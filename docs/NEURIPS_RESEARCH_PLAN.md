@@ -1,5 +1,17 @@
 # NeurIPS research blueprint: When is message passing worth it for retrieval?
 
+> **Six-dataset stop-gate update (2026-08-26):** the contract frozen at
+> `six-dataset-protocol-v1` is complete. Across five paired seeds, plain MLP
+> wins R@5 on 2Wiki (+2.08 points, 95% CI +1.22 to +2.94) and MuSiQue (+1.10,
+> +0.57 to +1.63); the validation-selected GNN wins on WebQSP (-4.05),
+> HotpotQA (-4.64), and MetaQA (-7.71); SQuAD is neutral (-0.01, -0.27 to
+> +0.25). MLP inference is 3.64--9.92x faster and uses 104--2,431 MiB less
+> incremental peak GPU memory with essentially matched parameters. MetaQA's
+> GNN advantage is largest at one hop and shrinks with hop count, so hop count
+> is not the mechanism. The effectiveness, MetaQA-hop, and systems tables are
+> in `docs/SIX_DATASET_RESULTS.md`. The preregistered stop condition is met; no
+> mechanism or perturbation follow-up has launched.
+
 > **Execution checkpoint (2026-08-25):** the exact protocol baseline is frozen
 > at `paper-protocol-v0`. The controlling immediate experiment is now the
 > complete-data relational-operator screen in
@@ -28,11 +40,9 @@
 
 ## Executive decision
 
-The paper should not claim that MLPs are universally better than GNNs. The
-first priority is a narrower operator question: whether query-conditioned
-relational translation can replace candidate message passing while improving
-the quality-efficiency tradeoff. If that direction is not supported, the paper
-returns to the broader conditional result:
+The paper must not claim that MLPs are universally better than GNNs. The
+six-dataset result instead establishes a real quality-efficiency boundary and
+returns the paper to the broader conditional question:
 
 > In query-conditioned retrieval, the value of message passing is predictable
 > from neighborhood task signal, feature strength, topology corruption, edge

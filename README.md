@@ -1,14 +1,12 @@
 # Relational Operators versus Message Passing for Retrieval
 
 This is a standalone research repository for a NeurIPS-oriented study of when
-a lightweight query-conditioned relational operator can replace explicit graph
-message passing for retrieval.
-
-The immediate question is whether an Offset-MLP can match or beat strong GNN
-operators in retrieval quality while improving parameters, memory, and latency.
-The broader phase diagram remains a conditional follow-up, not the current
-execution priority. The aim is to discover the outcome, not manufacture an MLP
-win.
+graph message passing is worth its cost for retrieval. The frozen six-dataset
+result is conditional: a plain MLP wins R@5 on 2Wiki and MuSiQue, message
+passing wins on WebQSP, HotpotQA, and MetaQA, and SQuAD is neutral. The MLP is
+3.64--9.92x faster with lower incremental peak GPU memory on every dataset.
+The aim is to explain and predict this boundary, not manufacture a universal
+MLP or GNN win.
 
 ## Scientific contract
 
@@ -34,6 +32,8 @@ docs/CONFIRMATION_PROTOCOL.md  frozen five-seed and capacity-selection gate
 docs/CONFIRMATION_RESULTS.md five-seed replication and coverage diagnosis
 docs/COVERAGE_VARIANT_PROTOCOL.md frozen single set-coverage Offset gate
 docs/COVERAGE_VARIANT_RESULTS.md preregistered negative mechanism result
+docs/SIX_DATASET_PROTOCOL.md frozen six-dataset comparison contract
+docs/SIX_DATASET_RESULTS.md  five-seed effectiveness, hop, and systems tables
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code
@@ -66,20 +66,26 @@ before running it.
 
 ## Current status
 
-The exact protocol baseline is preserved by the annotated tag
-`paper-protocol-v0`. The current gate is the complete-data, one-seed seven-model
-screen on WebQSP, 2Wiki, and MuSiQue defined in
-`docs/OFFSET_OPERATOR_PROTOCOL.md`. That screen is complete and its deliberately
-mixed, non-paper-final result is recorded in `docs/OFFSET_SCREEN_RESULTS.md`.
+The six-dataset contract is preserved by the annotated tag
+`six-dataset-protocol-v1`. Its stop gate is complete across 2Wiki, MuSiQue,
+WebQSP, HotpotQA, SQuAD, and all 407,513 local MetaQA queries. Every primary
+comparison uses five paired seeds; the four new-dataset GNN comparators were
+selected from GCN, GraphSAGE, GAT, and GIN on validation R@5 only. See
+`docs/SIX_DATASET_PROTOCOL.md` and `docs/SIX_DATASET_RESULTS.md`.
+
+The result does not support a universal topology-free claim: R@5 has two MLP
+wins, three GNN wins, and one neutral dataset under paired seed-level 95%
+intervals. It does establish a consistent systems boundary: explicit message
+passing costs 3.64--9.92x inference latency and 104--2,431 MiB of additional
+incremental peak GPU memory while parameters are effectively matched. MetaQA's
+GNN advantage is largest at one hop, so hop count alone cannot explain the
+boundary. No new topology perturbation, mechanism predictor, Offset rescue, or
+architecture has been launched after this stop gate.
+
 Earlier pilot and rewiring outputs remain `NOT_PAPER_VALID_PILOT`; old C-RAG
-results are hypothesis-generating only. The next bounded gate confirms only
-the 2Wiki/MuSiQue topology-free result and previously selected GNNs across five
-seeds, with a validation-only 16/32/64-width capacity sweep.
-That confirmation is complete: plain MLP's R@5 advantage replicates on both
-datasets, smaller capacities fail validation selection, and Offset's coverage
-gap worsens with answer count. See `docs/CONFIRMATION_RESULTS.md`.
-The single preregistered set-assignment remedy was then run and failed its
-coverage criterion on both datasets; see `docs/COVERAGE_VARIANT_RESULTS.md`.
+results are hypothesis-generating only. The prior Offset screen, confirmation,
+and failed coverage variant remain recorded in their corresponding protocol
+and results documents.
 
 To run the gated complete-data operator screen on isolated Modal storage:
 
