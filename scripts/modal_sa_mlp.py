@@ -6,7 +6,7 @@ import argparse
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import modal
@@ -91,6 +91,17 @@ def _baseline_summary(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _remote_result_path(dataset: str, fingerprint: str) -> str:
+    return str(
+        PurePosixPath(STORAGE_ROOT)
+        / "outputs"
+        / "sa_mlp_screen"
+        / dataset
+        / fingerprint[:16]
+        / "result.json"
+    )
+
+
 def _local_jobs(datasets: list[str]) -> list[dict[str, Any]]:
     jobs: list[dict[str, Any]] = []
     for dataset in datasets:
@@ -112,14 +123,7 @@ def _local_jobs(datasets: list[str]) -> list[dict[str, Any]]:
                 "baseline_result_sha256": _sha256(path),
                 "baseline": _baseline_summary(payload),
                 "fingerprint": fingerprint,
-                "result_remote": str(
-                    Path(STORAGE_ROOT)
-                    / "outputs"
-                    / "sa_mlp_screen"
-                    / dataset
-                    / fingerprint[:16]
-                    / "result.json"
-                ),
+                "result_remote": _remote_result_path(dataset, fingerprint),
             }
         )
     return jobs
