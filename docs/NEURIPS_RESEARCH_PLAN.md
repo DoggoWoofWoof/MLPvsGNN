@@ -6,7 +6,10 @@
 > `docs/OFFSET_OPERATOR_PROTOCOL.md`: plain MLP, Offset-MLP, K=4 Offset-MLP,
 > GCN, GraphSAGE, GAT, and GIN on WebQSP, 2Wiki, and MuSiQue. Earlier pilot and
 > rewiring results remain non-reportable. Large perturbation sweeps and the LODO
-> predictor are deferred until this screen's result gate is reviewed.
+> predictor are deferred until this screen's result gate is reviewed. The
+> completed screen is documented in `docs/OFFSET_SCREEN_RESULTS.md`: Offset has
+> a strong efficiency advantage and a 2Wiki top-rank advantage, but not a
+> cross-dataset R@5/R@20 advantage. No follow-up has launched.
 
 ## Executive decision
 
