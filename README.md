@@ -33,6 +33,7 @@ docs/OFFSET_SCREEN_RESULTS.md  complete-data one-seed screening result
 docs/CONFIRMATION_PROTOCOL.md  frozen five-seed and capacity-selection gate
 docs/CONFIRMATION_RESULTS.md five-seed replication and coverage diagnosis
 docs/COVERAGE_VARIANT_PROTOCOL.md frozen single set-coverage Offset gate
+docs/COVERAGE_VARIANT_RESULTS.md preregistered negative mechanism result
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code
@@ -77,6 +78,8 @@ seeds, with a validation-only 16/32/64-width capacity sweep.
 That confirmation is complete: plain MLP's R@5 advantage replicates on both
 datasets, smaller capacities fail validation selection, and Offset's coverage
 gap worsens with answer count. See `docs/CONFIRMATION_RESULTS.md`.
+The single preregistered set-assignment remedy was then run and failed its
+coverage criterion on both datasets; see `docs/COVERAGE_VARIANT_RESULTS.md`.
 
 To run the gated complete-data operator screen on isolated Modal storage:
 

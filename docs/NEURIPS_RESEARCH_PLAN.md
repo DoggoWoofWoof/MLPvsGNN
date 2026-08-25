@@ -19,6 +19,13 @@
 > monotonically with gold-set size, passing the gate for one preregistered
 > coverage-aware K-direction objective. See `docs/CONFIRMATION_RESULTS.md`.
 
+> **Coverage-variant update:** the single objective frozen in commit `364183f`
+> failed on both datasets. Relative to original K=4, it changes R@20 by -2.357
+> points on 2Wiki (paired 95% CI -2.794 to -1.919) and -2.332 on MuSiQue
+> (-2.704 to -1.960), while also reducing R@5 and FullCov. No coefficient was
+> tuned and no second variant was launched. See
+> `docs/COVERAGE_VARIANT_RESULTS.md`.
+
 ## Executive decision
 
 The paper should not claim that MLPs are universally better than GNNs. The
