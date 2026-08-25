@@ -1,0 +1,38 @@
+import torch
+
+from mp_retrieval.perturbations import (
+    add_random_edges,
+    corrupt_edge_types,
+    degree_preserving_rewire,
+    drop_edges,
+)
+
+
+def cycle_graph(n=20):
+    src = torch.arange(n)
+    dst = (src + 1) % n
+    return torch.stack([src, dst])
+
+
+def test_drop_and_add_are_seed_deterministic():
+    edges = cycle_graph()
+    left, _ = drop_edges(edges, 0.25, seed=7)
+    right, _ = drop_edges(edges, 0.25, seed=7)
+    assert torch.equal(left, right)
+    added, _ = add_random_edges(edges, 20, 0.5, seed=4)
+    assert added.shape[1] == 30
+    assert len(set(zip(added[0].tolist(), added[1].tolist()))) == 30
+
+
+def test_directed_rewire_preserves_degrees():
+    edges = torch.cat([cycle_graph(), torch.stack([torch.arange(20), (torch.arange(20) + 3) % 20])], dim=1)
+    rewired = degree_preserving_rewire(edges, 0.5, seed=3)
+    assert torch.equal(torch.bincount(edges[0], minlength=20), torch.bincount(rewired[0], minlength=20))
+    assert torch.equal(torch.bincount(edges[1], minlength=20), torch.bincount(rewired[1], minlength=20))
+
+
+def test_type_corruption_preserves_histogram():
+    types = torch.tensor([0, 0, 0, 1, 1, 2])
+    corrupted = corrupt_edge_types(types, 1.0, seed=9)
+    assert torch.equal(types.sort().values, corrupted.sort().values)
+

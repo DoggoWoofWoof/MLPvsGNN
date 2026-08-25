@@ -1,0 +1,29 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Experiment artifacts are generated, never hand-edited.
+artifacts/
+checkpoints/
+logs/
+outputs/
+wandb/
+
+# Standardized datasets can be large and may have upstream license constraints.
+data/*.pt
+data/*.npz
+data/*.npy
+data/*.pkl
+data/raw/
+data/processed/
+!data/README.md
+
+# Local configuration and credentials.
+.env
+*.local.yaml
+

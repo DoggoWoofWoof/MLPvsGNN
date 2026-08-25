@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "message-passing-retrieval"
+version = "0.1.0"
+description = "Controlled experiments for predicting when graph message passing helps retrieval."
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = {file = "LICENSE"}
+dependencies = [
+  "numpy>=1.26",
+  "pyyaml>=6.0",
+  "torch>=2.2",
+]
+
+[project.optional-dependencies]
+graph = ["torch-geometric>=2.5"]
+crag = ["faiss-cpu>=1.8", "sentence-transformers>=3.0"]
+analysis = ["pandas>=2.1", "scikit-learn>=1.4", "scipy>=1.12", "statsmodels>=0.14"]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+

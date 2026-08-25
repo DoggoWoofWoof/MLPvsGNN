@@ -1,0 +1,49 @@
+experiment: l2_clean_pair
+status: preregistration_draft
+
+datasets:
+  - 2wiki
+  - musique
+  - hotpotqa
+  - metaqa
+  - webqsp
+  - squad
+
+models:
+  primary_pair: [mlp, gcn]
+  architecture_robustness: [sage, gat, gin]
+  diagnostic_controls:
+    - mlp_degree_features
+    - gnn_self_loops_only
+    - gnn_shuffled_edges
+    - gnn_frozen_random_messages
+
+fairness:
+  same_candidate_pool: true
+  same_input_features: true
+  same_loss: listnet_multi_positive
+  same_negative_candidates: true
+  same_optimizer: adamw
+  parameter_tolerance_fraction: 0.05
+  validation_only_selection: true
+  test_evaluations_per_run: 1
+  gradient_audit: required
+
+training:
+  seeds: [0, 1, 2, 3, 4]
+  epochs_max: 50
+  patience: 8
+  learning_rates: [0.0003, 0.001, 0.003]
+  weight_decay: [0.0, 0.0001, 0.001]
+  layers: [1, 2, 3, 4]
+  hidden_dim_gnn: [64, 128]
+  dropout: [0.0, 0.2, 0.5]
+  selection_metric: validation_recall_at_5
+
+metrics:
+  primary: recall_at_5
+  secondary: [recall_at_1, recall_at_20, mrr, ndcg_at_10, full_coverage_at_20]
+  ceilings: [candidate_recall, conditional_recall]
+  efficiency: [train_seconds, milliseconds_per_query, peak_vram_mb, peak_ram_mb]
+  uncertainty: paired_query_bootstrap
+
