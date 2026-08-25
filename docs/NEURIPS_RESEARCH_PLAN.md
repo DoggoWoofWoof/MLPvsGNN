@@ -1,17 +1,20 @@
 # NeurIPS research blueprint: When is message passing worth it for retrieval?
 
 > **Execution checkpoint (2026-08-25):** the exact protocol baseline is frozen
-> at `paper-protocol-v0`. The three-dataset Modal run and initial 25%
-> degree-preserving-rewiring intervention are strictly non-reportable pilots;
-> see `docs/PILOT3_RESULTS.md`. They validate the comparison machinery and show
-> a shrinking GCN R@5 margin, including a near-neutral MuSiQue regime, but no
-> robust MLP-winning crossover. The LODO predictor remains gated.
+> at `paper-protocol-v0`. The controlling immediate experiment is now the
+> complete-data relational-operator screen in
+> `docs/OFFSET_OPERATOR_PROTOCOL.md`: plain MLP, Offset-MLP, K=4 Offset-MLP,
+> GCN, GraphSAGE, GAT, and GIN on WebQSP, 2Wiki, and MuSiQue. Earlier pilot and
+> rewiring results remain non-reportable. Large perturbation sweeps and the LODO
+> predictor are deferred until this screen's result gate is reviewed.
 
 ## Executive decision
 
-The paper should not claim that MLPs are universally better than GNNs. That is
-both scientifically unlikely and too easy to refute. The paper should establish
-a conditional result:
+The paper should not claim that MLPs are universally better than GNNs. The
+first priority is a narrower operator question: whether query-conditioned
+relational translation can replace candidate message passing while improving
+the quality-efficiency tradeoff. If that direction is not supported, the paper
+returns to the broader conditional result:
 
 > In query-conditioned retrieval, the value of message passing is predictable
 > from neighborhood task signal, feature strength, topology corruption, edge

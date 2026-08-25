@@ -1,13 +1,14 @@
-# When Is Message Passing Worth It for Retrieval?
+# Relational Operators versus Message Passing for Retrieval
 
-This is a standalone research repository for a NeurIPS-oriented study of the
-conditions under which graph message passing improves retrieval and the
-conditions under which it damages otherwise useful node representations.
+This is a standalone research repository for a NeurIPS-oriented study of when
+a lightweight query-conditioned relational operator can replace explicit graph
+message passing for retrieval.
 
-The intended contribution is a **predictive phase diagram**, not the isolated
-observation that an MLP can beat a GNN. We compare parameter-matched MLP and
-message-passing encoders while controlling graph quality, feature quality,
-degree, hubness, density, edge semantics, topology noise, and training size.
+The immediate question is whether an Offset-MLP can match or beat strong GNN
+operators in retrieval quality while improving parameters, memory, and latency.
+The broader phase diagram remains a conditional follow-up, not the current
+execution priority. The aim is to discover the outcome, not manufacture an MLP
+win.
 
 ## Scientific contract
 
@@ -27,6 +28,7 @@ degree, hubness, density, edge semantics, topology noise, and training size.
 configs/                       preregistered experiment grids
 data/                          data contract; generated tensors are ignored
 docs/NEURIPS_RESEARCH_PLAN.md  full paper and experiment blueprint
+docs/OFFSET_OPERATOR_PROTOCOL.md frozen immediate screen and result gate
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code
@@ -60,16 +62,15 @@ before running it.
 ## Current status
 
 The exact protocol baseline is preserved by the annotated tag
-`paper-protocol-v0`. A three-dataset Modal pilot and one audited 25%
-degree-preserving-rewiring point have run; both are stamped
-`NOT_PAPER_VALID_PILOT` because the current caches are incomplete/test-only.
-See `docs/PILOT3_RESULTS.md` for the fairness audit, results, limitations, and
-next-run gate. The old CRAG results remain **hypothesis-generating only**.
+`paper-protocol-v0`. The current gate is the complete-data, one-seed seven-model
+screen on WebQSP, 2Wiki, and MuSiQue defined in
+`docs/OFFSET_OPERATOR_PROTOCOL.md`. Earlier pilot and rewiring outputs remain
+`NOT_PAPER_VALID_PILOT`; old C-RAG results are hypothesis-generating only.
 
-To run the registered three-dataset pilot on isolated Modal storage:
+To run the gated complete-data operator screen on isolated Modal storage:
 
 ```bash
-python experiments.py run pilot3 --backend modal --intervention clean --rate 0
+python experiments.py run operator-screen --backend modal
 ```
 
 Compute credentials are resolved at runtime from an ignored local file or

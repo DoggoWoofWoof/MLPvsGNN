@@ -23,10 +23,15 @@ from mp_retrieval.compute_credentials import (  # noqa: E402
 
 def _run_modal(args: argparse.Namespace) -> int:
     pool = select_modal_pool(load_modal_pool(), args.account)
-    command = [sys.executable, "-m", "modal", "run", "scripts/modal_pilot3.py"]
+    modal_script = {
+        "pilot3": "scripts/modal_pilot3.py",
+        "operator-screen": "scripts/modal_operator_screen.py",
+    }[args.task]
+    command = [sys.executable, "-m", "modal", "run", modal_script]
     if args.datasets:
         command.extend(["--datasets", ",".join(args.datasets)])
-    command.extend(["--intervention", args.intervention, "--rate", str(args.rate)])
+    if args.task == "pilot3":
+        command.extend(["--intervention", args.intervention, "--rate", str(args.rate)])
     if args.dry_run:
         print(json.dumps({"command": command, "accounts": [item.name for item in pool]}, indent=2))
         return 0
@@ -79,7 +84,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     run = subparsers.add_parser("run")
-    run.add_argument("task", choices=["pilot3"])
+    run.add_argument("task", choices=["pilot3", "operator-screen"])
     run.add_argument("--backend", choices=["modal"], default="modal")
     run.add_argument("--account", default=None)
     run.add_argument("--datasets", nargs="+", default=None)

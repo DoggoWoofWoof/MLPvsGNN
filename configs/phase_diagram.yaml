@@ -1,5 +1,5 @@
 experiment: message_passing_phase_diagram
-status: preregistration_draft
+status: deferred_until_operator_screen_gate
 protocol_baseline: paper-protocol-v0
 
 primary_comparison: gcn_minus_parameter_matched_mlp

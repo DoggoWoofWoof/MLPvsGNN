@@ -1,0 +1,69 @@
+experiment: clean_relational_operator_screen
+status: SCREENING_ONLY_NOT_PAPER_FINAL
+
+paper_question: >-
+  Can a lightweight query-conditioned relational MLP recover graph-defined
+  relevance without explicit message passing while improving the retrieval and
+  efficiency tradeoff?
+
+datasets:
+  webqsp:
+    source_subdir: webqsp/gte_qwen
+    expected_queries: 1578
+  2wiki_clean:
+    source_subdir: 2wiki_clean/gte_qwen
+    expected_queries: 15000
+  musique_clean:
+    source_subdir: musique_clean/gte_qwen
+    expected_queries: 19938
+
+models: [plain_mlp, offset_mlp, offset_mlp_k4, gcn, sage, gat, gin]
+
+screen:
+  seed: 0
+  epochs: 3
+  batch_size: 16
+  hidden_dim: 64
+  layers: 1
+  offset_directions: 4
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  ks: [1, 5, 20]
+
+candidate_contract:
+  sources: [dense_top200, splade_top200]
+  merge: stable_union_dense_then_splade
+  anchor: dense_top1
+  train_only_when_gold_is_in_common_pool: true
+  report_unconditional_metrics: true
+  report_candidate_conditional_metrics: true
+
+fairness:
+  same_frozen_query_embeddings: true
+  same_frozen_node_embeddings: true
+  same_candidates: true
+  same_labels: true
+  same_candidate_negatives: true
+  same_loss: multi_positive_listwise_cross_entropy
+  same_canonical_splits: true
+  same_seed: true
+  same_optimizer_and_budget: true
+  gnn_only_privileged_input: candidate_induced_adjacency
+  offset_inference_uses_adjacency: false
+
+modal:
+  app: message-passing-retrieval-operator-screen
+  volume: message-passing-retrieval-data
+  gpu: A10G
+  timeout_seconds: 86400
+  parallel_datasets: 3
+
+gates:
+  launch_followup_before_compact_table: prohibited
+  topology_perturbations: deferred
+  typed_edge_removal: deferred
+  dataset_expansion: deferred
+  lodo_predictor: deferred
+  canonical_five_seed_confirmation: only_if_offset_is_promising
