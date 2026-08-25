@@ -3,6 +3,8 @@ import torch
 from mp_retrieval.operator_models import (
     COVERAGE_OFFSET_MODEL,
     SCREEN_MODELS,
+    STRUCTURE_AWARE_MODELS,
+    build_explicit_feature_mlp,
     build_operator_model,
     model_parameter_counts,
 )
@@ -66,3 +68,27 @@ def test_coverage_offset_exposes_k_direction_scores_without_topology():
     assert targets.shape == (2, 4, 4)
     assert torch.equal(model(nodes, queries, anchors, batch, edges), directional.max(dim=1).values)
     assert model.uses_topology is False
+
+
+def test_explicit_feature_models_are_parameter_matched_and_have_no_message_passing():
+    nodes, queries, _anchors, batch, _edges = _inputs()
+    target = 1_000
+    for name in STRUCTURE_AWARE_MODELS:
+        model = build_explicit_feature_mlp(
+            name,
+            embedding_dim=8,
+            projection_dim=4,
+            static_dim=7,
+            local_dim=10,
+            target_parameters=target,
+            dropout=0.0,
+            temperature=0.07,
+        ).eval()
+        structural = None
+        if model.structural_dim:
+            structural = torch.randn(nodes.shape[0], model.structural_dim)
+        scores = model.forward_explicit(nodes, queries, batch, structural)
+        assert scores.shape == (nodes.shape[0],)
+        assert model.uses_topology is False
+        assert not any("conv" in type(module).__name__.lower() for module in model.modules())
+        assert abs(model_parameter_counts(model)["parameters"] - target) < 64

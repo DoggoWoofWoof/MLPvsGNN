@@ -4,12 +4,12 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import json
 import os
-from pathlib import Path
 import subprocess
 import sys
+from datetime import datetime, timezone
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -29,6 +29,7 @@ def _run_modal(args: argparse.Namespace) -> int:
         "confirmation": "scripts/modal_confirmation.py",
         "coverage-variant": "scripts/modal_coverage_variant.py",
         "six-dataset": "scripts/modal_six_dataset.py",
+        "sa-mlp-screen": "scripts/modal_sa_mlp.py",
     }[args.task]
     command = [sys.executable, "-m", "modal", "run", modal_script]
     if args.datasets:
@@ -95,6 +96,7 @@ def main() -> None:
             "confirmation",
             "coverage-variant",
             "six-dataset",
+            "sa-mlp-screen",
         ],
     )
     run.add_argument("--backend", choices=["modal"], default="modal")

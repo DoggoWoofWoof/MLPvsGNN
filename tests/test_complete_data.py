@@ -45,6 +45,7 @@ def test_complete_dataset_contract_builds_common_pool_and_canonical_splits(tmp_p
     assert first.candidate_index.tolist() == [0, 1, 2]
     assert first.relevant_local.tolist() == [2]
     assert first.anchor_global == 0
+    assert first.retrieval_seed_local.tolist() == [0, 1, 2]
     assert dataset.metadata["candidate_contract_sha256"]
 
 

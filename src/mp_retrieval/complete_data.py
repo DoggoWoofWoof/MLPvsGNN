@@ -7,9 +7,9 @@ manifest with canonical splits and gold node IDs, and a global graph.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import hashlib
 import json
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -18,7 +18,6 @@ import torch
 
 from .data import QuerySplit
 from .l2_data import edge_index_to_csr
-
 
 REQUIRED_FILES = (
     "nodes.npy",
@@ -40,6 +39,7 @@ class CompleteQuery:
     anchor_global: int
     split: int
     hop: int | None = None
+    retrieval_seed_local: torch.Tensor | None = None
 
     @property
     def candidate_ceiling(self) -> float:
@@ -239,6 +239,14 @@ def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> Co
             [local[int(gold)] for gold in relevant_global.tolist() if int(gold) in local],
             dtype=torch.long,
         )
+        retrieval_seed_global = _stable_union(
+            dense[query_index, :5],
+            splade[query_index, :5],
+        )
+        retrieval_seed_local = torch.tensor(
+            [local[int(node)] for node in retrieval_seed_global.tolist()],
+            dtype=torch.long,
+        )
         queries.append(
             CompleteQuery(
                 query_index=query_index,
@@ -249,6 +257,7 @@ def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> Co
                 anchor_global=int(dense[query_index, 0]),
                 split=split_by_query[query_index],
                 hop=None if hops[query_index] is None else int(hops[query_index]),
+                retrieval_seed_local=retrieval_seed_local,
             )
         )
     rowptr, col, _ = edge_index_to_csr(edge_index, graph_nodes)

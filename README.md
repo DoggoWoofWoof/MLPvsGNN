@@ -34,6 +34,7 @@ docs/COVERAGE_VARIANT_PROTOCOL.md frozen single set-coverage Offset gate
 docs/COVERAGE_VARIANT_RESULTS.md preregistered negative mechanism result
 docs/SIX_DATASET_PROTOCOL.md frozen six-dataset comparison contract
 docs/SIX_DATASET_RESULTS.md  five-seed effectiveness, hop, and systems tables
+docs/SA_MLP_PROTOCOL.md      frozen fixed-structure MLP one-seed gate
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code
@@ -80,7 +81,15 @@ passing costs 3.64--9.92x inference latency and 104--2,431 MiB of additional
 incremental peak GPU memory while parameters are effectively matched. MetaQA's
 GNN advantage is largest at one hop, so hop count alone cannot explain the
 boundary. No new topology perturbation, mechanism predictor, Offset rescue, or
-architecture has been launched after this stop gate.
+architecture was launched inside that stop gate.
+
+The next bounded experiment is now frozen in `docs/SA_MLP_PROTOCOL.md`. It asks
+whether a parameter-matched MLP can recover the GNN advantage on MetaQA,
+WebQSP, and HotpotQA using cached degree/PageRank/core/clustering and
+query-local distance/path/PPR descriptors, while its learned forward pass never
+receives adjacency. Exactly one seed and four preregistered ablations are
+allowed. Five-seed expansion occurs only if the combined SA-MLP closes at least
+50% of the frozen seed-0 GNN R@5 gap on two of three datasets.
 
 Earlier pilot and rewiring outputs remain `NOT_PAPER_VALID_PILOT`; old C-RAG
 results are hypothesis-generating only. The prior Offset screen, confirmation,
@@ -97,6 +106,12 @@ Run the frozen confirmation gate on isolated Modal storage:
 
 ```bash
 python experiments.py run confirmation --backend modal
+```
+
+Run the frozen SA-MLP one-seed gate on isolated Modal storage:
+
+```bash
+python experiments.py run sa-mlp-screen --backend modal
 ```
 
 Compute credentials are resolved at runtime from an ignored local file or

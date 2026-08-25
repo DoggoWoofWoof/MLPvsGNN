@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import torch
-from torch import nn
 import torch.nn.functional as F
-
+from torch import nn
 
 SCREEN_MODELS = (
     "plain_mlp",
@@ -17,6 +16,12 @@ SCREEN_MODELS = (
     "gin",
 )
 COVERAGE_OFFSET_MODEL = "offset_mlp_set_k4"
+STRUCTURE_AWARE_MODELS = (
+    "interaction",
+    "static_structure",
+    "query_local_structure",
+    "sa_mlp",
+)
 
 
 class OperatorModel(nn.Module):
@@ -215,6 +220,162 @@ class MessagePassingOperator(OperatorModel):
         query_state = self.project_queries(queries)
         target = F.normalize(query_state + self.query_target(query_state), dim=-1)
         return self.similarities(node_state, target, batch_index)
+
+
+def explicit_feature_input_dim(
+    name: str,
+    projection_dim: int,
+    static_dim: int,
+    local_dim: int,
+) -> int:
+    if name not in STRUCTURE_AWARE_MODELS:
+        raise ValueError(f"Unknown explicit-feature model: {name}")
+    dimension = 2 * projection_dim
+    if name in {"interaction", "sa_mlp"}:
+        dimension += 2 * projection_dim + 2
+    if name in {"static_structure", "sa_mlp"}:
+        dimension += static_dim
+    if name in {"query_local_structure", "sa_mlp"}:
+        dimension += local_dim
+    return dimension
+
+
+def parameter_matched_head_width(
+    *,
+    embedding_dim: int,
+    projection_dim: int,
+    input_dim: int,
+    target_parameters: int,
+) -> int:
+    """Choose the deterministic scalar-head width nearest a frozen target."""
+
+    projection_parameters = 2 * embedding_dim * projection_dim
+
+    def total(width: int) -> int:
+        return projection_parameters + input_dim * width + width + width + 1
+
+    candidates = range(1, 513)
+    return min(candidates, key=lambda width: (abs(total(width) - target_parameters), width))
+
+
+class ExplicitFeatureMLP(OperatorModel):
+    """Candidate scorer over compact fixed descriptors, with no adjacency input."""
+
+    uses_topology = False
+    uses_structural_features = True
+
+    def __init__(
+        self,
+        name: str,
+        embedding_dim: int,
+        projection_dim: int,
+        *,
+        static_dim: int,
+        local_dim: int,
+        head_dim: int,
+        dropout: float,
+        temperature: float,
+    ):
+        super().__init__(
+            embedding_dim,
+            projection_dim,
+            dropout=dropout,
+            temperature=temperature,
+        )
+        if name not in STRUCTURE_AWARE_MODELS:
+            raise ValueError(f"Unknown explicit-feature model: {name}")
+        self.kind = name
+        self.include_interactions = name in {"interaction", "sa_mlp"}
+        self.include_static = name in {"static_structure", "sa_mlp"}
+        self.include_local = name in {"query_local_structure", "sa_mlp"}
+        self.static_dim = static_dim if self.include_static else 0
+        self.local_dim = local_dim if self.include_local else 0
+        input_dim = explicit_feature_input_dim(
+            name,
+            projection_dim,
+            static_dim,
+            local_dim,
+        )
+        self.scorer = nn.Sequential(
+            nn.Linear(input_dim, head_dim),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(head_dim, 1),
+        )
+
+    @property
+    def structural_dim(self) -> int:
+        return self.static_dim + self.local_dim
+
+    def forward_explicit(
+        self,
+        nodes: torch.Tensor,
+        queries: torch.Tensor,
+        batch_index: torch.Tensor,
+        structural_features: torch.Tensor | None,
+    ) -> torch.Tensor:
+        raw_nodes = F.gelu(self.node_projection(nodes))
+        raw_queries = F.gelu(self.query_projection(queries))[batch_index]
+        node_state = F.normalize(raw_nodes, dim=-1)
+        query_state = F.normalize(raw_queries, dim=-1)
+        pieces = [query_state, node_state]
+        if self.include_interactions:
+            pieces.extend(
+                [
+                    query_state * node_state,
+                    torch.abs(query_state - node_state),
+                    (query_state * node_state).sum(dim=-1, keepdim=True),
+                    (raw_queries * raw_nodes).sum(dim=-1, keepdim=True)
+                    / raw_nodes.shape[-1] ** 0.5,
+                ]
+            )
+        if self.structural_dim:
+            if structural_features is None:
+                raise ValueError(f"{self.kind} requires fixed structural features")
+            if structural_features.shape != (nodes.shape[0], self.structural_dim):
+                raise ValueError(
+                    f"Expected structural features {(nodes.shape[0], self.structural_dim)}, "
+                    f"got {tuple(structural_features.shape)}"
+                )
+            pieces.append(structural_features)
+        elif structural_features is not None and structural_features.shape[1] != 0:
+            raise ValueError(f"{self.kind} does not accept structural features")
+        return self.scorer(torch.cat(pieces, dim=-1)).squeeze(-1) / self.temperature
+
+
+def build_explicit_feature_mlp(
+    name: str,
+    embedding_dim: int,
+    projection_dim: int,
+    *,
+    static_dim: int,
+    local_dim: int,
+    target_parameters: int,
+    dropout: float,
+    temperature: float,
+) -> ExplicitFeatureMLP:
+    input_dim = explicit_feature_input_dim(
+        name,
+        projection_dim,
+        static_dim,
+        local_dim,
+    )
+    head_dim = parameter_matched_head_width(
+        embedding_dim=embedding_dim,
+        projection_dim=projection_dim,
+        input_dim=input_dim,
+        target_parameters=target_parameters,
+    )
+    return ExplicitFeatureMLP(
+        name,
+        embedding_dim,
+        projection_dim,
+        static_dim=static_dim,
+        local_dim=local_dim,
+        head_dim=head_dim,
+        dropout=dropout,
+        temperature=temperature,
+    )
 
 
 def build_operator_model(

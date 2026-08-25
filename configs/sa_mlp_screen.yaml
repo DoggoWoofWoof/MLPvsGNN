@@ -1,0 +1,144 @@
+experiment: structure_aware_mlp_screen
+status: SCREEN_PROTOCOL_FROZEN_BEFORE_REAL_TESTS
+baseline_tag: six-dataset-protocol-v1
+baseline_commit: 2f7f1aa
+
+question: >-
+  How much of the frozen message-passing R@5 advantage can be recovered by a
+  parameter-matched MLP that receives fixed structural summaries but never
+  aggregates neighbor embeddings inside the learned model?
+
+datasets:
+  metaqa:
+    expected_queries: 407513
+    required_hops: [1, 2, 3]
+  webqsp:
+    expected_queries: 1578
+    required_hops: []
+  hotpotqa_clean:
+    expected_queries: 97852
+    required_hops: []
+
+baseline:
+  source_pattern: outputs/main_table/{dataset}.json
+  seed: 0
+  primary_metric: recall_at_5
+  frozen_models:
+    metaqa: gat
+    webqsp: gat
+    hotpotqa_clean: gin
+  recompute_plain_mlp: false
+  recompute_gnn: false
+
+retrieval_seeds:
+  dense_top_k: 5
+  splade_top_k: 5
+  union: stable_unique
+  labels_used: false
+
+static_features:
+  directed_log_out_degree: true
+  directed_log_in_degree: true
+  log_total_degree: true
+  pagerank:
+    damping: 0.85
+    iterations: 30
+  hub_score: total_degree_empirical_percentile
+  coreness: exact_on_symmetrized_simple_graph
+  clustering: deterministic_wedge_estimate_on_symmetrized_simple_graph
+  clustering_max_wedges_per_node: 64
+  normalization: graph_wide_zscore_clip_5_then_divide_5
+  omitted:
+    - learned_structural_embedding
+    - textual_edge_embedding
+    - random_walk_embedding
+
+query_local_features:
+  graph: frozen_candidate_induced_directed_graph
+  distance_buckets: [0, 1, 2, 3_or_more_or_unreachable]
+  undirected_seed_connection_count: log1p_divide_query_max
+  directed_path_counts_from_seeds: [1, 2, 3]
+  path_count_normalization: log1p_divide_query_max_per_length
+  personalized_pagerank:
+    damping: 0.85
+    iterations: 8
+    dangling_policy: return_to_retrieval_seeds
+  directed_common_out_neighbor_count: log1p_divide_query_max
+  omitted:
+    - edge_confidence_because_not_in_frozen_graph_contract
+
+models:
+  frozen_plain_mlp:
+    source: baseline_seed_0
+  interaction:
+    learned_inputs: [q, x, q_times_x, abs_q_minus_x, cosine, dot]
+    static_features: false
+    query_local_features: false
+  static_structure:
+    learned_inputs: [q, x]
+    static_features: true
+    query_local_features: false
+  query_local_structure:
+    learned_inputs: [q, x]
+    static_features: false
+    query_local_features: true
+  sa_mlp:
+    learned_inputs: [q, x, q_times_x, abs_q_minus_x, cosine, dot]
+    static_features: true
+    query_local_features: true
+
+parameter_regime:
+  screening: matched_to_frozen_selected_gnn
+  projection_dim: 64
+  head_width_rule: closest_integer_width_to_frozen_gnn_parameter_count
+  allowed_absolute_parameter_difference: 256
+  practical_width_selection: deferred_until_screen_passes
+
+training:
+  seeds: [0]
+  epochs: 3
+  batch_size: 16
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  checkpoint_selection: validation_recall_at_5_only
+  test_evaluations_per_model: 1
+  inference_repeats: 5
+  metrics: [recall_at_1, recall_at_5, recall_at_20, mrr, full_coverage_at_20]
+
+systems:
+  report_feature_preprocessing_seconds: true
+  report_feature_cache_bytes: true
+  report_latency_per_query: true
+  report_total_and_incremental_gpu_memory: true
+  report_total_and_incremental_cpu_rss: true
+  feature_preprocessing_excluded_from_online_latency: true
+
+stop_gate:
+  tested_model: sa_mlp
+  gap_closure: (sa_mlp_r5_seed0 - plain_mlp_r5_seed0) / (gnn_r5_seed0 - plain_mlp_r5_seed0)
+  pass_threshold: 0.50
+  datasets_required_to_pass: 2
+  datasets_total: 3
+  if_pass: freeze_architecture_before_any_five_seed_or_width_selected_run
+  if_fail: stop_without_new_mlp_variants
+
+prohibited_before_gate_decision:
+  - five_seed_sa_mlp
+  - all_six_dataset_sa_mlp
+  - test_selected_widths
+  - textual_relation_or_edge_embeddings
+  - learned_neighbor_aggregation
+  - offset_models
+  - new_gnn_architectures
+
+modal:
+  app: message-passing-retrieval-sa-mlp-screen
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400
+  parallel_datasets: 3
