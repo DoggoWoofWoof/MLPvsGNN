@@ -1,0 +1,90 @@
+experiment: lightweight_operator_confirmation
+status: CONFIRMATION_GATE_NOT_PAPER_FINAL
+protocol_ancestor: paper-protocol-v0
+screen_commit: 5a6b8e3
+
+question: >-
+  Does the surprising topology-free R@5 result replicate across five seeds,
+  and can a 25%-50%-capacity MLP or Offset preserve effectiveness while
+  retaining the observed latency advantage?
+
+datasets:
+  2wiki_clean:
+    source_subdir: 2wiki_clean/gte_qwen
+    expected_queries: 15000
+    frozen_best_gnn: gat
+    hop_metadata: unavailable_do_not_infer
+  musique_clean:
+    source_subdir: musique_clean/gte_qwen
+    expected_queries: 19938
+    frozen_best_gnn: gcn
+    hop_metadata: recover_from_raw_question_decomposition
+
+seeds: [0, 1, 2, 3, 4]
+hidden_widths: [16, 32, 64]
+approximate_capacity_fractions: [0.25, 0.50, 1.00]
+
+model_grid:
+  capacity_sweep:
+    plain_mlp: [16, 32, 64]
+    offset_mlp: [16, 32, 64]
+  fixed_confirmation:
+    offset_mlp_k4: 64
+    frozen_best_gnn: 64
+
+selection:
+  source: validation_only
+  metric: recall_at_5
+  aggregation: mean_across_five_seeds
+  tie_margin_percentage_points: 0.1
+  tie_break: smaller_parameter_count
+  test_metrics_never_used_for_capacity_selection: true
+
+training:
+  epochs: 3
+  batch_size: 16
+  layers: 1
+  offset_directions: 4
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  ks: [1, 5, 20]
+  inference_repeats: 5
+
+fairness:
+  same_frozen_query_embeddings: true
+  same_frozen_node_embeddings: true
+  same_candidates: true
+  same_labels: true
+  same_candidate_negatives: true
+  same_loss: multi_positive_listwise_cross_entropy
+  same_canonical_splits: true
+  same_seeds: true
+  same_optimizer_and_epoch_budget: true
+  stable_batches_within_seed: true
+  gnn_only_privileged_input: candidate_induced_adjacency
+  offset_inference_uses_adjacency: false
+
+diagnostics:
+  answer_count_groups: observed_exact_count
+  metrics: [recall_at_1, recall_at_5, recall_at_20, mrr, full_coverage_at_20]
+  test_monotonic_offset_r20_gap_by_answer_count: true
+  hop_analysis:
+    2wiki_clean: unavailable_report_missingness
+    musique_clean: raw_question_decomposition_length
+  never_equate_missing_hops_with_answer_count: true
+
+modal:
+  app: message-passing-retrieval-confirmation
+  volume: message-passing-retrieval-data
+  gpu: A10G
+  timeout_seconds: 86400
+  parallel_datasets: 2
+
+gates:
+  generic_topology_perturbations: prohibited
+  extra_gnn_architectures: prohibited
+  hotpot_metaqa_squad_expansion: deferred
+  coverage_aware_offset: only_if_multi_target_failure_is_confirmed
+  launch_followup_before_confirmation_report: prohibited
