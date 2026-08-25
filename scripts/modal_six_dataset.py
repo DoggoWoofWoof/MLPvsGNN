@@ -125,6 +125,11 @@ def stage_dataset(job: dict[str, Any]) -> dict[str, Any]:
     dataset_config = CONFIG["new_datasets"][dataset]
     source = Path(SOURCE_ROOT) / dataset_config["source_subdir"]
     missing = [name for name in CORE_FILES if not (source / name).is_file()]
+    source_is_isolated = False
+    if missing and "isolated_source_subdir" in dataset_config:
+        source = Path(STORAGE_ROOT) / dataset_config["isolated_source_subdir"]
+        missing = [name for name in CORE_FILES if not (source / name).is_file()]
+        source_is_isolated = True
     if missing:
         raise FileNotFoundError(f"{dataset} source volume is missing {missing}")
     file_records: dict[str, dict[str, Any]] = {}
@@ -143,7 +148,11 @@ def stage_dataset(job: dict[str, Any]) -> dict[str, Any]:
     fingerprint = hashlib.sha256(
         json.dumps(file_records, sort_keys=True).encode("utf-8")
     ).hexdigest()
-    destination = Path(STORAGE_ROOT) / "paper_data" / dataset / fingerprint[:16]
+    destination = (
+        source
+        if source_is_isolated
+        else Path(STORAGE_ROOT) / "paper_data" / dataset / fingerprint[:16]
+    )
     destination.mkdir(parents=True, exist_ok=True)
     for name in CORE_FILES:
         target = destination / name
@@ -161,6 +170,7 @@ def stage_dataset(job: dict[str, Any]) -> dict[str, Any]:
         "data_fingerprint_sha256": fingerprint,
         "files": file_records,
         "node_identity_provenance": identity_provenance,
+        "staging_source": "existing_isolated_volume" if source_is_isolated else "crag_volume",
     }
     (destination / "_frozen_source_manifest.json").write_text(
         json.dumps(manifest, indent=2), encoding="utf-8"

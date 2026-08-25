@@ -18,6 +18,7 @@ frozen_findings_not_retuned:
 new_datasets:
   webqsp:
     source_subdir: webqsp/gte_qwen
+    isolated_source_subdir: operator_data/webqsp/437072d122ba51e0
     expected_queries: 1578
   hotpotqa_clean:
     source_subdir: hotpotqa_clean/gte_qwen
