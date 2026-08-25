@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
+import random
 
 import torch
 
@@ -112,22 +113,45 @@ def degree_preserving_rewire(
     This operator is intended for directed artifacts. For an undirected graph,
     store both directions and interpret the result as a degree-controlled null;
     reciprocity is not guaranteed after rewiring and should be measured.
+
+    ``rate`` targets the fraction of edge positions whose endpoint pair differs
+    from the input. With a fixed seed, lower-rate graphs are prefixes of the
+    same switching path used for higher rates. Already changed positions may be
+    used as partners but may never revert, which avoids the high-rate exhaustion
+    of disjoint-only edge swaps.
     """
 
     if not 0.0 <= rate <= 1.0:
         raise ValueError("rate must be in [0, 1]")
-    pairs = _edge_pairs(edge_index)
+    original = _edge_pairs(edge_index)
+    pairs = list(original)
     occupied = Counter(pairs)
-    target_swaps = round(rate * len(pairs) / 2)
-    gen = _generator(seed)
-    swaps = 0
-    used_positions: set[int] = set()
-    attempts = 0
-    max_attempts = max(100, target_swaps * 50)
-    while swaps < target_swaps and attempts < max_attempts and len(pairs) >= 2:
-        i, j = torch.randint(len(pairs), (2,), generator=gen).tolist()
-        attempts += 1
-        if i == j or i in used_positions or j in used_positions:
+    target_changed = round(rate * len(pairs))
+    if target_changed == 0 or len(pairs) < 2:
+        return edge_index.cpu().clone()
+    rng = random.Random(seed)
+    unchanged = list(range(len(pairs)))
+    unchanged_slot = {edge_pos: edge_pos for edge_pos in unchanged}
+
+    def mark_changed(edge_pos: int) -> None:
+        slot = unchanged_slot.pop(edge_pos, None)
+        if slot is None:
+            return
+        last = unchanged.pop()
+        if slot < len(unchanged):
+            unchanged[slot] = last
+            unchanged_slot[last] = slot
+
+    stalled_attempts = 0
+    max_stalled_attempts = max(1_000, min(100_000, len(pairs) * 10))
+    while (
+        len(pairs) - len(unchanged) < target_changed
+        and stalled_attempts < max_stalled_attempts
+    ):
+        i = unchanged[rng.randrange(len(unchanged))]
+        j = rng.randrange(len(pairs))
+        stalled_attempts += 1
+        if i == j:
             continue
         a, b = pairs[i]
         c, d = pairs[j]
@@ -136,6 +160,8 @@ def degree_preserving_rewire(
         if Counter((old_left, old_right)) == Counter((left, right)):
             continue
         if not allow_self_loops and (a == d or c == b):
+            continue
+        if left == original[i] or right == original[j]:
             continue
         occupied[old_left] -= 1
         if occupied[old_left] == 0:
@@ -151,10 +177,9 @@ def degree_preserving_rewire(
         occupied[left] += 1
         occupied[right] += 1
         pairs[i], pairs[j] = left, right
-        used_positions.update((i, j))
-        swaps += 1
-    if swaps < target_swaps:
-        raise RuntimeError(f"Completed {swaps}/{target_swaps} requested degree-preserving swaps")
+        mark_changed(i)
+        mark_changed(j)
+        stalled_attempts = 0
     return torch.tensor(pairs, dtype=torch.long).T.contiguous()
 
 

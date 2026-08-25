@@ -32,7 +32,29 @@ def test_directed_rewire_preserves_degrees():
     rewired = degree_preserving_rewire(edges, 0.5, seed=3)
     assert torch.equal(torch.bincount(edges[0], minlength=20), torch.bincount(rewired[0], minlength=20))
     assert torch.equal(torch.bincount(edges[1], minlength=20), torch.bincount(rewired[1], minlength=20))
-    assert float((rewired != edges).any(dim=0).float().mean()) == 0.5
+    changed_fraction = float((rewired != edges).any(dim=0).float().mean())
+    assert 0.5 <= changed_fraction <= 0.5 + 1 / edges.shape[1]
+
+
+def test_directed_rewire_reaches_full_rate_and_is_nested():
+    edges = torch.cat(
+        [cycle_graph(), torch.stack([torch.arange(20), (torch.arange(20) + 3) % 20])],
+        dim=1,
+    )
+    low = degree_preserving_rewire(edges, 0.25, seed=17)
+    high = degree_preserving_rewire(edges, 1.0, seed=17)
+    low_changed = (low != edges).any(dim=0)
+    high_changed = (high != edges).any(dim=0)
+    assert float(high_changed.float().mean()) == 1.0
+    assert torch.all(high_changed[low_changed])
+    assert torch.equal(
+        torch.bincount(edges[0], minlength=20),
+        torch.bincount(high[0], minlength=20),
+    )
+    assert torch.equal(
+        torch.bincount(edges[1], minlength=20),
+        torch.bincount(high[1], minlength=20),
+    )
 
 
 def test_directed_rewire_handles_duplicate_input_edges():

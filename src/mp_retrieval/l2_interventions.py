@@ -83,10 +83,20 @@ def apply_intervention(
             )
     after_edges = sum(int(value.shape[1]) for value in changed_edges.values())
     stage = "shared_model_input" if kind.startswith("feature_") else "gnn_topology"
+    algorithm = {
+        "degree_rewire": "nested_degree_preserving_switch_v2",
+        "add_random": "unique_uniform_directed_addition_v1",
+        "hub_injection": "existing_high_degree_target_redirect_v1",
+        "feature_mask": "entrywise_bernoulli_mask_v1",
+        "feature_gaussian": "column_scaled_gaussian_v1",
+        "typed_edge_removal": "relation_id_filter_v1",
+        "drop": "uniform_directed_edge_drop_v1",
+    }.get(kind)
     return changed_features, changed_edges, changed_types, {
         "kind": kind,
         "rate": rate,
         "seed": seed,
+        "algorithm": algorithm,
         "stage": stage,
         "applied_before_model_construction": True,
         "identical_degraded_features_for_all_models": kind.startswith("feature_"),
