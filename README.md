@@ -31,6 +31,7 @@ docs/NEURIPS_RESEARCH_PLAN.md  full paper and experiment blueprint
 docs/OFFSET_OPERATOR_PROTOCOL.md frozen immediate screen and result gate
 docs/OFFSET_SCREEN_RESULTS.md  complete-data one-seed screening result
 docs/CONFIRMATION_PROTOCOL.md  frozen five-seed and capacity-selection gate
+docs/CONFIRMATION_RESULTS.md five-seed replication and coverage diagnosis
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code
@@ -72,6 +73,9 @@ Earlier pilot and rewiring outputs remain `NOT_PAPER_VALID_PILOT`; old C-RAG
 results are hypothesis-generating only. The next bounded gate confirms only
 the 2Wiki/MuSiQue topology-free result and previously selected GNNs across five
 seeds, with a validation-only 16/32/64-width capacity sweep.
+That confirmation is complete: plain MLP's R@5 advantage replicates on both
+datasets, smaller capacities fail validation selection, and Offset's coverage
+gap worsens with answer count. See `docs/CONFIRMATION_RESULTS.md`.
 
 To run the gated complete-data operator screen on isolated Modal storage:
 

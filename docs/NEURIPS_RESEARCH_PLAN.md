@@ -11,6 +11,14 @@
 > a strong efficiency advantage and a 2Wiki top-rank advantage, but not a
 > cross-dataset R@5/R@20 advantage. No follow-up has launched.
 
+> **Confirmation update:** the frozen five-seed gate in commit `2c869a8`
+> replicates plain MLP's R@5 advantage over the preselected GNN on 2Wiki
+> (+2.077 points, paired 95% CI +1.218 to +2.936) and MuSiQue (+1.103,
+> +0.572 to +1.633). Width-16/32 models fail validation selection, so no
+> 2-4x parameter claim is supported. Offset's R@20 deficit worsens
+> monotonically with gold-set size, passing the gate for one preregistered
+> coverage-aware K-direction objective. See `docs/CONFIRMATION_RESULTS.md`.
+
 ## Executive decision
 
 The paper should not claim that MLPs are universally better than GNNs. The
