@@ -1,6 +1,11 @@
 import torch
 
-from mp_retrieval.operator_models import SCREEN_MODELS, build_operator_model, model_parameter_counts
+from mp_retrieval.operator_models import (
+    COVERAGE_OFFSET_MODEL,
+    SCREEN_MODELS,
+    build_operator_model,
+    model_parameter_counts,
+)
 
 
 def _inputs():
@@ -45,3 +50,19 @@ def test_message_passing_requires_topology():
         assert "edge_index" in str(exc)
     else:  # pragma: no cover
         raise AssertionError("GCN accepted a missing topology")
+
+
+def test_coverage_offset_exposes_k_direction_scores_without_topology():
+    nodes, queries, anchors, batch, edges = _inputs()
+    model = build_operator_model(
+        COVERAGE_OFFSET_MODEL,
+        8,
+        4,
+        offset_directions=4,
+        dropout=0.0,
+    ).eval()
+    directional, targets = model.directional_scores(nodes, queries, anchors, batch, edges)
+    assert directional.shape == (7, 4)
+    assert targets.shape == (2, 4, 4)
+    assert torch.equal(model(nodes, queries, anchors, batch, edges), directional.max(dim=1).values)
+    assert model.uses_topology is False

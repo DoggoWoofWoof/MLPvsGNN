@@ -32,6 +32,7 @@ docs/OFFSET_OPERATOR_PROTOCOL.md frozen immediate screen and result gate
 docs/OFFSET_SCREEN_RESULTS.md  complete-data one-seed screening result
 docs/CONFIRMATION_PROTOCOL.md  frozen five-seed and capacity-selection gate
 docs/CONFIRMATION_RESULTS.md five-seed replication and coverage diagnosis
+docs/COVERAGE_VARIANT_PROTOCOL.md frozen single set-coverage Offset gate
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code

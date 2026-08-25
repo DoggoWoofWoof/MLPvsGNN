@@ -1,0 +1,73 @@
+experiment: preregistered_set_coverage_offset
+status: PREREGISTERED_COVERAGE_VARIANT_GATE
+trigger_result_commit: c7813d0
+
+question: >-
+  Can an assignment-based K-direction objective recover Offset's
+  answer-multiplicity coverage loss without sacrificing its early-rank
+  advantage or adjacency-free inference?
+
+datasets:
+  2wiki_clean:
+    source_subdir: 2wiki_clean/gte_qwen
+    expected_queries: 15000
+    frozen_comparator_gnn: gat_h64
+  musique_clean:
+    source_subdir: musique_clean/gte_qwen
+    expected_queries: 19938
+    frozen_comparator_gnn: gcn_h64
+
+model:
+  name: offset_mlp_set_k4
+  hidden_dim: 64
+  directions: 4
+  parameters_expected: 221504
+  inference_score: max_over_directional_cosine_scores
+  adjacency_at_train_or_inference: false
+
+objective:
+  positives: all_in_pool_gold_candidates
+  directional_distribution: candidate_softmax_per_direction
+  assignment: hard_minimum_over_injective_direction_to_positive_assignments
+  assignment_reduction: mean_over_positives_then_mean_over_queries
+  max_supported_positives: 4
+  diversity:
+    form: mean_squared_hinge_on_pairwise_target_cosine
+    cosine_margin: 0.2
+    weight: 0.1
+  hyperparameter_search: prohibited
+
+seeds: [0, 1, 2, 3, 4]
+training:
+  epochs: 3
+  batch_size: 16
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  ks: [1, 5, 20]
+  inference_repeats: 5
+  checkpoint_selection: validation_recall_at_5
+
+success_criteria_frozen_before_test:
+  primary:
+    r20_gain_over_original_k4_percentage_points_each_dataset: 2.0
+    paired_95ci_lower_bound_above_zero: true
+  coverage_fraction:
+    close_at_least_fraction_of_k4_to_gnn_r20_gap: 0.25
+  early_rank_retention:
+    retain_at_least_fraction_of_original_k4_r1_advantage_over_gnn: 0.75
+  interpretation: mechanism_success_requires_primary_on_both_datasets
+
+gates:
+  additional_coverage_variant: prohibited
+  coefficient_tuning_after_test: prohibited
+  generic_topology_perturbations: prohibited
+  dataset_expansion: deferred
+
+modal:
+  app: message-passing-retrieval-coverage-variant
+  volume: message-passing-retrieval-data
+  gpu: A10G
+  timeout_seconds: 86400
+  parallel_datasets: 2

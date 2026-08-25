@@ -16,6 +16,7 @@ SCREEN_MODELS = (
     "gat",
     "gin",
 )
+COVERAGE_OFFSET_MODEL = "offset_mlp_set_k4"
 
 
 class OperatorModel(nn.Module):
@@ -97,6 +98,32 @@ class OffsetMLP(OperatorModel):
             nn.Linear(hidden_dim, directions * hidden_dim),
         )
 
+    def relational_targets(
+        self,
+        queries: torch.Tensor,
+        anchors: torch.Tensor,
+    ) -> torch.Tensor:
+        query_state = self.project_queries(queries)
+        anchor_state = self.project_nodes(anchors)
+        offsets = self.relation(torch.cat([query_state, anchor_state], dim=-1)).view(
+            queries.shape[0], self.directions, -1
+        )
+        return F.normalize(anchor_state[:, None, :] + offsets, dim=-1)
+
+    def directional_scores(
+        self,
+        nodes: torch.Tensor,
+        queries: torch.Tensor,
+        anchors: torch.Tensor,
+        batch_index: torch.Tensor,
+        edge_index: torch.Tensor | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        del edge_index
+        node_state = self.project_nodes(nodes)
+        targets = self.relational_targets(queries, anchors)
+        scores = (node_state[:, None, :] * targets[batch_index]).sum(dim=-1)
+        return scores / self.temperature, targets
+
     def forward(
         self,
         nodes: torch.Tensor,
@@ -105,17 +132,20 @@ class OffsetMLP(OperatorModel):
         batch_index: torch.Tensor,
         edge_index: torch.Tensor | None = None,
     ) -> torch.Tensor:
-        del edge_index
-        node_state = self.project_nodes(nodes)
-        query_state = self.project_queries(queries)
-        anchor_state = self.project_nodes(anchors)
-        offsets = self.relation(torch.cat([query_state, anchor_state], dim=-1)).view(
-            queries.shape[0], self.directions, -1
+        scores, _targets = self.directional_scores(
+            nodes,
+            queries,
+            anchors,
+            batch_index,
+            edge_index,
         )
-        targets = F.normalize(anchor_state[:, None, :] + offsets, dim=-1)
-        if self.directions == 1:
-            targets = targets[:, 0]
-        return self.similarities(node_state, targets, batch_index)
+        return scores.max(dim=-1).values
+
+
+class SetCoverageOffsetMLP(OffsetMLP):
+    """K-direction Offset model trained with the preregistered set objective."""
+
+    uses_set_coverage_objective = True
 
 
 class MessagePassingOperator(OperatorModel):
@@ -201,6 +231,14 @@ def build_operator_model(
         return PlainMLP(
             embedding_dim,
             hidden_dim,
+            dropout=dropout,
+            temperature=temperature,
+        )
+    if name == COVERAGE_OFFSET_MODEL:
+        return SetCoverageOffsetMLP(
+            embedding_dim,
+            hidden_dim,
+            directions=offset_directions,
             dropout=dropout,
             temperature=temperature,
         )
