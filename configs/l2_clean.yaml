@@ -1,12 +1,15 @@
 experiment: l2_clean_pair
 status: preregistration_draft
+protocol_baseline: paper-protocol-v0
 
 datasets:
-  - 2wiki
-  - musique
+  - webqsp
+  - 2wiki_clean
+  - musique_clean
+
+deferred_until_three_dataset_gate:
   - hotpotqa
   - metaqa
-  - webqsp
   - squad
 
 models:
@@ -25,6 +28,10 @@ fairness:
   same_negative_candidates: true
   same_optimizer: adamw
   parameter_tolerance_fraction: 0.05
+  compute_matching:
+    primary: analytical_sparse_multiply_accumulate_proxy
+    tolerance_fraction: 0.10
+    wall_clock_role: diagnostic_only
   validation_only_selection: true
   test_evaluations_per_run: 1
   gradient_audit: required
@@ -47,3 +54,7 @@ metrics:
   efficiency: [train_seconds, milliseconds_per_query, peak_vram_mb, peak_ram_mb]
   uncertainty: paired_query_bootstrap
 
+gates:
+  canonical_splits_required_for_paper_claims: true
+  pilot_test_only_artifacts_are_non_reportable: true
+  expand_datasets_only_after_three_dataset_audit: true

@@ -3,6 +3,8 @@ import torch
 from mp_retrieval.data import QuerySplit
 from mp_retrieval.l2_data import CandidateQuery, L2CandidateDataset, edge_index_to_csr
 from mp_retrieval.l2_features import build_candidate_features, present_only_stats
+from mp_retrieval.l2_protocol import comparison_contract
+from mp_retrieval.l2_stats import candidate_graph_statistics
 
 
 def make_query(name, scores, mask, relevant, split):
@@ -49,3 +51,21 @@ def test_induced_candidate_graph_uses_only_pool_nodes(tmp_path):
     artifact.save(path)
     assert L2CandidateDataset.load(path).queries[0].candidate_ceiling == 1.0
 
+
+def test_l2_contract_hashes_shared_inputs_and_stats_keep_types_unavailable():
+    query = make_query(
+        "q",
+        [[1, 0], [0, 1], [1, 1]],
+        [[1, 1], [1, 1], [1, 1]],
+        [0],
+        QuerySplit.TRAIN,
+    )
+    mean, std = present_only_stats([query])
+    features = {query: build_candidate_features(query, mean, std)}
+    edges = {query: torch.tensor([[0, 1], [1, 2]], dtype=torch.long)}
+    contract = comparison_contract([query], features, edges, seeds=[0, 1])
+    assert contract["topology_is_only_extra_gnn_information"]
+    assert len(contract["sha256"]["shared_model_inputs"]) == 64
+    stats = candidate_graph_statistics(query, features[query], edges[query], None)
+    assert stats["edge_types_available"] is False
+    assert stats["edge_type_entropy"] is None

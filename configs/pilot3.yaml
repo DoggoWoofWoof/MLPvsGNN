@@ -1,0 +1,60 @@
+protocol_baseline: paper-protocol-v0
+status: NOT_PAPER_VALID_PILOT
+reason: Existing L2 signal caches are test-only and temporarily re-split.
+
+datasets:
+  webqsp:
+    artifact: data/processed/webqsp_l2_pilot.pt
+  2wiki_clean:
+    artifact: data/processed/2wiki_clean_l2_pilot.pt
+  musique_clean:
+    artifact: data/processed/musique_clean_l2_pilot.pt
+
+comparison:
+  gnn: gcn
+  match_modes: [parameter, compute]
+  seeds: [0]
+  epochs: 2
+  layers: 1
+  hidden_dim: 32
+  dropout: 0.2
+  learning_rate: 0.001
+  ks: [1, 5, 10, 20, 50]
+  split_seed: 42
+  parameter_tolerance: 0.05
+  compute_tolerance: 0.10
+  compute_calibration_queries: 3
+  compute_warmups: 2
+  compute_repeats: 5
+  query_limit: null
+
+active_intervention:
+  kind: clean
+  rate: 0.0
+  seed: 31415
+
+ordered_interventions_after_clean_gate:
+  - kind: degree_rewire
+    rates: [0.10, 0.25, 0.50, 1.00]
+  - kind: add_random
+    rates: [0.10, 0.25, 0.50, 1.00]
+  - kind: hub_injection
+    rates: [0.10, 0.25, 0.50]
+  - kind: feature_mask
+    rates: [0.10, 0.25, 0.50, 0.75]
+  - kind: feature_gaussian
+    rates: [0.10, 0.25, 0.50, 1.00]
+  - kind: typed_edge_removal
+    gate: Requires canonical artifacts with real relation types.
+
+modal:
+  app: message-passing-retrieval-pilot3
+  volume: message-passing-retrieval-data
+  gpu: A10G
+  timeout_seconds: 86400
+  parallel_datasets: 3
+
+gates:
+  lodo_predictor: prohibited_until_clear_crossovers
+  expand_beyond_three_datasets: prohibited_in_this_stage
+  paper_claims_from_pilot: prohibited

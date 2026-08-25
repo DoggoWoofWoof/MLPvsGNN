@@ -28,8 +28,10 @@ configs/                       preregistered experiment grids
 data/                          data contract; generated tensors are ignored
 docs/NEURIPS_RESEARCH_PLAN.md  full paper and experiment blueprint
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
+docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code
 scripts/export_crag.py         deterministic CRAG-to-neutral-format exporter
+scripts/modal_pilot3.py        isolated parallel Modal execution entry point
 src/mp_retrieval/              reusable models, perturbations, metrics, schema
 tests/                         fast unit and contract tests
 ```
@@ -57,9 +59,19 @@ before running it.
 
 ## Current status
 
-The clean experimental substrate, perturbation operators, graph/representation
-diagnostics, retrieval metrics, fair model interfaces, CRAG exporter, and paper
-blueprint are scaffolded. The old CRAG results are explicitly treated as
-**hypothesis-generating only**. The first execution milestone is the paired
-parity suite in `docs/NEURIPS_RESEARCH_PLAN.md`.
+The exact protocol baseline is preserved by the annotated tag
+`paper-protocol-v0`. A three-dataset Modal pilot and one audited 25%
+degree-preserving-rewiring point have run; both are stamped
+`NOT_PAPER_VALID_PILOT` because the current caches are incomplete/test-only.
+See `docs/PILOT3_RESULTS.md` for the fairness audit, results, limitations, and
+next-run gate. The old CRAG results remain **hypothesis-generating only**.
 
+To run the registered three-dataset pilot on isolated Modal storage:
+
+```bash
+python experiments.py run pilot3 --backend modal --intervention clean --rate 0
+```
+
+Compute credentials are resolved at runtime from an ignored local file or
+environment variables. Use `configs/compute.local.yaml.example`; never copy a
+private CRAG credential file into this repository.

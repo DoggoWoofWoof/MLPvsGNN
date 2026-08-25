@@ -1,5 +1,12 @@
 # NeurIPS research blueprint: When is message passing worth it for retrieval?
 
+> **Execution checkpoint (2026-08-25):** the exact protocol baseline is frozen
+> at `paper-protocol-v0`. The three-dataset Modal run and initial 25%
+> degree-preserving-rewiring intervention are strictly non-reportable pilots;
+> see `docs/PILOT3_RESULTS.md`. They validate the comparison machinery and show
+> a shrinking GCN R@5 margin, including a near-neutral MuSiQue regime, but no
+> robust MLP-winning crossover. The LODO predictor remains gated.
+
 ## Executive decision
 
 The paper should not claim that MLPs are universally better than GNNs. That is
@@ -543,10 +550,13 @@ perturbation grids, per-dataset plots, gradient audits, and additional models.
 
 ### Weeks 1–2: canonicalize L2
 
+- completed: freeze `paper-protocol-v0` and execute the contract-only WebQSP,
+  2Wiki, and MuSiQue Modal pilot;
 - regenerate stable L2 train/validation/test caches with candidate IDs;
 - preserve typed/raw/synthetic edge provenance;
 - implement MLP parity and graph induction tests;
-- run 2Wiki and MetaQA 3-seed smoke comparisons.
+- rerun the three clean datasets with five seeds only after their canonical
+  manifests are frozen.
 
 ### Weeks 3–5: clean study
 
@@ -585,25 +595,16 @@ perturbation grids, per-dataset plots, gradient audits, and additional models.
 
 ## 17. Immediate runnable sequence
 
-Engineering pilot only:
+The completed engineering pilot is reproducible through the restricted launcher:
 
 ```bash
-python scripts/export_crag_l2.py \
-  --crag-root ../CRAG \
-  --dataset 2wiki_clean \
-  --output data/processed/2wiki_l2_pilot.pt
-
-python scripts/run_l2_pair.py \
-  --data data/processed/2wiki_l2_pilot.pt \
-  --output outputs/2wiki_l2_pilot.json \
-  --gnn gcn \
-  --seeds 0 1 2 \
-  --epochs 5 \
-  --allow-pilot-resplit
+python experiments.py run pilot3 --backend modal --intervention clean --rate 0
 ```
 
 The output must say `NOT_PAPER_VALID_PILOT`. Its only purposes are verifying
-gradient flow, memory, runtime, feature parity, and metric serialization.
+gradient flow, memory, runtime, feature parity, and metric serialization. The
+next pilot gate is degree-preserving rewiring at 0.10, 0.50, and 1.00; do not
+start the LODO predictor from these results.
 
 The first scientifically valid run occurs only after canonical split export:
 
@@ -628,4 +629,3 @@ The paper becomes compelling if it supplies a matched benchmark, a bidirectional
 phase diagram, a transferable predictor, a theory-aligned crossover, and
 mechanistic evidence. Without those pieces, it remains an interesting CRAG
 ablation rather than a fundamental graph-learning paper.
-

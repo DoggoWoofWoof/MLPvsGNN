@@ -26,4 +26,4 @@ data/processed/
 # Local configuration and credentials.
 .env
 *.local.yaml
-
+*.local.toml

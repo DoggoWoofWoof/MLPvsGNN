@@ -35,3 +35,8 @@ scientific comparison. It also demonstrates why the eventual claim cannot be
 budget, while the MLP retains a large latency advantage. Canonical splits,
 multiple seeds, validation, typed edges, and full sweeps are required.
 
+This one-epoch CPU run remains a smoke test even after the later three-dataset
+Modal pilot. In particular, its WebQSP R@1/R@5 winner reversal is retained as a
+warning against collapsing the research question into one metric; it is not a
+baseline or a number to report in the paper. See `docs/PILOT3_RESULTS.md` for
+the subsequent protocol audit.

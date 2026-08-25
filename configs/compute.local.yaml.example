@@ -1,0 +1,9 @@
+# Copy to configs/compute.local.yaml (git-ignored) and fill in private values.
+# Alternatively set MP_RETRIEVAL_COMPUTE_CONFIG to an existing compatible file.
+modal:
+  - name: personal
+    token_id: ak-xxxx
+    token_secret: as-xxxx
+  - name: lab
+    token_id: ak-yyyy
+    token_secret: as-yyyy

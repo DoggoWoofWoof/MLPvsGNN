@@ -1,8 +1,17 @@
 experiment: message_passing_phase_diagram
 status: preregistration_draft
+protocol_baseline: paper-protocol-v0
 
 primary_comparison: gcn_minus_parameter_matched_mlp
 seeds: [0, 1, 2, 3, 4]
+
+stage_order:
+  - clean_three_dataset_pair
+  - degree_preserving_rewire
+  - random_edge_addition
+  - hub_injection
+  - feature_degradation
+  - typed_edge_removal
 
 one_factor_sweeps:
   random_edge_addition: [0.0, 0.1, 0.25, 0.5, 1.0]
@@ -26,6 +35,7 @@ crossover:
   confidence: 0.95
 
 predictor:
+  gate: prohibited_until_clear_help_neutral_harm_crossovers
   target_regression: gnn_minus_mlp_recall_at_5
   target_classification: gnn_wins_by_practical_margin
   models: [linear_interaction, monotonic_gam]
@@ -42,3 +52,9 @@ predictor:
     - feature_snr
     - training_size
 
+paper_validity_gates:
+  canonical_dataset_splits: required
+  real_edge_types_for_typed_ablations: required
+  seeds_per_regime: 5
+  hyperparameter_selection: validation_only
+  pilot_results_in_main_tables: prohibited
