@@ -26,6 +26,7 @@ RUNTIME_REPO_ROOT = (
 CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "six_dataset_study.yaml"
 CONFIG = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
 MODAL_CONFIG = CONFIG["modal"]
+SOURCE_MOUNT = "/root/crag-source"
 SOURCE_ROOT = MODAL_CONFIG["source_root"]
 STORAGE_ROOT = MODAL_CONFIG["storage_root"]
 CORE_FILES = (
@@ -114,7 +115,7 @@ def _metaqa_node_ids(source: Path, dataset_config: dict[str, Any]) -> tuple[byte
 
 @app.function(
     image=image,
-    volumes={SOURCE_ROOT: source_volume, STORAGE_ROOT: result_volume},
+    volumes={SOURCE_MOUNT: source_volume, STORAGE_ROOT: result_volume},
     timeout=MODAL_CONFIG["timeout_seconds"],
     cpu=MODAL_CONFIG["cpu"],
     memory=MODAL_CONFIG["memory_mb"],
