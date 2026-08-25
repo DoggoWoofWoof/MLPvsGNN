@@ -39,6 +39,7 @@ class CompleteQuery:
     relevant_global: torch.Tensor
     anchor_global: int
     split: int
+    hop: int | None = None
 
     @property
     def candidate_ceiling(self) -> float:
@@ -68,36 +69,54 @@ class CompleteRetrievalDataset:
         return [query for query in self.queries if query.split == int(split)]
 
     def induced_subgraph(self, query: CompleteQuery) -> torch.Tensor:
-        local = {
-            int(global_id): local_id
-            for local_id, global_id in enumerate(query.candidate_index.tolist())
-        }
-        sources: list[int] = []
-        targets: list[int] = []
-        for source_global, source_local in local.items():
-            start = int(self.rowptr[source_global])
-            end = int(self.rowptr[source_global + 1])
-            for edge_pos in range(start, end):
-                target_local = local.get(int(self.col[edge_pos]))
-                if target_local is not None:
-                    sources.append(source_local)
-                    targets.append(target_local)
-        return torch.tensor([sources, targets], dtype=torch.long)
+        """Return candidate-induced edges without scanning neighbors in Python.
+
+        Candidate pools contain at most 400 nodes, while the largest frozen
+        graph contains millions of edges.  Expanding the selected CSR rows and
+        resolving membership with ``searchsorted`` keeps the exact stable local
+        node order while moving the expensive work into NumPy kernels.
+        """
+
+        candidates = query.candidate_index.numpy()
+        if candidates.size == 0:
+            return torch.empty((2, 0), dtype=torch.long)
+        rowptr = self.rowptr.numpy()
+        col = self.col.numpy()
+        starts = rowptr[candidates]
+        degrees = rowptr[candidates + 1] - starts
+        edge_count = int(degrees.sum())
+        if edge_count == 0:
+            return torch.empty((2, 0), dtype=torch.long)
+
+        source_local = np.repeat(np.arange(candidates.size, dtype=np.int64), degrees)
+        group_starts = np.repeat(np.cumsum(degrees) - degrees, degrees)
+        neighbor_positions = np.repeat(starts, degrees) + (
+            np.arange(edge_count, dtype=np.int64) - group_starts
+        )
+        neighbors = col[neighbor_positions]
+
+        order = np.argsort(candidates)
+        sorted_candidates = candidates[order]
+        positions = np.searchsorted(sorted_candidates, neighbors)
+        in_range = positions < sorted_candidates.size
+        keep = np.zeros(neighbors.size, dtype=bool)
+        keep[in_range] = sorted_candidates[positions[in_range]] == neighbors[in_range]
+        targets = order[positions[keep]].astype(np.int64, copy=False)
+        return torch.from_numpy(np.stack((source_local[keep], targets)))
 
 
 def _stable_union(*rows: np.ndarray) -> torch.Tensor:
-    seen: set[int] = set()
-    result: list[int] = []
-    for row in rows:
-        for value in row.tolist():
-            index = int(value)
-            if index not in seen:
-                seen.add(index)
-                result.append(index)
-    return torch.tensor(result, dtype=torch.long)
+    combined = np.concatenate(rows).astype(np.int64, copy=False)
+    _values, first = np.unique(combined, return_index=True)
+    return torch.from_numpy(combined[np.sort(first)])
 
 
-def _gold_index(node_id: str) -> int:
+def _gold_index(node_id: str, node_id_to_index: dict[str, int] | None) -> int:
+    if node_id_to_index is not None:
+        try:
+            return int(node_id_to_index[node_id])
+        except KeyError as exc:
+            raise ValueError(f"Gold node ID is absent from node_ids.json: {node_id!r}") from exc
     try:
         return int(node_id.rsplit("_", 1)[-1])
     except ValueError as exc:
@@ -122,7 +141,34 @@ def _contract_hash(queries: list[CompleteQuery]) -> str:
         digest.update(int(query.split).to_bytes(1, "little"))
         digest.update(query.candidate_index.numpy().tobytes())
         digest.update(query.relevant_global.numpy().tobytes())
+        digest.update((-1 if query.hop is None else query.hop).to_bytes(2, "little", signed=True))
     return digest.hexdigest()
+
+
+def _load_node_id_mapping(root: Path, num_nodes: int) -> dict[str, int] | None:
+    """Load an explicit row-identity sidecar for non-numeric node IDs.
+
+    Numeric document datasets retain the original zero-copy convention.  A
+    knowledge-graph dataset must provide ``node_ids.json`` as either a row-
+    ordered list or an explicit ID-to-row mapping; no partition IDs or implicit
+    dictionary order are treated as node rows.
+    """
+
+    path = root / "node_ids.json"
+    if not path.is_file():
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(payload, list):
+        if len(payload) != num_nodes or len(set(payload)) != num_nodes:
+            raise ValueError("node_ids.json must contain one unique ID per node row")
+        mapping = {str(node_id): index for index, node_id in enumerate(payload)}
+    elif isinstance(payload, dict):
+        mapping = {str(node_id): int(index) for node_id, index in payload.items()}
+        if len(mapping) != num_nodes or set(mapping.values()) != set(range(num_nodes)):
+            raise ValueError("node_ids.json mapping must cover every node row exactly once")
+    else:
+        raise ValueError("node_ids.json must be a row-ordered list or ID-to-row mapping")
+    return mapping
 
 
 def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> CompleteRetrievalDataset:
@@ -158,6 +204,7 @@ def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> Co
         raise ValueError("Dense candidates contain an invalid node index")
     if splade.size and (splade.min() < 0 or splade.max() >= graph_nodes):
         raise ValueError("SPLADE candidates contain an invalid node index")
+    node_id_to_index = _load_node_id_mapping(root, graph_nodes)
     split_indices = manifest["split_indices"]
     split_by_query: dict[int, int] = {}
     split_aliases = {
@@ -174,11 +221,14 @@ def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> Co
     if set(split_by_query) != set(range(query_count)):
         raise ValueError("Canonical train/validation/test indices do not cover every query exactly once")
     queries: list[CompleteQuery] = []
+    hops = manifest.get("hops", [None] * query_count)
+    if len(hops) != query_count:
+        raise ValueError("Hop metadata is misaligned with the query manifest")
     for query_index in range(query_count):
         candidates = _stable_union(dense[query_index], splade[query_index])
         local = {int(global_id): idx for idx, global_id in enumerate(candidates.tolist())}
         relevant_global = torch.tensor(
-            sorted({_gold_index(node_id) for node_id in gold_ids[query_index]}),
+            sorted({_gold_index(node_id, node_id_to_index) for node_id in gold_ids[query_index]}),
             dtype=torch.long,
         )
         if relevant_global.numel() == 0:
@@ -198,6 +248,7 @@ def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> Co
                 relevant_global=relevant_global,
                 anchor_global=int(dense[query_index, 0]),
                 split=split_by_query[query_index],
+                hop=None if hops[query_index] is None else int(hops[query_index]),
             )
         )
     rowptr, col, _ = edge_index_to_csr(edge_index, graph_nodes)
@@ -216,5 +267,6 @@ def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> Co
             "candidate_sources": ["dense_top200", "splade_top200"],
             "candidate_contract_sha256": _contract_hash(queries),
             "num_edges": int(edge_index.shape[1]),
+            "node_identity": "explicit_node_ids_json" if node_id_to_index is not None else "numeric_suffix",
         },
     )

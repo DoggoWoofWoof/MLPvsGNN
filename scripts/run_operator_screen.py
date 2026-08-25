@@ -33,6 +33,10 @@ from mp_retrieval.operator_models import (  # noqa: E402
     model_parameter_counts,
 )
 from mp_retrieval.protocol import seed_everything, sha256_file  # noqa: E402
+from mp_retrieval.topology_store import (  # noqa: E402
+    PackedLocalTopologies,
+    build_packed_topologies,
+)
 
 
 def _synchronize(device: torch.device) -> None:
@@ -79,17 +83,16 @@ def _hash_tensor_contract(queries: list[CompleteQuery]) -> dict[str, str]:
 def _build_local_topologies(
     dataset: CompleteRetrievalDataset,
     queries: list[CompleteQuery],
-) -> tuple[dict[CompleteQuery, torch.Tensor], float]:
-    started = time.perf_counter()
-    edges = {query: dataset.induced_subgraph(query) for query in queries}
-    return edges, time.perf_counter() - started
+) -> tuple[PackedLocalTopologies, float]:
+    edges = build_packed_topologies(dataset, queries)
+    return edges, edges.build_seconds
 
 
 def _prepare_batch(
     batch: list[CompleteQuery],
     node_embeddings: torch.Tensor,
     query_embeddings: torch.Tensor,
-    local_edges: dict[CompleteQuery, torch.Tensor],
+    local_edges: Any,
     device: torch.device,
     *,
     uses_topology: bool,
@@ -104,18 +107,21 @@ def _prepare_batch(
     )
     edge_index: torch.Tensor | None = None
     if uses_topology:
-        shifted: list[torch.Tensor] = []
-        offset = 0
-        for query, length in zip(batch, lengths):
-            edges = local_edges[query]
-            if edges.numel():
-                shifted.append(edges + offset)
-            offset += length
-        edge_index = (
-            torch.cat(shifted, dim=1).to(device)
-            if shifted
-            else torch.empty((2, 0), dtype=torch.long, device=device)
-        )
+        if hasattr(local_edges, "batch_edge_index"):
+            edge_index = local_edges.batch_edge_index(batch, lengths, device)
+        else:
+            shifted: list[torch.Tensor] = []
+            offset = 0
+            for query, length in zip(batch, lengths):
+                edges = local_edges[query]
+                if edges.numel():
+                    shifted.append(edges + offset)
+                offset += length
+            edge_index = (
+                torch.cat(shifted, dim=1).to(device)
+                if shifted
+                else torch.empty((2, 0), dtype=torch.long, device=device)
+            )
     return (
         node_embeddings[candidate_index],
         query_embeddings[query_index],

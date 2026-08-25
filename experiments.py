@@ -28,6 +28,7 @@ def _run_modal(args: argparse.Namespace) -> int:
         "operator-screen": "scripts/modal_operator_screen.py",
         "confirmation": "scripts/modal_confirmation.py",
         "coverage-variant": "scripts/modal_coverage_variant.py",
+        "six-dataset": "scripts/modal_six_dataset.py",
     }[args.task]
     command = [sys.executable, "-m", "modal", "run", modal_script]
     if args.datasets:
@@ -88,7 +89,13 @@ def main() -> None:
     run = subparsers.add_parser("run")
     run.add_argument(
         "task",
-        choices=["pilot3", "operator-screen", "confirmation", "coverage-variant"],
+        choices=[
+            "pilot3",
+            "operator-screen",
+            "confirmation",
+            "coverage-variant",
+            "six-dataset",
+        ],
     )
     run.add_argument("--backend", choices=["modal"], default="modal")
     run.add_argument("--account", default=None)

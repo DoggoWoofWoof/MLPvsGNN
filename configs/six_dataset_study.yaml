@@ -1,0 +1,104 @@
+experiment: six_dataset_message_passing_value
+status: PAPER_MAIN_TABLE_PROTOCOL_FROZEN_BEFORE_NEW_TESTS
+protocol_ancestor: paper-protocol-v0
+
+question: >-
+  When is candidate-graph message passing worth its computational and
+  statistical cost for retrieval when a topology-free MLP receives the same
+  frozen node/query features, candidates, labels, loss, seeds, and budget?
+
+frozen_findings_not_retuned:
+  2wiki_clean:
+    comparator: gat
+    source: outputs/confirmation/2wiki_clean.json
+  musique_clean:
+    comparator: gcn
+    source: outputs/confirmation/musique_clean.json
+
+new_datasets:
+  webqsp:
+    source_subdir: webqsp/gte_qwen
+    expected_queries: 1578
+  hotpotqa_clean:
+    source_subdir: hotpotqa_clean/gte_qwen
+    expected_queries: 97852
+  squad_clean:
+    source_subdir: squad_clean/gte_qwen
+    expected_queries: 130319
+  metaqa:
+    source_subdir: metaqa/gte_qwen
+    expected_queries: 407513
+    node_identity_source: metaqa/splade_doc_embs.pkl
+    required_hops: [1, 2, 3]
+
+gnn_selection:
+  candidates: [gcn, sage, gat, gin]
+  seed: 0
+  source: validation_only
+  metric: recall_at_5
+  tie_break_order: [gcn, sage, gat, gin]
+  test_evaluation_during_selection: prohibited
+
+confirmation:
+  models: [plain_mlp, validation_selected_best_gnn]
+  seeds: [0, 1, 2, 3, 4]
+  paired_by_seed: true
+  paired_ci: two_sided_student_t_95_percent
+  main_metrics: [recall_at_1, recall_at_5, recall_at_20, mrr, full_coverage_at_20]
+  conditional_metrics_reported_separately: true
+  metaqa_report_by_hop: [1, 2, 3]
+
+training:
+  hidden_dim: 64
+  epochs: 3
+  batch_size: 16
+  layers: 1
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  ks: [1, 5, 20]
+  inference_repeats: 5
+
+fairness:
+  same_frozen_query_embeddings: true
+  same_frozen_node_embeddings: true
+  same_candidate_pool: true
+  same_labels: true
+  same_candidate_negatives: true
+  same_multi_positive_listwise_loss: true
+  same_canonical_splits: true
+  same_seed_set: true
+  same_optimizer_and_epoch_budget: true
+  approximately_parameter_matched: true
+  gnn_only_privileged_input: candidate_induced_adjacency
+
+systems:
+  latency_batch_size: 16
+  warmup_batch: true
+  inference_repeats: 5
+  report_total_and_incremental_gpu_memory: true
+  report_cold_topology_preprocessing: true
+  topology_implementation: packed_vectorized_exact_v1
+
+modal:
+  app: message-passing-retrieval-six-dataset
+  source_volume: crag-data-volume
+  result_volume: message-passing-retrieval-data
+  source_root: /root/crag-source/data/ukb_storage
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 4
+  memory_mb: 49152
+  timeout_seconds: 86400
+  parallel_datasets: 4
+
+scope_gate:
+  offset_experiments: prohibited
+  new_architectures: prohibited
+  query_mechanism_before_main_tables: prohibited
+  graph_corruption_before_main_tables: prohibited
+  required_outputs_before_expansion:
+    - complete_six_dataset_five_seed_table
+    - metaqa_hop_table
+    - latency_memory_table
