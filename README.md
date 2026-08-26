@@ -35,6 +35,7 @@ docs/COVERAGE_VARIANT_RESULTS.md preregistered negative mechanism result
 docs/SIX_DATASET_PROTOCOL.md frozen six-dataset comparison contract
 docs/SIX_DATASET_RESULTS.md  five-seed effectiveness, hop, and systems tables
 docs/SA_MLP_PROTOCOL.md      frozen fixed-structure MLP one-seed gate
+docs/SA_MLP_SCREEN_RESULTS.md preregistered SA-MLP screen and fairness limit
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code
@@ -83,13 +84,19 @@ GNN advantage is largest at one hop, so hop count alone cannot explain the
 boundary. No new topology perturbation, mechanism predictor, Offset rescue, or
 architecture was launched inside that stop gate.
 
-The next bounded experiment is now frozen in `docs/SA_MLP_PROTOCOL.md`. It asks
-whether a parameter-matched MLP can recover the GNN advantage on MetaQA,
-WebQSP, and HotpotQA using cached degree/PageRank/core/clustering and
-query-local distance/path/PPR descriptors, while its learned forward pass never
-receives adjacency. Exactly one seed and four preregistered ablations are
-allowed. Five-seed expansion occurs only if the combined SA-MLP closes at least
-50% of the frozen seed-0 GNN R@5 gap on two of three datasets.
+The bounded SA-MLP screen frozen in `docs/SA_MLP_PROTOCOL.md` is complete and
+passed on all three datasets. At seed 0, SA-MLP exceeds the frozen selected GNN
+by 4.49 R@5 points on MetaQA, 1.55 on WebQSP, and 15.18 on HotpotQA. The
+query-local descriptors explain nearly all of the MetaQA gain and most of the
+HotpotQA gain; global degree/PageRank/core/clustering descriptors alone are
+harmful. These are screening results, not five-seed paper estimates.
+
+The screen also exposed the fairness control required before a causal claim:
+its distance-0 feature reveals membership in the frozen dense/SPLADE seed set,
+while the old GNN was not given that indicator. The combined SA architecture
+will remain unchanged during confirmation. A seed-only MLP and seed-aware GNN
+must separate the retrieval prior from the value of fixed graph paths/PPR.
+See `docs/SA_MLP_SCREEN_RESULTS.md`.
 
 Earlier pilot and rewiring outputs remain `NOT_PAPER_VALID_PILOT`; old C-RAG
 results are hypothesis-generating only. The prior Offset screen, confirmation,

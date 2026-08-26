@@ -1,12 +1,15 @@
 # NeurIPS research blueprint: When is message passing worth it for retrieval?
 
-> **Structure-aware MLP gate:** after the six-dataset stop decision, the next
-> bounded question is whether fixed, explicit structural summaries recover the
-> GNN gains without learned neighbor aggregation. The one-seed MetaQA/WebQSP/
-> HotpotQA protocol, feature definitions, parameter matching, and 50%-closure
-> stop rule are frozen in `docs/SA_MLP_PROTOCOL.md`. No five-seed expansion,
-> practical-width selection, textual edge feature, or extra MLP variant is
-> permitted unless the gate passes on at least two datasets.
+> **Structure-aware MLP gate update (2026-08-26):** the preregistered one-seed
+> gate passed on MetaQA, WebQSP, and HotpotQA. SA-MLP exceeds the frozen selected
+> GNN by +4.49, +1.55, and +15.18 R@5 points, respectively. Query-local fixed
+> descriptors drive the result; static global descriptors alone fail. This is
+> screening evidence only. Because distance-0 reveals retrieval-seed membership
+> to SA-MLP but not to the frozen GNN, confirmation must preserve the SA model
+> unchanged and include both a seed-only non-message-passing control and a
+> seed-aware GNN. The paper may claim neither a graph-path mechanism nor a
+> general SA-MLP win until that control and five paired seeds are complete. See
+> `docs/SA_MLP_SCREEN_RESULTS.md`.
 
 > **Six-dataset stop-gate update (2026-08-26):** the contract frozen at
 > `six-dataset-protocol-v1` is complete. Across five paired seeds, plain MLP
