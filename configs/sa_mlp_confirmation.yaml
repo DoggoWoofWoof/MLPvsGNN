@@ -1,0 +1,158 @@
+experiment: structure_aware_mlp_five_seed_confirmation
+status: CONFIRMATION_PROTOCOL_FROZEN_BEFORE_NEW_TESTS
+screen_protocol_tag: sa-mlp-screen-protocol-v1
+screen_result_commit: eef1f26
+
+question: >-
+  After controlling for frozen retriever-seed membership, do fixed query-local
+  graph summaries retain an effectiveness advantage over both a seed-only MLP
+  and the frozen validation-selected message-passing family?
+
+datasets:
+  2wiki_clean:
+    expected_queries: 15000
+    baseline: outputs/confirmation/2wiki_clean.json
+    selected_gnn: gat
+    required_hops: []
+  musique_clean:
+    expected_queries: 19938
+    baseline: outputs/confirmation/musique_clean.json
+    selected_gnn: gcn
+    required_hops: []
+  webqsp:
+    expected_queries: 1578
+    baseline: outputs/main_table/webqsp.json
+    selected_gnn: gat
+    required_hops: []
+    reuse_sa_seed_0: outputs/sa_mlp_screen/webqsp.json
+  hotpotqa_clean:
+    expected_queries: 97852
+    baseline: outputs/main_table/hotpotqa_clean.json
+    selected_gnn: gin
+    required_hops: []
+    reuse_sa_seed_0: outputs/sa_mlp_screen/hotpotqa_clean.json
+  squad_clean:
+    expected_queries: 130319
+    baseline: outputs/main_table/squad_clean.json
+    selected_gnn: gcn
+    required_hops: []
+  metaqa:
+    expected_queries: 407513
+    baseline: outputs/main_table/metaqa.json
+    selected_gnn: gat
+    required_hops: [1, 2, 3]
+    reuse_sa_seed_0: outputs/sa_mlp_screen/metaqa.json
+
+models:
+  sa_mlp:
+    role: frozen_primary_method
+    exact_architecture_from_screen: true
+    inputs: [interaction, static_7, query_local_10]
+    adjacency_in_learned_forward: false
+  seed_only:
+    role: retrieval_prior_control
+    inputs: [interaction, binary_dense_or_splade_top5_membership]
+    adjacency_in_learned_forward: false
+  seed_aware_gnn:
+    role: fairness_control
+    family: frozen_validation_selected_gnn_per_dataset
+    inputs: [node_embedding, binary_dense_or_splade_top5_membership, adjacency]
+    architecture_change: concatenate_one_binary_scalar_before_original_node_projection
+
+features:
+  source: exact_cache_contract_from_configs/sa_mlp_screen.yaml
+  retrieval_seed_labels_used: false
+  full_sa_feature_changes_after_screen: prohibited
+  static_feature_changes_after_screen: prohibited
+  query_local_feature_changes_after_screen: prohibited
+
+parameter_regime:
+  primary: matched_to_frozen_selected_gnn
+  sa_projection_dim: 64
+  sa_head_width: exact_deterministic_screen_rule
+  seed_only_projection_dim: 64
+  seed_only_head_width: deterministic_match_to_frozen_gnn
+  seed_aware_gnn_hidden_dim: 64
+  seed_aware_gnn_extra_parameters: 64
+  maximum_sa_absolute_difference: 256
+  practical_width_regime:
+    status: deferred_separate_validation_only_extension
+    reason: avoid_multiplying_models_before_primary_fairness_control
+    permitted_projection_widths: [16, 32, 64]
+    test_access_during_selection: prohibited
+
+training:
+  seeds: [0, 1, 2, 3, 4]
+  epochs: 3
+  batch_size: 16
+  layers: 1
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  checkpoint_selection: validation_recall_at_5_only
+  test_evaluations_per_seed_model: 1
+  inference_repeats: 5
+  metrics: [recall_at_1, recall_at_5, recall_at_20, mrr, full_coverage_at_20]
+
+reuse:
+  frozen_plain_and_gnn_baselines_retrained: false
+  sa_seed_0_screen_reuse_datasets: [metaqa, webqsp, hotpotqa_clean]
+  reuse_requires_exact_candidate_hash: true
+  reuse_requires_exact_screen_result_sha256: true
+  reuse_requires_exact_parameter_count: true
+
+primary_analysis:
+  unit: paired_seed_and_query
+  primary_metric: recall_at_5
+  contrasts:
+    - sa_mlp_minus_seed_aware_gnn
+    - sa_mlp_minus_seed_only
+    - seed_aware_gnn_minus_frozen_gnn
+  effect_scale: percentage_points
+  seed_interval: paired_student_t_95_percent
+  query_interval: stratified_paired_bootstrap_over_queries_with_seed_as_outer_block
+  familywise_correction: holm_across_six_datasets_per_primary_contrast
+  noninferiority_margin_absolute_recall: 0.01
+  report_all_metrics_regardless_of_primary_result: true
+
+interpretation_gates:
+  graph_summary_signal_supported_if: >-
+    SA-MLP minus seed-only has a Holm-adjusted positive R@5 interval on at
+    least two of MetaQA, WebQSP, and HotpotQA.
+  seed_prior_explanation_if: >-
+    seed-only recovers at least 80 percent of SA-MLP's gain over frozen plain
+    MLP on at least two of MetaQA, WebQSP, and HotpotQA.
+  substitution_supported_if: >-
+    SA-MLP is non-inferior to seed-aware GNN within one absolute R@5 point on
+    at least two of MetaQA, WebQSP, and HotpotQA, with no unreported dataset.
+  universal_mlp_claim: prohibited
+
+systems:
+  latency_batch_size: 16
+  warmup_batch: true
+  inference_repeats: 5
+  report_feature_preprocessing_and_cache_separately: true
+  report_total_and_incremental_gpu_memory: true
+  report_total_and_incremental_cpu_rss: true
+  vectorized_packed_topology: true
+  vectorized_packed_structural_cache: true
+
+prohibited_until_confirmation_compiled:
+  - changing_sa_features_or_architecture
+  - changing_selected_gnn_family
+  - test_selected_widths
+  - topology_perturbation_sweeps
+  - new_offset_variants
+  - lodo_predictor
+  - textual_edge_embeddings
+
+modal:
+  app: message-passing-retrieval-sa-confirmation
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400
+  parallel_datasets: 6

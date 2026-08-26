@@ -22,6 +22,8 @@ STRUCTURE_AWARE_MODELS = (
     "query_local_structure",
     "sa_mlp",
 )
+SEED_ONLY_MODEL = "seed_only"
+EXPLICIT_FEATURE_MODELS = (*STRUCTURE_AWARE_MODELS, SEED_ONLY_MODEL)
 
 
 class OperatorModel(nn.Module):
@@ -222,20 +224,76 @@ class MessagePassingOperator(OperatorModel):
         return self.similarities(node_state, target, batch_index)
 
 
+class SeedAwareMessagePassingOperator(MessagePassingOperator):
+    """Frozen GNN architecture with one additional binary retrieval-seed input."""
+
+    uses_retrieval_seed = True
+
+    def __init__(
+        self,
+        kind: str,
+        embedding_dim: int,
+        hidden_dim: int,
+        *,
+        layers: int,
+        dropout: float,
+        temperature: float,
+    ):
+        super().__init__(
+            kind,
+            embedding_dim,
+            hidden_dim,
+            layers=layers,
+            dropout=dropout,
+            temperature=temperature,
+        )
+        # Concatenating a scalar before the otherwise-identical projection adds
+        # exactly ``hidden_dim`` trainable parameters to the frozen GNN family.
+        self.node_projection = nn.Linear(embedding_dim + 1, hidden_dim, bias=False)
+
+    def forward_seed_aware(
+        self,
+        nodes: torch.Tensor,
+        queries: torch.Tensor,
+        batch_index: torch.Tensor,
+        edge_index: torch.Tensor,
+        seed_indicator: torch.Tensor,
+    ) -> torch.Tensor:
+        if seed_indicator.shape != (nodes.shape[0], 1):
+            raise ValueError(
+                f"Expected seed indicators {(nodes.shape[0], 1)}, got {tuple(seed_indicator.shape)}"
+            )
+        node_state = F.normalize(
+            F.gelu(self.node_projection(torch.cat([nodes, seed_indicator], dim=-1))),
+            dim=-1,
+        )
+        for conv, norm in zip(self.convs, self.norms):
+            update = F.dropout(
+                F.gelu(conv(node_state, edge_index)),
+                p=self.dropout,
+                training=self.training,
+            )
+            node_state = norm(node_state + update)
+        node_state = F.normalize(node_state, dim=-1)
+        query_state = self.project_queries(queries)
+        target = F.normalize(query_state + self.query_target(query_state), dim=-1)
+        return self.similarities(node_state, target, batch_index)
+
+
 def explicit_feature_input_dim(
     name: str,
     projection_dim: int,
     static_dim: int,
     local_dim: int,
 ) -> int:
-    if name not in STRUCTURE_AWARE_MODELS:
+    if name not in EXPLICIT_FEATURE_MODELS:
         raise ValueError(f"Unknown explicit-feature model: {name}")
     dimension = 2 * projection_dim
-    if name in {"interaction", "sa_mlp"}:
+    if name in {"interaction", "sa_mlp", SEED_ONLY_MODEL}:
         dimension += 2 * projection_dim + 2
     if name in {"static_structure", "sa_mlp"}:
         dimension += static_dim
-    if name in {"query_local_structure", "sa_mlp"}:
+    if name in {"query_local_structure", "sa_mlp", SEED_ONLY_MODEL}:
         dimension += local_dim
     return dimension
 
@@ -282,12 +340,12 @@ class ExplicitFeatureMLP(OperatorModel):
             dropout=dropout,
             temperature=temperature,
         )
-        if name not in STRUCTURE_AWARE_MODELS:
+        if name not in EXPLICIT_FEATURE_MODELS:
             raise ValueError(f"Unknown explicit-feature model: {name}")
         self.kind = name
-        self.include_interactions = name in {"interaction", "sa_mlp"}
+        self.include_interactions = name in {"interaction", "sa_mlp", SEED_ONLY_MODEL}
         self.include_static = name in {"static_structure", "sa_mlp"}
-        self.include_local = name in {"query_local_structure", "sa_mlp"}
+        self.include_local = name in {"query_local_structure", "sa_mlp", SEED_ONLY_MODEL}
         self.static_dim = static_dim if self.include_static else 0
         self.local_dim = local_dim if self.include_local else 0
         input_dim = explicit_feature_input_dim(
@@ -373,6 +431,25 @@ def build_explicit_feature_mlp(
         static_dim=static_dim,
         local_dim=local_dim,
         head_dim=head_dim,
+        dropout=dropout,
+        temperature=temperature,
+    )
+
+
+def build_seed_aware_message_passing(
+    kind: str,
+    embedding_dim: int,
+    hidden_dim: int,
+    *,
+    layers: int = 1,
+    dropout: float = 0.2,
+    temperature: float = 0.07,
+) -> SeedAwareMessagePassingOperator:
+    return SeedAwareMessagePassingOperator(
+        kind,
+        embedding_dim,
+        hidden_dim,
+        layers=layers,
         dropout=dropout,
         temperature=temperature,
     )

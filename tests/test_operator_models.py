@@ -3,9 +3,11 @@ import torch
 from mp_retrieval.operator_models import (
     COVERAGE_OFFSET_MODEL,
     SCREEN_MODELS,
+    SEED_ONLY_MODEL,
     STRUCTURE_AWARE_MODELS,
     build_explicit_feature_mlp,
     build_operator_model,
+    build_seed_aware_message_passing,
     model_parameter_counts,
 )
 
@@ -92,3 +94,41 @@ def test_explicit_feature_models_are_parameter_matched_and_have_no_message_passi
         assert model.uses_topology is False
         assert not any("conv" in type(module).__name__.lower() for module in model.modules())
         assert abs(model_parameter_counts(model)["parameters"] - target) < 64
+
+
+def test_seed_only_control_accepts_exactly_one_fixed_indicator():
+    nodes, queries, _anchors, batch, _edges = _inputs()
+    model = build_explicit_feature_mlp(
+        SEED_ONLY_MODEL,
+        embedding_dim=8,
+        projection_dim=4,
+        static_dim=0,
+        local_dim=1,
+        target_parameters=1_000,
+        dropout=0.0,
+        temperature=0.07,
+    ).eval()
+    scores = model.forward_explicit(
+        nodes,
+        queries,
+        batch,
+        torch.tensor([[1.0], [0.0], [0.0], [1.0], [0.0], [0.0], [0.0]]),
+    )
+    assert scores.shape == (7,)
+    assert model.include_interactions is True
+    assert model.include_static is False
+    assert model.local_dim == 1
+
+
+def test_seed_aware_gnn_adds_only_one_input_weight_per_hidden_channel():
+    nodes, queries, _anchors, batch, edges = _inputs()
+    baseline = build_operator_model("gcn", 8, 4, layers=1, dropout=0.0)
+    control = build_seed_aware_message_passing("gcn", 8, 4, layers=1, dropout=0.0)
+    seed = torch.tensor([[1.0], [0.0], [0.0], [1.0], [0.0], [0.0], [0.0]])
+    scores = control.forward_seed_aware(nodes, queries, batch, edges, seed)
+    assert scores.shape == (7,)
+    assert (
+        model_parameter_counts(control)["parameters"]
+        - model_parameter_counts(baseline)["parameters"]
+        == 4
+    )

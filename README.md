@@ -36,6 +36,7 @@ docs/SIX_DATASET_PROTOCOL.md frozen six-dataset comparison contract
 docs/SIX_DATASET_RESULTS.md  five-seed effectiveness, hop, and systems tables
 docs/SA_MLP_PROTOCOL.md      frozen fixed-structure MLP one-seed gate
 docs/SA_MLP_SCREEN_RESULTS.md preregistered SA-MLP screen and fairness limit
+docs/SA_MLP_CONFIRMATION_PROTOCOL.md frozen five-seed seed-prior controls
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code
@@ -98,6 +99,14 @@ will remain unchanged during confirmation. A seed-only MLP and seed-aware GNN
 must separate the retrieval prior from the value of fixed graph paths/PPR.
 See `docs/SA_MLP_SCREEN_RESULTS.md`.
 
+The next experiment is frozen in `docs/SA_MLP_CONFIRMATION_PROTOCOL.md`.
+Across all six datasets and five paired seeds it keeps SA-MLP unchanged, adds a
+seed-only MLP, and adds the same seed bit to the already-selected GNN family.
+This directly tests whether the screen measured fixed graph paths/PPR or merely
+the frozen retriever prior. No topology perturbation, new MLP variant, or
+test-selected practical width is permitted before this confirmation is
+compiled.
+
 Earlier pilot and rewiring outputs remain `NOT_PAPER_VALID_PILOT`; old C-RAG
 results are hypothesis-generating only. The prior Offset screen, confirmation,
 and failed coverage variant remain recorded in their corresponding protocol
@@ -119,6 +128,12 @@ Run the frozen SA-MLP one-seed gate on isolated Modal storage:
 
 ```bash
 python experiments.py run sa-mlp-screen --backend modal
+```
+
+Run the frozen six-dataset confirmation on isolated Modal storage:
+
+```bash
+python experiments.py run sa-mlp-confirmation --backend modal
 ```
 
 Compute credentials are resolved at runtime from an ignored local file or

@@ -30,6 +30,7 @@ def _run_modal(args: argparse.Namespace) -> int:
         "coverage-variant": "scripts/modal_coverage_variant.py",
         "six-dataset": "scripts/modal_six_dataset.py",
         "sa-mlp-screen": "scripts/modal_sa_mlp.py",
+        "sa-mlp-confirmation": "scripts/modal_sa_mlp_confirmation.py",
     }[args.task]
     command = [sys.executable, "-m", "modal", "run", modal_script]
     if args.datasets:
@@ -97,6 +98,7 @@ def main() -> None:
             "coverage-variant",
             "six-dataset",
             "sa-mlp-screen",
+            "sa-mlp-confirmation",
         ],
     )
     run.add_argument("--backend", choices=["modal"], default="modal")

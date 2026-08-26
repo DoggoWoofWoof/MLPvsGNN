@@ -11,6 +11,14 @@
 > general SA-MLP win until that control and five paired seeds are complete. See
 > `docs/SA_MLP_SCREEN_RESULTS.md`.
 
+> **Confirmation freeze:** the follow-up in
+> `docs/SA_MLP_CONFIRMATION_PROTOCOL.md` fixes all six datasets, five seeds,
+> the unchanged SA-MLP, a seed-only interaction control, and a seed-aware copy
+> of each dataset's already-selected GNN family. R@5, paired seed/query
+> intervals, Holm correction, a one-point non-inferiority margin, and systems
+> accounting are fixed before new test access. Practical width selection and
+> perturbations remain separate and prohibited during this confirmation.
+
 > **Six-dataset stop-gate update (2026-08-26):** the contract frozen at
 > `six-dataset-protocol-v1` is complete. Across five paired seeds, plain MLP
 > wins R@5 on 2Wiki (+2.08 points, 95% CI +1.22 to +2.94) and MuSiQue (+1.10,
