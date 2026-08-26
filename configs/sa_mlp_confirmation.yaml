@@ -14,11 +14,13 @@ datasets:
     baseline: outputs/confirmation/2wiki_clean.json
     selected_gnn: gat
     required_hops: []
+    candidate_contract_compatibility: pre_hop_metadata_v1
   musique_clean:
     expected_queries: 19938
     baseline: outputs/confirmation/musique_clean.json
     selected_gnn: gcn
     required_hops: []
+    candidate_contract_compatibility: pre_hop_metadata_v1
   webqsp:
     expected_queries: 1578
     baseline: outputs/main_table/webqsp.json

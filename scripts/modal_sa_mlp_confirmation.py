@@ -148,6 +148,10 @@ def _local_jobs(datasets: list[str]) -> list[dict[str, Any]]:
                 "expected_queries": int(dataset_config["expected_queries"]),
                 "required_hops": list(dataset_config["required_hops"]),
                 "selected_gnn": dataset_config["selected_gnn"],
+                "candidate_contract_compatibility": dataset_config.get(
+                    "candidate_contract_compatibility"
+                ),
+                "candidate_contract_proof_sha256": None,
                 "data_remote": payload["config"]["data"],
                 "baseline_remote": payload["config"]["output"],
                 "baseline_result_sha256": _sha256(baseline_path),
@@ -183,6 +187,8 @@ def _runner_namespace(job: dict[str, Any]) -> argparse.Namespace:
             else json.loads(Path(job["screen_remote"]).read_text(encoding="utf-8"))
         ),
         screen_result_sha256=job["screen_result_sha256"],
+        candidate_contract_compatibility=job["candidate_contract_compatibility"],
+        candidate_contract_proof_sha256=job["candidate_contract_proof_sha256"],
         feature_config={
             "retrieval_seeds": __import__("yaml").safe_load(
                 Path(f"{REMOTE_ROOT}/configs/sa_mlp_screen.yaml").read_text(encoding="utf-8")
@@ -211,6 +217,33 @@ def _runner_namespace(job: dict[str, Any]) -> argparse.Namespace:
         inference_repeats=int(training["inference_repeats"]),
         device="cuda",
     )
+
+
+@app.function(
+    image=image,
+    volumes={STORAGE_ROOT: result_volume},
+    timeout=MODAL_CONFIG["timeout_seconds"],
+    cpu=4,
+    memory=16384,
+)
+def check_candidate_contract(job: dict[str, Any]) -> dict[str, Any]:
+    """CPU-only preflight; no GPU job is submitted until this returns."""
+
+    os.chdir(REMOTE_ROOT)
+    result_volume.reload()
+    baseline_path = Path(job["baseline_remote"])
+    if not baseline_path.is_file() or _sha256(baseline_path) != job["baseline_result_sha256"]:
+        raise ValueError("Remote frozen baseline failed its SHA-256 check")
+    from mp_retrieval.complete_data import load_complete_dataset
+    from scripts.run_sa_mlp_confirmation import validate_candidate_contract
+
+    dataset = load_complete_dataset(Path(job["data_remote"]), dataset=job["dataset"])
+    proof = validate_candidate_contract(
+        job["baseline"],
+        dataset,
+        job["candidate_contract_compatibility"],
+    )
+    return {"dataset": job["dataset"], **proof}
 
 
 @app.function(
@@ -260,6 +293,29 @@ def main(
     if unknown:
         raise ValueError(f"Unregistered confirmation datasets: {sorted(unknown)}")
     jobs = _local_jobs(requested)
+    compatibility_jobs = [
+        job for job in jobs if job["candidate_contract_compatibility"] is not None
+    ]
+    if compatibility_jobs:
+        proofs = list(
+            check_candidate_contract.map(
+                compatibility_jobs,
+                return_exceptions=True,
+                wrap_returned_exceptions=False,
+            )
+        )
+        failures = [proof for proof in proofs if isinstance(proof, BaseException)]
+        if failures:
+            raise RuntimeError(f"{len(failures)} candidate preflight(s) failed: {failures}")
+        proof_by_dataset = {proof["dataset"]: proof for proof in proofs}
+        for job in compatibility_jobs:
+            job["candidate_contract_proof_sha256"] = proof_by_dataset[job["dataset"]][
+                "proof_sha256"
+            ]
+        print(
+            json.dumps({"candidate_contract_preflight": proofs}, indent=2),
+            flush=True,
+        )
     results = list(run_dataset.map(jobs, return_exceptions=True, wrap_returned_exceptions=False))
     failures = [result for result in results if isinstance(result, BaseException)]
     if failures:

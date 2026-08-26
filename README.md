@@ -37,6 +37,8 @@ docs/SIX_DATASET_RESULTS.md  five-seed effectiveness, hop, and systems tables
 docs/SA_MLP_PROTOCOL.md      frozen fixed-structure MLP one-seed gate
 docs/SA_MLP_SCREEN_RESULTS.md preregistered SA-MLP screen and fairness limit
 docs/SA_MLP_CONFIRMATION_PROTOCOL.md frozen five-seed seed-prior controls
+docs/SA_FEATURE_LEAKAGE_AUDIT.md label-free fixed-structure code-path audit
+docs/LEGACY_CANDIDATE_COMPATIBILITY.md bit-exact legacy digest bridge
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
 docs/PILOT3_RESULTS.md         non-reportable protocol-pilot audit and next gate
 legacy/crag_snapshot/          exact provenance snapshots; not production code

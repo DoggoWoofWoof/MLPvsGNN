@@ -6,9 +6,14 @@ import numpy as np
 import torch
 import yaml
 
-from mp_retrieval.complete_data import load_complete_dataset
+from mp_retrieval.complete_data import _contract_hash, load_complete_dataset
 from mp_retrieval.operator_models import build_operator_model, model_parameter_counts
-from scripts.run_sa_mlp_confirmation import _seed_indicator, run
+from scripts.run_sa_mlp_confirmation import (
+    _legacy_pre_hop_contract_sha256,
+    _seed_indicator,
+    run,
+    validate_candidate_contract,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -83,6 +88,28 @@ def test_confirmation_protocol_covers_six_datasets_and_five_seeds() -> None:
     assert config["models"]["seed_only"]["adjacency_in_learned_forward"] is False
 
 
+def test_legacy_contract_ignores_only_new_hop_metadata(tmp_path: Path) -> None:
+    _dataset(tmp_path)
+    dataset = load_complete_dataset(tmp_path, dataset="tiny")
+    for index, query in enumerate(dataset.queries):
+        query.hop = index + 1
+    dataset.metadata["candidate_contract_sha256"] = _contract_hash(dataset.queries)
+    baseline = {"candidate_contract_sha256": _legacy_pre_hop_contract_sha256(dataset.queries)}
+
+    proof = validate_candidate_contract(baseline, dataset, "pre_hop_metadata_v1")
+
+    assert proof["status"] == "BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE"
+    assert proof["observed_contract_sha256"] == baseline["candidate_contract_sha256"]
+    assert proof["ignored_legacy_field"] == "hop_metadata_only"
+    dataset.queries[0].candidate_index = dataset.queries[0].candidate_index.flip(0)
+    try:
+        validate_candidate_contract(baseline, dataset, "pre_hop_metadata_v1")
+    except ValueError as exc:
+        assert "candidate order" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("Changed candidate order passed the legacy contract")
+
+
 def test_confirmation_runs_all_three_fairness_models_and_packs_queries(tmp_path: Path) -> None:
     _dataset(tmp_path)
     dataset = load_complete_dataset(tmp_path, dataset="tiny")
@@ -121,6 +148,8 @@ def test_confirmation_runs_all_three_fairness_models_and_packs_queries(tmp_path:
         selected_gnn="gcn",
         screen_seed_0=None,
         screen_result_sha256=None,
+        candidate_contract_compatibility=None,
+        candidate_contract_proof_sha256=None,
         feature_config=_feature_config(),
         required_hops=[],
         seeds=[0],

@@ -85,6 +85,78 @@ def _query_order_sha256(queries: list[CompleteQuery]) -> str:
     return digest.hexdigest()
 
 
+def _legacy_pre_hop_contract_sha256(queries: list[CompleteQuery]) -> str:
+    """Reproduce the exact contract used by the legacy 2Wiki/MuSiQue artifacts.
+
+    The only difference from the current contract is that the legacy digest
+    predates optional hop metadata. Query IDs, split bytes, candidate IDs in
+    stable order, and gold IDs are all still covered bit-for-bit.
+    """
+
+    digest = hashlib.sha256()
+    for query in queries:
+        digest.update(query.query_id.encode("utf-8"))
+        digest.update(int(query.split).to_bytes(1, "little"))
+        digest.update(query.candidate_index.numpy().tobytes())
+        digest.update(query.relevant_global.numpy().tobytes())
+    return digest.hexdigest()
+
+
+def _candidate_order_sha256(queries: list[CompleteQuery]) -> str:
+    digest = hashlib.sha256()
+    for query in queries:
+        digest.update(query.query_id.encode("utf-8"))
+        digest.update(int(query.candidate_index.numel()).to_bytes(4, "little"))
+        digest.update(query.candidate_index.numpy().tobytes())
+    return digest.hexdigest()
+
+
+def validate_candidate_contract(
+    baseline: dict[str, Any],
+    dataset,
+    compatibility: str | None,
+) -> dict[str, Any]:
+    """Validate frozen candidates before topology, feature, or training work."""
+
+    expected = baseline["candidate_contract_sha256"]
+    current = dataset.metadata["candidate_contract_sha256"]
+    mode = "current_with_hop_metadata"
+    observed = current
+    if current != expected:
+        if compatibility != "pre_hop_metadata_v1":
+            raise ValueError("Frozen baseline candidate contract does not match")
+        observed = _legacy_pre_hop_contract_sha256(dataset.queries)
+        mode = compatibility
+        if observed != expected:
+            raise ValueError(
+                "Legacy compatibility check failed: query IDs, split, candidate order, "
+                "or gold IDs differ from the frozen artifact"
+            )
+    proof = {
+        "status": "BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE",
+        "mode": mode,
+        "expected_contract_sha256": expected,
+        "observed_contract_sha256": observed,
+        "current_contract_with_hop_metadata_sha256": current,
+        "candidate_id_order_sha256": _candidate_order_sha256(dataset.queries),
+        "queries": len(dataset.queries),
+        "candidate_rows": sum(int(query.candidate_index.numel()) for query in dataset.queries),
+        "covered_fields": [
+            "query_id",
+            "split",
+            "candidate_ids_in_stable_order",
+            "gold_ids",
+        ],
+        "ignored_legacy_field": (
+            "hop_metadata_only" if mode != "current_with_hop_metadata" else None
+        ),
+    }
+    proof["proof_sha256"] = hashlib.sha256(
+        json.dumps(proof, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+    return proof
+
+
 def _seed_indicator(
     batch: list[CompleteQuery],
     lengths: list[int],
@@ -495,8 +567,16 @@ def run(
         )
     if args.baseline["dataset"] != dataset.dataset:
         raise ValueError("Frozen baseline dataset does not match")
-    if args.baseline["candidate_contract_sha256"] != dataset.metadata["candidate_contract_sha256"]:
-        raise ValueError("Frozen baseline candidate contract does not match")
+    candidate_contract = validate_candidate_contract(
+        args.baseline,
+        dataset,
+        args.candidate_contract_compatibility,
+    )
+    if (
+        args.candidate_contract_proof_sha256 is not None
+        and candidate_contract["proof_sha256"] != args.candidate_contract_proof_sha256
+    ):
+        raise ValueError("Preflight candidate-contract proof changed before training")
     if args.baseline["selected_gnn"]["model"] != args.selected_gnn:
         raise ValueError("Frozen selected GNN family does not match the confirmation protocol")
     observed_hops = sorted({query.hop for query in dataset.queries if query.hop is not None})
@@ -550,6 +630,7 @@ def run(
             "seed_aware_gnn_extra_input": "binary_retrieval_seed_membership_only",
             "seed_aware_gnn_extra_parameters": args.hidden_dim,
             "sha256": _hash_tensor_contract(dataset.queries),
+            "candidate_compatibility_proof": candidate_contract,
         },
         "baseline": args.baseline,
         "feature_cache": features.metadata,
@@ -690,6 +771,8 @@ def main() -> None:
     parser.add_argument("--feature-cache", type=Path, required=True)
     parser.add_argument("--screen-seed-0", type=Path, default=None)
     parser.add_argument("--screen-result-sha256", default=None)
+    parser.add_argument("--candidate-contract-compatibility", default=None)
+    parser.add_argument("--candidate-contract-proof-sha256", default=None)
     parser.add_argument("--required-hops", nargs="*", type=int, default=[])
     parser.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2, 3, 4])
     parser.add_argument("--projection-dim", type=int, default=64)
