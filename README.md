@@ -91,6 +91,148 @@ extraction boundary are recorded in
 [the CRAG extraction audit](docs/CRAG_EXTRACTION_AUDIT.md). The standalone code,
 protocols, models, controls, analyses, and claims live in this repository.
 
+## Novelty and Positioning
+
+The novelty is **not** the generic idea of using an MLP with precomputed graph
+features, being the first non-message-passing graph model, or showing that
+message passing can be simplified. Prior work on simplified or precomputed graph
+propagation, MLP-style graph models, and structural sketches already shows that
+learned message passing can sometimes be replaced or approximated by
+precomputed graph information in node-classification and link-prediction
+settings. This project makes no firstness claim for that general idea.
+
+### A. Retrieval-specific separation of graph information from message passing
+
+The central scientific question is specific to retrieval ranking:
+
+> **Does graph-aware retrieval require learned neighborhood aggregation, or can
+> the useful structural signal be exposed through fixed query-local summaries
+> and consumed by a lightweight ranker?**
+
+Unlike graph features defined once per node for a generic prediction task, the
+important summaries here are conditioned on the frozen retrieval seeds and the
+query-local retrieval state. They include:
+
+- distance from retrieval seeds;
+- path counts and connectivity to seeds;
+- seed-conditioned PPR or diffusion;
+- other query-local structural descriptors registered before final evaluation.
+
+The learned SA-MLP consumes those fixed summaries but performs no learned
+neighborhood aggregation.
+
+### B. Explicit fairness decomposition
+
+The four-model chain is a core methodological contribution:
+
+```text
+plain MLP → seed-only MLP → SA-MLP → seed-aware GNN
+```
+
+It isolates three quantities that a direct MLP/GNN benchmark would confound:
+
+- `seed-only - plain` measures the frozen retrieval prior;
+- `SA-MLP - seed-only` measures fixed structural information beyond that prior;
+- `SA-MLP - seed-aware GNN` compares fixed summaries with learned message
+  passing after both sides receive the same seed indicator.
+
+This decomposition is scientifically more important than whether one model has
+the highest rounded mean on a particular dataset. It establishes which
+information differs between the models and prevents retrieval-seed membership
+from being mistaken for graph reasoning.
+
+### C. Broad retrieval evidence
+
+The final study covers six retrieval and QA datasets, five paired optimizer
+seeds, paired-query statistics, Holm correction, approximately matched
+parameter counts, and explicit latency, GPU-memory, CPU-memory, preprocessing,
+and cache accounting.
+
+The important empirical observation is not that SA-MLP always wins. It is:
+
+> **Once retrieval-seed information and query-local graph structure are made
+> explicit, seed-aware GNN message passing provides surprisingly little
+> additional R@5 effectiveness across the six evaluated datasets while
+> incurring a consistent online latency and GPU-memory cost.**
+
+The conclusion is bounded to the evaluated retrieval regimes, frozen candidate
+pools, model families, and training protocol.
+
+### D. Multi-hop result
+
+MetaQA contradicts the simple hypothesis that deeper query hop count necessarily
+makes learned message passing more valuable:
+
+- at one hop, the seed-aware GNN is slightly ahead;
+- at two hops, SA-MLP is slightly ahead;
+- at three hops, SA-MLP is slightly ahead.
+
+The current evidence therefore does not support “more hops implies that a GNN
+is more necessary.” It also does not establish that fixed summaries are
+sufficient for every multi-hop task.
+
+### E. Systems tradeoff
+
+SA-MLP and the selected GNNs are approximately parameter matched, so the systems
+advantage is not explained by parameter-count reduction. The contribution is
+replacing online learned neighborhood propagation with reusable offline
+structural computation and a lightweight online MLP ranker.
+
+SA-MLP trades:
+
+- structural-feature preprocessing;
+- CPU-accessible arrays and disk caches;
+
+for:
+
+- lower online latency;
+- substantially lower incremental GPU memory;
+- a simpler learned inference path without adjacency or neighbor aggregation.
+
+Both sides of this tradeoff are reported; preprocessing and storage are not
+treated as free.
+
+### F. Relationship to prior work
+
+Simplified and precomputed propagation work shows that propagation can sometimes
+be moved outside the learned loop. MLP-style graph methods show that message
+passing is not always necessary for graph prediction. Structural-sketch methods
+show that compact local summaries can support efficient graph prediction.
+
+This project differs by studying retrieval ranking with query-local,
+seed-conditioned structural summaries; explicitly separating the retrieval
+prior, fixed structure, and learned propagation; and evaluating the resulting
+accuracy–latency–memory tradeoff across multiple QA and KB retrieval regimes.
+It does not claim novelty beyond those demonstrated distinctions. Shared CRAG
+datasets and graphs remain experimental substrate, not part of the novelty
+claim.
+
+### G. Current novelty statement
+
+> **Current novelty:** We study whether learned message passing is necessary for
+> graph-aware retrieval by separating retrieval prior, fixed query-local
+> structural information, and learned neighborhood aggregation under a
+> controlled, approximately parameter-matched protocol. Across six retrieval
+> benchmarks, fixed structural summaries recover nearly all of the retrieval
+> effectiveness of seed-aware GNNs while substantially reducing online compute
+> and GPU memory.
+
+### H. What is still needed for a stronger NeurIPS claim
+
+The completed study is strong retrieval evidence, not yet a general theory of
+message-passing utility. The main deferred steps are:
+
+- causal topology perturbations;
+- feature-quality perturbations;
+- a predictor for when message passing helps enough to justify its cost;
+- leave-one-dataset-out validation of that predictor;
+- evaluation in broader non-QA graph domains.
+
+These steps are needed to move from a controlled empirical retrieval study to a
+deeper statement about when fixed structural summaries are sufficient and when
+learned message passing is genuinely necessary. They remain future work; no
+such experiment is currently scheduled.
+
 ## Scientific contract
 
 Every primary comparison uses the same frozen node/query features, candidate
