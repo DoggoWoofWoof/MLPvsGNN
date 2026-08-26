@@ -24,6 +24,8 @@ CONTRASTS = {
     "sa_mlp_minus_seed_only": ("sa_mlp", "seed_only"),
     "sa_mlp_minus_seed_aware_gnn": ("sa_mlp", "seed_aware_gnn"),
 }
+ORIGINAL_GNN_WIN_DATASETS = ("metaqa", "webqsp", "hotpotqa_clean")
+NONINFERIORITY_MARGIN = 0.01
 T_CRITICAL_95 = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776}
 
 
@@ -66,6 +68,72 @@ def _holm(pvalues: dict[str, float]) -> dict[str, float]:
         running = max(running, (count - rank) * value)
         adjusted[key] = min(running, 1.0)
     return adjusted
+
+
+def _interpretation_gates(dataset_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Apply only the decision rules frozen in the confirmation protocol."""
+    by_dataset = {row["dataset"]: row for row in dataset_rows}
+    if set(ORIGINAL_GNN_WIN_DATASETS) - set(by_dataset):
+        raise ValueError("Cannot apply interpretation gates without all GNN-win datasets")
+
+    evidence: dict[str, Any] = {}
+    for dataset in ORIGINAL_GNN_WIN_DATASETS:
+        row = by_dataset[dataset]
+        graph_effect = row["contrasts"]["sa_mlp_minus_seed_only"]["recall@5"]
+        substitution_effect = row["contrasts"]["sa_mlp_minus_seed_aware_gnn"]["recall@5"]
+        plain = row["models"]["plain_mlp"]["recall@5"]["mean"]
+        seed_only = row["models"]["seed_only"]["recall@5"]["mean"]
+        sa_mlp = row["models"]["sa_mlp"]["recall@5"]["mean"]
+        sa_gain = sa_mlp - plain
+        recovery = (seed_only - plain) / sa_gain if sa_gain > 0 else float("nan")
+        graph_signal = (
+            graph_effect["seed_effect"]["ci95_low"] > 0
+            and graph_effect["paired_hierarchical_query_ci95_low"] > 0
+            and graph_effect["holm_significant_0.05"]
+        )
+        # Requiring both registered intervals to clear the margin is the
+        # conservative reading of the paired seed-and-query contract.
+        substitution = (
+            substitution_effect["seed_effect"]["ci95_low"] > -NONINFERIORITY_MARGIN
+            and substitution_effect["paired_hierarchical_query_ci95_low"] > -NONINFERIORITY_MARGIN
+        )
+        evidence[dataset] = {
+            "sa_minus_seed_only_r5": graph_effect,
+            "graph_summary_signal": graph_signal,
+            "seed_prior_recovery_fraction": recovery,
+            "seed_prior_recovers_at_least_80_percent": recovery >= 0.8,
+            "sa_minus_seed_aware_gnn_r5": substitution_effect,
+            "noninferior_with_both_registered_intervals": substitution,
+        }
+
+    graph_count = sum(item["graph_summary_signal"] for item in evidence.values())
+    prior_count = sum(item["seed_prior_recovers_at_least_80_percent"] for item in evidence.values())
+    substitution_count = sum(
+        item["noninferior_with_both_registered_intervals"] for item in evidence.values()
+    )
+    return {
+        "evidence": evidence,
+        "graph_summary_signal": {
+            "required": 2,
+            "observed": graph_count,
+            "supported": graph_count >= 2,
+        },
+        "seed_prior_explanation": {
+            "required": 2,
+            "observed": prior_count,
+            "supported": prior_count >= 2,
+        },
+        "fixed_summary_substitution": {
+            "required": 2,
+            "observed": substitution_count,
+            "supported": substitution_count >= 2 and len(dataset_rows) == 6,
+            "margin_absolute_recall": NONINFERIORITY_MARGIN,
+            "requires_seed_and_query_intervals": True,
+            "all_six_datasets_reported": len(dataset_rows) == 6,
+        },
+        "universal_mlp_claim_supported": False,
+        "stopping_point": "CONFIRMATION_GATE_CLOSED_NO_MODEL_OR_TEST_TUNING",
+    }
 
 
 def _query_order_sha256(ids: list[str]) -> str:
@@ -318,9 +386,11 @@ def analyze(
                 "contrasts": contrasts,
                 "systems": _aggregate_systems(new, records, seeds),
                 "metaqa_hops": _metaqa_hops(records, seeds) if dataset == "metaqa" else {},
-                "candidate_compatibility_proof": new["comparison_contract"][
+                # Only the two legacy candidate artifacts require the isolated
+                # compatibility proof.  Canonical artifacts intentionally omit it.
+                "candidate_compatibility_proof": new["comparison_contract"].get(
                     "candidate_compatibility_proof"
-                ],
+                ),
             }
         )
 
@@ -337,6 +407,16 @@ def analyze(
                 item["holm_adjusted_pvalue_across_datasets"] = adjusted[row["dataset"]]
                 item["holm_significant_0.05"] = adjusted[row["dataset"]] < 0.05
 
+    system_speedups = [
+        row["systems"]["seed_aware_gnn"]["latency_ms_per_query"]["mean"]
+        / row["systems"]["sa_mlp"]["latency_ms_per_query"]["mean"]
+        for row in dataset_rows
+    ]
+    gpu_savings = [
+        row["systems"]["seed_aware_gnn"]["peak_gpu_memory_mb_incremental"]["mean"]
+        - row["systems"]["sa_mlp"]["peak_gpu_memory_mb_incremental"]["mean"]
+        for row in dataset_rows
+    ]
     return {
         "status": "SA_MLP_CONFIRMATION_SIX_DATASET_COMPLETE",
         "protocol_tag": "sa-mlp-confirmation-protocol-v1",
@@ -348,6 +428,13 @@ def analyze(
             "seed": bootstrap_seed,
         },
         "datasets": dataset_rows,
+        "interpretation_gates": _interpretation_gates(dataset_rows),
+        "system_summary": {
+            "sa_mlp_inference_speedup_over_seed_aware_gnn_min": min(system_speedups),
+            "sa_mlp_inference_speedup_over_seed_aware_gnn_max": max(system_speedups),
+            "sa_mlp_incremental_gpu_saving_mib_min": min(gpu_savings),
+            "sa_mlp_incremental_gpu_saving_mib_max": max(gpu_savings),
+        },
     }
 
 
@@ -360,6 +447,8 @@ def _effect(value: float) -> str:
 
 
 def _markdown(analysis: dict[str, Any]) -> str:
+    gates = analysis["interpretation_gates"]
+    systems = analysis["system_summary"]
     lines = [
         "# SA-MLP six-dataset fairness confirmation",
         "",
@@ -368,7 +457,69 @@ def _markdown(analysis: dict[str, Any]) -> str:
             "non-message-passing fixed-structure model, not a topology-free model."
         ),
         "",
+        "## Preregistered decision",
+        "",
+        "| Gate | Required | Observed | Decision |",
+        "|---|---:|---:|---|",
+        (
+            "| Fixed graph summaries add signal beyond the seed prior | 2/3 | "
+            f"{gates['graph_summary_signal']['observed']}/3 | "
+            f"{'supported' if gates['graph_summary_signal']['supported'] else 'not supported'} |"
+        ),
+        (
+            "| Seed prior explains at least 80% of the SA gain | 2/3 | "
+            f"{gates['seed_prior_explanation']['observed']}/3 | "
+            f"{'supported' if gates['seed_prior_explanation']['supported'] else 'not supported'} |"
+        ),
+        (
+            "| Fixed summaries are non-inferior to seed-aware GNN within 1 R@5 point | "
+            f"2/3 | {gates['fixed_summary_substitution']['observed']}/3 | "
+            f"{'supported' if gates['fixed_summary_substitution']['supported'] else 'not supported'} |"
+        ),
+        "",
+        (
+            "The substitution gate conservatively requires both the paired-seed and "
+            "paired-query 95% interval to clear the -1 point margin. All six datasets "
+            "are reported."
+        ),
+        "",
+        "| Dataset | SA - seed-only R@5 | Seed-prior recovery | SA - seed-aware GNN R@5 | Substitution |",
+        "|---|---:|---:|---:|---|",
     ]
+    for dataset in ORIGINAL_GNN_WIN_DATASETS:
+        item = gates["evidence"][dataset]
+        graph = item["sa_minus_seed_only_r5"]["seed_effect"]["mean"]
+        substitution = item["sa_minus_seed_aware_gnn_r5"]["seed_effect"]["mean"]
+        lines.append(
+            f"| {dataset} | {_effect(graph)} | "
+            f"{100 * item['seed_prior_recovery_fraction']:.1f}% | "
+            f"{_effect(substitution)} | "
+            f"{'yes' if item['noninferior_with_both_registered_intervals'] else 'no'} |"
+        )
+    lines.extend(
+        [
+            "",
+            (
+                "Across all six datasets, SA-MLP is "
+                f"{systems['sa_mlp_inference_speedup_over_seed_aware_gnn_min']:.2f}–"
+                f"{systems['sa_mlp_inference_speedup_over_seed_aware_gnn_max']:.2f}× "
+                "faster online and saves "
+                f"{systems['sa_mlp_incremental_gpu_saving_mib_min']:.0f}–"
+                f"{systems['sa_mlp_incremental_gpu_saving_mib_max']:.0f} MiB of "
+                "incremental peak GPU allocation; fixed-feature preprocessing and disk "
+                "cache costs remain reported separately below."
+            ),
+            "",
+            (
+                "**Stopping point:** the fairness-confirmation gate is closed. Freeze this "
+                "as the primary result; do not tune these models or revisit test data. Any "
+                "new mechanism, perturbation, or practical-width experiment requires a "
+                "separate preregistered protocol. The universal MLP-over-GNN claim remains "
+                "prohibited."
+            ),
+            "",
+        ]
+    )
     for row in analysis["datasets"]:
         lines.extend(
             [

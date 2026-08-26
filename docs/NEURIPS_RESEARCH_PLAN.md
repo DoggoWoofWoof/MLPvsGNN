@@ -1,5 +1,28 @@
 # NeurIPS research blueprint: When is message passing worth it for retrieval?
 
+> **Fairness-confirmation result and stop decision (2026-08-26):** the protocol
+> frozen at `sa-mlp-confirmation-protocol-v1` is complete on all six datasets
+> and five paired seeds. The unchanged SA-MLP, seed-only MLP, and seed-aware
+> selected GNN use identical frozen candidates, labels, losses, and seeds.
+> Fixed graph summaries add R@5 signal beyond the seed prior on all three
+> original GNN-win datasets: +6.86 points on MetaQA, +4.11 on WebQSP, and +3.70
+> on HotpotQA, with positive seed/query intervals and Holm-adjusted significance.
+> The seed prior explains at least 80% of the SA gain only on HotpotQA (1/3), so
+> the registered seed-prior explanation is rejected. Requiring both paired-seed
+> and paired-query intervals to clear the -1 point margin, SA-MLP is non-inferior
+> to the seed-aware GNN on MetaQA and HotpotQA (2/3; registered substitution gate
+> passed); WebQSP remains query-level inconclusive. SA-MLP is 2.49--7.08x faster
+> online and saves 90--2,418 MiB of incremental peak GPU allocation across the
+> six datasets, with its 9.3--20.5 second preprocessing and 0.030--2.835 GiB disk
+> caches disclosed separately. The gate is now closed: no tuning of these models
+> against test data is allowed. See `docs/SA_MLP_CONFIRMATION_RESULTS.md`.
+>
+> The supported claim is not “MLPs beat GNNs.” It is: **graph information is
+> useful for retrieval, but in identifiable regimes fixed query-conditioned
+> structural computation can substitute for learned message passing at much
+> lower online cost.** Any next mechanism, perturbation, or practical-width
+> experiment must begin under a separate preregistered protocol.
+
 > **Structure-aware MLP gate update (2026-08-26):** the preregistered one-seed
 > gate passed on MetaQA, WebQSP, and HotpotQA. SA-MLP exceeds the frozen selected
 > GNN by +4.49, +1.55, and +15.18 R@5 points, respectively. Query-local fixed
@@ -59,15 +82,30 @@
 
 ## Executive decision
 
-The paper must not claim that MLPs are universally better than GNNs. The
-six-dataset result instead establishes a real quality-efficiency boundary and
-returns the paper to the broader conditional question:
+The paper must not claim that MLPs are universally better than GNNs. The sealed
+fairness control establishes the narrower central result: graph-derived signal
+is real, the retrieval prior alone does not explain it, and learned aggregation
+is not always required to exploit it. The paper's conditional question is now:
 
-> In query-conditioned retrieval, the value of message passing is predictable
-> from neighborhood task signal, feature strength, topology corruption, edge
-> semantics, degree concentration, and supervision. We identify and predict the
-> crossover between regimes where message passing helps and regimes where it
-> destroys useful candidate representations.
+> When can fixed query-conditioned structural summaries substitute for learned
+> message passing in retrieval, and which graph/query regimes still require
+> neighborhood aggregation?
+
+This is already supported empirically on the preregistered substitution gate,
+not merely proposed. The remaining NeurIPS burden is mechanism and boundary:
+explain why substitution succeeds on MetaQA/HotpotQA, is uncertain on WebQSP,
+and misses the one-point margin on 2Wiki, while preserving the sealed main
+table. New evidence must be collected under a new protocol; it cannot alter,
+tune, or filter the completed confirmation.
+
+The observed boundary is already concrete. SA-MLP trails the seed-aware GNN by
+1.44 R@5 points on 2Wiki, with both paired intervals below zero, and fails the
+one-point non-inferiority test. MuSiQue's mean deficit is 0.96 points, but both
+intervals extend below the margin, so it is not certified non-inferior. WebQSP
+has a +0.27 point mean but a wide query-level interval and remains inconclusive.
+HotpotQA (-0.53), MetaQA (-0.02), and the graph-light SQuAD control (-0.10) clear
+the margin using both registered intervals. These failures and uncertainty are
+part of the result, not targets for post-hoc model tuning.
 
 The primary empirical setting is **Level-2 candidate reranking**, not C-RAG L1
 partition routing. This is the cleanest controlled comparison because both

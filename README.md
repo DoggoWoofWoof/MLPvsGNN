@@ -37,6 +37,7 @@ docs/SIX_DATASET_RESULTS.md  five-seed effectiveness, hop, and systems tables
 docs/SA_MLP_PROTOCOL.md      frozen fixed-structure MLP one-seed gate
 docs/SA_MLP_SCREEN_RESULTS.md preregistered SA-MLP screen and fairness limit
 docs/SA_MLP_CONFIRMATION_PROTOCOL.md frozen five-seed seed-prior controls
+docs/SA_MLP_CONFIRMATION_RESULTS.md six-dataset fairness result and stop decision
 docs/SA_FEATURE_LEAKAGE_AUDIT.md label-free fixed-structure code-path audit
 docs/LEGACY_CANDIDATE_COMPATIBILITY.md bit-exact legacy digest bridge
 docs/CRAG_EXTRACTION_AUDIT.md  what was retained, rewritten, or excluded
@@ -87,27 +88,26 @@ GNN advantage is largest at one hop, so hop count alone cannot explain the
 boundary. No new topology perturbation, mechanism predictor, Offset rescue, or
 architecture was launched inside that stop gate.
 
-The bounded SA-MLP screen frozen in `docs/SA_MLP_PROTOCOL.md` is complete and
-passed on all three datasets. At seed 0, SA-MLP exceeds the frozen selected GNN
-by 4.49 R@5 points on MetaQA, 1.55 on WebQSP, and 15.18 on HotpotQA. The
-query-local descriptors explain nearly all of the MetaQA gain and most of the
-HotpotQA gain; global degree/PageRank/core/clustering descriptors alone are
-harmful. These are screening results, not five-seed paper estimates.
+The fairness confirmation frozen at `sa-mlp-confirmation-protocol-v1` is now
+complete on all six datasets and five paired seeds. The unchanged SA-MLP is
+compared separately with plain MLP, seed-only MLP, and a seed-aware copy of the
+validation-selected GNN. Fixed graph summaries add significant R@5 signal over
+the seed prior on MetaQA (+6.86 points), WebQSP (+4.11), and HotpotQA (+3.70).
+The seed prior recovers at least 80% of the SA gain only on HotpotQA, so the
+registered seed-prior explanation fails (1/3; required 2/3).
 
-The screen also exposed the fairness control required before a causal claim:
-its distance-0 feature reveals membership in the frozen dense/SPLADE seed set,
-while the old GNN was not given that indicator. The combined SA architecture
-will remain unchanged during confirmation. A seed-only MLP and seed-aware GNN
-must separate the retrieval prior from the value of fixed graph paths/PPR.
-See `docs/SA_MLP_SCREEN_RESULTS.md`.
-
-The next experiment is frozen in `docs/SA_MLP_CONFIRMATION_PROTOCOL.md`.
-Across all six datasets and five paired seeds it keeps SA-MLP unchanged, adds a
-seed-only MLP, and adds the same seed bit to the already-selected GNN family.
-This directly tests whether the screen measured fixed graph paths/PPR or merely
-the frozen retriever prior. No topology perturbation, new MLP variant, or
-test-selected practical width is permitted before this confirmation is
-compiled.
+Using the conservative requirement that both paired-seed and paired-query 95%
+intervals clear the -1 point margin, SA-MLP is non-inferior to the seed-aware
+GNN on MetaQA and HotpotQA (2/3; gate passed); WebQSP is inconclusive at query
+level. Across all six datasets, SA-MLP is 2.49--7.08x faster online and saves
+90--2,418 MiB of incremental peak GPU allocation, with preprocessing and disk
+cache costs reported separately. The boundary is explicit: SA-MLP trails the
+seed-aware GNN by 1.44 R@5 points on 2Wiki and therefore fails the one-point
+margin; MuSiQue's -0.96 mean is too uncertain to certify non-inferiority, while
+SQuAD is non-inferior. The confirmation gate is closed: these models must not
+be tuned further against test data, and any new perturbation, mechanism, or
+practical-width experiment requires a separate preregistration. See
+`docs/SA_MLP_CONFIRMATION_RESULTS.md`.
 
 Earlier pilot and rewiring outputs remain `NOT_PAPER_VALID_PILOT`; old C-RAG
 results are hypothesis-generating only. The prior Offset screen, confirmation,
