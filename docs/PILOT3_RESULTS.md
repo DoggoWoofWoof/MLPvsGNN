@@ -1,4 +1,8 @@
-# Three-dataset protocol pilot: results and next gate
+# Three-dataset protocol pilot: results and historical next gate
+
+> **Archived pilot:** the project is paused at the later fairness-confirmed
+> six-dataset checkpoint. The proposed follow-up below is historical and is not
+> currently scheduled.
 
 Date: 2026-08-25
 
@@ -15,10 +19,10 @@ a claim that MLPs beat GNNs. On the clean pilot, a one-layer GCN has higher R@5
 than the parameter-matched MLP on all three datasets. Degree-preserving rewiring
 of 25% of edge positions reduces that advantage on all three; MuSiQue moves to
 an effectively neutral interval, while no dataset crosses into a reliable MLP
-win. The immediate next experiment is therefore the remaining registered
-rewiring rates, followed by random-edge addition if the curve remains coherent.
-Hub injection and feature degradation stay gated behind that result. The LODO
-predictor remains prohibited until clear help, neutral, and harm regions exist.
+win. The historical protocol therefore proposed the remaining registered
+rewiring rates, followed by random-edge addition if the curve remained
+coherent. Those interventions, hub injection, feature degradation, and the LODO
+predictor are now deferred and are not currently scheduled.
 
 ## Frozen baseline and run scope
 
@@ -153,7 +157,7 @@ It does **not** establish that GCNs win, that MLPs win, that rewiring causes the
 observed differences in expectation, or that the resulting boundary transfers
 across datasets. It cannot be cited in a submission as a main result.
 
-## Next-run gate
+## Historical next-run gate — deferred
 
 Run only the following next:
 

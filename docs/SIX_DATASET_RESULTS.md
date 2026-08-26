@@ -1,5 +1,10 @@
 # Six-dataset MLP vs message-passing results
 
+> **Historical clean-comparison stage:** this table established that the plain
+> MLP/GNN boundary is dataset-dependent and motivated SA-MLP. “Topology-free”
+> below refers only to the plain MLP. The final graph-aware,
+> non-message-passing comparison is in `SA_MLP_CONFIRMATION_RESULTS.md`.
+
 All values are five-seed means. Deltas are paired MLP minus GNN percentage points.
 
 ## Stop-gate conclusion
@@ -51,7 +56,7 @@ MetaQA does not show an increasing GNN advantage with hop count: its R@5 advanta
 | squad_clean | 19029 | 2857316 | 0.0625 | 0.6202 | 9.92× | 37.0 | 2467.6 | 2430.6 | 204928 | 209216 | 153.7 | 5.989 |
 | metaqa | 40151 | 585728 | 0.0623 | 0.2449 | 3.93× | 41.3 | 205.2 | 163.8 | 204928 | 213504 | 169.0 | 2.283 |
 
-## Claim boundary and next decision
+## Claim boundary and historical next decision
 
 What is established: under identical frozen features, candidates, labels, loss, splits, seeds, and training budget, adding the validation-selected message-passing model helps on three datasets, hurts on two, and is neutral on one; its inference cost is higher on all six. Candidate-conditional R@5 preserves the same directions, so the boundary is not an artifact of missing candidate-pool golds.
 

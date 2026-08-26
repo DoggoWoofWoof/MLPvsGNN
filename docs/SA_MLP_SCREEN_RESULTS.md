@@ -1,5 +1,10 @@
 # Structure-Aware MLP one-seed screening result
 
+> **Historical stage:** this screen motivated the seed-membership fairness
+> control. It has been superseded by the completed five-seed, six-dataset result
+> in `SA_MLP_CONFIRMATION_RESULTS.md`; the seed-0 values below remain screening
+> evidence only.
+
 Status: **the preregistered gate passed on all three datasets**. Values below are seed 0 only and are screening evidence, not five-seed paper estimates.
 
 ## Primary gate
@@ -42,8 +47,18 @@ SA-MLP exceeds the frozen GNN at every hop. The improvement is largest at one an
 
 The learned SA forward pass is 1.21--2.98x faster than the selected GNN, not the 3.6--9.9x advantage of the plain MLP, because online cache lookup and the explicit scoring head add work. GPU allocation remains far below the GNN, especially on HotpotQA. The method also shifts cost to CPU/disk: caches range from 0.030 to 2.835 GiB and total process RSS is high because frozen arrays and memory maps coexist.
 
-## Required fairness control before the paper claim
+## Required fairness control before the paper claim — now completed
 
-The query-local feature set includes a distance-0 bucket for the frozen dense/SPLADE retrieval seeds. This exposes seed membership explicitly, whereas the frozen GNN received candidate embeddings and adjacency but no seed indicator. Therefore this screen establishes that the registered fixed-feature package beats the old GNN; it does not yet isolate how much comes from graph paths/PPR versus the retrieval-seed prior. Confirmation must retain the frozen SA architecture and add a seed-only control (and, for the strongest causal comparison, a seed-aware GNN control).
+The query-local feature set includes a distance-0 bucket for the frozen
+dense/SPLADE retrieval seeds. This exposes seed membership explicitly, whereas
+the frozen GNN received candidate embeddings and adjacency but no seed
+indicator. Therefore this screen established only that the registered
+fixed-feature package beat the old GNN; it did not isolate how much came from
+graph paths/PPR versus the retrieval-seed prior. The subsequent confirmation
+retained the frozen SA architecture and added both a seed-only control and a
+seed-aware GNN control.
 
-No test-driven feature or architecture change was made. The combined SA-MLP is now eligible to be frozen for five-seed confirmation, but the one-seed values must not be presented as final estimates.
+No test-driven feature or architecture change was made. The combined SA-MLP was
+frozen and the required seed-only and seed-aware GNN controls were subsequently
+completed. Use `SA_MLP_CONFIRMATION_RESULTS.md`, not these one-seed values, for
+the current research claim.

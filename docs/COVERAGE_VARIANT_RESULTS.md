@@ -1,5 +1,9 @@
 # Set-coverage Offset variant result
 
+> **Historical negative result:** this completed gate remains part of the
+> evidence trail. It predates SA-MLP and is superseded as the main project result
+> by `SA_MLP_CONFIRMATION_RESULTS.md`; no second coverage remedy was launched.
+
 > **Status:** `PREREGISTERED_COVERAGE_VARIANT_GATE`  
 > **Run date:** 2026-08-25  
 > **Frozen formulation:** commit `364183f`  
@@ -18,7 +22,8 @@ The result distinguishes diagnosis from remedy:
 - Offset's original coverage loss does grow with answer multiplicity.
 - Requiring distinct directions to explain distinct positives, plus the frozen
   diversity penalty, is not a successful solution under this protocol.
-- The plain-MLP replication remains the strongest topology-free result.
+- The plain-MLP replication remained the strongest result among the
+  topology-free models tested at this stage.
 
 ## Variant effectiveness
 

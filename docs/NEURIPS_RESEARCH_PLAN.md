@@ -1,5 +1,11 @@
 # NeurIPS research blueprint: When is message passing worth it for retrieval?
 
+> **Project status (2026-08-26): paused at the fairness-confirmed six-dataset
+> checkpoint.** This document preserves the research progression and the larger
+> NeurIPS roadmap. Sections describing perturbations, prediction, theory, or
+> launch commands are deferred plans, not currently scheduled work. The frozen
+> confirmation result and stopping decision take precedence.
+
 > **Fairness-confirmation result and stop decision (2026-08-26):** the protocol
 > frozen at `sa-mlp-confirmation-protocol-v1` is complete on all six datasets
 > and five paired seeds. The unchanged SA-MLP, seed-only MLP, and seed-aware
@@ -23,18 +29,19 @@
 > lower online cost.** Any next mechanism, perturbation, or practical-width
 > experiment must begin under a separate preregistered protocol.
 
-> **Structure-aware MLP gate update (2026-08-26):** the preregistered one-seed
+> **Historical structure-aware MLP screen (superseded by the fairness result
+> above):** the preregistered one-seed
 > gate passed on MetaQA, WebQSP, and HotpotQA. SA-MLP exceeds the frozen selected
 > GNN by +4.49, +1.55, and +15.18 R@5 points, respectively. Query-local fixed
 > descriptors drive the result; static global descriptors alone fail. This is
-> screening evidence only. Because distance-0 reveals retrieval-seed membership
-> to SA-MLP but not to the frozen GNN, confirmation must preserve the SA model
-> unchanged and include both a seed-only non-message-passing control and a
-> seed-aware GNN. The paper may claim neither a graph-path mechanism nor a
-> general SA-MLP win until that control and five paired seeds are complete. See
+> screening evidence only. Because distance-0 revealed retrieval-seed membership
+> to SA-MLP but not to the frozen GNN, the subsequent confirmation preserved the
+> SA model unchanged and included both a seed-only non-message-passing control
+> and a seed-aware GNN. The screen alone supported neither a graph-path mechanism
+> nor a general SA-MLP win. See
 > `docs/SA_MLP_SCREEN_RESULTS.md`.
 
-> **Confirmation freeze:** the follow-up in
+> **Historical confirmation freeze (now completed):** the follow-up in
 > `docs/SA_MLP_CONFIRMATION_PROTOCOL.md` fixes all six datasets, five seeds,
 > the unchanged SA-MLP, a seed-only interaction control, and a seed-aware copy
 > of each dataset's already-selected GNN family. R@5, paired seed/query
@@ -54,7 +61,7 @@
 > in `docs/SIX_DATASET_RESULTS.md`. The preregistered stop condition is met; no
 > mechanism or perturbation follow-up has launched.
 
-> **Execution checkpoint (2026-08-25):** the exact protocol baseline is frozen
+> **Historical execution checkpoint (2026-08-25):** the exact protocol baseline is frozen
 > at `paper-protocol-v0`. The controlling immediate experiment is now the
 > complete-data relational-operator screen in
 > `docs/OFFSET_OPERATOR_PROTOCOL.md`: plain MLP, Offset-MLP, K=4 Offset-MLP,
@@ -634,7 +641,11 @@ Main tables:
 Everything else belongs in the appendix: all seeds, hyperparameters, full
 perturbation grids, per-dataset plots, gradient audits, and additional models.
 
-## 16. Execution roadmap
+## 16. Deferred execution roadmap
+
+The schedule below is retained as a planning artifact. It is not active while
+the project is paused. If the project resumes, unfinished items require a new
+preregistered protocol and must not modify the sealed confirmation.
 
 ### Weeks 1–2: canonicalize L2
 
@@ -681,20 +692,23 @@ perturbation grids, per-dataset plots, gradient audits, and additional models.
 - anonymous one-command supplement under the size limit;
 - draft rebuttal-risk matrix and run only pre-identified missing controls.
 
-## 17. Immediate runnable sequence
+## 17. Archived launch examples — do not run while paused
 
-The completed engineering pilot is reproducible through the restricted launcher:
+The following commands are retained only for provenance. No run is currently
+scheduled. The completed engineering pilot was reproducible through the
+restricted launcher:
 
 ```bash
 python experiments.py run pilot3 --backend modal --intervention clean --rate 0
 ```
 
-The output must say `NOT_PAPER_VALID_PILOT`. Its only purposes are verifying
-gradient flow, memory, runtime, feature parity, and metric serialization. The
-next pilot gate is degree-preserving rewiring at 0.10, 0.50, and 1.00; do not
-start the LODO predictor from these results.
+The output must say `NOT_PAPER_VALID_PILOT`. Its only purposes were verifying
+gradient flow, memory, runtime, feature parity, and metric serialization.
+Degree-preserving rewiring and the LODO predictor are deferred future work, not
+an immediate gate.
 
-The first scientifically valid run occurs only after canonical split export:
+A future scientifically valid resumption would require canonical split export
+and a new preregistration before any command such as the following is used:
 
 ```bash
 python scripts/run_l2_pair.py \

@@ -1,5 +1,10 @@
 # Five-seed lightweight-operator confirmation
 
+> **Historical stage:** this document records the pre-SA plain/Offset phase.
+> References to a “topology-free model” apply to the plain or Offset models in
+> this experiment, not to the later graph-aware SA-MLP. The current project
+> finding is frozen in `SA_MLP_CONFIRMATION_RESULTS.md`.
+
 > **Status:** `CONFIRMATION_GATE_NOT_PAPER_FINAL`  
 > **Run date:** 2026-08-25  
 > **Frozen protocol:** commit `2c869a8`  
@@ -98,7 +103,7 @@ count in this substrate. Hop and answer-multiplicity effects therefore cannot
 be separately identified. 2Wiki has no per-query hop label in its frozen or
 processed records; no hop labels were invented.
 
-## Interpretation and next gate
+## Interpretation and historical next gate
 
 The result supports a stronger, narrower paper direction:
 
@@ -110,12 +115,10 @@ The result supports a stronger, narrower paper direction:
 This is still not a final NeurIPS claim. It is two datasets, one frozen training
 budget, and candidate-level rather than end-to-end retrieval.
 
-The preregistered condition for one coverage-aware Offset variant is satisfied.
-That variant must use K fixed directions, permutation-invariant distinct
-direction-to-positive assignment, all in-pool positives, a frozen diversity
-penalty, and max-direction inference. Its exact formulation must be committed
-before its test results are observed. Generic topology perturbations and dataset
-expansion remain deferred.
+The preregistered condition for one coverage-aware Offset variant was satisfied.
+That exact variant was subsequently frozen and evaluated; it failed its primary
+criterion on both datasets, as recorded in `COVERAGE_VARIANT_RESULTS.md`.
+Generic topology perturbations remain deferred and are not currently scheduled.
 
 Raw model results and reproducible stratified analyses are retained under
 `outputs/confirmation/`.
