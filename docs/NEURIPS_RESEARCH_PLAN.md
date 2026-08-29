@@ -107,9 +107,13 @@ fairness control establishes the narrower central result: graph-derived signal
 is real, the retrieval prior alone does not explain it, and learned aggregation
 is not always required to exploit it. The paper's conditional question is now:
 
-> When can fixed query-conditioned structural summaries substitute for learned
-> message passing in retrieval, and which graph/query regimes still require
-> neighborhood aggregation?
+> **Once retrieval has already happened, how much learned message passing is
+> still necessary to rank graph-aware evidence?**
+
+RTA asks whether message passing itself can be reframed and replaced by
+retrieval. This project begins after retrieval: given a frozen upstream
+retriever, candidates, and graph, it asks what learned neighborhood aggregation
+adds beyond the retrieval prior and explicit query-local structure.
 
 This is already supported empirically on the preregistered substitution gate,
 not merely proposed. The remaining NeurIPS burden is mechanism and boundary:
@@ -232,19 +236,29 @@ tasks, features, pooling functions, or negative sets.
 
 ## 4. Hypotheses
 
-All directional hypotheses must be frozen before the canonical test runs.
+The two central hypotheses organize every future intervention:
 
-| ID | Hypothesis | Expected sign of \(\Delta\) |
+> **H1 — Structural compressibility:** QLS-MLP should approach or match learned
+> message passing when graph information useful for ranking a candidate can be
+> compressed into seed membership, seed distance, path multiplicity or
+> connectivity, and seed-conditioned diffusion.
+
+> **H2 — Rich-content requirement:** GNNs should gain an advantage when ranking
+> depends on richer neighbor content, interactions, typed/compositional
+> relations, or higher-order information not adequately represented by fixed
+> query-local summaries.
+
+All directional phase predictions must be frozen before canonical runs:
+
+| ID | Phase prediction | Expected sign of \(\Delta=GNN-QLS\) |
 |---|---|---:|
-| H1 | strong semantic features plus low positive-neighbor lift | QLS/fixed wins |
-| H2 | random or kNN edge additions at fixed features | increasingly QLS/fixed |
-| H3 | degree-preserving topology corruption | increasingly QLS/fixed |
-| H4 | high-degree or high-Gini hubs | QLS/fixed wins; hub nodes amplify |
-| H5 | sparse, typed edges with high relevance-path coverage | GNN wins |
-| H6 | node/expert feature masking or low feature SNR | GNN advantage grows |
-| H7 | deeper message passing under noisy topology | QLS/fixed advantage grows |
-| H8 | more training data helps GNN only when edge signal is positive | interaction |
-| H9 | a train-only graph-utility predictor transfers across datasets | predictable sign |
+| P1 | strong semantic features plus low positive-neighbor lift | negative |
+| P2 | random/kNN edge additions or degree-preserving corruption | increasingly negative |
+| P3 | high-degree or high-Gini hubs | negative; hub amplification |
+| P4 | sparse typed edges with high relevance-path coverage | positive |
+| P5 | feature masking or low feature SNR with useful topology | increasingly positive |
+| P6 | deeper propagation under noisy topology | increasingly negative |
+| P7 | a development-only utility predictor transfers to held-out regimes | predictable sign |
 
 Negative and positive controls are mandatory. If no deliberately favorable
 regime makes a GNN win, the implementation or task construction is suspect.
@@ -262,26 +276,29 @@ semantic features, typed retrieval edges, candidate ceilings, and OOD topology.
 
 ### C2. Predictive graph-utility index
 
-Develop a simple, pre-training predictor—working name **Retrieval Neighborhood
-Utility (RNU)**—that estimates \(\Delta\) or the probability that a GNN beats an
-MLP by the practical margin. RNU must use train/validation graph statistics only
-and be evaluated leave-one-dataset-out.
+Develop a message-passing utility predictor—working name **Retrieval
+Neighborhood Utility (RNU)**—that estimates \(\Delta=GNN-QLS\) or the
+probability that a GNN beats QLS by the practical margin. It must be trained and
+tuned on development settings and evaluated on held-out regimes or datasets.
+Do not lock the predictor architecture until the perturbation design and
+available inference-time variables are audited.
 
 Candidate inputs:
 
-- query-conditioned positive-neighbor lift;
-- relevant-neighbor coverage;
+- Dense/SPLADE disagreement and candidate count;
+- seed-to-candidate distance, connected-seed count, and path redundancy;
+- PPR concentration/entropy;
 - edge feature-alignment lift over random pairs;
 - degree mean, tail, Gini, and max/mean hubness;
 - density and reciprocity;
-- edge-type distribution/purity;
+- native/kNN edge proportion and edge-type distribution;
 - candidate-pool size and graph connectedness;
-- node/expert feature SNR;
-- training size;
+- semantic-neighborhood coherence;
 - disagreement between graph neighbors and frozen semantic ranking.
 
-Use a transparent linear interaction model and a monotonic GAM as primary
-predictors. A large black-box meta-model would weaken the scientific story.
+Candidate ceiling, seed recall, positive-neighbor lift, and relevant-neighbor
+coverage may be reported as label-dependent explanatory diagnostics, but they
+cannot be deployment-time predictor inputs.
 
 ### C3. Mechanistic evidence
 
@@ -306,6 +323,27 @@ energy measures can miss harmful collapse; see
 Release canonical candidate IDs, immutable split manifests, perturbation seeds,
 query-level predictions, graph statistics, efficiency logs, and one command per
 main table. The artifact must be independent of C-RAG.
+
+### Canonical execution packages
+
+The detailed execution scope is consolidated in
+`docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md`:
+
+```text
+P0  A semantic/structural controls
+P0  B edge provenance (mandatory)
+P0  C candidate/context budgets 50/100/200/400
+P0  D uncached post-retrieval systems evaluation
+
+P1  E robustness perturbations -> phase diagram -> utility predictor
+
+P2  freeze A-E hypotheses/protocol
+P2  F untouched external confirmation
+```
+
+External confirmation is last by design. Its test outcomes must remain unseen
+until the controls, graph rule, phase hypotheses, predictor inputs, and systems
+protocol are frozen.
 
 ## 6. Data tiers
 
@@ -484,11 +522,15 @@ Use fixed features and labels while varying one axis:
 
 | Intervention | Levels | Question isolated |
 |---|---|---|
+| removal of high-ranked seeds | preregistered top-seed fractions | dependence on seed quality |
+| Dense/SPLADE disagreement | controlled overlap strata | retriever-prior conflict |
+| irrelevant-candidate injection | fixed replacement fractions | robustness to candidate noise |
 | random edge addition | 0, 10, 25, 50, 100% of \(|E|\) | unstructured neighbor noise |
 | degree-preserving rewiring | 0, 10, 25, 50, 100% | semantics without degree change |
 | edge deletion | 0, 10, 25, 50, 75% | graph sparsity/connectivity |
 | edge-type shuffling | 0, 10, 25, 50, 100% | relational semantics |
-| semantic/kNN edge removal | by edge type | synthetic versus curated topology |
+| native-edge removal | by source/fraction | loss of genuinely relational topology |
+| kNN density | preregistered neighbor counts | semantic topology strength |
 | feature masking | 0, 25, 50, 75, 100% | node/evidence strength |
 | Gaussian feature noise | 30, 20, 10, 5, 0 dB | continuous feature SNR |
 | train fraction | 5, 10, 25, 50, 100% | sample efficiency |
@@ -502,18 +544,23 @@ meaning rather than degree distribution.
 
 ### E3. Joint phase diagram
 
-A full Cartesian product is wasteful and statistically awkward. Use 128 Sobol
-or Latin-hypercube regimes per dataset over:
+A full Cartesian product is wasteful and statistically awkward. Freeze the
+design size after feasibility profiling; a Sobol or Latin-hypercube design can
+cover:
 
 \[
-\text{feature SNR}\times\text{positive-neighbor lift}\times\text{degree}
-\times\text{hubness}\times\text{density}\times\text{edge-type purity}
-\times\text{train size}.
+\text{feature SNR}\times\text{seed quality}\times\text{retriever disagreement}
+\times\text{candidate noise}\times\text{degree/hubness/density}
+\times\text{native:kNN ratio}\times\text{train size}.
 \]
 
-Reserve 25% of generated regimes as an untouched design test set. Fit RNU on
-the remaining regimes using training/validation statistics. Repeat with an
-entire dataset held out.
+Record candidate ceiling, seed recall, seed-to-candidate distance, connected
+seed count, path redundancy, PPR concentration/entropy, clustering, degree/hub
+exposure, semantic-neighborhood coherence, and graph/semantic agreement.
+Label-dependent quantities such as candidate ceiling and seed recall are oracle
+diagnostics, not deployable predictor inputs. Reserve held-out generated regimes
+and repeat with an entire dataset held out. Do not specify the final predictor
+architecture before preregistration.
 
 ### E4. OOD graph transfer
 
@@ -641,6 +688,9 @@ Key stratified plots:
 
 ## 12. Theory work package
 
+No theorem has been established. The following is a possible future analytical
+starting point, not a claim about the completed experiments.
+
 Start with a binary relevance model. Let node feature
 (x_i=y_i\mu+\epsilon_i\), where \(y_i\in\{-1,+1\}\) and
 \(\epsilon_i\sim\mathcal N(0,\sigma^2 I)\). Let a neighbor share the target
@@ -663,9 +713,10 @@ aggregation exceeds that of the unpropagated feature. Extend it with:
 - finite feature SNR;
 - query-conditioned relevance rather than global class labels.
 
-The theorem target is a transparent crossover inequality whose variables map
-to measured RNU statistics. A theorem that merely restates “high homophily is
-good” is insufficient because the closest prior work already covers that idea.
+If this abstraction proves useful, the target would be a transparent crossover
+inequality whose variables map to measured utility statistics. A result that
+merely restates “high homophily is good” would be insufficient because the
+closest prior work already covers that idea.
 
 ## 13. Falsification criteria
 
@@ -754,7 +805,7 @@ Main figures:
 
 Main tables:
 
-1. clean matched MLP/GNN retrieval and efficiency;
+1. clean four-level plain/seed/QLS/GNN retrieval and efficiency;
 2. RNU versus homophily-only/degree-only baselines;
 3. OOD graph/encoder transfer;
 4. control models and mechanism ablations.
@@ -787,33 +838,35 @@ preregistered protocol and must not modify the sealed confirmation.
 - outstanding: no perturbation or new architecture run until the six
   submission-critical packages are separately preregistered.
 
-### Weeks 6–9: controlled phase diagram
+### Weeks 6–9: Packages A–D
 
-- one-axis topology and feature sweeps;
-- choose anchor regimes;
-- run mechanistic probes and compute profiles;
-- fix the joint-design ranges using training/validation data only.
+- complete equal/weighted RRF and structural/simple controls;
+- recover and verify edge provenance, then run native-only/kNN-only/union;
+- run the shared 50/100/200/400 context-budget study;
+- complete cached and uncached post-retrieval systems accounting.
 
-### Weeks 10–13: joint design and predictor
+### Weeks 10–14: Package E phase diagram
 
+- run one-axis seed/candidate/topology/feature interventions;
 - execute Sobol regimes;
+- run mechanistic probes and compute profiles;
 - fit RNU and simple baselines;
 - leave one regime family and one dataset out;
 - derive/validate crossover estimates.
 
-### Weeks 14–17: theory and external dataset
+### Weeks 15–17: explanation and protocol freeze
 
 - finish ranking-SNR crossover derivation;
-- replicate on one non-CRAG retrieval graph;
-- complete typed-edge and entity-disjoint OOD experiments.
+- freeze H1/H2, predictor inputs, metrics, graph rule, and all Package F hashes;
+- do not inspect the external outcome during this stage.
 
-### Weeks 18–22: paper hardening
+### Week 18: Package F untouched confirmation
 
-- complete the locked equal-RRF and validation-only weighted-RRF controls;
-- run cached and uncached post-retrieval timing from unseen query embeddings;
-- verify bit-equivalence of cached versus on-demand topology and QLS features;
-- freeze edge provenance and run native-only, kNN-only, and union anchors;
 - evaluate the fully locked method once on a fresh external holdout;
+- report the predictor and primary hypotheses exactly as preregistered.
+
+### Weeks 19–22: paper hardening
+
 - rerun headline cells with 10 seeds if confidence intervals are close;
 - freeze tables from machine-readable result manifests;
 - independent leakage/reproducibility audit;

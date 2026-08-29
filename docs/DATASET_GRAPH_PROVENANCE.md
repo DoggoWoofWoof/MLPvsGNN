@@ -96,7 +96,7 @@ the final candidate-reranking comparison:
 - L3 graph traversal;
 - CRAG checkpoints and system results.
 
-## End-to-end experimental flow
+## Post-retrieval experimental flow
 
 ```text
 Read-only CRAG UKB storage
@@ -117,6 +117,12 @@ Standalone data contract
                               +-- QLS-MLP: embeddings + fixed graph summaries
                               +-- GNN: embeddings + seed indicator + adjacency
 ```
+
+The runtime-facing interface is therefore a query embedding, upstream Dense and
+SPLADE ranked IDs, and a frozen corpus graph. The standalone project owns
+candidate fusion, candidate-induced topology, fixed summaries or learned
+message passing, and candidate ranking. It is not a raw-text search engine,
+UKB runtime, C-RAG system, or full RAG pipeline.
 
 The GNN does not normally propagate over the complete 781,485-node WebQSP
 graph for every query. Given a query candidate set \(C_q\), the loader extracts
@@ -202,6 +208,9 @@ standalone export must recover source sidecars, prove that their union exactly
 reconstructs the frozen adjacency, and compare **native/title/KB-only**,
 **embedding-kNN-only**, and **union** graphs for both QLS-MLP and the seed-aware
 GNN. No change may be made to the read-only CRAG repository.
+
+This is **Package B** in the canonical future plan and is mandatory before
+submission.
 
 Likewise, the MetaQA and WebQSP GNNs receive entity connectivity but not raw
 relation labels such as `directed_by` or `acted_in`. The current paper should

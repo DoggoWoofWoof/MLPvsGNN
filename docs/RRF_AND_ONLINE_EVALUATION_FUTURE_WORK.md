@@ -21,6 +21,8 @@ candidate pools. It does not yet answer two production-facing questions:
 
 These questions must remain separate. RRF is an effectiveness/prior control.
 Uncached post-retrieval timing is a systems-accounting correction.
+They implement Package A and Package D, respectively, in the canonical
+six-package plan.
 
 ## Scope boundary
 
@@ -205,6 +207,13 @@ No cache keyed by query ID, query embedding, candidate set, seed set, or
 candidate-induced topology may be read in the uncached unseen-embedding
 condition.
 
+The charged comparison is:
+
+```text
+QLS = graph induction + distance/path/PPR + MLP inference
+GNN = graph induction + learned propagation + readout
+```
+
 ### Two latency views
 
 Report both rather than replacing the existing diagnostic:
@@ -242,6 +251,14 @@ minimum report:
 - cold-start time separately from steady-state service time; and
 - at least one embedding/candidate stream whose query IDs were never used to
   build query-local topology or feature caches.
+
+Report preprocessing amortization and the cache break-even query-reuse count:
+
+\[
+N_{\text{break-even}} =
+\frac{\text{precompute or refresh cost}}
+{\text{on-demand cost saved per repeated query}}.
+\]
 
 CUDA work must be synchronized around timers. Warmups must be identical. Top-K
 selection must occur inside the timed production path, while evaluation metric

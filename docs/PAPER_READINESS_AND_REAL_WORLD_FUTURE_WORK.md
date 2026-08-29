@@ -42,12 +42,12 @@ claim is defensible.
 
 | Priority | Gap | Why it matters | Required resolution |
 | --- | --- | --- | --- |
-| P0 | Fresh untouched confirmation | The same benchmark families informed sequential screens, model decisions, and fairness confirmation | Lock the final method and evaluate once on a new external/hidden holdout |
+| P2 | Fresh untouched confirmation | The same benchmark families informed sequential screens, model decisions, and fairness confirmation | Open only after Packages A–E and their hypotheses are frozen |
 | P0 | Uncached unseen-embedding latency | Current speed ratios use packed per-query topology/features | Rebuild fusion, induced graph, and QLS summaries on demand for never-cached query IDs |
 | P0 | Edge provenance | `graph.pt` flattens native/title/KB and embedding-kNN edges | Re-export typed provenance and compare native-only, kNN-only, and union graphs |
 | P0 | Strong trivial controls | QLS gains may be explainable by parameter-free rank/diffusion combinations | Add Dense, SPLADE, RRF, PPR/distance, RRF+PPR, and linear-QLS controls |
 | P0 | Candidate-pool dependence | Results are conditional on a top-200+top-200 union and dataset-specific ceilings | Sweep frozen candidate budgets and report ceiling/effectiveness/latency together |
-| P0 | Phase boundary and prediction | Six clean datasets show a boundary but do not yet explain or predict it | Run controlled topology/feature axes, freeze crossovers, and validate a predictor on held-out regimes |
+| P1 | Phase boundary and prediction | Six clean datasets show a boundary but do not yet explain or predict it | Run controlled topology/feature axes, freeze crossovers, and validate a predictor on held-out regimes |
 | P1 | Upstream-quality robustness | QLS and GNN both depend on seed/candidate quality | Vary retriever agreement, seed corruption, embedding quality, and candidate recall |
 | P1 | Inductive and OOD validity | Current queries share a fixed transductive corpus graph | Test unseen query distributions, entity/topic splits, and at least one external graph |
 | P1 | Real-query failure modes | Current tasks underrepresent no-answer, ambiguity, and malformed/long-tail queries | Add frozen external embedding streams and confidence/abstention analysis |
@@ -56,9 +56,10 @@ claim is defensible.
 | P2 | Downstream utility | Retrieval parity may not imply answer parity | Optionally evaluate a fixed reader at an identical context budget |
 | P2 | Security and temporal drift | Hubs, injected edges, stale nodes, and new entities occur in deployed graphs | Add graph-poisoning and update/invalidation stress tests if space permits |
 
-The six P0 items are the submission-critical experiment packages. P1 items strengthen the
-real-world and generalization story. P2 items should not delay the central
-message-passing paper unless results reveal a specific need.
+The six packages below are submission-critical, but they intentionally occur at
+different priorities. P0 establishes controls, provenance, context budgets, and
+honest online cost. P1 establishes mechanism and prediction. P2 freezes the
+complete hypothesis/protocol and then opens the untouched external setting.
 
 Current readiness is asymmetric: quality and clarity are strong, significance
 is promising, and experimental rigor is strong for the sealed comparison.
@@ -67,7 +68,22 @@ RTA work; systems evidence is incomplete until uncached timing is measured;
 generalization is incomplete until an untouched retrieval-plus-graph setting is
 evaluated; and mechanism is incomplete until the crossover is characterized.
 
-## 1. Fresh untouched confirmation
+## Canonical six-package plan
+
+| Package | Priority | Purpose |
+|---|---|---|
+| A — semantic/structural decomposition | P0 | Determine which semantic, retrieval-prior, structural, and learned components recover the GNN benefit |
+| B — edge provenance | P0, mandatory | Separate native/title/KB relations from embedding-kNN topology |
+| C — structural-context budget | P0 | Measure quality and cost saturation at 50/100/200/400 candidates |
+| D — online systems evaluation | P0 | Separate cached operator cost from uncached post-retrieval serving cost |
+| E — robustness/crossover/predictor | P1 | Explain and predict `GNN effectiveness - QLS effectiveness` |
+| F — untouched external confirmation | P2, last | Confirm frozen hypotheses and predictor on a new retrieval-plus-graph setting |
+
+External confirmation is deliberately last. Opening it before A–E are fixed
+would turn it into another development benchmark and weaken the confirmatory
+claim.
+
+## 1. Package F — fresh untouched confirmation (executed last)
 
 Each frozen protocol evaluated its test split once, but the project as a whole
 progressed through multiple sequential screens and confirmations on the same
@@ -78,7 +94,7 @@ This is not evidence of label leakage, and the repository records the sequence
 transparently. It is nevertheless an adaptive-analysis risk. Additional seeds
 on the same test queries do not create a fresh holdout.
 
-Before a headline confirmatory claim:
+Only after Packages A–E are complete and frozen:
 
 1. freeze the final QLS-MLP, GNN family-selection rule, RRF rule, metrics, and
    systems protocol;
@@ -92,7 +108,7 @@ Before a headline confirmatory claim:
 The existing six datasets remain valuable development and broad replication
 evidence. The fresh holdout provides the confirmatory endpoint.
 
-## 2. Real-world unseen-embedding evaluation
+## 2. Package D — online systems evaluation
 
 ### Main serving condition
 
@@ -161,7 +177,7 @@ such as Wikipedia hyperlinks/title mentions, citation edges, or KB triples.
 The minimum useful design is one untouched retrieval-plus-graph holdout; a
 query dataset alone does not close the generalization gap.
 
-## 3. Edge provenance and the embedding-derived topology issue
+## 3. Package B — edge provenance and the embedding-derived topology issue
 
 The current `graph.pt` adjacency merges multiple sources and discards their
 types. It may contain:
@@ -200,7 +216,7 @@ This decomposition is required before making an edge-semantics claim. It also
 creates the cleanest test of whether message passing contributes relational
 information beyond smoothing in embedding space.
 
-## 4. Strong non-message-passing and parameter-free controls
+## 4. Package A — semantic versus structural decomposition
 
 The final table should include a compact ladder that shows where the gain first
 appears:
@@ -230,7 +246,7 @@ Reasons:
 All parameter-free rules must be frozen or validation-selected from a declared
 grid. They cannot be tuned on test.
 
-## 5. Candidate budget and upstream dependence
+## 5. Package C — structural-context budget and upstream dependence
 
 The main result currently uses the union of Dense top-200 and SPLADE top-200.
 That choice affects candidate ceiling, graph density, QLS computation, GNN
@@ -242,7 +258,7 @@ At each budget report:
 
 - candidate ceiling;
 - mean and tail candidate count;
-- induced nodes/edges and connected components;
+- induced nodes/edges, graph density, and connected components;
 - R@1/R@5/R@20, MRR, FullCov, and nDCG where labels permit;
 - cached and uncached post-retrieval latency; and
 - full memory.
@@ -364,7 +380,51 @@ N_{break-even} =
 For mostly unique real-world queries, per-query feature caches may provide
 little value. Corpus-static values remain reusable.
 
-## 10. Downstream utility: optional, not core
+## 10. Package E — robustness, crossover, and utility prediction
+
+This is the main scientific extension for a NeurIPS main-track submission.
+Controlled interventions should weaken seed quality, remove high-ranked seeds,
+increase Dense/SPLADE disagreement, inject irrelevant candidates, corrupt or
+rewire graph edges, remove native structural edges, vary kNN density, and weaken
+semantic embeddings.
+
+For every regime record QLS and GNN changes separately and the primary target:
+
+```text
+message-passing utility = GNN effectiveness - QLS effectiveness
+```
+
+Candidate explanatory variables include:
+
+- candidate ceiling and seed recall;
+- Dense/SPLADE disagreement;
+- mean seed-to-candidate distance and number of connected seeds;
+- path redundancy and PPR concentration/entropy;
+- candidate graph density, local clustering, and degree/hub exposure;
+- semantic-neighborhood coherence;
+- native-versus-kNN edge proportion; and
+- graph/semantic agreement.
+
+The predictor should answer whether paying for message passing is worthwhile
+from properties available for the query, retrieved candidates, and induced
+graph. Do not choose its architecture yet. Train and tune only on development
+settings, then evaluate on held-out regimes or datasets.
+
+### Mechanistic and future-theory question
+
+> Under what conditions are fixed query-local graph summaries sufficient for
+> preserving the ranking information that a message-passing model obtains from
+> the candidate graph?
+
+The working **structural-compressibility hypothesis** is that seed membership,
+shortest distance, reachable-seed count, path multiplicity, diffusion/PPR, and
+connectivity may suffice when relevance primarily depends on those statistics.
+The complementary **rich-content hypothesis** predicts a GNN advantage when
+relevance depends on rich neighbor semantics, ordered/compositional or typed
+relations, or higher-order content transformations. These are future
+mechanistic hypotheses, not theorems.
+
+## 11. Downstream utility: optional, not core
 
 This paper can remain a retrieval paper. If a downstream check is added, keep
 it controlled:
@@ -379,58 +439,76 @@ it controlled:
 This test asks whether small retrieval differences matter to answer quality. It
 must not become a second C-RAG systems contribution.
 
-## 11. Recommended stopping order
+## 12. Recommended stopping order
 
 To avoid scope expansion, resume in this order:
 
-### Gate 1 — no-training controls
+### P0.1 — semantic/structural controls
 
 Implement equal RRF and parameter-free structural baselines on frozen
 validation data, freeze their rules, and evaluate once.
 
-### Gate 2 — uncached serving path
+### P0.2 — graph provenance
+
+Re-export native/title versus kNN edge provenance and run native-only,
+kNN-only, and union anchors for QLS and GNN.
+
+### P0.3 — candidate/context budget
+
+Run the shared 50/100/200/400 sweep and report candidate ceiling,
+R@1/R@5/R@20, MRR, FullCov, induced graph size/density, and both method-specific
+compute paths.
+
+### P0.4 — uncached serving path
 
 Implement on-demand graph induction and QLS computation. Require numerical
 parity with the cached tensors, then measure unseen-embedding latency.
 
-### Gate 3 — graph provenance
+### P1 — robustness, phase diagram, and utility predictor
 
-Re-export native/title versus kNN edge provenance and run native-only,
-kNN-only, and union anchors. Do not launch the full perturbation grid first.
+Run retrieval-seed, candidate, topology, and semantic-feature perturbations.
+Fit the predictor on development settings and test it on held-out regimes or
+datasets.
 
-### Gate 4 — candidate-budget boundary
+### P2.1 — freeze final hypotheses and protocol
 
-Run the shared 50/100/200/400 budget sweep and report candidate ceiling,
-R@5/R@20, induced graph size, and both method-specific compute paths.
+Freeze Packages A–E, all target metrics, predictor inputs, graph-construction
+rule, and external evaluation contract before accessing the external outcome.
 
-### Gate 5 — fresh confirmation
+### P2.2 — fresh untouched confirmation
 
-Freeze the complete method and evaluate one untouched external query/graph
-substrate. This is the submission-critical statistical gate.
+Evaluate once on the untouched external retrieval-plus-graph substrate. This is
+the final confirmatory gate, not an exploratory dataset.
 
-### Gate 6 — phase diagram
+Optional downstream QA, deeper formal theory, and additional GNN families must
+not delay these steps.
 
-Only after the first five gates, run topology/feature-quality sweeps and the
-LODO predictor. Add optional downstream or dynamic tests only if the central
-result remains clear.
-
-## 12. Claims enabled by each gate
+## 13. Claims enabled by each gate
 
 | Completed evidence | Defensible claim |
 | --- | --- |
 | Current confirmation only | Fixed structural summaries recover nearly all GNN R@5 under frozen candidates and warm per-query caches |
-| + uncached serving | Same comparison with real post-retrieval unseen-embedding cost |
-| + edge provenance | Whether native relations, embedding kNN, or their union drive the result |
-| + fresh holdout | Confirmatory generalization beyond adaptively studied test sets |
-| + phase diagram/LODO | Predictive statement about when message passing is worth its cost |
+| + Package A controls | Whether semantic rank fusion, structural rules, linear scoring, or nonlinear QLS capacity is needed |
+| + Package B provenance | Whether native relations, embedding kNN, or their union drive the result |
+| + Package C context budget | How quality and cost saturate as structural context grows |
+| + Package D uncached serving | Same comparison with real post-retrieval unseen-embedding cost |
+| + Package E phase diagram/predictor | Predictive statement about when message passing is worth its cost |
+| + Package F fresh holdout | Confirmatory generalization beyond adaptively studied test sets |
 | + downstream check | Evidence that retrieval behavior transfers to answer utility |
 
-The NeurIPS-level story should be built from the first five rows, not from an
-attempt to claim that MLPs universally beat GNNs.
+The NeurIPS-level story should be built from Packages A–F, not from an attempt
+to claim that MLPs universally beat GNNs.
 
-For the NeurIPS **main track**, the phase diagram, held-out crossover predictor,
-or useful theory is the likely acceptance gate. For the **Evaluations &
-Datasets** track, a release-quality MPR-Bench can instead make the four-level
-decomposition and systems protocol the main contribution: existing comparisons
-confound retriever priors, access to graph information, and learned propagation,
-whereas this protocol separates them. Choose one route before resuming runs.
+Target claim—not established by the current checkpoint:
+
+> We characterize measurable retrieval and graph regimes in which fixed query-
+> local structural computation is sufficient and regimes in which learned
+> neighborhood aggregation provides additional value.
+
+For the NeurIPS **main track**, the minimum package is mechanism/phase diagram,
+a predictor or strong explanatory framework, edge-provenance controls, complete
+online systems evaluation, and untouched external confirmation. For the
+**Evaluations & Datasets** track, a release-quality MPR-Bench can instead center
+the four-level fairness decomposition, cross-dataset benchmark, retrieval-prior
+confounding, graph provenance, systems protocol, and standardized message-
+passing utility evaluation. Do not select the final track yet.

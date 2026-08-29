@@ -3,27 +3,33 @@
 **Working subtitle:** *Fixed Structural Summaries versus Learned Neighborhood
 Aggregation*
 
-> **Working paper identity:** We characterize when graph-aware retrieval
+> **Target paper identity:** We characterize when graph-aware retrieval
 > benefits from learned neighborhood propagation and when fixed query-local
 > structural computation is sufficient.
 
-> **Status: Research paused at the fairness-confirmed six-dataset checkpoint.**
->
-> All six datasets, five paired seeds, the seed-aware fairness control, and the
-> frozen statistical analysis are complete. The results are frozen. No further
-> experiments are scheduled, and no model, feature, protocol, or test result
-> should be changed while the project is paused.
+## Current status
+
+**Fairness-confirmed six-dataset study: COMPLETE.** This is a frozen completed
+checkpoint, not an unfinished or broken experiment. No new experiment is
+currently authorized.
+
+| Established | Not yet established |
+|---|---|
+| Four-level plain/seed/QLS/GNN decomposition | Uncached post-retrieval speedup |
+| Five paired seeds on all six datasets | Native-versus-kNN mechanism |
+| QLS nearly recovers seed-aware-GNN R@5 | Robustness crossover |
+| Warm-cache learned-inference advantage | Message-passing utility predictor |
+| Leakage-safe data/graph audit | Untouched external confirmation |
 
 This is a standalone research repository about the value and cost of graph
 message passing for retrieval. It began with the question:
 
 > **Do MLPs outperform GNN message passing for retrieval?**
 
-The evidence led to a more precise and more useful question:
+The evidence led to the paper's primary scientific question:
 
-> **Does graph-aware retrieval actually require learned message passing, or can
-> useful graph structure be exposed through fixed query-local structural
-> summaries and consumed by a lightweight MLP?**
+> **Once retrieval has already happened, how much learned message passing is
+> still necessary to rank graph-aware evidence?**
 
 The final fixed-structure model is publication-facing **QLS-MLP**
 (**Query-Local Structure MLP**). It is graph-aware and
@@ -43,10 +49,10 @@ publication-to-artifact mapping and the revised related-work boundary.
 ## Current Research Finding
 
 > **Across six retrieval benchmarks, a non-message-passing MLP supplied with
-> fixed query-local graph summaries recovers nearly all of the effectiveness of
-> parameter-matched seed-aware GNNs, remaining within 1.44 Recall@5 points on
-> every dataset while substantially reducing warm-cache candidate-reranking
-> latency and GPU memory.
+> fixed query-local graph summaries recovers nearly all of the Recall@5
+> effectiveness of parameter-matched seed-aware GNNs, remaining within 1.44
+> points on every dataset while substantially reducing cached online learned-
+> inference cost and GPU memory.
 > Controlled seed-only ablations show that the structural gain is not explained
 > solely by retriever-seed membership.**
 
@@ -64,6 +70,28 @@ query-local structural information is explicitly exposed.
 
 The project does **not** claim that graphs are useless, QLS-MLP is topology-free,
 QLS-MLP has fewer parameters, or message passing is never required.
+
+## System boundary
+
+This repository is a **post-retrieval graph-aware candidate-ranking study**:
+
+```text
+query embedding + Dense ranked IDs + SPLADE ranked IDs + frozen corpus graph
+                                 |
+                                 v
+                  candidate fusion and induced graph
+                                 |
+               +-----------------+-----------------+
+               |                                   |
+     fixed query-local summaries          learned message passing
+            -> QLS-MLP                     -> seed-aware GNN
+               |                                   |
+               +-----------------+-----------------+
+                                 v
+                         candidate ranking
+```
+
+It is not C-RAG, a UKB runtime, a raw-text search engine, or a full RAG system.
 
 ## Frozen checkpoint
 
@@ -148,7 +176,25 @@ neighborhood aggregation.
 The four-model chain is a core methodological contribution:
 
 ```text
-plain MLP → seed-only MLP → QLS-MLP (fixed query-local structure) → seed-aware GNN
+Plain MLP
+    ↓
+Seed-only MLP
+    ↓
+QLS-MLP (fixed query-local structure)
+    ↓
+Seed-aware GNN (learned message passing)
+```
+
+Conceptually, this adds one information source at a time:
+
+```text
+semantic embedding signal
+         ↓
+upstream retrieval prior
+         ↓
+explicit fixed graph structure
+         ↓
+learned message passing
 ```
 
 It isolates three quantities that a direct MLP/GNN benchmark would confound:
@@ -232,15 +278,45 @@ datasets and graphs remain experimental substrate, not part of the novelty
 claim.
 
 The closest new overlap is RTA, *Rethinking Message Passing as Retrieval for
-Text-Attributed Graph Learning*. RTA studies text-attributed graph prediction,
-constructs a label-aware contextual retrieval graph, and aggregates retrieved
-neighbors with an MLP. This project instead studies query-to-candidate
-document/entity ranking from frozen upstream Dense/SPLADE candidates and uses
-explicit retrieval-seed-conditioned distance/path/PPR summaries. The
-four-level retrieval decomposition—not the broad observation that an MLP can
-consume graph context—is the core distinction.
+Text-Attributed Graph Learning*. The distinction is precise:
 
-### G. Current novelty statement
+| Dimension | RTA | This project |
+|---|---|---|
+| Task | Node prediction/text-attributed graph learning | Query-candidate retrieval ranking |
+| Starting object | Graph node | External query |
+| Context retrieval | Builds its own retrieval context | Dense/SPLADE already produced candidates |
+| Structural signal | Node-conditioned PPR | Retrieval-seed-conditioned distance/path/PPR |
+| Labels as inference context | Possible | Prohibited |
+| Neighbor representation aggregation | Yes | QLS consumes fixed scalar summaries |
+| Main question | Can retrieval replace message passing? | What does message passing add after retrieval? |
+
+The different conditioning is central:
+
+```text
+RTA: PPR(node u -> graph)
+QLS: PPR(retrieval seeds S(q) -> candidate d)
+```
+
+This project does not claim to invent PPR-based structural retrieval. Its core
+distinction is the four-level retrieval-ranking decomposition.
+
+### G. Mechanistic hypotheses
+
+> **H1 — Structural compressibility:** QLS-MLP should approach or match learned
+> message passing when the graph information useful for ranking a candidate can
+> be compressed into seed membership, seed distance, path multiplicity or
+> connectivity, and seed-conditioned diffusion.
+
+> **H2 — Rich-content requirement:** GNNs should gain an advantage when ranking
+> depends on richer neighbor content, interactions, typed/compositional
+> relations, or higher-order information that the fixed summaries do not
+> represent adequately.
+
+These are mechanistic hypotheses, not established theorems. The goal is to
+predict when fixed structural computation is sufficient and when learned
+message passing is worth its additional cost.
+
+### H. Current novelty statement
 
 > **Current novelty:** We quantify, for graph-aware candidate retrieval, how
 > much apparent GNN benefit is explained by the frozen upstream retrieval prior,
@@ -248,21 +324,30 @@ consume graph context—is the core distinction.
 > incremental value remains for learned neighborhood propagation under a
 > controlled, approximately parameter-matched protocol.
 
-### H. What is still needed for a stronger NeurIPS claim
+### I. Target NeurIPS claim and required evidence
 
 The completed study is strong retrieval evidence, not yet a general theory of
-message-passing utility. Six submission-critical packages are now prioritized:
+message-passing utility. The intended claim is explicitly a **target, not an
+established result**:
 
-1. one fresh untouched **retrieval-plus-graph** setting after the method is
-   locked—not merely a fresh query dataset;
-2. true uncached post-retrieval timing from unseen query embeddings and frozen
-   Dense/SPLADE ranked IDs;
-3. Dense, SPLADE, equal/validation-weighted RRF, distance/PPR, RRF+PPR, and
-   linear fixed-structure controls;
-4. native/title/KB-only versus embedding-kNN-only versus union edge provenance;
-5. a shared 50/100/200/400 candidate-budget sweep with ceiling, quality, graph
-   size, and compute reported together;
-6. a deeper phase diagram plus held-out crossover predictor.
+> **We characterize measurable retrieval and graph regimes in which fixed
+> query-local structural computation is sufficient and regimes in which
+> learned neighborhood aggregation provides additional value.**
+
+The six required packages are:
+
+| Package | Deferred experiment | Purpose |
+|---|---|---|
+| A | Semantic versus structural controls | Locate which information recovers GNN benefit |
+| B | Native/title/KB versus kNN edge provenance | Determine whether benefit is relational or recycled embedding geometry |
+| C | Candidate/context budgets 50/100/200/400 | Locate structural-context saturation and cost |
+| D | Uncached post-retrieval systems evaluation | Measure true online ranker cost from unseen embeddings/rankings |
+| E | Robustness phase diagram and utility predictor | Explain and predict the QLS/GNN crossover |
+| F | Fresh untouched retrieval-plus-graph confirmation | Confirm frozen hypotheses and predictor externally |
+
+Package F is deliberately last: A–E must be frozen before its test outcomes are
+seen. The desired main-track spine is **empirical decomposition + causal
+perturbation + crossover predictor + systems tradeoff + external confirmation**.
 
 These steps are needed to move from a controlled empirical retrieval study to a
 deeper statement about when fixed structural summaries are sufficient and when
@@ -496,78 +581,64 @@ scheduled or authorized by the frozen confirmation protocol. Any resumption
 requires a separate preregistration that does not tune or filter the completed
 test results.
 
-The broader audit identifies six submission-critical packages: a fresh
-untouched retrieval-plus-graph holdout, uncached post-retrieval timing from
-unseen query embeddings, strong non-neural controls, edge-source provenance,
-candidate-budget robustness, and a deeper phase diagram/crossover predictor.
-Their exact priority order and real-world ranker contract are documented in the
+The canonical details and priority order are in the
 [paper-readiness and real-world audit](docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md).
 
-### A. Causal topology perturbations
+### Package A — Semantic versus structural decomposition
 
-Use degree-preserving rewiring and controlled edge corruption to test whether
-learned message passing and fixed summaries degrade differently as topology
-quality falls.
+Compare Dense, SPLADE, equal RRF, validation-only weighted RRF, structural-only
+PPR/distance/path summaries, RRF+PPR, RRF+structural summaries, linear QLS,
+QLS-MLP, and the seed-aware GNN. This query-ranking-specific ladder determines
+what information and learning capacity are actually required.
 
-### B. Feature corruption
+### Package B — Edge provenance (mandatory)
 
-Systematically weaken semantic node features to identify regimes where learned
-message passing becomes genuinely valuable rather than merely redundant.
+Reconstruct provenance-preserving native/title/KB-only, embedding-kNN-only, and
+union graphs, and run both QLS and GNN on each. The current flattened `graph.pt`
+cannot answer whether graph value is genuinely relational or mostly semantic
+similarity reintroduced through kNN topology.
 
-### C. Predicting the crossover
+### Package C — Structural-context budget
 
-Develop a dataset-independent or query-level predictor from neighborhood
-coherence, degree/hub exposure, local structural entropy, seed-to-candidate
-connectivity, path redundancy, candidate multiplicity, and graph-versus-semantic
-agreement. The target is whether message passing will improve retrieval enough
-to justify its systems cost.
+At budgets 50/100/200/400, jointly report candidate ceiling, R@1/5/20, MRR,
+FullCov where meaningful, induced nodes/edges/density, QLS computation, GNN
+propagation, and total post-retrieval latency. The question is how much context
+each approach needs before quality saturates.
 
-### D. Leave-one-dataset-out generalization
+### Package D — Online systems evaluation
 
-Fit the crossover predictor on N−1 datasets and evaluate whether it predicts the
-held-out graph regime without access to that dataset's test outcomes.
+Preserve the cached operator measurement, then separately time an uncached path
+from an unseen query embedding and Dense/SPLADE rankings through fusion, graph
+induction, method-specific computation, scoring, and top-K. Report batch 1/16,
+p50/p95/p99, throughput, GPU/CPU memory, storage, cold start, and cache
+break-even. The existing 2.49–7.08x result is not end-to-end.
 
-### E. Broader graph domains
+### Package E — Robustness, crossover, and utility prediction
 
-Validate beyond QA and retrieval graphs on graph families with substantially
-different topology, feature quality, edge semantics, and supervision.
+Perturb seed quality, Dense/SPLADE agreement, irrelevant-candidate rate, graph
+edges, native-edge availability, kNN density, and semantic features. Model
+`GNN effectiveness - QLS effectiveness` from query/candidate/graph statistics,
+then evaluate on held-out regimes or datasets. Do not choose the predictor
+architecture before the protocol is frozen.
 
-### F. Stronger GNN families
+### Package F — Fresh untouched confirmation
 
-Compare modern scalable, sparse, or query-conditioned message-passing methods
-while preserving identical candidates, features, supervision, validation
-budgets, and systems accounting.
+After A–E and their hypotheses are frozen, evaluate once on unseen query
+embeddings, upstream ranked candidates, relevance labels, and native or
+preregistered label-free topology. NQ, MS MARCO, or BEIR alone is insufficient
+without a graph contract.
 
-### G. Structural-summary design
+### Future theory and optional work
 
-Study whether fixed summaries can be compressed, selected, or made more compact
-without turning the learned scorer into message passing.
+The theoretical question is when fixed query-local summaries preserve the
+ranking information obtainable by message passing. If relevance depends mainly
+on seed membership, distance, reachable seeds, path multiplicity, diffusion,
+and connectivity, fixed summaries may be sufficient. Rich neighbor semantics,
+ordered or typed composition, and higher-order content transformations may
+favor learned propagation. This is a mechanistic hypothesis, not a theorem.
 
-### H. Systems scaling
-
-Extend offline-versus-online accounting to cache compression, dynamic-graph
-updates, feature invalidation, and amortization across query volume. Run an
-uncached post-retrieval benchmark beginning from unseen query embeddings and
-upstream Dense/SPLADE ranked IDs. Include candidate fusion, graph induction,
-on-demand QLS features, model inference, and top-K selection. Query encoding and
-initial retrieval stay outside the project boundary. Preserve the existing
-cached-reranker number as a separate operator-cost diagnostic.
-
-### I. Dense/SPLADE reciprocal-rank fusion
-
-Add a locked equal-RRF baseline over the existing Dense and SPLADE top-200
-rankings. Standard RRF uses rank positions, so the frozen ID arrays are
-sufficient even though raw score arrays were not exported. Test validation-only
-weighted RRF separately, and give any RRF scalar or RRF-derived seed set
-identically to QLS-MLP and seed-aware GNN controls. RRF over the unchanged union
-can improve in-pool ordering but cannot improve candidate ceiling.
-
-### J. Theory and mechanism
-
-Develop a principled explanation for when query-local structural sufficient
-statistics can substitute for iterative neighborhood aggregation. This is the
-main missing element before treating the work as mature for a NeurIPS
-submission.
+Downstream QA, deeper formal theory, and additional GNN families remain
+optional and must not displace the six packages.
 
 ## Repository guide
 

@@ -6,7 +6,7 @@
 
 **Working subtitle:** *Fixed Structural Summaries versus Learned Neighborhood Aggregation*
 
-**One-line identity:** We characterize when graph-aware retrieval benefits from
+**Target one-line identity:** We characterize when graph-aware retrieval benefits from
 learned neighborhood propagation and when fixed query-local structural
 computation is sufficient.
 
@@ -40,11 +40,14 @@ must state that `sa_mlp` is the frozen legacy key for the same model.
 
 ## Scientific question and four-level decomposition
 
-The defensible question is narrower than “MLPs beat GNNs”:
+The primary question is narrower than “MLPs beat GNNs”:
 
-> **For graph-aware candidate retrieval, what portion of the benefit attributed
-> to GNN message passing comes from upstream retrieval priors and explicit
-> query-local structural statistics?**
+> **Once retrieval has already happened, how much learned message passing is
+> still necessary to rank graph-aware evidence?**
+
+Equivalently: given an upstream retriever, frozen candidates, and a graph, what
+additional benefit comes from learned neighborhood aggregation beyond the
+retrieval prior and explicit query-local structure?
 
 The mandatory decomposition is:
 
@@ -76,17 +79,44 @@ The closest new overlap is *Rethinking Message Passing as Retrieval for
 Text-Attributed Graph Learning* (RTA, arXiv:2608.26732). Its setting and ours
 must be distinguished explicitly:
 
-| Axis | RTA | This project |
+| Dimension | RTA | This project |
 |---|---|---|
-| Task | Text-attributed graph node/representation prediction | Query-to-candidate document/entity ranking |
-| Upstream input | Label-aware contextual retrieval constructs a retrieval graph | Frozen Dense/SPLADE rankings and unseen query embeddings |
-| Structural use | Retrieved-neighbor aggregation with an MLP | Explicit retrieval-seed-conditioned distance/path/PPR summaries |
-| Empirical regimes | Text-attributed graph benchmarks | Six QA/KB retrieval regimes |
-| Main control | Retrieval view of graph message passing | Four-level retriever-prior/structure/propagation decomposition |
+| Task | Node prediction/text-attributed graph learning | Query-candidate retrieval ranking |
+| Starting object | Graph node | External query |
+| Context retrieval | Builds its own retrieval context | Upstream Dense/SPLADE already produced candidates |
+| Structural signal | Node-conditioned PPR | Retrieval-seed-conditioned distance/path/PPR |
+| Labels as inference context | Possible | Prohibited |
+| Neighbor representation aggregation | Yes | QLS consumes fixed summaries |
+| Main question | Can retrieval replace message passing? | What does message passing add after retrieval? |
+
+The query conditioning differs:
+
+```text
+RTA: PPR(node u -> graph)
+QLS: PPR(retrieval seeds S(q) -> candidate d)
+```
+
+This project does not claim to have invented PPR-based structural retrieval.
 
 The novelty therefore rests on the retrieval-specific decomposition, controlled
 phase diagram, edge-provenance audit, and cost accounting—not on a generic
 “MLP replaces GNN” statement.
+
+## Central mechanistic hypotheses
+
+> **H1 — Structural compressibility:** QLS-MLP should approach or match learned
+> message passing when graph information useful for ranking a candidate can be
+> compressed into seed membership, seed distance, path multiplicity or
+> connectivity, and seed-conditioned diffusion.
+
+> **H2 — Rich-content requirement:** GNNs should gain an advantage when ranking
+> depends on richer neighbor content, interactions, typed/compositional
+> relations, or higher-order information that fixed query-local summaries do
+> not represent adequately.
+
+The intended result is not “QLS always beats GNN.” It is a prediction of when
+fixed structural computation is sufficient and when message passing is worth
+its additional cost. These hypotheses are not established theorems.
 
 Primary references:
 
@@ -106,6 +136,12 @@ table: a reproducible phase diagram, a validated crossover predictor, or useful
 theory showing when learned propagation helps, is neutral, or hurts. Originality
 is currently the largest risk because the broad MLP-versus-message-passing area
 has substantial prior work.
+
+Target claim—not yet established:
+
+> We characterize measurable retrieval and graph regimes in which fixed query-
+> local structural computation is sufficient and regimes in which learned
+> neighborhood aggregation provides additional value.
 
 ### NeurIPS Evaluations & Datasets track
 
@@ -131,29 +167,36 @@ Planning references:
 
 Do not expand model design until these are complete:
 
-1. **Fresh untouched external retrieval-plus-graph setting.** It must provide
-   queries, frozen candidates, labels, and either native topology or a
-   label-free graph construction rule frozen before external test inspection.
-   NQ, MS MARCO, and BEIR are query sources, not automatically complete graph
-   retrieval settings.
-2. **Uncached post-retrieval systems timing.** Begin with an unseen query
-   embedding plus Dense and SPLADE ranked IDs. Include fusion, candidate-set
-   construction, graph induction, fixed summaries or learned propagation, model
-   scoring, and top-K. Report batch 1/16, p50/p95/p99, throughput, GPU memory,
-   CPU memory, storage, preprocessing, and cold start. Raw query encoding is out
-   of scope.
-3. **Strong non-neural controls.** Dense, SPLADE, equal-weight RRF,
-   validation-only weighted RRF, distance/PPR, RRF+PPR, and a linear scorer over
-   the fixed structural features.
-4. **Edge-provenance intervention.** Re-export edge sources and compare
-   native/title/KB-only, embedding-kNN-only, and their union for both QLS-MLP
-   and the seed-aware GNN.
-5. **Candidate-budget sweep.** Freeze budgets such as 50/100/200/400 and report
-   candidate ceiling, R@5, R@20, induced nodes/edges, QLS computation, and GNN
-   computation. The same budget must be used for both methods.
-6. **Deeper phase diagram and crossover predictor.** Vary topology quality,
-   feature quality, hubness, graph dependence, answer multiplicity, and degree;
-   preregister the final levels and evaluate prediction on held-out regimes.
+1. **Package A — semantic versus structural decomposition.** Dense, SPLADE,
+   equal RRF, validation-only weighted RRF, structural-only PPR/distance/path,
+   RRF+structural combinations, linear QLS, QLS-MLP, and seed-aware GNN.
+2. **Package B — edge provenance (mandatory).** Native/title/KB-only,
+   embedding-kNN-only, and union graphs for both QLS and GNN, with the union
+   proven equivalent to the frozen adjacency.
+3. **Package C — structural-context budget.** Shared 50/100/200/400 candidate
+   budgets with ceiling, effectiveness, graph size/density, method-specific
+   compute, and total post-retrieval latency.
+4. **Package D — online systems evaluation.** Separate cached operator latency
+   from an uncached path beginning at unseen query embeddings and Dense/SPLADE
+   rankings. Report batch 1/16, p50/p95/p99, throughput, GPU/CPU memory,
+   storage, cold start, and cache break-even.
+5. **Package E — robustness phase diagram and utility predictor.** Perturb seed
+   quality, retriever agreement, candidate noise, topology, kNN density, and
+   semantic features; predict `GNN effectiveness - QLS effectiveness` on held-
+   out regimes or datasets.
+6. **Package F — fresh untouched confirmation.** Only after A–E and their
+   hypotheses are frozen, evaluate an external setting with unseen query
+   embeddings, upstream candidates, relevance labels, and native or
+   preregistered label-free topology.
+
+The priority sequence is:
+
+```text
+P0: A controls, B provenance, C context budget, D online systems
+P1: E robustness, phase diagram, utility predictor
+P2: freeze hypotheses/protocol, then F untouched confirmation
+Optional: downstream QA, deeper formal theory, additional GNN families
+```
 
 ## Claim restrictions
 
