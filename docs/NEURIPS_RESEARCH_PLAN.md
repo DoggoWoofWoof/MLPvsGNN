@@ -1,5 +1,16 @@
 # NeurIPS research blueprint: When is message passing worth it for retrieval?
 
+> **Terminology and originality update (2026-08-29):** all new publication prose
+> uses **QLS-MLP (Query-Local Structure MLP)**. The implementation key `sa_mlp`
+> and all sealed SA-named files, tags, configurations, and hashes remain
+> immutable. The rename avoids collision with the published TMLR method
+> *SA-MLP*. The contemporaneous RTA paper also makes a broad
+> message-passing-as-retrieval claim, so our narrow question is now: **for
+> graph-aware candidate retrieval, how much apparent GNN benefit comes from the
+> upstream retrieval prior, explicit query-local structural statistics, and
+> learned propagation, respectively?** See
+> `docs/TERMINOLOGY_AND_POSITIONING.md`.
+
 > **Project status (2026-08-26): paused at the fairness-confirmed six-dataset
 > checkpoint.** This document preserves the research progression and the larger
 > NeurIPS roadmap. Sections describing perturbations, prediction, theory, or
@@ -8,16 +19,16 @@
 
 > **Fairness-confirmation result and stop decision (2026-08-26):** the protocol
 > frozen at `sa-mlp-confirmation-protocol-v1` is complete on all six datasets
-> and five paired seeds. The unchanged SA-MLP, seed-only MLP, and seed-aware
+> and five paired seeds. The unchanged QLS-MLP, seed-only MLP, and seed-aware
 > selected GNN use identical frozen candidates, labels, losses, and seeds.
 > Fixed graph summaries add R@5 signal beyond the seed prior on all three
 > original GNN-win datasets: +6.86 points on MetaQA, +4.11 on WebQSP, and +3.70
 > on HotpotQA, with positive seed/query intervals and Holm-adjusted significance.
-> The seed prior explains at least 80% of the SA gain only on HotpotQA (1/3), so
+> The seed prior explains at least 80% of the QLS gain only on HotpotQA (1/3), so
 > the registered seed-prior explanation is rejected. Requiring both paired-seed
-> and paired-query intervals to clear the -1 point margin, SA-MLP is non-inferior
+> and paired-query intervals to clear the -1 point margin, QLS-MLP is non-inferior
 > to the seed-aware GNN on MetaQA and HotpotQA (2/3; registered substitution gate
-> passed); WebQSP remains query-level inconclusive. SA-MLP is 2.49--7.08x faster
+> passed); WebQSP remains query-level inconclusive. QLS-MLP is 2.49--7.08x faster
 > in warm-cache candidate reranking and saves 90--2,418 MiB of incremental peak
 > GPU allocation across the six datasets, with its 9.3--20.5 second preprocessing
 > and 0.030--2.835 GiB disk
@@ -31,21 +42,21 @@
 > practical-width
 > experiment must begin under a separate preregistered protocol.
 
-> **Historical structure-aware MLP screen (superseded by the fairness result
+> **Historical query-local structure MLP screen (superseded by the fairness result
 > above):** the preregistered one-seed
-> gate passed on MetaQA, WebQSP, and HotpotQA. SA-MLP exceeds the frozen selected
+> gate passed on MetaQA, WebQSP, and HotpotQA. QLS-MLP exceeds the frozen selected
 > GNN by +4.49, +1.55, and +15.18 R@5 points, respectively. Query-local fixed
 > descriptors drive the result; static global descriptors alone fail. This is
 > screening evidence only. Because distance-0 revealed retrieval-seed membership
-> to SA-MLP but not to the frozen GNN, the subsequent confirmation preserved the
-> SA model unchanged and included both a seed-only non-message-passing control
+> to QLS-MLP but not to the frozen GNN, the subsequent confirmation preserved the
+> QLS model unchanged and included both a seed-only non-message-passing control
 > and a seed-aware GNN. The screen alone supported neither a graph-path mechanism
-> nor a general SA-MLP win. See
+> nor a general QLS-MLP win. See
 > `docs/SA_MLP_SCREEN_RESULTS.md`.
 
 > **Historical confirmation freeze (now completed):** the follow-up in
 > `docs/SA_MLP_CONFIRMATION_PROTOCOL.md` fixes all six datasets, five seeds,
-> the unchanged SA-MLP, a seed-only interaction control, and a seed-aware copy
+> the unchanged QLS-MLP, a seed-only interaction control, and a seed-aware copy
 > of each dataset's already-selected GNN family. R@5, paired seed/query
 > intervals, Holm correction, a one-point non-inferiority margin, and systems
 > accounting are fixed before new test access. Practical width selection and
@@ -107,7 +118,7 @@ and misses the one-point margin on 2Wiki, while preserving the sealed main
 table. New evidence must be collected under a new protocol; it cannot alter,
 tune, or filter the completed confirmation.
 
-The observed boundary is already concrete. SA-MLP trails the seed-aware GNN by
+The observed boundary is already concrete. QLS-MLP trails the seed-aware GNN by
 1.44 R@5 points on 2Wiki, with both paired intervals below zero, and fails the
 one-point non-inferiority test. MuSiQue's mean deficit is 0.96 points, but both
 intervals extend below the margin, so it is not certified non-inferior. WebQSP
@@ -117,10 +128,12 @@ the margin using both registered intervals. These failures and uncertainty are
 part of the result, not targets for post-hoc model tuning.
 
 The primary empirical setting is **Level-2 candidate reranking**, not C-RAG L1
-partition routing. This is the cleanest controlled comparison because both
-models receive the same candidate pool, the same expert evidence, the same
-labels, and the same query-level state. The GNN receives exactly one additional
-input: edges among the candidates.
+partition routing. This is the cleanest controlled comparison because all four
+models receive the same candidate pool, frozen embeddings, labels, and
+query-level state. In the plain-MLP versus GNN control, topology is the GNN's
+additional information. In the headline QLS-MLP versus seed-aware GNN control,
+both sides receive the same retrieval seeds and graph; only the form of graph
+computation differs—fixed query-local summaries versus learned propagation.
 
 The target should be **NeurIPS 2027**. The 2026 full-paper deadline was May 6,
 2026 and has passed. The 2027 call is not yet published; use the current
@@ -128,13 +141,31 @@ The target should be **NeurIPS 2027**. The 2026 full-paper deadline was May 6,
 as a planning prior, not as a promised 2027 requirement. The 2026 format allows
 nine content pages and requires anonymized code/data and a paper checklist.
 
+There are two legitimate submission routes. A **main-track** paper needs the
+phase diagram, a held-out crossover predictor, or useful theory. An
+**Evaluations & Datasets** paper can instead make a fully documented MPR-Bench
+and four-level confound-separation protocol central. The latter is not an easier
+fallback: it requires release-quality provenance, evaluation design, audits,
+and limitations. Choose the route before resuming large experiments.
+
 ## 1. Exact scientific question
 
-For query (q), frozen candidate set (C_q), candidate features (X_q),
-candidate graph (G_q=(C_q,E_q,T_q)), and relevance vector (y_q), compare:
+For query (q), frozen candidate set (C_q), candidate features (X_q), retrieval
+seed indicator (z_q), candidate graph (G_q=(C_q,E_q,T_q)), and relevance vector
+(y_q), compare the complete ladder:
 
 \[
 s_i^{\mathrm{MLP}} = f_\theta(x_i, u_q)
+\]
+
+\[
+s_i^{\mathrm{seed}} = f_\theta(x_i, u_q, z_i)
+\]
+
+\[
+\phi_i = \Phi(i; G_q,z_q),
+\qquad
+s_i^{\mathrm{QLS}} = f_\theta(x_i,u_q,z_i,\phi_i)
 \]
 
 with
@@ -145,15 +176,16 @@ H_q^{(\ell+1)} = \mathrm{MP}_\theta(H_q^{(\ell)}, E_q, T_q),
 s_i^{\mathrm{GNN}} = g_\theta(h_i^{(L)},u_q).
 \]
 
-(u_q) is the same query/expert state for both models. Candidate generation is
-frozen. Training/evaluation labels, losses, negatives, validation budgets, and
-random seeds are paired. Thus the causal intervention is the use of
-neighborhood aggregation.
+(u_q) is the same query state for every model, and (\Phi) is a frozen,
+label-free function producing distance/path/connectivity/PPR summaries.
+Candidate generation, labels, losses, negatives, validation budgets, and random
+seeds are paired. The ladder isolates retrieval prior, fixed graph computation,
+and learned neighborhood aggregation rather than collapsing them.
 
 Define the primary gap in a regime (r) as:
 
 \[
-\Delta_r = R@5_{\mathrm{GNN},r} - R@5_{\mathrm{MLP},r}.
+\Delta_r = R@5_{\mathrm{GNN},r} - R@5_{\mathrm{QLS},r}.
 \]
 
 The paper predicts the sign and magnitude of \(\Delta_r\), and estimates the
@@ -165,8 +197,9 @@ percentage point).
 An empirical paper cannot prove “MLPs are better than GNNs” for every graph,
 task, or architecture. It can support four narrower, defensible statements:
 
-1. **Clean-regime superiority:** on named datasets and a fixed protocol, the
-   paired MLP has higher expected retrieval performance than matched GNNs.
+1. **Clean-regime substitution or superiority:** on named datasets and a fixed
+   protocol, fixed query-local structural computation matches or outperforms
+   matched learned message passing within a preregistered margin.
 2. **Mechanism:** the loss is associated with measurable neighborhood noise,
    rank collapse, cosine concentration, hub amplification, or gradient effects.
 3. **Crossover:** controlled interventions produce regimes where the sign of
@@ -179,17 +212,20 @@ generative model. It cannot replace the real-data evidence.
 
 ## 3. Why L2 is the primary test
 
-CRAG’s strongest L2 neural scorer is an MLP over candidate-level expert signals.
-The current CRAG repository has GNNs for L1 partition encoding but no matched L2
-candidate GNN. Creating the L2 pair gives a much sharper test:
+CRAG's L2 work motivated a candidate-level comparison, but the final standalone
+contract does not execute C-RAG L2, `full_fd2`, expert fusion, or the router. It
+uses selected frozen CRAG data products only: raw query/node embeddings, Dense
+and SPLADE candidate IDs, labels/splits, and graph adjacency. This gives a sharp
+test:
 
 - same query;
 - same pool and candidate ceiling;
-- same dense, lexical, relational, path, and adapter evidence;
+- same frozen node/query embeddings and retrieval candidates;
 - same listwise multi-positive objective;
 - same query state and availability mask;
 - same metric vector;
-- topology is the only added information.
+- explicit accounting of which model receives retrieval seeds, fixed graph
+  summaries, or adjacency in its learned forward pass.
 
 This also avoids a common confound in GNN-vs-MLP studies: comparing different
 tasks, features, pooling functions, or negative sets.
@@ -200,13 +236,13 @@ All directional hypotheses must be frozen before the canonical test runs.
 
 | ID | Hypothesis | Expected sign of \(\Delta\) |
 |---|---|---:|
-| H1 | strong semantic/expert features plus low positive-neighbor lift | MLP wins |
-| H2 | random or kNN edge additions at fixed features | increasingly MLP |
-| H3 | degree-preserving topology corruption | increasingly MLP |
-| H4 | high-degree or high-Gini hubs | MLP wins; hub nodes amplify |
+| H1 | strong semantic features plus low positive-neighbor lift | QLS/fixed wins |
+| H2 | random or kNN edge additions at fixed features | increasingly QLS/fixed |
+| H3 | degree-preserving topology corruption | increasingly QLS/fixed |
+| H4 | high-degree or high-Gini hubs | QLS/fixed wins; hub nodes amplify |
 | H5 | sparse, typed edges with high relevance-path coverage | GNN wins |
 | H6 | node/expert feature masking or low feature SNR | GNN advantage grows |
-| H7 | deeper message passing under noisy topology | MLP advantage grows |
+| H7 | deeper message passing under noisy topology | QLS/fixed advantage grows |
 | H8 | more training data helps GNN only when edge signal is positive | interaction |
 | H9 | a train-only graph-utility predictor transfers across datasets | predictable sign |
 
@@ -292,14 +328,16 @@ Current counts observed in the read-only cache:
 
 ### Tier A: canonical retrieval datasets
 
-Rebuild 2Wiki, MuSiQue, HotpotQA, MetaQA, WebQSP, and SQuAD with complete stable
-query IDs and official splits where available. Freeze candidate generation
-before any MLP/GNN comparison. Preserve raw edge type and direction.
+The standalone contract is complete for 2Wiki, MuSiQue, HotpotQA, MetaQA,
+WebQSP, and SQuAD with stable query IDs, frozen splits, candidates, labels,
+embeddings, and flattened adjacency. The next export must preserve/recover raw
+edge source and direction without changing the sealed union graph or the
+read-only CRAG source.
 
 Role of each dataset:
 
 - **2Wiki and MuSiQue:** multi-positive/multi-hop text retrieval; primary clean
-  MLP-win candidates.
+  historical plain-MLP-win regimes and current fixed-versus-learned boundary.
 - **HotpotQA:** scale and hubness stress test after complete reconstruction.
 - **MetaQA:** sparse typed relational positive control where GNNs may win.
 - **WebQSP:** OOD KB retrieval and typed-edge semantics; requires complete
@@ -343,9 +381,11 @@ development/replication evidence rather than the sole fresh confirmation.
 
 ### Primary pair
 
-- residual candidate MLP;
-- residual GCN with 1/2/3/4 layers;
-- trainable-parameter gap within 5%.
+- QLS-MLP with fixed query-local structural summaries;
+- the seed-aware GNN family selected by the frozen validation-only rule;
+- trainable-parameter gap within the registered matched range;
+- plain MLP and seed-only MLP retained in every headline table as decomposition
+  controls.
 
 ### Architecture robustness
 
@@ -355,14 +395,15 @@ development/replication evidence rather than the sole fresh confirmation.
 - R-GCN or an equally simple typed-edge model when canonical edge types exist.
 
 Do not run every architecture at every phase-diagram point. Establish the full
-diagram with the primary GCN/MLP pair, then validate representative MLP-win,
-crossover, and GNN-win anchors with the other architectures.
+diagram with the primary QLS-MLP/seed-aware-GNN pair, then validate
+representative fixed-structure-win, crossover, and GNN-win anchors with the
+other architectures.
 
 ### Diagnostic controls
 
 - Dense rank, SPLADE rank, and locked equal RRF: tests whether simple upstream
   rank fusion explains the learned gain.
-- Seed distance/PPR alone, RRF+PPR, and a linear SA head: tests whether either a
+- Seed distance/PPR alone, RRF+PPR, and a linear QLS head: tests whether either a
   parameter-free rule or linear scorer already captures the structural gain.
 - MLP plus degree/local graph statistics: tests whether graph information helps
   without learned message propagation.
@@ -402,25 +443,40 @@ Run before scientific sweeps:
 6. Reproduce the frozen CRAG L2 MLP within tolerance using the neutral feature
    builder, or explain any intentional feature difference.
 7. Confirm train-only normalization and a single final test call.
-8. Rebuild candidate-induced topology and SA features on demand and require
+8. Rebuild candidate-induced topology and QLS features on demand and require
    numerical parity with the packed caches before uncached timing.
 9. Verify that edge-source sidecars reproduce the frozen union adjacency before
    native-only/kNN-only ablation.
+10. Verify that the fresh external setting contains all four required objects:
+    queries, frozen candidate rankings, relevance labels, and either native
+    topology or a label-free graph-construction rule frozen before test access.
 
 Failure of any gate blocks all paper runs.
 
 ### E1. Clean L2 comparison
 
-For each complete Tier-A dataset, run MLP, GCN, SAGE, GATv2, GIN and typed GNN
-where applicable. Report R@1/5/20, MRR, nDCG@10, FullCov@20, candidate ceiling,
+For each complete Tier-A dataset, retain the full four-level ladder: plain MLP,
+seed-only MLP, QLS-MLP, and the seed-aware validation-selected GNN. Additional
+GCN/SAGE/GATv2/GIN families are robustness controls, not test-selected headline
+models. Report R@1/5/20, MRR, nDCG@10, FullCov@20, candidate ceiling,
 conditional recall, time/query, train time, peak VRAM/RAM, parameters, and FLOPs.
 
-Run the same primary pair at preregistered candidate budgets (for example 50,
-100, 200, and the full union). Use the same budget for every model and report
-ceiling, induced edge count, effectiveness, and latency together.
+Run the same primary pair at preregistered candidate budgets 50, 100, 200, and
+400 (or the full union when fewer than 400 unique candidates exist). Use the
+same budget for every model and report candidate ceiling, R@5, R@20, induced
+node/edge count, QLS computation, GNN computation, and total latency together.
 
-The primary endpoint is paired query-level R@5 for GCN minus MLP. Do not choose
-the “best GNN” on test. Architecture-specific hypotheses are secondary.
+Edge provenance is a mandatory causal control, not optional metadata. Re-export
+native/title/KB structural edges and embedding-derived kNN edges into separate
+sidecars, prove that their union reconstructs the frozen adjacency, and run
+native-only, kNN-only, and union conditions for both QLS-MLP and the seed-aware
+GNN. This tests whether graph gains merely recycle the same embedding geometry
+already available to the ranker.
+
+The primary endpoint is paired query-level R@5 for the seed-aware selected GNN
+minus QLS-MLP. The plain and seed-only models retain their causal-decomposition
+roles. Do not choose the “best GNN” on test. Architecture-specific hypotheses
+are secondary.
 
 ### E2. One-axis phase sweeps
 
@@ -468,6 +524,12 @@ entire dataset held out.
 - entity-disjoint MetaQA/WebQSP split;
 - train on low-noise regimes, test higher noise and vice versa.
 
+NQ, MS MARCO, or BEIR may provide fresh queries, but none is automatically an
+external graph-retrieval confirmation. A valid external setting must also have
+frozen candidates, labels, and graph structure. When native topology is absent,
+freeze a label-free rule such as Wikipedia hyperlinks/title mentions, citation
+links, or KB triples before viewing external test outcomes.
+
 OOD model performance and OOD **predictor** performance are distinct results.
 
 ### E5. Scale and systems boundary
@@ -486,7 +548,7 @@ Use full-batch computation where feasible and a documented neighbor-sampling
 path at scale. Do not compare full-batch MLP with sampled GNN without a second
 matched-sampling control.
 
-The completed SA-MLP confirmation measures warm-cache candidate reranking, not
+The completed QLS-MLP confirmation measures warm-cache candidate reranking, not
 an uncached post-retrieval path for unseen query embeddings. A resumed systems
 study must report two separate views: cached reranker latency and uncached
 post-retrieval latency. The latter begins from an upstream query embedding plus
@@ -498,7 +560,7 @@ remain offline, but no cache keyed by a query or its candidate set may be used
 in the unseen-embedding condition.
 
 The GNN must be charged for on-demand candidate-induced topology construction;
-SA-MLP must be charged for the same construction plus its query-local
+QLS-MLP must be charged for the same construction plus its query-local
 distance/path/PPR summaries. Report batch-1 and batch-16 p50/p95/p99,
 throughput, peak GPU/RSS, static storage, cold start, and update/invalidation
 costs. The detailed contract is in
@@ -511,7 +573,7 @@ Use these ranks for a locked equal-RRF baseline with constant 60. Report Dense,
 SPLADE, equal RRF, and any validation-selected weighted RRF on the identical
 candidate union. Equal RRF changes ordering, not candidate ceiling. If RRF
 scores or RRF-derived top-K seeds are supplied to learned models, supply them
-identically to SA-MLP and seed-aware GNN and retrain both under a new frozen
+identically to QLS-MLP and seed-aware GNN and retrain both under a new frozen
 protocol. Do not splice those runs into the sealed confirmation.
 
 ## 10. Phase-diagram statistics
@@ -519,10 +581,10 @@ protocol. Do not splice those runs into the sealed confirmation.
 ### Primary test
 
 For each dataset/regime, compute a paired query vector of
-\(R@5_{GNN}-R@5_{MLP}\). Report a 95% paired bootstrap confidence interval and
+\(R@5_{GNN}-R@5_{QLS}\). Report a 95% paired bootstrap confidence interval and
 the mean over pre-registered seeds. Define:
 
-- **MLP win:** upper confidence bound below (-1\) percentage point;
+- **fixed-structure win:** upper confidence bound below (-1\) percentage point;
 - **GNN win:** lower confidence bound above (+1\) percentage point;
 - **practical tie:** confidence interval lies inside the equivalence band;
 - **uncertain:** all other cases.
@@ -610,7 +672,7 @@ good” is insufficient because the closest prior work already covers that idea.
 The project should change direction if any of the following occurs:
 
 - GNN gains disappear after correcting a gradient or candidate-pool bug.
-- MLP gains vanish under parameter/validation parity.
+- QLS/fixed-structure gains vanish under parameter/validation parity.
 - no GNN wins even on typed, high-signal, feature-degraded positive controls.
 - the crossover is architecture-specific and does not replicate with at least
   one of SAGE/GAT/GIN.
@@ -618,18 +680,19 @@ The project should change direction if any of the following occurs:
 - mechanism metrics do not track performance better than obvious baselines.
 - results depend on incomplete query caches or test-selected hyperparameters.
 
-If clean MLP wins are robust but RNU/OOD prediction fails, the work is better
+If clean fixed-structure wins are robust but RNU/OOD prediction fails, the work is better
 positioned as a strong WWW/KDD retrieval analysis than a NeurIPS paper.
 
 ## 14. Acceptance gates
 
 ### Gate A — correctness
 
-All E0 tests pass; CRAG MLP parity is documented; no dead GNN gradients.
+All E0 tests pass; standalone plain/seed/QLS contract parity is documented; no
+dead GNN gradients.
 
 ### Gate B — real bidirectional phase diagram
 
-At least two real datasets contain pre-registered MLP-win regimes and at least
+At least two real datasets contain preregistered fixed-structure-win regimes and at least
 one real/controlled regime contains a replicated GNN win. Crossovers survive
 parameter matching and two GNN families.
 
@@ -654,9 +717,10 @@ compute/memory boundaries.
 The introduction and experiments explicitly distinguish this work from node
 classification phase analyses, graph-aware MLPs such as
 [Graph-MLP](https://arxiv.org/abs/2106.04051), propagation-at-test approaches,
-and GNN/MLP training accelerators. The novelty is query-conditioned retrieval,
-typed/noisy retrieval graphs, a predictive crossover, and mechanistic/OOD
-validation—not merely an MLP baseline.
+the published SA-MLP, RTA, and GNN/MLP training accelerators. The novelty is the
+retrieval-prior/fixed-structure/learned-propagation decomposition, candidate
+ranking setting, edge-provenance controls, a predictive crossover, and
+mechanistic/OOD validation—not merely an MLP baseline.
 
 ### Gate G — ranker-serving and topology provenance
 
@@ -708,18 +772,20 @@ preregistered protocol and must not modify the sealed confirmation.
 
 - completed: freeze `paper-protocol-v0` and execute the contract-only WebQSP,
   2Wiki, and MuSiQue Modal pilot;
-- regenerate stable L2 train/validation/test caches with candidate IDs;
-- preserve typed/raw/synthetic edge provenance;
-- implement MLP parity and graph induction tests;
-- rerun the three clean datasets with five seeds only after their canonical
-  manifests are frozen.
+- completed: canonical standalone train/validation/test manifests and candidate
+  contracts for all six datasets;
+- completed: MLP/GNN parity, compatibility, and graph-induction tests;
+- outstanding: recover typed/native/kNN edge provenance into standalone
+  sidecars without changing the frozen union adjacency.
 
 ### Weeks 3–5: clean study
 
-- complete primary six-dataset GCN/MLP runs;
-- validate SAGE/GAT/GIN at clean anchors;
-- lock primary hyperparameters and practical margin;
-- write the clean-result table before perturbation exploration.
+- completed: primary six-dataset plain-MLP/GNN runs;
+- completed: validation-only GNN family selection and five-seed four-level
+  plain/seed-only/QLS/GNN confirmation;
+- completed: frozen practical margin, paired statistics, and clean-result table;
+- outstanding: no perturbation or new architecture run until the six
+  submission-critical packages are separately preregistered.
 
 ### Weeks 6–9: controlled phase diagram
 
@@ -745,7 +811,7 @@ preregistered protocol and must not modify the sealed confirmation.
 
 - complete the locked equal-RRF and validation-only weighted-RRF controls;
 - run cached and uncached post-retrieval timing from unseen query embeddings;
-- verify bit-equivalence of cached versus on-demand topology and SA features;
+- verify bit-equivalence of cached versus on-demand topology and QLS features;
 - freeze edge provenance and run native-only, kNN-only, and union anchors;
 - evaluate the fully locked method once on a fresh external holdout;
 - rerun headline cells with 10 seeds if confidence intervals are close;
@@ -792,4 +858,5 @@ answer to a model-selection question:
 The paper becomes compelling if it supplies a matched benchmark, a bidirectional
 phase diagram, a transferable predictor, a theory-aligned crossover, and
 mechanistic evidence. Without those pieces, it remains an interesting CRAG
-ablation rather than a fundamental graph-learning paper.
+substrate study rather than a fundamental graph-retrieval result. C-RAG itself
+is not a contribution of this standalone paper.

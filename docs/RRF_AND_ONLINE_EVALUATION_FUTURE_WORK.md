@@ -1,8 +1,12 @@
 # RRF Fusion and Unseen-Embedding Systems Evaluation
 
 Status: **deferred future work**. This document does not change the sealed
-SA-MLP confirmation protocol, checkpoints, test results, or statistical
+QLS-MLP confirmation protocol, checkpoints, test results, or statistical
 decisions. Any execution requires a new preregistration and new result files.
+
+Publication prose uses **QLS-MLP (Query-Local Structure MLP)**. The frozen
+implementation key remains `sa_mlp`, and sealed SA-named artifacts are not
+renamed; see [the terminology and positioning note](TERMINOLOGY_AND_POSITIONING.md).
 
 ## Why this follow-up is necessary
 
@@ -85,6 +89,10 @@ Report R@1, R@5, R@20, MRR, FullCov@20, candidate-conditional metrics, and
 candidate ceiling. Equal RRF cannot improve candidate ceiling when it only
 reorders the same union; it can improve where in-pool gold nodes appear.
 
+This follows the original rank-based RRF formulation; calibrated Dense/SPLADE
+scores are not required. See
+[Cormack, Clarke, and Buettcher (2009)](https://research.google/pubs/reciprocal-rank-fusion-outperforms-condorcet-and-individual-rank-learning-methods/).
+
 ### Validation-only weighted RRF
 
 Weighted RRF is a secondary control:
@@ -102,16 +110,16 @@ constant, or the number of seeds using test outcomes.
 
 ### RRF as a shared model prior
 
-RRF may help SA-MLP by selecting better structural seeds, but that must not
+RRF may help QLS-MLP by selecting better structural seeds, but that must not
 create a new information asymmetry. A fair new comparison should include:
 
 1. the sealed binary top-5-union prior as a reference;
-2. an RRF scalar feature supplied identically to seed-only MLP, SA-MLP, and
+2. an RRF scalar feature supplied identically to seed-only MLP, QLS-MLP, and
    seed-aware GNN;
-3. RRF top-\(K\) seeds supplied identically to SA-MLP and the seed-aware GNN;
+3. RRF top-\(K\) seeds supplied identically to QLS-MLP and the seed-aware GNN;
 4. the same candidates, labels, loss, optimizer seeds, and validation rule.
 
-Changing the structural seeds changes both SA features and the GNN's seed
+Changing the structural seeds changes both QLS features and the GNN's seed
 indicator. All affected models must therefore be retrained under a newly frozen
 protocol. These results must not be spliced into the sealed confirmation table.
 
@@ -124,14 +132,14 @@ Candidate fusion and candidate selection must also be distinguished:
 
 ## Audit of the current latency measurement
 
-The reported 2.49--7.08x SA-MLP/GNN ratio is a valid **warm-cache
+The reported 2.49--7.08x QLS-MLP/GNN ratio is a valid **warm-cache
 candidate-reranking** comparison. It is not a complete uncached
 post-retrieval serving measurement for an unseen query embedding.
 
 The timed loop currently includes:
 
 - gathering frozen candidate and query embeddings;
-- loading SA rows from the packed structural-feature cache;
+- loading QLS rows from the packed structural-feature cache;
 - loading GNN edges from the packed candidate-topology cache;
 - host/device tensor preparation performed inside the scoring path;
 - the learned forward pass; and
@@ -141,7 +149,7 @@ It excludes or performs before the timed loop:
 
 - candidate union or fusion;
 - construction of the candidate-induced topology;
-- computation of query-local SA distance/path/PPR features;
+- computation of query-local QLS distance/path/PPR features;
 - corpus-static graph-feature construction;
 - model and index cold start; and
 - final metric computation.
@@ -151,10 +159,10 @@ shared upstream services outside this paper's ranker boundary rather than
 missing ranker operations.
 
 Both graph-aware methods currently benefit from preprocessing. The GNN reads a
-prepacked candidate-induced topology, while SA-MLP reads that topology's
+prepacked candidate-induced topology, while QLS-MLP reads that topology's
 derived query-local structural summaries. A GNN can consume newly induced
-adjacency without computing SA summaries, but it is not topology-extraction
-free. For a new query, both methods require candidate graph induction; SA-MLP
+adjacency without computing QLS summaries, but it is not topology-extraction
+free. For a new query, both methods require candidate graph induction; QLS-MLP
 then requires additional query-local fixed graph computation.
 
 The previously reported 9.3--20.5 seconds is bulk preprocessing over each
@@ -189,7 +197,7 @@ post-retrieval timer must include:
 2. candidate embedding and metadata gathering;
 3. candidate-induced subgraph extraction for every graph-aware method;
 4. seed selection;
-5. query-local distance, path, connectivity, and PPR computation for SA-MLP;
+5. query-local distance, path, connectivity, and PPR computation for QLS-MLP;
 6. device transfer and model forward pass;
 7. final top-\(K\) selection.
 
@@ -204,7 +212,7 @@ Report both rather than replacing the existing diagnostic:
 | View | Scope | Purpose |
 | --- | --- | --- |
 | Cached reranker | Frozen candidates and packed per-query caches | Isolates learned scoring/operator cost and preserves the completed result |
-| Uncached post-retrieval | Starts from an unseen query embedding and upstream Dense/SPLADE rankings, then builds the fusion, induced topology, and SA features online | Supports a real-world ranker speed claim |
+| Uncached post-retrieval | Starts from an unseen query embedding and upstream Dense/SPLADE rankings, then builds the fusion, induced topology, and QLS features online | Supports a real-world ranker speed claim |
 
 The paper boundary is:
 
@@ -243,12 +251,12 @@ aggregation remains outside it.
 
 Until this protocol is executed, the correct claim is:
 
-> SA-MLP is 2.49--7.08x faster than the seed-aware GNN in warm-cache
+> QLS-MLP is 2.49--7.08x faster than the seed-aware GNN in warm-cache
 > candidate-reranking latency while using substantially less incremental GPU
 > memory.
 
 It is not yet justified to claim a 2.49--7.08x uncached post-retrieval speedup
-for unseen embeddings. The on-demand SA computation may shrink, eliminate, or
+for unseen embeddings. The on-demand QLS computation may shrink, eliminate, or
 reverse the ratio; the purpose of the future experiment is to measure that
 outcome rather than assume it.
 
@@ -256,8 +264,8 @@ outcome rather than assume it.
 
 1. Implement and unit-test equal RRF over the frozen ranked IDs.
 2. Freeze the RRF tie rule and effectiveness protocol before test evaluation.
-3. Implement a cache-disabled on-demand candidate-graph and SA-feature path.
-4. Verify numerical parity between cached and on-demand SA features and between
+3. Implement a cache-disabled on-demand candidate-graph and QLS-feature path.
+4. Verify numerical parity between cached and on-demand QLS features and between
    cached and on-demand candidate-induced GNN topology.
 5. Freeze the systems protocol and hardware image.
 6. Run screening timings without inspecting effectiveness test metrics.

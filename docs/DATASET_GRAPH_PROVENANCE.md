@@ -4,6 +4,10 @@ This document explains what the standalone message-passing retrieval project
 reuses from the original CRAG repository, what it deliberately does not reuse,
 what the `clean` dataset label means, and what graph is supplied to each model.
 
+Publication prose uses **QLS-MLP (Query-Local Structure MLP)**. The frozen
+implementation key remains `sa_mlp`, and existing SA-named files/tags remain
+unchanged; see [the terminology and positioning note](TERMINOLOGY_AND_POSITIONING.md).
+
 ## Executive summary
 
 The project reuses a substantial amount of CRAG's **frozen experimental data**,
@@ -110,7 +114,7 @@ Standalone data contract
                               |
                               +-- Plain MLP: embeddings only
                               +-- Seed-only MLP: embeddings + seed indicator
-                              +-- SA-MLP: embeddings + fixed graph summaries
+                              +-- QLS-MLP: embeddings + fixed graph summaries
                               +-- GNN: embeddings + seed indicator + adjacency
 ```
 
@@ -189,6 +193,15 @@ cannot reliably determine from that tensor whether an individual edge was:
 - a title-mention edge;
 - a native KB-relation edge; or
 - a synthetic embedding-kNN edge.
+
+This is now a submission-critical confound rather than a minor metadata gap.
+Because the kNN edges were constructed from the same frozen embedding family
+used as node features, a reviewer can reasonably ask whether graph gains recycle
+semantic geometry already available to every model. Before a final paper, the
+standalone export must recover source sidecars, prove that their union exactly
+reconstructs the frozen adjacency, and compare **native/title/KB-only**,
+**embedding-kNN-only**, and **union** graphs for both QLS-MLP and the seed-aware
+GNN. No change may be made to the read-only CRAG repository.
 
 Likewise, the MetaQA and WebQSP GNNs receive entity connectivity but not raw
 relation labels such as `directed_by` or `acted_in`. The current paper should
@@ -310,7 +323,7 @@ Completeness does **not** guarantee:
   experimental source.
 
 The candidate ceiling is particularly important. If a gold is absent from the
-Dense/SPLADE union, no MLP, SA-MLP, or GNN reranker can recover it.
+Dense/SPLADE union, no MLP, QLS-MLP, or GNN reranker can recover it.
 
 ## What each final model receives
 
@@ -318,11 +331,11 @@ Dense/SPLADE union, no MLP, SA-MLP, or GNN reranker can recover it.
 | --- | :---: | :---: | :---: | :---: |
 | Plain MLP | Yes | No | No | No |
 | Seed-only MLP | Yes | Yes | No | No |
-| SA-MLP | Yes | Yes | Yes | No |
+| QLS-MLP | Yes | Yes | Yes | No |
 | Seed-aware selected GNN | Yes | Yes | No | Yes |
 
 The retrieval seed set is the stable union of the Dense top-5 and SPLADE top-5
-candidate identities. SA-MLP computes deterministic query-local summaries such
+candidate identities. QLS-MLP computes deterministic query-local summaries such
 as distance/connectivity, path-count, and PPR-style signals from those seeds.
 Its learned forward pass does not aggregate neighboring embeddings.
 
@@ -330,11 +343,11 @@ This yields the intended decomposition:
 
 ```text
 seed-only - plain = value of the frozen retrieval prior
-SA-MLP - seed-only = value of fixed graph computation
-SA-MLP - GNN = fixed structural summaries versus learned message passing
+QLS-MLP - seed-only = value of fixed graph computation
+QLS-MLP - GNN = fixed structural summaries versus learned message passing
 ```
 
-SA-MLP is therefore **non-message-passing**, not topology-free.
+QLS-MLP is therefore **non-message-passing**, not topology-free.
 
 ## What is deliberately not reused
 
@@ -398,12 +411,13 @@ learned neighborhood aggregation.
 - [Standalone data contract](../data/README.md)
 - [Complete-data loader](../src/mp_retrieval/complete_data.py)
 - [Six-dataset results](SIX_DATASET_RESULTS.md)
-- [SA-MLP confirmation protocol](SA_MLP_CONFIRMATION_PROTOCOL.md)
-- [SA-MLP confirmation results](SA_MLP_CONFIRMATION_RESULTS.md)
-- [SA feature leakage audit](SA_FEATURE_LEAKAGE_AUDIT.md)
+- [QLS-MLP confirmation protocol](SA_MLP_CONFIRMATION_PROTOCOL.md)
+- [QLS-MLP confirmation results](SA_MLP_CONFIRMATION_RESULTS.md)
+- [QLS feature leakage audit](SA_FEATURE_LEAKAGE_AUDIT.md)
 - [Legacy candidate compatibility audit](LEGACY_CANDIDATE_COMPATIBILITY.md)
 - [RRF and unseen-embedding evaluation plan](RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md)
 - [Paper-readiness and real-world audit](PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md)
+- [Terminology, overlap, and submission positioning](TERMINOLOGY_AND_POSITIONING.md)
 
 The original CRAG repository is a read-only provenance source. It must not be
 edited as part of this standalone project.
