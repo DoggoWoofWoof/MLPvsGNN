@@ -402,7 +402,8 @@ learned neighborhood aggregation.
 - [SA-MLP confirmation results](SA_MLP_CONFIRMATION_RESULTS.md)
 - [SA feature leakage audit](SA_FEATURE_LEAKAGE_AUDIT.md)
 - [Legacy candidate compatibility audit](LEGACY_CANDIDATE_COMPATIBILITY.md)
-- [RRF and unseen-query evaluation plan](RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md)
+- [RRF and unseen-embedding evaluation plan](RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md)
+- [Paper-readiness and real-world audit](PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md)
 
 The original CRAG repository is a read-only provenance source. It must not be
 edited as part of this standalone project.

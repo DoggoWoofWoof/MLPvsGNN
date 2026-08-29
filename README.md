@@ -228,6 +228,11 @@ claim.
 The completed study is strong retrieval evidence, not yet a general theory of
 message-passing utility. The main deferred steps are:
 
+- one fresh untouched external confirmation after the final method is locked;
+- an uncached post-retrieval timing path for unseen query embeddings;
+- native/title-edge versus embedding-kNN provenance and ablation;
+- strong parameter-free Dense/SPLADE/RRF/PPR controls;
+- candidate-budget and upstream-seed-quality robustness;
 - causal topology perturbations;
 - feature-quality perturbations;
 - a predictor for when message passing helps enough to justify its cost;
@@ -243,8 +248,11 @@ such experiment is currently scheduled.
 
 Every primary comparison uses the same frozen node/query features, candidate
 IDs and order, relevance labels, loss, negative pool, split, optimizer seed,
-training budget, and validation-only checkpoint rule. Test is evaluated once.
-The topology or its fixed summaries are the controlled additional information.
+training budget, and validation-only checkpoint rule. Each sealed protocol
+evaluates its final seeds on test once. Because the broader project progressed
+through sequential screens on the same benchmark families, a future headline
+confirmation requires a fresh untouched external holdout. The topology or its
+fixed summaries are the controlled additional information.
 
 The final analysis reports five-seed mean and sample standard deviation,
 paired-seed confidence intervals, two-stage paired query confidence intervals,
@@ -252,7 +260,8 @@ and Holm correction across the six datasets per contrast and metric. R@5 is
 primary; R@1, R@20, MRR, and FullCov@20 are always reported. Parameters,
 training time, warm-cache candidate-reranking latency, GPU allocation, CPU
 memory, feature-precomputation time, and cache size are reported separately.
-The completed latency table is not an end-to-end unseen-query benchmark.
+The completed latency table is not an uncached post-retrieval benchmark for
+unseen query embeddings.
 
 All SA features are inference-safe functions of frozen retrieval seeds,
 candidate IDs/order, graph topology, and registered numerical constants. Gold
@@ -406,12 +415,14 @@ the largest feature cache is 2.835 GiB on MetaQA. The systems interpretation is:
 > **SA-MLP trades reusable offline structural preprocessing and storage for
 > substantially cheaper cached learned inference.**
 
-This ratio must not be presented as an end-to-end production-query speedup.
+This ratio must not be presented as an uncached post-retrieval speedup.
 Both methods currently read a prepacked candidate-induced topology, and SA-MLP
-also reads precomputed query-local features. A future unseen-query benchmark
-must charge both methods for candidate graph induction and charge SA-MLP for
-on-demand distance/path/PPR computation. The exact future protocol is recorded
-in [RRF fusion and unseen-query systems evaluation](docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md).
+also reads precomputed query-local features. A future unseen-embedding benchmark
+must begin from an upstream query embedding plus Dense/SPLADE ranked IDs, charge
+both methods for candidate graph induction, and charge SA-MLP for on-demand
+distance/path/PPR computation. Query encoding and initial retrieval remain
+outside this paper's scope. The exact future protocol is recorded in
+[RRF fusion and unseen-embedding systems evaluation](docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md).
 
 ## What features mattered
 
@@ -453,6 +464,12 @@ Everything in this section is deferred. No experiment below is currently
 scheduled or authorized by the frozen confirmation protocol. Any resumption
 requires a separate preregistration that does not tune or filter the completed
 test results.
+
+The broader audit identified five submission-critical additions: a fresh
+untouched holdout, uncached serving from unseen query embeddings, edge-source
+provenance, strong parameter-free controls, and candidate-budget robustness.
+Their exact priority order and real-world ranker contract are documented in the
+[paper-readiness and real-world audit](docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md).
 
 ### A. Causal topology perturbations
 
@@ -497,11 +514,12 @@ without turning the learned scorer into message passing.
 ### H. Systems scaling
 
 Extend offline-versus-online accounting to cache compression, dynamic-graph
-updates, feature invalidation, and amortization across query volume. Run a true
-unseen-query benchmark from raw query text that includes query encoding, Dense
-and SPLADE retrieval, candidate fusion, graph induction, on-demand SA features,
-model inference, and top-K selection. Preserve the existing cached-reranker
-number as a separate operator-cost diagnostic.
+updates, feature invalidation, and amortization across query volume. Run an
+uncached post-retrieval benchmark beginning from unseen query embeddings and
+upstream Dense/SPLADE ranked IDs. Include candidate fusion, graph induction,
+on-demand SA features, model inference, and top-K selection. Query encoding and
+initial retrieval stay outside the project boundary. Preserve the existing
+cached-reranker number as a separate operator-cost diagnostic.
 
 ### I. Dense/SPLADE reciprocal-rank fusion
 
@@ -526,7 +544,8 @@ configs/                         frozen and historical experiment contracts
 data/                            data contract; generated tensors are ignored
 docs/NEURIPS_RESEARCH_PLAN.md    historical roadmap and deferred research plan
 docs/DATASET_GRAPH_PROVENANCE.md datasets, graphs, UKB storage, and CRAG reuse
-docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-query timing plan
+docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md prioritized missing controls
+docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-embedding timing
 docs/SA_MLP_CONFIRMATION_PROTOCOL.md final frozen fairness protocol
 docs/SA_MLP_CONFIRMATION_RESULTS.md complete six-dataset result and stopping point
 docs/SA_FEATURE_LEAKAGE_AUDIT.md label-free fixed-feature audit

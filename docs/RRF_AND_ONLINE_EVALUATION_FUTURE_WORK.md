@@ -1,4 +1,4 @@
-# RRF Fusion and Unseen-Query Systems Evaluation
+# RRF Fusion and Unseen-Embedding Systems Evaluation
 
 Status: **deferred future work**. This document does not change the sealed
 SA-MLP confirmation protocol, checkpoints, test results, or statistical
@@ -11,11 +11,29 @@ candidate pools. It does not yet answer two production-facing questions:
 
 1. Would a stronger parameter-free fusion of the Dense and SPLADE rankings
    improve the retrieval prior supplied to every model?
-2. What is the latency for a genuinely unseen query when every
-   query-dependent operation is performed on demand?
+2. What is the post-retrieval latency for a genuinely unseen query embedding
+   when every query-dependent graph and ranking operation is performed on
+   demand?
 
 These questions must remain separate. RRF is an effectiveness/prior control.
-Cold-query timing is a systems-accounting correction.
+Uncached post-retrieval timing is a systems-accounting correction.
+
+## Scope boundary
+
+This project is not constructing or benchmarking an upstream retrieval system.
+The real-world serving interface begins at:
+
+```text
+query embedding
++ upstream Dense ranked candidate IDs
++ upstream SPLADE ranked candidate IDs
+```
+
+Raw query text, tokenization, query-encoder serving, ANN search, and SPLADE
+index serving remain upstream and out of scope. The existing frozen query
+embeddings and ranked IDs are sufficient to exercise this interface. A future
+stream of new embeddings may be exported by an upstream retriever without
+adding raw query text to the standalone data contract.
 
 ## Audit of the current frozen artifacts
 
@@ -107,8 +125,8 @@ Candidate fusion and candidate selection must also be distinguished:
 ## Audit of the current latency measurement
 
 The reported 2.49--7.08x SA-MLP/GNN ratio is a valid **warm-cache
-candidate-reranking** comparison. It is not a complete unseen-query or
-end-to-end production latency measurement.
+candidate-reranking** comparison. It is not a complete uncached
+post-retrieval serving measurement for an unseen query embedding.
 
 The timed loop currently includes:
 
@@ -121,15 +139,16 @@ The timed loop currently includes:
 
 It excludes or performs before the timed loop:
 
-- raw query text processing and query encoding;
-- Dense ANN retrieval;
-- SPLADE query encoding and sparse retrieval;
 - candidate union or fusion;
 - construction of the candidate-induced topology;
 - computation of query-local SA distance/path/PPR features;
 - corpus-static graph-feature construction;
 - model and index cold start; and
 - final metric computation.
+
+Query encoding and Dense/SPLADE retrieval are also excluded, but they are
+shared upstream services outside this paper's ranker boundary rather than
+missing ranker operations.
 
 Both graph-aware methods currently benefit from preprocessing. The GNN reads a
 prepacked candidate-induced topology, while SA-MLP reads that topology's
@@ -142,9 +161,9 @@ The previously reported 9.3--20.5 seconds is bulk preprocessing over each
 frozen dataset and includes corpus-static and query-local work. Dividing that
 number by the query count is not an acceptable substitute for online timing:
 bulk vectorization, JIT warmup, memory locality, and batching differ from a
-single unseen-query service path.
+single unseen-embedding service path.
 
-## Required unseen-query latency protocol
+## Required unseen-embedding latency protocol
 
 ### Allowed corpus-static preprocessing
 
@@ -161,44 +180,44 @@ separately:
 Storage size, build time, refresh time, and peak memory for these assets must be
 reported. Dynamic-graph invalidation cost is a separate systems endpoint.
 
-### Query-dependent work that must be charged
+### Post-retrieval query-dependent work that must be charged
 
-For a previously unseen query, the end-to-end timer must include:
+For a previously unseen query embedding and upstream candidate rankings, the
+post-retrieval timer must include:
 
-1. query text tokenization and all query encoders;
-2. Dense ANN search;
-3. SPLADE sparse search;
-4. equal/weighted RRF or stable-union construction;
-5. candidate embedding and metadata gathering;
-6. candidate-induced subgraph extraction for every graph-aware method;
-7. seed selection;
-8. query-local distance, path, connectivity, and PPR computation for SA-MLP;
-9. device transfer and model forward pass;
-10. final top-\(K\) selection.
+1. equal/weighted RRF or stable-union construction;
+2. candidate embedding and metadata gathering;
+3. candidate-induced subgraph extraction for every graph-aware method;
+4. seed selection;
+5. query-local distance, path, connectivity, and PPR computation for SA-MLP;
+6. device transfer and model forward pass;
+7. final top-\(K\) selection.
 
 No cache keyed by query ID, query embedding, candidate set, seed set, or
-candidate-induced topology may be read in the cold unseen-query condition.
+candidate-induced topology may be read in the uncached unseen-embedding
+condition.
 
-### Three latency views
+### Two latency views
 
-Report all three rather than replacing the existing diagnostic:
+Report both rather than replacing the existing diagnostic:
 
 | View | Scope | Purpose |
 | --- | --- | --- |
 | Cached reranker | Frozen candidates and packed per-query caches | Isolates learned scoring/operator cost and preserves the completed result |
-| On-demand post-retrieval | Starts from frozen candidate IDs but builds induced topology and SA features online | Isolates graph-processing plus ranker cost |
-| End-to-end unseen query | Starts from raw query text and performs retrieval, fusion, graph work, and ranking | Supports a real-world speed claim |
+| Uncached post-retrieval | Starts from an unseen query embedding and upstream Dense/SPLADE rankings, then builds the fusion, induced topology, and SA features online | Supports a real-world ranker speed claim |
 
-For fair attribution, also report:
+The paper boundary is:
 
 ```text
-shared retrieval latency
-+ method-specific post-candidate latency
-= end-to-end latency
+upstream query embedding + ranked candidate IDs
+                       |
+                       v
+candidate fusion + method-specific graph work + learned ranking + top-K
 ```
 
-Shared retrieval can be executed once and added identically to each method, but
-its measured cost cannot be omitted from the end-to-end table.
+Upstream encoder and retriever latency should be disclosed as out of scope, not
+silently described as measured. No end-to-end retrieval-system speed claim will
+be made.
 
 ### Measurement conditions
 
@@ -213,8 +232,8 @@ minimum report:
 - CPU thread count and GPU utilization;
 - cache/index storage and graph-feature storage;
 - cold-start time separately from steady-state service time; and
-- at least one query stream whose IDs were never used to build query-local
-  topology or feature caches.
+- at least one embedding/candidate stream whose query IDs were never used to
+  build query-local topology or feature caches.
 
 CUDA work must be synchronized around timers. Warmups must be identical. Top-K
 selection must occur inside the timed production path, while evaluation metric
@@ -228,10 +247,10 @@ Until this protocol is executed, the correct claim is:
 > candidate-reranking latency while using substantially less incremental GPU
 > memory.
 
-It is not yet justified to claim a 2.49--7.08x end-to-end or unseen-query
-speedup. The on-demand SA computation may shrink, eliminate, or reverse the
-ratio; the purpose of the future experiment is to measure that outcome rather
-than assume it.
+It is not yet justified to claim a 2.49--7.08x uncached post-retrieval speedup
+for unseen embeddings. The on-demand SA computation may shrink, eliminate, or
+reverse the ratio; the purpose of the future experiment is to measure that
+outcome rather than assume it.
 
 ## Decision order on resumption
 
@@ -242,6 +261,11 @@ than assume it.
    cached and on-demand candidate-induced GNN topology.
 5. Freeze the systems protocol and hardware image.
 6. Run screening timings without inspecting effectiveness test metrics.
-7. Run the canonical unseen-query timing benchmark and report every dataset.
-8. Only then decide whether the paper can make an end-to-end speed claim.
+7. Run the canonical unseen-embedding timing benchmark and report every
+   dataset.
+8. Only then decide whether the paper can make an uncached post-retrieval speed
+   claim.
 
+The wider set of submission-critical controls and the bounded real-world query
+plan are recorded in
+[the paper-readiness audit](PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md).

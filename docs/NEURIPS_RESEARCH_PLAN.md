@@ -333,6 +333,12 @@ contribution.
    conditional recall divides by golds present in the pool.
 10. Store query-level predictions so every comparison is paired.
 
+The one-test-call rule applies within each sealed protocol. Because the project
+used the same benchmark families across sequential screens and confirmations,
+the final paper must include one new external or hidden holdout whose outcomes
+were not observed during method design. Existing six-dataset results remain
+development/replication evidence rather than the sole fresh confirmation.
+
 ## 8. Models and controls
 
 ### Primary pair
@@ -354,6 +360,10 @@ crossover, and GNN-win anchors with the other architectures.
 
 ### Diagnostic controls
 
+- Dense rank, SPLADE rank, and locked equal RRF: tests whether simple upstream
+  rank fusion explains the learned gain.
+- Seed distance/PPR alone, RRF+PPR, and a linear SA head: tests whether either a
+  parameter-free rule or linear scorer already captures the structural gain.
 - MLP plus degree/local graph statistics: tests whether graph information helps
   without learned message propagation.
 - GNN with self-loops only: architecture/training control equivalent to no
@@ -392,6 +402,10 @@ Run before scientific sweeps:
 6. Reproduce the frozen CRAG L2 MLP within tolerance using the neutral feature
    builder, or explain any intentional feature difference.
 7. Confirm train-only normalization and a single final test call.
+8. Rebuild candidate-induced topology and SA features on demand and require
+   numerical parity with the packed caches before uncached timing.
+9. Verify that edge-source sidecars reproduce the frozen union adjacency before
+   native-only/kNN-only ablation.
 
 Failure of any gate blocks all paper runs.
 
@@ -400,6 +414,10 @@ Failure of any gate blocks all paper runs.
 For each complete Tier-A dataset, run MLP, GCN, SAGE, GATv2, GIN and typed GNN
 where applicable. Report R@1/5/20, MRR, nDCG@10, FullCov@20, candidate ceiling,
 conditional recall, time/query, train time, peak VRAM/RAM, parameters, and FLOPs.
+
+Run the same primary pair at preregistered candidate budgets (for example 50,
+100, 200, and the full union). Use the same budget for every model and report
+ceiling, induced edge count, effectiveness, and latency together.
 
 The primary endpoint is paired query-level R@5 for GCN minus MLP. Do not choose
 the “best GNN” on test. Architecture-specific hypotheses are secondary.
@@ -469,14 +487,15 @@ path at scale. Do not compare full-batch MLP with sampled GNN without a second
 matched-sampling control.
 
 The completed SA-MLP confirmation measures warm-cache candidate reranking, not
-an unseen-query production path. A resumed systems study must report three
-separate views: cached reranker latency, on-demand post-retrieval latency, and
-end-to-end unseen-query latency. The last view begins from raw query text and
-charges query encoding, Dense ANN, SPLADE retrieval, RRF/union construction,
-candidate gathering, induced-subgraph extraction, method-specific graph work,
-model inference, and top-K selection. Corpus-static indexes and node features
-may remain offline, but no cache keyed by a query or its candidate set may be
-used in the unseen-query condition.
+an uncached post-retrieval path for unseen query embeddings. A resumed systems
+study must report two separate views: cached reranker latency and uncached
+post-retrieval latency. The latter begins from an upstream query embedding plus
+Dense/SPLADE ranked candidate IDs and charges RRF/union construction, candidate
+gathering, induced-subgraph extraction, method-specific graph work, model
+inference, and top-K selection. Query encoding and initial retrieval are shared
+upstream services outside this paper's scope. Corpus-static node features may
+remain offline, but no cache keyed by a query or its candidate set may be used
+in the unseen-embedding condition.
 
 The GNN must be charged for on-demand candidate-induced topology construction;
 SA-MLP must be charged for the same construction plus its query-local
@@ -626,8 +645,9 @@ degree and behaves consistently across datasets.
 
 ### Gate E — generality and scale
 
-One external non-CRAG retrieval graph replicates the central relationship, and
-the paper reports honest compute/memory boundaries.
+One fresh external non-CRAG retrieval graph, untouched during method design,
+replicates the central relationship, and the paper reports honest
+compute/memory boundaries.
 
 ### Gate F — novelty
 
@@ -637,6 +657,14 @@ classification phase analyses, graph-aware MLPs such as
 and GNN/MLP training accelerators. The novelty is query-conditioned retrieval,
 typed/noisy retrieval graphs, a predictive crossover, and mechanistic/OOD
 validation—not merely an MLP baseline.
+
+### Gate G — ranker-serving and topology provenance
+
+The paper reports uncached post-retrieval latency from unseen query embeddings
+and upstream ranked IDs, with query-specific topology/features built on demand.
+It also separates native/title/KB edges from embedding-kNN edges and shows
+native-only, kNN-only, and union anchors. Query encoding and initial retrieval
+remain explicitly out of scope.
 
 ## 15. Paper structure and figure plan
 
@@ -716,8 +744,10 @@ preregistered protocol and must not modify the sealed confirmation.
 ### Weeks 18–22: paper hardening
 
 - complete the locked equal-RRF and validation-only weighted-RRF controls;
-- run cached, on-demand post-retrieval, and end-to-end unseen-query timing;
+- run cached and uncached post-retrieval timing from unseen query embeddings;
 - verify bit-equivalence of cached versus on-demand topology and SA features;
+- freeze edge provenance and run native-only, kNN-only, and union anchors;
+- evaluate the fully locked method once on a fresh external holdout;
 - rerun headline cells with 10 seeds if confidence intervals are close;
 - freeze tables from machine-readable result manifests;
 - independent leakage/reproducibility audit;
