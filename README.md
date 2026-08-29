@@ -90,6 +90,9 @@ experimental substrate only. Their provenance and the deliberately narrow
 extraction boundary are recorded in
 [the CRAG extraction audit](docs/CRAG_EXTRACTION_AUDIT.md). The standalone code,
 protocols, models, controls, analyses, and claims live in this repository.
+For a plain-language explanation of UKB storage, the clean datasets, each
+dataset graph, and the exact reuse boundary, see the
+[dataset, graph, and CRAG-reuse guide](docs/DATASET_GRAPH_PROVENANCE.md).
 
 ## Novelty and Positioning
 
@@ -497,6 +500,7 @@ submission.
 configs/                         frozen and historical experiment contracts
 data/                            data contract; generated tensors are ignored
 docs/NEURIPS_RESEARCH_PLAN.md    historical roadmap and deferred research plan
+docs/DATASET_GRAPH_PROVENANCE.md datasets, graphs, UKB storage, and CRAG reuse
 docs/SA_MLP_CONFIRMATION_PROTOCOL.md final frozen fairness protocol
 docs/SA_MLP_CONFIRMATION_RESULTS.md complete six-dataset result and stopping point
 docs/SA_FEATURE_LEAKAGE_AUDIT.md label-free fixed-feature audit
