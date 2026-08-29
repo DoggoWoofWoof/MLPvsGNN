@@ -30,7 +30,8 @@ GNN comparators; fewer parameters are not a contribution of this work.
 > **Across six retrieval benchmarks, a non-message-passing MLP supplied with
 > fixed query-local graph summaries recovers nearly all of the effectiveness of
 > parameter-matched seed-aware GNNs, remaining within 1.44 Recall@5 points on
-> every dataset while substantially reducing online latency and GPU memory.
+> every dataset while substantially reducing warm-cache candidate-reranking
+> latency and GPU memory.
 > Controlled seed-only ablations show that the structural gain is not explained
 > solely by retriever-seed membership.**
 
@@ -156,7 +157,7 @@ The important empirical observation is not that SA-MLP always wins. It is:
 > **Once retrieval-seed information and query-local graph structure are made
 > explicit, seed-aware GNN message passing provides surprisingly little
 > additional R@5 effectiveness across the six evaluated datasets while
-> incurring a consistent online latency and GPU-memory cost.**
+> incurring a consistent warm-cache reranking-latency and GPU-memory cost.**
 
 The conclusion is bounded to the evaluated retrieval regimes, frozen candidate
 pools, model families, and training protocol.
@@ -178,8 +179,10 @@ sufficient for every multi-hop task.
 
 SA-MLP and the selected GNNs are approximately parameter matched, so the systems
 advantage is not explained by parameter-count reduction. The contribution is
-replacing online learned neighborhood propagation with reusable offline
-structural computation and a lightweight online MLP ranker.
+moving learned neighborhood propagation out of the scorer and replacing it
+with fixed structural computation plus a lightweight MLP ranker. The completed
+latency measurement assumes reusable per-query caches; for a genuinely unseen
+query, query-local summaries must instead be computed on demand.
 
 SA-MLP trades:
 
@@ -188,7 +191,7 @@ SA-MLP trades:
 
 for:
 
-- lower online latency;
+- lower warm-cache candidate-reranking latency;
 - substantially lower incremental GPU memory;
 - a simpler learned inference path without adjacency or neighbor aggregation.
 
@@ -217,8 +220,8 @@ claim.
 > structural information, and learned neighborhood aggregation under a
 > controlled, approximately parameter-matched protocol. Across six retrieval
 > benchmarks, fixed structural summaries recover nearly all of the retrieval
-> effectiveness of seed-aware GNNs while substantially reducing online compute
-> and GPU memory.
+> effectiveness of seed-aware GNNs while substantially reducing warm-cache
+> reranking compute and GPU memory.
 
 ### H. What is still needed for a stronger NeurIPS claim
 
@@ -247,8 +250,9 @@ The final analysis reports five-seed mean and sample standard deviation,
 paired-seed confidence intervals, two-stage paired query confidence intervals,
 and Holm correction across the six datasets per contrast and metric. R@5 is
 primary; R@1, R@20, MRR, and FullCov@20 are always reported. Parameters,
-training time, online latency, GPU allocation, CPU memory, feature-precomputation
-time, and cache size are reported separately.
+training time, warm-cache candidate-reranking latency, GPU allocation, CPU
+memory, feature-precomputation time, and cache size are reported separately.
+The completed latency table is not an end-to-end unseen-query benchmark.
 
 All SA features are inference-safe functions of frozen retrieval seeds,
 candidate IDs/order, graph topology, and registered numerical constants. Gold
@@ -378,9 +382,9 @@ message passing is unnecessary for every multi-hop reasoning problem.
 Trainable parameter counts are approximately matched: the plain MLP has about
 205K parameters, and SA-MLP/seed-aware GNN configurations are about 209K–214K.
 There is no 2–4× parameter-reduction result. The efficiency contribution comes
-from avoiding online learned message propagation.
+from avoiding learned message propagation inside the cached scoring path.
 
-| Dataset | GNN/SA latency | SA GPU MiB | GNN GPU MiB | SA feature cache GiB |
+| Dataset | GNN/SA cached latency | SA GPU MiB | GNN GPU MiB | SA feature cache GiB |
 |---|---:|---:|---:|---:|
 | 2Wiki | 3.7× | 53.0 | 143.3 | 0.102 |
 | MuSiQue | 3.5× | 50.0 | 301.2 | 0.124 |
@@ -389,17 +393,25 @@ from avoiding online learned message propagation.
 | SQuAD | 7.1× | 49.3 | 2467.5 | 0.776 |
 | MetaQA | 2.5× | 55.8 | 205.2 | 2.835 |
 
-SA-MLP is approximately 2.5–7.1× faster online. The GPU-memory difference is
-especially large on HotpotQA (about 53 MiB versus 2,401 MiB) and SQuAD (about
-49 MiB versus 2,468 MiB).
+SA-MLP is approximately 2.5–7.1× faster in the completed warm-cache
+candidate-reranking benchmark. The GPU-memory difference is especially large
+on HotpotQA (about 53 MiB versus 2,401 MiB) and SQuAD (about 49 MiB versus
+2,468 MiB).
 
-This is not free computation. SA-MLP requires deterministic offline structural
-feature construction, CPU-accessible arrays, and reusable disk caches. Measured
-precomputation takes 9.3–20.5 seconds for the frozen datasets, and the largest
-feature cache is 2.835 GiB on MetaQA. The systems interpretation is:
+This is not free computation. The completed benchmark precomputes deterministic
+structural features into CPU-accessible arrays and reusable disk caches.
+Measured bulk preprocessing takes 9.3–20.5 seconds for the frozen datasets, and
+the largest feature cache is 2.835 GiB on MetaQA. The systems interpretation is:
 
 > **SA-MLP trades reusable offline structural preprocessing and storage for
-> substantially cheaper online learned inference.**
+> substantially cheaper cached learned inference.**
+
+This ratio must not be presented as an end-to-end production-query speedup.
+Both methods currently read a prepacked candidate-induced topology, and SA-MLP
+also reads precomputed query-local features. A future unseen-query benchmark
+must charge both methods for candidate graph induction and charge SA-MLP for
+on-demand distance/path/PPR computation. The exact future protocol is recorded
+in [RRF fusion and unseen-query systems evaluation](docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md).
 
 ## What features mattered
 
@@ -485,9 +497,22 @@ without turning the learned scorer into message passing.
 ### H. Systems scaling
 
 Extend offline-versus-online accounting to cache compression, dynamic-graph
-updates, feature invalidation, and amortization across query volume.
+updates, feature invalidation, and amortization across query volume. Run a true
+unseen-query benchmark from raw query text that includes query encoding, Dense
+and SPLADE retrieval, candidate fusion, graph induction, on-demand SA features,
+model inference, and top-K selection. Preserve the existing cached-reranker
+number as a separate operator-cost diagnostic.
 
-### I. Theory and mechanism
+### I. Dense/SPLADE reciprocal-rank fusion
+
+Add a locked equal-RRF baseline over the existing Dense and SPLADE top-200
+rankings. Standard RRF uses rank positions, so the frozen ID arrays are
+sufficient even though raw score arrays were not exported. Test validation-only
+weighted RRF separately, and give any RRF scalar or RRF-derived seed set
+identically to SA-MLP and seed-aware GNN controls. RRF over the unchanged union
+can improve in-pool ordering but cannot improve candidate ceiling.
+
+### J. Theory and mechanism
 
 Develop a principled explanation for when query-local structural sufficient
 statistics can substitute for iterative neighborhood aggregation. This is the
@@ -501,6 +526,7 @@ configs/                         frozen and historical experiment contracts
 data/                            data contract; generated tensors are ignored
 docs/NEURIPS_RESEARCH_PLAN.md    historical roadmap and deferred research plan
 docs/DATASET_GRAPH_PROVENANCE.md datasets, graphs, UKB storage, and CRAG reuse
+docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-query timing plan
 docs/SA_MLP_CONFIRMATION_PROTOCOL.md final frozen fairness protocol
 docs/SA_MLP_CONFIRMATION_RESULTS.md complete six-dataset result and stopping point
 docs/SA_FEATURE_LEAKAGE_AUDIT.md label-free fixed-feature audit

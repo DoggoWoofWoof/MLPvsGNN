@@ -53,6 +53,12 @@ identity and order are frozen and shared by all compared models. The Dense and
 SPLADE *outputs* are reused; their online retrieval runtimes are not part of the
 standalone experiment.
 
+The frozen arrays contain ranked IDs, not raw Dense/SPLADE scores. The current
+stable union is not Reciprocal Rank Fusion. Standard RRF can nevertheless be
+computed exactly from the retained rank positions and is registered as future
+work. RRF over the unchanged union can alter the initial ranking or structural
+seeds but cannot recover a gold node absent from both top-200 lists.
+
 ## What UKB means here
 
 Two distinct ideas can otherwise be confused.
@@ -396,6 +402,7 @@ learned neighborhood aggregation.
 - [SA-MLP confirmation results](SA_MLP_CONFIRMATION_RESULTS.md)
 - [SA feature leakage audit](SA_FEATURE_LEAKAGE_AUDIT.md)
 - [Legacy candidate compatibility audit](LEGACY_CANDIDATE_COMPATIBILITY.md)
+- [RRF and unseen-query evaluation plan](RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md)
 
 The original CRAG repository is a read-only provenance source. It must not be
 edited as part of this standalone project.

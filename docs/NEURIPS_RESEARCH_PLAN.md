@@ -18,15 +18,17 @@
 > and paired-query intervals to clear the -1 point margin, SA-MLP is non-inferior
 > to the seed-aware GNN on MetaQA and HotpotQA (2/3; registered substitution gate
 > passed); WebQSP remains query-level inconclusive. SA-MLP is 2.49--7.08x faster
-> online and saves 90--2,418 MiB of incremental peak GPU allocation across the
-> six datasets, with its 9.3--20.5 second preprocessing and 0.030--2.835 GiB disk
+> in warm-cache candidate reranking and saves 90--2,418 MiB of incremental peak
+> GPU allocation across the six datasets, with its 9.3--20.5 second preprocessing
+> and 0.030--2.835 GiB disk
 > caches disclosed separately. The gate is now closed: no tuning of these models
 > against test data is allowed. See `docs/SA_MLP_CONFIRMATION_RESULTS.md`.
 >
 > The supported claim is not “MLPs beat GNNs.” It is: **graph information is
 > useful for retrieval, but in identifiable regimes fixed query-conditioned
 > structural computation can substitute for learned message passing at much
-> lower online cost.** Any next mechanism, perturbation, or practical-width
+> lower cached-reranking cost.** Any next mechanism, perturbation, or
+> practical-width
 > experiment must begin under a separate preregistered protocol.
 
 > **Historical structure-aware MLP screen (superseded by the fairness result
@@ -466,6 +468,33 @@ Use full-batch computation where feasible and a documented neighbor-sampling
 path at scale. Do not compare full-batch MLP with sampled GNN without a second
 matched-sampling control.
 
+The completed SA-MLP confirmation measures warm-cache candidate reranking, not
+an unseen-query production path. A resumed systems study must report three
+separate views: cached reranker latency, on-demand post-retrieval latency, and
+end-to-end unseen-query latency. The last view begins from raw query text and
+charges query encoding, Dense ANN, SPLADE retrieval, RRF/union construction,
+candidate gathering, induced-subgraph extraction, method-specific graph work,
+model inference, and top-K selection. Corpus-static indexes and node features
+may remain offline, but no cache keyed by a query or its candidate set may be
+used in the unseen-query condition.
+
+The GNN must be charged for on-demand candidate-induced topology construction;
+SA-MLP must be charged for the same construction plus its query-local
+distance/path/PPR summaries. Report batch-1 and batch-16 p50/p95/p99,
+throughput, peak GPU/RSS, static storage, cold start, and update/invalidation
+costs. The detailed contract is in
+`docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md`.
+
+### E6. Dense/SPLADE fusion control
+
+The frozen candidate arrays retain Dense and SPLADE ranks but not raw scores.
+Use these ranks for a locked equal-RRF baseline with constant 60. Report Dense,
+SPLADE, equal RRF, and any validation-selected weighted RRF on the identical
+candidate union. Equal RRF changes ordering, not candidate ceiling. If RRF
+scores or RRF-derived top-K seeds are supplied to learned models, supply them
+identically to SA-MLP and seed-aware GNN and retrain both under a new frozen
+protocol. Do not splice those runs into the sealed confirmation.
+
 ## 10. Phase-diagram statistics
 
 ### Primary test
@@ -686,6 +715,9 @@ preregistered protocol and must not modify the sealed confirmation.
 
 ### Weeks 18–22: paper hardening
 
+- complete the locked equal-RRF and validation-only weighted-RRF controls;
+- run cached, on-demand post-retrieval, and end-to-end unseen-query timing;
+- verify bit-equivalence of cached versus on-demand topology and SA features;
 - rerun headline cells with 10 seeds if confidence intervals are close;
 - freeze tables from machine-readable result manifests;
 - independent leakage/reproducibility audit;
