@@ -10,10 +10,12 @@ native/symbolic relations, embedding similarity, or their union?
 The clean six-dataset result alone cannot answer this because its frozen
 `graph.pt` flattens edge semantics. SHA-256 verification shows that every clean
 standalone graph is byte-identical to CRAG's `gte_qwen/graph.pt`, also called
-variant A. Thus the clean result used:
+variant A. Thus the clean result used the exact stored A adjacency. Its intended
+construction is structural plus Qwen kNN, but the reconstruction does not
+assume exact set containment:
 
 ```text
-A = STRUCT union kNN
+kNN-only = A minus STRUCT
 ```
 
 It did not use the NER-expanded variant C.
@@ -32,8 +34,9 @@ sidecars are written only to this standalone project's result volume.
 
 All undirected edges are canonicalized as `(min(u,v), max(u,v))`. Node-row
 alignment must pass either an exact numeric-suffix check or exact equality with
-the standalone `node_ids.json` sidecar. Reconstruction fails if any STRUCT edge
-is absent from A.
+the standalone `node_ids.json` sidecar. Reconstruction records
+`STRUCT intersect A` and `STRUCT - A` so
+source-pipeline omissions remain visible rather than silently changing A.
 
 The exporter records edge counts, overlap counts, node-order hashes, and a
 serialization-independent SHA-256 digest for every edge set. It also records
@@ -48,8 +51,8 @@ weighting would be confounded with edge semantics.
 
 | Graph | Definition | Role |
 |---|---|---|
-| sealed A multigraph | stored `STRUCT union kNN`, including duplicates | Reuse the completed five-seed result |
-| simple A | deduplicated bidirectional `STRUCT union kNN` | New normalization control |
+| sealed A multigraph | exact stored `gte_qwen` adjacency, including duplicates | Reuse the completed five-seed result |
+| simple A | deduplicated bidirectional projection of sealed A | New normalization control |
 | symbolic B | `STRUCT union NER` | Non-embedding relational/symbolic anchor |
 | kNN-only | `A - STRUCT` | Embedding-similarity topology anchor |
 | full C | `A union NER` | All recovered edge sources |

@@ -84,7 +84,7 @@ def test_edge_family_reconstruction_and_identities(tmp_path: Path) -> None:
     )
 
 
-def test_edge_family_reconstruction_rejects_missing_structural_edge(tmp_path: Path) -> None:
+def test_edge_family_reconstruction_records_missing_structural_edge(tmp_path: Path) -> None:
     master = tmp_path / "master.json"
     master.write_text(
         json.dumps(
@@ -112,14 +112,13 @@ def test_edge_family_reconstruction_rejects_missing_structural_edge(tmp_path: Pa
     with ner_path.open("wb") as stream:
         pickle.dump(sparse.csr_matrix((2, 2)), stream)
 
-    try:
-        reconstruct_edge_families(
-            dataset="toy",
-            master_path=master,
-            baseline_graph_path=graph_path,
-            ner_path=ner_path,
-        )
-    except ValueError as exc:
-        assert "structural edge" in str(exc)
-    else:  # pragma: no cover
-        raise AssertionError("A graph that dropped structural edges was accepted")
+    families, metadata = reconstruct_edge_families(
+        dataset="toy",
+        master_path=master,
+        baseline_graph_path=graph_path,
+        ner_path=ner_path,
+    )
+    assert families["baseline_a_simple"].size == 0
+    assert families["knn_only"].size == 0
+    assert metadata["structural_coverage_by_sealed_a"]["present"] == 0
+    assert metadata["structural_coverage_by_sealed_a"]["missing"] == 1

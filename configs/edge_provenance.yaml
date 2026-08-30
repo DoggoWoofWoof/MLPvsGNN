@@ -8,16 +8,16 @@ question: >-
 
 graph_families:
   sealed_a_multigraph:
-    definition: structural_only UNION knn_only
+    definition: exact_stored_gte_qwen_graph
     execution: reuse_sealed_sa_mlp_confirmation
   baseline_a_simple:
-    definition: deduplicated_bidirectional_structural_only_UNION_knn_only
+    definition: deduplicated_bidirectional_projection_of_sealed_a
     execution: new_five_seed_normalization_control
   symbolic_b:
     definition: structural_only UNION ner_only
     execution: new_five_seed_training
   knn_only:
-    definition: baseline_a MINUS structural_only
+    definition: baseline_a_simple MINUS structural_only
     execution: new_five_seed_training
   full_union_c:
     definition: baseline_a UNION ner_only

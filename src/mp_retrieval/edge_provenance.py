@@ -194,8 +194,9 @@ def reconstruct_edge_families(
     structural_missing_from_a = np.setdiff1d(
         structural, baseline_a_simple, assume_unique=True
     )
-    if structural_missing_from_a.size:
-        raise ValueError("Frozen graph A does not contain every native structural edge")
+    structural_present_in_a = np.intersect1d(
+        structural, baseline_a_simple, assume_unique=True
+    )
     knn = np.setdiff1d(baseline_a_simple, structural, assume_unique=True)
     symbolic_b = np.union1d(structural, ner)
     full_union_c = np.union1d(baseline_a_simple, ner)
@@ -244,8 +245,15 @@ def reconstruct_edge_families(
             name: edge_key_sha256(values) for name, values in families.items()
         },
         "overlaps": overlaps,
+        "structural_coverage_by_sealed_a": {
+            "present": int(structural_present_in_a.size),
+            "missing": int(structural_missing_from_a.size),
+            "fraction": float(structural_present_in_a.size / max(structural.size, 1)),
+            "missing_edge_key_sha256": edge_key_sha256(structural_missing_from_a),
+        },
         "identities": {
-            "baseline_a_simple": "structural_only UNION knn_only",
+            "baseline_a_simple": "unique undirected projection of sealed A",
+            "knn_only": "baseline_a_simple MINUS structural_only",
             "symbolic_b": "structural_only UNION ner_only",
             "full_union_c": "baseline_a_simple UNION ner_only",
         },
