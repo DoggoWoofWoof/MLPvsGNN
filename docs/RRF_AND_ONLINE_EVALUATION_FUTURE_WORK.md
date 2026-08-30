@@ -1,12 +1,14 @@
 # RRF Fusion and Unseen-Embedding Systems Evaluation
 
-Status: **RRF effectiveness controls complete; uncached online evaluation
-deferred**. The A1/A2 executions use separate frozen protocols and do not
+Status: **RRF and linear effectiveness controls complete; uncached online evaluation
+deferred**. The A1/A2/A3 executions use separate frozen protocols and do not
 change the sealed QLS-MLP confirmation. Package D still requires a new
 preregistration and new result files.
 
 The completed rank and fixed-structure tables are in
 `P0_RANK_CONTROLS_RESULTS.md` and `P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md`.
+The completed learned linear decomposition is in
+`P0_LINEAR_RANK_STRUCTURE_RESULTS.md`.
 The weighted-RRF selection, tie rule, and unchanged-ceiling checks described
 below are now implemented. Sections concerning RRF-derived learned-model
 inputs or on-demand timing remain future work.

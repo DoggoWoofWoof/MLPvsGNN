@@ -11,7 +11,7 @@
 > learned propagation, respectively?** See
 > `docs/TERMINOLOGY_AND_POSITIONING.md`.
 
-> **Package A resumption update (2026-08-30):** A1 and A2 are complete under
+> **Package A resumption update (2026-08-30):** A1, A2, and A3 are complete under
 > new frozen protocols, without changing the sealed QLS/GNN models. A1 finds
 > that validation-selected RRF improves over the stronger Dense/SPLADE source
 > by 0.00–2.64 R@5 points. A2 finds genuine fixed-structure signal on WebQSP
@@ -19,14 +19,17 @@
 > for RRF+PPR), but the best training-free rule still trails QLS-MLP by
 > 3.89–17.97 points on four datasets. Rank fusion and one fixed rule therefore
 > do not explain the full QLS result. See `docs/P0_RANK_CONTROLS_RESULTS.md`
-> and `docs/P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md`. The next Package A stage
-> is a separately frozen tiny linear rank+structure control; it has not run.
+> and `docs/P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md`. The subsequently frozen
+> 19-parameter A3 control recovers part of the remaining gap on WebQSP,
+> MetaQA, and HotpotQA, but still trails QLS by 2.55–11.77 R@5 points on four
+> datasets. See `docs/P0_LINEAR_RANK_STRUCTURE_RESULTS.md`.
 
-> **Project status (2026-08-30): stopped at completed Package A2.** The sealed
-> fairness confirmation remains closed, while A1/A2 live in a separate P0
-> resumption lineage. Sections describing A3, perturbations, prediction,
-> theory, or launch commands remain plans until separately frozen. The frozen
-> confirmation result and its decisions continue to take precedence.
+> **Project status (2026-08-30): stopped at completed Package A3.** The sealed
+> fairness confirmation remains closed, while A1/A2/A3 live in a separate P0
+> resumption lineage. Package A is closed to further test-driven tuning.
+> Sections describing perturbations, prediction, theory, or launch commands
+> remain plans until separately frozen. The frozen confirmation result and its
+> decisions continue to take precedence.
 
 > **Fairness-confirmation result and stop decision (2026-08-26):** the protocol
 > frozen at `sa-mlp-confirmation-protocol-v1` is complete on all six datasets

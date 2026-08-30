@@ -2,6 +2,10 @@
 
 Status: **complete on all six frozen datasets**.
 
+Subsequent status: the separately frozen A3 linear control is also complete;
+see `P0_LINEAR_RANK_STRUCTURE_RESULTS.md`. The A2 table below remains the
+immutable training-free checkpoint.
+
 Every method was locked before test access and uses the exact sealed QLS query-local feature cache. There are no learned parameters, seeds, A2 validation choices, or message-passing operations.
 
 ## Complete R@5 table

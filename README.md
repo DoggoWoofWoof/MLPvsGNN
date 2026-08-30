@@ -9,20 +9,21 @@ Aggregation*
 
 ## Current status
 
-**Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2 controls:
+**Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2/A3 controls:
 COMPLETE.** The sealed QLS/GNN checkpoint remains unchanged. A separately
-preregistered P0 resumption has now completed rank-only and fixed structural
-controls; the learned linear A3 control has not started.
+preregistered P0 resumption has now completed rank-only, fixed structural, and
+19-parameter learned linear controls on all six datasets.
 
 | Established | Not yet established |
 |---|---|
 | Four-level plain/seed/QLS/GNN decomposition | Uncached post-retrieval speedup |
-| Five paired seeds on all six datasets | Native-versus-kNN mechanism |
-| QLS nearly recovers seed-aware-GNN R@5 | Robustness crossover |
+| Five paired seeds on all six datasets | Edge-provenance/native-versus-kNN mechanism |
+| QLS nearly recovers seed-aware-GNN R@5 | Topology/feature robustness crossover |
 | Warm-cache learned-inference advantage | Message-passing utility predictor |
 | Leakage-safe data/graph audit | Untouched external confirmation |
-| Dense/SPLADE/equal/weighted-RRF controls | Linear rank+structure capacity control |
-| Fixed distance/PPR/path/fusion controls | Uncached post-retrieval speedup |
+| Dense/SPLADE/equal/weighted-RRF controls | Candidate-pool budget sweep |
+| Fixed distance/PPR/path/fusion controls | Upstream seed-quality robustness |
+| 19-parameter linear rank+structure control | Typed-edge ablation |
 
 This is a standalone research repository about the value and cost of graph
 message passing for retrieval. It began with the question:
@@ -41,6 +42,8 @@ the frozen graph and retrieval seeds, but its learned forward pass never
 aggregates neighbor embeddings or receives adjacency. It is therefore **not
 topology-free**. Its trainable parameter count is approximately matched to the
 GNN comparators; fewer parameters are not a contribution of this work.
+The separate 19-parameter A3 model is deliberately a low-capacity diagnostic
+control, not a replacement name or parameter claim for QLS-MLP.
 
 The frozen implementation key remains `sa_mlp`, and the sealed SA-named files,
 tags, configurations, and hashes are intentionally unchanged. `SA-MLP` is
@@ -74,13 +77,18 @@ query-local structural information is explicitly exposed.
 The project does **not** claim that graphs are useless, QLS-MLP is topology-free,
 QLS-MLP has fewer parameters, or message passing is never required.
 
-The new P0 controls sharpen this boundary. Validation-selected RRF improves on
+The completed P0 controls sharpen this boundary. Validation-selected RRF improves on
 the stronger single ranker by 0.00–2.64 R@5 points. Fixed structural summaries
 alone add +5.20 points over RRF on WebQSP and +4.41 on MetaQA, while locked
 RRF+PPR adds +1.01 on HotpotQA. Yet the best training-free control still trails
 QLS-MLP by 3.89–17.97 points on HotpotQA, MuSiQue, MetaQA, and WebQSP. Simple
 rank fusion or a single hand-built structural rule therefore does not explain
-the complete QLS result.
+the complete QLS result. The 19-parameter A3 linear control recovers part of
+this gap—most clearly on WebQSP, MetaQA, and HotpotQA—but still trails QLS by
+11.77, 11.16, 5.63, and 2.55 R@5 points on MuSiQue, WebQSP, MetaQA, and
+HotpotQA, respectively. It matches QLS within one point only on 2Wiki and
+SQuAD. This isolates nonlinear semantic/structural interaction as important in
+four datasets without implying that message passing itself is necessary.
 
 ## System boundary
 
@@ -130,11 +138,15 @@ The separate Package A resumption is versioned by:
 - corrected rank controls: `p0-rank-controls-results-v2`, with
   [A1 results](docs/P0_RANK_CONTROLS_RESULTS.md);
 - fixed structural controls: `p0-fixed-structural-controls-results-v1`, with
-  [A2 results](docs/P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md); and
+  [A2 results](docs/P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md);
+- learned linear control: `p0-linear-rank-structure-results-v1`, with
+  [A3 results](docs/P0_LINEAR_RANK_STRUCTURE_RESULTS.md); and
 - explicit protocol/correction notes in the
   [A1 protocol](docs/P0_RANK_CONTROLS_PROTOCOL.md),
   [A1 MRR correction](docs/P0_RANK_CONTROLS_METRIC_CORRECTION.md), and
-  [A2 protocol](docs/P0_FIXED_STRUCTURAL_CONTROLS_PROTOCOL.md).
+  [A2 protocol](docs/P0_FIXED_STRUCTURAL_CONTROLS_PROTOCOL.md), plus the
+  [A3 protocol](docs/P0_LINEAR_RANK_STRUCTURE_PROTOCOL.md) and
+  [bias amendment](docs/P0_LINEAR_CONTROL_BIAS_AMENDMENT.md).
 
 ## Separation from C-RAG
 
@@ -598,7 +610,7 @@ of the project record:
 
 ## Prioritized Remaining Work
 
-The sealed confirmation remains closed to retuning. Package A1/A2 below were
+The sealed confirmation remains closed to retuning. Package A1/A2/A3 below were
 resumed only under new preregistered protocols and separate outputs. Every
 remaining experiment still requires its own freeze and must not tune or filter
 the completed test results.
@@ -608,12 +620,13 @@ The canonical details and priority order are in the
 
 ### Package A — Semantic versus structural decomposition
 
-**A1 and A2 are complete.** Dense, SPLADE, equal/validation-weighted RRF,
-structural-only PPR/distance/path summaries, and locked RRF+structure controls
-are reported in the linked P0 result documents. The next step is a separately
-frozen tiny linear rank+structure control, followed by the already sealed
-QLS-MLP and seed-aware-GNN references. This ladder determines what information
-and learning capacity are actually required.
+**A1, A2, and A3 are complete and closed.** Dense, SPLADE,
+equal/validation-weighted RRF, structural-only PPR/distance/path summaries,
+locked RRF+structure rules, and the 19-parameter linear rank+structure control
+are reported in the linked P0 result documents alongside the sealed QLS-MLP
+and seed-aware-GNN references. This ladder shows that fixed structure and
+learned weighting help, but linear capacity does not explain QLS on four of six
+datasets. Do not tune Package A further against these tests.
 
 ### Package B — Edge provenance (mandatory)
 
