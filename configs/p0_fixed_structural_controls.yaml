@@ -16,7 +16,7 @@ frozen_inputs:
     - hotpotqa_clean
     - squad_clean
     - metaqa
-  rank_control_tag: p0-rank-controls-results-v1
+  rank_control_tag: p0-rank-controls-results-v2
   structural_cache_tag: sa-mlp-confirmation-results-v1
   candidate_union: stable_dense_then_unseen_splade
   candidate_sources: [dense_top200, splade_top200]
