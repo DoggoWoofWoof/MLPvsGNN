@@ -29,7 +29,7 @@ frozen_inputs:
 
 model:
   name: linear_rank_structure
-  form: affine_score_w_transpose_x_plus_b
+  form: linear_score_w_transpose_x
   input_features:
     dense_reciprocal_rank:
       formula_if_present: (rrf_constant_plus_1)/(rrf_constant_plus_one_based_rank)
@@ -41,9 +41,9 @@ model:
     query_local_10: exact_sealed_local_features_in_metadata_order
   rrf_constant: 60
   input_dimension: 19
-  bias: true
-  trainable_parameters: 20
-  initialization: all_zeros
+  bias: false
+  trainable_parameters: 19
+  initialization: all_weights_zero
   hidden_layers: 0
   nonlinearities: 0
   adjacency_in_forward: false

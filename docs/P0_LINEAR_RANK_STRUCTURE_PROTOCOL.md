@@ -20,7 +20,7 @@ This is a capacity control, not a proposed architecture.
 
 For candidate `c` and query `q`, A3 computes
 
-`score(q,c) = w^T x(q,c) + b`.
+`score(q,c) = w^T x(q,c)`.
 
 The 19 inputs, in fixed order, are:
 
@@ -31,10 +31,14 @@ The 19 inputs, in fixed order, are:
 
 For one-based source rank `r`, a present candidate receives
 `(60 + 1) / (60 + r)` and an absent candidate receives zero. Static and local
-features are consumed exactly in the sealed cache metadata order. The affine
-layer has 19 weights and one bias: **20 trainable parameters total**. All
-parameters initialize to zero. There are no embeddings, feature projections,
-hidden layers, nonlinearities, or learned neighborhood operations.
+features are consumed exactly in the sealed cache metadata order. The linear
+layer has **19 trainable weights and no bias**. All weights initialize to zero.
+There are no embeddings, feature projections, hidden layers, nonlinearities,
+or learned neighborhood operations.
+
+A shared scalar bias is deliberately excluded: it cancels from a per-query
+softmax and cannot affect within-query ranking, so counting it as usable model
+capacity would be misleading.
 
 ## Immutable inputs and leakage boundary
 
@@ -75,7 +79,7 @@ mechanisms:
 - If A3 beats A1/A2 but trails QLS-MLP, learned feature weighting matters, while
   the remaining gap is attributable to nonlinear capacity and/or embedding
   interaction—not automatically to message passing.
-- If this 20-parameter control matches the seed-aware GNN, learned message
+- If this 19-parameter control matches the seed-aware GNN, learned message
   passing is unnecessary in that candidate-ranking regime.
 
 The complete ladder remains: rank-only, fixed structure, learned linear fixed
