@@ -134,7 +134,9 @@ def _graph_payload(path: Path) -> tuple[torch.Tensor, int]:
     return edge_index.long().cpu(), num_nodes
 
 
-def _contract_hash(queries: list[CompleteQuery]) -> str:
+def complete_query_contract_sha256(queries: list[CompleteQuery]) -> str:
+    """Hash query identity, split, ordered candidates, golds, and hop metadata."""
+
     digest = hashlib.sha256()
     for query in queries:
         digest.update(query.query_id.encode("utf-8"))
@@ -143,6 +145,9 @@ def _contract_hash(queries: list[CompleteQuery]) -> str:
         digest.update(query.relevant_global.numpy().tobytes())
         digest.update((-1 if query.hop is None else query.hop).to_bytes(2, "little", signed=True))
     return digest.hexdigest()
+
+
+_contract_hash = complete_query_contract_sha256
 
 
 def _load_node_id_mapping(root: Path, num_nodes: int) -> dict[str, int] | None:

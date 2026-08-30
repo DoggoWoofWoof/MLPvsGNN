@@ -1,0 +1,111 @@
+experiment: equal_rrf_candidate_context_budget
+status: CANDIDATE_BUDGET_PROTOCOL_FROZEN_BEFORE_NEW_TESTS
+protocol_ancestor: sa-mlp-confirmation-protocol-v1
+
+question: >-
+  How do candidate ceiling, graph context, effectiveness, and compute change as
+  QLS-MLP and the matched seed-aware GNN receive the same increasing budget?
+
+candidate_contract:
+  budgets: [50, 100, 200, 400]
+  fusion: equal_rrf
+  rrf_constant: 60
+  dense_weight: 0.5
+  splade_weight: 0.5
+  tie_break: ascending_global_node_id
+  full_union_when_unique_count_below_budget: true
+  seed_prior: original_dense_top5_union_splade_top5_intersect_budget
+  weighted_rrf: prohibited_in_primary_budget_sweep
+
+models: [sa_mlp, seed_aware_gnn]
+primary_metric: recall_at_5
+secondary_metrics: [recall_at_1, recall_at_20, mrr, full_coverage_at_20]
+
+datasets:
+  2wiki_clean:
+    expected_queries: 15000
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+    required_hops: []
+  musique_clean:
+    expected_queries: 19938
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+    required_hops: []
+  webqsp:
+    expected_queries: 1578
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+    required_hops: []
+  hotpotqa_clean:
+    expected_queries: 97852
+    selected_gnn: gin
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+    required_hops: []
+  squad_clean:
+    expected_queries: 130319
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+    required_hops: []
+  metaqa:
+    expected_queries: 407513
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+    required_hops: [1, 2, 3]
+
+training:
+  seeds: [0, 1, 2, 3, 4]
+  epochs: 3
+  batch_size: 16
+  layers: 1
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  checkpoint_selection: validation_recall_at_5_only
+  inference_repeats: 5
+  ks: [1, 5, 20]
+
+parameter_regime:
+  projection_dim: 64
+  hidden_dim: 64
+  maximum_sa_absolute_difference: 256
+  target: frozen_validation_selected_gnn_parameter_count
+
+fairness:
+  same_budget_and_candidates_for_both_models: true
+  same_sealed_a_multigraph: true
+  same_embeddings_labels_splits_loss_seeds_optimizer_epochs: true
+  same_selected_gnn_family: true
+  budget_selected_per_model: prohibited
+  test_selected_budget: prohibited
+
+required_context_outputs:
+  - candidate_ceiling
+  - candidate_count_mean_p95_p99_max
+  - stored_directed_edges_mean_p95_p99_max
+  - stored_directed_density_mean_p95_p99_max
+  - connected_components_mean_p95_p99_max
+  - topology_build_time_and_storage
+  - qls_feature_build_time_and_storage
+  - cached_model_latency_and_memory
+  - saved_checkpoints_for_uncached_package_d
+
+analysis:
+  primary_contrast: seed_aware_gnn_minus_sa_mlp_recall_at_5
+  unit: paired_seed_and_query
+  report_all_budgets_and_datasets: true
+  no_cross_budget_model_selection: true
+  candidate_ceiling_is_oracle_diagnostic_not_deployable_feature: true
+
+modal:
+  app: message-passing-retrieval-candidate-budget
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400
+
