@@ -13,7 +13,12 @@ import yaml
 
 REMOTE_ROOT = "/root/message-passing-retrieval"
 HOST_REPO_ROOT = Path(__file__).resolve().parents[1]
-CONFIG_PATH = HOST_REPO_ROOT / "configs" / "p0_fixed_structural_controls.yaml"
+RUNTIME_REPO_ROOT = (
+    HOST_REPO_ROOT
+    if (HOST_REPO_ROOT / "configs" / "p0_fixed_structural_controls.yaml").is_file()
+    else Path(REMOTE_ROOT)
+)
+CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "p0_fixed_structural_controls.yaml"
 CONFIG = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
 MODAL_CONFIG = CONFIG["modal"]
 STORAGE_ROOT = MODAL_CONFIG["storage_root"]
