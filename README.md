@@ -9,9 +9,10 @@ Aggregation*
 
 ## Current status
 
-**Fairness-confirmed six-dataset study: COMPLETE.** This is a frozen completed
-checkpoint, not an unfinished or broken experiment. No new experiment is
-currently authorized.
+**Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2 controls:
+COMPLETE.** The sealed QLS/GNN checkpoint remains unchanged. A separately
+preregistered P0 resumption has now completed rank-only and fixed structural
+controls; the learned linear A3 control has not started.
 
 | Established | Not yet established |
 |---|---|
@@ -20,6 +21,8 @@ currently authorized.
 | QLS nearly recovers seed-aware-GNN R@5 | Robustness crossover |
 | Warm-cache learned-inference advantage | Message-passing utility predictor |
 | Leakage-safe data/graph audit | Untouched external confirmation |
+| Dense/SPLADE/equal/weighted-RRF controls | Linear rank+structure capacity control |
+| Fixed distance/PPR/path/fusion controls | Uncached post-retrieval speedup |
 
 This is a standalone research repository about the value and cost of graph
 message passing for retrieval. It began with the question:
@@ -71,6 +74,14 @@ query-local structural information is explicitly exposed.
 The project does **not** claim that graphs are useless, QLS-MLP is topology-free,
 QLS-MLP has fewer parameters, or message passing is never required.
 
+The new P0 controls sharpen this boundary. Validation-selected RRF improves on
+the stronger single ranker by 0.00–2.64 R@5 points. Fixed structural summaries
+alone add +5.20 points over RRF on WebQSP and +4.41 on MetaQA, while locked
+RRF+PPR adds +1.01 on HotpotQA. Yet the best training-free control still trails
+QLS-MLP by 3.89–17.97 points on HotpotQA, MuSiQue, MetaQA, and WebQSP. Simple
+rank fusion or a single hand-built structural rule therefore does not explain
+the complete QLS result.
+
 ## System boundary
 
 This repository is a **post-retrieval graph-aware candidate-ranking study**:
@@ -113,6 +124,17 @@ The earlier general comparison is separately frozen at
 `six-dataset-protocol-v1` (`f012699`) and documented in
 [the six-dataset results](docs/SIX_DATASET_RESULTS.md). Historical protocol tags
 remain part of the record and must not be moved or deleted.
+
+The separate Package A resumption is versioned by:
+
+- corrected rank controls: `p0-rank-controls-results-v2`, with
+  [A1 results](docs/P0_RANK_CONTROLS_RESULTS.md);
+- fixed structural controls: `p0-fixed-structural-controls-results-v1`, with
+  [A2 results](docs/P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md); and
+- explicit protocol/correction notes in the
+  [A1 protocol](docs/P0_RANK_CONTROLS_PROTOCOL.md),
+  [A1 MRR correction](docs/P0_RANK_CONTROLS_METRIC_CORRECTION.md), and
+  [A2 protocol](docs/P0_FIXED_STRUCTURAL_CONTROLS_PROTOCOL.md).
 
 ## Separation from C-RAG
 
@@ -574,22 +596,24 @@ of the project record:
 - The plain MLP does not dominate across datasets, and QLS-MLP still has a clear
   one-point-margin failure on 2Wiki.
 
-## Deferred Future Work
+## Prioritized Remaining Work
 
-Everything in this section is deferred. No experiment below is currently
-scheduled or authorized by the frozen confirmation protocol. Any resumption
-requires a separate preregistration that does not tune or filter the completed
-test results.
+The sealed confirmation remains closed to retuning. Package A1/A2 below were
+resumed only under new preregistered protocols and separate outputs. Every
+remaining experiment still requires its own freeze and must not tune or filter
+the completed test results.
 
 The canonical details and priority order are in the
 [paper-readiness and real-world audit](docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md).
 
 ### Package A — Semantic versus structural decomposition
 
-Compare Dense, SPLADE, equal RRF, validation-only weighted RRF, structural-only
-PPR/distance/path summaries, RRF+PPR, RRF+structural summaries, linear QLS,
-QLS-MLP, and the seed-aware GNN. This query-ranking-specific ladder determines
-what information and learning capacity are actually required.
+**A1 and A2 are complete.** Dense, SPLADE, equal/validation-weighted RRF,
+structural-only PPR/distance/path summaries, and locked RRF+structure controls
+are reported in the linked P0 result documents. The next step is a separately
+frozen tiny linear rank+structure control, followed by the already sealed
+QLS-MLP and seed-aware-GNN references. This ladder determines what information
+and learning capacity are actually required.
 
 ### Package B — Edge provenance (mandatory)
 

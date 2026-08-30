@@ -1,9 +1,9 @@
 # Paper-Readiness and Real-World Ranker Audit
 
-Status: **deferred planning document**. Nothing here changes the sealed
-six-dataset confirmation, and no experiment is authorized by this document.
-Any resumed work requires a new preregistration and outputs separate from the
-frozen results.
+Status: **living readiness document**. Nothing here changes the sealed
+six-dataset confirmation. Package A1/A2 were executed under new frozen
+protocols and separate outputs; every remaining experiment still requires its
+own preregistration.
 
 Publication prose uses **QLS-MLP (Query-Local Structure MLP)**. The frozen
 implementation key `sa_mlp` and existing SA-named artifacts remain unchanged;
@@ -45,7 +45,7 @@ claim is defensible.
 | P2 | Fresh untouched confirmation | The same benchmark families informed sequential screens, model decisions, and fairness confirmation | Open only after Packages A–E and their hypotheses are frozen |
 | P0 | Uncached unseen-embedding latency | Current speed ratios use packed per-query topology/features | Rebuild fusion, induced graph, and QLS summaries on demand for never-cached query IDs |
 | P0 | Edge provenance | `graph.pt` flattens native/title/KB and embedding-kNN edges | Re-export typed provenance and compare native-only, kNN-only, and union graphs |
-| P0 | Strong trivial controls | QLS gains may be explainable by parameter-free rank/diffusion combinations | Add Dense, SPLADE, RRF, PPR/distance, RRF+PPR, and linear-QLS controls |
+| P0 | Strong trivial controls (A1/A2 complete; A3 pending) | QLS gains may be explainable by parameter-free rank/diffusion combinations | Rank and fixed-structure controls are complete; add the separately frozen linear rank+structure control |
 | P0 | Candidate-pool dependence | Results are conditional on a top-200+top-200 union and dataset-specific ceilings | Sweep frozen candidate budgets and report ceiling/effectiveness/latency together |
 | P1 | Phase boundary and prediction | Six clean datasets show a boundary but do not yet explain or predict it | Run controlled topology/feature axes, freeze crossovers, and validate a predictor on held-out regimes |
 | P1 | Upstream-quality robustness | QLS and GNN both depend on seed/candidate quality | Vary retriever agreement, seed corruption, embedding quality, and candidate recall |
@@ -218,6 +218,13 @@ information beyond smoothing in embedding space.
 
 ## 4. Package A — semantic versus structural decomposition
 
+**Execution update (2026-08-30):** A1 and A2 are complete. A1 reports Dense,
+SPLADE, equal RRF, and validation-selected weighted RRF in
+`P0_RANK_CONTROLS_RESULTS.md`. A2 reports frozen distance, PPR,
+path/connectivity, structural-summary, and locked RRF+structure rules in
+`P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md`. A3 (the learned linear control) is
+the next stage and must be frozen before any test evaluation.
+
 The final table should include a compact ladder that shows where the gain first
 appears:
 
@@ -243,8 +250,9 @@ Reasons:
 - the GNN comparison then isolates learned message passing rather than weak
   baselines.
 
-All parameter-free rules must be frozen or validation-selected from a declared
-grid. They cannot be tuned on test.
+All completed parameter-free rules were frozen or validation-selected from a
+declared grid and were not tuned on test. That boundary remains mandatory for
+A3 and later work.
 
 ## 5. Package C — structural-context budget and upstream dependence
 

@@ -1,8 +1,15 @@
 # RRF Fusion and Unseen-Embedding Systems Evaluation
 
-Status: **deferred future work**. This document does not change the sealed
-QLS-MLP confirmation protocol, checkpoints, test results, or statistical
-decisions. Any execution requires a new preregistration and new result files.
+Status: **RRF effectiveness controls complete; uncached online evaluation
+deferred**. The A1/A2 executions use separate frozen protocols and do not
+change the sealed QLS-MLP confirmation. Package D still requires a new
+preregistration and new result files.
+
+The completed rank and fixed-structure tables are in
+`P0_RANK_CONTROLS_RESULTS.md` and `P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md`.
+The weighted-RRF selection, tie rule, and unchanged-ceiling checks described
+below are now implemented. Sections concerning RRF-derived learned-model
+inputs or on-demand timing remain future work.
 
 Publication prose uses **QLS-MLP (Query-Local Structure MLP)**. The frozen
 implementation key remains `sa_mlp`, and sealed SA-named artifacts are not
@@ -64,7 +71,7 @@ to be candidate-order equivariant, so this ordering is a deterministic data
 contract rather than an explicit Dense/SPLADE fusion score. The current seed
 prior is binary membership in the stable union of Dense top-5 and SPLADE top-5.
 
-## Future RRF experiment
+## Completed RRF experiment and remaining extensions
 
 ### Locked parameter-free baseline
 
