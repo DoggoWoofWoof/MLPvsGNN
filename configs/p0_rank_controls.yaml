@@ -1,0 +1,96 @@
+experiment: p0_rank_controls
+status: PROTOCOL_FROZEN_BEFORE_TEST_EVALUATION
+package: A_semantic_vs_structural_decomposition
+stage: A1_rank_only_controls
+
+question: >-
+  On the unchanged frozen Dense-top-200 union SPLADE-top-200 candidate contract,
+  how much retrieval effectiveness is obtained by either source alone, locked
+  equal reciprocal-rank fusion, and validation-selected weighted reciprocal-rank
+  fusion before any learned or graph-structural reranking?
+
+source_contract:
+  source_root_cli_required: true
+  source_repository_read_only: true
+  dataset_subdirectory: gte_qwen
+  required_files:
+    - dense_top200_all.npy
+    - splade_top200_all.npy
+    - query_ids_all.json
+  candidate_union: stable_dense_then_unseen_splade
+  maximum_candidates: 400
+  rank_origin: one_indexed
+
+datasets:
+  - 2wiki_clean
+  - musique_clean
+  - webqsp
+  - hotpotqa_clean
+  - squad_clean
+  - metaqa
+
+methods:
+  dense:
+    rule: preserve_dense_rank
+  splade:
+    rule: preserve_splade_rank
+  equal_rrf:
+    constant: 60
+    dense_weight: 0.5
+    splade_weight: 0.5
+    locked: true
+  weighted_rrf:
+    constant: 60
+    dense_weight_grid: [0.0, 0.25, 0.5, 0.75, 1.0]
+    splade_weight_rule: one_minus_dense_weight
+    selection_split: validation
+    selection_metric: recall_at_5
+    tie_break:
+      - smallest_absolute_distance_from_equal_weight
+      - smaller_dense_weight
+    test_rule: evaluate_only_the_single_validation_selected_weight
+
+evaluation:
+  splits_used: [validation, test]
+  metrics:
+    - candidate_ceiling
+    - candidate_available
+    - recall_at_1
+    - recall_at_5
+    - recall_at_20
+    - mrr
+    - full_coverage_at_20
+    - conditional_recall_at_1
+    - conditional_recall_at_5
+    - conditional_recall_at_20
+    - conditional_mrr
+  recall_denominator: every_gold_for_the_query
+  conditional_denominator: in_pool_golds_only
+  rrf_tie_break: ascending_global_node_id
+  query_metrics_saved: true
+  batch_size: 2048
+
+test_access:
+  fixed_methods: [dense, splade, equal_rrf]
+  selected_methods: [weighted_rrf_validation_selected_only]
+  unselected_weighted_test_results: prohibited
+  test_selected_constants_or_weights: prohibited
+
+outputs:
+  root: outputs/p0_rank_controls
+  per_dataset_json: true
+  compressed_query_metrics: true
+  summary_json: true
+
+out_of_scope_for_stage_a1:
+  - model_training
+  - graph_loading
+  - structural_feature_computation
+  - candidate_regeneration
+  - raw_query_encoding
+  - changes_to_frozen_sa_mlp_artifacts
+  - changes_to_crag
+
+next_stage_requires_separate_freeze:
+  stage: A2_structural_and_linear_controls
+  methods: [distance, ppr, path_connectivity, rrf_plus_ppr, linear_qls]
