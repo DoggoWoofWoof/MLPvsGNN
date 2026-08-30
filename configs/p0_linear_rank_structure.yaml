@@ -1,0 +1,164 @@
+experiment: p0_linear_rank_structure
+status: PROTOCOL_FROZEN_BEFORE_TEST_EVALUATION
+package: A_semantic_vs_structural_decomposition
+stage: A3_learned_linear_control
+
+question: >-
+  Can a tiny learned linear weighting of frozen retrieval-rank and graph-summary
+  features explain QLS-MLP's advantage, without embeddings, hidden layers,
+  adjacency in the learned forward pass, or message passing?
+
+frozen_inputs:
+  datasets:
+    - 2wiki_clean
+    - musique_clean
+    - webqsp
+    - hotpotqa_clean
+    - squad_clean
+    - metaqa
+  rank_control_tag: p0-rank-controls-results-v2
+  structural_control_tag: p0-fixed-structural-controls-results-v1
+  qls_confirmation_tag: sa-mlp-confirmation-results-v1
+  candidate_union: stable_dense_then_unseen_splade
+  candidate_sources: [dense_top200, splade_top200]
+  structural_cache_format: fixed_structural_features_v1
+  graph: frozen_candidate_induced_directed_graph
+  embeddings_loaded: false
+  graph_loaded: false
+  labels_used_in_features: false
+
+model:
+  name: linear_rank_structure
+  form: affine_score_w_transpose_x_plus_b
+  input_features:
+    dense_reciprocal_rank:
+      formula_if_present: (rrf_constant_plus_1)/(rrf_constant_plus_one_based_rank)
+      absent_value: 0.0
+    splade_reciprocal_rank:
+      formula_if_present: (rrf_constant_plus_1)/(rrf_constant_plus_one_based_rank)
+      absent_value: 0.0
+    static_7: exact_sealed_static_features_in_metadata_order
+    query_local_10: exact_sealed_local_features_in_metadata_order
+  rrf_constant: 60
+  input_dimension: 19
+  bias: true
+  trainable_parameters: 20
+  initialization: all_zeros
+  hidden_layers: 0
+  nonlinearities: 0
+  adjacency_in_forward: false
+  message_passing: false
+
+derived_cache:
+  format: linear_rank_structure_inputs_v1
+  contents:
+    - stable_candidate_global_ids_int32
+    - dense_and_splade_rank_features_float16
+  labels_persisted: false
+  source_contracts_required:
+    - candidate_ID_order_sha256_matches_confirmation
+    - structural_contract_matches_confirmation
+  report_build_time_and_disk_bytes: true
+
+training:
+  loss: multi_positive_listwise_cross_entropy
+  loss_definition: logsumexp_all_candidates_minus_mean_positive_score
+  train_queries_without_in_pool_gold: excluded_from_loss
+  seeds: [0, 1, 2, 3, 4]
+  epochs: 3
+  query_batch_size: 512
+  optimizer: AdamW
+  learning_rate_grid: [0.001, 0.01, 0.05]
+  learning_rate_selection:
+    split: validation
+    seed: 0
+    metric: recall_at_5
+    tie_break: smaller_learning_rate
+    reuse_selected_seed_0_checkpoint: true
+  weight_decay: 0.0
+  gradient_clip_norm: 1.0
+  epoch_checkpoint_selection:
+    split: validation
+    metric: recall_at_5
+    tie_break: earlier_epoch
+  test_evaluations_per_seed: 1
+  inference_repeats_for_timing: 5
+
+ranking:
+  score_direction: descending
+  tie_break: ascending_global_node_id
+  full_candidate_ranking_before_metrics: true
+
+evaluation:
+  metrics:
+    - candidate_ceiling
+    - candidate_available
+    - recall_at_1
+    - recall_at_5
+    - recall_at_20
+    - mrr
+    - full_coverage_at_20
+    - conditional_recall_at_1
+    - conditional_recall_at_5
+    - conditional_recall_at_20
+    - conditional_mrr
+  recall_denominator: every_gold_for_the_query
+  conditional_denominator: in_pool_golds_only
+  per_query_test_metrics_saved_for_every_seed: true
+  metaqa_hop_breakdown: [1, 2, 3]
+  references_not_retrained:
+    - dense
+    - splade
+    - selected_rrf
+    - fixed_structural_controls
+    - seed_only_mlp
+    - qls_mlp
+    - seed_aware_selected_gnn
+
+alignment_gates:
+  - rank_and_structural_dataset_names_exact
+  - source_fingerprint_matches_confirmation
+  - static_and_local_feature_names_exact
+  - structural_contract_matches_confirmation
+  - candidate_row_count_exact
+  - candidate_ID_order_sha256_matches_confirmation
+  - selected_rrf_test_metrics_reproduce_A1_v2
+
+test_access:
+  test_used_for_learning_rate_or_checkpoint_selection: prohibited
+  test_selected_features_or_models: prohibited
+  test_run_only_after_dataset_learning_rate_selection: true
+  report_all_datasets_and_seeds: true
+
+interpretation:
+  if_linear_matches_qls: >-
+    Fixed rank and graph summaries contain most of the usable signal; QLS-MLP's
+    nonlinear semantic interaction is not required for effectiveness.
+  if_linear_beats_training_free_but_trails_qls: >-
+    Learned weighting matters, while the remaining QLS advantage requires
+    nonlinear capacity and/or embedding interactions rather than message passing.
+  if_linear_matches_gnn: >-
+    Learned message passing is unnecessary in this candidate-ranking regime;
+    an extremely low-capacity fixed-structure scorer suffices.
+  universal_mlp_claim: prohibited
+
+out_of_scope:
+  - embedding_features
+  - hidden_layers
+  - nonlinear_feature_crosses
+  - qls_mlp_or_gnn_retraining
+  - architecture_or_feature_search
+  - graph_or_candidate_regeneration
+  - topology_perturbations
+  - raw_query_encoding
+  - changes_to_crag
+
+modal:
+  app: message-passing-retrieval-p0-linear-control
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400
+  parallel_datasets: 6
