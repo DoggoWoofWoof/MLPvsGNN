@@ -28,7 +28,7 @@ result_volume = modal.Volume.from_name(MODAL_CONFIG["result_volume"], create_if_
 image = (
     modal.Image.micromamba(python_version="3.11")
     .env({"PYTHONPATH": f"{REMOTE_ROOT}:{REMOTE_ROOT}/src"})
-    .pip_install("numpy<2.0", "pyyaml==6.0.2")
+    .pip_install("torch==2.2.1", "numpy<2.0", "pyyaml==6.0.2")
     .add_local_dir(str(HOST_REPO_ROOT / "src"), remote_path=f"{REMOTE_ROOT}/src")
     .add_local_file(
         str(HOST_REPO_ROOT / "scripts" / "run_fixed_structural_controls.py"),
