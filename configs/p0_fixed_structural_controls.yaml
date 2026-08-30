@@ -1,0 +1,136 @@
+experiment: p0_fixed_structural_controls
+status: PROTOCOL_FROZEN_BEFORE_TEST_EVALUATION
+package: A_semantic_vs_structural_decomposition
+stage: A2_training_free_structural_controls
+
+question: >-
+  How much of QLS-MLP's gain over semantic rank fusion is recoverable from
+  individual fixed query-local graph summaries or locked rank-level fusion,
+  without learned parameters or message passing?
+
+frozen_inputs:
+  datasets:
+    - 2wiki_clean
+    - musique_clean
+    - webqsp
+    - hotpotqa_clean
+    - squad_clean
+    - metaqa
+  rank_control_tag: p0-rank-controls-results-v1
+  structural_cache_tag: sa-mlp-confirmation-results-v1
+  candidate_union: stable_dense_then_unseen_splade
+  candidate_sources: [dense_top200, splade_top200]
+  retrieval_seeds: stable_union_of_dense_top5_and_splade_top5
+  graph: frozen_candidate_induced_directed_graph
+  labels_used_in_features: false
+  cache_format: fixed_structural_features_v1
+
+feature_columns:
+  distance:
+    source: [distance_0, distance_1, distance_2, distance_3_plus_or_unreachable]
+    bucket_scores: [1.0, 0.6666666666666666, 0.3333333333333333, 0.0]
+  ppr:
+    source: personalized_pagerank
+  path_connectivity:
+    source:
+      - seed_connections
+      - paths_length_1
+      - paths_length_2
+      - paths_length_3
+      - common_out_neighbors_with_seed_neighborhood
+    aggregation: arithmetic_mean
+  structural_summary:
+    source:
+      - distance_score
+      - seed_connections
+      - paths_length_1
+      - paths_length_2
+      - paths_length_3
+      - personalized_pagerank
+      - common_out_neighbors_with_seed_neighborhood
+    aggregation: arithmetic_mean
+
+methods:
+  selected_rrf:
+    role: frozen_A1_reference
+    dense_weight: validation_selected_per_dataset_from_A1
+    splade_weight: one_minus_dense_weight
+    constant: 60
+  distance:
+    score: frozen_distance_bucket_score
+  ppr:
+    score: frozen_personalized_pagerank
+  path_connectivity:
+    score: frozen_path_connectivity_mean
+  structural_summary:
+    score: frozen_structural_summary_mean
+  selected_rrf_plus_ppr:
+    operator: equal_reciprocal_rank_fusion
+    inputs: [selected_rrf, ppr]
+    constant: 60
+    weights: [0.5, 0.5]
+  selected_rrf_plus_structural_summary:
+    operator: equal_reciprocal_rank_fusion
+    inputs: [selected_rrf, structural_summary]
+    constant: 60
+    weights: [0.5, 0.5]
+
+ranking:
+  score_direction: descending
+  tie_break: ascending_global_node_id
+  full_candidate_ranking_before_metrics: true
+
+evaluation:
+  splits: [validation, test]
+  metrics:
+    - candidate_ceiling
+    - candidate_available
+    - recall_at_1
+    - recall_at_5
+    - recall_at_20
+    - mrr
+    - full_coverage_at_20
+    - conditional_recall_at_1
+    - conditional_recall_at_5
+    - conditional_recall_at_20
+    - conditional_mrr
+  recall_denominator: every_gold_for_the_query
+  conditional_denominator: in_pool_golds_only
+  per_query_test_metrics_saved: true
+
+alignment_gates:
+  - structural_feature_names_exact
+  - source_fingerprint_matches_confirmation
+  - structural_contract_matches_confirmation
+  - candidate_row_count_exact
+  - candidate_ID_order_sha256_matches_confirmation
+  - selected_rrf_test_metrics_reproduce_A1
+
+test_access:
+  validation_selected_A2_weights_or_rules: prohibited
+  all_A2_rules_locked_before_test: true
+  test_selected_models_or_features: prohibited
+  report_all_datasets_and_methods: true
+
+out_of_scope:
+  - trainable_linear_qls
+  - qls_mlp_or_gnn_retraining
+  - architecture_changes
+  - graph_or_candidate_regeneration
+  - edge_provenance_reconstruction
+  - perturbations
+  - raw_query_encoding
+  - changes_to_crag
+
+next_stage_requires_separate_freeze:
+  stage: A3_linear_qls
+  role: learned_low_capacity_control
+
+modal:
+  app: message-passing-retrieval-p0-structural-controls
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400
+  parallel_datasets: 6
