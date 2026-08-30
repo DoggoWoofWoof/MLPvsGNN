@@ -2,6 +2,8 @@
 
 Status: **complete on all six frozen datasets**.
 
+Version 2 correction: MRR is computed over each method's full available ranking. Version 1 accidentally reported MRR@20; its R@K, FullCov, ceiling, selection, and rankings were unaffected.
+
 These are deterministic, training-free controls over the unchanged Dense-top-200 union SPLADE-top-200 candidate contract. Weighted RRF was selected by validation R@5 only. The test split was evaluated only for Dense, SPLADE, locked equal RRF, and the single selected weight.
 
 ## Primary R@5 result
@@ -22,11 +24,11 @@ Validation-selected RRF improves on the stronger single ranker on five datasets 
 | Dataset | Candidate ceiling | R@1 | R@5 | R@20 | MRR | FullCov@20 |
 |---|---:|---:|---:|---:|---:|---:|
 | 2wiki_clean | 79.67 | 42.05 | 68.48 | 72.30 | 96.71 | 42.40 |
-| musique_clean | 94.05 | 37.99 | 69.24 | 81.07 | 89.82 | 59.45 |
-| webqsp | 49.06 | 4.80 | 10.20 | 18.53 | 10.50 | 15.72 |
-| hotpotqa_clean | 92.95 | 42.39 | 72.24 | 81.45 | 89.47 | 65.21 |
-| squad_clean | 99.49 | 72.03 | 89.31 | 94.37 | 79.67 | 94.37 |
-| metaqa | 33.51 | 2.67 | 13.75 | 16.30 | 10.67 | 13.94 |
+| musique_clean | 94.05 | 37.99 | 69.24 | 81.07 | 89.83 | 59.45 |
+| webqsp | 49.06 | 4.80 | 10.20 | 18.53 | 11.21 | 15.72 |
+| hotpotqa_clean | 92.95 | 42.39 | 72.24 | 81.45 | 89.51 | 65.21 |
+| squad_clean | 99.49 | 72.03 | 89.31 | 94.37 | 79.75 | 94.37 |
+| metaqa | 33.51 | 2.67 | 13.75 | 16.30 | 10.87 | 13.94 |
 
 ## Descriptive comparison with the frozen learned models
 
