@@ -3,6 +3,7 @@ import hashlib
 import numpy as np
 
 from mp_retrieval.structural_controls import (
+    candidate_contract_hashes,
     candidate_order_sha256,
     equal_rrf_fusion,
     fixed_structural_scores,
@@ -58,3 +59,10 @@ def test_candidate_order_hash_covers_query_ids_counts_and_ids():
         digest.update(len(candidates).to_bytes(4, "little"))
         digest.update(values.tobytes())
     assert observed == digest.hexdigest()
+
+    tensor = hashlib.sha256()
+    for query_id, candidates in (("q0", [5, 3, 2]), ("q1", [4, 1, 0])):
+        tensor.update(query_id.encode())
+        tensor.update(np.asarray(candidates, dtype=np.int64).tobytes())
+    hashes = candidate_contract_hashes(["q0", "q1"], dense, splade, ptr)
+    assert hashes["candidate_tensor_sha256"] == tensor.hexdigest()

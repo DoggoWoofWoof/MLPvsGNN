@@ -142,19 +142,20 @@ def fixed_structural_scores(local_features: np.ndarray) -> dict[str, np.ndarray]
     }
 
 
-def candidate_order_sha256(
+def candidate_contract_hashes(
     query_ids: Sequence[str],
     dense: np.ndarray,
     splade: np.ndarray,
     candidate_ptr: np.ndarray,
-) -> str:
-    """Reproduce the sealed query/candidate-order digest without graph loading."""
+) -> dict[str, str]:
+    """Reproduce both sealed candidate digests without graph loading."""
 
     if dense.shape != splade.shape or dense.shape[0] != len(query_ids):
         raise ValueError("Query IDs and frozen rank arrays are misaligned")
     if candidate_ptr.shape != (len(query_ids) + 1,):
         raise ValueError("Structural candidate pointers are misaligned")
-    digest = hashlib.sha256()
+    order_digest = hashlib.sha256()
+    tensor_digest = hashlib.sha256()
     for query_index, query_id in enumerate(query_ids):
         candidates = stable_candidate_union(dense[query_index], splade[query_index])
         cached_count = int(candidate_ptr[query_index + 1] - candidate_ptr[query_index])
@@ -162,7 +163,26 @@ def candidate_order_sha256(
             raise ValueError(
                 f"Candidate count differs from structural cache at query {query_index}"
             )
-        digest.update(str(query_id).encode("utf-8"))
-        digest.update(int(candidates.size).to_bytes(4, "little"))
-        digest.update(candidates.tobytes())
-    return digest.hexdigest()
+        encoded_query_id = str(query_id).encode("utf-8")
+        order_digest.update(encoded_query_id)
+        order_digest.update(int(candidates.size).to_bytes(4, "little"))
+        order_digest.update(candidates.tobytes())
+        tensor_digest.update(encoded_query_id)
+        tensor_digest.update(candidates.tobytes())
+    return {
+        "candidate_id_order_sha256": order_digest.hexdigest(),
+        "candidate_tensor_sha256": tensor_digest.hexdigest(),
+    }
+
+
+def candidate_order_sha256(
+    query_ids: Sequence[str],
+    dense: np.ndarray,
+    splade: np.ndarray,
+    candidate_ptr: np.ndarray,
+) -> str:
+    """Reproduce the dedicated candidate-order digest used by legacy confirmations."""
+
+    return candidate_contract_hashes(query_ids, dense, splade, candidate_ptr)[
+        "candidate_id_order_sha256"
+    ]

@@ -29,7 +29,7 @@ from mp_retrieval.rank_fusion import (
 from mp_retrieval.structural_controls import (
     FROZEN_LOCAL_FEATURE_NAMES,
     FrozenStructuralCache,
-    candidate_order_sha256,
+    candidate_contract_hashes,
     equal_rrf_fusion,
     fixed_structural_scores,
     rank_scores,
@@ -105,23 +105,32 @@ def _validate_alignment(
     ):
         raise ValueError("Structural cache is not in canonical query-index order")
 
-    observed_order = candidate_order_sha256(
+    observed_hashes = candidate_contract_hashes(
         contract.query_ids,
         contract.dense,
         contract.splade,
         cache.candidate_ptr,
     )
-    expected_order = confirmation["comparison_contract"]["candidate_compatibility_proof"][
-        "candidate_id_order_sha256"
-    ]
-    if observed_order != expected_order:
-        raise ValueError("Frozen candidate ID/order digest differs from the QLS confirmation")
+    comparison = confirmation["comparison_contract"]
+    expected_tensor = comparison["sha256"]["candidates"]
+    if observed_hashes["candidate_tensor_sha256"] != expected_tensor:
+        raise ValueError("Frozen candidate tensor digest differs from the QLS confirmation")
+    compatibility = comparison.get("candidate_compatibility_proof")
+    if compatibility is not None:
+        expected_order = compatibility["candidate_id_order_sha256"]
+        if observed_hashes["candidate_id_order_sha256"] != expected_order:
+            raise ValueError("Frozen candidate ID/order digest differs from the QLS confirmation")
     return {
         "status": "BIT_EXACT_A2_INPUT_ALIGNMENT",
         "source_fingerprint_sha256": metadata["source_fingerprint_sha256"],
         "structural_contract_sha256": metadata["contract_sha256"],
         "candidate_contract_sha256": metadata["candidate_contract_sha256"],
-        "candidate_id_order_sha256": observed_order,
+        **observed_hashes,
+        "candidate_order_reference": (
+            "candidate_compatibility_proof"
+            if compatibility is not None
+            else "comparison_contract.sha256.candidates"
+        ),
         "queries": contract.query_count,
         "candidate_rows": int(cache.local.shape[0]),
         "feature_names": list(FROZEN_LOCAL_FEATURE_NAMES),
