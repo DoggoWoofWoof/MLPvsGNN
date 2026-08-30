@@ -77,22 +77,26 @@ def _evaluate_split(
             splade,
             dense_weights=dense_weights,
             constant=constant,
-            top_k=20,
+            top_k=dense.shape[1] + splade.shape[1],
         )
-        rankings = {
-            "dense": dense[:, :20],
-            "splade": splade[:, :20],
-            **{f"rrf_dense_{weight:.2f}": value for weight, value in rrf.items()},
-        }
         for local_index, query_index in enumerate(batch_indices.tolist()):
             output_index = batch_start + local_index
             golds = contract.golds[query_index]
             candidates = np.concatenate((dense[local_index], splade[local_index]))
             available = set(golds) & set(map(int, candidates))
+            unique_candidates = len(set(map(int, candidates)))
+            rankings = {
+                "dense": dense[local_index],
+                "splade": splade[local_index],
+                **{
+                    f"rrf_dense_{weight:.2f}": value[local_index, :unique_candidates]
+                    for weight, value in rrf.items()
+                },
+            }
             gold_count[output_index] = len(golds)
             in_pool_gold_count[output_index] = len(available)
-            for method, method_rankings in rankings.items():
-                row = ranking_metrics(method_rankings[local_index], golds, candidates)
+            for method, ranking in rankings.items():
+                row = ranking_metrics(ranking, golds, candidates)
                 for metric in metric_names:
                     value = row[metric]
                     arrays[method][metric][output_index] = np.nan if value is None else float(value)
@@ -133,9 +137,7 @@ def _run_dataset(
         save_query_metrics=False,
     )
     validation_seconds = time.perf_counter() - validation_started
-    weighted_validation = {
-        weight: validation[f"rrf_dense_{weight:.2f}"] for weight in weights
-    }
+    weighted_validation = {weight: validation[f"rrf_dense_{weight:.2f}"] for weight in weights}
     selected_weight = select_dense_weight(weighted_validation, metric="recall@5")
 
     test_weights = sorted({0.5, selected_weight})
@@ -220,7 +222,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
 
     results = []
     for dataset in datasets:
-        dataset_root = args.source_root / dataset / config["source_contract"]["dataset_subdirectory"]
+        dataset_root = (
+            args.source_root / dataset / config["source_contract"]["dataset_subdirectory"]
+        )
         existing_path = args.output_root / f"{dataset}.json"
         if args.resume and existing_path.is_file():
             result = json.loads(existing_path.read_text(encoding="utf-8"))

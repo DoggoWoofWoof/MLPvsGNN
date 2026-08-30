@@ -48,6 +48,13 @@ def test_ranking_metrics_use_all_gold_and_conditional_denominators():
     assert row["conditional_full_coverage@3"] == 1.0
 
 
+def test_mrr_uses_the_full_supplied_ranking_beyond_twenty():
+    ranking = list(range(21))
+    row = ranking_metrics(ranking, [20], ranking)
+    assert row["recall@20"] == 0.0
+    assert row["mrr"] == 1.0 / 21.0
+
+
 def test_aggregate_and_validation_only_weight_selection():
     aggregate = aggregate_metric_arrays(
         {

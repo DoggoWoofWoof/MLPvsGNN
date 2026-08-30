@@ -114,6 +114,12 @@ def render_markdown(analysis: dict[str, Any]) -> str:
         "Status: **complete on all six frozen datasets**.",
         "",
         (
+            "Version 2 correction: MRR is computed over each method's full available ranking. "
+            "Version 1 accidentally reported MRR@20; its R@K, FullCov, ceiling, selection, and "
+            "rankings were unaffected."
+        ),
+        "",
+        (
             "These are deterministic, training-free controls over the unchanged Dense-top-200 "
             "union SPLADE-top-200 candidate contract. Weighted RRF was selected by validation "
             "R@5 only. The test split was evaluated only for Dense, SPLADE, locked equal RRF, "
