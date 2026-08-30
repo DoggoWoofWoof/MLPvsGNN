@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import modal
@@ -56,7 +56,7 @@ def _local_jobs(datasets: list[str]) -> list[dict[str, Any]]:
             raise ValueError(f"{dataset} confirmation does not reference the expected Modal volume")
         fingerprint = confirmation["data_fingerprint_sha256"]
         output_root = (
-            Path(STORAGE_ROOT)
+            PurePosixPath(STORAGE_ROOT)
             / "outputs"
             / "p0_fixed_structural_controls"
             / dataset
