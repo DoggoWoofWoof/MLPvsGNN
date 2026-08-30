@@ -166,6 +166,7 @@ def _run_dataset(
         "dataset": dataset,
         "source_root": str(dataset_root),
         "source_sha256": contract.source_sha256,
+        "identity_source": contract.identity_source,
         "query_count": contract.query_count,
         "source_width": contract.source_width,
         "split_counts": {name: int(values.size) for name, values in contract.split_indices.items()},
@@ -220,7 +221,25 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     results = []
     for dataset in datasets:
         dataset_root = args.source_root / dataset / config["source_contract"]["dataset_subdirectory"]
-        result = _run_dataset(dataset, dataset_root, args.output_root, config)
+        existing_path = args.output_root / f"{dataset}.json"
+        if args.resume and existing_path.is_file():
+            result = json.loads(existing_path.read_text(encoding="utf-8"))
+            expected_methods = {"dense", "splade", "equal_rrf", "weighted_rrf_selected"}
+            if (
+                result.get("status") != "P0_A1_RANK_CONTROLS_COMPLETE"
+                or result.get("dataset") != dataset
+                or set(result.get("test", {})) != expected_methods
+                or result.get("test_access_audit", {}).get(
+                    "unselected_weighted_test_results_computed"
+                )
+                is not False
+            ):
+                raise ValueError(f"Cannot resume from incompatible result: {existing_path}")
+            result["result_path"] = str(existing_path)
+            result["resumed_from_existing"] = True
+        else:
+            result = _run_dataset(dataset, dataset_root, args.output_root, config)
+            result["resumed_from_existing"] = False
         results.append(result)
         print(
             json.dumps(
@@ -231,6 +250,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                         method: metrics["recall@5"] for method, metrics in result["test"].items()
                     },
                     "seconds": result["timing"]["total_seconds"],
+                    "resumed": result["resumed_from_existing"],
                 }
             ),
             flush=True,
@@ -249,6 +269,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 "selected_dense_weight": result["selection"]["selected_dense_weight"],
                 "test": result["test"],
                 "timing": result["timing"],
+                "resumed_from_existing": result["resumed_from_existing"],
             }
             for result in results
         },
@@ -263,6 +284,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, default=ROOT / "outputs" / "p0_rank_controls")
     parser.add_argument("--datasets", nargs="*")
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="reuse compatible per-dataset result artifacts and rebuild the summary",
+    )
     return parser.parse_args()
 
 

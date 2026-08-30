@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import pickle
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,6 +25,7 @@ class FrozenRankContract:
     golds: list[tuple[int, ...]]
     split_indices: dict[str, np.ndarray]
     source_sha256: dict[str, str]
+    identity_source: str
 
     @property
     def query_count(self) -> int:
@@ -42,21 +44,43 @@ def sha256_file(path: str | Path, *, block_size: int = 8 * 1024 * 1024) -> str:
     return digest.hexdigest()
 
 
-def _node_mapping(root: Path) -> dict[str, int] | None:
+def _node_mapping(
+    root: Path,
+    *,
+    dataset: str,
+) -> tuple[dict[str, int] | None, Path | None, str]:
     path = root / "node_ids.json"
-    if not path.is_file():
-        return None
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    if isinstance(payload, list):
-        if len(set(map(str, payload))) != len(payload):
-            raise ValueError("node_ids.json contains duplicate IDs")
-        return {str(node_id): index for index, node_id in enumerate(payload)}
-    if isinstance(payload, dict):
-        mapping = {str(node_id): int(index) for node_id, index in payload.items()}
-        if len(set(mapping.values())) != len(mapping):
-            raise ValueError("node_ids.json maps multiple IDs to the same row")
-        return mapping
-    raise ValueError("node_ids.json must be a row-ordered list or ID-to-row mapping")
+    if path.is_file():
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(payload, list):
+            if len(set(map(str, payload))) != len(payload):
+                raise ValueError("node_ids.json contains duplicate IDs")
+            mapping = {str(node_id): index for index, node_id in enumerate(payload)}
+        elif isinstance(payload, dict):
+            mapping = {str(node_id): int(index) for node_id, index in payload.items()}
+            if len(set(mapping.values())) != len(mapping):
+                raise ValueError("node_ids.json maps multiple IDs to the same row")
+        else:
+            raise ValueError("node_ids.json must be a row-ordered list or ID-to-row mapping")
+        return mapping, path, "explicit_node_ids_json"
+
+    if dataset != "metaqa":
+        return None, None, "numeric_suffix"
+
+    identity_path = root.parent / "splade_doc_embs.pkl"
+    if not identity_path.is_file():
+        return None, None, "numeric_suffix"
+    with identity_path.open("rb") as stream:
+        # This is a frozen, trusted local CRAG artifact, never an uploaded pickle.
+        payload = pickle.load(stream)
+    if not isinstance(payload, dict) or not isinstance(payload.get("id_to_idx"), dict):
+        raise TypeError("MetaQA SPLADE identity source has no id_to_idx mapping")
+    mapping = {str(node_id): int(index) for node_id, index in payload["id_to_idx"].items()}
+    if len(set(mapping.values())) != len(mapping):
+        raise ValueError("MetaQA SPLADE identity mapping is not one-to-one")
+    if set(mapping.values()) != set(range(len(mapping))):
+        raise ValueError("MetaQA SPLADE identity mapping is not onto contiguous node rows")
+    return mapping, identity_path, "frozen_splade_id_to_idx"
 
 
 def _gold_index(node_id: Any, node_mapping: dict[str, int] | None) -> int:
@@ -98,7 +122,12 @@ def load_frozen_rank_contract(
     if not np.issubdtype(dense.dtype, np.integer) or not np.issubdtype(splade.dtype, np.integer):
         raise ValueError("Ranked candidate arrays must contain integer global node IDs")
 
-    mapping = _node_mapping(root)
+    resolved_dataset = str(dataset or manifest.get("dataset", root.parent.name))
+    mapping, identity_path, identity_source = _node_mapping(root, dataset=resolved_dataset)
+    if identity_source == "frozen_splade_id_to_idx":
+        maximum_ranked_row = max(int(np.max(dense)), int(np.max(splade)))
+        if mapping is None or maximum_ranked_row >= len(mapping):
+            raise ValueError("MetaQA identity mapping does not cover every ranked node row")
     golds = [
         tuple(sorted({_gold_index(node_id, mapping) for node_id in row}))
         for row in raw_golds
@@ -129,18 +158,19 @@ def load_frozen_rank_contract(
     if hash_sources:
         for name in required:
             source_sha256[name] = sha256_file(root / name)
-        if (root / "node_ids.json").is_file():
-            source_sha256["node_ids.json"] = sha256_file(root / "node_ids.json")
+        if identity_path is not None:
+            source_sha256[identity_path.name] = sha256_file(identity_path)
 
     return FrozenRankContract(
         root=root,
-        dataset=dataset or str(manifest.get("dataset", root.parent.name)),
+        dataset=resolved_dataset,
         dense=dense,
         splade=splade,
         query_ids=query_ids,
         golds=golds,
         split_indices=split_indices,
         source_sha256=source_sha256,
+        identity_source=identity_source,
     )
 
 

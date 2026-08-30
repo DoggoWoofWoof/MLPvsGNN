@@ -1,4 +1,5 @@
 import json
+import pickle
 
 import numpy as np
 
@@ -83,3 +84,27 @@ def test_lightweight_contract_loads_without_nodes_or_graph(tmp_path):
     assert contract.golds == [(2,), (1,)]
     assert contract.split_indices["validation"].tolist() == [0]
     assert contract.split_indices["test"].tolist() == [1]
+    assert contract.identity_source == "numeric_suffix"
+
+
+def test_metaqa_contract_uses_frozen_splade_identity_without_graph(tmp_path):
+    root = tmp_path / "metaqa" / "gte_qwen"
+    root.mkdir(parents=True)
+    np.save(root / "dense_top200_all.npy", np.array([[0, 1]], dtype=np.int64))
+    np.save(root / "splade_top200_all.npy", np.array([[1, 0]], dtype=np.int64))
+    manifest = {
+        "dataset": "metaqa",
+        "ids": ["q0"],
+        "golds": [["metaqa_ent_carol reed"]],
+        "split_indices": {"train": [], "val": [], "test": [0]},
+    }
+    (root / "query_ids_all.json").write_text(json.dumps(manifest), encoding="utf-8")
+    identity = {"id_to_idx": {"metaqa_ent_$": 0, "metaqa_ent_carol reed": 1}}
+    (root.parent / "splade_doc_embs.pkl").write_bytes(pickle.dumps(identity))
+
+    contract = load_frozen_rank_contract(root, dataset="metaqa", hash_sources=True)
+
+    assert contract.golds == [(1,)]
+    assert contract.identity_source == "frozen_splade_id_to_idx"
+    assert "splade_doc_embs.pkl" in contract.source_sha256
+    assert not (root / "graph.pt").exists()
