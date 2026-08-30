@@ -24,6 +24,7 @@ class FrozenRankContract:
     query_ids: list[str]
     golds: list[tuple[int, ...]]
     split_indices: dict[str, np.ndarray]
+    hops: np.ndarray | None
     source_sha256: dict[str, str]
     identity_source: str
 
@@ -153,6 +154,18 @@ def load_frozen_rank_contract(
     split_indices = {
         name: np.asarray(indices, dtype=np.int64) for name, indices in split_lists.items()
     }
+    raw_hops = manifest.get("hops")
+    if raw_hops is None or all(value is None for value in raw_hops):
+        hops = None
+    else:
+        if any(value is None for value in raw_hops):
+            raise ValueError("Optional hop labels must be complete when any are provided")
+        hops = np.asarray(raw_hops, dtype=np.int16)
+    if hops is not None:
+        if hops.shape != (len(query_ids),):
+            raise ValueError("Optional hop labels must align one-to-one with query IDs")
+        if np.any(hops <= 0):
+            raise ValueError("Optional hop labels must be positive integers")
 
     source_sha256 = {}
     if hash_sources:
@@ -169,6 +182,7 @@ def load_frozen_rank_contract(
         query_ids=query_ids,
         golds=golds,
         split_indices=split_indices,
+        hops=hops,
         source_sha256=source_sha256,
         identity_source=identity_source,
     )

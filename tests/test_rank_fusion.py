@@ -92,6 +92,25 @@ def test_lightweight_contract_loads_without_nodes_or_graph(tmp_path):
     assert contract.split_indices["validation"].tolist() == [0]
     assert contract.split_indices["test"].tolist() == [1]
     assert contract.identity_source == "numeric_suffix"
+    assert contract.hops is None
+
+
+def test_lightweight_contract_preserves_optional_hop_labels(tmp_path):
+    np.save(tmp_path / "dense_top200_all.npy", np.array([[1], [2]], dtype=np.int64))
+    np.save(tmp_path / "splade_top200_all.npy", np.array([[2], [1]], dtype=np.int64))
+    manifest = {
+        "dataset": "tiny",
+        "ids": ["q0", "q1"],
+        "golds": [["node_1"], ["node_2"]],
+        "hops": [1, 3],
+        "split_indices": {"train": [0], "val": [], "test": [1]},
+    }
+    (tmp_path / "query_ids_all.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+    contract = load_frozen_rank_contract(tmp_path, hash_sources=False)
+
+    assert contract.hops is not None
+    assert contract.hops.tolist() == [1, 3]
 
 
 def test_metaqa_contract_uses_frozen_splade_identity_without_graph(tmp_path):
