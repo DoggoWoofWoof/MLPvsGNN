@@ -1,0 +1,129 @@
+experiment: edge_provenance_message_passing_value
+status: EDGE_PROVENANCE_PROTOCOL_FROZEN_BEFORE_NEW_TESTS
+protocol_ancestor: sa-mlp-confirmation-protocol-v1
+
+question: >-
+  Does the value of learned message passing depend on whether candidate-graph
+  edges encode native/symbolic relations, embedding similarity, or their union?
+
+graph_families:
+  sealed_a_multigraph:
+    definition: structural_only UNION knn_only
+    execution: reuse_sealed_sa_mlp_confirmation
+  baseline_a_simple:
+    definition: deduplicated_bidirectional_structural_only_UNION_knn_only
+    execution: new_five_seed_normalization_control
+  symbolic_b:
+    definition: structural_only UNION ner_only
+    execution: new_five_seed_training
+  knn_only:
+    definition: baseline_a MINUS structural_only
+    execution: new_five_seed_training
+  full_union_c:
+    definition: baseline_a UNION ner_only
+    execution: new_five_seed_training
+  structural_only:
+    definition: master_document_neighbor_edges
+    execution: export_audit_only
+  ner_only:
+    definition: frozen_ner_edges_w_df25
+    execution: export_audit_only
+
+primary_models: [sa_mlp, seed_aware_gnn]
+trained_families: [baseline_a_simple, symbolic_b, knn_only, full_union_c]
+primary_metric: recall_at_5
+secondary_metrics: [recall_at_1, recall_at_20, mrr, full_coverage_at_20]
+
+datasets:
+  2wiki_clean:
+    expected_queries: 15000
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    master_file: master_nodes_2wiki_clean.json
+    source_graph_sha256: 4adec02bae422472ca55a7bc4c41f6002b69d6a64a8c6d943bb394041abf3567
+    candidate_contract_compatibility: pre_hop_metadata_v1
+    required_hops: []
+  musique_clean:
+    expected_queries: 19938
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+    master_file: master_nodes_musique_clean.json
+    source_graph_sha256: 716613c68cfa2d9dad7c856a9ca30cafa9dc9d40db70f7dad73112fe0bbc0452
+    candidate_contract_compatibility: pre_hop_metadata_v1
+    required_hops: []
+  webqsp:
+    expected_queries: 1578
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+    master_file: master_nodes_webqsp.json
+    source_graph_sha256: dc97fee861ffebea204fa30224bb3c03cc29e7549bc371b7856497b9b09506f9
+    required_hops: []
+  hotpotqa_clean:
+    expected_queries: 97852
+    selected_gnn: gin
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+    master_file: master_nodes_hotpotqa_clean.json
+    source_graph_sha256: 566afea55794acb02365995b275852addc7d8221327036d5de543395162cfbd9
+    required_hops: []
+  squad_clean:
+    expected_queries: 130319
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+    master_file: master_nodes_squad_clean.json
+    source_graph_sha256: e4faebbd66ec29d1d1d60a0363b1ac13a2991e25fbab2273fabb318900296eea
+    required_hops: []
+  metaqa:
+    expected_queries: 407513
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+    master_file: master_nodes.json
+    source_graph_sha256: f311cd0c2f6dcca676c559c76e2b177f404916b16d2c47b3363a9d631ff36723
+    required_hops: [1, 2, 3]
+
+training:
+  seeds: [0, 1, 2, 3, 4]
+  epochs: 3
+  batch_size: 16
+  layers: 1
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  checkpoint_selection: validation_recall_at_5_only
+  inference_repeats: 5
+  ks: [1, 5, 20]
+
+parameter_regime:
+  projection_dim: 64
+  hidden_dim: 64
+  maximum_sa_absolute_difference: 256
+  target: frozen_validation_selected_gnn_parameter_count
+
+fairness:
+  identical_query_and_node_embeddings: true
+  identical_candidate_ids_and_order: true
+  identical_labels_splits_loss_seeds_optimizer_epochs: true
+  identical_retrieval_seed_prior: true
+  identical_selected_gnn_family: true
+  only_changed_input: global_edge_family
+  validation_or_test_selection_between_edge_families: prohibited
+
+analysis:
+  unit: paired_seed_and_query
+  primary_contrast: seed_aware_gnn_minus_sa_mlp
+  confidence_interval: stratified_query_bootstrap_with_seed_outer_block
+  correction: holm_across_datasets_within_each_declared_family
+  report_all_declared_families: true
+  sealed_a_multigraph_is_reused_not_retrained: true
+  baseline_a_simple_is_mandatory_duplicate_normalization_control: true
+
+modal:
+  app: message-passing-retrieval-edge-provenance
+  source_volume: crag-data-volume
+  source_root: /root/crag-source
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400

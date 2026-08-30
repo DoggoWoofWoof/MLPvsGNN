@@ -529,6 +529,7 @@ def build_or_load_structural_features(
     *,
     source_fingerprint: str,
     config: dict[str, Any],
+    graph_path: Path | None = None,
 ) -> StructuralFeatureStore:
     seeds = config["retrieval_seeds"]
     if int(seeds["dense_top_k"]) != 5 or int(seeds["splade_top_k"]) != 5:
@@ -546,7 +547,7 @@ def build_or_load_structural_features(
     seed_ptr, seed_index = _seed_arrays(dataset.queries)
     static_started = time.perf_counter()
     static = build_static_features(
-        dataset.root / "graph.pt",
+        dataset.root / "graph.pt" if graph_path is None else graph_path,
         pagerank_damping=float(config["static_features"]["pagerank"]["damping"]),
         pagerank_iterations=int(config["static_features"]["pagerank"]["iterations"]),
         clustering_max_wedges=int(
