@@ -506,6 +506,31 @@ def _candidate_arrays(queries: Sequence[CompleteQuery]) -> tuple[np.ndarray, np.
     return ptr, query_position
 
 
+def compute_query_local_features(
+    queries: Sequence[CompleteQuery],
+    topologies: PackedLocalTopologies,
+    *,
+    damping: float,
+    ppr_iterations: int,
+) -> np.ndarray:
+    """Compute label-free QLS local summaries without a query-keyed cache."""
+
+    candidate_ptr, _query_position = _candidate_arrays(queries)
+    seed_ptr, seed_index = _seed_arrays(queries)
+    return _local_feature_chunk(
+        0,
+        len(queries),
+        candidate_ptr,
+        seed_ptr,
+        seed_index,
+        topologies.edge_ptr,
+        topologies.query_position,
+        topologies.edge_index,
+        damping,
+        ppr_iterations,
+    )
+
+
 def _contract_sha256(
     dataset: CompleteRetrievalDataset,
     source_fingerprint: str,

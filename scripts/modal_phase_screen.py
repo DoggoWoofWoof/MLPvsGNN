@@ -160,7 +160,6 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
 )
 def run_regime(job: dict[str, Any]) -> dict[str, Any]:
     os.chdir(REMOTE_ROOT)
-    result_volume.reload()
     from scripts.run_phase_screen import run
 
     args = _runner_args(job)

@@ -111,7 +111,6 @@ def prepare_dataset(job: dict[str, Any]) -> dict[str, Any]:
 
     os.chdir(REMOTE_ROOT)
     source_volume.reload()
-    result_volume.reload()
     settings = job["settings"]
     source_data = Path(SOURCE_ROOT) / "data"
     master = source_data / "processed" / settings["master_file"]
@@ -233,7 +232,6 @@ def _runner_args(job: dict[str, Any], family: str) -> argparse.Namespace:
 )
 def run_family(job: dict[str, Any]) -> dict[str, Any]:
     os.chdir(REMOTE_ROOT)
-    result_volume.reload()
     from scripts.run_edge_provenance import run
 
     args = _runner_args(job, job["family"])

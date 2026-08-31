@@ -1,4 +1,4 @@
-"""Modal launcher for the frozen Package C candidate-budget study."""
+"""Modal launcher for the frozen uncached unseen-embedding systems benchmark."""
 
 from __future__ import annotations
 
@@ -15,10 +15,10 @@ REMOTE_ROOT = "/root/message-passing-retrieval"
 HOST_REPO_ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_REPO_ROOT = (
     HOST_REPO_ROOT
-    if (HOST_REPO_ROOT / "configs" / "candidate_budget.yaml").is_file()
+    if (HOST_REPO_ROOT / "configs" / "online_systems.yaml").is_file()
     else Path(REMOTE_ROOT)
 )
-CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "candidate_budget.yaml"
+CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "online_systems.yaml"
 SCREEN_CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "sa_mlp_screen.yaml"
 CONFIG = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
 MODAL_CONFIG = CONFIG["modal"]
@@ -53,7 +53,7 @@ image = (
     )
     .add_local_dir(str(RUNTIME_REPO_ROOT / "src"), remote_path=f"{REMOTE_ROOT}/src")
     .add_local_dir(str(RUNTIME_REPO_ROOT / "scripts"), remote_path=f"{REMOTE_ROOT}/scripts")
-    .add_local_file(str(CONFIG_PATH), remote_path=f"{REMOTE_ROOT}/configs/candidate_budget.yaml")
+    .add_local_file(str(CONFIG_PATH), remote_path=f"{REMOTE_ROOT}/configs/online_systems.yaml")
     .add_local_file(
         str(SCREEN_CONFIG_PATH), remote_path=f"{REMOTE_ROOT}/configs/sa_mlp_screen.yaml"
     )
@@ -62,84 +62,86 @@ image = (
 
 def _jobs(datasets: list[str]) -> list[dict[str, Any]]:
     jobs = []
+    budget = int(CONFIG["input_contract"]["budget"])
     for dataset in datasets:
         settings = CONFIG["datasets"][dataset]
         confirmation = json.loads(
             (HOST_REPO_ROOT / settings["confirmation"]).read_text(encoding="utf-8")
         )
-        for budget in CONFIG["candidate_contract"]["budgets"]:
-            jobs.append(
-                {
-                    "dataset": dataset,
-                    "budget": int(budget),
-                    "settings": settings,
-                    "confirmation": confirmation,
-                    "fingerprint": confirmation["data_fingerprint_sha256"],
-                    "data_remote": confirmation["config"]["data"],
-                }
-            )
+        fingerprint = confirmation["data_fingerprint_sha256"]
+        budget_root = (
+            PurePosixPath(STORAGE_ROOT)
+            / "outputs"
+            / "candidate_budget"
+            / dataset
+            / fingerprint[:16]
+            / f"budget_{budget}"
+        )
+        cache_root = (
+            PurePosixPath(STORAGE_ROOT)
+            / "candidate_budget_cache"
+            / dataset
+            / fingerprint[:16]
+            / f"budget_{budget}"
+        )
+        output_root = (
+            PurePosixPath(STORAGE_ROOT)
+            / "outputs"
+            / "online_systems"
+            / dataset
+            / fingerprint[:16]
+        )
+        jobs.append(
+            {
+                "dataset": dataset,
+                "settings": settings,
+                "confirmation": confirmation,
+                "fingerprint": fingerprint,
+                "data_remote": confirmation["config"]["data"],
+                "budget_result": str(budget_root / "result.json"),
+                "cached_topology": str(cache_root / "packed_topology_v1"),
+                "cached_features": str(cache_root / "fixed_structural_features_v1"),
+                "output_remote": str(output_root / "result.json"),
+            }
+        )
     return jobs
 
 
 def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
-    settings = job["settings"]
-    training = CONFIG["training"]
+    inputs = CONFIG["input_contract"]
+    measurement = CONFIG["measurement"]
     parameters = CONFIG["parameter_regime"]
-    contract = CONFIG["candidate_contract"]
-    cache_root = (
-        PurePosixPath(STORAGE_ROOT)
-        / "candidate_budget_cache"
-        / job["dataset"]
-        / job["fingerprint"][:16]
-        / f"budget_{job['budget']}"
-    )
-    output_root = (
-        PurePosixPath(STORAGE_ROOT)
-        / "outputs"
-        / "candidate_budget"
-        / job["dataset"]
-        / job["fingerprint"][:16]
-        / f"budget_{job['budget']}"
-    )
     screen = yaml.safe_load(
         Path(f"{REMOTE_ROOT}/configs/sa_mlp_screen.yaml").read_text(encoding="utf-8")
     )
     return argparse.Namespace(
         data=Path(job["data_remote"]),
         dataset=job["dataset"],
-        budget=int(job["budget"]),
-        rrf_constant=int(contract["rrf_constant"]),
-        fusion_chunk_size=4096,
-        expected_queries=int(settings["expected_queries"]),
-        output=Path(output_root) / "result.json",
-        query_metrics_output=Path(output_root) / "query_metrics.npz",
-        checkpoint_root=Path(output_root) / "checkpoints",
-        topology_cache=Path(cache_root) / "packed_topology_v1",
-        feature_cache=Path(cache_root) / "fixed_structural_features_v1",
-        baseline=job["confirmation"]["baseline"],
         data_fingerprint_sha256=job["fingerprint"],
-        selected_gnn=settings["selected_gnn"],
-        candidate_contract_compatibility=settings.get("candidate_contract_compatibility"),
-        required_hops=list(settings["required_hops"]),
-        seeds=list(training["seeds"]),
+        budget_result=Path(job["budget_result"]),
+        cached_topology=Path(job["cached_topology"]),
+        cached_features=Path(job["cached_features"]),
+        output=Path(job["output_remote"]),
+        baseline=job["confirmation"]["baseline"],
+        selected_gnn=job["settings"]["selected_gnn"],
+        budget=int(inputs["budget"]),
+        rrf_constant=int(inputs["rrf_constant"]),
+        model_seed=int(inputs["model_seed"]),
+        top_k=int(inputs["top_k"]),
+        sample_queries=int(measurement["deterministic_evenly_spaced_queries"]),
+        parity_queries=int(measurement["parity_queries"]),
+        warmup_queries=int(measurement["warmup_queries"]),
+        repeats=int(measurement["repeats"]),
+        batch_sizes=[int(value) for value in measurement["batch_sizes"]],
         projection_dim=int(parameters["projection_dim"]),
         hidden_dim=int(parameters["hidden_dim"]),
         max_parameter_difference=int(parameters["maximum_sa_absolute_difference"]),
-        layers=int(training["layers"]),
-        epochs=int(training["epochs"]),
-        batch_size=int(training["batch_size"]),
-        dropout=float(training["dropout"]),
-        temperature=float(training["temperature"]),
-        learning_rate=float(training["learning_rate"]),
-        weight_decay=float(training["weight_decay"]),
-        ks=list(training["ks"]),
-        inference_repeats=int(training["inference_repeats"]),
+        layers=int(parameters["layers"]),
+        dropout=float(parameters["dropout"]),
+        temperature=float(parameters["temperature"]),
         device="cuda",
         feature_config={
-            "retrieval_seeds": screen["retrieval_seeds"],
-            "static_features": screen["static_features"],
             "query_local_features": screen["query_local_features"],
-            "preprocessing": {"query_chunk_size": 8192},
         },
     )
 
@@ -152,18 +154,24 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
     cpu=MODAL_CONFIG["cpu"],
     memory=MODAL_CONFIG["memory_mb"],
 )
-def run_budget(job: dict[str, Any]) -> dict[str, Any]:
+def run_dataset(job: dict[str, Any]) -> dict[str, Any]:
     os.chdir(REMOTE_ROOT)
-    from scripts.run_candidate_budget import run
+    required = [
+        Path(job["budget_result"]),
+        Path(job["cached_topology"]) / "metadata.json",
+        Path(job["cached_features"]) / "metadata.json",
+    ]
+    if any(not path.is_file() for path in required):
+        raise FileNotFoundError("Package C budget-400 artifacts are not complete")
+    from scripts.run_online_systems import run
 
     args = _runner_args(job)
-    result = run(args, checkpoint_hook=result_volume.commit)
+    result = run(args)
+    result_volume.commit()
     return {
         "status": result["status"],
         "dataset": job["dataset"],
-        "budget": job["budget"],
-        "output_remote": str(args.output),
-        "query_metrics_remote": str(args.query_metrics_output),
+        "output_remote": job["output_remote"],
     }
 
 
@@ -182,15 +190,13 @@ def main(
     requested = [name.strip() for name in datasets.split(",") if name.strip()]
     unknown = set(requested) - set(CONFIG["datasets"])
     if unknown:
-        raise ValueError(f"Unregistered candidate-budget datasets: {sorted(unknown)}")
+        raise ValueError(f"Unregistered online-systems datasets: {sorted(unknown)}")
     jobs = _jobs(requested)
-    results = list(run_budget.map(jobs, return_exceptions=True, wrap_returned_exceptions=False))
+    results = list(run_dataset.map(jobs, return_exceptions=True, wrap_returned_exceptions=False))
     failures = [item for item in results if isinstance(item, BaseException)]
     if failures:
-        raise RuntimeError(f"{len(failures)} candidate-budget job(s) failed: {failures}")
-    local_root = HOST_REPO_ROOT / "outputs" / "candidate_budget"
+        raise RuntimeError(f"{len(failures)} online-systems job(s) failed: {failures}")
+    local_root = HOST_REPO_ROOT / "outputs" / "online_systems"
     for result in results:
-        budget_root = local_root / result["dataset"] / f"budget_{result['budget']}"
-        _download(result["output_remote"], budget_root / "result.json")
-        _download(result["query_metrics_remote"], budget_root / "query_metrics.npz")
+        _download(result["output_remote"], local_root / f"{result['dataset']}.json")
     print(json.dumps(results, indent=2))

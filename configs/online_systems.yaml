@@ -1,0 +1,104 @@
+experiment: uncached_unseen_embedding_post_retrieval_systems
+status: ONLINE_SYSTEMS_PROTOCOL_FROZEN_BEFORE_TIMING
+protocol_ancestor: candidate-budget-protocol-v1
+
+question: >-
+  After charging fusion, topology induction, method-specific graph work,
+  transfer, inference, and top-K, what latency and memory advantage remains for
+  QLS-MLP versus the seed-aware selected GNN?
+
+serving_boundary:
+  inputs: [query_embedding, dense_ranked_ids, splade_ranked_ids]
+  charged:
+    - equal_rrf_and_seed_construction
+    - candidate_embedding_gather
+    - candidate_induced_topology
+    - qls_query_local_summaries_when_applicable
+    - host_device_transfer
+    - learned_forward
+    - top_k_selection
+  out_of_scope_shared_upstream:
+    - raw_query_text
+    - query_encoding
+    - dense_ann_retrieval
+    - splade_index_retrieval
+  allowed_corpus_static_assets:
+    - node_embeddings
+    - global_graph_csr
+    - qls_static_node_features
+    - trained_model_checkpoint
+  query_specific_cache_reads_in_timed_path: prohibited
+
+input_contract:
+  source: package_c_equal_rrf_budget_400
+  budget: 400
+  rrf_constant: 60
+  model_seed: 0
+  top_k: 20
+
+measurement:
+  canonical_split: test
+  deterministic_evenly_spaced_queries: 1024
+  parity_queries: 32
+  warmup_queries: 64
+  repeats: 3
+  batch_sizes: [1, 16]
+  percentiles: [50, 95, 99]
+  cuda_synchronize_around_forward: true
+  alternate_method_order: true
+  precision: float32_models_float16_qls_local_contract
+
+parity_gate:
+  candidate_rule_matches_package_c: required
+  candidate_induced_topology_bit_exact: required
+  qls_local_features_bit_exact_after_float16: required
+  benchmark_launch_if_parity_fails: prohibited
+
+datasets:
+  2wiki_clean:
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+  musique_clean:
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+  webqsp:
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+  hotpotqa_clean:
+    selected_gnn: gin
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+  squad_clean:
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+  metaqa:
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+
+parameter_regime:
+  projection_dim: 64
+  hidden_dim: 64
+  maximum_sa_absolute_difference: 256
+  layers: 1
+  dropout: 0.2
+  temperature: 0.07
+
+report:
+  - cold_start_seconds
+  - ready_and_peak_process_rss
+  - ready_and_peak_gpu_allocation
+  - per_method_incremental_peak_gpu_allocation
+  - batch_latency_mean_p50_p95_p99
+  - per_query_latency_mean_p50_p95_p99
+  - throughput_queries_per_second
+  - stage_latency_breakdown
+  - static_asset_bytes_and_sha256
+  - cached_reranker_reference_from_package_c
+
+modal:
+  app: message-passing-retrieval-online-systems
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400
