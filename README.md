@@ -10,9 +10,10 @@ Aggregation*
 ## Current status
 
 **Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2/A3 controls:
-COMPLETE. Packages B/C/E1: RUNNING UNDER FROZEN PROTOCOLS. Package D: FROZEN
-AND GATED ON C.** The sealed QLS/GNN checkpoint remains unchanged. The active
-resumption does not retune Package A or inspect partial seed outcomes. See the
+COMPLETE. Packages B/C/E1: PARTIAL, INTEGRITY-VERIFIED, AND QUOTA-BLOCKED.
+Package D: FROZEN AND GATED ON C.** The sealed QLS/GNN checkpoint remains
+unchanged. No partial seed outcome has been interpreted. The exact completion
+matrices, remaining 248 model-seed work units, and safe resume order are in the
 [execution-status checkpoint](docs/EXPERIMENT_EXECUTION_STATUS.md).
 
 | Established | Not yet established |
@@ -387,9 +388,10 @@ perturbation + crossover predictor + systems tradeoff + external confirmation**.
 These steps are needed to move from a controlled empirical retrieval study to a
 deeper statement about when fixed structural summaries are sufficient and when
 learned message passing is genuinely necessary. Packages B and C and the
-validation-only E1 screen are currently executing under committed protocols;
-Package D is committed but cannot launch until the budget-400 checkpoints from
-C are complete. Package F remains deliberately unopened.
+validation-only E1 screen are frozen and partially persisted, but further GPU
+allocation is currently blocked by the Modal workspace spend limit. Package D
+is committed but cannot launch until the budget-400 checkpoints from C are
+complete. Package F remains deliberately unopened.
 
 For the NeurIPS main track, the phase diagram/predictor or theory is the likely
 gate. A separate Evaluations & Datasets route could instead center a documented
@@ -633,14 +635,14 @@ datasets. Do not tune Package A further against these tests.
 
 ### Package B — Edge provenance (mandatory)
 
-**Protocol frozen; five-seed runs active.** Verified sidecars reconstruct
+**Protocol frozen; partial runs integrity-verified and quota-blocked.** Verified sidecars reconstruct
 native/title/KB-only, embedding-kNN-only, simple-A, and union graphs. The exact
 sealed A multigraph is reused, and simple A is a mandatory duplicate-
 normalization control.
 
 ### Package C — Structural-context budget
 
-**Protocol frozen; five-seed runs active.** Equal-RRF budgets 50/100/200/400
+**Protocol frozen; partial runs integrity-verified and quota-blocked.** Equal-RRF budgets 50/100/200/400
 jointly record candidate ceiling, retrieval metrics, induced graph context,
 QLS/GNN compute, and checkpoints for Package D. No budget is selected on test.
 
@@ -654,7 +656,7 @@ storage, and cold start. The existing 2.49–7.08x result remains warm-cache onl
 
 ### Package E — Robustness, crossover, and utility prediction
 
-**E1 validation-only screen active.** Degree-preserving rewiring, random-edge
+**E1 validation-only screen partial, integrity-verified, and quota-blocked.** Degree-preserving rewiring, random-edge
 addition, hub injection, and raw-feature masking are screened with one seed on
 validation only. A locked rule chooses crossover brackets. Five-seed test
 confirmation cannot launch until those rates are generated, reviewed,
@@ -689,6 +691,7 @@ docs/NEURIPS_RESEARCH_PLAN.md    historical roadmap and deferred research plan
 docs/DATASET_GRAPH_PROVENANCE.md datasets, graphs, UKB storage, and CRAG reuse
 docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md prioritized missing controls
 docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-embedding timing
+docs/EXPERIMENT_EXECUTION_STATUS.md exact quota-blocked B/C/E1 matrices
 docs/TERMINOLOGY_AND_POSITIONING.md publication naming, overlap, and track fork
 docs/SA_MLP_CONFIRMATION_PROTOCOL.md final frozen fairness protocol
 docs/SA_MLP_CONFIRMATION_RESULTS.md complete six-dataset result and stopping point
