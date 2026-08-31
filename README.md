@@ -10,9 +10,10 @@ Aggregation*
 ## Current status
 
 **Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2/A3 controls:
-COMPLETE.** The sealed QLS/GNN checkpoint remains unchanged. A separately
-preregistered P0 resumption has now completed rank-only, fixed structural, and
-19-parameter learned linear controls on all six datasets.
+COMPLETE. Packages B/C/E1: RUNNING UNDER FROZEN PROTOCOLS. Package D: FROZEN
+AND GATED ON C.** The sealed QLS/GNN checkpoint remains unchanged. The active
+resumption does not retune Package A or inspect partial seed outcomes. See the
+[execution-status checkpoint](docs/EXPERIMENT_EXECUTION_STATUS.md).
 
 | Established | Not yet established |
 |---|---|
@@ -385,8 +386,10 @@ perturbation + crossover predictor + systems tradeoff + external confirmation**.
 
 These steps are needed to move from a controlled empirical retrieval study to a
 deeper statement about when fixed structural summaries are sufficient and when
-learned message passing is genuinely necessary. They remain future work; no
-such experiment is currently scheduled.
+learned message passing is genuinely necessary. Packages B and C and the
+validation-only E1 screen are currently executing under committed protocols;
+Package D is committed but cannot launch until the budget-400 checkpoints from
+C are complete. Package F remains deliberately unopened.
 
 For the NeurIPS main track, the phase diagram/predictor or theory is the likely
 gate. A separate Evaluations & Datasets route could instead center a documented
@@ -630,33 +633,33 @@ datasets. Do not tune Package A further against these tests.
 
 ### Package B — Edge provenance (mandatory)
 
-Reconstruct provenance-preserving native/title/KB-only, embedding-kNN-only, and
-union graphs, and run both QLS and GNN on each. The current flattened `graph.pt`
-cannot answer whether graph value is genuinely relational or mostly semantic
-similarity reintroduced through kNN topology.
+**Protocol frozen; five-seed runs active.** Verified sidecars reconstruct
+native/title/KB-only, embedding-kNN-only, simple-A, and union graphs. The exact
+sealed A multigraph is reused, and simple A is a mandatory duplicate-
+normalization control.
 
 ### Package C — Structural-context budget
 
-At budgets 50/100/200/400, jointly report candidate ceiling, R@1/5/20, MRR,
-FullCov where meaningful, induced nodes/edges/density, QLS computation, GNN
-propagation, and total post-retrieval latency. The question is how much context
-each approach needs before quality saturates.
+**Protocol frozen; five-seed runs active.** Equal-RRF budgets 50/100/200/400
+jointly record candidate ceiling, retrieval metrics, induced graph context,
+QLS/GNN compute, and checkpoints for Package D. No budget is selected on test.
 
 ### Package D — Online systems evaluation
 
-Preserve the cached operator measurement, then separately time an uncached path
-from an unseen query embedding and Dense/SPLADE rankings through fusion, graph
-induction, method-specific computation, scoring, and top-K. Report batch 1/16,
-p50/p95/p99, throughput, GPU/CPU memory, storage, cold start, and cache
-break-even. The existing 2.49–7.08x result is not end-to-end.
+**Protocol frozen; execution gated on Package C budget 400.** The uncached path
+starts from a held-out query embedding and Dense/SPLADE rankings and charges
+fusion, graph induction, method-specific computation, transfer, scoring, and
+top-K. It reports batch 1/16 percentiles, throughput, method-level memory,
+storage, and cold start. The existing 2.49–7.08x result remains warm-cache only.
 
 ### Package E — Robustness, crossover, and utility prediction
 
-Perturb seed quality, Dense/SPLADE agreement, irrelevant-candidate rate, graph
-edges, native-edge availability, kNN density, and semantic features. Model
-`GNN effectiveness - QLS effectiveness` from query/candidate/graph statistics,
-then evaluate on held-out regimes or datasets. Do not choose the predictor
-architecture before the protocol is frozen.
+**E1 validation-only screen active.** Degree-preserving rewiring, random-edge
+addition, hub injection, and raw-feature masking are screened with one seed on
+validation only. A locked rule chooses crossover brackets. Five-seed test
+confirmation cannot launch until those rates are generated, reviewed,
+committed, and tagged. Predictor construction remains prohibited until the
+confirmation establishes reproducible help/neutral/harm regions.
 
 ### Package F — Fresh untouched confirmation
 
