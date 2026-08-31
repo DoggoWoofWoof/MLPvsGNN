@@ -1,0 +1,111 @@
+experiment: validation_only_message_passing_phase_screen
+status: PHASE_SCREEN_PROTOCOL_FROZEN_BEFORE_VALIDATION_SWEEP
+protocol_ancestor: sa-mlp-confirmation-protocol-v1
+
+question: >-
+  Along which topology-quality and feature-quality axes does the validation
+  effectiveness gap between learned message passing and QLS-MLP cross zero?
+
+scope:
+  stage: validation_only_screening
+  test_metrics_computed: false
+  architectures_changed: false
+  predictor_training: prohibited
+  confirmation_seed_count: deferred_until_rates_selected_by_locked_rule
+
+axes:
+  degree_rewire:
+    rates: [0.10, 0.25, 0.50, 1.00]
+    action: query_local_destination_permutation
+    invariant: directed_in_and_out_degree_with_multiplicity
+  random_add:
+    rates: [0.10, 0.25, 0.50, 1.00]
+    action: append_uniform_query_local_directed_edges
+    invariant: original_edges_retained
+  hub_injection:
+    rates: [0.10, 0.25, 0.50, 1.00]
+    action: redirect_selected_query_local_destinations_to_high_degree_node
+    invariant: directed_edge_count_and_source_degree
+  feature_mask:
+    rates: [0.25, 0.50, 0.75, 1.00]
+    action: mask_raw_node_embedding_scalar_entries
+    invariant: query_embeddings_and_topology
+
+topology_scope:
+  perturbation_unit: frozen_candidate_induced_query_graph
+  corpus_static_qls_features: clean_and_frozen
+  query_local_qls_features: recomputed_from_perturbed_topology
+  gnn_adjacency: same_perturbed_topology
+  labels_used_to_construct_perturbation: false
+
+screen_selection_rule:
+  metric: validation_recall_at_5_gnn_minus_qls
+  clean_rate_zero_source: sealed_confirmation_training_best_validation
+  per_dataset_axis:
+    sign_change: retain_two_adjacent_bracketing_rates_plus_clean_and_axis_endpoint
+    no_sign_change: retain_clean_and_axis_endpoint
+    exact_zero: retain_exact_rate_plus_adjacent_rates_and_endpoints
+  merge_for_confirmation: union_selected_rates_across_datasets_per_axis
+  test_access_before_confirmation_freeze: prohibited
+
+datasets:
+  2wiki_clean:
+    expected_queries: 15000
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  musique_clean:
+    expected_queries: 19938
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  webqsp:
+    expected_queries: 1578
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+  hotpotqa_clean:
+    expected_queries: 97852
+    selected_gnn: gin
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+  squad_clean:
+    expected_queries: 130319
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+  metaqa:
+    expected_queries: 407513
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+
+training:
+  seed: 0
+  epochs: 3
+  batch_size: 16
+  layers: 1
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  checkpoint_selection: validation_recall_at_5_only
+  ks: [1, 5, 20]
+
+perturbation_seeds:
+  degree_rewire: 31415
+  random_add: 27182
+  hub_injection: 16180
+  feature_mask: 14142
+
+parameter_regime:
+  projection_dim: 64
+  hidden_dim: 64
+  maximum_sa_absolute_difference: 256
+  target: frozen_validation_selected_gnn_parameter_count
+
+modal:
+  app: message-passing-retrieval-phase-screen
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400
+
