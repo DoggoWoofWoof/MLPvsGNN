@@ -11,8 +11,9 @@ named dependency), **FUTURE** (not preregistered). Exact per-cell counts live in
 [`EXPERIMENT_EXECUTION_STATUS.md`](EXPERIMENT_EXECUTION_STATUS.md) and are not
 duplicated here.
 
-**A:** COMPLETE. **Candidate-generation headroom:** COMPLETE. **B / C / E1:**
-RUNNING. **D:** GATED on Package C budget-400. **E2:** GATED on the E1 screen.
+**A:** COMPLETE. **Candidate-generation headroom:** COMPLETE. **C:** COMPLETE
+AND FROZEN. **B / E1:** RUNNING. **D:** RUNNING on the verified Package C
+budget-400 gate. **E2:** GATED on the E1 screen.
 **F:** sealed.
 
 One readiness gap listed below is now closed. The audit asked for

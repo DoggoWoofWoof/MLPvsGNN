@@ -10,8 +10,9 @@ Aggregation*
 ## Current status
 
 **Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2/A3 controls:
-COMPLETE. Candidate-generation headroom diagnostic: COMPLETE. Packages B/C/E1:
-PARTIAL, INTEGRITY-VERIFIED, AND RESUMED. Package D: FROZEN AND GATED ON C.
+COMPLETE. Candidate-generation headroom diagnostic: COMPLETE. Package C
+(candidate budget): COMPLETE AND FROZEN. Packages B/E1: PARTIAL,
+INTEGRITY-VERIFIED, AND RESUMED. Package D: RUNNING on the verified C gate.
 Package F: SEALED.** The sealed QLS/GNN checkpoint remains unchanged and no
 partial seed outcome has been interpreted.
 
@@ -656,17 +657,34 @@ normalization control.
 
 ### Package C — Structural-context budget
 
-**Protocol frozen; partial runs integrity-verified and resumed 2026-09-01.**
-Equal-RRF budgets 50/100/200/400 jointly record candidate ceiling, retrieval
-metrics, induced graph context, QLS/GNN compute, and checkpoints for Package D.
-No budget is selected on test. Budget effects must be read against the
-per-budget ceiling: that ceiling rises monotonically with budget on every
-dataset, so part of any raw gain across the sweep is the ceiling moving rather
-than the model reranking better.
+**COMPLETE AND FROZEN 2026-09-01** (`candidate-budget-results-v1`): 24/24
+conditions, 240/240 model-seed work units, 0 INVALID. Equal-RRF budgets
+50/100/200/400 jointly record candidate ceiling, retrieval metrics, induced
+graph context, QLS/GNN compute, and checkpoints for Package D. No budget is
+selected on test.
+
+Budget effects are read against the per-budget ceiling, and doing so changes the
+conclusion. Recall factors exactly as `attainment x ceiling`, so every budget
+step splits into a ceiling term and a ranking term. Across 36
+dataset-step-model cells the ceiling term is positive in 36/36 at R@5 and R@20
+while the ranking term is negative in 33/36 and 36/36 respectively, and R@5
+attainment falls from budget 50 to 400 in 12/12 dataset-model pairs. Enlarging
+the candidate budget bought candidate supply, not better reranking, anywhere in
+this grid.
+
+Paired `GNN - QLS` at R@5 is Holm-significant in 7 of 24 cells: 2Wiki and
+HotpotQA at budgets 200 and 400 with the effect growing as the budget grows,
+and MetaQA at 50/100/200 where it is real but far smaller than the ranker's own
+distance from its ceiling. WebQSP is negative at every budget. Message passing
+helps where the pool is large enough to carry relational context, and that is a
+measured condition rather than a general claim. Full tables:
+[CANDIDATE_BUDGET_RESULTS.md](docs/CANDIDATE_BUDGET_RESULTS.md) and
+[CANDIDATE_BUDGET_AND_HEADROOM_RESULTS.md](docs/CANDIDATE_BUDGET_AND_HEADROOM_RESULTS.md).
 
 ### Package D — Online systems evaluation
 
-**Protocol frozen; execution gated on Package C budget 400.** The uncached path
+**Protocol frozen; RUNNING since 2026-09-01 on the verified Package C
+budget-400 gate.** The uncached path
 starts from a held-out query embedding and Dense/SPLADE rankings and charges
 fusion, graph induction, method-specific computation, transfer, scoring, and
 top-K. It reports batch 1/16 percentiles, throughput, method-level memory,

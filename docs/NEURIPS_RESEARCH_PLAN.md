@@ -34,7 +34,9 @@
 > decisions continue to take precedence.
 >
 > **A:** COMPLETE. **Candidate-generation headroom diagnostic:** COMPLETE.
-> **B / C / E1:** RUNNING. **D:** GATED on all six Package C budget-400 cells.
+> **C:** COMPLETE AND FROZEN (`candidate-budget-results-v1`). **B / E1:**
+> RUNNING. **D:** RUNNING since 2026-09-01, launched on the verified six-cell
+> Package C budget-400 gate.
 > **E2:** GATED on a complete E1 screen, a validation-only rate selection, a
 > commit, and a new freeze tag. **F:** sealed and unopened.
 >

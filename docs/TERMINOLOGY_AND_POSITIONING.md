@@ -180,11 +180,13 @@ Do not expand model design until these are complete:
 2. **Package B — edge provenance (mandatory). RUNNING.** Native/title/KB-only,
    embedding-kNN-only, and union graphs for both QLS and GNN, with the union
    proven equivalent to the frozen adjacency.
-3. **Package C — structural-context budget. RUNNING.** Shared 50/100/200/400
+3. **Package C — structural-context budget. COMPLETE AND FROZEN.** Shared
+   50/100/200/400
    candidate budgets with ceiling, effectiveness, graph size/density,
    method-specific compute, and total post-retrieval latency.
-4. **Package D — online systems evaluation. GATED on all six Package C
-   budget-400 cells.** Separate cached operator latency from an uncached path
+4. **Package D — online systems evaluation. RUNNING.** Launched 2026-09-01 on
+   the verified six-cell Package C budget-400 gate. Separate cached operator
+   latency from an uncached path
    beginning at unseen query embeddings and Dense/SPLADE rankings. Report batch
    1/16, p50/p95/p99, throughput, GPU/CPU memory, storage, cold start, and
    cache break-even.

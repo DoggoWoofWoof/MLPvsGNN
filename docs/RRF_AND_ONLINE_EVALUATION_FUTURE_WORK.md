@@ -1,11 +1,11 @@
 # RRF Fusion and Unseen-Embedding Systems Evaluation
 
 Status (2026-09-01): **RRF and linear effectiveness controls COMPLETE;
-uncached online evaluation (Package D) frozen and GATED**. Package D is
-preregistered in `ONLINE_SYSTEMS_PROTOCOL.md` and is blocked on exactly one
-dependency: all six Package C budget-400 conditions must be COMPLETE and
-integrity-valid, because D reuses their checkpoints and candidate caches.
-Package C is running; see
+uncached online evaluation (Package D) frozen and RUNNING**. Package D is
+preregistered in `ONLINE_SYSTEMS_PROTOCOL.md` and had exactly one dependency:
+all six Package C budget-400 conditions had to be COMPLETE and integrity-valid,
+because D reuses their checkpoints and candidate caches. That gate was verified
+OPEN 6/6 on 2026-09-01 and D was launched the same day. See
 [`EXPERIMENT_EXECUTION_STATUS.md`](EXPERIMENT_EXECUTION_STATUS.md) for the live
 matrix. D writes new result files and does not change the sealed QLS-MLP
 confirmation.
