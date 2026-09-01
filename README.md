@@ -75,6 +75,9 @@ topology-free**. Its trainable parameter count is approximately matched to the
 GNN comparators; fewer parameters are not a contribution of this work.
 The separate 19-parameter A3 model is deliberately a low-capacity diagnostic
 control, not a replacement name or parameter claim for QLS-MLP.
+(This describes **QLS-v1**, the method Packages A–E measure. The separate QLS-v2
+effort explicitly *does* target a parameter reduction — see
+[QLS-v2 — designed, not yet developed](#qls-v2--designed-not-yet-developed).)
 
 The frozen implementation key remains `sa_mlp`, and the sealed SA-named files,
 tags, configurations, and hashes are intentionally unchanged. `SA-MLP` is
@@ -730,36 +733,58 @@ result: a fixed query-local summary already matches parameter-matched message
 passing on 3/6 datasets, is never significantly beaten on similarity-only
 graphs, and already uses less GPU memory on all six.
 
-A read-only audit of those frozen results and of the v1 implementation
-identifies three specific, *scoped* weaknesses — and a v2 design that targets
-them. None of this modifies, reinterprets, or retunes any frozen result, and
-**no QLS-v2 model has been trained**.
+**The thesis is not "a clever MLP beats a GNN".** It is:
 
-| Weakness | Where it holds | Magnitude |
+> For retrieval ranking, most useful graph information reduces to a small set of
+> query-conditioned structural statistics. Once those statistics are exposed
+> explicitly, a tiny feed-forward ranker is sufficient; recursive learned message
+> passing is unnecessary overhead.
+
+So the scientific object is the **feature set**, not the architecture. The goal
+is to find the *minimum sufficient* set of structural statistics, compute them
+with bounded non-learned operations, and let a tiny universal MLP combine them.
+
+**QLS-v2 uses no GNN in any part of the method** — no teacher, no distillation,
+no hidden representations, no GNN-generated labels or residual targets, and no
+learned message passing at training or inference. Frozen GNN results are
+evaluation baselines only. This is stricter than the GLNN/TINED/SA-MLP
+distillation line, and deliberately so: otherwise the result reduces to "the MLP
+compressed a GNN".
+
+A read-only audit grounds six specific defects in the v1 implementation, all of
+them **information losses or unbounded costs — none a shortage of capacity**:
+
+| | Defect | Kind |
 |---|---|---|
-| W1 under-expresses relational topology | 2wiki, webqsp | +2.0 to +2.7 pts of relational signal the GNN extracts and v1 does not |
-| W2 degrades as candidate context grows | 2wiki, hotpotqa only | GNN advantage +0.16 → +1.28 and +0.22 → +0.70 across budgets 50 → 400 |
-| W3 cold-query inefficiency | all six | p95 1.5–1.9× worse, localized to one stage; **median already better in 4/6** |
+| W1 | min seed distance, collapsed and bucketed | information |
+| W2 | seed support counts edges, not distinct seeds | information |
+| W3 | path features are walks, not independent evidence | information |
+| W4 | graph provenance flattened | information |
+| W5 | max-normalization compresses the useful mid-range | information |
+| W6 | unbounded tail in `query_local_summary` (p95/p50 = 6.7–8.7×) | cost |
 
-The objective is that QLS-v2 **Pareto-dominate** the seed-aware GNN on
-effectiveness *and* systems cost while remaining non-message-passing at
-inference. Dominance requires every axis; partial dominance will be reported as
-partial, naming the axes lost.
+The decisive evidence that capacity is *not* the constraint is already ours: the
+frozen **19-parameter A3 linear model**, with no embeddings and no adjacency,
+recovers **51.8% / 47.9% / 65.6%** of the RRF→QLS gap on WebQSP/HotpotQA/MetaQA.
+Meanwhile 46% of QLS-v1's parameters are the 768→64 embedding projection alone.
+The proposed v2 learner is **~1.4K–4.3K parameters — 50–153× smaller than the
+GNN**.
 
-The governing rule is that the method may not be iterated against the same test
-results until it wins. Development uses validation evidence only; the v2
-specification is frozen and tagged before a single test evaluation. The
-six-dataset test set is a *weakened* confirmation surface for v2 because the
-weakness audit read test-set aggregates — that leakage is declared, bounded, and
-reported rather than hidden.
+Development uses validation evidence only; the specification is frozen and tagged
+before a single test evaluation, and leave-one-dataset-out transfer is mandatory.
+The six-dataset test set is a *weakened* confirmation surface because the audit
+read test-set aggregates — that leakage is declared and bounded rather than
+hidden.
 
-- [`docs/QLS_V1_WEAKNESS_AUDIT.md`](docs/QLS_V1_WEAKNESS_AUDIT.md) — evidence and mechanisms, including the axes v1 already wins
-- [`docs/QLS_V2_DESIGN.md`](docs/QLS_V2_DESIGN.md) — proposed changes with cost, fairness, and per-change ablation
-- [`docs/QLS_V2_DEVELOPMENT_PROTOCOL.md`](docs/QLS_V2_DEVELOPMENT_PROTOCOL.md) — split discipline, selection rule, freeze, confirmation
-- [`docs/QLS_V2_SYSTEMS_PLAN.md`](docs/QLS_V2_SYSTEMS_PLAN.md) — tail bounding, fused traversal, diffusion variants, Pareto table
+- [`docs/QLS_V1_WEAKNESS_AUDIT.md`](docs/QLS_V1_WEAKNESS_AUDIT.md) — the six defects, with evidence and the axes v1 already wins
+- [`docs/QLS_V2_FEATURE_CATALOG.md`](docs/QLS_V2_FEATURE_CATALOG.md) — 33 candidate features: formulas, costs, failure modes, registered predictions
+- [`docs/QLS_V2_DESIGN.md`](docs/QLS_V2_DESIGN.md) — no-GNN constraint, seed-bitset computation, the tiny learner
+- [`docs/QLS_V2_DEVELOPMENT_PROTOCOL.md`](docs/QLS_V2_DEVELOPMENT_PROTOCOL.md) — Phases 0–8, selection rule, LODO, freeze and confirmation
+- [`docs/QLS_V2_SYSTEMS_PLAN.md`](docs/QLS_V2_SYSTEMS_PLAN.md) — tail bounding, bounded diffusion, sketch backend, Pareto table
 
-**Status: design under review. Training is gated on the protocol being frozen
-and tagged.** Package E2 continues untouched; Package F remains unopened.
+**Status: design under review. Implementation and training are gated on the
+protocol being frozen and tagged.** Package E2 continues untouched; Package F
+remains unopened.
 
 ### Future theory and optional work
 
@@ -784,7 +809,8 @@ docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md prioritized missing controls
 docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-embedding timing
 docs/EXPERIMENT_EXECUTION_STATUS.md exact B/C/E1 completion matrices
 docs/QLS_V1_WEAKNESS_AUDIT.md    read-only diagnosis of frozen QLS-v1
-docs/QLS_V2_DESIGN.md            proposed QLS-v2 changes and fairness gates
+docs/QLS_V2_FEATURE_CATALOG.md   33 candidate features with costs
+docs/QLS_V2_DESIGN.md            no-GNN constraint and the tiny learner
 docs/QLS_V2_DEVELOPMENT_PROTOCOL.md v2 selection discipline and freeze rule
 docs/QLS_V2_SYSTEMS_PLAN.md      v2 tail bounding and Pareto reporting
 docs/CANDIDATE_HEADROOM_PROTOCOL.md read-only retrieval-headroom contract

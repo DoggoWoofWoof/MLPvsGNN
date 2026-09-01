@@ -843,63 +843,104 @@ connected-seed fraction, path redundancy, PPR concentration, and hub exposure.
 
 Packages A-E measure **QLS-v1**. They remain frozen and reported. A separate,
 strictly read-only phase re-reads them and the v1 implementation to diagnose
-where v1 is weaker than the parameter-matched GNN, and specifies a v2 intended
-to Pareto-dominate it while staying non-message-passing at inference.
+where v1 loses information or costs too much, and specifies a v2 under a
+revised thesis.
 
 Nothing in this phase modified a frozen result, protocol, config, candidate
-pool, candidate hash, or CRAG artifact. **No QLS-v2 model has been trained.**
+pool, candidate hash, or CRAG artifact. **No QLS-v2 model has been trained and
+no v2 code has been written.**
+
+### The thesis changed (2026-09-02)
+
+The target is no longer "an MLP that beats a GNN". It is: most useful graph
+information for retrieval ranking reduces to a small set of query-conditioned
+structural statistics; expose them explicitly and a tiny feed-forward ranker
+suffices. The scientific object is the **feature set**, not the architecture.
+
+**Hard constraint: QLS-v2 uses no GNN in any part of the method** -- no teacher,
+no distillation, no hidden representations, no GNN-generated labels or residual
+targets, no learned message passing at training or inference. Frozen GNN results
+are evaluation baselines only. This is to be enforced by an AST import-contract
+test, not by documentation alone.
 
 | Document | Contents |
 |---|---|
-| `docs/QLS_V1_WEAKNESS_AUDIT.md` | three scoped weaknesses with frozen evidence, plus the axes v1 already wins |
-| `docs/QLS_V2_DESIGN.md` | changes C1-C9 with cost, fairness gate, and per-change ablation |
-| `docs/QLS_V2_DEVELOPMENT_PROTOCOL.md` | split discipline, selection rule, freeze, single confirmation |
-| `docs/QLS_V2_SYSTEMS_PLAN.md` | tail bounding, fused traversal, diffusion variants, Pareto table |
+| `docs/QLS_V1_WEAKNESS_AUDIT.md` | six defects W1-W6 with frozen evidence, plus the axes v1 already wins |
+| `docs/QLS_V2_FEATURE_CATALOG.md` | 33 candidate features: formulas, costs, cacheability, failure modes, registered predictions |
+| `docs/QLS_V2_DESIGN.md` | no-GNN constraint, seed-bitset computation, the ~1.4K-4.3K parameter learner |
+| `docs/QLS_V2_DEVELOPMENT_PROTOCOL.md` | Phases 0-8, selection rule, mandatory LODO, freeze and confirmation |
+| `docs/QLS_V2_SYSTEMS_PLAN.md` | tail bounding, bounded diffusion, sketch backend, Pareto table |
 
-Weaknesses established, with their scope stated rather than generalized:
+### The six defects
 
-- **W1** relational under-expression -- 2wiki and webqsp only; the GNN converts
-  the same relational edges into +2.04 and +2.71 more Recall@5 points than v1.
-  On metaqa and musique v1 extracts the signal as well or better. On
-  similarity-only graphs the GNN never significantly beats v1 anywhere.
-- **W2** degradation with candidate context -- 2wiki and hotpotqa only
-  (GNN advantage +0.16 -> +1.28 and +0.22 -> +0.70 across budgets 50 -> 400,
-  Holm-significant from budget 200). Absent or reversed on the other four.
-- **W3** cold-query tail -- all six datasets, but localized: p95/p50 for
-  `query_local_summary_ms` is 6.68-8.69 while every other stage is 1.15-1.84,
-  and v1's **median is already better than the GNN's in 4/6 datasets**.
+All are **information losses or unbounded costs -- none is a shortage of
+capacity**:
 
-Two corrections carried explicitly rather than smoothed over:
+```
+W1  min seed distance, collapsed and bucketed
+W2  seed_connections counts edges, not distinct supporting seeds
+W3  path features are walks, not independent evidence paths
+W4  graph provenance flattened
+W5  max-normalization compresses useful mid-range values around hubs
+W6  cold-query cost concentrated in the query_local_summary heavy tail
+```
+
+**Preserved narrower frozen findings, not to be generalized:**
+
+- context-related GNN separation is primarily **2wiki + hotpotqa**, not universal;
+- learned message passing does **not** obtain its advantage from similarity-only
+  (kNN) topology -- the GNN never significantly beats QLS on `knn_only` anywhere.
+
+### Three new groundings established this phase
+
+1. **|S_q| <= 10** -- seeds are the union of dense top-5 and SPLADE top-5
+   (`configs/sa_mlp_screen.yaml`). Per-seed statistics are cheap and a per-node
+   seed bitmask fits one 16-bit word. No multi-word fallback is needed.
+2. **Embedding width is 768**, so v1's q/x projection is 98,432 parameters --
+   **46% of the 213,506-parameter model** -- before any structural feature is
+   consumed. A scalar-only ranker deletes that mass outright.
+3. **A3 is the decisive evidence that capacity is not the constraint.** The
+   frozen 19-parameter linear model, with no embeddings and no adjacency,
+   recovers 51.8% (WebQSP), 47.9% (HotpotQA), 65.6% (MetaQA) of the
+   selected-RRF to QLS gap. Proposed v2 learner: **~1,395-4,291 parameters,
+   50-153x smaller than the GNN.**
+
+### Corrections carried explicitly rather than smoothed over
 
 1. v1's features are already per-query max-normalized and `hub_degree_percentile`
-   is already a percentile. The defect is outlier compression, not rawness, so
-   the v2 fix is rank/percentile statistics rather than "normalize".
-2. The percentile decomposition in the audit **refines** Package D's frozen
-   mean-based framing using the same artifacts. `ONLINE_SYSTEMS_RESULTS.md` is
-   left exactly as frozen; both descriptions are simultaneously true because the
-   latency distribution is right-skewed.
+   is already a percentile. **"QLS-v1 uses raw features" is false.** The defect
+   is outlier compression (W5), so the fix is rank/percentile statistics.
+2. The percentile decomposition **refines** Package D's frozen mean-based framing
+   using the same artifacts. `ONLINE_SYSTEMS_RESULTS.md` is left exactly as
+   frozen; both descriptions are true because the distribution is right-skewed.
 
-**Declared leakage.** The audit read test-set aggregates from Packages B, C and
-D. W1 and W3 are code-level findings that did not require them; W2's dataset
-scoping did. No hyperparameter, feature admission, or architecture choice has
-been made from test data, and the protocol forbids it. The six-dataset test set
-is therefore a *weakened* confirmation surface for v2 and must be reported as
-such.
+### Naming hazard
 
-**Open decision for the user.** Package F was scoped as the fresh untouched
-confirmation for the v1 claim. It cannot serve as an untouched surface for both
-v1 and v2 without being consumed twice. Package F remains **unopened** and this
-phase makes no use of it.
+The internal frozen key `sa_mlp` collides with published SA-MLP
+(arXiv 2210.09609), which distills from a **GNN teacher** -- exactly what v2
+forbids. The key must not be renamed (frozen hashes); the paper name is QLS-MLP
+and must explicitly disambiguate. See `docs/TERMINOLOGY_AND_POSITIONING.md`.
+
+### Declared leakage
+
+The audit read test-set aggregates from Packages B, C and D. W1-W6 are
+code-level findings and the A3 evidence is a Package A result, but W5's dataset
+scoping used test aggregates. No hyperparameter, feature admission or
+architecture choice has been made from test data, and the protocol forbids it.
+The six-dataset test set is therefore a weakened confirmation surface; LODO
+transfer and Package F carry the generalization claim.
 
 ### Gate
 
-Training is blocked until `QLS_V2_DEVELOPMENT_PROTOCOL.md` is reviewed, frozen
-and tagged. The protocol's Stage 0 diagnostics (D1-D4, validation-only) are
-likewise deferred, because their outcomes gate feature admission and running
-them before the gates are frozen would defeat the discipline they enforce.
+Implementation and training are blocked until
+`QLS_V2_DEVELOPMENT_PROTOCOL.md` is reviewed, frozen and tagged. Stage-0
+diagnostics (D1-D4, validation-only) are likewise deferred, because their
+outcomes gate feature admission and running them before the gates are frozen
+would defeat the discipline they enforce.
 
-Package E2 continues untouched: no rate, analyzer, seed, condition or test
-protocol was modified by this phase.
+**E2 remains the QLS-v1 diagnosis and must not be used to choose any v2
+hyperparameter.** Package F stays unopened until the v2 architecture, feature
+set and implementation are frozen at Phase 7.
 
 ## Repository boundary
 

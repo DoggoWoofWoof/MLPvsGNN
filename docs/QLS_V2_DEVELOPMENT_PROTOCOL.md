@@ -4,170 +4,275 @@
 **Date:** 2026-09-02
 **Governs:** all QLS-v2 work from first measurement through final confirmation
 **Depends on:** [`QLS_V1_WEAKNESS_AUDIT.md`](QLS_V1_WEAKNESS_AUDIT.md),
-[`QLS_V2_DESIGN.md`](QLS_V2_DESIGN.md)
+[`QLS_V2_DESIGN.md`](QLS_V2_DESIGN.md),
+[`QLS_V2_FEATURE_CATALOG.md`](QLS_V2_FEATURE_CATALOG.md)
 
-> **No QLS-v2 training may begin until this document is reviewed, frozen and
-> tagged.** Nothing below has been executed.
-
-## 0. The problem this protocol exists to prevent
-
-The QLS-v2 effort is, by construction, an attempt to beat a comparator whose
-results we have already seen. Without a discipline, the natural process —
-adjust, re-evaluate on the same test set, keep what wins — produces a method
-that appears to dominate and an evaluation that means nothing.
-
-The discipline is:
-
-```
-Freeze QLS-v1 and its results
-  -> use them to identify weaknesses          (audit: DONE, read-only)
-  -> build QLS-v2 on development evidence     (this protocol, sections 2-5)
-  -> freeze QLS-v2 completely                 (section 6)
-  -> evaluate once on untouched confirmation  (section 7)
-```
-
-Each arrow is one-way. Section 8 lists what would invalidate the result.
+> **No QLS-v2 implementation or training may begin until this document is
+> reviewed, frozen and tagged.** Nothing below has been executed.
 
 ---
 
-## 1. Declared leakage, and what follows from it
+## 0. The two failure modes this protocol prevents
 
-**This must be stated in the paper.** The weakness audit read *aggregate
-test-set* contrasts from Packages B, C and D (family-level and budget-level
-GNN−QLS differences, and test-set latency percentiles). Those aggregates
-informed which weaknesses were prioritized. That is information flow from the
-test set into the design of v2, and pretending otherwise would be the exact
-failure this protocol exists to prevent.
+**Failure 1 — tuning against the comparator.** We are trying to beat a
+comparator whose results we have seen. Without discipline, the natural process
+(adjust, re-evaluate on the same test set, keep what wins) produces a method that
+appears to dominate and an evaluation that means nothing.
 
-Three facts bound its severity, and all three are stated rather than relied on
-silently:
+**Failure 2 — accidentally compressing a GNN.** If any GNN-derived signal enters
+the method — teacher, hidden states, generated labels, residual targets — the
+thesis collapses into a distillation result. §1 makes this a hard gate.
 
-1. **W1 and W3 are code-level findings.** The min-distance collapse, the
-   edge-count seed support, the walk-based path counts, the provenance-blind
-   edge array and the ~16 edge passes are properties of
-   [`structural_features.py`](../src/mp_retrieval/structural_features.py). They
-   were identifiable without any test metric, and would have been found by
-   reading the implementation alone.
-2. **W2's scoping used test aggregates.** That QLS's deficit grows with budget
-   *on 2wiki and hotpotqa specifically* came from frozen test numbers. This is
-   the most leakage-exposed part of the design (change C5 in particular).
-3. **No hyperparameter, feature admission, or architecture choice has been made
-   from test data, and under this protocol none may be.**
+The discipline:
 
-**Consequence for reporting.** The six-dataset test set is a *weakened*
-confirmation surface for v2: it is unbiased with respect to v2's *selection* but
-not with respect to v2's *problem framing*. Therefore:
+```
+Freeze QLS-v1 and its results          (done)
+  -> identify weaknesses, read-only    (done: W1-W6)
+  -> build QLS-v2 on development evidence   (Phases 0-6)
+  -> freeze QLS-v2 completely               (Phase 7)
+  -> evaluate once on untouched confirmation (Phase 8)
+```
 
-- The six-dataset confirmation is reported as the **primary** v2 result, with
-  this leakage declared in the paper text.
-- A **cross-corpus confirmation on data never read at any stage** is required
-  before the Pareto-dominance claim is stated without qualification. Package F is
-  the natural surface for this.
+Each arrow is one-way.
 
-**Open decision for the user, not for this document.** Package F was scoped as
-the fresh untouched confirmation for the *v1* claim. It cannot serve as an
-untouched surface for both v1 and v2 without being consumed twice. Whether F is
-spent on v1, on v2, or split, is a research-scope decision. **Package F remains
-unopened and this protocol makes no use of it.** The decision is flagged here so
-it is made deliberately rather than by default.
+---
+
+## 1. Hard gate: no GNN in the method
+
+Prohibited at every phase:
+
+```
+GNN teacher                          GNN-generated labels
+GNN distillation                     GNN-generated residual targets
+GNN hidden representations           learned message passing (train)
+GNN logits or soft targets           learned message passing (inference)
+```
+
+Frozen GNN results are **evaluation baselines only**, read at Phase 8 for
+comparison and never as a training or selection signal.
+
+**Enforcement.** The v2 training entry point must not import
+`build_seed_aware_message_passing` or any message-passing module, and a unit test
+must assert this by AST inspection of the import graph — the same contract-test
+pattern that now guards the E2 launcher's argument namespace. A prohibition that
+is only documented is not enforced.
 
 ---
 
 ## 2. Data discipline
 
-Canonical splits are `train` / `validation` / `test`, already fixed per dataset
-and unchanged from Packages A–E.
+Canonical splits `train` / `validation` / `test`, unchanged from Packages A–E.
 
-| Split | Use during v2 development | Use during confirmation |
+| Split | Phases 0–6 (development) | Phase 8 (confirmation) |
 |---|---|---|
 | `train` | model fitting | model fitting |
-| `validation` | **all** selection, all measurement, all ablation reading | seed-0 checkpoint selection only, as in v1 |
+| `validation` | **all** selection, measurement, ablation | seed-0 checkpoint selection only |
 | `test` | **prohibited — no read of any kind** | read once, after the freeze tag |
 
-The prohibition on `test` during development is absolute and includes: metric
-computation, plotting, "just checking", per-query inspection, and any script that
-loads test-split query metrics. It applies to the six frozen A–E analyses as
-well: those files are test-set artifacts.
+The prohibition is absolute: no metric computation, no plotting, no "just
+checking", no per-query inspection. It covers the frozen A–E analysis files,
+which are test-set artifacts.
 
-**Enforcement.** Development scripts must load splits through a wrapper that
-raises on a `test` request unless an explicit `--confirmation-run` flag is passed,
-and that flag must be unavailable until the freeze tag exists. This is the same
-gating pattern already used successfully for E2, where
-`configs/phase_confirmation.yaml` did not exist until the validation-only rule
-had been committed.
-
-**Development datasets.** Feature and architecture development runs on the
-`validation` splits of all six datasets. Reporting a v2 variant's validation
-number on a subset chosen after seeing the results is prohibited; the
-development report covers all six or declares the exclusion in advance.
+**Enforcement.** Development scripts load splits through a wrapper that raises on
+a `test` request unless `--confirmation-run` is passed, and that flag is
+unavailable until the freeze tag exists — the same gating that kept
+`configs/phase_confirmation.yaml` from existing until E1's rule was committed.
 
 ---
 
-## 3. Order of work
+## 3. Declared leakage
 
-The audit's §8 lists four measurements deliberately not computed. They come
-first, because the design's mechanisms are hypotheses until they are.
+**This must appear in the paper.** The weakness audit read *aggregate test-set*
+contrasts from Packages B, C and D. That is information flow from the test set
+into v2's problem framing.
 
-**Stage 0 — validation-set diagnostics (read-only, no training).**
+Bounding it honestly:
 
-| # | Measurement | Decides |
-|---|---|---|
-| D1 | Per-query correlates of the v1−GNN gap against inference-safe covariates (connected-seed fraction, path redundancy, PPR concentration, hub exposure, component size) | whether the gap is structural at all, and which features to prioritize |
-| D2 | Fraction of candidates with a degenerate local signature, by candidate budget | whether W2's proposed mechanism is real (gates C5) |
-| D3 | Significance of the relational extraction advantage on validation | whether W1's magnitude survives a test (gates C6's motivation) |
-| D4 | Operation-level profile inside `query_local_summary_ms` | which traversal produces the tail (gates the systems plan) |
+1. **W1–W6 are code-level findings.** Every one is a property of
+   [`structural_features.py`](../src/mp_retrieval/structural_features.py) and was
+   identifiable by reading the implementation alone.
+2. **The A3 evidence that motivates the whole strategy is a Package A result**,
+   already published in our own frozen reports.
+3. **W5's dataset scoping (2wiki/hotpotqa) used test aggregates.** This is the
+   most leakage-exposed part of the design, and it is what Group E targets.
+4. **No hyperparameter, feature admission, or architecture choice has been made
+   from test data, and this protocol forbids it.**
 
-All four run on `validation` only. **If D2 shows no degeneracy growth, C5 is
-dropped** rather than retained on intuition; the same conditional applies to each
-gate above. Committing these gates in advance is what makes them meaningful.
-
-**Stage 1 — feature implementation and unit correctness.** Each of C1–C7
-implemented behind a flag, with tests that check the feature computes what it
-claims on hand-built graphs (a candidate at distance 1 from one seed and 5 from
-four others must produce a different C1 vector than one at distance 1 from all
-five — the audit's own counterexample becomes a test case).
-
-**Stage 2 — ablation ladder on validation.** Section 4.
-
-**Stage 3 — systems profiling and variant selection.** Owned by
-[`QLS_V2_SYSTEMS_PLAN.md`](QLS_V2_SYSTEMS_PLAN.md); accuracy-neutral variants are
-chosen on cost alone.
-
-**Stage 4 — freeze.** Section 6.
-
-**Stage 5 — confirmation.** Section 7.
+**Consequence.** The six-dataset test set is unbiased with respect to v2's
+*selection* but not with respect to its *problem framing*. It is therefore the
+primary confirmation surface **with the leakage declared**, and the
+leave-one-dataset-out transfer result (Phase 6) plus Package F (Phase 8) carry
+the generalization claim.
 
 ---
 
-## 4. Ablation ladder (validation only)
+## 4. The staged program
 
-Reported for every rung: Recall@1/5/20, MRR, FullCoverage@20, trainable
-parameters, and p50/p95 uncached latency. A rung that improves recall while
-regressing p95 is not an improvement under the Pareto objective and must not be
-presented as one.
+### Phase 0 — Measurement infrastructure
 
-| Rung | Configuration | Isolates |
+**No model improvement.** Build per-feature instrumentation so that every feature
+family records:
+
+```
+build p50 / p95 / p99      storage bytes
+CPU RSS                    GPU memory
+feature dimension          cacheability class
+```
+
+Also complete the four diagnostics the audit deliberately left uncomputed
+(validation only):
+
+| # | Measurement | Gates |
 |---|---|---|
-| R0 | QLS-v1 as frozen | reference |
-| R1 | v1 + C7 (percentile transforms) | normalization alone |
-| R2 | R1 + C1 (multi-scale distance) | W1a |
-| R3 | R2 + C2 (multi-seed support) | W1b |
-| R4 | R3 + C4 (diffusion distribution) | W1a/W2 diffusion |
-| R5 | R4 + C5 (candidate-local structure) | W2 |
-| R6 | R5 + C3.branching | W1c cheap half |
-| R7 | R6 + C3.disjoint | W1c expensive half |
-| R8 | R7 + C8 (gated head) | architecture |
-| R9 | R8 + C6 (provenance split) | typing — **only if a typed GNN comparator is run** |
-| X1 | v1 features + C8 | how much of any gain is architectural, not informational |
-| X2 | full v2 − each C, one at a time | leave-one-out for the final configuration |
+| D1 | Per-query correlates of the v1−GNN gap vs inference-safe covariates | feature prioritization |
+| D2 | Degenerate-signature fraction by candidate budget | Group E |
+| D3 | Significance of the relational extraction gap | the §7 graph ablation |
+| D4 | Operation-level profile inside `query_local_summary_ms` | the whole systems plan |
 
-**Fixed in advance:** the ladder order, the metrics, and that X1 and X2 are
-reported regardless of outcome. X1 exists because "the gain came from the gate,
-not the features" is the most likely reviewer objection and the most likely
-truth; discovering it late would be worse than designing for it now.
+**These gates are committed in advance.** If D2 shows no degeneracy growth, Group
+E is dropped rather than retained on intuition.
 
-**Per-budget reporting.** C5's motivation is budget-dependent, so R5 and X2 are
-reported at candidate budgets 50/100/200/400, not only at the default.
+**Exit criterion:** every catalog feature has a measured build cost, and D1–D4
+are reported.
+
+### Phase 1 — Feature diagnostics
+
+**No large model.** Use a linear scorer or a fixed tiny MLP, and evaluate each
+feature *group* independently.
+
+> **Goal: discover what information matters. Not: maximize score.**
+
+This distinction is the phase's whole point. A group that adds little here is
+information the retrieval task does not need — that is a finding, not a failure.
+
+**Exit criterion:** per-group effectiveness and cost on validation, all six
+datasets.
+
+### Phase 2 — Incremental feature frontier
+
+Staged additions, evaluated on validation only:
+
+```
+R0  retrieval features only          (Group A)
+R1  + independent seed support       (C1-C5)
+R2  + bounded seed geometry          (Group B)
+R3  + path diversity                 (C6-C7)
+R4  + fixed-depth diffusion          (Group D)
+R5  + cheap static topology          (Group E)
+```
+
+Then **leave-one-group-out** ablations on the Pareto candidates, and backward
+elimination to the minimum sufficient set.
+
+For each rung record:
+
+```
+R@1 R@5 R@20 MRR FullCov@20
+training time, training peak memory
+inference p50 / p95 / p99
+CPU memory, GPU memory
+parameter count, feature-build time
+```
+
+**No arbitrary combinatorial feature search.** The ladder order is fixed here, in
+advance, and R1 comes before R2 because the audit predicts distinct seed support
+is the single highest-value addition — a registered prediction that the ladder
+can falsify.
+
+**Exit criterion:** a named minimum sufficient feature set with its frontier.
+
+### Phase 3 — Bounded computation
+
+For every expensive feature, compare exact against bounded:
+
+```
+exact iterative PPR   vs  H=1 / H=2 / H=3 diffusion / H=3 truncated PPR
+walk counting         vs  bitset seed support
+full traversal        vs  bounded 3-hop traversal
+online computation    vs  precomputed BUDDY-style sketch
+```
+
+**Selection is cost-first among accuracy-neutral variants**: screen for
+neutrality (within 0.10 R@5 of exact on validation), then take the lowest p95.
+If nothing is neutral, the choice escalates to the Phase 2 admission rule. This
+ordering is fixed now so a slow-but-slightly-better variant cannot be justified
+after the fact.
+
+**Exit criterion:** the `query_local_summary` tail is bounded, measured.
+
+### Phase 4 — Minimal learner comparison
+
+Only after the feature contract is known:
+
+```
+linear
+tiny single MLP
+two-branch residual MLP
+two-branch + explicit crosses
+```
+
+**That is the entire search.** No 50-architecture sweep. Gating, attention and
+transformers are excluded unless the four above all fail.
+
+**Exit criterion:** the smallest learner within the effectiveness frontier.
+
+### Phase 5 — Ranking objective (only if needed)
+
+```
+current loss  ->  pairwise  ->  listwise  ->  listwise + structural auxiliary
+```
+
+Any structural auxiliary loss must be **query-conditioned**. Do not assert
+"connected nodes should have similar representations" — graph neighbours are not
+necessarily relevant. A defensible positive relation is "same query, both
+structurally supported by multiple high-confidence seeds."
+
+**No GNN-derived supervision under any circumstance** (§1).
+
+### Phase 6 — Universal transfer (LODO) — **mandatory**
+
+True leave-one-dataset-out:
+
+```
+train on five datasets  ->  evaluate on the held-out sixth
+```
+
+repeated for all six folds. **No dataset ID.** Identical feature formulas,
+transformations, architecture, loss and hyperparameters across folds. Development
+and validation splits only until the Phase 7 freeze.
+
+The question this answers is the one that makes the paper significant:
+
+> Are these structural primitives **universal properties of retrieval**, or
+> benchmark-specific statistics?
+
+**A LODO failure is a reportable result**, not a reason to add dataset-specific
+handling.
+
+### Phase 7 — Freeze
+
+One commit containing:
+
+1. `configs/qls_v2.yaml` — final feature list, exact formulas, computation
+   algorithm, architecture, loss, normalization, hyperparameters, and the
+   per-dataset direction declaration sourced from
+   [`DATASET_GRAPH_PROVENANCE.md`](DATASET_GRAPH_PROVENANCE.md).
+2. The full development report: every rung, every rejected variant, LODO folds.
+3. Measured trainable parameter counts.
+4. The confirmation analyzer, written and tested **against the config while no
+   confirmation result exists** (the `analyze_phase_confirmation.py` discipline).
+5. The no-GNN import contract test (§1).
+
+Then a signed tag, e.g. `qls-v2-protocol-v1`. **Development stops here.**
+
+**Immutability.** A bug found during confirmation is fixed and confirmation
+**restarted from scratch** under a new tag with both attempts disclosed — never
+patched mid-run. (Precedent: the failed first E2 launch changed no condition,
+rate or seed, and is recorded rather than erased.)
+
+### Phase 8 — Untouched external confirmation
+
+Only now open Package F. **One shot.**
 
 ---
 
@@ -176,109 +281,119 @@ reported at candidate budgets 50/100/200/400, not only at the default.
 Fixed before any variant is trained; not revisable after seeing results.
 
 1. **Selection statistic:** mean `validation Recall@5` across development seeds
-   `{0,1,2}`. No other metric selects; the others are reported.
-2. **Admission threshold:** a rung is admitted only if its mean validation
-   Recall@5 exceeds the previous rung by **≥ 0.20 points** *and* its 95% paired
-   interval across development seeds excludes 0. A change that is merely
-   non-negative is **not** admitted — this is what prevents accumulating a dozen
-   neutral features that collectively overfit validation.
-3. **Cost veto:** a rung whose measured p95 latency exceeds the previous rung's
-   by more than 10% is rejected regardless of recall, unless the systems plan
-   supplies a bounded implementation that removes the regression.
-4. **Tie-breaking**, in order: fewer parameters, lower p95, fewer features.
-5. **C9 compact subset:** greedy backward elimination, removing the feature whose
-   removal costs least validation Recall@5, stopping when cumulative loss would
-   exceed **0.30 points** from the full set. The tolerance is declared here, in
-   advance, and applies whatever the resulting subset turns out to be.
-6. **Hyperparameters** (`learning_rate`, `dropout`, `temperature`, widths): a
-   pre-declared grid, searched once, selected on validation Recall@5, and the
-   full grid reported. No second pass.
-7. **Seeds:** development uses `{0,1,2}`. Confirmation uses `{0,1,2,3,4}`.
-   Development seeds are a subset by design so that confirmation adds unseen
-   seeds rather than reusing exactly the development draw.
+   `{0,1,2}`. No other metric selects; all others are reported.
+2. **Admission threshold:** a rung is admitted only if it exceeds the previous
+   rung by **≥ 0.20 R@5 points** *and* its 95% paired interval across development
+   seeds excludes 0. Merely non-negative is **not** admitted — this is what stops
+   a dozen neutral features accumulating into validation overfit.
+3. **Cost veto:** a rung whose measured p95 exceeds the previous rung's by more
+   than 10% is rejected regardless of recall, unless Phase 3 supplies a bounded
+   implementation that removes the regression.
+4. **Tie-breaking**, in order: fewer features, fewer parameters, lower p95.
+5. **Backward elimination tolerance:** stop when cumulative validation R@5 loss
+   from the full set would exceed **0.30 points**. Declared here, in advance.
+6. **Hyperparameters:** one pre-declared grid, searched once, selected on
+   validation R@5, full grid reported. No second pass.
+7. **Seeds:** development `{0,1,2}`; confirmation `{0,1,2,3,4}`. Development is a
+   subset by design so confirmation adds unseen seeds.
 
-**Prohibited during development, explicitly:** consulting any Package A–E test
-metric; selecting datasets, budgets, or edge families for reporting after seeing
-outcomes; re-running the ladder with a changed threshold because the first pass
-admitted too little; and adjusting the admission threshold, the cost veto, or the
-C9 tolerance after they have been applied.
+**`ΔR@5 / Δp95_ms` is reported as an explanatory statistic** — it is expected to
+make decisions obvious (if distinct seed support buys +2.0 R@5 for +0.02 ms and
+PPR buys +0.15 for +1.3 ms, removing PPR is clearly right) — **but a single
+scalar ratio is never the sole selection criterion.**
 
----
-
-## 6. Freeze
-
-Before any confirmation run, a single commit must contain:
-
-1. `configs/qls_v2.yaml` — complete feature list, architecture, hyperparameters,
-   the C6 admit/exclude decision with its justification, and the per-dataset
-   direction declaration sourced from
-   [`DATASET_GRAPH_PROVENANCE.md`](DATASET_GRAPH_PROVENANCE.md).
-2. The development report with the full ladder, including rejected rungs and X1.
-3. Measured trainable parameter counts per dataset, each verified ≤ the selected
-   GNN's count (213,568 / 213,440 / 209,280 as applicable).
-4. The confirmation analyzer, written and tested **against the config while no
-   confirmation result exists** — the same discipline used for
-   `analyze_phase_confirmation.py`.
-5. A statement of which comparator the GNN side runs (untyped, or typed if C6 was
-   admitted).
-
-Then a signed tag, e.g. `qls-v2-protocol-v1`. Confirmation may not launch before
-the tag exists. As with E2, the launcher should refuse to run if the config is
-absent.
-
-**Immutability.** After the tag, the v2 specification is fixed. A bug discovered
-in confirmation is fixed and the confirmation **restarted from scratch** under a
-new tag, with both attempts disclosed — not patched mid-run. (This is what was
-done when the E2 launch failed on a missing runner argument: the fix changed no
-condition, rate or seed, and the incident is recorded rather than erased.)
+**Prohibited during development:** consulting any Package A–E test metric;
+selecting datasets, budgets or families for reporting after seeing outcomes;
+re-running a ladder with a changed threshold; adjusting the threshold, cost veto
+or elimination tolerance after they have been applied.
 
 ---
 
-## 7. Confirmation
+## 6. Pareto evaluation
+
+A candidate `m` is characterized by
+`(effectiveness, latency, memory, training cost)`. `m` is **dominated** if
+another candidate achieves:
+
+```
+>= R@5  AND  >= R@20  AND  >= MRR
+AND
+<= p95 latency  AND  <= memory  AND  <= parameters  AND  <= training time
+```
+
+Dominated points are **kept for audit** and excluded from final architecture
+candidates.
+
+Required frontier plots:
+
+```
+R@5 vs uncached p95              <- the primary systems plot
+R@5 vs trainable parameters
+R@5 vs peak training memory
+R@5 vs training wall-clock
+R@5 vs feature-build p95
+ceiling-normalized attainment vs p95
+```
+
+The last is likely the fairest cross-dataset view, since candidate ceilings
+differ substantially (webqsp 0.30 vs squad 0.98 at budget 50):
+
+```
+attainment = R@5 / R@5_ceiling
+```
+
+**Training efficiency is measured, never inferred from parameter count.** For
+every final candidate record:
+
+```
+trainable parameters    training wall time    GPU-hours
+peak GPU VRAM           peak CPU RSS          samples/sec
+```
+
+---
+
+## 7. Confirmation rules
 
 - **Once.** One evaluation on `test`, seeds `{0,1,2,3,4}`, all six datasets.
-- **Paired** by seed and query against the same selected GNN, using the existing
-  hierarchical CI machinery in
-  [`scripts/analyze_linear_rank_structure.py`](../scripts/analyze_linear_rank_structure.py)
-  (`_hierarchical_paired_ci`, `_holm`).
+- **Paired** by seed and query against the frozen GNN baseline, using
+  `_hierarchical_paired_ci` and `_holm` from
+  [`scripts/analyze_linear_rank_structure.py`](../scripts/analyze_linear_rank_structure.py).
 - **Holm scope** declared in the config before the run.
-- **Every Pareto axis reported**: Recall@1/5/20, MRR, FullCoverage@20, cached
-  operator latency, uncached p50/p95/p99, throughput, peak GPU memory,
-  trainable parameters — for both methods, on all six datasets.
-- **Every ablation from §4 reported**, including rungs that did not help.
+- **Every Pareto axis reported** for both methods on all six datasets.
+- **Every ablation and LODO fold reported**, including those that do not favour v2.
 - **No re-selection.** If v2 loses on an axis, that is the result.
 
 **The dominance claim is stated only if every axis holds.** Partial dominance is
-reported as partial dominance, naming the axes lost. A v2 that improves Recall@5
-on two datasets and regresses p95 everywhere is a negative result for the Pareto
-objective and will be written as one.
+reported as partial, naming the axes lost. **Do not hide dimensions on which the
+final method fails.**
 
 ---
 
 ## 8. What would invalidate the result
 
-Any of the following, if it occurred, must be disclosed and the confirmation
-treated as void:
+Disclose and treat the confirmation as void if any occurred:
 
 - reading `test` metrics before the freeze tag;
-- changing the design, threshold, tolerance or grid after a confirmation run;
-- selecting reported datasets, budgets or families post hoc;
-- admitting C6 without a typed GNN comparator;
+- any GNN-derived signal entering the method (§1);
+- changing design, threshold, tolerance or grid after a confirmation run;
+- post-hoc selection of reported datasets, budgets or families;
+- dataset identity or dataset-specific constants entering the feature map;
 - fabricating direction features on an undirected dataset;
-- exceeding the parameter budget;
 - running confirmation from an untagged or modified config;
-- any candidate-pool, candidate-hash, or CRAG modification.
+- any candidate-pool, candidate-hash or CRAG modification.
 
-## 9. Standing constraints unaffected by this protocol
+---
 
-- **Package E2 continues untouched to completion.** Its rates, analyzer, seeds,
-  selected conditions and test protocol are not modified by anything here. No v2
-  work may share, reuse, or interfere with its Modal capacity in a way that
-  perturbs it.
-- **Package F stays unopened.**
-- **All frozen A–E results stay exactly as they are** — not rewritten, retuned,
-  reinterpreted or deleted. QLS-v1 remains a reported method, not an
-  embarrassment to be minimized: the paper's contribution includes the finding
-  that a fixed query-local summary already matches message passing on 3/6
-  datasets and on similarity-only graphs.
+## 9. Standing constraints
+
+- **Package E2 continues untouched to completion.** It is the QLS-v1 diagnosis.
+  Its rates, analyzer, seeds, conditions and test protocol are not modified, and
+  **E2 must not be used to choose any v2 hyperparameter.** It is monitored
+  separately.
+- **Package F stays unopened** until the final v2 architecture, feature set and
+  implementation are frozen at Phase 7.
+- **All frozen A–E results stay exactly as they are.** QLS-v1 remains a reported
+  method: the finding that a fixed query-local summary already matches message
+  passing on 3/6 datasets, is never significantly beaten on similarity-only
+  graphs, and already wins on GPU memory, is part of the contribution.
 - **CRAG remains strictly read-only.**
