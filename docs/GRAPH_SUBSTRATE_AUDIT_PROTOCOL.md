@@ -124,6 +124,12 @@ The depth sweep that would settle it already exists and was never run:
 under `status: deferred_until_operator_screen_gate`. **No depth evidence exists
 anywhere in this repository.**
 
+External evidence does exist, and it points the same way (§9.2, verified against
+primary sources): GCN, GraphSAGE and PinSage all use **two** layers in their
+reported experiments, and GraphSAGE measures the first-to-second hop gain at
+10–15% accuracy on uncut graphs. One layer is below the field-standard depth
+before the substrate question is even raised.
+
 ### 1.3 Still to verify when the data is reachable
 
 Not yet confirmed, and listed so they are not silently assumed:
@@ -322,6 +328,22 @@ should not be forced on large datasets — neighbour-sampled or `H`-hop
 neighbourhood construction is the norm precisely because full propagation is
 expensive.
 
+The verified reference constructions (§9.1) give it concrete, defensible
+settings rather than invented ones:
+
+```
+GraphSAGE   uniform draw from the true adjacency, K = 2, S1 = 25, S2 = 10
+PinSage     top-T by random-walk visit count on the real graph, T = 50,
+            two layers, importance-pooled by those same weights
+SEAL        the h-hop enclosing subgraph around the target
+```
+
+Each is closed under the graph's own neighbourhood operator, which is exactly the
+property `GNN-CAND` lacks. PinSage is the closest analogue to what Phase 1 needs,
+because it also has to bound a neighbourhood in a graph too large to propagate
+over in full — and it bounds it **structurally**, by proximity on the graph,
+rather than semantically.
+
 ### 7.4 The candidate ceiling must not move
 
 GLOBAL still scores exactly `C_q`. Therefore the candidate ceiling must be
@@ -384,26 +406,72 @@ to decide whether it is worth pursuing at all.
 
 ---
 
-## 9. Literature positioning — UNVERIFIED, must be checked before use
+## 9. Literature positioning — VERIFIED 2026-09-02
 
-The following claims motivate this audit and were supplied with the request.
-**They have not been independently verified in this session** and are recorded as
-claims-to-check, not as established citations. None of them is load-bearing for
-any measurement above; the measurements stand on the code trace in §1.
+Each claim below was checked against its primary source in this session. Two
+findings came out of it, and the second was not anticipated when the audit was
+proposed.
+
+### 9.1 Every reference substrate is closed under the graph's own neighbourhood operator
+
+| Method | Substrate it propagates over | Source |
+|---|---|---|
+| GCN | the normalised adjacency itself, `H⁽ˡ⁺¹⁾ = σ(D̃^(−1/2) Ã D̃^(−1/2) H⁽ˡ⁾ W⁽ˡ⁾)` with `Ã = A + I` | Kipf & Welling, ICLR 2017, [1609.02907](https://arxiv.org/abs/1609.02907) |
+| GraphSAGE | a fixed-size **uniform draw from `{u : (u,v) ∈ E}`** — the true adjacency, subsampled for cost, never reselected | Hamilton, Ying & Leskovec, NeurIPS 2017, [1706.02216](https://arxiv.org/abs/1706.02216) |
+| GraphSAINT | subgraphs of the training graph sampled to hold a fixed number of **well-connected** nodes at every layer, with an explicit **normalisation that removes the sampling bias** and variance-reduction samplers | Zeng et al., ICLR 2020, [1907.04931](https://arxiv.org/abs/1907.04931) |
+| PinSage | the top-`T` nodes by L1-normalised random-walk visit count (an approximation to Personalized PageRank), importance-pooled by those same weights, `T = 50`, walks run on the real graph | Ying et al., KDD 2018, [1806.01973](https://arxiv.org/abs/1806.01973) |
+| SEAL | the `h`-hop **enclosing subgraph** around each target link; the γ-decaying heuristic theory proves a broad class of link heuristics is well approximated from such local subgraphs | Zhang & Chen, NeurIPS 2018, [1802.09691](https://arxiv.org/abs/1802.09691) |
+| GNN-RAG | a **dense** KG subgraph, followed by extraction of the shortest paths joining question entities to answer candidates, verbalised for the LLM | Mavromatis & Karypis, 2024, [2405.20139](https://arxiv.org/abs/2405.20139) |
+
+PinSage is the sharpest case and it is worth stating carefully, because at first
+glance it looks like a counterexample. PinSage **does** select a neighbourhood by
+a scoring function rather than taking all neighbours — but the score is a
+*structural* one, random-walk visit count computed **on the graph itself**, and
+the selected set is by construction reachable from the target. Candidate
+induction selects by a *semantic* score computed **off the graph**, by a
+retriever that never consults an edge. The two operations are not the same
+species: one is a structural approximation of the neighbourhood, the other is
+independent of it.
+
+So the framing to defend is not *"are subgraphs legitimate."* They plainly are,
+and five of these six methods are subgraph methods. It is:
+
+> **Is a subgraph induced on an off-graph semantic top-K a faithful propagation
+> substrate?** Every reference above answers a different question, because every
+> one of them derives its substrate from the graph's own neighbourhood operator —
+> full adjacency, uniformly sampled adjacency, connectivity-aware sampling with
+> bias correction, random-walk proximity, `h`-hop closure, or an explicitly dense
+> subgraph. None of them induces on a set chosen without reference to the edges.
+
+§§2–6 measure how far the candidate-induced substrate falls from that standard.
+Nothing in §§1–8 depends on this section; the measurements stand on the code
+trace in §1. This section decides only how the result is positioned.
+
+### 9.2 The canonical depth is 2, and the frozen comparator is 1
+
+This was not part of the original motivation and is the more immediately
+actionable finding.
 
 ```
-GCN          propagation over the graph adjacency itself
-GraphSAGE    aggregates sampled TRUE local neighbours from the underlying graph
-GraphSAINT   deliberately samples well-connected subgraphs to limit information loss
-PinSage      random-walk-selected influential neighbourhoods from the global graph
-SEAL         h-hop enclosing subgraphs around targets, chosen for their topology
-GNN-RAG      GNN reasoning over a dense KG subgraph, then path extraction
+GCN        experiments are 2-layer; Appendix B reports 2-3 layers best,
+           degrading beyond that
+GraphSAGE  K = 2 with S1 = 25, S2 = 10; K = 2 beats K = 1 by 10-15% accuracy,
+           and K > 2 gives 0-5% for a prohibitive runtime cost
+PinSage    two convolution layers at neighbourhood size T = 50
 ```
 
-**Before any of this enters the paper, each must be checked against its primary
-source.** The framing to verify is not *"are subgraphs legitimate"* — they plainly
-are — but *"is an arbitrary semantic top-K induced subgraph a faithful
-propagation substrate"*.
+Three independent reference implementations converge on **two hops**, and
+GraphSAGE quantifies the first-to-second hop gain at 10–15% — on graphs that were
+never cut. The frozen Paper-1 comparator is **one** layer (§1.2) on a graph that
+was. Those two facts compound: a one-layer GNN on a candidate-induced graph is
+below the field-standard depth *and* propagating over a damaged substrate, and
+the frozen results cannot separate the two causes.
+
+This is external support for §7.2's requirement that any GLOBAL arm vary depth.
+It is **not** a reason to retract anything: depth was a fixed, declared,
+identically-applied protocol constant across every Paper-1 cell, so every
+comparison it entered remains internally valid. It bounds the claim's scope, not
+its correctness — see §10.
 
 ---
 
@@ -492,6 +560,13 @@ measured on is identifiable after the fact.
 fingerprint, graph list, split list, hop budget, or read-only flags differ from
 the current request. Changing what is measured forces a new run rather than
 returning a stale answer under a new question.
+
+**Verified 2026-09-02:** the literature positioning (§9) is checked against
+primary sources. It produced a second finding — the canonical GNN depth in the
+reference implementations is two layers, and GraphSAGE measures the
+first-to-second hop gain at 10–15% on uncut graphs — which strengthens §7.2's
+depth-matching requirement with external evidence rather than internal argument
+alone.
 
 **Blocker:** the frozen graphs live on the Modal Volume — `storage/` does not
 exist in the local checkout — and the workspace is still over its spend limit
