@@ -247,14 +247,67 @@ For the first, third, and fourth axes, Levels 1–4 mean
 
 Summary, re-derived 2026-09-01 with `scripts/audit_modal_integrity.py`:
 **57 COMPLETE, 3 PARTIAL / RESUMABLE, 36 MISSING, 0 INVALID** out of 96 cells.
-There are 117/192 verified seed-0 model work units; **75 remain**. At
-cell-launch granularity, 39 cells need resumption or first launch.
+**Superseded 2026-09-01.** E1 closed at 96/96 conditions, 192/192 seed-0
+model work units, 0 MISSING and 0 INVALID under
+`scripts/audit_modal_integrity.py`. The selected rates are frozen below.
 
-E1 is **not compilable**. The selected crossover/end-point rates cannot be
-frozen, so E2 five-seed test confirmation is not unlocked. Do not infer rates
-from the completed datasets and do not inspect partial-cell validation values.
+## Package E1 — COMPLETE AND FROZEN
 
-## E2 launch path — built 2026-09-01, still GATED
+Integrity: 96 COMPLETE, 0 PARTIAL, 0 MISSING, 0 INVALID; 192/192 work units.
+All 96 results were fetched (`fetch_modal_results.py phase_screen`, 96 files
+from 96 complete conditions) before any analysis ran, because the local tree was
+behind the Volume and the analyzer reads local files.
+
+`scripts/analyze_phase_screen.py` applied the already-frozen rule and stopped at
+`PHASE_SCREEN_VALIDATION_ONLY_ANALYZED`, writing `docs/PHASE_SCREEN_RESULTS.md`
+and the generated `configs/phase_confirmation.yaml`. The rule reads
+`best_validation_recall@5` from each cell's training record and nothing else; no
+E1 cell computes a test metric at all, and the integrity auditor independently
+refuses any cell whose `screen_contract.test_metrics_computed` is not `false`.
+
+### Selected rates — the frozen E2 conditions
+
+The rule keeps, per axis and per dataset, both endpoints plus any bracket where
+the validation GNN−QLS gap changes sign (and any exact zero with its
+neighbours). E2 runs the union across datasets, so every dataset runs every
+selected level of every axis:
+
+| Axis | Selected rates | Non-clean cells per dataset |
+|---|---|---:|
+| `degree_rewire` | 0.0, 0.10, 0.25, 0.50, 1.00 | 4 |
+| `random_add` | 0.0, 0.10, 0.25, 0.50, 1.00 | 4 |
+| `hub_injection` | 0.0, 0.10, 0.25, 0.50, 1.00 | 4 |
+| `feature_mask` | 0.0, 0.25, 0.50, 0.75, 1.00 | 4 |
+
+Every level of every axis survived selection. That is an outcome of the rule,
+not a decision: sign changes occur at different rates in different datasets, and
+the union of six datasets covers the grid. The clean rate is selected on every
+axis but is **not** an E2 cell — the clean condition reuses the sealed five-seed
+confirmation rather than being retrained, so E2 is 6 datasets x 16 non-clean
+cells = **96 cells, 960 GPU work units** (2 models x 5 seeds).
+
+### What the validation screen does and does not say
+
+`docs/PHASE_SCREEN_RESULTS.md` holds the per-cell validation gaps. Two features
+are worth recording now, both strictly as validation observations that E2 has
+not yet adjudicated:
+
+- **Sign changes are real and common.** Most dataset-axis rows cross zero at
+  some rate. This is the registered crossover phenomenon rather than a nuisance,
+  and it is why the rule selected so much of the grid.
+- **`feature_mask` at 1.00 is strongly negative in all six datasets.** At total
+  feature masking the seed-aware GNN loses heavily. Registered prediction P5
+  expects feature masking with useful topology to move the gap *positive*, and
+  several datasets do show positive gaps at intermediate masking before
+  collapsing at 1.00. The shape is therefore non-monotone rather than simply
+  contrary to P5, but nothing here may be reported as a result: these are
+  single-seed validation numbers, and only the five-seed test confirmation can
+  adjudicate P5.
+
+No rate was chosen by looking at any of this. The rule is mechanical and was
+frozen before E1 ran.
+
+## E2 launch path — built 2026-09-01, gate OPENED 2026-09-01
 
 E2 had no execution path at all. `scripts/run_phase_confirmation.py` ends with
 
@@ -324,8 +377,28 @@ than a discovered one:
    than against results is the only order that keeps it honest.
 2. **No `phase_confirmation` entry in `fetch_modal_results.py`.** Its local
    layout should be fixed by the analyzer above, not guessed now.
-3. **No `phase_confirmation` entry in `audit_modal_integrity.py`**, so E2
-   completion cannot yet be audited the way B, C and E1 are.
+3. ~~**No `phase_confirmation` entry in `audit_modal_integrity.py`**~~ —
+   **closed 2026-09-01, before launch.** E2 is registered in the shared
+   `PACKAGES` registry with a `gated_on` marker: while
+   `configs/phase_confirmation.yaml` does not exist both auditors report
+   `GATED / CONFIG NOT GENERATED` rather than inventing an expected matrix,
+   which is the only behaviour compatible with the validation-only rule. Once
+   generated, the expected matrix excludes the clean rate, so no permanent
+   phantom shortfall is reported. E2 gets its own contract branch rather than
+   reusing E1's: E1 must not compute test metrics, whereas E2 exists to compute
+   them, so applying E1's clause would mark every valid cell INVALID. The E2
+   branch instead verifies `test_selected_rate` is `false`,
+   `selected_by_locked_validation_only_rule` is `true`, and
+   `seed_zero_validation_checkpoint_reused_without_test_peeking` is `true`, and
+   treats a missing assertion as a failure rather than as evidence of
+   compliance. It also refuses any cell written at rate 0.0. Nine tests in
+   `tests/test_audit_phase_confirmation.py` cover the gate and each clause.
+
+**Still open, and genuinely not needed until E2 produces results:** items 1 and
+2 above. Package D is likewise not yet in the audit registry; its result is a
+systems benchmark keyed by batch size with no per-seed checkpoint records, so it
+needs a different verification shape rather than a registry line, and adding a
+half-correct entry during a live gating audit was not worth the risk.
 
 ## Exact remaining GPU workload
 

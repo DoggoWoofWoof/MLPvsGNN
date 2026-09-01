@@ -1,0 +1,105 @@
+experiment: five_seed_phase_crossover_confirmation
+status: GENERATED_FROM_LOCKED_VALIDATION_RULE_REQUIRES_COMMIT_BEFORE_TEST
+protocol_ancestor: phase-screen-protocol-v1
+selection_source: outputs/phase_screen
+axes:
+  degree_rewire:
+    rates:
+    - 0.0
+    - 0.1
+    - 0.25
+    - 0.5
+    - 1.0
+    perturbation_seed: 31415
+  random_add:
+    rates:
+    - 0.0
+    - 0.1
+    - 0.25
+    - 0.5
+    - 1.0
+    perturbation_seed: 27182
+  hub_injection:
+    rates:
+    - 0.0
+    - 0.1
+    - 0.25
+    - 0.5
+    - 1.0
+    perturbation_seed: 16180
+  feature_mask:
+    rates:
+    - 0.0
+    - 0.25
+    - 0.5
+    - 0.75
+    - 1.0
+    perturbation_seed: 14142
+datasets:
+  2wiki_clean:
+    expected_queries: 15000
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  musique_clean:
+    expected_queries: 19938
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  webqsp:
+    expected_queries: 1578
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+  hotpotqa_clean:
+    expected_queries: 97852
+    selected_gnn: gin
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+  squad_clean:
+    expected_queries: 130319
+    selected_gnn: gcn
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+  metaqa:
+    expected_queries: 407513
+    selected_gnn: gat
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+training:
+  seed: 0
+  epochs: 3
+  batch_size: 16
+  layers: 1
+  dropout: 0.2
+  temperature: 0.07
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  checkpoint_selection: validation_recall_at_5_only
+  ks:
+  - 1
+  - 5
+  - 20
+  seeds:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  evaluation_split: test_once_after_validation_checkpoint_selection
+parameter_regime:
+  projection_dim: 64
+  hidden_dim: 64
+  maximum_sa_absolute_difference: 256
+  target: frozen_validation_selected_gnn_parameter_count
+inference_repeats: 5
+analysis:
+  primary_contrast: seed_aware_gnn_minus_sa_mlp_recall_at_5
+  paired_seed_and_query: true
+  holm_scope: datasets_within_axis_and_rate
+  all_selected_cells_reported: true
+  predictor_training_before_confirmation: false
+modal:
+  app: message-passing-retrieval-phase-confirmation
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400

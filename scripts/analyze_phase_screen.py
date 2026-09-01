@@ -44,6 +44,13 @@ def select_confirmation_rates(points: list[tuple[float, float]]) -> list[float]:
     return sorted(selected)
 
 
+def _relative_source(root: Path) -> str:
+    try:
+        return root.resolve().relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return root.as_posix()
+
+
 def _clean_gap(confirmation: dict[str, Any]) -> tuple[float, dict[str, float]]:
     metrics = {}
     for model in MODEL_NAMES:
@@ -125,7 +132,9 @@ def compile_analysis(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         "experiment": "five_seed_phase_crossover_confirmation",
         "status": "GENERATED_FROM_LOCKED_VALIDATION_RULE_REQUIRES_COMMIT_BEFORE_TEST",
         "protocol_ancestor": "phase-screen-protocol-v1",
-        "selection_source": str(root),
+        # Repo-relative: this file is committed and tagged as a frozen
+        # protocol, so it must not record one machine's absolute path.
+        "selection_source": _relative_source(root),
         "axes": {
             axis: {
                 "rates": rates,

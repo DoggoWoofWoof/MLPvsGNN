@@ -18,7 +18,14 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.audit_modal_progress import PACKAGES, REPO_ROOT, _condition_key, _expected_keys
+from scripts.audit_modal_progress import (
+    GATED,
+    PACKAGES,
+    REPO_ROOT,
+    _condition_key,
+    _expected_keys,
+    _is_gated,
+)
 
 MODELS = ("sa_mlp", "seed_aware_gnn")
 STORAGE_PREFIX = "/root/message-passing-retrieval/storage/"
@@ -169,6 +176,41 @@ def _verify_payload_contract(
             errors.append("RRF constant differs from protocol")
         if not isinstance(payload.get("budget_candidate_contract_sha256"), str):
             errors.append("missing budget candidate-contract hash")
+    elif package == "phase_confirmation":
+        training = config["training"]
+        if sorted(result_config.get("seeds") or []) != sorted(training["seeds"]):
+            errors.append("confirmation seed set differs")
+        for field in ("epochs", "batch_size", "learning_rate", "weight_decay", "ks"):
+            if result_config.get(field) != training[field]:
+                errors.append(f"confirmation training field differs: {field}")
+        axis = payload.get("axis")
+        rate = float(payload.get("rate", -1))
+        registered = config["axes"].get(axis, {}).get("rates", [])
+        if axis not in config["axes"] or rate not in map(float, registered):
+            errors.append("unregistered confirmation cell")
+        if rate <= 0.0:
+            errors.append("clean rate is not a confirmation cell")
+        if result_config.get("perturbation_seed") != config["axes"].get(axis, {}).get(
+            "perturbation_seed"
+        ):
+            errors.append("perturbation seed differs")
+        if payload.get("data", {}).get("test_query_order_sha256") != confirmation[
+            "data"
+        ]["test_query_order_sha256"]:
+            errors.append("test query-order hash mismatch")
+        contract = payload.get("confirmation_contract", {})
+        # The gate this package exists to respect: the rate under test was
+        # chosen from validation alone, and seed 0 reused the screen checkpoint
+        # without any test metric having been consulted to select it.
+        if contract.get("test_selected_rate") is not False:
+            errors.append("confirmation rate was selected using test outcomes")
+        if contract.get("selected_by_locked_validation_only_rule") is not True:
+            errors.append("confirmation rate did not come from the locked rule")
+        if (
+            contract.get("seed_zero_validation_checkpoint_reused_without_test_peeking")
+            is not True
+        ):
+            errors.append("seed-0 checkpoint provenance not asserted")
     else:
         training = config["training"]
         if result_config.get("training_seed") != training["seed"]:
@@ -305,11 +347,17 @@ async def audit_integrity(volume_name: str) -> dict[str, Any]:
     semaphore = asyncio.Semaphore(8)
     output = {}
     for package, spec in PACKAGES.items():
+        if _is_gated(package):
+            output[package] = GATED
+            continue
         context = _load_context(package)
         paths = []
-        async for entry in volume.iterdir.aio(spec["path"], recursive=True):
-            if entry.path.endswith("/result.json"):
-                paths.append(entry.path)
+        try:
+            async for entry in volume.iterdir.aio(spec["path"], recursive=True):
+                if entry.path.endswith("/result.json"):
+                    paths.append(entry.path)
+        except modal.exception.NotFoundError:
+            paths = []
         payloads = await asyncio.gather(*(_read_bytes(volume, path) for path in sorted(paths)))
         decoded = [json.loads(value) for value in payloads]
         conditions = await asyncio.gather(

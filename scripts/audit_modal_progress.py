@@ -30,7 +30,27 @@ PACKAGES = {
         "expected_conditions": 96,
         "complete_status": "PHASE_SCREEN_VALIDATION_ONLY_COMPLETE",
     },
+    "phase_confirmation": {
+        "path": "outputs/phase_confirmation",
+        "expected_conditions": None,
+        "complete_status": "PHASE_CONFIRMATION_CELL_COMPLETE",
+        "gated_on": "configs/phase_confirmation.yaml",
+    },
 }
+
+GATED = "GATED / CONFIG NOT GENERATED"
+
+
+def _is_gated(package: str) -> bool:
+    """True while a package's protocol has not been generated yet.
+
+    Package E2's registered matrix is not knowable until the screen analysis
+    emits the selected rates. Auditing it before then would either crash on the
+    absent config or invent an expected matrix, and inventing one is exactly the
+    thing the validation-only rule forbids.
+    """
+    gate = PACKAGES[package].get("gated_on")
+    return gate is not None and not (REPO_ROOT / gate).is_file()
 
 
 async def _read_json(volume: modal.Volume, path: str) -> dict[str, Any]:
@@ -62,9 +82,12 @@ async def _audit_package(
     spec: dict[str, Any],
 ) -> tuple[str, dict[str, Any]]:
     paths = []
-    async for entry in volume.iterdir.aio(spec["path"], recursive=True):
-        if entry.path.endswith("/result.json"):
-            paths.append(entry.path)
+    try:
+        async for entry in volume.iterdir.aio(spec["path"], recursive=True):
+            if entry.path.endswith("/result.json"):
+                paths.append(entry.path)
+    except modal.exception.NotFoundError:
+        paths = []
     payloads = await asyncio.gather(*(_read_json(volume, path) for path in sorted(paths)))
     conditions = [_safe_condition(payload) for payload in payloads]
     complete = sum(condition["status"] == spec["complete_status"] for condition in conditions)
@@ -82,6 +105,7 @@ async def audit(volume_name: str) -> dict[str, Any]:
         *(
             _audit_package(volume, package, spec)
             for package, spec in PACKAGES.items()
+            if not _is_gated(package)
         )
     )
     return dict(records)
@@ -111,6 +135,14 @@ def _expected_keys(package: str) -> set[str]:
             for dataset in datasets
             for budget in config["candidate_contract"]["budgets"]
         }
+    if package == "phase_confirmation":
+        return {
+            f"{dataset}/{axis}/rate_{float(rate):.2f}"
+            for dataset in datasets
+            for axis, axis_spec in config["axes"].items()
+            for rate in axis_spec["rates"]
+            if float(rate) > 0.0
+        }
     return {
         f"{dataset}/{axis}/rate_{float(rate):.2f}"
         for dataset in datasets
@@ -120,7 +152,7 @@ def _expected_keys(package: str) -> set[str]:
 
 
 def summarize(audit_result: dict[str, Any]) -> dict[str, Any]:
-    output = {}
+    output = {package: GATED for package in PACKAGES if _is_gated(package)}
     for package, record in audit_result.items():
         expected = _expected_keys(package)
         found = {_condition_key(package, row): row for row in record["conditions"]}
