@@ -892,6 +892,55 @@ The partial hotpotqa cells stopped mid-GNN: `sa_mlp` has all five seeds while
   conditions and analyzer.
 - No test outcome has been inspected. The analyzer has not been run.
 
+### Integrity verified after the stall (2026-09-02)
+
+`scripts/audit_modal_integrity.py` was run over the whole Volume after the block
+was confirmed. E2:
+
+```
+COMPLETE            48
+PARTIAL / RESUMABLE 10
+MISSING             38
+INVALID              0
+completed_gpu_work_units 568 / 960     remaining 392
+```
+
+**Zero INVALID.** Every one of the 58 cells that has any output passed:
+
+- `candidate_contract_verified: true` (58/58)
+- `query_order_verified: true` (58/58)
+- **exactly one** protocol SHA-256 across all 58 cells,
+  `1f9b761bbad6fd0d6fccabee30defaba7c85904fa86beccd423b4d2464643976`, which
+  matches the committed `configs/phase_confirmation.yaml` byte for byte.
+
+That last check is the important one: it proves **no protocol drift**. Every cell
+that ran, ran against the tagged configuration, so the completed work and the
+work still to do belong to the same experiment.
+
+The 10 partial cells are all HotpotQA, and all have the same shape — `sa_mlp`
+complete at 5/5 seeds, `seed_aware_gnn` short by one or two:
+
+```
+hotpotqa_clean/degree_rewire/rate_0.10   qls 5/5   gnn 3/5
+hotpotqa_clean/degree_rewire/rate_0.25   qls 5/5   gnn 4/5
+hotpotqa_clean/degree_rewire/rate_0.50   qls 5/5   gnn 4/5
+hotpotqa_clean/degree_rewire/rate_1.00   qls 5/5   gnn 4/5
+hotpotqa_clean/hub_injection/rate_0.10   qls 5/5   gnn 4/5
+hotpotqa_clean/hub_injection/rate_0.25   qls 5/5   gnn 4/5
+hotpotqa_clean/random_add/rate_0.10      qls 5/5   gnn 4/5
+hotpotqa_clean/random_add/rate_0.25      qls 5/5   gnn 3/5
+hotpotqa_clean/random_add/rate_0.50      qls 5/5   gnn 4/5
+hotpotqa_clean/random_add/rate_1.00      qls 5/5   gnn 4/5
+```
+
+Remaining work decomposes exactly: 38 missing conditions x 10 model-seed cells
+= 380, plus 12 unfinished GNN seeds in the partials = **392**, which matches the
+auditor's own count. There is no unexplained gap.
+
+The other four packages re-verified COMPLETE with 0 INVALID at the same time:
+edge_provenance 24/24, candidate_budget 24/24, phase_screen 96/96,
+online_systems 6/6.
+
 ### Required action (external — cannot be resolved from this repository)
 
 The workspace spend limit must be raised or reset before E2 can continue. Until
