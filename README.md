@@ -713,6 +713,7 @@ docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-embedding timing
 docs/EXPERIMENT_EXECUTION_STATUS.md exact B/C/E1 completion matrices
 docs/CANDIDATE_HEADROOM_PROTOCOL.md read-only retrieval-headroom contract
 docs/CANDIDATE_HEADROOM_RESULTS.md candidate ceilings and missing-gold reachability
+docs/CROSS_PAPER_LEARNING_LEDGER.md Paper-1/Paper-2 findings and backport discipline
 docs/TERMINOLOGY_AND_POSITIONING.md publication naming, overlap, and track fork
 docs/SA_MLP_CONFIRMATION_PROTOCOL.md final frozen fairness protocol
 docs/SA_MLP_CONFIRMATION_RESULTS.md complete six-dataset result and stopping point
