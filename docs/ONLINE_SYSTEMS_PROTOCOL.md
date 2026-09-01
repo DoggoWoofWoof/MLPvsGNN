@@ -73,3 +73,35 @@ replace or splice it into this uncached table.
 
 The result may support an uncached speed claim only after these measurements.
 Until then, all existing speed ratios remain warm-cache claims.
+
+## Cache break-even (derived analysis layer)
+
+Registered 2026-09-01, before Package D produced any timing. This is a
+**derived** quantity, computed by `scripts/analyze_online_systems.py` from
+measurements the protocol above already takes. It adds no timing, changes no
+measurement, and does not alter the frozen protocol; the config remains
+`ONLINE_SYSTEMS_PROTOCOL_FROZEN_BEFORE_TIMING`. It is recorded here rather than
+in the measurement contract for exactly that reason.
+
+A per-query cache stores the products of fusion, seed construction, topology
+induction, and QLS local summaries. Building one entry therefore costs that
+cacheable prefix, and reading it saves the difference between the uncached and
+warm-cache paths. Caching repays itself once
+
+```text
+build_ms <= repeats * (uncached_ms - cached_ms)
+```
+
+so the reported `break_even_additional_servings` is the smallest number of
+*further* servings of the same query that repay building its entry, and
+`break_even_total_servings` adds the one serving that built it. When the cached
+path is not faster, the entry reports `cache_ever_repays: false` and both
+break-even fields are null rather than a misleading number.
+
+Two limits are declared in the output itself. The quantity is **compute-only**:
+the protocol measures static-asset bytes but not per-query cache footprint, so
+storage is excluded and the reported values are lower bounds on the true
+break-even point. And because break-even is expressed in repeat servings of the
+*same* query, it is a statement about workloads with query recurrence. A
+deployment that never repeats a query never reaches break-even, which is the
+regime this package exists to measure.

@@ -22,8 +22,64 @@ STAGES = (
 )
 
 
+# Stages whose products a per-query cache would store. The warm-cache path in
+# Package C reads these instead of recomputing them, so their cost is both what
+# building one cache entry costs and what reading it saves.
+CACHEABLE_PREFIX_STAGES = (
+    "fusion_and_seed_ms",
+    "topology_induction_ms",
+    "query_local_summary_ms",
+)
+
+
 def _ratio(numerator: float, denominator: float) -> float:
     return float(numerator) / max(float(denominator), 1e-12)
+
+
+def _cache_break_even(
+    model_condition: dict[str, Any],
+    cached_ms_per_query: float,
+    batch_size: int,
+) -> dict[str, Any]:
+    """Compute-only break-even for the per-query cache.
+
+    Derived entirely from quantities the frozen protocol already measures; it
+    adds no timing and changes no measurement. Definition: serving one query
+    uncached costs ``uncached_ms``. Serving it from cache costs
+    ``cached_ms`` but first requires building its entry, which costs the
+    cacheable prefix. Caching therefore repays itself once
+
+        build_ms <= repeats * (uncached_ms - cached_ms)
+
+    so ``break_even_additional_servings`` is the smallest number of *further*
+    servings of the same query that repay building its entry, and total
+    servings is that plus the one that built it.
+
+    This is compute-only. The frozen protocol measures static-asset bytes but
+    not the per-query cache footprint, so storage is excluded and the result is
+    a lower bound on the true break-even point.
+    """
+    stages = model_condition["batch_latency_ms"]
+    build_ms = sum(
+        float(stages[stage]["mean"]) for stage in CACHEABLE_PREFIX_STAGES
+    ) / max(batch_size, 1)
+    uncached_ms = float(model_condition["total_latency_ms_per_query"]["mean"])
+    saving_ms = uncached_ms - float(cached_ms_per_query)
+    repays = saving_ms > 0.0
+    return {
+        "definition": "compute_only_per_query_cache_excluding_storage",
+        "cache_build_ms_per_query": build_ms,
+        "uncached_ms_per_query": uncached_ms,
+        "cached_ms_per_query": float(cached_ms_per_query),
+        "saving_ms_per_served_query": saving_ms,
+        "cache_ever_repays": repays,
+        "break_even_additional_servings": (
+            build_ms / saving_ms if repays else None
+        ),
+        "break_even_total_servings": (
+            1.0 + build_ms / saving_ms if repays else None
+        ),
+    }
 
 
 def compile_analysis(root: Path, budget_root: Path) -> dict[str, Any]:
@@ -76,6 +132,16 @@ def compile_analysis(root: Path, budget_root: Path) -> dict[str, Any]:
                     inference["peak_gpu_memory_mb_incremental"]
                 ),
             }
+        for batch_size in config["measurement"]["batch_sizes"]:
+            key = f"batch_{batch_size}"
+            conditions[key]["cache_break_even"] = {
+                model: _cache_break_even(
+                    conditions[key]["models"][model],
+                    cached[model]["latency_ms_per_query"],
+                    batch_size,
+                )
+                for model in MODEL_NAMES
+            }
         rows.append(
             {
                 "dataset": dataset,
@@ -97,6 +163,7 @@ def compile_analysis(root: Path, budget_root: Path) -> dict[str, Any]:
             "query_specific_cache_reads_in_timed_path": False,
             "candidate_topology_and_qls_parity_gated": True,
             "cached_and_uncached_timings_never_spliced": True,
+            "cache_break_even_is_compute_only_excluding_storage": True,
             "hardware": config["modal"]["gpu"],
         },
     }
@@ -137,8 +204,45 @@ def render_markdown(analysis: dict[str, Any]) -> str:
                 "separate reference."
             ),
             "",
+            "## Cache break-even",
+            "",
+            (
+                "Derived from the measured stage breakdown and the Package C warm-cache "
+                "reference; it adds no timing. A per-query cache stores the products of "
+                "fusion, seed construction, topology induction, and QLS summaries, so "
+                "building one entry costs that prefix and reading it saves the difference "
+                "between the uncached and cached paths. The break-even column is the "
+                "number of *further* servings of the same query that repay building its "
+                "entry."
+            ),
+            "",
+            (
+                "This is compute-only: the frozen protocol measures static-asset bytes "
+                "but not per-query cache footprint, so storage is excluded and these are "
+                "lower bounds."
+            ),
+            "",
+            (
+                "| Dataset | Batch | Model | Build ms | Uncached ms | Cached ms | "
+                "Saved ms | Break-even repeats |"
+            ),
+            "|---|---:|---|---:|---:|---:|---:|---:|",
         ]
     )
+    for row in analysis["datasets"]:
+        for condition_name, condition in row["uncached"].items():
+            batch = condition_name.removeprefix("batch_")
+            for model, entry in condition["cache_break_even"].items():
+                repeats = entry["break_even_additional_servings"]
+                rendered = "never repays" if repeats is None else f"{repeats:.2f}"
+                lines.append(
+                    f"| {row['dataset']} | {batch} | {model} | "
+                    f"{entry['cache_build_ms_per_query']:.3f} | "
+                    f"{entry['uncached_ms_per_query']:.3f} | "
+                    f"{entry['cached_ms_per_query']:.3f} | "
+                    f"{entry['saving_ms_per_served_query']:.3f} | {rendered} |"
+                )
+    lines.append("")
     return "\n".join(lines)
 
 
