@@ -288,6 +288,29 @@ The container shape is read from `phase_screen.yaml`, the confirmation config's
 ancestor, so the module imports before the gate; the app name is asserted
 against the one the analysis generates.
 
+### Pre-flight against real artifacts (2026-09-01)
+
+The launcher was exercised end to end before the gate, using only the rates the
+locked rule retains *unconditionally* -- clean plus each axis endpoint -- so
+nothing in the check anticipates or depends on a screen outcome. A real screen
+can only add bracketing rates to that floor. The simulated config was written to
+a scratch directory and the module path was monkeypatched, so
+`configs/phase_confirmation.yaml` was not created and the gate stayed closed.
+
+- 24 cells built from the six datasets and four axes, with the clean rate
+  correctly excluded from every one.
+- All five registered seeds present on each cell.
+- All six sealed `sa_mlp_confirmation` baselines carry the fields the launcher
+  reads: fingerprint, baseline parameters, and the clean data, topology and
+  feature cache paths.
+- The data fingerprint each cell derives matched the fingerprint directory E1
+  actually wrote on the volume, for all six datasets.
+- All 96 E1 cell paths exist on the volume, including the four axis-endpoint
+  cells per dataset that E2 will reuse for its seed-0 checkpoint.
+
+The last two points matter most: they confirm the `screen_result` path E2
+computes resolves to a real screen cell rather than merely looking plausible.
+
 ### Still missing downstream of E2 (not blocking the launch)
 
 These are needed only after E2 produces results, and each is a known gap rather
