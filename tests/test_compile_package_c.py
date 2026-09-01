@@ -1,6 +1,6 @@
 import pytest
 
-from scripts.compile_package_c import attainment, decompose_budget_step
+from scripts.compile_package_c import REPO_ROOT, attainment, decompose_budget_step
 
 
 def test_attainment_is_the_fraction_of_the_ceiling_that_was_reached() -> None:
@@ -61,3 +61,54 @@ def test_an_unreachable_pool_is_reported_as_unattributable_not_as_zero() -> None
     assert step["ceiling_effect"] is None
     assert step["ranking_effect"] is None
     assert step["observed_recall_change"] == pytest.approx(0.10)
+
+
+def test_the_report_shows_every_jointly_required_column() -> None:
+    # The protocol requires effectiveness, pool ceilings, induced topology and
+    # cached cost to be readable side by side. A number reported without its
+    # ceiling invites exactly the misreading this package exists to prevent,
+    # so dropping a column here is a scientific regression, not a layout change.
+    markdown = (REPO_ROOT / "docs" / "CANDIDATE_BUDGET_AND_HEADROOM_RESULTS.md").read_text(
+        encoding="utf-8"
+    )
+    required = [
+        "Coverage",
+        "GoldFrac",
+        "AnyGold",
+        "AllGold",
+        "Ceil@1",
+        "Ceil@5",
+        "Ceil@20",
+        "QLS R@1",
+        "QLS R@5",
+        "QLS R@20",
+        "GNN R@1",
+        "GNN R@5",
+        "GNN R@20",
+        "Ceil-QLS",
+        "Ceil-GNN",
+        "QLS MRR",
+        "GNN MRR",
+        "FullCov ceil",
+        "Nodes/q",
+        "Edges/q",
+        "Density",
+        "Components",
+        "QLS ms/q",
+        "GNN ms/q",
+        "from ceiling",
+        "from ranking",
+    ]
+    missing = [column for column in required if column not in markdown]
+    assert not missing, f"joint report no longer shows: {missing}"
+
+
+def test_the_report_states_that_its_latency_is_cached_only() -> None:
+    # Cached operator latency, uncached post-retrieval latency and raw-query
+    # end-to-end latency are three different quantities. The report carries the
+    # first, so it must say so where the numbers are.
+    markdown = (REPO_ROOT / "docs" / "CANDIDATE_BUDGET_AND_HEADROOM_RESULTS.md").read_text(
+        encoding="utf-8"
+    )
+    assert "cached-operator latency only" in markdown
+    assert "not uncached post-retrieval latency" in markdown

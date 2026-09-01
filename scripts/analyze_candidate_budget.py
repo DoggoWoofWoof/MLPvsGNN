@@ -236,7 +236,7 @@ def render_markdown(analysis: dict[str, Any]) -> str:
             "selected using test effectiveness."
         ),
         "",
-        "| Dataset | Budget | Ceiling | RRF R@5 | QLS R@5 | GNN R@5 | GNN − QLS | Candidates | Edges | Components |",
+        "| Dataset | Budget | PoolCov | RRF R@5 | QLS R@5 | GNN R@5 | GNN − QLS | Candidates | Edges | Components |",
         "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in analysis["datasets"]:
@@ -256,7 +256,12 @@ def render_markdown(analysis: dict[str, Any]) -> str:
         [
             "",
             (
-                "Candidate ceiling is an oracle diagnostic and is never given to either model. "
+                "PoolCov is the mean fraction of a query's golds that reached the "
+                "candidate pool. It is an oracle diagnostic, is never given to either "
+                "model, and is not an achievable Recall@K: for a query with `g` golds "
+                "and `p` of them pooled, Recall@K cannot exceed `min(p, K) / g`, which "
+                "is below `p / g` whenever `g` exceeds `K`. The per-cut-off ceilings are "
+                "reported in CANDIDATE_BUDGET_AND_HEADROOM_RESULTS.md. "
                 "The systems fields in this table remain warm-cache measurements; the separate "
                 "uncached unseen-embedding benchmark charges fusion, topology induction, QLS "
                 "local summaries, transfer, forward, and top-K."

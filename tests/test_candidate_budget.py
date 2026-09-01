@@ -72,3 +72,19 @@ def test_budget_structural_statistics_include_connectivity(tmp_path: Path) -> No
     assert stats["candidate_count_mean"] == 3.0
     assert stats["connected_components_mean"] >= 1.0
     assert stats["stored_directed_edges_max"] >= 1.0
+
+
+def test_the_budget_report_does_not_call_pool_coverage_a_ceiling() -> None:
+    # candidate_ceiling is |golds in pool| / |golds|. That is coverage, and it
+    # exceeds the achievable Recall@K whenever a query has more golds than K.
+    # Printing it under a "Ceiling" heading next to R@5 invites reading the gap
+    # as ranking headroom that does not exist. The frozen field name is
+    # unchanged; only the report label is.
+    from pathlib import Path
+
+    report = Path(__file__).resolve().parents[1] / "docs" / "CANDIDATE_BUDGET_RESULTS.md"
+    markdown = report.read_text(encoding="utf-8")
+    header = next(line for line in markdown.splitlines() if line.startswith("| Dataset |"))
+    assert "Ceiling" not in header, "coverage is being presented as a ceiling"
+    assert "PoolCov" in header
+    assert "is not an achievable Recall@K" in markdown

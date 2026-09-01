@@ -222,7 +222,7 @@ def render_markdown(joint: dict[str, Any]) -> str:
             "not an oracle Recall@K and is reported as a separate column."
         ),
         "",
-        "## Pools and attainment",
+        "## Pools and attainment at the primary cut-off",
         "",
         (
             "| Dataset | Budget | Coverage | GoldFrac | AnyGold | AllGold | Ceil@5 | "
@@ -245,6 +245,43 @@ def render_markdown(joint: dict[str, Any]) -> str:
             f"{_fmt(gap['sa_mlp']['attainment@5'], 3)} | "
             f"{_fmt(gap['seed_aware_gnn']['attainment@5'], 3)} |"
         )
+
+    lines.extend(
+        [
+            "",
+            "## Every reported cut-off beside its ceiling",
+            "",
+            (
+                "Each Recall@K is followed by the ceiling for that same K. MRR and "
+                "FullCoverage@20 carry their own ceilings: FullCoverage asks whether "
+                "every gold is retrieved, which is impossible whenever the pool holds "
+                "fewer than all of them."
+            ),
+            "",
+            (
+                "| Dataset | Budget | Ceil@1 | QLS R@1 | GNN R@1 | Ceil@5 | QLS R@5 | "
+                "GNN R@5 | Ceil@20 | QLS R@20 | GNN R@20 | QLS MRR | GNN MRR | "
+                "FullCov ceil | QLS FullCov | GNN FullCov |"
+            ),
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for row in joint["rows"]:
+        pool, got = row["candidate_pool"], row["achieved"]
+        qls, gnn = got["sa_mlp"], got["seed_aware_gnn"]
+        lines.append(
+            f"| {row['dataset']} | {row['budget']} | "
+            f"{pool['recall_ceiling@1']:.4f} | {qls['recall@1']:.4f} | "
+            f"{gnn['recall@1']:.4f} | "
+            f"{pool['recall_ceiling@5']:.4f} | {qls['recall@5']:.4f} | "
+            f"{gnn['recall@5']:.4f} | "
+            f"{pool['recall_ceiling@20']:.4f} | {qls['recall@20']:.4f} | "
+            f"{gnn['recall@20']:.4f} | "
+            f"{qls['mrr']:.4f} | {gnn['mrr']:.4f} | "
+            f"{pool['full_coverage_ceiling@20']:.4f} | "
+            f"{qls['full_coverage@20']:.4f} | {gnn['full_coverage@20']:.4f} |"
+        )
+
     lines.extend(
         [
             "",
@@ -253,28 +290,73 @@ def render_markdown(joint: dict[str, Any]) -> str:
             (
                 "Recall is `attainment x ceiling`, so a change across a budget step "
                 "splits exactly into the ceiling moving and the ranker improving. A "
-                "raw gain is not a ranking improvement when the ceiling rose with it."
+                "raw gain is not a ranking improvement when the ceiling rose with it. "
+                "The split is exact and has no residual; it is ordered ceiling-first "
+                "by a convention fixed in code before any result was read."
             ),
             "",
-            "| Dataset | Step | Model | d Recall@5 | from ceiling | from ranking |",
-            "|---|---|---|---:|---:|---:|",
+            "| Dataset | Step | Model | K | d Recall@K | from ceiling | from ranking |",
+            "|---|---|---|---:|---:|---:|---:|",
         ]
     )
     for step in joint["budget_steps"]:
         for model, metrics in step["models"].items():
-            entry = metrics["recall@5"]
-            lines.append(
-                f"| {step['dataset']} | {step['from_budget']}->{step['to_budget']} | "
-                f"{PUBLICATION_NAMES[model]} | "
-                f"{entry['observed_recall_change']:+.4f} | "
-                f"{_fmt(entry['ceiling_effect'])} | {_fmt(entry['ranking_effect'])} |"
-            )
+            for k in RECALL_KS:
+                entry = metrics[f"recall@{k}"]
+                lines.append(
+                    f"| {step['dataset']} | "
+                    f"{step['from_budget']}->{step['to_budget']} | "
+                    f"{PUBLICATION_NAMES[model]} | {k} | "
+                    f"{entry['observed_recall_change']:+.4f} | "
+                    f"{_fmt(entry['ceiling_effect'])} | "
+                    f"{_fmt(entry['ranking_effect'])} |"
+                )
+
+    lines.extend(
+        [
+            "",
+            "## Induced topology and cached operator cost",
+            "",
+            (
+                "Node and edge counts are per query over the induced candidate "
+                "subgraph. Latency is cached-operator latency only: the fusion, "
+                "induction and query-local summary work is already paid for. It is "
+                "not uncached post-retrieval latency and not raw-query end-to-end "
+                "latency, both of which Package D measures separately."
+            ),
+            "",
+            (
+                "| Dataset | Budget | Queries | Nodes/q | Edges/q (p50/p95) | Density | "
+                "Components | QLS ms/q | GNN ms/q | QLS/GNN | Build s | Store MiB |"
+            ),
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for row in joint["rows"]:
+        ctx, cost = row["structural_context"], row["cached_operator_cost"]
+        qls_ms = cost["models"]["sa_mlp"]["latency_ms_per_query"]["mean"]
+        gnn_ms = cost["models"]["seed_aware_gnn"]["latency_ms_per_query"]["mean"]
+        topo = cost["topology"]
+        lines.append(
+            f"| {row['dataset']} | {row['budget']} | {ctx['queries']} | "
+            f"{ctx['candidate_count_mean']:.1f} | "
+            f"{ctx['stored_directed_edges_mean']:.1f} "
+            f"({ctx['stored_directed_edges_p50']:.0f}/"
+            f"{ctx['stored_directed_edges_p95']:.0f}) | "
+            f"{ctx['stored_directed_density_mean']:.4f} | "
+            f"{ctx['connected_components_mean']:.2f} | "
+            f"{qls_ms:.4f} | {gnn_ms:.4f} | "
+            f"{_fmt(cost['qls_latency_divided_by_gnn'], 3)} | "
+            f"{topo['cold_build_seconds']:.2f} | "
+            f"{topo['packed_storage_bytes'] / (1024 * 1024):.1f} |"
+        )
+
     lines.extend(
         [
             "",
             (
                 "Attainment is blank where the ceiling is zero: no ranking can score "
-                "against an empty pool, so a ratio there would be an artefact."
+                "against an empty pool, so a ratio there would be an artifact."
             ),
             "",
         ]

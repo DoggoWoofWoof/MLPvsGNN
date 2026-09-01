@@ -99,35 +99,72 @@ pre-resume checkpoint.
 Package B is **not compilable** as a six-dataset package. Complete subsets must
 not be promoted to a paper table while the registered package is incomplete.
 
-## Package C — candidate budget
+## Package C — candidate budget — COMPLETE and FROZEN (2026-09-01)
 
 Candidate construction remains frozen to equal-weight dense/SPLADE RRF with the
 registered candidate hashes and RRF constant. No budget is selected on test.
 
-| Dataset | Budget 50 | Budget 100 | Budget 200 | Budget 400 |
-|---|---:|---:|---:|---:|
-| 2Wiki | C | C | C | C |
-| MuSiQue | C | C | C | C |
-| WebQSP | C | C | C | C |
-| HotpotQA | C | P Q5/G1 | P Q5/G1 | P Q5/G1 |
-| SQuAD | P Q5/G1 | P Q5/G1 | P Q5/G0 | M |
-| MetaQA | M | M | M | M |
+**24 / 24 conditions COMPLETE, 240 / 240 model-seed work units verified, 0
+PARTIAL, 0 MISSING, 0 INVALID** (`scripts/audit_modal_integrity.py`,
+2026-09-01). All six datasets are complete at all four budgets, so the matrix
+that previously tracked partial cells is retired.
 
-Summary, re-derived 2026-09-01 with `scripts/audit_modal_integrity.py`:
-**21 COMPLETE, 3 PARTIAL / RESUMABLE, 0 MISSING, 0 INVALID** out of 24
-conditions. There are 233/240 verified model-seed work units; **7 remain**.
-Nothing is missing any more: every registered condition now exists on the
-volume, and the three that are incomplete are mid-training rather than
-unstarted. The matrix above predates this re-audit and is kept as the
-pre-resume checkpoint.
+Close-out performed in the registered order: integrity audit, fetch from the
+volume, `analyze_candidate_budget.py` at the registered 1000 bootstrap
+replicates and seed 20260831, `compile_package_c.py` for the joint
+budget-and-ceiling report, then this freeze.
 
-Package C is the closest gate. When it closes, `scripts/check_package_d_gate.py`
-decides whether Package D may launch.
+Reports: [CANDIDATE_BUDGET_RESULTS.md](CANDIDATE_BUDGET_RESULTS.md) and
+[CANDIDATE_BUDGET_AND_HEADROOM_RESULTS.md](CANDIDATE_BUDGET_AND_HEADROOM_RESULTS.md).
 
-Package C is **not compilable**. Package D is also locked: budget 400 is
-complete only for 2Wiki, MuSiQue, and WebQSP; HotpotQA is partial and SQuAD and
-MetaQA are missing. D may launch only when all six budget-400 checkpoint,
-candidate-cache, and parity contracts pass.
+### What a larger budget actually bought
+
+Recall factors exactly as `attainment x ceiling`, so each budget step splits
+into a ceiling term and a ranking term with no residual. The ordering is
+ceiling-first and was fixed in code before any result was read.
+
+Across the 36 dataset-step-model cells:
+
+| Cut-off | Ceiling term > 0 | Ranking term < 0 | Ranking term > 0 |
+|---|---:|---:|---:|
+| R@1 | 30 / 36 | 24 / 36 | 12 / 36 |
+| R@5 | 36 / 36 | 33 / 36 | 3 / 36 |
+| R@20 | 36 / 36 | 36 / 36 | 0 / 36 |
+
+Attainment at R@5 falls from budget 50 to budget 400 in **12 / 12**
+dataset-model pairs, from -0.010 (SQuAD) to -0.056 (WebQSP).
+
+Enlarging the candidate budget therefore did not improve ranking anywhere in
+this grid. Every observed recall gain across budgets is a candidate-supply
+effect, and both rankers convert a strictly smaller fraction of the reachable
+ceiling as the pool grows. A raw recall increase across budgets must not be
+reported as a reranking improvement.
+
+### Where message passing separates from structure alone
+
+Paired `GNN - QLS` R@5, five matched seeds, Holm-adjusted across datasets within
+each budget. Significant at 0.05 in 7 of 24 cells:
+
+| Dataset | Effect at budget 50 -> 400 | Holm-significant cells |
+|---|---|---|
+| 2Wiki | +0.16 -> +1.28 | 200, 400 |
+| HotpotQA | +0.21 -> +0.70 | 200, 400 |
+| MetaQA | +0.09 -> +0.02 | 50, 100, 200 |
+| MuSiQue | +0.71 -> +0.60 | none |
+| SQuAD | -0.08 -> +0.14 | none |
+| WebQSP | -0.36 -> -0.34 | none |
+
+The advantage is budget-dependent and dataset-dependent, not uniform. On the
+multi-hop Wikipedia sets it appears only once the pool is large enough to
+contain relational context and then grows with the budget. On MetaQA the
+significant effects are real but an order of magnitude smaller than the
+diagnostic gap between the ranker and its own ceiling. On WebQSP message
+passing does not help at any budget. This is the ladder rung Paper 1 exists to
+measure, and it is now measured rather than assumed.
+
+These effect sizes are comparable across budgets within a dataset because both
+models receive identical pools: the ceiling cancels in the paired difference.
+Absolute levels remain incomparable across datasets without their ceilings.
 
 ## Package E1 — validation-only phase screen
 
@@ -185,10 +222,10 @@ package**, so nothing completed so far has to be recomputed.
 
 | Package | Unfinished condition/cell launches | Remaining model-seed work units |
 |---|---:|---:|
-| B | 8 | 57 |
-| C | 3 | 7 |
-| E1 | 39 | 75 |
-| **Total** | **50** | **139** |
+| B | 4 | 26 |
+| C | 0 | 0 (CLOSED) |
+| E1 | 16 | 34 |
+| **Total** | **20** | **60** |
 
 These counts move while the jobs run and are a checkpoint, not a contract.
 
@@ -206,9 +243,11 @@ about equal wall-clock cost across datasets or models.
 
 - The sealed six-dataset fairness confirmation and Packages A1/A2/A3 are
   complete and immutable.
-- B, C, and E1 are not complete and must not be compiled into final paper
-  claims.
-- D remains gated on all six C budget-400 conditions.
+- **Package C is complete, compiled, and frozen.** Its budget-versus-ceiling
+  decomposition and its paired `GNN - QLS` contrasts are final.
+- B and E1 are not complete and must not be compiled into final paper claims.
+- D's gate depends only on Package C, which is now closed; D is unlocked and
+  launches immediately after this freeze.
 - E2 remains gated on a complete E1 screen followed by deterministic rate
   selection, a committed configuration, and a new frozen protocol tag.
 - Package F remains unopened.
