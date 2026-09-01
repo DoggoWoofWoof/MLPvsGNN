@@ -1,0 +1,112 @@
+experiment: phase_confirmation_cache_regeneration_equivalence
+status: MIGRATION_GATE_SPEC_FROZEN
+protocol: docs/MIGRATION_PROTOCOL.md
+
+question: >-
+  The migration to a second workspace omits phase_confirmation_cache/, which is
+  193.6 GB and 85% of the frozen volume, on the claim that it is a derived
+  recompute cache rather than a result. Does regenerating a cell from the frozen
+  clean inputs produce the same arrays and the same contracts as the cell the
+  source workspace holds?
+
+scope:
+  this_is_not_a_scientific_result: true
+  decides: whether the omission is safe
+  does_not_decide: anything about a model, a metric or a comparison
+  no_frozen_result_is_read_or_written: true
+
+what_the_cache_is:
+  written_by:
+    - src/mp_retrieval/local_topology_perturbations.py::build_or_load_perturbed_topologies
+    - src/mp_retrieval/structural_features.py::build_or_load_structural_features
+  keyed_by: intervention contract (axis, rate, perturbation seed) under the dataset fingerprint
+  rebuilt_when_absent: true
+  inputs:
+    - the frozen clean packed topology cache
+    - the frozen candidate pools, seeds, golds and splits
+    - the axis, rate and perturbation seed from configs/phase_confirmation.yaml
+  reads_no_embedding_value: >-
+    Neither builder touches node_array or query_array, so the regeneration runs
+    on the topology-only dataset load and does not need the two largest files in
+    a dataset root to be present.
+
+axes_that_write_a_cell:
+  - degree_rewire
+  - random_add
+  - hub_injection
+axes_that_write_no_cell:
+  feature_mask: >-
+    The feature axis masks node features on device and reuses the clean
+    topology and feature caches, so it has no per-cell cache. This is recorded
+    as NOT_APPLICABLE rather than passed over in silence.
+
+representative_set:
+  declared_before_any_comparison_is_run: true
+  rule: >-
+    Every topology axis at the lowest and highest non-zero rate on the smallest
+    dataset, plus one mid-rate cell per topology axis on the second-smallest
+    dataset.
+  rationale: >-
+    The failure being tested -- an unseeded generator, an order-dependent
+    reduction, a platform-dependent reduction -- is a property of the generator
+    rather than of a particular cell, so breadth across axes and rate extremes
+    is worth more than volume. The second dataset guards against a result that
+    holds only for the smallest graph.
+  cells: 9
+  derived_by: scripts/migration_provenance.py::reference_cache_cells
+
+equivalence_definition:
+  arrays: exact on dtype, shape and every element; no tolerance
+  metadata: exact, excluding declared wall-clock timing keys
+  excluded_timing_keys:
+    - cold_build_seconds
+    - static_preprocessing_seconds
+    - local_preprocessing_seconds
+    - total_preprocessing_seconds
+    - build_seconds
+  why_not_a_byte_comparison: >-
+    metadata.json records how long the build took, so two correct runs of the
+    same computation differ there on every machine. A hash comparison would
+    reject a correct regeneration, and the exclusion is reported in the output
+    rather than applied quietly.
+  contract_sha256: >-
+    Compared explicitly for both cache kinds. build_or_load_structural_features
+    refuses to load a cache whose contract_sha256 disagrees with its inputs, so
+    a difference here is not cosmetic.
+
+quarantine:
+  reference_prefix: migration_reference
+  rule: >-
+    Captured source cells are never written under phase_confirmation_cache/. At
+    their own paths they are exactly what build_or_load_* looks for, so the
+    regeneration would not happen and the comparison would be a file against
+    itself. scripts/replicate_volume.py refuses to upload the capture without a
+    quarantine prefix.
+  regeneration_prefix: migration_regenerated
+  regeneration_starts_empty: true
+
+environments:
+  local:
+    purpose: immediate evidence at no compute cost, on a different OS and CPU
+    binding: false
+  target_container:
+    purpose: the environment E2 will actually resume in
+    binding: true
+    note: >-
+      A local pass is supporting evidence. The claim that matters is that the
+      target container rebuilds the same cache, so the gate is not closed until
+      it runs there.
+
+datasets:
+  webqsp:
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+  2wiki_clean:
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+
+modal:
+  app: message-passing-retrieval-cache-equivalence
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  cpu: 8
+  memory_mb: 32768
+  timeout_seconds: 10800

@@ -41,6 +41,10 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         "scripts.modal_graph_substrate_audit",
         {"train": "run_substrate"},
     ),
+    "cache-equivalence": (
+        "scripts.modal_cache_equivalence",
+        {"train": "run_equivalence"},
+    ),
 }
 
 
