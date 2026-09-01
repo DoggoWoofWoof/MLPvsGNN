@@ -65,3 +65,23 @@ is admitted. Saturation without crossover is also informative: it identifies
 the cheapest common budget that retains effectiveness, but the paper will not
 retroactively relabel that point as the sole primary result.
 
+
+## Required headroom companion
+
+Every budget cell must be reported beside its candidate ceiling from
+`CANDIDATE_HEADROOM_PROTOCOL.md`. The ceiling is `min(p, K) / g`, not the pool
+coverage `p / g`.
+
+The ceiling **rises monotonically with budget on all six datasets**, so a raw
+metric gain from budget 50 to 400 is partly the ceiling moving rather than the
+model reranking better. On MetaQA the Recall@5 ceiling grows from 0.2104 at
+budget 50 to 0.3262 at budget 400; no model choice may be credited with that
+0.116. Budget effects are therefore reported as attainment against the
+per-budget ceiling as well as in absolute terms.
+
+The paired `GNN - QLS` contrast is unaffected: both models receive identical
+pools at every budget, so the ceiling cancels in the paired difference. Only the
+absolute levels and any cross-dataset comparison need the ceiling.
+
+This is a reporting requirement. It does not change the frozen budget contract,
+the fusion rule, or any candidate pool, and no budget may be selected using it.

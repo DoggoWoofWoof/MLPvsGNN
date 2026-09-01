@@ -10,11 +10,24 @@ Aggregation*
 ## Current status
 
 **Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2/A3 controls:
-COMPLETE. Packages B/C/E1: PARTIAL, INTEGRITY-VERIFIED, AND QUOTA-BLOCKED.
-Package D: FROZEN AND GATED ON C.** The sealed QLS/GNN checkpoint remains
-unchanged. No partial seed outcome has been interpreted. The exact completion
-matrices, remaining 248 model-seed work units, and safe resume order are in the
+COMPLETE. Candidate-generation headroom diagnostic: COMPLETE. Packages B/C/E1:
+PARTIAL, INTEGRITY-VERIFIED, AND RESUMED. Package D: FROZEN AND GATED ON C.
+Package F: SEALED.** The sealed QLS/GNN checkpoint remains unchanged and no
+partial seed outcome has been interpreted.
+
+The workspace spend limit that blocked GPU allocation on 2026-08-31 has lifted.
+B, C, and E1 were resumed on 2026-09-01 with every volume checkpoint preserved.
+The exact completion matrices, remaining work, and safe resume order are in the
 [execution-status checkpoint](docs/EXPERIMENT_EXECUTION_STATUS.md).
+
+Every reported metric now has a companion ceiling. The
+[headroom diagnostic](docs/CANDIDATE_HEADROOM_RESULTS.md) separates upstream
+candidate-generation failure from the reporting cut-off and from reranking, so
+QLS-MLP and the seed-aware GNN are neither credited nor penalised for gold
+evidence that was never in their candidate set. It reorders the cross-dataset
+reading: MetaQA attains 92% of what its candidates allowed and is not a
+modelling failure, while WebQSP attains only 74% and holds the most unexploited
+reranking headroom.
 
 | Established | Not yet established |
 |---|---|
@@ -26,6 +39,7 @@ matrices, remaining 248 model-seed work units, and safe resume order are in the
 | Dense/SPLADE/equal/weighted-RRF controls | Candidate-pool budget sweep |
 | Fixed distance/PPR/path/fusion controls | Upstream seed-quality robustness |
 | 19-parameter linear rank+structure control | Typed-edge ablation |
+| Candidate ceilings for every reported metric | Whether expansion lifts the ceiling (Paper 2) |
 
 This is a standalone research repository about the value and cost of graph
 message passing for retrieval. It began with the question:
@@ -388,10 +402,9 @@ perturbation + crossover predictor + systems tradeoff + external confirmation**.
 These steps are needed to move from a controlled empirical retrieval study to a
 deeper statement about when fixed structural summaries are sufficient and when
 learned message passing is genuinely necessary. Packages B and C and the
-validation-only E1 screen are frozen and partially persisted, but further GPU
-allocation is currently blocked by the Modal workspace spend limit. Package D
-is committed but cannot launch until the budget-400 checkpoints from C are
-complete. Package F remains deliberately unopened.
+validation-only E1 screen are frozen, partially persisted, and resumed as of
+2026-09-01. Package D is committed but cannot launch until the budget-400
+checkpoints from C are complete. Package F remains deliberately unopened.
 
 For the NeurIPS main track, the phase diagram/predictor or theory is the likely
 gate. A separate Evaluations & Datasets route could instead center a documented
@@ -635,16 +648,21 @@ datasets. Do not tune Package A further against these tests.
 
 ### Package B — Edge provenance (mandatory)
 
-**Protocol frozen; partial runs integrity-verified and quota-blocked.** Verified sidecars reconstruct
+**Protocol frozen; partial runs integrity-verified and resumed 2026-09-01.**
+Verified sidecars reconstruct
 native/title/KB-only, embedding-kNN-only, simple-A, and union graphs. The exact
 sealed A multigraph is reused, and simple A is a mandatory duplicate-
 normalization control.
 
 ### Package C — Structural-context budget
 
-**Protocol frozen; partial runs integrity-verified and quota-blocked.** Equal-RRF budgets 50/100/200/400
-jointly record candidate ceiling, retrieval metrics, induced graph context,
-QLS/GNN compute, and checkpoints for Package D. No budget is selected on test.
+**Protocol frozen; partial runs integrity-verified and resumed 2026-09-01.**
+Equal-RRF budgets 50/100/200/400 jointly record candidate ceiling, retrieval
+metrics, induced graph context, QLS/GNN compute, and checkpoints for Package D.
+No budget is selected on test. Budget effects must be read against the
+per-budget ceiling: that ceiling rises monotonically with budget on every
+dataset, so part of any raw gain across the sweep is the ceiling moving rather
+than the model reranking better.
 
 ### Package D — Online systems evaluation
 
@@ -656,7 +674,8 @@ storage, and cold start. The existing 2.49–7.08x result remains warm-cache onl
 
 ### Package E — Robustness, crossover, and utility prediction
 
-**E1 validation-only screen partial, integrity-verified, and quota-blocked.** Degree-preserving rewiring, random-edge
+**E1 validation-only screen partial, integrity-verified, and resumed
+2026-09-01.** Degree-preserving rewiring, random-edge
 addition, hub injection, and raw-feature masking are screened with one seed on
 validation only. A locked rule chooses crossover brackets. Five-seed test
 confirmation cannot launch until those rates are generated, reviewed,
@@ -691,7 +710,9 @@ docs/NEURIPS_RESEARCH_PLAN.md    historical roadmap and deferred research plan
 docs/DATASET_GRAPH_PROVENANCE.md datasets, graphs, UKB storage, and CRAG reuse
 docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md prioritized missing controls
 docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-embedding timing
-docs/EXPERIMENT_EXECUTION_STATUS.md exact quota-blocked B/C/E1 matrices
+docs/EXPERIMENT_EXECUTION_STATUS.md exact B/C/E1 completion matrices
+docs/CANDIDATE_HEADROOM_PROTOCOL.md read-only retrieval-headroom contract
+docs/CANDIDATE_HEADROOM_RESULTS.md candidate ceilings and missing-gold reachability
 docs/TERMINOLOGY_AND_POSITIONING.md publication naming, overlap, and track fork
 docs/SA_MLP_CONFIRMATION_PROTOCOL.md final frozen fairness protocol
 docs/SA_MLP_CONFIRMATION_RESULTS.md complete six-dataset result and stopping point

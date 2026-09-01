@@ -90,3 +90,18 @@ topology.
 No topology corruption levels, feature degradation levels, or phase-diagram
 predictor may be selected from these test outcomes. Those belong to a separate
 frozen package.
+
+## Required headroom companion
+
+Edge provenance changes the graph, never the candidate pool: all four families
+share the frozen candidate set, so they share one candidate ceiling per dataset
+(`CANDIDATE_HEADROOM_PROTOCOL.md`). The ceiling therefore cancels in every
+within-dataset family contrast, and the paired `GNN - QLS` endpoint needs no
+adjustment.
+
+It is still required for reading the package across datasets. A family that
+looks weak on MetaQA is being scored against a Recall@5 ceiling of 0.3262,
+where roughly half the test queries have no gold in the pool at all; the same
+family on SQuAD is scored against 0.9949. Absolute family levels are not
+comparable across datasets without their ceilings, and no family may be called
+worse on a dataset whose reported metric is already near its ceiling.

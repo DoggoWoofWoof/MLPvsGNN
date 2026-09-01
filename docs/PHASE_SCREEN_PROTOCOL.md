@@ -60,3 +60,23 @@ The predictor remains prohibited until the confirmed regimes contain clear
 help, neutral, and harm regions. All screening cells remain publishable in the
 appendix as validation-only exploration; none is silently discarded.
 
+
+## Required headroom companion
+
+Every screen axis perturbs the graph or the raw node features. None of them
+touches the candidate pool, so the candidate ceiling
+(`CANDIDATE_HEADROOM_PROTOCOL.md`) is **constant across every cell of the
+screen** for a given dataset, and identical for both models within a cell.
+
+That is a useful invariant rather than a caveat: any change in validation
+metric across perturbation levels is attributable to the intervention and the
+model, and cannot be an artifact of candidate generation. The
+`validation_gnn_minus_qls` contrast is likewise ceiling-free.
+
+The ceiling is still needed when reading absolute levels across datasets. A cell
+on MetaQA is scored against a far lower ceiling than the same cell on SQuAD, so
+absolute robustness levels must not be compared across datasets without it.
+
+Crossover and end-point rates are selected by the locked rule on validation
+values alone. Headroom numbers may not enter that selection, and no test metric
+may be consulted to choose a rate.
