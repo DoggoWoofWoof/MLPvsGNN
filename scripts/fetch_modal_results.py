@@ -57,6 +57,11 @@ PACKAGES = {
         "outputs/phase_screen",
         "PHASE_SCREEN_VALIDATION_ONLY_COMPLETE",
     ),
+    "phase_confirmation": Package(
+        "outputs/phase_confirmation",
+        "outputs/phase_confirmation",
+        "PHASE_CONFIRMATION_CELL_COMPLETE",
+    ),
     "online_systems": Package(
         "outputs/online_systems",
         "outputs/online_systems",
@@ -77,6 +82,14 @@ def _local_relative(package: str, dataset: str, condition: str, filename: str) -
         if not axis:
             raise ValueError(f"Unparsable phase-screen condition: {condition}")
         return Path(dataset) / axis / f"rate_{rate_key}.json"
+    if package == "phase_confirmation":
+        # Same remote condition naming as the screen, but the confirmation also
+        # writes packed per-query metrics, so a cell needs a directory rather
+        # than the screen's single flat file.
+        axis, _, rate_key = condition.rpartition("_")
+        if not axis:
+            raise ValueError(f"Unparsable phase-confirmation condition: {condition}")
+        return Path(dataset) / axis / f"rate_{rate_key}" / filename
     if package == "online_systems":
         # One result per dataset, read as outputs/online_systems/<dataset>.json.
         return Path(f"{dataset}.json")

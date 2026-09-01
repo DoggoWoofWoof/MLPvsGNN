@@ -73,3 +73,20 @@ def test_online_systems_is_discovered_at_its_own_remote_depth() -> None:
     assert PACKAGES["online_systems"].complete_status == (
         "UNCACHED_UNSEEN_EMBEDDING_SYSTEMS_COMPLETE"
     )
+
+
+def test_phase_confirmation_cells_keep_both_files_together() -> None:
+    # The confirmation writes packed per-query metrics beside its result, and
+    # the paired statistics need both. A flat file per cell, as the screen uses,
+    # would have nowhere to put the second artifact.
+    assert _local_relative(
+        "phase_confirmation", "webqsp", "degree_rewire_0p25", "result.json"
+    ) == Path("webqsp/degree_rewire/rate_0p25/result.json")
+    assert _local_relative(
+        "phase_confirmation", "webqsp", "degree_rewire_0p25", "query_metrics.npz"
+    ) == Path("webqsp/degree_rewire/rate_0p25/query_metrics.npz")
+
+
+def test_an_unparsable_phase_confirmation_condition_is_rejected() -> None:
+    with pytest.raises(ValueError, match="phase-confirmation condition"):
+        _local_relative("phase_confirmation", "webqsp", "noseparator", "result.json")

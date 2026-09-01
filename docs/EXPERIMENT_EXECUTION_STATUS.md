@@ -307,7 +307,7 @@ not yet adjudicated:
 No rate was chosen by looking at any of this. The rule is mechanical and was
 frozen before E1 ran.
 
-## E2 launch path — built 2026-09-01, gate OPENED 2026-09-01
+## E2 launch path — built 2026-09-01, gate opened and LAUNCHED 2026-09-01
 
 E2 had no execution path at all. `scripts/run_phase_confirmation.py` ends with
 
@@ -369,14 +369,39 @@ computes resolves to a real screen cell rather than merely looking plausible.
 These are needed only after E2 produces results, and each is a known gap rather
 than a discovered one:
 
-1. **No `scripts/analyze_phase_confirmation.py`.** The analysis contract is
-   already registered in the generated config: primary contrast
-   `seed_aware_gnn_minus_sa_mlp_recall_at_5`, paired over seed and query, Holm
-   scope `datasets_within_axis_and_rate`, all selected cells reported. It is
-   deliberately not written yet, because writing it against the config rather
-   than against results is the only order that keeps it honest.
-2. **No `phase_confirmation` entry in `fetch_modal_results.py`.** Its local
-   layout should be fixed by the analyzer above, not guessed now.
+1. ~~**No `scripts/analyze_phase_confirmation.py`**~~ — **closed 2026-09-01,
+   written against the config while no E2 result existed**, which is the only
+   order in which its choices cannot be steered by an outcome. It applies the
+   registered contract rather than restating it: primary contrast
+   `seed_aware_gnn_minus_sa_mlp_recall_at_5`, `_mean_std_ci` over the five
+   seeds, `_hierarchical_paired_ci` over seed and query, and `_holm` across
+   datasets within one axis and rate. Every cell is refused unless it asserts
+   `test_selected_rate` false, the locked validation-only rule, and seed-0
+   checkpoint provenance; a missing assertion is a refusal, not a pass. The
+   packed metrics are checked against the recorded digest and query-order hash,
+   because the result records a container-side path that does not survive the
+   fetch and only the digest travels.
+
+   Two further properties are asserted in the report itself. The clean rate is
+   **not** an E2 cell: every axis reuses the one sealed five-seed confirmation
+   as a shared origin rather than retraining a second, non-identical clean
+   condition. And no axis touches candidate generation, so within a dataset the
+   candidate pool and the Recall@K ceiling are identical at every rate — unlike
+   Package C, **no E2 movement across rates can be a ceiling effect**, which is
+   what makes the crossover claim a ranking claim.
+
+   A sign change is only called a crossover when both endpoints are
+   individually Holm-significant. Two cells that are each indistinguishable from
+   zero can straddle zero by noise alone, and reporting that as a regime change
+   would manufacture the paper's headline finding out of nothing. Fifteen tests
+   in `tests/test_analyze_phase_confirmation.py` cover each refusal and that
+   guard.
+2. ~~**No `phase_confirmation` entry in `fetch_modal_results.py`**~~ — **closed
+   2026-09-01.** E2 shares the screen's remote condition naming but also writes
+   packed per-query metrics, which the paired statistics need, so a cell maps to
+   `{dataset}/{axis}/rate_{key}/{filename}` — a directory — rather than to the
+   screen's single flat file, which would have nowhere to put the second
+   artifact.
 3. ~~**No `phase_confirmation` entry in `audit_modal_integrity.py`**~~ —
    **closed 2026-09-01, before launch.** E2 is registered in the shared
    `PACKAGES` registry with a `gated_on` marker: while
@@ -394,11 +419,22 @@ than a discovered one:
    compliance. It also refuses any cell written at rate 0.0. Nine tests in
    `tests/test_audit_phase_confirmation.py` cover the gate and each clause.
 
-**Still open, and genuinely not needed until E2 produces results:** items 1 and
-2 above. Package D is likewise not yet in the audit registry; its result is a
+**All three are now closed.** Package D remains the one gap: it is not yet in
+the audit registry; its result is a
 systems benchmark keyed by batch size with no per-seed checkpoint records, so it
 needs a different verification shape rather than a registry line, and adding a
 half-correct entry during a live gating audit was not worth the risk.
+
+### E2 launched
+
+`spawn_modal_jobs.py phase-confirmation` deployed
+`message-passing-retrieval-phase-confirmation` and spawned 96 server-side calls
+after, and only after, the selected rates were committed and tagged
+`phase-confirmation-protocol-v1`. The dry run confirmed the same 96 cells, 16
+per dataset, with no clean cell among them, and each cell's `screen_result`
+resolving to a screen cell that exists. Modal shows the app saturating the
+container cap alongside Package B's last condition; Package D stays queued
+behind it.
 
 ## Exact remaining GPU workload
 
