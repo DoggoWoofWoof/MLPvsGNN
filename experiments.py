@@ -49,9 +49,12 @@ MODAL_SCRIPTS = {
     "online-systems": "scripts/modal_online_systems.py",
 }
 
-# Tasks that mount the frozen ``message-passing-retrieval-data`` Volume. The
-# Volume exists in exactly one workspace, so rotating these into another
-# account cannot work and would only obscure the real quota signal.
+# Tasks that mount the frozen ``message-passing-retrieval-data`` Volume. A Modal
+# Volume lives in exactly one workspace, so rotating these into another account
+# only works once the data they read exists there too. Rotating before that
+# replication would either fail on a missing Volume or -- worse -- run against an
+# empty one and obscure the real quota signal. ``scripts/replicate_volume.py``
+# performs and verifies the copy; until it has, the refusal below stands.
 VOLUME_BOUND_TASKS = frozenset(MODAL_SCRIPTS) - {"pilot3"}
 
 
@@ -114,8 +117,14 @@ def _run_modal(args: argparse.Namespace) -> int:
         if args.task in VOLUME_BOUND_TASKS:
             print(
                 f"Not rotating {args.task!r}: it mounts the frozen data Volume, which "
-                f"exists only in {credential.name!r}. Replicate the Volume before "
-                "rotating this task.",
+                f"exists only in {credential.name!r}. Replicate it first, then "
+                "rotate:\n"
+                "  MODAL_PROFILE=<source> python scripts/replicate_volume.py "
+                "download --slice e2_resume --staging <dir>\n"
+                "  MODAL_PROFILE=<target> python scripts/replicate_volume.py "
+                "upload   --slice e2_resume --staging <dir>\n"
+                "  MODAL_PROFILE=<target> python scripts/replicate_volume.py "
+                "verify   --slice e2_resume --staging <dir> --deep",
                 flush=True,
             )
             return returncode

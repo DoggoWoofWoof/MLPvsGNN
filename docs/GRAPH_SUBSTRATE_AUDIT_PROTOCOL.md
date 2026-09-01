@@ -43,9 +43,9 @@ Those are different questions, and only measurement can tell us which one we
 answered.
 
 **The candidate-induced object is still a graph.** It is not "not a graph"
-because it is disconnected. The question is strictly whether it retains enough of
-the original neighbourhood structure for propagation to have anything useful to
-aggregate.
+because it is disconnected. The question is strictly *how much* of the original
+neighbourhood structure it retains for propagation to aggregate over — a
+quantity, measured continuously (§6.1), not a verdict.
 
 ---
 
@@ -124,11 +124,24 @@ The depth sweep that would settle it already exists and was never run:
 under `status: deferred_until_operator_screen_gate`. **No depth evidence exists
 anywhere in this repository.**
 
-External evidence does exist, and it points the same way (§9.2, verified against
-primary sources): GCN, GraphSAGE and PinSage all use **two** layers in their
-reported experiments, and GraphSAGE measures the first-to-second hop gain at
-10–15% accuracy on uncut graphs. One layer is below the field-standard depth
-before the substrate question is even raised.
+External evidence does exist and it motivates measuring depth (§9.2, verified
+against primary sources): GCN, GraphSAGE and PinSage all use **two** layers in
+their reported experiments, and GraphSAGE measures the first-to-second hop gain
+at 10–15% accuracy on uncut graphs.
+
+**That is a reason to measure depth, not to presume a correct one.** There is no
+universal correct GNN depth — deeper is not automatically better, because of
+oversmoothing and neighbourhood explosion, and GCN's own Appendix B reports
+degradation past two or three layers. This document therefore does **not** claim
+one layer is below a field standard. It claims only what the code shows:
+
+> The historical seed-aware GNN has a **one-hop learned receptive field**, while
+> QLS-v1 computes **multi-hop fixed summaries** on the same candidate-induced
+> substrate. Learned-versus-fixed aggregation has therefore never been evaluated
+> under matched structural reach.
+
+The right descriptor for the frozen comparator is **a shallow one-hop historical
+baseline**, not a substandard one.
 
 ### 1.3 Still to verify when the data is reachable
 
@@ -201,21 +214,100 @@ the condition GraphSAINT-style sampling is designed to avoid.
 
 ---
 
-## 4. Effective receptive field
+## 4. Effective receptive field — TWO notions, never merged
 
-Distinct non-self nodes reachable within `h` layers inside `G[C_q]`:
+Symmetrised connectivity answers *"are these nodes related at all"*. It does not
+answer *"can this candidate actually receive that node's signal"*. Both are
+reported; they are different questions and the audit keeps them apart.
 
 ```
-R_h(v) = |{u : d_{Gq}(u,v) <= h, u != v}|
+WEAK / SYMMETRISED                    ACTUAL MESSAGE FLOW
+------------------                    -------------------
+undirected view                       exact stored orientation
+                                      + the operator's aggregation convention
+
+used for:                             used for:
+  components                            GNN R1 / R2 / R3
+  largest component                     effective incoming neighbourhood
+  retention, boundary cut               seed signal propagation
+  gold path preservation                operator message load
+  bridge loss
 ```
 
-Report median and mean `R1, R2, R3`, and the fractions with `R1 = 0`, `R2 = 0`.
+### 4.1 Why the distinction is not pedantic
 
-Implemented: `graph_substrate.receptive_field_sizes`.
+A symmetrised view can show
 
-**`R1 = 0` is the number that matters most for the frozen comparison**, because
-the comparator is one layer deep (§1.2). Every candidate with `R1 = 0` was
-scored by a GNN that had literally nothing to message-pass, i.e. by an MLP.
+```
+seed -- bridge -- candidate
+```
+
+while the stored orientation is
+
+```
+seed <- bridge <- candidate
+```
+
+Every connectivity statistic calls that path intact. But messages travel
+`source_to_target`, so the candidate aggregates nothing from the seed at **any**
+depth, and a seed-aware GNN cannot propagate the seed indicator down it. Reporting
+only symmetric reach would overstate what the operator can use — and would do so
+in exactly the direction that flatters the substrate.
+
+`tests/test_graph_substrate_message_flow.py` encodes this case directly, both as
+a unit test and end-to-end through the runner.
+
+### 4.2 Operator edge semantics — VERIFIED, not assumed
+
+Measured by running each frozen factory on a three-node graph with one directed
+edge, a duplicated edge and an isolated node:
+
+| family | flow | inserts self-loops | coalesces duplicates | duplicate-sensitive | aggregation |
+|---|---|---|---|---|---|
+| `gcn` | source→target | **yes** | no | **yes** | sum, symmetric degree normalisation |
+| `gat` | source→target | **yes** | no | **yes** | attention-weighted sum |
+| `gin` | source→target | no | no | **yes** | sum, `(1+ε)·x` root |
+| `sage` | source→target | no | no | no | mean, separate root linear |
+
+Three consequences, all of which the audit reports:
+
+1. **Edge multiplicity is a real message.** Package B established that the sealed
+   graph is a multigraph (`baseline_a_simple` is the *deduplicated* projection of
+   `sealed_a`). For `gcn`, `gat` and `gin` a repeated edge is a genuinely
+   repeated message: GCN's degree normalisation counts it, GAT's softmax ranges
+   over it, GIN's sum adds it twice. Only `sage`'s mean is invariant.
+2. **The frozen selections are all duplicate-sensitive.** 2wiki `gat`, musique
+   `gcn`, webqsp `gat`, hotpotqa `gin`, squad `gcn`, metaqa `gat` — **not one
+   dataset uses `sage`.**
+3. **`gcn` and `gat` add their own self-loop**, so a stored self-loop becomes a
+   doubled one for four of the six datasets.
+
+The audit therefore reports **unique non-self edges** and **messages actually
+consumed by the operator** as separate numbers, per query and per graph.
+
+### 4.3 An isolated candidate is scored, not dropped
+
+All four families still emit a representation for a candidate whose receptive
+field is empty — through an inserted self-loop (`gcn`, `gat`) or a root term
+(`gin`, `sage`). So `R1 = 0` does not mean "unscored"; it means **scored as a
+plain MLP**, with the topology input contributing nothing. That is the precise
+sense in which a fragmented substrate silently degrades a GNN into an MLP, and
+it is why `R1_zero_fraction` is a headline number rather than a footnote.
+
+### 4.4 What is reported
+
+```
+R1 / R2 / R3       median, mean, zero-fraction     on BOTH notions
+seed reach         fraction of candidates a seed signal reaches, per hop,
+                   on the induced substrate (symmetric AND message-flow)
+                   and on the global graph
+message load       unique_non_self_edges
+                   stored_non_self_messages
+                   duplicate_messages and their fraction
+                   stored_self_loops
+                   operator_inserted_self_loops
+                   messages_consumed_by_operator
+```
 
 ---
 
@@ -256,12 +348,42 @@ Implemented: `graph_substrate.path_preservation`, `graph_substrate.bridge_loss`.
 Distance inflation is reported separately from disconnection because they are
 different failures with different fixes.
 
-Report `bridge_loss@2` and `bridge_loss@3`, split by `native` / `kNN` /
-`combined`.
+Report `bridge_loss@2` and `bridge_loss@3`.
 
-**Pre-registered reading:** if only ~20% of global ≤3-hop seed→gold
-relationships survive induction, that is a major experimental confound and must
-be reported as one.
+Split by `native` / `kNN` / `combined`, because a bridge lost from the native
+graph and a bridge lost from the kNN graph have different causes and different
+repairs.
+
+### 6.1 There is no adequacy threshold, and none will be invented
+
+The audit does **not** emit a verdict of the form *"the substrate is adequate"*
+or *"the substrate is inadequate"*. No number in this document is compared
+against a cutoff, and no cutoff is defined anywhere in the code, because any such
+line would be arbitrary: nothing in the retrieval literature establishes a
+retention fraction or a bridge-loss rate below which message passing stops being
+worthwhile, and inventing one here would convert a measurement into an assertion.
+
+What is produced instead is a **continuous characterisation** along nine axes,
+each reported as a distribution rather than a pass/fail bit:
+
+```
+isolation                     R1_zero_fraction, and its full distribution
+component structure           count, largest and second-largest fractions
+neighbourhood retention       per-candidate distribution, not just the mean
+boundary cut                  fraction of incident edges leaving the pool
+effective receptive field     R1/R2/R3 on message flow AND symmetrised
+seed reachability             per hop, induced versus global
+gold path preservation        P_h for golds inside the pool
+distance inflation            reported separately from disconnection
+bridge loss                   1 - P_h at h = 2 and h = 3
+```
+
+The decision these feed is **not** "is the graph good enough". It is "which graph
+basis should QLS-v2 structural features be defined over", and that is settled by
+comparing the candidate-induced numbers against the global ones on the same
+axes — a relative reading, which needs no absolute threshold. Where the audit's
+own text pre-registers an expectation, it says what a value would *mean*, never
+what a value would *decide*.
 
 ---
 
@@ -307,12 +429,46 @@ That is the same class of error as comparing `QLS-CAND` to `GNN-GLOBAL`, and it
 is ruled out for the same reason.
 
 **Therefore the design is `{CAND, GLOBAL} × {QLS, GNN} × H`, with the hop budget
-matched across methods within each cell.** At minimum the GLOBAL arm must run the
-GNN at `H = 3` layers to match the QLS hop budget, and report `H = 1` alongside it
-so the frozen configuration stays visible and comparable.
+matched across methods within each cell.**
+
+But matching `H = L` is **necessary and not sufficient**, and the protocol must
+say so plainly: a hand-engineered 3-hop statistic and three learned layers are
+not computationally or representationally identical. Matching the hop budget
+controls *topological reach*. It does not equalise capacity, and no result from
+this grid may be described as though it did. Two separate comparisons are
+therefore pre-registered.
+
+#### 7.2.1 Mechanism-controlled grid — matched reach
+
+```
+graph basis = CAND                  graph basis = GLOBAL-CONTEXT
+  QLS-H1  vs  GNN-L1                  QLS-H1  vs  GNN-L1
+  QLS-H2  vs  GNN-L2                  QLS-H2  vs  GNN-L2
+  QLS-H3  vs  GNN-L3                  QLS-H3  vs  GNN-L3
+```
+
+Answers: *at matched topological reach, do fixed statistics or learned
+aggregation make better use of the structure that is available?*
+
+#### 7.2.2 Strong-baseline comparison — the GNN at its best legitimate depth
+
+Separately, let the GNN select `L ∈ {1, 2, 3}` on **validation only**, under a
+frozen search and selection rule, and compare the final QLS configuration
+against that winner.
+
+This exists so the eventual QLS claim cannot rest on an artificially shallow
+comparator. A reviewer who asks *"you beat a one-layer GNN, but a two-layer GNN
+was better"* must have an answer in the paper. If the goal is to dominate message
+passing, the thing to beat is its strongest legitimate version, not its
+historical one.
+
+**Leakage rule:** GNN outcomes never select QLS features, and test results never
+select any depth.
 
 `configs/phase_diagram.yaml` already specifies `message_passing_layers:
-[0, 1, 2, 4, 8]`; Phase −1 is the reason to finally run it.
+[0, 1, 2, 4, 8]`; Phase −1 is the reason to finally run it. Both controls are
+registered in `configs/graph_substrate_audit.yaml` under `preregistered_controls`
+with `status: DECLARED_NOT_RUN`.
 
 ### 7.3 Three GNN receptive-field standards
 
@@ -343,6 +499,62 @@ property `GNN-CAND` lacks. PinSage is the closest analogue to what Phase 1 needs
 because it also has to bound a neighbourhood in a graph too large to propagate
 over in full — and it bounds it **structurally**, by proximity on the graph,
 rather than semantically.
+
+### 7.4 GLOBAL-CONTEXT is not defined yet — the expansion audit defines it
+
+`GNN-LOCAL` above names a *shape*. It does not yet name a size, and it must not
+be frozen into a concrete construction before Phase −1 measures how big that
+construction actually is. Two different neighbourhoods are both defensible
+readings of "restore the global context", they answer different questions, and
+they do **not** grow at the same rate:
+
+```
+U_seed(H)    = Cq  ∪  N_H(Sq)      the seeds' H-hop neighbourhood
+U_target(H)  = Cq  ∪  N_H(Cq)      the pool's own H-hop neighbourhood
+```
+
+**`U_seed`** restores the `seed → bridge → candidate` path that vertex-induction
+severs. It is the minimal repair for the specific failure §6 measures: a bridge
+node that is not itself a candidate, and therefore not in `G[C_q]`, but that sits
+between a seed and a gold.
+
+**`U_target`** is the *computational* neighbourhood an `H`-layer GNN genuinely
+requires. Every scored candidate aggregates over its own neighbours, those
+neighbours aggregate over theirs, and so on `H` times. This is the standard
+GraphSAGE/PinSage/SEAL object, and it is the one that explodes: `|S_q| ≤ 10` by
+the seed contract, but `|C_q|` is an order of magnitude larger and much more
+likely to contain a hub.
+
+The audit measures both, for `H ∈ {1, 2, 3}`, on **both** connectivity notions
+(§4), and on each provenance graph separately — `dataset_default`,
+`structural_only` (native), `knn_only`, and `baseline_a_simple` (native ∪ kNN) —
+because native and embedding-kNN edges have very different degree profiles and a
+merged figure would hide that.
+
+Reported per dataset, per graph, per `H`:
+
+```
+nodes            median, p90, p95, max
+edges            median, p90, p95, max
+density
+expansion factor over |Cq|   (median, p95, max)
+```
+
+**Why this gates the definition.** The choice between exact `H`-hop construction
+and neighbour sampling is an empirical consequence of these curves, not a
+preference:
+
+```
+U_target(H) stays small          ->  build the exact H-hop neighbourhood
+U_target(H) explodes             ->  GraphSAGE-style fixed-size sampling, or
+                                     PinSage-style top-T random-walk selection,
+                                     with the fan-out chosen from the measured
+                                     degree profile
+```
+
+Either way the **scoring set remains exactly `C_q`** (§7.6), and expansion nodes
+enter only as context. The measurement admits nothing to any pool; it reports
+sizes. §8 is where admission is considered, and it is oracle-only.
 
 ### 7.5 Feasibility, estimated from artifacts that are already frozen
 
@@ -408,7 +620,7 @@ only where it is cheap, and `GNN-LOCAL` is the arm that must carry the
 comparison.** That is not a compromise forced by budget — it is what GraphSAGE,
 PinSage and SEAL all do, for the same reason.
 
-### 7.4 The candidate ceiling must not move
+### 7.6 The candidate ceiling must not move
 
 GLOBAL still scores exactly `C_q`. Therefore the candidate ceiling must be
 **bit-identical** to the historical pool, and this is verified by hash, not by
@@ -437,25 +649,50 @@ expanded scoring universe   -> candidate generation      ceiling MAY IMPROVE
 
 These must not be conflated.
 
-Oracle-only diagnostic, no model, no training:
+Oracle-only diagnostic. **No model is trained on an expanded pool, in this phase
+or in any phase gated by it.** The expansion is constructed, measured, and
+discarded; the frozen pools are untouched and their hashes unchanged.
 
 ```
-C0 = Dense u SPLADE
-C1 = C0 u {native 1-hop from seeds}
+C0 = Dense u SPLADE                                   (the frozen pool)
+C1 = C0 u {native <=1-hop from seeds}
 C2 = C0 u {native <=2-hop from seeds}
 C3 = C0 u {native <=3-hop from seeds}
 ```
 
-plus kNN-only and combined expansions. For each report:
+and the same ladder on `knn_only` and on `native u kNN`, reported as three
+separate curves rather than merged — the two provenance families have different
+degree profiles, so a combined number would hide which one is paying the cost.
+
+For every (dataset, provenance, hop) cell:
 
 ```
-median / p95 / max pool size        AnyGold / AllGold / GoldFraction
-R@1 / R@5 / R@20 ceilings           FullCov ceiling
-additional golds recovered          ADDED NODES PER RECOVERED GOLD
+POOL SIZE          median, p95, max
+CEILING            R@1, R@5, R@20
+COVERAGE           AnyGold, AllGold, GoldFraction, FullCov ceiling
+GAIN               additional golds recovered
+COST               added nodes per recovered gold
+RATE               ceiling gain per 1,000 added nodes
 ```
 
-The last is the Pareto quantity: coverage gain against pool explosion. A `+3 hop`
-expansion that takes 400 candidates to 150,000 is not a system.
+The last two are the Pareto quantities: coverage gain against pool explosion. A
+`+3 hop` expansion that takes 400 candidates to 150,000 is not a system. Reported
+per 1,000 added nodes so the ladders are comparable across datasets whose pools
+differ by two orders of magnitude.
+
+The summary figure is the trade-off curve itself, one panel per dataset:
+
+```
+x = median pool size (and a second series at p95)
+y = R@5 ceiling
+three curves: native, kNN, native u kNN
+four points per curve: C0, C1, C2, C3
+```
+
+`C0` is the frozen operating point, so every curve starts at a number that
+already exists in the sealed results and moves right and up from there. A curve
+that goes far right for very little rise is the answer *"no"*, stated
+quantitatively.
 
 **Much of this already exists.** `candidate_headroom.missing_gold_reachability`
 already buckets every missing gold by shortest hop distance from the frozen seeds
@@ -554,7 +791,7 @@ and five of these six methods are subgraph methods. It is:
 Nothing in §§1–8 depends on this section; the measurements stand on the code
 trace in §1. This section decides only how the result is positioned.
 
-### 9.2 The canonical depth is 2, and the frozen comparator is 1
+### 9.2 Reference implementations commonly use two hops — a reason to measure depth
 
 This was not part of the original motivation and is the more immediately
 actionable finding.
@@ -567,15 +804,22 @@ GraphSAGE  K = 2 with S1 = 25, S2 = 10; K = 2 beats K = 1 by 10-15% accuracy,
 PinSage    two convolution layers at neighbourhood size T = 50
 ```
 
-Three independent reference implementations converge on **two hops**, and
-GraphSAGE quantifies the first-to-second hop gain at 10–15% — on graphs that were
-never cut. The frozen Paper-1 comparator is **one** layer (§1.2) on a graph that
-was. Those two facts compound: a one-layer GNN on a candidate-induced graph is
-below the field-standard depth *and* propagating over a damaged substrate, and
-the frozen results cannot separate the two causes.
+Three independent reference implementations use **two hops**, and GraphSAGE
+quantifies the first-to-second hop gain at 10–15% — on graphs that were never cut.
+The frozen Paper-1 comparator is **one** layer (§1.2) on a graph that was.
 
-This is external support for §7.2's requirement that any GLOBAL arm vary depth.
-It is **not** a reason to retract anything: depth was a fixed, declared,
+**This does not establish that one layer is wrong.** Depth is empirical: GCN's
+Appendix B reports 2–3 layers best and degradation beyond, GraphSAINT studies 2-
+and 4-layer variants, and oversmoothing and neighbourhood explosion are real
+costs. Nothing here licenses assuming three layers is the correct GNN.
+
+What it does establish is that **depth is a live variable that was never varied
+here**, and that the frozen comparison mixes two differences at once — one hop
+versus multi-hop reach, and learned versus fixed aggregation. That is why §7.2.1
+requires a matched-reach grid and §7.2.2 requires a validation-selected strong
+baseline.
+
+It is **not** a reason to retract anything. Depth was a fixed, declared,
 identically-applied protocol constant across every Paper-1 cell, so every
 comparison it entered remains internally valid. It bounds the claim's scope, not
 its correctness — see §10.
@@ -593,9 +837,10 @@ Their scope is relabelled precisely, not retracted:
 > regime**: a retriever returns top-K, a graph is induced among those K, and a
 > reranker scores them. That is a realistic and deployable systems configuration.
 
-If Phase −1 finds severe graph destruction, the correct statement is that those
-experiments measured a **graph-starved reranking setting** — not that they were
-wrong. No frozen result, protocol or tag is rewritten.
+To the extent Phase −1 measures large structural loss, the correct statement is
+that those experiments measured a **graph-starved reranking setting**, with the
+degree of starvation reported as the measured quantity rather than as a label —
+not that they were wrong. No frozen result, protocol or tag is rewritten.
 
 ---
 
@@ -605,7 +850,7 @@ wrong. No frozen result, protocol or tag is rewritten.
 FROZEN NOW      the audit metric definitions in this document
                 the code in src/mp_retrieval/graph_substrate.py
                 the fairness rules in 7.1 and 7.2
-                the ceiling-invariance check in 7.4
+                the ceiling-invariance check in 7.6
 
 BLOCKED         QLS-v2 Phase 0-2 freeze of the STRUCTURAL feature formulas
                 (support, distance, path diversity, diffusion) -- their values
@@ -635,10 +880,11 @@ measurement has been run.**
 
 | Artifact | Purpose |
 |---|---|
-| [`src/mp_retrieval/graph_substrate.py`](../src/mp_retrieval/graph_substrate.py) | the diagnostics: induced view retaining the global degrees `induced_subgraph` discards, connectivity, retention and boundary cut, receptive field R1/R2/R3, multi-source hop distances usable on either substrate, path preservation, bridge loss |
+| [`src/mp_retrieval/graph_substrate.py`](../src/mp_retrieval/graph_substrate.py) | the diagnostics: induced view retaining the global degrees `induced_subgraph` discards, connectivity, retention and boundary cut, receptive field R1/R2/R3 on both the symmetrised and the message-flow view, verified operator edge semantics and message load, multi-source hop distances usable on either substrate, path preservation, bridge loss, `U_seed`/`U_target` expansion sizes |
 | [`tests/test_graph_substrate.py`](../tests/test_graph_substrate.py) | 12 unit tests, including an equivalence test against the shipped `induced_subgraph` and a direct encoding of the bridge-deletion counterexample |
+| [`tests/test_graph_substrate_message_flow.py`](../tests/test_graph_substrate_message_flow.py) | 16 tests pinning directed message flow, the operator-semantics table against the real PyG layers, duplicate-edge message load, and `U_seed` vs `U_target` |
 | [`scripts/run_graph_substrate_audit.py`](../scripts/run_graph_substrate_audit.py) | the runner: validates the frozen candidate contract first, then audits the dataset graph and each provenance family, checkpointing after every split |
-| [`tests/test_graph_substrate_runner.py`](../tests/test_graph_substrate_runner.py) | 15 end-to-end tests over a toy corpus whose only seed→gold path leaves the pool; every asserted number is derived from that fixture by hand |
+| [`tests/test_graph_substrate_runner.py`](../tests/test_graph_substrate_runner.py) | 19 end-to-end tests over a toy corpus whose only seed→gold path leaves the pool; every asserted number is derived from that fixture by hand |
 | [`configs/graph_substrate_audit.yaml`](../configs/graph_substrate_audit.yaml) | the registered protocol: substrate definition, measurement list, aggregation rule, graphs, gating |
 | [`scripts/modal_graph_substrate_audit.py`](../scripts/modal_graph_substrate_audit.py) | CPU-only Modal driver, registered in `spawn_modal_jobs.py` as `graph-substrate` so submission is a server-side spawn, never `modal run --detach` |
 
@@ -669,11 +915,11 @@ the current request. Changing what is measured forces a new run rather than
 returning a stale answer under a new question.
 
 **Verified 2026-09-02:** the literature positioning (§9) is checked against
-primary sources. It produced a second finding — the canonical GNN depth in the
-reference implementations is two layers, and GraphSAGE measures the
-first-to-second hop gain at 10–15% on uncut graphs — which strengthens §7.2's
-depth-matching requirement with external evidence rather than internal argument
-alone.
+primary sources. It produced a second finding — reference implementations
+commonly use two hops, and GraphSAGE measures the first-to-second hop gain at
+10–15% on uncut graphs — which motivates **measuring** depth rather than
+presuming one. The frozen comparator is described throughout as a shallow
+one-hop historical baseline, never as substandard.
 
 **Blocker:** the frozen graphs live on the Modal Volume — `storage/` does not
 exist in the local checkout — and the workspace is still over its spend limit
@@ -681,6 +927,29 @@ exist in the local checkout — and the workspace is still over its spend limit
 CPU-only and read-only, but it still needs the Volume. It runs the moment compute
 is unblocked, and it is cheap: no training, no GPU, one pass per query.
 
-Ordering when compute returns: **resume E2 first** (it is a frozen, tagged,
-half-finished experiment with 392 units left), then Phase −1, which has no
-deadline and blocks only unstarted work.
+### Ordering when compute returns: concurrent, not serialised
+
+E2 and Phase −1 are **scientifically independent** and run at the same time:
+
+```
+E2 (phase confirmation)   GPU     resumes at unit 49/96, 392 units left
+                                  frozen protocol, tagged, no design decision
+                                  depends on Phase -1
+
+Phase -1 (this audit)     CPU     read-only, one pass per query, no training
+                                  writes to its own output prefix
+                                  blocks the QLS-v2 structural freeze
+```
+
+There is no shared resource that forces a queue: E2 needs GPUs, Phase −1 needs
+none; E2 writes under `phase_confirmation_cache/`, Phase −1 under
+`outputs/graph_substrate_audit/`; neither reads the other's output. Nothing in
+Phase −1 can alter an E2 cell, and no E2 result feeds a Phase −1 measurement.
+
+Serialising them would be a real cost, not a neutral choice. Phase −1 is cheap
+and blocks **all** v2 topology work, while E2 is a long sweep that blocks
+nothing downstream of it. Making the cheap blocking measurement wait behind the
+expensive non-blocking one would idle the v2 design for the duration of a
+training sweep for no scientific reason. **Launch both.**
+
+(This supersedes an earlier "resume E2 first" note in this document.)

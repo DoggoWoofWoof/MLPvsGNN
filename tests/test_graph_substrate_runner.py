@@ -97,6 +97,8 @@ def _prepared(tmp_path: Path, **overrides: object) -> argparse.Namespace:
         edge_families=None,
         max_hops=3,
         pooled_query_cap=1000,
+        operator_kind="gcn",
+        expansion_query_cap=1000,
         output=tmp_path / "substrate.json",
     )
     for key, value in overrides.items():
@@ -279,3 +281,103 @@ def test_provenance_families_require_a_family_root(tmp_path: Path) -> None:
     args = _prepared(tmp_path, graphs=["knn_only"])
     with pytest.raises(ValueError, match="require --edge-families"):
         run(args)
+
+
+# --------------------------------------------------------------------------
+# Message flow is measured on the stored orientation, not the symmetrised view.
+# --------------------------------------------------------------------------
+
+
+def _one_way_dataset(root: Path) -> None:
+    """Identical to `_dataset` except the kNN edge points AWAY from the seed."""
+
+    _dataset(root)
+    torch.save(
+        {
+            "edge_index": torch.tensor(
+                [[0, 12, 12, 5, 11], [12, 0, 5, 12, 6]], dtype=torch.long
+            ),
+            "num_nodes": NUM_NODES,
+        },
+        root / "graph.pt",
+    )
+
+
+def test_symmetrised_reach_overstates_what_the_operator_can_propagate(
+    tmp_path: Path,
+) -> None:
+    """Seed 6 and gold 11 are adjacent, but the message travels 11 -> 6.
+
+    Symmetrised, the relationship is intact and every connectivity statistic
+    says so. Along the direction messages actually move, the seed's signal never
+    reaches the gold, so a one-layer GNN cannot use the edge at all.
+    """
+
+    root = tmp_path / "data"
+    root.mkdir()
+    _one_way_dataset(root)
+    dataset = load_complete_dataset(root, dataset="toy")
+    args = argparse.Namespace(
+        data=root,
+        dataset="toy",
+        expected_queries=3,
+        baseline={
+            "candidate_contract_sha256": dataset.metadata["candidate_contract_sha256"]
+        },
+        candidate_contract_compatibility=None,
+        data_fingerprint_sha256="fingerprint",
+        graphs=["dataset_default"],
+        splits=["test"],
+        edge_families=None,
+        max_hops=3,
+        pooled_query_cap=1000,
+        operator_kind="gcn",
+        expansion_query_cap=1000,
+        output=tmp_path / "substrate.json",
+    )
+    split = _test_split(run(args))["query_level"]
+
+    # Ten of twelve candidates are seeds. Symmetrised, gold 11 joins them.
+    assert split["seed_reachability_induced"]["reachable_at_1"] == pytest.approx(11 / 12)
+    # Along the stored direction it never does, at any depth.
+    flow = split["seed_reachability_induced_message_flow"]
+    assert flow["reachable_at_1"] == pytest.approx(10 / 12)
+    assert flow["reachable_at_3"] == pytest.approx(10 / 12)
+
+
+def test_operator_edge_load_is_reported_for_the_selected_family(tmp_path: Path) -> None:
+    load = _test_split(run(_prepared(tmp_path)))["query_level"]["operator_edge_load"]
+
+    # The pool keeps only the bidirectional kNN pair 6 <-> 11.
+    assert load["unique_non_self_edges"] == pytest.approx(2.0)
+    assert load["duplicate_messages"] == pytest.approx(0.0)
+    assert load["stored_self_loops"] == pytest.approx(0.0)
+    # GCN inserts one self-loop per candidate on top of the two stored messages.
+    assert load["operator_inserted_self_loops"] == pytest.approx(12.0)
+    assert load["messages_consumed_by_operator"] == pytest.approx(14.0)
+    assert load["duplicate_sensitive"] == pytest.approx(1.0)
+
+
+def test_both_expansion_definitions_are_reported(tmp_path: Path) -> None:
+    expansion = _test_split(run(_prepared(tmp_path)))["expansion"]
+
+    assert expansion["queries_measured"] == 1
+    # The pool is nodes 0..11; one hop pulls in the bridge node 12 either way.
+    assert expansion["symmetric"]["candidates"] == pytest.approx(12.0)
+    assert expansion["symmetric"]["U_seed_1_nodes"] == pytest.approx(13.0)
+    assert expansion["symmetric"]["U_target_1_nodes"] == pytest.approx(13.0)
+    assert expansion["symmetric"]["U_target_1_expansion"] == pytest.approx(13 / 12)
+    assert "U_seed_3_nodes" in expansion["symmetric"]
+    assert expansion["message_flow"]["candidates"] == pytest.approx(12.0)
+
+
+def test_expansion_admits_nothing_to_the_candidate_pool(tmp_path: Path) -> None:
+    """Expansion measures sizes only; the scoring set and its hash must not move."""
+
+    args = _prepared(tmp_path)
+    result = run(args)
+    proof = result["candidate_contract"]
+    assert proof["status"] == "BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE"
+    contract = result["diagnostic_contract"]
+    assert contract["expansion_definitions"]["admits_nothing_to_the_pool"] is True
+    assert contract["candidate_pools_expanded"] is False

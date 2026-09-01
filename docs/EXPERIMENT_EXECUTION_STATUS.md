@@ -1,6 +1,7 @@
 # Experiment execution status
 
-Last audited: 2026-09-02 (E2 in flight; QLS-v2 design phase opened).
+Last audited: 2026-09-02 (spend limit re-imposed; E2 stalled at 48/96;
+Phase −1 built and blocked; cross-workspace replication path measured).
 
 This is the authoritative operational stopping point. It records artifact
 completeness and integrity only. No partial-seed metric and no incomplete E1
@@ -33,11 +34,75 @@ Two execution hazards were found and fixed before resuming.
    server-side call that outlives the client. This changes only submission, not
    what is computed.
 
-Account rotation cannot substitute for quota here. The frozen data Volume exists
-in a single workspace and the launchers open it with `create_if_missing=False`,
-so rotating a volume-bound task replaces a quota error with a missing-volume
-error. `experiments.py` now refuses to rotate those tasks and says so. Rotation
-would only become useful if the Volume were replicated.
+### Spend limit re-imposed (2026-09-02) — and what it now costs to route around it
+
+`deepalimohapatra1973` (`ac-1Zd8AkijYgSgLk37ju340f`) is over its spend limit
+again. This was established by submitting the real launcher, not by probing:
+
+```
+python scripts/spawn_modal_jobs.py graph-substrate --datasets musique_clean
+  -> modal.exception.ResourceExhaustedError:
+     Workspace ac-1Zd8AkijYgSgLk37ju340f has exceeded its spend limit
+```
+
+All five deployed apps report 0 tasks. **Volume reads still work**, which is what
+made the measurements below possible while the workspace is blocked.
+
+Account rotation is only meaningful once the data a job reads exists in the
+target workspace, because a Modal Volume lives in exactly one workspace and the
+launchers open it with `create_if_missing=False`. That much was already recorded.
+What was *not* known is the size of the copy, and the earlier estimate was badly
+wrong in a way that mattered:
+
+| tree | size | must replicate? |
+|---|---:|---|
+| six frozen dataset roots, files `load_complete_dataset` opens | 14.7 GB | yes |
+| `edge_provenance_graphs/` (Package B sidecars) | 1.5 GB | Phase −1 only |
+| `derived/packed_topology_v1` + `derived/fixed_structural_features_v1` | 14.6 GB | E2 only |
+| every frozen `outputs/` tree, all packages | 1.9 GB | E2 only |
+| `phase_confirmation_cache/` | **193.6 GB** | **no** |
+
+`phase_confirmation_cache/` is 85% of the Volume and **none of it is a result**.
+Every path under it is `build_or_load_perturbed_topologies` /
+`build_or_load_structural_features` output, keyed by intervention contract and
+regenerated deterministically when absent
+([`run_phase_confirmation.py:95-120`](../scripts/run_phase_confirmation.py:95)).
+Copying it would move 193.6 GB to save recomputation the runner does anyway.
+
+Excluding it, the real payloads are:
+
+```
+Phase -1     119 files    16.2 GB     dataset roots + provenance sidecars
+E2 resume  1,826 files    32.4 GB     the above + clean caches + all outputs/
+```
+
+Both are tractable. `scripts/replicate_volume.py` performs the copy through
+local staging — `download` under the source profile, `upload` under the target —
+because the SDK binds one profile per client and Modal has no cross-workspace
+volume copy. It records size and SHA-256 for every file and `verify --deep`
+re-reads the target and compares, so a partial copy is caught there rather than
+surfacing later as a corrupt result. `create_if_missing=True` appears in exactly
+one place in the repo — that tool's `upload` command — so no launcher can ever
+silently run against an empty replica.
+
+Once a slice is replicated and verified, no launcher change is needed: Volume
+names are workspace-scoped, so `MODAL_PROFILE` alone retargets the job.
+
+```
+MODAL_PROFILE=<source> python scripts/replicate_volume.py download --slice phase_minus_1 --staging <dir>
+MODAL_PROFILE=<target> python scripts/replicate_volume.py upload   --slice phase_minus_1 --staging <dir>
+MODAL_PROFILE=<target> python scripts/replicate_volume.py verify   --slice phase_minus_1 --staging <dir> --deep
+MODAL_PROFILE=<target> python scripts/spawn_modal_jobs.py graph-substrate --datasets <...>
+```
+
+`experiments.py` still refuses to rotate a volume-bound task automatically, and
+now prints these commands instead of a bare refusal. The refusal is a real safety
+property, not caution: rotating before replication either fails on a missing
+Volume or runs against an empty one.
+
+**Which target workspace has capacity is not yet established.** Probing the other
+profiles requires switching `MODAL_PROFILE`, which is not permitted in this
+session, so the target is the user's to choose.
 
 ## Integrity audit
 

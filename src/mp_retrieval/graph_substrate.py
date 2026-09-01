@@ -71,6 +71,10 @@ class SubstrateCounts:
         "boundary_edges",
         "self_loops",
         "num_candidates",
+        "induced_in_degree",
+        "self_loops_per_node",
+        "kept_messages",
+        "unique_non_self_edges",
     )
 
     def __init__(
@@ -81,6 +85,10 @@ class SubstrateCounts:
         boundary_edges: int,
         self_loops: int,
         num_candidates: int,
+        induced_in_degree: np.ndarray | None = None,
+        self_loops_per_node: np.ndarray | None = None,
+        kept_messages: int = 0,
+        unique_non_self_edges: int = 0,
     ):
         self.edges = edges
         self.global_degree = global_degree
@@ -88,6 +96,24 @@ class SubstrateCounts:
         self.boundary_edges = boundary_edges
         self.self_loops = self_loops
         self.num_candidates = num_candidates
+        # ``induced_out_degree`` is what a candidate sends. Message flow is
+        # source_to_target for every frozen operator, so what a candidate
+        # RECEIVES -- and therefore what a GNN layer aggregates for it -- is the
+        # in-degree. The two differ whenever the stored graph is not symmetric.
+        self.induced_in_degree = (
+            np.zeros(num_candidates, dtype=np.int64)
+            if induced_in_degree is None
+            else induced_in_degree
+        )
+        self.self_loops_per_node = (
+            np.zeros(num_candidates, dtype=np.int64)
+            if self_loops_per_node is None
+            else self_loops_per_node
+        )
+        # Kept edges INCLUDING self-loops and duplicates: the message multiset an
+        # operator consumes. ``unique_non_self_edges`` is the simple-graph count.
+        self.kept_messages = int(kept_messages)
+        self.unique_non_self_edges = int(unique_non_self_edges)
 
 
 def induced_view(
@@ -110,7 +136,9 @@ def induced_view(
     size = int(candidates.size)
     if size == 0:
         empty = np.empty((2, 0), dtype=np.int64)
-        return SubstrateCounts(empty, np.empty(0, np.int64), np.zeros(0, np.int64), 0, 0, 0)
+        return SubstrateCounts(
+            empty, np.empty(0, np.int64), np.zeros(0, np.int64), 0, 0, 0
+        )
 
     starts = rowptr[candidates]
     degrees = rowptr[candidates + 1] - starts
@@ -138,14 +166,35 @@ def induced_view(
 
     self_loop_mask = source_kept == target_local
     self_loops = int(self_loop_mask.sum())
+    self_loops_per_node = np.bincount(
+        source_kept[self_loop_mask], minlength=size
+    ).astype(np.int64)
+    kept_messages = int(keep.sum())
     if drop_self_loops and self_loops:
         source_kept = source_kept[~self_loop_mask]
         target_local = target_local[~self_loop_mask]
 
     edges = np.stack((source_kept, target_local))
     induced_out_degree = np.bincount(source_kept, minlength=size).astype(np.int64)
-    boundary = int(total - int(keep.sum()))
-    return SubstrateCounts(edges, global_degree, induced_out_degree, boundary, self_loops, size)
+    induced_in_degree = np.bincount(target_local, minlength=size).astype(np.int64)
+    unique_non_self = (
+        int(np.unique(source_kept * np.int64(size) + target_local).size)
+        if source_kept.size
+        else 0
+    )
+    boundary = int(total - kept_messages)
+    return SubstrateCounts(
+        edges,
+        global_degree,
+        induced_out_degree,
+        boundary,
+        self_loops,
+        size,
+        induced_in_degree=induced_in_degree,
+        self_loops_per_node=self_loops_per_node,
+        kept_messages=kept_messages,
+        unique_non_self_edges=unique_non_self,
+    )
 
 
 def _undirected_adjacency(edges: np.ndarray, size: int) -> tuple[np.ndarray, np.ndarray]:
@@ -234,7 +283,12 @@ def retention_summary(counts: SubstrateCounts) -> dict[str, float]:
     conventional GNN would aggregate over.
     """
 
-    global_degree = counts.global_degree.astype(np.float64)
+    # A stored self-loop is not context from a neighbour, and ``induced_view``
+    # already excludes it from the numerator, so it must leave the denominator
+    # too -- otherwise a self-looped candidate reports artificially low retention.
+    global_degree = (
+        counts.global_degree - counts.self_loops_per_node
+    ).clip(min=0).astype(np.float64)
     induced = counts.induced_out_degree.astype(np.float64)
     has_neighbors = global_degree > 0
     if not has_neighbors.any():
@@ -397,4 +451,218 @@ def bridge_loss(
         rate = preservation.get(f"path_preservation_at_{hop}", float("nan"))
         summary[f"bridge_loss_at_{hop}"] = float("nan") if np.isnan(rate) else float(1.0 - rate)
         summary[f"eligible_at_{hop}"] = preservation.get(f"eligible_at_{hop}", 0.0)
+    return summary
+
+
+# ---------------------------------------------------------------------------
+# Message flow: what the operator actually propagates, not what is symmetrically
+# connected. These two answer different questions and must never be conflated.
+# ---------------------------------------------------------------------------
+
+MESSAGE_FLOW = "source_to_target"
+"""Verified empirically for gcn, sage, gat and gin: an edge ``(a, b)`` in
+``edge_index`` delivers a message from ``a`` to ``b``. A candidate therefore
+aggregates over its IN-neighbours, and seed signal travels forward along the
+stored orientation."""
+
+OPERATOR_EDGE_SEMANTICS: dict[str, dict[str, object]] = {
+    # Measured, not assumed: every entry was established by running the frozen
+    # factory on a three-node graph with one directed edge, a duplicated edge and
+    # an isolated node. See tests/test_graph_substrate_message_flow.py.
+    "gcn": {
+        "adds_self_loops": True,
+        "coalesces_duplicates": False,
+        "duplicate_sensitive": True,
+        "aggregation": "sum_with_symmetric_degree_normalisation",
+        "root_term": "inserted_self_loop",
+        "isolated_node_still_scored": True,
+    },
+    "gat": {
+        "adds_self_loops": True,
+        "coalesces_duplicates": False,
+        "duplicate_sensitive": True,
+        "aggregation": "attention_weighted_sum",
+        "root_term": "inserted_self_loop",
+        "isolated_node_still_scored": True,
+    },
+    "gin": {
+        "adds_self_loops": False,
+        "coalesces_duplicates": False,
+        "duplicate_sensitive": True,
+        "aggregation": "sum",
+        "root_term": "(1+eps)*x_self",
+        "isolated_node_still_scored": True,
+    },
+    "sage": {
+        "adds_self_loops": False,
+        "coalesces_duplicates": False,
+        "duplicate_sensitive": False,  # mean aggregation is multiplicity-invariant
+        "aggregation": "mean",
+        "root_term": "separate_root_linear",
+        "isolated_node_still_scored": True,
+    },
+}
+
+
+def directed_adjacency(
+    edges: np.ndarray, size: int, *, reverse: bool = False
+) -> tuple[np.ndarray, np.ndarray]:
+    """CSR on the EXACT stored orientation, de-duplicated for reachability.
+
+    ``reverse=True`` returns the transpose, which is what a receptive field is
+    defined over: node ``v`` aggregates from every ``u`` having a directed path
+    ``u -> ... -> v``.
+    """
+
+    if edges.shape[1] == 0:
+        return np.zeros(size + 1, dtype=np.int64), np.empty(0, dtype=np.int64)
+    source, target = (edges[1], edges[0]) if reverse else (edges[0], edges[1])
+    keep = source != target
+    source, target = source[keep], target[keep]
+    if source.size == 0:
+        return np.zeros(size + 1, dtype=np.int64), np.empty(0, dtype=np.int64)
+    keys = source * np.int64(size) + target
+    order = np.argsort(keys, kind="stable")
+    keys = keys[order]
+    unique = np.ones(keys.size, dtype=bool)
+    unique[1:] = keys[1:] != keys[:-1]
+    source, target = source[order][unique], target[order][unique]
+    counts = np.bincount(source, minlength=size)
+    rowptr = np.zeros(size + 1, dtype=np.int64)
+    np.cumsum(counts, out=rowptr[1:])
+    return rowptr, target.astype(np.int64, copy=False)
+
+
+def message_flow_receptive_field(
+    counts: SubstrateCounts, *, max_hops: int = 3
+) -> dict[str, float]:
+    """``R_h`` along the real message direction, not the symmetrised one.
+
+    A symmetrised graph can show ``seed -- bridge -- candidate`` while the stored
+    orientation is ``seed <- bridge <- candidate``; in that case no seed signal
+    reaches the candidate at any depth. Symmetric connectivity calls that path
+    intact. This does not.
+    """
+
+    size = counts.num_candidates
+    if size == 0:
+        return {}
+    rowptr, col = directed_adjacency(counts.edges, size, reverse=True)
+    reachable = np.eye(size, dtype=bool)
+    frontier = np.eye(size, dtype=bool)
+    summary: dict[str, float] = {}
+    for hop in range(1, max_hops + 1):
+        nxt = np.zeros_like(frontier)
+        rows = np.nonzero(frontier)
+        for node, source in zip(rows[0], rows[1]):
+            nxt[node, col[rowptr[source] : rowptr[source + 1]]] = True
+        frontier = nxt & ~reachable
+        reachable |= nxt
+        sizes = reachable.sum(axis=1) - 1
+        summary[f"flow_R{hop}_median"] = float(np.median(sizes))
+        summary[f"flow_R{hop}_mean"] = float(sizes.mean())
+        summary[f"flow_R{hop}_zero_fraction"] = float((sizes == 0).mean())
+    return summary
+
+
+def operator_edge_load(counts: SubstrateCounts, kind: str) -> dict[str, float]:
+    """Unique structural edges versus messages the operator actually consumes.
+
+    Package B established that edge multiplicity is real in the sealed graph.
+    For every frozen family except ``sage`` a duplicated edge is a genuinely
+    doubled message, and ``gcn``/``gat`` additionally insert their own self-loop
+    on top of any already stored.
+    """
+
+    if kind not in OPERATOR_EDGE_SEMANTICS:
+        raise ValueError(f"Unknown message-passing operator: {kind}")
+    semantics = OPERATOR_EDGE_SEMANTICS[kind]
+    non_self_messages = int(counts.kept_messages - counts.self_loops)
+    duplicates = int(non_self_messages - counts.unique_non_self_edges)
+    consumed = float(counts.kept_messages)
+    if semantics["adds_self_loops"]:
+        consumed += float(counts.num_candidates)
+    return {
+        "unique_non_self_edges": float(counts.unique_non_self_edges),
+        "stored_non_self_messages": float(non_self_messages),
+        "duplicate_messages": float(duplicates),
+        "duplicate_message_fraction": (
+            float(duplicates / non_self_messages) if non_self_messages else 0.0
+        ),
+        "stored_self_loops": float(counts.self_loops),
+        "operator_inserted_self_loops": (
+            float(counts.num_candidates) if semantics["adds_self_loops"] else 0.0
+        ),
+        "messages_consumed_by_operator": consumed,
+        "duplicate_sensitive": float(bool(semantics["duplicate_sensitive"])),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Two candidate global-context definitions. They are not the same graph, and the
+# choice between them decides whether a conventional GNN is being underfed.
+# ---------------------------------------------------------------------------
+
+
+def _neighbourhood(
+    rowptr: np.ndarray, col: np.ndarray, seed: np.ndarray, hops: int
+) -> np.ndarray:
+    """Nodes within ``hops`` of ``seed`` on the given CSR, seed included."""
+
+    visited = np.unique(np.asarray(seed, dtype=np.int64))
+    frontier = visited
+    for _ in range(hops):
+        if frontier.size == 0:
+            break
+        starts = rowptr[frontier]
+        degrees = rowptr[frontier + 1] - starts
+        total = int(degrees.sum())
+        if total == 0:
+            break
+        group_starts = np.repeat(np.cumsum(degrees) - degrees, degrees)
+        positions = np.repeat(starts, degrees) + (
+            np.arange(total, dtype=np.int64) - group_starts
+        )
+        neighbours = np.unique(col[positions])
+        frontier = np.setdiff1d(neighbours, visited, assume_unique=True)
+        visited = np.union1d(visited, frontier)
+    return visited
+
+
+def expansion_sizes(
+    rowptr: np.ndarray,
+    col: np.ndarray,
+    pool: np.ndarray,
+    seeds: np.ndarray,
+    *,
+    max_hops: int = 3,
+) -> dict[str, float]:
+    """Sizes of ``U_seed(H) = Cq u N_H(Sq)`` and ``U_target(H) = Cq u N_H(Cq)``.
+
+    ``U_seed`` restores the ``seed -> bridge -> candidate`` path and answers the
+    structural-evidence question. ``U_target`` is the full ``H``-layer
+    computational neighbourhood a conventional GNN needs, because every scored
+    candidate aggregates over its own neighbours. The two diverge quickly, and if
+    ``U_target(3)`` explodes then neighbour sampling -- not exact neighbourhood
+    construction -- is the correct strong-GNN implementation.
+
+    Sizes only. Nothing is admitted to any candidate pool: the scoring set stays
+    exactly ``Cq``, so the candidate ceiling cannot move.
+    """
+
+    pool = np.unique(np.asarray(pool, dtype=np.int64))
+    seeds = np.unique(np.asarray(seeds, dtype=np.int64))
+    base = float(pool.size)
+    summary: dict[str, float] = {"candidates": base}
+    for hop in range(1, max_hops + 1):
+        u_seed = np.union1d(pool, _neighbourhood(rowptr, col, seeds, hop))
+        u_target = np.union1d(pool, _neighbourhood(rowptr, col, pool, hop))
+        summary[f"U_seed_{hop}_nodes"] = float(u_seed.size)
+        summary[f"U_target_{hop}_nodes"] = float(u_target.size)
+        summary[f"U_seed_{hop}_expansion"] = (
+            float(u_seed.size / base) if base else float("nan")
+        )
+        summary[f"U_target_{hop}_expansion"] = (
+            float(u_target.size / base) if base else float("nan")
+        )
     return summary

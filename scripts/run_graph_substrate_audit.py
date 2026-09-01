@@ -42,11 +42,17 @@ from mp_retrieval.complete_data import load_complete_dataset
 from mp_retrieval.data import QuerySplit
 from mp_retrieval.edge_provenance import edge_key_sha256, graph_payload
 from mp_retrieval.graph_substrate import (
+    MESSAGE_FLOW,
+    OPERATOR_EDGE_SEMANTICS,
     bridge_loss,
     connectivity_summary,
+    directed_adjacency,
     distribution,
+    expansion_sizes,
     hop_distances,
     induced_view,
+    message_flow_receptive_field,
+    operator_edge_load,
     path_preservation,
     receptive_field_sizes,
     retention_summary,
@@ -142,8 +148,18 @@ def audit_split(
     *,
     max_hops: int,
     pooled_query_cap: int,
+    operator_kind: str,
+    directed_rowptr: np.ndarray | None = None,
+    directed_col: np.ndarray | None = None,
+    expansion_query_cap: int = 0,
 ) -> dict[str, Any]:
-    """Characterise the induced substrate for every query in one split."""
+    """Characterise the induced substrate for every query in one split.
+
+    Two notions of connectivity are kept apart throughout. The symmetrised view
+    answers whether nodes are related at all; the message-flow view uses the
+    exact stored orientation and the operator's ``source_to_target`` convention,
+    and is the only one that describes what a GNN layer can actually aggregate.
+    """
 
     connectivity: list[dict[str, float]] = []
     retention: list[dict[str, float]] = []
@@ -152,6 +168,12 @@ def audit_split(
     bridges: list[dict[str, float]] = []
     seed_reach_induced: list[dict[str, float]] = []
     seed_reach_global: list[dict[str, float]] = []
+    flow_receptive: list[dict[str, float]] = []
+    edge_load: list[dict[str, float]] = []
+    seed_reach_flow: list[dict[str, float]] = []
+    expansion_symmetric: list[dict[str, float]] = []
+    expansion_flow: list[dict[str, float]] = []
+    expansion_measured = 0
 
     pooled_retention: list[np.ndarray] = []
     pooled_global_degree: list[np.ndarray] = []
@@ -168,6 +190,21 @@ def audit_split(
         connectivity.append(connectivity_summary(counts))
         retention.append(retention_summary(counts))
         receptive.append(receptive_field_sizes(counts, max_hops=max_hops))
+
+        # The operator is handed ``dataset.induced_subgraph(query)``, which is
+        # induced from the STORED orientation -- not from the symmetrised view
+        # used for connectivity. Message-flow statistics must therefore be built
+        # on their own induced view, or they would silently re-measure the
+        # symmetric graph and report the very confound they exist to expose.
+        flow_counts = (
+            counts
+            if directed_rowptr is None
+            else induced_view(directed_rowptr, directed_col, pool)
+        )
+        flow_receptive.append(
+            message_flow_receptive_field(flow_counts, max_hops=max_hops)
+        )
+        edge_load.append(operator_edge_load(flow_counts, operator_kind))
 
         # Node-level pooling is a deterministic prefix so the distribution is
         # reproducible and its provenance is stated rather than sampled.
@@ -204,6 +241,37 @@ def audit_split(
 
         seed_reach_induced.append(_reach_fractions(induced_distance, max_hops))
         seed_reach_global.append(_reach_fractions(global_distance, max_hops))
+
+        # Seed signal travels FORWARD along the stored orientation, because a
+        # message on edge (a, b) moves from a to b. This is strictly stronger
+        # than symmetric reachability and can be far smaller.
+        flow_rowptr, flow_col = directed_adjacency(flow_counts.edges, pool.size)
+        seed_reach_flow.append(
+            _reach_fractions(
+                hop_distances(
+                    flow_rowptr, flow_col, seed_local, pool.size, max_hops=max_hops
+                ),
+                max_hops,
+            )
+        )
+
+        if expansion_measured < expansion_query_cap:
+            expansion_measured += 1
+            expansion_symmetric.append(
+                expansion_sizes(
+                    global_rowptr, global_col, pool, seed_global, max_hops=max_hops
+                )
+            )
+            if directed_rowptr is not None and directed_col is not None:
+                expansion_flow.append(
+                    expansion_sizes(
+                        directed_rowptr,
+                        directed_col,
+                        pool,
+                        seed_global,
+                        max_hops=max_hops,
+                    )
+                )
 
         gold_local = query.relevant_local.numpy().astype(np.int64, copy=False)
         if gold_local.size == 0:
@@ -246,10 +314,18 @@ def audit_split(
             "connectivity": _mean_of(connectivity),
             "retention": _mean_of(retention),
             "receptive_field": _mean_of(receptive),
+            "message_flow_receptive_field": _mean_of(flow_receptive),
+            "operator_edge_load": _mean_of(edge_load),
             "seed_reachability_induced": _mean_of(seed_reach_induced),
+            "seed_reachability_induced_message_flow": _mean_of(seed_reach_flow),
             "seed_reachability_global": _mean_of(seed_reach_global),
             "gold_path_preservation": _mean_of(preservation),
             "gold_bridge_loss": _mean_of(bridges),
+        },
+        "expansion": {
+            "queries_measured": expansion_measured,
+            "symmetric": _mean_of(expansion_symmetric),
+            "message_flow": _mean_of(expansion_flow),
         },
     }
 
@@ -275,6 +351,7 @@ def _graph_csr(
     rowptr, col, was_symmetric = symmetric_csr(
         torch.from_numpy(edge_index), num_nodes
     )
+    directed_rowptr, directed_col = _directed_csr(edge_index, num_nodes)
     meta = {
         "provenance": provenance,
         "stored_directed_edges": int(edge_index.shape[1]),
@@ -288,7 +365,26 @@ def _graph_csr(
         ),
     }
     del edge_index
-    return rowptr, col, meta
+    return rowptr, col, directed_rowptr, directed_col, meta
+
+
+def _directed_csr(
+    edge_index: np.ndarray, num_nodes: int
+) -> tuple[np.ndarray, np.ndarray]:
+    """CSR on the exact stored orientation, duplicates preserved.
+
+    Duplicates are kept because for gcn, gat and gin a repeated edge is a
+    genuinely repeated message; only sage is multiplicity-invariant.
+    """
+
+    source = edge_index[0].astype(np.int64, copy=False)
+    target = edge_index[1].astype(np.int64, copy=False)
+    order = np.argsort(source, kind="stable")
+    source, target = source[order], target[order]
+    counts = np.bincount(source, minlength=num_nodes)
+    rowptr = np.zeros(num_nodes + 1, dtype=np.int64)
+    np.cumsum(counts, out=rowptr[1:])
+    return rowptr, target
 
 
 def run(
@@ -336,8 +432,21 @@ def run(
             ),
             "self_loops_excluded": True,
             "reachability_measured_on": "the undirected view of both substrates",
-            "retention_denominator": "true global out-degree of the candidate",
+            "retention_denominator": "true global out-degree, stored self-loops removed",
             "aggregation_levels": ["node_level", "query_level"],
+            "message_flow": MESSAGE_FLOW,
+            "operator_kind": args.operator_kind,
+            "operator_edge_semantics": OPERATOR_EDGE_SEMANTICS[args.operator_kind],
+            "connectivity_notions": {
+                "symmetrised": "components, LCC, retention, path preservation, bridge loss",
+                "message_flow": "R1/R2/R3, seed signal reach, operator message load",
+            },
+            "expansion_query_cap": int(args.expansion_query_cap),
+            "expansion_definitions": {
+                "U_seed": "Cq union N_H(Sq)",
+                "U_target": "Cq union N_H(Cq)",
+                "admits_nothing_to_the_pool": True,
+            },
         },
         "graphs": {},
         "config": {
@@ -348,7 +457,9 @@ def run(
     }
 
     for graph_name in args.graphs:
-        rowptr, col, meta = _graph_csr(graph_name, dataset, family_root)
+        rowptr, col, directed_rowptr, directed_col, meta = _graph_csr(
+            graph_name, dataset, family_root
+        )
         entry: dict[str, Any] = {**meta, "splits": {}}
         result["graphs"][graph_name] = entry
         for split_name in args.splits:
@@ -361,11 +472,15 @@ def run(
                 col,
                 max_hops=int(args.max_hops),
                 pooled_query_cap=int(args.pooled_query_cap),
+                operator_kind=args.operator_kind,
+                directed_rowptr=directed_rowptr,
+                directed_col=directed_col,
+                expansion_query_cap=int(args.expansion_query_cap),
             )
             _atomic_json(args.output, result)
             if checkpoint_hook is not None:
                 checkpoint_hook()
-        del rowptr, col
+        del rowptr, col, directed_rowptr, directed_col
 
     if dataset.metadata["candidate_contract_sha256"] != contract_before:
         raise RuntimeError("Candidate contract changed while computing a read-only diagnostic")

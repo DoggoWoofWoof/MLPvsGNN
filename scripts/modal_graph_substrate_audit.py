@@ -118,6 +118,11 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         edge_families=job["edge_families"],
         max_hops=int(reporting["max_hops"]),
         pooled_query_cap=int(CONFIG["aggregation"]["pooled_query_cap"]),
+        expansion_query_cap=int(CONFIG["aggregation"]["expansion_query_cap"]),
+        # The message-flow statistics depend on which operator consumes the
+        # edges, so the audit uses each dataset's frozen validation-selected
+        # family rather than a single global default.
+        operator_kind=str(settings["selected_gnn"]),
         output=Path(output_root) / "substrate.json",
     )
 

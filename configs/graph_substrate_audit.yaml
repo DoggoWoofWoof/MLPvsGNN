@@ -29,10 +29,62 @@ substrate_definition:
   induced_graph: "G[C_q]"
   rule: an edge survives only when both endpoints are retrieval candidates
   source: src/mp_retrieval/complete_data.py::CompleteRetrievalDataset.induced_subgraph
-  self_loops: excluded_from_statistics
-  reachability_view: undirected
-  retention_denominator: true_global_out_degree_of_the_candidate
+  self_loops: excluded_from_connectivity_statistics_and_from_both_retention_terms
+  retention_denominator: true_global_out_degree_minus_stored_self_loops
   seeds: frozen_dense_top5_union_splade_top5
+
+connectivity_notions:
+  rule: the two are reported side by side and are never merged
+  weak_symmetrised:
+    view: undirected
+    answers: are these nodes structurally related at all
+    used_for: [components, largest_component, retention, boundary_cut,
+               gold_path_preservation, bridge_loss]
+  message_flow:
+    view: exact_stored_orientation
+    convention: source_to_target
+    verified: >-
+      Measured on the shipped layers, not assumed. For gcn, sage, gat and gin an
+      edge (a, b) delivers a message from a to b, so a candidate aggregates over
+      its IN-neighbours and seed signal travels forward along stored edges.
+    answers: can this candidate actually receive that node's signal
+    used_for: [R1, R2, R3, effective_incoming_neighbourhood, seed_signal_propagation,
+               operator_message_load]
+
+operator_edge_semantics:
+  status: VERIFIED_EMPIRICALLY_2026-09-02
+  note: >-
+    Package B established that edge multiplicity is real. These are the
+    consequences for each frozen family, measured by running the factory on a
+    three-node graph with one directed edge, a duplicated edge and an isolate.
+  gcn:
+    adds_self_loops: true
+    coalesces_duplicates: false
+    duplicate_sensitive: true
+    aggregation: sum_with_symmetric_degree_normalisation
+  gat:
+    adds_self_loops: true
+    coalesces_duplicates: false
+    duplicate_sensitive: true
+    aggregation: attention_weighted_sum
+  gin:
+    adds_self_loops: false
+    coalesces_duplicates: false
+    duplicate_sensitive: true
+    aggregation: sum
+  sage:
+    adds_self_loops: false
+    coalesces_duplicates: false
+    duplicate_sensitive: false
+    aggregation: mean
+  consequence: >-
+    Every dataset's validation-selected family is gat, gcn or gin, so all six are
+    duplicate-sensitive and none of them coalesces. Report unique non-self edges
+    and messages-actually-consumed separately; they are not the same number.
+  isolated_candidate: >-
+    All four families still produce a representation for a candidate with an
+    empty receptive field, through an inserted self-loop or a root term. Such a
+    candidate is scored as a plain MLP, not dropped.
 
 measurements:
   connectivity:
@@ -48,10 +100,30 @@ measurements:
     - boundary_cut_ratio
   receptive_field:
     hops: [1, 2, 3]
+    measured_on: message_flow
+    also_reported_on: weak_symmetrised
     note: >-
-      R1 is what the frozen one-layer GNN actually aggregates. R2 and R3 are
-      reported because QLS-v1 reads 3 hops on the same substrate, so the two
-      methods were never compared at equal reach.
+      R1 on the message-flow view is what the frozen one-layer GNN actually
+      aggregates. R2 and R3 are reported because QLS-v1 reads 3 hops on the same
+      substrate, so learned and fixed aggregation were never compared at matched
+      structural reach. The symmetrised figures are reported alongside precisely
+      so the gap between the two is visible.
+
+  expansion:
+    definitions:
+      U_seed: "Cq union N_H(Sq)"
+      U_target: "Cq union N_H(Cq)"
+    hops: [1, 2, 3]
+    measured_on: [weak_symmetrised, message_flow]
+    reported: [median, p90, p95, max, expansion_factor_over_Cq]
+    per_graph: [dataset_default, structural_only, knn_only, baseline_a_simple]
+    admits_nothing_to_the_pool: true
+    purpose: >-
+      U_seed restores the seed -> bridge -> candidate path. U_target is the full
+      H-layer computational neighbourhood a conventional GNN needs, because every
+      scored candidate aggregates over its own neighbours. They are not the same
+      graph, and if U_target(3) explodes then neighbour sampling -- not exact
+      neighbourhood construction -- is the correct strong-GNN implementation.
   seed_connectivity:
     measured_on: [induced, global]
     note: the difference is attributable to the substrate, not to the traversal
@@ -68,7 +140,13 @@ aggregation:
   query_level: mean across queries of a per-query summary
   never_mixed: true
   pooled_query_cap: 4000
+  expansion_query_cap: 512
   pooling_rule: deterministic_prefix_of_the_split_order
+  cap_rationale: >-
+    Expansion traverses the global graph per query and is the most expensive
+    measurement here, so it runs on a deterministic prefix rather than every
+    query. The output records how many queries it drew from; nothing is sampled
+    at random and nothing is silently truncated.
 
 graphs:
   dataset_default:
@@ -104,30 +182,68 @@ interpretation:
   fairness_rule: >-
     Never compare QLS on the candidate-induced graph against a GNN on the global
     graph. Graph basis and hop budget must both be matched within a cell.
-  depth_confound: >-
-    The frozen GNN is one layer in all nine Paper-1 configs while QLS-v1 reads 3
-    hops (BFS, paths) and 8 (PPR). Any GLOBAL arm must therefore vary depth, or
-    the substrate effect and the depth effect are inseparable.
+  reach_mismatch: >-
+    The historical seed-aware GNN has a one-hop learned receptive field, whereas
+    QLS-v1 computes multi-hop fixed summaries (3 via BFS and paths, 8 via PPR) on
+    the same candidate-induced substrate. Learned-versus-fixed aggregation has
+    therefore not yet been evaluated under matched structural reach.
+  depth_is_not_assumed: >-
+    This is a reason to MEASURE depth, not to presume a correct one. There is no
+    universal correct GNN depth: deeper is not automatically better because of
+    oversmoothing and neighbourhood explosion, and GCN's own appendix reports
+    degradation beyond two or three layers. Do not describe one layer as below a
+    field standard; describe it as a shallow one-hop historical baseline.
+
+preregistered_controls:
+  status: DECLARED_NOT_RUN
+  gate: no model may be trained until Phase -1 is reviewed
+  mechanism_controlled:
+    purpose: >-
+      At matched topological reach, do fixed statistics or learned aggregation
+      make better use of the available structure?
+    grid:
+      graph_basis: [CAND, GLOBAL_CONTEXT]
+      pairs: ["QLS-H1 vs GNN-L1", "QLS-H2 vs GNN-L2", "QLS-H3 vs GNN-L3"]
+    caveat: >-
+      Matching H to L controls topological reach. It does NOT make a
+      hand-engineered h-hop statistic and h learned layers computationally or
+      representationally identical, and the comparison must not be described as
+      if it did.
+  strong_baseline:
+    purpose: >-
+      The eventual QLS claim must not depend on an artificially shallow GNN.
+    depth_search: [1, 2, 3]
+    selection: validation_only_under_a_frozen_search_rule
+    reported_against: the final QLS configuration
+  leakage_rule: >-
+    GNN outcomes must never be used to select QLS features, and test results must
+    never be used to select any depth.
 
 datasets:
   2wiki_clean:
+    selected_gnn: gat
     expected_queries: 15000
     confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
     candidate_contract_compatibility: pre_hop_metadata_v1
   musique_clean:
+    selected_gnn: gcn
     expected_queries: 19938
     confirmation: outputs/sa_mlp_confirmation/musique_clean.json
     candidate_contract_compatibility: pre_hop_metadata_v1
   webqsp:
+    selected_gnn: gat
     expected_queries: 1578
     confirmation: outputs/sa_mlp_confirmation/webqsp.json
   hotpotqa_clean:
+    selected_gnn: gin
     expected_queries: 97852
     confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
   squad_clean:
+    selected_gnn: gcn
     expected_queries: 130319
     confirmation: outputs/sa_mlp_confirmation/squad_clean.json
   metaqa:
+    selected_gnn: gat
     expected_queries: 407513
     confirmation: outputs/sa_mlp_confirmation/metaqa.json
 
