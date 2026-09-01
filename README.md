@@ -13,7 +13,8 @@ Aggregation*
 COMPLETE. Candidate-generation headroom diagnostic: COMPLETE. Package C
 (candidate budget): COMPLETE AND FROZEN. Package E1 (validation-only phase
 screen): COMPLETE AND FROZEN. Package E2 (five-seed phase confirmation):
-RUNNING on the tagged rate selection. Package B (edge provenance): COMPLETE
+STALLED at 48/96 on the tagged rate selection (workspace spend limit
+re-exceeded 2026-09-02; not corrupt, resumable, no protocol change needed). Package B (edge provenance): COMPLETE
 AND FROZEN. Package D (uncached online systems): COMPLETE AND FROZEN.
 Package F: SEALED. QLS-v2: DESIGNED, NOT TRAINED.**
 The sealed QLS/GNN checkpoint remains unchanged and no partial seed outcome has
@@ -26,7 +27,16 @@ v1 rather than the ceiling of the approach; no frozen result is modified and no
 v2 model has been trained. See
 [QLS-v2 — designed, not yet developed](#qls-v2--designed-not-yet-developed).
 
-The workspace spend limit that blocked GPU allocation on 2026-08-31 has lifted.
+**The workspace spend limit has been re-exceeded (2026-09-02 02:04 IST).** E2
+ran about four hours after its 2026-09-01 22:03 launch and then stopped: 2Wiki,
+WebQSP and MuSiQue are complete (16/16 conditions each), HotpotQA is partial,
+and MetaQA and SQuAD never started. Volume reads still work; only compute is
+blocked. Completed seeds are checkpointed and the launcher skips them on resume,
+so **nothing is lost and no protocol change is required** — but E2 cannot
+continue until the limit is raised. Details and the safe resume order are in the
+[execution-status checkpoint](docs/EXPERIMENT_EXECUTION_STATUS.md).
+
+The earlier spend limit that blocked GPU allocation on 2026-08-31 had lifted.
 B, C, and E1 were resumed on 2026-09-01 with every volume checkpoint preserved.
 E1 closed at 96/96 the same day. Its rates were selected by the locked
 validation-only rule, committed, and tagged `phase-confirmation-protocol-v1`

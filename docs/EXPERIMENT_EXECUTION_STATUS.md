@@ -839,6 +839,78 @@ connected-seed fraction, path redundancy, PPR concentration, and hub exposure.
 6. Do not build a utility predictor unless E2 confirms reproducible help,
    neutral, and harm regimes.
 
+## E2 STALLED 2026-09-02 — workspace spend limit re-exceeded
+
+**E2 is not corrupt and nothing is lost. It is blocked on billing, not on code
+or data.**
+
+Detected while checking E2 health during the QLS-v2 design phase: two audits
+~40 minutes apart both reported 48/96 conditions with no movement, and
+`modal app list` showed **0 running tasks** on
+`message-passing-retrieval-phase-confirmation` (ap-cj2qvLjN99Vcr4ki5r22sU,
+deployed 2026-09-01 22:03 IST). That combination — incomplete work plus zero
+tasks — cannot mean "in progress", and is the same signature that exposed the
+failed first E2 launch.
+
+Confirmed by a minimal CPU-only probe at 2026-09-02 02:04 IST:
+
+```
+Workspace ac-1Zd8AkijYgSgLk37ju340f has exceeded its spend limit
+```
+
+E2 therefore ran roughly **four hours** after launch before container execution
+was blocked. Volume reads still work; only compute is blocked.
+
+### Exact state at the stall
+
+| dataset | status |
+|---|---|
+| 2wiki_clean | **COMPLETE** 16/16 conditions |
+| webqsp | **COMPLETE** 16/16 |
+| musique_clean | **COMPLETE** 16/16 |
+| hotpotqa_clean | 10 PARTIAL, 6 MISSING |
+| metaqa | 16 MISSING (never started) |
+| squad_clean | 16 MISSING (never started) |
+
+Totals: **48/96 conditions complete, 568/960 model-seed cells, 38 missing,
+10 partial.** The volume holds output directories for four datasets only;
+`metaqa` and `squad_clean` have none.
+
+The partial hotpotqa cells stopped mid-GNN: `sa_mlp` has all five seeds while
+`seed_aware_gnn` has three or four. Example —
+`hotpotqa_clean/degree_rewire/rate_0.10`:
+`sa_mlp` seeds [0,1,2,3,4], `seed_aware_gnn` seeds [0,1,2].
+
+### Why this is safely resumable
+
+- The launcher resumes **disjoint fingerprinted paths** and **skips verified
+  model seeds** rather than retraining them, so completed seeds are not redone.
+- Every completed cell keeps its per-model-seed checkpoint on the Volume.
+- **No protocol change is required or permitted.** The frozen
+  `configs/phase_confirmation.yaml` and its tag `phase-confirmation-protocol-v1`
+  still describe the experiment exactly; resuming runs the same rates, seeds,
+  conditions and analyzer.
+- No test outcome has been inspected. The analyzer has not been run.
+
+### Required action (external — cannot be resolved from this repository)
+
+The workspace spend limit must be raised or reset before E2 can continue. Until
+then **no relaunch is possible**, and none should be attempted: a relaunch under
+the block would fail the same way and produce no artifacts.
+
+Once execution is unblocked, resume with the registered launcher via
+`scripts/spawn_modal_jobs.py` — **not** `modal run --detach` — and re-audit
+before compiling anything.
+
+### What must not happen
+
+- Do not reduce the seed set, drop datasets, or trim rates to fit a budget.
+  Those are frozen protocol parameters; changing them to fit a billing
+  constraint would silently redefine the experiment.
+- Do not compile or analyze a partial E2. `analyze_phase_confirmation.py`
+  refuses an incomplete matrix by design.
+- Do not treat the three complete datasets as a result. They are three of six.
+
 ## QLS-v2 design phase — opened 2026-09-02, GATED ON REVIEW
 
 Packages A-E measure **QLS-v1**. They remain frozen and reported. A separate,
