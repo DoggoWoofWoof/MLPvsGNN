@@ -15,9 +15,16 @@ COMPLETE. Candidate-generation headroom diagnostic: COMPLETE. Package C
 screen): COMPLETE AND FROZEN. Package E2 (five-seed phase confirmation):
 RUNNING on the tagged rate selection. Package B (edge provenance): COMPLETE
 AND FROZEN. Package D (uncached online systems): COMPLETE AND FROZEN.
-Package F: SEALED.**
+Package F: SEALED. QLS-v2: DESIGNED, NOT TRAINED.**
 The sealed QLS/GNN checkpoint remains unchanged and no partial seed outcome has
 been interpreted.
+
+Packages A–E measure QLS-v1 and are frozen as reported. A separate, read-only
+[weakness audit](docs/QLS_V1_WEAKNESS_AUDIT.md) and
+[QLS-v2 design](docs/QLS_V2_DESIGN.md) treat those results as a *diagnosis* of
+v1 rather than the ceiling of the approach; no frozen result is modified and no
+v2 model has been trained. See
+[QLS-v2 — designed, not yet developed](#qls-v2--designed-not-yet-developed).
 
 The workspace spend limit that blocked GPU allocation on 2026-08-31 has lifted.
 B, C, and E1 were resumed on 2026-09-01 with every volume checkpoint preserved.
@@ -716,6 +723,44 @@ embeddings, upstream ranked candidates, relevance labels, and native or
 preregistered label-free topology. NQ, MS MARCO, or BEIR alone is insufficient
 without a graph contract.
 
+### QLS-v2 — designed, not yet developed
+
+Packages A–E measure **QLS-v1**. They are frozen, and they are the reported
+result: a fixed query-local summary already matches parameter-matched message
+passing on 3/6 datasets, is never significantly beaten on similarity-only
+graphs, and already uses less GPU memory on all six.
+
+A read-only audit of those frozen results and of the v1 implementation
+identifies three specific, *scoped* weaknesses — and a v2 design that targets
+them. None of this modifies, reinterprets, or retunes any frozen result, and
+**no QLS-v2 model has been trained**.
+
+| Weakness | Where it holds | Magnitude |
+|---|---|---|
+| W1 under-expresses relational topology | 2wiki, webqsp | +2.0 to +2.7 pts of relational signal the GNN extracts and v1 does not |
+| W2 degrades as candidate context grows | 2wiki, hotpotqa only | GNN advantage +0.16 → +1.28 and +0.22 → +0.70 across budgets 50 → 400 |
+| W3 cold-query inefficiency | all six | p95 1.5–1.9× worse, localized to one stage; **median already better in 4/6** |
+
+The objective is that QLS-v2 **Pareto-dominate** the seed-aware GNN on
+effectiveness *and* systems cost while remaining non-message-passing at
+inference. Dominance requires every axis; partial dominance will be reported as
+partial, naming the axes lost.
+
+The governing rule is that the method may not be iterated against the same test
+results until it wins. Development uses validation evidence only; the v2
+specification is frozen and tagged before a single test evaluation. The
+six-dataset test set is a *weakened* confirmation surface for v2 because the
+weakness audit read test-set aggregates — that leakage is declared, bounded, and
+reported rather than hidden.
+
+- [`docs/QLS_V1_WEAKNESS_AUDIT.md`](docs/QLS_V1_WEAKNESS_AUDIT.md) — evidence and mechanisms, including the axes v1 already wins
+- [`docs/QLS_V2_DESIGN.md`](docs/QLS_V2_DESIGN.md) — proposed changes with cost, fairness, and per-change ablation
+- [`docs/QLS_V2_DEVELOPMENT_PROTOCOL.md`](docs/QLS_V2_DEVELOPMENT_PROTOCOL.md) — split discipline, selection rule, freeze, confirmation
+- [`docs/QLS_V2_SYSTEMS_PLAN.md`](docs/QLS_V2_SYSTEMS_PLAN.md) — tail bounding, fused traversal, diffusion variants, Pareto table
+
+**Status: design under review. Training is gated on the protocol being frozen
+and tagged.** Package E2 continues untouched; Package F remains unopened.
+
 ### Future theory and optional work
 
 The theoretical question is when fixed query-local summaries preserve the
@@ -738,6 +783,10 @@ docs/DATASET_GRAPH_PROVENANCE.md datasets, graphs, UKB storage, and CRAG reuse
 docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md prioritized missing controls
 docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-embedding timing
 docs/EXPERIMENT_EXECUTION_STATUS.md exact B/C/E1 completion matrices
+docs/QLS_V1_WEAKNESS_AUDIT.md    read-only diagnosis of frozen QLS-v1
+docs/QLS_V2_DESIGN.md            proposed QLS-v2 changes and fairness gates
+docs/QLS_V2_DEVELOPMENT_PROTOCOL.md v2 selection discipline and freeze rule
+docs/QLS_V2_SYSTEMS_PLAN.md      v2 tail bounding and Pareto reporting
 docs/CANDIDATE_HEADROOM_PROTOCOL.md read-only retrieval-headroom contract
 docs/CANDIDATE_HEADROOM_RESULTS.md candidate ceilings and missing-gold reachability
 docs/CROSS_PAPER_LEARNING_LEDGER.md Paper-1/Paper-2 findings and backport discipline
