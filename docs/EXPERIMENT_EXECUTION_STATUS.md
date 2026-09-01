@@ -654,6 +654,76 @@ The break-even figures are compute-only lower bounds. The frozen protocol
 measures static-asset bytes but not per-query cache footprint, so storage is
 excluded; a real cache would also pay for memory the protocol does not charge.
 
+## Package B — COMPLETE AND FROZEN
+
+Integrity: 24 COMPLETE, 0 PARTIAL, 0 MISSING, 0 INVALID; 240/240 work units.
+Fetched (48 files from 24 conditions), analyzed to
+`EDGE_PROVENANCE_ALL_DATASETS_ANALYZED`, and compiled against the frozen-union
+ceiling into `docs/EDGE_PROVENANCE_AND_HEADROOM_RESULTS.md`. The compiler
+verified that the candidate-contract hash Package B trained against equals the
+hash the headroom diagnostic measured, for all six datasets, so the attached
+ceiling describes these results rather than another pool.
+
+The ceiling is identical across the families of a dataset by construction, since
+only the edge family changes. It therefore explains none of the differences
+below: the absolute level is an upstream candidate constraint no edge family can
+move, and only the difference between families is a topology or ranking effect.
+
+### The registered question: relations or re-injected embedding similarity?
+
+`symbolic_b` is structural and NER edges -- genuine relational topology.
+`knn_only` is the embedding-similarity edges alone. Relational minus similarity
+on R@5, in points:
+
+| Dataset | QLS-MLP | Seed-aware GNN |
+|---|---:|---:|
+| metaqa | +6.76 | +6.62 |
+| hotpotqa_clean | +4.15 | +4.60 |
+| webqsp | +2.66 | +5.37 |
+| 2wiki_clean | +2.02 | +4.05 |
+| musique_clean | +0.75 | +0.53 |
+| squad_clean | -0.02 | +0.02 |
+
+Relational topology beats embedding-similarity edges in five of six datasets for
+both models. **Message passing here is not merely exploiting embedding
+similarity reintroduced as edges.** On `squad_clean` the graph family makes no
+difference at all -- every family lands within 0.1 points -- and that null is
+reported rather than dropped.
+
+This contrast is a difference of seed means. It carries **no p-value and no
+confidence interval**, because the analyzer's paired statistics test QLS against
+the GNN within a family, not one family against another. It must not be
+described as statistically significant.
+
+A quantity confound is possible: relational edge sets are larger than similarity
+edge sets in every dataset. `full_union_c` rebuts it directly. It has the most
+edges of any family and is nonetheless *worse* than `symbolic_b` on 2wiki
+(-0.97/-0.20), hotpotqa (-1.23/-0.88) and metaqa (-0.42/-0.03). Adding kNN edges
+to relational edges does not help and usually hurts, which is what registered
+prediction P2 expects of unstructured neighbor noise, and is the opposite of
+what a pure edge-count explanation predicts.
+
+### Where message passing actually wins, and by how little
+
+The GNN minus QLS contrast is Holm-significant in **11 of 30 dataset-family
+cells**, and every significant effect is small -- between +0.2 and +2.3 points.
+
+- 2wiki and hotpotqa: significant and positive in four of five families each.
+- metaqa: significant in three, but at +0.19, +0.26 and **-0.14** points;
+  `symbolic_b` is significantly *negative* there.
+- webqsp, musique and squad: nothing significant in any family.
+
+The pattern that matters is `knn_only`. It is the one family in which the GNN
+never significantly beats QLS in any dataset, and in which its point estimate is
+negative in three of six. The GNN's advantage, where it exists at all, depends
+on relational edges being present; supplied only with embedding neighborhoods,
+message passing does not beat a fixed query-local summary.
+
+No family is preferred here for reading better. `symbolic_b` is not the best
+family for the GNN everywhere -- on 2wiki and hotpotqa `full_union_c` and the
+sealed multigraph produce larger significant gaps, and on metaqa `symbolic_b` is
+the family where the GNN loses.
+
 ## Package B and E1 close-out sequences
 
 Package B, once its matrix reads 24/24:
