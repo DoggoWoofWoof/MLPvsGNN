@@ -35,6 +35,10 @@ class Package(NamedTuple):
     remote_root: str
     local_root: str
     complete_status: str
+    # Path segments below remote_root. Most packages store
+    # dataset/fingerprint/condition/filename; online systems has one result per
+    # dataset and so has no condition level.
+    remote_depth: int = 4
 
 
 PACKAGES = {
@@ -53,6 +57,12 @@ PACKAGES = {
         "outputs/phase_screen",
         "PHASE_SCREEN_VALIDATION_ONLY_COMPLETE",
     ),
+    "online_systems": Package(
+        "outputs/online_systems",
+        "outputs/online_systems",
+        "UNCACHED_UNSEEN_EMBEDDING_SYSTEMS_COMPLETE",
+        remote_depth=3,
+    ),
 }
 
 
@@ -67,6 +77,9 @@ def _local_relative(package: str, dataset: str, condition: str, filename: str) -
         if not axis:
             raise ValueError(f"Unparsable phase-screen condition: {condition}")
         return Path(dataset) / axis / f"rate_{rate_key}.json"
+    if package == "online_systems":
+        # One result per dataset, read as outputs/online_systems/<dataset>.json.
+        return Path(f"{dataset}.json")
     return Path(dataset) / condition / filename
 
 
@@ -93,12 +106,24 @@ async def fetch(package: str, volume_name: str, *, dry_run: bool) -> dict[str, A
     volume = modal.Volume.from_name(volume_name, create_if_missing=False)
 
     conditions: dict[tuple[str, str], list[str]] = {}
-    async for entry in volume.iterdir.aio(spec.remote_root, recursive=True):
+    try:
+        entries = [entry async for entry in volume.iterdir.aio(spec.remote_root, recursive=True)]
+    except modal.exception.NotFoundError:
+        # The package has not written anything yet. Absence of the root is
+        # "no results so far", not a failure; only this one case is tolerated,
+        # because reporting an empty package when the real problem was an
+        # inability to look would be worse than raising.
+        entries = []
+    for entry in entries:
         parts = entry.path[len(spec.remote_root) :].lstrip("/").split("/")
-        # dataset / fingerprint / condition / filename
-        if len(parts) != 4:
+        if len(parts) != spec.remote_depth:
             continue
-        dataset, _fingerprint, condition, filename = parts
+        if spec.remote_depth == 3:
+            # dataset / fingerprint / filename -- one result per dataset.
+            dataset, _fingerprint, filename = parts
+            condition = ""
+        else:
+            dataset, _fingerprint, condition, filename = parts
         if filename not in ("result.json", "query_metrics.npz"):
             continue
         conditions.setdefault((dataset, condition), []).append(entry.path)
@@ -107,20 +132,17 @@ async def fetch(package: str, volume_name: str, *, dry_run: bool) -> dict[str, A
     skipped: list[dict[str, str]] = []
     total_bytes = 0
     for (dataset, condition), remotes in sorted(conditions.items()):
+        label = f"{dataset}/{condition}" if condition else dataset
         result_remote = next(
             (path for path in remotes if path.endswith("result.json")), None
         )
         if result_remote is None:
-            skipped.append(
-                {"condition": f"{dataset}/{condition}", "reason": "no result.json"}
-            )
+            skipped.append({"condition": label, "reason": "no result.json"})
             continue
         payload = await _read_json(volume, result_remote)
         status = payload.get("status")
         if status != spec.complete_status:
-            skipped.append(
-                {"condition": f"{dataset}/{condition}", "reason": f"status {status!r}"}
-            )
+            skipped.append({"condition": label, "reason": f"status {status!r}"})
             continue
         for remote in sorted(remotes):
             filename = remote.rsplit("/", 1)[1]

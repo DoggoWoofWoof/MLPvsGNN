@@ -52,3 +52,24 @@ def test_every_package_declares_the_status_its_analyzer_requires() -> None:
     assert PACKAGES["phase_screen"].complete_status == (
         "PHASE_SCREEN_VALIDATION_ONLY_COMPLETE"
     )
+
+
+def test_online_systems_lands_as_one_file_per_dataset() -> None:
+    # Package D writes one result per dataset, and analyze_online_systems.py
+    # reads outputs/online_systems/<dataset>.json rather than a condition
+    # directory.
+    assert _local_relative(
+        "online_systems", "webqsp", "", "result.json"
+    ) == Path("webqsp.json")
+
+
+def test_online_systems_is_discovered_at_its_own_remote_depth() -> None:
+    # Its remote path is dataset/fingerprint/result.json with no condition
+    # level. Discovery filtered on a fixed depth of four, so without this the
+    # package would download nothing and report zero conditions rather than
+    # failing.
+    assert PACKAGES["online_systems"].remote_depth == 3
+    assert PACKAGES["candidate_budget"].remote_depth == 4
+    assert PACKAGES["online_systems"].complete_status == (
+        "UNCACHED_UNSEEN_EMBEDDING_SYSTEMS_COMPLETE"
+    )

@@ -457,6 +457,37 @@ python scripts/check_package_d_gate.py
 
 Package D does not wait on B or E1. Its only dependency is step 6.
 
+## Package D close-out sequence
+
+Once all six datasets report `UNCACHED_UNSEEN_EMBEDDING_SYSTEMS_COMPLETE`:
+
+```bash
+python scripts/fetch_modal_results.py online_systems
+python scripts/analyze_online_systems.py
+```
+
+`online_systems` was missing from the fetch registry, the same gap that would
+have left Package C uncompilable. It is registered now. Two shape differences
+had to be handled: D writes one result per dataset rather than one per
+condition, so discovery needed its own remote depth of three instead of the
+four the other packages use, and the local layout is a flat
+`outputs/online_systems/<dataset>.json`. A dry run against the volume was used
+to confirm the existing depth-four packages still discover all 24 Package C
+conditions and 48 files after the change.
+
+Fetching a package that has not written anything yet now reports zero
+conditions instead of raising: D's output root does not exist on the volume
+while its calls are queued. Only that one case is tolerated, since reporting an
+empty package when the real problem was an inability to look would be worse
+than failing.
+
+D is deliberately absent from `audit_modal_integrity.py`. The audit verifies
+per-seed checkpoints, and D trains nothing: it reuses the Package C budget-400
+checkpoints and measures latency. Its equivalent check is in
+`analyze_online_systems.py`, which refuses any dataset whose status is not
+complete and cross-checks each result against the budget-400 result it was
+derived from.
+
 ## Package B and E1 close-out sequences
 
 Package B, once its matrix reads 24/24:
