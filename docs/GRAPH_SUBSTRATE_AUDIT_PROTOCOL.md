@@ -922,10 +922,30 @@ presuming one. The frozen comparator is described throughout as a shallow
 one-hop historical baseline, never as substandard.
 
 **Blocker:** the frozen graphs live on the Modal Volume — `storage/` does not
-exist in the local checkout — and the workspace is still over its spend limit
-(`ap-cj2qvLjN99Vcr4ki5r22sU` reports 0 tasks as of 2026-09-02). Phase −1 is
-CPU-only and read-only, but it still needs the Volume. It runs the moment compute
-is unblocked, and it is cheap: no training, no GPU, one pass per query.
+exist in the local checkout — and `deepalimohapatra1973`
+(`ac-1Zd8AkijYgSgLk37ju340f`) is over its spend limit, confirmed on 2026-09-02 by
+submitting the real launcher rather than probing:
+
+```
+python scripts/spawn_modal_jobs.py graph-substrate --datasets musique_clean
+  -> ResourceExhaustedError: Workspace ac-1Zd8AkijYgSgLk37ju340f
+     has exceeded its spend limit
+```
+
+Phase −1 is CPU-only and read-only, but it still needs the Volume. Volume
+**reads** work under the block, which is what allowed the payload to be measured.
+
+**The replication payload is 16.2 GB, not 226 GB.** `load_complete_dataset` opens
+seven files at a dataset root and nothing under `derived/`, so the slice this
+audit needs is 119 files: the six dataset roots plus the Package B provenance
+sidecars. The 193.6 GB `phase_confirmation_cache/` — 85% of the Volume — is
+`build_or_load_*` output keyed by intervention contract, regenerated
+deterministically when absent, and is excluded from every slice.
+
+`scripts/replicate_volume.py` copies and verifies that slice into another
+workspace; once it has, `MODAL_PROFILE` alone retargets the run, because Volume
+names are workspace-scoped and the launcher's `create_if_missing=False` will then
+find a populated replica rather than creating an empty one.
 
 ### Ordering when compute returns: concurrent, not serialised
 

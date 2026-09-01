@@ -815,7 +815,7 @@ hidden.
 - [`docs/QLS_V2_DESIGN.md`](docs/QLS_V2_DESIGN.md) — no-GNN constraint, seed-bitset computation, the semantic micro-branch, the tiny learner
 - [`docs/QLS_V2_DEVELOPMENT_PROTOCOL.md`](docs/QLS_V2_DEVELOPMENT_PROTOCOL.md) — Phases 0–8, the two frontiers, lexicographic Pareto rule, LODO, freeze scope
 - [`docs/QLS_V2_SYSTEMS_PLAN.md`](docs/QLS_V2_SYSTEMS_PLAN.md) — bounded traversal with exact complexity, bounded diffusion, sketch backend, Pareto table
-- [`docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md`](docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md) — **Phase −1**: what graph the models actually receive, and whether it is an adequate propagation substrate
+- [`docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md`](docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md) — **Phase −1**: what graph the models actually receive, and how much of the propagation substrate survives vertex induction
 
 **The v2 model is built from two crossed frontiers, not from the catalog.**
 
@@ -851,6 +851,22 @@ paths) and 8 (PPR) on that same substrate — so the frozen comparison is a
 3-to-8-hop fixed summary against 1-hop learned propagation, not two methods at
 equal reach.
 
+The audit reports **two connectivity notions and never merges them**:
+weak/symmetrised for components, retention, boundary cut and bridge loss, and
+the exact stored orientation for `R1/R2/R3`, seed propagation and operator
+message load. They answer different questions — a path intact under
+symmetrisation can carry no message, because every frozen operator aggregates
+`source_to_target`. Operator edge semantics (self-loop insertion, duplicate
+sensitivity, coalescing, aggregation) are verified against the shipped PyG
+layers rather than assumed; all six datasets' selected families are
+duplicate-sensitive, and all four still score a candidate whose receptive field
+is empty, so `R1 = 0` means *scored as a plain MLP*, not *dropped*.
+
+It produces **no adequacy verdict and no threshold**. Nine axes are
+characterised continuously as distributions; the decision they feed is which
+graph basis QLS-v2 structural features are defined over, which is a relative
+reading between the induced and global numbers and needs no cutoff.
+
 Freezing the **structural** feature formulas is blocked until
 [`docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md`](docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md)
 reports. The **semantic** frontier S0–S3 is unaffected, because it references no
@@ -862,6 +878,11 @@ tagged.** One item is explicitly open and awaits the
 reviewer: the Pareto tolerance `tau`, proposed at **0.25 R@5 points**. Package E2
 is stalled on a workspace spend limit at 48/96 conditions with 0 INVALID cells;
 Package F remains unopened and is now reserved for the v2 confirmation.
+
+E2 and Phase −1 **run concurrently when compute returns, not in sequence**. They
+share no resource — E2 needs GPUs and Phase −1 none, and they write to disjoint
+prefixes — and Phase −1 is the cheap measurement that blocks all v2 topology
+work, while E2 blocks nothing downstream of it.
 
 ### Future theory and optional work
 
