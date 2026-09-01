@@ -35,6 +35,7 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
     "candidate-budget": ("scripts.modal_candidate_budget", {"train": "run_budget"}),
     "phase-screen": ("scripts.modal_phase_screen", {"train": "run_regime"}),
     "candidate-headroom": ("scripts.modal_candidate_headroom", {"train": "run_headroom"}),
+    "online-systems": ("scripts.modal_online_systems", {"train": "run_dataset"}),
 }
 
 
