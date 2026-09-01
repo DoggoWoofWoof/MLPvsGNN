@@ -166,6 +166,40 @@ These effect sizes are comparable across budgets within a dataset because both
 models receive identical pools: the ceiling cancels in the paired difference.
 Absolute levels remain incomparable across datasets without their ceilings.
 
+## Package D — uncached online systems — RUNNING (launched 2026-09-01)
+
+Gate justification, checked rather than assumed: `scripts/check_package_d_gate.py`
+reported **OPEN (6/6 budget-400 conditions integrity-valid)** and exited 0. The
+check validates, per dataset, the completion status, the dataset identity, that
+the budget is 400, that no budget was test-selected, that all five seeds exist
+for both models, and that each carries a checkpoint path and checkpoint hash. It
+reads contract booleans only and never an effectiveness metric, so opening the
+gate cannot be influenced by a result.
+
+D depends on Package C alone. B and E1 are still running and D does not wait for
+them.
+
+Launched as six persistent server-side calls on
+`message-passing-retrieval-online-systems` via `scripts/spawn_modal_jobs.py`,
+one per dataset, not with `modal run --detach`.
+
+D measures what the cached numbers elsewhere in this repository deliberately do
+not. Three quantities stay distinct and must never be merged in reporting:
+
+1. **Cached operator latency** — the model forward over an already-built
+   candidate subgraph with the query-local summary already computed. This is
+   what Package C reports.
+2. **Uncached post-retrieval latency** — fusion, seed selection, graph
+   induction, QLS structural computation, QLS scoring, GNN propagation and
+   readout, charged on an unseen embedding with nothing precomputed.
+3. **Raw-query end-to-end latency** — the above plus first-stage retrieval.
+
+Per condition D records batch 1 and 16, p50/p95/p99, throughput, GPU and CPU
+memory, cold start, cache and storage footprint, and the cache break-even point.
+Break-even is compute-only: `build_ms <= repeats * (uncached_ms - cached_ms)`,
+expressed in repeat servings of the same query, and it excludes per-query cache
+storage because the frozen protocol does not measure that.
+
 ## Package E1 — validation-only phase screen
 
 No E1 test metrics have been computed. The screen uses the single registered
@@ -246,8 +280,8 @@ about equal wall-clock cost across datasets or models.
 - **Package C is complete, compiled, and frozen.** Its budget-versus-ceiling
   decomposition and its paired `GNN - QLS` contrasts are final.
 - B and E1 are not complete and must not be compiled into final paper claims.
-- D's gate depends only on Package C, which is now closed; D is unlocked and
-  launches immediately after this freeze.
+- D is RUNNING: its gate was verified OPEN 6/6 and it was launched on
+  2026-09-01. It is not compilable yet.
 - E2 remains gated on a complete E1 screen followed by deterministic rate
   selection, a committed configuration, and a new frozen protocol tag.
 - Package F remains unopened.
