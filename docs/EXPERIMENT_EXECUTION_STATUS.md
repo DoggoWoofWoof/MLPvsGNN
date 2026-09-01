@@ -1,6 +1,6 @@
 # Experiment execution status
 
-Last audited: 2026-09-01 (resumption in flight; see below).
+Last audited: 2026-09-02 (E2 in flight; QLS-v2 design phase opened).
 
 This is the authoritative operational stopping point. It records artifact
 completeness and integrity only. No partial-seed metric and no incomplete E1
@@ -839,6 +839,68 @@ connected-seed fraction, path redundancy, PPR concentration, and hub exposure.
 6. Do not build a utility predictor unless E2 confirms reproducible help,
    neutral, and harm regimes.
 
+## QLS-v2 design phase — opened 2026-09-02, GATED ON REVIEW
+
+Packages A-E measure **QLS-v1**. They remain frozen and reported. A separate,
+strictly read-only phase re-reads them and the v1 implementation to diagnose
+where v1 is weaker than the parameter-matched GNN, and specifies a v2 intended
+to Pareto-dominate it while staying non-message-passing at inference.
+
+Nothing in this phase modified a frozen result, protocol, config, candidate
+pool, candidate hash, or CRAG artifact. **No QLS-v2 model has been trained.**
+
+| Document | Contents |
+|---|---|
+| `docs/QLS_V1_WEAKNESS_AUDIT.md` | three scoped weaknesses with frozen evidence, plus the axes v1 already wins |
+| `docs/QLS_V2_DESIGN.md` | changes C1-C9 with cost, fairness gate, and per-change ablation |
+| `docs/QLS_V2_DEVELOPMENT_PROTOCOL.md` | split discipline, selection rule, freeze, single confirmation |
+| `docs/QLS_V2_SYSTEMS_PLAN.md` | tail bounding, fused traversal, diffusion variants, Pareto table |
+
+Weaknesses established, with their scope stated rather than generalized:
+
+- **W1** relational under-expression -- 2wiki and webqsp only; the GNN converts
+  the same relational edges into +2.04 and +2.71 more Recall@5 points than v1.
+  On metaqa and musique v1 extracts the signal as well or better. On
+  similarity-only graphs the GNN never significantly beats v1 anywhere.
+- **W2** degradation with candidate context -- 2wiki and hotpotqa only
+  (GNN advantage +0.16 -> +1.28 and +0.22 -> +0.70 across budgets 50 -> 400,
+  Holm-significant from budget 200). Absent or reversed on the other four.
+- **W3** cold-query tail -- all six datasets, but localized: p95/p50 for
+  `query_local_summary_ms` is 6.68-8.69 while every other stage is 1.15-1.84,
+  and v1's **median is already better than the GNN's in 4/6 datasets**.
+
+Two corrections carried explicitly rather than smoothed over:
+
+1. v1's features are already per-query max-normalized and `hub_degree_percentile`
+   is already a percentile. The defect is outlier compression, not rawness, so
+   the v2 fix is rank/percentile statistics rather than "normalize".
+2. The percentile decomposition in the audit **refines** Package D's frozen
+   mean-based framing using the same artifacts. `ONLINE_SYSTEMS_RESULTS.md` is
+   left exactly as frozen; both descriptions are simultaneously true because the
+   latency distribution is right-skewed.
+
+**Declared leakage.** The audit read test-set aggregates from Packages B, C and
+D. W1 and W3 are code-level findings that did not require them; W2's dataset
+scoping did. No hyperparameter, feature admission, or architecture choice has
+been made from test data, and the protocol forbids it. The six-dataset test set
+is therefore a *weakened* confirmation surface for v2 and must be reported as
+such.
+
+**Open decision for the user.** Package F was scoped as the fresh untouched
+confirmation for the v1 claim. It cannot serve as an untouched surface for both
+v1 and v2 without being consumed twice. Package F remains **unopened** and this
+phase makes no use of it.
+
+### Gate
+
+Training is blocked until `QLS_V2_DEVELOPMENT_PROTOCOL.md` is reviewed, frozen
+and tagged. The protocol's Stage 0 diagnostics (D1-D4, validation-only) are
+likewise deferred, because their outcomes gate feature admission and running
+them before the gates are frozen would defeat the discipline they enforce.
+
+Package E2 continues untouched: no rate, analyzer, seed, condition or test
+protocol was modified by this phase.
+
 ## Repository boundary
 
 The original C-RAG repository remains strictly read-only. This audit read only
@@ -848,10 +910,12 @@ pushed.
 
 ## Local verification
 
-The full local suite passes **137 tests** with `PYTHONPATH=src`, up from 101 on
-2026-08-31: 13 new tests guard the phase-screen resume path, 14 cover the
-headroom arithmetic and reachability buckets, and 9 cover the headroom runner
-end to end. `mp_retrieval` is not installed into the environment, so the suite
+The full local suite passes **237 tests** with `PYTHONPATH=src`, up from 137 on
+2026-09-01: the additions guard the phase-screen resume path, the headroom
+arithmetic and reachability buckets, the headroom runner, Package D's distinct
+audit shape, E2's progress and integrity contracts, and E2's analyzer --
+including the AST contract test that would have caught the failed first E2
+launch. `mp_retrieval` is not installed into the environment, so the suite
 must be run with `PYTHONPATH` set; plain `pytest` fails at import. Both audit
 scripts also pass scoped Ruff checks and Python byte-compilation. The only
 warnings are existing Torch Geometric deprecation warnings.
