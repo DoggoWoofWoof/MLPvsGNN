@@ -1,24 +1,43 @@
 # Experiment execution status
 
-Last audited: 2026-08-31.
+Last audited: 2026-09-01 (resumption in flight; see below).
 
 This is the authoritative operational stopping point. It records artifact
 completeness and integrity only. No partial-seed metric and no incomplete E1
 validation outcome was read or interpreted.
 
-## Stopping condition
+## Execution state (2026-09-01)
 
-New Modal GPU allocation is blocked by the workspace spend limit:
+The spend limit recorded on 2026-08-31 has been lifted. GPU allocation on
+workspace `deepalimohapatra1973` was re-verified end to end by running the
+registered launchers, not by probing: containers start, the data Volume mounts,
+and training proceeds. The earlier stopping condition no longer holds and the
+instruction not to relaunch B, C, and E1 is withdrawn.
 
-```text
-Workspace ac-1Zd8AkijYgSgLk37ju340f has exceeded its spend limit
-```
+B, C, and E1 have been resumed. All partial checkpoints on the
+`message-passing-retrieval-data` Volume were preserved; the launchers resume
+disjoint fingerprinted paths and skip verified model seeds rather than
+retraining them.
 
-The earlier ephemeral Modal apps are no longer active. Their completed and
-partial checkpoints persist on the `message-passing-retrieval-data` Volume.
-Do not relaunch B, C, or E1 until quota is restored. When quota returns, use the
-existing idempotent launchers: they resume disjoint fingerprinted paths and skip
-verified model seeds rather than retraining them.
+Two execution hazards were found and fixed before resuming.
+
+1. **The phase screen had no cell-level resume.** `scripts/run_phase_screen.py`
+   would have retrained and overwritten already-complete, integrity-audited E1
+   cells with fresh numbers. It now reuses a registered complete cell and
+   refuses to overwrite a record written under a different frozen contract.
+2. **`modal run --detach` does not survive client teardown.** It keeps only the
+   last triggered function alive, so a package launched from an interactive
+   session stops when that session ends; this silently killed four in-flight
+   runs on 2026-09-01. Long packages are now submitted with
+   `scripts/spawn_modal_jobs.py`, which deploys the app and spawns each job as a
+   server-side call that outlives the client. This changes only submission, not
+   what is computed.
+
+Account rotation cannot substitute for quota here. The frozen data Volume exists
+in a single workspace and the launchers open it with `create_if_missing=False`,
+so rotating a volume-bound task replaces a quota error with a missing-volume
+error. `experiments.py` now refuses to rotate those tasks and says so. Rotation
+would only become useful if the Volume were replicated.
 
 ## Integrity audit
 
@@ -88,14 +107,16 @@ registered candidate hashes and RRF constant. No budget is selected on test.
 | 2Wiki | C | C | C | C |
 | MuSiQue | C | C | C | C |
 | WebQSP | C | C | C | C |
-| HotpotQA | P Q5/G3 | P Q5/G1 | P Q5/G1 | P Q5/G1 |
+| HotpotQA | C | P Q5/G1 | P Q5/G1 | P Q5/G1 |
 | SQuAD | P Q5/G1 | P Q5/G1 | P Q5/G0 | M |
 | MetaQA | M | M | M | M |
 
-Summary: **12 COMPLETE, 7 PARTIAL / RESUMABLE, 5 MISSING, 0 INVALID**
-out of 24 conditions. There are 163/240 verified model-seed work units;
-**77 remain**. At condition-launch granularity, 12 conditions need resumption
-or first launch.
+Summary as of 2026-09-01: **13 COMPLETE, 6 PARTIAL / RESUMABLE, 5 MISSING,
+0 INVALID** out of 24 conditions. HotpotQA budget 50 reached COMPLETE during the
+2026-09-01 wave. At condition-launch granularity, 11 conditions need resumption
+or first launch. The seed-level work-unit count below is carried from the
+2026-08-31 integrity audit and must be re-derived with
+`scripts/audit_modal_integrity.py` once the current wave settles.
 
 Package C is **not compilable**. Package D is also locked: budget 400 is
 complete only for 2Wiki, MuSiQue, and WebQSP; HotpotQA is partial and SQuAD and
@@ -151,12 +172,22 @@ from the completed datasets and do not inspect partial-cell validation values.
 
 ## Exact remaining GPU workload
 
+Condition/cell counts are verified as of 2026-09-01 via
+`scripts/audit_modal_progress.py`. The model-seed work-unit column is carried
+from the 2026-08-31 integrity audit and is an upper bound on what remains: it
+predates the 2026-09-01 wave and must be re-derived once that wave settles.
+
 | Package | Unfinished condition/cell launches | Remaining model-seed work units |
 |---|---:|---:|
-| B | 12 | 86 |
-| C | 12 | 77 |
-| E1 | 44 | 85 |
-| **Total** | **68** | **248** |
+| B | 12 | <= 86 |
+| C | 11 | <= 77 |
+| E1 | 44 | <= 85 |
+| **Total** | **67** | **<= 248** |
+
+Resumed on 2026-09-01 as persistent deployed Modal calls: 12 Package B jobs,
+12 Package C jobs, and 48 Package E1 cells, all restricted to the three
+incomplete datasets (HotpotQA, SQuAD, MetaQA). Cells that are already COMPLETE
+are reused by the idempotent runners rather than retrained.
 
 A work unit is one model/seed training-and-evaluation record: QLS-MLP or the
 selected seed-aware GNN. E1 has only seed 0. The 248 count is exact for the
@@ -174,12 +205,31 @@ about equal wall-clock cost across datasets or models.
   selection, a committed configuration, and a new frozen protocol tag.
 - Package F remains unopened.
 
-## Resume order after quota restoration
+## Candidate-generation headroom (companion layer)
 
-1. Re-run `scripts/audit_modal_integrity.py` and retain this exact matrix as the
-   pre-resume checkpoint.
+Complete for all six datasets as of 2026-09-01. This is a diagnostic, not an
+experimental condition: it modified no candidate pool and changed no frozen
+hash. See `CANDIDATE_HEADROOM_PROTOCOL.md` and `CANDIDATE_HEADROOM_RESULTS.md`.
+
+It changes how B, C, and the confirmation must be *read*, not what they compute:
+
+- Every primary metric is now reported beside `min(p, K) / g`, its achievable
+  ceiling. Pool coverage `p / g` is not an oracle Recall@K and must not be
+  quoted as one.
+- The Package C ceiling rises monotonically with budget on every dataset, so
+  budget effects must be read against the per-budget ceiling rather than in
+  absolute terms.
+- Absolute metric levels are not comparable across datasets without their
+  ceilings.
+
+## Resume order
+
+1. Re-run `scripts/audit_modal_integrity.py` and retain the matrix above as the
+   pre-resume checkpoint. **Done 2026-09-01** at condition granularity via
+   `scripts/audit_modal_progress.py`.
 2. Resume B, C, and E1 with the existing idempotent launchers. Do not delete or
    regenerate candidates, graphs, splits, feature caches, or partial records.
+   **Done 2026-09-01** via `scripts/spawn_modal_jobs.py`.
 3. Re-audit. Compile B/C/E1 only when their full registered matrices are
    COMPLETE and integrity-valid.
 4. Launch D only after all six C budget-400 gates pass.
@@ -197,6 +247,10 @@ pushed.
 
 ## Local verification
 
-The full local suite passes **101 tests** with `PYTHONPATH=src`. Both audit
+The full local suite passes **137 tests** with `PYTHONPATH=src`, up from 101 on
+2026-08-31: 13 new tests guard the phase-screen resume path, 14 cover the
+headroom arithmetic and reachability buckets, and 9 cover the headroom runner
+end to end. `mp_retrieval` is not installed into the environment, so the suite
+must be run with `PYTHONPATH` set; plain `pytest` fails at import. Both audit
 scripts also pass scoped Ruff checks and Python byte-compilation. The only
 warnings are existing Torch Geometric deprecation warnings.
