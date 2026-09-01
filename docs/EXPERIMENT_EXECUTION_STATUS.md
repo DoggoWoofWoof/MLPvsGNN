@@ -432,9 +432,46 @@ half-correct entry during a live gating audit was not worth the risk.
 after, and only after, the selected rates were committed and tagged
 `phase-confirmation-protocol-v1`. The dry run confirmed the same 96 cells, 16
 per dataset, with no clean cell among them, and each cell's `screen_result`
-resolving to a screen cell that exists. Modal shows the app saturating the
-container cap alongside Package B's last condition; Package D stays queued
-behind it.
+resolving to a screen cell that exists. Modal showed the app saturating the
+container cap alongside Package B's last condition.
+
+### The first launch failed entirely and was relaunched
+
+All 96 cells of that first launch died on live containers with
+
+```
+AttributeError: 'Namespace' object has no attribute 'projection_dim'
+```
+
+and wrote nothing at all: no results, no checkpoints, not even the output
+directory. The launcher built a Namespace missing `projection_dim`, `layers`,
+`dropout` and `temperature`.
+
+Those four are read by `_build_model` in `run_sa_mlp_confirmation.py` rather
+than by `run_phase_confirmation.py`'s own body, which is why the pre-flight
+missed them: it verified that the arguments were built and that every path
+resolved to a real screen cell, and that is not the same as verifying they
+satisfy the runner's contract. The values were already in the frozen protocol;
+the launcher simply did not pass them through, so no condition, rate or seed
+changed and `phase-confirmation-protocol-v1` still describes the experiment
+exactly.
+
+It was found by querying a spawned call's status directly rather than by
+waiting: the audit reported 96 MISSING with 0 PARTIAL and the app reported 0
+running tasks, a combination that cannot mean "in progress".
+
+The guard is now in place. `tests/test_modal_phase_confirmation.py` parses
+`run_phase_confirmation.py` and `_build_model` for every `args.<name>` they read
+and asserts the built Namespace supplies each one; removing `projection_dim`
+again fails that test by name. Against the real generated protocol: 33 required
+attributes, none missing across all 96 cells.
+
+E2 was relaunched after the fix. That is not a relaunch of functioning work --
+the first attempt left nothing behind, so the runners' idempotence had nothing
+to resume and the second launch started clean. It is now confirmed running:
+96 unique spawned calls and checkpoint directories appearing on the volume,
+which means cells are past model construction, the exact point where the first
+attempt died.
 
 ## Exact remaining GPU workload
 
