@@ -5,6 +5,7 @@ launcher as the only execution path, so a defect here is discovered at exactly
 the moment the screen closes and E2 is supposed to start.
 """
 
+import ast
 import json
 from pathlib import Path
 
@@ -49,11 +50,18 @@ def gated(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
             "seeds": [0, 1, 2, 3, 4],
             "epochs": 3,
             "batch_size": 16,
+            "layers": 1,
+            "dropout": 0.2,
+            "temperature": 0.07,
             "learning_rate": 0.001,
             "weight_decay": 0.0001,
             "ks": [1, 5, 20],
         },
-        "parameter_regime": {"hidden_dim": 64, "maximum_sa_absolute_difference": 256},
+        "parameter_regime": {
+            "projection_dim": 64,
+            "hidden_dim": 64,
+            "maximum_sa_absolute_difference": 256,
+        },
         "inference_repeats": 5,
     }
     config_path = tmp_path / "phase_confirmation.yaml"
@@ -123,3 +131,36 @@ def test_the_launcher_deploys_the_app_the_analysis_generates() -> None:
         Path(__file__).resolve().parents[1] / "scripts" / "analyze_phase_screen.py"
     ).read_text(encoding="utf-8")
     assert f'"app": "{mpc.APP_NAME}"' in analyzer
+
+
+def _args_attributes(path: Path, function: str | None = None) -> set[str]:
+    """Every ``args.<name>`` the given source reads."""
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    if function is not None:
+        tree = next(
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.FunctionDef) and node.name == function
+        )
+    return {
+        node.attr
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Attribute)
+        and isinstance(node.value, ast.Name)
+        and node.value.id == "args"
+    }
+
+
+def test_the_namespace_satisfies_the_runners_whole_contract(gated: Path) -> None:
+    # The failure this exists to prevent, and which it was written after: the
+    # launcher built a Namespace missing projection_dim, layers, dropout and
+    # temperature. Those are read by _build_model rather than by the runner's
+    # own body, so nothing local touched them and all 96 cells died on a live
+    # container with AttributeError after the app had already been deployed.
+    scripts = Path(__file__).resolve().parents[1] / "scripts"
+    required = _args_attributes(scripts / "run_phase_confirmation.py")
+    required |= _args_attributes(scripts / "run_sa_mlp_confirmation.py", "_build_model")
+
+    namespace = vars(mpc._runner_args(mpc._jobs(["webqsp"])[0]))
+    missing = sorted(attribute for attribute in required if attribute not in namespace)
+    assert not missing, f"launcher omits runner arguments: {missing}"

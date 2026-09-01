@@ -166,7 +166,11 @@ def _jobs(datasets: list[str]) -> list[dict[str, Any]]:
                         "learning_rate": float(training["learning_rate"]),
                         "weight_decay": float(training["weight_decay"]),
                         "ks": list(training["ks"]),
+                        "layers": int(training["layers"]),
+                        "dropout": float(training["dropout"]),
+                        "temperature": float(training["temperature"]),
                         "hidden_dim": int(parameters["hidden_dim"]),
+                        "projection_dim": int(parameters["projection_dim"]),
                         "max_parameter_difference": int(
                             parameters["maximum_sa_absolute_difference"]
                         ),
@@ -213,7 +217,13 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         selected_gnn=job["selected_gnn"],
         candidate_contract_compatibility=job["candidate_contract_compatibility"],
         seeds=[int(seed) for seed in job["seeds"]],
+        # Read by _build_model, not by the runner's own body: omitting any of
+        # these fails only once a container is already running.
+        layers=int(job["layers"]),
+        dropout=float(job["dropout"]),
+        temperature=float(job["temperature"]),
         hidden_dim=int(job["hidden_dim"]),
+        projection_dim=int(job["projection_dim"]),
         max_parameter_difference=int(job["max_parameter_difference"]),
         epochs=int(job["epochs"]),
         batch_size=int(job["batch_size"]),
