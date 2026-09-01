@@ -85,3 +85,29 @@ absolute levels and any cross-dataset comparison need the ceiling.
 
 This is a reporting requirement. It does not change the frozen budget contract,
 the fusion rule, or any candidate pool, and no budget may be selected using it.
+
+### Implementing script
+
+`scripts/compile_package_c.py` joins a finished Package C analysis with the
+headroom diagnostic and emits the combined report to
+`docs/CANDIDATE_BUDGET_AND_HEADROOM_RESULTS.md`. It is read-only: it consumes
+finished outputs, trains nothing, and modifies no candidate pool. It refuses a
+Package C analysis that is not complete and a headroom file whose contract does
+not declare `candidate_pools_modified: false`.
+
+It reports coverage, GoldFraction, AnyGold, AllGold, the per-budget ceilings,
+both models' metrics, and `ceiling - metric` with attainment beside them.
+
+For the requirement that budget effects be separated from ceiling movement, it
+decomposes each budget step exactly. Recall is `attainment x ceiling`, so
+
+```text
+d_recall = a0 * (c1 - c0)  +  c1 * (a1 - a0)
+           ceiling effect      ranking effect
+```
+
+The two terms sum to the observed change with no residual. The split is
+order-dependent by construction, so the ordering is fixed in code before any
+Package C result was opened and cannot be chosen afterwards to suit an
+attribution. Where a pool contains no reachable gold the ceiling is zero, and
+the step is reported as unattributable rather than as a zero effect.

@@ -237,6 +237,14 @@ D produced any timing, so its definition could not be chosen to suit a result.
 The measurement contract is unchanged and still reads
 `ONLINE_SYSTEMS_PROTOCOL_FROZEN_BEFORE_TIMING`.
 
+**Package C.** `scripts/compile_package_c.py` implements the joint reporting the
+budget protocol already required: it joins Package C effectiveness with the
+headroom ceilings and decomposes each budget step into ceiling movement and
+ranking improvement. It was verified against the real headroom outputs with
+synthetic effectiveness numbers, which confirmed the join keys and, with
+attainment held constant, attributed every gain to the ceiling and none to
+ranking. The decomposition sums exactly to the observed change on all 18 steps.
+
 **Package E2.** `scripts/analyze_phase_screen.py` was run on a full synthetic
 96-cell screen against the real sealed confirmations, read-only. All three
 branches of the locked selection rule behave as specified, the analysis reports
