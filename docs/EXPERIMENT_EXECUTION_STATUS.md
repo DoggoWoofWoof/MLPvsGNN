@@ -183,6 +183,13 @@ Launched as six persistent server-side calls on
 `message-passing-retrieval-online-systems` via `scripts/spawn_modal_jobs.py`,
 one per dataset, not with `modal run --detach`.
 
+Immediately after launch the workspace showed `edge-provenance` with 4 tasks and
+`phase-screen` with 6, which saturates the roughly ten-container concurrency
+cap, so D reported 0 running tasks. The six calls are queued server-side, not
+dropped: that is the property spawned calls have and `modal run --detach` does
+not. D will start as B and E1 free slots. An app sitting at 0 tasks while the
+cap is full is expected and is not a reason to relaunch it.
+
 D measures what the cached numbers elsewhere in this repository deliberately do
 not. Three quantities stay distinct and must never be merged in reporting:
 
