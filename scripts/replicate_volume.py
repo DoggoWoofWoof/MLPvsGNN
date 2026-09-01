@@ -52,8 +52,9 @@ import hashlib
 import json
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import modal
 
@@ -197,40 +198,68 @@ def cmd_plan(args: argparse.Namespace) -> int:
     return 0
 
 
+def _fetch_one(
+    volume: modal.Volume, staging: Path, path: str, size: int
+) -> tuple[str, dict[str, Any], bool]:
+    """Stage one file. Returns (path, manifest entry, was_already_staged)."""
+
+    local = staging / path
+    local.parent.mkdir(parents=True, exist_ok=True)
+    if local.is_file() and local.stat().st_size == size and size > 0:
+        return path, {"bytes": size, "sha256": sha256_of(local), "staged": True}, True
+
+    partial = local.with_suffix(local.suffix + ".partial")
+    digest = hashlib.sha256()
+    written = 0
+    with partial.open("wb") as stream:
+        for block in volume.read_file(path):
+            stream.write(block)
+            digest.update(block)
+            written += len(block)
+    if size and written != size:
+        partial.unlink(missing_ok=True)
+        raise RuntimeError(f"{path}: read {written} bytes, volume reported {size}")
+    partial.replace(local)
+    return path, {"bytes": written, "sha256": digest.hexdigest(), "staged": True}, False
+
+
 def cmd_download(args: argparse.Namespace) -> int:
     volume = modal.Volume.from_name(args.volume, create_if_missing=False)
     staging = Path(args.staging)
     staging.mkdir(parents=True, exist_ok=True)
     plan = build_plan(volume, args.slice)
     total = sum(size for _, size in plan)
-    print(f"\n{len(plan)} files, {human(total)} from {_profile()}:{args.volume}\n")
+    workers = max(1, int(args.workers))
+    print(
+        f"\n{len(plan)} files, {human(total)} from {_profile()}:{args.volume}"
+        f"  ({workers} worker{'s' if workers > 1 else ''})\n"
+    )
 
     manifest: dict[str, dict[str, Any]] = {}
     done = 0
-    for index, (path, size) in enumerate(plan, start=1):
-        local = staging / path
-        local.parent.mkdir(parents=True, exist_ok=True)
-        if local.is_file() and local.stat().st_size == size and size > 0:
-            digest = sha256_of(local)
-            manifest[path] = {"bytes": size, "sha256": digest, "staged": True}
-            done += size
-            print(f"[{index}/{len(plan)}] skip  {path}")
-            continue
-        partial = local.with_suffix(local.suffix + ".partial")
-        digest = hashlib.sha256()
-        written = 0
-        with partial.open("wb") as stream:
-            for block in volume.read_file(path):
-                stream.write(block)
-                digest.update(block)
-                written += len(block)
-        if size and written != size:
-            partial.unlink(missing_ok=True)
-            raise RuntimeError(f"{path}: read {written} bytes, volume reported {size}")
-        partial.replace(local)
-        manifest[path] = {"bytes": written, "sha256": digest.hexdigest(), "staged": True}
-        done += written
-        print(f"[{index}/{len(plan)}] {human(written):>10s}  {path}  ({human(done)}/{human(total)})")
+    finished = 0
+
+    # Largest first: a single multi-GB read is one stream no matter what, so
+    # starting it early lets the many small files fill the other workers rather
+    # than leaving one thread grinding alone at the end.
+    ordered = sorted(plan, key=lambda item: -item[1])
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {
+            pool.submit(_fetch_one, volume, staging, path, size): (path, size)
+            for path, size in ordered
+        }
+        for future in as_completed(futures):
+            path, size = futures[future]
+            key, entry, skipped = future.result()
+            manifest[key] = entry
+            done += entry["bytes"]
+            finished += 1
+            tag = "skip " if skipped else f"{human(entry['bytes']):>10s}"
+            print(
+                f"[{finished}/{len(plan)}] {tag}  {key}  ({human(done)}/{human(total)})",
+                flush=True,
+            )
 
     record = {
         "slice": args.slice,
@@ -342,6 +371,12 @@ def main() -> int:
     parser.add_argument("--volume", default=DEFAULT_VOLUME)
     parser.add_argument("--deep", action="store_true", help="verify: re-hash every target file")
     parser.add_argument("--skip-present", action="store_true", default=True)
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=8,
+        help="download: files fetched concurrently (one stream each)",
+    )
     parser.add_argument(
         "--batch-bytes",
         type=int,
