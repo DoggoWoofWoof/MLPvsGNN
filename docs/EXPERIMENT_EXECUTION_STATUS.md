@@ -274,6 +274,55 @@ It does refuse one, and that refusal is now a regression test, confirmed to fail
 if the guard is removed. Cells trained on another seed and incomplete screens are
 covered too, so an incomplete screen cannot be partially selected from.
 
+## Fetching results after a server-side run
+
+Each package's Modal module downloads its own results, but only inside the
+`local_entrypoint` that `modal run` invokes. Because long packages are now
+submitted with `scripts/spawn_modal_jobs.py` so they survive client teardown,
+that entrypoint never runs and no result reaches this machine. The analyzers
+read local files, so a gate can close with every result safely on the volume and
+still be uncompilable.
+
+`scripts/fetch_modal_results.py <package>` closes that gap. It downloads only
+conditions whose status is complete, skipping and naming the rest, so a partial
+download cannot be mistaken for a finished package. It writes through a staging
+file, so an interrupted download cannot leave a truncated file that later looks
+like a result. Remote paths carry a per-dataset data-fingerprint directory that
+the local layout does not, and the phase screen stores one directory per
+axis-and-rate where the analyzer expects one directory per axis; both mappings
+are derived from the discovered remote path. Use `--dry-run` to see what would
+be fetched without writing.
+
+## Package C close-out sequence
+
+Run in this order once the C matrix reads 24/24. Nothing here interprets a
+result until step 4, and no step selects anything on test.
+
+```bash
+python scripts/audit_modal_integrity.py
+python scripts/fetch_modal_results.py candidate_budget
+python scripts/analyze_candidate_budget.py
+python scripts/compile_package_c.py
+python scripts/check_package_d_gate.py
+```
+
+1. **Integrity.** Re-audit and require `INVALID: 0` for candidate_budget and 24
+   COMPLETE conditions. Stop if either fails.
+2. **Fetch.** Expect 48 files from 24 complete conditions and no skips.
+3. **Compile.** `analyze_candidate_budget.py` produces the effectiveness table
+   and the registered paired statistics: the paired optimizer-seed then shared
+   query hierarchical bootstrap, the paired-seed t test, and Holm adjustment
+   across datasets within each budget.
+4. **Join.** `compile_package_c.py` reports every metric beside its per-budget
+   ceiling and decomposes each budget step into ceiling movement and ranking
+   improvement.
+5. **Freeze.** Commit the results and tag before anything downstream reads them.
+6. **Unlock D.** `check_package_d_gate.py` exits zero only when all six
+   budget-400 conditions are complete and integrity-valid. Launch Package D
+   through `scripts/spawn_modal_jobs.py`, not `modal run --detach`.
+
+Package D does not wait on B or E1. Its only dependency is step 6.
+
 ## Resume order
 
 1. Re-run `scripts/audit_modal_integrity.py` and retain the matrix above as the
