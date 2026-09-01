@@ -323,6 +323,55 @@ python scripts/check_package_d_gate.py
 
 Package D does not wait on B or E1. Its only dependency is step 6.
 
+## Package B and E1 close-out sequences
+
+Package B, once its matrix reads 24/24:
+
+```bash
+python scripts/audit_modal_integrity.py
+python scripts/fetch_modal_results.py edge_provenance
+python scripts/analyze_edge_provenance.py
+```
+
+Compile and freeze before interpreting. All Package B graph families share the
+frozen candidate set, so they share one ceiling per dataset: the absolute level
+is an upstream constraint and only the *difference* between families is a
+topology or ranking effect. The analyzer enforces the precondition for that
+reading by requiring an identical `test_query_order_sha256` across every family.
+The question to answer is whether QLS and the GNN benefit from genuine
+relational topology or from embedding similarity reintroduced as kNN edges,
+which is what separates `symbolic_b` from `knn_only`. No family may be preferred
+because it reads better.
+
+Package E1, once its matrix reads 96/96:
+
+```bash
+python scripts/audit_modal_integrity.py
+python scripts/fetch_modal_results.py phase_screen
+python scripts/analyze_phase_screen.py
+```
+
+The analyzer applies the already-frozen selection rule on validation only,
+refuses any cell that computed test metrics, and stops at
+`RATES_SELECTED_REQUIRES_PROTOCOL_COMMIT_BEFORE_TEST`. Write the selected rates
+to the generated confirmation config, commit, and create a new freeze tag
+**before** launching E2. Test outcomes must never be inspected while E2
+conditions are still selectable.
+
+## E2 explanatory covariates: what already exists
+
+These are post-hoc explanatory covariates for interpreting E2, not
+preregistered axes, so they are computed after E2 runs and none of them gates
+its launch. Recorded now only so the work is known.
+
+Already available from the headroom diagnostic and Package B/C outputs:
+candidate ceiling, missing-gold rate, Dense/SPLADE disagreement
+(`source_complementarity`), graph density and induced size
+(`structural_context_all_queries`), and the shortest-hop distance buckets.
+
+Not yet computed, and deliberately not built ahead of need: seed recall,
+connected-seed fraction, path redundancy, PPR concentration, and hub exposure.
+
 ## Resume order
 
 1. Re-run `scripts/audit_modal_integrity.py` and retain the matrix above as the
