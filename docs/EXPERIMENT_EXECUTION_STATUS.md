@@ -1151,6 +1151,94 @@ tolerance or admission criterion is prospective.**
 `DRAFT_AWAITING_REVIEW_NOT_FROZEN`. No v2 experiment has been run, no v2 model
 trained, no v2 code written.
 
+## Phase -1 Graph Substrate Validity Audit -- opened 2026-09-02
+
+**The QLS-v2 Phase 0-2 freeze is PAUSED.** Spec frozen, code written and tested,
+**no measurement run.** Nothing frozen was touched; all 38 tags stand.
+
+### Why
+
+Before deciding which query-local features matter, we must establish which graph
+they are defined over. That question is logically prior and had never been asked.
+
+### Verified from code, not documentation
+
+1. **The per-query graph is a strict vertex-induced subgraph `G[Cq]`.**
+   `complete_data.py:100-105` keeps a neighbour only if it is itself a
+   candidate, so non-candidate bridge nodes are deleted outright. If the real
+   graph has `seed - bridge - gold` and retrieval misses the bridge, the
+   relationship is gone and neither a GNN layer nor a QLS hop feature can
+   recover it.
+2. **The frozen GNN is ONE layer.** `layers: 1` in all nine Paper-1 configs
+   (confirmation, phase_confirmation, edge_provenance, candidate_budget,
+   online_systems, phase_screen, sa_mlp_confirmation, six_dataset_study,
+   operator_screen); `operator_models.py:198` builds that many convolutions.
+3. **QLS-v1 reaches further than the GNN on the same substrate** -- 3 hops via
+   BFS (`structural_features.py:375`, `range(1, 4)`) and paths of length 1/2/3,
+   and **8 hops** via PPR (`iterations: 8`). The frozen comparison is therefore
+   a 3-to-8-hop fixed summary against 1-hop learned propagation, not two methods
+   at equal reach.
+4. **No depth evidence exists.** `configs/phase_diagram.yaml` declares
+   `message_passing_layers: [0, 1, 2, 4, 8]` but carries
+   `status: deferred_until_operator_screen_gate` and was never run.
+5. **`induced_subgraph` already computes each candidate's true global degree**
+   and discards it. That is the denominator of the retention statistic, so the
+   central Phase -1 measurement is nearly free.
+6. **Seed-hop expansion already exists.** `candidate_headroom.py:284-413`
+   implements `symmetric_csr`, `_expand` and `missing_gold_reachability` at
+   `max_hops=3`. Phase -1 extends it from "where are the missing golds" to "what
+   would admitting them cost"; it does not rebuild it.
+
+### What was built
+
+`src/mp_retrieval/graph_substrate.py` -- read-only diagnostics: induced view
+retaining discarded global degrees, connectivity/component summary, neighbourhood
+retention and boundary-cut ratio, receptive-field sizes R1/R2/R3, multi-source
+hop distances usable on either substrate, path preservation and bridge loss.
+
+`tests/test_graph_substrate.py` -- 12 tests, including an equivalence test
+asserting the audit reproduces the shipped `induced_subgraph` edge-for-edge, and
+a direct encoding of the bridge-deletion counterexample.
+
+### The correction to the proposed design
+
+The requested 2x2 (QLS/GNN x candidate/global) is confounded by finding 3. A
+one-layer `GNN-GLOBAL` sees one hop of the global graph while `QLS-GLOBAL` sees
+three, so restoring the substrate would hand QLS far more new information and the
+result would read as "context helps the fixed summary more" when the real cause
+is that the GNN lacked the depth to reach it. That is the same error class as
+comparing QLS-candidate to GNN-global. **The design must be
+`{CAND, GLOBAL} x {QLS, GNN} x H` with the hop budget matched within each cell.**
+
+### Gating
+
+```
+BLOCKED     freezing the STRUCTURAL feature formulas (support, distance,
+            path diversity, diffusion) -- their values depend on the substrate
+MAY PROCEED semantic frontier S0-S3 (references no graph), Phase 0
+            instrumentation that fixes no graph basis, the Pareto tolerance review
+PROHIBITED  training any global-context model before the diagnostic is reviewed;
+            opening Package F; touching E2
+```
+
+### Blocker
+
+The frozen graphs live on the Modal Volume; `storage/` does not exist locally and
+the workspace is still over its spend limit (`ap-cj2qvLjN99Vcr4ki5r22sU` reports
+0 tasks). Phase -1 is CPU-only and read-only but still needs the Volume.
+
+**Ordering when compute returns: resume E2 first** -- it is a frozen, tagged,
+half-finished experiment with 392 units left -- then Phase -1, which blocks only
+unstarted work.
+
+### Historical results
+
+Unchanged and valid. Relabelled precisely as the **candidate-induced reranking
+regime**: retriever returns top-K, graph induced among those K, reranker scores
+them. A realistic deployable configuration. If Phase -1 finds severe graph
+destruction, the statement is that those experiments measured a graph-starved
+reranking setting, **not** that they were wrong.
+
 ## Repository boundary
 
 The original C-RAG repository remains strictly read-only. This audit read only

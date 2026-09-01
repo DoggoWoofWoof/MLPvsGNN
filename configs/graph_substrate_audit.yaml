@@ -1,0 +1,153 @@
+experiment: graph_substrate_validity_audit
+status: DIAGNOSTIC_SPEC_FROZEN_MEASUREMENTS_NOT_RUN
+phase: "-1"
+protocol: docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md
+
+question: >-
+  Every frozen result was produced on a per-query graph built by vertex-inducing
+  the corpus graph on the Dense/SPLADE candidate pool. Does that object retain
+  enough of the original neighbourhood structure for message passing to have
+  anything to aggregate, and for QLS hop features to mean what their names say?
+  This decides which graph the QLS-v2 structural features are defined over. It
+  does not decide whether those features are useful.
+
+diagnostic_contract:
+  read_only: true
+  candidate_pools_modified: false
+  candidate_pools_expanded: false
+  candidate_pools_reordered: false
+  frozen_hashes_changed: false
+  models_trained: false
+  graph_expansion: prohibited_in_phase_minus_1
+  candidate_admission: prohibited_in_phase_minus_1
+  package_f_accessed: false
+  e2_touched: false
+  may_relabel_historical_scope: true
+  may_retract_historical_results: false
+
+substrate_definition:
+  induced_graph: "G[C_q]"
+  rule: an edge survives only when both endpoints are retrieval candidates
+  source: src/mp_retrieval/complete_data.py::CompleteRetrievalDataset.induced_subgraph
+  self_loops: excluded_from_statistics
+  reachability_view: undirected
+  retention_denominator: true_global_out_degree_of_the_candidate
+  seeds: frozen_dense_top5_union_splade_top5
+
+measurements:
+  connectivity:
+    - candidates
+    - isolated_fraction
+    - components
+    - largest_component_fraction
+    - second_component_fraction
+  retention:
+    - retention distribution over candidates with at least one global neighbour
+    - retention_zero_fraction
+    - retention_below_25pct_fraction
+    - boundary_cut_ratio
+  receptive_field:
+    hops: [1, 2, 3]
+    note: >-
+      R1 is what the frozen one-layer GNN actually aggregates. R2 and R3 are
+      reported because QLS-v1 reads 3 hops on the same substrate, so the two
+      methods were never compared at equal reach.
+  seed_connectivity:
+    measured_on: [induced, global]
+    note: the difference is attributable to the substrate, not to the traversal
+  path_preservation:
+    formula: "P_h = P(d_induced <= h | d_global <= h)"
+    targets: gold_nodes_present_in_the_pool
+  bridge_loss:
+    formula: "1 - P_h"
+    hops: [2, 3]
+    isolates: "seed -> non-candidate -> candidate, invisible to GNN and to QLS alike"
+
+aggregation:
+  node_level: pooled over individual candidates, the level at which retention is defined
+  query_level: mean across queries of a per-query summary
+  never_mixed: true
+  pooled_query_cap: 4000
+  pooling_rule: deterministic_prefix_of_the_split_order
+
+graphs:
+  dataset_default:
+    description: the graph carried by the frozen complete dataset, i.e. what every frozen result used
+    source: complete_dataset_csr
+  structural_only:
+    description: document-native edges
+    source: package_b_edge_family
+  knn_only:
+    description: embedding kNN edges
+    source: package_b_edge_family
+  baseline_a_simple:
+    description: native UNION kNN, the combined Paper-1 graph
+    source: package_b_edge_family
+
+reporting:
+  splits: [validation]
+  primary_split: validation
+  max_hops: 3
+  note: >-
+    Validation only. The test split is not read during a phase whose output
+    influences a design decision, per the standing separation rule.
+
+interpretation:
+  candidate_coverage_is_not_a_metric_ceiling: true
+  this_audit_does_not_measure_headroom: >-
+    Whether admitting more candidates would raise the ceiling is a separate
+    question, already implemented in src/mp_retrieval/candidate_headroom.py.
+  historical_results:
+    action: relabel_scope_only
+    label: candidate-induced reranking regime
+    retracted: false
+  fairness_rule: >-
+    Never compare QLS on the candidate-induced graph against a GNN on the global
+    graph. Graph basis and hop budget must both be matched within a cell.
+  depth_confound: >-
+    The frozen GNN is one layer in all nine Paper-1 configs while QLS-v1 reads 3
+    hops (BFS, paths) and 8 (PPR). Any GLOBAL arm must therefore vary depth, or
+    the substrate effect and the depth effect are inseparable.
+
+datasets:
+  2wiki_clean:
+    expected_queries: 15000
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  musique_clean:
+    expected_queries: 19938
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  webqsp:
+    expected_queries: 1578
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+  hotpotqa_clean:
+    expected_queries: 97852
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+  squad_clean:
+    expected_queries: 130319
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+  metaqa:
+    expected_queries: 407513
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+
+gating:
+  blocked_until_this_reports:
+    - freezing the QLS-v2 structural feature formulas R0-R5
+    - training any global-context model
+  not_blocked:
+    - the semantic frontier S0-S3, which references no graph
+    - Phase 0 instrumentation that fixes no graph basis
+    - the Pareto procedure and the tau review
+  prohibited_regardless:
+    - opening Package F
+    - relaunching or altering E2
+    - modifying CRAG
+
+modal:
+  app: message-passing-retrieval-graph-substrate
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  cpu: 8
+  memory_mb: 32768
+  timeout_seconds: 21600

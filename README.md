@@ -815,6 +815,7 @@ hidden.
 - [`docs/QLS_V2_DESIGN.md`](docs/QLS_V2_DESIGN.md) — no-GNN constraint, seed-bitset computation, the semantic micro-branch, the tiny learner
 - [`docs/QLS_V2_DEVELOPMENT_PROTOCOL.md`](docs/QLS_V2_DEVELOPMENT_PROTOCOL.md) — Phases 0–8, the two frontiers, lexicographic Pareto rule, LODO, freeze scope
 - [`docs/QLS_V2_SYSTEMS_PLAN.md`](docs/QLS_V2_SYSTEMS_PLAN.md) — bounded traversal with exact complexity, bounded diffusion, sketch backend, Pareto table
+- [`docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md`](docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md) — **Phase −1**: what graph the models actually receive, and whether it is an adequate propagation substrate
 
 **The v2 model is built from two crossed frontiers, not from the catalog.**
 
@@ -836,8 +837,28 @@ bitmask and the diffusion state over the same edge iteration — worst case
 density. All twelve R1–R4 dimensions are read-outs of that single pass, against
 v1's ~16 edge passes.
 
-**Status: design under review. Implementation and training are gated on the
-protocol being frozen and tagged.** One item is explicitly open and awaits the
+**Status: PAUSED for a graph-substrate audit.** A prerequisite was identified
+on 2026-09-02: we had never established whether the Dense/SPLADE
+candidate-induced graph preserves enough of the original topology for either
+QLS structural features or GNN message passing to be meaningfully evaluated.
+
+Verified from code — the per-query graph is a **strict vertex-induced subgraph**
+`G[C_q]` ([`complete_data.py:100`](src/mp_retrieval/complete_data.py:100)): an
+edge survives only when both endpoints are retrieval candidates, so
+non-candidate bridge nodes are deleted. Also verified: **the frozen GNN is one
+layer** in all nine Paper-1 configs, while QLS-v1's features reach 3 hops (BFS,
+paths) and 8 (PPR) on that same substrate — so the frozen comparison is a
+3-to-8-hop fixed summary against 1-hop learned propagation, not two methods at
+equal reach.
+
+Freezing the **structural** feature formulas is blocked until
+[`docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md`](docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md)
+reports. The **semantic** frontier S0–S3 is unaffected, because it references no
+graph. Packages A–E and all 38 tags are unchanged; their scope is relabelled the
+**candidate-induced reranking regime**, not retracted.
+
+**Implementation and training remain gated on the protocol being frozen and
+tagged.** One item is explicitly open and awaits the
 reviewer: the Pareto tolerance `tau`, proposed at **0.25 R@5 points**. Package E2
 is stalled on a workspace spend limit at 48/96 conditions with 0 INVALID cells;
 Package F remains unopened and is now reserved for the v2 confirmation.
@@ -869,6 +890,7 @@ docs/QLS_V2_FEATURE_CATALOG.md   40-feature superset catalog with costs
 docs/QLS_V2_DESIGN.md            no-GNN constraint, semantic micro-branch, tiny learner
 docs/QLS_V2_DEVELOPMENT_PROTOCOL.md v2 frontiers, Pareto rule, freeze scope, F allocation
 docs/QLS_V2_SYSTEMS_PLAN.md      v2 bounded complexity and Pareto reporting
+docs/GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md Phase -1 graph substrate validity audit
 docs/CANDIDATE_HEADROOM_PROTOCOL.md read-only retrieval-headroom contract
 docs/CANDIDATE_HEADROOM_RESULTS.md candidate ceilings and missing-gold reachability
 docs/CROSS_PAPER_LEARNING_LEDGER.md Paper-1/Paper-2 findings and backport discipline

@@ -10,6 +10,33 @@
 > **No QLS-v2 implementation or training may begin until this document is
 > reviewed, frozen and tagged.** Nothing below has been executed.
 
+> ## PAUSED 2026-09-02 — Phase −1 must complete first
+>
+> **The Phase 0–2 freeze is on hold.** A prerequisite was identified after this
+> document was drafted: we have never established whether the Dense/SPLADE
+> candidate-induced graph preserves enough of the original topology for either
+> QLS structural features or GNN message passing to be meaningfully evaluated.
+>
+> Verified from code, not documentation
+> ([`complete_data.py:100-105`](../src/mp_retrieval/complete_data.py:100)): the
+> per-query graph is a **strict vertex-induced subgraph** `G[C_q]` — an edge
+> survives only when both endpoints are retrieval candidates, so non-candidate
+> bridge nodes are deleted outright. Also verified: **the frozen GNN is one
+> layer** in all nine Paper-1 configs, while QLS-v1's features reach 3 hops
+> (BFS, paths) and 8 (PPR) on the same substrate.
+>
+> **Blocked:** freezing the *structural* feature formulas — support, distance,
+> path diversity, diffusion — because their values depend on which graph they are
+> computed over.
+>
+> **Not blocked:** the semantic frontier S0–S3, which references no graph at all;
+> Phase 0 instrumentation that does not fix a graph basis; the Pareto procedure
+> and the `tau` review.
+>
+> See [`GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md`](GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md).
+> Packages A–E and all 38 tags are unchanged; their scope is relabelled the
+> **candidate-induced reranking regime**, not retracted.
+
 ---
 
 ## 0. The two failure modes this protocol prevents
@@ -607,7 +634,8 @@ draws the line explicitly.
 | 4 | The **rank-weighting rule** `w(s) = 1/r(s)`, no free constant | catalog, Group C |
 | 5 | Phase 0 instrumentation: what is measured, at what percentiles | §4 Phase 0, systems §2 |
 | 6 | Phase 1 diagnostic protocol | §4 Phase 1 |
-| 7 | Phase 2 staged frontiers **R0–R5 and S0–S3**, their order and contents | §4 Phase 2 |
+| 7a | Phase 2 **semantic** frontier S0–S3, its order and contents | §4 Phase 2b |
+| 7b | Phase 2 **structural** frontier R0–R5 — **rung order and contents frozen; the graph basis is NOT**, pending Phase −1 | §4 Phase 2a |
 | 8 | The marginal-efficiency report required per transition | systems §8 |
 | 9 | The admission threshold, cost veto and elimination tolerance | §5 |
 | 10 | The **lexicographic Pareto selection procedure** | §6.1 |
@@ -616,14 +644,23 @@ draws the line explicitly.
 | 13 | Data discipline, declared leakage, confirmation rules | §2, §3, §7 |
 | 14 | The registered predictions | catalog §3 |
 
-Item 11 is the single open item and is flagged as such: the *procedure* is
-frozen, the *number* awaits the reviewer. It must be settled before Phase 2 runs,
-not after.
+Two items are open and both are flagged rather than assumed:
 
-### PROSPECTIVE — depends on Phase 0–2 findings, deliberately not frozen
+- **Item 11** — the *procedure* is frozen, the *number* awaits the reviewer. It
+  must be settled before Phase 2 runs, not after.
+- **Item 7b** — the R0–R5 rung order and membership are frozen, but the **graph
+  substrate they are computed over is not**. Phase −1
+  ([`GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md`](GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md))
+  decides between the candidate-induced basis and a global-context basis. The
+  feature *definitions* do not change; the graph they read does. Freezing them as
+  candidate-induced before that audit would bake in an unexamined choice.
+
+### PROSPECTIVE — depends on Phase −1 / Phase 0–2 findings, deliberately not frozen
 
 | Item | What legitimately decides it |
 |---|---|
+| **The graph substrate for all structural features** | Phase −1's retention, receptive-field, path-preservation and bridge-loss measurements |
+| **Whether the GNN comparator is re-run at matched depth** | Phase −1 §7.2 — the frozen comparator is 1 layer while QLS-v1 reaches 3–8 hops |
 | Phase 3 bounded-backend choice (`H`, truncated PPR vs plain diffusion, sketch vs online) | the Pareto experiment in systems §4; the rule that selects is frozen, the winner is not |
 | Phase 4 exact learner width `w` and the interaction form | the surviving feature dimensionality, which Phase 2 determines |
 | Phase 5 ranking objective — whether a listwise loss is used at all | triggered only if pointwise scoring is shown to be the binding constraint |
