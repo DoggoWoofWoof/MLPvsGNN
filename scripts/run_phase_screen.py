@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import sys
 import warnings
 from collections.abc import Callable
@@ -41,6 +42,43 @@ from scripts.run_sa_mlp_confirmation import (
 
 MODEL_NAMES = ("sa_mlp", "seed_aware_gnn")
 TOPOLOGY_AXES = {"degree_rewire", "random_add", "hub_injection"}
+COMPLETE_STATUS = "PHASE_SCREEN_VALIDATION_ONLY_COMPLETE"
+
+
+def completed_screen_cell(args: argparse.Namespace) -> dict[str, Any] | None:
+    """Return an already-registered complete cell, or ``None`` to run it.
+
+    The screen trains one registered seed per cell and has no per-model resume,
+    so an unguarded relaunch would retrain and overwrite cells that are already
+    complete and integrity-audited.  Reusing a complete record keeps registered
+    validation values byte-identical across resumptions; a record that claims
+    the same output path under a different frozen contract is an error rather
+    than something to overwrite.
+    """
+
+    if not args.output.is_file():
+        return None
+    existing = json.loads(args.output.read_text(encoding="utf-8"))
+    if existing.get("status") != COMPLETE_STATUS:
+        return None
+    contract = existing.get("screen_contract", {})
+    intervention = existing.get("intervention", {})
+    if (
+        existing.get("dataset") != args.dataset
+        or existing.get("axis") != args.axis
+        or float(existing.get("rate", float("nan"))) != float(args.rate)
+        or existing.get("data_fingerprint_sha256") != args.data_fingerprint_sha256
+        or int(contract.get("training_seed", -1)) != int(args.training_seed)
+        or int(intervention.get("seed", -1)) != int(args.perturbation_seed)
+        or contract.get("split_evaluated") != "validation_only"
+        or contract.get("test_metrics_computed") is not False
+    ):
+        raise ValueError("Existing complete phase-screen cell has a different frozen contract")
+    if set(existing.get("models", {})) != set(MODEL_NAMES):
+        raise ValueError("Existing complete phase-screen cell is missing a registered model")
+    if "validation_gnn_minus_qls" not in existing:
+        raise ValueError("Existing complete phase-screen cell has no validation contrast")
+    return existing
 
 
 def _mask_node_features(
@@ -85,6 +123,9 @@ def run(
 ) -> dict[str, Any]:
     if args.axis not in TOPOLOGY_AXES | {"feature_mask"}:
         raise ValueError(f"Unsupported phase-screen axis: {args.axis}")
+    finished = completed_screen_cell(args)
+    if finished is not None:
+        return finished
     dataset = load_complete_dataset(args.data, dataset=args.dataset)
     if len(dataset.queries) != args.expected_queries:
         raise ValueError("Complete dataset query count differs from the screen protocol")

@@ -1,0 +1,107 @@
+experiment: candidate_generation_headroom_diagnostic
+status: DIAGNOSTIC_COMPANION_LAYER_NOT_A_FROZEN_PROTOCOL_CHANGE
+protocol_ancestor: equal_rrf_candidate_context_budget
+
+question: >-
+  For each frozen candidate pool, how much of the reported ranking metric was
+  ever achievable? Separates upstream candidate-generation failure (gold absent
+  from the pool) from the reporting cut-off K and from reranking failure, so
+  QLS-MLP and the matched seed-aware GNN are never credited or penalised for
+  gold evidence that was never in their input.
+
+diagnostic_contract:
+  read_only: true
+  candidate_pools_modified: false
+  candidate_pools_expanded: false
+  candidate_pools_reordered: false
+  frozen_hashes_changed: false
+  graph_expansion: prohibited_in_paper_1
+  candidate_admission: prohibited_in_paper_1
+  candidate_regeneration: prohibited_in_paper_1
+  may_change_candidate_generation: false
+  reachable_missing_golds_are_a_paper_2_question: true
+
+ceiling_definition:
+  formula: "max Recall@K = min(gold_in_pool, K) / gold_total"
+  coverage_is_not_oracle_recall_at_k: true
+  reported_caps:
+    - recall_ceiling@K
+    - recall_ceiling_perfect_retrieval@K
+    - recall_headroom_lost_to_candidate_generation@K
+  rationale: >-
+    Pool coverage (p / g) overstates achievable Recall@K whenever g > K, so the
+    candidate-generation cap and the cut-off cap are always reported apart.
+
+pools_compared:
+  - dense_top200
+  - splade_top200
+  - frozen_union
+  - equal_rrf_budget_50
+  - equal_rrf_budget_100
+  - equal_rrf_budget_200
+  - equal_rrf_budget_400
+
+fusion:
+  budgets: [50, 100, 200, 400]
+  rrf_constant: 60
+  dense_weight: 0.5
+  splade_weight: 0.5
+  tie_break: ascending_global_node_id
+  mirrors: src/mp_retrieval/candidate_budget.py::build_budget_dataset
+
+reporting:
+  ks: [1, 5, 20]
+  splits: [train, validation, test]
+  primary_split: test
+
+reachability:
+  purpose: attribute_missing_gold_to_upstream_retrieval_not_to_reranking
+  seeds: frozen_dense_top5_union_splade_top5
+  graph_view: undirected
+  graph_source: frozen_complete_dataset_csr
+  max_hops: 3
+  max_visited_nodes_per_query: 2000000
+  splits: [test]
+  buckets: [1, 2, 3, beyond_3_or_unreachable]
+  cumulative_reported: true
+  frontier_capped_reported_separately: true
+
+datasets:
+  2wiki_clean:
+    expected_queries: 15000
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  musique_clean:
+    expected_queries: 19938
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  webqsp:
+    expected_queries: 1578
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+  hotpotqa_clean:
+    expected_queries: 97852
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+  squad_clean:
+    expected_queries: 130319
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+  metaqa:
+    expected_queries: 407513
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+
+analysis:
+  companion_to: outputs/candidate_budget
+  never_used_to_select_a_budget: true
+  never_used_to_select_a_model: true
+  never_used_to_select_a_perturbation_rate: true
+  interpretation: >-
+    Report every primary metric beside its ceiling. A model gap that survives
+    below a shared ceiling is a reranking result; a metric pinned at its ceiling
+    is an upstream candidate-generation result and must be labelled as such.
+
+modal:
+  app: message-passing-retrieval-candidate-headroom
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  cpu: 8
+  memory_mb: 32768
+  timeout_seconds: 21600
