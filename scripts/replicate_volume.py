@@ -336,6 +336,42 @@ def _fetch_one(
     raise RuntimeError(f"{path}: {last} (after {attempts} attempts)")
 
 
+def _hash_remote(
+    volume: modal.Volume,
+    path: str,
+    size: int,
+    attempts: int = FETCH_ATTEMPTS,
+) -> tuple[int, str]:
+    """Hash a file as the volume holds it, retrying a stream that ends early.
+
+    The fault ``_fetch_one`` guards against reaches the verifier too, and lands
+    worse there. Hashing whatever arrives and comparing the digest turns a short
+    read into a SHA256 line, which reads as a corrupt replica -- the one
+    conclusion that sends a correct file back over the wire, or blocks a launch
+    on data that was fine. Counting bytes separates a truncated read from a
+    genuine difference, and a short read is retried rather than reported.
+    """
+
+    last = ""
+    for attempt in range(1, attempts + 1):
+        digest = hashlib.sha256()
+        written = 0
+        try:
+            for block in volume.read_file(path):
+                digest.update(block)
+                written += len(block)
+        except Exception as error:  # transport faults are retryable, like short reads
+            last = f"{type(error).__name__}: {error}"
+        else:
+            if not size or written == size:
+                return written, digest.hexdigest()
+            last = f"read {written} bytes, target reports {size}"
+        if attempt < attempts:
+            print(f"  retry {attempt}/{attempts - 1}  {path}  ({last})", file=sys.stderr, flush=True)
+            time.sleep(RETRY_BACKOFF_SECONDS * attempt)
+    raise RuntimeError(f"{path}: {last} (after {attempts} attempts)")
+
+
 def cmd_download(args: argparse.Namespace) -> int:
     volume = modal.Volume.from_name(args.volume, create_if_missing=False)
     staging = Path(args.staging)
@@ -514,10 +550,13 @@ def cmd_verify(args: argparse.Namespace) -> int:
             return f"SIZE     {path}: target {size} != manifest {meta['bytes']}"
         if not args.deep:
             return None
-        digest = hashlib.sha256()
-        for block in volume.read_file(remote_prefix + path):
-            digest.update(block)
-        if digest.hexdigest() != meta["sha256"]:
+        try:
+            _, digest = _hash_remote(volume, remote_prefix + path, size)
+        except RuntimeError as error:
+            # Unreadable is not the same as wrong, and only one of the two is a
+            # reason to re-upload. Say which one this is.
+            return f"UNREAD   {error}"
+        if digest != meta["sha256"]:
             return f"SHA256   {path}"
         return None
 

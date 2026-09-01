@@ -435,3 +435,125 @@ def test_uploading_a_capture_without_a_quarantine_prefix_is_refused(tmp_path):
 def test_the_quarantine_prefix_is_not_a_tree_any_runner_reads():
     assert not replicate_volume.QUARANTINE_PREFIX.startswith("outputs")
     assert "phase_confirmation_cache" not in replicate_volume.QUARANTINE_PREFIX
+
+
+# ---------------------------------------------------------------------------
+# The verifier has the same blind spot the fetcher had, and it lands worse.
+#
+# Found in the field: `verify --deep` reported SHA256 on one 37 MB file in a
+# 107-file replica. Two fresh reads of that same file matched the manifest
+# exactly, and so did the local staged copy -- the replica was fine and the
+# verifier was wrong. Hashing whatever a stream delivers cannot tell a short
+# read from a real difference, and the two call for opposite actions.
+# ---------------------------------------------------------------------------
+
+
+def test_a_short_read_while_hashing_is_retried_not_called_a_difference(monkeypatch):
+    import hashlib
+
+    monkeypatch.setattr(replicate_volume, "RETRY_BACKOFF_SECONDS", 0.0)
+    payload = b"graph" * 5000
+    volume = TruncatingVolume(payload, short_reads=2)
+    written, digest = replicate_volume._hash_remote(volume, "toy/graph.pt", len(payload))
+    assert volume.calls == 3
+    assert written == len(payload)
+    assert digest == hashlib.sha256(payload).hexdigest()
+
+
+def test_a_truncated_read_is_never_reported_as_a_sha_mismatch(tmp_path, monkeypatch):
+    """The distinction the field failure turned on: unreadable, not wrong."""
+
+    import argparse
+    import hashlib
+
+    monkeypatch.setattr(replicate_volume, "RETRY_BACKOFF_SECONDS", 0.0)
+    payload = b"graph" * 5000
+    staging = tmp_path / "staging"
+    staging.mkdir()
+    (staging / "replication_manifest_phase_minus_1.json").write_text(
+        json.dumps(
+            {
+                "slice": "phase_minus_1",
+                "files": {
+                    "toy/graph.pt": {
+                        "bytes": len(payload),
+                        "sha256": hashlib.sha256(payload).hexdigest(),
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    class AlwaysShort(TruncatingVolume):
+        def listdir(self, prefix, recursive=False):
+            return [SimpleNamespace(path="toy/graph.pt", size=len(self.payload))]
+
+    volume = AlwaysShort(payload, short_reads=99)
+    monkeypatch.setattr(
+        replicate_volume.modal.Volume, "from_name", staticmethod(lambda *a, **k: volume)
+    )
+    args = argparse.Namespace(
+        staging=str(staging),
+        slice="phase_minus_1",
+        dataset_filter=None,
+        volume="v",
+        remote_prefix=None,
+        deep=True,
+        workers=1,
+    )
+    captured: list[str] = []
+    monkeypatch.setattr("builtins.print", lambda *a, **k: captured.append(" ".join(map(str, a))))
+    assert replicate_volume.cmd_verify(args) == 1
+    reported = "\n".join(captured)
+    assert "UNREAD" in reported
+    assert "SHA256" not in reported
+    assert volume.calls == replicate_volume.FETCH_ATTEMPTS
+
+
+def test_a_genuinely_different_replica_is_still_a_sha_mismatch(tmp_path, monkeypatch):
+    """Softening the short-read case must not soften the case it exists for."""
+
+    import argparse
+    import hashlib
+
+    payload = b"graph" * 5000
+    staging = tmp_path / "staging"
+    staging.mkdir()
+    (staging / "replication_manifest_phase_minus_1.json").write_text(
+        json.dumps(
+            {
+                "slice": "phase_minus_1",
+                "files": {
+                    "toy/graph.pt": {
+                        "bytes": len(payload),
+                        "sha256": hashlib.sha256(b"something else entirely").hexdigest(),
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    volume = SimpleNamespace(
+        listdir=lambda prefix, recursive=False: [
+            SimpleNamespace(path="toy/graph.pt", size=len(payload))
+        ],
+        read_file=lambda path: iter([payload]),
+    )
+    monkeypatch.setattr(
+        replicate_volume.modal.Volume, "from_name", staticmethod(lambda *a, **k: volume)
+    )
+    args = argparse.Namespace(
+        staging=str(staging),
+        slice="phase_minus_1",
+        dataset_filter=None,
+        volume="v",
+        remote_prefix=None,
+        deep=True,
+        workers=1,
+    )
+    captured: list[str] = []
+    monkeypatch.setattr("builtins.print", lambda *a, **k: captured.append(" ".join(map(str, a))))
+    assert replicate_volume.cmd_verify(args) == 1
+    assert "SHA256   toy/graph.pt" in "\n".join(captured)
