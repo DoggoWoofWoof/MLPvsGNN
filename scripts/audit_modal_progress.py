@@ -30,6 +30,11 @@ PACKAGES = {
         "expected_conditions": 96,
         "complete_status": "PHASE_SCREEN_VALIDATION_ONLY_COMPLETE",
     },
+    "online_systems": {
+        "path": "outputs/online_systems",
+        "expected_conditions": 6,
+        "complete_status": "UNCACHED_UNSEEN_EMBEDDING_SYSTEMS_COMPLETE",
+    },
     "phase_confirmation": {
         "path": "outputs/phase_confirmation",
         "expected_conditions": None,
@@ -112,6 +117,9 @@ async def audit(volume_name: str) -> dict[str, Any]:
 
 
 def _condition_key(package: str, condition: dict[str, Any]) -> str:
+    if package == "online_systems":
+        # One serving benchmark per dataset; there is no condition level.
+        return str(condition["dataset"])
     if package == "edge_provenance":
         return f"{condition['dataset']}/{condition['family']}"
     if package == "candidate_budget":
@@ -129,6 +137,8 @@ def _expected_keys(package: str) -> set[str]:
             for dataset in datasets
             for family in config["trained_families"]
         }
+    if package == "online_systems":
+        return set(datasets)
     if package == "candidate_budget":
         return {
             f"{dataset}/budget_{int(budget)}"
@@ -161,7 +171,14 @@ def summarize(audit_result: dict[str, Any]) -> dict[str, Any]:
             for key, row in found.items()
             if row["status"] != PACKAGES[package]["complete_status"]
         }
-        if package == "phase_screen":
+        if package == "online_systems":
+            # Not a seed sweep: each dataset benchmarks two serving paths using
+            # checkpoints trained in the budget package, so the unit is a
+            # benchmarked model path rather than a trained model-seed cell.
+            completed_work = record["complete_conditions"] * 2
+            expected_work = len(expected) * 2
+            work_unit = "benchmarked_model_paths"
+        elif package == "phase_screen":
             completed_work = sum(
                 sum(int(progress.get("completed", False)) for progress in row["model_progress"].values())
                 for row in found.values()

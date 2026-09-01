@@ -130,11 +130,29 @@ def _verify_payload_contract(
         "data_fingerprint_sha256"
     ):
         errors.append("dataset fingerprint mismatch")
-    errors.extend(_verify_candidate_proof(payload, confirmation, package))
+    if package != "online_systems":
+        # The serving benchmark writes no candidate proof of its own because it
+        # generates no candidates: it loads a checkpoint from a COMPLETE
+        # candidate-budget cell and refuses at runtime if that cell is not
+        # complete or its checkpoint digest does not match. Its candidate
+        # provenance is therefore inherited through that digest, which this
+        # audit verifies, and demanding a proof it never writes would mark every
+        # valid condition INVALID.
+        errors.extend(_verify_candidate_proof(payload, confirmation, package))
     result_config = payload.get("config", {})
     spec = config["datasets"][dataset]
     if result_config.get("selected_gnn") != spec["selected_gnn"]:
         errors.append("selected GNN differs from protocol")
+    if package == "online_systems":
+        if not payload.get("checkpoints"):
+            errors.append("missing reused checkpoint proof")
+        boundary = payload.get("boundary", {})
+        # The whole point of this package is the uncached boundary. A result
+        # that read a query-specific cache inside the timed path measures a
+        # different system than the one being reported.
+        if boundary.get("query_specific_cache_reads_in_timed_path") is not False:
+            errors.append("timed path read a query-specific cache")
+        return errors
     if package in {"edge_provenance", "candidate_budget"}:
         training = config["training"]
         for field in (
@@ -241,6 +259,23 @@ def _verify_payload_contract(
 
 def _checkpoint_records(package: str, payload: dict[str, Any]) -> list[tuple[str, int, dict[str, Any]]]:
     records = []
+    if package == "online_systems":
+        # The serving benchmark trains nothing: it loads the budget package's
+        # checkpoints, so the verifiable artifact is that reused checkpoint and
+        # the single seed slot stands for it rather than for a training seed.
+        for model, proof in payload.get("checkpoints", {}).items():
+            if model in MODELS:
+                records.append(
+                    (
+                        model,
+                        0,
+                        {
+                            "checkpoint_path": proof.get("path"),
+                            "checkpoint_file_sha256": proof.get("sha256"),
+                        },
+                    )
+                )
+        return records
     for model in MODELS:
         model_record = payload.get("models", {}).get(model, {})
         if package == "phase_screen":
@@ -261,7 +296,8 @@ async def _verify_condition(
     semaphore: asyncio.Semaphore,
 ) -> dict[str, Any]:
     errors = _verify_payload_contract(package, payload, context)
-    expected_seeds = [0] if package == "phase_screen" else [0, 1, 2, 3, 4]
+    single_slot = package in {"phase_screen", "online_systems"}
+    expected_seeds = [0] if single_slot else [0, 1, 2, 3, 4]
     seed_status = {
         model: {str(seed): "MISSING" for seed in expected_seeds} for model in MODELS
     }
@@ -294,8 +330,11 @@ async def _verify_condition(
                 seed_status[model][str(seed)] = "INVALID"
                 errors.append(f"{model}/seed_{seed} checkpoint failed integrity")
         checkpoint_checks.append(check)
-    query_metrics = {"applicable": package != "phase_screen", "verified": None}
-    if payload.get("status") == PACKAGES[package]["complete_status"] and package != "phase_screen":
+    # The screen computes no test metrics and the serving benchmark measures
+    # latency rather than ranking, so neither packs per-query metrics.
+    packs_query_metrics = package not in {"phase_screen", "online_systems"}
+    query_metrics = {"applicable": packs_query_metrics, "verified": None}
+    if payload.get("status") == PACKAGES[package]["complete_status"] and packs_query_metrics:
         packed = payload.get("query_metrics", {})
         try:
             observed = await _remote_sha256(volume, packed["path"], semaphore)
@@ -382,7 +421,11 @@ async def audit_integrity(volume_name: str) -> dict[str, Any]:
                 "seed_status": {
                     model: {
                         str(seed): "MISSING"
-                        for seed in ([0] if package == "phase_screen" else range(5))
+                        for seed in (
+                            [0]
+                            if package in {"phase_screen", "online_systems"}
+                            else range(5)
+                        )
                     }
                     for model in MODELS
                 },
@@ -401,7 +444,11 @@ async def audit_integrity(volume_name: str) -> dict[str, Any]:
             for model in MODELS
             for status in row["seed_status"][model].values()
         )
-        expected_units = len(expected) * len(MODELS) * (1 if package == "phase_screen" else 5)
+        expected_units = (
+            len(expected)
+            * len(MODELS)
+            * (1 if package in {"phase_screen", "online_systems"} else 5)
+        )
         output[package] = {
             "condition_counts": counts,
             "completed_gpu_work_units": completed_units,
