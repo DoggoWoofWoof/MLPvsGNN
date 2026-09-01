@@ -263,10 +263,14 @@ package**, so nothing completed so far has to be recomputed.
 
 | Package | Unfinished condition/cell launches | Remaining model-seed work units |
 |---|---:|---:|
-| B | 4 | 26 |
+| B | 4 | 17 |
 | C | 0 | 0 (CLOSED) |
-| E1 | 16 | 34 |
-| **Total** | **20** | **60** |
+| E1 | 11 | 21 |
+| **Total** | **15** | **38** |
+
+Re-derived 2026-09-01 after the Package C freeze: B is 20/24 conditions and
+223/240 units; C is 24/24 and 240/240; E1 is 85 COMPLETE, 1 PARTIAL, 10 MISSING
+and 171/192 units. Package D adds 6 dataset conditions, currently queued.
 
 These counts move while the jobs run and are a checkpoint, not a contract.
 
