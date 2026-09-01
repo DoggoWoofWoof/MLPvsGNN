@@ -222,6 +222,33 @@ It changes how B, C, and the confirmation must be *read*, not what they compute:
 - Absolute metric levels are not comparable across datasets without their
   ceilings.
 
+## Gate tooling verified before the gates open (2026-09-01)
+
+Both downstream compilers were exercised while B/C/E1 were still running, so a
+closing gate cannot open onto broken tooling. Neither check wrote into the
+repository or touched a frozen artifact.
+
+**Package D.** `scripts/analyze_online_systems.py` was run end to end on
+contract-valid synthetic inputs for all six datasets: it compiles, renders, and
+enforces its budget-400 fingerprint check. Cache break-even, which Package D
+must report, had no implementation; it is now derived in the analysis layer from
+measurements the frozen protocol already takes. It was registered before Package
+D produced any timing, so its definition could not be chosen to suit a result.
+The measurement contract is unchanged and still reads
+`ONLINE_SYSTEMS_PROTOCOL_FROZEN_BEFORE_TIMING`.
+
+**Package E2.** `scripts/analyze_phase_screen.py` was run on a full synthetic
+96-cell screen against the real sealed confirmations, read-only. All three
+branches of the locked selection rule behave as specified, the analysis reports
+`test_metrics_computed: false`, and it stops at
+`RATES_SELECTED_REQUIRES_PROTOCOL_COMMIT_BEFORE_TEST`.
+
+The gate that keeps E2 rate selection validation-only was previously untested:
+nothing checked that the analyzer refuses a screen cell carrying test metrics.
+It does refuse one, and that refusal is now a regression test, confirmed to fail
+if the guard is removed. Cells trained on another seed and incomplete screens are
+covered too, so an incomplete screen cannot be partially selected from.
+
 ## Resume order
 
 1. Re-run `scripts/audit_modal_integrity.py` and retain the matrix above as the
