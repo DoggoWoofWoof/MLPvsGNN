@@ -344,6 +344,70 @@ because it also has to bound a neighbourhood in a graph too large to propagate
 over in full — and it bounds it **structurally**, by proximity on the graph,
 rather than semantically.
 
+### 7.5 Feasibility, estimated from artifacts that are already frozen
+
+The graph sizes below come from the completed candidate-headroom diagnostic
+(`outputs/candidate_headroom/*.json`, status
+`CANDIDATE_HEADROOM_DIAGNOSTIC_COMPLETE`), so no new measurement was needed to
+produce them.
+
+| dataset | nodes | directed edges | mean degree | global CSR | R3 branching bound |
+|---|---:|---:|---:|---:|---:|
+| musique_clean | 13,672 | 280,108 | 20.5 | 2.4 MB | 100% of graph |
+| squad_clean | 19,029 | 2,857,316 | 150.2 | 23.0 MB | 100% of graph |
+| metaqa | 40,151 | 585,728 | 14.6 | 5.0 MB | 77.3% |
+| 2wiki_clean | 65,865 | 855,146 | 13.0 | 7.4 MB | 33.2% |
+| hotpotqa_clean | 507,494 | 16,223,058 | 32.0 | 133.8 MB | 64.4% |
+| webqsp | 781,485 | 13,379,166 | 17.1 | 113.3 MB | 6.4% |
+
+The last column is `min(N, 10 · d̄ʰ)` at `h = 3` — a loose branching upper bound
+that ignores overlap and degree skew, given only to bracket the question. The
+real frontier is what §4 measures, and it will be smaller.
+
+**Storage is never the obstacle.** Every global CSR fits in RAM with room to
+spare; the largest is 134 MB. Anything claiming a global basis is impossible on
+memory grounds is wrong.
+
+**GLOBAL QLS — feasible.** Bounded traversal from `|S_q| ≤ 10` seeds at
+`Θ(H·|E_q|)` with a frontier cap, over a resident CSR. This is the same shape as
+the v1 feature extractor, pointed at a different adjacency.
+
+**GNN-LOCAL — feasible, and it is the literature standard.** `h`-hop
+neighbourhood construction with GraphSAGE-style fixed-size sampling or
+PinSage-style top-`T` random-walk selection (§9.1). This is the primary new arm.
+
+**GNN-FULL — depends entirely on which comparator, and this is a code finding,
+not an estimate:**
+
+```
+MessagePassingOperator          project_nodes(nodes) -> convs -> score against query
+                                propagation does NOT depend on the query, so the
+                                whole graph can be propagated ONCE per forward
+                                pass and every query scored against the shared
+                                node states.  Cheap even at hotpotqa scale.
+
+SeedAwareMessagePassingOperator node_projection(cat([nodes, seed_indicator]))
+                                the seed indicator is per query, so propagation
+                                IS query-conditioned and must be repeated for
+                                every query.
+```
+
+The headline frozen contrast is `sa_mlp_minus_seed_aware_gnn`, so it is the
+**query-conditioned** variant that matters, and that is the expensive one. At one
+layer and hidden width 64, full-graph propagation per query costs:
+
+```
+musique_clean     0.4 TMAC/epoch      2wiki_clean     0.8 TMAC/epoch
+webqsp            1.4 TMAC/epoch      metaqa         15.3 TMAC/epoch
+squad_clean      23.8 TMAC/epoch      hotpotqa_clean 101.6 TMAC/epoch
+```
+
+Sparse scatter-gather runs far below dense peak, so hotpotqa at 101.6 TMAC per
+epoch per seed is not a five-seed protocol. **`GNN-FULL` should therefore be run
+only where it is cheap, and `GNN-LOCAL` is the arm that must carry the
+comparison.** That is not a compromise forced by budget — it is what GraphSAGE,
+PinSage and SEAL all do, for the same reason.
+
 ### 7.4 The candidate ceiling must not move
 
 GLOBAL still scores exactly `C_q`. Therefore the candidate ceiling must be
@@ -400,6 +464,49 @@ with `max_hops=3`, using `symmetric_csr` and `_expand`
 and `docs/CANDIDATE_HEADROOM_PROTOCOL.md` is already written. Phase −1 extends
 that from *"where are the missing golds"* to *"what would it cost to admit
 them"*; it does not rebuild it.
+
+### 8.1 The "where" half is already answered — and it is stark
+
+The diagnostic has **completed on all six datasets**
+(`outputs/candidate_headroom/*.json`). Test split, seeds =
+`dense_top5 ∪ splade_top5`, undirected view, `max_hops = 3`:
+
+| dataset | queries scanned | with a missing gold | missing golds | ≤1 hop | ≤2 hops | ≤3 hops | beyond / unreachable |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 2wiki_clean | 1,500 | 673 | 852 | 84.0% | 97.9% | 99.6% | 0.35% |
+| hotpotqa_clean | 9,786 | 1,358 | 1,379 | 70.8% | 98.7% | 100.0% | 0.00% |
+| metaqa | 39,093 | 29,079 | 260,233 | 20.7% | 58.6% | 100.0% | 0.04% |
+| musique_clean | 1,995 | 286 | 313 | 26.5% | 69.0% | 92.0% | 7.99% |
+| squad_clean | 13,033 | 67 | 67 | 11.9% | 49.3% | 92.5% | 7.46% |
+| webqsp | 159 | 98 | 537 | 24.4% | 64.4% | 96.6% | 3.35% |
+
+**Between 92.0% and 100% of every gold the retriever missed lies within three
+hops of a node the retriever found.** On 2wiki and hotpotqa the majority is a
+*single* hop away.
+
+This is not itself a substrate measurement — it concerns golds *outside* the
+pool, whereas §6's bridge loss concerns golds *inside* it whose connecting path
+left. But it establishes the precondition under which vertex induction is most
+destructive: the evidence is **locally concentrated around the retrieved set** in
+the real graph. A construction that keeps an edge only when both endpoints were
+independently retrieved is discarding exactly the region where these numbers say
+the signal lives.
+
+It also sharpens why §8's cost question is the one that matters. The graph
+clearly knows where the missing evidence is. Whether admitting it is affordable —
+added nodes per recovered gold — is unmeasured, and is what separates a real
+system from a coverage number.
+
+For context, the frozen test-split ceilings these sit against:
+
+| dataset | pool coverage | ceiling@5 | headroom lost to candidate generation@5 |
+|---|---:|---:|---:|
+| squad_clean | 99.5% | 99.5% | 0.5% |
+| musique_clean | 94.1% | 94.1% | 5.9% |
+| hotpotqa_clean | 93.0% | 93.0% | 7.0% |
+| 2wiki_clean | 79.7% | 79.7% | 20.3% |
+| webqsp | 49.1% | 45.0% | 44.0% |
+| metaqa | 33.5% | 32.6% | 49.9% |
 
 This experiment likely belongs to Paper 2. It is run here as a diagnostic only,
 to decide whether it is worth pursuing at all.
