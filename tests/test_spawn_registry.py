@@ -20,6 +20,7 @@ LONG_PACKAGES = (
     "phase-screen",
     "candidate-headroom",
     "online-systems",
+    "phase-confirmation",
 )
 
 

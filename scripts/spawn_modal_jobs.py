@@ -36,6 +36,7 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
     "phase-screen": ("scripts.modal_phase_screen", {"train": "run_regime"}),
     "candidate-headroom": ("scripts.modal_candidate_headroom", {"train": "run_headroom"}),
     "online-systems": ("scripts.modal_online_systems", {"train": "run_dataset"}),
+    "phase-confirmation": ("scripts.modal_phase_confirmation", {"train": "run_cell"}),
 }
 
 
