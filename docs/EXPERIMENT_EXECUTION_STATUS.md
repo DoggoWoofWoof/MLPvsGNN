@@ -465,6 +465,7 @@ Package B, once its matrix reads 24/24:
 python scripts/audit_modal_integrity.py
 python scripts/fetch_modal_results.py edge_provenance
 python scripts/analyze_edge_provenance.py
+python scripts/compile_package_b.py
 ```
 
 Compile and freeze before interpreting. All Package B graph families share the
@@ -476,6 +477,18 @@ The question to answer is whether QLS and the GNN benefit from genuine
 relational topology or from embedding similarity reintroduced as kNN edges,
 which is what separates `symbolic_b` from `knn_only`. No family may be preferred
 because it reads better.
+
+`scripts/compile_package_b.py` performs that join and was verified against the
+four already-complete datasets on 2026-09-01 with a shape-only check that
+printed no metric value and wrote nothing into the repository. It reports every
+family beside the shared ceiling with attainment at each cut-off, and puts
+`symbolic_b` against `knn_only` in its own table so the provenance question is
+answered rather than assumed. The ceiling is attached only after the Package B
+candidate-contract hash is verified equal to the hash the headroom diagnostic
+measured; a mismatch is refused, because a ceiling from another pool would
+silently rescale every gap. All six datasets were confirmed to share that hash
+between the two packages. The compiler also refuses a partial analysis, so a
+report cannot be frozen with missing rows that would read as absent effects.
 
 Package E1, once its matrix reads 96/96:
 
