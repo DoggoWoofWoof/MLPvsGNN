@@ -28,6 +28,12 @@ REQUIRED_FILES = (
     "graph.pt",
 )
 
+# The embedding matrices are the only files a purely topological read never
+# needs. Every other file here contributes identity, candidates, golds, splits
+# or edges, all of which a structural diagnostic does use.
+EMBEDDING_FILES = ("nodes.npy", "queries_all.npy")
+TOPOLOGY_ONLY_FILES = tuple(name for name in REQUIRED_FILES if name not in EMBEDDING_FILES)
+
 
 @dataclass(eq=False)
 class CompleteQuery:
@@ -50,19 +56,34 @@ class CompleteQuery:
 class CompleteRetrievalDataset:
     root: Path
     dataset: str
-    node_array: np.ndarray
-    query_array: np.ndarray
+    node_array: np.ndarray | None
+    query_array: np.ndarray | None
     rowptr: torch.Tensor
     col: torch.Tensor
     queries: list[CompleteQuery]
     metadata: dict[str, Any]
 
     @property
+    def embeddings_loaded(self) -> bool:
+        """False when this was opened topology-only; see ``load_complete_dataset``."""
+
+        return self.node_array is not None
+
+    @property
     def num_nodes(self) -> int:
+        if self.node_array is None:
+            # Cross-checked against nodes.shape[0] whenever embeddings are
+            # loaded, so the two agree by construction on a valid directory.
+            return int(self.metadata["graph_nodes"])
         return int(self.node_array.shape[0])
 
     @property
     def feature_dim(self) -> int:
+        if self.node_array is None:
+            raise ValueError(
+                "feature_dim is unavailable: this dataset was opened topology-only, "
+                "without nodes.npy. Load it with require_embeddings=True to train or score."
+            )
         return int(self.node_array.shape[1])
 
     def split(self, split: QuerySplit) -> list[CompleteQuery]:
@@ -176,34 +197,65 @@ def _load_node_id_mapping(root: Path, num_nodes: int) -> dict[str, int] | None:
     return mapping
 
 
-def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> CompleteRetrievalDataset:
-    """Validate and load one complete dataset without copying its arrays."""
+def load_complete_dataset(
+    root: str | Path,
+    *,
+    dataset: str | None = None,
+    require_embeddings: bool = True,
+) -> CompleteRetrievalDataset:
+    """Validate and load one complete dataset without copying its arrays.
+
+    ``require_embeddings=False`` opens the dataset **topology-only**: the two
+    embedding matrices are neither required nor opened, and ``node_array`` and
+    ``query_array`` are ``None``. Everything that defines the graph, the
+    candidate pools, the seeds, the golds and the splits is loaded and validated
+    exactly as before, including the candidate contract hash.
+
+    This exists because a structural diagnostic reads none of the embedding
+    values -- ``nodes.npy`` and ``queries_all.npy`` are consulted only for
+    ``.ndim`` and ``.shape`` -- while being by far the largest files in a frozen
+    dataset. Requiring them would make a topology audit wait on tens of
+    gigabytes it never reads.
+
+    What is given up is stated plainly rather than hidden: the cross-checks that
+    the embeddings agree with the query count and the graph node count cannot
+    run without the files. Every other check still does, and any code that
+    reaches for an embedding gets ``None`` or a clear error rather than a
+    silently wrong array.
+    """
 
     root = Path(root)
-    missing = [name for name in REQUIRED_FILES if not (root / name).is_file()]
+    needed = REQUIRED_FILES if require_embeddings else TOPOLOGY_ONLY_FILES
+    missing = [name for name in needed if not (root / name).is_file()]
     if missing:
         raise FileNotFoundError(f"Incomplete retrieval directory {root}: missing {missing}")
-    nodes = np.load(root / "nodes.npy", mmap_mode="r")
-    query_embeddings = np.load(root / "queries_all.npy", mmap_mode="r")
+    nodes = np.load(root / "nodes.npy", mmap_mode="r") if require_embeddings else None
+    query_embeddings = (
+        np.load(root / "queries_all.npy", mmap_mode="r") if require_embeddings else None
+    )
     dense = np.load(root / "dense_top200_all.npy", mmap_mode="r")
     splade = np.load(root / "splade_top200_all.npy", mmap_mode="r")
     manifest = json.loads((root / "query_ids_all.json").read_text(encoding="utf-8"))
     query_ids = manifest["ids"]
     gold_ids = manifest["golds"]
     query_count = len(query_ids)
-    if not (
-        query_embeddings.ndim == 2
-        and nodes.ndim == 2
-        and query_embeddings.shape[1] == nodes.shape[1]
-        and dense.shape == splade.shape
+    aligned = (
+        dense.shape == splade.shape
         and dense.ndim == 2
         and dense.shape[0] == query_count
-        and query_embeddings.shape[0] == query_count
         and len(gold_ids) == query_count
-    ):
+    )
+    if require_embeddings:
+        aligned = aligned and (
+            query_embeddings.ndim == 2
+            and nodes.ndim == 2
+            and query_embeddings.shape[1] == nodes.shape[1]
+            and query_embeddings.shape[0] == query_count
+        )
+    if not aligned:
         raise ValueError("Frozen embedding, candidate, ID, and gold arrays are misaligned")
     edge_index, graph_nodes = _graph_payload(root / "graph.pt")
-    if graph_nodes != nodes.shape[0]:
+    if require_embeddings and graph_nodes != nodes.shape[0]:
         raise ValueError(f"Graph has {graph_nodes} nodes but node embeddings have {nodes.shape[0]}")
     if dense.size and (dense.min() < 0 or dense.max() >= graph_nodes):
         raise ValueError("Dense candidates contain an invalid node index")
@@ -281,6 +333,8 @@ def load_complete_dataset(root: str | Path, *, dataset: str | None = None) -> Co
             "candidate_sources": ["dense_top200", "splade_top200"],
             "candidate_contract_sha256": _contract_hash(queries),
             "num_edges": int(edge_index.shape[1]),
+            "graph_nodes": int(graph_nodes),
+            "embeddings_loaded": bool(require_embeddings),
             "node_identity": "explicit_node_ids_json" if node_id_to_index is not None else "numeric_suffix",
         },
     )

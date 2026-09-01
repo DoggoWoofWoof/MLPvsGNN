@@ -85,6 +85,15 @@ DATASET_ROOT_FILES = (
     "_frozen_source_manifest.json",
 )
 
+# The two embedding matrices are consulted only for ``.ndim`` and ``.shape``
+# when a dataset is opened normally, and not at all under
+# ``require_embeddings=False``. They are also the largest files in the
+# directory, so a topology audit must not be queued behind them.
+EMBEDDING_FILES = ("nodes.npy", "queries_all.npy")
+TOPOLOGY_ROOT_FILES = tuple(
+    name for name in DATASET_ROOT_FILES if name not in EMBEDDING_FILES
+)
+
 # ``run_phase_confirmation`` loads these before applying any intervention.
 DATASET_DERIVED_PREFIXES = (
     "derived/packed_topology_v1",
@@ -139,9 +148,12 @@ def build_plan(volume: modal.Volume, which: str) -> list[tuple[str, int]]:
     plan: dict[str, int] = {}
 
     if which in ("phase_minus_1", "e2_resume"):
+        # Phase -1 opens the dataset topology-only, so it must not drag the
+        # embedding matrices across; E2 trains and therefore needs them.
+        wanted = TOPOLOGY_ROOT_FILES if which == "phase_minus_1" else DATASET_ROOT_FILES
         for dataset, root in sorted(roots.items()):
             listing = {path: size for path, size in _walk(volume, root)}
-            for name in DATASET_ROOT_FILES:
+            for name in wanted:
                 candidate = f"{root}/{name}"
                 if candidate in listing:
                     plan[candidate] = listing[candidate]

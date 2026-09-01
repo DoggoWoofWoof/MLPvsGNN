@@ -107,13 +107,31 @@ def test_dataset_root_outside_the_storage_prefix_is_rejected(tmp_path, monkeypat
         replicate_volume.dataset_roots()
 
 
-def test_phase_minus_1_is_exactly_what_load_complete_dataset_opens(volume, confirmations):
+def test_phase_minus_1_is_exactly_what_the_topology_audit_opens(volume, confirmations):
     plan = replicate_volume.build_plan(volume, "phase_minus_1")
     selected = paths(plan)
-    for name in replicate_volume.DATASET_ROOT_FILES:
+    for name in replicate_volume.TOPOLOGY_ROOT_FILES:
         assert f"{ROOT}/{name}" in selected, name
     assert not any("/derived/" in path for path in selected)
     assert "edge_provenance_graphs/toy/abcdef0123456789/structural_only.pt" in selected
+
+
+def test_phase_minus_1_never_carries_embeddings(volume, confirmations):
+    """The audit opens the dataset topology-only, so these must not be queued.
+
+    They are the two largest files in a dataset root; shipping them would put a
+    structural measurement behind tens of gigabytes it never reads.
+    """
+
+    selected = paths(replicate_volume.build_plan(volume, "phase_minus_1"))
+    for name in replicate_volume.EMBEDDING_FILES:
+        assert f"{ROOT}/{name}" not in selected, name
+
+
+def test_e2_still_carries_embeddings_because_it_trains(volume, confirmations):
+    selected = paths(replicate_volume.build_plan(volume, "e2_resume"))
+    for name in replicate_volume.EMBEDDING_FILES:
+        assert f"{ROOT}/{name}" in selected, name
 
 
 def test_phase_minus_1_carries_no_results(volume, confirmations):

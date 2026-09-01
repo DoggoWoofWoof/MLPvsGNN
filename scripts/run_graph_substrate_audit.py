@@ -395,7 +395,13 @@ def run(
     if finished is not None:
         return finished
 
-    dataset = load_complete_dataset(args.data, dataset=args.dataset)
+    # Topology-only: this audit reads the CSR, the candidate pools, the seeds,
+    # the golds and the splits, and never an embedding value. Requiring
+    # nodes.npy and queries_all.npy would make a structural measurement wait on
+    # the two largest files in the dataset for their array headers alone.
+    dataset = load_complete_dataset(
+        args.data, dataset=args.dataset, require_embeddings=False
+    )
     if len(dataset.queries) != args.expected_queries:
         raise ValueError("Complete dataset query count differs from the registered protocol")
     contract_before = dataset.metadata["candidate_contract_sha256"]
