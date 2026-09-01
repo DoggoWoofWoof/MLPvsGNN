@@ -245,6 +245,15 @@ synthetic effectiveness numbers, which confirmed the join keys and, with
 attainment held constant, attributed every gain to the ceiling and none to
 ranking. The decomposition sums exactly to the observed change on all 18 steps.
 
+`scripts/check_package_d_gate.py` decides whether D may launch. The Modal
+launcher only checks the artifacts of the one dataset it is about to run, so on
+a partially finished Package C it would start per dataset and fail per dataset
+instead of refusing as a whole. The gate check reads all six budget-400
+conditions and requires every one to be complete, five-seeded for both models,
+not test-selected, and carrying a recorded checkpoint hash. It exposes contract
+booleans only and never reads a metric, so it is safe to run while Package C is
+still finishing. It exits non-zero while the gate is closed.
+
 **Package E2.** `scripts/analyze_phase_screen.py` was run on a full synthetic
 96-cell screen against the real sealed confirmations, read-only. All three
 branches of the locked selection rule behave as specified, the analysis reports
