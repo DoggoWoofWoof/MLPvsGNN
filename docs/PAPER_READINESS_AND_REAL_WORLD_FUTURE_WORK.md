@@ -1,9 +1,27 @@
 # Paper-Readiness and Real-World Ranker Audit
 
-Status: **living readiness document**. Nothing here changes the sealed
-six-dataset confirmation. Package A1/A2/A3 were executed under new frozen
-protocols and separate outputs; Package A is now closed, and every remaining
-experiment still requires its own preregistration.
+Status: **living readiness document**, reconciled 2026-09-01. Nothing here
+changes the sealed six-dataset confirmation. Package A1/A2/A3 were executed
+under new frozen protocols and separate outputs; Package A is now closed, and
+every remaining experiment still requires its own preregistration.
+
+Status labels used here: **COMPLETE** (finished, integrity-verified, frozen),
+**RUNNING** (registered cells executing now), **GATED** (frozen but blocked on a
+named dependency), **FUTURE** (not preregistered). Exact per-cell counts live in
+[`EXPERIMENT_EXECUTION_STATUS.md`](EXPERIMENT_EXECUTION_STATUS.md) and are not
+duplicated here.
+
+**A:** COMPLETE. **Candidate-generation headroom:** COMPLETE. **B / C / E1:**
+RUNNING. **D:** GATED on Package C budget-400. **E2:** GATED on the E1 screen.
+**F:** sealed.
+
+One readiness gap listed below is now closed. The audit asked for
+candidate-conditional metrics, because a binary gold set can be incomplete and
+some sources are effectively gold-heavy. Every reported metric now carries its
+achievable ceiling `min(p, K) / g` from
+[`CANDIDATE_HEADROOM_RESULTS.md`](CANDIDATE_HEADROOM_RESULTS.md), which
+separates upstream candidate-generation failure from reranking failure and
+makes cross-dataset absolute levels interpretable for the first time.
 
 Publication prose uses **QLS-MLP (Query-Local Structure MLP)**. The frozen
 implementation key `sa_mlp` and existing SA-named artifacts remain unchanged;

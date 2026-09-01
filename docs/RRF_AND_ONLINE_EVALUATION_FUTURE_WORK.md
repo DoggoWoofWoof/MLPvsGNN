@@ -1,9 +1,19 @@
 # RRF Fusion and Unseen-Embedding Systems Evaluation
 
-Status: **RRF and linear effectiveness controls complete; uncached online evaluation
-deferred**. The A1/A2/A3 executions use separate frozen protocols and do not
-change the sealed QLS-MLP confirmation. Package D still requires a new
-preregistration and new result files.
+Status (2026-09-01): **RRF and linear effectiveness controls COMPLETE;
+uncached online evaluation (Package D) frozen and GATED**. Package D is
+preregistered in `ONLINE_SYSTEMS_PROTOCOL.md` and is blocked on exactly one
+dependency: all six Package C budget-400 conditions must be COMPLETE and
+integrity-valid, because D reuses their checkpoints and candidate caches.
+Package C is running; see
+[`EXPERIMENT_EXECUTION_STATUS.md`](EXPERIMENT_EXECUTION_STATUS.md) for the live
+matrix. D writes new result files and does not change the sealed QLS-MLP
+confirmation.
+
+The three-way latency distinction below is load-bearing and must be preserved in
+all prose: **cached operator latency** is not **uncached / on-demand
+post-retrieval latency**, and neither is **raw-query end-to-end latency**. The
+existing 2.49--7.08x figure is the first of the three.
 
 The completed rank and fixed-structure tables are in
 `P0_RANK_CONTROLS_RESULTS.md` and `P0_FIXED_STRUCTURAL_CONTROLS_RESULTS.md`.

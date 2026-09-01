@@ -137,7 +137,7 @@ Between 92% and 100% of missing gold evidence sits within three hops of nodes
 the retriever already returned. On 2Wiki, 84% is a single hop away; on MetaQA,
 all 260,233 missing golds are reachable within three.
 
-**This is a measurement, not a licence.** These nodes are not admitted to any
+**This is a measurement, not a license.** These nodes are not admitted to any
 Paper-1 candidate pool, and no expansion, admission, or regeneration was
 performed. Candidate expansion remains a Paper-2 / G2 question, and the
 Paper-1 protocol is unchanged by this result. What the number establishes is

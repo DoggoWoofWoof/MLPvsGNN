@@ -18,7 +18,7 @@ number in this paper is therefore ambiguous between three failures:
    ranked it below the cut-off.
 
 Only (3) is what this paper studies. QLS-MLP and the matched seed-aware GNN must
-not be credited or penalised for (1) or (2).
+not be credited or penalized for (1) or (2).
 
 ## The ceiling is not the coverage
 
@@ -78,7 +78,7 @@ records whether symmetrising the view changed anything.
 - It must not be used to select a budget, a model, a perturbation rate, or a
   dataset.
 - Candidate expansion remains a separate Paper-2 / G2 research question. That a
-  missing gold sits one hop from a seed is a *measurement*, not a licence to go
+  missing gold sits one hop from a seed is a *measurement*, not a license to go
   and fetch it.
 
 The runner re-validates the frozen candidate contract against the registered

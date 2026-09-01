@@ -331,6 +331,34 @@ Completeness does **not** guarantee:
 - that the original public benchmark has no omissions outside the frozen
   experimental source.
 
+### How far the first caveat actually bites (measured 2026-09-01)
+
+The gap between "complete" and "every gold is reachable by the ranker" is now
+quantified per dataset rather than left as a warning. Test split, frozen union
+pool; full tables in [`CANDIDATE_HEADROOM_RESULTS.md`](CANDIDATE_HEADROOM_RESULTS.md).
+
+| Dataset | golds/query | gold coverage | Recall@5 ceiling | test queries with no gold in pool |
+| --- | ---: | ---: | ---: | ---: |
+| SQuAD | 1.00 | 0.995 | 0.995 | 67 |
+| HotpotQA | 2.00 | 0.930 | 0.930 | 21 |
+| MuSiQue | 2.34 | 0.933 | 0.941 | 0 |
+| 2Wiki | 2.42 | 0.766 | 0.797 | 0 |
+| WebQSP | 6.17 | 0.453 | 0.450 | 58 |
+| MetaQA | 7.75 | 0.141 | 0.326 | 18,939 |
+
+Coverage and ceiling are different quantities and must not be interchanged. For
+a query with `g` golds, `p` of them in the pool, and cut-off `K`, the achievable
+Recall@K is `min(p, K) / g`. Coverage `p / g` overstates it whenever `g > K`,
+which is exactly the multi-gold regime of MetaQA and WebQSP.
+
+Nearly half of MetaQA's test queries have no gold in the pool at all and score
+zero for every model by construction. Separately, 92–100% of the missing gold
+evidence lies within three graph hops of the frozen retrieval seeds. That is a
+**measurement about candidate generation**, recorded here so the provenance of
+these datasets is honest. It is not a license to expand the Paper-1 candidate
+set: no gold was admitted, no pool was expanded, and candidate expansion remains
+a Paper-2 / G2 question.
+
 The candidate ceiling is particularly important. If a gold is absent from the
 Dense/SPLADE union, no MLP, QLS-MLP, or GNN reranker can recover it.
 

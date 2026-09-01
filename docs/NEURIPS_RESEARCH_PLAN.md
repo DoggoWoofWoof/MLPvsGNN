@@ -24,12 +24,27 @@
 > MetaQA, and HotpotQA, but still trails QLS by 2.55–11.77 R@5 points on four
 > datasets. See `docs/P0_LINEAR_RANK_STRUCTURE_RESULTS.md`.
 
-> **Project status (2026-08-30): stopped at completed Package A3.** The sealed
-> fairness confirmation remains closed, while A1/A2/A3 live in a separate P0
+> **Project status (2026-09-01): Packages B, C, and E1 are running.** The
+> workspace spend limit recorded on 2026-08-31 has lifted, and the three
+> packages were resumed with every volume checkpoint preserved. The sealed
+> fairness confirmation remains closed, and A1/A2/A3 live in a separate P0
 > resumption lineage. Package A is closed to further test-driven tuning.
 > Sections describing perturbations, prediction, theory, or launch commands
 > remain plans until separately frozen. The frozen confirmation result and its
 > decisions continue to take precedence.
+>
+> **A:** COMPLETE. **Candidate-generation headroom diagnostic:** COMPLETE.
+> **B / C / E1:** RUNNING. **D:** GATED on all six Package C budget-400 cells.
+> **E2:** GATED on a complete E1 screen, a validation-only rate selection, a
+> commit, and a new freeze tag. **F:** sealed and unopened.
+>
+> **Headroom changes how results are read, not what they compute.** Every
+> reported metric now has a companion ceiling `min(p, K) / g`. Candidate
+> coverage `p / g` is not an oracle Recall@K and must never be quoted as one.
+> MetaQA attains roughly 92% of its candidate ceiling and so is not primarily a
+> ranking-model failure; WebQSP attains roughly 74% and retains the most
+> genuine reranking headroom. See
+> `docs/CANDIDATE_HEADROOM_RESULTS.md`.
 
 > **Fairness-confirmation result and stop decision (2026-08-26):** the protocol
 > frozen at `sa-mlp-confirmation-protocol-v1` is complete on all six datasets

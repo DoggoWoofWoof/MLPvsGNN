@@ -23,7 +23,7 @@ The exact completion matrices, remaining work, and safe resume order are in the
 Every reported metric now has a companion ceiling. The
 [headroom diagnostic](docs/CANDIDATE_HEADROOM_RESULTS.md) separates upstream
 candidate-generation failure from the reporting cut-off and from reranking, so
-QLS-MLP and the seed-aware GNN are neither credited nor penalised for gold
+QLS-MLP and the seed-aware GNN are neither credited nor penalized for gold
 evidence that was never in their candidate set. It reorders the cross-dataset
 reading: MetaQA attains 92% of what its candidates allowed and is not a
 modelling failure, while WebQSP attains only 74% and holds the most unexploited

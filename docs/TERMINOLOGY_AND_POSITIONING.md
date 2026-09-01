@@ -165,29 +165,38 @@ Planning references:
 
 ## Six submission-critical experiment packages
 
+Status labels used here: **COMPLETE** (finished, integrity-verified, frozen),
+**RUNNING** (registered cells executing now), **GATED** (frozen but blocked on a
+named dependency), **FUTURE** (not preregistered). Exact per-cell counts live in
+[`EXPERIMENT_EXECUTION_STATUS.md`](EXPERIMENT_EXECUTION_STATUS.md) and are not
+duplicated here.
+
 Do not expand model design until these are complete:
 
-1. **Package A — semantic versus structural decomposition.** Dense, SPLADE,
-   equal RRF, validation-only weighted RRF, structural-only PPR/distance/path,
-   RRF+structural combinations, linear QLS, QLS-MLP, and seed-aware GNN.
-2. **Package B — edge provenance (mandatory).** Native/title/KB-only,
+1. **Package A — semantic versus structural decomposition. COMPLETE.** Dense,
+   SPLADE, equal RRF, validation-only weighted RRF, structural-only
+   PPR/distance/path, RRF+structural combinations, linear QLS, QLS-MLP, and
+   seed-aware GNN.
+2. **Package B — edge provenance (mandatory). RUNNING.** Native/title/KB-only,
    embedding-kNN-only, and union graphs for both QLS and GNN, with the union
    proven equivalent to the frozen adjacency.
-3. **Package C — structural-context budget.** Shared 50/100/200/400 candidate
-   budgets with ceiling, effectiveness, graph size/density, method-specific
-   compute, and total post-retrieval latency.
-4. **Package D — online systems evaluation.** Separate cached operator latency
-   from an uncached path beginning at unseen query embeddings and Dense/SPLADE
-   rankings. Report batch 1/16, p50/p95/p99, throughput, GPU/CPU memory,
-   storage, cold start, and cache break-even.
-5. **Package E — robustness phase diagram and utility predictor.** Perturb seed
-   quality, retriever agreement, candidate noise, topology, kNN density, and
-   semantic features; predict `GNN effectiveness - QLS effectiveness` on held-
-   out regimes or datasets.
-6. **Package F — fresh untouched confirmation.** Only after A–E and their
-   hypotheses are frozen, evaluate an external setting with unseen query
-   embeddings, upstream candidates, relevance labels, and native or
-   preregistered label-free topology.
+3. **Package C — structural-context budget. RUNNING.** Shared 50/100/200/400
+   candidate budgets with ceiling, effectiveness, graph size/density,
+   method-specific compute, and total post-retrieval latency.
+4. **Package D — online systems evaluation. GATED on all six Package C
+   budget-400 cells.** Separate cached operator latency from an uncached path
+   beginning at unseen query embeddings and Dense/SPLADE rankings. Report batch
+   1/16, p50/p95/p99, throughput, GPU/CPU memory, storage, cold start, and
+   cache break-even.
+5. **Package E — robustness phase diagram and utility predictor. E1 RUNNING; E2
+   GATED on a complete E1 screen, a validation-only rate selection, a commit,
+   and a new freeze tag.** Perturb seed quality, retriever agreement, candidate
+   noise, topology, kNN density, and semantic features; predict `GNN
+   effectiveness - QLS effectiveness` on held-out regimes or datasets.
+6. **Package F — fresh untouched confirmation. SEALED / UNOPENED.** Only after
+   A–E and their hypotheses are frozen, evaluate an external setting with
+   unseen query embeddings, upstream candidates, relevance labels, and native
+   or preregistered label-free topology.
 
 The priority sequence is:
 
@@ -208,7 +217,20 @@ Until the packages above are complete, do not claim that:
 - the existing 2.49--7.08x number is end-to-end or uncached latency;
 - external query datasets alone establish graph-retrieval generalization;
 - fewer parameters explain the result—the principal frozen models are
-  approximately parameter matched.
+  approximately parameter matched;
+- a dataset with low absolute recall is therefore a dataset where message
+  passing or QLS failed—MetaQA attains roughly 92% of its candidate ceiling, so
+  its low raw Recall@5 is dominated by upstream candidate generation, not by
+  reranking;
+- candidate coverage `p / g` is an oracle Recall@K—the achievable value is
+  `min(p, K) / g`, and the two differ whenever a query has more golds than the
+  cut-off;
+- absolute metric levels are comparable across datasets—they are confounded by
+  candidate coverage unless each is reported beside its ceiling.
+
+The dataset that currently retains the most genuine reranking headroom is
+WebQSP, at roughly 74% ceiling utilization, not the datasets with the lowest raw
+scores. See [`CANDIDATE_HEADROOM_RESULTS.md`](CANDIDATE_HEADROOM_RESULTS.md).
 
 The current systems result is specifically a **warm-cache operator/reranking
 comparison**. It remains valid, but it answers a smaller question than an
