@@ -28,7 +28,7 @@ therefore almost always "No", and that is the intended answer, not an oversight.
 | 2 | A 19-parameter linear rank+structure model is a serious control, not a strawman | Paper 1, `P0_LINEAR_RANK_STRUCTURE_*` | Already in Paper 1 | Bounds how much of the effect is linear in rank and simple structure | Same control must gate any G2 candidate-scoring claim | ESTABLISHED |
 | 3 | Structural vs embedding-kNN edge provenance are different mechanisms and must be separated | Paper 1 Package B, `EDGE_PROVENANCE_PROTOCOL.md`; C-RAG topology ablations | Already in Paper 1 (Package B) | Tests whether propagation and fixed structure respond differently to edge semantics | Chooses which graph a G2 expansion should walk | IN FLIGHT (B resumed 2026-09-01, 12/24) |
 | 4 | Fixed features can leak dataset identity or labels unless audited | Paper 1, `SA_FEATURE_LEAKAGE_AUDIT.md`, `DATASET_GRAPH_PROVENANCE.md` | Already in Paper 1 | Label-free audit is a precondition for every QLS claim | Any G2 learned admission scorer needs the same audit before it is trusted | ESTABLISHED |
-| 5 | Structural utility is regime-dependent, not a global property of a dataset | Paper 1 Packages A/E1 framing; C-RAG per-topology variation | Already in Paper 1 (E1 screens it) | Motivates the phase screen and the eventual utility predictor | Predicts where expansion pays for itself | IN FLIGHT (E1 resumed, 52/96) |
+| 5 | Structural utility is regime-dependent, not a global property of a dataset | Paper 1 Packages A/E1 framing; C-RAG per-topology variation | Already in Paper 1 (E1 screens it) | Motivates the phase screen and the eventual utility predictor | Predicts where expansion pays for itself | IN FLIGHT (E1 complete 96/96 and frozen; E2 running) |
 | 6 | Candidate generation, not reranking, is the binding constraint on several datasets | Paper 1, `CANDIDATE_HEADROOM_RESULTS.md` (2026-09-01) | **Reporting-only** | Every metric is reported beside `min(p,K)/g`; MetaQA attains 92% of its ceiling, WebQSP only 74% | The central quantitative motivation for G2: the headroom is upstream | ESTABLISHED |
 | 7 | 92–100% of missing gold evidence sits within three hops of the frozen retrieval seeds | Paper 1, `CANDIDATE_HEADROOM_RESULTS.md` | **No — explicitly withheld** | Measured and reported; **no node admitted, no pool expanded** | Direct evidence that graph expansion is worth trying, and a quantified target | ESTABLISHED, DELIBERATELY NOT ACTED ON |
 | 8 | The candidate ceiling rises with budget, so budget sweeps confound ceiling growth with reranking gain | Paper 1, headroom × Package C | **Reporting-only** | Package C effects reported as attainment against the per-budget ceiling | Any budget or admission sweep in G2 needs the same decomposition | ESTABLISHED |
@@ -76,6 +76,8 @@ Recorded rather than papered over:
   the exact phrasing used in the 2026-09-01 handoff directive. The underlying
   concepts are present; the precise result values were not re-verified from
   this repository, because C-RAG is read-only and its own protocol governs them.
-* Rows 3 and 5 depend on Packages B and E1, which are resumed but incomplete.
+* Row 3 depends on Package B, which is resumed but incomplete. Row 5's E1
+  screen is complete and frozen; the row stays IN FLIGHT because the claim is
+  about regimes, and only the five-seed E2 confirmation can establish those.
   Their status must be re-read from `EXPERIMENT_EXECUTION_STATUS.md` before
   either row is cited as settled.

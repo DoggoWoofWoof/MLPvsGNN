@@ -11,13 +11,19 @@ Aggregation*
 
 **Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2/A3 controls:
 COMPLETE. Candidate-generation headroom diagnostic: COMPLETE. Package C
-(candidate budget): COMPLETE AND FROZEN. Packages B/E1: PARTIAL,
-INTEGRITY-VERIFIED, AND RESUMED. Package D: RUNNING on the verified C gate.
-Package F: SEALED.** The sealed QLS/GNN checkpoint remains unchanged and no
-partial seed outcome has been interpreted.
+(candidate budget): COMPLETE AND FROZEN. Package E1 (validation-only phase
+screen): COMPLETE AND FROZEN. Package E2 (five-seed phase confirmation):
+RUNNING on the tagged rate selection. Package B: PARTIAL, INTEGRITY-VERIFIED,
+AND RESUMED. Package D: RUNNING on the verified C gate. Package F: SEALED.**
+The sealed QLS/GNN checkpoint remains unchanged and no partial seed outcome has
+been interpreted.
 
 The workspace spend limit that blocked GPU allocation on 2026-08-31 has lifted.
 B, C, and E1 were resumed on 2026-09-01 with every volume checkpoint preserved.
+E1 closed at 96/96 the same day. Its rates were selected by the locked
+validation-only rule, committed, and tagged `phase-confirmation-protocol-v1`
+before E2's 96 test cells were launched; no test outcome was inspected while
+those conditions were still selectable.
 The exact completion matrices, remaining work, and safe resume order are in the
 [execution-status checkpoint](docs/EXPERIMENT_EXECUTION_STATUS.md).
 
@@ -402,10 +408,10 @@ perturbation + crossover predictor + systems tradeoff + external confirmation**.
 
 These steps are needed to move from a controlled empirical retrieval study to a
 deeper statement about when fixed structural summaries are sufficient and when
-learned message passing is genuinely necessary. Packages B and C and the
-validation-only E1 screen are frozen, partially persisted, and resumed as of
-2026-09-01. Package D is committed but cannot launch until the budget-400
-checkpoints from C are complete. Package F remains deliberately unopened.
+learned message passing is genuinely necessary. Package C and the
+validation-only E1 screen are complete and frozen as of 2026-09-01; Package B is
+persisted and resumed; Packages D and E2 are running. Package F remains
+deliberately unopened.
 
 For the NeurIPS main track, the phase diagram/predictor or theory is the likely
 gate. A separate Evaluations & Datasets route could instead center a documented
@@ -692,12 +698,14 @@ storage, and cold start. The existing 2.49–7.08x result remains warm-cache onl
 
 ### Package E — Robustness, crossover, and utility prediction
 
-**E1 validation-only screen partial, integrity-verified, and resumed
-2026-09-01.** Degree-preserving rewiring, random-edge
-addition, hub injection, and raw-feature masking are screened with one seed on
-validation only. A locked rule chooses crossover brackets. Five-seed test
-confirmation cannot launch until those rates are generated, reviewed,
-committed, and tagged. Predictor construction remains prohibited until the
+**E1 validation-only screen COMPLETE AND FROZEN 2026-09-01; E2 five-seed
+confirmation RUNNING.** Degree-preserving rewiring, random-edge
+addition, hub injection, and raw-feature masking were screened with one seed on
+validation only, 96/96 cells, 0 INVALID. The locked rule chose the crossover
+brackets: every level of every axis survived, because sign changes occur at
+different rates in different datasets and the union over six datasets covers the
+grid. The rates were committed and tagged `phase-confirmation-protocol-v1`
+before E2's 96 test cells launched. Predictor construction remains prohibited until the
 confirmation establishes reproducible help/neutral/harm regions.
 
 ### Package F — Fresh untouched confirmation
