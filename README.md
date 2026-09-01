@@ -14,7 +14,8 @@ COMPLETE. Candidate-generation headroom diagnostic: COMPLETE. Package C
 (candidate budget): COMPLETE AND FROZEN. Package E1 (validation-only phase
 screen): COMPLETE AND FROZEN. Package E2 (five-seed phase confirmation):
 RUNNING on the tagged rate selection. Package B: PARTIAL, INTEGRITY-VERIFIED,
-AND RESUMED. Package D: RUNNING on the verified C gate. Package F: SEALED.**
+AND RESUMED. Package D (uncached online systems): COMPLETE AND FROZEN.
+Package F: SEALED.**
 The sealed QLS/GNN checkpoint remains unchanged and no partial seed outcome has
 been interpreted.
 
@@ -409,8 +410,8 @@ perturbation + crossover predictor + systems tradeoff + external confirmation**.
 These steps are needed to move from a controlled empirical retrieval study to a
 deeper statement about when fixed structural summaries are sufficient and when
 learned message passing is genuinely necessary. Package C and the
-validation-only E1 screen are complete and frozen as of 2026-09-01; Package B is
-persisted and resumed; Packages D and E2 are running. Package F remains
+validation-only E1 screen are complete and frozen as of 2026-09-01, as is
+Package D; Package B is persisted and resumed; Package E2 is running. Package F remains
 deliberately unopened.
 
 For the NeurIPS main track, the phase diagram/predictor or theory is the likely

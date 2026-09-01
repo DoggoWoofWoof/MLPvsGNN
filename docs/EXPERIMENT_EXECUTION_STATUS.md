@@ -613,12 +613,46 @@ while its calls are queued. Only that one case is tolerated, since reporting an
 empty package when the real problem was an inability to look would be worse
 than failing.
 
-D is deliberately absent from `audit_modal_integrity.py`. The audit verifies
-per-seed checkpoints, and D trains nothing: it reuses the Package C budget-400
-checkpoints and measures latency. Its equivalent check is in
-`analyze_online_systems.py`, which refuses any dataset whose status is not
-complete and cross-checks each result against the budget-400 result it was
-derived from.
+D was previously absent from `audit_modal_integrity.py`; it is **registered as
+of 2026-09-01** with its own verification shape, described in the E2 section
+above. That registration is what revealed D had already finished: without it the
+package was running unmonitored and its completion was invisible.
+
+## Package D — COMPLETE AND FROZEN
+
+Integrity: 6 COMPLETE, 0 PARTIAL, 0 MISSING, 0 INVALID; 12/12 benchmarked model
+paths. Fetched and analyzed to
+`UNCACHED_UNSEEN_EMBEDDING_SYSTEMS_ALL_DATASETS_ANALYZED`; results in
+`docs/ONLINE_SYSTEMS_RESULTS.md`.
+
+### The efficiency claim inverts under the uncached boundary
+
+This is the package's reason for existing and the result is not the convenient
+one. Under warm caches, QLS-MLP's operator is 4x to 8x cheaper than the
+seed-aware GNN's: 0.113-0.139 ms per query against 0.446-0.953 ms. Under the
+uncached on-demand boundary, where the timed path must rebuild equal-RRF
+candidates, seeds, induced topology and the query-local summaries themselves,
+**QLS-MLP is slower than the GNN in 10 of the 12 dataset-batch cells** --
+1.13x to 1.39x slower at batch 1, and at batch 16 either marginally slower or,
+in two cells only (`squad_clean` 0.997 and `metaqa` 0.955), marginally faster.
+
+The mechanism is visible in the break-even table's build column. QLS's build
+prefix costs 2.2-3.0 ms per query at batch 1 against the GNN's 0.8-1.6 ms,
+because the query-local summaries are themselves part of what must be
+constructed on demand. What the cached comparison charges to a preprocessing
+step, the uncached comparison charges to the request.
+
+The three latencies must therefore stay separate, exactly as registered:
+**cached operator latency is not uncached on-demand post-retrieval latency, and
+neither is raw-query end-to-end latency.** Query encoding, Dense ANN lookup and
+SPLADE index lookup are shared upstream and excluded from both arms, so none of
+these numbers is an end-to-end system latency. No efficiency claim for QLS-MLP
+may be stated without naming which boundary it holds at: on this evidence the
+QLS advantage is a property of warm caching, not of the method.
+
+The break-even figures are compute-only lower bounds. The frozen protocol
+measures static-asset bytes but not per-query cache footprint, so storage is
+excluded; a real cache would also pay for memory the protocol does not charge.
 
 ## Package B and E1 close-out sequences
 
