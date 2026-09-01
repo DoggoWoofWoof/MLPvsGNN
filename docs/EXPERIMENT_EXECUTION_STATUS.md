@@ -89,10 +89,12 @@ work.** The matrix below covers the four newly trained families.
 | SQuAD | P Q3/G0 | P Q2/G0 | P Q4/G0 | P Q3/G0 |
 | MetaQA | P Q1/G0 | P Q1/G0 | M | M |
 
-Summary: **12 COMPLETE, 10 PARTIAL / RESUMABLE, 2 MISSING, 0 INVALID**
-out of 24 new-family conditions. There are 154/240 verified model-seed
-work units; **86 remain**. At condition-launch granularity, 12 conditions need
-resumption or first launch.
+Summary, re-derived 2026-09-01 with `scripts/audit_modal_integrity.py`:
+**16 COMPLETE, 6 PARTIAL / RESUMABLE, 2 MISSING, 0 INVALID** out of 24
+new-family conditions. There are 183/240 verified model-seed work units;
+**57 remain**. At condition-launch granularity, 8 conditions need resumption or
+first launch. The matrix above predates this re-audit and is kept as the
+pre-resume checkpoint.
 
 Package B is **not compilable** as a six-dataset package. Complete subsets must
 not be promoted to a paper table while the registered package is incomplete.
@@ -111,12 +113,16 @@ registered candidate hashes and RRF constant. No budget is selected on test.
 | SQuAD | P Q5/G1 | P Q5/G1 | P Q5/G0 | M |
 | MetaQA | M | M | M | M |
 
-Summary as of 2026-09-01: **13 COMPLETE, 6 PARTIAL / RESUMABLE, 5 MISSING,
-0 INVALID** out of 24 conditions. HotpotQA budget 50 reached COMPLETE during the
-2026-09-01 wave. At condition-launch granularity, 11 conditions need resumption
-or first launch. The seed-level work-unit count below is carried from the
-2026-08-31 integrity audit and must be re-derived with
-`scripts/audit_modal_integrity.py` once the current wave settles.
+Summary, re-derived 2026-09-01 with `scripts/audit_modal_integrity.py`:
+**21 COMPLETE, 3 PARTIAL / RESUMABLE, 0 MISSING, 0 INVALID** out of 24
+conditions. There are 233/240 verified model-seed work units; **7 remain**.
+Nothing is missing any more: every registered condition now exists on the
+volume, and the three that are incomplete are mid-training rather than
+unstarted. The matrix above predates this re-audit and is kept as the
+pre-resume checkpoint.
+
+Package C is the closest gate. When it closes, `scripts/check_package_d_gate.py`
+decides whether Package D may launch.
 
 Package C is **not compilable**. Package D is also locked: budget 400 is
 complete only for 2Wiki, MuSiQue, and WebQSP; HotpotQA is partial and SQuAD and
@@ -161,10 +167,10 @@ For the first, third, and fourth axes, Levels 1–4 mean
 0.10/0.25/0.50/1.00. For feature masking they mean
 0.25/0.50/0.75/1.00.
 
-Summary: **52 COMPLETE, 3 PARTIAL / RESUMABLE, 41 MISSING, 0 INVALID**
-out of 96 cells. There are 107/192 verified seed-0 model work units;
-**85 remain**. At cell-launch granularity, 44 cells need resumption or first
-launch.
+Summary, re-derived 2026-09-01 with `scripts/audit_modal_integrity.py`:
+**57 COMPLETE, 3 PARTIAL / RESUMABLE, 36 MISSING, 0 INVALID** out of 96 cells.
+There are 117/192 verified seed-0 model work units; **75 remain**. At
+cell-launch granularity, 39 cells need resumption or first launch.
 
 E1 is **not compilable**. The selected crossover/end-point rates cannot be
 frozen, so E2 five-seed test confirmation is not unlocked. Do not infer rates
@@ -172,17 +178,19 @@ from the completed datasets and do not inspect partial-cell validation values.
 
 ## Exact remaining GPU workload
 
-Condition/cell counts are verified as of 2026-09-01 via
-`scripts/audit_modal_progress.py`. The model-seed work-unit column is carried
-from the 2026-08-31 integrity audit and is an upper bound on what remains: it
-predates the 2026-09-01 wave and must be re-derived once that wave settles.
+Both columns were re-derived 2026-09-01 with
+`scripts/audit_modal_integrity.py`, which verifies persisted checkpoints without
+reading partial effectiveness metrics. **No condition is INVALID in any
+package**, so nothing completed so far has to be recomputed.
 
 | Package | Unfinished condition/cell launches | Remaining model-seed work units |
 |---|---:|---:|
-| B | 12 | <= 86 |
-| C | 11 | <= 77 |
-| E1 | 44 | <= 85 |
-| **Total** | **67** | **<= 248** |
+| B | 8 | 57 |
+| C | 3 | 7 |
+| E1 | 39 | 75 |
+| **Total** | **50** | **139** |
+
+These counts move while the jobs run and are a checkpoint, not a contract.
 
 Resumed on 2026-09-01 as persistent deployed Modal calls: 12 Package B jobs,
 12 Package C jobs, and 48 Package E1 cells, all restricted to the three
