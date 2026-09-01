@@ -16,7 +16,8 @@ screen): COMPLETE AND FROZEN. Package E2 (five-seed phase confirmation):
 STALLED at 48/96 on the tagged rate selection (workspace spend limit
 re-exceeded 2026-09-02; not corrupt, resumable, no protocol change needed). Package B (edge provenance): COMPLETE
 AND FROZEN. Package D (uncached online systems): COMPLETE AND FROZEN.
-Package F: SEALED. QLS-v2: DESIGNED, NOT TRAINED.**
+Package F: SEALED, and now reserved exclusively for the QLS-v2 confirmation.
+QLS-v2: DESIGNED, NOT TRAINED.**
 The sealed QLS/GNN checkpoint remains unchanged and no partial seed outcome has
 been interpreted.
 
@@ -431,8 +432,10 @@ These steps are needed to move from a controlled empirical retrieval study to a
 deeper statement about when fixed structural summaries are sufficient and when
 learned message passing is genuinely necessary. Package C and the
 validation-only E1 screen are complete and frozen as of 2026-09-01, as is
-Packages B and D; Package E2 is running. Package F remains
-deliberately unopened.
+Packages B and D; Package E2 is **stalled at 48/96 conditions** on a workspace
+spend limit, with 0 INVALID cells and a single protocol hash across every
+completed cell. Package F remains deliberately unopened and is now reserved for
+the QLS-v2 confirmation.
 
 For the NeurIPS main track, the phase diagram/predictor or theory is the likely
 gate. A separate Evaluations & Datasets route could instead center a documented
@@ -729,12 +732,33 @@ grid. The rates were committed and tagged `phase-confirmation-protocol-v1`
 before E2's 96 test cells launched. Predictor construction remains prohibited until the
 confirmation establishes reproducible help/neutral/harm regions.
 
-### Package F — Fresh untouched confirmation
+### Package F — Fresh untouched confirmation, reserved for QLS-v2
 
-After A–E and their hypotheses are frozen, evaluate once on unseen query
-embeddings, upstream ranked candidates, relevance labels, and native or
-preregistered label-free topology. NQ, MS MARCO, or BEIR alone is insufficient
-without a graph contract.
+Evaluate once on unseen query embeddings, upstream ranked candidates, relevance
+labels, and native or preregistered label-free topology. NQ, MS MARCO, or BEIR
+alone is insufficient without a graph contract.
+
+**Allocation decided 2026-09-02: F is reserved exclusively for the final QLS-v2
+confirmation.**
+
+```
+DO NOT open F.            DO NOT inspect F.        DO NOT run QLS-v1 on F.
+DO NOT use F for feature selection, architecture selection,
+       normalization constants, hyperparameter tuning, or any Pareto decision.
+```
+
+F is opened exactly once, after the v2 feature frontier, computation frontier,
+minimal-learner selection, LODO transfer and final freeze have all completed.
+One shot; if the result is worse than development suggested, that is the finding.
+
+**QLS-v1's role is now diagnostic and historical evidence from the six existing
+datasets.** Its frozen results, and the GNN's, remain evaluation baselines on
+Packages A–E exactly as they stand.
+
+The reason is that every v2 design decision so far has read frozen numbers from
+those six datasets — legitimate diagnostic use, but it means a strong v2 result
+there can be challenged as shaped by what we already looked at. F has never been
+opened, so it is the one number in this project immune to that objection.
 
 ### QLS-v2 — designed, not yet developed
 
@@ -787,14 +811,36 @@ read test-set aggregates — that leakage is declared and bounded rather than
 hidden.
 
 - [`docs/QLS_V1_WEAKNESS_AUDIT.md`](docs/QLS_V1_WEAKNESS_AUDIT.md) — the six defects, with evidence and the axes v1 already wins
-- [`docs/QLS_V2_FEATURE_CATALOG.md`](docs/QLS_V2_FEATURE_CATALOG.md) — 33 candidate features: formulas, costs, failure modes, registered predictions
-- [`docs/QLS_V2_DESIGN.md`](docs/QLS_V2_DESIGN.md) — no-GNN constraint, seed-bitset computation, the tiny learner
-- [`docs/QLS_V2_DEVELOPMENT_PROTOCOL.md`](docs/QLS_V2_DEVELOPMENT_PROTOCOL.md) — Phases 0–8, selection rule, LODO, freeze and confirmation
-- [`docs/QLS_V2_SYSTEMS_PLAN.md`](docs/QLS_V2_SYSTEMS_PLAN.md) — tail bounding, bounded diffusion, sketch backend, Pareto table
+- [`docs/QLS_V2_FEATURE_CATALOG.md`](docs/QLS_V2_FEATURE_CATALOG.md) — 40-feature superset/audit catalog: formulas, costs, failure modes, ten registered predictions
+- [`docs/QLS_V2_DESIGN.md`](docs/QLS_V2_DESIGN.md) — no-GNN constraint, seed-bitset computation, the semantic micro-branch, the tiny learner
+- [`docs/QLS_V2_DEVELOPMENT_PROTOCOL.md`](docs/QLS_V2_DEVELOPMENT_PROTOCOL.md) — Phases 0–8, the two frontiers, lexicographic Pareto rule, LODO, freeze scope
+- [`docs/QLS_V2_SYSTEMS_PLAN.md`](docs/QLS_V2_SYSTEMS_PLAN.md) — bounded traversal with exact complexity, bounded diffusion, sketch backend, Pareto table
+
+**The v2 model is built from two crossed frontiers, not from the catalog.**
+
+| Frontier | Question | Rungs | Target |
+|---|---|---|---|
+| **Structural R0–R5** | how much query-local graph structure does ranking need? | 6 | **12–15 dims** |
+| **Semantic S0–S3** | how cheaply can `q` and `d` be compared? | 4 | **0–1,536 params** |
+
+QLS-v1 spends **98,304 parameters** — 46.0% of its 213,506 — on a learned
+`768 → 64` projection of the query and candidate. The S3 rung replaces it with
+two 768-vectors, `Σ w_i q_i d_i` and `Σ v_i |q_i − d_i|`, at **1,536 parameters**.
+The ratio is the identity `2DP / 2D = projection_dim`, so the compression is
+exactly **64×**. Whole-model estimates span **1,208–5,695 parameters, 37×–177×
+fewer than the GNN's 213,568.**
+
+The structural backend is one **fused 3-pass traversal** carrying a 16-bit seed
+bitmask and the diffusion state over the same edge iteration — worst case
+`Θ(3|E_q| + N_q + 2^|S_q|)`, `≤ 13.0 KB` per query, memory independent of graph
+density. All twelve R1–R4 dimensions are read-outs of that single pass, against
+v1's ~16 edge passes.
 
 **Status: design under review. Implementation and training are gated on the
-protocol being frozen and tagged.** Package E2 continues untouched; Package F
-remains unopened.
+protocol being frozen and tagged.** One item is explicitly open and awaits the
+reviewer: the Pareto tolerance `tau`, proposed at **0.25 R@5 points**. Package E2
+is stalled on a workspace spend limit at 48/96 conditions with 0 INVALID cells;
+Package F remains unopened and is now reserved for the v2 confirmation.
 
 ### Future theory and optional work
 
@@ -819,10 +865,10 @@ docs/PAPER_READINESS_AND_REAL_WORLD_FUTURE_WORK.md prioritized missing controls
 docs/RRF_AND_ONLINE_EVALUATION_FUTURE_WORK.md RRF and unseen-embedding timing
 docs/EXPERIMENT_EXECUTION_STATUS.md exact B/C/E1 completion matrices
 docs/QLS_V1_WEAKNESS_AUDIT.md    read-only diagnosis of frozen QLS-v1
-docs/QLS_V2_FEATURE_CATALOG.md   33 candidate features with costs
-docs/QLS_V2_DESIGN.md            no-GNN constraint and the tiny learner
-docs/QLS_V2_DEVELOPMENT_PROTOCOL.md v2 selection discipline and freeze rule
-docs/QLS_V2_SYSTEMS_PLAN.md      v2 tail bounding and Pareto reporting
+docs/QLS_V2_FEATURE_CATALOG.md   40-feature superset catalog with costs
+docs/QLS_V2_DESIGN.md            no-GNN constraint, semantic micro-branch, tiny learner
+docs/QLS_V2_DEVELOPMENT_PROTOCOL.md v2 frontiers, Pareto rule, freeze scope, F allocation
+docs/QLS_V2_SYSTEMS_PLAN.md      v2 bounded complexity and Pareto reporting
 docs/CANDIDATE_HEADROOM_PROTOCOL.md read-only retrieval-headroom contract
 docs/CANDIDATE_HEADROOM_RESULTS.md candidate ceilings and missing-gold reachability
 docs/CROSS_PAPER_LEARNING_LEDGER.md Paper-1/Paper-2 findings and backport discipline

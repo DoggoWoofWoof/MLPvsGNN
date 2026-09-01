@@ -987,10 +987,10 @@ test, not by documentation alone.
 | Document | Contents |
 |---|---|
 | `docs/QLS_V1_WEAKNESS_AUDIT.md` | six defects W1-W6 with frozen evidence, plus the axes v1 already wins |
-| `docs/QLS_V2_FEATURE_CATALOG.md` | 33 candidate features: formulas, costs, cacheability, failure modes, registered predictions |
-| `docs/QLS_V2_DESIGN.md` | no-GNN constraint, seed-bitset computation, the ~1.4K-4.3K parameter learner |
-| `docs/QLS_V2_DEVELOPMENT_PROTOCOL.md` | Phases 0-8, selection rule, mandatory LODO, freeze and confirmation |
-| `docs/QLS_V2_SYSTEMS_PLAN.md` | tail bounding, bounded diffusion, sketch backend, Pareto table |
+| `docs/QLS_V2_FEATURE_CATALOG.md` | 40-feature superset/audit catalog: formulas, costs, cacheability, failure modes, ten registered predictions |
+| `docs/QLS_V2_DESIGN.md` | no-GNN constraint, seed-bitset computation, semantic micro-branch, the 1.2K-5.7K parameter learner |
+| `docs/QLS_V2_DEVELOPMENT_PROTOCOL.md` | Phases 0-8, two crossed frontiers, lexicographic Pareto rule, mandatory LODO, freeze scope, F allocation |
+| `docs/QLS_V2_SYSTEMS_PLAN.md` | boundedness objective, exact traversal complexity, bounded diffusion Pareto experiment, sketch backend |
 
 ### The six defects
 
@@ -1017,14 +1017,18 @@ W6  cold-query cost concentrated in the query_local_summary heavy tail
 1. **|S_q| <= 10** -- seeds are the union of dense top-5 and SPLADE top-5
    (`configs/sa_mlp_screen.yaml`). Per-seed statistics are cheap and a per-node
    seed bitmask fits one 16-bit word. No multi-word fallback is needed.
-2. **Embedding width is 768**, so v1's q/x projection is 98,432 parameters --
-   **46% of the 213,506-parameter model** -- before any structural feature is
-   consumed. A scalar-only ranker deletes that mass outright.
+2. **Embedding width is 768 and both projections are bias-free**
+   (`operator_models.py:34-35`), so v1's q/x projection is exactly **98,304
+   parameters -- 46.0% of the 213,506-parameter model** -- spent before any
+   structural feature is consumed. *(An earlier revision said 98,432 by
+   including biases the layers do not have.)* The S3 semantic rung replaces it
+   with two 768-vectors at 1,536 parameters; the ratio is the identity
+   `2DP / 2D = projection_dim`, so the compression is exactly **64x**.
 3. **A3 is the decisive evidence that capacity is not the constraint.** The
    frozen 19-parameter linear model, with no embeddings and no adjacency,
    recovers 51.8% (WebQSP), 47.9% (HotpotQA), 65.6% (MetaQA) of the
-   selected-RRF to QLS gap. Proposed v2 learner: **~1,395-4,291 parameters,
-   50-153x smaller than the GNN.**
+   selected-RRF to QLS gap. Proposed v2 learner: **1,208-5,695 parameters,
+   37x-177x smaller than the GNN's 213,568.**
 
 ### Corrections carried explicitly rather than smoothed over
 
@@ -1062,6 +1066,90 @@ would defeat the discipline they enforce.
 **E2 remains the QLS-v1 diagnosis and must not be used to choose any v2
 hyperparameter.** Package F stays unopened until the v2 architecture, feature
 set and implementation are frozen at Phase 7.
+
+## QLS-v2 protocol revision 2026-09-02 -- semantic frontier and F allocation
+
+Second revision of the v2 design, before any implementation. Nothing frozen was
+touched; E2 is untouched and still quota-blocked; no v2 code exists.
+
+### What changed
+
+1. **A semantic-compression frontier S0-S3 was added.** The claim is no longer
+   "structural features plus optional embeddings" but: retrieval needs a compact
+   semantic relation representation **and** a compact query-local structural
+   representation, and neither requires learned message passing. musique forces
+   the first half -- there, structure contributes -0.73 and the entire QLS lift
+   is semantic. S3 replaces the 98,304-parameter projection with
+   `sum_i w_i q_i d_i` and `sum_i v_i |q_i - d_i|` at 1,536 parameters.
+2. **Rank-weighted seed support @1 / <=2 / <=3** added, with the weighting rule
+   `w(s) = 1/r(s)` -- pure reciprocal rank, no free constant -- **frozen before
+   any result exists**. RRF's k=60 was rejected because at ranks 1-5 it flattens
+   the weights to a 1.066 ratio and the feature would measure nothing.
+3. **The frontier was tightened.** The catalog is now explicitly a superset and
+   audit record. The primary frontier R0-R5 admits **12-15 structural
+   dimensions**, not 24+. R5 is predicted to be unnecessary, leaving 12.
+4. **Boundedness became an explicit design objective** with worst-case
+   complexity as the headline number: one fused 3-pass traversal, worst case
+   `Theta(3|E_q| + N_q + 2^|S_q|)`, `<= 13.0 KB` per query, memory independent
+   of graph density. All twelve R1-R4 dimensions read out of that single pass.
+5. **PPR replacement became a direct Pareto experiment** with a fixed primary
+   plot -- validation R@5 against `query_local_summary` p95 -- and a frozen rule:
+   if a bounded variant is Pareto-superior, iterative PPR is removed from the
+   candidate set; if none is, that negative result is reported.
+6. **An explicit lexicographic Pareto selection rule** replaced any weighted
+   scalar. No `R@5 - lambda*latency` objective exists, because lambda is
+   challengeable. Admit within a tolerance, then minimise p95, then parameters,
+   then peak training memory, with deterministic tie-breaks.
+7. **Marginal-efficiency reporting** is now mandatory per transition:
+   dR@1/dR@5/dR@20/dMRR, dp50/dp95/dp99, dCPU RSS, dtraining VRAM, dparameters.
+   `dR@5 / dp95` is explanatory only, never the selection objective.
+
+### The one open item
+
+**The Pareto tolerance `tau` is proposed at 0.25 R@5 points and awaits review.**
+It was chosen against two measured quantities, not for convenience:
+
+- QLS-v1's seed-to-seed std of R@5 is 0.047-1.144 across the six datasets, so the
+  seed-level noise of the six-dataset mean lies in **[0.224, 0.406]** points.
+  `tau = 0.25` sits at the lower edge of that band.
+- The smallest Holm-significant GNN advantage is **0.531** points (hotpotqa,
+  Holm p = 0.0027). `tau = 0.25` is 47% of it, so the tolerance alone cannot
+  hand back a contested effect.
+
+The *procedure* is frozen; only the *number* is open. It must be settled before
+Phase 2 runs, never after.
+
+### Package F allocation -- DECIDED
+
+**Package F is reserved exclusively for the final QLS-v2 confirmation.** Do not
+open, inspect, or run QLS-v1 on F. Do not use F for feature selection,
+architecture selection, normalization constants, hyperparameter tuning, or any
+Pareto decision. F is opened once, after the feature frontier, computation
+frontier, minimal-learner selection, LODO transfer and final freeze.
+
+**QLS-v1's role is now diagnostic and historical evidence from the six existing
+datasets.** Its frozen results and the GNN's remain evaluation baselines on
+Packages A-E exactly as they stand.
+
+### Freeze scope
+
+Frozen now: thesis, no-GNN constraint, feature catalog, rank-weighting rule,
+Phase 0 instrumentation, Phase 1 diagnostics, Phase 2 frontiers R0-R5 and S0-S3,
+marginal-efficiency reporting, admission threshold and cost veto, the
+lexicographic Pareto procedure, Package F allocation, data discipline and
+confirmation rules, and ten registered predictions.
+
+Prospective, because the answer legitimately depends on Phase 0-2 measurements:
+which bounded backend wins, the learner width, whether a listwise objective is
+needed, LODO presentation detail, freeze artifacts, whether the sketch backend
+ships, and the diffusion encoding choice. **No selection rule, threshold,
+tolerance or admission criterion is prospective.**
+
+### Status
+
+`docs/QLS_V2_DEVELOPMENT_PROTOCOL.md` remains
+`DRAFT_AWAITING_REVIEW_NOT_FROZEN`. No v2 experiment has been run, no v2 model
+trained, no v2 code written.
 
 ## Repository boundary
 

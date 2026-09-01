@@ -102,24 +102,40 @@ second.**
 
 ## 3. The candidate feature contract
 
-33 candidate scalars in five groups, defined with formulas, costs, cacheability
+40 candidate scalars in six groups, defined with formulas, costs, cacheability
 and failure modes in [`QLS_V2_FEATURE_CATALOG.md`](QLS_V2_FEATURE_CATALOG.md):
 
 | Group | n | Targets | Note |
 |---|---:|---|---|
 | A Retrieval prior | 9 | — | graph-free; rung R0 |
 | B Seed geometry | 7 | W1 | distance *distribution*, not the minimum |
-| C Independent support & path diversity | 7 | W2, W3 | **highest-expected-value group** |
+| C Independent support & path diversity | 9 | W2, W3 | **highest-expected-value group** |
 | D Fixed-depth diffusion | 6 | W6, W5 | bounded work, no convergence loop |
 | E Cheap candidate topology | 4 | W5 | induced-graph position |
+| F Semantic micro-branch | 5 | v1's 98,304-parameter projection | 0 or 1,536 parameters |
+
+> **That catalog is a superset and an audit record, not the model.** The model is
+> built from the two staged frontiers below, which together admit **12–15
+> structural dimensions and 0–5 semantic scalars** — not 40.
+
+| Frontier | Question it answers | Rungs | Target |
+|---|---|---|---|
+| **Structural R0–R5** | how much query-local graph structure does ranking need? | 6 | **12–15 dims** |
+| **Semantic S0–S3** | how cheaply can `q` and `d` be compared? | 4 | **0–1,536 params** |
+
+They are **crossed, not sequential** — see
+[`QLS_V2_DEVELOPMENT_PROTOCOL.md`](QLS_V2_DEVELOPMENT_PROTOCOL.md) §4 Phase 2.
+Both semantic branches (scalar/light-semantic S0–S2, and compact-embedding-
+interaction S3) are carried in parallel through early development; neither is
+assumed to win, and musique is the reason neither can be dropped on principle.
 
 **Every feature must correspond to a specific information loss identified in
 QLS-v1.** That constraint is what keeps this from becoming a fifty-feature
 kitchen sink, and it is why the catalog excludes motif censuses, exact
 disjoint-path computation and learned structural embeddings.
 
-Expected survivors: **15–20 features.** The elimination is a result, not
-housekeeping.
+Expected survivors: **12–15 structural dimensions**, with R5 predicted to be
+dropped entirely. The elimination is a result, not housekeeping.
 
 ---
 
@@ -157,19 +173,48 @@ unique supporting seeds   (popcount)
 hop-specific seed support (popcount per h)
 reachable seed fraction   (popcount / |S_q|)
 branch / predecessor stats (counted during the same passes)
+rank-weighted support     (one table lookup -- see below)
+diffusion h1 / h2 / h3    (fused into the same edge iteration)
 ```
 
-That is Groups B and C — 14 features — from **3 edge passes**, versus v1's ~8
-non-PPR passes producing a strictly weaker summary.
+**The diffusion is fused into the same passes.** Mask propagation and diffusion
+are both scatter-accumulate operations reading index `u` and writing index `v`
+from the previous generation. They share one loop over `E_q`, so the boolean OR
+and the float multiply-accumulate touch the same cache line. That collapses
+`3 + 3` passes into **3**.
+
+**Rank-weighted support costs nothing.** Because `|S_q| ≤ 10`, the whole function
+`mask ↦ Σ_{s ∈ mask} w(s)` is tabulated once per query in `2^|S_q| ≤ 1024` single
+additions via `W[m] = W[m & (m-1)] + w[ctz(m)]`. Every candidate then reads its
+rank-weighted support with **one array lookup**, not a loop over seeds. This is
+only possible because the seed contract bounds `|S_q|` at 10 — at 20 seeds the
+table would be a megabyte and the trick would be worthless.
+
+That is Groups B and C — 16 features — plus Group D, from **3 edge passes**,
+versus v1's ~16 producing a strictly weaker summary.
 
 **This is the design's best property: v2 becomes cheaper and more informative at
 the same time.** The information v1 destroys (which seeds, not how many edges) is
 exactly the information the bitmask carries for free.
 
+**Exact complexity**, stated because boundedness is a design objective and not a
+hoped-for side effect (see
+[`QLS_V2_SYSTEMS_PLAN.md`](QLS_V2_SYSTEMS_PLAN.md) §3 for the full algorithm):
+
+```
+time    Theta(H*|E_q| + N_q + 2^|S_q|)  =  Theta(3|E_q| + N_q + 1024)
+memory  <= 13.0 KB per query at N_q = 400, INDEPENDENT of |E_q|
+```
+
+Worst case, best case and average case are the same expression — no convergence
+loop, no early exit, no data-dependent iteration count. At `N_q = 400` the
+worst case is `3 x 159,600 = 478,800` edge operations against v1's `2,553,600`,
+a **5.33x** reduction by counting alone.
+
 **Sizing.** One 16-bit word per induced node covers `|S_q| ≤ 10` with room to
-spare; at budget 400 that is ≤ 800 bytes per query. A `ceil(S/64)`-word
-generalization is specified for portability but **is not needed by any dataset in
-this study**, and will not be implemented until a dataset requires it.
+spare. A `ceil(S/64)`-word generalization is specified for portability but **is
+not needed by any dataset in this study**, and will not be implemented until a
+dataset requires it.
 
 ---
 
@@ -242,63 +287,143 @@ protocol is resolved in advance.
 
 ## 8. The tiny learner
 
-Architecture philosophy from LINKX: represent topology and retrieval signal as
-**separate modalities** and combine them once, rather than repeatedly mixing them
-through propagation. Ours can be far smaller because we never feed an adjacency
-row — only ~33 scalars.
+### 8.0 The universal architecture target
+
+> **A tiny semantic/retrieval branch and a tiny structural branch, combined by
+> one simple cross interaction, feeding a residual ranking MLP with a linear
+> retrieval skip. Expected scale: low thousands of parameters.**
+
+The claim being made is not "retrieval needs structure and not semantics." It is:
+
+> Retrieval ranking needs a **compact semantic relation representation** and a
+> **compact query-local structural representation**, and **neither requires
+> learned message passing.**
+
+musique is why the first half is stated as strongly as the second. There, the
+seed-only MLP (embeddings, no structural features) reaches 80.08 against QLS's
+80.28, while A3 (structure, no embeddings) reaches 68.51 against RRF's 69.24 —
+structure contributes **−0.73**. A structure-only v2 would lose ~11 points on
+that dataset. Semantics are load-bearing. §10 develops this.
+
+What musique does **not** show is that the semantic representation must be a
+98,304-parameter learned projection. That is the question §8.2 asks.
+
+**Forbidden in the headline model,** unless a later validation phase explicitly
+demonstrates that a simpler candidate fails: GNN teacher, distillation, learned
+message passing, learned gating, attention, transformer blocks, relation-typed
+channels. Each is a mechanism a reviewer can point at to say the MLP is merely
+imitating a GNN. The whole value of this design is that there is nothing to point
+at.
+
+### 8.1 Structure
+
+Architecture philosophy from LINKX: represent topology and retrieval/semantic
+signal as **separate modalities** and combine them once, rather than repeatedly
+mixing them through propagation. Ours can be far smaller because we never feed an
+adjacency row — only scalars.
 
 ```
-        Retrieval features (9)          Structural features (~24)
-                 |                                |
-             Linear w                        Linear w
-               GELU                            GELU
-                 |                                |
-                 hr                               hs
-                 |                                |
-                 +----------------+---------------+
-                                  |
-                        [ hr , hs , hr (*) hs ]
-                                  |
-                              Linear w
-                                GELU
-                              Linear 1
-                                  |
-                                  +  <---- linear RRF/structure skip
-                                  |
-                                SCORE
+   Retrieval prior (9)                     Query-local structure (12-15)
+   + semantic scalars (0-5)                        |
+              |                                    |
+          Linear w                             Linear w
+            GELU                                 GELU
+              |                                    |
+              hr                                   hs
+              |                                    |
+              +------------------+-----------------+
+                                 |
+                       [ hr , hs , hr (*) hs ]        <- one cross, not a gate
+                                 |
+                             Linear w
+                               GELU
+                             Linear 1
+                                 |
+                                 +  <---- linear retrieval/structure skip
+                                 |
+                               SCORE
 ```
+
+At **S3** the semantic scalars `semantic_product` and `semantic_difference` are
+produced by two 768-vectors upstream of this diagram — 1,536 parameters, no
+hidden layer, no projection. At S0–S2 there are no semantic parameters at all.
 
 **Linear skip (from LINKX and from our own A3 result).** Do not force the MLP to
 relearn the strong simple baseline:
 
 ```
-score = score_linear + Δ_nonlinear
+score = score_linear + delta_nonlinear
 ```
 
-where `score_linear` is a linear scorer over RRF and the strongest simple
-structural features, and the MLP learns only the interactions the linear ranker
-misses. A3 proves the linear part is already worth ~half the structural gap; this
+A3 proves the linear part is already worth roughly half the structural gap; this
 makes that explicit and separately measurable, letting the paper decompose
 
 ```
-retrieval signal  +  explicit structural signal  +  nonlinear interaction
+retrieval signal  +  semantic signal  +  explicit structural signal  +  interaction
 ```
 
-instead of conflating all three.
+instead of conflating them.
 
-**Parameter count, exactly** (9 retrieval + 24 structural + 33-term linear skip):
+### 8.2 Exact parameter counts
 
-| width `w` | branches | interaction | output | skip | **total** | vs GNN 213,568 |
-|---:|---:|---:|---:|---:|---:|---:|
-| 16 | 560 | 784 | 17 | 34 | **1,395** | **153× fewer** |
-| 24 | 840 | 1,752 | 25 | 34 | **2,651** | **81× fewer** |
-| 32 | 1,120 | 3,104 | 33 | 34 | **4,291** | **50× fewer** |
+`n_r = 9 + n_sem` retrieval-and-semantic inputs, `n_s` structural inputs:
 
-Thousands of parameters, not hundreds of thousands — and that is *before*
-counting the GNN's edge-index storage, layer activations and autograd through
-graph operations, none of which v2 has at all.
+```
+branches      (n_r*w + w) + (n_s*w + w)
+interaction    3w*w + w
+output         w + 1
+linear skip    n_r + n_s + 1
+diagonal       1,536 at S3, else 0
+```
 
-**Learner ladder, simplest first.** Escalate only if validation demands it:
+Headline configurations, against the frozen `seed_aware_gnn` at **213,568**
+parameters and QLS-v1 at **213,506**:
+
+| config | `w` | branches | interaction | out | skip | diagonal | **total** | vs GNN |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| **S1 × R4** (12 struct) | 16 | 384 | 784 | 17 | 23 | 0 | **1,208** | **176.8×** |
+| | 32 | 768 | 3,104 | 33 | 23 | 0 | **3,928** | 54.4× |
+| **S2 × R4** | 16 | 416 | 784 | 17 | 25 | 0 | **1,242** | **172.0×** |
+| | 32 | 832 | 3,104 | 33 | 25 | 0 | **3,994** | 53.5× |
+| **S3 × R4** | 16 | 448 | 784 | 17 | 27 | 1,536 | **2,812** | **75.9×** |
+| | 32 | 896 | 3,104 | 33 | 27 | 1,536 | **5,596** | 38.2× |
+| **S3 × R5** (15 struct) | 16 | 496 | 784 | 17 | 30 | 1,536 | **2,863** | 74.6× |
+| | 32 | 992 | 3,104 | 33 | 30 | 1,536 | **5,695** | 37.5× |
+
+**The entire grid spans 1,208 to 5,695 parameters — 37× to 177× fewer than the
+GNN, and always in the low thousands.** (R0 is omitted: with no structural
+features the architecture degenerates to a single-branch MLP and the two-branch
+count does not apply.)
+
+And that is *before* counting what the GNN also carries and v2 does not at all:
+edge-index storage, per-layer activations over the induced graph, and autograd
+through graph operations — which is why the GNN's peak incremental GPU memory
+reaches 67.22 MB on hotpotqa against v1's 5.32 MB.
+
+### 8.3 The semantic branch is where the parameters actually are
+
+At S3 the diagonal pair is **1,536 of 2,812** parameters — 55% of the whole
+model. Everything structural, both branches, the interaction and the head
+together cost 1,276.
+
+That inverts v1's balance and is the clearest statement of the design:
+
+| | v1 | v2 @ S3 × R4, `w=16` |
+|---|---:|---:|
+| semantic path | 98,304 (46.0%) | 1,536 (54.6%) |
+| everything else | 115,202 (54.0%) | 1,276 (45.4%) |
+| **total** | **213,506** | **2,812** |
+
+The semantic comparison remains the dominant cost even after a 64× compression,
+because comparing two 768-dimensional vectors is genuinely the expensive part of
+retrieval ranking. The structural half — the part this paper is about — is
+essentially free, which is precisely the point: **the graph information that
+matters costs on the order of a thousand parameters and three passes over the
+edge list.**
+
+### 8.4 Learner ladder, simplest first
+
+Escalate only if validation demands it:
 
 ```
 linear
@@ -309,8 +434,7 @@ two-branch + explicit crosses
 
 **No gating, attention, or transformer.** This reverses the initial draft's
 proposal (§9). A gate adds parameters, interpretability cost, and an opportunity
-for dataset-specific routing that would undermine the universality claim. Add one
-only if validation shows a clear regime problem the residual model cannot handle.
+for dataset-specific routing that would undermine the universality claim.
 
 **The final architecture should be the smallest point on the Pareto frontier, not
 the architecture with every clever mechanism.**
@@ -329,23 +453,58 @@ the architecture with every clever mechanism.**
 
 ---
 
-## 10. Scalar-only is a hypothesis to test — and the frozen data already warns against it
+## 10. The semantic question, and why scalar-only is a branch rather than the plan
 
-Before designing anything larger, explicitly compare:
+The claim is **not** "structure replaces semantics." It is:
+
+> Retrieval ranking needs a compact semantic relation representation and a
+> compact query-local structural representation. **Neither requires learned
+> message passing**, and the semantic one does not require a large learned
+> projection either.
+
+Four positions are compared, not two:
 
 ```
-scalar retrieval + structural features only
-            versus
-scalar features + projected semantic embeddings (768 -> 64)
+S0-S2   scalar retrieval + structural features, ZERO semantic parameters
+S3      + diagonal bilinear and weighted-L1 scalars      1,536 parameters
+v1      + learned 768 -> 64 projection on q and d       98,304 parameters
+GNN     the frozen comparator                          213,568 parameters
 ```
 
-Prefer scalar-only **if it is within the effectiveness frontier**, because it
-improves parameters, training memory, training time, inference FLOPs and
-portability simultaneously. If scalar-only + topology reaches GNN-level results,
-the paper can state something considerably stronger than a latency win:
+Prefer the cheapest rung **that is within the effectiveness frontier**, because
+each step down improves parameters, training memory, training time, inference
+FLOPs and portability simultaneously.
+
+**The 64× is exact, not estimated.** The projection costs
+`2 × embedding_dim × projection_dim`; the diagonal pair costs
+`2 × embedding_dim`. The ratio is the identity `2DP / 2D = P = 64`. Both v1
+projections are declared `bias=False`
+([`operator_models.py:34-35`](../src/mp_retrieval/operator_models.py:34)), so
+`2 × 768 × 64 = 98,304` is the exact figure — 46.0% of the 213,506-parameter
+model.
+
+**What we expect S3 to give up, and what it gains.** The rank-64 projection can
+*mix* embedding dimensions; the diagonal cannot. The diagonal weights all 768
+dimensions; the rank-64 projection cannot preserve more than 64 directions.
+Neither strictly contains the other, so this is a real empirical question rather
+than a compression with a known answer. `semantic_difference` adds an
+absolute-difference channel that no bilinear projection can express at all.
+
+**And a limit we state before measuring.** S1, S2, S3 and v1 all read the same
+768 floats per candidate. Compressing the projection removes parameters and
+arithmetic; it removes **no embedding bandwidth**. If the semantic path is
+bandwidth-bound, S3's win is parameters, training memory and training time — not
+inference latency. Registered as prediction 8 in the catalog and gated by Phase 0
+in [`QLS_V2_SYSTEMS_PLAN.md`](QLS_V2_SYSTEMS_PLAN.md) §2.1.
+
+If S0–S2 + topology reaches GNN-level results, the paper can state something
+considerably stronger than a latency win:
 
 > Graph-aware retrieval ranking does not require high-dimensional candidate
 > embedding transformations inside the ranker at all.
+
+The frozen data says that stronger claim will not hold everywhere. Which is
+exactly why S3 exists as a parallel branch.
 
 ### The Package A decomposition says this will not hold everywhere
 

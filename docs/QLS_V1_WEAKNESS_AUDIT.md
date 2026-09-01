@@ -68,9 +68,30 @@ previously recorded: per-seed statistics that would be prohibitive for large see
 sets are cheap at |S_q| ≤ 10, and a per-seed bitmask fits in a single 16-bit
 word with no multi-word fallback path.
 
-**Embedding width is 768**, projected to 64. The q/x projection alone is
-`2 × 768 × 64 + 128 = 98,432` trainable parameters — **46% of the 213,506-parameter
-model** — before any structural feature is consumed.
+**Embedding width is 768**, projected to 64, and **both projections are
+bias-free** — `node_projection` and `query_projection` are declared
+`nn.Linear(embedding_dim, hidden_dim, bias=False)`
+([`operator_models.py:34-35`](../src/mp_retrieval/operator_models.py:34)), and
+`parameter_matched_head_width` accounts them as
+`2 * embedding_dim * projection_dim`
+([`:310`](../src/mp_retrieval/operator_models.py:310)). The semantic path alone
+is therefore
+
+```
+2 x 768 x 64 = 98,304 trainable parameters = 46.0% of the 213,506-parameter model
+```
+
+spent before a single structural feature is consumed. *(An earlier revision of
+this document gave 98,432 by including biases the layers do not have; 98,304 is
+the figure, and the percentage is unchanged.)*
+
+This is the **largest single parameter mass in QLS-v1** and it is not among the
+six defects below, because it is not a defect — it is an unexamined assumption.
+Whether a `768 → 64` projection is the necessary way to compare a query and a
+candidate is exactly the question the QLS-v2 semantic frontier S0–S3 asks, at
+`2 × 768 = 1,536` parameters. The ratio is the identity `2DP / 2D = P`, so the
+compression is exactly **64×** by construction. See
+[`QLS_V2_FEATURE_CATALOG.md`](QLS_V2_FEATURE_CATALOG.md) Group F.
 
 ---
 
@@ -383,10 +404,62 @@ Not asserted above; requires new development-set (validation-only) analysis:
    the family-vs-family contrast.
 4. **Which of the ~16 edge passes produces the tail.** §4 localizes it to the
    stage, not to the operation.
+5. **Whether the seven global static features carry any signal.** Detailed
+   below, because it directly shapes the v2 frontier.
+
+### 7.1 The seven global static features were never isolated
+
+A3 consumes all nineteen inputs — two rank features, the **seven graph-wide
+static features**, and the ten query-local features
+([`P0_LINEAR_RANK_STRUCTURE_PROTOCOL.md`](P0_LINEAR_RANK_STRUCTURE_PROTOCOL.md)
+lines 25–35) — but its nineteen learned coefficients were **not persisted**.
+`outputs/p0_linear_rank_structure/*.json` records metrics, timing and contract
+hashes; there is no weight vector in any artifact. The individual contribution of
+`log_out_degree`, `log_in_degree`, `log_total_degree`, `pagerank`,
+`hub_degree_percentile`, `coreness` and `clustering_wedge_estimate` has therefore
+**never been measured**, and this audit cannot say whether they carry signal.
+
+What *can* be said, and is the strongest available evidence: A2's
+`structural_summary` — the source of the only demonstrated fixed-structure wins,
+**+5.20 R@5 on webqsp and +4.41 on metaqa** — is constructed from the **ten
+query-local features only** (`fixed_structural_scores` takes a `[N, 10]` array;
+`structural_controls.py:120-141` combines distance, path/connectivity and PPR).
+**Zero static features participate.** Every structural gain this project has
+actually demonstrated came from query-local structure.
+
+That is why QLS-v2 places the seven static features outside the primary frontier
+R0–R5 and keeps only one of them in the audit catalog. It is a prediction with
+partial support, recorded as such, not a settled result — see
+[`QLS_V2_FEATURE_CATALOG.md`](QLS_V2_FEATURE_CATALOG.md) §3 prediction 10.
 
 ---
 
-## 8. A naming hazard that must be handled before submission
+## 8. Package F allocation — decided 2026-09-02
+
+Recorded here because this audit is the document that establishes what the six
+development datasets can and cannot support.
+
+**Package F is reserved exclusively for the final QLS-v2 confirmation.** It is
+not opened, not inspected, and **QLS-v1 will not be run on it.**
+
+The reason follows from this audit's own method. Every finding above reads frozen
+numbers from the six development datasets — the defect evidence in §4, the
+Package A decomposition, the musique semantic finding, and the seed-noise
+estimates that set the v2 Pareto tolerance. That is legitimate diagnostic use,
+but it means any v2 result on those six can be challenged as shaped by what we
+already looked at. **F has never been opened, so a v2 result there is the only
+number in this project immune to that objection.**
+
+QLS-v1's role is now **diagnostic and historical evidence from the six existing
+datasets**. The frozen v1 and GNN results remain evaluation baselines on Packages
+A–E exactly as they stand, and nothing in this document alters them.
+
+Governed by [`QLS_V2_DEVELOPMENT_PROTOCOL.md`](QLS_V2_DEVELOPMENT_PROTOCOL.md)
+§4 Phase 8 and §9.
+
+---
+
+## 9. A naming hazard that must be handled before submission
 
 The internal frozen code key is `sa_mlp`. A published method named **SA-MLP**
 (arXiv 2210.09609) learns from a **GNN teacher via distillation** — precisely the
@@ -401,7 +474,7 @@ the misreading the new thesis must avoid ("the MLP merely compressed a GNN").
 
 ---
 
-## 9. Summary
+## 10. Summary
 
 | ID | Defect | Kind | Scope in frozen evidence |
 |---|---|---|---|

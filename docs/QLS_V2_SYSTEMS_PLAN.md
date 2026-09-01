@@ -86,34 +86,165 @@ on the assumption that they are the fix.
 Every catalog feature also gets a measured `build p50/p95/p99`, storage, CPU RSS
 and GPU memory. Validation split only.
 
+### 2.1 The semantic path must be profiled separately — compute vs bandwidth
+
+The structural tail is not the only thing Phase 0 has to settle. The semantic
+frontier (catalog Group F) rests on a claim that is **not yet measured**: that
+compressing v1's `768 → 64` projection into two 768-vectors buys latency as well
+as parameters. Per query at `N_q = 400`:
+
+| | v1 projection | S3 (F4+F5) | ratio |
+|---|---:|---:|---:|
+| parameters | 98,304 | 1,536 | **64.0x** |
+| MACs | 19,709,952 | 614,400 | **32.1x** |
+| **embedding bytes read (fp16)** | **614,400** | **614,400** | **1.0x** |
+
+Arithmetic shrinks 32x. **Bytes moved do not shrink at all** — S1, S2, S3 and v1
+all read the same 768 floats per candidate. Only S0 avoids that traffic.
+
+**Phase 0 therefore measures, on the validation split:** wall-time of the
+semantic path alone at S0/S1/S2/S3/v1, arithmetic intensity (MACs per byte), and
+whether the stage scales with `N_q` (bandwidth-bound) or with parameter count
+(compute-bound).
+
+**This gates a claim.** If the semantic path is bandwidth-bound — which
+[`QLS_V2_FEATURE_CATALOG.md`](QLS_V2_FEATURE_CATALOG.md) §3 prediction 8 states
+we expect — then S3's advantage is **parameters, peak training memory and
+training wall-time only**, and the systems plan must not report it as an
+inference-latency win. Writing that limitation down before measuring is the point
+of putting it here.
+
 ---
 
 ## 3. One fused bounded traversal
 
-Replace the separate BFS passes, the seed-connection pass and the
-path-propagation passes with **one** bounded multi-source traversal carrying a
-per-node seed bitmask (`|S_q| ≤ 10`, one 16-bit word):
+### 3.0 Boundedness is a design objective, not a side effect
+
+Every operator in the query-local backend must satisfy:
+
+> **B1.** Worst-case work is a fixed function of `|E_q|` and `N_q` with **no
+> data-dependent iteration count**, no convergence test, and no early exit.
+> **B2.** Worst-case memory is a fixed function of `N_q` and is **independent of
+> `|E_q|`** — density must not buy allocation.
+> **B3.** Worst case, best case and average case are the **same expression**.
+
+B3 is the one that matters for the paper. A method whose mean is fast and whose
+p99 is not has not solved the problem the audit identified; v1's
+`query_local_summary` has p50 0.53–0.72 ms and **p95 4.60–4.79 ms**, and it is
+the tail that makes graph-aware reranking hard to deploy. **We therefore report
+worst-case complexity as the headline number and measured p99 alongside p50, not
+mean runtime.** Any candidate operator that cannot state a worst case is
+rejected before it is measured.
+
+### 3.1 The algorithm
+
+One bounded multi-source traversal carries a per-node seed bitmask **and** the
+diffusion state over the same edge iteration. The seed contract
+(`dense_top_k: 5`, `splade_top_k: 5`, `union: stable_unique`) guarantees
+`5 ≤ |S_q| ≤ 10`, so the mask is **one 16-bit word** and the rank-weight domain
+is at most `2^10 = 1024`.
 
 ```
-hop 0 : mask[s] = bit(s)
-hop 1 : mask1[v] |= mask0[u]    for each edge u->v
-hop 2 : mask2[v] |= mask1[u]
-hop 3 : mask3[v] |= mask2[u]
+FUSED-BOUNDED-QUERY-LOCAL(G_q = (V_q, E_q), S_q, H = 3, alpha)
+
+  S <- |S_q|                     # 5 <= S <= 10   (frozen contract)
+  n <- |V_q| <= N_q <= 400
+
+  # -- rank-weight table: 2^S - 1 additions, once per query --------------
+  for i in 0..S-1: w[i] <- 1 / r(s_i)          # r(s) in {1..5}
+  W[0] <- 0
+  for m in 1 .. 2^S - 1:
+      W[m] <- W[m & (m-1)] + w[ctz(m)]         # 1 add, 1 blsr, 1 tzcnt
+  Wtot <- W[2^S - 1]
+
+  # -- initialise --------------------------------------------------------
+  mask[0..H][v] <- 0                            # (H+1) x n  uint16
+  for i in 0..S-1: mask[0][s_i] <- 1 << i
+  first[v] <- H+1 ; for i: first[s_i] <- 0      # uint8
+  z[v] <- 0 ; for i: z[s_i] <- 1/S              # float32
+  acc[v] <- 0 ; preds[v] <- 0
+
+  # -- exactly H passes over E_q ----------------------------------------
+  for h in 1..H:
+      cur <- mask[h-1] ; nxt <- copy(cur) ; zn <- zeros(n)
+      for (u,v) in E_q:                         # ONE traversal, both signals
+          new <- cur[u] & ~cur[v]
+          if new: nxt[v] |= new
+                  preds[v] += 1
+                  if first[v] > h: first[v] <- h
+          zn[v] += z[u] / outdeg(u)             # same edge, same cache line
+      mask[h] <- nxt ; z <- zn ; acc += alpha^h * z
+
+  # -- per-candidate read-out: O(1) each --------------------------------
+  for d in candidates:
+      support_h     <- popcount(mask[h][d]) / S           # h = 1,2,3
+      rank_weighted <- W[mask[h][d]] / Wtot               # h = 1,2,3
+      min_distance  <- first[d]
+      unreachable   <- 1 - popcount(mask[H][d]) / S
+      mean_reach_d  <- sum_h h*popcount(mask[h][d] & ~mask[h-1][d])
+                       / popcount(mask[H][d])
+      diffusion_h   <- z_h[d] ;  truncated_ppr <- acc[d]
+      predecessors  <- preds[d]
 ```
 
-Emitted from the same sweep: per-seed hop membership, distance distribution
-(Group B), distinct-seed support and concentration (C1–C5), predecessor and
-branch statistics (C6–C7).
+### 3.2 Exact complexity
 
-**Why this is the key change.** BFS frontier expansion and path-count propagation
-are near-identical operations over the same edge array, currently executed
-separately ([`:434`](../src/mp_retrieval/structural_features.py:434)). Fusing cuts
-non-PPR edge passes from ~8 to **3**, and the bitmask carries the per-seed
-information v1 destroys. **v2 becomes cheaper and more informative at once** —
-Groups B and C (14 features) cost less than v1's 5 collapsed ones.
+**Time.** The loop structure contains no conditional iteration count.
 
-**Cost:** ≤ 800 bytes per query at budget 400. Negligible against the 4.4–5.3 MB
-incremental GPU footprint.
+```
+table build      2^S - 1 additions              <=     1,023
+edge passes      H * |E_q|                       =  3 * |E_q|
+read-out         O(n), 3 popcounts + 3 lookups
+-----------------------------------------------------------------
+TOTAL            Theta(H*|E_q| + n + 2^S)  =  Theta(3|E_q| + n + 1024)
+```
+
+and by B3 this is simultaneously the worst, best and average case.
+
+With `|E_q| <= N_q(N_q - 1)`, the **worst case at `N_q = 400` is
+`3 x 159,600 = 478,800` edge operations**, against v1's 16 passes
+(3 BFS + 1 seed-connection + 1 common-neighbour + 3 path + 8 PPR) =
+**2,553,600** — a **5.33x** worst-case reduction. This is a counting argument
+over the loop structure, not a measurement; Phase 0 measures the constant.
+
+**Memory,** at `N_q = 400`, and note that no term depends on `|E_q|`:
+
+| Buffer | Type | Bytes @ N_q=400 |
+|---|---|---:|
+| `mask[0..3]` | `(H+1) x n` uint16 | 3,200 |
+| `first` | `n` uint8 | 400 |
+| `preds` | `n` uint16 | 800 |
+| `z`, `zn`, `acc` | `3n` float32 | 4,800 |
+| `W` | `2^S` float32 | <= 4,096 |
+| **total** | | **<= 13,296 B (13.0 KB)** |
+
+Against the 4.4–5.3 MB incremental GPU footprint this is **~0.25%**, and it is a
+hard bound: a maximally dense query costs exactly the same 13 KB as a maximally
+sparse one. That satisfies **B2**.
+
+### 3.3 What this single pass buys
+
+Every structural feature in primary frontier rungs **R1 through R4 — all twelve
+dimensions — is a read-out of this one traversal.** Nothing in R1–R4 requires a
+second pass over `E_q`:
+
+| Rung | Features | Source in the pass |
+|---|---|---|
+| R1 | support @1 / ≤2 / ≤3 | `popcount(mask[h][d])` |
+| R2 | rank-weighted @1 / ≤2 / ≤3 | `W[mask[h][d]]` |
+| R3 | min distance, mean reachable distance, unreachable fraction | `first`, `mask[h] & ~mask[h-1]` |
+| R4 | diffusion h1 / h2 / h3 | `z` at each `h`, `acc` |
+
+R5 is the exception and this is a second reason to expect it to be dropped: its
+component features need a union-find, i.e. **an additional near-linear pass** that
+R1–R4 do not.
+
+**Why this is the key change.** BFS frontier expansion, path-count propagation
+and diffusion are near-identical scatter-accumulate operations over the same edge
+array, currently executed separately
+([`:434`](../src/mp_retrieval/structural_features.py:434)). Fusing them cuts edge
+passes from ~16 to **3** while the bitmask carries the per-seed information v1
+destroys. **v2 becomes cheaper and strictly more informative at once.**
 
 **Verification, not ablation:** an equivalence test asserting the fused traversal
 reproduces v1's features bit-for-bit where they overlap. A performance change
@@ -121,27 +252,38 @@ that silently alters a feature is a correctness bug, not a speedup.
 
 ---
 
-## 4. Bounded diffusion replaces iterative PPR
+## 4. Bounded diffusion replaces iterative PPR — as a Pareto experiment
 
-Compare, at equal feature semantics:
+This is run as a **direct Pareto comparison**, not as an assumption.
 
-| Variant | Work | Tail behaviour |
-|---|---|---|
-| v1 iterative PPR (8 iters, α=0.85) | fixed iterations, dense-query cost | unbounded worst case |
-| `H=1` diffusion | 1 sparse mat-vec | hard bound |
-| `H=2` diffusion | 2 | hard bound |
-| `H=3` diffusion | 3 | hard bound |
-| `H=3` truncated PPR | 3 + weighting | hard bound |
+| Variant | Work | Worst case | Tail |
+|---|---|---|---|
+| v1 iterative PPR (8 iters, α=0.85) | 8 mat-vecs | `8\|E_q\|` | data-dependent constant, unbounded in `\|E_q\|` |
+| `H=1` diffusion | 1 mat-vec | `\|E_q\|` | hard bound |
+| `H=2` diffusion | 2 | `2\|E_q\|` | hard bound |
+| `H=3` diffusion | 3 | `3\|E_q\|` | hard bound |
+| `H=3` truncated PPR | 3 + weighting | `3\|E_q\|` | hard bound |
 
-Record validation effectiveness, p50/p95/p99 and CPU RSS for each.
+**Primary plot: validation R@5 (y) against `query_local_summary` p95 in ms (x),
+one point per variant, six datasets shown separately and as a mean.** This plot
+is the deliverable of the experiment and its axes are fixed here so they cannot
+be chosen later to flatter a result.
 
-**The specific objective is eliminating the `query_local_summary` heavy tail**,
-and fixed-depth variants achieve it by construction: no convergence loop, no
-data-dependent termination.
+Secondary, reported in the same table for every variant: p50, p99, peak CPU RSS,
+and mean. **p99 is mandatory** — the entire motivation is tail behaviour, and a
+p50-only comparison would hide exactly the failure we are trying to remove.
 
-**Selection is cost-first among accuracy-neutral variants** (within 0.10 R@5 of
-exact on validation), then lowest p95. Fixed now so a slow-but-marginally-better
-variant cannot be justified afterwards.
+**Decision rule, frozen now.** If any bounded variant is **Pareto-superior** to
+v1 iterative PPR — no worse on validation R@5 within the frontier tolerance τ of
+§6 *and* strictly better on p95 — then **iterative PPR is removed from the v2
+candidate set entirely**, not kept as an option. If no bounded variant is
+Pareto-superior, iterative PPR stays and we report that the bounded
+approximation did not pay, which is a publishable negative result about the
+`H`-truncation hypothesis and must not be quietly dropped.
+
+Among bounded variants that are mutually non-dominated, the §6 lexicographic
+rule applies unchanged: smallest `H` wins ties, because smaller `H` is strictly
+cheaper and strictly more bounded.
 
 If an approximation is adopted, the confirmation still reports the exact-PPR
 variant's accuracy, so no reader can suspect the approximation was chosen for an
@@ -235,16 +377,36 @@ R@5 vs feature-build p95
 ceiling-normalized attainment vs p95
 ```
 
-Plus the explanatory statistic per feature group, **never used as the sole
-selection criterion**:
+### Mandatory marginal-efficiency report, one row per frontier transition
+
+For **every** transition R0→R1, R1→R2, R2→R3, R3→R4, R4→R5 and every semantic
+transition S0→S1, S1→S2, S2→S3, the following is reported in full. Not a
+summary statistic — the whole row, on the validation split, six datasets plus
+mean:
 
 ```
-Efficiency(F_i) = ΔR@5 / Δp95_ms
+effectiveness   dR@1   dR@5   dR@20   dMRR
+latency         dp50_ms   dp95_ms   dp99_ms          (uncached, end-to-end)
+memory          dCPU_RSS_MB      dtraining_peak_VRAM_MB
+size            dtrainable_parameters
 ```
 
-Its purpose is to make decisions legible. If distinct seed support buys +2.0 R@5
-for +0.02 ms and PPR buys +0.15 for +1.3 ms, the correct scientific decision —
-remove PPR — is obvious, and *that* is how a simpler model ends up beating a GNN.
+Deltas are against the immediately preceding rung, with the same seeds, the same
+splits and the same learner width. A rung that is not reported in this form is
+not admitted, whatever its R@5.
+
+Alongside each row, **as an explanatory statistic only and never as the selection
+objective**:
+
+```
+Efficiency(rung) = dR@5 / dp95_ms
+```
+
+Its purpose is to make decisions legible, not to make them. If distinct seed
+support buys +2.0 R@5 for +0.02 ms and PPR buys +0.15 for +1.3 ms, the correct
+scientific decision — remove PPR — is obvious. But `dR@5 / dp95` is a ratio of
+two noisy quantities and is unstable when `dp95 → 0`; selection is done by the
+lexicographic rule in §6 of the development protocol, which never divides.
 
 ### Full axis table
 
