@@ -329,7 +329,7 @@ the architecture with every clever mechanism.**
 
 ---
 
-## 10. Scalar-only is a hypothesis to test, not an assumption
+## 10. Scalar-only is a hypothesis to test — and the frozen data already warns against it
 
 Before designing anything larger, explicitly compare:
 
@@ -347,8 +347,49 @@ the paper can state something considerably stronger than a latency win:
 > Graph-aware retrieval ranking does not require high-dimensional candidate
 > embedding transformations inside the ranker at all.
 
-If it does **not** hold, that is reported, and the projected-embedding variant
-becomes the method with its cost stated honestly.
+### The Package A decomposition says this will not hold everywhere
+
+Package A already contains the control that isolates the two contributions.
+**A3** has structural features but *no embeddings and no adjacency*;
+**seed-only MLP** has embeddings and a seed indicator but *no structural
+features*. R@5, frozen:
+
+| dataset | RRF | A3 (structure, no emb.) | seed-only (emb., no structure) | QLS-MLP | structure lift | **embedding lift** |
+|---|---:|---:|---:|---:|---:|---:|
+| 2wiki_clean    | 68.48 | 68.57 | 65.83 | 68.40 | +0.09 | −2.65 |
+| musique_clean  | 69.24 | 68.51 | **80.08** | 80.28 | −0.73 | **+10.84** |
+| webqsp         | 10.20 | 22.21 | 29.26 | 33.37 | +12.01 | **+19.06** |
+| hotpotqa_clean | 72.24 | 74.58 | 73.43 | 77.13 | +2.34 | +1.19 |
+| squad_clean    | 89.31 | 89.50 | 89.31 | 89.23 | +0.19 | 0.00 |
+| metaqa         | 13.75 | 24.48 | 23.25 | 30.11 | +10.73 | +9.50 |
+
+> **On musique, structure contributes nothing (−0.73) and the entire QLS lift is
+> the embeddings**: the seed-only MLP reaches 80.08 of QLS's 80.28 with no
+> structural features at all. A scalar-only ranker would plausibly land near RRF
+> (69.24) — an ~11-point loss on that dataset.
+
+On webqsp both contribute and they are partly complementary (QLS 33.37 exceeds
+either control alone). On 2wiki and squad neither contributes. Only on metaqa and
+hotpotqa is structure the larger share.
+
+**Consequences, adopted now rather than discovered in Phase 2:**
+
+1. **Scalar-only is not the default.** It is rung R0's extension and a Pareto
+   candidate, not the presumed answer. The projected-embedding variant is carried
+   through the frontier in parallel, not as a fallback.
+2. **Expect the R0 rung to be weak on musique**, and do not read that as a
+   failure of the feature catalog — it is a property of the dataset.
+3. **The honest form of the claim is conditional**: scalar-only suffices *where
+   structure is what carries the signal* (metaqa, hotpotqa, webqsp-in-part), and
+   does not where semantics carries it (musique). If that is the outcome, it is
+   reported that way. **Do not hide dimensions on which the final method fails.**
+4. This is also the strongest argument for the **two-branch** architecture (§8):
+   the two modalities demonstrably dominate on different datasets, which is
+   exactly the situation separate branches with late combination are for.
+
+If a scalar-only model nonetheless matches the embedding variant everywhere, that
+is a substantially stronger result than expected and should be reported as such —
+but the design does not assume it.
 
 ---
 

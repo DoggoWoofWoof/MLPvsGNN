@@ -333,3 +333,12 @@ Recorded before measurement so they can be wrong:
    iterative PPR** while removing the latency tail.
 5. **The final set will contain 15–20 features**, with B2/B5/B7 and D1–D3 or
    D4–D6 partially eliminated as redundant.
+6. **Structural features will not close the gap on musique.** The frozen Package
+   A decomposition shows musique's entire QLS lift is semantic: the seed-only
+   MLP (embeddings, no structural features) reaches 80.08 versus QLS's 80.28,
+   while A3 (structure, no embeddings) reaches 68.51 versus RRF's 69.24 —
+   structure contributes **−0.73**. Expect every structural rung R1–R5 to be
+   approximately flat on musique, and expect a scalar-only variant to lose
+   ~11 points there. This is a property of the dataset, not a failure of the
+   catalog, and it must be reported rather than averaged away.
+   See [`QLS_V2_DESIGN.md`](QLS_V2_DESIGN.md) §10.
