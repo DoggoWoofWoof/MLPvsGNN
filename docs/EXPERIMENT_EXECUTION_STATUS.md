@@ -1420,6 +1420,72 @@ them. A realistic deployable configuration. If Phase -1 finds severe graph
 destruction, the statement is that those experiments measured a graph-starved
 reranking setting, **not** that they were wrong.
 
+## E2 analyzer validated before any outcome was read -- 2026-09-02
+
+Section 8 of the operating protocol forbids modifying the confirmation
+analyzer once E2 outcomes are visible. The window to find a bug in it is
+therefore the window while E2 is still running, so it was validated then
+rather than at 96/96.
+
+### What the analyzer will actually be handed
+
+`configs/phase_confirmation.yaml` registers six datasets, four axes and five
+rates per axis, so `compile_analysis` demands **120 cells, not 96**. The extra
+24 are the clean rate: `_cell_source` reads rate 0.0 from the sealed five-seed
+`sa_mlp_confirmation` rather than from E2, because retraining a clean condition
+per axis would produce four non-identical origins instead of one shared one.
+`feature_mask` carries its own ladder (0.0/0.25/0.50/0.75/1.00) against
+0.0/0.10/0.25/0.50/1.00 for the other three axes; the analyzer reads each
+axis's rates from the config rather than assuming a common ladder.
+
+### The 24 clean cells were pre-flighted against the real sealed artifacts
+
+All six sealed payloads load and report `SA_MLP_CONFIRMATION_DATASET_COMPLETE`,
+every `query_metrics.npz` matches its recorded SHA-256, every
+`test_query_order_sha256` matches, and all five seeds are present for both
+models. 24 of 24 ready, 0 failures. The test-split sizes those cells carry
+differ by more than two orders of magnitude, which is context for reading any
+interval E2 reports:
+
+| dataset | test queries |
+|---|---:|
+| webqsp | 159 |
+| 2wiki_clean | 1,500 |
+| musique_clean | 1,995 |
+| hotpotqa_clean | 9,786 |
+| squad_clean | 13,033 |
+| metaqa | 39,093 |
+
+### The full matrix was exercised on synthetic data
+
+Every pre-existing analyzer test drives `compile_analysis` through a reduced
+config -- one dataset, one axis, two rates. That is the right shape for testing
+the refusal paths, and it leaves two properties unexercised that only exist at
+full scale. Holm across a single dataset is the identity, so a correction
+applied to the wrong grouping looks correct in the reduced config. And the
+per-cell bootstrap seed is derived from three positional indices, so seed
+collision across 120 cells is a question a two-cell config cannot ask.
+
+`tests/test_analyze_phase_confirmation_full_matrix.py` builds all 120 cells
+from the registered config and confirms: the matrix compiles to 120 rows with
+no cell compiled twice; the 24 clean rows are byte-identical across a dataset's
+four axes; each axis-rate group spans exactly six datasets and Holm actually
+moves p-values within it; no two of the 120 cells share a bootstrap seed;
+reported crossings lie between adjacent rates and genuinely change sign, with
+significance resting on both endpoints; and the markdown renders every dataset.
+The data is synthetic throughout -- no E2 outcome was read, and only the shape
+of the compiled result is asserted.
+
+### The fetch step was verified too
+
+`scripts/fetch_modal_results.py phase_confirmation --dry-run` reports 116 files
+across 58 complete conditions and refuses the 10 in-progress ones by status,
+naming each. That independently corroborates the progress auditor and confirms
+the last unverified step of the section-8 sequence. The 58 complete cells were
+then downloaded so the work remaining at 96/96 is short; the bytes were fetched
+without reading any metric value, which preserves the option to fix the
+analyzer should anything else surface before the run finishes.
+
 ## Repository boundary
 
 The original C-RAG repository remains strictly read-only. This audit read only
@@ -1429,7 +1495,7 @@ pushed.
 
 ## Local verification
 
-The full local suite passes **481 tests** with `PYTHONPATH="src;."`, up from 237
+The full local suite passes **510 tests** with `PYTHONPATH="src;."`, up from 237
 earlier on 2026-09-02 and 137 on 2026-09-01: the additions guard the
 phase-screen resume path, the headroom arithmetic and reachability buckets, the
 headroom runner, Package D's distinct audit shape, E2's progress and integrity
@@ -1437,7 +1503,9 @@ contracts, and E2's analyzer -- including the AST contract test that would have
 caught the failed first E2 launch -- plus the migration provenance manifest, the
 cache-regeneration gate, the seed-0 checkpoint verification, the Phase −1 table
 renderer, and a check that every figure the Phase −1 report states in prose
-appears in one of its tables. `mp_retrieval` is not installed into the environment, so the suite
+appears in one of its tables, the checks that fail when the report and the
+audits on disk disagree about which datasets are covered, and the full
+120-cell exercise of E2's analyzer. `mp_retrieval` is not installed into the environment, so the suite
 must be run with `PYTHONPATH` set; plain `pytest` fails at import. Both audit
 scripts also pass scoped Ruff checks and Python byte-compilation. The only
 warnings are existing Torch Geometric deprecation warnings.
