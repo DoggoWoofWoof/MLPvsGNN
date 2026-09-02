@@ -374,12 +374,20 @@ def hop_distances(
         positions = np.repeat(starts, degrees) + (
             np.arange(total, dtype=np.int64) - group_starts
         )
-        neighbors = np.unique(col[positions])
-        fresh = neighbors[distance[neighbors] == UNREACHED]
+        # Discard already-reached nodes *before* deduplicating. Sorting the full
+        # neighbour gather was the dominant cost of the whole substrate audit:
+        # by the third hop almost every neighbour has been seen, so `np.unique`
+        # was sorting millions of entries to keep a few thousand. Filtering
+        # first sorts only the newly reached ones and yields the identical
+        # array, because uniquing a filtered set and filtering a uniqued set
+        # give the same set and both come back sorted.
+        fresh = col[positions]
+        fresh = fresh[distance[fresh] == UNREACHED]
         if fresh.size == 0:
             break
+        # Duplicate writes are idempotent -- every entry is being set to `hop`.
         distance[fresh] = hop
-        frontier = fresh
+        frontier = np.unique(fresh)
     return distance
 
 
