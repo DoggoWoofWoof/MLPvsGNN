@@ -12,6 +12,8 @@ fake volume rather than trusted. The two properties that matter:
 
 from __future__ import annotations
 
+import argparse
+import hashlib
 import json
 import sys
 import threading
@@ -24,6 +26,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts import replicate_volume
+from scripts import replicate_volume as rv
 
 
 ROOT = "paper_data/toy/abcdef0123456789"
@@ -715,3 +718,105 @@ def test_the_reader_does_not_buffer_the_whole_file(monkeypatch):
     next(stream)
     time.sleep(0.2)
     assert len(produced) < 64, "reader ran ahead of the consumer without bound"
+
+
+# ---------------------------------------------------------------------------
+# The quarantine applies to captures, not to inputs
+# ---------------------------------------------------------------------------
+#
+# The `cache_reference` slice carries two different kinds of file. The captured
+# `phase_confirmation_cache` cells must not land where `build_or_load_*` would
+# find them, or the regeneration loads the capture back and the gate compares a
+# file with itself. The clean inputs -- the dataset roots and
+# `derived/packed_topology_v1/` -- must land exactly where the gate opens them.
+#
+# Prefixing the whole slice satisfied the first rule by breaking the second.
+# All nine container jobs died on a missing
+# `.../derived/packed_topology_v1/metadata.json` that had been transferred
+# correctly, under a name nothing reads.
+
+
+def test_a_captured_cache_cell_is_quarantined() -> None:
+    assert rv.quarantined(
+        "phase_confirmation_cache/webqsp/642ee12ed1125208/degree_rewire_0p10/"
+        "packed_topology_v1/metadata.json"
+    )
+
+
+def test_the_clean_inputs_the_gate_reads_are_not_quarantined() -> None:
+    for path in (
+        "operator_data/webqsp/437072d122ba51e0/graph.pt",
+        "operator_data/webqsp/437072d122ba51e0/derived/packed_topology_v1/metadata.json",
+        "operator_data/2wiki_clean/6e4ac5ee0e1355ad/query_ids_all.json",
+    ):
+        assert not rv.quarantined(path), path
+
+
+def test_upload_splits_the_slice_between_the_two_destinations(monkeypatch, tmp_path) -> None:
+    """One upload, two destinations, decided per path rather than per slice."""
+
+    staged = {
+        "phase_confirmation_cache/webqsp/abc/degree_rewire_0p10/metadata.json": b"cell",
+        "operator_data/webqsp/abc/derived/packed_topology_v1/metadata.json": b"input",
+    }
+    files = {}
+    for path, blob in staged.items():
+        local = tmp_path / path
+        local.parent.mkdir(parents=True, exist_ok=True)
+        local.write_bytes(blob)
+        files[path] = {
+            "bytes": len(blob),
+            "sha256": hashlib.sha256(blob).hexdigest(),
+        }
+    (tmp_path / rv.manifest_name("cache_reference")).write_text(
+        json.dumps({"slice": "cache_reference", "files": files}), encoding="utf-8"
+    )
+
+    put: list[str] = []
+
+    class Upload:
+        def put_file(self, local, remote):
+            put.append(remote)
+
+    class Batch:
+        def __enter__(self):
+            return Upload()
+
+        def __exit__(self, *exc):
+            return False
+
+    class Volume:
+        def batch_upload(self, force=False):
+            return Batch()
+
+        def listdir(self, path, recursive=False):
+            return []
+
+    monkeypatch.setattr(rv.modal.Volume, "from_name", lambda *a, **k: Volume())
+    args = argparse.Namespace(
+        staging=str(tmp_path),
+        slice="cache_reference",
+        dataset_filter=None,
+        remote_prefix=rv.QUARANTINE_PREFIX,
+        volume="v",
+        skip_present=False,
+        batch_bytes=10**9,
+    )
+    assert rv.cmd_upload(args) == 0
+
+    assert sorted(put) == [
+        "/migration_reference/phase_confirmation_cache/webqsp/abc/degree_rewire_0p10/metadata.json",
+        "/operator_data/webqsp/abc/derived/packed_topology_v1/metadata.json",
+    ]
+
+
+def test_verify_looks_where_upload_put_each_file(monkeypatch, tmp_path) -> None:
+    """Checking the input at the quarantined path reports MISSING for a file
+    that is correctly present -- the one verdict that re-sends a good file."""
+
+    import inspect
+
+    source = inspect.getsource(rv.cmd_verify)
+    assert "def remote_for(path: str) -> str:" in source
+    assert "quarantined(path)" in source
+    assert "remote.get(remote_prefix + path)" not in source

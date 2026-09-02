@@ -123,6 +123,27 @@ SLICES = ("phase_minus_1", "e2_resume", "results", "cache_reference")
 # would compare a file with itself. Upload them under this prefix.
 QUARANTINE_PREFIX = "migration_reference"
 
+# Only the captured cells need quarantining, and only they may be quarantined.
+# The `cache_reference` slice also carries the clean inputs the regeneration
+# starts from -- the dataset roots and `derived/packed_topology_v1/` -- and the
+# gate opens those at their canonical paths. Prefixing the whole slice hides
+# them: the first container run died on a missing
+# `.../derived/packed_topology_v1/metadata.json` that had in fact been
+# transferred, under a name nothing reads.
+QUARANTINED_PREFIXES = ("phase_confirmation_cache/",)
+
+
+def quarantined(path: str) -> bool:
+    """Whether this volume path is a capture rather than an input.
+
+    A capture written at its own path is exactly what ``build_or_load_*`` looks
+    for, so the regeneration would load it instead of rebuilding and the
+    comparison would be a file against itself. An input written anywhere else
+    is simply not found.
+    """
+
+    return path.startswith(QUARANTINED_PREFIXES)
+
 # A short read is a transport fault, not a corrupt source, so it is worth a
 # few fresh streams before a multi-hour transfer is abandoned over one file.
 FETCH_ATTEMPTS = 4
@@ -533,8 +554,12 @@ def cmd_upload(args: argparse.Namespace) -> int:
     record = _load_manifest(staging, args.slice, args.dataset_filter)
     files: dict[str, dict[str, Any]] = record["files"]
 
-    # A quarantine prefix keeps a capture out of the tree a runner reads.
+    # A quarantine prefix keeps a capture out of the tree a runner reads. It
+    # applies to the captures only -- see `quarantined`.
     remote_prefix = f"{args.remote_prefix.strip('/')}/" if args.remote_prefix else ""
+
+    def remote_for(path: str) -> str:
+        return (remote_prefix + path) if quarantined(path) else path
     if args.slice == "cache_reference" and not remote_prefix:
         # Uploaded to its own paths, a captured cache cell is exactly what
         # build_or_load_* looks for, so the regeneration it is meant to test
@@ -558,7 +583,7 @@ def cmd_upload(args: argparse.Namespace) -> int:
     pending = [
         (path, meta)
         for path, meta in sorted(files.items())
-        if present.get(remote_prefix + path) != meta["bytes"]
+        if present.get(remote_for(path)) != meta["bytes"]
     ]
     total = sum(meta["bytes"] for _, meta in pending)
     print(f"\n{len(pending)} files, {human(total)} -> {_profile()}:{args.volume}\n")
@@ -587,9 +612,11 @@ def cmd_upload(args: argparse.Namespace) -> int:
             raise SystemExit(f"Staged file missing: {local}")
         if local.stat().st_size != meta["bytes"]:
             raise SystemExit(f"Staged size differs from manifest: {path}")
-        queue.append((local, "/" + remote_prefix + path))
+        remote = remote_for(path)
+        queue.append((local, "/" + remote))
         queued += meta["bytes"]
-        print(f"[{index}/{len(pending)}] queue {human(meta['bytes']):>10s}  {path}")
+        marker = "  [quarantined]" if remote != path else ""
+        print(f"[{index}/{len(pending)}] queue {human(meta['bytes']):>10s}  {remote}{marker}")
         if queued >= batch:
             flush()
     flush()
@@ -606,22 +633,29 @@ def cmd_verify(args: argparse.Namespace) -> int:
     remote = {path: size for path, size in _walk(volume, "/", strict=True)}
     remote_prefix = f"{args.remote_prefix.strip('/')}/" if args.remote_prefix else ""
 
+    # The same split `upload` applied. Verifying at the other location would
+    # report every clean input MISSING while it sat correctly on the target,
+    # which is the one verdict that sends a good file back over the wire.
+    def remote_for(path: str) -> str:
+        return (remote_prefix + path) if quarantined(path) else path
+
     def check(path: str, meta: dict[str, Any]) -> str | None:
-        size = remote.get(remote_prefix + path)
+        target = remote_for(path)
+        size = remote.get(target)
         if size is None:
-            return f"MISSING  {path}"
+            return f"MISSING  {target}"
         if size != meta["bytes"]:
-            return f"SIZE     {path}: target {size} != manifest {meta['bytes']}"
+            return f"SIZE     {target}: target {size} != manifest {meta['bytes']}"
         if not args.deep:
             return None
         try:
-            _, digest = _hash_remote(volume, remote_prefix + path, size)
+            _, digest = _hash_remote(volume, target, size)
         except RuntimeError as error:
             # Unreadable is not the same as wrong, and only one of the two is a
             # reason to re-upload. Say which one this is.
             return f"UNREAD   {error}"
         if digest != meta["sha256"]:
-            return f"SHA256   {path}"
+            return f"SHA256   {target}"
         return None
 
     bad: list[str] = []

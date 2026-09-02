@@ -133,6 +133,70 @@ The gate is not closed by the local run. A local pass is supporting evidence on
 a different OS and CPU; the binding claim is that the **target container**
 rebuilds the same cache, because that is where E2 resumes.
 
+### What the local run found
+
+Non-binding, and it found two separate things. Recorded here in full because a
+gate that only reports its verdict is a gate nobody can check.
+
+**The arrays are stable where it matters, and one ulp apart where it does not.**
+On `webqsp/degree_rewire/0.10`, `packed_topology_v1` came back bit-identical:
+`edge_index` (2 x 3,666,732 int32), `edge_ptr` (1,579 int64) and
+`query_position` (1,578 int64) all exactly equal. The perturbation generator is
+seeded and order-stable. `fixed_structural_features_v1` differed slightly:
+`local.npy` (float16, 541,514 x 10) in 111 of 5.4M elements with a maximum
+absolute difference of 0.00048828125, and `static.npy` (float32, 781,485 x 7) in
+639,808 elements with a maximum of 1.1920928955078125e-07. Both maxima are
+exactly one ulp at their dtype -- the signature of a different floating-point
+reduction order, here Windows local against a Linux container. This is why the
+local run cannot close the gate in either direction: the environment E2 resumes
+in is a Linux container, and so was the environment the original cells were
+built in.
+
+**All three contract hashes differed, and the cause is in the hash itself.**
+`perturb_packed_topologies` puts `build_seconds` -- a wall-clock measurement --
+inside the dict it hashes into `contract_sha256`. Two correct runs of the same
+computation therefore always produce different contracts, and the difference
+propagates into `feature_fingerprint` and the structural-feature contract.
+
+That defect is *not* fixed here. Changing what the hash covers changes it for
+every future build and interacts with cells that are already frozen, so it is a
+decision to take deliberately rather than in passing. What was added instead is
+an attribution diagnostic: it records whether a contract difference survives
+once the two records are given the same build time, so a reader can tell "the
+cache is genuinely different" from "the hash bound a clock". **The
+pre-registered verdict is unchanged** -- a differing `contract_sha256` is still
+reported as a difference.
+
+### A defect the local run exposed in the gate itself
+
+All three `2wiki_clean` cells failed before regenerating, with *"Candidate
+contract differs from the frozen record; refusing to regenerate"*. The pool had
+not changed.
+
+Two of the six frozen pools -- `2wiki_clean` and `musique_clean` -- were hashed
+before candidate hop metadata existed. `configs/phase_confirmation.yaml` marks
+them `candidate_contract_compatibility: pre_hop_metadata_v1`, and the frozen E1
+result records both hashes side by side along with a
+`BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE` proof that they describe the same
+pool. For 2wiki_clean: `expected_contract_sha256` is `11609cd7…` while
+`current_contract_with_hop_metadata_sha256` is `e763a748…`, which is exactly
+what a fresh `load_complete_dataset` computes today.
+
+The gate compared the frozen hash against the fresh one with `!=`, so it read a
+field-set difference as a changed candidate pool. `webqsp` passed only because
+it has no legacy mode and all three of its hashes coincide.
+
+The fix is not a looser comparison. `regenerate_cell` now delegates to the same
+`validate_candidate_contract` the experiment runners use, with the compatibility
+mode read from `configs/phase_confirmation.yaml` and carried on the declared
+cell — so the gate asks exactly the question E2 asks when it resumes, and still
+refuses a pool whose query IDs, split, candidate order or gold IDs really
+differ. The mode and the resulting proof are recorded in the output, because a
+legacy-mode result otherwise prints a frozen hash the fresh load never produces
+and reads as a contradiction.
+
+Nothing was overwritten: the gate raises before it writes.
+
 ## 5. The E2 resume plan comes from an integrity matrix
 
 Not from an ordinal position in a job list. `migration_provenance.py matrix`
