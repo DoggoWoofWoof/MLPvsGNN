@@ -125,6 +125,52 @@ against a flat one. Squad therefore has the densest induced graph measured
 Retrieval is cutting through neighbourhoods rather than selecting
 graph-coherent regions, but it is not doing so uniformly across candidates.
 
+**On metaqa and webqsp, a third to a half of measured queries have no gold
+target in the candidate pool at all.** 19,175 of metaqa's 39,138 measured
+queries (49.0%) and 106 of webqsp's 315 (33.7%), against 0.0% on 2wiki, 0.1% on
+musique and 0.5% on squad. Every gold-path-preservation and bridge-loss figure
+for those two datasets therefore describes the minority of queries that do
+carry a gold, which is why their denominators in the tables are 19,963 and 209
+rather than 39,138 and 315.
+
+Retrieval seeds are a different matter and pose no such caveat: **zero** queries
+lack retrieval seeds on any dataset, so the seed-reachability figures are
+computed on the full measured sample.
+
+This is reported, not acted on. `candidate coverage != metric ceiling` is a
+frozen distinction and the pools are frozen with it — nothing here proposes
+admitting a gold to any pool, expanding Paper-1 candidates, or changing a
+candidate hash.
+
+It is worth stating because Package B froze a number that should agree with it
+and does. That package records an oracle ceiling per dataset — `Ceil@5` in
+`docs/EDGE_PROVENANCE_AND_HEADROOM_RESULTS.md`, on the same sealed graph this
+audit read:
+
+| dataset | share with gold in pool | Ceil@5 (Package B) | GNN R@5 | share of ceiling attained |
+|---|---:|---:|---:|---:|
+| 2wiki_clean | 1.000 | 0.7967 | 0.6985 | 0.877 |
+| musique_clean | 0.999 | 0.9405 | 0.8124 | 0.864 |
+| squad_clean | 0.995 | 0.9949 | 0.8933 | 0.898 |
+| webqsp | 0.663 | 0.4501 | 0.3309 | 0.735 |
+| metaqa | 0.510 | 0.3262 | 0.3013 | 0.924 |
+| hotpotqa_clean | — | 0.9295 | 0.7766 | 0.835 |
+
+The ceiling cannot exceed the share of queries carrying a gold, because a query
+with no gold in the pool contributes exactly zero to it however it is ranked. It
+does not, on either low-coverage dataset. The two quantities were measured on
+different query samples by different packages, so this is a consistency check
+rather than an identity — but it is the check that would have caught either
+measurement being wrong, and neither is.
+
+Read down the last two columns and the ordering separates. metaqa and webqsp
+carry the two lowest GNN recall@5 figures of the six, yet metaqa attains a
+larger share of its ceiling than any dataset here except squad. Its recall is
+low because its ceiling is 0.3262, and its ceiling is low because half its
+queries have no gold to retrieve. That is the preserved distinction —
+`candidate coverage != metric ceiling` — measured from the substrate side and
+agreeing with the frozen number measured from the other.
+
 **Gold path preservation is high; bridge loss is small but not zero, and
 concentrated on one dataset.** Gold targets stay connected inside the induced
 subgraph in 90.1% (metaqa) to 98.9% (webqsp) of all measured gold targets,
@@ -477,6 +523,16 @@ global reach seen from the other side.
 | webqsp | structural | 315 | 344.5 | 1.17 | 81.36 | 717.24 | 5.21 | 364.94 | 1710.65 |
 | webqsp | kNN only | 315 | 344.5 | 1.04 | 1.20 | 1.69 | 3.25 | 9.53 | 25.45 |
 | webqsp | baseline A | 315 | 344.5 | 1.21 | 82.24 | 750.91 | 7.20 | 375.42 | 1772.93 |
+
+### Pool coverage -- the denominators behind every gold-path rate
+
+| dataset | queries measured | without retrieval seeds | without gold in pool | share without gold | with gold in pool |
+|---|---|---|---|---|---|
+| 2wiki_clean | 3000 | 0 | 0 | 0.000 | 3000 |
+| metaqa | 39138 | 0 | 19175 | 0.490 | 19963 |
+| musique_clean | 3987 | 0 | 3 | 0.001 | 3984 |
+| squad_clean | 26063 | 0 | 120 | 0.005 | 25943 |
+| webqsp | 315 | 0 | 106 | 0.337 | 209 |
 
 ### Operator edge semantics -- traced from the frozen selection, not assumed
 
