@@ -24,12 +24,11 @@ REPORT = REPO_ROOT / "docs" / "GRAPH_SUBSTRATE_AUDIT_RESULTS.md"
 UNGROUNDED_BY_DESIGN = {
     # A protocol section reference (§4.2), not a measurement.
     "4.2",
-    # The comparison tolerance, from `analyze_graph_substrate.py`'s
-    # `abs(delta) < 1e-12`. A constant in the code, not a measured quantity.
-    "12",
-    # 9 statistics x 20 graph-splits. Arithmetic over the tables rather than a
-    # figure any single row carries.
-    "180",
+    # 9 statistics x 24 graph-splits. Arithmetic over the tables rather than a
+    # figure any single row carries. Its companion 207 -- how many of them are
+    # zero -- is grounded incidentally and needs no entry; both are pinned to
+    # the data by tests/test_substrate_report_counts_match_audits.py.
+    "216",
     # `pooled_query_cap` from configs/graph_substrate_audit.yaml. A configured
     # limit on the audit, not something the audit measured.
     "4,000",

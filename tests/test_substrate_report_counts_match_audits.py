@@ -1,17 +1,25 @@
 r"""The report's derived counts must match the audits actually on disk.
 
-Four figures in the Phase -1 prose are not measurements. They are arithmetic
+Several figures in the Phase -1 prose are not measurements. They are arithmetic
 over how many audits exist: how many graph-splits were audited, how many
-statistics each connectivity comparison covers, their product, and the separate
-count of seed-reach agreements. Every one goes stale the moment a sixth dataset
-lands.
+statistics each connectivity comparison covers, how many of those comparisons
+agreed, and the separate count of seed-reach agreements. Every one goes stale
+the moment another dataset lands.
 
 Nothing else catches that. `render_substrate_tables.py` owns the generated
 tables and never touches prose, and the grounding test asks whether a prose
-figure appears in some table -- but "twenty" is a word, 180 is a product no
-single row carries, and 60 is "grounded" by an unrelated 0.600 in a retention
+figure appears in some table -- but "twenty-four" is a word, 216 is a product no
+single row carries, and 72 is "grounded" by an unrelated 0.720 in a retention
 column because that test accepts a figure's percentage form. This is the check
-that fails when hotpotqa_clean arrives and the sentences still say twenty.
+that failed when hotpotqa_clean arrived and the sentences still said twenty.
+
+It failed a second way when hotpotqa landed, and that is why this file no longer
+asks whether the comparisons *all* agree. Nine of the 216 do not: hotpotqa's
+sealed graph is not reachability-symmetric. A test that demanded universal
+agreement could only be satisfied by deleting a true finding from the report, so
+what is pinned instead is the exact partition -- how many agree, how many do
+not, and which graph-split the exceptions live on. A tenth disagreement, or the
+same nine moving to a different dataset, still fails.
 
 Phrases are matched with `\s+` rather than literal spaces because the report is
 hard-wrapped: a rewrap that pushed a phrase across a line break would otherwise
@@ -41,41 +49,101 @@ SUMMARY = REPO_ROOT / "outputs" / "graph_substrate_audit" / "summary.json"
 # difference between the message-flow and symmetrised receptive fields.
 DIVERGENCE_KEY = "message_flow_minus_symmetrised"
 
+TOLERANCE = 1e-12
 
-def _divergence_blocks() -> list[dict]:
-    """Every receptive-field comparison the analyzer wrote, in file order."""
+#: Graph-splits whose two connectivity notions are measured *not* to coincide,
+#: with what the report says about each. This is a registry of findings, not a
+#: list of failures to ignore: a graph-split that starts or stops disagreeing
+#: fails below until it is entered or removed here deliberately.
+KNOWN_DIVERGENCE = {
+    ("hotpotqa_clean", "dataset_default", "validation"): (
+        "hotpotqa's sealed graph is the one audited graph whose directed "
+        "message flow reaches strictly less than its symmetrised view: R2 "
+        "median 18.36 against 18.77, R3 32.79 against 33.12. Its three derived "
+        "families coincide exactly, and baseline_a_simple does so by "
+        "construction."
+    ),
+}
+
+#: Graph-splits carrying stored self-loops, same rule.
+KNOWN_STORED_SELF_LOOPS = {
+    ("hotpotqa_clean", "dataset_default", "validation"): (
+        "538.1 per query against 976.7 stored non-self messages. gin inserts "
+        "none of its own, so the double-count protocol 4.2 predicted takes a "
+        "different form: the stored loop puts a node in its own neighbour sum."
+    ),
+}
+
+
+def _summary() -> dict:
     if not SUMMARY.exists():
         pytest.skip(
             "outputs/graph_substrate_audit/summary.json is absent; run "
             "scripts/analyze_graph_substrate.py to derive these counts."
         )
-    found: list[dict] = []
+    return json.loads(SUMMARY.read_text(encoding="utf-8"))
 
-    def walk(node: object) -> None:
-        if isinstance(node, dict):
-            if DIVERGENCE_KEY in node:
-                found.append(node)
-            for value in node.values():
-                walk(value)
-        elif isinstance(node, list):
-            for value in node:
-                walk(value)
 
-    walk(json.loads(SUMMARY.read_text(encoding="utf-8")))
-    assert found, f"summary.json carries no {DIVERGENCE_KEY!r} block at all"
+def _graph_splits() -> list[tuple[tuple[str, str, str], dict]]:
+    """Every audited graph-split, labelled, in file order.
+
+    Labelled rather than walked blindly, because the interesting question is no
+    longer "how many" but "which one".
+    """
+    found = []
+    for audit in _summary().get("audits", []):
+        if not audit.get("complete"):
+            continue
+        for graph, entry in (audit.get("graphs") or {}).items():
+            for split, payload in (entry.get("splits") or {}).items():
+                found.append(((audit["dataset"], graph, split), payload))
+    assert found, "summary.json carries no completed graph-split at all"
     return found
 
 
-def test_graph_split_count_in_prose_matches_the_audits_on_disk():
-    expected = len(_divergence_blocks())
-    cited = re.findall(r"all\s+([\w-]+)\s+(?:graph-)?splits", _prose())
+def _divergence_blocks() -> list[tuple[tuple[str, str, str], dict]]:
+    blocks = [
+        (label, payload["receptive_field"][DIVERGENCE_KEY])
+        for label, payload in _graph_splits()
+        if DIVERGENCE_KEY in payload.get("receptive_field", {})
+    ]
+    assert blocks, f"summary.json carries no {DIVERGENCE_KEY!r} block at all"
+    return blocks
+
+
+def _cited(pattern: str) -> list[tuple[str, ...]]:
+    return re.findall(pattern, _prose())
+
+
+def _as_count(token: str) -> str:
+    return token.replace(",", "")
+
+
+def _allowed(count: int) -> set[str]:
+    """A count may be spelled as digits or, while it is small, as a word."""
+    forms = {str(count)}
+    try:
+        forms.add(_word(count))
+    except ValueError:
+        pass
+    return forms
+
+
+# ---------------------------------------------------------------------------
+# Denominators
+# ---------------------------------------------------------------------------
+
+
+def test_every_graph_split_denominator_in_prose_is_the_number_audited():
+    expected = len(_graph_splits())
+    cited = _cited(r"of\s+the\s+([\w-]+)\s+graph-splits")
     assert cited, (
-        "no sentence of the form 'all N graph-splits' survives in the prose. "
-        "If the phrasing changed, update this test with it -- do not delete "
-        "the check, it is the only thing pinning the count to the audits."
+        "no sentence of the form 'N of the M graph-splits' survives in the "
+        "prose. If the phrasing changed, update this test with it -- do not "
+        "delete the check, it is the only thing pinning the count to the "
+        "audits."
     )
-    allowed = {_word(expected), str(expected)}
-    wrong = sorted({c for c in cited if c not in allowed})
+    wrong = sorted({c for c in cited if c not in _allowed(expected)})
     assert not wrong, (
         f"prose says {', '.join(wrong)} graph-splits but {expected} were "
         f"audited. A dataset landed and the sentences were not updated; the "
@@ -83,110 +151,179 @@ def test_graph_split_count_in_prose_matches_the_audits_on_disk():
     )
 
 
+def test_every_graph_split_hop_denominator_in_prose_is_the_number_compared():
+    blocks = _seed_reach_blocks()
+    expected = sum(len(_hops(block)) for _label, block in blocks)
+    cited = _cited(r"of\s+the\s+([\w-]+)\s+graph-split-hops")
+    assert cited, "the prose no longer states a graph-split-hop denominator"
+    wrong = sorted({c for c in cited if c not in _allowed(expected)})
+    assert not wrong, (
+        f"prose says {', '.join(wrong)} graph-split-hops but the audit made "
+        f"{expected} seed-reach comparisons."
+    )
+
+
 def test_statistics_per_comparison_in_prose_matches_the_analyzer():
     blocks = _divergence_blocks()
-    sizes = {len(block[DIVERGENCE_KEY]) for block in blocks}
+    sizes = {len(block) for _label, block in blocks}
     assert len(sizes) == 1, (
         f"comparisons differ in width across graph-splits ({sorted(sizes)}); "
         "the prose describes a single fixed set of statistics."
     )
     per_block = sizes.pop()
-    cited = re.findall(r"([\w-]+)\s+summary\s+statistics\s+per\s+graph-split", _prose())
+    cited = _cited(r"([\w-]+)\s+summary\s+statistics\s+per\s+graph-split")
     assert cited, "the prose no longer says how many statistics are compared"
-    allowed = {_word(per_block), str(per_block)}
-    wrong = sorted({c for c in cited if c not in allowed})
+    wrong = sorted({c for c in cited if c not in _allowed(per_block)})
     assert not wrong, (
         f"prose says {', '.join(wrong)} statistics per graph-split but the "
         f"analyzer compares {per_block}."
     )
 
 
-def test_total_agreement_count_in_prose_is_the_product():
-    blocks = _divergence_blocks()
-    total = sum(len(block[DIVERGENCE_KEY]) for block in blocks)
+# ---------------------------------------------------------------------------
+# The receptive-field comparison, as a partition
+# ---------------------------------------------------------------------------
+
+
+def _receptive_partition() -> tuple[int, int, list[tuple[str, str, str]]]:
+    agreeing = 0
+    total = 0
+    disagreeing = []
+    for label, block in _divergence_blocks():
+        deltas = list(block.values())
+        total += len(deltas)
+        agreeing += sum(1 for delta in deltas if abs(delta) < TOLERANCE)
+        if any(abs(delta) >= TOLERANCE for delta in deltas):
+            disagreeing.append(label)
+    return agreeing, total, disagreeing
+
+
+def test_the_receptive_field_agreement_count_in_prose_is_the_measured_one():
+    agreeing, total, _ = _receptive_partition()
+    match = re.search(r"([\d,]+)\s+of\s+the\s+([\d,]+)\s+differences", _prose())
+    assert match, (
+        "the prose no longer states 'N of the M differences'. The claim used "
+        "to be that all of them were zero; it is not, and the count that "
+        "replaced it must stay pinned to the data."
+    )
+    cited_agreeing = int(_as_count(match.group(1)))
+    cited_total = int(_as_count(match.group(2)))
+    assert (cited_agreeing, cited_total) == (agreeing, total), (
+        f"prose claims {cited_agreeing} of {cited_total} differences are zero; "
+        f"the analyzer measured {agreeing} of {total}."
+    )
+
+
+def test_the_disagreeing_graph_splits_are_exactly_the_registered_ones():
+    _agreeing, _total, disagreeing = _receptive_partition()
+    assert set(disagreeing) == set(KNOWN_DIVERGENCE), (
+        "the set of graph-splits whose connectivity notions disagree has "
+        f"changed. Measured: {sorted(disagreeing)}. Registered: "
+        f"{sorted(KNOWN_DIVERGENCE)}. Enter or remove it here deliberately and "
+        "rewrite the report's claim to match -- do not widen the tolerance."
+    )
     prose = _prose()
-    match = re.search(r"([\d,]+)\s+exact\s+agreements", prose)
-    assert match, "the prose no longer states a total agreement count"
-    cited = int(match.group(1).replace(",", ""))
-    assert cited == total, (
-        f"prose claims {cited} exact agreements; the analyzer made {total} "
-        f"comparisons across {len(blocks)} graph-splits."
-    )
-    # The claim is that they *agree*, so the report is wrong in a second way if
-    # any of them stopped agreeing. Cheap to check while the blocks are open.
-    disagreeing = [
-        block for block in blocks
-        if not all(abs(delta) < 1e-12 for delta in block[DIVERGENCE_KEY].values())
+    for dataset, _graph, _split in KNOWN_DIVERGENCE:
+        short = dataset.removesuffix("_clean")
+        assert short in prose, (
+            f"{dataset} carries a measured asymmetry the report never names. "
+            "A reader would take the coincidence claim as universal."
+        )
+
+
+# ---------------------------------------------------------------------------
+# The seed-reach family, same treatment
+# ---------------------------------------------------------------------------
+
+
+def _seed_reach_blocks() -> list[tuple[tuple[str, str, str], dict]]:
+    return [
+        (label, payload["seed_reachability"])
+        for label, payload in _graph_splits()
+        if "induced_symmetrised" in payload.get("seed_reachability", {})
+        and "induced_message_flow" in payload.get("seed_reachability", {})
     ]
-    assert not disagreeing, (
-        f"{len(disagreeing)} graph-splits no longer agree to within 1e-12, so "
-        "'exact agreements' overstates the result and the headline claim in "
-        "the report must be rewritten rather than recounted."
+
+
+def _hops(block: dict) -> list[int]:
+    """Hops the block records, ignoring the `__queries_reporting` shadows."""
+    return sorted(
+        int(key.rsplit("_", 1)[1])
+        for key in block["induced_symmetrised"]
+        if key.startswith("reachable_at_") and "__" not in key
     )
 
 
-def _seed_reach_blocks() -> list[dict]:
-    """Every seed-reachability block carrying both induced notions."""
-    found: list[dict] = []
-
-    def walk(node: object) -> None:
-        if isinstance(node, dict):
-            if "induced_symmetrised" in node and "induced_message_flow" in node:
-                found.append(node)
-            for value in node.values():
-                walk(value)
-        elif isinstance(node, list):
-            for value in node:
-                walk(value)
-
-    if not SUMMARY.exists():
-        pytest.skip("outputs/graph_substrate_audit/summary.json is absent")
-    walk(json.loads(SUMMARY.read_text(encoding="utf-8")))
-    return found
-
-
-def test_the_second_family_of_agreements_is_counted_and_still_agrees():
+def test_the_seed_reach_agreement_count_in_prose_is_the_measured_one():
     """The seed-reach half of the coincidence claim.
 
     The grounding test cannot police this one. It asks whether a prose figure
-    appears in some table, and it accepts a figure's percentage form -- so 60
-    is "grounded" by the 0.600 sitting in a retention percentile column, which
-    is a different quantity entirely. A derived count has to be checked against
-    the data that derives it, which is here.
+    appears in some table, and it accepts a figure's percentage form -- so 69
+    is "grounded" by a 0.690 sitting in some percentile column, which is a
+    different quantity entirely. A derived count has to be checked against the
+    data that derives it, which is here.
     """
     blocks = _seed_reach_blocks()
     assert blocks, "summary.json carries no seed-reachability block"
-    # Each measured field is shadowed by a `<field>__queries_reporting`
-    # denominator; those are sample sizes, not hops.
-    hops = sorted(
-        int(key.rsplit("_", 1)[1])
-        for key in blocks[0]["induced_symmetrised"]
-        if key.startswith("reachable_at_") and "__" not in key
-    )
-    assert hops, "seed reachability records no hops"
 
+    agreeing = 0
     total = 0
     disagreeing = []
-    for block in blocks:
+    for label, block in blocks:
         sym, flow = block["induced_symmetrised"], block["induced_message_flow"]
-        for hop in hops:
+        for hop in _hops(block):
             key = "reachable_at_" + str(hop)
             left, right = sym.get(key), flow.get(key)
             if left is None or right is None:
                 continue
             total += 1
-            if abs(left - right) >= 1e-12:
-                disagreeing.append((key, left, right))
+            if abs(left - right) < TOLERANCE:
+                agreeing += 1
+            elif label not in disagreeing:
+                disagreeing.append(label)
 
-    match = re.search(r"([\d,]+)\s+further\s+exact\s+agreements", _prose())
-    assert match, "the prose no longer states the seed-reach agreement count"
-    cited = int(match.group(1).replace(",", ""))
-    assert cited == total, (
-        f"prose claims {cited} further exact agreements; the audit made {total} "
-        f"seed-reach comparisons across {len(blocks)} graph-splits."
+    match = re.search(
+        r"on\s+([\w-]+)\s+of\s+the\s+([\w-]+)\s+graph-split-hops", _prose()
     )
-    assert not disagreeing, (
-        f"{len(disagreeing)} seed-reach comparisons no longer agree, so the "
-        "second family of agreements must be rewritten rather than recounted: "
-        + str(disagreeing[:3])
+    assert match, "the prose no longer states the seed-reach agreement count"
+    assert match.group(1) in _allowed(agreeing), (
+        f"prose claims {match.group(1)} agreeing seed-reach comparisons; the "
+        f"audit measured {agreeing} of {total}."
+    )
+    assert set(disagreeing) == set(KNOWN_DIVERGENCE), (
+        "the seed-reach comparisons disagree on a different set of graph-splits "
+        f"than the receptive-field ones: {sorted(disagreeing)} against "
+        f"{sorted(KNOWN_DIVERGENCE)}. The report presents the two families as "
+        "localising the same asymmetry, and that would no longer be true."
+    )
+
+
+# ---------------------------------------------------------------------------
+# Stored self-loops, same treatment
+# ---------------------------------------------------------------------------
+
+
+def test_the_self_loop_free_count_in_prose_is_the_measured_one():
+    clean = []
+    looped = []
+    for label, payload in _graph_splits():
+        stored = payload.get("operator_message_load", {}).get("stored_self_loops")
+        assert stored is not None, f"{label} reports no stored_self_loops at all"
+        (clean if stored == 0 else looped).append(label)
+
+    assert set(looped) == set(KNOWN_STORED_SELF_LOOPS), (
+        "the set of graph-splits carrying stored self-loops has changed. "
+        f"Measured: {sorted(looped)}. Registered: "
+        f"{sorted(KNOWN_STORED_SELF_LOOPS)}. Protocol 4.2 named this a hazard "
+        "for any self-loop-inserting operator, so a new one is a finding, not "
+        "a number to update."
+    )
+
+    match = re.search(
+        r"`stored_self_loops`\s+is\s+0\.0\s+on\s+([\w-]+)\s+of\s+the", _prose()
+    )
+    assert match, "the prose no longer says how many graph-splits are self-loop free"
+    assert match.group(1) in _allowed(len(clean)), (
+        f"prose says {match.group(1)} graph-splits carry no stored self-loop; "
+        f"{len(clean)} of {len(clean) + len(looped)} do."
     )

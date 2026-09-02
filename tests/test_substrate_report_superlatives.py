@@ -7,19 +7,23 @@ naming webqsp as the dataset with the highest duplicate fraction passes both
 when a sixth dataset arrives carrying a higher one -- every numeral in it is
 still a real measurement, and no count changed. Only the claim became false.
 
-That is not hypothetical here. hotpotqa_clean's audit is running as this is
-written, it is by far the largest graph of the six, and the report hands webqsp
-four superlatives and squad three on a five-dataset field. The report itself
-flags webqsp's as resting on 315 measured queries. If any of them moves, this
-file fails instead of the report quietly misleading a reader.
+That was not hypothetical. hotpotqa_clean's audit was running when this was
+written, it is by far the largest graph of the six, and the report handed webqsp
+four superlatives and squad three on a five-dataset field. Three of the seven
+moved when it landed -- the two expansion claims and the lowest median retention
+-- and this file failed on each of them instead of the report quietly misleading
+a reader. The registry below now names hotpotqa for those three.
 
-The scope phrases have a second failure mode, in the opposite direction. Six of
-them say "all five" and mean the audited datasets, so they must become six. Two
-others say "all six" and mean something else entirely -- the operator selections
-Package B trained, and the six datasets Package B measured -- and must stay six.
-A find-and-replace over "five" would leave the first group right and is exactly
-the kind of edit made in a hurry when an audit finally lands. Both groups are
-pinned to what they actually refer to.
+The scope phrases have a second failure mode, in the opposite direction. Seven of
+them said "all five" and meant the audited datasets, so they had to become six.
+Two others say "all six" and mean something else entirely -- the operator
+selections Package B trained, and the six datasets Package B measured -- and must
+stay six. A find-and-replace over "five" would leave the first group right and is
+exactly the kind of edit made in a hurry when an audit finally lands. Both groups
+are pinned to what they actually refer to. A third group did not survive
+hotpotqa at all: two phrases claimed universal agreement across graph-splits,
+hotpotqa's sealed graph disagrees, and the sentences were rewritten as counts
+rather than corrected as counts.
 
 Every claim is registered with the prose that asserts it. If a sentence is
 edited away the claim fails as missing, so dropping a superlative from the
@@ -127,12 +131,12 @@ SUPERLATIVES = (
         "min", "webqsp",
     ),
     Superlative(
-        "webqsp holds the largest expansion",
+        "hotpotqa holds the largest expansion",
         r"largest\s+expansion",
         ("expansion_headroom", "symmetric", "U_seed_3_expansion"),
-        "max", "webqsp",
+        "max", "hotpotqa_clean",
     ),
-    # The three squad holds, each quoted with its value.
+    # Two squad holds and one it lost to hotpotqa, each quoted with its value.
     Superlative(
         "squad has the densest induced graph",
         r"densest\s+induced\s+graph\s+measured\s+\(median\s+R1\s+([\d.]+)\)",
@@ -140,10 +144,10 @@ SUPERLATIVES = (
         "max", "squad_clean", "5.31",
     ),
     Superlative(
-        "squad has the lowest median retention",
+        "hotpotqa has the lowest median retention",
         r"lowest\s+median\s+retention\s+\(([\d.]+)\)",
         ("retention", "node_level_pooled_over_candidates", "retention_median"),
-        "min", "squad_clean", "0.080",
+        "min", "hotpotqa_clean", "0.077",
     ),
     Superlative(
         "squad has the highest retention p95",
@@ -152,13 +156,14 @@ SUPERLATIVES = (
         "max", "squad_clean", "0.977",
     ),
     # The expansion multipliers. "Multiplier" is the three-hop seed expansion,
-    # not the target one -- the report quotes 750.91x and 23.72x, which are
+    # not the target one -- the report quotes 1488.95x and 23.72x, which are
     # U_seed_3_expansion. Pinning the field is half the point of this check.
     Superlative(
-        "webqsp carries the largest multiplier",
-        r"webqsp\s+carries\s+the\s+largest\s+multiplier",
+        "hotpotqa carries the largest multiplier",
+        r"hotpotqa\s+carries\s+the\s+largest\s+multiplier\s+of\s+the\s+six,"
+        r"\s+([\d.]+)x",
         ("expansion_headroom", "symmetric", "U_seed_3_expansion"),
-        "max", "webqsp",
+        "max", "hotpotqa_clean", "1488.95",
     ),
     Superlative(
         "musique carries the smallest multiplier",
@@ -222,13 +227,14 @@ SCOPES = (
     # These two do not. They are about Package B, which is frozen at six.
     Scope(r"across\s+all\s+([\w-]+)\s+selections", "operator_selections"),
     Scope(r"Across\s+all\s+([\w-]+)\s+datasets\s+Package\s+B\s+measured", "package_b"),
-    # These count statistics per comparison, not datasets.
-    Scope(r"All\s+([\w-]+)\s+differences\s+are\s+zero", "statistics"),
+    # This counts statistics per comparison, not datasets. Its two siblings --
+    # "All nine differences are zero on all twenty graph-splits" and
+    # "exactly on all twenty splits" -- are gone from the prose: hotpotqa broke
+    # both claims, and what replaced them is a partition ("207 of the 216"),
+    # which tests/test_substrate_report_counts_match_audits.py owns. The
+    # closure check below is what guarantees they were rewritten rather than
+    # quietly dropped: any surviving "all N" phrase must be registered here.
     Scope(r"all\s+([\w-]+)\s+statistics\s+agree\s+exactly", "statistics"),
-    # Graph-splits. The count itself is pinned by the derived-count test; these
-    # are registered so the closure check below can account for them.
-    Scope(r"on\s+all\s+([\w-]+)\s+graph-splits", "graph_splits"),
-    Scope(r"exactly\s+on\s+all\s+([\w-]+)\s+splits", "graph_splits"),
 )
 
 STATISTICS_PER_COMPARISON = 9
@@ -360,8 +366,8 @@ def test_every_per_dataset_enumeration_names_every_audited_dataset():
 
 HOPWISE_RANGES = (
     (1, "1.10", "2wiki_clean", "1.83", "squad_clean"),
-    (2, "6.48", "musique_clean", "110.59", "2wiki_clean"),
-    (3, "23.72", "musique_clean", "750.91", "webqsp"),
+    (2, "6.48", "musique_clean", "965.37", "hotpotqa_clean"),
+    (3, "23.72", "musique_clean", "1488.95", "hotpotqa_clean"),
 )
 
 

@@ -30,7 +30,7 @@ to lose if skimmed:
 | metaqa | 407,513 | 39,138 | 19,963 | 40,151 | 585,728 | complete, 4 graphs |
 | squad_clean | 130,319 | 26,063 | 25,943 | 19,029 | 2,857,316 | complete, 4 graphs |
 | webqsp | 1,578 | 315 | 209 | 781,485 | 13,379,166 | complete, 4 graphs |
-| hotpotqa_clean | 97,852 | — | — | — | — | queued, no output yet |
+| hotpotqa_clean | 97,852 | 19,570 | 19,538 | 507,494 | 16,223,058 | complete, 4 graphs |
 
 **The sample is not the dataset, and the three columns differ a lot.** "queries
 measured" is the `validation` split, subject to `pooled_query_cap`; "with gold
@@ -43,51 +43,61 @@ This matters most for **webqsp**, which is the smallest sample here by an order
 of magnitude — 315 measured queries, 209 of them with gold in the pool. Every
 webqsp figure quoted in this document rests on those, not on its 1,578 queries.
 webqsp is also the dataset that holds several extremes below (highest duplicate
-fraction, deepest R3, lowest boundary cut, largest expansion), so those
-extremes should be read as measured on a small sample rather than as
-established with the precision the four larger datasets carry.
+fraction, deepest R3, lowest boundary cut), so those extremes should be read as
+measured on a small sample rather than as established with the precision the
+five larger datasets carry. hotpotqa took the largest expansion from it when its
+audit landed, on 19,538 measured queries rather than 315.
 
-Every table below covers the five complete datasets on the `validation` split.
-hotpotqa_clean is appended when its audit finishes; no conclusion here is
-stated as holding for it.
+Every table below covers the six complete datasets on the `validation` split.
+All six are in. Where a claim below holds on five of them and not on hotpotqa,
+it says so and names the split.
 
 ## The headline measurements
 
-**The two connectivity notions coincide, on every graph audited.** Not by
-assumption — the audit computes the symmetrised receptive field and the exact
-directed message-flow receptive field separately, from separate traversals, and
-compares them. What is compared is nine summary statistics per graph-split:
-median, mean and zero-fraction at each of R1, R2 and R3. All nine differences
-are zero to within 1e-12 on all twenty graph-splits, 180 exact agreements in
-total.
+**The two connectivity notions coincide on every graph-split but one, and the
+exception is hotpotqa's sealed graph.** Not by assumption — the audit computes
+the symmetrised receptive field and the exact directed message-flow receptive
+field separately, from separate traversals, and compares them. What is compared
+is nine summary statistics per graph-split: median, mean and zero-fraction at
+each of R1, R2 and R3. 207 of the 216 differences are zero to within 1e-12.
 
-Stated precisely, that is what was measured: the two notions produce
-indistinguishable receptive-field *distributions*. It is not a node-by-node
-proof that the reachable sets are identical, because the audit retains the
-aggregates rather than the per-node sets, and distinct distributions can share
-a median. Given that stored orientation is asymmetric on the sealed graph and
-that all nine statistics agree exactly at three different depths, the reading
-that the graphs are effectively symmetric in reachability is a strong one — but
-it is an inference from the aggregates, not a separate measurement, and it is
-labelled as such here rather than promoted to a finding.
+The nine that are not are all hotpotqa_clean's `dataset_default`, and they point
+the same way at every depth: directed message flow reaches strictly less than
+the symmetrised view, 18.36 against 18.77 at R2 and 32.79 against 33.12 at R3.
+The gap is a fraction of a node — under half a node at R2 — so the practical
+reading, that reachability on these graphs is near-symmetric, survives. The
+claim that it *is* symmetric does not. This is the first dataset on which the
+distinction the protocol insisted on actually bites, and it bites on the sealed
+family only: hotpotqa's `structural_only`, `knn_only` and `baseline_a_simple`
+coincide exactly, the last by construction.
 
-A second, independent family of comparisons says the same thing. Seed
-reachability is computed on both induced notions as well as on the global
-graph, and the fraction of candidates a retrieval seed reaches at one, two and
-three hops is identical under both notions on every graph-split: 60 further
-exact agreements, on a different quantity, from a different traversal. That
-does not upgrade the aggregate reading to a node-by-node proof either — it is
-another distribution-level agreement — but it is not the same measurement made
-twice.
+Stated precisely, what was measured on the other twenty-three graph-splits is
+that the two notions produce indistinguishable receptive-field *distributions*. It is not a
+node-by-node proof that the reachable sets are identical, because the audit
+retains the aggregates rather than the per-node sets, and distinct distributions
+can share a median. Given that stored orientation is asymmetric on every sealed
+graph and that all nine statistics agree exactly at three different depths, the
+reading that those graphs are effectively symmetric in reachability is a strong
+one — but it is an inference from the aggregates, not a separate measurement,
+and it is labelled as such here rather than promoted to a finding. hotpotqa
+shows the inference is not free: there the aggregates disagree, and they
+disagree in the direction stored orientation predicts.
 
-The distinction the protocol insisted on therefore does not bite on any graph
-audited so far. It still had to be measured rather than assumed, and it must be
-re-measured on hotpotqa_clean.
+A second, independent family of comparisons agrees, and disagrees in the same
+one place. Seed reachability is computed on both induced notions as well as on
+the global graph, and the fraction of candidates a retrieval seed reaches at
+one, two and three hops is identical under both notions on sixty-nine of the
+seventy-two graph-split-hops. The three exceptions are hotpotqa's sealed graph
+again, where the symmetrised view reaches more at every hop by less than four
+ten-thousandths — too small to survive the three-decimal rounding of the table
+below, which prints 0.099, 0.254 and 0.332 under both notions. That is a
+different quantity from a different traversal, and it localises the asymmetry to
+exactly the graph-split the first family did.
 
 **A substantial fraction of candidates are scored as though the graph were not
 there, and how large that fraction is depends strongly on the dataset.** On the
 sealed graph the isolated fraction runs 0.175 (squad), 0.190 (webqsp), 0.224
-(musique), 0.375 (2wiki), 0.412 (metaqa). An isolated candidate is not dropped;
+(musique), 0.355 (hotpotqa), 0.375 (2wiki), 0.412 (metaqa). An isolated candidate is not dropped;
 it is scored, receiving only the operator's own root term — an inserted
 self-loop under `gat` and `gcn`, an explicit `(1+eps)*x_self` under `gin`. For
 that fraction of the pool the one-layer GNN is a plain MLP, whichever operator
@@ -98,9 +108,9 @@ none at greater depth.
 
 **Depth varies by a factor of seven at one hop and thirty-six at three, so
 "shallow" is a property of a substrate and not of the method.** Median
-symmetrised R1 on the sealed graph is 0.77 (metaqa), 1.01 (2wiki), 1.89
-(musique), 2.07 (webqsp), 5.31 (squad). At R3 the spread runs 3.09, 8.00,
-21.19, 64.41 and 110.38. The
+symmetrised R1 on the sealed graph is 0.77 (metaqa), 1.01 (2wiki), 1.21
+(hotpotqa), 1.89 (musique), 2.07 (webqsp), 5.31 (squad). At R3 the spread runs
+3.09, 8.00, 21.19, 33.12, 64.41 and 110.38. The
 historical operator is one layer, so R1 is what it used. R2 and R3 are reported
 because the protocol requires depth to be measured rather than asserted, and
 because the pre-registered GNN controls will be run at matched reach.
@@ -108,18 +118,19 @@ because the pre-registered GNN controls will be run at matched reach.
 **Induced reachability and global reachability diverge with depth, by very
 different margins.** Retrieval seeds reach the same fraction at one hop either
 way, as they must. At three hops the induced and global figures are 14.4% and
-97.3% on 2wiki, 20.2% and 87.2% on metaqa, 38.1% and 77.4% on musique, 51.2%
-and 86.6% on squad, and 53.9% and 84.6% on webqsp. On 2wiki almost everything a
+97.3% on 2wiki, 20.2% and 87.2% on metaqa, 33.2% and 100.0% on hotpotqa, 38.1%
+and 77.4% on musique, 51.2% and 86.6% on squad, and 53.9% and 84.6% on webqsp. On 2wiki almost everything a
 conventional GNN would reach at depth lies outside the scoring set; on webqsp
 and squad rather less than half does.
 
 **Retention is low at the median and spread very wide, so the median alone
-misdescribes it.** On the sealed graph the node-pooled median retention is 0.080
-(squad), 0.111 (2wiki), 0.154 (metaqa), 0.200 (musique), 0.250 (webqsp). Those
-are the numbers a summary would stop at, and they would suggest a uniformly
-graph-starved pool. The distribution says otherwise: p10 is 0.000 on all five —
-the isolated fraction showing through — while p95 runs 0.600 (2wiki), 0.667
-(metaqa), 0.833 (musique), 0.900 (webqsp), 0.977 (squad), and the maximum is
+misdescribes it.** On the sealed graph the node-pooled median retention is 0.077
+(hotpotqa), 0.080 (squad), 0.111 (2wiki), 0.154 (metaqa), 0.200 (musique), 0.250
+(webqsp). Those are the numbers a summary would stop at, and they would suggest a
+uniformly graph-starved pool. The distribution says otherwise: p10 is 0.000 on
+all six — the isolated fraction showing through — while p95 runs 0.444
+(hotpotqa), 0.600 (2wiki), 0.667 (metaqa), 0.833 (musique), 0.900 (webqsp),
+0.977 (squad), and the maximum is
 1.000 everywhere. A large minority of candidates keep most or all of their
 global neighbourhood; another large minority keep none of it. Protocol §6.1
 forbids an adequacy threshold and requires continuous characterisation, and
@@ -128,16 +139,33 @@ this is why: no single cut separates these populations.
 Squad is the extreme in both directions, and its global degree explains why.
 Its degree distribution runs 3 / 5 / 41 / 98 / 169 / 258 at p10 / p25 / median
 / p75 / p90 / p95, against 4 / 5 / 6 / 9 / 13 / 18 for webqsp — a heavy tail
-against a flat one. Squad therefore has the densest induced graph measured
-(median R1 5.31), the lowest median retention (0.080) and the highest p95
-(0.977) at once. Boundary-cut ratios run 0.700 (webqsp) to 0.904 (metaqa).
-Retrieval is cutting through neighbourhoods rather than selecting
-graph-coherent regions, but it is not doing so uniformly across candidates.
+against a flat one. Squad therefore has the densest induced graph
+measured (median R1 5.31) and the highest p95 (0.977) at once, while hotpotqa
+holds the lowest median retention (0.077) on a far larger sample. Boundary-cut
+ratios run 0.700 (webqsp) to 0.904 (metaqa). Retrieval is cutting through
+neighbourhoods rather than selecting graph-coherent regions, but it is not
+doing so uniformly across candidates.
+
+**hotpotqa's node-pooled retention is not measured on the same denominator as
+its query-level retention, and the difference is its self-loops.** The
+node-pooled column divides by the candidate's raw stored out-degree; the
+query-level column divides by that degree with stored self-loops removed. On
+five datasets there are no stored self-loops and the two denominators are the
+same number. On hotpotqa there are 538.1 per query over 347.8 candidates
+against a median global degree of 13.0, so the pooled column divides by a
+denominator roughly a tenth too large and reports a retention correspondingly
+too low. Its 0.077 is therefore the smallest of the six partly by convention,
+and on the self-loop-corrected column the smallest median is metaqa's. Both
+columns are printed, both are labelled with their level, and neither is
+adjusted here: the analyzer is frozen output and re-running it to unify the
+denominator would cost six dataset audits to move one dataset's figure by
+about a hundredth. The graph-context work downstream of this report uses the
+corrected convention and says so.
 
 **On metaqa and webqsp, a third to a half of measured queries have no gold
 target in the candidate pool at all.** 19,175 of metaqa's 39,138 measured
 queries (49.0%) and 106 of webqsp's 315 (33.7%), against 0.0% on 2wiki, 0.1% on
-musique and 0.5% on squad. Every gold-path-preservation and bridge-loss figure
+musique, 0.2% on hotpotqa and 0.5% on squad. Every gold-path-preservation and bridge-loss figure
 for those two datasets therefore describes the minority of queries that do
 carry a gold, which is why their denominators in the tables are 19,963 and 209
 rather than 39,138 and 315.
@@ -163,7 +191,7 @@ audit read:
 | squad_clean | 0.995 | 0.9949 | 0.8933 | 0.898 |
 | webqsp | 0.663 | 0.4501 | 0.3309 | 0.735 |
 | metaqa | 0.510 | 0.3262 | 0.3013 | 0.924 |
-| hotpotqa_clean | — | 0.9295 | 0.7766 | 0.835 |
+| hotpotqa_clean | 0.998 | 0.9295 | 0.7766 | 0.835 |
 
 The ceiling cannot exceed the share of queries carrying a gold, because a query
 with no gold in the pool contributes exactly zero to it however it is ranked. It
@@ -186,7 +214,8 @@ subgraph in 90.1% (metaqa) to 98.9% (webqsp) of all measured gold targets,
 against 99.0% to 100.0% connected globally. The conditional form is
 `bridge_loss@h`, the fraction of targets genuinely within `h` hops of a seed
 that the induced graph cannot reach within `h` at all: at three hops that is
-1.1% (webqsp), 1.2% (squad), 1.4% (2wiki), 3.6% (musique) and 9.9% (metaqa). It
+1.1% (webqsp), 1.2% (squad), 1.4% (2wiki), 2.1% (hotpotqa), 3.6% (musique) and
+9.9% (metaqa). It
 is zero at one hop everywhere, which is expected — a direct seed-to-target edge
 survives induction whenever both endpoints are in the pool. Bridge loss is the
 `seed -> non-candidate -> candidate` pattern specifically, and neither a GNN
@@ -200,45 +229,60 @@ carry weight elsewhere in this report: `coalesces_duplicates` is false on every
 selection, which is why duplicate edges are counted as real messages rather
 than collapsed; and `isolated_node_still_scored` is true on every selection,
 which is why an isolated candidate is described as scored rather than dropped.
-Message flow is `source_to_target` on all five, so a candidate aggregates over
+Message flow is `source_to_target` on all six, so a candidate aggregates over
 its in-neighbours and seed signal travels forward along the stored orientation.
 
 **The sealed graph is stored asymmetrically; every derived family is stored
 symmetrically and cleanly.** A symmetric graph with no duplicate edges stores
 exactly two directed edges per undirected edge. `structural_only`, `knn_only`
-and `baseline_a_simple` sit at exactly 2.0000 on all five datasets, so those
+and `baseline_a_simple` sit at exactly 2.0000 on all six datasets, so those
 three carry no stored multiplicity at all. `dataset_default` is flagged
-asymmetric on all five and its ratio runs 3.2788 (2wiki) to 4.0411 (webqsp).
+asymmetric on all six and its ratio runs 3.2788 (2wiki) to 4.0411 (webqsp).
 That excess above 2.0 *is* the duplicate multiplicity, measured on the whole
 stored artifact rather than per query. Protocol §1.3 listed storage orientation
 and duplicate-edge handling as open; both are now answered, and neither
 required opening a graph the audit does not already read.
 
-The asymmetry is in storage, not in reach. The sealed graph stores some pairs
-in one direction and others repeatedly, yet its message-flow receptive field
-equals its symmetrised one at every hop on every dataset. Storage orientation
-and reachability are separate properties and the audit measures them
-separately.
+The asymmetry is mostly in storage rather than in reach. The sealed graph
+stores some pairs in one direction and others repeatedly, yet its message-flow
+receptive field equals its symmetrised one at every hop on five of the six
+datasets, and falls short of it by a fraction of a node on the sixth. Storage
+orientation and reachability are separate properties, they are measured
+separately, and hotpotqa is the case that shows the separation is real rather
+than notational.
 
-**The stored graph carries no self-loops, on any dataset or any family.**
-`stored_self_loops` is 0.0 on all twenty graph-splits. Protocol §1.3 listed
-self-loop presence as an open question and §4.2 named the hazard: `gcn` and
-`gat` insert a self-loop of their own, so a stored one would be consumed twice
-and the affected node's own features would be weighted differently from every
-other node's. That case does not arise. Every self-loop in the message counts
-is operator-inserted, and `operator_inserted_self_loops` equals the candidate
-count exactly on all twenty splits — one per node, as the layer's own
-construction implies.
+**The stored graph carries self-loops on exactly one graph-split, and that
+dataset's operator consumes them.** `stored_self_loops` is 0.0 on
+twenty-three of the twenty-four graph-splits. On hotpotqa_clean's sealed graph
+it is 538.1
+per query against 976.7 stored non-self messages, and
+`messages_consumed_by_operator` is 1514.8 — the sum of the two, so every stored
+self-loop is consumed. Protocol §1.3 listed self-loop presence as an open
+question and §4.2 named the hazard: `gcn` and `gat` insert a self-loop of their
+own, so a stored one would be consumed twice and the affected node's own
+features would be weighted differently from every other node's. The predicted
+form of that hazard does not arise, because hotpotqa_clean selects `gin`, whose
+`operator_inserted_self_loops` is 0.0 and whose root term is `(1+eps)*x_self`.
 
-That last equality is a property of the operator, not of the graph, and it will
-not survive to hotpotqa_clean. The five datasets audited so far select `gat` or
-`gcn`, which both insert a self-loop; hotpotqa_clean selects `gin`, which does
-not — it carries an explicit `(1+eps)*x_self` root term instead. Its inserted
-count should therefore be zero and its consumed-message total correspondingly
-lower, and that will be a difference in the operator rather than a change in
-the substrate. The property that does hold across all six selections is
-duplicate sensitivity: `gat`, `gcn` and `gin` all consume duplicate edges as
-separate messages. Only `sage` would not, and no dataset selects it.
+Its substance arises by another route, and this is a finding rather than a
+prediction. `gin` sums over its neighbour set and adds the root term on top. A
+stored self-loop puts a node inside its own neighbour set, so on hotpotqa a
+self-looped candidate has its own features summed in again beside the root term,
+and the extra weight is not uniform across nodes because the stored self-loops
+are not: 538.1 of them spread over 347.8 candidates. This is a property of the
+frozen artifact, not of anything this package did, and it is recorded rather
+than repaired — Package B's hotpotqa numbers were trained on that graph, and
+this document does not rewrite frozen results.
+
+On the other five datasets every self-loop in the message counts is
+operator-inserted, and `operator_inserted_self_loops` equals the candidate count
+exactly — one per node, as the layer's own construction implies. That is a
+property of the operator, not of the graph, and it did not survive to
+hotpotqa_clean, which was predicted here before the audit landed: `gat` and
+`gcn` insert, `gin` does not. The property that does hold across all six
+selections is duplicate sensitivity: `gat`, `gcn` and `gin` all consume
+duplicate edges as separate messages. Only `sage` would not, and no dataset
+selects it.
 
 Two fields in the path-preservation table are per-query **counts**, not
 fractions, and are labelled as such: `lost by induction` and `targets`. On
@@ -253,7 +297,7 @@ That is by construction, not coincidence: `configs/edge_provenance.yaml`
 defines the latter as the deduplicated bidirectional projection of the former
 and names it the mandatory duplicate-normalization control. The audit confirms
 it independently — the two families hash to the same undirected edge key on all
-five datasets — and the stored directed edge counts it read match the counts
+six datasets — and the stored directed edge counts it read match the counts
 Package B recorded for the families it trained, so both packages read the same
 frozen artifacts.
 
@@ -283,7 +327,7 @@ point in either direction on every dataset measured.
 
 Package B showed a graph can look connected through kNN edges while its
 relational graph is fragmented. The audit measures both halves directly, and
-the picture is consistent across all five datasets: kNN edges supply local
+the picture is consistent across all six datasets: kNN edges supply local
 density, structural edges supply reach.
 
 Isolation alone does not separate them — on 2wiki the structural-only graph
@@ -326,8 +370,8 @@ nothing here licenses training on an expanded pool.
 
 The multipliers are steep and they are not uniform. One hop from the retrieval
 seeds grows the union by 1.10x (2wiki) to 1.83x (squad); two hops by 6.48x
-(musique) to 110.59x (2wiki); three hops by 23.72x (musique) to 750.91x
-(webqsp). The kNN-only graph barely expands at all — 1.05x / 1.26x / 1.94x on
+(musique) to 965.37x (hotpotqa); three hops by 23.72x (musique) to 1488.95x
+(hotpotqa). The kNN-only graph barely expands at all — 1.05x / 1.26x / 1.94x on
 2wiki, 1.04x / 1.20x / 1.69x on webqsp — which is the same fact as its short
 global reach seen from the other side.
 
@@ -338,13 +382,17 @@ not a system, and a multiplier cannot make that call: it is a ratio to a pool,
 so a dataset whose pool is small relative to its graph posts a large multiple
 without reaching further in any absolute sense. Against the whole graph, a
 three-hop expansion from the gold targets on the sealed graph is 0.777
-(webqsp), 0.939 (musique), 0.953 (2wiki), 0.972 (squad) and 0.996 (metaqa) of
-every node there is. From the retrieval seeds alone it is 0.329 (webqsp), 0.576
-(musique), 0.731 (metaqa), 0.781 (squad) and 0.908 (2wiki).
+(webqsp), 0.939 (musique), 0.953 (2wiki), 0.972 (squad), 0.996 (metaqa) and
+1.000 (hotpotqa) of every node there is. From the retrieval seeds alone it is
+0.329 (webqsp), 0.576 (musique), 0.731 (metaqa), 0.781 (squad), 0.908 (2wiki)
+and 0.997 (hotpotqa).
 
-webqsp carries the largest multiplier of the five and the *smallest* share on
-both readings. Its 750.91x is a statement about how small its candidate pool is
-next to its 781,485-node graph, not about how far three hops travel. musique
+hotpotqa carries the largest multiplier of the six, 1488.95x, and it reaches
+essentially the whole graph -- 0.997 of every node from the seeds alone. webqsp
+is the case that separates the two readings: 750.91x, the second largest
+multiple, against the *smallest* share on both counts. Its multiple is a
+statement about how small its candidate pool is next to its 781,485-node graph,
+not about how far three hops travel. musique
 carries the smallest multiplier, 23.72x, and a larger share than webqsp on both
 counts. Any comparison of expansion cost across these datasets has to be made
 on the absolute quantity; the multiples are not comparable and reading them as
@@ -367,6 +415,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 3000 | 359.7 | 117.7 | 0.775 | 0.165 | 0.060 |
 | 2wiki_clean | kNN only | 3000 | 359.7 | 346.5 | 0.488 | 0.259 | 0.252 |
 | 2wiki_clean | baseline A | 3000 | 359.7 | 464.1 | 0.375 | 0.291 | 0.333 |
+| hotpotqa_clean | sealed A | 19570 | 347.8 | 631.5 | 0.355 | 0.239 | 0.407 |
+| hotpotqa_clean | structural | 19570 | 347.8 | 286.9 | 0.637 | 0.219 | 0.145 |
+| hotpotqa_clean | kNN only | 19570 | 347.8 | 348.2 | 0.489 | 0.241 | 0.270 |
+| hotpotqa_clean | baseline A | 19570 | 347.8 | 631.5 | 0.355 | 0.239 | 0.407 |
 | metaqa | sealed A | 39138 | 373.1 | 440.1 | 0.412 | 0.320 | 0.268 |
 | metaqa | structural | 39138 | 373.1 | 228.1 | 0.604 | 0.302 | 0.094 |
 | metaqa | kNN only | 39138 | 373.1 | 212.0 | 0.644 | 0.227 | 0.129 |
@@ -392,6 +444,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 0.072 | 0.000 | 3.0 | 0.757 | 0.798 | 0.878 | 0.921 |
 | 2wiki_clean | kNN only | 0.227 | 0.111 | 4.0 | 0.484 | 0.489 | 0.581 | 0.773 |
 | 2wiki_clean | baseline A | 0.169 | 0.111 | 7.0 | 0.375 | 0.452 | 0.709 | 0.839 |
+| hotpotqa_clean | sealed A | 0.124 | 0.077 | 13.0 | 0.355 | 0.538 | 0.803 | 0.890 |
+| hotpotqa_clean | structural | 0.066 | 0.000 | 8.0 | 0.636 | 0.728 | 0.898 | 0.937 |
+| hotpotqa_clean | kNN only | 0.221 | 0.077 | 4.0 | 0.486 | 0.492 | 0.588 | 0.772 |
+| hotpotqa_clean | baseline A | 0.124 | 0.077 | 13.0 | 0.355 | 0.538 | 0.803 | 0.890 |
 | metaqa | sealed A | 0.208 | 0.154 | 7.0 | 0.412 | 0.539 | 0.784 | 0.904 |
 | metaqa | structural | 0.202 | 0.061 | 4.0 | 0.604 | 0.668 | 0.817 | 0.933 |
 | metaqa | kNN only | 0.258 | 0.000 | 3.0 | 0.624 | 0.628 | 0.677 | 0.816 |
@@ -417,6 +473,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 0.000 | 0.000 | 0.000 | 0.000 | 0.250 | 0.500 | 1.000 | 1.0 | 1.0 | 3.0 | 5.0 | 9.0 | 14.0 |
 | 2wiki_clean | kNN only | 0.000 | 0.000 | 0.111 | 0.333 | 0.667 | 0.857 | 1.000 | 2.0 | 3.0 | 4.0 | 5.0 | 7.0 | 9.0 |
 | 2wiki_clean | baseline A | 0.000 | 0.000 | 0.111 | 0.250 | 0.444 | 0.600 | 1.000 | 4.0 | 5.0 | 7.0 | 10.0 | 14.0 | 18.0 |
+| hotpotqa_clean | sealed A | 0.000 | 0.000 | 0.077 | 0.190 | 0.333 | 0.444 | 1.000 | 7.0 | 9.0 | 13.0 | 17.0 | 24.0 | 30.0 |
+| hotpotqa_clean | structural | 0.000 | 0.000 | 0.000 | 0.100 | 0.222 | 0.333 | 1.000 | 4.0 | 5.0 | 8.0 | 12.0 | 18.0 | 24.0 |
+| hotpotqa_clean | kNN only | 0.000 | 0.000 | 0.077 | 0.333 | 0.667 | 0.800 | 1.000 | 2.0 | 3.0 | 4.0 | 5.0 | 7.0 | 9.0 |
+| hotpotqa_clean | baseline A | 0.000 | 0.000 | 0.077 | 0.190 | 0.333 | 0.444 | 1.000 | 7.0 | 9.0 | 13.0 | 17.0 | 24.0 | 30.0 |
 | metaqa | sealed A | 0.000 | 0.000 | 0.154 | 0.333 | 0.500 | 0.667 | 1.000 | 3.0 | 5.0 | 7.0 | 11.0 | 18.0 | 32.0 |
 | metaqa | structural | 0.000 | 0.000 | 0.061 | 0.273 | 0.625 | 1.000 | 1.000 | 1.0 | 1.0 | 4.0 | 7.0 | 13.0 | 28.0 |
 | metaqa | kNN only | 0.000 | 0.000 | 0.000 | 0.500 | 1.000 | 1.000 | 1.000 | 1.0 | 2.0 | 3.0 | 4.0 | 6.0 | 7.0 |
@@ -442,6 +502,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 0.01 | 0.18 | 0.29 | 0.01 | 0.18 | 0.29 | yes | 0.775 |
 | 2wiki_clean | kNN only | 0.53 | 0.92 | 1.32 | 0.53 | 0.92 | 1.32 | yes | 0.488 |
 | 2wiki_clean | baseline A | 1.01 | 1.89 | 3.09 | 1.01 | 1.89 | 3.09 | yes | 0.375 |
+| hotpotqa_clean | sealed A | 1.21 | 18.77 | 33.12 | 1.21 | 18.36 | 32.79 | NO | 0.355 |
+| hotpotqa_clean | structural | 0.26 | 15.66 | 21.70 | 0.26 | 15.66 | 21.70 | yes | 0.637 |
+| hotpotqa_clean | kNN only | 0.59 | 1.64 | 2.46 | 0.59 | 1.64 | 2.46 | yes | 0.489 |
+| hotpotqa_clean | baseline A | 1.21 | 18.77 | 33.12 | 1.21 | 18.77 | 33.12 | yes | 0.355 |
 | metaqa | sealed A | 0.77 | 3.18 | 8.00 | 0.77 | 3.18 | 8.00 | yes | 0.412 |
 | metaqa | structural | 0.23 | 1.66 | 3.22 | 0.23 | 1.66 | 3.22 | yes | 0.604 |
 | metaqa | kNN only | 0.08 | 0.10 | 0.11 | 0.08 | 0.10 | 0.11 | yes | 0.644 |
@@ -471,6 +535,14 @@ still a pool rather than a corpus.
 | 2wiki_clean | kNN only | message flow | 0.53 | 0.98 | 0.488 | 0.92 | 2.19 | 0.488 | 1.32 | 3.68 | 0.488 |
 | 2wiki_clean | baseline A | symmetrised | 1.01 | 1.31 | 0.375 | 1.89 | 3.53 | 0.375 | 3.09 | 6.34 | 0.375 |
 | 2wiki_clean | baseline A | message flow | 1.01 | 1.31 | 0.375 | 1.89 | 3.53 | 0.375 | 3.09 | 6.34 | 0.375 |
+| hotpotqa_clean | sealed A | symmetrised | 1.21 | 1.88 | 0.355 | 18.77 | 21.91 | 0.355 | 33.12 | 35.82 | 0.355 |
+| hotpotqa_clean | sealed A | message flow | 1.21 | 1.87 | 0.355 | 18.36 | 21.74 | 0.355 | 32.79 | 35.62 | 0.355 |
+| hotpotqa_clean | structural | symmetrised | 0.26 | 0.85 | 0.637 | 15.66 | 18.87 | 0.637 | 21.70 | 24.49 | 0.637 |
+| hotpotqa_clean | structural | message flow | 0.26 | 0.85 | 0.637 | 15.66 | 18.87 | 0.637 | 21.70 | 24.49 | 0.637 |
+| hotpotqa_clean | kNN only | symmetrised | 0.59 | 1.03 | 0.489 | 1.64 | 2.83 | 0.489 | 2.46 | 5.05 | 0.489 |
+| hotpotqa_clean | kNN only | message flow | 0.59 | 1.03 | 0.489 | 1.64 | 2.83 | 0.489 | 2.46 | 5.05 | 0.489 |
+| hotpotqa_clean | baseline A | symmetrised | 1.21 | 1.88 | 0.355 | 18.77 | 21.91 | 0.355 | 33.12 | 35.82 | 0.355 |
+| hotpotqa_clean | baseline A | message flow | 1.21 | 1.88 | 0.355 | 18.77 | 21.91 | 0.355 | 33.12 | 35.82 | 0.355 |
 | metaqa | sealed A | symmetrised | 0.77 | 1.20 | 0.412 | 3.18 | 6.12 | 0.412 | 8.00 | 12.89 | 0.412 |
 | metaqa | sealed A | message flow | 0.77 | 1.20 | 0.412 | 3.18 | 6.12 | 0.412 | 8.00 | 12.89 | 0.412 |
 | metaqa | structural | symmetrised | 0.23 | 0.62 | 0.604 | 1.66 | 4.06 | 0.604 | 3.22 | 6.09 | 0.604 |
@@ -512,6 +584,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 117.7 | 117.7 | 0.0 | 0.000 | 0.0 | 359.7 | 477.3 |
 | 2wiki_clean | kNN only | 346.5 | 346.5 | 0.0 | 0.000 | 0.0 | 359.7 | 706.2 |
 | 2wiki_clean | baseline A | 464.1 | 464.1 | 0.0 | 0.000 | 0.0 | 359.7 | 823.8 |
+| hotpotqa_clean | sealed A | 631.1 | 976.7 | 345.6 | 0.341 | 538.1 | 0.0 | 1514.8 |
+| hotpotqa_clean | structural | 286.9 | 286.9 | 0.0 | 0.000 | 0.0 | 0.0 | 286.9 |
+| hotpotqa_clean | kNN only | 348.2 | 348.2 | 0.0 | 0.000 | 0.0 | 0.0 | 348.2 |
+| hotpotqa_clean | baseline A | 631.5 | 631.5 | 0.0 | 0.000 | 0.0 | 0.0 | 631.5 |
 | metaqa | sealed A | 440.1 | 742.6 | 302.5 | 0.402 | 0.0 | 373.1 | 1115.6 |
 | metaqa | structural | 228.1 | 228.1 | 0.0 | 0.000 | 0.0 | 373.1 | 601.2 |
 | metaqa | kNN only | 212.0 | 212.0 | 0.0 | 0.000 | 0.0 | 373.1 | 585.0 |
@@ -537,6 +613,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 0.031 | 0.039 | 0.041 | 0.031 | 0.039 | 0.041 | 0.031 | 0.744 | 0.870 |
 | 2wiki_clean | kNN only | 0.052 | 0.082 | 0.109 | 0.052 | 0.082 | 0.109 | 0.052 | 0.091 | 0.149 |
 | 2wiki_clean | baseline A | 0.060 | 0.104 | 0.144 | 0.060 | 0.104 | 0.144 | 0.060 | 0.765 | 0.973 |
+| hotpotqa_clean | sealed A | 0.099 | 0.254 | 0.332 | 0.099 | 0.254 | 0.332 | 0.099 | 0.924 | 1.000 |
+| hotpotqa_clean | structural | 0.067 | 0.186 | 0.211 | 0.067 | 0.186 | 0.211 | 0.067 | 0.848 | 0.988 |
+| hotpotqa_clean | kNN only | 0.060 | 0.102 | 0.140 | 0.060 | 0.102 | 0.140 | 0.060 | 0.601 | 0.926 |
+| hotpotqa_clean | baseline A | 0.099 | 0.254 | 0.332 | 0.099 | 0.254 | 0.332 | 0.099 | 0.924 | 1.000 |
 | metaqa | sealed A | 0.067 | 0.139 | 0.202 | 0.067 | 0.139 | 0.202 | 0.067 | 0.399 | 0.872 |
 | metaqa | structural | 0.047 | 0.085 | 0.103 | 0.047 | 0.085 | 0.103 | 0.047 | 0.353 | 0.770 |
 | metaqa | kNN only | 0.044 | 0.061 | 0.074 | 0.044 | 0.061 | 0.074 | 0.044 | 0.065 | 0.088 |
@@ -562,6 +642,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 3000 | 1.85 | 0.997 | 0.973 | 0.053 | 0.001 | 0.000 | 0.023 | 0.024 |
 | 2wiki_clean | kNN only | 3000 | 1.85 | 0.934 | 0.928 | 0.013 | 0.000 | 0.000 | 0.003 | 0.006 |
 | 2wiki_clean | baseline A | 3000 | 1.85 | 0.998 | 0.984 | 0.032 | 0.001 | 0.000 | 0.013 | 0.014 |
+| hotpotqa_clean | sealed A | 19538 | 1.87 | 1.000 | 0.979 | 0.040 | 0.005 | 0.000 | 0.024 | 0.021 |
+| hotpotqa_clean | structural | 19538 | 1.87 | 0.999 | 0.966 | 0.063 | 0.002 | 0.000 | 0.032 | 0.034 |
+| hotpotqa_clean | kNN only | 19538 | 1.87 | 0.991 | 0.890 | 0.197 | 0.007 | 0.000 | 0.084 | 0.102 |
+| hotpotqa_clean | baseline A | 19538 | 1.87 | 1.000 | 0.979 | 0.040 | 0.005 | 0.000 | 0.024 | 0.021 |
 | metaqa | sealed A | 19963 | 2.10 | 1.000 | 0.901 | 0.252 | 0.024 | 0.000 | 0.078 | 0.099 |
 | metaqa | structural | 19963 | 2.10 | 1.000 | 0.838 | 0.519 | 0.012 | 0.000 | 0.094 | 0.162 |
 | metaqa | kNN only | 19963 | 2.10 | 0.515 | 0.494 | 0.054 | 0.001 | 0.000 | 0.016 | 0.046 |
@@ -587,6 +671,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 512 | 359.2 | 1.05 | 110.36 | 137.87 | 2.89 | 125.15 | 146.35 |
 | 2wiki_clean | kNN only | 512 | 359.2 | 1.05 | 1.26 | 1.94 | 3.80 | 10.66 | 24.86 |
 | 2wiki_clean | baseline A | 512 | 359.2 | 1.10 | 110.59 | 167.17 | 5.51 | 129.73 | 175.50 |
+| hotpotqa_clean | sealed A | 512 | 342.8 | 1.34 | 965.37 | 1488.95 | 14.17 | 1389.97 | 1493.91 |
+| hotpotqa_clean | structural | 512 | 342.8 | 1.30 | 494.32 | 1357.74 | 9.36 | 1326.54 | 1480.77 |
+| hotpotqa_clean | kNN only | 512 | 342.8 | 1.04 | 750.43 | 1326.49 | 6.22 | 773.58 | 1345.94 |
+| hotpotqa_clean | baseline A | 512 | 342.8 | 1.34 | 965.37 | 1488.95 | 14.17 | 1389.97 | 1493.91 |
 | metaqa | sealed A | 512 | 360.8 | 1.49 | 22.78 | 81.68 | 19.82 | 80.60 | 111.28 |
 | metaqa | structural | 512 | 360.8 | 1.47 | 21.71 | 70.60 | 18.34 | 76.70 | 110.39 |
 | metaqa | kNN only | 512 | 360.8 | 1.02 | 1.12 | 1.40 | 3.25 | 8.12 | 17.29 |
@@ -612,6 +700,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 359.2 | 375.8 | 39516.9 | 49361.8 | 1044.7 | 44798.8 | 52365.9 | 65865 | 0.749 | 0.795 |
 | 2wiki_clean | kNN only | 359.2 | 377.2 | 454.1 | 698.1 | 1369.4 | 3857.5 | 9018.3 | 65865 | 0.011 | 0.137 |
 | 2wiki_clean | baseline A | 359.2 | 393.7 | 39600.4 | 59818.2 | 1993.6 | 46467.1 | 62791.5 | 65865 | 0.908 | 0.953 |
+| hotpotqa_clean | sealed A | 342.8 | 458.9 | 329095.0 | 505741.7 | 4953.9 | 472846.4 | 507379.2 | 507494 | 0.997 | 1.000 |
+| hotpotqa_clean | structural | 342.8 | 447.8 | 170172.0 | 462304.8 | 3213.1 | 451889.1 | 502943.5 | 507494 | 0.911 | 0.991 |
+| hotpotqa_clean | kNN only | 342.8 | 355.3 | 255042.9 | 450781.6 | 2224.5 | 262840.7 | 457150.2 | 507494 | 0.888 | 0.901 |
+| hotpotqa_clean | baseline A | 342.8 | 458.9 | 329095.0 | 505741.7 | 4953.9 | 472846.4 | 507379.2 | 507494 | 0.997 | 1.000 |
 | metaqa | sealed A | 360.8 | 541.9 | 8196.1 | 29347.5 | 7159.8 | 29013.6 | 39985.3 | 40151 | 0.731 | 0.996 |
 | metaqa | structural | 360.8 | 533.5 | 7805.0 | 25379.5 | 6624.9 | 27606.5 | 39665.3 | 40151 | 0.632 | 0.988 |
 | metaqa | kNN only | 360.8 | 369.4 | 405.4 | 506.1 | 1177.3 | 2940.1 | 6256.5 | 40151 | 0.013 | 0.156 |
@@ -634,6 +726,7 @@ still a pool rather than a corpus.
 | dataset | queries measured | without retrieval seeds | without gold in pool | share without gold | with gold in pool |
 |---|---|---|---|---|---|
 | 2wiki_clean | 3000 | 0 | 0 | 0.000 | 3000 |
+| hotpotqa_clean | 19570 | 0 | 32 | 0.002 | 19538 |
 | metaqa | 39138 | 0 | 19175 | 0.490 | 19963 |
 | musique_clean | 3987 | 0 | 3 | 0.001 | 3984 |
 | squad_clean | 26063 | 0 | 120 | 0.005 | 25943 |
@@ -644,6 +737,7 @@ still a pool rather than a corpus.
 | dataset | operator | message flow | aggregation | adds self-loops | coalesces duplicates | duplicate sensitive | root term | isolated still scored |
 |---|---|---|---|---|---|---|---|---|
 | 2wiki_clean | gat | source_to_target | attention_weighted_sum | yes | no | yes | inserted_self_loop | yes |
+| hotpotqa_clean | gin | source_to_target | sum | no | no | yes | (1+eps)*x_self | yes |
 | metaqa | gat | source_to_target | attention_weighted_sum | yes | no | yes | inserted_self_loop | yes |
 | musique_clean | gcn | source_to_target | sum_with_symmetric_degree_normalisation | yes | no | yes | inserted_self_loop | yes |
 | squad_clean | gcn | source_to_target | sum_with_symmetric_degree_normalisation | yes | no | yes | inserted_self_loop | yes |
@@ -657,6 +751,10 @@ still a pool rather than a corpus.
 | 2wiki_clean | structural | 252140 | 126070 | yes | 2.0000 |
 | 2wiki_clean | kNN only | 269474 | 134737 | yes | 2.0000 |
 | 2wiki_clean | baseline A | 521614 | 260807 | yes | 2.0000 |
+| hotpotqa_clean | sealed A | 16223058 | 4559172 | no | 3.5583 |
+| hotpotqa_clean | structural | 6853890 | 3426945 | yes | 2.0000 |
+| hotpotqa_clean | kNN only | 2333304 | 1166652 | yes | 2.0000 |
+| hotpotqa_clean | baseline A | 9118344 | 4559172 | yes | 2.0000 |
 | metaqa | sealed A | 585728 | 164687 | no | 3.5566 |
 | metaqa | structural | 218960 | 109480 | yes | 2.0000 |
 | metaqa | kNN only | 110414 | 55207 | yes | 2.0000 |
