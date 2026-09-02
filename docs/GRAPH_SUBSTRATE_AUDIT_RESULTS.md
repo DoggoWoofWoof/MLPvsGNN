@@ -40,12 +40,25 @@ stated as holding for it.
 
 **The two connectivity notions coincide, on every graph audited.** Not by
 assumption — the audit computes the symmetrised receptive field and the exact
-directed message-flow receptive field separately, and the difference is zero at
-R1, R2 and R3 on all twenty graph-splits. The stored graphs are symmetric in
-their reachability even where they are not symmetric in their storage. The
-distinction the protocol insisted on turns out not to bite here; it still had
-to be measured rather than assumed, and it must be re-measured on
-hotpotqa_clean.
+directed message-flow receptive field separately, from separate traversals, and
+compares them. What is compared is nine summary statistics per graph-split:
+median, mean and zero-fraction at each of R1, R2 and R3. All nine differences
+are zero to within 1e-12 on all twenty graph-splits, 180 exact agreements in
+total.
+
+Stated precisely, that is what was measured: the two notions produce
+indistinguishable receptive-field *distributions*. It is not a node-by-node
+proof that the reachable sets are identical, because the audit retains the
+aggregates rather than the per-node sets, and distinct distributions can share
+a median. Given that stored orientation is asymmetric on the sealed graph and
+that all nine statistics agree exactly at three different depths, the reading
+that the graphs are effectively symmetric in reachability is a strong one — but
+it is an inference from the aggregates, not a separate measurement, and it is
+labelled as such here rather than promoted to a finding.
+
+The distinction the protocol insisted on therefore does not bite on any graph
+audited so far. It still had to be measured rather than assumed, and it must be
+re-measured on hotpotqa_clean.
 
 **A substantial fraction of candidates are scored as though the graph were not
 there, and how large that fraction is depends strongly on the dataset.** On the

@@ -28,6 +28,12 @@ UNGROUNDED_BY_DESIGN = {
     "0.33",
     # A protocol section reference (§4.2), not a measurement.
     "4.2",
+    # The comparison tolerance, from `analyze_graph_substrate.py`'s
+    # `abs(delta) < 1e-12`. A constant in the code, not a measured quantity.
+    "12",
+    # 9 statistics x 20 graph-splits. Arithmetic over the tables rather than a
+    # figure any single row carries.
+    "180",
 }
 
 
