@@ -5,11 +5,13 @@ partway leaves real measurements behind. Nothing adopted them: `completed_audit`
 returns None for anything not marked complete, so the next attempt recomputed
 all four graph families from scratch.
 
-On five of the six datasets that is merely wasteful. On hotpotqa it is a loop.
-Its validation split carries 97,852 queries over a 507,494-node, 16.2M-edge
-graph, the Modal function's ceiling is six hours, and no retries are configured
--- so a run that does not fit discards everything it measured and the next one
-begins at exactly the same place with exactly the same budget.
+It is wasteful everywhere and worst on hotpotqa, whose 19,570 validation
+queries run against a 507,494-node, 16.2M-edge graph. The Modal function's
+ceiling is six hours and no retries are configured, so any run that does not
+finish -- timeout, preemption, or a workspace hitting its spend limit, which is
+what actually killed the previous attempt mid-audit -- discards everything it
+measured, and the next one begins at exactly the same place with exactly the
+same budget.
 
 Carrying finished families forward is not a shortcut past a result. A family's
 statistics are a deterministic function of the frozen graph and the frozen
@@ -57,7 +59,7 @@ def _family(*splits: str) -> dict:
     return {
         "provenance": "frozen",
         "stored_directed_edges": 16_223_058,
-        "splits": {name: {"queries": 97_852} for name in splits},
+        "splits": {name: {"queries": 19_570} for name in splits},
     }
 
 
