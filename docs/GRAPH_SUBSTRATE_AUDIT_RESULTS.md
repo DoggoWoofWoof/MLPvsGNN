@@ -331,6 +331,32 @@ seeds grows the union by 1.10x (2wiki) to 1.83x (squad); two hops by 6.48x
 2wiki, 1.04x / 1.20x / 1.69x on webqsp — which is the same fact as its short
 global reach seen from the other side.
 
+**Read as absolute pool sizes rather than multiples, those ladders say
+something the multiples hide, and they reverse the ordering.** Protocol §8
+warns in as many words that an expansion taking 400 candidates to 150,000 is
+not a system, and a multiplier cannot make that call: it is a ratio to a pool,
+so a dataset whose pool is small relative to its graph posts a large multiple
+without reaching further in any absolute sense. Against the whole graph, a
+three-hop expansion from the gold targets on the sealed graph is 0.777
+(webqsp), 0.939 (musique), 0.953 (2wiki), 0.972 (squad) and 0.996 (metaqa) of
+every node there is. From the retrieval seeds alone it is 0.329 (webqsp), 0.576
+(musique), 0.731 (metaqa), 0.781 (squad) and 0.908 (2wiki).
+
+webqsp carries the largest multiplier of the five and the *smallest* share on
+both readings. Its 750.91x is a statement about how small its candidate pool is
+next to its 781,485-node graph, not about how far three hops travel. musique
+carries the smallest multiplier, 23.72x, and a larger share than webqsp on both
+counts. Any comparison of expansion cost across these datasets has to be made
+on the absolute quantity; the multiples are not comparable and reading them as
+though they were would rank the datasets backwards.
+
+The kNN-only graph is the exception that makes the point. Its three-hop seed
+expansion reaches 0.001 (webqsp) to 0.037 (musique) of the graph — between one
+node in a thousand and one in twenty-seven. That is the short global reach of
+§"Structural edges and kNN edges are different graphs" restated as a pool size:
+whatever the kNN edges connect, it is local enough that three hops of it is
+still a pool rather than a corpus.
+
 ## Measurements
 
 ### Candidate-induced connectivity (validation split)
@@ -577,6 +603,31 @@ global reach seen from the other side.
 | webqsp | structural | 315 | 344.5 | 1.17 | 81.36 | 717.24 | 5.21 | 364.94 | 1710.65 |
 | webqsp | kNN only | 315 | 344.5 | 1.04 | 1.20 | 1.69 | 3.25 | 9.53 | 25.45 |
 | webqsp | baseline A | 315 | 344.5 | 1.21 | 82.24 | 750.91 | 7.20 | 375.42 | 1772.93 |
+
+### Graph-expansion headroom in absolute nodes -- ORACLE ONLY
+
+| dataset | graph | mean cand | seed H=1 | H=2 | H=3 | target H=1 | H=2 | H=3 | graph nodes | seed@3 / graph | target@3 / graph |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | 359.2 | 393.7 | 39600.4 | 59818.2 | 1993.6 | 46467.1 | 62791.5 | 65865 | 0.908 | 0.953 |
+| 2wiki_clean | structural | 359.2 | 375.8 | 39516.9 | 49361.8 | 1044.7 | 44798.8 | 52365.9 | 65865 | 0.749 | 0.795 |
+| 2wiki_clean | kNN only | 359.2 | 377.2 | 454.1 | 698.1 | 1369.4 | 3857.5 | 9018.3 | 65865 | 0.011 | 0.137 |
+| 2wiki_clean | baseline A | 359.2 | 393.7 | 39600.4 | 59818.2 | 1993.6 | 46467.1 | 62791.5 | 65865 | 0.908 | 0.953 |
+| metaqa | sealed A | 360.8 | 541.9 | 8196.1 | 29347.5 | 7159.8 | 29013.6 | 39985.3 | 40151 | 0.731 | 0.996 |
+| metaqa | structural | 360.8 | 533.5 | 7805.0 | 25379.5 | 6624.9 | 27606.5 | 39665.3 | 40151 | 0.632 | 0.988 |
+| metaqa | kNN only | 360.8 | 369.4 | 405.4 | 506.1 | 1177.3 | 2940.1 | 6256.5 | 40151 | 0.013 | 0.156 |
+| metaqa | baseline A | 360.8 | 541.9 | 8196.1 | 29347.5 | 7159.8 | 29013.6 | 39985.3 | 40151 | 0.731 | 0.996 |
+| musique_clean | sealed A | 333.5 | 402.8 | 2147.3 | 7871.8 | 2359.5 | 9101.5 | 12841.8 | 13672 | 0.576 | 0.939 |
+| musique_clean | structural | 333.5 | 393.5 | 1911.6 | 5960.3 | 1778.1 | 7414.1 | 9331.0 | 13672 | 0.436 | 0.682 |
+| musique_clean | kNN only | 333.5 | 343.0 | 384.5 | 502.3 | 1053.9 | 2392.6 | 4499.4 | 13672 | 0.037 | 0.329 |
+| musique_clean | baseline A | 333.5 | 402.8 | 2147.3 | 7871.8 | 2359.5 | 9101.5 | 12841.8 | 13672 | 0.576 | 0.939 |
+| squad_clean | sealed A | 316.1 | 580.0 | 4963.7 | 14865.0 | 5664.3 | 15201.4 | 18497.6 | 19029 | 0.781 | 0.972 |
+| squad_clean | structural | 316.1 | 576.0 | 4621.4 | 12217.1 | 5294.0 | 12663.4 | 13060.5 | 19029 | 0.642 | 0.686 |
+| squad_clean | kNN only | 316.1 | 320.2 | 337.9 | 381.7 | 822.6 | 1656.5 | 2869.3 | 19029 | 0.020 | 0.151 |
+| squad_clean | baseline A | 316.1 | 580.0 | 4963.7 | 14865.0 | 5664.3 | 15201.4 | 18497.6 | 19029 | 0.781 | 0.972 |
+| webqsp | sealed A | 344.5 | 416.6 | 28113.3 | 257261.6 | 2532.7 | 129381.6 | 607120.6 | 781485 | 0.329 | 0.777 |
+| webqsp | structural | 344.5 | 402.6 | 27795.5 | 245559.6 | 1834.7 | 125684.6 | 585820.8 | 781485 | 0.314 | 0.750 |
+| webqsp | kNN only | 344.5 | 358.6 | 415.6 | 586.3 | 1133.0 | 3337.6 | 8906.7 | 781485 | 0.001 | 0.011 |
+| webqsp | baseline A | 344.5 | 416.6 | 28113.3 | 257261.6 | 2532.7 | 129381.6 | 607120.6 | 781485 | 0.329 | 0.777 |
 
 ### Pool coverage -- the denominators behind every gold-path rate
 

@@ -257,6 +257,51 @@ def expansion(sp: dict) -> list[str]:
     )
 
 
+def expansion_absolute(audits: list[dict], split: str) -> str:
+    """What a hop-expanded pool would contain in nodes, not multiples.
+
+    Protocol 8 asks for pool size alongside the ladder, and warns in as many
+    words that an expansion taking 400 candidates to 150,000 is not a system.
+    A multiplier cannot make that call: it is a ratio to a pool, so a dataset
+    with a small pool relative to its graph posts a large multiple without
+    reaching further in any absolute sense. The last column is the quantity the
+    warning is actually about -- how much of the whole graph the expanded pool
+    would be.
+    """
+    header = ["dataset", "graph", "mean cand", "seed H=1", "H=2", "H=3",
+              "target H=1", "H=2", "H=3", "graph nodes",
+              "seed@3 / graph", "target@3 / graph"]
+    rows: list[list[str]] = []
+    for audit in audits:
+        nodes = audit.get("num_nodes")
+
+        def share(value: Any) -> str:
+            if not isinstance(value, (int, float)) or not nodes:
+                return "--"
+            return fmt(value / nodes)
+
+        for graph in GRAPH_ORDER:
+            payload = split_of(audit, graph, split)
+            if payload is None:
+                continue
+            block = payload["expansion_headroom"]["symmetric"]
+            rows.append(
+                [audit["dataset"], SHORT[graph], fmt(block.get("candidates"), 1)]
+                + [fmt(block.get("U_seed_" + str(h) + "_nodes"), 1) for h in HOPS]
+                + [fmt(block.get("U_target_" + str(h) + "_nodes"), 1) for h in HOPS]
+                + [
+                    fmt(nodes, 0) if nodes else "--",
+                    share(block.get("U_seed_3_nodes")),
+                    share(block.get("U_target_3_nodes")),
+                ]
+            )
+    return table(
+        "Graph-expansion headroom in absolute nodes -- ORACLE ONLY",
+        header,
+        rows,
+    )
+
+
 def pool_coverage(audits: list[dict], split: str) -> str:
     """How many measured queries have retrieval seeds, and gold, in the pool.
 
@@ -509,6 +554,7 @@ def render(summary: dict, split: str) -> str:
              "U_target H=1", "H=2", "H=3"],
             rows_for(audits, split, expansion),
         ),
+        expansion_absolute(audits, split),
         pool_coverage(audits, split),
         operator_semantics(audits),
         orientation(audits),

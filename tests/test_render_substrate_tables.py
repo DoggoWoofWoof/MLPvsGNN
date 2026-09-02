@@ -138,6 +138,16 @@ def _split(**overrides):
                 "U_target_1_expansion": 5.5,
                 "U_target_2_expansion": 129.7,
                 "U_target_3_expansion": 175.5,
+                # Protocol 8 wants pool size beside the ladder. Chosen so the
+                # two share columns are distinct from each other and from every
+                # other rate in this fixture: 4000/8000 = 0.500 and
+                # 6000/8000 = 0.750.
+                "U_seed_1_nodes": 395.1,
+                "U_seed_2_nodes": 2500.2,
+                "U_seed_3_nodes": 4000.0,
+                "U_target_1_nodes": 1975.3,
+                "U_target_2_nodes": 5100.4,
+                "U_target_3_nodes": 6000.0,
             },
         },
     }
@@ -158,6 +168,7 @@ def _audit(dataset="tiny", complete=True, graphs=None, aliases=None):
     return {
         "dataset": dataset,
         "complete": complete,
+        "num_nodes": 8000,
         "operator_kind": "gat",
         "message_flow": "source_to_target",
         "operator_edge_semantics": {
@@ -692,3 +703,34 @@ def test_seed_reach_is_rendered_on_both_induced_notions():
     for value in ("0.050", "0.090", "0.130"):
         assert value in block, f"message-flow seed reach {value} is not rendered"
     assert "flow @1" in block and "sym @1" in block and "global @1" in block
+
+
+def test_expansion_is_rendered_in_absolute_nodes_and_as_a_share_of_the_graph():
+    """Protocol 8's pool-size half, which the multiplier table cannot carry.
+
+    A multiplier is a ratio to a pool, so it says nothing about whether an
+    expanded pool is still a pool. The share of the whole graph does, and it is
+    the quantity section 8's "not a system" warning is about.
+    """
+    text = rst.render({"audits": [_audit()]}, "validation")
+    block = text.split("### Graph-expansion headroom in absolute nodes")[1]
+    block = block.split("###")[0]
+    for value in ("395.1", "2500.2", "4000.0", "1975.3", "5100.4", "6000.0"):
+        assert value in block, f"absolute node count {value} is not rendered"
+    assert "8000" in block, "the graph node count is not rendered"
+    assert "0.500" in block, "seed@3 as a share of the graph is not rendered"
+    assert "0.750" in block, "target@3 as a share of the graph is not rendered"
+
+
+def test_the_absolute_expansion_table_degrades_when_the_node_count_is_absent():
+    """An audit without num_nodes must not silently render a wrong share."""
+    audit = _audit()
+    del audit["num_nodes"]
+    text = rst.render({"audits": [audit]}, "validation")
+    block = text.split("### Graph-expansion headroom in absolute nodes")[1]
+    block = block.split("###")[0]
+    assert "0.500" not in block and "0.750" not in block, (
+        "a share was computed without a graph node count to divide by"
+    )
+    assert "--" in block, "the missing node count is not marked as missing"
+    assert "4000.0" in block, "the absolute counts should still render"

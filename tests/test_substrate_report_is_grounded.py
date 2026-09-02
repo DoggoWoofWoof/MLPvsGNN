@@ -33,6 +33,11 @@ UNGROUNDED_BY_DESIGN = {
     # `pooled_query_cap` from configs/graph_substrate_audit.yaml. A configured
     # limit on the audit, not something the audit measured.
     "4,000",
+    # Quoted from GRAPH_SUBSTRATE_AUDIT_PROTOCOL.md section 8, which warns that
+    # "a `+3 hop` expansion that takes 400 candidates to 150,000 is not a
+    # system". An illustration written into the protocol before any of this was
+    # measured, not a figure from any dataset here.
+    "150,000",
 }
 
 
