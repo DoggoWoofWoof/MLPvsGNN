@@ -317,7 +317,26 @@ def pilot_split(
     }
 
 
+def selected_arms(args: argparse.Namespace) -> tuple[str, ...]:
+    """The arms this stage runs, checked before anything expensive is loaded.
+
+    Stage C runs the arms Stage B did not kill. CAND stays first in every stage
+    because it defines the baseline the others are scored against: drop it, or
+    move it, and every movement and reach number silently rebases onto whichever
+    arm happened to run first, which is a result that looks entirely reasonable
+    and means nothing.
+    """
+    arms = tuple(getattr(args, "arms", None) or ARMS)
+    unknown = set(arms) - set(ARMS)
+    if unknown:
+        raise ValueError(f"Unregistered graph-context arms: {sorted(unknown)}")
+    if arms[0] != "CAND":
+        raise ValueError("CAND must be the first arm; it defines the baseline")
+    return arms
+
+
 def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = None):
+    arms = selected_arms(args)
     dataset = load_complete_dataset(args.data, dataset=args.dataset, require_embeddings=False)
     if len(dataset.queries) != args.expected_queries:
         raise ValueError("Complete dataset query count differs from the registered protocol")
@@ -338,7 +357,8 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
         "candidate_contract": candidate_contract,
         "num_nodes": size,
         "num_stored_directed_edges": int(col.size),
-        "arms": list(ARMS),
+        "arms": list(arms),
+        "arms_registered": list(ARMS),
         "arms_excluded_on_serving_cost": dict(SERVING_EXCLUDED),
         "contract": {
             "read_only": True,
@@ -359,6 +379,7 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
             continue
         result["splits"][split_name] = pilot_split(
             queries, rowptr, col, size,
+            arms=arms,
             query_cap=int(args.query_cap),
             damping=float(args.damping),
             ppr_iterations=int(args.ppr_iterations),

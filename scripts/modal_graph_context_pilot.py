@@ -101,6 +101,9 @@ def _jobs(
                 "dataset": dataset,
                 "settings": settings,
                 "stage": stage,
+                # Stage C runs Stage B's survivors. The stage letter is the last
+                # character of the stage name, so `stage_c` reads `stages.C`.
+                "arms": CONFIG["stages"].get(stage[-1].upper(), {}).get("arms"),
                 "query_cap": int(query_cap),
                 "baseline": confirmation["baseline"],
                 "fingerprint": confirmation["data_fingerprint_sha256"],
@@ -124,6 +127,7 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         data=Path(job["data_remote"]),
         dataset=job["dataset"],
         stage=job["stage"],
+        arms=job.get("arms"),
         expected_queries=int(settings["expected_queries"]),
         baseline=job["baseline"],
         candidate_contract_compatibility=settings.get("candidate_contract_compatibility"),

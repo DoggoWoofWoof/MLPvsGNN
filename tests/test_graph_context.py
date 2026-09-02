@@ -803,3 +803,83 @@ def test_the_ledger_declares_the_two_enclosing_arms():
     section = ledger_section()
     for arm in ("PATH_H2", "BRIDGE_H2"):
         assert arm in section, arm
+
+
+# --------------------------------------------------------------------------
+# Which arms Stage C runs
+# --------------------------------------------------------------------------
+
+
+def test_every_arm_is_either_killed_or_surviving():
+    """No arm may be dropped by omission.
+
+    An arm that appears in neither list has been forgotten rather than decided,
+    and the difference is invisible in a config that only names survivors.
+    """
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    outcome = config["stage_b_outcome"]
+    decided = set(outcome["killed"]) | set(outcome["surviving"])
+    assert decided == set(ARMS)
+    assert not set(outcome["killed"]) & set(outcome["surviving"])
+
+
+def test_stage_c_runs_exactly_the_surviving_arms():
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    assert set(config["stages"]["C"]["arms"]) == set(config["stage_b_outcome"]["surviving"])
+
+
+def test_stage_c_keeps_cand_first():
+    """CAND defines the baseline every movement and reach number is scored against."""
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    assert config["stages"]["C"]["arms"][0] == "CAND"
+
+
+def test_every_kill_records_why():
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    for arm, reason in config["stage_b_outcome"]["killed"].items():
+        assert len(reason.split()) >= 20, arm
+
+
+@pytest.mark.parametrize(
+    "arms,message",
+    [
+        (["CAND", "NOT_AN_ARM"], "Unregistered"),
+        (["SEED_H1", "CAND"], "CAND must be the first arm"),
+        (["TARGET_H1"], "CAND must be the first arm"),
+    ],
+)
+def test_the_runner_refuses_an_arm_list_it_cannot_score(arms, message):
+    """And refuses it before loading a multi-gigabyte dataset, not after.
+
+    A run that scores every arm against whichever one happened to go first
+    produces numbers that look entirely reasonable and mean nothing, so this
+    fires on a Namespace alone -- no data path is even read.
+    """
+    import argparse
+
+    from scripts.run_graph_context_pilot import selected_arms
+
+    with pytest.raises(ValueError, match=message):
+        selected_arms(argparse.Namespace(arms=arms))
+
+
+def test_an_absent_arm_list_means_every_arm():
+    import argparse
+
+    from scripts.run_graph_context_pilot import selected_arms
+
+    assert selected_arms(argparse.Namespace(arms=None)) == ARMS
+    assert selected_arms(argparse.Namespace()) == ARMS
+
+
+def test_the_wrapper_gives_stage_c_the_configs_arms():
+    from scripts.modal_graph_context_pilot import _jobs, _runner_args
+
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    stage_c = _runner_args(_jobs(["2wiki_clean"], "stage_c", 300)[0])
+    assert list(stage_c.arms) == list(config["stages"]["C"]["arms"])
+
+    # Stage B declared no arm list, and absent must mean "all of them" rather
+    # than "none of them".
+    stage_b = _runner_args(_jobs(["2wiki_clean"], "stage_b", 25)[0])
+    assert stage_b.arms is None

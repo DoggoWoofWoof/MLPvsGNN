@@ -171,6 +171,56 @@ measurements:
   systems: [build_ms, feature_ms, total_ms]
   distributions: [median, p90, p95, p99, max, mean]
 
+stage_b_outcome:
+  status: MEASURED
+  queries: 25 per dataset, validation, none skipped for want of seeds
+  datasets: [2wiki_clean, hotpotqa_clean]
+  killed:
+    PATH_H2: >-
+      Structurally dominated by SEED_H1, not narrowly beaten by it. PATH_H2 is a
+      SUBSET of SEED_H1 by the lattice, it recovered the same structure to three
+      decimal places (2wiki 0.2938 against 0.2941, hotpotqa 0.3104 against
+      0.3104), and it cost six times as much to build (p95 8.7 ms against 1.4,
+      204.4 ms against 73.5) because identifying a path node needs a second
+      matrix step. More queries cannot reverse a subset relation.
+    BRIDGE_H2: >-
+      Same shape one level up: a SUBSET of TARGET_H1 that costs more to build.
+      Recovered 0.594 and 0.708 median retention against TARGET_H1's 1.000, at
+      p95 5.1 ms against 1.9 and 199.5 ms against 74.0. Dominated on both axes
+      on both datasets.
+    SEED_H2: >-
+      Dominated on both axes, which is worse than the declaration predicted.
+      The filed hypothesis was that it would advance on information and fail on
+      cost; it failed on both, recovering 0.811 and 0.950 against TARGET_H1's
+      1.000 while holding 60.2% and 52.9% of the corpus graph and costing 74.4
+      and 2119.4 ms per query at the median.
+  surviving:
+    CAND: >-
+      The historical control, on the frontier only because it is free. It is not
+      a candidate for advancement; it is what the other arms are measured against.
+    SEED_H1: >-
+      On the frontier by a margin of half a millisecond on both datasets, at a
+      third of TARGET_H1's recovery. Carried because the preregistered rule
+      kills only dominated arms and this one is not dominated -- not because it
+      looks promising.
+    TARGET_H1: >-
+      Recovers the radius-1 deletion completely -- retention 1.000, boundary cut
+      0.000, isolated fraction 0.000 -- at 3.1% and 0.6% of the corpus graph and
+      p95 1.9 ms and 74.0 ms to build. Completeness is an IDENTITY on a
+      reachability-symmetric graph rather than a discovery: if every stored edge
+      carries its reverse, every out-neighbour of a candidate is an in-neighbour
+      of a candidate and so already inside Cq u N1_in(Cq). What the pilot
+      measures is that the sealed graphs behave that way at radius 1, and at
+      what cost.
+  saturation_confirmed_at_scale: >-
+    Predicted before the run and observed exactly: reach<=1 is identical across
+    all six arms including CAND (2wiki 0.0580, hotpotqa 0.1008), because Sq is
+    inside Cq so every seed-candidate edge is already in G[Cq]; and reach<=2 is
+    identical across all five non-CAND arms (0.7630, 0.9040), because reaching
+    distance 2 needs one intermediate and every such node is in SEED_H1. The
+    arms separate only at distance 3 and beyond -- exactly the range the frozen
+    descriptor collapses into a single class.
+
 qls_v1_parameters:
   source: configs/sa_mlp_screen.yaml::query_local_features
   damping: 0.85
@@ -194,9 +244,10 @@ stages:
       would triple its cost without changing either answer. They arrive at C.
     declared_in: docs/COMPUTE_LEDGER.md
   C:
-    status: GATED_ON_B
+    status: SURVIVORS_SELECTED
     queries: 300
     datasets: all_six
+    arms: [CAND, SEED_H1, TARGET_H1]
     what: survivors only
     cost: >-
       Not priced before B returns. It depends on which arms survive and on B's
