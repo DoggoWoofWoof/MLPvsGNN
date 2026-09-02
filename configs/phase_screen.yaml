@@ -108,4 +108,13 @@ modal:
   cpu: 16
   memory_mb: 49152
   timeout_seconds: 86400
+  # Caps how fast a package built on this container shape can bill. Uncapped,
+  # Modal starts one container per spawned cell, so 24 cells burn about
+  # 24 x $1.18/h and a run producing nothing costs ~$28 for every hour before
+  # anyone looks -- the shape of the $25.50 that arrived for eight cells. At six
+  # the ceiling is ~$7/h, well inside the watchdog's polling interval.
+  # Scheduling only: it changes no seed, no split and no protocol, and cells
+  # remain independent. Read by modal_phase_confirmation; the screen itself is
+  # frozen and does not apply it.
+  max_containers: 6
 

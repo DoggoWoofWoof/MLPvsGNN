@@ -232,3 +232,31 @@ def test_a_dry_run_reports_the_budget_so_it_can_be_checked_before_launching():
     source = inspect.getsource(spawn.main)
     dry_run_branch = source[source.index("if args.dry_run:") :]
     assert '"budget": budget' in dry_run_branch
+
+
+# --------------------------------------------------------------------------
+# Bounding the burn rate
+# --------------------------------------------------------------------------
+
+
+def test_phase_confirmation_caps_its_container_count():
+    """Uncapped, one container starts per spawned cell.
+
+    Twenty-four cells then bill about 24 x $1.18/h, so a run producing nothing
+    costs roughly $28 for every hour before anyone looks -- the shape of the
+    $25.50 that arrived for eight cells. The cap is what gives the watchdog
+    time to act, so it has to stay small enough to matter.
+    """
+    module = pytest.importorskip("scripts.modal_phase_confirmation")
+    cap = module.MODAL_CONFIG["max_containers"]
+    assert 1 <= cap <= 8
+
+
+def test_the_container_cap_is_actually_applied_to_the_function():
+    """A cap sitting in the config while the decorator ignores it is worse than
+    none: the launch record would report a bounded burn rate that is not real."""
+    import inspect
+
+    module = pytest.importorskip("scripts.modal_phase_confirmation")
+    source = inspect.getsource(module)
+    assert 'max_containers=MODAL_CONFIG["max_containers"]' in source

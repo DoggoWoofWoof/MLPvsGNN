@@ -252,6 +252,7 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
     timeout=MODAL_CONFIG["timeout_seconds"],
     cpu=MODAL_CONFIG["cpu"],
     memory=MODAL_CONFIG["memory_mb"],
+    max_containers=MODAL_CONFIG["max_containers"],
 )
 def run_cell(job: dict[str, Any]) -> dict[str, Any]:
     os.chdir(REMOTE_ROOT)
