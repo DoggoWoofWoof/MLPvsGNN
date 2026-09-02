@@ -697,7 +697,7 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D4:
-    status: DECLARED
+    status: COMPLETE
     results: docs/GRAPH_CONTEXT_D4_RESULTS.md
     evidence_class: CONFIRMATORY within its own narrow question
     runner: scripts/run_graph_context_d4.py
@@ -801,6 +801,67 @@ stages:
       cost_ceiling_usd: 0.45
       wall_time_ceiling_minutes: 10
       expected_actual_usd: 0.15
+    outcome: >-
+      GRADED RETRIEVAL PRIOR DOMINATES NEXT PRIORITY. 2Wiki validation, seed 0.
+      SEED_ID_ONLY 30.15 / 65.27 / 72.22 / 80.73 / 42.77;
+      SEED_PLUS_GRADED_RETRIEVAL 39.32 / 69.39 / 73.78 / 93.76 / 45.20.
+      delta_retrieval_quality +9.18 R@1, +4.13 R@5, +1.55 R@20, +13.03 MRR,
+      +2.43 FullCov@20. Positive on every metric.
+    size_against_d3: >-
+      On R@5 the prior is 3.67x delta_remaining_structure and 2.77x delta_distance,
+      far outside the 0.5-1.5 band that would have meant interpretation B. On R@1 it
+      is 2.55x delta_seed and on MRR 1.26x. With delta_seed it is one of only two
+      increments measured across D2-D4 positive on all five metrics; both structural
+      increments beyond the bit are negative on R@1 and MRR.
+    three_columns_beat_ten: >-
+      Against D3 FULL_LOCAL: +10.29 R@1, +1.51 R@5, +14.48 MRR, but -3.75 R@20 and
+      -6.73 FullCov@20. One bit plus dense rank, SPLADE rank and their agreement,
+      with no graph-derived structure at all, beat the entire frozen query-local
+      block on every precision measure and lose on both coverage measures.
+      conditional_hit@1 67.53 -> 88.50; conditional_hit@20 reaches 100.00.
+    coverage_is_where_structure_still_earns: >-
+      delta_retrieval_quality is smallest on exactly the two measures distance
+      geometry was largest on (+1.55 vs +5.13 R@20; +2.43 vs +8.77 FullCov@20). Both
+      retrievers rank by text similarity, so a gold no retriever placed highly is not
+      made findable by reporting where they placed it. The signals are complementary.
+    flat_across_strata: >-
+      +9.07 to +9.34 R@1 and +12.40 to +13.82 MRR across all four strata, within a
+      third of a point end to end -- unlike delta_seed which falls monotonically with
+      connectivity and delta_distance which rises. The strata are a graph property
+      and the prior is indifferent to it, because it is text evidence. Only R@20
+      climbs with connectivity (+1.17 to +2.65). boundaries_fitted_here false.
+    prior_coverage: >-
+      4,851,276 candidate rows, 0 ranked by neither retriever, 548,724 (11.31%) by
+      both, 2,151,276 by each alone. 359.35 candidates per query against 7.83 seeds,
+      so most of the arm's information concerns candidates the seed bit is silent on.
+    seed_bit_preserved: >-
+      Bit-identical in both arms from the same build_local_features call; 105,675
+      seed rows; distance_0 re-verified elementwise against the historical
+      _seed_indicator on 4,851,276 rows with 0 mismatches. seed_bit_replaced false.
+    reuse: >-
+      SEED_ID_ONLY was not retrained. All 25 guarded conditions matched D3. One new
+      run only. Identical initialisation and batch order: seed_everything(0) precedes
+      _build_model in both stages and _fit shuffles with a per-epoch Random(seed +
+      epoch * 1_000_003) independent of global RNG state.
+    convergence_caveat: >-
+      The new arm runs the frozen three-epoch budget and is still descending at the
+      boundary (loss 1.961 -> 1.699 -> 1.598, held-out tail R@5 0.6840 -> 0.6869 ->
+      0.6905). Deliberate: D4 reuses a D3 arm as its control and must not give itself
+      a convergence advantage over it.
+    not_established: >-
+      Three columns move together, so the agreement column is not separated from the
+      two rank columns. The prior is not new information about the world: Cq was
+      itself built by RRF over these two lists, so it reports retrieval evidence the
+      ranker previously could not see, which makes it free at serving time rather
+      than novel. Not a claim that structure is unnecessary. One dataset, one seed.
+    actual_cost:
+      new_runs: 1
+      accounted_seconds: 74.4
+      note: >-
+        50.7 s shared feature build, 2.1 s static, 2.8 s assembling the prior, 18.5 s
+        training, 0.3 s inference. Container total not captured by the spawn path;
+        the result was on the volume within three minutes of the spawn returning, so
+        under $0.15 at $1.734/h against $0.45 authorised.
     does_not_authorise:
       [second dataset, second seed, GNN, R0-R5 sweep, LODO, E2, TARGET_H1,
        PATH, BRIDGE, SEED_H2, graph-context gating, per-family decomposition of
