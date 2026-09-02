@@ -1074,6 +1074,37 @@ against the hashes E1 recorded for them**. Those are the one artifact class that
 cannot be regenerated: E2 reuses the seed-0 checkpoint E1 trained instead of
 retraining it.
 
+### E2 relaunched on the target (2026-09-02)
+
+Launched only after every gate closed, in this order:
+
+```
+replicate_volume verify --deep     1741/1741 files, size + SHA-256, on the target
+migration_provenance inputs        18/18 roots, 6/6 caches, 48/48 screens,
+                                   96/96 seed-0 checkpoints, remote
+migration_provenance provenance    192/192 seed-0 checkpoints byte-exact
+                                   against the hashes E1 recorded
+integrity matrix rebuilt           unchanged after transfer: 48/10/38/0
+target volume spot-check           all 10 PARTIAL cells present with
+                                   checkpoints/, query_metrics.npz, result.json
+spawn --dry-run                    48 submitted = 10 resume + 38 launch
+```
+
+The deep verify is the gate that mattered and it is why the launch waited on it
+rather than on the weaker readiness check. A corrupted `nodes.npy` is not
+hash-checked by the runner the way a checkpoint is, so it would not fail a
+container -- it would produce a wrong number.
+
+Submitted with `scripts/spawn_modal_jobs.py`, which deploys the app and spawns
+each cell as a server-side call: **48 calls, 10 resume + 38 launch**, matching
+the matrix exactly, with `skipped_complete: 0` because the three datasets in the
+launch set have no complete cells between them. Call ids are recorded in
+`outputs/migration/e2_launch_call_ids.json`.
+
+Concurrency is set by the resource request rather than a flat cap, so a queued
+call still reports as running. Fewer live containers than outstanding calls is
+not evidence that anything died, and is not grounds for a relaunch.
+
 ### The 193.6 GB cache was deliberately not migrated, and the claim was tested
 
 `phase_confirmation_cache/` is `build_or_load_*` output keyed by intervention
