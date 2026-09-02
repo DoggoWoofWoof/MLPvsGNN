@@ -697,7 +697,8 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D6:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D6_RESULTS.md
     evidence_class: CONFIRMATORY within its own narrow question
     runner: scripts/run_graph_context_d6.py
     dataset: 2wiki_clean
@@ -858,6 +859,104 @@ stages:
        Package F, architecture search, convergence study, graph-context branch,
        workspace migration]
     is_the_only_experiment: true
+    outcome: >-
+      REMAINING STRUCTURE MODEST / FAMILY TEST WARRANTED. 2Wiki validation, seed 0.
+      D6_BASE_13 39.39 / 71.38 / 77.70 / 93.88 / 51.90;
+      D6_FULL_13 38.77 / 72.28 / 77.94 / 93.18 / 52.43.
+      delta_remaining_structure_given_retrieval_and_geometry
+      -0.63 R@1, +0.89 R@5, +0.24 R@20, -0.70 MRR, +0.53 FullCov@20.
+      +0.89 R@5 sits inside the pre-registered B band of +0.5 to +1.5.
+    the_compensation_hypothesis_is_wrong: >-
+      D3 measured these six unconditionally at -0.60 / +1.12 / +0.17 / -0.80 / +0.40.
+      The conditional version is -0.63 / +0.89 / +0.24 / -0.70 / +0.53: the whole
+      sign shape survives, R@5 shrinks by 0.23 points, and both coverage measures
+      grow slightly. The six were NOT compensating for the missing retrieval prior.
+      Whatever they carry, the prior did not already contain it. That is a stronger
+      result for structure than D5 alone suggested and a smaller one than +1.12 was
+      ever going to justify.
+    it_is_a_trade_not_a_gain: >-
+      D6_FULL_13 is not the better arm. It wins R@5, R@20 and FullCov@20 and loses
+      R@1 (-0.63) and MRR (-0.70). What D5 showed for the distance buckets -- that
+      they stop costing precision once the prior is present -- does NOT extend to
+      the other six. Adopting all six wholesale would trade about 0.6 R@1 and 0.7
+      MRR for about 0.9 R@5 and 0.5 FullCov@20, and nothing in this stage says that
+      trade is worth making.
+    concentrated_where_the_graph_is: >-
+      isolated (834) -0.30 / +0.36 / -0.12 / -0.28 / -0.24; degree_1 (750) -0.37 /
+      +1.23 / +0.20 / -0.62 / +0.53; low_degree (1218) -1.19 / +0.90 / +0.39 / -1.30
+      / +0.82; ordinary (198) +0.51 / +1.77 / +1.01 / +0.95 / +2.02. Only the most
+      connected stratum is positive on all five, and it holds the largest value on
+      every one; coverage tracks connectivity monotonically. The headline +0.89 R@5
+      averages over strata ranging from +0.36 to +1.77, and the stratum carrying the
+      strongest signal is 6.6% of validation. low_degree pays most of the precision
+      cost. boundaries_fitted_here false; query counts identical to D5.
+    tensor_invariants_measured:
+      base_distance_is_d3: max_abs_diff 0.0, elementwise identical, 4,851,276 rows
+      full_historical_is_the_historical_block: max_abs_diff 0.0, identical
+      both_priors_are_d4s: max_abs_diff 0.0, identical
+      base_residual_columns: exactly zero
+      the_arms_differ_in: columns [4, 5, 6, 7, 8, 9] and no others
+      normalised_columns: (4,5,6,7,8,9), not extended to cols 10-12
+    parameter_accounting_measured:
+      historical_parameters: 213506
+      d6_parameters: 213689
+      increase: 183
+      increase_percent: 0.0857
+      head_width: 61
+      both_arms_identical: true
+      note: >-
+        Head width held from the historical ten-column solve rather than re-solved.
+        Re-solving returns head 60 at 213,409 parameters, a narrower head on a wider
+        input, which would change capacity and information together.
+    widening_check_measured: >-
+      D6_BASE_13 minus D5 Z2R: -0.17 R@1, -0.06 R@5, -0.11 R@20, -0.30 MRR, -0.23
+      FullCov@20. Every difference under a third of a point and all five slightly
+      negative, so widening the explicit input by three columns changed almost
+      nothing and cross-stage reading between D5 and D6 is safe at this resolution.
+      D5 remains DESCRIPTIVE REFERENCE, NOT CAUSAL CONTROL; 19 reference conditions
+      checked, all matched.
+    convergence_note: >-
+      VERIFIED FROM CODE, _fit restores the best held-out epoch. Both arms peaked at
+      epoch 2 (D6_BASE_13 0.7090 then 0.7081; D6_FULL_13 0.7181 then 0.7155), so
+      neither was favoured by selection and the three-epoch budget was not the
+      binding constraint -- unlike D4 and D5, which were still rising at the
+      boundary.
+    not_established: >-
+      Not a decomposition: six columns from four families moved as one group, and
+      nothing says which produced the +0.89 R@5 or whether one family produced all
+      of it while another cost the R@1. Not a statistical claim: +0.89 against D3's
+      +1.12 is a difference of two point estimates at one dataset and one seed, not
+      resolvable at this resolution. Not an architecture result: the 13-column block
+      is a diagnostic, three columns wider and 183 parameters larger than the frozen
+      model, and is not proposed as the QLS-v2 input. One dataset, one seed, G[Cq].
+    decides:
+      - >-
+        Pre-registered B branch. Remaining structure is live and must justify
+        itself family by family.
+      - >-
+        Do NOT add all six to QLS-v2; the group is a trade concentrated in the
+        most connected 6.6% of queries.
+      - >-
+        Do NOT open the old 30-35 feature frontier; the question is whether any
+        existing family earns its place, not whether to go wider.
+      - >-
+        The next decomposition is four grouped families against the retrieval +
+        geometry base: support (seed_connections), paths (paths_length_1..3),
+        diffusion (personalized_pagerank), common-neighbour topology
+        (common_out_neighbors_with_seed_neighborhood). One family at a time.
+      - >-
+        The global-context branch stays closed; TARGET_H1 already failed its
+        controlled effectiveness test.
+    actual_cost:
+      new_runs: 2
+      accounted_seconds: 96.5
+      note: >-
+        49.5 s shared feature build, 1.9 s static, 9.5 s assembling and proving the
+        prior, 18.0 s + 16.9 s training, 0.3 s + 0.3 s inference. Against the
+        declared 0.20 GPU-hour and $0.90 ceilings and the measured expectation of
+        about 95 s / $0.05 filed before launch. Under $0.15 billed at $1.734/h. The
+        gate reported 0.2 h / $0.87 again, which is the D1 stage-independent
+        whole-split ceiling and not a D6 forecast.
 
   D5:
     status: COMPLETE
