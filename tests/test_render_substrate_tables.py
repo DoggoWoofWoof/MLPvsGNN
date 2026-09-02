@@ -57,6 +57,7 @@ def _split(**overrides):
             "unique_non_self_edges": 400.0,
             "stored_non_self_messages": 600.0,
             "duplicate_message_fraction": 0.33,
+            "stored_self_loops": 0.0,
             "operator_inserted_self_loops": 300.0,
             "messages_consumed_by_operator": 900.0,
         },
@@ -194,6 +195,40 @@ def test_both_connectivity_notions_appear_and_are_not_merged():
     header = _table(_render(_audit()), "Effective receptive field")[0]
     for column in ("sym R1", "sym R2", "sym R3", "flow R1", "flow R2", "flow R3"):
         assert column in header
+
+
+def test_the_two_self_loop_sources_are_reported_separately():
+    # Protocol 4.4 names both; 4.2 flags that `gcn` and `gat` insert their own,
+    # so a stored self-loop would be consumed twice. Collapsing the two into one
+    # column, or omitting the stored count, hides whether that case arises.
+    rows = _table(_render(_audit()), "Operator message load")
+    header = rows[0]
+    assert "stored self-loops" in header
+    assert "operator self-loops" in header
+    cells = [c.strip() for c in rows[2].split("|")]
+    assert cells.count("300.0") == 1  # operator-inserted, not doubled into both
+    assert "0.0" in cells  # the stored count, recorded and rendered as zero
+
+
+def test_a_stored_self_loop_count_is_rendered_not_swallowed():
+    graphs = {
+        "dataset_default": {
+            "splits": {
+                "validation": _split(
+                    operator_message_load={
+                        "unique_non_self_edges": 400.0,
+                        "stored_non_self_messages": 600.0,
+                        "duplicate_message_fraction": 0.33,
+                        "stored_self_loops": 12.5,
+                        "operator_inserted_self_loops": 300.0,
+                        "messages_consumed_by_operator": 900.0,
+                    }
+                )
+            }
+        }
+    }
+    body = _table(_render(_audit(graphs=graphs)), "Operator message load")[2]
+    assert "12.5" in body
 
 
 def test_the_expansion_table_says_it_admits_nothing():

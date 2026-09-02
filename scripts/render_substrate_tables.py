@@ -124,6 +124,11 @@ def message_load(sp: dict) -> list[str]:
         fmt(m.get("unique_non_self_edges"), 1),
         fmt(m.get("stored_non_self_messages"), 1),
         fmt(m.get("duplicate_message_fraction")),
+        # Protocol 4.4 lists stored and operator-inserted self-loops as separate
+        # reported quantities, and 4.2 flags the case where they coexist: `gcn`
+        # and `gat` insert their own, so a stored self-loop would be consumed
+        # twice. Rendering only the inserted count would leave that unanswered.
+        fmt(m.get("stored_self_loops"), 1),
         fmt(m.get("operator_inserted_self_loops"), 1),
         fmt(m.get("messages_consumed_by_operator"), 1),
     ]
@@ -255,7 +260,8 @@ def render(summary: dict, split: str) -> str:
         table(
             "Operator message load",
             ["dataset", "graph", "unique edges", "stored messages",
-             "duplicate fraction", "operator self-loops", "messages consumed"],
+             "duplicate fraction", "stored self-loops", "operator self-loops",
+             "messages consumed"],
             rows_for(audits, split, message_load),
         ),
         table(

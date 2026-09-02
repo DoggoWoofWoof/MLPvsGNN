@@ -95,6 +95,16 @@ survives induction whenever both endpoints are in the pool. Bridge loss is the
 `seed -> non-candidate -> candidate` pattern specifically, and neither a GNN
 layer nor a QLS hop feature can see it.
 
+**The stored graph carries no self-loops, on any dataset or any family.**
+`stored_self_loops` is 0.0 on all twenty graph-splits. Protocol §1.3 listed
+self-loop presence as an open question and §4.2 named the hazard: `gcn` and
+`gat` insert a self-loop of their own, so a stored one would be consumed twice
+and the affected node's own features would be weighted differently from every
+other node's. That case does not arise. Every self-loop in the message counts
+is operator-inserted, and `operator_inserted_self_loops` equals the candidate
+count exactly on every split — one per node, as the layer's own construction
+implies.
+
 Two fields in the path-preservation table are per-query **counts**, not
 fractions, and are labelled as such: `lost by induction` and `targets`. On
 metaqa the mean is 0.252 lost gold targets per query out of 2.10 gold targets
@@ -265,28 +275,28 @@ global reach seen from the other side.
 
 ### Operator message load
 
-| dataset | graph | unique edges | stored messages | duplicate fraction | operator self-loops | messages consumed |
-|---|---|---|---|---|---|---|
-| 2wiki_clean | sealed A | 464.1 | 705.7 | 0.345 | 359.7 | 1065.4 |
-| 2wiki_clean | structural | 117.7 | 117.7 | 0.000 | 359.7 | 477.3 |
-| 2wiki_clean | kNN only | 346.5 | 346.5 | 0.000 | 359.7 | 706.2 |
-| 2wiki_clean | baseline A | 464.1 | 464.1 | 0.000 | 359.7 | 823.8 |
-| metaqa | sealed A | 440.1 | 742.6 | 0.402 | 373.1 | 1115.6 |
-| metaqa | structural | 228.1 | 228.1 | 0.000 | 373.1 | 601.2 |
-| metaqa | kNN only | 212.0 | 212.0 | 0.000 | 373.1 | 585.0 |
-| metaqa | baseline A | 440.1 | 440.1 | 0.000 | 373.1 | 813.2 |
-| musique_clean | sealed A | 936.4 | 1556.9 | 0.377 | 332.0 | 1888.8 |
-| musique_clean | structural | 431.3 | 431.3 | 0.000 | 332.0 | 763.3 |
-| musique_clean | kNN only | 505.1 | 505.1 | 0.000 | 332.0 | 837.1 |
-| musique_clean | baseline A | 936.4 | 936.4 | 0.000 | 332.0 | 1268.4 |
-| squad_clean | sealed A | 3190.8 | 6165.1 | 0.455 | 318.9 | 6484.0 |
-| squad_clean | structural | 2806.2 | 2806.2 | 0.000 | 318.9 | 3125.1 |
-| squad_clean | kNN only | 384.6 | 384.6 | 0.000 | 318.9 | 703.5 |
-| squad_clean | baseline A | 3190.8 | 3190.8 | 0.000 | 318.9 | 3509.7 |
-| webqsp | sealed A | 1005.5 | 2257.3 | 0.536 | 344.5 | 2601.8 |
-| webqsp | structural | 442.9 | 442.9 | 0.000 | 344.5 | 787.4 |
-| webqsp | kNN only | 562.6 | 562.6 | 0.000 | 344.5 | 907.1 |
-| webqsp | baseline A | 1005.5 | 1005.5 | 0.000 | 344.5 | 1350.0 |
+| dataset | graph | unique edges | stored messages | duplicate fraction | stored self-loops | operator self-loops | messages consumed |
+|---|---|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | 464.1 | 705.7 | 0.345 | 0.0 | 359.7 | 1065.4 |
+| 2wiki_clean | structural | 117.7 | 117.7 | 0.000 | 0.0 | 359.7 | 477.3 |
+| 2wiki_clean | kNN only | 346.5 | 346.5 | 0.000 | 0.0 | 359.7 | 706.2 |
+| 2wiki_clean | baseline A | 464.1 | 464.1 | 0.000 | 0.0 | 359.7 | 823.8 |
+| metaqa | sealed A | 440.1 | 742.6 | 0.402 | 0.0 | 373.1 | 1115.6 |
+| metaqa | structural | 228.1 | 228.1 | 0.000 | 0.0 | 373.1 | 601.2 |
+| metaqa | kNN only | 212.0 | 212.0 | 0.000 | 0.0 | 373.1 | 585.0 |
+| metaqa | baseline A | 440.1 | 440.1 | 0.000 | 0.0 | 373.1 | 813.2 |
+| musique_clean | sealed A | 936.4 | 1556.9 | 0.377 | 0.0 | 332.0 | 1888.8 |
+| musique_clean | structural | 431.3 | 431.3 | 0.000 | 0.0 | 332.0 | 763.3 |
+| musique_clean | kNN only | 505.1 | 505.1 | 0.000 | 0.0 | 332.0 | 837.1 |
+| musique_clean | baseline A | 936.4 | 936.4 | 0.000 | 0.0 | 332.0 | 1268.4 |
+| squad_clean | sealed A | 3190.8 | 6165.1 | 0.455 | 0.0 | 318.9 | 6484.0 |
+| squad_clean | structural | 2806.2 | 2806.2 | 0.000 | 0.0 | 318.9 | 3125.1 |
+| squad_clean | kNN only | 384.6 | 384.6 | 0.000 | 0.0 | 318.9 | 703.5 |
+| squad_clean | baseline A | 3190.8 | 3190.8 | 0.000 | 0.0 | 318.9 | 3509.7 |
+| webqsp | sealed A | 1005.5 | 2257.3 | 0.536 | 0.0 | 344.5 | 2601.8 |
+| webqsp | structural | 442.9 | 442.9 | 0.000 | 0.0 | 344.5 | 787.4 |
+| webqsp | kNN only | 562.6 | 562.6 | 0.000 | 0.0 | 344.5 | 907.1 |
+| webqsp | baseline A | 1005.5 | 1005.5 | 0.000 | 0.0 | 344.5 | 1350.0 |
 
 ### Seed reachability -- induced versus global
 
