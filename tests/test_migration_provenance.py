@@ -278,3 +278,63 @@ def test_the_reference_prefix_uses_the_fingerprint_the_launcher_uses():
             f"{cell['axis']}_{mp.rate_key(cell['rate'])}"
         )
         assert cell["prefix"] == expected
+
+
+# ---------------------------------------------------------------------------
+# A mistyped results root and an untouched sweep produce identical counts.
+#
+# Found in the field: --results-root <staging>/outputs reported 96 MISSING while
+# 58 cells sat on disk, because cell paths already carry the "outputs/"
+# component. Acting on that reading means relaunching half a finished sweep.
+# ---------------------------------------------------------------------------
+
+
+def _plant_cell(root: Path, cell: dict) -> Path:
+    path = root / mp.cell_relative_path(cell, "phase_confirmation") / "result.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "status": mp.CELL_COMPLETE,
+                "dataset": cell["dataset"],
+                "axis": cell["axis"],
+                "rate": cell["rate"],
+                "data_fingerprint_sha256": cell["data_fingerprint_sha256"],
+                "models": {
+                    name: {"seeds": {str(seed): {} for seed in mp.SEEDS}}
+                    for name in mp.MODEL_NAMES
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_a_root_one_level_too_deep_is_refused_not_reported_as_empty(tmp_path):
+    import argparse
+
+    staging = tmp_path / "staging"
+    _plant_cell(staging, mp.expected_cells()[0])
+
+    args = argparse.Namespace(results_root=str(staging / "outputs"), staging=str(staging))
+    with pytest.raises(SystemExit) as caught:
+        mp.cmd_matrix(args)
+    message = str(caught.value)
+    assert "already carry the 'outputs/' component" in message
+    assert str(staging) in message
+
+
+def test_a_genuinely_empty_sweep_is_still_reported_as_missing(tmp_path):
+    """The guard must not turn an honest zero into an error."""
+
+    rows = mp.integrity_matrix(tmp_path)["cells"]
+    assert all(row["state"] == "MISSING" for row in rows)
+    assert mp.misrooted_hint(tmp_path, rows) is None
+
+
+def test_the_guard_stays_quiet_once_anything_is_found(tmp_path):
+    staging = tmp_path / "staging"
+    _plant_cell(staging, mp.expected_cells()[0])
+    rows = mp.integrity_matrix(staging)["cells"]
+    assert mp.misrooted_hint(staging, rows) is None

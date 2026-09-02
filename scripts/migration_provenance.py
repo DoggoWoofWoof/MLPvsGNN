@@ -295,6 +295,34 @@ def classify_cell(cell: dict[str, Any], root: Path) -> dict[str, Any]:
     return record
 
 
+def misrooted_hint(root: Path, rows: list[dict[str, Any]]) -> str | None:
+    """Tell a mistyped root apart from a sweep that genuinely has not started.
+
+    ``cell_relative_path`` is volume-relative and already carries the
+    ``outputs/`` component, so pointing ``--results-root`` at ``<staging>/outputs``
+    searches ``outputs/outputs/...`` and every cell reports MISSING. That is
+    indistinguishable from an untouched sweep by the counts alone, and one of the
+    two readings says to launch 96 cells over work that is already done.
+
+    Only fires when nothing at all was found here *and* the tree is demonstrably
+    one or two levels up, so it cannot mask a real empty sweep.
+    """
+
+    if any(row["state"] != "MISSING" for row in rows):
+        return None
+    for candidate in (root.parent, root.parent.parent):
+        found = list((candidate / "outputs" / "phase_confirmation").glob("*/*/*/result.json"))
+        if found:
+            return (
+                f"{len(found)} cell result(s) exist under {candidate}, but every cell "
+                f"reports MISSING under {root}. Cell paths already carry the 'outputs/' "
+                f"component, so pass --results-root {candidate}. Refusing rather than "
+                "reporting an empty sweep: relaunching completed cells is the one "
+                "mistake this matrix exists to prevent."
+            )
+    return None
+
+
 def integrity_matrix(root: Path) -> dict[str, Any]:
     rows = [classify_cell(cell, root) for cell in expected_cells()]
     states = ("COMPLETE", "PARTIAL", "MISSING", "INVALID")
@@ -553,6 +581,9 @@ def cmd_manifests(args: argparse.Namespace) -> int:
 def cmd_matrix(args: argparse.Namespace) -> int:
     root = Path(args.results_root) if args.results_root else Path(args.staging)
     matrix = integrity_matrix(root)
+    hint = misrooted_hint(root, matrix["cells"])
+    if hint:
+        raise SystemExit(hint)
     _write("e2_integrity_matrix.json", matrix)
     counts = matrix["counts"]
     print(
