@@ -1635,6 +1635,22 @@ Both packages were then launched on the target:
 
 E1 was never touched. Package F remains unopened. No protocol changed.
 
+### The Phase -1 pipeline was dry-run on six datasets
+
+The analyzer and the renderer were exercised on a synthetic six-dataset tree
+before the sixth audit arrived, to check that nothing in either assumes five.
+Both handle it: the analyzer discovers 6 audits and 24 graph-splits, and all
+fourteen tables render symmetrically at 51 rows per dataset. The three derived
+counts in the prose above will need to become twenty-four graph-splits, 216
+exact agreements and 72 seed-reach agreements, and each of the three fails its
+own check today rather than needing to be remembered.
+
+The note originally sat in the results document and was moved here: those
+three figures describe the six-dataset state that does not exist yet, and the
+grounding check on that document rightly refuses a prose figure no table
+carries. An operational log is the place for a number about work not yet done.
+
+
 ## Repository boundary
 
 The original C-RAG repository remains strictly read-only. This audit read only

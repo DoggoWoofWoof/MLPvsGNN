@@ -357,14 +357,6 @@ node in a thousand and one in twenty-seven. That is the short global reach of
 whatever the kNN edges connect, it is local enough that three hops of it is
 still a pool rather than a corpus.
 
-The analyzer and the renderer were exercised on a synthetic six-dataset tree
-before the sixth audit arrived, to check that nothing in either assumes five.
-Both handle it: the analyzer discovers 6 audits and 24 graph-splits, and all
-fourteen tables render symmetrically at 51 rows per dataset. The three derived
-counts in the prose above will need to become twenty-four graph-splits, 216
-exact agreements and 72 seed-reach agreements, and each of the three fails its
-own check today rather than needing to be remembered.
-
 ## Measurements
 
 ### Candidate-induced connectivity (validation split)
