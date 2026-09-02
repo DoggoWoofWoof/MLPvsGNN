@@ -1690,3 +1690,98 @@ audits on disk disagree about which datasets are covered, and the full
 must be run with `PYTHONPATH` set; plain `pytest` fails at import. Both audit
 scripts also pass scoped Ruff checks and Python byte-compilation. The only
 warnings are existing Torch Geometric deprecation warnings.
+
+## The Pareto tolerance review is closed (2026-09-02)
+
+The QLS-v2 protocol revision left exactly one open item: `tau = 0.25` R@5 points
+was *proposed* and awaited review, with the procedure frozen and only the number
+open. The review is now complete. It was an arithmetic review, not a judgement
+call: the revision claims tau was "chosen against two measured quantities, not
+for convenience", and that claim is checkable against sealed artifacts.
+
+All four stated figures reproduce exactly from `outputs/sa_mlp_confirmation/`:
+
+| Stated | Re-derived | Source |
+|---|---|---|
+| seed-to-seed R@5 std `0.047-1.144` | 0.047 (metaqa) to 1.144 (webqsp) | five-seed QLS-v1 spread per dataset |
+| six-dataset mean noise `[0.224, 0.406]` | 0.2238 and 0.4061 | the two seed-correlation extremes |
+| smallest Holm-significant GNN advantage `0.531` | 0.531 pp on hotpotqa | paired five-seed t-test, Holm over six |
+| Holm `p = 0.0027` | 0.00265 | same |
+| tau is `47%` of that advantage | 47% | 0.25 / 0.531 |
+
+**The band's endpoints were the one part the prose did not spell out**, and they
+are not an interval estimate. They are the two extremes of how seed noise can
+combine across datasets: `sqrt(sum sd^2)/6 = 0.224` if each dataset's seed noise
+is independent, and `sum(sd)/6 = 0.406` if it is perfectly correlated. The same
+five seeds are shared by every dataset, so the correlated end is the
+conservative one and the truth lies between them. Quoting a single end would
+have been a choice in tau's favour; quoting both is what makes it defensible.
+
+`tau = 0.25` therefore sits just above the optimistic edge of the noise band and
+at 47% of the smallest effect the GNN demonstrably wins, so the tolerance alone
+cannot hand back a contested result. **The controller directive fixes
+`tau_mean = 0.25 pp` and `delta_dataset = 0.50 pp`; the review confirms the basis
+rather than reopening the number.** No open items remain in the v2 protocol.
+
+### The backdrop this tolerance is read against
+
+Re-deriving the Holm correction surfaced context that belongs in the record
+rather than only in a test. On **four of the six datasets the GNN's R@5 lead does
+not survive correction**, and on webqsp the sign is against it:
+
+| Dataset | GNN R@5 lead (pp) | raw p | Holm p | survives |
+|---|---:|---:|---:|---|
+| 2wiki | 1.443 | 0.0041 | 0.0205 | yes |
+| musique | 0.964 | 0.0220 | 0.0879 | no |
+| hotpotqa | 0.531 | 0.0004 | 0.0027 | yes |
+| squad | 0.103 | 0.5459 | 1.0000 | no |
+| metaqa | 0.019 | 0.5367 | 1.0000 | no |
+| webqsp | −0.273 | 0.4198 | 1.0000 | no |
+
+This is the honest backdrop for a no-message-passing thesis and it is recorded
+here so it cannot later be compressed into "the GNN wins". It also explains why
+the tolerance had to be calibrated against hotpotqa's 0.531 rather than 2wiki's
+1.443: calibrating against the largest surviving effect would have permitted a
+tolerance that swallows the smaller one.
+
+`tests/test_pareto_tolerance_basis.py` re-derives all four figures from the
+sealed artifacts on every run and additionally asserts that the status document
+still states them, so a figure edited in prose without being re-derived fails.
+Mutating the band, the smallest effect, or tau itself each fails two tests.
+
+## QLS-v2 implementation began: the semantic frontier (2026-09-02)
+
+The first v2 code exists: `src/mp_retrieval/qls_v2_semantic.py`, the semantic
+frontier S0-S3. It was chosen because it is the one part of the v2 frontier the
+substrate audit does not gate -- the gating table records the semantic rungs as
+MAY PROCEED precisely because they reference no graph, so a running Phase −1
+blocks none of it. **The structural formulas remain frozen and untouched.**
+
+Five scalars per the frozen Group F catalog, four rungs, `0/0/0/1,536`
+parameters against v1's 98,304 -- the stated 64.0x reduction, now asserted
+rather than claimed.
+
+The catalog's initialization argument is the load-bearing part and is pinned by
+test rather than left in prose. With `w_i = 1/768` the product feature is exactly
+`<q,d>/768` and with `v_i = 0` the difference feature is identically zero, so S3
+*starts* as S2 plus one redundant and one dead channel and can only depart by
+learning. That is what licenses reading an S3-over-S2 gain as evidence for a
+learned semantic comparison rather than for the extra channels merely existing.
+Mutating either constant fails the suite. The zero initialization is also checked
+for the usual hazard: `dF5/dv_i = |q_i - d_i|` is nonzero, so the dead channel
+still trains.
+
+**One detail the catalog leaves open had to be settled.** "Within-query
+percentile" fixes the quantity but not the tie rule, and the repo's other
+implementation (`l2_features`) resolves ties through `argsort`, i.e. by array
+position -- which would make a frozen feature change value when the candidate
+list is permuted. Ties here take the average of the ranks they span, so the value
+is a function of the multiset alone; a lone candidate scores 0.5 as the limit of
+the all-tied case rather than by separate convention. Both properties are tested,
+and substituting the ordinal convention fails three tests.
+
+Also verified, because the catalog advances it as a reason S3 is not merely a
+cheaper v1: the difference feature is **not expressible as any bilinear form**,
+since it is not linear in `d` and no rank-64 projection could represent it. Its
+companion holds too -- the product feature *is* linear in `d`, as a diagonal
+restriction of `q^T W d` must be.
