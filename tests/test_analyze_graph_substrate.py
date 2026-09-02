@@ -471,3 +471,41 @@ def test_an_alias_group_carries_the_one_axis_the_pair_differs_on() -> None:
     )
     assert load["dataset_default"]["validation"]["duplicate_message_fraction"] == 0.345
     assert load["baseline_a_simple"]["validation"]["duplicate_message_fraction"] == 0.0
+
+
+def test_the_zero_fraction_identity_is_checked_not_assumed() -> None:
+    """A candidate with no induced edge has an empty receptive field at every
+    hop, so the zero-fraction is constant in H and equals the independently
+    measured isolated fraction. Three identical numbers read as a copy-paste
+    error; the identity is checked so it can be reported as a consequence."""
+
+    split = _split()
+    split["query_level"]["receptive_field"].update(
+        R1_zero_fraction=0.25, R2_zero_fraction=0.25, R3_zero_fraction=0.25
+    )
+    field = gs.receptive_field(split)
+    assert field["zero_fraction_constant_in_hops"] is True
+    assert field["zero_fraction_equals_isolated_fraction"] is True
+    assert field["isolated_fraction"] == 0.25
+
+
+def test_a_zero_fraction_that_moves_with_depth_is_reported_as_such() -> None:
+    """If it ever does move, that is a finding about the audit, not something
+    to normalise away."""
+
+    split = _split()
+    split["query_level"]["receptive_field"].update(
+        R1_zero_fraction=0.25, R2_zero_fraction=0.10, R3_zero_fraction=0.05
+    )
+    field = gs.receptive_field(split)
+    assert field["zero_fraction_constant_in_hops"] is False
+
+
+def test_a_zero_fraction_disagreeing_with_the_isolated_fraction_is_flagged() -> None:
+    split = _split()
+    split["query_level"]["receptive_field"].update(
+        R1_zero_fraction=0.40, R2_zero_fraction=0.40, R3_zero_fraction=0.40
+    )
+    field = gs.receptive_field(split)
+    assert field["zero_fraction_constant_in_hops"] is True
+    assert field["zero_fraction_equals_isolated_fraction"] is False

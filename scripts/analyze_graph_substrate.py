@@ -235,6 +235,30 @@ def receptive_field(split: dict[str, Any]) -> dict[str, Any]:
         for key in symmetric_row
         if key in flow_row and not key.endswith(REPORTING)
     }
+    # A candidate with no induced edge has an empty receptive field at every
+    # hop -- depth cannot help a node with nothing to traverse -- so the
+    # zero-fraction is constant in H and equal to the isolated fraction from
+    # section 2. Three identical numbers in a row read as a copy-paste error,
+    # so the identity is checked against the independently measured isolated
+    # fraction and reported as a consequence rather than left to look like one.
+    isolated = value(
+        split.get("query_level", {}).get("connectivity", {}), "isolated_fraction"
+    )
+    zero_fractions = [
+        symmetric_row.get(f"R{hop}_zero_fraction")
+        for hop in HOPS
+        if f"R{hop}_zero_fraction" in symmetric_row
+    ]
+    constant = (
+        all(abs(z - zero_fractions[0]) < 1e-12 for z in zero_fractions)
+        if zero_fractions
+        else None
+    )
+    matches = (
+        None
+        if isolated is None or not zero_fractions
+        else abs(zero_fractions[0] - isolated) < 1e-12
+    )
     return {
         "symmetrised": symmetric_row,
         "message_flow": flow_row,
@@ -242,6 +266,9 @@ def receptive_field(split: dict[str, Any]) -> dict[str, Any]:
         "notions_coincide": all(abs(delta) < 1e-12 for delta in divergence.values())
         if divergence
         else None,
+        "zero_fraction_constant_in_hops": constant,
+        "zero_fraction_equals_isolated_fraction": matches,
+        "isolated_fraction": isolated,
     }
 
 
@@ -532,6 +559,22 @@ def print_report(summaries: list[dict[str, Any]], split_name: str) -> None:
                         f"  R3 {fmt(sym.get('R3_median'), 2):>9s}"
                         f"   flow R3 {fmt(flow.get('R3_median'), 2):>9s}"
                         f"   coincide {block['notions_coincide']}"
+                    )
+                    # Protocol 4.3 calls this a headline rather than a
+                    # footnote: every family still emits a representation for a
+                    # candidate with an empty receptive field, through an
+                    # inserted self-loop or a root term. R1 = 0 does not mean
+                    # unscored, it means scored as a plain MLP with the topology
+                    # contributing nothing.
+                    print(
+                        f"  {'':38s} zero-fraction R1/R2/R3 "
+                        f"{fmt(sym.get('R1_zero_fraction')):>6s}/"
+                        f"{fmt(sym.get('R2_zero_fraction')):>6s}/"
+                        f"{fmt(sym.get('R3_zero_fraction')):>6s}"
+                        f"   flow {fmt(flow.get('R1_zero_fraction')):>6s}/"
+                        f"{fmt(flow.get('R2_zero_fraction')):>6s}/"
+                        f"{fmt(flow.get('R3_zero_fraction')):>6s}"
+                        f"   = isolated {block['zero_fraction_equals_isolated_fraction']}"
                     )
                 elif section == "seed_reachability":
                     ind, glob = block["induced_symmetrised"], block["global"]
