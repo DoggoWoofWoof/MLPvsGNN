@@ -404,3 +404,81 @@ def test_attribution_does_not_change_the_verdict(tmp_path):
     assert result["equivalent"] is False
     assert result["perturbation_contract"]["contract_sha256_equal"] is False
     assert "contract_attribution" in result["perturbation_contract"]
+
+
+# ---------------------------------------------------------------------------
+# The legacy candidate-contract mode
+# ---------------------------------------------------------------------------
+#
+# Two of the six frozen pools were hashed before candidate hop metadata
+# existed, so the hash E1 recorded for them is over a smaller field set than
+# `load_complete_dataset` computes today. The gate compared the two directly
+# and refused all three 2wiki_clean cells with "Candidate contract differs from
+# the frozen record" -- a changed-pool verdict on a pool that had not changed.
+# E1 recorded both hashes and a BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE proof
+# between them, and `validate_candidate_contract` is what re-derives the legacy
+# hash. That function is already covered by
+# tests/test_sa_mlp_confirmation.py::test_legacy_contract_ignores_only_new_hop_metadata,
+# including that it still refuses a pool whose candidate order really differs.
+# What is tested here is that the gate reaches it at all, with the right mode.
+
+
+def test_the_declared_cells_carry_the_compatibility_mode_from_the_e2_config():
+    """The mode must travel with the hash, or the hash cannot be checked."""
+
+    from scripts import migration_provenance as mp
+
+    declared = mp.reference_cache_cells()
+    modes = mp.candidate_contract_modes()
+    assert declared["cells"], "no cells declared"
+    for cell in declared["cells"]:
+        assert "candidate_contract_compatibility" in cell
+        assert cell["candidate_contract_compatibility"] == modes[cell["dataset"]]
+
+
+def test_a_legacy_dataset_declares_a_mode_and_a_current_one_does_not():
+    """Guards against a mode that reads None everywhere, which would satisfy
+    the test above while restoring the strict comparison for every dataset."""
+
+    from scripts import migration_provenance as mp
+
+    modes = mp.candidate_contract_modes()
+    assert modes["2wiki_clean"] == "pre_hop_metadata_v1"
+    assert modes["webqsp"] is None
+
+
+def test_the_gate_delegates_to_the_proof_the_experiment_runners_use():
+    """Not a re-implementation: the same function, so the two cannot drift."""
+
+    import inspect
+
+    source = inspect.getsource(eq.regenerate_cell)
+    assert "validate_candidate_contract" in source
+    assert "args.candidate_contract_compatibility" in source
+    assert "!= args.candidate_contract_sha256" not in source, (
+        "the strict comparison is back; it rejects the two legacy-mode "
+        "datasets on a field-set difference"
+    )
+
+
+def test_the_gate_records_which_hash_it_matched():
+    """A legacy-mode result prints a frozen hash the fresh load never produces.
+    Without the proof beside it, the record looks like a contradiction."""
+
+    import inspect
+
+    assert '"candidate_contract_proof"' in inspect.getsource(eq.regenerate_cell)
+    assert '"candidate_contract_compatibility"' in inspect.getsource(eq.run)
+
+
+def test_the_container_launcher_forwards_the_mode():
+    """A job missing the field raises KeyError inside the container, after the
+    inputs are already mounted and the compute is already paid for."""
+
+    import inspect
+
+    import scripts.modal_cache_equivalence as launcher
+
+    source = inspect.getsource(launcher)
+    assert '"candidate_contract_compatibility"' in source
+    assert "candidate_contract_compatibility=job[" in source

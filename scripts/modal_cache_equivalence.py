@@ -132,6 +132,9 @@ def _jobs(datasets: list[str] | None = None) -> list[dict[str, Any]]:
                 "cell_prefix": cell["prefix"],
                 "fingerprint": confirmation["data_fingerprint_sha256"],
                 "candidate_contract_sha256": cell["candidate_contract_sha256"],
+                "candidate_contract_compatibility": cell[
+                    "candidate_contract_compatibility"
+                ],
                 "data_remote": confirmation["config"]["data"],
                 "rule": declared["rule"],
             }
@@ -155,6 +158,7 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         regenerated_root=Path(storage / REGENERATED_PREFIX / relative),
         data_fingerprint_sha256=job["fingerprint"],
         candidate_contract_sha256=job["candidate_contract_sha256"],
+        candidate_contract_compatibility=job["candidate_contract_compatibility"],
         feature_config=job["feature_config"],
         output=Path(
             storage

@@ -262,6 +262,7 @@ def regenerate_cell(args: argparse.Namespace) -> dict[str, Any]:
     )
     from mp_retrieval.structural_features import build_or_load_structural_features
     from mp_retrieval.topology_store import PackedLocalTopologies
+    from scripts.run_sa_mlp_confirmation import validate_candidate_contract
     import hashlib
 
     # Neither cache builder reads an embedding value, so the regeneration runs
@@ -270,10 +271,17 @@ def regenerate_cell(args: argparse.Namespace) -> dict[str, Any]:
     dataset = load_complete_dataset(
         args.data, dataset=args.dataset, require_embeddings=False
     )
-    if dataset.metadata["candidate_contract_sha256"] != args.candidate_contract_sha256:
-        raise ValueError(
-            "Candidate contract differs from the frozen record; refusing to regenerate"
-        )
+    # The same proof E2 runs before it touches a topology, not a hand-rolled
+    # comparison. Two of the frozen pools were hashed before candidate hop
+    # metadata existed, so for those the recorded hash covers fewer fields than
+    # a fresh load computes and a direct `!=` reports a changed pool where
+    # there is none. Delegating keeps the gate's question identical to the
+    # resume path's -- and still refuses a pool that genuinely differs.
+    candidate_proof = validate_candidate_contract(
+        {"candidate_contract_sha256": args.candidate_contract_sha256},
+        dataset,
+        args.candidate_contract_compatibility,
+    )
     clean = PackedLocalTopologies.load(args.clean_topology_cache)
     root = args.regenerated_root
     root.mkdir(parents=True, exist_ok=True)
@@ -303,6 +311,10 @@ def regenerate_cell(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "intervention_contract_sha256": intervention["contract_sha256"],
         "feature_source_fingerprint_sha256": feature_fingerprint,
+        # Recorded, not just consulted: for a legacy-mode dataset the reader
+        # needs to see which hash was matched and under which mode, or the
+        # gate looks like it compared against the hash printed beside it.
+        "candidate_contract_proof": candidate_proof,
     }
 
 
@@ -349,6 +361,7 @@ def run(args: argparse.Namespace, checkpoint_hook=None) -> dict[str, Any]:
         "perturbation_seed": args.perturbation_seed,
         "data_fingerprint_sha256": args.data_fingerprint_sha256,
         "candidate_contract_sha256": args.candidate_contract_sha256,
+        "candidate_contract_compatibility": args.candidate_contract_compatibility,
         "reference_root": str(args.reference_root),
         "regenerated_root": str(args.regenerated_root),
         "regeneration": produced,
@@ -410,6 +423,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--regenerated-root", type=Path, required=True)
     parser.add_argument("--data-fingerprint-sha256", required=True)
     parser.add_argument("--candidate-contract-sha256", required=True)
+    # Defaults to None, which is the strict comparison. Only the datasets
+    # configs/phase_confirmation.yaml marks as legacy pass a value, and they
+    # pass the same one E2 passes.
+    parser.add_argument("--candidate-contract-compatibility", default=None)
     parser.add_argument("--feature-config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)

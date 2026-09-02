@@ -369,7 +369,14 @@ SECOND_DATASET_RATE = 0.25
 
 
 def frozen_candidate_contract(dataset: str) -> str:
-    """The candidate contract E1 recorded for this dataset."""
+    """The candidate contract E1 recorded for this dataset.
+
+    For a dataset whose pool predates the hop-metadata field this is the
+    pre-hop hash, which is *not* the one a fresh ``load_complete_dataset``
+    computes. Anything comparing against it must go through
+    ``validate_candidate_contract`` with the compatibility mode, exactly as the
+    experiment runners do; see ``candidate_contract_modes``.
+    """
 
     for path in sorted((SCREEN_ROOT / dataset).rglob("rate_*.json")):
         payload = json.loads(path.read_text(encoding="utf-8"))
@@ -378,6 +385,29 @@ def frozen_candidate_contract(dataset: str) -> str:
         if expected:
             return str(expected)
     raise SystemExit(f"No frozen candidate contract recorded for {dataset}")
+
+
+def candidate_contract_modes() -> dict[str, str | None]:
+    """Each dataset's declared compatibility mode, from the E2 config.
+
+    Two of the six frozen pools were built before candidate hop metadata
+    existed, so the hash E1 recorded for them is over a smaller field set than
+    the one ``load_complete_dataset`` computes today. E1 recorded both hashes
+    and a ``BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE`` proof that they describe
+    the same pool; ``validate_candidate_contract`` is what re-derives the
+    legacy hash and checks it.
+
+    The mode is read from ``configs/phase_confirmation.yaml`` rather than
+    listed here, so the gate asks the same question of the same datasets that
+    E2 will when it resumes. A plain ``!=`` against the frozen hash rejects
+    those two datasets on a field-set difference and calls it a changed pool.
+    """
+
+    config = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+    return {
+        name: spec.get("candidate_contract_compatibility")
+        for name, spec in config["datasets"].items()
+    }
 
 
 def _datasets_by_size() -> list[str]:
@@ -390,6 +420,7 @@ def reference_cache_cells() -> dict[str, Any]:
 
     config = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
     identity = dataset_identity()
+    modes = candidate_contract_modes()
     order = _datasets_by_size()
     smallest, second = order[0], order[1]
 
@@ -410,8 +441,13 @@ def reference_cache_cells() -> dict[str, Any]:
                     ],
                     # Taken from the frozen E1 result rather than from the
                     # migrated data, so the regeneration is checked against
-                    # what the experiment recorded, not against itself.
+                    # what the experiment recorded, not against itself. The
+                    # mode travels with the hash because for two datasets the
+                    # frozen hash covers fewer fields than a fresh load
+                    # computes, and comparing them directly reads a field-set
+                    # difference as a changed candidate pool.
                     "candidate_contract_sha256": frozen_candidate_contract(dataset),
+                    "candidate_contract_compatibility": modes.get(dataset),
                     "prefix": (
                         f"phase_confirmation_cache/{dataset}/"
                         f"{identity[dataset]['cell_prefix']}/{axis}_{rate_key(rate)}"
