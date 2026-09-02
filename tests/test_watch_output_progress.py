@@ -25,7 +25,11 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 watch = pytest.importorskip("scripts.watch_output_progress")
 
-from mp_retrieval.compute_budget import substrate_family_units  # noqa: E402
+from mp_retrieval.compute_budget import (  # noqa: E402
+    HISTORICAL_EXPANSION_SECONDS_PER_QUERY,
+    HISTORICAL_SECONDS_PER_QUERY,
+    substrate_family_units,
+)
 
 HOUR = 3600.0
 DEADLINE = 5 * HOUR
@@ -110,7 +114,13 @@ def test_a_stall_window_shorter_than_one_unit_is_refused(capsys):
     audit shortly after the first family lands -- while it is correctly working
     on the second -- and does so every single time.
     """
-    unit = substrate_family_units(queries=19_570, families=["f"], expansion_cap=512)[0]
+    unit = substrate_family_units(
+        queries=19_570,
+        families=["f"],
+        expansion_cap=512,
+        seconds_per_query=HISTORICAL_SECONDS_PER_QUERY,
+        expansion_seconds_per_query=HISTORICAL_EXPANSION_SECONDS_PER_QUERY,
+    )[0]
     code = watch.main(
         [
             "--profile", "p", "--app-id", "ap-1", "--prefix", "outputs",

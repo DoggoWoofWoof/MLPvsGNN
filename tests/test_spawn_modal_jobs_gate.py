@@ -76,6 +76,34 @@ def substrate_jobs(*datasets: str) -> list[dict]:
     return [{"dataset": name} for name in datasets]
 
 
+@pytest.fixture
+def historical_rates(monkeypatch):
+    """Cost the substrate audit at its pre-optimisation rates.
+
+    These tests are about a launch that happened. The traversal was made ~3.7x
+    faster afterwards, which would make that launch fit its six-hour ceiling and
+    quietly delete the regression -- so the historical tests pin the historical
+    measurement rather than reading today's.
+    """
+    import functools
+
+    from mp_retrieval.compute_budget import (
+        HISTORICAL_EXPANSION_SECONDS_PER_QUERY,
+        HISTORICAL_SECONDS_PER_QUERY,
+        substrate_family_units,
+    )
+
+    monkeypatch.setattr(
+        spawn,
+        "substrate_family_units",
+        functools.partial(
+            substrate_family_units,
+            seconds_per_query=HISTORICAL_SECONDS_PER_QUERY,
+            expansion_seconds_per_query=HISTORICAL_EXPANSION_SECONDS_PER_QUERY,
+        ),
+    )
+
+
 def e2_jobs(*datasets: str) -> list[dict]:
     return [{"dataset": name, "axis": "degree_rewire", "rate": 0.1} for name in datasets]
 
@@ -85,7 +113,7 @@ def e2_jobs(*datasets: str) -> list[dict]:
 # --------------------------------------------------------------------------
 
 
-def test_the_launch_that_burned_the_workspace_is_refused():
+def test_the_launch_that_burned_the_workspace_is_refused(historical_rates):
     """Four families, six-hour ceiling, nothing carried across a restart."""
     with pytest.raises(SystemExit) as excinfo:
         spawn.gate_launch(
@@ -97,7 +125,7 @@ def test_the_launch_that_burned_the_workspace_is_refused():
     assert "13.2" in message  # the whole audit, not one 3.31 h family
 
 
-def test_one_family_would_have_fitted_which_is_why_the_unit_must_follow_the_runner():
+def test_one_family_would_have_fitted_which_is_why_the_unit_must_follow_the_runner(historical_rates):
     """The near miss that makes this gate worth having.
 
     3.31 h against a six-hour ceiling passes even at the 1.5x safety factor, so
@@ -111,7 +139,7 @@ def test_one_family_would_have_fitted_which_is_why_the_unit_must_follow_the_runn
     assert admitted["largest_unit_hours"] == pytest.approx(3.31, abs=0.02)
 
 
-def test_an_undeclared_runner_is_costed_as_redoing_everything():
+def test_an_undeclared_runner_is_costed_as_redoing_everything(historical_rates):
     """Silence must not read as "checkpoints perfectly"; that is the unsafe direction."""
     units, why = spawn.measured_units(
         "graph-substrate", fake_module(24 * HOUR), substrate_jobs("hotpotqa_clean")
@@ -137,15 +165,22 @@ def test_the_shipped_confirmation_runner_declares_seed_resumption():
 
 
 def test_the_current_ceiling_and_resumption_admit_the_audit():
+    """Costed at today's rates, not the historical ones above.
+
+    The traversal rewrite took the audit from ~13.2 h to ~3.6 h. This test
+    tracks the live cost deliberately: if the model and the implementation ever
+    drift apart, the number the gate reports at launch stops meaning anything.
+    """
     report = spawn.gate_launch(
         "graph-substrate", fake_module(24 * HOUR, "family"), substrate_jobs("hotpotqa_clean")
     )
     assert report["gated"] is True
     assert report["units"] == 4
-    assert report["total_hours"] > 13.0
+    assert 3.0 < report["total_hours"] < 5.0
+    assert report["largest_unit_hours"] < 1.0
 
 
-def test_a_total_above_the_ceiling_is_allowed_when_every_unit_fits():
+def test_a_total_above_the_ceiling_is_allowed_when_every_unit_fits(historical_rates):
     """13.2 h of families in a 12 h window: the case a total-based check breaks.
 
     Refusing this would have blocked the audit permanently even after resumption

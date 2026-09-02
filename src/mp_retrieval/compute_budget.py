@@ -28,8 +28,20 @@ from dataclasses import dataclass, field
 # undirected edges) after the filter-before-dedupe traversal fix, on this
 # workstation. Modal's 8-CPU containers are not identical hardware, so a safety
 # factor is applied at the call site rather than baked in here.
-SUBSTRATE_SECONDS_PER_QUERY = 0.411
-SUBSTRATE_EXPANSION_SECONDS_PER_QUERY = 7.546
+#
+# Both rates were then divided by the speedup of the mat-vec traversal and the
+# incremental expansion walk -- 3.8x and 3.6x, measured at this graph's shape
+# against the pre-patch functions loaded from git, values identical. The
+# container-measured anchors are kept and scaled rather than replaced by the
+# workstation's absolute timings, which are not the container's.
+# The rates as first measured, kept named rather than inlined: several tests
+# describe the launch that was refused on 2026-09-02, and making the audit
+# faster afterwards must not retroactively make that launch look feasible.
+HISTORICAL_SECONDS_PER_QUERY = 0.411
+HISTORICAL_EXPANSION_SECONDS_PER_QUERY = 7.546
+
+SUBSTRATE_SECONDS_PER_QUERY = HISTORICAL_SECONDS_PER_QUERY / 3.8
+SUBSTRATE_EXPANSION_SECONDS_PER_QUERY = HISTORICAL_EXPANSION_SECONDS_PER_QUERY / 3.6
 
 # Per-seed training seconds, from the fetched phase-confirmation results. The
 # spread is three orders of magnitude, which is why a single average would be

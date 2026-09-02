@@ -17,6 +17,7 @@ Read-only. Nothing here trains, tunes, or admits a feature.
 from __future__ import annotations
 
 import numpy as np
+import scipy.sparse as sp
 
 __all__ = [
     "SubstrateCounts",
@@ -25,6 +26,7 @@ __all__ = [
     "retention_summary",
     "receptive_field_sizes",
     "hop_distances",
+    "traversal_matrix",
     "path_preservation",
     "bridge_loss",
     "distribution",
@@ -344,6 +346,47 @@ def receptive_field_sizes(
     return summary
 
 
+def traversal_matrix(rowptr: np.ndarray, col: np.ndarray, size: int) -> "sp.csr_matrix":
+    """``M`` with ``M[j, i] = 1`` per stored edge ``i -> j``, so ``M @ f`` is the
+    neighbour set of frontier ``f``.
+
+    Build once per graph and reuse across queries; the transpose is the whole
+    cost and doing it per query would erase the gain.
+    """
+
+    adjacency = sp.csr_matrix(
+        (np.ones(col.size, dtype=np.int32), col, rowptr), shape=(size, size)
+    )
+    return adjacency.T.tocsr()
+
+
+def _hop_distances_spmv(
+    matrix: "sp.csr_matrix", sources: np.ndarray, size: int, *, max_hops: int = 3
+) -> np.ndarray:
+    """:func:`hop_distances` via sparse mat-vec. Returns the identical array.
+
+    The accumulator is ``int32`` deliberately. A ``uint8`` one overflows on any
+    node with a multiple of 256 frontier neighbours and silently reports it
+    UNREACHED; random small graphs never build a hub that dense, so only a
+    full-scale check catches it.
+    """
+
+    distance = np.full(size, UNREACHED, dtype=np.int64)
+    frontier = np.unique(np.asarray(sources, dtype=np.int64))
+    if frontier.size == 0:
+        return distance
+    distance[frontier] = 0
+    vector = np.zeros(size, dtype=np.int32)
+    vector[frontier] = 1
+    for hop in range(1, max_hops + 1):
+        fresh = (matrix.dot(vector) != 0) & (distance == UNREACHED)
+        if not fresh.any():
+            break
+        distance[fresh] = hop
+        vector = fresh.astype(np.int32)
+    return distance
+
+
 def hop_distances(
     rowptr: np.ndarray,
     col: np.ndarray,
@@ -351,13 +394,24 @@ def hop_distances(
     size: int,
     *,
     max_hops: int = 3,
+    matrix: "sp.csr_matrix | None" = None,
 ) -> np.ndarray:
     """Multi-source BFS distance to every node, ``UNREACHED`` beyond the budget.
+
+    ``matrix`` is an optional :func:`traversal_matrix` for the same CSR. It is
+    the identical traversal by a faster route and returns the identical array;
+    supply it for the global graph, where the gather below allocates three
+    arrays the size of the frontier's total degree -- on hotpotqa that is 74% of
+    the whole audit. Leave it ``None`` for the induced graphs, which are a few
+    hundred nodes and where building the matrix would cost more than it saves.
 
     Works on any CSR, so the same function measures the induced graph and the
     global graph. That is the point: the two must be measured identically for
     their difference to mean anything.
     """
+
+    if matrix is not None:
+        return _hop_distances_spmv(matrix, sources, size, max_hops=max_hops)
 
     distance = np.full(size, UNREACHED, dtype=np.int64)
     frontier = np.unique(np.asarray(sources, dtype=np.int64))
@@ -658,19 +712,43 @@ def expansion_sizes(
     exactly ``Cq``, so the candidate ceiling cannot move.
     """
 
+    size = int(rowptr.size - 1)
     pool = np.unique(np.asarray(pool, dtype=np.int64))
     seeds = np.unique(np.asarray(seeds, dtype=np.int64))
     base = float(pool.size)
     summary: dict[str, float] = {"candidates": base}
-    for hop in range(1, max_hops + 1):
-        u_seed = np.union1d(pool, _neighbourhood(rowptr, col, seeds, hop))
-        u_target = np.union1d(pool, _neighbourhood(rowptr, col, pool, hop))
-        summary[f"U_seed_{hop}_nodes"] = float(u_seed.size)
-        summary[f"U_target_{hop}_nodes"] = float(u_target.size)
-        summary[f"U_seed_{hop}_expansion"] = (
-            float(u_seed.size / base) if base else float("nan")
-        )
-        summary[f"U_target_{hop}_expansion"] = (
-            float(u_target.size / base) if base else float("nan")
-        )
+    pool_mask = np.zeros(size, dtype=bool)
+    pool_mask[pool] = True
+
+    # One accumulating traversal per start set rather than a fresh
+    # ``_neighbourhood`` call per hop: calling it with 1, then 2, then 3 hops
+    # recomputes every earlier layer. Neighbours are filtered against the
+    # visited mask *before* uniquing, which is the same correction already
+    # applied to `hop_distances` and left un-applied here -- and this is the
+    # expensive traversal, on the global graph.
+    for tag, start in (("U_seed", seeds), ("U_target", pool)):
+        visited = np.zeros(size, dtype=bool)
+        frontier = start
+        visited[frontier] = True
+        for hop in range(1, max_hops + 1):
+            if frontier.size:
+                starts = rowptr[frontier]
+                degrees = rowptr[frontier + 1] - starts
+                total = int(degrees.sum())
+                if total:
+                    group_starts = np.repeat(np.cumsum(degrees) - degrees, degrees)
+                    positions = np.repeat(starts, degrees) + (
+                        np.arange(total, dtype=np.int64) - group_starts
+                    )
+                    fresh = col[positions]
+                    fresh = fresh[~visited[fresh]]
+                    visited[fresh] = True
+                    frontier = np.unique(fresh)
+                else:
+                    frontier = np.zeros(0, dtype=np.int64)
+            reached = float(np.count_nonzero(visited | pool_mask))
+            summary[f"{tag}_{hop}_nodes"] = reached
+            summary[f"{tag}_{hop}_expansion"] = (
+                float(reached / base) if base else float("nan")
+            )
     return summary

@@ -26,6 +26,8 @@ from mp_retrieval.compute_budget import (
     feasibility,
     phase_confirmation_units,
     substrate_family_units,
+    HISTORICAL_SECONDS_PER_QUERY,
+    HISTORICAL_EXPANSION_SECONDS_PER_QUERY,
 )
 
 HOUR = 3600.0
@@ -111,7 +113,11 @@ def test_a_negative_duration_is_rejected_at_construction():
 
 def test_the_measured_family_cost_reproduces_the_benchmark():
     units = substrate_family_units(
-        queries=HOTPOTQA_VALIDATION, families=FAMILIES, expansion_cap=EXPANSION_CAP
+        queries=HOTPOTQA_VALIDATION,
+        families=FAMILIES,
+        expansion_cap=EXPANSION_CAP,
+        seconds_per_query=HISTORICAL_SECONDS_PER_QUERY,
+        expansion_seconds_per_query=HISTORICAL_EXPANSION_SECONDS_PER_QUERY,
     )
     assert len(units) == 4
     assert units[0].seconds / HOUR == pytest.approx(3.31, abs=0.02)
@@ -133,8 +139,16 @@ def test_the_expansion_term_does_not_scale_with_the_split():
 
 
 def test_a_split_smaller_than_the_cap_pays_expansion_only_for_its_queries():
-    unit = substrate_family_units(queries=100, families=["f"], expansion_cap=512)[0]
-    assert unit.seconds == pytest.approx(100 * 0.411 + 100 * 7.546)
+    unit = substrate_family_units(
+        queries=100,
+        families=["f"],
+        expansion_cap=512,
+        seconds_per_query=HISTORICAL_SECONDS_PER_QUERY,
+        expansion_seconds_per_query=HISTORICAL_EXPANSION_SECONDS_PER_QUERY,
+    )[0]
+    assert unit.seconds == pytest.approx(
+        100 * HISTORICAL_SECONDS_PER_QUERY + 100 * HISTORICAL_EXPANSION_SECONDS_PER_QUERY
+    )
 
 
 def test_the_old_six_hour_ceiling_was_survivable_per_family_but_not_per_job():
@@ -145,7 +159,11 @@ def test_the_old_six_hour_ceiling_was_survivable_per_family_but_not_per_job():
     the fix was resumption plus a larger ceiling, not one or the other.
     """
     units = substrate_family_units(
-        queries=HOTPOTQA_VALIDATION, families=FAMILIES, expansion_cap=EXPANSION_CAP
+        queries=HOTPOTQA_VALIDATION,
+        families=FAMILIES,
+        expansion_cap=EXPANSION_CAP,
+        seconds_per_query=HISTORICAL_SECONDS_PER_QUERY,
+        expansion_seconds_per_query=HISTORICAL_EXPANSION_SECONDS_PER_QUERY,
     )
     assert feasibility(units, timeout_seconds=6 * HOUR, safety=1.0)
     assert sum(u.seconds for u in units) > 6 * HOUR

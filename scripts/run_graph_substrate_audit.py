@@ -55,6 +55,7 @@ from mp_retrieval.graph_substrate import (
     operator_edge_load,
     path_preservation,
     receptive_field_sizes,
+    traversal_matrix,
     retention_summary,
 )
 from scripts.run_candidate_headroom import _edge_index_from_csr
@@ -250,6 +251,12 @@ def audit_split(
     queries_without_gold = 0
     num_nodes = int(global_rowptr.size - 1)
 
+    # Built once for the whole split. The global seed BFS below is 74% of this
+    # audit's runtime, and its cost is the frontier gather, not the graph; the
+    # mat-vec form returns the identical distances about four times faster.
+    # Per-query construction would cost more than the traversal it replaces.
+    global_matrix = traversal_matrix(global_rowptr, global_col, num_nodes)
+
     for position, query in enumerate(queries):
         pool = query.candidate_index.numpy().astype(np.int64, copy=False)
         counts = induced_view(global_rowptr, global_col, pool)
@@ -302,7 +309,12 @@ def audit_split(
             induced_rowptr, induced_col, seed_local, pool.size, max_hops=max_hops
         )
         global_distance = hop_distances(
-            global_rowptr, global_col, seed_global, num_nodes, max_hops=max_hops
+            global_rowptr,
+            global_col,
+            seed_global,
+            num_nodes,
+            max_hops=max_hops,
+            matrix=global_matrix,
         )[pool]
 
         seed_reach_induced.append(_reach_fractions(induced_distance, max_hops))
