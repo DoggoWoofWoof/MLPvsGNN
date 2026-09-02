@@ -171,3 +171,26 @@ def test_without_a_matrix_every_cell_is_still_expanded() -> None:
 
     source = inspect.getsource(spawn_modal_jobs.main)
     assert "if args.integrity_matrix is not None:" in source
+
+
+@pytest.mark.parametrize("package", sorted(PACKAGES))
+def test_every_registered_image_installs_the_pinned_pyg(package: str) -> None:
+    """A missing dependency should not cost a launch to discover.
+
+    The graph-context image shipped without `torch-geometric` and both Stage B
+    jobs died two seconds in on `No module named 'torch_geometric'`. Nothing
+    reached the import: the runner validates the frozen candidate contract
+    through the same helper every other package uses, and that helper's import
+    chain reaches `operator_models`. The launcher's own dry run cannot see this,
+    because it never builds the image.
+
+    Every registered package loads a dataset through that contract, so every
+    registered image needs the pin, and it has to be the SAME pin -- two
+    versions of PyG across packages would be a silent scientific difference.
+    """
+    module_name, _stages = PACKAGES[package]
+    source = Path(module_name.replace(".", "/") + ".py").read_text(encoding="utf-8")
+    assert '"torch-geometric==2.5.2"' in source, (
+        f"{module_name} builds an image without the pinned torch-geometric; "
+        "its jobs will fail on import after the containers have started"
+    )

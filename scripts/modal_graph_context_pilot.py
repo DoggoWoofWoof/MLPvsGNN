@@ -58,6 +58,19 @@ image = (
         "psutil==6.1.1",
         "pyyaml==6.0.2",
     )
+    # The pilot trains nothing and builds no GNN, but it validates the frozen
+    # candidate contract through the same helper every other package uses, and
+    # that helper's import chain reaches operator_models. Using the shipped
+    # validator rather than a copy is the point: a reimplementation could drift
+    # from the check the rest of the project runs. Pinned to the substrate
+    # audit's block exactly -- same shape, same CPU-only workload, already
+    # proven on these graphs.
+    .pip_install(
+        "torch-geometric==2.5.2",
+        "torch-scatter==2.1.2",
+        "torch-sparse==0.6.18",
+        find_links="https://data.pyg.org/whl/torch-2.2.1+cu121.html",
+    )
     .add_local_dir(str(RUNTIME_REPO_ROOT / "src"), remote_path=f"{REMOTE_ROOT}/src")
     .add_local_dir(str(RUNTIME_REPO_ROOT / "scripts"), remote_path=f"{REMOTE_ROOT}/scripts")
     .add_local_file(
