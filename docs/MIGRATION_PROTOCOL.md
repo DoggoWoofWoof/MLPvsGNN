@@ -312,6 +312,32 @@ searches `outputs/outputs/` and reports 96 `MISSING` — identical output to a
 sweep that never ran. `misrooted_hint` refuses that case and names the root that
 would have worked; an honest zero is still reported as zero.
 
+The third trap is not in the path at all. A root can be spelled correctly, sit
+at the right level, and still be *out of date*. During the second migration the
+staging copy of `outputs/` dated from when E2 stood at 58 cells while the volume
+had reached 74, and the matrix built from it reported COMPLETE 48, PARTIAL 10,
+MISSING 38 -- naming ten `hotpotqa_clean` cells to resume that had already
+finished. Nothing in those counts looks wrong; 48/10/38 is a plausible sweep,
+and it is the same triple the first migration legitimately produced.
+
+`misrooted_hint` cannot see this, because the root is not misrooted. The refusal
+has to come from comparing the tree against something that knows the volume:
+
+```
+migration_provenance.py matrix --against-audit <audit_modal_progress.json>
+```
+
+which refuses when the tree is behind the reading and names the cells that would
+be run again. The check is deliberately one-directional. A tree *ahead* of its
+reference -- fetched more recently than the audit it is compared against -- is
+the ordinary case and passes, because a guard that fires on the ordinary case
+gets bypassed, and a bypassed guard protects nothing.
+
+Refresh with `replicate_volume.py download --slice results` before building the
+matrix. Reads still work on a spend-limited workspace, so the refresh costs
+nothing but time even when the source can no longer compute.
+
+
 ### Measured state at migration time
 
 | dataset | COMPLETE | PARTIAL | MISSING | INVALID | model-seed units |
@@ -332,6 +358,32 @@ remaining work is those 12 units plus 380 in the 38 unstarted cells, 392 of 960.
 The 48 `COMPLETE` cells are skipped, not recomputed. That is the whole point of
 deriving the plan rather than restarting the package in a workspace that happens
 to have capacity.
+
+
+### Measured state at the second migration
+
+The spend limit recurred and took both workspaces at once: `kuttakamina9895`,
+which was running E2 and the substrate audit, and `deepalimohapatra1973`, the
+original source. E2 had advanced from 48 to 64 complete cells in between.
+
+| dataset | COMPLETE | PARTIAL | MISSING | INVALID | model-seed units |
+|---|---|---|---|---|---|
+| 2wiki_clean | 16 | 0 | 0 | 0 | 160/160 |
+| musique_clean | 16 | 0 | 0 | 0 | 160/160 |
+| webqsp | 16 | 0 | 0 | 0 | 160/160 |
+| hotpotqa_clean | 16 | 0 | 0 | 0 | 160/160 |
+| metaqa | 0 | 10 | 6 | 0 | 0/160 |
+| squad_clean | 0 | 0 | 16 | 0 | 0/160 |
+| **total** | **64** | **10** | **22** | **0** | **640/960 in COMPLETE cells** |
+
+hotpotqa_clean finished between the two migrations. The limit landed inside
+metaqa this time, and in a different place in the seed order: its partial cells
+carry between one and five QLS-MLP seeds and between zero and two GNN seeds,
+where hotpotqa's had all five QLS-MLP seeds and were missing only late GNN ones.
+
+The partial seed counts were confirmed identical on the target after transfer,
+so the resume continues from those points rather than retraining. Submitting all
+six datasets behind the matrix skipped the 64 complete cells and sent 32.
 
 ## 6. Transfer integrity
 
