@@ -82,6 +82,11 @@ def rows_for(
 def connectivity(sp: dict) -> list[str]:
     c = sp["connectivity"]
     return [
+        # The audited sample, which is the validation split subject to
+        # `pooled_query_cap` -- not the dataset's query count. Reporting a rate
+        # without it invites reading a 315-query measurement as a 1,578-query
+        # one.
+        str(c.get("candidates__queries_reporting", "--")),
         fmt(c.get("candidates"), 1),
         fmt(c.get("edges_directed_non_self"), 1),
         fmt(c.get("isolated_fraction")),
@@ -170,6 +175,11 @@ def paths(sp: dict) -> list[str]:
     p = sp["path_preservation"]["gold_path_preservation"]
     b = sp["path_preservation"]["gold_bridge_loss"]
     return [
+        # The denominator belongs beside the rates it produced. It is not the
+        # dataset's query count and it is not constant across datasets: only
+        # queries with a gold target in the pool contribute here, which on
+        # webqsp is 209 of a 315-query validation split.
+        str(p.get("targets__queries_reporting", "--")),
         fmt(p.get("targets"), 2),
         fmt(p.get("connected_globally_fraction")),
         fmt(p.get("connected_induced_fraction")),
@@ -341,8 +351,8 @@ def render(summary: dict, split: str) -> str:
     parts = [
         table(
             "Candidate-induced connectivity (" + split + " split)",
-            ["dataset", "graph", "mean cand", "mean directed edges", "isolated",
-             "degree 1", "degree 2+"],
+            ["dataset", "graph", "queries measured", "mean cand",
+             "mean directed edges", "isolated", "degree 1", "degree 2+"],
             rows_for(audits, split, connectivity),
         ),
         table(
@@ -379,9 +389,10 @@ def render(summary: dict, split: str) -> str:
         ),
         table(
             "Gold path preservation and bridge loss",
-            ["dataset", "graph", "targets (count/query)", "connected globally",
-             "connected induced", "lost by induction (count/query)",
-             "distance inflated", "bridge loss @1", "@2", "@3"],
+            ["dataset", "graph", "queries reporting", "targets (count/query)",
+             "connected globally", "connected induced",
+             "lost by induction (count/query)", "distance inflated",
+             "bridge loss @1", "@2", "@3"],
             rows_for(audits, split, paths),
         ),
         table(

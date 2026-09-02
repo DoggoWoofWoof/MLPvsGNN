@@ -25,6 +25,7 @@ def _split(**overrides):
     payload = {
         "connectivity": {
             "candidates": 300.0,
+            "candidates__queries_reporting": 315,
             "edges_directed_non_self": 400.0,
             "isolated_fraction": 0.25,
             "degree_1_fraction": 0.3,
@@ -87,6 +88,7 @@ def _split(**overrides):
         "path_preservation": {
             "gold_path_preservation": {
                 "targets": 2.1,
+                "targets__queries_reporting": 209,
                 "connected_globally_fraction": 1.0,
                 "connected_induced_fraction": 0.9,
                 "globally_connected_but_induced_disconnected": 0.252,
@@ -317,6 +319,44 @@ def test_a_metric_the_audit_did_not_record_prints_as_a_dash():
     rows = _table(_render(_audit(graphs=graphs)), "Candidate-induced connectivity")
     assert "| -- |" in rows[2]
     assert "0.000" not in rows[2]
+
+
+# ---------------------------------------------------------------------------
+# Denominators
+# ---------------------------------------------------------------------------
+
+
+def test_the_audited_sample_size_travels_with_the_rates_it_produced():
+    # The dataset's query count is not the sample. webqsp has 1,578 queries, a
+    # 315-query validation split, and 209 queries with gold in the pool -- and
+    # a reader who takes the first for the third overweights every webqsp rate
+    # in the report.
+    body = _table(_render(_audit()), "Candidate-induced connectivity")[2]
+    assert "315" in [c.strip() for c in body.split("|")]
+
+
+def test_the_gold_path_table_carries_its_own_narrower_denominator():
+    # Only queries with a gold target in the pool contribute here, so this
+    # denominator is smaller than the connectivity one and must not be
+    # inherited from it.
+    body = _table(_render(_audit()), "Gold path preservation")[2]
+    cells = [c.strip() for c in body.split("|")]
+    assert "209" in cells
+    assert "315" not in cells
+
+
+def test_a_missing_denominator_is_a_dash_not_an_invented_count():
+    graphs = {
+        "dataset_default": {
+            "splits": {
+                "validation": _split(
+                    connectivity={"candidates": 300.0, "isolated_fraction": 0.25}
+                )
+            }
+        }
+    }
+    body = _table(_render(_audit(graphs=graphs)), "Candidate-induced connectivity")[2]
+    assert [c.strip() for c in body.split("|")][3] == "--"
 
 
 # ---------------------------------------------------------------------------

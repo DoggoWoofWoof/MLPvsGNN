@@ -22,10 +22,6 @@ REPORT = REPO_ROOT / "docs" / "GRAPH_SUBSTRATE_AUDIT_RESULTS.md"
 
 # Figures that legitimately have no table row here, each with the reason.
 UNGROUNDED_BY_DESIGN = {
-    # Package B's webqsp recall@5 delta. This audit trains nothing and cannot
-    # produce it; the report names EDGE_PROVENANCE_AND_HEADROOM_RESULTS.md as
-    # its source at the point of use.
-    "0.33",
     # A protocol section reference (§4.2), not a measurement.
     "4.2",
     # The comparison tolerance, from `analyze_graph_substrate.py`'s
@@ -34,14 +30,28 @@ UNGROUNDED_BY_DESIGN = {
     # 9 statistics x 20 graph-splits. Arithmetic over the tables rather than a
     # figure any single row carries.
     "180",
+    # `pooled_query_cap` from configs/graph_substrate_audit.yaml. A configured
+    # limit on the audit, not something the audit measured.
+    "4,000",
 }
 
 
 def _sections() -> tuple[str, str]:
+    """The prose half, and everything that counts as a table.
+
+    The head carries a few hand-written tables of its own -- the status table
+    most importantly. Those are tables, so a figure they carry is grounded; they
+    are just not *generated* tables. They are therefore excluded from the prose
+    side and included on the grounding side.
+    """
+
     text = REPORT.read_text(encoding="utf-8")
-    head, marker, tables = text.partition("## Measurements")
+    head, marker, generated = text.partition("## Measurements")
     assert marker, "report has no '## Measurements' section"
-    return head, tables
+    head_tables = "\n".join(
+        line for line in head.splitlines() if line.startswith("|")
+    )
+    return head, generated + "\n" + head_tables
 
 
 def _prose_figures(head: str) -> set[str]:

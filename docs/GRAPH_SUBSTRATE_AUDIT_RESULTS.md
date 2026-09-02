@@ -23,14 +23,29 @@ to lose if skimmed:
 
 ## Status
 
-| dataset | queries | nodes | stored directed edges | audit |
-|---|---:|---:|---:|---|
-| 2wiki_clean | 15,000 | 65,865 | 855,146 | complete, 4 graphs |
-| musique_clean | 19,938 | 13,672 | 280,108 | complete, 4 graphs |
-| metaqa | 407,513 | 40,151 | 585,728 | complete, 4 graphs |
-| squad_clean | 130,319 | 19,029 | 2,857,316 | complete, 4 graphs |
-| webqsp | 1,578 | 781,485 | 13,379,166 | complete, 4 graphs |
-| hotpotqa_clean | 97,852 | — | — | queued, no output yet |
+| dataset | queries (dataset) | queries measured | with gold in pool | nodes | stored directed edges | audit |
+|---|---:|---:|---:|---:|---:|---|
+| 2wiki_clean | 15,000 | 3,000 | 3,000 | 65,865 | 855,146 | complete, 4 graphs |
+| musique_clean | 19,938 | 3,987 | 3,984 | 13,672 | 280,108 | complete, 4 graphs |
+| metaqa | 407,513 | 39,138 | 19,963 | 40,151 | 585,728 | complete, 4 graphs |
+| squad_clean | 130,319 | 26,063 | 25,943 | 19,029 | 2,857,316 | complete, 4 graphs |
+| webqsp | 1,578 | 315 | 209 | 781,485 | 13,379,166 | complete, 4 graphs |
+| hotpotqa_clean | 97,852 | — | — | — | — | queued, no output yet |
+
+**The sample is not the dataset, and the three columns differ a lot.** "queries
+measured" is the `validation` split, subject to `pooled_query_cap`; "with gold
+in pool" is the narrower set that contributes to gold path preservation and
+bridge loss. Retention is pooled over at most 4,000 queries and the expansion
+audit over at most 512, so those two carry their own smaller denominators
+again; each table below prints the one that produced its rates.
+
+This matters most for **webqsp**, which is the smallest sample here by an order
+of magnitude — 315 measured queries, 209 of them with gold in the pool. Every
+webqsp figure quoted in this document rests on those, not on its 1,578 queries.
+webqsp is also the dataset that holds several extremes below (highest duplicate
+fraction, deepest R3, lowest boundary cut, largest expansion), so those
+extremes should be read as measured on a small sample rather than as
+established with the precision the four larger datasets carry.
 
 Every table below covers the five complete datasets on the `validation` split.
 hotpotqa_clean is appended when its audit finishes; no conclusion here is
@@ -265,28 +280,28 @@ global reach seen from the other side.
 
 ### Candidate-induced connectivity (validation split)
 
-| dataset | graph | mean cand | mean directed edges | isolated | degree 1 | degree 2+ |
-|---|---|---|---|---|---|---|
-| 2wiki_clean | sealed A | 359.7 | 464.1 | 0.375 | 0.291 | 0.333 |
-| 2wiki_clean | structural | 359.7 | 117.7 | 0.775 | 0.165 | 0.060 |
-| 2wiki_clean | kNN only | 359.7 | 346.5 | 0.488 | 0.259 | 0.252 |
-| 2wiki_clean | baseline A | 359.7 | 464.1 | 0.375 | 0.291 | 0.333 |
-| metaqa | sealed A | 373.1 | 440.1 | 0.412 | 0.320 | 0.268 |
-| metaqa | structural | 373.1 | 228.1 | 0.604 | 0.302 | 0.094 |
-| metaqa | kNN only | 373.1 | 212.0 | 0.644 | 0.227 | 0.129 |
-| metaqa | baseline A | 373.1 | 440.1 | 0.412 | 0.320 | 0.268 |
-| musique_clean | sealed A | 332.0 | 936.4 | 0.224 | 0.217 | 0.559 |
-| musique_clean | structural | 332.0 | 431.3 | 0.678 | 0.143 | 0.179 |
-| musique_clean | kNN only | 332.0 | 505.1 | 0.323 | 0.258 | 0.419 |
-| musique_clean | baseline A | 332.0 | 936.4 | 0.224 | 0.217 | 0.559 |
-| squad_clean | sealed A | 318.9 | 3190.8 | 0.175 | 0.153 | 0.672 |
-| squad_clean | structural | 318.9 | 2806.2 | 0.509 | 0.076 | 0.416 |
-| squad_clean | kNN only | 318.9 | 384.6 | 0.457 | 0.215 | 0.329 |
-| squad_clean | baseline A | 318.9 | 3190.8 | 0.175 | 0.153 | 0.672 |
-| webqsp | sealed A | 344.5 | 1005.5 | 0.190 | 0.248 | 0.563 |
-| webqsp | structural | 344.5 | 442.9 | 0.420 | 0.420 | 0.160 |
-| webqsp | kNN only | 344.5 | 562.6 | 0.388 | 0.180 | 0.432 |
-| webqsp | baseline A | 344.5 | 1005.5 | 0.190 | 0.248 | 0.563 |
+| dataset | graph | queries measured | mean cand | mean directed edges | isolated | degree 1 | degree 2+ |
+|---|---|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | 3000 | 359.7 | 464.1 | 0.375 | 0.291 | 0.333 |
+| 2wiki_clean | structural | 3000 | 359.7 | 117.7 | 0.775 | 0.165 | 0.060 |
+| 2wiki_clean | kNN only | 3000 | 359.7 | 346.5 | 0.488 | 0.259 | 0.252 |
+| 2wiki_clean | baseline A | 3000 | 359.7 | 464.1 | 0.375 | 0.291 | 0.333 |
+| metaqa | sealed A | 39138 | 373.1 | 440.1 | 0.412 | 0.320 | 0.268 |
+| metaqa | structural | 39138 | 373.1 | 228.1 | 0.604 | 0.302 | 0.094 |
+| metaqa | kNN only | 39138 | 373.1 | 212.0 | 0.644 | 0.227 | 0.129 |
+| metaqa | baseline A | 39138 | 373.1 | 440.1 | 0.412 | 0.320 | 0.268 |
+| musique_clean | sealed A | 3987 | 332.0 | 936.4 | 0.224 | 0.217 | 0.559 |
+| musique_clean | structural | 3987 | 332.0 | 431.3 | 0.678 | 0.143 | 0.179 |
+| musique_clean | kNN only | 3987 | 332.0 | 505.1 | 0.323 | 0.258 | 0.419 |
+| musique_clean | baseline A | 3987 | 332.0 | 936.4 | 0.224 | 0.217 | 0.559 |
+| squad_clean | sealed A | 26063 | 318.9 | 3190.8 | 0.175 | 0.153 | 0.672 |
+| squad_clean | structural | 26063 | 318.9 | 2806.2 | 0.509 | 0.076 | 0.416 |
+| squad_clean | kNN only | 26063 | 318.9 | 384.6 | 0.457 | 0.215 | 0.329 |
+| squad_clean | baseline A | 26063 | 318.9 | 3190.8 | 0.175 | 0.153 | 0.672 |
+| webqsp | sealed A | 315 | 344.5 | 1005.5 | 0.190 | 0.248 | 0.563 |
+| webqsp | structural | 315 | 344.5 | 442.9 | 0.420 | 0.420 | 0.160 |
+| webqsp | kNN only | 315 | 344.5 | 562.6 | 0.388 | 0.180 | 0.432 |
+| webqsp | baseline A | 315 | 344.5 | 1005.5 | 0.190 | 0.248 | 0.563 |
 
 ### Global-neighbourhood retention
 
@@ -415,28 +430,28 @@ global reach seen from the other side.
 
 ### Gold path preservation and bridge loss
 
-| dataset | graph | targets (count/query) | connected globally | connected induced | lost by induction (count/query) | distance inflated | bridge loss @1 | @2 | @3 |
-|---|---|---|---|---|---|---|---|---|---|
-| 2wiki_clean | sealed A | 1.85 | 0.998 | 0.984 | 0.032 | 0.001 | 0.000 | 0.013 | 0.014 |
-| 2wiki_clean | structural | 1.85 | 0.997 | 0.973 | 0.053 | 0.001 | 0.000 | 0.023 | 0.024 |
-| 2wiki_clean | kNN only | 1.85 | 0.934 | 0.928 | 0.013 | 0.000 | 0.000 | 0.003 | 0.006 |
-| 2wiki_clean | baseline A | 1.85 | 0.998 | 0.984 | 0.032 | 0.001 | 0.000 | 0.013 | 0.014 |
-| metaqa | sealed A | 2.10 | 1.000 | 0.901 | 0.252 | 0.024 | 0.000 | 0.078 | 0.099 |
-| metaqa | structural | 2.10 | 1.000 | 0.838 | 0.519 | 0.012 | 0.000 | 0.094 | 0.162 |
-| metaqa | kNN only | 2.10 | 0.515 | 0.494 | 0.054 | 0.001 | 0.000 | 0.016 | 0.046 |
-| metaqa | baseline A | 2.10 | 1.000 | 0.901 | 0.252 | 0.024 | 0.000 | 0.078 | 0.099 |
-| musique_clean | sealed A | 2.17 | 0.990 | 0.954 | 0.085 | 0.005 | 0.000 | 0.021 | 0.036 |
-| musique_clean | structural | 2.17 | 0.950 | 0.893 | 0.136 | 0.003 | 0.000 | 0.037 | 0.058 |
-| musique_clean | kNN only | 2.17 | 0.883 | 0.870 | 0.030 | 0.000 | 0.000 | 0.005 | 0.014 |
-| musique_clean | baseline A | 2.17 | 0.990 | 0.954 | 0.085 | 0.005 | 0.000 | 0.021 | 0.036 |
-| squad_clean | sealed A | 1.00 | 0.996 | 0.984 | 0.012 | 0.002 | 0.000 | 0.006 | 0.012 |
-| squad_clean | structural | 1.00 | 0.983 | 0.967 | 0.015 | 0.001 | 0.000 | 0.009 | 0.016 |
-| squad_clean | kNN only | 1.00 | 0.965 | 0.963 | 0.001 | 0.000 | 0.000 | 0.001 | 0.002 |
-| squad_clean | baseline A | 1.00 | 0.996 | 0.984 | 0.012 | 0.002 | 0.000 | 0.006 | 0.012 |
-| webqsp | sealed A | 4.27 | 1.000 | 0.989 | 0.033 | 0.012 | 0.000 | 0.026 | 0.011 |
-| webqsp | structural | 4.27 | 1.000 | 0.979 | 0.057 | 0.007 | 0.000 | 0.029 | 0.021 |
-| webqsp | kNN only | 4.27 | 0.338 | 0.327 | 0.043 | 0.000 | 0.000 | 0.006 | 0.044 |
-| webqsp | baseline A | 4.27 | 1.000 | 0.989 | 0.033 | 0.012 | 0.000 | 0.026 | 0.011 |
+| dataset | graph | queries reporting | targets (count/query) | connected globally | connected induced | lost by induction (count/query) | distance inflated | bridge loss @1 | @2 | @3 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | 3000 | 1.85 | 0.998 | 0.984 | 0.032 | 0.001 | 0.000 | 0.013 | 0.014 |
+| 2wiki_clean | structural | 3000 | 1.85 | 0.997 | 0.973 | 0.053 | 0.001 | 0.000 | 0.023 | 0.024 |
+| 2wiki_clean | kNN only | 3000 | 1.85 | 0.934 | 0.928 | 0.013 | 0.000 | 0.000 | 0.003 | 0.006 |
+| 2wiki_clean | baseline A | 3000 | 1.85 | 0.998 | 0.984 | 0.032 | 0.001 | 0.000 | 0.013 | 0.014 |
+| metaqa | sealed A | 19963 | 2.10 | 1.000 | 0.901 | 0.252 | 0.024 | 0.000 | 0.078 | 0.099 |
+| metaqa | structural | 19963 | 2.10 | 1.000 | 0.838 | 0.519 | 0.012 | 0.000 | 0.094 | 0.162 |
+| metaqa | kNN only | 19963 | 2.10 | 0.515 | 0.494 | 0.054 | 0.001 | 0.000 | 0.016 | 0.046 |
+| metaqa | baseline A | 19963 | 2.10 | 1.000 | 0.901 | 0.252 | 0.024 | 0.000 | 0.078 | 0.099 |
+| musique_clean | sealed A | 3984 | 2.17 | 0.990 | 0.954 | 0.085 | 0.005 | 0.000 | 0.021 | 0.036 |
+| musique_clean | structural | 3984 | 2.17 | 0.950 | 0.893 | 0.136 | 0.003 | 0.000 | 0.037 | 0.058 |
+| musique_clean | kNN only | 3984 | 2.17 | 0.883 | 0.870 | 0.030 | 0.000 | 0.000 | 0.005 | 0.014 |
+| musique_clean | baseline A | 3984 | 2.17 | 0.990 | 0.954 | 0.085 | 0.005 | 0.000 | 0.021 | 0.036 |
+| squad_clean | sealed A | 25943 | 1.00 | 0.996 | 0.984 | 0.012 | 0.002 | 0.000 | 0.006 | 0.012 |
+| squad_clean | structural | 25943 | 1.00 | 0.983 | 0.967 | 0.015 | 0.001 | 0.000 | 0.009 | 0.016 |
+| squad_clean | kNN only | 25943 | 1.00 | 0.965 | 0.963 | 0.001 | 0.000 | 0.000 | 0.001 | 0.002 |
+| squad_clean | baseline A | 25943 | 1.00 | 0.996 | 0.984 | 0.012 | 0.002 | 0.000 | 0.006 | 0.012 |
+| webqsp | sealed A | 209 | 4.27 | 1.000 | 0.989 | 0.033 | 0.012 | 0.000 | 0.026 | 0.011 |
+| webqsp | structural | 209 | 4.27 | 1.000 | 0.979 | 0.057 | 0.007 | 0.000 | 0.029 | 0.021 |
+| webqsp | kNN only | 209 | 4.27 | 0.338 | 0.327 | 0.043 | 0.000 | 0.000 | 0.006 | 0.044 |
+| webqsp | baseline A | 209 | 4.27 | 1.000 | 0.989 | 0.033 | 0.012 | 0.000 | 0.026 | 0.011 |
 
 ### Graph-expansion headroom -- ORACLE ONLY, admits nothing to any pool
 
