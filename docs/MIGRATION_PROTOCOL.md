@@ -160,6 +160,33 @@ root is `.../6e4ac5ee0e1355ad` while its cell prefix is `d7c2da85e2b65680`. A
 matrix built on the directory name would report a finished sweep as 96 `MISSING`
 cells and invite a full, expensive re-run.
 
+The same trap is one directory level away. Cell paths are volume-relative and
+already carry the `outputs/` component, so `--results-root <staging>/outputs`
+searches `outputs/outputs/` and reports 96 `MISSING` — identical output to a
+sweep that never ran. `misrooted_hint` refuses that case and names the root that
+would have worked; an honest zero is still reported as zero.
+
+### Measured state at migration time
+
+| dataset | COMPLETE | PARTIAL | MISSING | INVALID | model-seed units |
+|---|---|---|---|---|---|
+| 2wiki_clean | 16 | 0 | 0 | 0 | 160/160 |
+| musique_clean | 16 | 0 | 0 | 0 | 160/160 |
+| webqsp | 16 | 0 | 0 | 0 | 160/160 |
+| hotpotqa_clean | 0 | 10 | 6 | 0 | 88/160 |
+| squad_clean | 0 | 0 | 16 | 0 | 0/160 |
+| metaqa | 0 | 0 | 16 | 0 | 0/160 |
+| **total** | **48** | **10** | **38** | **0** | **480/960 in COMPLETE cells** |
+
+Three datasets are finished. Nothing is `INVALID`. The spend limit landed inside
+hotpotqa's GNN arm: every partial cell has all five QLS-MLP seeds and is missing
+GNN seed 4, sometimes 3 as well — 12 model-seed units across ten cells. The
+remaining work is those 12 units plus 380 in the 38 unstarted cells, 392 of 960.
+
+The 48 `COMPLETE` cells are skipped, not recomputed. That is the whole point of
+deriving the plan rather than restarting the package in a workspace that happens
+to have capacity.
+
 ## 6. Transfer integrity
 
 `scripts/replicate_volume.py` — `plan`, `download`, `upload`, `verify`.
