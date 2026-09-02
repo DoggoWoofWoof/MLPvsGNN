@@ -1979,3 +1979,84 @@ strip EXTENDED would save roughly $0.40 while discarding the family in flight
 and requiring a code change, a test cycle and a relaunch -- more cost than it
 removes. The split governs which measurements the decision may rest on, not
 which ones this run computes.
+
+## Phase -1 closed: the graph basis decision (2026-09-02)
+
+Six datasets x four families, all `GRAPH_SUBSTRATE_AUDIT_COMPLETE`. The decision
+below is read off CORE only -- `dataset_default` (sealed A), the substrate
+QLS-v1 and the one-layer GNN actually ran on. EXTENDED families (`structural`,
+`knn_only`, `baseline_a_simple`) are reported but decide nothing.
+
+### Induction is lossless at radius 1 and lossy at radius >= 2
+
+Seed-reachability at hop 1 is *identical* induced and global on all six
+datasets. That is a structural identity, not a measurement: an edge between two
+candidates has both endpoints in `Cq`, so it survives induction by definition.
+It is stated here so it is not mistaken for evidence.
+
+The loss appears at radius >= 2, where the intermediate node on the path is
+usually not itself a candidate. Fraction of the global hop-2 seed reach that
+survives induction:
+
+| dataset | induced @2 | global @2 | surviving | @3 surviving |
+|---|---|---|---|---|
+| 2wiki_clean | 0.104 | 0.765 | 0.136 | 0.148 |
+| hotpotqa_clean | 0.254 | 0.924 | 0.275 | 0.332 |
+| metaqa | 0.139 | 0.399 | 0.348 | 0.232 |
+| musique_clean | 0.261 | 0.399 | 0.654 | 0.492 |
+| squad_clean | 0.371 | 0.504 | 0.736 | 0.591 |
+| webqsp | 0.454 | 0.574 | 0.791 | 0.637 |
+
+No threshold is applied. The ordering is the finding: induction destroys most
+2-hop reach exactly on the multi-hop datasets (2wiki, hotpotqa, metaqa) and
+least on the single-hop ones (squad, webqsp).
+
+Gold paths are the exception -- they largely survive. Induced gold connectivity
+is 0.901-0.989 against 0.990-1.000 global, and bridge loss @1 is 0.000
+everywhere. Induction removes general reach, not the specific supporting path.
+
+### The two starvation questions have different answers
+
+**QLS-v1 was graph-starved, in two separate ways.** Its multi-hop features live
+at radius >= 2, where 21-86% of reach is gone. And 17.5-41.2% of candidates are
+isolated in `G[Cq]`, so for those every graph feature at every radius is a
+constant.
+
+**The one-layer GNN was not starved by induction** -- one layer reads radius 1,
+where induction cannot remove anything. It was starved by sparsity. Median R1 is
+0.77-5.31 messages, and on the same 17.5-41.2% isolated fraction a one-layer GNN
+receives no messages at all. Every operator in the frozen selection scores
+isolated nodes and carries a root term (`inserted_self_loop`, or `(1+eps)*x_self`
+for hotpotqa's GIN), so for those candidates the layer reduces exactly to its
+self-transform.
+
+That is arithmetic, not conjecture: for 17.5-41.2% of candidates the historical
+one-layer GNN *was* an MLP on the node's own features.
+
+### Native / kNN / union
+
+The union (sealed A) dominates both sources on every dataset, and the two are
+complementary rather than redundant. Native-only (`structural`) collapses --
+2wiki R1 0.01, isolated 0.775. kNN-only has poor global connectivity (2wiki
+global @3 0.149 against 0.973) and destroys global gold connectivity on the KG
+datasets (metaqa 0.515, webqsp 0.338), where native edges are what carry gold.
+On hotpotqa the reverse holds: kNN-only loses the most gold to induction
+(0.197/query against 0.040 for the union).
+
+### Denominators
+
+metaqa has no gold in the pool for 49.0% of queries and webqsp for 33.7%. Every
+gold-path rate above is over the remaining queries. This is a retrieval ceiling,
+not a graph property, and it is not evidence about the substrate.
+
+### Decision
+
+QLS-v2 computes graph features on the **bounded query-local global
+neighbourhood**: the global graph restricted to hops <= 2 of `Cq` union seeds,
+with `Cq` unchanged and still the only scored set. The hop budget is set by the
+measured lossless/lossy boundary above, not chosen. Frozen candidate pools are
+untouched, so the ranking task is identical and A-F are uncontaminated.
+
+Measured size of that neighbourhood, from the audit's oracle-only headroom
+(these admit nothing to any pool): 81-1494 nodes per query, 0.2x-4.4x the
+candidate pool. Affordable.
