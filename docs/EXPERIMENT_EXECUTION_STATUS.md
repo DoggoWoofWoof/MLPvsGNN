@@ -1903,3 +1903,79 @@ and is too low; at the corrected shape rate the same work is **~$27**. It is an
 upper bound in one respect -- every cell is costed at its full five seeds,
 including the nine that only owe some -- but the rate error was real and is
 recorded here rather than quietly fixed.
+
+## E2 paused, and the Phase -1 core/extended split (2026-09-02)
+
+### E2 = PAUSED_FOR_RESEARCH_PRIORITY
+
+Not FAILED, not CANCELLED, not INVALID. The integrity audit run immediately
+before the GPU calls were stopped, and again immediately after:
+
+```text
+phase_confirmation   COMPLETE 82   PARTIAL/RESUMABLE 14   MISSING 0   INVALID 0
+                     891 / 960 seed-units    remaining 69
+```
+
+Per dataset, by `status == PHASE_CONFIRMATION_CELL_COMPLETE` -- never by
+`result.json` presence, which counts cells that have merely *started* because
+the runner rewrites that file after every seed:
+
+```text
+2wiki_clean 16/16   hotpotqa_clean 16/16   metaqa 8/16
+musique_clean 16/16 squad_clean 10/16      webqsp 16/16
+```
+
+Preserved and untouched: every COMPLETE result artifact, every PARTIAL seed
+checkpoint, the frozen protocol, the frozen analyzer, the protocol tag, and the
+candidate hashes. Nothing was deleted or rewritten. The 14 partial cells resume
+from their seed boundaries whenever they are wanted.
+
+**Why it is paused.** E2 was designed as a five-seed perturbation confirmation
+for QLS-v1 on the historical candidate-induced graph and the historical
+one-layer seed-aware GNN. Subsequent graph-substrate and model-design findings
+make Phase -1 and QLS-v2 development higher-value prerequisites: E2 cannot
+answer the current question, because it is locked to v1's feature set, v1's
+architecture, and a graph substrate whose adequacy is exactly what Phase -1 is
+measuring. E2 remains valid QLS-v1 diagnostic work and may be resumed later.
+
+It is reconsidered only after QLS-v2 is frozen, and only if completing it
+materially strengthens the paper. Resuming it costs 69 seed-units, ~12 GPU-h,
+about $27 at the measured $2.241/h. Sunk cost is not a reason.
+
+E2 findings, if later completed, are QLS-v1 *developmental* evidence. They
+cannot be described as independent confirmation of QLS-v2, which is why F stays
+sealed.
+
+### Phase -1 is a minimum-decision audit
+
+The graph-basis decision is made on CORE. EXTENDED enriches the paper and does
+not gate anything.
+
+```text
+CORE      candidate-induced connectivity / components / LCC
+          global-neighbourhood retention
+          directed message-flow receptive field (R1/R2/R3)
+          seed and gold path preservation
+          bridge loss
+
+EXTENDED  full U_seed(H) and U_target(H) curves
+          every provenance x every H statistic
+          secondary oracle / headroom tables
+```
+
+Recorded before the remaining Hotpot families land, so the split cannot be
+chosen to suit them.
+
+**Disclosure, because "preregistered" has to mean something.** Three
+`dataset_default` figures for hotpotqa were already read while sizing the
+runtime profile: `retention_zero_fraction` 0.3545, `R1_zero_fraction` 0.3546,
+and `second_component_fraction` 0.0343. They were read to get the candidate
+pool size, not to interpret the substrate, and no other dataset's substrate
+numbers have been inspected. The split above is not derived from them.
+
+**The running audit is not being restricted to CORE.** It computes both, and at
+0.85 h per family the whole thing is ~2.5 CPU-h and about $2.25. Stopping it to
+strip EXTENDED would save roughly $0.40 while discarding the family in flight
+and requiring a code change, a test cycle and a relaunch -- more cost than it
+removes. The split governs which measurements the decision may rest on, not
+which ones this run computes.
