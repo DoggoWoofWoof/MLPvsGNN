@@ -103,6 +103,36 @@ GRAPH_CONTEXT_LOAD_SECONDS = 600.0
 GRAPH_CONTEXT_D0B_SECONDS_PER_QUERY = 0.040
 GRAPH_CONTEXT_D0B_TRAINING_SECONDS = 300.0
 
+# D1 builds one context per arm rather than both at once, so its per-query cost
+# is the sum of the two arms' p95 context latencies as D0b measured them on this
+# dataset and image: CAND 9.8 ms + TARGET_H1 24.5 ms. p95 rather than the mean
+# because this feeds a gate.
+#
+# Training is measured, not modelled: the frozen sa_mlp confirmation fits 2wiki
+# in 21.4 s per seed on the same GPU shape. Two arms, doubled for the per-epoch
+# rescoring of the epoch-selection holdout that D1 adds and the confirmation did
+# not have at this size.
+GRAPH_CONTEXT_D1_SECONDS_PER_QUERY = 0.035
+GRAPH_CONTEXT_D1_TRAINING_SECONDS = 120.0
+
+
+def _graph_context_d1_seconds(module: Any, job: dict[str, Any]) -> float:
+    """Both arms' whole-split feature build, plus the load ceiling, plus training.
+
+    The 600 s load term is doubly a ceiling here: D1 is the first stage in this
+    line to read the embeddings, which is 474 MB this launcher has never timed.
+    """
+    cap = int(job["query_cap"])
+    protocol_queries = int(job["settings"]["expected_queries"])
+    # Over-counts by the test split, which D1 refuses to open. The safe
+    # direction for a gate.
+    queries = protocol_queries if cap <= 0 else min(cap, protocol_queries)
+    return (
+        GRAPH_CONTEXT_LOAD_SECONDS
+        + queries * GRAPH_CONTEXT_D1_SECONDS_PER_QUERY
+        + GRAPH_CONTEXT_D1_TRAINING_SECONDS
+    )
+
 
 def _graph_context_d0b_seconds(module: Any, job: dict[str, Any]) -> float:
     """Whole-split feature build, plus the load ceiling, plus linear training.
@@ -326,6 +356,8 @@ def measured_units(
                 seconds=(
                     _graph_context_d0b_seconds(module, job)
                     if job["stage"] == "stage_d0b"
+                    else _graph_context_d1_seconds(module, job)
+                    if job["stage"] == "stage_d1"
                     else GRAPH_CONTEXT_LOAD_SECONDS
                     + int(job["query_cap"])
                     * len(job.get("arms") or module.CONFIG["arms"])
@@ -365,7 +397,12 @@ def gate_launch(package: str, module: Any, jobs: list[dict[str, Any]]) -> dict[s
     shape = module.MODAL_CONFIG
     try:
         rate = container_rate_usd_per_hour(
-            gpu=shape.get("gpu"),
+            # The shape the module *resolved*, not the raw config key. A launcher
+            # that serves both CPU and GPU stages from one entrypoint decides its
+            # accelerator at import, the same way it decides its timeout, and
+            # pricing every stage as a GPU stage would over-report a CPU job's
+            # spend by threefold and make its declaration look breached.
+            gpu=getattr(module, "GPU", shape.get("gpu")),
             cpu_cores=shape.get("cpu", 0),
             memory_mb=shape.get("memory_mb", 0),
         )

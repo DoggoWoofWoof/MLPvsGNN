@@ -100,6 +100,14 @@ TIMEOUT_SECONDS = int(
     MODAL_CONFIG.get("stage_timeout_seconds", {}).get(STAGE, MODAL_CONFIG["timeout_seconds"])
 )
 
+#: The accelerator, per stage, for the same reason and by the same mechanism.
+#: B, C, D0 and D0b measure structure or fit twenty parameters and get ``None``;
+#: D1 scores from 1536-dimensional embeddings through the frozen QLS-v1 ranker
+#: and gets the shape every other trained package in this project uses. Reading
+#: it here rather than in a second Modal function keeps one entrypoint, which is
+#: what the spawn registry addresses.
+GPU = MODAL_CONFIG["gpu"] if STAGE in set(MODAL_CONFIG.get("gpu_stages", ())) else None
+
 
 def _stage_key(stage: str) -> str:
     """`stage_b` -> `B`, `stage_d0` -> `D0`. The config keys, not a character index."""
@@ -152,6 +160,11 @@ def _jobs(
                 "arms": CONFIG["stages"].get(_stage_key(stage), {}).get("arms"),
                 "query_cap": int(query_cap),
                 "baseline": confirmation["baseline"],
+                # D1 runs the frozen QLS-v1 ranker, so its hyperparameters come
+                # from the sealed confirmation that fixed them rather than from
+                # this launcher. Carried whole: a subset copied here would be a
+                # second place for them to drift.
+                "training": confirmation["config"],
                 "fingerprint": confirmation["data_fingerprint_sha256"],
                 "data_remote": confirmation["config"]["data"],
             }
@@ -196,6 +209,57 @@ def _d0b_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     )
 
 
+def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
+
+    Every training value here comes from the sealed confirmation config rather
+    than from this file. D1 exists to move one thing -- the node space the
+    feature kernel runs on -- and a hyperparameter typed twice is a
+    hyperparameter that can drift once.
+    """
+    settings = job["settings"]
+    stage = CONFIG["stages"]["D1"]
+    _static = CONFIG["stages"]["D0B"]["static_features"]
+    training = job["training"]
+    output_root = (
+        PurePosixPath(STORAGE_ROOT)
+        / "outputs"
+        / "graph_context_pilot"
+        / job["dataset"]
+        / job["fingerprint"][:16]
+    )
+    return argparse.Namespace(
+        data=Path(job["data_remote"]),
+        feature_cache=Path(job["feature_remote"]),
+        dataset=job["dataset"],
+        expected_queries=int(settings["expected_queries"]),
+        baseline=job["baseline"],
+        candidate_contract_compatibility=settings.get("candidate_contract_compatibility"),
+        data_fingerprint_sha256=job["fingerprint"],
+        splits=["train", "validation"],
+        holdout_fraction=0.1,
+        selected_gnn=job["baseline"]["selected_gnn"]["model"],
+        epochs=int(training["epochs"]),
+        batch_size=int(training["batch_size"]),
+        learning_rate=float(training["learning_rate"]),
+        weight_decay=float(training["weight_decay"]),
+        hidden_dim=int(training["hidden_dim"]),
+        projection_dim=int(training["projection_dim"]),
+        layers=int(training["layers"]),
+        dropout=float(training["dropout"]),
+        temperature=float(training["temperature"]),
+        ks=[1, 5, 20],
+        damping=0.85,
+        ppr_iterations=8,
+        static_pagerank_damping=float(_static["pagerank_damping"]),
+        static_pagerank_iterations=int(_static["pagerank_iterations"]),
+        static_clustering_max_wedges=int(_static["clustering_max_wedges_per_node"]),
+        seed=int(stage["seed"]),
+        device=None,
+        output=Path(output_root) / "stage_d1.json",
+    )
+
+
 def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
     settings = job["settings"]
     parameters = CONFIG["qls_v1_parameters"]
@@ -229,6 +293,7 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
     timeout=TIMEOUT_SECONDS,
     cpu=MODAL_CONFIG["cpu"],
     memory=MODAL_CONFIG["memory_mb"],
+    gpu=GPU,
 )
 def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
     """Stages B, C, D0 and D0b through one function.
@@ -246,6 +311,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d0b import run
 
         args = _d0b_runner_args(job)
+    elif job["stage"] == "stage_d1":
+        from scripts.run_graph_context_d1 import run
+
+        args = _d1_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run

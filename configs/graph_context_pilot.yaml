@@ -374,7 +374,30 @@ stages:
       No D0 conclusion rests on the sign of one.
 
   D0B:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D0B_RESULTS.md
+    outcome: >-
+      bridge_support KILLED. Added to an arm that already holds the ten frozen
+      local columns over TARGET_H1, it moves overall validation R@1 by +0.53
+      points and R@20 by -0.10, and changes R@5 and R@20 by exactly zero on the
+      isolated stratum it was built for. The D0 univariate AUC of 0.9513 does not
+      survive as incremental ranking value. Section 5's separate later QLS-v2
+      probe for this feature is therefore withdrawn rather than deferred: D0b was
+      that probe.
+    secondary_outcome: >-
+      CAND vs TARGET_H1 is null overall (validation R@5 67.82 vs 67.83) and
+      strongly stratified: isolated +3.06 R@1 and +4.44 MRR on 834 of 3,000
+      queries, low_degree -2.50 R@1. This is a prior for D1, not a measurement of
+      QLS-v1.
+    equivalence: >-
+      The CAND arm reproduces A3 seed 0 -- identical validation R@5 and 19
+      weights agreeing to 3.53e-05 -- through a static block rebuilt from
+      graph.pt rather than the sealed cache, which corroborates the rebuild and
+      candidate-readout normalisation at once.
+    actual_cost:
+      elapsed_seconds: 412.1
+      container_usd: 0.073
+      cost_ceiling_usd: 0.70
     runner: scripts/run_graph_context_d0b.py
     dataset: 2wiki_clean
     what: >-
@@ -441,31 +464,101 @@ stages:
   D1:
     status: DECLARED
     declaration: docs/COMPUTE_LEDGER.md
+    runner: scripts/run_graph_context_d1.py
     dataset: 2wiki_clean
     arms: [CAND, TARGET_H1]
     seeds: 1
+    seed: 0
+    model: sa_mlp
     what: >-
       First effectiveness pilot: 2wiki only, CAND vs TARGET_H1, one seed, same
       frozen ranker architecture and feature schema in both arms, bit-identical
       Cq, train for fitting and validation for reporting. The test split is not
       read and the runner refuses it.
     metrics: [recall_at_1, recall_at_5, recall_at_20, mrr]
+    normalisation: candidate_readout
+    scoring_domain: Cq
+    normalisation_domain: Cq
+    bridge_feature: >-
+      Not used. D1 is a context-only comparison; adding a schema change to a
+      context change would leave a positive result unattributable to either.
+    epoch_selection: >-
+      A deterministic tail of the training split, never validation. The frozen
+      _fit selects a checkpoint on whatever it is handed and the frozen protocol
+      then reports on test; D1 has no test split, so the reporting split is read
+      exactly once per arm and the selection set is carved out of train.
+    prerequisite:
+      what: >-
+        The active workspace holds this dataset topology-only. QLS-v1 scores from
+        node and query embeddings, so D1 cannot run until they are replicated.
+        Every graph-context stage before D1 opened the dataset with
+        require_embeddings=False, which is why nothing caught this earlier.
+      files:
+        - {path: nodes.npy, megabytes: 385.9}
+        - {path: queries_all.npy, megabytes: 87.9}
+      required_megabytes: 473.8
+      optional:
+        path: derived/fixed_structural_features_v1/
+        megabytes: 104.7
+        buys: >-
+          The sealed-cache alignment check that D0b had to skip. Without it the
+          rebuilt static block is corroborated only by CAND reproducing A3's
+          frozen validation R@5, which is agreement rather than identity.
+      source_workspace: deepalimohapatra1973
+      target_workspace: pilgnnteam
+      is_a_workspace_migration: false
+      status: NOT_YET_EXECUTED
     projected_cost:
-      feature_build_cpu_hours: 0.06
-      gpu_hours_ceiling: 1.0
-      cost_ceiling_usd: 2.29
-      wall_time_ceiling_minutes: 40
-    declared_confound: >-
-      Six of the ten frozen QLS-v1 descriptor columns are normalised by a
-      per-query maximum over the local node space, and that space is what
-      differs between the arms, so a positive result cannot on its own be
-      attributed to restored structure rather than to a moved normaliser.
-      Holding the schema fixed is still the right control -- the normaliser is
-      part of the frozen system. Columns 0-3 are the unnormalised one-hot
-      seed-distance bucket and do separate these two arms (an isolated
-      candidate sits at >=3 under CAND and can sit at 1 or 2 under TARGET_H1),
-      so they are the confound-free channel and are reported per arm beside the
-      metrics.
+      basis: >-
+        Measured, not modelled. Per-query context latency and the static rebuild
+        come from the completed D0b run on this exact dataset and image; the
+        training term is the frozen sa_mlp confirmation's measured 21.4 s/seed
+        on 2wiki.
+      feature_build_seconds: 350
+      static_rebuild_seconds: 3
+      training_seconds: 50
+      scoring_seconds: 20
+      embedding_load_seconds: 90
+      # The ceilings are the launcher gate's own projection rounded up, not the
+      # estimate above: 600 s load + 15,000 x 35 ms + 120 s training = 1,245 s,
+      # which the gate reports as 0.35 container-hours at $1.734/h for A10G with
+      # 8 cores and 32 GB, divided by the standing assumption that useful work is
+      # 40% of billed time -- $1.50. A declaration under what the gate projects
+      # would block its own launch, which is how D0b's first ceiling was wrong.
+      gpu_hours_ceiling: 0.35
+      cost_ceiling_usd: 1.60
+      wall_time_ceiling_minutes: 25
+    resolved_confound:
+      was: >-
+        Six of the ten frozen QLS-v1 descriptor columns are normalised by a
+        per-query maximum over the local node space, and that space is what
+        differs between the arms, so a positive result could not on its own be
+        attributed to restored structure rather than to a moved normaliser.
+      fix: >-
+        Candidate-readout normalisation. The kernel still computes over the
+        arm's context, but the normalising maximum is taken over the scored
+        candidates, so no candidate is rescaled by a node nobody scores. Under
+        CAND the two domains coincide and the arm is bit-identical to the
+        historical one, which is proven rather than asserted in
+        tests/test_candidate_readout.py.
+      residual: >-
+        Column 8 (personalised PageRank) is degree-coupled through its
+        rank[s]/out_degree[s] readout, so no normaliser can make it invariant to
+        the context. Recorded rather than hidden; the remaining five normalised
+        columns are invariant.
+      confound_free_channel: >-
+        Columns 0-3 are the unnormalised one-hot seed-distance bucket and do
+        separate these two arms (an isolated candidate sits at >=3 under CAND and
+        can sit at 1 or 2 under TARGET_H1), so they are reported per arm, over
+        all candidates and over the golds, beside the metrics.
+    what_d0b_already_showed: >-
+      D0b ran this same contrast through a linear ranker rather than QLS-v1 and
+      found it near-flat overall (validation R@5 67.82 vs 67.83) but strongly
+      stratified: on the isolated stratum TARGET_H1 gained +3.06 R@1 and +4.44
+      MRR, while on low_degree it lost -2.51 R@1. D1 is still worth running --
+      a 19-parameter linear map cannot use structure the way a 205k-parameter
+      ranker can, and the stratified split is a hypothesis about QLS-v1, not a
+      measurement of it.
     kill_gate: >-
       If TARGET_H1 <= CAND on validation R@k and MRR: DO NOT SCALE. Record that
       substantial graph structure was removed historically and that restoring it
@@ -538,5 +631,16 @@ modal:
   # Projected at ~1,440 s -- 540 s of feature build at 40 ms per query for both
   # arms, the 600 s load ceiling, and under 300 s of linear training -- so this
   # is roughly fivefold headroom and stays a ceiling rather than an estimate.
+  # The GPU shape D1 runs on. Stages B, C, D0 and D0b request none; the
+  # decorator reads this only for the stages listed in gpu_stages, so a CPU
+  # stage never pays for an accelerator it does not use.
+  gpu: A10G
+  gpu_stages: [stage_d1]
   stage_timeout_seconds:
     stage_d0b: 7200
+    # D1 is projected at ~515 s from measured parts -- 350 s of feature build
+    # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
+    # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and
+    # 20 s of scoring. This is tenfold headroom and stays a ceiling, not an
+    # estimate, because the window is what a restart would redo.
+    stage_d1: 5400
