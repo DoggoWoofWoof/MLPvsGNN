@@ -89,14 +89,26 @@ and 86.6% on squad, and 53.9% and 84.6% on webqsp. On 2wiki almost everything a
 conventional GNN would reach at depth lies outside the scoring set; on webqsp
 and squad rather less than half does.
 
-**Retention is low everywhere, and lowest where the global graph is densest.**
-On the sealed graph the node-pooled median retention is 0.080 (squad), 0.111
-(2wiki), 0.154 (metaqa), 0.200 (musique), 0.250 (webqsp). Squad is the case
-that explains the ordering: its median global degree is 41 against 6–7 for the
-other four, so its induced graph is simultaneously the densest measured (median
-R1 5.31) and the least retentive. Boundary-cut ratios run 0.700 (webqsp) to
-0.904 (metaqa). Retrieval is cutting through neighbourhoods rather than
-selecting graph-coherent regions.
+**Retention is low at the median and spread very wide, so the median alone
+misdescribes it.** On the sealed graph the node-pooled median retention is 0.080
+(squad), 0.111 (2wiki), 0.154 (metaqa), 0.200 (musique), 0.250 (webqsp). Those
+are the numbers a summary would stop at, and they would suggest a uniformly
+graph-starved pool. The distribution says otherwise: p10 is 0.000 on all five —
+the isolated fraction showing through — while p95 runs 0.600 (2wiki), 0.667
+(metaqa), 0.833 (musique), 0.900 (webqsp), 0.977 (squad), and the maximum is
+1.000 everywhere. A large minority of candidates keep most or all of their
+global neighbourhood; another large minority keep none of it. Protocol §6.1
+forbids an adequacy threshold and requires continuous characterisation, and
+this is why: no single cut separates these populations.
+
+Squad is the extreme in both directions, and its global degree explains why.
+Its degree distribution runs 3 / 5 / 41 / 98 / 169 / 258 at p10 / p25 / median
+/ p75 / p90 / p95, against 4 / 5 / 6 / 9 / 13 / 18 for webqsp — a heavy tail
+against a flat one. Squad therefore has the densest induced graph measured
+(median R1 5.31), the lowest median retention (0.080) and the highest p95
+(0.977) at once. Boundary-cut ratios run 0.700 (webqsp) to 0.904 (metaqa).
+Retrieval is cutting through neighbourhoods rather than selecting
+graph-coherent regions, but it is not doing so uniformly across candidates.
 
 **Gold path preservation is high; bridge loss is small but not zero, and
 concentrated on one dataset.** Gold targets stay connected inside the induced
@@ -300,6 +312,31 @@ global reach seen from the other side.
 | webqsp | structural | 0.342 | 0.214 | 2.0 | 0.420 | 0.441 | 0.495 | 0.768 |
 | webqsp | kNN only | 0.390 | 0.333 | 4.0 | 0.379 | 0.381 | 0.430 | 0.606 |
 | webqsp | baseline A | 0.348 | 0.250 | 6.0 | 0.190 | 0.225 | 0.423 | 0.700 |
+
+### Retention and global-degree distributions -- characterised continuously
+
+| dataset | graph | ret p10 | p25 | median | p75 | p90 | p95 | max | deg p10 | p25 | median | p75 | p90 | p95 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | 0.000 | 0.000 | 0.111 | 0.250 | 0.444 | 0.600 | 1.000 | 4.0 | 5.0 | 7.0 | 10.0 | 14.0 | 18.0 |
+| 2wiki_clean | structural | 0.000 | 0.000 | 0.000 | 0.000 | 0.250 | 0.500 | 1.000 | 1.0 | 1.0 | 3.0 | 5.0 | 9.0 | 14.0 |
+| 2wiki_clean | kNN only | 0.000 | 0.000 | 0.111 | 0.333 | 0.667 | 0.857 | 1.000 | 2.0 | 3.0 | 4.0 | 5.0 | 7.0 | 9.0 |
+| 2wiki_clean | baseline A | 0.000 | 0.000 | 0.111 | 0.250 | 0.444 | 0.600 | 1.000 | 4.0 | 5.0 | 7.0 | 10.0 | 14.0 | 18.0 |
+| metaqa | sealed A | 0.000 | 0.000 | 0.154 | 0.333 | 0.500 | 0.667 | 1.000 | 3.0 | 5.0 | 7.0 | 11.0 | 18.0 | 32.0 |
+| metaqa | structural | 0.000 | 0.000 | 0.061 | 0.273 | 0.625 | 1.000 | 1.000 | 1.0 | 1.0 | 4.0 | 7.0 | 13.0 | 28.0 |
+| metaqa | kNN only | 0.000 | 0.000 | 0.000 | 0.500 | 1.000 | 1.000 | 1.000 | 1.0 | 2.0 | 3.0 | 4.0 | 6.0 | 7.0 |
+| metaqa | baseline A | 0.000 | 0.000 | 0.154 | 0.333 | 0.500 | 0.667 | 1.000 | 3.0 | 5.0 | 7.0 | 11.0 | 18.0 | 32.0 |
+| musique_clean | sealed A | 0.000 | 0.045 | 0.200 | 0.429 | 0.680 | 0.833 | 1.000 | 3.0 | 5.0 | 7.0 | 13.0 | 26.0 | 44.0 |
+| musique_clean | structural | 0.000 | 0.000 | 0.000 | 0.200 | 0.500 | 1.000 | 1.000 | 0.0 | 1.0 | 2.0 | 9.0 | 22.0 | 39.0 |
+| musique_clean | kNN only | 0.000 | 0.000 | 0.333 | 0.667 | 1.000 | 1.000 | 1.000 | 2.0 | 3.0 | 4.0 | 5.0 | 7.0 | 8.0 |
+| musique_clean | baseline A | 0.000 | 0.045 | 0.200 | 0.429 | 0.680 | 0.833 | 1.000 | 3.0 | 5.0 | 7.0 | 13.0 | 26.0 | 44.0 |
+| squad_clean | sealed A | 0.000 | 0.019 | 0.080 | 0.333 | 0.667 | 0.977 | 1.000 | 3.0 | 5.0 | 41.0 | 98.0 | 169.0 | 258.0 |
+| squad_clean | structural | 0.000 | 0.000 | 0.034 | 0.125 | 0.368 | 0.579 | 1.000 | 0.0 | 0.0 | 38.0 | 95.0 | 168.0 | 256.0 |
+| squad_clean | kNN only | 0.000 | 0.000 | 0.333 | 0.667 | 1.000 | 1.000 | 1.000 | 0.0 | 2.0 | 3.0 | 4.0 | 6.0 | 7.0 |
+| squad_clean | baseline A | 0.000 | 0.019 | 0.080 | 0.333 | 0.667 | 0.977 | 1.000 | 3.0 | 5.0 | 41.0 | 98.0 | 169.0 | 258.0 |
+| webqsp | sealed A | 0.000 | 0.111 | 0.250 | 0.571 | 0.800 | 0.900 | 1.000 | 4.0 | 5.0 | 6.0 | 9.0 | 13.0 | 18.0 |
+| webqsp | structural | 0.000 | 0.000 | 0.214 | 0.500 | 1.000 | 1.000 | 1.000 | 1.0 | 1.0 | 2.0 | 3.0 | 7.0 | 13.0 |
+| webqsp | kNN only | 0.000 | 0.000 | 0.333 | 0.750 | 1.000 | 1.000 | 1.000 | 2.0 | 3.0 | 4.0 | 5.0 | 7.0 | 9.0 |
+| webqsp | baseline A | 0.000 | 0.111 | 0.250 | 0.571 | 0.800 | 0.900 | 1.000 | 4.0 | 5.0 | 6.0 | 9.0 | 13.0 | 18.0 |
 
 ### Effective receptive field -- the two notions, kept apart
 

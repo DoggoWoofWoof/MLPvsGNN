@@ -34,7 +34,18 @@ def _split(**overrides):
             "node_level_pooled_over_candidates": {
                 "retention_mean": 0.2,
                 "retention_median": 0.1,
+                "retention_p10": 0.0,
+                "retention_p25": 0.0,
+                "retention_p75": 0.25,
+                "retention_p90": 0.444,
+                "retention_p95": 0.6,
+                "retention_max": 1.0,
                 "global_degree_median": 7.0,
+                "global_degree_p10": 4.0,
+                "global_degree_p25": 5.0,
+                "global_degree_p75": 10.0,
+                "global_degree_p90": 14.0,
+                "global_degree_p95": 18.0,
             },
             "query_level_mean_across_queries": {
                 "retention_zero_fraction": 0.25,
@@ -306,6 +317,57 @@ def test_a_metric_the_audit_did_not_record_prints_as_a_dash():
     rows = _table(_render(_audit(graphs=graphs)), "Candidate-induced connectivity")
     assert "| -- |" in rows[2]
     assert "0.000" not in rows[2]
+
+
+# ---------------------------------------------------------------------------
+# Continuous characterisation
+# ---------------------------------------------------------------------------
+
+
+def test_the_distribution_table_carries_the_tails_not_just_the_middle():
+    # Protocol 6.1 forbids an adequacy threshold and requires the quantities to
+    # be characterised continuously. p10 is 0.000 and p95 is far from it on
+    # every real dataset, so a table of means and medians would misdescribe the
+    # shape as uniformly low.
+    rows = _table(_render(_audit()), "Retention and global-degree distributions")
+    header, body = rows[0], rows[2]
+    for column in ("ret p10", "p90", "p95", "max", "deg p10"):
+        assert column in header
+    cells = [c.strip() for c in body.split("|")]
+    assert "0.444" in cells and "0.600" in cells and "1.000" in cells
+    assert "18.0" in cells  # the global-degree tail, on its own scale
+
+
+def test_retention_and_degree_keep_their_own_scales():
+    # Retention is a fraction and degree is a count. Formatting degree to three
+    # decimal places would imply a precision the count does not have, and
+    # formatting retention to one would collapse 0.111 and 0.154.
+    body = _table(_render(_audit()), "Retention and global-degree distributions")[2]
+    cells = [c.strip() for c in body.split("|")]
+    assert "0.100" in cells  # retention median, 3dp
+    assert "7.0" in cells  # degree median, 1dp
+    assert "7.000" not in cells
+
+
+def test_a_distribution_the_audit_lacks_prints_dashes():
+    graphs = {
+        "dataset_default": {
+            "splits": {
+                "validation": _split(
+                    retention={
+                        "node_level_pooled_over_candidates": {"retention_median": 0.1},
+                        "query_level_mean_across_queries": {},
+                    }
+                )
+            }
+        }
+    }
+    body = _table(
+        _render(_audit(graphs=graphs)), "Retention and global-degree distributions"
+    )[2]
+    cells = [c.strip() for c in body.split("|")]
+    assert cells.count("--") == 12
+    assert "0.100" in cells
 
 
 # ---------------------------------------------------------------------------

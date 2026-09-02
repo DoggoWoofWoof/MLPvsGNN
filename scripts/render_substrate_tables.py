@@ -104,6 +104,30 @@ def retention(sp: dict) -> list[str]:
     ]
 
 
+def retention_distribution(sp: dict) -> list[str]:
+    """The full retention and global-degree distributions, not just the middle.
+
+    Protocol 6.1 forbids an adequacy threshold and requires the quantities to be
+    characterised continuously. A mean and a median cannot do that here: p10 is
+    zero on every dataset measured while p95 runs past 0.9 on some, so the
+    central tendency alone reads as "uniformly low" when the distribution is
+    anything but.
+    """
+
+    node = sp["retention"]["node_level_pooled_over_candidates"]
+    keys = ("p10", "p25", "median", "p75", "p90", "p95")
+
+    def at(prefix: str, key: str) -> str:
+        field = prefix + ("_median" if key == "median" else "_" + key)
+        return fmt(node.get(field), 3 if prefix == "retention" else 1)
+
+    return (
+        [at("retention", key) for key in keys]
+        + [fmt(node.get("retention_max"))]
+        + [at("global_degree", key) for key in keys]
+    )
+
+
 def receptive_field(sp: dict) -> list[str]:
     field = sp["receptive_field"]
     sym, flow = field["symmetrised"], field["message_flow"]
@@ -327,6 +351,12 @@ def render(summary: dict, split: str) -> str:
              "median global degree", "ret = 0 (query-mean)", "ret < 10%",
              "ret < 25%", "boundary cut"],
             rows_for(audits, split, retention),
+        ),
+        table(
+            "Retention and global-degree distributions -- characterised continuously",
+            ["dataset", "graph", "ret p10", "p25", "median", "p75", "p90", "p95",
+             "max", "deg p10", "p25", "median", "p75", "p90", "p95"],
+            rows_for(audits, split, retention_distribution),
         ),
         table(
             "Effective receptive field -- the two notions, kept apart",
