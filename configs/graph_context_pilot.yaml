@@ -697,7 +697,8 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D3:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D3_RESULTS.md
     evidence_class: CONFIRMATORY within its own narrow question
     runner: scripts/run_graph_context_d3.py
     dataset: 2wiki_clean
@@ -786,6 +787,49 @@ stages:
       cost_ceiling_usd: 0.90
       wall_time_ceiling_minutes: 12
       expected_actual_usd: 0.30
+    outcome: >-
+      SEED IDENTITY DOMINATES. Ladder on 2Wiki validation, seed 0, R@5: ZERO_LOCAL
+      47.07, SEED_ID_ONLY 65.27, DISTANCE_ONLY 66.76, FULL_LOCAL 67.88. Increments
+      delta_seed +18.20, delta_distance +1.49, delta_remaining_structure +1.12, which
+      telescope to D2's +20.82 exactly. Seed identity is 87.4% of the R@5 gap, 67.0%
+      of R@20 and 59.5% of FullCov@20.
+    one_bit_beats_the_block: >-
+      SEED_ID_ONLY beats FULL_LOCAL on R@1 (30.15 vs 29.03) and MRR (80.73 vs 79.28)
+      and reaches 96.1% of its R@5 from a single binary column. The other nine
+      columns are a net loss of 1.12 R@1 and 1.45 MRR against the bare indicator.
+    distance_geometry: >-
+      The one structural increment with real value, and it is entirely depth: +5.13
+      R@20 and +8.77 FullCov@20 against -0.52 R@1 and -0.65 MRR. Its stratified shape
+      is the mirror image of delta_seed -- worth +1.02 R@20 on isolated and +9.60 on
+      ordinary -- because an isolated candidate has no geometry to read.
+    remaining_structure_refused: >-
+      seed_connections, paths_length_1/2/3, personalized_pagerank and
+      common_out_neighbors are worth +1.12 R@5, +0.17 R@20, +0.40 FullCov@20 and are
+      NEGATIVE on R@1 and MRR. Interpretation C, "remaining structure has large
+      value", is REFUSED. Interpretation D also holds: seed identity plus distance
+      recovers 94.6% of the R@5 gap, 99.0% of R@20 and 98.2% of FullCov@20.
+    seed_identity_proof: >-
+      distance_0 verified elementwise identical to the historical _seed_indicator on
+      4,851,276 real candidate rows, 0 mismatches, 105,675 seed rows; the distance
+      group is a complete one-hot on every row. Asserted inside the run, not assumed.
+    reuse: >-
+      ZERO_LOCAL and FULL_LOCAL were not retrained. All 18 guarded conditions matched
+      D2. Two new runs only.
+    supersedes_the_d2_inference: >-
+      The D2 write-up sized this split by cross-stage inference at ~18.8 / ~2.57. D3
+      measures +18.20 / +2.61 within one stage. The inference was close but is no
+      longer what the conclusion rests on.
+    convergence_caveat: >-
+      Every arm runs the frozen three-epoch QLS-v1 budget and every arm is still
+      descending at the boundary. Deliberate: D3 decomposes D2 at D2's operating
+      point and no arm may be given more epochs than another. Not a converged claim.
+    actual_cost:
+      new_runs: 2
+      accounted_seconds: 90.4
+      note: >-
+        51.0 s shared feature build, 2.0 s static, 18.9 s + 17.8 s training, 0.7 s
+        inference. Container total not captured by the spawn path; wall clock under
+        ten minutes, so under $0.29 at $1.734/h against $0.90 authorised.
     does_not_authorise:
       [second dataset, second seed, GNN, R0-R5 sweep, LODO, E2, TARGET_H1,
        PATH, BRIDGE, SEED_H2, graph-context gating, more epochs for any one arm]
