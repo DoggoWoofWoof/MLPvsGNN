@@ -138,25 +138,34 @@ rebuilds the same cache, because that is where E2 resumes.
 Non-binding, and it found two separate things. Recorded here in full because a
 gate that only reports its verdict is a gate nobody can check.
 
-**The arrays are stable where it matters, and one ulp apart where it does not.**
-On `webqsp/degree_rewire/0.10`, `packed_topology_v1` came back bit-identical:
-`edge_index` (2 x 3,666,732 int32), `edge_ptr` (1,579 int64) and
-`query_position` (1,578 int64) all exactly equal. The perturbation generator is
-seeded and order-stable. `fixed_structural_features_v1` differed slightly:
-`local.npy` (float16, 541,514 x 10) in 111 of 5.4M elements with a maximum
-absolute difference of 0.00048828125, and `static.npy` (float32, 781,485 x 7) in
-639,808 elements with a maximum of 1.1920928955078125e-07. Both maxima are
-exactly one ulp at their dtype -- the signature of a different floating-point
-reduction order, here Windows local against a Linux container. This is why the
-local run cannot close the gate in either direction: the environment E2 resumes
-in is a Linux container, and so was the environment the original cells were
-built in.
+**The perturbation regenerates exactly. All nine cells, both datasets, all
+three axes, both rate extremes.** `packed_topology_v1` came back bit-identical
+every time -- on `webqsp/degree_rewire/0.10` that is `edge_index`
+(2 x 3,666,732 int32), `edge_ptr` (1,579 int64) and `query_position`
+(1,578 int64), all exactly equal -- and its cache `contract_sha256` matched too.
+The generator is seeded and order-stable, and its cache contract does not bind
+anything environmental.
 
-**All three contract hashes differed, and the cause is in the hash itself.**
+**The structural features differ by exactly one ulp.** `local.npy` (float16)
+differed in 92-501 of 5.4M elements depending on the cell, always with a maximum
+absolute difference of 0.00048828125; `static.npy` (float32) differed in 54,135
+elements on 2wiki_clean and 639,808 on webqsp, with maxima of
+1.7881393432617188e-07 and 1.1920928955078125e-07. Every one of those maxima is
+exactly one ulp at its dtype -- the signature of a different floating-point
+reduction order, here Windows local against a Linux container. This is why the
+local run cannot close the gate in either direction: E2 resumes in a Linux
+container, and the original cells were built in one too.
+
+**Two contract hashes differ, and the second is a consequence of the first.**
+Not three: the perturbation *cache* contract is stable, as above. What differs
+is the intervention record in `perturbation.json`.
 `perturb_packed_topologies` puts `build_seconds` -- a wall-clock measurement --
-inside the dict it hashes into `contract_sha256`. Two correct runs of the same
-computation therefore always produce different contracts, and the difference
-propagates into `feature_fingerprint` and the structural-feature contract.
+inside the dict it hashes into that `contract_sha256`, so two correct runs of the
+same computation always produce different intervention contracts. The attribution
+diagnostic reports `semantic_metadata_differences: {}` on all nine cells: kind,
+rate, seed and every recorded edge count are identical, and the sole differing
+key is the hash itself. That hash then feeds `feature_fingerprint`, which is why
+the structural-feature contract differs as well.
 
 That defect is *not* fixed here. Changing what the hash covers changes it for
 every future build and interacts with cells that are already frozen, so it is a
