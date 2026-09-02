@@ -193,6 +193,58 @@ def _compare_perturbation(reference_root: Path, regenerated_root: Path) -> dict[
         "regenerated_contract_sha256": b.get("contract_sha256"),
         "differing_keys": differing,
         "all_equal": not differing,
+        "contract_attribution": attribute_contract_difference(a, b),
+    }
+
+
+def attribute_contract_difference(
+    reference: dict[str, Any], regenerated: dict[str, Any]
+) -> dict[str, Any]:
+    """Say whether a differing perturbation contract is explained by build time.
+
+    ``perturb_packed_topologies`` hashes its whole metadata dict, and that dict
+    carries ``build_seconds``. So the perturbation ``contract_sha256`` cannot
+    reproduce across two builds of the identical computation on the identical
+    machine: it binds a wall-clock measurement along with the inputs. Every
+    downstream contract inherits the problem, because the feature fingerprint is
+    built from this hash.
+
+    This is a diagnostic, not a verdict. The pre-registered rule still compares
+    ``contract_sha256`` and still reports a difference; this only records whether
+    the difference survives once the two records are given the same build time,
+    so a reader can tell "the cache is different" from "the hash bound a clock".
+    """
+
+    semantic_keys = sorted(
+        key
+        for key in set(reference) | set(regenerated)
+        if key not in NON_SEMANTIC_METADATA_KEYS and key != "contract_sha256"
+    )
+    semantic_differences = {
+        key: {"reference": reference.get(key), "regenerated": regenerated.get(key)}
+        for key in semantic_keys
+        if reference.get(key) != regenerated.get(key)
+    }
+    timing_present = sorted(
+        key
+        for key in NON_SEMANTIC_METADATA_KEYS
+        if key in reference or key in regenerated
+    )
+    timing_differs = any(reference.get(key) != regenerated.get(key) for key in timing_present)
+    return {
+        "hash_covers_a_timing_key": bool(timing_present),
+        "timing_keys_in_the_hashed_metadata": timing_present,
+        "timing_keys_differ": timing_differs,
+        "semantic_metadata_differences": semantic_differences,
+        "explained_by_build_time": bool(timing_present)
+        and timing_differs
+        and not semantic_differences,
+        "note": (
+            "perturb_packed_topologies hashes its metadata dict, which contains "
+            "build_seconds, so this contract binds a wall-clock measurement. When "
+            "explained_by_build_time is true the two caches differ in no recorded "
+            "input, only in how long they took to build."
+        ),
     }
 
 

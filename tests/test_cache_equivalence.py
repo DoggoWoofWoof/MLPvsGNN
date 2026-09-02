@@ -341,3 +341,66 @@ def test_the_local_cli_asks_for_the_same_contract_as_the_container(tmp_path):
         "preprocessing",
     }
     assert args.feature_config != screen
+
+
+# ---------------------------------------------------------------------------
+# The perturbation contract binds a clock.
+#
+# perturb_packed_topologies hashes its whole metadata dict, and that dict holds
+# build_seconds. So contract_sha256 cannot reproduce across two builds of the
+# identical computation on the identical machine. Found by running the gate: the
+# topology arrays were bit-identical while the contract differed.
+#
+# The verdict does not change -- the pre-registered rule compares
+# contract_sha256 and still reports the difference. What is added is the ability
+# to tell "the cache is different" from "the hash bound a clock".
+# ---------------------------------------------------------------------------
+
+
+def test_the_frozen_perturbation_contract_hashes_a_wall_clock_measurement():
+    """Pins the defect. If this ever fails, the hash inputs changed."""
+
+    import inspect
+
+    from mp_retrieval import local_topology_perturbations as ltp
+
+    source = inspect.getsource(ltp.perturb_packed_topologies)
+    body = source.split('"build_seconds"')[-1]
+    assert '"build_seconds": elapsed' in source
+    assert "json.dumps(metadata, sort_keys=True)" in body, (
+        "build_seconds is no longer inside the hashed metadata dict; the "
+        "attribution diagnostic and its documentation need revisiting"
+    )
+
+
+def test_a_contract_difference_from_build_time_alone_is_attributed(tmp_path):
+    reference = {"kind": "degree_rewire", "seed": 31415, "build_seconds": 1.5, "contract_sha256": "a"}
+    regenerated = {"kind": "degree_rewire", "seed": 31415, "build_seconds": 92.0, "contract_sha256": "b"}
+    attribution = eq.attribute_contract_difference(reference, regenerated)
+    assert attribution["explained_by_build_time"] is True
+    assert attribution["semantic_metadata_differences"] == {}
+    assert "build_seconds" in attribution["timing_keys_in_the_hashed_metadata"]
+
+
+def test_a_real_input_difference_is_not_attributed_to_build_time(tmp_path):
+    """The escape hatch must not swallow a cache that really is different."""
+
+    reference = {"kind": "degree_rewire", "seed": 31415, "build_seconds": 1.5}
+    regenerated = {"kind": "degree_rewire", "seed": 99999, "build_seconds": 92.0}
+    attribution = eq.attribute_contract_difference(reference, regenerated)
+    assert attribution["explained_by_build_time"] is False
+    assert attribution["semantic_metadata_differences"]["seed"] == {
+        "reference": 31415,
+        "regenerated": 99999,
+    }
+
+
+def test_attribution_does_not_change_the_verdict(tmp_path):
+    """A differing contract is still not equivalence, whatever explains it."""
+
+    build_cell(tmp_path / "reference", contract="one")
+    build_cell(tmp_path / "regenerated", contract="two")
+    result = eq.compare_cell(tmp_path / "reference", tmp_path / "regenerated")
+    assert result["equivalent"] is False
+    assert result["perturbation_contract"]["contract_sha256_equal"] is False
+    assert "contract_attribution" in result["perturbation_contract"]
