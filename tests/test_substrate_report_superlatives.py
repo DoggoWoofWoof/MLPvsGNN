@@ -290,3 +290,97 @@ def test_every_scope_phrase_in_the_prose_is_registered():
         "registry, so nothing checks what their count refers to:\n  - "
         + "\n  - ".join(missed)
     )
+
+
+# ---------------------------------------------------------------------------
+# Per-dataset enumerations
+# ---------------------------------------------------------------------------
+
+# A figure tagged with the dataset it belongs to, as the prose writes them:
+# short names, sometimes with a unit between the number and the parenthesis.
+TAGGED = re.compile(
+    r"([\d.,]+)\s*(?:pp|x|%)?\s*"
+    r"\((2wiki|musique|squad|webqsp|metaqa|hotpotqa)(?:_clean)?\)"
+)
+
+# Sentences that state a span rather than list every dataset. Two names in a
+# `X (a) to Y (b)` clause are the endpoints, not an enumeration missing four
+# entries, and demanding completeness of them would be wrong.
+RANGE_SENTENCES = (
+    r"One\s+hop\s+from\s+the\s+retrieval\s+seeds\s+grows\s+the\s+union",
+)
+
+ENUMERATION_MINIMUM = 3
+
+
+def _short(dataset: str) -> str:
+    """The prose drops the `_clean` suffix; the audit keys keep it."""
+    return dataset[:-len("_clean")] if dataset.endswith("_clean") else dataset
+
+
+def _sentences() -> list[str]:
+    text = " ".join(_prose().split())
+    return re.split(r"(?<=[a-z0-9\)\]\*`])\.\s+(?=[A-Z`\*\-])", text)
+
+
+def test_every_per_dataset_enumeration_names_every_audited_dataset():
+    """A list of one figure per dataset must not silently keep its old length.
+
+    This is the third way the report can go stale that nothing else catches.
+    The grounding check passes -- every figure in a five-entry list is still a
+    real measurement. The count checks pass -- no count changed. The superlative
+    checks pass as long as the extreme did not move. The sentence simply lists
+    five datasets where six were audited, and reads as though that is all of
+    them.
+
+    Range sentences are exempt by registration, not by heuristic: two names in
+    an `X (a) to Y (b)` clause are endpoints, and a rule that demanded six names
+    from them would fire on correct prose.
+    """
+    audited = {_short(name) for name in audited_datasets()}
+    assert audited, "no completed audit on disk to check enumerations against"
+
+    offenders = []
+    for sentence in _sentences():
+        if any(re.search(pattern, sentence) for pattern in RANGE_SENTENCES):
+            continue
+        named = {tag for _, tag in TAGGED.findall(sentence)}
+        if len(TAGGED.findall(sentence)) < ENUMERATION_MINIMUM:
+            continue
+        missing = audited - named
+        if missing:
+            offenders.append(f"missing {sorted(missing)} from: {sentence[:110]}")
+
+    assert not offenders, (
+        f"{len(offenders)} per-dataset enumeration(s) do not name every audited "
+        "dataset, so they read as complete lists while omitting one:\n  - "
+        + "\n  - ".join(offenders)
+    )
+
+
+HOPWISE_RANGES = (
+    (1, "1.10", "2wiki_clean", "1.83", "squad_clean"),
+    (2, "6.48", "musique_clean", "110.59", "2wiki_clean"),
+    (3, "23.72", "musique_clean", "750.91", "webqsp"),
+)
+
+
+@pytest.mark.parametrize("hop,lo_value,lo_dataset,hi_value,hi_dataset", HOPWISE_RANGES)
+def test_hopwise_seed_expansion_ranges_name_the_true_extremes(
+    hop, lo_value, lo_dataset, hi_value, hi_dataset
+):
+    """The one registered range sentence still has to be right at both ends.
+
+    Exempting it from the completeness rule cannot mean exempting it from
+    checking, or the exemption becomes the place a wrong claim survives.
+    """
+    values = _values(("expansion_headroom", "symmetric", f"U_seed_{hop}_expansion"))
+    low, high = min(values, key=values.get), max(values, key=values.get)
+    assert low == lo_dataset and f"{values[low]:.2f}" == lo_value, (
+        f"the report opens the {hop}-hop span at {lo_value}x ({_short(lo_dataset)}) "
+        f"but the minimum is {values[low]:.2f}x ({_short(low)})"
+    )
+    assert high == hi_dataset and f"{values[high]:.2f}" == hi_value, (
+        f"the report closes the {hop}-hop span at {hi_value}x ({_short(hi_dataset)}) "
+        f"but the maximum is {values[high]:.2f}x ({_short(high)})"
+    )
