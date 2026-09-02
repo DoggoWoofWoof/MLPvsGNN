@@ -1584,6 +1584,57 @@ E2 resumes from the integrity matrix rather than from a cell number:
 `spawn_modal_jobs.py --integrity-matrix` submits only cells the matrix reports
 as resume or launch and refuses on an INVALID one.
 
+### The staged results tree was behind the volume
+
+The first integrity matrix built after the migration reported COMPLETE 48,
+PARTIAL 10, MISSING 38, and named ten `hotpotqa_clean` cells to resume. All ten
+had in fact finished before the stall. The staging copy of `outputs/` dated from
+when E2 stood at 58 cells; the volume had since reached 74.
+
+Nothing in those counts looks wrong. 48/10/38 is a plausible sweep, and
+`misrooted_hint` cannot see this because the root is not misrooted -- it is
+correct and out of date. Submitting that plan would have retrained sixteen
+finished cells.
+
+Refreshing the `results` slice (1,811 files, 1.7 GB, reads still work on an
+exhausted workspace) brought the tree current, and the matrix then read:
+
+```
+96 conditions: COMPLETE 64  PARTIAL 10  MISSING 22  INVALID 0
+640/960 model-seed units in COMPLETE cells
+```
+
+`matrix --against-audit` now refuses a tree that is behind a live progress
+reading, naming the cells that would be run again. The check is one-directional:
+a tree fetched more recently than its reference passes, because a guard that
+fires on the ordinary case gets bypassed.
+
+### Verification and launch
+
+| slice | files | check | result |
+|---|---:|---|---|
+| phase_minus_1 | 107 | size + sha256 | 107/107 |
+| results | 1,811 | size | 1,811/1,811 |
+| e2_resume | 1,741 | size | 1,721/1,741 |
+
+The twenty e2_resume mismatches are the same staleness in the other direction:
+that manifest describes ten `hotpotqa_clean` cells as they were while partial,
+and the target now holds the larger complete files that replaced them. Every one
+has the target *larger* than the manifest, and all twenty are covered by the
+`results` verification above.
+
+Both packages were then launched on the target:
+
+- `graph-substrate --datasets hotpotqa_clean` -- one job. The partial
+  `substrate.json` on the target is `IN_PROGRESS`, and `completed_audit` reuses
+  an existing file only when it is `GRAPH_SUBSTRATE_AUDIT_COMPLETE` *and* its
+  diagnostic contract matches, so the audit recomputes rather than adopting a
+  quarter-written file.
+- `phase-confirmation` with all six datasets and the integrity matrix -- 96
+  requested, **64 skipped as complete**, 10 resumed, 22 launched.
+
+E1 was never touched. Package F remains unopened. No protocol changed.
+
 ## Repository boundary
 
 The original C-RAG repository remains strictly read-only. This audit read only
