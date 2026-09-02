@@ -370,3 +370,12 @@ def test_the_report_does_not_claim_a_ranking_result(text, prose):
     # The claim is nameable -- it is what the next stage has to earn. What
     # the document must not do is assert it, so the negation is pinned.
     assert 'does **not** support "restoring the graph improves ranking"' in prose
+
+
+def test_the_deflationary_reading_is_addressed_with_its_own_numbers(results, prose):
+    """The gap quoted against the shared zero set must be the measured gap."""
+    stratified = results["2wiki_clean"]["arms"]["TARGET_H1"]["auc_by_prior_induced_degree"]
+    two_hop = stratified["two_hop_seed_support"]["isolated"]["mean"]
+    bridges = stratified["bridge_support"]["isolated"]["mean"]
+    assert f"they score {two_hop:.4f} and {bridges:.4f} on that stratum" in prose
+    assert f"A gap of {bridges - two_hop:.4f} between" in prose

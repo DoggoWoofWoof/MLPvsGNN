@@ -235,6 +235,26 @@ Those are exactly the queries where the historical substrate could not have
 ranked the gold candidate by message passing at all, because no message reached
 it.
 
+**It is not a reachable-or-not indicator in disguise.** The obvious deflationary
+reading is that `TARGET_H1` simply makes some isolated candidates reachable, and
+that the binary reachable/unreachable split is the entire signal. It is not, and
+the two columns above rule it out between them.
+
+VERIFIED FROM CODE: an isolated candidate has no seed at distance 1 -- that
+would be a direct seed-to-candidate edge with both endpoints in `Cq`, which
+survives vertex induction and would have given the candidate a neighbour. So all
+of its two-hop seed support arrives through a bridge, and
+`two_hop_seed_support > 0` exactly when `bridge_support > 0`. The two quantities
+vanish on precisely the same candidates and differ only in how they order the
+rest. Pinned by
+`tests/test_graph_context_d0.py::test_the_two_restored_supports_vanish_on_exactly_the_same_isolated_candidates`.
+
+On 2wiki they score 0.5356 and 0.9513 on that stratum. A gap of 0.4157 between
+two quantities with an identical zero set cannot be produced by the zero set. It
+is produced by what they count above it: distinct seeds saturates once the graph
+is complete, distinct bridges does not. The restored information is doing work
+beyond making the candidate visible.
+
 ## 8. What `seed_distance` is measuring on that stratum, and why it is not this
 
 `seed_distance` is the one column that is *not* pinned at 0.5000 under `CAND` on

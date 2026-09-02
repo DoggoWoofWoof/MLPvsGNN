@@ -356,3 +356,29 @@ def test_seed_distance_is_the_one_isolated_column_that_is_not_pinned_at_one_half
     assert set(np.unique(distance[isolated]).tolist()) <= {0.0, float(SEED_DISTANCE_HOPS + 1)}
     assert np.all(distance[isolated & is_seed] == 0)
     assert np.all(distance[isolated & ~is_seed] == SEED_DISTANCE_HOPS + 1)
+
+
+@pytest.mark.parametrize("trial", range(40))
+def test_the_two_restored_supports_vanish_on_exactly_the_same_isolated_candidates(trial):
+    """So their AUC gap cannot be a reachable-or-not indicator in disguise.
+
+    An isolated candidate has no seed at distance 1: that would be a direct
+    seed-to-candidate edge, both endpoints in `Cq`, which survives vertex
+    induction and would have given it a neighbour. So all of its two-hop seed
+    support arrives through a bridge, and `two_hop_seed_support > 0` exactly
+    when `bridge_support > 0`. The two quantities share a zero set and differ
+    only in how they order the candidates above it.
+    """
+    rowptr, col, operators, pool, seeds, size = scenario(trial)
+    isolated = isolated_mask(rowptr, col, pool, size)
+    if not isolated.any():
+        pytest.skip("no isolated candidate in this scenario")
+    support = seed_support(
+        rowptr, col,
+        context_nodes("TARGET_H1", operators=operators, pool=pool, seeds=seeds),
+        pool, seeds, size, edge_source=operators.edge_source,
+    )
+    two_hop = support["two_hop_seed_support"][isolated] > 0
+    bridges = support["bridge_support"][isolated] > 0
+    assert np.array_equal(two_hop, bridges)
+    assert not support["distinct_seed_support"][isolated].any()
