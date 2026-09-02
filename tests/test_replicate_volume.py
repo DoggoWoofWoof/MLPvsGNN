@@ -557,3 +557,67 @@ def test_a_genuinely_different_replica_is_still_a_sha_mismatch(tmp_path, monkeyp
     monkeypatch.setattr("builtins.print", lambda *a, **k: captured.append(" ".join(map(str, a))))
     assert replicate_volume.cmd_verify(args) == 1
     assert "SHA256   toy/graph.pt" in "\n".join(captured)
+
+
+# ---------------------------------------------------------------------------
+# Every slice stages into the same directory, so the manifest name is the only
+# thing keeping their records apart.
+#
+# Found in the field: `download --slice results` overwrote the phase_minus_1
+# manifest, because the slice-scoped name existed on the read path only. The
+# record of a verified 4.2 GB replica was destroyed by an unrelated transfer.
+# ---------------------------------------------------------------------------
+
+
+def _download_slice(monkeypatch, staging, which, contents, datasets=None):
+    import argparse
+
+    volume = FakeVolume(contents)
+    monkeypatch.setattr(
+        replicate_volume.modal.Volume, "from_name", staticmethod(lambda *a, **k: volume)
+    )
+    monkeypatch.setattr(
+        replicate_volume, "build_plan", lambda *a, **k: [(p, s) for p, s in contents]
+    )
+    monkeypatch.setattr(
+        replicate_volume,
+        "_fetch_one",
+        lambda vol, stage, path, size, **kw: (
+            path,
+            {"bytes": size, "sha256": f"sha-{path}", "staged": True},
+            False,
+        ),
+    )
+    args = argparse.Namespace(
+        staging=str(staging),
+        slice=which,
+        dataset_filter=datasets,
+        volume="v",
+        workers=1,
+    )
+    assert replicate_volume.cmd_download(args) == 0
+
+
+def test_a_later_slice_does_not_destroy_an_earlier_slices_manifest(tmp_path, monkeypatch):
+    staging = tmp_path / "staging"
+    _download_slice(monkeypatch, staging, "phase_minus_1", [("toy/graph.pt", 10)])
+    _download_slice(monkeypatch, staging, "results", [("outputs/a/result.json", 20)])
+
+    first = replicate_volume._load_manifest(staging, "phase_minus_1")
+    second = replicate_volume._load_manifest(staging, "results")
+    assert first["slice"] == "phase_minus_1"
+    assert list(first["files"]) == ["toy/graph.pt"]
+    assert second["slice"] == "results"
+    assert list(second["files"]) == ["outputs/a/result.json"]
+
+
+def test_a_narrowed_download_writes_its_own_manifest(tmp_path, monkeypatch):
+    """A partial slice must never be loadable as the whole slice."""
+
+    staging = tmp_path / "staging"
+    _download_slice(
+        monkeypatch, staging, "e2_resume", [("toy/graph.pt", 10)], datasets={"toy"}
+    )
+    assert (staging / "replication_manifest_e2_resume__toy.json").is_file()
+    with pytest.raises(SystemExit, match="run `download` first"):
+        replicate_volume._load_manifest(staging, "e2_resume")

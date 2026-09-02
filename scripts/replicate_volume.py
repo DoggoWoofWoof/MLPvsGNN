@@ -429,8 +429,12 @@ def cmd_download(args: argparse.Namespace) -> int:
         "planned_files": len(plan),
         "failed_files": failures,
     }
-    (staging / MANIFEST_NAME).write_text(json.dumps(record, indent=2), encoding="utf-8")
-    print(f"\nmanifest -> {staging / MANIFEST_NAME}")
+    # Slice-scoped, because every slice stages into the same directory. Writing
+    # the unslugged name here let a later download destroy an earlier slice's
+    # manifest -- and that manifest is the only record of what was verified.
+    written = staging / manifest_name(args.slice, args.dataset_filter)
+    written.write_text(json.dumps(record, indent=2), encoding="utf-8")
+    print(f"\nmanifest -> {written}")
     if failures:
         print(f"\n{len(failures)} of {len(plan)} files did not stage; re-run to retry them:")
         for path, error in sorted(failures.items()):
