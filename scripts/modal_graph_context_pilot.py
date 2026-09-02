@@ -249,6 +249,21 @@ def _d0c_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     )
 
 
+def _d2_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D2's arguments: D1's, with one context and one output name.
+
+    Every training value comes from the sealed confirmation config by the same
+    path D1 uses, because the whole stage rests on the two arms training exactly
+    as D1's CAND arm did -- FULL_CAND is meant to reproduce it, and a
+    hyperparameter typed twice is a hyperparameter that can drift once.
+    """
+    args = _d1_runner_args(job)
+    args.holdout_fraction = float(CONFIG["stages"]["D2"]["holdout_fraction"])
+    args.seed = int(CONFIG["stages"]["D2"]["seed"])
+    args.output = Path(args.output).with_name("stage_d2.json")
+    return args
+
+
 def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
 
@@ -359,6 +374,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d1 import run
 
         args = _d1_runner_args(job)
+    elif job["stage"] == "stage_d2":
+        from scripts.run_graph_context_d2 import run
+
+        args = _d2_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run

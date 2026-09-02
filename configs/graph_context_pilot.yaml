@@ -11,6 +11,85 @@ question: >-
   repairs the measured loss without turning a query into a whole-graph
   computation.
 
+frozen_conclusions:
+  # The exact wording the evidence supports, recorded so that later work quotes
+  # this rather than a remembered, wider version of it.
+  d1_result:
+    statement: >-
+      On 2Wiki validation, seed 0, replacing the historical candidate-induced
+      graph with TARGET_H1 while keeping the QLS-v1 architecture, scoring pool,
+      feature schema, optimisation and candidate-readout normalisation fixed
+      produced no meaningful ranking improvement.
+    measured_target_h1_minus_cand_pp:
+      overall: {recall@1: -0.05, recall@5: +0.08, recall@20: -0.03, mrr: +0.09}
+      and: no preregistered degree stratum shows a meaningful effect
+    established:
+      - structural information was genuinely removed by candidate induction
+      - simply restoring TARGET_H1 does not improve QLS-v1 on the strongest
+        initial 2Wiki test
+    must_not_be_broadened_to:
+      - global graph context is useless
+      - structural context is useless
+      - TARGET_H1 can never help QLS-v2
+      - graph starvation was irrelevant
+    why: >-
+      None of those is established. One dataset, one seed, one context
+      definition, one representation.
+
+  connectivity_gating:
+    status: KILLED FOR NOW
+    evidence:
+      - SELECTIVE_SUBSTITUTE < CAND
+      - SELECTIVE_MASK << CAND
+      - BOTH ~= CAND
+      - >-
+        the converged exploratory TARGET_H1 - CAND stratification moves in the
+        opposite direction to the original hypothesis
+    do_not_pursue:
+      - learned gate
+      - hard degree threshold
+      - degree-conditioned restored-context routing
+    do_not_spend_an_experiment_on: nearby thresholds
+    reopen_only_on: materially new evidence
+
+  bridge_support:
+    status: KILLED AT D0b
+    why: >-
+      The strong univariate AUC did not translate into incremental ranking value
+      once the restored-context descriptors were available.
+    do_not_resurrect_because: its mechanism is interpretable
+
+  paused_branches:
+    status: DO NOT RUN WITHOUT NEW EVIDENCE
+    branches:
+      - TARGET_H1 development
+      - TARGET_H2
+      - SEED_H2
+      - PATH
+      - BRIDGE
+      - global-context feature engineering
+      - graph-context gating
+    reopen_only_if: D2 or later QLS-v2 evidence specifically requires it
+
+  topological_completeness_is_not_retrieval_usefulness:
+    status: HYPOTHESIS
+    phase_minus_1_established: >-
+      graph starvation is real; candidate induction cuts 70-90% of boundary
+      edges and destroys large fractions of 2-hop paths
+    d1_adds: the missing graph is not automatically useful ranking information
+    together: >-
+      topological completeness is not the same as retrieval usefulness.
+      Literature-motivated neighbourhood restoration makes the graph more
+      topologically complete, but on the first controlled effectiveness
+      experiment that additional topology provides no ranking benefit. The
+      likely reason is that Cq is itself query-conditioned, so candidate
+      induction is also a semantic filtering operation -- retrieval graphs may
+      differ from generic node-classification and link-prediction settings for
+      that reason. HYPOTHESIS until broader evidence.
+    not_concluded: >-
+      that the historical construction was simply wrong because papers use local
+      neighbourhoods.
+
 working_hypotheses:
   # Recorded before D0c and D1 report, so that neither can be read as having
   # confirmed a frame it was designed under. These are hypotheses. None of them
@@ -617,6 +696,70 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D2:
+    status: DECLARED
+    evidence_class: CONFIRMATORY within its own narrow question
+    runner: scripts/run_graph_context_d2.py
+    dataset: 2wiki_clean
+    audit: docs/QLS_V1_COMPONENT_AUDIT.md
+    question: >-
+      What is the incremental value of QLS-v1's query-local structural feature
+      block under the historical semantically filtered candidate graph?
+    why_it_is_not_a_duplicate: >-
+      The frozen ladder was audited from code before this was filed. seed_only is
+      built with static_dim=0 and local_dim=1 and is fed a single binary retrieval
+      seed indicator, so seed_only -> sa_mlp (+2.58 R@5 on 2Wiki, five seeds)
+      moves the seven static features, the ten query-local features and the seed
+      indicator at once, at two head widths. No other frozen condition is
+      "interactions + static, no local". The linear half is already answered by
+      D0c at no cost; only the nonlinear arm is missing.
+    arms:
+      FULL_CAND: exact QLS-v1 on G[Cq]; reproduces D1's CAND arm as a control
+      NO_QUERY_LOCAL: identical model with the ten query-local columns zeroed
+    ablation:
+      method: zeroing, not removal
+      why: >-
+        Keeps architecture, head width and parameter count identical (213,506 at
+        head 61), removing the capacity, optimiser and parameter-count confounds
+        that the historical seed_only contrast carries. The first-layer weights
+        reading the zeroed columns receive exactly zero gradient; AdamW's
+        decoupled weight decay still shrinks them, which cannot change a score,
+        because a weight multiplying zero contributes zero. Dead but trainable,
+        and recorded as such.
+      parameter_difference: 0
+    context: CAND only. This is not a context experiment; that branch is closed.
+    not_named_retrieval_only: >-
+      The model keeps the seven static graph features, the candidate embeddings,
+      the learned projection and the interaction block. It is named for what it
+      removes.
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    reports: overall plus the same frozen degree strata, which are not refitted
+    projected_cost:
+      basis: >-
+        Measured from D1: 217.8 s and 209.5 s for two arms that each built their
+        own context. D2 builds one context for both arms and CAND is the cheaper
+        one (p95 3.9 ms vs TARGET_H1's 9.6 ms), so it is bounded by D1's own
+        elapsed rather than estimated upward from it.
+      gpu_hours_ceiling: 0.20
+      cost_ceiling_usd: 0.90
+      wall_time_ceiling_minutes: 12
+      expected_actual_usd: 0.10
+    interpretation_fixed_in_advance:
+      D2_A: >-
+        FULL_CAND > NO_QUERY_LOCAL. The useful structural signal is the
+        query-filtered structure already inside G[Cq]. Redirects QLS-v2 to better
+        statistics on G[Cq] -- distinct seed support, seed geometry, path
+        diversity, bounded diffusion, robust normalisation, provenance separation
+        -- rather than expanding global context.
+      D2_B: >-
+        FULL_CAND ~= NO_QUERY_LOCAL. QLS-v1's gains may come primarily from the
+        semantic and retrieval components. In that case do NOT begin the R0-R5
+        structural frontier; first audit where QLS-v1's historical gain comes
+        from.
+    does_not_authorise: [second dataset, second seed, GNN, R0-R5 sweep, LODO, E2]
+
   D1:
     status: COMPLETE
     results: docs/GRAPH_CONTEXT_D0C_D1_RESULTS.md
@@ -846,7 +989,7 @@ modal:
   # decorator reads this only for the stages listed in gpu_stages, so a CPU
   # stage never pays for an accelerator it does not use.
   gpu: A10G
-  gpu_stages: [stage_d1]
+  gpu_stages: [stage_d1, stage_d2]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -854,6 +997,8 @@ modal:
     # four for three. Projected at ~550 s from D0b's measured parts, so this is
     # roughly tenfold headroom and stays a ceiling rather than an estimate.
     stage_d0c: 5400
+    # Bounded by D1's measured 218 s, with the same order of headroom.
+    stage_d2: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and

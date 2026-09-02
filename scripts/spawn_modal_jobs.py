@@ -379,7 +379,9 @@ def measured_units(
                     else _graph_context_d0c_seconds(module, job)
                     if job["stage"] == "stage_d0c"
                     else _graph_context_d1_seconds(module, job)
-                    if job["stage"] == "stage_d1"
+                    # D2 builds one context for both arms where D1 built two, and
+                    # builds the cheaper of the two, so D1's model is a ceiling.
+                    if job["stage"] in {"stage_d1", "stage_d2"}
                     else GRAPH_CONTEXT_LOAD_SECONDS
                     + int(job["query_cap"])
                     * len(job.get("arms") or module.CONFIG["arms"])
@@ -395,7 +397,7 @@ def measured_units(
         # describe a calculation that did not happen -- and a gate report is read
         # later, by someone checking whether the ceiling was set against the
         # right quantity.
-        fitted = {"stage_d0b", "stage_d0c", "stage_d1"}
+        fitted = {"stage_d0b", "stage_d0c", "stage_d1", "stage_d2"}
         if {job["stage"] for job in jobs} <= fitted:
             queries = sorted({int(job["settings"]["expected_queries"]) for job in jobs})
             return units, (
