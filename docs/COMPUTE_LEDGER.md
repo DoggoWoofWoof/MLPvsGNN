@@ -77,3 +77,45 @@ whole argument for the ladder.
 | `result.json` presence read as completion | after reporting 86/96 to the user, twice | Stage B, one cell mid-run |
 | substrate audit could not finish in its ceiling | ~$8 and zero output | Stage C, a 100-query timing pilot |
 | global BFS as 74% of runtime | 3.31 h/family in production | Stage C, the same pilot |
+
+### QLS-v2 P1 -- does the graph basis move the features at all?
+
+Pre-launch declaration, Stages A-C only. Filed 2026-09-02.
+
+```text
+scientific question   Does recomputing QLS-v1's graph features on the bounded
+                      query-local global neighbourhood (H=2 of Cq u seeds)
+                      change them enough to change ranking, versus G[Cq]?
+
+exact hypothesis      Feature values move materially on the multi-hop datasets
+                      (2wiki, hotpotqa, metaqa), where induction destroys
+                      72-86% of hop-2 seed reach, and move little on squad and
+                      webqsp, where it destroys 21-26%. The isolated fraction
+                      (17.5-41.2%) shrinks on every dataset.
+
+datasets / queries    A: synthetic only.  B: 25 real queries, hotpotqa.
+                      C: 300 validation queries x 6 datasets = 1800.
+models / seeds        none -- no training in this pilot. Feature-only.
+number of jobs        A,B local. C: 6 CPU jobs, substrate container shape.
+estimated GPU-hours   0
+estimated CPU-hours   <= 1.0   (1800 q x ~1.2 s/q = 0.6 h, plus startup)
+estimated wall time   <= 25 min, jobs concurrent
+estimated storage     < 50 MB
+estimated cost        <= $1.00 at the $0.634/h substrate shape
+
+stopping rule         Kill if the isolated fraction does not fall, or if
+                      features are unchanged on 2wiki/hotpotqa/metaqa. Either
+                      means the new basis carries no information G[Cq] lacked,
+                      and no training run can recover it.
+
+advancement criterion Advance to D only if features move AND the movement is
+                      concentrated on candidates that are currently isolated or
+                      low-degree -- i.e. on the candidates whose scores a graph
+                      feature could actually change. Movement spread uniformly
+                      over already-well-connected candidates is noise, not
+                      signal, and does not advance.
+```
+
+Constraint carried from the frozen protocol: no GNN anywhere in QLS-v2, no GNN
+teacher, no GNN-derived feature selection. This pilot compares QLS features to
+QLS features.
