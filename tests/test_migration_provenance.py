@@ -338,3 +338,84 @@ def test_the_guard_stays_quiet_once_anything_is_found(tmp_path):
     _plant_cell(staging, mp.expected_cells()[0])
     rows = mp.integrity_matrix(staging)["cells"]
     assert mp.misrooted_hint(staging, rows) is None
+
+
+# ---------------------------------------------------------------------------
+# Input readiness
+# ---------------------------------------------------------------------------
+#
+# All nine cache-gate containers died on a `derived/packed_topology_v1/
+# metadata.json` that had been transferred but landed under a quarantine prefix.
+# A container discovers a missing input after it has mounted everything and the
+# compute is already paid for; forty-eight E2 jobs would have discovered it
+# forty-eight times.
+
+
+def test_the_required_set_covers_everything_the_runner_opens() -> None:
+    required = mp.e2_required_paths(["webqsp"])
+    assert set(required) == {
+        "dataset_roots",
+        "clean_derived_caches",
+        "e1_screen_results",
+        "e1_seed0_checkpoints",
+    }
+    # The embeddings: E2 trains, so unlike Phase -1 it materialises both.
+    roots = required["dataset_roots"]
+    assert any(path.endswith("/nodes.npy") for path in roots)
+    assert any(path.endswith("/queries_all.npy") for path in roots)
+    # The file whose absence killed the gate.
+    assert any(
+        path.endswith("/derived/packed_topology_v1/metadata.json")
+        for path in required["clean_derived_caches"]
+    )
+    # One seed-0 checkpoint per model per cell: 16 cells x 2 models.
+    assert len(required["e1_seed0_checkpoints"]) == 32
+    assert len(required["e1_screen_results"]) == 16
+
+
+def test_optional_root_files_are_not_demanded() -> None:
+    """node_ids.json exists only where node identity is not the numeric suffix,
+    and the source manifest was not written for every freeze. Demanding them
+    reports a healthy root as broken."""
+
+    roots = mp.e2_required_paths(["webqsp"])["dataset_roots"]
+    assert not any(path.endswith("/node_ids.json") for path in roots)
+    assert not any(path.endswith("/_frozen_source_manifest.json") for path in roots)
+
+
+def test_a_complete_root_is_reported_ready() -> None:
+    required = mp.e2_required_paths(["webqsp"])
+    present = {path: 1 for paths in required.values() for path in paths}
+    report = mp.check_inputs(present, ["webqsp"])
+    assert report["ready"] is True
+    assert report["missing_total"] == 0
+
+
+def test_a_missing_input_is_named_not_counted() -> None:
+    required = mp.e2_required_paths(["webqsp"])
+    present = {path: 1 for paths in required.values() for path in paths}
+    victim = required["clean_derived_caches"][0]
+    del present[victim]
+    report = mp.check_inputs(present, ["webqsp"])
+    assert report["ready"] is False
+    assert victim in report["groups"]["clean_derived_caches"]["missing"]
+
+
+def test_a_zero_length_input_is_a_defect_not_a_presence() -> None:
+    """An empty metadata.json is present to a listing and fails at load."""
+
+    required = mp.e2_required_paths(["webqsp"])
+    present = {path: 1 for paths in required.values() for path in paths}
+    victim = required["clean_derived_caches"][0]
+    present[victim] = 0
+    report = mp.check_inputs(present, ["webqsp"])
+    assert report["ready"] is False
+    assert report["empty_total"] == 1
+    assert victim in report["groups"]["clean_derived_caches"]["empty"]
+
+
+def test_narrowing_to_one_dataset_does_not_demand_the_others() -> None:
+    one = mp.e2_required_paths(["webqsp"])
+    both = mp.e2_required_paths(["webqsp", "metaqa"])
+    assert len(both["dataset_roots"]) > len(one["dataset_roots"])
+    assert all("metaqa" not in path for path in one["dataset_roots"])

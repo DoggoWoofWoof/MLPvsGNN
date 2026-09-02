@@ -596,6 +596,111 @@ def e2_resume_required_manifest() -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
+# Input readiness
+# ---------------------------------------------------------------------------
+
+# Files that may legitimately be absent from a dataset root. ``node_ids.json``
+# exists only where node identity is not the numeric suffix, and the source
+# manifest was not written for every freeze; ``load_complete_dataset`` handles
+# both. Treating them as required would report a healthy root as broken.
+OPTIONAL_ROOT_FILES = ("node_ids.json", "_frozen_source_manifest.json")
+
+
+def e2_required_paths(datasets: list[str] | None = None) -> dict[str, list[str]]:
+    """Every concrete file E2 opens before it trains, grouped by why.
+
+    Derived from ``run_phase_confirmation`` rather than from a remembered list:
+    it loads the dataset with embeddings, loads the clean packed topology, loads
+    the clean structural features for the ``feature_mask`` axis, reads the E1
+    seed-0 screen result, and ``torch.load``s the seed-0 checkpoint whose hash
+    that result records.
+    """
+
+    identity = dataset_identity()
+    wanted = set(datasets) if datasets else set(identity)
+    roots: list[str] = []
+    derived: list[str] = []
+    for dataset in sorted(wanted & set(identity)):
+        root = identity[dataset]["data_root"]
+        roots.extend(
+            f"{root}/{name}"
+            for name in replicate_volume.DATASET_ROOT_FILES
+            if name not in OPTIONAL_ROOT_FILES
+        )
+        # metadata.json is the file each loader opens first, and the one whose
+        # absence killed all nine gate jobs.
+        derived.extend(
+            f"{root}/{prefix}/metadata.json"
+            for prefix in replicate_volume.DATASET_DERIVED_PREFIXES
+        )
+
+    screens: list[str] = []
+    checkpoints: list[str] = []
+    for cell in expected_cells():
+        if cell["dataset"] not in wanted:
+            continue
+        screens.append(
+            f"outputs/phase_screen/{cell['dataset']}/{cell['cell_prefix']}/"
+            f"{cell['regime']}/result.json"
+        )
+    for record in screen_checkpoints()["files"]:
+        if record["dataset"] in wanted:
+            checkpoints.append(record["path"])
+
+    return {
+        "dataset_roots": sorted(set(roots)),
+        "clean_derived_caches": sorted(set(derived)),
+        "e1_screen_results": sorted(set(screens)),
+        "e1_seed0_checkpoints": sorted(set(checkpoints)),
+    }
+
+
+def check_inputs(
+    present: dict[str, int], datasets: list[str] | None = None
+) -> dict[str, Any]:
+    """Compare what E2 needs against what a root actually holds.
+
+    ``present`` maps a volume-relative path to its size, so a zero-length file
+    is a defect rather than a presence: an empty ``metadata.json`` fails at load
+    time, after the container has mounted its inputs and the compute is paid
+    for. Checking here is the difference between one refused launch and
+    forty-eight failed ones.
+    """
+
+    required = e2_required_paths(datasets)
+    groups: dict[str, Any] = {}
+    missing_total = 0
+    empty_total = 0
+    for group, paths in required.items():
+        missing = [path for path in paths if path not in present]
+        empty = [path for path in paths if present.get(path) == 0]
+        missing_total += len(missing)
+        empty_total += len(empty)
+        groups[group] = {
+            "required": len(paths),
+            "present": len(paths) - len(missing),
+            "missing": missing[:20],
+            "missing_count": len(missing),
+            "empty": empty[:20],
+        }
+    return {
+        "datasets": sorted(set(datasets)) if datasets else "all",
+        "ready": missing_total == 0 and empty_total == 0,
+        "missing_total": missing_total,
+        "empty_total": empty_total,
+        "groups": groups,
+    }
+
+
+def _local_listing(root: Path) -> dict[str, int]:
+    return {
+        str(path.relative_to(root)).replace("\\", "/"): path.stat().st_size
+        for path in root.rglob("*")
+        if path.is_file()
+    }
+
+
+# ---------------------------------------------------------------------------
 # Commands
 # ---------------------------------------------------------------------------
 
@@ -695,11 +800,69 @@ def cmd_provenance(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_inputs(args: argparse.Namespace) -> int:
+    """Refuse a launch whose inputs are not all there, before it costs anything."""
+
+    datasets = (
+        [name.strip() for name in args.datasets.split(",") if name.strip()]
+        if args.datasets
+        else None
+    )
+    if args.remote:
+        volume = replicate_volume.modal.Volume.from_name(
+            args.volume, create_if_missing=False
+        )
+        present = {
+            path: size for path, size in replicate_volume._walk(volume, "/", strict=True)
+        }
+        where = f"{args.volume} (remote)"
+    else:
+        root = Path(args.results_root) if args.results_root else Path(args.staging)
+        if not root.is_dir():
+            raise SystemExit(f"No such root: {root}")
+        present = _local_listing(root)
+        where = str(root)
+
+    report = check_inputs(present, datasets)
+    report["checked"] = where
+    _write("e2_input_readiness.json", report)
+
+    print(f"\nE2 inputs at {where}")
+    for group, block in report["groups"].items():
+        mark = "ok " if not block["missing_count"] and not block["empty"] else "GAP"
+        print(f"  {mark} {group:24s} {block['present']}/{block['required']}")
+        for path in block["missing"]:
+            print(f"        missing  {path}")
+        for path in block["empty"]:
+            print(f"        empty    {path}")
+        if block["missing_count"] > len(block["missing"]):
+            print(f"        ... and {block['missing_count'] - len(block['missing'])} more")
+    if report["ready"]:
+        print("\nevery declared E2 input is present and non-empty")
+        return 0
+    print(
+        f"\n{report['missing_total']} missing, {report['empty_total']} empty. "
+        "Refusing rather than launching: a container discovers this after its "
+        "inputs are mounted and the compute is already paid for."
+    )
+    return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("command", choices=("manifests", "matrix", "provenance"))
+    parser.add_argument(
+        "command", choices=("manifests", "matrix", "provenance", "inputs")
+    )
+    parser.add_argument(
+        "--datasets", help="inputs: restrict the check to these datasets"
+    )
+    parser.add_argument(
+        "--remote",
+        action="store_true",
+        help="inputs: check the target volume rather than a local root",
+    )
     parser.add_argument(
         "--staging", default=str(REPO_ROOT.parent / "mpr_replication_staging")
     )
@@ -722,6 +885,7 @@ def main() -> int:
         "manifests": cmd_manifests,
         "matrix": cmd_matrix,
         "provenance": cmd_provenance,
+        "inputs": cmd_inputs,
     }
     return handlers[args.command](args)
 
