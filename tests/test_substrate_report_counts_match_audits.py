@@ -16,34 +16,24 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-REPORT = REPO_ROOT / "docs" / "GRAPH_SUBSTRATE_AUDIT_RESULTS.md"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from substrate_report_helpers import (  # noqa: E402
+    REPO_ROOT,
+    number_word as _word,
+    prose as _prose,
+)
+
 SUMMARY = REPO_ROOT / "outputs" / "graph_substrate_audit" / "summary.json"
 
 # The analyzer stores each comparison under this key: the per-statistic
 # difference between the message-flow and symmetrised receptive fields.
 DIVERGENCE_KEY = "message_flow_minus_symmetrised"
-
-_UNITS = (
-    "zero one two three four five six seven eight nine ten eleven twelve "
-    "thirteen fourteen fifteen sixteen seventeen eighteen nineteen"
-).split()
-_TENS = ("", "", "twenty", "thirty", "forty", "fifty",
-         "sixty", "seventy", "eighty", "ninety")
-
-
-def _word(n: int) -> str:
-    """English for a count the prose would spell out. Small range on purpose."""
-    if n < 20:
-        return _UNITS[n]
-    if n < 100:
-        tens, unit = divmod(n, 10)
-        return _TENS[tens] + ("-" + _UNITS[unit] if unit else "")
-    raise ValueError("counts this large belong in a table, not in prose")
 
 
 def _divergence_blocks() -> list[dict]:
@@ -68,13 +58,6 @@ def _divergence_blocks() -> list[dict]:
     walk(json.loads(SUMMARY.read_text(encoding="utf-8")))
     assert found, f"summary.json carries no {DIVERGENCE_KEY!r} block at all"
     return found
-
-
-def _prose() -> str:
-    """Everything before the generated tables -- the hand-written half."""
-    head, marker, _ = REPORT.read_text(encoding="utf-8").partition("## Measurements")
-    assert marker, "report has no '## Measurements' section"
-    return head
 
 
 def test_graph_split_count_in_prose_matches_the_audits_on_disk():
