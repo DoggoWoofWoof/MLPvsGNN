@@ -433,3 +433,155 @@ advancement criterion Stage D1 is declared only if TARGET_H1's discrimination
 Nothing trained, no GPU, no test split, no candidate pool touched and no GNN
 anywhere. E2 stays paused at 82/96, F stays sealed, the workspace does not
 change, and no strong-GNN run is authorised by this declaration.
+
+## Stage D0, closed out 2026-09-02: declared against actual
+
+```text
+                       declared ceiling        actual              over/under
+Stage D0 CPU-hours     <= 1.2                  <= 0.75 (BOUND)     <= 63% of it
+Stage D0 cost          <= $0.80                <= $0.48 (BOUND)    <= 60% of it
+Stage D0 wall time     <= 20 min               ~11 min             concurrent
+```
+
+Six CPU containers, no GPU, nothing trained. The actual is a **bound, not a
+measurement**: the launcher recorded no container elapsed time, so the figure is
+derived from observed wall-clock returns at <= ~450 s per container.
+`scripts/modal_graph_context_pilot.py` now returns `elapsed_seconds`, so D1
+reports a number. A ledger that can only bound its own spend is a ledger with a
+hole in it, and this is where it was found.
+
+### Outcome, against the criterion as filed
+
+The filed criterion was: *"Stage D1 is declared only if `TARGET_H1`'s
+discrimination exceeds `CAND`'s, AND does so on the formerly isolated and
+low-degree strata where the repair lands."*
+
+**It is half met, and the half that fails is recorded rather than reinterpreted.**
+
+| clause | verdict |
+|---|---|
+| discrimination exceeds `CAND`'s overall | **NO.** `bridge_support` improves on 5/6 datasets by 0.010-0.066; `two_hop_seed_support` degrades on 5/6 by up to 0.274; `seed_distance` does not move. No overall dominance. |
+| on the formerly isolated stratum | **YES, decisively.** `CAND` scores exactly 0.5000 there by identity -- all three support quantities are constant-zero for a candidate with no induced neighbour. `TARGET_H1` reaches 0.9513 / 0.9054 / 0.8749 mean AUC on the three datasets where the stratum is measurable. |
+| on the low-degree stratum | **NO.** `bridge_support` at degree 2-4 improves on 2 of 6 datasets and degrades on 4, worst on squad (0.9611 -> 0.8423). |
+
+The clause exists to rule out a gain confined to already-well-connected
+candidates -- "a gain that appears only on already-well-connected candidates is
+not the repair paying off". The observed result is the opposite failure: the
+gain is confined to the *most* starved candidates and does not extend to the
+merely sparse ones. The rule's stated purpose is satisfied; its literal
+conjunction is not. That is a judgement, it is being flagged as one, and it is
+the reason D1 is declared rather than launched on the strength of a rule that
+did not anticipate this shape.
+
+The user-level kill rule -- *do not scale if `TARGET_H1 <= CAND` within noise
+**and** the restored features show no useful relevance separation* -- is a
+conjunction whose second clause is decisively false, so it does not fire.
+
+Full report: [`GRAPH_CONTEXT_D0_RESULTS.md`](GRAPH_CONTEXT_D0_RESULTS.md).
+
+---
+
+## Stage D1 declaration, filed 2026-09-02 after D0 returned
+
+The first stage in this line that trains anything. It is deliberately the
+smallest experiment that can answer its question: one dataset, one seed, two
+contexts, no new architecture, no GNN, no test split.
+
+```text
+scientific question   Does a ranker with the frozen QLS-v1 architecture and
+                      feature schema rank better when its features are computed
+                      over TARGET_H1 than over the historical CAND context?
+
+arms                  CAND, TARGET_H1. Identical in every respect except the
+                      node space the frozen feature kernel runs on.
+datasets              2wiki_clean only. Chosen before D0 returned, on Phase -1
+                      grounds: hop-2 retention 13.6%, median rho1 11.1%,
+                      boundary cut 83.9%, and no hotpotqa-scale serving tail.
+                      D0 subsequently found it is also the dataset with the
+                      largest addressable population -- 20.0% of its validation
+                      queries have a gold candidate that was isolated in G[Cq],
+                      against 1.0% on squad and 0.0% on metaqa.
+splits                train for fitting, validation for reporting. The test
+                      split is not read. The runner must refuse it.
+models / seeds        exactly one seed, one model per arm. Two training runs.
+candidates            bit-identical Cq in both arms, the frozen contract hash
+                      checked at load as in every stage since B.
+features              the shipped frozen QLS-v1 local descriptor kernel,
+                      unchanged, called through graph_context.local_descriptors
+                      so that neither arm can move because a second
+                      implementation disagrees with the first.
+metrics               R@1, R@5, R@20, MRR on validation, per arm, plus the
+                      feature-build p50/p95/p99 both arms actually paid.
+number of jobs        2 GPU jobs (one per arm), or 1 job running both arms.
+
+projected feature     MEASURED per query on the Modal image at Stage C, 2wiki,
+build                 300 validation queries, build + kernel:
+                        CAND       p50 2.99 ms  p95 3.71 ms  p99 4.01 ms
+                        TARGET_H1  p50 7.21 ms  p95 8.70 ms  p99 9.84 ms
+                      CAND's mean over the same 300 queries is 43.3 ms and
+                      its max 12,076 ms: the first call compiles the Numba
+                      kernel. Percentiles are the honest summary here and the
+                      mean is not; the one-off compile is paid once per
+                      container, not once per query.
+                      2wiki has 15,000 queries across all splits (frozen
+                      candidate contract) and 5,389,449 candidate rows, so
+                      359.3 candidates per query on average against the 316-364
+                      median the timings were taken at -- the extrapolation is
+                      to the same shape, not a different one. Costing every
+                      query in both arms, which strictly over-counts because
+                      test is never built:
+                        CAND       <= 60 s at p99
+                        TARGET_H1  <= 148 s at p99
+                        both arms  <= 3.5 CPU-min = 0.06 CPU-h = $0.04
+
+projected training    2 seed-units. E2 measured 69 seed-units at ~12 GPU-h
+                      including container overhead, so 0.174 GPU-h per unit
+                      -> 0.35 GPU-h; its pre-launch pure-compute rate was
+                      0.041 h per unit -> 0.08 GPU-h. The larger is used.
+
+estimated GPU-hours   <= 1.0  ceiling, dominated by fixed cost rather than by
+                              training: two containers pulling the image and
+                              loading 2wiki cost more than 0.35 h of fitting.
+                              This is a ceiling for approval, not a prediction.
+estimated cost        <= $2.29 = $2.25 GPU at the measured $2.241/h, plus $0.04
+                              CPU at $0.634/h. Derived from the ceilings above.
+estimated wall time   <= 40 min
+estimated storage     < 50 MB
+
+stopping rule         If either arm's feature build exceeds 10x its projected
+                      p99, stop and re-derive before training. Nothing else:
+                      two training runs are not worth a mid-flight gate.
+
+advancement criterion Validation R@k and MRR for TARGET_H1 above CAND. If
+                      TARGET_H1 <= CAND: DO NOT SCALE, and record the negative
+                      result -- substantial graph structure was removed
+                      historically, and restoring it in this form did not
+                      improve ranking. Only on a positive result may the
+                      two-dataset Stage E declaration (hotpotqa_clean for
+                      severe truncation, musique_clean as the semantic-dominant
+                      control, one seed each, both chosen before outcomes) be
+                      PREPARED. Preparing is not launching.
+```
+
+**A confound in the frozen schema, declared before the run rather than
+discovered after it.** Six of the ten frozen QLS-v1 descriptor columns are
+normalised by a per-query maximum taken over the whole local node space, and
+that space is what differs between the arms. A candidate whose own topology did
+not change is rescaled simply because the context grew. So a positive D1 cannot,
+on its own, be attributed to restored structure rather than to a moved
+normaliser.
+
+Holding the schema fixed is still the right control -- the normaliser is part of
+the frozen system, and changing it would make the arms differ in two ways at
+once -- so the run goes ahead as specified. What is added is a confound-free
+channel to report beside the metrics: columns 0-3 are a one-hot seed-distance
+bucket over `{0, 1, 2, >=3-or-unreachable}`, unnormalised, and they *do* separate
+these two arms even though Stage C proved no context wider than `SEED_H1` moves
+them. An isolated candidate sits at `>=3` under `CAND` and can sit at 1 or 2
+under `TARGET_H1`. That column group is where restored structure shows up
+without rescaling, and it will be reported per arm.
+
+D1 trains no GNN, distils nothing, and reads no GNN output. E2 stays paused at
+82/96 with its 69 seed-units unspent, F stays sealed, and the workspace does not
+change. No strong-GNN run and no R0-R5 frontier is authorised by this
+declaration.

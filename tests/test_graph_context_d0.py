@@ -27,7 +27,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from mp_retrieval.graph_context import build_operators, context_nodes  # noqa: E402
+from mp_retrieval.graph_context import (  # noqa: E402
+    build_operators,
+    context_nodes,
+    seed_distance,
+)
 from scripts.run_graph_context_d0 import (  # noqa: E402
     D0_ARMS,
     FEATURES,
@@ -294,3 +298,61 @@ def test_the_negative_control_is_declared_as_one():
     source = (REPO_ROOT / "scripts" / "run_graph_context_d0.py").read_text(encoding="utf-8")
     assert "NEGATIVE CONTROL" in source
     assert dict(FEATURES)["seed_distance"] == "lower_is_closer"
+
+
+# --- what the isolated stratum is actually measuring ---------------------
+
+
+def isolated_mask(rowptr, col, pool, size):
+    from mp_retrieval.graph_context import candidate_structure
+
+    return candidate_structure(rowptr, col, pool, pool, size)["induced_degree"] == 0
+
+
+@pytest.mark.parametrize("trial", range(40))
+def test_under_cand_every_support_is_identically_zero_on_isolated_candidates(trial):
+    """The 0.5000 cells in the D0 table are an identity, not a weak measurement.
+
+    A candidate with no neighbour inside `G[Cq]` has no seed edge (`Sq` is
+    inside `Cq`) and no bridge, so all three support counts are zero for it. A
+    constant scores AUC 0.5 exactly, on every query, in every dataset. Reading
+    those cells as "CAND discriminates poorly here" would be wrong: CAND has no
+    quantity to discriminate with.
+    """
+    rowptr, col, operators, pool, seeds, size = scenario(trial)
+    isolated = isolated_mask(rowptr, col, pool, size)
+    if not isolated.any():
+        pytest.skip("no isolated candidate in this scenario")
+    support = seed_support(
+        rowptr, col,
+        context_nodes("CAND", operators=operators, pool=pool, seeds=seeds),
+        pool, seeds, size, edge_source=operators.edge_source,
+    )
+    for name in ("distinct_seed_support", "two_hop_seed_support", "bridge_support"):
+        assert not support[name][isolated].any(), name
+
+
+@pytest.mark.parametrize("trial", range(40))
+def test_seed_distance_is_the_one_isolated_column_that_is_not_pinned_at_one_half(trial):
+    """...and what it separates there is seed membership, not graph structure.
+
+    An isolated candidate is unreachable, so it takes the sentinel -- unless it
+    is itself a seed, which scores 0 by definition. So on the isolated stratum
+    `seed_distance` ranks seeds above non-seeds and nothing else. Its AUC there
+    is a retrieval-score proxy and must not be read as restored graph signal.
+    """
+    from scripts.run_graph_context_d0 import SEED_DISTANCE_HOPS
+
+    rowptr, col, operators, pool, seeds, size = scenario(trial)
+    isolated = isolated_mask(rowptr, col, pool, size)
+    if not isolated.any():
+        pytest.skip("no isolated candidate in this scenario")
+    distance = seed_distance(
+        operators,
+        context_nodes("CAND", operators=operators, pool=pool, seeds=seeds),
+        pool, seeds,
+    )
+    is_seed = np.isin(pool, seeds)
+    assert set(np.unique(distance[isolated]).tolist()) <= {0.0, float(SEED_DISTANCE_HOPS + 1)}
+    assert np.all(distance[isolated & is_seed] == 0)
+    assert np.all(distance[isolated & ~is_seed] == SEED_DISTANCE_HOPS + 1)

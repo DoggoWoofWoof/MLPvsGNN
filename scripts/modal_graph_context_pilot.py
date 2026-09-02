@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -170,12 +171,17 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_pilot import run
 
     args = _runner_args(job)
+    started = time.monotonic()
     result = run(args, checkpoint_hook=result_volume.commit)
+    # The container is what is billed, and Stage D0 closed out with a wall-clock
+    # bound rather than a figure because nothing recorded this. It is the
+    # launcher's job, not the runner's: the runner does not know it is on Modal.
     return {
         "status": result["status"],
         "dataset": job["dataset"],
         "stage": job["stage"],
         "output_remote": str(args.output),
+        "elapsed_seconds": round(time.monotonic() - started, 1),
     }
 
 

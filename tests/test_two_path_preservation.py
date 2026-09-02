@@ -330,3 +330,75 @@ def test_a_self_loop_cannot_pose_as_a_leg_of_a_two_path():
     report = two_path_preservation(operators, nodes, pool, np.array([0]))
     assert report["directed_bridges"] == 0
     assert enumerate_directed_bridges(rowptr, col, pool, pool) == set()
+
+
+# --- the same claim, on the real graphs ----------------------------------
+
+D0_ROOT = REPO_ROOT / "outputs" / "graph_context_pilot" / "stage_d0"
+D0_DATASETS = (
+    "2wiki_clean", "hotpotqa_clean", "metaqa",
+    "musique_clean", "squad_clean", "webqsp",
+)
+
+
+def d0_results():
+    import json
+
+    if not D0_ROOT.is_dir():
+        pytest.skip(f"{D0_ROOT} absent -- gitignored outputs, nothing to check")
+    found = {}
+    for dataset in D0_DATASETS:
+        path = D0_ROOT / f"{dataset}_stage_d0.json"
+        if path.is_file():
+            found[dataset] = json.loads(path.read_text(encoding="utf-8"))
+    if not found:
+        pytest.skip("no stage_d0 result files on disk")
+    return found
+
+
+def test_the_claim_holds_on_every_real_graph_that_has_been_measured():
+    """Synthetic proof plus real-data confirmation, per dataset actually present.
+
+    A skip here means "not measured on disk", never "measured and fine", so the
+    set of datasets checked is asserted against what was found rather than
+    assumed to be all six.
+    """
+    results = d0_results()
+    for dataset, payload in results.items():
+        arms = payload["splits"]["validation"]["arms"]
+        target = arms["TARGET_H1"]["two_path_preservation"]
+        assert target["directed_bridges_in_context"] == target["directed_bridges"], dataset
+        assert target["seed_bridges_in_context"] == target["seed_bridges"], dataset
+
+
+def test_the_historical_substrate_loses_two_paths_the_claim_recovers():
+    """Non-degeneracy on real data: if `CAND` kept them all, there is nothing to repair."""
+    results = d0_results()
+    for dataset, payload in results.items():
+        arms = payload["splits"]["validation"]["arms"]
+        cand = arms["CAND"]["two_path_preservation"]
+        assert cand["directed_bridges"] > 0, dataset
+        assert cand["directed_bridges_in_context"] < cand["directed_bridges"], dataset
+
+
+def test_the_common_successor_exception_appears_only_where_direction_bites():
+    """It is impossible on an edge-symmetric graph, so a count above zero is a claim.
+
+    hotpotqa is the one graph-split the substrate audit measured as not
+    reachability-symmetric. This does not assert the exception must appear there
+    -- reachability symmetry and stored-edge symmetry are different properties --
+    only that a non-zero count anywhere else would contradict the recorded
+    symmetry and must be investigated rather than reported.
+    """
+    results = d0_results()
+    for dataset, payload in results.items():
+        if dataset == "hotpotqa_clean":
+            continue
+        target = payload["splits"]["validation"]["arms"]["TARGET_H1"][
+            "two_path_preservation"
+        ]
+        lost = (
+            target["common_successor_bridges"]
+            - target["common_successor_bridges_in_context"]
+        )
+        assert lost == 0, (dataset, lost)

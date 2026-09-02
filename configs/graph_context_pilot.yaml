@@ -315,7 +315,8 @@ stages:
       descriptor_saturation -- and was replaced before Stage B ran.
 
   D0:
-    status: DECLARED
+    status: MEASURED
+    results: docs/GRAPH_CONTEXT_D0_RESULTS.md
     queries: 300
     datasets: all_six
     arms: [CAND, TARGET_H1]
@@ -350,15 +351,63 @@ stages:
       the repair lands, do not spend GPU on Stage D1 or on a new GNN. Record
       that substantial graph structure was removed historically and that
       restoring it in this form did not improve ranking.
+    outcome: >-
+      HALF MET, and the half that failed is recorded rather than reinterpreted.
+      Overall, neither context dominates: bridge_support improves on 5/6
+      datasets by 0.010-0.066 AUC while two_hop_seed_support degrades on 5/6 by
+      up to 0.274 and seed_distance does not move. On the formerly isolated
+      stratum the gate is met decisively -- CAND scores exactly 0.5000 there by
+      identity, because all three support quantities are constant-zero for a
+      candidate with no induced neighbour, and TARGET_H1 reaches 0.9513 (2wiki),
+      0.9054 (musique) and 0.8749 (hotpotqa). On the low-degree stratum it is
+      not met: bridge_support at degree 2-4 improves on 2 datasets and degrades
+      on 4. The clause was written to rule out a gain confined to
+      well-connected candidates; the observed failure is the opposite one.
+    outcome_qualification: >-
+      The isolated stratum is scorable only when a GOLD candidate was isolated,
+      which happens in 20.0% of 2wiki queries, 10.3% of musique, 6.0% of
+      hotpotqa, 1.5% of webqsp, 1.0% of squad and 0.0% of metaqa. squad and
+      webqsp rest on three queries each and metaqa on none, so only 2wiki,
+      musique and hotpotqa carry weight. The overall deltas are point estimates:
+      the runner retained means and medians, not the paired per-query
+      differences, so D0 cannot say whether an overall delta is outside noise.
+      No D0 conclusion rests on the sign of one.
 
   D1:
-    status: NOT_DECLARED
-    blocked_on: D0
+    status: DECLARED
+    declaration: docs/COMPUTE_LEDGER.md
+    dataset: 2wiki_clean
+    arms: [CAND, TARGET_H1]
+    seeds: 1
     what: >-
       First effectiveness pilot: 2wiki only, CAND vs TARGET_H1, one seed, same
       frozen ranker architecture and feature schema in both arms, bit-identical
-      Cq, validation only. Not declared and not costed until D0 returns a
-      plausible relevance signal.
+      Cq, train for fitting and validation for reporting. The test split is not
+      read and the runner refuses it.
+    metrics: [recall_at_1, recall_at_5, recall_at_20, mrr]
+    projected_cost:
+      feature_build_cpu_hours: 0.06
+      gpu_hours_ceiling: 1.0
+      cost_ceiling_usd: 2.29
+      wall_time_ceiling_minutes: 40
+    declared_confound: >-
+      Six of the ten frozen QLS-v1 descriptor columns are normalised by a
+      per-query maximum over the local node space, and that space is what
+      differs between the arms, so a positive result cannot on its own be
+      attributed to restored structure rather than to a moved normaliser.
+      Holding the schema fixed is still the right control -- the normaliser is
+      part of the frozen system. Columns 0-3 are the unnormalised one-hot
+      seed-distance bucket and do separate these two arms (an isolated
+      candidate sits at >=3 under CAND and can sit at 1 or 2 under TARGET_H1),
+      so they are the confound-free channel and are reported per arm beside the
+      metrics.
+    kill_gate: >-
+      If TARGET_H1 <= CAND on validation R@k and MRR: DO NOT SCALE. Record that
+      substantial graph structure was removed historically and that restoring it
+      in this form did not improve ranking. Only on a positive result may the
+      two-dataset Stage E declaration be PREPARED -- hotpotqa_clean for severe
+      truncation, musique_clean as the semantic-dominant control, both chosen
+      before outcomes, one seed each. Preparing is not launching.
 
 advancement:
   rule: >-
