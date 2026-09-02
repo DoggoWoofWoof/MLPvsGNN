@@ -45,7 +45,10 @@ from scripts.run_graph_context_d1 import (  # noqa: E402
     context_feature_store,
     holdout_split,
     run,
+    stratify,
 )
+from scripts.run_graph_context_d0b import STRATA  # noqa: E402
+from scripts.run_graph_context_pilot import DEGREE_BUCKETS, SPLITS  # noqa: E402
 
 NODES = 48
 FEATURE_DIM = 8
@@ -609,3 +612,116 @@ def test_adding_a_gpu_stage_did_not_reprice_the_cpu_stages(launcher):
     declared = module.CONFIG["stages"]["D0B"]["projected_cost"]
     assert report["expected_spend_usd"] <= declared["cost_ceiling_usd"]
     assert report["container_usd_per_hour"] < 1.0
+
+
+# --- the pre-registered stratification ----------------------------------------
+
+
+def test_the_strata_partition_the_reported_split(completed, data):
+    """Every reported query lands in exactly one bucket, and none is invented."""
+
+    validation = data.split(SPLITS["validation"])
+    counts = completed["gold_stratum_counts"]["validation"]
+    assert sum(counts.values()) == len(validation)
+    assert set(counts) <= set(STRATA)
+
+    for arm in D1_ARMS:
+        by_stratum = completed["results"][arm]["validation_by_stratum"]
+        assert {name: block["queries"] for name, block in by_stratum.items()} == counts
+
+
+def test_both_arms_are_stratified_the_same_way(completed):
+    """The buckets come from the graph, not from an arm, or the deltas are noise."""
+
+    populations = [
+        {name: block["queries"] for name, block in completed["results"][arm][
+            "validation_by_stratum"
+        ].items()}
+        for arm in D1_ARMS
+    ]
+    assert populations[0] == populations[1]
+
+
+def test_the_stratified_delta_is_the_difference_of_the_two_arms(completed):
+    for arm, block in completed["delta_against_cand_by_stratum"].items():
+        for name, row in block.items():
+            for metric in METRICS:
+                if metric not in row:
+                    continue
+                expected = (
+                    completed["results"][arm]["validation_by_stratum"][name][metric]
+                    - completed["results"]["CAND"]["validation_by_stratum"][name][metric]
+                )
+                assert row[metric] == pytest.approx(expected), (arm, name, metric)
+
+
+def test_the_stratum_boundaries_are_the_frozen_ones(completed):
+    """D1's own question is the direction across these buckets, so it may not pick them."""
+
+    trend = completed["context_value_by_evidence"]["TARGET_H1"]
+    assert trend["boundaries_fitted_here"] is False
+    assert trend["strata_in_order"] == [name for name, _, _ in DEGREE_BUCKETS]
+    assert trend["strata_in_order"] == ["isolated", "degree_1", "low_degree", "ordinary"]
+
+
+def test_the_trend_records_its_own_shape_whether_or_not_it_holds(completed):
+    """`non_increasing` is the hypothesis. A False is the finding, not a failure."""
+
+    trend = completed["context_value_by_evidence"]["TARGET_H1"]
+    for metric in METRICS:
+        if metric not in trend:
+            continue
+        values = trend[metric]["values_in_stratum_order"]
+        assert len(values) == len(trend["strata_in_order"])
+        assert trend[metric]["non_increasing"] == all(
+            a >= b for a, b in zip(values, values[1:], strict=False)
+        )
+        assert trend[metric]["first_minus_last"] == pytest.approx(values[0] - values[-1])
+
+
+def test_the_overall_metric_is_the_query_weighted_mean_of_the_strata(completed):
+    """A stratification that does not reconstitute the whole is a stratification of something else.
+
+    Recall and MRR are per-query means, so the strata must average back to the
+    overall number under their own query counts. This is the check that catches a
+    subset scored against the wrong feature store or a query counted twice.
+    """
+
+    for arm in D1_ARMS:
+        by_stratum = completed["results"][arm]["validation_by_stratum"]
+        total = sum(block["queries"] for block in by_stratum.values())
+        for metric in ("recall@1", "recall@5", "recall@20", "mrr"):
+            pooled = sum(
+                block["queries"] * block[metric] for block in by_stratum.values()
+            ) / total
+            assert pooled == pytest.approx(
+                completed["results"][arm]["validation"][metric], abs=1e-9
+            ), (arm, metric)
+
+
+def test_the_stratifier_uses_the_hardest_gold_not_the_easiest(data):
+    """A query with one stranded gold is a query the repair could help."""
+
+    rowptr = data.rowptr.numpy().astype(np.int64)
+    col = data.col.numpy().astype(np.int64)
+    groups = stratify(data.split(SPLITS["validation"]), rowptr, col, int(data.num_nodes))
+    from scripts.run_graph_context_d0c import candidate_degrees
+
+    for name, queries in groups.items():
+        if name == "no_gold_in_pool" or not queries:
+            continue
+        degree = candidate_degrees(queries, rowptr, col, int(data.num_nodes))
+        cursor = 0
+        for query in queries:
+            width = int(query.candidate_index.shape[0])
+            rows = degree[cursor : cursor + width]
+            cursor += width
+            gold = set(int(node) for node in query.relevant_global.tolist())
+            hit = [
+                int(rows[position])
+                for position, node in enumerate(query.candidate_index.tolist())
+                if int(node) in gold
+            ]
+            assert hit, "a query with no in-pool gold is not in a degree bucket"
+            low, high = next((lo, hi) for label, lo, hi in DEGREE_BUCKETS if label == name)
+            assert low <= min(hit) <= high

@@ -75,8 +75,12 @@ from mp_retrieval.structural_features import (  # noqa: E402
     StructuralFeatureStore,
 )
 from scripts.run_edge_provenance import _atomic_json  # noqa: E402
-from scripts.run_graph_context_d0b import load_or_build_static  # noqa: E402
-from scripts.run_graph_context_pilot import SPLITS  # noqa: E402
+from scripts.run_graph_context_d0b import (  # noqa: E402
+    STRATA,
+    load_or_build_static,
+    query_stratum,
+)
+from scripts.run_graph_context_pilot import DEGREE_BUCKETS, SPLITS  # noqa: E402
 from scripts.run_sa_mlp_confirmation import (  # noqa: E402
     _build_model,
     _fit,
@@ -245,6 +249,76 @@ def holdout_split(train_queries, fraction: float):
     return train_queries[:cut], train_queries[cut:]
 
 
+def stratify(queries, rowptr, col, size) -> dict[str, list]:
+    """Split a reporting split by its hardest in-pool gold's induced degree in `G[Cq]`.
+
+    The buckets and the hardest-gold rule are D0b's, imported rather than
+    restated, and the config froze both before this stage ran. That is the whole
+    point of the block: the direction of the effect across these strata is the
+    pre-registered question, so choosing the boundaries here would answer it.
+
+    Degrees come from D0c's recomputation for the same reason it exists -- the
+    completed stages' runners stay untouched.
+    """
+    # Deferred because D0c imports `holdout_split` from this module, so a
+    # top-level import here is a cycle. The alternatives were worse: copying the
+    # degree computation is how two stages silently disagree about what "degree"
+    # means, and lifting it into a shared module would edit a stage that has
+    # already run and whose result is meant to be reproducible from its commit.
+    from scripts.run_graph_context_d0c import candidate_degrees
+
+    degree = candidate_degrees(queries, rowptr, col, size)
+    groups: dict[str, list] = {name: [] for name in STRATA}
+    cursor = 0
+    for query in queries:
+        width = int(query.candidate_index.shape[0])
+        rows = degree[cursor : cursor + width]
+        cursor += width
+        positive = np.zeros(width, dtype=bool)
+        gold = set(int(node) for node in query.relevant_global.tolist())
+        for position, node in enumerate(query.candidate_index.tolist()):
+            if int(node) in gold:
+                positive[position] = True
+        groups[query_stratum(rows, positive)].append(query)
+    if cursor != degree.shape[0]:
+        raise RuntimeError("Degree vector does not cover the reported split")
+    return groups
+
+
+def evidence_trend(result: dict[str, Any], arm: str, against: str) -> dict[str, Any]:
+    """The pre-registered read: does the arm's benefit fall as evidence rises?
+
+    Reported, never optimised. `non_increasing` is the hypothesis's own shape and
+    is recorded whether or not it holds -- a False here is the finding, not a bug.
+    """
+    order = [name for name, _, _ in DEGREE_BUCKETS]
+    trend: dict[str, Any] = {
+        "question": (
+            f"does the {arm} - {against} benefit fall as the gold's historical "
+            "induced degree rises?"
+        ),
+        "strata_in_order": order,
+        "boundaries_fitted_here": False,
+    }
+    for metric in METRICS:
+        values = []
+        for name in order:
+            block = result["results"][arm]["validation_by_stratum"].get(name)
+            base = result["results"][against]["validation_by_stratum"].get(name)
+            if not block or not base or metric not in block:
+                values = []
+                break
+            values.append(float(block[metric] - base[metric]))
+        if not values:
+            continue
+        trend[metric] = {
+            "values_in_stratum_order": values,
+            "non_increasing": all(a >= b for a, b in zip(values, values[1:], strict=False)),
+            "first_minus_last": values[0] - values[-1],
+        }
+    return trend
+
+
 def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = None):
     if "test" in args.splits:
         raise ValueError("Stage D1 is a development experiment; the test split is not read")
@@ -277,6 +351,10 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
         raise RuntimeError("Stage D1 requires non-empty train and validation splits")
     train, holdout = holdout_split(train_all, float(args.holdout_fraction))
     opened = train + holdout + validation
+    # Built from the graph, so it is arm-independent: the same queries fall in
+    # the same buckets for CAND and TARGET_H1, which is what makes the two arms'
+    # per-stratum numbers comparable at all.
+    strata = stratify(validation, rowptr, col, size)
 
     device = torch.device(args.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     node_embeddings = torch.from_numpy(np.asarray(dataset.node_array)).to(
@@ -357,6 +435,19 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
             node_embeddings, query_embeddings, None, features, device,
             batch_size=int(args.batch_size), ks=tuple(args.ks), timed=True,
         )
+        by_stratum = {}
+        for name, subset in strata.items():
+            if not subset:
+                continue
+            scores, _rows, _timing = _score_once(
+                MODEL_NAME, model, subset,
+                node_embeddings, query_embeddings, None, features, device,
+                batch_size=int(args.batch_size), ks=tuple(args.ks), timed=False,
+            )
+            by_stratum[name] = {"queries": len(subset)} | {
+                key: scores[key] for key in METRICS if key in scores
+            }
+
         result["results"][arm] = {
             "parameters": int(sum(p.numel() for p in model.parameters())),
             "feature_build": {
@@ -367,6 +458,7 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
             "training": telemetry,
             "validation": {key: metrics[key] for key in METRICS if key in metrics},
             "validation_all_metrics": metrics,
+            "validation_by_stratum": by_stratum,
             "inference": inference,
             "seed_distance_buckets": {
                 "all_candidates": bucket_distribution(
@@ -391,6 +483,24 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
             for key in baseline
         }
         for arm in D1_ARMS[1:]
+    }
+    result["delta_against_cand_by_stratum"] = {
+        arm: {
+            name: {"queries": block["queries"]}
+            | {
+                key: float(block[key] - result["results"][D1_ARMS[0]]["validation_by_stratum"][name][key])
+                for key in METRICS
+                if key in block
+            }
+            for name, block in result["results"][arm]["validation_by_stratum"].items()
+        }
+        for arm in D1_ARMS[1:]
+    }
+    result["context_value_by_evidence"] = {
+        arm: evidence_trend(result, arm, D1_ARMS[0]) for arm in D1_ARMS[1:]
+    }
+    result["gold_stratum_counts"] = {
+        "validation": {name: len(subset) for name, subset in strata.items() if subset}
     }
     result["status"] = COMPLETE_STATUS
     _atomic_json(args.output, result)
