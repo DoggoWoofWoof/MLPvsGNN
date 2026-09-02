@@ -213,3 +213,55 @@ def test_an_isolated_pool_never_expands():
     for hop in (1, 2, 3):
         assert summary[f"U_target_{hop}_nodes"] == 3.0
         assert summary[f"U_target_{hop}_expansion"] == 1.0
+
+
+# --------------------------------------------------------------------------
+# The context sets contain the pool, so their ratios are bounded below by 1
+# --------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("trial", range(12))
+def test_every_context_contains_the_pool(trial):
+    """`U_seed` and `U_target` are both `Cq union N_H(.)`, so `|U| >= |Cq|`
+    and the reported expansion can never fall below 1.0.
+
+    This is here because a ratio below 1.0 was once read off these tables and
+    used to call a whole-graph expansion "0.2x the pool" -- the expansion
+    columns are ratios and the node columns are counts, and confusing them
+    understated a 472k-node context by three orders of magnitude. The invariant
+    is cheap and pins the half of that which the code can actually enforce.
+    """
+    rng = np.random.default_rng(7000 + trial)
+    size = int(rng.integers(30, 400))
+    rowptr, col = random_symmetric(rng, size, int(rng.integers(0, 4 * size)))
+    pool = np.unique(rng.integers(0, size, size=int(rng.integers(1, min(size, 60)))))
+    seeds = np.unique(rng.integers(0, size, size=int(rng.integers(1, 6))))
+    summary = expansion_sizes(rowptr, col, pool, seeds, max_hops=3)
+    assert summary["candidates"] == float(pool.size)
+    for tag in ("U_seed", "U_target"):
+        for hop in (1, 2, 3):
+            assert summary[f"{tag}_{hop}_nodes"] >= float(pool.size)
+            assert summary[f"{tag}_{hop}_expansion"] >= 1.0
+
+
+def test_a_pool_with_no_edges_expands_to_exactly_one():
+    """The floor is attained, so the bound above is tight rather than vacuous."""
+    rowptr, col = csr(np.array([], dtype=np.int64), np.array([], dtype=np.int64), 10)
+    summary = expansion_sizes(rowptr, col, np.array([0, 1, 2]), np.array([0]), max_hops=3)
+    for tag in ("U_seed", "U_target"):
+        for hop in (1, 2, 3):
+            assert summary[f"{tag}_{hop}_expansion"] == 1.0
+
+
+def test_seeds_are_pool_positions_so_the_seed_context_also_contains_the_pool():
+    """The audit passes `seed_global = pool[seed_local]`, so `Sq` is a subset of
+    `Cq` by construction and `Cq union Sq == Cq`. A seed drawn from outside the
+    pool would make `U_seed` a genuinely different set; this pins that it is not.
+    """
+    rng = np.random.default_rng(11)
+    rowptr, col = random_symmetric(rng, 200, 400)
+    pool = np.unique(rng.integers(0, 200, size=40))
+    seeds = pool[rng.integers(0, pool.size, size=5)]
+    assert np.isin(seeds, pool).all()
+    summary = expansion_sizes(rowptr, col, pool, seeds, max_hops=2)
+    assert summary["U_seed_1_nodes"] >= float(pool.size)

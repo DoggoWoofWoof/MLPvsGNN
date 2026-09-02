@@ -2015,23 +2015,44 @@ Gold paths are the exception -- they largely survive. Induced gold connectivity
 is 0.901-0.989 against 0.990-1.000 global, and bridge loss @1 is 0.000
 everywhere. Induction removes general reach, not the specific supporting path.
 
-### The two starvation questions have different answers
+### The two starvation questions -- three separate statements
 
-**QLS-v1 was graph-starved, in two separate ways.** Its multi-hop features live
-at radius >= 2, where 21-86% of reach is gone. And 17.5-41.2% of candidates are
-isolated in `G[Cq]`, so for those every graph feature at every radius is a
-constant.
+An earlier version of this section claimed the one-layer GNN was "not starved by
+induction, only by sparsity". That was wrong, and the number refuting it was in
+this document's own CORE table. The claim is replaced by three statements that
+are separately checkable.
 
-**The one-layer GNN was not starved by induction** -- one layer reads radius 1,
-where induction cannot remove anything. It was starved by sparsity. Median R1 is
-0.77-5.31 messages, and on the same 17.5-41.2% isolated fraction a one-layer GNN
-receives no messages at all. Every operator in the frozen selection scores
-isolated nodes and carries a root term (`inserted_self_loop`, or `(1+eps)*x_self`
-for hotpotqa's GIN), so for those candidates the layer reduces exactly to its
-self-transform.
+**(A) Candidate-to-candidate radius-1 edges are preserved.** True by definition:
+both endpoints are in `Cq`, so the edge survives vertex induction. This is a
+structural identity and is evidence of nothing.
 
-That is arithmetic, not conjecture: for 17.5-41.2% of candidates the historical
-one-layer GNN *was* an MLP on the node's own features.
+**(B) The full global one-hop neighbourhood is NOT preserved.** A global
+neighbour outside `Cq` is deleted by induction and therefore cannot message a
+candidate in a one-layer GNN. The audit measures this directly as
+`rho_1(v) = |N_G(v) ∩ Cq| / |N_G(v)|`:
+
+| dataset | median rho_1 | mean rho_1 | median global degree | induced R1 | rho_1 < 25% | boundary cut |
+|---|---|---|---|---|---|---|
+| 2wiki_clean | 0.111 | 0.169 | 7.0 | 1.01 | 0.709 | 0.839 |
+| hotpotqa_clean | 0.077 | 0.124 | 13.0 | 1.21 | 0.803 | 0.890 |
+| metaqa | 0.154 | 0.208 | 7.0 | 0.77 | 0.784 | 0.904 |
+| musique_clean | 0.200 | 0.280 | 7.0 | 1.89 | 0.529 | 0.792 |
+| squad_clean | 0.080 | 0.219 | 41.0 | 5.31 | 0.677 | 0.881 |
+| webqsp | 0.250 | 0.348 | 6.0 | 2.07 | 0.423 | 0.700 |
+
+The median candidate keeps **7.7%-25%** of its global one-hop neighbourhood, and
+70.0%-90.4% of candidate-incident global edges cross the boundary and are cut.
+So the one-layer GNN **was** graph-starved by induction, at its own radius.
+
+**(C) Whatever the cause, the historical induced receptive field was very
+sparse.** Median R1 0.77-5.31 against median global degree 6-41, and 17.5%-41.2%
+of candidates isolated. Every operator in the frozen selection scores isolated
+nodes and carries a root term (`inserted_self_loop`; `(1+eps)*x_self` for
+hotpotqa's GIN), so on that isolated fraction the layer reduces exactly to its
+self-transform -- there, and only there, the GNN was an MLP on its own features.
+
+(A), (B) and (C) are all true. Collapsing them into "not induction, only
+sparsity" asserted the negation of (B).
 
 ### Native / kNN / union
 
@@ -2049,14 +2070,57 @@ metaqa has no gold in the pool for 49.0% of queries and webqsp for 33.7%. Every
 gold-path rate above is over the remaining queries. This is a retrieval ceiling,
 not a graph property, and it is not evidence about the substrate.
 
-### Decision
+### Decision -- context basis NOT yet frozen
 
-QLS-v2 computes graph features on the **bounded query-local global
-neighbourhood**: the global graph restricted to hops <= 2 of `Cq` union seeds,
-with `Cq` unchanged and still the only scored set. The hop budget is set by the
-measured lossless/lossy boundary above, not chosen. Frozen candidate pools are
-untouched, so the ranking task is identical and A-F are uncontaminated.
+An earlier version of this section froze `Cq ∪ N<=2(Cq ∪ seeds)` and reported it
+as "81-1494 nodes per query, 0.2x-4.4x the pool". Both numbers were wrong: the
+expansion table reports *ratios* and the node table reports *counts*, and the
+ratio table was read as counts and then divided by the pool again. The analyzer
+labelling is correct; the reading was not. An expansion ratio for a set that
+contains `Cq` cannot fall below 1.0, and
+`tests/test_substrate_traversal_equivalence.py` now pins that invariant.
 
-Measured size of that neighbourhood, from the audit's oracle-only headroom
-(these admit nothing to any pool): 81-1494 nodes per query, 0.2x-4.4x the
-candidate pool. Affordable.
+The measured context sizes, in nodes per query, sealed A:
+
+| arm | 2wiki | hotpot | metaqa | musique | squad | webqsp | worst share of graph |
+|---|---|---|---|---|---|---|---|
+| `G[Cq]` | 359 | 343 | 361 | 334 | 316 | 345 | -- |
+| `Cq ∪ N1(Sq)` | 394 | 459 | 542 | 403 | 580 | 417 | 2.9% |
+| `Cq ∪ N1(Cq)` | 1994 | 4954 | 7160 | 2360 | 5664 | 2533 | 29.8% |
+| `Cq ∪ N2(Sq)` | 39600 | 329095 | 8196 | 2147 | 4964 | 28113 | 64.8% |
+| `Cq ∪ N2(Cq)` | 46467 | 472846 | 29014 | 9102 | 15201 | 129382 | **93.2%** |
+| `Cq ∪ N3(Sq)` | 59818 | 505742 | 29348 | 7872 | 14865 | 257262 | **99.7%** |
+| `Cq ∪ N3(Cq)` | 62792 | 507379 | 39985 | 12842 | 18498 | 607121 | **100.0%** |
+
+Graph sizes: 2wiki 65865, hotpotqa 507494, metaqa 40151, musique 13672,
+squad 19029, webqsp 781485.
+
+Two consequences.
+
+**The proposed basis was corpus-scale, not query-local.** `Cq ∪ N2(Cq)` covers
+93% of the hotpotqa graph and `N3` covers essentially all of it on every
+dataset. Any arm at H>=2 on the target side fails the ladder's serving
+criterion on its face -- a per-query context of 472k nodes has no deployment
+story -- and it fails it from data already in hand, at zero additional cost.
+
+**Seeds are pool positions.** The audit passes `seed_global = pool[seed_local]`
+(`scripts/run_graph_substrate_audit.py:303`), so `Sq ⊆ Cq` holds by construction
+of the artifact, not merely empirically, and `queries_without_retrieval_seeds`
+is 0 on all six datasets. Therefore `Cq ∪ Sq = Cq`, and the proposed
+`N<=2(Cq ∪ Sq)` was simply the target-side expansion `N<=2(Cq)` under another
+name. `U_seed` and `U_target` remain genuinely distinct because they expand from
+different sets -- `Sq` (few nodes) versus `Cq` (~330-360 nodes).
+
+**The radius is not frozen.** H=1 being lossless for (A) does not justify H=2:
+global seed reach still gains substantially from hop 2 to hop 3 (metaqa
+0.399->0.872, musique 0.399->0.774, squad 0.504->0.866, webqsp 0.574->0.846).
+The radius is decided by pilot P1, not by the lossless/lossy boundary.
+
+What Phase -1 does establish, and all it establishes:
+
+> `G[Cq]` is not a faithful representation of the query-local global graph
+> beyond immediate candidate-candidate adjacency -- at radius 1 it deletes
+> 75%-92% of the median candidate's neighbours, and at radius 2 it destroys
+> 21%-86% of seed-relative reach.
+
+That justifies investigating restored global context. It does not select one.

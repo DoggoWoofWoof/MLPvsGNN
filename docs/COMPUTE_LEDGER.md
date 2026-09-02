@@ -78,44 +78,87 @@ whole argument for the ladder.
 | substrate audit could not finish in its ceiling | ~$8 and zero output | Stage C, a 100-query timing pilot |
 | global BFS as 74% of runtime | 3.31 h/family in production | Stage C, the same pilot |
 
-### QLS-v2 P1 -- does the graph basis move the features at all?
+### QLS-v2 P1 -- which restored global context, and at what radius?
 
-Pre-launch declaration, Stages A-C only. Filed 2026-09-02.
+Pre-launch declaration, Stages A-C only. Filed 2026-09-02, amended the same day
+after the interpretation checks below. The first version of this row froze H=2
+on the target side; the audit's own node counts show that context is 93% of the
+hotpotqa graph, so the arm set and the budget both changed.
+
+**Cost screen, settled for $0 from Phase -1 data.** Context nodes per query and
+worst-case share of the corpus graph:
 
 ```text
-scientific question   Does recomputing QLS-v1's graph features on the bounded
-                      query-local global neighbourhood (H=2 of Cq u seeds)
-                      change them enough to change ranking, versus G[Cq]?
+arm                      nodes/query (min-max)     worst share of graph
+CAND        G[Cq]              316 -    361                --
+SEED-H1     Cq u N1(Sq)        394 -    580               2.9%
+TARGET-H1   Cq u N1(Cq)       1994 -   7160              29.8%
+SEED-H2     Cq u N2(Sq)       2147 - 329095              64.8%
+SEED-H3     Cq u N3(Sq)       7872 - 505742              99.7%   killed
+TARGET-H2   Cq u N2(Cq)       9102 - 472846              93.2%   killed
+TARGET-H3   Cq u N3(Cq)      12842 - 607121             100.0%   killed
+```
 
-exact hypothesis      Feature values move materially on the multi-hop datasets
-                      (2wiki, hotpotqa, metaqa), where induction destroys
-                      72-86% of hop-2 seed reach, and move little on squad and
-                      webqsp, where it destroys 21-26%. The isolated fraction
-                      (17.5-41.2%) shrinks on every dataset.
+The three killed arms are not context; they are the corpus. They fail the
+ladder's serving criterion ("a feature that cannot be served is not a feature")
+on already-measured numbers, so no pilot compute is spent on them. If a later
+result makes a corpus-scale context worth revisiting, it needs its own row.
 
-datasets / queries    A: synthetic only.  B: 25 real queries, hotpotqa.
-                      C: 300 validation queries x 6 datasets = 1800.
-models / seeds        none -- no training in this pilot. Feature-only.
+```text
+scientific question   Which restored global context, at which radius, recovers
+                      the structure candidate induction deletes -- and does the
+                      recovery land on the candidates that lost it?
+
+exact hypothesis      TARGET-H1 moves features most, because it is the arm that
+                      directly repairs the measured radius-1 deletion (median
+                      rho_1 0.077-0.250). SEED-H1 moves them least, since
+                      Sq is a subset of Cq and it adds only 35-235 nodes.
+                      SEED-H2 moves seed-relative features on the datasets
+                      where induction destroyed the most 2-hop reach (2wiki
+                      13.6%, hotpotqa 27.5% retained) -- but that is also where
+                      it is 60-65% of the graph, so it is expected to advance
+                      on information and fail on cost.
+
+datasets / queries    A: synthetic only.  B: 25 real queries, hotpotqa + 2wiki.
+                      C: 300 validation queries x 6 datasets x 4 arms.
+models / seeds        none -- feature-only, no training.
 number of jobs        A,B local. C: 6 CPU jobs, substrate container shape.
 estimated GPU-hours   0
-estimated CPU-hours   <= 1.0   (1800 q x ~1.2 s/q = 0.6 h, plus startup)
-estimated wall time   <= 25 min, jobs concurrent
-estimated storage     < 50 MB
-estimated cost        <= $1.00 at the $0.634/h substrate shape
+estimated CPU-hours   <= 2.5   (raised from 1.0: four arms, and SEED-H2 on
+                                hotpotqa touches 329k nodes/query)
+estimated wall time   <= 40 min, jobs concurrent
+estimated storage     < 200 MB
+estimated cost        <= $2.00 at the $0.634/h substrate shape
 
-stopping rule         Kill if the isolated fraction does not fall, or if
-                      features are unchanged on 2wiki/hotpotqa/metaqa. Either
-                      means the new basis carries no information G[Cq] lacked,
-                      and no training run can recover it.
+measured per arm      feature movement vs QLS-v1 on G[Cq]
+                      isolate / constant-feature reduction
+                      fraction of low-degree candidates whose features changed
+                      context nodes/query, context edges/query
+                      p50 / p95 / p99 feature-build latency
+                      peak RSS and structural workspace
 
-advancement criterion Advance to D only if features move AND the movement is
-                      concentrated on candidates that are currently isolated or
-                      low-degree -- i.e. on the candidates whose scores a graph
-                      feature could actually change. Movement spread uniformly
-                      over already-well-connected candidates is noise, not
-                      signal, and does not advance.
+                      feature movement broken down by the induced degree the
+                      candidate had before: formerly isolated / low / normal
+
+stopping rule         Kill an arm if the isolated fraction does not fall, or if
+                      features do not move on the multi-hop datasets. Either
+                      means the arm carries no information G[Cq] lacked, and no
+                      training run can recover it.
+
+advancement criterion An arm advances to D only if movement is concentrated on
+                      the candidates Phase -1 identified as truncated --
+                      formerly isolated or low induced degree -- AND its
+                      projected serving cost is plausible. Movement spread
+                      evenly over already-well-connected candidates is noise.
+                      If a larger radius adds substantial information at modest
+                      incremental cost, both radii carry to D; if it mostly
+                      adds context and cost, it dies here.
 ```
 
 Constraint carried from the frozen protocol: no GNN anywhere in QLS-v2, no GNN
 teacher, no GNN-derived feature selection. This pilot compares QLS features to
-QLS features.
+QLS features. Frozen candidate pools are untouched -- the scored set is exactly
+`Cq` in every arm, and context nodes are never admitted to it.
+
+No training until this resolves. E2 stays paused, F stays sealed, no workspace
+migration.
