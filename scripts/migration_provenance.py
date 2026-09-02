@@ -746,6 +746,106 @@ def cmd_matrix(args: argparse.Namespace) -> int:
     return 1 if matrix["counts"]["INVALID"] else 0
 
 
+# ---------------------------------------------------------------------------
+# Whether the omitted cache may be omitted
+# ---------------------------------------------------------------------------
+
+EQUIVALENCE_DIR = REPO_ROOT / "outputs" / "cache_equivalence"
+
+# The only two metadata keys a correct regeneration is expected to change, and
+# the reason each one changes. Both are downstream of
+# `local_topology_perturbations.perturb_packed_topologies`, whose contract
+# digest covers a metadata dict containing `build_seconds` -- a
+# `time.perf_counter()` duration. A hash over a wall-clock measurement cannot
+# reproduce, so these two are not evidence of a differing cache.
+#
+# This set is deliberately narrow. A key outside it differing means something
+# other than the timing field moved, and the summary must not report that as
+# the known-benign case.
+TIMING_DERIVED_KEYS = frozenset({"contract_sha256", "source_fingerprint_sha256"})
+
+
+def regeneration_equivalence(root: Path | None = None) -> dict[str, Any]:
+    """Summarize the gate: did the omitted cache regenerate, and what differed?
+
+    Read from the gate's own result files rather than asserted, so the
+    provenance record cannot claim an equivalence nobody ran. A cell whose
+    arrays differ, or whose metadata differs on a key outside
+    ``TIMING_DERIVED_KEYS``, is named individually -- a count alone would let
+    one genuinely differing cell hide inside eight benign ones.
+    """
+
+    root = EQUIVALENCE_DIR if root is None else root
+    results = sorted(root.rglob("equivalence.json")) if root.is_dir() else []
+    if not results:
+        return {
+            "status": "NOT_RUN",
+            "cells": 0,
+            "detail": f"no equivalence.json under {root}",
+        }
+
+    cells: list[dict[str, Any]] = []
+    arrays_differ: list[str] = []
+    unexpected: list[str] = []
+    differing_keys: set[str] = set()
+    for path in results:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        name = f"{payload.get('dataset')}/{payload.get('axis')}/rate_{float(payload.get('rate', 0)):.2f}"
+        kinds = payload.get("comparison", {}).get("kinds", {})
+        cell_arrays_equal = True
+        cell_keys: set[str] = set()
+        for kind, entry in kinds.items():
+            if not entry.get("present"):
+                unexpected.append(f"{name}: {kind} absent from the reference")
+                cell_arrays_equal = False
+                continue
+            arrays = entry.get("arrays", {})
+            if not arrays.get("files"):
+                unexpected.append(f"{name}: {kind} compared no arrays")
+                cell_arrays_equal = False
+            if not arrays.get("all_equal"):
+                cell_arrays_equal = False
+                arrays_differ.append(
+                    f"{name}: {kind} "
+                    + ", ".join(
+                        item["file"] for item in arrays.get("files", []) if not item.get("equal")
+                    )
+                )
+            cell_keys.update(entry.get("metadata", {}).get("differing_keys", []) or [])
+        outside = cell_keys - TIMING_DERIVED_KEYS
+        if outside:
+            unexpected.append(f"{name}: metadata differs on {sorted(outside)}")
+        differing_keys.update(cell_keys)
+        cells.append({
+            "cell": name,
+            "status": payload.get("status"),
+            "arrays_equal": cell_arrays_equal,
+            "differing_metadata_keys": sorted(cell_keys),
+            "candidate_contract_proof": payload.get("regeneration", {})
+            .get("candidate_contract_proof", {})
+            .get("status"),
+        })
+
+    if arrays_differ or unexpected:
+        status = "DIFFERS"
+    elif differing_keys:
+        status = "SEMANTICALLY_EQUIVALENT_TIMING_DERIVED_HASHES_DIFFER"
+    else:
+        status = "BIT_IDENTICAL"
+    return {
+        "status": status,
+        "cells": len(cells),
+        "datasets": sorted({cell["cell"].split("/")[0] for cell in cells}),
+        "every_array_equal": not arrays_differ,
+        "differing_metadata_keys": sorted(differing_keys),
+        "differing_keys_are_timing_derived": bool(differing_keys)
+        and not (differing_keys - TIMING_DERIVED_KEYS),
+        "arrays_that_differ": sorted(arrays_differ),
+        "unexpected": sorted(unexpected),
+        "per_cell": cells,
+    }
+
+
 def cmd_provenance(args: argparse.Namespace) -> int:
     staging = Path(args.staging)
     staged: dict[str, Any] = {}
@@ -780,7 +880,7 @@ def cmd_provenance(args: argparse.Namespace) -> int:
                 "migrated": False,
                 "reason": "deterministic derived cache",
                 "size_bytes_source": None,
-                "regeneration_equivalence": "PENDING",
+                "regeneration_equivalence": regeneration_equivalence(),
             }
         },
         "staged_files": {

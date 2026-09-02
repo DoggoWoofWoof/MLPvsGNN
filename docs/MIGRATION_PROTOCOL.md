@@ -206,6 +206,79 @@ and reads as a contradiction.
 
 Nothing was overwritten: the gate raises before it writes.
 
+### What the container run found -- this is the binding result
+
+Nine cells, both datasets, all three topology axes, both rate extremes, run on
+the target workspace in the same image E2 runs in. All nine returned
+`CACHE_REGENERATION_DIFFERS`, and the reason is the same on all nine and is
+now fully characterised.
+
+**Everything semantic regenerates bit-identically.** `packed_topology_v1`
+matched completely: `edge_index.npy`, `edge_ptr.npy` and `query_position.npy`
+equal in dtype, shape and every byte, and its metadata equal on every compared
+key. `fixed_structural_features_v1` matched on all four arrays --
+`candidate_ptr.npy`, `query_position.npy`, `static.npy` (float32) and
+`local.npy` (float16). The one-ulp float differences the *local* run reported
+do not appear here; they were an artifact of regenerating on Windows, not a
+property of the pipeline. In the environment that matters, the regeneration is
+byte-for-byte.
+
+**Exactly two metadata keys differ, and neither can ever match.** On every cell
+the differing keys are `fixed_structural_features_v1`'s `contract_sha256` and
+`source_fingerprint_sha256`, and the second causes the first. Tracing them:
+
+```
+source_fingerprint = sha256(data_fingerprint
+                            + intervention["contract_sha256"]
+                            + "clean_global_static_features")
+```
+
+and `intervention["contract_sha256"]` is computed in
+`local_topology_perturbations.perturb_packed_topologies` as a digest over
+`json.dumps(metadata, sort_keys=True)` -- where `metadata` contains
+**`build_seconds`**, a `time.perf_counter()` measurement. A hash over a
+wall-clock duration is not reproducible by construction. It is not a
+regeneration defect; it is a hash that never had a chance of matching, and no
+amount of determinism upstream would change it.
+
+**Nothing compares those hashes against anything frozen.** This is the part
+that decides the migration, and it was traced rather than assumed:
+
+*   `build_or_load_perturbed_topologies` validates a cached `perturbation.json`
+    on `kind`, `requested_rate` and `seed` only. It never checks
+    `contract_sha256`.
+*   `build_or_load_structural_features` checks the cached
+    `contract_sha256` against one it recomputes from the *same*
+    `source_fingerprint` it was handed -- a within-cell consistency check, not
+    a comparison to a frozen value.
+*   `run_phase_confirmation._screen_seed_zero` validates the E1 screen result
+    on status, dataset, axis, rate, `data_fingerprint_sha256`,
+    `test_metrics_computed is False` and `training_seed == 0`. It does **not**
+    compare any feature-cache or perturbation contract. (The check at
+    `run_sa_mlp_confirmation.py:543` that does compare a recorded feature
+    contract belongs to `_reuse_screen_seed`, which E2 does not call.)
+
+So a regenerated cell is self-consistent and indistinguishable to E2 from a
+transferred one, and a transferred cell keeps its original hashes and is
+equally acceptable. Both paths work; they simply produce different values for a
+field nothing reads.
+
+**Decision: the 193.6 GB `phase_confirmation_cache` is not migrated.** It is
+regenerated from the clean inputs at the target. The 23.8 GB of cache belonging
+to the ten PARTIAL cells is not migrated either, and for a second reason
+besides size: a partially written cache can carry a complete `metadata.json`
+beside a truncated array, which the loader would accept. Regenerating into an
+empty root cannot hit that.
+
+**What is *not* claimed.** The perturbation contract hash is not reproducible,
+and this protocol does not change its definition to make it so -- that hash is
+frozen and a result-driven redefinition is exactly what is forbidden. The claim
+is narrower and is what the gate measured: every array and every semantic
+metadata key regenerates byte-for-byte, and the fields that differ are not read
+by any consumer. The nine result JSONs are kept under
+`outputs/cache_equivalence/` and record which hash matched, under which
+compatibility mode, with the proof digest.
+
 ## 5. The E2 resume plan comes from an integrity matrix
 
 Not from an ordinal position in a job list. `migration_provenance.py matrix`

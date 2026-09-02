@@ -419,3 +419,126 @@ def test_narrowing_to_one_dataset_does_not_demand_the_others() -> None:
     both = mp.e2_required_paths(["webqsp", "metaqa"])
     assert len(both["dataset_roots"]) > len(one["dataset_roots"])
     assert all("metaqa" not in path for path in one["dataset_roots"])
+
+
+# ---------------------------------------------------------------------------
+# Whether the omitted cache may be omitted
+# ---------------------------------------------------------------------------
+
+
+def _equivalence(
+    tmp_path,
+    *,
+    dataset="webqsp",
+    axis="random_add",
+    rate=0.10,
+    arrays_equal=True,
+    differing_keys=("contract_sha256", "source_fingerprint_sha256"),
+    present=True,
+    files=None,
+):
+    """One gate result on disk, shaped like the ones the container writes."""
+
+    if files is None:
+        files = [
+            {"file": "static.npy", "equal": arrays_equal},
+            {"file": "local.npy", "equal": True},
+        ]
+    payload = {
+        "status": "CACHE_REGENERATION_DIFFERS" if differing_keys else "CACHE_REGENERATION_EQUIVALENT",
+        "dataset": dataset,
+        "axis": axis,
+        "rate": rate,
+        "regeneration": {
+            "candidate_contract_proof": {
+                "status": "BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE"
+            }
+        },
+        "comparison": {
+            "kinds": {
+                "fixed_structural_features_v1": {
+                    "present": present,
+                    "arrays": {
+                        "files": files,
+                        "all_equal": all(item["equal"] for item in files),
+                    },
+                    "metadata": {"differing_keys": list(differing_keys)},
+                }
+            }
+        },
+    }
+    cell = tmp_path / dataset / "fp" / f"{axis}_{rate}"
+    cell.mkdir(parents=True, exist_ok=True)
+    (cell / "equivalence.json").write_text(json.dumps(payload), encoding="utf-8")
+    return payload
+
+
+def test_an_unrun_gate_is_reported_as_unrun_not_as_a_pass(tmp_path) -> None:
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["status"] == "NOT_RUN"
+    assert report["cells"] == 0
+
+
+def test_timing_derived_hash_differences_do_not_count_as_a_differing_cache(tmp_path) -> None:
+    _equivalence(tmp_path)
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["status"] == "SEMANTICALLY_EQUIVALENT_TIMING_DERIVED_HASHES_DIFFER"
+    assert report["every_array_equal"] is True
+    assert report["differing_keys_are_timing_derived"] is True
+
+
+def test_a_differing_array_is_a_differing_cache(tmp_path) -> None:
+    _equivalence(tmp_path, arrays_equal=False)
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["status"] == "DIFFERS"
+    assert report["every_array_equal"] is False
+    assert any("static.npy" in entry for entry in report["arrays_that_differ"])
+
+
+def test_a_metadata_key_outside_the_timing_set_is_not_waved_through(tmp_path) -> None:
+    _equivalence(tmp_path, differing_keys=("contract_sha256", "candidate_rows"))
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["status"] == "DIFFERS"
+    assert any("candidate_rows" in entry for entry in report["unexpected"])
+
+
+def test_one_differing_cell_is_not_hidden_by_eight_clean_ones(tmp_path) -> None:
+    for index in range(8):
+        _equivalence(tmp_path, axis="random_add", rate=0.10 + index)
+    _equivalence(tmp_path, axis="hub_injection", rate=1.00, arrays_equal=False)
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["cells"] == 9
+    assert report["status"] == "DIFFERS"
+    assert len(report["arrays_that_differ"]) == 1
+    assert "hub_injection" in report["arrays_that_differ"][0]
+
+
+def test_a_comparison_that_compared_no_arrays_is_not_an_equivalence(tmp_path) -> None:
+    """An empty file list makes `all_equal` vacuously true; that is not proof."""
+
+    _equivalence(tmp_path, files=[])
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["status"] == "DIFFERS"
+    assert any("compared no arrays" in entry for entry in report["unexpected"])
+
+
+def test_a_kind_missing_from_the_reference_is_not_an_equivalence(tmp_path) -> None:
+    _equivalence(tmp_path, present=False)
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["status"] == "DIFFERS"
+    assert any("absent from the reference" in entry for entry in report["unexpected"])
+
+
+def test_a_fully_identical_regeneration_is_reported_as_bit_identical(tmp_path) -> None:
+    _equivalence(tmp_path, differing_keys=())
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["status"] == "BIT_IDENTICAL"
+    assert report["differing_metadata_keys"] == []
+
+
+def test_each_cell_records_which_candidate_contract_proof_it_matched(tmp_path) -> None:
+    _equivalence(tmp_path)
+    report = mp.regeneration_equivalence(tmp_path)
+    assert report["per_cell"][0]["candidate_contract_proof"] == (
+        "BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE"
+    )
