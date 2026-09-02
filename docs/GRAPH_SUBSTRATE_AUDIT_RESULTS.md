@@ -51,8 +51,10 @@ hotpotqa_clean.
 there, and how large that fraction is depends strongly on the dataset.** On the
 sealed graph the isolated fraction runs 0.175 (squad), 0.190 (webqsp), 0.224
 (musique), 0.375 (2wiki), 0.412 (metaqa). An isolated candidate is not dropped;
-it is scored, receiving only its operator-inserted self-loop. For that fraction
-of the pool the one-layer GNN is a plain MLP. The fraction is *identical at R1,
+it is scored, receiving only the operator's own root term — an inserted
+self-loop under `gat` and `gcn`, an explicit `(1+eps)*x_self` under `gin`. For
+that fraction of the pool the one-layer GNN is a plain MLP, whichever operator
+the dataset selected. The fraction is *identical at R1,
 R2 and R3* and equal to the measured `isolated_fraction` — verified numerically
 on every graph-split, not inferred. A node with no induced neighbours gains
 none at greater depth.
