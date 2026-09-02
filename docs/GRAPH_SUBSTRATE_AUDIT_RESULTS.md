@@ -95,6 +95,17 @@ survives induction whenever both endpoints are in the pool. Bridge loss is the
 `seed -> non-candidate -> candidate` pattern specifically, and neither a GNN
 layer nor a QLS hop feature can see it.
 
+**The operator's edge semantics were traced, not assumed.** Every claim above
+about what the operator does with an edge rests on the semantics table, whose
+entries were established by running the frozen factory on a three-node graph
+with one directed edge, a duplicated edge and an isolated node. Two entries
+carry weight elsewhere in this report: `coalesces_duplicates` is false on every
+selection, which is why duplicate edges are counted as real messages rather
+than collapsed; and `isolated_node_still_scored` is true on every selection,
+which is why an isolated candidate is described as scored rather than dropped.
+Message flow is `source_to_target` on all five, so a candidate aggregates over
+its in-neighbours and seed signal travels forward along the stored orientation.
+
 **The sealed graph is stored asymmetrically; every derived family is stored
 symmetrically and cleanly.** A symmetric graph with no duplicate edges stores
 exactly two directed edges per undirected edge. `structural_only`, `knn_only`
@@ -119,8 +130,18 @@ self-loop presence as an open question and §4.2 named the hazard: `gcn` and
 and the affected node's own features would be weighted differently from every
 other node's. That case does not arise. Every self-loop in the message counts
 is operator-inserted, and `operator_inserted_self_loops` equals the candidate
-count exactly on every split — one per node, as the layer's own construction
-implies.
+count exactly on all twenty splits — one per node, as the layer's own
+construction implies.
+
+That last equality is a property of the operator, not of the graph, and it will
+not survive to hotpotqa_clean. The five datasets audited so far select `gat` or
+`gcn`, which both insert a self-loop; hotpotqa_clean selects `gin`, which does
+not — it carries an explicit `(1+eps)*x_self` root term instead. Its inserted
+count should therefore be zero and its consumed-message total correspondingly
+lower, and that will be a difference in the operator rather than a change in
+the substrate. The property that does hold across all six selections is
+duplicate sensitivity: `gat`, `gcn` and `gin` all consume duplicate edges as
+separate messages. Only `sage` would not, and no dataset selects it.
 
 Two fields in the path-preservation table are per-query **counts**, not
 fractions, and are labelled as such: `lost by induction` and `targets`. On
@@ -389,6 +410,16 @@ global reach seen from the other side.
 | webqsp | structural | 315 | 344.5 | 1.17 | 81.36 | 717.24 | 5.21 | 364.94 | 1710.65 |
 | webqsp | kNN only | 315 | 344.5 | 1.04 | 1.20 | 1.69 | 3.25 | 9.53 | 25.45 |
 | webqsp | baseline A | 315 | 344.5 | 1.21 | 82.24 | 750.91 | 7.20 | 375.42 | 1772.93 |
+
+### Operator edge semantics -- traced from the frozen selection, not assumed
+
+| dataset | operator | message flow | aggregation | adds self-loops | coalesces duplicates | duplicate sensitive | root term | isolated still scored |
+|---|---|---|---|---|---|---|---|---|
+| 2wiki_clean | gat | source_to_target | attention_weighted_sum | yes | no | yes | inserted_self_loop | yes |
+| metaqa | gat | source_to_target | attention_weighted_sum | yes | no | yes | inserted_self_loop | yes |
+| musique_clean | gcn | source_to_target | sum_with_symmetric_degree_normalisation | yes | no | yes | inserted_self_loop | yes |
+| squad_clean | gcn | source_to_target | sum_with_symmetric_degree_normalisation | yes | no | yes | inserted_self_loop | yes |
+| webqsp | gat | source_to_target | attention_weighted_sum | yes | no | yes | inserted_self_loop | yes |
 
 ### Storage orientation and multiplicity -- a property of the artifact
 

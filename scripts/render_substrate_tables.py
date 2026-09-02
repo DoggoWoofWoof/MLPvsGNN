@@ -164,6 +164,44 @@ def expansion(sp: dict) -> list[str]:
     )
 
 
+def operator_semantics(audits: list[dict]) -> str:
+    """What the frozen operator does with an edge -- protocol 4.2, traced.
+
+    Per dataset, not per graph: the operator is a property of the frozen model
+    selection. Two of these columns are what license readings made elsewhere in
+    the report -- `coalesces duplicates: no` is why duplicate edges are counted
+    as real messages, and `isolated still scored: yes` is why an isolated
+    candidate is described as scored rather than dropped.
+    """
+
+    rows = []
+    for audit in audits:
+        s = audit.get("operator_edge_semantics") or {}
+
+        def flag(key: str) -> str:
+            value = s.get(key)
+            return "--" if value is None else ("yes" if value else "no")
+
+        rows.append([
+            audit["dataset"],
+            str(audit.get("operator_kind") or "--"),
+            str(audit.get("message_flow") or "--"),
+            str(s.get("aggregation") or "--"),
+            flag("adds_self_loops"),
+            flag("coalesces_duplicates"),
+            flag("duplicate_sensitive"),
+            str(s.get("root_term") or "--"),
+            flag("isolated_node_still_scored"),
+        ])
+    return table(
+        "Operator edge semantics -- traced from the frozen selection, not assumed",
+        ["dataset", "operator", "message flow", "aggregation", "adds self-loops",
+         "coalesces duplicates", "duplicate sensitive", "root term",
+         "isolated still scored"],
+        rows,
+    )
+
+
 def orientation(audits: list[dict]) -> str:
     """How the frozen artifact stores its edges -- protocol 1.3, questions 1 and 2.
 
@@ -322,6 +360,7 @@ def render(summary: dict, split: str) -> str:
              "U_target H=1", "H=2", "H=3"],
             rows_for(audits, split, expansion),
         ),
+        operator_semantics(audits),
         orientation(audits),
         aliasing(audits, split),
     ]

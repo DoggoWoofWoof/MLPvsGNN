@@ -118,6 +118,16 @@ def _audit(dataset="tiny", complete=True, graphs=None, aliases=None):
     return {
         "dataset": dataset,
         "complete": complete,
+        "operator_kind": "gat",
+        "message_flow": "source_to_target",
+        "operator_edge_semantics": {
+            "adds_self_loops": True,
+            "coalesces_duplicates": False,
+            "duplicate_sensitive": True,
+            "aggregation": "attention_weighted_sum",
+            "root_term": "inserted_self_loop",
+            "isolated_node_still_scored": True,
+        },
         "graphs": graphs,
         "provenance_aliases": aliases
         or {
@@ -296,6 +306,40 @@ def test_a_metric_the_audit_did_not_record_prints_as_a_dash():
     rows = _table(_render(_audit(graphs=graphs)), "Candidate-induced connectivity")
     assert "| -- |" in rows[2]
     assert "0.000" not in rows[2]
+
+
+# ---------------------------------------------------------------------------
+# Operator semantics
+# ---------------------------------------------------------------------------
+
+
+def test_the_two_semantics_that_license_readings_elsewhere_are_rendered():
+    # `coalesces duplicates: no` is why duplicate edges are counted as real
+    # messages; `isolated still scored: yes` is why an isolated candidate is
+    # called scored rather than dropped. Both claims appear in the prose.
+    rows = _table(_render(_audit()), "Operator edge semantics")
+    header, body = rows[0], rows[2]
+    assert "coalesces duplicates" in header
+    assert "isolated still scored" in header
+    cells = [c.strip() for c in body.split("|")]
+    assert cells[header.split("|").index(" coalesces duplicates ")] == "no"
+    assert cells[header.split("|").index(" isolated still scored ")] == "yes"
+
+
+def test_operator_semantics_is_one_row_per_dataset_not_per_graph():
+    rows = _table(_render(_audit(dataset="a"), _audit(dataset="b")), "Operator edge semantics")
+    assert [r.split("|")[1].strip() for r in rows[2:]] == ["a", "b"]
+
+
+def test_an_audit_without_traced_semantics_renders_dashes():
+    audit = _audit()
+    del audit["operator_edge_semantics"]
+    del audit["operator_kind"]
+    body = _table(_render(audit), "Operator edge semantics")[2]
+    cells = [c.strip() for c in body.split("|")]
+    # Every semantic column unknown -- and not silently rendered as "no".
+    assert cells.count("--") == 7
+    assert "no" not in cells
 
 
 # ---------------------------------------------------------------------------
