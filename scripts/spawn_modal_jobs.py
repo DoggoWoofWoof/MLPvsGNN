@@ -62,19 +62,30 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
     ),
 }
 
-# Measured locally at true graph scale on the sealed CSRs. Context construction
-# is 0.4-232 ms per query per arm across all six arms, worst case on webqsp's
-# 781k-node graph, and the seed-distance probe is 22-73 ms p95 per arm. Both are
-# noise beside the QLS kernel, which is the only part whose Modal cost is
-# unknown: the image compiles it with Numba and the local pure-Python fallback
-# does not represent it.
+# Stage B replaced the pre-launch guess with measurements, so this is now
+# per-query-per-ARM rather than per-query: the cost of a job scales with how many
+# arms it runs, and Stage C runs three where Stage B ran six.
 #
-# So the kernel is costed at the one number that IS measured -- the local
-# fallback itself, 38 s per query for all six arms on 2wiki -- rounded up. That
-# is a ceiling rather than an estimate: any Numba speedup at all makes the real
-# figure smaller, and 25 queries still fit the declared 3600 s timeout with room
-# to spare even if there is none. Stage B replaces it with a measured number.
-GRAPH_CONTEXT_SECONDS_PER_QUERY = 40.0
+# Measured on Modal, p95 total per query per arm, validation split:
+#
+#     arm         2wiki      hotpotqa
+#     CAND         5.3 ms      84.2 ms
+#     SEED_H1      4.8 ms     173.5 ms
+#     TARGET_H1    7.9 ms     221.8 ms
+#     PATH_H2     12.7 ms     302.2 ms   killed at B
+#     BRIDGE_H2    9.6 ms     306.8 ms   killed at B
+#     SEED_H2     81.2 ms   2,635.6 ms   killed at B
+#
+# 1.5 s per query per arm clears every surviving arm by about sevenfold and the
+# six-arm mean by about threefold. Only SEED_H2 on hotpotqa exceeds it, and
+# SEED_H2 is killed; if it is ever revived this number has to be re-derived.
+#
+# The load term is the fixed cost before the first query -- container start, the
+# dataset, the CSR operators, and one Numba compilation. It shows up as a single
+# outlier: CAND runs first and its max is 6.7 s and 9.3 s against medians of 2.5
+# and 73 ms. Measured end to end at 33 s (2wiki) and 278 s (hotpotqa) for a whole
+# 25-query six-arm split, so 600 s stays a ceiling rather than an estimate.
+GRAPH_CONTEXT_SECONDS_PER_QUERY_PER_ARM = 1.5
 GRAPH_CONTEXT_LOAD_SECONDS = 600.0
 
 
@@ -279,7 +290,9 @@ def measured_units(
                 name=f"{job['dataset']}:{job['stage']}",
                 seconds=(
                     GRAPH_CONTEXT_LOAD_SECONDS
-                    + int(job["query_cap"]) * GRAPH_CONTEXT_SECONDS_PER_QUERY
+                    + int(job["query_cap"])
+                    * len(job.get("arms") or module.CONFIG["arms"])
+                    * GRAPH_CONTEXT_SECONDS_PER_QUERY_PER_ARM
                 ),
             )
             for job in jobs
@@ -287,7 +300,8 @@ def measured_units(
         # One split, committed once, so a restart redoes the whole dataset.
         units, granularity = _collapse_without_resumption(units, module, "split", "pilot")
         caps = sorted({int(job["query_cap"]) for job in jobs})
-        return units, f"{len(jobs)} dataset(s) at {caps} quer(ies); {granularity}"
+        arms = sorted({len(job.get("arms") or module.CONFIG["arms"]) for job in jobs})
+        return units, f"{len(jobs)} dataset(s) at {caps} quer(ies) x {arms} arm(s); {granularity}"
 
     return None, f"no measured cost model for {package}"
 

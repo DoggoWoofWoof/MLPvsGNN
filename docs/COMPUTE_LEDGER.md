@@ -251,3 +251,75 @@ number. It gets its own line when B returns.
 
 E2 stays paused, F stays sealed, no workspace migration, nothing trained.
 
+#### Stage C declaration, filed 2026-09-02 after B returned
+
+Stage B ran as declared: 25 validation queries on 2wiki and hotpotqa, six arms,
+no query skipped for want of a retrieval seed. Both jobs returned, in 33 s and
+278 s.
+
+**Measured throughput, which is what B was for.** Total per query per arm, p95,
+on the Modal image with the Numba kernel:
+
+```text
+arm           2wiki      hotpotqa      verdict at B
+CAND           5.3 ms      84.2 ms     control, on the frontier only by being free
+SEED_H1        4.8 ms     173.5 ms     survives on a half-millisecond margin
+TARGET_H1      7.9 ms     221.8 ms     survives
+PATH_H2       12.7 ms     302.2 ms     killed -- a subset of SEED_H1 costing 6x more
+BRIDGE_H2      9.6 ms     306.8 ms     killed -- a subset of TARGET_H1 costing more
+SEED_H2       81.2 ms   2,635.6 ms     killed -- less recovery at half the corpus
+```
+
+The pre-launch ceiling of 40 s per query was wrong by three orders of magnitude
+in the safe direction: it costed the QLS kernel at the local pure-Python
+fallback because no measured figure existed. The cost model is now per query per
+**arm**, at 1.5 s, which clears every surviving arm about sevenfold. Only
+SEED_H2 exceeds it and SEED_H2 is dead; reviving it means re-deriving this.
+
+**What B decided.** Three arms killed, each dominated on both declared axes on
+both datasets, and two of them killed structurally rather than narrowly: PATH_H2
+is a subset of SEED_H1 and BRIDGE_H2 a subset of TARGET_H1, each costing more to
+build because identifying a path node takes a second matrix step that a radius
+rule does not take. No quantity of further queries reverses a subset relation.
+That the literature-style enclosing contexts are dominated by a plain radius-1
+in-neighbourhood is a result rather than a formality, and it is the reason they
+were run rather than argued about.
+
+```text
+scientific question   Do B's survivors hold at 300 queries across all six
+                      datasets, and does the repair keep landing on the
+                      candidates Phase -1 identified as starved?
+
+arms                  CAND, SEED_H1, TARGET_H1. CAND stays first: it defines the
+                      baseline every reach number is scored against.
+datasets / queries    six datasets x 300 validation queries x 3 arms
+models / seeds        none -- feature-only, no training, no GPU
+number of jobs        6 CPU jobs, substrate container shape
+
+estimated CPU-hours   <= 3.25   ceiling; measured throughput puts the real
+                                figure near 0.7
+estimated cost        <= $5.15  ceiling at $0.634/h; near $1 in practice
+estimated wall time   <= 35 min, jobs concurrent, largest unit 0.54 h against a
+                                1 h timeout
+estimated storage     < 5 MB
+
+stopping rule         Kill an arm that is dominated on (p95 construction
+                      latency, median retention) on every one of the six
+                      datasets. Ties kill nothing, an unmeasurable retention
+                      decides nothing, and one dataset is not a frontier. The
+                      rule is executable and tested, not prose.
+
+advancement criterion An arm advances only if its recovery holds across all six
+                      datasets AND its seed-distance improvement stays
+                      concentrated on formerly isolated and low-degree
+                      candidates. On B, TARGET_H1 improved 97.7% and 99.7% of
+                      formerly isolated candidates against 49.1% and 29.2% of
+                      ordinary ones; a survivor that flattens out across strata
+                      on the remaining four datasets is rescaling, not repair.
+```
+
+Nothing trained, no GPU, no gold id, no test split, no candidate pool touched
+and no GNN anywhere. E2 stays paused at 82/96 with its 69 seed-units unspent, F
+stays sealed, and the workspace does not change.
+
+
