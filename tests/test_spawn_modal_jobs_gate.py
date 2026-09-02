@@ -50,11 +50,21 @@ FAMILIES = {
 _UNSET = object()
 
 
-def fake_module(timeout_seconds: float, granularity: Any = _UNSET) -> SimpleNamespace:
-    """A runner stub. Omitting `granularity` models one that declares nothing."""
+def fake_module(
+    timeout_seconds: float, granularity: Any = _UNSET, shape: dict | None = None
+) -> SimpleNamespace:
+    """A runner stub. Omitting `granularity` models one that declares nothing.
 
+    The default shape is the real phase-confirmation container, since a stub
+    with no cores or memory is not a container any package actually runs on.
+    """
+
+    config = {"timeout_seconds": timeout_seconds}
+    config.update(
+        shape if shape is not None else {"gpu": "A10G", "cpu": 16, "memory_mb": 49152}
+    )
     module = SimpleNamespace(
-        MODAL_CONFIG={"timeout_seconds": timeout_seconds},
+        MODAL_CONFIG=config,
         CONFIG={"graphs": FAMILIES},
     )
     if granularity is not _UNSET:
@@ -176,6 +186,80 @@ def test_an_e2_launch_reports_what_it_expects_to_spend():
         "phase-confirmation", fake_module(24 * HOUR, "seed"), e2_jobs("squad_clean", "metaqa")
     )
     assert report["expected_spend_usd"] > 0
+
+
+def test_the_rate_follows_the_container_shape_rather_than_a_blended_hour():
+    """A CPU-only job costed at the A10G rate reads five times too expensive.
+
+    The substrate audit holds no accelerator at all, so quoting it at the
+    confirmation container's rate would discourage a job that bills about $8 by
+    reporting nearly $40 -- an error in the direction that stops cheap work.
+    """
+    gpu_shape = fake_module(24 * HOUR, "family")
+    cpu_shape = fake_module(24 * HOUR, "family", shape={"cpu": 8, "memory_mb": 32768})
+    with_gpu = spawn.gate_launch("graph-substrate", gpu_shape, substrate_jobs("hotpotqa_clean"))
+    without = spawn.gate_launch("graph-substrate", cpu_shape, substrate_jobs("hotpotqa_clean"))
+    assert with_gpu["container_usd_per_hour"] > 3 * without["container_usd_per_hour"]
+
+
+def test_the_invoice_decomposition_is_reproduced_by_the_rates():
+    """The three rates come from one billed run and must still add back to it.
+
+    That run held an A10G with 16 cores and 48 GiB and was billed A10G $12.52,
+    CPU $8.61, memory $4.37. If a rate is edited without re-deriving it from an
+    invoice, these ratios drift and every spend figure quietly becomes fiction.
+    """
+    from mp_retrieval.compute_budget import (
+        USD_PER_A10G_HOUR,
+        USD_PER_CPU_CORE_HOUR,
+        USD_PER_GIB_HOUR,
+    )
+
+    assert (16 * USD_PER_CPU_CORE_HOUR) / USD_PER_A10G_HOUR == pytest.approx(
+        8.61 / 12.52, rel=0.02
+    )
+    assert (48 * USD_PER_GIB_HOUR) / USD_PER_A10G_HOUR == pytest.approx(
+        4.37 / 12.52, rel=0.02
+    )
+
+
+def test_a_launch_reports_the_burn_rate_the_container_cap_permits():
+    """What a stalled run costs per hour before anyone looks -- the whole point
+    of the cap, and a number that was never on screen before the bill arrived."""
+    report = spawn.gate_launch(
+        "phase-confirmation",
+        fake_module(24 * HOUR, "seed", shape={"gpu": "A10G", "cpu": 16, "memory_mb": 49152, "max_containers": 6}),
+        e2_jobs("squad_clean"),
+    )
+    assert report["max_burn_usd_per_hour"] == pytest.approx(
+        6 * report["container_usd_per_hour"], abs=0.01
+    )
+    # The figure that justifies the cap: uncapped, 24 cells run 24 containers.
+    assert report["max_burn_usd_per_hour"] < 24 * report["container_usd_per_hour"]
+
+
+def test_an_undeclared_container_shape_reports_unknown_not_zero():
+    """A confident "$0.00" in a launch record is worse than admitting ignorance."""
+    module = fake_module(24 * HOUR, "seed", shape={})
+    report = spawn.gate_launch("phase-confirmation", module, e2_jobs("metaqa"))
+    assert report["expected_spend_usd"] is None
+    assert report["container_usd_per_hour"] is None
+    assert "cannot price" in report["spend_unknown_because"]
+
+
+def test_an_unpriced_accelerator_is_refused_rather_than_costed_as_free():
+    from mp_retrieval.compute_budget import container_rate_usd_per_hour
+
+    with pytest.raises(ValueError, match="no measured hourly rate"):
+        container_rate_usd_per_hour(gpu="H100", cpu_cores=8, memory_mb=1024)
+
+
+def test_an_unknown_spend_still_does_not_block_a_feasible_launch():
+    """Feasibility is this gate's business; a budget is the operator's."""
+    report = spawn.gate_launch(
+        "phase-confirmation", fake_module(24 * HOUR, "seed", shape={}), e2_jobs("metaqa")
+    )
+    assert report["gated"] is True
 
 
 def test_a_ceiling_below_one_seed_is_refused():

@@ -1849,11 +1849,35 @@ shortly after the first family lands, every time.
 
 `max_containers: 6` (in the `phase_screen.yaml` modal block, which is the
 container shape `modal_phase_confirmation` actually reads) caps the burn rate.
-Uncapped, Modal starts one container per spawned cell, so 24 cells bill about
-$28/h and a run producing nothing can spend a day's budget before anyone looks.
-At six it is ~$7/h, well inside the watchdog's five-minute poll. Total training
-GPU-seconds are unchanged -- concurrency spreads cost, it does not create or
-remove it.
+Uncapped, Modal starts one container per spawned cell, so 24 cells bill
+**$53.78/h** and a run producing nothing can spend a day's budget before anyone
+looks. At six it is **$13.44/h**, so a stall costs about $1.12 per five-minute
+watchdog poll. Total training GPU-seconds are unchanged -- concurrency spreads
+cost, it does not create or remove it.
+
+### Pricing by container shape, not by a blended hour
+
+A first version of this costed everything at one "$1.18 container hour" and was
+wrong by a factor of five for CPU-only work, reporting **$39** for a substrate
+audit that bills about **$8**. Modal prices three lines separately, and the
+phase-confirmation invoice pins all three: that run held an A10G with 16 cores
+and 48 GiB for $25.50 -- A10G $12.52, CPU $8.61, memory $4.37 -- giving
+
+| resource | rate | check against the invoice |
+|---|---:|---|
+| A10G | $1.10/h | anchor |
+| CPU | $0.0473/core/h | 16 cores / A10G = 0.688 vs billed 8.61/12.52 = 0.688 |
+| memory | $0.0080/GiB/h | 48 GiB / A10G = 0.349 vs billed 4.37/12.52 = 0.349 |
+
+So the confirmation container is **$2.241/h** and the substrate container
+(8 cores, 32 GiB, no accelerator) is **$0.634/h**; $25.50 is 11.4
+container-hours, not the ~22 first estimated. A test re-derives both ratios from
+the invoice, so editing a rate without re-deriving it fails the suite.
+
+An undeclared container shape now reports the spend as **unknown** rather than
+`$0.00`: a confident zero in a launch record is worse than admitting ignorance.
+Spend is never grounds for refusal either way -- whether a run can finish is the
+gate's business, what it costs is the operator's.
 
 ### E2 relaunch on `pilgnnteam`
 
@@ -1869,7 +1893,13 @@ to check. Verified 88 + 1,907 files (size), and `migration_provenance.py inputs
 derived caches 4/4, E1 screen results 32/32, E1 seed-0 checkpoints 64/64.
 
 Matrix: **96 conditions -- COMPLETE 72, PARTIAL 9, MISSING 15, INVALID 0**.
-The 24 cells needing work are `squad_clean` 16 and `metaqa` 8. The gate's
-pre-launch reading: 120 seed-units, largest **0.11 h** against a 24 h ceiling,
-4.89 h total, **~$14.42** expected (an upper bound -- every cell is costed at
-its full five seeds, including the nine that only owe some).
+The 24 cells needing work are `squad_clean` 16 and `metaqa` 8, and all 24 were
+spawned on `pilgnnteam` as app `ap-dgTBfunNsWEESpqv1nyF6l`, running 6 tasks --
+the cap, applied. The gate's pre-launch reading: 120 seed-units, largest
+**0.11 h** against a 24 h ceiling, 4.89 h total.
+
+The spend it printed at launch, **$14.42**, was computed with the blended rate
+and is too low; at the corrected shape rate the same work is **~$27**. It is an
+upper bound in one respect -- every cell is costed at its full five seeds,
+including the nine that only owe some -- but the rate error was real and is
+recorded here rather than quietly fixed.

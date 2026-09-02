@@ -173,6 +173,18 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--stall-hours", type=float, default=2.0)
     parser.add_argument("--poll-seconds", type=float, default=300.0)
+    parser.add_argument(
+        "--max-depth",
+        type=int,
+        default=MAX_DEPTH,
+        help=(
+            "how deep to walk below the prefix. Each directory costs a volume "
+            "listing, so stop at the shallowest level that still changes when "
+            "work lands: E2 writes result.json at depth 3 and per-seed "
+            "checkpoints below it, and descending into those triples the poll "
+            "cost while telling you nothing new"
+        ),
+    )
     parser.add_argument("--no-stop", action="store_true", help="report only, do not stop the app")
     args = parser.parse_args(argv)
 
@@ -198,7 +210,7 @@ def main(argv: list[str] | None = None) -> int:
                 )
             return 4
 
-    baseline = snapshot(args.volume, args.prefix, args.profile)
+    baseline = snapshot(args.volume, args.prefix, args.profile, max_depth=args.max_depth)
     if baseline is None:
         print(f"REFUSED: cannot read {args.prefix} on {args.profile}", file=sys.stderr)
         return 4
@@ -219,7 +231,7 @@ def main(argv: list[str] | None = None) -> int:
 
     while True:
         time.sleep(args.poll_seconds)
-        current = snapshot(args.volume, args.prefix, args.profile)
+        current = snapshot(args.volume, args.prefix, args.profile, max_depth=args.max_depth)
         tasks = running_tasks(args.app_id, args.profile)
         now = time.time()
 

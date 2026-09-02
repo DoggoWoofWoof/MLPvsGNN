@@ -108,11 +108,14 @@ modal:
   cpu: 16
   memory_mb: 49152
   timeout_seconds: 86400
-  # Caps how fast a package built on this container shape can bill. Uncapped,
-  # Modal starts one container per spawned cell, so 24 cells burn about
-  # 24 x $1.18/h and a run producing nothing costs ~$28 for every hour before
-  # anyone looks -- the shape of the $25.50 that arrived for eight cells. At six
-  # the ceiling is ~$7/h, well inside the watchdog's polling interval.
+  # Caps how fast a package built on this container shape can bill. Modal
+  # prices the accelerator, the cores and the memory separately, so this shape
+  # -- A10G + 16 cores + 48 GiB -- costs $2.24/h, not the $1.10 of the GPU line
+  # alone. Uncapped, one container starts per spawned cell, so 24 cells burn
+  # $53.78/h and a run producing nothing can spend a day's budget before anyone
+  # looks; the $25.50 that arrived for eight cells is 11.4 container-hours of
+  # exactly that. At six the ceiling is $13.44/h, so a stall costs ~$1.12 per
+  # five-minute watchdog poll instead of ~$4.48.
   # Scheduling only: it changes no seed, no split and no protocol, and cells
   # remain independent. Read by modal_phase_confirmation; the screen itself is
   # frozen and does not apply it.

@@ -43,11 +43,52 @@ PHASE_CONFIRMATION_SECONDS_PER_SEED = {
     "webqsp": 3.0,
 }
 
-# Observed on darkphoenix: $25.50 over ~22 A10G container-hours, of which only
-# ~40% was training. Used for reporting an expected spend, never for a refusal --
-# a budget is the operator's call, feasibility is not.
-USD_PER_A10G_CONTAINER_HOUR = 1.18
+# Modal bills the accelerator, the cores and the memory as three separate lines,
+# and the phase-confirmation invoice decomposes cleanly enough to recover all
+# three rates. That run held an A10G with 16 cores and 48 GiB and was billed
+# $25.50: A10G $12.52, CPU $8.61, memory $4.37. Dividing the CPU and memory
+# lines by the A10G line and by the quantities held gives the ratios below;
+# anchoring them on the A10G hourly rate gives absolute figures.
+#
+# The distinction matters because a single blended "container hour" is wrong by
+# a factor of five in the direction that discourages cheap work: the substrate
+# audit holds no GPU at all, and costing it at the A10G rate reports $39 for a
+# job that bills about $8.
+USD_PER_A10G_HOUR = 1.10
+USD_PER_CPU_CORE_HOUR = 0.0473
+USD_PER_GIB_HOUR = 0.0080
+
+# Fraction of billed time a phase-confirmation container spends training. The
+# rest is image pull, data loading and feature building, all billed at the same
+# rate with the accelerator attached and idle. Quoting training seconds alone is
+# how a $25 job gets described as $10.
 TRAINING_FRACTION_OF_BILLED_TIME = 0.40
+
+
+def container_rate_usd_per_hour(
+    *, gpu: str | None = None, cpu_cores: float = 0.0, memory_mb: float = 0.0
+) -> float:
+    """Hourly cost of one container of a given shape.
+
+    Only the A10G is priced, because it is the only accelerator this project has
+    ever been billed for and it is the only one an invoice pins. An unrecognised
+    GPU raises rather than silently costing zero, which would understate a spend
+    in exactly the situation where the number is most wanted.
+    """
+    if cpu_cores < 0 or memory_mb < 0:
+        raise ValueError("container shape cannot be negative")
+    if not gpu and not cpu_cores and not memory_mb:
+        # Every Modal container holds cores and memory, so an empty shape means
+        # the caller could not find one -- not that the job is free. Returning
+        # 0.0 here would put a confident "$0.00" in a launch record, which is a
+        # worse answer than admitting the rate is unknown.
+        raise ValueError("no container shape given; cannot price a container that holds nothing")
+    rate = cpu_cores * USD_PER_CPU_CORE_HOUR + (memory_mb / 1024.0) * USD_PER_GIB_HOUR
+    if gpu:
+        if gpu.upper() != "A10G":
+            raise ValueError(f"no measured hourly rate for accelerator {gpu!r}")
+        rate += USD_PER_A10G_HOUR
+    return rate
 
 
 @dataclass(frozen=True)
@@ -163,16 +204,29 @@ def phase_confirmation_units(
 def expected_spend_usd(
     units: list[WorkUnit],
     *,
-    usd_per_container_hour: float = USD_PER_A10G_CONTAINER_HOUR,
+    usd_per_container_hour: float | None = None,
     training_fraction: float = TRAINING_FRACTION_OF_BILLED_TIME,
 ) -> float:
-    """Billed cost of the work, inflated for the time the GPU is not training.
+    """Billed cost of the work, inflated for time the container is not working.
 
-    Measured training seconds understate the bill: data loading and feature
-    building are billed at the same rate with the accelerator attached and idle.
-    Reporting the training figure alone is how a $30 job gets described as $12.
+    ``usd_per_container_hour`` should come from `container_rate_usd_per_hour`
+    for the shape the package actually runs on. It defaults to the A10G
+    phase-confirmation shape only because that is the run an invoice pins;
+    passing a CPU-only shape's rate is what keeps a GPU-less job from being
+    quoted at five times its cost.
+
+    ``training_fraction`` is how much of the billed time does the measured work.
+    A job whose measurement already covers its whole runtime -- the substrate
+    audit's per-query cost includes its loading -- should pass 1.0 rather than
+    be inflated twice.
     """
     if not 0 < training_fraction <= 1:
         raise ValueError("training fraction must lie in (0, 1]")
+    if usd_per_container_hour is None:
+        usd_per_container_hour = container_rate_usd_per_hour(
+            gpu="A10G", cpu_cores=16, memory_mb=49152
+        )
+    if usd_per_container_hour < 0:
+        raise ValueError("container rate cannot be negative")
     billed_hours = sum(u.seconds for u in units) / 3600 / training_fraction
     return billed_hours * usd_per_container_hour

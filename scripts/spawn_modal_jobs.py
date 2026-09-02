@@ -29,7 +29,9 @@ from modal.runner import deploy_app
 
 from mp_retrieval.compute_budget import (
     PHASE_CONFIRMATION_SECONDS_PER_SEED,
+    TRAINING_FRACTION_OF_BILLED_TIME,
     WorkUnit,
+    container_rate_usd_per_hour,
     expected_spend_usd,
     feasibility,
     phase_confirmation_units,
@@ -164,6 +166,17 @@ SUBSTRATE_EXPANSION_CAP = 512
 # Model seeds per E2 cell, from configs/phase_confirmation.yaml.
 PHASE_CONFIRMATION_SEEDS = 5
 
+# How much of a package's billed time does the work its measurement covers. A
+# confirmation container spends the rest pulling images and loading data with
+# the A10G attached and idle; the substrate audit's per-query cost already
+# includes its own loading, so inflating it again would double-count. An
+# unlisted package gets the lower figure, which overstates rather than
+# understates a bill.
+UTILISATION = {
+    "phase-confirmation": TRAINING_FRACTION_OF_BILLED_TIME,
+    "graph-substrate": 1.0,
+}
+
 
 def _collapse_without_resumption(
     units: list[WorkUnit], module: Any, expected: str, label: str
@@ -259,6 +272,20 @@ def gate_launch(package: str, module: Any, jobs: list[dict[str, Any]]) -> dict[s
         return {"gated": False, "why": note, "timeout_seconds": timeout}
 
     verdict = feasibility(units, timeout_seconds=timeout)
+    shape = module.MODAL_CONFIG
+    try:
+        rate = container_rate_usd_per_hour(
+            gpu=shape.get("gpu"),
+            cpu_cores=shape.get("cpu", 0),
+            memory_mb=shape.get("memory_mb", 0),
+        )
+    except ValueError as error:
+        # Reported as unknown, never as zero, and never as a refusal: what a run
+        # costs is the operator's business, while whether it can finish is this
+        # function's. Only the second is grounds for stopping a launch.
+        rate = None
+        rate_note = str(error)
+    cap = shape.get("max_containers")
     report = {
         "gated": True,
         "basis": note,
@@ -266,7 +293,17 @@ def gate_launch(package: str, module: Any, jobs: list[dict[str, Any]]) -> dict[s
         "units": len(units),
         "largest_unit_hours": round(verdict.largest.seconds / 3600, 3) if verdict.largest else 0.0,
         "total_hours": round(verdict.total_seconds / 3600, 2),
-        "expected_spend_usd": round(expected_spend_usd(units), 2),
+        "container_usd_per_hour": round(rate, 3) if rate is not None else None,
+        "max_burn_usd_per_hour": round(rate * cap, 2) if (rate is not None and cap) else None,
+        "expected_spend_usd": round(
+            expected_spend_usd(
+                units,
+                usd_per_container_hour=rate,
+                training_fraction=UTILISATION.get(package, TRAINING_FRACTION_OF_BILLED_TIME),
+            ),
+            2,
+        ) if rate is not None else None,
+        "spend_unknown_because": None if rate is not None else rate_note,
         "verdict": verdict.reason,
     }
     if not verdict:
