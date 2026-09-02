@@ -697,7 +697,8 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D7:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D7_RESULTS.md
     evidence_class: CONFIRMATORY within its own narrow question
     runner: scripts/run_graph_context_d7.py
     dataset: 2wiki_clean
@@ -901,6 +902,133 @@ stages:
        pairwise family combinations, architecture search, LODO, E2 resume,
        Package F, convergence study, workspace migration]
     is_the_only_experiment: true
+    outcome: >-
+      2Wiki validation, seed 0. Four one-family arms against D6's reused base.
+      SUPPORT PROMISING, PATHS PROMISING, DIFFUSION NEGLIGIBLE, NEIGHBOURHOOD
+      NEGLIGIBLE. Increments against D6_BASE_13, as R@1 / R@5 / R@20 / MRR /
+      FullCov@20 -- SUPPORT -0.03 / +0.64 / +0.20 / +0.09 / +0.40; PATHS -0.12 /
+      +0.82 / +0.13 / -0.15 / +0.30; DIFFUSION -0.13 / +0.43 / +0.17 / -0.06 /
+      +0.33; NEIGHBOURHOOD -0.22 / +0.07 / +0.08 / -0.19 / +0.17.
+    the_headline_is_sub_additivity: >-
+      The four families sum to +1.96 R@5 but jointly deliver +0.89. The
+      additivity residual is -1.07 R@5, and negative on every other metric too
+      (-0.14 R@1, -0.34 R@20, -0.39 MRR, -0.67 FullCov). More than half the
+      effectiveness the families produce separately disappears when they are
+      combined. On the reading registered in advance a large negative residual
+      means redundancy or interference, and at -1.07 against a +1.96 sum that is
+      the dominant fact about this block, not a correction to it. The plainest
+      statement -- the six columns carry roughly one family's worth of distinct
+      information, told four times. DESCRIPTIVE ONLY, one dataset, one seed, not
+      a statistical interaction test.
+    where_the_head_loss_lives: >-
+      Nowhere in particular. D6's block cost -0.63 R@1 and -0.70 MRR; the four
+      families together account for only -0.48 and -0.30, so for MRR more than
+      half the regression is in the additivity residual and belongs to no single
+      family. What can be attributed -- NEIGHBOURHOOD is the largest single
+      contributor to both losses (-0.22 R@1, -0.19 MRR) while returning the least
+      effectiveness of any family (+0.07 R@5, inside the near-zero band), so it
+      is the one clean delete. SUPPORT is head-neutral and is the only family
+      that improves a head metric at all (-0.03 R@1 but +0.09 MRR). Deleting any
+      single family would not recover the joint regression.
+    two_families_not_one: >-
+      dominant_family fired for PATHS at +0.82 R@5, above both the +0.50 bar and
+      half the joint +0.89. But SUPPORT's +0.64 clears the same half-joint bar of
+      +0.445, so two families do, and PATHS leads SUPPORT by 0.18 points at one
+      dataset and one seed. This is a two-family result, not a single winner, and
+      the sub-additivity is why both can be true at once. DIFFUSION missed the
+      +0.50 line by 0.07 points and is classified NEGLIGIBLE because that is the
+      rule that was written down; the margin is recorded rather than used to move
+      the threshold.
+    the_two_families_work_in_different_places: >-
+      R@5 by stratum -- SUPPORT +0.99 isolated, +1.03 degree_1, -0.02 low_degree,
+      +1.77 ordinary; PATHS +0.33 / +0.80 / +0.96 / +2.02; DIFFUSION +0.09 /
+      +0.30 / +0.53 / +1.77; NEIGHBOURHOOD -0.06 / +0.30 / +0.02 / +0.00. SUPPORT
+      does its work on the sparse end and nothing at low_degree; PATHS is the
+      opposite and rises with connectivity. Every family is largest on ordinary,
+      which is 198 queries and therefore carries the least weight and the most
+      noise. The one sharp head-ranking cost in the stratified view is SUPPORT on
+      ordinary, -2.53 R@1 and -2.48 MRR against +1.77 R@5, which does not survive
+      into the pooled figure. boundaries_fitted_here false; counts identical to
+      D5 and D6.
+    tensor_invariants_measured: >-
+      every_arm_max_abs_diff 0.0 over 4,851,276 candidate rows. For each of the
+      four arms -- distance geometry equal to D6_BASE_13's, prior columns equal
+      to both the injected prior and D6_BASE_13's, family columns equal to
+      D6_FULL_13's, every other residual column exactly zero. Each arm differs
+      from D6_BASE_13 in exactly its own family's columns and nowhere else. No
+      residual column is empty, so no invariant was satisfied vacuously --
+      occupancy runs from 224,317 rows (seed_connections, paths_length_1) to
+      1,106,161 (personalized_pagerank). Prior versus D4 max_abs_diff 0.0.
+      NORMALISED_COLUMNS still (4,5,6,7,8,9), not extended; PPR and path
+      definitions untouched.
+    reuse_measured: >-
+      D6_BASE_13 is an EXACT MATCHED CAUSAL CONTROL here, not the descriptive
+      reference D5's Z2R was for D6 -- identical architecture, width and
+      parameter count, so arm minus base is a clean information comparison. 31
+      reuse conditions checked, all matched. All six arms at 213,689 parameters,
+      head width 61, local_dim 13.
+    deterministic_reproduction_measured: >-
+      D6's arms were fitted in a different container, so the reuse was proved
+      rather than assumed. D7 rebuilt D6's two blocks locally and recomputed
+      every content-sensitive statistic D6 recorded from its own build. 7
+      conditions, all matched -- candidate rows 4,851,276; residual columns'
+      nonzero entries 2,999,730; prior rows ranked by both retrievers 548,724;
+      rows ranked by neither 0; prior versus D4 max_abs_diff 0.0; seed-identity
+      proof identical; gold stratum counts identical. A failure would have
+      stopped the stage rather than being refitted around.
+    convergence_note: >-
+      VERIFIED FROM CODE, _fit restores the best held-out epoch. D7_SUPPORT_13
+      peaked at epoch 3 (0.6962, 0.7150, 0.7157 -- still rising) where every
+      other arm here peaked at epoch 2, as D6's two did. SUPPORT's +0.64 is
+      therefore the more likely of the two qualifying families to be understated
+      at this budget. D7 was not given extra epochs to find out.
+    not_established: >-
+      Not a pairwise decomposition. The sub-additivity says the families overlap;
+      it does not say which pairs overlap, and nothing here licenses a
+      combinatorial sweep to find out. Not a statistical claim -- +0.82 against
+      +0.64 is a difference of two point estimates at one dataset and one seed,
+      and the -1.07 residual is descriptive. Not a feature recommendation -- a
+      family surviving is evidence that its KIND of information is useful, never
+      that its QLS-v1 implementation should be carried into QLS-v2. Not an
+      architecture result -- the 13-column block is a diagnostic, three columns
+      wider and 183 parameters larger than the frozen model.
+    decides:
+      - >-
+        Two families earn continued QLS-v2 development, not four -- SUPPORT and
+        PATHS. DIFFUSION and NEIGHBOURHOOD leave immediate priority.
+      - >-
+        Do NOT carry the v1 implementations forward. SUPPORT surviving motivates
+        distinct supporting seeds, support fraction or retrieval-weighted support
+        over bounded bitsets, NOT the raw edge count. PATHS surviving motivates
+        path diversity, unique predecessor count or independent seed support by
+        hop, NOT raw walk counts.
+      - >-
+        DIFFUSION not surviving is not an argument to retain iterative PPR under
+        any reading; bounded diffusion would have been the question and it did
+        not clear the bar to be asked.
+      - >-
+        NEIGHBOURHOOD not surviving closes this common-neighbour statistic, not
+        cheap bounded topology as an idea.
+      - >-
+        Do NOT launch pairwise family combinations. The sub-additivity makes them
+        tempting and that is exactly why they need their own declaration and a
+        clear reason. No combinatorial family sweep.
+      - >-
+        The global-context branch stays closed; TARGET_H1 already failed its
+        controlled effectiveness test.
+    actual_cost:
+      new_runs: 4
+      accounted_seconds: 139.6
+      accounted_gpu_hours: 0.039
+      accounted_usd: 0.07
+      note: >-
+        50.5 s shared feature build, 2.0 s static, 14.6 s assembling and proving
+        the prior, then 18.5 + 17.5 + 17.5 + 17.6 s of training and 0.34 s of
+        inference per arm. Against the declared authorisation ceiling of 0.15
+        GPU-hours and $0.60 and the measured expectation of about 132 s filed
+        before launch. Under $0.25 billed at $1.734/h. The gate reported 0.2 h /
+        $0.87 again, which is the D1 stage-independent whole-split ceiling and
+        not a D7 forecast.
 
   D6:
     status: COMPLETE
