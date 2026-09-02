@@ -61,7 +61,9 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any
+from queue import Empty, Queue
+from threading import Thread
+from typing import Any, Iterator
 
 import modal
 
@@ -125,6 +127,13 @@ QUARANTINE_PREFIX = "migration_reference"
 # few fresh streams before a multi-hour transfer is abandoned over one file.
 FETCH_ATTEMPTS = 4
 RETRY_BACKOFF_SECONDS = 2.0
+# A stream can also stop delivering without ending and without raising. That is
+# worse than either: the client blocks inside next() and the transfer hangs
+# silently rather than failing where a retry could fix it. Observed in the
+# field, on a verification that sat on its last seven files for 35 minutes at
+# zero CPU. A healthy stream delivers blocks continuously, so silence this long
+# is a stall rather than a slow link.
+STALL_TIMEOUT_SECONDS = 120.0
 
 
 # ---------------------------------------------------------------------------
@@ -290,12 +299,56 @@ def cmd_plan(args: argparse.Namespace) -> int:
     return 0
 
 
+def _blocks(
+    volume: modal.Volume, path: str, stall_seconds: float | None = None
+) -> Iterator[bytes]:
+    """Yield a file's blocks, raising ``TimeoutError`` if the stream goes quiet.
+
+    ``read_file`` blocks inside ``next()``, so the only way to bound it is to
+    read on another thread and wait on a queue. A stalled reader is abandoned
+    rather than joined: it is stuck in the very call that could not be
+    interrupted, and the retry opens a fresh stream regardless. The queue is
+    bounded so a slow consumer applies backpressure instead of buffering a
+    multi-gigabyte file into memory.
+    """
+
+    # Resolved here rather than as a default argument: a module constant
+    # bound at import is not a setting anyone can change, only one that
+    # looks changeable.
+    stall = STALL_TIMEOUT_SECONDS if stall_seconds is None else stall_seconds
+    blocks: Queue[Any] = Queue(maxsize=8)
+    finished = object()
+
+    def pump() -> None:
+        try:
+            for block in volume.read_file(path):
+                blocks.put(block)
+        except BaseException as error:  # handed to the consumer, which can act
+            blocks.put(error)
+        else:
+            blocks.put(finished)
+
+    Thread(target=pump, daemon=True, name=f"read:{path}").start()
+    while True:
+        try:
+            item = blocks.get(timeout=stall)
+        except Empty:
+            raise TimeoutError(
+                f"no data for {stall:.0f}s (stream stalled)"
+            ) from None
+        if item is finished:
+            return
+        if isinstance(item, BaseException):
+            raise item
+        yield item
+
+
 def _fetch_one(
     volume: modal.Volume,
     staging: Path,
     path: str,
     size: int,
-    attempts: int = FETCH_ATTEMPTS,
+    attempts: int | None = None,
 ) -> tuple[str, dict[str, Any], bool]:
     """Stage one file. Returns (path, manifest entry, was_already_staged).
 
@@ -306,6 +359,7 @@ def _fetch_one(
     resumed: a truncated prefix must never be promoted to the real name.
     """
 
+    attempts = FETCH_ATTEMPTS if attempts is None else attempts
     local = staging / path
     local.parent.mkdir(parents=True, exist_ok=True)
     if local.is_file() and local.stat().st_size == size and size > 0:
@@ -318,7 +372,7 @@ def _fetch_one(
         written = 0
         try:
             with partial.open("wb") as stream:
-                for block in volume.read_file(path):
+                for block in _blocks(volume, path):
                     stream.write(block)
                     digest.update(block)
                     written += len(block)
@@ -340,7 +394,7 @@ def _hash_remote(
     volume: modal.Volume,
     path: str,
     size: int,
-    attempts: int = FETCH_ATTEMPTS,
+    attempts: int | None = None,
 ) -> tuple[int, str]:
     """Hash a file as the volume holds it, retrying a stream that ends early.
 
@@ -352,12 +406,13 @@ def _hash_remote(
     genuine difference, and a short read is retried rather than reported.
     """
 
+    attempts = FETCH_ATTEMPTS if attempts is None else attempts
     last = ""
     for attempt in range(1, attempts + 1):
         digest = hashlib.sha256()
         written = 0
         try:
-            for block in volume.read_file(path):
+            for block in _blocks(volume, path):
                 digest.update(block)
                 written += len(block)
         except Exception as error:  # transport faults are retryable, like short reads

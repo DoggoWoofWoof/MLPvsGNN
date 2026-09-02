@@ -14,6 +14,8 @@ from __future__ import annotations
 
 import json
 import sys
+import threading
+import time
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -621,3 +623,95 @@ def test_a_narrowed_download_writes_its_own_manifest(tmp_path, monkeypatch):
     assert (staging / "replication_manifest_e2_resume__toy.json").is_file()
     with pytest.raises(SystemExit, match="run `download` first"):
         replicate_volume._load_manifest(staging, "e2_resume")
+
+
+# ---------------------------------------------------------------------------
+# A stream that stops delivering without ending and without raising.
+#
+# Found in the field: `verify --deep` sat on its last seven files for 35 minutes
+# at zero CPU. Not slow -- blocked inside next(), on a stream that would never
+# produce another byte and would never raise. A hang is worse than an error,
+# because nothing upstream can retry what never fails.
+# ---------------------------------------------------------------------------
+
+
+class StallingVolume:
+    """Delivers part of the payload, then blocks forever, for the first N calls."""
+
+    def __init__(self, payload: bytes, stalls: int):
+        self.payload = payload
+        self.stalls = stalls
+        self.calls = 0
+        self.released = threading.Event()
+
+    def read_file(self, path):
+        self.calls += 1
+        if self.calls <= self.stalls:
+            yield self.payload[:4]
+            self.released.wait()  # never set during the test
+            return
+        yield self.payload
+
+
+def test_a_stalled_stream_raises_instead_of_hanging(monkeypatch):
+    monkeypatch.setattr(replicate_volume, "STALL_TIMEOUT_SECONDS", 0.2)
+    volume = StallingVolume(b"payload" * 100, stalls=99)
+    with pytest.raises(TimeoutError, match="stream stalled"):
+        list(replicate_volume._blocks(volume, "toy/graph.pt", stall_seconds=0.2))
+
+
+def test_a_stall_is_retried_and_the_next_stream_succeeds(tmp_path, monkeypatch):
+    import hashlib
+
+    monkeypatch.setattr(replicate_volume, "RETRY_BACKOFF_SECONDS", 0.0)
+    monkeypatch.setattr(replicate_volume, "STALL_TIMEOUT_SECONDS", 0.2)
+    payload = b"payload" * 100
+    volume = StallingVolume(payload, stalls=1)
+    _, entry, _ = replicate_volume._fetch_one(volume, tmp_path, "toy/graph.pt", len(payload))
+    assert volume.calls == 2
+    assert entry["sha256"] == hashlib.sha256(payload).hexdigest()
+    assert (tmp_path / "toy/graph.pt").read_bytes() == payload
+
+
+def test_a_stall_while_hashing_is_retried_too(monkeypatch):
+    import hashlib
+
+    monkeypatch.setattr(replicate_volume, "RETRY_BACKOFF_SECONDS", 0.0)
+    monkeypatch.setattr(replicate_volume, "STALL_TIMEOUT_SECONDS", 0.2)
+    payload = b"payload" * 100
+    volume = StallingVolume(payload, stalls=1)
+    written, digest = replicate_volume._hash_remote(volume, "toy/graph.pt", len(payload))
+    assert volume.calls == 2
+    assert written == len(payload)
+    assert digest == hashlib.sha256(payload).hexdigest()
+
+
+def test_an_error_raised_by_the_reader_reaches_the_caller(monkeypatch):
+    """The worker thread must not swallow what the retry loop needs to see."""
+
+    def read_file(path):
+        yield b"start"
+        raise ConnectionError("reset by peer")
+
+    volume = SimpleNamespace(read_file=read_file)
+    stream = replicate_volume._blocks(volume, "toy/e.npy", stall_seconds=5.0)
+    assert next(stream) == b"start"
+    with pytest.raises(ConnectionError, match="reset by peer"):
+        next(stream)
+
+
+def test_the_reader_does_not_buffer_the_whole_file(monkeypatch):
+    """Backpressure: a bounded queue, so a 30 GB file is not read into memory."""
+
+    produced = []
+
+    def read_file(path):
+        for index in range(64):
+            produced.append(index)
+            yield bytes([index])
+
+    volume = SimpleNamespace(read_file=read_file)
+    stream = replicate_volume._blocks(volume, "toy/big.npy", stall_seconds=5.0)
+    next(stream)
+    time.sleep(0.2)
+    assert len(produced) < 64, "reader ran ahead of the consumer without bound"
