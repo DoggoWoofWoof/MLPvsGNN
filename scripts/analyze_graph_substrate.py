@@ -375,15 +375,24 @@ def summarize_split(split: dict[str, Any]) -> dict[str, Any]:
 def provenance_aliases(payload: dict[str, Any]) -> dict[str, Any]:
     """Group the provenance families by the undirected graph they actually are.
 
-    The audit hashes each graph's undirected edge set, so two families that
-    carry different names, different stored edge counts and different symmetry
-    flags can still be the same graph once direction and duplication are
-    removed. When they are, every downstream metric coincides -- not because
-    the substrates behave alike, but because there is one substrate wearing two
-    labels.
+    The audit hashes each graph's undirected edge set, so two families with
+    different names, different stored edge counts and different symmetry flags
+    can still be the same graph once direction and duplication are removed.
 
-    This is reported rather than left for a reader to notice in two identical
-    rows, because it changes what a comparison across families means.
+    For ``dataset_default`` and ``baseline_a_simple`` that is by construction,
+    not by accident: ``configs/edge_provenance.yaml`` defines the latter as the
+    "deduplicated bidirectional projection" of the former and calls it the
+    mandatory duplicate-normalization control. Grouping them here is what turns
+    that definition into a measurement -- it confirms the projection preserved
+    the edge set exactly, and it locates the entire difference between the two
+    families in one place: how many times the operator is handed an edge it
+    already has.
+
+    That matters for reading the rest of the report. Every structural quantity
+    below -- connectivity, retention, receptive field, seed reachability, path
+    preservation -- is identical between an aliased pair, so any measured
+    difference in their downstream behaviour is attributable to message
+    multiplicity alone. ``operator_message_load`` is where that shows up.
     """
 
     keys: dict[str, list[str]] = {}
@@ -402,6 +411,17 @@ def provenance_aliases(payload: dict[str, Any]) -> dict[str, Any]:
             },
             "stored_graph_was_symmetric": {
                 name: payload["graphs"][name].get("stored_graph_was_symmetric")
+                for name in sorted(names)
+            },
+            # The one axis an aliased pair can differ on. Reported per split
+            # because the load is measured per query.
+            "operator_message_load": {
+                name: {
+                    split_name: message_load(split)
+                    for split_name, split in payload["graphs"][name]
+                    .get("splits", {})
+                    .items()
+                }
                 for name in sorted(names)
             },
         }
@@ -602,6 +622,15 @@ def print_report(summaries: list[dict[str, Any]], split_name: str) -> None:
                 f"{group['undirected_edge_key_sha256'][:16]}; stored directed "
                 f"edges differ: {edges}"
             )
+            for name, splits in group["operator_message_load"].items():
+                load = splits.get(split_name, {})
+                if not load:
+                    continue
+                print(
+                    f"      {name:22s} unique {fmt(load.get('unique_non_self_edges'), 1):>9s}"
+                    f"  consumed {fmt(load.get('messages_consumed_by_operator'), 1):>9s}"
+                    f"  duplicate frac {fmt(load.get('duplicate_message_fraction')):>6s}"
+                )
         print(
             f"  {summary['dataset']:16s} {aliases['families_audited']} families ->"
             f" {aliases['distinct_undirected_graphs']} distinct undirected graph(s)"

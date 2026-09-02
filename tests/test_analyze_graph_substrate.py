@@ -437,3 +437,37 @@ def test_a_file_that_is_not_an_audit_is_refused(tmp_path: Path) -> None:
     path.write_text(json.dumps({"dataset": "tiny"}), encoding="utf-8")
     with pytest.raises(ValueError):
         gs.load_audit(path)
+
+
+def test_an_alias_group_carries_the_one_axis_the_pair_differs_on() -> None:
+    """`baseline_a_simple` is defined as the deduplicated bidirectional
+    projection of the multigraph, so every structural quantity is identical
+    between them and message multiplicity is the whole difference. A group
+    without the load is unreadable: it says two families are the same graph
+    and gives no way to see what separates them."""
+
+    audit = _audit()
+    # Give the pair the multiplicity the real audit measures.
+    audit["graphs"]["dataset_default"]["splits"]["validation"]["query_level"][
+        "operator_edge_load"
+    ] = {
+        "unique_non_self_edges": 464.1,
+        "messages_consumed_by_operator": 1065.0,
+        "duplicate_message_fraction": 0.345,
+    }
+    audit["graphs"]["baseline_a_simple"]["splits"]["validation"]["query_level"][
+        "operator_edge_load"
+    ] = {
+        "unique_non_self_edges": 464.1,
+        "messages_consumed_by_operator": 823.8,
+        "duplicate_message_fraction": 0.0,
+    }
+
+    group = gs.provenance_aliases(audit)["aliased_groups"][0]
+    load = group["operator_message_load"]
+    assert (
+        load["dataset_default"]["validation"]["unique_non_self_edges"]
+        == load["baseline_a_simple"]["validation"]["unique_non_self_edges"]
+    )
+    assert load["dataset_default"]["validation"]["duplicate_message_fraction"] == 0.345
+    assert load["baseline_a_simple"]["validation"]["duplicate_message_fraction"] == 0.0
