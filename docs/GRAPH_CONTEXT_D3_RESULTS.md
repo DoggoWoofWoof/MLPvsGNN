@@ -67,7 +67,7 @@ isolated candidate every bucket collapses to `distance_3_plus_or_unreachable`,
 so there is no geometry to read. `boundaries_fitted_here: false`; these are the
 same four strata, unchanged since D1.
 
-## 3. The rest of the structural machinery buys almost nothing
+## 3. The rest of the structural machinery is lower priority, not dead
 
 `seed_connections`, `paths_length_1/2/3`, `personalized_pagerank` and
 `common_out_neighbors_with_seed_neighborhood` -- six columns, the whole
@@ -85,6 +85,20 @@ Per stratum they are worth something only on the best-connected queries:
 
 `ordinary` is 198 queries, 6.6% of validation. Everywhere else this block is
 neutral to harmful.
+
+**These six columns are not eliminated by this result.** +1.12 R@5 is small
+beside seed identity's +18.20, but it is not negligible in absolute terms: it
+sits at roughly the scale of the QLS-versus-GNN differences measured on some
+datasets, so a result of that size cannot be discarded on relative grounds. The
+correct status is **lower priority, and each family must justify its own cost**,
+not dead.
+
+The sign pattern is itself a lead worth keeping: positive on R@5 (+1.12) and
+near-zero on R@20 (+0.17) while negative on R@1 (-0.60) and MRR (-0.80). That
+shape suggests these columns may be reorganising the ranking specifically around
+the R@5 operating region rather than improving it globally. Testing that means
+decomposing the six individually or by family, which this stage deliberately did
+not do -- it moved all six together.
 
 ## 4. Seed identity: largest exactly where the graph is thinnest
 
@@ -138,8 +152,9 @@ but it is no longer what the conclusion rests on.
   giving one arm more epochs than another would destroy the comparison. It is
   not a claim about converged contributions.
 - **Not a feature-level attribution inside the last group.** `delta_remaining_
-  structure` moves six columns together. It is small, so nothing yet justifies
-  splitting it further.
+  structure` moves six columns together, so this stage says nothing about any one
+  of them. A per-family decomposition is the way to settle whether the R@5-only
+  shape is real; it is deferred, not refused.
 - **One dataset, one seed.** 2Wiki, seed 0. `TARGET_H1` stays closed; both
   contexts are `G[Cq]`.
 - **Not a statement about retrieval quality.** The seed set is dense top-5 union
@@ -151,9 +166,12 @@ but it is no longer what the conclusion rests on.
 - **QLS-v1's query-local block is, to first order, a retrieval prior.** 87.4% of
   its R@5 value is one binary column, and on precision measures that column is
   better alone than the full block.
-- **The structural frontier is not justified by this evidence.** Everything
-  beyond seed identity and distance buckets is worth about a point of R@5 and
-  costs R@1 and MRR. `REMAINING STRUCTURE HAS LARGE VALUE` is refused.
+- **The broad structural frontier is not justified by this evidence, but the
+  remaining columns are not eliminated either.** Everything beyond seed identity
+  and distance buckets is worth about a point of R@5 and costs R@1 and MRR, so
+  `REMAINING STRUCTURE HAS LARGE VALUE` is refused -- yet a point of R@5 is not
+  nothing at the scale this project operates at. They are lower priority and
+  must justify their cost individually, not written off.
 - **Seed identity plus distance recovers almost all of the block**: 94.6% of the
   R@5 gap, 99.0% of R@20, 98.2% of FullCov@20. QLS-v2 should start from
   retrieval prior + seed identity + minimal seed geometry and add one family at

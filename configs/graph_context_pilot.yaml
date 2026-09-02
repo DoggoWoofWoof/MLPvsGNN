@@ -802,12 +802,22 @@ stages:
       R@20 and +8.77 FullCov@20 against -0.52 R@1 and -0.65 MRR. Its stratified shape
       is the mirror image of delta_seed -- worth +1.02 R@20 on isolated and +9.60 on
       ordinary -- because an isolated candidate has no geometry to read.
-    remaining_structure_refused: >-
+    remaining_structure_lower_priority_not_eliminated: >-
       seed_connections, paths_length_1/2/3, personalized_pagerank and
       common_out_neighbors are worth +1.12 R@5, +0.17 R@20, +0.40 FullCov@20 and are
       NEGATIVE on R@1 and MRR. Interpretation C, "remaining structure has large
       value", is REFUSED. Interpretation D also holds: seed identity plus distance
-      recovers 94.6% of the R@5 gap, 99.0% of R@20 and 98.2% of FullCov@20.
+      recovers 94.6% of the R@5 gap, 99.0% of R@20 and 98.2% of FullCov@20. These six
+      columns are NOT eliminated. +1.12 R@5 is materially smaller than seed identity
+      but still large enough to matter at the scale of the QLS-versus-GNN gap.
+      Correct status: remaining structural statistics are lower-priority and must
+      justify their cost individually; they are not yet eliminated.
+    remaining_structure_next_step: >-
+      Positive on R@5 (+1.12) and near-zero on R@20 (+0.17) while negative on R@1
+      (-0.60) and MRR (-0.80). The six columns may be optimising specifically around
+      the R@5 operating region rather than improving ranking globally. Decompose them
+      individually or by family later, not as one block. DEFERRED, not refused, and
+      not authorised by this stage.
     seed_identity_proof: >-
       distance_0 verified elementwise identical to the historical _seed_indicator on
       4,851,276 real candidate rows, 0 mismatches, 105,675 seed rows; the distance

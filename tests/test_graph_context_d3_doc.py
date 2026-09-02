@@ -151,6 +151,35 @@ def test_the_remaining_structure_verdict_is_refusal_not_endorsement(text, result
     assert "costs R@1 and MRR" in text
 
 
+def test_the_remaining_columns_are_not_written_off(text, result):
+    """Refusing `REMAINING STRUCTURE HAS LARGE VALUE` is not the same as killing it.
+
+    +1.12 R@5 is small beside +18.20, but it is not small in absolute terms --
+    it is about the size of the QLS-versus-GNN differences this project is
+    chasing. The document has to refuse the strong reading without licensing the
+    opposite one, so both halves are pinned here.
+    """
+
+    block = result["increments"]["delta_remaining_structure"]
+    assert block["recall@5"] > 0
+    assert "not eliminated" in text
+    assert "lower priority" in text and "justify their cost individually" in text
+    lowered = text.lower()
+    for phrase in ("useless", "dead weight", "buys almost nothing", "worthless"):
+        assert phrase not in lowered, phrase
+    assert "not dead" in lowered
+
+
+def test_the_r5_only_shape_is_flagged_as_the_next_question(text, result):
+    """R@5 up, R@1 and MRR down: a lead about *where* the block acts, kept open."""
+
+    block = result["increments"]["delta_remaining_structure"]
+    assert block["recall@5"] > 0 and block["recall@20"] > 0
+    assert block["recall@1"] < 0 and block["mrr"] < 0
+    assert "R@5 operating region" in text
+    assert "deferred, not refused" in text
+
+
 def test_the_distance_increment_is_reported_as_depth_only(text, result):
     block = result["increments"]["delta_distance"]
     assert block["recall@20"] > 0 and block["full_coverage@20"] > 0
