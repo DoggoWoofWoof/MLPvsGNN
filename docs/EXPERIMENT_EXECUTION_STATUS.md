@@ -1486,6 +1486,104 @@ then downloaded so the work remaining at 96/96 is short; the bytes were fetched
 without reading any metric value, which preserves the option to fix the
 analyzer should anything else surface before the run finishes.
 
+## Both source workspaces exhausted -- migration to a third (2026-09-02)
+
+The spend-limit failure recurred, and this time it took **both** workspaces the
+project had been using. `kuttakamina9895` (running E2 and the substrate audit)
+and `deepalimohapatra1973` (the original data source) are each exhausted.
+Confirmed by the same minimal CPU probe used at the previous stall:
+
+```
+Workspace ac-MZQrbQIKXPXXp3kEjQjmhl has exceeded its spend limit   (kuttakamina9895)
+Workspace ac-1Zd8AkijYgSgLk37ju340f has exceeded its spend limit   (deepalimohapatra1973)
+```
+
+Two things stopped at once, which is why the cause is billing rather than
+either job: E2 stalled at **64/96** with ten metaqa cells part-trained, and the
+`hotpotqa_clean` substrate audit died at **one graph family of four**.
+
+### The audit death was only visible because the watcher had just been fixed
+
+The previous watcher fired on the *output directory existing*. The audit writes
+incrementally, so `substrate.json` appears on the volume long before the run
+finishes -- hotpotqa_clean's first appeared carrying one family and a status of
+`GRAPH_SUBSTRATE_AUDIT_IN_PROGRESS`. That watcher had already fired once on
+that partial file and exited reporting success.
+
+Its replacement polls the file's `status` field and the app's task count, and
+emits when the app drops to zero tasks without the audit being complete. That
+is the event that surfaced this stall:
+
+```
+HOTPOTQA_AUDIT_DIED: substrate app has 0 tasks but status is
+GRAPH_SUBSTRATE_AUDIT_IN_PROGRESS with 1/4 families
+```
+
+A watcher whose silence can mean "the job died" is not a watcher. The same
+mistake had already produced a false positive in the report-coverage test,
+fixed in `ef6c087`.
+
+### Nothing was lost
+
+Volume **reads** still work on an exhausted workspace; only compute is blocked.
+That was verified before anything else was touched, and all 64 complete E2
+cells were fetched off `kuttakamina9895` first.
+
+| package | state |
+|---|---|
+| phase_screen (E1) | 96/96 -- intact |
+| edge_provenance | 24/24 -- intact |
+| candidate_budget | 24/24 -- intact |
+| online_systems | 6/6 -- intact |
+| phase_confirmation (E2) | 64/96 complete, 10 part-trained, 22 not started |
+
+E2's remaining work is metaqa (16) and squad_clean (16). hotpotqa_clean reached
+16/16 before the stall.
+
+### The migration was upload-only
+
+Both staged manifests were already complete on local disk, so nothing had to be
+pulled off an exhausted workspace:
+
+| slice | files | size | local deep verify |
+|---|---:|---:|---|
+| phase_minus_1 | 107 | 4.21 GiB | 107/107 sha256 |
+| e2_resume | 1,741 | 25.83 GiB | 1,741/1,741 sha256 |
+
+Target is `darkphoenix696969696969`, the designated first fallback. Five
+workspaces were probed and all five can schedule; an initial reading that they
+were all failing was a Windows cp1252 console error printing a check mark, not
+a spend limit. `PYTHONIOENCODING=utf-8` distinguishes the two.
+
+The frozen config pins `gpu: A10G` for phase_confirmation, so the workspace
+change does not alter the scientific condition. Availability was confirmed on
+the target before queueing any cell:
+
+```
+GPUPROBE: NVIDIA A10 | torch 2.13.0+cu130
+```
+
+The substrate audit is CPU-only and needs no GPU.
+
+### Provenance
+
+`scripts/migration_provenance.py provenance` recorded the move with the
+repository SHA, the three protocol document hashes, all six dataset
+fingerprints, and the non-regenerable artifacts. It independently re-verified
+the E1 seed-0 checkpoints that `run_phase_confirmation` loads:
+
+```
+screen seed-0 checkpoints required: 192/192
+staged copies verified by SHA-256: 192/192
+```
+
+`phase_confirmation_cache` is again recorded as a deliberate omission with its
+regeneration equivalence, not as a missing artifact.
+
+E2 resumes from the integrity matrix rather than from a cell number:
+`spawn_modal_jobs.py --integrity-matrix` submits only cells the matrix reports
+as resume or launch and refuses on an INVALID one.
+
 ## Repository boundary
 
 The original C-RAG repository remains strictly read-only. This audit read only
