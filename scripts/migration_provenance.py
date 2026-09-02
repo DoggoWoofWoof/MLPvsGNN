@@ -323,6 +323,58 @@ def misrooted_hint(root: Path, rows: list[dict[str, Any]]) -> str | None:
     return None
 
 
+COMPLETE_CELL_STATUS = "PHASE_CONFIRMATION_CELL_COMPLETE"
+
+
+def audit_complete_keys(payload: dict[str, Any]) -> set[str]:
+    """Cell keys an ``audit_modal_progress.py`` reading reports as complete.
+
+    Keyed exactly as ``classify_cell`` keys its rows so the two can be compared
+    without either side reformatting the other's rates.
+    """
+
+    conditions = (payload.get("phase_confirmation") or {}).get("conditions") or []
+    return {
+        f"{cond['dataset']}/{cond['axis']}/rate_{float(cond['rate']):.2f}"
+        for cond in conditions
+        if cond.get("status") == COMPLETE_CELL_STATUS
+    }
+
+
+def stale_hint(root: Path, rows: list[dict[str, Any]], complete_on_volume: set[str]) -> str | None:
+    """Refuse a matrix built from a results tree the volume has moved past.
+
+    ``misrooted_hint`` catches a root pointing at the wrong place. It cannot
+    catch a root pointing at the right place as it looked an hour ago, and that
+    failure is quieter and costs more: a staging copy taken when E2 stood at 58
+    cells still reports 48 COMPLETE long after the volume reached 64, and every
+    cell finished in between is handed back as ``resume`` or ``launch``. The
+    counts look entirely reasonable. Nothing in them says the tree is behind.
+
+    This fires only on cells the volume calls COMPLETE that the tree does not,
+    which is one-directional evidence that the tree is stale. A tree that is
+    *ahead* of the reading -- fetched more recently than the audit it is being
+    checked against -- is normal and says nothing, so it passes.
+    """
+
+    behind = sorted(
+        key for key in complete_on_volume
+        if key not in {row["key"] for row in rows if row["state"] == "COMPLETE"}
+    )
+    if not behind:
+        return None
+    sep = "\n" + '  '
+    shown = sep.join(behind[:8])
+    more = (sep + f'... and {len(behind) - 8} more') if len(behind) > 8 else ''
+    return (
+        f'{len(behind)} cell(s) are COMPLETE on the volume but not under {root}, '
+        f'so this results tree is behind the volume and the matrix would hand '
+        f'back finished work to be run again:{sep}{shown}{more}' + "\n"
+        "Refresh the results slice before building the matrix "
+        "(`replicate_volume.py download --slice results`)."
+    )
+
+
 def integrity_matrix(root: Path) -> dict[str, Any]:
     rows = [classify_cell(cell, root) for cell in expected_cells()]
     states = ("COMPLETE", "PARTIAL", "MISSING", "INVALID")
@@ -778,6 +830,11 @@ def cmd_matrix(args: argparse.Namespace) -> int:
     hint = misrooted_hint(root, matrix["cells"])
     if hint:
         raise SystemExit(hint)
+    if args.against_audit:
+        payload = json.loads(Path(args.against_audit).read_text(encoding="utf-8"))
+        hint = stale_hint(root, matrix["cells"], audit_complete_keys(payload))
+        if hint:
+            raise SystemExit(hint)
     _write("e2_integrity_matrix.json", matrix)
     counts = matrix["counts"]
     print(
@@ -1040,6 +1097,13 @@ def main() -> int:
     parser.add_argument(
         "--results-root",
         help="matrix: directory holding outputs/phase_confirmation (default: --staging)",
+    )
+    parser.add_argument(
+        "--against-audit",
+        help=(
+            "matrix: an audit_modal_progress.py JSON reading; refuses if the "
+            "results tree is behind the volume it describes"
+        ),
     )
     parser.add_argument("--source", help="provenance: source workspace name")
     parser.add_argument("--target", help="provenance: target workspace name")
