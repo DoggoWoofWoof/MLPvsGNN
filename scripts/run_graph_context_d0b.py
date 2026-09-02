@@ -469,6 +469,60 @@ def _percentiles(values: Sequence[float]) -> dict[str, float]:
     }
 
 
+def load_or_build_static(
+    feature_cache: Path,
+    graph_path: Path,
+    size: int,
+    *,
+    pagerank_damping: float,
+    pagerank_iterations: int,
+    clustering_max_wedges: int,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """The seven frozen static graph features, sealed if present and built if not.
+
+    The active Modal workspace holds the topology-only slice of this dataset --
+    graph, candidates, seeds, golds and splits, but neither the embeddings nor
+    the sealed `derived/` caches, which is why every graph-context stage so far
+    has opened the dataset with ``require_embeddings=False``. The static block is
+    a deterministic function of ``graph.pt``, so it can be rebuilt rather than
+    replicated, through the *shipped* builder that produced the sealed file and
+    at the frozen parameters, so the two agree by construction rather than by
+    resemblance.
+
+    Which path was taken is returned and recorded. A result that quietly does
+    not say whether it read a sealed artifact or rebuilt one is a result whose
+    provenance cannot be checked later.
+    """
+    sealed = Path(feature_cache) / "static.npy"
+    if sealed.is_file():
+        static = np.load(sealed, mmap_mode="r")
+        provenance: dict[str, Any] = {"source": "sealed", "path": str(sealed)}
+    else:
+        from mp_retrieval.structural_features import build_static_features
+
+        started = time.perf_counter()
+        static = build_static_features(
+            graph_path,
+            pagerank_damping=pagerank_damping,
+            pagerank_iterations=pagerank_iterations,
+            clustering_max_wedges=clustering_max_wedges,
+        )
+        provenance = {
+            "source": "rebuilt_from_graph",
+            "why": f"{sealed} is absent in this workspace",
+            "builder": "mp_retrieval.structural_features.build_static_features",
+            "pagerank_damping": pagerank_damping,
+            "pagerank_iterations": pagerank_iterations,
+            "clustering_max_wedges_per_node": clustering_max_wedges,
+            "seconds": round(time.perf_counter() - started, 1),
+        }
+    if static.ndim != 2 or static.shape[1] != len(STATIC_FEATURE_NAMES):
+        raise ValueError("The static feature matrix has an unexpected shape")
+    if int(static.shape[0]) != size:
+        raise ValueError("The static feature matrix does not cover the graph")
+    return static, provenance
+
+
 def _alignment_against_sealed_cache(
     packed: PackedFeatures, feature_cache: Path | None
 ) -> dict[str, Any]:
@@ -536,11 +590,12 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
     size = int(dataset.num_nodes)
     operators = build_operators(rowptr, col, size)
 
-    static = np.load(Path(args.feature_cache) / "static.npy", mmap_mode="r")
-    if static.ndim != 2 or static.shape[1] != len(STATIC_FEATURE_NAMES):
-        raise ValueError("The frozen static feature matrix has an unexpected shape")
-    if int(static.shape[0]) != size:
-        raise ValueError("The frozen static feature matrix does not cover the graph")
+    static, static_provenance = load_or_build_static(
+        Path(args.feature_cache), Path(args.data) / "graph.pt", size,
+        pagerank_damping=float(args.static_pagerank_damping),
+        pagerank_iterations=int(args.static_pagerank_iterations),
+        clustering_max_wedges=int(args.static_clustering_max_wedges),
+    )
     dense = np.load(Path(args.data) / "dense_top200_all.npy", mmap_mode="r")
     splade = np.load(Path(args.data) / "splade_top200_all.npy", mmap_mode="r")
 
@@ -570,6 +625,7 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
             "epoch_selected_on_validation": False,
             "evidence_class": "development diagnostic, not an evaluation",
         },
+        "static_features": static_provenance,
     }
 
     latency: dict[str, list[float]] = {"CAND": [], "TARGET_H1": []}
@@ -640,6 +696,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rrf-constant", type=int, default=60)
     parser.add_argument("--learning-rate", type=float, required=True)
     parser.add_argument("--seed", type=int, default=0)
+    # The frozen static-feature parameters, carried so a rebuild in a workspace
+    # without the sealed cache produces the same matrix rather than a similar one.
+    parser.add_argument("--static-pagerank-damping", type=float, default=0.85)
+    parser.add_argument("--static-pagerank-iterations", type=int, default=30)
+    parser.add_argument("--static-clustering-max-wedges", type=int, default=64)
     parser.add_argument("--output", type=Path, required=True)
     return parser
 

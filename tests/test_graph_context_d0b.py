@@ -439,3 +439,64 @@ def test_the_declared_ceiling_is_not_below_what_the_gate_projects():
     )
     assert report["total_hours"] <= declared["projected_cost"]["cpu_hours_ceiling"]
     assert report["expected_spend_usd"] <= declared["projected_cost"]["cost_ceiling_usd"]
+
+
+# --- the static block, when the workspace has no sealed copy of it ---------
+
+
+def test_a_sealed_static_matrix_is_preferred_and_says_so(tmp_path):
+    """Read the artifact when it exists. Rebuilding one that is already sealed
+    would be a second implementation of a frozen number."""
+    from scripts.run_graph_context_d0b import load_or_build_static
+
+    sealed = np.zeros((7, 7), dtype=np.float32)
+    np.save(tmp_path / "static.npy", sealed)
+    static, provenance = load_or_build_static(
+        tmp_path, tmp_path / "graph.pt", 7,
+        pagerank_damping=0.85, pagerank_iterations=30, clustering_max_wedges=64,
+    )
+    assert provenance["source"] == "sealed"
+    assert static.shape == (7, 7)
+
+
+def test_a_missing_sealed_matrix_is_rebuilt_through_the_shipped_builder(tmp_path):
+    """The active workspace holds the topology-only slice, so this path is the
+    one that actually runs. It must go through the builder that produced the
+    sealed file rather than a lookalike, and it must record that it did."""
+    import torch
+
+    from scripts.run_graph_context_d0b import load_or_build_static
+
+    edge_index = torch.tensor([[0, 1, 2, 3, 0], [1, 2, 3, 0, 2]], dtype=torch.long)
+    torch.save({"edge_index": edge_index, "num_nodes": 5}, tmp_path / "graph.pt")
+    static, provenance = load_or_build_static(
+        tmp_path, tmp_path / "graph.pt", 5,
+        pagerank_damping=0.85, pagerank_iterations=30, clustering_max_wedges=64,
+    )
+    assert provenance["source"] == "rebuilt_from_graph"
+    assert provenance["builder"].endswith("build_static_features")
+    assert provenance["pagerank_iterations"] == 30
+    assert static.shape == (5, 7)
+    assert np.isfinite(static).all()
+
+
+def test_a_static_matrix_that_does_not_cover_the_graph_is_an_error(tmp_path):
+    """Silently indexing a short matrix would read another node's features."""
+    from scripts.run_graph_context_d0b import load_or_build_static
+
+    np.save(tmp_path / "static.npy", np.zeros((3, 7), dtype=np.float32))
+    with pytest.raises(ValueError, match="does not cover"):
+        load_or_build_static(
+            tmp_path, tmp_path / "graph.pt", 9,
+            pagerank_damping=0.85, pagerank_iterations=30, clustering_max_wedges=64,
+        )
+
+
+def test_the_launcher_carries_the_frozen_static_parameters():
+    """Rebuilt at the frozen values, so a rebuild and the sealed artifact agree
+    by construction rather than by resemblance."""
+    module = _launcher()
+    args = module._d0b_runner_args(module._jobs(["2wiki_clean"], "stage_d0b", 0)[0])
+    assert args.static_pagerank_damping == 0.85
+    assert args.static_pagerank_iterations == 30
+    assert args.static_clustering_max_wedges == 64

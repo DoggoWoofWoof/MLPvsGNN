@@ -168,6 +168,7 @@ def _d0b_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     open the test split.
     """
     settings = job["settings"]
+    _static = CONFIG["stages"]["D0B"]["static_features"]
     output_root = (
         PurePosixPath(STORAGE_ROOT)
         / "outputs"
@@ -188,6 +189,9 @@ def _d0b_runner_args(job: dict[str, Any]) -> argparse.Namespace:
         rrf_constant=int(CONFIG["stages"]["D0B"]["rrf_constant"]),
         learning_rate=float(job["selected_learning_rate"]),
         seed=int(CONFIG["stages"]["D0B"]["seed"]),
+        static_pagerank_damping=float(_static["pagerank_damping"]),
+        static_pagerank_iterations=int(_static["pagerank_iterations"]),
+        static_clustering_max_wedges=int(_static["clustering_max_wedges_per_node"]),
         output=Path(output_root) / "stage_d0b.json",
     )
 

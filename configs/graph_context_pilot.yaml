@@ -395,6 +395,16 @@ stages:
     seed: 0
     rrf_constant: 60
     splits: [train, validation]
+    # The active workspace holds the topology-only slice of this dataset: graph,
+    # candidates, seeds, golds and splits, but not the sealed derived/ caches.
+    # The static block is a deterministic function of graph.pt, so it is rebuilt
+    # through the shipped builder at the frozen parameters rather than
+    # replicated -- the two then agree by construction, not by resemblance.
+    static_features:
+      source: configs/sa_mlp_screen.yaml::static_features
+      pagerank_damping: 0.85
+      pagerank_iterations: 30
+      clustering_max_wedges_per_node: 64
     normalisation: candidate-readout in every arm
     epoch_selection: >-
       none. The final epoch is reported. A3 selects its epoch on validation and
