@@ -763,3 +763,43 @@ def test_the_config_does_not_declare_a_saturated_primary():
     rule = config["stages"]["C"]["rule"]
     assert "does not bring candidates closer to a seed" in rule
     assert "descriptor_saturation" in rule
+
+
+def ledger_section():
+    """The pilot's own row, whitespace-normalised so wrapping cannot hide a claim."""
+    ledger = (REPO_ROOT / "docs" / "COMPUTE_LEDGER.md").read_text(encoding="utf-8")
+    return " ".join(ledger[ledger.index("### QLS-v2 P1") :].split())
+
+
+def test_stage_b_runs_only_datasets_the_config_knows():
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    assert set(config["stages"]["B"]["datasets"]) <= set(config["datasets"])
+
+
+def test_the_ledger_declares_the_stage_b_datasets():
+    """No declaration, no launch -- so the launch scope has to be in the ledger.
+
+    The config once said Stage B was "all six datasets" while the filed
+    declaration said two. Nothing would have caught the widening except the
+    bill.
+    """
+    section = ledger_section()
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    assert "Stage B stays at the filed scope" in section
+    for name in config["stages"]["B"]["datasets"]:
+        assert name.split("_")[0] in section, name
+
+
+def test_the_ledger_records_the_withdrawn_primary_measure():
+    """A withdrawn measure is recorded, not quietly replaced."""
+    section = ledger_section()
+    assert "The primary measure is withdrawn" in section
+    assert "distance_improved" in section
+    # The original declaration is left standing above the amendment.
+    assert "feature movement vs QLS-v1 on G[Cq]" in section
+
+
+def test_the_ledger_declares_the_two_enclosing_arms():
+    section = ledger_section()
+    for arm in ("PATH_H2", "BRIDGE_H2"):
+        assert arm in section, arm

@@ -162,3 +162,92 @@ QLS features. Frozen candidate pools are untouched -- the scored set is exactly
 
 No training until this resolves. E2 stays paused, F stays sealed, no workspace
 migration.
+
+#### Second amendment, filed 2026-09-02 before Stage B launched
+
+Three changes. The declaration above is left standing rather than rewritten, so
+what was believed at filing time and what replaced it are both readable.
+
+**The arm set gained two enclosing arms.** The four above are radius rules; a
+graph-retrieval context in the literature is more often a *path* set, and the
+declaration had no arm of that kind. `PATH_H2` admits a node lying on a
+two-step seed-to-candidate path, `BRIDGE_H2` a node lying on a two-step
+candidate-to-candidate path, both requiring two DISTINCT candidate endpoints.
+Neither uses a gold id, an answer label, a relevance label, any test
+information, or any GNN signal. All-pairs is not implemented and is not
+proposed. Measured on the real 2wiki CSR with hub pools, they cost:
+
+```text
+arm                       nodes/query (median)     share of graph
+PATH_H2     seed-anchored               156               0.24%
+BRIDGE_H2   candidate-anchored        6,818              10.35%
+```
+
+`PATH_H2` is essentially free and `BRIDGE_H2` buys 0.914 median retention for
+a tenth of the graph, against `TARGET_H1`'s 1.000 for six tenths. That is the
+comparison the frontier exists to make, so both carry into Stage B.
+
+**The primary measure is withdrawn, before Stage B rather than after.** The
+declaration made "feature movement vs QLS-v1 on G[Cq]" the signal, and its
+stopping rule kills an arm whose features do not move. Both are vacuous above
+`SEED_H1`, provably and on any graph. Columns 0-3 of the frozen QLS-v1
+descriptor are one-hot over {0, 1, 2, >=3-or-unreachable}; reaching bucket 2
+requires a path `seed -> x -> candidate` with a single intermediate, and every
+such `x` is an out-neighbour of a seed, which is exactly what `SEED_H1` admits.
+The raw seed-incidence column is pinned for the same reason -- `Sq` is inside
+`Cq`, so every seed-candidate edge already lies in `G[Cq]`. The remaining six
+columns are each divided by a per-query maximum over the whole local node
+space, so they move under a wider context whether or not a candidate's own
+topology did.
+
+Verified over 480 arm comparisons on 120 random graphs, symmetric and directed:
+zero bucket movements and zero raw-count changes above `SEED_H1`, with the
+normalised seed-incidence column differing on 17 of them, which is the
+rescaling confound and nothing else. On the real 2wiki CSR all six arms
+returned byte-identical buckets, `SEED_H1` at 166 context nodes against
+`TARGET_H1` at 40,653.
+
+The replacement is seed distance recomputed through the arm's own context,
+uncapped to four hops and divided by nothing, with `distance_improved` -- the
+fraction of candidates strictly closer to a seed than `G[Cq]` made them -- as
+primary, stratified by prior induced degree exactly as the original measure
+was. The lattice makes it one-sided: a wider context can only bring a candidate
+closer. On the same 2wiki pools it separates arms the bucket collapses to a
+constant 0.0129 across, and it lands where Phase -1 found the loss --
+`TARGET_H1` improves 26.4% of degree-1 candidates against 3.5% of ordinary
+ones. Both descriptor measures are still computed and still reported.
+
+This re-specifies a measurement before it is taken. No arm, no threshold, no
+dataset and no spend moves because of it.
+
+**The budget is restated on a measured ceiling.** Stage B stays at the filed
+scope -- 25 validation queries, 2wiki and hotpotqa, the two datasets where
+induction destroyed the most two-hop reach -- now at six arms rather than four.
+
+```text
+                        declared          now
+stage B datasets        2wiki, hotpot     unchanged
+stage B queries         25                unchanged
+arms                    4                 6
+CPU-hours (ceiling)     <= 2.5            <= 0.9   stage B
+cost (ceiling)          <= $2.00          <= $1.41 stage B
+GPU-hours               0                 unchanged
+```
+
+The per-query figure behind it is a ceiling, not an estimate. Context
+construction is 0.4-232 ms per query per arm at true graph scale and the
+seed-distance probe 22-73 ms p95, both negligible; the QLS kernel is the only
+unmeasured part, because the Modal image compiles it with Numba and the local
+pure-Python fallback does not represent it. So the kernel is costed at the one
+figure that is measured -- that same local fallback, 38 s per query for all six
+arms on 2wiki -- rounded to 40. Any Numba speedup at all makes the real number
+smaller, and 25 queries fit the declared 3600 s timeout even with none. Stage B
+exists in part to replace it with a measured throughput, which is what gates
+Stage C's own cost.
+
+Stage C is not re-priced here. Its cost depends on which arms survive B and on
+B's measured throughput, and pricing it before either would be inventing a
+number. It gets its own line when B returns.
+
+E2 stays paused, F stays sealed, no workspace migration, nothing trained.
+

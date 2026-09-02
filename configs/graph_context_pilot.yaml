@@ -185,11 +185,23 @@ stages:
   B:
     status: DECLARED
     queries: 25
-    what: real validation queries, all six datasets, all six arms
+    datasets: [2wiki_clean, hotpotqa_clean]
+    what: >-
+      real validation queries, all six arms, on the two datasets the ledger
+      declared -- the pair where induction destroyed the most two-hop reach
+      (2wiki 13.6% retained, hotpotqa 27.5%). Not all six: Stage B's job is to
+      measure throughput and separate the arms, and the remaining four datasets
+      would triple its cost without changing either answer. They arrive at C.
+    declared_in: docs/COMPUTE_LEDGER.md
   C:
     status: GATED_ON_B
     queries: 300
+    datasets: all_six
     what: survivors only
+    cost: >-
+      Not priced before B returns. It depends on which arms survive and on B's
+      measured throughput, and a number invented before either is not a
+      declaration.
     rule: >-
       Do not consume all 300 if an arm clearly fails before then. Kill an arm at
       B if it does not lower isolation, does not bring candidates closer to a
