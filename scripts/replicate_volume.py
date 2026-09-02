@@ -129,11 +129,16 @@ FETCH_ATTEMPTS = 4
 RETRY_BACKOFF_SECONDS = 2.0
 # A stream can also stop delivering without ending and without raising. That is
 # worse than either: the client blocks inside next() and the transfer hangs
-# silently rather than failing where a retry could fix it. Observed in the
-# field, on a verification that sat on its last seven files for 35 minutes at
-# zero CPU. A healthy stream delivers blocks continuously, so silence this long
-# is a stall rather than a slow link.
-STALL_TIMEOUT_SECONDS = 120.0
+# silently rather than failing where a retry could fix it. Observed on a
+# capture that sat on one file at zero CPU until it was killed.
+#
+# The window is long because a starved stream looks exactly like a dead one from
+# here. Running three transfers at once put every stream over two minutes of
+# silence while all of them were making progress, and retrying restarts a
+# multi-gigabyte file from the beginning -- so an impatient threshold turns
+# congestion into failure. Ten minutes of complete silence is not congestion.
+# Prefer fewer concurrent transfers over a shorter window.
+STALL_TIMEOUT_SECONDS = 600.0
 
 
 # ---------------------------------------------------------------------------
