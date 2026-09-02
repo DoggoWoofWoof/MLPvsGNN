@@ -322,6 +322,25 @@ def _d5_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     return args
 
 
+def _d6_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D6's arguments: D5's, minus the files it does not read.
+
+    D6 trains both of its own arms and reuses nothing, so it reads exactly one
+    earlier result -- D5's -- and only to quote it as a descriptive reference.
+    Carrying D3's and D4's paths forward would suggest this stage reads them,
+    which it does not. The operating point still arrives through D5's builder,
+    because the reference is only quotable if D6 ran where D5 did.
+    """
+    args = _d5_runner_args(job)
+    args.d5_result = Path(args.output)
+    del args.d3_result
+    del args.d4_result
+    args.holdout_fraction = float(CONFIG["stages"]["D6"]["holdout_fraction"])
+    args.seed = int(CONFIG["stages"]["D6"]["seed"])
+    args.output = Path(args.output).with_name("stage_d6.json")
+    return args
+
+
 def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
 
@@ -448,6 +467,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d5 import run
 
         args = _d5_runner_args(job)
+    elif job["stage"] == "stage_d6":
+        from scripts.run_graph_context_d6 import run
+
+        args = _d6_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run

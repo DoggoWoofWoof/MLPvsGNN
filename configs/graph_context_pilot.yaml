@@ -696,6 +696,169 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D6:
+    status: DECLARED
+    evidence_class: CONFIRMATORY within its own narrow question
+    runner: scripts/run_graph_context_d6.py
+    dataset: 2wiki_clean
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    question: >-
+      Once graded retrieval evidence and seed-distance geometry are already
+      present, do QLS-v1 remaining six structural statistics provide meaningful
+      incremental ranking value?
+    columns_under_test:
+      [seed_connections, paths_length_1, paths_length_2, paths_length_3,
+       personalized_pagerank, common_out_neighbors_with_seed_neighborhood]
+    why_it_is_needed: >-
+      D3 measured these six at +1.12 R@5 against a baseline that had no retrieval
+      prior at all. That number is what a broad structural-feature frontier would be
+      justified by, and D5 showed the prior is far stronger than any structural
+      increment, so the six have to be re-measured conditionally before anything is
+      built on them. This is the quantity that decides whether broad structural
+      development is warranted.
+    why_two_arms_not_one: >-
+      FULL_LOCAL already occupies all ten local slots. There is no exact
+      representation of FULL_LOCAL plus the three-column graded retrieval prior
+      inside ten dimensions. A one-arm Z3R would either overwrite columns 4-6 --
+      seed_connections, paths_length_1, paths_length_2, which are three of the six
+      features under test -- or compare a 13-dimensional treatment against D5
+      reused 10-dimensional Z2R and attribute the dimensionality and
+      parameterisation difference to graph structure. At effect sizes around one
+      R@5 point that confound is not acceptable. Two matched arms in one widened
+      representation is the only design that isolates the six columns.
+    representation:
+      local_dim: 13
+      cols_0_to_9: exact historical QLS local block, unchanged positions
+      col_10: dense_reciprocal_rank
+      col_11: splade_reciprocal_rank
+      col_12: retriever_agreement
+      prior_values: >-
+        numerically identical to D4 and D5, injected after historical local
+        normalisation, proven against the D4 build_graded_retrieval_block.
+    arms:
+      D6_BASE_13: >-
+        cols0-3 exact DISTANCE_ONLY geometry; cols4-9 exactly zero; cols10-12 exact
+        graded retrieval prior. NEW.
+      D6_FULL_13: >-
+        cols0-9 exact FULL_LOCAL historical features; cols10-12 the same exact
+        prior. NEW.
+    matched_between_arms:
+      [architecture, parameter count, initialisation procedure, optimizer,
+       batching, training budget, static block, semantic branch, CAND graph,
+       scoring pool, retrieval prior]
+    the_only_difference: six residual structural columns, zero versus active
+    tensor_invariants:
+      base_distance: D6_BASE_13[:,0:4] == D3 DISTANCE_ONLY[:,0:4]
+      full_historical: D6_FULL_13[:,0:10] == historical FULL_LOCAL[:,0:10]
+      both_priors: "[:,10:13] == the exact D4/D5 graded retrieval prior"
+      base_residual_zero: D6_BASE_13[:,4:10] == 0 exactly
+      required: max_abs_diff 0 on every one, and the arms must differ in exactly
+        the six columns under test and in no others
+    normalisation_unchanged: >-
+      candidate_readout.NORMALISED_COLUMNS stays (4,5,6,7,8,9) and is NOT extended
+      to cols 10-12. The retrieval prior is an externally defined universal
+      transform and keeps its exact A3 values. Widening the normaliser would turn
+      D6 into a second normalisation experiment. The runner refuses if
+      NORMALISED_COLUMNS is not the frozen tuple.
+    parameter_accounting:
+      historical_parameters: 213506
+      historical_input_dim: 275
+      head_width: 61
+      d6_parameters: 213689
+      d6_input_dim: 278
+      increase: 183
+      increase_percent: 0.0857
+      why: >-
+        Three more input columns at an unchanged head width. The head width is
+        taken from the historical ten-column solve and held fixed rather than
+        re-solved, because re-solving gives head 60 and 213,409 parameters -- a
+        NARROWER head on a wider input, which would change capacity and information
+        together. VERIFIED FROM CODE at embedding_dim 1536, projection_dim 64,
+        static_dim 7.
+      acceptable_because: both D6 arms carry exactly this widened architecture
+      not_a_proposed_architecture: >-
+        D6 is a diagnostic model used to isolate information value. It is not a
+        claim about the final minimal QLS-v2 architecture.
+    reports:
+      primary: >-
+        delta_remaining_structure_given_retrieval_and_geometry = D6_FULL_13 -
+        D6_BASE_13, on recall@1, recall@5, recall@20, mrr, full_coverage@20.
+      metric_shape_matters: >-
+        D3 measured the six columns at -0.60 R@1, +1.12 R@5, +0.17 R@20, -0.80 MRR,
+        +0.40 FullCov@20. That R@5-specific shape is the thing to watch. If it
+        disappears once graded retrieval evidence is available, the six were likely
+        compensating for the missing retrieval prior rather than adding independent
+        graph knowledge. If it persists, that is stronger evidence of genuine
+        structural complementarity.
+      also: the same frozen degree strata, which are not refitted
+    d5_z2r_role: >-
+      DESCRIPTIVE REFERENCE, NOT CAUSAL CONTROL. D5 arms have local_dim 10 and
+      213,506 parameters, so they are not the control for anything D6 reports. The
+      runner also reports D6_BASE_13 minus Z2R as a widening check: if they are
+      close, cross-stage reading is safe; if they differ materially, widening the
+      explicit input changes optimisation or initialisation enough that cross-stage
+      comparisons need caution. D6 is NOT modified after observing that difference.
+    interpretation_fixed_in_advance:
+      A_remaining_structure_negligible: >-
+        Near zero on R@5 with no meaningful R@20 or FullCov benefit. Conclude the
+        six historical support, path, PPR and common-neighbour features do not
+        justify broad structural development once direct retrieval evidence and
+        seed geometry are exposed, and radically simplify the QLS-v2 base to graded
+        dense retrieval, graded SPLADE retrieval, retriever agreement, bare seed
+        identity and seed-distance geometry. Does NOT open the old 30-35 feature
+        frontier.
+      B_modest_residual_gain: >-
+        Roughly +0.5 to +1.5 R@5, or a clear depth/coverage benefit. Remaining
+        structure is live but must justify itself family by family. Do NOT add all
+        six to QLS-v2; the next experiment decomposes support, paths, diffusion/PPR
+        and common-neighbour topology one grouped family at a time against the
+        strong retrieval+geometry base.
+      C_large_residual_gain: >-
+        Above about +1.5 R@5 with consistent supporting metrics. Structural
+        development remains a major priority. Even then the global-context branch
+        stays closed and the work goes into better explicit statistics on G[Cq],
+        because TARGET_H1 already failed its controlled effectiveness test.
+    frozen_operating_point:
+      [2wiki_clean, seed 0, 3 epochs, same train/holdout split, same loss,
+       same batching, same optimizer, same selection procedure]
+    no_extra_epochs: >-
+      The objective is decomposition of the frozen QLS-v1 regime, not convergence
+      optimisation. D6 does not get a larger budget than the arms it is read
+      against.
+    projected_cost:
+      new_runs: 2
+      measured_expected:
+        basis: >-
+          From the D5 actuals: 49.8 s shared feature build, 1.9 s static, 6.4 s
+          assembling and proving the prior, then 18.2 s training and 0.3 s inference
+          per arm. D6 shares one build and trains two arms, so 49.8 + 1.9 + 6.4 +
+          2 x 18.5 = about 95 s of accounted compute. D3 trained two arms on the
+          same substrate and accounted 90.4 s, which corroborates it.
+        accounted_gpu_hours: 0.027
+        accounted_usd: 0.05
+        billed_usd_including_container_overhead: 0.15
+      generic_safety_ceiling:
+        gpu_hours: 0.20
+        usd: 0.90
+        note: >-
+          Authorisation ceiling, not a forecast. Reported separately from the
+          measured expectation on purpose.
+      the_gate_number_is_not_a_forecast: >-
+        spawn_modal_jobs.py will report 0.2 h / $0.87 for this stage as it did for
+        D3, D4 and D5. VERIFIED FROM CODE: every fitted graph-context stage is
+        priced with the D1 whole-split model, documented in that source as a ceiling
+        the later stages are bounded by. It is stage-independent and must not be
+        quoted as a calibrated D6 projection.
+      stop_condition: >-
+        If actual cost exceeds 0.20 GPU-hours or $0.90, stop and inspect.
+    does_not_authorise:
+      [second dataset, second seed, GNN, TARGET_H1, R0-R5 sweep, LODO, E2 resume,
+       Package F, architecture search, convergence study, graph-context branch,
+       workspace migration]
+    is_the_only_experiment: true
+
   D5:
     status: COMPLETE
     results: docs/GRAPH_CONTEXT_D5_RESULTS.md
@@ -1590,7 +1753,7 @@ modal:
   # decorator reads this only for the stages listed in gpu_stages, so a CPU
   # stage never pays for an accelerator it does not use.
   gpu: A10G
-  gpu_stages: [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5]
+  gpu_stages: [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5, stage_d6]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -1606,6 +1769,7 @@ modal:
     # not a tighter one: a timeout is a bound, not a projection.
     stage_d4: 3600
     stage_d5: 3600
+    stage_d6: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and
