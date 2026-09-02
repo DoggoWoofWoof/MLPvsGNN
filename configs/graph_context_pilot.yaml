@@ -697,7 +697,8 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D5:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D5_RESULTS.md
     evidence_class: CONFIRMATORY within its own narrow question
     runner: scripts/run_graph_context_d5.py
     dataset: 2wiki_clean
@@ -853,6 +854,88 @@ stages:
     z3r_is_not_authorised_here: >-
       FULL_LOCAL plus the exact prior is the likely next question if interpretation
       A occurs, but it is a separate declaration and is not launched from this one.
+    outcome: >-
+      RETRIEVAL + GEOMETRY COMPOSE STRONGLY. 2Wiki validation, seed 0.
+      Z1 SEED_ID_ONLY 30.15 / 65.27 / 72.22 / 80.73 / 42.77;
+      Z2 DISTANCE_ONLY 29.63 / 66.76 / 77.36 / 80.08 / 51.53;
+      Z3 FULL_LOCAL 29.03 / 67.88 / 77.53 / 79.28 / 51.93;
+      Z1R SEED_PLUS_GRADED_RETRIEVAL 39.32 / 69.39 / 73.78 / 93.76 / 45.20;
+      Z2R DISTANCE_PLUS_GRADED_RETRIEVAL 39.56 / 71.44 / 77.81 / 94.18 / 52.13.
+      delta_prior_given_geometry +9.93 / +4.68 / +0.45 / +14.10 / +0.60;
+      delta_geometry_given_prior +0.23 / +2.05 / +4.03 / +0.42 / +6.93.
+      Both conditionals positive on all five metrics, and Z2R is the best of the
+      five arms on all five metrics.
+    interaction_measured: >-
+      +0.75 R@1, +0.56 R@5, -1.10 R@20, +1.06 MRR, -1.83 FullCov@20. Complementary
+      on precision, partly overlapping on depth. DESCRIPTIVE ONLY: five differences
+      of differences at one dataset, one seed, one operating point.
+    seven_columns_beat_ten: >-
+      Z2R against Z3 FULL_LOCAL: +10.53 R@1, +3.56 R@5, +0.28 R@20, +14.90 MRR,
+      +0.20 FullCov@20. Four distance buckets plus three retrieval columns beat all
+      ten historical columns on every metric at identical parameter count, which
+      resolves the D4 head/depth trade-off rather than confirming it. The two
+      coverage margins are small and should be read as no longer behind rather than
+      ahead.
+    ceiling_caveat: >-
+      candidate_ceiling is 79.33 and Z2R reaches 77.81 R@20, so 98.1% of achievable
+      recall@20 is taken. The +0.45 delta_prior_given_geometry on R@20 is partly
+      that ceiling, not only a property of the prior.
+    geometry_stops_costing_precision: >-
+      D3 measured delta_distance NEGATIVE on R@1 (-0.52) and MRR (-0.65). With the
+      prior present the same geometry is positive on both (+0.23, +0.42). That is
+      the positive precision interaction.
+    opposite_stratum_signatures: >-
+      delta_prior_given_geometry is flat across strata on precision (+9.17 to +11.36
+      R@1, +13.56 to +15.50 MRR) and near zero on coverage everywhere, turning
+      slightly negative on the most connected stratum. delta_geometry_given_prior is
+      the mirror image: near zero on R@1 and MRR, rising monotonically with
+      connectivity on R@20 (+0.63 to +6.69) and FullCov@20 (-0.24 to +13.13). The
+      strata are a graph property, so a signal indifferent to it is text evidence
+      and a signal that scales with it is using the induced structure. This is the
+      strongest evidence in the stage that the two carry different information.
+      boundaries_fitted_here false; query counts identical to D4.
+    equivalence_measured:
+      prior_matches_d4: max_abs_diff 0.0, elementwise identical, 4,851,276 rows
+      geometry_matches_d3: elementwise identical, complete one-hot, slots 7-9 zero
+      seed_identity: 4,851,276 rows, 105,675 seed rows, 0 mismatches
+    the_trap_did_not_bite_here: >-
+      MEASURED and recorded in docs/GRAPH_CONTEXT_D5_RESULTS.md section 4: on this
+      data the pre-normalisation layout would have produced identical values,
+      because each prior column per-query maximum is exactly 1.0 and
+      candidate_readout would have divided by one. Max absolute difference 0.0, and
+      a probe column with maximum 0.5 was rescaled to 1.0 in the same call, so the
+      mechanism is real and only its effect here is nil. The ordering and the proof
+      are kept because depending on the coincidence would be fragile. The fix is not
+      credited with averting a corruption it did not avert.
+    reuse_measured: >-
+      54 guarded conditions checked against BOTH source files, all matched. The
+      guard also requires D3 and D4 to agree about SEED_ID_ONLY, since D4 reused it
+      from D3. FULL_LOCAL is recorded as measured_in stage_d2 via stage_d3, not
+      relabelled. arms_trained_here == [DISTANCE_PLUS_GRADED_RETRIEVAL].
+    convergence_caveat: >-
+      Z2R runs the frozen three-epoch budget and is still improving at the boundary
+      (loss 1.846 -> 1.528 -> 1.415, held-out tail R@5 0.6938 -> 0.7064 -> 0.7088).
+      Deliberate: four of the five rows are earlier stages and this arm must not be
+      given a convergence advantage over its own controls.
+    not_established: >-
+      Not a statistical interaction claim. Not a verdict on the six remaining
+      structural columns: the D3 +1.12 R@5 was measured against a much weaker
+      baseline and whether any of it survives the prior is exactly what Z3R would
+      test, so it still cannot justify further structural work. Not new information
+      about the world, since Cq was built by RRF over the same two lists. Three
+      retrieval and four distance columns each move as a group. One dataset, one
+      seed, context G[Cq].
+    actual_cost:
+      new_runs: 1
+      accounted_seconds: 76.6
+      note: >-
+        49.8 s shared feature build, 1.9 s static, 6.4 s assembling and proving the
+        prior, 18.2 s training, 0.3 s inference. Under $0.15 at $1.734/h against
+        $0.45 authorised. The gate reported 0.2 h / $0.87, byte-identical to the D3
+        and D4 figures: VERIFIED FROM CODE, every fitted graph-context stage is
+        priced with the D1 whole-split model, documented in spawn_modal_jobs.py as a
+        ceiling the later stages are bounded by, so it is not a D5-specific
+        projection and its excess over the declared $0.45 has a technical cause.
 
   D4:
     status: COMPLETE
