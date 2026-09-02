@@ -1651,6 +1651,22 @@ grounding check on that document rightly refuses a prose figure no table
 carries. An operational log is the place for a number about work not yet done.
 
 
+### The 64 fetched E2 cells pre-flight clean
+
+Checked before any metric value was read, so the frozen analyzer stays frozen:
+
+- 64 of 64 cells carry all ten per-seed arrays, two models by five seeds.
+- One `metric_names` tuple across all 64 cells, so no cell scores a different
+  metric set from the rest.
+- One `query_order_sha256` per dataset. This is the one that matters for the
+  paired five-seed statistics: cells within a dataset must score the same
+  queries in the same order or the pairing is meaningless.
+- Query counts match the registered test splits exactly -- 2wiki 1,500,
+  hotpotqa 9,786, musique 1,995, webqsp 159.
+
+Zero problems. The remaining 32 cells are metaqa and squad_clean.
+
+
 ## Repository boundary
 
 The original C-RAG repository remains strictly read-only. This audit read only
