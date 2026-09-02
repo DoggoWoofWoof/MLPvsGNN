@@ -107,7 +107,13 @@ def _split(**overrides):
 
 def _audit(dataset="tiny", complete=True, graphs=None, aliases=None):
     graphs = graphs or {
-        name: {"splits": {"validation": _split()}} for name in rst.GRAPH_ORDER
+        name: {
+            "stored_directed_edges": 855146 if name == "dataset_default" else 521614,
+            "undirected_edges": 260807,
+            "stored_graph_was_symmetric": name != "dataset_default",
+            "splits": {"validation": _split()},
+        }
+        for name in rst.GRAPH_ORDER
     }
     return {
         "dataset": dataset,
@@ -290,6 +296,37 @@ def test_a_metric_the_audit_did_not_record_prints_as_a_dash():
     rows = _table(_render(_audit(graphs=graphs)), "Candidate-induced connectivity")
     assert "| -- |" in rows[2]
     assert "0.000" not in rows[2]
+
+
+# ---------------------------------------------------------------------------
+# Storage orientation
+# ---------------------------------------------------------------------------
+
+
+def test_the_orientation_table_reports_stored_multiplicity_as_a_ratio():
+    # 2.0 exactly means symmetric with no duplicate edges. The sealed graph is
+    # above it, and that gap is the whole duplicate-message finding.
+    rows = _table(_render(_audit()), "Storage orientation")
+    sealed = rows[2]
+    assert "3.2788" in sealed
+    assert "no" in [c.strip() for c in sealed.split("|")]
+    dedup = rows[5]
+    assert "2.0000" in dedup
+
+
+def test_orientation_is_rendered_even_though_it_has_no_split():
+    # It is a property of the stored artifact, so asking for a split the audit
+    # does have must not make it vanish, and it must not gain a split column.
+    header = _table(_render(_audit()), "Storage orientation")[0]
+    assert "split" not in header.lower()
+
+
+def test_a_graph_missing_its_edge_counts_prints_dashes_not_a_ratio():
+    graphs = {"dataset_default": {"splits": {"validation": _split()}}}
+    body = _table(_render(_audit(graphs=graphs)), "Storage orientation")[2]
+    cells = [c.strip() for c in body.split("|")]
+    assert cells.count("--") == 4
+    assert "0.0000" not in cells
 
 
 # ---------------------------------------------------------------------------

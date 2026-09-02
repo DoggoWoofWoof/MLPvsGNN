@@ -95,6 +95,23 @@ survives induction whenever both endpoints are in the pool. Bridge loss is the
 `seed -> non-candidate -> candidate` pattern specifically, and neither a GNN
 layer nor a QLS hop feature can see it.
 
+**The sealed graph is stored asymmetrically; every derived family is stored
+symmetrically and cleanly.** A symmetric graph with no duplicate edges stores
+exactly two directed edges per undirected edge. `structural_only`, `knn_only`
+and `baseline_a_simple` sit at exactly 2.0000 on all five datasets, so those
+three carry no stored multiplicity at all. `dataset_default` is flagged
+asymmetric on all five and its ratio runs 3.2788 (2wiki) to 4.0411 (webqsp).
+That excess above 2.0 *is* the duplicate multiplicity, measured on the whole
+stored artifact rather than per query. Protocol §1.3 listed storage orientation
+and duplicate-edge handling as open; both are now answered, and neither
+required opening a graph the audit does not already read.
+
+The asymmetry is in storage, not in reach. The sealed graph stores some pairs
+in one direction and others repeatedly, yet its message-flow receptive field
+equals its symmetrised one at every hop on every dataset. Storage orientation
+and reachability are separate properties and the audit measures them
+separately.
+
 **The stored graph carries no self-loops, on any dataset or any family.**
 `stored_self_loops` is 0.0 on all twenty graph-splits. Protocol §1.3 listed
 self-loop presence as an open question and §4.2 named the hazard: `gcn` and
@@ -372,6 +389,31 @@ global reach seen from the other side.
 | webqsp | structural | 315 | 344.5 | 1.17 | 81.36 | 717.24 | 5.21 | 364.94 | 1710.65 |
 | webqsp | kNN only | 315 | 344.5 | 1.04 | 1.20 | 1.69 | 3.25 | 9.53 | 25.45 |
 | webqsp | baseline A | 315 | 344.5 | 1.21 | 82.24 | 750.91 | 7.20 | 375.42 | 1772.93 |
+
+### Storage orientation and multiplicity -- a property of the artifact
+
+| dataset | graph | stored directed | undirected | stored symmetric | stored / undirected |
+|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | 855146 | 260807 | no | 3.2788 |
+| 2wiki_clean | structural | 252140 | 126070 | yes | 2.0000 |
+| 2wiki_clean | kNN only | 269474 | 134737 | yes | 2.0000 |
+| 2wiki_clean | baseline A | 521614 | 260807 | yes | 2.0000 |
+| metaqa | sealed A | 585728 | 164687 | no | 3.5566 |
+| metaqa | structural | 218960 | 109480 | yes | 2.0000 |
+| metaqa | kNN only | 110414 | 55207 | yes | 2.0000 |
+| metaqa | baseline A | 329374 | 164687 | yes | 2.0000 |
+| musique_clean | sealed A | 280108 | 78949 | no | 3.5480 |
+| musique_clean | structural | 103086 | 51543 | yes | 2.0000 |
+| musique_clean | kNN only | 54812 | 27406 | yes | 2.0000 |
+| musique_clean | baseline A | 157898 | 78949 | yes | 2.0000 |
+| squad_clean | sealed A | 2857316 | 722856 | no | 3.9528 |
+| squad_clean | structural | 1389160 | 694580 | yes | 2.0000 |
+| squad_clean | kNN only | 56552 | 28276 | yes | 2.0000 |
+| squad_clean | baseline A | 1445712 | 722856 | yes | 2.0000 |
+| webqsp | sealed A | 13379166 | 3310797 | no | 4.0411 |
+| webqsp | structural | 3276132 | 1638066 | yes | 2.0000 |
+| webqsp | kNN only | 3345462 | 1672731 | yes | 2.0000 |
+| webqsp | baseline A | 6621594 | 3310797 | yes | 2.0000 |
 
 ### Provenance aliasing -- families that are the same undirected graph
 

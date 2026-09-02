@@ -164,6 +164,45 @@ def expansion(sp: dict) -> list[str]:
     )
 
 
+def orientation(audits: list[dict]) -> str:
+    """How the frozen artifact stores its edges -- protocol 1.3, questions 1 and 2.
+
+    Split-independent, because orientation is a property of the stored graph
+    rather than of a query set. The ratio is the informative column: a symmetric
+    graph with no duplicate edges stores exactly two directed edges per
+    undirected one, so anything above 2.0 is stored multiplicity.
+    """
+
+    rows = []
+    for audit in audits:
+        for graph in GRAPH_ORDER:
+            entry = audit.get("graphs", {}).get(graph)
+            if not entry:
+                continue
+            stored = entry.get("stored_directed_edges")
+            undirected = entry.get("undirected_edges")
+            symmetric = entry.get("stored_graph_was_symmetric")
+            ratio = (
+                fmt(stored / undirected, 4)
+                if stored is not None and undirected
+                else "--"
+            )
+            rows.append([
+                audit["dataset"],
+                SHORT[graph],
+                "--" if stored is None else str(stored),
+                "--" if undirected is None else str(undirected),
+                "--" if symmetric is None else ("yes" if symmetric else "no"),
+                ratio,
+            ])
+    return table(
+        "Storage orientation and multiplicity -- a property of the artifact",
+        ["dataset", "graph", "stored directed", "undirected", "stored symmetric",
+         "stored / undirected"],
+        rows,
+    )
+
+
 def aliasing(audits: list[dict], split: str) -> str:
     """The one axis an aliased pair differs on, next to the fact they are aliased.
 
@@ -283,6 +322,7 @@ def render(summary: dict, split: str) -> str:
              "U_target H=1", "H=2", "H=3"],
             rows_for(audits, split, expansion),
         ),
+        orientation(audits),
         aliasing(audits, split),
     ]
     return "\n".join(parts) + "\n"
