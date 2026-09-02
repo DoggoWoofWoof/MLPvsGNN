@@ -302,6 +302,26 @@ def _d4_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     return args
 
 
+def _d5_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D5's arguments: D4's, plus the second result file it reuses.
+
+    D5 assembles a five-row table from two earlier stages and trains one arm, so
+    it must be at the operating point BOTH of them ran at. Taking D4's builder --
+    which takes D3's, which takes D2's -- is what makes that true by construction
+    rather than by three copies of the same numbers agreeing. `d3_result` is
+    already set by D4's builder; only D4's own path is new here.
+
+    The RRF constant arrives the same way, from D0B's block through D4. D5
+    composes D4's prior and must not be able to disagree with it about K.
+    """
+    args = _d4_runner_args(job)
+    args.d4_result = Path(args.output)
+    args.holdout_fraction = float(CONFIG["stages"]["D5"]["holdout_fraction"])
+    args.seed = int(CONFIG["stages"]["D5"]["seed"])
+    args.output = Path(args.output).with_name("stage_d5.json")
+    return args
+
+
 def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
 
@@ -424,6 +444,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d4 import run
 
         args = _d4_runner_args(job)
+    elif job["stage"] == "stage_d5":
+        from scripts.run_graph_context_d5 import run
+
+        args = _d5_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run

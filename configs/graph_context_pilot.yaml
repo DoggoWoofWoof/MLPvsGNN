@@ -696,6 +696,164 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D5:
+    status: DECLARED
+    evidence_class: CONFIRMATORY within its own narrow question
+    runner: scripts/run_graph_context_d5.py
+    dataset: 2wiki_clean
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    question: >-
+      After graded retrieval evidence is available, does seed-distance geometry
+      still provide incremental ranking value?
+    why_it_is_needed: >-
+      D4 found the graded retrieval prior larger than any structural increment on
+      R@1, R@5 and MRR, but weaker than distance geometry on exactly the two
+      coverage measures (+1.55 vs +5.13 R@20; +2.43 vs +8.77 FullCov@20). That
+      reads as complementary rather than substitutive, and nothing measured so far
+      tests whether the two add. D5 composes them directly. It also tells us
+      whether D3 remaining-structure increment of +1.12 survives once the much
+      stronger retrieval evidence is exposed, which is why that number may not be
+      used as the justification for any further structural work until D6.
+    arms:
+      Z1_SEED_ID_ONLY: the bare bit; REUSED from D3
+      Z2_DISTANCE_ONLY: the frozen four-column distance bucket group; REUSED from D3
+      Z3_FULL_LOCAL: >-
+        all ten historical columns; REUSED from D3, which itself reused it from D2
+        as FULL_CAND, so this row is a two-hop reuse and is recorded as measured in
+        D2
+      Z1R_SEED_PLUS_GRADED_RETRIEVAL: the bit plus the A3 prior; REUSED from D4
+      Z2R_DISTANCE_PLUS_GRADED_RETRIEVAL: >-
+        the D3 distance group plus the exact D4 prior; NEW, and the only training
+        run in this stage
+    columns:
+      slots_0_to_3: >-
+        distance_0..3, byte-for-byte the D3 DISTANCE_ONLY masking of the same
+        build_local_features output. Outside NORMALISED_COLUMNS by construction.
+      slots_4_to_6: >-
+        dense_reciprocal_rank, splade_reciprocal_rank, retriever_agreement,
+        injected AFTER candidate_readout has run.
+      slots_7_to_9: zero
+    the_normalisation_trap:
+      what_it_would_have_been: >-
+        candidate_readout divides columns 4-9 by their own per-query maximum and
+        leaves 0-3 untouched. A prior written into slots 4-6 BEFORE that
+        normalisation would not be the prior D4 measured, so Z2R - Z1R would have
+        confounded adding geometry with changing the retrieval transform.
+      what_the_runner_does: >-
+        build_local_features applies candidate_readout before returning, so the
+        injection happens after it. That is a property of call ordering, not of the
+        column indices, and D4 proved nothing about it, so D5 proves it rather than
+        assuming it.
+      measured_note: >-
+        On this data the naive layout would in fact have been harmless. Each prior
+        column per-query maximum is exactly 1.0 -- rank 0 is always in Cq, and
+        agreement reaches 1 whenever the lists overlap -- so candidate_readout would
+        have divided by one. MEASURED, max abs difference 0.0. That is a coincidence
+        of the reciprocal-rank transform, not a guarantee: a different K, a
+        percentile transform or a pool missing rank 0 would each break it. Recorded
+        so the fix is not credited with averting a corruption it did not avert, and
+        the proof is kept anyway because relying on the coincidence would be fragile.
+    equivalence_invariants:
+      prior_matches_d4: >-
+        Z2R columns 4-6 are compared elementwise against the block that the D4
+        build_graded_retrieval_block produces, calling the shipped D4 code rather
+        than a second implementation. Required: max_abs_diff exactly 0.0 and
+        np.array_equal. The runner raises otherwise.
+      geometry_matches_d3: >-
+        Z2R columns 0-3 are compared elementwise against masked_local over
+        DISTANCE_COLUMNS on the same build_local_features output D3 masked, plus a
+        complete-one-hot check and a check that slots 7-9 are exactly zero.
+      therefore: Z2R is exactly D3 geometry plus exactly the D4 prior and nothing else.
+    the_prior_is_unchanged_from_d4:
+      constant_K: 60
+      formula: (K + 1) / (K + zero_based_rank + 1)
+      missing_retriever_handling: exactly 0.0
+      agreement: 1.0 iff ranked by both retrievers
+      no_new_normalisation: true
+      no_percentile_transform: true
+      no_seed_only_masking: true
+      why: >-
+        D5 is a composition experiment. If the prior itself changed, the comparison
+        would not be about composition.
+    ablation:
+      method: injecting the prior into free slots after candidate_readout
+      parameter_difference: 0
+      why: >-
+        The distance group keeps its historical slots so the geometry is D3 exactly,
+        and the prior lands in three columns that are zero in DISTANCE_ONLY, so
+        local_dim stays 10, head width stays 61 and the parameter count stays
+        213,506.
+      same_epoch_budget_for_every_arm: true
+    reuse:
+      arms:
+        Z1: D3 SEED_ID_ONLY
+        Z2: D3 DISTANCE_ONLY
+        Z3: D2 FULL_CAND, via D3 FULL_LOCAL
+        Z1R: D4 SEED_PLUS_GRADED_RETRIEVAL
+      why: >-
+        Four of the five rows were measured under identical conditions in earlier
+        stages. The runner checks every condition against BOTH source files -- and
+        additionally that D3 and D4 agree about SEED_ID_ONLY, since D4 reused it
+        from D3 and a disagreement would mean the chain is broken behind us. It
+        refuses rather than reusing across a mismatch.
+      provenance_is_not_relabelled: >-
+        measured_in names where the numbers of a row were produced, not the file D5
+        read them out of, so FULL_LOCAL keeps pointing at stage_d2.
+      new_runs: 1
+    reports:
+      delta_prior_given_geometry: >-
+        Z2R - Z2. Does the D4 retrieval gain survive once geometry is present?
+      delta_geometry_given_prior: >-
+        Z2R - Z1R. Does geometry survive once the prior is present? The
+        scientifically more important of the two.
+      interaction: >-
+        (Z2R - Z1R) - (Z2 - Z1). Near zero means additive, positive means
+        complementary, negative means overlapping. DESCRIPTIVE ONLY at one dataset,
+        one seed, one operating point -- a sign, not a statistical interaction claim.
+      metrics: [recall@1, recall@5, recall@20, mrr, full_coverage@20]
+      read_all_of_them: >-
+        Not R@5 alone. D4 traded head accuracy against depth, so R@1, R@20 and
+        FullCov@20 each have to be inspected before the stage is classified.
+      also: the same frozen degree strata, which are not refitted
+    interpretation_fixed_in_advance:
+      A_retrieval_and_geometry_compose_strongly: >-
+        Both conditionals clearly positive. The minimal QLS-v2 starting point is
+        graded retrieval prior plus seed identity plus seed-distance geometry. Does
+        NOT authorise opening a large R0-R5 feature grid.
+      B_geometry_redundant_given_retrieval: >-
+        delta_geometry_given_prior near zero or negative. Geometry drops out of the
+        minimal base and the D3 +1.12 cannot justify further structural work.
+      C_retrieval_redundant_given_geometry: >-
+        delta_prior_given_geometry near zero. Would contradict the D4 magnitude and
+        would need explaining before anything is built on it.
+      D_head_depth_tradeoff_remains: >-
+        Z2R wins precision and loses coverage, or the reverse. Does NOT authorise
+        adding a larger model; it makes the objective, not the capacity, the issue.
+    projected_cost:
+      basis: >-
+        Measured from D4: 74.4 s of accounted compute for one shared feature build
+        (50.7 s), 2.1 s static, 2.8 s assembling the prior, 18.5 s training and
+        0.3 s inference. D5 trains ONE arm on the same build and adds one extra
+        prior-assembly pass for the equivalence proof, so it is priced as one new
+        run at the measured D4 cost plus a few seconds.
+      new_runs: 1
+      gpu_hours_ceiling: 0.10
+      cost_ceiling_usd: 0.45
+      wall_time_ceiling_minutes: 10
+      expected_actual_usd: 0.15
+      stop_condition: >-
+        If the gate projection exceeds 0.10 GPU-h or $0.45 without a technical
+        explanation, stop and inspect rather than launch.
+    does_not_authorise:
+      [second dataset, second seed, GNN, R0-R5 sweep, LODO, E2, TARGET_H1,
+       PATH, BRIDGE, SEED_H2, graph-context gating, larger model, more epochs
+       for any one arm, Z3R]
+    z3r_is_not_authorised_here: >-
+      FULL_LOCAL plus the exact prior is the likely next question if interpretation
+      A occurs, but it is a separate declaration and is not launched from this one.
+
   D4:
     status: COMPLETE
     results: docs/GRAPH_CONTEXT_D4_RESULTS.md
@@ -1349,7 +1507,7 @@ modal:
   # decorator reads this only for the stages listed in gpu_stages, so a CPU
   # stage never pays for an accelerator it does not use.
   gpu: A10G
-  gpu_stages: [stage_d1, stage_d2, stage_d3, stage_d4]
+  gpu_stages: [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -1364,6 +1522,7 @@ modal:
     # strictly cheaper than D3's measured 90.4 s of accounted work. Same ceiling,
     # not a tighter one: a timeout is a bound, not a projection.
     stage_d4: 3600
+    stage_d5: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and
