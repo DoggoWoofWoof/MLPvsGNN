@@ -217,8 +217,9 @@ def context_nodes(arm, *, operators, pool, seeds):
     subset of ``Cq`` by construction of the artifact -- the audit computes
     ``seed_global = pool[seed_local]`` -- so ``Cq u Sq == Cq`` and the seed arms
     are not a union of two independent sets. They differ from the target arms
-    only in what they expand *from*: roughly ten seeds against 316-361
-    candidates.
+    only in what they expand *from*: a much smaller seed set against a median
+    316-364 candidates. The seeds-per-query count is not recorded by the pilot
+    and is not asserted.
 
     Returned ids are sorted, unique, and always contain ``pool``.
     """
@@ -247,6 +248,88 @@ def context_nodes(arm, *, operators, pool, seeds):
         raise AssertionError(arm)
 
     return np.union1d(pool, np.flatnonzero(extra & ~in_pool))
+
+def two_path_preservation(operators, nodes, pool, seeds):
+    """Which length-2 paths between candidates survive inside ``Uq``.
+
+    This is the property that gives ``TARGET_H1`` its interpretation, and it is
+    an identity rather than a measurement, so it is stated and then checked
+    rather than discovered.
+
+    **Claim.** Let ``U = Cq u N1_in(Cq)`` with
+    ``N1_in(Cq) = {v : exists c in Cq, v -> c}``. For any ``a, b`` in ``Cq`` and
+    any ``v`` with ``a -> v`` and ``v -> b``, the whole path lies inside
+    ``G[U]``.
+
+    **Proof.** ``v -> b`` with ``b`` in ``Cq`` puts ``v`` in ``N1_in(Cq)``, so
+    ``v`` is in ``U``; ``a`` and ``b`` are in ``Cq``, a subset of ``U``. Both
+    edges therefore have both endpoints in ``U`` and survive vertex induction.
+    No symmetry assumption is used, so this holds on hotpotqa exactly as it
+    holds on the five reachability-symmetric graphs.
+
+    Two corollaries. ``Sq`` is a subset of ``Cq``, so every ``s -> v -> d`` from
+    a retrieval seed to a candidate is preserved -- ``TARGET_H1`` restores the
+    complete candidate-endpoint two-hop context without needing ``TARGET_H2``.
+    And ``PATH_H2`` and ``BRIDGE_H2`` are subsets of ``TARGET_H1`` by the same
+    argument rather than by measurement, which is what Stage B observed.
+
+    **Sharpness.** The claim is about *directed* two-paths. Undirected ones have
+    four orientations, and three of them put an out-edge from the bridge into
+    ``Cq``:
+
+    .. code-block:: text
+
+        a -> v -> b     v -> b, b in Cq     bridge in U
+        a <- v -> b     v -> a, a in Cq     bridge in U
+        a <- v <- b     v -> a, a in Cq     bridge in U
+        a -> v <- b     no out-edge needed  bridge in U only if v -> Cq anyway
+
+    So the one pattern ``TARGET_H1`` can lose is the common successor
+    ``a -> v <- b``: a node two distinct candidates both point at, which points
+    at no candidate itself. On a graph whose stored edges all carry their
+    reverse that node cannot exist, and ``Cq u N1(Cq)`` preserves every
+    undirected two-path between candidates. On hotpotqa it can exist, and this
+    function counts it rather than assuming it away.
+
+    Returns counts, not fractions of a fraction: a denominator of zero is
+    reported as zero paths rather than as a NaN rate, because "no two-path
+    existed" and "the two-paths were lost" are different facts.
+    """
+    size = operators.size
+    pool = np.unique(np.asarray(pool, dtype=np.int64))
+    seeds = np.unique(np.asarray(seeds, dtype=np.int64))
+    in_context = np.zeros(size, dtype=bool)
+    in_context[np.asarray(nodes, dtype=np.int64)] = True
+
+    pool_mark = _indicator(pool, size)
+    # Deduplicated views: a parallel edge must not pose as a second endpoint.
+    out_to_pool = operators.simple_forward.dot(pool_mark)  # distinct c with v -> c
+    in_from_pool = operators.simple_reverse.dot(pool_mark)  # distinct c with c -> v
+
+    directed = _distinct_two_paths(operators, pool, pool)
+    seeded = _distinct_two_paths(operators, seeds, pool)
+    # The one undirected orientation with no out-edge into the pool.
+    common_successor = (in_from_pool >= 2) & (out_to_pool == 0)
+
+    def _covered(mask):
+        total = int(mask.sum())
+        return total, int((mask & in_context).sum())
+
+    directed_total, directed_kept = _covered(directed)
+    seeded_total, seeded_kept = _covered(seeded)
+    successor_total, successor_kept = _covered(common_successor)
+
+    return {
+        # a -> v -> b with a, b distinct candidates. The claim: always 1.0.
+        "directed_bridges": directed_total,
+        "directed_bridges_in_context": directed_kept,
+        # s -> v -> d with s a seed. A subset of the above because Sq is in Cq.
+        "seed_bridges": seeded_total,
+        "seed_bridges_in_context": seeded_kept,
+        # a -> v <- b, the orientation the claim does not cover.
+        "common_successor_bridges": successor_total,
+        "common_successor_bridges_in_context": successor_kept,
+    }
 
 #: How far the seed-distance probe looks. The frozen descriptor's own bucket
 #: stops at 2 and lumps everything beyond into one class, which is exactly the

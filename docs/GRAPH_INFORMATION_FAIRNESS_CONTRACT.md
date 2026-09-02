@@ -153,3 +153,51 @@ it.
 The clauses in §5 are not machine-checkable and are the ones most likely to be
 broken by accident. They are checked at review time against this list, and a
 comparison that cannot point at this document for each of them is not reported.
+
+## 9. Amendment, 2026-09-02: two clarifications the pilot forced
+
+Filed after the graph-context pilot returned and before any comparison is run,
+so neither clause depends on an outcome.
+
+### 9.1 The privilege is not the implementation
+
+Two objects were being named by one phrase, and conflating them would smuggle an
+engineering choice into a scientific claim:
+
+| | |
+|---|---|
+| **graph-information privilege** | which structural information a system is permitted to see. `TARGET_H1` is the leading candidate. |
+| **feature backend** | how the permitted statistics are computed. Materialising `G[Cq u N1_in(Cq)]` is one implementation. |
+
+§2 binds the **privilege**: both systems see the same permitted information.
+Neither side is required to compute it the same way. QLS-v2 may derive seed
+support, distance at most 2, and bridge counts directly from the global CSR
+without building the subgraph -- §8 of the pilot results proves those statistics
+are determined by the privilege rather than by the subgraph object -- and a GNN
+may propagate over the materialised graph. What is forbidden is a *difference in
+permitted information*, not a difference in data structure.
+
+Any implicit backend must be exactly equivalent to the explicit one for every
+statistic it claims to compute, or must be declared as an approximation with its
+own name and its own numbers. A cap on context size is such an approximation:
+its rule is fixed from context-size distributions and systems constraints before
+its ranking effect is measured, never tuned against outcomes.
+
+### 9.2 The contract is depth-aware, and `TARGET_H1` is not a universal context
+
+§5 requires depth to be matched to context radius. Made explicit, because the
+convenient error is to fix one context and call it fair:
+
+* A one-layer GNN's natural receptive field is radius 1, which `TARGET_H1`
+  supplies in full.
+* A two-layer GNN needs radius-2 computational context -- `TARGET_H2`, or
+  literature-standard neighbour sampling -- and is truncated at `TARGET_H1`'s
+  boundary.
+* Deeper baselines need correspondingly more.
+
+**`TARGET_H1` must not be declared the graph context for all GNN depths.** Doing
+so would truncate every baseline deeper than one layer while leaving QLS-v2
+whole, which is the exact failure §1 exists to prevent, wearing the opposite
+costume. Each depth is its own condition with its own permitted context, the
+strongest practical baseline is selected on validation, and any truncation is
+reported in the same table as the result it affects.

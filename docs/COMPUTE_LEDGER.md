@@ -377,3 +377,59 @@ are in [`GRAPH_CONTEXT_PILOT_RESULTS.md`](GRAPH_CONTEXT_PILOT_RESULTS.md).
 Nothing trained, no GPU, no gold id, no test split, no candidate pool touched
 and no GNN anywhere. E2 stays paused at 82/96 with its 69 seed-units unspent, F
 stays sealed, and the workspace did not change.
+
+---
+
+## Stage D0 declaration, filed 2026-09-02 after the pilot closed
+
+Stage C established that `TARGET_H1` performs its intended repair. It did not
+establish that the repair is useful, and retention 1.0000 is a consequence of
+including a candidate's global one-hop neighbourhood rather than evidence about
+ranking. D0 is the cheap gate before any GPU is spent: if the restored
+information does not separate relevant candidates from irrelevant ones, training
+a new GNN on it is pointless and the right result is the negative one.
+
+```text
+scientific question   Do structural quantities computed under TARGET_H1
+                      discriminate relevant candidates from irrelevant ones
+                      better than the same quantities under CAND?
+
+arms                  CAND, TARGET_H1. CAND first: it defines the baseline.
+datasets / queries    six datasets x 300 validation queries x 2 arms -- the
+                      Stage-C sample, not a fresh draw
+features              seed_distance, distinct_seed_support (negative control),
+                      two_hop_seed_support, bridge_support
+statistic             per-query rank AUC, ties at one half, reported beside the
+                      tie fraction; unscorable queries counted, never imputed
+models / seeds        none -- no parameters, no training, no GPU
+labels                validation relevance, for SCORING ONLY. Read after the
+                      pool and seeds; never passed to context construction. The
+                      runner refuses the test split.
+number of jobs        6 CPU jobs, the graph-context container shape
+
+estimated CPU-hours   <= 1.2   ceiling. D0 runs 2 arms where C ran 3 and skips
+                              the PPR descriptor kernel entirely, so it should
+                              cost less than C's measured 0.26; the ceiling is
+                              4.7x that, not a prediction.
+estimated cost        <= $0.80 at $0.634/h. Derived from the CPU-hour ceiling
+                              rather than guessed -- the Stage C ceiling was
+                              32x its actual because it was not.
+estimated wall time   <= 20 min, jobs concurrent
+estimated storage     < 2 MB
+
+stopping rule         None. Every job is minutes and the comparison needs all
+                      six datasets to mean anything.
+
+advancement criterion Stage D1 is declared only if TARGET_H1's discrimination
+                      exceeds CAND's, AND does so on the formerly isolated and
+                      low-degree strata where the repair lands. A gain that
+                      appears only on already-well-connected candidates is not
+                      the repair paying off. If neither holds: DO NOT SCALE,
+                      and record that substantial graph structure was removed
+                      historically and restoring it in this form did not improve
+                      ranking.
+```
+
+Nothing trained, no GPU, no test split, no candidate pool touched and no GNN
+anywhere. E2 stays paused at 82/96, F stays sealed, the workspace does not
+change, and no strong-GNN run is authorised by this declaration.

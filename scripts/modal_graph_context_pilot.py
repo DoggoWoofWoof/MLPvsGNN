@@ -87,6 +87,11 @@ STAGE = os.environ.get("GRAPH_CONTEXT_STAGE", "stage_b")
 QUERY_CAP = int(os.environ.get("GRAPH_CONTEXT_QUERY_CAP", "25"))
 
 
+def _stage_key(stage: str) -> str:
+    """`stage_b` -> `B`, `stage_d0` -> `D0`. The config keys, not a character index."""
+    return stage.removeprefix("stage_").upper()
+
+
 def _jobs(
     datasets: list[str], stage: str = STAGE, query_cap: int = QUERY_CAP
 ) -> list[dict[str, Any]]:
@@ -101,9 +106,12 @@ def _jobs(
                 "dataset": dataset,
                 "settings": settings,
                 "stage": stage,
-                # Stage C runs Stage B's survivors. The stage letter is the last
-                # character of the stage name, so `stage_c` reads `stages.C`.
-                "arms": CONFIG["stages"].get(stage[-1].upper(), {}).get("arms"),
+                # Stage C runs Stage B's survivors and D0 runs two of them, so
+                # the arm list comes from the config rather than the runner's
+                # default. `stage_c` reads `stages.C`, `stage_d0` reads
+                # `stages.D0` -- the suffix, not the last character, or D0 would
+                # silently read `stages.0` and fall back to all six arms.
+                "arms": CONFIG["stages"].get(_stage_key(stage), {}).get("arms"),
                 "query_cap": int(query_cap),
                 "baseline": confirmation["baseline"],
                 "fingerprint": confirmation["data_fingerprint_sha256"],
@@ -148,8 +156,18 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
     memory=MODAL_CONFIG["memory_mb"],
 )
 def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
+    """Stages B, C and D0 through one function.
+
+    D0 shares the image, the volume, the loader and the contract check; it
+    differs only in what it measures. A second Modal module would have been a
+    second image to keep pinned and a second registry entry to keep honest, for
+    no isolation this job needs.
+    """
     os.chdir(REMOTE_ROOT)
-    from scripts.run_graph_context_pilot import run
+    if job["stage"] == "stage_d0":
+        from scripts.run_graph_context_d0 import run
+    else:
+        from scripts.run_graph_context_pilot import run
 
     args = _runner_args(job)
     result = run(args, checkpoint_hook=result_volume.commit)

@@ -314,6 +314,52 @@ stages:
       buckets"; that test is provably vacuous above SEED_H1 -- see
       descriptor_saturation -- and was replaced before Stage B ran.
 
+  D0:
+    status: DECLARED
+    queries: 300
+    datasets: all_six
+    arms: [CAND, TARGET_H1]
+    what: >-
+      Zero-training relevance diagnostic. Stage C established that TARGET_H1
+      performs its intended repair; it did not establish that the repair is
+      useful. D0 asks whether structural quantities computed under TARGET_H1
+      separate relevant candidates from irrelevant ones better than the same
+      quantities computed under CAND, on the Stage-C sample, using validation
+      relevance labels for SCORING ONLY.
+    features: [seed_distance, distinct_seed_support, two_hop_seed_support, bridge_support]
+    statistic: >-
+      Per-query rank AUC -- the pairwise win rate with ties at one half --
+      reported beside the tie fraction, because a constant quantity also scores
+      0.5 and "cannot discriminate" is not "is not defined here". A query with
+      no positive or no negative candidate is unscorable and is counted, never
+      imputed at 0.5.
+    negative_control: >-
+      distinct_seed_support is identical under both contexts by construction:
+      Sq is inside Cq, so every seed-to-candidate edge already survives vertex
+      induction on G[Cq]. It is carried to prove the harness cannot manufacture
+      a difference where none exists.
+    labels: >-
+      Validation relevance labels, read AFTER the pool and seeds and never
+      passed to context construction. Development evidence, not evaluation. The
+      test split is not read; the runner refuses it.
+    trains_nothing: true
+    gpu: none
+    kill_gate: >-
+      If TARGET_H1's discrimination is no better than CAND's, and in particular
+      if it is no better on the formerly isolated and low-degree strata where
+      the repair lands, do not spend GPU on Stage D1 or on a new GNN. Record
+      that substantial graph structure was removed historically and that
+      restoring it in this form did not improve ranking.
+
+  D1:
+    status: NOT_DECLARED
+    blocked_on: D0
+    what: >-
+      First effectiveness pilot: 2wiki only, CAND vs TARGET_H1, one seed, same
+      frozen ranker architecture and feature schema in both arms, bit-identical
+      Cq, validation only. Not declared and not costed until D0 returns a
+      plausible relevance signal.
+
 advancement:
   rule: >-
     An arm advances only if it materially restores structure WHERE Phase -1

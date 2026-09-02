@@ -10,13 +10,31 @@ all six datasets, removes every isolated candidate, and costs 2,012-7,520
 context nodes and 8.7-170.1 ms p95 per query. `SEED_H2`, `PATH_H2` and
 `BRIDGE_H2` are dominated and killed. Nothing was trained and no GPU was used.
 
+**What that sentence is not.** `TARGET_H1` is the leading *graph-information
+repair regime*. It is not the final QLS-v2 serving algorithm, and this document
+makes no effectiveness claim at all. Two distinctions carry the whole reading of
+these results and are easy to collapse by accident:
+
+| | |
+|---|---|
+| **graph-information privilege** | which structural information a system is *permitted* to see. `TARGET_H1` is a candidate for this. |
+| **QLS feature backend** | how the permitted statistics are *computed*. Materialising `G[Cq u N1_in(Cq)]` is one implementation; it is not the only one, and the 170 ms tail belongs to the implementation rather than to the regime. |
+
+| | |
+|---|---|
+| **structural identity** | retention 1.0000 and isolate fraction 0.0000 follow largely from including a candidate's global one-hop neighbourhood. They show the construction performs its intended repair. They are not evidence that the repaired information helps ranking. |
+| **empirical finding** | the restored reach concentrates on exactly the candidates Phase -1 identified as starved, monotonically in prior degree, on all six datasets -- and the whole thing is computationally measurable at 8.7-170.1 ms p95. |
+
 Read section 6 before quoting the context sizes: on the three small corpora
 those 2k-7.5k nodes are 16-30% of the whole graph at the median, and calling
 that a "bounded local context" without saying so would be false.
 
 Every number below is MEASURED on the validation split unless labelled
-otherwise. Section 4 marks the one result that is a STRUCTURAL IDENTITY rather
-than a discovery, and section 9 lists what this does not establish.
+otherwise. Sections 4 and 5 separate identities from findings line by line,
+section 8 states the property that gives the arm its interpretation, and
+section 10 lists what this does not establish. **We have not shown that
+restoring this information improves retrieval ranking. That is Stage D0's
+question, and it is the next thing to earn.**
 
 ## 1. What was run
 
@@ -83,32 +101,44 @@ candidate-to-candidate edges are preserved exactly at radius 1; the full global
 one-hop neighbourhood is badly truncated; the induced receptive field is
 therefore sparse.
 
-## 4. `TARGET_H1` repairs it, and the repair lands where the loss was
+## 4. What the repair is: the identity half
 
 Retention rises to **1.0000 on all six datasets**, boundary cut to 0.0000 on
 five and 0.0015 on hotpotqa, and the isolated fraction to 0.0000 everywhere.
 
-Completeness is a STRUCTURAL IDENTITY wherever the stored edge set is symmetric,
-not a discovery about the arm. Retention counts a candidate's stored out-edges
-landing inside `Uq`. If every stored edge carries its reverse, then `v -> w` with
-`v` a candidate implies `w -> v`, so `w` is an in-neighbour of a candidate and is
-already inside `Cq u N1_in(Cq)`; retention is then 1.0000 by construction. That
-premise is VERIFIED directly on 2wiki -- its 855,146 stored edges are 521,614
-distinct pairs and every pair carries its reverse. On the other four it is an
-INFERENCE from the substrate audit, which found the symmetrised and directed
-receptive fields indistinguishable across all nine summary statistics at three
-depths but retained aggregates rather than per-node sets.
+**These are largely consequences of the definition, and must be reported as
+such.** Retention counts a candidate's stored out-edges landing inside `Uq`, and
+`TARGET_H1` admits every node with an edge into a candidate. If every stored
+edge carries its reverse, then `v -> w` with `v` a candidate implies `w -> v`,
+so `w` is an in-neighbour of a candidate and is already inside
+`Cq u N1_in(Cq)`; retention is then 1.0000 by construction, and an isolated
+candidate would need a candidate with no stored neighbour at all. Including a
+candidate's global one-hop neighbourhood repairs a radius-1 truncation because
+that is what it was built to do.
 
-hotpotqa is the measured exception and behaves accordingly: its directed
-message-flow receptive field is strictly smaller than its symmetrised one at
-every hop, and it is the one dataset here with a non-zero boundary cut under
-`TARGET_H1` (0.0015). The identity is therefore not free, and the 0.0000 on the
-other five is a measurement that the premise holds there, not a tautology
-asserted over all graphs.
+That premise is VERIFIED directly on 2wiki -- its 855,146 stored edges are
+521,614 distinct pairs and every pair carries its reverse. On the other four it
+is an INFERENCE from the substrate audit, which found the symmetrised and
+directed receptive fields indistinguishable across all nine summary statistics
+at three depths but retained aggregates rather than per-node sets. hotpotqa is
+the measured exception and behaves accordingly: its directed message-flow
+receptive field is strictly smaller than its symmetrised one at every hop, and
+it is the one dataset here with a non-zero boundary cut under `TARGET_H1`
+(0.0015). The identity is therefore not free -- the 0.0000 on the other five is
+a measurement that the premise holds there, not a tautology over all graphs.
 
-The part that is *not* an identity is where the repair lands. Fraction of
-candidates brought strictly closer to a seed than `G[Cq]` had them, stratified
-by the induced degree the candidate had before any context was restored:
+**What this establishes:** the construction performs its intended repair, and it
+does so completely rather than partially. **What it does not establish:** that
+the repaired information is worth anything to a ranker. Quoting 1.0000 retention
+as evidence that "we fixed the graph" would be quoting a definition.
+
+## 5. What the repair is: the empirical half
+
+Two things here are genuine findings rather than restatements of the arm.
+
+**Where the restored reach lands.** Fraction of candidates brought strictly
+closer to a seed than `G[Cq]` had them, stratified by the induced degree the
+candidate had before any context was restored:
 
 | dataset | isolated (deg 0) | deg 1 | deg 2-4 | deg 5+ |
 |---|---:|---:|---:|---:|
@@ -121,12 +151,22 @@ by the induced degree the candidate had before any context was restored:
 
 Monotone decreasing in prior degree on all six datasets without exception, and
 87-99% of formerly isolated candidates helped against 14-53% of the well
-connected ones. That is the preregistered advancement criterion, met on every
-dataset: the repair concentrates on exactly the candidates Phase -1 identified
-as truncated, rather than spreading evenly over candidates that were already
-well connected.
+connected ones. Nothing in the definition of `Cq u N1_in(Cq)` requires this: an
+arm that widened the context and moved every candidate a little would satisfy
+retention 1.0000 just as well and would be rescaling, not repair. That is the
+preregistered advancement criterion, and the restored information demonstrably
+reaches the candidates Phase -1 identified as starved.
 
-## 5. What was killed, and why it cannot come back
+**That the whole thing is computationally measurable.** The regime is not a
+thought experiment about what a bigger context would contain: it is 2,012-7,520
+median context nodes and 8.7-170.1 ms p95 per query on real hardware, small
+enough that the next question can be asked at all.
+
+Neither finding is an effectiveness result. "The restored information reaches
+the starved candidates" and "the restored information helps rank them" are
+different claims, and only the first is measured here.
+
+## 6. What was killed, and why it cannot come back
 
 | arm | dominated by, at Stage B | on |
 |---|---|---|
@@ -159,7 +199,7 @@ improvement is 36-92% of `TARGET_H1`'s depending on dataset, and on metaqa,
 musique, squad and webqsp it helps only 15-24% of formerly isolated candidates
 against `TARGET_H1`'s 87-95%.
 
-## 6. The context is bounded in nodes, not in share of the graph
+## 7. The context is bounded in nodes, not in share of the graph
 
 This is the caveat that matters most for how the result is stated.
 
@@ -188,7 +228,66 @@ hotpotqa's 142,073-node maximum is one query in three hundred against a p95 of
 7,509 and a p99 of 21,778. It is a hub effect in the tail, and any serving story
 needs a cap for it.
 
-## 7. Cost
+## 8. Why `TARGET_H1` is the right repair: two-hop path preservation
+
+Retention and isolation say the arm restores a candidate's *neighbours*. The
+property that gives it a precise interpretation is stronger, and it is a
+theorem rather than a measurement.
+
+**Claim.** Let `U = Cq u N1_in(Cq)` with `N1_in(Cq) = {v : exists c in Cq, v -> c}`.
+For any `a, b` in `Cq` and any `v` with `a -> v` and `v -> b`, the whole path
+lies inside `G[U]`.
+
+**Proof.** `v -> b` with `b` in `Cq` puts `v` in `N1_in(Cq)`, so `v` is in `U`.
+`a` and `b` are in `Cq`, a subset of `U`. Both edges therefore have both
+endpoints in `U` and survive vertex induction. ∎
+
+No symmetry assumption is used, so this holds on hotpotqa exactly as on the five
+reachability-symmetric graphs. Three consequences matter:
+
+* **The seed case is a special case.** `Sq` is a subset of `Cq` (VERIFIED FROM
+  CODE), so every `s -> v -> d` from a retrieval seed to a candidate is
+  preserved. `TARGET_H1` restores the *complete* candidate-endpoint two-hop
+  context without needing `TARGET_H2` -- which Phase -1 measured at 93.2% of the
+  hotpotqa graph.
+* **The path arms could not have won.** `PATH_H2` and `BRIDGE_H2` admit only
+  nodes carrying a directed two-path into `Cq`, and every such node points at a
+  candidate. Both are subsets of `TARGET_H1` on every graph, by the claim rather
+  than by measurement. Stage B observed the nesting; this explains it.
+* **It is the precise sense in which `TARGET_H1` beats `SEED_H1`.** `SEED_H1`
+  preserves `s -> v -> d` for a *seed* `s`, because the bridge is an
+  out-neighbour of a seed. It carries no guarantee for `c -> v -> d` between two
+  ordinary candidates, and on these graphs it loses some. That is the same fact
+  as the descriptor saturation in section 10, seen from the other side: the
+  frozen distance-2 bucket asks only about seed two-paths, which is exactly the
+  subset both arms preserve.
+
+**Sharpness, stated rather than glossed.** The claim is about *directed*
+two-paths. An undirected one has four orientations, and three put an out-edge
+from the bridge into `Cq`:
+
+```text
+a -> v -> b     v -> b, b in Cq        bridge in U
+a <- v -> b     v -> a, a in Cq        bridge in U
+a <- v <- b     v -> a, a in Cq        bridge in U
+a -> v <- b     no out-edge into Cq    bridge in U only if v -> Cq anyway
+```
+
+So the one pattern `TARGET_H1` can lose is the common successor `a -> v <- b`: a
+node two distinct candidates both point at, which points at no candidate itself.
+On a graph whose stored edges all carry their reverse it cannot exist, and
+`Cq u N1(Cq)` preserves every undirected two-path between candidates. On
+hotpotqa it can, and `two_path_preservation` counts it rather than assuming it
+away.
+
+Pinned in [`tests/test_two_path_preservation.py`](../tests/test_two_path_preservation.py)
+against brute-force enumeration of actual paths -- an identity verified with the
+same expression that computes it is verified by nothing -- on directed and
+symmetric random graphs, including the non-degeneracy checks that the
+common-successor exception and the `SEED_H1` gap are both reachable rather than
+theoretical.
+
+## 9. Cost
 
 MEASURED on the Modal image, milliseconds per query, validation split, 300
 queries. `total` is context construction plus the frozen QLS-v1 descriptor
@@ -209,13 +308,26 @@ Context construction is the cheap half everywhere. The descriptor kernel
 dominates, and on squad it is 155 ms for an 8,378-node p95 context -- the cost
 scales with context nodes, not with corpus size.
 
+**This is the cost of one implementation, not of the regime.** Every number in
+the table comes from materialising `G[Cq u N1_in(Cq)]` explicitly and running
+the frozen kernel over it. The statistics that make the regime what it is --
+seed support, distance at most 2, bridge and predecessor counts -- are
+determined by the global CSR and the frozen pool, not by the subgraph object,
+and section 8's theorem is what makes that concrete: every `s -> v -> d` has its
+bridge in `N1_in(Cq)`, so the same counts are obtainable by marking
+seed-neighbour membership and scanning candidate adjacency rows without ever
+building a thousands-node subgraph. Whether an exact implicit form matches the
+explicit one bit for bit is an open engineering question, deliberately not
+pursued here: the 170 ms tail is not worth optimising until the information is
+known to be worth having.
+
 Whole pilot: 8 CPU containers, no GPU, 1,232 container-seconds = 0.34 CPU-hours,
 about $0.22 at the $0.634/h substrate shape, against declared ceilings of
 2.5 + 3.25 CPU-hours and $2.00 + $5.15. Two further containers were spent for
 two seconds each on an image that shipped without `torch-geometric`; a test now
 asserts every registered image carries the same pin.
 
-## 8. A measurement was re-specified before it was taken
+## 10. A measurement was re-specified before it was taken
 
 The filed declaration made "feature movement vs QLS-v1 on `G[Cq]`" the primary
 signal, and its stopping rule killed an arm whose features did not move. Both
@@ -254,7 +366,7 @@ The replacement is seed distance recomputed through each arm's own context,
 uncapped to four hops and divided by nothing, with `distance_improved` as
 primary. Both descriptor measures are still computed and still reported.
 
-## 9. What this does not establish
+## 11. What this does not establish
 
 * **No effectiveness claim.** Nothing was trained. Retention, reach and latency
   are structural and systems measurements. Whether a restored context improves
@@ -274,9 +386,32 @@ primary. Both descriptor measures are still computed and still reported.
   relations and hold everywhere; `SEED_H2`'s rests on a measurement of two
   datasets, and reviving it would mean running the remaining four.
 * **`TARGET_H1`'s tail is not solved.** hotpotqa's 142,073-node maximum is
-  reported, not handled.
+  reported, not handled. Any cap must be defined from the Stage-C size
+  distributions and systems constraints, never tuned against ranking outcomes.
+* **`TARGET_H1` is not frozen as the QLS-v2 backend.** It is a graph-information
+  privilege, and the explicit subgraph is one way to compute statistics from
+  that privilege. Section 9 says why the two should not be equated.
+* **The fair GNN protocol is not settled, and cannot be depth-blind.** A
+  one-layer GNN's natural receptive field matches `TARGET_H1`; a two- or
+  three-layer one does not, and would need `TARGET_H2` or standard neighbour
+  sampling. Declaring `TARGET_H1` the context for all depths would cripple the
+  deeper baselines, which the fairness contract forbids.
 
-## 10. Full tables
+### What has to be earned next
+
+> Restoring the graph information that candidate induction removed materially
+> improves retrieval ranking.
+
+That sentence is unproven. Stage D0 asks it without training anything -- do the
+structural quantities computed under `TARGET_H1` separate relevant candidates
+from irrelevant ones better than the same quantities under `CAND`, on the
+Stage-C sample, using validation labels for scoring only. If they do not, and in
+particular if they do not on the starved strata where the repair lands, the
+right result is that historical induction removed a great deal of graph and
+restoring it in this form did not help ranking. No GPU is justified before that
+question is answered.
+
+## 12. Full tables
 
 Rendered by `scripts/render_graph_context_tables.py` from the Stage C result
 files. Regenerate rather than retype:
@@ -561,7 +696,7 @@ Pareto domination on (`build` p95 latency, `retention_median`). An arm is killed
 | TARGET_H1 | on the frontier | on the frontier | on the frontier | on the frontier | on the frontier | on the frontier | survives |
 
 
-## 11. Stage B, six arms, 25 queries
+## 13. Stage B, six arms, 25 queries
 
 The run the kills were made on. Retained because three arms exist nowhere else.
 
