@@ -8,6 +8,7 @@ one place instead of drifting between checks that silently disagree.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -78,6 +79,29 @@ def status_rows() -> list[list[str]]:
     return rows
 
 
+COMPLETE_STATUS = "GRAPH_SUBSTRATE_AUDIT_COMPLETE"
+
+
 def audited_datasets() -> set[str]:
-    """Datasets with a substrate.json actually on disk."""
-    return {path.parent.parent.name for path in AUDIT_ROOT.glob("*/*/substrate.json")}
+    """Datasets whose substrate.json is on disk *and* reports itself complete.
+
+    Presence is not completion. The audit writes its output incrementally, one
+    graph family at a time, so a `substrate.json` exists on the volume long
+    before the run finishes -- hotpotqa_clean's appeared carrying one family of
+    four and a status of ``GRAPH_SUBSTRATE_AUDIT_IN_PROGRESS``. Treating that as
+    an audit would report a dataset as measured on a quarter of its data.
+
+    This is the same test `analyze_graph_substrate.py` applies when it sets
+    ``complete``, so the report checks and the analyzer cannot disagree about
+    which datasets exist.
+    """
+    found = set()
+    for path in AUDIT_ROOT.glob("*/*/substrate.json"):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            # A file being written is not a finished audit either.
+            continue
+        if payload.get("status") == COMPLETE_STATUS:
+            found.add(path.parent.parent.name)
+    return found

@@ -15,6 +15,7 @@ promoted before its data arrived.
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 
@@ -116,3 +117,34 @@ def test_generated_tables_and_status_table_agree_on_which_datasets_appear():
         "Status table: " + ", ".join(sorted(rendered - complete))
         + ". The tables were re-rendered and the Status table was not."
     )
+
+
+def test_an_in_progress_audit_does_not_count_as_audited(tmp_path, monkeypatch):
+    """Presence is not completion, and this check learned that the hard way.
+
+    The audit writes incrementally, one graph family at a time, so a
+    substrate.json exists on the volume long before the run finishes.
+    hotpotqa_clean's first appeared carrying one family of four and a status of
+    GRAPH_SUBSTRATE_AUDIT_IN_PROGRESS, and the first version of this check
+    reported it as an audit the report had failed to cover -- which would have
+    pushed a quarter-measured dataset into the results table.
+    """
+    import substrate_report_helpers as helpers
+
+    root = tmp_path / "graph_substrate_audit"
+    for name, status in (
+        ("done_clean", helpers.COMPLETE_STATUS),
+        ("running_clean", "GRAPH_SUBSTRATE_AUDIT_IN_PROGRESS"),
+    ):
+        target = root / name / "fingerprint"
+        target.mkdir(parents=True)
+        (target / "substrate.json").write_text(
+            json.dumps({"status": status, "dataset": name}), encoding="utf-8"
+        )
+    # A file caught mid-write is not a finished audit either.
+    truncated = root / "truncated_clean" / "fingerprint"
+    truncated.mkdir(parents=True)
+    (truncated / "substrate.json").write_text('{"status": "GRAPH_', encoding="utf-8")
+
+    monkeypatch.setattr(helpers, "AUDIT_ROOT", root)
+    assert helpers.audited_datasets() == {"done_clean"}
