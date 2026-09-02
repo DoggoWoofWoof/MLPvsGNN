@@ -373,6 +373,61 @@ stages:
       differences, so D0 cannot say whether an overall delta is outside noise.
       No D0 conclusion rests on the sign of one.
 
+  D0B:
+    status: DECLARED
+    runner: scripts/run_graph_context_d0b.py
+    dataset: 2wiki_clean
+    what: >-
+      D0 scored each structural quantity on its own. This asks the multivariate
+      question that decides whether bridge_support is worth a place in QLS-v2:
+      does it still help once the ordinary retrieval and static graph features
+      are present? CPU only, no GNN, no architecture search, no test split.
+    arms:
+      RETRIEVAL_ONLY: 2 rank + 7 static. A floor, not a candidate design.
+      CAND: "+ the 10 frozen local columns over Cq. Reproduces A3's feature set."
+      TARGET_H1: "+ the same 10 over Cq union N1_in(Cq)."
+      TARGET_H1_BRIDGE: "+ log1p(bridge_support), candidate-normalised."
+    learner: >-
+      The frozen A3 linear control, unchanged: bias-free, weights initialised at
+      zero, multi-positive listwise loss, AdamW, weight decay 0.0, gradient clip
+      1.0, 3 epochs, 512-query batches, one seed. The learning rate is A3's
+      selected value for this dataset, carried and not re-selected.
+    seed: 0
+    rrf_constant: 60
+    splits: [train, validation]
+    normalisation: candidate-readout in every arm
+    epoch_selection: >-
+      none. The final epoch is reported. A3 selects its epoch on validation and
+      reports on test; D0b has no test split, so selecting and reporting on
+      validation would be reading one number twice. The per-epoch trajectory is
+      retained so a reader can check whether another epoch reorders the arms.
+    projected_cost:
+      cpu_hours_ceiling: 0.42
+      cost_ceiling_usd: 0.70
+      wall_time_ceiling_minutes: 25
+      basis: >-
+        13,500 train+validation queries at the Stage C measured p99 of 4.01 ms
+        (CAND) and 9.84 ms (TARGET_H1) is 3.1 CPU-minutes of feature build; the
+        launcher's gate pads that threefold to 40 ms per query to cover the
+        seed-support and induced-degree work Stage C did not time, adds the
+        600 s load ceiling and 300 s for training, and returns 0.42 CPU-hours.
+        At the measured $0.634 per container-hour that is $0.27 of compute; the
+        gate's utilisation model reports $0.66, and the ceiling is set above the
+        larger of the two rather than the more flattering one. Training is four
+        linear models of at most 20 parameters, so the cost is dominated by
+        image pull and dataset load rather than by the experiment.
+    kill_gate: >-
+      If TARGET_H1_BRIDGE does not beat TARGET_H1 on validation R@k or MRR --
+      overall or on the formerly isolated stratum -- the bridge feature does not
+      survive its cheapest multivariate test and is dropped from the QLS-v2
+      candidate set. It is not carried forward on the strength of a univariate
+      AUC.
+    does_not_gate: >-
+      D0b does NOT decide D1. D1 is a context-only causal experiment on the
+      frozen QLS-v1 architecture and takes no bridge feature; adding one would
+      confound a graph-context change with a representation change. D0b informs
+      what a later QLS-v2 probe should contain.
+
   D1:
     status: DECLARED
     declaration: docs/COMPUTE_LEDGER.md
@@ -466,3 +521,12 @@ modal:
   # representative. One hour is far above any plausible Stage B and is the unit
   # a restart would redo, since resumption here is per split.
   timeout_seconds: 3600
+  # D0b is the one stage that runs a whole split rather than a capped prefix:
+  # 13,500 train+validation queries against Stage B and C's 25 and 300. Its
+  # indivisible unit is correspondingly larger, so it gets a larger window
+  # rather than the shared one being loosened for stages that do not need it.
+  # Projected at ~1,440 s -- 540 s of feature build at 40 ms per query for both
+  # arms, the 600 s load ceiling, and under 300 s of linear training -- so this
+  # is roughly fivefold headroom and stays a ceiling rather than an estimate.
+  stage_timeout_seconds:
+    stage_d0b: 7200

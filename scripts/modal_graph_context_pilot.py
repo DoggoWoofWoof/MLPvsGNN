@@ -1,8 +1,12 @@
-"""Modal launcher for the graph-context pilot (Stages B and C).
+"""Modal launcher for the graph-context pilot (Stages B, C, D0 and D0b).
 
-CPU only, read-only, no model trained. It shares the frozen data volume with the
-GPU packages but writes to its own output prefix and never mutates a candidate
-pool, a graph or a frozen result, so it is safe beside anything else.
+CPU only, read-only. It shares the frozen data volume with the GPU packages but
+writes to its own output prefix and never mutates a candidate pool, a graph or a
+frozen result, so it is safe beside anything else.
+
+Stages B, C and D0 train nothing. D0b fits four linear models of at most twenty
+parameters, which is still a CPU job and still costs cents -- being cheap enough
+to run before the GPU stage is the whole reason it exists.
 
 Submit through ``scripts/spawn_modal_jobs.py graph-context`` so the calls are
 server-side and survive client teardown. ``modal run --detach`` keeps only the
@@ -87,10 +91,36 @@ image = (
 STAGE = os.environ.get("GRAPH_CONTEXT_STAGE", "stage_b")
 QUERY_CAP = int(os.environ.get("GRAPH_CONTEXT_QUERY_CAP", "25"))
 
+#: The container window, per stage. Modal fixes a timeout when the function is
+#: decorated, so this is resolved at import time from the same variable that
+#: selects the stage. D0b runs a whole split where B and C run a capped prefix,
+#: so it gets its own window instead of the shared one being loosened for stages
+#: that do not need it.
+TIMEOUT_SECONDS = int(
+    MODAL_CONFIG.get("stage_timeout_seconds", {}).get(STAGE, MODAL_CONFIG["timeout_seconds"])
+)
+
 
 def _stage_key(stage: str) -> str:
     """`stage_b` -> `B`, `stage_d0` -> `D0`. The config keys, not a character index."""
     return stage.removeprefix("stage_").upper()
+
+
+def _selected_learning_rate(dataset: str, stage: str) -> float | None:
+    """The rate A3's frozen protocol selected for this dataset, or None.
+
+    Only D0b needs it, and only D0b pays the cost of a missing A3 result -- the
+    other stages train nothing, so a dataset without a sealed linear control
+    must not become an error for them.
+    """
+    if stage != "stage_d0b":
+        return None
+    path = HOST_REPO_ROOT / "outputs" / "p0_linear_rank_structure" / f"{dataset}.json"
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"Stage D0b reuses A3's selected learning rate and {path} is absent"
+        )
+    return float(json.loads(path.read_text(encoding="utf-8"))["selected_learning_rate"])
 
 
 def _jobs(
@@ -107,6 +137,13 @@ def _jobs(
                 "dataset": dataset,
                 "settings": settings,
                 "stage": stage,
+                # D0b fits the frozen A3 linear control, so it needs A3's sealed
+                # static features and the learning rate A3's protocol already
+                # selected for this dataset. Carried, never re-selected: a stage
+                # that picked its own rate per arm would be running the small
+                # architecture search it was told not to run.
+                "feature_remote": str(confirmation["config"]["feature_cache"]),
+                "selected_learning_rate": _selected_learning_rate(dataset, stage),
                 # Stage C runs Stage B's survivors and D0 runs two of them, so
                 # the arm list comes from the config rather than the runner's
                 # default. `stage_c` reads `stages.C`, `stage_d0` reads
@@ -120,6 +157,39 @@ def _jobs(
             }
         )
     return jobs
+
+
+def _d0b_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D0b's arguments. It fits a ranker, so it needs more than a context.
+
+    Train and validation, both: the diagnostic exists to be fit on one and read
+    on the other. `test` is absent here and refused by the runner, which is two
+    places rather than one on purpose -- a launcher typo should not be able to
+    open the test split.
+    """
+    settings = job["settings"]
+    output_root = (
+        PurePosixPath(STORAGE_ROOT)
+        / "outputs"
+        / "graph_context_pilot"
+        / job["dataset"]
+        / job["fingerprint"][:16]
+    )
+    return argparse.Namespace(
+        data=Path(job["data_remote"]),
+        feature_cache=Path(job["feature_remote"]),
+        dataset=job["dataset"],
+        expected_queries=int(settings["expected_queries"]),
+        baseline=job["baseline"],
+        candidate_contract_compatibility=settings.get("candidate_contract_compatibility"),
+        data_fingerprint_sha256=job["fingerprint"],
+        splits=["train", "validation"],
+        query_cap=int(job["query_cap"]),
+        rrf_constant=int(CONFIG["stages"]["D0B"]["rrf_constant"]),
+        learning_rate=float(job["selected_learning_rate"]),
+        seed=int(CONFIG["stages"]["D0B"]["seed"]),
+        output=Path(output_root) / "stage_d0b.json",
+    )
 
 
 def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
@@ -152,25 +222,33 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
 @app.function(
     image=image,
     volumes={STORAGE_ROOT: result_volume},
-    timeout=MODAL_CONFIG["timeout_seconds"],
+    timeout=TIMEOUT_SECONDS,
     cpu=MODAL_CONFIG["cpu"],
     memory=MODAL_CONFIG["memory_mb"],
 )
 def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
-    """Stages B, C and D0 through one function.
+    """Stages B, C, D0 and D0b through one function.
 
-    D0 shares the image, the volume, the loader and the contract check; it
-    differs only in what it measures. A second Modal module would have been a
-    second image to keep pinned and a second registry entry to keep honest, for
-    no isolation this job needs.
+    They share the image, the volume, the loader and the contract check; they
+    differ in what they measure. A second Modal module would have been a second
+    image to keep pinned and a second registry entry to keep honest, for no
+    isolation these jobs need.
+
+    D0b fits a nineteen-parameter linear model and is still a CPU job: the whole
+    point of putting it before the GPU stage is that it costs almost nothing.
     """
     os.chdir(REMOTE_ROOT)
-    if job["stage"] == "stage_d0":
-        from scripts.run_graph_context_d0 import run
-    else:
-        from scripts.run_graph_context_pilot import run
+    if job["stage"] == "stage_d0b":
+        from scripts.run_graph_context_d0b import run
 
-    args = _runner_args(job)
+        args = _d0b_runner_args(job)
+    else:
+        if job["stage"] == "stage_d0":
+            from scripts.run_graph_context_d0 import run
+        else:
+            from scripts.run_graph_context_pilot import run
+
+        args = _runner_args(job)
     started = time.monotonic()
     result = run(args, checkpoint_hook=result_volume.commit)
     # The container is what is billed, and Stage D0 closed out with a wall-clock

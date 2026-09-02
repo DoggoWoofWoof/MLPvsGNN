@@ -88,6 +88,41 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
 GRAPH_CONTEXT_SECONDS_PER_QUERY_PER_ARM = 1.5
 GRAPH_CONTEXT_LOAD_SECONDS = 600.0
 
+# Stage D0b does not fit the model above, and applying it anyway would be worse
+# than having no model: `query_cap` is 0 there because the stage runs whole
+# splits, so the estimate would collapse to the load term and the gate would wave
+# through a job of any size. The two failures point in opposite directions and
+# both are wrong, so D0b gets its own term.
+#
+# Stage C measured build + kernel per query on 2wiki at p99 4.01 ms (CAND) and
+# 9.84 ms (TARGET_H1). D0b also computes the seed-support quantities and the
+# induced degree per query, so the per-query figure below is roughly threefold
+# that 13.85 ms rather than equal to it. Training is four linear models of at
+# most twenty parameters and is bounded separately; it is small but not zero,
+# because each epoch re-scores the whole validation split.
+GRAPH_CONTEXT_D0B_SECONDS_PER_QUERY = 0.040
+GRAPH_CONTEXT_D0B_TRAINING_SECONDS = 300.0
+
+
+def _graph_context_d0b_seconds(module: Any, job: dict[str, Any]) -> float:
+    """Whole-split feature build, plus the load ceiling, plus linear training.
+
+    `query_cap` 0 means every query in both development splits, so the count
+    comes from the registered protocol rather than from the cap.
+    """
+    cap = int(job["query_cap"])
+    protocol_queries = int(job["settings"]["expected_queries"])
+    # The registered count is every split. D0b opens only train and validation,
+    # so this deliberately over-counts by the size of the test split -- the safe
+    # direction for a gate, and cheaper than teaching the launcher a split
+    # arithmetic it would then have to keep in step with the loader.
+    queries = protocol_queries if cap <= 0 else min(cap, protocol_queries)
+    return (
+        GRAPH_CONTEXT_LOAD_SECONDS
+        + queries * GRAPH_CONTEXT_D0B_SECONDS_PER_QUERY
+        + GRAPH_CONTEXT_D0B_TRAINING_SECONDS
+    )
+
 
 def _expand(module: Any, package: str, stage: str, datasets: list[str]) -> list[dict[str, Any]]:
     jobs = module._jobs(datasets)
@@ -289,7 +324,9 @@ def measured_units(
             WorkUnit(
                 name=f"{job['dataset']}:{job['stage']}",
                 seconds=(
-                    GRAPH_CONTEXT_LOAD_SECONDS
+                    _graph_context_d0b_seconds(module, job)
+                    if job["stage"] == "stage_d0b"
+                    else GRAPH_CONTEXT_LOAD_SECONDS
                     + int(job["query_cap"])
                     * len(job.get("arms") or module.CONFIG["arms"])
                     * GRAPH_CONTEXT_SECONDS_PER_QUERY_PER_ARM
@@ -315,7 +352,11 @@ def gate_launch(package: str, module: Any, jobs: list[dict[str, Any]]) -> dict[s
     fine and common -- what cannot work is a unit larger than its window.
     """
 
-    timeout = float(module.MODAL_CONFIG["timeout_seconds"])
+    # The window the container will actually get. A launcher may resolve a
+    # per-stage timeout at import time, and gating against the shared default
+    # when the function was decorated with a larger one would refuse a launch
+    # that fits -- the gate has to read the same number Modal will enforce.
+    timeout = float(getattr(module, "TIMEOUT_SECONDS", module.MODAL_CONFIG["timeout_seconds"]))
     units, note = measured_units(package, module, jobs)
     if units is None:
         return {"gated": False, "why": note, "timeout_seconds": timeout}
