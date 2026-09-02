@@ -266,4 +266,9 @@ modal:
   storage_root: /root/message-passing-retrieval/storage
   cpu: 8
   memory_mb: 32768
-  timeout_seconds: 21600
+  # Measured, not guessed: the global three-hop BFS costs ~0.55 s per query
+  # after the traversal fix, and hotpotqa's validation split holds 19,570 of
+  # them, so one graph family is ~3 h and four are ~12 h. The previous 6 h
+  # ceiling was below the cost of a single family and the audit could not have
+  # finished. Modal's maximum is 24 h; family-level resumption covers the rest.
+  timeout_seconds: 86400
