@@ -696,6 +696,100 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D3:
+    status: DECLARED
+    evidence_class: CONFIRMATORY within its own narrow question
+    runner: scripts/run_graph_context_d3.py
+    dataset: 2wiki_clean
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    question: >-
+      How much of QLS-v1's query-local block value is bare retrieval-seed
+      identity, how much is seed-distance geometry, and how much is the
+      remaining graph-derived structure?
+    why_it_is_needed: >-
+      D2 measured the block as a whole (-20.82 R@5) but cannot attribute it. All
+      ten columns are seed-anchored and sa_mlp has no other seed channel, so
+      zeroing the block removes seed identity, seed geometry and graph structure
+      at once. The seed_only comparison in the D2 write-up sizes the split only
+      by cross-stage inference at a different head width; D3 replaces that
+      inference with a within-stage measurement.
+    proven_before_running: >-
+      distance_0 is exactly I[d in Sq]. It is set from is_seed before any BFS hop
+      and never overwritten, and candidate_readout leaves columns 0-3 untouched,
+      so it is elementwise identical to the historical _seed_indicator. Proven in
+      tests/test_seed_membership_column.py and asserted again at full scale
+      inside the runner on the real queries.
+    arms:
+      Z0_ZERO_LOCAL: all ten query-local columns zero; reused from D2 NO_QUERY_LOCAL
+      Z1_SEED_ID_ONLY: only distance_0, exact bare seed membership; NEW
+      Z2_DISTANCE_ONLY: the complete frozen distance bucket group 0-3; NEW
+      Z3_FULL_LOCAL: the original ten-column block; reused from D2 FULL_CAND
+    naming: >-
+      Z1 is not called SEED_MEMBERSHIP_ONLY-plus-buckets and Z2 is not called
+      seed-membership-only. Keeping all four distance buckets exposes seed
+      geometry, not membership, so the arm that keeps them is named
+      DISTANCE_ONLY.
+    ablation:
+      method: masking, not removal
+      parameter_difference: 0
+      why: >-
+        Identical architecture, head width and parameter count (213,506 at head
+        61) in all four arms, so the ladder measures information and not
+        capacity.
+      same_epoch_budget_for_every_arm: true
+    reuse:
+      arms: {Z0: D2 NO_QUERY_LOCAL, Z3: D2 FULL_CAND}
+      why: >-
+        Identical conditions, so retraining them would pay twice for the same
+        numbers. The runner checks dataset, fingerprint, context, model, node
+        count, candidate contract, candidate rows, static feature source, all
+        three split sizes and all five training values against D2's result file,
+        and refuses rather than reusing across a mismatch.
+      new_runs: 2
+    reports:
+      delta_seed: Z1 - Z0, value of knowing which candidates were retrieval seeds
+      delta_distance: Z2 - Z1, incremental value of seed-distance geometry
+      delta_remaining_structure: >-
+        Z3 - Z2, incremental value of seed connections, path statistics,
+        personalised PageRank and common-neighbour structure
+      metrics: [recall@1, recall@5, recall@20, mrr, full_coverage@20]
+      also: the same frozen degree strata, which are not refitted
+    interpretation_fixed_in_advance:
+      A_seed_identity_dominates: >-
+        delta_seed carries almost all of the D2 gap. Most of QLS-v1's apparent
+        query-local structural value is retrieval-seed identity, and structural
+        work has only modest demonstrated headroom. Before opening R0-R5 broadly,
+        isolate which small structural family produces the remainder.
+      B_seed_geometry_dominates: >-
+        delta_distance is large. Seed geometry is the main useful structural
+        primitive; favour a minimal QLS-v2 built on seed identity, distinct
+        support and a better distance distribution rather than a feature
+        catalogue.
+      C_remaining_structure_has_large_value: >-
+        delta_remaining_structure is large. Support, path and diffusion
+        statistics carry genuine incremental value beyond identity and distance,
+        which justifies opening the QLS-v2 structural frontier.
+      D_seed_and_distance_recover_almost_all: >-
+        Do NOT test a large structural catalogue. Start QLS-v2 from retrieval
+        prior + seed identity + minimal seed geometry and add one family at a
+        time.
+    projected_cost:
+      basis: >-
+        Measured from D2: 88.1 s of accounted compute for one shared feature
+        build (49.7 s) plus two trainings (18.5 s + 17.1 s) and two scorings. D3
+        shares one build across four arms and trains two, so its accounted work
+        is within a few seconds of D2's. Priced as two new runs, not four.
+      new_runs: 2
+      gpu_hours_ceiling: 0.20
+      cost_ceiling_usd: 0.90
+      wall_time_ceiling_minutes: 12
+      expected_actual_usd: 0.30
+    does_not_authorise:
+      [second dataset, second seed, GNN, R0-R5 sweep, LODO, E2, TARGET_H1,
+       PATH, BRIDGE, SEED_H2, graph-context gating, more epochs for any one arm]
+
   D2:
     status: COMPLETE
     evidence_class: CONFIRMATORY within its own narrow question
@@ -760,9 +854,12 @@ stages:
         structural frontier; first audit where QLS-v1's historical gain comes
         from.
     outcome: >-
-      STRUCTURAL BLOCK MATTERS. Reading D2-A. Zeroing the ten query-local columns
-      costs -20.82 R@5, -16.07 R@20, -8.92 MRR and -2.48 R@1 on 2Wiki validation at
-      seed 0. The block is load-bearing in QLS-v1 by a wide margin.
+      SEED-ANCHORED LOCAL BLOCK MATTERS. Reading D2-A. Zeroing the ten query-local
+      columns costs -20.82 R@5, -16.07 R@20, -8.92 MRR and -2.48 R@1 on 2Wiki
+      validation at seed 0. The block is load-bearing in QLS-v1 by a wide margin.
+      Deliberately NOT stated as "structural block matters": zeroing removes seed
+      identity, seed geometry and graph-derived structure simultaneously, and D2
+      cannot attribute the loss among them. D3 measures that attribution.
     outcome_must_not_be_broadened_to: >-
       "graph structure is worth twenty points". All ten columns are seed-anchored and
       sa_mlp has no other seed input -- no reciprocal-rank features, no separate seed
@@ -1027,7 +1124,7 @@ modal:
   # decorator reads this only for the stages listed in gpu_stages, so a CPU
   # stage never pays for an accelerator it does not use.
   gpu: A10G
-  gpu_stages: [stage_d1, stage_d2]
+  gpu_stages: [stage_d1, stage_d2, stage_d3]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -1037,6 +1134,7 @@ modal:
     stage_d0c: 5400
     # Bounded by D1's measured 218 s, with the same order of headroom.
     stage_d2: 3600
+    stage_d3: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and

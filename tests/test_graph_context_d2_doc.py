@@ -87,9 +87,29 @@ def test_the_headline_is_the_r_at_5_delta(text, result):
 
 
 def test_the_verdict_is_the_pre_registered_reading(text):
-    assert "STRUCTURAL BLOCK MATTERS" in text
+    assert "SEED-ANCHORED LOCAL BLOCK MATTERS" in text
     assert "`D2-A`" in text
     assert "STRUCTURAL BLOCK NOT ESTABLISHED" not in text
+
+
+def test_the_verdict_is_not_stated_as_a_structural_claim(text):
+    """D2 removed seed identity, seed geometry and structure together.
+
+    Calling the result `STRUCTURAL BLOCK MATTERS` would assert an attribution
+    the stage cannot make. The narrower headline is the whole point of the
+    correction, so it is pinned rather than left to drift back.
+    """
+
+    # The broad phrase may appear, but only in a sentence that rejects it.
+    for index, line in enumerate(text.splitlines()):
+        if "STRUCTURAL BLOCK MATTERS" not in line:
+            continue
+        if "SEED-ANCHORED LOCAL BLOCK MATTERS" in line:
+            continue
+        assert "deliberately *not* stated as" in line, f"line {index + 1}: {line}"
+    assert "**Verdict: SEED-ANCHORED LOCAL BLOCK MATTERS.**" in text
+    assert "cannot attribute the loss among them" in text
+    assert "is what D3 measures" in text
 
 
 # --- the control ----------------------------------------------------------------

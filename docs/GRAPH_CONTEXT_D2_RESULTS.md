@@ -17,7 +17,10 @@ it settles the question D0c left open.
 
 2wiki_clean, validation, seed 0, points. MEASURED.
 
-**Verdict: STRUCTURAL BLOCK MATTERS.** This is reading `D2-A`, fixed in advance.
+**Verdict: SEED-ANCHORED LOCAL BLOCK MATTERS.** This is reading `D2-A`, fixed in
+advance. It is deliberately *not* stated as `STRUCTURAL BLOCK MATTERS`: what was
+removed is seed identity, seed geometry and graph-derived structure together,
+and D2 cannot attribute the loss among them.
 
 **But the headline number is not a structural finding, and reporting it as one
 would be wrong.** All ten columns are seed-anchored, and `sa_mlp` has no other
@@ -130,7 +133,9 @@ in the code rather than inferred from the numbers.
 ## 5. What it decides
 
 - **The ten query-local columns are load-bearing in QLS-v1.** Removing them
-  costs more than a fifth of R@5. `STRUCTURAL BLOCK MATTERS`.
+  costs more than a fifth of R@5. `SEED-ANCHORED LOCAL BLOCK MATTERS`. The
+  attribution among seed identity, seed geometry and the remaining graph
+  statistics is **unresolved** and is what D3 measures.
 - **The dominant term is seed membership, not graph structure.** The honest
   target for QLS-v2 is the ~2.6-point band above `seed_only`, not the 20.8-point
   block. Any claim that better statistics on `G[Cq]` are worth twenty points is

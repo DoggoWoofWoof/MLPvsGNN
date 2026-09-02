@@ -264,6 +264,23 @@ def _d2_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     return args
 
 
+def _d3_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D3's arguments: D2's, plus the path to the result it reuses.
+
+    D3 decomposes D2 at D2's own operating point, so every training value is
+    taken from D2's argument builder rather than restated. Two stages that must
+    agree about what "identical conditions" means should not each carry their own
+    copy of them; the runner then re-checks the agreement against D2's result
+    file and refuses if anything drifted.
+    """
+    args = _d2_runner_args(job)
+    args.d2_result = Path(args.output)
+    args.holdout_fraction = float(CONFIG["stages"]["D3"]["holdout_fraction"])
+    args.seed = int(CONFIG["stages"]["D3"]["seed"])
+    args.output = Path(args.output).with_name("stage_d3.json")
+    return args
+
+
 def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
 
@@ -378,6 +395,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d2 import run
 
         args = _d2_runner_args(job)
+    elif job["stage"] == "stage_d3":
+        from scripts.run_graph_context_d3 import run
+
+        args = _d3_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run
