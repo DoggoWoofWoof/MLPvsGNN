@@ -1,7 +1,8 @@
 experiment: graph_context_pilot
-status: STAGE_A_PASSED_STAGE_B_DECLARED
+status: STAGES_A_B_C_COMPLETE_TARGET_H1_RECOMMENDED
 phase: "P1"
 protocol: docs/COMPUTE_LEDGER.md
+results: docs/GRAPH_CONTEXT_PILOT_RESULTS.md
 
 question: >-
   Phase -1 measured what the candidate-induced graph G[Cq] destroys. This asks
@@ -31,9 +32,12 @@ definitions:
   Cq: the frozen Dense/SPLADE candidate set -- the scoring universe
   Sq: >-
     the frozen retrieval seeds. A SUBSET of Cq by construction of the artifact
-    (seed_global = pool[seed_local]), so Cq union Sq == Cq. The seed arms differ
-    from the target arms only in what they expand from: ~10 seeds against
-    316-361 candidates.
+    (seed_global = pool[seed_local]), so Cq union Sq == Cq. VERIFIED FROM CODE.
+    The seed arms differ from the target arms only in what they expand from.
+    Sq is much smaller than Cq: MEASURED at Stage C, SEED_H1 adds 9-56% more
+    nodes at the median where TARGET_H1 adds 470-1977%, on a median Cq of
+    316-364 candidates. The seeds-per-query count itself is not recorded by
+    the pilot result files and is NOT asserted here.
   Uq: the context -- nodes allowed to contribute structural information
   invariant: Cq is a subset of Uq, therefore |Uq| >= |Cq|
   total_context_ratio: "|Uq| / |Cq|, bounded below by 1"
@@ -180,9 +184,9 @@ stage_b_outcome:
       Structurally dominated by SEED_H1, not narrowly beaten by it. PATH_H2 is a
       SUBSET of SEED_H1 by the lattice, it recovered the same structure to three
       decimal places (2wiki 0.2938 against 0.2941, hotpotqa 0.3104 against
-      0.3104), and it cost six times as much to build (p95 8.7 ms against 1.4,
-      204.4 ms against 73.5) because identifying a path node needs a second
-      matrix step. More queries cannot reverse a subset relation.
+      0.3104), and it cost 6.2x and 2.8x as much to build (p95 8.7 ms against
+      1.4, 204.4 ms against 73.5) because identifying a path node needs a
+      second matrix step. More queries cannot reverse a subset relation.
     BRIDGE_H2: >-
       Same shape one level up: a SUBSET of TARGET_H1 that costs more to build.
       Recovered 0.594 and 0.708 median retention against TARGET_H1's 1.000, at
@@ -221,6 +225,54 @@ stage_b_outcome:
     arms separate only at distance 3 and beyond -- exactly the range the frozen
     descriptor collapses into a single class.
 
+stage_c_outcome:
+  status: MEASURED
+  queries: 300 per dataset, validation, none skipped for want of seeds
+  datasets: all_six
+  arms: [CAND, SEED_H1, TARGET_H1]
+  results: docs/GRAPH_CONTEXT_PILOT_RESULTS.md
+  recommended_arm: TARGET_H1
+  frontier_verdict: >-
+    All three arms survive. SEED_H1 is dominated by TARGET_H1 on hotpotqa and
+    webqsp only, and the preregistered rule kills only an arm dominated on
+    every measured dataset. It is carried as an ablation, not a recommendation.
+  recovery: >-
+    TARGET_H1 restores median radius-1 retention to 1.0000 and the isolated
+    fraction to 0.0000 on all six datasets. Boundary cut is 0.0000 on five and
+    0.0015 on hotpotqa -- the one dataset the substrate audit measured as not
+    reachability-symmetric, so the exception falls exactly where direction
+    matters. CAND reproduces Phase -1's starvation on real queries: retention
+    0.0908-0.3170, boundary cut 0.7000-0.9173, isolated 17.1%-36.8%.
+  advancement_criterion_met: >-
+    Required the seed-distance improvement to stay concentrated on formerly
+    isolated and low-degree candidates rather than flattening across strata.
+    Met on 6/6: TARGET_H1's improvement is monotone decreasing in prior induced
+    degree on every dataset, helping 87.3%-99.4% of formerly isolated
+    candidates against 14.0%-53.1% of degree-5+ ones.
+  cost: >-
+    TARGET_H1 total p95 8.7-170.1 ms per query, p99 9.8-205.9 ms, on the frozen
+    QLS-v1 kernel. Context construction is the cheap half everywhere; the
+    descriptor kernel dominates and scales with context nodes, not corpus size.
+  size_qualification: >-
+    REQUIRED WHENEVER THE CONTEXT SIZE IS QUOTED. TARGET_H1 is bounded in
+    ABSOLUTE NODE COUNT -- median 2,012-7,520 and p95 at most 12,039 across
+    corpora spanning 13.7k to 781k nodes -- and NOT in share of the graph. On
+    the small corpora the median context is 16.4% (musique), 18.7% (metaqa) and
+    30.2% (squad) of the whole graph, reaching 50.2% on one squad query. That is
+    a consequence of a fixed-size candidate pool on a small corpus, not of an
+    expansive rule, but "bounded local context" is false on those three without
+    the qualification stated beside it.
+  open_tail: >-
+    hotpotqa's TARGET_H1 context reaches 142,073 nodes on one query in 300,
+    against a p95 of 7,509 and a p99 of 21,778. Reported, not handled. Any
+    serving story needs a cap.
+  not_established: >-
+    No effectiveness claim: nothing was trained. No QLS-v2 versus GNN
+    comparison. Validation split only. PATH_H2, BRIDGE_H2 and SEED_H2 were
+    killed on Stage B's two datasets and never run on the other four -- the
+    first two kills rest on subset relations and hold everywhere, SEED_H2's
+    rests on a measurement of two datasets.
+
 qls_v1_parameters:
   source: configs/sa_mlp_screen.yaml::query_local_features
   damping: 0.85
@@ -233,7 +285,7 @@ stages:
     what: synthetic correctness, 521 tests
     cost: seconds, local
   B:
-    status: DECLARED
+    status: MEASURED
     queries: 25
     datasets: [2wiki_clean, hotpotqa_clean]
     what: >-
@@ -244,15 +296,16 @@ stages:
       would triple its cost without changing either answer. They arrive at C.
     declared_in: docs/COMPUTE_LEDGER.md
   C:
-    status: SURVIVORS_SELECTED
+    status: MEASURED
     queries: 300
     datasets: all_six
     arms: [CAND, SEED_H1, TARGET_H1]
     what: survivors only
     cost: >-
-      Not priced before B returns. It depends on which arms survive and on B's
-      measured throughput, and a number invented before either is not a
-      declaration.
+      MEASURED 921 container-seconds across 6 concurrent CPU jobs = 0.26
+      CPU-hours, about $0.16, against a declared ceiling of 3.25 CPU-hours and
+      $5.15. Declared in the ledger after B returned, never before.
+    results: docs/GRAPH_CONTEXT_PILOT_RESULTS.md
     rule: >-
       Do not consume all 300 if an arm clearly fails before then. Kill an arm at
       B if it does not lower isolation, does not bring candidates closer to a

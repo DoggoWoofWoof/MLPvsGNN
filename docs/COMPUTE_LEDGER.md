@@ -323,3 +323,57 @@ and no GNN anywhere. E2 stays paused at 82/96 with its 69 seed-units unspent, F
 stays sealed, and the workspace does not change.
 
 
+
+---
+
+## Graph-context pilot, closed out 2026-09-02: declared against actual
+
+Both stages returned. The declarations above stand as filed; this records what
+they actually cost, because a ledger that only ever records estimates is not a
+ledger.
+
+```text
+                       declared ceiling        actual              over/under
+Stage B  CPU-hours     <= 2.5                  0.086               3.5% of it
+Stage B  cost          <= $2.00                $0.05               2.7% of it
+Stage B  wall time     <= 40 min               4.6 min             concurrent
+Stage C  CPU-hours     <= 3.25                 0.256               7.9% of it
+Stage C  cost          <= $5.15                $0.16               3.1% of it
+Stage C  wall time     <= 35 min               5.8 min             concurrent
+                       ----------------------------------------------------
+pilot total            <= 5.75 h / $7.15       0.34 h / $0.22      6.0% / 3.0%
+```
+
+Eight containers, no GPU, 1,232 container-seconds, at the $0.634/h substrate
+shape. Storage under 5 MB as declared.
+
+Two containers beyond those eight ran for about two seconds each and produced
+nothing: the graph-context image shipped without `torch-geometric`, which the
+runner needs transitively through the candidate-contract validator, and fifteen
+sibling images already pinned. That is roughly $0.0004 of compute and the only
+wasted spend in the pilot. `tests/test_spawn_registry.py` now asserts every
+registered image installs the same pin, so the same failure cannot recur
+silently.
+
+The Stage C ceiling was 12.7x its actual on CPU-hours and 32x on cost. The
+CPU-hour ceiling was deliberate headroom over a measured throughput; the cost
+ceiling was not re-derived after the throughput measurement replaced the
+placeholder rate, and it should have been. Ceilings are for approval, not for
+prediction, but a 32x cost ceiling approves more than it needs to.
+
+### Outcome
+
+`TARGET_H1 = Cq u N1_in(Cq)` is the recommended context: median radius-1
+retention 1.0000 and isolated fraction 0.0000 on all six datasets, 2,012-7,520
+median context nodes, total p95 8.7-170.1 ms per query. `SEED_H1` survives the
+frontier rule as an ablation. `PATH_H2`, `BRIDGE_H2` and `SEED_H2` are killed.
+The advancement criterion filed above -- improvement concentrated on formerly
+isolated and low-degree candidates -- was met on 6/6 datasets.
+
+Full results, including the qualification that the context is bounded in
+absolute node count and *not* in share of the graph on the three small corpora,
+are in [`GRAPH_CONTEXT_PILOT_RESULTS.md`](GRAPH_CONTEXT_PILOT_RESULTS.md).
+
+Nothing trained, no GPU, no gold id, no test split, no candidate pool touched
+and no GNN anywhere. E2 stays paused at 82/96 with its 69 seed-units unspent, F
+stays sealed, and the workspace did not change.
