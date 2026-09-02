@@ -696,6 +696,239 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D8:
+    status: DECLARED
+    evidence_class: CONFIRMATORY within its own narrow question
+    runner: scripts/run_graph_context_d8.py
+    dataset: 2wiki_clean
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    question: >-
+      Does a corrected distinct-seed-support representation beat the historical
+      edge-count proxy it replaces, at the same matched 13-column architecture?
+    selection_rule_correction:
+      recorded: before D8 was launched and before any D8 outcome existed
+      the_rule_is_not: choose the largest R@5
+      the_rule_is: >-
+        choose the smallest, cheapest representation that remains on the
+        effectiveness / system Pareto frontier.
+      what_it_changes_here: >-
+        D7's pre-registered dominance rule fired for PATHS at +0.82 R@5 against
+        SUPPORT's +0.64, and the proposal that followed was a PATHS replacement
+        pilot. Under the correct rule that proposal is wrong: PATHS buys 0.18
+        points more R@5 while SUPPORT is head-neutral (-0.03 R@1, +0.09 MRR
+        against PATHS's -0.12 / -0.15), returns more coverage (+0.40 against
+        +0.30 FullCov@20), is one column rather than three, and is very likely
+        the cheaper bounded computation. SUPPORT is the Pareto-efficient choice
+        even though it is not the R@5 maximiser.
+      this_is_not_outcome_driven_threshold_moving: >-
+        The correction is filed here, in the declaration, before D8 runs and
+        before any D8 number exists. D7's own thresholds and verdicts are
+        untouched -- PATHS still measured +0.82 and is still PROMISING. What
+        changed is which surviving family gets developed first, which is a
+        forward priority decision, not a rewrite of a completed measurement.
+    why_support_first: >-
+      D7 established that seed-support information still has incremental value
+      after the graded retrieval prior, seed identity and seed-distance geometry
+      are all present: +0.64 R@5, +0.40 FullCov@20, at no head-ranking cost. It
+      is the only family in D7 that improved a head metric at all. And it maps
+      onto a specific, nameable QLS-v1 defect rather than a vague one: the
+      historical column counts graph edges, not distinct retrieval seeds
+      supporting the candidate. A bitset-based support implementation can
+      eventually give support, reachability and seed geometry from the same
+      bounded computation, which is a systems argument as well as an
+      effectiveness one.
+    historical_audit_first: >-
+      D8 does not rely on the name `seed_connections`. Step one is to read the
+      exact formula off the frozen kernel and report it: formula, hop radius,
+      whether multiplicity is possible, whether duplicate and reverse edges count
+      separately, the normalisation, the maximum observed value and the full
+      computation path. Only then is a replacement defined.
+    do_not_start_with_several_features: >-
+      ONE primary replacement, DISTINCT_SEED_SUPPORT. D8 does not simultaneously
+      introduce support@1, support@2, support@3, weighted support, path diversity
+      or diffusion. One corrected representation against one historical proxy.
+    the_replacement_definition:
+      relation_unchanged: >-
+        s supports d iff there is an induced edge s->d or d->s inside G[Cq] with
+        s a retrieval seed. Same radius, same edge list, same seed privilege rule
+        as the historical column. Only the counting rule changes.
+      support_count: "support_count(d) = |{s in Sq : s supports d}|"
+      support_fraction: "support_fraction(d) = support_count(d) / |Sq|"
+      canonical_scalar: support_fraction
+      why_that_one: >-
+        Chosen before any effectiveness result. It is naturally bounded in [0,1],
+        it means the same thing in every query, and it needs no per-query
+        normaliser -- which is the second historical defect, not just the first.
+        support_count is reported alongside it so the raw quantity stays visible.
+      what_it_does_not_fix: >-
+        A seed adjacent to another seed still accrues support, exactly as it does
+        historically. D8 changes the counting rule and nothing else, so that the
+        comparison isolates one change.
+    injection_discipline: >-
+      The replacement is injected at column 4 AFTER the historical
+      candidate_readout normalisation, exactly as D5's graded retrieval prior is
+      appended after it. If the new scalar were routed through candidate_readout
+      it would be divided by the per-query maximum a second time and would mean
+      what the historical column means. The runner asserts elementwise that the
+      learner receives count/|Sq| and records how many queries have a column
+      maximum strictly below 1.0 -- under a per-query max rescaling that count
+      would necessarily be zero. This is an intentional QLS-v2 representation
+      change and is documented as one.
+    arms:
+      trained_here: [D8_DISTINCT_SUPPORT_13]
+      reused:
+        D6_BASE_13: >-
+          B, the exact matched causal control, reused from stage_d6 via stage_d7,
+          not refitted.
+        D7_SUPPORT_13: >-
+          H, the historical edge-count proxy at the identical architecture,
+          reused from stage_d7, not refitted.
+      representation: >-
+        cols 0-3 exactly D6's seed-distance geometry; col 4 the D8 distinct
+        support scalar; cols 5-9 exactly zero; cols 10-12 exactly the D5/D6
+        graded retrieval prior. local_dim 13, head width 61, 213,689 parameters.
+      architecture_changed: false
+    comparisons:
+      H_minus_B: >-
+        Is historical support useful at all? Already measured in D7 at +0.64 R@5.
+        Carried here unchanged so the three arms read as one ladder.
+      V_minus_B: Is distinct support useful?
+      V_minus_H: >-
+        Does the corrected support representation beat the historical edge-count
+        proxy? This is the comparison D8 exists to make.
+      on: [recall@1, recall@5, recall@20, mrr, full_coverage@20]
+    mechanistic_comparison_before_training: >-
+      Computed on validation-feature construction only, and reported BEFORE any
+      effectiveness number is interpreted. Correlation between the two signals;
+      the fraction of within-query candidate pairs the two order differently,
+      split into strict reversals and one-sided ties; the fraction of candidate
+      rows where the historical edge count exceeds the distinct seed count; and
+      the distribution of both conditioned on induced degree 0 / 1 / 2-4 / 5+.
+      THIS IS NOT A SELECTION CRITERION. If the two signals turn out to be nearly
+      identical on 2Wiki then the representation defect does not occur materially
+      here, and that has to be said plainly before any effectiveness difference
+      is read as having fixed it.
+    bitset_backend: >-
+      One bit per retrieval seed. |Sq| is about 7 on 2Wiki, so every candidate's
+      support set fits in one 64-bit word and popcount(mask[d]) is the number of
+      distinct supporting seeds. Recorded: algorithm, asymptotic complexity,
+      temporary memory, and the number of fixed graph passes. NO SIMD, Numba
+      specialisation or CUDA optimisation work in D8 unless the implementation is
+      unexpectedly slow -- D8 is first an information-value test, not a systems
+      optimisation.
+    paths_is_deferred_not_killed:
+      classification: PROMISING / DEFERRED
+      measured: +0.82 R@5 in D7, the largest single-family increment
+      why_deferred: >-
+        Not because it lost. Because SUPPORT is the Pareto-efficient first move
+        and PATHS costs three columns to SUPPORT's one. If improved support later
+        absorbs the historical PATHS gain, a separate path feature may never be
+        needed; if it does not, PATHS is the next candidate and is already
+        motivated.
+    interpretation_fixed_in_advance:
+      thresholds:
+        material: 0.50 pp
+        band: anything strictly inside +/- 0.50 pp
+      A_DISTINCT_SUPPORT_IMPROVES: >-
+        V is materially better than H on at least one reported metric and
+        materially worse on none. A serious QLS-v2 feature. The question it would
+        raise next is retrieval-weighted distinct support -- which is NOT
+        automatically run.
+      B_DISTINCT_SUPPORT_PARETO_MATCHES_HISTORICAL: >-
+        No material difference in either direction, or a genuine mixed result
+        where each arm is materially better on something. V still wins as the
+        QLS-v2 replacement on Pareto grounds: clearer semantics, a bounded [0,1]
+        range needing no per-query normaliser, and a cheaper bounded computation.
+        DO NOT REQUIRE AN ACCURACY INCREASE WHEN REPRESENTATION AND SYSTEM COST
+        IMPROVE.
+      C_DISTINCT_SUPPORT_FAILS: >-
+        V is materially worse than H on at least one reported metric and
+        materially better on none. Do NOT immediately revert to raw edge counts.
+        Record the failure and move to the deferred PATHS replacement as the next
+        candidate.
+      also_reported_separately: >-
+        The user's rule A read literally -- a >= +0.50 pp R@5 gain with R@1 and
+        MRR maintained inside the band -- is recorded as its own boolean beside
+        the trichotomy, so the exact stated criterion is visible independent of
+        the Pareto reading.
+      these_are_development_decisions: >-
+        One dataset, one seed. Stage-D development decisions, not statistical
+        significance claims.
+    not_authorised_in_d8:
+      weighted_support: >-
+        Retrieval-weighted support is a possible D9 ONLY if D8 earns it. Not now.
+      path_diversity: >-
+        No predecessor diversity, branch count or shortest-path multiplicity
+        implementation in D8.
+      also:
+        [global graph, TARGET_H1, second dataset, second seed, GNN, diffusion,
+         path replacement, architecture search, E2 resume, Package F,
+         workspace migration]
+    systems_measurement: >-
+      Incremental feature-construction cost for the new signal only, p50 / p95 /
+      p99 per query, measured separately from the historical build. Peak CPU RSS
+      and the temporary structural workspace in bytes. The whole QLS pipeline
+      time is NOT attributed to one feature.
+    frozen_operating_point:
+      [2wiki_clean, seed 0, CAND graph, frozen candidate pool, same semantic
+       branch, same retrieval prior, same distance geometry, same static block,
+       3 epochs, same listwise loss, same optimizer, same batching, same
+       best-epoch restoration, local_dim 13, head width 61, 213689 parameters]
+    projected_cost:
+      new_runs: 1
+      shared_feature_builds: 1
+      reuses: [D6_BASE_13, D7_SUPPORT_13]
+      measured_expected:
+        basis: >-
+          From the D7 actuals: 50.5 s shared feature build, 2.0 s static, 14.6 s
+          assembling and proving the prior, 18.5 s training and 0.34 s inference
+          for the SUPPORT arm. D8 adds one bounded pass for the new signal and
+          the mechanistic comparison, budgeted generously at 25 s, and trains one
+          arm: 50.5 + 2.0 + 14.6 + 25 + 18.5 + 0.4 = about 111 s of accounted
+          compute.
+        accounted_gpu_hours: 0.031
+        accounted_usd: 0.06
+        conservative_billed_usd_including_container_overhead: 0.25
+        wall_time_ceiling_minutes: 30
+      authorisation_ceiling:
+        gpu_hours: 0.08
+        usd: 0.40
+      stop_before_training_if: >-
+        The measured distinct-support construction time exceeds the historical
+        local feature build time -- that is, if the new signal more than doubles
+        the build. Registered here before launch. On that condition the runner
+        writes the microbenchmark and the mechanistic comparison and STOPS
+        without fitting the model, and the stage reports rather than trains.
+      the_gate_number_is_not_a_forecast: >-
+        spawn_modal_jobs.py will report 0.2 h / $0.87 for this stage as it did
+        for D3 through D7, which is ABOVE the $0.40 authorisation ceiling. That
+        is expected and is not a breach. VERIFIED FROM CODE: every fitted
+        graph-context stage is priced with the D1 whole-split model, documented
+        in that source as a ceiling the later stages are bounded by, and the gate
+        enforces only that no indivisible unit exceeds its container window. It
+        does not enforce a dollar ceiling and it is not a calibrated D8
+        projection.
+      stop_condition: >-
+        If actual cost exceeds 0.08 GPU-hours or $0.40, stop and inspect.
+    execution_order:
+      - audit the exact historical seed_connections formula from code
+      - define one exact distinct-support replacement
+      - implement the bounded bitset computation
+      - prove it against a brute-force synthetic reference
+      - measure how much historical and distinct support actually differ
+      - verify the D6 and D7 reuse guards
+      - file this one-run declaration
+      - train D8_DISTINCT_SUPPORT_13
+      - compare V - B and V - H
+      - STOP
+    does_not_authorise:
+      [second dataset, second seed, GNN, TARGET_H1, global context, weighted
+       support, path diversity, architecture search, LODO, E2 resume, Package F,
+       convergence study, workspace migration]
+    is_the_only_experiment: true
+
   D7:
     status: COMPLETE
     results: docs/GRAPH_CONTEXT_D7_RESULTS.md
@@ -2187,7 +2420,8 @@ modal:
   # stage never pays for an accelerator it does not use.
   gpu: A10G
   gpu_stages:
-    [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5, stage_d6, stage_d7]
+    [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5, stage_d6, stage_d7,
+     stage_d8]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -2209,6 +2443,11 @@ modal:
     # roughly 132 s of accounted work. Same ceiling, not a tighter one: a
     # timeout is a bound, not a projection.
     stage_d7: 3600
+    # D8 trains one arm on the same shared build, refits neither D6's base nor
+    # D7's support arm, and adds one bounded pass for the new signal. Bounded
+    # by roughly 111 s of accounted work, well inside D7's own 139.6 s. Same
+    # ceiling, not a tighter one: a timeout is a bound, not a projection.
+    stage_d8: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and

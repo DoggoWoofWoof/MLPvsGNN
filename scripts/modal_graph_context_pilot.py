@@ -359,6 +359,24 @@ def _d7_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     return args
 
 
+def _d8_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D8's arguments: D7's, pointed at D7's result instead of D6's.
+
+    D8 reuses two arms it does not refit -- D6's matched control and D7's
+    historical support arm -- and both reach it through D7's own result file, so
+    that is the single artifact it reads. Taking D7's builder is what makes D8
+    run where D7 ran by construction; the runner then proves the reuse against
+    the statistics D7 recorded and refuses if any of them disagrees.
+    """
+    args = _d7_runner_args(job)
+    args.d7_result = Path(args.output)
+    del args.d6_result
+    args.holdout_fraction = float(CONFIG["stages"]["D8"]["holdout_fraction"])
+    args.seed = int(CONFIG["stages"]["D8"]["seed"])
+    args.output = Path(args.output).with_name("stage_d8.json")
+    return args
+
+
 def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
 
@@ -493,6 +511,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d7 import run
 
         args = _d7_runner_args(job)
+    elif job["stage"] == "stage_d8":
+        from scripts.run_graph_context_d8 import run
+
+        args = _d8_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run
