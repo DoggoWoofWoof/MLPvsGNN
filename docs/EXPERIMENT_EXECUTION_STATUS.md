@@ -1785,3 +1785,91 @@ cheaper v1: the difference feature is **not expressible as any bilinear form**,
 since it is not linear in `d` and no rank-64 projection could represent it. Its
 companion holds too -- the product feature *is* linear in `d`, as a diagonal
 restriction of `q^T W d` must be.
+
+## Compute waste: what caused it, and the two guards (2026-09-02)
+
+`message-passing-retrieval-phase-confirmation` billed **$25.50** on
+`darkphoenix696969696969` -- A10G $12.52, CPU $8.61, memory $4.37 -- and the
+`hotpotqa_clean` substrate audit spent about two hours on eight CPUs and 32 GB
+and wrote **no file at all**. Both were launched by me. Neither was caught by
+anything; the workspace hitting its spend limit is what stopped them.
+
+### A correction to the record
+
+The message on commit `e13759b` says *"One graph family of hotpotqa needs more
+than that on its own"* of the 21,600 s ceiling. **That is wrong.** The
+decomposed measurement puts one family at **3.31 h (11,916 s)**, which fits six
+hours with room to spare, and the same commit's "~0.55 s per query" conflates
+two different costs. The correct decomposition, measured on the staged graph
+after the traversal fix:
+
+| component | per query | who pays it | hotpotqa validation |
+|---|---:|---|---:|
+| three-hop BFS + statistics | 411 ms | all 19,570 queries | 2.23 h |
+| expansion | 7,546 ms | first 512 only (`expansion_query_cap`) | 1.07 h |
+| **one graph family** | | | **3.31 h** |
+| four families | | | 13.24 h |
+
+So raising the ceiling was right, but not for the reason given. The audit was
+fatal because **nothing was carried across a restart**: with no resumption the
+piece a restart must redo is the whole four-family audit, and no number of
+retries against a six-hour window ever finishes it. The fix that mattered was
+family-level resumption; the larger ceiling only made the first attempt
+comfortable.
+
+### The rule this yields
+
+> A run makes progress only if the timeout exceeds its largest **indivisible**
+> unit -- the piece a restart redoes from the beginning. Total cost may exceed
+> the window freely, provided completed units survive a restart.
+
+Which piece is indivisible is a property of the **runner**, not of the work.
+Runners now declare it (`RESUME_GRANULARITY`: `"family"` for the substrate
+audit, `"seed"` for phase confirmation), and a runner that declares nothing is
+costed as redoing everything -- silence can only refuse a launch that would have
+been fine, never admit one that should have been stopped.
+
+### The guards
+
+`src/mp_retrieval/compute_budget.py` + `gate_launch` in `spawn_modal_jobs.py`
+run **before `deploy_app`**, so an infeasible run is refused rather than
+discovered on an invoice. Constants are measured, each carrying its date and
+machine; where no per-unit cost was ever taken the launch is reported as
+*ungated* with the reason recorded, because a gate that blocks work on invented
+numbers gets bypassed and then protects nothing.
+
+`scripts/watch_output_progress.py` judges a run by its **output**, not its
+liveness -- the run that burned the workspace was alive throughout -- and stops
+the app rather than reporting on it. Two details a plausible implementation gets
+wrong, both pinned by tests: progress is a fingerprint of (path, size, mtime),
+not a file count, because the audit rewrites a single `substrate.json` per
+family and a count would read 1 forever; and *both* thresholds must clear one
+work unit, since a 2 h stall window against a 3.31 h family stops the audit
+shortly after the first family lands, every time.
+
+`max_containers: 6` (in the `phase_screen.yaml` modal block, which is the
+container shape `modal_phase_confirmation` actually reads) caps the burn rate.
+Uncapped, Modal starts one container per spawned cell, so 24 cells bill about
+$28/h and a run producing nothing can spend a day's budget before anyone looks.
+At six it is ~$7/h, well inside the watchdog's five-minute poll. Total training
+GPU-seconds are unchanged -- concurrency spreads cost, it does not create or
+remove it.
+
+### E2 relaunch on `pilgnnteam`
+
+Staging is now described by **two** manifests: the E2 rescue means `e2_resume`
+still describes `paper_data/` and `edge_provenance_graphs/` exactly, while
+twenty files under `outputs/` are newer results that the `results` manifest
+describes. Each subtree was uploaded under the manifest that describes it
+(`replicate_volume.py --only`), so every byte stayed covered by an
+independently recorded hash; rewriting the stale manifest to match the disk
+would have made the check pass by copying its answer from the thing it is meant
+to check. Verified 88 + 1,907 files (size), and `migration_provenance.py inputs
+--remote` reports every declared E2 input present: dataset roots 12/12, clean
+derived caches 4/4, E1 screen results 32/32, E1 seed-0 checkpoints 64/64.
+
+Matrix: **96 conditions -- COMPLETE 72, PARTIAL 9, MISSING 15, INVALID 0**.
+The 24 cells needing work are `squad_clean` 16 and `metaqa` 8. The gate's
+pre-launch reading: 120 seed-units, largest **0.11 h** against a 24 h ceiling,
+4.89 h total, **~$14.42** expected (an upper bound -- every cell is costed at
+its full five seeds, including the nine that only owe some).
