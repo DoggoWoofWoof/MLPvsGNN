@@ -548,6 +548,64 @@ def test_the_degree_buckets_partition_the_rows(data, support):
     assert sum(entry["rows"] for entry in buckets.values()) == int(ptr[-1])
 
 
+def test_the_reported_comparison_is_the_validation_block(completed):
+    """The effectiveness numbers are validation numbers; so is the explanation."""
+    comparison = completed["mechanistic_comparison"]
+    assert comparison["measured_on"] == "validation feature construction"
+    assert comparison["seeds_per_query"]["queries"] == completed["splits"][
+        "validation_reported"
+    ]
+    everything = comparison["also_over_every_opened_query"]
+    assert everything["measured_on"] == "every opened query"
+    assert everything["seeds_per_query"]["queries"] == sum(
+        completed["splits"][key]
+        for key in (
+            "train_fit",
+            "train_holdout_for_epoch_selection",
+            "validation_reported",
+        )
+    )
+    assert comparison["rows"] < everything["rows"]
+    assert "The validation figures above are the reported ones." in everything[
+        "why_reported"
+    ]
+
+
+def test_slicing_the_whole_range_reproduces_the_unsliced_statistic(data, support):
+    local, ptr = local_block(data, CONTEXT)
+    column = np.asarray(local)[:, SUPPORT_COLUMN]
+    whole = mechanistic_comparison(support, column, ptr)
+    sliced = mechanistic_comparison(
+        support, column, ptr, queries=slice(0, len(data.queries) + 1)
+    )
+    for key in ("rows", "rows_with_any_support", "multiplicity", "by_induced_degree"):
+        assert sliced[key] == whole[key], key
+    assert sliced["ordering"]["within_query_candidate_pairs"] == whole["ordering"][
+        "within_query_candidate_pairs"
+    ]
+
+
+def test_a_tail_slice_reads_only_its_own_rows(data, support):
+    """A slice that dropped the pointer rebase would read the wrong candidates."""
+    local, ptr = local_block(data, CONTEXT)
+    column = np.asarray(local)[:, SUPPORT_COLUMN]
+    start = len(data.queries) // 2
+    tail = mechanistic_comparison(support, column, ptr, queries=slice(start, None))
+    expected_rows = int(ptr[-1]) - int(ptr[start])
+    assert tail["rows"] == expected_rows
+    assert tail["seeds_per_query"]["queries"] == len(data.queries) - start
+    buckets = tail["by_induced_degree"]
+    assert sum(entry["rows"] for entry in buckets.values()) == expected_rows
+    ordering = tail["ordering"]
+    assert (
+        ordering["concordant"]
+        + ordering["strictly_reversed"]
+        + ordering["tied_by_the_historical_column_only"]
+        + ordering["tied_by_distinct_support_only"]
+        + ordering["tied_by_both"]
+    ) == ordering["within_query_candidate_pairs"]
+
+
 # --- reuse and reproduction --------------------------------------------------
 
 

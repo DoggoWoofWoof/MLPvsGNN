@@ -648,6 +648,8 @@ def mechanistic_comparison(
     support: dict[str, Any],
     historical_column: np.ndarray,
     candidate_ptr: np.ndarray,
+    *,
+    queries: slice | None = None,
 ) -> dict[str, Any]:
     """How much the two counting rules actually differ, before any training.
 
@@ -655,12 +657,23 @@ def mechanistic_comparison(
     representation defect does not occur materially on this data, and the
     effectiveness comparison has to be read in that light rather than as
     evidence that correcting it helped.
+
+    `queries` restricts the statistic to a contiguous block of queries in the
+    order the feature build packed them. The reported one is the validation
+    block: the effectiveness numbers this comparison exists to explain are
+    validation numbers, so a mechanistic statement about a different population
+    would be describing queries nobody is scoring.
     """
-    counts = support["count"].astype(np.int64)
-    connections = support["connections"].astype(np.float64)
-    fraction = support["fraction"].astype(np.float64)
-    degree = support["degree"].astype(np.int64)
-    column = np.asarray(historical_column, dtype=np.float64)
+    query_ptr = candidate_ptr if queries is None else candidate_ptr[queries]
+    rows_slice = slice(int(query_ptr[0]), int(query_ptr[-1]))
+    query_ptr = np.asarray(query_ptr, dtype=np.int64) - int(query_ptr[0])
+
+    counts = support["count"][rows_slice].astype(np.int64)
+    connections = support["connections"][rows_slice].astype(np.float64)
+    fraction = support["fraction"][rows_slice].astype(np.float64)
+    degree = support["degree"][rows_slice].astype(np.int64)
+    column = np.asarray(historical_column, dtype=np.float64)[rows_slice]
+    candidate_ptr = query_ptr
 
     def correlation(left: np.ndarray, right: np.ndarray) -> float | None:
         if left.size < 2 or left.std() == 0.0 or right.std() == 0.0:
@@ -676,9 +689,18 @@ def mechanistic_comparison(
         "degree_5_plus": degree >= 5,
     }
     rows = int(counts.size)
-    seeds = support["seeds_per_query"]
+    seeds = (
+        support["seeds_per_query"]
+        if queries is None
+        else support["seeds_per_query"][slice(queries.start, queries.stop)]
+    )
 
     return {
+        "measured_on": (
+            "validation feature construction"
+            if queries is not None
+            else "every opened query"
+        ),
         "is_not_a_selection_criterion": (
             "reported before the effectiveness numbers are interpreted; if the "
             "two signals are nearly identical on this data, say so plainly"
@@ -1096,8 +1118,21 @@ def run(args: argparse.Namespace, checkpoint_hook: Callable[[], None] | None = N
     )
     prior_seconds = time.perf_counter() - started
 
+    # The reported comparison is the validation block. `opened` is packed as
+    # train + holdout + validation, so the validation queries are its tail.
+    validation_from = len(train) + len(holdout)
     comparison = mechanistic_comparison(
+        support, local[:, SUPPORT_COLUMN], candidate_ptr,
+        queries=slice(validation_from, len(opened) + 1),
+    )
+    comparison["also_over_every_opened_query"] = mechanistic_comparison(
         support, local[:, SUPPORT_COLUMN], candidate_ptr
+    )
+    comparison["also_over_every_opened_query"]["why_reported"] = (
+        "the same statistic over train, holdout and validation together, "
+        "recorded because it is free and because a validation-only figure that "
+        "differs sharply from it would itself be worth knowing. The validation "
+        "figures above are the reported ones."
     )
 
     target_parameters = int(args.baseline["selected_gnn"]["parameters"]["parameters"])

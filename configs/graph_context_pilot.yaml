@@ -810,6 +810,13 @@ stages:
       identical on 2Wiki then the representation defect does not occur materially
       here, and that has to be said plainly before any effectiveness difference
       is read as having fixed it.
+    the_same_statistic_over_every_opened_query: >-
+      Recorded beside the validation figures because it is free, and because a
+      validation-only number that differed sharply from it would itself be worth
+      knowing. The validation figures are the reported ones: the effectiveness
+      numbers this comparison exists to explain are validation numbers, so a
+      mechanistic statement about a different population would be describing
+      queries nobody is scoring.
     bitset_backend: >-
       One bit per retrieval seed. |Sq| is about 7 on 2Wiki, so every candidate's
       support set fits in one 64-bit word and popcount(mask[d]) is the number of
