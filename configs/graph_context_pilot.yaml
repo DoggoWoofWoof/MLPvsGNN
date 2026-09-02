@@ -696,6 +696,212 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D7:
+    status: DECLARED
+    evidence_class: CONFIRMATORY within its own narrow question
+    runner: scripts/run_graph_context_d7.py
+    dataset: 2wiki_clean
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    question: >-
+      Which historical structural family, if any, is responsible for the residual
+      +0.89 R@5 once direct retrieval evidence and seed geometry are already
+      available? And secondarily, which family causes the -0.63 R@1 / -0.70 MRR
+      tradeoff?
+    not_a_general_feature_search: >-
+      D7 decomposes the six columns D6 already measured. It does not widen the
+      frontier, propose new statistics, or test anything outside the frozen
+      QLS-v1 historical block.
+    why_it_is_needed: >-
+      D6 measured the six residual columns as one block: +0.89 R@5, +0.24 R@20,
+      +0.53 FullCov, but -0.63 R@1 and -0.70 MRR. That is not Pareto-clean, and a
+      block moved as one unit cannot say which part bought the depth and which
+      part sold the head. If one family carries the gain and another carries the
+      loss, QLS-v2 can keep the useful primitive and delete the harmful one.
+    families:
+      SUPPORT:
+        columns: [4]
+        names: [seed_connections]
+      PATHS:
+        columns: [5, 6, 7]
+        names: [paths_length_1, paths_length_2, paths_length_3]
+      DIFFUSION:
+        columns: [8]
+        names: [personalized_pagerank]
+      NEIGHBOURHOOD:
+        columns: [9]
+        names: [common_out_neighbors_with_seed_neighborhood]
+      note: >-
+        These names describe the historical QLS-v1 signals only. They are not the
+        final QLS-v2 feature definitions. The four families are disjoint and
+        together cover the six residual columns exactly once, which is what makes
+        the additivity residual meaningful; the runner refuses otherwise.
+    arms:
+      trained_here:
+        [D7_SUPPORT_13, D7_PATHS_13, D7_DIFFUSION_13, D7_NEIGHBOURHOOD_13]
+      reused_from_d6:
+        D6_BASE_13: EXACT MATCHED CAUSAL CONTROL, not refitted
+        D6_FULL_13: six-family joint reference, not refitted
+      every_arm_carries: >-
+        cols 0-3 D6_BASE_13's exact distance geometry; cols 10-12 the exact
+        D6/D5/D4 graded retrieval prior; among cols 4-9, only the family's own
+        columns, at exactly D6_FULL_13's values, with every other residual column
+        exactly zero.
+    why_four_runs_not_five: >-
+      D6 already fitted the matched control at this exact architecture: local_dim
+      13, head width 61, 213,689 parameters, seed 0, same split, same budget.
+      Refitting D6_BASE_13 would produce a number that cannot change any decision
+      D7 makes. The project has repeatedly demonstrated deterministic
+      reproduction across independent containers -- D1 reproduced bit-identically,
+      D2's FULL reproduced D1, and every stage since has carried tensor-equivalence
+      guards -- so a fifth run buys within-file symmetry and nothing else. Spend
+      only on conditions that can change the decision.
+    reuse_guards: >-
+      Load-bearing, not decorative: every D7 increment is a D7 arm minus a D6
+      arm. Before launch the runner requires dataset, seed, split sizes, node
+      fingerprint, candidate contract, context CAND, local_dim 13, head width 61,
+      213,689 parameters, static feature source, optimizer, loss, batching, epoch
+      budget, model-selection procedure, retrieval prior exactness and the frozen
+      normaliser to match D6's recorded values. Any material difference stops the
+      stage.
+    deterministic_reproduction_check: >-
+      Because D6's arms were fitted in another container, D7 rebuilds D6's two
+      blocks locally -- masking an array, not fitting a model -- and recomputes
+      the content-sensitive statistics D6 recorded from its own build: candidate
+      row count, the residual columns' total nonzero entry count, the prior's
+      rows-ranked-by-both and rows-ranked-by-neither counts, the prior-vs-D4
+      max_abs_diff, the seed-identity proof and the gold stratum counts. These
+      are the evidence a reproduction run would have provided. If any disagrees
+      the stage STOPS AND INSPECTS. It does not refit around the failure.
+    tensor_invariants:
+      distance: arm[:,0:4] == D6_BASE_13[:,0:4]
+      prior: "arm[:,10:13] == the exact D6/D5/D4 graded retrieval prior"
+      support: arm[:,4] == D6_FULL_13[:,4]
+      paths: "arm[:,5:8] == D6_FULL_13[:,5:8]"
+      diffusion: arm[:,8] == D6_FULL_13[:,8]
+      neighbourhood: arm[:,9] == D6_FULL_13[:,9]
+      every_other_residual_column: exactly zero
+      required: >-
+        max_abs_diff 0 on every one where dtype permits, and each arm must differ
+        from D6_BASE_13 in exactly its own family's occupied columns and from
+        D6_FULL_13 in exactly the complement. Checking both directions is the
+        point: "carries the family" and "carries nothing else" are separate
+        claims, and an arm that leaked a second family would satisfy the first.
+    normalisation_unchanged: >-
+      candidate_readout, NORMALISED_COLUMNS, the transforms, the PPR definition
+      and the path definitions are all untouched. D7 is diagnosing the historical
+      block. It is not yet implementing the QLS-v2 replacements that a surviving
+      family would motivate, and that separation is what keeps the diagnosis
+      readable.
+    reports:
+      primary: >-
+        delta_support, delta_paths, delta_diffusion and delta_neighbourhood, each
+        arm minus D6_BASE_13, on recall@1, recall@5, recall@20, mrr and
+        full_coverage@20.
+      additivity: >-
+        J = D6_FULL_13 - D6_BASE_13 (reused from D6); S = the sum of the four
+        family increments; additivity_residual = J - S, per metric. DESCRIPTIVE
+        ONLY. Residual near zero means the families are approximately additive; a
+        large positive residual means useful complementarity; a large negative
+        residual means redundancy or interference when combined. Not a statistical
+        interaction claim from one seed.
+      attribution: >-
+        Which family contributes most to the R@5 gain, and which contributes most
+        to the R@1 and MRR losses. The ideal outcome is one family buying depth
+        with little head loss while another causes most of the regression.
+      also: the same frozen degree strata, which are not refitted
+    interpretation_fixed_in_advance:
+      thresholds:
+        promising_r5: +0.50 pp
+        depth_gain: +0.50 pp on R@20 or FullCov@20
+        material_r5_sacrifice: -0.50 pp
+        negligible_band: 0.25 pp
+      PROMISING: >-
+        Qualifies on >= +0.50 pp R@5, or on a clearly useful R@20 / FullCov@20
+        improvement without materially sacrificing R@5, and does not pay for it
+        with a comparable or larger head-ranking regression.
+      TRADEOFF: >-
+        Qualifies on effectiveness but the R@1 or MRR regression is comparable to
+        or larger than the benefit. Not automatically retained.
+      NEGLIGIBLE: >-
+        Near-zero effectiveness, or fails to qualify at all. Killed from immediate
+        QLS-v2 priority.
+      these_are_development_decisions: >-
+        Stage-D development decisions at one dataset and one seed, not final
+        statistical significance claims.
+    a_surviving_family_is_not_a_surviving_feature: >-
+      The single most important interpretation rule in this stage. A family
+      surviving is evidence that its KIND of information is useful, never that its
+      QLS-v1 implementation should be carried into QLS-v2.
+      SUPPORT surviving motivates distinct supporting seeds, support fraction or
+      retrieval-weighted support over bounded bitsets -- NOT the historical edge
+      count, which is a known QLS-v1 representation weakness.
+      PATHS surviving motivates path diversity, unique predecessor count or
+      independent seed support by hop -- NOT raw walk counts, which inflate around
+      hubs and cycles.
+      DIFFUSION surviving motivates a comparison of H1, H2, H3 and truncated PPR
+      at deterministic bounded work -- NOT the historical iterative PPR, which
+      Package D already identified as part of the systems problem.
+      NEIGHBOURHOOD surviving motivates some cheap bounded topology statistic --
+      NOT necessarily this exact common-neighbour count.
+      The runner carries each of these strings beside the number it belongs to,
+      because the failure mode is reading "PATHS survived" as "keep the walk
+      counts".
+    if_no_family_explains_the_joint_gain: >-
+      If each family is individually near zero while FULL - BASE is around +0.89
+      R@5, record JOINT COMPLEMENTARITY SUSPECTED and STOP. Do not launch pairwise
+      combinations automatically. A pairwise experiment requires its own
+      declaration and a clear reason. No combinatorial family sweep.
+    if_one_family_dominates: >-
+      If one family explains most of the +0.89 R@5, the other historical families
+      leave immediate QLS-v2 development. The next step tests the better QLS-v2
+      replacement for the winner -- distinct and weighted support, bounded path
+      diversity, or fixed H1/H2/H3 diffusion -- not more historical ablations.
+    frozen_operating_point:
+      [2wiki_clean, seed 0, CAND graph, 3 epochs, same split, same listwise loss,
+       same optimizer, same batching, same best-epoch restoration, local_dim 13,
+       head width 61, 213689 parameters]
+    no_convergence_runs: >-
+      D7 decomposes D6's regime and does not get a larger budget than the arms it
+      is read against.
+    projected_cost:
+      new_runs: 4
+      shared_feature_builds: 1
+      measured_expected:
+        basis: >-
+          From the D6 actuals: 49.5 s shared feature build, 1.9 s static, 9.5 s
+          assembling and proving the prior, then 17.5 s training and 0.33 s
+          inference per arm (D6's two arms took 18.0 s and 16.9 s). D7 shares one
+          build and trains four arms, so 49.5 + 1.9 + 9.5 + 4 x 17.8 = about 132 s
+          of accounted compute.
+        accounted_gpu_hours: 0.037
+        accounted_usd: 0.06
+        conservative_billed_usd_including_container_overhead: 0.25
+        wall_time_ceiling_minutes: 30
+      authorisation_ceiling:
+        gpu_hours: 0.15
+        usd: 0.60
+        note: >-
+          Deliberately well above the measured expectation while still bounded.
+          If the measured stage-specific projection materially exceeds this, stop.
+      the_gate_number_is_not_a_forecast: >-
+        spawn_modal_jobs.py will report 0.2 h / $0.87 for this stage as it did for
+        D3, D4, D5 and D6, which is ABOVE the $0.60 authorisation ceiling. That is
+        expected and is not a breach. VERIFIED FROM CODE: every fitted
+        graph-context stage is priced with the D1 whole-split model, documented in
+        that source as a ceiling the later stages are bounded by, and the gate
+        enforces only that no indivisible unit exceeds its container window -- it
+        does not enforce a dollar ceiling. The figure is stage-independent and
+        must not be quoted as a calibrated D7 projection.
+      stop_condition: >-
+        If actual cost exceeds 0.15 GPU-hours or $0.60, stop and inspect.
+    does_not_authorise:
+      [second dataset, second seed, GNN, TARGET_H1, global context, R0-R5 sweep,
+       pairwise family combinations, architecture search, LODO, E2 resume,
+       Package F, convergence study, workspace migration]
+    is_the_only_experiment: true
+
   D6:
     status: COMPLETE
     results: docs/GRAPH_CONTEXT_D6_RESULTS.md
@@ -1852,7 +2058,8 @@ modal:
   # decorator reads this only for the stages listed in gpu_stages, so a CPU
   # stage never pays for an accelerator it does not use.
   gpu: A10G
-  gpu_stages: [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5, stage_d6]
+  gpu_stages:
+    [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5, stage_d6, stage_d7]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -1869,6 +2076,11 @@ modal:
     stage_d4: 3600
     stage_d5: 3600
     stage_d6: 3600
+    # D6 trained two arms on one shared build and accounted 96.5 s. D7 trains
+    # four on the same build and refits neither of D6's, so it is bounded by
+    # roughly 132 s of accounted work. Same ceiling, not a tighter one: a
+    # timeout is a bound, not a projection.
+    stage_d7: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and

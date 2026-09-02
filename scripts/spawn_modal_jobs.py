@@ -385,12 +385,14 @@ def measured_units(
                     # trains only two of them, so it is bounded by D2 in turn;
                     # D4 and D5 share the same build again while training one
                     # arm each, and D6 trains two on it -- still D3's shape, so
-                    # D1's model remains the ceiling for all of them. It is a
+                    # D1's model remains the ceiling for all of them. D7 trains
+                    # four arms on that same single build and refits neither of
+                    # D6's, so it is bounded the same way. It is a
                     # ceiling and not a per-stage forecast, which is why every
                     # one of these stages reports the same figure.
                     if job["stage"] in {
                         "stage_d1", "stage_d2", "stage_d3",
-                        "stage_d4", "stage_d5", "stage_d6",
+                        "stage_d4", "stage_d5", "stage_d6", "stage_d7",
                     }
                     else GRAPH_CONTEXT_LOAD_SECONDS
                     + int(job["query_cap"])
@@ -407,7 +409,10 @@ def measured_units(
         # describe a calculation that did not happen -- and a gate report is read
         # later, by someone checking whether the ceiling was set against the
         # right quantity.
-        fitted = {"stage_d0b", "stage_d0c", "stage_d1", "stage_d2", "stage_d3", "stage_d4", "stage_d5", "stage_d6"}
+        fitted = {
+            "stage_d0b", "stage_d0c", "stage_d1", "stage_d2", "stage_d3",
+            "stage_d4", "stage_d5", "stage_d6", "stage_d7",
+        }
         if {job["stage"] for job in jobs} <= fitted:
             queries = sorted({int(job["settings"]["expected_queries"]) for job in jobs})
             return units, (
