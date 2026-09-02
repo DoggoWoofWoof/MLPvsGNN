@@ -1,0 +1,257 @@
+experiment: graph_context_pilot
+status: STAGE_A_PASSED_STAGE_B_DECLARED
+phase: "P1"
+protocol: docs/COMPUTE_LEDGER.md
+
+question: >-
+  Phase -1 measured what the candidate-induced graph G[Cq] destroys. This asks
+  what each replacement context recovers, on real validation queries, without
+  training anything. The deliverable is the smallest defensible context that
+  repairs the measured loss without turning a query into a whole-graph
+  computation.
+
+contract:
+  read_only: true
+  models_trained: false
+  gpu_used: false
+  scored_nodes: exactly_Cq_in_every_arm
+  candidate_pools_modified: false
+  candidate_pools_expanded: false
+  candidate_ceiling_changed: false
+  gold_ids_used_in_context_construction: false
+  gold_labels_used: false
+  test_split_read: false
+  package_f_accessed: false
+  e2_touched: false
+  crag_modified: false
+  invented_edges: false
+  qls_kernel: the_shipped_structural_features_kernel_not_a_reimplementation
+
+definitions:
+  Cq: the frozen Dense/SPLADE candidate set -- the scoring universe
+  Sq: >-
+    the frozen retrieval seeds. A SUBSET of Cq by construction of the artifact
+    (seed_global = pool[seed_local]), so Cq union Sq == Cq. The seed arms differ
+    from the target arms only in what they expand from: ~10 seeds against
+    316-361 candidates.
+  Uq: the context -- nodes allowed to contribute structural information
+  invariant: Cq is a subset of Uq, therefore |Uq| >= |Cq|
+  total_context_ratio: "|Uq| / |Cq|, bounded below by 1"
+  added_context_ratio: "(|Uq| - |Cq|) / |Cq|, bounded below by 0"
+  never_interchange: >-
+    Reading one ratio as the other once understated a 472k-node context as
+    "0.2x the pool". They are reported as separate fields.
+
+arms:
+  CAND:
+    definition: "Uq = Cq"
+    role: historical control, must stay bit-exact with the frozen construction
+  SEED_H1:
+    definition: "Uq = Cq union N1_out(Sq)"
+    role: cheap control; expected to add little because Sq is small and inside Cq
+  TARGET_H1:
+    definition: "Uq = Cq union N1_in(Cq)"
+    role: >-
+      directly repairs the one-hop deletion Phase -1 measured (median rho_1
+      0.077-0.250). In-neighbours, not out: every frozen operator flows
+      source_to_target, so this is what a one-layer GNN actually lost.
+  SEED_H2:
+    definition: "Uq = Cq union N<=2_out(Sq)"
+    role: >-
+      structural-information control. Expected to advance on recovery and fail
+      on cost: 60-65% of the corpus graph on 2wiki and hotpotqa.
+  PATH_H2:
+    definition: "Uq = Cq union {v not in Cq : exists s in Sq, c in Cq, s->v->c, s != c}"
+    role: literature-inspired enclosing arm, seed-anchored
+  BRIDGE_H2:
+    definition: "Uq = Cq union {v not in Cq : exists c1,c2 in Cq, c1->v->c2, c1 != c2}"
+    role: literature-inspired enclosing arm, candidate-anchored
+
+distinctness_rule:
+  status: VERIFIED_FROM_CODE_AND_DATA
+  why: >-
+    Five of the six sealed graphs are reachability-symmetric -- 2wiki stores
+    855,146 edges as 521,614 distinct pairs with every reverse present. A path
+    rule asking only "reachable from a seed AND has an edge into Cq" is then
+    satisfied through the seed itself, because Sq is inside Cq. The first
+    version did exactly that and returned a set identical to SEED_H1 on all 25
+    smoke queries. The arms therefore require two DISTINCT candidate endpoints.
+  deduplicated_view_because: >-
+    34.1%-53.6% of stored messages are duplicates, and hotpotqa's sealed graph
+    additionally stores 538.14 self-loops per query -- the only one of the 24
+    audited graph-splits that carries any. Both are removed before a path is
+    counted, so a duplicate edge cannot pose as a second endpoint and a
+    self-loop cannot pose as a bridge.
+
+lattice:
+  order:
+    - "CAND <= PATH_H2 <= SEED_H1 <= SEED_H2"
+    - "CAND <= PATH_H2 <= BRIDGE_H2 <= TARGET_H1"
+  enforced_in: tests/test_graph_context.py
+
+excluded_before_any_compute:
+  rule: >-
+    Killed on Phase -1's already-measured corpus share, at zero pilot cost. A
+    per-query context of 472k nodes has no serving story, and calling it
+    "bounded local context" would be false.
+  SEED_H3: 33.0%-99.7% of the corpus graph
+  TARGET_H2: 17.9%-93.2% of the corpus graph
+  TARGET_H3: 72.5%-100.0% of the corpus graph
+
+retention_convention:
+  status: VERIFIED_FROM_CODE
+  source: src/mp_retrieval/graph_substrate.py::retention_summary
+  rule: >-
+    rho(v) = stored non-self out-messages of v landing in Uq, over stored
+    non-self out-messages of v. Stored multiplicity is kept on both sides;
+    stored self-loops are removed from both. This is the Phase -1 convention
+    exactly, so the CAND arm has to reproduce the audited rho_1 rather than
+    merely resemble it -- pinned in tests/test_graph_context.py.
+  why_it_matters: >-
+    Leaving self-loops in the denominator would have understated hotpotqa's
+    retention by roughly a third, on the one dataset that has any, and hotpotqa
+    holds the lowest measured median retention.
+
+descriptor_saturation:
+  status: STRUCTURAL_IDENTITY_VERIFIED_ON_480_COMPARISONS
+  claim: >-
+    No context wider than SEED_H1 can move a distance bucket of the frozen
+    QLS-v1 descriptor, and none can change a candidate's raw seed-incidence
+    count, on any graph.
+  proof: >-
+    Columns 0-3 are one-hot over {0, 1, 2, >=3-or-unreachable}. A candidate
+    reaches bucket 2 exactly when some path seed -> x -> candidate exists with
+    at most one intermediate, and every such x is an out-neighbour of a seed,
+    which is precisely what SEED_H1 already admits. Column 4 counts edges
+    incident to a seed; Sq is inside Cq, so every seed-candidate edge is already
+    present in G[Cq] and widening cannot add one.
+  evidence: >-
+    480 arm comparisons over 120 random graphs, symmetric and directed: zero
+    bucket movements and zero raw-count changes above SEED_H1. Column 4's
+    normalised value nonetheless differed on 17 of them, which is the rescaling
+    confound, not restored structure. Reproduced on the real 2wiki CSR with hub
+    pools: all six arms returned byte-identical buckets, SEED_H1 at 166 context
+    nodes against TARGET_H1 at 40,653.
+  consequence: >-
+    distance_bucket_changed was declared the primary movement signal before this
+    was known. It is provably constant above SEED_H1, so it cannot rank the arms
+    and is demoted to a reported diagnostic. This re-specifies a measurement
+    before it is taken; no arm, threshold or spend changes.
+
+measurements:
+  size: [context_nodes, added_nodes, total_ratio, added_ratio, graph_share, context_edges]
+  recovery: [retention_mean, retention_median, boundary_cut, isolated_fraction]
+  reach:
+    primary: distance_improved
+    primary_rationale: >-
+      Seed distance recomputed through the arm's own context, uncapped to four
+      hops and divided by nothing. Both defects of the frozen descriptor are
+      absent: it is not saturated at two hops, so it separates arms that the
+      one-hot bucket lumps together, and it has no per-query normaliser, so a
+      candidate's value moves only when its own topology did.
+      distance_improved is the fraction of candidates strictly closer to a seed
+      than the historical substrate G[Cq] made them.
+    secondary: [seed_reach_at_1, seed_reach_at_2, seed_reach_at_3, seed_reach_at_4, seed_unreachable]
+    censored: >-
+      seed_distance_mean admits unreachable candidates at the sentinel
+      SEED_DISTANCE_HOPS + 1 and is read beside seed_unreachable, never alone.
+    stratified_by: prior_induced_degree
+    strata: [isolated, degree_1, low_degree, ordinary]
+    max_hops: 4
+    cost: >-
+      Diagnostic only. Nothing at serving time computes seed distance, so its
+      latency is reported separately and excluded from total_ms and from the
+      Pareto axis.
+  movement:
+    status: REPORTED_NOT_RELIED_ON
+    reason: see descriptor_saturation
+    reported: [distance_bucket_changed, any_column_changed]
+    stratified_by: prior_induced_degree
+    strata: [isolated, degree_1, low_degree, ordinary]
+  systems: [build_ms, feature_ms, total_ms]
+  distributions: [median, p90, p95, p99, max, mean]
+
+qls_v1_parameters:
+  source: configs/sa_mlp_screen.yaml::query_local_features
+  damping: 0.85
+  ppr_iterations: 8
+  note: the frozen values, so CAND reproduces the historical descriptor exactly
+
+stages:
+  A:
+    status: PASSED
+    what: synthetic correctness, 521 tests
+    cost: seconds, local
+  B:
+    status: DECLARED
+    queries: 25
+    what: real validation queries, all six datasets, all six arms
+  C:
+    status: GATED_ON_B
+    queries: 300
+    what: survivors only
+    rule: >-
+      Do not consume all 300 if an arm clearly fails before then. Kill an arm at
+      B if it does not lower isolation, does not bring candidates closer to a
+      seed than G[Cq] did, or costs a fraction of the corpus that cannot be
+      served. The second clause originally read "does not move distance
+      buckets"; that test is provably vacuous above SEED_H1 -- see
+      descriptor_saturation -- and was replaced before Stage B ran.
+
+advancement:
+  rule: >-
+    An arm advances only if it materially restores structure WHERE Phase -1
+    found loss -- recovery and seed-distance improvement concentrated on
+    formerly isolated and low-degree candidates -- AND its projected serving
+    cost is plausible. More reach is not
+    better; the whole corpus is reachable in three hops on every dataset.
+  kill: >-
+    Strictly Pareto-dominated on (p95 construction latency, structural recovery)
+    means killed, recorded, and not trained.
+
+aggregation:
+  query_selection: deterministic_prefix_of_the_split_order
+  never_sampled: true
+  cap_is_recorded: true
+
+reporting:
+  splits: [validation]
+  note: >-
+    Validation only. The test split is not read during a phase whose output
+    influences a design decision.
+
+datasets:
+  2wiki_clean:
+    expected_queries: 15000
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  musique_clean:
+    expected_queries: 19938
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  webqsp:
+    expected_queries: 1578
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+  hotpotqa_clean:
+    expected_queries: 97852
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+  squad_clean:
+    expected_queries: 130319
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+  metaqa:
+    expected_queries: 407513
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+
+modal:
+  app: message-passing-retrieval-graph-context
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  cpu: 8
+  memory_mb: 32768
+  # Stage B is 25 queries x 6 arms. Context construction is milliseconds even on
+  # webqsp's 781k-node graph (p95 232 ms, measured locally at true graph scale).
+  # The feature kernel is Numba-compiled in this image; the local Python
+  # fallback measured 16 s/query on a 40k-node SEED_H2 context and is not
+  # representative. One hour is far above any plausible Stage B and is the unit
+  # a restart would redo, since resumption here is per split.
+  timeout_seconds: 3600

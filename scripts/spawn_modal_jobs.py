@@ -56,7 +56,26 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         "scripts.modal_cache_equivalence",
         {"train": "run_equivalence"},
     ),
+    "graph-context": (
+        "scripts.modal_graph_context_pilot",
+        {"train": "run_context_pilot"},
+    ),
 }
+
+# Measured locally at true graph scale on the sealed CSRs. Context construction
+# is 0.4-232 ms per query per arm across all six arms, worst case on webqsp's
+# 781k-node graph, and the seed-distance probe is 22-73 ms p95 per arm. Both are
+# noise beside the QLS kernel, which is the only part whose Modal cost is
+# unknown: the image compiles it with Numba and the local pure-Python fallback
+# does not represent it.
+#
+# So the kernel is costed at the one number that IS measured -- the local
+# fallback itself, 38 s per query for all six arms on 2wiki -- rounded up. That
+# is a ceiling rather than an estimate: any Numba speedup at all makes the real
+# figure smaller, and 25 queries still fit the declared 3600 s timeout with room
+# to spare even if there is none. Stage B replaces it with a measured number.
+GRAPH_CONTEXT_SECONDS_PER_QUERY = 40.0
+GRAPH_CONTEXT_LOAD_SECONDS = 600.0
 
 
 def _expand(module: Any, package: str, stage: str, datasets: list[str]) -> list[dict[str, Any]]:
@@ -253,6 +272,22 @@ def measured_units(
             )
         units, granularity = _collapse_without_resumption(units, module, "family", "audit")
         return units, f"{len(jobs)} dataset(s) x {len(families)} families; {granularity}"
+
+    if package == "graph-context":
+        units = [
+            WorkUnit(
+                name=f"{job['dataset']}:{job['stage']}",
+                seconds=(
+                    GRAPH_CONTEXT_LOAD_SECONDS
+                    + int(job["query_cap"]) * GRAPH_CONTEXT_SECONDS_PER_QUERY
+                ),
+            )
+            for job in jobs
+        ]
+        # One split, committed once, so a restart redoes the whole dataset.
+        units, granularity = _collapse_without_resumption(units, module, "split", "pilot")
+        caps = sorted({int(job["query_cap"]) for job in jobs})
+        return units, f"{len(jobs)} dataset(s) at {caps} quer(ies); {granularity}"
 
     return None, f"no measured cost model for {package}"
 
