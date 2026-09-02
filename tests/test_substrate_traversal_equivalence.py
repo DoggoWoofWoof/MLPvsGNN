@@ -9,11 +9,13 @@ So every test here compares the fast path against the original algorithm rather
 than against a stored expectation: a stored number would drift silently if the
 definition changed, whereas a reference implementation fails loudly.
 
-The dense-hub cases are not decoration. The first version of the mat-vec path
-used a `uint8` accumulator, which wraps at 256; a node with exactly 256 frontier
-neighbours summed to zero and was reported unreachable. Sixty random graphs
-passed it, because none of them grew a hub that dense. Only a case built to
-overflow finds that class of bug, so one lives here permanently.
+The overflow cases are not decoration. The first version of the mat-vec path
+used a `uint8` accumulator, which wraps at 256. What overflows is the number of
+frontier *edges* arriving at one node -- 256 of them sum to zero, which reads as
+"no frontier edge", so a reached node was silently reported unreachable. Sixty
+random graphs passed it, because none accumulated that much at a single node.
+Both routes to it are pinned below: parallel edges, and 256 distinct sources
+into one target, which is what a hub on the real 507k-node graph looks like.
 """
 
 from __future__ import annotations
@@ -108,11 +110,14 @@ def test_matrix_path_matches_the_gather_path(trial):
 
 
 @pytest.mark.parametrize("degree", [255, 256, 257, 512, 1024])
-def test_a_hub_denser_than_the_accumulator_is_still_reached(degree):
+def test_parallel_edges_past_the_accumulator_still_reach(degree):
     """`uint8` wrapped here and called a reached node UNREACHED.
 
-    At exactly 256 the sum is 0, which is indistinguishable from "no frontier
-    neighbour" -- the failure is silent and produces a plausible number.
+    The quantity that overflows is the number of frontier *edges* arriving at
+    one node, not the number of distinct neighbours. This builds it the cheap
+    way: four nodes, with ``degree`` parallel edges all running 0 -> 1. At
+    exactly 256 the sum is 0, indistinguishable from "no frontier edge" -- the
+    failure is silent and yields a plausible number.
     """
     size = 4
     rowptr = np.array([0, degree, degree, degree, degree], dtype=np.int64)
@@ -124,6 +129,27 @@ def test_a_hub_denser_than_the_accumulator_is_still_reached(degree):
     assert actual[1] == 1
     assert np.array_equal(
         actual, hop_distances(rowptr, col, np.array([0]), size, max_hops=2)
+    )
+
+
+@pytest.mark.parametrize("frontier_size", [256, 512])
+def test_distinct_frontier_neighbours_past_the_accumulator_still_reach(frontier_size):
+    """The same overflow by the route the real graph actually takes.
+
+    No duplicate edges here: ``frontier_size`` distinct sources each contribute
+    one edge to a single target, which is what a hub on a 507k-node graph looks
+    like at hop two. A simple-graph invariant elsewhere would not rescue the
+    uint8 version -- the sum is over edges either way.
+    """
+    size = frontier_size + 1
+    target = frontier_size
+    sources = np.arange(frontier_size, dtype=np.int64)
+    rowptr, col = csr(sources, np.full(frontier_size, target, dtype=np.int64), size)
+    matrix = traversal_matrix(rowptr, col, size)
+    actual = hop_distances(rowptr, col, sources, size, max_hops=2, matrix=matrix)
+    assert actual[target] == 1
+    assert np.array_equal(
+        actual, hop_distances(rowptr, col, sources, size, max_hops=2)
     )
 
 

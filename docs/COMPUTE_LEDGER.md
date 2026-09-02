@@ -73,7 +73,7 @@ whole argument for the ladder.
 
 | defect | found at | findable at |
 |---|---|---|
-| `uint8` accumulator wrapping at 256 hub-neighbours | full-scale benchmark | Stage A, a 4-node graph |
+| `uint8` accumulator wrapping at 256 accumulated frontier edges into one node | full-scale benchmark | Stage A: 4 nodes with parallel edges, or 256 distinct sources into one target |
 | `result.json` presence read as completion | after reporting 86/96 to the user, twice | Stage B, one cell mid-run |
 | substrate audit could not finish in its ceiling | ~$8 and zero output | Stage C, a 100-query timing pilot |
 | global BFS as 74% of runtime | 3.31 h/family in production | Stage C, the same pilot |

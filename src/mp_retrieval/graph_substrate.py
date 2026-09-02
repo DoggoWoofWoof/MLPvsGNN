@@ -365,10 +365,11 @@ def _hop_distances_spmv(
 ) -> np.ndarray:
     """:func:`hop_distances` via sparse mat-vec. Returns the identical array.
 
-    The accumulator is ``int32`` deliberately. A ``uint8`` one overflows on any
-    node with a multiple of 256 frontier neighbours and silently reports it
-    UNREACHED; random small graphs never build a hub that dense, so only a
-    full-scale check catches it.
+    The accumulator is ``int32`` deliberately. A ``uint8`` one wraps once the
+    number of frontier *edges* arriving at a node reaches a multiple of 256 --
+    whether they come from 256 distinct neighbours or from parallel edges --
+    and the node is then silently reported UNREACHED. Random small graphs never
+    accumulate that much at one node, so only a full-scale check catches it.
     """
 
     distance = np.full(size, UNREACHED, dtype=np.int64)
