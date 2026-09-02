@@ -23,6 +23,13 @@ single ``substrate.json`` once per family, so a count would read 1 forever and a
 count-based watchdog would kill it at the deadline while it was working
 perfectly. Size and mtime catch both new files and rewritten ones.
 
+The volume is read through the SDK in one recursive call, not by shelling out
+per directory. That is not a micro-optimisation: `modal volume ls` pays a full
+client import every invocation, and the E2 tree needs about 110 of them, so a
+subprocess-per-directory walk takes longer than the poll interval it is supposed
+to run inside -- the first version of this never finished a single snapshot in
+25 minutes and would have watched nothing forever.
+
 Stopping is the point. Reporting a stall while the containers keep running is
 the behaviour that lost the workspace in the first place.
 """
@@ -40,9 +47,6 @@ HEALTHY = "HEALTHY"
 NO_OUTPUT = "NO_OUTPUT"
 STALLED = "STALLED"
 FINISHED = "FINISHED"
-
-MAX_DEPTH = 4
-
 
 def classify(
     *,
@@ -84,46 +88,42 @@ def _run(args: list[str], profile: str) -> subprocess.CompletedProcess:
     return subprocess.run(args, capture_output=True, text=True, encoding="utf-8", env=env)
 
 
-def _listing(volume: str, path: str, profile: str) -> list[dict] | None:
-    """None distinguishes could-not-read from read-and-empty."""
-    result = _run(["modal", "volume", "ls", volume, path, "--json"], profile)
-    if result.returncode != 0:
-        return None
-    try:
-        entries = json.loads(result.stdout)
-    except ValueError:
-        return None
-    return entries if isinstance(entries, list) else None
+def open_volume(name: str, profile: str):
+    """Bind a volume handle under one profile.
 
-
-def snapshot(
-    volume: str, prefix: str, profile: str, *, max_depth: int = MAX_DEPTH
-) -> frozenset | None:
-    """Fingerprint the output tree as {(path, size, timestamp)}.
-
-    Returns None if the listing could not be read at all, so a transient CLI
-    failure reads as unknown rather than as the output having vanished -- the
-    latter would silently reset the baseline and hide a stall forever.
+    MODAL_PROFILE is read when the client initialises, so it has to be set
+    before modal is imported; the import is deferred here for that reason.
     """
-    root = _listing(volume, prefix, profile)
-    if root is None:
+    os.environ["MODAL_PROFILE"] = profile
+    import modal
+
+    return modal.Volume.from_name(name, create_if_missing=False)
+
+
+def snapshot(volume, prefix: str) -> frozenset | None:
+    """Fingerprint the output tree as {(path, size, mtime)}.
+
+    Returns None if the tree could not be read, so a transient failure reads as
+    unknown rather than as the output having vanished -- the latter would
+    silently reset the baseline and hide a stall forever.
+    """
+    if prefix in (".", "", "./"):
+        prefix = "/"
+    try:
+        listing = list(volume.listdir(prefix, recursive=True))
+    except Exception:
         return None
 
-    fingerprint: set[tuple[str, str, str]] = set()
-    pending = [(root, 0)]
-    while pending:
-        entries, depth = pending.pop()
-        for entry in entries:
-            name = str(entry.get("Filename", ""))
-            if entry.get("Type") == "dir":
-                if depth < max_depth:
-                    nested = _listing(volume, name, profile)
-                    if nested is not None:
-                        pending.append((nested, depth + 1))
-                continue
-            fingerprint.add(
-                (name, str(entry.get("Size", "")), str(entry.get("Created/Modified", "")))
-            )
+    fingerprint: set[tuple[str, int, int]] = set()
+    for entry in listing:
+        leaf = entry.path.rsplit("/", 1)[-1]
+        # Directory rows carry a nominal size and would churn the fingerprint;
+        # every file this project writes has an extension.
+        if "." not in leaf:
+            continue
+        fingerprint.add(
+            (entry.path, int(getattr(entry, "size", 0) or 0), int(getattr(entry, "mtime", 0) or 0))
+        )
     return frozenset(fingerprint)
 
 
@@ -173,18 +173,6 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--stall-hours", type=float, default=2.0)
     parser.add_argument("--poll-seconds", type=float, default=300.0)
-    parser.add_argument(
-        "--max-depth",
-        type=int,
-        default=MAX_DEPTH,
-        help=(
-            "how deep to walk below the prefix. Each directory costs a volume "
-            "listing, so stop at the shallowest level that still changes when "
-            "work lands: E2 writes result.json at depth 3 and per-seed "
-            "checkpoints below it, and descending into those triples the poll "
-            "cost while telling you nothing new"
-        ),
-    )
     parser.add_argument("--no-stop", action="store_true", help="report only, do not stop the app")
     args = parser.parse_args(argv)
 
@@ -210,7 +198,8 @@ def main(argv: list[str] | None = None) -> int:
                 )
             return 4
 
-    baseline = snapshot(args.volume, args.prefix, args.profile, max_depth=args.max_depth)
+    volume = open_volume(args.volume, args.profile)
+    baseline = snapshot(volume, args.prefix)
     if baseline is None:
         print(f"REFUSED: cannot read {args.prefix} on {args.profile}", file=sys.stderr)
         return 4
@@ -231,7 +220,7 @@ def main(argv: list[str] | None = None) -> int:
 
     while True:
         time.sleep(args.poll_seconds)
-        current = snapshot(args.volume, args.prefix, args.profile, max_depth=args.max_depth)
+        current = snapshot(volume, args.prefix)
         tasks = running_tasks(args.app_id, args.profile)
         now = time.time()
 

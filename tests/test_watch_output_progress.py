@@ -154,57 +154,88 @@ def test_thresholds_that_clear_the_unit_get_past_the_check(monkeypatch):
 # --------------------------------------------------------------------------
 
 
-def _fake_listing(monkeypatch, table):
-    monkeypatch.setattr(watch, "_listing", lambda volume, path, profile: table.get(path))
+class FakeEntry:
+    def __init__(self, path, size, mtime):
+        self.path, self.size, self.mtime = path, size, mtime
 
 
-def test_a_rewritten_file_counts_as_progress(monkeypatch):
+class FakeVolume:
+    """Stands in for a Modal volume; `None` entries make listdir raise."""
+
+    def __init__(self, entries):
+        self.entries = entries
+
+    def listdir(self, prefix, recursive=False):
+        if self.entries is None:
+            raise RuntimeError("volume unreadable")
+        return list(self.entries)
+
+
+def test_a_rewritten_file_counts_as_progress():
     """The substrate audit's only output is one json rewritten per family.
 
     A file-count watchdog sees 1 forever and kills a run that is working; this
     is the case that decided the fingerprint is (path, size, mtime).
     """
-    before = {"outputs": [{"Filename": "outputs/substrate.json", "Type": "file",
-                           "Size": "1.2 KiB", "Created/Modified": "2026-09-02 10:00"}]}
-    after = {"outputs": [{"Filename": "outputs/substrate.json", "Type": "file",
-                          "Size": "2.4 KiB", "Created/Modified": "2026-09-02 13:20"}]}
-
-    _fake_listing(monkeypatch, before)
-    first = watch.snapshot("vol", "outputs", "p")
-    _fake_listing(monkeypatch, after)
-    assert watch.snapshot("vol", "outputs", "p") != first
+    before = FakeVolume([FakeEntry("outputs/substrate.json", 1200, 1000)])
+    after = FakeVolume([FakeEntry("outputs/substrate.json", 2400, 2000)])
+    assert watch.snapshot(before, "outputs") != watch.snapshot(after, "outputs")
 
 
-def test_an_unchanged_tree_fingerprints_identically(monkeypatch):
+def test_a_rewrite_of_identical_size_still_counts_as_progress():
+    """Cells that always serialise to the same length would freeze a size-only
+    fingerprint, so the modification time has to be part of it too."""
+    before = FakeVolume([FakeEntry("outputs/result.json", 1200, 1000)])
+    after = FakeVolume([FakeEntry("outputs/result.json", 1200, 2000)])
+    assert watch.snapshot(before, "outputs") != watch.snapshot(after, "outputs")
+
+
+def test_an_unchanged_tree_fingerprints_identically():
     """Otherwise every poll looks like progress and nothing is ever stopped."""
-    table = {"outputs": [{"Filename": "outputs/a.json", "Type": "file",
-                          "Size": "1.2 KiB", "Created/Modified": "2026-09-02 10:00"}]}
-    _fake_listing(monkeypatch, table)
-    assert watch.snapshot("vol", "outputs", "p") == watch.snapshot("vol", "outputs", "p")
+    volume = FakeVolume([FakeEntry("outputs/a.json", 1200, 1000)])
+    assert watch.snapshot(volume, "outputs") == watch.snapshot(volume, "outputs")
 
 
-def test_nested_directories_are_walked(monkeypatch):
+def test_nested_files_are_included():
     """E2 writes one directory per cell, so its output is never at the top level."""
-    _fake_listing(monkeypatch, {
-        "outputs": [{"Filename": "outputs/squad", "Type": "dir", "Size": "4.0 KiB",
-                     "Created/Modified": "2026-09-02 10:00"}],
-        "outputs/squad": [{"Filename": "outputs/squad/seed0.json", "Type": "file",
-                           "Size": "9 KiB", "Created/Modified": "2026-09-02 10:05"}],
-    })
-    assert {name for name, _, _ in watch.snapshot("vol", "outputs", "p")} == {
-        "outputs/squad/seed0.json"
+    volume = FakeVolume([FakeEntry("outputs/squad/abc/degree_rewire_0p10/result.json", 9, 1)])
+    assert {path for path, _, _ in watch.snapshot(volume, "outputs")} == {
+        "outputs/squad/abc/degree_rewire_0p10/result.json"
     }
 
 
-def test_an_unreadable_volume_is_unknown_rather_than_empty(monkeypatch):
-    """Reading a CLI failure as an empty tree would reset the baseline.
+def test_directory_rows_are_not_part_of_the_fingerprint():
+    """Their nominal size churns between listings and would mask a real stall
+    as constant activity."""
+    volume = FakeVolume(
+        [FakeEntry("outputs/squad", 4096, 1), FakeEntry("outputs/squad/result.json", 9, 1)]
+    )
+    assert len(watch.snapshot(volume, "outputs")) == 1
+
+
+def test_an_unreadable_volume_is_unknown_rather_than_empty():
+    """Reading a failure as an empty tree would reset the baseline.
 
     Two such failures in a row would then make a stalled run look like it had
     just produced its first output, which is the one lie that disarms this
     entirely.
     """
-    _fake_listing(monkeypatch, {})
-    assert watch.snapshot("vol", "outputs", "p") is None
+    assert watch.snapshot(FakeVolume(None), "outputs") is None
+
+
+def test_the_walk_is_one_recursive_call_not_one_per_directory():
+    """`modal volume ls` pays a full client import per invocation, and the E2
+    tree needs ~110 of them: a subprocess-per-directory walk takes longer than
+    the poll interval, so the watchdog never completes a single snapshot."""
+    calls = []
+
+    class Recording(FakeVolume):
+        def listdir(self, prefix, recursive=False):
+            calls.append(recursive)
+            return []
+
+    watch.snapshot(Recording([]), "outputs")
+    assert calls == [True]
 
 
 def test_an_unknown_task_count_is_negative_not_zero(monkeypatch):
