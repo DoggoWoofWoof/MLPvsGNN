@@ -709,7 +709,14 @@ def _write(name: str, payload: dict[str, Any]) -> Path:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     path = OUTPUT_DIR / name
     path.write_text(json.dumps(payload, indent=2, sort_keys=False), encoding="utf-8")
-    print(f"wrote {path.relative_to(REPO_ROOT)}")
+    # A relative path reads better, but an output directory outside the repo is
+    # legitimate -- a test redirecting OUTPUT_DIR, or a run writing to a
+    # scratch volume -- and should not crash after the file is already written.
+    try:
+        shown: Path | str = path.relative_to(REPO_ROOT)
+    except ValueError:
+        shown = path
+    print(f"wrote {shown}")
     return path
 
 
@@ -884,6 +891,12 @@ def cmd_provenance(args: argparse.Namespace) -> int:
             }
         },
         "staged_files": {
+            # Without this flag a run made before the transfer finishes emits
+            # `count: 0, total_bytes: null`, which is indistinguishable from a
+            # completed transfer of nothing. The manifest has to say which of
+            # the two it is.
+            "staging_record_found": bool(staged),
+            "requested_slice": args.slice,
             "count": len(staged.get("files", {})),
             "total_bytes": staged.get("total_bytes"),
             "failed": staged.get("failed_files", {}),

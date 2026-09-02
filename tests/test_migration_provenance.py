@@ -17,6 +17,7 @@ sweep as 96 MISSING cells and invite a full, expensive re-run.
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -542,3 +543,24 @@ def test_each_cell_records_which_candidate_contract_proof_it_matched(tmp_path) -
     assert report["per_cell"][0]["candidate_contract_proof"] == (
         "BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE"
     )
+
+
+def test_a_missing_staging_record_is_not_a_transfer_of_nothing(tmp_path, monkeypatch) -> None:
+    """`count: 0` before the transfer finishes must not read as a finished one."""
+
+    monkeypatch.setattr(mp, "OUTPUT_DIR", tmp_path / "out")
+    args = argparse.Namespace(
+        staging=str(tmp_path),
+        slice="e2_resume",
+        source="src-ws",
+        target="tgt-ws",
+        volume="vol",
+    )
+    assert mp.cmd_provenance(args) == 0
+    payload = json.loads(
+        (tmp_path / "out" / "migration_provenance.json").read_text(encoding="utf-8")
+    )
+    staged = payload["staged_files"]
+    assert staged["staging_record_found"] is False
+    assert staged["requested_slice"] == "e2_resume"
+    assert staged["count"] == 0
