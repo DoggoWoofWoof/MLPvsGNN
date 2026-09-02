@@ -302,3 +302,42 @@ def test_narrowing_the_datasets_cannot_widen_the_declared_set():
     narrowed = gate._jobs(["webqsp"])
     assert {job["dataset"] for job in narrowed} == {"webqsp"}
     assert len(narrowed) < len(gate._jobs(["webqsp", "2wiki_clean"]))
+
+
+def test_the_local_cli_asks_for_the_same_contract_as_the_container(tmp_path):
+    """A --feature-config path is a screen config, not the contract itself.
+
+    Loading the whole file would hash a different dict than E2 hashed, and the
+    gate would report a difference that has nothing to do with determinism.
+    """
+
+    import yaml
+
+    from scripts import modal_cache_equivalence as gate
+
+    screen_path = gate.FEATURE_CONFIG_PATH
+    screen = yaml.safe_load(screen_path.read_text(encoding="utf-8"))
+    args = eq.parse_args(
+        [
+            "--data", str(tmp_path),
+            "--dataset", "webqsp",
+            "--axis", "degree_rewire",
+            "--rate", "0.1",
+            "--perturbation-seed", "31415",
+            "--clean-topology-cache", str(tmp_path),
+            "--reference-root", str(tmp_path / "ref"),
+            "--regenerated-root", str(tmp_path / "new"),
+            "--data-fingerprint-sha256", "a" * 64,
+            "--candidate-contract-sha256", "b" * 64,
+            "--feature-config", str(screen_path),
+            "--output", str(tmp_path / "out.json"),
+        ]
+    )
+    assert args.feature_config == gate.feature_config(screen)
+    assert set(args.feature_config) == {
+        "retrieval_seeds",
+        "static_features",
+        "query_local_features",
+        "preprocessing",
+    }
+    assert args.feature_config != screen

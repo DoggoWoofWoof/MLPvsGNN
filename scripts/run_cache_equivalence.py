@@ -324,6 +324,26 @@ def _write(output: Path, payload: dict[str, Any], checkpoint_hook=None) -> None:
         checkpoint_hook()
 
 
+def feature_contract(screen: dict[str, Any]) -> dict[str, Any]:
+    """The dict E2 hands ``build_or_load_structural_features``, from the screen config.
+
+    It is hashed into ``contract_sha256``, and the builder refuses to load a
+    cache whose contract disagrees. Asking for anything else -- the whole screen
+    config, say -- makes the regeneration build a different cache and the gate
+    report a difference that says nothing about determinism.
+
+    Defined here rather than in the launcher so the local run and the container
+    run cannot drift apart; ``modal_cache_equivalence`` delegates to this.
+    """
+
+    return {
+        "retrieval_seeds": screen["retrieval_seeds"],
+        "static_features": screen["static_features"],
+        "query_local_features": screen["query_local_features"],
+        "preprocessing": {"query_chunk_size": 8192},
+    }
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
@@ -343,7 +363,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     import yaml
 
-    args.feature_config = yaml.safe_load(args.feature_config.read_text(encoding="utf-8"))
+    # --feature-config points at configs/sa_mlp_screen.yaml, the frozen screen
+    # config. Only the four keys E2 forwards become the contract; passing the
+    # whole file would hash a different dict.
+    screen = yaml.safe_load(args.feature_config.read_text(encoding="utf-8"))
+    args.feature_config = feature_contract(screen)
     return args
 
 

@@ -90,18 +90,13 @@ image = (
 def feature_config(screen: dict[str, Any]) -> dict[str, Any]:
     """Exactly the dict ``modal_phase_confirmation`` builds for the same call.
 
-    ``build_or_load_structural_features`` hashes this into ``contract_sha256``
-    and refuses to load a cache that disagrees, so the regeneration has to ask
-    for the same features E2 asked for or the comparison measures the wrong
-    thing.
+    Delegates to the runner so the container run and a local run cannot ask for
+    different features and report the difference as non-determinism.
     """
 
-    return {
-        "retrieval_seeds": screen["retrieval_seeds"],
-        "static_features": screen["static_features"],
-        "query_local_features": screen["query_local_features"],
-        "preprocessing": {"query_chunk_size": 8192},
-    }
+    from scripts.run_cache_equivalence import feature_contract
+
+    return feature_contract(screen)
 
 
 def _jobs(datasets: list[str] | None = None) -> list[dict[str, Any]]:
