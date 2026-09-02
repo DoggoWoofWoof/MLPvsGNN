@@ -1008,6 +1008,11 @@ online_systems 6/6.
 
 ### Required action (external — cannot be resolved from this repository)
 
+**Superseded 2026-09-02.** This was written when a single workspace was the only
+option. The requirement was met a different way -- see "E2 stall resolved by
+cross-workspace migration" below -- and the paragraph is kept because it records
+what was true at the stall, not because it is still the required action.
+
 The workspace spend limit must be raised or reset before E2 can continue. Until
 then **no relaunch is possible**, and none should be attempted: a relaunch under
 the block would fail the same way and produce no artifacts.
@@ -1024,6 +1029,86 @@ before compiling anything.
 - Do not compile or analyze a partial E2. `analyze_phase_confirmation.py`
   refuses an incomplete matrix by design.
 - Do not treat the three complete datasets as a result. They are three of six.
+
+## E2 stall resolved by cross-workspace migration (2026-09-02)
+
+The stall above is closed. It was not resolved by the spend limit being raised;
+it was routed around by replicating the frozen state into a second workspace.
+`deepalimohapatra1973` remains over its limit and **volume reads still work**,
+which is the whole basis of the migration. `kuttakamina9895` is the active
+target.
+
+The migration answered three questions separately, because conflating them is
+how a replication produces a corrupt result that looks complete.
+
+**What does each stage actually open?** Two manifests, derived from the code
+that opens the files rather than hand-listed. Phase −1 needs only the seven
+files `load_complete_dataset` opens plus the Package B provenance sidecars, so
+it was launched against a 3.2 GB slice and did not wait behind E2's embeddings.
+E2 needs that plus the clean packed-topology and structural-feature caches and
+the frozen result trees: 1741 files, 25.8 GB.
+
+**What is already done?** An integrity matrix over the 96 E2 cells, built from
+the resume rule `run_phase_confirmation.py` enforces on itself rather than from
+a position in a job list. **E2 is not "resume at cell 49."** It is:
+
+```
+COMPLETE 48   skip       2wiki_clean 16, musique_clean 16, webqsp 16
+PARTIAL  10   resume     hotpotqa_clean -- 8 or 9 of 10 model-seeds each,
+                         12 model-seed units outstanding in total
+MISSING  38   launch     hotpotqa_clean 6, metaqa 16, squad_clean 16
+INVALID   0   --
+```
+
+480 of 960 model-seed units sit in COMPLETE cells. The matrix was rebuilt after
+the transfer finished and was unchanged, so no completed work was discovered
+late or double-counted. All ten PARTIAL cells are present on the target volume
+with their `checkpoints/`, `query_metrics.npz` and `result.json` intact, so the
+runner resumes them from recorded seeds rather than retraining.
+
+**Did the right bytes arrive?** `inputs --remote` reports every declared E2
+input present and non-empty on the target: 18/18 dataset roots, 6/6 clean
+derived caches, 48/48 E1 screen results, 96/96 E1 seed-0 checkpoints. Separately
+and more strictly, all **192 seed-0 checkpoints verified byte-exact by SHA-256
+against the hashes E1 recorded for them**. Those are the one artifact class that
+cannot be regenerated: E2 reuses the seed-0 checkpoint E1 trained instead of
+retraining it.
+
+### The 193.6 GB cache was deliberately not migrated, and the claim was tested
+
+`phase_confirmation_cache/` is `build_or_load_*` output keyed by intervention
+contract -- a recompute cache, not a result. Copying it would have moved 85% of
+the bytes to save work the runner redoes deterministically. That was not
+assumed. Nine cells were regenerated in containers on the target and compared
+against the source capture:
+
+- `packed_topology_v1`: every array equal in dtype, shape and bytes; metadata
+  equal on every compared key.
+- `fixed_structural_features_v1`: all four arrays equal, including `static.npy`
+  (float32) and `local.npy` (float16). One-ulp differences seen in an earlier
+  local Windows run did not reproduce in the container, so they were a platform
+  artifact rather than a property of the pipeline.
+- Exactly two metadata keys differ on every cell: `contract_sha256` and
+  `source_fingerprint_sha256`.
+
+The two differing hashes are not reproducible by construction. The feature
+fingerprint is derived from the intervention's contract digest, and that digest
+covers a metadata dict containing `build_seconds` -- a `time.perf_counter()`
+duration. Nothing compares either hash to a frozen value; all three call sites
+were traced. 2wiki additionally reports
+`candidate_contract_proof: BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE` under mode
+`pre_hop_metadata_v1`.
+
+A second reason not to migrate it: a partially transferred cache can carry a
+complete `metadata.json` beside a truncated array, and the loader would accept
+it. Regenerating into an empty root cannot fail that way.
+
+### What this did not change
+
+No frozen result, protocol, config, candidate pool, candidate hash, tag, or
+CRAG artifact. E1 is untouched and was not restarted. The E2 conditions, rates,
+seeds and model configs are the frozen ones. Package F remains sealed. The
+migration changed where the work runs and nothing about what is computed.
 
 ## QLS-v2 design phase — opened 2026-09-02, GATED ON REVIEW
 
@@ -1313,12 +1398,15 @@ pushed.
 
 ## Local verification
 
-The full local suite passes **237 tests** with `PYTHONPATH=src`, up from 137 on
-2026-09-01: the additions guard the phase-screen resume path, the headroom
-arithmetic and reachability buckets, the headroom runner, Package D's distinct
-audit shape, E2's progress and integrity contracts, and E2's analyzer --
-including the AST contract test that would have caught the failed first E2
-launch. `mp_retrieval` is not installed into the environment, so the suite
+The full local suite passes **481 tests** with `PYTHONPATH="src;."`, up from 237
+earlier on 2026-09-02 and 137 on 2026-09-01: the additions guard the
+phase-screen resume path, the headroom arithmetic and reachability buckets, the
+headroom runner, Package D's distinct audit shape, E2's progress and integrity
+contracts, and E2's analyzer -- including the AST contract test that would have
+caught the failed first E2 launch -- plus the migration provenance manifest, the
+cache-regeneration gate, the seed-0 checkpoint verification, the Phase −1 table
+renderer, and a check that every figure the Phase −1 report states in prose
+appears in one of its tables. `mp_retrieval` is not installed into the environment, so the suite
 must be run with `PYTHONPATH` set; plain `pytest` fails at import. Both audit
 scripts also pass scoped Ruff checks and Python byte-compilation. The only
 warnings are existing Torch Geometric deprecation warnings.
