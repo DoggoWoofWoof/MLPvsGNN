@@ -23,92 +23,92 @@ to lose if skimmed:
 
 ## Status
 
-| dataset | queries | nodes | audit |
-|---|---:|---:|---|
-| 2wiki_clean | 15,000 | 65,865 | complete, 4 graphs |
-| musique_clean | 19,938 | 13,672 | complete, 4 graphs |
-| metaqa | 407,513 | 40,151 | complete, 4 graphs |
-| squad_clean | 130,319 | 19,029 | complete, 4 graphs |
-| webqsp | 1,578 | — | in progress, 3 of 4 graphs |
-| hotpotqa_clean | 97,852 | — | queued, no output yet |
+| dataset | queries | nodes | stored directed edges | audit |
+|---|---:|---:|---:|---|
+| 2wiki_clean | 15,000 | 65,865 | 855,146 | complete, 4 graphs |
+| musique_clean | 19,938 | 13,672 | 280,108 | complete, 4 graphs |
+| metaqa | 407,513 | 40,151 | 585,728 | complete, 4 graphs |
+| squad_clean | 130,319 | 19,029 | 2,857,316 | complete, 4 graphs |
+| webqsp | 1,578 | 781,485 | 13,379,166 | complete, 4 graphs |
+| hotpotqa_clean | 97,852 | — | — | queued, no output yet |
 
-Every table below covers the four complete datasets on the `validation` split.
-The remaining two are appended when their audits finish; no conclusion here is
-stated as holding for them.
+Every table below covers the five complete datasets on the `validation` split.
+hotpotqa_clean is appended when its audit finishes; no conclusion here is
+stated as holding for it.
 
 ## The headline measurements
 
 **The two connectivity notions coincide, on every graph audited.** Not by
 assumption — the audit computes the symmetrised receptive field and the exact
 directed message-flow receptive field separately, and the difference is zero at
-R1, R2 and R3 on all sixteen graph-splits. The stored graphs are symmetric in
+R1, R2 and R3 on all twenty graph-splits. The stored graphs are symmetric in
 their reachability even where they are not symmetric in their storage. The
 distinction the protocol insisted on turns out not to bite here; it still had
-to be measured rather than assumed, and it must be re-measured on the two
-outstanding datasets.
+to be measured rather than assumed, and it must be re-measured on
+hotpotqa_clean.
 
 **A substantial fraction of candidates are scored as though the graph were not
 there, and how large that fraction is depends strongly on the dataset.** On the
-sealed graph the isolated fraction runs from 0.175 (squad) through 0.224
-(musique) and 0.375 (2wiki) to 0.412 (metaqa). An isolated candidate is not
-dropped; it is scored, receiving only its operator-inserted self-loop. For that
-fraction of the pool the one-layer GNN is a plain MLP. The fraction is
-*identical at R1, R2 and R3* and equal to the measured `isolated_fraction` —
-verified numerically on every graph-split, not inferred. A node with no induced
-neighbours gains none at greater depth.
+sealed graph the isolated fraction runs 0.175 (squad), 0.190 (webqsp), 0.224
+(musique), 0.375 (2wiki), 0.412 (metaqa). An isolated candidate is not dropped;
+it is scored, receiving only its operator-inserted self-loop. For that fraction
+of the pool the one-layer GNN is a plain MLP. The fraction is *identical at R1,
+R2 and R3* and equal to the measured `isolated_fraction` — verified numerically
+on every graph-split, not inferred. A node with no induced neighbours gains
+none at greater depth.
 
-**Depth varies by nearly an order of magnitude across datasets, so "shallow" is
-a property of a substrate and not of the method.** Median symmetrised R1 on the
-sealed graph is 0.77 (metaqa), 1.01 (2wiki), 1.89 (musique) and 5.31 (squad);
-at R3 the spread widens to 3.09, 8.00, 21.19 and 64.41. The historical operator
-is one layer, so R1 is what it used. R2 and R3 are reported because the
-protocol requires depth to be measured rather than asserted, and because the
-pre-registered GNN controls will be run at matched reach.
+**Depth varies by a factor of seven at one hop and thirty-six at three, so
+"shallow" is a property of a substrate and not of the method.** Median
+symmetrised R1 on the sealed graph is 0.77 (metaqa), 1.01 (2wiki), 1.89
+(musique), 2.07 (webqsp), 5.31 (squad). At R3 the spread runs 3.09, 8.00,
+21.19, 64.41 and 110.38. The
+historical operator is one layer, so R1 is what it used. R2 and R3 are reported
+because the protocol requires depth to be measured rather than asserted, and
+because the pre-registered GNN controls will be run at matched reach.
 
-**Induced reachability and global reachability diverge with depth, but by very
+**Induced reachability and global reachability diverge with depth, by very
 different margins.** Retrieval seeds reach the same fraction at one hop either
 way, as they must. At three hops the induced and global figures are 14.4% and
-97.3% on 2wiki, 20.2% and 87.2% on metaqa, 38.1% and 77.4% on musique, and
-51.2% and 86.6% on squad. On 2wiki almost everything a conventional GNN would
-reach at depth lies outside the scoring set; on squad rather less than half
-does.
+97.3% on 2wiki, 20.2% and 87.2% on metaqa, 38.1% and 77.4% on musique, 51.2%
+and 86.6% on squad, and 53.9% and 84.6% on webqsp. On 2wiki almost everything a
+conventional GNN would reach at depth lies outside the scoring set; on webqsp
+and squad rather less than half does.
 
 **Retention is low everywhere, and lowest where the global graph is densest.**
 On the sealed graph the node-pooled median retention is 0.080 (squad), 0.111
-(2wiki), 0.154 (metaqa) and 0.200 (musique). Squad is the exception that
-explains the pattern: its median global degree is 41 against 7 for the other
-three, so its induced graph is simultaneously the densest measured (median R1
-5.31) and the least retentive. Boundary-cut ratios sit between 0.792 and 0.904
-on all four. Retrieval is cutting through neighbourhoods rather than selecting
-graph-coherent regions.
+(2wiki), 0.154 (metaqa), 0.200 (musique), 0.250 (webqsp). Squad is the case
+that explains the ordering: its median global degree is 41 against 6–7 for the
+other four, so its induced graph is simultaneously the densest measured (median
+R1 5.31) and the least retentive. Boundary-cut ratios run 0.700 (webqsp) to
+0.904 (metaqa). Retrieval is cutting through neighbourhoods rather than
+selecting graph-coherent regions.
 
 **Gold path preservation is high; bridge loss is small but not zero, and
-concentrated.** Gold targets stay connected inside the induced subgraph in
-90.1% (metaqa) to 98.4% (2wiki and squad) of all measured gold targets, against
-99.0% to 100.0% connected globally. The conditional form is `bridge_loss@h`,
-the fraction of targets genuinely within `h` hops of a seed that the induced
-graph cannot reach within `h` at all: at three hops that is 1.2% (squad), 1.4%
-(2wiki), 3.6% (musique) and 9.9% (metaqa). It is zero at one hop everywhere,
-which is expected — a direct seed-to-target edge survives induction whenever
-both endpoints are in the pool. Bridge loss is the `seed -> non-candidate ->
-candidate` pattern specifically, and neither a GNN layer nor a QLS hop feature
-can see it.
+concentrated on one dataset.** Gold targets stay connected inside the induced
+subgraph in 90.1% (metaqa) to 98.9% (webqsp) of all measured gold targets,
+against 99.0% to 100.0% connected globally. The conditional form is
+`bridge_loss@h`, the fraction of targets genuinely within `h` hops of a seed
+that the induced graph cannot reach within `h` at all: at three hops that is
+1.1% (webqsp), 1.2% (squad), 1.4% (2wiki), 3.6% (musique) and 9.9% (metaqa). It
+is zero at one hop everywhere, which is expected — a direct seed-to-target edge
+survives induction whenever both endpoints are in the pool. Bridge loss is the
+`seed -> non-candidate -> candidate` pattern specifically, and neither a GNN
+layer nor a QLS hop feature can see it.
 
 Two fields in the path-preservation table are per-query **counts**, not
 fractions, and are labelled as such: `lost by induction` and `targets`. On
 metaqa the mean is 0.252 lost gold targets per query out of 2.10 gold targets
-per query. They are counts because the audit records them as counts;
-converting them to a rate here would mix mean-of-fractions with
-ratio-of-means.
+per query. They are counts because the audit records them as counts; converting
+them to a rate here would mix mean-of-fractions with ratio-of-means.
 
-## Duplicate messages are a third to a half of the operator's work
+## Duplicate messages are a third to over half of the operator's work
 
 `dataset_default` and `baseline_a_simple` are **the same undirected graph**.
 That is by construction, not coincidence: `configs/edge_provenance.yaml`
 defines the latter as the deduplicated bidirectional projection of the former
 and names it the mandatory duplicate-normalization control. The audit confirms
 it independently — the two families hash to the same undirected edge key on all
-four datasets — and the stored directed edge counts it read match the counts
+five datasets — and the stored directed edge counts it read match the counts
 Package B recorded for the families it trained, so both packages read the same
 frozen artifacts.
 
@@ -122,27 +122,30 @@ difference is large in the operator's work and small in its output:
 | musique_clean | 0.377 | 1888.8 → 1268.4 | 0.8124 → 0.8125 (+0.01 pp) |
 | metaqa | 0.402 | 1115.6 → 813.2 | 0.3013 → 0.3012 (−0.01 pp) |
 | squad_clean | 0.455 | 6484.0 → 3509.7 | 0.8933 → 0.8936 (+0.03 pp) |
+| webqsp | 0.536 | 2601.8 → 1350.0 | 0.3309 → 0.3276 (−0.33 pp) |
 
 The recall figures are Package B's, from
 `docs/EDGE_PROVENANCE_AND_HEADROOM_RESULTS.md`; they are separately trained
 models on the two graphs, not one model with messages removed. Across all six
 datasets Package B measured, the largest absolute gap between the pair is 0.43
 pp (hotpotqa_clean), in the direction of the deduplicated graph being *worse*.
-Between a third and a half of the messages the operator consumes are exact
-duplicates, and removing them moves recall@5 by less than half a point in
-either direction.
+On webqsp, where a majority of all messages are duplicates, removing them costs
+0.33 pp. Between a third and over half of the messages the operator consumes
+are exact duplicates, and removing them moves recall@5 by less than half a
+point in either direction on every dataset measured.
 
 ## Structural edges and kNN edges are different graphs
 
 Package B showed a graph can look connected through kNN edges while its
 relational graph is fragmented. The audit measures both halves directly, and
-the picture is consistent across all four datasets: kNN edges supply local
+the picture is consistent across all five datasets: kNN edges supply local
 density, structural edges supply reach.
 
 Isolation alone does not separate them — on 2wiki the structural-only graph
 leaves 77.5% of candidates isolated against 48.8% for kNN-only, while on
-musique the ordering reverses (67.8% against 32.3%). Global seed reachability
-at three hops separates them cleanly and in the same direction every time:
+musique the ordering reverses (67.8% against 32.3%). Two other measurements
+separate them cleanly and in the same direction every time. Global seed
+reachability at three hops:
 
 | dataset | kNN-only, global @3 | structural-only, global @3 |
 |---|---:|---:|
@@ -150,9 +153,23 @@ at three hops separates them cleanly and in the same direction every time:
 | musique_clean | 0.226 | 0.568 |
 | metaqa | 0.088 | 0.770 |
 | squad_clean | 0.163 | 0.663 |
+| webqsp | 0.160 | 0.810 |
 
-The kNN graph simply does not extend. Whatever connectivity it contributes is
-local, and the sealed graph's reach comes from its structural edges.
+And whether a gold target is reachable from a seed *at all in the full graph*,
+before any induction:
+
+| dataset | kNN-only, gold connected globally | structural-only, gold connected globally |
+|---|---:|---:|
+| 2wiki_clean | 0.934 | 0.997 |
+| musique_clean | 0.883 | 0.950 |
+| metaqa | 0.515 | 1.000 |
+| squad_clean | 0.965 | 0.983 |
+| webqsp | 0.338 | 1.000 |
+
+On webqsp and metaqa the kNN graph does not contain a path to most gold targets
+even before candidate induction, while the structural graph contains one for
+essentially all of them. Whatever connectivity kNN contributes is local; the
+sealed graph's reach comes from its structural edges.
 
 ## Expansion headroom — oracle only
 
@@ -164,9 +181,10 @@ nothing here licenses training on an expanded pool.
 
 The multipliers are steep and they are not uniform. One hop from the retrieval
 seeds grows the union by 1.10x (2wiki) to 1.83x (squad); two hops by 6.48x
-(musique) to 110.59x (2wiki); three hops by 23.72x to 167.17x. The kNN-only
-graph barely expands at all (1.05x / 1.26x / 1.94x on 2wiki), which is the same
-fact as its short global reach seen from the other side.
+(musique) to 110.59x (2wiki); three hops by 23.72x (musique) to 750.91x
+(webqsp). The kNN-only graph barely expands at all — 1.05x / 1.26x / 1.94x on
+2wiki, 1.04x / 1.20x / 1.69x on webqsp — which is the same fact as its short
+global reach seen from the other side.
 
 ## Measurements
 
@@ -190,6 +208,10 @@ fact as its short global reach seen from the other side.
 | squad_clean | structural | 318.9 | 2806.2 | 0.509 | 0.076 | 0.416 |
 | squad_clean | kNN only | 318.9 | 384.6 | 0.457 | 0.215 | 0.329 |
 | squad_clean | baseline A | 318.9 | 3190.8 | 0.175 | 0.153 | 0.672 |
+| webqsp | sealed A | 344.5 | 1005.5 | 0.190 | 0.248 | 0.563 |
+| webqsp | structural | 344.5 | 442.9 | 0.420 | 0.420 | 0.160 |
+| webqsp | kNN only | 344.5 | 562.6 | 0.388 | 0.180 | 0.432 |
+| webqsp | baseline A | 344.5 | 1005.5 | 0.190 | 0.248 | 0.563 |
 
 ### Global-neighbourhood retention
 
@@ -211,6 +233,10 @@ fact as its short global reach seen from the other side.
 | squad_clean | structural | 0.117 | 0.034 | 38.0 | 0.302 | 0.717 | 0.849 | 0.897 |
 | squad_clean | kNN only | 0.383 | 0.333 | 3.0 | 0.364 | 0.365 | 0.415 | 0.616 |
 | squad_clean | baseline A | 0.219 | 0.080 | 41.0 | 0.175 | 0.531 | 0.677 | 0.881 |
+| webqsp | sealed A | 0.348 | 0.250 | 6.0 | 0.190 | 0.225 | 0.423 | 0.700 |
+| webqsp | structural | 0.342 | 0.214 | 2.0 | 0.420 | 0.441 | 0.495 | 0.768 |
+| webqsp | kNN only | 0.390 | 0.333 | 4.0 | 0.379 | 0.381 | 0.430 | 0.606 |
+| webqsp | baseline A | 0.348 | 0.250 | 6.0 | 0.190 | 0.225 | 0.423 | 0.700 |
 
 ### Effective receptive field -- the two notions, kept apart
 
@@ -232,6 +258,10 @@ fact as its short global reach seen from the other side.
 | squad_clean | structural | 3.53 | 18.50 | 40.04 | 3.53 | 18.50 | 40.04 | yes | 0.509 |
 | squad_clean | kNN only | 0.74 | 1.32 | 1.84 | 0.74 | 1.32 | 1.84 | yes | 0.457 |
 | squad_clean | baseline A | 5.31 | 26.72 | 64.41 | 5.31 | 26.72 | 64.41 | yes | 0.175 |
+| webqsp | sealed A | 2.07 | 66.34 | 110.38 | 2.07 | 66.34 | 110.38 | yes | 0.190 |
+| webqsp | structural | 0.64 | 62.73 | 99.85 | 0.64 | 62.73 | 99.85 | yes | 0.420 |
+| webqsp | kNN only | 1.15 | 2.33 | 3.35 | 1.15 | 2.33 | 3.35 | yes | 0.388 |
+| webqsp | baseline A | 2.07 | 66.34 | 110.38 | 2.07 | 66.34 | 110.38 | yes | 0.190 |
 
 ### Operator message load
 
@@ -253,6 +283,10 @@ fact as its short global reach seen from the other side.
 | squad_clean | structural | 2806.2 | 2806.2 | 0.000 | 318.9 | 3125.1 |
 | squad_clean | kNN only | 384.6 | 384.6 | 0.000 | 318.9 | 703.5 |
 | squad_clean | baseline A | 3190.8 | 3190.8 | 0.000 | 318.9 | 3509.7 |
+| webqsp | sealed A | 1005.5 | 2257.3 | 0.536 | 344.5 | 2601.8 |
+| webqsp | structural | 442.9 | 442.9 | 0.000 | 344.5 | 787.4 |
+| webqsp | kNN only | 562.6 | 562.6 | 0.000 | 344.5 | 907.1 |
+| webqsp | baseline A | 1005.5 | 1005.5 | 0.000 | 344.5 | 1350.0 |
 
 ### Seed reachability -- induced versus global
 
@@ -274,6 +308,10 @@ fact as its short global reach seen from the other side.
 | squad_clean | structural | 0.150 | 0.271 | 0.342 | 0.150 | 0.411 | 0.663 |
 | squad_clean | kNN only | 0.064 | 0.109 | 0.147 | 0.064 | 0.112 | 0.163 |
 | squad_clean | baseline A | 0.187 | 0.371 | 0.512 | 0.187 | 0.504 | 0.866 |
+| webqsp | sealed A | 0.156 | 0.454 | 0.539 | 0.156 | 0.574 | 0.846 |
+| webqsp | structural | 0.125 | 0.419 | 0.483 | 0.125 | 0.548 | 0.810 |
+| webqsp | kNN only | 0.065 | 0.110 | 0.146 | 0.065 | 0.114 | 0.160 |
+| webqsp | baseline A | 0.156 | 0.454 | 0.539 | 0.156 | 0.574 | 0.846 |
 
 ### Gold path preservation and bridge loss
 
@@ -295,6 +333,10 @@ fact as its short global reach seen from the other side.
 | squad_clean | structural | 1.00 | 0.983 | 0.967 | 0.015 | 0.001 | 0.000 | 0.009 | 0.016 |
 | squad_clean | kNN only | 1.00 | 0.965 | 0.963 | 0.001 | 0.000 | 0.000 | 0.001 | 0.002 |
 | squad_clean | baseline A | 1.00 | 0.996 | 0.984 | 0.012 | 0.002 | 0.000 | 0.006 | 0.012 |
+| webqsp | sealed A | 4.27 | 1.000 | 0.989 | 0.033 | 0.012 | 0.000 | 0.026 | 0.011 |
+| webqsp | structural | 4.27 | 1.000 | 0.979 | 0.057 | 0.007 | 0.000 | 0.029 | 0.021 |
+| webqsp | kNN only | 4.27 | 0.338 | 0.327 | 0.043 | 0.000 | 0.000 | 0.006 | 0.044 |
+| webqsp | baseline A | 4.27 | 1.000 | 0.989 | 0.033 | 0.012 | 0.000 | 0.026 | 0.011 |
 
 ### Graph-expansion headroom -- ORACLE ONLY, admits nothing to any pool
 
@@ -316,6 +358,10 @@ fact as its short global reach seen from the other side.
 | squad_clean | structural | 512 | 316.1 | 1.82 | 14.58 | 38.89 | 16.68 | 40.33 | 41.65 |
 | squad_clean | kNN only | 512 | 316.1 | 1.01 | 1.07 | 1.20 | 2.58 | 5.19 | 8.98 |
 | squad_clean | baseline A | 512 | 316.1 | 1.83 | 15.66 | 47.28 | 17.84 | 48.34 | 58.96 |
+| webqsp | sealed A | 315 | 344.5 | 1.21 | 82.24 | 750.91 | 7.20 | 375.42 | 1772.93 |
+| webqsp | structural | 315 | 344.5 | 1.17 | 81.36 | 717.24 | 5.21 | 364.94 | 1710.65 |
+| webqsp | kNN only | 315 | 344.5 | 1.04 | 1.20 | 1.69 | 3.25 | 9.53 | 25.45 |
+| webqsp | baseline A | 315 | 344.5 | 1.21 | 82.24 | 750.91 | 7.20 | 375.42 | 1772.93 |
 
 ### Provenance aliasing -- families that are the same undirected graph
 
@@ -325,7 +371,7 @@ fact as its short global reach seen from the other side.
 | metaqa | `baseline_a_simple` + `dataset_default` | `54fbd3708ac9fe9d` | 329374 / 585728 | yes / no | 813.2 / 1115.6 |
 | musique_clean | `baseline_a_simple` + `dataset_default` | `9b4795052dfe01cb` | 157898 / 280108 | yes / no | 1268.4 / 1888.8 |
 | squad_clean | `baseline_a_simple` + `dataset_default` | `be333097e2aa8271` | 1445712 / 2857316 | yes / no | 3509.7 / 6484.0 |
-
+| webqsp | `baseline_a_simple` + `dataset_default` | `369abaabd9ca5b7d` | 6621594 / 13379166 | yes / no | 1350.0 / 2601.8 |
 ## What this does not touch
 
 Nothing in Phase −1 modifies a frozen result. The audit opens the sealed
@@ -352,5 +398,5 @@ python scripts/render_substrate_tables.py --output tables.md
 
 renders the `## Measurements` section verbatim from that summary. Every number
 in this document is read from it; none is computed here, and the prose above
-cites only figures that appear in a table below it. When the three outstanding
-audits finish, re-running both commands and re-splicing is the whole update.
+cites only figures that appear in a table below it. When the one outstanding
+audit finishes, re-running both commands and re-splicing is the whole update.
