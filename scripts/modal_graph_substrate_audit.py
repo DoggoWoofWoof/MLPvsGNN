@@ -124,6 +124,11 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         # family rather than a single global default.
         operator_kind=str(settings["selected_gnn"]),
         output=Path(output_root) / "substrate.json",
+        # The audit commits after every family/split. Without resumption a run
+        # that hits the timeout throws away everything it measured and the next
+        # attempt starts from the same place; only families that are themselves
+        # finished are carried, and only under an identical contract.
+        resume_partial=True,
     )
 
 

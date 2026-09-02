@@ -26,7 +26,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -62,12 +62,27 @@ from scripts.run_edge_provenance import _atomic_json
 from scripts.run_sa_mlp_confirmation import validate_candidate_contract
 
 COMPLETE_STATUS = "GRAPH_SUBSTRATE_AUDIT_COMPLETE"
+IN_PROGRESS_STATUS = "GRAPH_SUBSTRATE_AUDIT_IN_PROGRESS"
 DATASET_GRAPH = "dataset_default"
 SPLITS = {
     "train": QuerySplit.TRAIN,
     "validation": QuerySplit.VALIDATION,
     "test": QuerySplit.TEST,
 }
+
+
+def _contract_differs(existing: dict[str, Any], args: argparse.Namespace) -> bool:
+    """Whether a written audit describes a different measurement than this one."""
+
+    contract = existing.get("diagnostic_contract", {})
+    return (
+        existing.get("dataset") != args.dataset
+        or existing.get("data_fingerprint_sha256") != args.data_fingerprint_sha256
+        or list(existing.get("graphs_audited", [])) != list(args.graphs)
+        or list(existing.get("splits_audited", [])) != list(args.splits)
+        or int(contract.get("max_hops", -1)) != int(args.max_hops)
+        or contract.get("candidate_pools_modified") is not False
+    )
 
 
 def completed_audit(args: argparse.Namespace) -> dict[str, Any] | None:
@@ -78,17 +93,68 @@ def completed_audit(args: argparse.Namespace) -> dict[str, Any] | None:
     existing = json.loads(args.output.read_text(encoding="utf-8"))
     if existing.get("status") != COMPLETE_STATUS:
         return None
-    contract = existing.get("diagnostic_contract", {})
-    if (
-        existing.get("dataset") != args.dataset
-        or existing.get("data_fingerprint_sha256") != args.data_fingerprint_sha256
-        or list(existing.get("graphs_audited", [])) != list(args.graphs)
-        or list(existing.get("splits_audited", [])) != list(args.splits)
-        or int(contract.get("max_hops", -1)) != int(args.max_hops)
-        or contract.get("candidate_pools_modified") is not False
-    ):
+    if _contract_differs(existing, args):
         raise ValueError("Existing substrate audit has a different diagnostic contract")
     return existing
+
+
+def partial_audit(args: argparse.Namespace) -> dict[str, Any] | None:
+    """An in-progress audit of *this* measurement, or ``None``.
+
+    The audit commits after every family/split, so a run killed partway leaves
+    real measurements on the volume. Nothing adopts them by default: an
+    unfinished file is not a result, and :func:`completed_audit` is deliberately
+    strict about that. What this returns is a *candidate* for reuse, which
+    :func:`adoptable_families` then narrows to the families that are themselves
+    finished.
+
+    A file that fails to parse is treated as absent rather than as an error. A
+    truncated write is evidence of a dead writer, not of a contract violation,
+    and the only safe response is to measure again.
+    """
+
+    if not getattr(args, "resume_partial", True):
+        return None
+    if not args.output.is_file():
+        return None
+    try:
+        existing = json.loads(args.output.read_text(encoding="utf-8"))
+    except ValueError:
+        return None
+    if not isinstance(existing, dict) or existing.get("status") != IN_PROGRESS_STATUS:
+        return None
+    if _contract_differs(existing, args):
+        raise ValueError("Partial substrate audit has a different diagnostic contract")
+    return existing
+
+
+def adoptable_families(
+    existing: dict[str, Any],
+    args: argparse.Namespace,
+    populated_splits: Sequence[str],
+) -> dict[str, dict[str, Any]]:
+    """The families of a partial audit that are safe to carry forward.
+
+    A family's statistics are a deterministic function of the frozen graph and
+    the frozen candidate pools, and both are pinned by the data fingerprint the
+    contract check has already matched. Recomputing one cannot change its value,
+    only its cost -- which on hotpotqa is hours.
+
+    A family is adopted only if every split that *has* queries is present in it.
+    A family missing one is genuinely mid-measurement, and half a family is
+    exactly the kind of incomplete artifact that must never be read as a result.
+    """
+
+    carried: dict[str, dict[str, Any]] = {}
+    for name in args.graphs:
+        entry = (existing.get("graphs") or {}).get(name)
+        if not isinstance(entry, dict):
+            continue
+        splits = entry.get("splits")
+        if not isinstance(splits, dict) or set(splits) != set(populated_splits):
+            continue
+        carried[name] = entry
+    return carried
 
 
 def _mean_of(records: list[dict[str, float]]) -> dict[str, float]:
@@ -394,6 +460,7 @@ def run(
     finished = completed_audit(args)
     if finished is not None:
         return finished
+    carried = partial_audit(args)
 
     # Topology-only: this audit reads the CSR, the candidate pools, the seeds,
     # the golds and the splits, and never an embedding value. Requiring
@@ -413,7 +480,7 @@ def run(
 
     family_root = Path(args.edge_families) if args.edge_families else None
     result: dict[str, Any] = {
-        "status": "GRAPH_SUBSTRATE_AUDIT_IN_PROGRESS",
+        "status": IN_PROGRESS_STATUS,
         "dataset": args.dataset,
         "data_fingerprint_sha256": args.data_fingerprint_sha256,
         "candidate_contract": candidate_contract,
@@ -462,7 +529,26 @@ def run(
         },
     }
 
+    # A killed run leaves finished families on the volume. Carrying them forward
+    # is not a shortcut: they are deterministic in the fingerprint the contract
+    # check already matched, so the only thing recomputing them buys is delay.
+    # Without this, a six-hour timeout on hotpotqa discards six hours of work and
+    # the next attempt starts from the same place, which is a loop rather than a
+    # retry.
+    populated_splits = [name for name in args.splits if dataset.split(SPLITS[name])]
+    adopted = adoptable_families(carried, args, populated_splits) if carried else {}
+    if adopted:
+        print(
+            f"resuming {args.dataset}: carrying {len(adopted)} finished "
+            f"famil{'y' if len(adopted) == 1 else 'ies'} "
+            f"({', '.join(adopted)}); recomputing the rest",
+            flush=True,
+        )
+
     for graph_name in args.graphs:
+        if graph_name in adopted:
+            result["graphs"][graph_name] = adopted[graph_name]
+            continue
         rowptr, col, directed_rowptr, directed_col, meta = _graph_csr(
             graph_name, dataset, family_root
         )
