@@ -11,6 +11,60 @@ question: >-
   repairs the measured loss without turning a query into a whole-graph
   computation.
 
+working_hypotheses:
+  # Recorded before D0c and D1 report, so that neither can be read as having
+  # confirmed a frame it was designed under. These are hypotheses. None of them
+  # is a finding, and none may be cited as one.
+  candidate_induction_is_not_only_damage:
+    status: HYPOTHESIS
+    recorded: 2026-09-02, before D0c and D1 reported
+    what_changed: >-
+      Phase -1 and D0 treated G[Cq] as a lesion: a one-hop deletion that removes
+      legitimate structure and manufactures isolates. D0b's stratified split is
+      consistent with that on the isolated stratum and inconsistent with it
+      everywhere else, where restoring the deleted context made top-of-list
+      ranking worse rather than better.
+    damage: >-
+      Vertex induction removes legitimate structural context and creates
+      isolates. On 2wiki validation, 27.8% of queries have a gold with no in-pool
+      neighbour. MEASURED.
+    filter: >-
+      Vertex induction is also a query-specific semantic filter. Cq comes from
+      retrieval, so G[Cq] keeps the edges between things already judged relevant
+      and drops generic hub connectivity. Widening the context restores the hubs
+      along with the evidence. HYPOTHESIS.
+    consequence_for_qls_v2: >-
+      The design target is the minimum sufficient selectively-restored structure,
+      not maximum graph restoration. This changes what a good result looks like:
+      an arm that restores more context and ranks no better is not a failed
+      repair, it may be a repair that also undid a filter.
+    not_claimed:
+      - TARGET_H1 is universally better than CAND. Not shown.
+      - Global graph restoration improves ranking overall. Not shown; the overall
+        effect measured at D0b is null at the linear level (R@5 67.82 -> 67.83).
+    what_would_falsify_it: >-
+      A context that restores structure without suppressing the query-specific
+      bias -- for instance one that is uniformly better across every degree
+      stratum -- would mean the dilution has some other cause and the filter
+      reading is unnecessary.
+
+  context_value_falls_as_evidence_rises:
+    status: HYPOTHESIS
+    recorded: 2026-09-02, before D1 ran
+    statement: >-
+      The value of restored context decreases as usable candidate-induced
+      structural evidence increases. Where G[Cq] already describes a candidate,
+      widening the context adds mostly noise; where G[Cq] says nothing, it adds
+      the only evidence there is.
+    tested_by: D1, and separately and non-confirmatorily by D0c
+    strata_fixed_in_advance: [0, 1, 2-4, 5+]
+    strata_definition: >-
+      Undirected distinct non-self degree of the candidate inside G[Cq]; the same
+      DEGREE_BUCKETS the D0b runner used, which is why the boundaries are not a
+      choice made for D1.
+    strata_may_be_changed_after_reading_d1: false
+    read_on: the TARGET_H1 - CAND delta per stratum, for R@1, R@5, R@20 and MRR
+
 contract:
   read_only: true
   models_trained: false
@@ -383,7 +437,9 @@ stages:
       isolated stratum it was built for. The D0 univariate AUC of 0.9513 does not
       survive as incremental ranking value. Section 5's separate later QLS-v2
       probe for this feature is therefore withdrawn rather than deferred: D0b was
-      that probe.
+      that probe. bridge_support standalone addition: KILLED AT D0b, not to be
+      reintroduced except as a documented new hypothesis carrying its own
+      declaration.
     secondary_outcome: >-
       CAND vs TARGET_H1 is null overall (validation R@5 67.82 vs 67.83) and
       strongly stratified: isolated +3.06 R@1 and +4.44 MRR on 834 of 3,000
@@ -575,7 +631,33 @@ stages:
       source_workspace: deepalimohapatra1973
       target_workspace: pilgnnteam
       is_a_workspace_migration: false
-      status: NOT_YET_EXECUTED
+      status: SATISFIED
+      executed:
+        slice: embeddings_only
+        files_copied: 2
+        megabytes: 473.8
+        optional_derived_copied: false
+        optional_derived_reason: >-
+          D1 performs no correctness check that requires it. The CAND arm's agreement
+          with A3 is already established by D0b at the same static parameters, and
+          D1's own equivalence claim is the candidate-readout identity, checked
+          in-process against the context normalisation rather than against a cache.
+          The approval was for the required payload only.
+        verification:
+          before_transfer: source byte size and sha256 recorded per file
+          after_transfer: target byte size and sha256 re-read and compared
+          shape_dtype: >-
+            nodes.npy (65865, 1536) float32 and queries_all.npy (15000, 1536)
+            float32, both finite on the read head. Checked on the staged bytes; the
+            target carries the same sha256, so it is the same header.
+          mismatches: 0
+        files_verified:
+          - path: operator_data/2wiki_clean/6e4ac5ee0e1355ad/nodes.npy
+            bytes: 404674688
+            sha256: 14b5186dc6d5395e1096220abdae5ff8a416e724a2d4366f2a0d43559572535b
+          - path: operator_data/2wiki_clean/6e4ac5ee0e1355ad/queries_all.npy
+            bytes: 92160128
+            sha256: 769fcb7a139058722b4c21178cb5d6be6092d0840244a1793e87c271ea75b646
     projected_cost:
       basis: >-
         Measured, not modelled. Per-query context latency and the static rebuild

@@ -545,14 +545,46 @@ def test_the_declared_d1_ceiling_is_not_below_what_the_gate_projects(launcher):
 
 
 def test_the_declaration_records_the_prerequisite_it_cannot_run_without(launcher):
-    """D1 needs embeddings the active workspace does not hold. Declared, not assumed."""
+    """D1 needs embeddings the active workspace did not hold. Declared, not assumed."""
 
     declared = launcher().CONFIG["stages"]["D1"]["prerequisite"]
-    assert declared["status"] == "NOT_YET_EXECUTED"
+    assert declared["status"] == "SATISFIED"
     assert declared["is_a_workspace_migration"] is False
     assert declared["required_megabytes"] == pytest.approx(
         sum(entry["megabytes"] for entry in declared["files"])
     )
+
+
+def test_the_replication_stayed_inside_what_was_approved(launcher):
+    """The approval was for two files and 473.8 MB, and for nothing else.
+
+    A replication that quietly grows is the failure mode this checks: the record
+    has to say what was copied, that the optional payload was not, and that the
+    hashes were compared rather than assumed. It is also what keeps the stage
+    honest about *why* the optional payload was skipped -- the approval allowed
+    it if a correctness check needed it, so the record must claim none did.
+    """
+
+    declared = launcher().CONFIG["stages"]["D1"]["prerequisite"]
+    done = declared["executed"]
+    assert done["files_copied"] == len(declared["files"]) == 2
+    assert done["megabytes"] == declared["required_megabytes"] == pytest.approx(473.8)
+    assert done["optional_derived_copied"] is False
+    assert done["optional_derived_reason"].strip()
+
+    verification = done["verification"]
+    assert verification["mismatches"] == 0
+    assert "sha256" in verification["before_transfer"]
+    assert "sha256" in verification["after_transfer"]
+
+    names = {entry["path"].rsplit("/", 1)[-1] for entry in done["files_verified"]}
+    assert names == {entry["path"] for entry in declared["files"]}
+    for entry in done["files_verified"]:
+        assert len(entry["sha256"]) == 64 and int(entry["sha256"], 16) >= 0
+        assert entry["bytes"] > 0
+    # The two files are distinct, so two identical digests would mean one file
+    # was hashed twice and the other never checked.
+    assert len({entry["sha256"] for entry in done["files_verified"]}) == 2
 
 
 def test_the_resolved_confound_still_records_that_it_existed(launcher):
