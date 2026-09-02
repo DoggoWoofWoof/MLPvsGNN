@@ -182,6 +182,44 @@ def manifest_name(which: str, datasets: set[str] | None = None) -> str:
     return f"replication_manifest_{which}__{tag}.json"
 
 
+def restrict_to_subtrees(
+    files: dict[str, Any], subtrees: list[str] | None
+) -> dict[str, Any]:
+    """Narrow a manifest to whole subtrees of the slice it already describes.
+
+    A manifest records one download, so a staging directory that has since been
+    refreshed from a second source has two authoritative records covering
+    disjoint parts of itself. That is the state after E2 was rescued from a
+    third workspace: the `e2_resume` manifest still describes `paper_data/` and
+    `edge_provenance_graphs/` exactly, while twenty files under `outputs/` are
+    now the newer results that `replication_manifest_results.json` describes.
+
+    Uploading each subtree under the manifest that actually describes it keeps
+    every transferred byte covered by a hash that was recorded independently of
+    the transfer. The alternative -- rewriting the stale manifest's entries to
+    match what is on disk -- would make the check pass by copying its own answer
+    from the thing it is supposed to be checking.
+
+    Prefixes match on path boundaries, so `paper_data` never selects
+    `paper_data_old/`.
+    """
+
+    if not subtrees:
+        return files
+    roots = [prefix.strip("/") for prefix in subtrees if prefix.strip("/")]
+    selected = {
+        path: meta
+        for path, meta in files.items()
+        if any(path == root or path.startswith(root + "/") for root in roots)
+    }
+    if not selected:
+        raise SystemExit(
+            f"--only {','.join(roots)} selected none of the manifest's "
+            f"{len(files)} file(s); it names no subtree of this slice."
+        )
+    return selected
+
+
 def dataset_roots() -> dict[str, str]:
     """Map dataset -> volume-relative root, taken from the frozen confirmations."""
 
@@ -552,7 +590,11 @@ def _load_manifest(
 def cmd_upload(args: argparse.Namespace) -> int:
     staging = Path(args.staging)
     record = _load_manifest(staging, args.slice, args.dataset_filter)
-    files: dict[str, dict[str, Any]] = record["files"]
+    files: dict[str, dict[str, Any]] = restrict_to_subtrees(
+        record["files"], getattr(args, "only", None)
+    )
+    if getattr(args, "only", None):
+        print(f"restricted to {', '.join(args.only)} ({len(files)} of {len(record['files'])} files)")
 
     # A quarantine prefix keeps a capture out of the tree a runner reads. It
     # applies to the captures only -- see `quarantined`.
@@ -627,7 +669,11 @@ def cmd_upload(args: argparse.Namespace) -> int:
 def cmd_verify(args: argparse.Namespace) -> int:
     staging = Path(args.staging)
     record = _load_manifest(staging, args.slice, args.dataset_filter)
-    files: dict[str, dict[str, Any]] = record["files"]
+    files: dict[str, dict[str, Any]] = restrict_to_subtrees(
+        record["files"], getattr(args, "only", None)
+    )
+    if getattr(args, "only", None):
+        print(f"restricted to {', '.join(args.only)} ({len(files)} of {len(record['files'])} files)")
     volume = modal.Volume.from_name(args.volume, create_if_missing=False)
 
     remote = {path: size for path, size in _walk(volume, "/", strict=True)}
@@ -705,6 +751,14 @@ def main() -> int:
         "--datasets",
         help="restrict a slice to these datasets (comma separated); the manifest records the restriction",
     )
+    parser.add_argument(
+        "--only",
+        help=(
+            "upload/verify: restrict to these whole subtrees of the slice (comma "
+            "separated), for when a refreshed staging directory is described by "
+            "more than one manifest"
+        ),
+    )
     parser.add_argument("--skip-present", action="store_true", default=True)
     parser.add_argument(
         "--workers",
@@ -722,6 +776,11 @@ def main() -> int:
     args.dataset_filter = (
         {name.strip() for name in args.datasets.split(",") if name.strip()}
         if args.datasets
+        else None
+    )
+    args.only = (
+        [name.strip() for name in args.only.split(",") if name.strip()]
+        if args.only
         else None
     )
 

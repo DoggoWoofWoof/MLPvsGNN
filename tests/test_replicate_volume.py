@@ -820,3 +820,75 @@ def test_verify_looks_where_upload_put_each_file(monkeypatch, tmp_path) -> None:
     assert "def remote_for(path: str) -> str:" in source
     assert "quarantined(path)" in source
     assert "remote.get(remote_prefix + path)" not in source
+
+
+# ---------------------------------------------------------------------------
+# Restricting a slice to whole subtrees
+# ---------------------------------------------------------------------------
+#
+# After E2 was rescued from a third workspace, the staging directory stopped
+# being described by a single manifest: `paper_data/` and
+# `edge_provenance_graphs/` are still exactly what the `e2_resume` download
+# recorded, while twenty files under `outputs/` are newer results recorded by
+# the `results` manifest. Uploading each subtree under the manifest that
+# describes it keeps every byte covered by an independently recorded hash,
+# which rewriting the stale manifest to match the disk would not.
+
+SPLIT_MANIFEST = {
+    "paper_data/squad/abc/nodes.npy": {"bytes": 10, "sha256": "a"},
+    "paper_data/squad/abc/derived/packed_topology_v1/edge_index.npy": {"bytes": 20, "sha256": "b"},
+    "edge_provenance_graphs/squad/abc/knn_only/graph.pt": {"bytes": 30, "sha256": "c"},
+    "outputs/phase_confirmation/squad/abc/result.json": {"bytes": 40, "sha256": "d"},
+}
+
+
+def test_no_restriction_returns_the_whole_slice() -> None:
+    assert rv.restrict_to_subtrees(SPLIT_MANIFEST, None) == SPLIT_MANIFEST
+    assert rv.restrict_to_subtrees(SPLIT_MANIFEST, []) == SPLIT_MANIFEST
+
+
+def test_a_subtree_carries_everything_beneath_it() -> None:
+    """Including `derived/`, which is nested well below the named root."""
+
+    selected = rv.restrict_to_subtrees(SPLIT_MANIFEST, ["paper_data"])
+    assert set(selected) == {
+        "paper_data/squad/abc/nodes.npy",
+        "paper_data/squad/abc/derived/packed_topology_v1/edge_index.npy",
+    }
+
+
+def test_the_excluded_subtree_is_genuinely_excluded() -> None:
+    """The point of the restriction: the stale files must not be transferred."""
+
+    selected = rv.restrict_to_subtrees(SPLIT_MANIFEST, ["paper_data", "edge_provenance_graphs"])
+    assert not any(path.startswith("outputs/") for path in selected)
+    assert len(selected) == 3
+
+
+def test_prefixes_match_on_path_boundaries() -> None:
+    """`paper_data` selecting `paper_data_old/` would transfer another slice's
+    bytes under this slice's hashes, which is the one error a manifest cannot
+    catch -- each file would still match the record it was wrongly paired with."""
+
+    files = dict(SPLIT_MANIFEST, **{"paper_data_old/squad/abc/nodes.npy": {"bytes": 50, "sha256": "e"}})
+    selected = rv.restrict_to_subtrees(files, ["paper_data"])
+    assert "paper_data_old/squad/abc/nodes.npy" not in selected
+
+
+def test_surrounding_slashes_are_tolerated() -> None:
+    assert rv.restrict_to_subtrees(SPLIT_MANIFEST, ["/paper_data/"]) == rv.restrict_to_subtrees(
+        SPLIT_MANIFEST, ["paper_data"]
+    )
+
+
+def test_a_subtree_that_selects_nothing_is_refused_rather_than_uploading_nothing() -> None:
+    """A silent empty upload reports success and moves no bytes, which is
+    indistinguishable from a completed transfer until a runner fails hours later."""
+
+    with pytest.raises(SystemExit, match="names no subtree"):
+        rv.restrict_to_subtrees(SPLIT_MANIFEST, ["ouputs"])
+
+
+def test_an_exact_file_path_is_a_valid_subtree() -> None:
+    selected = rv.restrict_to_subtrees(SPLIT_MANIFEST, ["outputs/phase_confirmation/squad/abc/result.json"])
+    assert len(selected) == 1

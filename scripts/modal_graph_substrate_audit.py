@@ -29,6 +29,14 @@ RUNTIME_REPO_ROOT = (
 CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "graph_substrate_audit.yaml"
 CONFIG = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
 MODAL_CONFIG = CONFIG["modal"]
+
+# What a restart has to redo from the beginning, which is what the launch gate
+# compares against the timeout. The runner adopts completed graph families from
+# a partial audit (`resume_partial=True` below), so a killed run resumes at a
+# family boundary and the unit is one family rather than the whole audit.
+# Deleting that resumption without changing this would make the gate admit a
+# job whose real unit is four times larger.
+RESUME_GRANULARITY = "family"
 STORAGE_ROOT = MODAL_CONFIG["storage_root"]
 DATASET_GRAPH = "dataset_default"
 

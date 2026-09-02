@@ -41,6 +41,10 @@ CONFIRMATION_CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "phase_confirmation.y
 # config carries the same block with only the app name replaced.
 SCREEN_CONFIG = yaml.safe_load(SCREEN_CONFIG_PATH.read_text(encoding="utf-8"))
 MODAL_CONFIG = SCREEN_CONFIG["modal"]
+
+# See modal_graph_substrate_audit for what this declares. A cell writes its
+# result after each model seed, so a restart redoes one seed, not the cell.
+RESUME_GRANULARITY = "seed"
 STORAGE_ROOT = MODAL_CONFIG["storage_root"]
 APP_NAME = "message-passing-retrieval-phase-confirmation"
 

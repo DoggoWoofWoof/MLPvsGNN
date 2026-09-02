@@ -27,6 +27,15 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from modal.runner import deploy_app
 
+from mp_retrieval.compute_budget import (
+    PHASE_CONFIRMATION_SECONDS_PER_SEED,
+    WorkUnit,
+    expected_spend_usd,
+    feasibility,
+    phase_confirmation_units,
+    substrate_family_units,
+)
+
 PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
     "edge-provenance": (
         "scripts.modal_edge_provenance",
@@ -141,6 +150,133 @@ def filter_by_matrix(
     return submitted, plan
 
 
+# ---------------------------------------------------------------------------
+# Refusing a launch that cannot finish
+# ---------------------------------------------------------------------------
+
+# Validation queries behind the substrate audit's measured per-family cost. Only
+# hotpotqa_clean is listed because the other five audits are complete and were
+# never timed; a dataset absent here is reported as ungated rather than given an
+# invented query count.
+SUBSTRATE_VALIDATION_QUERIES = {"hotpotqa_clean": 19_570}
+SUBSTRATE_EXPANSION_CAP = 512
+
+# Model seeds per E2 cell, from configs/phase_confirmation.yaml.
+PHASE_CONFIRMATION_SEEDS = 5
+
+
+def _collapse_without_resumption(
+    units: list[WorkUnit], module: Any, expected: str, label: str
+) -> tuple[list[WorkUnit], str]:
+    """Cost a job as one unit unless the runner declares it resumes inside one.
+
+    This is the distinction the substrate audit failure actually turned on, and
+    getting it wrong makes the gate miss the very run it exists to catch. One
+    hotpotqa family is 3.31 h, which fits a six-hour ceiling with room to spare
+    -- so per-family units would have waved that launch through. What made it
+    fatal was that nothing was carried across a restart: with no resumption the
+    piece a restart redoes is the *whole* four-family audit, 13.2 h, and no
+    number of retries against a six-hour window ever finishes it.
+
+    A runner therefore has to declare where it checkpoints, and silence is
+    costed as no checkpointing at all. That is the safe direction: an
+    undeclared package is treated as redoing everything, which can only refuse
+    a launch that would have been admitted, never admit one that should not be.
+    """
+
+    if getattr(module, "RESUME_GRANULARITY", None) == expected:
+        return units, f"unit = one {expected}"
+    total = sum(unit.seconds for unit in units)
+    return (
+        [WorkUnit(f"{label} (no {expected}-level resumption)", total)],
+        f"unit = the whole {label}, because the runner does not declare "
+        f"{expected}-level resumption and a restart redoes all of it",
+    )
+
+
+def measured_units(
+    package: str, module: Any, jobs: list[dict[str, Any]]
+) -> tuple[list[WorkUnit] | None, str]:
+    """Indivisible work units for a launch, or None when nothing was measured.
+
+    The gate refuses only on evidence. Where no per-unit cost was ever measured
+    this returns None and the launch proceeds ungated: inventing a number would
+    produce a confident verdict with nothing behind it, and a gate that blocks
+    on guesses is one that gets bypassed and then protects nothing.
+    """
+
+    if package == "phase-confirmation":
+        unknown = sorted(
+            {job["dataset"] for job in jobs} - set(PHASE_CONFIRMATION_SECONDS_PER_SEED)
+        )
+        if unknown:
+            return None, f"no measured per-seed cost for {', '.join(unknown)}"
+        # Every cell is costed at its full seed count, which overstates a
+        # partly-finished cell's total but leaves the unit -- the only thing the
+        # ceiling is compared against -- exact.
+        units, granularity = _collapse_without_resumption(
+            phase_confirmation_units(
+                [(job["dataset"], PHASE_CONFIRMATION_SEEDS) for job in jobs]
+            ),
+            module,
+            "seed",
+            "sweep",
+        )
+        return units, f"{len(jobs)} cell(s) at {PHASE_CONFIRMATION_SEEDS} seeds each; {granularity}"
+
+    if package == "graph-substrate":
+        unknown = sorted({job["dataset"] for job in jobs} - set(SUBSTRATE_VALIDATION_QUERIES))
+        if unknown:
+            return None, f"no measured validation query count for {', '.join(unknown)}"
+        families = list(module.CONFIG["graphs"])
+        units: list[WorkUnit] = []
+        for job in jobs:
+            units.extend(
+                substrate_family_units(
+                    queries=SUBSTRATE_VALIDATION_QUERIES[job["dataset"]],
+                    families=families,
+                    expansion_cap=SUBSTRATE_EXPANSION_CAP,
+                )
+            )
+        units, granularity = _collapse_without_resumption(units, module, "family", "audit")
+        return units, f"{len(jobs)} dataset(s) x {len(families)} families; {granularity}"
+
+    return None, f"no measured cost model for {package}"
+
+
+def gate_launch(package: str, module: Any, jobs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Refuse a launch whose largest indivisible unit exceeds the timeout.
+
+    This is the check that was missing when the substrate audit was submitted
+    with a six-hour ceiling: it billed a full window per attempt, restarted from
+    zero each time, and produced nothing at all. Total cost above the ceiling is
+    fine and common -- what cannot work is a unit larger than its window.
+    """
+
+    timeout = float(module.MODAL_CONFIG["timeout_seconds"])
+    units, note = measured_units(package, module, jobs)
+    if units is None:
+        return {"gated": False, "why": note, "timeout_seconds": timeout}
+
+    verdict = feasibility(units, timeout_seconds=timeout)
+    report = {
+        "gated": True,
+        "basis": note,
+        "timeout_seconds": timeout,
+        "units": len(units),
+        "largest_unit_hours": round(verdict.largest.seconds / 3600, 3) if verdict.largest else 0.0,
+        "total_hours": round(verdict.total_seconds / 3600, 2),
+        "expected_spend_usd": round(expected_spend_usd(units), 2),
+        "verdict": verdict.reason,
+    }
+    if not verdict:
+        raise SystemExit(
+            f"REFUSED: {verdict.reason}\n"
+            f"  package {package} | ceiling {timeout/3600:.1f} h | {note}"
+        )
+    return report
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("package", choices=sorted(PACKAGES))
@@ -178,6 +314,9 @@ def main() -> int:
             return 0
 
     function = getattr(module, stages[args.stage])
+    # Before anything is deployed or spawned, because the point is to refuse a
+    # run that would bill a full window and produce nothing.
+    budget = gate_launch(args.package, module, jobs)
     if args.dry_run:
         print(json.dumps({
             "package": args.package,
@@ -186,6 +325,7 @@ def main() -> int:
             "datasets": requested,
             "jobs": len(jobs),
             "plan": plan,
+            "budget": budget,
         }, indent=2))
         return 0
 
@@ -198,6 +338,7 @@ def main() -> int:
         "datasets": requested,
         "spawned": len(handles),
         "plan": plan,
+        "budget": budget,
         "call_ids": [handle.object_id for handle in handles],
     }, indent=2))
     return 0
