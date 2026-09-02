@@ -518,8 +518,40 @@ stages:
       what a later QLS-v2 probe should contain.
 
   D0C:
-    status: DECLARED
+    status: COMPLETE
     evidence_class: EXPLORATORY
+    results: docs/GRAPH_CONTEXT_D0C_D1_RESULTS.md
+    outcome: >-
+      Conditional use of restored context is NOT promising. BOTH matches CAND's
+      R@5 to the digit (68.38) while losing 0.96 R@1, so a learner handed both
+      blocks extracts nothing from the restored one. SELECTIVE_SUBSTITUTE is
+      worse than CAND on three of four measures. SELECTIVE_MASK is the worst arm
+      by a wide margin, which confirms the historical block is load-bearing. The
+      approved question was whether this justified designing a principled
+      query-conditioned reliability feature; it does not, and no learned gate is
+      to be built on this evidence.
+    secondary_outcome: >-
+      D0b's stratified split does not survive convergence -- it inverts.
+      TARGET_H1 - CAND R@1 moves from +3.06 to -1.80 on the isolated stratum and
+      from -0.51 to +3.28 on ordinary. D0b's split is retracted as evidence: four
+      arms compared at a shared three-epoch budget were being compared at their
+      rates of ascent.
+    tertiary_outcome: >-
+      RETRIEVAL_ONLY's R@1 lead survives convergence at reduced size, +2.21
+      rather than +6.12, against -0.96 R@5 and -3.83 R@20. Roughly two thirds of
+      the D0b gap was the unconverged comparison. Still a 19-parameter result and
+      still not a QLS-v1 statement.
+    convergence: >-
+      Every arm selects an interior epoch (4 to 9 of 10) and every arm's
+      train-tail R@5 peaks and turns down inside the budget, which is the
+      property D0b lacked. Not full convergence: mean train loss over the last
+      four epochs still creeps 4.3% for RETRIEVAL_ONLY and 3.2% for
+      SELECTIVE_MASK, against under 1.4% for the four arms carrying the full
+      local block.
+    actual_cost:
+      elapsed_seconds: 451.2
+      container_usd: 0.079
+      cost_ceiling_usd: 0.80
     runner: scripts/run_graph_context_d0c.py
     dataset: 2wiki_clean
     what: >-
@@ -586,7 +618,36 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D1:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D0C_D1_RESULTS.md
+    outcome: >-
+      NULL. TARGET_H1 vs CAND at QLS-v1 is null overall (R@5 67.88 -> 67.97, R@1
+      -0.05, R@20 -0.03, MRR +0.09) and null in every pre-registered stratum. The
+      largest per-stratum move is +0.83 R@1 on degree_1; the largest anywhere is
+      -1.01 R@20 on ordinary, which is 198 queries. On the isolated stratum, the
+      27.8% of queries this line was aimed at, the ranker gains nothing: -0.48
+      R@1, -0.06 R@5. TARGET_H1 does not enter QLS-v2 as a context.
+    preregistered_hypothesis_result: >-
+      NOT SUPPORTED. context_value_falls_as_evidence_rises predicted the
+      TARGET_H1 - CAND benefit would decrease across induced-degree strata
+      0 / 1 / 2-4 / 5+. non_increasing holds for R@20 alone, across deltas that
+      are all inside a point, and fails for R@1, R@5 and MRR. The strata were
+      frozen before the run and boundaries_fitted_here is false in the result.
+    reproduction: >-
+      D1 ran twice -- once as declared, once more after the stratified reporting
+      was added, since the first run emitted only overall numbers. Both runs, in
+      separate containers, returned bit-identical validation metrics for both
+      arms on all four measures. The second run changed reporting only: same
+      seed, same holdout, same selection rule, validation still read once per arm
+      within a run.
+    actual_cost:
+      runs: 2
+      elapsed_seconds: 427.3
+      gpu_hours: 0.119
+      container_usd: 0.206
+      gpu_hours_authorised: 1.0
+      cost_authorised_usd: 2.50
+    status_before: DECLARED
     declaration: docs/COMPUTE_LEDGER.md
     runner: scripts/run_graph_context_d1.py
     dataset: 2wiki_clean

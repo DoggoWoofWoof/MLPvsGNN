@@ -1,5 +1,16 @@
 # Stage D0b: does `bridge_support` survive contact with the other features?
 
+> **RETRACTION (D0c, D1).** The stratified `TARGET_H1` - `CAND` split reported
+> below does **not** survive convergence and does **not** appear at the ranker.
+> At ten epochs it inverts -- isolated R@1 goes +3.06 to -1.80, `ordinary` -0.51
+> to +3.28 -- and at QLS-v1 every stratum is null. All four arms here were still
+> climbing at the three-epoch budget, so they were compared at their rates of
+> ascent. **Section 4 and the second headline paragraph are withdrawn as
+> evidence.** The `bridge_support` kill in section 3 is unaffected: it is a
+> within-arm comparison at a shared budget, and D0c confirms the local block it
+> was redundant with is load-bearing. See
+> [GRAPH_CONTEXT_D0C_D1_RESULTS.md](GRAPH_CONTEXT_D0C_D1_RESULTS.md).
+
 D0 scored each structural quantity on its own and found one striking number:
 on candidates isolated inside `G[Cq]`, `bridge_support` computed over
 `TARGET_H1` reaches 0.9513 mean rank AUC on 2wiki, against an exact 0.5000
