@@ -457,6 +457,7 @@ global reach seen from the other side.
 | musique_clean | `baseline_a_simple` + `dataset_default` | `9b4795052dfe01cb` | 157898 / 280108 | yes / no | 1268.4 / 1888.8 |
 | squad_clean | `baseline_a_simple` + `dataset_default` | `be333097e2aa8271` | 1445712 / 2857316 | yes / no | 3509.7 / 6484.0 |
 | webqsp | `baseline_a_simple` + `dataset_default` | `369abaabd9ca5b7d` | 6621594 / 13379166 | yes / no | 1350.0 / 2601.8 |
+
 ## What this does not touch
 
 Nothing in Phase −1 modifies a frozen result. The audit opens the sealed
@@ -478,10 +479,17 @@ That reads the per-dataset `substrate.json` files under
 the report. Then:
 
 ```bash
-python scripts/render_substrate_tables.py --output tables.md
+python scripts/render_substrate_tables.py --in-place
 ```
 
-renders the `## Measurements` section verbatim from that summary. Every number
-in this document is read from it; none is computed here, and the prose above
-cites only figures that appear in a table below it. When the one outstanding
-audit finishes, re-running both commands and re-splicing is the whole update.
+rewrites the `## Measurements` section of this file from that summary, touching
+nothing outside it. Every number in the tables is read from the summary; none
+is computed here, and the prose above cites only figures that appear in a table
+below it -- `tests/test_substrate_report_is_grounded.py` enforces that, so a
+re-render that leaves a sentence unsupported fails the suite rather than
+shipping.
+
+When the one outstanding audit finishes, the whole update is: fetch its
+`substrate.json`, run those two commands, and revise the prose the second one
+does not touch. Use `--output tables.md` instead to inspect the tables without
+writing to the report.

@@ -367,15 +367,64 @@ def render(summary: dict, split: str) -> str:
     return "\n".join(parts) + "\n"
 
 
+MEASUREMENTS_HEADING = "## Measurements"
+REPORT = REPO_ROOT / "docs" / "GRAPH_SUBSTRATE_AUDIT_RESULTS.md"
+
+
+def replace_measurements(report_text: str, tables: str) -> str:
+    """Swap the report's ``## Measurements`` body for freshly rendered tables.
+
+    Splicing this by hand is how the prose and the tables drift apart: the
+    tables are regenerated whenever a dataset lands, the prose is not, and a
+    mis-splice can drop a heading or duplicate a block without anything
+    complaining. Only the region between the Measurements heading and the next
+    top-level heading is touched, so every hand-written section is preserved
+    byte for byte.
+    """
+
+    start = report_text.find("\n" + MEASUREMENTS_HEADING + "\n")
+    if start == -1:
+        raise SystemExit(
+            f"report has no {MEASUREMENTS_HEADING!r} section; refusing to guess "
+            "where the tables belong."
+        )
+    body_start = start + len(MEASUREMENTS_HEADING) + 2
+    end = report_text.find("\n## ", body_start)
+    if end == -1:
+        raise SystemExit(
+            "no heading follows the Measurements section; refusing to overwrite "
+            "to end of file, which would delete anything written after it."
+        )
+    return report_text[:body_start] + tables.rstrip("\n") + "\n" + report_text[end:]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--summary", type=Path, default=DEFAULT_SUMMARY)
     parser.add_argument("--split", default="validation")
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument(
+        "--in-place",
+        type=Path,
+        nargs="?",
+        const=REPORT,
+        default=None,
+        metavar="REPORT",
+        help="rewrite the Measurements section of the results doc in place "
+        "(default: docs/GRAPH_SUBSTRATE_AUDIT_RESULTS.md)",
+    )
     args = parser.parse_args(argv)
 
     summary = json.loads(args.summary.read_text(encoding="utf-8"))
     text = render(summary, args.split)
+
+    if args.in_place is not None:
+        report = args.in_place
+        updated = replace_measurements(report.read_text(encoding="utf-8"), text)
+        report.write_text(updated, encoding="utf-8")
+        print(f"rewrote {MEASUREMENTS_HEADING} in {report}")
+        return 0
+
     if args.output is None:
         sys.stdout.write(text)
     else:

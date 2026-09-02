@@ -433,3 +433,53 @@ def test_the_cli_writes_the_same_text_it_would_print(tmp_path):
     out = tmp_path / "tables.md"
     assert rst.main(["--summary", str(summary), "--output", str(out)]) == 0
     assert out.read_text(encoding="utf-8") == _render(_audit())
+
+
+# ---------------------------------------------------------------------------
+# In-place splicing
+# ---------------------------------------------------------------------------
+
+
+def _report(tables_body="| old | table |\n", trailer="\n## What this does not touch\n\nkept.\n"):
+    return "# Title\n\nprose citing 0.375.\n\n## Measurements\n\n" + tables_body + trailer
+
+
+def test_splicing_replaces_only_the_measurements_body():
+    out = rst.replace_measurements(_report(), "| new | table |\n")
+    assert "| new | table |" in out
+    assert "| old | table |" not in out
+    assert "prose citing 0.375." in out
+    assert "## What this does not touch" in out
+    assert "kept." in out
+
+
+def test_splicing_is_idempotent():
+    once = rst.replace_measurements(_report(), "| new |\n")
+    twice = rst.replace_measurements(once, "| new |\n")
+    assert once == twice
+
+
+def test_a_report_without_the_heading_is_refused():
+    with pytest.raises(SystemExit) as excinfo:
+        rst.replace_measurements("# Title\n\nno measurements here.\n", "| x |\n")
+    assert "refusing to guess" in str(excinfo.value)
+
+
+def test_a_report_with_nothing_after_measurements_is_refused():
+    # Overwriting to end of file would silently delete whatever a future author
+    # appended, so this refuses rather than truncating.
+    with pytest.raises(SystemExit) as excinfo:
+        rst.replace_measurements(_report(trailer=""), "| x |\n")
+    assert "delete anything written after it" in str(excinfo.value)
+
+
+def test_the_cli_rewrites_the_report_in_place(tmp_path):
+    summary = tmp_path / "summary.json"
+    summary.write_text(json.dumps({"audits": [_audit()]}), encoding="utf-8")
+    report = tmp_path / "report.md"
+    report.write_text(_report(), encoding="utf-8")
+    assert rst.main(["--summary", str(summary), "--in-place", str(report)]) == 0
+    text = report.read_text(encoding="utf-8")
+    assert "### Candidate-induced connectivity" in text
+    assert "| old | table |" not in text
+    assert "kept." in text
