@@ -152,6 +152,12 @@ def message_load(sp: dict) -> list[str]:
     return [
         fmt(m.get("unique_non_self_edges"), 1),
         fmt(m.get("stored_non_self_messages"), 1),
+        # Protocol 4.4 names `duplicate_messages` and its fraction as two
+        # reported quantities. The count is not redundant with the fraction: the
+        # fraction says what share of the operator's work is duplicated, the
+        # count says how many messages that is, and the two orderings differ
+        # across datasets because the totals differ by an order of magnitude.
+        fmt(m.get("duplicate_messages"), 1),
         fmt(m.get("duplicate_message_fraction")),
         # Protocol 4.4 lists stored and operator-inserted self-loops as separate
         # reported quantities, and 4.2 flags the case where they coexist: `gcn`
@@ -164,11 +170,64 @@ def message_load(sp: dict) -> list[str]:
 
 
 def seed_reach(sp: dict) -> list[str]:
+    """Seed reach on both induced notions and on the global graph.
+
+    Protocol 4.4 asks for this "on the induced substrate (symmetric AND
+    message-flow) and on the global graph" -- three blocks, not two. The
+    message-flow block is the one that answers whether a candidate can actually
+    receive the seed's signal under the frozen operator's edge directions;
+    rendering only the symmetrised block would assume the answer the audit was
+    built to check.
+    """
     reach = sp["seed_reachability"]
-    induced, glob = reach["induced_symmetrised"], reach["global"]
-    return [fmt(induced.get("reachable_at_" + str(h))) for h in HOPS] + [
-        fmt(glob.get("reachable_at_" + str(h))) for h in HOPS
-    ]
+    induced = reach["induced_symmetrised"]
+    flow = reach.get("induced_message_flow", {})
+    glob = reach["global"]
+    return (
+        [fmt(induced.get("reachable_at_" + str(h))) for h in HOPS]
+        + [fmt(flow.get("reachable_at_" + str(h))) for h in HOPS]
+        + [fmt(glob.get("reachable_at_" + str(h))) for h in HOPS]
+    )
+
+
+def receptive_field_full(audits: list[dict], split: str) -> str:
+    """All nine statistics per graph-split, per notion -- protocol 4.4 in full.
+
+    The comparison table above carries the two medians side by side because
+    that is the headline: the notions agree. This is the evidence underneath
+    it. 4.4 requires median, mean and zero-fraction at each of R1, R2 and R3 on
+    *both* notions, and those same nine numbers per graph-split are exactly
+    what `notions_coincide` compares -- so a reader who wants to check the
+    coincidence claim rather than take it needs them printed.
+
+    One row per notion rather than eighteen columns per graph: the wide form
+    would not survive a terminal or a printed page, and the quantity being
+    compared reads more naturally down a column than across one.
+    """
+    header = ["dataset", "graph", "notion", "R1 median", "R1 mean", "R1 zero",
+              "R2 median", "R2 mean", "R2 zero", "R3 median", "R3 mean", "R3 zero"]
+    rows: list[list[str]] = []
+    for audit in audits:
+        for graph in GRAPH_ORDER:
+            payload = split_of(audit, graph, split)
+            if payload is None:
+                continue
+            field = payload["receptive_field"]
+            for label, key in (("symmetrised", "symmetrised"),
+                               ("message flow", "message_flow")):
+                block = field.get(key, {})
+                cells: list[str] = []
+                for hop in HOPS:
+                    prefix = "R" + str(hop)
+                    cells.append(fmt(block.get(prefix + "_median"), 2))
+                    cells.append(fmt(block.get(prefix + "_mean"), 2))
+                    cells.append(fmt(block.get(prefix + "_zero_fraction")))
+                rows.append([audit["dataset"], SHORT[graph], label] + cells)
+    return table(
+        "Effective receptive field -- all nine statistics, both notions",
+        header,
+        rows,
+    )
 
 
 def paths(sp: dict) -> list[str]:
@@ -195,6 +254,53 @@ def expansion(sp: dict) -> list[str]:
         [str(headroom.get("queries_measured", "--")), fmt(s.get("candidates"), 1)]
         + [fmt(s.get("U_seed_" + str(h) + "_expansion"), 2) for h in HOPS]
         + [fmt(s.get("U_target_" + str(h) + "_expansion"), 2) for h in HOPS]
+    )
+
+
+def pool_coverage(audits: list[dict], split: str) -> str:
+    """How many measured queries have retrieval seeds, and gold, in the pool.
+
+    These are the denominators behind every gold-path rate, and they are not
+    close to uniform: on some datasets nearly half the measured queries carry no
+    gold target in the candidate pool at all, so their path-preservation figures
+    describe the minority that do.
+
+    Reported, not acted on. `candidate coverage != metric ceiling` is a frozen
+    distinction and the pools are frozen with it; nothing here proposes
+    admitting a gold to any pool.
+    """
+
+    rows = []
+    for audit in audits:
+        payload = split_of(audit, "dataset_default", split)
+        if payload is None:
+            continue
+        measured = payload.get("connectivity", {}).get("candidates__queries_reporting")
+        no_seeds = payload.get("queries_without_retrieval_seeds")
+        no_gold = payload.get("queries_without_gold_in_pool")
+        with_gold = (
+            payload.get("path_preservation", {})
+            .get("gold_path_preservation", {})
+            .get("targets__queries_reporting")
+        )
+        share = (
+            fmt(no_gold / measured)
+            if isinstance(no_gold, (int, float)) and measured
+            else "--"
+        )
+        rows.append([
+            audit["dataset"],
+            "--" if measured is None else str(measured),
+            "--" if no_seeds is None else str(no_seeds),
+            "--" if no_gold is None else str(no_gold),
+            share,
+            "--" if with_gold is None else str(with_gold),
+        ])
+    return table(
+        "Pool coverage -- the denominators behind every gold-path rate",
+        ["dataset", "queries measured", "without retrieval seeds",
+         "without gold in pool", "share without gold", "with gold in pool"],
+        rows,
     )
 
 
@@ -374,16 +480,18 @@ def render(summary: dict, split: str) -> str:
              "flow R3", "coincide", "zero fraction"],
             rows_for(audits, split, receptive_field),
         ),
+        receptive_field_full(audits, split),
         table(
             "Operator message load",
             ["dataset", "graph", "unique edges", "stored messages",
-             "duplicate fraction", "stored self-loops", "operator self-loops",
-             "messages consumed"],
+             "duplicate messages", "duplicate fraction", "stored self-loops",
+             "operator self-loops", "messages consumed"],
             rows_for(audits, split, message_load),
         ),
         table(
-            "Seed reachability -- induced versus global",
-            ["dataset", "graph", "induced @1", "induced @2", "induced @3",
+            "Seed reachability -- both induced notions versus global",
+            ["dataset", "graph", "sym @1", "sym @2", "sym @3",
+             "flow @1", "flow @2", "flow @3",
              "global @1", "global @2", "global @3"],
             rows_for(audits, split, seed_reach),
         ),
@@ -401,6 +509,7 @@ def render(summary: dict, split: str) -> str:
              "U_target H=1", "H=2", "H=3"],
             rows_for(audits, split, expansion),
         ),
+        pool_coverage(audits, split),
         operator_semantics(audits),
         orientation(audits),
         aliasing(audits, split),

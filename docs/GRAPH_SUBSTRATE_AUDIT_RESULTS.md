@@ -71,6 +71,15 @@ that the graphs are effectively symmetric in reachability is a strong one — bu
 it is an inference from the aggregates, not a separate measurement, and it is
 labelled as such here rather than promoted to a finding.
 
+A second, independent family of comparisons says the same thing. Seed
+reachability is computed on both induced notions as well as on the global
+graph, and the fraction of candidates a retrieval seed reaches at one, two and
+three hops is identical under both notions on every graph-split: 60 further
+exact agreements, on a different quantity, from a different traversal. That
+does not upgrade the aggregate reading to a node-by-node proof either — it is
+another distribution-level agreement — but it is not the same measurement made
+twice.
+
 The distinction the protocol insisted on therefore does not bite on any graph
 audited so far. It still had to be measured rather than assumed, and it must be
 re-measured on hotpotqa_clean.
@@ -424,55 +433,100 @@ global reach seen from the other side.
 | webqsp | kNN only | 1.15 | 2.33 | 3.35 | 1.15 | 2.33 | 3.35 | yes | 0.388 |
 | webqsp | baseline A | 2.07 | 66.34 | 110.38 | 2.07 | 66.34 | 110.38 | yes | 0.190 |
 
+### Effective receptive field -- all nine statistics, both notions
+
+| dataset | graph | notion | R1 median | R1 mean | R1 zero | R2 median | R2 mean | R2 zero | R3 median | R3 mean | R3 zero |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | symmetrised | 1.01 | 1.31 | 0.375 | 1.89 | 3.53 | 0.375 | 3.09 | 6.34 | 0.375 |
+| 2wiki_clean | sealed A | message flow | 1.01 | 1.31 | 0.375 | 1.89 | 3.53 | 0.375 | 3.09 | 6.34 | 0.375 |
+| 2wiki_clean | structural | symmetrised | 0.01 | 0.33 | 0.775 | 0.18 | 1.01 | 0.775 | 0.29 | 1.21 | 0.775 |
+| 2wiki_clean | structural | message flow | 0.01 | 0.33 | 0.775 | 0.18 | 1.01 | 0.775 | 0.29 | 1.21 | 0.775 |
+| 2wiki_clean | kNN only | symmetrised | 0.53 | 0.98 | 0.488 | 0.92 | 2.19 | 0.488 | 1.32 | 3.68 | 0.488 |
+| 2wiki_clean | kNN only | message flow | 0.53 | 0.98 | 0.488 | 0.92 | 2.19 | 0.488 | 1.32 | 3.68 | 0.488 |
+| 2wiki_clean | baseline A | symmetrised | 1.01 | 1.31 | 0.375 | 1.89 | 3.53 | 0.375 | 3.09 | 6.34 | 0.375 |
+| 2wiki_clean | baseline A | message flow | 1.01 | 1.31 | 0.375 | 1.89 | 3.53 | 0.375 | 3.09 | 6.34 | 0.375 |
+| metaqa | sealed A | symmetrised | 0.77 | 1.20 | 0.412 | 3.18 | 6.12 | 0.412 | 8.00 | 12.89 | 0.412 |
+| metaqa | sealed A | message flow | 0.77 | 1.20 | 0.412 | 3.18 | 6.12 | 0.412 | 8.00 | 12.89 | 0.412 |
+| metaqa | structural | symmetrised | 0.23 | 0.62 | 0.604 | 1.66 | 4.06 | 0.604 | 3.22 | 6.09 | 0.604 |
+| metaqa | structural | message flow | 0.23 | 0.62 | 0.604 | 1.66 | 4.06 | 0.604 | 3.22 | 6.09 | 0.604 |
+| metaqa | kNN only | symmetrised | 0.08 | 0.58 | 0.644 | 0.10 | 1.21 | 0.644 | 0.11 | 1.89 | 0.644 |
+| metaqa | kNN only | message flow | 0.08 | 0.58 | 0.644 | 0.10 | 1.21 | 0.644 | 0.11 | 1.89 | 0.644 |
+| metaqa | baseline A | symmetrised | 0.77 | 1.20 | 0.412 | 3.18 | 6.12 | 0.412 | 8.00 | 12.89 | 0.412 |
+| metaqa | baseline A | message flow | 0.77 | 1.20 | 0.412 | 3.18 | 6.12 | 0.412 | 8.00 | 12.89 | 0.412 |
+| musique_clean | sealed A | symmetrised | 1.89 | 2.86 | 0.224 | 7.09 | 12.47 | 0.224 | 21.19 | 28.68 | 0.224 |
+| musique_clean | sealed A | message flow | 1.89 | 2.86 | 0.224 | 7.09 | 12.47 | 0.224 | 21.19 | 28.68 | 0.224 |
+| musique_clean | structural | symmetrised | 0.20 | 1.32 | 0.678 | 1.63 | 7.43 | 0.678 | 6.12 | 14.12 | 0.678 |
+| musique_clean | structural | message flow | 0.20 | 1.32 | 0.678 | 1.63 | 7.43 | 0.678 | 6.12 | 14.12 | 0.678 |
+| musique_clean | kNN only | symmetrised | 1.23 | 1.54 | 0.323 | 2.55 | 3.85 | 0.323 | 3.89 | 6.89 | 0.323 |
+| musique_clean | kNN only | message flow | 1.23 | 1.54 | 0.323 | 2.55 | 3.85 | 0.323 | 3.89 | 6.89 | 0.323 |
+| musique_clean | baseline A | symmetrised | 1.89 | 2.86 | 0.224 | 7.09 | 12.47 | 0.224 | 21.19 | 28.68 | 0.224 |
+| musique_clean | baseline A | message flow | 1.89 | 2.86 | 0.224 | 7.09 | 12.47 | 0.224 | 21.19 | 28.68 | 0.224 |
+| squad_clean | sealed A | symmetrised | 5.31 | 10.34 | 0.175 | 26.72 | 32.83 | 0.175 | 64.41 | 63.97 | 0.175 |
+| squad_clean | sealed A | message flow | 5.31 | 10.34 | 0.175 | 26.72 | 32.83 | 0.175 | 64.41 | 63.97 | 0.175 |
+| squad_clean | structural | symmetrised | 3.53 | 9.12 | 0.509 | 18.50 | 26.31 | 0.509 | 40.04 | 44.56 | 0.509 |
+| squad_clean | structural | message flow | 3.53 | 9.12 | 0.509 | 18.50 | 26.31 | 0.509 | 40.04 | 44.56 | 0.509 |
+| squad_clean | kNN only | symmetrised | 0.74 | 1.22 | 0.457 | 1.32 | 2.94 | 0.457 | 1.84 | 5.10 | 0.457 |
+| squad_clean | kNN only | message flow | 0.74 | 1.22 | 0.457 | 1.32 | 2.94 | 0.457 | 1.84 | 5.10 | 0.457 |
+| squad_clean | baseline A | symmetrised | 5.31 | 10.34 | 0.175 | 26.72 | 32.83 | 0.175 | 64.41 | 63.97 | 0.175 |
+| squad_clean | baseline A | message flow | 5.31 | 10.34 | 0.175 | 26.72 | 32.83 | 0.175 | 64.41 | 63.97 | 0.175 |
+| webqsp | sealed A | symmetrised | 2.07 | 2.98 | 0.190 | 66.34 | 63.98 | 0.190 | 110.38 | 99.19 | 0.190 |
+| webqsp | sealed A | message flow | 2.07 | 2.98 | 0.190 | 66.34 | 63.98 | 0.190 | 110.38 | 99.19 | 0.190 |
+| webqsp | structural | symmetrised | 0.64 | 1.32 | 0.420 | 62.73 | 61.10 | 0.420 | 99.85 | 89.95 | 0.420 |
+| webqsp | structural | message flow | 0.64 | 1.32 | 0.420 | 62.73 | 61.10 | 0.420 | 99.85 | 89.95 | 0.420 |
+| webqsp | kNN only | symmetrised | 1.15 | 1.67 | 0.388 | 2.33 | 4.58 | 0.388 | 3.35 | 7.66 | 0.388 |
+| webqsp | kNN only | message flow | 1.15 | 1.67 | 0.388 | 2.33 | 4.58 | 0.388 | 3.35 | 7.66 | 0.388 |
+| webqsp | baseline A | symmetrised | 2.07 | 2.98 | 0.190 | 66.34 | 63.98 | 0.190 | 110.38 | 99.19 | 0.190 |
+| webqsp | baseline A | message flow | 2.07 | 2.98 | 0.190 | 66.34 | 63.98 | 0.190 | 110.38 | 99.19 | 0.190 |
+
 ### Operator message load
 
-| dataset | graph | unique edges | stored messages | duplicate fraction | stored self-loops | operator self-loops | messages consumed |
-|---|---|---|---|---|---|---|---|
-| 2wiki_clean | sealed A | 464.1 | 705.7 | 0.345 | 0.0 | 359.7 | 1065.4 |
-| 2wiki_clean | structural | 117.7 | 117.7 | 0.000 | 0.0 | 359.7 | 477.3 |
-| 2wiki_clean | kNN only | 346.5 | 346.5 | 0.000 | 0.0 | 359.7 | 706.2 |
-| 2wiki_clean | baseline A | 464.1 | 464.1 | 0.000 | 0.0 | 359.7 | 823.8 |
-| metaqa | sealed A | 440.1 | 742.6 | 0.402 | 0.0 | 373.1 | 1115.6 |
-| metaqa | structural | 228.1 | 228.1 | 0.000 | 0.0 | 373.1 | 601.2 |
-| metaqa | kNN only | 212.0 | 212.0 | 0.000 | 0.0 | 373.1 | 585.0 |
-| metaqa | baseline A | 440.1 | 440.1 | 0.000 | 0.0 | 373.1 | 813.2 |
-| musique_clean | sealed A | 936.4 | 1556.9 | 0.377 | 0.0 | 332.0 | 1888.8 |
-| musique_clean | structural | 431.3 | 431.3 | 0.000 | 0.0 | 332.0 | 763.3 |
-| musique_clean | kNN only | 505.1 | 505.1 | 0.000 | 0.0 | 332.0 | 837.1 |
-| musique_clean | baseline A | 936.4 | 936.4 | 0.000 | 0.0 | 332.0 | 1268.4 |
-| squad_clean | sealed A | 3190.8 | 6165.1 | 0.455 | 0.0 | 318.9 | 6484.0 |
-| squad_clean | structural | 2806.2 | 2806.2 | 0.000 | 0.0 | 318.9 | 3125.1 |
-| squad_clean | kNN only | 384.6 | 384.6 | 0.000 | 0.0 | 318.9 | 703.5 |
-| squad_clean | baseline A | 3190.8 | 3190.8 | 0.000 | 0.0 | 318.9 | 3509.7 |
-| webqsp | sealed A | 1005.5 | 2257.3 | 0.536 | 0.0 | 344.5 | 2601.8 |
-| webqsp | structural | 442.9 | 442.9 | 0.000 | 0.0 | 344.5 | 787.4 |
-| webqsp | kNN only | 562.6 | 562.6 | 0.000 | 0.0 | 344.5 | 907.1 |
-| webqsp | baseline A | 1005.5 | 1005.5 | 0.000 | 0.0 | 344.5 | 1350.0 |
+| dataset | graph | unique edges | stored messages | duplicate messages | duplicate fraction | stored self-loops | operator self-loops | messages consumed |
+|---|---|---|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | 464.1 | 705.7 | 241.6 | 0.345 | 0.0 | 359.7 | 1065.4 |
+| 2wiki_clean | structural | 117.7 | 117.7 | 0.0 | 0.000 | 0.0 | 359.7 | 477.3 |
+| 2wiki_clean | kNN only | 346.5 | 346.5 | 0.0 | 0.000 | 0.0 | 359.7 | 706.2 |
+| 2wiki_clean | baseline A | 464.1 | 464.1 | 0.0 | 0.000 | 0.0 | 359.7 | 823.8 |
+| metaqa | sealed A | 440.1 | 742.6 | 302.5 | 0.402 | 0.0 | 373.1 | 1115.6 |
+| metaqa | structural | 228.1 | 228.1 | 0.0 | 0.000 | 0.0 | 373.1 | 601.2 |
+| metaqa | kNN only | 212.0 | 212.0 | 0.0 | 0.000 | 0.0 | 373.1 | 585.0 |
+| metaqa | baseline A | 440.1 | 440.1 | 0.0 | 0.000 | 0.0 | 373.1 | 813.2 |
+| musique_clean | sealed A | 936.4 | 1556.9 | 620.5 | 0.377 | 0.0 | 332.0 | 1888.8 |
+| musique_clean | structural | 431.3 | 431.3 | 0.0 | 0.000 | 0.0 | 332.0 | 763.3 |
+| musique_clean | kNN only | 505.1 | 505.1 | 0.0 | 0.000 | 0.0 | 332.0 | 837.1 |
+| musique_clean | baseline A | 936.4 | 936.4 | 0.0 | 0.000 | 0.0 | 332.0 | 1268.4 |
+| squad_clean | sealed A | 3190.8 | 6165.1 | 2974.3 | 0.455 | 0.0 | 318.9 | 6484.0 |
+| squad_clean | structural | 2806.2 | 2806.2 | 0.0 | 0.000 | 0.0 | 318.9 | 3125.1 |
+| squad_clean | kNN only | 384.6 | 384.6 | 0.0 | 0.000 | 0.0 | 318.9 | 703.5 |
+| squad_clean | baseline A | 3190.8 | 3190.8 | 0.0 | 0.000 | 0.0 | 318.9 | 3509.7 |
+| webqsp | sealed A | 1005.5 | 2257.3 | 1251.7 | 0.536 | 0.0 | 344.5 | 2601.8 |
+| webqsp | structural | 442.9 | 442.9 | 0.0 | 0.000 | 0.0 | 344.5 | 787.4 |
+| webqsp | kNN only | 562.6 | 562.6 | 0.0 | 0.000 | 0.0 | 344.5 | 907.1 |
+| webqsp | baseline A | 1005.5 | 1005.5 | 0.0 | 0.000 | 0.0 | 344.5 | 1350.0 |
 
-### Seed reachability -- induced versus global
+### Seed reachability -- both induced notions versus global
 
-| dataset | graph | induced @1 | induced @2 | induced @3 | global @1 | global @2 | global @3 |
-|---|---|---|---|---|---|---|---|
-| 2wiki_clean | sealed A | 0.060 | 0.104 | 0.144 | 0.060 | 0.765 | 0.973 |
-| 2wiki_clean | structural | 0.031 | 0.039 | 0.041 | 0.031 | 0.744 | 0.870 |
-| 2wiki_clean | kNN only | 0.052 | 0.082 | 0.109 | 0.052 | 0.091 | 0.149 |
-| 2wiki_clean | baseline A | 0.060 | 0.104 | 0.144 | 0.060 | 0.765 | 0.973 |
-| metaqa | sealed A | 0.067 | 0.139 | 0.202 | 0.067 | 0.399 | 0.872 |
-| metaqa | structural | 0.047 | 0.085 | 0.103 | 0.047 | 0.353 | 0.770 |
-| metaqa | kNN only | 0.044 | 0.061 | 0.074 | 0.044 | 0.065 | 0.088 |
-| metaqa | baseline A | 0.067 | 0.139 | 0.202 | 0.067 | 0.399 | 0.872 |
-| musique_clean | sealed A | 0.114 | 0.261 | 0.381 | 0.114 | 0.399 | 0.774 |
-| musique_clean | structural | 0.069 | 0.153 | 0.193 | 0.069 | 0.307 | 0.568 |
-| musique_clean | kNN only | 0.072 | 0.130 | 0.185 | 0.072 | 0.139 | 0.226 |
-| musique_clean | baseline A | 0.114 | 0.261 | 0.381 | 0.114 | 0.399 | 0.774 |
-| squad_clean | sealed A | 0.187 | 0.371 | 0.512 | 0.187 | 0.504 | 0.866 |
-| squad_clean | structural | 0.150 | 0.271 | 0.342 | 0.150 | 0.411 | 0.663 |
-| squad_clean | kNN only | 0.064 | 0.109 | 0.147 | 0.064 | 0.112 | 0.163 |
-| squad_clean | baseline A | 0.187 | 0.371 | 0.512 | 0.187 | 0.504 | 0.866 |
-| webqsp | sealed A | 0.156 | 0.454 | 0.539 | 0.156 | 0.574 | 0.846 |
-| webqsp | structural | 0.125 | 0.419 | 0.483 | 0.125 | 0.548 | 0.810 |
-| webqsp | kNN only | 0.065 | 0.110 | 0.146 | 0.065 | 0.114 | 0.160 |
-| webqsp | baseline A | 0.156 | 0.454 | 0.539 | 0.156 | 0.574 | 0.846 |
+| dataset | graph | sym @1 | sym @2 | sym @3 | flow @1 | flow @2 | flow @3 | global @1 | global @2 | global @3 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 2wiki_clean | sealed A | 0.060 | 0.104 | 0.144 | 0.060 | 0.104 | 0.144 | 0.060 | 0.765 | 0.973 |
+| 2wiki_clean | structural | 0.031 | 0.039 | 0.041 | 0.031 | 0.039 | 0.041 | 0.031 | 0.744 | 0.870 |
+| 2wiki_clean | kNN only | 0.052 | 0.082 | 0.109 | 0.052 | 0.082 | 0.109 | 0.052 | 0.091 | 0.149 |
+| 2wiki_clean | baseline A | 0.060 | 0.104 | 0.144 | 0.060 | 0.104 | 0.144 | 0.060 | 0.765 | 0.973 |
+| metaqa | sealed A | 0.067 | 0.139 | 0.202 | 0.067 | 0.139 | 0.202 | 0.067 | 0.399 | 0.872 |
+| metaqa | structural | 0.047 | 0.085 | 0.103 | 0.047 | 0.085 | 0.103 | 0.047 | 0.353 | 0.770 |
+| metaqa | kNN only | 0.044 | 0.061 | 0.074 | 0.044 | 0.061 | 0.074 | 0.044 | 0.065 | 0.088 |
+| metaqa | baseline A | 0.067 | 0.139 | 0.202 | 0.067 | 0.139 | 0.202 | 0.067 | 0.399 | 0.872 |
+| musique_clean | sealed A | 0.114 | 0.261 | 0.381 | 0.114 | 0.261 | 0.381 | 0.114 | 0.399 | 0.774 |
+| musique_clean | structural | 0.069 | 0.153 | 0.193 | 0.069 | 0.153 | 0.193 | 0.069 | 0.307 | 0.568 |
+| musique_clean | kNN only | 0.072 | 0.130 | 0.185 | 0.072 | 0.130 | 0.185 | 0.072 | 0.139 | 0.226 |
+| musique_clean | baseline A | 0.114 | 0.261 | 0.381 | 0.114 | 0.261 | 0.381 | 0.114 | 0.399 | 0.774 |
+| squad_clean | sealed A | 0.187 | 0.371 | 0.512 | 0.187 | 0.371 | 0.512 | 0.187 | 0.504 | 0.866 |
+| squad_clean | structural | 0.150 | 0.271 | 0.342 | 0.150 | 0.271 | 0.342 | 0.150 | 0.411 | 0.663 |
+| squad_clean | kNN only | 0.064 | 0.109 | 0.147 | 0.064 | 0.109 | 0.147 | 0.064 | 0.112 | 0.163 |
+| squad_clean | baseline A | 0.187 | 0.371 | 0.512 | 0.187 | 0.371 | 0.512 | 0.187 | 0.504 | 0.866 |
+| webqsp | sealed A | 0.156 | 0.454 | 0.539 | 0.156 | 0.454 | 0.539 | 0.156 | 0.574 | 0.846 |
+| webqsp | structural | 0.125 | 0.419 | 0.483 | 0.125 | 0.419 | 0.483 | 0.125 | 0.548 | 0.810 |
+| webqsp | kNN only | 0.065 | 0.110 | 0.146 | 0.065 | 0.110 | 0.146 | 0.065 | 0.114 | 0.160 |
+| webqsp | baseline A | 0.156 | 0.454 | 0.539 | 0.156 | 0.454 | 0.539 | 0.156 | 0.574 | 0.846 |
 
 ### Gold path preservation and bridge loss
 

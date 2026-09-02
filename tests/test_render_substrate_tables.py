@@ -56,18 +56,38 @@ def _split(**overrides):
             },
         },
         "receptive_field": {
+            # Protocol 4.4 asks for median, mean and zero-fraction at each hop
+            # on both notions. Distinct values throughout so a renderer that
+            # reads the wrong statistic shows up as a wrong number rather than
+            # a coincidence.
             "symmetrised": {
                 "R1_median": 1.0,
                 "R2_median": 2.0,
                 "R3_median": 3.0,
+                "R1_mean": 1.5,
+                "R2_mean": 2.5,
+                "R3_mean": 3.5,
                 "R1_zero_fraction": 0.25,
+                "R2_zero_fraction": 0.26,
+                "R3_zero_fraction": 0.27,
             },
-            "message_flow": {"R1_median": 1.0, "R2_median": 2.0, "R3_median": 3.0},
+            "message_flow": {
+                "R1_median": 1.0,
+                "R2_median": 2.0,
+                "R3_median": 3.0,
+                "R1_mean": 1.6,
+                "R2_mean": 2.6,
+                "R3_mean": 3.6,
+                "R1_zero_fraction": 0.35,
+                "R2_zero_fraction": 0.36,
+                "R3_zero_fraction": 0.37,
+            },
             "notions_coincide": True,
         },
         "operator_message_load": {
             "unique_non_self_edges": 400.0,
             "stored_non_self_messages": 600.0,
+            "duplicate_messages": 200.0,
             "duplicate_message_fraction": 0.33,
             "stored_self_loops": 0.0,
             "operator_inserted_self_loops": 300.0,
@@ -79,12 +99,19 @@ def _split(**overrides):
                 "reachable_at_2": 0.10,
                 "reachable_at_3": 0.14,
             },
+            "induced_message_flow": {
+                "reachable_at_1": 0.05,
+                "reachable_at_2": 0.09,
+                "reachable_at_3": 0.13,
+            },
             "global": {
                 "reachable_at_1": 0.06,
                 "reachable_at_2": 0.76,
                 "reachable_at_3": 0.97,
             },
         },
+        "queries_without_retrieval_seeds": 0,
+        "queries_without_gold_in_pool": 106,
         "path_preservation": {
             "gold_path_preservation": {
                 "targets": 2.1,
@@ -319,6 +346,35 @@ def test_a_metric_the_audit_did_not_record_prints_as_a_dash():
     rows = _table(_render(_audit(graphs=graphs)), "Candidate-induced connectivity")
     assert "| -- |" in rows[2]
     assert "0.000" not in rows[2]
+
+
+# ---------------------------------------------------------------------------
+# Pool coverage
+# ---------------------------------------------------------------------------
+
+
+def test_pool_coverage_reports_the_share_without_gold_not_only_the_count():
+    # A raw count means nothing without its denominator: 106 is a third of
+    # webqsp's measured queries and a rounding error on squad's.
+    rows = _table(_render(_audit()), "Pool coverage")
+    header, body = rows[0], rows[2]
+    assert "share without gold" in header
+    cells = [c.strip() for c in body.split("|")]
+    assert "106" in cells
+    assert "0.337" in cells  # 106 / 315
+
+
+def test_pool_coverage_separates_missing_seeds_from_missing_gold():
+    # Different caveats attach to each: no seeds would undercut seed
+    # reachability, no gold undercuts only the gold-path rates.
+    header = _table(_render(_audit()), "Pool coverage")[0]
+    assert "without retrieval seeds" in header
+    assert "without gold in pool" in header
+
+
+def test_pool_coverage_is_one_row_per_dataset():
+    rows = _table(_render(_audit(dataset="a"), _audit(dataset="b")), "Pool coverage")
+    assert [r.split("|")[1].strip() for r in rows[2:]] == ["a", "b"]
 
 
 # ---------------------------------------------------------------------------
@@ -585,3 +641,54 @@ def test_the_cli_rewrites_the_report_in_place(tmp_path):
     assert "### Candidate-induced connectivity" in text
     assert "| old | table |" not in text
     assert "kept." in text
+
+
+# --- Protocol 4.4 completeness -------------------------------------------
+#
+# 4.4 fixes exactly what the audit reports. Three of its quantities were
+# measured and stored but never rendered, so the report satisfied the protocol
+# in its data and not in its output. These pin the rendering.
+
+
+def test_all_nine_receptive_field_statistics_appear_on_both_notions():
+    text = rst.render({"audits": [_audit()]}, "validation")
+    block = text.split("### Effective receptive field -- all nine statistics")[1]
+    block = block.split("###")[0]
+    # Medians are shared between the notions in this fixture; means and
+    # zero-fractions are not, so they are what distinguishes the two rows.
+    for value in ("1.50", "2.50", "3.50", "0.250", "0.260", "0.270"):
+        assert value in block, f"symmetrised {value} is not rendered"
+    for value in ("1.60", "2.60", "3.60", "0.350", "0.360", "0.370"):
+        assert value in block, f"message-flow {value} is not rendered"
+    assert "symmetrised" in block and "message flow" in block
+
+
+def test_the_nine_statistic_table_gives_each_notion_its_own_row():
+    text = rst.render({"audits": [_audit()]}, "validation")
+    block = text.split("### Effective receptive field -- all nine statistics")[1]
+    block = block.split("###")[0]
+    rows = [line for line in block.splitlines() if line.startswith("| tiny")]
+    # Four graph families in the fixture, two notions each.
+    assert len(rows) == 2 * len(rst.GRAPH_ORDER), (
+        f"expected one row per graph per notion, got {len(rows)}"
+    )
+    assert sum("symmetrised" in row for row in rows) == len(rst.GRAPH_ORDER)
+    assert sum("message flow" in row for row in rows) == len(rst.GRAPH_ORDER)
+
+
+def test_the_duplicate_message_count_is_rendered_beside_its_fraction():
+    text = rst.render({"audits": [_audit()]}, "validation")
+    block = text.split("### Operator message load")[1].split("###")[0]
+    assert "duplicate messages" in block, "the count column is missing"
+    assert "200.0" in block, "the duplicate message count is not rendered"
+    assert "0.330" in block, "the duplicate fraction stopped being rendered"
+
+
+def test_seed_reach_is_rendered_on_both_induced_notions():
+    text = rst.render({"audits": [_audit()]}, "validation")
+    block = text.split("### Seed reachability")[1].split("###")[0]
+    for value in ("0.060", "0.100", "0.140"):
+        assert value in block, f"symmetrised seed reach {value} is not rendered"
+    for value in ("0.050", "0.090", "0.130"):
+        assert value in block, f"message-flow seed reach {value} is not rendered"
+    assert "flow @1" in block and "sym @1" in block and "global @1" in block

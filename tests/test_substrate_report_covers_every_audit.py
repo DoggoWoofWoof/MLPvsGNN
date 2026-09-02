@@ -87,7 +87,7 @@ def test_complete_rows_carry_no_placeholder_cells():
 
 def test_the_prose_names_the_right_number_of_complete_datasets():
     expected = sum(1 for row in _status().values() if _is_complete(row))
-    cited = re.findall(r"covers the ([\w-]+) complete datasets", prose())
+    cited = re.findall(r"covers\s+the\s+([\w-]+)\s+complete\s+datasets", prose())
     assert cited, (
         "the sentence naming how many datasets the tables cover is gone. If "
         "the phrasing changed, update this test with it rather than dropping "
