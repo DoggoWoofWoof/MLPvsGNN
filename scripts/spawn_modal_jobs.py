@@ -383,7 +383,7 @@ def measured_units(
                     # and builds the cheaper of the two, so D1's model is a
                     # ceiling. D3 shares that one build across four arms but
                     # trains only two of them, so it is bounded by D2 in turn.
-                    if job["stage"] in {"stage_d1", "stage_d2", "stage_d3"}
+                    if job["stage"] in {"stage_d1", "stage_d2", "stage_d3", "stage_d4"}
                     else GRAPH_CONTEXT_LOAD_SECONDS
                     + int(job["query_cap"])
                     * len(job.get("arms") or module.CONFIG["arms"])
@@ -399,7 +399,7 @@ def measured_units(
         # describe a calculation that did not happen -- and a gate report is read
         # later, by someone checking whether the ceiling was set against the
         # right quantity.
-        fitted = {"stage_d0b", "stage_d0c", "stage_d1", "stage_d2", "stage_d3"}
+        fitted = {"stage_d0b", "stage_d0c", "stage_d1", "stage_d2", "stage_d3", "stage_d4"}
         if {job["stage"] for job in jobs} <= fitted:
             queries = sorted({int(job["settings"]["expected_queries"]) for job in jobs})
             return units, (

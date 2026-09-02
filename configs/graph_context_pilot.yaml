@@ -696,6 +696,116 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D4:
+    status: DECLARED
+    results: docs/GRAPH_CONTEXT_D4_RESULTS.md
+    evidence_class: CONFIRMATORY within its own narrow question
+    runner: scripts/run_graph_context_d4.py
+    dataset: 2wiki_clean
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    question: >-
+      After the model already knows bare retrieval-seed membership, does graded
+      retrieval evidence provide substantial additional ranking value?
+    why_it_is_needed: >-
+      D3 showed the seed bit carries 87.4% of the query-local block's R@5 value and
+      beats the whole block on R@1 and MRR. The bit is coarse: it says whether a
+      candidate was in the dense-top-5 union SPLADE-top-5 set and nothing about
+      rank, retriever agreement, or the ~350 candidates outside that set. Whether
+      graded evidence adds to it decides where QLS-v2 starts.
+    arms:
+      Z1_SEED_ID_ONLY: only distance_0, exact bare seed membership; REUSED from D3
+      Z1R_SEED_PLUS_GRADED_RETRIEVAL: >-
+        that same bit, plus A3's dense and SPLADE reciprocal-rank features and a
+        retriever-agreement column, for every candidate in Cq; NEW
+    the_bit_is_preserved_not_replaced: >-
+      Both arms carry distance_0, bit-identical, from the same build_local_features
+      call. Replacing it with graded evidence would have confounded "is graded
+      evidence better than the bit" with "what happens when the bit is removed",
+      and only the second is already answered. Asserted in the runner.
+    definition: >-
+      B, the full candidate retrieval prior: graded evidence for every candidate in
+      Cq, not only for seeds. Feasible because Cq IS the top-200 dense union SPLADE
+      union while Sq is only the top-5 union, so every candidate carries a rank
+      from at least one retriever. Because it is definition B the arm is named
+      GRADED_RETRIEVAL_PRIOR, not seed quality.
+    columns:
+      slot_0: distance_0, unchanged, exactly I[d in Sq]
+      slot_1: dense_reciprocal_rank (A3), overwrites the zeroed distance_1 slot
+      slot_2: splade_reciprocal_rank (A3), overwrites the zeroed distance_2 slot
+      slot_3: retriever_agreement (NEW), overwrites the zeroed distance_3 slot
+      slots_4_to_9: zero in both arms
+    a3_audit:
+      feature_names: [dense_reciprocal_rank, splade_reciprocal_rank]
+      source: mp_retrieval.linear_control.rank_feature_rows, called as D0B calls it
+      formula: (K + 1) / (K + zero_based_rank + 1)
+      constant_K: 60
+      missing_retriever_handling: exactly 0.0 for a candidate absent from that ranking
+      normalisation: >-
+        universal. Rank 0 is exactly 1.0 and rank r is the same value whatever the
+        list length or pool size, so no pool-dependent scale enters. Verified in the
+        runner by halving the list and requiring every value to be unchanged.
+      seeds_special_cased: false
+      new_feature: >-
+        retriever_agreement only, 1.0 iff the candidate is ranked by both
+        retrievers. A deterministic function of the two A3 columns, disclosed as new
+        rather than presented as an A3 feature.
+    ablation:
+      method: filling zeroed slots, not widening the block
+      parameter_difference: 0
+      why: >-
+        The three retrieval columns are exactly zero in SEED_ID_ONLY, so local_dim,
+        head width and parameter count (213,506 at head 61) are identical and the
+        increment measures information, not capacity.
+      same_epoch_budget_for_every_arm: true
+    reuse:
+      arms: {Z1: D3 SEED_ID_ONLY}
+      why: >-
+        Identical conditions, so retraining it for cosmetic symmetry would pay twice
+        for the same numbers and would give one arm a different initialisation. The
+        runner checks dataset, fingerprint, context, model, node count, candidate
+        contract, local feature schema, candidate rows, static feature source,
+        architecture, epoch-budget policy, that D3's reused row is the bare-bit arm
+        and was trained in D3, that the seed-identity proof agrees on column, row
+        count, seed rows and mismatches, all three split sizes and all five training
+        values. It refuses rather than reusing across a mismatch.
+      new_runs: 1
+    reports:
+      delta_retrieval_quality: >-
+        Z1R - Z1, the incremental value of graded dense and SPLADE evidence over
+        every candidate, given bare seed membership. The only main causal comparison.
+      metrics: [recall@1, recall@5, recall@20, mrr, full_coverage@20]
+      also: the same frozen degree strata, which are not refitted
+    interpretation_fixed_in_advance:
+      A_graded_retrieval_prior_dominates: >-
+        Gain much larger than D3's +1.12 R@5 remaining-structure increment. QLS-v2
+        begins from a graded retrieval prior plus seed identity plus minimal seed
+        geometry.
+      B_retrieval_and_structure_both_live: >-
+        Gain roughly 0.5 to 1.5 R@5, comparable to the remaining structural block.
+        Both stay live and are compared on effectiveness against serving and
+        parameter cost.
+      C_seed_bit_already_saturated: >-
+        Gain negligible. The bare bit already captures what retrieval evidence
+        offers this ranker; the next lever is seed-distance geometry, then selective
+        testing of the six remaining structural statistics.
+    projected_cost:
+      basis: >-
+        Measured from D3: 90.4 s of accounted compute for one shared feature build
+        (51.0 s), 2.0 s static, two trainings (18.9 s + 17.8 s) and two scorings. D4
+        shares the same build and trains ONE arm, adding only a cheap pass to
+        assemble the rank columns. Priced as one new run, not two.
+      new_runs: 1
+      gpu_hours_ceiling: 0.10
+      cost_ceiling_usd: 0.45
+      wall_time_ceiling_minutes: 10
+      expected_actual_usd: 0.15
+    does_not_authorise:
+      [second dataset, second seed, GNN, R0-R5 sweep, LODO, E2, TARGET_H1,
+       PATH, BRIDGE, SEED_H2, graph-context gating, per-family decomposition of
+       the six remaining structural columns, more epochs for any one arm]
+
   D3:
     status: COMPLETE
     results: docs/GRAPH_CONTEXT_D3_RESULTS.md
@@ -1178,7 +1288,7 @@ modal:
   # decorator reads this only for the stages listed in gpu_stages, so a CPU
   # stage never pays for an accelerator it does not use.
   gpu: A10G
-  gpu_stages: [stage_d1, stage_d2, stage_d3]
+  gpu_stages: [stage_d1, stage_d2, stage_d3, stage_d4]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -1189,6 +1299,10 @@ modal:
     # Bounded by D1's measured 218 s, with the same order of headroom.
     stage_d2: 3600
     stage_d3: 3600
+    # D4 shares D3's feature build and trains one arm instead of two, so it is
+    # strictly cheaper than D3's measured 90.4 s of accounted work. Same ceiling,
+    # not a tighter one: a timeout is a bound, not a projection.
+    stage_d4: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and

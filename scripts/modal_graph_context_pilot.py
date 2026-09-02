@@ -281,6 +281,27 @@ def _d3_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     return args
 
 
+def _d4_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D4's arguments: D3's, plus the result it reuses and A3's constant.
+
+    D4 reuses D3's SEED_ID_ONLY as its control, so it must be at D3's operating
+    point exactly -- taken from D3's own argument builder rather than restated.
+    The RRF constant comes from D0B's block, which is where A3's frozen fusion
+    constant already lives; D4 reuses A3's transform, so it must not carry a
+    second copy of the constant that transform is defined by.
+    """
+    args = _d3_runner_args(job)
+    args.d3_result = Path(args.output)
+    # D4 reuses D3, and D3 reused D2. Carrying D2's path forward would suggest
+    # this stage reads it, which it does not.
+    del args.d2_result
+    args.holdout_fraction = float(CONFIG["stages"]["D4"]["holdout_fraction"])
+    args.seed = int(CONFIG["stages"]["D4"]["seed"])
+    args.rrf_constant = int(CONFIG["stages"]["D0B"]["rrf_constant"])
+    args.output = Path(args.output).with_name("stage_d4.json")
+    return args
+
+
 def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
 
@@ -399,6 +420,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d3 import run
 
         args = _d3_runner_args(job)
+    elif job["stage"] == "stage_d4":
+        from scripts.run_graph_context_d4 import run
+
+        args = _d4_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run
