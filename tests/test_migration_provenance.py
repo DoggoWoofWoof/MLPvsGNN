@@ -18,6 +18,7 @@ sweep as 96 MISSING cells and invite a full, expensive re-run.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -556,7 +557,9 @@ def test_a_missing_staging_record_is_not_a_transfer_of_nothing(tmp_path, monkeyp
         target="tgt-ws",
         volume="vol",
     )
-    assert mp.cmd_provenance(args) == 0
+    # Non-zero because nothing is staged, so no checkpoint verifies -- which is
+    # itself the point: an empty staging root must not exit clean.
+    assert mp.cmd_provenance(args) == 1
     payload = json.loads(
         (tmp_path / "out" / "migration_provenance.json").read_text(encoding="utf-8")
     )
@@ -564,3 +567,68 @@ def test_a_missing_staging_record_is_not_a_transfer_of_nothing(tmp_path, monkeyp
     assert staged["staging_record_found"] is False
     assert staged["requested_slice"] == "e2_resume"
     assert staged["count"] == 0
+
+
+# ---------------------------------------------------------------------------
+# The one artifact that cannot be regenerated
+# ---------------------------------------------------------------------------
+
+
+def _stage_checkpoints(tmp_path, corrupt=None, drop=None):
+    """Write the staged checkpoint files the frozen E1 results point at."""
+
+    checkpoints = mp.screen_checkpoints()
+    for entry in checkpoints["files"]:
+        if drop and entry["path"] in drop:
+            continue
+        local = tmp_path / entry["path"]
+        local.parent.mkdir(parents=True, exist_ok=True)
+        if corrupt and entry["path"] in corrupt:
+            local.write_bytes(b"not the checkpoint")
+            continue
+        # Content whose digest is the recorded one cannot be conjured, so the
+        # test rewrites the expectation to match the bytes it wrote instead.
+        body = entry["path"].encode("utf-8")
+        local.write_bytes(body)
+        entry["checkpoint_file_sha256"] = hashlib.sha256(body).hexdigest()
+    return checkpoints
+
+
+def test_intact_staged_checkpoints_verify(tmp_path) -> None:
+    checkpoints = _stage_checkpoints(tmp_path)
+    report = mp.verify_screen_checkpoints(tmp_path, checkpoints)
+    assert report["intact"] is True
+    assert report["verified_files"] == checkpoints["expected_files"]
+    assert report["problems"] == []
+
+
+def test_a_corrupted_checkpoint_is_named_not_counted(tmp_path) -> None:
+    checkpoints = mp.screen_checkpoints()
+    victim = checkpoints["files"][0]["path"]
+    checkpoints = _stage_checkpoints(tmp_path, corrupt={victim})
+    report = mp.verify_screen_checkpoints(tmp_path, checkpoints)
+    assert report["intact"] is False
+    assert any(victim in problem for problem in report["problems"])
+    assert report["verified_files"] == checkpoints["expected_files"] - 1
+
+
+def test_a_checkpoint_that_did_not_transfer_is_a_problem(tmp_path) -> None:
+    checkpoints = mp.screen_checkpoints()
+    victim = checkpoints["files"][0]["path"]
+    checkpoints = _stage_checkpoints(tmp_path, drop={victim})
+    report = mp.verify_screen_checkpoints(tmp_path, checkpoints)
+    assert report["intact"] is False
+    assert any(problem.startswith("missing: ") for problem in report["problems"])
+
+
+def test_an_empty_staging_root_does_not_report_intact(tmp_path) -> None:
+    """Nothing staged must never read as 'all 192 verified'."""
+
+    report = mp.verify_screen_checkpoints(tmp_path)
+    assert report["intact"] is False
+    assert report["verified_files"] == 0
+
+
+def test_the_verification_states_what_it_checked_against(tmp_path) -> None:
+    report = mp.verify_screen_checkpoints(tmp_path)
+    assert "checkpoint_file_sha256" in report["checked_against"]

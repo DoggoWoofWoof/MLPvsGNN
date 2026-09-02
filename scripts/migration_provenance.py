@@ -524,6 +524,52 @@ def screen_checkpoints() -> dict[str, Any]:
     }
 
 
+def verify_screen_checkpoints(
+    staging: Path, checkpoints: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    """Hash the staged seed-0 checkpoints against what E1 recorded for them.
+
+    ``screen_checkpoints`` collects the expected hashes; this is the pass that
+    actually opens the files. Worth doing locally because the failure it
+    catches is expensive elsewhere: ``run_phase_confirmation`` verifies the
+    same SHA-256 *after* its container is up and its inputs are mounted, so one
+    corrupted transfer costs a GPU container per affected cell.
+
+    Only the file hash is checked. E2 also verifies a hash of the loaded state
+    dict, which needs torch and catches a different failure -- a file that
+    hashes correctly but deserializes to something else. That one is left to
+    E2 rather than reimplemented here.
+    """
+
+    checkpoints = screen_checkpoints() if checkpoints is None else checkpoints
+    verified = 0
+    problems: list[str] = []
+    for entry in checkpoints["files"]:
+        local = staging / entry["path"]
+        if not local.is_file():
+            problems.append(f"missing: {entry['path']}")
+            continue
+        digest = hashlib.sha256()
+        with local.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1 << 20), b""):
+                digest.update(chunk)
+        actual = digest.hexdigest()
+        if actual != entry["checkpoint_file_sha256"]:
+            problems.append(
+                f"sha256: {entry['path']} recorded "
+                f"{entry['checkpoint_file_sha256'][:16]} actual {actual[:16]}"
+            )
+            continue
+        verified += 1
+    return {
+        "checked_against": "checkpoint_file_sha256 recorded in the frozen E1 result",
+        "expected_files": checkpoints["expected_files"],
+        "verified_files": verified,
+        "intact": not problems and verified == checkpoints["expected_files"],
+        "problems": problems,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Required manifests
 # ---------------------------------------------------------------------------
@@ -881,6 +927,9 @@ def cmd_provenance(args: argparse.Namespace) -> int:
         "datasets": dataset_identity(),
         "non_regenerable_artifacts": {
             "screen_seed0_checkpoints": checkpoints,
+            "screen_seed0_checkpoint_verification": verify_screen_checkpoints(
+                staging, checkpoints
+            ),
         },
         "regenerable_omissions": {
             "phase_confirmation_cache": {
@@ -910,7 +959,16 @@ def cmd_provenance(args: argparse.Namespace) -> int:
     )
     for problem in checkpoints["problems"][:10]:
         print(f"  ! {problem}")
-    return 0
+    verification = payload["non_regenerable_artifacts"][
+        "screen_seed0_checkpoint_verification"
+    ]
+    print(
+        f"staged copies verified by SHA-256: {verification['verified_files']}"
+        f"/{verification['expected_files']}"
+    )
+    for problem in verification["problems"][:10]:
+        print(f"  ! {problem}")
+    return 0 if verification["intact"] else 1
 
 
 def cmd_inputs(args: argparse.Namespace) -> int:

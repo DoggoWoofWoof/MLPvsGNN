@@ -345,6 +345,28 @@ to have capacity.
 - a slice narrowed with `--datasets` keeps its own manifest, so a partial run can
   never pass for the whole slice.
 
+### The one artifact that cannot be regenerated, verified before launch
+
+The 192 seed-0 checkpoints are the only thing in this migration that cannot be
+rebuilt. `run_phase_confirmation` loads each one and refuses on a SHA-256
+mismatch -- but it does that *after* its container is up and its inputs are
+mounted, so a single corrupted transfer costs a GPU container per affected
+cell.
+
+`migration_provenance.py provenance` now hashes every staged copy against the
+`checkpoint_file_sha256` the frozen E1 result recorded for it, and exits
+non-zero unless all 192 verify. On the staged `e2_resume` copy:
+
+```
+screen seed-0 checkpoints required: 192/192
+staged copies verified by SHA-256: 192/192
+```
+
+Only the file hash is checked here. E2 also verifies a hash of the loaded
+state dict, which catches a file that hashes correctly but deserializes to
+something else; that check needs torch and is left where it already lives
+rather than reimplemented.
+
 ### Defects found and fixed during the migration
 
 Each is recorded because the failure mode matters more than the fix.
