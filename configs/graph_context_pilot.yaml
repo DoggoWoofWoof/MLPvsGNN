@@ -461,6 +461,74 @@ stages:
       confound a graph-context change with a representation change. D0b informs
       what a later QLS-v2 probe should contain.
 
+  D0C:
+    status: DECLARED
+    evidence_class: EXPLORATORY
+    runner: scripts/run_graph_context_d0c.py
+    dataset: 2wiki_clean
+    what: >-
+      D0b found TARGET_H1 neutral overall and sharply stratified. Two readings
+      survive that: the restored columns carry information a linear map cannot
+      route conditionally, or restoring context genuinely helps only the starved
+      candidates. D0c separates them by making the conditioning explicit, and
+      re-runs every arm to convergence so the comparison is not read off an
+      arbitrary shared epoch. CPU only, no GNN, no test split.
+    arms:
+      RETRIEVAL_ONLY: 2 rank + 7 static. The floor, re-run converged.
+      CAND: "+ the 10 frozen local columns over Cq."
+      TARGET_H1: "+ the same 10 over Cq union N1_in(Cq)."
+      BOTH: "+ both blocks; the learner chooses the coefficients."
+      SELECTIVE_SUBSTITUTE: "+ 10 columns: H1 where induced degree < 2, CAND otherwise."
+      SELECTIVE_MASK: "+ 10 columns: H1 where induced degree < 2, zeros otherwise."
+    confirmatory_arms: [CAND, TARGET_H1, BOTH]
+    exploratory_arms: [SELECTIVE_SUBSTITUTE, SELECTIVE_MASK]
+    post_hoc_threshold:
+      value: induced degree < 2
+      chosen: after observing D0b's degree strata
+      preregistered: false
+      may_be_used_for_confirmation: false
+      may_be_frozen_into_qls_v2: false
+      universal_transfer_claimed: false
+      purpose: >-
+        To answer only whether conditional use of restored graph information is
+        promising enough to justify designing a principled query-conditioned
+        reliability feature. A yes buys a design effort, not a design.
+    reliability_variable:
+      name: induced_degree_in_G[Cq]
+      trained_on: false
+      exposed_as: >-
+        the axis the TARGET_H1 - CAND delta is reported along, so the question is
+        whether context value falls as historical structural evidence rises
+      strata: [0, 1, 2-4, 5+]
+      boundaries_fitted_here: false
+    learner: the frozen A3 linear control, learning rate carried from A3
+    epochs: 10
+    epoch_selection: >-
+      argmax validation-proxy recall@5 on a deterministic tail of train, so the
+      reporting split is read exactly once per arm. D0b showed every arm still
+      climbing at epoch 3, which is why its RETRIEVAL_ONLY R@1 lead is not a
+      feature conclusion and why this stage does not repeat that comparison at an
+      unconverged checkpoint.
+    holdout_fraction: 0.1
+    seed: 0
+    rrf_constant: 60
+    splits: [train, validation]
+    normalisation: candidate_readout
+    not_compared_to_d0b_absolutes: >-
+      D0c fits on train-minus-tail where D0b fit on all of train, so the absolute
+      numbers are not a continuation. Read the arms against each other.
+    projected_cost:
+      # The gate's own projection rounded up: 600 s load + 15,000 x 45 ms +
+      # 400 s training = 1,675 s at $0.634/h, divided by the standing assumption
+      # that useful work is 40% of billed time.
+      cpu_hours_ceiling: 0.47
+      cost_ceiling_usd: 0.80
+      wall_time_ceiling_minutes: 30
+      expected_actual_usd: 0.10
+    does_not_gate: >-
+      D1. D0c and D1 ask different questions and neither substitutes for the
+      other; D0c may not add arms to D1 or change its schema.
+
   D1:
     status: DECLARED
     declaration: docs/COMPUTE_LEDGER.md
@@ -638,6 +706,11 @@ modal:
   gpu_stages: [stage_d1]
   stage_timeout_seconds:
     stage_d0b: 7200
+    # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
+    # a per-candidate degree pass, and trains six arms for ten epochs instead of
+    # four for three. Projected at ~550 s from D0b's measured parts, so this is
+    # roughly tenfold headroom and stays a ceiling rather than an estimate.
+    stage_d0c: 5400
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and

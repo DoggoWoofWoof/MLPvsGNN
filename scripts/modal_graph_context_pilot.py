@@ -117,11 +117,11 @@ def _stage_key(stage: str) -> str:
 def _selected_learning_rate(dataset: str, stage: str) -> float | None:
     """The rate A3's frozen protocol selected for this dataset, or None.
 
-    Only D0b needs it, and only D0b pays the cost of a missing A3 result -- the
-    other stages train nothing, so a dataset without a sealed linear control
-    must not become an error for them.
+    Only the linear stages need it, and only they pay the cost of a missing A3
+    result -- the other stages train nothing, so a dataset without a sealed
+    linear control must not become an error for them.
     """
-    if stage != "stage_d0b":
+    if stage not in {"stage_d0b", "stage_d0c"}:
         return None
     path = HOST_REPO_ROOT / "outputs" / "p0_linear_rank_structure" / f"{dataset}.json"
     if not path.is_file():
@@ -206,6 +206,46 @@ def _d0b_runner_args(job: dict[str, Any]) -> argparse.Namespace:
         static_pagerank_iterations=int(_static["pagerank_iterations"]),
         static_clustering_max_wedges=int(_static["clustering_max_wedges_per_node"]),
         output=Path(output_root) / "stage_d0b.json",
+    )
+
+
+def _d0c_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D0c's arguments: D0b's, plus the tail that replaces its fixed budget.
+
+    Everything shared with D0b is read from D0B's own config block rather than
+    copied into a D0C one. D0c is a follow-up to that stage under a different
+    epoch budget and arm set; if the static parameters or the RRF constant ever
+    moved, the two stages diverging silently would be worse than either value.
+
+    No `query_cap`: D0c has none. The stage exists to be read against D0b, and a
+    capped run would answer a different question at the same price.
+    """
+    settings = job["settings"]
+    _static = CONFIG["stages"]["D0B"]["static_features"]
+    output_root = (
+        PurePosixPath(STORAGE_ROOT)
+        / "outputs"
+        / "graph_context_pilot"
+        / job["dataset"]
+        / job["fingerprint"][:16]
+    )
+    return argparse.Namespace(
+        data=Path(job["data_remote"]),
+        feature_cache=Path(job["feature_remote"]),
+        dataset=job["dataset"],
+        expected_queries=int(settings["expected_queries"]),
+        baseline=job["baseline"],
+        candidate_contract_compatibility=settings.get("candidate_contract_compatibility"),
+        data_fingerprint_sha256=job["fingerprint"],
+        splits=["train", "validation"],
+        holdout_fraction=float(CONFIG["stages"]["D0C"]["holdout_fraction"]),
+        rrf_constant=int(CONFIG["stages"]["D0B"]["rrf_constant"]),
+        learning_rate=float(job["selected_learning_rate"]),
+        seed=int(CONFIG["stages"]["D0C"]["seed"]),
+        static_pagerank_damping=float(_static["pagerank_damping"]),
+        static_pagerank_iterations=int(_static["pagerank_iterations"]),
+        static_clustering_max_wedges=int(_static["clustering_max_wedges_per_node"]),
+        output=Path(output_root) / "stage_d0c.json",
     )
 
 
@@ -311,6 +351,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d0b import run
 
         args = _d0b_runner_args(job)
+    elif job["stage"] == "stage_d0c":
+        from scripts.run_graph_context_d0c import run
+
+        args = _d0c_runner_args(job)
     elif job["stage"] == "stage_d1":
         from scripts.run_graph_context_d1 import run
 

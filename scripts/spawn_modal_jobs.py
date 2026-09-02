@@ -115,6 +115,26 @@ GRAPH_CONTEXT_D0B_TRAINING_SECONDS = 300.0
 GRAPH_CONTEXT_D1_SECONDS_PER_QUERY = 0.035
 GRAPH_CONTEXT_D1_TRAINING_SECONDS = 120.0
 
+# D0c builds the same two contexts as D0b over the same queries and adds a
+# per-candidate degree pass, so its per-query term is D0b's plus a margin for
+# that pass. Training is six linear arms for ten epochs where D0b ran four for
+# three -- five times the arm-epochs -- and each epoch now rescores a tail as
+# well, so D0b's 300 s bound is carried up rather than scaled: D0b's measured
+# training was 15.4 s, which is not the quantity this term is protecting
+# against.
+GRAPH_CONTEXT_D0C_SECONDS_PER_QUERY = 0.045
+GRAPH_CONTEXT_D0C_TRAINING_SECONDS = 400.0
+
+
+def _graph_context_d0c_seconds(module: Any, job: dict[str, Any]) -> float:
+    """D0b's shape at D0c's arm count. Over-counts by the test split, as D0b does."""
+    protocol_queries = int(job["settings"]["expected_queries"])
+    return (
+        GRAPH_CONTEXT_LOAD_SECONDS
+        + protocol_queries * GRAPH_CONTEXT_D0C_SECONDS_PER_QUERY
+        + GRAPH_CONTEXT_D0C_TRAINING_SECONDS
+    )
+
 
 def _graph_context_d1_seconds(module: Any, job: dict[str, Any]) -> float:
     """Both arms' whole-split feature build, plus the load ceiling, plus training.
@@ -356,6 +376,8 @@ def measured_units(
                 seconds=(
                     _graph_context_d0b_seconds(module, job)
                     if job["stage"] == "stage_d0b"
+                    else _graph_context_d0c_seconds(module, job)
+                    if job["stage"] == "stage_d0c"
                     else _graph_context_d1_seconds(module, job)
                     if job["stage"] == "stage_d1"
                     else GRAPH_CONTEXT_LOAD_SECONDS
@@ -368,6 +390,18 @@ def measured_units(
         ]
         # One split, committed once, so a restart redoes the whole dataset.
         units, granularity = _collapse_without_resumption(units, module, "split", "pilot")
+        # The fitted stages are priced per whole split and ignore both the query
+        # cap and the pilot's context arms, so reporting those numbers here would
+        # describe a calculation that did not happen -- and a gate report is read
+        # later, by someone checking whether the ceiling was set against the
+        # right quantity.
+        fitted = {"stage_d0b", "stage_d0c", "stage_d1"}
+        if {job["stage"] for job in jobs} <= fitted:
+            queries = sorted({int(job["settings"]["expected_queries"]) for job in jobs})
+            return units, (
+                f"{len(jobs)} dataset(s) at {queries} protocol quer(ies), "
+                f"whole splits; {granularity}"
+            )
         caps = sorted({int(job["query_cap"]) for job in jobs})
         arms = sorted({len(job.get("arms") or module.CONFIG["arms"]) for job in jobs})
         return units, f"{len(jobs)} dataset(s) at {caps} quer(ies) x {arms} arm(s); {granularity}"

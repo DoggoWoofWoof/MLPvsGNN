@@ -115,7 +115,7 @@ DATASET_DERIVED_PREFIXES = (
 
 RESULT_PREFIXES = ("outputs",)
 
-SLICES = ("phase_minus_1", "e2_resume", "results", "cache_reference")
+SLICES = ("phase_minus_1", "e2_resume", "results", "cache_reference", "embeddings_only")
 
 # The regeneration gate compares captured source cache cells against freshly
 # rebuilt ones. Those captures must never land where a runner would find
@@ -298,6 +298,26 @@ def build_plan(
         for path, size in _walk(volume, "edge_provenance_graphs"):
             if datasets is None or path.split("/")[1] in datasets:
                 plan[path] = size
+
+    if which == "embeddings_only":
+        # The narrowest slice there is: the two embedding matrices and nothing
+        # else. It exists because a workspace can hold a dataset's topology
+        # without holding the dataset -- `phase_minus_1` deliberately leaves the
+        # embeddings behind, so a stage that scores rather than measures finds a
+        # directory that opens fine under require_embeddings=False and fails the
+        # moment it needs a vector.
+        #
+        # `e2_resume` would also carry them, along with `derived/` and the whole
+        # `outputs/` tree. A slice is the unit an approval is granted over, so
+        # widening one to reach two files inside it would make the transfer
+        # unauditable against what was approved.
+        for dataset, root in sorted(roots.items()):
+            listing = {path: size for path, size in _walk(volume, root)}
+            for name in EMBEDDING_FILES:
+                candidate = f"{root}/{name}"
+                if candidate in listing:
+                    plan[candidate] = listing[candidate]
+            print(f"  {dataset}: {len([p for p in plan if p.startswith(root)])} files")
 
     if which == "cache_reference":
         from scripts.migration_provenance import reference_cache_cells
