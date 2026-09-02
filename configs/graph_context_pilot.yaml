@@ -697,9 +697,10 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D2:
-    status: DECLARED
+    status: COMPLETE
     evidence_class: CONFIRMATORY within its own narrow question
     runner: scripts/run_graph_context_d2.py
+    results: docs/GRAPH_CONTEXT_D2_RESULTS.md
     dataset: 2wiki_clean
     audit: docs/QLS_V1_COMPONENT_AUDIT.md
     question: >-
@@ -758,6 +759,43 @@ stages:
         semantic and retrieval components. In that case do NOT begin the R0-R5
         structural frontier; first audit where QLS-v1's historical gain comes
         from.
+    outcome: >-
+      STRUCTURAL BLOCK MATTERS. Reading D2-A. Zeroing the ten query-local columns
+      costs -20.82 R@5, -16.07 R@20, -8.92 MRR and -2.48 R@1 on 2Wiki validation at
+      seed 0. The block is load-bearing in QLS-v1 by a wide margin.
+    outcome_must_not_be_broadened_to: >-
+      "graph structure is worth twenty points". All ten columns are seed-anchored and
+      sa_mlp has no other seed input -- no reciprocal-rank features, no separate seed
+      indicator -- so NO_QUERY_LOCAL cannot tell which candidates the retriever
+      returned. Against the frozen ladder (seed_only, one binary membership column,
+      65.83 R@5) roughly 18.8 of the 20.8 points is bare seed membership and about
+      2.57 is everything the structural statistics add on top. That split is
+      INFERENCE across two splits and two stages, not a measurement.
+    control: >-
+      FULL_CAND reproduced D1's CAND bit-identically on all five metrics (29.033 /
+      67.883 / 77.525 / 79.2816 / 51.933) and on every recorded digit of the
+      per-epoch train loss. Third independent container to do so.
+    stratified: >-
+      The block's value falls as candidate-induced evidence rises. R@5 delta runs
+      -22.84 isolated, -23.03 degree_1, -19.03 low_degree, -14.90 ordinary; on
+      ordinary, removing the block IMPROVES R@1 by 3.54 and leaves MRR flat. Strata
+      were not refitted (boundaries_fitted_here false).
+    convergence_caveat: >-
+      Both arms select epoch 3 of 3, the boundary, and both are still descending.
+      Three epochs is the frozen QLS-v1 budget and running it is what makes FULL_CAND
+      reproduce CAND, but this is not a converged measurement, and the D0b lesson
+      applies to the stratified reading in particular.
+    reconciles_with_d0c: >-
+      D0c's linear CAND - RETRIEVAL_ONLY was mild (-2.21 R@1, +0.96 R@5) because the
+      linear model keeps two reciprocal-rank features and so still knows what was
+      retrieved. The nonlinear model does not. The stages ablate different amounts of
+      seed information; they are not in tension.
+    actual_cost:
+      accounted_seconds: 88.1
+      note: >-
+        Container total was not captured by the spawn path. Wall clock from launch to
+        COMPLETE was under ten minutes, so under $0.29 at $1.734/h against $0.90
+        authorised.
     does_not_authorise: [second dataset, second seed, GNN, R0-R5 sweep, LODO, E2]
 
   D1:
