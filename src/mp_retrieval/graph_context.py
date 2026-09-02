@@ -93,6 +93,21 @@ SERVING_EXCLUDED = {
 #: the movement signal no rescaling can manufacture.
 DISTANCE_BUCKETS = slice(0, 4)
 
+#: The other six. Each is a per-node quantity divided by the largest such value
+#: anywhere in the kernel's local node space, so each is exactly the half of the
+#: descriptor a wider context can move without any candidate's topology changing.
+NORMALISED_COLUMNS = (4, 5, 6, 7, 8, 9)
+
+#: How the six normalised columns are scaled.
+#:
+#: ``context``  -- historical. Divide by the maximum over every node the kernel
+#:                 saw. Correct when the local node space is the scoring set,
+#:                 which is what ``CAND`` is; wrong the moment it is not.
+#: ``candidate`` -- candidate-readout. Divide by the maximum over the scored
+#:                 candidates only. The structural values are still computed
+#:                 through the full context; only the normaliser is restricted.
+NORMALISATIONS = ("context", "candidate")
+
 
 @dataclass(frozen=True)
 class Operators:
@@ -510,6 +525,42 @@ def context_report(arm, *, rowptr, col, operators, pool, seeds):
     }
 
 
+def candidate_readout(features):
+    """Rescale the six normalised columns over the candidate rows themselves.
+
+    ``features`` is the frozen kernel's output already restricted to the scored
+    candidates, so every normalised column holds ``v_i / M_U`` for the maximum
+    ``M_U`` over the whole context. Dividing that column by its own maximum
+    gives ``v_i / M_C`` for the maximum ``M_C`` over the candidates: the
+    unknown context maximum cancels, exactly, and no raw value has to be
+    recovered or recomputed.
+
+    Two consequences worth stating rather than leaving to be rediscovered.
+
+    First, when the context *is* the candidate set the column maximum is
+    already 1.0 and this divides by one, so ``CAND`` is bit-identical under both
+    normalisations rather than merely close. That is what makes the historical
+    arm a genuine control instead of a second variant.
+
+    Second, the result is invariant to any change in the context that rescales
+    a column uniformly -- which is precisely what adding nodes nobody scores
+    does to a maximum. Under ``context`` normalisation such an addition moves
+    every candidate's feature; here it moves none.
+
+    The zero guard matches the kernel's own: a column that is zero on every
+    candidate stays zero rather than becoming a division by zero. Columns 0-3
+    are a one-hot bucket and are never touched.
+    """
+    features = np.array(features, dtype=np.float32, copy=True)
+    if features.size == 0:
+        return features
+    block = features[:, list(NORMALISED_COLUMNS)]
+    maximum = block.max(axis=0)
+    scale = np.where(maximum > 0, maximum, np.float32(1.0)).astype(np.float32)
+    features[:, list(NORMALISED_COLUMNS)] = block / scale
+    return features
+
+
 def qls_local_features(
     *,
     rowptr,
@@ -521,6 +572,7 @@ def qls_local_features(
     damping=0.85,
     ppr_iterations=8,
     edge_source=None,
+    normalisation="context",
 ):
     """Frozen QLS-v1 query-local descriptors over ``nodes``, read off ``pool``.
 
@@ -543,6 +595,13 @@ def qls_local_features(
     space, so widening the context can rescale a candidate whose own topology did
     not change. ``DISTANCE_BUCKETS`` is free of that confound and is the primary
     movement measure for exactly that reason.
+
+    ``normalisation="candidate"`` removes that confound instead of reporting it,
+    by restricting the normaliser to the scored candidates -- see
+    ``candidate_readout``. The structural values still travel through the whole
+    context; only the population they are scaled against changes. ``CAND`` is
+    bit-identical under both settings, so the historical arm does not move when
+    the fix is applied.
     """
     from .structural_features import _local_feature_chunk
 
@@ -565,4 +624,9 @@ def qls_local_features(
         float(damping),
         int(ppr_iterations),
     )
-    return np.asarray(features)[np.searchsorted(nodes, pool)]
+    if normalisation not in NORMALISATIONS:
+        raise ValueError(
+            f"normalisation must be one of {NORMALISATIONS}, not {normalisation!r}"
+        )
+    readout = np.asarray(features)[np.searchsorted(nodes, pool)]
+    return readout if normalisation == "context" else candidate_readout(readout)
