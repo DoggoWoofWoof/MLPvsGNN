@@ -409,15 +409,19 @@ modal:
 
 compute:
   estimated_before_launch: true
-  is_final: false
-  final_numbers_deferred_to: step_2_smoke_run_on_real_data
+  is_final: true
+  final_numbers_deferred_to: step_2_smoke_run_on_real_data  # done; see below
   expected_to_be_dramatically_cheaper_than_m0b: >-
-    R1/R2/A64 construction is the same real work M0B paid for (re-derived
-    here as the reuse proof, not skipped); U3_bounded adds only a cheap
-    array union in place of M0B's expensive TARGET_H1(Cq_struct) walk, and
-    R3_FULL is cited rather than recomputed. The saving is specifically
-    R3's context-build and feature cost on the datasets where M0B's full
-    re-expansion was largest (hotpotqa_clean above all).
+    Confirmed by the step-2 smoke run. R1/R2/A64 construction is the same
+    real work M0B paid for (re-derived here as the reuse proof, not
+    skipped) and its measured cost lands within noise of M0B's own smoke
+    numbers. The saving is specifically R3: U3_bounded is a cheap array
+    union rather than a TARGET_H1(Cq_struct) walk, so its build latency is
+    sub-millisecond on every dataset, and mainline_r3_bounded_feature p99
+    on hotpotqa_clean (115.0 ms) is roughly a tenth of M0B's filed
+    R3_FULL_REEXPANSION feature p99 on the same dataset (1,145.0 ms) --
+    because the bounded context never re-expands around the newly
+    scoreable structural nodes.
   container: cpu_only
   gpu_hours_authorised: 0.0
   reuses_existing_artifacts: >-
@@ -428,12 +432,48 @@ compute:
     execution, exactly like M0A/M0A.1/M0B's own two-stage discipline: smoke
     on 5 queries/dataset first, derive a real estimate from that
     measurement, file a ceiling, gate-check, only then launch 100 queries x
-    six datasets.
+    six datasets. Done: the smoke run returned on all six datasets
+    (including a retry of musique_clean after the candidate-contract-flag
+    fix -- see git history), peak RSS 3.66-7.69 GB per container (well
+    under the 16 GB ceiling, highest at 48%, metaqa again the peak exactly
+    as in M0B), and the cost below is derived from that real measurement.
   cost_ceiling_usd:
-    filed_from_measurement: false  # updated after the step-2 smoke run
-    point_estimate_usd: null
-    filed_ceiling_usd: null
-    is_final: false
+    filed_from_measurement: true
+    point_estimate_usd: 0.0553
+    point_estimate_derivation: >-
+      Derived 2026-09-04 from the step-2 six-dataset smoke run: 6 datasets
+      x 100 queries x (R1 feature + R2 build + R2 feature + A64 admission +
+      U3_bounded build + R3_bounded feature) per-query cost, using each
+      dataset's OWN real p99 measurement for every component -- the same
+      method M0B used for its own point estimate, with R3_FULL's walk
+      replaced by U3_bounded's array union. Plus each dataset's own real
+      cold_start_compile_ms (1.7 ms-11.2 s, once per container, isolated to
+      R1 query 0, same convention as M0B), plus the same 30s/container x 6
+      residual margin M0B's own updated estimate used (image pull, data
+      load, CSR construction). Total 314,117 ms = 0.087255 CPU-hours at the
+      $0.634/h CPU rate docs/COMPUTE_LEDGER.md documents -> $0.0553. The
+      residual margin (180,000 ms) dominates the real per-query total
+      (134,117 ms across all six datasets combined) -- expected, since
+      R3_BOUNDED's own cost is now small by construction. Per-dataset
+      component table: scripts kept this derivation in the session
+      scratchpad, not committed, matching M0B's own practice of filing the
+      resulting number and its prose rather than the throwaway script.
+    filed_ceiling_usd: 2.00
+    ceiling_margin_rationale: >-
+      ~36x the point estimate, inside this repo's own established
+      convention (docs/COMPUTE_LEDGER.md: every stage files a ceiling
+      roughly 30-40x its actual measured cost, e.g. Stage C: $5.15 ceiling
+      vs $0.16 actual). Filed as a fixed round number rather than M0B's
+      $5.00 verbatim -- M0C's own point estimate is smaller than M0B's
+      ($0.0553 vs $0.088), and carrying M0B's ceiling forward unchanged
+      would have meant an untethered ~90x margin rather than a re-derived
+      one inside the stated band.
+    is_final: true
+    stop_condition_check: >-
+      Not triggered. Peak RSS across all six smoke containers (3.66-7.69
+      GB) leaves comfortable headroom under the 16 GB ceiling, and the
+      point estimate ($0.0553) is far below the filed ceiling ($2.00), not
+      above it. Step 4 (headline launch) may proceed.
 
 # --------------------------------------------------------------------------
 # After the map

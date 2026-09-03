@@ -377,12 +377,19 @@ def test_the_runner_actually_asserts_the_six_live_invariants_by_name():
 # --- compute: not yet filed, correctly deferred to the smoke measurement ---
 
 
-def test_compute_is_not_yet_final(config):
+def test_the_cost_ceiling_is_now_filed_from_measurement_not_a_placeholder(config):
     compute = config["compute"]
-    assert compute["is_final"] is False
-    assert compute["cost_ceiling_usd"]["filed_from_measurement"] is False
-    assert compute["cost_ceiling_usd"]["point_estimate_usd"] is None
-    assert compute["cost_ceiling_usd"]["filed_ceiling_usd"] is None
+    assert compute["is_final"] is True
+    ceiling = compute["cost_ceiling_usd"]
+    assert ceiling["is_final"] is True
+    assert ceiling["filed_from_measurement"] is True
+    assert ceiling["point_estimate_usd"] is not None
+    assert ceiling["filed_ceiling_usd"] is not None
+    # The ceiling must stay a conservative multiple of the point estimate, not
+    # collapse to it -- a tight ceiling would force a re-file on ordinary
+    # container-to-container variance, the opposite of what step 3 is for.
+    assert ceiling["filed_ceiling_usd"] > ceiling["point_estimate_usd"] * 10
+    assert "not triggered" in ceiling["stop_condition_check"].lower()
 
 
 def test_compute_explains_why_m0c_should_be_cheaper(config):

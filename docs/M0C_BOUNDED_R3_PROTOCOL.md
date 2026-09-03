@@ -234,23 +234,46 @@ The eight required invariants (`configs/m0c_bounded_r3.yaml#invariants_required`
 A failure on any of the eight stops the stage. None is averaged away across
 the sample.
 
-## 9. Compute — a plan, not a final number
+## 9. Compute — filed from a real measurement
 
-Not yet filed. `configs/m0c_bounded_r3.yaml#compute.cost_ceiling_usd` is
-`is_final: false` until the step-2 smoke run produces a real per-dataset
+`configs/m0c_bounded_r3.yaml#compute.cost_ceiling_usd` is now `is_final:
+true`, filed 2026-09-04 from the step-2 smoke run's real per-dataset
 measurement, mirroring M0A/M0A.1/M0B's own two-stage discipline exactly:
-smoke on 5 queries/dataset → derive a real estimate → file a ceiling with a
-conservative margin (this repo's convention: roughly 30–40× the point
-estimate) → gate-check → only then launch the 600-query headline run.
+smoke on 5 queries/dataset (done — all six datasets, including a retry of
+`musique_clean` after the candidate-contract-flag fix) → derive a real
+estimate → file a ceiling with a conservative margin → gate-check → launch
+the 600-query headline run.
 
-M0C is expected to be dramatically cheaper than M0B for one structural
-reason: R1/R2/A64 construction is the same real work M0B already paid for
-(re-derived here as the reuse proof, not skipped — so it is not free), but
+The point estimate is **$0.0553**, derived the same way M0B derived its own
+$0.088: 6 datasets × 100 queries × (R1 feature + R2 build + R2 feature + A64
+admission + U3_bounded build + R3_bounded feature) per-query cost at each
+dataset's own real p99, plus each dataset's own real
+`cold_start_compile_ms` once per container, plus the same 30s/container × 6
+residual margin M0B's own updated estimate used. At the $0.634/h CPU rate
+`docs/COMPUTE_LEDGER.md` documents, that is 0.087255 CPU-hours. The filed
+ceiling is **$2.00**, ≈36× the point estimate — inside this repo's stated
+30–40× convention, not carried forward from M0B's own $5.00 unchanged (full
+derivation and rationale: `configs/m0c_bounded_r3.yaml#compute`).
+
+M0C is confirmed dramatically cheaper than M0B for the structural reason
+predicted: R1/R2/A64 construction is the same real work M0B already paid
+for (re-derived here as the reuse proof, not skipped — so it is not free,
+and its measured cost lands within noise of M0B's own smoke numbers), but
 R3's expensive part — `TARGET_H1(Cq_struct)`'s context build and the feature
 pass over it — is replaced by a cheap array union and a feature pass over a
-strictly smaller (`U3_bounded ⊆ U3_full`, proved in §3) context. The saving
-is concentrated exactly on the datasets where M0B's full re-expansion was
-largest, `hotpotqa_clean` above all.
+strictly smaller (`U3_bounded ⊆ U3_full`, proved in §3) context. On
+`hotpotqa_clean`, where M0B's full re-expansion was largest, the saving
+shows up directly: `mainline_r3_bounded_feature` p99 is 115.0 ms against
+M0B's filed `R3_FULL_REEXPANSION` feature p99 of 1,145.0 ms on the same
+dataset — roughly a tenth of the cost, because the bounded context never
+re-expands around the newly scoreable structural nodes.
+
+Peak RSS across all six smoke containers: 3.66 GB (`2wiki_clean`) to 7.69 GB
+(`metaqa`), comfortably under the 16 GB container ceiling (highest at 48%)
+and closely tracking M0B's own filed figures for the same six datasets —
+expected, since R1/R2/A64 are the identical work and `U3_bounded` is never
+larger than M0B's own `U3_full`. No stop condition triggered; step 4
+(headline launch) is cleared to proceed.
 
 ## 10. What this declaration does not authorise
 
@@ -270,7 +293,37 @@ cells.
 
 ## 11. What actually happened
 
-Not yet — this section is appended once the steps above execute, matching
-`docs/M0B_REGIME_MAP_PROTOCOL.md`'s own convention of recording real results
-in the protocol doc as they land, with full results filed separately in
-`docs/M0C_BOUNDED_R3_RESULTS.md`.
+**Steps 1–3 complete.** Full results land in `docs/M0C_BOUNDED_R3_RESULTS.md`
+once the headline run (step 4) returns; this section tracks progress as it
+lands, matching `docs/M0B_REGIME_MAP_PROTOCOL.md`'s own convention.
+
+**Step 1 (declare):** filed `configs/m0c_bounded_r3.yaml` and this protocol
+doc, commit `4269f8b`.
+
+**Step 2 (prove reuse) — one real bug, then verified clean.** The smoke run
+(5 queries/dataset) surfaced a real defect on first Modal contact:
+condensing M0B's per-dataset block into M0C's config silently dropped
+`musique_clean`'s `pre_hop_metadata_v1` `candidate_contract_compatibility`
+flag while keeping `2wiki_clean`'s, so `musique_clean`'s job failed
+`validate_candidate_contract` with "Frozen baseline candidate contract does
+not match." Fixed by restoring the flag and adding a permanent regression
+test (`test_candidate_contract_compatibility_matches_m0b_for_every_dataset`
+in `tests/test_m0c_declaration.py`) comparing every dataset's flag against
+M0B's own YAML. `musique_clean`'s smoke job was re-spawned alone and
+completed. Commit `a9f730f`.
+
+With all six smoke outputs downloaded, `tests/test_m0c_reuse_against_m0b.py`
+ran for real against M0B's own filed smoke data (not toy fixtures): 48/48
+parametrized checks passed — bit-exact reproduction of R1 headroom and
+candidate counts, R2 context-node counts, shared R1/R2 invariants, A64
+admission (`C3_M0C == C3_M0B` on every family, admitted count ≤ 64 on
+every query), R3 containment and gold-overlap classification, and
+retrieval/structural node-role counts, across all six datasets. The guard
+test (`test_at_least_one_stage_has_been_downloaded_and_checked`) confirms
+this was a real check against real data, not a vacuous all-skip run. The
+reuse claim in §6 is now verified, not just proved algebraically.
+
+**Step 3 (cost) — filed.** See §9. Point estimate $0.0553, ceiling $2.00
+(≈36×), `is_final: true`. No stop condition triggered.
+
+**Steps 4–8:** not yet run.
