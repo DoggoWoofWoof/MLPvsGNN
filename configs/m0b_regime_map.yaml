@@ -243,6 +243,18 @@ sampling:
       (single dataset load, 5-query slice, no GPU) -- this is an operational
       correction to how step 2 executes, not a reopening of what step 2
       checks or why.
+    measurement_scope_2026_09_03: >-
+      scripts/run_m0b_regime_map.py now also times qls_local_features per
+      query for R1/R2/R3 (Safeguard C found this cost is where webqsp's real
+      risk actually lives, not in the invariants). This does not enlarge
+      queries_per_dataset or change selection -- same 5 queries, same
+      deterministic prefix -- it only widens what is measured per query
+      already in the sample. The run's first such call (always R1's query 0,
+      by fixed per-query order) pays a one-time Numba parallel-JIT compile
+      and is reported separately as cold_start_compile_ms, never mixed into
+      steady_state or discarded; see result.r1.feature_latency_ms and
+      docs/M0B_REGIME_MAP_PROTOCOL.md section 10 for the real cliff this was
+      diagnosed from on webqsp.
 
 # --------------------------------------------------------------------------
 # Feature catalog wiring
@@ -570,57 +582,71 @@ compute:
         300-query sample, not as the first measurement of either regime.
   what_is_unmeasured:
     a64_admission_cost: >-
-      expand()'s STRUCTURAL_NEIGHBOUR rule over the symmetrised
-      structural_only family at graph_expansion_cap=64 -- never run in the
-      graph-context pilot, which only ever expands TARGET_H1 over the raw
-      directed graph.pt. Genuinely new to M0B, on every dataset.
+      Measured for real on all six datasets by the step-2 smoke run
+      (2026-09-03, 5 queries/dataset): 0.6-1.0ms p99, cheap and roughly flat
+      across datasets as expected for a bounded, cap=64 admission rule.
+      Still genuinely new to M0B relative to the graph-context pilot, which
+      only ever expands TARGET_H1 over the raw directed graph.pt and never
+      ran STRUCTURAL_NEIGHBOUR -- but no longer unmeasured. See
+      docs/M0B_REGIME_MAP_PROTOCOL.md section 10 for the full table.
     r3_absolute_latency: >-
-      Cq_struct's own TARGET_H1(Cq_struct)=U3 build and feature cost.
-      Plausibly close to R2's, since the graph-context pilot found context
-      cost scales with context node count rather than corpus size and
-      Cq_struct is at most 64 nodes larger than Cq -- but that is an
-      extrapolation from a different arm, not a measurement, and is not
-      filed as one. On every dataset.
+      Measured for real on all six datasets by the step-2 smoke run, not
+      extrapolated from R2. It does NOT scale uniformly with R2: squad_clean's
+      R3 feature cost (164.5ms p99) sits close to its R2 (167.4ms), but
+      hotpotqa_clean's R3 context explodes to ~65x its R2 context-node count
+      (median 1,935 -> 126,056) and its R3 feature cost follows (1,145.0ms
+      p99, climbing and noisy even within 5 queries) -- context-size growth
+      under A64 admission is real and dataset-specific, not a fixed ratio.
+      Full per-dataset table in docs/M0B_REGIME_MAP_PROTOCOL.md section 10.
     peak_rss_for_the_full_r1_r2_r3_pipeline: >-
-      The graph-context pilot's cost section reports container-seconds and
-      CPU-hours, never RSS. M0A.1's three-dataset RSS figures above are a
-      different runner over a different (smaller) node set than R3 adds.
+      Measured for real on all six datasets by the step-2 smoke run (the
+      actual R1+R2+A64+R3 runner, not M0A.1's narrower node set): all six
+      stay well under the 16GB container ceiling (3.6-7.7GB, highest at
+      48%). See why_webqsp_stays_the_named_risk below for the one correction
+      this measurement produced.
     why_webqsp_stays_the_named_risk: >-
-      For memory only, now that A64/R3 are measured (see safeguard_c above):
-      webqsp is the largest of the six graphs, so its 4.59 GB peak RSS is
-      the relevant worst case there. It is NOT the per-query latency worst
-      case for R3 -- the already-measured R1/R2 table shows squad_clean
-      (155.2ms) and hotpotqa_clean (143.5ms) both already cost more at R2
-      features than webqsp (41.8ms) despite webqsp's much larger graph,
-      since feature cost tracks context size, not corpus size. The step-3
-      estimate below applies webqsp's measured R3:R2 cost ratio to each
-      dataset's own R2 baseline rather than webqsp's absolute numbers, for
-      exactly this reason -- see docs/M0B_REGIME_MAP_PROTOCOL.md section 10.
+      Corrected 2026-09-03: for MEMORY, webqsp is no longer the named risk --
+      the step-2 smoke run's real peak RSS is actually highest for metaqa
+      (7.69GB), not webqsp (4.62GB), contradicting the edge-count-based
+      assumption that the largest graph would show the largest peak RSS.
+      Both remain far under the 16GB container, so this changes no gate, but
+      the reason previously named no longer holds; peak RSS should be read
+      per-dataset going into step 4, not assumed to track graph size. webqsp
+      DOES stay correctly named as not the R3 per-query LATENCY worst case
+      -- squad_clean and hotpotqa_clean both already cost more at R2/R3
+      features than webqsp despite webqsp's much larger graph, since feature
+      cost tracks context size, not corpus size (confirmed, not just
+      plausible, now that R3 is measured directly rather than via ratio).
+      See docs/M0B_REGIME_MAP_PROTOCOL.md section 10.
   cost_ceiling_usd:
     filed_from_measurement: true
-    point_estimate_usd: 0.147
+    point_estimate_usd: 0.088
     point_estimate_derivation: >-
-      6 datasets x 100 queries x (R1+R2+A64+R3) per-query cost, where R1/R2
-      are the real six-dataset pilot numbers above, A64 and R3's build/distance
-      use webqsp's own measured p99 as a uniform proxy (bounded-cost/context-
-      insensitive operations), and R3's features use webqsp's measured
-      R3:R2 feature-cost RATIO (5.91x) applied to each dataset's own R2
-      baseline -- not webqsp's absolute R3 number, which the
-      why_webqsp_stays_the_named_risk correction above shows would
-      understate squad_clean and hotpotqa_clean. Plus 60s/container x 6 for
-      image pull, data load, CSR construction and the one-time Numba
-      parallel-JIT compile (webqsp's own observed 12.0s max sits inside
-      this margin). Total ~0.232 compute-hours at the $0.634/h CPU rate
-      docs/COMPUTE_LEDGER.md documents. Full per-dataset table in
-      docs/M0B_REGIME_MAP_PROTOCOL.md section 10.
+      Updated 2026-09-03 from the step-2 six-dataset smoke run: 6 datasets x
+      100 queries x (R1+R2+A64+R3) per-query cost, using each dataset's OWN
+      real p99 measurement for every component (R1/R2/A64/R3 build and
+      features alike) -- replacing the prior estimate's webqsp-ratio
+      extrapolation for R3 features now that all six are measured directly.
+      Plus each dataset's own real cold_start_compile_ms (8.4-12.6s, once
+      per container, isolated to R1 query 0 -- see
+      docs/M0B_REGIME_MAP_PROTOCOL.md section 10 for the cross-dataset
+      verification that no other stage shows a similar outlier), plus a
+      reduced 30s/container x 6 residual margin (image pull, data load, CSR
+      construction) now that the JIT-compile piece it used to cover is
+      measured exactly rather than folded into a 60s slack. Total ~0.1385
+      compute-hours at the $0.634/h CPU rate docs/COMPUTE_LEDGER.md
+      documents. Full per-dataset table in docs/M0B_REGIME_MAP_PROTOCOL.md
+      section 10.
     filed_ceiling_usd: 5.00
     ceiling_margin_rationale: >-
-      ~34x the point estimate, matching this repo's own established
-      convention (docs/COMPUTE_LEDGER.md: every stage files a ceiling
-      roughly 30-40x its actual measured cost, e.g. Stage C: $5.15 ceiling
-      vs $0.16 actual) rather than a tight bound that forces a re-file on
-      ordinary container-to-container variance. Replaces the prior $3.00
-      order-of-magnitude placeholder, which predated any measurement.
+      ~57x the point estimate (up from ~34x at the prior $0.147 estimate --
+      more conservative, not less, since real six-dataset measurement came
+      in below the ratio-extrapolated projection it replaces). Still inside
+      this repo's own established convention (docs/COMPUTE_LEDGER.md: every
+      stage files a ceiling roughly 30-40x its actual measured cost, e.g.
+      Stage C: $5.15 ceiling vs $0.16 actual) on the conservative side.
+      Ceiling itself stays unchanged at $5.00 -- the margin widened because
+      the estimate dropped, not because the ceiling moved.
     is_final: true
     stop_condition_check: >-
       Not triggered. docs/M0B_REGIME_MAP_PROTOCOL.md's own filed stop

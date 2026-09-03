@@ -533,6 +533,149 @@ spend is far below the $3.00 placeholder it replaces, not materially above
 it, and every Safeguard B invariant held on real data. Step 4 is authorised
 to proceed on this basis.
 
+**Step 2, launched for real, 2026-09-03.** All six datasets,
+`scripts/modal_m0b_regime_map.py` (`run_regime_map_smoke`), 5 queries each,
+validation split, deterministic prefix, `structural_only`, cap=64 —
+`outputs/m0b_regime_map/smoke/*.json` (gitignored, not committed; this
+section is the record). Every job returned `M0B_REGIME_MAP_COMPLETE`: no
+Safeguard B invariant breached on any dataset, including the newly-tightened
+`scored_r1_equals_scored_r2` (now a real per-query array-equality check, not
+an assumed label — see `scripts/run_m0b_regime_map.py`).
+
+*Containment, reported as the two separate figures the user's own
+instruction requires — never conflated:*
+
+| dataset | all-admitted-node containment | recovered-gold instances | recovered gold already in U2 |
+|---|---:|---:|---:|
+| `squad_clean` | 210/210 = 1.0 | 0 | n/a (none recovered at this sample size) |
+| `2wiki_clean` | 112/112 = 1.0 | 3 | 3/3 = 1.0 |
+| `musique_clean` | 136/136 = 1.0 | 0 | n/a |
+| `hotpotqa_clean` | 159/159 = 1.0 | 0 | n/a |
+| `metaqa` | 101/101 = 1.0 | 2 | 2/2 = 1.0 |
+| `webqsp` | 82/82 = 1.0 | 4 | 4/4 = 1.0 |
+
+Every dataset that recovered any gold at all found it already inside U2 —
+`BEYOND_U2_RECOVERED == 0`, the same shape M0A.1 and Safeguard C already
+found, now replicated on three more datasets. **`hotpotqa_clean`'s all-node
+containment is also 1.0 on this sample** — but this is a 5-query measurement
+of a 5-query sample, not a closure of the directionality risk flag: `A64 ⊆
+U2` is not a mathematical identity for `hotpotqa_clean` (its `graph.pt` is
+not bidirectionally closed, unlike the other five), so a gap can only be
+ruled out by measurement, not assumed from this result. The flag stays open
+into the 100-query headline run.
+
+*Cold start, confirmed real and isolated to R1 query 0 on all six datasets*
+(`ms`, `structural_only`):
+
+| dataset | R1 cold-start compile | R1 steady-state p50 | R2 raw range | R3 raw range |
+|---|---:|---:|---:|---:|
+| `squad_clean` | 12,601.4 | 8.1 | 104.9–167.8 | 95.9–165.0 |
+| `2wiki_clean` | 8,443.6 | 3.3 | 5.1–7.8 | 78.0–90.0 |
+| `musique_clean` | 8,715.7 | 1.4 | 5.9–14.8 | 11.6–14.4 |
+| `hotpotqa_clean` | 11,953.5 | 52.3 | 87.4–122.6 | 184.6–1,160.4 |
+| `metaqa` | 11,686.3 | 1.7 | 3.8–5.6 | 6.0–19.9 |
+| `webqsp` | 8,792.6 | 56.4 | 59.3–69.0 | 55.4–383.8 |
+
+No R2 or R3 raw array shows a cold-start-shaped outlier (one value orders of
+magnitude above the rest) on any dataset — the one-time Numba parallel-JIT
+compile really does land exactly once, on R1's first call, exactly as
+designed. `cold_start_compile_ms` is reported per dataset, split from
+`steady_state`, and the full raw array is retained unfiltered in every
+regime's `feature_latency_ms` block — nothing here is discarded.
+
+**A genuine finding, not noise: `hotpotqa_clean`'s R3 context explodes
+relative to R2**, far more than any other dataset:
+
+| dataset | R2 context nodes (median) | R3 context nodes (median) | growth |
+|---|---:|---:|---:|
+| `squad_clean` | 6,120 | 6,404 | 1.05x |
+| `2wiki_clean` | 2,039 | 40,737 | 20.0x |
+| `musique_clean` | 2,402 | 3,882 | 1.6x |
+| `hotpotqa_clean` | 1,935 | 126,056 | **65.1x** |
+| `metaqa` | 2,383 | 7,893 | 3.3x |
+| `webqsp` | 1,574 | 29,614 | 18.8x |
+
+This is why `hotpotqa_clean`'s R3 feature cost is both the highest of the
+six and the noisiest within just 5 queries (184.6–1,160.4 ms, a 6.3x spread,
+climbing rather than flat) — R3 feature cost tracks context size, and
+`hotpotqa_clean`'s A64 admissions evidently sit near much denser local
+neighbourhoods than the other five datasets', on the queries sampled here.
+Worth watching at the 100-query headline scale, not a reason to stop: every
+Safeguard B invariant held (including
+`structural_only.admitted_delta_within_universal_cap`, so A64 itself never
+exceeded its own +64 budget — the blowup is in the *context* TARGET_H1 walks
+outward from the admitted nodes, not in admission itself), and peak RSS
+stayed well inside the container even for this dataset (below).
+
+**Correction to "`webqsp` is the named risk" — memory, not just latency:**
+measured peak RSS at smoke scale is actually highest for `metaqa` (7.69 GB),
+not `webqsp` (4.62 GB), contradicting the edge-count-based assumption that
+the largest graph (`webqsp`, ~15.6x `2wiki_clean`'s edge count) would also
+show the largest peak RSS:
+
+| dataset | peak RSS (GB) |
+|---|---:|
+| `squad_clean` | 4.79 |
+| `2wiki_clean` | 3.67 |
+| `musique_clean` | 3.63 |
+| `hotpotqa_clean` | 5.78 |
+| `metaqa` | 7.69 |
+| `webqsp` | 4.62 |
+
+Both remain far under the 16 GB container (highest at 48%), so this does not
+change Step 4's authorisation, but the *reason* previously named for
+tracking `webqsp` specifically no longer holds for memory — peak RSS does
+not track graph edge count here. `webqsp` does stay correctly named as not
+the R3 *latency* risk (the earlier correction in this section), and no
+dataset's memory margin is remotely tight, so this is recorded as a
+correction for accuracy, not a new risk requiring its own gate.
+
+## Step 3: the compute projection, updated from real six-dataset measurement
+
+The step-4 estimate above (`$0.147`) applied `webqsp`'s measured R3:R2
+feature-cost *ratio* to each dataset's own R2 baseline, because Safeguard C
+only ever measured `webqsp`. Step 2 now measures R1, R2, A64 admission, and
+R3 directly on all six datasets, so the ratio-extrapolation is replaced with
+each dataset's own real numbers. Per-query cost, p99 of the 5-query smoke
+sample per component (`ms`):
+
+| dataset | R1 feat | R2 build | R2 feat | A64 | R3 build | R3 feat | total/query | ×100 (s) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `squad_clean` | 15.7 | 3.9 | 167.4 | 0.8 | 3.3 | 164.5 | 355.7 | 35.6 |
+| `2wiki_clean` | 3.6 | 2.4 | 7.7 | 0.7 | 3.1 | 89.9 | 107.5 | 10.7 |
+| `musique_clean` | 1.5 | 0.9 | 14.7 | 0.7 | 0.7 | 14.3 | 32.7 | 3.3 |
+| `hotpotqa_clean` | 54.9 | 30.6 | 121.6 | 0.8 | 30.1 | 1,145.0 | 1,382.9 | 138.3 |
+| `metaqa` | 2.2 | 1.1 | 5.5 | 0.6 | 1.3 | 19.8 | 30.6 | 3.1 |
+| `webqsp` | 70.6 | 66.9 | 68.9 | 1.0 | 67.7 | 378.2 | 653.2 | 65.3 |
+
+At `n=5`, p99 sits near each dataset's own observed max, which is the safe
+direction for a projection feeding a gate — this deliberately does not
+smooth over `hotpotqa_clean`'s climbing R3 tail.
+
+Sum of the six ×100-query columns ≈ **256.3 s**. Each dataset's own real,
+measured `cold_start_compile_ms` (table above) is added once per container
+rather than assumed — sum ≈ **62.2 s**. The remaining per-container margin
+(image pull, dataset load, CSR construction — still not separately measured)
+is reduced from the prior estimate's 60 s to **30 s × 6 = 180 s**, since the
+JIT-compile piece it used to cover is now measured exactly rather than
+folded in as slack. Total ≈ **498.4 s ≈ 0.1385 compute-hours**, at the
+$0.634/h CPU rate `docs/COMPUTE_LEDGER.md` documents ≈ **$0.088**.
+
+This is *lower* than the ratio-extrapolated $0.147, not higher — the ratio
+method overstated cost for datasets whose real R3:R2 ratio came in below
+`webqsp`'s 5.91x (e.g. `musique_clean`'s real ratio is ≈0.98x) by more than
+it understated `hotpotqa_clean`'s (whose real ratio, ≈9.4x, does exceed
+5.91x — consistent with the context-blowup finding above, and exactly the
+kind of gap a six-dataset measurement is supposed to catch that a
+single-dataset ratio cannot). The filed ceiling stays **$5.00**, unchanged —
+now roughly a **57x** margin rather than the prior 34x, more conservative,
+not less.
+
+This does not trigger the stop condition: the newly-measured spend is
+materially *below* the already-authorised $0.147 estimate, not above it, and
+every Safeguard B invariant held on real data across all six datasets. Step
+4 is authorised to proceed on this basis.
+
 ## 11. What this declaration does not authorise
 
 Only step 1 — filing this declaration. Not authorised: the step-2 smoke

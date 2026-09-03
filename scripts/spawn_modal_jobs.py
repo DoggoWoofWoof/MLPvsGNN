@@ -63,6 +63,10 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
     "m0a-probe": ("scripts.modal_m0a_probe", {"train": "run_probe"}),
     "m0a1-overlap": ("scripts.modal_m0a1_overlap", {"train": "run_overlap"}),
     "m0b-webqsp-probe": ("scripts.modal_m0b_webqsp_probe", {"train": "run_probe"}),
+    "m0b-regime-map": (
+        "scripts.modal_m0b_regime_map",
+        {"smoke": "run_regime_map_smoke", "headline": "run_regime_map_headline"},
+    ),
 }
 
 # Stage B replaced the pre-launch guess with measurements, so this is now

@@ -44,12 +44,21 @@ def _write_dataset(root: Path, *, golds=DEFAULT_GOLDS) -> None:
     nodes = rng.normal(size=(NUM_NODES, 6)).astype(np.float32)
     np.save(root / "nodes.npy", nodes)
     np.save(root / "queries_all.npy", rng.normal(size=(4, 6)).astype(np.float32))
+    # Rows are descending, not ascending: complete_data._stable_union does an
+    # order-preserving (first-occurrence) dedup of concat(dense, splade), not
+    # a sort, so an ascending-by-construction fixture reassembles
+    # candidate_index in sorted order by accident and can never exercise a
+    # caller that forgets to sort a pool before using it as
+    # qls_local_features' nodes= argument -- the real bug
+    # scripts/run_m0b_webqsp_probe.py hit on first contact with real (sorted-
+    # nothing) webqsp data, fixed there with one np.unique call and mirrored
+    # by the same reversed-row fix in tests/test_m0b_webqsp_probe.py.
     dense = np.array(
         [
-            [0, 1, 2, 3, 4, 5],
-            [6, 7, 8, 9, 10, 11],
-            [12, 13, 14, 15, 16, 17],
-            [18, 19, 20, 21, 22, 23],
+            [5, 4, 3, 2, 1, 0],
+            [11, 10, 9, 8, 7, 6],
+            [17, 16, 15, 14, 13, 12],
+            [23, 22, 21, 20, 19, 18],
         ]
     )
     splade = (dense + 2) % NUM_NODES
@@ -143,7 +152,7 @@ def test_the_run_completes_and_says_what_it_did_not_do(regime_map):
 
 def test_r1_and_r2_ceilings_are_bit_exact(regime_map):
     assert regime_map["invariants"]["oracle_r1_equals_oracle_r2_bit_exact"] is True
-    assert regime_map["invariants"]["scored_r1_equals_scored_r2"] == "true_by_construction_both_are_Cq"
+    assert regime_map["invariants"]["scored_r1_equals_scored_r2"] is True
 
 
 def test_u2_contains_cq_for_every_query(regime_map):
@@ -215,6 +224,46 @@ def test_r3_node_role_totals_match_admitted_and_gold_overlap_bookkeeping(regime_
     assert r3_roles["STRUCTURAL_SCORED_CANDIDATE"] == admitted_total
 
 
+# --- feature-construction cost: cold-start vs steady-state ---
+
+
+def test_r1_feature_latency_splits_a_cold_start_from_steady_state(regime_map):
+    r1_features = regime_map["r1"]["feature_latency_ms"]
+    raw = r1_features["raw_ms"]
+    assert len(raw) == regime_map["queries"]
+    assert r1_features["cold_start_compile_ms"] == raw[0]
+    steady = raw[1:]
+    assert r1_features["steady_state"]["max"] == max(steady)
+    assert r1_features["steady_state"]["mean"] == pytest.approx(sum(steady) / len(steady))
+
+
+def test_r2_and_r3_feature_latency_have_no_cold_start_of_their_own(regime_map):
+    # The one-time Numba compile always lands on R1's query-0 call (this
+    # runner's fixed R1-before-R2-before-R3 order); by the time R2/R3 first
+    # call qls_local_features, the kernel is already warm. Their full raw
+    # array is already steady-state -- nothing here is sliced off.
+    r2_features = regime_map["r2"]["feature_latency_ms"]
+    assert r2_features["cold_start_compile_ms"] is None
+    assert len(r2_features["raw_ms"]) == regime_map["queries"]
+    assert r2_features["steady_state"]["max"] == max(r2_features["raw_ms"])
+
+    for family, row in regime_map["r3"].items():
+        r3_features = row["feature_latency_ms"]
+        assert r3_features["cold_start_compile_ms"] is None, family
+        assert len(r3_features["raw_ms"]) == regime_map["queries"], family
+        assert r3_features["steady_state"]["max"] == max(r3_features["raw_ms"]), family
+
+
+def test_raw_feature_timings_are_never_discarded(regime_map):
+    # "raw unfiltered timings must still be retained in the machine-readable
+    # artifact -- never silently discarded or overwritten" -- one raw entry
+    # per query, in every regime, always, not just when a cold start exists.
+    assert len(regime_map["r1"]["feature_latency_ms"]["raw_ms"]) == regime_map["queries"]
+    assert len(regime_map["r2"]["feature_latency_ms"]["raw_ms"]) == regime_map["queries"]
+    for row in regime_map["r3"].values():
+        assert len(row["feature_latency_ms"]["raw_ms"]) == regime_map["queries"]
+
+
 # --- systems ---
 
 
@@ -232,6 +281,12 @@ def test_systems_reports_latency_percentiles_and_peak_rss(regime_map):
         "mainline_u3_build_latency_ms",
     ):
         assert set(systems[key]) >= {"p50", "p95", "max"}
+    for key in ("r1_feature_latency_ms", "r2_feature_latency_ms", "mainline_r3_feature_latency_ms"):
+        assert set(systems[key]["steady_state"]) >= {"p50", "p95", "max"}
+    assert "cold_start_compile_ms" in systems["r1_feature_latency_ms"]
+    assert systems["mainline_r3_feature_latency_ms"]["steady_state"]["max"] == max(
+        regime_map["r3"][MAINLINE_FAMILY]["feature_latency_ms"]["raw_ms"]
+    )
     assert systems["latency_is_per_query_percentiles_on_one_container"] is True
 
 
@@ -243,10 +298,13 @@ def test_the_run_repeats_exactly(tmp_path):
     second = run(_args(tmp_path / "b"))
     for payload in (first, second):
         payload.pop("systems")
+        payload["r1"].pop("feature_latency_ms")
         payload["r2"].pop("build_latency_ms")
+        payload["r2"].pop("feature_latency_ms")
         for row in payload["r3"].values():
             row.pop("admission_latency_ms")
             row.pop("context_build_latency_ms")
+            row.pop("feature_latency_ms")
     assert json.dumps(first, sort_keys=True) == json.dumps(second, sort_keys=True)
 
 

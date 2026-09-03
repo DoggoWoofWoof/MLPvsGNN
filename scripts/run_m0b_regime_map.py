@@ -58,6 +58,7 @@ from scripts.run_m0a_probe import (
     _percentiles,
     _undirected,
 )
+from scripts.run_m0b_webqsp_probe import _feature_ms
 from scripts.run_sa_mlp_confirmation import validate_candidate_contract
 
 COMPLETE_STATUS = "M0B_REGIME_MAP_COMPLETE"
@@ -68,6 +69,25 @@ MAINLINE_FAMILY = "structural_only"
 # mainline A64 -- not M0A.1's own headline arm (cap=128) and not M0A's
 # original default (cap=128). Held fixed like M0A.1's own budget.
 A64_GRAPH_EXPANSION_CAP = 64
+# qls_local_features' first call in a fresh container pays a one-time
+# Numba parallel-JIT compile (structural_features.py's
+# @njit(cache=True, parallel=True) kernel). This runner always times R1
+# before R2 before R3, for every query in a fixed order, so that first call
+# is always R1's query-0 feature call -- see
+# docs/M0B_REGIME_MAP_PROTOCOL.md section 10 for the real webqsp cliff this
+# was diagnosed from. Split out by position, not by statistical outlier
+# detection, and never dropped from the raw array.
+R1_COLD_START_ATTRIBUTION_NOTE = (
+    "index 0 of raw_ms -- structurally the first qls_local_features call in "
+    "this run. Excluded from steady_state so a fresh-container Numba "
+    "parallel-JIT compile never contaminates the feature-cost figure "
+    "HIGH_COST screening reads; retained in raw_ms, never discarded."
+)
+STEADY_STATE_ONLY_ATTRIBUTION_NOTE = (
+    "not applicable here -- the one-time compile cost is always paid during "
+    "R1's query-0 call, which this runner always executes first; see "
+    "result.r1.feature_latency_ms.cold_start_compile_ms"
+)
 
 
 def _a64_budget(*, per_seed_cap: int, neighbour_scan_cap_per_seed: int) -> ExpansionBudget:
@@ -140,19 +160,56 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     r1_metrics, _r1_present, _r1_gold_counts = regime_headroom(
         ragged_from_rows(pools), golds, num_nodes=num_nodes, ks=KS
     )
+
+    # R1 feature-construction cost (qls_local_features), timed per query and
+    # BEFORE R2/R3 so query 0 here is this process's first such call -- see
+    # R1_COLD_START_ATTRIBUTION_NOTE above for why that position matters.
+    r1_feature_ms: list[float] = []
+    r1_scored_sets: list[np.ndarray] = []
+    for view in views:
+        # qls_local_features uses np.searchsorted against nodes= without
+        # sorting it first; view.pool is retrieval-ranked, not ascending.
+        # Same fix as scripts/run_m0b_webqsp_probe.py's R1 arm, applied
+        # proactively here rather than waiting to hit it again on real spend.
+        sorted_pool = np.unique(view.pool)
+        r1_scored_sets.append(sorted_pool)
+        r1_feature_ms.append(
+            _feature_ms(
+                rowptr=rowptr, col=col, nodes=sorted_pool, pool=sorted_pool,
+                seeds=view.seeds, size=num_nodes, edge_source=operators.edge_source,
+            )
+        )
+    cold_start_compile_ms = r1_feature_ms[0] if r1_feature_ms else None
+    r1_feature_steady_ms = r1_feature_ms[1:]
+
     result["r1"] = {
         "headroom": r1_metrics,
         "candidate_count": _counts([pool.size for pool in pools]),
+        "feature_latency_ms": {
+            "raw_ms": r1_feature_ms,
+            "cold_start_compile_ms": cold_start_compile_ms,
+            "steady_state": _percentiles(r1_feature_steady_ms),
+            "cold_start_attribution": R1_COLD_START_ATTRIBUTION_NOTE,
+        },
     }
 
     # --- R2 context: U2 = TARGET_H1(Cq) ---
     u2_sets: list[np.ndarray] = []
     u2_ms: list[float] = []
+    r2_feature_ms: list[float] = []
+    r2_scored_sets: list[np.ndarray] = []
     for view in views:
         started = time.perf_counter()
         nodes = context_nodes(CONTEXT_ARM, operators=operators, pool=view.pool, seeds=view.seeds)
         u2_ms.append((time.perf_counter() - started) * 1000.0)
         u2_sets.append(nodes)
+        r2_scored_sets.append(np.unique(view.pool))
+        r2_feature_ms.append(
+            _feature_ms(
+                rowptr=rowptr, col=col, nodes=nodes, pool=view.pool,
+                seeds=view.seeds, size=num_nodes, edge_source=operators.edge_source,
+            )
+        )
 
     # scored_R2 == scored_R1 == Cq by construction (R2 never widens the scored
     # set, only the context) -- so recomputing headroom over the same pools
@@ -164,7 +221,15 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     result["invariants"]["oracle_r1_equals_oracle_r2_bit_exact"] = bool(r1_metrics == r2_metrics)
     if not result["invariants"]["oracle_r1_equals_oracle_r2_bit_exact"]:
         raise RuntimeError("R2 moved the candidate ceiling; the scored set is not Cq")
-    result["invariants"]["scored_r1_equals_scored_r2"] = "true_by_construction_both_are_Cq"
+    # Verified per query, not assumed: R1 and R2 must have scored the exact
+    # same node set. Currently true by construction (both loops read
+    # view.pool), but this now catches a future divergence instead of
+    # documenting one that can no longer be checked.
+    result["invariants"]["scored_r1_equals_scored_r2"] = bool(
+        all(np.array_equal(a, b) for a, b in zip(r1_scored_sets, r2_scored_sets, strict=True))
+    )
+    if not result["invariants"]["scored_r1_equals_scored_r2"]:
+        raise RuntimeError("R2's scored set diverged from R1's Cq; the scored-set invariant is broken")
     result["invariants"]["u2_contains_cq"] = bool(
         all(np.isin(view.pool, u2).all() for view, u2 in zip(views, u2_sets, strict=True))
     )
@@ -174,6 +239,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     result["r2"] = {
         "context_node_count": _counts([nodes.size for nodes in u2_sets]),
         "build_latency_ms": _percentiles(u2_ms),
+        "feature_latency_ms": {
+            "raw_ms": r2_feature_ms,
+            "cold_start_compile_ms": None,
+            "steady_state": _percentiles(r2_feature_ms),
+            "cold_start_attribution": STEADY_STATE_ONLY_ATTRIBUTION_NOTE,
+        },
         "arm": CONTEXT_ARM,
         "adjacency": "in_neighbours_of_Cq, the exact existing TARGET_H1 contract",
     }
@@ -201,6 +272,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         a64_ms: list[float] = []
         u3_ms: list[float] = []
         u3_sizes: list[int] = []
+        r3_feature_ms: list[float] = []
         per_query_invariants: list[dict[str, Any]] = []
         per_query_admitted_overlap: list[dict[str, np.ndarray]] = []
         per_query_gold_classification: list[dict[str, np.ndarray]] = []
@@ -229,6 +301,15 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             u3 = context_nodes(CONTEXT_ARM, operators=operators, pool=cq_struct, seeds=view.seeds)
             u3_ms.append((time.perf_counter() - started) * 1000.0)
             u3_sizes.append(int(u3.size))
+            # Base sealed-A graph (rowptr/col), not family_rowptr/family_col:
+            # the admission-family graph only decides which nodes join
+            # Cq_struct, same convention as run_m0b_webqsp_probe.py's R3 arm.
+            r3_feature_ms.append(
+                _feature_ms(
+                    rowptr=rowptr, col=col, nodes=u3, pool=cq_struct,
+                    seeds=view.seeds, size=num_nodes, edge_source=operators.edge_source,
+                )
+            )
 
             per_query_invariants.append(
                 regime_set_invariants(cq=view.pool, cq_struct=cq_struct, a64=a64, universal_cap=64)
@@ -277,6 +358,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "admission_latency_ms": _percentiles(a64_ms),
             "context_node_count": _counts(u3_sizes),
             "context_build_latency_ms": _percentiles(u3_ms),
+            "feature_latency_ms": {
+                "raw_ms": r3_feature_ms,
+                "cold_start_compile_ms": None,
+                "steady_state": _percentiles(r3_feature_ms),
+                "cold_start_attribution": STEADY_STATE_ONLY_ATTRIBUTION_NOTE,
+            },
             "admitted_node_containment_in_u2": containment,
             "gold_overlap_vs_u2": gold_partition,
         }
@@ -288,6 +375,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             }
             mainline_a64_ms = a64_ms
             mainline_u3_ms = u3_ms
+            mainline_r3_feature_ms = r3_feature_ms
 
     # --- systems: construction-stage latency and peak RSS for this container ---
     result["systems"] = {
@@ -295,6 +383,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "u2_build_latency_ms": _percentiles(u2_ms),
         "mainline_a64_admission_latency_ms": _percentiles(mainline_a64_ms),
         "mainline_u3_build_latency_ms": _percentiles(mainline_u3_ms),
+        "r1_feature_latency_ms": {
+            "cold_start_compile_ms": cold_start_compile_ms,
+            "steady_state": _percentiles(r1_feature_steady_ms),
+        },
+        "r2_feature_latency_ms": {"steady_state": _percentiles(r2_feature_ms)},
+        "mainline_r3_feature_latency_ms": {"steady_state": _percentiles(mainline_r3_feature_ms)},
         "latency_is_per_query_percentiles_on_one_container": True,
     }
 
