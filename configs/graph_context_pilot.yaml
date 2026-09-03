@@ -697,7 +697,92 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D9:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D9_RESULTS.md
+    outcome: PATH REPLACEMENT UNINFORMATIVE ON 2WIKI
+    outcome_qualification: >-
+      Uninformative on a SYSTEMS rule, not on representation. The stage stopped
+      at the microbenchmark: 92.4 s of branch-diversity construction against a
+      74.2 s historical feature build. No arm was fitted, so there is no ladder,
+      no increment and no effectiveness claim of any kind. D7's PATHS
+      classification is untouched and the three effectiveness readings filed in
+      advance remain untested.
+    the_gate_that_was_never_reached: >-
+      The frozen mechanistic gate was computed on validation before the abort
+      and recorded in full. Applying the filed thresholds to it -- arithmetic on
+      the stage's own measurement, not a second run -- it would NOT have fired.
+      Hop 1 is representation-equivalent at 0.094% of within-query pairs
+      reordered; hops 2 and 3 diverge materially at 0.370% and 0.845% against a
+      0.0025 threshold. The stage would have proceeded to train one arm.
+    the_predicted_weakness_held: >-
+      Both conditions declared weak before measurement behaved as declared.
+      Nonzero agreement came back at exactly 1.000000 in all three columns, with
+      no discriminating power whatever. The pooled Spearman passed in all three
+      (0.998383 to 0.999669) and is an artifact of the shared zero mass: on rows
+      where either column is nonzero it collapses to 0.409761 / 0.650787 /
+      0.710165. The ordering condition was the only discriminator, exactly as
+      filed.
+    mechanistic_finding: >-
+      Walk multiplicity is mostly multiplicity. At hop 3 the historical column
+      ranges over walk counts to 7,880 while the branch count reaches 255 and
+      the number of distinct seeds reaching the candidate never exceeds 9.
+      395,695 within-query pairs are strictly reversed at hop 3, and 1,176,596
+      pairs the walk count separates are ties under the replacement.
+    reach_is_not_branch: >-
+      CONFIRMED ON REAL DATA. Identical at hop 1 by construction, then differing
+      on 36,786 rows at hop 2 and 74,356 at hop 3, with Pearson falling to
+      0.725978 and 0.637605. Injecting "distinct seeds within k hops" would have
+      handed the learner reach, which never exceeds 9, instead of branch, which
+      reaches 255.
+    overlap_with_d8: >-
+      Diagnostic only, never trained. At hop 1 branch diversity is very nearly
+      D8's distinct support (Pearson 0.931212, Spearman 0.999810), which is also
+      the one column the mechanistic gate calls equivalent. At hops 2 and 3 the
+      overlap falls away (Spearman 0.527883 and 0.611398). The part of the path
+      family that is not already support is the part beyond one hop.
+    cost_rule_defect_found: >-
+      The abort rule as filed -- and as implemented identically in D8 -- compares
+      the WHOLE construction wall clock against the historical build. 79.24 s of
+      the 92.4 s was re-extracting induced edges the historical build already
+      computes, which the same declaration says is NOT charged to a new feature.
+      The kernel itself is 9.84 s, 13.25% of the build, at 0.877 ms p95 per
+      query in 6368 bytes of workspace. D8 passed the same rule at 42.0 s
+      against a 51.4 s build; this container ran the identical historical build
+      1.44 times slower and the re-extraction crossed with it. The rule was NOT
+      changed after seeing this: repairing a preregistered rule inside the stage
+      whose outcome it produced is exactly the result-driven rewriting this
+      project forbids. It is recorded, and its repair is the next experiment's
+      first correction.
+    systems_measured: >-
+      branch kernel 9.84 s, p50 0.620 / p95 0.877 / p99 1.022 ms per query;
+      shared induced-edge extraction 79.24 s reported separately; D8 overlap
+      diagnostic 1.19 s timed separately again; temporary workspace 6368 bytes;
+      peak RSS 6,250,299,392 bytes; three fixed graph passes, no convergence
+      loop.
+    storage_ceiling_measured: >-
+      The frozen 13-column block is float16. The 138 distinct branch-saturation
+      values present collapse to 78 when stored, and branch counts above 51 stop
+      being distinguishable from their successors. The historical columns are
+      log1p ratios in the same dtype and pay the same cost, so neither arm is
+      advantaged, but any future structural feature inherits this ceiling.
+    not_established: >-
+      Nothing about effectiveness. No arm was fitted. Whether branch diversity
+      ranks better or worse than walk multiplicity is untested, and the
+      mechanistic divergence is not a proxy for it -- D8 is the standing
+      reminder that two nearly rank-equivalent signals can still differ on all
+      five metrics. Hop 1 is a partial exception in the other direction: the two
+      representations are equivalent there under the filed rule, so even a
+      fitted arm could not have attributed anything at hop 1 to the correction.
+    actual_cost:
+      container_seconds: 229.0
+      gpu_hours: 0.064
+      usd: 0.11
+      against_authorisation: 0.08 GPU-h and $0.40
+      why_above_the_passing_projection: >-
+        the 0.035 GPU-h projection was priced from D8's container; this one ran
+        the same historical feature build 1.44 times slower and still paid for
+        the feature work before aborting.
+      fitted_runs: 0
     evidence_class: CONFIRMATORY within its own narrow question
     runner: scripts/run_graph_context_d9.py
     dataset: 2wiki_clean
