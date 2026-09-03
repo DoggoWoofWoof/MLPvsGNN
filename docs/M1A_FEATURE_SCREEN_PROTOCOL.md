@@ -207,11 +207,20 @@ SA_MLP's own three coarse arm-types, not this catalog's column ranges);
 (c) the `is_structurally_admitted` column; (d) a runner looping
 (dataset, regime, arm) for one seed, generalising
 `run_sa_mlp_confirmation.py`'s own fit/score/telemetry loop from fixed model
-identities to this file's column-masked arms; (e) confirmation that
-uncached feature-build p50/p95/p99 reuses the same timing utility M0B/M0C's
-`feature_latency_ms.steady_state.p99` came from -- not yet confirmed which
-module that is, to be resolved before step 4, not before filing this
-document.
+identities to this file's column-masked arms; (e) reuse of the same timing
+convention M0B/M0C's `feature_latency_ms.steady_state.p99` came from --
+**resolved**: `_feature_ms()` in `scripts/run_m0b_webqsp_probe.py:125-138`
+wraps the per-query `qls_local_features(...)` call in
+`time.perf_counter()`; `_percentiles()` in `scripts/run_m0a_probe.py:52-62`
+takes the resulting raw-millisecond list and reports `np.percentile` at
+50/95/99 plus mean/max; "steady_state" means the raw list with index 0
+(query-0's one-time Numba parallel-JIT compile) excluded, per
+`R1_COLD_START_ATTRIBUTION_NOTE`/`STEADY_STATE_ONLY_ATTRIBUTION_NOTE` in
+`scripts/run_m0c_bounded_r3.py`. The new M1A runner must time its own
+per-arm feature-build calls the same way (perf_counter-wrapped, query-0
+excluded from steady_state, `np.percentile` at the same three points) so
+p50/p95/p99 stay comparable across M0B/M0C/M1A rather than silently
+becoming a new, inconsistent measurement.
 
 ## 9. Pre-declared selection rule
 
@@ -304,14 +313,22 @@ resuming E2. No workspace migration.
 
 ## 15. Open items before step 4
 
-Two items are explicitly unresolved by this document and must be settled
-before the smoke run, not silently defaulted inside runner code:
+One item remains explicitly unresolved by this document and must be
+settled before the smoke run, not silently defaulted inside runner code:
 
 1. **The lexicographic tie-break rule's 4th tier** (§9) -- not yet fixed.
-2. **Which module M0B/M0C's `feature_latency_ms.steady_state.p99` actually
-   came from** (§8, §10) -- needed to wire the new runner's percentile
-   reporting onto the same measurement convention rather than a new,
-   inconsistent one.
+   Only matters if arms (1)-(3) tie exactly; not blocking for the smoke run
+   itself (a single BASE + one feature-arm smoke has nothing to tie-break),
+   so this must be fixed before step 5 (the real one-seed screen) rather
+   than before step 4.
+
+Resolved this session, no longer open: **which module M0B/M0C's
+`feature_latency_ms.steady_state.p99` actually came from** (§8, §10) --
+confirmed as `_feature_ms()` in `scripts/run_m0b_webqsp_probe.py:125-138`
+(`time.perf_counter()` around `qls_local_features(...)`) reduced by
+`_percentiles()` in `scripts/run_m0a_probe.py:52-62` (`np.percentile` at
+50/95/99, query-0 excluded from steady_state). The new M1A runner reuses
+this exact convention.
 
 The semantic-branch rung choice (§3, S2) is a judgement call, not an open
 item in the same sense -- it is a stated decision, flagged for review, that

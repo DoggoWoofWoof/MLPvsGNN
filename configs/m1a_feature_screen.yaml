@@ -406,10 +406,13 @@ metrics_required_per_fit:
     (training_seconds:430; peak_gpu_memory_mb_total/incremental:285-286,
     338-339; peak_cpu_rss_mb_total/incremental:287-288,341-343; latency_ms_
     per_query:283,331-332). uncached_feature_build_latency_p50/95/99 is new
-    instrumentation -- confirm against the timing utility M0B/M0C's own
-    feature_latency_ms.steady_state.p99 used (overlap_audit.py or a shared
-    systems-timing helper; not yet confirmed which) before step 4's smoke
-    run, not before filing this declaration.
+    instrumentation -- RESOLVED: reuse the same convention M0B/M0C's own
+    feature_latency_ms.steady_state.p99 came from, confirmed as
+    scripts/run_m0b_webqsp_probe.py::_feature_ms (125-138, perf_counter
+    around qls_local_features) reduced by scripts/run_m0a_probe.py::
+    _percentiles (52-62, np.percentile at 50/95/99, query-0 excluded from
+    steady_state per run_m0c_bounded_r3.py's cold-start attribution notes).
+    The new runner's p50/p95/p99 must be produced the same way.
 
 # --------------------------------------------------------------------------
 # Reuse contract -- what M1A reuses vs. builds new
