@@ -15,8 +15,17 @@ import pytest
 import yaml
 
 from mp_retrieval.candidate_expansion_v2 import EXPANSION_METHODS, ExpansionBudget
+from mp_retrieval.compute_budget import container_rate_usd_per_hour
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _container_rate(declaration: dict) -> float:
+    return container_rate_usd_per_hour(
+        gpu=declaration["modal"]["gpu"],
+        cpu_cores=declaration["compute"]["cpu"],
+        memory_mb=declaration["compute"]["memory_mb"],
+    )
 CONFIG = ROOT / "configs" / "m0a_probe.yaml"
 
 
@@ -161,10 +170,63 @@ def test_the_protocol_names_the_reconstruction_as_a_reconstruction(protocol):
     assert "never enters the\nadmission score" in protocol
 
 
-def test_the_protocol_does_not_report_a_number_it_could_not_have(protocol):
-    """M0A has not run. Only D10's already-published ratios may appear."""
+def test_the_protocol_does_not_report_a_number_it_could_not_have(protocol, declaration):
+    """M0A has not run.
+
+    Every decimal in the protocol has to be traceable to something that already
+    exists: a D10 ratio that is published, a threshold the config declares, or
+    a pre-launch cost estimate the config also declares. Anything else would be
+    a measurement this stage has not made.
+    """
+
     import re
 
-    published = {"1.2449", "0.9779", "1.0", "0.25", "0.60", "1"}
+    estimate = declaration["compute"]["estimate"]
+    allowed = {"1.2449", "0.9779", "1.0", "0.25"}
+    allowed |= {
+        f"{declaration['compute']['cost_ceiling_usd']:.2f}",
+        f"{estimate['estimated_cost_usd']:.2f}",
+        f"{estimate['estimated_cost_usd_at_three_times_the_estimate']:.2f}",
+        f"{_container_rate(declaration):.4f}",
+    }
     for number in re.findall(r"\b\d+\.\d+\b", protocol):
-        assert number in published, number
+        assert number in allowed, number
+
+
+# --- the container that is authorised is the container that is requested ---
+
+
+def test_the_launcher_shape_is_the_authorised_shape(declaration):
+    compute, modal_config = declaration["compute"], declaration["modal"]
+    assert modal_config["cpu"] == compute["cpu"]
+    assert modal_config["memory_mb"] == compute["memory_mb"]
+    assert modal_config["timeout_seconds"] == compute["timeout_seconds_per_job"]
+    assert modal_config["gpu"] is None
+    assert compute["gpu_hours_authorised"] == 0.0
+
+
+def test_the_cost_was_estimated_before_the_launch(declaration):
+    estimate = declaration["compute"]["estimate"]
+    assert declaration["compute"]["estimated_before_launch"] is True
+    assert estimate["estimated_cost_usd"] < declaration["compute"]["cost_ceiling_usd"]
+    assert (
+        estimate["estimated_cost_usd_at_three_times_the_estimate"]
+        < declaration["compute"]["cost_ceiling_usd"]
+    )
+    assert set(estimate["job_seconds"]) == set(declaration["datasets"])
+
+
+def test_the_estimate_says_it_is_an_estimate(declaration):
+    """A host timing is not a container measurement, and must not read as one."""
+    assert "not a measurement of the container" in declaration["compute"]["estimate"]["measured_on"]
+
+
+def test_the_run_is_submitted_server_side(declaration):
+    assert declaration["modal"]["spawn_server_side"] is True
+    assert "detach" in declaration["modal"]["never_modal_run_detach"]
+
+
+def test_the_quoted_hourly_rate_is_the_projects_own_rate(protocol, declaration):
+    """A rate written by hand is a rate nobody can trace. This one is computed."""
+    assert f"{_container_rate(declaration):.4f}" in protocol
+    assert "compute_budget" in protocol

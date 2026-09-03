@@ -60,6 +60,7 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         "scripts.modal_graph_context_pilot",
         {"train": "run_context_pilot"},
     ),
+    "m0a-probe": ("scripts.modal_m0a_probe", {"train": "run_probe"}),
 }
 
 # Stage B replaced the pre-launch guess with measurements, so this is now
@@ -427,6 +428,24 @@ def measured_units(
         caps = sorted({int(job["query_cap"]) for job in jobs})
         arms = sorted({len(job.get("arms") or module.CONFIG["arms"]) for job in jobs})
         return units, f"{len(jobs)} dataset(s) at {caps} quer(ies) x {arms} arm(s); {granularity}"
+
+    if package == "m0a-probe":
+        estimate = module.CONFIG["compute"]["estimate"]["job_seconds"]
+        unknown = sorted({job["dataset"] for job in jobs} - set(estimate))
+        if unknown:
+            return None, f"no estimated job cost for {', '.join(unknown)}"
+        # One dataset is one job that writes its result once at the end, so a
+        # restart redoes the whole dataset. The declaration's per-job estimate
+        # is therefore already the indivisible unit.
+        units = [
+            WorkUnit(name=job["dataset"], seconds=float(estimate[job["dataset"]]))
+            for job in jobs
+        ]
+        units, granularity = _collapse_without_resumption(units, module, "dataset", "probe")
+        return units, (
+            f"{len(jobs)} dataset(s) at the declared pre-launch estimate, "
+            f"which is a host timing and not a container measurement; {granularity}"
+        )
 
     return None, f"no measured cost model for {package}"
 

@@ -82,6 +82,19 @@ An edge whose displacement has no usable norm -- two nodes at the same
 coordinate -- has no direction to be compatible with, so it is dropped and
 counted rather than scored as zero.
 
+**The frontier is the undirected one-hop neighbourhood of `Sq`.** All three
+frozen graphs are stored asymmetric, so walking stored edges in one orientation
+would be a choice between two directions that cannot be made from evidence
+before the probe runs and must not be made after it. The runner symmetrises the
+frozen CSR in memory, reads it, and never writes it back. Orientation costs
+nothing here in any case: the score is a displacement in embedding space from
+the seed to the neighbour, `normalize(x_v - x_seed)`, which does not depend on
+which way the stored edge points. Whether each graph was already symmetric is
+reported per dataset.
+
+A query with no frozen retrieval seeds has no frontier and admits nothing. The
+count of such queries is reported rather than dropped silently.
+
 `cos(e_q, x_v)` is recorded per admitted node as a **diagnostic** so a reader
 can see whether admitted nodes were merely dense-similar. It never enters the
 admission score.
@@ -187,11 +200,36 @@ seeing M0A.
 
 ## Compute
 
-CPU-only preferred, zero GPU hours authorised, three jobs, one hour each, a
-cost ceiling of $0.60. A dataset is aborted before reporting if its expansion
-p95 per query exceeds its context-build p95 per query by more than a factor of
-four on the same container, or if the temporary workspace exceeds 1 MiB per
-query.
+CPU only, zero GPU hours authorised, three jobs on 4 CPUs and 16 GiB, one hour
+each, a cost ceiling of $0.60.
+
+The estimate was made before the launch, on the host, against synthetic graphs
+carrying each dataset's exact node and edge counts and the frozen feature
+dimension of 1536. That is a container estimate from host timings, not a
+measurement of the container, and it is reported as such.
+
+| | manifest build | operators | expansion | context | job |
+|---|---|---|---|---|---|
+| squad_clean | 50 s | 11 s | 114 ms/q | 20 ms/q | ~170 s |
+| 2wiki_clean | 6 s | 2 s | 6 ms/q | 12 ms/q | ~30 s |
+| metaqa | 156 s | 2 s | 9 ms/q | 6 ms/q | ~180 s |
+
+Each dataset runs 12 R3 cells and 600 expansions, for 380 seconds of work in
+total. Priced by the project's own `compute_budget` rates -- $0.3172 an hour
+for this shape, at the standing assumption that work is 40% of billed time --
+that is about $0.08, or $0.25 if the estimate is out by a factor of three.
+Both are inside the ceiling.
+
+The 8 CPU / 32 GiB shape was inherited from the full-dataset headroom job and
+is not what this needs. M0A memory-maps every array and scores 100 queries, so
+peak RSS is dominated by the retained per-query objects -- 3 to 4 GiB on
+metaqa, the largest manifest -- and by the traversal operators, a few hundred
+MiB. The work is memory-bound gathers rather than matrix products, so four
+cores lose nothing.
+
+A dataset is aborted before reporting if its expansion p95 per query exceeds
+its context-build p95 per query by more than a factor of four on the same
+container, or if the temporary workspace exceeds 1 MiB per query.
 
 ## What M0A does not authorise
 

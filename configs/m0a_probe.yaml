@@ -106,6 +106,17 @@ expansion_methods:
     graph_displacement: d(u,v) = normalize(x_v - x_u) for each frozen edge u->v
     compatibility: cos(r_q, d(u,v)), and nothing else
     frontier: the frozen retrieval seeds Sq
+    frontier_adjacency: undirected_one_hop_of_the_frozen_csr
+    why_undirected: >-
+      all three frozen graphs are stored asymmetric, so walking stored edges in
+      one orientation would be a choice between two directions that cannot be
+      made from evidence before the probe runs and must not be made after it.
+      The frontier is therefore the undirected one-hop neighbourhood of Sq: the
+      runner symmetrises the frozen CSR in memory, reads it, and never writes it
+      back. Orientation still costs nothing scientifically, because the score is
+      a displacement in embedding space from the seed to the neighbour,
+      normalize(x_v - x_seed), which does not depend on which way the stored
+      edge points.
     why_not_dense_similarity: >-
       the admission score reads only the direction of a real graph edge against
       the query residual. cos(e_q, x_v) is recorded per admitted node as a
@@ -163,17 +174,26 @@ edge_provenance_control:
     the three families are a diagnostic here. They are not carried into every
     later training cell.
   r1_and_r2_graph: dataset_default, the frozen graph.pt, unchanged
+  r3_context_graph: >-
+    dataset_default. A family graph is read for candidate EXPANSION only. The
+    R3 context TARGET_H1(Cq') is built on the dataset default graph so that the
+    three families differ in exactly one thing -- which edges could admit a
+    candidate -- and not also in what a candidate can see.
 
 datasets:
   squad_clean:
     regime_covered: weak structural / single hop
     expected_queries: 130319
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
   2wiki_clean:
     regime_covered: multi-hop text
     expected_queries: 15000
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
   metaqa:
     regime_covered: knowledge base
     expected_queries: 407513
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
 
 sampling:
   split: validation
@@ -192,6 +212,8 @@ measurements:
     - candidate_count_max
     - context_node_count
     - induced_edge_count
+    - stored_graph_was_symmetric
+    - queries_without_frozen_seeds
   headroom:
     - any_gold_at_pool
     - all_gold_at_pool
@@ -259,11 +281,39 @@ compute:
   estimated_before_launch: true
   container: cpu_only_preferred
   gpu_hours_authorised: 0.0
-  cpu: 8
-  memory_mb: 32768
+  cpu: 4
+  memory_mb: 16384
   cost_ceiling_usd: 0.60
   jobs: 3
   timeout_seconds_per_job: 3600
+  estimate:
+    measured_on: >-
+      the host, against synthetic graphs of each dataset's exact node and edge
+      counts and the frozen feature_dim of 1536. A container estimate from host
+      timings, stated as such, not a measurement of the container.
+    manifest_build_seconds: {squad_clean: 50, 2wiki_clean: 6, metaqa: 156}
+    operators_and_symmetrise_seconds: {squad_clean: 11, 2wiki_clean: 2, metaqa: 2}
+    r3_cells_per_dataset: 12
+    expansions_per_dataset: 600
+    expansion_ms_per_query: {squad_clean: 114, 2wiki_clean: 6, metaqa: 9}
+    context_ms_per_query: {squad_clean: 20, 2wiki_clean: 12, metaqa: 6}
+    job_seconds: {squad_clean: 170, 2wiki_clean: 30, metaqa: 180}
+    total_work_seconds: 380
+    priced_by: >-
+      mp_retrieval.compute_budget.container_rate_usd_per_hour and
+      expected_spend_usd, the project's own rates, at 0.3172 USD per hour for
+      this 4 CPU / 16 GiB shape and the standing 0.4 utilisation assumption that
+      charges for image pull and data load as well as work.
+    estimated_cost_usd: 0.08
+    estimated_cost_usd_at_three_times_the_estimate: 0.25
+    why_cpu_4_and_16_gib: >-
+      the 8 CPU / 32 GiB shape was inherited from the full-dataset headroom job.
+      M0A mmaps every array and scores 100 queries, so peak RSS is dominated by
+      the retained CompleteQuery objects -- about 3 to 4 GiB on metaqa, the
+      largest manifest -- and the traversal operators, a few hundred MiB. The
+      work is memory-bound gathers rather than GEMMs, so four cores lose
+      nothing. Halving both keeps a fourfold memory margin and brings the
+      three-times-estimate cost under the declared ceiling.
   abort_rule: >-
     abort a dataset before reporting if its expansion p95 per query exceeds its
     context build p95 per query by more than a factor of four on the same
@@ -275,3 +325,17 @@ does_not_authorise: >-
   migration, a test-split read, modification of any frozen pool or hash, a
   sweep of further expansion variants, or citing M0A as evidence that expansion
   helps or does not help. Regardless of M0A's outcome.
+
+modal:
+  app: message-passing-retrieval-m0a-probe
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: null
+  cpu: 4
+  memory_mb: 16384
+  timeout_seconds: 3600
+  edge_provenance_root: edge_provenance_graphs
+  spawn_server_side: true
+  never_modal_run_detach: >-
+    jobs are submitted through scripts/spawn_modal_jobs.py so the run survives
+    the local process. A detached local run is not a registered execution.
