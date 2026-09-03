@@ -128,17 +128,24 @@ no per-column value or occupancy rate is computed here.
 | --- | --- | --- | --- | --- |
 | RETRIEVAL | computable, identical across regimes on `Cq` | computable, identical across regimes on `Cq` | computable on `Cq`; undefined on A64-admitted nodes, same as M0B's R3 | same |
 | SEED | computable, identical across regimes | computable, identical across regimes | computable on `Cq`; undefined on A64-admitted nodes | same |
-| GEOMETRY / SUPPORT / PATH / DIFFUSION / TOPOLOGY | starved -- no context to bucket against | computable over `U2`'s real context | **computable over `U3_bounded`, but richness is within noise of R2's own** (6c: growth 1.00-1.0013x) -- these families gain essentially nothing from moving R2→R3_BOUNDED | computable over `U3_full`; richness gap vs. R2 is real and dataset-dependent, up to 56.27x (6c) -- but this context is a systems control, never trained on |
+| GEOMETRY / SUPPORT / PATH / DIFFUSION / TOPOLOGY | starved -- no context to bucket against | computable over `U2`'s real context | **computable over `U3_bounded`, but richness is within noise of R2's own** (6c: growth 1.00-1.0013x) -- `R3_BOUNDED` introduces no additional wide-context expansion for these families to draw on | computable over `U3_full`; richness gap vs. R2 is real and dataset-dependent, up to 56.27x (6c) -- but this context is a systems control, never trained on |
 | PROVENANCE | n/a | n/a | this run is fresh evidence: `structural_only`, bounded-context construction, six datasets | M0B's own run remains the evidence for the full-reexpansion construction |
 | NODE ROLE | only `RETRIEVAL_CANDIDATE` (0 `STRUCTURAL_SCORED_CANDIDATE`, all six) | same as R1 | **`STRUCTURAL_SCORED_CANDIDATE` real and nonzero, bit-exact identical counts to M0B's R3** (6c) -- this is the one family where R3_BOUNDED carries all the same information R3_FULL does, at a fraction of the cost | same counts, at 1.15x-56.27x the context cost |
 
-**The corrected conclusion:** for GEOMETRY/SUPPORT/PATH/DIFFUSION/TOPOLOGY,
-whatever richness M0B's R3 appeared to add over R2 was coming from context
-re-expansion, not from candidate scoreability -- `R3_BOUNDED` shows those
-families see almost no change from R2 at all. For NODE ROLE, the opposite
-holds: it captures 100% of the scoreability signal at R2-level context cost,
-because `STRUCTURAL_SCORED_CANDIDATE` depends only on `C3`, never on `U3`'s
-size.
+**The corrected conclusion, scoped to what this run can actually establish:**
+for GEOMETRY/SUPPORT/PATH/DIFFUSION/TOPOLOGY, whatever *context richness*
+M0B's R3 appeared to add over R2 was coming from re-expansion, not from
+candidate scoreability -- `R3_BOUNDED` shows those families' input context is
+almost unchanged from R2's. That is a zero-training availability/computability
+finding only. M0C fits no model and therefore cannot establish that these
+families carry zero *learned* value under `R3_BOUNDED` or under R2 -- it
+establishes only that `R3_BOUNDED` gives them no additional wide-context
+material to draw on beyond what R2 already provides, which is a reason to
+deprioritize them for the *first* trained screen (Step 7), not a verdict on
+their usefulness. For NODE ROLE, the opposite holds on computability grounds:
+it captures 100% of the scoreability signal at R2-level context cost, because
+`STRUCTURAL_SCORED_CANDIDATE` depends only on `C3`, never on `U3`'s size --
+whether that signal is *useful* to a trained ranker is equally untested here.
 
 ### 6c. Context growth and feature cost, R2 -> R3 -- the three-way systems comparison
 
@@ -170,10 +177,15 @@ R2-vs-R3-trained-model comparison ambiguous between "the model got more
 candidates" and "the model got a vastly bigger graph to read features from."
 Under `R3_BOUNDED`, the same 9 gold recoveries happen (identical `C3`,
 verified above), at a context size **statistically flat against R2**
-(2,973.5 -> 2,977.5, +0.13%) and a feature cost that is *lower* than R2's own
-p99, not higher (161.0 -> 106.6 ms; the two measurements come from
-independent runs and this is ordinary container-to-container variance on a
-near-identical context size, not a real reversal). The blowup M0B measured
+(2,973.5 -> 2,977.5, +0.13%). The measured feature-cost p99 also came in
+below R2's own (161.0 -> 106.6 ms) -- this is **not** read as R3_BOUNDED
+being cheaper than R2 in any real sense; on a near-identical context size the
+two numbers should be treated as systems noise/equivalence, not a finding,
+and this document does not draw a conclusion from the direction of that
+difference. The two measurements come from independent runs on one
+container each; only a dedicated timing re-run designed to resolve
+sub-context-size latency noise would justify treating the ordering as real,
+and no such run has been done. The blowup M0B measured
 was real and is preserved as a systems-control finding
 (`R3_FULL_REEXPANSION`, `outputs/m0b_regime_map/**`, untouched) -- it was
 never a property of candidate scoreability, which is now shown directly to
@@ -221,14 +233,18 @@ forward M0B's `R3_FULL`-scale priority reasoning. Where M0B prioritized
 GEOMETRY/SUPPORT/PATH/DIFFUSION/TOPOLOGY on `2wiki_clean`/`hotpotqa_clean`/
 `webqsp` because R3 context growth there was largest, 6b/6c now show that
 growth was entirely an `R3_FULL_REEXPANSION` property `R3_BOUNDED` does not
-share -- so those cells are not carried forward as proposed here.
+share -- so those cells are not carried forward as proposed here. This is a
+priority ordering for the *first* trained screen, not a verdict: M0C fits no
+model, so nothing below establishes that a deprioritized family has zero
+learned value, only that `R3_BOUNDED` gives it no additional zero-training
+signal to justify testing it first.
 
 | priority | dataset | family | why |
 | --- | --- | --- | --- |
 | 1 | `hotpotqa_clean` | NODE ROLE | the only dataset where structural admission recovers gold plain one-hop context could not reach (1/9 recovered-gold instances, 6a) -- and now cleanly isolated from context-size confound, this signal costs 14.5x less to compute than it appeared to under M0B's R3 |
 | 2 | `2wiki_clean`, `metaqa`, `webqsp` | NODE ROLE | `STRUCTURAL_SCORED_CANDIDATE` promotion recovers real gold (41, 43, 78 instances respectively) at R2-level context cost; worth confirming whether this recovery translates into ranking signal, independent of any wider-context family |
 | deprioritized | `squad_clean`, `musique_clean` | all | at or near ceiling already (squad: `all_gold_at_pool=1.0`; musique: residual gap is 4 gold instances total) -- no family can improve what is barely missing |
-| not proposed under `R3_BOUNDED` | any | GEOMETRY, SUPPORT, PATH, DIFFUSION, TOPOLOGY | 6b/6c show these families gain no material richness moving R2→R3_BOUNDED (growth 1.00-1.0013x) -- screening them here would just re-measure R2's own already-known story under a different name |
+| not prioritized under `R3_BOUNDED` | any | GEOMETRY, SUPPORT, PATH, DIFFUSION, TOPOLOGY | `R3_BOUNDED` introduces no additional wide-context expansion for these families (6b/6c: growth 1.00-1.0013x), so they are not prioritized for the first trained screen unless a future zero-training pass finds signal M0C did not -- this is a screening-order decision, not a claim of zero learned value |
 | explicitly out of scope | any | GEOMETRY, SUPPORT, PATH, DIFFUSION, TOPOLOGY under `R3_FULL_REEXPANSION` | the richness gap is real there, but `R3_FULL_REEXPANSION` is a systems control -- standing prohibition keeps it untrained, on Hotpot or anywhere |
 | not proposed | any | PROVENANCE | graph-axis choice, already measured by this run and `EDGE_PROVENANCE_RESULTS.md`, not a screening target |
 
