@@ -697,7 +697,144 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D10:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D10_RESULTS.md
+    outcome: >-
+      PATH DIVERSITY FAILS under the filed predicates -- a MIXED result the band
+      set did not anticipate. V buys +0.62 MRR by giving up -0.67 R@5.
+    outcome_is_contested_between_two_preregistered_statements: >-
+      READ THIS BEFORE QUOTING A LABEL. Two statements of the interpretation
+      bands were both filed before the measurement and they disagree on this
+      specific outcome. The predicates filed in this block give FAILS. The
+      runner's classify(), inherited unchanged from D9 and never exercised
+      because D9 never trained, gives PATH DIVERSITY PARETO-MATCHES, and that is
+      the string inside stage_d10.json. The disagreement is entirely about the
+      MIXED case -- materially better on one metric, materially worse on
+      another -- which D9's implementation routes to a catch-all `else` branch
+      labelled PARETO-MATCHES, and which the filed predicates route to FAILS
+      because R@5 is materially negative.
+    which_reading_is_taken_and_why: >-
+      The filed predicates. Applied to the measured increment, exactly one of
+      the three matches: IMPROVES requires "not materially negative on any other
+      metric" and R@5 is -0.67; PARETO-MATCHES requires "no metric moves
+      materially in either direction" and two did; FAILS requires "materially
+      negative on R@5 or MRR" and R@5 is. The code's answer is also the more
+      favourable one -- PARETO-MATCHES carries "retain the replacement on Pareto
+      grounds", FAILS carries "do NOT add walk counts back" -- so taking it by
+      default would be choosing a label because of what it licenses. The result
+      file is not edited; it records what the runner decided.
+    the_honest_description_is_neither_label: >-
+      This is a MIXED outcome and no filed band describes it well. Calling it a
+      Pareto match is plainly wrong: a Pareto match means nothing got materially
+      worse, and R@5 did. Calling it a failure is defensible under the filed
+      wording but overstates a result that also improved MRR materially and R@1
+      to within 0.0002 of material. The substantive finding, which both labels
+      agree on, is that the bounded branch-diversity representation is NOT an
+      improvement on the historical walk-count representation at this operating
+      point. It reallocates: it finds the first correct node more often and the
+      top-5 set less often.
+    band_set_defect_found: >-
+      The three bands are not exhaustive over the outcome space. Nothing filed
+      before D10 said what a mixed result is called, and D9's implementation
+      silently absorbed it into PARETO-MATCHES. Recorded, NOT repaired here:
+      changing classify() after seeing the outcome it produced is the same
+      result-driven rewriting D9 refused, and the repair belongs to whoever
+      files the next set of bands -- who should make them exhaustive and name
+      the mixed case explicitly.
+    a_pinned_document_test_was_amended_after_the_outcome: >-
+      tests/test_graph_context_d10_doc.py was written before this run and
+      asserted that exactly one of the three band strings could appear in the
+      write-up. That assertion inherited the band set's own non-exhaustiveness,
+      and under it a contested outcome cannot be disclosed at all. It was
+      amended after the outcome was known so that the single-label rule still
+      holds whenever the two readings agree, and a disagreement must be
+      disclosed -- both labels named, the runner's answer attributed to
+      classify(), the reading taken stated, and the FAILS reading barred from
+      being written up as a win. The amendment is strictly stricter than what
+      it replaced, and it changes prose requirements only: classify(),
+      stage_d10.json and the recorded verdict are untouched. It is filed here
+      because a test edited after seeing a result is the kind of change a
+      reader should be told about rather than left to find in a diff.
+    measured_increments: >-
+      Validation, 3,000 queries, x100. H - B (carried from D7, reproduced to
+      0.0): -0.12 / +0.82 / +0.13 / -0.15 / +0.30. V - B: +0.36 / +0.14 / +0.18
+      / +0.47 / +0.33. V - H: +0.48 / -0.67 / +0.04 / +0.62 / +0.03, as R@1 /
+      R@5 / R@20 / MRR / FullCov@20.
+    ladder: >-
+      D6_BASE_13 39.39 / 71.38 / 77.70 / 93.88 / 51.90; D7_PATHS_13 39.27 /
+      72.20 / 77.83 / 93.73 / 52.20; D10_PATH_DIVERSITY_13 39.75 / 71.53 /
+      77.88 / 94.35 / 52.23.
+    the_two_families_are_not_interchangeable: >-
+      D7's historical PATHS arm and D10's replacement move different metrics in
+      opposite directions from the same base. H buys R@5 (+0.82) and loses MRR
+      (-0.15); V buys MRR (+0.47) and R@1 (+0.36) and barely moves R@5 (+0.14).
+      Both are above the base overall. Whatever walk multiplicity encodes, it is
+      not noise that branch diversity strictly cleans up, and the D9 mechanistic
+      divergence at hops 2 and 3 is now shown to be a divergence that matters
+      for ranking rather than one that washes out.
+    by_stratum: >-
+      V - H, x100, by gold stratum: isolated (834) +0.24 / +0.60 / +0.27 / +0.32
+      / +0.48; degree_1 (750) +0.40 / -0.60 / +0.07 / +0.65 / +0.13; low_degree
+      (1218) +0.92 / -1.46 / -0.08 / +1.03 / -0.25; ordinary (198) -1.01 / -1.52
+      / -0.25 / -0.80 / -0.51. The R@5 loss is concentrated in low_degree and
+      ordinary; isolated queries are the only stratum where the replacement wins
+      on every metric.
+    causal_wording_restriction_applied: >-
+      H outperformed V on R@5 and V outperformed H on MRR and R@1. It is NOT
+      concluded that raw repeated walks are inherently useful, nor that removing
+      walk multiplicity caused anything. The replacement changes the counting
+      rule AND the numerical transform and calibration the learner sees, and no
+      arm in this design separates those. Attribution is not identified in
+      either direction.
+    systems_gate_passed: >-
+      Replacement kernel p95 0.611 ms against historical structural build p95
+      3.943 ms, ratio 0.155. Kernel 7.07 s, 13.95% of the build. Shared
+      induced-edge extraction 40.86 s, reported and not charged. Workspace 6368
+      bytes against the 1 MiB backstop. Three fixed passes, no convergence.
+    the_repaired_rule_was_vindicated_by_accident: >-
+      MEASURED, and stronger than the argument filed for it. This container ran
+      the whole construction in 49.5 s against a 50.7 s build -- 97.79% -- so
+      D9's ORIGINAL wall-clock rule would have PASSED here, on identical work
+      that it aborted at 124.49% on D9's slower container. Two containers, the
+      same code, the same rule, opposite answers. That is the defect the repair
+      was filed against, and it is now demonstrated rather than argued.
+    reproduction_of_d9: >-
+      EXACT. All 13 conditions matched, including the three within-query
+      ordering fractions to full recorded precision (0.0009358088563998761,
+      0.00370229089220594, 0.008446842308984613) and the 138 -> 78 float16
+      collapse. The rebuilt block is D9's block.
+    no_reusable_artifact_existed: >-
+      Confirmed before any D10 code was written: the stage directory holds
+      fourteen JSON files and no feature tensor. D10 rebuilt 4,851,276 rows
+      because D9 persisted none, and records SHA-256
+      400443606913a3b0b7931849e4b8108a1789b7227381446a3dc7a43e322783a0 for the
+      int16 branch block so no later stage has to pay this again.
+    float16_limitation_measured: >-
+      134 rows of 4,851,276 (0.002762%) carry a branch count the float16 block
+      cannot separate from a strictly larger one; 0.020105% of the 666,517 rows
+      with any nonzero PATH value. All of them are at hops 2 and 3; hop 1 never
+      reaches the boundary. Documented as a limitation of the frozen 13-column
+      block. The dtype was not changed and this does not open an experiment.
+    actual_cost:
+      container_seconds: 149.0
+      gpu_hours: 0.041
+      usd: 0.07
+      against_authorisation: 0.08 GPU-h and $0.20
+      against_projection: 240 s projected, 149 s spent
+      why_under: >-
+        two diagnostics D9 already reported were dropped -- D8's overlap column
+        and the all-opened mechanistic pass -- and this container was roughly
+        1.6 times faster than D9's on the shared build. No artifact reuse was
+        available to contribute anything.
+      fitted_runs: 1
+    not_established: >-
+      One replacement for one historical family, one dataset, one seed. The
+      design does not separate the change in counting rule from the change in
+      numerical transform, so neither direction attributes anything to walk
+      multiplicity by itself. Nothing here is evidence about weighted paths,
+      disjoint paths, motif structure, or the composition of branch diversity
+      with D8's distinct support, which was explicitly not trained. Development
+      evidence on G[Cq], not an evaluation.
     runner: scripts/run_graph_context_d10.py
     dataset: 2wiki_clean
     seed: 0
