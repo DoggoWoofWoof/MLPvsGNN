@@ -29,6 +29,21 @@ answers.
 4,851,276 candidate rows rebuilt. One fitted arm, `D10_PATH_DIVERSITY_13`;
 `D6_BASE_13` and `D7_PATHS_13` reused from D7's result file and never refitted.
 
+## The downstream decision
+
+What later stages read off D10 is one line, and it is neither band label:
+
+    D10 = MIXED / NOT PROMOTED
+
+Branch diversity is **not promoted** over historical PATHS. The R@5 loss
+exceeds the +/-0.50 pp tolerance filed before the run, so the replacement does
+not enter the Pareto-selected 2Wiki feature subset. Historical PATHS is not
+promoted either -- it remains a feature-family control, since "the correction
+does not beat it" is not the same as "admit the historical columns".
+
+Both preregistered labels stay in the provenance below, because both were
+filed. Neither is what feature selection reads.
+
 ## The label is contested, and the favourable reading is the wrong one
 
 Two statements of the interpretation bands were both filed before the
@@ -312,9 +327,13 @@ evaluation, and not a statistical significance claim.
 
 ## Verdict
 
-**`PATH DIVERSITY FAILS`** under the filed predicates, recorded as a MIXED
-outcome the band set did not anticipate, with `PATH DIVERSITY PARETO-MATCHES`
-standing in `stage_d10.json` as what the inherited `classify()` computed.
+**`D10 = MIXED / NOT PROMOTED`** is the downstream decision.
+
+Under the filed predicates the band is `PATH DIVERSITY FAILS`, recorded as a
+MIXED outcome the band set did not anticipate.
+`PATH DIVERSITY PARETO-MATCHES` stands in `stage_d10.json` as what the
+inherited `classify()` computed. Both are kept as provenance; the decision line
+above is what selection reads.
 
 The bounded branch-diversity representation does not win over the historical
 normalized walk-count representation on 2Wiki. It trades -0.67 R@5 for +0.62

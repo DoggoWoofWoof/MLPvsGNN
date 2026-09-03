@@ -27,6 +27,36 @@ That is a 2Wiki result. It is **not declared universal**, and the zero-training
 dataset x regime matrix proposed after D10 exists precisely because whether it
 transfers is unmeasured.
 
+## Catalogued membership
+
+What each family is understood to contain. This is deliberately wider than the
+columns the frozen 13-dimension block carries: a member named here has been
+catalogued, **not tested and not admitted**.
+
+```text
+RETRIEVAL     dense RR; SPLADE RR; dense/SPLADE agreement
+SEED          seed identity
+GEOMETRY      seed-relative distance
+SUPPORT       historical edge-count support; distinct-support replacement
+PATH          historical directed walks; branch-diversity replacement
+DIFFUSION     historical personalized PPR; bounded replacement if later justified
+TOPOLOGY      local-neighbourhood statistic
+PROVENANCE    native evidence; kNN evidence
+NODE ROLE     scored candidate; context-only node
+```
+
+**PROVENANCE and NODE ROLE are catalogued hypotheses, not tested winners.**
+Neither has a fitted arm at this architecture, and no paper text may present
+either as having been tested and won.
+
+The provisional strong subset -- 2Wiki, `CAND`, seed 0 -- is only:
+
+```text
+RETRIEVAL + SEED + GEOMETRY
+```
+
+and it is not universal.
+
 ## The nine families
 
 | family | cols | status on 2Wiki | evidence |

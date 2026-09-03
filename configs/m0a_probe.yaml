@@ -1,0 +1,277 @@
+experiment: m0a_regime_probe
+status: DECLARED
+phase: M0A
+protocol: docs/M0A_PROBE_PROTOCOL.md
+results: docs/M0A_PROBE_RESULTS.md
+
+question: >-
+  Are the three graph/candidate regimes implementable, inference-safe, budget
+  controlled and affordable, and does parameter-free directional candidate
+  expansion move candidate headroom at all on a text, a multi-hop and a KB
+  dataset? This is a contract probe. It selects nothing and fits nothing.
+
+what_this_is_not: >-
+  Not a result about whether expansion helps. Not a feature-selection stage.
+  Not a model comparison. One hundred validation queries per dataset cannot
+  support any of those, and no downstream stage may cite M0A as evidence of
+  effectiveness.
+
+zero_training:
+  neural_training: false
+  qls_trained: false
+  gnn_trained: false
+  any_fitted_parameter: false
+  model_selection: false
+  feature_selection: false
+  why: >-
+    The point of measuring first is to learn where fitting is worth paying for.
+    A stage that fits anything has already spent the budget the measurement was
+    supposed to allocate.
+
+historical_artifacts_are_untouched:
+  candidate_headroom_contract: preserved_unmodified
+  d1_through_d10_results: preserved_unmodified
+  packages_a_through_f: preserved_unmodified
+  e2: PAUSED_NOT_RESUMED
+  f: SEALED_NOT_OPENED
+  historical_cand_construction: preserved_unmodified
+  frozen_pools_hashes_tags: preserved_unmodified
+  workspace_migration: false
+  test_split_read: false
+  why_a_new_namespace: >-
+    configs/candidate_headroom.yaml sets candidate_regeneration,
+    candidate_admission and graph_expansion to prohibited_in_paper_1. That
+    contract is not edited, reinterpreted or relaxed. It governs the historical
+    scientific object oracle(Cq) over a fixed pool, and that object is
+    unchanged. R3 studies a DIFFERENT object, oracle(Cq'), where candidate
+    regeneration is the declared intervention rather than a violation. A new
+    object needs a new namespace, so the code lives in
+    src/mp_retrieval/candidate_expansion_v2.py and
+    src/mp_retrieval/headroom_v2.py and never writes into the historical paths.
+
+regimes:
+  R1:
+    name: HISTORICAL
+    scored_nodes: Cq
+    graph: G[Cq]
+    changes_candidate_oracle: false
+  R2:
+    name: REPAIRED_GRAPH_CONTEXT
+    scored_nodes: Cq
+    graph: TARGET_H1(Cq)
+    context_definition: Cq union N1(Cq), the frozen graph_context.context_nodes arm
+    changes_candidate_oracle: false
+    invariant: >-
+      the candidate ceiling must be mathematically identical to R1 because the
+      scored set is byte-identical. Asserted, not assumed.
+  R3:
+    name: EXPANDED_CANDIDATES_AND_REPAIRED_GRAPH
+    scored_nodes: Cq_prime
+    graph: TARGET_H1(Cq_prime)
+    changes_candidate_oracle: true
+    only_regime_permitted_to_change_the_oracle: true
+
+candidate_expansion:
+  forbidden:
+    learned_relational_offset: true
+    learned_router: true
+    gnn_candidate_generator: true
+    neural_query_expansion: true
+    dataset_identifier: true
+    gold_nodes: true
+    gold_relations: true
+    supporting_fact_information: true
+    target_test_tuning: true
+    any_fitted_parameter: true
+  permitted_inputs:
+    - the query embedding, frozen
+    - node embeddings, frozen
+    - the frozen retrieval seeds and the frozen dense-rank-1 anchor
+    - graph topology
+  determinism: >-
+    a pure function of the permitted inputs. Same inputs, same output, on any
+    machine, with no random state and no split-dependent branch.
+
+expansion_methods:
+  L1_DIRECTIONAL:
+    role: primary
+    reconstructed_from: >-
+      CRAG level 1, docs/level1_unified_protocol.md in the read-only CRAG
+      reference, whose router is a shared MLP producing K relational offsets
+      around the nearest dense document, and this repository's
+      docs/OFFSET_OPERATOR_PROTOCOL.md, whose offset_mlp scores
+      normalize(a + g(q,a)) with a learned g. Both are LEARNED. The shape is
+      kept and the learned direction is removed.
+    query_residual: r_q = normalize(e_q - x_a), with a the frozen dense-rank-1 anchor
+    graph_displacement: d(u,v) = normalize(x_v - x_u) for each frozen edge u->v
+    compatibility: cos(r_q, d(u,v)), and nothing else
+    frontier: the frozen retrieval seeds Sq
+    why_not_dense_similarity: >-
+      the admission score reads only the direction of a real graph edge against
+      the query residual. cos(e_q, x_v) is recorded per admitted node as a
+      DIAGNOSTIC so that a reader can see whether admitted nodes were merely
+      dense-similar, and it never enters the score.
+  STRUCTURAL_NEIGHBOUR:
+    role: control
+    definition: >-
+      the same frontier, the same caps and the same tie-break, admitting
+      neighbours in ascending global node id with no direction scoring at all
+    isolates: >-
+      whether directional compatibility chooses better nodes than an arbitrary
+      bounded expansion of the identical neighbourhood
+  no_others_in_m0a: >-
+    exactly two. A sweep of parameter-free variants is not run before the
+    contract is shown to hold.
+
+budget:
+  predeclared_before_any_m0a_number: true
+  hop_cap: 1
+  per_seed_cap: 16
+  graph_expansion_cap: 128
+  neighbour_scan_cap_per_seed: 4096
+  tie_break: ascending_global_node_id
+  headline_is_matched_budget:
+    rule: "|Cq'| == |Cq| exactly, per query"
+    mechanism: >-
+      admitted nodes Aq displace the tail of Cq in frozen candidate order, so
+      expansion trades rather than adds. The oracle can fall as well as rise,
+      which is the property that makes the comparison mean something.
+    why: >-
+      R3 must not win by scoring more candidates than R1 and R2.
+  additive_diagnostic:
+    rule: "Cq' = stable_union(Cq, Aq), |Aq| <= graph_expansion_cap"
+    reported: true
+    is_the_headline: false
+    why_reported: >-
+      it separates "the node is reachable and directionally compatible" from
+      "the node is worth a slot", which the matched-budget number folds
+      together.
+  no_silent_truncation: >-
+    if neighbour_scan_cap_per_seed fires, the count of affected queries and
+    seeds is reported. A cap that is not reported reads as full coverage.
+
+edge_provenance_control:
+  applies_to: candidate expansion and headroom only
+  families: [structural_only, knn_only, baseline_a_simple]
+  source: >-
+    edge_provenance_graphs/<dataset>/<fingerprint16>, already reconstructed by
+    Package B in the frozen node coordinate system. Read, never rebuilt.
+  question: >-
+    whether recovered candidates come from real structural topology or from
+    embedding similarity recycled through kNN edges
+  does_not_multiply_later_training: >-
+    the three families are a diagnostic here. They are not carried into every
+    later training cell.
+  r1_and_r2_graph: dataset_default, the frozen graph.pt, unchanged
+
+datasets:
+  squad_clean:
+    regime_covered: weak structural / single hop
+    expected_queries: 130319
+  2wiki_clean:
+    regime_covered: multi-hop text
+    expected_queries: 15000
+  metaqa:
+    regime_covered: knowledge base
+    expected_queries: 407513
+
+sampling:
+  split: validation
+  test_split_read: false
+  queries_per_dataset: 100
+  selection: deterministic_prefix_of_the_split_order
+  never_sampled: true
+  why_100: >-
+    the probe validates a contract and calibrates cost. One hundred queries
+    cannot support an effectiveness claim and this stage does not make one.
+
+measurements:
+  candidate:
+    - candidate_count_median
+    - candidate_count_p95
+    - candidate_count_max
+    - context_node_count
+    - induced_edge_count
+  headroom:
+    - any_gold_at_pool
+    - all_gold_at_pool
+    - gold_fraction_at_pool_macro
+    - oracle_recall@1
+    - oracle_recall@5
+    - oracle_recall@20
+    - full_coverage_ceiling@20
+    - missing_golds_recovered
+    - recovered_gold_per_added_candidate
+  systems:
+    - expansion_latency_ms_per_query_p50
+    - expansion_latency_ms_per_query_p95
+    - expansion_latency_ms_per_query_p99
+    - context_build_latency_ms_per_query_p50
+    - context_build_latency_ms_per_query_p95
+    - context_build_latency_ms_per_query_p99
+    - peak_process_rss_bytes
+    - temporary_workspace_bytes
+  latency_rule: >-
+    per-query percentiles on a stated container, never a wall-clock total. D10
+    measured the same construction at 1.2449 of the historical build on one
+    host and 0.9779 on another; a totals race measures the machine.
+  diagnostics:
+    - admitted_node_query_cosine_distribution
+    - neighbour_scan_cap_fired
+
+invariants_asserted_not_assumed:
+  scored_nodes_equals_the_declared_set: true
+  cq_subset_of_uq: true
+  r1_ceiling_equals_r2_ceiling_exactly: true
+  only_r3_changes_the_candidate_oracle: true
+  matched_budget_pool_size_equals_cq: true
+  expansion_is_deterministic_across_repeats: true
+  expansion_never_reads_gold_or_split: true
+  historical_headroom_output_paths_untouched: true
+
+advancement_to_m0b:
+  filed_before_results: true
+  automatic: false
+  all_of:
+    - every invariant above passes
+    - the leakage tests pass, including the one that permutes gold and requires
+      byte-identical expansion output
+    - the matched-budget rule holds for every query in every cell
+    - expansion and context latency percentiles are recorded per dataset
+    - the neighbour scan cap is reported wherever it fired
+  and_one_of:
+    movement: >-
+      at least one dataset shows matched-budget AnyGold or oracle recall@5
+      moving by at least 1.0 point in at least one edge family, under either
+      expansion method
+    decisive_null: >-
+      every dataset's matched-budget oracle recall@5 moves by less than 0.25
+      points AND the additive diagnostic moves by less than 1.0 point, which
+      would say directional expansion is inert at this budget and is worth
+      confirming across all six datasets precisely because it is cheap
+  neither_holds: >-
+    if the result is between the two -- movement too small to act on and too
+    large to call inert -- M0B is NOT launched on this evidence. The budget or
+    the frontier is reconsidered in a new declaration.
+  thresholds_are_not_moved_after_seeing_m0a: true
+
+compute:
+  estimated_before_launch: true
+  container: cpu_only_preferred
+  gpu_hours_authorised: 0.0
+  cpu: 8
+  memory_mb: 32768
+  cost_ceiling_usd: 0.60
+  jobs: 3
+  timeout_seconds_per_job: 3600
+  abort_rule: >-
+    abort a dataset before reporting if its expansion p95 per query exceeds its
+    context build p95 per query by more than a factor of four on the same
+    container, or if the temporary workspace exceeds 1 MiB per query. Stated as
+    per-query percentiles on one container, not as a totals race.
+
+does_not_authorise: >-
+  M0B, any neural training, any GNN, resuming E2, opening F, a workspace
+  migration, a test-split read, modification of any frozen pool or hash, a
+  sweep of further expansion variants, or citing M0A as evidence that expansion
+  helps or does not help. Regardless of M0A's outcome.

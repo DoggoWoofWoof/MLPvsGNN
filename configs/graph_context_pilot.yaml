@@ -733,6 +733,32 @@ stages:
       improvement on the historical walk-count representation at this operating
       point. It reallocates: it finds the first correct node more often and the
       top-5 set less often.
+    downstream_decision: D10 = MIXED / NOT PROMOTED
+    downstream_decision_is_the_one_later_stages_read: >-
+      Branch diversity is NOT promoted over historical PATHS. V - H is
+      +0.48 R@1, -0.67 R@5, +0.04 R@20, +0.62 MRR, +0.03 FullCov@20, which is
+      genuinely mixed: a meaningful R@5 loss against a meaningful MRR gain. The
+      R@5 drop exceeds the +/-0.50 pp tolerance, so the replacement does NOT
+      enter the Pareto-selected 2Wiki feature subset. D10 did not establish
+      branch diversity as a superior replacement, and no downstream text may
+      describe it as an effectiveness improvement.
+    historical_paths_status_after_d10: >-
+      Historical PATHS remains a feature-family control, not necessarily a final
+      feature. It was not promoted either: D10 measured that the corrected
+      representation does not beat it, which is not the same as admitting the
+      historical columns into a model.
+    both_preregistered_labels_stay_in_provenance: >-
+      Both were filed before the measurement and both are kept. The D10
+      declaration's predicates give PATH DIVERSITY FAILS; classify(), inherited
+      from D9, gives PATH DIVERSITY PARETO-MATCHES and that is the string inside
+      stage_d10.json. Neither is deleted, neither is rewritten, and the
+      downstream decision above is what selection reads instead of either label.
+    the_doc_test_amendment_is_a_process_deviation: >-
+      Recorded as a process deviation, not hidden and not treated as
+      invalidating. tests/test_graph_context_d10_doc.py was amended after the
+      outcome to permit disclosure of the contested label. It changed prose
+      requirements only. It did not alter any measured number, any fitted model,
+      stage_d10.json, classify(), or the trained arm. D10 stands.
     band_set_defect_found: >-
       The three bands are not exhaustive over the outcome space. Nothing filed
       before D10 said what a mixed result is called, and D9's implementation
@@ -3159,6 +3185,14 @@ feature_catalog:
     other family held at zero in the base arm. That is a 2Wiki result. It is
     NOT declared universal, and the zero-training matrix proposed after D10
     exists precisely because whether it transfers is unmeasured.
+  members_are_catalogued_not_admitted: >-
+    catalogued_members lists what each family is understood to contain,
+    which is deliberately wider than the columns the frozen 13-dimension
+    block carries. A member appearing here has been named, not tested and
+    not admitted. PROVENANCE and NODE ROLE carry
+    catalogued_hypothesis_not_a_tested_winner because every member of both
+    is a hypothesis: neither family has a fitted arm at this architecture,
+    and no paper text may present either as a tested winner.
   status_vocabulary:
     ADMITTED: >-
       fitted, materially positive, and carried in the base arm every later
@@ -3181,6 +3215,7 @@ feature_catalog:
       explicit rather than accidental
   families:
     RETRIEVAL:
+      catalogued_members: dense reciprocal rank; SPLADE reciprocal rank; dense/SPLADE agreement
       columns: [10, 11, 12]
       members: graded retrieval prior over dense and SPLADE ranks
       status_on_2wiki: ADMITTED
@@ -3199,6 +3234,7 @@ feature_catalog:
         the claim that retrieval rank dominates on any other dataset, or that
         this particular grading is the best encoding of rank
     SEED:
+      catalogued_members: seed identity
       columns: [0]
       members: distance_0, which is exactly the indicator that d is a retrieval seed
       status_on_2wiki: ADMITTED
@@ -3216,6 +3252,7 @@ feature_catalog:
         counting SEED and GEOMETRY as two independent families when summing
         contributions. They overlap by construction
     GEOMETRY:
+      catalogued_members: seed-relative distance
       columns: [0, 1, 2, 3]
       members: seed-distance one-hot, buckets 0, 1, 2 and 3-plus-or-unreachable
       status_on_2wiki: ADMITTED
@@ -3233,6 +3270,7 @@ feature_catalog:
         a finer distance encoding, a weighted distance, or a hop bound other
         than the frozen three
     SUPPORT:
+      catalogued_members: historical edge-count support; distinct-support replacement
       columns: [4]
       members: >-
         historical seed_connections; the corrected form is distinct supporting
@@ -3255,6 +3293,7 @@ feature_catalog:
         the claim that the corrected form is more accurate, or a weighted
         support variant, which was named and not tested
     PATH:
+      catalogued_members: historical directed walks; branch-diversity replacement
       columns: [5, 6, 7]
       members: >-
         historical paths_length_1, paths_length_2, paths_length_3; the
@@ -3280,6 +3319,7 @@ feature_catalog:
         path variant. D10 changed the counting rule, the numerical transform
         and the calibration together and has no arm that separates them
     DIFFUSION:
+      catalogued_members: historical personalized PPR; a bounded replacement only if later justified
       columns: [8]
       members: historical personalized_pagerank
       status_on_2wiki: NEGLIGIBLE
@@ -3296,6 +3336,7 @@ feature_catalog:
         the claim that diffusion carries no signal. What was measured is one
         historical encoding of it, once
     TOPOLOGY:
+      catalogued_members: local-neighbourhood statistic
       columns: [9]
       members: historical common_out_neighbors_with_seed_neighborhood
       status_on_2wiki: NEGLIGIBLE
@@ -3313,6 +3354,8 @@ feature_catalog:
         the claim that cheap candidate topology is worthless, which D7 was
         explicit is not what a one-column arm tests
     PROVENANCE:
+      catalogued_members: native evidence; kNN evidence
+      catalogued_hypothesis_not_a_tested_winner: true
       columns: []
       members: >-
         none in the frozen local block. The family is the edge-construction
@@ -3334,6 +3377,8 @@ feature_catalog:
         QLS-versus-GNN gap in that table as evidence about which QLS features
         to admit. GNN outcomes are not permitted to select QLS features
     NODE_ROLE:
+      catalogued_members: scored candidate; context-only node
+      catalogued_hypothesis_not_a_tested_winner: true
       columns: []
       members: >-
         none. The only member ever probed is bridge_support, which is not in
