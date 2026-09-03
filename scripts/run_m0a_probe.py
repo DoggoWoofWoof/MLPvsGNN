@@ -29,6 +29,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from mp_retrieval.candidate_expansion_v2 import (
     EXPANSION_METHODS,
+    STRUCTURAL,
     ExpansionBudget,
     expand,
 )
@@ -312,6 +313,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             context_sizes: list[int] = []
             induced: list[int] = []
             admitted_counts: list[int] = []
+            admitted_nodes: list[list[int]] = []
+            capped_seeds = 0
+            queries_with_a_capped_seed = 0
             scan_cap_queries = 0
             degenerate_queries = 0
             zero_displacement_edges = 0
@@ -338,6 +342,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 matched_pools.append(expansion.matched_pool)
                 additive_pools.append(expansion.additive_pool)
                 admitted_counts.append(int(expansion.admitted.size))
+                admitted_nodes.append([int(node) for node in expansion.admitted])
+                capped_seeds += int(expansion.seeds_at_the_per_seed_cap)
+                queries_with_a_capped_seed += int(expansion.seeds_at_the_per_seed_cap > 0)
                 scan_cap_queries += int(expansion.scan_cap_fired)
                 degenerate_queries += int(expansion.degenerate_residual)
                 zero_displacement_edges += int(expansion.zero_displacement_edges)
@@ -356,6 +363,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 cell["expansion_latency_ms"] = _percentiles(expansion_ms)
                 cell["admitted_per_query"] = _counts(admitted_counts)
                 cell["neighbour_scan_cap_fired_queries"] = scan_cap_queries
+                cell["seeds_at_the_per_seed_cap"] = capped_seeds
+                cell["queries_with_a_capped_seed"] = queries_with_a_capped_seed
+                cell["admitted_nodes_per_query"] = admitted_nodes
                 cell["degenerate_residual_queries"] = degenerate_queries
                 cell["zero_displacement_edges"] = zero_displacement_edges
                 cell["family_graph_was_symmetric"] = family_symmetric
@@ -374,6 +384,41 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                     baseline_sizes=np.asarray([view.pool.size for view in views]),
                     regime_sizes=np.asarray([pool.size for pool in pools]),
                 )
+        # The unconstrained frontier: every one-hop neighbour of every seed, no
+        # caps at all. A DIAGNOSTIC, never a matched-budget comparison. It
+        # separates "the budget limits what expansion recovers" from "the
+        # frontier does", which the capped cells alone cannot tell apart.
+        unlimited = ExpansionBudget(
+            per_seed_cap=num_nodes,
+            graph_expansion_cap=num_nodes,
+            neighbour_scan_cap_per_seed=num_nodes,
+        )
+        frontier_pools: list[np.ndarray] = []
+        frontier_admitted: list[int] = []
+        for view in views:
+            reach = expand(
+                STRUCTURAL,
+                rowptr=family_rowptr,
+                col=family_col,
+                node_embeddings=dataset.node_array,
+                query_embedding=None,
+                anchor=view.anchor,
+                pool=view.pool,
+                seeds=view.seeds,
+                budget=unlimited,
+                num_nodes=num_nodes,
+            )
+            frontier_pools.append(reach.additive_pool)
+            frontier_admitted.append(int(reach.admitted.size))
+        cell = _cell(frontier_pools, golds, num_nodes=num_nodes)
+        cell["admitted_per_query"] = _counts(frontier_admitted)
+        cell["is_the_headline"] = False
+        cell["is_a_diagnostic_not_a_comparison"] = True
+        cell["why"] = (
+            "the whole one-hop frontier with every cap removed, so it bounds "
+            "what any budget over this frontier could ever recover"
+        )
+        result["regimes"][f"R3/{family}/UNCONSTRAINED_FRONTIER/diagnostic"] = _public(cell)
         del family_rowptr, family_col
 
     result["regimes"]["R1"] = _public(r1)

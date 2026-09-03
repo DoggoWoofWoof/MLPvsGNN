@@ -391,3 +391,30 @@ def test_the_historical_headroom_module_is_not_touched_by_this_one():
         for alias in node.names
     }
     assert not any(name.startswith("mp_retrieval") for name in imported)
+
+
+def test_a_cap_that_forced_a_choice_is_counted(graph, embeddings, query):
+    """A null between the methods is unreadable without knowing this.
+
+    If the per-seed cap never binds, both methods admit the whole neighbourhood
+    and neither ever chose anything, so "they agree" says nothing about
+    directional compatibility.
+    """
+
+    loose = _expand(DIRECTIONAL, graph, embeddings, query)
+    assert loose.seeds_at_the_per_seed_cap == 0
+    tight = _expand(DIRECTIONAL, graph, embeddings, query, budget=ExpansionBudget(per_seed_cap=2))
+    assert tight.seeds_at_the_per_seed_cap == 1
+
+
+def test_when_the_cap_binds_the_two_methods_choose_differently(graph, embeddings, query):
+    """The control is only a control where the budget makes it one."""
+    budget = ExpansionBudget(per_seed_cap=2)
+    directional = _expand(DIRECTIONAL, graph, embeddings, query, budget=budget)
+    structural = _expand(STRUCTURAL, graph, embeddings, query, budget=budget)
+    assert directional.seeds_at_the_per_seed_cap == structural.seeds_at_the_per_seed_cap == 1
+    assert directional.admitted.tolist() == [1, 2]
+    assert structural.admitted.tolist() == [1, 2]
+    # Same set here only because node 1 is both the best-scoring and the lowest
+    # id. The counter above is what tells a reader the cap was doing work.
+    assert directional.scores.tolist() != structural.scores.tolist()

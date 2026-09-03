@@ -90,6 +90,7 @@ class Expansion:
     protected: np.ndarray
     neighbours_scanned: int
     scan_cap_fired: bool
+    seeds_at_the_per_seed_cap: int
     degenerate_residual: bool
     zero_displacement_edges: int
     diagnostics: dict[str, Any] = field(default_factory=dict)
@@ -243,6 +244,12 @@ def expand(
 
     degenerate = False
     zero_edges = 0
+    # How often the per-seed cap actually forced a choice. Without this a null
+    # between the two methods cannot be told apart from a budget so loose that
+    # both admitted the whole neighbourhood and neither ever chose anything.
+    capped_seeds = sum(
+        1 for _seed, neighbours in per_seed if neighbours.size > budget.per_seed_cap
+    )
     nodes_parts: list[np.ndarray] = []
     score_parts: list[np.ndarray] = []
 
@@ -301,6 +308,7 @@ def expand(
         protected=protected,
         neighbours_scanned=scanned,
         scan_cap_fired=fired,
+        seeds_at_the_per_seed_cap=capped_seeds,
         degenerate_residual=degenerate,
         zero_displacement_edges=zero_edges,
         diagnostics=diagnostics,

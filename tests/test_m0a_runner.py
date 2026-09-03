@@ -140,8 +140,39 @@ def test_every_declared_r3_cell_is_present(probe):
         for method in ("L1_DIRECTIONAL", "STRUCTURAL_NEIGHBOUR")
         for rule in ("matched", "additive")
     }
+    diagnostic = {f"R3/{family}/UNCONSTRAINED_FRONTIER/diagnostic" for family in FAMILIES}
     assert expected <= set(probe["regimes"])
-    assert set(probe["regimes"]) == expected | {"R1", "R2"}
+    assert set(probe["regimes"]) == expected | diagnostic | {"R1", "R2"}
+
+
+def test_the_unconstrained_frontier_bounds_every_capped_cell(probe):
+    """It is a ceiling on the frontier, so no budget over it may beat it."""
+    for family in FAMILIES:
+        bound = probe["regimes"][f"R3/{family}/UNCONSTRAINED_FRONTIER/diagnostic"]
+        assert bound["is_a_diagnostic_not_a_comparison"] is True
+        assert bound["is_the_headline"] is False
+        for method in ("L1_DIRECTIONAL", "STRUCTURAL_NEIGHBOUR"):
+            for rule in ("matched", "additive"):
+                cell = probe["regimes"][f"R3/{family}/{method}/{rule}"]
+                assert (
+                    cell["headroom"]["any_gold_at_pool"]
+                    <= bound["headroom"]["any_gold_at_pool"] + 1e-12
+                ), (family, method, rule)
+
+
+def test_whether_the_cap_ever_forced_a_choice_is_recorded(probe):
+    for key, cell in probe["regimes"].items():
+        if key.endswith("/matched"):
+            assert isinstance(cell["seeds_at_the_per_seed_cap"], int), key
+            assert isinstance(cell["queries_with_a_capped_seed"], int), key
+
+
+def test_the_admitted_sets_are_recorded_so_the_arms_can_be_compared(probe):
+    """Equal ceilings mean nothing until you know the arms admitted equal sets."""
+    directional = probe["regimes"][f"R3/{FAMILIES[0]}/L1_DIRECTIONAL/matched"]
+    structural = probe["regimes"][f"R3/{FAMILIES[0]}/STRUCTURAL_NEIGHBOUR/matched"]
+    assert len(directional["admitted_nodes_per_query"]) == probe["queries"]
+    assert len(structural["admitted_nodes_per_query"]) == probe["queries"]
 
 
 def test_only_the_matched_cells_are_the_headline(probe):

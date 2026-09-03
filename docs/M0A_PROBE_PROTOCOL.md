@@ -196,6 +196,14 @@ Then **one** of:
   point, which would say directional expansion is inert at this budget and is
   worth confirming across all six datasets precisely because it is cheap.
 
+**The two branches are not disjoint**, which was found before any M0A result
+was read and is recorded here rather than quietly repaired. Movement fires on
+AnyGold *or* recall@5; the decisive null reads recall@5 alone. A cell whose
+AnyGold moves a point while its recall@5 stays inert satisfies both. The
+analysis reports that overlap as `CONTRADICTORY` and stops. It does not resolve
+it by taking whichever branch suits the outcome: a result inside the overlap
+needs a decision about the rule, not a computation over the data.
+
 If the result falls between the two -- too small to act on, too large to call
 inert -- M0B is **not** launched on this evidence. The budget or the frontier
 is reconsidered in a new declaration. These thresholds are not moved after

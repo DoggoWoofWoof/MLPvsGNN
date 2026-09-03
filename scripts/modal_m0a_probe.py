@@ -106,6 +106,7 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         / "m0a_probe"
         / job["dataset"]
         / job["fingerprint"][:16]
+        / MODAL_CONFIG["execution_label"]
     )
     return argparse.Namespace(
         data=Path(job["data_remote"]),

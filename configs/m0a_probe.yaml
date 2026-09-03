@@ -205,6 +205,28 @@ sampling:
     the probe validates a contract and calibrates cost. One hundred queries
     cannot support an effectiveness claim and this stage does not make one.
 
+diagnostics_added_after_the_first_execution:
+  status: PROCESS_DEVIATION_RECORDED_NOT_HIDDEN
+  what: >-
+    seeds_at_the_per_seed_cap and queries_with_a_capped_seed, the admitted node
+    set per query, and an UNCONSTRAINED_FRONTIER cell per edge family.
+  why: >-
+    the first execution returned identical headroom for L1_DIRECTIONAL and
+    STRUCTURAL_NEIGHBOUR in every cell. That reading is ambiguous without two
+    facts the first execution did not record: whether the per-seed cap ever
+    forced a choice at all, and whether the two arms admitted the same nodes.
+    A null between a method and its control is unreadable if the budget was so
+    loose that neither ever chose anything.
+  what_did_not_change: >-
+    no admission rule, no score, no cap, no tie-break, no pool, no threshold.
+    The added fields are counters and recorded sets. The expansion is a pure
+    function of its inputs, so the re-execution must reproduce the first
+    execution's headroom exactly, and that identity is asserted rather than
+    assumed.
+  it_is_still_a_post_outcome_change: >-
+    the outcome was seen before these fields were added. That is disclosed here
+    rather than presented as the original design.
+
 measurements:
   candidate:
     - candidate_count_median
@@ -263,6 +285,13 @@ advancement_to_m0b:
     - expansion and context latency percentiles are recorded per dataset
     - the neighbour scan cap is reported wherever it fired
   and_one_of:
+    numbers_are_the_prose_and_the_prose_is_the_numbers: >-
+      each threshold below appears twice, once as a sentence a person reads and
+      once as a number the analysis script reads. A test asserts they agree, so
+      neither can be changed without the other.
+    movement_points: 1.0
+    decisive_null_matched_points: 0.25
+    decisive_null_additive_points: 1.0
     movement: >-
       at least one dataset shows matched-budget AnyGold or oracle recall@5
       moving by at least 1.0 point in at least one edge family, under either
@@ -277,6 +306,15 @@ advancement_to_m0b:
     large to call inert -- M0B is NOT launched on this evidence. The budget or
     the frontier is reconsidered in a new declaration.
   thresholds_are_not_moved_after_seeing_m0a: true
+  the_two_branches_are_not_disjoint: >-
+    FOUND BEFORE ANY M0A RESULT WAS READ, and recorded rather than repaired.
+    The movement branch fires on matched-budget AnyGold OR oracle recall@5. The
+    decisive_null branch reads oracle recall@5 only. A cell whose AnyGold moves
+    at least 1.0 point while its recall@5 moves less than 0.25 therefore
+    satisfies both branches at once, which the rule does not anticipate. The
+    analysis reports this as CONTRADICTORY and stops; it never resolves the
+    overlap by choosing the branch that suits the outcome. If a result lands in
+    the overlap, the rule needs a decision, not a computation.
 
 compute:
   estimated_before_launch: true
@@ -286,6 +324,12 @@ compute:
   memory_mb: 16384
   cost_ceiling_usd: 0.60
   jobs: 3
+  executions: 2
+  why_two_executions: >-
+    the second adds the diagnostics recorded under
+    diagnostics_added_after_the_first_execution and changes nothing that could
+    move a number. Six jobs at the declared per-job estimate stay inside the
+    ceiling.
   timeout_seconds_per_job: 3600
   estimate:
     measured_on: >-
@@ -315,6 +359,8 @@ compute:
       work is memory-bound gathers rather than GEMMs, so four cores lose
       nothing. Halving both keeps a fourfold memory margin and brings the
       three-times-estimate cost under the declared ceiling.
+  abort_rule_latency_factor: 4.0
+  abort_rule_workspace_bytes_per_query: 1048576
   abort_rule: >-
     abort a dataset before reporting if its expansion p95 per query exceeds its
     context build p95 per query by more than a factor of four on the same
@@ -336,6 +382,11 @@ modal:
   memory_mb: 16384
   timeout_seconds: 3600
   edge_provenance_root: edge_provenance_graphs
+  execution_label: execution_2
+  why_a_label: >-
+    the first execution's output stays where it was written. A second execution
+    writes beside it rather than over it, so the identity of the two can be
+    checked instead of asserted.
   spawn_server_side: true
   never_modal_run_detach: >-
     jobs are submitted through scripts/spawn_modal_jobs.py so the run survives

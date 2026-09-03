@@ -118,7 +118,8 @@ def test_the_advancement_rule_cannot_be_moved_afterwards(declaration):
     rule = declaration["advancement_to_m0b"]
     assert rule["automatic"] is False
     assert rule["thresholds_are_not_moved_after_seeing_m0a"] is True
-    assert set(rule["and_one_of"]) == {"movement", "decisive_null"}
+    assert {"movement", "decisive_null"} <= set(rule["and_one_of"])
+    assert "FOUND BEFORE ANY M0A RESULT WAS READ" in rule["the_two_branches_are_not_disjoint"]
     assert rule["neither_holds"].strip()
     assert any("permutes gold" in item for item in rule["all_of"])
 
