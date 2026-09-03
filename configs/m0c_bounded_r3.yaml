@@ -1,0 +1,465 @@
+# M0C -- repair M0B's R3 causal confound. Zero training.
+#
+# Status: DECLARED_NOT_LAUNCHED. Filed before any M0C number exists.
+#
+# M0B measured R3 as scored=Cq_struct=stable_union(Cq,A64), context=
+# TARGET_H1(Cq_struct). That changes two things in one step: which nodes are
+# scoreable (candidate eligibility) AND how large the surrounding graph
+# context is (a second, uncontrolled TARGET_H1 walk seeded from the wider
+# pool). On hotpotqa_clean the second effect dominates -- real measured
+# median context grew from R2's 1,935 to R3's 126,056, ~65x -- which makes
+# any future R2 -> R3 model comparison causally ambiguous: a change in model
+# behaviour there could come from structural eligibility, from a vastly
+# larger graph, or both, and M0B's own data cannot separate them.
+#
+# M0C does not rerun or reinterpret M0B. M0B's commits (acceffd, e769a1b),
+# results, and regime definitions stand exactly as executed, retained as
+# R3_FULL_REEXPANSION -- a real, valuable zero-training systems/structural
+# finding ("full graph repair after candidate admission can be pathologically
+# expensive on some graph regimes"), cited by name in the results doc, never
+# recomputed here. M0C instead measures a second, distinct R3:
+#
+#   C3 = stable_union(Cq, A64)              -- unchanged from M0B
+#   U3_bounded = stable_union(U2, A64)      -- NOT TARGET_H1(Cq_struct)
+#
+# which admits every structurally-scoreable node into the model's domain
+# (C3 subset U3_bounded, proved below, not merely hoped for) without
+# performing a second graph walk. This isolates the causal ladder the QLS-
+# vs-GNN paper actually needs: R1 -> R2 repairs graph information; R2 -> R3
+# repairs candidate eligibility, without recursively re-expanding graph
+# information a second time.
+#
+# This document authorises step 1 only: filing the declaration. It does not
+# authorise steps 2-8 (proving scored-set/headroom reuse, building bounded
+# U3, recomputing context-dependent diagnostics, invariant verification, the
+# corrected feature/regime map, the trained-screen proposal). Each later step
+# needs its own artifact before the next runs.
+
+status: DECLARED_NOT_LAUNCHED
+this_file_authorises: file_declaration_only
+does_not_authorise:
+  - the_reuse_proof_run_step_2
+  - the_bounded_u3_construction_step_3
+  - the_headline_launch
+  - any_fitting_of_any_kind
+  - modifying_m0b_in_any_way
+
+# --------------------------------------------------------------------------
+# M0B is frozen. Nothing below re-derives it with a different algorithm.
+# --------------------------------------------------------------------------
+
+do_not_modify:
+  commits: [acceffd, e769a1b]
+  files:
+    - configs/m0b_regime_map.yaml
+    - docs/M0B_REGIME_MAP_PROTOCOL.md
+    - docs/M0B_REGIME_MAP_RESULTS.md
+    - scripts/run_m0b_regime_map.py
+    - tests/test_m0b_runner.py
+    - tests/test_m0b_declaration.py
+    - scripts/modal_m0b_regime_map.py
+  a64_construction: >-
+    STRUCTURAL_NEIGHBOUR over the structural_only edge family, native
+    structural edges, universal +64 cap, parameter-free, dataset-agnostic --
+    reused exactly, re-derived (M0B persisted only aggregate statistics, not
+    per-query node-ID arrays, so there is nothing to literally load), never
+    regenerated with another algorithm or a per-dataset tuned cap.
+
+carried_unchanged_not_recomputed:
+  m0b_status: ALL_8_STEPS_COMPLETE_STOPPED_AT_STEP_8
+  m0b_headline_scale: 600  # 100 queries x six datasets
+  m0b_invariant_breaches: 0
+  m0b_actual_compute_usd: 0.088
+  m0b_hotpotqa_r2_context_node_count_median: 1935
+  m0b_hotpotqa_r3_full_context_node_count_median: 126056
+  m0b_hotpotqa_r2_to_r3_full_growth_ratio: ~65x
+  m0b_hotpotqa_admitted_node_containment_in_u2: 0.9964  # 15/4167 admitted instances outside U2
+  m0b_hotpotqa_is_the_only_dataset_where_a64_recovered_gold_beyond_u2: true
+  m0b_webqsp_unrecovered_gold_instances_beyond_u2: 86
+  m0b_webqsp_all_gold_at_pool: 0.31
+  m0b_metaqa_peak_rss_bytes: 7680409600  # the real six-dataset peak, not webqsp
+  source: docs/M0B_REGIME_MAP_RESULTS.md
+
+# --------------------------------------------------------------------------
+# Why this does not reopen paper 1's or M0B's own precedent
+# --------------------------------------------------------------------------
+
+why_this_does_not_relitigate_prior_declarations:
+  the_contract: >-
+    configs/candidate_headroom.yaml's diagnostic_contract (candidate_
+    regeneration, candidate_admission, graph_expansion all prohibited_in_
+    paper_1) is not edited, reinterpreted or relaxed here, exactly as M0A
+    and M0B left it. It governs oracle(Cq); M0C, like M0B, studies the
+    separate, disclosed object oracle(Cq_struct).
+  the_precedent_chain: >-
+    configs/m0a_probe.yaml opened the why_a_new_namespace precedent;
+    configs/m0b_regime_map.yaml cited it rather than re-litigating it; this
+    file cites the same chain a third time. M0C adds nothing new to argue
+    here -- it only changes which CONTEXT the already-authorised C3 is
+    measured against.
+  what_is_new_here: >-
+    Only the definition of R3's context. M0B's R3 used TARGET_H1(Cq_struct)
+    -- a second, uncontrolled expansion. M0C uses stable_union(U2, A64) --
+    bounded, no second graph walk. C3 itself (the scored set) is byte-for-
+    byte the same construction in both.
+
+historical_artifacts_are_untouched:
+  m0b_results_and_commits: preserved_unmodified  # see do_not_modify above
+  m0a_results: preserved_unmodified
+  m0a1_results: preserved_unmodified
+  packages_a_through_f: preserved_unmodified
+  e2: PAUSED_NOT_RESUMED
+  f: SEALED_NOT_OPENED
+  frozen_pools_hashes_tags: preserved_unmodified
+  workspace_migration: false
+  test_split_read: false
+  feature_selection_by_model_outcome: false
+  qls_training: false
+  gnn_training: false
+  h2_h3_or_a_new_candidate_generator: false
+
+# --------------------------------------------------------------------------
+# Regimes and sets
+# --------------------------------------------------------------------------
+
+regimes:
+  R1:
+    name: HISTORICAL
+    scored_nodes: Cq
+    graph: G[Cq]
+    unchanged_from_m0b: true
+  R2:
+    name: REPAIRED_GRAPH_CONTEXT
+    scored_nodes: Cq
+    graph: TARGET_H1(Cq)  # == U2
+    unchanged_from_m0b: true
+    causal_role: "repairs graph information: exposes more topology as context"
+  R3_BOUNDED:
+    name: STRUCTURAL_ADMISSION_BOUNDED_CONTEXT
+    scored_nodes: C3  # == stable_union(Cq, A64), identical construction to M0B's Cq_struct
+    graph: U3_bounded  # == stable_union(U2, A64) -- NOT TARGET_H1(C3)
+    changes_candidate_oracle: true  # disclosed, inherited from M0B's own disclosure
+    causal_role: >-
+      repairs candidate eligibility only: permits the bounded A64 subset to
+      become scoreable and folds exactly those nodes into the model's
+      domain, without a second, uncontrolled graph re-expansion.
+    does_not_run: TARGET_H1(C3)
+    why_not: >-
+      Admitting a node into the scored set does not recursively earn it
+      another neighbourhood expansion. Running TARGET_H1(C3) in mainline
+      M0C would silently reintroduce the exact confound this phase exists
+      to remove.
+  R3_FULL_REEXPANSION:
+    name: M0B_HISTORICAL_SYSTEMS_CONTROL
+    scored_nodes: Cq_struct  # identical to C3 above, different name for the historical object
+    graph: TARGET_H1(Cq_struct)
+    status: CITED_FROM_M0B_NOT_RECOMPUTED
+    role: >-
+      Retained as a zero-training systems/structural control: evidence that
+      full graph repair after candidate admission can be pathologically
+      expensive on some graph regimes (hotpotqa_clean's ~65x growth). Never
+      trained on Hotpot or anywhere else. Its numbers in M0C's results doc
+      are the exact values already filed in docs/M0B_REGIME_MAP_RESULTS.md,
+      not a fresh measurement.
+
+sets:
+  Cq: the historical scored candidate set, frozen candidate order, bit-exact -- unchanged
+  U2: "TARGET_H1(Cq) -- R2's context universe, unchanged contract, unchanged from M0B"
+  A64: >-
+    The exact M0B STRUCTURAL_NEIGHBOUR admission at graph_expansion_cap=64,
+    re-derived by the identical construction (candidate_expansion_v2.expand,
+    method=STRUCTURAL_NEIGHBOUR, budget=ExpansionBudget(hop_cap=1,
+    per_seed_cap=16, graph_expansion_cap=64, neighbour_scan_cap_per_seed=
+    4096)).admitted), over the same structural_only edge family. Not
+    regenerated with another algorithm; not re-tuned per dataset.
+  C3: "stable_union(Cq, A64) -- identical construction to M0B's Cq_struct, same object under a name that does not imply a particular context"
+  U3_bounded: >-
+    stable_union(U2, A64). Cheap: since Cq subset U2 already holds (M0B's
+    own u2_contains_cq invariant, re-verified live by M0C, not assumed),
+    U2 union A64 == U2 union C3 -- the same set stable_union(U2, A64)
+    describes without a second TARGET_H1 walk. A plain np.union1d, not a
+    graph traversal.
+  why_union_with_a64_rather_than_asserting_a64_subset_u2: >-
+    M0B measured real hotpotqa_clean containment = 0.9964 (15 of 4,167
+    admitted instances outside U2), and hotpotqa_clean is the only dataset
+    where A64 recovered gold beyond U2's own context. Asserting A64 subset
+    U2 would silently discard exactly those nodes on exactly the one dataset
+    where they mattered. U3_bounded = U2 union A64 guarantees every
+    scoreable node is in the model's domain without triggering another
+    uncontrolled expansion to reach it.
+
+edge_provenance_family_backing_a64:
+  chosen: structural_only
+  unchanged_from: configs/m0b_regime_map.yaml#edge_provenance_family_backing_a64
+  why: >-
+    A64's construction is not reopened by M0C -- the same deterministic
+    graph, chosen once in M0B, backs the identical admission rule here.
+
+node_role_under_r3_bounded:
+  exactly_one_role_per_node: true
+  RETRIEVAL_CANDIDATE: v in Cq
+  STRUCTURAL_SCORED_CANDIDATE: v in C3 minus Cq  # == A64, same as M0B
+  CONTEXT_ONLY: v in U3_bounded minus C3
+  implementation: src/mp_retrieval/overlap_audit.py#node_roles, unmodified
+  reused_unmodified_because: >-
+    node_roles(cq, scored, context) only requires cq subset scored subset
+    context, which holds for (Cq, C3, U3_bounded) by the same containment
+    argument as sets.U3_bounded above -- no code change, no new case.
+
+# --------------------------------------------------------------------------
+# Datasets -- the same six, same real numbers M0B already filed
+# --------------------------------------------------------------------------
+
+datasets:
+  squad_clean: {expected_queries: 130319, m0b_measured: true}
+  2wiki_clean:
+    expected_queries: 15000
+    candidate_contract_compatibility: pre_hop_metadata_v1
+    m0b_measured: true
+  musique_clean: {expected_queries: 19938, m0b_measured: true}
+  hotpotqa_clean:
+    expected_queries: 97852
+    m0b_measured: true
+    named_evidence_cell: >-
+      M0B's real ~65x R2->R3_full context growth and the 0.9964 containment
+      gap both live here. M0C highlights this dataset explicitly in its
+      results doc's systems comparison table -- it must remain visible as
+      evidence, not be overwritten by the bounded number.
+  metaqa: {expected_queries: 407513, m0b_measured: true}
+  webqsp:
+    expected_queries: 1578
+    m0b_measured: true
+    stays_the_named_risk_for: candidate_eligibility_and_graph_availability_both
+    do_not_attempt: [H2, H3, another_candidate_generator]
+    what_m0c_adds_for_webqsp: >-
+      Nothing structural. M0C's results doc reports webqsp's absolute R@K
+      AND its regime-specific ceiling attainment (achieved effectiveness /
+      regime-specific oracle), so a future reader cannot confuse unreachable
+      evidence (86 gold instances beyond U2, 36/100 queries with zero gold
+      in the pool) with a ranking failure -- essential for a fair MLP vs GNN
+      comparison later.
+
+# --------------------------------------------------------------------------
+# Sampling -- identical to M0B, no new sampling
+# --------------------------------------------------------------------------
+
+sampling:
+  reuses_m0b_exactly: true
+  queries_per_dataset: 100
+  split: validation
+  selection: deterministic_prefix_of_the_split_order
+  why_no_new_sampling: >-
+    M0C's entire value proposition is a controlled comparison against M0B on
+    the exact same 600 queries. A different sample would reopen the
+    question M0C exists to close.
+  smoke_sample_step_2:
+    queries_per_dataset: 5
+    split: validation
+    selection: deterministic_prefix_of_the_split_order
+    purpose: >-
+      Prove scored-set/headroom reuse cheaply, against M0B's own filed
+      smoke-stage numbers (outputs/m0b_regime_map/smoke/*.json), before the
+      headline-scale container cost is incurred. Mirrors M0B's own step-2/3
+      discipline exactly.
+
+# --------------------------------------------------------------------------
+# Reuse contract -- what M0C proves rather than assumes
+# --------------------------------------------------------------------------
+
+reuse_contract:
+  what_is_reused: >-
+    Candidate/headroom-side quantities whose meaning is identical between
+    R3_FULL and R3_BOUNDED, because neither references U3: candidate counts,
+    AnyGold/AllGold/GoldFraction, oracle R@1/R@5/R@20, recovered missing
+    golds, rescued queries, provenance of admitted candidates, A64 itself.
+  how_reuse_is_proved_not_assumed: >-
+    M0B persisted only aggregate per-dataset statistics, never per-query
+    node-ID arrays -- there is no literal cache to load. M0C re-derives
+    these quantities live, with the identical deterministic construction
+    (same frozen candidate pools, same seeds, same A64 rule), and asserts
+    the resulting aggregates equal M0B's own filed numbers bit-exactly.
+    Re-derivation IS the reuse proof, not a shortcut around it.
+  what_is_new_and_actually_recomputed: >-
+    Only context-dependent quantities: U3_bounded's node/edge count, isolate
+    fraction, radius-1 retention, boundary-cut fraction, candidate-endpoint
+    two-hop path retention, seed-relative reach, feature distributions/
+    correlations/discrimination/latency/RSS for all nine catalogued
+    families, and NODE_ROLE under the bounded partition.
+  if_exact_reproduction_fails: STOP_AND_REPORT
+  where_the_cross_check_lives: >-
+    tests/test_m0c_reuse_against_m0b.py, conditionally skipped when the
+    gitignored real outputs are not present locally (mirrors tests/
+    test_m0b_declaration.py's own pattern for gitignored artifacts) -- not
+    inside the runner itself, which has no access to M0B's downloaded
+    outputs inside a fresh Modal container.
+  r3_full_reexpansion_is_cited_not_recomputed_in_the_headline_run: >-
+    M0C's Modal runner never calls TARGET_H1(C3). Recomputing it would pay
+    for the same expensive walk M0B already paid for, for no new
+    information, and would work against "M0C must be dramatically cheaper
+    than M0B." The systems comparison table cites M0B's already-filed
+    R3_FULL numbers directly.
+
+# --------------------------------------------------------------------------
+# Feature catalog wiring -- unchanged frozen catalog, narrower rebuild
+# --------------------------------------------------------------------------
+
+feature_catalog:
+  frozen_declaration: configs/graph_context_pilot.yaml#feature_catalog
+  frozen_doc: docs/GRAPH_CONTEXT_FEATURE_CATALOG.md
+  reused_verbatim: true
+  nine_families: [RETRIEVAL, SEED, GEOMETRY, SUPPORT, PATH, DIFFUSION, TOPOLOGY, PROVENANCE, NODE_ROLE]
+  only_context_dependent_families_need_rebuilding: >-
+    R1 and R2 feature measurements are unchanged from M0B (same Cq, same
+    U2) and are re-derived only as part of the reuse proof, not as new
+    measurement. Only R3's feature pass runs over the new U3_bounded.
+  provenance_family_is_reused_not_remeasured:
+    source: docs/EDGE_PROVENANCE_RESULTS.md
+    unchanged_from_m0b: true
+  do_not_use_m0b_r3_full_labels_for_bounded_r3: >-
+    M0B's docs/M0B_REGIME_MAP_RESULTS.md classification labels were computed
+    against R3_FULL's feature distributions. M0C recomputes the same five
+    predeclared labels (below, unchanged rules) against R3_BOUNDED's own
+    measured distributions -- it does not assume R3_FULL's labels transfer.
+
+# --------------------------------------------------------------------------
+# Classification labels -- unchanged rules, reapplied to the corrected map
+# --------------------------------------------------------------------------
+
+classification_labels:
+  status: PREDECLARED_BEFORE_ANY_M0C_RESULT_IS_READ
+  rules_unchanged_from: configs/m0b_regime_map.yaml#classification_labels
+  applies_to: one (dataset, regime, feature_family) cell at a time, regime in {R1, R2, R3_BOUNDED}
+  legitimate_use_of_gold: >-
+    Unchanged: occupancy/redundancy stay gold-blind; any gold-conditioned
+    diagnostic is reported separately and never an input to the five labels.
+
+# --------------------------------------------------------------------------
+# Systems contract -- unchanged thresholds
+# --------------------------------------------------------------------------
+
+systems_contract:
+  inherits_thresholds_from: configs/m0b_regime_map.yaml#systems_contract
+  latency_factor: 4.0
+  peak_rss_bytes_max: 15032385536  # 14 GiB, same container-shape bound
+  measured_independently_for: [candidate_admission, u3_bounded_construction, feature_construction, shared_graph_extraction]
+  u3_bounded_construction_is_expected_to_be_cheap: >-
+    np.union1d over two already-materialised arrays, not a graph walk --
+    reported anyway, on the systems contract's own terms, not assumed cheap
+    without measurement.
+
+# --------------------------------------------------------------------------
+# Invariants -- the eight M0C-specific gates. Any failure stops the stage.
+# --------------------------------------------------------------------------
+
+invariants_required:
+  - name: scored_r1_equals_scored_r2
+    checked: live, per query, in scripts/run_m0c_bounded_r3.py
+  - name: oracle_r1_equals_oracle_r2_bit_exact
+    checked: live, per dataset, in scripts/run_m0c_bounded_r3.py
+  - name: c3_m0c_equals_c3_m0b
+    checked: >-
+      post-hoc, aggregate-level, in tests/test_m0c_reuse_against_m0b.py
+      against outputs/m0b_regime_map/{smoke,headline}/*.json (no per-query
+      cache exists to compare against directly -- see reuse_contract above)
+  - name: u2_subset_u3_bounded
+    checked: live, per query, in scripts/run_m0c_bounded_r3.py
+  - name: c3_subset_u3_bounded
+    checked: live, per query, in scripts/run_m0c_bounded_r3.py
+  - name: admitted_delta_within_universal_cap  # |C3 \ Cq| <= 64
+    checked: live, per query, in scripts/run_m0c_bounded_r3.py (overlap_audit.regime_set_invariants, unmodified)
+  - name: r3_candidate_and_headroom_metrics_match_m0b_bit_exactly
+    checked: post-hoc, in tests/test_m0c_reuse_against_m0b.py
+  - name: node_role_partition_is_exhaustive_and_mutually_exclusive
+    checked: >-
+      inherited proof, not re-verified per query in M0C -- overlap_audit.
+      node_roles proves this given cq subset scored subset context (module
+      docstring, 200-trial randomized sweep in tests/test_overlap_audit.py),
+      unmodified and reused exactly as M0B relied on it.
+
+# --------------------------------------------------------------------------
+# Modal deployment
+# --------------------------------------------------------------------------
+
+modal:
+  app: message-passing-retrieval-m0c-bounded-r3
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: null
+  cpu: 4
+  memory_mb: 16384
+  timeout_seconds: 3600
+  edge_provenance_root: edge_provenance_graphs
+  execution_label: execution_1
+  spawn_server_side: true
+  never_modal_run_detach: >-
+    submitted through scripts/spawn_modal_jobs.py so the run survives the
+    local process, unchanged discipline from M0A/M0A.1/M0B.
+  require_embeddings: false
+  require_embeddings_why: >-
+    Unchanged from M0B: this runner's only embeddings-shaped argument is
+    expand(STRUCTURAL, ...)'s node_embeddings, which STRUCTURAL never
+    dereferences.
+
+# --------------------------------------------------------------------------
+# Compute -- plan only. NOT FINAL. Final numbers come from the step-2 probe.
+# --------------------------------------------------------------------------
+
+compute:
+  estimated_before_launch: true
+  is_final: false
+  final_numbers_deferred_to: step_2_smoke_run_on_real_data
+  expected_to_be_dramatically_cheaper_than_m0b: >-
+    R1/R2/A64 construction is the same real work M0B paid for (re-derived
+    here as the reuse proof, not skipped); U3_bounded adds only a cheap
+    array union in place of M0B's expensive TARGET_H1(Cq_struct) walk, and
+    R3_FULL is cited rather than recomputed. The saving is specifically
+    R3's context-build and feature cost on the datasets where M0B's full
+    re-expansion was largest (hotpotqa_clean above all).
+  container: cpu_only
+  gpu_hours_authorised: 0.0
+  reuses_existing_artifacts: >-
+    frozen candidate pools, edge-family graphs, confirmation manifests, and
+    M0B's own filed per-dataset numbers for the R3_FULL comparison column.
+  validate_cheaply_first: >-
+    File jobs, CPU-hours, walltime, storage, peak RSS and cost BEFORE
+    execution, exactly like M0A/M0A.1/M0B's own two-stage discipline: smoke
+    on 5 queries/dataset first, derive a real estimate from that
+    measurement, file a ceiling, gate-check, only then launch 100 queries x
+    six datasets.
+  cost_ceiling_usd:
+    filed_from_measurement: false  # updated after the step-2 smoke run
+    point_estimate_usd: null
+    filed_ceiling_usd: null
+    is_final: false
+
+# --------------------------------------------------------------------------
+# After the map
+# --------------------------------------------------------------------------
+
+after_the_map:
+  eight_step_plan:
+    1: file_this_declaration
+    2: prove_scored_set_and_headroom_reuse_against_m0b_on_the_smoke_sample
+    3: build_bounded_u3_and_file_a_real_cost_ceiling_from_the_smoke_measurement
+    4: recompute_context_dependent_diagnostics_on_the_full_600_query_panel
+    5: verify_all_eight_invariants
+    6: update_the_dataset_x_regime_x_feature_family_map_with_r3_bounded
+    7: propose_not_launch_the_minimum_trained_screen_matrix_mechanically_from_the_corrected_map
+    8: hard_stop
+  step_7_must_not: >-
+    reuse M0B's R3_FULL feature labels as if they automatically apply to
+    R3_BOUNDED -- the corrected map is regenerated mechanically from R3_
+    BOUNDED's own measured distributions, not inherited from
+    docs/M0B_REGIME_MAP_RESULTS.md's proposal.
+  step_8_is_a_hard_stop: >-
+    No fitting of any kind begins without a further, separate, explicit
+    authorisation after step 7's proposal is reviewed.
+  standing_prohibitions_restated:
+    - no_qls_fitting
+    - no_gnn_fitting
+    - no_h2_h3
+    - no_new_candidate_generator
+    - no_d_series_work
+    - e2_stays_paused
+    - f_stays_sealed
+    - no_workspace_migration

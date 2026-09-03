@@ -67,6 +67,10 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         "scripts.modal_m0b_regime_map",
         {"smoke": "run_regime_map_smoke", "headline": "run_regime_map_headline"},
     ),
+    "m0c-bounded-r3": (
+        "scripts.modal_m0c_bounded_r3",
+        {"smoke": "run_bounded_r3_smoke", "headline": "run_bounded_r3_headline"},
+    ),
 }
 
 # Stage B replaced the pre-launch guess with measurements, so this is now
