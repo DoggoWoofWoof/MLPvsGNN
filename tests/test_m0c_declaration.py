@@ -222,6 +222,19 @@ def test_the_dataset_roster_matches_the_sealed_confirmation_manifests(config, sa
         assert entry["expected_queries"] == sa_mlp_confirmation["datasets"][name]["expected_queries"]
 
 
+def test_candidate_contract_compatibility_matches_m0b_for_every_dataset(config, m0b_config):
+    # Real bug caught on first contact with real data (2026-09-04 M0C smoke
+    # run): condensing M0B's dataset block dropped musique_clean's
+    # pre_hop_metadata_v1 flag while keeping 2wiki_clean's, causing a real
+    # Modal job to fail validate_candidate_contract with "Frozen baseline
+    # candidate contract does not match." This asserts the two YAMLs agree
+    # on every dataset, not just the one that already broke, so a future
+    # condensation error is caught here instead of on real compute.
+    for name, entry in config["datasets"].items():
+        expected = m0b_config["datasets"][name].get("candidate_contract_compatibility")
+        assert entry.get("candidate_contract_compatibility") == expected, name
+
+
 def test_hotpotqa_is_named_as_the_evidence_cell(config):
     assert "named_evidence_cell" in config["datasets"]["hotpotqa_clean"]
     evidence = config["datasets"]["hotpotqa_clean"]["named_evidence_cell"]

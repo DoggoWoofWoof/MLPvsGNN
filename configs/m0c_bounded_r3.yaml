@@ -216,7 +216,10 @@ datasets:
     expected_queries: 15000
     candidate_contract_compatibility: pre_hop_metadata_v1
     m0b_measured: true
-  musique_clean: {expected_queries: 19938, m0b_measured: true}
+  musique_clean:
+    expected_queries: 19938
+    candidate_contract_compatibility: pre_hop_metadata_v1
+    m0b_measured: true
   hotpotqa_clean:
     expected_queries: 97852
     m0b_measured: true
