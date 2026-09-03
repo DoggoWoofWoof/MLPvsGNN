@@ -7,7 +7,7 @@ actual per-dataset matrix, a cell that got its regime wrong (e.g. a
 NODE_ROLE arm declared where the role column is provably constant), a
 reused-code claim that names a function that does not actually exist in the
 file it is attributed to, and a declaration that quietly authorises more
-than step 1-2.
+than steps 1-3 (file, derive cells, estimate compute).
 """
 
 from __future__ import annotations
@@ -56,17 +56,16 @@ def _flat(text: str) -> str:
     return " ".join(text.split())
 
 
-# --- this document authorises steps 1-2 only ---
+# --- this document authorises steps 1-3 only (step 3 added 2026-09-04) ---
 
 
 def test_the_stage_is_declared_but_not_launched(config):
     assert config["status"] == "DECLARED_NOT_LAUNCHED"
-    assert config["this_file_authorises"] == "file_declaration_and_derive_cells_only"
+    assert config["this_file_authorises"] == "file_declaration_derive_cells_and_estimate_compute"
 
 
 def test_every_later_step_is_named_as_not_authorised(config):
     later_steps = {
-        "the_compute_estimate_step_3",
         "the_smoke_validation_step_4",
         "the_real_m1a_screen_launch_step_5",
         "the_trained_effect_map_step_6",
@@ -84,6 +83,8 @@ def test_every_later_step_is_named_as_not_authorised(config):
         "migrating_workspace",
     }
     assert later_steps == set(config["does_not_authorise"])
+    # the compute estimate (step 3) is done -- must not still be listed as prohibited
+    assert "the_compute_estimate_step_3" not in config["does_not_authorise"]
 
 
 def test_no_gnn_work_of_any_kind_is_marked_false(config):
@@ -488,12 +489,77 @@ def test_sampling_is_explicitly_distinguished_from_the_m0_diagnostic_panel(confi
     assert "100-query" in note
 
 
-# --- compute: correctly deferred, not estimated in this file ---
+# --- compute: step 3 estimated here, but the real ceiling is still deferred ---
 
 
-def test_compute_is_not_estimated_in_this_declaration(config):
-    assert config["compute"]["estimated_in_this_file"] is False
-    assert config["compute"]["deferred_to"] == "step_3_after_declaration_review"
+def test_compute_is_estimated_but_ceiling_not_yet_filed(config):
+    assert config["compute"]["estimated_in_this_file"] is True
+    assert config["compute"]["ceiling_filed"] is False
+    assert config["compute"]["ceiling_deferred_to"] == "step_4_real_smoke_measurement"
+
+
+def test_compute_rates_match_the_real_compute_ledger_e2_entry(config):
+    ledger = pathlib.Path("docs/COMPUTE_LEDGER.md").read_text(encoding="utf-8")
+    assert config["compute"]["gpu_rate_usd_per_hour"] == 2.241
+    assert config["compute"]["cpu_rate_usd_per_hour"] == 0.634
+    assert "$2.241/h" in ledger
+    assert "$0.634/h" in ledger
+
+
+def test_compute_derivation_recomputes_from_its_own_stated_inputs(config):
+    # Mirrors this repo's declaration-testing convention: mechanically
+    # recompute the filed totals from the filed per-dataset breakdowns
+    # rather than trusting the summary numbers in isolation.
+    d = config["compute"]["derivation"]
+
+    feature_total = sum(d["feature_build_by_dataset_seconds"].values())
+    fit_total = sum(d["fit_by_dataset_seconds"].values())
+
+    assert feature_total == pytest.approx(d["feature_build_seconds_total"], abs=0.5)
+    assert fit_total == pytest.approx(d["fit_seconds_total"], abs=0.5)
+    assert feature_total / 3600 == pytest.approx(d["feature_build_hours_total"], abs=0.01)
+    assert fit_total / 3600 == pytest.approx(d["fit_hours_total"], abs=0.01)
+
+    floor = (feature_total + fit_total) / 3600
+    assert floor == pytest.approx(d["pure_compute_floor_gpu_hours"], abs=0.01)
+
+    gpu_rate = config["compute"]["gpu_rate_usd_per_hour"]
+    assert floor * gpu_rate == pytest.approx(d["cost_all_gpu_billed_usd"], abs=0.05)
+
+
+def test_compute_derivation_matches_real_source_artifacts(config):
+    import json as _json
+
+    val_n = {
+        "squad_clean": 26063, "2wiki_clean": 3000, "hotpotqa_clean": 19570,
+        "metaqa": 39138, "webqsp": 315,
+    }
+    d = config["compute"]["derivation"]
+    for dataset, expected_val_n in val_n.items():
+        path = pathlib.Path(f"outputs/sa_mlp_confirmation/{dataset}.json")
+        if not path.exists():
+            pytest.skip(f"{path} not present in this checkout")
+        real = _json.loads(path.read_text(encoding="utf-8"))
+        assert real["data"]["splits"]["validation"] == expected_val_n
+
+        real_fit_seconds = real["models"]["sa_mlp"]["aggregate"]["training_seconds"]["mean"]
+        n_arms = {
+            "squad_clean": 1, "2wiki_clean": 13, "hotpotqa_clean": 13,
+            "metaqa": 13, "webqsp": 4,
+        }[dataset]
+        expected_fit = real_fit_seconds * n_arms
+        assert d["fit_by_dataset_seconds"][dataset] == pytest.approx(expected_fit, abs=1.0)
+
+
+def test_dominant_cost_drivers_are_named_and_plausible(config):
+    d = config["compute"]["derivation"]
+    assert d["dominant_cost_driver_feature_build"] == "hotpotqa_clean"
+    assert d["dominant_cost_driver_fit"] == "metaqa"
+    # each named driver really is the largest contributor in its own row
+    fb = d["feature_build_by_dataset_seconds"]
+    assert fb["hotpotqa_clean"] == max(fb.values())
+    fit = d["fit_by_dataset_seconds"]
+    assert fit["metaqa"] == max(fit.values())
 
 
 def test_the_30_40x_ceiling_convention_is_explicitly_corrected(config, protocol):

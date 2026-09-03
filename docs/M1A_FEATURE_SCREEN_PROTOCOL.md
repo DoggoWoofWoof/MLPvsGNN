@@ -283,15 +283,82 @@ that same split. One seed (0) only, per explicit instruction; multi-seed
 confirmation is reserved for whatever survives M1A/M1B as a Pareto
 candidate, not for the screen itself.
 
-## 12. Compute -- deferred to step 3
+## 12. Compute -- step 3 estimate (not a filed ceiling)
 
-Not estimated in this document. A preliminary, non-binding order-of-magnitude
-anchor: `docs/COMPUTE_LEDGER.md`'s E2 phase-confirmation measured 0.174
-GPU-h per seed-unit *realized* (vs. 0.041 GPU-h pure-compute estimate,
-≈4.2x) at a comparable full-validation-split scale; 47 seed-units against
-that rate is ≈8.2 GPU-h, not a filed number, and does not account for this
-file's much larger per-dataset validation splits (up to 39,138 queries on
-`metaqa`) or the new R3-builder/column-mask code's uncosted overhead.
+**Step 3, executed.** This is a pure-compute projection from real, already-
+measured inputs -- not a new Modal run. The filed ceiling itself still
+waits for step 4's real smoke measurement (§15/`ceiling_derivation_
+discipline` in the YAML); this section answers step 3's actual question,
+scale sanity, before any real launch.
+
+**Real inputs, not assumed:**
+- Validation-split sizes (`outputs/sa_mlp_confirmation/*.json`,
+  `data.splits.validation`): squad_clean 26,063; 2wiki_clean 3,000;
+  hotpotqa_clean 19,570; metaqa 39,138; webqsp 315.
+- Per-seed training seconds, the *same reused trainer core* M1A's runner
+  generalises (`outputs/sa_mlp_confirmation/*.json`, `models.sa_mlp.
+  aggregate.training_seconds.mean`, one seed's worth of the 5-seed
+  confirmation run): squad_clean 174.46s; 2wiki_clean 20.51s; hotpotqa_
+  clean 160.46s; metaqa 492.82s; webqsp 1.80s. Measured on the historical
+  ~213K-parameter model; S3's 1,536 params are +0.72% of that, folded into
+  headroom rather than modelled separately.
+- Per-query feature-build cost, steady-state mean, per (dataset, regime)
+  (`outputs/m0c_bounded_r3/headline/*.json`, `systems.{r1,r2,mainline_r3_
+  bounded}_feature_latency_ms.steady_state.mean`, the 100-query panel,
+  extrapolated to the full split the same way `COMPUTE_LEDGER.md`'s own
+  Stage C/E2 entries extrapolate "to the same shape, not a different one").
+  hotpotqa_clean is the most expensive per query (44.1-84.9ms); metaqa the
+  cheapest (1.9-14.6ms) despite being the largest split. The same artifacts
+  show A64-admission and U3-build latency at under 1% of feature-build cost
+  on every dataset -- the new R3-bounded wiring's underlying operations are
+  already measured and cheap, so step 4's real risk is integration
+  correctness, not undiscovered compute cost.
+- Real Modal rates (`docs/COMPUTE_LEDGER.md` L546-547, reused verbatim):
+  GPU $2.241/h, CPU $0.634/h.
+
+**Derivation.** Feature-build runs once per (dataset, regime) **cell**, not
+once per arm -- 13 cells share a column-masked feature matrix across the 44
+arms (§8's per-family column mask), so feature-build cost scales with 13,
+fit cost scales with 44. Conflating the two overstates feature-build cost
+by ≈3.4x.
+
+| component | seconds | hours | dominant driver |
+|---|---|---|---|
+| feature-build (13 cells, full splits) | 5,576.0 | 1.549 | hotpotqa_clean (74% of this row) |
+| fit (44 arms, 1 seed each) | 8,940.9 | 2.484 | metaqa (72% of this row) |
+| **pure-compute floor** | **14,516.9** | **4.032** | |
+
+Cost at real rates: **$9.04** if the whole pipeline bills at the GPU rate
+(conservative -- one container, GPU allocated throughout); **$6.55** if
+feature-build bills separately at the CPU rate and only fit bills GPU
+(optimistic). Wall clock with per-dataset parallelism (5 concurrent
+containers, M0B/M0C's own established pattern): **≈2.1-2.5h**, dominated
+by metaqa's own serial feature-build+fit chain (≈2.11h).
+
+**Non-binding sanity range.** Applying the E2 realized/pure-compute ratio
+(≈4.2x -- see below) to the 4.032 GPU-h floor gives ≈16.9 GPU-h, ≈$37.95
+(all-GPU) or ≈$27.50 (blended), as an upper anchor for what step 4's real
+smoke might reveal -- **not a filed ceiling**. Either end of this range is
+small in absolute terms, comparable to M0B's $5.00 and M0C's $2.00 filed
+ceilings. Step 3's real question was whether a 44-arm, full-validation-
+split screen is a reasonable thing to run at all -- it is.
+
+**Why the E2 ratio only, not E2's absolute numbers**: `docs/COMPUTE_LEDGER.
+md`'s E2 phase-confirmation measured 0.174 GPU-h per seed-unit *realized*
+vs. 0.041 GPU-h pure-compute *estimate* (≈4.2x) at a comparable full-
+validation-split scale. E2's own per-unit magnitude does not transfer to
+M1A -- it was a different workload -- but the *ratio* (container-startup /
+image-pull overhead as a fraction of pure compute) is a reasonable
+non-binding multiplier, since M1A's own pure-compute numbers above are
+already real, measured on this track's own data, not borrowed from E2.
+
+**Recommended step 4 smoke scope**: `hotpotqa_clean x R3 x {BASE, BASE+
+NODE_ROLE}` -- simultaneously the dominant feature-build cost driver and
+the cell exercising the actually-new code (R3-bounded context builder,
+column mask, `is_structurally_admitted`) for the first time, which is also
+hotpotqa's own declared NODE_ROLE priority-1 cell. One smoke covers the
+highest-uncertainty code path and the highest-cost regime at once. This is
+a recommendation for step 4 to review, not an authorisation to run it.
 
 One correction to how this track has described the ceiling convention:
 `configs/m0c_bounded_r3.yaml`'s compute section described "a ceiling
@@ -304,8 +371,9 @@ practice, followed correctly by D0 onward, is to derive a ceiling from
 measured-or-well-reasoned throughput with a *stated, reasoned* multiplier,
 and to re-derive the cost ceiling from the same measured rate as the
 CPU/GPU-hour ceiling rather than carrying an unrelated placeholder forward.
-M1A's step-3 ceiling will follow the D0-onward practice, not the phrase
-carried in M0C's own compute section.
+M1A's real filed ceiling (after step 4) will follow the D0-onward practice,
+not the phrase carried in M0C's own compute section -- the numbers above
+are step 3's projection, not that ceiling.
 
 ## 13. The eight-step plan
 

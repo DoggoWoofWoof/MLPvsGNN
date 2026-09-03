@@ -42,11 +42,21 @@ amendments:
       step 3 (compute estimate). Does not change the 44-cell/arm matrix,
       feature-family choices, R1/R2/R3 definitions, A64, seed count,
       metrics, or selection thresholds. See base.semantic_rung.why_s3_now_primary.
+  - date: 2026-09-04
+    change: >-
+      Step 3 (compute estimate) executed, per explicit user instruction to
+      proceed directly after the S2->S3 amendment. Pure-compute projection
+      only, from real measured inputs -- see compute.derivation below.
+      Floor 4.032 GPU-h (~$9.04 conservative / ~$6.55 blended); non-binding
+      E2-anchored sanity range up to ~16.9 GPU-h (~$38). This is NOT a
+      filed ceiling -- compute.ceiling_filed stays false; the real ceiling
+      still waits for step 4's real smoke measurement per compute.
+      ceiling_derivation_discipline. this_file_authorises extended to
+      include step 3; step 4 (smoke) and beyond remain unauthorised.
 
 status: DECLARED_NOT_LAUNCHED
-this_file_authorises: file_declaration_and_derive_cells_only
+this_file_authorises: file_declaration_derive_cells_and_estimate_compute  # steps 1-3
 does_not_authorise:
-  - the_compute_estimate_step_3
   - the_smoke_validation_step_4
   - the_real_m1a_screen_launch_step_5
   - the_trained_effect_map_step_6
@@ -541,31 +551,107 @@ sampling:
 # --------------------------------------------------------------------------
 
 compute:
-  estimated_in_this_file: false
-  deferred_to: step_3_after_declaration_review
+  estimated_in_this_file: true  # step 3 -- pure-compute projection only. NOT a filed ceiling.
+  ceiling_filed: false
+  ceiling_deferred_to: step_4_real_smoke_measurement
+  rates_source: >-
+    docs/COMPUTE_LEDGER.md's E2 entry (L546-547): GPU $2.241/h, CPU
+    $0.634/h -- the same measured Modal rates this track has used since D0,
+    reused verbatim, not re-quoted from memory.
+  gpu_rate_usd_per_hour: 2.241
+  cpu_rate_usd_per_hour: 0.634
+
+  inputs:
+    real_validation_split_sizes: >-
+      squad_clean=26063, 2wiki_clean=3000, hotpotqa_clean=19570,
+      metaqa=39138, webqsp=315 -- outputs/sa_mlp_confirmation/*.json,
+      data.splits.validation, matches datasets.*.real_validation_split_n
+      elsewhere in this file.
+    real_per_seed_training_seconds: >-
+      squad_clean=174.46, 2wiki_clean=20.51, hotpotqa_clean=160.46,
+      metaqa=492.82, webqsp=1.80 -- outputs/sa_mlp_confirmation/*.json,
+      models.sa_mlp.aggregate.training_seconds.mean, the 5-seed
+      CONFIRMATION run's own per-seed mean (this file uses 1 seed, so one
+      arm's fit cost = one of these numbers, not five). Measured on the
+      historical ~213K-parameter model; S3 adds 1,536 params, +0.72% of
+      that total -- folded into headroom, not modelled as a separate term.
+    real_per_query_feature_build_ms_steady_state_mean: >-
+      From outputs/m0c_bounded_r3/headline/*.json, systems.
+      {r1,r2,mainline_r3_bounded}_feature_latency_ms.steady_state.mean (100
+      query panel, extrapolated to the full split -- same "extrapolate to
+      the same shape" practice as COMPUTE_LEDGER.md's own Stage C/E2
+      entries). squad_clean R1=6.687; 2wiki_clean R1=2.573 R2=6.113
+      R3=6.329; hotpotqa_clean R1=44.095 R2=84.924 R3=81.079; metaqa
+      R1=1.889 R2=14.328 R3=14.553; webqsp R1=41.566 R2=42.168 R3=45.792.
+      A64-admission and U3-build latency (also real-measured in the same
+      artifacts) are both <1% of these feature-build figures on every
+      dataset -- the new R3-bounded wiring's underlying operations are
+      already measured and cheap; what step 4 actually tests is
+      integration correctness, not undiscovered compute cost.
+    feature_build_runs_once_per_cell_not_per_arm: >-
+      13 (dataset, regime) cells share one built feature matrix each,
+      column-masked per arm (see feature_catalog.per_family_column_mask,
+      §8/step 4) -- feature-build cost scales with cells (13), fit cost
+      scales with arms (44). Conflating the two overstates feature-build
+      cost by ~3.4x.
+
+  derivation:
+    feature_build_seconds_total: 5576.0  # sum over 13 cells: (ms/1000) * val_n
+    feature_build_hours_total: 1.549
+    feature_build_by_dataset_seconds: {squad_clean: 174.3, 2wiki_clean: 45.0, hotpotqa_clean: 4111.6, metaqa: 1204.3, webqsp: 40.8}
+    fit_seconds_total: 8940.9  # sum over 44 arms: dataset's real per-seed training_seconds, one seed each
+    fit_hours_total: 2.484
+    fit_by_dataset_seconds: {squad_clean: 174.5, 2wiki_clean: 266.6, hotpotqa_clean: 2086.0, metaqa: 6406.7, webqsp: 7.2}
+    pure_compute_floor_gpu_hours: 4.032
+    cost_all_gpu_billed_usd: 9.04  # conservative: whole pipeline on one GPU-billed container
+    cost_blended_feature_cpu_fit_gpu_usd: 6.55  # optimistic: feature-build on a CPU container, fit on GPU
+    dominant_cost_driver_feature_build: hotpotqa_clean  # 1.14h of 1.55h total, ~74% -- highest per-query ms
+    dominant_cost_driver_fit: metaqa  # 1.78h of 2.48h total, ~72% -- largest validation split
+    wall_clock_estimate_with_per_dataset_parallelism_hours: "~2.1-2.5"  # 5 concurrent containers (M0B/M0C's own established pattern); metaqa's own serial chain (feature+fit) dominates at ~2.11h
+
+  non_binding_sanity_range: >-
+    Applying the E2 realized/pure-compute ratio (~4.2x, see
+    preliminary_anchor_not_a_ceiling below) to the 4.032 GPU-h floor gives
+    ~16.9 GPU-h / ~$37.95 (all-GPU) or ~$27.50 (blended) as a
+    non-binding upper anchor for what step 4's real smoke might reveal --
+    NOT a filed ceiling. Either end of this range is small in absolute
+    terms, comparable to M0B's $5.00 and M0C's $2.00 filed ceilings -- step
+    3's real question was scale sanity (is a 44-arm/full-split screen a
+    reasonable thing to run at all), not dollar risk, and the answer is yes.
   preliminary_anchor_not_a_ceiling: >-
     docs/COMPUTE_LEDGER.md's E2 phase-confirmation measured 0.174 GPU-h per
     seed-unit REALIZED (vs. 0.041 GPU-h pure-compute estimate, ~4.2x) at a
-    comparable full-validation-split scale. 47 seed-units x 0.174 GPU-h is
-    an order-of-magnitude sanity check only (~8.2 GPU-h), not a filed
-    number -- it does not account for this file's much larger per-dataset
-    validation splits (up to 39,138 queries on metaqa) or for the new
-    R3-context-builder/column-mask code's own uncosted overhead.
+    comparable full-validation-split scale. Retained here for the ratio
+    only (container-startup/image-pull overhead as a fraction of
+    pure-compute); E2's own absolute per-unit magnitude does not transfer,
+    since M1A's real per-dataset feature-build/fit numbers above are
+    already measured on this track's own real data, not borrowed from E2's
+    unrelated workload.
+  recommended_step_4_smoke_scope: >-
+    hotpotqa_clean x R3 x {BASE, BASE+NODE_ROLE} -- the single cell that is
+    simultaneously the dominant feature-build cost driver AND the one
+    exercising the actually-new code (R3-bounded context builder, column
+    mask, is_structurally_admitted) for the first time, which is also
+    hotpotqa's own declared NODE_ROLE priority-1 cell. One smoke covers the
+    highest-uncertainty code path and the highest-cost regime at once,
+    rather than needing two separate smokes for cost vs. correctness risk.
+    A recommendation for step 4 to review, not an authorisation to run it.
   ceiling_derivation_discipline: >-
     docs/COMPUTE_LEDGER.md's own Stage C entry (L358-362) names a 32x
     cost ceiling as a MISTAKE ("approves more than it needs to"), not a
     convention to replicate -- despite m0c_bounded_r3.yaml's compute
     section describing "roughly 30-40x" as "this repo's own established
-    convention." That description will not be repeated for M1A: the step-3
-    ceiling will be derived from step-4's real smoke measurement with
+    convention." That description will not be repeated for M1A: the real filed
+    ceiling still comes from step 4's real smoke measurement with
     reasoned, stated headroom (per D0's own corrected practice: derive from
     measured throughput, state the multiplier's basis, re-derive the cost
     ceiling from the SAME measured rate as the CPU/GPU-hour ceiling rather
-    than carrying an unrelated placeholder forward).
+    than carrying an unrelated placeholder forward) -- this section's
+    numbers are step 3's pure-compute projection, not that ceiling.
   validate_cheaply_first: >-
     Same two-stage discipline as M0A-M0C: one dataset x one cell x BASE,
     plus one feature arm, on the real pipeline, before any fan-out --
-    step 4, not this file.
+    step 4, not this file. See recommended_step_4_smoke_scope above.
 
 # --------------------------------------------------------------------------
 # After the map
