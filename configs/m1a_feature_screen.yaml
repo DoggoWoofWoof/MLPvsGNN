@@ -71,12 +71,40 @@ amendments:
       need only match forward_explicit's signature); only model construction
       changes. No cell/arm/regime/family/threshold changes. See
       model_architecture.why_not_explicit_feature_mlp.
+  - date: 2026-09-04
+    change: >-
+      User explicitly authorised step 4 (the real one-cell/two-arm smoke,
+      hotpotqa_clean x R3 x {BASE, BASE+NODE_ROLE}) in chat, in the same
+      instruction that ordered step 3 executed without a further review
+      stop: "if the estimate is inside the filed compute policy, execute
+      the previously declared BASE + one-feature real smoke; if smoke
+      invariants and runtime pass, proceed to the one-seed M1A screen;
+      otherwise stop at the corresponding gate." Step 3's estimate (see
+      compute.derivation above) is inside the filed compute policy -- a
+      $9.04 conservative / $6.55 blended floor for the full 44-arm screen,
+      with a non-binding $38 sanity ceiling, both small in absolute terms
+      and consistent with this track's own M0B/M0C-scale precedent -- so
+      this amendment executes the first half of that instruction:
+      this_file_authorises is extended to include step 4 unconditionally.
+      Step 5 (the real one-seed M1A screen) remains a SEPARATE, event-
+      conditional authorisation -- granted only once step 4's own smoke
+      invariants and runtime are actually measured and pass, not granted
+      pre-emptively here. the_real_m1a_screen_launch_step_5 therefore stays
+      listed under does_not_authorise until a further amendment records
+      that step 4 passed. Before this amendment, the runner script
+      (scripts/run_m1a_feature_screen.py) and its local test suite
+      (tests/test_run_m1a_feature_screen.py, 21 tests) were already written
+      and passing against synthetic data, and the full repo suite (5989
+      tests) was confirmed clean -- the "validate cheaply first" discipline
+      -- with zero Modal contact for M1A up to this point. This amendment
+      is what authorises the first real Modal spend for M1A.
 
 status: DECLARED_NOT_LAUNCHED
-this_file_authorises: file_declaration_derive_cells_and_estimate_compute  # steps 1-3
+# steps 1-4; step 5 remains a separate, event-conditional authorisation
+# pending step 4's own pass/fail, see the 2026-09-04 step-4 amendment above
+this_file_authorises: file_declaration_derive_cells_estimate_compute_and_the_real_smoke
 does_not_authorise:
-  - the_smoke_validation_step_4
-  - the_real_m1a_screen_launch_step_5
+  - the_real_m1a_screen_launch_step_5  # conditional on step 4 passing, see amendments
   - the_trained_effect_map_step_6
   - proposing_m1b_step_7
   - any_gnn_work_of_any_kind
@@ -738,6 +766,33 @@ compute:
     Same two-stage discipline as M0A-M0C: one dataset x one cell x BASE,
     plus one feature arm, on the real pipeline, before any fan-out --
     step 4, not this file. See recommended_step_4_smoke_scope above.
+
+# --------------------------------------------------------------------------
+# Modal -- GPU shape for the trainer core this file reuses verbatim
+# (scripts/run_sa_mlp_confirmation.py::_fit/_score_once run on an A10G in
+# every prior use of that code; M1AScorer is smaller, not larger, than
+# ExplicitFeatureMLP, so the same shape is not undersized). Two-stage
+# smoke/headline naming mirrors configs/m0b_regime_map.yaml and
+# configs/m0c_bounded_r3.yaml exactly, though here "smoke" additionally
+# restricts to the declared compute.recommended_step_4_smoke_scope's own
+# regime/arm pair, not only a smaller query count.
+# --------------------------------------------------------------------------
+
+modal:
+  app: message-passing-retrieval-m1a-feature-screen
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: A10G
+  cpu: 16
+  memory_mb: 49152
+  timeout_seconds: 86400
+  edge_provenance_root: edge_provenance_graphs
+  execution_label: execution_1
+  spawn_server_side: true
+  never_modal_run_detach: >-
+    submitted through scripts/spawn_modal_jobs.py so the run survives the
+    local process, unchanged discipline from M0A/M0A.1/M0B/M0C.
+  smoke_queries: 100  # this track's own established 100-query diagnostic panel size, not a new number
 
 # --------------------------------------------------------------------------
 # After the map

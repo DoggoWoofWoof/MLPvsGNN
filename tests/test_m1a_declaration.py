@@ -56,17 +56,19 @@ def _flat(text: str) -> str:
     return " ".join(text.split())
 
 
-# --- this document authorises steps 1-3 only (step 3 added 2026-09-04) ---
+# --- this document authorises steps 1-4 only (step 4 added 2026-09-04) ---
 
 
 def test_the_stage_is_declared_but_not_launched(config):
     assert config["status"] == "DECLARED_NOT_LAUNCHED"
-    assert config["this_file_authorises"] == "file_declaration_derive_cells_and_estimate_compute"
+    assert (
+        config["this_file_authorises"]
+        == "file_declaration_derive_cells_estimate_compute_and_the_real_smoke"
+    )
 
 
 def test_every_later_step_is_named_as_not_authorised(config):
     later_steps = {
-        "the_smoke_validation_step_4",
         "the_real_m1a_screen_launch_step_5",
         "the_trained_effect_map_step_6",
         "proposing_m1b_step_7",
@@ -83,8 +85,10 @@ def test_every_later_step_is_named_as_not_authorised(config):
         "migrating_workspace",
     }
     assert later_steps == set(config["does_not_authorise"])
-    # the compute estimate (step 3) is done -- must not still be listed as prohibited
+    # the compute estimate (step 3) and the real smoke (step 4) are both
+    # done/authorised -- must not still be listed as prohibited
     assert "the_compute_estimate_step_3" not in config["does_not_authorise"]
+    assert "the_smoke_validation_step_4" not in config["does_not_authorise"]
 
 
 def test_no_gnn_work_of_any_kind_is_marked_false(config):
