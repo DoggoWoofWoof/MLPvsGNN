@@ -696,6 +696,226 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D9:
+    status: DECLARED
+    evidence_class: CONFIRMATORY within its own narrow question
+    runner: scripts/run_graph_context_d9.py
+    dataset: 2wiki_clean
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    question: >-
+      Is the useful part of the historical PATHS family branch/path diversity
+      rather than raw walk multiplicity? And does 2Wiki provide enough
+      representation divergence between the two to answer that at all?
+    why_paths_is_next: >-
+      D7 measured PATHS at -0.12 R@1, +0.82 R@5, +0.13 R@20, -0.15 MRR, +0.30
+      FullCov and left it PROMISING / DEFERRED. After D8 it is the strongest
+      untested residual family. D8 did not earn a weighted-support follow-up:
+      rule A did not fire, so retrieval-weighted support is not promoted here.
+    the_replacement_is_not_reach: >-
+      "Distinct seeds reaching the candidate within k hops" is multi-hop seed
+      support and would recreate D8's SUPPORT feature at a larger radius. D9
+      keeps three concepts separate and injects only the second.
+    three_concepts_kept_separate:
+      REACH: which distinct SEEDS reach the candidate in exactly h hops
+      BRANCH: through how many distinct immediate PREDECESSORS that arrives
+      WALK: how many enumerated length-h walks arrive, the historical count
+    historical_audit_first: >-
+      VERIFIED FROM CODE at src/mp_retrieval/structural_features.py:426-443 and
+      reproduced exactly against qls_local_features on eight named graphs in
+      tests/test_path_diversity.py. w_0 is the seed indicator; w_h[target] +=
+      w_{h-1}[source] over the induced edges; the column is log1p(w_h) divided by
+      the per-query maximum over the local node space. Lengths are EXACT, not
+      cumulative. There is no visited set, so vertices and edges may repeat. The
+      family is DIRECTED, unlike seed_connections, which credits both endpoints.
+      Parallel edges multiply, self-loops pad every hop, a reciprocal pair gives
+      the candidate hop 1, the seed hop 2 and the candidate hop 3 from one edge,
+      and a hub with fan-out k gives its sink k walks from a single seed. The
+      accumulator is float32, exact for integers below 2**24.
+    the_replacement_definition:
+      names: [branch_diversity_1, branch_diversity_2, branch_diversity_3]
+      columns: [5, 6, 7]
+      masks: >-
+        M_0(v) = {v} if v in Sq else empty;
+        M_h(v) = union over distinct predecessors p != v of M_{h-1}(p)
+      branch: >-
+        branch_h(d) = |{p : (p,d) a distinct induced edge, p != d,
+        M_{h-1}(p) non-empty}|
+      canonical_scalar: branch_diversity_h(d) = branch_h(d) / (branch_h(d) + 1)
+      why_that_scalar: >-
+        Intrinsic and bounded in [0,1] by construction, so it needs no per-query
+        maximum and a candidate's value never moves because another candidate
+        entered the pool. STRICTLY MONOTONE in branch_h, deliberately: any
+        ordering divergence from the historical column is then attributable to
+        the counting rule and not to the transform. Concave, so a hub with fifty
+        branches reads 0.980 against three branches at 0.750 rather than sixteen
+        times larger.
+      alternatives_recorded_and_rejected:
+        branch_over_indegree: >-
+          bounded, but it is a purity measure: it saturates at 1.0 for every
+          degree-1 candidate whose one predecessor carries evidence, and 2Wiki's
+          gold nodes are concentrated in the isolated and degree_1 strata.
+        raw_count: >-
+          unbounded and would need the per-query maximum this replacement exists
+          to remove.
+      self_loops: >-
+        excluded everywhere, from the branch count and the mask propagation
+        alike. A node is not an independent branch of evidence into itself.
+      parallel_edges: >-
+        collapsed. The edge list is deduplicated to distinct (predecessor,
+        candidate) pairs once, before any hop.
+      reach_is_computed_but_not_injected: >-
+        reach_h and reach_fraction_h are recorded as diagnostics so REACH and
+        BRANCH can be shown to differ. They are not columns of any arm.
+    injection_discipline: >-
+      The three scalars are appended after historical candidate_readout, exactly
+      as D5's prior and D8's support fraction are. normalised_columns stays
+      (4,5,6,7,8,9) and is NOT extended to them. The gate is elementwise
+      equality with branch/(branch+1) over every candidate row.
+    bounded_computation: >-
+      Seed bitsets propagated over deduplicated edges. Three fixed graph passes,
+      one per hop, no iteration to convergence. FORBIDDEN and not implemented:
+      simple-path enumeration, DFS over all paths, disjoint-path max-flow, motif
+      enumeration, any path-list materialisation.
+    arms:
+      D6_BASE_13: cols 0-3 distance geometry, 4-9 zero, 10-12 the graded prior. REUSED.
+      D7_PATHS_13: the same, with cols 5-7 carrying the historical walk columns. REUSED.
+      D9_PATH_DIVERSITY_13: the same, with cols 5-7 carrying branch_diversity_1/2/3.
+    comparisons:
+      H_minus_B: historical path-family value, carried from D7 unchanged
+      V_minus_B: bounded-diversity value given retrieval and geometry
+      V_minus_H: the replacement delta, the comparison D9 exists to make
+    frozen_operating_point:
+      local_dim: 13
+      head_width: 61
+      parameters: 213689
+      epochs: 3
+      architecture_change: none
+    mechanistic_gate_thresholds_filed_before_measurement:
+      when: recorded in this declaration, before the gate was computed
+      rule: >-
+        STOP BEFORE TRAINING if and only if ALL THREE conditions hold on
+        validation feature construction, on the post-transform values actually
+        presented to the learner.
+      spearman_abs_min: 0.995
+      which_spearman: >-
+        the POOLED Spearman over every validation candidate row, per mapped
+        column pair, computed on the post-transform values. Named explicitly
+        here, before the gate was computed, because the filed threshold did not
+        say which of the several Spearmans it meant and a statistic chosen after
+        seeing numbers is not a pre-registered one. Per-query Spearman is
+        undefined for the many queries where a column is constant, which is why
+        it is reported beside the rule rather than being the rule.
+      ordering_change_max: 0.0025
+      which_ordering_statistic: >-
+        the fraction of within-query candidate pairs whose strict ordering or tie
+        status differs between the mapped columns, counted exactly from the
+        per-query joint contingency table over (walk count, branch count). Both
+        columns are strictly monotone transforms of those counts within a query,
+        so the table determines every pairwise comparison.
+      nonzero_agreement_min: 0.995
+      mapped_columns: [[paths_length_1, branch_diversity_1],
+                       [paths_length_2, branch_diversity_2],
+                       [paths_length_3, branch_diversity_3]]
+      expected_weakness_recorded_in_advance: >-
+        branch_h(d) > 0 implies walk_h(d) > 0 by construction, and the converse
+        fails only where every route into the candidate at that hop is a
+        self-loop. Nonzero agreement is therefore expected to pass at close to
+        1.0 and carries almost no discriminating power here. This is stated
+        before the measurement so that a near-1.0 figure is not later read as
+        evidence of equivalence. The pooled Spearman is expected to be inflated
+        the same way, because roughly 95% of candidate rows are zero in both
+        columns and that shared mass dominates the pooled ranks. The condition
+        with actual discriminating power is the ordering one. All three are kept
+        as filed rather than reweighted: they form an AND, so trivially-passing
+        conditions only make the gate fire more readily, which is the
+        conservative direction for spending a training run. What that costs is
+        an increased chance of an UNINFORMATIVE verdict, and that is stated here
+        rather than discovered afterwards.
+      also_reported_but_not_part_of_the_rule:
+        - Pearson correlation per mapped column
+        - per-query Spearman, pooled and on supported rows only
+        - fraction of candidate rows whose values differ numerically
+        - within-query pairs tied in one column but not the other
+        - within-query pairs strictly reversed
+        - block-level divergence, the rank correlation of the path block L2 norm
+        - value-distribution divergence per column
+        - REACH vs BRANCH correlation, to show the two are not one statistic
+        - BRANCH vs D8 distinct support, the sub-additivity overlap diagnostic
+    do_not_force_one_to_one: >-
+      The historical columns are exact-hop walk counts on a per-query maximum;
+      the replacement is an intrinsic bounded branch count. Both the mapped
+      column comparisons and a block-level comparison are reported. Neither is
+      dropped to make the table tidy.
+    overlap_diagnostic_only: >-
+      D7 found strong sub-additivity: the individual family R@5 deltas sum to
+      +1.96 against a joint +0.89. If branch diversity is computed from
+      propagated seed masks it may be another encoding of support, so its
+      correlation with D8's distinct support is reported. D9 does NOT train
+      distinct support and path diversity together.
+    interpretation_fixed_in_advance:
+      material: 0.005
+      A_improves: >-
+        V beats H materially while reducing the head-metric tradeoff: branch
+        diversity is a better explicit structural primitive than raw walk
+        multiplicity, and becomes a QLS-v2 candidate.
+      B_pareto_matches: >-
+        effectiveness inside the band while the replacement is bounded,
+        deterministic, cheaper at p95/p99 and clearer: retain on Pareto grounds.
+        An accuracy increase is not required.
+      C_fails: >-
+        historical multiplicity carries information branch diversity does not.
+        Do NOT add walk counts back. At that point SUPPORT and PATHS have both
+        failed to improve under correction, which is itself evidence that
+        rewriting historical structural features into cleaner versions does not
+        automatically improve ranking, and the next question is whether the
+        residual is worth further structural engineering at all.
+      D_uninformative: >-
+        the gate fired: 2Wiki does not separate the two representations enough
+        to test the replacement, and no fitted arm was run.
+    systems_measurement: >-
+      The branch kernel is timed separately from the shared induced-edge
+      extraction, p50/p95/p99 per query, with temporary workspace, peak RSS and
+      the fixed pass count. Shared graph preparation is NOT charged to the new
+      feature. Compared against the historical path computation where separable.
+    projected_cost:
+      gate_fires:
+        gpu_hours: 0.0
+        usd: 0.0
+        what: CPU feature analysis only, no fitted run
+      gate_passes:
+        gpu_hours: 0.035
+        usd: 0.06
+        what: one fitted arm on one shared build, priced from D8's measured 124.3 s
+      authorisation:
+        gpu_hours: 0.08
+        usd: 0.40
+      stop_before_training_if: >-
+        the branch-diversity construction time exceeds the historical local
+        feature build time, regardless of representation divergence.
+      gate_note: >-
+        scripts/spawn_modal_jobs.py prices every fitted graph-context stage with
+        D1's whole-split model and reports 0.2 h / $0.87 for D9 as for D3-D8. It
+        is a stage-independent ceiling, not a D9 projection, and it enforces only
+        that no indivisible unit exceeds its container window.
+    execution_order:
+      - audit the historical paths_length_1/2/3 formulas from code
+      - define one bounded path/branch-diversity replacement from that audit
+      - prove synthetic correctness
+      - benchmark the kernel
+      - run the frozen mechanistic-divergence gate on validation
+      - if representation-equivalent, STOP without model training
+      - otherwise train exactly one D9 arm
+      - compare B, H and V
+      - STOP
+    does_not_authorise:
+      [second dataset, second seed, GNN, TARGET_H1, global context, weighted
+       support, support plus path combination, PPR replacement, simple-path
+       enumeration, motif enumeration, architecture search, LODO, E2 resume,
+       Package F, convergence study, workspace migration]
+    is_the_only_experiment: true
+
   D8:
     status: COMPLETE
     results: docs/GRAPH_CONTEXT_D8_RESULTS.md
@@ -2490,7 +2710,7 @@ modal:
   gpu: A10G
   gpu_stages:
     [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5, stage_d6, stage_d7,
-     stage_d8]
+     stage_d8, stage_d9]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -2517,6 +2737,14 @@ modal:
     # by roughly 111 s of accounted work, well inside D7's own 139.6 s. Same
     # ceiling, not a tighter one: a timeout is a bound, not a projection.
     stage_d8: 3600
+    # D9 trains at most one arm on the same shared build, refits neither D6's
+    # base nor D7's paths arm, and adds three bounded passes for the new
+    # signal. Bounded by roughly 115 s of accounted work -- D8's 124.3 s
+    # measured, plus two more graph passes and D8's support column recomputed
+    # once for the overlap diagnostic, minus nothing. It can also stop at
+    # either of its two gates and spend no training run at all. Same ceiling,
+    # not a tighter one: a timeout is a bound, not a projection.
+    stage_d9: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and

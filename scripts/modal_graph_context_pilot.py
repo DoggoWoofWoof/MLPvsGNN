@@ -377,6 +377,22 @@ def _d8_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     return args
 
 
+def _d9_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D9's arguments: D8's, with D9's own holdout and seed.
+
+    D9 reads the same single artifact D8 does -- D7's result file, which carries
+    both arms D9 reuses without refitting. The two stages replace different
+    columns of the same block, so sharing the builder is what keeps them
+    standing in the same place; the runner then proves the reuse against D7's
+    recorded statistics, per replaced column, and refuses if any disagrees.
+    """
+    args = _d8_runner_args(job)
+    args.holdout_fraction = float(CONFIG["stages"]["D9"]["holdout_fraction"])
+    args.seed = int(CONFIG["stages"]["D9"]["seed"])
+    args.output = Path(args.output).with_name("stage_d9.json")
+    return args
+
+
 def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
 
@@ -515,6 +531,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d8 import run
 
         args = _d8_runner_args(job)
+    elif job["stage"] == "stage_d9":
+        from scripts.run_graph_context_d9 import run
+
+        args = _d9_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run
