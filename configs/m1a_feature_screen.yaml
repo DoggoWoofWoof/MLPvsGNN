@@ -31,6 +31,18 @@
 # R3_FULL_REEXPANSION (=TARGET_H1(C3)) is cited only, never trained here or
 # anywhere in M1.
 
+amendments:
+  - date: 2026-09-04
+    change: >-
+      base.semantic_rung changed from S2 (primary, 0 params) to S3
+      (primary, 1536 params); S2 retained as semantic_controls.S2, a later
+      minimality ablation not multiplied through the 44-arm matrix. User
+      decision, causal rationale (avoid rewarding structural families for
+      compensating for an artificially fixed semantic branch), made before
+      step 3 (compute estimate). Does not change the 44-cell/arm matrix,
+      feature-family choices, R1/R2/R3 definitions, A64, seed count,
+      metrics, or selection thresholds. See base.semantic_rung.why_s3_now_primary.
+
 status: DECLARED_NOT_LAUNCHED
 this_file_authorises: file_declaration_and_derive_cells_only
 does_not_authorise:
@@ -162,7 +174,7 @@ base:
     - dense_reciprocal_rank   # RETRIEVAL family, (K+1)/(K+rank+1), K=60
     - splade_reciprocal_rank  # RETRIEVAL family, same transform, SPLADE side
     - retriever_agreement     # RETRIEVAL family, deterministic fn of the two above
-    - semantic_branch         # see semantic_branch_rung below
+    - semantic_branch         # see semantic_rung / semantic_controls below
   reused_from:
     dense_and_splade_reciprocal_rank: >-
       src/mp_retrieval/linear_control.py::rank_feature_rows /
@@ -182,28 +194,72 @@ base:
       scripts/run_graph_context_d3.py::SEED_ID_COLUMN /
       assert_seed_identity_column -- col 0 of the frozen 10-col local block,
       unchanged.
-  semantic_branch_rung:
-    value: S2
+  semantic_rung:
+    primary: S3
     module: src/mp_retrieval/qls_v2_semantic.py::SemanticHead
-    features: [cosine_qd, dot_qd_pct, mean_abs_diff]
-    parameters: 0
-    why_s2_not_s3: >-
-      EXPLICIT JUDGEMENT CALL, not directly specified by the user -- flagged
-      here for review before any real compute spends against it. S3 adds
-      two learned weight vectors (semantic_product, semantic_difference,
-      1,536 params) on top of S2's three parameter-free scalars. Every other
-      BASE component (seed identity, both reciprocal ranks, agreement) is a
-      deterministic feature, not a learned sub-module -- S2 keeps BASE
-      entirely non-learned apart from the shared MLP head, which is the
-      simplest reading of "frozen BASE, identical meaning across datasets."
-      S3 is a legitimate candidate for a later, explicitly-motivated
-      interaction arm (e.g. if S2 alone under-performs on a
-      semantically-hard dataset) but is not admitted into BASE itself here.
+    features: [cosine_qd, dot_qd_pct, mean_abs_diff, semantic_product, semantic_difference]
+    learned_parameters: 1536
+    verified_against_implementation: >-
+      NOT assumed from the RUNG_PARAMETERS dict/docstring alone (that dict
+      could itself drift, the way RANK_FEATURE_NAMES was found to have two
+      entries not three -- see reused_from above). Confirmed live:
+      instantiated SemanticHead(rung="S3") and summed p.numel() for every
+      p in .parameters() -- 1536, all trainable (requires_grad=True, no
+      frozen params), exactly matching RUNG_PARAMETERS["S3"] =
+      2 * EMBEDDING_DIM = 2 * 768. See SemanticHead.parameter_count()
+      (src/mp_retrieval/qls_v2_semantic.py:178-179) and
+      tests/test_m1a_declaration.py's live-instantiation test.
+    why_s3_now_primary: >-
+      AMENDED 2026-09-04 by explicit user decision, reversing the prior S2
+      judgement call retained below for its own record. The reason is
+      causal, not performance-oriented: M1A asks whether a structural
+      feature family adds value once the ranker already has a competent
+      semantic signal. A zero-learned-parameter semantic rung
+      under-constrains that question -- a structural family could look
+      important partly because the semantic branch was artificially fixed,
+      making a finding like "PATH matters on MetaQA" hard to interpret (is
+      it PATH, or graph structure compensating for a deliberately weak
+      semantic scorer?). Earlier work already showed semantic information
+      can dominate on some datasets, MuSiQue especially -- screening
+      structural families against a weak semantic baseline risks
+      rediscovering that omitted semantic capacity as "graph value." S3
+      remains tiny relative to the historical ~213K-parameter QLS model, so
+      this does not undermine the paper's efficiency thesis -- it is a
+      methodological choice for the conditioning baseline, not a promotion
+      of S3 in an effectiveness experiment. S3 is shared identically across
+      every arm and regime, so "frozen BASE, identical meaning across
+      datasets" still holds; BASE was already a learned ranker (the shared
+      MLP head trains regardless), so there was no methodological purity
+      being protected by forcing the semantic component specifically to
+      stay parameter-free.
+  semantic_controls:
+    S2:
+      role: later_minimality_ablation
+      module: src/mp_retrieval/qls_v2_semantic.py::SemanticHead
+      features: [cosine_qd, dot_qd_pct, mean_abs_diff]
+      learned_parameters: 0
+      verified_against_implementation: >-
+        Confirmed live: instantiated SemanticHead(rung="S2") and summed
+        p.numel() for p in .parameters() -- 0, matching
+        RUNG_PARAMETERS["S2"].
+      not_multiplied_through_m1a: true
+      why_retained_not_deleted: >-
+        S2's original rationale (richest zero-parameter rung -- S0 has no
+        semantic signal at all, S1 discards two free scalars) still holds
+        as a minimality control; it is demoted, not wrong. Do not run
+        S2 x every feature arm -- that would double the 44-arm matrix for a
+        question M1A is not asking.
+      later_use: >-
+        Once M1A's structural survivors are known: final_survivor + S2 vs.
+        final_survivor + S3, on one or two representative cells, to test
+        whether the learned 1,536-parameter semantic diagonal/head earns
+        its cost. NOT authorised by this declaration -- a separate, later
+        step.
     why_not_s0_or_s1: >-
       S0 is empty (no semantic signal at all, which is not what "semantic
       branch" in the user's spec can mean); S1 is cosine-only and discards
-      dot-percentile and mean-abs-diff for free (both zero-parameter) --
-      S2 is the richest rung that costs nothing in parameters.
+      dot-percentile and mean-abs-diff for free -- both S2 and S3 build on
+      all three parameter-free scalars rather than S1's single one.
   r3_only_structural_candidates:
     dense_reciprocal_rank: 0
     splade_reciprocal_rank: 0
@@ -426,7 +482,7 @@ reuse_contract:
     local_features_and_splits: "scripts/run_graph_context_d1.py::build_local_features, context_feature_store, holdout_split, stratify, METRICS, MODEL_NAME"
     seed_identity: "scripts/run_graph_context_d3.py::SEED_ID_COLUMN, assert_seed_identity_column, masked_local"
     retrieval_columns: "src/mp_retrieval/linear_control.py::rank_feature_rows, RANK_FEATURE_NAMES"
-    semantic_branch: "src/mp_retrieval/qls_v2_semantic.py::SemanticHead (rung S2) -- code exists, unit-level only, never before wired into a real trained run"
+    semantic_branch: "src/mp_retrieval/qls_v2_semantic.py::SemanticHead (rung S3 primary, S2 retained as a later minimality-ablation control, not multiplied through M1A) -- code exists, unit-level only, never before wired into a real trained run"
     r1_r2_regime_arms: "src/mp_retrieval/graph_context.py::ARMS, build_operators, context_nodes -- CAND==R1, TARGET_H1==R2 map directly"
     node_role_partition_proof: "src/mp_retrieval/overlap_audit.py::node_roles, unmodified"
   must_be_newly_written:

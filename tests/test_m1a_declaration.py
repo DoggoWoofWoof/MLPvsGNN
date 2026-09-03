@@ -125,7 +125,8 @@ def test_graph_context_arms_actually_contains_cand_and_target_h1():
     assert "TARGET_H1" in ARMS
 
 
-# --- frozen BASE: five components, semantic branch is S2 (zero params) ---
+# --- frozen BASE: five components, semantic branch primary rung is S3 ---
+# (amended 2026-09-04 from S2 -- see base.amendments / why_s3_now_primary)
 
 
 def test_base_composition_has_exactly_five_components(config):
@@ -138,18 +139,51 @@ def test_base_composition_has_exactly_five_components(config):
     ]
 
 
-def test_semantic_branch_rung_is_s2_and_flagged_as_a_judgement_call(config, protocol):
-    rung = config["base"]["semantic_branch_rung"]
-    assert rung["value"] == "S2"
-    assert rung["parameters"] == 0
-    assert "EXPLICIT JUDGEMENT CALL" in protocol or "judgement call" in _flat(rung["why_s2_not_s3"]).lower()
+def test_semantic_rung_is_s3_primary_with_s2_as_a_later_control(config, protocol):
+    rung = config["base"]["semantic_rung"]
+    assert rung["primary"] == "S3"
+    assert rung["learned_parameters"] == 1536
+    assert "causal" in _flat(rung["why_s3_now_primary"]).lower()
+
+    s2 = config["base"]["semantic_controls"]["S2"]
+    assert s2["role"] == "later_minimality_ablation"
+    assert s2["learned_parameters"] == 0
+    assert s2["not_multiplied_through_m1a"] is True
 
 
-def test_semantic_head_module_actually_has_an_s2_rung_with_zero_params():
+def test_semantic_head_module_actually_has_s2_and_s3_rungs_with_declared_params():
     from mp_retrieval.qls_v2_semantic import RUNG_FEATURES, RUNG_PARAMETERS
 
     assert RUNG_FEATURES["S2"] == ("cosine_qd", "dot_qd_pct", "mean_abs_diff")
     assert RUNG_PARAMETERS["S2"] == 0
+    assert RUNG_FEATURES["S3"] == (
+        "cosine_qd",
+        "dot_qd_pct",
+        "mean_abs_diff",
+        "semantic_product",
+        "semantic_difference",
+    )
+    assert RUNG_PARAMETERS["S3"] == 1536
+
+
+def _trainable_param_count(module) -> int:
+    return sum(p.numel() for p in module.parameters() if p.requires_grad)
+
+
+def test_semantic_head_live_trainable_params_match_the_declaration(config):
+    # The implementation is the authority, not the YAML and not the
+    # RUNG_PARAMETERS dict/docstring in isolation: instantiate both rungs
+    # for real and let a mismatch fail this test, per the user's explicit
+    # instruction not to assume 1,536/0 from the name or design alone.
+    from mp_retrieval.qls_v2_semantic import SemanticHead
+
+    s2_actual = _trainable_param_count(SemanticHead(rung="S2"))
+    s3_actual = _trainable_param_count(SemanticHead(rung="S3"))
+
+    assert s2_actual == config["base"]["semantic_controls"]["S2"]["learned_parameters"]
+    assert s3_actual == config["base"]["semantic_rung"]["learned_parameters"]
+    assert s2_actual == 0
+    assert s3_actual == 1536
 
 
 def test_r3_only_structural_candidates_zero_all_three_retrieval_columns(config):

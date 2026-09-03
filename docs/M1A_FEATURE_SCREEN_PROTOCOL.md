@@ -67,16 +67,47 @@ Identical composition and meaning in every cell:
   `in_dense & in_splade` cast to float32 (`run_graph_context_d4.py:235-238`),
   reused verbatim from that construction, not from `linear_control.py`.
 - **semantic branch** -- `src/mp_retrieval/qls_v2_semantic.py::SemanticHead`
-  at rung **S2** (`cosine_qd`, `dot_qd_pct`, `mean_abs_diff`; zero
-  parameters).
+  at rung **S3** (`cosine_qd`, `dot_qd_pct`, `mean_abs_diff`,
+  `semantic_product`, `semantic_difference`; 1,536 learned parameters).
 
-  **This rung choice is an explicit judgement call, not something the user's
-  specification pinned down, and is flagged here for review before step 4
-  spends any real compute against it.** S3 adds two learned weight vectors
-  (1,536 params) on top of S2; every other BASE component is a deterministic
-  feature, so S2 keeps BASE non-learned apart from the shared MLP head --
-  the simplest reading of "frozen BASE, identical meaning across datasets."
-  S3 remains available as a later, explicitly-motivated interaction arm.
+  **AMENDED 2026-09-04, by explicit user decision, before step 3's compute
+  estimate.** This section originally proposed rung S2 (zero parameters) as
+  BASE's primary semantic rung, flagged as an explicit judgement call for
+  review. The user reviewed it and chose S3 instead, on causal rather than
+  performance grounds: M1A asks whether a structural feature family adds
+  value *once the ranker already has a competent semantic signal*. A
+  zero-learned-parameter semantic rung under-constrains that question -- a
+  structural family could look important partly because the semantic
+  branch was artificially fixed, which would make a finding like "PATH
+  matters on MetaQA" hard to interpret (PATH itself, or graph structure
+  compensating for a deliberately weak semantic scorer?). Earlier work
+  already showed semantic information can dominate on some datasets,
+  MuSiQue especially -- screening structural families against a
+  deliberately weak semantic baseline risks rediscovering that omitted
+  semantic capacity as "graph value." S3 stays tiny relative to the
+  historical ~213K-parameter QLS model, so this does not undermine the
+  paper's efficiency thesis; it is a methodological choice for the
+  *conditioning* baseline, not a promotion of S3 in an effectiveness
+  experiment. S3 is shared identically across every arm and regime, so
+  "frozen BASE, identical meaning across datasets" still holds -- BASE was
+  already a learned ranker (the shared MLP head trains regardless), so
+  there was no methodological purity being protected by forcing the
+  semantic component specifically to stay parameter-free.
+
+  **Both parameter counts are verified against the live implementation, not
+  assumed from `RUNG_PARAMETERS`'s dict/docstring alone**: instantiating
+  `SemanticHead(rung="S3")` and summing `p.numel()` over `.parameters()`
+  gives exactly 1,536, all trainable; `SemanticHead(rung="S2")` gives
+  exactly 0. See `SemanticHead.parameter_count()`
+  (`qls_v2_semantic.py:178-179`) and the corresponding live-instantiation
+  test in `tests/test_m1a_declaration.py`.
+
+  **S2 is retained, demoted to a later minimality-ablation control** (not
+  BASE, not multiplied through the 44-arm matrix -- that would double the
+  matrix for a question M1A is not asking): once structural survivors are
+  known, `final_survivor + S2` vs. `final_survivor + S3` on one or two
+  representative cells tests whether the learned 1,536-parameter semantic
+  diagonal/head earns its cost. Not authorised by this declaration.
 
 For R3-only structural candidates (A64-admitted, never retrieval-scored):
 `dense_reciprocal_rank = splade_reciprocal_rank = retriever_agreement = 0`,
@@ -330,6 +361,7 @@ confirmed as `_feature_ms()` in `scripts/run_m0b_webqsp_probe.py:125-138`
 50/95/99, query-0 excluded from steady_state). The new M1A runner reuses
 this exact convention.
 
-The semantic-branch rung choice (§3, S2) is a judgement call, not an open
-item in the same sense -- it is a stated decision, flagged for review, that
-step 4 will proceed with unless corrected first.
+The semantic-branch rung choice (§3) was exactly this kind of flagged,
+not-yet-open item -- reviewed by the user 2026-09-04, resolved as **S3
+primary, S2 demoted to a later minimality-ablation control**, before step
+3's compute estimate. No longer open.
