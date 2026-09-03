@@ -3134,6 +3134,277 @@ stages:
       truncation, musique_clean as the semantic-dominant control, both chosen
       before outcomes, one seed each. Preparing is not launching.
 
+feature_catalog:
+  status: FROZEN_AT_D10
+  frozen_by: >-
+    stage D10, the last 2Wiki-only feature-development stage. Nothing below may
+    be restated as a stronger claim than the stage that produced it; a family
+    whose status changes needs a new declaration and a new stage.
+  results: docs/GRAPH_CONTEXT_FEATURE_CATALOG.md
+  what_this_is: >-
+    Nine families, each with the evidence that exists for it, the strength of
+    that evidence, and what a later stage is allowed to read off it. It is a
+    per-family record, not a ranking and not a model.
+  what_this_is_not: >-
+    NOT a declaration of one global winner. No family is named best. Three of
+    the nine have no fitted evidence at all, two were classified NEGLIGIBLE and
+    never revisited, and the two that were carried forward were carried on
+    different grounds from each other. Reading a winner out of this block would
+    be reading something that was not measured.
+  the_2wiki_selected_subset_is_not_universal: >-
+    Everything below is 2Wiki, seed 0, CAND, G[Cq], validation, one
+    architecture at 213,689 parameters, and development evidence rather than an
+    evaluation. The subset the D-ladder actually selected is GEOMETRY plus
+    RETRIEVAL -- local columns 0-3 and 10-12, seven of thirteen -- with every
+    other family held at zero in the base arm. That is a 2Wiki result. It is
+    NOT declared universal, and the zero-training matrix proposed after D10
+    exists precisely because whether it transfers is unmeasured.
+  status_vocabulary:
+    ADMITTED: >-
+      fitted, materially positive, and carried in the base arm every later
+      stage builds on
+    CARRIED_NOT_ON_ACCURACY: >-
+      fitted; the corrected representation matched rather than beat the
+      historical one, and is carried on representation and systems grounds
+      that were stated before the measurement
+    PROMISING_REPLACEMENT_FAILED: >-
+      the historical form was fitted and looked useful; the corrected
+      replacement was fitted and did not match it
+    NEGLIGIBLE: >-
+      fitted once as a one-family arm and classified negligible against the
+      filed band; no corrected replacement was ever built or tested
+    MEASURED_AS_A_GRAPH_AXIS: >-
+      measured, but as a property of graph construction rather than as a
+      scored-node feature column. No feature in the frozen block belongs to it
+    NOT_TESTED: >-
+      no fitted arm exists at this architecture. Named so that its absence is
+      explicit rather than accidental
+  families:
+    RETRIEVAL:
+      columns: [10, 11, 12]
+      members: graded retrieval prior over dense and SPLADE ranks
+      status_on_2wiki: ADMITTED
+      evidence: D4, D5
+      increment: >-
+        D4 delta_retrieval_quality +9.18 / +4.13 / +1.55 / +13.03 / +2.43;
+        D5 delta_prior_given_geometry +9.93 / +4.68 / +0.45 / +14.10 / +0.60,
+        as R@1 / R@5 / R@20 / MRR / FullCov@20
+      strength: >-
+        the largest single increment anywhere in the D-ladder, positive on
+        every metric in both stages
+      a_later_stage_may: >-
+        treat the graded prior as the strongest structural signal measured on
+        2Wiki and keep it in any base arm
+      it_does_not_authorise: >-
+        the claim that retrieval rank dominates on any other dataset, or that
+        this particular grading is the best encoding of rank
+    SEED:
+      columns: [0]
+      members: distance_0, which is exactly the indicator that d is a retrieval seed
+      status_on_2wiki: ADMITTED
+      evidence: D3
+      increment: >-
+        delta_seed +18.20 R@5 over ZERO_LOCAL, 87.4% of the R@5 gap, 67.0% of
+        R@20 and 59.5% of FullCov@20
+      strength: >-
+        the single largest jump in the D3 ladder, from one bit per candidate
+      a_later_stage_may: >-
+        treat seed membership as the cheapest large signal measured, and note
+        that it is not a separate column: it is the zero bucket of the
+        GEOMETRY one-hot, so admitting GEOMETRY admits it
+      it_does_not_authorise: >-
+        counting SEED and GEOMETRY as two independent families when summing
+        contributions. They overlap by construction
+    GEOMETRY:
+      columns: [0, 1, 2, 3]
+      members: seed-distance one-hot, buckets 0, 1, 2 and 3-plus-or-unreachable
+      status_on_2wiki: ADMITTED
+      evidence: D3, D5, D6
+      increment: >-
+        D3 delta_distance +1.49 R@5 over SEED_ID_ONLY;
+        D5 delta_geometry_given_prior +0.23 / +2.05 / +4.03 / +0.42 / +6.93
+      strength: >-
+        positive on every metric conditional on the retrieval prior, and the
+        block every later base arm is built from
+      a_later_stage_may: >-
+        keep the full one-hot as the geometry block. D3 verified it is a
+        complete one-hot, so dropping a bucket changes what is encoded
+      it_does_not_authorise: >-
+        a finer distance encoding, a weighted distance, or a hop bound other
+        than the frozen three
+    SUPPORT:
+      columns: [4]
+      members: >-
+        historical seed_connections; the corrected form is distinct supporting
+        seeds over bounded bitsets
+      status_on_2wiki: CARRIED_NOT_ON_ACCURACY
+      evidence: D7, D8
+      increment: >-
+        D7 SUPPORT -0.03 / +0.64 / +0.20 / +0.09 / +0.40 against D6_BASE_13;
+        D8 V - H -0.07 / -0.43 / -0.04 / -0.12 / -0.07, every metric inside the
+        filed +/-0.50 material band
+      strength: >-
+        the corrected representation matched the historical proxy and beat it
+        on nothing. It is carried on grounds filed in advance -- bounded [0,1]
+        by construction, no per-query normaliser, 1.66 s and one fixed graph
+        pass -- and explicitly not on accuracy
+      a_later_stage_may: >-
+        use distinct supporting seeds in place of the historical edge count and
+        say the exchange was Pareto-neutral on 2Wiki
+      it_does_not_authorise: >-
+        the claim that the corrected form is more accurate, or a weighted
+        support variant, which was named and not tested
+    PATH:
+      columns: [5, 6, 7]
+      members: >-
+        historical paths_length_1, paths_length_2, paths_length_3; the
+        corrected form is bounded branch diversity per hop
+      status_on_2wiki: PROMISING_REPLACEMENT_FAILED
+      evidence: D7, D9, D10
+      increment: >-
+        D7 PATHS -0.12 / +0.82 / +0.13 / -0.15 / +0.30 against D6_BASE_13;
+        D10 V - H +0.48 / -0.67 / +0.04 / +0.62 / +0.03
+      strength: >-
+        the historical form held the largest R@5 gain of the four D7 families.
+        The replacement is mixed against it: materially better on MRR,
+        materially worse on R@5, at the filed 0.005 threshold. The two forms
+        move different metrics in opposite directions from the same base, so
+        neither subsumes the other
+      a_later_stage_may: >-
+        state that bounded branch diversity did not match the historical walk
+        columns on 2Wiki, and that the classification is contested between two
+        preregistered statements of the bands -- see the D10 stage block
+      it_does_not_authorise: >-
+        adding walk counts back as established useful, attributing either
+        direction to walk multiplicity alone, or a weighted, disjoint or motif
+        path variant. D10 changed the counting rule, the numerical transform
+        and the calibration together and has no arm that separates them
+    DIFFUSION:
+      columns: [8]
+      members: historical personalized_pagerank
+      status_on_2wiki: NEGLIGIBLE
+      evidence: D7
+      increment: >-
+        D7 DIFFUSION -0.13 / +0.43 / +0.17 / -0.06 / +0.33 against D6_BASE_13
+      strength: >-
+        one fitted one-family arm, classified negligible against the filed
+        band. The corrected candidate named at D7 -- bounded H1, H2, H3 and
+        truncated PPR at deterministic work -- was never built or fitted
+      a_later_stage_may: >-
+        record that the historical iterative PPR column was negligible on 2Wiki
+      it_does_not_authorise: >-
+        the claim that diffusion carries no signal. What was measured is one
+        historical encoding of it, once
+    TOPOLOGY:
+      columns: [9]
+      members: historical common_out_neighbors_with_seed_neighborhood
+      status_on_2wiki: NEGLIGIBLE
+      evidence: D7
+      increment: >-
+        D7 NEIGHBOURHOOD -0.22 / +0.07 / +0.08 / -0.19 / +0.17 against
+        D6_BASE_13
+      strength: >-
+        the weakest of the four D7 families, negative on R@1 and MRR. No
+        corrected bounded topology statistic was built or fitted
+      a_later_stage_may: >-
+        record that this particular common-neighbour count was negligible on
+        2Wiki
+      it_does_not_authorise: >-
+        the claim that cheap candidate topology is worthless, which D7 was
+        explicit is not what a one-column arm tests
+    PROVENANCE:
+      columns: []
+      members: >-
+        none in the frozen local block. The family is the edge-construction
+        axis: which edges exist, from which source
+      status_on_2wiki: MEASURED_AS_A_GRAPH_AXIS
+      evidence: docs/EDGE_PROVENANCE_RESULTS.md
+      increment: >-
+        not an increment over a base arm. Five edge families were compared on
+        three datasets, with QLS-MLP and a learned reference measured on each
+      strength: >-
+        real measurement, different object. It says which graph to build, not
+        which per-candidate feature to score with. No column of the thirteen
+        belongs to it
+      a_later_stage_may: >-
+        choose an edge family using that evidence, and must keep it separate
+        from the feature question when summarising
+      it_does_not_authorise: >-
+        treating an edge-family result as a feature-family result, or reading a
+        QLS-versus-GNN gap in that table as evidence about which QLS features
+        to admit. GNN outcomes are not permitted to select QLS features
+    NODE_ROLE:
+      columns: []
+      members: >-
+        none. The only member ever probed is bridge_support, which is not in
+        the frozen block
+      status_on_2wiki: NOT_TESTED
+      evidence: D0b, for the one probe that happened
+      increment: >-
+        D0b bridge_support, added to an arm already holding the ten frozen
+        local columns over TARGET_H1, moved validation R@1 by +0.53 and R@20 by
+        -0.10, and changed R@5 and R@20 by exactly zero on the isolated
+        stratum it was built for. KILLED
+      strength: >-
+        none for the family. One member was probed and killed; no other member
+        has been defined, built or fitted at this architecture. It is listed so
+        that its absence is explicit rather than accidental
+      a_later_stage_may: >-
+        note that the family is open and unmeasured, and that a univariate AUC
+        of 0.9513 did not survive as incremental ranking value for its one
+        probe
+      it_does_not_authorise: >-
+        reintroducing bridge_support without a new declaration, or claiming
+        node role was tested and failed. It was not tested
+  what_the_ladder_actually_selected: >-
+    GEOMETRY plus RETRIEVAL. Local columns 0-3 and 10-12; columns 4 through 9
+    are exactly zero in D6_BASE_13 and in every base arm after it. Seven of
+    thirteen. Every family tested after D6 was tested as one column group added
+    to that base, one at a time, and none of them was admitted into it.
+  three_families_have_no_replacement_evidence: >-
+    DIFFUSION and TOPOLOGY were each fitted once in their historical form and
+    classified negligible; the corrected candidates D7 named for both were
+    never built. NODE_ROLE has no member at all. Two of the nine families that
+    do have replacement evidence, SUPPORT and PATH, produced a match and a
+    mixed result respectively -- neither produced a gain.
+  what_that_pattern_is_evidence_for: >-
+    Stated as inference, not measurement. Two corrected structural
+    representations were built carefully and neither beat the historical proxy
+    it replaced, on the dataset where the historical proxies were tuned. That
+    is evidence about how much further per-candidate structural engineering is
+    worth on 2Wiki. It is not evidence that structure is exhausted, and it says
+    nothing about datasets where the frozen block was never fitted.
+
+next_phase_proposal:
+  status: PROPOSED_NOT_DECLARED
+  document: docs/ZERO_TRAINING_MATRIX_PROPOSAL.md
+  this_block_is_not_a_declaration: >-
+    It is a pointer, filed so the proposal is discoverable from the config that
+    ends at D10. It authorises nothing. Nothing in the proposal may be launched
+    until a declaration is filed with its own regimes, caps, container, cost
+    ceiling, abort rule and outcome readings, all before the first number is
+    opened. No declaration, no launch.
+  shape: >-
+    Six datasets -- squad_clean, musique_clean, 2wiki_clean, hotpotqa_clean,
+    metaqa, webqsp -- crossed with three regimes: R1 Cq over G[Cq], R2 Cq over
+    TARGET_H1(Cq), R3 Cq' over TARGET_H1(Cq'). Twelve cells are runnable.
+  no_neural_training: >-
+    The first matrix trains nothing and selects nothing. It measures candidate
+    headroom, feature occupancy and distributions, family correlation and
+    redundancy, and graph size and construction percentiles.
+  r3_is_closed_in_paper_1: >-
+    A re-derived Cq' is candidate regeneration, which
+    configs/candidate_headroom.yaml prohibits in paper 1 alongside candidate
+    admission and graph expansion. R3's six cells are named so their absence is
+    deliberate; they belong to paper 2 unless that contract is changed by its
+    own declaration.
+  reuses_rather_than_restates: >-
+    src/mp_retrieval/candidate_headroom.py already defines any_gold_at_pool,
+    all_gold_at_pool, gold_fraction_at_pool_macro and the ceiling split, over
+    all six datasets, read-only against frozen pools. The matrix reuses those
+    definitions. A second definition of the same quantity is the failure this
+    reuse exists to prevent.
+
 advancement:
   rule: >-
     An arm advances only if it materially restores structure WHERE Phase -1

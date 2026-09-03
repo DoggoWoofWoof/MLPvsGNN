@@ -20,9 +20,10 @@ reallocation: it finds a first correct node more often and a correct top-5 set
 less often.
 
 The systems result: this container built the historical features in 50.7 s and
-the whole branch construction in 49.5 s -- **97.79%** -- so D9's original rule
-would have passed here, on byte-identical work it aborted at 1.2449 on a slower
-host. Same code, same rule, two containers, opposite answers.
+the whole branch construction in 49.5 s -- a ratio of **0.9779** -- so D9's
+original rule would have passed here, on byte-identical work it aborted at
+1.2449 on a slower host. Same code, same rule, two containers, opposite
+answers.
 
 2Wiki, seed 0, `G[Cq]`, `CAND`. 13,500 queries opened, 3,000 reported;
 4,851,276 candidate rows rebuilt. One fitted arm, `D10_PATH_DIVERSITY_13`;
@@ -158,7 +159,8 @@ file:
 D9's container ran the same historical build 1.44 times slower than D8's, and
 paid 79.24 s of shared induced-edge extraction against D8's 39.22 s. This
 container is back at D8's speed -- build p95 3.943 ms against D8's 4.083 --
-and the identical construction D9 aborted comes in under the build.
+and the identical construction D9 aborted comes in at 97.79% of the build,
+under it rather than over.
 
 The repaired rule was filed with an argument rather than an outcome: a
 total-seconds race is a ratio of one fixed cost to another, so a host that runs
@@ -321,7 +323,7 @@ metric for the 198 `ordinary` ones.
 
 D9's abort was not evidence about the feature. It was evidence about the
 container: the same construction reads 1.2449 of the build on one host and
-97.79% on another. That rule is repaired, the repair is filed with the
+0.9779 on another. That rule is repaired, the repair is filed with the
 admission that it permits what it once blocked, and the abort stayed live.
 
 This is the last 2Wiki-only feature-development stage.
