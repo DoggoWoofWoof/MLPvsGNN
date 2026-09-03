@@ -326,4 +326,14 @@ reuse claim in §6 is now verified, not just proved algebraically.
 **Step 3 (cost) — filed.** See §9. Point estimate $0.0553, ceiling $2.00
 (≈36×), `is_final: true`. No stop condition triggered.
 
-**Steps 4–8:** not yet run.
+**Steps 4–7 complete, Step 8 reached.** The headline run (100 queries × six
+datasets) launched via `spawn_modal_jobs.py m0c-bounded-r3 --stage
+headline`, all six returned `M0C_BOUNDED_R3_COMPLETE` in 111 s wall clock
+(concurrent). All 8 required invariants verified on the real headline data
+(6 live in-runner, confirmed on every dataset; 2 post-hoc, confirmed via
+`tests/test_m0c_reuse_against_m0b.py` at `headline` stage, 48/48 passing).
+Full results, the corrected dataset × regime × feature-family map, the
+Hotpot systems comparison, webqsp's absolute-R@K framing, and the
+regenerated (not carried-forward) trained-screen proposal are all in
+[`M0C_BOUNDED_R3_RESULTS.md`](M0C_BOUNDED_R3_RESULTS.md). Step 8 is a hard
+stop: nothing further launches on the strength of that document.
