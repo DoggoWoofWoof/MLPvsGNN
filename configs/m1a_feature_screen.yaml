@@ -1,0 +1,547 @@
+# M1A -- one-seed trained feature screening. First TRAINED phase in this track.
+#
+# Status: DECLARED_NOT_LAUNCHED. Filed before any M1 number exists.
+#
+# M0A -> M0A.1 -> M0B -> M0C established, entirely zero-training, that:
+#   - A64 admission determines which nodes become scoreable (candidate
+#     eligibility), independent of graph context size.
+#   - R3_BOUNDED (U3 = U2 union A64) isolates that eligibility repair from
+#     M0B's R3 re-expansion confound: bit-exact same C3, same recovered
+#     gold, statistically flat context vs. R2.
+#   - GEOMETRY/SUPPORT/PATH/DIFFUSION/TOPOLOGY gain no additional
+#     wide-context material moving R2 -> R3_BOUNDED. That is an
+#     availability finding, not a learned-value finding -- M0C fits no
+#     model (docs/M0C_BOUNDED_R3_RESULTS.md, the corrected conclusion).
+#   - NODE ROLE carries the scoreability signal at R2-level context cost,
+#     itself equally untested for learned usefulness.
+#
+# M1 is the first phase that fits anything. Its job is not to re-run the
+# D-series' 2Wiki-only catalog verdicts, and not to compare against a GNN
+# yet -- it is a dataset x regime TRANSFER screen: take the frozen 9-family
+# catalog (measured only on 2wiki_clean, CAND regime) and the M0C map
+# (which regimes/families have a reason to be tested at all), and find out
+# which families actually move a trained QLS/MLP ranker, on which dataset,
+# under which of the three frozen regimes below.
+#
+#   R1 -- HISTORICAL                    scored=Cq   context=G[Cq]
+#   R2 -- GRAPH REPAIR                  scored=Cq   context=U2=TARGET_H1(Cq)
+#   R3 -- BOUNDED STRUCTURAL SCOREABILITY  scored=C3=Cq∪A64  context=U3=U2∪A64
+#
+# frozen verbatim as canonical for all trained work from this point forward.
+# R3_FULL_REEXPANSION (=TARGET_H1(C3)) is cited only, never trained here or
+# anywhere in M1.
+
+status: DECLARED_NOT_LAUNCHED
+this_file_authorises: file_declaration_and_derive_cells_only
+does_not_authorise:
+  - the_compute_estimate_step_3
+  - the_smoke_validation_step_4
+  - the_real_m1a_screen_launch_step_5
+  - the_trained_effect_map_step_6
+  - proposing_m1b_step_7
+  - any_gnn_work_of_any_kind
+  - tuning_qls_against_gnn_results
+  - training_r3_full_reexpansion
+  - changing_a64
+  - adding_h2_h3
+  - adding_new_feature_families_or_new_formulas_within_a_family
+  - reopening_d_series_conclusions
+  - running_more_than_one_seed
+  - inspecting_package_f
+  - resuming_e2
+  - migrating_workspace
+
+# --------------------------------------------------------------------------
+# M0A-M0C and the D-series are frozen. Nothing below re-derives them.
+# --------------------------------------------------------------------------
+
+do_not_modify:
+  commits: [acceffd, e769a1b, c0f6402]  # M0B, M0C results, M0C prose corrections
+  files:
+    - configs/m0a_probe.yaml
+    - configs/m0a1_overlap.yaml
+    - configs/m0b_regime_map.yaml
+    - configs/m0c_bounded_r3.yaml
+    - docs/M0B_REGIME_MAP_RESULTS.md
+    - docs/M0C_BOUNDED_R3_RESULTS.md
+    - docs/GRAPH_CONTEXT_FEATURE_CATALOG.md
+    - configs/graph_context_pilot.yaml  # feature_catalog section
+    - all scripts/run_graph_context_d*.py and their docs/GRAPH_CONTEXT_D*_RESULTS.md
+  a64_construction: >-
+    Unchanged from M0B/M0C: STRUCTURAL_NEIGHBOUR over structural_only,
+    graph_expansion_cap=64. Never re-tuned, never regenerated with another
+    algorithm, for any dataset, in M1.
+  feature_catalog: >-
+    The nine families and their column ranges (docs/GRAPH_CONTEXT_FEATURE_
+    CATALOG.md, FROZEN_AT_D10) are reused verbatim. M1 does not re-litigate
+    which representation is "historical" for SUPPORT or PATH -- see
+    support_path_controls below.
+
+# --------------------------------------------------------------------------
+# Why this does not relitigate M0-M0C or the D-series
+# --------------------------------------------------------------------------
+
+why_this_does_not_relitigate_prior_declarations:
+  the_precedent_chain: >-
+    configs/m0a_probe.yaml opened why_a_new_namespace; m0b_regime_map.yaml
+    and m0c_bounded_r3.yaml each cited it rather than re-arguing it. This
+    file cites the same chain. M1 is a new kind of phase (trained, not
+    zero-training) but the namespace/declaration discipline is unchanged.
+  what_is_new_here: >-
+    M0-M0C measured whether context/candidates were AVAILABLE. M1 measures,
+    for the first time, whether a trained ranker actually USES what is
+    available. Every zero-training finding cited above is read strictly as
+    availability evidence, never substituted for a trained result -- exactly
+    the scope correction filed in commit c0f6402.
+  the_catalog_is_2wiki_only_and_cand_only: >-
+    docs/GRAPH_CONTEXT_FEATURE_CATALOG.md's ADMITTED/NEGLIGIBLE/CARRIED_NOT_
+    ON_ACCURACY verdicts were measured on exactly one dataset (2wiki_clean)
+    under exactly one regime (CAND, == this track's R1). Testing the same
+    families on hotpotqa_clean/metaqa/webqsp, and at R2/R3_BOUNDED on
+    2wiki_clean itself, is a TRANSFER test the catalog has never run -- it is
+    motivated new work, not "re-measuring R2's own already-known story"
+    (the phrase M0C's Step 7 used specifically about R3_BOUNDED adding no
+    NEW wide-context material over R2, which is a narrower claim than "these
+    families are settled everywhere").
+
+historical_artifacts_are_untouched:
+  m0a_through_m0c_results_and_commits: preserved_unmodified
+  d_series_results_and_commits: preserved_unmodified
+  packages_a_through_f: preserved_unmodified
+  e2: PAUSED_NOT_RESUMED
+  f: SEALED_NOT_OPENED
+  workspace_migration: false
+  gnn_training: false
+  gnn_result_used_for_qls_selection: false
+
+# --------------------------------------------------------------------------
+# Frozen regimes (verbatim, canonical for all trained work from here on)
+# --------------------------------------------------------------------------
+
+regimes:
+  R1:
+    name: HISTORICAL
+    scored_nodes: Cq
+    graph: G[Cq]
+    maps_to_existing_arm: CAND  # src/mp_retrieval/graph_context.py::ARMS
+  R2:
+    name: GRAPH_REPAIR
+    scored_nodes: Cq
+    graph: U2  # TARGET_H1(Cq)
+    maps_to_existing_arm: TARGET_H1
+  R3:
+    name: BOUNDED_STRUCTURAL_SCOREABILITY
+    scored_nodes: C3  # Cq union A64
+    graph: U3  # U2 union A64, NOT TARGET_H1(C3)
+    maps_to_existing_arm: none  # new wiring required, see reuse_contract below
+    alias_in_this_file: R3_BOUNDED
+  R3_FULL_REEXPANSION:
+    status: CITED_FROM_M0B_NEVER_TRAINED
+    scored_nodes: C3
+    graph: TARGET_H1(C3)
+    role: systems_control_only
+    standing_prohibition: never_trained_on_any_dataset_in_m1
+
+# --------------------------------------------------------------------------
+# M1 scientific question
+# --------------------------------------------------------------------------
+
+scientific_question: >-
+  Which explicit feature families actually improve a trained QLS/MLP
+  ranker, and does their usefulness change across dataset and graph/
+  candidate regime? GNN results must not influence QLS feature selection at
+  any point in M1.
+
+# --------------------------------------------------------------------------
+# Frozen BASE -- identical composition and meaning across every cell
+# --------------------------------------------------------------------------
+
+base:
+  composition:
+    - seed_identity        # SEED family, col 0 (distance_0), I[v in Cq's seed set]
+    - dense_reciprocal_rank   # RETRIEVAL family, (K+1)/(K+rank+1), K=60
+    - splade_reciprocal_rank  # RETRIEVAL family, same transform, SPLADE side
+    - retriever_agreement     # RETRIEVAL family, deterministic fn of the two above
+    - semantic_branch         # see semantic_branch_rung below
+  reused_from:
+    dense_and_splade_reciprocal_rank: >-
+      src/mp_retrieval/linear_control.py::rank_feature_rows /
+      RANK_FEATURE_NAMES = ("dense_reciprocal_rank", "splade_reciprocal_
+      rank") -- the frozen (K+1)/(K+rank+1) transform, K=60. NOT
+      src/mp_retrieval/qls_v2_retrieval_prior.py, which is a separate,
+      unused, not-yet-integrated QLS-v2 module with different column
+      semantics (9 columns, none of them wired into any trained run).
+    retriever_agreement: >-
+      NOT part of RANK_FEATURE_NAMES (verified: that tuple has exactly two
+      entries). This is scripts/run_graph_context_d4.py's own new-at-D4
+      column, `in_dense & in_splade` cast to float32 (run_graph_context_d4.
+      py:235-238) -- a deterministic boolean AND of "ranked by the dense
+      retriever" and "ranked by SPLADE", reused verbatim from that
+      construction, not from linear_control.py.
+    seed_identity: >-
+      scripts/run_graph_context_d3.py::SEED_ID_COLUMN /
+      assert_seed_identity_column -- col 0 of the frozen 10-col local block,
+      unchanged.
+  semantic_branch_rung:
+    value: S2
+    module: src/mp_retrieval/qls_v2_semantic.py::SemanticHead
+    features: [cosine_qd, dot_qd_pct, mean_abs_diff]
+    parameters: 0
+    why_s2_not_s3: >-
+      EXPLICIT JUDGEMENT CALL, not directly specified by the user -- flagged
+      here for review before any real compute spends against it. S3 adds
+      two learned weight vectors (semantic_product, semantic_difference,
+      1,536 params) on top of S2's three parameter-free scalars. Every other
+      BASE component (seed identity, both reciprocal ranks, agreement) is a
+      deterministic feature, not a learned sub-module -- S2 keeps BASE
+      entirely non-learned apart from the shared MLP head, which is the
+      simplest reading of "frozen BASE, identical meaning across datasets."
+      S3 is a legitimate candidate for a later, explicitly-motivated
+      interaction arm (e.g. if S2 alone under-performs on a
+      semantically-hard dataset) but is not admitted into BASE itself here.
+    why_not_s0_or_s1: >-
+      S0 is empty (no semantic signal at all, which is not what "semantic
+      branch" in the user's spec can mean); S1 is cosine-only and discards
+      dot-percentile and mean-abs-diff for free (both zero-parameter) --
+      S2 is the richest rung that costs nothing in parameters.
+  r3_only_structural_candidates:
+    dense_reciprocal_rank: 0
+    splade_reciprocal_rank: 0
+    retriever_agreement: 0
+    why: >-
+      A64-admitted nodes were never retrieval-scored, so both ranks are
+      genuinely absent, not merely low. Zero retrieval rank alone must not
+      be used as a role indicator (user's explicit instruction) -- that is
+      exactly what node_role's is_structurally_admitted bit exists to
+      disambiguate from "ranked last."
+
+# --------------------------------------------------------------------------
+# Feature catalog wiring -- frozen families, reused column ranges
+# --------------------------------------------------------------------------
+
+feature_catalog:
+  frozen_declaration: configs/graph_context_pilot.yaml#feature_catalog
+  frozen_doc: docs/GRAPH_CONTEXT_FEATURE_CATALOG.md
+  reused_verbatim: true
+  families:
+    RETRIEVAL: {in: base, columns_10_12: [dense_reciprocal_rank, splade_reciprocal_rank, retriever_agreement]}
+    SEED: {in: base, column_0: seed_identity}
+    GEOMETRY: {columns: [0, 1, 2, 3], note: "col 0 overlaps SEED -- admitting GEOMETRY as an arm means columns 1-3 only are the ADDITION over BASE, since col 0 is already in BASE"}
+    SUPPORT: {column: 4, representation: historical_seed_connections, replacement_tested_not_promoted: "distinct_support -- D8, Pareto-matched not beat"}
+    PATH: {columns: [5, 6, 7], representation: historical_paths_length_1_2_3, replacement_tested_not_promoted: "branch_diversity -- D9/D10, MIXED, R@5 -0.67, not promoted"}
+    DIFFUSION: {column: 8, representation: personalized_pagerank, catalog_status_2wiki_cand: NEGLIGIBLE, excluded_from_m1a: true}
+    TOPOLOGY: {column: 9, representation: common_out_neighbors_with_seed_neighborhood, catalog_status_2wiki_cand: NEGLIGIBLE, excluded_from_m1a: true}
+    PROVENANCE: {status: graph_construction_axis_not_a_feature_column, not_a_screening_target_in_m1a: true}
+    NODE_ROLE:
+      status_in_catalog: NOT_TESTED  # D0b's only probe (bridge_support) was killed, no surviving code
+      m1a_encoding: >-
+        One new column, is_structurally_admitted: 1.0 for v in A64 (==
+        STRUCTURAL_SCORED_CANDIDATE), 0.0 for v in Cq (==
+        RETRIEVAL_CANDIDATE). CONTEXT_ONLY nodes (v in U3 minus C3) are
+        never scored under any regime, so they never receive this feature
+        at all -- a two-state, not three-state, encoding for the ranker.
+      why_this_is_not_a_prohibited_new_feature: >-
+        overlap_audit.node_roles already proves the exhaustive, mutually-
+        exclusive (Cq, C3, U3) partition (200-trial randomized sweep,
+        tests/test_overlap_audit.py, reused unmodified through M0B and
+        M0C). This exposes an already-proven set-membership fact as a
+        training column -- it introduces no new formula, no new graph
+        computation, and no new admission rule. It is the one catalogued
+        family (NODE_ROLE) that was always slated for testing once a
+        trained phase existed; D0b's killed bridge_support probe was a
+        different, unrelated formula, not this partition.
+      constant_under_r1_r2: >-
+        Under R1 and R2 the scored set is always Cq, so
+        is_structurally_admitted is identically 0 for every scored
+        candidate -- NO_VARIATION, so NODE_ROLE arms are not declared under
+        R1 or R2 in the cell matrix below.
+  excluded_families_rationale: >-
+    DIFFUSION and TOPOLOGY are excluded from M1A's declared matrix entirely.
+    2wiki_clean/CAND is the only cell with any evidence at all for them
+    (both NEGLIGIBLE, D7), and M0C adds that R3_BOUNDED gives the whole
+    wide-context group no additional material to draw on. Neither fact
+    proves zero learned value elsewhere, but "conditional training, not
+    power set" means the weakest-evidenced families are the right ones to
+    leave for M1B if M1A's results motivate revisiting them -- not tested
+    here for the first time on unproven ground.
+
+support_path_controls:
+  preserves_d_series_evidence: true
+  historical_representation_is_primary: true
+  declared_before_seeing_any_m1a_outcome: true
+  no_new_formulas: >-
+    Only the two representations already measured (historical
+    seed_connections / paths_length_1_2_3, and D8/D10's tested replacements)
+    are in scope. distinct_support and branch_diversity are NOT arms in
+    M1A -- D8 Pareto-matched (didn't beat) history and D10 was MIXED
+    (R@5 -0.67, not promoted per docs/GRAPH_CONTEXT_D10_RESULTS.md's own
+    corrected verdict, not the misleading PARETO-MATCHES string the code
+    wrote into stage_d10.json). Reopening either replacement is out of
+    scope for M1A.
+
+# --------------------------------------------------------------------------
+# Per-dataset cell/arm matrix -- derived mechanically from the frozen
+# catalog (R1/CAND evidence) + M0C's corrected map (R3_BOUNDED evidence).
+# This IS step 2 of the eight-step plan, filed inside the declaration.
+# --------------------------------------------------------------------------
+
+datasets:
+  squad_clean:
+    role: low_structure_control
+    validation_split_queries: 26063
+    cells:
+      R1: {arms: [BASE], why: "at/near ceiling already (all_gold_at_pool=1.0, M0C); a floor/reference point, not a family screen -- M0C: no family can improve what is barely missing"}
+    why_only_one_regime: >-
+      squad_clean's R2/R3_BOUNDED context growth is 1.00x over R1 in every
+      M0C measurement -- there is no repair happening on this dataset for a
+      second or third regime cell to isolate. Testing R2/R3_BOUNDED here
+      would cost real compute to reproduce a result 6c already establishes
+      structurally (identical context).
+  2wiki_clean:
+    validation_split_queries: 3000
+    cells:
+      R1:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH], why: "the catalog's own home cell -- D3/D5/D6/D7 all measured here; a trained re-check on the exact cell that produced ADMITTED/CARRIED/PROMISING verdicts"}
+      R2:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH], why: "does context repair change what the catalog found at CAND? Never measured before -- this is new transfer information, not a rerun"}
+      R3:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH, BASE+NODE_ROLE], why: "completes the R1/R2/R3 ladder per the minimum-contrast table; NODE_ROLE added because M0C found 41 recovered gold instances at R2-level context cost here (Priority 2)"}
+  hotpotqa_clean:
+    validation_split_queries: 19570
+    priority: 1
+    cells:
+      R1:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH], why: "transfer test -- catalog verdicts were never measured on this dataset"}
+      R2:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH], why: "same transfer test at R2, needed to see whether context repair changes family usefulness here"}
+      R3:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH, BASE+NODE_ROLE], why: "M0C's headline cell -- the only dataset where structural admission recovered gold plain one-hop context could not reach (1/9 recovered instances), now isolated from the R3_FULL context-size confound and 14.5x cheaper to compute than it appeared under M0B's R3"}
+  metaqa:
+    validation_split_queries: 39138
+    cells:
+      R1:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH], why: "transfer test; MetaQA's own 1/2/3-hop stratification (by_hop, already wired in run_sa_mlp_confirmation.py) gives GEOMETRY a dataset-native reason to matter here independent of the 2wiki catalog"}
+      R2:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH], why: "same transfer test at R2"}
+      R3:  {arms: [BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH, BASE+NODE_ROLE], why: "Priority 2 -- 43 recovered gold instances at R2-level context cost (M0C)"}
+    extra_diagnostic: report by_hop metrics per fit, reusing the existing stratification -- no new build required
+  webqsp:
+    validation_split_queries: 315
+    cells:
+      R1:  {arms: [BASE], why: "reference point only -- ceiling is 0.3351 (perfect ranker over Cq); small-N (315 queries, wide CIs already observed in SA_MLP confirmation) argues against multiplying arms here"}
+      R2:  {arms: [BASE], why: "reference point -- how much of R1->R2's headroom gain (0.3351 -> higher ceiling via U2) a trained ranker actually recovers"}
+      R3:  {arms: [BASE, BASE+NODE_ROLE], why: "M0C: R3_BOUNDED recovers 78 gold instances, ALL already reachable within U2 -- zero ADDITIONAL ceiling lift over R2 -- but promotion into the SCORED set (C3) rather than mere context presence is a scoreability question, not a ceiling question, and is exactly what NODE_ROLE tests. Priority 2 (M0C)."}
+    why_bounded: >-
+      "bounded cells justified by reachable headroom" (user's instruction)
+      -- no GEOMETRY/SUPPORT/PATH arms anywhere on webqsp: no catalog
+      transfer motivation beyond what 2wiki/hotpot/metaqa already test, and
+      webqsp's own small validation split argues for the minimum matrix
+      that still answers the NODE_ROLE scoreability question.
+  musique_clean:
+    status: OUT_OF_SCOPE_FOR_M1A
+    why: >-
+      Per the user's explicit deferral: musique_clean is out unless M0C's
+      map shows it supplies a feature/regime condition absent from
+      squad_clean. Checked: musique_clean's 6b/6c pattern (1.00x R3_BOUNDED
+      growth, near-ceiling gold recovery, M0C Step 7 groups it with
+      squad_clean as "deprioritized... no family can improve what is
+      barely missing") does not differ qualitatively from squad_clean's own
+      low-structure-control role. No condition found that squad_clean does
+      not already cover -- stays deferred to a transfer expansion, not M1A.
+
+arm_count_summary:
+  predeclared_arms: 44  # 1 + 13 + 13 + 13 + 4 (squad, 2wiki, hotpot, metaqa, webqsp)
+  conditional_interaction_arms_reserved: up_to_3  # one per R3 cell with 2+ material individual families (2wiki/hotpot/metaqa), see conditional_interaction_arms below
+  seeds_per_arm: 1
+  total_seed_units_ceiling: 47
+
+# --------------------------------------------------------------------------
+# Conditional training, not power set
+# --------------------------------------------------------------------------
+
+conditional_training_rule:
+  individual_arms_only_first: true
+  interaction_arms:
+    max_per_cell: 2
+    trigger_condition: >-
+      An interaction arm BASE+X+Y is added to a cell ONLY if both BASE+X
+      and BASE+Y individually improved that cell's validation R@5 by more
+      than the material-regression threshold's mirror image (i.e. both show
+      a real, non-noise-band positive move, not merely "inside the
+      admissibility band") relative to BASE alone. Never pre-declared before
+      individual-arm results exist.
+    candidate_pairs_by_cell: >-
+      2wiki_clean/R3, hotpotqa_clean/R3, metaqa/R3: BASE+NODE_ROLE paired
+      with whichever of GEOMETRY/SUPPORT/PATH individually moved that same
+      cell materially. webqsp/R3 has only one non-BASE arm (NODE_ROLE), so
+      no interaction arm is possible there. squad_clean and every R1/R2
+      cell have no NODE_ROLE arm to pair against, so no interaction arm
+      applies there either.
+  never_enumerate_power_set: true
+
+# --------------------------------------------------------------------------
+# Pre-declared selection rule -- filed before any fit runs
+# --------------------------------------------------------------------------
+
+selection_rule:
+  primary_metric: recall_at_5
+  pareto_admissibility_tolerance_pp: 0.25
+  material_regression_threshold_pp: 0.50
+  regression_exception: unless_uncertainty_overlaps
+  secondary_diagnostics_never_swap_primary: [recall_at_1, recall_at_20, mrr, full_coverage_at_20]
+  among_admissible_arms_prefer_lexicographic:
+    1: lower_uncached_feature_build_p95
+    2: fewer_parameters
+    3: lower_peak_train_memory
+    4: deterministic_tie_rule_TBD_before_first_tie  # filed here as a placeholder; must be resolved before step 5, not decided post-hoc on a real tie
+  gnn_outcomes_excluded_from_selection: true
+
+# --------------------------------------------------------------------------
+# Metrics required per fit
+# --------------------------------------------------------------------------
+
+metrics_required_per_fit:
+  effectiveness: [recall_at_1, recall_at_5, recall_at_20, mrr, full_coverage_at_20]
+  regime_headroom: [recall_ceiling_at_1, recall_ceiling_at_5, recall_ceiling_at_20, candidate_ceiling_mean]
+  ceiling_attainment: mandatory_on_webqsp  # achieved / regime-specific oracle, so unreachable gold is never misread as a ranking failure
+  systems: [parameters, train_time_seconds, peak_train_vram_mb, peak_train_rss_mb, uncached_feature_build_latency_p50_ms, uncached_feature_build_latency_p95_ms, uncached_feature_build_latency_p99_ms]
+  do_not_attribute_unreachable_gold_to_ranking: true
+  metrics_field_reuse: >-
+    recall@1/5/20, mrr, full_coverage@20, parameters, training.
+    training_seconds, peak_gpu_memory_mb_{total,incremental}, peak_cpu_
+    rss_mb_{total,incremental}, inference.latency_ms_per_query -- these
+    exact keys are confirmed present in scripts/run_sa_mlp_confirmation.py
+    (training_seconds:430; peak_gpu_memory_mb_total/incremental:285-286,
+    338-339; peak_cpu_rss_mb_total/incremental:287-288,341-343; latency_ms_
+    per_query:283,331-332). uncached_feature_build_latency_p50/95/99 is new
+    instrumentation -- confirm against the timing utility M0B/M0C's own
+    feature_latency_ms.steady_state.p99 used (overlap_audit.py or a shared
+    systems-timing helper; not yet confirmed which) before step 4's smoke
+    run, not before filing this declaration.
+
+# --------------------------------------------------------------------------
+# Reuse contract -- what M1A reuses vs. builds new
+# --------------------------------------------------------------------------
+
+reuse_contract:
+  reused_as_is:
+    trainer_core: "scripts/run_sa_mlp_confirmation.py::_build_model, _fit, _score_once, validate_candidate_contract"
+    metrics: "scripts/run_operator_screen.py::_metric_row, _aggregate_rows"
+    static_features: "scripts/run_graph_context_d0b.py::load_or_build_static"
+    local_features_and_splits: "scripts/run_graph_context_d1.py::build_local_features, context_feature_store, holdout_split, stratify, METRICS, MODEL_NAME"
+    seed_identity: "scripts/run_graph_context_d3.py::SEED_ID_COLUMN, assert_seed_identity_column, masked_local"
+    retrieval_columns: "src/mp_retrieval/linear_control.py::rank_feature_rows, RANK_FEATURE_NAMES"
+    semantic_branch: "src/mp_retrieval/qls_v2_semantic.py::SemanticHead (rung S2) -- code exists, unit-level only, never before wired into a real trained run"
+    r1_r2_regime_arms: "src/mp_retrieval/graph_context.py::ARMS, build_operators, context_nodes -- CAND==R1, TARGET_H1==R2 map directly"
+    node_role_partition_proof: "src/mp_retrieval/overlap_audit.py::node_roles, unmodified"
+  must_be_newly_written:
+    r3_bounded_context_builder: >-
+      No existing code feeds a regime-switched context into
+      context_feature_store/StructuralFeatureStore for R3 (U2 union A64).
+      Needs: candidate_expansion_v2.expand for A64 (reused construction,
+      new call site) + np.union1d against U2 (matches M0C's own
+      U3_bounded construction) + wiring that pool into
+      context_feature_store/build_local_features where today only the six
+      graph_context.ARMS are accepted.
+    per_family_column_mask: >-
+      No existing code slices/zeros specific catalog column ranges per
+      declared arm. ExplicitFeatureMLP's include_interactions/
+      include_static/include_local are SA_MLP's own three coarse arm-types,
+      not the 9-family catalog's column ranges. Needs a new mask keyed by
+      family name -> column range (GEOMETRY [1:4] beyond BASE's shared col
+      0, SUPPORT [4], PATH [5:8], NODE_ROLE the one new column).
+    node_role_column: >-
+      One new column, is_structurally_admitted -- see feature_catalog.
+      NODE_ROLE.m1a_encoding above. Not a new formula; exposes an
+      already-proven set membership.
+    cell_matrix_runner: >-
+      A new runner looping (dataset, regime, arm), one seed, over the 47
+      declared/reserved seed-units above, calling the reused trainer core
+      per cell -- closest template is run_sa_mlp_confirmation.py's own
+      fit/score/telemetry loop, generalised from its fixed model identities
+      to this file's column-masked arms.
+    uncached_feature_build_percentiles: >-
+      Confirm/reuse the timing utility M0B/M0C used for feature_latency_ms;
+      wire p50/p95/p99 reporting into the new runner if not already emitted
+      by the reused feature-building path at this grain.
+
+# --------------------------------------------------------------------------
+# Sampling -- full canonical validation split per dataset, one seed
+# --------------------------------------------------------------------------
+
+sampling:
+  split: validation
+  subsampling: none  # the entire canonical validation split, same convention as SA_MLP confirmation
+  reused_automatically_from: src/mp_retrieval/complete_data.py::CompleteRetrievalDataset.split
+  distinct_from_m0_diagnostic_sample: >-
+    M0A/M0B/M0C's 100-query panel is a deterministic-prefix diagnostic
+    slice of this same validation split, not an alternate sample. M1A does
+    not reuse the 100-query slice -- it trains and selects over the full
+    split, matching every prior trained phase's own convention (SA_MLP
+    screen/confirmation, D4-D10).
+  seeds: [0]
+  why_one_seed_only: >-
+    Explicit instruction. Multi-seed confirmation (5 seeds, the ladder's
+    established confirmation-stage convention) is reserved for whatever
+    survives M1A/M1B as a Pareto candidate, not for the screen itself.
+
+# --------------------------------------------------------------------------
+# Compute -- NOT ESTIMATED HERE. Step 3, gated on this file being reviewed.
+# --------------------------------------------------------------------------
+
+compute:
+  estimated_in_this_file: false
+  deferred_to: step_3_after_declaration_review
+  preliminary_anchor_not_a_ceiling: >-
+    docs/COMPUTE_LEDGER.md's E2 phase-confirmation measured 0.174 GPU-h per
+    seed-unit REALIZED (vs. 0.041 GPU-h pure-compute estimate, ~4.2x) at a
+    comparable full-validation-split scale. 47 seed-units x 0.174 GPU-h is
+    an order-of-magnitude sanity check only (~8.2 GPU-h), not a filed
+    number -- it does not account for this file's much larger per-dataset
+    validation splits (up to 39,138 queries on metaqa) or for the new
+    R3-context-builder/column-mask code's own uncosted overhead.
+  ceiling_derivation_discipline: >-
+    docs/COMPUTE_LEDGER.md's own Stage C entry (L358-362) names a 32x
+    cost ceiling as a MISTAKE ("approves more than it needs to"), not a
+    convention to replicate -- despite m0c_bounded_r3.yaml's compute
+    section describing "roughly 30-40x" as "this repo's own established
+    convention." That description will not be repeated for M1A: the step-3
+    ceiling will be derived from step-4's real smoke measurement with
+    reasoned, stated headroom (per D0's own corrected practice: derive from
+    measured throughput, state the multiplier's basis, re-derive the cost
+    ceiling from the SAME measured rate as the CPU/GPU-hour ceiling rather
+    than carrying an unrelated placeholder forward).
+  validate_cheaply_first: >-
+    Same two-stage discipline as M0A-M0C: one dataset x one cell x BASE,
+    plus one feature arm, on the real pipeline, before any fan-out --
+    step 4, not this file.
+
+# --------------------------------------------------------------------------
+# After the map
+# --------------------------------------------------------------------------
+
+after_the_map:
+  eight_step_plan:
+    1: file_this_declaration_and_derive_cells  # THIS FILE
+    2: derive_exact_cells_arms_from_m0c_map  # folded into datasets/ above
+    3: estimate_compute_before_any_launch
+    4: real_smoke_one_dataset_one_cell_base_plus_one_feature_arm
+    5: if_gates_pass_run_m1a_one_seed_screen
+    6: build_dataset_x_regime_x_family_trained_effect_map
+    7: propose_not_launch_m1b_survivor_expansion
+    8: hard_stop
+  classification_definitions_for_step_6:
+    PROMOTED: "admissible under selection_rule AND validation R@5 improvement exceeds the material threshold, uncertainty not overlapping zero"
+    PARETO_MATCH: "admissible under selection_rule, improvement inside the tolerance band either direction"
+    NO_EFFECT: "inside the tolerance band on every metric, no systems cost advantage either"
+    REGIME_SPECIFIC: "PROMOTED or PARETO_MATCH in exactly one of R1/R2/R3 for a given dataset, NO_EFFECT or HARMFUL in the others"
+    DATASET_SPECIFIC: "PROMOTED or PARETO_MATCH on exactly one dataset at a given regime, NO_EFFECT or HARMFUL elsewhere"
+    HARMFUL: "validation R@5 regression exceeds the material threshold, uncertainty not overlapping zero"
+  step_7_must_not: launch_anything  # PROPOSE ONLY, mirrors M0C's own step 7 discipline exactly
+  step_8_is_a_hard_stop: >-
+    No GNN work, no further Modal launch beyond what step 5 authorises,
+    begins without a further, separate, explicit authorisation.
+  standing_prohibitions_restated:
+    - no_gnn_training
+    - no_qls_tuning_against_gnn
+    - no_r3_full_reexpansion_training
+    - no_a64_changes
+    - no_h2_h3
+    - no_new_features_beyond_the_frozen_catalog
+    - no_d_series_reopening
+    - no_five_seed_screen  # one seed only in M1A
+    - no_package_f
+    - no_e2_resume
+    - no_workspace_migration
