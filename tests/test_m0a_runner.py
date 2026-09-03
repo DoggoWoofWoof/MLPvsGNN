@@ -16,6 +16,7 @@ import numpy as np
 import pytest
 import torch
 
+from mp_retrieval.complete_data import load_complete_dataset
 from scripts.run_m0a_probe import COMPLETE_STATUS, run
 
 NUM_NODES = 24
@@ -85,10 +86,16 @@ def _args(tmp_path: Path, **overrides) -> argparse.Namespace:
     graphs = tmp_path / "families"
     _write_dataset(data)
     _write_families(graphs)
+    frozen = load_complete_dataset(data, dataset="toy")
     settings = {
         "data": data,
         "dataset": "toy",
         "data_fingerprint_sha256": "0" * 64,
+        "expected_queries": len(frozen.queries),
+        "baseline": {
+            "candidate_contract_sha256": frozen.metadata["candidate_contract_sha256"]
+        },
+        "candidate_contract_compatibility": None,
         "queries": 3,
         "per_seed_cap": 4,
         "graph_expansion_cap": 8,
@@ -218,3 +225,24 @@ def test_a_short_split_is_refused_rather_than_quietly_shrunk(tmp_path):
 def test_r3_without_a_family_graph_is_refused(tmp_path):
     with pytest.raises(ValueError, match="at least one edge-provenance family"):
         run(_args(tmp_path / "nofamily", edge_families=[]))
+
+
+def test_the_frozen_candidate_pool_is_proved_before_it_is_measured(probe):
+    """R1 is the historical object only if Cq is bit-exact against the artifact."""
+    proof = probe["candidate_contract"]
+    assert proof["status"] == "BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE"
+    assert proof["expected_contract_sha256"] == proof["observed_contract_sha256"]
+
+
+def test_a_drifted_candidate_pool_stops_the_run(tmp_path):
+    args = _args(tmp_path / "drift")
+    args.baseline = {"candidate_contract_sha256": "f" * 64}
+    with pytest.raises(ValueError, match="candidate contract does not match"):
+        run(args)
+
+
+def test_a_manifest_of_the_wrong_size_stops_the_run(tmp_path):
+    args = _args(tmp_path / "size")
+    args.expected_queries = 99
+    with pytest.raises(ValueError, match="differs from the registered protocol"):
+        run(args)

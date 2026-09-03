@@ -168,6 +168,9 @@ machine.
 
 ## Invariants asserted per cell
 
+- the frozen candidate contract is proved bit-exact against the registered
+  confirmation before anything is measured over the pool, so R1 is the
+  historical object rather than a re-derivation that resembles it
 - `scored_nodes == Cq` for R1 and R2, `== Cq'` for R3; `Cq` is a subset of `Uq`
 - **`R1 ceiling == R2 ceiling` exactly**
 - only R3 changes the candidate oracle

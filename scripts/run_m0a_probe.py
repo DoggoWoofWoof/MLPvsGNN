@@ -40,6 +40,7 @@ from mp_retrieval.graph_context import build_operators, context_nodes
 from mp_retrieval.headroom_v2 import pool_movement, ragged_from_rows, regime_headroom
 from mp_retrieval.l2_data import edge_index_to_csr
 from scripts.run_edge_provenance import _atomic_json
+from scripts.run_sa_mlp_confirmation import validate_candidate_contract
 
 COMPLETE_STATUS = "M0A_PROBE_COMPLETE"
 IN_PROGRESS_STATUS = "M0A_PROBE_IN_PROGRESS"
@@ -199,6 +200,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             return existing
 
     dataset = load_complete_dataset(args.data, dataset=args.dataset)
+    if len(dataset.queries) != args.expected_queries:
+        raise ValueError("Complete dataset query count differs from the registered protocol")
+    # R1 is only the historical object if Cq is bit-exact against the frozen
+    # artifact. Proved before anything is measured over it, so a mismatch stops
+    # the run rather than producing a comparison against a pool that drifted.
+    candidate_contract = validate_candidate_contract(
+        args.baseline, dataset, args.candidate_contract_compatibility
+    )
     queries = dataset.split(QuerySplit.VALIDATION)[: args.queries]
     if len(queries) < args.queries:
         raise ValueError(f"validation split holds {len(queries)} queries, needed {args.queries}")
@@ -223,6 +232,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "dataset": args.dataset,
         "data_fingerprint_sha256": args.data_fingerprint_sha256,
         "declaration": "configs/m0a_probe.yaml",
+        "candidate_contract": candidate_contract,
         "protocol": "docs/M0A_PROBE_PROTOCOL.md",
         "queries": len(views),
         "split": "validation",

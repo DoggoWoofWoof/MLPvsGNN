@@ -242,6 +242,7 @@ measurements:
     - neighbour_scan_cap_fired
 
 invariants_asserted_not_assumed:
+  frozen_candidate_contract_is_bit_exact: true
   scored_nodes_equals_the_declared_set: true
   cq_subset_of_uq: true
   r1_ceiling_equals_r2_ceiling_exactly: true

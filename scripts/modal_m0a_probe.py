@@ -86,6 +86,7 @@ def _jobs(datasets: list[str]) -> list[dict[str, Any]]:
                 "settings": settings,
                 "fingerprint": fingerprint,
                 "data_remote": confirmation["config"]["data"],
+                "baseline": confirmation["baseline"],
                 "graph_root": str(
                     PurePosixPath(STORAGE_ROOT)
                     / MODAL_CONFIG["edge_provenance_root"]
@@ -110,6 +111,11 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         data=Path(job["data_remote"]),
         dataset=job["dataset"],
         data_fingerprint_sha256=job["fingerprint"],
+        expected_queries=int(job["settings"]["expected_queries"]),
+        baseline=job["baseline"],
+        candidate_contract_compatibility=job["settings"].get(
+            "candidate_contract_compatibility"
+        ),
         queries=int(CONFIG["sampling"]["queries_per_dataset"]),
         per_seed_cap=int(budget["per_seed_cap"]),
         graph_expansion_cap=int(budget["graph_expansion_cap"]),
