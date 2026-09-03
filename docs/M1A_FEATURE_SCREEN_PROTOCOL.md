@@ -216,9 +216,10 @@ The power set is never enumerated.
 
 ## 8. What is reused vs. newly written
 
-Reused as-is: the trainer core
-(`scripts/run_sa_mlp_confirmation.py::_build_model`, `_fit`, `_score_once`,
-`validate_candidate_contract`), metrics aggregation
+Reused as-is: the trainer *shell*
+(`scripts/run_sa_mlp_confirmation.py::_fit`, `_score_once`, `_prepare_batch`,
+`validate_candidate_contract`) -- optimizer, listwise loss, epoch loop,
+batching and telemetry, unmodified -- metrics aggregation
 (`scripts/run_operator_screen.py::_metric_row`, `_aggregate_rows`), static
 and local feature construction (`run_graph_context_d0b.py`,
 `run_graph_context_d1.py`), seed identity (`run_graph_context_d3.py`),
@@ -227,18 +228,49 @@ retrieval columns (`linear_control.py`), the semantic branch
 run), R1/R2 regime arms (`graph_context.py`), and the NODE_ROLE partition
 proof (`overlap_audit.py`).
 
-Newly written, before step 4's smoke run: (a) a bounded R3 context builder
--- `candidate_expansion_v2.expand` for A64 plus `np.union1d` against `U2`,
+**Not reused: `_build_model`'s `"sa_mlp"` construction branch.** This file
+originally listed `_build_model` as reused as-is; reading
+`ExplicitFeatureMLP.forward_explicit` directly during step-4 preparation
+found it always applies its own learned 768->64 node/query projection --
+98,304 params, the exact projection `qls_v2_semantic.py`'s own module
+docstring names as the thing the S0-S3 ladder exists to question -- plus
+four projection-derived interaction features, before any
+`structural_features` are concatenated. Reusing it wholesale would put that
+fixed 98,304-param block in every arm regardless of `semantic_rung`,
+confounding the S2-vs-S3 (0 vs 1,536 param) contrast Section 3 exists to
+make legible. A new, minimal `nn.Module` (`M1AScorer`, see below) replaces
+just that construction branch; the shell around it is untouched because the
+new model exposes the same `forward_explicit(nodes, queries, batch_index,
+structural_features)` signature and is still driven under the literal
+`model_name="sa_mlp"`.
+
+**M1AScorer** (`src/mp_retrieval/m1a_screen.py`, newly written) has no
+embedding projection of its own. At forward time it calls `SemanticHead`
+live, once per query, on the raw query/candidate embeddings the existing
+batching already provides -- so `semantic_rung`'s learned parameters receive
+real gradients every step rather than being frozen into a precomputed
+column -- concatenates that output with the precomputed BASE + per-arm
+family + NODE_ROLE columns, and scores the result with one small
+`nn.Sequential(Linear, GELU, Dropout, Linear(., 1))` head, `head_width=32`
+(a fixed, small, round constant against an input of at most ~13 columns --
+not parameter-matched to the historical ~213K budget, since that budget is
+dominated by the projection this architecture drops; see
+`configs/m1a_feature_screen.yaml#model_architecture` for the full rationale
+and the live parameter-count verification).
+
+Newly written, before step 4's smoke run: (a) the `M1AScorer` model
+described above; (b) a bounded R3 context builder --
+`candidate_expansion_v2.expand` for A64 plus `np.union1d` against `U2`,
 matching M0C's own `U3_bounded` construction, wired into
 `context_feature_store` where today only the six existing `ARMS` are
-accepted; (b) a per-family column mask, since no existing code slices or
+accepted; (c) a per-family column mask, since no existing code slices or
 zeros specific catalog column ranges per declared arm
 (`ExplicitFeatureMLP`'s `include_interactions/static/local` booleans are
 SA_MLP's own three coarse arm-types, not this catalog's column ranges);
-(c) the `is_structurally_admitted` column; (d) a runner looping
+(d) the `is_structurally_admitted` column; (e) a runner looping
 (dataset, regime, arm) for one seed, generalising
 `run_sa_mlp_confirmation.py`'s own fit/score/telemetry loop from fixed model
-identities to this file's column-masked arms; (e) reuse of the same timing
+identities to this file's column-masked arms; (f) reuse of the same timing
 convention M0B/M0C's `feature_latency_ms.steady_state.p99` came from --
 **resolved**: `_feature_ms()` in `scripts/run_m0b_webqsp_probe.py:125-138`
 wraps the per-query `qls_local_features(...)` call in

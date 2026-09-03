@@ -187,6 +187,61 @@ def test_semantic_head_live_trainable_params_match_the_declaration(config):
     assert s3_actual == 1536
 
 
+# --- model architecture: not ExplicitFeatureMLP, live-verified ---
+
+
+def test_model_architecture_section_explains_why_not_explicit_feature_mlp(config):
+    reason = config["model_architecture"]["why_not_explicit_feature_mlp"]
+    assert "98,304" in reason
+    assert "ExplicitFeatureMLP" in reason
+    assert config["model_architecture"]["head_width"]["value"] == 32
+
+
+def test_reuse_contract_trainer_core_no_longer_claims_build_model_reused(config):
+    # Corrected by the 2026-09-04 "model architecture" amendment: only the
+    # shell (_fit/_score_once/_prepare_batch) is reused as-is; _build_model's
+    # "sa_mlp" branch would silently attach ExplicitFeatureMLP's 98,304-param
+    # projection, defeating the semantic_rung (S2-vs-S3) contrast above.
+    trainer_core = config["reuse_contract"]["reused_as_is"]["trainer_core"]
+    assert "_build_model" not in trainer_core.replace("NOT _build_model", "")
+    assert "_fit" in trainer_core
+    assert "_score_once" in trainer_core
+    assert "_prepare_batch" in trainer_core
+
+
+def test_must_be_newly_written_names_the_scorer_model(config):
+    reuse = config["reuse_contract"]["must_be_newly_written"]
+    assert "scorer_model" in reuse
+
+
+def test_m1a_scorer_live_trainable_params_match_declared_head_width(config):
+    # Same "implementation is the authority" discipline as the SemanticHead
+    # check above, extended to the new scorer: the declared head_width and
+    # the semantic rung's own live param count must both show up unchanged
+    # inside the instantiated M1AScorer, not merely asserted about in
+    # isolation.
+    from mp_retrieval.m1a_screen import HEAD_WIDTH, M1AScorer
+
+    head_width = config["model_architecture"]["head_width"]["value"]
+    assert head_width == HEAD_WIDTH
+
+    precomputed_width = 4  # BASE alone: seed_identity, dense_rr, splade_rr, agreement
+    for rung, declared in (("S2", 0), ("S3", 1536)):
+        model = M1AScorer(
+            precomputed_width=precomputed_width,
+            semantic_rung=rung,
+            dropout=0.0,
+            temperature=1.0,
+            head_width=head_width,
+        )
+        assert _trainable_param_count(model.semantic_head) == declared
+
+        input_dim = precomputed_width + len(model.semantic_head.feature_names)
+        expected_scorer_params = (input_dim * head_width + head_width) + (head_width * 1 + 1)
+        assert _trainable_param_count(model.scorer) == expected_scorer_params
+        assert _trainable_param_count(model) == declared + expected_scorer_params
+
+
 def test_r3_only_structural_candidates_zero_all_three_retrieval_columns(config):
     r3_only = config["base"]["r3_only_structural_candidates"]
     assert r3_only["dense_reciprocal_rank"] == 0

@@ -53,6 +53,24 @@ amendments:
       still waits for step 4's real smoke measurement per compute.
       ceiling_derivation_discipline. this_file_authorises extended to
       include step 3; step 4 (smoke) and beyond remain unauthorised.
+  - date: 2026-09-04
+    change: >-
+      Corrected reuse_contract.reused_as_is.trainer_core and added
+      model_architecture below, before any step-4 code was written. Reading
+      ExplicitFeatureMLP.forward_explicit directly (operator_models.py:
+      368-401) during step-4 preparation found it always applies its own
+      learned 768->64 node/query projection (98,304 params -- qls_v2_
+      semantic.py's own module docstring names this exact projection as
+      the thing the S0-S3 ladder exists to question) plus four projection-
+      derived interaction features, before any structural_features concat.
+      Reusing _build_model's "sa_mlp" branch as originally filed would put
+      that fixed 98,304-param block in every arm regardless of
+      semantic_rung, confounding the S2-vs-S3 (0 vs 1,536 param) contrast
+      this same amendment list's first entry was designed to make legible.
+      _fit/_score_once/_prepare_batch remain reused unmodified (a new model
+      need only match forward_explicit's signature); only model construction
+      changes. No cell/arm/regime/family/threshold changes. See
+      model_architecture.why_not_explicit_feature_mlp.
 
 status: DECLARED_NOT_LAUNCHED
 this_file_authorises: file_declaration_derive_cells_and_estimate_compute  # steps 1-3
@@ -481,12 +499,78 @@ metrics_required_per_fit:
     The new runner's p50/p95/p99 must be produced the same way.
 
 # --------------------------------------------------------------------------
+# Model architecture -- the shared scorer, and why it is not ExplicitFeatureMLP
+# --------------------------------------------------------------------------
+
+model_architecture:
+  status: newly_declared_2026-09-04
+  why_not_explicit_feature_mlp: >-
+    src/mp_retrieval/operator_models.py::ExplicitFeatureMLP.forward_explicit
+    (operator_models.py:368-401) always applies its own learned 768->64
+    node_projection/query_projection -- 98,304 params, the exact projection
+    qls_v2_semantic.py's own module docstring names ("QLS-v1 spends a
+    learned 768 -> 64 projection on q and on d -- 98,304 parameters, 46% of
+    the model... This module asks whether that is necessary") -- plus four
+    interaction features derived from that projection, before any
+    structural_features are concatenated. Reusing it wholesale would put a
+    fixed, always-on 98,304-parameter block in every arm regardless of
+    semantic_rung, swamping and confounding the S2-vs-S3 (0 vs 1,536 param)
+    contrast base.semantic_rung.why_s3_now_primary exists to make legible.
+    Verified by reading forward_explicit's body directly, not assumed from
+    its "sa_mlp" name or its status as the frozen historical model
+    elsewhere in this repo.
+  scorer: >-
+    A new, minimal nn.Module (src/mp_retrieval/m1a_screen.py::M1AScorer)
+    with no embedding projection of its own. At forward time it calls
+    SemanticHead(rung) live, once per query, on the raw query/candidate
+    embeddings already threaded through run_sa_mlp_confirmation.py's
+    batching -- so semantic_rung's learned parameters (0 for S2, 1,536 for
+    S3) receive real gradients every training step rather than being frozen
+    into a precomputed column -- concatenates that output with the
+    precomputed BASE + per-arm family + NODE_ROLE columns, and scores the
+    concatenation with one small nn.Sequential(Linear, GELU, Dropout,
+    Linear(., 1)) head. See reuse_contract.reused_as_is.trainer_core for
+    what stays unmodified around this model.
+  head_width:
+    value: 32
+    rule: fixed_small_constant_not_parameter_matched
+    why: >-
+      No target_parameters figure is declared anywhere in this file or its
+      protocol for M1A's own scorer -- "a shared tiny MLP" (user
+      instruction) is descriptive, not a specific width. Historical QLS-v1
+      parameter-matches its head width against a ~213K-parameter budget
+      dominated by the 768->64 projection this architecture deliberately
+      drops; reusing that matching utility here would size the head against
+      a budget that no longer applies to what M1A actually scores. 32 is a
+      small, round width against an input of at most ~13 columns (4 BASE +
+      up to 5 semantic + up to 4 family/NODE_ROLE), held fixed across every
+      arm and regime so head width is never itself a confound -- only the
+      input columns change between arms.
+    live_verification: >-
+      tests/test_m1a_declaration.py asserts the instantiated M1AScorer's
+      total and per-module (semantic_head vs. scorer) trainable parameter
+      counts directly against this file, the same live-instantiation
+      discipline used for semantic_rung/semantic_controls above -- never
+      assumed from this number alone.
+
+# --------------------------------------------------------------------------
 # Reuse contract -- what M1A reuses vs. builds new
 # --------------------------------------------------------------------------
 
 reuse_contract:
   reused_as_is:
-    trainer_core: "scripts/run_sa_mlp_confirmation.py::_build_model, _fit, _score_once, validate_candidate_contract"
+    trainer_core: >-
+      scripts/run_sa_mlp_confirmation.py::_fit, _score_once, _prepare_batch,
+      validate_candidate_contract -- the shell (optimizer, listwise loss,
+      epoch loop, batching, telemetry), unmodified, by giving the new model
+      the same forward_explicit(nodes, queries, batch_index,
+      structural_features) signature ExplicitFeatureMLP exposes and calling
+      it under model_name "sa_mlp" so _prepare_batch's existing dispatch
+      needs no edit. NOT _build_model's "sa_mlp" construction branch itself
+      -- see model_architecture.why_not_explicit_feature_mlp for why that
+      one piece is newly written instead of reused, corrected from this
+      file's original text by the amendment dated 2026-09-04 (model
+      architecture).
     metrics: "scripts/run_operator_screen.py::_metric_row, _aggregate_rows"
     static_features: "scripts/run_graph_context_d0b.py::load_or_build_static"
     local_features_and_splits: "scripts/run_graph_context_d1.py::build_local_features, context_feature_store, holdout_split, stratify, METRICS, MODEL_NAME"
@@ -496,6 +580,8 @@ reuse_contract:
     r1_r2_regime_arms: "src/mp_retrieval/graph_context.py::ARMS, build_operators, context_nodes -- CAND==R1, TARGET_H1==R2 map directly"
     node_role_partition_proof: "src/mp_retrieval/overlap_audit.py::node_roles, unmodified"
   must_be_newly_written:
+    scorer_model: >-
+      See model_architecture above -- M1AScorer, not ExplicitFeatureMLP.
     r3_bounded_context_builder: >-
       No existing code feeds a regime-switched context into
       context_feature_store/StructuralFeatureStore for R3 (U2 union A64).
