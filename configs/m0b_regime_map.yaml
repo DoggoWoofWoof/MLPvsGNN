@@ -1,0 +1,484 @@
+# M0B -- six-dataset zero-training regime map.
+#
+# Status: DECLARED_NOT_LAUNCHED. Filed before any M0B number exists.
+#
+# Builds on docs/ZERO_TRAINING_MATRIX_PROPOSAL.md (PROPOSED_NOT_DECLARED,
+# written before M0A.1 ran) and M0A.1's accepted finding
+# (docs/M0A1_OVERLAP_RESULTS.md): BEYOND_U2_RECOVERED == 0 on every measured
+# cell -- every gold bounded structural expansion recovered was already
+# inside R2's TARGET_H1(Cq) context. R2 fixes graph starvation (exposes
+# context); R3 fixes candidate eligibility (permits a bounded subset of that
+# context to become scoreable). These are separate questions. This
+# declaration maps that split across all six sealed datasets, at zero
+# training, before any trained-screen phase is proposed.
+#
+# This document authorises step 1 only: filing the declaration. It does not
+# authorise steps 2-8 (small-sample validation, compute estimate, the launch,
+# invariant verification, the feature/regime map, the trained-screen
+# proposal). Each later step needs its own artifact before the next runs.
+
+status: DECLARED_NOT_LAUNCHED
+this_file_authorises: file_declaration_only
+does_not_authorise:
+  - small_sample_validation_run
+  - compute_estimate_as_final
+  - the_six_dataset_launch
+  - any_fitting_of_any_kind
+carried_unchanged_not_recomputed:
+  m0a_verdict: MOVEMENT_UNDER_A_BREACHED_ABORT_RULE
+  m0a1_verdict: ADVANCE
+  m0a1_finding: BEYOND_U2_RECOVERED_IS_ZERO_ON_EVERY_MEASURED_CELL
+  m0a1_universal_budget: 64
+  m0a1_cells_with_any_recoverable_gold: 4  # of squad_clean/2wiki_clean/metaqa x 2 families
+
+# --------------------------------------------------------------------------
+# Why the paper-1 candidate-admission prohibition does not block this
+# --------------------------------------------------------------------------
+
+historical_artifacts_are_untouched:
+  candidate_headroom_contract: preserved_unmodified
+  d1_through_d10_results: preserved_unmodified
+  packages_a_through_f: preserved_unmodified
+  m0a_results: preserved_unmodified
+  m0a1_results: preserved_unmodified
+  e2: PAUSED_NOT_RESUMED
+  f: SEALED_NOT_OPENED
+  frozen_pools_hashes_tags: preserved_unmodified
+  workspace_migration: false
+  test_split_read: false
+  feature_selection_by_model_outcome: false
+  qls_training: false
+  gnn_training: false
+
+why_the_paper_1_candidate_admission_prohibition_does_not_block_this:
+  the_contract: >-
+    configs/candidate_headroom.yaml's diagnostic_contract sets
+    candidate_regeneration, candidate_admission and graph_expansion to
+    prohibited_in_paper_1, and records reachable_missing_golds_are_a_paper_2_question
+    as true. That contract is not edited, reinterpreted or relaxed here.
+  what_it_governs: >-
+    The historical scientific object oracle(Cq) over the fixed frozen pool.
+    That object is unchanged by M0B: R1 and R2 still score exactly Cq. R3
+    scores Cq_struct, an explicitly separate, disclosed object, never
+    silently substituted for Cq in any headline number.
+  the_precedent: >-
+    configs/m0a_probe.yaml already crossed this line for the same reason,
+    under the identical key why_a_new_namespace. Its code lives in
+    src/mp_retrieval/candidate_expansion_v2.py and headroom_v2.py, a
+    namespace built to study oracle(Cq') as a declared intervention rather
+    than a violation, and it never writes into a historical path. M0B reuses
+    that namespace and that precedent rather than asking the question again.
+  what_this_declaration_adds: >-
+    docs/ZERO_TRAINING_MATRIX_PROPOSAL.md named R3 as blocked and reserved
+    the decision for "its own declaration rather than this one." This file is
+    that declaration, scoped to zero-training measurement of R3 across six
+    datasets. It does not reopen paper 1's already-sealed content and does
+    not claim R3 is part of paper 1 -- it authorises measuring R3, nothing
+    downstream of measuring it.
+
+# --------------------------------------------------------------------------
+# Regimes and sets
+# --------------------------------------------------------------------------
+
+regimes:
+  R1:
+    name: HISTORICAL
+    scored_nodes: Cq
+    graph: G[Cq]
+    changes_candidate_oracle: false
+  R2:
+    name: REPAIRED_GRAPH_CONTEXT
+    scored_nodes: Cq
+    graph: TARGET_H1(Cq)  # == U2
+    changes_candidate_oracle: false
+    causal_role: >-
+      Fixes graph starvation: exposes more topology as context. Does not
+      change which nodes are eligible to be returned.
+  R3:
+    name: STRUCTURAL_ADMISSION
+    scored_nodes: Cq_struct  # == stable_union(Cq, A64)
+    graph: TARGET_H1(Cq_struct)
+    changes_candidate_oracle: true  # disclosed above, not a silent violation
+    causal_role: >-
+      Fixes candidate eligibility: permits a bounded, deterministic subset of
+      R2's own context to become scoreable. A separate question from R2's.
+
+sets:
+  Cq: the historical scored candidate set, frozen candidate order, bit-exact
+  U2: "TARGET_H1(Cq) -- R2's context universe, in-neighbours only, unchanged contract"
+  A64:
+    definition: >-
+      The M0A.1 STRUCTURAL_NEIGHBOUR admission at graph_expansion_cap=64 --
+      the saturation-curve budget=64 point, reused unchanged as the new
+      mainline object. This is NOT M0A.1's own headline arm, which used
+      cap=128, and NOT M0A's original cap=128 default. Stated because it
+      would otherwise be easy to silently reuse the wrong prior artifact.
+    construction: >-
+      candidate_expansion_v2.expand(method="STRUCTURAL_NEIGHBOUR",
+      budget=ExpansionBudget(hop_cap=1, per_seed_cap=16,
+      graph_expansion_cap=64, neighbour_scan_cap_per_seed=4096)).admitted
+    equals_the_curve_point: m0a1_overlap budget=64, exact object reused, not recomputed
+    universal: true  # dataset-agnostic, deterministic, parameter-free
+    do_not_tune_per_dataset: >-
+      If a dataset's cost or recovery at +64 is pathological, the response is
+      report-and-stop, never a silent per-dataset budget change. M0A.1's
+      universal_budget() found +64 sufficient on every cell with recoverable
+      gold, on 4 of the 6 probed (dataset, family) cells -- squad_clean had
+      none to recover in either family, so it could not inform the budget and
+      was correctly excluded rather than counted as trivially satisfied. This
+      declaration extends the same fixed rule to six datasets; it does not
+      re-derive a new one from more data.
+  Cq_struct: "stable_union(Cq, A64) -- equals expand(...).additive_pool by construction, no separate union step"
+
+edge_provenance_family_backing_a64:
+  chosen: structural_only
+  why: >-
+    M0A.1's edge_provenance_control compared structural_only against
+    baseline_a_simple for STRUCTURAL_NEIGHBOUR admission specifically (a
+    different axis from the six-dataset native/kNN/union PROVENANCE feature
+    family below) and found them behave identically -- same recovered golds,
+    BEYOND_U2_RECOVERED == 0 on both, on every measured cell. structural_only
+    is chosen as the single deterministic graph A64 is built over because the
+    two are interchangeable on the evidence that exists, and structural_only
+    is the simpler, unambiguously native-only member of the pair.
+  disclosed_not_silent: >-
+    This choice was open before this declaration was filed and is made here,
+    once, rather than left implicit. It is not re-derived per dataset.
+  baseline_a_simple_is_not_dropped: >-
+    Retained as a single cross-check cell in the systems/invariants report,
+    matching M0A.1's own precedent of measuring a provenance cross-check
+    without multiplying it through the whole matrix. It is never run across
+    all six datasets x three regimes.
+
+# --------------------------------------------------------------------------
+# Datasets
+# --------------------------------------------------------------------------
+
+datasets:
+  squad_clean:
+    regime_covered: weak structural / single hop
+    expected_queries: 130319
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+    m0a1_measured: true
+  2wiki_clean:
+    regime_covered: multi-hop text
+    expected_queries: 15000
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+    m0a1_measured: true
+  musique_clean:
+    regime_covered: multi-hop text
+    expected_queries: 19938
+    confirmation: outputs/sa_mlp_confirmation/musique_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+    m0a1_measured: false
+  hotpotqa_clean:
+    regime_covered: multi-hop text
+    expected_queries: 97852
+    confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
+    m0a1_measured: false
+  metaqa:
+    regime_covered: knowledge base
+    expected_queries: 407513
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+    hop_conditional_metrics:
+      - 1
+      - 2
+      - 3
+    m0a1_measured: true
+  webqsp:
+    regime_covered: knowledge base, by far the densest graph
+    expected_queries: 1578
+    confirmation: outputs/sa_mlp_confirmation/webqsp.json
+    m0a1_measured: false
+    cost_risk_flag: >-
+      13,379,166 directed edges against 2wiki_clean's 855,146 (~15.6x
+      denser). Per-query cost is a function of pool size and local density,
+      neither known outside the three m0a1-measured datasets. The step-2/3
+      probe must clear this specifically before step 4 launches; a
+      pathological per-query cost here is report-and-stop, not a reason to
+      shrink webqsp's sample below the filed convention.
+
+# --------------------------------------------------------------------------
+# Sampling
+# --------------------------------------------------------------------------
+
+sampling:
+  headline_run_step_4:
+    queries_per_dataset: 100
+    split: validation
+    selection: deterministic_prefix_of_the_split_order
+    identical_to_m0a_and_m0a1: true
+    why: >-
+      One consistent, already-cross-validated sampling convention across the
+      entire M0/M0A/M0A.1/M0B track, rather than a new one invented per
+      stage. Revisable before step 4 actually launches -- this declaration
+      does not launch it.
+  smoke_sample_step_2:
+    queries_per_dataset: 5
+    split: validation
+    selection: deterministic_prefix_of_the_split_order
+    purpose: >-
+      Invariant and construction correctness only (R1==R2 bit-exact,
+      Cq subset Cq_struct, Cq_struct == additive_pool, A64 disjoint from Cq),
+      run in-process with no Modal spend, before any container cost is
+      incurred. Not a source of headline numbers.
+
+# --------------------------------------------------------------------------
+# Feature catalog wiring
+# --------------------------------------------------------------------------
+
+feature_catalog:
+  frozen_declaration: configs/graph_context_pilot.yaml#feature_catalog
+  frozen_doc: docs/GRAPH_CONTEXT_FEATURE_CATALOG.md
+  reused_verbatim: true
+  substituted_with_a_dataset_specific_winner_subset: false
+  why_not_the_2wiki_selected_subset: >-
+    The 2wiki-selected base (GEOMETRY + RETRIEVAL, columns 0-3 and 10-12) is
+    a 2Wiki result, explicitly not declared universal by its own frozen
+    doc. M0B measures all nine families on all six datasets precisely because
+    whether that subset transfers is the open question.
+  families_and_regimes_already_fitted:
+    RETRIEVAL: R1 only (2wiki_clean, seed 0)
+    SEED: R1 only (2wiki_clean, seed 0)
+    GEOMETRY: R1 only (2wiki_clean, seed 0)
+    SUPPORT: R1 only (2wiki_clean, seed 0)
+    PATH: R1 only (2wiki_clean, seed 0)
+    DIFFUSION: R1 only (2wiki_clean, seed 0), no corrected replacement ever built
+    TOPOLOGY: R1 only (2wiki_clean, seed 0), no corrected replacement ever built
+    PROVENANCE: measured as a graph axis, all six datasets, NOT per-candidate -- see below
+    NODE_ROLE: not implemented. One member (bridge_support) probed once at D0b and killed.
+  provenance_family_is_reused_not_remeasured:
+    source: docs/EDGE_PROVENANCE_RESULTS.md
+    already_covers: [squad_clean, musique_clean, 2wiki_clean, hotpotqa_clean, metaqa, webqsp]
+    families_measured: [baseline_a_simple, knn_only, full_union_c]
+    what_m0b_does: >-
+      Fold the existing six-dataset table into the M0B feature/regime map as
+      the PROVENANCE row, cited rather than rerun. This is a different axis
+      from edge_provenance_family_backing_a64 above (which graph A64's
+      admission frontier walks) -- both concern "which edges", neither
+      substitutes for the other, and neither is multiplied into the trained
+      matrix.
+  node_role_is_a_real_gap:
+    status: NOT_IMPLEMENTED
+    evidence: >-
+      graph_context.qls_local_features's own docstring: "Only the pool rows
+      are returned -- context nodes are never scored." Widening context (R2)
+      today never emits a row for a context-only node.
+    what_m0b_adds: >-
+      A role label per node per (dataset, regime) cell, not a fitted feature:
+      retrieval_candidate (in Cq), structural_scored_candidate (in Cq_struct
+      minus Cq, R3 only), context_only (in TARGET_H1(Cq_struct) minus
+      Cq_struct). This is bookkeeping over sets M0B already constructs, not
+      a new model or a revival of bridge_support -- bridge_support stays
+      killed and is not reintroduced under this label.
+    missing_value_semantics: >-
+      dense_rr = 0, splade_rr = 0, agreement = 0 for any node without a
+      retrieval ranking -- reusing rank_feature_rows's existing convention,
+      which today is scoped to Cq members only. M0B states explicitly that
+      these zeros mean "not in that ranking," not "ranked and scored
+      poorly," and pairs every such zero with the node-role flag so a later
+      reader (human or model) cannot conflate the two. This is exactly the
+      kind of missing-value/labelled-zero confusion the RETRIEVAL family's
+      own convention already had to solve for Cq; M0B extends the same
+      solved shape to the wider role universe rather than inventing a new one.
+  new_measurement_beyond_m0a1:
+    what: >-
+      Fraction of ALL A64-admitted nodes (not just the gold-recovering ones)
+      already inside U2 = TARGET_H1(Cq). M0A.1 only classified golds.
+      A64(q) is not guaranteed by construction to be a subset of U2 --
+      STRUCTURAL_NEIGHBOUR's frontier is undirected, U2's is the
+      in-neighbour TARGET_H1 contract -- so this is measured, not assumed.
+    where_it_lives: >-
+      A new function in src/mp_retrieval/overlap_audit.py
+      (admitted_node_overlap / aggregate_admitted_node_overlap), extending
+      the existing gold-only classify_query_golds / overlap_partition /
+      recovery_share rather than duplicating their logic. classify_query_golds
+      already answers the gold-only half of point 2; only the all-admitted-
+      nodes half is new.
+
+# --------------------------------------------------------------------------
+# Graph-context diagnostics ("Phase -1 / Stage C")
+# --------------------------------------------------------------------------
+
+graph_context_diagnostics:
+  reused_not_reimplemented: true
+  canonical_module: src/mp_retrieval/graph_context.py
+  already_generic_over_scored_set_context_and_regime:
+    - context_nodes            # builds Uq per arm; R1=CAND, R2=TARGET_H1 already registered
+    - candidate_structure      # isolate fraction, radius-1 retention per candidate
+    - context_report           # aggregates size/retention/isolation/boundary-cut
+    - two_path_preservation    # candidate-endpoint two-hop bridge retention
+    - seed_distance            # seed-relative reach, generic over (nodes, pool, seeds)
+  r3_is_a_new_arm_for_this_module: >-
+    docs/ZERO_TRAINING_MATRIX_PROPOSAL.md explicitly named R3 as blocked
+    there (prohibited_in_paper_1, see above); this declaration is what
+    unblocks measuring it. context_nodes / context_report / etc. take the
+    scored set and graph as arguments already, so R3 is a new call with
+    Cq_struct and TARGET_H1(Cq_struct), not new code in graph_context.py.
+  needs_a_thin_wrapper_for:
+    - one_call_per_cell: >-
+        No existing single call returns all of context_report,
+        two_path_preservation and seed_distance-derived reach together; a
+        wrapper merges them into one per-(dataset, regime) record.
+    - cross_query_aggregation: >-
+        Existing functions are per-query or per-arm; M0B aggregates across
+        the sampled queries into per-dataset x per-regime cells.
+  not_reused_from_the_pilot_runner: >-
+    scripts/run_graph_context_pilot.py inlines the same math rather than
+    calling context_report() and mixes in QLS-feature "movement" diagnostics
+    M0B does not need. The wrapper calls graph_context.py's functions
+    directly, not the pilot script.
+
+# --------------------------------------------------------------------------
+# Classification labels -- predeclared, mechanical, before any result exists
+# --------------------------------------------------------------------------
+
+classification_labels:
+  status: PREDECLARED_BEFORE_ANY_M0B_RESULT_IS_READ
+  applies_to: one (dataset, regime, feature_family) cell at a time
+  not_mutually_exclusive: >-
+    A cell may carry more than one label at once (e.g. SIGNAL_PRESENT and
+    HIGH_COST together) -- mirroring M0A.1's own not-disjoint cross-tab
+    discipline. No later stage may collapse these into a single ranking.
+  never_reads: [trained_model_output, ablation_result, gold_conditioned_fit]
+  legitimate_use_of_gold: >-
+    Occupancy and redundancy are structural (no gold read at all). Any
+    gold-conditioned diagnostic (e.g. a univariate rank-association, in the
+    spirit of D0's one-off rank-AUC probe) is reported separately, labelled
+    as a diagnostic, and is never an input to these five labels -- it may
+    only inform step 7's proposal. This line exists because a gold-blind
+    classification rule and a gold-conditioned diagnostic look similar and
+    must not be allowed to silently stand in for one another.
+  rules:
+    NO_VARIATION:
+      predicate: >-
+        every column in the family has nonzero_rate < 0.005 OR
+        nonzero_rate > 0.995, AND value_stddev < 1e-6, on this cell's
+        sampled candidate rows.
+      meaning: cannot discriminate anything; constant or near-constant.
+    REDUNDANT:
+      predicate: >-
+        max absolute Pearson correlation >= 0.95 against any column of
+        the frozen 2Wiki-selected base (GEOMETRY + RETRIEVAL) already
+        present in this cell's regime, OR against another catalog family
+        measured in the same cell.
+      meaning: carries no information beyond a family already in the map.
+    SIGNAL_PRESENT:
+      predicate: >-
+        NOT NO_VARIATION, AND NOT REDUNDANT, AND nonzero_rate in
+        [0.02, 0.98] on at least one column.
+      meaning: >-
+        structurally capable of discriminating and not already covered by
+        another family. Not a claim of downstream accuracy benefit -- that
+        is untested by construction at this stage.
+    HIGH_COST:
+      predicate: >-
+        this family's p95 per-query construction cost exceeds 4.0x the
+        cheapest family's p95 in the same cell (reusing the systems
+        contract's own latency_factor threshold, unchanged, not refit here).
+      meaning: expensive to compute, independent of whether it carries signal.
+    CANDIDATE_FOR_TRAINED_SCREEN:
+      predicate: >-
+        SIGNAL_PRESENT AND NOT REDUNDANT AND NOT already in the frozen
+        2Wiki-selected base for this dataset AND NOT HIGH_COST (or HIGH_COST
+        but flagged for a representative-cell probe rather than excluded).
+      meaning: >-
+        the label step 7 draws its representative-cell shortlist from. Never
+        a licence by itself -- see advancement below.
+
+# --------------------------------------------------------------------------
+# Systems contract -- reused thresholds, independently measured per cell
+# --------------------------------------------------------------------------
+
+systems_contract:
+  inherits_thresholds_from: configs/m0a1_overlap.yaml#systems_contract_for_the_structural_arm
+  latency_factor: 4.0
+  peak_rss_bytes_max: 15032385536  # 14 GiB, same container-shape bound as M0A.1
+  measured_independently_for:
+    - candidate_admission        # A64 construction
+    - target_h1_construction     # U2 / TARGET_H1(Cq_struct)
+    - feature_construction       # per family, per cell
+    - shared_graph_extraction
+  does_not_inherit_the_directional_verdict: true
+  webqsp_is_the_named_risk_cell: >-
+    See datasets.webqsp.cost_risk_flag. If webqsp breaches either threshold,
+    the response is report-and-stop for that cell, never a silent threshold
+    change to make it pass.
+
+# --------------------------------------------------------------------------
+# Invariants -- asserted in the runner, not assumed
+# --------------------------------------------------------------------------
+
+invariants_asserted_not_assumed:
+  - "oracle(Cq under R1) == oracle(Cq under R2), bit-exactly, on every dataset"
+  - "Cq is bit-exact against the frozen artifact, on every dataset"
+  - "A64 disjoint from Cq, on every dataset"
+  - "Cq subset Cq_struct and Cq subset U2, on every dataset"
+  - "Cq_struct == expand(...).additive_pool, no separate union step, on every dataset"
+  - "permuting gold labels leaves the expansion byte-identical (standing parametrized test, not rederived per dataset)"
+  - "fraction of ALL A64-admitted nodes already in U2, reported per dataset (new measurement, see feature_catalog.new_measurement_beyond_m0a1)"
+  - "fraction of R3-recovered golds already in U2, reported per dataset (reuses M0A.1's classify_query_golds unchanged)"
+
+# --------------------------------------------------------------------------
+# Compute -- plan only. Final numbers come from the step-2/3 probe.
+# --------------------------------------------------------------------------
+
+compute:
+  estimated_before_launch: true
+  final_numbers_deferred_to: step_3_after_the_step_2_probe
+  container: cpu_only
+  gpu_hours_authorised: 0.0
+  reuses_existing_artifacts: >-
+    frozen candidate pools, edge-family graphs, confirmation manifests, the
+    M0A kNN result, and docs/EDGE_PROVENANCE_RESULTS.md's six-dataset
+    provenance table. Nothing already measured is regenerated.
+  what_is_already_measured:
+    peak_process_rss_bytes:
+      squad_clean: 4788690944
+      2wiki_clean: 3628077056
+      metaqa: 7680409600
+    expansion_over_context_p95_ratio_structural_only:
+      squad_clean: 0.1756
+      2wiki_clean: 0.1724
+      metaqa: 0.3441
+    disclosure: >-
+      m0a1_overlap's runner persisted the ratio and peak RSS but not the raw
+      p50/p95/p99 latencies, so absolute per-query cost is not available even
+      for these three datasets from that artifact alone -- the step-2/3 probe
+      re-measures absolute latency for all six, not just the three new ones.
+  what_is_unmeasured:
+    musique_clean: no prior run at any regime
+    hotpotqa_clean: no prior run at any regime
+    webqsp: no prior run; flagged as the named density risk cell above
+    r3_absolute_latency: >-
+      M0A.1 measured only a ratio, not R3's absolute construction cost, on
+      any dataset
+  cost_ceiling_usd:
+    placeholder_order_of_magnitude: 3.00
+    is_final: false
+    why_not_final: >-
+      docs/ZERO_TRAINING_MATRIX_PROPOSAL.md is explicit that a declaration
+      should set the budget from a probe, not an extrapolation, and that
+      webqsp's graph density (~15.6x 2wiki_clean's edge count) makes any
+      extrapolation from three datasets to six unreliable. This number is a
+      conservative order-of-magnitude marker so this file is self-contained;
+      the number actually used to gate step 4's launch must come from step
+      3's measured-probe-based estimate, filed as its own artifact.
+
+# --------------------------------------------------------------------------
+# After the map
+# --------------------------------------------------------------------------
+
+after_the_map:
+  step_7_proposes: >-
+    the smallest trained-screen phase -- representative cells first, chosen
+    from CANDIDATE_FOR_TRAINED_SCREEN labels, never all 18 (6 x 3) cells by
+    default.
+  step_8_is_a_hard_stop: >-
+    No fitting of any kind begins without a further, separate, explicit
+    authorisation after step 7's proposal is reviewed.
+  explicitly_not_done_after_step_7: >-
+    Training 6 x 3 x features exhaustively. Only representative cells fit
+    first; the matrix expands further only if those fits show that
+    dataset/regime dependence can change the scientific conclusion.
