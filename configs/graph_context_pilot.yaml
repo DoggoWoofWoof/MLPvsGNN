@@ -697,7 +697,8 @@ stages:
       other; D0c may not add arms to D1 or change its schema.
 
   D8:
-    status: DECLARED
+    status: COMPLETE
+    results: docs/GRAPH_CONTEXT_D8_RESULTS.md
     evidence_class: CONFIRMATORY within its own narrow question
     runner: scripts/run_graph_context_d8.py
     dataset: 2wiki_clean
@@ -935,6 +936,67 @@ stages:
        support, path diversity, architecture search, LODO, E2 resume, Package F,
        convergence study, workspace migration]
     is_the_only_experiment: true
+    outcome: >-
+      DISTINCT SUPPORT PARETO-MATCHES HISTORICAL. Every V - H metric is inside
+      the +/-0.50 pp material band: R@1 -0.07, R@5 -0.43, R@20 -0.04, MRR -0.12,
+      FullCov@20 -0.07. The corrected representation therefore stays on the
+      frontier and is carried forward as the QLS-v2 support column on
+      representation and system grounds -- bounded [0,1] by construction, no
+      per-query normaliser, 1.66 s and one fixed graph pass -- and NOT on
+      accuracy. It did not beat the proxy on any metric.
+    outcome_qualification: >-
+      R@5 at -0.43 misses the FAILS threshold by 0.07 pp, and all five metrics
+      are negative. The margin is recorded, not used: the threshold was fixed in
+      the declaration and does not move because a result landed near it, exactly
+      as D7's DIFFUSION missed PROMISING by the same 0.07. Five out of five in
+      one direction is not a coin-flip tie, and the write-up says so. Rule A did
+      not fire, so retrieval-weighted distinct support is not promoted.
+    mechanistic_finding: >-
+      Reported before the effectiveness numbers, on validation feature
+      construction. The representation defect is real and universal where it can
+      occur -- 100.0% of the 50,003 supported rows have more edge endpoints than
+      distinct supporting seeds, 3.75 edges per 1.23 seeds -- but only 4.63% of
+      candidate rows carry any support at all, and the two signals order
+      candidates almost identically: 0.094% of 194,238,384 within-query pairs
+      ordered differently, 209 strictly reversed. On 2Wiki these are close to the
+      same signal, which is why no effectiveness difference here can be read as
+      evidence that correcting the defect is what moved it. No candidate row has
+      induced degree 1, so 2Wiki stores induced edges in both directions.
+    historical_formula_audited: >-
+      VERIFIED FROM CODE at src/mp_retrieval/structural_features.py:340-425.
+      seed_connections accumulates induced edge ENDPOINTS at hop radius 1:
+      reverse and parallel edges count separately, a reciprocal pair from one
+      seed scores 2, a self-loop on a seed scores 2, a seed adjacent to a seed
+      accrues support; then log1p and a per-query maximum. Two defects, not one:
+      the count is edges rather than seeds, and the value is not intrinsic.
+      Maximum observed raw value 28 on validation, 30 over all opened queries.
+    systems_measured: >-
+      Kernel 1.66 s total, 3.23% of the 51.4 s historical build, p50 0.080 ms,
+      p95 0.095 ms, p99 0.119 ms per query; the 581 ms maximum is numba's first
+      compile. Shared induced-edge extraction is 39.22 s and is reported
+      separately rather than charged to the feature. Temporary workspace 3,184
+      bytes, one fixed graph pass, no convergence iteration. Peak process RSS
+      5.47 GB, dominated by the 4.85M-row feature block.
+    cost_gate_measured: >-
+      Did not fire: 42.0 s construction against a 51.4 s historical build. No
+      SIMD, numba specialisation or CUDA work was done.
+    not_established: >-
+      A Pareto match is not interchangeability. On a graph storing edges once
+      rather than reciprocally, or with denser multiplicity, the two signals
+      would diverge further and this comparison would have to be redone. One
+      dataset, one seed, development evidence on G[Cq]. PATHS remains PROMISING /
+      DEFERRED at +0.82 R@5, unchanged by D8.
+    actual_cost:
+      accounted_seconds: 124.3
+      gpu_hours: 0.035
+      usd: 0.06
+      authorised_gpu_hours: 0.08
+      authorised_usd: 0.40
+      note: >-
+        Measured component time -- 51.4 s feature build, 2.1 s static, 10.3 s
+        prior, 42.0 s replacement construction, 18.2 s training, 0.35 s
+        inference -- at $1.734/h. Container startup and image import are not
+        included and were not measured.
 
   D7:
     status: COMPLETE
