@@ -61,6 +61,7 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         {"train": "run_context_pilot"},
     ),
     "m0a-probe": ("scripts.modal_m0a_probe", {"train": "run_probe"}),
+    "m0a1-overlap": ("scripts.modal_m0a1_overlap", {"train": "run_overlap"}),
 }
 
 # Stage B replaced the pre-launch guess with measurements, so this is now
@@ -445,6 +446,25 @@ def measured_units(
         return units, (
             f"{len(jobs)} dataset(s) at the declared pre-launch estimate, "
             f"which is a host timing and not a container measurement; {granularity}"
+        )
+
+    if package == "m0a1-overlap":
+        estimate = module.CONFIG["compute"]["estimate"]["job_seconds"]
+        unknown = sorted({job["dataset"] for job in jobs} - set(estimate))
+        if unknown:
+            return None, f"no estimated job cost for {', '.join(unknown)}"
+        # One dataset is one job that writes its result once at the end, so a
+        # restart redoes the whole dataset. The declaration's per-job estimate
+        # is anchored to M0A execution 2's measured per-query latencies, not a
+        # fresh host timing, and is already the indivisible unit.
+        units = [
+            WorkUnit(name=job["dataset"], seconds=float(estimate[job["dataset"]]))
+            for job in jobs
+        ]
+        units, granularity = _collapse_without_resumption(units, module, "dataset", "overlap")
+        return units, (
+            f"{len(jobs)} dataset(s) at the declared pre-launch estimate, "
+            f"anchored to M0A execution 2's measured per-query latencies; {granularity}"
         )
 
     return None, f"no measured cost model for {package}"

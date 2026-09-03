@@ -1,0 +1,343 @@
+# M0A.1 -- R2/R3 overlap + minimal structural expansion audit.
+#
+# Filed before any M0A.1 number exists. A zero-training follow-up to M0A.
+# It opens no new stage, trains nothing, and does not authorise M0B.
+
+status: DECLARED
+stage: m0a1_overlap
+protocol: docs/M0A1_OVERLAP_PROTOCOL.md
+reuses: configs/m0a_probe.yaml
+
+zero_training:
+  trains_qls: false
+  trains_gnn: false
+  trains_anything: false
+  fits_any_parameter: false
+  reads_test_split: false
+  opens_m0b: false
+  resumes_e2: false
+  opens_f: false
+  migrates_workspace: false
+  redesigns_the_expansion_algorithm: false
+
+# --- M0A is history and is not reinterpreted here ---
+m0a_is_historical:
+  verdict: MOVEMENT_UNDER_A_BREACHED_ABORT_RULE
+  rule: >-
+    The M0A verdict stands exactly as filed. M0A.1 does not rewrite it, soften
+    it, or re-derive it. Nothing measured here may be used to restate the M0A
+    outcome.
+  results_document: docs/M0A_PROBE_RESULTS.md
+
+canonical_findings_from_m0a:
+  1: >-
+    native structural expansion materially moves candidate headroom on 2Wiki
+    and especially MetaQA
+  2: "kNN-only expansion recovers zero golds in every tested cell"
+  3: "native-only and union recover the same golds"
+  4: >-
+    L1_DIRECTIONAL and STRUCTURAL_NEIGHBOUR produce identical observed
+    candidate-headroom outcomes despite different admitted node sets
+  5: >-
+    the directional arm is materially more expensive and breached the filed
+    latency abort
+
+wording:
+  allowed: >-
+    Directional selection showed no incremental candidate-headroom benefit over
+    bounded structural expansion in M0A.
+  forbidden:
+    - "directional expansion is useless"
+    - >-
+      any claim that directional selection can never affect downstream ranking.
+      The non-gold distractors differ between the two admitted sets and no
+      ranker has been trained on either pool, so downstream difficulty is
+      untested, not equal.
+
+# --- the sets this stage measures over ---
+sets:
+  Cq: historical scored candidate set, frozen candidate order, bit-exact
+  U2:
+    definition: TARGET_H1(Cq)
+    contract: >-
+      the exact existing TARGET_H1 contract -- Cq union the in-neighbours of Cq,
+      via graph_context.context_nodes("TARGET_H1"). In-neighbours only. This is
+      NOT the undirected frontier M0A expanded over, and the difference is the
+      whole reason this stage exists.
+  A_struct:
+    definition: nodes admitted by the M0A STRUCTURAL_NEIGHBOUR construction
+    frontier: undirected one-hop of the frozen family CSR, symmetrised in memory
+    unchanged_from_m0a: true
+  Cq_struct:
+    definition: stable_union(Cq, A_struct)
+    note: >-
+      the additive pool. M0A measured golds_lost == 0 in every cell, so the
+      matched-budget pool recovered the same golds; that is re-measured here
+      rather than assumed, and both are reported.
+
+primary_arm: STRUCTURAL_NEIGHBOUR
+directional_arm:
+  status: RETAINED_AS_M0A_CONTROL_NOT_RERUN
+  why: >-
+    M0A already established that the admitted sets differ while candidate
+    headroom is identical. Re-running it here would spend compute to reproduce
+    a settled measurement.
+
+# --- the partition, and a defect in it found before any result was read ---
+partition:
+  scope: golds absent from Cq
+  classes:
+    R2_CONTEXT_RECOVERABLE: "gold in U2"
+    R3_BEYOND_R2: "gold not in U2 and gold in Cq_struct"
+    STILL_MISSING: "gold not in Cq_struct"
+  reported_as:
+    - gold_instance_counts
+    - query_counts
+  the_three_classes_are_not_disjoint:
+    found: BEFORE_ANY_M0A1_RESULT_WAS_READ
+    defect: >-
+      A gold in U2 but not in Cq_struct satisfies both R2_CONTEXT_RECOVERABLE
+      and STILL_MISSING as literally written. The classes overlap.
+    resolution: >-
+      The primitive measured and reported is the 2x2 cross-tabulation of
+      (in U2) x (in Cq_struct). The three filed classes are derived from it and
+      reported unchanged, with the overlapping cell named and counted
+      separately so neither reading is hidden. No class definition was altered.
+    cross_tabulation:
+      IN_U2_AND_RECOVERED: "in U2, in Cq_struct"
+      IN_U2_NOT_RECOVERED: "in U2, not in Cq_struct -- the overlapping cell"
+      BEYOND_U2_RECOVERED: "not in U2, in Cq_struct -- equals R3_BEYOND_R2"
+      BEYOND_U2_NOT_RECOVERED: "not in U2, not in Cq_struct"
+
+interpretation_is_not_chosen_before_measuring:
+  if_most_recovered_golds_are_in_u2: >-
+    R2 already exposes the missing answer as graph context; R3's principal
+    intervention is making selected structural context nodes scoreable.
+  if_many_recovered_golds_are_outside_u2: >-
+    R3 extends the scored universe beyond the original TARGET_H1 context.
+  rule: >-
+    Neither sentence is written into any document before the overlap is
+    measured. The runner emits counts; the wording is selected from these two
+    filed options afterwards.
+
+# --- reconfirmed invariants ---
+invariants_asserted_not_assumed:
+  r1_ceiling_equals_r2_ceiling_exactly: >-
+    bit-exact. R2 may expose additional golds as context but they are not
+    scoreable, so this must never be described as candidate-headroom
+    improvement.
+  cq_is_bit_exact_against_the_frozen_artifact: true
+  a_struct_is_disjoint_from_cq: true
+  cq_struct_contains_cq: true
+  u2_contains_cq: true
+  gold_permutation_leaves_expansion_byte_identical: true
+
+# --- saturation curve ---
+budget_curve:
+  purpose: saturation analysis, NOT hyperparameter fitting
+  method: STRUCTURAL_NEIGHBOUR only
+  ordering: ascending_global_node_id, the M0A deterministic ordering contract
+  varies: graph_expansion_cap
+  points: [4, 8, 16, 32, 64, "full_bounded_n1_frontier"]
+  held_fixed:
+    per_seed_cap: 16
+    hop_cap: 1
+    neighbour_scan_cap_per_seed: 4096
+  nesting:
+    numeric_points: >-
+      strictly nested. STRUCTURAL scores are constant, so _rank breaks every
+      tie by ascending node id and the cap-k admitted set is the k lowest ids
+      of the same frontier.
+    final_point: >-
+      the full frontier lifts per_seed_cap as well, so it is a set-wise
+      superset of every numeric point but is not a prefix of the same ordering.
+      Stated because it is a real discontinuity in the curve, not smoothed over.
+  reported_per_point:
+    - added_nodes_per_query_median_p95_max
+    - any_gold_at_pool
+    - all_gold_at_pool
+    - gold_fraction_at_pool_macro
+    - recall_ceiling@1
+    - recall_ceiling@5
+    - recall_ceiling@20
+    - missing_golds_recovered
+    - marginal_recovered_gold_per_added_node
+  no_dataset_specific_budgets:
+    rule: >-
+      No per-dataset budget is fitted, reported as a recommendation, or carried
+      forward. M0B needs one universal bounded rule, or a deterministic
+      query-derived rule that does not read dataset identity.
+
+# --- edge provenance: reuse, do not recompute ---
+edge_provenance_control:
+  families: [structural_only, baseline_a_simple]
+  knn_only:
+    status: REPRODUCED_FROM_EXISTING_M0A_ARTIFACTS_NOT_RECOMPUTED
+    claim: "kNN-only recovered zero golds in every tested cell"
+    how: >-
+      read from the stored M0A probe outputs and asserted, rather than spending
+      a container to recompute a settled zero.
+  why_not_all_three: >-
+    M0A settled the kNN result. The overlap audit prioritises the two families
+    that actually recovered golds. Do not multiply unnecessary work.
+
+# --- the structural arm's own systems contract, filed before results ---
+systems_contract_for_the_structural_arm:
+  does_not_inherit_the_directional_verdict: >-
+    The M0A latency abort fired only on L1_DIRECTIONAL cells. That verdict is
+    about that arm. The structural arm is measured here against its own filed
+    threshold and neither inherits the failure nor is excused by it.
+  measured:
+    - expansion_latency_ms p50/p95/p99
+    - context_build_latency_ms p50/p95/p99
+    - temporary_workspace_bound
+    - peak_process_rss_bytes
+  thresholds:
+    latency_factor: 4.0
+    latency_factor_provenance: >-
+      inherited unchanged from configs/m0a_probe.yaml. It was NOT selected now
+      to fit the structural arm. Disclosure: M0A execution 2 measured every
+      structural cell at 0.477-0.621 ms expansion p95 against 1.884-3.818 ms
+      context p95, so this threshold is already known to pass. It is filed
+      because the rule requires a filed threshold, not because it is a test
+      whose outcome is open.
+    peak_rss_bytes_max: 15032385536
+    peak_rss_provenance: >-
+      14 GiB inside the 16 GiB container. Set from M0A's MEASURED peaks
+      (5.13 / 3.87 / 8.36 GiB) plus margin, because M0A's a-priori 3-4 GiB
+      estimate was wrong by ~2.2x on metaqa. This bound IS open: M0A.1 builds
+      U2 per query and six curve points, which M0A did not.
+    temporary_workspace_bytes_per_query_max: 1048576
+  workspace_figure_is_a_bound_not_a_measurement: true
+
+# --- advancement, filed before results ---
+advancement_to_m0b:
+  is_automatic: false
+  advance_the_simple_structural_r3_construction_only_if_all_hold:
+    leakage_and_invariants_pass: >-
+      every invariant in invariants_asserted_not_assumed holds, including the
+      bit-exact R1==R2 ceiling and gold-permutation byte-identity
+    materially_improves_candidate_headroom: >-
+      structural expansion moves matched-budget AnyGold or oracle recall@5 by
+      at least the filed movement threshold on at least one structural regime
+    independent_systems_contract_passes: >-
+      the structural arm satisfies systems_contract_for_the_structural_arm on
+      its own numbers
+    a_universal_bounded_expansion_rule_can_be_stated: >-
+      one budget, or one deterministic query-derived budget, that does not read
+      dataset identity and is not fitted per dataset
+  movement_points: 1.0
+  no_directional_method_is_required_for_advancement: true
+  thresholds_are_not_moved_after_seeing_m0a1: true
+  proposed_m0b_regimes_are_a_proposal_only:
+    R1: "scored = Cq, graph = G[Cq]"
+    R2: "scored = Cq, context = TARGET_H1(Cq)"
+    R3: "scored = Cq_struct, context = TARGET_H1(Cq_struct)"
+    status: PROPOSAL_AT_M0A1_DO_NOT_LAUNCH
+
+# Fingerprints and data paths are read at launch from each dataset's frozen
+# confirmation artifact, exactly as M0A does. They are not restated here, so
+# this file cannot drift from the artifact it claims to describe.
+datasets:
+  squad_clean:
+    regime_covered: weak structural / single hop
+    expected_queries: 130319
+    confirmation: outputs/sa_mlp_confirmation/squad_clean.json
+  2wiki_clean:
+    regime_covered: multi-hop text
+    expected_queries: 15000
+    confirmation: outputs/sa_mlp_confirmation/2wiki_clean.json
+    candidate_contract_compatibility: pre_hop_metadata_v1
+  metaqa:
+    regime_covered: knowledge base
+    expected_queries: 407513
+    confirmation: outputs/sa_mlp_confirmation/metaqa.json
+
+sampling:
+  queries_per_dataset: 100
+  split: validation
+  selection: deterministic_prefix_of_the_split_order
+  identical_to_m0a: true
+
+compute:
+  estimated_before_launch: true
+  container: cpu_only
+  gpu_hours_authorised: 0.0
+  cpu: 4
+  memory_mb: 16384
+  jobs: 3
+  executions: 1
+  timeout_seconds_per_job: 3600
+  cost_ceiling_usd: 0.3
+  reuses_existing_artifacts: >-
+    the frozen candidate pools, the three edge-family graphs, the confirmation
+    manifests, and the M0A kNN result. Nothing is regenerated that already
+    exists.
+  estimate:
+    derived_from: >-
+      M0A execution 2's MEASURED per-query latencies on the same container
+      shape, not from a fresh host timing. M0A's a-priori estimate was wrong on
+      memory by ~2.2x, so this one is anchored to measurement wherever a
+      measurement exists and says so where it is not.
+    structural_expansion_ms_per_query_mean:
+      squad_clean: 0.47
+      2wiki_clean: 0.42
+      metaqa: 0.53
+    context_build_ms_per_query_mean:
+      squad_clean: 3.14
+      2wiki_clean: 2.43
+      metaqa: 1.70
+    manifest_build_seconds:
+      squad_clean: 50
+      2wiki_clean: 6
+      metaqa: 156
+    operators_and_symmetrise_seconds:
+      squad_clean: 11
+      2wiki_clean: 2
+      metaqa: 2
+    families: 2
+    curve_points_per_family: 6
+    expansions_per_dataset: 1200
+    u2_constructions_per_dataset: 100
+    job_seconds:
+      squad_clean: 90
+      2wiki_clean: 30
+      metaqa: 200
+    total_work_seconds: 320
+    priced_by: >-
+      mp_retrieval.compute_budget.container_rate_usd_per_hour and
+      expected_spend_usd at 0.3172 USD per hour for this 4 CPU / 16 GiB shape,
+      with the standing 0.4 utilisation assumption charging for image pull and
+      data load as well as work.
+    estimated_cost_usd: 0.07
+    estimated_cost_usd_at_three_times_the_estimate: 0.21
+    cheaper_than_m0a_because: >-
+      one execution rather than two, two edge families rather than three, and
+      no L1_DIRECTIONAL arm -- which was 12-28 ms per query against structural
+      expansion's 0.4-0.6 ms.
+    peak_memory_prediction_is_not_a_measurement: >-
+      M0A measured 5.13 / 3.87 / 8.36 GiB. M0A.1 holds one more per-query set
+      (U2) and iterates six curve points, so it is predicted to sit at or a
+      little above those peaks. The filed bound is 14 GiB and this prediction
+      is explicitly NOT a measurement.
+    storage_bytes_per_dataset_max: 8388608
+
+modal:
+  app: message-passing-retrieval-m0a1-overlap
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: null
+  cpu: 4
+  memory_mb: 16384
+  timeout_seconds: 3600
+  edge_provenance_root: edge_provenance_graphs
+  execution_label: execution_1
+  source_m0a_execution_label: execution_2
+  source_m0a_execution_label_why: >-
+    the M0A run whose result docs/M0A_PROBE_RESULTS.md reports and whose
+    knn_only movement this audit reproduces rather than recomputes. Filed
+    here so the launcher reads it instead of assuming it.
+  spawn_server_side: true
+  never_modal_run_detach: >-
+    submitted through scripts/spawn_modal_jobs.py so the run survives the local
+    process. A detached local run is not a registered execution.
