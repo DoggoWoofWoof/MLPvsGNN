@@ -696,17 +696,289 @@ stages:
       D1. D0c and D1 ask different questions and neither substitutes for the
       other; D0c may not add arms to D1 or change its schema.
 
+  D10:
+    status: DECLARED
+    runner: scripts/run_graph_context_d10.py
+    dataset: 2wiki_clean
+    seed: 0
+    holdout_fraction: 0.1
+    splits: [train, validation]
+    evidence_class: CONFIRMATORY within its own narrow question
+    is_the_only_experiment: true
+    is_the_last_2wiki_only_feature_stage: true
+    question: >-
+      Does the already-defined bounded branch-diversity PATH replacement match
+      or improve the historical raw-walk PATH family at the frozen 2Wiki
+      development operating point?
+    what_d9_left_open: >-
+      D9 aborted at its systems gate before fitting. The representation question
+      it did answer -- the two columns diverge substantially at hops 2 and 3 --
+      is not an effectiveness answer, and mechanistic divergence is not a proxy
+      for one. D8 is the standing reminder that two nearly rank-equivalent
+      signals can still differ on all five metrics, and the converse is equally
+      unproven. D10 exists to fit the arm D9 did not.
+    no_feature_redesign: >-
+      The replacement transform is frozen exactly as D9 defined and implemented
+      it, in src/mp_retrieval/path_diversity.py. It was NOT re-tuned after
+      seeing D9's divergence statistics and may not be. D10 changes the systems
+      rule and nothing about the representation.
+    the_frozen_replacement:
+      hop_1: branch_1(d) = number of distinct seeds with an edge into d
+      hop_2: branch_2(d) = number of distinct predecessors of d reached in 1 hop
+      hop_3: branch_3(d) = number of distinct predecessors of d reached in 2 hops
+      injected: branch_diversity_h(d) = branch_h(d) / (branch_h(d) + 1)
+      preserved_from_d9: >-
+        parallel-edge collapse, self-loop exclusion, directed semantics, three
+        fixed passes, no convergence loop, the same float-storage contract, and
+        the same post-normalisation injection point.
+      bounded: >-
+        [0, 1), strictly monotone in the branch count, concave. Unbounded walk
+        counts cannot dominate the head's input scale.
+    reuse_rule:
+      what_was_required: >-
+        Before recomputing, check for a durable exact feature artifact from D9
+        and, if one exists, verify dataset hash, query IDs, candidate pool hash,
+        graph hash, seed hash, row count 4851276, feature shape, replacement
+        formula and version, and max_abs_diff 0 against D9's recorded block.
+      what_was_found: >-
+        NONE. modal volume ls on
+        outputs/graph_context_pilot/2wiki_clean/d7c2da85e2b65680 returns exactly
+        fourteen files, stage_b.json through stage_d9.json, and no feature
+        tensor. D9 built the replacement block in memory and discarded it at the
+        abort; it persisted only its JSON result. Checked 2026-09-03 before any
+        D10 code was written.
+      consequence: >-
+        D10 must recompute the 4,851,276-row block. This is reported, not
+        glossed: the rebuild is forced by D9's failure to persist, not chosen
+        for stage symmetry.
+      what_replaces_artifact_reuse: >-
+        D9's result file records enough content-sensitive statistics to prove a
+        rebuild is the same block: per-hop nonzero counts, maximum branch
+        counts, column minima and maxima, distinct scalar values before and
+        after the float16 cast, and the full ordering statistics. D10 verifies
+        the rebuilt block against every one of them before fitting. Rebuild plus
+        exact verification is weaker than not rebuilding, and stronger than
+        rebuilding unverified.
+      what_d10_persists: >-
+        A SHA-256 of the int16 branch block and of the injected float16 columns,
+        recorded in stage_d10.json. NOT the tensor. D10 is the last 2Wiki-only
+        feature stage, so no declared consumer exists for a 29 MB artifact; a
+        recorded hash still lets any future stage verify a rebuild in one
+        comparison, which is the thing D9 lacked.
+    corrected_systems_rule_filed_before_fitting:
+      why_the_d9_rule_needed_repair: >-
+        It compared the WHOLE construction wall clock against the historical
+        build, but 79.24 s of D9's 92.4 s was re-extracting induced edges the
+        historical build already computes, and the same declaration says shared
+        extraction is not charged to a new feature. It also raced two wall
+        clocks on one container, so a host that runs the historical build 1.44
+        times slower -- as D9's did against D8's -- moves the threshold instead
+        of the measurement.
+      what_is_charged: >-
+        the replacement kernel only, incrementally: the three branch passes over
+        already-extracted edges.
+      what_is_reported_but_not_charged: >-
+        shared candidate and graph extraction, timed and reported separately,
+        because both arms need it and the historical build pays it too.
+      abort_condition: >-
+        abort before fitting if the replacement kernel p95 per query exceeds the
+        historical structural build p95 per query measured on the same
+        container, or if the temporary workspace exceeds the declared bounded
+        contract.
+      why_p95_rather_than_totals: >-
+        both quantities are per-query percentiles taken on the same host against
+        the same clock, so a slow container scales them together and the
+        comparison survives the machine variance that decided D9. A total-
+        seconds race does not: it is a ratio of one fixed cost to another, and
+        D8 and D9 got opposite answers from the same rule on the same work.
+      workspace_contract_bytes: 1048576
+      what_the_workspace_contract_means: >-
+        The shape guarantee is exact and pre-existing: the kernel allocates
+        2 * n * ceil(|Sq| / 64) uint64 words plus n-vectors, with no term
+        growing in the number of walks, and tests/test_path_diversity.py:355
+        has asserted that exact identity since D9 was written. The 1 MiB figure
+        is NOT that assertion. It is a new absolute backstop filed here for
+        D10, chosen before any D10 measurement exists, and it is stated as new
+        rather than dressed up as pre-existing. D9 measured 6368 bytes, so the
+        backstop sits 164 times above the only observation of it -- it is a
+        pathology tripwire, not a tight bound, and it is the shape guarantee
+        that does the real work.
+      this_repair_is_not_result_driven_rewriting: >-
+        D9 refused to repair the rule inside the stage whose outcome it produced
+        and recorded the defect instead. The repair is filed here, before D10's
+        runner exists in a launchable state and before any D10 measurement. The
+        D9 outcome stands exactly as registered and is not revisited.
+      stated_in_advance_so_it_cannot_be_presented_as_a_discovery: >-
+        On D9's recorded numbers the kernel p95 is 0.877 ms against a historical
+        build p95 of 8.432 ms, so the corrected rule would NOT have aborted D9.
+        A rule rewritten after an abort that then permits the aborted work is
+        the exact shape of result-driven rewriting, and saying so is part of
+        filing it. The defence is that the justification is independent of the
+        outcome -- shared extraction was declared uncharged before D9 ran, and
+        the p95 form was chosen to remove host variance, not to clear a
+        threshold. The abort remains live: if D10's container reverses those
+        percentiles, D10 aborts without fitting.
+    mechanistic_check_is_not_a_gate: >-
+      The D9 mechanistic thresholds are unchanged and are NOT re-applied as a
+      selection criterion. D10 recomputes the comparison on validation only, as
+      a deterministic consistency check that the rebuilt block is D9's block. No
+      new gate is invented. If the check disagrees with D9's recorded values the
+      stage aborts as a reproduction failure, not as a scientific finding.
+    d9_recorded_for_comparison:
+      read_from: >-
+        stage_d9.json at full recorded precision, not from the rounded figures
+        in the write-up
+      pairs_reordered_by_hop:
+        [0.0009358088563998761, 0.00370229089220594, 0.008446842308984613]
+      nonzero_agreement_by_hop: [1.0, 1.0, 1.0]
+      maximum_branch_count_by_hop: [7, 113, 255]
+      distinct_scalar_values_before_cast: 138
+      distinct_scalar_values_after_cast: 78
+      candidate_rows: 4851276
+    arms:
+      B: D6_BASE_13 -- REUSED from D7's result file, not refitted
+      H: D7_PATHS_13 -- REUSED from D7's result file, not refitted
+      V: D10_PATH_DIVERSITY_13 -- the only arm fitted in this stage
+    no_other_fitted_arm: true
+    frozen_operating_point:
+      dataset: 2wiki_clean
+      seed: 0
+      context: CAND
+      local_dim: 13
+      head_width: 61
+      parameters: 213689
+      epochs: 3
+      selection: best epoch on the held-out fit split, restored before scoring
+      identical_to: D6, D7, D8 and D9 -- same semantic and static inputs, same
+        optimizer, same listwise loss, same schedule.
+    column_layout:
+      0_3: exact seed-distance geometry, copied from B
+      4: zero
+      5_7: exact D9 branch-diversity block, the only difference from B
+      8_9: zero
+      10_12: exact graded retrieval prior, copied from B
+    tensor_guards_required_before_fitting:
+      - V[:, 0:4] equals B[:, 0:4] elementwise
+      - V[:, 10:13] equals B[:, 10:13] elementwise
+      - the residual nonzero columns are exactly {5, 6, 7}
+      - columns 4, 8 and 9 are exactly zero
+      - columns 5, 6, 7 are elementwise the injected branch saturations, not a
+        rescaling of them
+      - the rebuilt branch block reproduces every D9 fingerprint listed above
+      - H minus B reproduces D7's recorded delta_paths to 1e-9, from D7's result
+        file, without refitting H
+    comparisons:
+      H_minus_B: delta_historical_paths_given_retrieval_and_geometry
+      V_minus_B: delta_branch_diversity_given_retrieval_and_geometry
+      V_minus_H: delta_bounded_diversity_over_historical_walk_proxy
+      metrics: [R@1, R@5, R@20, MRR, FullCov@20]
+    interpretation_fixed_in_advance:
+      material: 0.005
+      PATH DIVERSITY IMPROVES: >-
+        V - H is materially positive on R@5 or MRR and not materially negative
+        on any other metric.
+      PATH DIVERSITY PARETO-MATCHES: >-
+        no metric moves materially in either direction.
+      PATH DIVERSITY FAILS: >-
+        V - H is materially negative on R@5 or MRR.
+      thresholds_do_not_move_after_d10: true
+    causal_wording_restriction:
+      if_v_beats_h_say: >-
+        The bounded branch-diversity representation outperforms the historical
+        normalized walk-count representation.
+      if_v_beats_h_do_not_say: >-
+        Removing duplicate or cyclic walks caused the improvement.
+      why: >-
+        the replacement changes the numerical transform and calibration
+        presented to the learner as well as the counting rule, and D10 has no
+        arm that separates those. Attribution to walk multiplicity alone is not
+        identified by this design.
+      if_h_beats_v_do_not_conclude: >-
+        that raw repeated walks are inherently useful. The same confound runs
+        the other way.
+    float16_diagnostic:
+      report: total affected rows, fraction of all rows, fraction of nonzero
+        PATH rows
+      definition: >-
+        a row is affected at hop h if its stored float16 saturation is equal to
+        the stored saturation of the next branch count, i.e. the cast has made
+        it indistinguishable from a strictly larger count. D9 measured that
+        boundary at 51.
+      do_not_change_dtype_inside_d10: true
+      if_the_fraction_is_small: >-
+        record it as a documented representation limitation of the frozen
+        13-column block. It does not open another experiment.
+    projected_cost:
+      basis: >-
+        D9's container did every piece of work D10 needs except the fit, at
+        229.0 s. D10 drops the 1.19 s D8 overlap diagnostic, which D9 already
+        reported and which no D10 claim depends on, and drops the all-opened
+        mechanistic comparison, keeping the validation one as the consistency
+        check. It adds one 3-epoch fit and its scoring.
+      container_seconds_projected: 240
+      gpu_hours_projected: 0.067
+      usd_projected: 0.12
+      authorised: 0.08 GPU-h and $0.20
+      variance_risk: >-
+        D9's container ran the shared historical build 1.44 times slower than
+        D8's. A repeat of that variance puts the projection near the GPU-hour
+        ceiling. The dollar ceiling has room. If the container exceeds 0.08
+        GPU-h the overage is reported against this projection rather than
+        absorbed.
+      reuse_did_not_reduce_this: >-
+        no artifact existed to reuse. The reduction from 229 s comes only from
+        dropping two diagnostics D9 already reported.
+      fitted_runs: 1
+      the_spawner_gate_reports_a_different_number: >-
+        The budget gate prices the whole 3600 s container window and reports
+        0.2 GPU-h at $0.87. That is the ceiling the window permits, not the
+        expectation, and it is the same quantity that read $0.87 before D9 spent
+        $0.11. The authorisation above is against the expectation. If the
+        container actually consumes the window, that is a failure to report, not
+        a budget that was quietly larger all along.
+    execution_order:
+      1: amend the D9 status wording -- DONE before this block was written
+      2: file this corrected systems rule -- this block
+      3: reuse the D9 feature artifact if trustworthy -- NONE EXISTS, recompute
+      4: verify every reuse and tensor guard listed above
+      5: train exactly one V arm
+      6: report B, H and V on the three increments and five metrics
+      7: classify against the bands above
+      8: STOP
+    does_not_authorise: >-
+      D11 weighted support, D11 path variants, support-plus-path combinations,
+      diffusion replacement, neighbourhood replacement, longer convergence runs,
+      another 2Wiki seed, resuming E2, opening F, any GNN, TARGET_H1 training,
+      parameter-free candidate expansion, or a workspace migration. Regardless
+      of D10's outcome.
+    after_d10: >-
+      Freeze the feature CATALOG rather than one global winner, and propose --
+      not launch -- the zero-training dataset x regime matrix. The 2Wiki-
+      selected subset is a 2Wiki result and is not declared universal.
   D9:
     status: COMPLETE
     results: docs/GRAPH_CONTEXT_D9_RESULTS.md
-    outcome: PATH REPLACEMENT UNINFORMATIVE ON 2WIKI
+    outcome: >-
+      PATH REPLACEMENT EFFECTIVENESS UNTESTED -- ABORTED BY PRE-REGISTERED
+      SYSTEMS GATE
     outcome_qualification: >-
-      Uninformative on a SYSTEMS rule, not on representation. The stage stopped
-      at the microbenchmark: 92.4 s of branch-diversity construction against a
-      74.2 s historical feature build. No arm was fitted, so there is no ladder,
-      no increment and no effectiveness claim of any kind. D7's PATHS
-      classification is untouched and the three effectiveness readings filed in
-      advance remain untested.
+      The stage stopped at the microbenchmark: 92.4 s of branch-diversity
+      construction against a 74.2 s historical feature build. No arm was fitted,
+      so there is no ladder, no increment and no effectiveness claim of any
+      kind. D7's PATHS classification is untouched and the three effectiveness
+      readings filed in advance remain untested.
+    terminology_correction: >-
+      This stage was first recorded as PATH REPLACEMENT UNINFORMATIVE ON 2WIKI,
+      which is the runner constant and is still the literal string inside
+      stage_d9.json. That label is withdrawn as the canonical conclusion because
+      it is easy to misread as "the representation carried no signal". The
+      representation was informative: hops 2 and 3 diverged strongly from the
+      historical walk column on supported rows and on within-query ordering, and
+      the filed mechanistic gate would have passed. What is untested is
+      EFFECTIVENESS. This is a correction to the wording of the conclusion, not
+      a re-reading of the measurements -- every number in this block and in
+      stage_d9.json is unchanged. The result file is left byte-identical on
+      purpose: it records what the runner decided at the time it decided it.
     the_gate_that_was_never_reached: >-
       The frozen mechanistic gate was computed on validation before the abort
       and recorded in full. Applying the filed thresholds to it -- arithmetic on
@@ -2795,7 +3067,7 @@ modal:
   gpu: A10G
   gpu_stages:
     [stage_d1, stage_d2, stage_d3, stage_d4, stage_d5, stage_d6, stage_d7,
-     stage_d8, stage_d9]
+     stage_d8, stage_d9, stage_d10]
   stage_timeout_seconds:
     stage_d0b: 7200
     # D0c builds the same two contexts over the same 13,500 queries as D0b, adds
@@ -2830,6 +3102,7 @@ modal:
     # either of its two gates and spend no training run at all. Same ceiling,
     # not a tighter one: a timeout is a bound, not a projection.
     stage_d9: 3600
+    stage_d10: 3600
     # D1 is projected at ~515 s from measured parts -- 350 s of feature build
     # at D0b's per-query rates, ~90 s to read 474 MB of embeddings, 50 s of
     # training at the frozen sa_mlp confirmation's measured 21.4 s/seed, and

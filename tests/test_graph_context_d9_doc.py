@@ -58,6 +58,15 @@ LABELS = (
     "PATH DIVERSITY FAILS",
     "PATH REPLACEMENT UNINFORMATIVE ON 2WIKI",
 )
+# The runner constant above is what `stage_d9.json` records and is left alone;
+# the conclusion the project carries forward is the one below. "Uninformative"
+# describes the systems race, and read plainly it says the wrong thing about a
+# representation that diverged.
+RETIRED_LABEL = "PATH REPLACEMENT UNINFORMATIVE ON 2WIKI"
+CORRECTED_LABEL = (
+    "PATH REPLACEMENT EFFECTIVENESS UNTESTED — ABORTED BY PRE-REGISTERED "
+    "SYSTEMS GATE"
+)
 
 
 def _load(path: Path, label: str) -> dict:
@@ -116,6 +125,30 @@ def test_exactly_one_label_is_claimed(text, result):
     for other in LABELS:
         if other != label and other not in label and label not in other:
             assert other not in text, other
+
+
+def test_the_corrected_conclusion_is_the_one_the_document_leads_with(text):
+    """The retired label may appear, but only while being retired."""
+    squashed = " ".join(text.split())
+    assert " ".join(CORRECTED_LABEL.split()) in squashed
+    assert RETIRED_LABEL in text
+    assert "withdrawn" in squashed
+    assert "wording correction" in squashed
+
+
+def test_the_correction_does_not_claim_the_measurements_moved(text):
+    squashed = " ".join(text.split())
+    assert "no measurement in this document changed" in squashed.lower()
+    assert "is not edited afterwards" in squashed
+
+
+def test_the_config_carries_the_corrected_label(result):
+    config = Path("configs/graph_context_pilot.yaml").read_text(encoding="utf-8")
+    block = config.split(chr(10) + "  D9:" + chr(10), 1)[1]
+    squashed = " ".join(block.split())
+    assert " ".join(CORRECTED_LABEL.replace("—", "--").split()) in squashed
+    assert result["verdict"]["label"] == RETIRED_LABEL
+    assert "terminology_correction" in block
 
 
 def test_the_document_says_whether_an_arm_was_trained(text, result):

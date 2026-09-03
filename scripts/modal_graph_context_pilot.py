@@ -393,6 +393,21 @@ def _d9_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     return args
 
 
+def _d10_runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    """Stage D10's arguments: D9's exactly, with D10's output name.
+
+    D10 is the run D9 declared and aborted before making, at the same operating
+    point, reusing the same single artifact. Deriving the arguments from D9's
+    rather than restating them is the same discipline as importing the
+    transform: there is no second place for the two to drift apart.
+    """
+    args = _d9_runner_args(job)
+    args.holdout_fraction = float(CONFIG["stages"]["D10"]["holdout_fraction"])
+    args.seed = int(CONFIG["stages"]["D10"]["seed"])
+    args.output = Path(args.output).with_name("stage_d10.json")
+    return args
+
+
 def _d1_runner_args(job: dict[str, Any]) -> argparse.Namespace:
     """Stage D1's arguments: the frozen QLS-v1 hyperparameters, unchanged.
 
@@ -535,6 +550,10 @@ def run_context_pilot(job: dict[str, Any]) -> dict[str, Any]:
         from scripts.run_graph_context_d9 import run
 
         args = _d9_runner_args(job)
+    elif job["stage"] == "stage_d10":
+        from scripts.run_graph_context_d10 import run
+
+        args = _d10_runner_args(job)
     else:
         if job["stage"] == "stage_d0":
             from scripts.run_graph_context_d0 import run

@@ -729,7 +729,10 @@ def test_the_overlap_with_d8_support_is_diagnostic_only(comparison):
     overlap = comparison["concept_separation"]["branch_vs_d8_distinct_support"]
     assert "Diagnostic only" in overlap["why"]
     assert "does not train support and diversity together" in overlap["why"]
-    assert set(overlap) - {"why"} == set(REPLACEMENT_NAMES)
+    # "computed" records whether D8's column was rebuilt at all; a caller that
+    # skipped it gets None per column rather than a correlation against zeros.
+    assert set(overlap) - {"why", "computed"} == set(REPLACEMENT_NAMES)
+    assert overlap["computed"] is True
 
 
 def test_the_diamond_case_separates_reach_from_branch():

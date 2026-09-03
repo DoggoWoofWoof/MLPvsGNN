@@ -127,6 +127,11 @@ MATERIAL = 0.005
 IMPROVES = "PATH DIVERSITY IMPROVES"
 PARETO_MATCHES = "PATH DIVERSITY PARETO-MATCHES"
 FAILS = "PATH DIVERSITY FAILS"
+# Kept verbatim: it is the string inside the stage_d9.json this script wrote,
+# and a runner that no longer reproduces its own artifact is worse than a
+# label that reads badly. The conclusion the project carries forward was
+# corrected to "PATH REPLACEMENT EFFECTIVENESS UNTESTED -- ABORTED BY
+# PRE-REGISTERED SYSTEMS GATE"; see the D9 block of configs/graph_context_pilot.yaml.
 UNINFORMATIVE = "PATH REPLACEMENT UNINFORMATIVE ON 2WIKI"
 
 #: Filed in configs/graph_context_pilot.yaml before this stage was computed.
@@ -333,7 +338,7 @@ def build_path_diversity(
     *,
     latency: list[float],
     shared_latency: list[float],
-    support_latency: list[float],
+    support_latency: list[float] | None,
 ) -> dict[str, Any]:
     """Every path-family quantity per query, in the frozen candidate order.
 
@@ -379,11 +384,17 @@ def build_path_diversity(
 
         # D8's column, recomputed on the same rows. Diagnostic only: it is never
         # injected here and D9 never trains support and diversity together.
-        support_started = time.perf_counter()
-        _count, fraction, _connections, _num = distinct_seed_support(
-            edges, nodes.size, seed_positions
-        )
-        support_latency.append((time.perf_counter() - support_started) * 1000.0)
+        # `None` skips it outright, for a caller that already has D9's overlap
+        # numbers and would only be paying to reproduce them; D9 itself always
+        # passes a list, so D9's own behaviour is unchanged.
+        if support_latency is None:
+            fraction = np.zeros(nodes.size, dtype=np.float32)
+        else:
+            support_started = time.perf_counter()
+            _count, fraction, _connections, _num = distinct_seed_support(
+                edges, nodes.size, seed_positions
+            )
+            support_latency.append((time.perf_counter() - support_started) * 1000.0)
 
         workspace_bytes = max(workspace_bytes, result["temporary_workspace_bytes"])
         max_walk = max(max_walk, float(result["walks"].max()) if nodes.size else 0.0)
@@ -411,6 +422,7 @@ def build_path_diversity(
         "d8_distinct_support": (
             np.concatenate(supports) if not empty else np.zeros(0, np.float32)
         ),
+        "overlap_diagnostic_computed": support_latency is not None,
         "seeds_per_query": np.asarray(seeds_per_query, dtype=np.int64),
         "temporary_workspace_bytes": int(workspace_bytes),
         "maximum_observed_walk_count": float(max_walk),
@@ -717,6 +729,7 @@ def mechanistic_gate(
     branch = np.asarray(quantities["branch"], dtype=np.int64)[rows]
     reach = np.asarray(quantities["reach"], dtype=np.int64)[rows]
     support = np.asarray(quantities["d8_distinct_support"], dtype=np.float64)[rows]
+    computed_support = bool(quantities.get("overlap_diagnostic_computed", True))
     indegree = np.asarray(quantities["distinct_indegree"], dtype=np.int64)[rows]
 
     columns: dict[str, Any] = {}
@@ -796,11 +809,20 @@ def mechanistic_gate(
                 "propagated seed masks might be another encoding of support. "
                 "Diagnostic only: D9 does not train support and diversity together."
             ),
+            # A caller that skipped D8's column has a constant zero here, and
+            # correlating against a constant is a division by a zero standard
+            # deviation. Reporting nothing is correct; writing NaN into the
+            # result file would be invalid JSON dressed up as a measurement.
+            "computed": computed_support,
             **{
-                REPLACEMENT_NAMES[offset]: {
-                    "pearson": _correlation(support, replacement[:, offset]),
-                    "spearman": _spearman(support, replacement[:, offset]),
-                }
+                REPLACEMENT_NAMES[offset]: (
+                    {
+                        "pearson": _correlation(support, replacement[:, offset]),
+                        "spearman": _spearman(support, replacement[:, offset]),
+                    }
+                    if computed_support
+                    else None
+                )
                 for offset in range(HOPS)
             },
         },

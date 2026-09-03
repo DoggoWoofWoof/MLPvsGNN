@@ -18,9 +18,10 @@ recorded in full, would not have.
     hop 2  DIVERGES  0.370%  |  hop 3  DIVERGES  0.845%   (threshold 0.0025)
     -> would NOT have fired; the stage would have trained one arm
 
-**PATH REPLACEMENT UNINFORMATIVE ON 2WIKI** — on a systems rule, not on
-representation. That distinction is the result, and the rest of this document
-is about not letting it blur.
+**PATH REPLACEMENT EFFECTIVENESS UNTESTED — ABORTED BY PRE-REGISTERED SYSTEMS
+GATE.** The representation was informative; what went unmeasured is whether it
+ranks better. That distinction is the result, and the rest of this document is
+about not letting it blur.
 
 2Wiki, seed 0, `G[Cq]`, `CAND`. 13,500 queries opened, 3,000 reported;
 4,851,276 candidate rows built, 1,079,071 of them validation. No arm was
@@ -344,11 +345,22 @@ it early. Nothing here is an evaluation.
 
 ## Verdict
 
-**PATH REPLACEMENT UNINFORMATIVE ON 2WIKI**
+**PATH REPLACEMENT EFFECTIVENESS UNTESTED — ABORTED BY PRE-REGISTERED SYSTEMS
+GATE**
 
 The stage stopped at the microbenchmark under a rule filed before launch, and
 spent no fitted run. That is the registered outcome and it is reported as
 registered.
+
+The runner's own constant for this branch is
+`PATH REPLACEMENT UNINFORMATIVE ON 2WIKI`, and that string is still what
+`stage_d9.json` says, because the result file records what the runner decided
+at the time it decided it and is not edited afterwards. The label is withdrawn from the conclusion
+line anyway: read plainly it says the representation carried no signal, and
+that is the opposite of what was measured. Hops 2 and 3 diverge substantially
+from the historical walk column, and the mechanistic gate would have passed.
+Uninformative describes the systems race, not the signal. This is a wording
+correction; no measurement in this document changed.
 
 But the reason matters and is recorded rather than smoothed over. The abort
 compared 92.4 s of construction against a 74.2 s build, and 79.24 s of that

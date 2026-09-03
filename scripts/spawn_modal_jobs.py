@@ -396,7 +396,7 @@ def measured_units(
                     if job["stage"] in {
                         "stage_d1", "stage_d2", "stage_d3",
                         "stage_d4", "stage_d5", "stage_d6", "stage_d7",
-                        "stage_d8", "stage_d9",
+                        "stage_d8", "stage_d9", "stage_d10",
                     }
                     else GRAPH_CONTEXT_LOAD_SECONDS
                     + int(job["query_cap"])
@@ -416,7 +416,7 @@ def measured_units(
         fitted = {
             "stage_d0b", "stage_d0c", "stage_d1", "stage_d2", "stage_d3",
             "stage_d4", "stage_d5", "stage_d6", "stage_d7", "stage_d8",
-            "stage_d9",
+            "stage_d9", "stage_d10",
         }
         if {job["stage"] for job in jobs} <= fitted:
             queries = sorted({int(job["settings"]["expected_queries"]) for job in jobs})
