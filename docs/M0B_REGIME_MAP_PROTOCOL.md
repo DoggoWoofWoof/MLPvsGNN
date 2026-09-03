@@ -708,3 +708,28 @@ itself proposes representative cells first, never `6 × 3 × features`
 exhaustively by default — the matrix expands further only if representative
 fits show that dataset or regime dependence can change the scientific
 conclusion.
+
+## 12. What actually happened
+
+```text
+1. file declaration                                    DONE (this document)
+2. validate +64 regime construction on small real samples   DONE (section 10)
+3. estimate compute                                     DONE (section 10, $0.088)
+4. run all-six zero-training matrix                     DONE
+5. verify invariants                                    DONE
+6. construct feature/regime map                         DONE
+7. propose smallest trained-screen phase                DONE
+8. STOP                                                 HERE
+```
+
+Steps 4 through 8's full results — the real per-dataset invariant table, the
+two-figure containment report (including the `hotpotqa_clean` directionality
+gap this section named as a risk, now measured at 0.36%, and the one
+recovered-gold instance A64 alone supplied there), the candidate-eligibility
+vs. graph-availability bottleneck map across all six datasets, the
+nine-family computability-per-regime map, and the proposed minimum
+trained-screen matrix — are filed in
+[`M0B_REGIME_MAP_RESULTS.md`](M0B_REGIME_MAP_RESULTS.md), not restated here.
+This section exists only as the pointer from the declaration's own plan to
+where it was executed. Nothing beyond step 7's proposal is authorised; the
+next action on any proposed cell requires its own declaration.
