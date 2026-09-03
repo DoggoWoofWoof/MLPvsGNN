@@ -14,11 +14,20 @@ import pytest
 from mp_retrieval.overlap_audit import (
     CROSS_TAB_CELLS,
     FILED_CLASSES,
+    NODE_ROLES,
     OVERLAPPING_CELL,
+    ROLE_CONTEXT_ONLY,
+    ROLE_RETRIEVAL_CANDIDATE,
+    ROLE_STRUCTURAL_SCORED_CANDIDATE,
+    admitted_node_overlap,
+    aggregate_admitted_node_overlap,
     classify_query_golds,
     marginal_recovery,
+    node_role_counts,
+    node_roles,
     overlap_partition,
     recovery_share,
+    regime_set_invariants,
 )
 
 
@@ -216,3 +225,158 @@ def test_the_step_into_the_unbounded_point_is_flagged():
 
 def test_a_single_point_curve_has_no_steps():
     assert marginal_recovery([_point(4, 4.0, 10)]) == []
+
+
+# --- containment of A64 in U2 (M0B Safeguard B) ---
+
+
+def test_admitted_node_overlap_splits_by_u2_membership():
+    row = admitted_node_overlap(admitted=[5, 6, 7], u2=[1, 5, 7, 9])
+    assert sorted(row["ADMITTED_IN_U2"].tolist()) == [5, 7]
+    assert sorted(row["ADMITTED_BEYOND_U2"].tolist()) == [6]
+
+
+def test_admitted_node_overlap_handles_no_admissions():
+    row = admitted_node_overlap(admitted=[], u2=[1, 2])
+    assert row["ADMITTED_IN_U2"].size == 0
+    assert row["ADMITTED_BEYOND_U2"].size == 0
+
+
+def test_aggregate_admitted_node_overlap_is_a_rate_not_a_boolean():
+    rows = [
+        admitted_node_overlap(admitted=[5, 6], u2=[5]),
+        admitted_node_overlap(admitted=[7], u2=[7]),
+    ]
+    agg = aggregate_admitted_node_overlap(rows)
+    assert agg["admitted_node_instances_total"] == 3
+    assert agg["admitted_in_u2"] == 2
+    assert agg["admitted_beyond_u2"] == 1
+    assert agg["containment_rate"] == pytest.approx(2 / 3)
+    assert agg["undefined_because_nothing_was_admitted"] is False
+
+
+def test_aggregate_admitted_node_overlap_full_containment_reads_as_one():
+    rows = [admitted_node_overlap(admitted=[5, 6], u2=[5, 6, 9])]
+    agg = aggregate_admitted_node_overlap(rows)
+    assert agg["containment_rate"] == pytest.approx(1.0)
+
+
+def test_aggregate_admitted_node_overlap_reports_zero_rather_than_dividing():
+    rows = [admitted_node_overlap(admitted=[], u2=[1, 2])]
+    agg = aggregate_admitted_node_overlap(rows)
+    assert agg["admitted_node_instances_total"] == 0
+    assert agg["containment_rate"] is None
+    assert agg["undefined_because_nothing_was_admitted"] is True
+
+
+# --- NODE_ROLE (M0B Safeguard A) ---
+
+
+def test_r1_shape_has_no_structural_or_context_only_roles():
+    """Under R1, scored == cq == context: no A64, no wider context."""
+    roles = node_roles(cq=[1, 2], scored=[1, 2], context=[1, 2])
+    assert sorted(roles[ROLE_RETRIEVAL_CANDIDATE].tolist()) == [1, 2]
+    assert roles[ROLE_STRUCTURAL_SCORED_CANDIDATE].size == 0
+    assert roles[ROLE_CONTEXT_ONLY].size == 0
+
+
+def test_r2_shape_has_context_only_but_no_structural_scored():
+    """Under R2, scored == cq; only U2 \\ Cq is new, and it is context-only."""
+    roles = node_roles(cq=[1, 2], scored=[1, 2], context=[1, 2, 9, 11])
+    assert sorted(roles[ROLE_RETRIEVAL_CANDIDATE].tolist()) == [1, 2]
+    assert roles[ROLE_STRUCTURAL_SCORED_CANDIDATE].size == 0
+    assert sorted(roles[ROLE_CONTEXT_ONLY].tolist()) == [9, 11]
+
+
+def test_r3_shape_populates_all_three_roles():
+    """Under R3, A64 = scored \\ cq is newly scoreable; context beyond that is context-only."""
+    roles = node_roles(cq=[1, 2], scored=[1, 2, 5], context=[1, 2, 5, 9, 11])
+    assert sorted(roles[ROLE_RETRIEVAL_CANDIDATE].tolist()) == [1, 2]
+    assert sorted(roles[ROLE_STRUCTURAL_SCORED_CANDIDATE].tolist()) == [5]
+    assert sorted(roles[ROLE_CONTEXT_ONLY].tolist()) == [9, 11]
+
+
+def test_node_roles_rejects_cq_not_a_subset_of_scored():
+    with pytest.raises(ValueError, match="cq must be a subset of scored"):
+        node_roles(cq=[1, 3], scored=[1, 2], context=[1, 2, 3])
+
+
+def test_node_roles_rejects_scored_not_a_subset_of_context():
+    with pytest.raises(ValueError, match="scored must be a subset of context"):
+        node_roles(cq=[1], scored=[1, 2], context=[1])
+
+
+def test_node_roles_is_an_exact_partition_of_context_across_random_regimes():
+    """Property check: given cq subset scored subset context, the three roles
+    are pairwise disjoint and their union is exactly context. Swept over many
+    randomly generated (cq, scored, context) triples that satisfy the
+    containment precondition, rather than asserted on one hand-picked case.
+    """
+    rng = np.random.default_rng(0)
+    universe = np.arange(200)
+    for _ in range(200):
+        context = rng.choice(universe, size=rng.integers(1, 40), replace=False)
+        scored_size = rng.integers(0, context.size + 1)
+        scored = rng.choice(context, size=scored_size, replace=False)
+        cq_size = rng.integers(0, scored.size + 1)
+        cq = rng.choice(scored, size=cq_size, replace=False)
+
+        roles = node_roles(cq=cq, scored=scored, context=context)
+        parts = [np.asarray(roles[role]) for role in NODE_ROLES]
+
+        union = np.unique(np.concatenate(parts)) if any(p.size for p in parts) else np.array([])
+        assert sorted(union.tolist()) == sorted(np.unique(context).tolist())
+        assert sum(p.size for p in parts) == np.unique(context).size
+        for i in range(len(parts)):
+            for j in range(i + 1, len(parts)):
+                assert not np.any(np.isin(parts[i], parts[j]))
+
+
+def test_node_role_counts_reports_a_size_per_role():
+    roles = node_roles(cq=[1, 2], scored=[1, 2, 5], context=[1, 2, 5, 9, 11])
+    counts = node_role_counts(roles)
+    assert counts == {
+        ROLE_RETRIEVAL_CANDIDATE: 2,
+        ROLE_STRUCTURAL_SCORED_CANDIDATE: 1,
+        ROLE_CONTEXT_ONLY: 2,
+    }
+
+
+# --- R1/R2/R3 set invariants (M0B Safeguard B) ---
+
+
+def test_regime_set_invariants_all_hold_on_a_well_formed_example():
+    result = regime_set_invariants(cq=[1, 2], cq_struct=[1, 2, 5, 6], a64=[5, 6])
+    assert result == {
+        "scored_r1_subset_scored_r3": True,
+        "a64_disjoint_from_cq": True,
+        "admitted_delta_size": 2,
+        "admitted_delta_within_universal_cap": True,
+        "cq_struct_equals_cq_union_a64": True,
+    }
+
+
+def test_regime_set_invariants_catches_a64_overlapping_cq():
+    result = regime_set_invariants(cq=[1, 2], cq_struct=[1, 2, 5], a64=[2, 5])
+    assert result["a64_disjoint_from_cq"] is False
+
+
+def test_regime_set_invariants_catches_the_delta_exceeding_the_cap():
+    result = regime_set_invariants(
+        cq=[1], cq_struct=list(range(1, 68)), a64=list(range(2, 68)), universal_cap=64
+    )
+    assert result["admitted_delta_size"] == 66
+    assert result["admitted_delta_within_universal_cap"] is False
+
+
+def test_regime_set_invariants_catches_cq_struct_diverging_from_the_union():
+    """Cq_struct must equal expand(...).additive_pool with no separate union
+    step -- if a caller passes a Cq_struct that silently dropped or added a
+    node relative to Cq union A64, this must be visible, not silently true."""
+    result = regime_set_invariants(cq=[1, 2], cq_struct=[1, 2, 5], a64=[5, 6])
+    assert result["cq_struct_equals_cq_union_a64"] is False
+
+
+def test_regime_set_invariants_catches_scored_r1_not_a_subset_of_scored_r3():
+    result = regime_set_invariants(cq=[1, 2, 99], cq_struct=[1, 2, 5], a64=[5])
+    assert result["scored_r1_subset_scored_r3"] is False

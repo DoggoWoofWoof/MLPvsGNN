@@ -189,28 +189,74 @@ covers all six datasets across `baseline_a_simple` / `knn_only` /
 `full_union_c`. M0B folds that table into the feature/regime map as the
 PROVENANCE row, cited rather than rerun.
 
-**NODE_ROLE has no implementation.** `graph_context.qls_local_features`'s own
-docstring is explicit: *"Only the `pool` rows are returned — context nodes
-are never scored."* The only member ever probed, `bridge_support`, was
-killed at D0b and stays killed — this is not its reintroduction. M0B adds a
-role label per node per (dataset, regime) cell — `retrieval_candidate`
-(∈ `Cq`), `structural_scored_candidate` (∈ `Cq_struct \ Cq`, R3 only),
-`context_only` (∈ `TARGET_H1(Cq_struct) \ Cq_struct`) — as bookkeeping over
-sets M0B already constructs, not a new fitted feature. `dense_rr = 0`,
-`splade_rr = 0`, `agreement = 0` mark "not in that ranking" for any node
-without one, reusing `rank_feature_rows`'s existing convention (today scoped
-to `Cq` members only) extended to the wider role universe; each such zero is
-paired with its role flag so it cannot be read as "ranked and scored
-poorly."
+**NODE_ROLE — implemented as Safeguard A, not deferred.**
+`graph_context.qls_local_features`'s own docstring is explicit: *"Only the
+`pool` rows are returned — context nodes are never scored."* The only member
+ever probed, `bridge_support`, was killed at D0b and stays killed — this is
+not its reintroduction. `overlap_audit.node_roles` assigns exactly one role
+per node per (dataset, regime) cell — `RETRIEVAL_CANDIDATE` (∈ `Cq`),
+`STRUCTURAL_SCORED_CANDIDATE` (∈ `scored \ Cq`; empty under R1/R2, `= A64`
+under R3), `CONTEXT_ONLY` (∈ `context \ scored`; empty under R1) — as
+bookkeeping over sets M0B already constructs, not a new fitted feature.
+`node_roles` raises if `Cq ⊄ scored` or `scored ⊄ context`, so it doubles as
+a wiring check on the caller's regime construction. Given both containments
+hold, the three roles are provably an exact partition of `context` — proved
+in the module docstring and checked by a 200-trial randomized sweep in
+`tests/test_overlap_audit.py`, not asserted on a single hand-picked example.
+**These are deterministic set-membership labels only — nothing here is
+trained, and M0B does not call a role "useful" before any trained-screen
+phase exists.** `dense_rr = 0`, `splade_rr = 0`, `agreement = 0` mark "not in
+that ranking" for any node without one, reusing `rank_feature_rows`'s
+existing convention (today scoped to `Cq` members only) extended to the
+wider role universe; each such zero is paired with its role flag so it
+cannot be read as "ranked and scored poorly."
 
 **A new measurement beyond M0A.1.** M0A.1 classified only golds. M0B also
 asks: of *all* `A64`-admitted nodes, not just the gold-recovering ones, what
-fraction is already in `U2`? `A64(q) ⊆ U2` is not guaranteed by
-construction — `STRUCTURAL_NEIGHBOUR`'s frontier is undirected, `U2`'s is
-the in-neighbour `TARGET_H1` contract — so this is measured, not assumed.
-The gold-only half already exists (`overlap_audit.classify_query_golds`);
-only the all-admitted-nodes half is new code, added to
-`overlap_audit.py` rather than duplicated elsewhere.
+fraction is already in `U2`? The gold-only half already exists
+(`overlap_audit.classify_query_golds`); the all-admitted-nodes half is new
+code — `overlap_audit.admitted_node_overlap` /
+`aggregate_admitted_node_overlap` — added to `overlap_audit.py` rather than
+duplicated elsewhere.
+
+**Resolving the directionality question, before step 2, as required.**
+`A64(q) ⊆ U2` is **not** a mathematical identity, and no test in this
+codebase asserts it as one. Tracing both constructions:
+
+- `U2 = TARGET_H1(Cq)` walks true in-neighbours of the *raw, directed*
+  `graph.pt` (`dataset.rowptr`/`dataset.col` → `build_operators` →
+  `operators.forward`).
+- `A64` walks the frontier of the *symmetrised* `structural_only` edge
+  family — reconstructed from per-document neighbour lists in
+  `edge_provenance.py`, a different source from `graph.pt`, then explicitly
+  passed through `_undirected()` / `symmetric_csr()` in
+  `scripts/run_m0a1_overlap.py` before `expand()` ever sees it.
+
+Containment needs two independent, dataset-specific facts to both hold,
+neither of which follows from the code's structure alone:
+
+1. **`graph.pt` (sealed A) is bidirectionally closed for that dataset** —
+   symmetrising it would change nothing. Verified directly from
+   `outputs/edge_provenance_analysis.json`'s `graph_audits` block: true for
+   `squad_clean`, `2wiki_clean`, `musique_clean`, `metaqa`, and `webqsp`;
+   **false only for `hotpotqa_clean`**, whose directed receptive field is
+   strictly smaller than its symmetrised one.
+2. **`structural_only`'s edges are fully covered by sealed A's edges** —
+   tracked by `edge_provenance.reconstruct_edge_families()`'s own
+   `structural_coverage_by_sealed_a` diagnostic. That diagnostic's existence
+   is itself evidence the repo's own authors did not assume full coverage;
+   it is measured per dataset, not guaranteed.
+
+Fact 2 is not independently confirmed to be `1.0` on any dataset from
+artifacts already on hand. Per the user's instruction — *"if yes, prove it
+... if no, retain the declared empirical containment-rate diagnostic and do
+not overclaim"* — this is a **no**: containment is retained as the declared
+empirical rate (`aggregate_admitted_node_overlap`'s `containment_rate`),
+measured on all six datasets, including the five that are bidirectionally
+closed. `hotpotqa_clean` is flagged as the dataset where a rate below `1.0`
+would be least surprising; a rate below `1.0` on any of the other five would
+be the more informative result, since it would isolate fact 2 (coverage) as
+the cause rather than fact 1 (closure).
 
 ## 7. Graph-context diagnostics — "Phase −1 / Stage C"
 
@@ -279,7 +325,17 @@ Invariants, asserted in the runner rather than assumed, on every dataset:
 disjoint from `Cq`, `Cq ⊆ Cq_struct` and `Cq ⊆ U2`, `Cq_struct ==
 additive_pool`, gold-permutation byte-identity (the standing parametrized
 test, not re-derived per dataset), plus the two admitted-node-overlap
-fractions from §6 (all-admitted and gold-only).
+fractions from §6 (all-admitted and gold-only). The R3-specific checks
+(`A64` disjoint from `Cq`, the admitted delta bounded by the universal cap,
+`Cq_struct == Cq ∪ A64` with no separate union step, `Cq ⊆ Cq_struct`) are
+`overlap_audit.regime_set_invariants`, run per query, not per dataset
+sample — a single query breaching one fails the run rather than being
+averaged away. `scored_R1 == scored_R2` is true by construction (both
+regimes score the same `Cq` array) and is checked once as a wiring assertion
+where the runner builds the two regimes, not re-derived per query.
+`node_roles` (§6) independently re-checks `Cq ⊆ scored ⊆ context` for every
+regime it is called on, so a violation surfaces twice through unrelated code
+paths rather than once.
 
 ## 10. Compute — a plan, not a final number
 
@@ -298,17 +354,184 @@ even for these three datasets from that artifact alone. The step-2/3 probe
 re-measures absolute latency for all six datasets, not only the three new
 ones.
 
-**Unmeasured:** `musique_clean` and `hotpotqa_clean` at any regime;
-`webqsp`, flagged above as the named density risk; R3's absolute
-construction cost on any dataset (M0A.1 measured only a ratio).
+**Reused, already measured — R1 and R2, all six datasets, Stage C evidence**
+(`docs/GRAPH_CONTEXT_PILOT_RESULTS.md`, 300 validation queries per dataset,
+real Modal hardware, $0.22 total pilot spend, not re-estimated). That
+pilot's `CAND` arm is exactly R1's `scored=Cq, graph=G[Cq]`; its `TARGET_H1`
+arm is exactly R2's `context=TARGET_H1(Cq)=U2`. Confirmed by reading
+`scripts/run_graph_context_pilot.py:170` directly: the pilot's `feature_ms`
+column is timing the identical call this runner makes —
+`qls_local_features(..., edge_source=operators.edge_source)` — not an
+approximation of it. Milliseconds per query, p95 (p99 in parens where the
+per-dataset table reports it):
 
-A placeholder ceiling of **$3.00** is filed so this document is
-self-contained, and is explicitly **not final** —
-`docs/ZERO_TRAINING_MATRIX_PROPOSAL.md` already states a declaration should
-set the budget from a probe, not an extrapolation, and `webqsp`'s ~15.6×
-edge-count density makes extrapolating from three datasets to six
-unreliable. The number that actually gates step 4's launch comes from step
-3's measured-probe-based estimate, filed as its own artifact.
+| dataset | R1 build | R1 features | R2 (`TARGET_H1`) build | R2 features | R2 total | U2 context nodes p95 |
+|---|---:|---:|---:|---:|---:|---:|
+| `2wiki_clean` | 0.0 | 3.7 | 1.9 | 6.9 | 8.7 | 2,616 |
+| `hotpotqa_clean` | 0.3 | 65.5 | 31.7 | 143.5 | 170.1 (205.9) | 7,509 |
+| `metaqa` | 0.0 | 7.0 | 1.7 | 27.6 | 29.3 | 12,039 |
+| `musique_clean` | 0.0 | 3.6 | 0.6 | 12.7 | 13.2 | 3,355 |
+| `squad_clean` | 0.0 | 13.2 | 5.3 | 155.2 | 160.1 | 8,378 |
+| `webqsp` | 0.2 | 34.9 | 21.9 | 41.8 | 62.8 (89.4) | 4,764 |
+
+This closes most of the "unmeasured" gap below for R1 and R2 specifically —
+`musique_clean` and `hotpotqa_clean` are not actually unmeasured at those two
+regimes, and `webqsp` is not either. The step-2/3 probe still re-measures
+R1/R2 (the runner computes all three regimes every call; there is no code
+path that computes R3 alone), but its R1/R2 numbers now serve as a
+consistency cross-check against this much larger 300-query sample rather
+than as the only evidence for them.
+
+**Genuinely unmeasured anywhere:** R3's `A64` admission cost (`expand`'s
+`STRUCTURAL_NEIGHBOUR` rule over the symmetrised `structural_only` family
+at `graph_expansion_cap=64`) — the pilot above never runs a capped
+expansion over a *different* edge-provenance graph, only `TARGET_H1` over
+the raw directed `graph.pt`; `Cq_struct`'s own `TARGET_H1(Cq_struct)=U3`
+build and feature cost — plausibly close to R2's given the pilot's own
+finding that "the cost scales with context nodes, not with corpus size"
+(§9 there), since `Cq_struct` is at most 64 nodes larger than `Cq`, but
+this is an extrapolation from a different arm, not a measurement, and is
+not asserted as one; and peak RSS for the full R1+R2+R3 pipeline together
+(the pilot's cost section reports container-seconds and CPU-hours, never
+RSS). These three are what the step-2/3 probe exists to measure — not
+R1/R2 construction cost in general, which is already evidenced above.
+
+**Implemented as Safeguard C:** `scripts/run_m0b_webqsp_probe.py` — webqsp
+only, 10-20 queries, real per-query timing for build/feature/seed-distance
+cost on R1/R2/R3, A64 admission cost, context node/edge counts, peak RSS,
+and the declared (not measured — nothing here writes to disk, so there is
+no filesystem workspace to instrument; `run_m0a1_overlap.py`'s own
+`temporary_workspace_bytes` convention is reused, scaled to this cap of 64)
+temporary-workspace bound. Deliberately excludes `two_path_preservation`
+from per-query timing, matching `scripts/run_graph_context_pilot.py`'s own
+scope: it is a proof-verification tool pinned by
+`tests/test_two_path_preservation.py`, not a per-query serving cost.
+Deliberately excludes gold-conditioned statistics entirely, per "no need for
+meaningful retrieval statistics from those 10 queries" — Safeguard B's
+set-membership invariants and the A64-in-U2 containment rate are still
+checked and still gate the run, since neither reads a gold label.
+`tests/test_m0b_webqsp_probe.py` proves the wiring locally on a synthetic
+dataset before any real Modal spend, the same discipline as
+`run_m0b_regime_map.py`.
+
+**Launched for real, 2026-09-03.** The first attempt failed on contact with
+real data: `qls_local_features` requires its `nodes=` argument pre-sorted
+(it uses `np.searchsorted` against it and does not sort it itself, unlike
+its `pool=` argument, which it dedupes internally) but R1 passed the raw
+candidate pool as `nodes=` unsorted, raising `IndexError` inside the shipped
+kernel on webqsp's real (non-monotonic, retrieval-ranked) candidate order.
+`run_graph_context_pilot.py:157` had always sorted+deduped `pool` before
+using it as any arm's `nodes=`; this runner's R1 arm — the one arm that
+aliases `pool` directly as `nodes` rather than getting it from
+`context_nodes` (which sorts internally) — had not. Fixed with one
+`np.unique` call ahead of the per-query loop. The synthetic fixture had
+been silently accident-proof against this: its candidate rows were built
+ascending with a small constant shift between `dense`/`splade`, which
+`complete_data._stable_union`'s first-occurrence dedup happens to
+reassemble back into a fully sorted sequence regardless. Reordered to
+descending (same value set, so no other fixture invariant moved) so the
+suite now reproduces the failure without the fix and confirms it with the
+fix — both checked before relaunching. No test-suite regression: 5713
+passed, 108 skipped (pre-existing, unrelated) on the full local run.
+
+**Real results** (`outputs/m0b_webqsp_probe/webqsp.json`, 15 queries,
+validation split, `structural_only`, cap=64):
+
+All four Safeguard B invariants held. A64 admitted a median of 16 nodes/query
+(p95 34.7, max 41 — well inside the cap=64 budget) at negligible cost (p99
+0.90 ms/query). Containment: **265/265 admitted-node instances were already
+inside U2** — `containment_rate = 1.0`, no `admitted_beyond_u2` — the same
+`BEYOND_U2_RECOVERED == 0` shape M0A.1 found on its own three datasets, now
+also true on `webqsp`'s A64/U2 pair specifically. Peak RSS was 4.59 GB
+against the 16 GB container (comfortable, and `webqsp` is the largest of the
+six graphs by a wide margin).
+
+R1's raw `feature_latency_ms` (p50 36.6, p95 3640.8, p99 10365.8, max
+12047.0) looks alarming read as a serving-cost tail but is not one:
+`_local_feature_chunk` is `@njit(cache=True, parallel=True)`
+(`structural_features.py:339`), so a fresh container pays parallel
+JIT-compilation once, on whichever call reaches the kernel first — R1's,
+since it runs first in the per-query loop. The arithmetic confirms a single
+outlier: `mean × 15 − max ≈ 510.7 ms` spread over the other 14 queries
+averages `≈36.5 ms`, matching the p50 almost exactly, and R3's own feature
+timings (called later, after the kernel is already compiled) show no such
+cliff. Steady-state R1 feature cost is `≈36.6 ms` (p50), consistent with the
+pilot's own webqsp p95 of 34.9 ms above. The one-time compile cost is real
+and is charged separately, once per container, in the estimate below — not
+folded into a misleading per-query figure.
+
+R2 and R3 build/feature/distance costs (p50/p95/p99/max, all `ms`):
+
+| regime | build | features | seed_distance (diagnostic) | context nodes (median/p95/max) | context edges (median/p95/max) |
+|---|---|---|---|---|---|
+| R1 | 0 (no build) | p50 36.6 / p99 10365.8¹ | p50 76.6 / p99 96.0 | 313 / 382 / 392 | 2,468 / 3,560 / 3,630 |
+| R2 | p50 18.7 / p99 21.0 | p50 39.9 / p99 52.7 | p50 81.6 / p99 91.0 | 1,574 / 6,221 / 11,894 | 25,714 / 74,614 / 159,570 |
+| R3 | p50 19.6 / p99 24.6 | p50 125.8 / p99 311.6 | p50 79.5 / p99 99.9 | 29,614 / 69,887 / 72,546 | 595,262 / 1,944,817 / 2,034,204 |
+
+¹ p99 is the JIT-compilation artifact explained above; steady-state is the p50.
+
+R3's context is far larger than R2's (edges: median 595K vs. 26K, a ~23×
+jump) — A64's structural admissions evidently sit near much denser local
+neighbourhoods than the frozen candidates alone reach — but feature cost
+grows sub-linearly with it (features: p99 311.6 ms vs. R2's 52.7 ms, a
+~5.9× jump against a ~23× edge-count jump), and build/diagnostic cost barely
+moves (build ×1.17, `seed_distance` ×1.10). This ratio — not `webqsp`'s
+absolute R3 numbers — is what the estimate below extrapolates to the other
+five datasets, for the reason in the next paragraph.
+
+**Correction to "`webqsp` is the named risk":** the already-measured R1/R2
+table above shows `webqsp` is *not* the worst case for feature latency —
+`squad_clean` (155.2 ms) and `hotpotqa_clean` (143.5 ms) both already cost
+more at R2 than `webqsp` does (41.8 ms), despite `webqsp`'s graph being
+~15.6× larger by edge count. Feature cost tracks context size, not corpus
+size, and nothing says the two must correlate. `webqsp` stays the named risk
+for *memory* (largest graph, so the peak-RSS measurement above is the
+relevant worst case there) but is very likely **not** the per-query latency
+worst case for R3 — extrapolating "`webqsp`'s absolute R3 numbers apply
+everywhere" would have understated `squad_clean` and `hotpotqa_clean`
+specifically. The estimate below applies `webqsp`'s measured R3:R2 *ratio*
+to each dataset's own already-measured R2 baseline instead, which carries
+that risk forward correctly.
+
+**Six-dataset, 100-query estimate for step 4**, per-query cost per dataset
+= R1 (p50 features + `webqsp`'s p99 diagnostic as a uniform proxy, since
+`seed_distance` moved only 76.6→99.9 ms across all three of `webqsp`'s own
+regimes and is not obviously context-size-driven) + R2 (p99, all real,
+per-dataset) + A64 (`webqsp`'s p99, 0.90 ms, uniform — admission cost is
+bounded by the fixed per-seed/neighbour-scan caps, not context size) + R3
+(build ≈ R2 build × 1.17, features ≈ R2 features × 5.91, distance =
+`webqsp`'s p99 99.9 ms uniform, all per-dataset-scaled, not `webqsp`'s
+absolute numbers):
+
+| dataset | R1 (ms) | R2 (ms) | A64 (ms) | R3 est. (ms) | total/query (ms) | ×100 (s) |
+|---|---:|---:|---:|---:|---:|---:|
+| `2wiki_clean` | 99.7 | 99.8 | 0.9 | 142.9 | 343.3 | 34.3 |
+| `hotpotqa_clean` | 161.5 | 266.2 | 0.9 | 985.1 | 1413.7 | 141.4 |
+| `metaqa` | 103.0 | 120.3 | 0.9 | 265.0 | 489.2 | 48.9 |
+| `musique_clean` | 99.6 | 104.3 | 0.9 | 175.7 | 380.5 | 38.1 |
+| `squad_clean` | 109.2 | 251.5 | 0.9 | 1023.3 | 1384.9 | 138.5 |
+| `webqsp` (real, not estimated) | 132.6 | 164.7 | 0.9 | 436.1 | 734.3 | 73.4 |
+
+Sum of the six ×100-query columns ≈ 474.6 s of query-loop compute. Adding a
+generous 60 s/container for image pull, dataset load, CSR construction and
+the one-time JIT-compile (`webqsp`'s own observed max of 12.0 s already sits
+inside this margin) × 6 containers = 360 s. Total ≈ 834.6 s ≈ **0.232
+compute-hours**, at the $0.634/h CPU substrate rate `docs/COMPUTE_LEDGER.md`
+already documents (the same 4-CPU/16 GB shape this probe used) ≈ **$0.147**.
+
+That lands within a factor of two of Stage C's own historical actual/ceiling
+pair ($0.16 actual against a $5.15 ceiling) — a reassuring consistency
+check, not a coincidence being relied on. Following the same margin this
+repo's own ledger uses throughout (`docs/COMPUTE_LEDGER.md`: every stage
+files a ceiling roughly 30-40× its actual cost, not a tight bound), the
+filed ceiling below is **$5.00** — about 34× this point estimate — rather
+than the point estimate itself, so ordinary container-to-container variance
+does not force a re-file.
+
+This does not trigger the stop condition: the measured-and-extrapolated
+spend is far below the $3.00 placeholder it replaces, not materially above
+it, and every Safeguard B invariant held on real data. Step 4 is authorised
+to proceed on this basis.
 
 ## 11. What this declaration does not authorise
 

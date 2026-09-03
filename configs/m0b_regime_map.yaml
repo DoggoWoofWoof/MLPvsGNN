@@ -177,6 +177,16 @@ datasets:
     expected_queries: 97852
     confirmation: outputs/sa_mlp_confirmation/hotpotqa_clean.json
     m0a1_measured: false
+    directionality_risk_flag: >-
+      The sole dataset (of six) whose graph.pt is not bidirectionally
+      closed (outputs/edge_provenance_analysis.json#graph_audits). Its
+      directed receptive field is strictly smaller than its symmetrised
+      one, so this is the cell where the A64-subset-U2 containment rate
+      (overlap_audit.aggregate_admitted_node_overlap) is least likely to
+      run high. A rate below 1.0 here is expected, not a bug; a rate below
+      1.0 on one of the other five, bidirectionally-closed datasets would
+      be the more informative result -- see
+      docs/M0B_REGIME_MAP_PROTOCOL.md#6.
   metaqa:
     regime_covered: knowledge base
     expected_queries: 407513
@@ -221,8 +231,18 @@ sampling:
     purpose: >-
       Invariant and construction correctness only (R1==R2 bit-exact,
       Cq subset Cq_struct, Cq_struct == additive_pool, A64 disjoint from Cq),
-      run in-process with no Modal spend, before any container cost is
-      incurred. Not a source of headline numbers.
+      before the headline-scale container cost of step 4 is incurred. Not a
+      source of headline numbers.
+    correction_2026_09_03: >-
+      Earlier text here claimed this ran "in-process with no Modal spend."
+      That was wrong: no local complete_data root exists for any of the six
+      datasets (verified -- all six live only under
+      /root/message-passing-retrieval/storage/... on the Modal volume; see
+      data/README.md and outputs/sa_mlp_confirmation/*.json's config.data
+      fields). Five queries still needs a real container, just a cheap one
+      (single dataset load, 5-query slice, no GPU) -- this is an operational
+      correction to how step 2 executes, not a reopening of what step 2
+      checks or why.
 
 # --------------------------------------------------------------------------
 # Feature catalog wiring
@@ -247,7 +267,7 @@ feature_catalog:
     DIFFUSION: R1 only (2wiki_clean, seed 0), no corrected replacement ever built
     TOPOLOGY: R1 only (2wiki_clean, seed 0), no corrected replacement ever built
     PROVENANCE: measured as a graph axis, all six datasets, NOT per-candidate -- see below
-    NODE_ROLE: not implemented. One member (bridge_support) probed once at D0b and killed.
+    NODE_ROLE: implemented as Safeguard A (overlap_audit.node_roles), zero-training bookkeeping only -- not fitted, not a revival of bridge_support (probed once at D0b, stays killed).
   provenance_family_is_reused_not_remeasured:
     source: docs/EDGE_PROVENANCE_RESULTS.md
     already_covers: [squad_clean, musique_clean, 2wiki_clean, hotpotqa_clean, metaqa, webqsp]
@@ -260,18 +280,33 @@ feature_catalog:
       substitutes for the other, and neither is multiplied into the trained
       matrix.
   node_role_is_a_real_gap:
-    status: NOT_IMPLEMENTED
-    evidence: >-
+    status: IMPLEMENTED_AS_SAFEGUARD_A_ZERO_TRAINING_ONLY
+    implementation: src/mp_retrieval/overlap_audit.py#node_roles, node_role_counts
+    do_not_train_yet: >-
+      These are deterministic set-membership labels, computed with no
+      parameters and no gold label. M0B measures NODE_ROLE distributions and
+      gold-conditioned diagnostics over them; it does not call a role
+      "useful" before any trained-screen phase exists, and no code path
+      fits anything against them at this phase.
+    evidence_the_gap_was_real: >-
       graph_context.qls_local_features's own docstring: "Only the pool rows
       are returned -- context nodes are never scored." Widening context (R2)
-      today never emits a row for a context-only node.
+      previously never emitted a row for a context-only node; NODE_ROLE is
+      the bookkeeping that now makes that distinction visible, not a fix to
+      qls_local_features itself.
     what_m0b_adds: >-
       A role label per node per (dataset, regime) cell, not a fitted feature:
-      retrieval_candidate (in Cq), structural_scored_candidate (in Cq_struct
-      minus Cq, R3 only), context_only (in TARGET_H1(Cq_struct) minus
-      Cq_struct). This is bookkeeping over sets M0B already constructs, not
-      a new model or a revival of bridge_support -- bridge_support stays
-      killed and is not reintroduced under this label.
+      RETRIEVAL_CANDIDATE (in Cq), STRUCTURAL_SCORED_CANDIDATE (in scored
+      minus Cq -- empty under R1/R2, equals A64 under R3), CONTEXT_ONLY (in
+      context minus scored -- empty under R1). node_roles raises if
+      Cq is not a subset of scored or scored is not a subset of context, so
+      it doubles as a wiring check on the regime being constructed. Given
+      both containments hold, the three roles are provably an exact
+      partition of context (proved in the module docstring, checked by a
+      200-trial randomized sweep in tests/test_overlap_audit.py). This is
+      bookkeeping over sets M0B already constructs, not a new model or a
+      revival of bridge_support -- bridge_support stays killed and is not
+      reintroduced under this label.
     missing_value_semantics: >-
       dense_rr = 0, splade_rr = 0, agreement = 0 for any node without a
       retrieval ranking -- reusing rank_feature_rows's existing convention,
@@ -286,16 +321,38 @@ feature_catalog:
     what: >-
       Fraction of ALL A64-admitted nodes (not just the gold-recovering ones)
       already inside U2 = TARGET_H1(Cq). M0A.1 only classified golds.
-      A64(q) is not guaranteed by construction to be a subset of U2 --
-      STRUCTURAL_NEIGHBOUR's frontier is undirected, U2's is the
-      in-neighbour TARGET_H1 contract -- so this is measured, not assumed.
     where_it_lives: >-
-      A new function in src/mp_retrieval/overlap_audit.py
-      (admitted_node_overlap / aggregate_admitted_node_overlap), extending
-      the existing gold-only classify_query_golds / overlap_partition /
-      recovery_share rather than duplicating their logic. classify_query_golds
-      already answers the gold-only half of point 2; only the all-admitted-
-      nodes half is new.
+      src/mp_retrieval/overlap_audit.py#admitted_node_overlap,
+      aggregate_admitted_node_overlap, extending the existing gold-only
+      classify_query_golds / overlap_partition / recovery_share rather than
+      duplicating their logic. classify_query_golds already answers the
+      gold-only half; only the all-admitted-nodes half is new.
+    directionality_resolved_before_step_2: >-
+      A64(q) subset U2 is NOT a mathematical identity, and no test in this
+      codebase asserts it as one. U2 = TARGET_H1(Cq) walks true
+      in-neighbours of the RAW DIRECTED graph.pt (dataset.rowptr/col via
+      build_operators). A64 walks the frontier of the SYMMETRISED
+      structural_only edge family -- reconstructed from per-document
+      neighbour lists in edge_provenance.py, a different source from
+      graph.pt, then explicitly passed through _undirected()/symmetric_csr()
+      in scripts/run_m0a1_overlap.py before expand() sees it. Containment
+      needs two independent, dataset-specific facts, neither provable from
+      the code alone: (1) graph.pt is bidirectionally closed for that
+      dataset -- verified via outputs/edge_provenance_analysis.json's
+      graph_audits block: true for squad_clean, 2wiki_clean, musique_clean,
+      metaqa, webqsp; false only for hotpotqa_clean (see
+      datasets.hotpotqa_clean.directionality_risk_flag); (2) structural_only's
+      edges are fully covered by graph.pt's edges -- tracked by
+      edge_provenance.reconstruct_edge_families()'s own
+      structural_coverage_by_sealed_a diagnostic, whose existence is itself
+      evidence full coverage is not assumed by the repo's own authors, and
+      whose exact per-dataset value is not confirmed to be 1.0 from any
+      artifact already on hand. Per the user's instruction ("if yes, prove
+      it ... if no, retain the declared empirical containment-rate
+      diagnostic and do not overclaim") -- this is the "no" branch: the
+      containment_rate stays a measured per-dataset rate, on all six
+      datasets, never asserted as an invariant. See
+      docs/M0B_REGIME_MAP_PROTOCOL.md#6 for the full resolution.
 
 # --------------------------------------------------------------------------
 # Graph-context diagnostics ("Phase -1 / Stage C")
@@ -412,13 +469,44 @@ systems_contract:
 
 invariants_asserted_not_assumed:
   - "oracle(Cq under R1) == oracle(Cq under R2), bit-exactly, on every dataset"
+  - "scored_R1 == scored_R2 as sets, true by construction (both are the Cq array); checked once as a wiring assertion where the runner builds the two regimes, not rederived per query"
   - "Cq is bit-exact against the frozen artifact, on every dataset"
-  - "A64 disjoint from Cq, on every dataset"
-  - "Cq subset Cq_struct and Cq subset U2, on every dataset"
-  - "Cq_struct == expand(...).additive_pool, no separate union step, on every dataset"
+  - "A64 disjoint from Cq, on every dataset (overlap_audit.regime_set_invariants, per query)"
+  - "Cq subset Cq_struct and Cq subset U2, on every dataset (overlap_audit.regime_set_invariants and node_roles both re-check Cq subset scored subset context independently, per query)"
+  - "|scored_R3 minus scored_R1| <= 64, on every query (overlap_audit.regime_set_invariants.admitted_delta_within_universal_cap)"
+  - "Cq_struct == expand(...).additive_pool, no separate union step, on every dataset (overlap_audit.regime_set_invariants.cq_struct_equals_cq_union_a64)"
+  - "NODE_ROLE is an exact partition of context per (query, regime) cell -- proved given Cq subset scored subset context, not merely asserted; see overlap_audit.node_roles's docstring and the randomized sweep in tests/test_overlap_audit.py"
   - "permuting gold labels leaves the expansion byte-identical (standing parametrized test, not rederived per dataset)"
-  - "fraction of ALL A64-admitted nodes already in U2, reported per dataset (new measurement, see feature_catalog.new_measurement_beyond_m0a1)"
+  - "fraction of ALL A64-admitted nodes already in U2, reported per dataset as a rate, never as an invariant -- containment is not a proven identity; see feature_catalog.new_measurement_beyond_m0a1.directionality_resolved_before_step_2"
   - "fraction of R3-recovered golds already in U2, reported per dataset (reuses M0A.1's classify_query_golds unchanged)"
+
+# --------------------------------------------------------------------------
+# Modal deployment -- Safeguard C's probe only, for now. The six-dataset
+# smoke sample (step 2) and headline run (step 4) reuse this same shape but
+# are not yet wired to a launcher.
+# --------------------------------------------------------------------------
+
+modal:
+  app: message-passing-retrieval-m0b-webqsp-probe
+  result_volume: message-passing-retrieval-data
+  storage_root: /root/message-passing-retrieval/storage
+  gpu: null
+  cpu: 4
+  memory_mb: 16384
+  timeout_seconds: 3600
+  edge_provenance_root: edge_provenance_graphs
+  execution_label: execution_1
+  spawn_server_side: true
+  never_modal_run_detach: >-
+    submitted through scripts/spawn_modal_jobs.py so the run survives the
+    local process. A detached local run is not a registered execution.
+  require_embeddings: false
+  require_embeddings_why: >-
+    webqsp's slice on the pilgnnteam volume is topology-only (confirmed via
+    Volume.listdir 2026-09-03: graph.pt, dense/splade top200, query_ids_all,
+    no nodes.npy/queries_all.npy). Safe because this probe's only
+    embeddings-shaped argument is expand(STRUCTURAL, ...)'s node_embeddings,
+    which the STRUCTURAL rule never dereferences (only DIRECTIONAL does).
 
 # --------------------------------------------------------------------------
 # Compute -- plan only. Final numbers come from the step-2/3 probe.
@@ -427,12 +515,25 @@ invariants_asserted_not_assumed:
 compute:
   estimated_before_launch: true
   final_numbers_deferred_to: step_3_after_the_step_2_probe
+  safeguard_c: >-
+    implemented as scripts/run_m0b_webqsp_probe.py (webqsp-only, 10-20
+    queries, real per-query R1/R2/R3 + A64 timing) -- tests/test_m0b_webqsp_probe.py
+    proves its wiring locally on a synthetic dataset first, the same
+    discipline as run_m0b_regime_map.py. Launched for real 2026-09-03 (two
+    attempts: the first hit a real IndexError -- qls_local_features needs
+    its nodes= argument pre-sorted and R1 passed the raw candidate pool
+    unsorted, fixed with one np.unique call -- the second completed clean).
+    Result: outputs/m0b_webqsp_probe/webqsp.json, cited in full in
+    docs/M0B_REGIME_MAP_PROTOCOL.md section 10. All four Safeguard B
+    invariants held; containment_rate=1.0 (0 admitted_beyond_u2, matching
+    M0A.1's BEYOND_U2_RECOVERED==0 shape); peak RSS 4.59 GB of 16 GB.
   container: cpu_only
   gpu_hours_authorised: 0.0
   reuses_existing_artifacts: >-
     frozen candidate pools, edge-family graphs, confirmation manifests, the
-    M0A kNN result, and docs/EDGE_PROVENANCE_RESULTS.md's six-dataset
-    provenance table. Nothing already measured is regenerated.
+    M0A kNN result, docs/EDGE_PROVENANCE_RESULTS.md's six-dataset provenance
+    table, and (added 2026-09-03) docs/GRAPH_CONTEXT_PILOT_RESULTS.md's
+    Stage C measurements. Nothing already measured is regenerated.
   what_is_already_measured:
     peak_process_rss_bytes:
       squad_clean: 4788690944
@@ -447,24 +548,87 @@ compute:
       p50/p95/p99 latencies, so absolute per-query cost is not available even
       for these three datasets from that artifact alone -- the step-2/3 probe
       re-measures absolute latency for all six, not just the three new ones.
+    r1_and_r2_all_six_datasets_ms_p95_build_plus_features_total:
+      source: docs/GRAPH_CONTEXT_PILOT_RESULTS.md, Stage C, 300 validation queries/dataset, real Modal hardware, $0.22 total pilot spend
+      confirmed_same_call_as_this_runner: >-
+        scripts/run_graph_context_pilot.py:170 calls
+        qls_local_features(..., edge_source=operators.edge_source), the
+        identical call this runner makes for feature cost -- verified by
+        reading the source, not assumed from the arm name matching.
+      2wiki_clean: {r1_features: 3.7, r2_build: 1.9, r2_features: 6.9, r2_total: 8.7}
+      hotpotqa_clean: {r1_features: 65.5, r2_build: 31.7, r2_features: 143.5, r2_total: 170.1}
+      metaqa: {r1_features: 7.0, r2_build: 1.7, r2_features: 27.6, r2_total: 29.3}
+      musique_clean: {r1_features: 3.6, r2_build: 0.6, r2_features: 12.7, r2_total: 13.2}
+      squad_clean: {r1_features: 13.2, r2_build: 5.3, r2_features: 155.2, r2_total: 160.1}
+      webqsp: {r1_features: 34.9, r2_build: 21.9, r2_features: 41.8, r2_total: 62.8}
+      note: >-
+        This closes most of what was previously listed below as unmeasured
+        for R1/R2 on musique_clean, hotpotqa_clean and webqsp. The step-2/3
+        probe still computes R1/R2 (there is no code path that builds R3
+        alone), but treats these numbers as the primary evidence and the
+        probe's own R1/R2 output as a consistency cross-check against a
+        300-query sample, not as the first measurement of either regime.
   what_is_unmeasured:
-    musique_clean: no prior run at any regime
-    hotpotqa_clean: no prior run at any regime
-    webqsp: no prior run; flagged as the named density risk cell above
+    a64_admission_cost: >-
+      expand()'s STRUCTURAL_NEIGHBOUR rule over the symmetrised
+      structural_only family at graph_expansion_cap=64 -- never run in the
+      graph-context pilot, which only ever expands TARGET_H1 over the raw
+      directed graph.pt. Genuinely new to M0B, on every dataset.
     r3_absolute_latency: >-
-      M0A.1 measured only a ratio, not R3's absolute construction cost, on
-      any dataset
+      Cq_struct's own TARGET_H1(Cq_struct)=U3 build and feature cost.
+      Plausibly close to R2's, since the graph-context pilot found context
+      cost scales with context node count rather than corpus size and
+      Cq_struct is at most 64 nodes larger than Cq -- but that is an
+      extrapolation from a different arm, not a measurement, and is not
+      filed as one. On every dataset.
+    peak_rss_for_the_full_r1_r2_r3_pipeline: >-
+      The graph-context pilot's cost section reports container-seconds and
+      CPU-hours, never RSS. M0A.1's three-dataset RSS figures above are a
+      different runner over a different (smaller) node set than R3 adds.
+    why_webqsp_stays_the_named_risk: >-
+      For memory only, now that A64/R3 are measured (see safeguard_c above):
+      webqsp is the largest of the six graphs, so its 4.59 GB peak RSS is
+      the relevant worst case there. It is NOT the per-query latency worst
+      case for R3 -- the already-measured R1/R2 table shows squad_clean
+      (155.2ms) and hotpotqa_clean (143.5ms) both already cost more at R2
+      features than webqsp (41.8ms) despite webqsp's much larger graph,
+      since feature cost tracks context size, not corpus size. The step-3
+      estimate below applies webqsp's measured R3:R2 cost ratio to each
+      dataset's own R2 baseline rather than webqsp's absolute numbers, for
+      exactly this reason -- see docs/M0B_REGIME_MAP_PROTOCOL.md section 10.
   cost_ceiling_usd:
-    placeholder_order_of_magnitude: 3.00
-    is_final: false
-    why_not_final: >-
-      docs/ZERO_TRAINING_MATRIX_PROPOSAL.md is explicit that a declaration
-      should set the budget from a probe, not an extrapolation, and that
-      webqsp's graph density (~15.6x 2wiki_clean's edge count) makes any
-      extrapolation from three datasets to six unreliable. This number is a
-      conservative order-of-magnitude marker so this file is self-contained;
-      the number actually used to gate step 4's launch must come from step
-      3's measured-probe-based estimate, filed as its own artifact.
+    filed_from_measurement: true
+    point_estimate_usd: 0.147
+    point_estimate_derivation: >-
+      6 datasets x 100 queries x (R1+R2+A64+R3) per-query cost, where R1/R2
+      are the real six-dataset pilot numbers above, A64 and R3's build/distance
+      use webqsp's own measured p99 as a uniform proxy (bounded-cost/context-
+      insensitive operations), and R3's features use webqsp's measured
+      R3:R2 feature-cost RATIO (5.91x) applied to each dataset's own R2
+      baseline -- not webqsp's absolute R3 number, which the
+      why_webqsp_stays_the_named_risk correction above shows would
+      understate squad_clean and hotpotqa_clean. Plus 60s/container x 6 for
+      image pull, data load, CSR construction and the one-time Numba
+      parallel-JIT compile (webqsp's own observed 12.0s max sits inside
+      this margin). Total ~0.232 compute-hours at the $0.634/h CPU rate
+      docs/COMPUTE_LEDGER.md documents. Full per-dataset table in
+      docs/M0B_REGIME_MAP_PROTOCOL.md section 10.
+    filed_ceiling_usd: 5.00
+    ceiling_margin_rationale: >-
+      ~34x the point estimate, matching this repo's own established
+      convention (docs/COMPUTE_LEDGER.md: every stage files a ceiling
+      roughly 30-40x its actual measured cost, e.g. Stage C: $5.15 ceiling
+      vs $0.16 actual) rather than a tight bound that forces a re-file on
+      ordinary container-to-container variance. Replaces the prior $3.00
+      order-of-magnitude placeholder, which predated any measurement.
+    is_final: true
+    stop_condition_check: >-
+      Not triggered. docs/M0B_REGIME_MAP_PROTOCOL.md's own filed stop
+      condition was "if the webqsp probe makes the projected spend or
+      memory materially larger than the filed ceiling, stop before step 4
+      and report" -- the measured-and-extrapolated point estimate ($0.147)
+      is far below the prior $3.00 placeholder, not above it, and peak RSS
+      (4.59 GB of 16 GB) leaves comfortable headroom. Step 4 proceeds.
 
 # --------------------------------------------------------------------------
 # After the map

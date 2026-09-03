@@ -231,11 +231,23 @@ def test_the_headline_sample_matches_m0a1s_own_convention(config, m0a1_config):
     assert sampling["selection"] == m0a1_config["sampling"]["selection"]
 
 
-def test_the_smoke_sample_is_smaller_and_local_only(config):
+def test_the_smoke_sample_is_smaller_than_the_headline_run(config):
     smoke = config["sampling"]["smoke_sample_step_2"]
     headline = config["sampling"]["headline_run_step_4"]
     assert smoke["queries_per_dataset"] < headline["queries_per_dataset"]
-    assert "no Modal spend" in smoke["purpose"] or "no-Modal" in smoke["purpose"]
+
+
+def test_the_smoke_sample_no_longer_claims_zero_modal_spend(config):
+    # Earlier text claimed step 2 runs "in-process with no Modal spend." That
+    # was factually wrong -- no local complete_data root exists for any of
+    # the six datasets, so even 5 queries needs a real (cheap) container.
+    # The correction is filed alongside the purpose, not silently dropped.
+    smoke = config["sampling"]["smoke_sample_step_2"]
+    assert "no Modal spend" not in smoke["purpose"]
+    assert "no-Modal" not in smoke["purpose"]
+    correction = smoke["correction_2026_09_03"]
+    assert "no local complete_data root" in correction
+    assert "real container" in correction
 
 
 # --- classification labels are predeclared, mechanical, and not gold-conditioned ---
@@ -310,10 +322,11 @@ def test_the_2wiki_winner_subset_does_not_replace_the_full_catalog(config, proto
     assert "explicitly not declared universal" in _flat(protocol)
 
 
-def test_node_role_is_named_as_a_real_gap_not_assumed_solved(config, protocol):
+def test_node_role_is_implemented_but_not_claimed_useful(config, protocol):
     node_role = config["feature_catalog"]["node_role_is_a_real_gap"]
-    assert node_role["status"] == "NOT_IMPLEMENTED"
-    assert "context nodes are never scored" in _flat(node_role["evidence"])
+    assert node_role["status"] == "IMPLEMENTED_AS_SAFEGUARD_A_ZERO_TRAINING_ONLY"
+    assert "context nodes are never scored" in _flat(node_role["evidence_the_gap_was_real"])
+    assert "does not call a role" in _flat(node_role["do_not_train_yet"])
     assert "killed at D0b and stays killed" in _flat(protocol)
 
 
@@ -327,6 +340,55 @@ def test_the_new_measurement_extends_overlap_audit_rather_than_duplicating_it(co
     new_measurement = config["feature_catalog"]["new_measurement_beyond_m0a1"]
     assert "overlap_audit.py" in new_measurement["where_it_lives"]
     assert "classify_query_golds already answers" in new_measurement["where_it_lives"]
+
+
+# --- directionality (Safeguard B, resolved before step 2) ---
+
+
+def test_containment_is_declared_not_a_mathematical_identity(config, protocol):
+    resolution = _flat(
+        config["feature_catalog"]["new_measurement_beyond_m0a1"][
+            "directionality_resolved_before_step_2"
+        ]
+    )
+    assert "is NOT a mathematical identity" in resolution
+    assert "no test in this codebase asserts it as one" in resolution
+    assert "bidirectionally closed" in resolution
+    assert "structural_coverage_by_sealed_a" in resolution
+    flat_protocol = _flat(protocol)
+    assert "is **not** a mathematical identity" in flat_protocol
+    assert "false only for `hotpotqa_clean`" in flat_protocol
+
+
+def test_hotpotqa_carries_the_directionality_risk_flag_the_others_do_not(config):
+    datasets = config["datasets"]
+    assert "directionality_risk_flag" in datasets["hotpotqa_clean"]
+    for name, meta in datasets.items():
+        if name == "hotpotqa_clean":
+            continue
+        assert "directionality_risk_flag" not in meta, name
+
+
+def test_the_bidirectional_closure_claim_matches_the_real_edge_provenance_output():
+    edge_provenance_path = pathlib.Path("outputs/edge_provenance_analysis.json")
+    if not edge_provenance_path.exists():
+        pytest.skip(f"{edge_provenance_path} is gitignored and absent; numeric check skipped")
+    import json
+
+    audits = json.loads(edge_provenance_path.read_text(encoding="utf-8"))["graph_audits"]
+    closure = {
+        dataset: meta["sealed_a_multigraph"]["bidirectionally_closed"]
+        for dataset, meta in audits.items()
+    }
+    assert set(closure) == SIX_DATASETS
+    assert closure["hotpotqa_clean"] is False
+    assert all(closed for dataset, closed in closure.items() if dataset != "hotpotqa_clean")
+
+
+def test_containment_rate_is_never_asserted_as_an_invariant(config):
+    invariants = " ".join(config["invariants_asserted_not_assumed"])
+    assert "never as an invariant" in invariants
+    assert "containment is not a proven identity" in invariants
 
 
 # --- graph-context diagnostics: reused module, R3 is a new arm not new code ---
@@ -356,13 +418,23 @@ def test_the_pilot_runner_is_named_as_not_reused(config):
     assert "run_graph_context_pilot.py" in note
 
 
-# --- compute is a plan, with a placeholder ceiling explicitly marked non-final ---
+# --- compute: step 3's real, measured-and-extrapolated ceiling ---
 
 
-def test_compute_final_numbers_are_deferred_not_asserted(config):
+def test_compute_records_that_final_numbers_were_deferred_to_step_3(config):
     compute = config["compute"]
     assert compute["final_numbers_deferred_to"] == "step_3_after_the_step_2_probe"
-    assert compute["cost_ceiling_usd"]["is_final"] is False
+
+
+def test_the_cost_ceiling_is_now_filed_from_measurement_not_a_placeholder(config):
+    ceiling = config["compute"]["cost_ceiling_usd"]
+    assert ceiling["is_final"] is True
+    assert ceiling["filed_from_measurement"] is True
+    # The ceiling must stay a conservative multiple of the point estimate, not
+    # collapse to it -- a tight ceiling would force a re-file on ordinary
+    # container-to-container variance, the opposite of what step 3 is for.
+    assert ceiling["filed_ceiling_usd"] > ceiling["point_estimate_usd"] * 10
+    assert "not triggered" in ceiling["stop_condition_check"].lower()
 
 
 def test_the_reused_compute_numbers_match_the_real_m0a1_systems_output():
@@ -384,8 +456,25 @@ def test_the_reused_compute_numbers_match_the_real_m0a1_systems_output():
         )
 
 
-def test_webqsp_is_unmeasured_not_silently_assumed_cheap(config):
-    assert config["compute"]["what_is_unmeasured"]["webqsp"].startswith("no prior run")
+def test_webqsp_r1_r2_reuse_is_cited_not_reestimated(config):
+    # docs/GRAPH_CONTEXT_PILOT_RESULTS.md's Stage C measured R1/R2 cost on
+    # all six datasets already, webqsp included -- this must be cited, not
+    # silently ignored in favour of a fresh guess.
+    measured = config["compute"]["what_is_already_measured"]
+    reuse = measured["r1_and_r2_all_six_datasets_ms_p95_build_plus_features_total"]
+    assert "webqsp" in reuse
+    assert "GRAPH_CONTEXT_PILOT_RESULTS" in reuse["source"]
+
+
+def test_webqsp_r3_specific_cost_is_still_unmeasured_not_silently_assumed_cheap(config):
+    # R1/R2 on webqsp are no longer unmeasured (see the reuse test above),
+    # but A64/Cq_struct/U3 -- the part of R3 unique to M0B -- is genuinely
+    # new and must stay flagged as such rather than assumed cheap because
+    # R1/R2 turned out to be.
+    unmeasured = config["compute"]["what_is_unmeasured"]
+    assert "webqsp" in unmeasured["why_webqsp_stays_the_named_risk"]
+    assert "a64_admission_cost" in unmeasured
+    assert "r3_absolute_latency" in unmeasured
 
 
 # --- the plan ends in a hard stop ---
