@@ -5,7 +5,7 @@ CONFIRMATION_CONFIG_PATH (configs/sa_mlp_confirmation.yaml) via
 yaml.safe_load(...read_text()) at module import time, but the image build
 never shipped that file into the container with add_local_file. Every
 remote invocation crash-looped on FileNotFoundError before running any real
-code -- see docs/M1A_FEATURE_SCREEN_PROTOCOL.md's step-4 execution log.
+code, observed directly on the first real step-4 smoke submission.
 
 This walks the launcher's own source AST rather than importing the module
 and introspecting the built modal.Image object: modal.Image exposes no
