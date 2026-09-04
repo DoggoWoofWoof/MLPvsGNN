@@ -37,6 +37,7 @@ from scripts.run_m1a_feature_screen import (
     _arm_columns,
     _declared_cells,
     _load_declaration,
+    _resolve_repo_root,
     _widen_query,
     main,
     run,
@@ -398,6 +399,54 @@ def test_a_completed_run_is_not_repeated(tmp_path):
     args.expected_queries = 99  # would raise if the run actually happened again
     second = run(args)
     assert first == second
+
+
+def test_resolve_repo_root_uses_file_path_when_its_own_parent_has_the_marker(tmp_path):
+    repo = tmp_path / "repo"
+    (repo / "configs").mkdir(parents=True)
+    (repo / "configs" / "m1a_feature_screen.yaml").write_text("x", encoding="utf-8")
+    file_path = repo / "scripts" / "run_m1a_feature_screen.py"
+
+    found = _resolve_repo_root(file_path, sys_path=[], marker_relpath="configs/m1a_feature_screen.yaml")
+
+    assert found == repo
+
+
+def test_resolve_repo_root_falls_back_to_sys_path_when_file_path_lands_on_an_automount(tmp_path):
+    # Mirrors Modal's real layout: the script's own __file__ resolves under an
+    # auto-mounted copy of scripts/ that has no configs/ sibling (nothing
+    # imports configs/, so it is only ever placed by an explicit
+    # add_local_file at the launcher's own REMOTE_ROOT, a different path).
+    automount = tmp_path / "automount"
+    (automount / "scripts").mkdir(parents=True)
+    file_path = automount / "scripts" / "run_m1a_feature_screen.py"
+
+    mounted = tmp_path / "mounted"
+    (mounted / "configs").mkdir(parents=True)
+    (mounted / "configs" / "m1a_feature_screen.yaml").write_text("x", encoding="utf-8")
+
+    found = _resolve_repo_root(
+        file_path,
+        # a leading "" is a real, common sys.path entry (cwd) -- must not crash
+        sys_path=["", str(mounted)],
+        marker_relpath="configs/m1a_feature_screen.yaml",
+    )
+
+    assert found == mounted
+
+
+def test_resolve_repo_root_falls_back_to_the_naive_candidate_when_nothing_has_the_marker(tmp_path):
+    nowhere = tmp_path / "nowhere"
+    (nowhere / "scripts").mkdir(parents=True)
+    file_path = nowhere / "scripts" / "run_m1a_feature_screen.py"
+
+    found = _resolve_repo_root(
+        file_path,
+        sys_path=[str(tmp_path / "also_nowhere")],
+        marker_relpath="configs/m1a_feature_screen.yaml",
+    )
+
+    assert found == nowhere
 
 
 def test_main_refuses_a_nonzero_seed(tmp_path):

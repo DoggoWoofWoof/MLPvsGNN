@@ -62,7 +62,30 @@ import numpy as np
 import torch
 import yaml
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+
+def _resolve_repo_root(file_path: Path, sys_path: list[str], marker_relpath: str) -> Path:
+    """Find the repo root containing ``marker_relpath``, robust to Modal's mount layout.
+
+    ``file_path``-relative resolution is correct for local/CLI use. It is
+    NOT correct for a Modal container: Modal auto-mounts the local
+    `scripts`/`src` packages under a container path derived from import
+    analysis, separate from this repo's own configs/ (which nothing
+    imports, so it is only ever placed by an explicit add_local_file in the
+    launcher) -- ``file_path`` then resolves under the auto-mount, not the
+    launcher's REMOTE_ROOT mount, so the configs/ sibling this module
+    expects is missing next to it. Recover the root from whichever
+    ``sys_path`` entry actually has the marker instead.
+    """
+    candidate = file_path.resolve().parents[1]
+    if (candidate / marker_relpath).is_file():
+        return candidate
+    for entry in sys_path:
+        if entry and (Path(entry) / marker_relpath).is_file():
+            return Path(entry)
+    return candidate
+
+
+REPO_ROOT = _resolve_repo_root(Path(__file__), sys.path, "configs/m1a_feature_screen.yaml")
 sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
