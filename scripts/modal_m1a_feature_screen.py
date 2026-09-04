@@ -182,6 +182,7 @@ def _runner_args(job: dict[str, Any], *, stage: str) -> argparse.Namespace:
         dataset=job["dataset"],
         data_fingerprint_sha256=job["fingerprint"],
         expected_queries=job["expected_queries"],
+        frozen_embedding_dim=CONFIG["base"]["semantic_rung"]["frozen_embedding_dim"],
         baseline=job["baseline"],
         candidate_contract_compatibility=job["candidate_contract_compatibility"],
         queries=queries,

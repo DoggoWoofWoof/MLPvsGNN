@@ -98,6 +98,44 @@ amendments:
       tests) was confirmed clean -- the "validate cheaply first" discipline
       -- with zero Modal contact for M1A up to this point. This amendment
       is what authorises the first real Modal spend for M1A.
+  - date: 2026-09-04
+    change: >-
+      Post-smoke accounting correction to base.semantic_rung.learned_
+      parameters and semantic_controls.S2.later_use, filed after the real
+      step-4 smoke (hotpotqa_clean x R3 x {BASE, BASE+NODE_ROLE}) actually
+      ran on Modal. Sequence: filed expectation 1,536 (= 2 x 768, this
+      file's amendments above and tests/test_m1a_declaration.py both
+      instantiated SemanticHead(rung="S3") without an explicit dim=,
+      silently inheriting qls_v2_semantic.EMBEDDING_DIM's module default) /
+      smoke observation 3,072 (both arms) / root cause: the real frozen
+      M1A payload is 1,536-dimensional, not 768 -- independently
+      corroborated by configs/m0a_probe.yaml's own "frozen feature_dim of
+      1536" (filed for a wholly separate, earlier zero-training phase) and
+      docs/QLS_V1_COMPONENT_AUDIT.md's "2x1536x64" historical QLS-v1
+      projection figure / corrected contract: semantic_parameter_formula
+      = 2 * embedding_dim, frozen_embedding_dim (M1A) = 1536, therefore
+      learned_parameters = 3072. The deployed runner
+      (scripts/run_m1a_feature_screen.py) was never wrong: it already
+      built SemanticHead from node_embeddings.shape[1] (the real loaded
+      data), not from the module default -- see
+      base.semantic_rung.embedding_dim_derivation below. No fitted architecture,
+      candidate set, feature tensor, training result, or metric changed
+      because of this correction; the smoke JSON
+      (outputs/m1a_feature_screen/smoke/hotpotqa_clean.json) is untouched
+      and was not rerun. This is a declaration/test correction only,
+      methodologically sound because step 4 was explicitly a pipeline-
+      validation smoke, not the scientific feature screen (see the eight-
+      step plan, docs/M1A_FEATURE_SCREEN_PROTOCOL.md#13). qls_v2_semantic.
+      EMBEDDING_DIM (768) is deliberately NOT changed by this amendment --
+      it is a separate module's historical default, used elsewhere, out of
+      scope here; M1A instead becomes explicitly dimension-aware via the
+      new frozen_embedding_dim field below plus a live run()-time guard
+      (base.semantic_rung.embedding_dim_derivation) so no M1A code path can silently
+      fall back to that default again. Once the corrected gate verifier
+      confirms all step-4 gates pass against the existing (unmodified)
+      smoke artifact, the result is recorded as M1A_STEP4_SMOKE =
+      PASS_AFTER_ACCOUNTING_CORRECTION, not plain PASS, so this provenance
+      stays visible rather than being folded away.
 
 status: DECLARED_NOT_LAUNCHED
 # steps 1-4; step 5 remains a separate, event-conditional authorisation
@@ -254,17 +292,43 @@ base:
     primary: S3
     module: src/mp_retrieval/qls_v2_semantic.py::SemanticHead
     features: [cosine_qd, dot_qd_pct, mean_abs_diff, semantic_product, semantic_difference]
-    learned_parameters: 1536
+    learned_parameters: 3072
+    semantic_parameter_formula: 2 * embedding_dim
+    frozen_embedding_dim: 1536
+    embedding_dim_derivation: >-
+      AMENDED 2026-09-04 (accounting correction, see amendments above). Not
+      768 (qls_v2_semantic.EMBEDDING_DIM's module default) -- that default
+      is deliberately left unchanged by this file, since it is used by other,
+      unrelated code paths. M1A's own frozen embedding width is 1536,
+      independently corroborated by configs/m0a_probe.yaml's "frozen
+      feature_dim of 1536" and docs/QLS_V1_COMPONENT_AUDIT.md's
+      "2x1536x64" QLS-v1 projection figure. scripts/run_m1a_feature_screen.
+      py builds SemanticHead with dim=node_embeddings.shape[1] (the real
+      loaded array's own width, never the module default) and additionally
+      asserts that width equals frozen_embedding_dim immediately after
+      loading each dataset, before any model is built -- see run()'s
+      embedding-width guard. This makes M1A explicitly dimension-aware
+      rather than reliant on qls_v2_semantic.EMBEDDING_DIM.
     verified_against_implementation: >-
       NOT assumed from the RUNG_PARAMETERS dict/docstring alone (that dict
       could itself drift, the way RANK_FEATURE_NAMES was found to have two
-      entries not three -- see reused_from above). Confirmed live:
-      instantiated SemanticHead(rung="S3") and summed p.numel() for every
-      p in .parameters() -- 1536, all trainable (requires_grad=True, no
-      frozen params), exactly matching RUNG_PARAMETERS["S3"] =
-      2 * EMBEDDING_DIM = 2 * 768. See SemanticHead.parameter_count()
-      (src/mp_retrieval/qls_v2_semantic.py:178-179) and
-      tests/test_m1a_declaration.py's live-instantiation test.
+      entries not three -- see reused_from above), and NOT assumed from
+      SemanticHead(rung="S3")'s own default width either -- that default is
+      768 (qls_v2_semantic.EMBEDDING_DIM), not M1A's real frozen width, and
+      instantiating without an explicit dim= is exactly the mistake the
+      2026-09-04 accounting-correction amendment fixes. Confirmed live at
+      the real M1A width: instantiated SemanticHead(rung="S3",
+      dim=frozen_embedding_dim) and summed p.numel() for every p in
+      .parameters() -- 3072, all trainable (requires_grad=True, no frozen
+      params), matching 2 * frozen_embedding_dim = 2 * 1536. Also confirmed
+      end to end on the real step-4 smoke: both arms
+      (hotpotqa_clean x R3 x {BASE, BASE+NODE_ROLE}) instantiated a
+      3,072-parameter semantic head from the real loaded 1536-dim node
+      embeddings (outputs/m1a_feature_screen/smoke/hotpotqa_clean.json).
+      See SemanticHead.parameter_count() (src/mp_retrieval/qls_v2_semantic.
+      py:178-179) and tests/test_m1a_declaration.py's live-instantiation
+      tests, none of which may instantiate S3 without an explicit real-data
+      dim= again.
     why_s3_now_primary: >-
       AMENDED 2026-09-04 by explicit user decision, reversing the prior S2
       judgement call retained below for its own record. The reason is
@@ -308,7 +372,7 @@ base:
       later_use: >-
         Once M1A's structural survivors are known: final_survivor + S2 vs.
         final_survivor + S3, on one or two representative cells, to test
-        whether the learned 1,536-parameter semantic diagonal/head earns
+        whether the learned 3,072-parameter semantic diagonal/head earns
         its cost. NOT authorised by this declaration -- a separate, later
         step.
     why_not_s0_or_s1: >-
@@ -542,7 +606,7 @@ model_architecture:
     interaction features derived from that projection, before any
     structural_features are concatenated. Reusing it wholesale would put a
     fixed, always-on 98,304-parameter block in every arm regardless of
-    semantic_rung, swamping and confounding the S2-vs-S3 (0 vs 1,536 param)
+    semantic_rung, swamping and confounding the S2-vs-S3 (0 vs 3,072 param)
     contrast base.semantic_rung.why_s3_now_primary exists to make legible.
     Verified by reading forward_explicit's body directly, not assumed from
     its "sa_mlp" name or its status as the frozen historical model
@@ -552,7 +616,7 @@ model_architecture:
     with no embedding projection of its own. At forward time it calls
     SemanticHead(rung) live, once per query, on the raw query/candidate
     embeddings already threaded through run_sa_mlp_confirmation.py's
-    batching -- so semantic_rung's learned parameters (0 for S2, 1,536 for
+    batching -- so semantic_rung's learned parameters (0 for S2, 3,072 for
     S3) receive real gradients every training step rather than being frozen
     into a precomputed column -- concatenates that output with the
     precomputed BASE + per-arm family + NODE_ROLE columns, and scores the
@@ -687,8 +751,9 @@ compute:
       models.sa_mlp.aggregate.training_seconds.mean, the 5-seed
       CONFIRMATION run's own per-seed mean (this file uses 1 seed, so one
       arm's fit cost = one of these numbers, not five). Measured on the
-      historical ~213K-parameter model; S3 adds 1,536 params, +0.72% of
-      that total -- folded into headroom, not modelled as a separate term.
+      historical ~213K-parameter model; S3 adds 3,072 params (corrected
+      2026-09-04; see amendments), +1.44% of that total -- folded into
+      headroom, not modelled as a separate term.
     real_per_query_feature_build_ms_steady_state_mean: >-
       From outputs/m0c_bounded_r3/headline/*.json, systems.
       {r1,r2,mainline_r3_bounded}_feature_latency_ms.steady_state.mean (100

@@ -151,6 +151,7 @@ def _args(tmp_path: Path, *, dataset: str = "hotpotqa_clean", **overrides) -> ar
         "dataset": dataset,
         "data_fingerprint_sha256": "0" * 64,
         "expected_queries": len(frozen.queries),
+        "frozen_embedding_dim": 6,  # matches _write_dataset's own toy width, not the real 1536
         "baseline": {"candidate_contract_sha256": frozen.metadata["candidate_contract_sha256"]},
         "candidate_contract_compatibility": None,
         "queries": 3,
@@ -463,6 +464,8 @@ def test_main_refuses_a_nonzero_seed(tmp_path):
                 "0" * 64,
                 "--expected-queries",
                 "3",
+                "--frozen-embedding-dim",
+                "6",
                 "--baseline",
                 str(baseline_path),
                 "--seed",

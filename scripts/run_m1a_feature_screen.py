@@ -408,6 +408,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     dataset = load_complete_dataset(args.data, dataset=args.dataset, require_embeddings=True)
     if len(dataset.queries) != args.expected_queries:
         raise ValueError("Complete dataset query count differs from the registered protocol")
+    if dataset.node_array.shape[1] != args.frozen_embedding_dim:
+        raise ValueError(
+            f"{args.dataset}: node embeddings are {dataset.node_array.shape[1]}-dimensional, "
+            f"--frozen-embedding-dim says {args.frozen_embedding_dim} -- SemanticHead would "
+            "silently build at the wrong width and every downstream parameter count would be wrong"
+        )
     candidate_contract = validate_candidate_contract(
         args.baseline, dataset, args.candidate_contract_compatibility
     )
@@ -539,6 +545,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dataset", required=True)
     parser.add_argument("--data-fingerprint-sha256", required=True)
     parser.add_argument("--expected-queries", type=int, required=True)
+    parser.add_argument("--frozen-embedding-dim", type=int, required=True)
     parser.add_argument("--baseline", type=Path, required=True)
     parser.add_argument("--candidate-contract-compatibility", default=None)
     parser.add_argument("--queries", type=int, default=100)

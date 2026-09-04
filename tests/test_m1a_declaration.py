@@ -147,7 +147,13 @@ def test_base_composition_has_exactly_five_components(config):
 def test_semantic_rung_is_s3_primary_with_s2_as_a_later_control(config, protocol):
     rung = config["base"]["semantic_rung"]
     assert rung["primary"] == "S3"
-    assert rung["learned_parameters"] == 1536
+    # 3072 = 2 * frozen_embedding_dim (1536), not 2 * qls_v2_semantic.
+    # EMBEDDING_DIM (768) -- corrected 2026-09-04 after the real step-4
+    # smoke observed the real M1A payload is 1536-dimensional. See
+    # base.semantic_rung.embedding_dim_derivation.
+    assert rung["frozen_embedding_dim"] == 1536
+    assert rung["semantic_parameter_formula"] == "2 * embedding_dim"
+    assert rung["learned_parameters"] == 2 * rung["frozen_embedding_dim"] == 3072
     assert "causal" in _flat(rung["why_s3_now_primary"]).lower()
 
     s2 = config["base"]["semantic_controls"]["S2"]
@@ -157,6 +163,14 @@ def test_semantic_rung_is_s3_primary_with_s2_as_a_later_control(config, protocol
 
 
 def test_semantic_head_module_actually_has_s2_and_s3_rungs_with_declared_params():
+    # RUNG_PARAMETERS["S3"] == 1536 here is qls_v2_semantic's OWN default-
+    # width figure (2 * EMBEDDING_DIM, 2 * 768) -- deliberately unchanged by
+    # the 2026-09-04 M1A accounting correction, since EMBEDDING_DIM is a
+    # separate module default used by other code paths. It is NOT M1A's own
+    # real parameter count (3072, at the frozen 1536-dim M1A width) -- do
+    # not read this assertion as M1A's figure; see
+    # test_semantic_rung_is_s3_primary_with_s2_as_a_later_control and
+    # base.semantic_rung.frozen_embedding_dim for that.
     from mp_retrieval.qls_v2_semantic import RUNG_FEATURES, RUNG_PARAMETERS
 
     assert RUNG_FEATURES["S2"] == ("cosine_qd", "dot_qd_pct", "mean_abs_diff")
@@ -179,16 +193,38 @@ def test_semantic_head_live_trainable_params_match_the_declaration(config):
     # The implementation is the authority, not the YAML and not the
     # RUNG_PARAMETERS dict/docstring in isolation: instantiate both rungs
     # for real and let a mismatch fail this test, per the user's explicit
-    # instruction not to assume 1,536/0 from the name or design alone.
+    # instruction not to assume params from the name or design alone.
+    #
+    # dim= must be explicit and read from the declaration's own frozen
+    # width. SemanticHead(rung="S3") alone silently falls back to
+    # qls_v2_semantic.EMBEDDING_DIM (768) -- exactly the stale-default bug
+    # the real step-4 smoke caught (real M1A data is 1536-dim, giving 3,072
+    # trainable S3 params, not 1,536). Never instantiate S3 here without
+    # this explicit dim= again.
     from mp_retrieval.qls_v2_semantic import SemanticHead
 
-    s2_actual = _trainable_param_count(SemanticHead(rung="S2"))
-    s3_actual = _trainable_param_count(SemanticHead(rung="S3"))
+    frozen_dim = config["base"]["semantic_rung"]["frozen_embedding_dim"]
+    s2_actual = _trainable_param_count(SemanticHead(rung="S2", dim=frozen_dim))
+    s3_actual = _trainable_param_count(SemanticHead(rung="S3", dim=frozen_dim))
 
     assert s2_actual == config["base"]["semantic_controls"]["S2"]["learned_parameters"]
     assert s3_actual == config["base"]["semantic_rung"]["learned_parameters"]
     assert s2_actual == 0
-    assert s3_actual == 1536
+    assert s3_actual == 3072
+
+
+@pytest.mark.parametrize("dim", [16, 32, 1536])
+def test_semantic_head_s3_param_count_is_2x_dim_at_every_width(dim):
+    # Generic, dimension-parametric proof that SemanticHead(rung="S3")'s
+    # trainable param count is always 2 * dim, for widths that include
+    # neither qls_v2_semantic.EMBEDDING_DIM's default (768) nor M1A's own
+    # frozen width (1536) alone -- catches exactly the class of stale-
+    # default error this file already made once: a test that only ever
+    # exercises the module's own default width cannot tell "correctly
+    # computes 2 * dim" apart from "silently always uses 768."
+    from mp_retrieval.qls_v2_semantic import SemanticHead
+
+    assert _trainable_param_count(SemanticHead(rung="S3", dim=dim)) == 2 * dim
 
 
 # --- model architecture: not ExplicitFeatureMLP, live-verified ---
@@ -223,20 +259,24 @@ def test_m1a_scorer_live_trainable_params_match_declared_head_width(config):
     # check above, extended to the new scorer: the declared head_width and
     # the semantic rung's own live param count must both show up unchanged
     # inside the instantiated M1AScorer, not merely asserted about in
-    # isolation.
+    # isolation. embedding_dim= must be explicit here too -- M1AScorer's own
+    # default is qls_v2_semantic.EMBEDDING_DIM (768), the same stale default
+    # base.semantic_rung.embedding_dim_derivation exists to eliminate.
     from mp_retrieval.m1a_screen import HEAD_WIDTH, M1AScorer
 
     head_width = config["model_architecture"]["head_width"]["value"]
     assert head_width == HEAD_WIDTH
+    frozen_dim = config["base"]["semantic_rung"]["frozen_embedding_dim"]
 
     precomputed_width = 4  # BASE alone: seed_identity, dense_rr, splade_rr, agreement
-    for rung, declared in (("S2", 0), ("S3", 1536)):
+    for rung, declared in (("S2", 0), ("S3", 3072)):
         model = M1AScorer(
             precomputed_width=precomputed_width,
             semantic_rung=rung,
             dropout=0.0,
             temperature=1.0,
             head_width=head_width,
+            embedding_dim=frozen_dim,
         )
         assert _trainable_param_count(model.semantic_head) == declared
 
@@ -244,6 +284,27 @@ def test_m1a_scorer_live_trainable_params_match_declared_head_width(config):
         expected_scorer_params = (input_dim * head_width + head_width) + (head_width * 1 + 1)
         assert _trainable_param_count(model.scorer) == expected_scorer_params
         assert _trainable_param_count(model) == declared + expected_scorer_params
+
+
+def test_build_m1a_model_at_the_frozen_embedding_dim_reports_3072_semantic_params(config):
+    # The exact construction path scripts/run_m1a_feature_screen.py uses in
+    # production (build_m1a_model, not a bare SemanticHead/M1AScorer), at
+    # the exact frozen width the declaration files, reporting through the
+    # exact accessor (semantic_parameter_count) the real smoke's own result
+    # JSON was checked against.
+    from mp_retrieval.m1a_screen import build_m1a_model
+
+    frozen_dim = config["base"]["semantic_rung"]["frozen_embedding_dim"]
+    model = build_m1a_model(
+        precomputed_width=4,
+        semantic_rung="S3",
+        dropout=0.0,
+        temperature=1.0,
+        embedding_dim=frozen_dim,
+    )
+
+    assert model.semantic_parameter_count() == config["base"]["semantic_rung"]["learned_parameters"]
+    assert model.semantic_parameter_count() == 3072
 
 
 def test_r3_only_structural_candidates_zero_all_three_retrieval_columns(config):
