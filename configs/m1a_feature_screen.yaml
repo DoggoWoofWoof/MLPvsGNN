@@ -136,13 +136,143 @@ amendments:
       smoke artifact, the result is recorded as M1A_STEP4_SMOKE =
       PASS_AFTER_ACCOUNTING_CORRECTION, not plain PASS, so this provenance
       stays visible rather than being folded away.
+  - date: 2026-09-04
+    change: >-
+      Step 5 (the real one-seed M1A screen) authorised. Preconditions,
+      per the step-4 amendment above: (1) the corrected gate verifier,
+      re-run against the existing (unmodified, not rerun) smoke artifact
+      outputs/m1a_feature_screen/smoke/hotpotqa_clean.json, confirms
+      M1A_STEP4_SMOKE = PASS_AFTER_ACCOUNTING_CORRECTION -- every hard gate
+      passes, including the corrected S3 parameter gate (3072 for both
+      arms). (2) feature_build_runs_once_per_cell_not_per_arm re-confirmed
+      directly against the live runner (not just its test): scripts/
+      run_m1a_feature_screen.py::run()'s outer loop is `for regime, arms in
+      cells.items()`, calling _cell_master_local exactly once per (dataset,
+      regime) cell to build master_blocks; the inner `for arm in arms`
+      calls _arm_store, which only slices master_blocks via _arm_columns
+      (column selection, no recomputation). Confirmed correct as originally
+      built -- no refactor was needed.
+
+      Real, dataset-weighted, component-separated cost projection
+      (replacing step 3's pure-compute projection, which used ExplicitFeatureMLP/
+      SA_MLP's real per-seed training seconds as a proxy for a model that
+      turned out not to be M1A's own -- see model_architecture amendment
+      above): FEATURE-BUILD unchanged from step 3 -- compute.derivation.
+      feature_build_seconds_total (5576.0s / 1.549 GPU-h, sum over the 13
+      real cells of compute.inputs.real_per_query_feature_build_ms_steady_
+      state_mean x datasets.*.validation_split_queries) is independent of
+      the S3 fix and of which scorer model M1A uses, so it carries forward
+      unchanged, arithmetic re-verified this amendment. Real smoke
+      cross-check on the one cell measured twice (hotpotqa_clean/R3): smoke
+      p50=93.489ms vs the reused steady-state figure of 81.079ms for that
+      same cell (+15.3%, a plausible new-integration overhead, not a
+      revision); smoke mean=159.300ms (+96.5%) is NOT used for calibration
+      -- p95=113.652ms vs max=6503.648ms shows a heavy right tail from a
+      handful of cold-start queries in a field literally named
+      uncached_feature_build_latency_ms, which a full-split run amortises
+      away, unlike a 100-query smoke. TRAINING/FIT is corrected, not
+      reused: step 3's fit_seconds_total (8940.9s) was measured on the
+      historical ~213K-parameter SA_MLP model, never M1AScorer; replaced
+      with a linear extrapolation from the real step-4 smoke's own
+      M1AScorer measurements (epochs fixed at 3 in both the smoke and
+      run_feature_screen_headline's own _runner_args -- no separate
+      epoch-scaling term needed): BASE arm 1.239471s / 80 train_queries =
+      0.0154934 s/query (conservative, used as the filed rate -- BASE ran
+      first in the cell's arm loop, so its cost plausibly still carries a
+      one-time CUDA/allocator warm-up that a real first-arm-per-cell always
+      pays regardless of which arm goes first); BASE+NODE_ROLE arm
+      0.613303s / 80 = 0.0076663 s/query (optimistic bound, kept only as a
+      sensitivity floor, not filed as the rate, since a single two-arm
+      smoke cannot separate a real per-arm architecture cost from one-time
+      warm-up with only one pair of points). train_queries(dataset) =
+      validation_split_queries(dataset) x 0.8 (holdout_fraction=0.2, filed
+      in both run_m1a_feature_screen.py's own default and modal_
+      m1a_feature_screen.py's _runner_args, matching the smoke's observed
+      80/20 split exactly). Filed fit_seconds_total = 10281.7s / 2.856
+      GPU-h (conservative rate); sensitivity floor using the optimistic
+      rate = 5087.5s / 1.413 GPU-h. Filed TOTAL pure-compute = 15857.8s /
+      4.405 GPU-h (feature-build 1.549h + fit 2.856h), bracketed
+      2.962-4.642 GPU-h across the feature-build-calibration x fit-rate
+      combinations -- landing inside, and toward the low/middle of, step
+      3's own non-binding sanity range (4.032-16.9 GPU-h), a real
+      consistency check despite the fully corrected fit methodology. Filed
+      cost: $9.87 all-GPU-billed / $7.38 blended (feature-build CPU-billed,
+      fit GPU-billed), bracketed $6.64-$10.40 all-GPU across the same
+      scenarios -- both small in absolute terms, consistent with M0B's
+      $5.00 / M0C's $2.00 filed-ceiling precedent scale (M1A is inherently
+      costlier since, unlike M0B/M0C, it trains on a GPU). WALLTIME under
+      this track's own established 5-concurrent-container, one-per-dataset
+      parallelism (run_m1a_feature_screen.py is one-dataset-per-invocation
+      by construction): dominated by the slowest single container's own
+      serial feature-build+fit chain -- metaqa 125.2min (2.086h, its larger
+      validation split), hotpotqa_clean close behind at 121.1min (2.018h,
+      its costlier per-query feature-build); squad_clean/2wiki_clean/webqsp
+      all finish under 9 minutes each. Realistic wall-clock ~2.0-2.1h
+      (conservative fit rate) to ~1.6-1.7h (optimistic rate); does not
+      include per-container Modal startup/data-load, which the smoke's
+      result JSON does not instrument separately (only a single top-level
+      peak_process_rss_bytes field) -- structurally bounded to 5
+      occurrences total (once per dataset container, not per the 13 cells
+      or 44 arms), so it cannot become the dominant cost line without an
+      anomaly, but is not itself measured by this amendment; the headline
+      run's own per-container logs should be read once available. STORAGE:
+      smoke peak_process_rss_bytes = 11.39 GB on hotpotqa_clean (507,494
+      nodes x 1536-dim embeddings dominates this, not query count -- the
+      node array alone is ~2.9 GB), comfortably inside the provisioned
+      modal.memory_mb (49152 MB, 4.2x headroom) and expected to stay flat
+      from 100 queries to the full 19570-query split for the same dataset,
+      since RSS scales with the frozen graph, not the query count; not
+      independently measured for the other four datasets by this smoke.
+
+      Filed ceiling (compute.ceiling_filed: true, was false): $20.00,
+      all-GPU-billed basis. Derivation per compute.ceiling_derivation_
+      discipline's own instruction (derive from measured throughput, state
+      the multiplier's basis, re-derive from the SAME measured rate rather
+      than carry an unrelated placeholder forward): NOT step 3's borrowed
+      E2 realized/pure-compute ratio (~4.2x) applied verbatim -- that ratio
+      reflects a fixed per-container overhead (image pull, cold start, data
+      load) amortised over E2's own, likely much shorter, per-call
+      workload; M1A's containers each run tens of minutes to ~2 hours of
+      real compute, so the same fixed overhead is structurally a much
+      smaller fraction of the total here, and applying 4.2x uncritically
+      would not be tightly reasoned for this workload's shape. Instead:
+      2x this amendment's own worst-case real bracket ($10.40
+      all-GPU-billed, the p50-calibrated-feature-build x conservative-fit
+      scenario) headroom, rounded to $20.00 -- a stated, measured-rate-
+      derived multiplier, not a round number chosen first. Not expected to
+      bind; the filed real estimate is $6.64-$10.40. Stop condition: if any
+      dataset's real Modal cost report suggests the full run will exceed
+      $20.00, or if any step-4-style hard gate (scope, shared split,
+      parameter counts, epoch/loss finiteness, metric presence, zero
+      NaN/Inf) fails on any real cell, stop and report -- do not proceed to
+      step 6. This authorisation covers exactly the 44 predeclared arms
+      across the 13 declared cells (arm_count_summary.predeclared_arms,
+      matching what _declared_cells() reads and what stage="headline" with
+      arms=None in run_feature_screen_headline actually executes), one
+      seed (0, sampling.seeds), full canonical validation split per dataset
+      (sampling.subsampling: none), the three frozen regimes as declared
+      above (regimes.R1/R2/R3, unchanged). It does NOT cover
+      arm_count_summary.conditional_interaction_arms_reserved (up to 3
+      more, seed-unit ceiling 47) -- conditional_training_rule's own
+      trigger is a human judgement call over 44-arm results, is not wired
+      into run_m1a_feature_screen.py's cell/arm reading at all yet, and
+      remains a separate, later, not-yet-authorised decision. this_file_
+      authorises is extended to include step 5;
+      the_real_m1a_screen_launch_step_5 is removed from does_not_authorise
+      below. Steps 6-8 (effect map, M1B proposal, stop) remain unauthorised,
+      as do all standing prohibitions unchanged from every prior amendment
+      in this list (no GNN, no second seed, no R3_FULL training, no A64
+      change, no new feature formula, no H2/H3, no E2, no Package F, no
+      workspace migration).
 
 status: DECLARED_NOT_LAUNCHED
-# steps 1-4; step 5 remains a separate, event-conditional authorisation
-# pending step 4's own pass/fail, see the 2026-09-04 step-4 amendment above
-this_file_authorises: file_declaration_derive_cells_estimate_compute_and_the_real_smoke
+# steps 1-5 now authorised (status field itself is this file's fixed
+# category label, not a step tracker -- configs/m0b_regime_map.yaml and
+# configs/m0c_bounded_r3.yaml both keep this same literal value after their
+# own full completion; this_file_authorises/does_not_authorise below are
+# what actually track progress in this file, per its own amendment history)
+this_file_authorises: file_declaration_derive_cells_estimate_compute_the_real_smoke_and_the_real_one_seed_screen
 does_not_authorise:
-  - the_real_m1a_screen_launch_step_5  # conditional on step 4 passing, see amendments
   - the_trained_effect_map_step_6
   - proposing_m1b_step_7
   - any_gnn_work_of_any_kind
@@ -729,9 +859,9 @@ sampling:
 # --------------------------------------------------------------------------
 
 compute:
-  estimated_in_this_file: true  # step 3 -- pure-compute projection only. NOT a filed ceiling.
-  ceiling_filed: false
-  ceiling_deferred_to: step_4_real_smoke_measurement
+  estimated_in_this_file: true  # step 3's pure-compute projection; step 5's amendment above supersedes its fit component with real measurements and files the ceiling below.
+  ceiling_filed: true  # was false pending step_4_real_smoke_measurement; filed by the step-5 amendment above
+  ceiling_usd: 20.0  # all-GPU-billed basis; derivation and stop condition in the step-5 amendment above
   rates_source: >-
     docs/COMPUTE_LEDGER.md's E2 entry (L546-547): GPU $2.241/h, CPU
     $0.634/h -- the same measured Modal rates this track has used since D0,
@@ -753,7 +883,20 @@ compute:
       arm's fit cost = one of these numbers, not five). Measured on the
       historical ~213K-parameter model; S3 adds 3,072 params (corrected
       2026-09-04; see amendments), +1.44% of that total -- folded into
-      headroom, not modelled as a separate term.
+      headroom, not modelled as a separate term. Superseded as the fit-cost
+      basis by real_m1a_scorer_training_seconds_per_query below (step 5
+      amendment, 2026-09-04) -- retained here unchanged as the historical
+      record of what step 3 actually used, not as a live input.
+    real_m1a_scorer_training_seconds_per_query: >-
+      From outputs/m1a_feature_screen/smoke/hotpotqa_clean.json, cells.R3.
+      arms.{BASE,BASE+NODE_ROLE}.training.training_seconds, at 80
+      train_queries and epochs=3 (fixed in both the smoke and
+      modal_m1a_feature_screen.py's own _runner_args, so no separate
+      epoch-scaling term is needed). BASE=1.239471s/80=0.0154934 s/query
+      (filed rate, conservative -- see the step-5 amendment above for why
+      the slower BASE-arm rate is used rather than averaged with
+      BASE+NODE_ROLE's 0.613303s/80=0.0076663 s/query). This is M1AScorer's
+      own real measurement, not a proxy from a different model.
     real_per_query_feature_build_ms_steady_state_mean: >-
       From outputs/m0c_bounded_r3/headline/*.json, systems.
       {r1,r2,mainline_r3_bounded}_feature_latency_ms.steady_state.mean (100
@@ -778,15 +921,16 @@ compute:
     feature_build_seconds_total: 5576.0  # sum over 13 cells: (ms/1000) * val_n
     feature_build_hours_total: 1.549
     feature_build_by_dataset_seconds: {squad_clean: 174.3, 2wiki_clean: 45.0, hotpotqa_clean: 4111.6, metaqa: 1204.3, webqsp: 40.8}
-    fit_seconds_total: 8940.9  # sum over 44 arms: dataset's real per-seed training_seconds, one seed each
-    fit_hours_total: 2.484
-    fit_by_dataset_seconds: {squad_clean: 174.5, 2wiki_clean: 266.6, hotpotqa_clean: 2086.0, metaqa: 6406.7, webqsp: 7.2}
-    pure_compute_floor_gpu_hours: 4.032
-    cost_all_gpu_billed_usd: 9.04  # conservative: whole pipeline on one GPU-billed container
-    cost_blended_feature_cpu_fit_gpu_usd: 6.55  # optimistic: feature-build on a CPU container, fit on GPU
+    fit_seconds_total: 10281.7  # step 5, 2026-09-04: sum over 44 arms of train_queries(dataset) x real_m1a_scorer_training_seconds_per_query (BASE rate); supersedes the 8940.9 SA_MLP-proxy figure above
+    fit_hours_total: 2.856
+    fit_by_dataset_seconds: {squad_clean: 323.0, 2wiki_clean: 483.4, hotpotqa_clean: 3153.3, metaqa: 6306.4, webqsp: 15.6}
+    fit_seconds_total_optimistic_sensitivity_floor: 5087.5  # same sum using the BASE+NODE_ROLE rate instead; see the step-5 amendment for why this is a floor, not the filed rate
+    pure_compute_floor_gpu_hours: 4.405  # step 5: feature_build_hours_total (1.549, unchanged) + fit_hours_total (2.856, corrected); bracket 2.962-4.642 across feature-build-calibration x fit-rate scenarios, see amendment
+    cost_all_gpu_billed_usd: 9.87  # step 5, conservative: whole pipeline on one GPU-billed container; bracket 6.64-10.40
+    cost_blended_feature_cpu_fit_gpu_usd: 7.38  # step 5: feature-build on a CPU container, fit on GPU
     dominant_cost_driver_feature_build: hotpotqa_clean  # 1.14h of 1.55h total, ~74% -- highest per-query ms
-    dominant_cost_driver_fit: metaqa  # 1.78h of 2.48h total, ~72% -- largest validation split
-    wall_clock_estimate_with_per_dataset_parallelism_hours: "~2.1-2.5"  # 5 concurrent containers (M0B/M0C's own established pattern); metaqa's own serial chain (feature+fit) dominates at ~2.11h
+    dominant_cost_driver_fit: metaqa  # 1.75h of 2.86h total, ~61% -- largest validation split
+    wall_clock_estimate_with_per_dataset_parallelism_hours: "~1.6-2.1"  # 5 concurrent containers (M0B/M0C's own established pattern); metaqa's own serial chain (feature+fit) dominates at 125.2min/2.086h (conservative fit rate) to ~1.6-1.7h (optimistic rate); excludes unmeasured per-container Modal startup/data-load, see step-5 amendment
 
   non_binding_sanity_range: >-
     Applying the E2 realized/pure-compute ratio (~4.2x, see
@@ -821,12 +965,16 @@ compute:
     convention to replicate -- despite m0c_bounded_r3.yaml's compute
     section describing "roughly 30-40x" as "this repo's own established
     convention." That description will not be repeated for M1A: the real filed
-    ceiling still comes from step 4's real smoke measurement with
+    ceiling comes from step 4's real smoke measurement with
     reasoned, stated headroom (per D0's own corrected practice: derive from
     measured throughput, state the multiplier's basis, re-derive the cost
     ceiling from the SAME measured rate as the CPU/GPU-hour ceiling rather
     than carrying an unrelated placeholder forward) -- this section's
-    numbers are step 3's pure-compute projection, not that ceiling.
+    numbers at the time this discipline note was written were step 3's
+    pure-compute projection only, not yet that ceiling. Satisfied by the
+    step-5 amendment above (2026-09-04): ceiling_usd: 20.0, stated as 2x
+    this file's own real worst-case bracket rather than a borrowed
+    multiplier -- see that amendment for the full derivation.
   validate_cheaply_first: >-
     Same two-stage discipline as M0A-M0C: one dataset x one cell x BASE,
     plus one feature arm, on the real pipeline, before any fan-out --

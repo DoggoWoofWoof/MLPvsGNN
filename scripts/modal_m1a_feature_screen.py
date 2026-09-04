@@ -1,4 +1,4 @@
-"""Modal launcher for M1A step 4 (smoke) and step 5 (headline, not yet authorised).
+"""Modal launcher for M1A step 4 (smoke) and step 5 (headline, authorised 2026-09-04).
 
 GPU (A10G), since M1A trains -- unlike M0B/M0C's zero-training CPU launchers.
 Reuses scripts/run_sa_mlp_confirmation.py's own frozen baseline artifacts
@@ -23,12 +23,21 @@ r3.py's smoke/headline shape:
                          for the requested dataset(s), at the full canonical
                          validation split (datasets.*.validation_split_
                          queries -- sampling.subsampling: none). This is
-                         step 5 -- NOT authorised by the filed declaration
-                         yet (does_not_authorise: the_real_m1a_screen_
-                         launch_step_5). Implemented here so step 5 is ready
-                         to submit the moment a further amendment records
-                         that step 4 passed; calling it before that
-                         amendment exists would violate the filed gate.
+                         step 5, the real one-seed M1A screen -- authorised
+                         by the 2026-09-04 step-5 amendment in that file
+                         (this_file_authorises extended,
+                         the_real_m1a_screen_launch_step_5 removed from
+                         does_not_authorise), filed only after step 4's
+                         smoke actually passed
+                         (PASS_AFTER_ACCOUNTING_CORRECTION) and a real,
+                         dataset-weighted cost projection was filed with a
+                         $20.00 ceiling. Covers exactly the 44 predeclared
+                         arms (arm_count_summary.predeclared_arms) -- the
+                         reserved up-to-3 conditional interaction arms
+                         (arm_count_summary.conditional_interaction_arms_
+                         reserved) are a separate, later, not-yet-authorised
+                         decision, not wired into run_m1a_feature_screen.py
+                         at all yet.
 
 Unlike M0C's smoke (same cells, fewer queries), M1A's smoke additionally
 narrows to the declared regime/arm pair -- see recommended_step_4_smoke_
@@ -75,11 +84,23 @@ SMOKE_DATASET = "hotpotqa_clean"
 
 if CONFIG["status"] != "DECLARED_NOT_LAUNCHED":
     raise RuntimeError(f"Unexpected declaration status {CONFIG['status']!r} -- re-check before launching")
-if "the_real_m1a_screen_launch_step_5" not in CONFIG["does_not_authorise"]:
+# Inverted 2026-09-04 (step-5 amendment): this launcher's headline stage now
+# assumes step 5 IS authorised (run_feature_screen_headline calls _run for
+# real, no guard raise inside it) -- if a future edit reintroduces
+# the_real_m1a_screen_launch_step_5 into does_not_authorise (a revert, a bad
+# merge) without this file being updated to match, fail loudly at import
+# time rather than let an actually-unauthorised launch proceed silently.
+if "the_real_m1a_screen_launch_step_5" in CONFIG["does_not_authorise"]:
     raise RuntimeError(
-        "configs/m1a_feature_screen.yaml no longer lists step 5 under does_not_authorise -- "
-        "this launcher's headline stage assumed step 5 was still gated; re-read the amendments "
-        "before trusting that assumption silently changed."
+        "configs/m1a_feature_screen.yaml lists step 5 under does_not_authorise again, but "
+        "this launcher's run_feature_screen_headline is wired to actually run it -- re-sync "
+        "this file with the declaration before trusting either one."
+    )
+if not CONFIG["compute"].get("ceiling_filed"):
+    raise RuntimeError(
+        "configs/m1a_feature_screen.yaml does not report a filed compute ceiling "
+        "(compute.ceiling_filed) -- the step-5 amendment that authorised headline launches "
+        "also files compute.ceiling_usd; re-check before launching without one."
     )
 
 # One dataset is one spawned call that writes its result once, at the end,
@@ -249,11 +270,7 @@ def run_feature_screen_smoke(job: dict[str, Any]) -> dict[str, Any]:
     memory=MODAL_CONFIG["memory_mb"],
 )
 def run_feature_screen_headline(job: dict[str, Any]) -> dict[str, Any]:
-    raise RuntimeError(
-        "Step 5 (the real one-seed M1A screen) is not yet authorised -- "
-        "configs/m1a_feature_screen.yaml still lists the_real_m1a_screen_launch_step_5 "
-        "under does_not_authorise. File the amendment recording step 4's pass before calling this."
-    )
+    return _run(job, stage="headline")
 
 
 def _download(remote_path: str, local_path: Path) -> None:

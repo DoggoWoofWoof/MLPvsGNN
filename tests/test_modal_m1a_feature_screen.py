@@ -99,3 +99,44 @@ def test_every_path_read_at_module_import_time_is_mounted_into_the_image() -> No
         "but never passed to add_local_file -- every remote container will "
         "crash with FileNotFoundError before running any real code"
     )
+
+
+def _function_def(tree: ast.Module, name: str) -> ast.FunctionDef:
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef) and node.name == name:
+            return node
+    raise AssertionError(f"no top-level def {name!r} found in {LAUNCHER_PATH}")
+
+
+def _calls_function_named(node: ast.AST, name: str) -> bool:
+    return any(
+        isinstance(call, ast.Call) and isinstance(call.func, ast.Name) and call.func.id == name
+        for call in ast.walk(node)
+    )
+
+
+def test_run_feature_screen_headline_actually_runs_instead_of_refusing() -> None:
+    """Regression test for the step-5 authorisation (2026-09-04).
+
+    Before the step-5 amendment to configs/m1a_feature_screen.yaml,
+    run_feature_screen_headline's entire body was an unconditional
+    ``raise RuntimeError(...)`` -- step 5 was declared but not authorised,
+    so the function existed only to refuse. The amendment removed
+    the_real_m1a_screen_launch_step_5 from does_not_authorise; this
+    launcher must now actually delegate to the shared _run helper (the same
+    one run_feature_screen_smoke already uses), not still refuse.
+    """
+    tree = ast.parse(LAUNCHER_PATH.read_text(encoding="utf-8"), filename=str(LAUNCHER_PATH))
+    headline = _function_def(tree, "run_feature_screen_headline")
+
+    body_raises_unconditionally = any(isinstance(stmt, ast.Raise) for stmt in headline.body)
+    assert not body_raises_unconditionally, (
+        "run_feature_screen_headline still unconditionally raises -- step 5 was authorised "
+        "by the 2026-09-04 amendment to configs/m1a_feature_screen.yaml; this function "
+        "should delegate to _run(job, stage='headline') like run_feature_screen_smoke does"
+    )
+    assert _calls_function_named(headline, "_run"), (
+        "run_feature_screen_headline no longer calls the shared _run helper -- "
+        "it should reuse the same stage-dispatch _run(job, stage='headline') that "
+        "run_feature_screen_smoke uses via _run(job, stage='smoke')"
+    )

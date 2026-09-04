@@ -56,20 +56,22 @@ def _flat(text: str) -> str:
     return " ".join(text.split())
 
 
-# --- this document authorises steps 1-4 only (step 4 added 2026-09-04) ---
+# --- this document authorises steps 1-5 (step 5 added 2026-09-04) ---
 
 
-def test_the_stage_is_declared_but_not_launched(config):
+def test_the_stage_is_declared_and_authorises_through_step_5(config):
+    # status itself is this file's fixed category label, not a step tracker
+    # -- configs/m0b_regime_map.yaml and configs/m0c_bounded_r3.yaml both
+    # keep this same literal value after their own full completion.
+    # this_file_authorises/does_not_authorise are what track progress here.
     assert config["status"] == "DECLARED_NOT_LAUNCHED"
-    assert (
-        config["this_file_authorises"]
-        == "file_declaration_derive_cells_estimate_compute_and_the_real_smoke"
+    assert config["this_file_authorises"] == (
+        "file_declaration_derive_cells_estimate_compute_the_real_smoke_and_the_real_one_seed_screen"
     )
 
 
 def test_every_later_step_is_named_as_not_authorised(config):
     later_steps = {
-        "the_real_m1a_screen_launch_step_5",
         "the_trained_effect_map_step_6",
         "proposing_m1b_step_7",
         "any_gnn_work_of_any_kind",
@@ -85,10 +87,55 @@ def test_every_later_step_is_named_as_not_authorised(config):
         "migrating_workspace",
     }
     assert later_steps == set(config["does_not_authorise"])
-    # the compute estimate (step 3) and the real smoke (step 4) are both
-    # done/authorised -- must not still be listed as prohibited
+    # the compute estimate (step 3), the real smoke (step 4), and the real
+    # one-seed screen (step 5) are all done/authorised -- must not still be
+    # listed as prohibited
     assert "the_compute_estimate_step_3" not in config["does_not_authorise"]
     assert "the_smoke_validation_step_4" not in config["does_not_authorise"]
+    assert "the_real_m1a_screen_launch_step_5" not in config["does_not_authorise"]
+
+
+def test_step_5_authorisation_covers_exactly_the_predeclared_arms_not_the_reserved_interaction_arms(
+    config,
+):
+    # arm_count_summary reserves headroom (up to 3 more, ceiling 47) for
+    # conditional interaction arms that conditional_training_rule's own
+    # trigger decides about AFTER the 44-arm results exist -- that trigger
+    # is a human judgement call, not wired into run_m1a_feature_screen.py's
+    # cell/arm reading, and is not what step 5 authorises.
+    summary = config["arm_count_summary"]
+    assert summary["predeclared_arms"] == 44
+    assert summary["conditional_interaction_arms_reserved"] == "up_to_3"
+    assert summary["total_seed_units_ceiling"] == 47
+
+
+def test_the_filed_compute_ceiling_covers_the_real_projected_cost(config):
+    compute = config["compute"]
+    assert compute["ceiling_filed"] is True
+    ceiling = compute["ceiling_usd"]
+    derivation = compute["derivation"]
+    # the ceiling must be a real, reasoned multiple of the filed real
+    # estimate, not an arbitrary number sitting apart from it -- and must
+    # never come in under the estimate it is supposed to bound
+    assert ceiling > derivation["cost_all_gpu_billed_usd"]
+    assert ceiling == pytest.approx(2 * derivation["cost_all_gpu_billed_usd"], rel=0.2)
+
+
+def test_the_filed_fit_cost_is_measured_from_the_real_m1a_scorer_not_the_old_sa_mlp_proxy(config):
+    derivation = config["compute"]["derivation"]
+    # step 3's stale proxy (8940.9s, measured on the historical ~213K-param
+    # SA_MLP model) must not still be the filed number -- it was replaced by
+    # a linear extrapolation from the real step-4 smoke's own M1AScorer
+    # training_seconds, which came in higher for this smaller, GPU-cold-
+    # start-dominated single-smoke measurement.
+    assert derivation["fit_seconds_total"] != pytest.approx(8940.9, rel=0.01)
+    assert derivation["fit_seconds_total"] == pytest.approx(10281.7, rel=0.01)
+    assert derivation["fit_hours_total"] == pytest.approx(
+        derivation["fit_seconds_total"] / 3600, abs=1e-3
+    )
+    by_dataset = derivation["fit_by_dataset_seconds"]
+    assert set(by_dataset) == FIVE_ACTIVE_DATASETS
+    assert sum(by_dataset.values()) == pytest.approx(derivation["fit_seconds_total"], rel=0.01)
 
 
 def test_no_gnn_work_of_any_kind_is_marked_false(config):
@@ -609,13 +656,14 @@ def test_sampling_is_explicitly_distinguished_from_the_m0_diagnostic_panel(confi
     assert "100-query" in note
 
 
-# --- compute: step 3 estimated here, but the real ceiling is still deferred ---
+# --- compute: step 3 estimated here; step 5 files the real ceiling ---
 
 
-def test_compute_is_estimated_but_ceiling_not_yet_filed(config):
+def test_compute_is_estimated_and_the_real_ceiling_is_filed(config):
     assert config["compute"]["estimated_in_this_file"] is True
-    assert config["compute"]["ceiling_filed"] is False
-    assert config["compute"]["ceiling_deferred_to"] == "step_4_real_smoke_measurement"
+    assert config["compute"]["ceiling_filed"] is True
+    assert config["compute"]["ceiling_usd"] == 20.0
+    assert "ceiling_deferred_to" not in config["compute"]
 
 
 def test_compute_rates_match_the_real_compute_ledger_e2_entry(config):
@@ -647,28 +695,55 @@ def test_compute_derivation_recomputes_from_its_own_stated_inputs(config):
     assert floor * gpu_rate == pytest.approx(d["cost_all_gpu_billed_usd"], abs=0.05)
 
 
-def test_compute_derivation_matches_real_source_artifacts(config):
+def test_compute_derivation_feature_build_matches_real_source_artifacts(config):
     import json as _json
 
     val_n = {
         "squad_clean": 26063, "2wiki_clean": 3000, "hotpotqa_clean": 19570,
         "metaqa": 39138, "webqsp": 315,
     }
-    d = config["compute"]["derivation"]
     for dataset, expected_val_n in val_n.items():
         path = pathlib.Path(f"outputs/sa_mlp_confirmation/{dataset}.json")
         if not path.exists():
             pytest.skip(f"{path} not present in this checkout")
         real = _json.loads(path.read_text(encoding="utf-8"))
         assert real["data"]["splits"]["validation"] == expected_val_n
+    # feature-build cost is independent of which scorer model M1A trains
+    # (qls_local_features doesn't touch the semantic head), so it is still
+    # sourced from compute.inputs.real_per_query_feature_build_ms_steady_
+    # state_mean (M0C's own real measurement) -- see
+    # test_compute_derivation_recomputes_from_its_own_stated_inputs for the
+    # mechanical recomputation of that total.
 
-        real_fit_seconds = real["models"]["sa_mlp"]["aggregate"]["training_seconds"]["mean"]
-        n_arms = {
-            "squad_clean": 1, "2wiki_clean": 13, "hotpotqa_clean": 13,
-            "metaqa": 13, "webqsp": 4,
-        }[dataset]
-        expected_fit = real_fit_seconds * n_arms
-        assert d["fit_by_dataset_seconds"][dataset] == pytest.approx(expected_fit, abs=1.0)
+
+def test_compute_derivation_fit_matches_the_real_step_4_smoke_not_the_sa_mlp_proxy(config):
+    import json as _json
+
+    smoke_path = pathlib.Path("outputs/m1a_feature_screen/smoke/hotpotqa_clean.json")
+    if not smoke_path.exists():
+        pytest.skip(f"{smoke_path} not present in this checkout")
+    smoke = _json.loads(smoke_path.read_text(encoding="utf-8"))
+    base = smoke["cells"]["R3"]["arms"]["BASE"]["training"]
+    rate = base["training_seconds"] / base["train_queries"]
+
+    val_n = {
+        "squad_clean": 26063, "2wiki_clean": 3000, "hotpotqa_clean": 19570,
+        "metaqa": 39138, "webqsp": 315,
+    }
+    n_arms = {
+        "squad_clean": 1, "2wiki_clean": 13, "hotpotqa_clean": 13,
+        "metaqa": 13, "webqsp": 4,
+    }
+    # Not a declared field under sampling: -- 0.2 is the shared value hardcoded
+    # in both scripts/run_m1a_feature_screen.py's --holdout-fraction default
+    # and scripts/modal_m1a_feature_screen.py's _runner_args, matching the
+    # smoke's own observed 80/20 train/held-out split exactly.
+    holdout_fraction = 0.2
+    d = config["compute"]["derivation"]
+    for dataset, n in val_n.items():
+        train_queries = n * (1 - holdout_fraction)
+        expected_fit = train_queries * rate * n_arms[dataset]
+        assert d["fit_by_dataset_seconds"][dataset] == pytest.approx(expected_fit, rel=0.01)
 
 
 def test_dominant_cost_drivers_are_named_and_plausible(config):
