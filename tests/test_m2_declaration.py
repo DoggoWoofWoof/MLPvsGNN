@@ -2,26 +2,40 @@
 
 M2 freezes the QLS-v2 candidate and defines how it is selected. The failure
 modes these tests guard against: a declaration that quietly authorises
-compute (the whole point of filing it is that it does not), a frozen schema
-that drifts from what M1AScorer will actually instantiate, a parameter count
-asserted rather than measured, hyperparameters transcribed from memory
-instead of from the launcher that actually ran M1A/M1B, a QLS-CELL map in the
-YAML that disagrees with the committed derivation script's own output, and a
-workload count preserved from an earlier draft instead of recomputed from the
-selection matrix.
+compute beyond its own gates, a frozen schema that drifts from what M1AScorer
+will actually instantiate, a parameter count asserted rather than measured,
+hyperparameters transcribed from memory instead of from the launcher that
+actually ran M1A/M1B, a QLS-CELL map in the YAML that disagrees with the
+committed derivation script's own output, and a workload count preserved from
+an earlier draft instead of recomputed from the selection matrix.
+
+Amendment 2 (2026-09-07) turned the file from "declared, launches nothing"
+into "launch conditionally authorised", which adds one more failure mode and
+it is the most consequential one here: a selection rule that could be read as
+frozen-before-outcomes while actually leaving room to choose a framing after
+the numbers land. The universal_selection_rule tests below pin all three
+clauses, both thresholds, the per-cell reference map, and the equal-weight
+dataset aggregation, so the rule cannot drift once results exist.
 """
 
 from __future__ import annotations
 
 import json
+import math
 import pathlib
+import sys
 
 import pytest
 import yaml
 
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
 CONFIG_PATH = pathlib.Path("configs/m2_qls_v2_freeze.yaml")
 M1A_CONFIG_PATH = pathlib.Path("configs/m1a_feature_screen.yaml")
 DERIVATION_ARTIFACT = pathlib.Path("outputs/m2_qls_v2_freeze/qls_cell_derivation.json")
+ESTIMATE_ARTIFACT = pathlib.Path("outputs/m2_qls_v2_freeze/compute_estimate.json")
 
 SIX_DATASETS = {"squad_clean", "2wiki_clean", "hotpotqa_clean", "metaqa", "webqsp", "musique_clean"}
 EXCLUDED_FAMILIES = {"GEOMETRY", "DIFFUSION", "TOPOLOGY"}
@@ -29,6 +43,11 @@ EXCLUDED_FAMILIES = {"GEOMETRY", "DIFFUSION", "TOPOLOGY"}
 needs_derivation_artifact = pytest.mark.skipif(
     not DERIVATION_ARTIFACT.exists(),
     reason="derivation artifact not present; run scripts/m2_qls_cell_derivation.py",
+)
+
+needs_estimate_artifact = pytest.mark.skipif(
+    not ESTIMATE_ARTIFACT.exists(),
+    reason="compute estimate artifact not present; run scripts/m2_compute_estimate.py",
 )
 
 
@@ -49,21 +68,26 @@ def _flat(text: str) -> str:
 # --- authorisation boundary ---------------------------------------------------
 
 
-def test_status_is_declared_not_launched_and_authorises_only_derivation_and_estimate(config):
-    assert config["status"] == "DECLARED_NOT_LAUNCHED"
+def test_status_is_launch_conditionally_authorised_and_never_unconditionally(config):
+    # Amendment 2 moved this off DECLARED_NOT_LAUNCHED. The authorisation it
+    # grants must stay explicitly conditional on the gates -- an unconditional
+    # "launch M2" string here would authorise spending that no gate protects.
+    assert config["status"] == "DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED"
     authorised = _flat(config["this_file_authorises"])
     assert "derive_qls_cell" in authorised
     assert "already_completed" in authorised
     assert "estimate_m2_compute" in authorised
-    assert "launch" not in authorised
-    assert "fit" not in authorised.replace("m1a_and_m1b", "")
+    assert "conditionally_launch" in authorised
+    assert "once_every_launch_authorization_gate_is_true" in authorised
 
 
 @pytest.mark.parametrize(
     "item",
     [
-        "launching_the_musique_clean_screen",
-        "launching_any_qls_universal_fit",
+        "launching_anything_before_every_gate_in_launch_authorization_is_true",
+        "modifying_qls_universal_after_seeing_any_m2_result",
+        "drawing_any_scientific_conclusion_from_a_smoke_run",
+        "adding_seeds_beyond_seed_zero",
         "any_gnn_work_of_any_kind",
         "the_semantic_minimality_study",
         "the_development_qls_vs_gnn_comparison",
@@ -81,12 +105,23 @@ def test_status_is_declared_not_launched_and_authorises_only_derivation_and_esti
         "describing_any_current_substrate_result_as_final",
     ],
 )
-def test_every_compute_spending_or_later_phase_step_is_not_authorised(config, item):
+def test_every_ungated_or_later_phase_step_is_not_authorised(config, item):
     assert item in config["does_not_authorise"]
 
 
-def test_the_single_amendment_records_the_node_role_ruling_and_the_musique_correction(config):
-    assert len(config["amendments"]) == 1
+def test_the_launch_amendment_did_not_quietly_drop_the_two_launch_prohibitions(config):
+    # launching_the_musique_clean_screen and launching_any_qls_universal_fit
+    # left does_not_authorise by design -- but only because a narrower,
+    # gate-conditional prohibition replaced them. If both the old items and
+    # the replacement were absent, M2 would authorise an ungated launch.
+    items = config["does_not_authorise"]
+    assert "launching_the_musique_clean_screen" not in items
+    assert "launching_any_qls_universal_fit" not in items
+    assert "launching_anything_before_every_gate_in_launch_authorization_is_true" in items
+
+
+def test_amendment_one_records_the_node_role_ruling_and_the_musique_correction(config):
+    assert len(config["amendments"]) == 2
     amendment = config["amendments"][0]
     assert str(amendment["date"]) == "2026-09-07"
     text = _flat(amendment["change"])
@@ -96,19 +131,44 @@ def test_the_single_amendment_records_the_node_role_ruling_and_the_musique_corre
     assert "launch stays unauthorised" in text
 
 
+def test_amendment_two_is_the_launch_amendment_and_names_every_thing_it_changed(config):
+    amendment = config["amendments"][1]
+    assert str(amendment["date"]) == "2026-09-07"
+    text = _flat(amendment["change"])
+    assert "THE LAUNCH AMENDMENT" in text
+    # the six things it must record, each traceable to a block below
+    assert "dataset-balanced" in text
+    assert "macro_delta >= -0.25pp" in text
+    assert "no dataset_delta < -0.50pp" in text
+    assert "no individual cell delta < -0.50pp" in text
+    assert "$9.00 proposed ceiling" in text
+    assert "bit-exact" in text
+    assert "marked NEW" in text
+    assert "M2B semantic minimality stays closed" in text
+    assert "DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED" in text
+
+
 def test_gnn_work_is_refused_in_the_reversal_note_too(config):
     assert "GNN work is NOT authorised by this file" in _flat(config["reversal_note"])
 
 
-def test_after_this_file_estimates_then_stops_and_launches_nothing(config):
+def test_after_this_file_runs_the_gated_steps_then_stops_for_review(config):
     after = config["after_this_file"]
-    assert after["next_step"] == "COMPUTE_ESTIMATE_THEN_STOP"
+    assert after["next_step"] == "EXECUTE_M2_UNDER_THE_GATES_THEN_STOP_FOR_REVIEW"
+    assert after["superseded_next_step"] == "COMPUTE_ESTIMATE_THEN_STOP"
+    assert list(after["execution_order"]) == list("ABCDEFGH")
+    assert after["execution_order"]["H"] == "STOP_FOR_REVIEW"
     stops = _flat(after["what_stops"])
-    assert "No musique_clean fit" in stops
-    assert "no QLS-UNIVERSAL fit" in stops
-    assert "no GNN code" in stops
-    assert "spends nothing" in stops
-    assert "launch" in _flat(after["to_proceed_requires"])
+    assert "No M2B semantic minimality" in stops
+    assert "no GNN code of any kind" in stops
+    assert "no extra seeds" in stops
+    assert "no canonical CRAG" in stops
+    assert "no Package F" in stops
+    assert "no E2 resume" in stops
+    assert "a false gate" in stops
+    proceed = _flat(after["to_proceed_requires"])
+    assert "every gate in launch_authorization TRUE" in proceed
+    assert "not bypassing" in proceed
     assert list(after["phases_that_follow_each_in_their_own_file"].values())[-1] == "LEGACY_DEVELOPMENT_FREEZE"
 
 
@@ -325,7 +385,12 @@ def test_workload_is_recomputed_from_the_matrix_not_preserved(config):
     assert workload["reused_fits"] == reused == 19
     assert workload["logical_fits"] == new + reused == 34
     assert workload["seeds_per_fit"] == 1
-    assert "launching_any_qls_universal_fit" in config["does_not_authorise"]
+    # The filed compute estimate is arithmetic over exactly this workload, so
+    # a matrix edit that did not re-run the estimate must not pass silently.
+    compute = config["compute"]
+    assert (compute["new_fits"], compute["reused_fits"], compute["logical_fits"], compute["cells"]) == (
+        new, reused, new + reused, 14,
+    )
 
 
 def test_incumbents_in_the_matrix_are_exactly_the_qls_cell_features_with_the_right_evidence_label(config):
@@ -358,17 +423,173 @@ def test_admissibility_rule_reuses_m1a_thresholds_and_never_retunes(config):
     assert rule["primary_metric"] == "recall_at_5"
     per_cell = _flat(rule["per_cell"])
     assert "0.25pp" in per_cell and "0.50pp" in per_cell and "GRAY" in per_cell
-    verdict = _flat(rule["universal_verdict"])
-    assert "all 14 cells" in verdict
-    assert "No schema is reduced or retuned inside M2" in verdict
     assert "recall_at_5" not in rule["secondary_diagnostics_reported_never_deciding"]
+
+
+def test_the_old_all_fourteen_cells_verdict_is_marked_superseded_not_deleted(config):
+    # Amendment 2 replaced the aggregate but kept the earlier wording visible,
+    # so a reader cannot mistake the dataset-balanced rule for what was filed
+    # originally. Its no-material-regression clause survives verbatim.
+    rule = config["m2_selection_matrix"]["admissibility_rule"]
+    verdict = _flat(rule["universal_verdict"])
+    assert verdict.startswith("SUPERSEDED BY universal_selection_rule")
+    assert "all 14 cells" in verdict
+    assert "no schema is reduced or retuned inside M2" in verdict
+    assert "no individual cell delta R@5 below -0.50pp" in verdict
+    assert "diagnostic" in _flat(rule["per_cell_labels_are_still_reported"])
 
 
 def test_reuse_audit_is_required_and_names_the_scoped_runner_change(config):
     text = _flat(config["m2_selection_matrix"]["reuse_audit_required_before_launch"])
     assert "no longer holds" in text
     assert "run_m1a_feature_screen.py" in text
-    assert "not assumed here" in text
+    assert "reuse_audit below" in text
+
+
+def test_the_reuse_audit_block_is_mechanical_and_names_every_per_fit_check(config):
+    audit = config["m2_selection_matrix"]["reuse_audit"]
+    assert audit["status"] == "MECHANICAL_NOT_PROSE"
+    assert set(audit["per_fit_checks_all_required"]) == {
+        "same_historical_arm_name",
+        "same_feature_column_indices",
+        "same_model_input_width",
+        "same_trainer_hyperparameters",
+        "same_validation_and_holdout_query_ids",
+        "same_dataset_fingerprint",
+        "same_candidate_contract_fingerprint",
+    }
+    probe = _flat(audit["bit_exact_feature_probe"])
+    assert "3d85916" in probe, "the probe must name the concrete pre-change source it compares against"
+    assert "element-for-element" in probe and "not close, equal" in probe
+    for arm in ("BASE", "BASE+GEOMETRY", "BASE+SUPPORT", "BASE+PATH", "BASE+NODE_ROLE", "BASE+NODE_ROLE+SUPPORT"):
+        assert arm in probe, arm
+    failure = _flat(audit["on_failure"])
+    assert "marked NEW" in failure
+    assert "recomputed" in failure
+    assert "prohibited" in failure
+
+
+def test_the_reuse_audit_scope_is_every_proposed_reused_fit_not_one_repo_verdict(config):
+    audit = config["m2_selection_matrix"]["reuse_audit"]
+    scope = _flat(audit["scope"])
+    assert "All 19 proposed reused seed-0 fits" in scope
+    assert str(config["m2_selection_matrix"]["workload"]["reused_fits"]) in scope
+    assert "git-HEAD identity" in scope, "the audit must say why M1B's own method no longer applies"
+
+
+# --- the frozen universal selection rule --------------------------------------
+
+
+def test_the_selection_rule_is_closed_before_any_outcome_exists(config):
+    rule = config["universal_selection_rule"]
+    assert rule["status"] == "CLOSED_2026_09_07_BEFORE_ANY_M2_RESULT_EXISTS"
+    assert rule["primary_metric"] == "recall_at_5"
+    assert rule["effect_scale"] == "percentage_points"
+    frozen = _flat(rule["frozen_before_outcomes"])
+    assert "before any smoke ran" in frozen
+    assert "applied mechanically by a committed script" in frozen
+
+
+def test_the_per_cell_reference_is_the_incumbent_where_one_exists_else_base(config):
+    reference = _flat(config["universal_selection_rule"]["per_cell"]["reference"])
+    assert "QLS-CELL incumbent arm for that cell if one exists, otherwise BASE" in reference
+    # An outcome-adaptive reference ("whichever comparator did better") is the
+    # specific thing this wording exists to refuse.
+    assert 'Never "the better of the two"' in reference
+    # The incumbent cells the reference names must be exactly the ones the
+    # matrix actually labels as incumbents, and the split must add up to 14.
+    incumbents = {
+        (dataset, regime): arm
+        for (dataset, regime), arms in _matrix_cells(config).items()
+        for arm, status in arms.items()
+        if "incumbent" in status
+    }
+    assert len(incumbents) == 6
+    assert "six cells have an incumbent" in reference
+    assert "the other eight reference BASE" in reference
+    assert len(incumbents) + 8 == len(_matrix_cells(config)) == 14
+    for (dataset, _regime), arm in incumbents.items():
+        assert dataset in reference, dataset
+        assert arm in reference, arm
+    quantity = config["universal_selection_rule"]["per_cell"]["quantity"]
+    assert "cell_delta = R@5(QLS-UNIVERSAL) - R@5(reference)" in quantity
+    assert "percentage points" in quantity
+
+
+def test_the_aggregation_is_two_level_and_weights_datasets_equally(config):
+    rule = config["universal_selection_rule"]
+    assert "mean(cell_delta) over that dataset's own declared regime cells" in rule["per_dataset"]["quantity"]
+    assert "mean(dataset_delta) over the six datasets, equal weight each" in rule["macro"]["quantity"]
+    # the declared per-dataset cell counts must match the real matrix
+    counted: dict[str, int] = {}
+    for dataset, _regime in _matrix_cells(config):
+        counted[dataset] = counted.get(dataset, 0) + 1
+    assert rule["per_dataset"]["cells_per_dataset"] == counted
+    assert sum(counted.values()) == 14
+    assert set(counted) == SIX_DATASETS
+    why = _flat(rule["macro"]["why_not_a_flat_cell_mean"])
+    assert "3/14" in why and "1/14" in why
+    assert "weight datasets equally" in why
+
+
+def test_advancement_needs_all_three_clauses_at_the_reused_m1a_thresholds(config):
+    rule = config["universal_selection_rule"]
+    condition = _flat(rule["advancement_condition"])
+    assert "macro_delta >= -0.25pp" in condition
+    assert "no dataset_delta < -0.50pp" in condition
+    assert "no individual cell_delta < -0.50pp" in condition
+    assert "All three are required" in condition
+    thresholds = rule["thresholds"]
+    assert thresholds["macro_tolerance_pp"] == -0.25
+    assert thresholds["dataset_material_regression_pp"] == -0.50
+    assert thresholds["cell_material_regression_pp"] == -0.50
+    assert "reused unchanged" in _flat(thresholds["no_new_number_is_introduced_here"])
+
+
+def test_thresholds_are_m1as_own_filed_numbers_not_new_ones(config, m1a_config):
+    # The rule's novelty is the two-level aggregation. Its magnitudes must be
+    # M1A's, read from M1A's own file -- a retuned threshold arriving with a
+    # new aggregation would be a silent change of the bar.
+    m1a_rule = m1a_config["selection_rule"]
+    thresholds = config["universal_selection_rule"]["thresholds"]
+    assert abs(thresholds["macro_tolerance_pp"]) == m1a_rule["pareto_admissibility_tolerance_pp"]
+    assert abs(thresholds["dataset_material_regression_pp"]) == m1a_rule["material_regression_threshold_pp"]
+    assert abs(thresholds["cell_material_regression_pp"]) == m1a_rule["material_regression_threshold_pp"]
+    assert config["universal_selection_rule"]["primary_metric"] == m1a_rule["primary_metric"]
+    assert (
+        config["universal_selection_rule"]["secondary_diagnostics"]["reported_always"]
+        == m1a_rule["secondary_diagnostics_never_swap_primary"]
+    )
+
+
+def test_the_gray_zone_goes_to_the_already_established_three_seed_procedure(config):
+    rule = config["universal_selection_rule"]
+    assert set(rule["outcome_labels"]) == {
+        "ADVANCE_QLS_UNIVERSAL", "NOT_ADVANCED_AS_FILED", "GRAY_PENDING_THREE_SEED",
+    }
+    gray = _flat(rule["outcome_labels"]["GRAY_PENDING_THREE_SEED"])
+    assert "3-seed" in gray
+    assert "m1b_targeted_resolution.yaml#uncertainty_ procedure" in gray or "uncertainty_" in gray
+    assert "further amendment" in gray
+    assert "Not resolved by re-reading the one-seed numbers" in gray
+    inherited = _flat(rule["gray_zone_uses_an_existing_procedure_not_a_new_one"])
+    assert "10,000 replicates" in inherited
+    assert "20260905" in inherited, "the gray zone must inherit M1B's own filed RNG seed, not a fresh one"
+
+
+def test_secondary_diagnostics_are_reported_and_can_never_decide(config):
+    secondary = config["universal_selection_rule"]["secondary_diagnostics"]
+    assert secondary["reported_always"] == ["recall_at_1", "recall_at_20", "mrr", "full_coverage_at_20"]
+    assert "recall_at_5" not in secondary["reported_always"]
+    never = _flat(secondary["never_deciding"])
+    assert "never substituted for R@5 after outcomes are visible" in never
+
+
+def test_the_candidate_is_never_modified_after_results(config):
+    text = _flat(config["universal_selection_rule"]["qls_universal_is_not_modified_after_results"])
+    assert "stay exactly as qls_universal declares them" in text
+    assert "minimality certificate" in text
+    assert "modifying_qls_universal_after_seeing_any_m2_result" in config["does_not_authorise"]
 
 
 # --- QLS-CELL map -------------------------------------------------------------
@@ -494,3 +715,264 @@ def test_instrumentation_is_adopted_immediately_with_the_full_list(config):
         "dataset_fingerprint", "feature_store_fingerprint", "train_and_inference_timings",
         "peak_memory", "parameter_count",
     } <= required
+
+
+def test_the_instrumentation_list_is_concrete_enough_to_implement_and_to_test(config):
+    # Amendment 2 turned a stated intent into a checkable field list, because
+    # stating it was not enough last time (M1B amendment 5 re-ran 27 fits).
+    inst = config["instrumentation_requirement"]
+    fields = set(inst["exact_fields_every_new_m2_fit_writes"])
+    assert {
+        "checkpoint", "per_query_rows", "query_ids", "candidate_ids_sha256",
+        "aggregate_metrics", "source_commit", "config_sha256",
+        "dataset_fingerprint_sha256", "candidate_contract_sha256",
+        "feature_store_fingerprint_sha256", "training_seconds",
+        "feature_build_latency_ms_p50_p95_p99", "peak_gpu_memory_mb",
+        "peak_cpu_rss_mb", "parameter_counts_total_semantic_scorer",
+    } <= fields
+    reconstruct = _flat(inst["per_query_rows_must_reconstruct_the_aggregate"])
+    assert "_metric_row" in reconstruct
+    assert "exactly, not approximately" in reconstruct
+    test_requirement = _flat(inst["test_requirement"])
+    assert "aggregate_from_rows == stored_aggregate" in test_requirement
+    assert "launch gate" in test_requirement
+    assert "M1B's amendment 5" in _flat(inst["why_this_became_a_gate"])
+
+
+# --- compute, filed from real measurements ------------------------------------
+
+
+def test_compute_is_filed_with_its_script_and_manifest(config):
+    compute = config["compute"]
+    assert compute["status"] == "FILED_2026_09_07"
+    assert pathlib.Path(compute["script"]).exists()
+    assert compute["manifest"] == "outputs/m2_qls_v2_freeze/compute_estimate.json"
+    assert config["m2_selection_matrix"]["compute_estimate"]["status"] == "FILED_2026_09_07"
+
+
+def test_the_ceiling_is_about_twice_the_conservative_estimate_and_never_a_hidden_budget(config):
+    compute = config["compute"]
+    conservative = compute["cost_usd_all_gpu_billed"]["conservative"]
+    floor = compute["cost_usd_all_gpu_billed"]["floor"]
+    ceiling = compute["proposed_ceiling_usd"]
+    assert floor <= conservative < ceiling
+    assert ceiling >= 5.00, "M1B's own filed floor"
+    assert ceiling < 3 * conservative, "a ceiling far above the real bracket is a disguised budget"
+    assert ceiling == math.ceil(2 * conservative)
+    assert "2x" in _flat(compute["ceiling_basis"])
+    assert "not a disguised larger budget" in _flat(compute["no_large_safety_multiple"])
+
+
+def test_compute_totals_are_internally_consistent(config):
+    compute = config["compute"]
+    for key in ("feature_build_seconds", "new_fits_seconds", "pure_compute_gpu_h", "cost_usd_all_gpu_billed"):
+        assert compute[key]["floor"] <= compute[key]["conservative"], key
+    seconds = compute["feature_build_seconds"]["conservative"] + compute["new_fits_seconds"]["conservative"]
+    assert compute["pure_compute_gpu_h"]["conservative"] == pytest.approx(seconds / 3600.0, abs=5e-4)
+    assert compute["cost_usd_all_gpu_billed"]["conservative"] == pytest.approx(
+        compute["pure_compute_gpu_h"]["conservative"] * 2.241, abs=0.01
+    )
+    # blended (feature build on CPU) must be cheaper than all-GPU, or the
+    # feature_build_compute_check below would be chasing nothing
+    assert compute["cost_usd_blended_feature_cpu_fit_gpu"] < compute["cost_usd_all_gpu_billed"]["conservative"]
+
+
+@needs_estimate_artifact
+def test_the_declared_compute_figures_match_the_committed_estimate_artifact(config):
+    artifact = json.loads(ESTIMATE_ARTIFACT.read_text(encoding="utf-8"))
+    assert artifact["status"] == "M2_COMPUTE_ESTIMATE_NOT_A_LAUNCH_AUTHORISATION"
+    compute = config["compute"]
+    assert compute["cells"] == artifact["cells"]
+    assert compute["logical_fits"] == artifact["logical_fits"]
+    assert compute["new_fits"] == artifact["new_fits"]
+    assert compute["reused_fits"] == artifact["reused_fits"]
+    assert compute["feature_build_seconds"]["conservative"] == artifact["feature_build"]["seconds_conservative"]
+    assert compute["new_fits_seconds"]["conservative"] == artifact["new_fits_seconds_conservative"]
+    assert compute["pure_compute_gpu_h"]["conservative"] == artifact["pure_compute_gpu_h_conservative"]
+    assert compute["cost_usd_all_gpu_billed"]["conservative"] == artifact["cost_usd_all_gpu_billed_conservative"]
+    assert compute["proposed_ceiling_usd"] == artifact["proposed_ceiling_usd"]
+
+
+def test_the_dominant_cost_driver_is_named_as_feature_build_not_training(config):
+    compute = config["compute"]
+    text = _flat(compute["dominant_cost_driver"])
+    assert "Feature build, not training" in text
+    feature = compute["feature_build_seconds"]["conservative"]
+    fits = compute["new_fits_seconds"]["conservative"]
+    assert feature > fits, "the stated driver must match the filed numbers"
+    assert f"{feature}s" in text and "83%" in text
+    assert round(100 * feature / (feature + fits)) == 83
+
+
+# --- the feature-build compute check ------------------------------------------
+
+
+def test_the_cpu_build_check_demands_bit_exactness_and_refuses_formula_changes(config):
+    check = config["feature_build_compute_check"]
+    assert check["status"] == "REQUIRED_BEFORE_LAUNCH"
+    equivalence = _flat(check["equivalence_requirement"])
+    assert "element-for-element" in equivalence
+    assert 'Not "close"' in equivalence
+    assert "same metrics after training" in equivalence
+    assert "float16" in equivalence and "candidate_ptr" in equivalence and "query_position" in equivalence
+    never = _flat(check["never"])
+    assert "No feature formula, normalisation, dtype or column order changes for systems convenience" in never
+    assert "the split is refused, not the feature" in never
+
+
+def test_the_cpu_build_check_reuses_the_existing_on_disk_format(config):
+    fmt = _flat(config["feature_build_compute_check"]["persistence_format"])
+    assert "fixed_structural_features_v1" in fmt
+    assert "StructuralFeatureStore.load" in fmt
+    for array in ("metadata.json", "static.npy", "local.npy", "candidate_ptr.npy", "query_position.npy"):
+        assert array in fmt, array
+    adopt = _flat(config["feature_build_compute_check"]["adopt_only_if"])
+    assert "behaviour-preserving" in adopt
+    assert "small orchestration change" in adopt
+    assert "retained and the reason is written into" in adopt
+
+
+def test_the_cpu_build_check_quantifies_the_waste_it_is_chasing(config):
+    problem = _flat(config["feature_build_compute_check"]["the_problem_in_numbers"])
+    compute = config["compute"]
+    assert str(compute["feature_build_seconds"]["conservative"]) in problem
+    assert "83%" in problem
+    assert "no CUDA kernel" in problem
+
+
+# --- engineering prerequisites and the launch gates ----------------------------
+
+
+def test_the_prerequisites_say_plainly_that_the_runner_does_not_exist_yet(config):
+    prerequisites = config["engineering_prerequisites_before_execution"]
+    runner = _flat(prerequisites["m2_runner"])
+    assert "does not exist yet" in runner
+    assert "The universal arm is NOT added to M1A's own experiment matrix" in runner
+    assert "run_m2_qls_v2_freeze.py" in runner
+    why = _flat(prerequisites["why_a_separate_runner"])
+    assert "hard-fails on seed != 0" in why
+    assert "discards the per-query rows" in why
+    assert "code-identity premise" in why
+    assert "excludes musique_clean" in _flat(prerequisites["modal_launcher"])
+    assert "NOT known to be present" in _flat(prerequisites["musique_clean_data_availability"])
+
+
+def test_launch_is_conditional_on_a_closed_set_of_boolean_gates(config):
+    launch = config["launch_authorization"]
+    rule = _flat(launch["rule"])
+    assert "once every gate below is TRUE" in rule
+    assert "stops before the full launch and returns for review" in rule
+    assert "pre-authorises passing the gates, never working around a failed one" in rule
+    assert "re-reads these gates at call time" in rule
+    gates = launch["gates"]
+    assert set(gates) == {
+        "amendment_filed", "selection_rule_frozen", "reuse_audit_passes",
+        "instrumentation_tests_pass", "feature_build_equivalence_proved",
+        "compute_within_ceiling", "engineering_tests_pass", "engineering_smoke_passes",
+        "musique_clean_data_verified",
+    }
+    for name, value in gates.items():
+        assert isinstance(value, bool), name
+
+
+def test_a_gate_that_claims_true_has_the_evidence_it_names(config):
+    # A gate is only worth having if flipping it costs something. Each gate
+    # below that is mechanically checkable must have its evidence present
+    # before it may read true -- prose cannot open one.
+    gates = config["launch_authorization"]["gates"]
+
+    if gates["amendment_filed"]:
+        assert len(config["amendments"]) == 2, "amendment 2 must actually be in the file"
+        assert config["status"] == "DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED"
+    if gates["selection_rule_frozen"]:
+        assert config["universal_selection_rule"]["status"].startswith("CLOSED_")
+    if gates["reuse_audit_passes"]:
+        audit = pathlib.Path(config["m2_selection_matrix"]["reuse_audit"]["artifact"])
+        assert audit.exists(), "the audit artifact must exist before its gate opens"
+        assert json.loads(audit.read_text(encoding="utf-8"))["all_reusable"] is True
+    for gate in ("instrumentation_tests_pass", "engineering_tests_pass"):
+        if gates[gate]:
+            assert pathlib.Path("tests/test_run_m2_qls_v2_freeze.py").exists(), gate
+    if gates["compute_within_ceiling"]:
+        assert ESTIMATE_ARTIFACT.exists()
+        artifact = json.loads(ESTIMATE_ARTIFACT.read_text(encoding="utf-8"))
+        assert artifact["cost_usd_all_gpu_billed_conservative"] <= artifact["proposed_ceiling_usd"]
+
+
+def test_no_gate_that_depends_on_the_m2_runner_can_open_before_it_exists(config):
+    # The three gates below are statements about scripts/run_m2_qls_v2_freeze.py
+    # behaving correctly. While that file does not exist they are unprovable,
+    # so they must read false -- this is the invariant that stops the launch
+    # clause from being satisfiable by editing YAML alone.
+    gates = config["launch_authorization"]["gates"]
+    if not pathlib.Path("scripts/run_m2_qls_v2_freeze.py").exists():
+        for gate in ("instrumentation_tests_pass", "engineering_tests_pass", "engineering_smoke_passes"):
+            assert gates[gate] is False, f"{gate} claims a runner that does not exist"
+
+
+def test_the_smoke_exercises_the_universal_contract_and_concludes_nothing(config):
+    smoke = config["launch_authorization"]["smoke_spec"]
+    assert smoke["purpose"] == "PIPELINE_VALIDATION_ONLY_NO_SCIENTIFIC_CONCLUSION"
+    primary = smoke["primary"]
+    assert primary["regime"] in {"R1", "R2"}, "the primary smoke must be a zero-NODE_ROLE cell"
+    assert primary["arms"] == ["QLS-UNIVERSAL"]
+    assert primary["seed"] == 0
+    assert set(primary["verifies"]) == {
+        "fourteen_column_schema", "node_role_column_present", "node_role_identically_zero",
+        "support_and_path_columns_active", "total_parameters_equal_3585", "checkpoint_written",
+        "per_query_rows_written", "aggregate_reconstructed_from_rows", "feature_store_fingerprint_recorded",
+    }
+    secondary = smoke["secondary_only_if_needed"]
+    assert secondary["regime"] == "R3"
+    assert secondary["verifies"] == ["node_role_nonzero_exactly_on_c3_minus_cq"]
+    assert "zero by construction under R2" in _flat(secondary["condition"])
+    assert "No smoke result feeds" in _flat(smoke["no_scientific_interpretation"])
+
+
+def test_the_smoke_panel_size_is_the_tracks_established_one(config, m1a_config):
+    smoke = config["launch_authorization"]["smoke_spec"]
+    panel = int(m1a_config["modal"]["smoke_queries"])
+    assert smoke["primary"]["queries"] == panel == 100
+    assert smoke["secondary_only_if_needed"]["queries"] == panel
+
+
+def test_the_smoke_cell_is_declared_in_the_matrix_and_is_a_cheap_one(config):
+    smoke = config["launch_authorization"]["smoke_spec"]["primary"]
+    cells = _matrix_cells(config)
+    key = (smoke["dataset"], smoke["regime"])
+    assert key in cells, "the smoke must run a cell M2 actually declares"
+    assert cells[key]["QLS-UNIVERSAL"] == "new"
+    assert (config["launch_authorization"]["smoke_spec"]["secondary_only_if_needed"]["dataset"],
+            config["launch_authorization"]["smoke_spec"]["secondary_only_if_needed"]["regime"]) in cells
+    why = _flat(smoke["why_this_cell"])
+    assert "2wiki_clean/R2 rather than hotpotqa_clean/R2" in why
+
+
+# --- what M2 produces ----------------------------------------------------------
+
+
+def test_m2_output_covers_every_level_of_the_selection_rule(config):
+    output = config["m2_output"]
+    assert set(output["contents"]) == {
+        "qls_cell_incumbent_map",
+        "qls_universal_six_dataset_dataset_balanced_evaluation",
+        "per_cell_deltas", "per_dataset_deltas", "macro_delta",
+        "secondary_diagnostics_table", "systems_and_parameter_table", "verdict",
+    }
+    mechanical = _flat(output["applied_mechanically"])
+    assert "computed by the script from the three frozen clauses" in mechanical
+    assert "written back into this file" in mechanical
+    assert "never delivered only in conversation" in mechanical
+    assert "stays as declared" in _flat(output["qls_universal_is_not_modified_after_seeing_this"])
+
+
+def test_the_report_script_named_here_is_the_one_the_rule_points_at(config):
+    assert config["m2_output"]["script"] == "scripts/m2_selection_report.py"
+    assert "scripts/m2_selection_report.py" in _flat(config["universal_selection_rule"]["frozen_before_outcomes"])
+
+
+def test_m2b_stays_closed_until_m2_has_selected(config):
+    prohibitions = config["standing_prohibitions_restated"]
+    assert "no_m2b_semantic_minimality_until_m2_has_selected_and_frozen_the_structural_universal_candidate" in prohibitions
+    assert "no_extra_seeds_beyond_seed_zero_without_a_further_amendment" in prohibitions
+    assert "the_semantic_minimality_study" in config["does_not_authorise"]

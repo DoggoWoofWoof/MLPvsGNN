@@ -72,16 +72,66 @@ amendments:
       extended to the compute estimate for that matrix (spends nothing);
       launch stays unauthorised pending a further amendment, the same
       estimate -> smoke -> launch gate ordering M1A used for its steps 3/4/5.
+  - date: 2026-09-07
+    change: >-
+      THE LAUNCH AMENDMENT (second filing, same date, after the user reviewed
+      the declaration checkpoint and the compute estimate). Six things, all
+      filed BEFORE any M2 outcome exists. (1) The universal selection rule is
+      frozen ahead of results, and it is dataset-balanced rather than a naive
+      mean over all 14 cells: per cell the reference is the QLS-CELL incumbent
+      if one exists, otherwise BASE; the primary quantity is delta R@5
+      (UNIVERSAL - reference); dataset_delta is the mean of that dataset's own
+      declared regime cells; macro_delta is the equal-weight mean over the six
+      datasets. QLS-UNIVERSAL advances iff macro_delta >= -0.25pp AND no
+      dataset_delta < -0.50pp AND no individual cell delta < -0.50pp.
+      Rationale for replacing "ADMISSIBLE in all 14 cells": an unweighted cell
+      mean would give 2wiki_clean and hotpotqa_clean three votes each and
+      squad_clean/musique_clean one, so the six-dataset coverage claim would be
+      decided by which datasets happen to declare more regimes. See
+      universal_selection_rule below -- that block, not this summary, is the
+      operative text. R@1/R@20/MRR/FullCov@20 are reported and can never
+      replace R@5 after outcomes. (2) The compute estimate amendment 1
+      authorised is filed: compute below, from scripts/m2_compute_estimate.py
+      -- 15 new fits, 1.82-1.93 GPU-h pure compute, $4.07-$4.33 all-GPU-billed,
+      $9.00 proposed ceiling. (3) The reuse of all 19 seed-0 fits must be
+      earned mechanically, not by prose: scripts/m2_reuse_audit.py, including a
+      bit-exact old-code-vs-current-code feature probe for every historical arm
+      type; any candidate that fails is marked NEW and the workload/cost are
+      recomputed rather than forced. (4) Instrumentation becomes a launch gate
+      with tests, not only a stated intent -- every new M2 fit persists its
+      checkpoint, per-query rows sufficient to reconstruct R@1/R@5/R@20/MRR/
+      FullCov@20 exactly, and the full fingerprint/timing/memory/parameter set;
+      see instrumentation_requirement. (5) A CPU-build/GPU-fit split is
+      investigated before launch, because ~82% of the estimated GPU-billed
+      seconds is CPU-style feature construction -- adopted only if a test
+      proves the CPU-built store is bit-exact with the current path's, and
+      never by changing a feature formula for systems convenience; see
+      feature_build_compute_check. (6) Launch becomes CONDITIONAL, not open:
+      launch_authorization below lists the gates, and the remaining new seed-0
+      fits launch automatically once every gate is true and the measured cost
+      stays under the filed ceiling. status moves from DECLARED_NOT_LAUNCHED to
+      DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED, and
+      launching_the_musique_clean_screen / launching_any_qls_universal_fit
+      leave does_not_authorise -- replaced by the narrower
+      launching_anything_before_every_gate_in_launch_authorization_is_true.
+      M2B semantic minimality stays closed: it is not opened by this amendment,
+      by the smoke, or by the result. After the universal-selection verdict is
+      produced, M2 stops for review.
 
-status: DECLARED_NOT_LAUNCHED
+status: DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED
 this_file_authorises: >-
-  file_this_declaration_derive_qls_cell_from_already_completed_m1a_and_m1b_evidence_and_estimate_m2_compute
+  file_this_declaration_derive_qls_cell_from_already_completed_m1a_and_m1b_evidence_estimate_m2_compute_and_conditionally_launch_the_declared_seed_zero_m2_screen_once_every_launch_authorization_gate_is_true
 # The QLS-CELL derivation (scripts/m2_qls_cell_derivation.py) is read-only
 # over results that already exist; the compute estimate is arithmetic over
-# M1A's real measured rates. Neither spends compute, launches, or fits.
+# M1A's real measured rates. Neither spends compute, launches, or fits. The
+# launch clause added by amendment 2 is conditional on every gate in
+# launch_authorization below being TRUE at launch time -- it pre-authorises
+# passing those gates, never working around a failed one.
 does_not_authorise:
-  - launching_the_musique_clean_screen          # designed below, not authorised
-  - launching_any_qls_universal_fit             # specified below, not authorised
+  - launching_anything_before_every_gate_in_launch_authorization_is_true
+  - modifying_qls_universal_after_seeing_any_m2_result
+  - drawing_any_scientific_conclusion_from_a_smoke_run
+  - adding_seeds_beyond_seed_zero                # gray-zone 3-seed expansion needs its own amendment
   - any_gnn_work_of_any_kind                    # a separate, later file
   - the_semantic_minimality_study               # a separate, later file
   - the_development_qls_vs_gnn_comparison       # a separate, later file
@@ -476,12 +526,25 @@ m2_selection_matrix:
       cannot separate arms here; effectiveness decides, systems are
       reported.
     universal_verdict: >-
-      SELECTED_UNIVERSAL only if ADMISSIBLE in all 14 cells. Otherwise the
-      result records every failing cell and its magnitude, and the
-      candidate is NOT_SELECTED_AS_FILED. No schema is reduced or retuned
-      inside M2 in response -- a reduced universal schema is a new
-      candidate for a new declaration, and the minimality certificate is
-      the phase built to remove families on evidence.
+      SUPERSEDED BY universal_selection_rule (amendment 2, 2026-09-07),
+      which is the operative rule and was frozen before any M2 outcome
+      existed. The original wording -- "SELECTED_UNIVERSAL only if
+      ADMISSIBLE in all 14 cells" -- is retained here as the historical
+      record of what amendment 1 filed, and its all-cell no-material-
+      regression requirement survives verbatim as the third clause of the
+      new rule (no individual cell delta R@5 below -0.50pp). What changed
+      is that the aggregate is now dataset-balanced rather than an
+      unweighted mean over 14 cells, so a six-dataset coverage claim is not
+      decided by which datasets happen to declare three regimes and which
+      declare one. Unchanged either way: no schema is reduced or retuned
+      inside M2 in response to a failure -- a reduced universal schema is a
+      new candidate for a new declaration, and the minimality certificate
+      is the phase built to remove families on evidence.
+    per_cell_labels_are_still_reported: >-
+      The ADMISSIBLE / GRAY / INADMISSIBLE label above is still computed and
+      reported for every cell. It is a diagnostic that locates a problem;
+      the advancement decision itself is universal_selection_rule's three
+      clauses, nothing else.
     secondary_diagnostics_reported_never_deciding: [recall_at_1, recall_at_20, mrr, full_coverage_at_20, ceiling_attainment_at_5]
   reuse_audit_required_before_launch: >-
     M1B's audit (scripts/m1b_reuse_audit.py) proved reuse via git-HEAD
@@ -496,15 +559,159 @@ m2_selection_matrix:
     All 19 reused fits are historical arms. Where a seed-0 fit exists both
     in M1A and in M1B's execution_2 re-run (the four R3 cells), prefer the
     M1B one: it carries per-query rows, which a gray-zone expansion would
-    need. To be filed as part of the launch amendment, not assumed here.
-  compute_estimate: >-
-    Authorised by amendment 1, not yet produced. Inputs are M1A's own real
-    measured rates (per-cell uncached feature build, per-train-query fit
-    seconds) from configs/m1a_feature_screen.yaml#compute.derivation and
-    the real M1A headline JSONs; 15 new fits over 14 cells, musique_clean's
-    feature build being the only cell with no prior M1A-scale measurement
-    (M0B/M0C measured it at zero-training scale). Filed as a follow-up
-    amendment with its derivation shown, before any launch amendment.
+    need. Filed by amendment 2 as reuse_audit below; that block, not this
+    paragraph, is what the launch gate reads.
+  reuse_audit: # filed by amendment 2, 2026-09-07
+    status: MECHANICAL_NOT_PROSE
+    script: scripts/m2_reuse_audit.py
+    artifact: outputs/m2_qls_v2_freeze/reuse_audit.json
+    tests: tests/test_m2_reuse_audit.py
+    scope: >-
+      All 19 proposed reused seed-0 fits, individually. Not a single
+      repository-level verdict inherited by all of them, which is what
+      git-HEAD identity gave M1B and what no longer applies here.
+    per_fit_checks_all_required:
+      - same_historical_arm_name
+      - same_feature_column_indices                 # MASTER_COLUMNS/ARM_FAMILIES slices, old code vs current
+      - same_model_input_width                      # precomputed_width recorded in the source result
+      - same_trainer_hyperparameters                # against modal_m1a_feature_screen.py::_runner_args, live
+      - same_validation_and_holdout_query_ids
+      - same_dataset_fingerprint
+      - same_candidate_contract_fingerprint
+    bit_exact_feature_probe: >-
+      Required, and the reason this audit is not prose. For every historical
+      arm type (BASE, BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH,
+      BASE+NODE_ROLE, BASE+NODE_ROLE+SUPPORT) the audit loads the
+      pre-change feature builder from git object 3d85916 as a separate
+      module, runs it and the current one on the same deterministic
+      fixture, and requires the produced feature tensors to be equal
+      element-for-element -- not close, equal. The universal compatibility
+      path must not have altered any historical M1A/M1B arm, and this is
+      what proves it rather than assuming it from a diff.
+    on_failure: >-
+      A candidate that fails any check is marked NEW, not argued into
+      reuse. The workload and the compute estimate are then recomputed from
+      the audit's own counts (scripts/m2_compute_estimate.py reads them),
+      and the launch gate re-evaluated against the filed ceiling. Forcing a
+      reuse past a failed check is prohibited.
+    prefer_m1b_rows_where_both_exist: >-
+      For the four R3 cells M1B re-ran with row capture (2wiki_clean,
+      hotpotqa_clean, metaqa, webqsp), the M1B execution_2 seed-0 fit is the
+      preferred source: identical result, plus the per-query rows a
+      gray-zone expansion would need. Verified equal to M1A's own recorded
+      recall@5 at seed 0 in every case (M1B's own cross_checked_against_
+      m1a_splice records delta 0.0pp on all of them), so this is a choice of
+      the richer artifact, not of a different number.
+  compute_estimate:
+    status: FILED_2026_09_07     # amendment 2; see the compute block below for the figures
+    script: scripts/m2_compute_estimate.py
+    artifact: outputs/m2_qls_v2_freeze/compute_estimate.json
+    note: >-
+      Inputs are M1A's own real measured rates (per-cell uncached feature
+      build, per-train-query fit seconds) from the real M1A headline JSONs;
+      15 new fits over 14 cells, musique_clean's feature build being the
+      only cell with no prior M1A-scale measurement (M0B/M0C measured it at
+      zero-training scale, calibrated here by the measured M0C->M1A drift on
+      its twin squad_clean/R1). The script asserts its enumerated counts
+      against the workload block above rather than restating them.
+
+# --------------------------------------------------------------------------
+# The universal selection rule -- frozen before any M2 outcome exists.
+# Amendment 2, 2026-09-07. This block is operative; m2_selection_matrix.
+# admissibility_rule.universal_verdict is the superseded earlier wording.
+# --------------------------------------------------------------------------
+
+universal_selection_rule:
+  status: CLOSED_2026_09_07_BEFORE_ANY_M2_RESULT_EXISTS
+  ruled_by: user, 2026-09-07 (amendment 2)
+  primary_metric: recall_at_5
+  effect_scale: percentage_points
+
+  per_cell:
+    reference: >-
+      The QLS-CELL incumbent arm for that cell if one exists, otherwise
+      BASE. Exactly the map in qls_cell.map above -- six cells have an
+      incumbent (2wiki_clean/R3 BASE+NODE_ROLE; hotpotqa_clean/R1, R2, R3
+      BASE+SUPPORT; metaqa/R2, R3 BASE+PATH) and the other eight reference
+      BASE. Never "the better of the two", which would silently make the
+      comparison adaptive to the outcome.
+    quantity: "cell_delta = R@5(QLS-UNIVERSAL) - R@5(reference), in percentage points"
+    both_sides_are_seed_0: >-
+      The reference is a reused (or, where the audit refuses reuse, a
+      re-run) seed-0 fit and QLS-UNIVERSAL is a new seed-0 fit on the same
+      cell, the same validation prefix, the same holdout split and the same
+      candidate contract -- paired by construction, exactly as M1A's own
+      arm comparisons were.
+
+  per_dataset:
+    quantity: "dataset_delta = mean(cell_delta) over that dataset's own declared regime cells"
+    cells_per_dataset: {squad_clean: 1, 2wiki_clean: 3, hotpotqa_clean: 3, metaqa: 3, webqsp: 3, musique_clean: 1}
+
+  macro:
+    quantity: "macro_delta = mean(dataset_delta) over the six datasets, equal weight each"
+    why_not_a_flat_cell_mean: >-
+      A flat mean over the 14 cells weights 2wiki_clean, hotpotqa_clean,
+      metaqa and webqsp at 3/14 each and squad_clean and musique_clean at
+      1/14 each. M2's claim is that one specification works across six
+      DATASETS, so the aggregate that decides it must weight datasets
+      equally; otherwise the verdict is decided by which datasets happened
+      to earn three regime cells in M1A, which is a fact about M0C's
+      context-growth map, not about the universal schema.
+
+  advancement_condition: >-
+    ADVANCE_QLS_UNIVERSAL iff all three hold at this one-seed screening
+    scale: (1) macro_delta >= -0.25pp; AND (2) no dataset_delta < -0.50pp;
+    AND (3) no individual cell_delta < -0.50pp. All three are required; any
+    one failing means the candidate does not advance as filed.
+  thresholds:
+    macro_tolerance_pp: -0.25          # m1a_feature_screen.yaml#selection_rule tolerance, reused verbatim
+    dataset_material_regression_pp: -0.50   # m1a's filed material threshold, reused verbatim
+    cell_material_regression_pp: -0.50      # same threshold, applied per cell
+    no_new_number_is_introduced_here: >-
+      Both magnitudes are M1A's own filed +/-0.25pp tolerance and 0.50pp
+      material threshold, reused unchanged. The only new content in this
+      rule is the two-level aggregation, not a retuned threshold.
+
+  outcome_labels:
+    ADVANCE_QLS_UNIVERSAL: "all three clauses hold; QLS-UNIVERSAL is the selected universal candidate every later phase tests against"
+    NOT_ADVANCED_AS_FILED: "clause (2) or (3) failed -- the result names every failing dataset/cell and its magnitude"
+    GRAY_PENDING_THREE_SEED: >-
+      macro_delta between -0.50pp and -0.25pp with clauses (2) and (3)
+      holding, or a single cell/dataset sitting inside the -0.50/-0.25pp
+      band. Resolved -- if resolved at all -- by the already-established
+      3-seed procedure (configs/m1b_targeted_resolution.yaml#uncertainty_
+      procedure + promotion_rule_for_m1b, reused unmodified), and only by a
+      further amendment that authorises those seeds. Not resolved by
+      re-reading the one-seed numbers.
+  gray_zone_uses_an_existing_procedure_not_a_new_one: >-
+    M1B already filed a paired per-query bootstrap over a shared held-out
+    set, 10,000 replicates, seed 20260905, and a 3-seed promotion rule. A
+    gray M2 verdict inherits that machinery verbatim rather than inventing
+    a second uncertainty procedure. Nothing about it is re-opened or
+    re-tuned here.
+
+  secondary_diagnostics:
+    reported_always: [recall_at_1, recall_at_20, mrr, full_coverage_at_20]
+    never_deciding: >-
+      Reported for every fit at every level (cell, dataset, macro) and
+      never substituted for R@5 after outcomes are visible. This restates
+      m1a_feature_screen.yaml#selection_rule.secondary_diagnostics_never_
+      swap_primary, which M1A filed and M1B honoured; M2 adds nothing to it
+      and removes nothing from it.
+
+  frozen_before_outcomes: >-
+    Filed 2026-09-07 as amendment 2, before scripts/run_m2_qls_v2_freeze.py
+    existed, before any smoke ran and before any M2 fit produced a number.
+    The rule is applied mechanically by a committed script
+    (scripts/m2_selection_report.py) whose tests assert the arithmetic on
+    synthetic cases that exercise each clause independently, so the verdict
+    cannot be reached by reading a table and choosing a framing.
+  qls_universal_is_not_modified_after_results: >-
+    Whatever this rule returns, the 14-column schema, the architecture, the
+    normalization, the loss and the hyperparameters stay exactly as
+    qls_universal declares them. A different schema is a different
+    candidate and needs a different declaration; the minimality certificate
+    is the phase built to remove families on evidence.
 
 # --------------------------------------------------------------------------
 # musique_clean -- reintroduction, derived from M0C's own map
@@ -590,6 +797,280 @@ instrumentation_requirement:
     only in conversation. M1A's unfiled step-6 map is the counterexample;
     see qls_cell.derivation.why_a_committed_script_and_a_map_inside_this_file.
 
+  # --- amendment 2, 2026-09-07: the same requirement, made checkable ---
+  exact_fields_every_new_m2_fit_writes:
+    - checkpoint                              # torch state_dict, one file per fit
+    - per_query_rows                          # one row per held-out query, keyed by query_id
+    - query_ids
+    - candidate_ids_sha256                    # candidate_contract.candidate_id_order_sha256, the frozen order the rows index
+    - aggregate_metrics
+    - source_commit
+    - config_sha256
+    - dataset_fingerprint_sha256
+    - candidate_contract_sha256
+    - feature_store_fingerprint_sha256
+    - training_seconds
+    - feature_build_latency_ms_p50_p95_p99
+    - peak_gpu_memory_mb
+    - peak_cpu_rss_mb
+    - parameter_counts_total_semantic_scorer
+  per_query_rows_must_reconstruct_the_aggregate: >-
+    The rows are not a summary. Each row carries every field
+    run_operator_screen.py::_metric_row produces -- recall@{1,5,20},
+    full_coverage@{1,5,20}, mrr, the conditional_* variants, and the
+    candidate_ceiling/candidate_available flags -- so re-running
+    _aggregate_rows over the stored rows reproduces the stored aggregate
+    for R@1, R@5, R@20, MRR and FullCov@20 exactly, not approximately.
+  test_requirement: >-
+    tests/test_run_m2_qls_v2_freeze.py asserts aggregate_from_rows ==
+    stored_aggregate for all five metrics on a real toy run, and asserts
+    every field above is present and non-null in each fit's record. This is
+    a launch gate (launch_authorization.gates.instrumentation_tests_pass),
+    not a follow-up task.
+  why_this_became_a_gate: >-
+    M1B's amendment 5 discovered mid-flight that per-query rows were not
+    being written and had to re-run 27 completed fits to get them -- real,
+    avoidable, re-spent compute. Stating the requirement was not enough
+    last time; a test that fails the build is.
+
+# --------------------------------------------------------------------------
+# Compute -- filed from real measurements, amendment 2, 2026-09-07
+# --------------------------------------------------------------------------
+
+compute:
+  status: FILED_2026_09_07
+  script: scripts/m2_compute_estimate.py
+  manifest: outputs/m2_qls_v2_freeze/compute_estimate.json
+  method: >-
+    Every rate is a real measurement from this track, none is a guess.
+    Feature build: each (dataset, regime) cell's own M1A headline
+    uncached_feature_build_latency_ms times that cell's real validation
+    split size -- p50 as the steady-state floor, mean as the conservative
+    figure since it includes the first-query JIT outlier. Fits: the slowest
+    real seed-0 training_seconds M1A recorded on that same cell, whatever
+    the arm (M1A's own data shows fit time is width-insensitive, e.g.
+    hotpotqa_clean/R3 BASE 121.8s vs BASE+PATH 119.8s, so the cell's
+    slowest arm is the conservative bracket for the 2-columns-wider
+    universal arm). musique_clean, which M1A never ran, is the only cell
+    without a direct measurement: its feature build is M0C's own 100-query
+    steady state scaled by 1.3258, the largest M0C->M1A drift measured on
+    its twin squad_clean/R1, and its fit uses M1A's filed conservative
+    0.0154934 s per train query.
+  cells: 14
+  logical_fits: 34
+  reused_fits: 19
+  new_fits: 15
+  feature_build_seconds: {floor: 5430.7, conservative: 5781.9}
+  new_fits_seconds: {floor: 1112.2, conservative: 1181.1}
+  pure_compute_gpu_h: {floor: 1.8175, conservative: 1.9342}
+  cost_usd_all_gpu_billed: {floor: 4.07, conservative: 4.33}
+  cost_usd_blended_feature_cpu_fit_gpu: 1.75
+  wall_clock_hours_with_per_dataset_parallelism: 1.42   # hotpotqa_clean's own serial chain, 85.3 min, dominates
+  rate_source: "docs/COMPUTE_LEDGER.md L546-547 -- $2.241/h GPU, $0.634/h CPU, reused verbatim throughout this track"
+  proposed_ceiling_usd: 9.00
+  ceiling_basis: >-
+    2x the $4.33 conservative all-GPU-billed bracket = $8.66, rounded up to
+    a stated round figure -- the same convention M1A ($20.00) and M1B
+    ($5.00) used, and never below M1B's $5 floor.
+  no_large_safety_multiple: >-
+    $9.00 is ~2.1x the real conservative estimate, not a disguised larger
+    budget. The M1A step-3 lesson (docs/COMPUTE_LEDGER.md's own Stage C
+    entry names a 32x ceiling as a MISTAKE) is honoured here.
+  dominant_cost_driver: >-
+    Feature build, not training: 5781.9s of the 6963.0s conservative total
+    is feature construction (83%), and hotpotqa_clean alone is 4111.6s of
+    it. That imbalance is exactly what feature_build_compute_check below
+    exists to address -- an A10G billed at $2.241/h to run single-threaded
+    numpy/numba is the specific waste the user flagged.
+  not_costed:
+    - "gray-zone 3-seed expansions (only by further amendment, only where a verdict lands inside the -0.50/-0.25pp band)"
+    - "the smoke runs (real but tiny; itemised separately from the 15 counted fits, same convention M1B used)"
+    - "the reuse audit and the selection report (read-only, local, no Modal compute)"
+
+# --------------------------------------------------------------------------
+# Feature-build compute check -- amendment 2, 2026-09-07
+# --------------------------------------------------------------------------
+
+feature_build_compute_check:
+  status: REQUIRED_BEFORE_LAUNCH
+  the_problem_in_numbers: >-
+    83% of the estimated GPU-billed seconds (5781.9s of 6963.0s) is
+    _cell_master_local -- qls_local_features, the A64 admission and the
+    per-family column assembly. All of it is CPU-side numpy/numba: it
+    touches no torch tensor, no CUDA kernel, and reads node embeddings only
+    as a numpy array that the STRUCTURAL expansion never dereferences.
+    hotpotqa_clean alone would hold an A10G for ~68 minutes doing it.
+  what_must_be_tested_before_launch: >-
+    Whether the immutable per-(dataset, regime) feature store can be built
+    on a CPU container, persisted, and then loaded by the GPU trainer, with
+    the loaded store bit-exact against what the current single-container
+    path builds in memory.
+  equivalence_requirement: >-
+    CPU-built store == current-path store, element-for-element, under the
+    exact dtype and normalisation semantics already in force: the float16
+    `local` block byte-identical, candidate_ptr and query_position
+    identical, and the derived precomputed_width identical. Not "close",
+    not "same metrics after training". A test proving this is the gate; a
+    reasoned argument that it must be true is not.
+  persistence_format: >-
+    The existing on-disk format, not a new one: fixed_structural_features_v1
+    (metadata.json + static.npy + local.npy + candidate_ptr.npy +
+    query_position.npy), written so that
+    mp_retrieval.structural_features.StructuralFeatureStore.load reads it
+    back unchanged. context_feature_store already constructs exactly this
+    object in memory; persistence writes the same arrays out.
+  adopt_only_if: >-
+    The split is behaviour-preserving AND is a small orchestration change
+    (a persist step, a load step, and a second Modal function shape). If it
+    would require substantial changes to the scientific code, the proven
+    single-container path is retained and the reason is written into
+    launch_authorization.gates.feature_build_equivalence_proved's note --
+    a documented decision, not silent abandonment.
+  never: >-
+    No feature formula, normalisation, dtype or column order changes for
+    systems convenience. If making the split cheap would require changing
+    what a feature means, the split is refused, not the feature.
+
+# --------------------------------------------------------------------------
+# Engineering prerequisites -- what does not exist yet
+# --------------------------------------------------------------------------
+
+engineering_prerequisites_before_execution:
+  m2_runner: >-
+    scripts/run_m2_qls_v2_freeze.py does not exist yet. It reads
+    m2_selection_matrix above (not M1A's declaration) and reuses
+    run_m1a_feature_screen.py's _cell_master_local / _widen_query /
+    _arm_store and run_sa_mlp_confirmation.py's _fit / _score_once
+    unmodified. It must support BASE, the QLS-CELL incumbent arms, and
+    QLS-UNIVERSAL. The universal arm is NOT added to M1A's own experiment
+    matrix: configs/m1a_feature_screen.yaml stays frozen, and
+    tests/test_m2_universal_schema.py already asserts the arm appears in no
+    M1A cell.
+  why_a_separate_runner: >-
+    Same reason M1B got its own: run_m1a_feature_screen.py's run() reads
+    its cells from M1A's frozen declaration and hard-fails on seed != 0 at
+    the CLI, and its _run_arm discards the per-query rows M2's
+    instrumentation requires. Editing it to serve M2 would also break the
+    code-identity premise the reuse audit depends on.
+  instrumentation: >-
+    The persistence listed in instrumentation_requirement.exact_fields_
+    every_new_m2_fit_writes has no implementation yet -- _run_arm saves no
+    checkpoint and returns no rows. This is new code, gated by its own
+    tests.
+  feature_store_persistence: >-
+    Required by feature_build_compute_check above, and separately useful:
+    M1A never persisted its stores, which is why every M2 cell has to
+    rebuild features it has already built once before.
+  modal_launcher: >-
+    scripts/modal_m2_qls_v2_freeze.py, registered in
+    scripts/spawn_modal_jobs.py, with its own _jobs builder -- M1A's
+    excludes musique_clean by construction (ALL_DATASETS), and M2 needs it.
+  musique_clean_data_availability: >-
+    musique_clean has never run a trained phase on any active workspace, so
+    its training-capable slice (nodes.npy, queries_all.npy, and the
+    edge_provenance_graphs subtree) is NOT known to be present where the
+    job would run. Verified before the launch, per musique_clean_
+    reintroduction.preconditions_to_verify_before_any_launch, not assumed.
+
+# --------------------------------------------------------------------------
+# Launch: chained, conditional. Gates, not a blanket go-ahead.
+# --------------------------------------------------------------------------
+
+launch_authorization:
+  status: GATES_OPEN_2026_09_07   # filed with amendment 2; flipped per gate as each is earned
+  rule: >-
+    The 15 new seed-0 fits (or whatever count the reuse audit leaves) are
+    authorised to launch without a further review stop once every gate
+    below is TRUE. If any gate is FALSE when checked at launch time,
+    execution stops before the full launch and returns for review -- this
+    file pre-authorises passing the gates, never working around a failed
+    one. The Modal launcher re-reads these gates at call time and refuses
+    the headline stage while any is false, the same mechanism
+    scripts/modal_m1b_targeted_resolution.py already uses.
+  gates:
+    amendment_filed: true             # this amendment, 2026-09-07, committed with tests/test_m2_declaration.py green
+    selection_rule_frozen: true       # universal_selection_rule above, CLOSED before any outcome and locked by tests
+    reuse_audit_passes: false         # scripts/m2_reuse_audit.py, including the bit-exact historical-arm probe
+    instrumentation_tests_pass: false # aggregate_from_rows == stored_aggregate, all five metrics, plus field presence
+    feature_build_equivalence_proved: false  # CPU-built store == current-path store, bit-exact -- or a filed decision to retain the proven path
+    compute_within_ceiling: false     # measured cost under compute.proposed_ceiling_usd ($9.00)
+    engineering_tests_pass: false     # tests/test_run_m2_qls_v2_freeze.py + the full repo suite
+    engineering_smoke_passes: false   # smoke_spec below, real, on Modal
+    musique_clean_data_verified: false  # its training-capable slice present on the workspace that will run it
+  smoke_spec:
+    purpose: PIPELINE_VALIDATION_ONLY_NO_SCIENTIFIC_CONCLUSION
+    primary:
+      dataset: 2wiki_clean
+      regime: R2
+      arms: [QLS-UNIVERSAL]
+      queries: 100        # this track's established diagnostic panel size, m1a_feature_screen.yaml#modal.smoke_queries
+      seed: 0
+      verifies:
+        - fourteen_column_schema
+        - node_role_column_present
+        - node_role_identically_zero
+        - support_and_path_columns_active
+        - total_parameters_equal_3585
+        - checkpoint_written
+        - per_query_rows_written
+        - aggregate_reconstructed_from_rows
+        - feature_store_fingerprint_recorded
+      why_this_cell: >-
+        An R1/R2 universal cell is the one that exercises the actually-new
+        contract: NODE_ROLE present in the schema but identically zero,
+        SUPPORT and PATH live, 14 columns, 3,585 parameters. 2wiki_clean/R2
+        rather than hotpotqa_clean/R2 because its feature build is ~5.8ms
+        per query against hotpot's ~85ms -- the same validation for a
+        fraction of the billed time, and the smoke is not the place to pay
+        hotpot's cost.
+    secondary_only_if_needed:
+      dataset: 2wiki_clean
+      regime: R3
+      arms: [QLS-UNIVERSAL]
+      queries: 100
+      condition: >-
+        Run only if the R2 smoke does not already establish that the
+        NODE_ROLE column is nonzero exactly on C3 \ Cq -- which it cannot,
+        since that column is zero by construction under R2. Treated as
+        expected-to-be-needed, kept minimal, and still pipeline validation
+        only.
+      verifies: [node_role_nonzero_exactly_on_c3_minus_cq]
+    no_scientific_interpretation: >-
+      No smoke result feeds scientific_questions, qls_cell,
+      universal_selection_rule, or any reported metric. Its only job is
+      proving the pipeline runs end to end on real Modal hardware.
+  after_gates_pass: >-
+    Launch the remaining new seed-0 fits automatically, one spawned call
+    per dataset (the RESUME_GRANULARITY convention every launcher in this
+    track uses), then produce m2_output below and stop.
+
+# --------------------------------------------------------------------------
+# What M2 produces
+# --------------------------------------------------------------------------
+
+m2_output:
+  script: scripts/m2_selection_report.py
+  artifact: outputs/m2_qls_v2_freeze/selection_report.json
+  tests: tests/test_m2_selection_report.py
+  contents:
+    - qls_cell_incumbent_map                      # already derived; carried into the report unchanged
+    - qls_universal_six_dataset_dataset_balanced_evaluation
+    - per_cell_deltas                             # cell_delta for all 14 cells, with the reference each used
+    - per_dataset_deltas                          # dataset_delta for all six
+    - macro_delta
+    - secondary_diagnostics_table                 # R@1, R@20, MRR, FullCov@20 at every level
+    - systems_and_parameter_table                 # params, train seconds, feature-build p50/p95/p99, peak VRAM/RSS
+    - verdict                                     # universal_selection_rule applied mechanically
+  applied_mechanically: >-
+    The verdict is computed by the script from the three frozen clauses,
+    and its conclusion is written back into this file -- never delivered
+    only in conversation (instrumentation_requirement.also_applies_to_
+    analysis_products).
+  qls_universal_is_not_modified_after_seeing_this: >-
+    Restated because it is the failure this whole ordering exists to
+    prevent. Whatever the report says, the candidate specification stays as
+    declared.
+
 # --------------------------------------------------------------------------
 # Standing prohibitions -- restated, unchanged in force
 # --------------------------------------------------------------------------
@@ -605,6 +1086,8 @@ standing_prohibitions_restated:
   - no_qls_tuning_against_gnn_results
   - no_substrate_switch_to_canonical_crag_before_LEGACY_DEVELOPMENT_FREEZE
   - no_current_substrate_result_described_as_final
+  - no_m2b_semantic_minimality_until_m2_has_selected_and_frozen_the_structural_universal_candidate
+  - no_extra_seeds_beyond_seed_zero_without_a_further_amendment
 reversal_note: >-
   The course decision does reverse two long-standing prohibitions, but only
   in later, separately-declared phases: GNN work (development-scale,
@@ -617,20 +1100,32 @@ reversal_note: >-
 # --------------------------------------------------------------------------
 
 after_this_file:
-  next_step: COMPUTE_ESTIMATE_THEN_STOP
+  next_step: EXECUTE_M2_UNDER_THE_GATES_THEN_STOP_FOR_REVIEW
+  superseded_next_step: COMPUTE_ESTIMATE_THEN_STOP   # amendment 1's; the estimate is now filed (compute above)
+  execution_order:
+    A: file_this_launch_amendment                    # this block
+    B: mechanical_reuse_audit                        # scripts/m2_reuse_audit.py
+    C: m2_runner_with_instrumentation_and_persistence
+    D: cpu_vs_current_feature_build_equivalence_probe
+    E: real_smoke                                    # launch_authorization.smoke_spec
+    F: launch_the_remaining_new_seed_zero_fits       # only with every gate true
+    G: universal_selection_report                    # m2_output
+    H: STOP_FOR_REVIEW
   what_stops: >-
-    Everything that spends compute. No musique_clean fit, no QLS-UNIVERSAL
-    fit, no GNN code, and no opening of the next phase's declaration runs on
-    the strength of this filing. The QLS-CELL derivation that this file
-    authorises has already run; its script, its tests and its map (in this
-    file) are what get committed. The compute estimate amendment 1
-    authorises is arithmetic over already-measured rates and spends nothing.
+    Everything past the M2 universal-selection verdict. No M2B semantic
+    minimality, no GNN code of any kind, no extra seeds, no new feature
+    families, no canonical CRAG, no Package F, no E2 resume -- none of them
+    runs on the strength of this filing or of M2's result, and each needs
+    its own separate dated declaration first. Within M2, nothing spends
+    compute until every launch_authorization gate is true; a false gate
+    stops execution and returns for review rather than being worked around.
   to_proceed_requires: >-
-    A further amendment to this file authorising the launch of the 15 new
-    fits, filed only after the compute estimate and the reuse audit exist
-    -- the same estimate -> smoke -> launch gate ordering M1A used for its
-    steps 3/4/5 -- or, for anything beyond M2's own scope, that phase's own
-    separate declaration file.
+    For M2's own launch: every gate in launch_authorization TRUE, which
+    this amendment pre-authorises earning but not bypassing. For anything
+    beyond M2's scope -- including M2B, which is explicitly not opened by
+    this amendment -- that phase's own separate declaration file, filed and
+    reviewed first, per the one-file-per-phase pacing the user settled on
+    2026-09-07.
   phases_that_follow_each_in_their_own_file:
     1: semantic_minimality            # S2 vs S3 vs the historical ~98K projection, around this file's frozen structure
     2: independent_gnn_development    # small validation-only screen, never tuned against QLS outcomes
