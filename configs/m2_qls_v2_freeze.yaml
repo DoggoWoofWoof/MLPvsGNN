@@ -1,0 +1,639 @@
+# M2 -- freeze the QLS-v2 candidate. First phase of the development
+# closure declared by the 2026-09-07 course decision.
+#
+# Status: DECLARED_NOT_LAUNCHED. Filed before any M2 fit exists.
+#
+# Chain to here, all frozen and unmodified by this file:
+#   M0A -> M0A.1 -> M0B -> M0C  zero-training availability map
+#   M1A (configs/m1a_feature_screen.yaml)  one-seed trained feature screen,
+#       44 arms / 13 cells / 5 datasets, seed=0, COMPLETE
+#   M1B (configs/m1b_targeted_resolution.yaml)  3-seed + bootstrap targeted
+#       resolution of exactly 4 R3 ambiguities, COMPLETE, result recorded as
+#       M1B_LEGACY_DEVELOPMENT_COMPLETE
+#
+# M2's job is to fix the complete candidate QLS-v2 specification -- one
+# schema, one architecture, one normalization, one loss, one hyperparameter
+# set -- and then SELECT it by testing that single specification for
+# Pareto-admissibility across all six current datasets, so that every later
+# phase (semantic minimality, the independent GNN screen, the QLS-vs-GNN
+# comparison, the minimality certificate) compares against a frozen target
+# rather than a moving one. It invents no feature family and reopens no
+# M1A/M1B verdict.
+
+substrate_scope: >-
+  DEVELOPMENT SUBSTRATE ONLY. squad_clean, 2wiki_clean, hotpotqa_clean,
+  metaqa, webqsp and musique_clean are the method-selection substrate for
+  this whole development track. Nothing produced under M2 -- or under any
+  phase before LEGACY_DEVELOPMENT_FREEZE -- may be described as a final or
+  canonical result. Canonical CRAG full-universe data is reserved for final
+  confirmation after the method is frozen. Same framing as
+  configs/m1b_targeted_resolution.yaml#result.substrate_scope; restated here
+  so this file stands alone.
+
+amendments:
+  - date: 2026-09-07
+    change: >-
+      User ruling on the one open implementation precondition, plus three
+      corrections to the initial filing, all before the first commit of
+      this file. (1) NODE_ROLE under R1/R2 -- option (a): universal_node_
+      role_policy = ZERO_WHEN_NOT_APPLICABLE. Reason: R1/R2 contain no
+      structurally admitted scored candidates (the scored set is Cq), so
+      NODE_ROLE's own definition (1 iff v in C3 \ Cq) evaluates to a
+      well-defined constant zero -- the feature's correct value, not a
+      hack. Purpose: keep the universal schema and architecture literally
+      identical across regimes; dropping the column would make the schema
+      regime-dependent and weaken the claim that QLS-UNIVERSAL is one fixed
+      representation. Implemented as a scoped compatibility path in
+      scripts/run_m1a_feature_screen.py (UNIVERSAL_ARM registered in
+      ARM_FAMILIES; _cell_master_local now emits the NODE_ROLE column for
+      every regime, zero outside R3; _arm_columns permits NODE_ROLE outside
+      R3 only for arms in ZERO_NODE_ROLE_WHEN_NOT_APPLICABLE and refuses a
+      nonzero column there). The historical M1A/M1B rule -- NODE_ROLE is an
+      R3-only tested family for every historical arm -- is unchanged and
+      still raises. Tests: tests/test_m2_universal_schema.py (R1/R2 column
+      shape and identically-zero; R3 semantics unchanged; the 14-column
+      model equals the 13-column model on any R1/R2 input, weights
+      transplanted; live counts 3,585 / 3,072 / 513, and 3,553 for the
+      13-column comparison). (2) musique_clean and squad_clean must
+      EVALUATE the universal model, not only BASE: both become R1 x {BASE,
+      QLS-UNIVERSAL}. A universal model selected "across all six datasets"
+      while never running its structural schema on two of them would be
+      misnamed; the two are the track's control datasets and their expected
+      nulls are evidence only if measured. R1-only scope for both stands on
+      the M0C evidence (1.00x R3_BOUNDED growth). (3) QLS-CELL and
+      QLS-UNIVERSAL are kept conceptually separate: QLS-CELL is the
+      historical/development incumbent map (confirmed where M1B exists,
+      provisional where only M1A evidence exists -- never silently
+      promoted); QLS-UNIVERSAL is a NEW object M2 selects by testing
+      Pareto-admissibility per cell, not a union of cell winners. The
+      workload was recomputed from the scientific matrix rather than
+      preserved at the earlier "14": 15 new fits, 19 reused seed-0 fits, 34
+      logical fits (m2_selection_matrix below). this_file_authorises is
+      extended to the compute estimate for that matrix (spends nothing);
+      launch stays unauthorised pending a further amendment, the same
+      estimate -> smoke -> launch gate ordering M1A used for its steps 3/4/5.
+
+status: DECLARED_NOT_LAUNCHED
+this_file_authorises: >-
+  file_this_declaration_derive_qls_cell_from_already_completed_m1a_and_m1b_evidence_and_estimate_m2_compute
+# The QLS-CELL derivation (scripts/m2_qls_cell_derivation.py) is read-only
+# over results that already exist; the compute estimate is arithmetic over
+# M1A's real measured rates. Neither spends compute, launches, or fits.
+does_not_authorise:
+  - launching_the_musique_clean_screen          # designed below, not authorised
+  - launching_any_qls_universal_fit             # specified below, not authorised
+  - any_gnn_work_of_any_kind                    # a separate, later file
+  - the_semantic_minimality_study               # a separate, later file
+  - the_development_qls_vs_gnn_comparison       # a separate, later file
+  - the_minimality_certificate                  # a separate, later file
+  - running_five_seed_confirmation
+  - tuning_qls_against_gnn_results
+  - training_r3_full_reexpansion
+  - changing_a64
+  - adding_h2_h3
+  - adding_new_feature_families_or_new_formulas_within_a_family
+  - reopening_m1a_or_m1b_verdicts
+  - reopening_d_series_conclusions
+  - inspecting_package_f
+  - resuming_e2
+  - switching_the_active_substrate_to_canonical_crag
+  - describing_any_current_substrate_result_as_final
+
+# --------------------------------------------------------------------------
+# What M2 answers, and what it explicitly does not
+# --------------------------------------------------------------------------
+
+scientific_questions:
+  qls_cell: >-
+    Per (dataset, regime) cell, what is the incumbent feature subset the
+    already-completed validation evidence supports -- and, for each one, is
+    that support a real bootstrap confirmation or only a one-seed point
+    estimate? Answered below from existing evidence; no new fit.
+  qls_universal: >-
+    Is one single frozen specification -- schema, architecture,
+    normalization, loss, hyperparameters, applied identically to all six
+    datasets -- Pareto-admissible in every cell against BASE and against
+    the QLS-CELL incumbent where one exists? If yes, it is the selected
+    universal model every later phase tests against. If it fails in a
+    cell, this file records where and by how much; it does not retune.
+  musique_reintroduction: >-
+    musique_clean has real zero-training M0B/M0C evidence but has never been
+    through any trained phase. What is the smallest screen that brings it
+    into the development substrate on the same footing as the other five
+    AND actually evaluates the universal schema on it?
+  out_of_scope: >-
+    Everything else. M2 does not re-run M1A's screen, does not re-test any
+    M1B verdict, does not choose between QLS and a GNN, does not compare
+    semantic rungs, and does not remove features to certify minimality --
+    each of those is its own later, separately declared phase.
+
+# --------------------------------------------------------------------------
+# QLS-CELL -- the incumbent map, derived mechanically from completed evidence
+# --------------------------------------------------------------------------
+
+qls_cell:
+  definition: >-
+    The historical/development INCUMBENT map: per (dataset, regime) cell,
+    the feature subset already-completed validation evidence supports,
+    labelled by how strong that evidence is. Confirmed where an M1B
+    bootstrap exists; provisional where only M1A one-seed evidence exists.
+    A per-cell finding and a comparator for M2's selection -- not a
+    deployable model, and not what QLS-UNIVERSAL is derived from.
+  derivation:
+    script: scripts/m2_qls_cell_derivation.py
+    artifact: outputs/m2_qls_v2_freeze/qls_cell_derivation.json
+    tests: tests/test_m2_qls_cell_derivation.py
+    inputs:
+      - outputs/m1a_feature_screen/headline/{squad_clean,2wiki_clean,hotpotqa_clean,metaqa,webqsp}.json
+      - outputs/m1b_targeted_resolution/m1b_result_map.json
+    why_a_committed_script_and_a_map_inside_this_file: >-
+      M1A's own step-6 classification map was "delivered to the user in
+      chat, not duplicated into this file" (configs/m1a_feature_screen.yaml
+      amendment, 2026-09-05). It was therefore not recoverable from any repo
+      file, and had to be re-derived from the raw headline JSONs before M2
+      could state QLS-CELL honestly -- real rework caused purely by an
+      unfiled result. Three things prevent a recurrence: the derivation is
+      a committed script; its tests are committed and cross-check the
+      script's output against the real M1A/M1B evidence; and the resulting
+      map is written INTO this file (map: below), where
+      tests/test_m2_declaration.py locks it against the script's output.
+      The JSON artifact itself lives under outputs/, which this repo
+      gitignores for every result artifact (M1B's included) -- it is
+      regenerable in seconds from committed code over the same inputs, not
+      a source of truth. Same lesson as M1B's amendment 5 (mid-flight
+      row-capture correction); see instrumentation_requirement below.
+  m1a_labelling_rule_reproduced_faithfully: >-
+    M1A issued no PROMOTED and no HARMFUL label anywhere, on any cell. Both
+    labels require "uncertainty not overlapping zero", which a one-seed
+    screen structurally cannot supply, so every |delta R@5| > 0.25pp result
+    -- gray-zone or material-magnitude alike -- fell back to
+    UNRESOLVED_BY_FILED_RULE (m1a_feature_screen.yaml amendment 2026-09-05).
+    The derivation reproduces that behaviour rather than the idealised
+    four-label rule. This matters concretely: reproducing the idealised rule
+    would label webqsp/R3 NODE_ROLE (+2.358pp, one seed) PROMOTED, and M1B
+    then failed to confirm exactly that effect.
+  map:
+    squad_clean:
+      R1: {features: [], status: NO_STRUCTURAL_ARMS_DECLARED}
+    2wiki_clean:
+      R1: {features: [], status: NO_EFFECT_M1A_ONLY}
+      R2: {features: [], status: NO_EFFECT_M1A_ONLY}
+      R3:
+        features: [NODE_ROLE]
+        status: MIXED_SEE_PER_FEATURE
+        per_feature:
+          NODE_ROLE: UNRESOLVED_PROVISIONAL_M1A_ONE_SEED_ONLY
+          SUPPORT: M1B_BOOTSTRAP_NOT_CONFIRMED
+          GEOMETRY: UNRESOLVED_NEVER_TESTED_BY_M1B
+          PATH: UNRESOLVED_NEVER_TESTED_BY_M1B
+    hotpotqa_clean:
+      R1: {features: [SUPPORT], status: UNRESOLVED_PROVISIONAL_M1A_ONE_SEED_ONLY}
+      R2: {features: [SUPPORT], status: UNRESOLVED_PROVISIONAL_M1A_ONE_SEED_ONLY}
+      R3: {features: [SUPPORT], status: M1B_BOOTSTRAP_CONFIRMED}
+    metaqa:
+      R1: {features: [], status: NO_EFFECT_M1A_ONLY}
+      R2: {features: [PATH], status: UNRESOLVED_PROVISIONAL_M1A_ONE_SEED_ONLY}
+      R3: {features: [PATH], status: M1B_BOOTSTRAP_CONFIRMED}
+    webqsp:
+      R1: {features: [], status: NO_STRUCTURAL_ARMS_DECLARED}
+      R2: {features: [], status: NO_STRUCTURAL_ARMS_DECLARED}
+      R3: {features: [], status: M1B_BOOTSTRAP_NOT_CONFIRMED}
+    musique_clean:
+      status: NO_TRAINED_EVIDENCE_YET
+      note: see musique_clean_reintroduction below
+  what_is_actually_confirmed: >-
+    Exactly two cells in the entire development substrate carry a
+    bootstrap-confirmed structural feature: hotpotqa_clean/R3 (SUPPORT,
+    +1.38pp, CI [1.00, 1.78]pp) and metaqa/R3 (PATH, +0.87pp, CI [0.60,
+    1.15]pp). Everything else is either a genuine null, an untested
+    alternative, or a one-seed point estimate carried forward provisionally.
+    Provisional cells are never silently promoted by this file or by M2's
+    selection; they remain provisional until something tests them.
+  named_open_risks:
+    2wiki_node_role: >-
+      2wiki_clean/R3's NODE_ROLE sits in QLS-CELL on one-seed evidence only
+      (+2.625pp). M1B never tested "BASE+NODE_ROLE vs BASE" on 2wiki_clean;
+      it tested only whether SUPPORT adds anything on top of an assumed
+      NODE_ROLE base (it does not: +0.22pp, CI [-0.28, 0.72]pp). The one
+      time a comparable NODE_ROLE point estimate was properly tested --
+      webqsp/R3, +2.358pp at seed 0 -- it did not survive (CI [-4.10,
+      5.23]pp, one seed outright negative). This is a live risk, not a
+      resolved question. M2 does not resolve it; QLS-UNIVERSAL's design
+      below makes resolving it unnecessary for the frozen model, and the
+      later minimality certificate is where it gets decided on evidence.
+    regime_carryover: >-
+      M1B tested R3 only ("no regime other than R3",
+      m1b_targeted_resolution.yaml#scientific_questions.out_of_scope). Every
+      R1/R2 feature in the map above is therefore PROVISIONAL, inherited
+      from a regime-neighbouring confirmation, never itself confirmed.
+    untested_tied_alternatives: >-
+      2wiki_clean/R3's GEOMETRY (+2.583pp) and PATH (+2.375pp) are
+      effectiveness-tied with the arms that were tested (spread 0.21pp,
+      inside the filed tolerance) and lost only the systems tie-break. They
+      are unconfirmed, not rejected. Reopening them is not authorised here.
+
+# --------------------------------------------------------------------------
+# QLS-UNIVERSAL -- the candidate to be selected. One spec, six datasets.
+# --------------------------------------------------------------------------
+
+qls_universal:
+  definition: >-
+    One specification applied identically to all six datasets and every
+    declared regime: identical feature schema, identical column order,
+    identical input width, identical architecture, identical normalization,
+    identical loss, identical hyperparameters, identical training protocol,
+    identical trainable parameter count. Weights are fit per (dataset,
+    regime) cell -- as in every phase of this track -- but nothing about the
+    specification varies by cell. It is a NEW object M2 selects, not a
+    union of QLS-CELL winners: the candidate schema below is a reasonable
+    candidate because each structural family helped somewhere, but it is
+    the selected universal model only once m2_selection_matrix shows it
+    Pareto-admissible in every cell. Once selected, it is the object the
+    GNN is later compared against and the object the minimality
+    certificate later ablates.
+  feature_schema:
+    frozen_column_order: [
+      seed_identity,                       # precomputed 0-3: base_columns() order, m1a_screen.py
+      dense_reciprocal_rank,
+      splade_reciprocal_rank,
+      retriever_agreement,
+      node_role_is_structurally_admitted,  # precomputed 4-8: arm_families_tuple order via _arm_columns()
+      support_seed_connections,
+      path_length_1,
+      path_length_2,
+      path_length_3,
+      cosine_qd,                           # 9-13: SemanticHead(S3).feature_names, verbatim, appended last
+      dot_qd_pct,
+      mean_abs_diff,
+      semantic_product,
+      semantic_difference,
+    ]
+    column_order_source: >-
+      M1AScorer.forward_explicit concatenates [structural_features, semantic]
+      -- precomputed block first, live semantic block last. Within the
+      precomputed block, scripts/run_m1a_feature_screen.py::_arm_columns
+      emits BASE's four columns then each family in the arm's ARM_FAMILIES
+      tuple order. The semantic names are SemanticHead's own feature_names,
+      not relabelled. tests/test_m2_declaration.py asserts the semantic
+      block against the live module and the precomputed block against the
+      registered arm's family tuple.
+    arm_name: "BASE+NODE_ROLE+SUPPORT+PATH"
+    arm_families_tuple: [NODE_ROLE, SUPPORT, PATH]   # registered verbatim as run_m1a_feature_screen.UNIVERSAL_ARM
+    width: 14
+    precomputed_width: 9        # M1AScorer's precomputed_width= argument: 4 BASE + 1 NODE_ROLE + 1 SUPPORT + 3 PATH
+    semantic_feature_count: 5   # SemanticHead(rung=S3).feature_names, computed live per query, not precomputed
+    families: [SEED, RETRIEVAL, SEMANTIC_S3, NODE_ROLE, SUPPORT, PATH]
+    every_family_is_preexisting: >-
+      All six are already-frozen catalog families reused verbatim (SEED /
+      RETRIEVAL / NODE_ROLE / SUPPORT / PATH per
+      m1a_feature_screen.yaml#feature_catalog, S3 per
+      base.semantic_rung). No new family, no new formula inside a family,
+      no re-representation of SUPPORT or PATH. GEOMETRY, DIFFUSION and
+      TOPOLOGY are excluded -- see excluded_families below.
+    why_all_three_structural_families_are_always_present: >-
+      QLS-UNIVERSAL is deliberately NOT the union of the per-cell QLS-CELL
+      findings, and deliberately not validation-selected per dataset.
+      Selecting its schema per dataset would (a) make "one schema across
+      six datasets" false by construction, (b) bake the named open risks
+      above into the frozen model -- 2wiki's unconfirmed NODE_ROLE would
+      decide a column's existence -- and (c) leave the minimality
+      certificate nothing to ablate, since a pre-minimised schema cannot be
+      tested for minimality. Including all three, testing the whole for
+      admissibility in every cell, and letting the certificate remove them
+      one at a time on evidence is the design that answers the question
+      rather than assuming it.
+    universal_node_role_policy:
+      policy: ZERO_WHEN_NOT_APPLICABLE
+      ruled_by: user, 2026-09-07 (amendment 1)
+      contract: >-
+        QLS-UNIVERSAL input schema: always 14 columns.
+        NODE_ROLE(v) = 0 for every scored candidate under R1;
+        NODE_ROLE(v) = 0 for every scored candidate under R2;
+        NODE_ROLE(v) = 1 iff v in C3 \ Cq, 0 iff v in Cq, under R3.
+        Same column order, same input width, same M1AScorer architecture,
+        same 3,585 trainable parameters, same formulas, same hyperparameters
+        across every dataset and regime.
+      why_zero_is_the_feature_value_not_a_placeholder: >-
+        Under R1 and R2 the scored set is Cq by construction
+        (run_m1a_feature_screen.py::_cell_master_local), so C3 \ Cq is
+        empty and the family's own definition evaluates to 0 for every
+        scored candidate. m1a_feature_screen.yaml#feature_catalog.NODE_ROLE.
+        constant_under_r1_r2 already states this fact; M2 keeps the column
+        so the schema is literally regime-independent.
+      scoped_implementation: >-
+        run_m1a_feature_screen.py: UNIVERSAL_ARM is registered in
+        ARM_FAMILIES with families (NODE_ROLE, SUPPORT, PATH);
+        _cell_master_local emits the NODE_ROLE column for every regime
+        (node_role_column under R3, an explicit zero column otherwise);
+        _arm_columns permits NODE_ROLE outside R3 only for arms in
+        ZERO_NODE_ROLE_WHEN_NOT_APPLICABLE and raises if that column is not
+        identically zero there. Every historical M1A/M1B arm is unchanged:
+        BASE+NODE_ROLE under R1/R2 still raises, and every historical arm's
+        store is column-for-column identical to before (the NODE_ROLE
+        column exists in the in-memory master block for R1/R2 but no
+        historical arm reads it).
+      tests: tests/test_m2_universal_schema.py
+      parameter_accounting_under_r1_r2: >-
+        The 32 first-layer weights connected to the NODE_ROLE input receive
+        a zero input under R1/R2 and therefore no gradient; they are dead
+        weight in those regimes by design, and the price of insisting on
+        one universal architecture. Parameter count stays 3,585 everywhere.
+        The 14-column model is functionally identical to a 13-column model
+        with those weights removed on any R1/R2 input -- tested by weight
+        transplant, not by metric agreement after training.
+  excluded_families:
+    GEOMETRY:
+      reason: >-
+        Not excluded for weakness -- it is one of the tied 2wiki/R3
+        alternatives. Excluded because including it would widen the frozen
+        schema by 3 columns on the strength of a single dataset's untested
+        one-seed tie, and because its column 0 overlaps SEED (already in
+        BASE), making its true addition 3 columns of geometry the catalog
+        rated ADMITTED only on 2wiki/CAND. Recorded as an exclusion by
+        parsimony, reversible only by a future declaration, never silently.
+    DIFFUSION: {reason: "NEGLIGIBLE on the only cell ever measured (2wiki/CAND, D7); excluded from M1A's matrix for the same reason"}
+    TOPOLOGY: {reason: "NEGLIGIBLE, same basis as DIFFUSION"}
+  architecture:
+    scorer: src/mp_retrieval/m1a_screen.py::M1AScorer
+    unchanged_from_m1a: true
+    semantic_head: "src/mp_retrieval/qls_v2_semantic.py::SemanticHead(rung=S3, dim=1536)"
+    head_width: 32
+    head: "nn.Sequential(Linear(width, 32), GELU, Dropout(0.2), Linear(32, 1))"
+    why_unchanged: >-
+      M1A and M1B both fit this exact scorer. Changing the architecture at
+      freeze time would invalidate the reuse of every completed fit and make
+      QLS-CELL's evidence non-comparable with QLS-UNIVERSAL's. The freeze
+      fixes what already ran; it does not redesign it.
+  parameter_count:
+    total: 3585
+    semantic: 3072       # 2 * frozen_embedding_dim (1536), S3
+    scorer: 513          # 32 * 14 + 32 (bias) + 32 + 1 (output layer)
+    thirteen_column_comparison_model: 3553   # scorer 481; used only by the R1/R2 equivalence test, never fit
+    derivation_check: >-
+      scorer params = 32*in_dim + 65. Verified against three real M1A arms
+      at three widths: BASE (in_dim 9) -> 353, observed 3425-3072=353;
+      BASE+SUPPORT (in_dim 10) -> 385, observed; BASE+PATH (in_dim 12) ->
+      449, observed. QLS-UNIVERSAL's in_dim 14 -> 513. Arithmetic, not an
+      estimate -- and asserted live against the instantiated module in
+      tests/test_m2_declaration.py and tests/test_m2_universal_schema.py,
+      per this track's standing never-assume-a-parameter-count discipline
+      (m1a_feature_screen.yaml#model_architecture.head_width.live_verification).
+    context: >-
+      3,585 parameters against historical QLS-v1's ~213K, of which 98,304
+      is the fixed 768->64 projection this line of work exists to question.
+  normalization: candidate            # qls_local_features(normalisation="candidate"), hardcoded, unchanged
+  loss: listwise                      # run_sa_mlp_confirmation.py::_fit, reused unmodified
+  hyperparameters:
+    epochs: 3
+    learning_rate: 1.0e-3
+    weight_decay: 1.0e-4
+    dropout: 0.2
+    temperature: 0.07
+    batch_size: 16
+    holdout_fraction: 0.2
+    per_seed_cap: 16
+    neighbour_scan_cap_per_seed: 4096
+    device: cuda
+    source: >-
+      Every value above is what scripts/modal_m1a_feature_screen.py's
+      _runner_args already hardcodes, and what M1A's 44 arms and M1B's 27
+      fits actually ran under. Frozen by transcription, not by new choice --
+      no hyperparameter is tuned by or for M2.
+  regimes: [R1, R2, R3]               # R1/R2/R3_BOUNDED exactly as frozen in M1A; R3_FULL never trained
+  seeds:
+    m2_seeds: 1
+    seed_values: [0]
+    why_one: >-
+      Compute ladder, unchanged: cheap validation -> one seed -> only
+      genuinely ambiguous decisions get 3. Every reused comparator is a
+      seed-0 fit, so the new fits are seed 0 too. A cell whose
+      admissibility verdict lands in the gray zone (see
+      m2_selection_matrix.admissibility_rule) is the only thing that earns
+      a 3-seed expansion, and only by a further amendment.
+    five_seed_confirmation: RESERVED_FOR_CANONICAL_DATA_NOT_AUTHORISED_ANYWHERE_IN_DEVELOPMENT
+  weights_are_fit_per_cell_not_jointly: >-
+    Explicit, because "one universal model" is ambiguous: the SPECIFICATION
+    is universal, the WEIGHTS are fit per (dataset, regime) cell, exactly as
+    in M1A/M1B. No cross-dataset joint training happens anywhere in this
+    track, and introducing it would be a new architectural decision nothing
+    has asked for.
+
+# --------------------------------------------------------------------------
+# M2 selection matrix -- what gets compared, per cell. Not authorised to run.
+# --------------------------------------------------------------------------
+
+m2_selection_matrix:
+  comparators_per_cell: >-
+    In every cell QLS-UNIVERSAL is compared against BASE (the floor) and,
+    where QLS-CELL names one, against the incumbent arm. Both comparators
+    already exist as real seed-0 fits and are REUSED, never refit, subject
+    to the reuse audit below. Only QLS-UNIVERSAL is new -- plus both
+    musique_clean arms, since musique_clean has no trained fit of any kind.
+  cells:
+    squad_clean:
+      R1: {BASE: reuse_m1a_seed0, QLS-UNIVERSAL: new}
+    2wiki_clean:
+      R1: {BASE: reuse_m1a_seed0, QLS-UNIVERSAL: new}
+      R2: {BASE: reuse_m1a_seed0, QLS-UNIVERSAL: new}
+      R3: {BASE: reuse_m1a_seed0, "BASE+NODE_ROLE": reuse_m1a_seed0_incumbent_provisional, QLS-UNIVERSAL: new}
+    hotpotqa_clean:
+      R1: {BASE: reuse_m1a_seed0, "BASE+SUPPORT": reuse_m1a_seed0_incumbent_provisional, QLS-UNIVERSAL: new}
+      R2: {BASE: reuse_m1a_seed0, "BASE+SUPPORT": reuse_m1a_seed0_incumbent_provisional, QLS-UNIVERSAL: new}
+      R3: {BASE: reuse_m1a_seed0, "BASE+SUPPORT": reuse_m1a_seed0_incumbent_confirmed, QLS-UNIVERSAL: new}
+    metaqa:
+      R1: {BASE: reuse_m1a_seed0, QLS-UNIVERSAL: new}
+      R2: {BASE: reuse_m1a_seed0, "BASE+PATH": reuse_m1a_seed0_incumbent_provisional, QLS-UNIVERSAL: new}
+      R3: {BASE: reuse_m1a_seed0, "BASE+PATH": reuse_m1a_seed0_incumbent_confirmed, QLS-UNIVERSAL: new}
+    webqsp:
+      R1: {BASE: reuse_m1a_seed0, QLS-UNIVERSAL: new}
+      R2: {BASE: reuse_m1a_seed0, QLS-UNIVERSAL: new}
+      R3: {BASE: reuse_m1a_seed0, QLS-UNIVERSAL: new}   # BASE+NODE_ROLE is not an incumbent here: M1B NOT_CONFIRMED
+    musique_clean:
+      R1: {BASE: new, QLS-UNIVERSAL: new}
+  workload:
+    cells: 14
+    new_fits: 15            # 13 QLS-UNIVERSAL + musique_clean BASE + musique_clean QLS-UNIVERSAL
+    reused_fits: 19         # 13 BASE + 6 incumbents (2wiki R3; hotpot R1/R2/R3; metaqa R2/R3)
+    logical_fits: 34
+    seeds_per_fit: 1
+    recomputed_not_preserved: >-
+      The initial filing said 14 fits (13 QLS-UNIVERSAL + one musique BASE).
+      Amendment 1 added musique_clean's QLS-UNIVERSAL arm; the count is
+      recomputed from the matrix above, and tests/test_m2_declaration.py
+      derives it from the matrix rather than asserting a literal.
+  admissibility_rule:
+    source: configs/m1a_feature_screen.yaml#selection_rule, applied verbatim
+    primary_metric: recall_at_5
+    per_cell: >-
+      QLS-UNIVERSAL is ADMISSIBLE in a cell if its R@5 is within the filed
+      +/-0.25pp tolerance of, or better than, the best comparator in that
+      cell (BASE, or the incumbent where one exists). It is INADMISSIBLE
+      in a cell if it regresses that comparator by more than the filed
+      0.50pp material threshold. Strictly between the two it is GRAY --
+      the only outcome that earns a 3-seed expansion, by further amendment.
+      Parameter count is constant by construction and uncached feature
+      build p95 is shared per cell, so the lexicographic systems tie-break
+      cannot separate arms here; effectiveness decides, systems are
+      reported.
+    universal_verdict: >-
+      SELECTED_UNIVERSAL only if ADMISSIBLE in all 14 cells. Otherwise the
+      result records every failing cell and its magnitude, and the
+      candidate is NOT_SELECTED_AS_FILED. No schema is reduced or retuned
+      inside M2 in response -- a reduced universal schema is a new
+      candidate for a new declaration, and the minimality certificate is
+      the phase built to remove families on evidence.
+    secondary_diagnostics_reported_never_deciding: [recall_at_1, recall_at_20, mrr, full_coverage_at_20, ceiling_attainment_at_5]
+  reuse_audit_required_before_launch: >-
+    M1B's audit (scripts/m1b_reuse_audit.py) proved reuse via git-HEAD
+    identity with the M1A launch commit. That identity no longer holds:
+    HEAD has moved for M1B's own commit and for amendment 1's scoped runner
+    change. M2's audit must therefore reason per change rather than per
+    HEAD: the only trainer/feature-builder source change since M1A's launch
+    is the universal-schema path in run_m1a_feature_screen.py, and it
+    leaves every historical arm's store column-for-column identical (pinned
+    by tests/test_run_m1a_feature_screen.py::test_arm_columns_selects_the_
+    declared_family_slots_in_order and tests/test_m2_universal_schema.py).
+    All 19 reused fits are historical arms. Where a seed-0 fit exists both
+    in M1A and in M1B's execution_2 re-run (the four R3 cells), prefer the
+    M1B one: it carries per-query rows, which a gray-zone expansion would
+    need. To be filed as part of the launch amendment, not assumed here.
+  compute_estimate: >-
+    Authorised by amendment 1, not yet produced. Inputs are M1A's own real
+    measured rates (per-cell uncached feature build, per-train-query fit
+    seconds) from configs/m1a_feature_screen.yaml#compute.derivation and
+    the real M1A headline JSONs; 15 new fits over 14 cells, musique_clean's
+    feature build being the only cell with no prior M1A-scale measurement
+    (M0B/M0C measured it at zero-training scale). Filed as a follow-up
+    amendment with its derivation shown, before any launch amendment.
+
+# --------------------------------------------------------------------------
+# musique_clean -- reintroduction, derived from M0C's own map
+# --------------------------------------------------------------------------
+
+musique_clean_reintroduction:
+  prior_status: OUT_OF_SCOPE_FOR_M1A     # m1a_feature_screen.yaml#datasets.musique_clean
+  why_it_was_deferred: >-
+    M0C found musique_clean's R3_BOUNDED context growth is exactly 1.00x
+    (docs/M0C_BOUNDED_R3_RESULTS.md), and its entire residual gold gap is 4
+    instances in total, of which R3_BOUNDED recovers 0. M0C Step 7 grouped
+    it with squad_clean as "deprioritized ... at or near ceiling already --
+    no family can improve what is barely missing". M1A found no condition it
+    supplied that squad_clean did not already cover.
+  why_it_returns_now: >-
+    The course decision requires the universal model to be developed over
+    all six current datasets. That is a coverage requirement -- and
+    coverage means the universal schema is actually evaluated here, not
+    that the dataset merely appears in a table with a BASE number.
+  proposed_cells:
+    R1: {arms: [BASE, QLS-UNIVERSAL], why: "BASE is the floor; QLS-UNIVERSAL is the object under selection. Both new -- musique_clean has no trained fit of any kind."}
+  why_r1_only: >-
+    Mechanical, not a judgement call: squad_clean's R2/R3 cells were skipped
+    because "context growth is 1.00x over R1 in every M0C measurement --
+    there is no repair happening on this dataset for a second or third
+    regime cell to isolate" (m1a_feature_screen.yaml#datasets.squad_clean.
+    why_only_one_regime). musique_clean's M0C growth ratio is the same 1.00x.
+    The same rule therefore yields the same regime scope. It does NOT yield
+    a BASE-only arm scope -- see the next key.
+  why_the_universal_arm_is_mandatory_here: >-
+    Reintroduced means evaluated. Running only BASE would let a universal
+    model be "selected across all six datasets" while its structural
+    schema was never once fit on this one. musique_clean and squad_clean
+    are the track's control datasets: the expected null (structure earns
+    nothing at or near ceiling) is evidence only if it is measured, and a
+    material regression here would be exactly the kind of universal-schema
+    failure M2 exists to catch.
+  why_no_other_structural_arms: >-
+    Same M0C rule, same evidence: a single family cannot demonstrate value
+    on 4 total missing gold instances, 0 of them structurally recoverable.
+    Declaring GEOMETRY/SUPPORT/PATH/NODE_ROLE arms individually would spend
+    compute reproducing a null M0C already establishes structurally. The
+    universal arm is the one structural test that carries information here.
+  squad_clean_gets_the_same_treatment: >-
+    squad_clean's M1A cell was R1 x {BASE}. In M2 it is R1 x {BASE (reused),
+    QLS-UNIVERSAL (new)} for exactly the reason above -- see
+    m2_selection_matrix.cells.squad_clean.
+  preconditions_to_verify_before_any_launch:
+    - musique_clean node embeddings exist at the frozen 1536-dim width M1A asserts at load time.
+    - Its candidate contract passes the same BIT_EXACT_FROZEN_CANDIDATE_EQUIVALENCE gate every M1A/M1B result carries.
+    - Its A64 admission set was built with the unchanged STRUCTURAL_NEIGHBOUR / graph_expansion_cap=64 construction.
+    - none_of_these_are_assumed_here: true
+
+# --------------------------------------------------------------------------
+# Instrumentation -- adopted immediately, no gate
+# --------------------------------------------------------------------------
+
+instrumentation_requirement:
+  status: ADOPTED_IMMEDIATELY
+  why_no_gate: >-
+    This is a lesson already paid for. M1B's amendment 5 caught mid-flight
+    that per-query rows were not being written, forcing a re-run of work
+    that had already completed. The requirement below prevents a repeat; it
+    costs nothing and gates nothing.
+  every_future_fit_must_persist_from_its_first_execution:
+    - model_checkpoint
+    - per_query_prediction_and_outcome_rows
+    - aggregate_metrics
+    - query_ids
+    - candidate_ids
+    - configuration_fingerprint
+    - source_commit
+    - dataset_fingerprint
+    - feature_store_fingerprint
+    - train_and_inference_timings
+    - peak_memory
+    - parameter_count
+  applies_to: every_fit_in_m2_and_every_later_development_phase
+  also_applies_to_analysis_products: >-
+    A classification map, a result map or a selection derivation is
+    produced by a committed script, locked by committed tests, and its
+    conclusion is written into the phase's declaration -- never delivered
+    only in conversation. M1A's unfiled step-6 map is the counterexample;
+    see qls_cell.derivation.why_a_committed_script_and_a_map_inside_this_file.
+
+# --------------------------------------------------------------------------
+# Standing prohibitions -- restated, unchanged in force
+# --------------------------------------------------------------------------
+
+standing_prohibitions_restated:
+  - no_five_seed_confirmation_anywhere_in_development
+  - no_package_f
+  - no_e2_resume
+  - no_a64_changes
+  - no_new_feature_families_beyond_this_file's_schema
+  - no_h2_h3
+  - no_r3_full_reexpansion_training
+  - no_qls_tuning_against_gnn_results
+  - no_substrate_switch_to_canonical_crag_before_LEGACY_DEVELOPMENT_FREEZE
+  - no_current_substrate_result_described_as_final
+reversal_note: >-
+  The course decision does reverse two long-standing prohibitions, but only
+  in later, separately-declared phases: GNN work (development-scale,
+  validation-only, never tuned against QLS outcomes) and musique_clean's
+  reintroduction. musique_clean's return is scoped by this file.
+  GNN work is NOT authorised by this file in any form.
+
+# --------------------------------------------------------------------------
+# After this file
+# --------------------------------------------------------------------------
+
+after_this_file:
+  next_step: COMPUTE_ESTIMATE_THEN_STOP
+  what_stops: >-
+    Everything that spends compute. No musique_clean fit, no QLS-UNIVERSAL
+    fit, no GNN code, and no opening of the next phase's declaration runs on
+    the strength of this filing. The QLS-CELL derivation that this file
+    authorises has already run; its script, its tests and its map (in this
+    file) are what get committed. The compute estimate amendment 1
+    authorises is arithmetic over already-measured rates and spends nothing.
+  to_proceed_requires: >-
+    A further amendment to this file authorising the launch of the 15 new
+    fits, filed only after the compute estimate and the reuse audit exist
+    -- the same estimate -> smoke -> launch gate ordering M1A used for its
+    steps 3/4/5 -- or, for anything beyond M2's own scope, that phase's own
+    separate declaration file.
+  phases_that_follow_each_in_their_own_file:
+    1: semantic_minimality            # S2 vs S3 vs the historical ~98K projection, around this file's frozen structure
+    2: independent_gnn_development    # small validation-only screen, never tuned against QLS outcomes
+    3: development_qls_vs_gnn_comparison
+    4: minimality_certificate         # remove-one-at-a-time over this file's 14-column schema
+    5: LEGACY_DEVELOPMENT_FREEZE      # then, and only then, canonical CRAG migration

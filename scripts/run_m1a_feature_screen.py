@@ -124,9 +124,10 @@ REGIMES = ("R1", "R2", "R3")
 KS = (1, 5, 20)
 
 #: Column ranges into one cell's master block (BASE[4] GEOMETRY[3] SUPPORT[1]
-#: PATH[3] NODE_ROLE[1], NODE_ROLE present only when the cell's regime is R3).
-#: FAMILY_COLUMNS (m1a_screen.py) slices qls_local_features' own 10-column
-#: output; this slices the master block _cell_master_local assembles from it.
+#: PATH[3] NODE_ROLE[1]). NODE_ROLE is always present: real under R3,
+#: identically zero under R1/R2 -- see _cell_master_local. FAMILY_COLUMNS
+#: (m1a_screen.py) slices qls_local_features' own 10-column output; this
+#: slices the master block _cell_master_local assembles from it.
 MASTER_COLUMNS: dict[str, slice] = {
     "BASE": slice(0, 4),
     "GEOMETRY": slice(4, 7),
@@ -134,6 +135,9 @@ MASTER_COLUMNS: dict[str, slice] = {
     "PATH": slice(8, 11),
     "NODE_ROLE": slice(11, 12),
 }
+
+#: M2's universal schema, configs/m2_qls_v2_freeze.yaml#qls_universal.
+UNIVERSAL_ARM = "BASE+NODE_ROLE+SUPPORT+PATH"
 
 #: Arm name -> extra families beyond BASE. Mirrors the declaration's arm
 #: vocabulary (configs/m1a_feature_screen.yaml#feature_catalog); not read
@@ -144,7 +148,13 @@ ARM_FAMILIES: dict[str, tuple[str, ...]] = {
     "BASE+SUPPORT": ("SUPPORT",),
     "BASE+PATH": ("PATH",),
     "BASE+NODE_ROLE": ("NODE_ROLE",),
+    UNIVERSAL_ARM: ("NODE_ROLE", "SUPPORT", "PATH"),
 }
+
+#: The only arms allowed a NODE_ROLE column under R1/R2, where that column
+#: is identically zero (no scored candidate is structurally admitted when the
+#: scored set is Cq). M1A/M1B's historical arms keep NODE_ROLE R3-only.
+ZERO_NODE_ROLE_WHEN_NOT_APPLICABLE: frozenset[str] = frozenset({UNIVERSAL_ARM})
 
 
 def _load_declaration() -> dict[str, Any]:
@@ -274,21 +284,28 @@ def _cell_master_local(
             ],
             axis=1,
         )
-        columns = [base, family_block]
         if regime == "R3":
-            columns.append(node_role_column(cq=np.unique(view.pool), scored=scored, context=context_ids))
-        master_blocks.append(np.concatenate(columns, axis=1).astype(np.float32))
+            node_role = node_role_column(cq=np.unique(view.pool), scored=scored, context=context_ids)
+        else:
+            # scored IS Cq above, so NODE_ROLE's definition (1 iff v in C3 \ Cq)
+            # is identically 0 here -- the feature's value, not a placeholder.
+            node_role = np.zeros((len(scored), 1), dtype=np.float32)
+        master_blocks.append(np.concatenate([base, family_block, node_role], axis=1).astype(np.float32))
         scored_sets.append(scored)
     return scored_sets, master_blocks, latencies
 
 
 def _arm_columns(master: np.ndarray, arm: str, regime: str) -> np.ndarray:
-    keep = [MASTER_COLUMNS["BASE"]]
+    blocks = [master[:, MASTER_COLUMNS["BASE"]]]
     for family in ARM_FAMILIES[arm]:
+        block = master[:, MASTER_COLUMNS[family]]
         if family == "NODE_ROLE" and regime != "R3":
-            raise ValueError("NODE_ROLE is only defined for R3 cells")
-        keep.append(MASTER_COLUMNS[family])
-    return np.concatenate([master[:, sl] for sl in keep], axis=1)
+            if arm not in ZERO_NODE_ROLE_WHEN_NOT_APPLICABLE:
+                raise ValueError("NODE_ROLE is only defined for R3 cells")
+            if block.any():
+                raise ValueError(f"NODE_ROLE must be identically zero under {regime} for {arm!r}")
+        blocks.append(block)
+    return np.concatenate(blocks, axis=1)
 
 
 def _arm_store(
