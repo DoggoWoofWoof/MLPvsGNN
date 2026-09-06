@@ -264,6 +264,65 @@ amendments:
       in this list (no GNN, no second seed, no R3_FULL training, no A64
       change, no new feature formula, no H2/H3, no E2, no Package F, no
       workspace migration).
+  - date: 2026-09-05
+    change: >-
+      Step 5 completed across all 5 datasets (squad_clean/2wiki_clean on
+      pilgnnteam; hotpotqa_clean on swathihrao281; metaqa/webqsp on
+      hemachandraminchu, after pilgnnteam exhausted its billing-cycle spend
+      limit mid-run -- compute only moved, not code: see project memory
+      project-modal-workspace-migration). User explicitly authorised step 6
+      (trained-effect map) and step 7 (M1B proposal only, not launch) in
+      chat, conditioned on two mechanical gates passing first: (a) a
+      cross-workspace run-integrity audit proving every result shares one
+      scientific contract despite spanning 3 workspaces; (b) a matrix
+      completeness check (44 declared, 44 completed, 0 duplicate/missing/
+      unexpected). Both gates run and PASSED before any classification:
+      git HEAD was f81985d (clean) since before any of the 3 workspaces'
+      launches and has not moved since -- every container image was built
+      from byte-identical code; scripts/modal_m1a_feature_screen.py's
+      _runner_args hardcodes every scientific hyperparameter (seed=0,
+      epochs=3, semantic_rung=S3, holdout_fraction=0.2, dropout=0.2,
+      temperature=0.07, learning_rate=1e-3, weight_decay=1e-4, batch_size=16,
+      per_seed_cap=16, neighbour_scan_cap_per_seed=4096, device=cuda) with no
+      per-invocation override path, and qls_local_features' normalisation=
+      "candidate" call is hardcoded in run_m1a_feature_screen.py itself (not
+      an arg at all); empirically verified identical across all 5 result
+      JSONs (seed=0, semantic_rung=S3, parameters.semantic=3072,
+      candidate_contract.expected_contract_sha256==observed_contract_sha256
+      bit-exact, holdout_fraction=0.2, a64_mainline_family="structural_only"
+      uniformly on every R3-bearing dataset); 44/44 arms present, 0
+      duplicate/missing/unexpected, cross-checked against both this file's
+      own datasets.*.cells and arm_count_summary.predeclared_arms.
+      Audit/classification scripts and their JSON output are session
+      scratchpad artifacts, not committed to this repo.
+
+      Step 6 executed: classification_definitions_for_step_6 (below) applied
+      literally, primary metric R@5, thresholds unchanged (+/-0.25pp
+      tolerance, >0.50pp material). Finding, not a rule change: neither this
+      file nor docs/M1A_FEATURE_SCREEN_PROTOCOL.md operationalises the
+      "uncertainty not overlapping zero" clause PROMOTED/HARMFUL both
+      require -- grepped, present only as a referenced condition, never as a
+      formula, consistent with M1A being a genuine one-seed screen (sampling,
+      why_one_seed_only) with no multi-seed variance to draw a CI from. The
+      four base labels also leave an unfiled gray zone strictly between the
+      0.25pp tolerance and the 0.50pp material threshold (e.g. hotpotqa_
+      clean R3 BASE+NODE_ROLE's -0.26pp point estimate). Per explicit
+      instruction, every such cell falls back to UNRESOLVED_BY_FILED_RULE
+      rather than a post-hoc rule change -- no PROMOTED or HARMFUL label was
+      issued this pass; the classification map is otherwise fully populated
+      (NO_EFFECT / UNRESOLVED_BY_FILED_RULE per cell, REGIME_SPECIFIC/
+      DATASET_SPECIFIC evaluated compositionally, UNDETERMINED wherever an
+      input cell is itself unresolved). Full map delivered to the user in
+      chat, not duplicated into this file.
+
+      Step 7: smallest-experiment M1B proposal delivered in chat, proposal
+      only -- nothing launched. this_file_authorises is extended to include
+      steps 6 and 7; the_trained_effect_map_step_6 and proposing_m1b_step_7
+      are removed from does_not_authorise below. Step 8 (hard stop) and all
+      standing prohibitions remain unchanged and in force: no GNN work, no
+      second seed, no M1B launch, no R3_FULL training, no A64 change, no new
+      feature formula, no H2/H3, no E2, no Package F, no workspace
+      migration. No further compute is authorised by this amendment.
 
 status: DECLARED_NOT_LAUNCHED
 # steps 1-5 now authorised (status field itself is this file's fixed
@@ -271,10 +330,9 @@ status: DECLARED_NOT_LAUNCHED
 # configs/m0c_bounded_r3.yaml both keep this same literal value after their
 # own full completion; this_file_authorises/does_not_authorise below are
 # what actually track progress in this file, per its own amendment history)
-this_file_authorises: file_declaration_derive_cells_estimate_compute_the_real_smoke_and_the_real_one_seed_screen
+this_file_authorises: file_declaration_derive_cells_estimate_compute_the_real_smoke_the_real_one_seed_screen_the_trained_effect_map_and_proposing_m1b
 does_not_authorise:
-  - the_trained_effect_map_step_6
-  - proposing_m1b_step_7
+  - launching_m1b
   - any_gnn_work_of_any_kind
   - tuning_qls_against_gnn_results
   - training_r3_full_reexpansion

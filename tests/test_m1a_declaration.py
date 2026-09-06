@@ -56,24 +56,24 @@ def _flat(text: str) -> str:
     return " ".join(text.split())
 
 
-# --- this document authorises steps 1-5 (step 5 added 2026-09-04) ---
+# --- this document authorises steps 1-7 (step 5 added 2026-09-04; steps 6-7 added 2026-09-05) ---
 
 
-def test_the_stage_is_declared_and_authorises_through_step_5(config):
+def test_the_stage_is_declared_and_authorises_through_step_7(config):
     # status itself is this file's fixed category label, not a step tracker
     # -- configs/m0b_regime_map.yaml and configs/m0c_bounded_r3.yaml both
     # keep this same literal value after their own full completion.
     # this_file_authorises/does_not_authorise are what track progress here.
     assert config["status"] == "DECLARED_NOT_LAUNCHED"
     assert config["this_file_authorises"] == (
-        "file_declaration_derive_cells_estimate_compute_the_real_smoke_and_the_real_one_seed_screen"
+        "file_declaration_derive_cells_estimate_compute_the_real_smoke_the_real_one_seed_screen_"
+        "the_trained_effect_map_and_proposing_m1b"
     )
 
 
 def test_every_later_step_is_named_as_not_authorised(config):
     later_steps = {
-        "the_trained_effect_map_step_6",
-        "proposing_m1b_step_7",
+        "launching_m1b",
         "any_gnn_work_of_any_kind",
         "tuning_qls_against_gnn_results",
         "training_r3_full_reexpansion",
@@ -87,11 +87,16 @@ def test_every_later_step_is_named_as_not_authorised(config):
         "migrating_workspace",
     }
     assert later_steps == set(config["does_not_authorise"])
-    # the compute estimate (step 3), the real smoke (step 4), and the real
-    # one-seed screen (step 5) are all done/authorised -- must not still be
-    # listed as prohibited
+    # the compute estimate (step 3), the real smoke (step 4), the real
+    # one-seed screen (step 5), the trained-effect map (step 6), and
+    # proposing M1B (step 7) are all done/authorised -- must not still be
+    # listed as prohibited. Only *launching* M1B remains gated, by this
+    # file; configs/m1b_targeted_resolution.yaml is where that file's own
+    # launch_authorization is tracked instead.
     assert "the_compute_estimate_step_3" not in config["does_not_authorise"]
     assert "the_smoke_validation_step_4" not in config["does_not_authorise"]
+    assert "the_trained_effect_map_step_6" not in config["does_not_authorise"]
+    assert "proposing_m1b_step_7" not in config["does_not_authorise"]
     assert "the_real_m1a_screen_launch_step_5" not in config["does_not_authorise"]
 
 
