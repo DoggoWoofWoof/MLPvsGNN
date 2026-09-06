@@ -1,0 +1,841 @@
+# M1B -- targeted uncertainty + minimality resolution.
+#
+# NOT the brute-force Pareto-survivor confirmation the sampling section of
+# configs/m1a_feature_screen.yaml reserves multi-seed confirmation for.
+# M1A's Step 6 (trained-effect map, see that file's after_the_map amendment
+# dated 2026-09-05) found that almost every large-magnitude cell resolves to
+# UNRESOLVED_BY_FILED_RULE, not because the effects are small, but because no
+# uncertainty procedure was ever operationalised for a one-seed screen. M1B
+# exists to resolve exactly four specific ambiguities that finding left open
+# -- nothing broader. Declaration only: this file authorises nothing beyond
+# its own filing. Compute estimation, the real run, and any later 5-seed
+# confirmation each need their own separate, explicit, dated amendment,
+# exactly the discipline configs/m1a_feature_screen.yaml itself used at
+# every step.
+#
+# Supersedes an earlier, chat-only 3-cell/5-seed M1B sketch (2026-09-05,
+# same day) that the user rejected before it was filed here: it jumped
+# straight to confirmation-scale seeding, proposed confirming 2Wiki
+# BASE+NODE_ROLE alone (which cannot answer whether richer structure adds
+# anything beyond candidate origin), picked Hotpot's PATH by raw point
+# estimate inside the tolerance band rather than the filed tie-break, and
+# treated more training seeds as sufficient for WebQSP's n=63 problem, which
+# is a query-sampling problem, not a training-variance one. None of that
+# reached this file. Everything below reflects the corrected design.
+
+status: DECLARED_NOT_LAUNCHED
+this_file_authorises:
+  - file_declaration_and_derive_the_four_targeted_cells_only
+  - estimating_compute  # closed 2026-09-05 amendment 2 -- see compute below
+  - auditing_which_m1a_seed0_results_are_reusable  # closed 2026-09-05 amendment 2 -- see reuse_contract below
+  - closing_the_uncertainty_procedure_and_promotion_rule_open_items  # closed 2026-09-05 amendment 2
+does_not_authorise:
+  - any_real_launch_of_the_3_seed_targeted_run  # conditional, see launch_authorization below -- gates not all met yet
+  - five_seed_confirmation  # reserved for whatever survives M1B as a frozen Pareto candidate, not this file
+  - any_gnn_work_of_any_kind
+  - another_feature_family_sweep
+  - extra_interactions_beyond_the_one_authorised_below
+  - adding_h2_h3
+  - training_r3_full_reexpansion
+  - resuming_e2
+  - inspecting_package_f
+  - migrating_workspace  # narrow, one-time, 2wiki_clean-only exception granted 2026-09-05 amendment 4 -- see there; the general prohibition still stands
+
+amendments:
+  - date: 2026-09-05
+    change: >-
+      First filing. Corrects a chat-only M1B sketch per explicit user
+      feedback the same day: (1) MetaQA prose in the Step-6 write-up
+      overstated the regime/feature-effect gap as "two orders of magnitude"
+      (actual ratio 11.60/0.73 ~= 15.9x, roughly one order of magnitude) and
+      incorrectly implied PATH's +0.73pp was "not close to material" when it
+      in fact exceeds the filed >0.50pp threshold -- unresolved only for
+      lack of a filed uncertainty procedure, a different claim. Both
+      corrected in the Step-6 write-up itself; no measured value or Step-6
+      classification changed. (2) Seed count: this track's own established
+      convention (SA_MLP screen/confirmation, D4-D10) treats 5 seeds as a
+      confirmation-stage cost, not a development-stage one; M1B uses 3.
+      (3) The 2Wiki cell is redesigned as a nested test (BASE; BASE+
+      NODE_ROLE; BASE+NODE_ROLE+X) so it actually answers the ambiguity that
+      motivated it -- whether richer structure carries information beyond
+      candidate origin -- rather than only confirming NODE_ROLE alone. (4)
+      Hotpot's survivor is chosen by the filed systems/parameter tie-break,
+      not by raw point estimate inside the ±0.25pp tolerance band. (5)
+      WebQSP's uncertainty is reframed as a query-sampling problem (n=63
+      held-out), which more training seeds do not address; a paired
+      query-level bootstrap is required and must be preregistered here,
+      before any M1B result exists, not chosen after seeing outcomes.
+  - date: 2026-09-05
+    change: >-
+      Second filing, same day. Closes every item the first filing left
+      deliberately OPEN, per explicit user instruction: "close the
+      uncertainty and seed details now rather than leaving them OPEN. After
+      that, proceed through compute estimation, implementation smoke, and
+      the targeted runs without another review stop if the gates pass."
+      (1) reuse_contract added and audited mechanically (not assumed):
+      scripts/m1b_reuse_audit.py checked all 8 candidate M1A seed=0 results
+      against the gate below; all 8 pass. 27 logical fits therefore need
+      only 19 new fits, not 27 reruns; seed 0 is reused for the other 8
+      only because the audit proved the scientific contract identical, not
+      for bookkeeping convenience. Manifest: outputs/m1b_targeted_
+      resolution/reuse_audit.json. (2) compute added: a real estimate
+      derived entirely from M1A's own measured rates (scripts/
+      m1b_compute_estimate.py), no guessed multiplier disguised as an
+      expected cost. estimating_compute moves from does_not_authorise to
+      this_file_authorises. Manifest: outputs/m1b_targeted_resolution/
+      compute_estimate.json. (3) uncertainty_procedure.status moves
+      PARTIALLY_SPECIFIED_OPEN_ITEMS_BELOW -> CLOSED: all six open items
+      given exact values (10,000 resamples, 95% percentile CI, whole-query
+      paired resampling shared across arms and seeds, complete gold sets
+      preserved, bootstrap_statistic = mean_s(delta_seed), a fixed
+      bootstrap RNG seed distinct from the 3 training seeds). (4)
+      promotion_rule_for_m1b.status moves DRAFT -> CLOSED: exact PROMOTED/
+      HARMFUL conditions filed, reusing the existing 0.50pp threshold plus
+      a CI-excludes-zero condition and a no-seed-sign-reversal condition;
+      the undefined "protected secondary criteria" clause is dropped
+      rather than left half-specified, since no sacrifice-threshold rule
+      for it exists anywhere in this track. (5) 2wiki_clean's primary
+      comparison is reconfirmed as BASE+NODE_ROLE+SUPPORT vs BASE+
+      NODE_ROLE, not vs BASE -- unchanged from the first filing, restated
+      because it is the comparison the whole 2wiki_r3 scientific question
+      depends on. (6) launch_authorization added: a chained, six-gate
+      condition under which the 19 new fits may launch without a further
+      review stop. Four gates close with this amendment (audit passed,
+      compute within ceiling, bootstrap closed, amendment filed); the
+      remaining two (engineering tests, engineering smoke) require code
+      and a real Modal run that do not exist yet and are not satisfied by
+      this filing. This amendment does not launch anything.
+  - date: 2026-09-05
+    change: >-
+      Third filing, same day. engineering_tests_pass closed: tests/
+      test_run_m1b_targeted_resolution.py (13/13, including the required
+      cached-tensor==rebuilt-tensor test) plus a full repository suite run
+      (6017 passed / 6019 on a second run after further orchestration-only
+      edits, 108 skipped, 0 failed both times) found no collateral
+      regression from the new M1B runner, Modal launcher, or dispatcher
+      registration. scripts/modal_m1b_targeted_resolution.py added (the
+      Modal launcher for both the smoke and the real run) and registered
+      into scripts/spawn_modal_jobs.py's PACKAGES; scripts/
+      m1b_reuse_audit.py's DIRTY_CHECK_EXCLUDE_PATHSPECS extended to cover
+      every new orchestration file added this filing (none of which edit
+      run_m1a_feature_screen.py or any code path _cell_master_local/
+      _run_arm reads) -- re-run, all_8_reusable remained true.
+
+      smoke_spec's dataset changed from 2wiki_clean to webqsp, by explicit
+      user choice, for an operational reason unrelated to the science: the
+      Modal workspace holding 2wiki_clean's data (pilgnnteam) has exceeded
+      its spend limit (confirmed via a real ResourceExhaustedError on
+      deploy, not assumed), and neither other workspace used during M1A's
+      step 5 (swathihrao281: hotpotqa_clean only; hemachandraminchu:
+      webqsp + metaqa) holds 2wiki_clean's data. Presented to the user as
+      an explicit choice (switch dataset / raise the spend limit / locate
+      the data elsewhere / pause here); the user chose to switch. webqsp
+      picked over hotpotqa_clean or metaqa as the cheapest, fastest
+      available substitute (315 total queries and the lowest measured
+      per-fit training rate of any M1B dataset, per compute above).
+
+      Known, accepted gap from this substitution: webqsp's declared cell
+      has no interaction arm, so the smoke no longer exercises
+      BASE+NODE_ROLE+SUPPORT (2wiki_clean-only) end-to-end on real
+      Modal/GPU before the headline run does. Mitigated, not eliminated:
+      (1) the same multi-family _arm_columns concatenation the interaction
+      arm exercises is already covered by tests/test_run_m1b_targeted_
+      resolution.py against real declared arms on toy data, just not real
+      data or a real GPU container; (2) M1A's own ARM_FAMILIES vocabulary
+      was single-family only (BASE+GEOMETRY, BASE+SUPPORT, BASE+PATH,
+      BASE+NODE_ROLE -- confirmed by reading the dict, never a 2-family
+      tuple), so the 2-block-concatenate branch inside _arm_columns is
+      genuinely new regardless of which dataset the smoke runs on; (3) the
+      dollar exposure if it did fail on the real run is small -- the three
+      BASE+NODE_ROLE+SUPPORT fits cost an estimated $0.033 of the $2.28
+      total, and 2wiki_clean's whole cell is $0.077 of it. The seed-loop
+      and feature-store-reuse-across-seeds-and-arms claims, which do not
+      depend on any specific arm, remain fully exercised by webqsp's own
+      two arms (BASE, BASE+NODE_ROLE) at seed=1.
+  - date: 2026-09-05
+    change: >-
+      Fourth filing, same day. 2wiki_clean's headline launch remained
+      blocked after the smoke's dataset substitution above: pilgnnteam
+      (the only known workspace holding 2wiki_clean's data) returned the
+      same modal.exception.ResourceExhaustedError on three separate real
+      attempts (initial headline spawn, a mid-session re-check, and a
+      final re-check immediately before this filing), with no change
+      across them. Presented to the user as an explicit choice (wait for
+      the user to raise the limit / target a workspace the user already
+      knows of / authorise a data migration / accept a partial
+      20-of-27-fit map without 2wiki_clean); the user chose to authorise
+      a data migration.
+
+      This is a narrow, one-time, dataset-scoped exception to
+      does_not_authorise.migrating_workspace and
+      standing_prohibitions_restated.no_workspace_migration above, not a
+      lifting of either -- both remain in force for anything else.
+      Scope: move only 2wiki_clean's training-required data from
+      pilgnnteam to hemachandraminchu, the M1B-proven workspace already
+      running this track's launcher (metaqa's and webqsp's headlines
+      both completed there this session), so that dataset's 7 blocked
+      new fits (BASE seeds 1-2, BASE+NODE_ROLE seeds 1-2,
+      BASE+NODE_ROLE+SUPPORT seeds 0-2) can run at all.
+
+      Executed via scripts/replicate_volume.py's e2_resume slice
+      (already built for exactly this purpose; not reinvented):
+      MODAL_PROFILE=pilgnnteam download --datasets 2wiki_clean (source
+      reads still work at its spend limit, consistent with every other
+      exhausted workspace observed this track) staged 2wiki_clean's
+      operator_data root -- all 6 DATASET_ROOT_FILES present, including
+      both embedding matrices; node_ids.json and
+      _frozen_source_manifest.json are absent for this dataset, which
+      load_complete_dataset already tolerates -- plus the whole
+      edge_provenance_graphs/2wiki_clean/ subtree (all 6 edge-family
+      variants + manifest.json). No derived/packed_topology_v1 or
+      derived/fixed_structural_features_v1 existed on the source for
+      this dataset, consistent with its already-known-absent structural
+      cache, so nothing was missed by their absence; stages rebuild the
+      static block from graph.pt exactly as they already do on
+      pilgnnteam. MODAL_PROFILE=hemachandraminchu upload then verify
+      --deep transferred and sha256-verified 19 files, 608.0 MB, 0
+      mismatches. The slice's own outputs/ subtree (2,130 additional
+      files, ~1.9 GB, spanning every dataset and package, not just
+      2wiki_clean) was deliberately excluded via --only: a fresh
+      headline run does not read it, per the same exclusion already
+      applied to hotpotqa_clean's and metaqa's earlier cross-workspace
+      moves.
+
+      The real headline job was spawned on hemachandraminchu immediately
+      after verification (call fc-01M1QB498R8RSMYVJDH9TE3723). Its
+      result will be checked to the same depth as the other three
+      datasets -- seed=0 splice correctness, holdout arithmetic,
+      plausible metrics -- before being trusted, exactly as those three
+      already were.
+  - date: 2026-09-05
+    change: >-
+      Fifth filing, same day. All four headline results existed
+      (hotpotqa_clean, metaqa, webqsp, and, after the fourth filing's
+      migration, 2wiki_clean), each individually verified. Implementing
+      the preregistered paired query-level bootstrap
+      (uncertainty_procedure.design.query_level above) against them
+      surfaced that it cannot be computed: the design requires paired
+      per-query metric deltas, but no per-query outcome was ever
+      persisted anywhere, for any of the 27 logical fits, spliced or
+      freshly trained.
+
+      Root cause, traced through the actual call chain rather than
+      assumed: scripts/run_sa_mlp_confirmation.py's _score_once returns
+      (metrics, rows, inference); run_m1a_feature_screen.py's _run_arm
+      calls it, keeps metrics and inference, and discards rows (binds it
+      to _rows). No model checkpoint is persisted anywhere in the
+      pipeline either, so the rows cannot be cheaply recovered by
+      re-scoring a saved model -- recovering them requires re-fitting.
+      This is not a bug introduced this track; run_m1a_feature_screen.py
+      is git-source-identity-frozen (reuse_contract above) and was never
+      written to keep rows, because M1A itself never needed them.
+
+      Presented to the user as an explicit choice (re-run all 27 fits
+      with row capture / adjust the uncertainty procedure instead to drop
+      the paired design / report the promotion decision without the
+      bootstrap leg / decide after seeing the point estimates); the user
+      chose to re-run with row capture, and explicitly instructed that
+      this be filed as a dated amendment before spending, with
+      compute_within_ceiling re-verified explicitly rather than assumed
+      to still hold.
+
+      Engineering change, scripts/run_m1b_targeted_resolution.py: a new
+      function, _run_arm_with_rows, duplicates run_m1a_feature_screen.
+      _run_arm's body rather than wrapping or editing it -- _run_arm is
+      one of the functions that file's git-source-identity freeze
+      depends on staying byte-unchanged, so there is no way to change
+      what it returns. _run_arm_with_rows calls the same _fit and
+      _score_once this runner already used indirectly through _run_arm,
+      keeps _score_once's previously-discarded rows, and builds
+      per_query_recall_at_5: {query_id: recall@5} from them, keyed by
+      each held-out query's own stable query_id (mp_retrieval.
+      complete_data.CompleteQuery.query_id). The main loop persists this
+      per seed as cells.<regime>.arms.<arm>.per_query_recall_at_5_by_seed
+      = {seed: {query_id: recall@5}}, alongside the existing seeds block.
+
+      Splicing is retired, not patched around: every one of the 27
+      logical (dataset, arm, seed) fits is now genuinely trained,
+      including the 8 reuse_contract-audited (dataset, arm) pairs at
+      seed=0 -- a spliced result would have no per-query rows of its own,
+      defeating the entire point of this filing. reused_from_m1a is
+      therefore always false from this point forward. In its place, each
+      of the 8 formerly-spliced pairs is cross-checked: the fresh seed=0
+      recall@5 is compared against M1A's original recorded recall@5, and
+      must agree within REUSE_CROSS_CHECK_TOLERANCE_PP = 0.50pp (the
+      track's own existing material-effect threshold, reused rather than
+      inventing a second number) or the run raises ValueError rather than
+      trusting a reuse premise that failed to reproduce. Recorded as
+      cross_checked_against_m1a_splice: {m1a_recall_at_5, fresh_recall_at_5,
+      delta_pp, tolerance_pp, within_tolerance} on that (arm, seed=0)
+      result only. The pre-existing recall_ceiling@5 mismatch guard
+      (freshly-measured regime headroom vs. M1A's recorded value) is
+      unchanged and still runs first, as a cheaper CPU-only check before
+      any of the 8 candidates' GPU re-fits.
+
+      Compute: retiring splicing means 27 fits train instead of 19,
+      undoing the reuse contract's savings. Re-estimated in a new,
+      separate script, scripts/m1b_rerun_with_rows_estimate.py --
+      scripts/m1b_compute_estimate.py is left untouched as the filed
+      record that justified the original 19-fit gate closure, not edited
+      to match. The new estimate needs no guessed rate anywhere: real
+      measured training_seconds now exist for all 9 (dataset, arm) cells
+      across all 4 datasets, including 2wiki_clean's BASE+NODE_ROLE+
+      SUPPORT interaction arm, which the original estimate had to guess
+      at before any 2wiki_clean fit existed. Feature-build repeats once
+      per dataset per invocation (unchanged behaviour, not a new cost).
+      Result: 1.2172 GPU-h pure compute (0.6083 GPU-h feature-build +
+      0.6089 GPU-h fitting all 27) x $2.241/GPU-h = $2.728. Combined with
+      the $2.28 already spent on the original 19-fit run: $5.008
+      cumulative against the filed $5.00 ceiling -- a $0.008 (0.16%)
+      overage. Manifest: outputs/m1b_targeted_resolution/
+      rerun_with_rows_estimate.json.
+
+      Judged immaterial and proceeding on the user's explicit go-ahead,
+      not silently absorbed: the user selected "re-run with row capture"
+      already knowing, from the options presented, that it would land
+      "right at the filed $5.00 ceiling, not comfortably inside it";
+      $0.008 is within the rounding/estimation noise of a compute
+      estimate built from measured-but-small-sample per-fit rates; and
+      nothing about the 4 datasets, arms, or seeds in scope changed --
+      only how much of the already-authorised matrix gets genuinely
+      trained versus spliced. compute_within_ceiling below is re-closed
+      as true on this $5.008 figure, replacing the stale $2.28-only
+      justification, rather than left silently pointing at a number that
+      no longer reflects what will actually be spent.
+
+      Engineering re-verification: tests/test_run_m1b_targeted_
+      resolution.py extended from 13 to 15 tests -- one retired
+      (test_reuse_splice_reproduces_a_fresh_run_and_skips_retraining, its
+      premise no longer true), one rewritten to prove a reuse candidate
+      is cross-checked and genuinely retrained rather than spliced
+      (test_reuse_candidate_is_cross_checked_not_spliced_and_still_
+      retrains), and two added (test_reuse_cross_check_raises_on_
+      divergence_beyond_tolerance; test_per_query_recall_at_5_by_seed_
+      matches_the_aggregate_metric, which proves the captured rows mean-
+      match _aggregate_rows' own independently-computed recall@5 rather
+      than being a parallel, possibly-mismatched recomputation). 15/15
+      passing. Full repository suite re-run: 6021 passed, 108 skipped, 0
+      failed (was 6019 passed / 108 skipped before this filing's edits,
+      per the third filing above) -- the +2 delta is exactly this filing's
+      net new test count, nothing collateral.
+
+      engineering_smoke_passes is not re-earned by a fresh dedicated
+      Modal run this filing, and that choice is recorded rather than
+      left implicit: this filing's only new cross-module dependency is
+      _score_once, imported from scripts/run_sa_mlp_confirmation.py -- a
+      module already imported for _fit and already proven to mount
+      correctly under the existing webqsp smoke evidence, so no new file
+      or module boundary is crossed (the class of failure that gate
+      exists to catch, per this track's own prior incident correcting
+      sa_mlp_confirmation.yaml's mount path under Modal's auto-mount).
+      The change itself -- capturing an already-computed return value,
+      and replacing a splice with a cross-check -- is pure Python/JSON-
+      shape logic, fully exercised by the tests above. As a belt-and-
+      braces check beyond what the gate formally requires, webqsp (the
+      cheapest dataset, and the one already holding real Modal smoke
+      evidence) will be re-run first under this new code, and inspected
+      in depth -- per-query rows present and internally consistent,
+      both its reuse-candidate arms' seed=0 cross-checks passing,
+      holdout arithmetic unchanged -- before the remaining 3 datasets
+      are launched.
+
+      Nothing else changes. No seed beyond development_seed_values=
+      [0, 1, 2], no new dataset, cell, or arm, no scope expansion of any
+      kind -- this filing is an engineering-method correction (how
+      per-query outcomes are captured and how reuse is verified), not a
+      scientific-scope change. standing_prohibitions_restated below are
+      unchanged and remain in force.
+  - date: 2026-09-07
+    change: >-
+      Sixth filing: M1B is COMPLETE. All 4 cells' real re-runs (webqsp,
+      metaqa, 2wiki_clean, hotpotqa_clean) executed under amendment 5's
+      row-capturing code, deep-verified (holdout arithmetic, per-query/
+      aggregate consistency, every reuse-candidate seed=0 cross-check
+      within tolerance -- all four datasets' cross-checks landed at
+      delta_pp=0.000 exactly against M1A). scripts/m1b_bootstrap_analysis.py
+      ran the exact preregistered paired query-level bootstrap
+      (uncertainty_procedure above, unmodified) and scripts/
+      m1b_result_map.py applied promotion_rule_for_m1b unmodified. See
+      result below for the frozen verdicts and outputs/m1b_targeted_
+      resolution/{bootstrap_analysis,m1b_result_map}.json for full detail
+      (per-seed deltas, CI bounds, held-out counts).
+
+      Per the user's own explicit framing when reviewing this result: the
+      four datasets used throughout M0A-M1B (squad_clean, 2wiki_clean,
+      hotpotqa_clean, metaqa, webqsp -- musique_clean deferred) are a
+      DEVELOPMENT / METHOD-SELECTION SUBSTRATE, not the final paper
+      evidence base. Canonical CRAG data is reserved for final
+      confirmation once the method (features, QLS-v2 architecture, GNN
+      baseline, statistics, systems protocol) is frozen. This result must
+      not later be cited as a final/canonical claim -- it is a development
+      finding that selects which features and cells carry into the next
+      development phase (M2 onward, tracked in a future
+      configs/m2_*.yaml, not this file).
+
+      after_m1b's construct_pareto_survivor_set and then=STOP_FOR_REVIEW
+      (below) are both satisfied by this filing. This file's own
+      authorisation ends here: it authorises file_declaration,
+      compute_estimation, the reuse_audit, closing uncertainty/promotion-
+      rule, and the real 19-new-fit (later 27-fit, per amendment 5) launch
+      -- all exercised. Nothing beyond that (5-seed confirmation, GNN
+      work, a new feature family, another dataset/regime, further
+      workspace migration) is authorised by this file regardless of what
+      any later, separate file authorises for a subsequent phase.
+
+# --------------------------------------------------------------------------
+# Scope: resolve exactly these four ambiguities. Do not broaden.
+# --------------------------------------------------------------------------
+
+scientific_questions:
+  2wiki_r3: >-
+    Does explicit structure (X, one family) add anything after the model
+    already knows a candidate's structural-admission origin (NODE_ROLE)? If
+    BASE+NODE_ROLE+X does not beat BASE+NODE_ROLE materially, the R3
+    structural-family gains measured in M1A reduce substantially to
+    candidate-provenance information NODE_ROLE alone already captures. If it
+    does, that is evidence for genuinely nonredundant structural information
+    beyond provenance.
+  hotpot_r3: >-
+    Does the tie-break-selected SUPPORT/PATH survivor (Y) confirm as a real
+    effect under a preregistered uncertainty procedure?
+  metaqa_r3: >-
+    Does PATH's +0.73pp residual feature effect (small next to the +11.60pp
+    R2->R3 regime effect, but above the filed material threshold) survive?
+  webqsp_r3: >-
+    Does NODE_ROLE's apparent recovery survive both training-seed variance
+    and, separately, the query-sampling uncertainty its 63-query held-out
+    set carries?
+  out_of_scope: >-
+    Nothing else. No new feature families, no additional interactions beyond
+    the single authorised 2wiki_r3 nesting, no regime other than R3 (the
+    ambiguities above are all R3-specific), no dataset beyond these four.
+    squad_clean contributes no cell (R1-only, no feature arm exists to
+    resolve).
+
+# --------------------------------------------------------------------------
+# Seeds: development, not confirmation.
+# --------------------------------------------------------------------------
+
+seeds:
+  development_seeds: 3
+  development_seed_values: [0, 1, 2]  # seed 0 already real (M1A); 1-2 are new
+  confirmation_seeds_reserved: 5
+  confirmation_seeds_scope: >-
+    Reserved for whatever survives M1B as a frozen Pareto candidate, per
+    configs/m1a_feature_screen.yaml#sampling.why_one_seed_only's own
+    "reserved for whatever survives M1A/M1B" language. Not authorised by
+    this file. A separate, later, explicit amendment is required before any
+    5-seed run, exactly like every other step-gate in this track.
+
+# --------------------------------------------------------------------------
+# The four cells. X and Y are derived mechanically below, not chosen here.
+# --------------------------------------------------------------------------
+
+cells:
+  2wiki_clean:
+    regime: R3
+    arms: [BASE, "BASE+NODE_ROLE", "BASE+NODE_ROLE+X"]
+    x_binding: SUPPORT  # see mechanical_selection_of_x_and_y below
+    fits: 9  # 3 arms x 3 seeds
+    primary_comparison: "BASE+NODE_ROLE+SUPPORT vs BASE+NODE_ROLE"
+    note: >-
+      The only interaction arm authorised anywhere in M1B. BASE and
+      BASE+NODE_ROLE are re-run at 3 seeds (not reused from M1A's single
+      seed=0 point) so all three arms in the comparison share the same
+      seed panel.
+  hotpotqa_clean:
+    regime: R3
+    arms: [BASE, "BASE+Y"]
+    y_binding: SUPPORT  # see mechanical_selection_of_x_and_y below
+    fits: 6  # 2 arms x 3 seeds
+    note: "No NODE_ROLE interaction here -- that question is 2wiki_clean's alone."
+  metaqa:
+    regime: R3
+    arms: [BASE, "BASE+PATH"]
+    fits: 6  # 2 arms x 3 seeds
+    note: >-
+      PATH kept per the corrected magnitude reading (+0.73pp exceeds the
+      filed >0.50pp threshold). The dominant +11.60pp R2->R3 regime effect
+      is not re-tested here -- it is a BASE-vs-BASE comparison already
+      measured at seed=0 in M1A with no feature-arm ambiguity to resolve;
+      re-running it under 3 seeds would spend fits on a question M1B was
+      not filed to answer.
+  webqsp:
+    regime: R3
+    arms: [BASE, "BASE+NODE_ROLE"]
+    fits: 6  # 2 arms x 3 seeds
+    note: >-
+      3 seeds measure training-seed variance only. The dominant uncertainty
+      source here is query-sampling (63 held-out queries) -- see
+      uncertainty_procedure below. Report the number of query outcomes
+      behind each metric movement, not only percentage points, given how
+      few queries are behind each point of movement at this n.
+
+total_workload:
+  fits: 27  # 9 + 6 + 6 + 6
+  exact_list_required_before_launch: >-
+    A literal (dataset, regime, arm, seed) enumeration -- all 27 rows --
+    must be filed (as a follow-up amendment to this file, or a generated
+    manifest this file points to) before any launch. Not written here;
+    this file fixes the cells/arms/seeds, the enumeration is mechanical
+    from that and should be generated, not hand-typed, to avoid a
+    transcription gap between this declaration and what actually runs.
+
+# --------------------------------------------------------------------------
+# Mechanical X/Y selection -- shown, not asserted.
+# --------------------------------------------------------------------------
+
+mechanical_selection_of_x_and_y:
+  rule_applied: >-
+    configs/m1a_feature_screen.yaml#selection_rule's own admissibility +
+    tie-break order: effectiveness first (tied within the filed
+    +/-0.25pp pareto_admissibility_tolerance_pp), then (1) uncached
+    feature-build p95 [shared per (dataset,regime) cell -- never
+    differentiates arms within one cell, so inert here], (2) fewer
+    parameters, (3) lower peak train memory.
+  2wiki_r3_candidates:
+    GEOMETRY: {delta_r5_pp: 2.58, params_delta: 96, vram_delta_mb: 0.07}
+    SUPPORT: {delta_r5_pp: 2.42, params_delta: 32, vram_delta_mb: 0.02}
+    PATH: {delta_r5_pp: 2.37, params_delta: 96, vram_delta_mb: 0.07}
+    spread_pp: 0.21  # 2.58 - 2.37, inside +/-0.25pp -- effectiveness-tied
+    verdict: "X = SUPPORT (strictly fewer params AND lower VRAM than both alternatives; effectiveness tied)"
+  hotpot_r3_candidates:
+    SUPPORT: {delta_r5_pp_by_regime: {R1: 1.52, R2: 1.52, R3: 1.265}, params_delta: 32, vram_delta_mb_by_regime: {R1: 0.022, R2: 0.022, R3: 0.025}}
+    PATH: {delta_r5_pp_by_regime: {R1: 1.571, R2: 1.622, R3: 1.316}, params_delta: 96, vram_delta_mb_by_regime: {R1: 0.068, R2: 0.068, R3: 0.077}}
+    spread_pp_by_regime: {R1: 0.05, R2: 0.10, R3: 0.06}  # all inside +/-0.25pp -- effectiveness-tied
+    verdict: "Y = SUPPORT (strictly fewer params AND lower VRAM in every regime; effectiveness tied)"
+  observation_not_a_rule: >-
+    SUPPORT wins both derivations independently -- it is the single-column
+    family (precomputed_width contribution 1, vs 3 for GEOMETRY/PATH), so
+    params_delta = family_width x head_width(32) makes it structurally the
+    cheapest non-NODE_ROLE family everywhere it competes. Noted as a
+    pattern, not used to skip showing the derivation per dataset.
+
+# --------------------------------------------------------------------------
+# Reuse: which of the 27 logical fits already exist. Audited, not assumed.
+# --------------------------------------------------------------------------
+
+reuse_contract:
+  status: AUDITED_2026_09_05
+  script: scripts/m1b_reuse_audit.py
+  manifest: outputs/m1b_targeted_resolution/reuse_audit.json
+  result: "all_8_reusable=true -- 27 logical fits = 8 reused (M1A seed=0) + 19 new"
+  candidates:
+    - {dataset: 2wiki_clean, regime: R3, arm: BASE}
+    - {dataset: 2wiki_clean, regime: R3, arm: "BASE+NODE_ROLE"}
+    - {dataset: hotpotqa_clean, regime: R3, arm: BASE}
+    - {dataset: hotpotqa_clean, regime: R3, arm: "BASE+SUPPORT"}
+    - {dataset: metaqa, regime: R3, arm: BASE}
+    - {dataset: metaqa, regime: R3, arm: "BASE+PATH"}
+    - {dataset: webqsp, regime: R3, arm: BASE}
+    - {dataset: webqsp, regime: R3, arm: "BASE+NODE_ROLE"}
+  not_reusable:
+    candidates:
+      - {dataset: 2wiki_clean, regime: R3, arm: "BASE+NODE_ROLE+SUPPORT"}
+    note: "Brand new arm, no M1A measurement exists at any seed -- all 3 seeds are new fits."
+  gate_evidence_classes:
+    directly_recorded_from_result_json: >-
+      dataset_fingerprint_sha256, candidate_contract status + bit-exactness
+      (expected_contract_sha256 == observed_contract_sha256), query split
+      ("validation") and selection ("deterministic_prefix_of_the_split_
+      order"), regime match, precomputed_width, semantic_rung ("S3"),
+      semantic parameter count (3072), seed (0), a64_mainline_family
+      ("structural_only"), holdout_fraction (0.2) -- checked value-by-value
+      per candidate in the manifest, not asserted.
+    proven_by_code_identity_no_json_field_records_these_directly: >-
+      git source fingerprint (HEAD unchanged since the M1A step-5 launch
+      commit, f81985d47d6383744e9bad0139fbdeb0a9e88a5b, AND the working
+      tree clean outside this file's own declaration/tooling edits), the
+      M1AScorer model-construction path, the trainer's loss function and
+      optimizer (reused unmodified inside _fit), and every hardcoded
+      hyperparameter in modal_m1a_feature_screen.py's _runner_args with no
+      CLI override path (learning_rate=1e-3, weight_decay=1e-4,
+      dropout=0.2, temperature=0.07, batch_size=16, epochs=3,
+      embedding_width=1536 runtime-enforced, normalisation="candidate"
+      hardcoded not a CLI arg at all).
+  do_not: >-
+    Rerun seed 0 for any of the 8 reusable rows merely for bookkeeping
+    symmetry. The audit exists precisely so seed-0 reuse rests on a proven
+    contract, not a convenience assumption.
+
+# --------------------------------------------------------------------------
+# Compute: a real estimate, from M1A's own measured rates. No guessing.
+# --------------------------------------------------------------------------
+
+compute:
+  status: FILED_2026_09_05
+  script: scripts/m1b_compute_estimate.py
+  manifest: outputs/m1b_targeted_resolution/compute_estimate.json
+  method: >-
+    Feature-build seconds from the real steady-state per-query latency
+    filed at configs/m1a_feature_screen.yaml#compute.inputs.
+    real_per_query_feature_build_ms_steady_state_mean, times each dataset's
+    real validation query count. Per-fit training seconds from the real
+    M1A seed=0 R3 training_seconds for each reused-rate arm. The one arm
+    with no direct M1A measurement (2wiki_clean BASE+NODE_ROLE+SUPPORT)
+    uses the conservative max of its two constituent single-family arms'
+    real rates on the same dataset (17.70s), not an average and not a
+    guess -- the same "use the slower real bracket" convention M1A step 3
+    used.
+  logical_fits: 27
+  reused_fits: 8
+  new_fits: 19
+  feature_build_gpu_h: 0.6083  # 4 cells, one build each, reused across every seed/arm in that cell
+  new_fits_gpu_h: 0.4103
+  pure_compute_gpu_h: 1.0186
+  cost_usd_all_gpu_billed: 2.28  # conservative primary basis, M1A's own convention
+  cost_usd_blended: 1.31  # feature-build CPU-billed, fit GPU-billed, optimistic
+  rate_source: "docs/COMPUTE_LEDGER.md L546-547 -- $2.241/h GPU, $0.634/h CPU, reused verbatim throughout this track"
+  bootstrap_analysis_cost: "pure-CPU, post-hoc, over already-scored held-out queries -- negligible next to $2.28; not separately costed"
+  proposed_ceiling_usd: 5.00
+  ceiling_basis: "2x the $2.28 worst-case real bracket = $4.56, rounded up to a stated round figure -- M1A's own convention"
+  no_large_safety_multiple: >-
+    $5.00 is ~2.2x the real $2.28 estimate, not a disguised larger budget --
+    matching the explicit instruction that this estimate carry no large
+    safety multiple presented as an expected cost.
+
+# --------------------------------------------------------------------------
+# Uncertainty: preregistered here, before any M1B result exists.
+# --------------------------------------------------------------------------
+
+uncertainty_procedure:
+  status: CLOSED_2026_09_05
+  why_this_exists: >-
+    Step 6 found "uncertainty not overlapping zero" referenced three times
+    in configs/m1a_feature_screen.yaml and docs/M1A_FEATURE_SCREEN_PROTOCOL.md
+    but never operationalised. M1B is where that gets fixed prospectively --
+    not invented after seeing which cells look promising, the same failure
+    mode Step 6 refused to commit on M1A's results.
+  design:
+    pairing: "Same seed used for BASE and its feature arm in every comparison -- never cross-seed."
+    query_level: >-
+      Paired per-query metric deltas (arm's per-query outcome minus BASE's
+      per-query outcome, same query, same seed), not independent-sample
+      comparison -- holdout_split (scripts/run_graph_context_d1.py:237-249)
+      is a deterministic order-based tail slice with no seed argument, so
+      the held-out query set is identical across arms and across seeds by
+      construction; confirmed by reading its source, not assumed.
+    resampling: "Bootstrap resample over the paired per-query deltas, held-out queries only."
+    report_separately: >-
+      Query-sampling uncertainty (the bootstrap interval) and training-seed
+      variability (spread across the 3 development seeds) are two different
+      variance sources and must be reported as two separate numbers, never
+      collapsed into one interval. 3 seeds evaluated on the same 63 WebQSP
+      queries measures only the first kind of variance repeatedly against a
+      fixed, small sample of the second -- it does not substitute for the
+      bootstrap.
+    aggregation_across_seeds: >-
+      CLOSED: bootstrap_statistic = mean_s(delta_seed) -- within each
+      bootstrap replicate, compute delta_seed = metric(challenger_s) -
+      metric(BASE_s) for each of the 3 development seeds on that
+      replicate's resampled query set, then average the 3 per-seed deltas.
+      Repeat for all 10,000 replicates; the CI is the [2.5th, 97.5th]
+      percentile of the resulting 10,000 bootstrap_statistic values. This
+      is neither "pool all seeds' queries then bootstrap once" nor
+      "bootstrap each seed separately then combine intervals" -- it
+      resamples queries once per replicate and shares that same resample
+      across all 3 seeds and both arms (BASE and challenger) within that
+      replicate, consistent with holdout_split's seed-independent, shared
+      held-out query set.
+  bootstrap_resample_count: 10000
+  confidence_level: 0.95
+  ci_method: percentile  # [2.5th, 97.5th] percentile of the 10,000 bootstrap_statistic values
+  bootstrap_rng_seed: 20260905
+  bootstrap_rng_seed_note: >-
+    Fixed and recorded before any M1B result exists, per the explicit
+    instruction not to borrow one after seeing outcomes. Value is the
+    filing date (2026-09-05) as an integer -- arbitrary as a number, but
+    traceable to when it was preregistered and trivially distinguishable
+    from the 3 training-seed values {0, 1, 2}, so the two RNG streams
+    (training-seed RNG vs. bootstrap-resample RNG) are never confusable in
+    logs or code. No other significance.
+  exact_paired_resampling_procedure: >-
+    For each of the 10,000 replicates: draw a sample of query indices, of
+    the same size as the held-out query set, uniformly with replacement
+    from that held-out set (whole-query resampling -- an index may be
+    drawn 0, 1, or multiple times). Apply the identical drawn index
+    multiset to BASE and to the challenger arm, and to all 3 development
+    seeds, within that replicate (paired resampling, never resampled
+    independently per arm or per seed). Recompute each arm/seed's metric
+    on the resampled query multiset, then compute delta_seed and
+    bootstrap_statistic per aggregation_across_seeds above.
+  multi_gold_metric_handling: >-
+    Resampling operates on whole query indices only, never on individual
+    gold documents within a query. A query drawn k times in a replicate
+    contributes its complete, unmodified gold set k times to that
+    replicate's metric computation -- gold sets are never split,
+    subsampled, or resampled independently of their query.
+  report_requirement: >-
+    Per configs.m1b_targeted_resolution.yaml#uncertainty_procedure.design.
+    report_separately (unchanged): report the bootstrap 95% CI and the
+    3-seed spread (delta_seed0, delta_seed1, delta_seed2, mean, sample SD,
+    min/max, sign pattern) as two distinct, never-collapsed quantities.
+    Neither is "combined query-and-seed uncertainty."
+
+promotion_rule_for_m1b:
+  status: CLOSED_2026_09_05  # extends, does not replace, configs/m1a_feature_screen.yaml#selection_rule
+  promoted_condition: >-
+    PROMOTED iff: mean R@5 improvement across the 3 development seeds
+    exceeds +0.50pp (unchanged filed material threshold) AND the paired
+    query-level bootstrap 95% CI lower bound is > 0 AND no individual
+    development seed shows R@5 delta <= -0.50pp.
+  harmful_condition: >-
+    HARMFUL iff: mean R@5 change across the 3 development seeds is below
+    -0.50pp AND the paired query-level bootstrap 95% CI upper bound is < 0
+    AND no individual development seed shows R@5 delta >= +0.50pp.
+  otherwise: >-
+    Neither PROMOTED nor HARMFUL -- reported as "not confirmed by M1B."
+    This is a real, reportable outcome, not a filing gap: it means the
+    effect did not clear both the magnitude threshold and the bootstrap
+    CI condition without a seed-level contradiction, at this seed/query
+    budget.
+  dropped_from_the_draft: >-
+    The DRAFT's "no >0.50pp sacrifice on protected secondary effectiveness
+    criteria" clause is removed rather than left half-specified. No
+    sacrifice-threshold rule for R@1/R@20/MRR/FullCov@20 exists anywhere
+    in this track -- configs/m1a_feature_screen.yaml#selection_rule only
+    requires that a secondary diagnostic never silently replace the
+    primary metric, which is a reporting requirement, not a promotion
+    gate. Reintroducing a sacrifice threshold here would be inventing a
+    rule post-hoc, exactly what this track's discipline prohibits.
+
+# --------------------------------------------------------------------------
+# Known engineering prerequisite, not yet built.
+# --------------------------------------------------------------------------
+
+engineering_prerequisites_before_execution:
+  seed_loop_in_runner: >-
+    scripts/run_m1a_feature_screen.py's main() currently hard-fails if
+    --seed != 0 (its own one-seed-screen guard) and run()/_cell_master_local
+    build one (dataset, regime) cell's features once per invocation with no
+    seed loop at all. Feature-build (_cell_master_local) and holdout_split
+    are both confirmed seed-independent (see uncertainty_procedure.design.
+    query_level above), so the 27 fits only need 4 feature-builds (one per
+    declared cell here) reused across 3 seeds each, per this file's own
+    scientific_questions scope and the user's explicit "do not rebuild
+    identical features 27 times" instruction -- but the runner does not yet
+    support that reuse across a seed loop. Needs a runner change before
+    execution; not written by this filing.
+  feature_store_reuse: >-
+    The runner must cache built features per (dataset, R3) cell and reuse
+    them across all 3 seeds and all arms in that cell -- not rebuild
+    identical features per seed. A test proving cached tensor ==
+    independently rebuilt tensor, elementwise, on real/smoke samples is
+    required before the engineering smoke (see launch_authorization below),
+    not optional polish.
+  seed_scope: >-
+    Seed must affect model/training RNG only (seed_everything at the start
+    of _run_arm), never feature construction -- confirmed already true for
+    _cell_master_local and holdout_split, neither of which takes a seed
+    argument. The seed-loop change must not alter this.
+
+# --------------------------------------------------------------------------
+# Launch: chained, conditional. This filing does not launch anything.
+# --------------------------------------------------------------------------
+
+launch_authorization:
+  status: ALL_GATES_TRUE_2026_09_05  # every gate below closed; re-verified same date, fifth filing (amendments above) -- compute_within_ceiling and engineering_tests_pass re-closed on amendment-5 figures, not left pointing at stale ones
+  rule: >-
+    The 19 new fits (reuse_contract above) are authorised to launch without
+    a further review stop once every gate below is TRUE. If any gate is
+    FALSE when checked at launch time, execution stops before the full
+    launch and returns for review -- this file pre-authorises passing the
+    gates, not working around a failed one.
+  gates:
+    amendment_filed: true  # this amendment, 2026-09-05
+    reuse_audit_passes: true  # scripts/m1b_reuse_audit.py -> all_8_reusable=true
+    compute_within_ceiling: true  # re-verified fifth filing (amendments above): $5.008 cumulative ($2.728 27-fit rerun-with-rows + $2.28 already spent) vs $5.00 filed ceiling, a $0.008/0.16% overage judged immaterial and proceeding on the user's explicit go-ahead -- see outputs/m1b_targeted_resolution/rerun_with_rows_estimate.json. Supersedes the original $2.28-vs-$5.00 figure, which assumed splicing and no longer reflects what will be spent.
+    bootstrap_and_promotion_rule_closed: true  # uncertainty_procedure + promotion_rule_for_m1b, both CLOSED above
+    engineering_tests_pass: true  # re-verified fifth filing (amendments above): tests/test_run_m1b_targeted_resolution.py, 15/15 passing (extended for row capture + cross-check-not-splice); full repo suite 6021 passed, 108 skipped, 0 failed (was 6019/108/0 before this filing) -- the +2 delta is exactly this filing's own net new test count
+    engineering_smoke_passes: true  # webqsp R3 seed=1, BASE + BASE+NODE_ROLE: ran real on Modal (hemachandraminchu), M1B_TARGETED_RESOLUTION_DATASET_COMPLETE, 40.8s. development_seed_values=[1] (not 0), both arms reused_from_m1a=false (correctly trained fresh, no false splice), train/held_out=80/20 matches holdout_fraction=0.2 on 100 queries. Manifest: outputs/m1b_targeted_resolution/smoke/webqsp.json. Not re-earned by a fresh dedicated Modal run for the row-capture change (fifth filing, amendments above) -- reasoning for why filed there; webqsp will be the first of the 4 real re-runs launched under the new code and inspected before the other 3, as a belt-and-braces check beyond what this gate formally requires.
+  smoke_spec:
+    purpose: PIPELINE_VALIDATION_ONLY_NO_SCIENTIFIC_CONCLUSION
+    dataset: webqsp  # changed from 2wiki_clean, amendment 3 above -- pilgnnteam spend-limit block, user's explicit choice
+    regime: R3
+    seed: 1  # a seed not already real in M1A, so it genuinely exercises the new seed loop
+    arms: [BASE, "BASE+NODE_ROLE"]
+    superseded_original:
+      dataset: 2wiki_clean
+      arms: [BASE, "BASE+NODE_ROLE+SUPPORT"]
+      why_changed: "see amendments[2] (2026-09-05, third filing) -- pilgnnteam ResourceExhaustedError, no other M1A-step-5 workspace holds 2wiki_clean's data"
+    note: >-
+      Deliberately small and deliberately not the full 19-fit matrix. Its
+      job is proving the seed loop and the feature-store reuse path run
+      end-to-end on Modal without error. Unlike the original 2wiki_clean
+      spec, this does NOT exercise the new BASE+NODE_ROLE+SUPPORT
+      interaction arm (webqsp's declared cell has no interaction arm) --
+      see amendments[2]'s accepted-gap note for why this substitution was
+      made anyway and what covers the gap. No result from this smoke feeds
+      scientific_questions or promotion_rule_for_m1b.
+  note: >-
+    Four gates close with this amendment. The remaining two require runner
+    code that does not exist yet (engineering_prerequisites_before_execution
+    above) plus one real, small Modal run -- real but tiny compute/billing,
+    itemised separately from the $2.28 estimate above since the smoke is
+    not part of the 19 counted fits.
+
+standing_prohibitions_restated:
+  - no_five_seed_confirmation_from_this_file  # reserved for later frozen-survivor confirmation
+  - no_gnn_training
+  - no_qls_tuning_against_gnn
+  - no_r3_full_reexpansion_training
+  - no_a64_changes
+  - no_h2_h3
+  - no_new_feature_families_beyond_the_frozen_catalog
+  - no_interactions_beyond_the_single_2wiki_r3_nesting_above
+  - no_d_series_reopening
+  - no_package_f
+  - no_e2_resume
+  - no_workspace_migration  # narrow, one-time, 2wiki_clean-only exception granted 2026-09-05 amendment 4 -- see there; the general prohibition still stands
+
+after_m1b:
+  construct_pareto_survivor_set: true
+  then: STOP_FOR_REVIEW
+  note: >-
+    M1B does not chain into 5-seed confirmation, further feature work, or
+    GNN training automatically. Results get reported and the track stops
+    for the user's review, exactly as M1A's own after_the_map.step_8_is_a_
+    hard_stop requires.
+
+result:
+  status: M1B_LEGACY_DEVELOPMENT_COMPLETE
+  date: 2026-09-07
+  substrate_scope: >-
+    DEVELOPMENT SUBSTRATE ONLY. These four datasets and this result are the
+    method-selection basis for the next development phase (M2 onward), not
+    a final/canonical claim -- canonical CRAG data is reserved for
+    confirmation after the method is frozen. See amendment 6 above.
+  verdicts:
+    hotpotqa_clean:
+      comparison: "BASE+SUPPORT vs BASE"
+      verdict: PROMOTED
+      mean_r5_delta_pp: 1.38
+      bootstrap_ci_pp: [1.00, 1.78]
+    metaqa:
+      comparison: "BASE+PATH vs BASE"
+      verdict: PROMOTED
+      mean_r5_delta_pp: 0.87
+      bootstrap_ci_pp: [0.60, 1.15]
+    2wiki_clean:
+      comparison: "BASE+NODE_ROLE+SUPPORT vs BASE+NODE_ROLE"
+      verdict: NOT_CONFIRMED_BY_M1B
+      mean_r5_delta_pp: 0.22
+      bootstrap_ci_pp: [-0.28, 0.72]
+      note: "Residual SUPPORT beyond NODE_ROLE did not confirm; sign pattern +-- across the 3 development seeds."
+    webqsp:
+      comparison: "BASE+NODE_ROLE vs BASE"
+      verdict: NOT_CONFIRMED_BY_M1B
+      mean_r5_delta_pp: 0.76
+      bootstrap_ci_pp: [-4.10, 5.23]
+      note: "63-query holdout gives a wide bootstrap CI, exactly the query-sampling risk this file flagged in advance; one seed's own delta breaches the no-contradiction condition."
+  pareto_survivor_set:
+    - {dataset: hotpotqa_clean, feature: SUPPORT}
+    - {dataset: metaqa, feature: PATH}
+  survivor_disposition: >-
+    Frozen candidates reserved for confirmation_seeds_reserved (seeds.
+    confirmation_seeds_scope above) -- NOT authorised for a 5-seed run by
+    this result or anything filed so far. A separate, later, explicit
+    amendment (in whatever file governs that phase) is required first.
+  artifacts:
+    - outputs/m1b_targeted_resolution/bootstrap_analysis.json
+    - outputs/m1b_targeted_resolution/m1b_result_map.json

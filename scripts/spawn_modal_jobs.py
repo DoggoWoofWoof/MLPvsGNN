@@ -75,6 +75,10 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         "scripts.modal_m1a_feature_screen",
         {"smoke": "run_feature_screen_smoke", "headline": "run_feature_screen_headline"},
     ),
+    "m1b-targeted-resolution": (
+        "scripts.modal_m1b_targeted_resolution",
+        {"smoke": "run_targeted_resolution_smoke", "headline": "run_targeted_resolution_headline"},
+    ),
 }
 
 # Stage B replaced the pre-launch guess with measurements, so this is now
