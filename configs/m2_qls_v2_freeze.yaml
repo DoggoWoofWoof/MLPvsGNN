@@ -594,6 +594,37 @@ m2_selection_matrix:
       the audit's own counts (scripts/m2_compute_estimate.py reads them),
       and the launch gate re-evaluated against the filed ceiling. Forcing a
       reuse past a failed check is prohibited.
+    result: # written by the script, 2026-09-07, per instrumentation_requirement.also_applies_to_analysis_products
+      status: M2_REUSE_AUDIT_COMPLETE
+      all_reusable: true
+      reusable_fits: 19
+      refused_fits: []
+      workload_unchanged: true     # 15 new / 19 reused / 34 logical, exactly as filed
+      bit_exact_feature_probe: BIT_EXACT_HISTORICAL_ARM_EQUIVALENCE
+      probe_detail: >-
+        All six historical arms compared across R1, R2 and R3 on the committed
+        deterministic fixture. Where both paths produce a tensor it is equal
+        element-for-element in float16, with candidate_ptr, query_position and
+        precomputed_width equal; where the arm is BASE+NODE_ROLE or
+        BASE+NODE_ROLE+SUPPORT outside R3 both paths refuse it identically.
+        The R1/R2 master block did widen from 11 to 12 columns -- that is the
+        change under audit -- and the added column is identically zero while
+        every column a historical arm reads is unchanged.
+      probe_is_not_vacuous: >-
+        The fixture admits a real A64-only node outside Cq (doc_8), so the
+        NODE_ROLE column is genuinely nonzero under R3 rather than agreeing on
+        zeros. tests/test_m2_reuse_audit.py re-runs the probe against three
+        deliberately perturbed feature paths -- a one-unit change to a single
+        BASE value, a reordered family block at the same width, and a
+        historical arm that stops refusing NODE_ROLE outside R3 -- and requires
+        the probe to refuse each of them.
+      one_check_was_wrong_and_was_corrected: >-
+        The first run refused squad_clean/R1/BASE on a64_mainline_family. The
+        fit was fine: run_m1a_feature_screen.run() records that field only when
+        the dataset declares an R3 cell, because A64 exists to build C3, so an
+        R1-only dataset correctly records null. The audit, not the fit, was
+        corrected (_a64_family_matches), and the correction is itself tested.
+      m1b_sourced_fits: 7   # the four R3 cells' BASE plus 2wiki NODE_ROLE, hotpot SUPPORT, metaqa PATH
     prefer_m1b_rows_where_both_exist: >-
       For the four R3 cells M1B re-ran with row capture (2wiki_clean,
       hotpotqa_clean, metaqa, webqsp), the M1B execution_2 seed-0 fit is the
@@ -990,7 +1021,7 @@ launch_authorization:
   gates:
     amendment_filed: true             # this amendment, 2026-09-07, committed with tests/test_m2_declaration.py green
     selection_rule_frozen: true       # universal_selection_rule above, CLOSED before any outcome and locked by tests
-    reuse_audit_passes: false         # scripts/m2_reuse_audit.py, including the bit-exact historical-arm probe
+    reuse_audit_passes: true          # scripts/m2_reuse_audit.py, 19/19, bit-exact probe green -- see reuse_audit.result
     instrumentation_tests_pass: false # aggregate_from_rows == stored_aggregate, all five metrics, plus field presence
     feature_build_equivalence_proved: false  # CPU-built store == current-path store, bit-exact -- or a filed decision to retain the proven path
     compute_within_ceiling: false     # measured cost under compute.proposed_ceiling_usd ($9.00)

@@ -875,6 +875,27 @@ def test_launch_is_conditional_on_a_closed_set_of_boolean_gates(config):
         assert isinstance(value, bool), name
 
 
+def test_the_recorded_reuse_verdict_matches_the_artifact_it_came_from(config):
+    # The declaration carries the audit's conclusion (analysis products are
+    # never delivered only in conversation). It must not drift from the script's
+    # own output -- a hand-edited verdict here would open a gate on prose.
+    declared = config["m2_selection_matrix"]["reuse_audit"]
+    if "result" not in declared:
+        pytest.skip("the audit has not been run yet")
+    artifact = pathlib.Path(declared["artifact"])
+    if not artifact.exists():
+        pytest.skip("audit artifact not present; run scripts/m2_reuse_audit.py")
+    manifest = json.loads(artifact.read_text(encoding="utf-8"))
+    result = declared["result"]
+    assert result["status"] == manifest["status"]
+    assert result["all_reusable"] is manifest["all_reusable"]
+    assert result["reusable_fits"] == manifest["expected_reused_fits"]
+    assert result["refused_fits"] == manifest["refused_fits"]
+    assert result["workload_unchanged"] is manifest["workload_unchanged_by_this_audit"]
+    assert result["bit_exact_feature_probe"] == manifest["bit_exact_feature_probe"]["status"]
+    assert result["m1b_sourced_fits"] == sum(f["preferred_m1b_rows"] for f in manifest["fits"])
+
+
 def test_a_gate_that_claims_true_has_the_evidence_it_names(config):
     # A gate is only worth having if flipping it costs something. Each gate
     # below that is mechanically checkable must have its evidence present
