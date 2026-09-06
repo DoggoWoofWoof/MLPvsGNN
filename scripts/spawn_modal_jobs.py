@@ -79,6 +79,18 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         "scripts.modal_m1b_targeted_resolution",
         {"smoke": "run_targeted_resolution_smoke", "headline": "run_targeted_resolution_headline"},
     ),
+    # Three stages rather than two: M2's declared smoke is a pair. The R2
+    # primary cannot exercise a nonzero NODE_ROLE column (it is zero there by
+    # construction), so the R3 secondary is a separate submission rather than a
+    # flag on the first.
+    "m2-qls-v2-freeze": (
+        "scripts.modal_m2_qls_v2_freeze",
+        {
+            "smoke": "run_m2_smoke",
+            "secondary_smoke": "run_m2_secondary_smoke",
+            "headline": "run_m2_headline",
+        },
+    ),
 }
 
 # Stage B replaced the pre-launch guess with measurements, so this is now

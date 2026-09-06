@@ -121,7 +121,6 @@ def test_the_launch_amendment_did_not_quietly_drop_the_two_launch_prohibitions(c
 
 
 def test_amendment_one_records_the_node_role_ruling_and_the_musique_correction(config):
-    assert len(config["amendments"]) == 2
     amendment = config["amendments"][0]
     assert str(amendment["date"]) == "2026-09-07"
     text = _flat(amendment["change"])
@@ -146,6 +145,37 @@ def test_amendment_two_is_the_launch_amendment_and_names_every_thing_it_changed(
     assert "marked NEW" in text
     assert "M2B semantic minimality stays closed" in text
     assert "DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED" in text
+
+
+def test_amendment_three_records_step_c_and_claims_only_the_gates_it_earned(config):
+    amendment = config["amendments"][2]
+    assert str(amendment["date"]) == "2026-09-07"
+    text = _flat(amendment["change"])
+    assert "STEP C IS BUILT" in text
+    # the three artifacts it claims, each of which must exist
+    for path in (
+        "scripts/run_m2_qls_v2_freeze.py",
+        "scripts/modal_m2_qls_v2_freeze.py",
+        "tests/test_run_m2_qls_v2_freeze.py",
+    ):
+        assert path in text, f"amendment 3 does not name {path}"
+        assert pathlib.Path(path).exists(), f"amendment 3 names {path}, which does not exist"
+    assert "m2-qls-v2-freeze" in text, "the spawn-registry name it registered"
+    # The instrumentation gate is only worth flipping if the refusal is in the
+    # write path. M1B's amendment-5 failure was a fit that reported metrics
+    # whose rows were never kept, and a test-only check would not have caught it.
+    assert "REFUSES to record a fit" in text
+    assert "not only in a test" in text
+    # And it must be explicit about what it did NOT earn.
+    assert "Everything steps D and E have not yet earned stays false" in text
+    for still_closed in (
+        "feature_build_equivalence_proved",
+        "compute_within_ceiling",
+        "engineering_smoke_passes",
+        "musique_clean_data_verified",
+    ):
+        assert still_closed in text
+        assert config["launch_authorization"]["gates"][still_closed] is False
 
 
 def test_gnn_work_is_refused_in_the_reversal_note_too(config):
@@ -843,18 +873,34 @@ def test_the_cpu_build_check_quantifies_the_waste_it_is_chasing(config):
 # --- engineering prerequisites and the launch gates ----------------------------
 
 
-def test_the_prerequisites_say_plainly_that_the_runner_does_not_exist_yet(config):
+def test_the_prerequisites_say_truthfully_whether_each_piece_exists_yet(config):
+    # This block is the file's own account of what is built. It is checked
+    # against the filesystem in BOTH directions: while a piece is missing the
+    # prose must say so, and once it exists the prose must stop saying so.
+    # A declaration that still reads "does not exist yet" beside a committed
+    # runner is how a reader ends up trusting a stale plan.
     prerequisites = config["engineering_prerequisites_before_execution"]
     runner = _flat(prerequisites["m2_runner"])
-    assert "does not exist yet" in runner
     assert "The universal arm is NOT added to M1A's own experiment matrix" in runner
     assert "run_m2_qls_v2_freeze.py" in runner
     why = _flat(prerequisites["why_a_separate_runner"])
     assert "hard-fails on seed != 0" in why
     assert "discards the per-query rows" in why
     assert "code-identity premise" in why
-    assert "excludes musique_clean" in _flat(prerequisites["modal_launcher"])
+    launcher = _flat(prerequisites["modal_launcher"])
+    assert "excludes musique_clean" in launcher
     assert "NOT known to be present" in _flat(prerequisites["musique_clean_data_availability"])
+
+    for key, path in (
+        ("m2_runner", "scripts/run_m2_qls_v2_freeze.py"),
+        ("modal_launcher", "scripts/modal_m2_qls_v2_freeze.py"),
+    ):
+        text = _flat(prerequisites[key])
+        if pathlib.Path(path).exists():
+            assert "does not exist yet" not in text, f"{path} exists; {key} must not deny it"
+            assert "BUILT" in text, f"{path} exists but {key} does not say it was built"
+        else:
+            assert "does not exist yet" in text, f"{path} is missing; {key} must say so"
 
 
 def test_launch_is_conditional_on_a_closed_set_of_boolean_gates(config):
@@ -903,7 +949,9 @@ def test_a_gate_that_claims_true_has_the_evidence_it_names(config):
     gates = config["launch_authorization"]["gates"]
 
     if gates["amendment_filed"]:
-        assert len(config["amendments"]) == 2, "amendment 2 must actually be in the file"
+        # At least the launch amendment. Later amendments are expected -- each
+        # gate below is earned by one -- so this is a floor, not an equality.
+        assert len(config["amendments"]) >= 2, "the launch amendment must actually be in the file"
         assert config["status"] == "DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED"
     if gates["selection_rule_frozen"]:
         assert config["universal_selection_rule"]["status"].startswith("CLOSED_")

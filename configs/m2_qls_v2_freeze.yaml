@@ -117,6 +117,41 @@ amendments:
       M2B semantic minimality stays closed: it is not opened by this amendment,
       by the smoke, or by the result. After the universal-selection verdict is
       produced, M2 stops for review.
+  - date: 2026-09-07
+    change: >-
+      STEP C IS BUILT: the M2 runner and its Modal launcher now exist, and the
+      two engineering gates they were blocking are earned. Nothing scientific
+      changed and no compute was spent. (1) scripts/run_m2_qls_v2_freeze.py
+      reads m2_selection_matrix in THIS file (never M1A's), consumes the reuse
+      manifest so that only genuinely-new arms are fitted, and supports BASE,
+      the QLS-CELL incumbent arms and QLS-UNIVERSAL. M1A's own experiment
+      matrix is untouched, as engineering_prerequisites_before_execution.
+      m2_runner required. (2) Every field in instrumentation_requirement.
+      exact_fields_every_new_m2_fit_writes is persisted from the first
+      execution, and the runner REFUSES to record a fit whose stored per-query
+      rows do not re-aggregate to the metrics it reports -- the check is in the
+      write path, not only in a test, because M1B's amendment-5 failure was
+      exactly a fit that reported metrics whose rows were never kept.
+      tests/test_run_m2_qls_v2_freeze.py (31 tests) covers
+      aggregate_from_rows == stored_aggregate for all five metrics, checkpoint
+      and feature-store reload, fingerprint sensitivity, the 14-column
+      universal schema, NODE_ROLE zero under R2 and nonzero exactly on C3\\Cq
+      under R3, and that the total new-fit count over the real manifest is 15.
+      (3) scripts/modal_m2_qls_v2_freeze.py is registered in
+      scripts/spawn_modal_jobs.py as m2-qls-v2-freeze with smoke /
+      secondary_smoke / headline stages. It has its own _jobs builder because
+      M1A's excludes musique_clean by construction, and it derives every
+      dataset's validation split size from that dataset's completed
+      confirmation artifact -- the same source M1A's five declared values were
+      read off, cross-checked against them, and the reason musique_clean is an
+      ordinary row rather than a hand-entered number. Its headline stage
+      re-reads the gates below at call time and refuses while ANY is false.
+      (4) Gates instrumentation_tests_pass and engineering_tests_pass flip to
+      true on that evidence (full suite green). Everything steps D and E have
+      not yet earned stays false: feature_build_equivalence_proved,
+      compute_within_ceiling, engineering_smoke_passes,
+      musique_clean_data_verified. No compute has been spent and no M2 fit
+      exists.
 
 status: DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED
 this_file_authorises: >-
@@ -963,18 +998,21 @@ feature_build_compute_check:
     what a feature means, the split is refused, not the feature.
 
 # --------------------------------------------------------------------------
-# Engineering prerequisites -- what does not exist yet
+# Engineering prerequisites -- what has to exist before execution, and whether
+# it does. Amendment 3 (2026-09-07) built the first four; the fifth is still
+# open and is its own launch gate.
 # --------------------------------------------------------------------------
 
 engineering_prerequisites_before_execution:
   m2_runner: >-
-    scripts/run_m2_qls_v2_freeze.py does not exist yet. It reads
+    BUILT 2026-09-07 (amendment 3). scripts/run_m2_qls_v2_freeze.py reads
     m2_selection_matrix above (not M1A's declaration) and reuses
     run_m1a_feature_screen.py's _cell_master_local / _widen_query /
     _arm_store and run_sa_mlp_confirmation.py's _fit / _score_once
-    unmodified. It must support BASE, the QLS-CELL incumbent arms, and
-    QLS-UNIVERSAL. The universal arm is NOT added to M1A's own experiment
-    matrix: configs/m1a_feature_screen.yaml stays frozen, and
+    unmodified. It supports BASE, the QLS-CELL incumbent arms, and
+    QLS-UNIVERSAL, and fits only the arms the reuse manifest marks new. The
+    universal arm is NOT added to M1A's own experiment matrix:
+    configs/m1a_feature_screen.yaml stays frozen, and
     tests/test_m2_universal_schema.py already asserts the arm appears in no
     M1A cell.
   why_a_separate_runner: >-
@@ -984,18 +1022,29 @@ engineering_prerequisites_before_execution:
     instrumentation requires. Editing it to serve M2 would also break the
     code-identity premise the reuse audit depends on.
   instrumentation: >-
-    The persistence listed in instrumentation_requirement.exact_fields_
-    every_new_m2_fit_writes has no implementation yet -- _run_arm saves no
-    checkpoint and returns no rows. This is new code, gated by its own
-    tests.
+    BUILT 2026-09-07 (amendment 3). Every field in instrumentation_
+    requirement.exact_fields_every_new_m2_fit_writes is persisted from the
+    first execution, and the runner refuses to record a fit whose stored
+    per-query rows do not re-aggregate to the metrics it reports -- the
+    check sits in the write path, not only in a test.
   feature_store_persistence: >-
-    Required by feature_build_compute_check above, and separately useful:
-    M1A never persisted its stores, which is why every M2 cell has to
-    rebuild features it has already built once before.
+    BUILT 2026-09-07 (amendment 3). Each fit writes its arm store in the
+    existing fixed_structural_features_v1 format and each cell writes its
+    master block once, so the step-D CPU/GPU split is an orchestration
+    change rather than a rewrite. Required by feature_build_compute_check
+    above, and separately useful: M1A never persisted its stores, which is
+    why every M2 cell has to rebuild features it has already built once
+    before.
   modal_launcher: >-
-    scripts/modal_m2_qls_v2_freeze.py, registered in
-    scripts/spawn_modal_jobs.py, with its own _jobs builder -- M1A's
-    excludes musique_clean by construction (ALL_DATASETS), and M2 needs it.
+    BUILT 2026-09-07 (amendment 3). scripts/modal_m2_qls_v2_freeze.py,
+    registered in scripts/spawn_modal_jobs.py as m2-qls-v2-freeze, with its
+    own _jobs builder -- M1A's excludes musique_clean by construction
+    (ALL_DATASETS), and M2 needs it. Each dataset's validation split size is
+    derived from that dataset's own completed confirmation artifact and
+    cross-checked against M1A's declared value wherever one exists, which is
+    what makes musique_clean an ordinary row rather than a transcribed
+    number. The headline stage re-reads launch_authorization.gates at call
+    time and refuses while any is false.
   musique_clean_data_availability: >-
     musique_clean has never run a trained phase on any active workspace, so
     its training-capable slice (nodes.npy, queries_all.npy, and the
@@ -1022,10 +1071,10 @@ launch_authorization:
     amendment_filed: true             # this amendment, 2026-09-07, committed with tests/test_m2_declaration.py green
     selection_rule_frozen: true       # universal_selection_rule above, CLOSED before any outcome and locked by tests
     reuse_audit_passes: true          # scripts/m2_reuse_audit.py, 19/19, bit-exact probe green -- see reuse_audit.result
-    instrumentation_tests_pass: false # aggregate_from_rows == stored_aggregate, all five metrics, plus field presence
+    instrumentation_tests_pass: true  # aggregate_from_rows == stored_aggregate, all five metrics, plus field presence -- earned 2026-09-07, see amendment 3
     feature_build_equivalence_proved: false  # CPU-built store == current-path store, bit-exact -- or a filed decision to retain the proven path
     compute_within_ceiling: false     # measured cost under compute.proposed_ceiling_usd ($9.00)
-    engineering_tests_pass: false     # tests/test_run_m2_qls_v2_freeze.py + the full repo suite
+    engineering_tests_pass: true      # tests/test_run_m2_qls_v2_freeze.py + tests/test_modal_m2_qls_v2_freeze.py + the full repo suite -- earned 2026-09-07, see amendment 3
     engineering_smoke_passes: false   # smoke_spec below, real, on Modal
     musique_clean_data_verified: false  # its training-capable slice present on the workspace that will run it
   smoke_spec:
