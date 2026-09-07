@@ -3,16 +3,24 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_STAGE0_GATE_RETURNED_STOP_PENDING_B` — section 3 has run and its findings
-are below; the Stage-0 jobs were priced in
+`M2D_STAGE0_GATE_RETURNED_ADVANCE_TARGETED_M2D` — section 3 has run and its
+findings are below; the Stage-0 jobs were priced in
 [`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and have now
-run on all four declared cells; and section 10's gate has been applied to them
-in [`docs/M2D_STAGE0_GATE.md`](M2D_STAGE0_GATE.md). It did not advance, and it
-did not return a plain stop either: conditions A and C both fail on their filed
-terms, and condition B was never measured, because the probe ranks whole models
-and B asks about a single primitive. A stop resting on an unmeasured condition
-is not a stop, so B is being measured and the same gate will be re-applied
-unchanged. Stage 1 remains unauthorised.
+run on all four declared cells; condition B was measured afterwards on the two
+failure cells, because the Stage-0 probe ranks whole models and B asks about a
+single primitive, and a stop resting on an unmeasured condition is not a stop;
+and section 10's gate has been applied to all of it in
+[`docs/M2D_STAGE0_GATE.md`](M2D_STAGE0_GATE.md), unchanged from the version that
+returned the pending verdict.
+
+It advances on B alone. Conditions A and C both fail on their filed terms: no
+fixed fusion arm gains on either blocker, and the S3+S4 diagnostic loses
+recall@5 on MuSiQue. B holds on exactly one of the five primitives S4 is
+missing — `semantic_difference`, S3's learned weighted L1 at raw 1536 — which
+reorders 59.5% of SQuAD's and 74.8% of MuSiQue's top-1 errors ranking alone. A
+pass by one of five is a selection over five and is reported as one. Stage 1
+remains unauthorised: section 20's deliverable on an advance is the exact
+minimum next matrix and its cost, and the review comes before it runs.
 
 **This is a post-hoc development branch.** It was opened because of an observed
 S4 development result, not from a preregistered hypothesis, and it is labelled

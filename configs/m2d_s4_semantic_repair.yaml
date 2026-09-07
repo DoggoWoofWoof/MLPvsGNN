@@ -13,7 +13,7 @@
 
 phase: M2D_S4_SEMANTIC_REPAIR
 opened: 2026-09-08
-status: M2D_STAGE0_GATE_RETURNED_STOP_PENDING_B
+status: M2D_STAGE0_GATE_RETURNED_ADVANCE_TARGETED_M2D
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: >-
   An observed S4 development result, not a preregistered hypothesis. S4 was
@@ -729,9 +729,16 @@ launch_authorization:
     semantic_archaeology_recorded: true       # earned 2026-09-08, outputs/m2d_s4_semantic_repair/semantic_archaeology.json at 024911d
     stage_0_compute_record_filed: true         # earned 2026-09-08, docs/M2D_STAGE0_COMPUTE_RECORD.md
     stage_0_diagnostics_run: true              # earned 2026-09-08, four cells at 677b2fa7ec20, fetched and verified
-    stage_0_advance_gate_evaluated: true       # earned 2026-09-08, docs/M2D_STAGE0_GATE.md; the gate was committed at 7260064, first
-                                               # artifact written at 677b2fa, so the rule predates every number it judges
-    stage_1_authorised: false
+    stage_0_condition_b_measured: true         # earned 2026-09-08, squad_clean and musique_clean at ef5500e, fetched and
+                                               # verified; the runner and its tests were committed in the same commit that
+                                               # the artifacts record as their source, so no number preceded its rule
+    stage_0_advance_gate_evaluated: true       # earned 2026-09-08, docs/M2D_STAGE0_GATE.md; the gate was committed at 7260064,
+                                               # its B criterion at 1538690, and the first artifact either judges was written
+                                               # at 677b2fa, so the rule predates every number it judges. Re-applied unchanged
+                                               # once B was measured; it returned ADVANCE_TARGETED_M2D on B alone.
+    stage_1_authorised: false                  # section 19 authorises the smallest seed-0 pilot ON A PASS, and the gate passed.
+                                               # Section 20 still stops for review first, and its if_advance deliverable is the
+                                               # exact minimum next matrix and its cost -- a specification, not its execution.
 
 # --------------------------------------------------------------------------
 # 20. Hard stop

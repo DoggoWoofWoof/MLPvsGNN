@@ -1,6 +1,6 @@
 # M2D Stage-0 advance gate
 
-**STOP_PENDING_B** — neither A nor C holds, and B was not measured. A STOP that rests on an unmeasured condition is not a STOP -- measure B, then re-apply this gate unchanged.
+**ADVANCE_TARGETED_M2D** — B_a_named_primitive_reorders holds.
 
 every delta is arm minus Z0_S4 within one cell's own panel. Nothing here is compared against M2B's filed table, which reports the holdout portion and is a different panel.
 
@@ -27,9 +27,19 @@ Every figure is recall@5 in percentage points against Z0_S4. An arm passes on a 
 
 ## B — does one named primitive reorder?
 
-**UNMEASURED**, and recorded as such before the results existed rather than after: the Stage-0 probe emits rankings for four whole models and no ranking for any single primitive, so no evidence here bears on B either way.
+1 of 5 primitives S4 is missing reach a majority on both failure cells. A pass by one of 5 is a selection over 5 and is reported as such.
 
-What would settle it: rank each cell's frozen pool by each raw primitive alone -- cosine_qd, the raw query-document dot, its within-query percentile, mean_abs_diff -- and report, on the queries S4 gets top-1 wrong, the share where that primitive alone ranks a relevant candidate above S4's wrong top item.
+| primitive | squad_clean/R1 | musique_clean/R1 | majority on both |
+|---|---:|---:|---|
+| cosine_qd | 0.2857 | 0.7067 | no |
+| dot_qd_pct | 0.2853 | 0.7067 | no |
+| mean_abs_diff | 0.3442 | 0.7253 | no |
+| semantic_difference | 0.5949 | 0.7482 | yes |
+| semantic_product | 0.3543 | 0.7067 | no |
+
+Each figure is the share of the queries S4 gets wrong at rank 1 -- with a relevant candidate in the pool -- on which that primitive ALONE ranks a relevant candidate above S4's wrong top item. The bar is a majority (> 0.50) on both.
+
+Measured but not admitted, because B is about a primitive S4 is MISSING and S4 already computes these: normalized_state_dot.
 
 ## C — does S3+S4 repair both blockers?
 
@@ -41,4 +51,3 @@ Holds: **no**. Diagnostic only — the arm runs two semantic models and can neve
 | musique_clean/R1 | +2.670 | -1.134 | +2.995 |
 
 that the two representations carry different information, so an integrated single-model representation is worth trying. Never that two semantic models may be run at inference.
-

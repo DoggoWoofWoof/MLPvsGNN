@@ -44,6 +44,7 @@ BASELINE_JSON = (
 ARCHAEOLOGY_JSON = (
     REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "semantic_archaeology.json"
 )
+PRIMITIVE_ROOT = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage0_primitives"
 
 #: The passage/KB split is M2C's, measured there and inherited here. Restated
 #: as a constant so that a test can catch the declaration drifting from it.
@@ -130,6 +131,14 @@ STATUS_REQUIRES_UNEARNED = {
     "M2D_STAGE0_GATE_RETURNED_STOP_PENDING_B": {
         "stage_1_authorised",
     },
+    # The gate advanced, and Stage 1 is STILL unauthorised, which is the one
+    # pairing this table has to be able to express. Section 19 authorises the
+    # seed-0 pilot on a pass; section 20 puts a review between the verdict and
+    # the pilot, and asks for the next matrix as a specification. A status that
+    # advanced the authorisation gate along with itself would collapse those.
+    "M2D_STAGE0_GATE_RETURNED_ADVANCE_TARGETED_M2D": {
+        "stage_1_authorised",
+    },
 }
 
 
@@ -163,6 +172,10 @@ def test_the_gates_that_are_earned_point_at_something_on_disk(declaration):
             "the archaeology gate is claimed and its artifact is not on disk"
         )
         assert (REPO_ROOT / "scripts" / "m2d_semantic_archaeology.py").exists()
+    if gates.get("stage_0_condition_b_measured"):
+        measured = sorted(PRIMITIVE_ROOT.glob("*.json"))
+        assert measured, "condition B is claimed measured and no measurement is on disk"
+        assert (REPO_ROOT / "scripts" / "run_m2d_primitive_probe.py").exists()
 
 
 def test_the_predecessor_commit_gate_is_not_a_promise(declaration):
