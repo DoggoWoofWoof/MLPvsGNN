@@ -230,7 +230,7 @@ def test_a_measured_b_would_allow_a_plain_stop(monkeypatch) -> None:
     monkeypatch.setattr(
         gate,
         "condition_b",
-        lambda results, cells: {
+        lambda results, cells, primitives=None: {
             "condition": "B_a_named_primitive_reorders",
             "holds": False,
             "measured": True,
@@ -239,6 +239,180 @@ def test_a_measured_b_would_allow_a_plain_stop(monkeypatch) -> None:
     verdict = gate.evaluate(_panel(z1={}), DECLARATION)
     assert verdict["verdict"] == gate.STOP
     assert verdict["if_none_holds"]["then"].startswith("freeze S3")
+
+
+# ---------------------------------------------------------------------------
+# Condition B, once a measurement exists
+# ---------------------------------------------------------------------------
+
+
+def _primitives(shares: dict[str, dict[str, float]], *, missing: set[str] | None = None) -> dict:
+    """A measurement per failure cell: {cell: {primitive: share}}."""
+
+    missing = {name for row in shares.values() for name in row} if missing is None else missing
+    return {
+        cell: {
+            "status": "M2D_PRIMITIVE_PROBE_COMPLETE",
+            "cell": cell,
+            "trained_anything": False,
+            "test_split_read": False,
+            "primitives": {
+                name: {
+                    "share_reordered": share,
+                    "population": 500,
+                    "missing_from_s4": name in missing,
+                }
+                for name, share in row.items()
+            },
+        }
+        for cell, row in shares.items()
+    }
+
+
+def test_b_holds_when_one_missing_primitive_reorders_a_majority_on_both() -> None:
+    measured = _primitives(
+        {
+            FAILURE[0]: {"cosine_qd": 0.61, "mean_abs_diff": 0.20},
+            FAILURE[1]: {"cosine_qd": 0.55, "mean_abs_diff": 0.31},
+        }
+    )
+    verdict = gate.evaluate(_panel(z1={}), DECLARATION, measured)
+    b = verdict["conditions"][1]
+    assert b["measured"] is True
+    assert b["holds"] is True
+    assert b["passing_primitives"] == ["cosine_qd"]
+    assert verdict["verdict"] == gate.ADVANCE
+
+
+def test_b_fails_when_the_majority_holds_on_only_one_blocker() -> None:
+    """B is a claim about BOTH cells. One is a fact about one dataset."""
+
+    measured = _primitives(
+        {FAILURE[0]: {"cosine_qd": 0.95}, FAILURE[1]: {"cosine_qd": 0.49}}
+    )
+    b = gate.evaluate(_panel(z1={}), DECLARATION, measured)["conditions"][1]
+    assert b["holds"] is False
+    assert b["rows"][0]["reaches_a_majority_on_both"] is False
+
+
+def test_a_bare_half_is_not_a_majority() -> None:
+    measured = _primitives({FAILURE[0]: {"cosine_qd": 0.50}, FAILURE[1]: {"cosine_qd": 0.99}})
+    b = gate.evaluate(_panel(z1={}), DECLARATION, measured)["conditions"][1]
+    assert b["holds"] is False
+    assert b["bar"] == 0.50
+
+
+def test_a_primitive_s4_already_computes_cannot_satisfy_b() -> None:
+    """B is about a MISSING primitive. The archaeology decides which those are,
+    and a primitive S4 has cannot be the repair however well it ranks alone."""
+
+    measured = _primitives(
+        {
+            FAILURE[0]: {"normalized_state_dot": 0.99, "cosine_qd": 0.10},
+            FAILURE[1]: {"normalized_state_dot": 0.99, "cosine_qd": 0.10},
+        },
+        missing={"cosine_qd"},
+    )
+    b = gate.evaluate(_panel(z1={}), DECLARATION, measured)["conditions"][1]
+    assert b["holds"] is False
+    assert b["not_admitted_because_s4_already_has_them"] == ["normalized_state_dot"]
+    assert [row["primitive"] for row in b["rows"]] == ["cosine_qd"]
+
+
+def test_b_reports_how_many_primitives_were_tried() -> None:
+    measured = _primitives(
+        {
+            FAILURE[0]: {"cosine_qd": 0.61, "dot_qd": 0.60, "mean_abs_diff": 0.10},
+            FAILURE[1]: {"cosine_qd": 0.55, "dot_qd": 0.20, "mean_abs_diff": 0.10},
+        }
+    )
+    b = gate.evaluate(_panel(z1={}), DECLARATION, measured)["conditions"][1]
+    assert b["primitives_tried"] == 3
+    assert b["primitives_passed"] == 1
+    assert "1 of 3" in b["selection_note"]
+
+
+def test_a_measurement_that_skips_a_blocker_is_refused() -> None:
+    measured = _primitives({FAILURE[0]: {"cosine_qd": 0.99}})
+    with pytest.raises(ValueError, match="BOTH failure cells"):
+        gate.evaluate(_panel(z1={}), DECLARATION, measured)
+
+
+def test_a_measured_and_failing_b_turns_the_pending_stop_into_a_stop() -> None:
+    """The point of measuring B: it is what a STOP_M2D has been waiting on."""
+
+    measured = _primitives({FAILURE[0]: {"cosine_qd": 0.10}, FAILURE[1]: {"cosine_qd": 0.10}})
+    verdict = gate.evaluate(_panel(z1={}), DECLARATION, measured)
+    assert verdict["conditions_holding"] == []
+    assert verdict["verdict"] == gate.STOP
+    assert verdict["if_none_holds"]["then"].startswith("freeze S3")
+
+
+def test_no_measurement_is_not_the_same_as_a_measurement_of_nothing() -> None:
+    """A missing measurement and a measurement where nothing reorders reach
+    opposite verdicts, which is the whole reason the flag is three-valued."""
+
+    nothing_reorders = _primitives(
+        {FAILURE[0]: {"cosine_qd": 0.10}, FAILURE[1]: {"cosine_qd": 0.10}}
+    )
+    assert gate.evaluate(_panel(z1={}), DECLARATION, None)["verdict"] == gate.STOP_PENDING_B
+    assert gate.evaluate(_panel(z1={}), DECLARATION, nothing_reorders)["verdict"] == gate.STOP
+
+
+def test_the_rendered_gate_shows_a_measured_b_as_a_table() -> None:
+    measured = _primitives(
+        {
+            FAILURE[0]: {"cosine_qd": 0.61, "normalized_state_dot": 0.99},
+            FAILURE[1]: {"cosine_qd": 0.55, "normalized_state_dot": 0.99},
+        },
+        missing={"cosine_qd"},
+    )
+    text = gate.render(gate.evaluate(_panel(z1={}), DECLARATION, measured))
+    assert "UNMEASURED" not in text
+    assert "cosine_qd" in text
+    assert "normalized_state_dot" in text, "the excluded primitive is still reported"
+    assert "MISSING" in text
+
+
+# ---------------------------------------------------------------------------
+# Reading a measurement off disk
+# ---------------------------------------------------------------------------
+
+
+def test_no_primitive_directory_reads_as_no_measurement() -> None:
+    assert gate.load_primitives(None) is None
+
+
+def test_an_empty_primitive_directory_reads_as_no_measurement(tmp_path: Path) -> None:
+    """An empty directory is not a measurement, and must not become a STOP."""
+
+    assert gate.load_primitives(tmp_path) is None
+
+
+def test_a_primitive_artifact_is_unwrapped_and_keyed_by_cell(tmp_path: Path) -> None:
+    payload = _primitives({FAILURE[0]: {"cosine_qd": 0.61}})[FAILURE[0]]
+    (tmp_path / "cell.json").write_text(
+        json.dumps({"identity": {}, "payload": payload}), encoding="utf-8"
+    )
+    loaded = gate.load_primitives(tmp_path)
+    assert set(loaded) == {FAILURE[0]}
+    assert loaded[FAILURE[0]]["primitives"]["cosine_qd"]["share_reordered"] == 0.61
+
+
+def test_a_primitive_artifact_that_claims_to_have_trained_is_refused(tmp_path: Path) -> None:
+    payload = _primitives({FAILURE[0]: {"cosine_qd": 0.61}})[FAILURE[0]]
+    payload["trained_anything"] = True
+    (tmp_path / "cell.json").write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="trained or read the test split"):
+        gate.load_primitives(tmp_path)
+
+
+def test_a_stage_0_result_is_not_accepted_as_a_primitive_measurement(tmp_path: Path) -> None:
+    (tmp_path / "cell.json").write_text(
+        json.dumps(_result(FAILURE[0], {})), encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match="not a completed primitive measurement"):
+        gate.load_primitives(tmp_path)
 
 
 # ---------------------------------------------------------------------------

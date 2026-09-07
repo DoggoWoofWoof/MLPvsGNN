@@ -30,14 +30,23 @@ The probe runs on the FIT portion of the validation split; M2B's filed numbers
 are the HOLDOUT portion. An arm-minus-Z0 delta inside one artifact is a real
 comparison. An arm-minus-M2B number would be two different panels subtracted.
 
-**B is not measurable from what Stage 0 produced, and that is recorded rather
-than assumed away.** The probe ranks four whole models; B asks about a single
-primitive, which needs a per-primitive ranking the probe does not emit. So B is
-reported UNMEASURED. That matters asymmetrically and the verdict says so: an
-ADVANCE on A or C stands on its own, because the gate needs only one condition.
-A STOP does not, because an unmeasured condition might have passed -- so when A
-and C both fail, this script returns STOP_PENDING_B rather than STOP_M2D, and
-names the measurement that would settle it.
+**B needs a measurement Stage 0 did not produce, and the gate says so rather
+than assuming it away.** The probe ranks four whole models; B asks about a
+single primitive, which needs a per-primitive ranking over the same pool. With
+no such measurement B is reported UNMEASURED, and that matters asymmetrically:
+an ADVANCE on A or C stands on its own, because the gate needs only one
+condition, but a STOP claims all three failed. So when A and C both fail and B
+is unmeasured this returns STOP_PENDING_B rather than STOP_M2D, and names the
+measurement that would settle it.
+
+When that measurement is supplied, B holds if ONE primitive that S4 is missing
+reorders a MAJORITY of S4's top-1 errors on BOTH failure cells. Two parts of
+that are choices and both are filed here, before any per-primitive number
+exists. "Missing" is the declaration's word and is read against the archaeology's
+S3_NOT_IN_S4 set, so a primitive S4 already contains cannot satisfy B however
+well it ranks. "Systematically" is read as a majority of the measurable error
+population -- a share rather than a count, because the two blockers' populations
+differ eightfold.
 
 ``C`` needs a reading of "substantially repairs" that is not chosen after the
 fact. It is taken as the same bar A sets for a real improvement -- recall@5 up
@@ -64,6 +73,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 DECLARATION = REPO_ROOT / "configs" / "m2d_s4_semantic_repair.yaml"
 RESULT_ROOT = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage0"
 GATE_JSON = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage0_gate.json"
+PRIMITIVE_ROOT = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage0_primitives"
 
 #: The reference arm every fusion is compared against. S4 alone, inside the
 #: same panel, so the comparison is an ordering change and nothing else.
@@ -75,6 +85,13 @@ DIAGNOSTIC_ARM = "Z4_S4_S3_DIAGNOSTIC_ONLY"
 #: Percentage points. Both are the declaration's, and neither is adjustable.
 IMPROVEMENT_PP = 0.25
 CONTROL_REGRESSION_PP = 0.50
+
+#: B's reading of "systematically", fixed before any per-primitive number
+#: existed. A share of the measurable error population, not a count, because
+#: the two blockers' populations differ by a factor of eight; and a majority,
+#: because a primitive that reorders fewer than half of S4's top-1 errors is
+#: doing it sometimes rather than systematically.
+B_MAJORITY_SHARE = 0.50
 
 STOP = "STOP_M2D"
 STOP_PENDING_B = "STOP_PENDING_B"
@@ -112,6 +129,31 @@ def load_results(root: Path = RESULT_ROOT) -> dict[str, dict[str, Any]]:
             raise ValueError(f"{path} claims to have trained or read the test split")
         results[payload["cell"]] = payload
     return results
+
+
+def load_primitives(root: Path | None) -> dict[str, dict[str, Any]] | None:
+    """The per-primitive reordering measurement, if one has been made.
+
+    ``None`` means no measurement exists, which is a different statement from a
+    measurement in which nothing reordered, and the two reach opposite verdicts.
+
+    Only primitives the archaeology placed in S3_NOT_IN_S4 are admitted, and
+    the artifact has to say so of itself. B is about a MISSING primitive; one
+    S4 already computes cannot be the repair however well it ranks alone.
+    """
+
+    if root is None:
+        return None
+    measured: dict[str, dict[str, Any]] = {}
+    for path in sorted(Path(root).glob("*.json")):
+        envelope = json.loads(path.read_text(encoding="utf-8"))
+        payload = envelope.get("payload", envelope)
+        if payload.get("status") != "M2D_PRIMITIVE_PROBE_COMPLETE":
+            raise ValueError(f"{path} is not a completed primitive measurement")
+        if payload.get("trained_anything") or payload.get("test_split_read"):
+            raise ValueError(f"{path} claims to have trained or read the test split")
+        measured[payload["cell"]] = payload
+    return measured or None
 
 
 def _pp(value: float) -> float:
@@ -182,31 +224,91 @@ def condition_a(results: dict[str, dict[str, Any]], cells: dict[str, list[str]])
     }
 
 
-def condition_b(results: dict[str, dict[str, Any]], cells: dict[str, list[str]]) -> dict[str, Any]:
-    """Not measurable from Stage 0 as it was run, and said so before it ran.
+def condition_b(
+    results: dict[str, dict[str, Any]],
+    cells: dict[str, list[str]],
+    primitives: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Does one primitive S4 lacks reorder a majority of its top-1 errors?
 
-    The probe ranks four whole models. B asks whether ONE primitive reorders
-    S4's mistakes, which needs a ranking per primitive -- cosine_qd, the raw
-    dot, dot_qd_pct's within-query percentile, mean_abs_diff -- over the same
-    pool. That is cheap, it is the same embeddings already loaded, and it is
-    not what ran.
+    Without a measurement this reports UNMEASURED, which was written into the
+    gate before the Stage-0 results existed: the probe emits rankings for whole
+    models and none for any single primitive.
     """
 
+    failure = cells["failure"]
+    if primitives is None:
+        return {
+            "condition": "B_a_named_primitive_reorders",
+            "holds": False,
+            "measured": False,
+            "why": (
+                "the Stage-0 probe emits rankings for four whole models and no ranking "
+                "for any single primitive, so no evidence here bears on B either way"
+            ),
+            "what_would_settle_it": (
+                "rank each cell's frozen pool by each raw primitive alone -- cosine_qd, "
+                "the raw query-document dot, its within-query percentile, mean_abs_diff "
+                "-- and report, on the queries S4 gets top-1 wrong, the share where that "
+                "primitive alone ranks a relevant candidate above S4's wrong top item"
+            ),
+            "cells_it_would_have_to_hold_on": failure,
+        }
+
+    missing = sorted(set(failure) - set(primitives))
+    if missing:
+        raise ValueError(
+            f"B is a claim about BOTH failure cells and {missing} were not measured"
+        )
+
+    admitted = sorted(
+        set.intersection(
+            *(
+                {
+                    name
+                    for name, row in primitives[cell]["primitives"].items()
+                    if row["missing_from_s4"]
+                }
+                for cell in failure
+            )
+        )
+    )
+    excluded = sorted(
+        set.union(*(set(primitives[cell]["primitives"]) for cell in failure)) - set(admitted)
+    )
+
+    rows = []
+    for name in admitted:
+        shares = {cell: primitives[cell]["primitives"][name]["share_reordered"] for cell in failure}
+        rows.append(
+            {
+                "primitive": name,
+                "share_of_s4_top1_errors_reordered": shares,
+                "population": {
+                    cell: primitives[cell]["primitives"][name]["population"] for cell in failure
+                },
+                "reaches_a_majority_on_both": all(
+                    value > B_MAJORITY_SHARE for value in shares.values()
+                ),
+            }
+        )
+    passing = [row["primitive"] for row in rows if row["reaches_a_majority_on_both"]]
     return {
         "condition": "B_a_named_primitive_reorders",
-        "holds": False,
-        "measured": False,
-        "why": (
-            "the Stage-0 probe emits rankings for four whole models and no ranking "
-            "for any single primitive, so no evidence here bears on B either way"
+        "holds": bool(passing),
+        "measured": True,
+        "bar": B_MAJORITY_SHARE,
+        "primitives_tried": len(rows),
+        "primitives_passed": len(passing),
+        "passing_primitives": passing,
+        "selection_note": (
+            f"{len(passing)} of {len(rows)} primitives S4 is missing reach a majority "
+            f"on both failure cells. A pass by one of {len(rows)} is a selection over "
+            f"{len(rows)} and is reported as such."
         ),
-        "what_would_settle_it": (
-            "rank each cell's frozen pool by each raw primitive alone -- cosine_qd, "
-            "the raw query-document dot, its within-query percentile, mean_abs_diff "
-            "-- and report, on the queries S4 gets top-1 wrong, the share where that "
-            "primitive alone ranks a relevant candidate above S4's wrong top item"
-        ),
-        "cells_it_would_have_to_hold_on": cells["failure"],
+        "not_admitted_because_s4_already_has_them": excluded,
+        "rows": rows,
+        "cells_it_would_have_to_hold_on": failure,
     }
 
 
@@ -244,7 +346,11 @@ def condition_c(results: dict[str, dict[str, Any]], cells: dict[str, list[str]])
     }
 
 
-def evaluate(results: dict[str, dict[str, Any]], config: dict[str, Any]) -> dict[str, Any]:
+def evaluate(
+    results: dict[str, dict[str, Any]],
+    config: dict[str, Any],
+    primitives: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     cells = declared_cells(config)
     missing = sorted(set(cells["failure"] + cells["control"]) - set(results))
     if missing:
@@ -254,7 +360,7 @@ def evaluate(results: dict[str, dict[str, Any]], config: dict[str, Any]) -> dict
         )
 
     a = condition_a(results, cells)
-    b = condition_b(results, cells)
+    b = condition_b(results, cells, primitives)
     c = condition_c(results, cells)
     conditions = [a, b, c]
     holding = [item["condition"] for item in conditions if item["holds"]]
@@ -347,16 +453,51 @@ def render(gate: dict[str, Any]) -> str:
             ),
         ]
 
+    lines += ["", "## B \u2014 does one named primitive reorder?", ""]
+    if not b["measured"]:
+        lines += [
+            (
+                "**UNMEASURED**, and recorded as such before the results existed "
+                f"rather than after: {b['why']}."
+            ),
+            "",
+            f"What would settle it: {b['what_would_settle_it']}.",
+        ]
+    else:
+        failure = list(b["rows"][0]["share_of_s4_top1_errors_reordered"]) if b["rows"] else []
+        lines += [b["selection_note"], ""]
+        lines.append("| primitive | " + " | ".join(failure) + " | majority on both |")
+        lines.append("|---|" + "---:|" * len(failure) + "---|")
+        for row in b["rows"]:
+            shares = [
+                f"{row['share_of_s4_top1_errors_reordered'][cell]:.4f}" for cell in failure
+            ]
+            lines.append(
+                "| "
+                + " | ".join([row["primitive"], *shares])
+                + f" | {'yes' if row['reaches_a_majority_on_both'] else 'no'} |"
+            )
+        lines += [
+            "",
+            (
+                "Each figure is the share of the queries S4 gets wrong at rank 1 -- with a "
+                "relevant candidate in the pool -- on which that primitive ALONE ranks a "
+                f"relevant candidate above S4's wrong top item. The bar is a majority "
+                f"(> {b['bar']:.2f}) on both."
+            ),
+        ]
+        if b["not_admitted_because_s4_already_has_them"]:
+            lines += [
+                "",
+                (
+                    "Measured but not admitted, because B is about a primitive S4 is "
+                    "MISSING and S4 already computes these: "
+                    + ", ".join(b["not_admitted_because_s4_already_has_them"])
+                    + "."
+                ),
+            ]
+
     lines += [
-        "",
-        "## B \u2014 does one named primitive reorder?",
-        "",
-        (
-            "**UNMEASURED**, and recorded as such before the results existed "
-            f"rather than after: {b['why']}."
-        ),
-        "",
-        f"What would settle it: {b['what_would_settle_it']}.",
         "",
         "## C \u2014 does S3+S4 repair both blockers?",
         "",
@@ -380,10 +521,18 @@ def render(gate: dict[str, Any]) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results", type=Path, default=RESULT_ROOT)
+    parser.add_argument(
+        "--primitives",
+        type=Path,
+        default=PRIMITIVE_ROOT if PRIMITIVE_ROOT.is_dir() else None,
+        help="per-primitive reordering measurements; without them B is UNMEASURED",
+    )
     parser.add_argument("--print-only", action="store_true")
     args = parser.parse_args(argv)
 
-    gate = evaluate(load_results(args.results), declaration())
+    gate = evaluate(
+        load_results(args.results), declaration(), load_primitives(args.primitives)
+    )
     markdown = render(gate)
     print(markdown)
     if args.print_only:
