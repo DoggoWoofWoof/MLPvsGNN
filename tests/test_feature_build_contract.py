@@ -558,3 +558,138 @@ def test_the_reconstructed_path_does_not_claim_the_contract_hash_as_evidence() -
 
     doc = inspect.getdoc(fbc.verify_store_identity)
     assert "circular" in doc
+
+
+# --------------------------------------------------------------------------
+# The formula-constant snapshot: git on the host, comparison in the container
+# --------------------------------------------------------------------------
+
+
+def test_the_snapshot_matches_what_git_says_at_every_recorded_commit():
+    """The one place the snapshot is held to the history it claims to record.
+
+    A store's build contract is reconstructed with today's formula identity,
+    and that substitution is only honest if those constants were the same when
+    the store was built. A container cannot check that itself -- it has no
+    repository -- so it compares against recorded values instead. Which means
+    a wrong recording would admit a store that should be refused, and this is
+    the test standing between those two things.
+    """
+
+    snapshot = json.loads(
+        fbc.FORMULA_CONSTANT_SNAPSHOT_PATH.read_text(encoding="utf-8")
+    )
+    assert snapshot["commits"], "a snapshot recording no commits proves nothing"
+    for commit, entry in snapshot["commits"].items():
+        assert entry["constants"] == fbc.historical_formula_constants(commit), commit
+
+
+def test_the_snapshot_covers_every_commit_an_m2_store_was_built_at():
+    """Coverage read from the artifacts, not from the snapshot's own list.
+
+    Checking the snapshot against itself would pass at any coverage, including
+    none.
+    """
+
+    from scripts.m2b_formula_constants_snapshot import build_commits
+
+    snapshot = json.loads(
+        fbc.FORMULA_CONSTANT_SNAPSHOT_PATH.read_text(encoding="utf-8")
+    )
+    assert set(build_commits()) <= set(snapshot["commits"])
+
+
+def test_an_unrecorded_commit_is_refused_not_waved_through(tmp_path):
+    """"No evidence" must not resolve to "therefore fine".
+
+    That reading would make the check a formality the moment a new build
+    commit appeared -- which is exactly when it matters.
+    """
+
+    path = tmp_path / "snapshot.json"
+    path.write_text(json.dumps({"commits": {}}), encoding="utf-8")
+    with pytest.raises(KeyError, match="records no formula constants"):
+        fbc.formula_constants_unchanged_since("deadbeef", snapshot_path=path)
+
+
+def test_a_missing_snapshot_is_refused(tmp_path):
+    with pytest.raises(FileNotFoundError, match="no record of what the formula constants"):
+        fbc.formula_constants_unchanged_since(
+            "deadbeef", snapshot_path=tmp_path / "absent.json"
+        )
+
+
+def test_a_partial_record_cannot_establish_the_claim(tmp_path):
+    # Three of four constants matching is not "the formulas are unchanged".
+    path = tmp_path / "snapshot.json"
+    path.write_text(
+        json.dumps({"commits": {"c0ffee": {"constants": {"CONTEXT_ARM": "TARGET_H1"}}}}),
+        encoding="utf-8",
+    )
+    with pytest.raises(KeyError, match="do not cover"):
+        fbc.formula_constants_unchanged_since("c0ffee", snapshot_path=path)
+
+
+def test_a_changed_constant_is_caught_against_this_processs_own_imports(tmp_path):
+    """The half the container computes for itself.
+
+    The snapshot supplies history; the running process supplies what it
+    actually imported. A snapshot claiming a different damping factor must
+    fail here, because the comparison is against a live value that no snapshot
+    can influence.
+    """
+
+    live = fbc.live_formula_constants()
+    path = tmp_path / "snapshot.json"
+    path.write_text(
+        json.dumps({"commits": {"c0ffee": {"constants": {**live, "FEATURE_DAMPING": 0.5}}}}),
+        encoding="utf-8",
+    )
+    result = fbc.formula_constants_unchanged_since("c0ffee", snapshot_path=path)
+    assert result["all_unchanged"] is False
+    assert result["per_constant"]["FEATURE_DAMPING"]["unchanged"] is False
+    assert result["per_constant"]["FEATURE_DAMPING"]["in_the_tree_now"] == live["FEATURE_DAMPING"]
+    assert result["per_constant"]["CONTEXT_ARM"]["unchanged"] is True
+
+
+def test_a_matching_snapshot_passes_and_says_where_each_half_came_from(tmp_path):
+    live = fbc.live_formula_constants()
+    path = tmp_path / "snapshot.json"
+    path.write_text(json.dumps({"commits": {"c0ffee": {"constants": live}}}), encoding="utf-8")
+    result = fbc.formula_constants_unchanged_since("c0ffee", snapshot_path=path)
+    assert result["all_unchanged"] is True
+    assert result["live_values_from"] == "this process's own imports"
+    assert str(path) == result["historical_values_from"]
+
+
+def test_the_real_build_commit_still_passes_through_the_snapshot_path():
+    """The end-to-end case: M2's fourteen stores stay loadable.
+
+    This is what the container will evaluate, and it now runs the same way
+    here as it does there.
+    """
+
+    from scripts.m2b_formula_constants_snapshot import build_commits
+
+    for commit in build_commits():
+        result = fbc.formula_constants_unchanged_since(commit)
+        assert result["all_unchanged"] is True, commit
+        assert set(result["per_constant"]) == set(fbc.FORMULA_CONSTANT_SOURCES)
+
+
+def test_the_check_needs_no_git_at_runtime(monkeypatch):
+    """A container has src/ and scripts/ and no repository.
+
+    The first M2B smoke died on `git show` after being billed for a GPU, so
+    the absence of git is asserted rather than hoped for: this fails loudly if
+    the historical half ever creeps back into the runtime path.
+    """
+
+    def _refuse(*args, **kwargs):
+        raise AssertionError("the runtime path must not shell out to git")
+
+    monkeypatch.setattr(fbc.subprocess, "run", _refuse)
+    from scripts.m2b_formula_constants_snapshot import build_commits
+
+    for commit in build_commits():
+        assert fbc.formula_constants_unchanged_since(commit)["all_unchanged"] is True

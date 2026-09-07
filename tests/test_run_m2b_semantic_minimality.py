@@ -143,7 +143,44 @@ def _build_the_cell(tmp_path: Path, commit: str) -> None:
 
 
 @pytest.fixture(scope="module")
-def smoke(tmp_path_factory):
+def _constants_snapshot(tmp_path_factory):
+    """A snapshot that also covers HEAD, so a store built here can be dated.
+
+    The committed snapshot records the commits M2's stores were built at. These
+    tests build their own store at whatever HEAD happens to be, and dating it
+    is refused unless that commit is recorded -- which is the refusal working,
+    not a problem with it.
+
+    The entry is resolved from git exactly the way the committed one was, so
+    the tests still run the production path against a real historical value
+    rather than one asserted into place.
+    """
+
+    committed = json.loads(fbc.FORMULA_CONSTANT_SNAPSHOT_PATH.read_text(encoding="utf-8"))
+    commit = _head_commit()
+    path = tmp_path_factory.mktemp("constants") / "snapshot.json"
+    path.write_text(
+        json.dumps(
+            {
+                **committed,
+                "commits": {
+                    **committed["commits"],
+                    commit: {
+                        "built_datasets": ["<built by this test>"],
+                        "constants": fbc.historical_formula_constants(commit),
+                    },
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(fbc, "FORMULA_CONSTANT_SNAPSHOT_PATH", path)
+        yield path
+
+
+@pytest.fixture(scope="module")
+def smoke(tmp_path_factory, _constants_snapshot):
     """One real S2 fit and one real S4 fit, on the same loaded cell."""
 
     tmp_path = tmp_path_factory.mktemp("m2b_smoke")

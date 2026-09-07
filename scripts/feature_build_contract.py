@@ -315,26 +315,44 @@ FORMULA_CONSTANT_SOURCES: dict[str, tuple[str, str]] = {
 }
 
 
-def formula_constants_unchanged_since(commit: str) -> dict[str, Any]:
-    """Were the formula constants at ``commit`` the ones in the tree now?
+#: Resolved historical constant values, written by
+#: scripts/m2b_formula_constants_snapshot.py on a machine that has the git
+#: history. A GPU container has only src/ and scripts/ mounted, so it cannot
+#: run ``git show`` -- the M2B smoke discovered that by dying on it after the
+#: container had started and been billed, having proved nothing.
+FORMULA_CONSTANT_SNAPSHOT_PATH = (
+    REPO_ROOT / "configs" / "formula_constants_at_build_commits.json"
+)
 
-    Reconstructing an old store's contract uses today's formula identity for
-    the fields the store never recorded. That substitution is only honest if
-    those values were the same when the store was built, so this checks each
-    one against the source at the build commit instead of assuming it.
 
-    ``MASTER_COLUMNS`` is compared through the same ``[start, stop]``
-    normalisation the contract uses, since a slice object is not literal-eval
-    friendly and its repr is not a stable comparison surface.
+def live_formula_constants() -> dict[str, Any]:
+    """The constants as the running process actually imports them.
+
+    This is the half of the proof that varies between a laptop and a container,
+    and the half that decides whether a persisted store may be loaded here.
     """
 
-    live = {
+    return {
         "CONTEXT_ARM": _m1a.CONTEXT_ARM,
         "FEATURE_DAMPING": float(_m1a.FEATURE_DAMPING),
         "FEATURE_PPR_ITERATIONS": int(_m1a.FEATURE_PPR_ITERATIONS),
         "MASTER_COLUMNS": formula_identity()["master_column_layout"],
     }
-    per_constant: dict[str, Any] = {}
+
+
+def historical_formula_constants(commit: str) -> dict[str, Any]:
+    """Each formula constant as it was defined at ``commit``, read from git.
+
+    Requires a repository, so it runs where one exists and its answers are
+    snapshotted for the processes that have none.
+
+    ``MASTER_COLUMNS`` is normalised to the contract's ``[start, stop]`` form,
+    since a slice object is not literal-eval friendly and its repr is not a
+    stable comparison surface.
+    """
+
+    live = live_formula_constants()
+    values: dict[str, Any] = {}
     for name, (relpath, symbol) in FORMULA_CONSTANT_SOURCES.items():
         if name == "MASTER_COLUMNS":
             source = subprocess.run(
@@ -348,14 +366,84 @@ def formula_constants_unchanged_since(commit: str) -> dict[str, Any]:
                 historical = float(historical)
             elif isinstance(live[name], int):
                 historical = int(historical)
+        values[name] = historical
+    return values
+
+
+def _snapshot_constants(commit: str, snapshot_path: Path) -> dict[str, Any]:
+    """The recorded historical values for ``commit``, or a refusal.
+
+    An unrecorded commit is refused rather than admitted. Falling through to
+    "no evidence, therefore fine" would turn the one check that dates a store
+    into a formality the moment a new build commit appeared.
+    """
+
+    if not snapshot_path.is_file():
+        raise FileNotFoundError(
+            f"{snapshot_path} does not exist, so there is no record of what the formula "
+            "constants were when this store was built. Run "
+            "scripts/m2b_formula_constants_snapshot.py where the git history is."
+        )
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    entry = (snapshot.get("commits") or {}).get(commit)
+    if entry is None:
+        raise KeyError(
+            f"{snapshot_path} records no formula constants at {commit}, so a store built "
+            f"there cannot be dated. Recorded: {sorted(snapshot.get('commits') or {})}. "
+            "Re-run scripts/m2b_formula_constants_snapshot.py rather than loading the "
+            "store without the check."
+        )
+    return entry["constants"]
+
+
+def formula_constants_unchanged_since(
+    commit: str, *, snapshot_path: Path | None = None
+) -> dict[str, Any]:
+    """Were the formula constants at ``commit`` the ones in the tree now?
+
+    Reconstructing an old store's contract uses today's formula identity for
+    the fields the store never recorded. That substitution is only honest if
+    those values were the same when the store was built, so this compares each
+    one instead of assuming it.
+
+    The historical side comes from the snapshot rather than from git, so this
+    runs identically on a laptop and in a container that has no repository.
+    The live side is computed here either way, which is what keeps the check
+    real: a wrong snapshot still has to survive comparison against what this
+    process actually imported, and the snapshot itself is held to git by
+    tests/test_feature_build_contract.py.
+    """
+
+    live = live_formula_constants()
+    historical = _snapshot_constants(
+        commit,
+        snapshot_path if snapshot_path is not None else FORMULA_CONSTANT_SNAPSHOT_PATH,
+    )
+    missing = sorted(set(FORMULA_CONSTANT_SOURCES) - set(historical))
+    if missing:
+        raise KeyError(
+            f"the recorded constants at {commit} do not cover {missing}; a partial record "
+            "cannot establish that the formulas are unchanged"
+        )
+    per_constant: dict[str, Any] = {}
+    for name, (relpath, _symbol) in FORMULA_CONSTANT_SOURCES.items():
+        recorded = historical[name]
+        if isinstance(live[name], float):
+            recorded = float(recorded)
+        elif isinstance(live[name], int) and not isinstance(live[name], bool):
+            recorded = int(recorded)
         per_constant[name] = {
             "defined_in": relpath,
-            "at_build_commit": historical,
+            "at_build_commit": recorded,
             "in_the_tree_now": live[name],
-            "unchanged": historical == live[name],
+            "unchanged": recorded == live[name],
         }
     return {
         "build_commit": commit,
+        "historical_values_from": str(
+            snapshot_path if snapshot_path is not None else FORMULA_CONSTANT_SNAPSHOT_PATH
+        ),
+        "live_values_from": "this process's own imports",
         "per_constant": per_constant,
         "all_unchanged": all(entry["unchanged"] for entry in per_constant.values()),
     }

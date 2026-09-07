@@ -1,0 +1,63 @@
+{
+  "status": "FORMULA_CONSTANTS_AT_BUILD_COMMITS",
+  "what_this_is": "The value of each formula constant at each commit an M2 feature store was built at, resolved from git on a machine that has the history. A process without a repository -- a GPU container -- compares these against its own live imports; it is handed the historical half of the proof and computes the live half itself.",
+  "what_this_is_not": "It is not permission to load a store. A commit absent from this file is refused rather than admitted, and the comparison against the running tree still has to pass.",
+  "checked_against_git_by": "tests/test_feature_build_contract.py",
+  "constants": {
+    "CONTEXT_ARM": {
+      "defined_in": "scripts/run_m0b_regime_map.py",
+      "symbol": "CONTEXT_ARM"
+    },
+    "FEATURE_DAMPING": {
+      "defined_in": "scripts/run_m0b_webqsp_probe.py",
+      "symbol": "FEATURE_DAMPING"
+    },
+    "FEATURE_PPR_ITERATIONS": {
+      "defined_in": "scripts/run_m0b_webqsp_probe.py",
+      "symbol": "FEATURE_PPR_ITERATIONS"
+    },
+    "MASTER_COLUMNS": {
+      "defined_in": "scripts/run_m1a_feature_screen.py",
+      "symbol": "MASTER_COLUMNS"
+    }
+  },
+  "commits": {
+    "3489f4cee74c159cb52f7c5a6927fa5c09cf4f8b": {
+      "built_datasets": [
+        "2wiki_clean",
+        "hotpotqa_clean",
+        "metaqa",
+        "musique_clean",
+        "squad_clean",
+        "webqsp"
+      ],
+      "constants": {
+        "CONTEXT_ARM": "TARGET_H1",
+        "FEATURE_DAMPING": 0.85,
+        "FEATURE_PPR_ITERATIONS": 8,
+        "MASTER_COLUMNS": {
+          "BASE": [
+            0,
+            4
+          ],
+          "GEOMETRY": [
+            4,
+            7
+          ],
+          "SUPPORT": [
+            7,
+            8
+          ],
+          "PATH": [
+            8,
+            11
+          ],
+          "NODE_ROLE": [
+            11,
+            12
+          ]
+        }
+      }
+    }
+  }
+}

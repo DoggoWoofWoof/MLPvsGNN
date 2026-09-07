@@ -60,6 +60,9 @@ RUNTIME_REPO_ROOT = (
     else Path(REMOTE_ROOT)
 )
 M2B_CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "m2b_semantic_minimality.yaml"
+FORMULA_CONSTANT_SNAPSHOT_PATH = (
+    RUNTIME_REPO_ROOT / "configs" / "formula_constants_at_build_commits.json"
+)
 M2_CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "m2_qls_v2_freeze.yaml"
 M1A_CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "m1a_feature_screen.yaml"
 CONFIRMATION_CONFIG_PATH = RUNTIME_REPO_ROOT / "configs" / "sa_mlp_confirmation.yaml"
@@ -148,6 +151,14 @@ image = (
     # REPO_ROOT by finding M1A's. Mounted so the imports succeed, not because
     # M2B reads either matrix.
     .add_local_file(str(M2_CONFIG_PATH), remote_path=f"{REMOTE_ROOT}/configs/m2_qls_v2_freeze.yaml")
+    # The formula constants as they were at each store's build commit. A
+    # container has no git repository, so it cannot read its own history; it
+    # compares these recorded values against its own live imports instead. The
+    # first M2B smoke died on `git show` here, after being billed for a GPU.
+    .add_local_file(
+        str(FORMULA_CONSTANT_SNAPSHOT_PATH),
+        remote_path=f"{REMOTE_ROOT}/configs/formula_constants_at_build_commits.json",
+    )
     .add_local_file(
         str(M1A_CONFIG_PATH), remote_path=f"{REMOTE_ROOT}/configs/m1a_feature_screen.yaml"
     )
