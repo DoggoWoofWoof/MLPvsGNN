@@ -1,0 +1,620 @@
+# M3 -- independent GNN development
+#
+# One file per phase. This file declares M3 and authorises no fit.
+#
+# M2B closed semantic selection at SELECTED_S3 and QLS-v2 is frozen. The next
+# risk is no longer QLS over-tuning: it is tuning the GNN against QLS. M3 is
+# therefore deliberately independent -- it selects a GNN among GNN candidates
+# and never reads a QLS number.
+
+phase: M3_GNN_DEVELOPMENT
+opened: 2026-09-07
+status: M3_DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_AUTHORISED
+
+this_file_authorises: >-
+  Declaration and reconnaissance only. It authorises no GNN fit, no comparison
+  against QLS, and no M4. Every number below that describes a future run is an
+  estimate; the fits that would produce real ones need a further dated
+  amendment, and the gates at the bottom name what that amendment must earn.
+
+scientific_question: >-
+  What is the smallest reasonable learned-message-passing baseline when it
+  receives the corrected graph privilege, selected independently of QLS
+  outcomes?
+
+# --------------------------------------------------------------------------
+# The firewall. This is the point of running M3 as its own phase.
+# --------------------------------------------------------------------------
+
+firewall:
+  m3_answers: Which GNN architecture is best among the preregistered GNN candidates?
+  m3_does_not_answer: Which GNN architecture beats QLS?
+  why: >-
+    If the GNN architecture were chosen by which one closed the gap to QLS, the
+    comparison in M4 would be between QLS and the GNN that happened to lose to
+    it least -- a selection effect wearing the costume of a baseline. Selecting
+    the GNN on GNN-only evidence is what makes M4's comparison mean anything.
+  ordering:
+    - M2/M2B outcomes -> QLS FROZEN
+    - M3 GNN-only selection, no QLS comparison -> GNN FROZEN
+    - M4 QLS vs GNN
+  no_qls_quantity_may_enter_m3: >-
+    Not as a threshold, not as a tie-break, not as a reason to add or drop a
+    candidate, and not as a reason to stop early. selection_rule below contains
+    no QLS term, and the screen datasets were derived from graph-only evidence
+    that predates every QLS number.
+  prohibited_in_both_directions:
+    - GNN teacher or distillation of any kind
+    - QLS logits, scores or hidden representations as GNN targets or inputs
+    - GNN hidden representations as QLS features
+    - gold-derived graph inputs on either side
+    - selecting a GNN candidate because of how it compares to QLS
+
+# --------------------------------------------------------------------------
+# Step 1. Historical GNN archaeology.
+#
+# Recovered from the code, and verified by live instantiation rather than from
+# prose. Historical results are NOT rewritten; this is a new corrected-context
+# track that records what the old one was.
+# --------------------------------------------------------------------------
+
+historical_gnn:
+  recovered_on: 2026-09-07
+  method: >-
+    Read from source and instantiated live. Parameter counts below are measured
+    from a constructed module, not quoted from a document.
+  implementation:
+    class: SeedAwareMessagePassingOperator
+    defined_in: src/mp_retrieval/operator_models.py:227
+    base_class: MessagePassingOperator (operator_models.py:158)
+    factory: build_seed_aware_message_passing
+    built_by: scripts/run_sa_mlp_confirmation.py::_build_model, model_name "seed_aware_gnn"
+    frozen_config: configs/candidate_budget.yaml
+  architecture:
+    message_passing_operator: PER DATASET -- see the note below; not one operator
+    depth_layers: 1
+    hidden_width: 64
+    projection_dim: 64
+    node_input_width: 1537      # node embedding 1536 + one binary retrieval-seed scalar
+    query_input_width: 1536
+    node_projection: Linear(1537, 64, bias=False), then GELU, then L2-normalise
+    query_projection: Linear(1536, 64, bias=False), then GELU
+    query_conditioning: >-
+      A query-side residual head, query_target = Linear(64,64) -> GELU ->
+      Dropout -> Linear(64,64); the scoring target is
+      normalize(query_state + query_target(query_state)). The query never
+      participates in message passing -- it conditions only the readout.
+    seed_awareness: >-
+      One binary retrieval-seed indicator concatenated to the node embedding
+      before the projection. That is the whole mechanism, and it costs exactly
+      hidden_dim = 64 extra parameters over the non-seed-aware family.
+    layer_update: "h <- LayerNorm(h + Dropout(GELU(conv(h, edge_index))))"
+    activation: GELU
+    normalization: LayerNorm, one per message-passing layer
+    residual: yes, additive, inside the LayerNorm
+    dropout: 0.2, applied to the update rather than to h
+    readout: >-
+      L2-normalise the node state; score = dot(node_state,
+      target[batch_index]) / temperature. A per-candidate dot product against
+      the query target, not a pooled graph readout.
+    temperature: 0.07
+  training:
+    loss: >-
+      Listwise soft cross-entropy per query -- uniform target mass over the
+      in-pool golds, -(log_softmax(scores) * target).sum(), averaged over the
+      queries in the batch. Defined at scripts/run_operator_screen.py:135.
+    optimizer: AdamW
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    epochs: 3
+    batch_size: 16
+  measured_parameter_counts:
+    measured_by: live instantiation at embedding_dim 1536, hidden_dim 64
+    depth_1: {gcn: 209280, sage: 213376, gat: 213568, gin: 213440}
+    depth_2: {gcn: 213568, sage: 221760, gat: 222144, gin: 221888}
+    where_the_mass_is: >-
+      The two input projections are 98,368 and 98,304 of it and the query head
+      another 8,320 -- 204,992 before a single message-passing parameter. One
+      GCN layer adds 4,288. Depth is nearly free; the 1536-wide projections are
+      the model.
+
+  the_historical_operator_is_per_dataset: >-
+    This is the first archaeology finding that changes the plan. There is no
+    single historical GNN operator. configs/candidate_budget.yaml froze a
+    DIFFERENT family per dataset, selected by an earlier operator screen:
+    2wiki_clean gat, webqsp gat, metaqa gat, musique_clean gcn, squad_clean
+    gcn, hotpotqa_clean gin. "The historical operator" is therefore not a
+    well-defined anchor across datasets, and any phase that speaks of one has
+    to say which dataset it means.
+  why_that_does_not_block_the_screen: >-
+    Both datasets the graph-only rule selects below -- 2wiki_clean and metaqa --
+    were frozen at gat. So for this screen, and only because of which datasets
+    the graph evidence picked, a single historical operator anchor does exist.
+    That is a convenience the derivation happened to produce, not a reason the
+    derivation chose them, and it would not survive a different screen: a screen
+    containing hotpotqa_clean would face gin against gat with no principled way
+    to call either "the" historical operator.
+
+  historical_graph_privilege:
+    scored_set: Cq
+    context_set: Cq
+    graph_passed_to_each_layer: >-
+      G[Cq], the vertex-induced candidate graph. Built by
+      dataset.induced_subgraph(query) (src/mp_retrieval/complete_data.py:92),
+      which indexes the frozen CSR by query.candidate_index and keeps an edge
+      only when BOTH endpoints are candidates. Packed by
+      build_packed_topologies and handed to the model as edge_index.
+    the_defect: >-
+      One layer means a radius-1 receptive field, and radius 1 is exactly where
+      the vertex-induced construction deletes the most. On the sealed graph the
+      median node-pooled radius-1 retention is 0.111 (2wiki) and 0.154
+      (metaqa), the boundary cut is 0.839 and 0.904, and 37.5% and 41.2% of
+      candidates have no neighbour at all inside G[Cq]. The historical baseline
+      was not merely on a sparse graph; it was induction-starved at precisely
+      its own radius.
+    not_rewritten: >-
+      Historical results stand as measured under the context they were measured
+      in. M3 is a new corrected-context track and says so; it does not restate
+      old numbers as though they had been run under the new privilege.
+
+  inputs_the_historical_gnn_actually_received:
+    - node embeddings, 1536-d, for each candidate
+    - the query embedding, 1536-d
+    - one binary retrieval-seed indicator per candidate
+    - edge_index over G[Cq]
+  inputs_it_did_not_receive:
+    - dense retriever reciprocal rank
+    - SPLADE reciprocal rank
+    - retriever agreement
+    - NODE_ROLE
+    - degree or any other precomputed structural scalar
+    - SUPPORT or PATH, which is correct and stays correct -- see fairness below
+  why_that_matters: >-
+    The second archaeology finding that changes the plan. QLS-v2's BASE block
+    is four columns -- seed_identity, dense_rr, splade_rr, agreement
+    (src/mp_retrieval/m1a_screen.py:54) -- and the historical GNN had only the
+    first of them. Under the fairness contract the M3 GNN must receive all four,
+    so G0 is NOT a byte-identical reproduction of the historical model: it is
+    the historical operator, depth and width with the input privilege corrected.
+    Declared here rather than discovered later, because a baseline described as
+    "the historical architecture" that quietly receives three new inputs would
+    misdescribe both itself and any gap it closes.
+
+# --------------------------------------------------------------------------
+# Step 2. Corrected graph privilege. Frozen regimes, reused unchanged.
+# --------------------------------------------------------------------------
+
+graph_privilege:
+  regimes_are_already_frozen: >-
+    Reused from the graph-context track and from M1A/M2/M2B. M3 defines no new
+    context and rebuilds no features.
+  R1: {scored: Cq, context: Cq, radius_supplied: 0 beyond Cq}
+  R2: {scored: Cq, context: "U2 = TARGET_H1(Cq) = Cq u N1_in(Cq)", radius_supplied: 1}
+  R3: {scored: "C3 = Cq u A64", context: "U3 = U2 u A64", radius_supplied: 1 plus A64 admission}
+  r3_full_reexpansion: PROHIBITED
+  a64: frozen
+
+  depth_and_radius_are_not_independent:
+    contract_clause: docs/GRAPH_INFORMATION_FAIRNESS_CONTRACT.md section 9.2
+    what_it_says: >-
+      A GNN with L layers has an L-hop receptive field, TARGET_H1 must not be
+      declared the context for all depths, and any truncation is a limitation
+      OF THE CONDITION reported in the same table as the result it affects --
+      never counted as evidence against the baseline.
+    what_that_means_here:
+      R1: >-
+        Depth 1 is ALREADY TRUNCATED, because radius 1 of Cq reaches outside
+        Cq. This is the historical condition and it is retained precisely so the
+        correction has something to be measured against.
+      R2: >-
+        Depth 1 receives its full natural receptive field. Depth 2 is truncated
+        at the context boundary.
+      R3: >-
+        Depth 1 is full over U3. Depth 2 is truncated.
+    consequence_for_this_screen: >-
+      There is no un-truncated condition for depth 2 among the frozen regimes,
+      so the G0-versus-G1 contrast is partly depth against truncation and
+      cannot be read as a clean depth effect. Stated here, before any fit, and
+      required in every table that reports it. Supplying TARGET_H2 would fix it
+      and is NOT proposed: it is a new context, new feature stores and a new
+      privilege, which is a larger intervention than this phase is scoped for.
+    the_clean_contrast_this_screen_does_supply: >-
+      G0 under R1 against G0 under R2. Same architecture, same depth, same
+      inputs; the only thing that changes is whether the radius-1 context the
+      one layer needs is actually present. That is the corrected-privilege
+      measurement, and it is un-truncated on the R2 side.
+
+# --------------------------------------------------------------------------
+# Step 3. Information fairness. The contract already exists; M3 is bound by it.
+# --------------------------------------------------------------------------
+
+fairness:
+  binding_document: docs/GRAPH_INFORMATION_FAIRNESS_CONTRACT.md
+  not_restated_here: >-
+    The contract was filed before any comparison and is binding as written. M3
+    adds no clause to it and relaxes none. What follows records how M3 satisfies
+    it and, where a clause bites, says so.
+  equal_privilege_not_equal_representation:
+    both_sides_receive:
+      - the same query
+      - the same scored set (Cq, or C3 under R3)
+      - the same context node set and induced edges, from one code path
+      - the same underlying frozen graph and node embeddings
+      - seed identity, dense RR, SPLADE RR, retriever agreement
+      - NODE_ROLE where the regime defines it
+      - the same supervision, splits, loss family and seed protocol
+    the_gnn_does_not_receive_SUPPORT_or_PATH:
+      decision: correct, and preserved
+      why: >-
+        SUPPORT and PATH are QLS's fixed graph-summary MECHANISM, not extra
+        information. Both systems get the same underlying graph; QLS reduces it
+        to fixed query-conditioned descriptors and the GNN learns aggregation
+        over it. Handing the GNN the descriptors too changes the question from
+        "fixed summaries or learned propagation?" to "does propagation add
+        anything once the summaries are supplied?" -- a different and narrower
+        experiment.
+      the_control_this_forgoes: >-
+        GNN-plus-explicit-summaries is a legitimate later control and is NOT
+        authorised in M3. Naming it here so that if it is ever run it is
+        recognisable as the separate experiment it is, rather than as a variant
+        of the primary baseline.
+    qls_does_not_receive_anything_gnn_derived: >-
+      Unchanged from the contract. No GNN teacher, no distillation, no hidden
+      states, no GNN-selected features. QLS is frozen at M2B in any case, so in
+      M3 there is nothing left to contaminate.
+
+  node_input_width:
+    historical: 1537              # 1536 embedding + seed
+    m3_all_regimes: 1541          # + dense_rr, splade_rr, agreement, NODE_ROLE
+    informative_columns_under_R1_R2: 1540
+    why_the_column_is_present_when_it_is_constant: >-
+      QLS-v2 keeps NODE_ROLE in MASTER_COLUMNS in every regime and sets it to
+      zero under R1 and R2 (it is the admitted-candidate indicator, and under R1
+      and R2 nothing is admitted). The GNN mirrors that exactly: same column in
+      the same place, identically zero where QLS-v2's is identically zero. A
+      schema that changed shape between regimes on one side and not the other
+      would make the two systems' inputs differ for a reason that has nothing to
+      do with either mechanism.
+    this_is_a_change_from_the_historical_model: >-
+      +4 input columns, +256 parameters in the node projection. Small in
+      parameters and decisive in kind: three of the four are the retrieval
+      features the historical GNN never saw. Recorded here so that "the
+      historical architecture" is never read as "the historical model re-run".
+
+  the_tuning_budget_asymmetry_this_screen_creates:
+    contract_clause: >-
+      Section 5 -- "The GNN is not to be crippled... a tuning budget at least
+      equal to QLS-v2's. If QLS-v2 is tuned over a grid, the GNN is tuned over a
+      comparable one, and the grids are reported."
+    the_asymmetry: >-
+      QLS-v2's architecture was selected over three phases: M1A screened feature
+      families, M2 selected the arm, M2B screened three semantic rungs across 42
+      evaluations. The GNN screen proposed here is 2 candidates over 6 cells. On
+      any count of fits or of decisions made, that is a smaller budget.
+    why_it_is_proposed_anyway: >-
+      A Cartesian sweep over operators, depths and widths is the failure this
+      whole programme has been avoiding, and it would also break the firewall in
+      practice: the more GNN variants are screened, the more the best-of-many
+      becomes an optimistically-biased comparator. The corrected graph privilege
+      is itself the major intervention here, and the candidate set is sized to
+      answer whether that correction changes which architecture is appropriate.
+    how_it_is_handled: >-
+      Declared, not hidden, and both grids reported side by side whenever an M4
+      comparison is written. If review judges the budget inadequate, the
+      remedy is to widen the GNN screen in a dated amendment BEFORE any fit --
+      never to widen it afterwards because the first result was unwelcome.
+    what_is_not_a_defence: >-
+      "The GNN has 58 times more parameters" is not a tuning budget. Parameter
+      count is a finding to report, and the contract forbids using it as a
+      handicap in either direction.
+
+# --------------------------------------------------------------------------
+# Step 4. Candidate architectures. Anchored on the audit, deliberately small.
+# --------------------------------------------------------------------------
+
+candidates:
+  anchor: >-
+    The historical architecture, as recovered above, with the input privilege
+    corrected to the fairness contract. Not an arbitrary GraphSAGE/GCN/GAT
+    preregistration: the operator, width, activation, normalisation, residual,
+    readout, loss and optimiser are all taken from what the code actually did.
+  G0:
+    operator: gat (GATv2Conv, heads=1, concat=False) -- historical for both screen datasets
+    depth: 1
+    hidden_width: 64
+    what_it_is: the historical architecture under corrected graph and input privilege
+  G1:
+    operator: gat
+    depth: 2
+    hidden_width: 64
+    what_it_is: the same architecture one layer deeper
+    truncation: >-
+      Truncated under every frozen regime. See
+      graph_privilege.depth_and_radius_are_not_independent. Reported in the same
+      table as its results, per contract section 5.
+  count: 2
+  no_width_variant_is_proposed: >-
+    The audit gives no concrete capacity reason for one. The message-passing
+    parameters are 4,288 of 213,568 at depth 1; width is dominated by the input
+    projections, so a width change is mostly a change to the projection, which
+    is not the mechanism under test. A width variant may be added by amendment
+    if a specific capacity argument is made first.
+  no_cartesian_sweep: >-
+    Not 3 operators x 4 depths x 5 widths x 6 datasets. The corrected context is
+    the intervention; the architecture screen exists to check that the
+    correction does not change which minimal architecture is appropriate.
+
+# --------------------------------------------------------------------------
+# Step 5. Representative screen, derived mechanically from graph-only evidence.
+# --------------------------------------------------------------------------
+
+screen_selection:
+  rule: >-
+    Chosen from pre-QLS graph-only evidence, filed before any fit. No QLS
+    effectiveness number entered this derivation, and none could have: every
+    quantity below was measured by the graph substrate audit and the
+    graph-context D0 series, all of which predate QLS-v2.
+  requirement: at least one passage-style graph and at least one KB-style graph
+  evidence_sources:
+    - docs/GRAPH_SUBSTRATE_AUDIT_RESULTS.md (candidate-induced connectivity; global-neighbourhood retention)
+    - docs/GRAPH_CONTEXT_D0_RESULTS.md (isolated-gold prevalence; 2-path retention)
+  graph_only_table:
+    columns: [style, isolated_fraction, boundary_cut, median_retention, isolated_gold_queries, validation_queries]
+    2wiki_clean:    [passage, 0.375, 0.839, 0.111, 0.200, 3000]
+    hotpotqa_clean: [passage, 0.355, 0.890, 0.077, 0.060, 19570]
+    musique_clean:  [passage, 0.224, 0.792, 0.200, 0.103, 3987]
+    squad_clean:    [passage, 0.175, 0.881, 0.080, 0.010, 26063]
+    metaqa:         [KB,      0.412, 0.904, 0.154, 0.000, 39138]
+    webqsp:         [KB,      0.190, 0.700, 0.250, 0.015, 315]
+
+  passage_style_selection:
+    selected: 2wiki_clean
+    why: >-
+      Highest isolated fraction of the four passage graphs (0.375), highest
+      isolated-gold prevalence of all six (20.0%, so the repair has the most to
+      act on), and the smallest context of the four (464 mean directed edges
+      against squad's 3,191), which is also the cheapest to run. Damage,
+      headroom and feasibility all point the same way, so no trade-off has to
+      be adjudicated.
+
+  kb_style_selection:
+    selected: metaqa
+    why: >-
+      The two KB graphs disagree and metaqa wins on the criteria that bear on
+      whether message passing has anything to do. It is the most graph-damaged
+      of all six -- highest isolated fraction (0.412) and highest boundary cut
+      (0.904) -- so G[Cq] starves induction there more than anywhere else.
+    why_not_webqsp:
+      excluded_on: panel size, mechanically
+      detail: >-
+        webqsp has 315 validation queries and held out 63 in M2B, where one
+        query moved recall by 1.587pp. The M3 rule below uses a 0.50pp per-cell
+        tolerance. A panel on which a single query is worth three times the
+        tolerance cannot decide a per-cell clause, so webqsp is unusable for
+        this selection regardless of its graph properties -- and it is also the
+        LEAST damaged graph of the six (boundary cut 0.700, the lowest), so it
+        would be the weakest KB test even with a usable panel.
+    the_limitation_this_choice_carries:
+      what: metaqa has 0.0% of queries with an isolated gold -- 0 of 195 measured in D0.
+      consequence: >-
+        Whatever the corrected context does for isolated candidates, on metaqa
+        it has almost nothing to act on FOR RANKING. A null result there is
+        therefore weak evidence about the correction, though it remains
+        informative about architecture: depth is a receptive-field question and
+        does not require isolated golds to be exercised.
+      why_it_is_selected_regardless: >-
+        The alternative is unusable on panel size, and the requirement for a
+        KB-style graph is not optional. Filing the limitation is the honest
+        alternative to either dropping the KB arm or pretending metaqa is a
+        stronger test than it is.
+      what_would_be_wrong: >-
+        Reading a metaqa null as "the correction does not help on KB graphs".
+        The correct reading is "metaqa cannot distinguish that", and it is
+        pre-registered here so the reading cannot be chosen afterwards.
+
+  cells:
+    2wiki_clean: [R1, R2, R3]
+    metaqa: [R1, R2, R3]
+  cell_count: 6
+  logical_matrix: 12   # 6 cells x 2 candidates
+  not_chosen_because_of_qls: >-
+    2wiki_clean and metaqa are also M2B cells, which is convenient for reusing
+    frozen candidate pools and splits. That is a consequence of the derivation,
+    not an input to it. QLS's own results on these datasets played no part and
+    are not consulted anywhere in this phase.
+
+# --------------------------------------------------------------------------
+# Step 6. The selection rule. Frozen now, before any GNN number exists.
+# --------------------------------------------------------------------------
+
+selection_rule:
+  primary_metric: recall@5
+  anchoring: SYMMETRIC_BEST_ANCHORED
+  anchored_on: the best GNN candidate in each scope -- never on QLS, never on the historical GNN
+  definitions:
+    cell_score: recall@5 for one (dataset, regime)
+    dataset_score: equal-weight mean over that dataset's declared regimes
+    macro_score: equal-weight mean over the screen datasets
+  effectiveness_admissible_iff_pp:
+    macro: 0.25
+    per_dataset: 0.5
+    per_cell: 0.5
+  thresholds_are_not_adjustable: >-
+    Carried from M2B with the same force. A threshold moved after seeing the
+    numbers it failed is not a threshold. They are the same values M2B used, so
+    they were not chosen for this phase's data either.
+  if_multiple_survive:
+    ordering: LEXICOGRAPHIC_SYSTEMS_PARETO
+    keys:
+      - lower total uncached inference p95
+      - fewer total trainable parameters
+      - lower peak memory
+      - "deterministic filed tie rule: fewer message-passing layers, then earliest of G0/G1"
+  if_none_survives: >-
+    Report GNN_PARETO_CONFLICT and stop for review, exactly as M2B did. Do not
+    widen a tolerance, drop a clause or reweight the macro.
+  no_qls_term_appears_here: >-
+    Checked by inspection and by test. There is no QLS threshold, no QLS
+    anchor, and no QLS tie-break in this rule.
+
+seed_policy:
+  seed: 0
+  count: 1
+  five_seed_confirmation: PROHIBITED
+  three_seed_resolution: >-
+    If architecture selection is genuinely ambiguous after the one-seed screen,
+    the smallest sufficient resolution may be PROPOSED, naming the specific
+    cells it would resolve. Not launched automatically and not launched with the
+    one-seed run. M2B's resolution is the template, including its requirement
+    that the rule be frozen before the fits.
+
+# --------------------------------------------------------------------------
+# Step 8. Systems. The cold path is the whole cold path.
+# --------------------------------------------------------------------------
+
+systems_contract:
+  primary_metric: total uncached inference p50/p95/p99
+  the_span_that_must_be_timed:
+    - query arrives
+    - candidate and context resolution
+    - context edge gathering
+    - node and query input construction
+    - message passing
+    - candidate readout and scoring
+  what_must_not_be_reported_as_cold_latency: >-
+    Pre-built graph tensors handed to forward(). That measures the GPU kernel,
+    not the query. QLS's own historical systems weakness was feature
+    construction, and benchmarking the GNN from already-materialised edges while
+    charging QLS for building its features would be the systems mirror of the
+    substrate error the fairness contract exists to prevent.
+  components_persisted_separately:
+    - context_materialization_ms
+    - edge_gather_ms
+    - message_passing_ms
+    - readout_ms
+    - total_uncached_ms
+  why_separately: >-
+    Context construction is paid by both systems and cancels in a like-for-like
+    comparison (contract section 6), so it has to be visible rather than folded
+    in. Recording the components also makes the total auditable instead of
+    asserted.
+  cached_forward_latency: secondary diagnostic only
+
+# --------------------------------------------------------------------------
+# Step 9. Persistence. Everything M2/M2B taught, carried forward.
+# --------------------------------------------------------------------------
+
+instrumentation_required_per_fit:
+  - checkpoint, reloading into the same model with strict=True
+  - per-query rows, with the aggregate rebuilt from them and matching exactly
+  - query IDs, candidate IDs, context IDs
+  - edge fingerprint
+  - graph/input contract hash
+  - model-config hash
+  - source commit
+  - trainable parameter count
+  - training seconds
+  - peak training VRAM
+  - peak inference VRAM and RSS
+  - total uncached p50/p95/p99 and the component timings above
+
+contract_hash_design:
+  reused_from: scripts/feature_build_contract.py
+  the_rule: >-
+    Hash the scientific inputs -- the graph, the candidate pools, the context
+    definition, the model configuration -- and NOT the declaration prose. M2B's
+    contract hashes a named set of constants and layout, not the YAML, so that
+    editing a comment cannot invalidate a tensor and editing a formula cannot
+    fail to.
+  what_would_be_wrong: >-
+    Hashing this file. It is mutable by design -- it will carry amendments --
+    and making prose part of tensor identity would either force spurious
+    rebuilds or, worse, teach everyone to avoid editing the declaration.
+
+# --------------------------------------------------------------------------
+# Workload and compute. Estimates. The multiplier is PROVISIONAL.
+# --------------------------------------------------------------------------
+
+workload:
+  candidates: 2
+  cells: 6
+  seeds: 1
+  fits: 12
+  containers: 2          # one per dataset, so both candidates share a clock
+  features_rebuilt: 0
+  reuses: >-
+    M2's frozen cell masters, candidate pools, splits and node embeddings. M3
+    builds no features and seals no new data.
+
+compute:
+  status: ESTIMATED_PROVISIONAL_UNTIL_A_SMOKE_MEASURES_A_GNN_FIT
+  basis: >-
+    M2B's measured S4 fits on these six cells, totalling 462.07 s. S4 carries
+    205,217 parameters against the GNN's 213,568, so it is a close
+    parameter-matched proxy for everything except the message passing itself.
+  measured_s4_seconds_on_the_screen_cells:
+    2wiki_clean: {R1: 15.25, R2: 15.33, R3: 15.48}
+    metaqa: {R1: 106.12, R2: 121.06, R3: 188.84}
+    total: 462.07
+  provisional_multipliers: {G0_depth_1: 1.5, G1_depth_2: 2.0}
+  why_provisional: >-
+    They are guesses at the cost of message passing and context materialisation
+    on top of a parameter-matched forward pass, and M2B is the reason they are
+    labelled as such: its own pre-launch estimate used a guessed 2.5x for S4 and
+    the smoke measured something different. A smoke must replace these with a
+    measurement before any fan-out.
+  estimated_training_seconds: {G0: 693.1, G1: 924.1, total: 1617.2}
+  scale_headroom: 1.5
+  conservative_training_seconds: 2425.8
+  gpu_usd_per_hour: 2.241
+  estimated_fit_usd: 1.5100
+  inference_benchmarking: {fits: 12, seconds_per_fit: 30.0, usd: 0.2241}
+  container_overhead_usd: 0.0948
+  estimated_total_usd: 1.8289
+  proposed_ceiling_usd: 2.50
+  ceiling_status: >-
+    PROPOSED, not filed. It is built on the provisional multipliers, so it is
+    not authorisation for anything. The amendment that authorises fitting must
+    refile it against the smoke's measurement, exactly as M2B refiled 6.00 to
+    3.5732.
+  ledger_line: m3_gnn_development, separate from every M2B line
+
+# --------------------------------------------------------------------------
+# Gates. What the fitting amendment must earn.
+# --------------------------------------------------------------------------
+
+launch_authorization:
+  gates:
+    archaeology_recorded: true          # earned 2026-09-07, historical_gnn above, verified by live instantiation
+    fairness_contract_bound: true       # earned 2026-09-07, docs/GRAPH_INFORMATION_FAIRNESS_CONTRACT.md
+    screen_derived_from_graph_only_evidence: true  # earned 2026-09-07, screen_selection above
+    selection_rule_frozen: true         # earned 2026-09-07, selection_rule above, no QLS term
+    candidate_set_declared: true        # earned 2026-09-07, candidates above
+    truncation_declared: true           # earned 2026-09-07, depth_and_radius_are_not_independent
+    runner_exists: false
+    instrumentation_tests_pass: false
+    smoke_measures_a_gnn_fit: false
+    compute_ceiling_refiled_against_measurement: false
+  gates_are_earned_not_waived: >-
+    The four false gates are the work of the next phase-step. A gate is turned
+    true by doing the thing it names and pointing at the artifact that proves
+    it, never by deciding it does not apply.
+
+stop_condition:
+  this_turn_produced:
+    - the M3 declaration
+    - historical GNN archaeology, verified by live instantiation
+    - the fairness-contract audit, including where its clauses bite
+    - the candidate architecture proposal
+    - the mechanically derived representative screen
+    - the workload and compute estimate
+  and_then: STOP_FOR_REVIEW
+  not_authorised:
+    - training any GNN
+    - comparing anything against QLS
+    - opening M4
+    - additional seeds
+    - canonical CRAG
+    - Package F
+    - resuming E2
+    - reopening QLS feature or semantic selection, which M2B closed
