@@ -1,0 +1,811 @@
+# M2C -- S4 structural conditioning / offset
+#
+# A POST-HOC DEVELOPMENT BRANCH, opened because of an observed S4 result and
+# labelled as such everywhere. It does not reinterpret M2 or M2B, whose records
+# are frozen and are read here only as a starting point.
+#
+# Historical state, unchanged by this file:
+#   M2  -- QLS-UNIVERSAL accepted.
+#   M2B -- preregistered result SELECTED_S3, S3 total params 3,585.
+#   S4  -- a CHALLENGER. 205,217 params, best in 12/14 cells, fastest rung,
+#          blocked at squad_clean/R1 (-0.882pp) and musique_clean/R1
+#          (-2.572pp), both means over seeds 0/1/2.
+
+phase: M2C_S4_STRUCTURAL_CONDITIONING
+opened: 2026-09-07
+status: M2C_DECLARED_STAGE0_NOT_YET_RUN
+branch_type: POST_HOC_DEVELOPMENT
+motivated_by: an observed S4 development result, not a preregistered hypothesis
+
+this_file_does_not_touch:
+  - M2 files or results
+  - M2B files or results
+  - Package F
+  - canonical CRAG
+  - E2
+  - M3 / GNN development
+no_gnn_anywhere_in_m2c: true
+
+# --------------------------------------------------------------------------
+# 0. The scientific question
+# --------------------------------------------------------------------------
+
+scientific_question: >-
+  Can deterministic graph-derived displacement geometry, and/or a small
+  structure-conditioned residual transform, repair S4's localized
+  generalization failures while retaining its effectiveness and systems
+  advantages, without learned message passing?
+
+not_the_question: Can we make S4 score higher?
+
+what_must_be_distinguished:
+  A: useful graph information already exists as deterministic geometry
+  B: that geometry only needs a small learned interaction/transform
+  C: a generic extra neural adapter helps regardless of graph structure
+  D: the apparent signal merely comes from embedding-kNN rather than native topology
+
+# --------------------------------------------------------------------------
+# THE ARCHAEOLOGY FINDING THAT RESHAPES THIS PHASE
+#
+# Filed at the top because it changes what is worth running, and because
+# discovering it after spending compute would be the expensive way to learn it.
+# --------------------------------------------------------------------------
+
+prior_measured_evidence:
+  the_mechanism_already_exists:
+    module: src/mp_retrieval/candidate_expansion_v2.py
+    what_it_implements: >-
+      A parameter-free directional expansion that is, line for line, sections 4
+      and 5 of this phase's own specification: a query residual, real edge
+      displacements d(u,v) = normalize(x_v - x_u), a cosine compatibility
+      against the residual, per-seed top-k, dedup keeping the best score, a
+      global cap, and a matched-budget rule. It has leakage tests that permute
+      gold labels and require byte-identical output.
+    method_names: {directional: L1_DIRECTIONAL, control: STRUCTURAL_NEIGHBOUR}
+    the_control_is_a64: >-
+      configs/m0c_bounded_r3.yaml defines A64 as "the exact M0B
+      STRUCTURAL_NEIGHBOUR admission at graph_expansion_cap=64, re-derived by
+      the identical construction (candidate_expansion_v2.expand,
+      method=STRUCTURAL_NEIGHBOUR, budget=ExpansionBudget(hop_cap=1,
+      per_seed_cap=16, graph_expansion_cap=64, ...))". So the R3 candidate set
+      every M2B R3 cell already uses IS the blind-admission control arm, and
+      "R3-A64 versus R3-PF64 at a matched budget" is L1_DIRECTIONAL versus
+      STRUCTURAL_NEIGHBOUR under a different name.
+
+  what_m0a_measured:
+    scope: 100 validation queries x 3 datasets x 3 edge families, matched, additive and unconstrained budgets
+    artifact: docs/M0A_PROBE_RESULTS.md
+    finding_1_directional_selection_bought_nothing: >-
+      L1_DIRECTIONAL and STRUCTURAL_NEIGHBOUR produced IDENTICAL headroom in
+      every one of the nine family cells on all three datasets, to every
+      recorded digit -- including cells where the two arms admitted almost
+      disjoint sets (squad_clean/structural: mean Jaccard 0.292, min 0.013).
+      The "the caps never bound so no choice was forced" explanation was
+      checked and rejected for seven of the nine cells.
+    finding_2_knn_recovers_nothing: >-
+      knn_only recovered EXACTLY ZERO golds on every dataset, under every
+      method, at every budget including unconstrained. structural_only and
+      baseline_a_simple recovered identically: 2wiki_clean +15.25pp ceiling@5,
+      metaqa +34.83pp, squad_clean +0.00pp.
+    finding_3_the_gain_saturates: >-
+      On metaqa, admitting seven times as many nodes per query (167 against 23)
+      recovered zero additional gold. Whatever one-hop expansion recovers, it
+      recovers immediately.
+
+  what_this_does_to_track_b:
+    the_admission_provenance_table_is_already_filled_in: >-
+      STRUCT vs KNN vs FULL for CEILING is measured, not open: STRUCT == FULL,
+      KNN == 0. Re-running it would buy a third measurement of a settled
+      question. It is reported from M0A and not re-derived.
+    the_directional_admission_question_has_a_measured_null: >-
+      "Do query-conditioned directions choose better nodes than blind
+      admission at the same budget?" was asked and answered NO, on the two
+      datasets that matter most here (squad_clean and metaqa) plus 2wiki_clean.
+    the_one_variable_that_is_genuinely_new: >-
+      M0A's residual is normalize(e_q - x_anchor), a SINGLE anchor at dense
+      rank 1. This phase specifies r_q = q - P_span(E_q) q, the component of
+      the query orthogonal to the span of up to ten retrieval seeds. That is a
+      different and better-motivated residual, and it is the ONLY thing that
+      differs. So Track B, if it runs at all, is a one-variable re-test of a
+      measured null -- not a fresh exploration -- and it is scoped that way
+      below.
+    what_would_be_wrong: >-
+      Presenting Track B as an open question, or reporting a Track B win
+      without saying that the same comparison under a single-anchor residual
+      returned a null. If the seed-subspace residual breaks the tie, the
+      finding is "the residual definition was what mattered", which is a
+      sharper and more publishable claim than "directions help".
+
+  what_is_genuinely_unmeasured:
+    ranking: >-
+      query_residual appears in exactly one module and one test in this
+      repository, both about ADMISSION. Directional compatibility has never
+      been used to ORDER candidates. dir_max, dir_mean, the projected offset
+      and the structure-conditioned transform are all unmeasured. M0A's null is
+      about which nodes to admit, not about how to rank them.
+    attainment: >-
+      M0A measured oracle ceilings. It never measured actual/ceiling.
+    this_is_why_track_a_leads: >-
+      Track A is the open question; Track B is a narrow re-test. The phase is
+      ordered accordingly, which is the reverse of the order in which the two
+      ideas arrived.
+
+# --------------------------------------------------------------------------
+# 1. The frozen baseline table
+# --------------------------------------------------------------------------
+
+baseline_table:
+  status: EXPORTED
+  built_by: scripts/m2c_baseline_table.py
+  artifacts: [outputs/m2c_s4_structural_conditioning/m2b_baseline_table.json, docs/M2C_BASELINE_TABLE.md]
+  nothing_was_rerun: >-
+    Every column is read off the frozen M2B artifacts. 50 fits over 14 cells:
+    42 at seed 0 from the headline screen, 8 from the targeted resolution at
+    seeds 1 and 2. The script trains nothing and writes nothing into M2B.
+  columns: [dataset, regime, seed, rung, "recall@1", "recall@5", "recall@20", mrr,
+            "full_coverage@20", "candidate_ceiling@5", attainment_at_5,
+            uncached_p50_ms, uncached_p95_ms, uncached_p99_ms,
+            semantic_parameters, scorer_parameters, total_parameters,
+            held_out_queries, train_queries, split_queries, source_commit]
+  it_reproduces_the_filed_margins: >-
+    squad_clean/R1 mean S4-S3 = -0.882pp and musique_clean/R1 = -2.572pp over
+    seeds 0/1/2, recomputed from rows rather than copied from prose.
+  immutable_for_the_duration_of_m2c: >-
+    Challengers are compared against these rows. The rows are never recomputed
+    to match a challenger.
+
+# --------------------------------------------------------------------------
+# THE CEILING / ATTAINMENT DECOMPOSITION
+#
+# Verified against the artifacts, not assumed.
+# --------------------------------------------------------------------------
+
+headroom_decomposition:
+  the_identity: >-
+    recall@5 = attainment@5 * recall_ceiling@5. A reranking intervention can
+    move only the first factor; the second is fixed by which candidates are
+    SCORED. This is why M2C has two tracks rather than one.
+
+  which_ceiling:
+    the_correction: >-
+      M2B records TWO ceiling quantities and only one of them bounds recall@5.
+      An earlier draft of this file divided recall@5 by the wrong one. Fixed
+      here, and the definitions are pinned so it cannot recur.
+    recall_ceiling_at_5: >-
+      regime_headroom["recall_ceiling@5"]. K-aware, and the quantity that
+      actually bounds recall@5. It is also the denominator M2B itself used for
+      ceiling_attainment_at_5, verified to agree in all 50 rows.
+    candidate_pool_ceiling: >-
+      metrics["candidate_ceiling"]. The macro fraction of a query's gold nodes
+      present in the scored pool, with NO K. A coverage statistic, not a
+      recall@5 bound.
+    where_they_diverge: >-
+      Wherever a query has more than five gold nodes. metaqa reaches 246 golds
+      per query (mean 7.69, p95 36) and webqsp 222 (mean 5.93, p95 27), so on
+      those two datasets K binds long before pool coverage does: metaqa/R1 has
+      recall_ceiling@5 0.325429 against a split-level pool coverage of 0.333843,
+      and webqsp/R1 0.460434 against 0.493853. On the other four datasets no
+      query has more than four golds, K never binds, and the two agree up to the
+      held-out/split panel difference. Both blocker cells are in that second
+      group -- squad_clean has exactly one gold per query and musique_clean at
+      most four -- so their headroom numbers are unaffected by the distinction.
+    attainment_is_copied_not_recomputed: >-
+      The baseline table now carries M2B's own ceiling_attainment_at_5 rather
+      than deriving a second attainment that would quietly disagree with the
+      frozen record.
+
+  verified_r1_and_r2_share_a_ceiling_exactly: >-
+    MEASURED from the M2B artifacts, not asserted: recall_ceiling@5 is
+    bit-identical between R1 and R2 on 2wiki_clean (0.793333), webqsp
+    (0.460434), metaqa (0.325429) and hotpotqa_clean (0.934006). R2 widens
+    CONTEXT while scoring Cq, so it cannot change what R1 could have retrieved.
+    R3 is the only regime that moves the ceiling, because C3 = Cq u A64 changes
+    the scored set. M0A recorded the same identity as a per-cell assertion.
+
+  ranking_headroom_exists_in_every_cell: >-
+    MEASURED against recall_ceiling@5. All 28 seed-0 S3/S4 rows have a positive
+    ceiling-minus-recall gap; the smallest is 7.77pp (squad_clean/R1, S3). The
+    two blockers carry 8.52pp (squad_clean/R1) and 18.52pp (musique_clean/R1)
+    of unattained ceiling under S4.
+
+  exposure_is_nearly_exhausted_on_the_blockers: >-
+    MEASURED. recall_ceiling_perfect_retrieval@5 minus recall_ceiling@5 is the
+    part of the ceiling candidate generation threw away, and it is the ONLY
+    quantity an admission-side intervention can move. On squad_clean/R1 it is
+    0.46pp. On musique_clean/R1 it is 6.39pp. Against 8.52pp and 18.52pp of
+    ranking headroom respectively.
+
+  what_that_implies_for_the_phase: >-
+    On squad_clean/R1 a perfect admission mechanism could win at most 0.46pp,
+    which is below the 0.50pp repair target -- Track B could not repair that
+    blocker even in principle. Ranking has 8.52pp available there. The repair
+    target on both blockers sits far inside existing ranking headroom, so Track
+    A is SUFFICIENT in principle to meet the pilot gate and Track B is not
+    needed for the repair. Track B is a bid for a different and larger prize:
+    raising the ceiling itself, which is worth most where exposure is still
+    large (webqsp/R3 loses 17.31pp to candidate generation). Keeping the two
+    separate stops a ceiling result being reported as if it had repaired the
+    blockers, or the reverse.
+
+# --------------------------------------------------------------------------
+# THE SHAPE OF THE FAILURE
+#
+# Derived from the frozen baseline rows, not newly measured. It constrains
+# what a repair can look like, so it is filed before any arm is chosen.
+# --------------------------------------------------------------------------
+
+failure_shape:
+  the_damage_is_concentrated_at_the_head_of_the_ranking: >-
+    MEASURED over seeds 0/1/2 on both blockers, monotone in the cutoff and
+    consistent in every seed. squad_clean/R1: S4-S3 = -4.303pp at rank 1,
+    -0.882pp at rank 5, -0.262pp at rank 20. musique_clean/R1: -12.505pp at
+    rank 1, -2.572pp at rank 5, -1.108pp at rank 20, with MRR -14.922pp. The
+    gold is still in S4's top 20 almost exactly as often as in S3's; S4 orders
+    the top of the list worse.
+  it_is_a_passage_graph_phenomenon: >-
+    MEASURED at seed 0 across all 14 cells. S4 loses recall@1 to S3 in exactly
+    the eight passage-graph cells (2wiki_clean, hotpotqa_clean, musique_clean,
+    squad_clean) and wins recall@1 in all six KB cells (metaqa, webqsp). The
+    split is clean, with no exceptions. Whatever S4's projection costs at the
+    head of the ranking, it costs on passage graphs.
+  s4_is_not_a_worse_retriever_it_is_a_worse_orderer: >-
+    S4 is best at recall@5 in 12 of 14 cells but worse at recall@1 in 8 of 14
+    and worse at MRR in the same 8. M2B selected on recall@5, which is the
+    filed rule and is not revisited here; the point is only that the object
+    M2C has to repair is an ordering defect, not a coverage defect.
+  what_this_does_to_the_two_tracks: >-
+    A candidate-admission intervention cannot repair a rank-1 ordering error
+    among candidates that were already scored. Track B could not fix these
+    blockers even if it worked perfectly. This is a second, independent reason
+    Track A leads -- the first was that M0A already returned a null on
+    directional admission -- and the two reasons come from different evidence.
+  it_constrains_what_counts_as_a_repair: >-
+    Because the damage decays monotonically with K, an arm that closes
+    recall@5 while leaving recall@1 and MRR still far below S3 has moved
+    candidates around inside the top 5 rather than repaired the ordering.
+    recall@1 and MRR are therefore reported alongside recall@5 for every M2C
+    arm on the blocker cells, and a recall@5 repair with no recall@1 movement
+    is reported as such rather than as a repair.
+
+# --------------------------------------------------------------------------
+# 2. Frozen S4 inputs -- unchanged
+# --------------------------------------------------------------------------
+
+frozen_base_inputs:
+  qls_universal_block: [dense_rr, splade_rr, retriever_agreement, is_seed, SUPPORT,
+                        PATH_1, PATH_2, PATH_3, NODE_ROLE]
+  plus: the existing S4 projected semantic representation
+  nothing_is_removed_or_silently_redefined: true
+  s4_as_recovered:
+    module: src/mp_retrieval/m2b_semantic_control.py
+    klass: ProjectionSemanticHead
+    projection_dim: 64
+    query_projection: Linear(1536, 64, bias=False)
+    node_projection: Linear(1536, 64, bias=False)     # this is W_d
+    node_state: normalize(gelu(node_projection(e_v)))
+    query_state: normalize(gelu(query_projection(e_q)))
+    emitted_columns: 4 * 64 + 2 = 258
+    block_names: [query_state, node_state, state_product, state_absolute_difference]
+    scalar_names: [normalized_state_dot, raw_projection_dot_scaled]
+    semantic_parameters: 196608
+    scorer_parameters: 8609
+    total_parameters: 205217
+
+# --------------------------------------------------------------------------
+# 3. Graph provenance views -- mapped onto the existing families, not invented
+# --------------------------------------------------------------------------
+
+graph_provenance:
+  machinery: src/mp_retrieval/edge_provenance.py
+  reconstructed_not_heuristic: >-
+    reconstruct_edge_families derives every family in the frozen node-row
+    coordinate system, validates node order against the master documents, and
+    fingerprints each family with a serialization-independent sha256. M2C
+    selects among existing families and reconstructs nothing.
+  views:
+    G_STRUCT: structural_only
+    G_KNN: knn_only
+    G_FULL: baseline_a_simple
+  why_g_full_is_baseline_a_simple_and_not_full_union_c: >-
+    full_union_c is baseline_a_simple UNION ner_only, so it adds a THIRD
+    provenance (NER) that this phase did not ask about. G_FULL is specified as
+    "native structural + frozen kNN", and the module's own identity line says
+    knn_only = baseline_a_simple MINUS structural_only. So baseline_a_simple is
+    exactly STRUCT + KNN and is the correct mapping. NER is out of scope here.
+  primary_control_holds_the_feature_store_identical: >-
+    For the first provenance experiment the frozen S4/QLS feature store does
+    not change. Only the NEW displacement branch varies between G_STRUCT,
+    G_KNN and G_FULL, so a difference between them is the provenance of the NEW
+    information rather than a simultaneous change to SUPPORT/PATH.
+  full_provenance_rebuild: NOT_AUTHORISED_UNTIL_A_MECHANISM_IS_ESTABLISHED
+
+# --------------------------------------------------------------------------
+# 4. Parameter-free query residual -- THE new variable
+# --------------------------------------------------------------------------
+
+query_residual:
+  existing_form_in_this_repository: normalize(e_q - x_anchor), anchor = dense rank 1
+  m2c_form: >-
+    r_q = q - P_span(E_q) q, where E_q = [e_s1 ... e_sm] are the frozen
+    embeddings of the inference-safe retrieval seeds, |S_q| <= 10.
+  why_this_is_the_change_worth_making: >-
+    A single anchor throws away nine of the ten seeds and makes the residual a
+    function of whichever document dense retrieval happened to rank first. The
+    subspace residual is the component of the query that NO retrieval seed
+    already explains, which is a better statement of "what is still missing"
+    and is what a directional search should be steering by.
+  implementation: src/mp_retrieval/m2c_structural_offset.py
+  numerics_required:
+    - zero seeds
+    - one seed (the projection degenerates to a single direction)
+    - collinear or nearly collinear seeds
+    - rank-deficient E
+    - very small residual norm
+  method: >-
+    Rank-revealing orthonormalisation of the seed matrix, with a relative
+    singular-value tolerance, then projection onto the retained basis. Never a
+    raw normal-equations inverse.
+  fallback: >-
+    If the residual is numerically degenerate, use the normalized query and
+    record degenerate_residual = true on the row. A fallback that is not
+    recorded is a silent second method.
+  no_learned_parameters: true
+  no_gold_labels: true
+
+# --------------------------------------------------------------------------
+# 5. Displacement vectors and directional statistics
+# --------------------------------------------------------------------------
+
+displacements:
+  definition: delta(s, v) = normalize(e_v - e_s)
+  scope: DIRECT native graph support only at the first stage; no long unconstrained paths
+  compatibility: c(s, v) = cosine(r_q, delta(s, v)) = dot(r_q_unit, delta(s, v))
+  statistics_to_audit_at_stage_0: [dir_max, dir_mean, dir_positive_mass, dir_support_count]
+  not_every_statistic_is_adopted: >-
+    Stage 0 decides which of these carries signal. Adding all four to a model
+    because all four were computed is how a feature block grows without
+    evidence.
+
+direction_prototype:
+  weighted: "w_i = softmax(tau * c_i); delta_star = normalize(sum_i w_i * delta_i)"
+  unweighted_control: "delta_star_mean = normalize(mean(top compatible delta_i))"
+  tau:
+    status: MUST_BE_FIXED_PROSPECTIVELY
+    no_target_test_tuning: true
+    no_large_grid: true
+    resolution: >-
+      No transferable frozen CRAG-style tau exists in this repository -- the
+      existing directional code has no temperature at all, it ranks on the raw
+      cosine. So tau is declared prospectively from the Stage-0 smoke on the
+      dev subset, ONE value, recorded before any Stage-1 fit. The unweighted
+      control exists precisely so that a phase result does not rest on it.
+  goal: a deterministic structural vector, not a new learned router
+
+# --------------------------------------------------------------------------
+# 6-10. The candidate ladder
+# --------------------------------------------------------------------------
+
+ladder:
+  A0_S4:
+    what: the frozen current challenger
+    new_trainable_params: 0
+    reused: true
+  A1_S4_DIR_SCALAR:
+    what: S4 unchanged, plus the minimal deterministic directional scalars
+    initial_scalars: [dir_max, dir_mean]
+    answers: is the useful information a scalar rather than a vector shift?
+    new_trainable_params: "2 scorer weights per scalar admitted; reported live"
+  A2_S4_PF_OFFSET:
+    what: deterministic vector displacement applied in S4's own 64-D state space
+    name: ZERO-NEW-PARAMETER STRUCTURAL OFFSET
+    never_call_it: PARAMETER-FREE MODEL
+    why_the_name_matters: >-
+      S4 itself is learned. The offset introduces no new learned parameter, and
+      that is the precise claim. "Parameter-free model" would claim something
+      untrue about the object it is bolted onto.
+    construction:
+      delta64: W_d @ delta_star, reusing S4's existing frozen node_projection
+      gate: a bounded deterministic alpha from the same directional geometry
+      output: normalize(d64 + alpha * delta64)
+    the_gelu_wrinkle:
+      what: >-
+        S4's node_state is normalize(gelu(W_d e_v)), so d64 has passed through
+        a GELU and W_d delta_star has not. Adding them mixes a post-activation
+        state with a pre-activation displacement.
+      how_it_is_handled: >-
+        Implemented as specified, and declared: W_d delta_star is the
+        Jacobian-free first-order image of the displacement, which ignores
+        GELU's local slope. A pre-activation variant --
+        normalize(gelu(W_d(e_v + alpha delta_star))) -- is a legitimate
+        alternative and is NOT run as a second arm in the pilot. Stage 0 can
+        compare the two geometrically for free, since neither needs training.
+      what_would_be_wrong: >-
+        Silently substituting the pre-activation form because it is tidier. The
+        specified form is the one under test unless Stage-0 geometry says it is
+        degenerate, and then the substitution is recorded as a decision.
+    new_trainable_params: 0
+  A3_S4_SEMANTIC_TRANSFORM:
+    what: matched learned-capacity control
+    inputs: [q64, d64]
+    forbidden_inputs: [delta64, directional scalars, any new SUPPORT/PATH-derived input]
+    why_mandatory: >-
+      Without it, "S4-STRUCT-TRANSFORM improves" is indistinguishable from "we
+      added another MLP". Same architecture, hidden width, parameter budget,
+      initialization and training as A4.
+  A4_S4_STRUCT_TRANSFORM:
+    what: small residual transform conditioned on structural geometry
+    inputs: [q64, d64, delta64, minimal directional scalars, frozen QLS structural vector phi]
+    formulations_audited: [additive residual, identity-initialized FiLM]
+    chosen: FiLM, identity-initialized (gamma = 1, beta = 0 at step 0)
+    why_film: >-
+      Both are identity-preserving at initialization, which is the property
+      that matters, but FiLM's gamma gives the transform a way to ATTENUATE the
+      semantic state where structure contradicts it, and the failure cells are
+      cases where S4 is confidently wrong. A pure additive residual can only
+      add. One formulation is implemented, not both.
+    parameter_budget: small, reported live, never silently multi-million
+  do_not_run_the_cross_product: >-
+    Not 5 arms x 3 graph views x 14 cells x multiple seeds. Staged gates below.
+
+# --------------------------------------------------------------------------
+# THE TWO TRACKS
+# --------------------------------------------------------------------------
+
+tracks:
+  ordering_rationale: >-
+    A before B because A is the open question and B is a re-test of a measured
+    null; C last because it can only be judged once there is something for
+    learning to exploit.
+  M2C_A_RANKING_OFFSET:
+    candidate_universe: FROZEN -- Cq under R1/R2, C3 under R3
+    question: does structural displacement help S4 ORDER the candidates it already has?
+    moves: attainment@5 only; the ceiling cannot move and is reported unchanged as proof
+    arms: [A1, A2, A3, A4]
+    status: THE PRIMARY TRACK
+  M2C_B_OFFSET_ADMISSION:
+    candidate_universe: "C4 = C3 u A_offset"
+    question: does structural displacement EXPOSE gold that C3 does not contain?
+    reports_separately: [delta_candidate_ceiling, delta_actual_recall_at_5, attainment]
+    budget:
+      value: 64
+      why_64_and_not_a_sweep: >-
+        A64 is the incumbent admission at exactly this budget, so 64 is the
+        only value at which the comparison is budget-matched rather than
+        budget-buying. 16 and 32 are not run: they would answer "does a smaller
+        budget do worse", which M0A already answered by showing the gain
+        saturates at a per-seed cap of 16.
+    the_comparison: R3-A64 (incumbent, = STRUCTURAL_NEIGHBOUR) versus R3-PF64 (= directional, seed-subspace residual)
+    exactly_one_variable_may_differ: >-
+      The frontier construction, per-seed cap, scan cap, dedup rule, global cap
+      and matched-budget rule are the EXISTING candidate_expansion_v2 code
+      paths, byte-identical between arms. Only the residual definition changes.
+      Anything else changing makes the result uninterpretable against M0A's
+      null.
+    status: CONDITIONAL -- runs only if Stage 0 shows the new residual changes the directions chosen
+  M2C_C_TRANSFORM:
+    question: can learned structural conditioning exploit whatever A or B exposes?
+    status: CONDITIONAL on A or B producing something to exploit
+
+# --------------------------------------------------------------------------
+# 12-13. Stage 0 -- zero-training probe, and its advance gate
+# --------------------------------------------------------------------------
+
+stage_0:
+  trains_nothing: true
+  reads_test_split: false
+  cells:
+    failure_cells: [squad_clean/R1, musique_clean/R1]
+    multi_hop_r3: 2wiki_clean/R3
+    kb_r3: metaqa/R3
+    declared_before_any_result: true
+    why_these_two_r3_cells: >-
+      Derived from the frozen graph audit rather than chosen. 2wiki_clean is
+      the passage graph with the highest isolated-gold prevalence (20.0% of
+      queries) and the largest measured one-hop ceiling recovery of the passage
+      sets; metaqa is the KB graph where M0A measured the largest recovery of
+      all (+34.83pp ceiling@5) and is the most graph-damaged of the six
+      (isolation 0.412, boundary cut 0.904). Both are R3 because R3 is the only
+      regime whose scored set the offset could ever change.
+  measure_under_each_of: [G_STRUCT, G_KNN, G_FULL]
+  report:
+    coverage: fraction of candidates with a valid structural direction
+    directional_signal:
+      - gold versus non-gold directional score separation on the dev subset
+      - rank association with relevance where dev labels permit
+      - top-k recall under direction-only reranking
+      - overlap between newly corrected queries and S4's existing error set
+    residual_comparison:
+      checks:
+        - agreement between the seed-subspace residual and the single-anchor residual
+        - how often they select different directions at the same budget
+      why: >-
+        This is the quantity that decides whether Track B is worth running at
+        all. If the two residuals choose the same nodes, M0A's null transfers
+        directly and Track B is closed without spending anything on it.
+    cost: [p50, p95, p99 feature construction, storage bytes, peak memory]
+  where_it_can_run:
+    not_locally: >-
+      AUDITED, not assumed. The only local data is data/processed/*_l2_pilot.pt
+      for 2wiki_clean, musique_clean and webqsp. Those payloads carry graph
+      topology (rowptr, col), candidate indices, the four expert signals and
+      gold labels -- but NO node or query embeddings, and the residual and the
+      displacements are both functions of embeddings. They are also marked
+      'pilot_test_only' with 'No training split is present; do not report as
+      paper evidence', and every query in them is split 2. So they could not
+      carry a scientific result even if they held the tensors.
+    requires: >-
+      The Modal volume message-passing-retrieval-data, and squad_clean and
+      metaqa are not present locally in any form.
+    consequence: >-
+      Stage 0 is a launch, so it needs the compute record compute_discipline
+      demands -- predicted jobs, GPU hours, walltime, storage, expected spend,
+      ceiling, advance and abort conditions -- filed before it runs. That record
+      does not exist yet and is the next gate to earn.
+
+  advance_gate:
+    advance_only_if: >-
+      The cheap probe shows the mechanism can plausibly change the S4
+      scientific decision -- for example directional score separates relevant
+      from irrelevant candidates, direction-only reranking improves one or both
+      failure cells, newly corrected queries overlap S4's failures, STRUCT
+      differs meaningfully from KNN, and feature cost is bounded.
+    if_no_directional_signal_exists: STOP_M2C
+    what_stopping_means: >-
+      S3 remains the final development semantic choice and S4 remains a
+      challenger with a filed, unrepaired blocker. That is a publishable
+      outcome, not a failure to be worked around.
+    do_not_train_a_transform_on_noise: >-
+      Code that runs is not evidence that a mechanism exists.
+
+# --------------------------------------------------------------------------
+# 14-15. Stage 1 -- the smallest useful trained pilot
+# --------------------------------------------------------------------------
+
+stage_1:
+  authorised_only_if: stage_0 advance gate passes
+  seeds: [0]
+  reuse_without_refitting: [S3, S4]
+  cells:
+    primary_failure: [squad_clean/R1, musique_clean/R1]
+    positive_control:
+      cell: webqsp/R3
+      declared_before_its_results_are_seen: true
+      why: >-
+        S4 is already far ahead of S3 there (+9.908pp) and the structural
+        evidence is nontrivial (R3 lifts webqsp's recall_ceiling@5 from 0.4604
+        to 0.7290, the largest ceiling movement of any cell, and it still loses
+        17.31pp to candidate generation). It is the cleanest place to detect a
+        challenger that repairs the blockers by damaging what S4 was already
+        good at.
+      it_is_deliberately_not_a_stage_0_cell: >-
+        Stage 0 is four cells by specification, and webqsp/R3 is not one of
+        them, so the positive control runs without its own geometric
+        reconnaissance. That is correct for what it is FOR: it exists to detect
+        damage, not to demonstrate mechanism, and a control that had been
+        pre-screened for favourable geometry would be a worse control. metaqa/R3
+        is the Stage-0 KB cell, so KB-graph coverage evidence exists even though
+        this exact cell was not probed.
+  arms: arms Stage 0 supports, minus any arm Stage 0 made scientifically irrelevant
+  provenance_in_stage_1: >-
+    Do NOT train every learned arm under all three graph views. Use the Stage-0
+    provenance result to pick. The zero-new-parameter offset may compare
+    provenance sources cheaply because it costs no training.
+  success_targets:
+    squad_clean_R1: within 0.50pp of the frozen S3 incumbent
+    musique_clean_R1: within 0.50pp of the frozen S3 incumbent
+    positive_control: no regression greater than 0.50pp from S4
+    these_are_development_gates: >-
+      They do not retroactively change M2B, whose rule and verdict stand.
+    recall_at_5_alone_does_not_establish_a_repair: >-
+      See failure_shape. The blocker damage is monotone in the cutoff and is
+      worst at rank 1, so recall@1 and MRR are reported next to recall@5 on
+      both blocker cells. An arm that reaches the 0.50pp recall@5 target while
+      recall@1 stays far below S3 has reordered the top 5, not repaired the
+      ordering, and is reported that way.
+  systems_target:
+    report: total uncached p95
+    rule: >-
+      A challenger that repairs effectiveness but destroys S4's latency
+      advantage does not automatically advance. S4's advantage is measured:
+      1.068 ms p95 against S3's 1.922 ms.
+
+# --------------------------------------------------------------------------
+# 16. Systems contract
+# --------------------------------------------------------------------------
+
+systems_contract:
+  the_span_that_must_be_timed:
+    - query and seed retrieval already required by the regime
+    - structural-edge lookup
+    - query residual construction
+    - direction lookup and aggregation
+    - projection of the structural vector
+    - the transform, if any
+    - the scorer
+  components: [structural_offset_build_ms, semantic_ms, transform_ms, scorer_ms,
+               total_uncached_p50, total_uncached_p95, total_uncached_p99]
+  also: [peak_vram_mb, peak_rss_mb, feature_store_bytes, new_parameter_count, total_parameter_count]
+  precomputed_only_scorer_timing_is_not_uncached_latency: true
+  offline_pieces_reported_separately: [offline storage and build cost, online lookup and aggregation cost]
+
+precomputation_study:
+  options:
+    P0: compute delta(u,v) online
+    P1: precompute full 1536-D delta for eligible graph edges
+    P2: precompute a compressed deterministic projection
+    P3: precompute W_d @ delta(u,v) for a frozen selected S4 checkpoint
+  p3_caveat: >-
+    P3 is checkpoint-specific. It must be invalidated by the model-config hash,
+    or it silently serves one checkpoint's projections to another's scorer.
+  estimate_before_choosing: [edge count, storage at fp32 and fp16, read bandwidth, online compute saved]
+  do_not_duplicate_huge_tensors_blindly: true
+
+multi_hop_offset:
+  status: NOT_IN_THE_INITIAL_PILOT
+  trigger: direct displacement shows signal but fails on deeper R3 queries
+  form: "r1 = r_q - proj_delta1(r_q), then choose delta2 using r1"
+  bounds: [max hops <= the regime's already-allowed radius, small fixed branch count, fixed candidate and context budget]
+  no_beam_search_at_the_start: true
+  no_recursive_uncontrolled_expansion: true
+
+# --------------------------------------------------------------------------
+# 19. Provenance interpretation
+# --------------------------------------------------------------------------
+
+provenance_interpretation:
+  STRUCT_gt_KNN: genuine topology contributes
+  KNN_approx_STRUCT: semantic geometry is doing much of the work
+  FULL_gt_both: complementary provenance
+  FULL_lt_STRUCT: kNN adds noise or semantic redundancy
+  no_structural_reasoning_claim_without_this_control: true
+  the_prior_for_ceiling_is_already_known: >-
+    M0A measured KNN = 0 recovered golds everywhere. If a Track B result showed
+    KNN contributing to the ceiling, the first hypothesis is a bug, not a
+    discovery.
+
+# --------------------------------------------------------------------------
+# 20-21. What happens if Stage 1 succeeds
+# --------------------------------------------------------------------------
+
+after_a_successful_stage_1:
+  do_not_declare_a_winner_immediately: true
+  order:
+    A: seeds 1 and 2 ONLY on decision-critical pilot cells
+    B: if still successful, the winning challenger across the remaining M2B cells, seed 0 first
+    C: if still Pareto-admissible, targeted extra seeds only where necessary
+  no_five_seed_development_sweep: true
+
+full_matrix_advancement:
+  compare_prospectively_against_both: [S3, S4]
+  report: ["per-cell recall@5", per-dataset equal-weight score, six-dataset macro,
+           uncached p95, parameters, peak memory]
+  replaces_s3_only_if:
+    1: repairs the S4 blocker behaviour enough to satisfy the universal per-cell and per-dataset protection
+    2: preserves S4's broad advantages rather than overfitting SQuAD and MuSiQue
+    3: remains systems-competitive
+    4: has a defensible mechanism attribution from the PF offset, the matched semantic transform and the provenance controls
+  the_m2b_rule_is_not_edited_after_results: >-
+    A NEW M2C rule is filed prospectively. M2B's rule and verdict stand as
+    they are.
+
+# --------------------------------------------------------------------------
+# 22. Generalization
+# --------------------------------------------------------------------------
+
+generalization:
+  do_not_stop_at_target_refit_success: true
+  first_tests: [LODO_SQUAD, LODO_MUSIQUE]
+  lodo_definition: train the allowed learned component without that dataset, evaluate it without refit
+  pf_offset_note: >-
+    A2 has no new structural parameters, so it is naturally dataset-transferable
+    except for the existing S4 weights. That asymmetry is stated, not used as a
+    claim that A2 "generalizes" in the same sense a transform would.
+  learned_transforms_must_distinguish: [architecture generalization, parameter generalization]
+  prohibited: [dataset ID input, target-specific logic, target-test tuning]
+  six_way_lodo: only if the two initial held-out-domain tests show it could matter
+
+# --------------------------------------------------------------------------
+# 24. Information / leakage firewall
+# --------------------------------------------------------------------------
+
+firewall:
+  absolutely_prohibited:
+    - gold nodes as seeds
+    - gold relation types
+    - supporting-fact labels at inference
+    - dataset IDs
+    - target-test tuning
+    - Package F
+    - GNN outputs
+    - GNN hidden states
+    - GNN teacher or distillation
+    - canonical CRAG test inspection
+  only_inference_safe_inputs:
+    - retrieval seeds
+    - frozen embeddings
+    - frozen graph topology
+    - frozen edge provenance
+    - the current regime's context
+    - the current QLS features
+  enforced_by_test: >-
+    The existing candidate_expansion_v2 leakage test permutes gold labels and
+    requires byte-identical output. M2C's new mechanism gets the same test, in
+    tests/test_m2c_structural_offset.py, rather than a promise in prose.
+
+# --------------------------------------------------------------------------
+# 25. Reproducibility
+# --------------------------------------------------------------------------
+
+instrumentation_required_per_result:
+  - checkpoint
+  - per-query rows, with the aggregate reconstructed from them
+  - query IDs, candidate IDs, context IDs
+  - graph provenance view (STRUCT / KNN / FULL)
+  - direction-valid mask
+  - direction and prototype fingerprint
+  - feature contract fingerprint
+  - semantic fingerprint
+  - source commit and config hash
+  - parameter counts, with new_trainable_params recorded explicitly (0 for A0 and A2)
+  - training seconds, feature-build timing
+  - uncached p50/p95/p99
+  - peak VRAM and RSS, storage bytes
+
+# --------------------------------------------------------------------------
+# 26-27. Compute discipline and authorization
+# --------------------------------------------------------------------------
+
+compute_discipline:
+  rule: >-
+    Validate cheaply, then expand only when the current scale produces evidence
+    that more compute can change a scientific decision.
+  per_stage_record: [predicted jobs, CPU hours, GPU hours, walltime, storage,
+                     expected spend, ceiling, advance condition, abort condition]
+  no_cartesian_sweep_merely_because_the_matrix_exists: true
+  ledger_line: m2c_s4_structural_conditioning
+
+launch_authorization:
+  authorised_by_this_declaration:
+    - the M2C declaration itself
+    - exact archaeology of S4 and the graph-provenance APIs
+    - the immutable M2B baseline export
+    - the parameter-free residual and direction implementation
+    - the STRUCT/KNN/FULL zero-training probe
+    - tests
+    - a tiny Stage-1 seed-0 pilot IF the Stage-0 advance gate passes
+    - automatic reporting of the pilot result
+  not_authorised:
+    - full 14-cell M2C evaluation
+    - extra seeds
+    - six-way LODO
+    - M3 or any GNN
+    - canonical CRAG
+    - Package F
+    - E2
+  gates:
+    baseline_table_exported: true          # earned 2026-09-07
+    protocol_document_filed: true          # earned 2026-09-07
+    declaration_tested: true               # earned 2026-09-07, tests/test_m2c_declaration.py
+    archaeology_recorded: true             # earned 2026-09-07
+    prior_evidence_audited: true           # earned 2026-09-07, M0A null recorded above
+    residual_implemented_and_tested: true   # earned 2026-09-07, 31 tests in tests/test_m2c_structural_offset.py
+    stage_0_compute_record_filed: false     # blocked: see stage_0.where_it_can_run
+    stage_0_probe_run: false
+    stage_0_advance_gate_evaluated: false
+    stage_1_authorised: false
+
+# --------------------------------------------------------------------------
+# 28. Hard stop
+# --------------------------------------------------------------------------
+
+stop_condition:
+  after_stage_1_produce:
+    - M2C_STATUS
+    - the baseline table
+    - "Stage 0: STRUCT/KNN/FULL directional evidence"
+    - "Stage 1: per-arm recall@1/5/20, MRR, FullCov, deltas versus S4 and versus S3"
+    - "systems: p50/p95/p99, params, memory, storage"
+    - "mechanism: scalar versus vector offset, semantic-only versus structure-conditioned transform, STRUCT versus KNN versus FULL"
+  verdict_values: [STOP_M2C, ADVANCE_TARGETED_M2C]
+  if_advance: give the exact minimum next matrix and a compute estimate
+  and_then: STOP_FOR_REVIEW
