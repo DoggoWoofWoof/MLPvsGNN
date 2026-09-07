@@ -370,31 +370,66 @@ def test_the_import_time_check_excludes_the_gates_that_are_earned_downstream() -
     ), "every gate is either an import-time prerequisite or earned downstream"
 
 
-def test_the_headline_stage_rereads_the_gates_at_call_time(tree) -> None:
-    """Not the import-time snapshot: the remaining gates are earned between
-    this app being deployed and a headline job being spawned."""
-
-    headline = next(
+def _function_node(tree, name: str):
+    return next(
         node
         for node in ast.walk(tree)
-        if isinstance(node, ast.FunctionDef) and node.name == "run_m2_headline"
+        if isinstance(node, ast.FunctionDef) and node.name == name
     )
+
+
+def test_the_gate_check_rereads_the_declaration_at_call_time(tree) -> None:
+    """Not the import-time snapshot: the remaining gates are earned between
+    this app being deployed and a job being spawned against it."""
+
+    check = _function_node(tree, "_require_every_gate")
     calls = {
         node.func.id
-        for node in ast.walk(headline)
+        for node in ast.walk(check)
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
     }
     assert "unmet_gates" in calls
-    assert any(isinstance(node, ast.Raise) for node in ast.walk(headline))
+    assert any(isinstance(node, ast.Raise) for node in ast.walk(check))
     read_paths = {
         node.func.value.id
-        for node in ast.walk(headline)
+        for node in ast.walk(check)
         if isinstance(node, ast.Call)
         and isinstance(node.func, ast.Attribute)
         and node.func.attr == "read_text"
         and isinstance(node.func.value, ast.Name)
     }
     assert read_paths == {"M2_CONFIG_PATH"}
+
+
+def test_every_stage_that_spends_on_the_real_panel_is_gated(tree) -> None:
+    """The CPU build is where 83% of the estimated seconds go. Gating only the
+    trainer would let the expensive half of a launch run while a gate is false."""
+
+    gated = {
+        name
+        for name, (_runner_stage, smoke_key, _subtree) in launcher.STAGE_PLAN.items()
+        if smoke_key is None
+    }
+    assert gated == {"build", "headline"}
+    for stage in sorted(gated):
+        node = _function_node(tree, launcher.STAGE_FUNCTIONS[stage])
+        calls = {
+            call.func.id
+            for call in ast.walk(node)
+            if isinstance(call, ast.Call) and isinstance(call.func, ast.Name)
+        }
+        assert "_require_every_gate" in calls, stage
+    for stage in sorted(set(launcher.STAGE_PLAN) - gated):
+        node = _function_node(tree, launcher.STAGE_FUNCTIONS[stage])
+        calls = {
+            call.func.id
+            for call in ast.walk(node)
+            if isinstance(call, ast.Call) and isinstance(call.func, ast.Name)
+        }
+        assert "_require_every_gate" not in calls, (
+            f"{stage} is a smoke; gating it on engineering_smoke_passes would make the "
+            "smoke unable to ever run first"
+        )
 
 
 def test_the_headline_is_still_blocked_by_the_gates_steps_d_and_e_have_not_earned(
@@ -475,6 +510,106 @@ def test_the_source_commit_is_resolved_on_the_host(jobs) -> None:
     assert commit is not None and len(commit) == 40 and set(commit) <= set("0123456789abcdef")
     args = launcher._runner_args(_job(jobs, "webqsp"), stage="headline")
     assert args.source_commit == commit
+
+
+# --- the CPU-build / GPU-fit split (step D) -----------------------------------
+#
+# outputs/m2_qls_v2_freeze/feature_build_equivalence.json returned EQUIVALENT,
+# which under feature_build_compute_check.adopt_only_if authorises moving the
+# build onto a container with no accelerator. These hold the orchestration to
+# what makes that safe: the two halves must address the same cell, in the same
+# place, on the hardware each half actually needs.
+
+
+def _decorator_keywords(tree, function_name: str) -> dict[str, ast.expr]:
+    node = _function_node(tree, function_name)
+    decorator = next(
+        item
+        for item in node.decorator_list
+        if isinstance(item, ast.Call)
+        and isinstance(item.func, ast.Attribute)
+        and item.func.attr == "function"
+    )
+    return {keyword.arg: keyword.value for keyword in decorator.keywords if keyword.arg}
+
+
+def test_the_building_containers_ask_for_no_accelerator(tree) -> None:
+    """The point of the split. A build stage that still requests an A10G costs
+    exactly what the split was adopted to stop paying."""
+
+    for stage, (runner_stage, _smoke_key, _subtree) in launcher.STAGE_PLAN.items():
+        keywords = _decorator_keywords(tree, launcher.STAGE_FUNCTIONS[stage])
+        if runner_stage == launcher.CPU_ONLY_RUNNER_STAGE:
+            assert "gpu" not in keywords, stage
+        else:
+            assert "gpu" in keywords, stage
+        # The blended cost figure assumes the CPU half is the same shape as the
+        # GPU half minus the card, so these must not drift apart.
+        assert {"cpu", "memory", "timeout", "image", "volumes"} <= set(keywords), stage
+
+
+def test_a_build_stage_never_names_a_device_it_was_not_given(jobs) -> None:
+    for stage, (runner_stage, smoke_key, _subtree) in launcher.STAGE_PLAN.items():
+        dataset = launcher.SMOKE_DATASET if smoke_key else "metaqa"
+        args = launcher._runner_args(_job(jobs, dataset), stage=stage)
+        assert args.stage == runner_stage, stage
+        assert args.device == ("cpu" if runner_stage == "build" else "cuda"), stage
+
+
+def test_the_two_halves_of_the_split_address_the_same_cell(jobs) -> None:
+    """run_m2_qls_v2_freeze.load_cell_for_fit refuses a master whose build key
+    differs, so a launcher that hands the two halves different arguments turns
+    the headline into a hard failure after the build has already been paid for."""
+
+    from scripts.run_m2_qls_v2_freeze import cell_build_key
+
+    for build_stage, fit_stage in (("build", "headline"), ("smoke_build", "smoke_fit")):
+        dataset = "metaqa" if build_stage == "build" else launcher.SMOKE_DATASET
+        job = _job(jobs, dataset)
+        build = launcher._runner_args(job, stage=build_stage)
+        fit = launcher._runner_args(job, stage=fit_stage)
+        assert build.artifact_root == fit.artifact_root, (build_stage, "the master's location")
+        for regime in ("R1", "R2", "R3"):
+            assert cell_build_key(build, regime) == cell_build_key(fit, regime), (
+                build_stage,
+                regime,
+            )
+
+
+def test_each_half_writes_its_own_result_file(jobs) -> None:
+    """Sharing the artifact root is required; sharing the result path would let
+    the build's own summary be cached back as a completed screen."""
+
+    job = _job(jobs, "metaqa")
+    build = launcher._runner_args(job, stage="build")
+    headline = launcher._runner_args(job, stage="headline")
+    assert build.output != headline.output
+    assert build.output.name == "feature_build.json"
+    assert headline.output.name == "qls_v2_freeze.json"
+
+
+def test_the_split_smoke_does_not_overwrite_the_one_container_smoke(jobs) -> None:
+    """The two are compared against each other -- that comparison is the
+    cross-container half of the equivalence evidence, and it needs two artifacts."""
+
+    job = _job(jobs, launcher.SMOKE_DATASET)
+    whole = launcher._runner_args(job, stage="smoke")
+    split_fit = launcher._runner_args(job, stage="smoke_fit")
+    assert whole.output != split_fit.output
+    assert whole.artifact_root != split_fit.artifact_root
+    assert whole.regimes == split_fit.regimes and whole.queries == split_fit.queries, (
+        "but they must be the same cell, or the comparison compares nothing"
+    )
+
+
+def test_no_stage_writes_where_the_headline_writes_except_the_headlines_own_build(jobs) -> None:
+    job = _job(jobs, launcher.SMOKE_DATASET)
+    roots: dict[str, set[str]] = {}
+    for stage in launcher.STAGE_PLAN:
+        args = launcher._runner_args(job, stage=stage)
+        roots.setdefault(str(args.artifact_root).replace("\\", "/"), set()).add(stage)
+    shared = {frozenset(stages) for stages in roots.values() if len(stages) > 1}
+    assert shared == {frozenset({"build", "headline"}), frozenset({"smoke_build", "smoke_fit"})}
 
 
 def test_the_declaration_names_this_launcher_and_its_registry_entry(declaration) -> None:

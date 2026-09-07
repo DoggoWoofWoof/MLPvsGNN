@@ -476,3 +476,158 @@ def test_the_real_audit_manifest_satisfies_the_runners_loader():
         ).values()
     )
     assert total_new == DECLARATION["m2_selection_matrix"]["workload"]["new_fits"] == 15
+
+
+# --- the CPU-build / GPU-fit split (step D) -----------------------------------
+#
+# scripts/m2_feature_build_equivalence.py proved the build is separable
+# bit-exactly. These tests pin the orchestration that separation buys: that a
+# split run produces the same result as the one-container run, and that a
+# mismatched or absent cache is refused rather than silently papered over.
+
+
+@pytest.fixture(scope="module")
+def split_run(tmp_path_factory):
+    """The same cell as universal_run, built and fitted in two invocations."""
+
+    tmp_path = tmp_path_factory.mktemp("m2_split")
+    monkeypatch = pytest.MonkeyPatch()
+    _write_manifest(tmp_path, monkeypatch, _all_reusable_manifest())
+    build_args = _args(tmp_path, stage="build", output=tmp_path / "out" / "build.json")
+    build = runner.run(build_args)
+    fit_args = _args(tmp_path, stage="fit", output=tmp_path / "out" / "fit.json")
+    fit = runner.run(fit_args)
+    monkeypatch.undo()
+    return build, fit, fit_args
+
+
+def test_the_build_stage_persists_the_master_and_trains_nothing(split_run):
+    build, _fit, _args_used = split_run
+    assert build["status"] == runner.BUILD_COMPLETE_STATUS
+    assert build["status"] != runner.COMPLETE_STATUS, "a build must not read as a completed screen"
+    cell = build["cells"]["R2"]
+    assert cell["arms"] == {}, "the build stage fits nothing"
+    assert cell["arms_run"] == ["QLS-UNIVERSAL"], "but it records what the fit stage will run"
+    assert Path(cell["cell_features_root"]).is_dir()
+
+
+def test_the_split_reproduces_the_one_container_run_exactly(split_run, universal_run):
+    _build, fit, _args_used = split_run
+    whole, _ = universal_run
+    assert fit["status"] == runner.COMPLETE_STATUS
+    split_arm = fit["cells"]["R2"]["arms"]["QLS-UNIVERSAL"]
+    whole_arm = whole["cells"]["R2"]["arms"]["QLS-UNIVERSAL"]
+    assert split_arm["metrics"] == whole_arm["metrics"]
+    assert split_arm["parameters"] == whole_arm["parameters"]
+    assert split_arm["instrumentation"]["feature_store_fingerprint_sha256"] == (
+        whole_arm["instrumentation"]["feature_store_fingerprint_sha256"]
+    )
+    assert (
+        fit["cells"]["R2"]["cell_features_fingerprint_sha256"]
+        == whole["cells"]["R2"]["cell_features_fingerprint_sha256"]
+    )
+    assert fit["cells"]["R2"]["regime_headroom"] == whole["cells"]["R2"]["regime_headroom"]
+
+
+def test_the_fit_stage_reports_the_build_latency_it_did_not_measure(split_run, universal_run):
+    """Under the split the fitting container never runs the build, so the
+    p50/p95/p99 instrumentation_requirement asks for has to come from the
+    container that did -- measuring the load instead would file a different
+    quantity under the same name."""
+
+    build, fit, _ = split_run
+    built = build["cells"]["R2"]["uncached_feature_build_latency_ms"]
+    assert fit["cells"]["R2"]["uncached_feature_build_latency_ms"] == built
+    arm = fit["cells"]["R2"]["arms"]["QLS-UNIVERSAL"]
+    assert arm["instrumentation"]["feature_build_latency_ms_p50_p95_p99"] == {
+        key: built[key] for key in ("p50", "p95", "p99")
+    }
+    # The quantity is a real build measurement, not a load timing standing in
+    # for one: it is a wall clock over the same work the one-container run does,
+    # so it lands in the same order of magnitude but is its own measurement.
+    whole, _ = universal_run
+    measured_once = whole["cells"]["R2"]["uncached_feature_build_latency_ms"]
+    assert built["p50"] > 0.0 and measured_once["p50"] > 0.0
+
+
+def test_each_stage_records_which_half_of_the_split_it_was(split_run, universal_run):
+    build, fit, _ = split_run
+    whole, _ = universal_run
+    assert build["feature_build_stage"] == "build"
+    assert fit["feature_build_stage"] == "fit"
+    assert whole["feature_build_stage"] == "full"
+    assert fit["cells"]["R2"]["feature_build_stage"] == "fit"
+
+
+def test_a_fit_with_no_persisted_master_is_refused(tmp_path, monkeypatch):
+    _write_manifest(tmp_path, monkeypatch, _all_reusable_manifest())
+    with pytest.raises(FileNotFoundError, match="run --stage build"):
+        runner.run(_args(tmp_path, stage="fit"))
+
+
+def test_a_master_built_for_a_different_cell_is_refused_not_reused(tmp_path, monkeypatch):
+    """A hash proves the arrays were not corrupted in transit. It says nothing
+    about whether they are the arrays of the right cell, which is what a stale
+    cache actually gets wrong."""
+
+    _write_manifest(tmp_path, monkeypatch, _all_reusable_manifest())
+    runner.run(_args(tmp_path, stage="build", output=tmp_path / "out" / "build.json"))
+    root = tmp_path / "artifacts" / "R2" / "cell_features"
+    metadata = runner.load_cell_metadata(root)
+    metadata["build_key"]["per_seed_cap"] = metadata["build_key"]["per_seed_cap"] + 1
+    (root / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
+    with pytest.raises(ValueError, match="built for a different cell"):
+        runner.run(_args(tmp_path, stage="fit", output=tmp_path / "out" / "fit.json"))
+
+
+def test_a_master_whose_arrays_do_not_match_its_fingerprint_is_refused(tmp_path, monkeypatch):
+    _write_manifest(tmp_path, monkeypatch, _all_reusable_manifest())
+    runner.run(_args(tmp_path, stage="build", output=tmp_path / "out" / "build.json"))
+    root = tmp_path / "artifacts" / "R2" / "cell_features"
+    master = np.load(root / "master_flat.npy")
+    master[0, 0] = master[0, 0] + np.float32(1.0)
+    np.save(root / "master_flat.npy", master)
+    with pytest.raises(ValueError, match="do not hash to the fingerprint"):
+        runner.run(_args(tmp_path, stage="fit", output=tmp_path / "out" / "fit.json"))
+
+
+def test_the_build_key_covers_everything_that_decides_what_a_master_is(tmp_path):
+    args = _args(tmp_path)
+    key = runner.cell_build_key(args, "R3")
+    assert set(key) == {
+        "dataset", "data_fingerprint_sha256", "regime", "queries", "per_seed_cap",
+        "neighbour_scan_cap_per_seed", "a64_mainline_family", "config_sha256",
+    }
+    # A64 exists to build C3, so the family is part of the key under R3 and
+    # meaningless outside it -- recording it anyway would refuse a valid R1/R2
+    # cache for a difference that could not have changed its contents.
+    assert key["a64_mainline_family"] == args.a64_mainline_family
+    assert runner.cell_build_key(args, "R1")["a64_mainline_family"] is None
+    for field, changed in (
+        ("queries", args.queries - 1),
+        ("per_seed_cap", args.per_seed_cap + 1),
+        ("neighbour_scan_cap_per_seed", args.neighbour_scan_cap_per_seed + 1),
+        ("data_fingerprint_sha256", "f" * 64),
+        ("dataset", "metaqa"),
+    ):
+        other = _args(tmp_path, **{field: changed})
+        assert runner.cell_build_key(other, "R3") != key, field
+
+
+def test_an_unknown_stage_is_refused(tmp_path, monkeypatch):
+    _write_manifest(tmp_path, monkeypatch, _all_reusable_manifest())
+    with pytest.raises(ValueError, match="--stage must be one of"):
+        runner.run(_args(tmp_path, stage="rehearsal"))
+
+
+def test_a_completed_build_is_not_mistaken_for_a_completed_screen(tmp_path, monkeypatch):
+    """Both stages can share an output path only if each recognises its own
+    terminal status. A fit that saw a build artifact and returned it would
+    report a screen with no fits in it."""
+
+    _write_manifest(tmp_path, monkeypatch, _all_reusable_manifest())
+    output = tmp_path / "out" / "shared.json"
+    runner.run(_args(tmp_path, stage="build", output=output))
+    fit = runner.run(_args(tmp_path, stage="fit", output=output))
+    assert fit["status"] == runner.COMPLETE_STATUS
+    assert fit["cells"]["R2"]["arms"]["QLS-UNIVERSAL"]["metrics"]

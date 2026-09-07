@@ -168,6 +168,7 @@ def test_amendment_three_records_step_c_and_claims_only_the_gates_it_earned(conf
     assert "not only in a test" in text
     # And it must be explicit about what it did NOT earn.
     assert "Everything steps D and E have not yet earned stays false" in text
+    later = " ".join(_flat(item["change"]) for item in config["amendments"][3:])
     for still_closed in (
         "feature_build_equivalence_proved",
         "compute_within_ceiling",
@@ -175,7 +176,69 @@ def test_amendment_three_records_step_c_and_claims_only_the_gates_it_earned(conf
         "musique_clean_data_verified",
     ):
         assert still_closed in text
+        # Amendment 3 left these false. A later amendment may earn one -- that is
+        # what amendments are for -- but only by saying so. A gate that went true
+        # with no amendment naming it was flipped by editing YAML.
+        if config["launch_authorization"]["gates"][still_closed] is not False:
+            assert still_closed in later, (
+                f"{still_closed} is true but no amendment after the third records earning it"
+            )
+
+
+def test_amendment_four_records_the_step_d_verdict_and_the_decision_it_licenses(config):
+    amendment = config["amendments"][3]
+    assert str(amendment["date"]) == "2026-09-07"
+    text = _flat(amendment["change"])
+    assert "STEP D IS MEASURED AND THE SPLIT IS ADOPTED" in text
+    # A verdict is only evidence if the artifact it names is on disk and says
+    # the same thing. This is the gate's whole basis.
+    artifact_path = "outputs/m2_qls_v2_freeze/feature_build_equivalence.json"
+    assert "scripts/m2_feature_build_equivalence.py" in text
+    assert artifact_path in text
+    assert "EQUIVALENT" in text
+    for path in ("scripts/m2_feature_build_equivalence.py", artifact_path):
+        assert pathlib.Path(path).exists(), f"amendment 4 names {path}, which does not exist"
+    report = json.loads(pathlib.Path(artifact_path).read_text(encoding="utf-8"))
+    assert report["verdict"] == "EQUIVALENT" and report["equivalent"] is True
+    # The limit of the evidence, stated in the amendment and not only in the
+    # artifact -- the reader of this file must not have to go find it.
+    assert "CPU against CPU across a process boundary" in text
+    assert "A10G container" in text
+    # adopt_only_if has two limbs and both must be argued.
+    assert "adopt_only_if is satisfied on both limbs" in text
+    assert "Behaviour-preserving" in text and "small orchestration change" in text
+    assert "never is honoured" in text, "the no-formula-change clause"
+    # What it did NOT earn.
+    for still_closed in ("compute_within_ceiling", "engineering_smoke_passes",
+                         "musique_clean_data_verified"):
+        assert still_closed in text
         assert config["launch_authorization"]["gates"][still_closed] is False
+    assert config["launch_authorization"]["gates"]["feature_build_equivalence_proved"] is True
+
+
+def test_the_split_is_verified_on_modal_before_the_headline_relies_on_it(config):
+    """The probe states outright that it cannot compare against a real GPU
+    container. The smoke is where that comparison happens, and it has to be a
+    bit-exactness check, not an eyeball."""
+
+    smoke = config["launch_authorization"]["smoke_spec"]
+    if config["feature_build_compute_check"]["status"] == "REQUIRED_BEFORE_LAUNCH":
+        return
+    split = smoke["split_verification"]
+    assert split["stages"] == ["smoke_build", "smoke_fit"]
+    assert split["cell"] == "SAME_AS_PRIMARY", (
+        "restating the cell here would let the split be verified on a cell the "
+        "headline never runs"
+    )
+    passes = _flat(split["passes_only_if"])
+    assert "feature_store_fingerprint_sha256" in passes
+    assert "Not close" in passes
+    assert "single-container path" in passes, "the named fallback if it fails"
+    assert "split_store_fingerprint_equals_the_one_container_run_s" in split["verifies"]
+    assert "split_metrics_equal_the_one_container_run_s" in split["verifies"]
+    assert "concludes nothing" in _flat(config["amendments"][3]["change"]) or (
+        "No smoke result feeds" in _flat(smoke["no_scientific_interpretation"])
+    )
 
 
 def test_gnn_work_is_refused_in_the_reversal_note_too(config):
@@ -839,7 +902,16 @@ def test_the_dominant_cost_driver_is_named_as_feature_build_not_training(config)
 
 def test_the_cpu_build_check_demands_bit_exactness_and_refuses_formula_changes(config):
     check = config["feature_build_compute_check"]
-    assert check["status"] == "REQUIRED_BEFORE_LAUNCH"
+    # Either the question is still open, or it has been answered and the answer
+    # is recorded here. What is not allowed is a status that has moved on with
+    # no result written down.
+    assert check["status"].startswith(("REQUIRED_BEFORE_LAUNCH", "MEASURED_AND_ADOPTED")) or (
+        check["status"].startswith("MEASURED_AND_RETAINED")
+    ), check["status"]
+    if check["status"] != "REQUIRED_BEFORE_LAUNCH":
+        result = _flat(check["result"])
+        assert result.startswith(("EQUIVALENT", "NOT_EQUIVALENT"))
+        assert "outputs/m2_qls_v2_freeze/feature_build_equivalence.json" in result
     equivalence = _flat(check["equivalence_requirement"])
     assert "element-for-element" in equivalence
     assert 'Not "close"' in equivalence

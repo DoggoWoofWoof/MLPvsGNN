@@ -81,7 +81,25 @@ from scripts.run_sa_mlp_confirmation import _fit, _score_once, validate_candidat
 DECLARATION_PATH = REPO_ROOT / "configs" / "m2_qls_v2_freeze.yaml"
 REUSE_MANIFEST_PATH = REPO_ROOT / "outputs" / "m2_qls_v2_freeze" / "reuse_audit.json"
 COMPLETE_STATUS = "M2_QLS_V2_FREEZE_DATASET_COMPLETE"
+BUILD_COMPLETE_STATUS = "M2_QLS_V2_FREEZE_FEATURE_BUILD_COMPLETE"
 KS = _m1a.KS
+
+#: How much of a dataset one invocation does.
+#:
+#: ``full``  -- build the features and fit, in one container. The path M1A and
+#:              M1B used, and still the default.
+#: ``build`` -- build and persist every declared cell's master block, then stop.
+#:              Runs on a CPU container: the build receives only numpy arrays
+#:              and plain objects (proved by
+#:              scripts/m2_feature_build_equivalence.py stage 1), so it cannot
+#:              observe whether an accelerator is attached, and holding an idle
+#:              A10G through it is 83% of M2's estimated GPU bill.
+#: ``fit``   -- load those persisted masters and fit, on the GPU container.
+#:
+#: ``build`` and ``fit`` write to the SAME artifact root by design: the fit
+#: stage reads exactly the masters the build stage wrote, under the same
+#: <artifact_root>/<regime>/cell_features path the ``full`` path already used.
+STAGES = ("full", "build", "fit")
 
 #: The declaration writes the universal arm by its scientific name; the runner's
 #: arm vocabulary writes it by its family composition. One mapping, in one place.
@@ -247,13 +265,50 @@ def save_feature_store(store: StructuralFeatureStore, root: Path, *, extra: dict
     return fingerprint
 
 
-def save_cell_features(root: Path, scored_sets: list[np.ndarray], master_blocks: list[np.ndarray]) -> str:
+def cell_build_key(args: argparse.Namespace, regime: str) -> dict[str, Any]:
+    """Everything that decides what a cell's master block IS.
+
+    The fit stage loads a master block some other container built. A hash of
+    that block proves it was not corrupted in transit; it says nothing about
+    whether it is a block of the RIGHT cell. This key is the input side: the
+    dataset and its fingerprint, the panel, the A64 budget, the family. The fit
+    stage recomputes it and refuses a store whose key differs -- loudly, rather
+    than rebuilding silently, because a mismatch means the wrong build was run
+    and quietly papering over that is how a phase reports a delta between two
+    different experiments.
+    """
+
+    return {
+        "dataset": args.dataset,
+        "data_fingerprint_sha256": args.data_fingerprint_sha256,
+        "regime": regime,
+        "queries": int(args.queries),
+        "per_seed_cap": int(args.per_seed_cap),
+        "neighbour_scan_cap_per_seed": int(args.neighbour_scan_cap_per_seed),
+        "a64_mainline_family": args.a64_mainline_family if regime == "R3" else None,
+        "config_sha256": _config_sha256(),
+    }
+
+
+def save_cell_features(
+    root: Path,
+    scored_sets: list[np.ndarray],
+    master_blocks: list[np.ndarray],
+    *,
+    extra: dict[str, Any] | None = None,
+) -> str:
     """The per-cell master block, which is the expensive object.
 
     Persisted separately from the per-arm stores because it is what a CPU
-    container would hand to a GPU trainer under feature_build_compute_check:
+    container hands to a GPU trainer under feature_build_compute_check:
     _cell_master_local is 83% of M2's estimated compute and every arm in the
     cell slices this one result. Ragged, so stored flat with an offset vector.
+
+    ``extra`` carries the build key and the feature-build latencies. The
+    latencies are persisted because the instrumentation requirement asks every
+    fit to record p50/p95/p99 of the build it used, and under the split the fit
+    stage did not perform that build -- measuring the load instead would put a
+    different quantity under the same name.
     """
 
     root.mkdir(parents=True, exist_ok=True)
@@ -266,25 +321,21 @@ def save_cell_features(root: Path, scored_sets: list[np.ndarray], master_blocks:
     np.save(root / "scored_offsets.npy", offsets)
     np.save(root / "master_flat.npy", master)
     fingerprint = _sha256_of_arrays(scored, offsets, master)
-    (root / "metadata.json").write_text(
-        json.dumps(
-            {
-                "format": "m2_cell_master_features_v1",
-                "built_by": "scripts/run_m2_qls_v2_freeze.py",
-                "queries": len(scored_sets),
-                "master_columns": int(master.shape[1]) if master.size else 0,
-                "master_dtype": str(master.dtype),
-                "fingerprint_sha256": fingerprint,
-                "why_persisted": (
-                    "_cell_master_local dominates M2's cost and every arm in the cell "
-                    "slices this one result; persisting it is what makes a CPU-build / "
-                    "GPU-fit split an orchestration change rather than a rewrite"
-                ),
-            },
-            indent=2,
+    metadata = {
+        "format": "m2_cell_master_features_v1",
+        "built_by": "scripts/run_m2_qls_v2_freeze.py",
+        "queries": len(scored_sets),
+        "master_columns": int(master.shape[1]) if master.size else 0,
+        "master_dtype": str(master.dtype),
+        "fingerprint_sha256": fingerprint,
+        "why_persisted": (
+            "_cell_master_local dominates M2's cost and every arm in the cell "
+            "slices this one result; persisting it is what makes a CPU-build / "
+            "GPU-fit split an orchestration change rather than a rewrite"
         ),
-        encoding="utf-8",
-    )
+    }
+    metadata.update(extra or {})
+    (root / "metadata.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     return fingerprint
 
 
@@ -301,6 +352,60 @@ def load_cell_features(root: Path) -> tuple[list[np.ndarray], list[np.ndarray]]:
         master_blocks.append(master[cursor: cursor + size])
         cursor += size
     return scored_sets, master_blocks
+
+
+def load_cell_metadata(root: Path) -> dict[str, Any]:
+    return json.loads((root / "metadata.json").read_text(encoding="utf-8"))
+
+
+def load_cell_for_fit(
+    root: Path, args: argparse.Namespace, regime: str
+) -> tuple[list[np.ndarray], list[np.ndarray], dict[str, float], str]:
+    """A persisted cell, checked against the key the fit stage expects.
+
+    Three refusals, each of which would otherwise be a silently wrong result:
+    a missing store (the build stage was never run for this cell), a key that
+    does not match (the wrong build was run), and a fingerprint that does not
+    match the arrays on disk (the store was corrupted or hand-edited).
+    """
+
+    if not (root / "metadata.json").is_file():
+        raise FileNotFoundError(
+            f"{root} holds no persisted cell master -- run --stage build for {args.dataset}/"
+            f"{regime} before --stage fit, or use --stage full to do both in one container"
+        )
+    metadata = load_cell_metadata(root)
+    expected = cell_build_key(args, regime)
+    recorded = metadata.get("build_key")
+    if recorded != expected:
+        differing = sorted(
+            key for key in set(expected) | set(recorded or {})
+            if (recorded or {}).get(key) != expected.get(key)
+        )
+        raise ValueError(
+            f"{root}: the persisted cell master was built for a different cell -- {differing} "
+            f"differ (persisted {recorded!r}, expected {expected!r}). Refusing rather than "
+            "rebuilding silently: a key mismatch means the wrong build was run."
+        )
+    scored_sets, master_blocks = load_cell_features(root)
+    fingerprint = _sha256_of_arrays(
+        np.concatenate(scored_sets) if scored_sets else np.zeros(0, dtype=np.int64),
+        np.load(root / "scored_offsets.npy"),
+        np.concatenate(master_blocks, axis=0) if master_blocks
+        else np.zeros((0, 12), dtype=np.float32),
+    )
+    if fingerprint != metadata.get("fingerprint_sha256"):
+        raise ValueError(
+            f"{root}: the arrays on disk do not hash to the fingerprint recorded beside them "
+            f"({fingerprint} != {metadata.get('fingerprint_sha256')})"
+        )
+    latency = metadata.get("uncached_feature_build_latency_ms")
+    if not latency:
+        raise ValueError(
+            f"{root}: no feature-build latency was persisted, so a fit loading this store could "
+            "not record the p50/p95/p99 instrumentation_requirement asks for"
+        )
+    return scored_sets, master_blocks, latency, fingerprint
 
 
 # --- one fit ------------------------------------------------------------------
@@ -481,9 +586,13 @@ def _aggregate_mismatch(reported: dict[str, Any], reconstructed: dict[str, Any])
 
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
+    stage = getattr(args, "stage", "full") or "full"
+    if stage not in STAGES:
+        raise ValueError(f"--stage must be one of {STAGES}; got {stage!r}")
+    expected_status = BUILD_COMPLETE_STATUS if stage == "build" else COMPLETE_STATUS
     if args.output.is_file():
         existing = json.loads(args.output.read_text(encoding="utf-8"))
-        if existing.get("status") == COMPLETE_STATUS:
+        if existing.get("status") == expected_status:
             return existing
     if args.seed != DECLARED_SEED:
         raise ValueError(
@@ -530,25 +639,39 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
 
     rowptr = dataset.rowptr.numpy().astype(np.int64, copy=False)
     col = dataset.col.numpy().astype(np.int64, copy=False)
-    operators = build_operators(rowptr, col, num_nodes)
-    device = (
-        torch.device(args.device) if args.device
-        else torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    )
-    node_embeddings = torch.from_numpy(np.array(dataset.node_array, dtype=np.float32, copy=True)).to(device)
-    query_embeddings = torch.from_numpy(np.array(dataset.query_array, dtype=np.float32, copy=True)).to(device)
-    dense = np.load(Path(args.data) / "dense_top200_all.npy", mmap_mode="r")
-    splade = np.load(Path(args.data) / "splade_top200_all.npy", mmap_mode="r")
-
+    # Each half of the split pays only for what it uses. The build stage never
+    # trains, so it never materialises the embedding tables (1536 floats per
+    # node is the largest thing in the process); the fit stage never builds, so
+    # it never pays for the CSR operators or the A64 family graph.
+    operators = dense = splade = None
     family_rowptr = family_col = None
-    if "R3" in plan:
-        families = _families(args)
-        if args.a64_mainline_family not in families:
-            raise ValueError(
-                f"declared mainline family {args.a64_mainline_family!r} is not among {list(families)}"
+    device = node_embeddings = query_embeddings = None
+    if stage != "fit":
+        operators = build_operators(rowptr, col, num_nodes)
+        dense = np.load(Path(args.data) / "dense_top200_all.npy", mmap_mode="r")
+        splade = np.load(Path(args.data) / "splade_top200_all.npy", mmap_mode="r")
+        if "R3" in plan:
+            families = _families(args)
+            if args.a64_mainline_family not in families:
+                raise ValueError(
+                    f"declared mainline family {args.a64_mainline_family!r} is not among "
+                    f"{list(families)}"
+                )
+            family_rowptr, family_col = _load_family_csr(
+                families[args.a64_mainline_family], num_nodes
             )
-        family_rowptr, family_col = _load_family_csr(families[args.a64_mainline_family], num_nodes)
-        family_rowptr, family_col, _symmetric = _undirected(family_rowptr, family_col, num_nodes)
+            family_rowptr, family_col, _symmetric = _undirected(family_rowptr, family_col, num_nodes)
+    if stage != "build":
+        device = (
+            torch.device(args.device) if args.device
+            else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        )
+        node_embeddings = torch.from_numpy(
+            np.array(dataset.node_array, dtype=np.float32, copy=True)
+        ).to(device)
+        query_embeddings = torch.from_numpy(
+            np.array(dataset.query_array, dtype=np.float32, copy=True)
+        ).to(device)
     budget = _a64_budget(
         per_seed_cap=args.per_seed_cap, neighbour_scan_cap_per_seed=args.neighbour_scan_cap_per_seed
     )
@@ -565,21 +688,39 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     golds = ragged_from_rows([view.golds for view in views])
     result_cells: dict[str, Any] = {}
     for regime, declared_arms in plan.items():
-        scored_sets, master_blocks, latencies = _m1a._cell_master_local(
-            regime=regime,
-            views=views,
-            queries=queries,
-            dense=dense,
-            splade=splade,
-            rowptr=rowptr,
-            col=col,
-            num_nodes=num_nodes,
-            operators=operators,
-            family_rowptr=family_rowptr,
-            family_col=family_col,
-            node_embeddings=dataset.node_array,
-            budget=budget,
-        )
+        cell_root = artifact_root / regime
+        if stage == "fit":
+            scored_sets, master_blocks, latency, cell_fingerprint = load_cell_for_fit(
+                cell_root / "cell_features", args, regime
+            )
+        else:
+            scored_sets, master_blocks, latencies = _m1a._cell_master_local(
+                regime=regime,
+                views=views,
+                queries=queries,
+                dense=dense,
+                splade=splade,
+                rowptr=rowptr,
+                col=col,
+                num_nodes=num_nodes,
+                operators=operators,
+                family_rowptr=family_rowptr,
+                family_col=family_col,
+                node_embeddings=dataset.node_array,
+                budget=budget,
+            )
+            latency = _percentiles(latencies)
+            cell_fingerprint = save_cell_features(
+                cell_root / "cell_features",
+                scored_sets,
+                master_blocks,
+                extra={
+                    "build_key": cell_build_key(args, regime),
+                    "uncached_feature_build_latency_ms": latency,
+                    "built_at_stage": stage,
+                    "source_commit": _source_commit(args.source_commit),
+                },
+            )
         headroom, _present, _gold_counts = regime_headroom(
             ragged_from_rows(scored_sets), golds, num_nodes=num_nodes, ks=KS
         )
@@ -587,9 +728,6 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             _m1a._widen_query(query, scored) for query, scored in zip(queries, scored_sets, strict=True)
         ]
         train_queries, held_out_queries = holdout_split(widened, args.holdout_fraction)
-        latency = _percentiles(latencies)
-        cell_root = artifact_root / regime
-        cell_fingerprint = save_cell_features(cell_root / "cell_features", scored_sets, master_blocks)
 
         cell_result: dict[str, Any] = {
             "regime": regime,
@@ -600,8 +738,15 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "held_out_queries": len(held_out_queries),
             "arms_run": list(declared_arms),
             "cell_features_fingerprint_sha256": cell_fingerprint,
+            "cell_features_root": str(cell_root / "cell_features"),
+            "feature_build_stage": stage,
             "arms": {},
         }
+        if stage == "build":
+            # The whole point of this stage: the expensive object is written and
+            # the container exits without ever needing an accelerator.
+            result_cells[regime] = cell_result
+            continue
         for declared_arm in declared_arms:
             arm = runner_arm(declared_arm)
             store, precomputed_width = _m1a._arm_store(
@@ -639,8 +784,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         result_cells[regime] = cell_result
 
     result: dict[str, Any] = {
-        "status": COMPLETE_STATUS,
+        "status": BUILD_COMPLETE_STATUS if stage == "build" else COMPLETE_STATUS,
         "stage": "m2_qls_v2_freeze",
+        "feature_build_stage": stage,
         "dataset": args.dataset,
         "data_fingerprint_sha256": args.data_fingerprint_sha256,
         "declaration": "configs/m2_qls_v2_freeze.yaml",
@@ -693,6 +839,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--device", default=None)
     parser.add_argument("--source-commit", default=None)
     parser.add_argument("--artifact-root", type=Path, default=None)
+    parser.add_argument(
+        "--stage",
+        default="full",
+        choices=STAGES,
+        help=(
+            "full: build and fit in one container (the proven path). "
+            "build: persist every declared cell's master block and stop, so the build can run "
+            "off the GPU. fit: load those masters and fit. build and fit share --artifact-root."
+        ),
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     if args.seed != DECLARED_SEED:

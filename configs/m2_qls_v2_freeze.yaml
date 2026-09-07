@@ -152,6 +152,60 @@ amendments:
       compute_within_ceiling, engineering_smoke_passes,
       musique_clean_data_verified. No compute has been spent and no M2 fit
       exists.
+  - date: 2026-09-07
+    change: >-
+      STEP D IS MEASURED AND THE SPLIT IS ADOPTED. The question
+      feature_build_compute_check asked is now answered by measurement, and
+      the answer moves ~83% of M2's estimated billed seconds off the A10G. No
+      compute was spent and no feature changed. (1) THE MEASUREMENT:
+      scripts/m2_feature_build_equivalence.py, artifact
+      outputs/m2_qls_v2_freeze/feature_build_equivalence.json, verdict
+      EQUIVALENT. Four stages, all on the real-shaped fixture
+      scripts/m2_reuse_audit.py already probes with, so the two audits cannot
+      disagree about what a cell looks like. Stage 1 invokes the real run()
+      call site with recorders around _cell_master_local and _arm_store: no
+      torch object and no device ever enters the build, and all six persisted
+      objects reload identical. Stage 2 slices every runner arm the matrix
+      names out of a reloaded master -- 13 byte-identical, 2 refused on both
+      sides (BASE+NODE_ROLE under R1/R2, which has no column to slice). Stage
+      3 rebuilds in a child process with CUDA_VISIBLE_DEVICES emptied and
+      NUMBA_NUM_THREADS pinned to 1, bit-exact against a parent that pins
+      neither, with the fixture hashed on both sides so a master difference
+      could not be blamed on a different input; several kernels on this path
+      are njit(parallel=True) and a CPU container would not share the GPU
+      container's core count. Stage 4 fits from a reloaded store and gets the
+      identical checkpoint and the identical metrics. Comparison is dtype-and-
+      bytes throughout, never np.array_equal, because the local block is
+      float16 and value equality would pass a store built at the wrong width.
+      (2) WHAT IT CANNOT PROVE, recorded in the artifact rather than glossed:
+      this machine's torch is a CPU build, so stage 3 compares CPU against CPU
+      across a process boundary and not against an A10G container. Stage 1's
+      finding is what makes that sufficient -- a build that receives only
+      numpy arrays, ints and plain objects cannot observe whether an
+      accelerator is attached, and in the current path that build already runs
+      on the container's CPU while the A10G sits attached and idle. (3) ADOPT.
+      feature_build_compute_check.adopt_only_if is satisfied on both limbs.
+      Behaviour-preserving, per (1). A small orchestration change, per the
+      diff: run_m2_qls_v2_freeze.py gains a --stage argument (full, build,
+      fit), a build key over the inputs that decide what a master IS, and a
+      loader that REFUSES a master built for a different cell instead of
+      silently rebuilding one; the launcher gains CPU-only functions and a
+      shared artifact root. No feature formula, dtype, normalisation or column
+      order moved, so feature_build_compute_check.never is honoured; full
+      remains the default stage and stays tested. (4) THE SMOKE NOW EXERCISES
+      THE SPLIT, because the headline will run on it. smoke_spec.
+      split_verification adds a CPU build and a GPU fit of the SAME declared
+      cell, held against the one-container smoke's own result: two containers
+      on real Modal hardware, one with the card and one without, which is
+      exactly the cross-container comparison the probe states it cannot
+      produce locally. Still pipeline validation only, and it concludes
+      nothing scientific. (5) The gate named
+      feature_build_equivalence_proved flips to true on that evidence, with
+      tests/test_m2_feature_build_equivalence.py holding the probe's
+      comparison strict and its verdict a conjunction over what it actually
+      measured. Three gates stay false and are unchanged by this amendment:
+      compute_within_ceiling, engineering_smoke_passes, and
+      musique_clean_data_verified. No M2 fit exists.
 
 status: DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED
 this_file_authorises: >-
@@ -958,7 +1012,17 @@ compute:
 # --------------------------------------------------------------------------
 
 feature_build_compute_check:
-  status: REQUIRED_BEFORE_LAUNCH
+  status: MEASURED_AND_ADOPTED_2026_09_07   # amendment 4; verdict EQUIVALENT, see result below
+  result: >-
+    EQUIVALENT. scripts/m2_feature_build_equivalence.py, artifact
+    outputs/m2_qls_v2_freeze/feature_build_equivalence.json, four stages, all
+    bit-exact. The split is adopted: the runner takes --stage full|build|fit
+    and the launcher builds on a container with no accelerator. What the
+    probe cannot show locally -- a real GPU container on the other side of
+    the boundary -- is checked on Modal by
+    launch_authorization.smoke_spec.split_verification before the headline
+    runs, and full remains the default stage so a failure there retires the
+    split rather than the phase.
   the_problem_in_numbers: >-
     83% of the estimated GPU-billed seconds (5781.9s of 6963.0s) is
     _cell_master_local -- qls_local_features, the A64 admission and the
@@ -1035,16 +1099,33 @@ engineering_prerequisites_before_execution:
     above, and separately useful: M1A never persisted its stores, which is
     why every M2 cell has to rebuild features it has already built once
     before.
+  cpu_build_gpu_fit_split: >-
+    BUILT AND ADOPTED 2026-09-07 (amendment 4), on the EQUIVALENT verdict in
+    outputs/m2_qls_v2_freeze/feature_build_equivalence.json. The runner takes
+    --stage full|build|fit; build persists each declared cell's master and
+    trains nothing, fit loads it and never constructs the CSR operators or
+    the A64 family graph. A build key over dataset, fingerprint, regime,
+    panel, caps, family and config hash is recorded with the master, and the
+    fit stage REFUSES a master whose key or fingerprint differs rather than
+    rebuilding one silently -- a mismatch means the wrong build ran, and
+    papering over it is how a phase reports a delta between two different
+    experiments. full stays the default and stays tested, so a failed split
+    verification retires the split without stranding the phase.
   modal_launcher: >-
-    BUILT 2026-09-07 (amendment 3). scripts/modal_m2_qls_v2_freeze.py,
-    registered in scripts/spawn_modal_jobs.py as m2-qls-v2-freeze, with its
-    own _jobs builder -- M1A's excludes musique_clean by construction
-    (ALL_DATASETS), and M2 needs it. Each dataset's validation split size is
-    derived from that dataset's own completed confirmation artifact and
-    cross-checked against M1A's declared value wherever one exists, which is
-    what makes musique_clean an ordinary row rather than a transcribed
-    number. The headline stage re-reads launch_authorization.gates at call
-    time and refuses while any is false.
+    BUILT 2026-09-07 (amendment 3), extended by amendment 4.
+    scripts/modal_m2_qls_v2_freeze.py, registered in
+    scripts/spawn_modal_jobs.py as m2-qls-v2-freeze, with its own _jobs
+    builder -- M1A's excludes musique_clean by construction (ALL_DATASETS),
+    and M2 needs it. Each dataset's validation split size is derived from
+    that dataset's own completed confirmation artifact and cross-checked
+    against M1A's declared value wherever one exists, which is what makes
+    musique_clean an ordinary row rather than a transcribed number. Six
+    stages: smoke, smoke_build, smoke_fit, secondary_smoke, build, headline.
+    The two building stages ask for no accelerator at all; build and headline
+    share one artifact root, which is how the fitting container finds the
+    master the building container wrote. Both of those re-read
+    launch_authorization.gates at call time and refuse while any is false --
+    the build too, because it is where most of the money goes.
   musique_clean_data_availability: >-
     musique_clean has never run a trained phase on any active workspace, so
     its training-capable slice (nodes.npy, queries_all.npy, and the
@@ -1072,7 +1153,7 @@ launch_authorization:
     selection_rule_frozen: true       # universal_selection_rule above, CLOSED before any outcome and locked by tests
     reuse_audit_passes: true          # scripts/m2_reuse_audit.py, 19/19, bit-exact probe green -- see reuse_audit.result
     instrumentation_tests_pass: true  # aggregate_from_rows == stored_aggregate, all five metrics, plus field presence -- earned 2026-09-07, see amendment 3
-    feature_build_equivalence_proved: false  # CPU-built store == current-path store, bit-exact -- or a filed decision to retain the proven path
+    feature_build_equivalence_proved: true   # verdict EQUIVALENT, outputs/m2_qls_v2_freeze/feature_build_equivalence.json -- earned 2026-09-07, see amendment 4
     compute_within_ceiling: false     # measured cost under compute.proposed_ceiling_usd ($9.00)
     engineering_tests_pass: true      # tests/test_run_m2_qls_v2_freeze.py + tests/test_modal_m2_qls_v2_freeze.py + the full repo suite -- earned 2026-09-07, see amendment 3
     engineering_smoke_passes: false   # smoke_spec below, real, on Modal
@@ -1115,6 +1196,28 @@ launch_authorization:
         expected-to-be-needed, kept minimal, and still pipeline validation
         only.
       verifies: [node_role_nonzero_exactly_on_c3_minus_cq]
+    split_verification:               # added by amendment 4, once step D adopted the split
+      stages: [smoke_build, smoke_fit]
+      cell: SAME_AS_PRIMARY           # the launcher derives it from primary; nothing is restated here
+      why: >-
+        The headline runs as a CPU build followed by a GPU fit, so the smoke
+        has to run the path the headline will actually take. It is also the
+        one piece of evidence scripts/m2_feature_build_equivalence.py says
+        outright it cannot produce: this machine has no CUDA build, so its
+        stage 3 compares CPU against CPU across processes. Two Modal
+        containers -- one with the card, one without -- is that comparison,
+        for the price of a 100-query cell.
+      verifies:
+        - cpu_container_writes_the_master_and_trains_nothing
+        - gpu_container_trains_from_the_persisted_master
+        - split_store_fingerprint_equals_the_one_container_run_s
+        - split_metrics_equal_the_one_container_run_s
+      passes_only_if: >-
+        The split fit's feature_store_fingerprint_sha256 and its five metrics
+        equal the one-container smoke's exactly. Not close: the same
+        bit-exactness bar feature_build_compute_check.equivalence_requirement
+        already sets. A mismatch retires the split and the headline runs the
+        proven single-container path, which stays the runner's default stage.
     no_scientific_interpretation: >-
       No smoke result feeds scientific_questions, qls_cell,
       universal_selection_rule, or any reported metric. Its only job is

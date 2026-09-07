@@ -14,21 +14,39 @@ that are not stylistic:
    scripts/m2_reuse_audit.py reads *live* when checking every one of the 19
    reused fits. It has to keep saying what it said when those fits ran.
 
-Three Modal functions, mirroring the smoke/headline shape every launcher in this
-track uses:
+Six Modal functions. Three are the smoke/headline shape every launcher in this
+track uses; the other three exist because step D (amendment 4) proved the
+feature build separable and moved it onto a CPU container:
   - run_m2_smoke:           configs/m2_qls_v2_freeze.yaml#launch_authorization.
                             smoke_spec.primary, read from the declaration at
                             call time rather than restated here so the two
-                            cannot drift. Pipeline validation only; no smoke
-                            result feeds any reported metric.
+                            cannot drift. One container, builds and fits, which
+                            is the path the equivalence claim is measured
+                            against. Pipeline validation only; no smoke result
+                            feeds any reported metric.
+  - run_m2_smoke_build:     the same cell, CPU only (no ``gpu=``), building and
+                            persisting the master and exiting.
+  - run_m2_smoke_fit:       the same cell again, GPU, training from what
+                            run_m2_smoke_build persisted. Its store fingerprint
+                            and metrics against run_m2_smoke's are the
+                            cross-container half of the equivalence evidence --
+                            the half scripts/m2_feature_build_equivalence.py
+                            says outright it cannot produce locally, because
+                            this machine has no CUDA build to compare against.
   - run_m2_secondary_smoke: smoke_spec.secondary_only_if_needed -- the R3 cell
                             that exercises a genuinely nonzero NODE_ROLE column,
                             which the R2 primary cannot by construction.
-  - run_m2_headline:        the declared new seed-0 fits for the requested
-                            dataset(s). Refuses while ANY of the nine launch
+  - run_m2_feature_build:   the declared cells' masters for the requested
+                            dataset(s), CPU only. 83% of the estimated billed
+                            seconds is this work and none of it touches a CUDA
+                            kernel (feature_build_compute_check).
+  - run_m2_headline:        the declared new seed-0 fits, trained from those
+                            masters. Refuses while ANY of the nine launch
                             gates is false, which is the declaration's own rule:
                             it pre-authorises passing the gates, never working
-                            around a failed one.
+                            around a failed one. run_m2_feature_build carries
+                            the same refusal: it spends real money on the real
+                            panel, so it is not a smoke.
 
 ``validation_split_queries`` is derived from each dataset's own completed
 confirmation artifact rather than transcribed. That is where M1A's five declared
@@ -278,19 +296,43 @@ def _smoke_scope(dataset: str, spec: dict[str, Any]) -> tuple[list[str], list[st
     return [regime], arms, int(spec["queries"])
 
 
+#: launcher stage -> (runner --stage, the smoke_spec key it runs at or None for
+#: the declared panel, the subtree it writes under).
+#:
+#: ``build`` and ``headline`` share a subtree deliberately: the fitting
+#: container finds the master by looking in exactly the place it would have
+#: built it itself, which is what makes the split an orchestration change and
+#: not a new artifact layout. The two split-smoke stages get a subtree of their
+#: own rather than joining the one-container smoke's, so the split result and
+#: the one-container result are two independent artifacts that can be held
+#: against each other instead of one overwriting the other.
+STAGE_PLAN: dict[str, tuple[str, str | None, str]] = {
+    "smoke": ("full", "primary", "smoke"),
+    "smoke_build": ("build", "primary", "smoke_split"),
+    "smoke_fit": ("fit", "primary", "smoke_split"),
+    "secondary_smoke": ("full", "secondary_only_if_needed", "secondary_smoke"),
+    "build": ("build", None, "headline"),
+    "headline": ("fit", None, "headline"),
+}
+
+#: The runner stages that never construct a torch device and so run on a
+#: container with no accelerator attached.
+CPU_ONLY_RUNNER_STAGE = "build"
+
+
 def _runner_args(job: dict[str, Any], *, stage: str) -> argparse.Namespace:
     from scripts.run_m0b_regime_map import MAINLINE_FAMILY
 
     dataset = job["dataset"]
-    if stage == "smoke":
-        regimes, arms, queries = _smoke_scope(dataset, PRIMARY_SMOKE)
-    elif stage == "secondary_smoke":
-        regimes, arms, queries = _smoke_scope(dataset, SECONDARY_SMOKE)
-    elif stage == "headline":
+    plan = STAGE_PLAN.get(stage)
+    if plan is None:
+        raise ValueError(f"unknown stage {stage!r}; expected one of {tuple(STAGE_PLAN)}")
+    runner_stage, smoke_key, subtree = plan
+    if smoke_key is None:
         regimes, arms = None, None
         queries = int(job["validation_split_queries"])
     else:
-        raise ValueError(f"unknown stage {stage!r}; expected one of {tuple(STAGE_FUNCTIONS)}")
+        regimes, arms, queries = _smoke_scope(dataset, SMOKE_SPEC[smoke_key])
     output_root = (
         PurePosixPath(STORAGE_ROOT)
         / "outputs"
@@ -298,9 +340,10 @@ def _runner_args(job: dict[str, Any], *, stage: str) -> argparse.Namespace:
         / dataset
         / job["fingerprint"][:16]
         / MODAL_CONFIG["execution_label"]
-        / stage
+        / subtree
     )
     return argparse.Namespace(
+        stage=runner_stage,
         data=Path(job["data_remote"]),
         dataset=dataset,
         data_fingerprint_sha256=job["fingerprint"],
@@ -325,15 +368,22 @@ def _runner_args(job: dict[str, Any], *, stage: str) -> argparse.Namespace:
         temperature=0.07,
         learning_rate=1e-3,
         weight_decay=1e-4,
-        device="cuda",
+        # The build stage never constructs a device (run_m2_qls_v2_freeze.run
+        # skips the whole torch block for it), so this names the hardware the
+        # container actually has rather than a GPU it was not given.
+        device="cpu" if runner_stage == CPU_ONLY_RUNNER_STAGE else "cuda",
         source_commit=job.get("source_commit"),
         artifact_root=Path(output_root) / "fits",
-        output=Path(output_root) / "qls_v2_freeze.json",
+        output=Path(output_root)
+        / ("feature_build.json" if runner_stage == CPU_ONLY_RUNNER_STAGE else "qls_v2_freeze.json"),
     )
 
 
 def _run(job: dict[str, Any], *, stage: str) -> dict[str, Any]:
     os.chdir(REMOTE_ROOT)
+    # The fitting container reads a master a different container wrote, so this
+    # reload is load-bearing rather than hygiene: without it the volume view is
+    # whatever it was when this container started.
     result_volume.reload()
     from scripts.run_m2_qls_v2_freeze import run
 
@@ -344,9 +394,28 @@ def _run(job: dict[str, Any], *, stage: str) -> dict[str, Any]:
         "status": result["status"],
         "dataset": job["dataset"],
         "stage": stage,
+        "runner_stage": args.stage,
         "output_remote": str(args.output),
         "artifact_root_remote": str(args.artifact_root),
     }
+
+
+def _require_every_gate() -> None:
+    """Re-read the declaration and refuse while any gate is false.
+
+    Read at call time rather than trusting the import-time snapshot: the
+    remaining gates are earned between this app being deployed and a job being
+    spawned against it.
+    """
+
+    declaration = yaml.safe_load(M2_CONFIG_PATH.read_text(encoding="utf-8"))
+    unmet = unmet_gates(declaration)
+    if unmet:
+        raise RuntimeError(
+            f"configs/m2_qls_v2_freeze.yaml#launch_authorization.gates reports {unmet} as not "
+            "true. The declaration authorises launching once EVERY gate is true and pre-authorises "
+            "passing them, never working around a failed one -- earn the gate, do not bypass it."
+        )
 
 
 @app.function(
@@ -361,6 +430,33 @@ def run_m2_smoke(job: dict[str, Any]) -> dict[str, Any]:
     return _run(job, stage="smoke")
 
 
+# No gpu= : the build stage's work is numpy and numba end to end and the runner
+# never constructs a torch device for it. Same cpu/memory as its GPU siblings,
+# so the blended figure in compute.cost_usd_blended_feature_build_cpu_fit_gpu_
+# conservative is what this actually bills.
+@app.function(
+    image=image,
+    volumes={STORAGE_ROOT: result_volume},
+    timeout=MODAL_CONFIG["timeout_seconds"],
+    cpu=MODAL_CONFIG["cpu"],
+    memory=MODAL_CONFIG["memory_mb"],
+)
+def run_m2_smoke_build(job: dict[str, Any]) -> dict[str, Any]:
+    return _run(job, stage="smoke_build")
+
+
+@app.function(
+    image=image,
+    gpu=MODAL_CONFIG["gpu"],
+    volumes={STORAGE_ROOT: result_volume},
+    timeout=MODAL_CONFIG["timeout_seconds"],
+    cpu=MODAL_CONFIG["cpu"],
+    memory=MODAL_CONFIG["memory_mb"],
+)
+def run_m2_smoke_fit(job: dict[str, Any]) -> dict[str, Any]:
+    return _run(job, stage="smoke_fit")
+
+
 @app.function(
     image=image,
     gpu=MODAL_CONFIG["gpu"],
@@ -373,6 +469,19 @@ def run_m2_secondary_smoke(job: dict[str, Any]) -> dict[str, Any]:
     return _run(job, stage="secondary_smoke")
 
 
+# No gpu=, and gated: this is the real panel, not a 100-query diagnostic.
+@app.function(
+    image=image,
+    volumes={STORAGE_ROOT: result_volume},
+    timeout=MODAL_CONFIG["timeout_seconds"],
+    cpu=MODAL_CONFIG["cpu"],
+    memory=MODAL_CONFIG["memory_mb"],
+)
+def run_m2_feature_build(job: dict[str, Any]) -> dict[str, Any]:
+    _require_every_gate()
+    return _run(job, stage="build")
+
+
 @app.function(
     image=image,
     gpu=MODAL_CONFIG["gpu"],
@@ -382,17 +491,7 @@ def run_m2_secondary_smoke(job: dict[str, Any]) -> dict[str, Any]:
     memory=MODAL_CONFIG["memory_mb"],
 )
 def run_m2_headline(job: dict[str, Any]) -> dict[str, Any]:
-    # Re-read at call time rather than trusting the import-time snapshot: the
-    # remaining gates are earned between this app being deployed and a headline
-    # job being spawned.
-    declaration = yaml.safe_load(M2_CONFIG_PATH.read_text(encoding="utf-8"))
-    unmet = unmet_gates(declaration)
-    if unmet:
-        raise RuntimeError(
-            f"configs/m2_qls_v2_freeze.yaml#launch_authorization.gates reports {unmet} as not "
-            "true. The declaration authorises launching once EVERY gate is true and pre-authorises "
-            "passing them, never working around a failed one -- earn the gate, do not bypass it."
-        )
+    _require_every_gate()
     return _run(job, stage="headline")
 
 
@@ -410,7 +509,10 @@ def _download(remote_path: str, local_path: Path) -> None:
 #: at a name that no longer exists.
 STAGE_FUNCTIONS = {
     "smoke": "run_m2_smoke",
+    "smoke_build": "run_m2_smoke_build",
+    "smoke_fit": "run_m2_smoke_fit",
     "secondary_smoke": "run_m2_secondary_smoke",
+    "build": "run_m2_feature_build",
     "headline": "run_m2_headline",
 }
 

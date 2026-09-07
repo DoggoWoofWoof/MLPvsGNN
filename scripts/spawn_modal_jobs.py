@@ -87,7 +87,10 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         "scripts.modal_m2_qls_v2_freeze",
         {
             "smoke": "run_m2_smoke",
+            "smoke_build": "run_m2_smoke_build",
+            "smoke_fit": "run_m2_smoke_fit",
             "secondary_smoke": "run_m2_secondary_smoke",
+            "build": "run_m2_feature_build",
             "headline": "run_m2_headline",
         },
     ),
