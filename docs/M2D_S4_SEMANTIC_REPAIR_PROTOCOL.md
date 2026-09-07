@@ -3,8 +3,10 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_ARCHAEOLOGY_RECORDED_STAGE0_NOT_YET_RUN` — section 3 has run and its
-findings are below; sections 4 to 6 have not.
+`M2D_COMPUTE_RECORD_FILED_STAGE0_NOT_YET_RUN` — section 3 has run and its
+findings are below, and the Stage-0 jobs are priced in
+[`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md); sections 4
+to 6 have not run.
 
 **This is a post-hoc development branch.** It was opened because of an observed
 S4 development result, not from a preregistered hypothesis, and it is labelled

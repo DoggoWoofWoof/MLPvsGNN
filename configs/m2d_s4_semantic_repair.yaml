@@ -13,7 +13,7 @@
 
 phase: M2D_S4_SEMANTIC_REPAIR
 opened: 2026-09-08
-status: M2D_ARCHAEOLOGY_RECORDED_STAGE0_NOT_YET_RUN
+status: M2D_COMPUTE_RECORD_FILED_STAGE0_NOT_YET_RUN
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: >-
   An observed S4 development result, not a preregistered hypothesis. S4 was
@@ -687,6 +687,37 @@ launch_authorization:
     - canonical CRAG
     - Package F
     - E2
+  # The shape the Stage-0 jobs will hold, copied from the record filed at
+  # ab2092f1d70f BEFORE any job was submitted. The launcher reads the
+  # container shape from HERE rather than from outputs/, because the image
+  # carries configs/ and does not carry an outputs/ tree, and a shape the
+  # container cannot read is a shape that silently reverts to a training
+  # phase's default. A declaration test holds this copy equal to the generated
+  # record, so the two cannot drift.
+  stage_0_compute_record:
+    document: docs/M2D_STAGE0_COMPUTE_RECORD.md
+    machine_readable: outputs/m2d_s4_semantic_repair/stage0_compute_record.json
+    derived_by: scripts/m2d_stage0_compute_record.py
+    filed_before_launch: true
+    jobs: 4
+    gpu: null
+    gpu_hours_authorised: 0.0
+    cpu: 4
+    memory_mb: 16384
+    timeout_seconds: 3600
+    expected_spend_usd: 0.32
+    cost_ceiling_usd: 1.00
+    why_cpu: >-
+      The probe trains nothing. It scores an already-frozen candidate pool with
+      two already-sealed rungs and counts what the rankings do, so its kernel is
+      two forward passes over a few hundred candidates and no backward pass at
+      all. An accelerator would spend money on transfer rather than arithmetic.
+    numbers_are_derived_not_typed: >-
+      Panels are split minus holdout from the immutable M2B baseline table, mean
+      candidate pools come from M2C's sealed candidate contracts, the structural
+      width is derived from the recorded parameter counts, and the pricing is
+      this project's own compute_budget functions. The document is regenerated,
+      never edited.
   gates:
     persistence_hardening_implemented: true    # earned 2026-09-08, src/mp_retrieval/run_artifacts.py
     persistence_regression_tests_pass: true    # earned 2026-09-08, tests/test_run_artifacts.py
@@ -696,6 +727,7 @@ launch_authorization:
     declaration_tested: true                   # earned 2026-09-08, tests/test_m2d_declaration.py
     failure_shape_frozen: true                 # earned 2026-09-08, from the immutable M2B baseline table
     semantic_archaeology_recorded: true       # earned 2026-09-08, outputs/m2d_s4_semantic_repair/semantic_archaeology.json at 024911d
+    stage_0_compute_record_filed: true         # earned 2026-09-08, docs/M2D_STAGE0_COMPUTE_RECORD.md
     stage_0_diagnostics_run: false
     stage_0_advance_gate_evaluated: false
     stage_1_authorised: false

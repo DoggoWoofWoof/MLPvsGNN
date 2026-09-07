@@ -110,6 +110,12 @@ STATUS_REQUIRES_UNEARNED = {
         "stage_1_authorised",
     },
     "M2D_ARCHAEOLOGY_RECORDED_STAGE0_NOT_YET_RUN": {
+        "stage_0_compute_record_filed",
+        "stage_0_diagnostics_run",
+        "stage_0_advance_gate_evaluated",
+        "stage_1_authorised",
+    },
+    "M2D_COMPUTE_RECORD_FILED_STAGE0_NOT_YET_RUN": {
         "stage_0_diagnostics_run",
         "stage_0_advance_gate_evaluated",
         "stage_1_authorised",
@@ -839,3 +845,80 @@ def test_the_advance_gate_has_not_moved_since_it_was_filed(declaration):
         f"the gate reached its current form in {filed_at[:8]}, which is not an ancestor "
         f"of {produced_at[:8]} -- a threshold moved after a result existed"
     )
+
+
+def _declared_stage_0_cells(declaration) -> list[str]:
+    cells = declaration["stage_0"]["cells"]
+    return [*cells["failure_cells"], cells["passage_control"], cells["kb_control"]]
+
+
+# ---------------------------------------------------------------------------
+# The compute record the launcher will read
+# ---------------------------------------------------------------------------
+
+COMPUTE_RECORD_JSON = (
+    REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage0_compute_record.json"
+)
+
+
+def _filed_record():
+    if not COMPUTE_RECORD_JSON.exists():
+        pytest.skip("the compute record has not been generated in this checkout")
+    return json.loads(COMPUTE_RECORD_JSON.read_text(encoding="utf-8"))
+
+
+def test_the_declared_container_shape_is_the_one_the_record_priced(declaration):
+    """The launcher reads the shape from the declaration, not from outputs/.
+
+    It has to: the container image carries configs/ and does not carry an
+    outputs/ tree, so a launcher reading the generated record would find
+    nothing inside the container and fall back to a training phase's defaults.
+    That makes this copy load-bearing, and a copy that drifts from the record
+    is a job running on hardware nobody priced.
+    """
+
+    declared = declaration["launch_authorization"]["stage_0_compute_record"]
+    record = _filed_record()
+    container = record["container"]
+    prediction = record["prediction"]
+
+    assert declared["cpu"] == container["cpu_cores"]
+    assert declared["memory_mb"] == container["memory_mb"]
+    assert declared["timeout_seconds"] == container["timeout_seconds"]
+    assert declared["gpu"] is None and container["gpu"] is None
+    assert declared["jobs"] == record["workload"]["jobs"]
+    assert declared["expected_spend_usd"] == pytest.approx(
+        prediction["expected_spend_usd"], abs=0.005
+    )
+    assert declared["cost_ceiling_usd"] == pytest.approx(prediction["hard_ceiling_usd"])
+
+
+def test_the_declared_record_authorises_no_gpu_hour(declaration):
+    declared = declaration["launch_authorization"]["stage_0_compute_record"]
+    assert declared["gpu"] is None
+    assert declared["gpu_hours_authorised"] == 0.0
+    assert declared["filed_before_launch"] is True
+
+
+def test_the_declared_record_points_at_files_that_exist(declaration):
+    declared = declaration["launch_authorization"]["stage_0_compute_record"]
+    assert (REPO_ROOT / declared["document"]).exists()
+    assert (REPO_ROOT / declared["derived_by"]).exists()
+
+
+def test_the_compute_record_gate_is_earned_by_a_document_not_a_promise(declaration):
+    gates = declaration["launch_authorization"]["gates"]
+    if not gates["stage_0_compute_record_filed"]:
+        return
+    document = REPO_ROOT / "docs" / "M2D_STAGE0_COMPUTE_RECORD.md"
+    assert document.exists()
+    text = document.read_text(encoding="utf-8")
+    assert "no accelerator" in text
+    for cell in _declared_stage_0_cells(declaration):
+        assert cell in text, f"the record prices no job for {cell}"
+
+
+def test_the_record_prices_every_declared_cell_and_no_others(declaration):
+    record = _filed_record()
+    priced = [item["cell"] for item in record["workload"]["cells"]]
+    assert priced == _declared_stage_0_cells(declaration)

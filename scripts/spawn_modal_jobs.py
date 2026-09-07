@@ -99,6 +99,11 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
     # writes only under M2C's own prefix, so there is no build stage to run and
     # no historical artifact for a stage to overwrite.
     "m2c-stage0-probe": ("scripts.modal_m2c_stage0_probe", {"probe": "run_stage0"}),
+    # The same shape one phase on: one spawned call per declared cell, nothing
+    # fitted. M2D's probe reads BOTH of M2B's sealed semantic checkpoints rather
+    # than S4's alone, because the question is what each rung finds that the
+    # other misses; it still writes only under M2D's own prefix.
+    "m2d-stage0-probe": ("scripts.modal_m2d_stage0_probe", {"probe": "run_stage0"}),
     # Three stages, and no build stage at all: M2B rebuilds no features. Every
     # cell master it reads was persisted by M2's build stage and is admitted on
     # its feature build contract. One spawned job per dataset runs every regime
@@ -351,6 +356,10 @@ UTILISATION = {
     # the same number, and a divergence between them is a real divergence
     # rather than two different utilisation assumptions.
     "m2c-stage0-probe": 0.4,
+    # M2D's record was derived at the same divisor, for the same reason: the
+    # timing it prices covers the forward passes and not the image pull, the
+    # embedding load or the cell master.
+    "m2d-stage0-probe": 0.4,
 }
 
 
@@ -557,6 +566,25 @@ def measured_units(
         estimate = {
             job["dataset"]: float(job["job_seconds"])
             for job in module.compute_record()["estimate"]["jobs"]
+        }
+        unknown = sorted({job["dataset"] for job in jobs} - set(estimate))
+        if unknown:
+            return None, f"the filed compute record prices no job for {', '.join(unknown)}"
+        units = [WorkUnit(name=job["dataset"], seconds=estimate[job["dataset"]]) for job in jobs]
+        units, granularity = _collapse_without_resumption(units, module, "cell", "probe")
+        return units, (
+            f"{len(jobs)} cell(s) at the filed Stage-0 compute record, which is a host "
+            f"timing and not a container measurement; {granularity}"
+        )
+
+    if package == "m2d-stage0-probe":
+        # The filed record again, and its own per-cell figure rather than a
+        # rate applied here. The record prices each cell as panel queries times
+        # a measured kernel, so re-deriving the seconds in this function would
+        # gate the launch against a second number that nobody filed.
+        estimate = {
+            item["cell"].split("/")[0]: float(item["seconds"])
+            for item in module.compute_record()["workload"]["cells"]
         }
         unknown = sorted({job["dataset"] for job in jobs} - set(estimate))
         if unknown:
