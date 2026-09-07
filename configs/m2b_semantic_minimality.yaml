@@ -44,20 +44,77 @@ amendments:
       No container was started, no seed was run, no dataset was read beyond
       already-persisted artifacts.
 
-status: DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_AUTHORISED
+  - date: 2026-09-07
+    change: >-
+      LAUNCH AMENDMENT. THE SMOKE AND THE 28-FIT FAN-OUT ARE CONDITIONALLY
+      AUTHORISED, GATE BY GATE. Nine things are closed here and none of them
+      touches the 42-logical-fit scientific matrix, which is unchanged. (1)
+      FEATURE-STORE REUSE NO LONGER RESTS ON A PINNED HASH. Amendment 1
+      resolved the config_sha256 drift by passing the recorded build-time
+      value, which works exactly once: M3, M4 and the canonical migration each
+      amend a declaration too, and each would face the same refusal and be
+      tempted to pin again until the identity check certified nothing. A
+      feature store's scientific identity is not the identity of an entire
+      mutable phase-declaration file. scripts/feature_build_contract.py
+      defines feature_build_contract_sha256 over the 23 inputs that can change
+      a cell tensor and excludes the 12 that cannot -- authorisation, seeds,
+      optimiser settings, compute ceilings, selection wording, and the
+      semantic rung itself. Both hashes are kept: the original config_sha256
+      travels as provenance and is never rewritten. See feature_store_reuse
+      below. (2) S3 REUSE IS PROVED AGAINST THE INJECTION, NOT ASSUMED.
+      M1AScorer gained an optional semantic_head for this phase, so the S3
+      model current code builds must be shown to be the same function as the
+      one M2's 14 fits ran. scripts/m2b_s3_reuse_proof.py builds S3 from the
+      pre-injection source at eae453a and from current code, and requires
+      state-dict compatibility and bit-level forward equality on a probe;
+      verdict S3_REUSE_PERMITTED. Had it failed, those 14 fits would have been
+      recalculated rather than reused. (3) THE FORMULAS ARE FROZEN, NOT THE
+      COLUMN COUNTS. 258 is 4 x 64 + 2 and nobody should have to reverse it
+      out of the number. semantic_formulas below carries the actual expression
+      producing every output block of every rung, each re-implemented a second
+      time from its own formula text and required to reproduce the live module
+      within 1e-05 on a probe. (4) LATENCY IS MEASURED OVER THE WHOLE STACK.
+      A benchmark starting from an already-computed semantic tensor would
+      charge S4 nothing for the two 1536x64 projections that are the entire
+      thing under test, and a projection control that costs nothing would win
+      every tie-break it entered. See inference_timing. (5) THE TIE-BREAK
+      AGGREGATIONS ARE FILED BEFORE THE NUMBERS. "Lower uncached inference
+      p95" over 14 cells is not yet one number; selection_rule now says how it
+      becomes one. (6) THE RULE-APPLYING SCRIPT IS COMMITTED BEFORE ANY M2B
+      NUMBER EXISTS, as M2 did at eae453a: scripts/m2b_selection_report.py,
+      44 tests, one per clause and per refusal. (7) A PAIRED BOOTSTRAP IS
+      ADDED AS A DIAGNOSTIC AND ONLY AS A DIAGNOSTIC. M2B runs one seed, so it
+      cannot speak to seed stability and says so in a field. It exists because
+      webqsp holds out 63 queries where one query moves recall by 1.587pp
+      against a 0.50pp tolerance, and because M2 already saw that dataset
+      supply +9.881pp of a +1.776pp macro. It is not an advancement condition
+      and the selection rule is not amended to make it one. (8) THE
+      ORCHESTRATION IS SIX CONTAINERS, NOT 28 AND NOT 12. One job per dataset,
+      every cell and every rung of that dataset inside it, still producing 28
+      independently checkpointed and result-addressable fits. A p95 is a
+      property of the machine that measured it, so comparing p95 across
+      containers would compare containers. (9) THE CEILING IS NOT FINAL. The
+      2.5x S4 fit multiplier is still an argument. The smoke measures it, and
+      only then is the ceiling refiled.
+
+status: DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED
 
 this_file_authorises: >-
-  Declaration and reconnaissance. Specifically: reading M2's persisted
-  artifacts, instantiating candidate models on CPU to count their parameters,
-  and computing the reuse proof and compute estimate below. That work is
-  complete and its artifacts are listed under m2b_output.
+  As amended 2026-09-07: the smoke cell, and then the 28-fit fan-out, each
+  conditional on the gates in launch_authorization being true when the
+  launcher re-reads them at call time. Also everything the first amendment
+  authorised -- reading M2's persisted artifacts, instantiating candidates on
+  CPU, and computing the proofs and estimates listed in m2b_output. The
+  authorisation is to PASS the gates, never to work around one that is false.
 
 does_not_authorise: >-
-  Launching M2B. Fitting anything, including the smoke cell. Modifying the
-  QLS structural schema. Opening M3. Training a GNN of any kind. Adding any
-  seed beyond 0. Reading canonical CRAG data. Using Package F. Resuming E2.
-  Execution requires a further dated amendment after the review this file
-  stops for.
+  Any fit outside the 42-cell matrix declared here, or any arm other than the
+  frozen QLS-UNIVERSAL. Modifying the QLS structural schema. Opening M3.
+  Training a GNN of any kind. Adding any seed beyond 0, including the 3-seed
+  resolution this file allows to be PROPOSED. Reading canonical CRAG data.
+  Using Package F. Resuming E2. Exceeding the compute ceiling in force.
+  Launching the fan-out while any gate is false, including on the strength of
+  a smoke that has run but not been verified.
 
 # --------------------------------------------------------------------------
 # The question
@@ -205,6 +262,207 @@ semantic_candidates:
     wrong rung is unrecoverable after the fact.
 
 # --------------------------------------------------------------------------
+# The exact formulas -- filed by amendment 2, because a column count is not a
+# specification
+# --------------------------------------------------------------------------
+
+semantic_formulas:
+  why_this_section_exists: >-
+    Amendment 1 filed widths and parameter counts. Those do not say what any
+    column contains. 258 in particular is 4 x 64 + 2 and no reader should have
+    to reverse-engineer that from the number, nor guess whether the projection
+    is normalised, whether it carries a bias, or which of its blocks is
+    elementwise. Every formula below is the expression the module evaluates.
+  frozen_by: scripts/m2b_semantic_formula_freeze.py
+  artifact: outputs/m2b_semantic_minimality/semantic_formula_freeze.json
+  verdict: FORMULAS_FROZEN
+  how_each_formula_was_checked: >-
+    Implemented a second time in the freeze script from the formula text
+    written beside it, and required to reproduce the live module within a
+    relative 1e-05 on a 17-candidate probe at seed 20260907. The two differ
+    only in floating-point association order. A formula that describes the
+    module is not the same object as a formula that was transcribed from it.
+  frozen_embedding_dim: 1536
+  eps: 1.0e-12
+
+  S2:
+    module: src/mp_retrieval/qls_v2_semantic.py::SemanticHead(rung='S2')
+    learned_parameters: 0
+    columns:
+      - name: cosine_qd
+        index: 0
+        formula: cos(q, d) = (q / max(||q||_2, eps)) . (d / max(||d||_2, eps))
+      - name: dot_qd_pct
+        index: 1
+        formula: >-
+          rank of <q, d> among the candidates of this query, ties taking the
+          average of the ordinal ranks they span, divided by (n - 1); exactly
+          0.5 when n <= 1
+        why_average_ties: >-
+          Ordinal ranking resolves ties by position, so permuting the
+          candidate list would change the feature. Averaging makes it a
+          function of the multiset alone.
+      - name: mean_abs_diff
+        index: 2
+        formula: (1 / dim) * sum_i |d_i - q_i|
+    width: 3
+    scorer_input_width: 12
+    total_trainable_parameters: 449
+    the_total_does_not_depend_on_the_embedding_width: >-
+      S2 learns no semantic parameter, so 449 is 32 * 12 + 65 whatever the
+      payload width is. Verified live at a toy width of 6, where the same 449
+      appears. That is a fact about the rung and is the reason the runner's
+      declared-count guard is gated on the frozen 1536 and not on whatever
+      width a test happens to run at.
+
+  S3:
+    module: src/mp_retrieval/qls_v2_semantic.py::SemanticHead(rung='S3')
+    description: S2's three columns plus two learned vectors over the payload
+    columns:
+      - name: cosine_qd
+        index: 0
+        formula: as S2
+      - name: dot_qd_pct
+        index: 1
+        formula: as S2
+      - name: mean_abs_diff
+        index: 2
+        formula: as S2
+      - name: semantic_product
+        index: 3
+        formula: sum_i w_i * q_i * d_i,  w in R^dim, initialised w_i = 1/dim
+        parameters: 1536
+        what_it_is: >-
+          The diagonal restriction of the bilinear form q^T W d that a rank-64
+          projection approximates -- strictly less expressive there.
+      - name: semantic_difference
+        index: 4
+        formula: sum_i v_i * |d_i - q_i|,  v in R^dim, initialised v_i = 0
+        parameters: 1536
+    width: 5
+    scorer_input_width: 14
+    total_trainable_parameters: 3585
+    initialisation_is_part_of_the_design: >-
+      w_i = 1/dim makes semantic_product the mean elementwise product, a
+      monotone function of the raw dot already available at S2, and v_i = 0
+      makes semantic_difference identically zero. S3 therefore starts as S2
+      plus one redundant channel and can only depart from it by learning, so
+      an S3-over-S2 gain is attributable to the weights rather than to the
+      channels existing.
+
+  S4:
+    module: src/mp_retrieval/m2b_semantic_control.py::ProjectionSemanticHead
+    projection_dim: 64
+    steps:
+      - step: 1
+        name: query_projection
+        formula: g = GELU(W_q q),  W_q in R^{P x dim}, bias=False
+        parameters: 98304
+        why_no_bias: >-
+          operator_models.OperatorModel, where the historical projection
+          lives, is bias-free; a bias here would be a quiet 128-parameter
+          departure from the thing this controls for.
+      - step: 2
+        name: candidate_projection
+        formula: h = GELU(W_d d),  W_d in R^{P x dim}, bias=False
+        parameters: 98304
+      - step: 3
+        name: normalisation
+        formula: >-
+          qhat = g / max(||g||_2, 1e-12);  dhat = h / max(||h||_2, 1e-12)
+        note: torch.nn.functional.normalize over the last dimension
+    output_blocks:
+      - {name: query_state, columns: [0, 64], formula: qhat, broadcast over the candidates}
+      - {name: node_state, columns: [64, 128], formula: dhat}
+      - {name: state_product, columns: [128, 192], formula: qhat * dhat (elementwise)}
+      - {name: state_absolute_difference, columns: [192, 256],
+         formula: '|qhat - dhat| (elementwise)'}
+      - {name: normalized_state_dot, columns: [256, 257], formula: sum_k qhat_k * dhat_k}
+      - {name: raw_projection_dot_scaled, columns: [257, 258],
+         formula: (sum_k g_k * h_k) / sqrt(P),
+         note: the RAW projections, before normalisation}
+    width_derivation:
+      expression: 4 * P + 2
+      blocks: 4
+      projection_dim: 64
+      scalars: 2
+      width: 258
+    parameter_derivation:
+      expression: 2 * dim * P
+      value: 196608
+      not_98304: >-
+        qls_v2_semantic.V1_SEMANTIC_PARAMETERS is 98,304, which is 2 * 768 * 64
+        and therefore a fact about a 768-dimensional payload. The same
+        projection on this track's 1536-dimensional payload holds 196,608 --
+        exactly twice.
+    scorer_input_width: 267
+    total_trainable_parameters: 205217
+
+# --------------------------------------------------------------------------
+# S3 reuse, proved against the injection -- filed by amendment 2
+# --------------------------------------------------------------------------
+
+s3_behaviour_reuse:
+  question: >-
+    Is an S3 model built by the current code the same function as the S3 model
+    that produced M2's 14 reused fits?
+  why_it_had_to_be_asked: >-
+    M1AScorer gained an optional semantic_head for this phase. Passing None --
+    what every M1A, M1B and M2 caller does -- builds SemanticHead(rung, dim)
+    exactly as before, but "exactly as before" is a claim about a constructor
+    that was edited, and 14 of M2B's 42 cells are reused on the strength of
+    it.
+  proof: scripts/m2b_s3_reuse_proof.py
+  artifact: outputs/m2b_semantic_minimality/s3_reuse_proof.json
+  baseline: src/mp_retrieval/m1a_screen.py at eae453a, which predates the injection
+  requires:
+    - state-dict keys, shapes and dtypes identical between the two constructions
+    - a trained M2 checkpoint loads into the current model with strict=True
+    - forward outputs bit-identical on a fixed probe
+  verdict: S3_REUSE_PERMITTED
+  what_a_failure_would_have_meant: >-
+    Not a waiver. If state-dict compatibility or forward equality had failed,
+    those 14 S3 results would not have been reused and the workload would have
+    become 42 new fits, at the cost of recalculating them. A reuse that cannot
+    be proved is a fabricated reuse whether or not anyone notices.
+
+# --------------------------------------------------------------------------
+# What the latency measurement spans -- filed by amendment 2
+# --------------------------------------------------------------------------
+
+inference_timing:
+  implementation: src/mp_retrieval/m2b_inference_timing.py
+  measured_span: >-
+    raw query and candidate embeddings -> the rung's semantic computation ->
+    the frozen precomputed structural block -> the scorer -> a score per
+    candidate.
+  why_the_span_starts_there: >-
+    A benchmark that starts from an already-computed semantic tensor and times
+    only the scorer compares S2, S3 and S4 on a Linear(W, 32) whose widths
+    differ by a factor of twenty, while the thing that actually separates them
+    -- S4's two 1536x64 projections -- is never charged for at all. A
+    projection control that costs nothing would win every tie-break it
+    entered, and the tie-break is what selects among admissible rungs.
+  uncached_means: >-
+    One query at a time, with nothing carried between queries. The p95 the
+    paper reports is the latency of a query nobody has asked before.
+  percentiles: nearest-rank on the sorted sample, so every reported percentile was observed
+  attribution_note: >-
+    semantic_ms and scorer_ms come from a second pass with forward hooks
+    attached. The hooks' own synchronisations cost time the clean pass does
+    not pay, so those two do not sum to the total and are not a partition of
+    it. The tie-break uses the clean total's p95 and nothing else.
+  the_tie_break_orders_on: total uncached inference p95
+  an_early_measurement_contradicts_the_intuition: >-
+    At the real 1536 width over 200 candidates on CPU, S4's semantic branch
+    measured CHEAPER than S2's and S3's -- 0.739 ms against 1.055 and 1.410 --
+    because two BLAS matmuls beat within_query_percentile's
+    argsort/unique/scatter_add chain plus a full-width elementwise mean.
+    196,608 parameters do not imply a slower query. Nothing in this phase
+    assumes an ordering between the rungs; the ordering is a result the smoke
+    measures, which is precisely why the fit multiplier may not be guessed.
+
+# --------------------------------------------------------------------------
 # The evaluation matrix -- M2's cells, unchanged
 # --------------------------------------------------------------------------
 
@@ -306,19 +564,58 @@ feature_store_reuse:
       paperwork rather than the features -- and the obvious workaround, a
       rebuild, would spend the largest line in the budget to reproduce
       byte-identical arrays.
-    resolution: PIN_TO_RECORDED_BUILD_TIME_HASH
+    resolution: FEATURE_BUILD_CONTRACT_SHA256
+    superseded_resolution: PIN_TO_RECORDED_BUILD_TIME_HASH
+    why_the_pin_was_superseded: >-
+      Filed by amendment 1 and replaced by amendment 2 before any store was
+      loaded under it. The pin works exactly once. M3, M4 and the canonical
+      migration each amend a declaration too, and each would meet the same
+      refusal and be tempted to pin again, until the identity check certified
+      nothing. An amendment about authorisation or statistics should not be
+      able to invalidate an immutable structural feature store, and the fix
+      for that is a better identity, not a standing exemption.
     resolution_rule: >-
-      M2B passes the build-time hash above as the expected value rather than
-      recomputing it from the current file. The check is not relaxed and the
-      field is not dropped: the other seven fields are still compared exactly,
-      so a store from the wrong dataset, regime, panel or A64 budget is still
-      refused. The hash reverts to what it was always for -- a record of which
-      declaration built the store.
+      A feature store's scientific identity is not the identity of the entire
+      mutable phase-declaration file that happened to be in force when it was
+      built. scripts/feature_build_contract.py defines
+      feature_build_contract_sha256 over exactly the inputs that can change a
+      cell tensor -- dataset, data fingerprint, regime, panel size and
+      selection, per-seed cap, neighbour scan cap, A64 mainline family,
+      candidate contract and candidate id order, context arm, damping, PPR
+      iterations, normalisation, builder, formula version, master column
+      layout, count, dtype and store format, and the contract version itself.
+      Nothing is relaxed: every one of those is compared exactly, so a store
+      from the wrong dataset, regime, panel or A64 budget is still refused.
+      What is excluded is what cannot move a float in a structural feature
+      tensor: config_sha256, source_commit, seed, epochs, learning rate, batch
+      size, dropout, temperature, the semantic rung, compute ceilings,
+      authorisation and selection wording.
+    both_hashes_are_kept: >-
+      original_full_config_sha256 travels beside the contract hash as
+      provenance and governs nothing. No store's recorded config_sha256 is
+      rewritten, and the audit never writes to the volume at all.
+    reconstruction_for_the_existing_stores: >-
+      The 14 M2 stores predate the contract, so their key is rebuilt from
+      their own recorded provenance plus the seven exact cell-identity fields.
+      That reconstruction is only trustworthy if it produces what current code
+      would build, so tests/test_feature_build_contract.py proves the
+      reconstructed key equals the forward key, and pins the behaviour of the
+      real _cell_master_local over a deterministic toy cell in R1/R2/R3 so a
+      changed formula cannot keep an unchanged version string.
+    proof: scripts/m2b_feature_store_identity.py
+    artifact: outputs/m2b_semantic_minimality/feature_store_identity.json
+    verdict: FEATURE_STORE_REUSE_PERMITTED
+    the_data_side_gap_is_closed_in_the_container: >-
+      validate_candidate_contract measures the corpus, which lives on the
+      Modal volume, so the local audit passes through the hashes the build
+      recorded. The runner recomputes the contract in the container from the
+      candidate contract it measures there and refuses any store whose
+      reconstructed hash differs, so the local audit closes the
+      declaration-side gap and the container closes the data-side one.
     what_this_does_not_license: >-
-      Reuse across a change that alters the features. If any of the seven
-      cell-identity fields moved, the store would be refused and should be.
-      This rule covers exactly one situation: the declaration file gained
-      prose after the stores were built.
+      Reuse across a change that alters the features. If any contract field
+      moved, the store would be refused and should be. What this covers is
+      exactly one situation: paperwork changed and the tensor did not.
 
 # --------------------------------------------------------------------------
 # The selection rule -- frozen before any M2B number exists
@@ -353,6 +650,55 @@ selection_rule:
     the weight of squad_clean and musique_clean, which have one cell each. The
     per-cell clause stops a rung failing badly in one regime and being covered
     by its siblings within the same dataset.
+
+  effectiveness_admissible_iff_pp:   # numeric mirror, filed by amendment 2
+    macro: 0.25
+    per_dataset: 0.50
+    per_cell: 0.50
+  why_a_numeric_mirror: >-
+    So that nothing has to parse prose to know what the rule says.
+    scripts/m2b_selection_report.py reads the tolerance out of the clause text
+    above, then refuses to produce a verdict at all if this block disagrees
+    with what it parsed. It is a cross-check, not a second authority.
+
+  boundary_handling:
+    rule: A_RUNG_EXACTLY_ON_A_TOLERANCE_IS_ADMISSIBLE
+    why_it_is_stated: >-
+      The clauses are written with >=, so the boundary belongs to the
+      admissible side. In binary floating point 0.4975 against a best of 0.50
+      lands at -0.2500000000000002 and a strict comparison would refuse it, so
+      the report allows 1e-9pp of slack. That is eight orders of magnitude
+      below what any declared panel can resolve -- webqsp's 63 queries move
+      recall in steps of 1.587pp -- and it is filed here rather than left as
+      an implementation detail because which side of a boundary a rung falls
+      on can decide the phase.
+
+  systems_ordering_aggregation:   # filed by amendment 2, before any latency exists
+    uncached_inference_p95_ms: >-
+      Equal-weight mean over the six datasets of that dataset's mean over its
+      declared regimes -- the same shape as the effectiveness macro, so the
+      four three-regime datasets do not carry triple weight in the tie-break
+      either.
+    total_trainable_parameters: >-
+      Constant per rung by construction. The report refuses if a rung's count
+      differs between cells, because a parameter count that moves between
+      cells is not one object.
+    peak_memory: >-
+      Max over all 14 cells, not a mean, because a memory figure is a ceiling
+      and a rung that fits everywhere is bounded by its worst cell. Ordered on
+      peak VRAM first and peak RSS second: VRAM is the binding constraint on
+      the declared A10G, and on a CPU run every VRAM figure is zero so RSS
+      decides -- deterministic rather than adaptive.
+    why_it_is_filed_here: >-
+      "Lower uncached inference p95" over 14 cells is not yet a single number.
+      Choosing how to reduce 14 numbers to one after seeing them would be
+      choosing the winner.
+    the_final_tie_rule_is_unreachable: >-
+      Stated rather than left as an unchecked branch: the second ordering key
+      is the total parameter count, and 449, 3,585 and 205,217 are distinct by
+      construction, so the semantic-width and rung-order tie rule below can
+      never fire. It stays filed because a rule that is only unreachable by
+      arithmetic should still exist.
 
   if_none_survives: SEMANTIC_PARETO_CONFLICT
   thresholds_are_not_adjustable: >-
@@ -398,6 +744,70 @@ seed_policy:
     PROPOSED, naming the specific cells it would resolve. It is not launched
     with the one-seed run and is not launched automatically. Five seeds are
     not the fallback and are prohibited throughout development.
+
+uncertainty_diagnostic:      # filed by amendment 2
+  status: DIAGNOSTIC_ONLY
+  is_not_an_advancement_condition: >-
+    M2B advances on selection_rule's three effectiveness clauses and its filed
+    systems ordering. No interval computed here can admit or refuse a rung.
+    Making one an advancement condition would mean amending the selection rule
+    after seeing the numbers it would have decided, which is the thing this
+    whole file exists to prevent.
+  implementation: scripts/m2b_bootstrap_diagnostic.py
+  artifact: outputs/m2b_semantic_minimality/bootstrap_diagnostic.json
+  reused_from: scripts/m1b_bootstrap_analysis.py
+  parameters_read_from: >-
+    configs/m1b_targeted_resolution.yaml#uncertainty_procedure, at run time
+    rather than transcribed: 10,000 replicates, 95% percentile interval, RNG
+    seed 20260905, a fresh generator per cell so any cell reproduces in
+    isolation. A copied 10,000 would be a second authority that could drift.
+  design:
+    resampling_unit: whole query, with replacement, from the held-out panel
+    pairing: >-
+      One set of resampled indices per cell, applied to every rung, so a
+      replicate compares the rungs on the same drawn queries. Two rungs that
+      agree on every query then get an interval of exactly zero, which
+      independent resampling could not produce.
+    statistic: >-
+      The plain paired delta of mean recall@5. M1B's statistic was
+      mean_s(delta_seed) over three seeds; with one seed it collapses to this,
+      and the collapse is the only change made to the implementation.
+  what_it_cannot_measure: >-
+    Training-seed stability. M2B runs one seed by declaration, so every
+    replicate resamples the same fit's per-query outcomes. A narrow interval
+    means the panel would have produced a similar difference had different
+    queries been drawn into it; it does not mean a second seed would have
+    produced a similar fit. This phase does not pretend otherwise.
+  why_it_is_worth_computing_anyway: >-
+    webqsp holds out 63 queries and the equal-weight macro gives it the same
+    weight as squad_clean's 26,063. One webqsp query moves recall by 1.587pp
+    against a 0.50pp per-cell tolerance, so a point estimate there can sit
+    anywhere in the decision band for reasons that have nothing to do with the
+    semantic rung. M2 already saw that dataset supply +9.881pp of a +1.776pp
+    macro. The diagnostic exists to stop a second WebQSP point-estimate
+    artefact quietly driving a universal decision.
+  what_it_feeds:
+    output: a PROPOSAL for the smallest sufficient 3-seed resolution
+    criterion: >-
+      A cell qualifies only if it is in the selection report's decision band
+      -- the selected rung was admitted there by the per-cell tolerance rather
+      than by winning the cell -- AND at least one bootstrap interval
+      involving the selected rung straddles zero. Both, not either: a wide
+      interval in a cell the rung won outright changes nothing, and a tight
+      one-signed interval inside the tolerance has already been resolved.
+    it_is_not_launched: >-
+      seed_policy.three_seed_resolution governs. The resolution is proposed,
+      naming its cells, and is not launched by this phase -- not with the
+      one-seed run and not by the script that identifies its candidates. It
+      needs a further authorisation. Five seeds remain prohibited throughout
+      development.
+  per_query_outcomes_are_persisted_at_fit_time: >-
+    M1B needed amendment 5 because no per-query outcome had been persisted
+    anywhere and its bootstrap was not computable after the fact; a rerun to
+    obtain them would have been a different fit on different hardware. M2B
+    pays that cost up front: every fit records per_query_recall_at_5 and every
+    cell records held_out_query_ids once, and a rung whose vector is not the
+    panel's length stops the run.
 
 # --------------------------------------------------------------------------
 # Instrumentation -- mandatory for every new fit, no recovery reruns
@@ -448,7 +858,7 @@ compute:
   estimate: scripts/m2b_reuse_and_compute.py
   artifact: outputs/m2b_semantic_minimality/reuse_and_compute.json
   rate_source: docs/COMPUTE_LEDGER.md L546-547 -- $2.241/h GPU, $0.634/h CPU, reused verbatim
-  status: ESTIMATED_NOT_AUTHORISED
+  status: ESTIMATED_CEILING_PROVISIONAL_UNTIL_THE_SMOKE_MEASURES_S4
 
   feature_store_build:
     new_builds: 0
@@ -501,6 +911,14 @@ compute:
       orchestration here is 6 datasets x 2 new rungs = 12 containers, less
       than half. The larger number is kept because the estimate should not
       depend on an orchestration choice that has not been made.
+    revised_by_amendment_2: >-
+      The choice has now been made and it is 6, not 12 and not 28: one
+      container per dataset carrying every cell and every rung of that
+      dataset. See launch_authorization.orchestration. The 28-container line
+      above is left as filed rather than rewritten, because it is the record
+      of what was estimated before the decision; the recomputation lives in
+      launch_authorization.compute_revision and the ceiling is not refiled
+      until the smoke replaces the S4 multiplier.
 
   storage:
     checkpoint_megabytes_all_cells: {S2: 0.025, S3: 0.201, S4: 11.492}
@@ -537,14 +955,141 @@ smoke_before_fanout:
     zero and a broken structural path could pass unnoticed. It is also the
     cell M2 smoked, so its build is warm and its numbers are comparable, and
     it is one of the cheapest cells in the matrix at about 19 s of training.
+  panel: the full declared validation panel for the cell, not a 100-query diagnostic
+  why_the_full_panel: >-
+    The smoke's job is to measure the S4 fit time that replaces the 2.5
+    multiplier. A fit over 100 queries would measure a different fit, and the
+    number it produced would not be the one the ceiling is recomputed from.
+    This is a real cell of the matrix, run once, and its numbers are the
+    matrix's.
+  seed: 0
+  rungs: [S2, S4]
   what_the_smoke_must_establish:
-    - both heads instantiate at the frozen width and produce the declared column counts
-    - the persisted M2 store loads under the pinned build-time hash
-    - every instrumentation field above is populated
+    - both heads instantiate at the frozen 1536 width and produce the declared column counts
+    - >-
+      the persisted M2 store loads under its reconstructed
+      feature_build_contract_sha256, with the seven cell-identity fields
+      compared exactly, and no cell master is rebuilt
+    - >-
+      S2 and S4 in this cell record byte-identical shared inputs: the same
+      query ids, the same scored candidates, the same context, the same
+      structural feature fingerprint, the same NODE_ROLE, SUPPORT and PATH
+      values and the same candidate normalization, with only the semantic
+      rung differing -- enforced by one store handed to both rungs, and
+      checked by comparing their shared_inputs digests afterwards
+    - S2 reports semantic parameters 0 and 449 total, with 3 semantic columns
+    - S4 reports semantic parameters 196,608 and 205,217 total, with 258 semantic columns
+    - a checkpoint is written and reloads into the same model with strict=True
+    - per-query rows are written and the aggregate rebuilt from them matches exactly
+    - every training-epoch loss is finite, and no held-out score is NaN or Inf
+    - every instrumentation field above is populated and non-null
+    - full uncached inference p50, p95 and p99 over the whole model stack, and peak VRAM
     - the measured S4 fit time, which replaces the 2.5 multiplier with a number
+  why_nan_checking_is_listed_separately: >-
+    Argsorting a vector containing NaN still returns a permutation, so a model
+    that emits NaN produces a ranking, and aggregate metrics computed from
+    that ranking can look entirely healthy. M2 did not check this. A fit whose
+    scores are not finite is refused before it is recorded, not diagnosed
+    afterwards from a metric that survived.
   authorisation: >-
-    NOT AUTHORISED BY THIS FILE. The smoke is a fit. It requires the further
-    dated amendment that this file's stop condition asks for.
+    AUTHORISED BY AMENDMENT 2, conditional on the six precursor gates in
+    launch_authorization being true when the launcher re-reads them. The smoke
+    is not gated on the gates it exists to earn -- that would make it unable
+    to run first -- and it does not authorise the fan-out, which has its own
+    gates.
+
+# --------------------------------------------------------------------------
+# Launch authorization -- filed by amendment 2, 2026-09-07
+# --------------------------------------------------------------------------
+
+launch_authorization:
+  status: GATES_OPEN_2026_09_07
+  rule: >-
+    The smoke cell, and then the 28 new fits, are authorised to launch once
+    the gates below are true. scripts/modal_m2b_semantic_minimality.py
+    re-reads this block at call time -- not at deploy time, because the
+    amendment is filed between the app being deployed and a job being spawned
+    -- and refuses the stage while any gate it checks is false. This file
+    pre-authorises PASSING a gate. It never authorises working around one.
+  gates:
+    amendment_filed: true                  # this amendment, 2026-09-07, with tests/test_m2b_declaration.py green
+    selection_rule_frozen: true            # scripts/m2b_selection_report.py, committed before any M2B number existed
+    feature_store_reuse_proved: true       # FEATURE_STORE_REUSE_PERMITTED, outputs/m2b_semantic_minimality/feature_store_identity.json
+    s3_behaviour_reuse_proved: true        # S3_REUSE_PERMITTED, outputs/m2b_semantic_minimality/s3_reuse_proof.json
+    semantic_formulas_frozen: true         # FORMULAS_FROZEN, outputs/m2b_semantic_minimality/semantic_formula_freeze.json
+    instrumentation_tests_pass: true       # tests/test_run_m2b_semantic_minimality.py + tests/test_modal_m2b_semantic_minimality.py
+    uncertainty_diagnostic_committed: true # scripts/m2b_bootstrap_diagnostic.py, filed before any interval existed
+    engineering_smoke_passes: false        # earned by the smoke cell, not before
+    parameter_accounting_matches: false    # earned by the smoke: 449 and 205,217 at the frozen 1536 width, on a real fit
+    measured_cost_within_ceiling: false    # earned once the smoke replaces the 2.5x multiplier and the ceiling is refiled
+  which_gates_the_smoke_is_held_to: >-
+    The first six only. The smoke exists to earn the last three, so gating it
+    on them would make it unable to run first. The fan-out is held to all ten.
+  a_smoke_that_ran_is_not_a_smoke_that_passed: >-
+    engineering_smoke_passes is flipped by a verification artifact against
+    smoke_before_fanout.what_the_smoke_must_establish, item by item, not by
+    the job exiting zero.
+
+  orchestration:
+    shape: ONE_CONTAINER_PER_DATASET
+    containers: 6
+    not_28: >-
+      28 separate GPU containers would pay 28 startups, 28 image pulls and 28
+      volume mounts to run fits that take tens of seconds each, and would
+      reload the same cell master up to three times for the three rungs that
+      share it.
+    not_12: >-
+      Six datasets x two new rungs would split a cell's rungs across
+      containers, which is the one split that matters here.
+    why_the_split_matters: >-
+      The systems tie-break orders on uncached inference p95, and a latency is
+      a property of the machine that measured it. Comparing S2's p95 from one
+      container against S4's from another compares containers. Running every
+      rung of every cell of a dataset on one machine makes the comparison a
+      comparison of rungs.
+    it_also_makes_the_shared_store_structural: >-
+      One container builds or loads a cell's store once and hands the same
+      object to all three rungs, so "only the semantic rung differs" is true
+      by construction rather than by a comparison that could pass on two
+      objects that happened to agree.
+    every_fit_stays_addressable: >-
+      Sharing a container is not sharing a result. Each fit writes its own
+      checkpoint, its own per-query rows and its own fit.json under
+      <artifact_root>/<regime>/<rung>/, so 28 fits in 6 containers are 28
+      results and not 6. Resume granularity is the dataset.
+    execution_placement: INHERITED_FROM_M2
+    why_placement_is_inherited: >-
+      M2B declares no placement map of its own and the launcher falls back to
+      configs/m2_qls_v2_freeze.yaml#launch_authorization.execution_placement.
+      M2B reads M2's stores, and a Modal volume lives in exactly one
+      workspace, so the dataset must run where its store already is. Copying
+      the map here would create a second authority that could drift from the
+      one that actually holds the data.
+
+  compute_revision:
+    what_changed: the container count only, from the orchestration decision above
+    container_overhead_usd: {before: 1.3272, after: 0.2844}
+    containers: {before: 28, after: 6}
+    usd_each: 0.0474
+    total_cost_usd: {floor: 2.4531, conservative: 3.4915}
+    fit_lines_are_unchanged: >-
+      The S2 line, the S4 line, the inference line and the zero feature-build
+      line are exactly as amendment 1 filed them. Nothing here is a new
+      measurement.
+    the_ceiling_is_not_refiled_here: >-
+      The dominant unknown is still the 2.5x S4 fit multiplier, which is an
+      argument and not a measurement. The $6.00 ceiling stands as filed until
+      the smoke measures that multiplier; then the estimate is recomputed from
+      the measured value and the ceiling is refiled against it. Lowering a
+      ceiling on the strength of an orchestration choice, before the
+      measurement that motivated the smoke, would be spending the smoke's
+      answer before hearing it.
+
+  after_the_smoke:
+    - recompute the S2 and S4 fit lines from the measured seconds, not the multiplier
+    - refile the ceiling against the recomputed total
+    - flip measured_cost_within_ceiling only if the projection is at or under it
+    - if the projection exceeds the ceiling, stop for review rather than raise it
 
 # --------------------------------------------------------------------------
 # Output and stop
@@ -563,13 +1108,20 @@ m2b_output:
 stop_condition:
   status: STOP_FOR_REVIEW
   reached_when: >-
-    The declaration, the live implementation audit, the parameter accounting,
-    the exact workload, the reuse plan and the compute estimate are all filed.
-    All six are filed. This phase stops here.
+    Amendment 1's stop is reached and superseded. The declaration, the live
+    implementation audit, the parameter accounting, the exact workload, the
+    reuse plan and the compute estimate were all filed, and the review they
+    stopped for produced amendment 2. The stop that is in force now is the one
+    below.
+  the_stop_now_in_force: >-
+    After the M2B semantic-rung verdict. The phase runs the smoke, verifies
+    it, refiles the ceiling, runs the 28-fit fan-out, applies the committed
+    selection rule and files the verdict -- and then stops.
   what_happens_next: >-
-    Nothing, until a further dated amendment authorises execution. The next
-    authorisation would cover the smoke cell first and the 28-fit fan-out only
-    after the smoke's numbers are reviewed.
+    Nothing. Not M3. Not a GNN of any kind. Not a seed beyond 0, including the
+    3-seed resolution this file allows to be PROPOSED and does not launch. Not
+    canonical CRAG. A further dated amendment is required, after a review of
+    the verdict.
 
 standing_prohibitions_restated:
   - no_five_seed_confirmation_anywhere_in_development
@@ -589,5 +1141,6 @@ reversal_note: >-
   invalidate M2, because it changes nothing M2 measured.
 
 after_this_file: >-
-  A review of the numbers above, then a dated amendment authorising the smoke
-  cell. Not M3, not a GNN, not a seed beyond 0, and not canonical CRAG.
+  As amended 2026-09-07: the smoke, its verification, the refiled ceiling, the
+  fan-out, the committed rule's verdict, and then STOP_FOR_REVIEW. Not M3, not
+  a GNN, not a seed beyond 0, and not canonical CRAG.

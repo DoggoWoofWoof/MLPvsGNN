@@ -21,6 +21,7 @@ the declaration that describes them.
 
 from __future__ import annotations
 
+import datetime
 import json
 import pathlib
 import re
@@ -82,25 +83,65 @@ def test_the_three_declared_files_exist():
         assert path.is_file(), f"{path} is part of M2B's one-declaration-per-phase paperwork"
 
 
-def test_the_status_says_no_fit_is_authorised(declaration):
-    assert declaration["status"] == "DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_AUTHORISED"
-    assert "no fit" in declaration["this_file_authorises"].lower() or (
-        "reconnaissance" in declaration["this_file_authorises"].lower()
-    )
+def test_the_status_says_execution_is_conditional_on_gates(declaration):
+    # Amendment 2 moved this from DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_
+    # AUTHORISED. The launcher matches on this exact string, so a status that
+    # reads as authorised while naming no gates would be an authorisation with
+    # nothing to check.
+    assert declaration["status"] == "DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED"
+    authorises = declaration["this_file_authorises"].lower()
+    assert "gates" in authorises
+    assert "never to work around" in authorises
 
 
 def test_the_prohibitions_name_every_thing_the_authorisation_excluded(declaration):
     forbidden = declaration["does_not_authorise"].lower()
-    for phrase in ("fit", "smoke", "structural schema", "m3", "gnn", "seed", "crag",
-                   "package f", "e2"):
+    for phrase in ("structural schema", "m3", "gnn", "seed", "crag",
+                   "package f", "e2", "ceiling"):
         assert phrase in forbidden, f"{phrase!r} is not named in does_not_authorise"
+    # The fan-out is authorised, but not on the strength of a smoke that merely
+    # exited zero.
+    assert "while any gate is false" in forbidden
 
 
-def test_the_smoke_is_declared_and_explicitly_not_authorised(declaration):
+def test_the_smoke_is_authorised_only_behind_the_precursor_gates(declaration):
     smoke = declaration["smoke_before_fanout"]
     assert smoke["cell"] == "2wiki_clean / R3"
-    assert "NOT AUTHORISED" in smoke["authorisation"]
+    assert "AUTHORISED BY AMENDMENT 2" in smoke["authorisation"]
+    assert "six precursor gates" in smoke["authorisation"]
+    assert "does not authorise the fan-out" in smoke["authorisation"]
     assert "R3" in smoke["why_that_cell"] and "NODE_ROLE" in smoke["why_that_cell"]
+
+
+def test_the_smoke_runs_the_full_panel_and_says_why(declaration):
+    # A 100-query diagnostic would measure a different fit from the one whose
+    # seconds replace the 2.5x multiplier.
+    smoke = declaration["smoke_before_fanout"]
+    assert "full declared validation panel" in smoke["panel"]
+    assert "100-query" in smoke["panel"] or "100-query" in smoke["why_the_full_panel"]
+    assert smoke["seed"] == 0
+    assert smoke["rungs"] == ["S2", "S4"]
+
+
+def test_the_smoke_must_establish_the_controlled_comparison_not_just_that_it_ran(
+    declaration,
+):
+    items = " ".join(declaration["smoke_before_fanout"]["what_the_smoke_must_establish"])
+    for phrase in ("query ids", "scored candidates", "context", "structural feature",
+                   "NODE_ROLE", "SUPPORT", "PATH", "candidate normalization",
+                   "only the semantic\n      rung differing"):
+        assert phrase.replace("\n      ", " ") in " ".join(items.split()), phrase
+    for phrase in ("449", "205,217", "196,608", "258", "strict=True",
+                   "NaN", "p50, p95 and p99", "peak VRAM"):
+        assert phrase in items, phrase
+    assert "feature_build_contract_sha256" in items
+    assert "pinned build-time hash" not in items
+
+
+def test_the_smoke_checks_for_nan_and_says_why_ranking_would_not(declaration):
+    why = declaration["smoke_before_fanout"]["why_nan_checking_is_listed_separately"]
+    assert "still returns a permutation" in why
+    assert "M2 did not check this" in why
 
 
 def test_the_smoke_covers_only_the_two_new_rungs(declaration):
@@ -399,16 +440,55 @@ def test_the_config_hash_drift_is_declared_with_both_hashes(declaration):
     obstruction = declaration["feature_store_reuse"]["the_one_obstruction"]
     assert obstruction["field"] == "config_sha256"
     assert re.fullmatch(r"[0-9a-f]{64}", obstruction["build_time_value"])
-    assert obstruction["resolution"] == "PIN_TO_RECORDED_BUILD_TIME_HASH"
+    assert obstruction["resolution"] == "FEATURE_BUILD_CONTRACT_SHA256"
+    # The pin is not deleted, it is marked superseded. What amendment 1 filed
+    # is part of the record even though it no longer governs.
+    assert obstruction["superseded_resolution"] == "PIN_TO_RECORDED_BUILD_TIME_HASH"
+    assert "works exactly once" in obstruction["why_the_pin_was_superseded"]
+
+
+def test_the_contract_is_not_a_pin_that_would_have_to_be_repeated(declaration):
+    why = declaration["feature_store_reuse"]["the_one_obstruction"][
+        "why_the_pin_was_superseded"
+    ]
+    for phrase in ("M3", "M4", "canonical migration"):
+        assert phrase in why, f"{phrase!r} is the case the pin would recur in"
+    assert "certified nothing" in why
 
 
 def test_the_resolution_does_not_weaken_the_check(declaration):
     obstruction = declaration["feature_store_reuse"]["the_one_obstruction"]
-    rule = obstruction["resolution_rule"]
-    assert "not relaxed" in rule and "not dropped" in rule
-    assert "seven fields" in rule
+    rule = " ".join(obstruction["resolution_rule"].split())
+    assert "Nothing is relaxed" in rule
+    # Everything that can move a float is still compared.
+    for field in ("dataset", "data fingerprint", "regime", "per-seed cap",
+                  "neighbour scan cap", "A64 mainline family", "candidate contract",
+                  "formula version", "master column layout"):
+        assert field in rule, f"{field!r} left the contract"
+    # And only things that cannot move a float were excluded.
+    for field in ("config_sha256", "source_commit", "seed", "learning rate",
+                  "semantic rung", "authorisation"):
+        assert field in rule, f"{field!r} is not named among the exclusions"
     limit = obstruction["what_this_does_not_license"]
-    assert "would be refused, and should be" in limit or "refused and should be" in limit
+    assert "would be refused and should be" in limit
+
+
+def test_both_hashes_are_kept_and_the_original_is_never_rewritten(declaration):
+    kept = declaration["feature_store_reuse"]["the_one_obstruction"]["both_hashes_are_kept"]
+    assert "original_full_config_sha256" in kept
+    assert "governs nothing" in kept
+    assert "never writes to the volume" in declaration["feature_store_reuse"][
+        "the_one_obstruction"
+    ]["both_hashes_are_kept"] or "is rewritten" in kept
+
+
+def test_the_reconstructed_key_is_proved_against_what_current_code_builds(declaration):
+    rule = declaration["feature_store_reuse"]["the_one_obstruction"][
+        "reconstruction_for_the_existing_stores"
+    ]
+    assert "tests/test_feature_build_contract.py" in rule
+    assert "equals the forward key" in rule
+    assert "unchanged version string" in rule
 
 
 @needs_reuse
@@ -502,8 +582,34 @@ def test_the_container_count_is_labelled_an_upper_bound(declaration):
     assert "12" in overhead["this_is_an_upper_bound"]
 
 
-def test_compute_is_estimated_not_authorised(declaration):
-    assert declaration["compute"]["status"] == "ESTIMATED_NOT_AUTHORISED"
+def test_the_ceiling_is_provisional_until_the_smoke_measures_s4(declaration):
+    assert declaration["compute"]["status"] == (
+        "ESTIMATED_CEILING_PROVISIONAL_UNTIL_THE_SMOKE_MEASURES_S4"
+    )
+    revision = declaration["launch_authorization"]["compute_revision"]
+    assert "not refiled here" in " ".join(
+        revision["the_ceiling_is_not_refiled_here"].split()
+    ) or "stands as filed" in revision["the_ceiling_is_not_refiled_here"]
+    assert "spending the smoke's answer before hearing it" in revision[
+        "the_ceiling_is_not_refiled_here"
+    ]
+
+
+def test_the_orchestration_revision_changed_only_the_container_count(declaration):
+    revision = declaration["launch_authorization"]["compute_revision"]
+    assert revision["containers"] == {"before": 28, "after": 6}
+    assert revision["container_overhead_usd"]["after"] == pytest.approx(6 * 0.0474, abs=1e-4)
+    # The recomputed total is the filed line items with only that line moved.
+    compute = declaration["compute"]
+    for bound in ("floor", "conservative"):
+        expected = (
+            compute["feature_store_build"]["cost_usd"]
+            + compute["s2_fits"]["cost_usd"][bound]
+            + compute["s4_fits"]["cost_usd"][bound]
+            + compute["inference_benchmarking"]["cost_usd"]
+            + revision["container_overhead_usd"]["after"]
+        )
+        assert revision["total_cost_usd"][bound] == pytest.approx(expected, abs=5e-4)
 
 
 @needs_reuse
@@ -597,3 +703,238 @@ def test_no_folded_identifier_was_split_by_yaml(declaration):
     blob = json.dumps(declaration, default=str)
     broken = re.findall(r"[A-Za-z_/]+\.\s+(?:yaml|json|py|md)\b", blob)
     assert not broken, broken
+
+
+# --------------------------------------------------------------------------
+# Amendment 2: the formulas, the proofs, and the gates
+# --------------------------------------------------------------------------
+
+
+def test_the_file_carries_two_amendments_and_the_second_is_the_launch(declaration):
+    amendments = declaration["amendments"]
+    assert len(amendments) == 2
+    assert "LAUNCH AMENDMENT" in amendments[1]["change"]
+    assert amendments[1]["date"] == datetime.date(2026, 9, 7)
+
+
+def test_every_semantic_column_has_a_formula_not_only_a_count(declaration):
+    formulas = declaration["semantic_formulas"]
+    assert formulas["verdict"] == "FORMULAS_FROZEN"
+    assert formulas["frozen_embedding_dim"] == 1536
+    for rung in ("S2", "S3"):
+        for column in formulas[rung]["columns"]:
+            assert column["formula"], f"{rung}/{column['name']} has no formula"
+
+
+def test_s4s_width_is_derived_and_not_left_to_be_reverse_engineered(declaration):
+    s4 = declaration["semantic_formulas"]["S4"]
+    derivation = s4["width_derivation"]
+    assert derivation["expression"] == "4 * P + 2"
+    assert derivation["blocks"] * derivation["projection_dim"] + derivation["scalars"] == 258
+    assert derivation["width"] == 258
+    # Every one of those blocks is named with the expression that produces it.
+    names = [block["name"] for block in s4["output_blocks"]]
+    assert names == [
+        "query_state", "node_state", "state_product", "state_absolute_difference",
+        "normalized_state_dot", "raw_projection_dot_scaled",
+    ]
+    assert sum(block["columns"][1] - block["columns"][0] for block in s4["output_blocks"]) == 258
+
+
+def test_s4s_parameter_count_is_derived_and_names_the_number_it_is_not(declaration):
+    derivation = declaration["semantic_formulas"]["S4"]["parameter_derivation"]
+    assert derivation["expression"] == "2 * dim * P"
+    assert derivation["value"] == 2 * 1536 * 64 == 196608
+    assert "98,304" in derivation["not_98304"]
+    assert "768" in derivation["not_98304"]
+
+
+def test_the_projection_is_bias_free_and_says_why(declaration):
+    steps = declaration["semantic_formulas"]["S4"]["steps"]
+    projections = [step for step in steps if "projection" in step["name"]]
+    assert len(projections) == 2
+    assert all("bias=False" in step["formula"] for step in projections)
+    assert "bias-free" in projections[0]["why_no_bias"]
+
+
+def test_s2s_total_is_declared_independent_of_the_embedding_width(declaration):
+    s2 = declaration["semantic_formulas"]["S2"]
+    note = s2["the_total_does_not_depend_on_the_embedding_width"]
+    assert "32 * 12 + 65" in note
+    assert s2["total_trainable_parameters"] == 449
+
+
+def test_s3s_initialisation_is_declared_as_part_of_the_design(declaration):
+    note = declaration["semantic_formulas"]["S3"]["initialisation_is_part_of_the_design"]
+    assert "identically zero" in note
+    assert "attributable to the weights" in note
+
+
+def test_s3_reuse_is_proved_and_a_failure_would_have_recalculated(declaration):
+    proof = declaration["s3_behaviour_reuse"]
+    assert proof["verdict"] == "S3_REUSE_PERMITTED"
+    assert "eae453a" in proof["baseline"]
+    assert "predates the injection" in proof["baseline"]
+    consequence = proof["what_a_failure_would_have_meant"]
+    assert "would not have been reused" in consequence
+    assert "42 new fits" in consequence
+    assert "fabricated reuse" in consequence
+
+
+def test_the_timing_span_starts_at_the_raw_embeddings(declaration):
+    timing = declaration["inference_timing"]
+    span = " ".join(timing["measured_span"].split())
+    assert span.startswith("raw query and candidate embeddings")
+    assert "semantic computation" in span
+    assert "scorer" in span
+    why = " ".join(timing["why_the_span_starts_there"].split())
+    assert "already-computed semantic tensor" in why
+    assert "would win every tie-break it entered" in why
+    assert timing["the_tie_break_orders_on"] == "total uncached inference p95"
+
+
+def test_the_timing_section_does_not_assume_which_rung_is_fastest(declaration):
+    note = " ".join(
+        declaration["inference_timing"][
+            "an_early_measurement_contradicts_the_intuition"
+        ].split()
+    )
+    assert "196,608 parameters do not imply a slower query" in note
+    assert "the ordering is a result the smoke measures" in note
+
+
+def test_the_bootstrap_is_a_diagnostic_and_not_a_clause(declaration):
+    diagnostic = declaration["uncertainty_diagnostic"]
+    assert diagnostic["status"] == "DIAGNOSTIC_ONLY"
+    text = " ".join(diagnostic["is_not_an_advancement_condition"].split())
+    assert "No interval computed here can admit or refuse a rung" in text
+    assert "after seeing the numbers it would have decided" in text
+    # The selection rule is unchanged in the way that matters: three clauses.
+    assert set(declaration["selection_rule"]["effectiveness_admissible_iff"]) == {
+        "macro", "per_dataset", "per_cell"
+    }
+
+
+def test_the_diagnostic_disowns_the_claim_it_could_be_mistaken_for(declaration):
+    cannot = " ".join(
+        declaration["uncertainty_diagnostic"]["what_it_cannot_measure"].split()
+    )
+    assert cannot.startswith("Training-seed stability")
+    assert "does not mean a second seed" in cannot
+    assert declaration["seed_policy"]["count"] == 1
+
+
+def test_the_diagnostic_names_webqsp_and_prices_one_of_its_queries(declaration):
+    why = " ".join(
+        declaration["uncertainty_diagnostic"]["why_it_is_worth_computing_anyway"].split()
+    )
+    assert "63 queries" in why
+    assert "1.587pp" in why
+    assert "0.50pp" in why
+    assert "+9.881pp" in why
+
+
+def test_a_resolution_candidate_needs_both_conditions(declaration):
+    feeds = declaration["uncertainty_diagnostic"]["what_it_feeds"]
+    criterion = " ".join(feeds["criterion"].split())
+    assert "AND" in criterion
+    assert "Both, not either" in criterion
+    assert "not launched" in feeds["it_is_not_launched"]
+
+
+def test_the_numeric_mirror_matches_the_prose_thresholds(declaration):
+    mirror = declaration["selection_rule"]["effectiveness_admissible_iff_pp"]
+    assert mirror == {"macro": 0.25, "per_dataset": 0.50, "per_cell": 0.50}
+    clauses = declaration["selection_rule"]["effectiveness_admissible_iff"]
+    for key, value in mirror.items():
+        assert f"{value:.2f}pp" in clauses[key]
+
+
+def test_the_systems_aggregations_are_filed_before_any_latency_exists(declaration):
+    aggregation = declaration["selection_rule"]["systems_ordering_aggregation"]
+    assert "Equal-weight mean over the six datasets" in aggregation[
+        "uncached_inference_p95_ms"
+    ]
+    assert "Max over all 14 cells, not a mean" in aggregation["peak_memory"]
+    assert "would be choosing the winner" in aggregation["why_it_is_filed_here"]
+    assert "distinct by construction" in aggregation["the_final_tie_rule_is_unreachable"]
+
+
+def test_the_boundary_belongs_to_the_admissible_side(declaration):
+    boundary = declaration["selection_rule"]["boundary_handling"]
+    assert boundary["rule"] == "A_RUNG_EXACTLY_ON_A_TOLERANCE_IS_ADMISSIBLE"
+    assert "1e-9pp" in boundary["why_it_is_stated"]
+    assert "1.587pp" in boundary["why_it_is_stated"]
+
+
+def test_the_gates_are_filed_and_the_earned_ones_are_still_false(declaration):
+    gates = declaration["launch_authorization"]["gates"]
+    already_earned = (
+        "amendment_filed", "selection_rule_frozen", "feature_store_reuse_proved",
+        "s3_behaviour_reuse_proved", "semantic_formulas_frozen",
+        "instrumentation_tests_pass", "uncertainty_diagnostic_committed",
+    )
+    for name in already_earned:
+        assert gates[name] is True, f"{name} should be earned by now"
+    for name in ("engineering_smoke_passes", "parameter_accounting_matches",
+                 "measured_cost_within_ceiling"):
+        assert gates[name] is False, f"{name} cannot be true before the smoke runs"
+    assert "never authorises working around one" in declaration["launch_authorization"][
+        "rule"
+    ]
+
+
+def test_the_smoke_is_held_to_the_precursor_gates_only(declaration):
+    authorization = declaration["launch_authorization"]
+    held = authorization["which_gates_the_smoke_is_held_to"]
+    assert "first six only" in held
+    assert "unable to run first" in held
+    assert "held to all ten" in held
+    assert len(authorization["gates"]) == 10
+
+
+def test_a_smoke_that_exited_zero_does_not_flip_its_own_gate(declaration):
+    note = " ".join(
+        declaration["launch_authorization"][
+            "a_smoke_that_ran_is_not_a_smoke_that_passed"
+        ].split()
+    )
+    assert "item by item" in note
+    assert "not by the job exiting zero" in note
+
+
+def test_the_orchestration_is_six_containers_and_says_why_not_28_or_12(declaration):
+    orchestration = declaration["launch_authorization"]["orchestration"]
+    assert orchestration["containers"] == 6
+    assert orchestration["shape"] == "ONE_CONTAINER_PER_DATASET"
+    assert "28 separate GPU containers" in orchestration["not_28"]
+    assert "split a cell" in " ".join(orchestration["not_12"].split())
+    why = " ".join(orchestration["why_the_split_matters"].split())
+    assert "compares containers" in why
+
+
+def test_sharing_a_container_is_not_sharing_a_result(declaration):
+    note = " ".join(
+        declaration["launch_authorization"]["orchestration"][
+            "every_fit_stays_addressable"
+        ].split()
+    )
+    assert "28 fits in 6 containers are 28 results and not 6" in note
+    assert "own checkpoint" in note
+
+
+def test_placement_is_inherited_rather_than_copied(declaration):
+    orchestration = declaration["launch_authorization"]["orchestration"]
+    assert orchestration["execution_placement"] == "INHERITED_FROM_M2"
+    why = " ".join(orchestration["why_placement_is_inherited"].split())
+    assert "second authority that could drift" in why
+    assert "configs/m2_qls_v2_freeze.yaml" in why
+
+
+def test_the_stop_is_now_after_the_verdict(declaration):
+    stop = declaration["stop_condition"]
+    assert stop["status"] == "STOP_FOR_REVIEW"
+    assert "After the M2B semantic-rung verdict" in stop["the_stop_now_in_force"]
+    nothing = " ".join(stop["what_happens_next"].split())
+    for phrase in ("Not M3", "Not a GNN", "Not a seed beyond 0", "Not canonical CRAG"):
+        assert phrase in nothing, phrase

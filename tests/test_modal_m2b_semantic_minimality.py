@@ -289,19 +289,51 @@ def test_the_frozen_width_is_the_one_every_parameter_count_is_quoted_at(jobs) ->
 # --------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("stage", ["smoke", "headline"])
-def test_both_stages_refuse_while_the_declaration_authorises_no_fit(stage) -> None:
-    """Today's real gate. The declaration says the smoke is a fit; so is this."""
+def test_the_smoke_is_authorised_by_the_live_declaration() -> None:
+    """Amendment 2 opened this. The six precursor gates are true, so it runs."""
 
-    assert DECLARATION["status"] == launcher.RECONNAISSANCE_STATUS
-    with pytest.raises(RuntimeError, match="authorises no fit"):
-        launcher._require_authorisation(stage)
+    assert DECLARATION["status"] == launcher.AUTHORISED_STATUS
+    launcher._require_authorisation("smoke")
 
 
-def test_the_declaration_still_says_the_smoke_is_not_authorised() -> None:
+def test_the_headline_is_still_refused_by_the_live_declaration() -> None:
+    """The three gates the smoke exists to earn are false, and they hold it."""
+
+    with pytest.raises(RuntimeError) as raised:
+        launcher._require_authorisation("headline")
+    message = str(raised.value)
+    for gate in ("engineering_smoke_passes", "measured_cost_within_ceiling",
+                 "parameter_accounting_matches"):
+        assert gate in message, f"{gate} should be holding the fan-out back"
+    assert "earn the gate, do not bypass it" in message
+
+
+def test_a_reconnaissance_status_would_still_refuse_both_stages(
+    tmp_path, monkeypatch
+) -> None:
+    """The refusal amendment 2 lifted, kept as a test rather than deleted.
+
+    If a later amendment moves the status back -- a reviewer withdrawing the
+    authorisation, say -- both stages must refuse again, and that has to be a
+    property of the launcher rather than of what the file happened to say on
+    the day the launcher was written.
+    """
+
+    path = tmp_path / "m2b.yaml"
+    path.write_text(
+        yaml.safe_dump({"status": launcher.RECONNAISSANCE_STATUS}), encoding="utf-8"
+    )
+    monkeypatch.setattr(launcher, "M2B_CONFIG_PATH", path)
+    for stage in ("smoke", "headline"):
+        with pytest.raises(RuntimeError, match="authorises no fit"):
+            launcher._require_authorisation(stage)
+
+
+def test_the_declaration_says_the_smoke_earns_gates_rather_than_skipping_them() -> None:
     authorisation = DECLARATION["smoke_before_fanout"]["authorisation"]
-    assert "NOT AUTHORISED BY THIS FILE" in authorisation
-    assert "The smoke is a fit" in authorisation
+    assert "AUTHORISED BY AMENDMENT 2" in authorisation
+    assert "six precursor gates" in authorisation
+    assert "does not authorise the fan-out" in authorisation
 
 
 @pytest.mark.parametrize("stage", ["smoke", "headline"])
