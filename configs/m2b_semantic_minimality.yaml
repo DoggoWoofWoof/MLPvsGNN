@@ -1,0 +1,593 @@
+# ==========================================================================
+# M2B -- SEMANTIC MINIMALITY
+#
+# One declaration per phase. This file declares M2B and authorises
+# declaration and reconnaissance ONLY. No fit is authorised by this file.
+#
+# Opened by: configs/m2_qls_v2_freeze.yaml#selected (M2_QLS_UNIVERSAL_SELECTED)
+# ==========================================================================
+
+substrate_scope: >-
+  Development / method-selection substrate only: squad_clean, 2wiki_clean,
+  hotpotqa_clean, metaqa, webqsp, musique_clean. Canonical CRAG data remains
+  reserved for final confirmation after LEGACY_DEVELOPMENT_FREEZE and is not
+  read by this phase. Nothing decided here is a confirmation of anything; M2B
+  selects a representation, and later phases test it.
+
+amendments:
+  - date: 2026-09-07
+    change: >-
+      M2B IS DECLARED, AND RECONNAISSANCE IS COMPLETE. Filed together because
+      the user authorised declaration and reconnaissance in one turn and
+      neither is a fit. (1) THE CANDIDATES WERE INSTANTIATED, NOT QUOTED.
+      scripts/m2b_semantic_audit.py builds a real M1AScorer for each of S2, S3
+      and S4 at the frozen 1536 width and counts parameters with numel(), and
+      the count it reports for S3 reproduces the 3,585 that 15 completed M2
+      fits ran under, which is what makes its other two numbers worth
+      believing. (2) THE HISTORICAL PROJECTION NUMBER WAS WRONG FOR THIS
+      TRACK, BY EXACTLY A FACTOR OF TWO. qls_v2_semantic.V1_SEMANTIC_PARAMETERS
+      is 98,304 and planning prose has repeated it for months. It is
+      2 x 768 x 64, a fact about a 768-dimensional payload. Instantiated
+      against this track's 1536-dimensional payload the same projection holds
+      196,608 semantic parameters, so S4 totals 205,217, not the ~98K a
+      transcription would have filed. This rung is therefore labelled
+      CURRENT_DIMENSION_PROJECTION_CONTROL and not HISTORICAL_EXACT. (3) THE
+      M2 FEATURE STORES ARE REUSABLE, AND THE PROOF IS MECHANICAL.
+      scripts/m2b_reuse_and_compute.py calls the real cell_build_key with the
+      semantic rung set to S2, S3 and S4 and shows the key is identical in
+      every declared regime; the rung is not one of its eight fields. (4) ONE
+      OBSTRUCTION EXISTS AND IT IS NOT THE RUNG. That key's eighth field is a
+      hash of the whole M2 declaration file, which has changed since the
+      stores were built, so load_cell_for_fit would refuse all 14 of them on
+      paperwork rather than on features. See feature_store_reuse below for the
+      rule that resolves it without weakening the check. (5) NOTHING WAS FIT.
+      No container was started, no seed was run, no dataset was read beyond
+      already-persisted artifacts.
+
+status: DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_AUTHORISED
+
+this_file_authorises: >-
+  Declaration and reconnaissance. Specifically: reading M2's persisted
+  artifacts, instantiating candidate models on CPU to count their parameters,
+  and computing the reuse proof and compute estimate below. That work is
+  complete and its artifacts are listed under m2b_output.
+
+does_not_authorise: >-
+  Launching M2B. Fitting anything, including the smoke cell. Modifying the
+  QLS structural schema. Opening M3. Training a GNN of any kind. Adding any
+  seed beyond 0. Reading canonical CRAG data. Using Package F. Resuming E2.
+  Execution requires a further dated amendment after the review this file
+  stops for.
+
+# --------------------------------------------------------------------------
+# The question
+# --------------------------------------------------------------------------
+
+scientific_question: >-
+  With the M2 structural representation frozen, what is the minimum semantic
+  representation that remains Pareto-admissible across all six development
+  datasets?
+
+why_it_is_worth_asking: >-
+  M2 froze a 14-column schema of which 5 columns and 3,072 of 3,585 trainable
+  parameters are semantic. The semantic block is therefore 86% of the model's
+  parameters and the structural claim this track exists to make is about the
+  other 14%. If S2 -- which learns no semantic parameter at all -- is
+  admissible, the publication model drops to 449 parameters and the structural
+  claim gets sharper. If it is not, the S3 columns are earning their place and
+  that is worth being able to say with a filed number rather than an
+  assumption.
+
+what_is_frozen: >-
+  Everything except the semantic representation, exactly as
+  configs/m2_qls_v2_freeze.yaml#qls_universal froze it. The list is
+  frozen_structural_schema below, transcribed from that file's own
+  selected.frozen_for_m2b and checked against it by
+  tests/test_m2b_declaration.py.
+
+frozen_structural_schema:
+  - R1/R2/R3
+  - A64
+  - scored_and_context_sets
+  - retrieval_prior
+  - seed_identity
+  - NODE_ROLE
+  - SUPPORT
+  - PATH
+  - candidate_normalization
+  - loss
+  - optimizer
+  - training_hyperparameters
+
+only_semantic_representation_may_vary: >-
+  Feature selection is NOT reopened here. M2 answered that question, and
+  reopening it would make M2's verdict retroactively conditional on a later
+  phase. The structural schema above is frozen for the whole of M2B; the
+  semantic branch is the only thing that differs between the three
+  candidates, and it is the only thing this phase is allowed to change.
+
+# --------------------------------------------------------------------------
+# The candidates -- counted from live modules, never transcribed
+# --------------------------------------------------------------------------
+
+semantic_candidates:
+  audited_by: scripts/m2b_semantic_audit.py
+  artifact: outputs/m2b_semantic_minimality/semantic_audit.json
+  tests: tests/test_m2b_semantic_control.py
+  frozen_set: [S2, S3, S4]
+  no_other_rung_is_in_scope: >-
+    S0 and S1 exist in qls_v2_semantic.RUNG_FEATURES and are deliberately
+    excluded: S0 is no semantic signal at all and S1 is a single cosine, and
+    neither is a serious candidate for a retrieval model whose whole input is
+    a query and a document. The question is minimality among usable
+    representations, not the floor of the ladder.
+
+  method: >-
+    Every number below was read off an instantiated nn.Module with numel(),
+    at the frozen 1536 embedding width, with precomputed_width 9 and M2's own
+    dropout and temperature. No parameter count in this file is transcribed
+    from prose, from a constant, or from an earlier draft. The audit refuses
+    to report anything if its S3 row does not reproduce the 3,585 that M2's
+    15 fits actually ran under.
+
+  frozen_embedding_dim: 1536
+  precomputed_width: 9
+  scorer: nn.Sequential(Linear(width, 32), GELU, Dropout(0.2), Linear(32, 1))
+  scorer_parameters_formula: 32 * width + 65
+
+  S2:
+    implementation: src/mp_retrieval/qls_v2_semantic.py::SemanticHead(rung=S2, dim=1536)
+    description: zero-learned-parameter semantic representation
+    columns: [cosine_qd, dot_qd_pct, mean_abs_diff]
+    raw_embedding_dimension: 1536
+    semantic_output_width: 3
+    semantic_trainable_parameters: 0
+    scorer_input_width: 12
+    scorer_trainable_parameters: 449
+    total_trainable_parameters: 449
+
+  S3:
+    implementation: src/mp_retrieval/qls_v2_semantic.py::SemanticHead(rung=S3, dim=1536)
+    description: the M2 incumbent -- S2's three columns plus two learned 1536-vectors
+    columns: [cosine_qd, dot_qd_pct, mean_abs_diff, semantic_product, semantic_difference]
+    raw_embedding_dimension: 1536
+    semantic_output_width: 5
+    semantic_trainable_parameters: 3072
+    scorer_input_width: 14
+    scorer_trainable_parameters: 513
+    total_trainable_parameters: 3585
+    reproduces_the_m2_filed_count: true
+
+  S4:
+    implementation: src/mp_retrieval/m2b_semantic_control.py::ProjectionSemanticHead(dim=1536)
+    description: projection-style control -- two learned 1536->64 projections and their interaction
+    columns: 4 blocks of 64 (query_state, node_state, product, absolute difference) plus 2 scalars
+    raw_embedding_dimension: 1536
+    projection_dim: 64
+    semantic_output_width: 258
+    semantic_trainable_parameters: 196608
+    scorer_input_width: 267
+    scorer_trainable_parameters: 8609
+    total_trainable_parameters: 205217
+
+    historical_status: CURRENT_DIMENSION_PROJECTION_CONTROL
+    not_historical_exact: >-
+      qls_v2_semantic.V1_SEMANTIC_PARAMETERS is 98,304, which is 2 x 768 x 64
+      and therefore a fact about a 768-dimensional payload. This track's
+      payload is 1536-dimensional, so the same projection instantiated here
+      holds 196,608 -- exactly twice. Two further things are not historical:
+      the input width is the current payload's, and what consumes the columns
+      is M2's frozen scorer rather than v1's parameter-matched head. Calling
+      this "the v1 model" would be wrong on all three counts. It is a control
+      for whether a projection-style semantic branch buys anything over two
+      learned vectors, which is M2B's question, not a reconstruction of v1,
+      which would answer a different one.
+    why_it_is_not_a_rung_in_RUNG_FEATURES: >-
+      qls_v2_semantic's rungs form a strictly nested chain and
+      tests/test_qls_v2_semantic.py asserts it. A projection block shares no
+      column with S2 or S3, so adding it there would break that invariant and
+      would assert a monotone relationship that does not exist. It lives in
+      its own module instead.
+
+  parameter_ladder:
+    S2: 449
+    S3: 3585
+    S4: 205217
+    S4_over_S3: 57.2
+    S3_over_S2: 8.0
+
+  how_the_branch_is_swapped: >-
+    M1AScorer takes an optional semantic_head. Passing None -- what every
+    M1A, M1B and M2 caller does -- builds SemanticHead(rung, dim) exactly as
+    before, so no completed fit's construction changes. M2B passes its own
+    head. The constructor raises if an injected head's rung disagrees with the
+    rung name the model is being recorded under, because a fit filed under the
+    wrong rung is unrecoverable after the fact.
+
+# --------------------------------------------------------------------------
+# The evaluation matrix -- M2's cells, unchanged
+# --------------------------------------------------------------------------
+
+evaluation_matrix:
+  cells_are_m2s: >-
+    Read from configs/m2_qls_v2_freeze.yaml#m2_selection_matrix.cells, not
+    re-derived. M2B changes the semantic rung and nothing about which cells
+    exist, so a cell added or dropped here would make the two phases
+    incomparable.
+  cells:
+    squad_clean: [R1]
+    musique_clean: [R1]
+    2wiki_clean: [R1, R2, R3]
+    hotpotqa_clean: [R1, R2, R3]
+    metaqa: [R1, R2, R3]
+    webqsp: [R1, R2, R3]
+  cell_count: 14
+  rungs_per_cell: 3
+  logical_matrix: 42
+
+workload:
+  proof: scripts/m2b_reuse_and_compute.py
+  artifact: outputs/m2b_semantic_minimality/reuse_and_compute.json
+  reused: 14
+  new: 28
+  new_by_rung:
+    S2: 14
+    S4: 14
+  reuse_basis: >-
+    All 14 M2 QLS-UNIVERSAL fits are seed-0 S3 fits in exactly these cells
+    under exactly this schema, so the S3 row of the matrix is already run. The
+    ledger derives that by checking each declared cell against the fits M2's
+    headline artifacts actually contain, and reports any cell it cannot match
+    rather than assuming coverage. Zero cells were unmatched.
+  what_is_not_reused: >-
+    S3's timings. The systems tie-break orders on uncached inference p95, and
+    an S3 latency measured on another day in another container would be a
+    measurement of the container. S3 is re-benchmarked for inference alongside
+    the new rungs; only its fitted weights and its effectiveness metrics are
+    reused.
+
+# --------------------------------------------------------------------------
+# Feature-store reuse
+# --------------------------------------------------------------------------
+
+feature_store_reuse:
+  rule: >-
+    M2's feature stores are immutable inputs to M2B. Graph and structural
+    features are not rebuilt per semantic rung.
+
+  proof: scripts/m2b_reuse_and_compute.py
+  artifact: outputs/m2b_semantic_minimality/reuse_and_compute.json
+
+  why_it_holds_by_construction: >-
+    A persisted cell's identity is run_m2_qls_v2_freeze.cell_build_key, whose
+    eight fields are dataset, data fingerprint, regime, panel size, per-seed
+    cap, neighbour scan cap, A64 mainline family and the declaration hash. The
+    semantic rung is not among them. The proof calls that function with the
+    rung set to S2, S3 and S4 on an otherwise identical namespace and shows
+    the key is byte-identical in every declared regime -- an equality
+    demonstrated, not a property asserted.
+
+  what_the_store_actually_holds: >-
+    Twelve structural columns -- BASE 4, GEOMETRY 3, SUPPORT 1, PATH 3,
+    NODE_ROLE 1 -- of which QLS-UNIVERSAL reads 9; the surplus is the excluded
+    GEOMETRY family. No column is semantic. M1AScorer.forward_explicit
+    computes the semantic block live, per query, from raw node and query
+    embeddings, so there is nothing rung-specific in the store to be stale.
+
+  equality_required_across_rungs_in_a_cell:
+    - query_ids
+    - scored_candidates
+    - context
+    - structural_feature_tensor
+    - retrieval_features
+    - seed
+    - NODE_ROLE
+    - SUPPORT
+    - PATH
+    - candidate_normalization
+  how_that_equality_is_enforced: >-
+    By identity rather than by comparison. All ten come from the one persisted
+    store, which the proof above shows is the same object for all three rungs.
+    The only thing constructed per rung is the semantic head. A comparison
+    would be the weaker guarantee: it could pass on two objects that happened
+    to agree.
+
+  the_one_obstruction:
+    field: config_sha256
+    build_time_value: d9518792075054612f70cd77d710c4af71f70407c287e8b883b87e68b84747a1
+    recorded_in: each M2 headline artifact's provenance.config_sha256, identical across all six
+    why_it_drifted: >-
+      cell_build_key hashes the whole of configs/m2_qls_v2_freeze.yaml, and
+      that file has since gained amendment 7 (M2's verdict), the result block,
+      amendment 8 and the selected block. The hash moved. No cell changed.
+    consequence_if_ignored: >-
+      load_cell_for_fit recomputes the key and raises on any differing field,
+      so all 14 stores would be refused on a field that describes the
+      paperwork rather than the features -- and the obvious workaround, a
+      rebuild, would spend the largest line in the budget to reproduce
+      byte-identical arrays.
+    resolution: PIN_TO_RECORDED_BUILD_TIME_HASH
+    resolution_rule: >-
+      M2B passes the build-time hash above as the expected value rather than
+      recomputing it from the current file. The check is not relaxed and the
+      field is not dropped: the other seven fields are still compared exactly,
+      so a store from the wrong dataset, regime, panel or A64 budget is still
+      refused. The hash reverts to what it was always for -- a record of which
+      declaration built the store.
+    what_this_does_not_license: >-
+      Reuse across a change that alters the features. If any of the seven
+      cell-identity fields moved, the store would be refused and should be.
+      This rule covers exactly one situation: the declaration file gained
+      prose after the stores were built.
+
+# --------------------------------------------------------------------------
+# The selection rule -- frozen before any M2B number exists
+# --------------------------------------------------------------------------
+
+selection_rule:
+  primary_metric: recall@5
+  anchoring: SYMMETRIC_BEST_ANCHORED
+  not_incumbent_anchored: >-
+    Every threshold below is measured against the best rung in the relevant
+    scope, not against S3. S3 gets no privilege for being the incumbent and S2
+    gets none for being smaller. If the rule were incumbent-anchored, S3 would
+    be admissible by definition and the phase would only be able to reject its
+    challengers.
+
+  definitions:
+    cell_best: max recall@5 among S2/S3/S4 in cell c
+    dataset_score: mean recall@5 of rung r over that dataset's declared regimes
+    dataset_best: max dataset_score among S2/S3/S4 for dataset d
+    macro_score: equal-weight mean of the six dataset_scores
+    macro_best: max macro_score among S2/S3/S4
+
+  effectiveness_admissible_iff:
+    macro: macro_score(r) >= macro_best - 0.25pp
+    per_dataset: every dataset_score(r, d) >= dataset_best(d) - 0.50pp
+    per_cell: every recall@5(r, c) >= cell_best(c) - 0.50pp
+
+  why_all_three_clauses: >-
+    The per-dataset clause stops a rung buying one giant gain by sacrificing
+    another dataset -- a macro-only rule would admit that trade. The
+    equal-weight dataset macro stops the three-regime datasets carrying triple
+    the weight of squad_clean and musique_clean, which have one cell each. The
+    per-cell clause stops a rung failing badly in one regime and being covered
+    by its siblings within the same dataset.
+
+  if_none_survives: SEMANTIC_PARETO_CONFLICT
+  thresholds_are_not_adjustable: >-
+    If no rung satisfies all three clauses the phase reports
+    SEMANTIC_PARETO_CONFLICT and stops for review. It does not widen a
+    tolerance, drop a clause, or reweight the macro. A threshold moved after
+    seeing the numbers it failed is not a threshold.
+
+  if_multiple_survive:
+    ordering: LEXICOGRAPHIC_SYSTEMS_PARETO
+    keys:
+      - 1. lower uncached inference p95
+      - 2. fewer total trainable parameters
+      - 3. lower peak memory
+      - 4. deterministic filed tie rule
+    tie_rule: >-
+      If all four keys tie exactly, select the rung with the smaller semantic
+      output width; if those tie, select the earlier of S2, S3, S4 in that
+      order. Filed here, before any number exists, so that a tie is resolved
+      by a rule rather than by whichever rung is being argued for at the time.
+    why_latency_outranks_parameters: >-
+      Parameter count is the headline this track cares about, which is exactly
+      why it is not first: ordering on it would let M2B select for its own
+      publication story. Latency is the property a reader of the systems table
+      can check against their own hardware.
+
+  secondary_diagnostics:
+    reported: [recall@1, recall@20, MRR, FullCov@20]
+    status: DIAGNOSTIC_ONLY
+    cannot_replace_the_primary_metric: >-
+      Reported for every cell and every rung, and read only after the
+      recall@5 outcome is computed. A secondary metric may explain a result or
+      raise a caution for a later phase; it may not overturn the verdict or be
+      substituted for recall@5 post-outcome.
+
+seed_policy:
+  seed: 0
+  count: 1
+  five_seed_confirmation: PROHIBITED
+  three_seed_resolution: >-
+    If selection remains decision-critical within the gray bands above after
+    the one-seed result, the smallest sufficient 3-seed resolution may be
+    PROPOSED, naming the specific cells it would resolve. It is not launched
+    with the one-seed run and is not launched automatically. Five seeds are
+    not the fallback and are prohibited throughout development.
+
+# --------------------------------------------------------------------------
+# Instrumentation -- mandatory for every new fit, no recovery reruns
+# --------------------------------------------------------------------------
+
+instrumentation_requirement:
+  rule: >-
+    Every new fit records the full field list below at the time it runs. A
+    field missing from a completed fit is not recoverable by a later rerun,
+    because the rerun would be a different fit on different hardware; a run
+    that cannot record these is not started.
+  fields:
+    - checkpoint
+    - per_query_rows
+    - aggregate_metrics_reconstructed_from_rows
+    - source_commit
+    - config_fingerprint
+    - dataset_fingerprint
+    - candidate_fingerprint
+    - feature_store_fingerprint
+    - semantic_rung_fingerprint
+    - semantic_parameter_count
+    - scorer_parameter_count
+    - total_parameter_count
+    - train_time_seconds
+    - uncached_inference_p50_ms
+    - uncached_inference_p95_ms
+    - uncached_inference_p99_ms
+    - peak_vram_mb
+    - peak_rss_mb
+  semantic_rung_fingerprint: >-
+    New in M2B and the field that makes the phase auditable: a hash over the
+    rung name, the implementing module and class, the ordered feature names,
+    the embedding width, the projection width where one exists, and the
+    semantic parameter count. Two fits that differ only in semantic
+    representation are otherwise nearly indistinguishable in their
+    provenance, which is precisely the confusion this phase could produce.
+  aggregates_are_rebuilt_from_rows: >-
+    As in M2. Every stored aggregate is reconstructed from that fit's own
+    per-query rows rather than carried from a summary, and the artifact
+    records that it was.
+
+# --------------------------------------------------------------------------
+# Compute
+# --------------------------------------------------------------------------
+
+compute:
+  estimate: scripts/m2b_reuse_and_compute.py
+  artifact: outputs/m2b_semantic_minimality/reuse_and_compute.json
+  rate_source: docs/COMPUTE_LEDGER.md L546-547 -- $2.241/h GPU, $0.634/h CPU, reused verbatim
+  status: ESTIMATED_NOT_AUTHORISED
+
+  feature_store_build:
+    new_builds: 0
+    cost_usd: 0.0
+    cost_avoided_usd: 3.5992
+    why_zero: >-
+      All 14 stores exist and are provably rung-independent. M2's own estimate
+      put feature build at 5,431-5,782 s and called it 83% of that phase; M2B
+      does not spend it again. This is the largest line in the estimate and it
+      is zero because of a proof, not an assumption.
+
+  s2_fits:
+    new_fits: 14
+    seconds: {floor: 1112.0, conservative: 1112.0}
+    cost_usd: {floor: 0.6922, conservative: 0.6922}
+    basis: >-
+      Each cell's own measured M2 S3 training_seconds, unscaled. S2 runs the
+      same per-query loop over the same candidates and does strictly less
+      arithmetic inside it, so it cannot be slower for a compute reason; it is
+      floored at parity rather than estimated below it.
+
+  s4_fits:
+    new_fits: 14
+    seconds: {floor: 1112.0, conservative: 2780.0}
+    cost_usd: {floor: 0.6922, conservative: 1.7306}
+    basis: >-
+      The same measured seconds, scaled by 2.5 for the conservative bound. S4
+      replaces three reductions with two 1536x64 projections -- about 64x the
+      arithmetic per candidate -- and widens the scorer's first layer from 14
+      to 267 columns. Neither is likely to appear at 64x in wall clock,
+      because at this scale the fits are dominated by per-query kernel-launch
+      overhead in M1AScorer's Python loop rather than by the size of each
+      kernel. That is an argument, not a measurement, which is why the smoke
+      cell measures it before any fan-out. 2.5 is a loose bound to launch
+      under, not a prediction.
+
+  inference_benchmarking:
+    arms: 42
+    includes_the_incumbent: true
+    cost_usd: 0.7843
+
+  container_overhead:
+    priced_containers: 28
+    usd_each: 0.0474
+    cost_usd: 1.3272
+    source: M2's measured smoke, outputs/m2_qls_v2_freeze/measured_cost.json
+    this_is_an_upper_bound: >-
+      An upper bound, priced at one container per fit. M2 actually ran one
+      container per dataset and did every cell inside it; the same
+      orchestration here is 6 datasets x 2 new rungs = 12 containers, less
+      than half. The larger number is kept because the estimate should not
+      depend on an orchestration choice that has not been made.
+
+  storage:
+    checkpoint_megabytes_all_cells: {S2: 0.025, S3: 0.201, S4: 11.492}
+    total_megabytes: 11.718
+    note: >-
+      S4's checkpoint is 57x the incumbent's per cell. Still under a megabyte
+      each and not worth pricing, but the ratio is the point of the phase and
+      is not hidden inside a rounding.
+
+  total_cost_usd: {floor: 3.4959, conservative: 4.5343}
+  proposed_ceiling_usd: 6.00
+  ceiling_basis: >-
+    The conservative bound plus roughly 32%, which is headroom for the S4 fit
+    multiplier being wrong in the expensive direction. Deliberately below M2's
+    $9.00 because M2B buys no feature builds and M2 measured $4.3914 with
+    them. Not a safety multiple over an unknown -- the dominant unknown is one
+    multiplier, and the smoke measures it before anything fans out.
+  not_costed:
+    - the smoke cell, a subset of the fits above rather than additional to them
+    - storage rent on a volume this track already holds
+    - any seed beyond 0, which is prohibited without a further authorisation
+
+smoke_before_fanout:
+  rule: >-
+    Exactly one representative cell is smoked before any fan-out, and only S2
+    and S4 are smoked in it. S3 is already proven there by a completed M2 fit,
+    so re-running it would spend money to re-answer a question with a filed
+    answer.
+  cell: 2wiki_clean / R3
+  why_that_cell: >-
+    It exercises a real R3 NODE_ROLE column -- non-constant structural
+    admission -- so the smoke tests the branch under the schema's most
+    demanding regime rather than under R1, where NODE_ROLE is identically
+    zero and a broken structural path could pass unnoticed. It is also the
+    cell M2 smoked, so its build is warm and its numbers are comparable, and
+    it is one of the cheapest cells in the matrix at about 19 s of training.
+  what_the_smoke_must_establish:
+    - both heads instantiate at the frozen width and produce the declared column counts
+    - the persisted M2 store loads under the pinned build-time hash
+    - every instrumentation field above is populated
+    - the measured S4 fit time, which replaces the 2.5 multiplier with a number
+  authorisation: >-
+    NOT AUTHORISED BY THIS FILE. The smoke is a fit. It requires the further
+    dated amendment that this file's stop condition asks for.
+
+# --------------------------------------------------------------------------
+# Output and stop
+# --------------------------------------------------------------------------
+
+m2b_output:
+  contents:
+    - semantic_candidate_parameter_accounting
+    - feature_store_reuse_proof
+    - workload_ledger
+    - compute_estimate
+  artifacts:
+    - outputs/m2b_semantic_minimality/semantic_audit.json
+    - outputs/m2b_semantic_minimality/reuse_and_compute.json
+
+stop_condition:
+  status: STOP_FOR_REVIEW
+  reached_when: >-
+    The declaration, the live implementation audit, the parameter accounting,
+    the exact workload, the reuse plan and the compute estimate are all filed.
+    All six are filed. This phase stops here.
+  what_happens_next: >-
+    Nothing, until a further dated amendment authorises execution. The next
+    authorisation would cover the smoke cell first and the 28-fit fan-out only
+    after the smoke's numbers are reviewed.
+
+standing_prohibitions_restated:
+  - no_five_seed_confirmation_anywhere_in_development
+  - no_package_f
+  - no_e2_resume
+  - no_a64_changes
+  - no_structural_schema_changes_in_this_phase
+  - no_gnn_training
+  - no_m3
+  - no_canonical_crag_read
+
+reversal_note: >-
+  If M2B returns SEMANTIC_PARETO_CONFLICT, or if a reviewer rejects the
+  candidate set, the frozen object remains M2's: QLS-UNIVERSAL at S3, 3,585
+  parameters, exactly as configs/m2_qls_v2_freeze.yaml#selected records it.
+  M2B can only narrow the semantic representation or fail to; it cannot
+  invalidate M2, because it changes nothing M2 measured.
+
+after_this_file: >-
+  A review of the numbers above, then a dated amendment authorising the smoke
+  cell. Not M3, not a GNN, not a seed beyond 0, and not canonical CRAG.

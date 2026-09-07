@@ -159,9 +159,22 @@ class M1AScorer(nn.Module):
         temperature: float,
         head_width: int = HEAD_WIDTH,
         embedding_dim: int = EMBEDDING_DIM,
+        semantic_head: nn.Module | None = None,
     ) -> None:
         super().__init__()
-        self.semantic_head = SemanticHead(rung=semantic_rung, dim=embedding_dim)
+        # M2B varies the semantic branch and nothing else, so it injects its own
+        # head rather than getting a second scorer. Default None keeps every
+        # M1A/M1B/M2 construction byte-identical: the branch below is the only
+        # one those callers reach.
+        if semantic_head is None:
+            semantic_head = SemanticHead(rung=semantic_rung, dim=embedding_dim)
+        elif getattr(semantic_head, "rung", None) != semantic_rung:
+            raise ValueError(
+                f"semantic_head is rung {getattr(semantic_head, 'rung', None)!r} but the model "
+                f"was asked for {semantic_rung!r}; a fit recorded under the wrong rung name is "
+                "unrecoverable after the fact"
+            )
+        self.semantic_head = semantic_head
         self.precomputed_width = int(precomputed_width)
         input_dim = self.precomputed_width + len(self.semantic_head.feature_names)
         if input_dim <= 0:
@@ -222,6 +235,7 @@ def build_m1a_model(
     temperature: float,
     head_width: int = HEAD_WIDTH,
     embedding_dim: int = EMBEDDING_DIM,
+    semantic_head: nn.Module | None = None,
 ) -> M1AScorer:
     return M1AScorer(
         precomputed_width=precomputed_width,
@@ -230,4 +244,5 @@ def build_m1a_model(
         temperature=temperature,
         head_width=head_width,
         embedding_dim=embedding_dim,
+        semantic_head=semantic_head,
     )
