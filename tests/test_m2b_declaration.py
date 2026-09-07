@@ -120,7 +120,15 @@ def test_the_smoke_runs_the_full_panel_and_says_why(declaration):
     assert "full declared validation panel" in smoke["panel"]
     assert "100-query" in smoke["panel"] or "100-query" in smoke["why_the_full_panel"]
     assert smoke["seed"] == 0
-    assert smoke["rungs"] == ["S2", "S4"]
+    # All three run; only two are fitted. Amendment 2a corrected a filing that
+    # had left S3 out of the smoke altogether.
+    assert smoke["rungs"] == ["S2", "S3", "S4"]
+    assert "S2 and S4" in smoke["which_of_those_are_fitted"]
+    assert "fabricated reuse" in smoke["which_of_those_are_fitted"]
+    why = " ".join(smoke["why_s3_is_in_the_smoke_at_all"].split())
+    assert "did not prove that the reuse path works in the container" in why
+    assert "no training" in why
+    assert "42 logical, 14 reused, 28 new" in " ".join(smoke["what_it_does_not_do"].split())
 
 
 def test_the_smoke_must_establish_the_controlled_comparison_not_just_that_it_ran(

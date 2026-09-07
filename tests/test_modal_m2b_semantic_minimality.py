@@ -103,15 +103,25 @@ def test_the_smoke_cell_comes_from_the_declaration() -> None:
     assert launcher.SMOKE_REGIME == "R3"
 
 
-def test_the_smoke_fits_only_the_two_new_rungs(jobs) -> None:
-    """S3 in that cell is a completed M2 fit; re-running it buys nothing."""
+def test_the_smoke_runs_all_three_rungs_but_fits_only_the_two_new_ones(jobs) -> None:
+    """S3 is in the smoke, and the runner is what keeps it from being refitted.
+
+    Amendment 2a put it back: leaving it out would have deferred the reuse
+    path -- the one fourteen of the forty-two cells depend on -- to the
+    fan-out, where a failure costs six containers instead of one. It costs one
+    inference pass and no training, because the runner selects the reused
+    branch on rung identity.
+    """
 
     job = next(item for item in jobs if item["dataset"] == launcher.SMOKE_DATASET)
     args = launcher._runner_args(job, stage="smoke")
-    assert args.rungs == ["S2", "S4"]
+    assert args.rungs == ["S2", "S3", "S4"]
     assert args.regimes == ["R3"]
-    assert sorted(launcher.SMOKE_RUNGS) == sorted(runner.NEW_RUNGS)
-    assert runner.REUSED_RUNG not in launcher.SMOKE_RUNGS
+    assert sorted(launcher.SMOKE_RUNGS) == sorted(runner.ALL_RUNGS)
+    assert runner.REUSED_RUNG in launcher.SMOKE_RUNGS
+    # And the smoke is handed M2's tree, without which the runner refuses the
+    # reused rung rather than quietly refitting it.
+    assert args.m2_fits_root is not None
 
 
 def test_the_smoke_runs_the_full_panel_not_a_hundred_queries(jobs) -> None:

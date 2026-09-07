@@ -943,10 +943,12 @@ compute:
 
 smoke_before_fanout:
   rule: >-
-    Exactly one representative cell is smoked before any fan-out, and only S2
-    and S4 are smoked in it. S3 is already proven there by a completed M2 fit,
-    so re-running it would spend money to re-answer a question with a filed
-    answer.
+    Exactly one representative cell is smoked before any fan-out. All three
+    rungs run in it, but only S2 and S4 are FITTED: S3 enters the smoke the
+    same way it enters the fan-out, by loading the checkpoint M2 paid for.
+    Re-training S3 would spend money to re-answer a question with a filed
+    answer, and leaving it out entirely would leave the reuse path untested
+    until the fan-out, where a failure costs six containers instead of one.
   cell: 2wiki_clean / R3
   why_that_cell: >-
     It exercises a real R3 NODE_ROLE column -- non-constant structural
@@ -963,7 +965,25 @@ smoke_before_fanout:
     This is a real cell of the matrix, run once, and its numbers are the
     matrix's.
   seed: 0
-  rungs: [S2, S4]
+  rungs: [S2, S3, S4]
+  which_of_those_are_fitted: >-
+    S2 and S4. S3 is loaded from M2's checkpoint by the runner, which selects
+    the reused path on rung identity and refuses outright when no fits root is
+    given rather than silently refitting -- a fresh fit reported in a column
+    the declaration calls reused would be a fabricated reuse.
+  why_s3_is_in_the_smoke_at_all: >-
+    s3_behaviour_reuse proved state-dict compatibility and forward equality
+    offline, against local checkpoints. It did not prove that the reuse path
+    works in the container, on the volume, against the sealed M2 tree, which
+    is the arrangement all fourteen reused cells will run under. The smoke
+    costs one extra inference pass to establish that, and no training. It
+    also makes the smoke's controlled comparison the same three-way
+    comparison the fan-out will produce, rather than a two-way rehearsal of
+    it.
+  what_it_does_not_do: >-
+    It does not add a fit to the workload. The matrix is unchanged at 42
+    logical, 14 reused, 28 new. S3 here is a re-benchmark of an existing fit,
+    which is exactly what the fourteen reused cells are.
   what_the_smoke_must_establish:
     - both heads instantiate at the frozen 1536 width and produce the declared column counts
     - >-
@@ -971,20 +991,27 @@ smoke_before_fanout:
       feature_build_contract_sha256, with the seven cell-identity fields
       compared exactly, and no cell master is rebuilt
     - >-
-      S2 and S4 in this cell record byte-identical shared inputs: the same
+      every rung in this cell records byte-identical shared inputs: the same
       query ids, the same scored candidates, the same context, the same
       structural feature fingerprint, the same NODE_ROLE, SUPPORT and PATH
       values and the same candidate normalization, with only the semantic
-      rung differing -- enforced by one store handed to both rungs, and
+      rung differing -- enforced by one store handed to every rung, and
       checked by comparing their shared_inputs digests afterwards
     - S2 reports semantic parameters 0 and 449 total, with 3 semantic columns
     - S4 reports semantic parameters 196,608 and 205,217 total, with 258 semantic columns
     - a checkpoint is written and reloads into the same model with strict=True
     - per-query rows are written and the aggregate rebuilt from them matches exactly
-    - every training-epoch loss is finite, and no held-out score is NaN or Inf
+    - >-
+      every training-epoch loss is finite for the rungs that trained, and no
+      held-out score is NaN or Inf for any rung including the reused one
     - every instrumentation field above is populated and non-null
     - full uncached inference p50, p95 and p99 over the whole model stack, and peak VRAM
     - the measured S4 fit time, which replaces the 2.5 multiplier with a number
+    - >-
+      S3 is loaded rather than refitted -- its recorded training time is
+      exactly zero and its checkpoint is M2's -- so the reuse path the
+      fourteen reused cells depend on is exercised in the container before
+      the fan-out rather than during it
   why_nan_checking_is_listed_separately: >-
     Argsorting a vector containing NaN still returns a permutation, so a model
     that emits NaN produces a ranking, and aggregate metrics computed from

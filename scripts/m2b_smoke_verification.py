@@ -53,6 +53,7 @@ from scripts.run_m2b_semantic_minimality import (  # noqa: E402
     DECLARED_UNIVERSAL_ARM,
     RUNNER_UNIVERSAL_ARM,
 )
+from scripts.run_m2b_semantic_minimality import REUSED_RUNG as RUNNER_REUSED_RUNG  # noqa: E402
 
 DECLARATION_PATH = REPO_ROOT / "configs" / "m2b_semantic_minimality.yaml"
 SMOKE_RESULT_PATH = (
@@ -88,7 +89,12 @@ ITEM_KEYS: dict[str, str] = {
     "every instrumentation field": "instrumentation_is_populated",
     "full uncached inference p50": "uncached_latency_and_peak_vram",
     "the measured S4 fit time": "s4_fit_time_measured",
+    "S3 is loaded rather than refitted": "s3_is_reused_not_refitted",
 }
+
+#: The rung the declaration says is reused rather than fitted. Read from the
+#: runner so this file cannot disagree with the code that selects the path.
+REUSED_RUNG = RUNNER_REUSED_RUNG
 
 
 def _flat(text: Any) -> str:
@@ -184,6 +190,12 @@ def check(
     smoked = list(declaration["smoke_before_fanout"]["rungs"])
     fits = {rung: _rung(cell, rung) for rung in smoked}
     s2, s4 = fits["S2"], fits["S4"]
+    if REUSED_RUNG not in fits:
+        raise SystemExit(
+            f"the declaration smokes {smoked} but {REUSED_RUNG} is not among them, so the "
+            "reuse path the fourteen reused cells depend on would first run in the fan-out"
+        )
+    reused = fits[REUSED_RUNG]
 
     frozen = int(declaration["semantic_formulas"]["frozen_embedding_dim"])
     fingerprints = {
@@ -402,6 +414,31 @@ def check(
                 "the_multiplier_this_replaces": 2.5,
                 "reused_from_m2": {rung: fit.get("reused_from_m2") for rung, fit in fits.items()},
             },
+        },
+        "s3_is_reused_not_refitted": {
+            # The reuse path fourteen cells depend on, exercised here rather
+            # than first in the fan-out. A refit would look like a successful
+            # smoke: same shape, same fields, plausible numbers, and an S3
+            # column that is no longer M2's fit.
+            "passed": reused.get("reused_from_m2") is True
+            and (reused.get("training") or {}).get("reused") is True
+            # Not `or -1.0`: zero is the value being tested for, and `0.0 or x`
+            # is x, so the idiom would refuse exactly the correct reading.
+            and (reused.get("systems") or {}).get("train_time_seconds") == 0.0
+            and (reused.get("training") or {}).get("history") == []
+            and bool((reused.get("training") or {}).get("reused_from")),
+            "observed": {
+                "rung": REUSED_RUNG,
+                "reused_from_m2": reused.get("reused_from_m2"),
+                "reused_from": (reused.get("training") or {}).get("reused_from"),
+                "train_time_seconds": (reused.get("systems") or {}).get("train_time_seconds"),
+                "training_epochs": len((reused.get("training") or {}).get("history") or []),
+            },
+            "why_zero_seconds_is_the_pass_here": (
+                "A reused rung trains nothing, so zero is the correct reading and a nonzero "
+                "one means it was refitted. This is the opposite of the S4 timing item, "
+                "where zero would mean nothing was measured."
+            ),
         },
     }
 

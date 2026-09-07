@@ -9,7 +9,7 @@ cannot fail is not a check.
 Three of them are about the checker rather than the smoke:
 
 *   the denominator. If a declared item stops matching a check, the run must
-    stop rather than report "10 of 10" against a declaration that asked for 11.
+    stop rather than report "11 of 11" against a declaration that asked for 12.
 *   the parameter counts. They must come from the declaration, so the script
     cannot agree with a wrong number by carrying its own copy. The test moves
     the declaration and requires the checker to move with it.
@@ -57,17 +57,33 @@ def _digest(text: str) -> str:
     return text.encode().hex().ljust(64, "0")[:64]
 
 
-def _fit(declaration: dict[str, Any], rung: str, *, seconds: float) -> dict[str, Any]:
-    """One fit shaped like the runner's, weighing what the declaration says."""
+def _fit(
+    declaration: dict[str, Any], rung: str, *, seconds: float, reused: bool = False
+) -> dict[str, Any]:
+    """One fit shaped like the runner's, weighing what the declaration says.
+
+    ``reused`` builds the S3 shape: weights loaded from M2, no epochs, zero
+    seconds, and everything downstream of the model measured here anyway.
+    """
 
     declared = declaration["semantic_candidates"][rung]
     width = int(declared["semantic_output_width"])
+    training = (
+        {
+            "reused": True,
+            "reused_from": "/vol/m2_fits/R3/qls-universal/checkpoint.pt",
+            "training_seconds": 0.0,
+            "history": [],
+        }
+        if reused
+        else {"training_seconds": seconds, "history": [{"loss": 1.0}, {"loss": 0.5}]}
+    )
     return {
         "dataset": "2wiki_clean",
         "regime": "R3",
         "semantic_rung": rung,
         "seed": 0,
-        "reused_from_m2": False,
+        "reused_from_m2": reused,
         "semantic_rung_fingerprint": {
             "rung": rung,
             "class": f"{rung}Head",
@@ -85,7 +101,7 @@ def _fit(declaration: dict[str, Any], rung: str, *, seconds: float) -> dict[str,
             "total": int(declared["total_trainable_parameters"]),
         },
         "metrics": {"recall@5": 0.5},
-        "training": {"training_seconds": seconds, "history": [{"loss": 1.0}, {"loss": 0.5}]},
+        "training": training,
         "uncached_inference": {
             "measured_span": (
                 "raw query and candidate embeddings -> semantic rung -> frozen precomputed "
@@ -159,6 +175,8 @@ def result(declaration) -> dict[str, Any]:
                 "held_out_query_ids": [f"q{index}" for index in range(PANEL)],
                 "rungs": {
                     "S2": _fit(declaration, "S2", seconds=40.0),
+                    # S3 enters the smoke the way it enters the fan-out.
+                    "S3": _fit(declaration, "S3", seconds=0.0, reused=True),
                     "S4": _fit(declaration, "S4", seconds=92.0),
                 },
             }
@@ -181,7 +199,7 @@ def test_the_declared_items_each_match_exactly_one_check(declaration):
     """Against the live declaration, not a fixture: this is the real binding."""
 
     items = verifier.declared_items(declaration)
-    assert len(items) == 11
+    assert len(items) == 12
     assert set(items) == set(verifier.ITEM_KEYS.values())
 
 
@@ -208,11 +226,11 @@ def test_an_item_matching_two_checks_stops_the_run(declaration, monkeypatch):
         verifier.declared_items(declaration)
 
 
-def test_a_fixture_that_meets_the_declaration_passes_all_eleven(result, tmp_path):
+def test_a_fixture_that_meets_the_declaration_passes_all_twelve(result, tmp_path):
     built = _built(result, tmp_path)
     assert built["verdict"] == verifier.PASSED
     assert built["failed_items"] == []
-    assert built["passed_items"] == built["declared_items"] == 11
+    assert built["passed_items"] == built["declared_items"] == 12
 
 
 def test_the_result_must_be_the_declared_cell_and_seed(result, tmp_path):
@@ -235,11 +253,30 @@ def test_a_missing_result_leaves_the_gate_false(tmp_path):
 
 
 def test_a_missing_rung_is_refused_rather_than_scored_as_a_failure(result, tmp_path):
-    # Not "S4 failed its items" -- there is no S4, and reporting 9 of 11 would
+    # Not "S4 failed its items" -- there is no S4, and reporting 11 of 12 would
     # invite a rerun of the wrong thing.
     del result["cells"]["R3"]["rungs"]["S4"]
     with pytest.raises(SystemExit, match="no S4 fit"):
         _built(result, tmp_path)
+
+
+def test_a_smoke_without_the_reused_rung_is_refused(result, tmp_path, monkeypatch):
+    """Leaving S3 out would defer the reuse path to the fan-out.
+
+    That is the arrangement the amendment corrected: fourteen cells depend on
+    reuse, and a failure discovered during the fan-out costs six containers
+    instead of one.
+    """
+
+    smoke = dict(yaml.safe_load(DECLARATION_PATH.read_text(encoding="utf-8")))
+    smoke["smoke_before_fanout"] = dict(smoke["smoke_before_fanout"])
+    smoke["smoke_before_fanout"]["rungs"] = ["S2", "S4"]
+    path = tmp_path / "without_s3.yaml"
+    path.write_text(yaml.safe_dump(smoke), encoding="utf-8")
+    result_path = tmp_path / "2wiki_clean.json"
+    result_path.write_text(json.dumps(result), encoding="utf-8")
+    with pytest.raises(SystemExit, match="is not among them"):
+        verifier.build(result_path, path)
 
 
 # --------------------------------------------------------------------------
@@ -527,6 +564,90 @@ def test_the_artifact_says_which_gates_it_earns_and_which_it_does_not(result, tm
     # been refiled yet, and a passing smoke does not confer it.
     assert "measured_cost_within_ceiling" not in earns
     assert "cost gate is earned separately" in earns
+
+
+# --------------------------------------------------------------------------
+# Item 12: the reuse path
+# --------------------------------------------------------------------------
+
+
+def test_a_refitted_s3_is_refused(result, tmp_path):
+    """The failure this item exists for, and it looks like a healthy smoke.
+
+    Same shape, same fields, plausible numbers -- and an S3 column that is no
+    longer the fit M2 filed, in a phase whose whole design is that fourteen of
+    its forty-two cells come from M2 unchanged.
+    """
+
+    s3 = result["cells"]["R3"]["rungs"]["S3"]
+    s3["reused_from_m2"] = False
+    s3["training"] = {"reused": False, "training_seconds": 31.0, "history": [{"loss": 0.4}]}
+    s3["systems"]["train_time_seconds"] = 31.0
+    built = _built(result, tmp_path)
+    assert built["verdict"] == verifier.FAILED
+    assert "s3_is_reused_not_refitted" in built["failed_items"]
+
+
+def test_zero_seconds_is_the_pass_for_the_reused_rung(result, tmp_path):
+    """The opposite reading from item 11, and worth stating as a test.
+
+    Zero seconds means "did not train", which is correct for S3 and a failure
+    for S4. A checker written with `value or default` gets this backwards,
+    because 0.0 is falsy -- so the passing case is asserted directly.
+    """
+
+    entry = _built(result, tmp_path)["items"]["s3_is_reused_not_refitted"]
+    assert entry["passed"] is True
+    assert entry["observed"]["train_time_seconds"] == 0.0
+    assert entry["observed"]["training_epochs"] == 0
+    assert "opposite of the S4 timing item" in entry["why_zero_seconds_is_the_pass_here"]
+
+
+def test_a_reused_rung_with_training_epochs_is_refused(result, tmp_path):
+    # Zero seconds and a training history at once: the seconds were not
+    # recorded, and something did train.
+    result["cells"]["R3"]["rungs"]["S3"]["training"]["history"] = [{"loss": 0.4}]
+    assert "s3_is_reused_not_refitted" in _built(result, tmp_path)["failed_items"]
+
+
+def test_a_reused_rung_must_name_the_checkpoint_it_reused(result, tmp_path):
+    result["cells"]["R3"]["rungs"]["S3"]["training"]["reused_from"] = ""
+    assert "s3_is_reused_not_refitted" in _built(result, tmp_path)["failed_items"]
+
+
+def test_the_reused_rung_is_still_held_to_the_shared_inputs(result, tmp_path):
+    """Reuse exempts S3 from training, not from the controlled comparison."""
+
+    result["cells"]["R3"]["rungs"]["S3"]["shared_inputs_sha256"] = _digest("elsewhere")
+    assert "only_the_semantic_rung_differs" in _built(result, tmp_path)["failed_items"]
+
+
+def test_the_reused_rung_is_still_held_to_finite_scores(result, tmp_path):
+    """It trains no epochs, so the loss half is vacuous; the score half is not.
+
+    M2 filed S3's effectiveness, but the scores being re-measured here are this
+    container's, and a NaN in them would be this container's problem.
+    """
+
+    result["cells"]["R3"]["rungs"]["S3"]["held_out_scores"]["all_finite"] = False
+    assert "losses_and_scores_are_finite" in _built(result, tmp_path)["failed_items"]
+
+
+def test_the_reused_rung_is_still_benchmarked_here(result, tmp_path):
+    """Its latency is a property of this container, not of M2's."""
+
+    result["cells"]["R3"]["rungs"]["S3"]["systems"]["uncached_inference_p95_ms"] = 0.0
+    assert "uncached_latency_and_peak_vram" in _built(result, tmp_path)["failed_items"]
+
+
+def test_the_reused_rung_still_weighs_3585(result, tmp_path):
+    built = _built(result, tmp_path)
+    columns = built["items"]["heads_instantiate_at_the_frozen_width"]["expected"][
+        "semantic_columns"
+    ]
+    assert columns == {"S2": 3, "S3": 5, "S4": 258}
+    result["cells"]["R3"]["rungs"]["S3"]["semantic_rung_fingerprint"]["semantic_columns"] = 4
+    assert "heads_instantiate_at_the_frozen_width" in _built(result, tmp_path)["failed_items"]
 
 
 # --------------------------------------------------------------------------
