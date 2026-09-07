@@ -15,6 +15,7 @@ needs no data.
 
 from __future__ import annotations
 
+import ast
 import sys
 from pathlib import Path
 
@@ -29,6 +30,7 @@ for path in (REPO_ROOT, REPO_ROOT / "src"):
         sys.path.insert(0, str(path))
 
 from mp_retrieval import m2d_semantic_fusion as fusion
+from mp_retrieval import run_artifacts
 from scripts import run_m2d_stage0_probe as probe
 
 DECLARATION = yaml.safe_load(
@@ -380,3 +382,162 @@ def test_the_passage_family_constant_is_the_set_the_declaration_named():
         assert probe._family(dataset) == "kb"
     for dataset in named:
         assert probe._family(dataset) == "passage"
+
+
+# --------------------------------------------------------------------------
+# The artifact the container will try to write
+# --------------------------------------------------------------------------
+
+PROBE_SOURCE = (REPO_ROOT / "scripts" / "run_m2d_stage0_probe.py").read_text(encoding="utf-8")
+PROBE_TREE = ast.parse(PROBE_SOURCE)
+
+
+def _declared_rows_at() -> str:
+    """The rows_at the probe passes to write_artifact, read from the call."""
+
+    for node in ast.walk(PROBE_TREE):
+        if not isinstance(node, ast.Call):
+            continue
+        name = node.func.attr if isinstance(node.func, ast.Attribute) else None
+        if name != "write_artifact":
+            continue
+        for keyword in node.keywords:
+            if keyword.arg == "rows_at":
+                assert isinstance(keyword.value, ast.Constant), "rows_at must be a literal"
+                return keyword.value.value
+    raise AssertionError("the probe does not call write_artifact")
+
+
+def _payload_node(dotted: str) -> ast.AST:
+    """Walk the payload literal along a dotted rows_at path."""
+
+    literal = None
+    for node in ast.walk(PROBE_TREE):
+        if (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.target.id == "result"
+            and isinstance(node.value, ast.Dict)
+        ):
+            literal = node.value
+    assert literal is not None, "the probe's payload is no longer a dict literal named result"
+
+    current: ast.AST = literal
+    for key in dotted.split("."):
+        assert isinstance(current, ast.Dict), (
+            f"rows_at={dotted!r} descends into a {type(current).__name__}, whose "
+            f"contents are computed rather than written out, so nothing here can "
+            f"establish that {key!r} is a list. Point rows_at at a literal list."
+        )
+        match = [
+            value
+            for name, value in zip(current.keys, current.values, strict=True)
+            if isinstance(name, ast.Constant) and name.value == key
+        ]
+        assert match, f"the payload has no key {key!r} on the path {dotted!r}"
+        current = match[0]
+    return current
+
+
+def test_the_row_count_counts_something_countable() -> None:
+    """Reproduces a failure that cost four containers their last step.
+
+    write_artifact refuses a rows_at that resolves to anything but a list -- a
+    row count over a dict counts nothing and would let a truncated artifact
+    read back as a valid one. The probe pointed it at ``rankers.S4``, which is
+    a metrics dict, and every cell died at the write, after the whole panel had
+    been scored and paid for.
+
+    Nothing about that needed a container to discover: the payload is a literal
+    in this file, so the type of what rows_at names can be read off the source.
+    """
+
+    node = _payload_node(_declared_rows_at())
+    produces_a_list = isinstance(node, (ast.List, ast.ListComp)) or (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id in ("sorted", "list")
+    )
+    assert produces_a_list, (
+        f"rows_at={_declared_rows_at()!r} names a "
+        f"{type(node).__name__}, and write_artifact refuses anything but a list"
+    )
+
+
+def test_the_counted_rows_are_the_arms_the_declaration_names() -> None:
+    """A count is only a check if it counts the thing that could go missing."""
+
+    assert _declared_rows_at() == "arms_scored"
+    node = _payload_node("arms_scored")
+    assert isinstance(node, ast.Call) and node.func.id == "sorted"
+    assert isinstance(node.args[0], ast.Name) and node.args[0].id == "per_arm"
+
+
+def _ranks(order: list[int]) -> np.ndarray:
+    position = {int(node): index for index, node in enumerate(POOL.tolist())}
+    out = np.empty(POOL.size, dtype=np.int64)
+    for rank, node in enumerate(order, start=1):
+        out[position[node]] = rank
+    return out
+
+
+def test_every_block_the_payload_is_built_from_survives_the_write() -> None:
+    """The last runtime-only failure class on this path, closed here.
+
+    The payload is assembled from numpy arrays. A block that hands back a
+    numpy scalar instead of a float, or a NaN from an empty mean, is valid
+    Python and fails only at write_artifact -- which is to say after the whole
+    panel has been scored, in a container, on the last line. That has now
+    happened twice on this probe for two different reasons, so each builder is
+    pushed through the real digest here, on synthetic ranks. content_digest
+    round-trips through JSON with allow_nan=False, so it refuses exactly what
+    the container would refuse.
+    """
+
+    relevant = np.isin(POOL, np.asarray([20], dtype=np.int64))
+    ranks = {
+        "S4": _ranks([10, 20, 30, 40]),
+        "S3": _ranks([20, 10, 30, 40]),
+        "Dense": _ranks([30, 20, 10, 40]),
+        "SPLADE": _ranks([40, 20, 30, 10]),
+    }
+
+    per_query = [fusion.metrics(ranks[name], relevant) for name in ranks]
+    fused = fusion.fuse_ranks(
+        [fusion.source_contribution(POOL, np.asarray([20, 10], dtype=np.int64))], POOL
+    )
+    rescue = fusion.rescue_row(
+        ranks["S4"], {name: ranks[name] for name in ("Dense", "SPLADE", "S3")}, relevant
+    )
+    assert rescue is not None, "S4 is wrong at rank 1 here, so this query is in the population"
+
+    blocks = {
+        "metrics": per_query,
+        "mean_metrics": fusion.mean_metrics(per_query),
+        "mean_metrics_of_nothing": fusion.mean_metrics([]),
+        "fused_metrics": fusion.metrics(fused, relevant),
+        "complementarity": probe._summarise_complementarity(
+            [fusion.complementarity(ranks["S4"], ranks["S3"], relevant, POOL)]
+        ),
+        "complementarity_of_nothing": probe._summarise_complementarity([]),
+        "rescue": fusion.rescue_table(
+            [rescue],
+            names=("Dense", "SPLADE", "S3"),
+            excluded={"no_relevant_in_pool": 1, "s4_top1_already_right": 2},
+        ),
+        "rescue_of_nothing": fusion.rescue_table(
+            [], names=("Dense", "SPLADE", "S3"), excluded={"no_relevant_in_pool": 0}
+        ),
+    }
+    for name, value in blocks.items():
+        try:
+            run_artifacts.content_digest(value)
+        except (TypeError, ValueError) as error:
+            raise AssertionError(f"the {name} block cannot be written: {error}") from error
+
+
+def test_the_empty_cases_do_not_produce_a_nan_the_writer_would_refuse() -> None:
+    """allow_nan=False is what makes the check above bite, so it is asserted."""
+
+    with pytest.raises(ValueError):
+        run_artifacts.content_digest({"mrr": float("nan")})

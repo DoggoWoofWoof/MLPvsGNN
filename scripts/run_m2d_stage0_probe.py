@@ -419,6 +419,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 "linear_control.rank_feature_rows gives it"
             ),
         },
+        # The artifact's countable rows. Every block below is an aggregate, so
+        # without this there is nothing for the write-then-reopen check to count,
+        # and a truncated arms block would read back as a valid artifact.
+        "arms_scored": sorted(per_arm),
         "rankers": {name: fusion.mean_metrics(rows) for name, rows in per_ranker.items()},
         "comparability": (
             "These absolute numbers are on the FIT portion of the validation split. "
@@ -496,7 +500,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         identity,
         result,
         config_fingerprint=args.config_fingerprint,
-        rows_at="rankers.S4",
+        rows_at="arms_scored",
     )
     result["artifact"] = receipt.as_dict()
     return result
