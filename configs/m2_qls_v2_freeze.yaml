@@ -256,8 +256,8 @@ amendments:
       differ. (3) THE MEASURED COST IS UNDER THE CEILING.
       scripts/m2_measured_cost.py, artifact
       outputs/m2_qls_v2_freeze/measured_cost.json, verdict WITHIN_CEILING:
-      $2.31 projected against the $9.00 of compute.proposed_ceiling_usd,
-      $6.69 of headroom. The estimate's rates were all M1A's; these are M2's
+      $3.07 projected against the $9.00 of compute.proposed_ceiling_usd,
+      $5.93 of headroom. The estimate's rates were all M1A's; these are M2's
       own. Build calibration 1.5361, composed rather than max'd from two
       separable measured penalties -- the worst cell ratio 1.1649 (R3
       measured p50 over its predicted per-query figure) times the CPU
@@ -267,21 +267,31 @@ amendments:
       universal arm's two-point marginal rate came out at 0.958 (R2) and
       0.953 (R3) of the rate the estimate assumed, and both calibrations are
       floored at 1.0 because two cells of fourteen can show an estimate too
-      optimistic but cannot justify scaling it down. The fallback is priced
-      too: $6.26 if the split were retired and the headline ran all-GPU, so
-      neither branch of amendment 4's decision needs a new ceiling. And
-      because one measured point cannot separate a fit's fixed cost from its
-      marginal rate, the report also prices the bound that needs no
-      separation -- every second of the smoke's fit charged as marginal,
-      setup free -- at $3.32, still inside the ceiling; that bound is
-      reported and not applied, since this cell's own setup measured 0.79s
-      rather than zero. Not priced, and stated in the artifact rather than
-      glossed: per-container Modal startup, image pull and data load. Modal
-      exposes no per-call wall clock through its Python API and `modal app
-      logs` does not terminate, so container wall-clock is declared
-      unmeasured rather than estimated; the ceiling's 2x margin over the
-      conservative bracket is what covers it, and the headroom above is what
-      remains of that margin. (4) THE TWO GATES THE SMOKE WAS RUN TO EARN
+      optimistic but cannot justify scaling it down. Both fallbacks are priced
+      too, so no branch of any earlier decision needs a new ceiling: $7.03 if
+      amendment 4's split were retired and the headline ran all-GPU, and $4.08
+      under the deliberately false assumption that a fit has no fixed cost at
+      all -- the bound that needs no separation of fixed from marginal, since
+      one measured point cannot provide one. That bound is reported and not
+      applied, because this cell's own setup measured 0.79s rather than zero.
+      The estimate declared per-container Modal startup, image pull and data
+      load unpriced; this report prices them, because the smoke made them
+      measurable for the first time. Its four containers billed $0.2024 on the
+      workspace that ran them against $0.0127 of in-container compute, so the
+      overhead is $0.1897 over four containers, $0.0474 each, and the headline
+      is 12 containers -- one build call and one fit call for each of six
+      datasets -- for $0.5692. Volume reads are lazy, so a container's data
+      load is not inside the per-query p50 above and is genuinely part of this
+      term. What that figure cannot carry is stated rather than glossed: it is
+      measured on 2wiki_clean, whose arrays are the smallest of the six, and
+      data load scales with the dataset even though image pull and container
+      start do not, so it is a floor for hotpotqa_clean, metaqa and
+      squad_clean and not a prediction. What bounds it is that the measured
+      overhead would have to be 11.4x larger across all 12 containers before
+      the ceiling binds. Still unmeasured: the split of that billed figure
+      between startup and data load, because Modal exposes no per-call wall
+      clock through its Python API and `modal app logs` does not terminate --
+      only their sum was observable. (4) THE TWO GATES THE SMOKE WAS RUN TO EARN
       flip to true on this evidence: engineering_smoke_passes on (1) and (2),
       compute_within_ceiling on (3). Tests:
       tests/test_m2_smoke_verification.py, tests/test_m2_split_verification.py
@@ -1062,8 +1072,8 @@ compute:
     outputs/m2_qls_v2_freeze/measured_cost.json, tests
     tests/test_m2_measured_cost.py. Every rate below was M1A's predicting
     M2's; the step-E smoke is the first time M2's own code ran on real
-    hardware, so it is the first test of that prediction. Projection $2.31
-    against the $9.00 ceiling, $6.69 headroom. Build calibration 1.5361 =
+    hardware, so it is the first test of that prediction. Projection $3.07
+    against the $9.00 ceiling, $5.93 headroom. Build calibration 1.5361 =
     worst cell ratio 1.1649 x measured CPU-container penalty 1.3187, composed
     rather than max'd because the two penalties are separable and a single max
     would price the slowest cell as if it never met the slower container. Fit
@@ -1071,10 +1081,16 @@ compute:
     0.958 (R2) and 0.953 (R3) of the assumed rate, confirming this block's own
     width-insensitivity argument -- with both calibrations floored at 1.0
     because two cells of fourteen cannot justify scaling an estimate down.
-    $6.26 if the split were retired, so the fallback is affordable too, and
-    $3.32 under the deliberately false bound that a fit has no fixed cost at
-    all. not_costed below is unchanged and still excludes container startup,
-    image pull and data load, which the ceiling's 2x margin covers.
+    $7.03 if the split were retired, so that fallback is affordable too, and
+    $4.08 under the deliberately false bound that a fit has no fixed cost at
+    all. The $3.07 includes $0.5692 of per-container startup, image pull and
+    data load, which this block's not_costed and the estimate both exclude:
+    the smoke's four containers billed $0.2024 against $0.0127 of in-container
+    compute, making that term measurable for the first time at $0.0474 per
+    container across the headline's 12. It is measured on 2wiki_clean only,
+    and data load scales with the dataset, so it is a floor rather than a
+    prediction -- bounded by the fact that it would have to be 11.4x larger
+    before the ceiling binds.
   method: >-
     Every rate is a real measurement from this track, none is a guess.
     Feature build: each (dataset, regime) cell's own M1A headline

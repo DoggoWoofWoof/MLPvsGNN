@@ -235,15 +235,73 @@ def test_going_over_the_ceiling_is_reported_as_going_over(tmp_path, monkeypatch)
     assert report["headroom_usd"] < 0
 
 
-def test_the_smokes_own_spend_is_counted_not_ignored(tmp_path, monkeypatch) -> None:
+def test_the_smoke_is_charged_at_what_it_billed_not_what_it_computed(tmp_path,
+                                                                     monkeypatch) -> None:
+    """The smoke's in-container compute is a strict subset of its bill. Counting
+    only the compute would drop the very term this report exists to add."""
+
     _install(tmp_path, monkeypatch)
     report = cost.measure("2wiki_clean")
-    assert report["smoke_measured_usd"] > 0
+    assert 0 < report["smoke_measured_usd"] < report["smoke_billed_usd"]
     assert report["total_projected_usd"] == pytest.approx(
         report["projected_headline"]["cost_usd_split_cpu_build_gpu_fit"]
-        + report["smoke_measured_usd"],
+        + report["smoke_billed_usd"]
+        + report["container_overhead"]["projected_headline_usd"],
         abs=0.011,
     )
+
+
+def test_the_container_overhead_is_the_gap_between_billed_and_computed(tmp_path,
+                                                                      monkeypatch) -> None:
+    """The estimate left this term out entirely. It is measurable exactly once
+    the smoke has both a known compute and a known bill."""
+
+    _install(tmp_path, monkeypatch)
+    report = cost.measure("2wiki_clean")
+    overhead = report["container_overhead"]
+    assert overhead["measured_usd"] == pytest.approx(
+        report["smoke_billed_usd"] - report["smoke_measured_usd"], abs=1e-4
+    )
+    assert overhead["usd_per_container"] == pytest.approx(
+        overhead["measured_usd"] / overhead["measured_over_containers"], abs=1e-4
+    )
+    # One build call and one fit call per dataset in the estimate.
+    assert overhead["headline_containers"] == 2 * len(overhead["headline_datasets"])
+    assert overhead["projected_headline_usd"] == pytest.approx(
+        overhead["usd_per_container"] * overhead["headline_containers"], abs=1e-3
+    )
+    assert overhead["projected_headline_usd"] > 0
+
+
+def test_a_bill_below_the_computed_cost_never_becomes_a_credit(tmp_path,
+                                                               monkeypatch) -> None:
+    """A negative overhead would silently subtract from the projection."""
+
+    _install(tmp_path, monkeypatch)
+    monkeypatch.setitem(cost.SMOKE_BILLED, "usd", 0.0001)
+    overhead = cost.measure("2wiki_clean")["container_overhead"]
+    assert overhead["measured_usd"] == 0.0
+    assert overhead["projected_headline_usd"] == 0.0
+
+
+def test_the_overhead_says_how_much_room_is_left_for_it_to_be_wrong(tmp_path,
+                                                                   monkeypatch) -> None:
+    """It is measured on one dataset, and data load scales with the dataset. The
+    figure that makes that honest is how much larger it could be."""
+
+    _install(tmp_path, monkeypatch)
+    report = cost.measure("2wiki_clean")
+    overhead = report["container_overhead"]
+    multiple = overhead["multiple_of_itself_that_would_reach_the_ceiling"]
+    assert multiple > 1, "if the measured overhead already reaches the ceiling, say so"
+    scaled = (
+        report["total_projected_usd"]
+        - overhead["projected_headline_usd"]
+        + multiple * overhead["projected_headline_usd"]
+    )
+    assert scaled == pytest.approx(report["ceiling_usd"], abs=0.06)
+    assert "2wiki_clean alone" in overhead["what_this_figure_cannot_carry"]
+    assert "data load" in overhead["what_this_figure_cannot_carry"]
 
 
 def test_the_report_prices_the_fallback_too(tmp_path, monkeypatch) -> None:
@@ -251,17 +309,32 @@ def test_the_report_prices_the_fallback_too(tmp_path, monkeypatch) -> None:
     A ceiling check that only prices the happy path would not have covered it."""
 
     _install(tmp_path, monkeypatch)
-    projected = cost.measure("2wiki_clean")["projected_headline"]
+    report = cost.measure("2wiki_clean")
+    projected = report["projected_headline"]
     assert projected["cost_usd_if_the_split_were_retired"] > projected[
         "cost_usd_split_cpu_build_gpu_fit"
     ]
+    # And the fallback's TOTAL carries the same smoke bill and overhead.
+    assert report["total_projected_usd_if_the_split_were_retired"] == pytest.approx(
+        projected["cost_usd_if_the_split_were_retired"]
+        + report["smoke_billed_usd"]
+        + report["container_overhead"]["projected_headline_usd"],
+        abs=0.011,
+    )
+    assert report["within_ceiling_if_the_split_were_retired"] is (
+        report["total_projected_usd_if_the_split_were_retired"] <= report["ceiling_usd"]
+    )
 
 
-def test_the_report_states_what_it_does_not_price(tmp_path, monkeypatch) -> None:
+def test_the_report_states_what_remains_unmeasured(tmp_path, monkeypatch) -> None:
     _install(tmp_path, monkeypatch)
     report = cost.measure("2wiki_clean")
-    assert "startup" in report["not_priced_here"]
-    assert "not a billing statement" in report["not_priced_here"]
+    remaining = report["not_priced_here"]
+    assert "not a billing statement" in remaining
+    assert "SCALE" in remaining, "the overhead is now measured; its scale is what is not"
+    assert "startup and data load is unmeasured" in remaining, (
+        "only their sum was observable; the split between them was not"
+    )
     assert "full-split fit" in report["what_the_smoke_could_not_measure"]
 
 
@@ -295,12 +368,14 @@ def test_the_committed_report_backs_the_gate(declaration) -> None:
     assert report["ceiling_usd"] == float(declaration["compute"]["proposed_ceiling_usd"])
     assert report["total_projected_usd"] <= report["ceiling_usd"]
     # Both branches must be affordable, or the fallback is not a fallback.
-    assert (
-        report["projected_headline"]["cost_usd_if_the_split_were_retired"]
-        + report["smoke_measured_usd"]
-    ) <= report["ceiling_usd"]
+    assert report["within_ceiling_if_the_split_were_retired"] is True
     assert report["calibration"]["build_multiplier_applied"] >= 1.0
     assert report["calibration"]["fit_multiplier_applied"] >= 1.0
     # The launch does not rest on the fit's fixed cost being real.
     assert report["within_ceiling_at_the_pessimistic_fit_bound"] is True
     assert report["total_projected_usd_if_the_fit_had_no_fixed_cost"] <= report["ceiling_usd"]
+    # Nor on the container overhead being exactly what one dataset measured.
+    assert report["container_overhead"]["projected_headline_usd"] > 0, (
+        "a projection that prices twelve containers' startup at zero is the estimate's own gap"
+    )
+    assert report["container_overhead"]["multiple_of_itself_that_would_reach_the_ceiling"] > 2

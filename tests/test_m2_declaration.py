@@ -281,10 +281,28 @@ def test_the_measured_cost_is_bound_to_the_gate_it_earns(config):
     assert report["total_projected_usd"] <= report["ceiling_usd"]
     # Both branches of amendment 4's decision have to fit, or retiring the
     # split on a failed verification would leave the phase unfunded.
+    assert report["within_ceiling_if_the_split_were_retired"] is True
+
+    # Every dollar figure this file quotes has to be the one the script
+    # currently produces. A re-run that moved a number would otherwise leave
+    # the declaration quoting a figure no artifact supports.
+    amendment = _flat(config["amendments"][4]["change"])
+    for text in (measured, amendment):
+        for value in (
+            report["total_projected_usd"],
+            report["headroom_usd"],
+            report["total_projected_usd_if_the_split_were_retired"],
+            report["total_projected_usd_if_the_fit_had_no_fixed_cost"],
+        ):
+            assert f"${value:.2f}" in text, f"${value:.2f} is not quoted where it is cited"
+    overhead = report["container_overhead"]
+    assert f"${overhead['projected_headline_usd']:.4f}" in amendment
+    assert f"${overhead['usd_per_container']:.4f}" in amendment
+    assert f"${report['smoke_billed_usd']:.4f}" in amendment
+    assert f"{overhead['headline_containers']} containers" in amendment
     assert (
-        report["projected_headline"]["cost_usd_if_the_split_were_retired"]
-        + report["smoke_measured_usd"]
-    ) <= report["ceiling_usd"]
+        f"{overhead['multiple_of_itself_that_would_reach_the_ceiling']}x larger" in amendment
+    )
 
 
 def test_the_smoke_result_is_recorded_next_to_the_spec_that_declared_it(config):

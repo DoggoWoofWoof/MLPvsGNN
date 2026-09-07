@@ -27,9 +27,14 @@ Two rates decide the bill, and the smoke measures both:
           that too. The bound is known to be false (the two-point solve finds
           real setup time) which is why it bounds rather than decides.
 
-Neither the estimate nor this script prices per-container Modal startup, image
-pull or data load; both say so. That is what the ceiling's 2x margin over the
-conservative bracket is for, and the headroom is reported rather than assumed.
+The estimate prices neither per-container Modal startup, image pull nor data
+load, and says so. This script does, because the smoke made them measurable for
+the first time: four containers whose in-container compute is known here, and
+one billing line for the app that ran them. The difference between the two is
+that overhead, and it is projected onto the headline's own container count
+rather than left to the ceiling's margin. It is still measured on ONE dataset,
+so the report also states how much larger it would have to be before the
+ceiling binds.
 
 Writes outputs/m2_qls_v2_freeze/measured_cost.json. Spends no compute.
 """
@@ -64,6 +69,24 @@ MEASURED = (
 #: The estimate is never scaled down on the strength of two cells out of
 #: fourteen: a faster measurement is reported and then ignored.
 MIN_CALIBRATION = 1.0
+
+#: What the smoke's containers actually BILLED, against which the in-container
+#: compute computed below is a strict subset. The gap is per-container startup,
+#: image pull and data load -- the term the estimate declares unpriced.
+SMOKE_BILLED = {
+    "usd": 0.2024,
+    "containers": 4,
+    "source": (
+        'modal billing report --for "this month" --json, workspace hemachandraminchu '
+        "(profile extra_wNzonK), app message-passing-retrieval-m2-qls-v2-freeze, "
+        "read 2026-09-07 after all four smoke stages completed and before any other "
+        "M2 call ran there"
+    ),
+}
+
+#: The headline spawns one call per dataset per stage -- run_m2_feature_build,
+#: then run_m2_headline -- so its container count is this times the datasets.
+HEADLINE_STAGES_PER_DATASET = 2
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -249,9 +272,28 @@ def measure(dataset: str) -> dict[str, Any]:
         + smoke_seconds["cpu"] / 3600.0 * estimate["cpu_rate_usd_per_h"]
     )
 
-    total = projected["cost_usd_split_cpu_build_gpu_fit"] + smoke_usd
+    # The one term the estimate never priced, now measurable: the smoke's four
+    # containers billed SMOKE_BILLED while doing smoke_usd of the compute
+    # measured above. The difference is startup, image pull and data load.
+    datasets = sorted({cell["dataset"] for cell in estimate["per_cell"]})
+    headline_containers = HEADLINE_STAGES_PER_DATASET * len(datasets)
+    overhead_total = max(0.0, SMOKE_BILLED["usd"] - smoke_usd)
+    overhead_per_container = overhead_total / SMOKE_BILLED["containers"]
+    headline_overhead = overhead_per_container * headline_containers
+
+    total = (
+        projected["cost_usd_split_cpu_build_gpu_fit"] + SMOKE_BILLED["usd"] + headline_overhead
+    )
     within = total <= ceiling
-    pessimistic_total = pessimistic["cost_usd_split_cpu_build_gpu_fit"] + smoke_usd
+    pessimistic_total = (
+        pessimistic["cost_usd_split_cpu_build_gpu_fit"] + SMOKE_BILLED["usd"] + headline_overhead
+    )
+    overhead_headroom = ceiling - (total - headline_overhead)
+    # Undefined when the smoke's bill did not exceed its own compute, which
+    # means there was no overhead to project and nothing to scale.
+    overhead_multiple = (
+        round(overhead_headroom / headline_overhead, 1) if headline_overhead > 0 else None
+    )
 
     return {
         "status": "M2_MEASURED_COST_COMPLETE",
@@ -289,15 +331,60 @@ def measure(dataset: str) -> dict[str, Any]:
             "cpu": round(smoke_seconds["cpu"], 1),
         },
         "smoke_measured_usd": round(smoke_usd, 4),
+        "smoke_billed_usd": SMOKE_BILLED["usd"],
+        "container_overhead": {
+            "measured_usd": round(overhead_total, 4),
+            "measured_over_containers": SMOKE_BILLED["containers"],
+            "usd_per_container": round(overhead_per_container, 4),
+            "headline_containers": headline_containers,
+            "headline_datasets": datasets,
+            "projected_headline_usd": round(headline_overhead, 4),
+            "what_it_is": (
+                "Per-container Modal startup, image pull and data load. The estimate declares "
+                "these unpriced and so did every earlier version of this report; the smoke makes "
+                "them measurable, because its four containers' in-container compute is known "
+                f"(${smoke_usd:.4f}) and the app they ran under billed ${SMOKE_BILLED['usd']:.4f}. "
+                "The difference is the overhead, and it is projected onto the headline's own "
+                "container count rather than left to the ceiling's margin. Volume reads are "
+                "lazy, so a container's data load is not in the per-query p50 measured above and "
+                "is genuinely part of this term."
+            ),
+            "measured_on": SMOKE_BILLED["source"],
+            "what_this_figure_cannot_carry": (
+                "It is measured on 2wiki_clean alone, whose arrays are the smallest of the six. "
+                "Image pull and container start do not scale with the dataset but data load "
+                "does, so the per-container figure is a floor for hotpotqa_clean, metaqa and "
+                "squad_clean rather than a prediction. What bounds that is the next field: the "
+                "measured overhead would have to be "
+                + (f"{overhead_multiple}x larger across all {headline_containers} containers "
+                   "before the ceiling binds."
+                   if overhead_multiple is not None else
+                   "scaled from a measurement that came out at or below zero, so there is "
+                   "nothing here to scale and the term is not projected at all.")
+            ),
+            "multiple_of_itself_that_would_reach_the_ceiling": overhead_multiple,
+        },
         "total_projected_usd": round(total, 2),
         "headroom_usd": round(ceiling - total, 2),
+        "total_projected_usd_if_the_split_were_retired": round(
+            projected["cost_usd_if_the_split_were_retired"]
+            + SMOKE_BILLED["usd"] + headline_overhead, 2
+        ),
+        "within_ceiling_if_the_split_were_retired": (
+            projected["cost_usd_if_the_split_were_retired"]
+            + SMOKE_BILLED["usd"] + headline_overhead
+        ) <= ceiling,
         "total_projected_usd_if_the_fit_had_no_fixed_cost": round(pessimistic_total, 2),
         "within_ceiling_at_the_pessimistic_fit_bound": pessimistic_total <= ceiling,
         "not_priced_here": (
-            "Per-container Modal startup, image pull and data load, on either side of the "
-            "split. The estimate excludes them too and says so; the ceiling was set at 2x the "
-            "conservative all-GPU bracket precisely to absorb them, and the headroom above is "
-            "what remains for that. This is a compute projection, not a billing statement."
+            "Nothing structural is now left out: the compute is measured, and the container "
+            "overhead the estimate excluded is measured too and carried in the total above. What "
+            "remains uncertain is that overhead's SCALE on the five datasets the smoke did not "
+            "run -- see container_overhead.what_this_figure_cannot_carry -- and Modal's own "
+            "rounding of billed container seconds. Container wall clock could not be read back "
+            "per call (the Python API exposes none and `modal app logs` does not terminate), so "
+            "the split of the billed figure between startup and data load is unmeasured; only "
+            "their sum is. This remains a projection, not a billing statement."
         ),
         "what_the_smoke_could_not_measure": (
             "A full-split fit. Every fit here is 80 train queries, so the per-query fit rate is "
@@ -325,7 +412,8 @@ def main(argv: list[str] | None = None) -> int:
     print(json.dumps({
         key: report[key]
         for key in ("status", "verdict", "within_ceiling", "ceiling_usd", "calibration",
-                    "projected_headline", "smoke_measured_usd", "total_projected_usd",
+                    "projected_headline", "smoke_measured_usd", "smoke_billed_usd",
+                    "container_overhead", "total_projected_usd",
                     "headroom_usd", "total_projected_usd_if_the_fit_had_no_fixed_cost",
                     "within_ceiling_at_the_pessimistic_fit_bound")
     }, indent=2))
