@@ -531,6 +531,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dropout", type=float, default=0.2)
     parser.add_argument("--temperature", type=float, default=0.07)
     parser.add_argument("--panel-cap", type=int, default=0)
+    # The build key of the sealed master this probe loads, not choices M2D is
+    # making. load_cell_under_contract reads all three off ``args`` and refuses
+    # the store when they disagree with what M2 wrote, so they are transcribed
+    # from configs/m2_qls_v2_freeze.yaml#qls_universal.hyperparameters and held
+    # equal to it by a test rather than by this comment.
+    parser.add_argument("--per-seed-cap", type=int, default=16)
+    parser.add_argument("--neighbour-scan-cap-per-seed", type=int, default=4096)
+    parser.add_argument("--a64-mainline-family", default=_m1a.MAINLINE_FAMILY)
     return parser
 
 

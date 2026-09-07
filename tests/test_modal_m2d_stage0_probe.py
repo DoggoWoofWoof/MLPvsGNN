@@ -13,8 +13,11 @@ has already been billed for it.
 
 from __future__ import annotations
 
+import ast
 import hashlib
+import inspect
 import json
+import re
 import sys
 from pathlib import Path, PurePosixPath
 
@@ -30,6 +33,7 @@ modal = pytest.importorskip("modal")
 
 from scripts import m2d_stage0_compute_record as record_module
 from scripts import modal_m2d_stage0_probe as launcher
+from scripts import run_m2b_semantic_minimality as m2b
 from scripts import run_m2d_stage0_probe as runner
 from scripts import spawn_modal_jobs
 
@@ -101,13 +105,121 @@ def test_the_run_id_is_left_for_the_container_to_choose(jobs) -> None:
     )
 
 
-def test_every_runner_flag_the_launcher_sets_is_one_the_runner_reads(jobs) -> None:
-    """A knob the runner never consults reads as a controlled variable and is a
+RUNNER_SOURCE = (REPO_ROOT / "scripts" / "run_m2d_stage0_probe.py").read_text(encoding="utf-8")
+
+#: Functions in ANOTHER module that the runner hands its WHOLE namespace to.
+#: Their reads are the runner's reads, and the set is asserted below rather
+#: than assumed, so a future call that passes ``args`` somewhere new fails
+#: here instead of in a container.
+FOREIGN_NAMESPACE_CONSUMERS = {"load_cell_under_contract": "m2b"}
+
+#: Functions defined in the runner itself. Nothing to follow: their source is
+#: already the source this test scans.
+LOCAL_NAMESPACE_CONSUMERS = {"run"}
+
+
+def _namespace_consumers() -> set[str]:
+    """Every callee the runner passes the bare namespace to, by attribute name."""
+
+    tree = ast.parse(RUNNER_SOURCE)
+    found = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        passes_namespace = any(
+            isinstance(arg, ast.Name) and arg.id == "args" for arg in node.args
+        ) or any(
+            isinstance(kw.value, ast.Name) and kw.value.id == "args" for kw in node.keywords
+        )
+        if not passes_namespace:
+            continue
+        callee = node.func
+        found.add(callee.attr if isinstance(callee, ast.Attribute) else getattr(callee, "id", "?"))
+    return found
+
+
+def _attributes_read_on_the_run_path() -> set[str]:
+    """Every ``args.X`` the run path reads, the runner's own and its callees'."""
+
+    sources = [RUNNER_SOURCE]
+    for name in sorted(FOREIGN_NAMESPACE_CONSUMERS):
+        sources.append(inspect.getsource(getattr(m2b, name)))
+    read: set[str] = set()
+    for source in sources:
+        read |= set(re.findall(r"\bargs\.([a-z_][a-z0-9_]*)", source))
+    return read
+
+
+def test_the_runner_hands_its_namespace_only_to_functions_this_test_follows() -> None:
+    """The read set below is only complete if this set is."""
+
+    assert _namespace_consumers() == set(FOREIGN_NAMESPACE_CONSUMERS) | LOCAL_NAMESPACE_CONSUMERS
+
+
+def test_every_args_attribute_the_run_path_reads_is_a_parser_dest() -> None:
+    """The failure this reproduces cost four containers.
+
+    The runner hands its whole namespace to M2B's store loader, which reads
+    per_seed_cap, neighbour_scan_cap_per_seed and a64_mainline_family off it to
+    rebuild the cell's build key. None of the three was a flag on this parser.
+    Every launcher-side check passed -- the launcher set exactly the arguments
+    the parser declared -- and all four cells died on AttributeError after the
+    data was loaded, which is the most expensive moment to die.
+
+    Checking only that the launcher matches the parser cannot catch it. The
+    reads are what must match the parser, and some of them are in another file.
+    """
+
+    missing = sorted(_attributes_read_on_the_run_path() - _parser_dests())
+    assert missing == [], (
+        f"the run path reads args.{{{','.join(missing)}}}, which this parser does not "
+        "define. A container will raise AttributeError after loading the data."
+    )
+
+
+def test_the_frozen_build_key_is_m2s_and_is_not_set_by_m2d() -> None:
+    """Section 1 freezes the scored universe. These three fields identify it.
+
+    They are transcribed into the runner's defaults, so they are held equal to
+    M2's declaration here -- a different value does not mislabel anything, it
+    makes the sealed master refuse to load, or worse, load a different one.
+    """
+
+    frozen = yaml.safe_load(
+        (REPO_ROOT / "configs" / "m2_qls_v2_freeze.yaml").read_text(encoding="utf-8")
+    )["qls_universal"]["hyperparameters"]
+    assert launcher.BUILD_KEY is not None
+    for field in ("per_seed_cap", "neighbour_scan_cap_per_seed"):
+        assert int(launcher.BUILD_KEY[field]) == int(frozen[field])
+    defaults = {
+        action.dest: action.default
+        for action in runner.build_parser()._actions
+        if action.dest != "help"
+    }
+    assert int(defaults["per_seed_cap"]) == int(frozen["per_seed_cap"])
+    assert int(defaults["neighbour_scan_cap_per_seed"]) == int(
+        frozen["neighbour_scan_cap_per_seed"]
+    )
+
+
+def test_the_launcher_passes_the_build_key_it_read_not_one_it_typed(jobs) -> None:
+    from scripts.run_m0b_regime_map import MAINLINE_FAMILY
+
+    args = launcher._runner_args(jobs[0])
+    assert args.per_seed_cap == int(launcher.BUILD_KEY["per_seed_cap"])
+    assert args.neighbour_scan_cap_per_seed == int(
+        launcher.BUILD_KEY["neighbour_scan_cap_per_seed"]
+    )
+    assert args.a64_mainline_family == MAINLINE_FAMILY
+
+
+def test_every_runner_flag_the_launcher_sets_is_one_the_run_path_reads(jobs) -> None:
+    """A knob nothing consults reads as a controlled variable and is a
     decoration. M2C shipped one; this checks M2D does not."""
 
-    source = (REPO_ROOT / "scripts" / "run_m2d_stage0_probe.py").read_text(encoding="utf-8")
+    read = _attributes_read_on_the_run_path()
     for name in vars(launcher._runner_args(jobs[0])):
-        assert f"args.{name}" in source, f"the runner never reads args.{name}"
+        assert name in read, f"nothing on the run path reads args.{name}"
 
 
 def test_the_config_fingerprint_is_the_declarations_own_text(jobs) -> None:

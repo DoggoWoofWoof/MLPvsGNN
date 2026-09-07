@@ -126,6 +126,11 @@ STORAGE_ROOT = MODAL_CONFIG["storage_root"]
 APP_NAME = "message-passing-retrieval-m2d-stage0-probe"
 OUTPUT_PREFIX = "m2d_s4_semantic_repair"
 M2_OUTPUT_PREFIX = "m2_qls_v2_freeze"
+
+#: The frozen build key of the cell stores M2 sealed. M2D reads it; it never
+#: sets it. Section 1 freezes the scored universe, and these are the fields
+#: that identify it.
+BUILD_KEY = M2_CONFIG["qls_universal"]["hyperparameters"]
 M2B_OUTPUT_PREFIX = "m2b_semantic_minimality"
 
 #: The rungs whose weights Stage 0 reads, and the directories M2B stored them
@@ -469,6 +474,12 @@ def _output_root(job: dict[str, Any]) -> PurePosixPath:
 
 
 def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    # The family A64 is defined on, and the value M2 recorded in this cell's
+    # build key. Imported the way M2's own launcher imports it, and imported
+    # rather than typed for a blunt reason: a different string here does not
+    # mislabel the arm, it makes the sealed cell master refuse to load.
+    from scripts.run_m0b_regime_map import MAINLINE_FAMILY
+
     regime = job["regime"]
     m2b_root = Path(job["m2b_fits_remote"]) / regime
     return argparse.Namespace(
@@ -492,6 +503,11 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         dropout=0.2,
         temperature=0.07,
         panel_cap=0,
+        # M2's frozen build key, read from its declaration rather than typed
+        # here. These three decide whether the sealed master loads at all.
+        per_seed_cap=int(BUILD_KEY["per_seed_cap"]),
+        neighbour_scan_cap_per_seed=int(BUILD_KEY["neighbour_scan_cap_per_seed"]),
+        a64_mainline_family=MAINLINE_FAMILY,
     )
 
 
