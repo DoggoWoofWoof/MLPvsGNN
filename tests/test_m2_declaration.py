@@ -252,14 +252,142 @@ def test_amendment_five_records_step_e_and_earns_only_the_gates_it_measured(conf
         assert earned in text
         assert gates[earned] is True
     assert "musique_clean_data_verified" in text
-    assert gates["musique_clean_data_verified"] is False, (
-        "amendment 5 states this gate stays false; the gates block must agree"
-    )
+    # Amendment 5 states this gate stays false. It may go true later, but only
+    # in an amendment that says so -- a gate that flipped with no amendment
+    # naming it was flipped by editing YAML.
+    if gates["musique_clean_data_verified"] is not False:
+        later = " ".join(_flat(item["change"]) for item in config["amendments"][5:])
+        assert "musique_clean_data_verified" in later, (
+            "the gate amendment 5 left closed is true, and no later amendment records earning it"
+        )
     # And it must say why, in the file, rather than leaving it to a commit message.
     assert "deepalimohapatra1973" in text
     assert "nodes.npy" in text and "queries_all.npy" in text
     # A smoke that concluded something scientific would be the real failure.
     assert "no scientific conclusion is drawn from any smoke" in text
+
+
+def test_amendment_six_earns_the_last_gate_by_moving_data_not_by_lowering_the_bar(config):
+    """The one gate amendment 5 left closed is the one that stands between a
+    complete gate set and 15 fits. It could be earned two ways: move the data,
+    or weaken what "verified" means. This test is here because only the first
+    is legitimate, and from the gates block alone the two look identical."""
+
+    if len(config["amendments"]) < 6:
+        return
+    from scripts.replicate_volume import SLICES  # noqa: PLC0415 -- test-local
+
+    amendment = config["amendments"][5]
+    assert str(amendment["date"]) == "2026-09-07"
+    text = _flat(amendment["change"])
+    assert "STEP F PRECONDITION" in text
+    assert "NOT BY LOWERING THE BAR" in text
+    # The bar itself, restated. If a later edit softens the gate's meaning this
+    # sentence is what it has to contradict.
+    assert "training-capable slice on the workspace that will run it" in text
+    assert "false for two datasets, not one" in text, (
+        "squad_clean had the same problem and no gate named it; hiding that would "
+        "have left the launch to discover it at spawn time"
+    )
+
+    # (1) What moved, and by which tool. The last hand-rolled copy is exactly
+    # how edge_provenance_graphs went missing, so the amendment has to name the
+    # existing script and the slices it actually declares.
+    assert "scripts/replicate_volume.py" in text
+    assert pathlib.Path("scripts/replicate_volume.py").exists()
+    for slice_name in ("phase_minus_1", "embeddings_only"):
+        assert slice_name in text, f"amendment 6 does not name the {slice_name} slice"
+        assert slice_name in SLICES, (
+            f"{slice_name} is not a slice replicate_volume declares; a transfer is only "
+            "auditable against a slice the script defines"
+        )
+    assert "35 of 35 and 4 of 4" in text
+    assert "size and sha256" in text, "a file count alone does not verify a copy"
+    assert "on the TARGET" in text, "verifying the source proves nothing about the copy"
+    # And what deliberately did not move, with the reason, so a later reader does
+    # not treat the omission as an oversight.
+    assert "derived/" in text and "regenerates deterministically" in text
+
+    # (2) Placement is declared in the file, not decided at spawn time.
+    placement = config["launch_authorization"]["execution_placement"]
+    assert set(placement) == set(config["m2_selection_matrix"]["cells"]), (
+        "every dataset the matrix declares needs a workspace, and no others"
+    )
+    assert "launch_authorization.execution_placement" in text
+    for dataset, profile in placement.items():
+        assert profile in text, f"{dataset}'s workspace {profile} is not named in the amendment"
+
+    # (3) The gate is earned on a check with an artifact, not on the copy
+    # exiting zero -- the same standard amendment 5 set for its own three gates.
+    assert "scripts/m2_data_placement.py" in text
+    artifact_path = "outputs/m2_qls_v2_freeze/data_placement.json"
+    assert artifact_path in text
+    assert "TRAINABLE_EVERYWHERE" in text
+    for path in ("scripts/m2_data_placement.py", artifact_path):
+        assert pathlib.Path(path).exists(), f"amendment 6 names {path}, which does not exist"
+    report = json.loads(pathlib.Path(artifact_path).read_text(encoding="utf-8"))
+    assert report["verdict"] == "TRAINABLE_EVERYWHERE" and report["passed"] is True
+    assert f"{report['datasets']} of {report['datasets']} datasets" in text
+    # Both historical failures, named in the file rather than left to a commit
+    # message, because each one is a check whose absence would look harmless.
+    assert "2wiki_clean" in text and "require_embeddings=False" in text
+    assert "edge_provenance_graphs" in text
+    assert "DIFFERENT fingerprint than the data path" in text
+    assert "R1 and R2 never construct an A64 mainline" in text
+    r1_only = sorted(d for d, r in config["m2_selection_matrix"]["cells"].items()
+                     if "R3" not in r)
+    assert r1_only, "the exemption is only sound while some dataset really is R1-only"
+    for dataset in r1_only:
+        assert dataset in text
+        row = next(r for r in report["checks"] if r["dataset"] == dataset)
+        assert row["a64_required"] is False
+
+    # (4) The limit, stated where the claim is, not only in the artifact.
+    assert "does not establish" in text.lower()
+    assert "ResourceExhaustedError" in text
+    assert "necessary for the launch, not sufficient" in text
+
+    # (5) The gate, and nothing beyond it.
+    gates = config["launch_authorization"]["gates"]
+    assert "musique_clean_data_verified" in text
+    assert gates["musique_clean_data_verified"] is True
+    assert all(gates.values()), "the amendment claims every gate is now true"
+    assert "No fit has run" in amendment["change"] or "No fit has run" in text
+    assert "moves bytes and files a check" in text
+
+
+def test_the_placement_does_not_invalidate_the_filed_wall_clock(config):
+    """Concentrating five datasets on one workspace is only free if their
+    chains, run strictly in series there, still finish inside the longest chain
+    elsewhere. Otherwise the placement silently rewrites a filed compute figure."""
+
+    placement = config["launch_authorization"].get("execution_placement")
+    if not placement or not ESTIMATE_ARTIFACT.exists():
+        return
+    estimate = json.loads(ESTIMATE_ARTIFACT.read_text(encoding="utf-8"))
+    wall = estimate["wall_clock_with_per_dataset_parallelism"]
+    chains = wall["per_dataset_serial_chain_minutes_conservative"]
+    assert set(chains) == set(placement)
+
+    per_workspace: dict[str, float] = {}
+    for dataset, profile in placement.items():
+        per_workspace[profile] = per_workspace.get(profile, 0.0) + chains[dataset]
+    worst = max(per_workspace.values())
+    assert worst == pytest.approx(chains[wall["longest_chain"]], abs=0.05), (
+        f"under this placement the slowest workspace takes {worst:.1f} min, but the filed "
+        f"figure assumes {chains[wall['longest_chain']]:.1f} min; the estimate needs rerunning"
+    )
+    assert config["compute"]["wall_clock_hours_with_per_dataset_parallelism"] == pytest.approx(
+        wall["hours_conservative"]
+    )
+    # The note has to carry the argument, not just the conclusion.
+    note = _flat(config["launch_authorization"]["execution_placement_note"])
+    assert "compute.wall_clock_hours_with_per_dataset_parallelism" in note, (
+        "a folded scalar joins lines with a space; keep the identifier on one line"
+    )
+    others = sum(v for k, v in chains.items() if k != wall["longest_chain"])
+    assert f"{chains[wall['longest_chain']]}-minute" in note
+    assert f"about {round(others)} minutes" in note
 
 
 def test_the_measured_cost_is_bound_to_the_gate_it_earns(config):

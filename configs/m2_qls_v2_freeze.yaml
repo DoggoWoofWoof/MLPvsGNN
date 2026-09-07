@@ -313,6 +313,64 @@ amendments:
       exists, no scientific conclusion is drawn from any smoke, and
       smoke_spec.purpose is unchanged.
 
+  - date: 2026-09-07
+    change: >-
+      STEP F PRECONDITION: THE LAST GATE IS EARNED BY MOVING DATA, NOT BY
+      LOWERING THE BAR. musique_clean_data_verified asks for a
+      training-capable slice on the workspace that will run it, and that was
+      false for two datasets, not one. A survey of all ten profiles found
+      musique_clean's and squad_clean's complete slices only on
+      deepalimohapatra1973, kuttakamina9895, darkphoenix696969696969 and
+      pilgnnteam -- every one of which is spend-limited and can be read but
+      cannot start a container -- while neither active workspace held either
+      dataset at all. (1) WHAT MOVED. scripts/replicate_volume.py, which
+      already exists for exactly this and whose module docstring documents the
+      slices, from deepalimohapatra1973 to extra_wNzonK: two declared slices
+      narrowed to these two datasets, phase_minus_1 (35 files, 639.3 MB --
+      the topology root files plus each dataset's edge_provenance_graphs
+      subtree) and embeddings_only (4 files, 1.0 GB -- nodes.npy and
+      queries_all.npy, the two files whose absence is what makes a slice
+      listable but untrainable). Composed from the script's own slices rather
+      than a new one, because a slice is the unit a transfer is auditable
+      against. Verified on the TARGET with --deep, size and sha256 per file:
+      35 of 35 and 4 of 4. Nothing under derived/ was copied -- it is a
+      build_or_load cache the runner regenerates deterministically, 7.07 GB of
+      it for squad_clean alone, and 2wiki_clean has now run M1A, M1B and the
+      M2 smoke on extra_wNzonK without it. (2) WHERE EACH DATASET RUNS is now
+      declared rather than decided at spawn time:
+      launch_authorization.execution_placement, five datasets on extra_wNzonK
+      and hotpotqa_clean on extra_ip9HxU where it already lives. Concentrating
+      five on one workspace costs no wall clock, because
+      compute.wall_clock_hours_with_per_dataset_parallelism is set by
+      hotpotqa_clean's own 85.3-minute chain and the other five sum to about
+      31 minutes even run strictly in series. (3) THE GATE IS EARNED ON A
+      CHECK, NOT ON THE COPY SUCCEEDING. scripts/m2_data_placement.py,
+      artifact outputs/m2_qls_v2_freeze/data_placement.json, verdict
+      TRAINABLE_EVERYWHERE, 6 of 6 datasets, none not trainable. It reads
+      execution_placement, so the placement and the verification cannot drift,
+      and it checks the two trees this track has already been burned by: the
+      dataset root, where 2wiki_clean once arrived on pilgnnteam with graph,
+      candidates and splits but no embeddings and opened fine under
+      require_embeddings=False until a stage had to score; and
+      edge_provenance_graphs/<dataset>/<fingerprint>/structural_only, which a
+      complete-looking hand copy of hotpotqa_clean and metaqa missed entirely
+      and which is keyed by a DIFFERENT fingerprint than the data path. The
+      second is required only where the matrix declares an R3 cell, since R1
+      and R2 never construct an A64 mainline -- squad_clean and musique_clean
+      are R1-only, so demanding it of them would fail a placement that trains.
+      (4) WHAT THIS DOES NOT ESTABLISH, and the artifact says so rather than
+      leaving it implied: that a workspace has budget. No Modal API exposes a
+      spend cap -- `modal billing report` gives spend to date and never the
+      limit -- so an exhausted workspace is indistinguishable from a healthy
+      one until a call raises ResourceExhaustedError. Placement is necessary
+      for the launch, not sufficient. As of this amendment extra_wNzonK has
+      billed $5.48 and extra_ip9HxU $9.17 this month, against the ~$30 per
+      workspace the exhaustion pattern suggests but which no API confirms.
+      (5) musique_clean_data_verified flips to true, which makes every gate in
+      launch_authorization true and satisfies launch_authorization.rule. No
+      fit has run and no scientific conclusion is drawn here; this amendment
+      moves bytes and files a check.
+
 status: DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED
 this_file_authorises: >-
   file_this_declaration_derive_qls_cell_from_already_completed_m1a_and_m1b_evidence_estimate_m2_compute_and_conditionally_launch_the_declared_seed_zero_m2_screen_once_every_launch_authorization_gate_is_true
@@ -1287,7 +1345,27 @@ launch_authorization:
     compute_within_ceiling: true      # $2.31 measured against $9.00, outputs/m2_qls_v2_freeze/measured_cost.json -- earned 2026-09-07, see amendment 5
     engineering_tests_pass: true      # tests/test_run_m2_qls_v2_freeze.py + tests/test_modal_m2_qls_v2_freeze.py + the full repo suite -- earned 2026-09-07, see amendment 3
     engineering_smoke_passes: true    # 10/10 verifies items PASSED + split REPRODUCED, outputs/m2_qls_v2_freeze/{smoke,split}_verification.json -- earned 2026-09-07, see amendment 5
-    musique_clean_data_verified: false  # its training-capable slice present on the workspace that will run it
+    musique_clean_data_verified: true   # TRAINABLE_EVERYWHERE 6/6, outputs/m2_qls_v2_freeze/data_placement.json -- earned 2026-09-07, see amendment 6
+  execution_placement:            # filed by amendment 6, 2026-09-07; scripts/m2_data_placement.py reads THIS, so the two cannot drift
+    squad_clean: extra_wNzonK
+    2wiki_clean: extra_wNzonK
+    hotpotqa_clean: extra_ip9HxU
+    metaqa: extra_wNzonK
+    webqsp: extra_wNzonK
+    musique_clean: extra_wNzonK
+  execution_placement_note: >-
+    A Modal volume lives in exactly one workspace, so "the data exists" is a
+    per-workspace question and the launch has to say which one each dataset
+    runs on. Five on extra_wNzonK (hemachandraminchu) and hotpotqa_clean on
+    extra_ip9HxU (swathihrao281), which already holds it. Concentrating five
+    on one workspace costs no wall clock:
+    compute.wall_clock_hours_with_per_dataset_parallelism is set by
+    hotpotqa_clean's own 85.3-minute serial
+    chain, and the other five chains sum to about 31 minutes even if they run
+    strictly one after another. The exhausted workspaces
+    (deepalimohapatra1973, pilgnnteam, kuttakamina9895,
+    darkphoenix696969696969) are readable but cannot start containers, which
+    is why the slice was copied rather than the job moved.
   smoke_spec:
     purpose: PIPELINE_VALIDATION_ONLY_NO_SCIENTIFIC_CONCLUSION
     result: >-
