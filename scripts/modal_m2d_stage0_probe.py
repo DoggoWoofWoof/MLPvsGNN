@@ -540,6 +540,25 @@ def run_stage0(job: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _staging_suffix(job: dict[str, Any], remote_path: str) -> PurePosixPath:
+    """Where one physical run lands under the local staging directory.
+
+    The identity segments and the filename, and nothing above them. What is
+    dropped is the store prefix -- phase output root, dataset, data
+    fingerprint, execution label -- which is constant for the cell and is
+    already the directory being staged into, so mirroring it would say the
+    same thing twice.
+
+    That is not only tidiness. verify_artifact_file checks an artifact against
+    its own location by comparing the LAST len(segments) directories, so the
+    suffix kept here is exactly what that check reads; and the full remote path
+    mirrored under the local root runs past Windows' 260-character limit, which
+    is a fetch that fails on the host after the science has already succeeded.
+    """
+
+    return PurePosixPath(remote_path).relative_to(_output_root(job))
+
+
 def _download(remote_path: str, local_path: Path) -> None:
     local_path.parent.mkdir(parents=True, exist_ok=True)
     relative = remote_path.removeprefix(f"{STORAGE_ROOT}/")
@@ -625,7 +644,7 @@ def fetch(
 
         receipts = []
         for remote in remotes:
-            local = staging / PurePosixPath(remote).relative_to(STORAGE_ROOT)
+            local = staging / _staging_suffix(job, remote)
             _download(remote, local)
             receipts.append(run_artifacts.verify_artifact_file(local))
         selected = run_artifacts.select_logical_result(
@@ -640,7 +659,7 @@ def fetch(
                 "local": str(destination),
                 "source_commit": selected.identity.source_commit,
                 "run_id": selected.identity.run_id,
-                "rows": selected.rows,
+                "rows": selected.row_count,
                 "physical_runs_found": len(receipts),
             }
         )

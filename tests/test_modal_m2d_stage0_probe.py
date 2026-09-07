@@ -613,3 +613,121 @@ def test_the_fetch_prefix_is_the_logical_result_and_not_one_run(jobs) -> None:
         runner.ARM,
     )
     assert runner.PHASE in prefix.parts
+
+
+# --------------------------------------------------------------------------
+# The fetch, on the path where it succeeds
+# --------------------------------------------------------------------------
+
+
+def _artifact_bytes(job: dict, run_id: str, commit: str, arms: int) -> tuple[str, bytes]:
+    """One physical run: its remote path, and the bytes that belong there."""
+
+    from mp_retrieval import run_artifacts
+
+    phase, arm, filename = launcher._artifact_names()
+    identity = run_artifacts.ArtifactIdentity(
+        phase=phase,
+        dataset=job["dataset"],
+        regime=job["regime"],
+        arm=arm,
+        source_commit=commit,
+        run_id=run_id,
+    )
+    payload = {
+        "status": "M2D_STAGE0_COMPLETE",
+        "cell": f"{job['dataset']}/{job['regime']}",
+        "arms_scored": [f"arm_{index}" for index in range(arms)],
+    }
+    envelope = run_artifacts.build_envelope(
+        identity, payload, config_fingerprint=launcher.CONFIG_FINGERPRINT, rows_at="arms_scored"
+    )
+    remote = str(
+        launcher._output_root(job).joinpath(*identity.segments()) / filename
+    )
+    return remote, json.dumps(envelope).encode("utf-8")
+
+
+@pytest.fixture
+def staged(tmp_path, monkeypatch, jobs):
+    """A volume holding two physical runs of one cell, at two commits."""
+
+    job = jobs[0]
+    wanted = "b" * 40
+    stale = "a" * 40
+    written = dict(
+        [
+            _artifact_bytes(job, "fc-STALE", stale, arms=3),
+            _artifact_bytes(job, "fc-WANTED", wanted, arms=8),
+        ]
+    )
+
+    monkeypatch.setattr(launcher, "HOST_REPO_ROOT", tmp_path)
+    monkeypatch.setattr(launcher, "_remote_artifacts", lambda prefix: sorted(written))
+    # _jobs reads M2B's baselines from the repo, which the redirected root no
+    # longer holds. The job itself is the real one, built above from the real
+    # declaration; only the lookup is stubbed.
+    monkeypatch.setattr(launcher, "_jobs", lambda requested: [job])
+
+    def fake_download(remote: str, local: Path) -> None:
+        local.parent.mkdir(parents=True, exist_ok=True)
+        local.write_bytes(written[remote])
+
+    monkeypatch.setattr(launcher, "_download", fake_download)
+    return {"job": job, "wanted": wanted, "stale": stale, "root": tmp_path}
+
+
+def test_the_fetch_selects_by_commit_and_reports_what_it_selected(staged) -> None:
+    """The success path, which no test exercised until it failed on the host.
+
+    Everything here is host-side: download, reopen, verify, select. The verify
+    is the real one, so the artifact has to survive its own content digest,
+    its own row recount, and the check that its recorded identity agrees with
+    where it sits.
+    """
+
+    rows = launcher.fetch(staged["job"]["dataset"], expect_source_commit=staged["wanted"])
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["source_commit"] == staged["wanted"]
+    assert row["run_id"] == "fc-WANTED"
+    assert row["physical_runs_found"] == 2, "both runs are downloaded and verified"
+    assert row["rows"] == 8, "the count is recounted from the selected run, not the other one"
+    assert Path(row["local"]).name == f"{staged['job']['dataset']}_{staged['job']['regime']}.json"
+    assert json.loads(Path(row["local"]).read_text(encoding="utf-8"))["identity"]["run_id"] == (
+        "fc-WANTED"
+    )
+
+
+def test_a_commit_the_volume_does_not_hold_is_refused_rather_than_approximated(staged) -> None:
+    with pytest.raises(Exception, match="c" * 8):
+        launcher.fetch(staged["job"]["dataset"], expect_source_commit="c" * 40)
+
+
+def test_the_staging_mirror_keeps_the_identity_and_drops_the_store_prefix(jobs) -> None:
+    """What verify_artifact_file reads is the tail, and the head is where the
+    file is already being put.
+
+    Mirroring the whole remote path under the local staging root produced a
+    Windows path over the 260-character limit, so the fetch died on mkdir --
+    on the host, after four containers had succeeded.
+    """
+
+    job = jobs[0]
+    remote, _ = _artifact_bytes(job, "fc-01M1Z11EZPD14032QSH1DV3CH6", "b" * 40, arms=8)
+    suffix = launcher._staging_suffix(job, remote)
+
+    assert suffix.parts[0] != "outputs", "the phase store prefix is not mirrored"
+    assert suffix.name == launcher._artifact_names()[2]
+
+    from mp_retrieval import run_artifacts
+
+    segments = len(
+        run_artifacts.ArtifactIdentity(
+            phase="p", dataset="d", regime="R1", arm="a", source_commit="c" * 40, run_id="r"
+        ).segments()
+    )
+    assert len(suffix.parts) == segments + 1, "identity segments plus the filename, exactly"
+
+    local = launcher.HOST_REPO_ROOT / "outputs" / launcher.OUTPUT_PREFIX / "stage0" / "runs"
+    assert len(str(local / suffix)) < 260, "a Windows path this fetch has to be able to create"
