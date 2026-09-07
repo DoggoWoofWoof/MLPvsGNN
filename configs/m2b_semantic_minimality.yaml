@@ -97,7 +97,7 @@ amendments:
       2.5x S4 fit multiplier is still an argument. The smoke measures it, and
       only then is the ceiling refiled.
 
-status: DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED
+status: M2B_SEMANTIC_PARETO_CONFLICT_STOPPED_FOR_REVIEW
 
 this_file_authorises: >-
   As amended 2026-09-07: the smoke cell, and then the 28-fit fan-out, each
@@ -1148,9 +1148,141 @@ m2b_output:
     - feature_store_reuse_proof
     - workload_ledger
     - compute_estimate
+    - smoke_verification
+    - measured_cost_and_refiled_ceiling
+    - the_42_evaluation_screen
+    - the_selection_rules_verdict
+    - the_query_level_uncertainty_diagnostic
   artifacts:
     - outputs/m2b_semantic_minimality/semantic_audit.json
     - outputs/m2b_semantic_minimality/reuse_and_compute.json
+    - outputs/m2b_semantic_minimality/smoke_verification.json
+    - outputs/m2b_semantic_minimality/measured_cost.json
+    - outputs/m2b_semantic_minimality/selection_report.json
+    - outputs/m2b_semantic_minimality/bootstrap_diagnostic.json
+
+m2b_verdict:
+  status: SEMANTIC_PARETO_CONFLICT
+  filed: 2026-09-07
+  returned_by: scripts/m2b_selection_report.py
+  artifact: outputs/m2b_semantic_minimality/selection_report.json
+  screen: 42 evaluations, 14 cells x 3 rungs, six datasets, seed 0, complete
+  selected_rung: null
+  advances: false
+
+  what_the_rule_returned: >-
+    No rung is admissible. SYMMETRIC_BEST_ANCHORED requires a rung to be within
+    tolerance of the best rung in every scope -- macro at 0.25pp, each dataset
+    at 0.50pp, each cell at 0.50pp -- and none of the three is.
+
+  macro_recall_at_5:
+    S2: 0.5572234359551854
+    S3: 0.5789512671172691
+    S4: 0.59718719198715
+
+  why_each_rung_failed:
+    S4: >-
+      Best on macro and best outright in 12 of the 14 cells, but genuinely
+      worse in two: musique_clean/R1 by 2.258pp and squad_clean/R1 by 0.748pp,
+      both past the 0.50pp per-cell tolerance. Both datasets are
+      single-regime, so those two cells fail the per-dataset clause as well.
+    S3: >-
+      Fails macro by 1.824pp against a 0.25pp tolerance, and fails four
+      datasets: webqsp by 9.065pp, 2wiki_clean by 1.944pp, metaqa by 1.908pp,
+      hotpotqa_clean by 1.030pp.
+    S2: >-
+      Fails every scope. Macro by 3.996pp, and every one of the six datasets:
+      webqsp 12.736pp, metaqa 7.181pp, hotpotqa_clean 3.283pp, 2wiki_clean
+      2.514pp, musique_clean 0.753pp, squad_clean 0.518pp.
+
+  the_449_parameter_question_this_phase_was_asked: >-
+    Whether a 449-parameter model stays within tolerance of a 205,217-parameter
+    projection control across six datasets. It does not. S2 is outside
+    tolerance on all six, and the gap is largest exactly where the panel is
+    smallest and the structure richest: 12.736pp on webqsp. The answer is
+    clean and it is negative, which is what the screen was preregistered to be
+    able to say.
+
+  what_this_does_not_do: >-
+    It does not unseat M2. reversal_note said so before the numbers existed:
+    the frozen object remains QLS-UNIVERSAL at S3, 3,585 parameters, exactly
+    as configs/m2_qls_v2_freeze.yaml#selected records it. M2B could narrow the
+    semantic representation or fail to, and it failed to. Nothing M2 measured
+    is changed by this.
+
+  systems_finding_that_inverts_the_naive_expectation:
+    uncached_inference_p95_ms: {S2: 1.6764, S3: 1.9223, S4: 1.0677}
+    peak_vram_mb: {S2: 4700.4995, S3: 4666.5259, S4: 4755.4185}
+    what_it_says: >-
+      The 205,217-parameter rung is the FASTEST, on every one of the six
+      datasets, and the 3,585-parameter incumbent is the slowest. This is not a
+      warm-up artifact: within a container the rungs run S2, S3, S4 and the
+      middle one is slowest, and the pattern repeats across all fourteen cells.
+      The scorer costs the same in every rung; the whole difference is the
+      semantic head.
+    why: >-
+      S2 and S3 compute dot_qd_pct -- a within-query rank with average tie
+      handling, which is an argsort plus a unique plus two scatter-adds -- and
+      their remaining columns are reductions over the full 1536 width. S4 pays
+      two 1536x64 GEMMs once and then works at width 64 with no rank at all.
+      Everything is on device; there is no CPU round trip in either path. At
+      this candidate-set size latency tracks kernel-launch count, not parameter
+      count.
+    what_it_does_not_license: >-
+      Reading S4 as a systems win. It won no effectiveness clause either, so
+      the tie-break never ran: the filed systems ordering applies only among
+      rungs that are already admissible, and none is. The measurement is
+      reported because it is true and surprising, not because it decides
+      anything here.
+
+  uncertainty_diagnostic:
+    artifact: outputs/m2b_semantic_minimality/bootstrap_diagnostic.json
+    role: DIAGNOSTIC_ONLY
+    what_it_shows: >-
+      Both margins that block S4 sit outside the query-resampling interval:
+      squad_clean/R1 S3-S4 is +0.748pp with a 95% CI of [+0.364, +1.132] and
+      musique_clean/R1 S3-S4 is +2.258pp with [+1.317, +3.262]. Neither
+      straddles zero, so neither is an artifact of which queries landed in the
+      panel.
+    what_it_cannot_show: >-
+      Whether either is an artifact of which fit was trained. M2B runs one
+      seed, so resampling queries cannot speak to training-seed stability, and
+      this diagnostic decides nothing either way.
+    webqsp_disclosure: >-
+      webqsp holds out 63 queries, so one query moves its recall by 1.587pp --
+      more than three times the 0.50pp per-cell tolerance -- and the
+      equal-weight macro gives that panel the same weight as squad_clean's
+      5,213. Every webqsp interval is correspondingly wide: S3-S4 at R3 is
+      -9.908pp with a CI of [-22.398, +2.813], which straddles zero. webqsp is
+      not what decides this verdict, but it is the panel least able to.
+
+  smallest_three_seed_resolution_PROPOSED_NOT_LAUNCHED:
+    would_change_the_verdict_only_for: S4
+    cells: [musique_clean/R1, squad_clean/R1]
+    rungs: [S3, S4]
+    seeds: [1, 2]
+    fits: 8
+    why_these_and_no_others: >-
+      They are exactly the cells blocking S4, and both are single-regime, so
+      clearing them clears the per-cell and per-dataset clauses together. S4
+      already passes macro. S3 would need four datasets and the macro to move,
+      and S2 would need all six; neither is a small resolution and neither is
+      proposed.
+    why_it_is_worth_proposing_at_all: >-
+      The query bootstrap rules out the panel as the explanation and cannot
+      rule out the fit. Three seeds is the smallest design that could.
+    not_launched: >-
+      stop_condition forbids it without a further dated amendment, and the
+      review instruction asks for the proposal rather than the run. No seed
+      beyond 0 has been fitted.
+
+  cost:
+    projected_conservative_usd: 2.7003
+    refiled_ceiling_usd: 3.5732
+    filed_ceiling_usd: 6.00
+    containers: 6
+    fits_new: 28
+    fits_reused: 14
 
 stop_condition:
   status: STOP_FOR_REVIEW

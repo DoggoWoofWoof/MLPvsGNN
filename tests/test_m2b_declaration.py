@@ -96,15 +96,45 @@ def test_the_three_declared_files_exist():
         assert path.is_file(), f"{path} is part of M2B's one-declaration-per-phase paperwork"
 
 
-def test_the_status_says_execution_is_conditional_on_gates(declaration):
-    # Amendment 2 moved this from DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_
-    # AUTHORISED. The launcher matches on this exact string, so a status that
-    # reads as authorised while naming no gates would be an authorisation with
-    # nothing to check.
-    assert declaration["status"] == "DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED"
+def test_the_status_says_the_phase_ran_and_stopped(declaration):
+    """The status has moved twice: reconnaissance, then conditional, now done.
+
+    The launcher matches on this exact string and authorises only the middle
+    one, so the terminal status has to be a value it recognises and refuses --
+    not one it has never heard of, and not one that reads as authorised.
+    """
+
+    assert declaration["status"] == "M2B_SEMANTIC_PARETO_CONFLICT_STOPPED_FOR_REVIEW"
+    assert declaration["m2b_verdict"]["status"] == "SEMANTIC_PARETO_CONFLICT"
+    assert declaration["m2b_verdict"]["selected_rung"] is None
+    assert declaration["m2b_verdict"]["advances"] is False
     authorises = declaration["this_file_authorises"].lower()
     assert "gates" in authorises
     assert "never to work around" in authorises
+
+
+def test_the_verdict_leaves_m2s_frozen_object_standing(declaration):
+    """M2B could narrow the semantic representation or fail to. It failed to.
+
+    reversal_note committed that reading before any number existed, so the
+    verdict is held to it rather than to a sentence written afterwards.
+    """
+
+    assert "SEMANTIC_PARETO_CONFLICT" in declaration["reversal_note"]
+    assert "3,585" in declaration["reversal_note"]
+    assert "does not unseat M2" in declaration["m2b_verdict"]["what_this_does_not_do"]
+
+
+def test_the_three_seed_resolution_is_proposed_and_not_launched(declaration):
+    """One seed ran. The proposal is a proposal."""
+
+    proposal = declaration["m2b_verdict"][
+        "smallest_three_seed_resolution_PROPOSED_NOT_LAUNCHED"
+    ]
+    assert proposal["seeds"] == [1, 2]
+    assert sorted(proposal["cells"]) == ["musique_clean/R1", "squad_clean/R1"]
+    assert "No seed beyond 0 has been fitted" in proposal["not_launched"]
+    assert declaration["seed_policy"]["count"] == 1
 
 
 def test_the_prohibitions_name_every_thing_the_authorisation_excluded(declaration):

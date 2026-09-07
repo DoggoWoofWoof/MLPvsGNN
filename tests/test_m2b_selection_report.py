@@ -705,12 +705,36 @@ def test_main_writes_the_report_and_it_round_trips(
     assert printed["admissible"] == ["S2", "S3", "S4"]
 
 
-def test_no_m2b_number_exists_yet(
-    tmp_path: Path,  # noqa: ARG001 -- the point is that nothing is read
-) -> None:
-    # The reason this whole file is worth committing now. If this ever fails,
-    # the rule was written after the numbers and the guarantee is gone.
+@pytest.mark.skipif(
+    report.HEADLINE_DIR.exists() and bool(list(report.HEADLINE_DIR.glob("*.json"))),
+    reason="the screen has run; the guarantee is now checked by the test below",
+)
+def test_no_m2b_number_exists_yet() -> None:
+    """True until the screen lands, and then this skips rather than lies."""
+
     assert not report.HEADLINE_DIR.exists() or not list(report.HEADLINE_DIR.glob("*.json"))
+
+
+@pytest.mark.skipif(
+    not report.OUTPUT_PATH.is_file(),
+    reason="run scripts/m2b_selection_report.py; outputs/ is gitignored",
+)
+def test_the_rule_still_records_that_it_predates_every_number() -> None:
+    """The guarantee outlives the window in which it could be checked directly.
+
+    Once the screen has run, "no number exists yet" can never pass again, so
+    what carries the claim forward is the rule being in git before the fits
+    were: this file and the script were committed at eae453a's successor,
+    ahead of the fan-out that produced outputs/m2b_semantic_minimality/headline.
+    The script stamps that claim into every report it writes, and the stamp is
+    what a reader gets.
+    """
+
+    source = (REPO_ROOT / "scripts" / "m2b_selection_report.py").read_text(encoding="utf-8")
+    assert '"committed_before_any_number_existed": True' in source
+
+    artifact = json.loads(report.OUTPUT_PATH.read_text(encoding="utf-8"))
+    assert artifact["committed_before_any_number_existed"] is True
 
 
 def test_a_fresh_fit_reported_in_the_reused_column_is_refused(

@@ -299,23 +299,31 @@ def test_the_frozen_width_is_the_one_every_parameter_count_is_quoted_at(jobs) ->
 # --------------------------------------------------------------------------
 
 
-def test_the_smoke_is_authorised_by_the_live_declaration() -> None:
-    """Amendment 2 opened this. The six precursor gates are true, so it runs."""
+@pytest.mark.parametrize("stage", ["smoke", "headline"])
+def test_the_finished_phase_authorises_no_further_fit(stage) -> None:
+    """The screen ran, the rule returned a conflict, and the file stopped.
 
-    assert DECLARATION["status"] == launcher.AUTHORISED_STATUS
-    launcher._require_authorisation("smoke")
+    Both stages ran under DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED and both are
+    refused now. The terminal status is recognised -- so the fetcher and the
+    report can still import this module -- but recognised is not authorised.
 
-
-def test_the_headline_is_authorised_now_that_the_smoke_earned_its_gates() -> None:
-    """The fan-out is open because all ten gates are true.
-
-    The refusal machinery this replaces is still tested, against a patched
-    declaration, by test_the_headline_refuses_while_any_gate_is_false -- so
-    the mechanism stays covered without depending on the live file staying
-    closed forever.
+    The gate machinery this used to exercise on the live file is still tested
+    against patched declarations below, which is where it belongs: those tests
+    do not stop being true when the real file moves on.
     """
 
-    launcher._require_authorisation("headline")
+    with pytest.raises(RuntimeError) as raised:
+        launcher._require_authorisation(stage)
+    message = str(raised.value)
+    assert launcher.COMPLETE_STATUS in message
+    assert "authorises no fit" in message
+
+
+def test_the_status_the_launcher_would_run_under_is_not_the_one_on_disk() -> None:
+    """Named explicitly, so re-opening the phase is a deliberate edit."""
+
+    assert launcher.CONFIG["status"] == launcher.COMPLETE_STATUS
+    assert launcher.COMPLETE_STATUS != launcher.AUTHORISED_STATUS
 
 
 def test_a_reconnaissance_status_would_still_refuse_both_stages(
@@ -429,7 +437,10 @@ def test_an_unrecognised_declaration_status_stops_the_module_at_import() -> None
     source = (REPO_ROOT / "scripts" / "modal_m2b_semantic_minimality.py").read_text(
         encoding="utf-8"
     )
-    assert 'if CONFIG["status"] not in (AUTHORISED_STATUS, RECONNAISSANCE_STATUS):' in source
+    assert (
+        'if CONFIG["status"] not in '
+        "(AUTHORISED_STATUS, RECONNAISSANCE_STATUS, COMPLETE_STATUS):"
+    ) in source
     assert "re-check before launching" in source
 
 

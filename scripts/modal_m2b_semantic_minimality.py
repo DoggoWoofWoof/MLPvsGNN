@@ -92,8 +92,14 @@ ALL_DATASETS = tuple(CONFIG["evaluation_matrix"]["cells"])
 #: mechanism before the authorisation is this track's standing order.
 AUTHORISED_STATUS = "DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED"
 RECONNAISSANCE_STATUS = "DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_AUTHORISED"
+#: The phase ran, the committed rule returned SEMANTIC_PARETO_CONFLICT, and the
+#: declaration stopped for review. Recognised so the module still imports --
+#: the fetcher and the report read it -- but it authorises nothing: only
+#: AUTHORISED_STATUS lets a stage run, so this refuses both, the same way the
+#: reconnaissance status did before the amendment.
+COMPLETE_STATUS = "M2B_SEMANTIC_PARETO_CONFLICT_STOPPED_FOR_REVIEW"
 
-if CONFIG["status"] not in (AUTHORISED_STATUS, RECONNAISSANCE_STATUS):
+if CONFIG["status"] not in (AUTHORISED_STATUS, RECONNAISSANCE_STATUS, COMPLETE_STATUS):
     raise RuntimeError(
         f"Unexpected declaration status {CONFIG['status']!r} in "
         "configs/m2b_semantic_minimality.yaml -- re-check before launching"
