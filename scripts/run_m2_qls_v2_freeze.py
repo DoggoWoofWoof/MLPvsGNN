@@ -64,6 +64,10 @@ from mp_retrieval.graph_context import build_operators  # noqa: E402
 from mp_retrieval.headroom_v2 import ragged_from_rows, regime_headroom  # noqa: E402
 from mp_retrieval.structural_features import StructuralFeatureStore  # noqa: E402
 from scripts import run_m1a_feature_screen as _m1a  # noqa: E402
+from scripts.feature_build_contract import (  # noqa: E402
+    QUERY_SELECTION,
+    QUERY_SPLIT,
+)
 from scripts.run_edge_provenance import _atomic_json  # noqa: E402
 from scripts.run_graph_context_d1 import holdout_split  # noqa: E402
 from scripts.run_m0a_probe import (  # noqa: E402
@@ -792,8 +796,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "declaration": "configs/m2_qls_v2_freeze.yaml",
         "candidate_contract": candidate_contract,
         "queries": len(views),
-        "split": "validation",
-        "selection": "deterministic_prefix_of_the_split_order",
+        "split": QUERY_SPLIT,
+        "selection": QUERY_SELECTION,
         "test_split_read": False,
         "holdout_fraction": args.holdout_fraction,
         "seed": args.seed,
