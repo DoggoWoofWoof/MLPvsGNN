@@ -207,6 +207,102 @@ amendments:
       compute_within_ceiling, engineering_smoke_passes, and
       musique_clean_data_verified. No M2 fit exists.
 
+  - date: 2026-09-07
+    change: >-
+      STEP E IS RUN AND TWO GATES ARE EARNED. Four Modal containers on
+      workspace extra_wNzonK (hemachandraminchu), 2wiki_clean, 100 queries,
+      seed 0, at source commit 9a6d52d. Every number below is measured, and
+      each of the three claims has an artifact on disk rather than a reading
+      in conversation -- instrumentation_requirement.also_applies_to_
+      analysis_products applies to a gate's evidence exactly as it applies to
+      a result. (1) THE DECLARED SMOKE PASSES. scripts/m2_smoke_verification.py,
+      artifact outputs/m2_qls_v2_freeze/smoke_verification.json, verdict
+      PASSED: 10 of 10 declared verifies items, 0 failed. Five are settled by
+      the result JSON -- parameters 3,585 = 3,072 semantic + 513 scorer,
+      checkpoint written, per-query rows written for 20 query ids,
+      aggregate_metrics_reconstructed_from_rows true, store fingerprint
+      726fd4be recorded. Five are claims about the FEATURE COLUMNS and no
+      result JSON can settle them, so they are checked on the persisted
+      stores: the R2 local block is (35500, 9) float16, the scorer's own
+      513 = 32w + 65 reads back w = 14 for 9 precomputed + 5 semantic,
+      NODE_ROLE is column 4 with 0 of 35500 rows nonzero, SUPPORT is nonzero
+      on 1,708 rows and PATH on 62,978 of 106,500 entries. The secondary R3
+      smoke settles the tenth on real data: NODE_ROLE is nonzero on exactly
+      C3 \ Cq for 100 of 100 queries, 1,638 rows, no query mismatched. That
+      claim rests on nothing inferred -- _cell_master_local persists scored =
+      unique(pool) under R2, which IS Cq, and scored = unique(C3) under R3,
+      so it is a set difference over two persisted arrays. Column indices come
+      from ARM_FAMILIES and MASTER_COLUMNS, never from the store's
+      local_feature_names, which carries ten names for a nine-column array.
+      Each store is bound to the run by fingerprint against the result's own,
+      so a store from another run is refused rather than read; and beyond the
+      declared ten, the R3 arm's column 4 is byte-equal to the master's column
+      11, because a correct master sliced at the wrong offset would pass every
+      declared item and still train on the wrong column. (2) THE SPLIT
+      REPRODUCES THE ONE-CONTAINER RUN. scripts/m2_split_verification.py,
+      artifact outputs/m2_qls_v2_freeze/split_verification.json, verdict
+      REPRODUCED: 32 fields compared, zero mismatches, all four
+      smoke_spec.split_verification.verifies checks true, and the build
+      latency correctly carried from the building container into the fitting
+      one. A CPU container with no accelerator built the master and trained
+      nothing; an A10G container fit from that persisted master and returned
+      the same store fingerprint and the same five metrics as the
+      one-container smoke. This is the cross-container comparison amendment 4
+      recorded that scripts/m2_feature_build_equivalence.py states outright it
+      cannot produce locally, and it closes that limitation with measurement
+      rather than argument. Timings, memory and artifact paths are excluded
+      from the comparison by design and the artifact says so: they are
+      properties of the container, and the split's whole point is that they
+      differ. (3) THE MEASURED COST IS UNDER THE CEILING.
+      scripts/m2_measured_cost.py, artifact
+      outputs/m2_qls_v2_freeze/measured_cost.json, verdict WITHIN_CEILING:
+      $2.31 projected against the $9.00 of compute.proposed_ceiling_usd,
+      $6.69 of headroom. The estimate's rates were all M1A's; these are M2's
+      own. Build calibration 1.5361, composed rather than max'd from two
+      separable measured penalties -- the worst cell ratio 1.1649 (R3
+      measured p50 over its predicted per-query figure) times the CPU
+      container penalty 1.3187 (R2's p50 with no accelerator over R2's p50
+      with one) -- because a single max over the rows would price the slowest
+      cell as if it never met the slower container. Fit calibration 1.0: the
+      universal arm's two-point marginal rate came out at 0.958 (R2) and
+      0.953 (R3) of the rate the estimate assumed, and both calibrations are
+      floored at 1.0 because two cells of fourteen can show an estimate too
+      optimistic but cannot justify scaling it down. The fallback is priced
+      too: $6.26 if the split were retired and the headline ran all-GPU, so
+      neither branch of amendment 4's decision needs a new ceiling. And
+      because one measured point cannot separate a fit's fixed cost from its
+      marginal rate, the report also prices the bound that needs no
+      separation -- every second of the smoke's fit charged as marginal,
+      setup free -- at $3.32, still inside the ceiling; that bound is
+      reported and not applied, since this cell's own setup measured 0.79s
+      rather than zero. Not priced, and stated in the artifact rather than
+      glossed: per-container Modal startup, image pull and data load. Modal
+      exposes no per-call wall clock through its Python API and `modal app
+      logs` does not terminate, so container wall-clock is declared
+      unmeasured rather than estimated; the ceiling's 2x margin over the
+      conservative bracket is what covers it, and the headroom above is what
+      remains of that margin. (4) THE TWO GATES THE SMOKE WAS RUN TO EARN
+      flip to true on this evidence: engineering_smoke_passes on (1) and (2),
+      compute_within_ceiling on (3). Tests:
+      tests/test_m2_smoke_verification.py, tests/test_m2_split_verification.py
+      and tests/test_m2_measured_cost.py hold each script's refusals, not
+      only its arithmetic -- a store from another run, a declared item the
+      script cannot check, a panel of the wrong size, an artifact that is not
+      the stage it claims, and a calibration below 1.0 all stop the check.
+      Each test file also asserts that the committed artifact still backs the
+      gate it is cited for. (5) ONE GATE STAYS FALSE AND BLOCKS THE FULL
+      LAUNCH: musique_clean_data_verified. Its complete training-capable
+      slice, the one carrying nodes.npy and queries_all.npy, exists only on
+      workspace deepalimohapatra1973; pilgnnteam, kuttakamina9895 and
+      darkphoenix each hold a partial slice without those two files, and
+      neither active workspace (extra_wNzonK, extra_ip9HxU) holds
+      musique_clean at all. squad_clean is on no active workspace either,
+      which is a placement problem rather than a gate, since no gate names it.
+      launch_authorization.rule governs and is not being worked around: the
+      remaining fits stay unlaunched until that gate is true. No M2 fit
+      exists, no scientific conclusion is drawn from any smoke, and
+      smoke_spec.purpose is unchanged.
+
 status: DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED
 this_file_authorises: >-
   file_this_declaration_derive_qls_cell_from_already_completed_m1a_and_m1b_evidence_estimate_m2_compute_and_conditionally_launch_the_declared_seed_zero_m2_screen_once_every_launch_authorization_gate_is_true
@@ -958,9 +1054,27 @@ instrumentation_requirement:
 # --------------------------------------------------------------------------
 
 compute:
-  status: FILED_2026_09_07
+  status: FILED_2026_09_07          # the estimate; measured against real M2 rates by amendment 5, see measured below
   script: scripts/m2_compute_estimate.py
   manifest: outputs/m2_qls_v2_freeze/compute_estimate.json
+  measured: >-
+    WITHIN_CEILING. scripts/m2_measured_cost.py, artifact
+    outputs/m2_qls_v2_freeze/measured_cost.json, tests
+    tests/test_m2_measured_cost.py. Every rate below was M1A's predicting
+    M2's; the step-E smoke is the first time M2's own code ran on real
+    hardware, so it is the first test of that prediction. Projection $2.31
+    against the $9.00 ceiling, $6.69 headroom. Build calibration 1.5361 =
+    worst cell ratio 1.1649 x measured CPU-container penalty 1.3187, composed
+    rather than max'd because the two penalties are separable and a single max
+    would price the slowest cell as if it never met the slower container. Fit
+    calibration 1.0 -- the universal arm's two-point marginal rate measured
+    0.958 (R2) and 0.953 (R3) of the assumed rate, confirming this block's own
+    width-insensitivity argument -- with both calibrations floored at 1.0
+    because two cells of fourteen cannot justify scaling an estimate down.
+    $6.26 if the split were retired, so the fallback is affordable too, and
+    $3.32 under the deliberately false bound that a fit has no fixed cost at
+    all. not_costed below is unchanged and still excludes container startup,
+    image pull and data load, which the ceiling's 2x margin covers.
   method: >-
     Every rate is a real measurement from this track, none is a guess.
     Feature build: each (dataset, regime) cell's own M1A headline
@@ -1154,12 +1268,26 @@ launch_authorization:
     reuse_audit_passes: true          # scripts/m2_reuse_audit.py, 19/19, bit-exact probe green -- see reuse_audit.result
     instrumentation_tests_pass: true  # aggregate_from_rows == stored_aggregate, all five metrics, plus field presence -- earned 2026-09-07, see amendment 3
     feature_build_equivalence_proved: true   # verdict EQUIVALENT, outputs/m2_qls_v2_freeze/feature_build_equivalence.json -- earned 2026-09-07, see amendment 4
-    compute_within_ceiling: false     # measured cost under compute.proposed_ceiling_usd ($9.00)
+    compute_within_ceiling: true      # $2.31 measured against $9.00, outputs/m2_qls_v2_freeze/measured_cost.json -- earned 2026-09-07, see amendment 5
     engineering_tests_pass: true      # tests/test_run_m2_qls_v2_freeze.py + tests/test_modal_m2_qls_v2_freeze.py + the full repo suite -- earned 2026-09-07, see amendment 3
-    engineering_smoke_passes: false   # smoke_spec below, real, on Modal
+    engineering_smoke_passes: true    # 10/10 verifies items PASSED + split REPRODUCED, outputs/m2_qls_v2_freeze/{smoke,split}_verification.json -- earned 2026-09-07, see amendment 5
     musique_clean_data_verified: false  # its training-capable slice present on the workspace that will run it
   smoke_spec:
     purpose: PIPELINE_VALIDATION_ONLY_NO_SCIENTIFIC_CONCLUSION
+    result: >-
+      RUN AND PASSED 2026-09-07 (amendment 5), four containers on workspace
+      extra_wNzonK at commit 9a6d52d. scripts/m2_smoke_verification.py,
+      artifact outputs/m2_qls_v2_freeze/smoke_verification.json, verdict
+      PASSED: 10 of 10 declared verifies items across the primary R2 cell and
+      the secondary R3 one, 0 failed. The five column claims are checked on
+      the persisted stores, not on the result JSON, and each store is bound to
+      this run by fingerprint. scripts/m2_split_verification.py, artifact
+      outputs/m2_qls_v2_freeze/split_verification.json, verdict REPRODUCED: 32
+      fields, zero mismatches, all four split_verification.verifies checks
+      true. Tests: tests/test_m2_smoke_verification.py and
+      tests/test_m2_split_verification.py. This earns
+      gates.engineering_smoke_passes and nothing else; no smoke number is
+      scientific, per purpose above.
     primary:
       dataset: 2wiki_clean
       regime: R2

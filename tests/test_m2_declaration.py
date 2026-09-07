@@ -208,12 +208,101 @@ def test_amendment_four_records_the_step_d_verdict_and_the_decision_it_licenses(
     assert "adopt_only_if is satisfied on both limbs" in text
     assert "Behaviour-preserving" in text and "small orchestration change" in text
     assert "never is honoured" in text, "the no-formula-change clause"
-    # What it did NOT earn.
+    # What it did NOT earn. As with amendment 3: a later amendment may earn one
+    # of these, but only by saying so. A gate that went true with no amendment
+    # naming it was flipped by editing YAML.
+    later = " ".join(_flat(item["change"]) for item in config["amendments"][4:])
     for still_closed in ("compute_within_ceiling", "engineering_smoke_passes",
                          "musique_clean_data_verified"):
         assert still_closed in text
-        assert config["launch_authorization"]["gates"][still_closed] is False
+        if config["launch_authorization"]["gates"][still_closed] is not False:
+            assert still_closed in later, (
+                f"{still_closed} is true but no amendment after the fourth records earning it"
+            )
     assert config["launch_authorization"]["gates"]["feature_build_equivalence_proved"] is True
+
+
+def test_amendment_five_records_step_e_and_earns_only_the_gates_it_measured(config):
+    if len(config["amendments"]) < 5:
+        return
+    amendment = config["amendments"][4]
+    assert str(amendment["date"]) == "2026-09-07"
+    text = _flat(amendment["change"])
+    assert "STEP E IS RUN" in text
+    # Three claims, three artifacts, each of which must exist and agree.
+    for script, artifact, verdict in (
+        ("scripts/m2_smoke_verification.py",
+         "outputs/m2_qls_v2_freeze/smoke_verification.json", "PASSED"),
+        ("scripts/m2_split_verification.py",
+         "outputs/m2_qls_v2_freeze/split_verification.json", "REPRODUCED"),
+        ("scripts/m2_measured_cost.py",
+         "outputs/m2_qls_v2_freeze/measured_cost.json", "WITHIN_CEILING"),
+    ):
+        assert script in text, f"amendment 5 does not name {script}"
+        assert artifact in text, f"amendment 5 does not name {artifact}"
+        assert pathlib.Path(script).exists()
+        if not pathlib.Path(artifact).exists():
+            continue
+        report = json.loads(pathlib.Path(artifact).read_text(encoding="utf-8"))
+        assert report["verdict"] == verdict, f"{artifact} does not say {verdict}"
+        assert verdict in text
+    # The two gates it earns, and the one it explicitly does not.
+    gates = config["launch_authorization"]["gates"]
+    for earned in ("engineering_smoke_passes", "compute_within_ceiling"):
+        assert earned in text
+        assert gates[earned] is True
+    assert "musique_clean_data_verified" in text
+    assert gates["musique_clean_data_verified"] is False, (
+        "amendment 5 states this gate stays false; the gates block must agree"
+    )
+    # And it must say why, in the file, rather than leaving it to a commit message.
+    assert "deepalimohapatra1973" in text
+    assert "nodes.npy" in text and "queries_all.npy" in text
+    # A smoke that concluded something scientific would be the real failure.
+    assert "no scientific conclusion is drawn from any smoke" in text
+
+
+def test_the_measured_cost_is_bound_to_the_gate_it_earns(config):
+    """compute_within_ceiling is the gate that spends money. It may only be
+    true while the declaration names a measurement and that measurement agrees
+    with the ceiling this file filed."""
+
+    if not config["launch_authorization"]["gates"]["compute_within_ceiling"]:
+        return
+    measured = _flat(config["compute"]["measured"])
+    assert "WITHIN_CEILING" in measured
+    artifact = pathlib.Path("outputs/m2_qls_v2_freeze/measured_cost.json")
+    assert "outputs/m2_qls_v2_freeze/measured_cost.json" in measured
+    if not artifact.exists():
+        return
+    report = json.loads(artifact.read_text(encoding="utf-8"))
+    assert report["within_ceiling"] is True
+    assert report["ceiling_usd"] == config["compute"]["proposed_ceiling_usd"]
+    assert report["total_projected_usd"] <= report["ceiling_usd"]
+    # Both branches of amendment 4's decision have to fit, or retiring the
+    # split on a failed verification would leave the phase unfunded.
+    assert (
+        report["projected_headline"]["cost_usd_if_the_split_were_retired"]
+        + report["smoke_measured_usd"]
+    ) <= report["ceiling_usd"]
+
+
+def test_the_smoke_result_is_recorded_next_to_the_spec_that_declared_it(config):
+    smoke = config["launch_authorization"]["smoke_spec"]
+    if not config["launch_authorization"]["gates"]["engineering_smoke_passes"]:
+        assert "result" not in smoke, "a passing smoke is recorded only once it has passed"
+        return
+    result = _flat(smoke["result"])
+    assert "PASSED" in result and "REPRODUCED" in result
+    for artifact in ("outputs/m2_qls_v2_freeze/smoke_verification.json",
+                     "outputs/m2_qls_v2_freeze/split_verification.json"):
+        assert artifact in result
+        assert pathlib.Path(artifact).exists(), f"the smoke result names {artifact}"
+    declared = len(smoke["primary"]["verifies"]) + len(smoke["secondary_only_if_needed"]["verifies"])
+    assert f"{declared} of {declared} declared verifies items" in result, (
+        "the recorded count must be the count the spec declares, not a number typed in"
+    )
+    assert "no smoke number is scientific" in result
 
 
 def test_the_split_is_verified_on_modal_before_the_headline_relies_on_it(config):
