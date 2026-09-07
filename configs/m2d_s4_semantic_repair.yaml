@@ -1,0 +1,726 @@
+# ==========================================================================
+# M2D -- S4 SEMANTIC / TOP-RANK REPAIR
+#
+# One declaration per phase. This file declares M2D and authorises the
+# hardening, the archaeology, the zero-training diagnostics and a Stage-0
+# verdict. It does NOT authorise a full screen, extra seeds, or any phase
+# other than this one.
+#
+# Opened by:  the turn that accepted M2C Stage 0 as terminal (6ea570f).
+# Predecessor: configs/m2c_s4_structural_conditioning.yaml
+#              (STOP_STRUCTURAL_M2C, ADMISSION_CLOSED -- frozen, not reopened)
+# ==========================================================================
+
+phase: M2D_S4_SEMANTIC_REPAIR
+opened: 2026-09-08
+status: M2D_DECLARED_STAGE0_NOT_YET_RUN
+branch_type: POST_HOC_DEVELOPMENT
+motivated_by: >-
+  An observed S4 development result, not a preregistered hypothesis. S4 was
+  rejected as a universal rung by M2B's filed rule and remains a challenger.
+  M2D asks whether the specific defect that rejected it is repairable in the
+  semantic branch. It is post-hoc and is labelled so wherever it is reported.
+
+substrate_scope: >-
+  Development / method-selection substrate only: squad_clean, 2wiki_clean,
+  hotpotqa_clean, metaqa, webqsp, musique_clean. Canonical CRAG data remains
+  reserved for final confirmation and is not read by this phase. Nothing
+  decided here is a confirmation of anything.
+
+# --------------------------------------------------------------------------
+# 0. What this phase may not touch
+# --------------------------------------------------------------------------
+
+this_file_does_not_touch:
+  m2: "M2's files, results and QLS-UNIVERSAL selection are frozen."
+  m2b: >-
+    M2B's files and results are frozen. SELECTED_S3 at 3,585 parameters is the
+    preregistered incumbent and this phase does not reinterpret the record that
+    produced it. S2 and S4 were rejected as universal rungs UNDER A RULE; that
+    is not a claim about their representational merit and is not restated here
+    as one.
+  m2c: >-
+    M2C is terminal. Its two verdicts stand and its files are not edited.
+  m3_gnn: "No GNN is used, read, or referenced anywhere in M2D."
+  package_f: "Not read, not written."
+  canonical_crag: "Not read. No test split of any dataset is read."
+  e2: "Not read, not written."
+
+scored_universe_is_frozen:
+  statement: >-
+    M2D changes the SEMANTIC COMPARISON and nothing else. The set of candidates
+    that gets scored, and every structural column computed over it, is
+    inherited unchanged from M2/M2B.
+  may_not_change:
+    - SUPPORT
+    - PATH
+    - NODE_ROLE
+    - A64
+    - R1/R2/R3 regime definitions
+    - graph context
+    - graph provenance
+    - candidate admission
+    - the candidate budget and its frozen RRF constant
+  why: >-
+    M2C answered the admission question and returned ADMISSION_CLOSED. A phase
+    that quietly re-opened the candidate set would be re-asking a question that
+    has an answer, and any effectiveness change would then be uninterpretable:
+    it could belong to the semantics or to the new candidates.
+
+no_gnn_anywhere_in_m2d: >-
+  No GNN output, hidden state, teacher, distillation target or architecture may
+  enter M2D in any role, including as a feature, a label or a selection signal.
+  M3 is a separate, firewalled phase and M4 is where the two meet.
+
+inference_safe_inputs_only:
+  permitted:
+    - retrieval seeds
+    - frozen node and query embeddings
+    - the frozen candidate set for the query
+    - frozen Dense and SPLADE rankings already stored for the query
+    - current regime context
+    - current QLS features
+  prohibited:
+    - gold nodes as seeds
+    - gold relation types
+    - supporting-fact labels at inference
+    - dataset identity as a model input
+    - any tuning against a target test set
+    - Package F, GNN outputs, GNN hidden states, GNN teachers
+    - canonical CRAG test inspection
+
+# --------------------------------------------------------------------------
+# 1. The M2C negative result, inherited as evidence
+# --------------------------------------------------------------------------
+
+inherited_m2c_negative_result:
+  status: FROZEN_EVIDENCE_NOT_REOPENED
+  source: docs/M2C_STAGE0_REPORT.md
+  verdicts:
+    ranking: STOP_STRUCTURAL_M2C
+    admission: ADMISSION_CLOSED
+  findings:
+    prior_null_replicated: >-
+      The old L1_DIRECTIONAL admission already matched A64's headroom, and the
+      new seed-subspace residual changed which nodes were admitted -- 17,787
+      against A64's 6,812 on metaqa -- without moving recall_ceiling@5 at all.
+      All three arms landed on the identical 0.896575. That is M0A's null,
+      replicated under a new residual.
+    coverage_was_the_ceiling: >-
+      Deterministic graph-derived directional geometry is DEFINED for only
+      0.99%-9.09% of the candidates S4 scores. A signal that is undefined for
+      nine candidates in ten cannot reorder a top-1 list.
+    nothing_passed: >-
+      0 of 9 residual x provenance combinations passed the effectiveness
+      condition and 0 of 9 were protected.
+    margins_disagreed_across_blockers: >-
+      No residual produced a positive error-conditioned margin on BOTH
+      blockers. squad's sign and musique's pointed in opposite directions,
+      which is what a null looks like when it is read per-cell instead of
+      pooled.
+    therefore: >-
+      A learned structural transform lacked the prerequisite evidence, and
+      S4-STRUCT-TRANSFORM was not trained and must not be.
+  what_it_licenses_here: >-
+    Exactly one thing: it removes the graph from the list of places S4's defect
+    could be repaired. It says nothing about the semantic branch, which M2C
+    never varied.
+
+# --------------------------------------------------------------------------
+# 2. The failure shape, frozen from existing artifacts
+# --------------------------------------------------------------------------
+
+failure_shape:
+  source: outputs/m2c_s4_structural_conditioning/m2b_baseline_table.json
+  nothing_was_rerun: true
+  seeds: [0, 1, 2]
+
+  blockers_three_seed_mean_s4_minus_s3_pp:
+    squad_clean/R1:
+      recall@1: -4.303
+      recall@5: -0.882
+      recall@20: -0.262
+      mrr: -2.615
+      negative_in_every_seed: true
+    musique_clean/R1:
+      recall@1: -12.505
+      recall@5: -2.572
+      recall@20: -1.108
+      mrr: -14.922
+      negative_in_every_seed: true
+
+  family_split_seed_0_mean_s4_minus_s3_pp:
+    definition: >-
+      passage-graph = 2wiki_clean, hotpotqa_clean, musique_clean, squad_clean
+      (8 cells). KB = metaqa, webqsp (6 cells). The split is M2C's, measured,
+      and is inherited rather than re-derived.
+    passage:
+      cells: 8
+      recall@1: -6.459
+      recall@5: +0.740
+      recall@20: +0.314
+      mrr: -7.335
+      recall_at_1_negative_in_every_passage_cell: true
+    kb:
+      cells: 6
+      recall@1: +3.653
+      recall@5: +5.487
+      recall@20: +4.179
+      mrr: +8.947
+      s4_wins_every_metric_in_every_kb_cell: true
+
+  prospective_interpretation:
+    statement: >-
+      S4's remaining failure is dominated by top-of-ranking ORDERING. On
+      passage graphs S4 finds the gold about as often as S3 -- recall@20 is
+      +0.314pp, essentially neutral -- and places it worse, losing 6.459pp at
+      rank 1 and 7.335pp of MRR.
+    this_is_a_shape_not_a_cause: >-
+      DO NOT claim the cause yet. "S4 orders the top of the list worse on
+      passage data" is what the numbers say. WHY it does is what the
+      archaeology and the zero-training diagnostics are for, and a repair
+      chosen before that evidence exists would be chosen from a story.
+
+# --------------------------------------------------------------------------
+# 3. Semantic archaeology -- required before any repair is proposed
+# --------------------------------------------------------------------------
+
+semantic_archaeology:
+  status: REQUIRED_BEFORE_ANY_ARM_IS_PROPOSED
+  instantiate_do_not_quote: >-
+    Every formula, column name, dimensionality and parameter count is read off
+    a LIVE instance at the frozen 1536 payload width, never inferred from a
+    number in prose. This rule has already caught one error in this track:
+    qls_v2_semantic.V1_SEMANTIC_PARAMETERS is 98,304, a fact about a
+    768-dimensional payload, and the real cost at 1536 is twice that. Do NOT
+    infer S4's semantic formulas from the fact that it emits 258 columns.
+
+  record_for_each_of_s2_s3_s4:
+    - source tensors
+    - exact formula
+    - dimensionality of each output group
+    - learned parameters, counted with numel() on a live instance
+    - whether any operation is performed at the full 1536 width
+    - whether any sorting or ranking over the candidate set occurs
+    - whether any query-relative normalization occurs
+
+  must_produce:
+    S3_NOT_IN_S4: >-
+      The exact set of semantic primitives available to S3 and not to S4. This
+      set, and not a hypothesis about it, is what the candidate repairs are
+      drawn from.
+    S4_NOT_IN_S3: >-
+      The reverse set, so that a proposed addition can be checked against what
+      S4 already has.
+  do_not_duplicate: >-
+    A primitive S4 already contains in some basis may not be re-added as if it
+    were missing. Where S4 has a restricted form of an S3 primitive, say
+    restricted-in-what-way rather than present or absent.
+
+  output: outputs/m2d_s4_semantic_repair/semantic_archaeology.json
+
+# --------------------------------------------------------------------------
+# 4-6. Stage 0: the zero-training diagnostics
+# --------------------------------------------------------------------------
+
+stage_0:
+  name: ZERO_TRAINING_COMPLEMENTARITY_AND_FUSION
+  trains_nothing: true
+  reads_test_split: false
+  fits_nothing_new: true
+  uses_only: >-
+    Per-query rows and rankings that already exist from M2B, plus the frozen
+    Dense and SPLADE rankings already stored for each query. No new model fit
+    of any kind, at any size, for any reason.
+
+  cells:
+    failure_cells: [squad_clean/R1, musique_clean/R1]
+    passage_control: hotpotqa_clean/R1
+    kb_control: metaqa/R1
+    how_the_controls_were_chosen:
+      rule: >-
+        Among cells where S4 currently WINS recall@5 against S3 at seed 0, take
+        the one with the largest held-out panel, separately within the passage
+        family and the KB family.
+      applied_before_any_m2d_arm_ran: true
+      passage: >-
+        6 passage cells qualify. hotpotqa_clean holds 3,914 held-out queries
+        against 2wiki_clean's 600, so hotpotqa_clean is selected.
+      kb: >-
+        6 KB cells qualify. metaqa holds 7,828 held-out queries against
+        webqsp's 63. webqsp shows by far the largest S4 advantage (+8.6 to
+        +9.9pp) and is exactly the tiny panel the rule exists to avoid; metaqa
+        is selected.
+      why_all_four_are_r1: >-
+        Both blockers are R1. Holding the regime constant across all four cells
+        means an arm's effect cannot be confounded with a regime change, which
+        is a stronger reason than any tie-break among hotpotqa's and metaqa's
+        three equally-sized regimes.
+
+  a_complementarity:
+    question: >-
+      Are S3 and S4 semantically complementary, or is S4 simply a noisier
+      version of S3 on passage data?
+    per_cell_counts:
+      - queries where S4 is wrong at rank 1 and S3 is correct
+      - queries where S3 is wrong at rank 1 and S4 is correct
+      - queries where both retrieve the same relevant candidate, ordered differently
+      - rank of S3's top relevant candidate under S4, and the reverse
+      - overlap of the top-1, top-5 and top-20 sets
+    reported_separately_for: [passage, kb]
+    why_the_second_count_matters: >-
+      If S4-wrong/S3-right is large and S3-wrong/S4-right is near zero, S4 is
+      dominated on this family and there is nothing to fuse. If both are large,
+      the two representations disagree productively and an integrated
+      representation could plausibly capture it.
+
+  b_rank_fusion:
+    constant: 60
+    constant_is_frozen: >-
+      configs/candidate_budget.yaml already fixes the RRF constant at 60. It is
+      reused, not chosen, and no weight or constant is searched. A fusion whose
+      constant was picked here would be a tuned model wearing a control's name.
+    no_weight_search: true
+    arms:
+      Z0: S4 alone (the reference)
+      Z1: RRF(S4, Dense)
+      Z2: RRF(S4, SPLADE)
+      Z3: RRF(S4, Dense, SPLADE)
+      Z4: RRF(S4, S3)
+    z4_is_diagnostic_only:
+      eligible_as_a_final_model: false
+      why: >-
+        Running both semantic models at inference would defeat the systems
+        object this phase exists to protect. Z4 answers one question only --
+        does S3 contain ranking information complementary to S4 -- and a Z4
+        number may never be reported as a candidate result.
+    also_if_cheap_from_stored_ranks:
+      - RRF(S3, Dense)
+      - RRF(S3, SPLADE)
+    these_are_context_not_candidates: >-
+      They say whether the S3 incumbent is itself improvable by the same
+      parameter-free move, which is the only way to tell an S4-specific gain
+      from a gain any model would get.
+
+  c_error_conditioned:
+    population: >-
+      Every query where S4's top-1 is wrong AND a relevant candidate is already
+      present in the scored set. A query whose gold was never a candidate is
+      not a ranking error and is excluded, with the excluded count reported.
+    for_each_query_classify_the_rescuer:
+      - Dense
+      - SPLADE
+      - S3
+      - none
+    at_cutoffs: [1, 5, 20]
+    reported_as: a passage-versus-KB table
+    purpose: >-
+      To determine whether the repair should preserve raw dense semantic
+      geometry, lexical signal, the S3 diagonal interaction, or something else.
+      No model may be chosen before this table exists.
+
+  measurability_travels_with_every_margin: >-
+    M2C's lesson, applied here in advance: every conditioned statistic is
+    reported beside the fraction of the population it was measurable on. A
+    clean margin on 3% of the errors is not a repair for the cell, and pooling
+    the two hides exactly that.
+
+# --------------------------------------------------------------------------
+# 7. The cheap raw-semantic controls
+# --------------------------------------------------------------------------
+
+raw_semantic_controls:
+  only_what_the_diagnostic_justifies: >-
+    Constructed AFTER the archaeology and the error-conditioned table, and only
+    from primitives those two show to be both missing from S4 and implicated in
+    its errors.
+  candidates_if_and_only_if_missing:
+    - raw cosine(q, d)
+    - raw mean |q - d|
+    - raw dot(q, d)
+  dot_qd_pct_is_not_automatic:
+    rule: >-
+      Do NOT add dot_qd_pct merely because it is the most conspicuous thing S4
+      lacks. It was the dominant latency source in S2 and S3, and adding it
+      back would spend the systems advantage that is the entire reason for
+      repairing S4 rather than accepting S3.
+    if_uniquely_implicated: >-
+      If, and only if, the error-conditioned table shows that percentile or
+      rank structure specifically -- and not raw geometry -- separates the
+      relevant candidate from S4's wrong top item, treat it as a SEPARATE
+      EXPENSIVE CONTROL with its own measured latency, not as part of a cheap
+      arm.
+    ask_first: >-
+      Whether cheap raw geometry alone is sufficient. That question has to be
+      answered before the expensive control is priced.
+
+# --------------------------------------------------------------------------
+# 8. The candidate repair ladder
+# --------------------------------------------------------------------------
+
+ladder:
+  prospective: true
+  arms_must_be_reduced_after_archaeology: >-
+    This ladder is what MAY be run, not what WILL be. The archaeology and the
+    Stage-0 diagnostics remove arms; nothing adds one. Running all five would
+    be a Cartesian sweep, which this track does not do.
+  arms:
+    A0:
+      name: S4
+      description: the current frozen projection challenger, unchanged
+      added_parameters: 0
+    A1:
+      name: S4 + RAW-SEMANTIC-SKIP
+      description: >-
+        The smallest missing raw-space semantic scalar or scalars the
+        diagnostic justifies, concatenated to the semantic branch.
+      added_parameters: at most one scorer input weight per added scalar
+    A2:
+      name: S4 + DENSE-RRF
+      description: >-
+        Parameter-free external rank-preserving skip at the frozen k=60.
+      added_parameters: 0
+    A3:
+      name: S4 + S3-DIAGONAL
+      only_if: >-
+        The complementarity diagnostic specifically implicates the two learned
+        S3 diagonal interactions -- not merely that S3 wins somewhere.
+      description: >-
+        Adds at most the exact existing S3 semantic parameters, unmodified.
+      do_not_redesign_them: true
+      added_parameters: at most 2 * 1536
+    A4:
+      name: S4 + SEMANTIC-RESIDUAL
+      only_if: >-
+        A1, A2 and A3 together demonstrate that a semantic residual signal
+        EXISTS but that no static inclusion of it recovers the blocker.
+      description: see semantic_residual_design below
+  do_not_run_all_arms: true
+
+# --------------------------------------------------------------------------
+# 9. The residual, if one is ever justified
+# --------------------------------------------------------------------------
+
+semantic_residual_design:
+  authorised_by_this_file: false
+  form:
+    base: the S4 projected representation, unchanged
+    correction: a small function of SEMANTIC INPUTS ONLY
+    combined: base + gated correction
+    initialization: the correction initialises to exactly zero
+  why_zero_init: >-
+    An arm that starts as its own base cannot win by being different; it can
+    only win by learning. That is the same discipline S3's own initialization
+    was designed under, where w = 1/dim makes the learned product start as the
+    mean elementwise product.
+  forbidden:
+    - graph conditioning of any kind
+    - dataset identity as an input
+    - any target-specific branch
+    - a multimillion-parameter adapter
+  file_before_implementing:
+    - exact inputs
+    - hidden width
+    - exact parameter count
+    - initialization
+    - latency estimate
+  the_control_it_needs: >-
+    A same-capacity structural control is unnecessary because no structural
+    input exists. What it must be compared against is the SIMPLER
+    RAW-SEMANTIC SKIP, so that extra nonlinear capacity has to earn its place
+    rather than merely occupy it.
+
+# --------------------------------------------------------------------------
+# 10. The Stage-0 advance gate -- FILED BEFORE ANY RESULT EXISTS
+# --------------------------------------------------------------------------
+
+advance_gate:
+  filed_before_any_diagnostic_ran: true
+  thresholds_are_not_adjustable: >-
+    A threshold moved after seeing the number it failed is not a threshold. The
+    same rule M2B and M2C operated under, and the reason M2C's gate is checked
+    by git ancestry rather than by a flag inside the file that claims it.
+  the_zero_training_diagnostic_must_happen_before_any_fit: true
+
+  advance_only_if_at_least_one_holds:
+    A_fixed_fusion_works: >-
+      A fixed zero-training fusion improves recall@5 on BOTH failure cells,
+      with at least one improvement >= +0.25pp, and regresses NEITHER control
+      cell by more than 0.50pp on recall@5.
+    B_a_named_primitive_reorders: >-
+      The complementarity analysis shows that ONE missing S3 or raw semantic
+      primitive systematically ranks the relevant item above S4's wrong top
+      item on BOTH failure cells.
+    C_s3_plus_s4_repairs_both: >-
+      The S3+S4 diagnostic RRF substantially repairs BOTH failure cells,
+      demonstrating real semantic complementarity that a cheaper integrated
+      representation could plausibly capture.
+
+  if_none_holds:
+    verdict: STOP_M2D
+    then: freeze S3 and move to M3 with S3
+    do_not: >-
+      Do not train another adapter because S4's macro number is attractive. An
+      attractive aggregate over a family S4 already wins is not evidence about
+      the family it loses.
+
+  selection_over_many_must_be_declared: >-
+    Condition A does not name which fusion arm must improve. Every arm is
+    evaluated and the number that passed out of the number tried is reported,
+    because a pass by one of four is a selection over four. Narrowing the gate
+    to one arm after seeing the results would be picking the comparison from
+    the results.
+
+# --------------------------------------------------------------------------
+# 11. Stage 1, if Stage 0 passes
+# --------------------------------------------------------------------------
+
+stage_1:
+  authorised_only_if: stage_0 advance gate passes on its filed terms
+  authorised_by_this_file: false
+  cells:
+    mandatory_blockers: [squad_clean/R1, musique_clean/R1]
+    controls: [hotpotqa_clean/R1, metaqa/R1]
+    controls_were_chosen_before_any_arm_result: true
+  seeds: [0]
+  reuse: >-
+    All existing S3 and S4 baselines are reused. Nothing already fit is refit
+    to produce a comparison row.
+
+effectiveness_gate:
+  applies_to: any new challenger C
+  blockers:
+    squad_clean/R1: C must be within 0.50pp of S3 on recall@5
+    musique_clean/R1: C must be within 0.50pp of S3 on recall@5
+  controls: no recall@5 regression greater than 0.50pp relative to S4
+  also_report: [recall@1, recall@20, mrr, full_coverage@20]
+  rank_1_and_mrr_are_the_point: >-
+    They are reported not as supporting detail but as the metrics the defect
+    actually lives in: -6.459pp at rank 1 and -7.335pp of MRR across the
+    passage family, against +0.314pp at rank 20. A challenger that fixes
+    recall@5 and leaves rank 1 where it is has not repaired the failure this
+    phase was opened for.
+
+# --------------------------------------------------------------------------
+# 13-14. The systems gate and honest parameter accounting
+# --------------------------------------------------------------------------
+
+systems_gate:
+  why_it_exists: >-
+    The reason to repair S4 rather than accept S3 is partly S4's systems
+    result. A repair that spends that advantage has removed its own
+    justification, whatever it does to effectiveness.
+  measurement: full uncached inference; nothing excluded
+  must_not_be_excluded_from_timing:
+    - raw-space reductions
+    - rank fusion
+    - the semantic skip
+    - any residual transform
+  reference_values:
+    source: outputs/m2c_s4_structural_conditioning/m2b_baseline_table.json
+    subset: the six blocker-cell fits (squad_clean/R1 and musique_clean/R1, seeds 0-2)
+    S4_uncached_p95_ms: 1.0683
+    S3_uncached_p95_ms: 1.9138
+    note: >-
+      Over all 18 fits per rung the same figures are 1.0728 and 1.9466. The
+      blocker subset is what the gate uses, because that is where a repair has
+      to hold; both subsets are recorded so neither can be quoted selectively.
+  requirement: >-
+    A repaired S4 challenger must keep total uncached p95 BELOW S3's p95 on the
+    cells being compared. Above it, the systems reason for replacing S3 is
+    gone.
+  also_report: relative increase over native S4
+  report: [p50, p95, p99, params, peak_vram_or_rss, training_seconds]
+
+parameter_accounting:
+  report_separately:
+    - S4 base semantic parameters
+    - added semantic parameters
+    - scorer parameters
+    - total trainable parameters
+  do_not_describe_s4_as_tiny: >-
+    S4 holds 196,608 semantic parameters and 205,217 in total, against S3's
+    3,072 and 3,585. S4 is the LARGE model in this comparison by a factor of
+    57, and any sentence implying otherwise is false.
+  the_target_story_is_not: "fewer parameters than everything"
+  the_possible_story_is: >-
+    A projection-heavy feed-forward representation maps efficiently to GPU
+    kernels and, with a minimal semantic-preservation mechanism, can deliver
+    high retrieval effectiveness without learned message passing.
+
+# --------------------------------------------------------------------------
+# 15-16. Resolution and the full screen
+# --------------------------------------------------------------------------
+
+targeted_multi_seed_resolution:
+  authorised_by_this_file: false
+  trigger: a seed-0 challenger that clears BOTH the effectiveness and systems gates
+  run_seeds: [1, 2]
+  only_for: [squad_clean/R1, musique_clean/R1]
+  why_only_the_blockers: >-
+    They are the robust blockers, negative in every seed on every metric. Extra
+    seeds elsewhere would price a screen rather than resolve a question.
+  do_not_add_seeds_on_all_cells: true
+  then: >-
+    If it survives those three-seed blockers, and only then, PROPOSE the full
+    14-cell seed-0 M2D screen. Proposing is not running.
+
+full_screen_rule:
+  authorised_by_this_file: false
+  file_a_new_rule_first: >-
+    Before any full-screen run, a NEW M2D selection rule is filed. M2B's rule
+    is not rewritten and not reused by reference; this is a new decision about
+    a new object.
+  compared_prospectively: [S3 incumbent, S4, M2D challenger]
+  effectiveness_admissibility:
+    six_dataset_macro: within 0.25pp of best
+    every_dataset: within 0.50pp of best
+    every_cell: within 0.50pp of best
+  among_admissible_models_in_order:
+    1: lower total uncached p95
+    2: fewer trainable parameters
+    3: lower peak memory
+    4: deterministic tie-break
+  this_mirrors_but_does_not_inherit: >-
+    The shape is M2B's SYMMETRIC_BEST_ANCHORED protection, deliberately, so
+    that the two phases are comparable. It remains a NEW M2D decision and M2B's
+    outcome is not re-derived from it.
+
+# --------------------------------------------------------------------------
+# 17. No headroom or graph reopening
+# --------------------------------------------------------------------------
+
+no_graph_reopening:
+  statement: >-
+    M2C answered the graph question. If semantic repair fails, this phase
+    stops.
+  do_not: >-
+    Do not return to graph offsets looking for another variant. A third
+    directional residual is the same experiment with a new name, and the null
+    has now been measured twice.
+
+# --------------------------------------------------------------------------
+# 18. Compute discipline
+# --------------------------------------------------------------------------
+
+compute_discipline:
+  before_every_new_run_record:
+    - predicted jobs
+    - CPU and GPU hours
+    - walltime
+    - storage
+    - expected spend
+    - hard ceiling
+    - the advance rule the run is gated on
+  consume_existing_rows_first: >-
+    Every Stage-0 diagnostic in this file is derivable from stored M2B rows and
+    stored Dense/SPLADE rankings. Do not pay GPU cost for a number that already
+    exists on disk.
+  gpu_hours_authorised_by_this_file: 0
+
+# --------------------------------------------------------------------------
+# 0 (bis). The persistence contract -- hardening before compute
+# --------------------------------------------------------------------------
+
+persistence_contract:
+  status: IMPLEMENTED_AND_TESTED
+  module: src/mp_retrieval/run_artifacts.py
+  tests: tests/test_run_artifacts.py
+  motivated_by: >-
+    A measured Modal volume failure on 2026-09-08. A write that OVERWRITES an
+    existing file was silently discarded at commit: the container saw its own
+    bytes, reported success, and the old file survived, while brand-new files
+    from the same batch persisted normally. It happened twice.
+  every_scientific_artifact_is_addressed_by:
+    - phase
+    - dataset
+    - regime
+    - seed
+    - arm
+    - source_commit
+    - run or call identifier
+  concurrent_containers_can_never_share_a_result_path: >-
+    The run identifier is Modal's own function-call id, which is unique by
+    construction, so two containers cannot address one path even by mistake.
+  writes_are_immutable: >-
+    A second write to an existing artifact path is REFUSED, not unlinked.
+    Unlinking makes an overwrite safe; refusing makes it impossible.
+  after_write_reopen_and_verify:
+    - source_commit
+    - run or call id
+    - config fingerprint
+    - row count, recounted rather than read
+    - content hash, recomputed rather than read
+  in_container_readback_is_not_sufficient: >-
+    Recorded explicitly because it is the trap: the copy a container reads back
+    is the copy that gets discarded. The check that has teeth is host-side,
+    after fetching, and only a verified artifact may be exposed as the selected
+    logical result.
+  selection_is_stated_not_inferred: >-
+    Where several runs exist for one logical result, the caller names the
+    commit. Two verified runs at the same commit is an ambiguity to be
+    resolved, never a tie broken by timestamp.
+  regression_tests_reproduce_the_failure_class: >-
+    tests/test_run_artifacts.py models the volume's measured behaviour, shows
+    the old fixed-path scheme reproducing the incident including the deceptive
+    successful read-back, and shows the new scheme unable to reach that state.
+
+# --------------------------------------------------------------------------
+# 19. What this file authorises
+# --------------------------------------------------------------------------
+
+launch_authorization:
+  authorised:
+    - infrastructure persistence hardening
+    - this declaration and its protocol document
+    - exact S2/S3/S4 semantic archaeology
+    - existing-row complementarity analysis
+    - fixed zero-training RRF diagnostics at the frozen k=60
+    - error-conditioned analysis
+    - the Stage-0 verdict
+    - the smallest Stage-1 seed-0 pilot, ONLY if the filed Stage-0 gate passes
+    - result fetch, audit and report
+  not_authorised:
+    - the full 14-cell M2D screen
+    - seeds 1 and 2
+    - M3 or any GNN work
+    - canonical CRAG
+    - Package F
+    - E2
+  gates:
+    persistence_hardening_implemented: true    # earned 2026-09-08, src/mp_retrieval/run_artifacts.py
+    persistence_regression_tests_pass: true    # earned 2026-09-08, tests/test_run_artifacts.py
+    predecessor_commit_pushed: true            # earned 2026-09-08, 6ea570f is on origin/main
+    declaration_filed: true                    # this file
+    protocol_document_filed: true              # docs/M2D_S4_SEMANTIC_REPAIR_PROTOCOL.md
+    declaration_tested: true                   # earned 2026-09-08, tests/test_m2d_declaration.py
+    failure_shape_frozen: true                 # earned 2026-09-08, from the immutable M2B baseline table
+    semantic_archaeology_recorded: false
+    stage_0_diagnostics_run: false
+    stage_0_advance_gate_evaluated: false
+    stage_1_authorised: false
+
+# --------------------------------------------------------------------------
+# 20. Hard stop
+# --------------------------------------------------------------------------
+
+stop_condition:
+  after_stage_0_or_stage_1_report:
+    1: the exact S3 versus S4 semantic difference
+    2: the passage-versus-KB error decomposition
+    3: S4-wrong / S3-right counts
+    4: Dense / SPLADE / S3 rescue fractions
+    5: the fixed RRF results
+    6: the selected minimal repair, if any
+    7: the blocker deltas
+    8: recall@1, recall@5, recall@20 and MRR
+    9: p50, p95 and p99
+    10: parameter count
+    11: compute spend
+  verdict:
+    one_of: [STOP_S4_DEVELOPMENT, ADVANCE_TARGETED_M2D]
+    if_stop:
+      - freeze S3
+      - next phase is M3 independent GNN development
+    if_advance: give the exact minimum next matrix and its cost
+  then: STOP_FOR_REVIEW
