@@ -96,15 +96,15 @@ def test_the_three_declared_files_exist():
         assert path.is_file(), f"{path} is part of M2B's one-declaration-per-phase paperwork"
 
 
-def test_the_status_says_the_phase_ran_and_stopped(declaration):
-    """The status has moved twice: reconnaissance, then conditional, now done.
+def test_the_status_says_the_resolution_is_authorised_and_nothing_else(declaration):
+    """Fourth status: reconnaissance, conditional, stopped, now resolution.
 
-    The launcher matches on this exact string and authorises only the middle
-    one, so the terminal status has to be a value it recognises and refuses --
-    not one it has never heard of, and not one that reads as authorised.
+    The verdict below it does not move. The screen still returned
+    SEMANTIC_PARETO_CONFLICT; what changed is that eight further fits are
+    authorised to test whether two of its cells survive a change of seed.
     """
 
-    assert declaration["status"] == "M2B_SEMANTIC_PARETO_CONFLICT_STOPPED_FOR_REVIEW"
+    assert declaration["status"] == "M2B_TARGETED_RESOLUTION_AUTHORISED"
     assert declaration["m2b_verdict"]["status"] == "SEMANTIC_PARETO_CONFLICT"
     assert declaration["m2b_verdict"]["selected_rung"] is None
     assert declaration["m2b_verdict"]["advances"] is False
@@ -125,16 +125,98 @@ def test_the_verdict_leaves_m2s_frozen_object_standing(declaration):
     assert "does not unseat M2" in declaration["m2b_verdict"]["what_this_does_not_do"]
 
 
-def test_the_three_seed_resolution_is_proposed_and_not_launched(declaration):
-    """One seed ran. The proposal is a proposal."""
+def test_the_authorised_resolution_is_the_one_that_was_proposed(declaration):
+    """Amendment 3 may authorise the proposal. It may not enlarge it.
+
+    The proposal was filed with the verdict, before any seed-1 number could
+    exist. Holding the amendment's scope to it is what makes the resolution
+    prospective rather than a scope chosen once the screen was in hand.
+    """
 
     proposal = declaration["m2b_verdict"][
         "smallest_three_seed_resolution_PROPOSED_NOT_LAUNCHED"
     ]
-    assert proposal["seeds"] == [1, 2]
-    assert sorted(proposal["cells"]) == ["musique_clean/R1", "squad_clean/R1"]
-    assert "No seed beyond 0 has been fitted" in proposal["not_launched"]
-    assert declaration["seed_policy"]["count"] == 1
+    scope = declaration["resolution_amendment"]["scope"]
+    assert sorted(scope["cells"]) == sorted(proposal["cells"])
+    assert scope["rungs"] == proposal["rungs"]
+    assert scope["new_seeds"] == proposal["seeds"]
+    assert scope["new_fits"] == proposal["fits"] == 8
+
+
+def test_the_seed_policy_is_narrowed_rather_than_opened(declaration):
+    policy = declaration["seed_policy"]
+    assert policy["seed"] == 0
+    assert policy["count"] == 1
+    assert policy["five_seed_confirmation"] == "PROHIBITED"
+    status = policy["three_seed_resolution_status"]
+    assert "squad_clean/R1" in status and "musique_clean/R1" in status
+    assert "no others" in status
+    assert "PROHIBITED" in status
+
+
+def test_the_amendment_does_not_invent_a_threshold(declaration):
+    """The rule that judges the substituted numbers is the filed one, unchanged."""
+
+    filed = declaration["selection_rule"]["effectiveness_admissible_iff_pp"]
+    amended = declaration["resolution_amendment"]["substitution_rule"][
+        "the_thresholds_are_the_filed_ones"
+    ]
+    assert amended["macro_pp"] == filed["macro"] == 0.25
+    assert amended["per_dataset_pp"] == filed["per_dataset"] == 0.5
+    assert amended["per_cell_pp"] == filed["per_cell"] == 0.5
+
+
+def test_the_amendment_records_that_the_filed_criterion_did_not_pick_these_cells(
+    declaration,
+):
+    """The diagnostic's proposal criterion could not fire, and that is disclosed.
+
+    It admits a cell only if an interval involving the SELECTED rung straddles
+    zero. No rung was selected and neither interval straddles zero, so the
+    criterion selects nothing. The cells came from the admissibility rule's own
+    output instead. Recording the mismatch is the point: a criterion treated as
+    satisfied when its precondition does not exist has stopped being one.
+    """
+
+    disclosure = declaration["resolution_amendment"][
+        "relationship_to_this_filed_criterion"
+    ]
+    assert "no referent" in disclosure["the_filed_criterion_did_not_produce_these_cells"]
+    assert "straddl" in disclosure["the_filed_criterion_did_not_produce_these_cells"]
+    assert "selection_report.json" in disclosure["so_these_cells_were_named_a_different_way"]
+
+
+def test_the_resolution_has_its_own_ceiling_and_its_own_ledger_line(declaration):
+    """A ceiling is a bound on a declared workload, not a budget to spend down."""
+
+    amendment = declaration["resolution_amendment"]
+    compute = amendment["compute"]
+    assert compute["total_cost_usd"]["conservative"] < compute["resolution_ceiling_usd"]
+    lines = {
+        line["line"]: line
+        for line in amendment["compute_ledger_lines_kept_separate"]["lines"]
+    }
+    assert set(lines) == {
+        "m2b_smoke_failed",
+        "m2b_smoke",
+        "m2b_screen",
+        "m2b_targeted_resolution",
+    }
+    # The screen's line stays at what it actually cost, against its own ceiling.
+    assert lines["m2b_screen"]["usd"] == 2.7003
+    assert lines["m2b_screen"]["ceiling_usd"] == 3.5732
+    assert lines["m2b_targeted_resolution"]["ceiling_usd"] == compute[
+        "resolution_ceiling_usd"
+    ]
+    # Two container starts that produced nothing were still money.
+    assert lines["m2b_smoke_failed"]["usd"] > 0
+
+
+def test_the_amendment_stops_semantic_selection(declaration):
+    stop = declaration["resolution_amendment"]["hard_stop_after_this"]
+    for forbidden in ("additional seeds", "new semantic formulas", "M3", "GNN", "CRAG"):
+        assert forbidden in stop
+    assert "last semantic-selection compute" in stop
 
 
 def test_the_prohibitions_name_every_thing_the_authorisation_excluded(declaration):

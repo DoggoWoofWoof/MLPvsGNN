@@ -97,7 +97,7 @@ amendments:
       2.5x S4 fit multiplier is still an argument. The smoke measures it, and
       only then is the ceiling refiled.
 
-status: M2B_SEMANTIC_PARETO_CONFLICT_STOPPED_FOR_REVIEW
+status: M2B_TARGETED_RESOLUTION_AUTHORISED
 
 this_file_authorises: >-
   As amended 2026-09-07: the smoke cell, and then the 28-fit fan-out, each
@@ -744,6 +744,13 @@ seed_policy:
     PROPOSED, naming the specific cells it would resolve. It is not launched
     with the one-seed run and is not launched automatically. Five seeds are
     not the fallback and are prohibited throughout development.
+  three_seed_resolution_status: >-
+    PROPOSED at the verdict, AUTHORISED by amendment 3 -- for the two cells
+    named in resolution_amendment.scope and for no others. Seeds 1 and 2 are
+    permitted in squad_clean/R1 and musique_clean/R1, rungs S3 and S4 only.
+    Every other cell of the screen stays at seed 0, S2 stays at seed 0
+    everywhere, and five seeds remain PROHIBITED. This is a narrowing, not an
+    opening: the runner refuses a non-zero seed anywhere outside those cells.
 
 uncertainty_diagnostic:      # filed by amendment 2
   status: DIAGNOSTIC_ONLY
@@ -801,6 +808,12 @@ uncertainty_diagnostic:      # filed by amendment 2
       one-seed run and not by the script that identifies its candidates. It
       needs a further authorisation. Five seeds remain prohibited throughout
       development.
+    what_actually_happened: >-
+      Amendment 3 is that further authorisation. It did not arrive through
+      this criterion -- see
+      resolution_amendment.relationship_to_this_filed_criterion, which records
+      that the criterion could not fire and why the cells were named some
+      other way.
   per_query_outcomes_are_persisted_at_fit_time: >-
     M1B needed amendment 5 because no per-query outcome had been persisted
     anywhere and its bootstrap was not computable after the fact; a rerun to
@@ -1283,6 +1296,304 @@ m2b_verdict:
     containers: 6
     fits_new: 28
     fits_reused: 14
+
+# --------------------------------------------------------------------------
+# Amendment 3, 2026-09-07: the targeted three-seed resolution
+# --------------------------------------------------------------------------
+
+resolution_amendment:
+  amendment: 3
+  filed: 2026-09-07
+  supersedes_status: M2B_SEMANTIC_PARETO_CONFLICT_STOPPED_FOR_REVIEW
+  authorised_by: >-
+    Review of the M2B verdict. The reviewer accepted SEMANTIC_PARETO_CONFLICT
+    and authorised the resolution this file PROPOSED and did not launch, on the
+    ground that S4 is the only rung for which further seed evidence can change
+    the semantic-selection decision.
+
+  why_more_compute_is_justified_here: >-
+    The compute rule requires that additional spend be able to change a
+    concrete decision. It can. S4 wins the macro and 12 of 14 cells and is
+    blocked by exactly two cells. The paired query bootstrap already showed
+    both blocking margins sit outside the query-resampling interval, so they
+    are not panel artifacts -- and it cannot say whether they are artifacts of
+    the single fit, because M2B trained one seed. Seeds 1 and 2 are the
+    smallest evidence that can answer the remaining question.
+
+  # ------------------------------------------------------------------
+  # Scope. Exhaustive.
+  # ------------------------------------------------------------------
+  scope:
+    cells: [squad_clean/R1, musique_clean/R1]
+    rungs: [S3, S4]
+    existing_seed: 0
+    new_seeds: [1, 2]
+    new_fits: 8
+    logical_resolution_evidence: 2 cells x 2 rungs x 3 seeds = 12 comparisons
+    seed_0_is_reused_not_refitted: >-
+      The seed-0 fits for both rungs in both cells are the M2B screen's own and
+      are read, not recomputed. S3 at seed 0 is M2's checkpoint, exactly as the
+      screen used it.
+
+  relationship_to_this_filed_criterion:
+    the_filed_criterion_did_not_produce_these_cells: >-
+      uncertainty_diagnostic.what_it_feeds.criterion admits a cell only if it
+      sits in the decision band of THE SELECTED RUNG and at least one bootstrap
+      interval involving that rung STRADDLES ZERO. Neither half applies. No
+      rung was selected, so "the selected rung" has no referent and there is no
+      decision band to sit in; and the two intervals here are
+      [+0.364, +1.132] and [+1.317, +3.262], which are as far from straddling
+      zero as this screen produced. Read literally, the filed criterion selects
+      no cells at all.
+    so_these_cells_were_named_a_different_way: >-
+      By the admissibility rule's own output, not by the diagnostic: they are
+      the exhaustive set of cells on which S4 fails, computed from the filed
+      verdict that was already on disk. That is a stronger basis than the
+      criterion, not a weaker one -- it is mechanical, it predates this
+      amendment, and it would have named the same two cells to anyone reading
+      selection_report.json.
+    why_this_is_recorded_rather_than_smoothed_over: >-
+      The criterion was written expecting a rung to be admitted with some cell
+      carried by tolerance, and expecting uncertainty to look like a
+      zero-straddling interval. The screen produced neither. Silently treating
+      a criterion as satisfied when its precondition does not exist is how a
+      preregistration decays into a formality, so the mismatch is filed
+      instead. What follows from it: the tight, one-signed intervals mean the
+      two blocking margins are NOT query noise, so the resolution is testing
+      seed sensitivity specifically -- and if the deltas hold across seeds 1
+      and 2, that is real evidence FOR the conflict standing, not a formality
+      to be got through.
+
+  why_these_cells_and_no_others: >-
+    They are S4's only admissibility blockers -- squad_clean/R1 at -0.748pp and
+    musique_clean/R1 at -2.258pp against the cell best. Both datasets are
+    single-regime, so resolving those two cells resolves the per-cell and
+    per-dataset clauses together, and S4 already passes macro. No other cell,
+    dataset or regime can change whether S4 becomes admissible, so no other is
+    authorised.
+
+  why_s2_is_excluded: >-
+    S2 fails every scope by margins between 0.518pp and 12.736pp and fails the
+    macro by 3.996pp. No seed evidence on two cells can bring it inside
+    tolerance on six datasets. Spending on it would buy no decision.
+
+  why_s3_gets_no_broad_resolution: >-
+    S3 would need four datasets and the macro to move. That is not a small
+    resolution and it is not authorised. S3 is refitted at seeds 1 and 2 only
+    in the two resolution cells, because the statistic below is a PAIRED
+    S4-minus-S3 delta and pairing requires both rungs at the same seed.
+
+  not_authorised:
+    - any rung other than S3 and S4
+    - any cell other than squad_clean/R1 and musique_clean/R1
+    - any seed other than 0, 1 and 2, in those cells only
+    - a five-seed confirmation, which remains PROHIBITED throughout development
+    - re-running the twelve cells the screen already settled
+    - any change to a semantic formula or its implementation
+    - any change to the feature stores, which stay immutable and are reused
+    - M3, GNN training, canonical CRAG, Package F, E2
+
+  # ------------------------------------------------------------------
+  # The statistic. Frozen before the fits exist.
+  # ------------------------------------------------------------------
+  resolution_statistic:
+    per_seed_delta: "delta_seed = recall@5(S4, seed) - recall@5(S3, seed)"
+    seeds: [0, 1, 2]
+    point_estimate: "mean_delta = mean(delta_seed for seed in [0, 1, 2])"
+    bootstrap:
+      implementation_reused_from: scripts/m1b_bootstrap_analysis.py
+      replicates: 10000
+      confidence_level: 0.95
+      interval: percentile, [2.5th, 97.5th]
+      resampling_unit: whole query, with replacement
+      pairing: >-
+        One set of resampled query indices per cell, applied to S3 and S4 AND
+        to all three seeds. The same queries are compared everywhere, so the
+        replicate varies only what the statistic is meant to vary.
+      statistic: >-
+        the mean of the three seed-wise S4-minus-S3 deltas -- which is M1B's
+        original mean_s(delta_seed), restored now that there are three seeds to
+        average rather than collapsed to a single delta as in the one-seed
+        screen.
+    also_reported_separately:
+      - seed-wise deltas for seeds 0, 1 and 2
+      - mean
+      - sample standard deviation
+      - min
+      - max
+      - sign pattern across the three seeds
+      - the bootstrap interval
+    what_this_interval_is: >-
+      Query uncertainty around the observed three-seed mean. It is NOT a
+      random-effects seed interval: three seeds bound the mean's spread poorly
+      and this procedure does not pretend otherwise. The seed-wise deltas and
+      their sign pattern are reported raw for exactly that reason -- a reader
+      who wants seed evidence should read those, not the CI.
+
+  # ------------------------------------------------------------------
+  # The substitution. Narrow, prospective, and the rule stays frozen.
+  # ------------------------------------------------------------------
+  substitution_rule:
+    what_is_replaced: >-
+      The seed-0 recall@5 for S3 and S4 in squad_clean/R1 and musique_clean/R1
+      is replaced by that rung's three-seed mean recall@5 in that cell.
+    what_is_not_replaced: >-
+      Everything else. The other twelve cells keep the values the screen
+      measured, S2 keeps its seed-0 values everywhere including in these two
+      cells, and no systems number is replaced.
+    then: >-
+      Re-run the ORIGINAL filed admissibility rule, unchanged and unparametrised
+      by this amendment.
+    the_thresholds_are_the_filed_ones:
+      macro_pp: 0.25
+      per_dataset_pp: 0.5
+      per_cell_pp: 0.5
+    no_new_threshold: >-
+      This amendment introduces no S4-specific threshold, no relaxed tolerance
+      and no reweighting. It changes which measurement fills two cells and
+      nothing about how the rule reads them. thresholds_are_not_adjustable
+      still governs: a threshold moved after seeing the numbers it failed is
+      not a threshold.
+    why_prospective_matters: >-
+      The two cells are named here, before the fits run, because choosing which
+      cells get three seeds after seeing three-seed numbers would be choosing
+      the answer. They are named by the seed-0 verdict, which is already filed.
+
+  # ------------------------------------------------------------------
+  # Outcomes. Both filed before either is known.
+  # ------------------------------------------------------------------
+  outcomes:
+    if_s4_becomes_effectiveness_admissible: >-
+      Apply the already-filed systems tie-break unchanged --
+      selection_rule.if_multiple_survive, ordering on lower uncached inference
+      p95, then fewer parameters, then lower peak memory. File SELECTED_S4.
+    if_s4_remains_inadmissible: >-
+      The conflict stands and semantic experimentation ends. M2's incumbent
+      remains the frozen object: SELECTED_S3, 3,585 parameters, per
+      reversal_note, which committed that reading before any number existed.
+    either_way: >-
+      File M2B_SEMANTIC_SELECTION_COMPLETE and STOP_FOR_REVIEW.
+
+  the_tie_break_is_not_reopened: >-
+    If S4 becomes admissible it wins the tie-break on latency, at 1.068 ms
+    against S3's 1.922 ms, despite weighing 205,217 parameters against 3,585.
+    That ordering was filed before any M2B number existed, and its filed
+    reason -- why_latency_outranks_parameters -- says outright that ordering on
+    parameter count first "would let M2B select for its own publication story".
+    Reordering the keys now because the outcome is inconvenient for the small
+    model thesis is exactly the move that sentence was written to forbid.
+
+  the_systems_finding_is_recorded_not_acted_on: >-
+    S2 and S3 are slower than S4 under these frozen implementations because
+    their columns need a within-query rank with average tie handling and
+    full-1536-width reductions, while S4 pays two GEMMs and then works at width
+    64. That is a property of THESE formulas as implemented on THIS hardware at
+    THIS candidate-set size, and it is reported that way -- not as a general law
+    that larger models are faster.
+  no_implementation_optimisation_during_resolution: >-
+    dot_qd_pct is not optimised, S2 and S3 are not re-implemented, and no
+    semantic formula is touched. Changing a frozen implementation after seeing
+    the systems result it produced would make the systems evidence a function
+    of what the result was. A later systems ablation may study an optimised
+    rank; it cannot decide M2B's selection.
+
+  systems_evidence_for_the_resolution: >-
+    Unchanged. The filed tie-break reads the M2B screen's seed-0 systems
+    numbers. The eight new fits are instrumented like every other fit -- their
+    latency and memory are recorded -- but the resolution is effectiveness-only
+    and those timings do not enter the tie-break.
+
+  instrumentation_required_per_new_fit:
+    - checkpoint, reloading into the same model with strict=True
+    - per-query rows, with the aggregate rebuilt from them and matching exactly
+    - the feature build contract hash the store was admitted under
+    - the semantic rung fingerprint
+    - parameter counts
+    - training and uncached inference timing
+    - peak VRAM and peak RSS
+  feature_stores: >-
+    Reused, immutable, and never rebuilt. The resolution reads the same M2
+    cell masters the screen read, admitted the same way.
+
+  # ------------------------------------------------------------------
+  # Compute. Its own ledger line and its own ceiling.
+  # ------------------------------------------------------------------
+  compute:
+    status: RESOLUTION_CEILING_FILED_FROM_MEASURED_SECONDS
+    why_a_separate_ceiling: >-
+      The M2B screen's ceiling was earned by, and spent on, the screen. Treating
+      the unspent difference as authorisation for post-conflict work would make
+      a ceiling a budget to use up rather than a bound on a declared workload.
+      This is a new workload and it is priced on its own.
+    basis: >-
+      Measured seconds from the completed screen and from M2, for these exact
+      cells -- not a multiplier and not an extrapolation from another cell.
+    measured_seconds_per_fit:
+      squad_clean/R1: {S3: 160.976, S4: 126.320}
+      musique_clean/R1: {S3: 24.756, S4: 19.803}
+      where_s3_comes_from: >-
+        M2's own fit seconds for that cell. M2B reused S3 rather than fitting
+        it, so its screen recorded 0.0 s, and 0.0 is not what an S3 fit costs.
+      where_s4_comes_from: the M2B screen's own measured fit for that cell
+    training_seconds: {floor: 663.71, conservative: 995.57}
+    scale_headroom: 1.5
+    why_headroom_when_the_cells_are_the_measured_ones: >-
+      The cells are exact but the seeds are not: a different initialisation can
+      take a different number of steps to converge. The headroom covers the
+      seed, not the cell, and it is the same 1.5 this phase has carried since
+      before its first measurement.
+    inference_benchmarking: {fits: 8, seconds_per_fit: 30.0, seconds: 240.0, cost_usd: 0.1494}
+    containers: 2
+    container_overhead_usd: 0.0948
+    total_cost_usd: {floor: 0.6573, conservative: 0.8639}
+    resolution_ceiling_usd: 1.15
+    ceiling_basis: >-
+      The conservative bound plus the same 1.3232 margin the screen's own
+      ceiling carried, rounded up to the nearest five cents. It is a bound on
+      this workload alone.
+
+  compute_ledger_lines_kept_separate:
+    lines:
+      - line: m2b_smoke_failed
+        what: >-
+          Two container starts that proved nothing: a git call in a container
+          with no repository, then a run that produced real fits and persisted
+          none of them.
+        usd: 0.0948
+      - line: m2b_smoke
+        what: the 2wiki_clean/R3 smoke that earned the gates
+        usd_note: >-
+          Counted inside the screen rather than separately, because it is a
+          real cell of the matrix and its fits were kept and reused.
+      - line: m2b_screen
+        what: 28 new fits in 6 containers
+        usd: 2.7003
+        ceiling_usd: 3.5732
+      - line: m2b_targeted_resolution
+        what: 8 new fits in 2 containers
+        usd: 0.8639
+        ceiling_usd: 1.15
+    why_the_failed_starts_are_listed: >-
+      They were spent. A ledger that records only the runs that worked
+      understates what the phase cost and quietly rewards not writing failures
+      down.
+    the_screen_line_is_not_extended: >-
+      m2b_screen is closed at its measured 2.7003. The resolution gets its own
+      line and its own ceiling so that neither the screen's unspent headroom
+      nor this amendment's can be read as authorisation for the other.
+
+  # ------------------------------------------------------------------
+  # Stop.
+  # ------------------------------------------------------------------
+  hard_stop_after_this: >-
+    This is the last semantic-selection compute on the current substrate.
+    After the eight fits and the mechanically recomputed verdict, file
+    M2B_SEMANTIC_SELECTION_COMPLETE with SELECTED_S3 or SELECTED_S4, and stop
+    for review. No additional seeds, no additional rungs, no other cells, no
+    projection-width variants, no new semantic formulas, no S2 or S3
+    optimisation, no feature changes, no M3, no GNN, no canonical CRAG, no
+    Package F, no E2 -- until the semantic rung is frozen and that freeze is
+    reviewed.
 
 stop_condition:
   status: STOP_FOR_REVIEW

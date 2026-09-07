@@ -100,6 +100,61 @@ ALL_RUNGS = ("S2", "S3", "S4")
 
 DECLARED_SEED = 0
 
+#: Amendment 3's targeted resolution, filed in
+#: configs/m2b_semantic_minimality.yaml#resolution_amendment.scope before any of
+#: its fits existed. These are the ONLY (dataset, regime) cells in which a
+#: non-zero seed is authorised, and 1 and 2 are the only seeds authorised there.
+#: Transcribed rather than read from the YAML deliberately: the runner is what
+#: the container executes, and a scope it can widen by editing a config is not a
+#: scope. A mismatch between the two is caught by a test, not by a container.
+RESOLUTION_CELLS = {"squad_clean": ("R1",), "musique_clean": ("R1",)}
+RESOLUTION_RUNGS = ("S3", "S4")
+RESOLUTION_SEEDS = (1, 2)
+
+
+def check_seed_authorisation(
+    dataset: str, seed: int, regimes: list[str], rungs: list[str]
+) -> None:
+    """Refuse any seed the declaration does not authorise for this exact cell.
+
+    M2B is a seed-0 screen. Amendment 3 opened seeds 1 and 2 for two cells and
+    two rungs, to resolve the only comparison that can still change the semantic
+    selection. This narrows that opening to precisely those, so the resolution
+    cannot quietly grow into a re-run of the screen at three seeds -- which is
+    the thing the amendment's hard stop forbids and which nothing else would
+    catch, every extra fit being individually well-formed.
+    """
+
+    if seed == DECLARED_SEED:
+        return
+    if seed not in RESOLUTION_SEEDS:
+        raise ValueError(
+            f"--seed {seed} is not declared: M2B is a seed-{DECLARED_SEED} screen and "
+            f"amendment 3 authorises only {list(RESOLUTION_SEEDS)}, for the resolution "
+            "cells. A further seed needs its own amendment (seed_policy); five seeds "
+            "remain prohibited."
+        )
+    if dataset not in RESOLUTION_CELLS:
+        raise ValueError(
+            f"--seed {seed} is authorised only for the resolution cells "
+            f"{sorted(RESOLUTION_CELLS)}, not for {dataset!r}. Amendment 3 named its "
+            "cells prospectively; running a third dataset at three seeds would be "
+            "choosing the scope after seeing the screen."
+        )
+    unauthorised_regimes = sorted(set(regimes) - set(RESOLUTION_CELLS[dataset]))
+    if unauthorised_regimes:
+        raise ValueError(
+            f"--seed {seed} is authorised for {dataset} only in "
+            f"{list(RESOLUTION_CELLS[dataset])}, not {unauthorised_regimes}"
+        )
+    unauthorised_rungs = sorted(set(rungs) - set(RESOLUTION_RUNGS))
+    if unauthorised_rungs:
+        raise ValueError(
+            f"--seed {seed} is authorised for rungs {list(RESOLUTION_RUNGS)} only, not "
+            f"{unauthorised_rungs}. The resolution is a paired S4-minus-S3 delta; S2 "
+            "failed every scope and no seed evidence on two cells can change that."
+        )
+
 #: The width every parameter count in this phase is quoted at. Named here so the
 #: declared-parameter check fires on the real thing and stays quiet on a toy
 #: fixture, which legitimately weighs something else.
@@ -702,11 +757,6 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         existing = json.loads(args.output.read_text(encoding="utf-8"))
         if existing.get("status") == STATUS_COMPLETE:
             return existing
-    if args.seed != DECLARED_SEED:
-        raise ValueError(
-            f"M2B is a seed-{DECLARED_SEED} screen; --seed {args.seed} needs its own "
-            "amendment (seed_policy)"
-        )
     available = declared_cells(args.dataset)
     regimes = list(args.regimes) if args.regimes else available
     unknown = sorted(set(regimes) - set(available))
@@ -718,6 +768,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     unknown_rungs = sorted(set(rungs) - set(ALL_RUNGS))
     if unknown_rungs:
         raise ValueError(f"--rungs {unknown_rungs} are not M2B's rungs {list(ALL_RUNGS)}")
+    # After the regimes and rungs resolve, because the authorisation is per
+    # cell and per rung, not per dataset: --seed 1 is legitimate for
+    # squad_clean/R1 and is not legitimate for squad_clean's other regimes.
+    check_seed_authorisation(args.dataset, args.seed, regimes, rungs)
 
     dataset = load_complete_dataset(args.data, dataset=args.dataset, require_embeddings=True)
     if len(dataset.queries) != args.expected_queries:
@@ -850,8 +904,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 provenance=provenance,
                 feature_build_latency_ms=build_latency,
                 shared_inputs=shared,
+                # ... and only at the declared seed. M2 fit seed 0, so there
+                # is no seed-1 checkpoint to reuse. Keying this on the rung
+                # alone would hand the resolution M2's seed-0 weights three
+                # times, making S3 a constant across the three seeds it is
+                # supposed to vary -- a corrupted paired delta that every
+                # artifact would report as a clean reuse.
                 reused_checkpoint=(
-                    reused_checkpoint_path(args, regime) if rung == REUSED_RUNG else None
+                    reused_checkpoint_path(args, regime)
+                    if rung == REUSED_RUNG and args.seed == DECLARED_SEED
+                    else None
                 ),
             )
             achieved = fit["metrics"].get("recall@5")
@@ -896,7 +958,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "arm": DECLARED_UNIVERSAL_ARM,
         "runner_arm": RUNNER_UNIVERSAL_ARM,
         "rungs": list(rungs),
-        "reused_rung": REUSED_RUNG if REUSED_RUNG in rungs else None,
+        "reused_rung": (
+            REUSED_RUNG if REUSED_RUNG in rungs and args.seed == DECLARED_SEED else None
+        ),
         "new_rungs": [rung for rung in rungs if rung in NEW_RUNGS],
         "seed": args.seed,
         "queries": len(queries),
@@ -978,10 +1042,15 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.seed != DECLARED_SEED:
-        parser.error(
-            f"M2B declares seed {DECLARED_SEED} only; --seed {args.seed} needs an amendment"
+    try:
+        check_seed_authorisation(
+            args.dataset,
+            args.seed,
+            list(args.regimes) if args.regimes else declared_cells(args.dataset),
+            list(args.rungs) if args.rungs else list(ALL_RUNGS),
         )
+    except ValueError as exc:
+        parser.error(str(exc))
     args.baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
     result = run(args)  # writes args.output itself
     print(json.dumps({

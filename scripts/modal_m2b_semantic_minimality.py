@@ -98,8 +98,29 @@ RECONNAISSANCE_STATUS = "DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_AUTHORISED"
 #: AUTHORISED_STATUS lets a stage run, so this refuses both, the same way the
 #: reconnaissance status did before the amendment.
 COMPLETE_STATUS = "M2B_SEMANTIC_PARETO_CONFLICT_STOPPED_FOR_REVIEW"
+#: Amendment 3. Authorises the eight-fit targeted resolution and NOTHING else --
+#: in particular not a re-run of the screen, which is closed at its measured
+#: cost against its own ceiling.
+RESOLUTION_STATUS = "M2B_TARGETED_RESOLUTION_AUTHORISED"
 
-if CONFIG["status"] not in (AUTHORISED_STATUS, RECONNAISSANCE_STATUS, COMPLETE_STATUS):
+#: Which status authorises which stage. A dict rather than one global flag,
+#: because the two authorisations are not interchangeable: the screen's status
+#: must not license the resolution (it predates the amendment that priced it),
+#: and the resolution's status must not re-license the six-dataset fan-out
+#: (that workload is finished and its ledger line is closed). Any stage whose
+#: authorising status is not the one on disk is refused.
+STAGE_AUTHORISING_STATUS = {
+    "smoke": AUTHORISED_STATUS,
+    "headline": AUTHORISED_STATUS,
+    "resolution": RESOLUTION_STATUS,
+}
+
+if CONFIG["status"] not in (
+    AUTHORISED_STATUS,
+    RECONNAISSANCE_STATUS,
+    COMPLETE_STATUS,
+    RESOLUTION_STATUS,
+):
     raise RuntimeError(
         f"Unexpected declaration status {CONFIG['status']!r} in "
         "configs/m2b_semantic_minimality.yaml -- re-check before launching"
@@ -367,11 +388,13 @@ def _smoke_scope(dataset: str) -> tuple[list[str], list[str]]:
 STAGE_PLAN: dict[str, tuple[bool, str]] = {
     "smoke": (True, "smoke"),
     "headline": (False, "headline"),
+    "resolution": (False, "resolution"),
 }
 
 
-def _runner_args(job: dict[str, Any], *, stage: str) -> argparse.Namespace:
+def _runner_args(job: dict[str, Any], *, stage: str, seed: int = 0) -> argparse.Namespace:
     from scripts.run_m0b_regime_map import MAINLINE_FAMILY
+    from scripts.run_m2b_semantic_minimality import RESOLUTION_CELLS, RESOLUTION_RUNGS
 
     dataset = job["dataset"]
     plan = STAGE_PLAN.get(stage)
@@ -380,6 +403,20 @@ def _runner_args(job: dict[str, Any], *, stage: str) -> argparse.Namespace:
     is_smoke, subtree = plan
     if is_smoke:
         regimes, rungs = _smoke_scope(dataset)
+    elif stage == "resolution":
+        # Read from the runner, not restated here. The runner is what refuses an
+        # out-of-scope seed, so a launcher holding its own copy of the scope
+        # could only ever disagree with the thing that enforces it.
+        if dataset not in RESOLUTION_CELLS:
+            raise ValueError(
+                f"{dataset!r} is not a resolution cell; amendment 3 names "
+                f"{sorted(RESOLUTION_CELLS)} and no others"
+            )
+        regimes, rungs = list(RESOLUTION_CELLS[dataset]), list(RESOLUTION_RUNGS)
+        # Each seed gets its own subtree. One output path per fit is what lets
+        # the runner's own idempotence check resume a half-finished container
+        # instead of refitting a seed that already landed.
+        subtree = f"{subtree}/seed{seed}"
     else:
         regimes, rungs = list(job["regimes"]), None
     output_root = (
@@ -408,7 +445,7 @@ def _runner_args(job: dict[str, Any], *, stage: str) -> argparse.Namespace:
         a64_mainline_family=MAINLINE_FAMILY,
         regimes=regimes,
         rungs=rungs,
-        seed=0,
+        seed=seed,
         epochs=3,
         batch_size=16,
         dropout=0.2,
@@ -428,7 +465,7 @@ def _runner_args(job: dict[str, Any], *, stage: str) -> argparse.Namespace:
     )
 
 
-def _run(job: dict[str, Any], *, stage: str) -> dict[str, Any]:
+def _run(job: dict[str, Any], *, stage: str, seed: int = 0) -> dict[str, Any]:
     os.chdir(REMOTE_ROOT)
     # M2's masters were written by a different container in a different phase,
     # so this reload is load-bearing: without it the volume view is whatever it
@@ -436,13 +473,14 @@ def _run(job: dict[str, Any], *, stage: str) -> dict[str, Any]:
     result_volume.reload()
     from scripts.run_m2b_semantic_minimality import run
 
-    args = _runner_args(job, stage=stage)
+    args = _runner_args(job, stage=stage, seed=seed)
     result = run(args)
     result_volume.commit()
     return {
         "status": result["status"],
         "dataset": job["dataset"],
         "stage": stage,
+        "seed": seed,
         "regimes": sorted(result["cells"]),
         "rungs": result["rungs"],
         "fits_in_this_container": sum(len(cell["rungs"]) for cell in result["cells"].values()),
@@ -463,11 +501,16 @@ def _require_authorisation(stage: str) -> None:
 
     declaration = yaml.safe_load(M2B_CONFIG_PATH.read_text(encoding="utf-8"))
     status = declaration.get("status")
-    if status != AUTHORISED_STATUS:
+    required = STAGE_AUTHORISING_STATUS.get(stage)
+    if required is None:
+        raise RuntimeError(f"unknown stage {stage!r}; expected one of {tuple(STAGE_PLAN)}")
+    if status != required:
         raise RuntimeError(
-            f"configs/m2b_semantic_minimality.yaml reports status {status!r}. It authorises "
-            "no fit -- and smoke_before_fanout.authorisation says outright that the smoke is "
-            f"a fit and needs the further dated amendment. Refusing to run stage {stage!r}."
+            f"configs/m2b_semantic_minimality.yaml reports status {status!r}, which authorises "
+            f"no fit for stage {stage!r} -- that stage runs under {required!r}. The screen's "
+            "authorisation and the resolution's are separate on purpose: neither status "
+            "licenses the other's workload, and smoke_before_fanout.authorisation says "
+            "outright that even the smoke is a fit needing its own dated amendment."
         )
     gates = declaration.get("launch_authorization", {}).get("gates")
     if gates is None:
@@ -520,6 +563,37 @@ def run_m2b_headline(job: dict[str, Any]) -> dict[str, Any]:
     return _run(job, stage="headline")
 
 
+@app.function(
+    image=image,
+    gpu=MODAL_CONFIG["gpu"],
+    volumes={STORAGE_ROOT: result_volume},
+    timeout=MODAL_CONFIG["timeout_seconds"],
+    cpu=MODAL_CONFIG["cpu"],
+    memory=MODAL_CONFIG["memory_mb"],
+)
+def run_m2b_resolution(job: dict[str, Any]) -> dict[str, Any]:
+    """Amendment 3's two new seeds for one resolution cell, in one container.
+
+    Both seeds in one container rather than one each: the cell master, the
+    embeddings and the panel are loaded once and the second seed is then nearly
+    free, which is the whole reason two containers cover eight fits. The seeds
+    run in a declared order and each writes its own output, so a container that
+    dies after seed 1 resumes rather than repeating it.
+    """
+
+    from scripts.run_m2b_semantic_minimality import RESOLUTION_SEEDS
+
+    _require_authorisation("resolution")
+    return {
+        "dataset": job["dataset"],
+        "stage": "resolution",
+        "seeds": list(RESOLUTION_SEEDS),
+        "per_seed": [
+            _run(job, stage="resolution", seed=seed) for seed in RESOLUTION_SEEDS
+        ],
+    }
+
+
 def _download(remote_path: str, local_path: Path) -> None:
     local_path.parent.mkdir(parents=True, exist_ok=True)
     relative = remote_path.removeprefix(f"{STORAGE_ROOT}/")
@@ -534,6 +608,7 @@ def _download(remote_path: str, local_path: Path) -> None:
 STAGE_FUNCTIONS = {
     "smoke": "run_m2b_smoke",
     "headline": "run_m2b_headline",
+    "resolution": "run_m2b_resolution",
 }
 
 

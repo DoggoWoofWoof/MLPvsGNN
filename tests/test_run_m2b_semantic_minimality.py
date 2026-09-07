@@ -936,9 +936,16 @@ def test_an_unknown_rung_is_refused_before_any_work(tmp_path) -> None:
         runner.run(args)
 
 
-def test_a_non_zero_seed_is_refused(tmp_path) -> None:
+def test_a_non_zero_seed_is_refused_outside_the_resolution_cells(tmp_path) -> None:
+    """The toy dataset is not squad_clean or musique_clean, so seed 1 is refused.
+
+    Amendment 3 opened two cells. Everything else is still the seed-0 screen,
+    and this is the assertion that keeps "opened two cells" from meaning
+    "opened".
+    """
+
     args = _m2b_args(tmp_path, seed=1)
-    with pytest.raises(ValueError, match="seed-0 screen"):
+    with pytest.raises(ValueError, match="authorised only for the resolution cells"):
         runner.run(args)
 
 
@@ -950,6 +957,86 @@ def test_the_parser_refuses_a_non_zero_seed_too(tmp_path) -> None:
             "--frozen-embedding-dim", "1536", "--baseline", str(tmp_path / "b.json"),
             "--seed", "1", "--output", str(tmp_path / "o.json"),
         ])
+
+
+# --------------------------------------------------------------------------
+# Amendment 3's boundary, asserted from both sides
+# --------------------------------------------------------------------------
+
+
+def test_the_resolution_scope_is_exactly_what_the_declaration_filed() -> None:
+    """The runner transcribes the scope; this holds the transcription to the YAML.
+
+    The runner deliberately does not read its scope from the config -- a scope a
+    config edit can widen is not a scope -- so the two have to be pinned
+    together somewhere, and a host-side test is the right place: it fails on a
+    laptop rather than in a container that has already started billing.
+    """
+
+    scope = yaml.safe_load(
+        (REPO_ROOT / "configs" / "m2b_semantic_minimality.yaml").read_text(encoding="utf-8")
+    )["resolution_amendment"]["scope"]
+
+    filed = sorted(scope["cells"])
+    transcribed = sorted(
+        f"{dataset}/{regime}"
+        for dataset, regimes in runner.RESOLUTION_CELLS.items()
+        for regime in regimes
+    )
+    assert transcribed == filed == ["musique_clean/R1", "squad_clean/R1"]
+    assert list(runner.RESOLUTION_RUNGS) == list(scope["rungs"]) == ["S3", "S4"]
+    assert list(runner.RESOLUTION_SEEDS) == list(scope["new_seeds"]) == [1, 2]
+    # 2 cells x 2 rungs x 2 new seeds. If any of the three above grows, this is
+    # the line that notices the workload grew with it.
+    assert len(transcribed) * len(runner.RESOLUTION_RUNGS) * len(
+        runner.RESOLUTION_SEEDS
+    ) == scope["new_fits"] == 8
+
+
+@pytest.mark.parametrize(
+    ("dataset", "seed", "regimes", "rungs", "expected"),
+    [
+        ("squad_clean", 1, ["R1"], ["S3", "S4"], None),
+        ("squad_clean", 2, ["R1"], ["S3", "S4"], None),
+        ("musique_clean", 1, ["R1"], ["S3", "S4"], None),
+        # Seed 0 is the screen and is authorised everywhere it always was.
+        ("2wiki_clean", 0, ["R1"], ["S2", "S3", "S4"], None),
+        # A third dataset at three seeds would be choosing the scope late.
+        ("2wiki_clean", 1, ["R1"], ["S3", "S4"], "resolution cells"),
+        # A fourth seed is a different design, not a bigger version of this one.
+        ("squad_clean", 3, ["R1"], ["S3", "S4"], "not declared"),
+        ("squad_clean", 5, ["R1"], ["S3", "S4"], "five seeds"),
+        # S2 failed every scope; no seed evidence on two cells can move it.
+        ("squad_clean", 1, ["R1"], ["S2", "S3", "S4"], "rungs"),
+        # The authorisation is per cell, not per dataset.
+        ("squad_clean", 1, ["R2"], ["S3", "S4"], "only in"),
+    ],
+)
+def test_the_seed_authorisation_is_per_cell_and_per_rung(
+    dataset, seed, regimes, rungs, expected
+) -> None:
+    if expected is None:
+        assert runner.check_seed_authorisation(dataset, seed, regimes, rungs) is None
+        return
+    with pytest.raises(ValueError, match=expected):
+        runner.check_seed_authorisation(dataset, seed, regimes, rungs)
+
+
+def test_s3_is_not_reused_at_a_seed_m2_never_fitted() -> None:
+    """The reuse is a property of seed 0, not a property of S3.
+
+    M2 fit seed 0. Reusing that checkpoint for seeds 1 and 2 would give S3 the
+    same recall three times, so every seed-wise delta would carry an identical
+    S3 term and the paired comparison would be measuring S4's variance against
+    a constant -- while every artifact reported an honest-looking reuse. This
+    asserts the condition that stops it, at the call site that would do it.
+    """
+
+    source = (REPO_ROOT / "scripts" / "run_m2b_semantic_minimality.py").read_text(
+        encoding="utf-8"
+    )
+    assert "if rung == REUSED_RUNG and args.seed == DECLARED_SEED" in source
+    assert 'REUSED_RUNG if REUSED_RUNG in rungs and args.seed == DECLARED_SEED else None' in source
 
 
 def test_run_persists_its_own_result_because_main_is_not_the_caller(smoke) -> None:

@@ -87,8 +87,13 @@ def test_an_unknown_stage_is_refused(jobs) -> None:
 
 
 def test_there_is_no_build_stage_because_m2b_builds_nothing() -> None:
-    assert set(launcher.STAGE_PLAN) == {"smoke", "headline"}
+    assert set(launcher.STAGE_PLAN) == {"smoke", "headline", "resolution"}
     assert "build" not in launcher.STAGE_FUNCTIONS
+    # Every stage is served by a function that exists. A registry entry naming
+    # a function that was renamed away spawns nothing and reports success.
+    for stage, name in launcher.STAGE_FUNCTIONS.items():
+        assert stage in launcher.STAGE_PLAN
+        assert hasattr(launcher, name), f"stage {stage!r} names a missing {name!r}"
 
 
 # --------------------------------------------------------------------------
@@ -300,30 +305,78 @@ def test_the_frozen_width_is_the_one_every_parameter_count_is_quoted_at(jobs) ->
 
 
 @pytest.mark.parametrize("stage", ["smoke", "headline"])
-def test_the_finished_phase_authorises_no_further_fit(stage) -> None:
-    """The screen ran, the rule returned a conflict, and the file stopped.
+def test_the_closed_screen_is_not_relicensed_by_the_resolution(stage) -> None:
+    """Amendment 3 authorises eight fits. It must not reopen the twenty-eight.
 
-    Both stages ran under DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED and both are
-    refused now. The terminal status is recognised -- so the fetcher and the
-    report can still import this module -- but recognised is not authorised.
-
-    The gate machinery this used to exercise on the live file is still tested
-    against patched declarations below, which is where it belongs: those tests
-    do not stop being true when the real file moves on.
+    Both screen stages ran under DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED. The
+    file no longer carries that status, so both are refused -- which is the
+    property that keeps a resolution from silently becoming a re-run whose
+    cost lands on a ledger line that is already closed.
     """
 
     with pytest.raises(RuntimeError) as raised:
         launcher._require_authorisation(stage)
     message = str(raised.value)
-    assert launcher.COMPLETE_STATUS in message
-    assert "authorises no fit" in message
+    assert launcher.RESOLUTION_STATUS in message
+    assert launcher.AUTHORISED_STATUS in message
+    assert "authorises\nno fit" in message or "authorises no fit" in message
 
 
-def test_the_status_the_launcher_would_run_under_is_not_the_one_on_disk() -> None:
-    """Named explicitly, so re-opening the phase is a deliberate edit."""
+def test_the_resolution_stage_is_the_one_the_live_declaration_authorises() -> None:
+    """The complement of the test above: exactly one stage may run right now."""
 
-    assert launcher.CONFIG["status"] == launcher.COMPLETE_STATUS
-    assert launcher.COMPLETE_STATUS != launcher.AUTHORISED_STATUS
+    assert launcher.CONFIG["status"] == launcher.RESOLUTION_STATUS
+    launcher._require_authorisation("resolution")  # does not raise
+    assert launcher.STAGE_AUTHORISING_STATUS["resolution"] == launcher.RESOLUTION_STATUS
+    assert launcher.STAGE_AUTHORISING_STATUS["headline"] == launcher.AUTHORISED_STATUS
+    assert launcher.RESOLUTION_STATUS != launcher.AUTHORISED_STATUS
+
+
+def test_an_unknown_stage_is_refused_rather_than_defaulting_open() -> None:
+    """A stage with no filed authorising status must not fall through to run."""
+
+    with pytest.raises(RuntimeError, match="unknown stage"):
+        launcher._require_authorisation("whatever")
+
+
+def test_the_resolution_runs_both_new_seeds_in_one_container_per_cell() -> None:
+    """Eight fits, two containers -- and each seed writing its own output.
+
+    The cell master and embeddings load once per container, which is why the
+    second seed is nearly free and why the amendment prices two containers
+    rather than four. Separate output paths are what let a container that dies
+    after seed 1 resume instead of refitting it.
+    """
+
+    from scripts.run_m2b_semantic_minimality import RESOLUTION_CELLS, RESOLUTION_SEEDS
+
+    job = {
+        "dataset": "squad_clean",
+        "data_remote": "/data/squad_clean",
+        "fingerprint": "f" * 64,
+        "expected_queries": 10,
+        "baseline": {},
+        "candidate_contract_compatibility": None,
+        "validation_split_queries": 5213,
+        "regimes": ["R1"],
+        "m2_fits_remote": "/data/m2",
+        "source_commit": None,
+    }
+    outputs = set()
+    for seed in RESOLUTION_SEEDS:
+        args = launcher._runner_args(job, stage="resolution", seed=seed)
+        assert args.seed == seed
+        assert args.regimes == list(RESOLUTION_CELLS["squad_clean"]) == ["R1"]
+        assert args.rungs == ["S3", "S4"]
+        assert f"seed{seed}" in str(args.output)
+        outputs.add(str(args.output))
+    assert len(outputs) == len(RESOLUTION_SEEDS)
+
+
+def test_the_resolution_stage_refuses_a_dataset_it_does_not_name() -> None:
+    job = {"dataset": "2wiki_clean", "regimes": ["R3"], "fingerprint": "f" * 64}
+    with pytest.raises(ValueError, match="not a resolution cell"):
+        launcher._runner_args(job, stage="resolution", seed=1)
 
 
 def test_a_reconnaissance_status_would_still_refuse_both_stages(
@@ -437,10 +490,14 @@ def test_an_unrecognised_declaration_status_stops_the_module_at_import() -> None
     source = (REPO_ROOT / "scripts" / "modal_m2b_semantic_minimality.py").read_text(
         encoding="utf-8"
     )
-    assert (
-        'if CONFIG["status"] not in '
-        "(AUTHORISED_STATUS, RECONNAISSANCE_STATUS, COMPLETE_STATUS):"
-    ) in source
+    assert 'if CONFIG["status"] not in (' in source
+    for name in (
+        "AUTHORISED_STATUS",
+        "RECONNAISSANCE_STATUS",
+        "COMPLETE_STATUS",
+        "RESOLUTION_STATUS",
+    ):
+        assert name in source
     assert "re-check before launching" in source
 
 

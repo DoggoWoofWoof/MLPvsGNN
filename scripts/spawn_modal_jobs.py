@@ -94,15 +94,22 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
             "headline": "run_m2_headline",
         },
     ),
-    # Two stages, and no build stage at all: M2B rebuilds no features. Every
+    # Three stages, and no build stage at all: M2B rebuilds no features. Every
     # cell master it reads was persisted by M2's build stage and is admitted on
     # its feature build contract. One spawned job per dataset runs every regime
     # and every semantic rung inside one container, so the rungs share a clock
     # -- the tie-break orders on uncached inference p95, and comparing that
-    # across containers would compare containers.
+    # across containers would compare containers. The resolution keeps that
+    # property: one container per resolution cell runs both new seeds.
     "m2b-semantic-minimality": (
         "scripts.modal_m2b_semantic_minimality",
-        {"smoke": "run_m2b_smoke", "headline": "run_m2b_headline"},
+        {
+            "smoke": "run_m2b_smoke",
+            "headline": "run_m2b_headline",
+            # Amendment 3. Runs only under the resolution status, and only for
+            # the two cells that status names.
+            "resolution": "run_m2b_resolution",
+        },
     ),
 }
 
