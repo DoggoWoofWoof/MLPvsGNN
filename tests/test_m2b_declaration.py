@@ -96,15 +96,16 @@ def test_the_three_declared_files_exist():
         assert path.is_file(), f"{path} is part of M2B's one-declaration-per-phase paperwork"
 
 
-def test_the_status_says_the_resolution_is_authorised_and_nothing_else(declaration):
-    """Fourth status: reconnaissance, conditional, stopped, now resolution.
+def test_the_status_says_semantic_selection_is_closed(declaration):
+    """Fifth and last status. The resolution ran and changed no verdict.
 
-    The verdict below it does not move. The screen still returned
-    SEMANTIC_PARETO_CONFLICT; what changed is that eight further fits are
-    authorised to test whether two of its cells survive a change of seed.
+    Both the screen's verdict and the resolved one are
+    SEMANTIC_PARETO_CONFLICT. What the eight fits settled is that the two cells
+    blocking S4 were not artifacts of the single fit M2B trained -- so the
+    conflict is a finding, not an open question.
     """
 
-    assert declaration["status"] == "M2B_TARGETED_RESOLUTION_AUTHORISED"
+    assert declaration["status"] == "M2B_SEMANTIC_SELECTION_COMPLETE"
     assert declaration["m2b_verdict"]["status"] == "SEMANTIC_PARETO_CONFLICT"
     assert declaration["m2b_verdict"]["selected_rung"] is None
     assert declaration["m2b_verdict"]["advances"] is False
@@ -210,6 +211,93 @@ def test_the_resolution_has_its_own_ceiling_and_its_own_ledger_line(declaration)
     ]
     # Two container starts that produced nothing were still money.
     assert lines["m2b_smoke_failed"]["usd"] > 0
+
+
+def test_the_resolution_returned_the_incumbent(declaration):
+    """SELECTED_S3 -- and the verdict it was asked to disturb did not move."""
+
+    result = declaration["resolution_result"]
+    assert result["status"] == "SELECTED_S3"
+    assert result["selected"] == "S3"
+    assert result["selected_total_parameters"] == 3585
+    assert result["verdict"]["before"] == result["verdict"]["after"] == (
+        "SEMANTIC_PARETO_CONFLICT"
+    )
+    assert result["verdict"]["unchanged"] is True
+    assert result["verdict"]["thresholds_unchanged"] is True
+    assert result["verdict"]["cells_substituted"] == 2
+    assert result["verdict"]["cells_left_as_measured"] == 12
+
+
+def test_s4_lost_at_every_seed_in_both_cells(declaration):
+    """The seed evidence is unanimous, which is stronger than either interval.
+
+    Six comparisons, all negative, all past the 0.50pp per-cell tolerance --
+    and the three-seed means are LARGER in magnitude than the seed-0 values
+    that blocked S4. Seed 0 was S4's most favourable draw in both cells, so the
+    screen was, if anything, generous to it.
+    """
+
+    seedwise = declaration["resolution_result"]["seedwise"]
+    for cell in ("squad_clean/R1", "musique_clean/R1"):
+        entry = seedwise[cell]
+        deltas = entry["delta_pp_by_seed"]
+        assert set(deltas) == {0, 1, 2}
+        assert all(delta < -0.5 for delta in deltas.values()), cell
+        assert entry["sign_pattern"] == "---"
+        assert entry["straddles_zero"] is False
+        # The resolution moved the margin away from admissibility, not toward.
+        assert entry["mean_delta_pp"] < deltas[0]
+
+
+def test_the_resolution_came_in_under_its_own_ceiling(declaration):
+    cost = declaration["resolution_result"]["cost"]
+    assert cost["measured_usd"] == 0.6443
+    assert cost["measured_usd"] < cost["conservative_estimate_usd"] < cost["ceiling_usd"]
+    assert cost["within_ceiling"] is True
+    # 0.0948 failed starts + 2.7003 screen + 0.6443 resolution.
+    assert declaration["resolution_result"]["m2b_phase_total_usd"] == pytest.approx(
+        0.0948 + 2.7003 + 0.6443
+    )
+
+
+def test_the_rule_was_frozen_before_the_fits_that_it_judged(declaration):
+    """The whole guarantee, reduced to one commit hash.
+
+    Every one of the eight fits records the commit that froze the amendment as
+    its source_commit. The rule could not have been written to fit numbers that
+    did not exist when it was committed.
+    """
+
+    result = declaration["resolution_result"]
+    assert result["rule_frozen_at"].startswith("74e591c")
+    assert result["rule_frozen_at"] in result["fits_ran_under"]
+
+
+def test_semantic_selection_is_closed_and_nothing_downstream_is_opened(declaration):
+    closed = declaration["semantic_selection_closed"]
+    assert closed["selected"] == "S3"
+    assert closed["total_parameters"] == 3585
+    assert closed["what_happens_next"] == "STOP_FOR_REVIEW"
+    for phase in ("M3", "GNN", "CRAG", "Package F", "E2"):
+        assert phase in closed["not_authorised_by_this_file"]
+    last = closed["the_last_semantic_selection_compute"]
+    assert "end of semantic selection" in last
+    for forbidden in ("additional seeds", "S4 variants", "projection widths", "optimisation"):
+        assert forbidden in last
+
+
+def test_the_systems_finding_is_not_read_as_a_win_for_s4(declaration):
+    """S4 is the fastest rung and it still lost. Both halves are recorded."""
+
+    result = declaration["resolution_result"]
+    finding = result["the_systems_finding_stands_and_decided_nothing"]
+    assert "fastest" in finding
+    assert "never ran" in finding
+    assert "not a general law" in finding
+    assert "not a reason to prefer S4" in finding
+    # And the implementations that produced it were left alone afterwards.
+    assert "was not optimised" in result["it_did_not_cause_an_optimisation"]
 
 
 def test_the_amendment_stops_semantic_selection(declaration):

@@ -97,7 +97,7 @@ amendments:
       2.5x S4 fit multiplier is still an argument. The smoke measures it, and
       only then is the ceiling refiled.
 
-status: M2B_TARGETED_RESOLUTION_AUTHORISED
+status: M2B_SEMANTIC_SELECTION_COMPLETE
 
 this_file_authorises: >-
   As amended 2026-09-07: the smoke cell, and then the 28-fit fan-out, each
@@ -1594,6 +1594,160 @@ resolution_amendment:
     optimisation, no feature changes, no M3, no GNN, no canonical CRAG, no
     Package F, no E2 -- until the semantic rung is frozen and that freeze is
     reviewed.
+
+# --------------------------------------------------------------------------
+# The resolution ran. Filed 2026-09-07, from the rule frozen at 74e591c.
+# --------------------------------------------------------------------------
+
+resolution_result:
+  status: SELECTED_S3
+  filed: 2026-09-07
+  returned_by: scripts/m2b_resolution_report.py
+  artifact: outputs/m2b_semantic_minimality/resolution_report.json
+  rule_frozen_at: 74e591cc3a01cf3e124e467846a8f2f3536ead03
+  fits_ran_under: >-
+    Every one of the eight fits records source_commit
+    74e591cc3a01cf3e124e467846a8f2f3536ead03 -- the commit that froze this
+    amendment. The rule predates the numbers by construction, not by assertion.
+
+  what_the_resolution_returned: >-
+    S4 is behind S3 at EVERY seed in BOTH cells, and every one of the six
+    margins exceeds the 0.50pp per-cell tolerance. The sign pattern is --- in
+    both cells. The three-seed means are larger in magnitude than the seed-0
+    values that blocked S4, not smaller: squad_clean/R1 moved from -0.748pp to
+    -0.882pp and musique_clean/R1 from -2.258pp to -2.572pp. Seed 0 was, in
+    both cells, S4's most favourable draw of the three.
+
+  seedwise:
+    squad_clean/R1:
+      panel: 5213
+      one_query_moves_recall_pp: 0.0192
+      delta_pp_by_seed: {0: -0.7481, 1: -0.9975, 2: -0.9016}
+      mean_delta_pp: -0.8824
+      sample_sd_pp: 0.1258
+      min_delta_pp: -0.9975
+      max_delta_pp: -0.7481
+      sign_pattern: "---"
+      bootstrap_ci_pp: [-1.2469, -0.5307]
+      straddles_zero: false
+    musique_clean/R1:
+      panel: 797
+      one_query_moves_recall_pp: 0.1255
+      delta_pp_by_seed: {0: -2.2585, 1: -2.4467, 2: -3.0113}
+      mean_delta_pp: -2.5721
+      sample_sd_pp: 0.3918
+      min_delta_pp: -3.0113
+      max_delta_pp: -2.2585
+      sign_pattern: "---"
+      bootstrap_ci_pp: [-3.4295, -1.7357]
+      straddles_zero: false
+    what_the_intervals_are: >-
+      Query uncertainty around the observed three-seed mean. NOT a
+      random-effects seed interval. The seed-wise deltas and the sign patterns
+      above are the seed evidence, and they are unanimous, which is a stronger
+      statement than either interval makes.
+
+  the_question_the_seeds_were_asked: >-
+    Whether S4's two blocking margins were artifacts of the single fit M2B
+    trained. They were not. The query bootstrap had already ruled out the panel
+    as the explanation; the seeds now rule out the fit. Both blocking cells
+    survive, so both the per-cell and the per-dataset clauses still fail and S4
+    is inadmissible on the rule exactly as filed.
+
+  verdict:
+    before: SEMANTIC_PARETO_CONFLICT
+    after: SEMANTIC_PARETO_CONFLICT
+    unchanged: true
+    thresholds_unchanged: true
+    cells_substituted: 2
+    cells_left_as_measured: 12
+
+  selected: S3
+  selected_total_parameters: 3585
+  what_this_means: >-
+    QLS-UNIVERSAL keeps the semantic rung M2 froze. M2B was asked whether the
+    semantic representation could be narrowed to 449 parameters or should be
+    widened to 205,217, and the answer is neither: S2 is outside tolerance on
+    all six datasets and S4 is outside tolerance on two cells at every seed
+    tested. The 3,585-parameter incumbent stands, unchanged and unreopened.
+
+  this_is_not_a_null_result: >-
+    Three things were established that no prior phase had established. The
+    449-parameter floor is refuted cleanly -- a tiny semantic head does not stay
+    competitive, and it fails worst where structure is richest. The
+    205,217-parameter ceiling is refuted too, and by a mechanism worth
+    reporting: more semantic capacity bought a better macro and 12 of 14 cells
+    while losing two cells outright, which is what a Pareto conflict looks like
+    when it is real rather than noisy. And the incumbent's width is now a
+    measured choice between three candidates rather than the only width anyone
+    tried.
+
+  the_systems_finding_stands_and_decided_nothing: >-
+    Uncached p95 is S2 1.676 ms, S3 1.922 ms, S4 1.068 ms: the 205,217-parameter
+    rung is the fastest and the 3,585-parameter incumbent the slowest, on all
+    six datasets and in all fourteen cells. The tie-break that would have used
+    it orders only admissible rungs, and there are none, so it never ran. The
+    measurement is reported because it is true and surprising -- at this
+    candidate-set size latency tracks kernel-launch count, not parameter count,
+    because S2 and S3 compute a within-query rank with average tie handling over
+    the full 1536 width while S4 pays two GEMMs and then works at width 64. It
+    is a property of these frozen implementations on this hardware at this
+    scale. It is not a general law that larger models are faster, and it is not
+    a reason to prefer S4, which lost on effectiveness.
+  it_did_not_cause_an_optimisation: >-
+    dot_qd_pct was not optimised and S2 and S3 were not re-implemented after the
+    systems result was seen. Changing a frozen implementation because of the
+    number it produced would make the systems evidence a function of the
+    outcome. A later ablation may study an optimised rank; it could not have
+    decided this phase.
+
+  cost:
+    measured_usd: 0.6443
+    conservative_estimate_usd: 0.8639
+    ceiling_usd: 1.15
+    within_ceiling: true
+    training_seconds_measured: 642.72
+    seconds_by_fit:
+      squad_clean/R1: {S3: [151.54, 151.57], S4: [124.70, 125.93]}
+      musique_clean/R1: {S3: [25.14, 23.94], S4: [19.94, 19.96]}
+    note: >-
+      Landed between the floor estimate of 0.6573 and the conservative 0.8639,
+      nearer the floor: the seeds converged in about the time the measured
+      seed-0 fits took, so the 1.5x seed headroom was not needed. It was still
+      the right thing to file, since what it covered was the possibility that a
+      different initialisation would take longer, and that possibility was real
+      before the fits ran.
+
+  m2b_phase_total_usd: 3.4394
+  m2b_phase_total_note: >-
+    0.0948 failed smoke starts + 2.7003 screen + 0.6443 resolution. Against
+    3.5732 refiled for the screen and 1.15 for the resolution, filed
+    separately and neither borrowed from the other.
+
+# --------------------------------------------------------------------------
+# Nothing further runs on this substrate for semantic selection.
+# --------------------------------------------------------------------------
+
+semantic_selection_closed:
+  closed_on: 2026-09-07
+  selected: S3
+  total_parameters: 3585
+  the_last_semantic_selection_compute: >-
+    This was it. No additional seeds, no S4 variants, no other projection
+    widths, no new semantic formulas, no S2 or S3 optimisation, no feature
+    changes. The eight fits are the end of semantic selection on the current
+    development substrate.
+  what_happens_next: STOP_FOR_REVIEW
+  not_authorised_by_this_file: >-
+    M3, GNN training, canonical CRAG, Package F and E2 all remain unauthorised.
+    The semantic rung is now frozen; that freeze is what goes to review, and
+    review is what opens whatever comes after it.
+  why_stopping_here_matters: >-
+    The result is the one the development track hoped for -- the small incumbent
+    survives -- which is exactly the circumstance in which it would be easiest
+    to keep going and cheapest to stop being careful. The rule that produced it
+    was frozen at 74e591c before any of these eight numbers existed, and it is
+    left as it stands.
 
 stop_condition:
   status: STOP_FOR_REVIEW

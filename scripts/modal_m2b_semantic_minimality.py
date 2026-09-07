@@ -102,6 +102,11 @@ COMPLETE_STATUS = "M2B_SEMANTIC_PARETO_CONFLICT_STOPPED_FOR_REVIEW"
 #: in particular not a re-run of the screen, which is closed at its measured
 #: cost against its own ceiling.
 RESOLUTION_STATUS = "M2B_TARGETED_RESOLUTION_AUTHORISED"
+#: The resolution ran, returned SELECTED_S3, and semantic selection closed.
+#: Recognised so this module still imports -- the fetcher and both reports read
+#: it -- but it appears in no STAGE_AUTHORISING_STATUS value, so every stage is
+#: refused. That is the terminal state: the phase is over.
+SELECTION_COMPLETE_STATUS = "M2B_SEMANTIC_SELECTION_COMPLETE"
 
 #: Which status authorises which stage. A dict rather than one global flag,
 #: because the two authorisations are not interchangeable: the screen's status
@@ -120,6 +125,7 @@ if CONFIG["status"] not in (
     RECONNAISSANCE_STATUS,
     COMPLETE_STATUS,
     RESOLUTION_STATUS,
+    SELECTION_COMPLETE_STATUS,
 ):
     raise RuntimeError(
         f"Unexpected declaration status {CONFIG['status']!r} in "

@@ -304,29 +304,34 @@ def test_the_frozen_width_is_the_one_every_parameter_count_is_quoted_at(jobs) ->
 # --------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("stage", ["smoke", "headline"])
-def test_the_closed_screen_is_not_relicensed_by_the_resolution(stage) -> None:
-    """Amendment 3 authorises eight fits. It must not reopen the twenty-eight.
+@pytest.mark.parametrize("stage", ["smoke", "headline", "resolution"])
+def test_the_closed_phase_authorises_no_stage_at_all(stage) -> None:
+    """M2B is over. Every stage is refused, including the one that just ran.
 
-    Both screen stages ran under DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED. The
-    file no longer carries that status, so both are refused -- which is the
-    property that keeps a resolution from silently becoming a re-run whose
-    cost lands on a ledger line that is already closed.
+    The status has moved four times -- reconnaissance, conditionally
+    authorised, stopped for review, resolution authorised, and now selection
+    complete -- and each move re-pointed exactly one stage, or none. This is
+    the terminal state: the resolution's own status no longer licenses the
+    resolution either, so re-running it would take a new dated amendment
+    rather than a re-run of the same command.
     """
 
     with pytest.raises(RuntimeError) as raised:
         launcher._require_authorisation(stage)
     message = str(raised.value)
-    assert launcher.RESOLUTION_STATUS in message
-    assert launcher.AUTHORISED_STATUS in message
-    assert "authorises\nno fit" in message or "authorises no fit" in message
+    assert launcher.SELECTION_COMPLETE_STATUS in message
+    assert launcher.STAGE_AUTHORISING_STATUS[stage] in message
 
 
-def test_the_resolution_stage_is_the_one_the_live_declaration_authorises() -> None:
-    """The complement of the test above: exactly one stage may run right now."""
+def test_the_terminal_status_is_recognised_but_authorises_nothing() -> None:
+    """Recognised so the module imports; absent from the map so nothing runs."""
 
-    assert launcher.CONFIG["status"] == launcher.RESOLUTION_STATUS
-    launcher._require_authorisation("resolution")  # does not raise
+    assert launcher.CONFIG["status"] == launcher.SELECTION_COMPLETE_STATUS
+    assert launcher.SELECTION_COMPLETE_STATUS not in set(
+        launcher.STAGE_AUTHORISING_STATUS.values()
+    )
+    # The three that did authorise something, kept distinct so that re-opening
+    # any one of them is a deliberate edit naming which one.
     assert launcher.STAGE_AUTHORISING_STATUS["resolution"] == launcher.RESOLUTION_STATUS
     assert launcher.STAGE_AUTHORISING_STATUS["headline"] == launcher.AUTHORISED_STATUS
     assert launcher.RESOLUTION_STATUS != launcher.AUTHORISED_STATUS

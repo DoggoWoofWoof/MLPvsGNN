@@ -59,16 +59,38 @@ _READ_SNIPPET = (
 )
 
 
-def _remote_path(dataset: str, stage: str) -> str:
-    """The path _runner_args composed, rebuilt from the same three inputs."""
+def _remote_path(dataset: str, stage: str, seed: int | None = None) -> str:
+    """The path _runner_args composed, rebuilt from the same inputs.
+
+    ``seed`` mirrors the launcher's own ``f"{subtree}/seed{seed}"``: the
+    resolution runs two seeds per cell and each writes its own file, so the
+    stage's subtree alone does not name a result there.
+    """
 
     confirmation = json.loads((CONFIRMATIONS / f"{dataset}.json").read_text(encoding="utf-8"))
     fingerprint = confirmation["data_fingerprint_sha256"][:16]
     _, subtree = STAGE_PLAN[stage]
+    if seed is not None:
+        subtree = f"{subtree}/seed{seed}"
     return (
         f"outputs/{OUTPUT_PREFIX}/{dataset}/{fingerprint}/"
         f"{MODAL_CONFIG['execution_label']}/{subtree}/{RESULT_FILENAME}"
     )
+
+
+def _stage_targets(stage: str, datasets: list[str]) -> list[tuple[str, int | None]]:
+    """(dataset, seed) pairs a stage writes. Only the resolution has seeds.
+
+    Read from the runner's declared scope rather than restated, so the fetcher
+    cannot look for a seed the resolution was never authorised to fit, or miss
+    one it was.
+    """
+
+    if stage != "resolution":
+        return [(dataset, None) for dataset in datasets]
+    from scripts.run_m2b_semantic_minimality import RESOLUTION_SEEDS
+
+    return [(dataset, seed) for dataset in datasets for seed in RESOLUTION_SEEDS]
 
 
 def _download(profile: str, remote: str, destination: Path) -> int | None:
@@ -129,16 +151,24 @@ def fetch(
 
     downloaded: list[dict[str, Any]] = []
     skipped: list[dict[str, str]] = []
-    for dataset in wanted:
+    targets = _stage_targets(stage, wanted)
+    for dataset, seed in targets:
         profile = placement[dataset]
-        remote = _remote_path(dataset, stage)
-        local = root / stage / f"{dataset}.json"
+        remote = _remote_path(dataset, stage, seed)
+        # The layout the resolution report reads: resolution/seed1/<dataset>.json.
+        local = (
+            root / stage / f"{dataset}.json"
+            if seed is None
+            else root / stage / f"seed{seed}" / f"{dataset}.json"
+        )
+        local.parent.mkdir(parents=True, exist_ok=True)
         staging = local.with_suffix(local.suffix + ".partial")
         size = _download(profile, remote, staging)
         if size is None:
             skipped.append(
                 {
                     "dataset": dataset,
+                    "seed": seed,
                     "workspace_profile": profile,
                     "reason": "not written yet",
                     "remote": remote,
@@ -152,6 +182,7 @@ def fetch(
             skipped.append(
                 {
                     "dataset": dataset,
+                    "seed": seed,
                     "workspace_profile": profile,
                     "reason": f"status {status!r}",
                     "remote": remote,
@@ -168,9 +199,17 @@ def fetch(
             staging.unlink(missing_ok=True)
         else:
             staging.replace(local)
+        if seed is not None and int(payload.get("seed", -1)) != seed:
+            staging.unlink(missing_ok=True)
+            raise SystemExit(
+                f"{remote} records seed {payload.get('seed')!r} but was fetched as seed "
+                f"{seed} -- a fit filed under the wrong seed would enter the three-seed "
+                "mean twice"
+            )
         downloaded.append(
             {
                 "dataset": dataset,
+                "seed": seed,
                 "workspace_profile": profile,
                 "remote": remote,
                 "local": _reported_path(local),
@@ -188,6 +227,7 @@ def fetch(
         "declaration": "configs/m2b_semantic_minimality.yaml",
         "placement_source": "configs/m2_qls_v2_freeze.yaml (M2B inherits it)",
         "expected_datasets": len(wanted),
+        "expected_results": len(targets),
         "downloaded": downloaded,
         "skipped": skipped,
         "complete": not skipped,
