@@ -888,7 +888,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             )
         cells[regime] = cell
 
-    return {
+    result = {
         "status": STATUS_COMPLETE,
         "stage": "m2b_semantic_minimality",
         "dataset": args.dataset,
@@ -919,6 +919,15 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "cells": cells,
         "systems": {"peak_process_rss_bytes": _m2._peak_rss_bytes()},
     }
+    # Written here rather than in main(), because main() is not the caller that
+    # matters: the Modal container calls run() directly. With the write in
+    # main(), a container produced real fits, returned them, and left nothing on
+    # the volume -- and the idempotence check at the top of this function, which
+    # reads exactly this file, could never be satisfied by a container either.
+    # M2's run() persists its own result for the same reason.
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    _atomic_json(args.output, result)
+    return result
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -974,9 +983,7 @@ def main(argv: list[str] | None = None) -> int:
             f"M2B declares seed {DECLARED_SEED} only; --seed {args.seed} needs an amendment"
         )
     args.baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
-    result = run(args)
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    _atomic_json(args.output, result)
+    result = run(args)  # writes args.output itself
     print(json.dumps({
         "status": result["status"],
         "dataset": result["dataset"],

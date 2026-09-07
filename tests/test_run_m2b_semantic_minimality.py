@@ -952,11 +952,36 @@ def test_the_parser_refuses_a_non_zero_seed_too(tmp_path) -> None:
         ])
 
 
-def test_a_completed_run_is_not_repeated(smoke) -> None:
+def test_run_persists_its_own_result_because_main_is_not_the_caller(smoke) -> None:
+    """The Modal container calls run() directly and never calls main().
+
+    A smoke that fitted three rungs on a GPU, returned them, and left nothing
+    on the volume is what this test exists to stop: the write lived in main(),
+    so the fits were real and the aggregate was unrecoverable.
+    """
+
     result, args = smoke
+    assert args.output.is_file(), "run() returned a result it did not write down"
+    assert json.loads(args.output.read_text(encoding="utf-8")) == result
+
+
+def test_a_completed_run_is_not_repeated(smoke, monkeypatch) -> None:
+    """Idempotence has to hold for run(), not just for the command line.
+
+    The check reads the file run() writes, so with the write in main() a
+    container could never resume its own completed work either.
+    """
+
+    result, args = smoke
+
+    def _refuse(*fn_args, **fn_kwargs):
+        raise AssertionError("a completed cell must not be loaded again, let alone refit")
+
+    monkeypatch.setattr(runner, "load_cell_under_contract", _refuse)
     again = runner.run(args)
     assert again["status"] == runner.STATUS_COMPLETE
     assert again["cells"].keys() == result["cells"].keys()
+    assert again == result
 
 
 def test_the_rungs_the_declaration_calls_new_are_the_ones_fit(smoke) -> None:
