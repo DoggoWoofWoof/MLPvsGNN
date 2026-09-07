@@ -607,23 +607,39 @@ def fit_one_rung(
             "uncached_inference_p99_ms": latency["total_model_ms"]["p99"],
             "tie_break_orders_on": "uncached_inference_p95_ms",
         },
+        # Flat, and named exactly as instrumentation_requirement.fields names
+        # them, so the declared list can be checked against this dict one to
+        # one. Several are duplicated from "systems" above: the declaration
+        # lists them in a single set, and a field list that has to be mentally
+        # translated is a field list nothing can mechanically verify.
         "instrumentation": {
             "checkpoint": str(checkpoint),
             "per_query_rows": str(fit_root / "per_query_rows.json"),
             "query_ids": len(query_ids),
             "aggregate_metrics_reconstructed_from_rows": True,
             "source_commit": provenance["source_commit"],
-            "m2b_declaration_sha256": provenance["config_sha256"],
-            "dataset_fingerprint_sha256": provenance["dataset_fingerprint_sha256"],
-            "candidate_contract_sha256": provenance["candidate_contract_sha256"],
-            "candidate_ids_sha256": provenance["candidate_id_order_sha256"],
-            "feature_store_fingerprint_sha256": shared_inputs["arm_store_sha256"],
-            "cell_features_fingerprint_sha256": shared_inputs["cell_features_sha256"],
-            "feature_build_contract_sha256": shared_inputs["feature_build_contract_sha256"],
-            "semantic_rung_fingerprint_sha256": fingerprint["sha256"],
+            "config_fingerprint": provenance["config_sha256"],
+            "dataset_fingerprint": provenance["dataset_fingerprint_sha256"],
+            "candidate_fingerprint": provenance["candidate_id_order_sha256"],
+            "feature_store_fingerprint": shared_inputs["arm_store_sha256"],
+            "semantic_rung_fingerprint": fingerprint["sha256"],
             "semantic_parameter_count": parameters["semantic"],
             "scorer_parameter_count": parameters["scorer"],
             "total_parameter_count": parameters["total"],
+            "train_time_seconds": training["training_seconds"],
+            "uncached_inference_p50_ms": latency["total_model_ms"]["p50"],
+            "uncached_inference_p95_ms": latency["total_model_ms"]["p95"],
+            "uncached_inference_p99_ms": latency["total_model_ms"]["p99"],
+            "peak_vram_mb": max(
+                float(training["peak_training_gpu_memory_mb_total"]),
+                float(latency["peak_inference_gpu_memory_mb"]),
+            ),
+            "peak_rss_mb": inference["peak_cpu_rss_mb_total"],
+            # Beyond the declared list, because M2B reuses stores and weights
+            # across phases and a reader has to be able to check which ones.
+            "candidate_contract_sha256": provenance["candidate_contract_sha256"],
+            "cell_features_fingerprint_sha256": shared_inputs["cell_features_sha256"],
+            "feature_build_contract_sha256": shared_inputs["feature_build_contract_sha256"],
             "uncached_feature_build_latency_ms": feature_build_latency_ms,
             "peak_gpu_memory_mb": {
                 "training_total": training["peak_training_gpu_memory_mb_total"],

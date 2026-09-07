@@ -426,6 +426,36 @@ def test_the_rows_reproduce_the_aggregate_for_every_metric(smoke, cell) -> None:
         assert _m2._aggregate_mismatch(fit["metrics"], _aggregate_rows(rows)) == [], rung
 
 
+def test_every_declared_instrumentation_field_is_present_and_non_null(cell) -> None:
+    """The declaration's list, checked against the artifact one name at a time.
+
+    A rerun cannot recover a field a completed fit did not write, because the
+    rerun would be a different fit on different hardware. So the names have to
+    match literally, not after a mental translation.
+    """
+
+    declared = M2B_DECLARATION["instrumentation_requirement"]["fields"]
+    for rung, fit in cell["rungs"].items():
+        for field in declared:
+            assert field in fit["instrumentation"], (rung, field)
+            assert fit["instrumentation"][field] is not None, (rung, field)
+
+
+def test_the_declared_field_list_is_not_silently_shrinking() -> None:
+    declared = M2B_DECLARATION["instrumentation_requirement"]["fields"]
+    assert len(declared) == 18
+    assert "semantic_rung_fingerprint" in declared
+    assert "uncached_inference_p95_ms" in declared
+
+
+def test_peak_vram_covers_training_and_inference(cell) -> None:
+    for rung, fit in cell["rungs"].items():
+        peaks = fit["instrumentation"]["peak_gpu_memory_mb"]
+        assert fit["instrumentation"]["peak_vram_mb"] == max(
+            float(peaks["training_total"]), float(peaks["uncached_inference_total"])
+        ), rung
+
+
 def test_the_uncached_timing_covers_the_whole_model(cell) -> None:
     for rung, fit in cell["rungs"].items():
         latency = fit["uncached_inference"]
