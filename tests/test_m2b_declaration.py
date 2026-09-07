@@ -52,6 +52,19 @@ needs_reuse = pytest.mark.skipif(
     reason="run scripts/m2b_reuse_and_compute.py to produce the reuse artifact",
 )
 
+VERIFICATION_ARTIFACT = pathlib.Path(
+    "outputs/m2b_semantic_minimality/smoke_verification.json"
+)
+MEASURED_COST_ARTIFACT = pathlib.Path("outputs/m2b_semantic_minimality/measured_cost.json")
+
+needs_smoke_evidence = pytest.mark.skipif(
+    not (VERIFICATION_ARTIFACT.exists() and MEASURED_COST_ARTIFACT.exists()),
+    reason=(
+        "run scripts/m2b_smoke_verification.py and scripts/m2b_measured_cost.py; "
+        "outputs/ is gitignored, so a fresh clone has neither"
+    ),
+)
+
 
 @pytest.fixture(scope="module")
 def declaration() -> dict:
@@ -590,11 +603,21 @@ def test_the_container_count_is_labelled_an_upper_bound(declaration):
     assert "12" in overhead["this_is_an_upper_bound"]
 
 
-def test_the_ceiling_is_provisional_until_the_smoke_measures_s4(declaration):
-    assert declaration["compute"]["status"] == (
-        "ESTIMATED_CEILING_PROVISIONAL_UNTIL_THE_SMOKE_MEASURES_S4"
+def test_the_ceiling_was_refiled_by_the_measurement_and_not_by_the_orchestration(declaration):
+    """Which change was allowed to move the ceiling, and which was not.
+
+    The orchestration revision cut 28 containers to 6 and left the ceiling
+    alone on purpose -- that was an argument, not a measurement. The refile
+    came later, from the smoke. Both halves stay asserted, because the
+    distinction is the whole reason the ceiling waited.
+    """
+
+    assert declaration["compute"]["status"] == "CEILING_REFILED_AGAINST_THE_MEASURED_S4_FIT"
+    assert declaration["compute"]["refiled_from"] == (
+        "outputs/m2b_semantic_minimality/measured_cost.json"
     )
     revision = declaration["launch_authorization"]["compute_revision"]
+    assert "container count only" in revision["what_changed"]
     assert "not refiled here" in " ".join(
         revision["the_ceiling_is_not_refiled_here"].split()
     ) or "stands as filed" in revision["the_ceiling_is_not_refiled_here"]
@@ -875,20 +898,42 @@ def test_the_boundary_belongs_to_the_admissible_side(declaration):
     assert "1.587pp" in boundary["why_it_is_stated"]
 
 
-def test_the_gates_are_filed_and_the_earned_ones_are_still_false(declaration):
+@needs_smoke_evidence
+def test_every_gate_is_open_and_the_smoke_earned_ones_name_a_passing_artifact(declaration):
+    """A gate reading true has to be redeemable, not just typed.
+
+    The three the smoke earns are the ones a tired operator would flip by
+    hand, so each is checked against the artifact that is supposed to have
+    earned it. Flipping a gate while its artifact says otherwise is the
+    failure this catches; "is True" alone would not.
+    """
+
     gates = declaration["launch_authorization"]["gates"]
-    already_earned = (
-        "amendment_filed", "selection_rule_frozen", "feature_store_reuse_proved",
-        "s3_behaviour_reuse_proved", "semantic_formulas_frozen",
-        "instrumentation_tests_pass", "uncertainty_diagnostic_committed",
-    )
-    for name in already_earned:
-        assert gates[name] is True, f"{name} should be earned by now"
-    for name in ("engineering_smoke_passes", "parameter_accounting_matches",
-                 "measured_cost_within_ceiling"):
-        assert gates[name] is False, f"{name} cannot be true before the smoke runs"
+    for name, value in gates.items():
+        assert value is True, f"{name} is still holding the fan-out back"
+
+    verification = json.loads(VERIFICATION_ARTIFACT.read_text(encoding="utf-8"))
+    assert verification["verdict"] == "PASSED"
+    assert verification["passed_items"] == verification["declared_items"]
+
+    cost = json.loads(MEASURED_COST_ARTIFACT.read_text(encoding="utf-8"))
+    assert cost["verdict"] == "WITHIN_FILED_CEILING"
+
     assert "never authorises working around one" in declaration["launch_authorization"][
         "rule"
+    ]
+
+
+@needs_smoke_evidence
+def test_the_refiled_ceiling_only_came_down(declaration):
+    """A ceiling recomputed upward to fit a projection is not a commitment."""
+
+    compute = declaration["compute"]
+    assert compute["refiled_ceiling_usd"] <= compute["proposed_ceiling_usd"]
+    cost = json.loads(MEASURED_COST_ARTIFACT.read_text(encoding="utf-8"))
+    assert compute["refiled_ceiling_usd"] == cost["ceiling"]["proposed_refile_usd"]
+    assert cost["projection"]["total_cost_usd"]["conservative"] <= compute[
+        "refiled_ceiling_usd"
     ]
 
 

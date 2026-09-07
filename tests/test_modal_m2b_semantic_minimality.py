@@ -306,16 +306,16 @@ def test_the_smoke_is_authorised_by_the_live_declaration() -> None:
     launcher._require_authorisation("smoke")
 
 
-def test_the_headline_is_still_refused_by_the_live_declaration() -> None:
-    """The three gates the smoke exists to earn are false, and they hold it."""
+def test_the_headline_is_authorised_now_that_the_smoke_earned_its_gates() -> None:
+    """The fan-out is open because all ten gates are true.
 
-    with pytest.raises(RuntimeError) as raised:
-        launcher._require_authorisation("headline")
-    message = str(raised.value)
-    for gate in ("engineering_smoke_passes", "measured_cost_within_ceiling",
-                 "parameter_accounting_matches"):
-        assert gate in message, f"{gate} should be holding the fan-out back"
-    assert "earn the gate, do not bypass it" in message
+    The refusal machinery this replaces is still tested, against a patched
+    declaration, by test_the_headline_refuses_while_any_gate_is_false -- so
+    the mechanism stays covered without depending on the live file staying
+    closed forever.
+    """
+
+    launcher._require_authorisation("headline")
 
 
 def test_a_reconnaissance_status_would_still_refuse_both_stages(

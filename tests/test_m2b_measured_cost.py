@@ -302,9 +302,14 @@ def test_a_declaration_with_a_different_ceiling_moves_the_verdict(
 # --------------------------------------------------------------------------
 
 
-def test_the_guess_this_replaces_is_still_what_the_estimate_carries(declaration):
+def test_the_guess_is_kept_as_the_thing_the_measurement_replaced(declaration):
+    """2.5 stays in the source as the number that was superseded.
+
+    Deleting it would leave the artifact reporting a replacement of something
+    no longer written down anywhere, and the size of the correction -- 2.5
+    guessed against 0.8023 measured -- is the point.
+    """
+
     assert FIT_MULTIPLIER["S4"]["conservative"] == 2.5
-    assert declaration["compute"]["status"] == (
-        "ESTIMATED_CEILING_PROVISIONAL_UNTIL_THE_SMOKE_MEASURES_S4"
-    )
-    assert declaration["launch_authorization"]["gates"]["measured_cost_within_ceiling"] is False
+    assert declaration["compute"]["status"] == "CEILING_REFILED_AGAINST_THE_MEASURED_S4_FIT"
+    assert declaration["launch_authorization"]["gates"]["measured_cost_within_ceiling"] is True

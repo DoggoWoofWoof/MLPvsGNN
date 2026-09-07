@@ -858,7 +858,7 @@ compute:
   estimate: scripts/m2b_reuse_and_compute.py
   artifact: outputs/m2b_semantic_minimality/reuse_and_compute.json
   rate_source: docs/COMPUTE_LEDGER.md L546-547 -- $2.241/h GPU, $0.634/h CPU, reused verbatim
-  status: ESTIMATED_CEILING_PROVISIONAL_UNTIL_THE_SMOKE_MEASURES_S4
+  status: CEILING_REFILED_AGAINST_THE_MEASURED_S4_FIT
 
   feature_store_build:
     new_builds: 0
@@ -928,14 +928,34 @@ compute:
       each and not worth pricing, but the ratio is the point of the phase and
       is not hidden inside a rounding.
 
-  total_cost_usd: {floor: 3.4959, conservative: 4.5343}
-  proposed_ceiling_usd: 6.00
+  total_cost_usd: {floor: 3.4959, conservative: 4.5343}   # as filed, on the guessed multiplier
+  proposed_ceiling_usd: 6.00                             # superseded by refiled_ceiling_usd below
   ceiling_basis: >-
     The conservative bound plus roughly 32%, which is headroom for the S4 fit
     multiplier being wrong in the expensive direction. Deliberately below M2's
     $9.00 because M2B buys no feature builds and M2 measured $4.3914 with
     them. Not a safety multiple over an unknown -- the dominant unknown is one
     multiplier, and the smoke measures it before anything fans out.
+  refiled_ceiling_usd: 3.5732
+  refiled_on: 2026-09-07
+  refiled_from: outputs/m2b_semantic_minimality/measured_cost.json
+  refiled_basis: >-
+    The smoke measured the one dominant unknown. S4's fit took 15.338 s
+    against M2's 19.117 s for the same cell, so the multiplier is 0.8023 and
+    not the 2.5 that was guessed: S4 replaces three full-1536-width reductions
+    with two 1536x64 projections, and on this candidate-set size the
+    projections are cheaper than what they replace rather than 64x dearer.
+    Measured total is {floor: 2.3163, conservative: 2.7003}; the refile
+    carries the same 1.3232 margin the original filing carried, clamped at the
+    filed ceiling because a ceiling only comes down. Headroom against the
+    original filing: $3.2997.
+  what_the_measurement_did_not_settle: >-
+    The ratio comes from one of the cheapest cells in the matrix, where a fit
+    is dominated by per-query kernel-launch overhead rather than by the
+    arithmetic S4 adds. A cell with a larger candidate panel could move it
+    toward the guess, which is what the 1.5x scale headroom in
+    scripts/m2b_measured_cost.py is carried for. It was filed before the
+    number was known.
   not_costed:
     - the smoke cell, a subset of the fits above rather than additional to them
     - storage rent on a volume this track already holds
@@ -1046,9 +1066,9 @@ launch_authorization:
     semantic_formulas_frozen: true         # FORMULAS_FROZEN, outputs/m2b_semantic_minimality/semantic_formula_freeze.json
     instrumentation_tests_pass: true       # tests/test_run_m2b_semantic_minimality.py + tests/test_modal_m2b_semantic_minimality.py
     uncertainty_diagnostic_committed: true # scripts/m2b_bootstrap_diagnostic.py, filed before any interval existed
-    engineering_smoke_passes: false        # earned by the smoke cell, not before
-    parameter_accounting_matches: false    # earned by the smoke: 449 and 205,217 at the frozen 1536 width, on a real fit
-    measured_cost_within_ceiling: false    # earned once the smoke replaces the 2.5x multiplier and the ceiling is refiled
+    engineering_smoke_passes: true         # earned 2026-09-07: 12/12 in outputs/m2b_semantic_minimality/smoke_verification.json
+    parameter_accounting_matches: true     # earned by the same artifact: 0/449 and 196,608/205,217 observed, 3 and 258 columns, at the frozen 1536 width
+    measured_cost_within_ceiling: true     # earned 2026-09-07: WITHIN_FILED_CEILING, conservative $2.7003 vs filed $6.00, refiled to $3.5732
   which_gates_the_smoke_is_held_to: >-
     The first six only. The smoke exists to earn the last three, so gating it
     on them would make it unable to run first. The fan-out is held to all ten.

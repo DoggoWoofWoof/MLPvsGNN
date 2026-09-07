@@ -655,10 +655,21 @@ def test_the_reused_rung_still_weighs_3585(result, tmp_path):
 # --------------------------------------------------------------------------
 
 
-def test_the_gate_this_script_flips_is_still_false(declaration):
+@pytest.mark.skipif(
+    not VERIFICATION_PATH.is_file(),
+    reason="run scripts/m2b_smoke_verification.py; outputs/ is gitignored",
+)
+def test_the_gates_this_script_earns_are_open_and_its_artifact_says_why(declaration):
     gates = declaration["launch_authorization"]["gates"]
-    assert gates["engineering_smoke_passes"] is False
-    assert gates["parameter_accounting_matches"] is False
+    assert gates["engineering_smoke_passes"] is True
+    assert gates["parameter_accounting_matches"] is True
+
+    artifact = json.loads(VERIFICATION_PATH.read_text(encoding="utf-8"))
+    assert artifact["verdict"] == "PASSED"
+    assert artifact["failed_items"] == []
+    # The denominator comes from the declaration, so this is 12 of the 12 the
+    # declaration asks for and not 12 of however many happened to be checked.
+    assert artifact["passed_items"] == artifact["declared_items"]
 
 
 @pytest.mark.skipif(SMOKE_RESULT_PATH.is_file(), reason="the smoke has run")
