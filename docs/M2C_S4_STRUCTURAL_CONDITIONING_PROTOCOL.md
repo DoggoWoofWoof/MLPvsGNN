@@ -169,7 +169,7 @@ them scoreable.
 positive ceiling-minus-recall gap; the smallest is 7.77pp (`squad_clean`/R1,
 S3).
 
-**Exposure is nearly exhausted on the blockers.**
+**Exposure is bounded on the blockers.**
 `recall_ceiling_perfect_retrieval@5 − recall_ceiling@5` is the part of the
 ceiling candidate generation threw away — the only quantity an admission-side
 intervention can move.
@@ -180,16 +180,52 @@ intervention can move.
 | `musique_clean`/R1 | 18.52pp | 6.39pp |
 | `webqsp`/R3 | 36.68pp | 17.31pp |
 
-On `squad_clean`/R1 a *perfect* admission mechanism could win at most 0.46pp,
-which is below the 0.50pp repair target: **Track B could not repair that blocker
-even in principle.** Ranking has 8.52pp available there.
+### How much actually has to be recovered
 
-So the repair target sits far inside ranking headroom that already exists.
-**Track A is sufficient in principle to meet the pilot gate.** Track B is not
-needed for the repair; it is a bid for a different and larger prize — raising
-the ceiling itself, which is worth most where exposure is still large. Keeping
-that separation explicit stops a ceiling result being reported as though it had
-repaired the blockers, or the reverse.
+An earlier draft of this section compared the 0.46pp of squad exposure against
+the 0.50pp per-cell tolerance and concluded that admission could not repair that
+blocker even in principle. **That comparison was wrong, and the conclusion drawn
+from it is withdrawn.** The tolerance is not the amount of work.
+`SYMMETRIC_BEST_ANCHORED` admits a rung that is no worse than 0.50pp below the
+cell's best, so a challenger sitting at a deficit `d` has to recover
+`d − 0.50pp`, not `0.50pp` and not the whole of `d`:
+
+```
+required_repair_to_guard = max(0, |robust deficit| − 0.50pp)
+```
+
+Recomputed from the frozen multi-seed margins by
+`scripts/m2c_baseline_table.py`, never typed:
+
+| cell (S4) | robust deficit | must recover | exposure available | slack | share of exposure that must convert |
+|---|---:|---:|---:|---:|---:|
+| `squad_clean`/R1 | −0.8824pp | **0.3824pp** | 0.4604pp | 0.0780pp | **83.1%** |
+| `musique_clean`/R1 | −2.5721pp | **2.0721pp** | 6.3853pp | 4.3132pp | 32.5% |
+
+Exposure exceeds the required repair on **both** blockers, so admission is not
+ruled out arithmetically on either. The corrected reading:
+
+> Squad's blocker is primarily an ordering defect. Candidate admission has only
+> a narrow theoretical path to clear the M2B guard and cannot be assumed
+> sufficient.
+
+Note that the ordering of plausibility reverses under the correct arithmetic.
+Squad, the cell the earlier draft called impossible, needs 83.1% of *all*
+available exposure to convert into realised recall@5; musique needs 32.5%. On
+this test musique is the *more* plausible admission target of the two, not the
+less.
+
+**An oracle bound is not an achieved metric.** Exposure is what a *perfect*
+admission mechanism could win. Comparing it against `required_repair_to_guard`
+can rule a path out; it can never rule one in. A real mechanism converting 83%
+of an oracle bound is not something any evidence in this repository predicts.
+
+So the repair target sits far inside ranking headroom that already exists, and
+well inside exposure on musique. **Track A remains the leading track** — on
+sufficiency of headroom, on M0A's null, and on the failure shape in §4 — but it
+leads on weight of evidence, not because Track B has been eliminated. Keeping
+the two separate stops a ceiling result being reported as though it had repaired
+the blockers, or the reverse.
 
 ## 4. The shape of the failure
 
@@ -218,9 +254,15 @@ Two things follow.
 
 **A second, independent reason Track A leads.** A candidate-admission
 intervention cannot repair a rank-1 ordering error among candidates that were
-already scored. Track B could not fix these blockers even if it worked
-perfectly. The first reason was M0A's null; this one comes from different
-evidence entirely.
+*already scored*, and §4 shows the damage is concentrated exactly there. So:
+
+> S4's blocker is dominated by top-of-ranking error; candidate exposure is a
+> secondary possible contributor.
+
+This is evidence about where the damage sits, and it is independent of M0A's
+null. It is **not** proof that admission is irrelevant — the arithmetic in §3
+leaves both blockers open to an admission repair in principle, and the two
+statements have to be allowed to stand together.
 
 **A constraint on what counts as a repair.** Because the damage decays
 monotonically with K, an arm that closes recall@5 while leaving recall@1 and MRR
@@ -365,58 +407,221 @@ which directions are chosen.
 
 ## 8. Stage 0 — zero training
 
-Trains nothing, reads no test split. Cells, declared before any result:
+Trains nothing, reads no test split, runs on the validation/development split
+only.
+
+**Primary question.** Does graph-derived directional compatibility contain
+useful *ranking* signal for S4's mistakes?
+
+**Secondary question.** Does replacing the legacy single-anchor residual with
+the seed-subspace residual change *admission* enough to reopen M0A's headroom
+null?
+
+The ordering is deliberate and it is the amendment's main structural change.
+§3's arithmetic leaves admission open on both blockers, so the secondary
+question is live — but §4 puts the damage at the head of the ranking, and M0A
+already nulled the admission mechanism once. Ranking is asked first because it
+is where the evidence points, not because admission has been eliminated.
+
+### Cells
+
+Four. Declared before any result, derived from the frozen graph audit and M0A,
+both of which predate every M2C number.
 
 | role | cell | why |
 |---|---|---|
-| failure | `squad_clean`/R1, `musique_clean`/R1 | the two blockers |
-| multi-hop R3 | `2wiki_clean`/R3 | highest isolated-gold prevalence of the passage sets (20.0% of queries), largest measured one-hop ceiling recovery among them |
-| KB R3 | `metaqa`/R3 | largest recovery M0A measured anywhere (+34.83pp ceiling@5), most graph-damaged of the six (isolation 0.412, boundary cut 0.904) |
+| failure | `squad_clean`/R1 | blocker, −0.882pp robust |
+| failure | `musique_clean`/R1 | blocker, −2.572pp robust |
+| passage R3 control | `2wiki_clean`/R3 | highest isolated-gold prevalence of the passage sets (20.0% of queries), largest measured one-hop ceiling recovery among them (+15.25pp) |
+| KB R3 control | `metaqa`/R3 | largest recovery M0A measured anywhere (+34.83pp ceiling@5), most graph-damaged of the six (isolation 0.412, boundary cut 0.904) |
 
-Both extra cells are R3 because R3 is the only regime whose scored set the offset
-could ever change, and both were derived from the frozen graph audit rather than
-chosen.
+Both controls are R3 because R3 is the only regime whose scored set an offset
+could ever change. **All 14 cells are not run.**
 
-Measured under each of `G_STRUCT`, `G_KNN`, `G_FULL`. Reported: direction
-coverage; gold-versus-non-gold directional separation on the dev subset; rank
-association where dev labels permit; top-k recall under direction-only
-reranking; overlap between newly corrected queries and S4's existing error set;
-p50/p95/p99 feature-construction cost, storage bytes, peak memory.
+### The three residual controls
 
-And the quantity that decides Track B: **how far the seed-subspace residual
-actually moves from the single-anchor residual**, and how often the two select
-different directions at the same budget. If they choose the same nodes, M0A's
-null transfers directly and Track B closes without spending anything on it.
+| id | form | role |
+|---|---|---|
+| **R0** `RAW_QUERY_CONTROL` | `r = normalize(q)` | subtracts nothing |
+| **R1** `LEGACY_DIRECTIONAL` | `normalize(e_q − x_anchor)`, anchor = dense rank 1 | what M0A actually ran |
+| **R2** `SEED_SUBSPACE` | `r = q − P_E q` over inference-safe seeds | the new variable |
+
+**The central comparison is R1 against R2.** That is the one genuinely new
+independent variable in this phase; everything else is a control on it.
+
+**R1 is called, not reimplemented.** The arm invokes
+`candidate_expansion_v2.query_residual` directly. An arm reconstructed from
+prose would not be the function M0A ran, and the comparison against M0A's null
+would not be a comparison.
+
+**R0 exists so a positive result cannot be misattributed.** If a bare query
+direction ranks as well as either residual, then "what the seeds do not explain"
+is not the operative construct and the residual is decoration. Note that a
+degenerate R2 falls back to `normalize(q)` and so *coincides* with R0 as a
+vector — the `fell_back_to_query` flag keeps the two distinguishable in the
+record, because a fallback row and a control row mean different things.
+
+### The directional score
+
+`delta(s, v) = normalize(e_v − e_s)`, compatibility `cosine(r_q, delta(s, v))`,
+aggregated to a minimum of **`dir_max` and `dir_mean`**. Optionally `delta_star`
+from a fixed aggregation rule with `tau` declared before results. **No large
+feature catalogue is built** — a wide catalogue would turn a null into a search.
+
+**Coverage is measured explicitly** and reported beside every margin: the
+fraction of scored candidates with at least one eligible seed-edge displacement.
+A signal that exists for a small minority of candidates cannot repair a ranking
+even if it is perfectly informative where it exists, and a margin without its
+coverage hides exactly that.
+
+### The error-conditioned diagnostic
+
+**This is the load-bearing measurement, and it matters more than any global
+correlation.** A positive global correlation with relevance is compatible with
+*zero* repair capacity, if the signal agrees with S4 wherever S4 is already
+right.
+
+Population: every query where S4's top-1 is wrong **and** a relevant candidate
+exists in the scored universe. Queries with no relevant candidate scored are
+excluded and counted separately — no reranker could win them, and leaving them
+in would dilute the margin with unwinnable cases.
+
+```
+directional_margin = dir(best relevant) − dir(S4's top-ranked wrong candidate)
+```
+
+Reported: the margin, the fraction positive, mean and median. Stratified by
+where the first relevant item currently sits — **rank 2–5**, **rank 6–20**,
+**beyond 20 or absent** — because a signal that only helps when the answer is
+already at rank 2 buys much less than one that reaches into the tail.
+
+Implemented as `m2c_structural_offset.error_conditioned_margin`. It is the only
+function in that module permitted to see a label, it is named in an explicit
+allowlist that tests enforce in both directions, and the labels select *which
+candidates to compare* — the directional scores are handed in already built.
+
+### The zero-training ranking test
+
+**Arm A, `direction_only`.** Rank the existing scored universe by directional
+compatibility alone; report recall@1/5/20 and MRR. This is a **diagnostic, not
+a candidate model** — nobody is proposing to ship it.
+
+**Arm B, `S4_plus_direction_rrf`.** Reciprocal rank fusion, **not a tuned score
+weight**. The constant is **60**, `REUSED_NOT_NEW`, taken from
+`configs/candidate_budget.yaml#candidate_construction.rrf_constant`, with the
+same `ascending_global_node_id` tie-break. **No weight sweep and no constant
+sweep.** A fitted weight would make this a one-parameter trained model needing
+its own control; RRF at the project's existing constant introduces nothing new
+and is falsifiable exactly as it stands.
+
+The third arm is `S4` itself, unmodified, as the reference every delta is taken
+against.
+
+Matrix: **3 arms × 3 residuals × 3 provenances × 4 cells, zero training.**
+
+### Provenance, for ranking
+
+Measured under `G_STRUCT`, `G_KNN` and `G_FULL`. Held byte-identical between
+arms: scored candidates, S4's existing structural features, the S4 checkpoint,
+candidate normalization. Only the new directional calculation changes.
+
+**M0A does not answer this.** Its STRUCT/KNN/FULL result is about the admission
+*ceiling*. This is whether provenance carries *ranking* signal — a different
+quantity over a different operation. That the admission table is settled is not
+a reason to skip the ranking version.
 
 ### The advance gate
 
-Advance only if the cheap probe shows the mechanism can plausibly change the S4
-scientific decision — directional score separating relevant from irrelevant
-candidates, direction-only reranking improving one or both failure cells, newly
-corrected queries overlapping S4's failures, STRUCT differing meaningfully from
-KNN, bounded feature cost.
+**Filed before any Modal result exists.** `stage_0_probe_run: false` in the
+declaration's gate block is what makes that checkable rather than asserted.
 
-**If no directional signal exists: STOP M2C.** S3 remains the final development
-semantic choice and S4 remains a challenger with a filed, unrepaired blocker.
-That is a publishable outcome, not a failure to be worked around. Code that runs
-is not evidence that a mechanism exists, and a transform will not be trained on
-noise.
+Advance requires **all four** of:
 
-## 9. Stage 1 — the smallest useful pilot
+1. **Effectiveness** — either (A) S4 + direction RRF improves recall@5 on
+   **both** failure cells, by at least **+0.25pp** on at least one; **or** (B)
+   recall@1 improves by at least **+2.0pp** on **both**, with recall@5 no worse
+   than **−0.25pp** on either.
+2. **Protection** — neither positive control regresses by more than **0.50pp**
+   recall@5.
+3. **Mechanism** — the seed-subspace residual is **not behaviourally identical**
+   to the legacy one.
+4. **Mechanism** — the relevant-versus-top-wrong margin is meaningfully positive
+   on **at least one** failure cell.
 
-Authorized only if the Stage-0 gate passes. Seed 0 only. S3 and S4 are reused
-without refitting.
+These are not adjustable after results are seen. **If the gate fails: do NOT
+train `S4-STRUCT-TRANSFORM`.** S3 remains the final development semantic choice
+and S4 remains a challenger with a filed, unrepaired blocker. That is a
+publishable outcome, not a failure to be worked around. Code that runs is not
+evidence that a mechanism exists, and a transform will not be trained on noise.
 
-Cells: the two blockers, plus a **positive control declared before its results
-are seen** — `webqsp`/R3, where S4 is already far ahead of S3 (+9.908pp) and the
-structural evidence is nontrivial (R3 lifts webqsp's `recall_ceiling@5` from
-0.4604 to 0.7290, the largest ceiling movement of any cell, and it still loses
-17.31pp to candidate generation). It is the cleanest place to detect a
-challenger that repairs the blockers by damaging what S4 was already good at.
+### The minimal admission diagnostic
 
-Learned arms are not trained under all three graph views; the Stage-0 provenance
-result picks one. The zero-new-parameter offset may compare provenance sources
-cheaply, because it costs no training.
+Budget **64 only** — A64 is the incumbent admission at exactly that budget, so
+64 is the only value at which the comparison is budget-matched rather than
+budget-buying. Three arms:
+
+| arm | what |
+|---|---|
+| `A64` | the existing `STRUCTURAL_NEIGHBOUR` blind-admission control |
+| `legacy-PF64` | R1's residual, parameter-free, at the same budget |
+| `seed-subspace-PF64` | R2's residual, parameter-free, at the same budget |
+
+Reported: pairwise **Jaccard** of admitted sets, **unique admitted nodes**,
+**unique relevant admissions**, and the exact **`recall_ceiling@5`** for each
+arm plus deltas.
+
+**`candidate_ceiling` is never used as the recall@5 bound.** It is macro pool
+coverage with no K; `recall_ceiling@5` is K-aware and is the denominator M2B
+itself used. They agree on the four passage sets and diverge materially on
+metaqa and webqsp, and substituting one for the other invents headroom. §3 keeps
+the distinction; the diagnostic must too.
+
+### Admission feasibility
+
+Compare the oracle `Δrecall_ceiling@5` each arm achieves against
+`required_repair_to_guard` from §3 — **0.3824pp** on `squad_clean`/R1,
+**2.0721pp** on `musique_clean`/R1.
+
+- Oracle gain **below** required → that arm **cannot** clear the M2B guard by
+  admission, whatever its ranking does.
+- Oracle gain **at or above** required → admission is not excluded. Not
+  excluded is **not the same as capable**: an oracle bound is not an achieved
+  metric, and squad would need 83.1% of it to convert.
+
+### Passage versus KB
+
+The split from §4 is quantified exactly, and it has **two live explanations**:
+
+- **structural** — passage graphs carry displacement geometry S4 ignores;
+- **semantic** — S4's projection miscalibrates passage embeddings, and the graph
+  is incidental.
+
+Stage 0 has to distinguish them. **If directional graph signal does not explain
+the passage errors, a graph-conditioned repair is not forced merely because that
+story is more attractive** — the honest reading would then be a semantic
+calibration path, and the matched `A3_S4_SEMANTIC_TRANSFORM` control stays
+mandatory the moment any learned-transform stage opens.
+
+## 9. Stage 1 — proposed, not authorized
+
+**Withdrawn from scope by the amendment.** The committed declaration allowed a
+tiny Stage-1 pilot to follow automatically if the Stage-0 gate passed. It no
+longer does: Stage 0 stops for review whether it passes or fails, and a Stage-1
+matrix is *proposed with a cost* rather than run.
+
+The shape below is retained as the proposal, not as an authorization.
+
+Seed 0 only. S3 and S4 reused without refitting. Cells: the two blockers, plus a
+**positive control declared before its results are seen** — `webqsp`/R3, where
+S4 is already far ahead of S3 (+9.908pp) and the structural evidence is
+nontrivial (R3 lifts webqsp's `recall_ceiling@5` from 0.4604 to 0.7290, the
+largest ceiling movement of any cell, and it still loses 17.31pp to candidate
+generation). It is the cleanest place to detect a challenger that repairs the
+blockers by damaging what S4 was already good at.
+
+Learned arms would not be trained under all three graph views; the Stage-0
+provenance result picks one. The zero-new-parameter offset may compare
+provenance sources cheaply, because it costs no training.
 
 Targets: both blockers within **0.50pp** of the frozen S3 incumbent; positive
 control no regression greater than 0.50pp from S4; recall@1 and MRR reported
@@ -504,14 +709,19 @@ matter.
 
 ## 14. Authorization
 
-Authorized by this declaration: the declaration itself, the archaeology, the
-immutable baseline export, the parameter-free residual and direction
-implementation, the STRUCT/KNN/FULL zero-training probe, tests, a tiny Stage-1
-seed-0 pilot **if** the Stage-0 advance gate passes, and automatic reporting of
-the pilot result.
+**Amended 2026-09-07.** The turn that accepted `a71a83f` authorised Stage-0
+execution and withdrew the Stage-1 pilot from scope until Stage 0 reports.
 
-Not authorized: the full 14-cell M2C evaluation, extra seeds, six-way LODO, M3
-or any GNN, canonical CRAG, Package F, E2.
+Authorized by this declaration and its amendment: the declaration and the
+correction itself, the archaeology, the immutable baseline export, the
+parameter-free residual and direction implementation, **the compute record**,
+**real Stage-0 Modal execution**, **the zero-training ranking and provenance
+probe**, **the minimal +64 admission diagnostic**, **result fetch and
+verification**, tests, and **the Stage-0 report**.
+
+Not authorized: **learned transform training**, **any Stage-1 fit**, the full
+14-cell M2C evaluation, extra seeds, six-way LODO, M3 or any GNN, canonical
+CRAG, Package F, E2.
 
 | gate | state |
 |---|---|
@@ -521,10 +731,10 @@ or any GNN, canonical CRAG, Package F, E2.
 | `archaeology_recorded` | earned 2026-09-07 |
 | `prior_evidence_audited` | earned 2026-09-07 |
 | `residual_implemented_and_tested` | earned 2026-09-07 |
-| `stage_0_compute_record_filed` | **not earned — blocked** |
+| `stage_0_compute_record_filed` | not earned |
 | `stage_0_probe_run` | not earned |
 | `stage_0_advance_gate_evaluated` | not earned |
-| `stage_1_authorised` | not earned |
+| `stage_1_authorised` | **withdrawn from scope by this amendment** |
 
 **Stage 0 cannot run on this machine.** Audited rather than assumed: the only
 local data is `data/processed/*_l2_pilot.pt` for `2wiki_clean`, `musique_clean`
@@ -536,9 +746,10 @@ paper evidence"*, and every query in them is split 2, so they could not carry a
 scientific result even if they held the tensors. `squad_clean` and `metaqa` are
 not present locally in any form.
 
-Stage 0 is therefore a Modal launch, and needs the compute record §14 demands —
-predicted jobs, GPU hours, walltime, storage, expected spend, ceiling, advance
-and abort conditions — filed before it runs. That record is the next gate.
+Stage 0 is therefore a Modal launch, and needs the compute record filed before
+it runs — predicted jobs, hardware choice, walltime, storage, expected spend,
+ceiling, and abort conditions. That record is
+`docs/M2C_STAGE0_COMPUTE_RECORD.md`, and it is the next gate.
 
 Validate cheaply, then expand only when the current scale produces evidence that
 more compute can change a scientific decision. Ledger line:
@@ -546,10 +757,30 @@ more compute can change a scientific decision. Ledger line:
 
 ## 15. Hard stop
 
-After Stage 1: `M2C_STATUS`, the baseline table, Stage-0 STRUCT/KNN/FULL
-directional evidence, Stage-1 per-arm recall@1/5/20, MRR, FullCov and deltas
-against both S4 and S3, the systems numbers, and the mechanism attribution
-(scalar versus vector offset, semantic-only versus structure-conditioned
-transform, STRUCT versus KNN versus FULL). Verdict is `STOP_M2C` or
-`ADVANCE_TARGETED_M2C`; if it advances, the exact minimum next matrix and a
-compute estimate. Then stop for review.
+**After Stage 0** — not after Stage 1, which this amendment removed from scope.
+Produce, in order:
+
+1. the exact residual × provenance matrix
+2. directional error-margin diagnostics
+3. direction-only metrics
+4. fixed S4 + direction fusion metrics
+5. the `G_STRUCT` / `G_KNN` / `G_FULL` result
+6. `A64` versus `legacy-PF64` versus `seed-subspace-PF64`
+7. exact `recall_ceiling@5` deltas
+8. the blocker required-repair calculation
+9. timing and storage
+10. the two verdicts
+
+**Two verdicts, returned independently:**
+
+| question | values |
+|---|---|
+| ranking | `STOP_STRUCTURAL_M2C` \| `ADVANCE_STRUCTURAL_RANKING_M2C` |
+| admission | `ADMISSION_CLOSED` \| `ADMISSION_REMAINS_PLAUSIBLE` |
+
+They are separate mechanisms answering separate questions, and Stage 0 can
+easily settle one without settling the other. A single verdict would force them
+to move together and would hide which of the two the evidence actually spoke to.
+
+If advancement is justified, propose the exact minimum learned Stage-1 matrix
+and its cost — **do not run it**. Then `STOP_FOR_REVIEW`.

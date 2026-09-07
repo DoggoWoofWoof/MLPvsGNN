@@ -116,9 +116,16 @@ blockers M2C exists to try to repair.
 | webqsp | R2 | 0 | 0.1476 | 0.2341 | +8.6437 |
 | webqsp | R3 | 0 | 0.2631 | 0.3622 | +9.9078 |
 
-### Multi-seed means
+### Multi-seed means, and what a repair actually has to recover
 
-| dataset | regime | seeds | mean S4-S3 (pp) | min | max |
-|---|---|---:|---:|---:|---:|
-| musique_clean | R1 | 3 | -2.5721 | -3.0113 | -2.2585 |
-| squad_clean | R1 | 3 | -0.8824 | -0.9975 | -0.7481 |
+`required` is `max(0, -mean_deficit - 0.50)`: the deficit LESS M2B's
+per-cell tolerance, which is what a challenger must recover to clear
+the guard. It is neither the deficit nor the tolerance. `exposure` is
+the ceiling candidate generation threw away, so comparing the two says
+whether admission could clear the cell in the ORACLE limit -- exposing
+a gold is not retrieving it, and ranking still has to convert it.
+
+| dataset | regime | seeds | mean S4-S3 (pp) | min | max | required (pp) | exposure (pp) | admission ruled out? |
+|---|---|---:|---:|---:|---:|---:|---:|:--:|
+| musique_clean | R1 | 3 | -2.5721 | -3.0113 | -2.2585 | 2.0721 | 6.3853 | no |
+| squad_clean | R1 | 3 | -0.8824 | -0.9975 | -0.7481 | 0.3824 | 0.4604 | no |

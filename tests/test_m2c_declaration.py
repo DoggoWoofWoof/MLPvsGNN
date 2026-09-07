@@ -32,6 +32,10 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 CONFIG_PATH = REPO_ROOT / "configs" / "m2c_s4_structural_conditioning.yaml"
 PROTOCOL_PATH = REPO_ROOT / "docs" / "M2C_S4_STRUCTURAL_CONDITIONING_PROTOCOL.md"
+COMPUTE_RECORD_JSON = (
+    REPO_ROOT / "outputs" / "m2c_s4_structural_conditioning" / "stage0_compute_record.json"
+)
+COMPUTE_RECORD_DOC = REPO_ROOT / "docs" / "M2C_STAGE0_COMPUTE_RECORD.md"
 BASELINE_JSON = (
     REPO_ROOT / "outputs" / "m2c_s4_structural_conditioning" / "m2b_baseline_table.json"
 )
@@ -56,6 +60,31 @@ def rows() -> list[dict]:
         pytest.skip("baseline table not exported; run scripts/m2c_baseline_table.py")
     loaded = json.loads(BASELINE_JSON.read_text(encoding="utf-8"))
     return loaded["rows"] if isinstance(loaded, dict) else loaded
+
+
+@pytest.fixture(scope="module")
+def means() -> list[dict]:
+    """The multi-seed robust margins, with the derived repair arithmetic."""
+
+    if not BASELINE_JSON.exists():
+        pytest.skip("baseline table not exported; run scripts/m2c_baseline_table.py")
+    loaded = json.loads(BASELINE_JSON.read_text(encoding="utf-8"))
+    # Not a skip: the table exists, so a missing key is a real breakage of the
+    # contract between the exporter and these tests, not an absent artifact.
+    entries = loaded["multi_seed_margins"]
+    assert entries, "the exported table carries no multi-seed margins"
+    covered = {entry["dataset"] for entry in entries}
+    assert {"squad_clean", "musique_clean"} <= covered, (
+        f"both blockers must be in the multi-seed margins; found {sorted(covered)}"
+    )
+    return entries
+
+
+@pytest.fixture(scope="module")
+def compute_record() -> dict:
+    if not COMPUTE_RECORD_JSON.exists():
+        pytest.skip("compute record not exported; run scripts/m2c_stage0_compute_record.py")
+    return json.loads(COMPUTE_RECORD_JSON.read_text(encoding="utf-8"))
 
 
 def _cell(rows: list[dict], dataset: str, regime: str, rung: str, seed: int = 0) -> dict:
@@ -154,24 +183,86 @@ def test_ranking_headroom_really_does_exist_in_every_cell(declaration, rows):
     )
 
 
-def test_the_exposure_numbers_that_rule_track_b_out_on_squad_are_real(declaration, rows):
-    """A perfect admission mechanism cannot reach the 0.50pp target on squad.
+def test_the_exposure_numbers_are_real(declaration, rows):
+    squad = _cell(rows, "squad_clean", "R1", "S4")
+    musique = _cell(rows, "musique_clean", "R1", "S4")
+    claim = declaration["headroom_decomposition"]["exposure_is_bounded_on_the_blockers"]
+    quoted = _numbers(claim)
 
-    This is the sharpest claim in the declaration, so it is the one most worth
-    holding to the artifact.
+    for row in (squad, musique):
+        exposure = row["recall_headroom_lost_to_candidate_generation_at_5"] * 100
+        assert any(abs(exposure - q) < TOLERANCE_PP for q in quoted)
+        assert exposure < (row["recall_ceiling_at_5"] - row["recall@5"]) * 100, (
+            "exposure should be the smaller of the two headrooms on both blockers"
+        )
+
+
+def test_the_required_repair_is_the_deficit_less_the_guard_not_either_alone(declaration, means):
+    """The correction that prompted this amendment.
+
+    M2B admits a rung within 0.50pp of the cell's best, so a challenger must
+    recover deficit MINUS 0.50pp. The committed file compared exposure against
+    the 0.50pp tolerance instead and concluded admission was impossible on
+    squad. It is not. This test pins the right comparison.
     """
 
-    squad = _cell(rows, "squad_clean", "R1", "S4")
-    exposure_pp = squad["recall_headroom_lost_to_candidate_generation_at_5"] * 100
-    assert exposure_pp < 0.50, "the whole argument depends on this being under the target"
+    expected = {"squad_clean": 0.3824, "musique_clean": 2.0721}
+    for entry in means:
+        if entry["dataset"] not in expected:
+            continue
+        deficit = entry["mean_delta_s4_minus_s3_pp"]
+        required = entry["required_repair_to_guard_pp"]
 
-    claim = declaration["headroom_decomposition"]["exposure_is_nearly_exhausted_on_the_blockers"]
-    assert any(abs(exposure_pp - q) < TOLERANCE_PP for q in _numbers(claim))
+        assert required == pytest.approx(max(0.0, -deficit - 0.50), abs=1e-9)
+        assert required == pytest.approx(expected[entry["dataset"]], abs=5e-4)
+        assert required < abs(deficit), "required repair is less than the whole deficit"
+        assert required != 0.50, "required repair is not the tolerance"
 
-    musique = _cell(rows, "musique_clean", "R1", "S4")
-    musique_pp = musique["recall_headroom_lost_to_candidate_generation_at_5"] * 100
-    assert any(abs(musique_pp - q) < TOLERANCE_PP for q in _numbers(claim))
-    assert musique_pp < (musique["recall_ceiling_at_5"] - musique["recall@5"]) * 100
+
+def test_neither_blocker_is_closed_to_admission_on_the_arithmetic(declaration, means):
+    """The substantive correction: exposure exceeds required repair on BOTH."""
+
+    for entry in means:
+        if entry["dataset"] not in ("squad_clean", "musique_clean"):
+            continue
+        assert entry["admission_ruled_out_by_exposure"] is False, (
+            f"{entry['dataset']}: exposure {entry['exposure_lost_to_candidate_generation_pp']}"
+            f" vs required {entry['required_repair_to_guard_pp']}"
+        )
+        assert 0.0 < entry["share_of_exposure_that_must_convert"] < 1.0
+
+    squad = next(e for e in means if e["dataset"] == "squad_clean")
+    musique = next(e for e in means if e["dataset"] == "musique_clean")
+    assert (
+        squad["share_of_exposure_that_must_convert"]
+        > musique["share_of_exposure_that_must_convert"]
+    ), "squad is the tighter of the two paths, not musique"
+
+
+def test_the_declaration_states_the_corrected_conclusion_and_keeps_the_error(declaration):
+    """An amendment that erases what it corrected teaches nothing."""
+
+    block = declaration["headroom_decomposition"]["required_repair_to_guard"]
+    assert "not ruled out" in block["squad_clean_R1"].lower()
+    assert "0.50pp tolerance" in block["what_was_wrong"] or "tolerance" in block["what_was_wrong"]
+    assert "narrow theoretical path" in block["corrected_wording"]
+    assert "cannot be assumed sufficient" in block["corrected_wording"]
+    assert "PERFECT" in block["an_oracle_bound_is_not_an_achieved_metric"]
+
+    for value in (0.3824, 2.0721):
+        assert any(
+            abs(value - q) < 5e-4
+            for text in block.values()
+            if isinstance(text, str)
+            for q in _numbers(text)
+        ), f"{value} is not quoted in the required-repair block"
+
+
+def test_the_failure_shape_no_longer_claims_admission_is_irrelevant(declaration):
+    clause = declaration["failure_shape"]["what_this_does_to_the_two_tracks"]
+    assert "secondary possible contributor" in clause
+    assert "NOT proof that admission is irrelevant" in clause
+    assert "required_repair_to_guard" in clause, "it should point at the arithmetic"
 
 
 # ---------------------------------------------------------------------------
@@ -474,18 +565,133 @@ def test_stage_0_covers_both_blockers_and_declares_its_r3_cells_prospectively(de
     cells = declaration["stage_0"]["cells"]
     assert set(cells["failure_cells"]) == {"squad_clean/R1", "musique_clean/R1"}
     assert cells["declared_before_any_result"] is True
-    assert cells["multi_hop_r3"].endswith("/R3")
-    assert cells["kb_r3"].endswith("/R3")
+    assert cells["passage_r3_control"].endswith("/R3")
+    assert cells["kb_r3_control"].endswith("/R3")
+    assert cells["four_cells_is_sufficient"] is True
+    assert cells["do_not_run_all_fourteen"] is True
     assert "frozen graph audit" in cells["why_these_two_r3_cells"]
 
 
-def test_the_stage_0_gate_can_return_stop(declaration):
-    """A gate that cannot fail is not a gate."""
+def test_stage_0_asks_about_ranking_first(declaration):
+    """The amendment's reordering, checked rather than assumed."""
+
+    stage = declaration["stage_0"]
+    assert "RANKING" in stage["primary_question"]
+    assert "ADMISSION" in stage["secondary_question"]
+    assert stage["split"].startswith("validation")
+
+
+def test_the_three_residual_controls_are_declared_with_the_legacy_one_called_not_copied(
+    declaration,
+):
+    controls = declaration["stage_0"]["residual_controls"]
+    assert set(controls) >= {
+        "R0_RAW_QUERY_CONTROL",
+        "R1_LEGACY_DIRECTIONAL",
+        "R2_SEED_SUBSPACE",
+    }
+    legacy = controls["R1_LEGACY_DIRECTIONAL"]
+    assert legacy["not_reimplemented_from_prose"] is True
+    assert "candidate_expansion_v2.query_residual" in legacy["implementation"]
+    assert "CALLED" in legacy["implementation"]
+    assert controls["the_central_comparison"] == (
+        "R1_LEGACY_DIRECTIONAL versus R2_SEED_SUBSPACE"
+    )
+    # And all three exist in code.
+    from mp_retrieval import m2c_structural_offset as offset_module
+    from mp_retrieval.candidate_expansion_v2 import query_residual  # noqa: F401
+
+    assert callable(offset_module.raw_query_direction)
+    assert callable(offset_module.seed_subspace_residual)
+
+
+def test_the_fusion_constant_is_reused_and_not_swept(declaration):
+    fusion = declaration["stage_0"]["zero_training_ranking_test"]["B_s4_plus_direction_fusion"]
+    constant = fusion["constant"]
+    assert constant["status"] == "REUSED_NOT_NEW"
+    assert constant["value"] == 60
+    assert "candidate_budget.yaml" in constant["source"]
+    assert fusion["no_weight_sweep"] is True
+    assert fusion["no_constant_sweep"] is True
+
+    from mp_retrieval.m2c_structural_offset import RRF_CONSTANT
+
+    assert RRF_CONSTANT == constant["value"]
+
+
+def test_the_error_conditioned_diagnostic_excludes_unwinnable_queries(declaration):
+    diagnostic = declaration["stage_0"]["error_conditioned_diagnostic"]
+    assert "top-1 is wrong" in diagnostic["population"]
+    assert "excluded and counted separately" in diagnostic["population"]
+    assert set(diagnostic["report"]) == {
+        "directional_margin",
+        "fraction_positive",
+        "central_tendency",
+    }
+    assert len(diagnostic["stratify_s4_misses_by_where_the_first_relevant_item_sits"]) == 3
+
+
+def test_coverage_must_be_reported_beside_any_margin(declaration):
+    score = declaration["stage_0"]["directional_score"]
+    assert score["do_not_build_a_large_feature_catalog"] is True
+    assert set(score["minimum_signals"]) == {"dir_max", "dir_mean"}
+    assert "cannot repair a ranking" in score["coverage_must_be_measured_explicitly"]
+
+
+def test_the_admission_diagnostic_is_minimal_and_uses_the_right_ceiling(declaration):
+    diagnostic = declaration["stage_0"]["admission_diagnostic"]
+    assert diagnostic["budget"] == 64
+    assert len(diagnostic["arms"]) == 3
+    assert diagnostic["never_use_candidate_ceiling_as_the_r5_bound"] is True
+    assert any("recall_ceiling@5" in item for item in diagnostic["report"])
+
+
+def test_the_admission_feasibility_rule_uses_the_required_repair(declaration, means):
+    feasibility = declaration["stage_0"]["admission_feasibility"]
+    assert feasibility["do_not_equate_oracle_headroom_with_achieved_recall"] is True
+    quoted = feasibility["required_values"]
+
+    for entry in means:
+        key = f"{entry['dataset']}_R1"
+        if key not in quoted:
+            continue
+        assert any(
+            abs(entry["required_repair_to_guard_pp"] - q) < 5e-4
+            for q in _numbers(str(quoted[key]))
+        ), f"{key}: declaration says {quoted[key]}, table says {entry['required_repair_to_guard_pp']}"
+
+    assert "CANNOT" in feasibility["interpretation"]["oracle_gain_below_required"]
+    assert "not the same as capable" in feasibility["interpretation"][
+        "oracle_gain_at_or_above_required"
+    ]
+
+
+def test_the_passage_kb_split_leaves_the_semantic_explanation_open(declaration):
+    """Refusing to force the more attractive story is the point of this block."""
+
+    split = declaration["stage_0"]["passage_versus_kb"]
+    assert set(split["two_live_explanations"]) == {"structural", "semantic"}
+    assert "do not force a graph-conditioned repair" in split["stage_0_must_distinguish_them"]
+    assert "A3_S4_SEMANTIC_TRANSFORM" in split["the_matched_control_stays_mandatory"]
+
+
+def test_the_stage_0_gate_is_filed_before_results_and_can_fail(declaration):
+    """A gate that cannot fail, or that can move, is not a gate."""
 
     gate = declaration["stage_0"]["advance_gate"]
-    assert gate["if_no_directional_signal_exists"] == "STOP_M2C"
-    assert "S3 remains" in gate["what_stopping_means"]
-    assert "publishable outcome" in gate["what_stopping_means"]
+    assert gate["filed_before_modal_results"] is True
+    assert "not a threshold" in gate["thresholds_are_not_adjustable"]
+    assert declaration["launch_authorization"]["gates"]["stage_0_probe_run"] is False, (
+        "the gate must be filed while the probe has not yet run"
+    )
+
+    assert "+0.25pp" in gate["effectiveness_condition"]
+    assert "+2.0pp" in gate["effectiveness_condition"]
+    assert "0.50pp" in gate["protection_condition"]
+    assert "not behaviourally identical" in gate["mechanistic_condition_1"]
+    assert "margin" in gate["mechanistic_condition_2"]
+    assert "AND" in gate["all_conditions_required"]
+    assert "Do NOT train S4-STRUCT-TRANSFORM" in gate["if_the_gate_fails"]
     assert "Code that runs is not evidence" in gate["do_not_train_a_transform_on_noise"]
 
 
@@ -590,12 +796,31 @@ def test_the_expensive_things_are_not_authorised(declaration):
     assert any("gnn" in item for item in not_authorised)
 
 
-def test_the_phase_stops_for_review_with_a_verdict_that_can_be_negative(declaration):
+def test_the_phase_stops_after_stage_0_with_two_independent_verdicts(declaration):
     stop = declaration["stop_condition"]
-    assert set(stop["verdict_values"]) == {"STOP_M2C", "ADVANCE_TARGETED_M2C"}
-    produced = " ".join(stop["after_stage_1_produce"])
-    assert "recall@1" in produced and "MRR" in produced
-    assert "systems" in produced
+    assert sorted(stop["after_stage_0_produce"]) == list(range(1, 11))
+
+    verdicts = stop["verdicts_are_independent"]
+    assert set(verdicts["ranking"]) == {"STOP_STRUCTURAL_M2C", "ADVANCE_STRUCTURAL_RANKING_M2C"}
+    assert set(verdicts["admission"]) == {"ADMISSION_CLOSED", "ADMISSION_REMAINS_PLAUSIBLE"}
+    assert "separate questions" in verdicts["why_two"]
+    assert "Do not run it" in stop["if_advancement_is_justified"]
+    assert stop["then"] == "STOP_FOR_REVIEW"
+
+
+def test_stage_1_is_no_longer_pre_authorised(declaration):
+    """The amendment withdrew the automatic pilot; the file must agree."""
+
+    auth = declaration["launch_authorization"]
+    not_authorised = {item.lower() for item in auth["not_authorised"]}
+    assert "any stage-1 fit" in not_authorised
+    assert "learned transform training" in not_authorised
+    assert auth["gates"]["stage_1_authorised"] is False
+    assert "withdraws that" in auth["stage_1_is_no_longer_pre_authorised"]
+
+    authorised = " ".join(auth["authorised_by_this_declaration"]).lower()
+    assert "stage-0 modal execution" in authorised
+    assert "admission diagnostic" in authorised
 
 
 # ---------------------------------------------------------------------------
@@ -615,6 +840,119 @@ def test_the_protocol_reports_the_null_rather_than_burying_it(protocol):
     assert "M0A_PROBE_RESULTS" in protocol
 
 
+@pytest.fixture(scope="module")
+def flat_protocol(protocol: str) -> str:
+    """The protocol with runs of whitespace collapsed.
+
+    Markdown reflows when a sentence is edited, so a substring assertion that
+    depends on where a line happens to wrap tests the formatter, not the claim.
+    Blockquote markers are stripped for the same reason: a "> " that survives
+    into the middle of a flattened sentence is markup, not wording.
+    """
+
+    unquoted = re.sub(r"(?m)^[ 	]*>[ 	]?", "", protocol)
+    return re.sub(r"\s+", " ", unquoted)
+
+
+def test_the_protocol_no_longer_claims_admission_is_impossible_on_squad(flat_protocol):
+    """The corrected sentence has to be IN the document, not merely absent from it.
+
+    The withdrawn claim was "Track B could not repair that blocker even in
+    principle", reached by comparing squad's 0.46pp of exposure against the
+    0.50pp tolerance. Both the wrong comparison and the conclusion are gone, and
+    the replacement wording is present verbatim.
+    """
+
+    # The withdrawn wording is quoted on purpose -- an amendment that erases
+    # what it corrected teaches nothing. What must hold is that it never stands
+    # on its own: every occurrence is marked as withdrawn in the same breath.
+    for withdrawn in (
+        "could not repair that blocker even in principle",
+        "could not fix these blockers even if it worked perfectly",
+    ):
+        for match in re.finditer(re.escape(withdrawn), flat_protocol):
+            window = flat_protocol[match.start() - 200 : match.end() + 200]
+            assert "withdrawn" in window or "not" in window.split(withdrawn)[0][-80:], (
+                f"superseded claim stated without its retraction: {withdrawn!r}"
+            )
+    assert "the conclusion drawn from it is withdrawn" in flat_protocol
+
+    assert "narrow theoretical path to clear the M2B guard" in flat_protocol
+    assert "cannot be assumed sufficient" in flat_protocol
+    assert "dominated by top-of-ranking error" in flat_protocol
+    assert "secondary possible contributor" in flat_protocol
+    assert "proof that admission is irrelevant" in flat_protocol
+
+
+def test_the_protocol_carries_the_repair_arithmetic_and_keeps_the_error_visible(
+    flat_protocol, means
+):
+    """An amendment that erases what it corrected teaches nothing."""
+
+    section = flat_protocol.split("### How much actually has to be recovered")[1].split("## 4.")[0]
+    assert "That comparison was wrong" in section
+    assert "The tolerance is not the amount of work" in section
+    assert "required_repair_to_guard = max(0, |robust deficit| \u2212 0.50pp)" in section
+    assert "an oracle bound is not an achieved metric" in section.lower()
+
+    quoted = _numbers(section)
+    for entry in means:
+        for field in (
+            "required_repair_to_guard_pp",
+            "exposure_lost_to_candidate_generation_pp",
+        ):
+            value = entry[field]
+            assert any(abs(value - q) < TOLERANCE_PP for q in quoted), (
+                f"{entry['dataset']} {field}={value:.4f} is not quoted in the protocol"
+            )
+
+
+def test_the_protocol_records_that_squad_is_the_tighter_path_not_the_closed_one(flat_protocol):
+    """The correction reversed which blocker looks more open to admission."""
+
+    section = flat_protocol.split("### How much actually has to be recovered")[1].split("## 4.")[0]
+    assert "83.1%" in section and "32.5%" in section
+    assert "musique is the *more* plausible admission target" in section
+    assert "not the less" in section
+
+
+def test_the_protocol_and_the_declaration_agree_on_stage_0(flat_protocol, declaration):
+    """Two documents describing one protocol must not drift apart."""
+
+    stage = declaration["stage_0"]
+    assert "useful *ranking* signal" in flat_protocol
+    for cell in (
+        *stage["cells"]["failure_cells"],
+        stage["cells"]["passage_r3_control"],
+        stage["cells"]["kb_r3_control"],
+    ):
+        dataset, regime = cell.split("/")
+        assert f"`{dataset}`/{regime}" in flat_protocol, f"{cell} is not in the protocol"
+
+    gate = stage["advance_gate"]
+    assert "+0.25pp" in flat_protocol and "+2.0pp" in flat_protocol
+    assert "do NOT train `S4-STRUCT-TRANSFORM`" in flat_protocol
+    assert gate["filed_before_modal_results"] is True
+    assert "Filed before any Modal result exists" in flat_protocol
+
+    for arm in stage["zero_training_ranking_test"]["matrix"]["arms"]:
+        assert arm in flat_protocol, (
+            f"arm {arm!r} is named in the declaration but not in the protocol"
+        )
+
+    for verdict in declaration["stop_condition"]["verdicts_are_independent"]["ranking"]:
+        assert verdict in flat_protocol
+    for verdict in declaration["stop_condition"]["verdicts_are_independent"]["admission"]:
+        assert verdict in flat_protocol
+
+
+def test_the_protocol_does_not_promise_a_stage_1_run(flat_protocol, declaration):
+    assert "Stage 1 \u2014 proposed, not authorized" in flat_protocol
+    assert "Withdrawn from scope by the amendment" in flat_protocol
+    assert "do not run it" in flat_protocol.lower()
+    assert declaration["launch_authorization"]["gates"]["stage_1_authorised"] is False
+
+
 def test_the_protocol_quotes_ceilings_that_reproduce(protocol, rows):
     """The prose is held to the artifacts exactly as the YAML is."""
 
@@ -632,3 +970,169 @@ def test_every_file_the_protocol_links_to_exists(protocol):
         assert (REPO_ROOT / target).exists(), f"broken link: {target}"
     for target in re.findall(r"\]\((?!\.\./|https?://)([^)#]+\.md)\)", protocol):
         assert (REPO_ROOT / "docs" / target).exists(), f"broken doc link: {target}"
+
+
+# ---------------------------------------------------------------------------
+# The Stage-0 compute record, which the amendment makes a gate on the launch.
+# ---------------------------------------------------------------------------
+
+
+def test_the_compute_record_is_filed_before_the_run_it_prices(declaration, compute_record):
+    gates = declaration["launch_authorization"]["gates"]
+    assert gates["stage_0_compute_record_filed"] is True
+    assert gates["stage_0_probe_run"] is False, (
+        "a record that is filed after the run it prices is not a prediction"
+    )
+    assert compute_record["status"] == "FILED_BEFORE_LAUNCH"
+    assert COMPUTE_RECORD_DOC.exists()
+
+
+def test_the_record_prices_the_declared_workload_and_not_something_else(
+    declaration, compute_record
+):
+    """A cost estimate for a different matrix would authorise nothing."""
+
+    stage = declaration["stage_0"]
+    expected_cells = [
+        *stage["cells"]["failure_cells"],
+        stage["cells"]["passage_r3_control"],
+        stage["cells"]["kb_r3_control"],
+    ]
+    workload = compute_record["workload"]
+    assert workload["cells"] == expected_cells
+    assert workload["jobs"] == len(expected_cells) == 4
+
+    matrix = stage["zero_training_ranking_test"]["matrix"]
+    assert workload["arms"] == matrix["arms"]
+    assert workload["residuals"] == matrix["residuals"]
+    assert workload["provenance"] == matrix["provenance"]
+    assert compute_record["trains_nothing"] is True
+    assert compute_record["reads_test_split"] is False
+
+
+def test_the_record_does_not_overstate_the_matrix_it_prices(compute_record):
+    """S4 is invariant under residual and provenance, so 27 passes is wrong."""
+
+    workload = compute_record["workload"]
+    arms, residuals = len(workload["arms"]), len(workload["residuals"])
+    provenance = len(workload["provenance"])
+    assert workload["declared_matrix_size"] == arms * residuals * provenance
+    assert workload["scored_configurations_per_query"] == 1 + (arms - 1) * residuals * provenance
+    assert (
+        workload["scored_configurations_per_query"] < workload["declared_matrix_size"]
+    ), "the reference arm is computed once, not nine times"
+
+
+def test_the_panel_is_the_development_split_not_the_holdout(compute_record, rows):
+    """Stage 0 reads what fitting already spent, so M2B's holdout stays clean."""
+
+    assert "validation" in compute_record["split"]
+    for job in compute_record["estimate"]["jobs"]:
+        row = _cell(rows, job["dataset"], job["regime"], "S4")
+        assert job["development_panel_queries"] == row["train_queries"]
+        assert job["development_panel_queries"] != row["held_out_queries"]
+        assert job["development_panel_queries"] < row["split_queries"]
+
+
+def test_no_gpu_is_held_and_the_refusal_is_reasoned(compute_record):
+    """The amendment forbids holding an accelerator for a probe that trains nothing."""
+
+    container = compute_record["container"]
+    assert container["gpu"] is None
+    assert container["gpu_hours_authorised"] == 0.0
+    assert "trains nothing" in container["why_cpu_and_not_gpu"]
+    assert "not a reason to hold one idle" in container["why_cpu_and_not_gpu"]
+
+    from mp_retrieval.compute_budget import container_rate_usd_per_hour
+
+    assert container["usd_per_hour"] == pytest.approx(
+        container_rate_usd_per_hour(
+            gpu=None, cpu_cores=container["cpu"], memory_mb=container["memory_mb"]
+        ),
+        abs=5e-5,
+    ), "the quoted rate must be the project's own rate for the shape actually held"
+
+
+def test_every_job_fits_the_timeout_it_declares(compute_record):
+    """A unit that cannot finish before the timeout can never make progress."""
+
+    timeout = compute_record["container"]["timeout_seconds"]
+    for job in compute_record["estimate"]["jobs"]:
+        assert job["job_seconds"] < timeout, f"{job['cell']} cannot finish in one container"
+    assert compute_record["feasibility"]["fits_timeout"] is True
+    assert compute_record["estimate"]["longest_job_seconds"] < timeout
+
+
+def test_the_ceiling_is_above_the_worst_case_bracket(compute_record):
+    """A ceiling under the bracket would be breached by an expected outcome."""
+
+    estimate = compute_record["estimate"]
+    bracket = estimate["estimated_cost_usd_at_three_times_the_estimate"]
+    assert bracket == pytest.approx(estimate["estimated_cost_usd"] * 3, abs=0.02)
+    assert compute_record["cost_ceiling_usd"] > bracket
+    assert "not a budget to spend down" in compute_record["ceiling_rationale"]
+
+
+def test_the_estimate_is_quoted_at_the_conservative_pool_size(compute_record):
+    """A cheap assumption in a pre-launch estimate is how a ceiling gets breached."""
+
+    estimate = compute_record["estimate"]
+    measured = estimate["kernel_ms_per_query"]
+    assumed = estimate["assumed_candidates_per_query"]
+    assert str(assumed) in measured or assumed in measured
+    costs = [measured[k] for k in measured]
+    chosen = measured[str(assumed)] if str(assumed) in measured else measured[assumed]
+    assert chosen == max(costs), "the estimate must use the slower measured bracket"
+
+
+def test_the_abort_criteria_cover_spend_and_the_firewall(compute_record):
+    """An abort list that only watches money would not stop a leak."""
+
+    criteria = " ".join(compute_record["abort_criteria"]).lower()
+    assert "ceiling" in criteria
+    assert "timeout" in criteria
+    for forbidden in ("test split", "gold node", "supporting-fact", "package f", "gnn"):
+        assert forbidden in criteria, f"the abort list does not mention {forbidden}"
+    assert "outside the stage-0 output prefix" in criteria
+
+
+def test_the_record_writes_nowhere_frozen(compute_record):
+    storage = compute_record["storage"]
+    assert storage["writes_under"].startswith("outputs/m2c_s4_structural_conditioning/")
+    forbidden = " ".join(storage["writes_nothing_under"]).lower()
+    for path in ("m2", "m2b", "m3", "package f", "canonical crag"):
+        assert path in forbidden
+
+
+def test_placement_is_read_not_copied(compute_record):
+    """Workspaces rotate; a second copy of the map is a second thing to go stale."""
+
+    placement = compute_record["placement"]
+    assert placement["read_at_submit_time"] is True
+    assert "execution_placement" in placement["declared_in"]
+    assert "m2_qls_v2_freeze.yaml" in placement["declared_in"]
+    for workspace in ("extra_wNzonK", "extra_ip9HxU"):
+        assert workspace not in json.dumps(compute_record), (
+            "the placement map must not be duplicated into this record"
+        )
+    assert compute_record["submission"]["spawn_server_side"] is True
+    assert "not a registered execution" in compute_record["submission"]["never_modal_run_detach"]
+
+
+def test_the_declaration_and_the_record_quote_the_same_numbers(declaration, compute_record):
+    """Two places holding one figure is how a stale number survives."""
+
+    bound = declaration["launch_authorization"]["stage_0_compute_record"]
+    assert bound["filed_before_launch"] is True
+    assert bound["jobs"] == compute_record["workload"]["jobs"]
+    assert bound["gpu"] is None
+    assert bound["gpu_hours_authorised"] == compute_record["container"]["gpu_hours_authorised"]
+    assert bound["cpu"] == compute_record["container"]["cpu"]
+    assert bound["memory_mb"] == compute_record["container"]["memory_mb"]
+    assert bound["timeout_seconds"] == compute_record["container"]["timeout_seconds"]
+    assert bound["cost_ceiling_usd"] == compute_record["cost_ceiling_usd"]
+    assert bound["expected_spend_usd"] == pytest.approx(
+        compute_record["estimate"]["estimated_cost_usd"], abs=0.01
+    )
+    for path in (bound["document"], bound["machine_readable"], bound["derived_by"]):
+        assert (REPO_ROOT / path).exists(), f"{path} is named in the declaration but missing"

@@ -17,6 +17,15 @@ from numbers already present:
 ``delta_s4_minus_s3_pp``
     the per-cell margin the whole phase exists to repair.
 
+``required_repair_to_guard_pp``
+    ``max(0, -robust_deficit - 0.50)``. What a challenger must actually recover
+    to clear M2B's per-cell guard: the deficit LESS the guard's tolerance. It is
+    neither the deficit nor the tolerance, and confusing it with either
+    misstates how much work a mechanism has to do. Reported beside
+    ``exposure_lost_to_candidate_generation_pp`` so the two can be compared,
+    which is the only way to say whether admission is capable of clearing a cell
+    even in the oracle limit.
+
 ``attainment_at_5``
     NOT recomputed. M2B already recorded ``ceiling_attainment_at_5`` on every
     rung, and this column is that field, copied. Reranking cannot move the
@@ -70,6 +79,13 @@ TABLE_MARKDOWN = pathlib.Path("docs/M2C_BASELINE_TABLE.md")
 
 RUNGS = ("S2", "S3", "S4")
 DECLARED_SEED = 0
+
+#: M2B's per-cell effectiveness guard, in points. A rung is admissible in a
+#: cell when it is no worse than this far behind the cell's best. Taken from
+#: configs/m2b_semantic_minimality.yaml, where it is filed as not adjustable --
+#: restated here only so the derived required-repair column is computable, and
+#: checked against that file by tests/test_m2c_declaration.py.
+M2B_PER_CELL_GUARD_PP = 0.50
 
 #: The two cells M2B resolved at three seeds, and the rungs it resolved them
 #: for. Read from the M2B runner rather than restated, so this file cannot
@@ -201,18 +217,46 @@ def margins(rows: list[dict]) -> list[dict]:
         multi.setdefault((entry["dataset"], entry["regime"]), []).append(
             entry["delta_s4_minus_s3_pp"]
         )
-    means = [
-        {
-            "dataset": dataset,
-            "regime": regime,
-            "seeds": len(deltas),
-            "mean_delta_s4_minus_s3_pp": statistics.fmean(deltas),
-            "min_pp": min(deltas),
-            "max_pp": max(deltas),
-        }
-        for (dataset, regime), deltas in sorted(multi.items())
-        if len(deltas) > 1
-    ]
+    means = []
+    for (dataset, regime), deltas in sorted(multi.items()):
+        if len(deltas) <= 1:
+            continue
+        robust = statistics.fmean(deltas)
+        # What a challenger must actually RECOVER to clear M2B's cell guard --
+        # the deficit less the guard's tolerance, not the deficit and not the
+        # tolerance. Zero when the cell is already admissible.
+        required = max(0.0, -robust - M2B_PER_CELL_GUARD_PP)
+        exposure = next(
+            (
+                row["recall_headroom_lost_to_candidate_generation_at_5"] * 100.0
+                for row in rows
+                if (row["dataset"], row["regime"], row["rung"], row["seed"])
+                == (dataset, regime, "S4", DECLARED_SEED)
+                and row["recall_headroom_lost_to_candidate_generation_at_5"] is not None
+            ),
+            None,
+        )
+        means.append(
+            {
+                "dataset": dataset,
+                "regime": regime,
+                "seeds": len(deltas),
+                "mean_delta_s4_minus_s3_pp": robust,
+                "min_pp": min(deltas),
+                "max_pp": max(deltas),
+                "required_repair_to_guard_pp": required,
+                "exposure_lost_to_candidate_generation_pp": exposure,
+                # An oracle bound only. Exposure is what a PERFECT admission
+                # mechanism could expose; converting it into recall@5 is a
+                # separate problem that ranking still has to solve.
+                "admission_ruled_out_by_exposure": (
+                    None if exposure is None else exposure < required
+                ),
+                "share_of_exposure_that_must_convert": (
+                    None if not exposure or required == 0.0 else required / exposure
+                ),
+            }
+        )
     return per_seed, means
 
 
@@ -317,16 +361,31 @@ def markdown(rows: list[dict], per_seed: list[dict], means: list[dict]) -> str:
     if means:
         lines += [
             "",
-            "### Multi-seed means",
+            "### Multi-seed means, and what a repair actually has to recover",
             "",
-            "| dataset | regime | seeds | mean S4-S3 (pp) | min | max |",
-            "|---|---|---:|---:|---:|---:|",
+            "`required` is `max(0, -mean_deficit - 0.50)`: the deficit LESS M2B's",
+            "per-cell tolerance, which is what a challenger must recover to clear",
+            "the guard. It is neither the deficit nor the tolerance. `exposure` is",
+            "the ceiling candidate generation threw away, so comparing the two says",
+            "whether admission could clear the cell in the ORACLE limit -- exposing",
+            "a gold is not retrieving it, and ranking still has to convert it.",
+            "",
+            (
+                "| dataset | regime | seeds | mean S4-S3 (pp) | min | max |"
+                " required (pp) | exposure (pp) | admission ruled out? |"
+            ),
+            "|---|---|---:|---:|---:|---:|---:|---:|:--:|",
         ]
         for entry in means:
+            ruled = entry["admission_ruled_out_by_exposure"]
+            verdict = "--" if ruled is None else ("YES" if ruled else "no")
             lines.append(
                 f"| {entry['dataset']} | {entry['regime']} | {entry['seeds']} "
                 f"| {entry['mean_delta_s4_minus_s3_pp']:+.4f} "
-                f"| {entry['min_pp']:+.4f} | {entry['max_pp']:+.4f} |"
+                f"| {entry['min_pp']:+.4f} | {entry['max_pp']:+.4f} "
+                f"| {entry['required_repair_to_guard_pp']:.4f} "
+                f"| {_fmt(entry['exposure_lost_to_candidate_generation_pp'], 4)} "
+                f"| {verdict} |"
             )
     lines.append("")
     return "\n".join(lines)

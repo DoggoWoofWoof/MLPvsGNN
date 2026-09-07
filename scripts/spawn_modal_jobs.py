@@ -94,6 +94,11 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
             "headline": "run_m2_headline",
         },
     ),
+    # One stage, one spawned call per declared cell, and nothing fitted. The
+    # probe reads M2's sealed cell masters and M2B's sealed S4 checkpoint and
+    # writes only under M2C's own prefix, so there is no build stage to run and
+    # no historical artifact for a stage to overwrite.
+    "m2c-stage0-probe": ("scripts.modal_m2c_stage0_probe", {"probe": "run_stage0"}),
     # Three stages, and no build stage at all: M2B rebuilds no features. Every
     # cell master it reads was persisted by M2's build stage and is admitted on
     # its feature build contract. One spawned job per dataset runs every regime
@@ -341,6 +346,11 @@ PHASE_CONFIRMATION_SEEDS = 5
 UTILISATION = {
     "phase-confirmation": TRAINING_FRACTION_OF_BILLED_TIME,
     "graph-substrate": 1.0,
+    # The figure M2C's own compute record was derived at. Held here so the
+    # number this gate reports and the number the filed record predicted are
+    # the same number, and a divergence between them is a real divergence
+    # rather than two different utilisation assumptions.
+    "m2c-stage0-probe": 0.4,
 }
 
 
@@ -368,8 +378,10 @@ def _collapse_without_resumption(
     total = sum(unit.seconds for unit in units)
     return (
         [WorkUnit(f"{label} (no {expected}-level resumption)", total)],
-        f"unit = the whole {label}, because the runner does not declare "
-        f"{expected}-level resumption and a restart redoes all of it",
+        (
+            f"unit = the whole {label}, because the runner does not declare "
+            f"{expected}-level resumption and a restart redoes all of it"
+        ),
     )
 
 
@@ -533,6 +545,27 @@ def measured_units(
         return units, (
             f"{len(jobs)} dataset(s) at the declared pre-launch estimate, "
             f"anchored to M0A execution 2's measured per-query latencies; {granularity}"
+        )
+
+    if package == "m2c-stage0-probe":
+        # Not the declaration's estimate but the filed compute record's, which
+        # is the artifact the amendment made a precondition of this launch. The
+        # record derives its per-job seconds from a host benchmark of the actual
+        # kernel, M0A's measured expansion rates and this project's own pricing
+        # functions, so gating against anything else would gate against a
+        # second, softer number.
+        estimate = {
+            job["dataset"]: float(job["job_seconds"])
+            for job in module.compute_record()["estimate"]["jobs"]
+        }
+        unknown = sorted({job["dataset"] for job in jobs} - set(estimate))
+        if unknown:
+            return None, f"the filed compute record prices no job for {', '.join(unknown)}"
+        units = [WorkUnit(name=job["dataset"], seconds=estimate[job["dataset"]]) for job in jobs]
+        units, granularity = _collapse_without_resumption(units, module, "cell", "probe")
+        return units, (
+            f"{len(jobs)} cell(s) at the filed Stage-0 compute record, which is a host "
+            f"timing and not a container measurement; {granularity}"
         )
 
     if package == "m2-qls-v2-freeze":
