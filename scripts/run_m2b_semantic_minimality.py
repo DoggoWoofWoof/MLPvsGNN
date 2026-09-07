@@ -593,6 +593,13 @@ def fit_one_rung(
         "batched_inference": inference,
         "uncached_inference": latency,
         "held_out_scores": scores,
+        # The paired-bootstrap diagnostic needs a per-query outcome per rung,
+        # and M1B is the cautionary case: its amendment 5 exists only because
+        # no per-query outcome had been persisted anywhere and the analysis was
+        # therefore not computable after the fact. Aligned to this fit's own
+        # per_query_rows.json, and to the cell's held_out_query_ids, which are
+        # the same list for every rung by construction.
+        "per_query_recall_at_5": [float(row["recall@5"]) for row in rows],
         "checkpoint_round_trip": round_trip,
         "eligible_train_queries": sum(
             1 for query in train_queries if query.relevant_local.numel()
@@ -820,6 +827,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 "is handed to every rung in this cell. A difference between the rungs here is "
                 "a difference in semantic representation or it is nothing."
             ),
+            # Written once per cell rather than once per rung: the panel is a
+            # property of the cell, all three rungs score it, and three copies
+            # of the same several-thousand-element list would be three chances
+            # for them to disagree.
+            "held_out_query_ids": [query.query_id for query in held_out],
             "rungs": {},
         }
         for rung in rungs:
@@ -857,6 +869,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             raise ValueError(
                 f"{args.dataset}/{regime}: rungs {divergent} did not record the cell's shared "
                 "inputs, so this cell is not a controlled comparison"
+            )
+        misaligned = sorted(
+            rung for rung, fit in cell["rungs"].items()
+            if len(fit["per_query_recall_at_5"]) != len(cell["held_out_query_ids"])
+        )
+        if misaligned:  # pragma: no cover - defensive; one panel makes this unreachable
+            raise ValueError(
+                f"{args.dataset}/{regime}: rungs {misaligned} recorded a per-query vector "
+                "that is not the length of this cell's held-out panel, so no paired "
+                "comparison against them is paired"
             )
         distinct = {fit["semantic_rung_fingerprint"]["sha256"] for fit in cell["rungs"].values()}
         if len(distinct) != len(cell["rungs"]):

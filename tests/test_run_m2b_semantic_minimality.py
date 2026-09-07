@@ -969,3 +969,38 @@ def _load_queries(args):
     node_embeddings = torch.from_numpy(np.array(dataset.node_array, dtype=np.float32, copy=True))
     query_embeddings = torch.from_numpy(np.array(dataset.query_array, dtype=np.float32, copy=True))
     return held_out, node_embeddings, query_embeddings
+
+
+# --------------------------------------------------------------------------
+# The per-query outcomes the paired bootstrap needs
+# --------------------------------------------------------------------------
+
+
+def test_every_rung_records_a_per_query_outcome_aligned_to_the_cell_panel(cell):
+    # M1B needed an amendment because no per-query outcome had been persisted
+    # anywhere and its bootstrap was not computable after the fact. M2B pays
+    # that cost up front, while the fit is running.
+    panel = cell["held_out_query_ids"]
+    assert len(panel) == cell["held_out_queries"]
+    for rung, fit in cell["rungs"].items():
+        assert len(fit["per_query_recall_at_5"]) == len(panel), rung
+
+
+def test_the_per_query_vector_reproduces_the_reported_recall(cell):
+    for rung, fit in cell["rungs"].items():
+        vector = fit["per_query_recall_at_5"]
+        assert sum(vector) / len(vector) == pytest.approx(
+            fit["metrics"]["recall@5"], abs=1e-9
+        ), rung
+
+
+def test_the_panel_is_written_once_and_is_the_same_list_for_every_rung(cell, tmp_path):
+    # The paired premise: one query id order, shared. Each rung's own rows file
+    # is checked against it rather than the cell's copy being trusted.
+    panel = cell["held_out_query_ids"]
+    for rung, fit in cell["rungs"].items():
+        rows = json.loads(
+            Path(fit["instrumentation"]["per_query_rows"]).read_text(encoding="utf-8")
+        )
+        assert rows["query_ids"] == panel, rung
+        assert [row["recall@5"] for row in rows["rows"]] == fit["per_query_recall_at_5"]
