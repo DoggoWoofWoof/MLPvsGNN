@@ -332,6 +332,110 @@ def test_an_unmeasured_dataset_does_not_drag_a_measured_one_into_a_guess():
 
 
 # --------------------------------------------------------------------------
+# M2, whose estimate lives in an artifact rather than in the launcher
+# --------------------------------------------------------------------------
+
+
+def m2_module(timeout_seconds: float = 24 * HOUR, manifest: str | None = None,
+              granularity: Any = "dataset") -> SimpleNamespace:
+    module = fake_module(timeout_seconds, granularity)
+    module.HOST_REPO_ROOT = REPO_ROOT
+    module.CONFIG = {
+        "compute": {
+            "manifest": manifest or "outputs/m2_qls_v2_freeze/compute_estimate.json"
+        }
+    }
+    return module
+
+
+def m2_jobs(*datasets: str) -> list[dict]:
+    return [{"dataset": name} for name in datasets]
+
+
+needs_m2_estimate = pytest.mark.skipif(
+    not (REPO_ROOT / "outputs/m2_qls_v2_freeze/compute_estimate.json").exists(),
+    reason="M2 compute estimate not present; run scripts/m2_compute_estimate.py",
+)
+
+
+@needs_m2_estimate
+def test_the_m2_unit_is_read_from_the_committed_estimate_not_restated():
+    """A number typed into the launcher drifts the first time the estimate is
+    re-run. This one has to move with the artifact or not exist."""
+
+    import json
+
+    estimate = json.loads(
+        (REPO_ROOT / "outputs/m2_qls_v2_freeze/compute_estimate.json").read_text(encoding="utf-8")
+    )
+    chains = estimate["wall_clock_with_per_dataset_parallelism"][spawn.M2_CHAIN_KEY]
+    units, why = spawn.measured_units("m2-qls-v2-freeze", m2_module(), m2_jobs("hotpotqa_clean"))
+    assert units is not None
+    assert units[0].seconds == pytest.approx(chains["hotpotqa_clean"] * 60.0)
+    assert "unit = one dataset" in why
+
+
+@needs_m2_estimate
+def test_the_m2_headline_fits_its_window_and_says_what_it_expects_to_spend():
+    report = spawn.gate_launch(
+        "m2-qls-v2-freeze",
+        m2_module(),
+        m2_jobs("squad_clean", "2wiki_clean", "hotpotqa_clean",
+                "metaqa", "webqsp", "musique_clean"),
+    )
+    assert report["gated"] is True
+    assert report["units"] == 6
+    assert report["verdict"] == "fits in one window"
+    assert report["largest_unit_hours"] < report["timeout_seconds"] / 3600
+    assert report["expected_spend_usd"] is not None
+
+
+@needs_m2_estimate
+def test_the_m2_unit_overstates_the_stage_it_gates_and_says_so():
+    """One call runs one stage, but the unit is the whole build+fit chain. That
+    is the safe direction, and it must be stated where the number is read."""
+
+    _, why = spawn.measured_units("m2-qls-v2-freeze", m2_module(), m2_jobs("hotpotqa_clean"))
+    assert "overstates either stage submitted alone" in why
+    assert "GPU rate" in why, "the CPU build stage is priced as GPU; do not let that pass silently"
+
+
+def test_an_m2_dataset_the_estimate_never_costed_is_ungated_not_guessed():
+    units, why = spawn.measured_units(
+        "m2-qls-v2-freeze", m2_module(), m2_jobs("crag_canonical")
+    )
+    assert units is None
+    assert "no estimated serial chain for crag_canonical" in why
+
+
+def test_a_missing_m2_estimate_is_ungated_rather_than_a_crash():
+    """The manifest is an output, and outputs/ is gitignored -- a fresh clone
+    has none. Ungated is the honest report; a traceback out of the gate is not."""
+
+    units, why = spawn.measured_units(
+        "m2-qls-v2-freeze",
+        m2_module(manifest="outputs/m2_qls_v2_freeze/no_such_estimate.json"),
+        m2_jobs("metaqa"),
+    )
+    assert units is None
+    assert "no readable M2 compute estimate" in why
+
+
+@needs_m2_estimate
+def test_an_m2_runner_that_stopped_declaring_dataset_resumption_is_costed_whole():
+    units, why = spawn.measured_units(
+        "m2-qls-v2-freeze", m2_module(granularity=_UNSET), m2_jobs("hotpotqa_clean", "metaqa")
+    )
+    assert len(units) == 1
+    assert "does not declare dataset-level resumption" in why
+
+
+def test_the_shipped_m2_runner_declares_dataset_resumption():
+    module = pytest.importorskip("scripts.modal_m2_qls_v2_freeze")
+    assert getattr(module, "RESUME_GRANULARITY", None) == "dataset"
+
+
+# --------------------------------------------------------------------------
 # Where the gate sits
 # --------------------------------------------------------------------------
 

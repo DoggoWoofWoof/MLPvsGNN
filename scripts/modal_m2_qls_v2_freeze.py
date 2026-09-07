@@ -277,6 +277,70 @@ def _jobs(datasets: list[str]) -> list[dict[str, Any]]:
     return jobs
 
 
+def _active_modal_profile() -> str | None:
+    """The profile this client will actually submit under, or None if unreadable.
+
+    MODAL_PROFILE wins where it is set; otherwise modal resolves the active
+    profile from ~/.modal.toml. None is returned rather than a guess, and the
+    caller refuses on it -- the wrong answer here sends a job to the wrong
+    workspace, which is precisely what this cannot be allowed to do quietly.
+    """
+
+    from_env = os.environ.get("MODAL_PROFILE")
+    if from_env:
+        return from_env
+    try:
+        from modal.config import _profile
+    except ImportError:  # pragma: no cover -- modal always ships this
+        return None
+    return _profile or None
+
+
+def check_execution_placement(datasets: list[str]) -> dict[str, Any]:
+    """Refuse to submit a dataset under a workspace the declaration did not place it on.
+
+    A Modal volume lives in exactly one workspace, so the profile this client
+    submits under decides which volume the container opens. The declaration
+    names one workspace per dataset and scripts/m2_data_placement.py verified a
+    training-capable slice on exactly those; submitting under any other profile
+    discards that verification entirely and fails inside a container that has
+    already started billing.
+
+    scripts/spawn_modal_jobs.py calls this by name if a launcher defines it, so
+    the check runs before the app is deployed and before anything is spawned.
+    """
+
+    placement = CONFIG["launch_authorization"].get("execution_placement")
+    if not placement:
+        raise SystemExit(
+            "configs/m2_qls_v2_freeze.yaml#launch_authorization.execution_placement is "
+            "missing; the declaration has to say which workspace each dataset runs on "
+            "before a job can be submitted to one"
+        )
+    profile = _active_modal_profile()
+    if not profile:
+        raise SystemExit(
+            "cannot determine the active Modal profile -- set MODAL_PROFILE explicitly "
+            "rather than letting the placement go unchecked"
+        )
+    undeclared = sorted(name for name in datasets if name not in placement)
+    if undeclared:
+        raise SystemExit(
+            f"execution_placement does not say where {undeclared} run; a dataset with no "
+            "declared workspace cannot be submitted to one"
+        )
+    misplaced = {name: placement[name] for name in datasets if placement[name] != profile}
+    if misplaced:
+        raise SystemExit(
+            f"REFUSED: submitting under profile {profile!r}, but the declaration places "
+            f"{misplaced} elsewhere. A Modal volume lives in one workspace, so this would "
+            "open a different volume than the one scripts/m2_data_placement.py verified. "
+            f"Run these under their own profile, or submit only the datasets placed on "
+            f"{profile!r}."
+        )
+    return {"profile": profile, "datasets": sorted(datasets)}
+
+
 def _smoke_scope(dataset: str, spec: dict[str, Any]) -> tuple[list[str], list[str], int]:
     """Regimes, arms and panel size for one declared smoke, checked against the matrix."""
 

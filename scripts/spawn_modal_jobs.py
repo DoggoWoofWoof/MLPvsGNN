@@ -356,6 +356,25 @@ def _collapse_without_resumption(
     )
 
 
+#: Where M2's committed estimate keeps its per-dataset serial chain: feature
+#: build plus every new fit on that dataset, in minutes.
+M2_CHAIN_KEY = "per_dataset_serial_chain_minutes_conservative"
+
+
+def _m2_chain_seconds(module: Any) -> dict[str, float]:
+    """Per-dataset chain seconds, read from the artifact the declaration names.
+
+    Read from the manifest rather than restated here so a re-run of
+    scripts/m2_compute_estimate.py cannot leave this gate quoting a number no
+    artifact supports -- the same binding the declaration's own gates use.
+    """
+
+    manifest = Path(module.HOST_REPO_ROOT) / module.CONFIG["compute"]["manifest"]
+    estimate = json.loads(manifest.read_text(encoding="utf-8"))
+    chains = estimate["wall_clock_with_per_dataset_parallelism"][M2_CHAIN_KEY]
+    return {dataset: float(minutes) * 60.0 for dataset, minutes in chains.items()}
+
+
 def measured_units(
     package: str, module: Any, jobs: list[dict[str, Any]]
 ) -> tuple[list[WorkUnit] | None, str]:
@@ -499,6 +518,27 @@ def measured_units(
             f"anchored to M0A execution 2's measured per-query latencies; {granularity}"
         )
 
+    if package == "m2-qls-v2-freeze":
+        try:
+            chains = _m2_chain_seconds(module)
+        except (OSError, KeyError, ValueError) as error:
+            return None, f"no readable M2 compute estimate ({error})"
+        unknown = sorted({job["dataset"] for job in jobs} - set(chains))
+        if unknown:
+            return None, f"no estimated serial chain for {', '.join(unknown)}"
+        # One dataset at one stage is one spawned call that writes its result
+        # once at the end, so a restart redoes that whole call.
+        units = [
+            WorkUnit(name=job["dataset"], seconds=chains[job["dataset"]]) for job in jobs
+        ]
+        units, granularity = _collapse_without_resumption(units, module, "dataset", "screen")
+        return units, (
+            f"{len(jobs)} dataset(s) at the declared per-dataset serial chain -- feature "
+            "build plus every new fit, so it overstates either stage submitted alone, and "
+            "the spend figure prices the CPU build stage at the GPU rate for the same "
+            f"reason; {granularity}"
+        )
+
     return None, f"no measured cost model for {package}"
 
 
@@ -595,6 +635,15 @@ def main() -> int:
     if unknown:
         raise SystemExit(f"Unregistered {args.package} datasets: {sorted(unknown)}")
 
+    # A launcher whose datasets are not all on one workspace declares which one
+    # each runs on, and checks it here -- before the app is deployed, before
+    # anything is spawned, and before a container opens the wrong volume.
+    # Absent on every package whose datasets share a workspace, which is most.
+    placement: dict[str, Any] | None = None
+    check_placement = getattr(module, "check_execution_placement", None)
+    if check_placement is not None:
+        placement = check_placement(requested)
+
     jobs = _expand(module, args.package, args.stage, requested)
     plan: dict[str, Any] | None = None
     if args.integrity_matrix is not None:
@@ -615,6 +664,7 @@ def main() -> int:
             "function": stages[args.stage],
             "datasets": requested,
             "jobs": len(jobs),
+            "placement": placement,
             "plan": plan,
             "budget": budget,
         }, indent=2))
@@ -628,6 +678,7 @@ def main() -> int:
         "function": stages[args.stage],
         "datasets": requested,
         "spawned": len(handles),
+        "placement": placement,
         "plan": plan,
         "budget": budget,
         "call_ids": [handle.object_id for handle in handles],

@@ -619,3 +619,84 @@ def test_the_declaration_names_this_launcher_and_its_registry_entry(declaration)
     assert "scripts/modal_m2_qls_v2_freeze.py" in prerequisite
     assert "scripts/spawn_modal_jobs.py" in prerequisite
     assert PACKAGE in prerequisite
+
+
+# --------------------------------------------------------------------------
+# Which workspace a job is submitted to
+# --------------------------------------------------------------------------
+#
+# A Modal volume lives in exactly one workspace, so the profile the client
+# submits under decides which volume the container opens. Amendment 6 declared
+# execution_placement and scripts/m2_data_placement.py verified a
+# training-capable slice on exactly those workspaces -- but nothing in the
+# submit path read that placement, so a launch under the wrong profile would
+# have discarded the whole verification and failed inside a billed container.
+
+
+def test_a_dataset_submitted_under_the_wrong_workspace_is_refused(monkeypatch) -> None:
+    placement = launcher.CONFIG["launch_authorization"]["execution_placement"]
+    elsewhere = next(
+        dataset for dataset, profile in placement.items()
+        if profile != placement[launcher.SMOKE_DATASET]
+    )
+    monkeypatch.setenv("MODAL_PROFILE", placement[launcher.SMOKE_DATASET])
+    with pytest.raises(SystemExit, match="REFUSED"):
+        launcher.check_execution_placement([launcher.SMOKE_DATASET, elsewhere])
+
+
+def test_the_declared_workspace_is_accepted_and_reported(monkeypatch) -> None:
+    placement = launcher.CONFIG["launch_authorization"]["execution_placement"]
+    profile = placement[launcher.SMOKE_DATASET]
+    here = sorted(name for name, where in placement.items() if where == profile)
+    monkeypatch.setenv("MODAL_PROFILE", profile)
+    report = launcher.check_execution_placement(here)
+    assert report == {"profile": profile, "datasets": here}
+
+
+def test_a_dataset_with_no_declared_workspace_is_refused(monkeypatch) -> None:
+    monkeypatch.setenv("MODAL_PROFILE", "extra_wNzonK")
+    with pytest.raises(SystemExit, match="does not say where"):
+        launcher.check_execution_placement(["crag_canonical"])
+
+
+def test_an_unreadable_profile_refuses_rather_than_guesses(monkeypatch) -> None:
+    """Defaulting to whatever profile happens to be active is how a job lands on
+    a workspace nobody verified."""
+
+    monkeypatch.delenv("MODAL_PROFILE", raising=False)
+    monkeypatch.setattr("modal.config._profile", "")
+    with pytest.raises(SystemExit, match="cannot determine the active Modal profile"):
+        launcher.check_execution_placement([launcher.SMOKE_DATASET])
+
+
+def test_the_env_var_wins_over_the_configured_profile(monkeypatch) -> None:
+    """MODAL_PROFILE is what the launch command sets, so it has to be what the
+    check reads -- otherwise the check passes on one profile and modal submits
+    under another."""
+
+    monkeypatch.setattr("modal.config._profile", "some_other_workspace")
+    monkeypatch.setenv("MODAL_PROFILE", "extra_wNzonK")
+    assert launcher._active_modal_profile() == "extra_wNzonK"
+
+
+def test_the_smoke_already_ran_where_the_placement_puts_its_dataset(declaration) -> None:
+    """Amendment 5 recorded the smoke on extra_wNzonK. If amendment 6's placement
+    disagreed, one of the two records would be wrong about what has happened."""
+
+    placement = declaration["launch_authorization"]["execution_placement"]
+    result = " ".join(declaration["launch_authorization"]["smoke_spec"]["result"].split())
+    assert placement[launcher.SMOKE_DATASET] in result
+
+
+def test_the_spawn_path_calls_the_placement_check_before_deploying_or_spawning() -> None:
+    """A check the submit path never calls protects nothing."""
+
+    import inspect
+
+    from scripts import spawn_modal_jobs
+
+    source = inspect.getsource(spawn_modal_jobs.main)
+    assert "check_execution_placement" in source
+    assert source.index("check_execution_placement") < source.index("deploy_app(")
+    assert source.index("check_execution_placement") < source.index(".spawn(")
+    assert '"placement": placement' in source, "the launch record must carry what it checked"
