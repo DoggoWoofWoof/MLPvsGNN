@@ -524,11 +524,49 @@ def _download(remote_path: str, local_path: Path) -> None:
             stream.write(chunk)
 
 
-def fetch(datasets: str = ",".join(CELLS)) -> list[dict[str, Any]]:
+def _check_fetched(local: Path, job: dict[str, Any], expect_source_commit: str | None) -> str:
+    """Say which submission the fetched artifact came from, and refuse a swap.
+
+    A container that overwrites an existing result on this volume can have the
+    write discarded at commit: it sees its own bytes, reports success, and the
+    old file survives. That happened to 2wiki_clean/R3 twice, and a read-back
+    inside the container cannot catch it -- the container's view is the one
+    thrown away. The only place the truth is visible is here.
+
+    The commit is REPORTED unconditionally and ENFORCED only when the caller
+    says which one it expects. Fetching is routine and often happens several
+    commits after a launch, so comparing against whatever HEAD is now would
+    refuse perfectly good artifacts; a caller that knows the launch commit can
+    pass it and get the hard check.
+    """
+
+    result = json.loads(local.read_text(encoding="utf-8"))
+    cell = f"{job['dataset']}/{job['regime']}"
+    if result.get("cell") != cell:
+        raise RuntimeError(f"{local} holds {result.get('cell')!r}, expected {cell!r}")
+    recorded = result.get("source_commit")
+    if expect_source_commit and recorded != expect_source_commit:
+        raise RuntimeError(
+            f"{cell}: the volume holds a result built at {recorded}, but the run being "
+            f"fetched was launched at {expect_source_commit}. The write did not land. "
+            f"Remove the stale file from the volume and rerun that cell; do NOT report "
+            f"this artifact, which is an earlier run's numbers wearing a fresh fetch."
+        )
+    return recorded
+
+
+def fetch(
+    datasets: str = ",".join(CELLS), expect_source_commit: str = ""
+) -> list[dict[str, Any]]:
     """Copy finished cell results down beside the declaration they answer.
 
     Separate from the spawn because the spawn is server-side and returns as soon
     as the calls are registered. Reads the volume; writes nothing to it.
+
+    Every row carries the commit its artifact was built at. Pass
+    ``expect_source_commit`` to make a mismatch an error rather than a line to
+    read: a write that the volume discarded leaves the previous run's numbers
+    in place, and nothing else downstream can tell the difference.
     """
 
     requested = [name.strip() for name in datasets.split(",") if name.strip()]
@@ -538,8 +576,9 @@ def fetch(datasets: str = ",".join(CELLS)) -> list[dict[str, Any]]:
         remote = f"{_output_root(job)}/{job['regime']}.json"
         local = local_root / f"{job['dataset']}_{job['regime']}.json"
         _download(remote, local)
+        recorded = _check_fetched(local, job, expect_source_commit or None)
         fetched.append({"dataset": job["dataset"], "cell": f"{job['dataset']}/{job['regime']}",
-                        "local": str(local)})
+                        "local": str(local), "source_commit": recorded})
     return fetched
 
 

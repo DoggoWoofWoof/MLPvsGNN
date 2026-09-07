@@ -13,7 +13,7 @@
 
 phase: M2C_S4_STRUCTURAL_CONDITIONING
 opened: 2026-09-07
-status: M2C_DECLARED_STAGE0_NOT_YET_RUN
+status: M2C_STAGE0_COMPLETE_STOP_STRUCTURAL_ADMISSION_CLOSED
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: an observed S4 development result, not a preregistered hypothesis
 
@@ -1084,9 +1084,9 @@ launch_authorization:
     archaeology_recorded: true             # earned 2026-09-07
     prior_evidence_audited: true           # earned 2026-09-07, M0A null recorded above
     residual_implemented_and_tested: true   # earned 2026-09-07, 31 tests in tests/test_m2c_structural_offset.py
-    stage_0_compute_record_filed: true   # docs/M2C_STAGE0_COMPUTE_RECORD.md     # blocked: see stage_0.where_it_can_run
-    stage_0_probe_run: false
-    stage_0_advance_gate_evaluated: false
+    stage_0_compute_record_filed: true      # earned 2026-09-07, docs/M2C_STAGE0_COMPUTE_RECORD.md
+    stage_0_probe_run: true                # earned 2026-09-08, four cells on Modal, outputs/m2c_s4_structural_conditioning/stage0/
+    stage_0_advance_gate_evaluated: true   # earned 2026-09-08, STOP_STRUCTURAL_M2C and ADMISSION_CLOSED, outputs/.../stage0_gate.json
     stage_1_authorised: false                # withdrawn from scope by this amendment
 
 # --------------------------------------------------------------------------

@@ -21,6 +21,7 @@ from __future__ import annotations
 import json
 import pathlib
 import re
+import subprocess
 import sys
 
 import pytest
@@ -40,8 +41,133 @@ BASELINE_JSON = (
     REPO_ROOT / "outputs" / "m2c_s4_structural_conditioning" / "m2b_baseline_table.json"
 )
 M2B_CONFIG_PATH = REPO_ROOT / "configs" / "m2b_semantic_minimality.yaml"
+STAGE0_ROOT = REPO_ROOT / "outputs" / "m2c_s4_structural_conditioning" / "stage0"
+STAGE0_GATE = REPO_ROOT / "outputs" / "m2c_s4_structural_conditioning" / "stage0_gate.json"
+STAGE0_REPORT = REPO_ROOT / "docs" / "M2C_STAGE0_REPORT.md"
 
 TOLERANCE_PP = 0.02
+
+#: Read from the declaration rather than typed, so the four cells cannot drift
+#: apart between the file that names them and the tests that check them.
+_STAGE_0_CELLS = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))["stage_0"]["cells"]
+DECLARED_CELLS = [
+    *_STAGE_0_CELLS["failure_cells"],
+    _STAGE_0_CELLS["passage_r3_control"],
+    _STAGE_0_CELLS["kb_r3_control"],
+]
+
+
+def _git(*args: str) -> str:
+    """Read-only git, or a skip. Never a silent pass.
+
+    The ordering guarantees below are the only durable form of "this was filed
+    before that", so a missing git is a reason to say the check could not run,
+    not a reason to let it look satisfied.
+    """
+
+    try:
+        finished = subprocess.run(
+            ["git", *args],
+            cwd=str(REPO_ROOT),
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except FileNotFoundError:  # pragma: no cover - depends on the machine
+        pytest.skip("git is not available; the history-ordering checks cannot run")
+    except subprocess.CalledProcessError as error:  # pragma: no cover
+        pytest.skip(f"git refused {args!r}: {error.stderr.strip()}")
+    return finished.stdout.strip()
+
+
+def _commits_touching(path: str) -> list[str]:
+    lines = _git("log", "--format=%H", "--", path).splitlines()
+    if not lines:
+        pytest.skip(f"{path} has no committed history yet")
+    return lines
+
+
+def _result_commits() -> list[str]:
+    """The commits the Stage-0 results were produced at, as they record it."""
+
+    commits = set()
+    for cell in DECLARED_CELLS:
+        result = STAGE0_ROOT / f"{cell.replace('/', '_')}.json"
+        if result.exists():
+            recorded = json.loads(result.read_text(encoding="utf-8")).get("source_commit")
+            if recorded:
+                commits.add(recorded)
+    return sorted(commits)
+
+
+def _is_ancestor(earlier: str, later: str) -> bool:
+    if earlier == later:
+        return True
+    try:
+        return (
+            subprocess.run(
+                ["git", "merge-base", "--is-ancestor", earlier, later],
+                cwd=str(REPO_ROOT),
+                capture_output=True,
+                check=False,
+            ).returncode
+            == 0
+        )
+    except FileNotFoundError:  # pragma: no cover - depends on the machine
+        pytest.skip("git is not available; the history-ordering checks cannot run")
+
+
+def _gate_as_of(commit: str) -> dict | None:
+    """The advance gate as the declaration held it at ``commit``.
+
+    Deliberately not routed through :func:`_git`: a commit where the file did
+    not yet exist, or held something this cannot parse, is a normal answer here
+    ("no gate then") and must return ``None`` rather than skip the caller. Only
+    a missing git is a reason to skip.
+    """
+
+    relative = CONFIG_PATH.relative_to(REPO_ROOT).as_posix()
+    try:
+        finished = subprocess.run(
+            ["git", "show", f"{commit}:{relative}"],
+            cwd=str(REPO_ROOT),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError:  # pragma: no cover - depends on the machine
+        pytest.skip("git is not available; the history-ordering checks cannot run")
+    if finished.returncode != 0:  # pragma: no cover - the file predates that commit
+        return None
+    try:
+        return yaml.safe_load(finished.stdout)["stage_0"]["advance_gate"]
+    except (KeyError, TypeError, yaml.YAMLError):  # pragma: no cover
+        return None
+
+
+@pytest.fixture(scope="module")
+def when_the_gate_took_its_current_form() -> tuple[str | None, list[str]]:
+    """The oldest commit whose gate is byte-for-byte today's, and the commits
+    the results were built at.
+
+    The gate block rather than the whole file, because the declaration is
+    legitimately edited after a run -- flipping an earned gate, recording a
+    status -- and a whole-file check would call that tampering. What must not
+    move is the THRESHOLDS, so those are what is tracked: walking the file's
+    history oldest-first and stopping at the first commit whose gate already
+    equals the current one dates the version being applied today. A threshold
+    edited after a result existed moves that date forward past the result and
+    fails the check below.
+    """
+
+    current = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))["stage_0"][
+        "advance_gate"
+    ]
+    history = list(reversed(_commits_touching(CONFIG_PATH.relative_to(REPO_ROOT).as_posix())))
+    for commit in history:
+        if _gate_as_of(commit) == current:
+            return commit, _result_commits()
+    return None, _result_commits()
 
 
 @pytest.fixture(scope="module")
@@ -681,9 +807,6 @@ def test_the_stage_0_gate_is_filed_before_results_and_can_fail(declaration):
     gate = declaration["stage_0"]["advance_gate"]
     assert gate["filed_before_modal_results"] is True
     assert "not a threshold" in gate["thresholds_are_not_adjustable"]
-    assert declaration["launch_authorization"]["gates"]["stage_0_probe_run"] is False, (
-        "the gate must be filed while the probe has not yet run"
-    )
 
     assert "+0.25pp" in gate["effectiveness_condition"]
     assert "+2.0pp" in gate["effectiveness_condition"]
@@ -693,6 +816,27 @@ def test_the_stage_0_gate_is_filed_before_results_and_can_fail(declaration):
     assert "AND" in gate["all_conditions_required"]
     assert "Do NOT train S4-STRUCT-TRANSFORM" in gate["if_the_gate_fails"]
     assert "Code that runs is not evidence" in gate["do_not_train_a_transform_on_noise"]
+
+
+def test_the_gate_has_not_been_touched_since_it_was_filed(when_the_gate_took_its_current_form):
+    """The claim "filed before results" used to be checked by asserting the
+    probe had not run yet. That check expired the moment it did.
+
+    Its durable form is history. The gate being applied today must already have
+    said what it says now at a commit that precedes every result, so that no
+    threshold can have been softened once a number was in hand. The YAML's own
+    ``filed_before_modal_results: true`` cannot establish this -- it is a claim
+    inside the file it is making a claim about.
+    """
+
+    filed_at, result_commits = when_the_gate_took_its_current_form
+    assert result_commits, "no Stage-0 result records a source commit"
+    assert filed_at is not None, "no commit in history holds the gate as it stands now"
+    for produced_at in result_commits:
+        assert _is_ancestor(filed_at, produced_at), (
+            f"the gate reached its current form in {filed_at[:8]}, which is not an "
+            f"ancestor of {produced_at[:8]} -- a threshold moved after a result existed"
+        )
 
 
 def test_stage_1_is_gated_on_stage_0_and_stays_at_one_seed(declaration):
@@ -767,6 +911,9 @@ def test_zero_parameter_arms_must_record_that_they_are_zero(declaration):
 
 
 def test_the_gates_that_are_earned_have_evidence_on_disk(declaration):
+    """A gate is a claim that something happened. Each earned one has to point
+    at the artifact that happened, and each unearned one at nothing."""
+
     gates = declaration["launch_authorization"]["gates"]
 
     assert gates["baseline_table_exported"] is True and BASELINE_JSON.exists()
@@ -774,18 +921,56 @@ def test_the_gates_that_are_earned_have_evidence_on_disk(declaration):
     assert (REPO_ROOT / "src" / "mp_retrieval" / "m2c_structural_offset.py").exists()
     assert (REPO_ROOT / "tests" / "test_m2c_structural_offset.py").exists()
 
-    for unearned in (
-        "stage_0_probe_run",
-        "stage_0_advance_gate_evaluated",
-        "stage_1_authorised",
-    ):
-        assert gates[unearned] is False, f"{unearned} claims to be earned but nothing ran"
+    assert gates["stage_0_probe_run"] is True
+    for cell in DECLARED_CELLS:
+        result = STAGE0_ROOT / f"{cell.replace('/', '_')}.json"
+        assert result.exists(), f"{cell} claims to have run and has no result"
+        payload = json.loads(result.read_text(encoding="utf-8"))
+        assert payload["status"] == "M2C_STAGE0_COMPLETE"
+        assert payload["trained_anything"] is False
+        assert payload["test_split_read"] is False
+
+    assert gates["stage_0_advance_gate_evaluated"] is True
+    assert STAGE0_GATE.exists()
+
+    assert gates["stage_1_authorised"] is False, (
+        "Stage 1 claims to be authorised; the amendment withdrew it from scope "
+        "and the Stage-0 verdict did not return it"
+    )
 
 
 def test_the_status_matches_the_gates(declaration):
     gates = declaration["launch_authorization"]["gates"]
-    assert declaration["status"] == "M2C_DECLARED_STAGE0_NOT_YET_RUN"
-    assert gates["stage_0_probe_run"] is False, "the status says Stage 0 has not run"
+    assert declaration["status"] == "M2C_STAGE0_COMPLETE_STOP_STRUCTURAL_ADMISSION_CLOSED"
+    assert gates["stage_0_probe_run"] is True, "the status says Stage 0 has run"
+    assert gates["stage_0_advance_gate_evaluated"] is True
+
+    verdict = json.loads(STAGE0_GATE.read_text(encoding="utf-8"))
+    assert verdict["ranking_verdict"] == "STOP_STRUCTURAL_M2C"
+    assert verdict["admission_verdict"] == "ADMISSION_CLOSED"
+    assert gates["stage_1_authorised"] is False, (
+        "the ranking verdict is STOP; nothing may have opened Stage 1"
+    )
+
+
+def test_the_stage_0_report_exists_and_carries_both_verdicts():
+    """The declaration requires a report with ten items and two independent
+    verdicts. A verdict that lives only in a JSON file nobody reads is not the
+    report the stop condition asked for."""
+
+    report = STAGE0_REPORT.read_text(encoding="utf-8")
+    assert "STOP_STRUCTURAL_M2C" in report
+    assert "ADMISSION_CLOSED" in report
+    assert "STOP_FOR_REVIEW" in report
+    assert "do NOT train `S4-STRUCT-TRANSFORM`" in report
+    # Line-break-insensitive: the report is prose and rewraps.
+    condensed = " ".join(report.split())
+    assert "Advancement is not justified**, so no Stage-1 matrix is proposed" in (
+        condensed
+    ), (
+        "the declaration asks for a Stage-1 proposal only if advancement is "
+        "justified; the report has to say it is withholding one, not go quiet"
+    )
 
 
 def test_the_expensive_things_are_not_authorised(declaration):
@@ -978,13 +1163,39 @@ def test_every_file_the_protocol_links_to_exists(protocol):
 
 
 def test_the_compute_record_is_filed_before_the_run_it_prices(declaration, compute_record):
+    """Checked in history rather than by the flag it used to read.
+
+    The original form asserted the probe had not run yet, which stopped meaning
+    anything once it had. What has to stay true is the ordering: the record was
+    committed before the commit the results were produced at, so it is a
+    prediction and not a reconstruction.
+    """
+
     gates = declaration["launch_authorization"]["gates"]
     assert gates["stage_0_compute_record_filed"] is True
-    assert gates["stage_0_probe_run"] is False, (
-        "a record that is filed after the run it prices is not a prediction"
-    )
     assert compute_record["status"] == "FILED_BEFORE_LAUNCH"
     assert COMPUTE_RECORD_DOC.exists()
+
+    # The committed document, not the JSON beside it: ``outputs/`` is gitignored,
+    # so the JSON has no history to order against and a check on it could only
+    # ever skip. The document is what the launch gate cited.
+    for edit in _commits_touching(COMPUTE_RECORD_DOC.relative_to(REPO_ROOT).as_posix()):
+        for produced_at in _result_commits():
+            assert _is_ancestor(edit, produced_at), (
+                f"the compute record was edited in {edit[:8]}, which is not an "
+                f"ancestor of {produced_at[:8]} -- it prices a run that already existed"
+            )
+
+
+def test_the_builder_refuses_to_regenerate_the_record_after_the_run():
+    """Regenerating it would silently replace a prediction with a hindsight
+    number, and the launch gate was checked against the prediction."""
+
+    source = (REPO_ROOT / "scripts" / "m2c_stage0_compute_record.py").read_text(
+        encoding="utf-8"
+    )
+    assert 'declaration["status"] != "M2C_DECLARED_STAGE0_NOT_YET_RUN"' in source
+    assert "Do not regenerate it." in source
 
 
 def test_the_record_prices_the_declared_workload_and_not_something_else(

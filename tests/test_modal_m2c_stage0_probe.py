@@ -22,6 +22,7 @@ kill every remote job at startup.
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path, PurePosixPath
 
@@ -441,3 +442,82 @@ def test_a_job_larger_than_its_window_would_be_refused(jobs, record, monkeypatch
     monkeypatch.setattr(launcher, "compute_record", lambda: oversized)
     with pytest.raises(SystemExit, match="REFUSED"):
         spawn_modal_jobs.gate_launch(PACKAGE, launcher, jobs)
+
+
+# ---------------------------------------------------------------------------
+# The volume can discard a write and report success
+# ---------------------------------------------------------------------------
+
+
+def _artifact(tmp_path: Path, **overrides) -> Path:
+    payload = {"cell": "2wiki_clean/R3", "source_commit": "a" * 40, **overrides}
+    path = tmp_path / "R3.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return path
+
+
+def test_a_fetched_artifact_reports_the_commit_it_was_built_at(tmp_path) -> None:
+    """Reported on every fetch, because it is the only thing that distinguishes
+    a rerun's result from the result it was supposed to replace."""
+
+    job = {"dataset": "2wiki_clean", "regime": "R3"}
+    assert launcher._check_fetched(_artifact(tmp_path), job, None) == "a" * 40
+
+
+def test_a_result_the_volume_kept_from_an_earlier_run_is_refused(tmp_path) -> None:
+    """Measured, not hypothetical. A container that overwrites an existing file
+    on this volume can have the write discarded at commit: it sees its own
+    bytes, reports M2C_STAGE0_COMPLETE, and the old file survives. It happened
+    twice to 2wiki_clean/R3 and was caught only because the stale artifact
+    recorded a pre-fix commit.
+
+    A read-back inside the container cannot catch it -- the container's view is
+    the one thrown away -- so the check has to live host-side, here.
+    """
+
+    job = {"dataset": "2wiki_clean", "regime": "R3"}
+    with pytest.raises(RuntimeError, match="did not land"):
+        launcher._check_fetched(_artifact(tmp_path), job, "b" * 40)
+
+
+def test_a_fetch_that_states_no_expectation_does_not_refuse_an_old_commit(tmp_path) -> None:
+    """The first version of this guard compared the artifact against whatever
+    HEAD happened to be at fetch time.
+
+    That refuses every good artifact as soon as one more commit lands, which is
+    always, because fetching is routine and happens several commits after a
+    launch. So an artifact built at a commit that is demonstrably not HEAD has
+    to come back without complaint when the caller states no expectation; the
+    hard check belongs to the caller that knows which run it is fetching.
+    """
+
+    head = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    not_head = "a" * 40
+    assert not_head != head, "the artifact has to be built at something other than HEAD"
+
+    job = {"dataset": "2wiki_clean", "regime": "R3"}
+    fetched = launcher._check_fetched(_artifact(tmp_path, source_commit=not_head), job, None)
+    assert fetched == not_head
+
+
+def test_an_artifact_for_the_wrong_cell_is_refused_whatever_the_caller_expects(
+    tmp_path,
+) -> None:
+    job = {"dataset": "2wiki_clean", "regime": "R3"}
+    with pytest.raises(RuntimeError, match="expected '2wiki_clean/R3'"):
+        launcher._check_fetched(_artifact(tmp_path, cell="metaqa/R3"), job, None)
+
+
+def test_the_runner_clears_the_output_path_before_writing_it() -> None:
+    """The other half of the same defect, fixed where it originates."""
+
+    source = (REPO_ROOT / "scripts" / "run_m2c_stage0_probe.py").read_text(encoding="utf-8")
+    unlink = source.index("args.output.unlink(missing_ok=True)")
+    write = source.index("args.output.write_text(")
+    assert unlink < write, "the path must be removed before it is rewritten"

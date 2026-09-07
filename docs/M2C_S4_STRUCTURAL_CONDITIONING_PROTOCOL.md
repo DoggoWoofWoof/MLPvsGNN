@@ -3,7 +3,10 @@
 Filed 2026-09-07, before any M2C arm is fit. The machine-readable declaration is
 [`configs/m2c_s4_structural_conditioning.yaml`](../configs/m2c_s4_structural_conditioning.yaml);
 this document is the argument behind it. Status:
-`M2C_DECLARED_STAGE0_NOT_YET_RUN`.
+`M2C_STAGE0_COMPLETE_STOP_STRUCTURAL_ADMISSION_CLOSED` — Stage 0 ran on
+2026-09-08 and returned `STOP_STRUCTURAL_M2C` and `ADMISSION_CLOSED`; the
+results are in [`M2C_STAGE0_REPORT.md`](M2C_STAGE0_REPORT.md). Everything below
+was written before those results and is left as it was.
 
 **This is a post-hoc development branch**, opened because of an observed S4
 result rather than from a preregistered hypothesis, and labelled as such in

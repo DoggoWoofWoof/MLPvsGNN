@@ -641,6 +641,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         },
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    # Unlink first, then create. Measured behaviour on the result volume, not a
+    # precaution: a rerun of a cell whose result file already existed had its
+    # write silently discarded at commit while brand-new files from the same
+    # batch persisted. The container saw the new bytes, reported success, and
+    # the volume kept the old ones. For a probe that is rerun after a bug fix
+    # that is the worst possible failure -- the stale numbers come back looking
+    # fresh -- so the path is removed before it is written.
+    args.output.unlink(missing_ok=True)
     args.output.write_text(json.dumps(result, indent=2), encoding="utf-8")
     return result
 

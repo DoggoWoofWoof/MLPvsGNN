@@ -137,10 +137,15 @@ def _panel(rows: list[dict], dataset: str, regime: str) -> int:
 def build() -> dict:
     declaration = yaml.safe_load(DECLARATION.read_text(encoding="utf-8"))
     stage = declaration["stage_0"]
+    # The record is a PREDICTION. Once Stage 0 has run the declaration's status
+    # changes, and this refuses rather than regenerating: a cost record rebuilt
+    # against the run it was supposed to price is not a prediction any more, and
+    # the filed one is what the launch gate was checked against.
     if declaration["status"] != "M2C_DECLARED_STAGE0_NOT_YET_RUN":
         raise RuntimeError(
             f"unexpected declaration status {declaration['status']!r}; this record "
-            "prices a Stage-0 probe that has not run"
+            "prices a Stage-0 probe that has not run, and the one on disk was filed "
+            "before the run. Do not regenerate it."
         )
     if stage["trains_nothing"] is not True or stage["reads_test_split"] is not False:
         raise RuntimeError("this record prices a zero-training, no-test-split probe only")
