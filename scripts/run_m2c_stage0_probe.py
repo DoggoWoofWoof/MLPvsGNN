@@ -113,12 +113,30 @@ def _mean_metrics(rows: list[dict[str, float]]) -> dict[str, float]:
     }
 
 
-def _load_family_csr(path: Path, num_nodes: int) -> tuple[np.ndarray, np.ndarray]:
+def _load_family_csr(path: Path, num_nodes: int) -> tuple[np.ndarray, np.ndarray, bool]:
+    """One provenance family, symmetrised before anything reads it.
+
+    Symmetrised because M0A and M1A both symmetrise these graphs before use,
+    and for M0A's stated reason: the family graphs are stored asymmetric, and
+    choosing an orientation is a choice a probe is not entitled to make. It
+    matters twice here. The +64 admission arms have to expand over the same
+    adjacency A64 expanded over or they are not budget-matched to it; and the
+    directional scores have to be computed over the same adjacency M0A's null
+    was measured on, or the comparison against that null compares two graphs
+    as much as two mechanisms.
+
+    ``_m1a._undirected`` rather than a local copy: it is the exact function M2
+    applied to this family when it built the R3 cell masters this probe reads.
+    """
+
     edge_index, stored_nodes = graph_payload(path)
     if int(stored_nodes) != int(num_nodes):
         raise ValueError(f"{path} declares {stored_nodes} nodes, dataset has {num_nodes}")
     rowptr, col, _ = edge_index_to_csr(torch.from_numpy(edge_index), num_nodes)
-    return np.asarray(rowptr, dtype=np.int64), np.asarray(col, dtype=np.int64)
+    rowptr, col, was_symmetric = _m1a._undirected(
+        np.asarray(rowptr, dtype=np.int64), np.asarray(col, dtype=np.int64), num_nodes
+    )
+    return rowptr, col, bool(was_symmetric)
 
 
 def _residual_vectors(
@@ -173,8 +191,8 @@ def _admission_diagnostic(
     num_nodes: int,
     budget: ExpansionBudget,
     cap: int,
-    mainline_family: str = "baseline_a_simple",
-    family_edges: int | None = None,
+    mainline_family: str,
+    stored_was_symmetric: bool,
 ) -> dict[str, Any]:
     """A64 against the two parameter-free residual admissions, at one budget.
 
@@ -258,21 +276,21 @@ def _admission_diagnostic(
     return {
         "queries": len(subset),
         "budget": budget.graph_expansion_cap,
-        # Which graph all three arms expanded over. A64 is the incumbent blind
-        # admission, so the arm has to run on the topology the pipeline itself
-        # admits from -- the dataset's own mainline CSR, not a provenance view
-        # selected here. Recorded rather than assumed, because the provenance
-        # RANKING result beside it is only interpretable against this one if the
-        # graph each ran on is stated. Disagreement is reported, not raised:
-        # which family the mainline corresponds to is a fact about the frozen
-        # build, and a probe is the wrong place to relitigate it.
+        # Which graph all three arms expanded over, stated rather than implied.
+        # A64 is the incumbent blind admission and it is defined on ONE graph:
+        # the symmetrised mainline provenance family, which is also the family
+        # M2 recorded in the R3 cell master's build key. Running the residual
+        # arms on anything else would make them differ from A64 in two things
+        # at once -- the scoring rule and the adjacency -- and the diagnostic
+        # exists to isolate the first.
         "graph": {
-            "source": "the dataset's own mainline CSR",
+            "family": mainline_family,
             "edges": int(col.size),
-            "declared_equivalent_family": mainline_family,
-            "family_edges": family_edges,
-            "edge_counts_agree": (
-                None if family_edges is None else int(col.size) == int(family_edges)
+            "symmetrised": True,
+            "stored_already_symmetric": bool(stored_was_symmetric),
+            "why": (
+                "the family A64 is defined on, symmetrised the way M0A and M1A "
+                "symmetrise it, so the arms differ only in how the frontier is scored"
             ),
         },
         "why_64_only": (
@@ -371,7 +389,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         regime=args.regime,
         master_blocks=master_blocks,
         queries=widened,
-        query_count=len(widened),
+        # The whole dataset's query count, not the panel's. The store is
+        # indexed by ``query.query_index``, which is a position in the dataset's
+        # query array and not in the split -- sizing it to the split makes every
+        # query past the split's length an IndexError.
+        query_count=len(dataset.queries),
         num_nodes=int(dataset.num_nodes),
     )
 
@@ -391,16 +413,34 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     )
     model.eval()
 
-    families = {
+    loaded = {
         view: _load_family_csr(
             args.edge_provenance_root / family / "graph.pt", int(dataset.num_nodes)
         )
         for view, family in PROVENANCE_FAMILIES.items()
     }
-
-    family_edge_counts = {
-        PROVENANCE_FAMILIES[view]: int(col.size) for view, (_rowptr, col) in families.items()
+    families = {view: (rowptr, col) for view, (rowptr, col, _sym) in loaded.items()}
+    stored_symmetry = {
+        PROVENANCE_FAMILIES[view]: sym for view, (_r, _c, sym) in loaded.items()
     }
+
+    # A64's own graph. It is the mainline provenance family -- the same value
+    # M2 recorded in this cell's build key -- and it must be loaded here even
+    # though G_STRUCT happens to name the same family today, because the
+    # diagnostic's correctness depends on the A64 identity and not on that
+    # coincidence continuing to hold.
+    if args.a64_mainline_family not in stored_symmetry:
+        raise ValueError(
+            f"the mainline family {args.a64_mainline_family!r} is not among the loaded "
+            f"provenance views {sorted(stored_symmetry)}; the +64 diagnostic cannot "
+            "expand over a graph it did not load"
+        )
+    mainline_view = next(
+        view
+        for view, family in PROVENANCE_FAMILIES.items()
+        if family == args.a64_mainline_family
+    )
+    a64_rowptr, a64_col = families[mainline_view]
 
     node_array = np.asarray(dataset.node_array, dtype=np.float64)
     query_array = np.asarray(dataset.query_array, dtype=np.float64)
@@ -477,15 +517,18 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                         ("S4_plus_direction_rrf", residual_name, view), []
                     ).append(_metrics(offset.rank_positions(fused, pool), relevant))
 
-                    # The load-bearing diagnostic. Coverage-aware: an uncovered
-                    # candidate has no direction to compare, so it enters at the
-                    # value the ranking would give it, not at a fabricated one.
+                    # The load-bearing diagnostic. The coverage mask goes in
+                    # beside the scores rather than folded into them: an
+                    # uncovered candidate has no direction to compare, and
+                    # masking it to a sentinel first made a comparison between
+                    # two uncovered candidates come out as -inf minus -inf.
                     margin = offset.error_conditioned_margin(
                         query.query_id,
                         s4_scores,
-                        np.where(direction.covered, signal, -np.inf),
+                        signal,
                         pool,
                         relevant,
+                        covered=direction.covered,
                     )
                     if margin is not None:
                         margins.setdefault((residual_name, view), []).append(margin)
@@ -520,17 +563,18 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         panel,
         node_array=node_array,
         query_array=query_array,
-        rowptr=np.asarray(dataset.rowptr, dtype=np.int64),
-        col=np.asarray(dataset.col, dtype=np.int64),
+        rowptr=a64_rowptr,
+        col=a64_col,
         num_nodes=int(dataset.num_nodes),
-        budget=ExpansionBudget(
+        # A64's own budget object, built by the function that defines it, so
+        # the control cannot drift from the incumbent by a constant typed here.
+        budget=_m1a._a64_budget(
             per_seed_cap=args.per_seed_cap,
-            graph_expansion_cap=args.admission_budget,
             neighbour_scan_cap_per_seed=args.neighbour_scan_cap_per_seed,
         ),
         cap=args.admission_cap,
         mainline_family=args.a64_mainline_family,
-        family_edges=family_edge_counts.get(args.a64_mainline_family),
+        stored_was_symmetric=stored_symmetry[args.a64_mainline_family],
     )
 
     result: dict[str, Any] = {
@@ -618,12 +662,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--holdout-fraction", type=float, default=0.2)
     parser.add_argument("--per-seed-cap", type=int, default=16)
     parser.add_argument("--neighbour-scan-cap-per-seed", type=int, default=4096)
-    parser.add_argument("--a64-mainline-family", default="baseline_a_simple")
+    # The family A64 is defined on, and the value M2 recorded in the R3 cell
+    # master's build key. Imported, not typed: a different string here does not
+    # merely mislabel the arm, it makes the sealed master refuse to load.
+    parser.add_argument("--a64-mainline-family", default=_m1a.MAINLINE_FAMILY)
     parser.add_argument("--dropout", type=float, default=0.2)
     parser.add_argument("--temperature", type=float, default=0.07)
     parser.add_argument("--panel-cap", type=int, default=0)
     parser.add_argument("--admission-cap", type=int, default=2000)
-    parser.add_argument("--admission-budget", type=int, default=64)
     parser.add_argument("--source-commit", default=None)
     return parser
 

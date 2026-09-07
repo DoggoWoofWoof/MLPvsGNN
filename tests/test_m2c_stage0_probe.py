@@ -177,6 +177,8 @@ def admission_fixture(rng):
             per_seed_cap=16, graph_expansion_cap=64, neighbour_scan_cap_per_seed=4096
         ),
         "cap": 0,
+        "mainline_family": "structural_only",
+        "stored_was_symmetric": False,
     }
 
 
@@ -238,6 +240,88 @@ def test_relevant_admissions_are_counted_against_the_query_own_golds(admission_f
         assert value <= result["unique_admitted_nodes"][arm] * len(
             admission_fixture["panel"]
         )
+
+
+def test_the_diagnostic_states_the_graph_all_three_arms_expanded_over(admission_fixture):
+    """A64 is defined on ONE graph. Running the residual arms on another would
+    make them differ from the control in the adjacency as well as the scoring
+    rule, and the scoring rule is the whole variable."""
+
+    graph = probe._admission_diagnostic(**admission_fixture)["graph"]
+    assert graph["family"] == "structural_only"
+    assert graph["symmetrised"] is True
+    assert graph["stored_already_symmetric"] is False
+
+
+# ---------------------------------------------------------------------------
+# The contract with the sealed artifacts
+# ---------------------------------------------------------------------------
+
+
+SOURCE = (REPO_ROOT / "scripts" / "run_m2c_stage0_probe.py").read_text(encoding="utf-8")
+
+
+def test_the_mainline_family_is_a64s_own_and_is_not_typed_here():
+    """The value M2 recorded in the R3 cell master's build key.
+
+    A wrong string here does not merely mislabel an arm: ``load_cell_under_
+    contract`` compares this field against the persisted build key and refuses
+    the master outright. The first Stage-0 submission died on exactly that,
+    with ``['a64_mainline_family'] differ`` on both R3 cells.
+    """
+
+    default = next(
+        action.default
+        for action in probe.build_parser()._actions
+        if action.dest == "a64_mainline_family"
+    )
+    assert default == probe._m1a.MAINLINE_FAMILY == "structural_only"
+    assert '"baseline_a_simple"' not in SOURCE.split("build_parser")[1]
+
+
+def test_the_admission_budget_is_a64s_constant_and_not_a_flag():
+    """64 is not a choice this probe gets to make -- it is what makes the
+    comparison budget-matched. A flag beside it could only disagree."""
+
+    dests = {action.dest for action in probe.build_parser()._actions}
+    assert "admission_budget" not in dests
+    assert "_m1a._a64_budget(" in SOURCE
+    assert probe._m1a._a64_budget(per_seed_cap=16, neighbour_scan_cap_per_seed=4096) == (
+        ExpansionBudget(per_seed_cap=16, graph_expansion_cap=64, neighbour_scan_cap_per_seed=4096)
+    )
+
+
+def test_the_feature_store_is_sized_by_the_dataset_not_by_the_panel():
+    """``context_feature_store`` indexes by ``query.query_index``, which is a
+    position in the dataset's query array and not in the split. Sizing it to
+    the panel made every query past the split length an IndexError, which is
+    how the first squad_clean submission died."""
+
+    assert "query_count=len(dataset.queries)" in SOURCE
+    assert "query_count=len(widened)" not in SOURCE
+
+
+def test_a_family_graph_is_symmetrised_before_anything_reads_it(tmp_path):
+    """Stored asymmetric; choosing an orientation is not a probe's call.
+
+    It matters twice: the admission arms must expand over the adjacency A64
+    expanded over, and the directional scores must be computed over the
+    adjacency M0A's null was measured on.
+    """
+
+    path = tmp_path / "graph.pt"
+    torch.save(
+        {"edge_index": torch.tensor([[0, 1, 2], [1, 2, 3]]), "num_nodes": 4}, path
+    )
+    rowptr, col, was_symmetric = probe._load_family_csr(path, 4)
+
+    assert was_symmetric is False, "the fixture is deliberately one-directional"
+    pairs = {
+        (source, int(target))
+        for source in range(4)
+        for target in col[rowptr[source] : rowptr[source + 1]]
+    }
+    assert pairs == {(0, 1), (1, 0), (1, 2), (2, 1), (2, 3), (3, 2)}
 
 
 def test_the_provenance_views_resolve_to_the_audited_families():

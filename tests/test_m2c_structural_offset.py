@@ -465,8 +465,13 @@ def test_the_diagnostic_cannot_change_a_direction_it_is_given(rng):
     mask_a = np.array([0, 0, 1, 0, 0, 1, 0, 0], dtype=bool)
     mask_b = np.array([1, 0, 0, 0, 1, 0, 0, 0], dtype=bool)
 
-    first = offset.error_conditioned_margin("q", model, directions, node_ids, mask_a)
-    second = offset.error_conditioned_margin("q", model, directions, node_ids, mask_b)
+    covered = np.ones(8, dtype=bool)
+    first = offset.error_conditioned_margin(
+        "q", model, directions, node_ids, mask_a, covered=covered
+    )
+    second = offset.error_conditioned_margin(
+        "q", model, directions, node_ids, mask_b, covered=covered
+    )
 
     for result in (first, second):
         if result is not None:
@@ -613,7 +618,12 @@ def test_a_query_s4_already_gets_right_is_not_in_the_error_population():
     node_ids = np.arange(4)
     model = np.array([0.9, 0.1, 0.2, 0.3])
     relevant = np.array([True, False, False, False])
-    assert offset.error_conditioned_margin("q", model, np.zeros(4), node_ids, relevant) is None
+    assert (
+        offset.error_conditioned_margin(
+            "q", model, np.zeros(4), node_ids, relevant, covered=np.ones(4, dtype=bool)
+        )
+        is None
+    )
 
 
 def test_a_query_with_no_relevant_candidate_scored_is_excluded():
@@ -622,7 +632,12 @@ def test_a_query_with_no_relevant_candidate_scored_is_excluded():
     node_ids = np.arange(4)
     model = np.array([0.9, 0.1, 0.2, 0.3])
     relevant = np.zeros(4, dtype=bool)
-    assert offset.error_conditioned_margin("q", model, np.zeros(4), node_ids, relevant) is None
+    assert (
+        offset.error_conditioned_margin(
+            "q", model, np.zeros(4), node_ids, relevant, covered=np.ones(4, dtype=bool)
+        )
+        is None
+    )
 
 
 def test_the_margin_compares_the_best_relevant_against_s4s_top_mistake():
@@ -631,7 +646,9 @@ def test_the_margin_compares_the_best_relevant_against_s4s_top_mistake():
     directions = np.array([-0.5, 0.1, 0.7, 0.2, 0.0])  # index 2 is best by direction
     relevant = np.array([False, False, True, True, False])
 
-    result = offset.error_conditioned_margin("q7", model, directions, node_ids, relevant)
+    result = offset.error_conditioned_margin(
+        "q7", model, directions, node_ids, relevant, covered=np.ones(5, dtype=bool)
+    )
     assert result is not None
     assert result.wrong_index == 0, "S4's top-ranked candidate is the wrong one"
     assert result.relevant_index == 2, "the best relevant BY DIRECTION"
@@ -653,7 +670,7 @@ def test_the_strata_are_the_declared_bands():
         mask = relevant.copy()
         mask[position] = True
         result = offset.error_conditioned_margin(
-            "q", model, np.zeros(30), node_ids, mask
+            "q", model, np.zeros(30), node_ids, mask, covered=np.ones(30, dtype=bool)
         )
         assert result is not None
         assert result.stratum == expected, (position, result.first_relevant_rank)
@@ -665,8 +682,11 @@ def test_summarising_an_empty_population_reports_nothing_rather_than_zero():
 
     summary = offset.summarise_margins([])
     assert summary["queries"] == 0
+    assert summary["measurable"] == 0
+    assert summary["fraction_of_the_error_population_measurable"] is None
     assert summary["fraction_positive"] is None
     assert summary["mean_margin"] is None
+    assert summary["median_margin"] is None
 
 
 def test_the_summary_reports_the_fraction_and_the_strata():
@@ -677,18 +697,149 @@ def test_the_summary_reports_the_fraction_and_the_strata():
         directions = np.array([0.0, direction, 0.0, 0.0])
         relevant = np.array([False, True, False, False])
         result = offset.error_conditioned_margin(
-            f"q{index}", model, directions, node_ids, relevant
+            f"q{index}", model, directions, node_ids, relevant, covered=np.ones(4, dtype=bool)
         )
         assert result is not None and np.sign(result.margin) == sign
         margins.append(result)
 
     summary = offset.summarise_margins(margins)
     assert summary["queries"] == 3
+    assert summary["measurable"] == 3
+    assert summary["fraction_of_the_error_population_measurable"] == pytest.approx(1.0)
     assert summary["fraction_positive"] == pytest.approx(2 / 3)
     assert summary["mean_margin"] == pytest.approx((0.4 - 0.3 + 0.9) / 3)
     assert summary["by_stratum"]["rank_2_5"]["queries"] == 3
     assert summary["by_stratum"]["beyond_20"]["queries"] == 0
     assert summary["by_stratum"]["beyond_20"]["mean_margin"] is None
+
+
+# ---------------------------------------------------------------------------
+# Coverage is a first-class outcome of the diagnostic, not a preprocessing step
+# ---------------------------------------------------------------------------
+
+
+def _margin(directions, relevant, covered, *, model=None):
+    node_ids = np.arange(len(directions))
+    model = np.array([1.0, 0.5, 0.4, 0.3]) if model is None else model
+    return offset.error_conditioned_margin(
+        "q", model, np.asarray(directions, dtype=np.float64), node_ids,
+        np.asarray(relevant, dtype=bool), covered=np.asarray(covered, dtype=bool),
+    )
+
+
+def test_a_comparison_with_an_uncovered_side_has_no_margin_rather_than_a_number():
+    """The defect that produced this test: the caller masked uncovered
+    candidates to -inf before calling, so a comparison between two uncovered
+    candidates evaluated -inf minus -inf and every reported mean was NaN.
+
+    Coverage on the real graphs is a few percent, so this is the common case,
+    not an edge case, and a sentinel would decide most of the diagnostic.
+    """
+
+    result = _margin([0.0, 0.0, 0.0, 0.0], [False, True, False, False], [False] * 4)
+    assert result is not None, "the query is still in the error population"
+    assert result.margin is None
+    assert result.measurable is False
+    assert result.relevant_covered is False and result.wrong_covered is False
+    assert result.relevant_direction is None and result.wrong_direction is None
+
+
+def test_the_row_says_which_side_was_missing():
+    """"The relevant candidate has directional evidence and S4's mistake has
+    none" and the reverse are different findings about the mechanism."""
+
+    only_relevant = _margin(
+        [0.0, 0.6, 0.0, 0.0], [False, True, False, False], [False, True, False, False]
+    )
+    assert only_relevant.relevant_covered is True and only_relevant.wrong_covered is False
+    assert only_relevant.relevant_direction == pytest.approx(0.6)
+    assert only_relevant.wrong_direction is None and only_relevant.margin is None
+
+    only_wrong = _margin(
+        [0.6, 0.0, 0.0, 0.0], [False, True, False, False], [True, False, False, False]
+    )
+    assert only_wrong.wrong_covered is True and only_wrong.relevant_covered is False
+    assert only_wrong.wrong_direction == pytest.approx(0.6)
+    assert only_wrong.margin is None
+
+
+def test_a_covered_relevant_candidate_beats_an_uncovered_one_with_a_higher_score():
+    """Same convention as rank_with_coverage: an uncovered candidate's stored
+    score is not evidence, so it cannot win the selection on its magnitude."""
+
+    model = np.array([1.0, 0.5, 0.4, 0.3])
+    result = _margin(
+        [0.0, 9.0, 0.2, 0.0],
+        [False, True, True, False],
+        [True, False, True, True],
+        model=model,
+    )
+    assert result.relevant_index == 2, "index 1 scores higher but has no coverage"
+    assert result.measurable is True
+    assert result.margin == pytest.approx(0.2 - 0.0)
+
+
+def test_the_averages_are_over_measurable_comparisons_and_the_rest_are_counted():
+    """A mechanism can have a fine margin where it applies and still be unable
+    to touch most of the errors. One mean would let either fact hide the other,
+    so the summary reports both and never averages a missing comparison."""
+
+    margins = [
+        _margin([0.0, 0.4, 0.0, 0.0], [False, True, False, False], [True, True, True, True]),
+        _margin([0.0, 0.0, 0.0, 0.0], [False, True, False, False], [False, False, False, False]),
+        _margin([0.0, 0.5, 0.0, 0.0], [False, True, False, False], [False, True, False, False]),
+        _margin([0.5, 0.0, 0.0, 0.0], [False, True, False, False], [True, False, False, False]),
+    ]
+    summary = offset.summarise_margins(margins)
+
+    assert summary["queries"] == 4
+    assert summary["measurable"] == 1
+    assert summary["fraction_of_the_error_population_measurable"] == pytest.approx(0.25)
+    assert summary["unmeasurable_neither_side_covered"] == 1
+    assert summary["unmeasurable_only_relevant_covered"] == 1
+    assert summary["unmeasurable_only_top_wrong_covered"] == 1
+    assert summary["fraction_positive"] == pytest.approx(1.0)
+    assert summary["mean_margin"] == pytest.approx(0.4)
+    assert summary["by_stratum"]["rank_2_5"]["measurable"] == 1
+
+
+def test_no_reported_average_is_ever_nan():
+    """The regression itself, stated as the property that was violated."""
+
+    margins = [
+        _margin([0.0, 0.0, 0.0, 0.0], [False, True, False, False], [False, False, False, False])
+        for _ in range(5)
+    ]
+    summary = offset.summarise_margins(margins)
+    blocks = [summary, *summary["by_stratum"].values()]
+    reported = [
+        block[key]
+        for block in blocks
+        for key in ("fraction_positive", "mean_margin", "median_margin")
+    ]
+    assert all(value is None or np.isfinite(value) for value in reported), reported
+    assert summary["measurable"] == 0
+    assert summary["mean_margin"] is None
+
+
+def test_coverage_and_the_scores_must_agree_about_which_candidates_have_evidence():
+    """A -inf sitting under a True coverage flag is the old defect arriving by
+    another route, so it is refused rather than averaged."""
+
+    with pytest.raises(ValueError, match="non-finite direction"):
+        _margin([0.0, -np.inf, 0.0, 0.0], [False, True, False, False], [True] * 4)
+
+
+def test_the_coverage_mask_must_describe_the_same_candidates():
+    with pytest.raises(ValueError, match="must agree in shape"):
+        offset.error_conditioned_margin(
+            "q",
+            np.array([1.0, 0.5, 0.4, 0.3]),
+            np.zeros(4),
+            np.arange(4),
+            np.array([False, True, False, False]),
+            covered=np.ones(3, dtype=bool),
+        )
 
 
 # ---------------------------------------------------------------------------

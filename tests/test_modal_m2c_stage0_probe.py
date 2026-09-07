@@ -35,6 +35,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 modal = pytest.importorskip("modal")
 
 from scripts import modal_m2c_stage0_probe as launcher  # noqa: E402
+from scripts import run_m2b_semantic_minimality as runner_m2b  # noqa: E402
 from scripts import run_m2c_stage0_probe as runner  # noqa: E402
 from scripts import spawn_modal_jobs  # noqa: E402
 
@@ -246,7 +247,12 @@ def test_the_cell_master_and_the_checkpoint_come_from_the_sealed_trees(jobs) -> 
         assert "m2_qls_v2_freeze" in master.parts
         assert master.parts[-2:] == (job["regime"], "cell_features")
         assert "m2b_semantic_minimality" in checkpoint.parts
-        assert checkpoint.parts[-3:] == (job["regime"], "S4", "checkpoint.pt")
+        # Lowercased, because that is the directory M2B actually wrote:
+        # fit_root = cell_root / rung.lower(). On Linux the difference between
+        # "S4" and "s4" is a missing checkpoint, not a cosmetic one.
+        assert checkpoint.parts[-3:] == (job["regime"], "s4", "checkpoint.pt")
+        assert launcher.S4_RUNG in runner_m2b.ALL_RUNGS
+        assert launcher.S4_FIT_DIRECTORY == launcher.S4_RUNG.lower()
 
 
 def test_every_write_lands_under_m2cs_own_prefix(jobs) -> None:

@@ -112,6 +112,12 @@ OUTPUT_PREFIX = "m2c_s4_structural_conditioning"
 M2_OUTPUT_PREFIX = "m2_qls_v2_freeze"
 M2B_OUTPUT_PREFIX = "m2b_semantic_minimality"
 
+#: The rung whose weights Stage 0 reads, and the directory M2B stored it in.
+#: M2B writes ``fit_root = cell_root / rung.lower()``, so the two differ in
+#: case; on the container's filesystem that difference is a missing file.
+S4_RUNG = "S4"
+S4_FIT_DIRECTORY = S4_RUNG.lower()
+
 #: One cell is one spawned call that writes its result once, at the end. A
 #: restart therefore redoes exactly one cell and no more, and a re-spawn of a
 #: finished cell returns its recorded result without recomputing it.
@@ -251,9 +257,10 @@ def _m2_fits_root(dataset: str, fingerprint: str) -> PurePosixPath:
 def _m2b_fits_root(dataset: str, fingerprint: str) -> PurePosixPath:
     """Where M2B left this dataset's S4 checkpoints. Read-only.
 
-    Checkpoints live at ``<root>/<regime>/<rung>/checkpoint.pt``, the layout
-    run_m2b_semantic_minimality.py wrote. S4 is a CHALLENGER and S3 remains
-    M2B's frozen selection; reading S4's weights here changes neither.
+    Checkpoints live at ``<root>/<regime>/<rung.lower()>/checkpoint.pt``, the
+    layout run_m2b_semantic_minimality.py wrote -- lowercased, which is why the
+    rung is not spelled as the declaration spells it. S4 is a CHALLENGER and S3
+    remains M2B's frozen selection; reading S4's weights here changes neither.
     """
 
     return (
@@ -445,6 +452,12 @@ def _output_root(job: dict[str, Any]) -> PurePosixPath:
 
 
 def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
+    # The family A64 is defined on, and the value M2 recorded in this cell's
+    # build key. Imported the way M2's own launcher imports it, and imported
+    # rather than typed for a blunt reason: a different string here does not
+    # mislabel the arm, it makes the sealed cell master refuse to load.
+    from scripts.run_m0b_regime_map import MAINLINE_FAMILY
+
     regime = job["regime"]
     return argparse.Namespace(
         data=Path(job["data_remote"]),
@@ -457,18 +470,19 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         baseline=job["baseline"],
         candidate_contract_compatibility=job["candidate_contract_compatibility"],
         cell_features=Path(job["m2_fits_remote"]) / regime / "cell_features",
-        s4_checkpoint=Path(job["m2b_fits_remote"]) / regime / "S4" / "checkpoint.pt",
+        s4_checkpoint=(
+            Path(job["m2b_fits_remote"]) / regime / S4_FIT_DIRECTORY / "checkpoint.pt"
+        ),
         edge_provenance_root=Path(job["graph_root"]),
         output=Path(_output_root(job)) / f"{regime}.json",
         holdout_fraction=0.2,
         per_seed_cap=16,
         neighbour_scan_cap_per_seed=4096,
-        a64_mainline_family="baseline_a_simple",
+        a64_mainline_family=MAINLINE_FAMILY,
         dropout=0.2,
         temperature=0.07,
         panel_cap=0,
         admission_cap=int(job["admission_cap"]),
-        admission_budget=64,
         source_commit=job.get("source_commit"),
     )
 

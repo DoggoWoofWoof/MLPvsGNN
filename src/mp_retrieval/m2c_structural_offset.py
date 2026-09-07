@@ -561,16 +561,32 @@ def reciprocal_rank_fusion(
 
 @dataclass(frozen=True)
 class ErrorMargin:
-    """One query's directional evidence about the mistake S4 actually made."""
+    """One query's directional evidence about the mistake S4 actually made.
+
+    ``margin`` is None when either side of the comparison has no directional
+    evidence, and that is not a technicality. Measured coverage on these graphs
+    is a few percent of scored candidates, so most comparisons have an
+    uncovered side; substituting a sentinel there produced ``-inf - -inf``, and
+    a NaN mean margin is what first exposed it. "No evidence about this pair"
+    and "the geometry is indifferent about this pair" are different findings
+    and are kept apart here, with the coverage of each side recorded so the
+    reason a margin is missing can be read off the row.
+    """
 
     query_id: str
     relevant_index: int
     wrong_index: int
-    relevant_direction: float
-    wrong_direction: float
-    margin: float
+    relevant_direction: float | None
+    wrong_direction: float | None
+    margin: float | None
+    relevant_covered: bool
+    wrong_covered: bool
     first_relevant_rank: int
     stratum: str
+
+    @property
+    def measurable(self) -> bool:
+        return self.relevant_covered and self.wrong_covered
 
     def as_row(self) -> dict[str, Any]:
         return {
@@ -580,6 +596,9 @@ class ErrorMargin:
             "dir_relevant": self.relevant_direction,
             "dir_top_wrong": self.wrong_direction,
             "directional_margin": self.margin,
+            "relevant_covered": self.relevant_covered,
+            "wrong_covered": self.wrong_covered,
+            "measurable": self.measurable,
             "first_relevant_rank": self.first_relevant_rank,
             "stratum": self.stratum,
         }
@@ -603,6 +622,8 @@ def error_conditioned_margin(
     directional_scores: np.ndarray,
     node_ids: np.ndarray,
     relevant_mask: np.ndarray,
+    *,
+    covered: np.ndarray,
 ) -> ErrorMargin | None:
     """Does the direction prefer a relevant candidate over S4's top mistake?
 
@@ -616,14 +637,32 @@ def error_conditioned_margin(
     ``relevant_mask`` is used ONLY to select which candidates to compare, never
     to compute a direction: the directional scores are handed in already built
     from embeddings and topology.
+
+    ``covered`` is required rather than folded into the scores by the caller.
+    A caller that masks uncovered candidates to a sentinel before calling loses
+    the distinction this function needs to keep: a comparison against a
+    candidate with no incident seed edge is not a comparison the geometry lost,
+    it is one the geometry never entered.
     """
 
     model_scores = np.asarray(model_scores, dtype=np.float64).reshape(-1)
     directional_scores = np.asarray(directional_scores, dtype=np.float64).reshape(-1)
     relevant = np.asarray(relevant_mask, dtype=bool).reshape(-1)
     node_ids = np.asarray(node_ids).reshape(-1)
-    if not (model_scores.shape == directional_scores.shape == relevant.shape == node_ids.shape):
-        raise ValueError("scores, directions, mask and ids must describe the same candidates")
+    covered = np.asarray(covered, dtype=bool).reshape(-1)
+    if not (
+        model_scores.shape
+        == directional_scores.shape
+        == relevant.shape
+        == node_ids.shape
+        == covered.shape
+    ):
+        raise ValueError("scores, directions, mask, ids and coverage must agree in shape")
+    if not np.all(np.isfinite(directional_scores[covered])):
+        raise ValueError(
+            "a covered candidate carries a non-finite direction; coverage and the "
+            "scores disagree about which candidates have evidence"
+        )
     if not relevant.any():
         return None
 
@@ -636,52 +675,78 @@ def error_conditioned_margin(
     first_relevant_rank = int(ranks[relevant_positions].min())
 
     # The best relevant candidate BY DIRECTION -- the one the mechanism would
-    # have to promote. Ties fall to the lowest node id, as everywhere else.
+    # have to promote. Uncovered candidates sort last, the same convention
+    # rank_with_coverage uses and for the same reason: a covered relevant
+    # candidate is always preferred to one the geometry says nothing about,
+    # and an uncovered candidate's stored score is not evidence of anything.
+    # Ties fall to the lowest node id, as everywhere else.
+    relevant_covered_mask = covered[relevant_positions]
+    relevant_signal = np.where(relevant_covered_mask, directional_scores[relevant_positions], 0.0)
     best = relevant_positions[
-        np.lexsort(
-            (node_ids[relevant_positions], -directional_scores[relevant_positions])
-        )[0]
+        np.lexsort((node_ids[relevant_positions], -relevant_signal, ~relevant_covered_mask))[0]
     ]
+    relevant_covered = bool(covered[best])
+    wrong_covered = bool(covered[top_index])
     return ErrorMargin(
         query_id=query_id,
         relevant_index=int(best),
         wrong_index=top_index,
-        relevant_direction=float(directional_scores[best]),
-        wrong_direction=float(directional_scores[top_index]),
-        margin=float(directional_scores[best] - directional_scores[top_index]),
+        relevant_direction=float(directional_scores[best]) if relevant_covered else None,
+        wrong_direction=float(directional_scores[top_index]) if wrong_covered else None,
+        margin=(
+            float(directional_scores[best] - directional_scores[top_index])
+            if relevant_covered and wrong_covered
+            else None
+        ),
+        relevant_covered=relevant_covered,
+        wrong_covered=wrong_covered,
         first_relevant_rank=first_relevant_rank,
         stratum=_stratum(first_relevant_rank),
     )
 
 
+def _margin_block(margins: Sequence[ErrorMargin]) -> dict[str, Any]:
+    """Aggregate one population, over the comparisons that are measurable.
+
+    ``queries`` is the whole error population; every average below it is over
+    ``measurable`` only, and the three unmeasurable counts say why the rest
+    were left out. Reported this way rather than as one number because the two
+    facts point in opposite directions: a mechanism can have an excellent
+    margin where it applies and still be unable to touch most of the errors,
+    and a single mean would let either of those hide the other.
+    """
+
+    measurable = [m for m in margins if m.measurable]
+    values = np.array([m.margin for m in measurable], dtype=np.float64)
+    return {
+        "queries": len(margins),
+        "measurable": len(measurable),
+        "unmeasurable_neither_side_covered": sum(
+            1 for m in margins if not m.relevant_covered and not m.wrong_covered
+        ),
+        "unmeasurable_only_relevant_covered": sum(
+            1 for m in margins if m.relevant_covered and not m.wrong_covered
+        ),
+        "unmeasurable_only_top_wrong_covered": sum(
+            1 for m in margins if m.wrong_covered and not m.relevant_covered
+        ),
+        "fraction_positive": None if values.size == 0 else float((values > 0).mean()),
+        "mean_margin": None if values.size == 0 else float(values.mean()),
+        "median_margin": None if values.size == 0 else float(np.median(values)),
+    }
+
+
 def summarise_margins(margins: Sequence[ErrorMargin]) -> dict[str, Any]:
     """Aggregate the error-conditioned diagnostic, stratified as declared."""
 
-    if not margins:
-        return {
-            "queries": 0,
-            "fraction_positive": None,
-            "mean_margin": None,
-            "median_margin": None,
-            "by_stratum": {},
-        }
-    values = np.array([m.margin for m in margins], dtype=np.float64)
-    summary: dict[str, Any] = {
-        "queries": int(values.size),
-        "fraction_positive": float((values > 0).mean()),
-        "mean_margin": float(values.mean()),
-        "median_margin": float(np.median(values)),
-        "by_stratum": {},
+    summary = _margin_block(margins)
+    summary["fraction_of_the_error_population_measurable"] = (
+        None if not margins else summary["measurable"] / len(margins)
+    )
+    summary["by_stratum"] = {
+        stratum: _margin_block([m for m in margins if m.stratum == stratum])
+        for stratum in ("rank_2_5", "rank_6_20", "beyond_20", "absent")
     }
-    for stratum in ("rank_2_5", "rank_6_20", "beyond_20", "absent"):
-        subset = np.array(
-            [m.margin for m in margins if m.stratum == stratum], dtype=np.float64
-        )
-        summary["by_stratum"][stratum] = {
-            "queries": int(subset.size),
-            "fraction_positive": None if subset.size == 0 else float((subset > 0).mean()),
-            "mean_margin": None if subset.size == 0 else float(subset.mean()),
-        }
     return summary
 
 
