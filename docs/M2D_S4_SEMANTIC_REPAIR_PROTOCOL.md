@@ -1,10 +1,10 @@
 # M2D — S4 semantic / top-rank repair
 
-Filed 2026-09-08, before any M2D arm is fit and before the archaeology has
-instantiated anything. The machine-readable declaration is
+Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_DECLARED_STAGE0_NOT_YET_RUN`.
+`M2D_ARCHAEOLOGY_RECORDED_STAGE0_NOT_YET_RUN` — section 3 has run and its
+findings are below; sections 4 to 6 have not.
 
 **This is a post-hoc development branch.** It was opened because of an observed
 S4 development result, not from a preregistered hypothesis, and it is labelled
@@ -128,6 +128,53 @@ S3 primitive — the same quantity computed in a different basis, say — the
 archaeology must say restricted-in-what-way rather than record it as absent.
 Re-adding something S4 already has in another basis would spend parameters and
 latency on a duplicate and then attribute any movement to the wrong cause.
+
+### What it found
+
+Run by [`scripts/m2d_semantic_archaeology.py`](../scripts/m2d_semantic_archaeology.py)
+against live heads at 1536. The live counts reproduce what the fits recorded —
+0, 3,072 and 196,608 semantic parameters — so this describes the same models
+that produced the blocker deltas and not a lookalike.
+
+| | semantic params | columns | comparison space | rank-aware columns |
+|---|---:|---:|---|---|
+| S2 | 0 | 3 | raw 1536 | `dot_qd_pct` |
+| S3 | 3,072 | 5 | raw 1536 | `dot_qd_pct` |
+| S4 | 196,608 | 258 | projected 64 | **none** |
+
+Three of the findings are measurements rather than readings of the source, and
+each was obtained by running the head twice — once on the candidate set, once on
+the set minus one candidate — and comparing the rows both runs share.
+
+**S4 has no set-dependent column at all.** Not one of its 258 columns changes
+when a *different* candidate leaves the set. `dot_qd_pct` — the within-query
+percentile of ⟨q, d⟩ — is the only rank-aware and the only query-relative
+quantity in any of the three rungs, and S4 has no form of it in any basis. It is
+the single entry in `S3_NOT_IN_S4` that is genuinely **ABSENT**.
+
+**64 of S4's 258 columns cannot reorder anything.** The `query_state` block is
+expanded across candidate rows, so it takes the same value for every candidate
+of a query and was measured to have zero spread. The scorer can only use it to
+shift a query's candidates together, which no within-query ranking metric can
+see. S4's column count is 258; its *reordering* column count is 194.
+
+**The other four `S3_NOT_IN_S4` entries are RESTRICTED, not absent.** S4 has a
+cosine (`normalized_state_dot`), an L1 term (`state_absolute_difference`) and a
+learned product (`state_product`) — all after two rank-64 projections and a
+GELU. Every S4 column factors through those projections, so no setting of them
+makes a column equal a full-rank form on the raw vectors; but a rank-64 form is
+not *less* than S3's full-rank diagonal either, it is restricted differently.
+Neither class contains the other. That is why none of these four may be
+re-added as though S4 were missing them.
+
+**Honest cost, both halves.** The scorer's first layer is as wide as the column
+count. Deriving the slope from S2 and S3 gives 32 parameters per semantic
+column, and that figure predicts S4's recorded non-semantic remainder of 8,609
+exactly. So S4's 258 columns cost 8,160 scorer parameters *beyond S2's three*,
+on top of the 196,608 in the projections.
+
+None of this says what caused the passage blockers. It says which primitives
+are available to which rung; sections 4 to 6 are what may implicate one.
 
 ---
 

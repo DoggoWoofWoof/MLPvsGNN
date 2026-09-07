@@ -98,16 +98,41 @@ def test_the_phase_is_labelled_post_hoc(declaration):
     assert "not a preregistered hypothesis" in declaration["motivated_by"]
 
 
-def test_the_status_matches_the_gates(declaration):
-    gates = declaration["launch_authorization"]["gates"]
-    assert declaration["status"] == "M2D_DECLARED_STAGE0_NOT_YET_RUN"
-    for unearned in (
+#: What each phase status commits the gate block to. The status cannot advance
+#: without the gates advancing with it, and vice versa -- which is the point:
+#: a status that drifts ahead of its gates is how "declared" quietly becomes
+#: "done" with nothing having run.
+STATUS_REQUIRES_UNEARNED = {
+    "M2D_DECLARED_STAGE0_NOT_YET_RUN": {
         "semantic_archaeology_recorded",
         "stage_0_diagnostics_run",
         "stage_0_advance_gate_evaluated",
         "stage_1_authorised",
-    ):
-        assert gates[unearned] is False, f"{unearned} claims to be earned but nothing ran"
+    },
+    "M2D_ARCHAEOLOGY_RECORDED_STAGE0_NOT_YET_RUN": {
+        "stage_0_diagnostics_run",
+        "stage_0_advance_gate_evaluated",
+        "stage_1_authorised",
+    },
+    "M2D_STAGE0_COMPLETE_GATE_NOT_YET_EVALUATED": {
+        "stage_0_advance_gate_evaluated",
+        "stage_1_authorised",
+    },
+}
+
+
+def test_the_status_matches_the_gates(declaration):
+    gates = declaration["launch_authorization"]["gates"]
+    status = declaration["status"]
+    assert status in STATUS_REQUIRES_UNEARNED, (
+        f"{status} is not a status this test knows how to check. Advancing the phase "
+        "means saying here which gates that status still leaves unearned."
+    )
+    unearned = {name for name, earned in gates.items() if earned is False}
+    assert unearned == STATUS_REQUIRES_UNEARNED[status], (
+        f"{status} should leave {sorted(STATUS_REQUIRES_UNEARNED[status])} unearned; "
+        f"the file leaves {sorted(unearned)}"
+    )
 
 
 def test_the_gates_that_are_earned_point_at_something_on_disk(declaration):
@@ -121,6 +146,11 @@ def test_the_gates_that_are_earned_point_at_something_on_disk(declaration):
     assert gates["protocol_document_filed"] is True and PROTOCOL_PATH.exists()
     assert gates["declaration_tested"] is True and Path(__file__).exists()
     assert gates["failure_shape_frozen"] is True and BASELINE_JSON.exists()
+    if gates["semantic_archaeology_recorded"]:
+        assert ARCHAEOLOGY_JSON.exists(), (
+            "the archaeology gate is claimed and its artifact is not on disk"
+        )
+        assert (REPO_ROOT / "scripts" / "m2d_semantic_archaeology.py").exists()
 
 
 def test_the_predecessor_commit_gate_is_not_a_promise(declaration):
@@ -322,10 +352,10 @@ def test_the_rrf_constant_is_inherited_and_not_chosen_here(declaration):
     budget = yaml.safe_load(
         (REPO_ROOT / "configs" / "candidate_budget.yaml").read_text(encoding="utf-8")
     )
-    frozen = json.dumps(budget)
-    assert '"rrf_constant": 60' in frozen or "60" in frozen, (
+    assert budget["candidate_contract"]["rrf_constant"] == 60, (
         "the declaration says candidate_budget.yaml fixes the constant at 60"
     )
+    assert "candidate_budget.yaml" in fusion["constant_is_frozen"]
 
 
 def test_the_s3_plus_s4_fusion_is_diagnostic_and_can_never_be_reported_as_a_result(declaration):
@@ -662,6 +692,60 @@ def test_the_protocol_states_the_numbers_the_declaration_freezes(declaration, pr
     for number in ("−4.303pp", "−12.505pp", "−6.459pp", "+0.314pp", "−7.335pp"):
         assert number in condensed, f"{number} is missing from the protocol"
     assert "1.0683 ms" in condensed and "1.9138 ms" in condensed
+
+
+def test_the_protocol_archaeology_numbers_come_from_the_artifact(protocol):
+    """Same rule as the failure shape: the document may quote, but only what
+    the artifact says. A hand-typed 194 or 8,160 would pass a reader and fail
+    here."""
+
+    if not ARCHAEOLOGY_JSON.exists():
+        pytest.skip("the archaeology has not been run on this machine")
+    payload = json.loads(ARCHAEOLOGY_JSON.read_text(encoding="utf-8"))["payload"]
+    condensed = " ".join(protocol.split())
+
+    for rung in ("S2", "S3", "S4"):
+        params = payload["rungs"][rung]["parameters"]["counted_with_numel"]
+        assert f"{params:,}" in condensed, f"{rung}'s parameter count is not in the protocol"
+        assert str(payload["column_totals"][rung]) in condensed
+
+    constant = payload["rungs"]["S4"]["measured"]["constant_within_query_column_count"]
+    reordering = payload["column_totals"]["S4"] - constant
+    assert f"{constant} of S4's {payload['column_totals']['S4']} columns" in condensed
+    assert f"reordering* column count is {reordering}" in condensed
+
+    cross = payload["parameter_cross_check"]
+    per_column = int(cross["scorer_cost_per_semantic_column"]["parameters_per_column"])
+    remainder = cross["S4"]["non_semantic_remainder"]
+    beyond = remainder - cross["S2"]["non_semantic_remainder"]
+    assert f"{per_column} parameters per semantic column" in condensed
+    assert f"remainder of {remainder:,}" in condensed
+    assert f"{beyond:,} scorer parameters" in condensed
+
+
+def test_the_protocol_reports_the_absent_set_as_the_artifact_measured_it(protocol):
+    if not ARCHAEOLOGY_JSON.exists():
+        pytest.skip("the archaeology has not been run on this machine")
+    payload = json.loads(ARCHAEOLOGY_JSON.read_text(encoding="utf-8"))["payload"]
+    condensed = " ".join(protocol.split())
+
+    absent = [e["primitive"] for e in payload["S3_NOT_IN_S4"] if e["in_s4"] == "ABSENT"]
+    restricted = [e for e in payload["S3_NOT_IN_S4"] if e["in_s4"] == "RESTRICTED"]
+    assert absent == ["dot_qd_pct"]
+    assert f"`{absent[0]}`" in condensed
+    assert "genuinely **ABSENT**" in condensed
+    assert "entries are RESTRICTED, not absent" in condensed
+    # Stronger than counting them: the protocol has to NAME the analogue for
+    # each, which is what stops "restricted" from being a softer word for
+    # absent and what makes the no-duplicate rule checkable by a reader.
+    for entry in restricted:
+        analogue = entry["s4_analogue"].split("[")[0].split(" ")[0]
+        assert f"`{analogue}" in condensed, (
+            f"{entry['primitive']} is called restricted and its S4 analogue "
+            f"{analogue} is not named in the protocol"
+        )
+    assert payload["rank_aware_columns_by_rung"]["S4"] == []
+    assert "S4 has no set-dependent column at all" in condensed
 
 
 def test_the_protocol_does_not_claim_a_cause(protocol):

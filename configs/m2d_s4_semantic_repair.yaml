@@ -13,7 +13,7 @@
 
 phase: M2D_S4_SEMANTIC_REPAIR
 opened: 2026-09-08
-status: M2D_DECLARED_STAGE0_NOT_YET_RUN
+status: M2D_ARCHAEOLOGY_RECORDED_STAGE0_NOT_YET_RUN
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: >-
   An observed S4 development result, not a preregistered hypothesis. S4 was
@@ -695,7 +695,7 @@ launch_authorization:
     protocol_document_filed: true              # docs/M2D_S4_SEMANTIC_REPAIR_PROTOCOL.md
     declaration_tested: true                   # earned 2026-09-08, tests/test_m2d_declaration.py
     failure_shape_frozen: true                 # earned 2026-09-08, from the immutable M2B baseline table
-    semantic_archaeology_recorded: false
+    semantic_archaeology_recorded: true       # earned 2026-09-08, outputs/m2d_s4_semantic_repair/semantic_archaeology.json at 024911d
     stage_0_diagnostics_run: false
     stage_0_advance_gate_evaluated: false
     stage_1_authorised: false
