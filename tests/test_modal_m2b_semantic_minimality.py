@@ -527,3 +527,15 @@ def test_the_runner_args_are_a_namespace_the_runner_can_consume(jobs) -> None:
     assert isinstance(args, argparse.Namespace)
     assert isinstance(args.baseline, dict)
     assert "candidate_contract_sha256" in args.baseline
+
+
+def test_the_smoke_rungs_come_from_the_declaration_not_a_second_copy() -> None:
+    """One authority. Amendment 2 filed the list; this file must not restate it.
+
+    A transcribed ["S2", "S4"] here would keep working after an amendment
+    changed the declared rungs, and the run would quietly be a different smoke
+    from the one the declaration authorised.
+    """
+
+    assert launcher.SMOKE_RUNGS == list(DECLARATION["smoke_before_fanout"]["rungs"])
+    assert launcher.SMOKE_RUNGS is not DECLARATION["smoke_before_fanout"]["rungs"]

@@ -106,8 +106,10 @@ CONTAINERS_PER_DATASET = 1
 SMOKE_SPEC = CONFIG["smoke_before_fanout"]
 SMOKE_DATASET, SMOKE_REGIME = (part.strip() for part in SMOKE_SPEC["cell"].split("/"))
 #: The smoke fits the two new rungs. S3 in that cell is a completed M2 fit, so
-#: re-running it would spend money to re-answer a filed question.
-SMOKE_RUNGS = ["S2", "S4"]
+#: re-running it would spend money to re-answer a filed question. Read from the
+#: declaration rather than transcribed: amendment 2 filed this list, and a
+#: second copy here is a second thing that could drift from it.
+SMOKE_RUNGS = list(SMOKE_SPEC["rungs"])
 
 app = modal.App(APP_NAME)
 result_volume = modal.Volume.from_name(MODAL_CONFIG["result_volume"], create_if_missing=False)
