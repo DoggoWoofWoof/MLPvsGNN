@@ -34,6 +34,7 @@ modal = pytest.importorskip("modal")
 from scripts import m2d_stage0_compute_record as record_module
 from scripts import modal_m2d_stage0_probe as launcher
 from scripts import run_m2b_semantic_minimality as m2b
+from scripts import run_m2d_primitive_probe as primitive_runner
 from scripts import run_m2d_stage0_probe as runner
 from scripts import spawn_modal_jobs
 
@@ -43,6 +44,15 @@ BASELINE_JSON = (
     REPO_ROOT / "outputs" / "m2c_s4_structural_conditioning" / "m2b_baseline_table.json"
 )
 PACKAGE = "m2d-stage0-probe"
+
+#: The app hosts two runners, and every launcher/runner agreement below has to
+#: hold for BOTH -- one namespace is built by one function and handed to
+#: whichever module the stage names, so an argument the second runner does not
+#: take is the same failure as an argument the first does not take, discovered
+#: the same expensive way. Held against ``launcher.STAGES`` rather than listed
+#: twice, so a third stage cannot be added without appearing here.
+RUNNERS = {"stage0": runner, "primitives": primitive_runner}
+STAGE_IDS = tuple(RUNNERS)
 
 pytestmark = pytest.mark.skipif(
     not launcher.COMPUTE_RECORD_PATH.is_file(),
@@ -65,22 +75,34 @@ def jobs() -> list[dict]:
 # --------------------------------------------------------------------------
 
 
-def _parser_dests() -> set[str]:
-    return {action.dest for action in runner.build_parser()._actions if action.dest != "help"}
+def _parser_dests(stage: str = "stage0") -> set[str]:
+    parser = RUNNERS[stage].build_parser()
+    return {action.dest for action in parser._actions if action.dest != "help"}
 
 
-def test_the_launcher_builds_exactly_the_runners_arguments(jobs) -> None:
+def test_every_stage_the_launcher_hosts_has_a_runner_this_test_covers() -> None:
+    """The agreement checks below are only complete if this mapping is."""
+
+    assert set(launcher.STAGES) == set(RUNNERS)
+    for stage, module in RUNNERS.items():
+        assert launcher.STAGES[stage]["module"] == module.__name__
+
+
+@pytest.mark.parametrize("stage", STAGE_IDS)
+def test_the_launcher_builds_exactly_the_runners_arguments(jobs, stage) -> None:
     """A missing or extra field is a container that starts, bills, and dies."""
 
-    built = set(vars(launcher._runner_args(jobs[0])))
-    assert built == _parser_dests(), (
-        f"launcher/runner argument drift: launcher-only={sorted(built - _parser_dests())}, "
-        f"runner-only={sorted(_parser_dests() - built)}"
+    dests = _parser_dests(stage)
+    built = set(vars(launcher._runner_args(jobs[0], stage)))
+    assert built == dests, (
+        f"launcher/{stage} argument drift: launcher-only={sorted(built - dests)}, "
+        f"runner-only={sorted(dests - built)}"
     )
 
 
-def test_no_launcher_argument_is_left_unset(jobs) -> None:
-    args = launcher._runner_args(jobs[0])
+@pytest.mark.parametrize("stage", STAGE_IDS)
+def test_no_launcher_argument_is_left_unset(jobs, stage) -> None:
+    args = launcher._runner_args(jobs[0], stage)
     unset = sorted(
         name
         for name, value in vars(args).items()
@@ -99,13 +121,13 @@ def test_the_run_id_is_left_for_the_container_to_choose(jobs) -> None:
     silently discarded if it is a Modal volume.
     """
 
-    assert launcher._runner_args(jobs[0]).run_id is None
-    assert "current_run_id" in (
-        (REPO_ROOT / "scripts" / "run_m2d_stage0_probe.py").read_text(encoding="utf-8")
-    )
+    for stage, module in RUNNERS.items():
+        assert launcher._runner_args(jobs[0], stage).run_id is None
+        assert "current_run_id" in inspect.getsource(module)
 
 
-RUNNER_SOURCE = (REPO_ROOT / "scripts" / "run_m2d_stage0_probe.py").read_text(encoding="utf-8")
+def _runner_source(stage: str) -> str:
+    return inspect.getsource(RUNNERS[stage])
 
 #: Functions in ANOTHER module that the runner hands its WHOLE namespace to.
 #: Their reads are the runner's reads, and the set is asserted below rather
@@ -118,10 +140,10 @@ FOREIGN_NAMESPACE_CONSUMERS = {"load_cell_under_contract": "m2b"}
 LOCAL_NAMESPACE_CONSUMERS = {"run"}
 
 
-def _namespace_consumers() -> set[str]:
+def _namespace_consumers(stage: str = "stage0") -> set[str]:
     """Every callee the runner passes the bare namespace to, by attribute name."""
 
-    tree = ast.parse(RUNNER_SOURCE)
+    tree = ast.parse(_runner_source(stage))
     found = set()
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call):
@@ -138,10 +160,10 @@ def _namespace_consumers() -> set[str]:
     return found
 
 
-def _attributes_read_on_the_run_path() -> set[str]:
+def _attributes_read_on_the_run_path(stage: str = "stage0") -> set[str]:
     """Every ``args.X`` the run path reads, the runner's own and its callees'."""
 
-    sources = [RUNNER_SOURCE]
+    sources = [_runner_source(stage)]
     for name in sorted(FOREIGN_NAMESPACE_CONSUMERS):
         sources.append(inspect.getsource(getattr(m2b, name)))
     read: set[str] = set()
@@ -150,13 +172,16 @@ def _attributes_read_on_the_run_path() -> set[str]:
     return read
 
 
-def test_the_runner_hands_its_namespace_only_to_functions_this_test_follows() -> None:
+@pytest.mark.parametrize("stage", STAGE_IDS)
+def test_the_runner_hands_its_namespace_only_to_functions_this_test_follows(stage) -> None:
     """The read set below is only complete if this set is."""
 
-    assert _namespace_consumers() == set(FOREIGN_NAMESPACE_CONSUMERS) | LOCAL_NAMESPACE_CONSUMERS
+    expected = set(FOREIGN_NAMESPACE_CONSUMERS) | LOCAL_NAMESPACE_CONSUMERS
+    assert _namespace_consumers(stage) == expected
 
 
-def test_every_args_attribute_the_run_path_reads_is_a_parser_dest() -> None:
+@pytest.mark.parametrize("stage", STAGE_IDS)
+def test_every_args_attribute_the_run_path_reads_is_a_parser_dest(stage) -> None:
     """The failure this reproduces cost four containers.
 
     The runner hands its whole namespace to M2B's store loader, which reads
@@ -170,7 +195,7 @@ def test_every_args_attribute_the_run_path_reads_is_a_parser_dest() -> None:
     reads are what must match the parser, and some of them are in another file.
     """
 
-    missing = sorted(_attributes_read_on_the_run_path() - _parser_dests())
+    missing = sorted(_attributes_read_on_the_run_path(stage) - _parser_dests(stage))
     assert missing == [], (
         f"the run path reads args.{{{','.join(missing)}}}, which this parser does not "
         "define. A container will raise AttributeError after loading the data."
@@ -191,21 +216,23 @@ def test_the_frozen_build_key_is_m2s_and_is_not_set_by_m2d() -> None:
     assert launcher.BUILD_KEY is not None
     for field in ("per_seed_cap", "neighbour_scan_cap_per_seed"):
         assert int(launcher.BUILD_KEY[field]) == int(frozen[field])
-    defaults = {
-        action.dest: action.default
-        for action in runner.build_parser()._actions
-        if action.dest != "help"
-    }
-    assert int(defaults["per_seed_cap"]) == int(frozen["per_seed_cap"])
-    assert int(defaults["neighbour_scan_cap_per_seed"]) == int(
-        frozen["neighbour_scan_cap_per_seed"]
-    )
+    for module in RUNNERS.values():
+        defaults = {
+            action.dest: action.default
+            for action in module.build_parser()._actions
+            if action.dest != "help"
+        }
+        assert int(defaults["per_seed_cap"]) == int(frozen["per_seed_cap"])
+        assert int(defaults["neighbour_scan_cap_per_seed"]) == int(
+            frozen["neighbour_scan_cap_per_seed"]
+        )
 
 
-def test_the_launcher_passes_the_build_key_it_read_not_one_it_typed(jobs) -> None:
+@pytest.mark.parametrize("stage", STAGE_IDS)
+def test_the_launcher_passes_the_build_key_it_read_not_one_it_typed(jobs, stage) -> None:
     from scripts.run_m0b_regime_map import MAINLINE_FAMILY
 
-    args = launcher._runner_args(jobs[0])
+    args = launcher._runner_args(jobs[0], stage)
     assert args.per_seed_cap == int(launcher.BUILD_KEY["per_seed_cap"])
     assert args.neighbour_scan_cap_per_seed == int(
         launcher.BUILD_KEY["neighbour_scan_cap_per_seed"]
@@ -213,13 +240,14 @@ def test_the_launcher_passes_the_build_key_it_read_not_one_it_typed(jobs) -> Non
     assert args.a64_mainline_family == MAINLINE_FAMILY
 
 
-def test_every_runner_flag_the_launcher_sets_is_one_the_run_path_reads(jobs) -> None:
+@pytest.mark.parametrize("stage", STAGE_IDS)
+def test_every_runner_flag_the_launcher_sets_is_one_the_run_path_reads(jobs, stage) -> None:
     """A knob nothing consults reads as a controlled variable and is a
     decoration. M2C shipped one; this checks M2D does not."""
 
-    read = _attributes_read_on_the_run_path()
-    for name in vars(launcher._runner_args(jobs[0])):
-        assert name in read, f"nothing on the run path reads args.{name}"
+    read = _attributes_read_on_the_run_path(stage)
+    for name in vars(launcher._runner_args(jobs[0], stage)):
+        assert name in read, f"nothing on the {stage} run path reads args.{name}"
 
 
 def test_the_config_fingerprint_is_the_declarations_own_text(jobs) -> None:
@@ -522,11 +550,18 @@ def test_the_gates_currently_pass() -> None:
 # --------------------------------------------------------------------------
 
 
-def test_the_package_is_registered_and_its_stage_resolves() -> None:
+def test_the_package_is_registered_and_its_stages_resolve() -> None:
+    """A stage the app defines but the spawner does not register can only be
+    started with `modal run`, which is the thing the spawner exists to prevent:
+    no placement gate, no authorisation gate, no filed budget. So the count is
+    checked against the app, not just the names against a literal."""
+
     module_name, stages = spawn_modal_jobs.PACKAGES[PACKAGE]
-    assert module_name == "scripts.modal_m2d_stage0_probe"
-    assert stages == {"probe": "run_stage0"}
-    assert hasattr(launcher, "run_stage0")
+    assert module_name == launcher.__name__
+    assert stages == {"probe": "run_stage0", "primitives": "run_primitives"}
+    assert len(stages) == len(launcher.STAGES), "an app stage nothing can launch"
+    for function_name in stages.values():
+        assert hasattr(launcher, function_name)
 
 
 def test_the_budget_gate_reports_the_filed_numbers(jobs, record) -> None:
@@ -604,15 +639,43 @@ def test_the_fetch_lists_the_store_rather_than_guessing_a_path() -> None:
     assert "verify_artifact_file" in source
 
 
-def test_the_fetch_prefix_is_the_logical_result_and_not_one_run(jobs) -> None:
-    prefix = launcher._remote_prefix(jobs[0])
+@pytest.mark.parametrize("stage", STAGE_IDS)
+def test_the_fetch_prefix_is_the_logical_result_and_not_one_run(jobs, stage) -> None:
+    prefix = launcher._remote_prefix(jobs[0], stage)
     assert prefix.parts[-4:] == (
         jobs[0]["dataset"],
         jobs[0]["regime"],
         "no_seed",
-        runner.ARM,
+        RUNNERS[stage].ARM,
     )
-    assert runner.PHASE in prefix.parts
+    assert RUNNERS[stage].PHASE in prefix.parts
+
+
+def test_the_two_stages_cannot_write_over_each_other(jobs) -> None:
+    """What keeps two results of one cell apart on one store is the ARM, and
+    the two stages ask different questions of the same panel. A shared arm
+    would put a fusion result and a primitive result in one directory, where
+    the fetch's own commit selection would be free to return either."""
+
+    names = {stage: launcher._artifact_names(stage) for stage in STAGE_IDS}
+    assert len({phase for phase, _, _ in names.values()}) == 1, "both stages are M2D"
+    arms = {stage: arm for stage, (_, arm, _) in names.items()}
+    assert len(set(arms.values())) == len(STAGE_IDS), arms
+    prefixes = {str(launcher._remote_prefix(jobs[0], stage)) for stage in STAGE_IDS}
+    assert len(prefixes) == len(STAGE_IDS)
+    roots = {str(launcher._output_root(jobs[0], stage)) for stage in STAGE_IDS}
+    assert len(roots) == len(STAGE_IDS), "and their stores are separate too"
+
+
+def test_the_primitive_stage_is_priced_and_placed_like_the_one_it_follows() -> None:
+    """It reuses Stage 0's filed record deliberately, so the gate has to admit
+    the two failure cells under it rather than fall through to no cost model."""
+
+    jobs = launcher._jobs(["squad_clean", "musique_clean"])
+    report = spawn_modal_jobs.gate_launch(PACKAGE, launcher, jobs)
+    assert report["gated"] is True
+    assert report["units"] == 2
+    assert "ceiling for its second stage" in report["basis"]
 
 
 # --------------------------------------------------------------------------
@@ -663,7 +726,9 @@ def staged(tmp_path, monkeypatch, jobs):
     )
 
     monkeypatch.setattr(launcher, "HOST_REPO_ROOT", tmp_path)
-    monkeypatch.setattr(launcher, "_remote_artifacts", lambda prefix: sorted(written))
+    monkeypatch.setattr(
+        launcher, "_remote_artifacts", lambda prefix, stage=None: sorted(written)
+    )
     # _jobs reads M2B's baselines from the repo, which the redirected root no
     # longer holds. The job itself is the real one, built above from the real
     # declaration; only the lookup is stubbed.

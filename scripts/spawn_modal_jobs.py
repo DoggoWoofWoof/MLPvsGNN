@@ -103,7 +103,18 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
     # fitted. M2D's probe reads BOTH of M2B's sealed semantic checkpoints rather
     # than S4's alone, because the question is what each rung finds that the
     # other misses; it still writes only under M2D's own prefix.
-    "m2d-stage0-probe": ("scripts.modal_m2d_stage0_probe", {"probe": "run_stage0"}),
+    #
+    # Two stages, because the advance gate returned STOP_PENDING_B and condition
+    # B needs a per-primitive ranking the `probe` stage does not emit. A stage
+    # rather than a package: same app, same image, same volume, same placement
+    # and authorisation gates, same filed compute record -- what differs is the
+    # question, and therefore the arm, which is what keeps the two stages'
+    # artifacts in separate directories on one store. `primitives` runs on the
+    # two failure cells only, because B is a claim about the blockers.
+    "m2d-stage0-probe": (
+        "scripts.modal_m2d_stage0_probe",
+        {"probe": "run_stage0", "primitives": "run_primitives"},
+    ),
     # Three stages, and no build stage at all: M2B rebuilds no features. Every
     # cell master it reads was persisted by M2's build stage and is admitted on
     # its feature build contract. One spawned job per dataset runs every regime
@@ -582,6 +593,11 @@ def measured_units(
         # rate applied here. The record prices each cell as panel queries times
         # a measured kernel, so re-deriving the seconds in this function would
         # gate the launch against a second number that nobody filed.
+        #
+        # It prices the `probe` stage. The `primitives` stage runs the same
+        # panel over the same pool with no fusion and no stored retrieval
+        # lists, so the same per-cell figure is a ceiling for it rather than a
+        # forecast -- which is the direction a launch gate may be wrong in.
         estimate = {
             item["cell"].split("/")[0]: float(item["seconds"])
             for item in module.compute_record()["workload"]["cells"]
@@ -593,7 +609,9 @@ def measured_units(
         units, granularity = _collapse_without_resumption(units, module, "cell", "probe")
         return units, (
             f"{len(jobs)} cell(s) at the filed Stage-0 compute record, which is a host "
-            f"timing and not a container measurement; {granularity}"
+            f"timing and not a container measurement, and which prices this app's "
+            f"Stage-0 runner -- a ceiling for its second stage, not a forecast; "
+            f"{granularity}"
         )
 
     if package == "m2-qls-v2-freeze":

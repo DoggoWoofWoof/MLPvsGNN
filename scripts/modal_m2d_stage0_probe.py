@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import json
 import os
 import subprocess
@@ -137,6 +138,31 @@ M2B_OUTPUT_PREFIX = "m2b_semantic_minimality"
 #: in. M2B writes ``fit_root = cell_root / rung.lower()``, so the two differ in
 #: case; on the container's filesystem that difference is a missing file.
 RUNGS = ("S4", "S3")
+
+#: The two runners this app hosts. They share the image, the volume, the
+#: placement gate, the authorisation gate and the filed compute record; what
+#: differs is the question, and therefore the arm, which is what keeps their
+#: artifacts in separate directories on the same store.
+#:
+#: ``primitives`` runs only on the two failure cells, because condition B is a
+#: claim about the blockers and about nothing else. Its per-cell work is a
+#: subset of stage 0's -- the same panel, the same pool, no fusion and no
+#: stored retrieval lists -- so it is priced by the same record rather than a
+#: new one.
+STAGES: dict[str, dict[str, Any]] = {
+    "stage0": {
+        "module": "scripts.run_m2d_stage0_probe",
+        "prefix": "stage0",
+        "measures": "the fixed zero-training fusion arms, sections 4 to 6",
+    },
+    "primitives": {
+        "module": "scripts.run_m2d_primitive_probe",
+        "prefix": "stage0_primitives",
+        "measures": "advance gate condition B, on the failure cells only",
+    },
+}
+DEFAULT_STAGE = "stage0"
+
 
 #: One cell is one spawned call that writes its result once, at the end. A
 #: restart therefore redoes exactly one cell and no more.
@@ -455,7 +481,7 @@ def require_authorisation() -> None:
     compute_record()
 
 
-def _output_root(job: dict[str, Any]) -> PurePosixPath:
+def _output_root(job: dict[str, Any], stage: str = DEFAULT_STAGE) -> PurePosixPath:
     """The run store this cell's artifact is written INTO, not the artifact path.
 
     run_artifacts derives the rest -- phase, dataset, regime, arm, commit and
@@ -466,14 +492,14 @@ def _output_root(job: dict[str, Any]) -> PurePosixPath:
         PurePosixPath(STORAGE_ROOT)
         / "outputs"
         / OUTPUT_PREFIX
-        / "stage0"
+        / STAGES[stage]["prefix"]
         / job["dataset"]
         / job["fingerprint"][:16]
         / MODAL_CONFIG["execution_label"]
     )
 
 
-def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
+def _runner_args(job: dict[str, Any], stage: str = DEFAULT_STAGE) -> argparse.Namespace:
     # The family A64 is defined on, and the value M2 recorded in this cell's
     # build key. Imported the way M2's own launcher imports it, and imported
     # rather than typed for a blunt reason: a different string here does not
@@ -495,7 +521,7 @@ def _runner_args(job: dict[str, Any]) -> argparse.Namespace:
         cell_features=Path(job["m2_fits_remote"]) / regime / "cell_features",
         s4_checkpoint=m2b_root / "s4" / "checkpoint.pt",
         s3_checkpoint=m2b_root / "s3" / "checkpoint.pt",
-        output_root=Path(_output_root(job)),
+        output_root=Path(_output_root(job, stage)),
         config_fingerprint=job["config_fingerprint"],
         source_commit=job["source_commit"],
         run_id=None,
@@ -524,13 +550,15 @@ def run_stage0(job: dict[str, Any]) -> dict[str, Any]:
     # containers in other phases, so without this the volume view is whatever
     # it was when this container started.
     result_volume.reload()
-    from scripts.run_m2d_stage0_probe import run
+    stage = job.get("stage", DEFAULT_STAGE)
+    run = importlib.import_module(STAGES[stage]["module"]).run
 
-    args = _runner_args(job)
+    args = _runner_args(job, stage)
     result = run(args)
     result_volume.commit()
     return {
         "status": result["status"],
+        "stage": stage,
         "dataset": job["dataset"],
         "cell": result["cell"],
         "queries": result["panel"]["queries"],
@@ -540,7 +568,27 @@ def run_stage0(job: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _staging_suffix(job: dict[str, Any], remote_path: str) -> PurePosixPath:
+@app.function(
+    image=image,
+    volumes={STORAGE_ROOT: result_volume},
+    timeout=TIMEOUT_SECONDS,
+    cpu=CPU,
+    memory=MEMORY_MB,
+)
+def run_primitives(job: dict[str, Any]) -> dict[str, Any]:
+    """Condition B's measurement, on one failure cell.
+
+    A thin wrapper rather than a second app: the two runners differ in what
+    they ask, not in where they run, what they may read, or what authorised
+    them.
+    """
+
+    return run_stage0.local({**job, "stage": "primitives"})
+
+
+def _staging_suffix(
+    job: dict[str, Any], remote_path: str, stage: str = DEFAULT_STAGE
+) -> PurePosixPath:
     """Where one physical run lands under the local staging directory.
 
     The identity segments and the filename, and nothing above them. What is
@@ -556,7 +604,7 @@ def _staging_suffix(job: dict[str, Any], remote_path: str) -> PurePosixPath:
     is a fetch that fails on the host after the science has already succeeded.
     """
 
-    return PurePosixPath(remote_path).relative_to(_output_root(job))
+    return PurePosixPath(remote_path).relative_to(_output_root(job, stage))
 
 
 def _download(remote_path: str, local_path: Path) -> None:
@@ -567,7 +615,7 @@ def _download(remote_path: str, local_path: Path) -> None:
             stream.write(chunk)
 
 
-def _artifact_names() -> tuple[str, str, str]:
+def _artifact_names(stage: str = DEFAULT_STAGE) -> tuple[str, str, str]:
     """The phase, arm and filename run_artifacts will have used.
 
     Imported here rather than at module scope on purpose. This module is
@@ -581,12 +629,12 @@ def _artifact_names() -> tuple[str, str, str]:
         if str(path) not in sys.path:
             sys.path.insert(0, str(path))
     from mp_retrieval.run_artifacts import ARTIFACT_FILENAME
-    from scripts.run_m2d_stage0_probe import ARM, PHASE
 
-    return PHASE, ARM, ARTIFACT_FILENAME
+    runner = importlib.import_module(STAGES[stage]["module"])
+    return runner.PHASE, runner.ARM, ARTIFACT_FILENAME
 
 
-def _remote_prefix(job: dict[str, Any]) -> PurePosixPath:
+def _remote_prefix(job: dict[str, Any], stage: str = DEFAULT_STAGE) -> PurePosixPath:
     """The logical result's directory on the volume, above the physical runs.
 
     ``<phase>/<dataset>/<regime>/<seed>/<arm>`` -- run_artifacts orders its
@@ -594,12 +642,12 @@ def _remote_prefix(job: dict[str, Any]) -> PurePosixPath:
     under it is one directory per commit, and one per run inside that.
     """
 
-    phase, arm, _ = _artifact_names()
-    return _output_root(job) / phase / job["dataset"] / job["regime"] / "no_seed" / arm
+    phase, arm, _ = _artifact_names(stage)
+    return _output_root(job, stage) / phase / job["dataset"] / job["regime"] / "no_seed" / arm
 
 
-def _remote_artifacts(prefix: PurePosixPath) -> list[str]:
-    _, _, filename = _artifact_names()
+def _remote_artifacts(prefix: PurePosixPath, stage: str = DEFAULT_STAGE) -> list[str]:
+    _, _, filename = _artifact_names(stage)
     relative = str(prefix).removeprefix(f"{STORAGE_ROOT}/")
     found = []
     for entry in result_volume.listdir(relative, recursive=True):
@@ -609,7 +657,9 @@ def _remote_artifacts(prefix: PurePosixPath) -> list[str]:
 
 
 def fetch(
-    datasets: str = ",".join(CELLS), expect_source_commit: str = ""
+    datasets: str = ",".join(CELLS),
+    expect_source_commit: str = "",
+    stage: str = DEFAULT_STAGE,
 ) -> list[dict[str, Any]]:
     """Copy the selected result for each cell down beside the declaration.
 
@@ -633,18 +683,18 @@ def fetch(
         )
     requested = [name.strip() for name in datasets.split(",") if name.strip()]
     fetched = []
-    local_root = HOST_REPO_ROOT / "outputs" / OUTPUT_PREFIX / "stage0"
+    local_root = HOST_REPO_ROOT / "outputs" / OUTPUT_PREFIX / STAGES[stage]["prefix"]
     staging = local_root / "runs"
     for job in _jobs(requested):
         cell = f"{job['dataset']}/{job['regime']}"
-        remotes = _remote_artifacts(_remote_prefix(job))
+        remotes = _remote_artifacts(_remote_prefix(job, stage), stage)
         if not remotes:
             raise RuntimeError(f"{cell}: the volume holds no artifact under its prefix")
         from mp_retrieval import run_artifacts
 
         receipts = []
         for remote in remotes:
-            local = staging / _staging_suffix(job, remote)
+            local = staging / _staging_suffix(job, remote, stage)
             _download(remote, local)
             receipts.append(run_artifacts.verify_artifact_file(local))
         selected = run_artifacts.select_logical_result(
