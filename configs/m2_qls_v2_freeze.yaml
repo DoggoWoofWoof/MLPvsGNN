@@ -371,6 +371,68 @@ amendments:
       fit has run and no scientific conclusion is drawn here; this amendment
       moves bytes and files a check.
 
+  - date: 2026-09-07
+    change: >-
+      STEP G: THE SCREEN RAN, AND THE FROZEN RULE WAS APPLIED TO IT
+      MECHANICALLY. (1) WHAT RAN. All six datasets, both stages, under
+      launch_authorization.execution_placement and nowhere else -- six CPU
+      build containers spawned at commit 3489f4c and six GPU fit containers
+      at commit eae453a, five of each on extra_wNzonK and hotpotqa_clean's
+      pair on extra_ip9HxU. The fits were submitted per dataset as each
+      build finished rather than in one batch after the last one: the same
+      containers in a different order, since both stages are per dataset,
+      which cost nothing and saved about an hour of wall clock while
+      hotpotqa_clean's 111-minute build ran. THE TWO COMMITS ARE NOT A
+      SCIENCE DIFFERENCE. git diff 3489f4c..eae453a is four added files --
+      scripts/m2_fetch_results.py, scripts/m2_selection_report.py and their
+      two test modules -- with nothing under src/, nothing in the runner and
+      nothing in this declaration, so both stages ran identical scientific
+      code. (2) THE WORKLOAD IS THE ONE THAT WAS DECLARED. 15 new seed-0
+      fits, all 15 marked new by the runner, matching
+      m2_selection_matrix.compute_estimate's declared count exactly:
+      QLS-UNIVERSAL in all 14 cells, plus musique_clean/R1 BASE, the one
+      reference this track had never fit. No reused fit was re-run and no
+      fit outside the matrix was written. (3) THE VERDICT IS
+      ADVANCE_QLS_UNIVERSAL, computed by scripts/m2_selection_report.py from
+      this file's own thresholds, artifact
+      outputs/m2_qls_v2_freeze/selection_report.json, 14 of 14 cells
+      present. macro_delta +1.776pp; every dataset_delta positive; 13 of 14
+      cell deltas positive; the one negative cell is hotpotqa_clean/R2 at
+      -0.026pp, which is an order of magnitude inside the -0.25pp macro
+      tolerance and twenty times inside the -0.50pp material floor. All
+      three clauses hold; failing_cells, failing_datasets and
+      gray_band_members are all empty, so the 3-seed gray procedure was
+      never triggered. (4) WHAT THE MACRO IS, AND WHAT IT IS NOT. webqsp
+      contributes +9.881pp while the other five datasets contribute between
+      +0.065pp and +0.376pp each, so the headline macro is substantially a
+      webqsp number. The verdict does not rest on it: dropping webqsp
+      entirely leaves macro_delta at +0.155pp with every clause still
+      satisfied, because advancement is a floor condition and no cell comes
+      near the floor. webqsp's own margins deserve the caution M1B already
+      filed about that dataset -- 63 held-out queries, and its R3 reference
+      (M1B's BASE seed 0) has recall@1 of 0.00045, so the +19.342pp there is
+      measured against a near-degenerate incumbent rather than a strong one.
+      (5) WHAT THIS RESULT IS NOT. One seed, development substrate, no
+      bootstrap, no canonical CRAG data read. It selects the object later
+      phases test; it confirms nothing, and nothing here may be described as
+      final. (6) COST. $4.3914 measured across both workspaces ($1.9492 on
+      extra_wNzonK, $2.4422 on extra_ip9HxU) against the $9.00 ceiling and
+      the $4.33 amendment 2 projected; training totalled 1136.9 s against
+      1181.1 s estimated. One figure needs stating rather than netting out:
+      the launcher's budget gate reported an expected spend of $7.96 for
+      hotpotqa_clean's final submission, which is the overstatement its own
+      basis string declares -- it prices that dataset's whole build-plus-fit
+      chain at the GPU rate even though the build had already run to
+      completion on CPU -- so adding it to spend-to-date would have
+      double-counted a stage already paid for. (7) INSTRUMENTATION HELD.
+      Every one of the 15 fits carries the amendment 2 field list, and
+      aggregate_metrics_reconstructed_from_rows is true for all 15, so each
+      stored aggregate was rebuilt from that fit's own per-query rows rather
+      than carried from a summary. (8) NOTHING ELSE IS OPENED. qls_universal
+      is byte-for-byte what it was before any result existed, M2B semantic
+      minimality stays closed, no seed beyond 0 is authorised, and no GNN
+      work of any kind is authorised. Step H is a stop for review.
+
 status: DECLARED_LAUNCH_CONDITIONALLY_AUTHORISED
 this_file_authorises: >-
   file_this_declaration_derive_qls_cell_from_already_completed_m1a_and_m1b_evidence_estimate_m2_compute_and_conditionally_launch_the_declared_seed_zero_m2_screen_once_every_launch_authorization_gate_is_true
@@ -1475,6 +1537,123 @@ m2_output:
     Restated because it is the failure this whole ordering exists to
     prevent. Whatever the report says, the candidate specification stays as
     declared.
+
+# --------------------------------------------------------------------------
+# What M2 produced -- filed by amendment 7, 2026-09-07 (step G)
+# --------------------------------------------------------------------------
+
+result:
+  status: M2_SCREEN_COMPLETE
+  date: 2026-09-07
+  outcome: ADVANCE_QLS_UNIVERSAL
+  outcome_source: >-
+    universal_selection_rule.outcome_labels, applied by
+    scripts/m2_selection_report.py to all 14 declared cells. The label was
+    not chosen here; it is the one the script returned, and the script was
+    committed at eae453a while the feature builds were still running.
+  substrate_scope: >-
+    DEVELOPMENT SUBSTRATE ONLY. One seed, no bootstrap, six current
+    datasets. This selects the universal candidate the later development
+    phases test against; it is not a final or canonical claim, and no
+    canonical CRAG data was read. Same framing as
+    m1b_targeted_resolution.yaml#result.substrate_scope.
+  primary_metric: recall_at_5
+  macro_delta_pp: 1.776
+  dataset_delta_pp:
+    squad_clean: 0.077
+    2wiki_clean: 0.181
+    hotpotqa_clean: 0.077
+    metaqa: 0.065
+    webqsp: 9.881
+    musique_clean: 0.376
+  cell_delta_pp:
+    squad_clean/R1: 0.077          # vs BASE
+    2wiki_clean/R1: 0.125          # vs BASE
+    2wiki_clean/R2: 0.083          # vs BASE
+    2wiki_clean/R3: 0.333          # vs BASE+NODE_ROLE
+    hotpotqa_clean/R1: 0.077       # vs BASE+SUPPORT
+    hotpotqa_clean/R2: -0.026      # vs BASE+SUPPORT -- the only negative cell
+    hotpotqa_clean/R3: 0.179       # vs BASE+SUPPORT
+    metaqa/R1: 0.044               # vs BASE
+    metaqa/R2: 0.017               # vs BASE+PATH
+    metaqa/R3: 0.134               # vs BASE+PATH
+    webqsp/R1: 5.150               # vs BASE
+    webqsp/R2: 5.150               # vs BASE
+    webqsp/R3: 19.342              # vs BASE
+    musique_clean/R1: 0.376        # vs BASE, itself a new M2 fit
+  clauses:
+    1_macro_within_tolerance: true
+    2_no_dataset_material_regression: true
+    3_no_cell_material_regression: true
+  failing_cells: []
+  failing_datasets: []
+  gray_band_members: []
+  robustness_without_webqsp: >-
+    webqsp supplies +9.881pp of the +1.776pp macro; the other five datasets
+    supply between +0.065pp and +0.376pp. Recomputing the macro over the
+    five datasets without webqsp gives +0.155pp, and every clause still
+    holds, because advancement is a floor condition and the worst cell in
+    the whole screen is -0.026pp against a -0.50pp floor. The verdict
+    therefore does not depend on webqsp; the size of the headline number
+    does.
+  webqsp_margins_carry_m1b_s_caution: >-
+    63 held-out queries, and this cell's R3 reference -- M1B's BASE seed 0
+    -- has recall@1 of 0.00045, so +19.342pp is measured against a
+    near-degenerate incumbent. M1B already filed webqsp's wide bootstrap CI
+    for exactly this reason, at
+    m1b_targeted_resolution.yaml#result.verdicts.webqsp -- reported, not
+    smoothed over, and decisive of nothing on its own.
+  fits:
+    new_seed_zero_fits_written: 15
+    all_marked_new_by_the_runner: true
+    composition: >-
+      QLS-UNIVERSAL in all 14 declared cells, plus musique_clean/R1 BASE,
+      the one reference arm this track had never fit. No reused fit was
+      re-run and nothing outside m2_selection_matrix was written.
+    total_parameters_every_fit: 3585          # 3072 semantic + 513 scorer, identical in all 15
+    total_training_seconds: 1136.9            # against 1181.1 estimated by amendment 2
+  execution:
+    build_stage_commit: 3489f4cee74c159cb52f7c5a6927fa5c09cf4f8b
+    fit_stage_commit: eae453af97d50aece88d618438ca53e6dc6a7f2a
+    the_two_commits_differ_only_in_analysis_code: >-
+      git diff 3489f4c..eae453a adds scripts/m2_fetch_results.py,
+      scripts/m2_selection_report.py and their two test modules and changes
+      nothing else -- nothing under src/, nothing in the runner, nothing in
+      this declaration. Both stages ran identical scientific code.
+    placement_honoured: >-
+      Every container ran on the workspace
+      launch_authorization.execution_placement names, enforced before
+      deploy and before spawn by
+      modal_m2_qls_v2_freeze.check_execution_placement.
+    hotpotqa_clean_build_minutes: 111         # against 79 estimated; both far inside the 24h window
+  cost:
+    measured_usd_total: 4.3914
+    by_workspace: {extra_wNzonK: 1.9492, extra_ip9HxU: 2.4422}
+    ceiling_usd: 9.00
+    amendment_two_projection_usd: 4.33
+    why_the_launcher_reported_a_larger_number: >-
+      The budget gate quoted an expected spend of $7.96 for
+      hotpotqa_clean's final submission. That is the overstatement its own
+      basis string declares: the cost unit is a dataset's whole
+      build-plus-fit serial chain, priced at the GPU rate, and that
+      dataset's 111-minute build had already run to completion on CPU. The
+      figure is safe to gate on and wrong to add to spend-to-date, which
+      would double-count a stage already paid for.
+  instrumentation:
+    every_fit_carries_the_amendment_two_field_list: true
+    aggregate_metrics_reconstructed_from_rows: true      # all 15 fits
+  artifacts:
+    - outputs/m2_qls_v2_freeze/selection_report.json
+    - outputs/m2_qls_v2_freeze/reuse_audit.json
+    - outputs/m2_qls_v2_freeze/data_placement.json
+    - outputs/m2_qls_v2_freeze/headline/            # six per-dataset result files
+    - outputs/m2_qls_v2_freeze/build/               # six per-dataset feature-build files
+  what_this_does_not_authorise: >-
+    Anything past step H. The gray-zone 3-seed procedure was not triggered
+    and is not opened; no seed beyond 0 is authorised; qls_universal is
+    unchanged and stays unchanged; M2B semantic minimality stays closed;
+    no GNN work of any kind is authorised. Each is its own separate,
+    dated, reviewed declaration.
 
 # --------------------------------------------------------------------------
 # Standing prohibitions -- restated, unchanged in force

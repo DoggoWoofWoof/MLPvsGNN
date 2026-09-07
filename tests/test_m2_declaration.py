@@ -36,6 +36,7 @@ CONFIG_PATH = pathlib.Path("configs/m2_qls_v2_freeze.yaml")
 M1A_CONFIG_PATH = pathlib.Path("configs/m1a_feature_screen.yaml")
 DERIVATION_ARTIFACT = pathlib.Path("outputs/m2_qls_v2_freeze/qls_cell_derivation.json")
 ESTIMATE_ARTIFACT = pathlib.Path("outputs/m2_qls_v2_freeze/compute_estimate.json")
+SELECTION_ARTIFACT = pathlib.Path("outputs/m2_qls_v2_freeze/selection_report.json")
 
 SIX_DATASETS = {"squad_clean", "2wiki_clean", "hotpotqa_clean", "metaqa", "webqsp", "musique_clean"}
 EXCLUDED_FAMILIES = {"GEOMETRY", "DIFFUSION", "TOPOLOGY"}
@@ -1352,3 +1353,216 @@ def test_m2b_stays_closed_until_m2_has_selected(config):
     assert "no_m2b_semantic_minimality_until_m2_has_selected_and_frozen_the_structural_universal_candidate" in prohibitions
     assert "no_extra_seeds_beyond_seed_zero_without_a_further_amendment" in prohibitions
     assert "the_semantic_minimality_study" in config["does_not_authorise"]
+
+
+# --- amendment 7 / result -------------------------------------------------------
+
+
+def test_amendment_seven_records_the_verdict_the_script_returned(config):
+    """The one place a frozen rule can still be bent is the transcription.
+
+    Everything upstream of this point was built so the verdict could not be
+    chosen: the rule closed before the runner existed, and the report script
+    was committed while the feature builds were still running. All of that is
+    undone if the number written into the declaration is not the number the
+    script produced, so the file and the artifact are compared field by field
+    rather than spot-checked.
+    """
+
+    if len(config["amendments"]) < 7:
+        return
+    amendment = config["amendments"][6]
+    assert str(amendment["date"]) == "2026-09-07"
+    text = _flat(amendment["change"])
+    assert "STEP G" in text
+    assert "APPLIED TO IT" in text and "MECHANICALLY" in text
+    assert "scripts/m2_selection_report.py" in text
+
+    result = config["result"]
+    assert result["status"] == "M2_SCREEN_COMPLETE"
+    assert result["outcome"] in config["universal_selection_rule"]["outcome_labels"], (
+        "the outcome must be one of the three labels the rule declared in advance"
+    )
+    assert result["outcome"] in text
+    assert result["primary_metric"] == config["universal_selection_rule"]["primary_metric"]
+
+    # One seed, development substrate, no bootstrap -- restated where a reader
+    # looking only at the result block will see it.
+    scope = _flat(result["substrate_scope"])
+    assert "DEVELOPMENT SUBSTRATE ONLY" in scope
+    assert "not a final or canonical claim" in scope
+    assert "no canonical CRAG data was read" in scope
+    assert "One seed" in scope and "no bootstrap" in scope
+
+
+def test_the_result_block_reports_every_declared_cell_and_no_others(config):
+    result = config["result"]
+    declared = {
+        f"{dataset}/{regime}"
+        for dataset, regimes in config["m2_selection_matrix"]["cells"].items()
+        for regime in regimes
+    }
+    assert set(result["cell_delta_pp"]) == declared, (
+        "a verdict reported over a different cell set is a different rule"
+    )
+    assert set(result["dataset_delta_pp"]) == SIX_DATASETS
+    assert result["fits"]["new_seed_zero_fits_written"] == config["compute"]["new_fits"]
+
+
+def test_the_filed_verdict_is_consistent_with_its_own_thresholds(config):
+    """Independent of the artifact: the clauses must follow from the numbers.
+
+    If a later edit softened a delta or flipped a clause, this catches it from
+    the declaration alone, with no output file present.
+    """
+
+    result = config["result"]
+    thresholds = config["universal_selection_rule"]["thresholds"]
+    cells = result["cell_delta_pp"]
+    datasets = result["dataset_delta_pp"]
+
+    assert result["clauses"]["1_macro_within_tolerance"] is (
+        result["macro_delta_pp"] >= thresholds["macro_tolerance_pp"]
+    )
+    assert result["clauses"]["2_no_dataset_material_regression"] is (
+        min(datasets.values()) >= thresholds["dataset_material_regression_pp"]
+    )
+    assert result["clauses"]["3_no_cell_material_regression"] is (
+        min(cells.values()) >= thresholds["cell_material_regression_pp"]
+    )
+    advances = all(result["clauses"].values())
+    assert (result["outcome"] == "ADVANCE_QLS_UNIVERSAL") is advances
+
+    assert result["failing_cells"] == [
+        name for name, value in cells.items()
+        if value < thresholds["cell_material_regression_pp"]
+    ]
+    assert result["failing_datasets"] == [
+        name for name, value in datasets.items()
+        if value < thresholds["dataset_material_regression_pp"]
+    ]
+    # The gray band is half-open at both ends; nothing in this screen is in it,
+    # and the file must not claim a 3-seed expansion it did not earn.
+    floor = thresholds["cell_material_regression_pp"]
+    tolerance = thresholds["macro_tolerance_pp"]
+    in_band = [
+        name for name, value in {**cells, **datasets}.items()
+        if floor <= value < tolerance
+    ]
+    assert result["gray_band_members"] == in_band
+
+
+def test_a_dataset_delta_is_the_mean_of_its_own_cells(config):
+    """The two-level aggregation, checked on the filed numbers rather than
+    trusted. A dataset mean that is not the mean of its cells would let a
+    regression hide between the levels."""
+
+    result = config["result"]
+    per_dataset: dict[str, list[float]] = {}
+    for name, value in result["cell_delta_pp"].items():
+        dataset, _regime = name.split("/")
+        per_dataset.setdefault(dataset, []).append(value)
+    for dataset, values in per_dataset.items():
+        expected = sum(values) / len(values)
+        assert result["dataset_delta_pp"][dataset] == pytest.approx(expected, abs=0.002), dataset
+    macro = sum(result["dataset_delta_pp"].values()) / len(result["dataset_delta_pp"])
+    assert result["macro_delta_pp"] == pytest.approx(macro, abs=0.002)
+    assert len(per_dataset) == 6, "the macro weights datasets equally, so all six must be there"
+
+
+def test_the_result_states_what_the_headline_number_rests_on(config):
+    """webqsp supplies most of the macro. A result block that reported +1.776pp
+    without saying so would be true and misleading at the same time."""
+
+    result = config["result"]
+    deltas = result["dataset_delta_pp"]
+    largest = max(deltas, key=lambda name: deltas[name])
+    others = [value for name, value in deltas.items() if name != largest]
+    assert deltas[largest] > 10 * max(others), (
+        "this test assumes one dataset dominates; if that stops being true, the "
+        "disclosure below is no longer the right thing to require"
+    )
+    robustness = _flat(result["robustness_without_webqsp"])
+    assert largest in robustness
+    # The verdict must be shown to survive without it, with the recomputed number.
+    without = sum(others) / len(others)
+    assert f"{without:.3f}" in robustness, (
+        f"the macro without {largest} is {without:.3f}pp and the block does not state it"
+    )
+    assert "every clause still holds" in robustness
+    assert "floor condition" in robustness
+    # And the caution M1B already filed about that dataset is carried, not dropped.
+    caution = _flat(result["webqsp_margins_carry_m1b_s_caution"])
+    assert "63 held-out queries" in caution
+    assert "m1b_targeted_resolution.yaml#result.verdicts.webqsp" in caution, (
+        "a folded scalar joins lines with a space; keep the identifier on one line"
+    )
+
+
+def test_the_result_does_not_quietly_reprice_the_ceiling(config):
+    """The launcher's own gate quoted a larger number than was spent, for a
+    stated reason. Silence about that gap is how a ceiling stops meaning
+    anything."""
+
+    cost = config["result"]["cost"]
+    assert cost["measured_usd_total"] < cost["ceiling_usd"]
+    assert cost["measured_usd_total"] == pytest.approx(
+        sum(cost["by_workspace"].values()), abs=0.0001
+    )
+    assert set(cost["by_workspace"]) == set(
+        config["launch_authorization"]["execution_placement"].values()
+    ), "spend is reported per workspace, and those are the workspaces that ran it"
+    why = _flat(cost["why_the_launcher_reported_a_larger_number"])
+    assert "$7.96" in why
+    assert "overstatement" in why
+    assert "already run to completion on CPU" in why
+    assert "double-count" in why
+
+
+def test_the_result_closes_nothing_it_was_not_authorised_to_close(config):
+    result = config["result"]
+    text = _flat(result["what_this_does_not_authorise"])
+    for phrase in ("3-seed", "no seed beyond 0", "M2B", "GNN"):
+        assert phrase in text, f"the result block does not close {phrase}"
+    assert result["gray_band_members"] == [], (
+        "if a later screen does land in the gray band, the 3-seed expansion needs "
+        "its own amendment and this assertion is the reminder"
+    )
+    # The candidate itself is unchanged -- the whole point of the ordering.
+    assert "unchanged" in text
+    assert "modifying_qls_universal_after_seeing_any_m2_result" in config["does_not_authorise"]
+
+
+@pytest.mark.skipif(
+    not SELECTION_ARTIFACT.exists(),
+    reason="selection report not present; run scripts/m2_selection_report.py",
+)
+def test_the_filed_numbers_are_the_scripts_numbers(config):
+    """The transcription check. Every delta in the declaration is compared to
+    the artifact the committed script wrote, so the file cannot drift from the
+    verdict it claims to record."""
+
+    artifact = json.loads(SELECTION_ARTIFACT.read_text(encoding="utf-8"))
+    assert artifact["status"] == "M2_SELECTION_COMPLETE"
+    verdict = artifact["verdict"]
+    result = config["result"]
+
+    assert result["outcome"] == verdict["outcome"]
+    assert result["clauses"] == verdict["clauses"]
+    assert result["failing_cells"] == verdict["failing_cells"]
+    assert result["failing_datasets"] == verdict["failing_datasets"]
+    assert result["gray_band_members"] == verdict["gray_band_members"]
+    assert result["macro_delta_pp"] == pytest.approx(verdict["macro_delta_pp"], abs=0.0005)
+    for name, value in result["cell_delta_pp"].items():
+        assert value == pytest.approx(verdict["cell_delta_pp"][name], abs=0.0005), name
+    for name, value in result["dataset_delta_pp"].items():
+        assert value == pytest.approx(verdict["dataset_delta_pp"][name], abs=0.0005), name
+    # The thresholds the script applied are this file's, not a second copy.
+    declared = config["universal_selection_rule"]["thresholds"]
+    assert verdict["thresholds_pp"]["macro_tolerance"] == declared["macro_tolerance_pp"]
+    assert verdict["thresholds_pp"]["cell_material_regression"] == declared[
+        "cell_material_regression_pp"
+    ]
+    assert result["execution"]["fit_stage_commit"] in artifact["source_commits"], (
+        "the commit the fits recorded is the commit the result block names"
+    )

@@ -429,6 +429,72 @@ def secondary_summary(rows: list[dict[str, Any]], keys: list[str],
     return summary
 
 
+def systems_and_parameter_table(headlines: dict[str, dict], rows: list[dict[str, Any]],
+                                ) -> dict[str, Any]:
+    """What the selected object costs, per cell.
+
+    m2_output.contents names this table alongside the deltas: params, train
+    seconds, feature-build p50/p95/p99, peak VRAM/RSS. M2's claim is a
+    parameter-efficiency claim as much as a recall claim, and M4's Pareto table
+    is built from exactly these columns, so the numbers belong in the report
+    rather than only in the six per-dataset result files.
+
+    Candidate side only, deliberately. The reference fits were run in M1A and
+    M1B, in other launches on other days; putting their seconds and megabytes
+    in the same table would read as a cost comparison that nothing here
+    controls for. Parameter counts are the exception -- they are a property of
+    the specification, not of the run -- so the declared reference-arm width is
+    carried and the timings are not.
+    """
+
+    table: dict[str, Any] = {
+        "measured_for": CANDIDATE_ARM,
+        "why_candidate_only": (
+            "Reference fits were run in M1A/M1B on other days and other launches; their "
+            "timings are not controlled against these and are not reported here as if "
+            "they were. Parameter counts are a property of the specification and are "
+            "reported for both."
+        ),
+        "cells": {},
+    }
+    for row in rows:
+        if not row["present"]:
+            continue
+        dataset, regime = row["dataset"], row["regime"]
+        cell = headlines[dataset]["cells"][regime]
+        record = cell["arms"][CANDIDATE_ARM]
+        parameters = record.get("parameters") or {}
+        training = record.get("training") or {}
+        inference = record.get("inference") or {}
+        build_latency = cell.get("uncached_feature_build_latency_ms") or {}
+        table["cells"][f"{dataset}/{regime}"] = {
+            "parameters": {
+                "total": parameters.get("total"),
+                "semantic": parameters.get("semantic"),
+                "scorer": parameters.get("scorer"),
+            },
+            "train_seconds": training.get("training_seconds"),
+            "uncached_feature_build_ms": {
+                level: build_latency.get(level) for level in ("p50", "p95", "p99")
+            },
+            "peak_train_vram_mb": training.get("peak_training_gpu_memory_mb_total"),
+            "peak_train_rss_mb": (record.get("systems") or {}).get("peak_train_rss_mb"),
+            "peak_train_rss_mb_provenance": (record.get("systems") or {}).get(
+                "peak_train_rss_mb_provenance"
+            ),
+            "inference_latency_ms_per_query": inference.get("latency_ms_per_query"),
+            "train_queries": cell.get("train_queries"),
+            "held_out_queries": cell.get("held_out_queries"),
+        }
+    totals = [c["parameters"]["total"] for c in table["cells"].values()]
+    table["parameters_identical_in_every_cell"] = len(set(totals)) == 1
+    table["total_parameters"] = totals[0] if table["parameters_identical_in_every_cell"] else None
+    table["total_train_seconds"] = sum(
+        c["train_seconds"] for c in table["cells"].values() if c["train_seconds"] is not None
+    )
+    return table
+
+
 def build(headline_dir: Path = HEADLINE_DIR) -> dict[str, Any]:
     declaration = yaml.safe_load(DECLARATION_PATH.read_text(encoding="utf-8"))
     audit = json.loads(REUSE_AUDIT_PATH.read_text(encoding="utf-8"))
@@ -457,6 +523,16 @@ def build(headline_dir: Path = HEADLINE_DIR) -> dict[str, Any]:
         "declared_cells": declared_cells,
         "cells_reported": len(complete),
         "cells_missing": missing,
+        # Carried into the report unchanged, per m2_output.contents. It is the
+        # map every cell's reference arm was resolved from, so a reader can see
+        # what each delta was measured against without opening the declaration.
+        "qls_cell_incumbent_map": {
+            f"{row['dataset']}/{row['regime']}": {
+                "reference_arm": row["reference_arm"],
+                "matrix_status": row.get("reference_matrix_status"),
+            }
+            for row in rows
+        },
         "cells": rows,
     }
     if missing:
@@ -470,6 +546,7 @@ def build(headline_dir: Path = HEADLINE_DIR) -> dict[str, Any]:
 
     report["verdict"] = verdict(declaration, complete, primary)
     report["secondary_diagnostics"] = secondary_summary(complete, keys, primary)
+    report["systems_and_parameter_table"] = systems_and_parameter_table(headlines, complete)
     report["secondary_diagnostics_never_decide"] = (
         rule["secondary_diagnostics"]["never_deciding"]
     )

@@ -21,6 +21,7 @@ from __future__ import annotations
 import copy
 import json
 import pathlib
+import re
 import sys
 
 import pytest
@@ -97,14 +98,25 @@ MUSIQUE_BASE_METRICS = dict.fromkeys(METRIC_KEYS, 0.40)
 
 def _candidate_record(declaration: dict, metrics: dict[str, float], **overrides) -> dict:
     schema = declaration["qls_universal"]["feature_schema"]
+    counts = declaration["qls_universal"]["parameter_count"]
     record = {
         "arm": report.CANDIDATE_ARM,
         "runner_arm": schema["arm_name"],
         "precomputed_width": schema["precomputed_width"],
-        "parameters": {"total": declaration["qls_universal"]["parameter_count"]["total"]},
+        "parameters": {
+            "total": counts["total"],
+            "semantic": counts["semantic"],
+            "scorer": counts["scorer"],
+        },
         "seed": 0,
         "matrix_status": "new",
         "metrics": dict(metrics),
+        # The systems fields the real runner writes. Present here so the shape
+        # the report reads is the shape it will meet, not a reduced one.
+        "training": {"training_seconds": 12.5, "peak_training_gpu_memory_mb_total": 640.0},
+        "inference": {"latency_ms_per_query": 1.5},
+        "systems": {"peak_train_rss_mb": 4096.0,
+                    "peak_train_rss_mb_provenance": "synthetic"},
     }
     record.update(overrides)
     return record
@@ -149,7 +161,10 @@ def write_screen(declaration: dict, tmp_path: pathlib.Path,
                     "arm": reference_arm, "seed": 0, "matrix_status": "new",
                     "metrics": dict(ref_metrics),
                 }
-            cells_out[regime] = {**cell, "regime": regime, "arms": arms}
+            cells_out[regime] = {
+                **cell, "regime": regime, "arms": arms,
+                "uncached_feature_build_latency_ms": {"p50": 2.5, "p95": 3.4, "p99": 4.0},
+            }
             payload = top
 
         assert payload is not None
@@ -640,3 +655,116 @@ def test_the_committed_report_still_matches_the_declaration(declaration):
         len(regimes) for regimes in declaration["m2_selection_matrix"]["cells"].values()
     )
     assert verdict["advances"] is (verdict["outcome"] == "ADVANCE_QLS_UNIVERSAL")
+
+
+# --------------------------------------------------------------------------
+# What the report is required to contain, not just what it happens to contain
+# --------------------------------------------------------------------------
+
+
+#: m2_output.contents name -> where a complete report carries it. The mapping is
+#: explicit because the declared names are descriptions, not key names, and a
+#: test that only checked key spelling would pass while an item was missing.
+#: This list is the reason the systems table exists at all: it was declared and
+#: not produced, and nothing failed.
+CONTENT_LOCATIONS = {
+    "qls_cell_incumbent_map": lambda r: r["qls_cell_incumbent_map"],
+    "qls_universal_six_dataset_dataset_balanced_evaluation":
+        lambda r: r["verdict"]["dataset_delta_pp"],
+    "per_cell_deltas": lambda r: r["verdict"]["cell_delta_pp"],
+    "per_dataset_deltas": lambda r: r["verdict"]["dataset_delta_pp"],
+    "macro_delta": lambda r: r["verdict"]["macro_delta_pp"],
+    "secondary_diagnostics_table": lambda r: r["secondary_diagnostics"],
+    "systems_and_parameter_table": lambda r: r["systems_and_parameter_table"],
+    "verdict": lambda r: r["verdict"]["outcome"],
+}
+
+
+def test_a_complete_report_carries_every_item_m2_output_declares(declaration, tmp_path):
+    """The declaration promises eight things. Producing seven of them is an
+    incomplete step G, and without this test that is invisible."""
+
+    screen = write_screen(declaration, tmp_path, {})
+    built = report.build(headline_dir=screen)
+    assert built["status"] == "M2_SELECTION_COMPLETE"
+    declared = declaration["m2_output"]["contents"]
+    assert set(declared) == set(CONTENT_LOCATIONS), (
+        "m2_output.contents changed; this map has to change with it or the check "
+        "silently stops covering the new item"
+    )
+    for name in declared:
+        value = CONTENT_LOCATIONS[name](built)
+        assert value is not None and value != {} and value != [], f"{name} is empty"
+
+
+def test_the_systems_table_covers_every_reported_cell(declaration, tmp_path):
+    screen = write_screen(declaration, tmp_path, {})
+    table = report.build(headline_dir=screen)["systems_and_parameter_table"]
+    expected = {
+        f"{dataset}/{regime}"
+        for dataset, regimes in declaration["m2_selection_matrix"]["cells"].items()
+        for regime in regimes
+    }
+    assert set(table["cells"]) == expected
+    for name, row in table["cells"].items():
+        assert row["parameters"]["total"] == declaration["qls_universal"]["parameter_count"]["total"], name
+        assert row["train_seconds"] is not None, name
+        assert set(row["uncached_feature_build_ms"]) == {"p50", "p95", "p99"}, name
+        assert row["peak_train_vram_mb"] is not None, name
+    assert table["parameters_identical_in_every_cell"] is True
+    assert table["total_parameters"] == declaration["qls_universal"]["parameter_count"]["total"]
+
+
+def test_the_systems_table_reports_the_candidate_and_says_so(declaration, tmp_path):
+    """A cost table with reference timings in it would read as a cost comparison
+    across M1A, M1B and M2 launches that nothing controls for. It reports one
+    side and says which."""
+
+    screen = write_screen(declaration, tmp_path, {})
+    table = report.build(headline_dir=screen)["systems_and_parameter_table"]
+    assert table["measured_for"] == report.CANDIDATE_ARM
+    why = " ".join(table["why_candidate_only"].split())
+    assert "not controlled" in why
+    assert "M1A/M1B" in why
+    # And it reads one arm, not whichever arm happens to be in the cell.
+    source = (REPO_ROOT / "scripts" / "m2_selection_report.py").read_text(encoding="utf-8")
+    body = source.split("def systems_and_parameter_table")[1].split("\ndef ")[0]
+    code = body.split('"""')[2]
+    indexed = re.findall(r'\["arms"\]\[([^\]]+)\]', code)
+    assert indexed == ["CANDIDATE_ARM"], (
+        f"the table indexes arms by {indexed}; it must read the candidate only"
+    )
+    assert 'row["reference_arm"]' not in code
+
+
+def test_the_systems_table_does_not_reach_the_verdict(declaration, tmp_path):
+    """Cost is reported, never decisive. Changing every systems number must not
+    move the outcome by so much as a label."""
+
+    def slow_everything(_dataset, payload):
+        for cell in payload["cells"].values():
+            cell["uncached_feature_build_latency_ms"] = {"p50": 9e4, "p95": 9e5, "p99": 9e6}
+            for arm in cell["arms"].values():
+                arm.setdefault("training", {})["training_seconds"] = 9e5
+                arm["training"]["peak_training_gpu_memory_mb_total"] = 9e5
+                arm.setdefault("inference", {})["latency_ms_per_query"] = 9e5
+
+    baseline = report.build(headline_dir=write_screen(declaration, tmp_path / "a", {}))
+    slowed = report.build(
+        headline_dir=write_screen(declaration, tmp_path / "b", {}, mutate=slow_everything)
+    )
+    assert slowed["verdict"] == baseline["verdict"]
+    assert slowed["systems_and_parameter_table"] != baseline["systems_and_parameter_table"]
+
+
+def test_the_committed_report_carries_the_systems_table(declaration):
+    if not COMMITTED_REPORT.exists():
+        pytest.skip("no selection report committed yet")
+    built = json.loads(COMMITTED_REPORT.read_text(encoding="utf-8"))
+    if built["verdict"] is None:
+        pytest.skip("incomplete screen; the table is only built for a complete one")
+    table = built["systems_and_parameter_table"]
+    assert table["total_parameters"] == declaration["qls_universal"]["parameter_count"]["total"]
+    assert set(table["cells"]) == set(built["verdict"]["cell_delta_pp"]), (
+        "every cell that has a delta has a cost"
+    )
