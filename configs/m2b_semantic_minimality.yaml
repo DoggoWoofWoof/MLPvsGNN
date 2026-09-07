@@ -1672,15 +1672,25 @@ resolution_result:
     tested. The 3,585-parameter incumbent stands, unchanged and unreopened.
 
   this_is_not_a_null_result: >-
-    Three things were established that no prior phase had established. The
-    449-parameter floor is refuted cleanly -- a tiny semantic head does not stay
-    competitive, and it fails worst where structure is richest. The
-    205,217-parameter ceiling is refuted too, and by a mechanism worth
+    Three things were established that no prior phase had established. S2 is
+    REJECTED as a universal semantic rung on this development substrate: a
+    449-parameter head does not stay within tolerance anywhere, and it fails
+    worst where structure is richest. S4 is REJECTED as the universal semantic
+    rung under this preregistered admissibility rule, and by a mechanism worth
     reporting: more semantic capacity bought a better macro and 12 of 14 cells
     while losing two cells outright, which is what a Pareto conflict looks like
     when it is real rather than noisy. And the incumbent's width is now a
     measured choice between three candidates rather than the only width anyone
     tried.
+  the_scope_of_those_rejections: >-
+    Rejected under a rule, on a substrate -- not refuted as representations.
+    S4 was the strongest rung on 12 of 14 cells and the fastest of the three;
+    what this phase establishes is that it cannot serve as the UNIVERSAL rung
+    under SYMMETRIC_BEST_ANCHORED at these tolerances on these six datasets.
+    Saying the representation itself was refuted would claim more than the
+    experiment supports, and would misdescribe a rung that won most of the
+    matrix. The same care applies to S2: rejected as a universal rung here, on
+    this development substrate, not shown to be worthless.
 
   the_systems_finding_stands_and_decided_nothing: >-
     Uncached p95 is S2 1.676 ms, S3 1.922 ms, S4 1.068 ms: the 205,217-parameter

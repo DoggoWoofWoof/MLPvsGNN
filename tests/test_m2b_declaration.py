@@ -287,6 +287,30 @@ def test_semantic_selection_is_closed_and_nothing_downstream_is_opened(declarati
         assert forbidden in last
 
 
+def test_the_rungs_are_rejected_under_a_rule_not_refuted_as_representations(declaration):
+    """A precision the result does not license being loosened later.
+
+    S4 was the strongest rung on 12 of 14 cells and the fastest of the three.
+    What M2B establishes is that it cannot serve as the UNIVERSAL rung under
+    SYMMETRIC_BEST_ANCHORED at these tolerances on these six datasets -- which
+    is narrower than "S4 is refuted", and the difference matters most when the
+    sentence is read outside the phase that produced it.
+    """
+
+    result = declaration["resolution_result"]
+    finding = result["this_is_not_a_null_result"]
+    assert "S2 is REJECTED as a universal semantic rung" in finding
+    assert "S4 is REJECTED as the universal semantic rung" in finding
+    assert "refuted" not in finding.lower()
+
+    scope = result["the_scope_of_those_rejections"]
+    assert "not refuted as representations" in scope
+    assert "UNIVERSAL rung" in scope
+    assert "SYMMETRIC_BEST_ANCHORED" in scope
+    # Both halves of the caveat: S4 won most of the matrix, S2 is not worthless.
+    assert "12 of 14 cells" in scope
+    assert "not shown to be worthless" in scope
+
 def test_the_systems_finding_is_not_read_as_a_win_for_s4(declaration):
     """S4 is the fastest rung and it still lost. Both halves are recorded."""
 
