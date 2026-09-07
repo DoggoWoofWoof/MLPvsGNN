@@ -124,6 +124,12 @@ STATUS_REQUIRES_UNEARNED = {
         "stage_0_advance_gate_evaluated",
         "stage_1_authorised",
     },
+    # The gate ran and did not advance, so Stage 1 stays unauthorised. It is a
+    # separate status from a plain STOP because the gate returned a plain STOP
+    # only on a measured B, and B was not measured.
+    "M2D_STAGE0_GATE_RETURNED_STOP_PENDING_B": {
+        "stage_1_authorised",
+    },
 }
 
 

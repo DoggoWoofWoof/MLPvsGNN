@@ -3,10 +3,16 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_COMPUTE_RECORD_FILED_STAGE0_NOT_YET_RUN` — section 3 has run and its
-findings are below, and the Stage-0 jobs are priced in
-[`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md); sections 4
-to 6 have not run.
+`M2D_STAGE0_GATE_RETURNED_STOP_PENDING_B` — section 3 has run and its findings
+are below; the Stage-0 jobs were priced in
+[`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and have now
+run on all four declared cells; and section 10's gate has been applied to them
+in [`docs/M2D_STAGE0_GATE.md`](M2D_STAGE0_GATE.md). It did not advance, and it
+did not return a plain stop either: conditions A and C both fail on their filed
+terms, and condition B was never measured, because the probe ranks whole models
+and B asks about a single primitive. A stop resting on an unmeasured condition
+is not a stop, so B is being measured and the same gate will be re-applied
+unchanged. Stage 1 remains unauthorised.
 
 **This is a post-hoc development branch.** It was opened because of an observed
 S4 development result, not from a preregistered hypothesis, and it is labelled
