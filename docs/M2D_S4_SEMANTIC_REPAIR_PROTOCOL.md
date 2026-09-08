@@ -3,8 +3,16 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_STAGE1_RECORD_FILED_NOTHING_SUBMITTED` — Stage 1 is authorised, every
-gate is earned, its jobs are priced, and no job has been submitted. Stage 0 is
+`M2D_STAGE1_GATE_RETURNED_STOP_S4_DEVELOPMENT` — Stage 1 ran. The eight fits
+were submitted, fetched and verified, and the gate committed before any of them
+existed returned `STOP_S4_DEVELOPMENT` on case 3: neither arm passed, so S3 is
+retained and M3 proceeds. The numbers are in
+[`docs/M2D_STAGE1_REPORT.md`](M2D_STAGE1_REPORT.md) and the rule's own working
+in [`docs/M2D_STAGE1_GATE.md`](M2D_STAGE1_GATE.md). One qualification the case
+label does not carry: A3-MINIMAL's single shortfall, on musique_clean/R1, was
+RESOLVABLE rather than FAIL — inside that cell's own measured seed spread, so
+seed 0 cannot settle it. That is the one state extra seeds could change, and
+section 14 authorises them only on a pass, so none were run. Stage 0 is
 complete and reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
 in [`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and ran on
 all four declared cells; condition B was measured afterwards on the two failure

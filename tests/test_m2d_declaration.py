@@ -155,6 +155,13 @@ STATUS_REQUIRES_UNEARNED = {
     # exists, at which point the numbers, not the gates, are what is being
     # asserted.
     "M2D_STAGE1_RECORD_FILED_NOTHING_SUBMITTED": set(),
+    # The eight fits ran and the gate judged them. Every gate stays earned --
+    # they are permissions, and a permission is not spent by being used -- so
+    # this entry is empty for the same reason the one above it is. What has
+    # changed is not the flags but the disk: the status may only carry this
+    # name once the gate's own verdict is on disk saying so, which the test
+    # below checks rather than trusting the string.
+    "M2D_STAGE1_GATE_RETURNED_STOP_S4_DEVELOPMENT": set(),
 }
 
 
@@ -215,6 +222,40 @@ def test_a_status_claiming_nothing_was_submitted_is_checked_against_the_disk(
         f"artifact(s) are on disk, the first being {found[0] if found else None}. "
         "Advance the status rather than leaving it describing an empty tree."
     )
+
+
+def test_a_status_naming_a_stage_1_verdict_is_checked_against_the_gates_output(
+    declaration,
+):
+    """The mirror of the test above, for the other direction.
+
+    That one refuses a status claiming nothing ran while artifacts exist. This
+    refuses a status claiming a verdict the gate did not return. Between them
+    the status cannot drift ahead of the disk or behind it, and neither claim
+    rests on the string in the YAML.
+    """
+
+    status = declaration["status"]
+    prefix = "M2D_STAGE1_GATE_RETURNED_"
+    if not status.startswith(prefix):
+        return
+    gate_json = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage1_gate.json"
+    assert gate_json.is_file(), (
+        f"the status claims the Stage-1 gate returned {status[len(prefix):]} and "
+        "the gate has written no verdict to disk"
+    )
+    gate = json.loads(gate_json.read_text(encoding="utf-8"))
+    assert gate["verdict"] == status[len(prefix):], (
+        f"the status names {status[len(prefix):]} and the gate returned "
+        f"{gate['verdict']}"
+    )
+    # A verdict is a claim over the whole declared matrix. The gate refuses to
+    # return one otherwise, so this is checking that the file on disk is the
+    # gate's real output rather than an older or hand-edited one.
+    assert gate["fits_measured"] == gate["fits_expected"] == 8
+    assert not gate["fits_absent"]
+    assert (REPO_ROOT / "docs" / "M2D_STAGE1_REPORT.md").is_file()
+    assert (REPO_ROOT / "docs" / "M2D_STAGE1_GATE.md").is_file()
 
 
 def test_the_stage_1_compute_record_is_a_prediction_not_a_report(declaration):

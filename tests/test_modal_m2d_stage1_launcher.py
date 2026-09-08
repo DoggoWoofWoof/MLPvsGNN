@@ -658,13 +658,57 @@ def test_the_document_names_every_cell_it_prices() -> None:
         assert f"{dataset}/{regime}" in document
 
 
-def test_no_stage_1_result_exists_at_the_commit_that_files_the_record() -> None:
-    """The record is a prediction. If a Stage-1 artifact were already on disk
-    the record would be a report of a spend that had happened, and the gate it
-    earns would be a formality."""
+def test_the_record_was_filed_before_the_commit_the_fits_ran_at() -> None:
+    """The record is a prediction, and this is the durable way to say so.
+
+    An earlier version asserted the results directory was empty. That was true
+    when the record was filed and false the moment the stage it priced ran, so
+    it was a test with a shelf life -- and it never checked the claim that
+    matters anyway. `outputs/` is gitignored, so no artifact is in any commit
+    and looking for one there would be vacuous.
+
+    What IS checkable, and is the actual claim, is the ordering of two commits
+    the artifacts and the record name themselves: the record was derived at a
+    commit that is a strict ancestor of the commit the fits were produced at.
+    A record filed at or after the fits would be a report of a spend that had
+    already happened, and the gate it earns would be a formality.
+    """
+
+    record = filed_record()
+    filed_at = record["source_commit"]
+    assert record["filed_before_any_job_was_submitted"] is True
 
     root = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage1"
-    assert not root.exists() or not list(root.rglob("*.json"))
+    artifacts = sorted(root.glob("*.json")) if root.exists() else []
+    if not artifacts:
+        pytest.skip("no Stage-1 artifact in this checkout; there is no ordering yet")
+
+    import json as _json
+    import subprocess
+
+    def _payload(path):
+        # The fetched file is an envelope carrying the identity the fetch
+        # verified; the run's own record is inside it, the way the gate reads it.
+        envelope = _json.loads(path.read_text(encoding="utf-8"))
+        return envelope.get("payload", envelope)
+
+    ran_at = {_payload(path)["provenance"]["source_commit"] for path in artifacts}
+    assert len(ran_at) == 1, f"the fits do not agree on a commit: {sorted(ran_at)}"
+    ran_at = ran_at.pop()
+    assert ran_at != filed_at, (
+        "the record names the same commit the fits ran at, so it was not filed "
+        "before them"
+    )
+    ancestry = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", filed_at, ran_at],
+        cwd=str(REPO_ROOT),
+        capture_output=True,
+        check=False,  # the returncode IS the answer; a raise would lose the message
+    )
+    assert ancestry.returncode == 0, (
+        f"the record was filed at {filed_at[:12]}, which is not an ancestor of "
+        f"{ran_at[:12]}, the commit the eight fits were produced at"
+    )
 
 
 # ---------------------------------------------------------------------------
