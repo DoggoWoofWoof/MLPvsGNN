@@ -665,3 +665,172 @@ def test_no_stage_1_result_exists_at_the_commit_that_files_the_record() -> None:
 
     root = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage1"
     assert not root.exists() or not list(root.rglob("*.json"))
+
+
+# ---------------------------------------------------------------------------
+# The spawn registry's budget gate reads the record
+# ---------------------------------------------------------------------------
+#
+# A filed record the launch gate does not consult is a prediction nobody is
+# held to. This package was registered for spawning before it had a cost
+# model, and the dry run said so in as many words -- "no measured cost model
+# for m2d-stage1-arms", gated: false -- while passing every other gate and
+# offering to submit. Section 6 exists to prevent exactly that: a launch whose
+# spend nobody checked at submit time.
+
+
+PACKAGE = "m2d-stage1-arms"
+
+
+def test_the_package_is_registered_and_its_stage_resolves() -> None:
+    from scripts import spawn_modal_jobs
+
+    module_name, stages = spawn_modal_jobs.PACKAGES[PACKAGE]
+    assert module_name == launcher.__name__
+    assert stages == {"arms": "run_stage1"}
+    for function_name in stages.values():
+        assert hasattr(launcher, function_name)
+
+
+def test_the_budget_gate_is_gated_at_all(jobs) -> None:
+    """The regression this branch exists for. `gated: false` is not a refusal
+    -- the spawner reports it and proceeds -- so the assertion is on the flag,
+    not on an exception."""
+
+    from scripts import spawn_modal_jobs
+
+    report = spawn_modal_jobs.gate_launch(PACKAGE, launcher, jobs)
+    assert report["gated"] is True, report.get("why")
+    assert report["spend_unknown_because"] is None
+
+
+def test_the_budget_gate_reports_the_filed_numbers(jobs) -> None:
+    from scripts import spawn_modal_jobs
+
+    record = filed_record()
+    report = spawn_modal_jobs.gate_launch(PACKAGE, launcher, jobs)
+    assert report["units"] == len(launcher.CELLS), "one unit per cell, not one per fit"
+    assert report["container_usd_per_hour"] == pytest.approx(
+        record["container"]["usd_per_hour"], abs=0.001
+    )
+    assert report["timeout_seconds"] == record["container"]["timeout_seconds"]
+    assert report["largest_unit_hours"] * 3600 == pytest.approx(
+        record["prediction"]["largest_single_job_seconds"], abs=2.0
+    )
+
+
+def test_the_whole_matrix_prices_to_the_records_own_compute_spend(jobs) -> None:
+    """Gating every cell at once must return the record's compute figure.
+
+    The record's headline `expected_spend_usd` also carries the container
+    overhead, which the spawner's gate does not model; comparing against that
+    number would fail for a reason that has nothing to do with the branch.
+    """
+
+    from scripts import spawn_modal_jobs
+
+    record = filed_record()
+    report = spawn_modal_jobs.gate_launch(PACKAGE, launcher, jobs)
+    assert report["expected_spend_usd"] == pytest.approx(
+        record["prediction"]["compute_spend_usd"], abs=0.01
+    )
+    overhead = record["prediction"]["container_overhead_usd"]
+    assert report["expected_spend_usd"] + overhead == pytest.approx(
+        record["prediction"]["expected_spend_usd"], abs=0.01
+    )
+
+
+def test_a_launch_is_priced_per_workspace_and_the_halves_sum_to_the_whole() -> None:
+    """Stage 1's cells are split across two Modal workspaces, so the launch is
+    two submissions and neither dry run ever displays the whole spend. The
+    halves have to add up, or each submission looks affordable on its own
+    while the stage as a whole was never priced.
+    """
+
+    from scripts import spawn_modal_jobs
+
+    placement = launcher.execution_placement()
+    by_workspace: dict[str, list[dict]] = {}
+    for job in launcher._jobs(list(launcher.CELLS)):
+        by_workspace.setdefault(placement[job["dataset"]], []).append(job)
+    assert len(by_workspace) > 1, "one workspace: this test is checking nothing"
+
+    halves = [
+        spawn_modal_jobs.gate_launch(PACKAGE, launcher, subset)["expected_spend_usd"]
+        for subset in by_workspace.values()
+    ]
+    whole = spawn_modal_jobs.gate_launch(
+        PACKAGE, launcher, launcher._jobs(list(launcher.CELLS))
+    )["expected_spend_usd"]
+    assert sum(halves) == pytest.approx(whole, abs=0.01)
+
+
+def test_the_expected_spend_is_inside_the_declared_ceiling(jobs) -> None:
+    from scripts import spawn_modal_jobs
+
+    shape = DECLARATION["launch_authorization"]["stage_1_compute_record"]
+    report = spawn_modal_jobs.gate_launch(PACKAGE, launcher, jobs)
+    assert report["expected_spend_usd"] <= shape["cost_ceiling_usd"]
+
+
+def test_the_utilisation_matches_the_one_the_record_was_derived_at() -> None:
+    """Two divisors, one number. If the spawner assumed a busier container than
+    the record was derived at, the gate would report a spend the record does
+    not predict and the ceiling would be checked against the wrong figure."""
+
+    from scripts import m2d_stage1_compute_record as record_module
+    from scripts import spawn_modal_jobs
+
+    record = filed_record()
+    assert spawn_modal_jobs.UTILISATION[PACKAGE] == record["prediction"]["utilisation_assumed"]
+    assert spawn_modal_jobs.UTILISATION[PACKAGE] == record_module.UTILISATION
+
+
+def test_a_dataset_the_record_does_not_price_is_refused_rather_than_estimated(
+    jobs, monkeypatch
+) -> None:
+    """A cell missing from the record must stop the launch. Silently pricing
+    the jobs it does know would report a spend for a smaller matrix than the
+    one about to be submitted."""
+
+    from scripts import spawn_modal_jobs
+
+    record = filed_record()
+    monkeypatch.setattr(
+        launcher,
+        "compute_record",
+        lambda: {
+            **record,
+            "workload": {
+                **record["workload"],
+                "cells": record["workload"]["cells"][:1],
+            },
+        },
+    )
+    units, why = spawn_modal_jobs.measured_units(PACKAGE, launcher, jobs)
+    assert units is None
+    assert "prices no job for" in why
+
+
+def test_a_job_larger_than_its_window_would_be_refused(jobs, monkeypatch) -> None:
+    """The gate has to be able to fail, or it is decoration. A cell that bills
+    a whole window and finishes nothing is the failure it is watching for."""
+
+    from scripts import spawn_modal_jobs
+
+    record = filed_record()
+    monkeypatch.setattr(
+        launcher,
+        "compute_record",
+        lambda: {
+            **record,
+            "workload": {
+                **record["workload"],
+                "cells": [
+                    {**item, "seconds": 9_000.0} for item in record["workload"]["cells"]
+                ],
+            },
+        },
+    )
+    with pytest.raises(SystemExit, match="REFUSED"):
+        spawn_modal_jobs.gate_launch(PACKAGE, launcher, jobs)

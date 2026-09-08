@@ -379,6 +379,10 @@ UTILISATION = {
     # timing it prices covers the forward passes and not the image pull, the
     # embedding load or the cell master.
     "m2d-stage0-probe": 0.4,
+    # Stage 1's record uses the same divisor and buys more with it: its line
+    # items cover training, scoring and benchmarking, and still not the image
+    # pull, the dataset load, the cell master load or the arm-store build.
+    "m2d-stage1-arms": 0.4,
 }
 
 
@@ -641,6 +645,34 @@ def measured_units(
             "build plus every new fit, so it overstates either stage submitted alone, and "
             "the spend figure prices the CPU build stage at the GPU rate for the same "
             f"reason; {granularity}"
+        )
+
+    if package == "m2d-stage1-arms":
+        # The filed Stage-1 record's own per-cell seconds. Its per-cell figure
+        # is the sum of enumerated line items -- two fits, three scorings and
+        # three latency benchmarks -- so re-deriving the seconds here would
+        # gate the launch against a second number nobody filed, which is
+        # exactly what the record exists to prevent.
+        #
+        # This branch is not optional the way an ungated launch is elsewhere.
+        # Stage 1 is the first M2D package that trains, and it was submitted
+        # once with no cost model registered: the dry run reported
+        # "no measured cost model for m2d-stage1-arms" and would have spawned
+        # anyway. A filed record the launch gate does not read is a prediction
+        # nobody is held to.
+        estimate = {
+            item["cell"].split("/")[0]: float(item["seconds"])
+            for item in module.compute_record()["workload"]["cells"]
+        }
+        unknown = sorted({job["dataset"] for job in jobs} - set(estimate))
+        if unknown:
+            return None, f"the filed compute record prices no job for {', '.join(unknown)}"
+        units = [WorkUnit(name=job["dataset"], seconds=estimate[job["dataset"]]) for job in jobs]
+        units, granularity = _collapse_without_resumption(units, module, "cell", "arms")
+        return units, (
+            f"{len(jobs)} cell(s) at the filed Stage-1 compute record, whose per-cell "
+            "seconds scale M2B's own measured S4 training time for that cell by a host "
+            f"forward-cost ratio -- a bracket, not a container measurement; {granularity}"
         )
 
     return None, f"no measured cost model for {package}"
