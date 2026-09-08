@@ -1,0 +1,373 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# M3A-COMPILATION — the strongest defensible non-message-passing graph
+# compilation, developed on the five canonical datasets that remain after the
+# WebQSP deferral.
+#
+# Filed before any number exists, as the phase rule. Nothing in this file is a
+# result. The three findings recorded under `substrate_blockers` were measured
+# from the package before the phase was declared, because a plan written
+# against a substrate that cannot support it is worse than no plan.
+# ═════════════════════════════════════════════════════════════════════════════
+
+phase: M3A-COMPILATION
+status: DECLARED_NOT_RUN
+declared: 2026-09-08
+accepts: 1ae3c2d
+supersedes_nothing: >-
+  The M3A adoption contract and its execution record stand. This is the next
+  phase, not a revision of that one.
+
+registered_question_unchanged: >-
+  After matching candidate exposure and inference-time graph information to
+  modern graph-retrieval/GNN systems, how much effectiveness remains
+  attributable specifically to learned message passing?
+
+immediate_question: >-
+  How strong can deterministic, precomputed graph compilation become before
+  learned message passing is introduced?
+
+# ─────────────────────────────────────────────────────────────────────────────
+# WebQSP
+# ─────────────────────────────────────────────────────────────────────────────
+webqsp:
+  status: DEFERRED_PRE_M3B
+  deferral_is_not_removal: true
+  deferred_items:
+    - WebQSP query construction
+    - WebQSP node and query encoding
+    - WebQSP candidate-universe decision
+    - WebQSP RoG-exact recomputation
+  do_not_spend: the filed WebQSP GPU budget
+  must_return_before:
+    - FINAL_SIX_DATASET_CONTRACT
+    - final M3B confirmation
+    - final universal claims
+    - Package F / paper-final evidence
+  return_gate:
+    complete_webqsp_only_if_at_least_one_holds:
+      - compiled features materially improve the non-MP ranker
+      - >-
+        fixed neighbourhood/seed aggregation looks competitive enough that the
+        remaining GNN delta is scientifically worth measuring
+      - >-
+        typed relation summaries on MetaQA show enough signal that the richer
+        WebQSP relation vocabulary could change the conclusion
+    if_none_hold: STOP_AND_REVIEW_BEFORE_SPENDING_WEBQSP_COMPUTE
+  why_deferring_is_safe: >-
+    Most of the immediate question can be answered without WebQSP. What WebQSP
+    uniquely provides is a typed-relation vocabulary two orders of magnitude
+    richer than MetaQA's, and that only matters once there is a typed-relation
+    block worth stress-testing.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Substrate
+# ─────────────────────────────────────────────────────────────────────────────
+substrate:
+  which: canonical
+  package_root: C:/Users/Swastik/Desktop/CRAG
+  access_mode: READ_ONLY
+  datasets: [metaqa, squad, musique, hotpotqa, 2wiki]
+  corpus_note: >-
+    2wiki's canonical corpus is data/canonical/2wiki_universe. data/canonical/2wiki
+    is a superseded 398,354-node corpus and must never be on the path.
+  historical_substrate_rule: >-
+    The clean development substrate, the old graph.pt and every frozen M2 result
+    remain untouched and are a DIFFERENT OBJECT. Any table naming a canonical
+    and a historical number together must carry substrate identity on every row,
+    and no canonical-minus-historical difference may be computed as though it
+    were a model delta.
+  test_data_rule: >-
+    No scientific result from test data. Development uses train and dev/validation
+    only. Split naming is not uniform: musique, metaqa and 2wiki use dev.jsonl,
+    hotpotqa uses validation.jsonl, squad has no test split at all.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# What was measured from the package before declaring the phase.
+# These are the reason the phase cannot simply start on five datasets.
+# ─────────────────────────────────────────────────────────────────────────────
+substrate_blockers:
+  status: MEASURED_BEFORE_DECLARATION
+  how: read-only inspection of manifests and file presence; nothing was built
+
+  blocker_1_no_query_view_on_two_datasets:
+    finding: >-
+      metaqa and 2wiki have no retrieval query view in the canonical substrate
+      at all -- no data/canonical/<d>/queries.jsonl, no query_manifest.json and
+      no dense or splade query encodings. squad, musique and hotpotqa have all
+      three and are complete.
+    evidence:
+      squad: {canonical_query_rows: 142192, dense_queries: 142192, splade_queries: 142192}
+      musique: {canonical_query_rows: 24814, dense_queries: 24814, splade_queries: 24814}
+      hotpotqa: {canonical_query_rows: 105257, dense_queries: 105257, splade_queries: 105257}
+      metaqa: {canonical_query_rows: null, dense_queries: null, splade_queries: null}
+      2wiki: {canonical_query_rows: null, dense_queries: null, splade_queries: null}
+    source_material_does_exist:
+      metaqa: {train: 329282, dev: 39138, test: 39093, total: 407513}
+      2wiki: {train: 167454, dev: 12576, test: 12576, total: 192606}
+      where: data/final_canonical/<dataset>/queries/*.jsonl, carrying gold_node_ids
+    how_this_differs_from_webqsp: >-
+      Materially smaller. WebQSP had no canonical query set anywhere, so building
+      one was a construction from raw. Here the canonical query files already
+      exist with gold_node_ids resolved; what is missing is the retrieval view
+      projected from them and its encoding. That is a projection plus an encode,
+      not a construction.
+    consequence: >-
+      Without it, metaqa and 2wiki cannot be retrieved against, so they cannot
+      have candidate pools, so they cannot appear in any headroom or occupancy
+      table. Three of the five datasets are usable today, not five.
+    status: BLOCKS_TWO_OF_FIVE_DATASETS
+
+  blocker_2_no_retrieval_anywhere:
+    finding: >-
+      The package contains no retrieval results, no top-K lists and no candidate
+      pools for any dataset. Encodings exist; retrieval over them does not.
+    consequence: >-
+      Every quantity in the authorised headroom list is defined over a candidate
+      pool, so retrieval has to be run before any of it exists. This is a real
+      compute step and section J requires its record filed first.
+    status: BLOCKS_ALL_FIVE_DATASETS
+
+  blocker_3_edge_families_are_not_uniform:
+    finding: >-
+      The STRUCT / KNN / FULL axis the phase asks for is not available on every
+      dataset. KNN edges are absent on hotpotqa and 2wiki; NER edges are absent
+      on metaqa.
+    matrix:
+      metaqa: {structural: present, knn: present, ner: ABSENT, structural_edges: 133582, relations: 9}
+      squad: {structural: present, knn: present, ner: present, structural_edges: 874190, relations: 1}
+      musique: {structural: present, knn: present, ner: present, structural_edges: 2744076, relations: 1}
+      hotpotqa: {structural: present, knn: ABSENT, ner: present, structural_edges: 15367541, relations: 1}
+      2wiki: {structural: present, knn: ABSENT, ner: present, structural_edges: 28963600, relations: 1}
+    consequence: >-
+      FULL is not the same union on every dataset, and a KNN column would be
+      empty for two of five. Either FULL is defined per dataset and labelled
+      with its members on every row, or the axis is reported only where its
+      members exist. It must not be silently averaged across datasets whose
+      FULL means different things.
+    status: CHANGES_WHAT_THE_AXIS_CAN_MEAN
+
+# ─────────────────────────────────────────────────────────────────────────────
+# What already exists, and what this phase is therefore NOT allowed to redo.
+# ─────────────────────────────────────────────────────────────────────────────
+prior_evidence_that_constrains_this_phase:
+  the_d_series:
+    what: >-
+      Stages D0 through D10 developed exactly the direction-A compilation this
+      phase names, and the result is frozen in docs/GRAPH_CONTEXT_FEATURE_CATALOG.md
+      as nine families over thirteen columns.
+    scope_limit: >-
+      Every number in it is 2Wiki, seed 0, CAND, G[Cq], validation, ONE
+      architecture at 213,689 parameters, on the HISTORICAL clean substrate. It
+      is development evidence, not evaluation, and it is explicitly not declared
+      universal.
+    what_was_admitted_on_2wiki: [RETRIEVAL, SEED, GEOMETRY]
+    what_was_not:
+      SUPPORT: CARRIED_NOT_ON_ACCURACY
+      PATH: PROMISING_REPLACEMENT_FAILED
+      DIFFUSION: NEGLIGIBLE
+      TOPOLOGY: NEGLIGIBLE
+    the_corrected_forms_already_exist:
+      distinct_support: >-
+        src/mp_retrieval/distinct_support.py already replaces the edge-count
+        seed_connections with distinct supporting seeds and a support_fraction
+        bounded in [0,1] with no per-query normaliser. It was built, fitted at
+        D7/D8, matched the historical proxy and beat it on nothing.
+      path_diversity: >-
+        src/mp_retrieval/path_diversity.py already replaces walk counts with
+        bounded branch diversity, keeping REACH, BRANCH and WALK separate. It
+        was built, fitted at D7/D10, and came out mixed against the historical
+        form.
+    therefore:
+      - >-
+        This phase MUST NOT rebuild distinct support or branch diversity as
+        though they were new. They exist, they were tested, and the finding is
+        that the corrections were principled but not accuracy-positive on 2Wiki.
+      - >-
+        This phase MUST NOT treat the 2Wiki admissions as universal. Whether any
+        of it transfers is the open question, and it is what the five-dataset
+        occupancy and redundancy work is for.
+      - >-
+        Of the four historical weaknesses named in the redirection, two already
+        have built replacements, one (per-query max normalisation) is fixed by
+        support_fraction's construction, and one -- bucketed distance -- does
+        not. distance_3_plus_or_unreachable merges "three or more hops away"
+        with "not connected at all", which are different facts, and no existing
+        column separates them.
+  the_zero_training_matrix_proposal:
+    what: docs/ZERO_TRAINING_MATRIX_PROPOSAL.md, status PROPOSED_NOT_DECLARED
+    relation_to_this_phase: >-
+      It proposed six datasets x three regimes with no training, reusing the
+      candidate_headroom definitions rather than restating them. This phase is
+      that proposal, minus WebQSP, minus R3, plus directions C and D. Its rule
+      against writing a second definition of AnyGold carries over unchanged.
+    r3_stays_blocked: >-
+      configs/candidate_headroom.yaml sets candidate_regeneration,
+      candidate_admission and graph_expansion to prohibited_in_paper_1. This
+      phase does not reopen that and does not ask for R3.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# The four compilation directions
+# ─────────────────────────────────────────────────────────────────────────────
+directions:
+  A_exact_topology:
+    goal: replace the compressed historical topology with exact deterministic quantities
+    candidates_to_investigate_prospectively:
+      - exact minimum seed distance, unbucketed
+      - reachability separated from distance, so "far" and "disconnected" are distinct
+      - hop-specific seed support
+      - number of distinct supporting seeds
+      - fraction of seeds connected
+      - distinct path / connectivity summaries
+      - connected-component relations
+      - provenance-specific support
+      - candidate local degree and statistics
+    known_weaknesses_to_fix:
+      bucketed_distance: OPEN -- no existing column separates unreachable from distant
+      edge_count_seed_connections: ALREADY_REPLACED by distinct_support.py
+      walk_counts_for_independent_paths: ALREADY_REPLACED by path_diversity.py
+      fragile_per_query_max_normalisation: ALREADY_FIXED by support_fraction's construction
+    rule: >-
+      Do not add everything automatically. Measure redundancy and cost, and
+      admit on evidence.
+
+  B_typed_relation_compilation:
+    substrate: MetaQA only, for now
+    METAQA_RELATION_VOCAB: THIN
+    FINAL_TYPED_RELATION_BLOCK: PROVISIONAL
+    candidates:
+      - query-relation compatibility
+      - inverse relation frequency / RF-IEF-like summaries
+      - direction-sensitive relation support
+      - seed-to-candidate relation support
+      - bounded relation-chain summaries
+    forbidden:
+      - learned propagation
+      - >-
+        generalising a MetaQA null to typed relations broadly. MetaQA has 9
+        relation types at normalised entropy 0.8349 with no singletons; WebQSP
+        has 7,058 at 0.6592 with 902 singletons and a median of 20 edges per
+        relation. A null on the first says nothing about the second.
+    not_frozen_until: WebQSP returns
+
+  C_fixed_neighbourhood_semantics:
+    priority: true
+    goal: >-
+      deterministic fixed aggregation of neighbour EMBEDDINGS, so the graph
+      chooses which vectors contribute but never how they are combined
+    candidates:
+      - STRUCT-neighbour embedding prototype
+      - KNN-neighbour embedding prototype
+      - provenance-separated prototypes
+      - 1-hop prototype
+      - bounded 2-hop prototype where affordable
+    hard_rule: >-
+      Aggregation is fixed and deterministic. Any learned transformation happens
+      strictly AFTER aggregation. This is what makes the arm "fixed aggregation
+      + MLP" rather than "learned aggregation + GNN".
+    novelty_note: >-
+      No family in the frozen D10 catalog is an embedding prototype. C is new
+      work, not a re-run.
+
+  D_seed_conditioned_aggregation:
+    priority: true
+    goal: >-
+      per-candidate deterministic query-local semantic aggregates conditioned on
+      inference-safe retrieval seeds
+    candidates:
+      - reachable-seed prototype
+      - hop1 / hop2 / hop3 seed prototypes where bounded
+      - seed-support-weighted semantic aggregate
+    hard_rules:
+      - Do NOT use gold seeds. Seeds are inference-safe retrieval seeds only.
+      - Do NOT train propagation weights.
+    novelty_note: >-
+      Also absent from the D10 catalog. D is new work.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Headroom
+# ─────────────────────────────────────────────────────────────────────────────
+headroom:
+  regimes: [RETRIEVAL, STRUCT, KNN, FULL]
+  regime_caveat: see substrate_blockers.blocker_3_edge_families_are_not_uniform
+  quantities:
+    - candidate ceiling @1 / @5 / @20
+    - ANY
+    - ALL / FullCov
+    - graph reach
+    - candidates per query
+    - nodes per query
+    - edges per query
+    - incremental unique-gold exposure
+  reuse_rule: >-
+    Reuse src/mp_retrieval/candidate_headroom.py and headroom_v2.py. A second
+    definition of AnyGold in a second module is the failure this rule exists to
+    prevent.
+  two_ceilings_rule: >-
+    recall_ceiling@K is K-aware and bounds recall@K; candidate_ceiling is pool
+    coverage with no K. Confusing them invents headroom.
+  separate_always:
+    - candidate supply
+    - ranking quality
+  budget_rule: Do not explode candidate budgets. Find knees first.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# QLS-U architecture — design only
+# ─────────────────────────────────────────────────────────────────────────────
+qls_u_architecture:
+  train: false
+  train_requires: separate authorisation
+  requirement: >-
+    QLS-U must preserve strong fixed scores easily. The hypothesis class must
+    contain "return the fixed score unchanged" as an EASY solution, not merely a
+    representable one.
+  prospective_pattern: final_score = fixed_base_score + learned_residual(features)
+  do_not: hard-code GraphER GCS as the fixed base score
+  fixed_base_score_source: >-
+    determined from the five-dataset compilation evidence, not copied from a
+    paper
+  symmetry_requirement_carried_forward: >-
+    If QLS-U is given a residual-preservation mechanism, the GNN arm must be
+    able to preserve the same fixed score at least as well, or delta_MP stops
+    being interpretable. Recorded now because it is cheap now and unfixable once
+    the fits exist.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Freeze policy
+# ─────────────────────────────────────────────────────────────────────────────
+freeze_policy:
+  may_freeze_at_end_of_this_phase:
+    QLS_U_CORE_FEATURES: universally defined non-relation features only
+  must_not_freeze:
+    FINAL_TYPED_RELATION_BLOCK: PROVISIONAL until WebQSP returns
+    FINAL_SIX_DATASET_CONTRACT: OPEN until WebQSP returns
+  why: >-
+    WebQSP's ~7,058 relations may expose requirements MetaQA's 9 cannot. A
+    contract frozen without that evidence would be frozen on the thin end of the
+    only axis it is meant to generalise over.
+
+# ─────────────────────────────────────────────────────────────────────────────
+authorization:
+  authorised:
+    - five-dataset headroom analysis
+    - A topology compilation
+    - provisional B MetaQA relation compilation
+    - C fixed-neighbour aggregation diagnostics
+    - D seed-conditioned aggregation diagnostics
+    - redundancy analysis
+    - systems/cost analysis
+    - proposed QLS-U core architecture
+  not_authorised:
+    - any WebQSP work
+    - final six-dataset contract
+    - large GNN sweeps
+    - final M3B
+    - Package F
+    - E2
+    - training QLS-U
+    - training any GNN
+  compute_discipline: >-
+    Before any expensive step, file jobs / CPU hours / GPU hours / walltime /
+    storage / expected cost / hard ceiling / abort criteria. Validate cheaply
+    first; expand only when the current scale produces evidence that more
+    compute can change a scientific decision.
+  on_completion: STOP_FOR_REVIEW
