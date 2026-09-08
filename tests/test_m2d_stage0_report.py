@@ -242,10 +242,33 @@ def test_the_matrix_is_the_declarations_cells_and_seed_zero(inputs, rendered) ->
 
 
 @needs_artifacts
-def test_the_report_does_not_authorise_the_matrix_it_specifies(inputs, rendered) -> None:
-    assert inputs["declared"]["launch_authorization"]["gates"]["stage_1_authorised"] is False
+def test_the_report_does_not_authorise_the_matrix_it_specifies(rendered) -> None:
+    """True whatever the declaration's gates say later. A report is not an
+    authorisation, and this one specifies a matrix it may not launch."""
+
     assert "It is not authorised by this document" in rendered
     assert "STOP_FOR_REVIEW" in rendered
+
+
+@needs_artifacts
+def test_the_record_is_pinned_to_the_status_stage_0_closed_at(inputs, rendered) -> None:
+    """Stage 0's record must not re-render itself under Stage 1's status.
+
+    The header status is derived from the gate's verdict, so it stays where
+    Stage 0 left it; the phase's live status appears only as a forward pointer
+    to what happened after the stop.
+    """
+
+    gate = inputs["gate"]
+    assert f"Stage 0 closed at `{report.stage_0_status(gate)}`" in rendered
+    assert report.stage_0_status(gate) == f"M2D_STAGE0_GATE_RETURNED_{gate['verdict']}"
+    assert "this document has not, and must not" in rendered
+
+    mutated = copy.deepcopy(inputs)
+    mutated["declared"]["status"] = "SOME_LATER_STATUS"
+    text = report.render(**mutated)
+    assert f"Stage 0 closed at `{report.stage_0_status(gate)}`" in text
+    assert "The declaration now reads `SOME_LATER_STATUS`" in text
 
 
 # ---------------------------------------------------------------------------
