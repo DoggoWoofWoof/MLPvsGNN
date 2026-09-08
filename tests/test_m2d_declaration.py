@@ -139,13 +139,13 @@ STATUS_REQUIRES_UNEARNED = {
     "M2D_STAGE0_GATE_RETURNED_ADVANCE_TARGETED_M2D": {
         "stage_1_authorised",
     },
-    # The review happened and authorised the pilot. Two gates stay unearned and
-    # they are the two that stand between an authorisation and a submission: a
-    # compute record derived by a script and filed before the jobs go out, and
-    # the Stage-1 gate committed before the numbers it will judge exist.
+    # The review happened and authorised the pilot. The Stage-1 gate has since
+    # been committed -- with nothing on disk for it to judge, which is the only
+    # ordering that makes it a rule -- so one gate stays unearned, and it is the
+    # one that stands between an authorisation and a submission: a compute
+    # record derived by a script and filed before the jobs go out.
     "M2D_STAGE1_AUTHORISED_A1_AND_A3_MINIMAL": {
         "stage_1_compute_record_filed",
-        "stage_1_gate_committed",
     },
 }
 
@@ -184,6 +184,47 @@ def test_the_gates_that_are_earned_point_at_something_on_disk(declaration):
         measured = sorted(PRIMITIVE_ROOT.glob("*.json"))
         assert measured, "condition B is claimed measured and no measurement is on disk"
         assert (REPO_ROOT / "scripts" / "run_m2d_primitive_probe.py").exists()
+
+
+def test_the_stage_1_gate_was_committed_before_anything_it_judges(declaration):
+    """The flag claims an ordering. A flag cannot establish that; git can.
+
+    `stage_1_gate_committed` is not a statement that a file exists -- it is a
+    statement that the file existed BEFORE the eight fits it will judge. So the
+    commit it names has to be an ancestor of HEAD, has to contain the gate and
+    its tests, and must carry no Stage-1 arm artifact. If a result were already
+    on disk at that commit the gate would be a rationalisation with a timestamp.
+    """
+
+    gates = declaration["launch_authorization"]["gates"]
+    if not gates["stage_1_gate_committed"]:
+        pytest.skip("the Stage-1 gate gate is not claimed yet")
+    if not gates_can_reach_git():
+        pytest.skip("git is not available; the ordering check cannot run")
+
+    assert (REPO_ROOT / "scripts" / "m2d_stage1_gate.py").exists()
+    assert (REPO_ROOT / "tests" / "test_m2d_stage1_gate.py").exists()
+
+    named = "6f429ee"
+    ancestry = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", named, "HEAD"],
+        cwd=str(REPO_ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if "unknown revision" in ancestry.stderr or "Not a valid" in ancestry.stderr:
+        pytest.skip("the named commit is not in this checkout")
+    assert ancestry.returncode == 0, f"{named} is not an ancestor of HEAD"
+
+    listed = _git("ls-tree", "-r", "--name-only", named).splitlines()
+    assert "scripts/m2d_stage1_gate.py" in listed
+    assert "tests/test_m2d_stage1_gate.py" in listed
+    assert not [
+        path
+        for path in listed
+        if path.startswith("outputs/m2d_s4_semantic_repair/stage1")
+    ], "a Stage-1 result already existed at the commit the gate gate names"
 
 
 def test_the_predecessor_commit_gate_is_not_a_promise(declaration):

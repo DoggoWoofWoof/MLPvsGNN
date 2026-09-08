@@ -997,7 +997,10 @@ launch_authorization:
                                                # authorises the smallest seed-0 pilot on a pass; section 20's review has now
                                                # happened and returned an authorisation with the section 8b amendment attached.
     stage_1_compute_record_filed: false        # nothing may be submitted until this is earned
-    stage_1_gate_committed: false              # the rule is committed before the number it judges
+    stage_1_gate_committed: true               # earned 2026-09-08, scripts/m2d_stage1_gate.py at 6f429ee, with
+                                               # tests/test_m2d_stage1_gate.py in the same commit. No Stage-1 artifact
+                                               # exists at that commit or at this one, which is what makes the rule a
+                                               # rule; `git ls-tree 6f429ee` is the check, not this comment.
 
 # --------------------------------------------------------------------------
 # 20. Hard stop
