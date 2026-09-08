@@ -3,8 +3,9 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_STAGE1_AUTHORISED_A1_AND_A3_MINIMAL` — Stage 0 is complete and
-reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
+`M2D_STAGE1_RECORD_FILED_NOTHING_SUBMITTED` — Stage 1 is authorised, every
+gate is earned, its jobs are priced, and no job has been submitted. Stage 0 is
+complete and reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
 in [`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and ran on
 all four declared cells; condition B was measured afterwards on the two failure
 cells, because the Stage-0 probe ranks whole models and B asks about a single
@@ -20,6 +21,16 @@ recall@5 on MuSiQue. B holds on exactly one of the five primitives S4 is
 missing — `semantic_difference`, S3's learned weighted L1 at raw 1536 — which
 reorders 59.5% of SQuAD's and 74.8% of MuSiQue's top-1 errors ranking alone. A
 pass by one of five is a selection over five and is reported as one.
+
+**The last gate is earned and nothing has run.** Section 6's compute record is
+filed in [`docs/M2D_STAGE1_COMPUTE_RECORD.md`](M2D_STAGE1_COMPUTE_RECORD.md),
+derived by `scripts/m2d_stage1_compute_record.py` from M2B's own measured
+per-cell S4 training seconds rather than carried over from M2B's $0.92 — the
+basis differs, and the record says how. With that, every gate in the
+declaration is `true`, so the gate block can no longer express "and still
+nothing has run". That claim now rests on the results directory being empty,
+and `tests/test_m2d_declaration.py` refuses this status the moment a Stage-1
+artifact appears.
 
 **Stage 1 is now authorised, with an amendment attached.** The stop returned an
 operator authorisation of the eight-fit pilot section 20 specified, and section

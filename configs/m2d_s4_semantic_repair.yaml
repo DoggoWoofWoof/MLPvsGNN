@@ -13,7 +13,7 @@
 
 phase: M2D_S4_SEMANTIC_REPAIR
 opened: 2026-09-08
-status: M2D_STAGE1_AUTHORISED_A1_AND_A3_MINIMAL
+status: M2D_STAGE1_RECORD_FILED_NOTHING_SUBMITTED
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: >-
   An observed S4 development result, not a preregistered hypothesis. S4 was
@@ -971,6 +971,37 @@ launch_authorization:
       width is derived from the recorded parameter counts, and the pricing is
       this project's own compute_budget functions. The document is regenerated,
       never edited.
+
+  # The Stage-1 record's shape, copied here for the same reason Stage 0's is:
+  # the launcher's Modal decorators are evaluated inside the container, which
+  # carries configs/ and does not carry an outputs/ tree. A declaration test
+  # holds this copy equal to the generated record, so the two cannot drift.
+  # Unlike Stage 0's, this one authorises an accelerator, because Stage 1
+  # trains; the launcher refuses a record that does not.
+  stage_1_compute_record:
+    document: docs/M2D_STAGE1_COMPUTE_RECORD.md
+    machine_readable: outputs/m2d_s4_semantic_repair/stage1_compute_record.json
+    derived_by: scripts/m2d_stage1_compute_record.py
+    filed_before_launch: true
+    jobs: 4
+    fits: 8
+    gpu: A10G
+    cpu: 16
+    memory_mb: 49152
+    timeout_seconds: 3600
+    expected_spend_usd: 2.00
+    cost_ceiling_usd: 5.00
+    why_gpu: >-
+      Stage 1 trains. Eight fits of a 205k-parameter scorer over panels of up to 31,310
+      queries is a backward pass per step, which is what an accelerator is for, and it
+      is the shape M2B's training seconds -- the basis of every line below -- were
+      measured on.
+    numbers_are_derived_not_typed: >-
+      Panel sizes and training seconds come from M2B's filed headline artifacts for
+      these exact cells, the structural width is derived from the recorded parameter
+      counts, the arm multipliers are measured on the host and stated as ratios, and the
+      pricing is this project's own compute_budget functions. The document is
+      regenerated, never edited.
   gates:
     persistence_hardening_implemented: true    # earned 2026-09-08, src/mp_retrieval/run_artifacts.py
     persistence_regression_tests_pass: true    # earned 2026-09-08, tests/test_run_artifacts.py
@@ -996,7 +1027,13 @@ launch_authorization:
     stage_1_authorised: true                   # earned 2026-09-08 by operator review of the Stage-0 report. Section 19
                                                # authorises the smallest seed-0 pilot on a pass; section 20's review has now
                                                # happened and returned an authorisation with the section 8b amendment attached.
-    stage_1_compute_record_filed: false        # nothing may be submitted until this is earned
+    stage_1_compute_record_filed: true         # earned 2026-09-08, docs/M2D_STAGE1_COMPUTE_RECORD.md, derived by
+                                               # scripts/m2d_stage1_compute_record.py from M2B's filed per-cell S4
+                                               # training seconds. Recomputed rather than carried: section 6 forbids
+                                               # reusing M2B's $0.92, and the basis differs -- 8 fits on 4 cells against
+                                               # measured S4 seconds, plus a native re-score and a third latency
+                                               # benchmark per cell that M2B never bought. No Stage-1 artifact exists
+                                               # at this commit; the record is a prediction, not a report.
     stage_1_gate_committed: true               # earned 2026-09-08, scripts/m2d_stage1_gate.py at 6f429ee, with
                                                # tests/test_m2d_stage1_gate.py in the same commit. No Stage-1 artifact
                                                # exists at that commit or at this one, which is what makes the rule a

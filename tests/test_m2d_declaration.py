@@ -147,6 +147,14 @@ STATUS_REQUIRES_UNEARNED = {
     "M2D_STAGE1_AUTHORISED_A1_AND_A3_MINIMAL": {
         "stage_1_compute_record_filed",
     },
+    # Every gate is now earned, which is why this entry is empty -- and why the
+    # empty set is the most dangerous one in the table. From here nothing in
+    # the gate block can express "and still nothing has run": that is a claim
+    # about what is on disk, so the test below checks the disk rather than the
+    # flags. The status may only advance past this when a Stage-1 artifact
+    # exists, at which point the numbers, not the gates, are what is being
+    # asserted.
+    "M2D_STAGE1_RECORD_FILED_NOTHING_SUBMITTED": set(),
 }
 
 
@@ -184,6 +192,52 @@ def test_the_gates_that_are_earned_point_at_something_on_disk(declaration):
         measured = sorted(PRIMITIVE_ROOT.glob("*.json"))
         assert measured, "condition B is claimed measured and no measurement is on disk"
         assert (REPO_ROOT / "scripts" / "run_m2d_primitive_probe.py").exists()
+
+
+def test_a_status_claiming_nothing_was_submitted_is_checked_against_the_disk(
+    declaration,
+):
+    """The one claim the gate block can no longer make for itself.
+
+    Every gate is earned, so the flags say only that the phase is permitted to
+    submit. Whether it HAS submitted is a fact about the results directory, and
+    a status asserting it has not must be refused the moment an artifact
+    appears -- otherwise the phase would keep reporting "nothing submitted"
+    while holding eight paid fits.
+    """
+
+    if declaration["status"] != "M2D_STAGE1_RECORD_FILED_NOTHING_SUBMITTED":
+        return
+    results = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage1"
+    found = sorted(results.rglob("*.json")) if results.exists() else []
+    assert not found, (
+        f"the status says nothing has been submitted and {len(found)} Stage-1 "
+        f"artifact(s) are on disk, the first being {found[0] if found else None}. "
+        "Advance the status rather than leaving it describing an empty tree."
+    )
+
+
+def test_the_stage_1_compute_record_is_a_prediction_not_a_report(declaration):
+    """Section 6 asks for the record BEFORE the launch. The flag claims that
+    ordering; this checks the two things that could contradict it -- a record
+    that does not say it is pre-launch, and results that already exist."""
+
+    if not declaration["launch_authorization"]["gates"]["stage_1_compute_record_filed"]:
+        return
+    record = json.loads(
+        (
+            REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage1_compute_record.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert record["filed_before_any_job_was_submitted"] is True
+    assert record["status"] == "M2D_STAGE1_COMPUTE_RECORD"
+    assert (REPO_ROOT / "docs" / "M2D_STAGE1_COMPUTE_RECORD.md").exists()
+    assert (REPO_ROOT / "scripts" / "m2d_stage1_compute_record.py").exists()
+    # Section 6: recomputed from the actual selected cells, not carried over.
+    priced = {cell["cell"] for cell in record["workload"]["cells"]}
+    cells = declaration["stage_1"]["cells"]
+    assert priced == {*cells["mandatory_blockers"], *cells["controls"]}
+    assert record["new_fits"] == declaration["stage_1"]["new_fits"]
 
 
 def test_the_stage_1_gate_was_committed_before_anything_it_judges(declaration):
