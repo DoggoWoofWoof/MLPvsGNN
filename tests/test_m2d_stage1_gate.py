@@ -99,11 +99,14 @@ def arm_payload(
             ),
             "uncached_p99_ms": native["uncached_p99_ms"],
         },
+        # The real names, and checked against the gate's own contract below:
+        # a fixture that built a payload the gate would refuse would make every
+        # test above a test of something that cannot happen.
         "parameters": {
-            "s4_semantic": 196608,
-            "added_semantic": 1536 if arm == "A3_MINIMAL" else 0,
-            "scorer": 8641,
-            "total": 206753,
+            "semantic": 198144 if arm == "A3_MINIMAL" else 196608,
+            "scorer": 9633 if arm == "A3_MINIMAL" else 9665,
+            "total": 207777 if arm == "A3_MINIMAL" else 206273,
+            "added_semantic_parameters": 1536 if arm == "A3_MINIMAL" else 0,
         },
         "integration": {
             "s4_top1_errors": 1000,
@@ -181,6 +184,52 @@ def test_an_incomplete_artifact_is_refused_rather_than_skipped(tmp_path, rows, c
     (tmp_path / "bad.json").write_text(json.dumps(payload), encoding="utf-8")
     with pytest.raises(ValueError, match="not a completed"):
         gate.load_results(tmp_path)
+
+
+def test_the_fixture_satisfies_the_contract_the_gate_declares(rows, cells) -> None:
+    """Otherwise every test above judges a payload no runner could produce."""
+
+    for arm in gate.ARMS:
+        gate.check_payload(
+            arm_payload(rows, cells["blocker"][0], arm, recall_at_5_vs=("S3", 0.0)),
+            "the fixture",
+        )
+
+
+@pytest.mark.parametrize("section,key", [
+    ("", "integration"),
+    ("metrics", "recall@1"),
+    ("metrics", "mrr"),
+    ("systems", "uncached_p95_ms"),
+    ("parameters", "added_semantic_parameters"),
+    ("integration", "newly_broken"),
+])
+def test_a_payload_missing_anything_the_gate_reads_is_refused(
+    tmp_path, rows, cells, section, key
+) -> None:
+    payload = arm_payload(rows, cells["blocker"][0], "A1", recall_at_5_vs=("S3", 0.0))
+    (payload if section == "" else payload[section]).pop(key)
+    (tmp_path / "thin.json").write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="the gate cannot judge it"):
+        gate.load_results(tmp_path)
+
+
+def test_the_runner_writes_every_key_this_gate_declares() -> None:
+    """The contract has two ends. This is the other one.
+
+    The runner validates each payload against REQUIRED_PAYLOAD before writing,
+    so a fit that the gate could not judge fails in the container that produced
+    it rather than after eight of them have been paid for.
+    """
+
+    import inspect
+
+    from scripts import run_m2d_stage1_arms as runner
+
+    assert runner.check_payload is gate.check_payload
+    assert "check_payload(payload" in inspect.getsource(runner.run)
+    assert runner.COMPLETE_STATUS == "M2D_STAGE1_ARM_COMPLETE"
+    assert runner.ARMS == gate.ARMS
 
 
 # ---------------------------------------------------------------------------

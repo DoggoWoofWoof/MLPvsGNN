@@ -90,6 +90,45 @@ CONTROL_BOUND_PP = -0.50
 #: The seed M2D Stage 1 runs. Section 15's extra seeds are not authorised.
 SEED = 0
 
+#: Exactly what this gate reads out of an arm artifact, named here rather than
+#: left implicit in the code below. A contract between two files that is only
+#: implied is a contract that breaks silently: the runner would write a payload
+#: this gate could not judge, and the failure would surface as a KeyError after
+#: eight fits had been paid for. ``scripts/run_m2d_stage1_arms.py`` validates
+#: every payload against this before writing it, so a mismatch is caught in the
+#: container that produced it.
+REQUIRED_PAYLOAD: dict[str, tuple[str, ...]] = {
+    "": ("cell", "arm", "seed", "metrics", "systems", "parameters", "integration"),
+    # Section 8's mandatory five. recall@5 is the selector; the rest are the
+    # metrics the defect actually lives in.
+    "metrics": ("recall@1", "recall@5", "recall@20", "mrr", "full_coverage@20"),
+    "systems": ("uncached_p50_ms", "uncached_p95_ms", "uncached_p99_ms"),
+    "parameters": ("semantic", "scorer", "total", "added_semantic_parameters"),
+    "integration": (
+        "s4_top1_errors",
+        "corrected",
+        "newly_broken",
+        "net_top1_corrections",
+    ),
+}
+
+
+def check_payload(payload: dict[str, Any], where: str) -> None:
+    """Every key in REQUIRED_PAYLOAD, or refuse."""
+
+    for section, keys in REQUIRED_PAYLOAD.items():
+        block = payload if section == "" else payload.get(section)
+        # A section that is absent or is not a mapping is reported as missing
+        # every key it owes, which is what it is: the gate can read none of them.
+        present = set(block) if isinstance(block, dict) else set()
+        missing = [key for key in keys if key not in present]
+        if missing:
+            raise ValueError(
+                f"{where} is missing {missing} from "
+                f"{section or 'the payload root'}; the gate cannot judge it"
+            )
+
+
 PASS = "PASS"
 FAIL = "FAIL"
 RESOLVABLE = "RESOLVABLE"
@@ -181,6 +220,7 @@ def load_results(root: Path = RESULT_ROOT) -> dict[tuple[str, str], dict[str, An
             raise ValueError(f"{path} claims to have read the test split")
         if payload.get("arm") not in ARMS:
             raise ValueError(f"{path} carries arm {payload.get('arm')!r}, not one of {ARMS}")
+        check_payload(payload, str(path))
         results[(payload["cell"], payload["arm"])] = payload
     return results
 
