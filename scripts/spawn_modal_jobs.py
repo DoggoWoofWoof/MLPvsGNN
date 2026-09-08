@@ -123,6 +123,16 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
     # because every cell master and every checkpoint it reads was persisted by
     # an earlier phase and is loaded rather than rebuilt.
     "m2d-stage1-arms": ("scripts.modal_m2d_stage1_arms", {"arms": "run_stage1"}),
+    # Stage 2, and a different unit: one spawned call per CELL AND SEED rather
+    # than per cell. Stage 1 put both arms in one container because section 10
+    # asked what the added column costs against its own control on one clock;
+    # section 15b asks whether the seed-0 shortfall survives a three-seed mean,
+    # which A1 has no part in, so the container holds one fit and the seed is
+    # what distinguishes two jobs on one dataset. Four calls, four fits. It
+    # runs the SAME runner as Stage 1 -- the architecture is frozen -- and
+    # reads M2B's resolution tree rather than its headline, because that is
+    # where a seed-1 or seed-2 S4 checkpoint exists.
+    "m2d-stage2-seeds": ("scripts.modal_m2d_stage2_seeds", {"seeds": "run_stage2"}),
     # Three stages, and no build stage at all: M2B rebuilds no features. Every
     # cell master it reads was persisted by M2's build stage and is admitted on
     # its feature build contract. One spawned job per dataset runs every regime
@@ -383,6 +393,11 @@ UTILISATION = {
     # items cover training, scoring and benchmarking, and still not the image
     # pull, the dataset load, the cell master load or the arm-store build.
     "m2d-stage1-arms": 0.4,
+    # Stage 2's record is derived at the same divisor and for the same reason.
+    # It buys less per container than Stage 1's -- one fit rather than two --
+    # and still not the image pull, the dataset load, the cell master load or
+    # the arm-store build, which is the part the divisor is covering.
+    "m2d-stage2-seeds": 0.4,
 }
 
 
@@ -673,6 +688,41 @@ def measured_units(
             f"{len(jobs)} cell(s) at the filed Stage-1 compute record, whose per-cell "
             "seconds scale M2B's own measured S4 training time for that cell by a host "
             f"forward-cost ratio -- a bracket, not a container measurement; {granularity}"
+        )
+
+    if package == "m2d-stage2-seeds":
+        # Keyed by cell AND seed, unlike every branch above it. Stage 2 spawns
+        # two containers per dataset, so a per-dataset estimate would price one
+        # of them and silently reuse that figure for the other -- which happens
+        # to be right here, because the two seeds read one measurement, and
+        # would stop being right the moment a seed were priced separately.
+        #
+        # The seconds themselves are the filed record's own per-container sum
+        # of four measured line items. Re-deriving them here would gate the
+        # launch against a second number nobody filed.
+        estimate = {
+            (item["cell"].split("/")[0], int(item["seed"])): float(item["seconds"])
+            for item in module.compute_record()["workload"]["cells"]
+        }
+        unknown = sorted(
+            f"{job['dataset']} seed {job['seed']}"
+            for job in jobs
+            if (job["dataset"], int(job["seed"])) not in estimate
+        )
+        if unknown:
+            return None, f"the filed compute record prices no job for {', '.join(unknown)}"
+        units = [
+            WorkUnit(
+                name=f"{job['dataset']} seed {job['seed']}",
+                seconds=estimate[(job["dataset"], int(job["seed"]))],
+            )
+            for job in jobs
+        ]
+        units, granularity = _collapse_without_resumption(units, module, "cell_seed", "seeds")
+        return units, (
+            f"{len(jobs)} fit(s) at the filed Stage-2 compute record, whose per-container "
+            "seconds are read out of the Stage-1 artifacts for these same cells and this "
+            f"same arm -- a measurement, not a bracket; {granularity}"
         )
 
     return None, f"no measured cost model for {package}"
