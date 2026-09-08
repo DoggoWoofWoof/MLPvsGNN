@@ -3,16 +3,33 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_STAGE1_GATE_RETURNED_STOP_S4_DEVELOPMENT` — Stage 1 ran. The eight fits
-were submitted, fetched and verified, and the gate committed before any of them
-existed returned `STOP_S4_DEVELOPMENT` on case 3: neither arm passed, so S3 is
-retained and M3 proceeds. The numbers are in
-[`docs/M2D_STAGE1_REPORT.md`](M2D_STAGE1_REPORT.md) and the rule's own working
-in [`docs/M2D_STAGE1_GATE.md`](M2D_STAGE1_GATE.md). One qualification the case
-label does not carry: A3-MINIMAL's single shortfall, on musique_clean/R1, was
-RESOLVABLE rather than FAIL — inside that cell's own measured seed spread, so
-seed 0 cannot settle it. That is the one state extra seeds could change, and
-section 14 authorises them only on a pass, so none were run. Stage 0 is
+`M2D_STAGE2_AUTHORISED_A3_MINIMAL_SEEDS_1_AND_2` — Stage 1 ran and its verdict
+stands. The eight fits were submitted, fetched and verified, and the gate
+committed before any of them existed returned `STOP_S4_DEVELOPMENT` on case 3.
+The numbers are in [`docs/M2D_STAGE1_REPORT.md`](M2D_STAGE1_REPORT.md) and the
+rule's own working in [`docs/M2D_STAGE1_GATE.md`](M2D_STAGE1_GATE.md); neither
+is altered by what follows.
+
+One qualification the case label does not carry: A3-MINIMAL's single shortfall,
+on musique_clean/R1, was RESOLVABLE rather than FAIL. It missed the 0.50pp
+admissibility guard by **0.065pp**, against a seed variation already measured at
+**0.816pp** on that same cell — an order of magnitude wider than the gap. That
+is the one state extra seeds could change, section 15's trigger did not fire
+(RESOLVABLE is not a pass), and the gate's own
+`extra_seeds.authorised_by_this_gate` is `false`, so none were run.
+
+Review has now read that report and authorised the minimum additional seeds, in
+the dated amendment at section 15b of the declaration. The accurate description
+is not "trying more seeds because seed 0 failed": seed 0 landed inside a
+**pre-measured decision-uncertainty band**, and the four fits are the smallest
+matrix that can resolve the decision — A3-MINIMAL only, the two blockers only,
+seeds 1 and 2 only, with seed 0 and every S3/S4 comparison row reused rather
+than refit. No threshold moves. What the amendment adds is the aggregation the
+guard is applied to, fixed in advance as the **mean of three same-seed
+differences**, so that no seed can be selected after the fact. Filed with it,
+before the fits exist, is the observation that this stage is *not* expected to
+pass on seed 0's strength: native S4 degrades monotonically with seed on
+MuSiQue, so seeds 1 and 2 must average better than seed 0 managed. Stage 0 is
 complete and reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
 in [`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and ran on
 all four declared cells; condition B was measured afterwards on the two failure

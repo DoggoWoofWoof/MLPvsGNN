@@ -162,6 +162,28 @@ STATUS_REQUIRES_UNEARNED = {
     # name once the gate's own verdict is on disk saying so, which the test
     # below checks rather than trusting the string.
     "M2D_STAGE1_GATE_RETURNED_STOP_S4_DEVELOPMENT": set(),
+    # Review read the Stage-1 report and did NOT accept the verdict as final.
+    # The gate's own `extra_seeds.authorised_by_this_gate` is false and section
+    # 15's trigger did not fire, so the four fits are authorised by a dated
+    # amendment instead -- and an authorisation is not a rule. Two gates stay
+    # unearned, and they are the two that stand between a decision to run and a
+    # submission: the rule that will judge the result, and its price.
+    "M2D_STAGE2_AUTHORISED_A3_MINIMAL_SEEDS_1_AND_2": {
+        "stage_2_gate_committed",
+        "stage_2_compute_record_filed",
+    },
+    "M2D_STAGE2_GATE_COMMITTED_RECORD_NOT_YET_FILED": {
+        "stage_2_compute_record_filed",
+    },
+    # Same empty set and same danger as its Stage-1 counterpart: the flags can
+    # no longer say whether anything has run, so the test below asks the disk.
+    "M2D_STAGE2_RECORD_FILED_NOTHING_SUBMITTED": set(),
+    # Both terminal statuses are filed HERE, before the four fits exist, so that
+    # neither has to be invented once the numbers are visible. Which one the
+    # phase ends at is the gate's to say, and the test below checks it against
+    # the gate's own output rather than the string.
+    "M2D_STAGE2_GATE_RETURNED_A3_MINIMAL_BLOCKERS_RESOLVED": set(),
+    "M2D_STAGE2_GATE_RETURNED_STOP_S4_DEVELOPMENT_CONFIRMED": set(),
 }
 
 
@@ -333,6 +355,363 @@ def test_the_predecessor_commit_gate_is_not_a_promise(declaration):
         "the declaration says the M2C close-out is pushed, and origin/main does not "
         "contain it. Either the push did not happen or the gate is wrong."
     )
+
+
+# ---------------------------------------------------------------------------
+# Stage 2: the amendment must not be a rewrite
+# ---------------------------------------------------------------------------
+
+
+STAGE_1_RESULTS = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage1"
+STAGE_1_GATE_JSON = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage1_gate.json"
+
+
+def _stage_1_gate() -> dict:
+    if not STAGE_1_GATE_JSON.is_file():
+        pytest.skip("Stage 1's verdict is not on this machine")
+    return json.loads(STAGE_1_GATE_JSON.read_text(encoding="utf-8"))
+
+
+def test_the_stage_2_amendment_leaves_stage_1_exactly_as_it_was(declaration):
+    """The one thing an amendment filed after a verdict must not do.
+
+    Stage 1 ran under `stage_1`, at seed 0, over eight fits, and returned
+    STOP_S4_DEVELOPMENT. Widening any of those retroactively would mean the
+    record no longer describes the experiment that was actually paid for, and
+    the honest reading of Stage 2 -- a new question -- would become a quiet
+    re-scoring of the old one.
+    """
+
+    assert declaration["stage_1"]["seeds"] == [0]
+    assert declaration["stage_1"]["new_fits"] == 8
+    assert declaration["stage_2"] is not declaration["stage_1"]
+
+    amendment = declaration["stage_2_amendment"]
+    stood = amendment["what_stage_1_returned_and_still_returns"]
+    assert stood["verdict"] == "STOP_S4_DEVELOPMENT"
+    assert _stage_1_gate()["verdict"] == stood["verdict"], (
+        "the amendment restates Stage 1's verdict and the gate on disk returned "
+        "a different one"
+    )
+    for document in ("M2D_STAGE1_REPORT.md", "M2D_STAGE1_GATE.md"):
+        assert (REPO_ROOT / "docs" / document).is_file()
+
+
+def test_the_stage_2_amendment_changes_no_threshold(declaration):
+    """It says so; this is the check that it is true rather than claimed."""
+
+    amendment = declaration["stage_2_amendment"]["thresholds_unchanged"]
+    filed = declaration["effectiveness_gate"]["blockers"]
+
+    for cell, prose in filed.items():
+        assert f"{amendment['effectiveness_guard_pp']:.2f}pp" in prose, (
+            f"section 12 states {cell}'s guard in prose and the amendment restates "
+            "it as a number; they have to be the same number"
+        )
+    assert declaration["stage_2"]["decision_rule"]["primary"]["requirement_pp"] == pytest.approx(
+        -amendment["effectiveness_guard_pp"]
+    ), (
+        "Stage 2's requirement is the SAME 0.50pp guard, expressed as a signed "
+        "floor on a difference. A different magnitude here would be a new "
+        "threshold wearing the old one's name."
+    )
+
+    gate = _stage_1_gate()
+    assert gate["bounds_pp"]["blocker_vs_s3_recall_at_5"] == pytest.approx(
+        -amendment["effectiveness_guard_pp"]
+    ), "the bound Stage 1 was actually judged at"
+    for measured in gate["arms"]["A3_MINIMAL"]["parameters"].values():
+        assert measured["added_semantic_parameters"] == 1536
+    assert "1536" in str(amendment["parameter_envelope"])
+
+
+def test_the_stage_2_amendment_records_that_the_filed_trigger_was_not_met(declaration):
+    """Section 15's seeds have a trigger and it did not fire.
+
+    The amendment could have been written as though it had -- RESOLVABLE reads
+    close enough to PASS that the substitution would pass unnoticed. It is the
+    difference between the seeds being auto-advanced by a filed rule and being
+    authorised by a person, and only one of those actually happened.
+    """
+
+    assert declaration["targeted_multi_seed_resolution"]["authorised_by_this_file"] is False
+    trigger = declaration["stage_2_amendment"]["the_trigger_was_not_met_and_this_says_so"]
+    assert trigger["was_it_met"] is False
+    assert trigger["filed_trigger"] == declaration["targeted_multi_seed_resolution"]["trigger"]
+
+    gate = _stage_1_gate()
+    blockers = gate["arms"]["A3_MINIMAL"]["blockers"]
+    assert blockers["musique_clean/R1"]["outcome"] == "RESOLVABLE"
+    assert blockers["squad_clean/R1"]["outcome"] == "PASS"
+    assert gate["extra_seeds"]["authorised_by_this_gate"] is False, (
+        "if the gate itself had authorised the seeds there would be nothing for a "
+        "review amendment to authorise, and this test would be describing fiction"
+    )
+    assert "A3_MINIMAL_BLOCKERS_RESOLVED" not in str(gate["verdict"])
+
+
+def test_the_stage_2_matrix_is_the_minimum_the_filed_resolution_names(declaration):
+    """Four fits, and no fifth. The seeds, cells and arm all come from section
+    15, which specified them before Stage 1 ran; anything added here would be a
+    matrix chosen with the seed-0 number in view."""
+
+    stage_2 = declaration["stage_2"]
+    filed = declaration["targeted_multi_seed_resolution"]
+
+    assert stage_2["seeds"] == filed["run_seeds"] == [1, 2]
+    assert stage_2["cells"] == filed["only_for"] == ["squad_clean/R1", "musique_clean/R1"]
+    assert stage_2["arms"] == ["A3_MINIMAL"]
+    assert stage_2["new_fits"] == len(stage_2["cells"]) * len(stage_2["seeds"]) == 4
+    assert set(stage_2["cells"]) == set(declaration["stage_1"]["cells"]["mandatory_blockers"])
+
+    forbidden = " ".join(stage_2["do_not_run"]).lower()
+    for excluded in ("a1", "control", "regime", "dataset", "14-cell"):
+        assert excluded in forbidden
+
+
+def test_the_stage_2_comparisons_all_exist_already(declaration, by_cell_seed):
+    """Nothing is refit to produce a comparison row.
+
+    The claim is that S3 and S4 are already on disk at all three seeds for both
+    blockers, which is what makes four fits enough. If it were false the stage
+    would silently need twelve more, and the compute record would be wrong
+    before it was written.
+    """
+
+    assert declaration["stage_2"]["reuse"]["s3_and_s4"]
+    for cell in declaration["stage_2"]["cells"]:
+        dataset, regime = cell.split("/")
+        for seed in (0, 1, 2):
+            rows = by_cell_seed[(dataset, regime, seed)]
+            assert "S3" in rows and "S4" in rows, f"{cell} seed {seed} is not paired"
+
+
+def test_the_stage_2_rule_cannot_select_a_seed(declaration):
+    """The failure mode this whole stage is exposed to.
+
+    Three seeds are being run because one was not enough to decide. That same
+    fact makes it trivially possible to decide from whichever of the three
+    reads best, so the aggregation is fixed in advance, over all three, and the
+    alternatives are named as forbidden rather than merely omitted.
+    """
+
+    rule = declaration["stage_2"]["decision_rule"]
+    primary = rule["primary"]
+
+    assert primary["per_cell_over_seeds"] == [0, 1, 2]
+    assert primary["aggregate"].startswith("arithmetic mean")
+    assert primary["both_must_hold"] is True
+    assert primary["applies_to_both_of"] == declaration["stage_2"]["cells"]
+
+    forbidden = " ".join(rule["forbidden"]).lower()
+    for banned in ("best seed", "only the seeds", "changing the", "fewer than three"):
+        assert banned in forbidden
+
+    companion = rule["companion_reported_not_gated"]
+    assert "sd" in companion["what"].lower() and "sign" in companion["what"].lower()
+    assert "negative_in_every_seed" in companion["why"], (
+        "the per-seed convention is inherited from this file's own reporting rather "
+        "than invented, and the reason has to survive in the file"
+    )
+
+
+def test_the_per_seed_constraint_is_reported_and_not_gated(declaration):
+    """It was considered and deliberately not adopted.
+
+    A per-seed floor would be a reasonable rule and it is not this file's rule.
+    Adding one now -- with seed 0 already measured at -0.565pp -- would be
+    choosing a threshold that the visible number decides. The existing
+    convention reports the per-seed sign beside the mean; that precedent is
+    followed, and the file has to say why.
+    """
+
+    means = declaration["failure_shape"]["blockers_three_seed_mean_s4_minus_s3_pp"]
+    assert all(cell["negative_in_every_seed"] is True for cell in means.values()), (
+        "this test asserts a precedent -- a per-seed sign reported BESIDE a mean "
+        "rather than gating it. If the precedent moved, the reasoning in the "
+        "declaration has to move with it"
+    )
+    rule = declaration["stage_2"]["decision_rule"]
+    assert "per-seed" not in str(rule["primary"]).lower()
+    assert "NOT adopted" in rule["companion_reported_not_gated"]["why"]
+
+
+def test_the_stage_2_amendments_measured_numbers_recompute(declaration, by_cell_seed):
+    """The amendment quotes the four figures that justify it. Every one is
+    recomputed from the artifacts, so a transcription slip cannot be the reason
+    four fits were bought."""
+
+    gate = _stage_1_gate()
+    quoted = declaration["stage_2_amendment"]["the_measured_state_that_motivates_this"]
+
+    for cell in declaration["stage_2"]["cells"]:
+        dataset, regime = cell.split("/")
+        said = quoted[f"A3_MINIMAL_{dataset}_{regime}"]
+        measured = gate["arms"]["A3_MINIMAL"]["blockers"][cell]
+        s3 = by_cell_seed[(dataset, regime, 0)]["S3"]["recall@5"]
+        delta = measured["recall_at_5_vs_s3_pp"]
+
+        assert said["s3_recall_at_5"] == pytest.approx(s3, abs=1e-6)
+        assert said["delta_pp"] == pytest.approx(delta, abs=TOLERANCE_PP)
+        assert said["recall_at_5"] == pytest.approx(s3 + delta / 100.0, abs=1e-6), (
+            "the arm's own recall@5, reconstructed from the seed-0 S3 row and the "
+            "difference the gate measured against it"
+        )
+        assert said["outcome"] == measured["outcome"]
+
+    musique = quoted["A3_MINIMAL_musique_clean_R1"]
+    assert musique["misses_the_guard_by_pp"] == pytest.approx(
+        abs(musique["delta_pp"] - musique["guard_pp"]), abs=TOLERANCE_PP
+    )
+    spread = [
+        by_cell_seed[("musique_clean", "R1", seed)]["S4"]["recall@5"] for seed in (0, 1, 2)
+    ]
+    assert musique["cell_measured_s4_seed_spread_pp"] == pytest.approx(
+        (max(spread) - min(spread)) * 100.0, abs=TOLERANCE_PP
+    )
+    assert musique["cell_measured_s4_seed_spread_pp"] == pytest.approx(
+        gate["arms"]["A3_MINIMAL"]["blockers"]["musique_clean/R1"]["seed_spread_band_pp"],
+        abs=TOLERANCE_PP,
+    ), "the same band the gate used to call the shortfall RESOLVABLE"
+    assert musique["misses_the_guard_by_pp"] < musique["cell_measured_s4_seed_spread_pp"], (
+        "the entire justification for Stage 2 is that the undecided margin is "
+        "smaller than the seed variation. If that ever stops being true, the stage "
+        "stops being a resolution and becomes a retry."
+    )
+
+
+def test_the_prospective_observation_recomputes_and_is_unflattering(
+    declaration, by_cell_seed
+):
+    """Filed before the four fits exist, and it predicts against the stage.
+
+    A prospective note that made the stage look promising would cost nothing to
+    write. This one says seed 0 is S4's best seed on musique and that the other
+    two therefore have to beat it, so the check is both that the arithmetic is
+    right and that it still points the unfavourable way.
+    """
+
+    note = declaration["stage_2"]["prospective_observation_filed_before_the_numbers"]
+    assert note["it_changes_no_rule"] is True
+
+    per_seed = [
+        _delta_pp(by_cell_seed[("musique_clean", "R1", seed)], "recall@5")
+        for seed in (0, 1, 2)
+    ]
+    assert per_seed == sorted(per_seed, reverse=True), (
+        "the note says S4 degrades monotonically with seed on this cell"
+    )
+    for value in per_seed:
+        assert f"{value:.3f}" in note["what"]
+
+    seed_0 = declaration["stage_2_amendment"]["the_measured_state_that_motivates_this"][
+        "A3_MINIMAL_musique_clean_R1"
+    ]["delta_pp"]
+    guard = declaration["stage_2"]["decision_rule"]["primary"]["requirement_pp"]
+    needed = (3 * guard - seed_0) / 2
+    assert f"{needed:.4f}" in note["the_arithmetic_this_implies"]
+    assert needed > seed_0, (
+        "the point of the note: seeds 1 and 2 must average BETTER than seed 0 did"
+    )
+
+
+def test_the_stage_2_systems_position_claims_no_new_measurement(declaration):
+    """Four training fits do not remeasure latency, and the file must not let a
+    report say they did. What they can carry is the identity evidence -- the
+    parameter counts and the uncached path -- which is per-artifact."""
+
+    systems = declaration["stage_2"]["systems"]
+    assert systems["rerun_the_full_benchmark_per_seed"] is False
+    assert "no stage-2 latency claim" in systems["do_not_claim_a_new_latency_result"].lower()
+    required = " ".join(systems["still_required_of_every_new_artifact"])
+    assert "added_semantic_parameters == 1536" in required
+    assert "cached_or_precomputed_semantic_difference == false" in required.lower()
+    assert "p95" in required
+
+
+def test_the_stage_2_verdicts_are_two_and_neither_runs_the_screen(declaration):
+    """Both outcomes are named before either is known, and the favourable one
+    ends in a proposal rather than a launch."""
+
+    verdicts = declaration["stage_2"]["verdicts"]
+    assert verdicts["on_pass"] == "A3_MINIMAL_BLOCKERS_RESOLVED"
+    assert verdicts["on_fail"] == "STOP_S4_DEVELOPMENT_CONFIRMED"
+    assert verdicts["always"] == "STOP_FOR_REVIEW"
+
+    assert declaration["full_screen_rule"]["authorised_by_this_file"] is False
+    assert "PROPOSE" in verdicts["on_pass_then"]
+    assert "does not authorise the screen" in verdicts["on_pass_then"]
+    assert "M3" in verdicts["on_fail_then"] and "No further S4 repair" in verdicts["on_fail_then"]
+
+    for verdict in (verdicts["on_pass"], verdicts["on_fail"]):
+        assert f"M2D_STAGE2_GATE_RETURNED_{verdict}" in STATUS_REQUIRES_UNEARNED, (
+            "both terminal statuses are filed before either is earned, so that "
+            "neither has to be invented once the numbers are visible"
+        )
+
+
+def test_a_status_naming_a_stage_2_verdict_is_checked_against_the_gates_output(
+    declaration,
+):
+    status = declaration["status"]
+    prefix = "M2D_STAGE2_GATE_RETURNED_"
+    if not status.startswith(prefix):
+        return
+    gate_json = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage2_gate.json"
+    assert gate_json.is_file(), (
+        f"the status claims the Stage-2 gate returned {status[len(prefix):]} and "
+        "the gate has written no verdict to disk"
+    )
+    gate = json.loads(gate_json.read_text(encoding="utf-8"))
+    assert gate["verdict"] == status[len(prefix):]
+    assert gate["fits_measured"] == gate["fits_expected"] == 4
+    assert not gate["fits_absent"]
+
+
+def test_a_stage_2_status_claiming_nothing_was_submitted_is_checked_against_the_disk(
+    declaration,
+):
+    if declaration["status"] != "M2D_STAGE2_RECORD_FILED_NOTHING_SUBMITTED":
+        return
+    results = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage2"
+    found = sorted(results.rglob("*.json")) if results.exists() else []
+    assert not found, (
+        f"the status says nothing has been submitted and {len(found)} Stage-2 "
+        f"artifact(s) are on disk, the first being {found[0] if found else None}"
+    )
+
+
+def test_the_stage_2_gate_gate_is_not_a_promise(declaration):
+    """`stage_2_gate_committed` claims an ordering, not a file. Same check the
+    Stage-1 gate gets: the rule has to exist in a commit that holds no Stage-2
+    artifact, or it is a rationalisation with a timestamp."""
+
+    gates = declaration["launch_authorization"]["gates"]
+    if not gates["stage_2_gate_committed"]:
+        assert not (REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage2_gate.json").is_file(), (
+            "a Stage-2 verdict is on disk and the gate that produced it is not "
+            "claimed as committed"
+        )
+        return
+    assert (REPO_ROOT / "scripts" / "m2d_stage2_gate.py").exists()
+    assert (REPO_ROOT / "tests" / "test_m2d_stage2_gate.py").exists()
+
+
+def test_the_stage_2_compute_record_is_a_prediction_not_a_report(declaration):
+    if not declaration["launch_authorization"]["gates"]["stage_2_compute_record_filed"]:
+        return
+    record = json.loads(
+        (
+            REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage2_compute_record.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert record["filed_before_any_job_was_submitted"] is True
+    assert record["status"] == "M2D_STAGE2_COMPUTE_RECORD"
+    assert (REPO_ROOT / "docs" / "M2D_STAGE2_COMPUTE_RECORD.md").exists()
+    assert (REPO_ROOT / "scripts" / "m2d_stage2_compute_record.py").exists()
+    assert record["new_fits"] == declaration["stage_2"]["new_fits"]
+    priced = {cell["cell"] for cell in record["workload"]["cells"]}
+    assert priced == set(declaration["stage_2"]["cells"])
 
 
 # ---------------------------------------------------------------------------

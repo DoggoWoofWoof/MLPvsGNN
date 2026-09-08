@@ -13,7 +13,7 @@
 
 phase: M2D_S4_SEMANTIC_REPAIR
 opened: 2026-09-08
-status: M2D_STAGE1_GATE_RETURNED_STOP_S4_DEVELOPMENT
+status: M2D_STAGE2_AUTHORISED_A3_MINIMAL_SEEDS_1_AND_2
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: >-
   An observed S4 development result, not a preregistered hypothesis. S4 was
@@ -818,6 +818,192 @@ targeted_multi_seed_resolution:
     If it survives those three-seed blockers, and only then, PROPOSE the full
     14-cell seed-0 M2D screen. Proposing is not running.
 
+# ==========================================================================
+# STAGE 2 -- targeted three-seed resolution, authorised by dated review
+# ==========================================================================
+# Filed after Stage 1 returned, and before any Stage-2 fit exists. It changes
+# no threshold. What it does is authorise the extra seeds that
+# `targeted_multi_seed_resolution` above describes but does not itself permit,
+# because that block's trigger was NOT met and this file has no way to say
+# "run them anyway" without a human saying so.
+
+stage_2_amendment:
+  filed: 2026-09-08
+  filed_against_commit: 24e5862
+  no_stage_2_result_existed_when_this_was_filed: true
+
+  what_stage_1_returned_and_still_returns:
+    verdict: STOP_S4_DEVELOPMENT
+    case: case_3
+    gate: scripts/m2d_stage1_gate.py, committed at 6f429ee before any Stage-1 fit existed
+    this_is_not_reopened: >-
+      Stage 1's gate ran correctly on the rule it was given and its outcome is
+      historical. Nothing in this amendment alters docs/M2D_STAGE1_REPORT.md,
+      docs/M2D_STAGE1_GATE.md or the filed stage1_gate.json, and Stage 2 is a
+      NEW question with its own gate rather than a re-scoring of that one.
+
+  the_measured_state_that_motivates_this:
+    A3_MINIMAL_squad_clean_R1:
+      recall_at_5: 0.918473
+      s3_recall_at_5: 0.917706
+      delta_pp: 0.077
+      outcome: PASS
+    A3_MINIMAL_musique_clean_R1:
+      recall_at_5: 0.767880
+      s3_recall_at_5: 0.773526
+      delta_pp: -0.565
+      outcome: RESOLVABLE
+      guard_pp: -0.500
+      misses_the_guard_by_pp: 0.065
+      cell_measured_s4_seed_spread_pp: 0.8156
+    why_seed_0_cannot_settle_it: >-
+      The unresolved decision margin is 0.065pp and the seed variation already
+      measured on this cell is 0.8156pp, an order of magnitude larger. A single
+      seed cannot distinguish a challenger that misses the guard from one that
+      meets it when the seed noise is that much wider than the gap.
+
+  why_this_is_not_running_seeds_until_one_looks_good:
+    the_honest_description: >-
+      Seed 0 landed inside a pre-measured decision-uncertainty band. The extra
+      seeds are the minimum needed to resolve the decision, they were specified
+      in this file BEFORE Stage 1 ran, and the criterion aggregates all three
+      seeds rather than selecting among them.
+    what_would_make_it_illegitimate:
+    - selecting the best seed
+    - averaging only the seeds that passed
+    - widening the 0.50pp guard
+    - adding seeds on cells that already passed in order to move a mean
+    - running further seeds if three do not settle it
+    none_of_those_are_authorised_here: true
+
+  the_trigger_was_not_met_and_this_says_so:
+    filed_trigger: a seed-0 challenger that clears BOTH the effectiveness and systems gates
+    was_it_met: false
+    why_not: >-
+      A3-MINIMAL cleared the systems gate on all four cells and cleared the
+      effectiveness gate on squad_clean/R1 and both controls, but musique_clean/R1
+      came back RESOLVABLE rather than PASS, and RESOLVABLE is not a pass.
+    therefore: >-
+      The seeds are NOT auto-advanced by the filed rule. They are authorised by
+      this dated review amendment, explicitly and narrowly, and the distinction
+      is recorded rather than smoothed over.
+
+  thresholds_unchanged:
+    effectiveness_guard_pp: 0.50
+    against: S3 recall@5, per blocker cell
+    systems_requirement: unchanged -- total uncached p95 below S3's
+    parameter_envelope: unchanged -- 1536 added semantic parameters
+    what_this_amendment_specifies_instead: >-
+      Only the AGGREGATION. The filed guard is a per-cell number and Stage 1
+      applied it at one seed; with three seeds it has to be applied to
+      something, and this amendment fixes that something in advance as the mean
+      of the three same-seed differences. The guard itself is not touched.
+
+stage_2:
+  authorised_by: stage_2_amendment, filed 2026-09-08 by review
+  arms: [A3_MINIMAL]
+  cells: [squad_clean/R1, musique_clean/R1]
+  seeds: [1, 2]
+  new_fits: 4
+  reuse:
+    seed_0: >-
+      The Stage-1 A3-MINIMAL artifacts for these two cells are reused as the
+      seed-0 row. They are not refit.
+    s3_and_s4: >-
+      M2B's baseline table already carries S3 and S4 at seeds 0, 1 and 2 on
+      BOTH blockers, so every same-seed comparison this stage needs already
+      exists and nothing is refit to produce a comparison row.
+  do_not_run:
+  - A1
+  - the controls
+  - any other regime
+  - any other dataset
+  - the full 14-cell screen
+  architecture_frozen: >-
+    A3-MINIMAL is exactly current S4 + semantic_difference. No semantic_product,
+    no dot_qd_pct, no new raw feature, no graph change, no structural transform,
+    no candidate change, no hyperparameter change, no loss change, no
+    projection-width change.
+
+  decision_rule:
+    primary:
+      quantity: A3_MINIMAL recall@5 minus SAME-SEED S3 recall@5, in percentage points
+      per_cell_over_seeds: [0, 1, 2]
+      aggregate: arithmetic mean of the three same-seed differences
+      requirement_pp: -0.50
+      requirement: mean >= -0.50pp
+      applies_to_both_of: [squad_clean/R1, musique_clean/R1]
+      both_must_hold: true
+    forbidden:
+    - selecting the best seed
+    - averaging only the seeds that clear the guard
+    - changing the -0.50pp guard
+    - reporting a mean over fewer than three seeds
+    companion_reported_not_gated:
+      what: per-seed sign and the sample SD of the three differences
+      why: >-
+        This file already reports `negative_in_every_seed` beside its three-seed
+        means rather than gating on it, and that precedent is followed rather
+        than replaced. A per-seed floor was considered by the review and
+        deliberately NOT adopted, because no such constraint was ever filed and
+        inventing one now -- with the seed-0 number already visible -- would be
+        choosing a threshold with the result in view.
+    also_report:
+      metrics: [recall@1, recall@5, recall@20, mrr]
+      against: [same-seed S3, same-seed S4]
+      then: three-seed means of each
+      why: >-
+        A3-MINIMAL was selected to repair top-rank ordering, so rank-1 and MRR
+        behaviour across seeds is the mechanism-specific evidence, not
+        supporting detail.
+
+  systems:
+    rerun_the_full_benchmark_per_seed: false
+    why: >-
+      Parameter count and operation graph do not depend on the seed. Stage 1
+      measured this arm's latency on both blockers in the same container as a
+      native S4 re-score; re-timing four more fits would buy a fourth and fifth
+      copy of a number that cannot have moved.
+    still_required_of_every_new_artifact:
+    - semantic, scorer and total parameter counts
+    - added_semantic_parameters == 1536
+    - cached_or_precomputed_semantic_difference == false
+    - the same uncached p95 path identity Stage 1 reported
+    do_not_claim_a_new_latency_result: >-
+      Stage 1's p95 figures stand as Stage 1's. No Stage-2 latency claim may be
+      made from training seeds that did not remeasure it.
+
+  prospective_observation_filed_before_the_numbers:
+    what: >-
+      This stage is NOT expected to pass on the strength of seed 0. On
+      musique_clean/R1 native S4's own recall@5 degrades monotonically with
+      seed -- S4 minus S3 reads -2.258pp, -2.447pp and -3.011pp at seeds 0, 1
+      and 2 -- so seed 0 is S4's BEST seed on that cell by a clear margin.
+    the_arithmetic_this_implies: >-
+      Seed 0 contributes -0.565pp. For the three-seed mean to reach -0.50pp the
+      other two seeds must average -0.4675pp or better, which is BETTER than
+      seed 0 achieved. If A3-MINIMAL inherits any of S4's seed sensitivity on
+      this cell, the mean will fall further below the guard rather than closer
+      to it.
+    why_this_is_filed_now: >-
+      So that a failure cannot later be described as a surprise, and a pass
+      cannot be described as the expected outcome. It is written down before
+      the four fits exist precisely because it makes the stage look less
+      promising, not more.
+    it_changes_no_rule: true
+
+  verdicts:
+    on_pass: A3_MINIMAL_BLOCKERS_RESOLVED
+    on_pass_then: >-
+      PROPOSE the full 14-cell seed-0 M2D screen under full_screen_rule, which
+      requires a NEW selection rule filed first. Proposing is not running, and
+      this file does not authorise the screen.
+    on_fail: STOP_S4_DEVELOPMENT_CONFIRMED
+    on_fail_then: >-
+      Freeze S3 as the development QLS model and proceed to M3 independent GNN
+      development. No further S4 repair families.
+    always: STOP_FOR_REVIEW
+
 full_screen_rule:
   authorised_by_this_file: false
   file_a_new_rule_first: >-
@@ -1038,6 +1224,19 @@ launch_authorization:
                                                # tests/test_m2d_stage1_gate.py in the same commit. No Stage-1 artifact
                                                # exists at that commit or at this one, which is what makes the rule a
                                                # rule; `git ls-tree 6f429ee` is the check, not this comment.
+    stage_1_reported: true                     # earned 2026-09-08, docs/M2D_STAGE1_REPORT.md and docs/M2D_STAGE1_GATE.md at
+                                               # 24e5862, generated by scripts/m2d_stage1_report.py from the eight artifacts.
+                                               # The gate returned STOP_S4_DEVELOPMENT and that outcome is historical.
+    stage_2_amendment_filed: true              # earned 2026-09-08, section 15b of this file, filed against 24e5862 with no
+                                               # Stage-2 fit in existence. It changes no threshold; it fixes the aggregation
+                                               # and records that the filed trigger was NOT met.
+    stage_2_authorised: true                   # earned 2026-09-08 by operator review of the Stage-1 report. Section 15's
+                                               # `authorised_by_this_file: false` still holds -- this file never authorised
+                                               # the seeds by itself, and does not now. A human did, narrowly, in writing.
+    stage_2_gate_committed: false              # scripts/m2d_stage2_gate.py, with its tests, and no Stage-2 artifact on disk
+                                               # at the commit that files it.
+    stage_2_compute_record_filed: false        # a four-fit record derived from the MEASURED Stage-1 A3-MINIMAL seconds on
+                                               # these same two cells, filed before any job is submitted.
 
 # --------------------------------------------------------------------------
 # 20. Hard stop
