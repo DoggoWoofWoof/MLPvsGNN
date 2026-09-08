@@ -13,7 +13,7 @@
 
 phase: M2D_S4_SEMANTIC_REPAIR
 opened: 2026-09-08
-status: M2D_STAGE2_AUTHORISED_A3_MINIMAL_SEEDS_1_AND_2
+status: M2D_STAGE2_GATE_COMMITTED_RECORD_NOT_YET_FILED
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: >-
   An observed S4 development result, not a preregistered hypothesis. S4 was
@@ -1233,8 +1233,11 @@ launch_authorization:
     stage_2_authorised: true                   # earned 2026-09-08 by operator review of the Stage-1 report. Section 15's
                                                # `authorised_by_this_file: false` still holds -- this file never authorised
                                                # the seeds by itself, and does not now. A human did, narrowly, in writing.
-    stage_2_gate_committed: false              # scripts/m2d_stage2_gate.py, with its tests, and no Stage-2 artifact on disk
-                                               # at the commit that files it.
+    stage_2_gate_committed: true               # earned 2026-09-08, scripts/m2d_stage2_gate.py with
+                                               # tests/test_m2d_stage2_gate.py in the same commit, and no Stage-2
+                                               # artifact anywhere on disk when it was written. The 31 tests run on
+                                               # synthetic fits for that reason: the rule's behaviour is fixed before
+                                               # any real number can inform it.
     stage_2_compute_record_filed: false        # a four-fit record derived from the MEASURED Stage-1 A3-MINIMAL seconds on
                                                # these same two cells, filed before any job is submitted.
 

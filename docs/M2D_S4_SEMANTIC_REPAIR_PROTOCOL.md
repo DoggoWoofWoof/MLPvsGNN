@@ -3,7 +3,7 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_STAGE2_AUTHORISED_A3_MINIMAL_SEEDS_1_AND_2` — Stage 1 ran and its verdict
+`M2D_STAGE2_GATE_COMMITTED_RECORD_NOT_YET_FILED` — Stage 1 ran and its verdict
 stands. The eight fits were submitted, fetched and verified, and the gate
 committed before any of them existed returned `STOP_S4_DEVELOPMENT` on case 3.
 The numbers are in [`docs/M2D_STAGE1_REPORT.md`](M2D_STAGE1_REPORT.md) and the
@@ -29,8 +29,16 @@ guard is applied to, fixed in advance as the **mean of three same-seed
 differences**, so that no seed can be selected after the fact. Filed with it,
 before the fits exist, is the observation that this stage is *not* expected to
 pass on seed 0's strength: native S4 degrades monotonically with seed on
-MuSiQue, so seeds 1 and 2 must average better than seed 0 managed. Stage 0 is
-complete and reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
+MuSiQue, so seeds 1 and 2 must average better than seed 0 managed.
+
+The rule that will judge those fits is `scripts/m2d_stage2_gate.py`, committed
+with its 31 tests and with no Stage-2 artifact anywhere on disk — which is why
+those tests run on synthetic fits. It refuses a verdict on fewer than three
+seeds, refuses a Stage-2 file carrying seed 0 (that row is Stage 1's and is
+reused, not refit), pairs each seed against its own S3 and S4 rows, and reports
+the per-seed signs and sample SD beside the mean without letting them decide.
+What remains before anything is submitted is its price. Stage 0 is complete and
+reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
 in [`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and ran on
 all four declared cells; condition B was measured afterwards on the two failure
 cells, because the Stage-0 probe ranks whole models and B asks about a single
