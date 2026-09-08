@@ -11,6 +11,22 @@ phase: M3_GNN_DEVELOPMENT
 opened: 2026-09-07
 status: M3_DECLARED_RECONNAISSANCE_COMPLETE_NO_FIT_AUTHORISED
 
+# Added 2026-09-08. This declaration's scope was superseded before any fit ran
+# against it, so nothing below was ever measured and nothing below is edited.
+# The status line above is left exactly as it was declared on 2026-09-07.
+superseded_by:
+  file: configs/m3a_sota_information_contract.yaml
+  becomes: M3B
+  superseded_scope: >-
+    The candidate set (G0/G1), the six-cell screen matrix, the selection rule
+    and the workload. Those were declared for a plain node-embedding GNN screen
+    under the historical information contract; M3B trains QLS-U, GAT and
+    GAT-NO-MP under one SOTA-derived information contract instead.
+  surviving_scope: >-
+    The firewall, the R1/R2/R3 graph-privilege regimes and the truncation
+    caveat. M3B restates what it needs rather than reading it from here.
+  no_result_was_ever_produced_against_this_file: true
+
 this_file_authorises: >-
   Declaration and reconnaissance only. It authorises no GNN fit, no comparison
   against QLS, and no M4. Every number below that describes a future run is an

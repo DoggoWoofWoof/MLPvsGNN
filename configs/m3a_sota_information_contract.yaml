@@ -1,0 +1,491 @@
+# M3A -- SOTA information contract, typed graph reconstruction, candidate headroom
+#
+# One file per phase. This file declares M3A and authorises no model fit.
+#
+# M2D closed the semantic ladder at STOP_S4_DEVELOPMENT_CONFIRMED with S3 as the
+# final development QLS model. The next risk is not QLS over-tuning and is no
+# longer GNN over-tuning either: it is comparing a richly-informed GNN against an
+# information-starved feed-forward ranker and calling the difference "message
+# passing". M3A exists to remove that confound before either model is trained.
+#
+# Nothing in this file may be read as a result. It fixes the rules; M3B produces
+# the numbers.
+
+phase: M3A_SOTA_INFORMATION_CONTRACT
+opened: 2026-09-08
+status: M3A_DECLARED_NO_RECONSTRUCTION_AUTHORISED
+
+this_file_authorises: >-
+  Declaration only. It authorises no QLS-U fit, no GAT fit, no GAT-NO-MP fit, no
+  M4, and no canonical migration. Every quantity below that describes future work
+  is an estimate; the gates at the bottom name what a dated amendment must earn
+  before any reconstruction or encoding job is submitted.
+
+# --------------------------------------------------------------------------
+# The registered question. This wording is mandatory and may not be paraphrased
+# into a claim about the answer.
+# --------------------------------------------------------------------------
+
+scientific_question: >-
+  After matching candidate exposure and inference-time graph information to
+  modern graph-retrieval/GNN systems, how much effectiveness remains
+  attributable specifically to learned message passing?
+
+registered_framing:
+  mandatory_wording: true
+  valid_outcomes: >-
+    A nonzero message-passing benefit is a valid scientific outcome. So is a zero
+    or negative one. The phase is designed to measure the increment, not to
+    retire it.
+  forbidden_framings:
+    - prove message passing is unnecessary
+    - show that we do not need message passing
+    - demonstrate that the MLP wins
+  why: >-
+    Every gate in M0-M2D exists to stop a conclusion being fixed before the
+    measurement. A phase that sets out to prove its own hypothesis forfeits that
+    apparatus, and the reviewer would be right to discount the result.
+
+# --------------------------------------------------------------------------
+# Where this sits. M3 as previously declared becomes M3B and is superseded in
+# scope, not deleted.
+# --------------------------------------------------------------------------
+
+phase_order:
+  - M2D: frozen historical QLS development, closed at STOP_S4_DEVELOPMENT_CONFIRMED
+  - M3A: this file -- information contract, typed graph, candidate headroom
+  - M3B: train QLS-U, GAT-NO-MP and GAT under one identical information contract
+  - FREEZE: architectures frozen with config and checkpoint hashes
+  - M4: the first and only direct controlled comparison
+
+supersedes:
+  file: configs/m3_gnn_development.yaml
+  what_is_superseded: >-
+    Its candidate set (G0/G1 plain GATs), its six-cell screen matrix, its
+    selection rule and its workload. Those were declared for a plain
+    node-embedding GNN screen under the historical information contract.
+  what_survives: >-
+    Its firewall (no QLS number may enter GNN selection), its graph-privilege
+    regime definitions R1/R2/R3, its truncation caveat, and its record that the
+    historical operator is per-dataset. M3B will restate what it needs.
+  rule: >-
+    That file is not edited to match this one and its status line is not
+    rewritten to claim a result. It is marked superseded and left as the record
+    of what was declared on 2026-09-07.
+
+# --------------------------------------------------------------------------
+# Naming. Frozen before any result artifact exists, per review decision 1.
+# --------------------------------------------------------------------------
+
+model_naming:
+  display_name: QLS-U
+  formal_name: Universal Query-Local Structure Ranker
+  internal_key: qls_u_sota_v1
+  key_choice_rationale: >-
+    The review offered `qls_u` with `qls_u_sota_v1` as the fallback if collision
+    risk existed. It does. `qls_universal` is already an established M2-era name
+    in configs/m2_qls_v2_freeze.yaml and configs/m2c_s4_structural_conditioning.yaml,
+    where it denotes a shared FEATURE BLOCK, not a model. `qls_u` sitting beside
+    `qls_universal_block` would read as an abbreviation of it and conflate a model
+    with a feature group. The suffixed key cannot be misread.
+  is_not: >-
+    QLS-U is not S5, not S3, not S4, and not an ensemble or a renaming of any of
+    them. S3, S4 and A3 remain frozen historical semantic-ladder objects.
+  reuse_is_architectural_only: >-
+    QLS-U starts from the S4-style projection machinery and retains the validated
+    semantic_difference repair. That is a reuse of code and layer shape. QLS-U
+    results are never to be reported or described as S4 results.
+  historical_keys_must_not_be_renamed: true
+  frozen_before_any_result_artifact_exists: true
+
+# --------------------------------------------------------------------------
+# What must not move. M2-M2D remain valid because their substrate is untouched.
+# --------------------------------------------------------------------------
+
+frozen_historical_contracts:
+  rule: >-
+    Typed relation reconstruction creates NEW versioned artifacts beside the old
+    ones. It never mutates, replaces or re-hashes an artifact an existing result
+    depends on.
+  untouchable:
+    - the historical graph.pt files and their digests
+    - the M2 candidate universe and candidate ordering contract
+    - the frozen node and query embeddings
+    - the canonical splits
+    - every filed M2, M2B, M2C and M2D result
+  consequence: >-
+    Old and new evidence coexist. M2-M2D claims continue to hold under the
+    historical graph contract; M3A/M3B claims hold under the typed contract; no
+    claim is silently re-based onto a substrate it was not measured on.
+
+# --------------------------------------------------------------------------
+# A. SOTA archaeology
+# --------------------------------------------------------------------------
+
+sota_archaeology:
+  purpose: >-
+    Establish what information current graph-retrieval systems actually receive at
+    inference, so that "feature parity" is defined against the literature rather
+    than against our own imagination.
+  systems_required:
+    knowledge_base:
+      - NuTrea
+      - ReaRev
+      - GNN-RAG
+    passage_multi_hop:
+      - GraphER
+      - GFM-Retriever   # where implementation detail is sufficiently public
+  fields_per_system:
+    - dataset
+    - corpus
+    - candidate_or_subgraph_construction
+    - seed_or_topic_entity_assumptions
+    - graph_node_type
+    - graph_edge_type
+    - relations_typed
+    - relation_embeddings
+    - query_conditioning_mechanism
+    - node_features
+    - edge_features
+    - structural_statistics
+    - message_passing_operator
+    - depth
+    - hidden_width
+    - pretraining
+    - external_supervision
+    - output_metric
+    - test_time_information_privilege
+  mandatory_separation:
+    - transferable_inference_time_feature
+    - model_architecture
+    - privileged_or_oracle_assumption
+    - training_or_pretraining_resource
+  oracle_rule: >-
+    Do not copy oracle topic-entity information into our contract unless it is
+    inference-safe and obtainable under our own retrieval setup. A feature that
+    requires gold linking is an oracle, not a feature.
+  comparability_rule: >-
+    External absolute numbers are reference only. Corpora, candidate universes,
+    entity linking, graph construction, relation typing, pretrained models and
+    metrics all differ. No percentage-point claim against an external system
+    unless the protocol matches.
+  outputs:
+    - docs/M3A_SOTA_ARCHAEOLOGY.md
+    - outputs/m3a/sota_archaeology.json
+
+# --------------------------------------------------------------------------
+# B. The universal feature contract F(q, v)
+# --------------------------------------------------------------------------
+
+feature_contract:
+  name: SOTA_FEATURE_CONTRACT
+  principle: >-
+    One dataset-agnostic schema. The same weights process all six datasets.
+  groups:
+    semantic:
+      - query_embedding
+      - candidate_embedding
+      - s4_style_projected_semantic_representation
+      - semantic_difference
+    retrieval:
+      - dense_score
+      - dense_rank
+      - splade_score
+      - splade_rank
+      - retriever_agreement
+    seed:
+      - is_seed
+      - seed_rank_statistics
+      - min_inference_safe_graph_distance   # where computable
+    explicit_qls:
+      - SUPPORT
+      - PATH
+      - NODE_ROLE
+    sota_inspired_structural:
+      - relation_query_compatibility
+      - relation_frequency_rf_ief_like_statistics
+      - local_structural_degree_statistics
+      - seed_conditioned_relation_statistics
+      - entity_overlap_cohesion_statistics
+      - edge_family_provenance_statistics
+  availability_masks:
+    required_for: every optional group
+    why: >-
+      Without a mask, zero is ambiguous between "the relation matched poorly" and
+      "this graph has no typed relation at all". Those are different states and a
+      model that cannot distinguish them is being handed a silent confound.
+  prohibitions:
+    - no dataset ID as a feature
+    - no dataset-specific branch in the feature builder
+    - no feature added merely because a paper contains it
+  required_per_feature:
+    - source
+    - exact_formula
+    - inference_availability
+    - cost
+    - expected_mechanism
+    - datasets_on_which_defined
+  outputs:
+    - docs/M3A_FEATURE_CONTRACT.md
+    - outputs/m3a/feature_contract.json
+
+# --------------------------------------------------------------------------
+# C. Typed graph contract -- MetaQA and WebQSP
+# --------------------------------------------------------------------------
+
+typed_graph_contract:
+  name: TYPED_GRAPH_CONTRACT
+  applies_to: [metaqa, webqsp]
+  motivation: >-
+    The historical flattened graph tells a model only that A and B are connected.
+    NuTrea and ReaRev see that A is connected to B BY a named relation, and let
+    the question interact with that relation. That is the single largest
+    information gap between our setup and the KB state of the art.
+  edge_record:
+    - src
+    - dst
+    - relation_id
+    - relation_text
+    - direction
+    - edge_family        # STRUCT for reconstructed KB triples
+  direction_rule: >-
+    Preserve true relation direction. Where reverse adjacency is needed for
+    traversal, represent it explicitly as an inverse-direction edge rather than
+    silently symmetrizing, which would destroy the relation's meaning.
+  assertions_required:
+    - every edge maps into the exact model node row-space
+    - zero unmapped edges, or every unmapped edge explicitly accounted for
+    - deterministic digest over the built artifact
+    - no gold label and no test-split read during construction
+    - construction is split-independent
+  must_not: >-
+    Modify, overwrite or re-hash the historical untyped graph.pt.
+
+# --------------------------------------------------------------------------
+# D. Passage universal edge contract
+# --------------------------------------------------------------------------
+
+passage_edge_contract:
+  applies_to: [hotpotqa_clean, 2wiki_clean, musique_clean, squad_clean]
+  principle: >-
+    Map whatever relations exist into the SAME abstract edge interface the KB
+    datasets use, so one model reads one schema.
+  edge_record:
+    - src
+    - dst
+    - edge_family
+    - edge_type
+    - direction
+    - relation_text              # where semantically meaningful
+    - shared_entity_count        # where available
+    - shared_entity_specificity  # where available
+    - semantic_similarity        # where applicable
+  unavailable_fields: represented by masks, never by dataset-specific code paths
+  must_not: >-
+    Manufacture relation labels from gold support chains. A label derived from
+    the answer is an oracle wearing a feature's clothes.
+
+# --------------------------------------------------------------------------
+# E. Graph provenance
+# --------------------------------------------------------------------------
+
+graph_provenance:
+  views_maintained:
+    - G_STRUCT
+    - G_KNN
+    - G_FULL
+  optional_where_clean_ner_edges_exist:
+    - G_NER
+    - G_STRUCT_NER
+  first_use: diagnostics, not a model sweep
+  diagnostics_required:
+    - candidate_ceiling
+    - reach
+    - graph_availability
+    - incremental_unique_gold_exposure
+    - graph_size_and_cost
+  sweep_rule: >-
+    Provenance does not become a 6 datasets x 4 graphs x 3 models x seeds grid.
+    Understand which graph contract is scientifically defensible, freeze ONE
+    primary graph for the model comparison, and make provenance an ablation.
+
+# --------------------------------------------------------------------------
+# F/G. High-headroom common candidate contract
+# --------------------------------------------------------------------------
+
+candidate_contract:
+  name: HIGH_HEADROOM_CANDIDATE_CONTRACT
+  motivation: >-
+    A multi-hop GNN compared inside a candidate pool that withholds the multi-hop
+    evidence it was designed to use is not being tested, it is being starved. The
+    pool must be generous enough that message passing has something to do.
+  construction:
+    must_be: parameter-free and model-independent
+    may_combine:
+      - dense_and_splade_retrieval
+      - bounded_struct_expansion
+      - bounded_typed_relation_expansion
+      - other prospectively justified parameter-free discovery
+    must_not: >-
+      No learned QLS score and no GNN score may select the candidate universe.
+    identical_for: [qls_u_sota_v1, gat, gat_no_mp]
+  reported_per_dataset:
+    - recall_ceiling@1
+    - recall_ceiling@5
+    - recall_ceiling@20
+    - ANY
+    - ALL_full_coverage
+    - candidates_per_query
+    - nodes_per_query
+    - edges_per_query
+    - mathematical_max@K
+    - normalized_attainable_headroom
+  mandatory_separation:
+    - candidate_supply
+    - ranking_attainment
+  ceiling_discipline: >-
+    recall_ceiling@K is K-aware and bounds recall@K. candidate_ceiling is pool
+    coverage with no K. Confusing them invents headroom on metaqa and webqsp.
+  selection_rule:
+    prefer: >-
+      The smallest prospectively defensible budget at which the ceiling is near
+      its knee and/or >= 90% of mathematically attainable recall@5 is reached.
+    if_infeasible: >-
+      Report the full curve rather than exploding the graph to chase the
+      threshold.
+    freeze: ONE main candidate contract before any training
+
+# --------------------------------------------------------------------------
+# H/I/J. The three objects M3B will train. Declared here, fitted there.
+# --------------------------------------------------------------------------
+
+proposed_objects:
+  qls_u_sota_v1:
+    role: the proposed efficient model
+    composition: >-
+      One model. S4-style 1536->64 semantic projections plus semantic_difference,
+      concatenated with the frozen SOTA_FEATURE_CONTRACT, into one shared
+      feed-forward scorer producing one score.
+    prohibitions:
+      - no learned message passing anywhere
+      - no ensemble, no S3 or S4 running beside it
+      - no dataset router, no KB-specific head, no passage-specific model
+      - no GNN teacher, no GNN hidden-state targets, no distillation
+  gat:
+    role: the message-passing baseline
+    receives: the same base information contract F(q, v)
+    additionally_may_access: >-
+      The raw frozen graph edges and, where M3A freezes them, typed relation and
+      edge attributes. Message passing is the mechanism under test, so access to
+      the edges is the treatment, not an unfairness.
+    must_not_receive: any gold-derived feature unavailable to QLS-U
+  gat_no_mp:
+    role: causal control, not a proposed production model
+    preserves_as_closely_as_possible:
+      - feature contract
+      - projection width
+      - readout capacity
+      - normalization
+      - training protocol
+    disables: neighbour aggregation
+    measures: the increment attributable to message passing itself
+
+# --------------------------------------------------------------------------
+# What the record already contains. Prior evidence, not the claim.
+# --------------------------------------------------------------------------
+
+prior_repo_evidence:
+  source: outputs/sa_mlp_screen/decision.json
+  observed_recall@5_seed_0:
+    metaqa:   {plain_mlp: 0.1777740288481356, gnn: 0.25547617283292434, sa_mlp: 0.3004071987893109}
+    webqsp:   {plain_mlp: 0.27657238459830785, gnn: 0.3110326182408632, sa_mlp: 0.32655165256926644}
+  gap_closure_fraction_exceeds_one_on: [metaqa, webqsp, hotpotqa_clean]
+  gradient_path: >-
+    Verified live in docs/M3_GNN_ARCHAEOLOGY.md. The historical GNNs carried real
+    gradient through every convolution, so this is not an artifact of a dead GNN.
+  status: >-
+    Prior repo-side evidence motivating M3A/M3B. It is NOT promoted to the final
+    claim: it was measured before feature parity, before typed relations and
+    inside the historical candidate universe. M3B tests whether the mechanism
+    survives under a stronger information contract and higher headroom.
+
+# --------------------------------------------------------------------------
+# Out of scope
+# --------------------------------------------------------------------------
+
+distillation:
+  status: OUT_OF_SCOPE
+  forbidden_targets:
+    - GNN logits
+    - GNN rankings
+    - GNN hidden states
+    - GNN relation attention
+    - GNN pseudo-labels
+  why: >-
+    Feature parity and distillation answer different questions. An MLP taught the
+    GNN's outputs is no longer independent of the GNN, so the comparison stops
+    isolating message passing.
+  if_wanted_later: a separately declared systems phase after the causal comparison is frozen
+
+# --------------------------------------------------------------------------
+# Cost discipline
+# --------------------------------------------------------------------------
+
+compute:
+  status: NOT_YET_FILED
+  m3a_is: archaeology, graph construction and diagnostics
+  no_training_in_m3a: >-
+    QLS-U, GAT and GAT-NO-MP are not trained during M3A. Not a smoke, not a
+    pilot, not a single fit.
+  must_file_before_heavy_reconstruction_or_encoding:
+    - predicted_cpu_hours
+    - predicted_gpu_hours
+    - graph_storage
+    - relation_storage
+    - candidate_cache_storage
+    - expected_spend
+    - hard_ceiling
+    - abort_condition
+
+# --------------------------------------------------------------------------
+# Gates
+# --------------------------------------------------------------------------
+
+launch_authorization:
+  authorised_by_review_2026_09_08:
+    - filing the completed repository GNN archaeology
+    - SOTA literature and code archaeology
+    - this M3A declaration
+    - typed relation reconstruction
+    - universal feature-contract construction
+    - parameter-free candidate and headroom analysis
+    - graph provenance and headroom diagnostics
+    - cost and storage report
+  not_authorised:
+    - QLS-U training
+    - GAT training
+    - GAT-NO-MP training
+    - M4
+    - canonical final confirmation
+    - Package F
+    - E2 resumption
+  gates:
+    repo_gnn_archaeology_filed: true
+    model_key_frozen: true
+    historical_contracts_declared_untouchable: true
+    registered_question_recorded_verbatim: true
+    sota_archaeology_recorded: false
+    feature_contract_frozen: false
+    typed_graph_contract_frozen: false
+    candidate_contract_frozen: false
+    no_leakage_proof_filed: false
+    headroom_table_filed: false
+    provenance_table_filed: false
+    construction_cost_filed: false
+
+stop_condition: >-
+  M3A ends only when SOTA_FEATURE_CONTRACT, TYPED_GRAPH_CONTRACT and
+  HIGH_HEADROOM_CANDIDATE_CONTRACT are all frozen with schema hashes, graph
+  hashes, node alignment, availability masks, a no-leakage proof, a per-dataset
+  headroom table, a graph provenance table and construction cost. M3B is then
+  PROPOSED, not launched. Review authorises M3B in a separate turn.
