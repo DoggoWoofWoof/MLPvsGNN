@@ -757,3 +757,425 @@ amendment_2_2026_09_08:
     why_now: >-
       This is written before the substrate arrives, so the rule cannot be shaped by
       the first comparison someone wants to make.
+
+# --------------------------------------------------------------------------
+# AMENDMENT 3, dated 2026-09-08. Review accepted d291155 and both amendments,
+# and locked two decisions. This amendment is the adoption contract: it is
+# written while the transfer package is still absent from this box, so no rule
+# in it can have been shaped by the data it will judge.
+# --------------------------------------------------------------------------
+
+amendment_3_2026_09_08:
+  status: ADOPTION_CONTRACT_FILED
+  accepts:
+    commit: d291155
+    amendments: [amendment_1_2026_09_08, amendment_2_2026_09_08]
+  package_location:
+    corrected_on: 2026-09-08
+    correction: >-
+      This amendment was first filed saying the package was absent. That was true
+      of the paths inside this repository and false about the machine: review
+      then identified the CRAG folder. The sections below are unchanged; only the
+      premise about where the bytes are is corrected.
+    root: C:/Users/Swastik/Desktop/CRAG
+    root_is_outside_this_repository: true
+    access_mode: READ_ONLY
+    access_rule: >-
+      The package belongs to another project. Verify in place. Never write to,
+      move, rename or re-hash anything under the root, and never copy it into
+      this repository. All verification output is a sidecar under outputs/m3a/.
+    what_is_present_in_this_repository: data/processed/{2wiki,musique,webqsp}_clean_l2_pilot.pt and data/README.md
+
+  # ------------------------------------------------------------------------
+  # Decision 1
+  # ------------------------------------------------------------------------
+  decision_1_webqsp_encode:
+    verdict: YES
+    webqsp_status: PRIORITY_DATASET_NOT_OPTIONAL_APPENDIX
+    m3b_shape: >-
+      M3B is a six-dataset experiment. It may only be planned as five if the
+      encode is shown genuinely infeasible under a SEPARATELY FILED compute
+      ceiling. Convenience is not infeasibility.
+    reasons:
+      - richest transferred typed-relation vocabulary, ~7058 declared types
+      - relation/query compatibility is therefore meaningfully testable
+      - a KB regime where SOTA message-passing systems receive substantial relational information
+      - excluding it would weaken the central test of fixed compilation against learned propagation
+    compute_record_required_before_encoding:
+      - number of missing query embeddings
+      - number of missing node/entity/document embeddings
+      - encoder identity
+      - embedding dimension
+      - batch size
+      - expected GPU seconds
+      - expected walltime
+      - expected storage
+      - expected cost
+      - hard ceiling
+    encode_rules:
+      do_not_re_encode: anything already present and verified
+      encoder_contract: exactly the one frozen for the new canonical substrate
+      historical_reuse_forbidden_when: node or corpus identity differs
+      why_the_last_rule: >-
+        Reusing a historical clean-substrate embedding across a changed node
+        space would put WebQSP's semantics in a different space from the other
+        five datasets, silently breaking the one-model-for-all-datasets
+        requirement without failing any test.
+
+  # ------------------------------------------------------------------------
+  # Decision 2
+  # ------------------------------------------------------------------------
+  decision_2_adoption_verification:
+    verdict: YES
+    principle: VERIFY_IS_NOT_REBUILD
+    rules:
+      - transferred typed-relation artifacts must pass independent verification here before adoption
+      - do not reconstruct a second relation vocabulary or second graph
+      - repair is a later review decision, authorised only if verification fails
+      - preserve transferred bytes wherever possible
+      - emit sidecar verification and alignment artifacts, never rewrite the incoming source
+
+  # ------------------------------------------------------------------------
+  # A-J: the binding sections
+  # ------------------------------------------------------------------------
+  section_A_transfer_ingest_gate:
+    order: inventory first, without modification
+    fields_per_artifact:
+      - relative path
+      - byte size
+      - sha256
+      - declared source revision
+      - schema or version
+      - corpus identity
+      - node-space identity
+      - relation-space identity
+    manifest: one immutable transfer manifest
+    immutability: >-
+      Write-once. A second ingest of the same root must refuse to overwrite and
+      must diff against the existing manifest instead.
+    blocks: no feature construction before this passes
+
+  section_B_metaqa_losslessness:
+    run_locally: true
+    why_cheap_enough: the relation vocabulary is only about 9 types
+    verify:
+      - source triples
+      - parsed triples
+      - mapped src IDs
+      - mapped dst IDs
+      - relation IDs
+      - relation text
+      - direction
+      - duplicate handling
+      - inverse-edge representation
+      - final typed-edge count
+    accounting_identity: source = mapped + explicitly rejected/malformed/unmapped
+    enumeration_required: every non-mapped row is listed individually, not counted
+    upstream_claims_to_establish_independently:
+      - 0 malformed
+      - 0 dangling
+    also_verify: the transferred typed graph is lossless relative to this local reconstruction
+    must_not: >-
+      Replace the transferred graph with the locally reconstructed one merely
+      because they are equivalent. Equivalence is the result, not a licence to
+      substitute.
+
+  section_C_webqsp_adoption_verification:
+    must_not: independently reinvent the 7058-relation vocabulary
+    verify_against: its own authoritative source contract
+    minimum_checks:
+      - relation vocabulary cardinality
+      - relation ID uniqueness
+      - relation text uniqueness and collisions
+      - src/dst node resolution
+      - direction preservation
+      - inverse-edge convention
+      - malformed rows
+      - dangling rows
+      - duplicate policy
+      - edge-family provenance
+      - node-space alignment
+    rog_exact_claim:
+      recompute_if: the source representation needed for the check is included in the package
+      otherwise_status: UPSTREAM_ASSERTED_NOT_LOCALLY_REPRODUCIBLE
+      status_meaning: >-
+        Not a rejection. It goes to review. What it forbids is recording an
+        unreproducible upstream claim as though this phase had measured it.
+
+  section_D_historical_substrates_untouched:
+    untouched:
+      - clean development substrate
+      - old graph.pt
+      - frozen M0A-M2D results
+    canonical_is: a NEW experimental substrate
+    table_rule: every table mentioning historical and canonical results together carries substrate identity
+    forbidden_arithmetic: >-
+      new canonical QLS-U minus historical S3/S4, presented as a model delta. It
+      would be a substrate delta wearing a model delta's clothes.
+
+  section_E_node_space_alignment:
+    chain: graph node ID -> canonical document/entity ID -> embedding row -> retrieval row
+    property_required: deterministic, and one-to-one where required
+    report:
+      - N graph nodes
+      - N canonical nodes
+      - N embedding rows
+      - N retrieval rows
+      - missing in each direction
+      - duplicates in each direction
+    blocks: no model result may exist before this alignment is green
+
+  section_F_relation_representation:
+    do_not_yet: encode relation text merely because relations exist
+    audit_first:
+      - relation cardinality
+      - relation text quality
+      - directionality
+      - query coverage
+      - frequency distribution
+      - entropy and concentration
+    regimes_to_contrast:
+      metaqa: about 9 types
+      webqsp: about 7058 types
+    requirement: quantify how different these regimes are before choosing the relation feature representation
+    forbidden_generalisation: >-
+      A MetaQA null must never be reported as "typed relation features do not
+      help". Its relation vocabulary has extremely low cardinality, so the null
+      is about that regime and not about typed features.
+
+  section_G_graph_compilation_target:
+    contract_is_not_limited_to: features copied from SOTA papers
+    research_target: the strongest defensible non-message-passing compilation of graph information
+    sota_features_are: evidence about useful information, not a maximum allowed feature list
+    retain: directions A, C and D even where no SOTA model uses them
+    final_comparison:
+      qls_u_receives: F(q, v)
+      gnn_receives: F(q, v) + raw graph G
+      gnn_is: strictly information-advantaged
+    primary_quantity: delta_MP = effectiveness[GNN(F, G)] - effectiveness[QLS-U(F)]
+    sign_predicted: false
+
+  section_H_fixed_signal_preservation:
+    status: RECORDED_AS_AN_ARCHITECTURE_REQUIREMENT_NOT_AUTHORISED_TO_BUILD
+    requirement: >-
+      A learned feed-forward scorer must not be allowed to destroy a strong fixed
+      graph score because the optimisation failed to preserve it.
+    verified_motivating_pattern:
+      dataset: MuSiQue
+      metric: PR@10
+      fixed_gcs: 36.9
+      mlp: 32.4
+      gat: 37.4
+      reading: the learned arm fell 4.5 below a fixed signal it received as an input feature
+    to_evaluate_later:
+      - score = fixed_base_score + learned_residual
+      - any other prospectively declared architecture that can represent the fixed score without relearning it
+    do_not: implement or train this during adoption
+    symmetry_constraint_added_here:
+      rule: >-
+        If QLS-U is given a residual-preservation mechanism, the GNN must be able
+        to preserve the same fixed score at least as well, by the same mechanism
+        or a strictly more expressive one.
+      why: >-
+        Section G makes the GNN strictly information-advantaged, and delta_MP is
+        only interpretable while that holds. A preservation mechanism given to
+        QLS-U alone would hand it an architectural advantage the GNN lacks, and a
+        small or negative delta_MP could then be explained by the asymmetry
+        rather than by compilation. This constraint is recorded now because it is
+        cheap now and unfixable after the fits exist.
+    tuning_prohibition: this is not authorisation to tune on GraphER
+
+  section_I_headroom_after_adoption:
+    do_not_yet: choose candidate budgets from declared upstream numbers
+    after: adoption, alignment and the WebQSP encode are complete
+    recompute_locally_on_the_canonical_substrate:
+      - Dense/SPLADE candidate ceiling
+      - STRUCT headroom
+      - KNN headroom
+      - FULL headroom
+    datasets: all six
+    ordering_dependency_recorded_here: >-
+      WebQSP headroom cannot be computed before the WebQSP encode, because a
+      candidate ceiling needs retrieval rows. WebQSP is therefore the last
+      dataset to go green in section I, and a five-dataset headroom table is an
+      intermediate state, never the filed one.
+    status_of_pre_transfer_figures: historical and declarative until reproduced here
+
+  section_J_compute_discipline:
+    file_before_any_expensive_step:
+      - jobs
+      - CPU hours
+      - GPU hours
+      - walltime
+      - storage
+      - expected cost
+      - hard ceiling
+      - abort criteria
+    expectation: verification is substantially cheaper than reconstruction
+    do_not: >-
+      rebuild artifacts merely to increase confidence when hashes plus
+      losslessness and alignment checks establish the same thing
+
+  # ------------------------------------------------------------------------
+  # Authorisation
+  # ------------------------------------------------------------------------
+  current_authorization:
+    authorised:
+      - transfer-package immutable inventory
+      - adoption verification
+      - MetaQA local losslessness chain
+      - WebQSP typed-substrate verification
+      - six-dataset node/retrieval/embedding alignment
+      - WebQSP missing embedding encode
+      - relation-vocabulary diagnostics
+      - adoption report
+      - exact measured compute/storage report
+    not_authorised:
+      - construct final QLS-U features
+      - construct high-headroom candidates
+      - train QLS-U
+      - train GAT
+      - train GAT-NO-MP
+    on_completion: STOP_FOR_REVIEW
+    delivery_status:
+      blocked: []
+      reason: >-
+        Superseded by the package_location correction. The package is on this
+        machine, so every authorised item has something to read.
+      item_6_note: >-
+        The WebQSP encode is authorised, but its mandatory compute record derives
+        counts from the delivered artifacts, so the record is filed from measured
+        counts before the encode starts, not from declared ones.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# What the nine authorised items actually did. Filed after they ran, against
+# the contract above, so the record can be read beside the rule rather than
+# instead of it.
+# ─────────────────────────────────────────────────────────────────────────────
+adoption_execution_record_2026_09_08:
+  status: ADOPTION_COMPLETE_PENDING_REVIEW
+  overall_recommendation: ADOPT_WITH_FINDINGS
+  package_root: C:/Users/Swastik/Desktop/CRAG
+  access_mode: READ_ONLY
+  package_bytes_modified: 0
+
+  verify_not_rebuild:
+    held: true
+    second_relation_vocabulary_built: false
+    second_graph_built: false
+    note: >-
+      Section B does reconstruct MetaQA's graph locally, because that is what a
+      losslessness chain is. The reconstruction was compared to the shipped
+      graph, found set-equal, and discarded. Equivalence is the result; it is
+      not a licence to substitute, and the transferred bytes remain the adopted
+      object.
+
+  items:
+    1_transfer_inventory:
+      status: DONE
+      artifacts: [outputs/m3a/transfer_manifest.json, docs/M3A_TRANSFER_INVENTORY.md]
+      measured: {files: 2841, gib: 81.618}
+      note: >-
+        Write-once. A second pass re-hashed and diffed rather than overwriting,
+        and reported 0 added, 0 removed, 0 changed.
+    2_adoption_verification:
+      status: DONE
+      verdict: ADOPT_WITH_FINDINGS
+    3_metaqa_losslessness:
+      status: LOCALLY_REPRODUCED
+      note: >-
+        134,741 source lines to 133,582 distinct triples to 133,582 mapped
+        edges, 0 unmapped and enumerated, identity closed in both directions.
+    4_webqsp_verification:
+      status: LOCALLY_REPRODUCED
+      rog_exact_property: UPSTREAM_ASSERTED_NOT_LOCALLY_REPRODUCIBLE
+      findings_not_in_the_upstream_manifest:
+        - 893 relation short-label collisions against 0 qualified-label collisions
+        - 93,692 self-loops
+        - the graph is WebQSP union CWQ; WebQSP alone contributed 3,791,303 triples
+    5_node_alignment:
+      status: GREEN_ON_FIVE_OF_SIX
+      blocked: [webqsp]
+      note: >-
+        Blocked for the one reason item 6 exists: WebQSP has no embeddings.
+        Also measured, and not previously recorded, canonical nodes with no
+        edge at all -- squad 31.4%, hotpotqa 10.5%, 2wiki 8.6%, musique 8.4%,
+        metaqa and webqsp none.
+    6_webqsp_encode:
+      status: BUDGET_FILED_ENCODE_NOT_RUN
+      why_not_run: >-
+        Section J requires the compute record before the expensive step, and
+        filing it surfaced two review decisions the encode cannot proceed
+        without. Neither is a systems choice.
+      blockers:
+        - >-
+          There is no canonical WebQSP query set. WebQSP v1 ships no queries/
+          directory at all, so 'number of missing query embeddings' has no
+          answer as an encode quantity. Building one is a BUILD, which decision
+          2 does not authorise.
+        - >-
+          The node text representation is unchosen, and it is not a cost
+          question. name_plus_facts folds incident triples into node text,
+          moving relational information into the semantic channel, which would
+          put graph structure inside QLS-U's inputs regardless of which
+          structural features are declared and stop delta_MP isolating message
+          passing.
+      hazard_found: >-
+        name_plus_facts cannot run as contracted anyway. SentenceTransformer
+        sorts by length before batching, so the 31 rows over the 32,768-token
+        cap batch together: a 1,048,576 padded-token-slot first batch, about 84
+        GiB of activations against a 24 GiB card. It would fail deterministically
+        on batch one.
+    7_relation_diagnostics:
+      status: DONE
+      relation_text_encoded: false
+      note: >-
+        MetaQA 9 types at normalised entropy 0.8349 and no singletons; WebQSP
+        7,058 types at 0.6592, median 20 edges per relation, 902 singletons.
+        784.2x cardinality ratio.
+    8_adoption_report:
+      status: DONE
+      artifacts: [outputs/m3a/adoption_report.json, docs/M3A_ADOPTION_REPORT.md]
+    9_compute_report:
+      status: DONE
+      gpu_seconds_spent: 0.0
+      usd_spent: 0.0
+      wall_seconds: 442.0
+      section_j_claim_tested: >-
+        WebQSP verified in 38.0s against upstream's own recorded 1,111.8s to
+        reconstruct the union from raw shards -- 29.3x cheaper. The MetaQA row
+        is recorded as NOT_A_TEST_OF_THE_CLAIM, because section B reconstructs
+        it in full and the two costs are therefore the same.
+
+  open_for_review:
+    - decision: WebQSP node text representation
+      recommendation: name_only
+      reason: >-
+        name_plus_facts contaminates the semantic channel with graph structure
+        and cannot run under the frozen contract.
+    - decision: whether to build a canonical WebQSP query set
+      recommendation: none offered
+      reason: >-
+        It is a build. Decision 1 made WebQSP a priority dataset rather than an
+        optional appendix, and that commitment cannot be met by encoding alone,
+        so the two sit in tension and only review can resolve it.
+    - decision: candidate universe for WebQSP queries
+      recommendation: declare explicitly either way
+      reason: >-
+        The shipped graph is the WebQSP union CWQ. Evaluating WebQSP queries
+        against it means the candidate universe holds CWQ-only triples.
+    - decision: whether to re-derive the RoG-exact property from raw shards
+      recommendation: affordable if wanted
+      reason: About 1,112s of CPU by upstream's own timing, but it is a rebuild.
+
+  still_not_authorised:
+    - construct final QLS-U features
+    - construct high-headroom candidates
+    - train QLS-U
+    - train GAT
+    - train GAT-NO-MP
+    - run the WebQSP encode
+    - build a WebQSP query set
+    - recompute headroom, which section I places after adoption and after the encode
+
+  next: STOP_FOR_REVIEW

@@ -371,13 +371,18 @@ def test_the_substrate_is_marked_unverified_in_this_repository(declaration: dict
     assert "recomputed here" in amendment["verification_rule"]
 
 
-def test_the_declared_substrate_really_is_absent_from_this_repository() -> None:
-    """If it ever arrives, the amendment's premise has to be revisited, not assumed."""
+def test_the_canonical_substrate_was_never_copied_into_this_repository() -> None:
+    """The package exists -- it lives at C:/Users/Swastik/Desktop/CRAG, outside
+    this repository, and amendment 3 records that location with access_mode
+    READ_ONLY. So this is no longer a test that the substrate is missing. It is
+    a test that adoption stayed read-only: an 81.6 GiB tree appearing under
+    these paths would mean something got copied in rather than verified in
+    place, which is exactly what 'verify is not rebuild' forbids."""
 
     for relative in ("data/final_canonical", "data/canonical", "transfer"):
         assert not (ROOT / relative).exists(), (
-            f"{relative} now exists; amendment 2 says it does not, so its "
-            "acceptance conditions must be run and the status updated"
+            f"{relative} now exists inside the repository; the transfer package "
+            "is external and read-only, so nothing should have been copied in"
         )
 
 
