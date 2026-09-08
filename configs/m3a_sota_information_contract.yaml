@@ -474,7 +474,7 @@ launch_authorization:
     model_key_frozen: true
     historical_contracts_declared_untouchable: true
     registered_question_recorded_verbatim: true
-    sota_archaeology_recorded: false
+    sota_archaeology_recorded: true    # docs/M3A_SOTA_ARCHAEOLOGY.md, amendment 1
     feature_contract_frozen: false
     typed_graph_contract_frozen: false
     candidate_contract_frozen: false
@@ -489,3 +489,271 @@ stop_condition: >-
   hashes, node alignment, availability masks, a no-leakage proof, a per-dataset
   headroom table, a graph provenance table and construction cost. M3B is then
   PROPOSED, not launched. Review authorises M3B in a separate turn.
+
+# --------------------------------------------------------------------------
+# AMENDMENT 1, dated 2026-09-08, filed after the SOTA archaeology and before any
+# feature is built. Review sharpened the hypothesis. Nothing above is deleted;
+# where this amendment is narrower or wider than a clause above, this governs.
+# --------------------------------------------------------------------------
+
+amendment_1_2026_09_08:
+  status: RECORDED_BEFORE_ANY_FEATURE_EXISTS
+  why_now: >-
+    The archaeology is filed and no feature has been built, so the design rule
+    can still be committed before the number it will judge.
+
+  what_changed:
+    not_the_registered_question: >-
+      The scientific_question above is unchanged and remains mandatory wording.
+      This amendment changes what F(q, v) is allowed to contain, not what is
+      being asked.
+    hypothesis_under_test: >-
+      Learned message passing may become unnecessary when the useful graph
+      computation is compiled into sufficiently expressive fixed or query-local
+      structural features before ranking.
+    superseded_reading: >-
+      The weaker reading -- that an MLP given a GNN's own raw inputs matches the
+      GNN -- is NOT the claim, and matching QLS-U's inputs to a SOTA GNN's stated
+      input list would delete the mechanism under test.
+
+  feature_admission:
+    rule: >-
+      A feature is admissible if it is computable at inference without gold
+      labels or oracle linking, is defined or explicitly masked on every dataset,
+      and is given to BOTH models. Whether a published GNN lists it as an input
+      is not a criterion.
+    added_converse_of_existing_prohibition: >-
+      feature_contract.prohibitions still forbids adding a feature merely because
+      a paper contains it. This amendment adds the converse: no feature may be
+      refused merely because no paper contains it. The compiled features are the
+      method.
+    unchanged_prohibitions:
+      - no gold-derived feature
+      - no oracle topic-entity assignment
+      - no dataset ID and no dataset-specific branch
+      - no test-split read at any point
+
+  asymmetric_information_design:
+    qls_u_receives: F(q, v)
+    gnn_receives: F(q, v) + G
+    G: the raw graph, typed relations where frozen, and learned message passing
+    the_gnn_is_strictly_advantaged: true
+    delta: Delta = GNN(F, G) - QLS_U(F)
+    delta_measures: >-
+      the effectiveness remaining attributable specifically to learned message
+      passing after compilation, which is the registered question. It is NOT the
+      value of graph access, which both models have.
+    sign_not_predicted: true
+    why_asymmetry_is_the_conservative_choice: >-
+      Handicapping the GNN would make a small Delta uninformative. Advantaging it
+      means a small Delta cannot be explained by starving it.
+
+  compilation_targets:
+    note: >-
+      Directions to build, not yet a frozen contract. Each still has to pass
+      feature_contract.required_per_feature before it enters
+      SOTA_FEATURE_CONTRACT, and each needs an availability mask.
+    A_query_local_topology: >-
+      shortest hop distance to any seed, distinct supporting seeds, distinct
+      supporting paths, supporting seeds at 1/2/3 hops, unique neighbours
+      reached, seed-normalised support, candidate degree, local clustering,
+      seed-connected components, fraction of seeds connected. Fixes the four
+      known weaknesses of the historical QLS block: edge counts standing in for
+      distinct seeds, collapsed distance buckets, walk counts standing in for
+      distinct paths, and missing normalisation.
+    B_typed_relation_compatibility: >-
+      max and mean query-to-relation similarity, top-3 relation match, relation
+      frequency, RF-IEF, matching seed-to-candidate relations, two-hop relation
+      chains, direction match, per-hop relation-pattern scores. Requires
+      TYPED_GRAPH_CONTRACT and is masked on untyped datasets.
+    C_deterministic_neighbourhood_embeddings: >-
+      mu^(1), mu^(2), mu^(3) as unlearned means of frozen neighbour embeddings,
+      kept separate per provenance and relation family, projected 1536 -> 64.
+      Fixed aggregation plus a learned interaction, against learned aggregation
+      at every layer.
+    D_seed_conditioned_deterministic_aggregation: >-
+      p^(1), p^(2), p^(3) as unlearned means of frozen embeddings of the seeds
+      that reach the candidate at that hop; ranker input [q, d, p^(1), p^(2),
+      p^(3)]. Query-dependent aggregation without learned aggregation.
+    cost_rule: >-
+      C and D are the dominant new storage and compute cost in M3A and must be
+      priced in the construction cost report before they are built.
+
+  two_tables_never_merged:
+    controlled_comparison: >-
+      QLS-U, GAT-NO-MP and GAT, our protocol, our candidates, our metrics, paired
+      seeds. This is the only table a Delta may be read from.
+    native_external_reference: >-
+      NuTrea, ReaRev, GNN-RAG, GraphER, GFM-Retriever reported in their own
+      protocols with their own metrics, for context only. No percentage-point
+      claim crosses between the tables. PR@K is set coverage, not recall@K.
+
+  external_evidence_recorded:
+    source: outputs/m3a/sota_archaeology.json
+    grapher_three_arm_ablation: >-
+      GraphER's own Table 5 contains a third arm, GraphER-GCS, which the paper
+      states is a linear transformation of the initial retrieval scores and is
+      therefore parameter-free. At PR@10 the five-layer GATv2 exceeds it by 0.2
+      on HotpotQA, 1.9 on 2Wiki and 0.5 on MuSiQue; at PR@5 on HotpotQA the GAT
+      is the worst of the three arms.
+    status: >-
+      MECHANISTIC_EXTERNAL_EVIDENCE. It motivates the compilation hypothesis and
+      it is not our result. It does not license any claim about our datasets and
+      it does not predict our Delta.
+
+# --------------------------------------------------------------------------
+# AMENDMENT 2, dated 2026-09-08. The typed relations M3A planned to reconstruct
+# already exist upstream. Recorded before any of the substrate is on this box,
+# so the acceptance conditions are fixed before the data can influence them.
+# --------------------------------------------------------------------------
+
+amendment_2_2026_09_08:
+  status: DECLARED_BY_REVIEW_NOT_YET_VERIFIED_IN_THIS_REPOSITORY
+  provenance: >-
+    Reported by review from the canonical dataset build, with a transfer manifest
+    at transfer/TRANSFER_MANIFEST.md in that project. None of data/final_canonical,
+    data/canonical or transfer/ exists in this repository; this repository's data/
+    holds three L2 pilot tensors. Every figure below is therefore a DECLARED
+    figure, not one this phase has measured.
+  verification_rule: >-
+    No figure in this amendment may enter a contract, a report or a paper table
+    until it has been recomputed here from the delivered artifact. Record the
+    recomputation, not this amendment, as the source.
+
+  what_it_changes:
+    item_4_is_no_longer_reconstruction: >-
+      The authorised item "typed relation reconstruction" becomes ADOPT_AND_ALIGN.
+      Building a typed MetaQA or WebQSP graph from scratch is now the wrong move:
+      it would duplicate a lossless upstream build and produce a second, divergent
+      relation vocabulary.
+    typed_graph_contract_verb: reconstruct -> adopt, align, verify, hash
+    unchanged: >-
+      The historical graph.pt remains untouchable and the adopted substrate is a
+      NEW parallel artifact, which is what the phase order already required.
+
+  declared_typed_substrate:
+    metaqa:
+      relations: 9
+      edges: 133582
+      losslessness_claim: >-
+        source kb.txt 134741 lines -> 133582 distinct triples -> 133582 canonical
+        edges, difference exactly 0, all 9 relations intact
+      caveat_for_direction_B: >-
+        9 relation types is a small vocabulary. Query-to-relation compatibility
+        has very low cardinality here, so a null on MetaQA would be weak evidence
+        about typed-relation features in general and must not be reported as one.
+    webqsp_v1:
+      relations: 7058
+      triples: 8309195
+      nodes: 2592894
+      corroboration: both figures declared an exact match to the published RoG figures
+      integrity_declared: 0 malformed, 0 dangling endpoints, DISPLAY_NAME_EMPTY_N 0
+      blocker: >-
+        NO EMBEDDINGS EXIST. The data/canonical/webqsp/ encodings belong to a
+        superseded 1316466-node corpus in a dead ID space and must not be joined
+        to v1. Until WebQSP v1 is encoded, the semantic feature group is undefined
+        on WebQSP and no QLS-U or GAT row may be produced for it.
+    untyped_datasets:
+      squad:    {relations: 1, reason: manifest states no native graph available}
+      musique:  {relations: 1, reason: manifest states no native graph available}
+      hotpotqa: {relations: 1, reason: hyperlink graph, single link type}
+      2wiki:    {relations: 1, reason: hyperlink graph, single link type}
+      consequence: >-
+        Relation-family features (compilation target B) are DEFINED on metaqa and
+        webqsp and MASKED on the other four. Masked is not zero. This is the case
+        the availability_masks clause was written for, and it is now concrete
+        rather than hypothetical.
+
+  corrections_to_earlier_figures:
+    use_2wiki_universe_not_2wiki: >-
+      data/canonical/2wiki/ -- encodings and graph both -- belongs to a superseded
+      398354-node corpus. The graph matching the canonical corpus is
+      2wiki_universe at 28963600 edges. An earlier audit figure of 359549 edges
+      for 2wiki is superseded and must not be cited.
+    stale_records_not_to_be_quoted:
+      records:
+        - path: data/final_canonical/MANIFEST.json
+          stale_value: WEBQSP_BLOCKED_ON_FREEBASE_SOURCE / READY_5_OF_6
+        - path: data/final_canonical/webqsp/status.json
+          stale_value: BLOCKED_PENDING_FREEBASE_SOURCE
+      why: >-
+        Both predate the WebQSP union CWQ build that is on disk. A phase that
+        quoted them would file a blocker that no longer exists.
+
+  declared_known_gaps:
+    2wiki_mentions_without_ref_ids: 6194218
+    meaning: >-
+      hyperlink mentions with no resolvable target curid, so they cannot become
+      edges. Nothing was discarded by choice, but the 2wiki hyperlink graph must
+      not be described as complete in any report or paper table.
+    rev2_encoding_staleness:
+      rows: 87859
+      of_total: 11223176
+      fraction: 0.0078
+      composition: {2wiki: 87765, hotpotqa: 94}
+      cause: >-
+        REV2 gave empty-bodied articles their title as text; the encodings predate
+        it, so these rows encoded the empty string.
+      remedy: a delta re-encode patch, base shards untouched
+
+  declared_id_bridge:
+    character: mechanical rewrite for three corpora, an emitted join table for two
+    rules:
+      2wiki:    "2wu:<curid> -> 2wiki:c<curid>"
+      hotpotqa: "hotpot_<curid> -> hotpotqa:c<curid>"
+      metaqa:   "metaqa_ent_<i> -> metaqa:e<i:05d>"
+      musique:  exact text join, table emitted
+      squad:    exact text join, table emitted
+    declared_coverage: full on all five
+    declared_unmappable_graph_endpoints: {metaqa: 0, musique: 0, squad: 0}
+    musique_off_by_one: >-
+      117533 legacy vs 117534 canonical is benign: legacy hashed text alone,
+      canonical hashes (title, text), and one paragraph is carried by two titles.
+      Both share the one vector, which is correct because the encoder input was
+      text only.
+    do_not_use: >-
+      node_id_map_legacy.json -- it bridges the document space and covers
+      essentially no graph endpoints.
+
+  declared_encoder_configuration:
+    dense:
+      model: Alibaba-NLP/gte-Qwen2-1.5B-instruct
+      precision: FP16
+      normalized: true
+      dim: 1536
+      document_prefix: none
+      query_prefix_shape: >-
+        an Instruct/Query two-line instruction prefix; copy it byte-exact from the
+        delivered transfer manifest rather than retyping it here
+    splade:
+      model: naver/splade-cocondenser-ensembledistil
+      pooling: log(1 + relu) max-pool
+      vocab: 30522
+      max_len: 256
+    shard_size: 40000
+    why_recorded: >-
+      Any WebQSP v1 encode must reproduce this exactly, or WebQSP semantic
+      features would sit in a different space from the other five datasets and the
+      one-model-for-all-datasets requirement would be silently violated.
+
+  acceptance_conditions_before_item_4_consumes_this:
+    - recompute relation count and edge count per dataset from the delivered artifact
+    - recompute the MetaQA losslessness chain from kb.txt rather than accepting 133582
+    - confirm every graph endpoint maps into the model node row-space, or account for each that does not
+    - confirm the substrate carries no gold label and no test-split dependence
+    - emit a deterministic digest per adopted graph and record it in TYPED_GRAPH_CONTRACT
+    - confirm 2wiki_universe is the graph joined, and that data/canonical/2wiki/ is nowhere on the path
+    - state WebQSP embedding status explicitly in every table that contains a WebQSP cell
+
+  comparability_hazard_registered_now:
+    hazard: >-
+      The canonical substrate is a DIFFERENT corpus from the one M0A-M2D ran on.
+      Node counts, edge counts and candidate pools all differ.
+    rule: >-
+      No QLS-U, GAT or GAT-NO-MP number computed on the canonical substrate may be
+      compared to any frozen M0A-M2D number, or placed in a table beside one
+      without an explicit substrate column. The frozen results remain valid for
+      the substrate they were computed on and are not restated.
+    why_now: >-
+      This is written before the substrate arrives, so the rule cannot be shaped by
+      the first comparison someone wants to make.

@@ -192,13 +192,19 @@ def test_the_earned_gates_are_backed_by_files_on_disk(declaration: dict) -> None
         assert declaration["model_naming"]["internal_key"]
     if gates["registered_question_recorded_verbatim"]:
         assert " ".join(declaration["scientific_question"].split()) == REGISTERED_QUESTION
+    if gates["sota_archaeology_recorded"]:
+        for relative in declaration["sota_archaeology"]["outputs"]:
+            assert (ROOT / relative).exists(), relative
 
 
 def test_the_three_contracts_are_all_still_unfrozen(declaration: dict) -> None:
-    """M3A cannot end before they freeze, so none may start out claimed."""
+    """M3A cannot end before they freeze, so none may start out claimed.
+
+    The archaeology gate is not one of the three; it was recorded on 2026-09-08
+    and is checked above against the files that earn it.
+    """
 
     gates = declaration["launch_authorization"]["gates"]
-    assert gates["sota_archaeology_recorded"] is False
     assert gates["feature_contract_frozen"] is False
     assert gates["typed_graph_contract_frozen"] is False
     assert gates["candidate_contract_frozen"] is False
