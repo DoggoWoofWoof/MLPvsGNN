@@ -1122,6 +1122,15 @@ def render(
             )
             if "stage_2_amendment" in declared
             else ""
+        )
+        + (
+            (" That resolution has since run: four fits, three seeds, and the verdict "
+            f"`{declared['status'].split('GATE_RETURNED_')[-1]}`, in "
+            "`docs/M2D_STAGE2_REPORT.md`. M2D is closed. This document remains Stage "
+            "0's and is not where any of that is decided."
+            )
+            if declared["status"].startswith("M2D_STAGE2_GATE_RETURNED_")
+            else ""
         )),
         "",
         ("**This is a post-hoc development branch.** M2D was opened because of an observed "

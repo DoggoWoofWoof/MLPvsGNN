@@ -13,7 +13,7 @@
 
 phase: M2D_S4_SEMANTIC_REPAIR
 opened: 2026-09-08
-status: M2D_STAGE2_RECORD_FILED_NOTHING_SUBMITTED
+status: M2D_STAGE2_GATE_RETURNED_STOP_S4_DEVELOPMENT_CONFIRMED
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: >-
   An observed S4 development result, not a preregistered hypothesis. S4 was

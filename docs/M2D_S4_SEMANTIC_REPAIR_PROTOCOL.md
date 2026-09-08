@@ -3,9 +3,10 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_STAGE2_RECORD_FILED_NOTHING_SUBMITTED` — Stage 1 ran and its verdict
-stands. The eight fits were submitted, fetched and verified, and the gate
-committed before any of them existed returned `STOP_S4_DEVELOPMENT` on case 3.
+`M2D_STAGE2_GATE_RETURNED_STOP_S4_DEVELOPMENT_CONFIRMED` — Stage 1 ran, Stage 2
+ran, and both verdicts stand. Stage 1's eight fits were submitted, fetched and
+verified, and the gate committed before any of them existed returned
+`STOP_S4_DEVELOPMENT` on case 3.
 The numbers are in [`docs/M2D_STAGE1_REPORT.md`](M2D_STAGE1_REPORT.md) and the
 rule's own working in [`docs/M2D_STAGE1_GATE.md`](M2D_STAGE1_GATE.md); neither
 is altered by what follows.
@@ -43,11 +44,30 @@ Its price is filed with it, in
 four fits, 385.8 GPU-seconds, an expected **$0.79** against a **$2.00** hard
 ceiling. Stage 1's record predicted its seconds by scaling M2B's; this one reads
 them out of the Stage-1 A3-MINIMAL artifacts for these same two cells, so the
-safety factor is 1.25 rather than 2x and the record says why. Every Stage-2 gate
-in the declaration is now `true` and **nothing has been submitted** — a claim
-that rests on `outputs/m2d_s4_semantic_repair/stage2/` not existing, which
-`tests/test_m2d_declaration.py` checks against the disk. Stage 0 is complete and
-reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
+safety factor is 1.25 rather than 2x and the record says why. The four fits then
+ran and cost **$0.80** against that $0.79 prediction — 393.3 measured seconds
+against 385.8 predicted, a ratio of 1.02, which is what pricing measured seconds
+rather than scaled ones buys.
+
+Those four fits have landed, and the gate returned
+`STOP_S4_DEVELOPMENT_CONFIRMED`. squad_clean/R1 meets the guard on a three-seed
+mean of **-0.109pp**; musique_clean/R1 does not, at **-1.087pp**, and the guard
+applies to both. Seed 0's -0.565pp was the *best* of its three seeds, not a low
+draw beneath a passing mean — which is the outcome the paragraph above predicted
+before the fits existed, and the reason the result is a resolution rather than a
+reversal. The numbers are in
+[`docs/M2D_STAGE2_REPORT.md`](M2D_STAGE2_REPORT.md) and the rule's own working in
+[`docs/M2D_STAGE2_GATE.md`](M2D_STAGE2_GATE.md).
+
+One finding is worth stating separately from the verdict, because it is what
+these four fits actually established. Against **native S4** the 1,536-parameter
+semantic difference column helps on every metric, at every seed, on both
+blockers, and by the largest margins exactly where it was predicted to — +8.5pp
+recall@1 and +10.2pp MRR on MuSiQue. Against **S3** it does not close the gap.
+`semantic_difference` is a real repair of what the S4 widening cost; it is not a
+sufficient one, and the guard is against S3.
+
+Stage 0 is complete and reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
 in [`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and ran on
 all four declared cells; condition B was measured afterwards on the two failure
 cells, because the Stage-0 probe ranks whole models and B asks about a single

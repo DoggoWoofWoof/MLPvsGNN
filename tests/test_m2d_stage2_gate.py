@@ -458,10 +458,20 @@ def test_the_render_survives_a_stage_with_nothing_in_it() -> None:
 
 
 def test_the_gate_writes_nothing_unless_asked(tmp_path, capsys) -> None:
+    """Not only "creates no file" -- disturbs no file.
+
+    Before Stage 2 ran, absence was the whole check. Now that a real verdict is
+    filed there, the stronger reading is the one that matters: this run judges
+    synthetic fits, and a dry read that touched the filed verdict would replace
+    a measured decision with invented numbers under the same name.
+    """
+
+    before = gate.GATE_JSON.read_bytes() if gate.GATE_JSON.exists() else None
     stage_2, stage_1 = write(tmp_path, spread({CELLS[0]: [0.0, 0.0, 0.0]}))
     assert gate.main(["--results", str(stage_2), "--stage-1-results", str(stage_1)]) == 0
     assert gate.NOT_MEASURED in capsys.readouterr().out
-    assert not gate.GATE_JSON.exists(), "a dry read must not file a verdict"
+    after = gate.GATE_JSON.read_bytes() if gate.GATE_JSON.exists() else None
+    assert after == before, "a dry read must neither file a verdict nor disturb one"
 
 
 def test_no_stage_2_artifact_exists_at_the_commit_that_files_this_rule() -> None:

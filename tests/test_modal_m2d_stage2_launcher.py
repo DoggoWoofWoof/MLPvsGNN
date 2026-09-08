@@ -710,9 +710,24 @@ def test_the_utilisation_matches_the_one_the_record_was_derived_at() -> None:
     assert spawn_modal_jobs.UTILISATION[PACKAGE] == record_module.UTILISATION
 
 
-def test_nothing_has_been_submitted_yet() -> None:
-    """The declaration's status is a claim about the disk. This launcher is
-    committed before it is used, which is this track's standing order."""
+def test_what_landed_is_exactly_the_matrix_this_launcher_declares() -> None:
+    """The status is a claim about the disk, so it is checked against the disk.
 
-    assert DECLARATION["status"] == "M2D_STAGE2_RECORD_FILED_NOTHING_SUBMITTED"
-    assert not (REPO_ROOT / "outputs" / launcher.OUTPUT_PREFIX / "stage2").exists()
+    Until the fits ran, that check was that nothing existed. It cannot stay
+    that, so it becomes the stronger one the results allow: the artifacts on
+    disk are precisely the four cells and seeds this launcher enumerates --
+    neither a fifth arm nor a seed-0 file, which would mean Stage 1's row had
+    been refit and the mean taken over three new numbers.
+    """
+
+    assert DECLARATION["status"] == (
+        "M2D_STAGE2_GATE_RETURNED_STOP_S4_DEVELOPMENT_CONFIRMED"
+    )
+    root = REPO_ROOT / "outputs" / launcher.OUTPUT_PREFIX / launcher.STAGE_PREFIX
+    declared = {
+        f"{job['dataset']}_{job['regime']}_{arm}_seed{job['seed']}.json"
+        for job in launcher._jobs(list(launcher.CELLS))
+        for arm in job["arms"]
+    }
+    assert {path.name for path in root.glob("*.json")} == declared
+    assert f"seed{launcher.REUSED_SEED}" not in " ".join(declared)

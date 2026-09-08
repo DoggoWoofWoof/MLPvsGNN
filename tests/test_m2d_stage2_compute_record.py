@@ -466,10 +466,41 @@ def test_the_record_is_filed_against_a_real_commit(record: dict) -> None:
 def test_the_record_claims_to_predate_the_launch_and_the_disk_agrees(
     record: dict,
 ) -> None:
+    """The claim is an ordering, so it is checked as one.
+
+    Until the jobs went out, absence was the check: no Stage-2 tree. That check
+    cannot outlive the stage it guarded, so it becomes the one the artifacts
+    themselves supply. Every second this record prices was read out of a
+    Stage-1 artifact, and the filed record's commit is a strict ancestor of the
+    commit the Stage-2 fits carry. A record that had seen a Stage-2 result
+    could satisfy neither.
+    """
+
     assert record["filed_before_any_job_was_submitted"] is True
     assert record["trains_nothing"] is False
     assert record["authorises_no_gpu"] is False
-    assert not (REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage2").exists()
+    assert all(
+        cell["measured_from"].startswith("outputs/m2d_s4_semantic_repair/stage1/")
+        for cell in record["workload"]["cells"]
+    )
+
+    outputs = REPO_ROOT / "outputs" / "m2d_s4_semantic_repair"
+    stage_2 = outputs / "stage2"
+    if not stage_2.is_dir():
+        return
+    filed = json.loads(
+        (outputs / "stage2_compute_record.json").read_text(encoding="utf-8")
+    )["source_commit"]
+    for path in sorted(stage_2.glob("*.json")):
+        ran_at = json.loads(path.read_text(encoding="utf-8"))["identity"]["source_commit"]
+        assert filed != ran_at, f"{path.name} claims to have run at the record's own commit"
+        assert (
+            subprocess.run(
+                ["git", "merge-base", "--is-ancestor", filed, ran_at],
+                cwd=str(REPO_ROOT),
+            ).returncode
+            == 0
+        ), f"{path.name} names a commit the record's does not precede"
 
 
 def test_the_filed_record_still_matches_the_artifacts_it_was_built_from() -> None:
