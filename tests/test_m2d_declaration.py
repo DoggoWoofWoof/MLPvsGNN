@@ -1091,9 +1091,21 @@ def test_the_m2c_declaration_is_untouched_by_this_phase(declaration):
 def test_the_expensive_things_are_not_authorised(declaration):
     authorization = declaration["launch_authorization"]
     not_authorised = {item.lower() for item in authorization["not_authorised"]}
-    for forbidden in ("seeds 1 and 2", "canonical crag", "package f", "e2"):
+    for forbidden in ("canonical crag", "package f", "e2"):
         assert forbidden in not_authorised
     assert any("14-cell" in item for item in not_authorised)
+
+    # Seeds 1 and 2 were on that list until section 15b, and what replaced them
+    # has to be narrower rather than absent. The authorisation names the arm
+    # and both cells; the prohibition covers everything else and a fourth seed,
+    # which is the direction this could have drifted -- one more seed, then one
+    # more, until the mean was over whatever it took.
+    authorised = " ".join(authorization["authorised"]).lower()
+    assert "seeds 1 and 2 for a3_minimal" in authorised
+    for cell in declaration["stage_2"]["cells"]:
+        assert cell.lower() in authorised
+    assert "seeds 1 and 2 on any other arm, cell or regime" in not_authorised
+    assert "a fourth seed" in not_authorised
 
     for later in ("targeted_multi_seed_resolution", "full_screen_rule", "semantic_residual_design"):
         assert declaration[later]["authorised_by_this_file"] is False

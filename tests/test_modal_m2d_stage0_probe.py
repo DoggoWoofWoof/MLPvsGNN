@@ -533,11 +533,17 @@ def test_a_declaration_that_stops_authorising_these_diagnostics_refuses(monkeypa
 
 def test_a_declaration_that_stops_restricting_the_workload_refuses(monkeypatch) -> None:
     """Four seed-0 cells is the whole authorised workload. If the declaration
-    stopped forbidding the full screen and the extra seeds, this launcher could
-    no longer claim the four jobs it spawns are all of it."""
+    stopped forbidding the full screen, this launcher could no longer claim the
+    four jobs it spawns are all of it.
+
+    The check used to read the extra seeds too. Section 15b authorised those,
+    narrowly, for an arm and two cells Stage 0 never fits, so requiring them to
+    stay forbidden would now fail this launcher for a reason unrelated to
+    anything it does.
+    """
 
     monkeypatch.setitem(launcher.CONFIG["launch_authorization"], "not_authorised", ["E2"])
-    with pytest.raises(SystemExit, match="no longer restricts"):
+    with pytest.raises(SystemExit, match="no longer forbids the full M2D screen"):
         launcher.require_authorisation()
 
 

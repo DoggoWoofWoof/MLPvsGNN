@@ -291,6 +291,10 @@ def identity(
         if fit is None:
             continue
         parameters = fit["parameters"]
+        # Both live where the Stage-1 runner already writes them, so a Stage-2
+        # artifact is checked on exactly the fields Stage 1's were, and no new
+        # field had to be invented for the gate to have something to read.
+        systems = fit.get("systems") or {}
         seen[seed] = {
             "semantic": parameters.get("semantic"),
             "scorer": parameters.get("scorer"),
@@ -299,10 +303,10 @@ def identity(
             "added_is_the_declared_1536": (
                 parameters.get("added_semantic_parameters") == ADDED_SEMANTIC_PARAMETERS
             ),
-            "semantic_difference_precomputed": fit.get(
+            "semantic_difference_precomputed": systems.get(
                 "cached_or_precomputed_semantic_difference"
             ),
-            "p95_path_identity": fit.get("p95_path_identity"),
+            "p95_path_identity": systems.get("what_is_timed"),
         }
     return {
         "per_seed": seen,

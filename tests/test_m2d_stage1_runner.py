@@ -225,15 +225,49 @@ def test_the_values_m2bs_launcher_actually_passed_are_the_same_ones(name) -> Non
 # ---------------------------------------------------------------------------
 
 
+def test_the_authorised_seeds_are_read_from_the_declaration() -> None:
+    """Not typed here, and not widened by a flag.
+
+    Stage 1 ran at seed 0. Section 15b later authorised seeds 1 and 2 for
+    A3-MINIMAL alone, and this runner learned about them by reading that file.
+    Had the gate been loosened by hand instead, the file's authorisation would
+    have become decorative and the refusal below would guard nothing.
+    """
+
+    config = yaml.safe_load(
+        (REPO_ROOT / "configs" / "m2d_s4_semantic_repair.yaml").read_text(encoding="utf-8")
+    )
+    table = runner.authorised_seeds()
+
+    assert sorted(table) == sorted(
+        {*config["stage_1"]["seeds"], *config.get("stage_2", {}).get("seeds", [])}
+    )
+    assert table[0]["arms"] == runner.ARMS, "seed 0 is Stage 1's and keeps both arms"
+    assert table[0]["status"] == runner.COMPLETE_STATUS
+    for seed in config["stage_2"]["seeds"]:
+        assert table[seed]["arms"] == ("A3_MINIMAL",)
+        assert table[seed]["status"] == runner.STAGE_2_COMPLETE_STATUS
+
+
 def test_an_unauthorised_seed_is_refused_before_any_data_is_touched() -> None:
-    args = argparse.Namespace(arms=None, seed=1)
-    with pytest.raises(ValueError, match="authorised at seed 0 only"):
+    args = argparse.Namespace(arms=None, seed=7)
+    with pytest.raises(ValueError, match="not authorised by the declaration"):
+        runner.run(args)
+
+
+def test_stage_1s_control_arm_is_refused_at_a_stage_2_seed() -> None:
+    """A1 is not rerun. Its role was to make a seed-0 gain attributable, which
+    a seed cannot reopen, and section 15b's four fits are four because A1 is
+    not among them. Accepting it here would double the stage's cost silently."""
+
+    args = argparse.Namespace(arms=["A1"], seed=1)
+    with pytest.raises(ValueError, match="not authorised at seed 1"):
         runner.run(args)
 
 
 def test_an_arm_the_declaration_never_named_is_refused() -> None:
     args = argparse.Namespace(arms=["A2"], seed=0)
-    with pytest.raises(ValueError, match="are not Stage 1's arms"):
+    with pytest.raises(ValueError, match="not authorised at seed 0"):
         runner.run(args)
 
 

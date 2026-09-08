@@ -1112,6 +1112,16 @@ def render(
             )
             if "stage_1_amendment" in declared
             else "."
+        )
+        + (
+            (" Stage 1 has since run, and the gate committed before its eight fits "
+            "existed returned `STOP_S4_DEVELOPMENT`. Section 15b files the dated "
+            "review that read that report and authorised a targeted three-seed "
+            "resolution of the one shortfall it called RESOLVABLE. That is a later "
+            "question than this document's and is judged by its own gate."
+            )
+            if "stage_2_amendment" in declared
+            else ""
         )),
         "",
         ("**This is a post-hoc development branch.** M2D was opened because of an observed "

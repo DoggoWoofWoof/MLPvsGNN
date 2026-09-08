@@ -470,12 +470,18 @@ def require_authorisation() -> None:
                 "launcher spawns; refusing to submit"
             )
     forbidden = {item.lower() for item in authorisation["not_authorised"]}
-    if "seeds 1 and 2" not in forbidden or "the full 14-cell m2d screen" not in forbidden:
+    if "the full 14-cell m2d screen" not in forbidden:
         raise SystemExit(
-            "the declaration no longer restricts M2D to the seed-0 Stage-0 cells, so "
-            "this launcher can no longer assume the four jobs it spawns are the whole "
-            "authorised workload"
+            "the declaration no longer forbids the full M2D screen, so this launcher "
+            "can no longer assume the four jobs it spawns are the whole authorised "
+            "workload"
         )
+    # This check used to also require "seeds 1 and 2" in the forbidden list.
+    # Section 15b later authorised them for A3-MINIMAL on the two blockers, so
+    # that clause would now fail for a reason that has nothing to do with
+    # Stage 0 -- which trains nothing, fits nothing and has no seed of its
+    # own. What it spawns is bounded by the diagnostics named above, and that
+    # is what the check above it reads.
     # Last, because it is the expensive one and because its failure message is
     # about regenerating an artifact rather than about authorisation.
     compute_record()

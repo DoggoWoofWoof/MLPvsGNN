@@ -95,8 +95,11 @@ def payload(cell: str, seed: int, recall_5: float, **extra) -> dict:
             "total": 206785,
             "added_semantic_parameters": gate.ADDED_SEMANTIC_PARAMETERS,
         },
-        "cached_or_precomputed_semantic_difference": False,
-        "p95_path_identity": "uncached, same path as Stage 1",
+        # Where the Stage-1 runner actually writes them.
+        "systems": {
+            "cached_or_precomputed_semantic_difference": False,
+            "what_is_timed": "the whole uncached forward, cold, nothing precomputed",
+        },
     }
     body.update(extra)
     return body
@@ -412,7 +415,7 @@ def test_identity_is_checked_on_the_new_fits_and_can_fail(tmp_path) -> None:
     assert evaluate(tmp_path, wrong)["blockers"][CELLS[0]]["identity"]["holds"] is False
 
     cached = spread({CELLS[0]: [0.0, 0.0, 0.0]})
-    cached[2]["cached_or_precomputed_semantic_difference"] = True
+    cached[2]["systems"]["cached_or_precomputed_semantic_difference"] = True
     assert evaluate(tmp_path, cached)["blockers"][CELLS[0]]["identity"]["holds"] is False
 
 

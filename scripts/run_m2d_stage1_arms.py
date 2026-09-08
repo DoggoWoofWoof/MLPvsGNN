@@ -63,6 +63,7 @@ from typing import Any
 
 import numpy as np
 import torch
+import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
@@ -101,6 +102,13 @@ STAGE = "stage1"
 #: rather than skipped, so this string is part of the contract between the two.
 COMPLETE_STATUS = "M2D_STAGE1_ARM_COMPLETE"
 
+#: Stage 2's, for the same reason. The two stages write different strings
+#: because they are different experiments bought under different authority,
+#: and an artifact that could not say which one paid for it would let a
+#: three-seed mean be assembled out of rows nobody authorised.
+STAGE_2 = "stage2"
+STAGE_2_COMPLETE_STATUS = "M2D_STAGE2_SEED_COMPLETE"
+
 #: Section 8b's arms, in the order they are fit. The control first: if it is
 #: going to fail on this cell for a systems or data reason, that is better
 #: learned before the candidate's fit is paid for.
@@ -112,6 +120,35 @@ NATIVE_RUNG = "S4"
 
 KS = _m1a.KS
 DECLARED_SEED = 0
+
+
+def authorised_seeds() -> dict[int, dict[str, Any]]:
+    """Which seeds this runner may fit, and on whose authority.
+
+    Read out of the declaration rather than typed here. Stage 1 ran at seed 0
+    under `stage_1`; section 15b later authorised seeds 1 and 2 for A3-MINIMAL
+    alone. Widening the runner by hand would have made the seed gate a comment
+    -- this way, running a new seed requires the file that has to justify it to
+    say so first, and the refusal below quotes what the file actually permits.
+
+    Stage 1's entry is not rewritten by Stage 2's presence: seed 0 keeps both
+    arms and keeps writing Stage 1's status, so a re-run of seed 0 cannot
+    silently become a Stage-2 row.
+    """
+
+    config = yaml.safe_load(DECLARATION_PATH.read_text(encoding="utf-8"))
+    table = {
+        int(seed): {"stage": STAGE, "status": COMPLETE_STATUS, "arms": tuple(ARMS)}
+        for seed in config["stage_1"]["seeds"]
+    }
+    stage_2 = config.get("stage_2") or {}
+    for seed in stage_2.get("seeds", ()):
+        table[int(seed)] = {
+            "stage": STAGE_2,
+            "status": STAGE_2_COMPLETE_STATUS,
+            "arms": tuple(stage_2["arms"]),
+        }
+    return table
 
 
 def panel_digest(query_ids: list[str]) -> str:
@@ -510,10 +547,11 @@ def fit_one_arm(
     head = fitted.semantic_head
     achieved = metrics.get("recall@5")
     ceiling = headroom.get("recall_ceiling@5")
+    authority = authorised_seeds()[args.seed]
     return {
-        "status": COMPLETE_STATUS,
+        "status": authority["status"],
         "phase": PHASE,
-        "stage": STAGE,
+        "stage": authority["stage"],
         "cell": f"{args.dataset}/{args.regime}",
         "dataset": args.dataset,
         "regime": args.regime,
@@ -631,15 +669,21 @@ def fit_one_arm(
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
     started = time.perf_counter()
-    arms = list(args.arms) if args.arms else list(ARMS)
-    unknown = sorted(set(arms) - set(ARMS))
-    if unknown:
-        raise ValueError(f"--arms {unknown} are not Stage 1's arms {list(ARMS)}")
-    if args.seed != DECLARED_SEED:
+    table = authorised_seeds()
+    if args.seed not in table:
         raise ValueError(
-            f"Stage 1 is authorised at seed {DECLARED_SEED} only; --seed {args.seed} is "
-            "not authorised. Section 15's extra seeds are proposed after the gate, and "
-            "only where they could change the decision."
+            f"seed {args.seed} is not authorised by the declaration, which permits "
+            f"{sorted(table)}. Extra seeds are added by amending that file, not by "
+            "passing a flag."
+        )
+    authority = table[args.seed]
+    arms = list(args.arms) if args.arms else list(authority["arms"])
+    unknown = sorted(set(arms) - set(authority["arms"]))
+    if unknown:
+        raise ValueError(
+            f"--arms {unknown} are not authorised at seed {args.seed}, which permits "
+            f"{list(authority['arms'])}. Stage 2 runs A3-MINIMAL alone: A1 was Stage "
+            "1's attribution control and seeds cannot reopen what it answered."
         )
 
     dataset = load_complete_dataset(args.data, dataset=args.dataset, require_embeddings=True)
@@ -706,7 +750,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         )
     ]
 
-    fit_root = Path(args.fit_root or (args.output_root / "fits")) / args.regime
+    # Section 4: the seed is part of the path, not just of the payload. Two
+    # seeds of the same cell in one container would otherwise write the same
+    # checkpoint, and the second would silently be scored against the first.
+    fit_root = (
+        Path(args.fit_root or (args.output_root / "fits"))
+        / args.regime
+        / f"seed_{args.seed}"
+    )
     store, precomputed_width = _m1a._arm_store(
         arm=_m2.RUNNER_UNIVERSAL_ARM, regime=args.regime, master_blocks=master_blocks,
         queries=widened, query_count=query_count, num_nodes=num_nodes,
@@ -799,9 +850,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         receipts[arm] = receipt.as_dict()
 
     return {
-        "status": "M2D_STAGE1_CELL_COMPLETE",
+        "status": (
+            "M2D_STAGE1_CELL_COMPLETE"
+            if authority["stage"] == STAGE
+            else "M2D_STAGE2_CELL_COMPLETE"
+        ),
         "phase": PHASE,
-        "stage": STAGE,
+        "stage": authority["stage"],
         "cell": f"{args.dataset}/{args.regime}",
         "seed": args.seed,
         "arms": arms,

@@ -604,11 +604,24 @@ def require_authorisation() -> None:
             "after the gate rather than beside it"
         )
     forbidden = {item.lower() for item in authorisation["not_authorised"]}
-    if "seeds 1 and 2" not in forbidden or "the full 14-cell m2d screen" not in forbidden:
+    if "the full 14-cell m2d screen" not in forbidden:
         raise SystemExit(
-            "the declaration no longer restricts M2D to the seed-0 cells, so this "
-            "launcher can no longer assume the eight fits it spawns are the whole "
-            "authorised workload"
+            "the declaration no longer forbids the full M2D screen, so this launcher "
+            "can no longer assume the eight fits it spawns are the whole authorised "
+            "workload"
+        )
+    # Section 15b later authorised seeds 1 and 2 for A3-MINIMAL on the two
+    # blockers, so "seeds 1 and 2" left the forbidden list and this check
+    # cannot be the one that used to read it. What still has to hold is
+    # narrower, and is the thing that actually protects this launcher: the
+    # seed it spawns belongs to ITS stage and to no other. A seed owned by two
+    # stages would let one launch overwrite rows the other's gate reads.
+    stage_2 = CONFIG.get("stage_2") or {}
+    overlap = sorted({SEED} & {int(seed) for seed in stage_2.get("seeds", ())})
+    if overlap:
+        raise SystemExit(
+            f"seed {overlap} is claimed by both this launcher and stage_2; one of the "
+            "two would be writing rows the other's gate reads"
         )
     # Last, because it is the expensive one and because its failure message is
     # about regenerating an artifact rather than about authorisation.

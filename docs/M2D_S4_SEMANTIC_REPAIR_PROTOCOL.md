@@ -3,7 +3,7 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_STAGE2_GATE_COMMITTED_RECORD_NOT_YET_FILED` — Stage 1 ran and its verdict
+`M2D_STAGE2_RECORD_FILED_NOTHING_SUBMITTED` — Stage 1 ran and its verdict
 stands. The eight fits were submitted, fetched and verified, and the gate
 committed before any of them existed returned `STOP_S4_DEVELOPMENT` on case 3.
 The numbers are in [`docs/M2D_STAGE1_REPORT.md`](M2D_STAGE1_REPORT.md) and the
@@ -37,7 +37,16 @@ those tests run on synthetic fits. It refuses a verdict on fewer than three
 seeds, refuses a Stage-2 file carrying seed 0 (that row is Stage 1's and is
 reused, not refit), pairs each seed against its own S3 and S4 rows, and reports
 the per-seed signs and sample SD beside the mean without letting them decide.
-What remains before anything is submitted is its price. Stage 0 is complete and
+
+Its price is filed with it, in
+[`docs/M2D_STAGE2_COMPUTE_RECORD.md`](M2D_STAGE2_COMPUTE_RECORD.md): four jobs,
+four fits, 385.8 GPU-seconds, an expected **$0.79** against a **$2.00** hard
+ceiling. Stage 1's record predicted its seconds by scaling M2B's; this one reads
+them out of the Stage-1 A3-MINIMAL artifacts for these same two cells, so the
+safety factor is 1.25 rather than 2x and the record says why. Every Stage-2 gate
+in the declaration is now `true` and **nothing has been submitted** — a claim
+that rests on `outputs/m2d_s4_semantic_repair/stage2/` not existing, which
+`tests/test_m2d_declaration.py` checks against the disk. Stage 0 is complete and
 reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
 in [`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and ran on
 all four declared cells; condition B was measured afterwards on the two failure
