@@ -115,6 +115,14 @@ PACKAGES: dict[str, tuple[str, dict[str, str]]] = {
         "scripts.modal_m2d_stage0_probe",
         {"probe": "run_stage0", "primitives": "run_primitives"},
     ),
+    # Stage 1, and the first M2D package that trains. One spawned call per
+    # declared cell fits BOTH arms inside one container and re-scores M2B's
+    # native S4 there too, so the arms and the model they are measured against
+    # share a clock -- section 10 asks what the added column costs, and two
+    # containers cannot answer that. One stage: there is no build stage,
+    # because every cell master and every checkpoint it reads was persisted by
+    # an earlier phase and is loaded rather than rebuilt.
+    "m2d-stage1-arms": ("scripts.modal_m2d_stage1_arms", {"arms": "run_stage1"}),
     # Three stages, and no build stage at all: M2B rebuilds no features. Every
     # cell master it reads was persisted by M2's build stage and is admitted on
     # its feature build contract. One spawned job per dataset runs every regime

@@ -135,6 +135,45 @@ def _row_count(payload: Any, rows_at: str) -> int:
     return len(rows)
 
 
+def seed_segment(seed: int | None) -> str:
+    """How a seed is spelled in a path, in exactly one place.
+
+    ``None`` renders as ``no_seed`` rather than ``seed_0``: a zero-training
+    diagnostic has no seed, and writing one would claim a determinism scope it
+    does not have.
+
+    A module function as well as a property because a caller that only wants to
+    LIST results -- a launcher fetching a cell it has just run -- needs the
+    spelling without having a commit or a run id to build an identity from. The
+    alternative is that each such caller spells it again, and the second
+    spelling is only ever discovered as an empty listing reported as "this cell
+    produced nothing".
+    """
+
+    if seed is not None and (not isinstance(seed, int) or isinstance(seed, bool) or seed < 0):
+        raise ValueError(f"seed={seed!r} must be a non-negative integer or None")
+    return "no_seed" if seed is None else f"seed_{seed}"
+
+
+def logical_segments(
+    *, phase: str, dataset: str, regime: str, arm: str, seed: int | None
+) -> tuple[str, ...]:
+    """The logical result's path segments: what a result table is keyed by.
+
+    ``<phase>/<dataset>/<regime>/<seed>/<arm>``. The physical run --
+    ``<commit>/<run_id>`` -- lies below it and is deliberately not part of this,
+    which is what makes the prefix listable when several physical runs exist.
+    """
+
+    return (
+        _segment("phase", phase),
+        _segment("dataset", dataset),
+        _segment("regime", regime),
+        seed_segment(seed),
+        _segment("arm", arm),
+    )
+
+
 @dataclass(frozen=True)
 class ArtifactIdentity:
     """Everything that has to differ before two results may share a path.
@@ -167,7 +206,7 @@ class ArtifactIdentity:
 
     @property
     def seed_segment(self) -> str:
-        return "no_seed" if self.seed is None else f"seed_{self.seed}"
+        return seed_segment(self.seed)
 
     def segments(self) -> tuple[str, ...]:
         """Ordered coarse-to-fine, so a partial prefix is a meaningful listing.
@@ -181,11 +220,13 @@ class ArtifactIdentity:
         """
 
         return (
-            self.phase,
-            self.dataset,
-            self.regime,
-            self.seed_segment,
-            self.arm,
+            *logical_segments(
+                phase=self.phase,
+                dataset=self.dataset,
+                regime=self.regime,
+                arm=self.arm,
+                seed=self.seed,
+            ),
             self.source_commit[:12],
             self.run_id,
         )

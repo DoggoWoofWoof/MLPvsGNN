@@ -51,6 +51,40 @@ from mp_retrieval.qls_v2_semantic import (
 #: is 768 and is the default no fit has ever used.
 LIVE_DIM = 1536
 
+#: How many precomputed structural columns the scorer actually sees in the
+#: fits, derived from M2B's immutable baseline table rather than typed.
+#:
+#: This is not decoration. An earlier version of the parameter test below built
+#: at a made-up width of 40 under a docstring claiming it was the width the
+#: fits run at, and every absolute count it asserted described a store that has
+#: never existed. The arithmetic here is the compute record's
+#: ``structural_width``: the scorer is
+#: ``Linear(width + columns, HEAD_WIDTH) + Linear(HEAD_WIDTH, 1)``, so a filed
+#: fit's recorded semantic and total counts pin the width exactly.
+BASELINE_TABLE = (
+    REPO_ROOT / "outputs" / "m2c_s4_structural_conditioning" / "m2b_baseline_table.json"
+)
+SEMANTIC_COLUMNS = {"S2": 3, "S3": 5, "S4": 258}
+
+
+def _live_precomputed_width() -> int:
+    import json
+
+    from mp_retrieval.m1a_screen import HEAD_WIDTH
+
+    table = json.loads(BASELINE_TABLE.read_text(encoding="utf-8"))
+    widths = set()
+    for row in table["rows"]:
+        scorer = row["total_parameters"] - row["semantic_parameters"]
+        columns, remainder = divmod(scorer - HEAD_WIDTH - HEAD_WIDTH - 1, HEAD_WIDTH)
+        assert remainder == 0, row
+        widths.add(columns - SEMANTIC_COLUMNS[row["rung"]])
+    assert len(widths) == 1, f"the filed fits disagree about the width: {sorted(widths)}"
+    return widths.pop()
+
+
+LIVE_PRECOMPUTED_WIDTH = _live_precomputed_width()
+
 SHAPES = [(1, 8), (2, 8), (5, 64), (64, 128)]
 
 
@@ -329,12 +363,37 @@ def test_no_arm_computes_a_column_the_declaration_excluded(arm) -> None:
 # ---------------------------------------------------------------------------
 
 
+def _built(arm: str):
+    """One arm, instantiated at the width and depth the Stage-1 fits use."""
+
+    from mp_retrieval.m1a_screen import build_m1a_model
+    from scripts.run_m2b_semantic_minimality import build_semantic_head
+
+    head = (
+        build_semantic_head(arm, LIVE_DIM)
+        if arm == "S4"
+        else arms.build_arm_head(arm, LIVE_DIM)
+    )
+    model = build_m1a_model(
+        precomputed_width=LIVE_PRECOMPUTED_WIDTH,
+        semantic_rung=arm,
+        dropout=0.1,
+        temperature=1.0,
+        embedding_dim=LIVE_DIM,
+        semantic_head=head,
+    )
+    return (
+        sum(p.numel() for p in model.semantic_head.parameters()),
+        sum(p.numel() for p in model.scorer.parameters()),
+    )
+
+
 @pytest.mark.parametrize(
     "arm,semantic,scorer,total",
     [
-        ("S4", 196_608, 9_601, 206_209),
-        (arms.CONTROL_ARM, 196_608, 9_665, 206_273),
-        (arms.CANDIDATE_ARM, 198_144, 9_633, 207_777),
+        ("S4", 196_608, 8_609, 205_217),
+        (arms.CONTROL_ARM, 196_608, 8_673, 205_281),
+        (arms.CANDIDATE_ARM, 198_144, 8_641, 206_785),
     ],
 )
 def test_the_measured_parameter_counts_at_the_live_width(arm, semantic, scorer, total) -> None:
@@ -346,30 +405,78 @@ def test_the_measured_parameter_counts_at_the_live_width(arm, semantic, scorer, 
     parameters and still costs 64; A3-MINIMAL's 1,536-parameter diagonal costs
     1,568 in the model. Section 11 says not to call the result tiny, and the
     honest number is the second one.
+
+    The absolute totals are the ones section 15 reports, so they are asserted
+    at the width the fits actually run at -- read from the filed table above,
+    not chosen here.
     """
 
-    from mp_retrieval.m1a_screen import build_m1a_model
-    from scripts.run_m2b_semantic_minimality import build_semantic_head
-
-    head = (
-        build_semantic_head(arm, LIVE_DIM)
-        if arm == "S4"
-        else arms.build_arm_head(arm, LIVE_DIM)
-    )
-    model = build_m1a_model(
-        precomputed_width=40,
-        semantic_rung=arm,
-        dropout=0.1,
-        temperature=1.0,
-        embedding_dim=LIVE_DIM,
-        semantic_head=head,
-    )
-    measured_semantic = sum(p.numel() for p in model.semantic_head.parameters())
-    measured_scorer = sum(p.numel() for p in model.scorer.parameters())
-
+    measured_semantic, measured_scorer = _built(arm)
     assert measured_semantic == semantic
     assert measured_scorer == scorer
     assert measured_semantic + measured_scorer == total
+
+
+def test_native_s4s_count_here_is_the_one_m2b_filed() -> None:
+    """The check that makes the row above a fact rather than my arithmetic.
+
+    Native S4 is not a Stage-1 arm; it is the model M2B already fitted on these
+    cells and whose checkpoint the runner reloads. If S4 built here does not
+    weigh exactly what M2B recorded, then the width, the head or the scorer
+    differs from the fits, and every added-parameter number reported beside it
+    would be measured against the wrong incumbent.
+    """
+
+    import json
+
+    table = json.loads(BASELINE_TABLE.read_text(encoding="utf-8"))
+    filed = {
+        (row["semantic_parameters"], row["total_parameters"] - row["semantic_parameters"])
+        for row in table["rows"]
+        if row["rung"] == "S4"
+    }
+    assert len(filed) == 1, f"M2B's filed S4 fits disagree with each other: {filed}"
+    assert _built("S4") == filed.pop()
+
+
+@pytest.mark.parametrize(
+    "arm,added_semantic,added_total",
+    [(arms.CONTROL_ARM, 0, 64), (arms.CANDIDATE_ARM, 1_536, 1_568)],
+)
+def test_what_each_arm_adds_does_not_depend_on_the_store(
+    arm, added_semantic, added_total
+) -> None:
+    """The width-independent half of section 11, separated from the totals.
+
+    The totals above move if the structural store ever changes width. What an
+    arm ADDS does not: it is its own weights plus head_width per added column.
+    Asserting it at two widths says which of the two claims is contingent.
+    """
+
+    from mp_retrieval.m1a_screen import HEAD_WIDTH, build_m1a_model
+    from scripts.run_m2b_semantic_minimality import build_semantic_head
+
+    for width in (LIVE_PRECOMPUTED_WIDTH, LIVE_PRECOMPUTED_WIDTH + 31):
+        counts = {}
+        for name in ("S4", arm):
+            head = (
+                build_semantic_head(name, LIVE_DIM)
+                if name == "S4"
+                else arms.build_arm_head(name, LIVE_DIM)
+            )
+            model = build_m1a_model(
+                precomputed_width=width, semantic_rung=name, dropout=0.1,
+                temperature=1.0, embedding_dim=LIVE_DIM, semantic_head=head,
+            )
+            counts[name] = (
+                sum(p.numel() for p in model.semantic_head.parameters()),
+                sum(p.numel() for p in model.scorer.parameters()),
+            )
+        semantic_delta = counts[arm][0] - counts["S4"][0]
+        scorer_delta = counts[arm][1] - counts["S4"][1]
+        assert semantic_delta == added_semantic, width
+        assert semantic_delta + scorer_delta == added_total, width
+        assert scorer_delta % HEAD_WIDTH == 0, "a column costs head_width in the scorer"
 
 
 def test_the_frozen_scorer_takes_the_arms_without_being_changed() -> None:

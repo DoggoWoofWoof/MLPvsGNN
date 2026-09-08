@@ -103,9 +103,13 @@ def arm_payload(
         # a fixture that built a payload the gate would refuse would make every
         # test above a test of something that cannot happen.
         "parameters": {
+            # The counts the arms actually build to at the fits' width, pinned
+            # by tests/test_m2d_stage1_arms.py against M2B's filed S4 row. A
+            # fixture carrying numbers no real artifact could hold would make
+            # this file agree with itself and with nothing else.
             "semantic": 198144 if arm == "A3_MINIMAL" else 196608,
-            "scorer": 9633 if arm == "A3_MINIMAL" else 9665,
-            "total": 207777 if arm == "A3_MINIMAL" else 206273,
+            "scorer": 8641 if arm == "A3_MINIMAL" else 8673,
+            "total": 206785 if arm == "A3_MINIMAL" else 205281,
             "added_semantic_parameters": 1536 if arm == "A3_MINIMAL" else 0,
         },
         "integration": {
