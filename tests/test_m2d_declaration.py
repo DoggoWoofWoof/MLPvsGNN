@@ -139,6 +139,14 @@ STATUS_REQUIRES_UNEARNED = {
     "M2D_STAGE0_GATE_RETURNED_ADVANCE_TARGETED_M2D": {
         "stage_1_authorised",
     },
+    # The review happened and authorised the pilot. Two gates stay unearned and
+    # they are the two that stand between an authorisation and a submission: a
+    # compute record derived by a script and filed before the jobs go out, and
+    # the Stage-1 gate committed before the numbers it will judge exist.
+    "M2D_STAGE1_AUTHORISED_A1_AND_A3_MINIMAL": {
+        "stage_1_compute_record_filed",
+        "stage_1_gate_committed",
+    },
 }
 
 
@@ -941,3 +949,258 @@ def test_the_record_prices_every_declared_cell_and_no_others(declaration):
     record = _filed_record()
     priced = [item["cell"] for item in record["workload"]["cells"]]
     assert priced == _declared_stage_0_cells(declaration)
+
+
+# ---------------------------------------------------------------------------
+# Section 8b: the Stage-1 amendment
+#
+# An amendment filed after a diagnostic is the exact place a phase can quietly
+# widen itself. These check the three claims it makes about itself: that it
+# narrows rather than expands, that it changed no threshold, and that the arm
+# contents follow from rules that were frozen before the numbers existed.
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def amendment(declaration) -> dict:
+    return declaration["stage_1_amendment"]
+
+
+def test_the_amendment_narrows_the_arm_rather_than_widening_it(declaration, amendment):
+    """A3's ceiling is at most 2 * 1536; A3-MINIMAL spends 1536 of it.
+
+    This is the claim that makes the amendment an amendment and not a new
+    declaration, so it is checked arithmetically rather than read.
+    """
+
+    ceiling = declaration["ladder"]["arms"]["A3"]["added_parameters"]
+    assert ceiling == "at most 2 * 1536"
+    spent = amendment["a3_minimal_primitive"]["live_parameter_count_measured"]
+    assert spent == 1536
+    assert spent < 2 * 1536
+    claim = amendment["a3_ambiguity"]["this_is_a_narrowing_not_an_expansion"]
+    assert "strictly inside the envelope" in claim
+    assert "no capacity, cell, seed or threshold is added" in claim
+
+
+def test_the_added_column_is_the_live_s3_tensor_and_not_a_reimplementation(amendment):
+    """Recovered from the code. A column that agreed to four decimals would
+    answer this question about a quantity no rung ever computed."""
+
+    import torch
+
+    from mp_retrieval.qls_v2_semantic import SemanticHead
+
+    declared = amendment["a3_minimal_primitive"]
+    head = SemanticHead("S3", dim=declared["dim_the_fits_run_at"])
+    assert head.difference_weight.numel() == declared["live_parameter_count_measured"]
+    assert torch.equal(head.difference_weight, torch.zeros_like(head.difference_weight))
+    assert declared["initialisation"] == "torch.zeros(dim)"
+    assert declared["bias"] == "none"
+
+    # The formula, evaluated against the module's own forward on real tensors.
+    generator = torch.Generator().manual_seed(0)
+    query = torch.randn(head.dim, generator=generator)
+    candidates = torch.randn(7, head.dim, generator=generator)
+    with torch.no_grad():
+        head.difference_weight.copy_(torch.randn(head.dim, generator=generator))
+        column = head(query, candidates)[:, head.feature_names.index("semantic_difference")]
+        expected = (candidates - query).abs() @ head.difference_weight
+    assert torch.allclose(column, expected)
+
+
+def test_the_unsupported_diagonal_and_the_expensive_primitive_are_both_excluded(amendment):
+    forbidden = set(amendment["a3_minimal_primitive"]["do_not_add"])
+    assert "semantic_product" in forbidden
+    assert "dot_qd_pct" in forbidden
+    assert "any structural feature" in forbidden
+
+
+def test_a1s_columns_are_what_the_frozen_rule_returns(declaration, amendment):
+    """Applied, not chosen.
+
+    The candidate list and the exclusion of dot_qd_pct are both frozen in
+    section 7 of this file. The admitted set is the parameter-free primitives
+    condition B actually measured against S4's errors, less the one section 7
+    excludes by name. Nothing here is a judgement made after seeing a score.
+    """
+
+    from mp_retrieval.qls_v2_semantic import PARAMETER_FREE_FEATURE_NAMES
+
+    gate = json.loads(
+        (
+            REPO_ROOT / "outputs" / "m2d_s4_semantic_repair" / "stage0_gate.json"
+        ).read_text(encoding="utf-8")
+    )
+    gate = gate.get("payload", gate)
+    condition = next(c for c in gate["conditions"] if c["condition"].startswith("B_"))
+    measured = {row["primitive"] for row in condition["rows"]}
+
+    excluded = set(amendment["a1_columns"]["excluded"])
+    expected = (set(PARAMETER_FREE_FEATURE_NAMES) & measured) - excluded
+    assert set(amendment["a1_columns"]["admitted"]) == expected
+    assert amendment["a1_columns"]["admitted"] == ["cosine_qd", "mean_abs_diff"]
+    assert amendment["a1_columns"]["added_semantic_parameters"] == 0
+    # Section 7's own rule is the reason dot_qd_pct is out, so it must still say so.
+    assert declaration["raw_semantic_controls"]["dot_qd_pct_is_not_automatic"]["rule"]
+
+
+def test_the_amendment_states_the_partial_nesting_rather_than_claiming_a_clean_one(
+    amendment,
+):
+    """A1's mean_abs_diff IS A3-MINIMAL's column at a uniform weight; A1's
+    cosine_qd is not in A3-MINIMAL at all. Both halves have to be said."""
+
+    pair = amendment["what_the_pair_isolates"]
+    assert "1/dim" in pair["the_shared_tensor"]
+    assert "not nested overall" in pair["the_nesting_is_partial_and_must_be_stated_so"]
+    assert "cosine_qd" in pair["the_nesting_is_partial_and_must_be_stated_so"]
+
+
+def test_the_uniform_reduction_really_is_the_learned_one_at_a_fixed_weight():
+    """The amendment's central causal claim, checked on tensors.
+
+    If this were false the two arms would not be a control pair at all.
+    """
+
+    import torch
+
+    from mp_retrieval.qls_v2_semantic import (
+        PARAMETER_FREE_FEATURE_NAMES,
+        SemanticHead,
+        parameter_free_scalars,
+    )
+
+    dim = 1536
+    head = SemanticHead("S3", dim=dim)
+    generator = torch.Generator().manual_seed(1)
+    query = torch.randn(dim, generator=generator)
+    candidates = torch.randn(5, dim, generator=generator)
+
+    with torch.no_grad():
+        head.difference_weight.fill_(1.0 / dim)
+        learned = head(query, candidates)[
+            :, head.feature_names.index("semantic_difference")
+        ]
+    uniform = parameter_free_scalars(query, candidates)[
+        :, PARAMETER_FREE_FEATURE_NAMES.index("mean_abs_diff")
+    ]
+    assert torch.allclose(learned, uniform, atol=1e-6)
+
+
+def test_the_amendment_changed_no_threshold(declaration):
+    """Checked against git, not against a flag in the file.
+
+    The amendment says it alters no effectiveness, systems or parameter
+    threshold. A file cannot establish that about itself, so the pre-amendment
+    copy is read out of the commit the amendment names.
+    """
+
+    before_text = subprocess.run(
+        ["git", "show", "6290e97:configs/m2d_s4_semantic_repair.yaml"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if before_text.returncode != 0:
+        pytest.skip("the pre-amendment commit is not in this checkout")
+    before = yaml.safe_load(before_text.stdout)
+    for section in ("effectiveness_gate", "systems_gate", "parameter_accounting"):
+        assert declaration[section] == before[section], section
+    # And the frozen evidence the amendment reasons from is itself untouched.
+    for section in ("failure_shape", "advance_gate", "scored_universe_is_frozen"):
+        assert declaration[section] == before[section], section
+
+
+def test_the_amendment_predates_every_stage_1_fit(declaration, amendment):
+    """"No Stage-1 result existed when this was filed" is a claim about time.
+
+    It is checked the only way it can be: the commit the amendment names must
+    be an ancestor of HEAD, and no Stage-1 artifact may exist at that commit.
+    """
+
+    named = amendment["filed_against_commit"]
+    ancestry = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", named, "HEAD"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if "unknown revision" in ancestry.stderr:
+        pytest.skip("the named commit is not in this checkout")
+    assert ancestry.returncode == 0, f"{named} is not an ancestor of HEAD"
+    listing = subprocess.run(
+        ["git", "ls-tree", "-r", "--name-only", named],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert listing.returncode == 0
+    assert not [
+        path for path in listing.stdout.splitlines() if "m2d" in path and "stage1" in path
+    ]
+    assert amendment["no_stage_1_result_existed_when_this_was_filed"] is True
+
+
+def test_the_matrix_is_two_arms_four_cells_one_seed(declaration):
+    stage_1 = declaration["stage_1"]
+    assert stage_1["arms"] == ["A1", "A3_MINIMAL"]
+    assert stage_1["seeds"] == [0]
+    cells = stage_1["cells"]
+    assert cells["mandatory_blockers"] == ["squad_clean/R1", "musique_clean/R1"]
+    assert cells["controls"] == ["hotpotqa_clean/R1", "metaqa/R1"]
+    assert cells["controls_were_chosen_before_any_arm_result"] is True
+    total = len(stage_1["arms"]) * (
+        len(cells["mandatory_blockers"]) + len(cells["controls"])
+    ) * len(stage_1["seeds"])
+    assert stage_1["new_fits"] == total == 8
+
+
+def test_the_candidate_is_one_model_and_the_file_says_which_things_it_is_not(amendment):
+    one = amendment["the_candidate_is_one_model"]
+    forbidden = set(one["explicitly_not"])
+    for phrase in ("an ensemble", "a dataset router", "a model selector"):
+        assert phrase in forbidden
+    assert "diagnostic" in one["z4_remains_diagnostic_only"]
+
+
+def test_the_integration_analysis_counts_breakage_as_well_as_repair(amendment):
+    """A corrections count on its own is not a measurement."""
+
+    analysis = amendment["integration_error_conditioned_analysis"]
+    reported = " ".join(analysis["report_per_arm"])
+    assert "corrects" in reported
+    assert "newly breaks" in reported
+    assert "net" in reported
+    assert "not a measurement" in analysis["both_directions_are_mandatory"]
+
+
+def test_every_prospective_case_has_a_reading_and_the_failures_have_an_action(
+    amendment,
+):
+    """Filed before the arms run, so the result cannot choose its own reading."""
+
+    cases = amendment["causal_interpretation_filed_in_advance"]
+    assert set(cases) == {"case_1", "case_2", "case_3", "case_4"}
+    for name, case in cases.items():
+        assert case["pattern"] and case["conclusion"], name
+    assert "STOP_S4_DEVELOPMENT" in cases["case_3"]["action"]
+    assert "STOP" in cases["case_4"]["action"]
+    assert "routing" in cases["case_4"]["action"]
+
+
+def test_the_added_column_is_timed_in_the_cold_number(amendment):
+    systems = amendment["systems_additions"]
+    assert "cached" in systems["the_added_column_is_timed_cold"]
+    assert "cold one is primary" in systems["the_added_column_is_timed_cold"]
+    assert "an argument, not a measurement" in systems["the_thing_being_protected"]
+
+
+def test_the_amendment_does_not_authorise_the_things_stage_0_did_not(amendment):
+    still_closed = set(amendment["after_stage_1"]["still_not_authorised_by_this_amendment"])
+    for item in ("the full 14-cell M2D screen", "any M3 or GNN work", "canonical CRAG"):
+        assert item in still_closed
+    assert "seeds 1 and 2" in amendment["after_stage_1"]["on_a_clear_success"]

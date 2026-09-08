@@ -13,7 +13,7 @@
 
 phase: M2D_S4_SEMANTIC_REPAIR
 opened: 2026-09-08
-status: M2D_STAGE0_GATE_RETURNED_ADVANCE_TARGETED_M2D
+status: M2D_STAGE1_AUTHORISED_A1_AND_A3_MINIMAL
 branch_type: POST_HOC_DEVELOPMENT
 motivated_by: >-
   An observed S4 development result, not a preregistered hypothesis. S4 was
@@ -375,6 +375,7 @@ ladder:
         The smallest missing raw-space semantic scalar or scalars the
         diagnostic justifies, concatenated to the semantic branch.
       added_parameters: at most one scorer input weight per added scalar
+      resolved_by: stage_1_amendment.a1_columns   # [cosine_qd, mean_abs_diff]
     A2:
       name: S4 + DENSE-RRF
       description: >-
@@ -389,6 +390,8 @@ ladder:
         Adds at most the exact existing S3 semantic parameters, unmodified.
       do_not_redesign_them: true
       added_parameters: at most 2 * 1536
+      resolved_by: stage_1_amendment.a3_ambiguity   # A3-MINIMAL, one diagonal
+      run_as: A3_MINIMAL
     A4:
       name: S4 + SEMANTIC-RESIDUAL
       only_if: >-
@@ -396,6 +399,249 @@ ladder:
         EXISTS but that no static inclusion of it recovers the blocker.
       description: see semantic_residual_design below
   do_not_run_all_arms: true
+
+# --------------------------------------------------------------------------
+# 8b. STAGE-1 AMENDMENT -- filed 2026-09-08, before any Stage-1 fit exists
+# --------------------------------------------------------------------------
+
+stage_1_amendment:
+  filed: 2026-09-08
+  filed_against_commit: 6290e97
+  no_stage_1_result_existed_when_this_was_filed: true
+  why_an_amendment_and_not_a_new_file: >-
+    It changes no threshold, adds no cell, adds no seed and opens no phase. It
+    resolves one ambiguity in this file's own arm A3, and it writes down the
+    arm contents that this file's own rules already determine once the Stage-0
+    diagnostics exist. A new declaration would imply a new phase; this is the
+    phase this file declared, with its ladder reduced by its own diagnostics.
+
+  # ----------------------------------------------------------------------
+  # 1. The A3 ambiguity, and its resolution
+  # ----------------------------------------------------------------------
+  a3_ambiguity:
+    the_text_as_written: >-
+      Arm A3's only_if reads "The complementarity diagnostic specifically
+      implicates the two learned S3 diagonal interactions", and its capacity
+      ceiling reads "at most 2 * 1536". The prose refers to the two diagonals
+      collectively.
+    what_stage_0_was_allowed_to_do: >-
+      Identify WHICH missing primitive carries the signal. That is the whole
+      content of condition B, whose admitted set was fixed by the archaeology
+      and whose bar was filed before any of the numbers it judges existed.
+    what_stage_0_identified: >-
+      semantic_difference only. It reorders 0.5949 of SQuAD's and 0.7482 of
+      MuSiQue's S4 top-1 errors as a sole ranker, clearing the filed majority
+      bar on both blockers.
+    what_stage_0_did_not_support: >-
+      semantic_product. It reaches 0.3543 on SQuAD and fails the bar. No filed
+      measurement implicates it.
+    resolution: >-
+      A3-MINIMAL = S4 + semantic_difference only. semantic_product is NOT
+      included, because Stage 0 did not support it.
+    this_is_a_narrowing_not_an_expansion: >-
+      1,536 added semantic parameters against an authorised ceiling of at most
+      2 * 1536. The arm runs strictly inside the envelope this file already
+      authorised, and no capacity, cell, seed or threshold is added. Forcing
+      the unsupported diagonal back in to match the prose would be a LESS
+      principled experiment than running the one the evidence names, and would
+      spend 1,536 parameters no measurement asks for.
+    thresholds_unchanged: >-
+      No effectiveness, systems or parameter threshold anywhere in this file is
+      altered by this amendment. Section 12's 0.50pp and section 13's p95
+      requirement stand exactly as filed.
+    the_selection_is_reported_as_a_selection: >-
+      One primitive of five inspected. This licenses the smallest pilot; it is
+      not evidence that the repair works, and no report of Stage 1 may drop the
+      denominator.
+
+  # ----------------------------------------------------------------------
+  # 2. The exact live formula A3-MINIMAL adds -- recovered, not rewritten
+  # ----------------------------------------------------------------------
+  a3_minimal_primitive:
+    name: semantic_difference
+    recovered_from: src/mp_retrieval/qls_v2_semantic.py::SemanticHead
+    live_formula: (candidates - query).abs() @ difference_weight
+    algebraic_form: sum_i v_i * abs(q_i - d_i), i = 1..dim
+    parameter: difference_weight
+    initialisation: torch.zeros(dim)
+    why_zero_init_is_the_historical_semantics: >-
+      d(F5)/d(v_i) = |q_i - d_i| does not vanish at v = 0, so the column starts
+      inert and still trains. That is S3's own initialisation and it is kept.
+    bias: none
+    live_parameter_count_measured: 1536
+    dim_the_fits_run_at: 1536
+    do_not_add:
+      - semantic_product
+      - dot_qd_pct
+      - any structural feature
+      - any graph-conditioned input
+    do_not_rewrite_it: >-
+      The column must be the exact live S3 tensor operation, not a
+      reimplementation that agrees to four decimals. A reimplementation would
+      answer this question about a quantity no rung ever computed.
+
+  # ----------------------------------------------------------------------
+  # 3. A1's contents, derived from this file's frozen rule
+  # ----------------------------------------------------------------------
+  a1_columns:
+    rule_applied: >-
+      raw_semantic_controls.only_what_the_diagnostic_justifies -- admit only
+      primitives the archaeology and the error-conditioned table show to be
+      BOTH missing from S4 AND implicated in its errors, drawn from the frozen
+      candidate list. The rule is applied here; it is not rewritten.
+    admitted: [cosine_qd, mean_abs_diff]
+    admitted_because: >-
+      Both are raw-1536 parameter-free primitives the archaeology records as
+      RESTRICTED in S4 -- S4 holds only their projected-64 analogues -- and both
+      were measured against S4's top-1 errors by the condition-B probe.
+    excluded:
+      dot_qd_pct: >-
+        Excluded by this file's own dot_qd_pct_is_not_automatic rule. It was
+        the dominant latency source in S2 and S3, and no filed measurement
+        shows that rank structure specifically, rather than raw geometry,
+        separates the relevant candidate from S4's wrong top item -- it reorders
+        0.2853 of SQuAD's errors, the lowest of the five.
+      raw_dot_qd: >-
+        On the frozen candidate list but never measured, because the
+        condition-B admitted set is the archaeology's S3_NOT_IN_S4 and raw
+        dot(q, d) is not an S3 primitive. The rule requires the diagnostic to
+        SHOW a primitive implicated; absence of evidence does not admit it.
+    added_semantic_parameters: 0
+    added_scorer_parameters: one input weight per added scalar, so two
+    a1_is_not_a_proposed_final_model: >-
+      It is the causal control. Its only job is to separate "S4 needs some raw
+      1536-D geometry" from "S4 needs the learned dimension-wise mismatch
+      weighting specifically".
+
+  # ----------------------------------------------------------------------
+  # 4. What the two arms share, and where they differ
+  # ----------------------------------------------------------------------
+  what_the_pair_isolates:
+    the_shared_tensor: >-
+      A1's mean_abs_diff is abs(q - d) reduced by the UNIFORM weight 1/dim.
+      A3-MINIMAL's semantic_difference is the SAME abs(q - d) reduced by a
+      LEARNED v. On that column the two arms differ only in whether the 1,536
+      weights are free.
+    the_nesting_is_partial_and_must_be_stated_so: >-
+      A3-MINIMAL's hypothesis class contains A1's mean_abs_diff column exactly,
+      at v = 1/dim. It does NOT contain A1's cosine_qd column. The two arms are
+      therefore not nested overall, and no report may describe A1 as a
+      restriction of A3-MINIMAL.
+    what_a_null_would_then_mean: >-
+      If A3-MINIMAL does not beat A1, the 1,535 degrees of freedom beyond the
+      uniform direction bought nothing over a fixed uniform weighting on the
+      same tensor. That is a clean negative and it is reported as one.
+
+  # ----------------------------------------------------------------------
+  # 5. One model. Not an ensemble.
+  # ----------------------------------------------------------------------
+  the_candidate_is_one_model:
+    statement: >-
+      A1 and A3-MINIMAL are controlled development ablations of ONE universal
+      S4-based ranker: one semantic branch, one scorer, one forward pass. The
+      added primitive is a column inside that branch.
+    explicitly_not:
+      - an ensemble
+      - a second model at inference
+      - S3 running beside S4
+      - a model selector
+      - a dataset router
+      - a KB-specific or passage-specific model
+    z4_remains_diagnostic_only: >-
+      The Stage-0 S3+S4 fusion arm was and stays a diagnostic. It is not an
+      ancestor of either Stage-1 arm and may not be cited as one.
+
+  # ----------------------------------------------------------------------
+  # 6. The integration check condition B does not answer
+  # ----------------------------------------------------------------------
+  integration_error_conditioned_analysis:
+    why: >-
+      Condition B measured what a primitive does ALONE. Whether that survives
+      being one input among many in a trained scorer is a different question,
+      and it is the question Stage 1 exists to answer.
+    population: >-
+      The queries the reused native S4 baseline gets wrong at rank 1, with a
+      relevant candidate in the pool, on each blocker cell.
+    report_per_arm:
+      - fraction of that population whose top-1 the arm corrects
+      - fraction of previously CORRECT S4 top-1 the arm newly breaks
+      - net top-1 corrections
+    both_directions_are_mandatory: >-
+      A corrections count without a breakage count is not a measurement. An arm
+      that fixes 30% and breaks 30% has done nothing and must not be reportable
+      as having fixed 30%.
+
+  # ----------------------------------------------------------------------
+  # 7. The prospective reading, filed before the arms run
+  # ----------------------------------------------------------------------
+  causal_interpretation_filed_in_advance:
+    case_1:
+      pattern: A1 is approximately A3-MINIMAL
+      conclusion: >-
+        Original-space semantic geometry matters; the learned diagonal
+        weighting may not be necessary.
+      action: >-
+        Prefer the simpler A1 if effectiveness and systems remain comparable.
+    case_2:
+      pattern: A1 fails and A3-MINIMAL works
+      conclusion: >-
+        The learned dimension-wise absolute-difference weighting supplies
+        information the S4 projection loses. This is the sharpest available
+        outcome and the only one that identifies a mechanism.
+    case_3:
+      pattern: both fail
+      conclusion: >-
+        Condition B's sole-ranker evidence does not transfer into the
+        integrated scorer.
+      action: STOP_S4_DEVELOPMENT. S3 is retained and M3 proceeds.
+    case_4:
+      pattern: both improve the blockers and harm the controls
+      conclusion: the repair is not universal
+      action: >-
+        STOP, or require a new scientifically justified mechanism. Do NOT
+        introduce dataset routing, a per-family model, or any selector. A
+        universal ranker that needs a router is not a universal ranker.
+
+  # ----------------------------------------------------------------------
+  # 8. Timing the added column honestly
+  # ----------------------------------------------------------------------
+  systems_additions:
+    the_added_column_is_timed_cold: >-
+      The primary uncached number must include abs(q - d), the learned diagonal
+      weighting and the reduction, computed in the measured pass. A
+      precomputed or cached semantic_difference may not stand in for it unless
+      an actual deployment contract legitimately allows the cache, in which
+      case both numbers are reported and the cold one is primary.
+    also_report:
+      - added semantic time against native S4
+      - scorer time
+    the_thing_being_protected: >-
+      S4's p95 advantage is the systems reason to repair S4 rather than accept
+      S3. abs, multiply, reduce is a cheaper operation than dot_qd_pct's
+      argsort, unique, scatter_add and tie-aware percentile, which is why the
+      cheap arm is the one being tried -- but "cheaper than the expensive thing"
+      is an argument, not a measurement, and the measurement is what counts.
+
+  # ----------------------------------------------------------------------
+  # 9. What may be proposed after the eight fits, and what may not
+  # ----------------------------------------------------------------------
+  after_stage_1:
+    on_a_clear_failure: >-
+      STOP_S4_DEVELOPMENT. S3 is retained as the preregistered incumbent and
+      M3 proceeds unchanged.
+    on_a_clear_success: >-
+      ADVANCE_TARGETED_M2D, and then propose ONLY seeds 1 and 2 on
+      squad_clean/R1 and musique_clean/R1. Not the full 14-cell screen.
+    on_an_ambiguous_result: >-
+      Extra seeds are authorised only where they could change the scientific
+      decision under the filed rule. A seed that cannot change the decision is
+      not run.
+    still_not_authorised_by_this_amendment:
+      - the full 14-cell M2D screen
+      - any M3 or GNN work
+      - canonical CRAG
+      - Package F
+      - E2
 
 # --------------------------------------------------------------------------
 # 9. The residual, if one is ever justified
@@ -477,7 +723,14 @@ advance_gate:
 
 stage_1:
   authorised_only_if: stage_0 advance gate passes on its filed terms
-  authorised_by_this_file: false
+  authorised_by_this_file: false          # authorised by the operator on
+                                          # 2026-09-08, after the amendment in
+                                          # section 8b was filed and against
+                                          # the Stage-0 record at 6290e97
+  arms: [A1, A3_MINIMAL]                  # the ladder, reduced by its own
+                                          # diagnostics: A2 removed by a failed
+                                          # condition A, A4 not licensed
+  new_fits: 8                             # 2 arms x 4 cells x 1 seed
   cells:
     mandatory_blockers: [squad_clean/R1, musique_clean/R1]
     controls: [hotpotqa_clean/R1, metaqa/R1]
@@ -736,9 +989,15 @@ launch_authorization:
                                                # its B criterion at 1538690, and the first artifact either judges was written
                                                # at 677b2fa, so the rule predates every number it judges. Re-applied unchanged
                                                # once B was measured; it returned ADVANCE_TARGETED_M2D on B alone.
-    stage_1_authorised: false                  # section 19 authorises the smallest seed-0 pilot ON A PASS, and the gate passed.
-                                               # Section 20 still stops for review first, and its if_advance deliverable is the
-                                               # exact minimum next matrix and its cost -- a specification, not its execution.
+    stage_0_reported: true                     # earned 2026-09-08, docs/M2D_STAGE0_REPORT.md at 6290e97; section 20's eleven
+                                               # items, the gate's verdict and the stop, generated from the artifacts
+    stage_1_amendment_filed: true              # earned 2026-09-08, section 8b of this file. A3 resolved to A3-MINIMAL and A1's
+                                               # columns derived from the frozen rule, both BEFORE any Stage-1 fit existed
+    stage_1_authorised: true                   # earned 2026-09-08 by operator review of the Stage-0 report. Section 19
+                                               # authorises the smallest seed-0 pilot on a pass; section 20's review has now
+                                               # happened and returned an authorisation with the section 8b amendment attached.
+    stage_1_compute_record_filed: false        # nothing may be submitted until this is earned
+    stage_1_gate_committed: false              # the rule is committed before the number it judges
 
 # --------------------------------------------------------------------------
 # 20. Hard stop

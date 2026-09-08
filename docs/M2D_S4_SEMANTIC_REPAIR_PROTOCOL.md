@@ -3,24 +3,47 @@
 Filed 2026-09-08, before any M2D arm is fit. The machine-readable declaration is
 [`configs/m2d_s4_semantic_repair.yaml`](../configs/m2d_s4_semantic_repair.yaml);
 this document is the argument behind it. Status:
-`M2D_STAGE0_GATE_RETURNED_ADVANCE_TARGETED_M2D` — section 3 has run and its
-findings are below; the Stage-0 jobs were priced in
-[`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and have now
-run on all four declared cells; condition B was measured afterwards on the two
-failure cells, because the Stage-0 probe ranks whole models and B asks about a
-single primitive, and a stop resting on an unmeasured condition is not a stop;
-and section 10's gate has been applied to all of it in
+`M2D_STAGE1_AUTHORISED_A1_AND_A3_MINIMAL` — Stage 0 is complete and
+reported. Section 3 ran and its findings are below; the Stage-0 jobs were priced
+in [`docs/M2D_STAGE0_COMPUTE_RECORD.md`](M2D_STAGE0_COMPUTE_RECORD.md) and ran on
+all four declared cells; condition B was measured afterwards on the two failure
+cells, because the Stage-0 probe ranks whole models and B asks about a single
+primitive, and a stop resting on an unmeasured condition is not a stop; section
+10's gate was applied to all of it in
 [`docs/M2D_STAGE0_GATE.md`](M2D_STAGE0_GATE.md), unchanged from the version that
-returned the pending verdict.
+returned the pending verdict; and section 20's eleven items, the verdict and the
+stop are in [`docs/M2D_STAGE0_REPORT.md`](M2D_STAGE0_REPORT.md).
 
-It advances on B alone. Conditions A and C both fail on their filed terms: no
+It advanced on B alone. Conditions A and C both fail on their filed terms: no
 fixed fusion arm gains on either blocker, and the S3+S4 diagnostic loses
 recall@5 on MuSiQue. B holds on exactly one of the five primitives S4 is
 missing — `semantic_difference`, S3's learned weighted L1 at raw 1536 — which
 reorders 59.5% of SQuAD's and 74.8% of MuSiQue's top-1 errors ranking alone. A
-pass by one of five is a selection over five and is reported as one. Stage 1
-remains unauthorised: section 20's deliverable on an advance is the exact
-minimum next matrix and its cost, and the review comes before it runs.
+pass by one of five is a selection over five and is reported as one.
+
+**Stage 1 is now authorised, with an amendment attached.** The stop returned an
+operator authorisation of the eight-fit pilot section 20 specified, and section
+8b of the declaration files the amendment it came with, dated and against commit
+`6290e97`, before any Stage-1 fit exists. Two things are resolved there. Arm A3
+was written about "the two learned S3 diagonal interactions" and the measurement
+implicates one, so the arm runs as **A3-MINIMAL** — S4 plus `semantic_difference`
+only, 1,536 parameters against an authorised ceiling of at most 2 × 1536, which
+is a narrowing of the envelope and not an expansion. And arm A1's columns are
+derived by applying this file's own frozen admission rule to the diagnostics:
+`cosine_qd` and `mean_abs_diff`, with `dot_qd_pct` excluded by its own named rule
+and raw `dot(q, d)` excluded because nothing measured it. No effectiveness,
+systems or parameter threshold is altered.
+
+The pair is chosen to be causal rather than to be two guesses. A1's
+`mean_abs_diff` is |q − d| reduced by the uniform weight 1/dim; A3-MINIMAL's
+`semantic_difference` is the same |q − d| reduced by a learned v. On that column
+the arms differ only in whether the 1,536 weights are free, so a null result
+means the extra degrees of freedom bought nothing over a fixed uniform
+weighting. They are not nested overall — A1 also carries `cosine_qd`, which
+A3-MINIMAL does not — and no report may describe A1 as a restriction of
+A3-MINIMAL. Both are ablations of **one** universal S4 ranker: one semantic
+branch, one scorer, one forward pass. Nothing here proposes an ensemble, a
+second model at inference, or a dataset router.
 
 **This is a post-hoc development branch.** It was opened because of an observed
 S4 development result, not from a preregistered hypothesis, and it is labelled
