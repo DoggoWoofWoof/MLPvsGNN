@@ -1,6 +1,6 @@
 # M2D Stage 2 — compute record
 
-Filed at `43392d193e39`, before any Stage-2 job was submitted. 4 GPU jobs, one per cell and seed, each fitting A3_MINIMAL once and re-scoring M2B's native S4 on the same panel -- 4 new fits in total.
+Filed at `f8bcab93eb95`, before any Stage-2 job was submitted. 4 GPU jobs, one per cell and seed, each fitting A3_MINIMAL once and re-scoring M2B's native S4 on the same panel -- 4 new fits in total.
 
 Authorised by: stage_2_amendment, filed 2026-09-08 by review.
 
