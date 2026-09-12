@@ -676,3 +676,62 @@ class TestExecutionRecord:
         alignment = artifact("node_alignment.json")
         blocked = [row["dataset"] for row in alignment["alignments"] if not row["green"]]
         assert record["items"]["5_node_alignment"]["blocked"] == blocked
+
+
+class TestAdoptionSupersessionRecord:
+    """The package the adoption verified was consolidated and frozen upstream
+    on 2026-09-12. The execution record is scoped to its own run and stays as
+    filed; the supersession record is where the moved bytes and the two
+    withdrawn findings live. The point of these tests is that the correction
+    was made by a new record and not by editing a number in the old one.
+    """
+
+    @pytest.fixture(scope="class")
+    def declaration(self):
+        import yaml
+
+        config = ROOT / "configs" / "m3a_sota_information_contract.yaml"
+        return yaml.safe_load(config.read_text(encoding="utf-8"))
+
+    @pytest.fixture(scope="class")
+    def supersession(self, declaration):
+        return declaration["adoption_supersession_record_2026_09_13"]
+
+    def test_the_record_exists_and_does_not_edit_the_execution_record(self, declaration, supersession):
+        assert supersession["status"] == "SUPERSESSION_FILED"
+        assert supersession["edits_the_execution_record"] is False
+        record = declaration["adoption_execution_record_2026_09_08"]
+        assert record["package_bytes_modified"] == 0
+        assert record["status"] == "ADOPTION_COMPLETE_PENDING_REVIEW"
+        assert record["items"]["6_webqsp_encode"]["status"] == "BUDGET_FILED_ENCODE_NOT_RUN"
+
+    def test_the_footprint_field_stands_and_the_moved_bytes_live_here(self, supersession):
+        assert supersession["package_bytes_modified_field"]["verdict"] == "STANDS_AT_0"
+        moved = supersession["package_bytes_moved_since_adoption"]
+        assert moved["bytes_deleted"] + moved["bytes_written"] == moved["total"] == 43294408297
+        assert "dda72ce8458baf13" in moved["measured_by"]
+        assert "8b32dee1854efb0a" in supersession["package_bytes_modified_field"]["upstream_record_that_agrees"]
+
+    def test_the_two_wrong_findings_are_withdrawn_by_name(self, supersession):
+        withdrawn = supersession["findings_withdrawn"]
+        assert withdrawn["webqsp_ships_no_queries"]["status"] == "WRONG_AT_FILING"
+        assert withdrawn["webqsp_encode_budget"]["status"].startswith("WITHDRAWN")
+        assert withdrawn["webqsp_encode_budget"]["gpu_spent_by_this_repository"] == 0
+
+    def test_every_open_decision_has_a_disposition_and_rog_exact_stays_open(self, declaration, supersession):
+        record = declaration["adoption_execution_record_2026_09_08"]
+        dispositions = supersession["findings_withdrawn"]["open_decisions_disposition"]
+        assert len(dispositions) == len(record["open_for_review"])
+        still_open = [name for name, value in dispositions.items() if str(value).startswith("STILL_OPEN")]
+        assert still_open == ["rederive_rog_exact_from_raw_shards"]
+
+    def test_the_inventory_is_superseded_not_deleted(self, supersession):
+        inventory = supersession["transfer_inventory"]
+        assert inventory["status"] == "SUPERSEDED_AS_INVENTORY"
+        assert (ROOT / inventory["artifact"]).exists()
+
+    def test_it_authorises_nothing_and_stops_for_review(self, supersession):
+        forbidden = " ".join(supersession["what_this_record_does_not_do"]).lower()
+        assert "does not authorise the rog-exact" in forbidden
+        assert "does not authorise training" in forbidden
+        assert supersession["next"] == "STOP_FOR_REVIEW"

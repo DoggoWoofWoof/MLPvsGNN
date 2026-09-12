@@ -7,11 +7,20 @@
 # result. The three findings recorded under `substrate_blockers` were measured
 # from the package before the phase was declared, because a plan written
 # against a substrate that cannot support it is worse than no plan.
+#
+# AMENDED 2026-09-13 (amendment_1_2026_09_13, at the end of this file). The
+# substrate was frozen upstream on 2026-09-12 and the paths this file cited were
+# deleted; the three blockers are void; WebQSP is reinstated by user ruling. The
+# declared sections are retained as filed. Where a field is LIVE -- read by a
+# test or a runner -- it is updated in place and its filed value is kept beside
+# it under *_at_declaration.
 # ═════════════════════════════════════════════════════════════════════════════
 
 phase: M3A-COMPILATION
-status: DECLARED_NOT_RUN
+status: DECLARED_AMENDED_NOT_RUN
+status_at_declaration: DECLARED_NOT_RUN
 declared: 2026-09-08
+amended: 2026-09-13
 accepts: 1ae3c2d
 supersedes_nothing: >-
   The M3A adoption contract and its execution record stand. This is the next
@@ -30,7 +39,9 @@ immediate_question: >-
 # WebQSP
 # ─────────────────────────────────────────────────────────────────────────────
 webqsp:
-  status: DEFERRED_PRE_M3B
+  status: REINSTATED_2026_09_13
+  status_at_declaration: DEFERRED_PRE_M3B
+  reinstated_by: user ruling 2026-09-13 -- see amendment_1_2026_09_13.webqsp_reinstated_2026_09_13
   deferral_is_not_removal: true
   deferred_items:
     - WebQSP query construction
@@ -66,8 +77,15 @@ substrate:
   which: canonical
   package_root: C:/Users/Swastik/Desktop/CRAG
   access_mode: READ_ONLY
-  datasets: [metaqa, squad, musique, hotpotqa, 2wiki]
+  datasets: [metaqa, squad, musique, hotpotqa, 2wiki, webqsp]
+  datasets_at_declaration: [metaqa, squad, musique, hotpotqa, 2wiki]
+  served_root: data/final_canonical  # since the 2026-09-12 freeze; data/canonical is deleted (amendment 1)
   corpus_note: >-
+    2wiki's canonical corpus is the 5,989,847-node universe served at
+    data/final_canonical/2wiki (built as the Phase-C tree 2wiki_universe).
+    The superseded 398,354-node corpus, formerly data/canonical/2wiki, was a
+    query-induced subset, is deleted, and must never be on the path.
+  corpus_note_at_declaration: >-
     2wiki's canonical corpus is data/canonical/2wiki_universe. data/canonical/2wiki
     is a superseded 398,354-node corpus and must never be on the path.
   historical_substrate_rule: >-
@@ -79,7 +97,10 @@ substrate:
   test_data_rule: >-
     No scientific result from test data. Development uses train and dev/validation
     only. Split naming is not uniform: musique, metaqa and 2wiki use dev.jsonl,
-    hotpotqa uses validation.jsonl, squad has no test split at all.
+    hotpotqa uses validation.jsonl, squad has no test split at all, and webqsp
+    has no dev split and evaluates on a seed-free train_holdout carve (amendment 1).
+    metaqa's QUALITY_LOCKED lane is its official test split and is never an
+    evaluation population.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # What was measured from the package before declaring the phase.
@@ -87,6 +108,7 @@ substrate:
 # ─────────────────────────────────────────────────────────────────────────────
 substrate_blockers:
   status: MEASURED_BEFORE_DECLARATION
+  disposition_2026_09_13: ALL_THREE_VOID -- see amendment_1_2026_09_13.blocker_dispositions; the blocks below are retained as filed
   how: read-only inspection of manifests and file presence; nothing was built
 
   blocker_1_no_query_view_on_two_datasets:
@@ -287,8 +309,9 @@ directions:
 # Headroom
 # ─────────────────────────────────────────────────────────────────────────────
 headroom:
-  regimes: [RETRIEVAL, STRUCT, KNN, FULL]
-  regime_caveat: see substrate_blockers.blocker_3_edge_families_are_not_uniform
+  regimes: [RETRIEVAL, STRUCT, NER, KNN, FULL]
+  regimes_at_declaration: [RETRIEVAL, STRUCT, KNN, FULL]
+  regime_caveat: see substrate_blockers.blocker_3_edge_families_are_not_uniform and amendment_1_2026_09_13.headroom_amended
   quantities:
     - candidate ceiling @1 / @5 / @20
     - ANY
@@ -348,7 +371,8 @@ freeze_policy:
 # ─────────────────────────────────────────────────────────────────────────────
 authorization:
   authorised:
-    - five-dataset headroom analysis
+    - six-dataset headroom analysis over served caches and families (was five-dataset; amendment 1)
+    - WebQSP compilation diagnostics over served artifacts, zero GPU (amendment 1)
     - A topology compilation
     - provisional B MetaQA relation compilation
     - C fixed-neighbour aggregation diagnostics
@@ -357,7 +381,7 @@ authorization:
     - systems/cost analysis
     - proposed QLS-U core architecture
   not_authorised:
-    - any WebQSP work
+    - WebQSP RoG-exact recomputation or any WebQSP GPU spend before a filed compute record (was "any WebQSP work"; narrowed by the 2026-09-13 ruling, amendment 1)
     - final six-dataset contract
     - large GNN sweeps
     - final M3B
@@ -371,3 +395,512 @@ authorization:
     first; expand only when the current scale produces evidence that more
     compute can change a scientific decision.
   on_completion: STOP_FOR_REVIEW
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Amendment 1 — 2026-09-13. Filed before any headroom number exists.
+#
+# The substrate this phase was declared against no longer exists, all three
+# substrate blockers are void, three measured rows in the phase's own documents
+# are stale, and the user has lifted the WebQSP deferral. The sections above are
+# left exactly as filed; every disposition is recorded here and cites the record
+# that establishes it. Nothing in this amendment is a result.
+# ─────────────────────────────────────────────────────────────────────────────
+amendment_1_2026_09_13:
+  status: FILED_BEFORE_ANY_NUMBER
+  numbers_present: false
+  filed: 2026-09-13
+  authorised_by: user, 2026-09-13, in the review chat
+
+  user_rulings_2026_09_13:
+    six_datasets: since all 6 datasets are complete take all into consideration
+    universal_gnn: >-
+      instead of choosing a gnn family per dataset can we have a universal gnn
+      as well which is atleast par enough with the different dataset sotas we
+      have -- universal mlp = universal gnn = sota gnn of different papers
+    features_compensate: >-
+      the papers that said gnn without message passing is worse didnt give the
+      features we are to compensate for it
+    three_substrates: we have to test across the 3 graph substrates we have
+    headroom: >-
+      i want to keep as much headroom as possible the way the sota gnns are
+      doing it
+    where_each_is_applied:
+      six_datasets: webqsp_reinstated_2026_09_13
+      universal_gnn: universal_gnn_calibration_rule
+      features_compensate: universal_gnn_calibration_rule.same_information
+      three_substrates: headroom_amended.regimes
+      headroom: headroom_amended.exposure_matching_rule
+
+  # ── the substrate as served ────────────────────────────────────────────────
+  served_substrate:
+    root: C:/Users/Swastik/Desktop/CRAG/data/final_canonical
+    access_mode: READ_ONLY
+    freeze_record: data/final_canonical/CANONICAL_FREEZE.json
+    freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+    frozen_utc: "2026-09-12T22:27:25Z"
+    verification:
+      file: data/final_canonical/VERIFICATION.json
+      utc: "2026-09-12T23:20:06Z"
+      mode: full
+      checks: 686
+      failed: 0
+      seconds: 3150.4
+      pins_freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+      relation_to_the_served_freeze: >-
+        The served record is the verified record. This full verification was
+        written upstream at 23:20:06Z, after the pins below were first taken, and
+        the pin test caught the move (VERIFICATION.json and HANDOFF.md re-pinned,
+        old digests kept under pins_refreshed_2026_09_13). Nothing under the six
+        served trees changed: the freeze record 58958f33 is byte-identical to the
+        one pinned (file sha 039dcf32...).
+      previous_verification:
+        utc: "2026-09-12T15:47:00Z"
+        mode: full
+        checks: 679
+        failed: 0
+        pins_freeze_RECORD_SHA256: eaab0b8f534f5b2f297dccb515d7d761d6629c2cee1cbdcb7652f1a654a4bb5d
+        note: >-
+          That verification predated the served freeze by one cut. The served
+          record 58958f33 (22:27:25Z) and eaab0b8f (14:37:32Z) were diffed key
+          by key on 2026-09-13: they differ only in BUILDERS (275 to 280 archived
+          sources), FREEBASE.source_layer (a terminal closure of the Freebase
+          source layer), LAYOUT.freebase, HISTORY and LINEAGE (eaab0b8f added as
+          superseded). DATASETS, TOTALS, EDGE_FAMILIES, K_SEMANTICS, EVAL_SPLITS,
+          QUERY_LANES, GOLD_FIELD and the webqsp holdout are identical. The
+          upstream re-verification made this diff a belt-and-braces argument
+          rather than the load-bearing one.
+    layout_per_dataset: >-
+      nodes.jsonl; queries/<split>.jsonl + queries/query_ids.json + queries/lanes/*;
+      eval_*.jsonl; embeddings/{dense,splade}/{docs,queries} in 40,000-row shards;
+      graph/{structural,ner,knn}.npz + GRAPH_MANIFEST.json;
+      retrieval_cache/{dense,splade}_top1000.npz; DATASET.json.
+      Position i is line i of nodes.jsonl, row i of the doc embeddings, an endpoint
+      value in graph/*.npz and an id in retrieval_cache/*; query j is entry j of
+      queries/query_ids.json (freeze POSITION_INVARIANT).
+    loader: data/final_canonical/canonical.py
+    corpus_invariant_adopted: >-
+      QUERY SUBSETTING IS ALLOWED. CORPUS SUBSETTING BY QUERY IS FORBIDDEN. Every
+      corpus is query-independent (freeze CORE_INVARIANT).
+    what_no_longer_exists:
+      - data/canonical/ in its entirety, including every tsv this file cited under substrate
+      - the pointer index and the reuse maps
+      - graph2/ and every superseded copy
+      - the version chain; CANONICAL_SUBSTRATE_MAP.json survives only as history
+    deleted_under: the user rulings of 2026-09-12, recorded verbatim in the freeze USER_RULINGS block
+    datasets_served:
+      metaqa:   {nodes: 43234,   queries: 407513, train: 329282, dev: 39138,  test: 39093, cache_rows: 407513}
+      squad:    {nodes: 20233,   queries: 142192, train: 130319, dev: 11873,  test: 0,     cache_rows: 142192}
+      musique:  {nodes: 117534,  queries: 24814,  train: 19938,  dev: 2417,   test: 2459,  cache_rows: 24814}
+      hotpotqa: {nodes: 5233329, queries: 105257, train: 90447,  validation: 7405, test: 7405, cache_rows: 105257}
+      2wiki:    {nodes: 5989847, queries: 192606, train: 167454, dev: 12576,  test: 12576, cache_rows: 192606}
+      webqsp:   {nodes: 2592894, queries: 4737,   train: 3098,   test: 1639,  cache_rows: 4737}
+      cache_depth: 1000
+      cache_note: >-
+        float16 scores, ties broken by the builder key; verify a cache with that
+        key, never with a bare argpartition.
+    served_edge_families:
+      metaqa:   {structural: 133582,   ner: 5949,     knn: 97920}
+      squad:    {structural: 874190,   ner: 156130,   knn: 42969}
+      musique:  {structural: 2744076,  ner: 800278,   knn: 265366}
+      hotpotqa: {structural: 15367541, ner: 20369074, knn: 11946289}
+      2wiki:    {structural: 28963600, ner: 34067241, knn: 13643063}
+      webqsp:   {structural: 8309195,  ner: 2994802,  knn: 6470520}
+      total: 147251785
+      direction: >-
+        structural is directed as found in the source and never symmetrised
+        (real reverse rows, e.g. musique 185,592); every NER and kNN family is
+        stored as one row per unordered pair, flagged directed:false, and
+        symmetrised in memory by canonical.Graph. Every npz sha256 matches a sha
+        in an earlier frozen record -- no edge file changed at the freeze.
+    two_wiki_corpus_resolved: >-
+      The served 2wiki corpus is the 5,989,847-node universe (the Phase-C tree
+      2wiki_universe). Its retrieval caches were built over it (max_id_seen
+      5,989,846), so the 192,606 queries ARE posed against it. The 398,354-node
+      view was a query-induced subset, which the corpus invariant forbids, and
+      is deleted. The substrate row measured at d690859 therefore measured the
+      right corpus; only its "no KNN" cell is stale (see stale_rows_withdrawn).
+    evidence_pins:
+      script: scripts/m3a_evidence_pins.py
+      manifest: outputs/m3a/evidence/PINS.json
+      sidecar_is_gitignored: true
+      rule: >-
+        The package is never copied into the repository (the adoption access
+        rule); the sidecar under outputs/m3a/ is local. What this file carries
+        is the pin -- path and sha256 -- and the declaration tests re-check every
+        pin against the live package whenever it is present.
+      pinned:
+        data/final_canonical/CANONICAL_FREEZE.json: 039dcf327aa71e39994cdeedc731033279d81d854d74efc29c86f197546f3dc8
+        data/final_canonical/VERIFICATION.json: a5efb16005e74cea91a237d8863d293ff0e84ab338e41deeb514c6160fe5139b
+        data/final_canonical/HANDOFF.md: 8b8e7566e101d986566a85802128dc9e515e079c4cd545081b9d19f5e9a1e70b
+        data/final_canonical/_history/INDEX.json: 22420857859d03fddcd06a489924a0ac02e28385832415c410dfcd34503a504f
+        data/final_canonical/_history/logs/RECORD_MOVES.jsonl: f5860d2af31e532ec1e25874d0450bcb160a4e86adc9c13b988130cde4270de1
+        data/final_canonical/_history/records/CANONICAL_FREEZE_20260912T001322Z_86bc74e3.json: a623266269ac99e37d5c19afba76412ea7316d71c761a11e581e1326724a794e
+        data/final_canonical/_history/records/CANONICAL_FREEZE_20260912T133714Z_f2b8eee1.json: ad67410a812357ccfd19236e435279e2e1acc1fed3cdfd6ad5586cb5304460c2
+        data/final_canonical/_history/records/CANONICAL_FREEZE_20260912T143732Z_eaab0b8f.json: dc5aa5bf76e555a71c32afe3d48a6733db7079a231bd80117754d8406035b47b
+        data/final_canonical/_history/records/K_SEMANTICS_AND_EVAL_SPLITS.json: fce8c90620c681ad76619976ccb060e58e6627fa71b8883bdd7bad5b2ed3dd63
+        data/final_canonical/_history/records/GRAPH_DEGREE_HUB.json: 296b3df5bb1e40637aa49f125d5f935f1c59ae7959caac15a50885dfeec0cec7
+        data/final_canonical/_history/records/PACKAGE_BYTES_LEDGER.json: dda72ce8458baf13728d7830b72d835e1ad6cd692ccebba4181ce90795b2ebad
+        data/final_canonical/_history/records/PACKAGE_BYTES_LEDGER_SCOPE_ADDENDUM.json: 8b32dee1854efb0a18333b107c6dde276f1a7bd20205eafa259af3722e0109bd
+        data/final_canonical/_history/records/LOCKED_6_OF_6_FAMILY_COMPLETION_V1.json: 60910a6663d0ddc6f1262a31616ec99b8715d45a08cbecee5e3bace5599c5a7d
+        data/final_canonical/_history/records/LOCKED_6_OF_6_FAMILY_COMPLETION_V2.json: 1a0c0ebf392950ebba9c5c0d770f7aed4ba7dc6fb8661b31330bebc80c4e3cb9
+        docs/CANONICAL_FREEZE_2026-09-12.md: 43f83d9f490980e99029bc5970f96d97ecb2f9f5560df1ed5f57b2eea1a44916
+        data/final_canonical/metaqa/DATASET.json: 2998a69af9c1e7e4f88aa12d6e3113719ca30e8c5acfd0524079d1b28d5bcf09
+        data/final_canonical/squad/DATASET.json: 54bcdb3007f56e30f1f4aaee864e5faa313839934bb139dbb88c0d38871629d1
+        data/final_canonical/musique/DATASET.json: 7825b2315a2932f15386fc95eea80379f9e864ead7b5b1a1be4fd801ceb6473e
+        data/final_canonical/hotpotqa/DATASET.json: bc24f8532845224ede36f1d3e5f5eccdae3b121140f7997064b51883ba930d45
+        data/final_canonical/2wiki/DATASET.json: f43eee1edf80b00d15d6bbd596aaf6db5e5c27904a886b2dcc48701cfce6c956
+        data/final_canonical/webqsp/DATASET.json: 83c4814b3c6b7ccd30dfa8299db59413cb520bbfd76b4a30d50ea926d5a43670
+        data/final_canonical/metaqa/graph/GRAPH_MANIFEST.json: df360a84ab18b006f4f57391d02fc63992dc61495d3a7899fca8a0c6f8313bc9
+        data/final_canonical/squad/graph/GRAPH_MANIFEST.json: a46e80bc1a828622b413ab8af064040e5c59d849a783f3673b8eba2cd98ceffc
+        data/final_canonical/musique/graph/GRAPH_MANIFEST.json: 51c5df697afa30504569010825006a7ace0872f055d5550d5bf66f82fe5edc3f
+        data/final_canonical/hotpotqa/graph/GRAPH_MANIFEST.json: 0764ac90df37cf27086c2f28252623a4b3c80c139e91a7121c282ddaee7576bb
+        data/final_canonical/2wiki/graph/GRAPH_MANIFEST.json: 948fb163e9fddd890a6b422ac10d1d95bc2e318c1e9bfcaf3bad58fd61408090
+        data/final_canonical/webqsp/graph/GRAPH_MANIFEST.json: 4130ad1fee08dac8c9a84a7cd4c2e56a2cbbd4909c97d932a723d13cd90a7a2c
+        data/final_canonical/metaqa/legacy_comparison.json: 20db3b19461f07bac2340ef61cb102e4948da3addd979f249e0cb0006cb0b2a3
+        data/final_canonical/squad/legacy_comparison.json: da3c5c25a0ff4dac6c52beda9022917bcfc82d2574baa52a1f87af2ceb75af3d
+        data/final_canonical/musique/legacy_comparison.json: 99bbfe9f810f4971d98893477231d0e07aed3ed78b198b46d1545925d592c79c
+        data/final_canonical/hotpotqa/legacy_comparison.json: 238c11f0a85be1587d76268c763945c2f11d4fba03bb1672b1719573552638e7
+        data/final_canonical/2wiki/legacy_comparison.json: 04d324585698069ac4428fc7317f859627e100ca0fb29b58819f6f0b90ff57b4
+      pins_refreshed_2026_09_13:
+        why: >-
+          the declaration test compares every pin to the live package; on the
+          second run of the day two records had been rewritten upstream by the
+          full re-verification against the served freeze (686 checks, 0 failed).
+          The freeze record itself did not move.
+        VERIFICATION.json: {was: ddd2ae20b57159b00f9e00e33232f73c81eba50a16ea6c3f037e80e03f99fe3f, now: a5efb16005e74cea91a237d8863d293ff0e84ab338e41deeb514c6160fe5139b, upstream_utc: "2026-09-12T23:20:06Z"}
+        HANDOFF.md: {was: 716355160b9432858466d6906fa0d3de553772ee8c42379ff83f8f070f2ab69a, now: 8b8e7566e101d986566a85802128dc9e515e079c4cd545081b9d19f5e9a1e70b, upstream_utc: "2026-09-12T23:20:24Z"}
+      package_footprint_of_this_phase:
+        rule: nothing under the package root is written; verification output is a sidecar under outputs/m3a/
+        incident: >-
+          the first validation attempt of the headroom runner (2026-09-12T22:29:08Z)
+          imported data/final_canonical/canonical.py in place and the interpreter
+          wrote data/final_canonical/__pycache__/canonical.cpython-313.pyc (37,614
+          bytes) -- a byte-code cache, not a package record. The directory was
+          removed on 2026-09-13 before any science run; the runner now sets
+          sys.dont_write_bytecode before the import and refuses to run if the
+          directory exists. No record, tree or manifest was touched; every pin
+          other than the two upstream rewrites above still matches.
+      freeze_lineage_note: >-
+        The freeze was cut five times on 2026-09-12. abd72f9b (quick-verified)
+        was overwritten in place and survives only in the diary; 86bc74e3,
+        f2b8eee1 and eaab0b8f were moved to _history/records/ and logged in
+        RECORD_MOVES.jsonl (63 moves); 58958f33 is served. The pins above
+        identify each surviving record. The package moved under this phase twice
+        already (eaab0b8f was served when the pins were first taken on
+        2026-09-13; the full re-verification rewrote two records the same day);
+        the runner records the served RECORD_SHA256 at run time and the tests
+        compare the pins to the live package on every run.
+
+  # ── the three blockers, disposed ───────────────────────────────────────────
+  blocker_dispositions:
+    blocker_1_no_query_view_on_two_datasets:
+      disposition: WITHDRAWN_WRONG_AT_FILING
+      what_was_true_at_filing: >-
+        metaqa had 407,513 encoded queries in the per-hop trees and 2wiki had
+        192,606 in data/canonical/2wiki. outputs/m3a/transfer_manifest.json never
+        walked those trees, and the silence of an inventory was filed as an
+        absence. An inventory that did not look is not evidence of absence.
+      served_now:
+        metaqa: {canonical_query_rows: 407513, dense_queries: 407513, splade_queries: 407513}
+        2wiki:  {canonical_query_rows: 192606, dense_queries: 192606, splade_queries: 192606}
+        webqsp: {canonical_query_rows: 4737,   dense_queries: 4737,   splade_queries: 4737}
+      filed_encode_budget: WITHDRAWN -- nothing to encode
+      original_block: retained above, unedited, as the record of what was filed
+    blocker_2_no_retrieval_anywhere:
+      disposition: CLEARED_UPSTREAM
+      served_now: >-
+        12 of 12 top-1000 caches (dense and splade for every dataset), shapes as
+        in served_substrate.datasets_served, each pinned by its DATASET.json and
+        by the freeze.
+      original_status_retained: BLOCKS_ALL_FIVE_DATASETS (as filed; no longer true)
+    blocker_3_edge_families_are_not_uniform:
+      disposition: CLEARED_UPSTREAM
+      served_matrix: all 18 families present -- see served_substrate.served_edge_families
+      what_changed_upstream:
+        - NER added on metaqa (LOCKED_6_OF_6_FAMILY_COMPLETION_V1, 2026-09-09); node coverage 0.1314, and the record says to read the coverage, not the edge count
+        - KNN added on hotpotqa, 2wiki and webqsp (V1)
+        - musique KNN replaced by an audited rebuild (LOCKED_6_OF_6_FAMILY_COMPLETION_V2, 2026-09-11)
+      caveat_that_survives: >-
+        FULL is now the same three-family union on every dataset, but the
+        families are not the same kind of object. structural is typed only on
+        metaqa (9 relations) and webqsp (7,058); NER touches 30.7% of webqsp
+        nodes and 13.1% of metaqa nodes; kNN weights are cosines in [0,1] while
+        NER weights run to 35.3 with a mean near 0.12. Every FULL row carries its
+        members, and nothing is averaged across datasets whose FULL means
+        different things. The V1 record itself says the added families are a
+        property to carry, not a uniformity fix.
+
+  # ── measured rows this phase filed that are now wrong ──────────────────────
+  stale_rows_withdrawn:
+    rule: >-
+      The measured files (docs/M3A_GRAPH_SUBSTRATE.md, docs/M3A_COMPILATION_REPORT.md,
+      outputs/m3a/graph_substrate_stats.json) are not edited; a measurement is a
+      record of what was true when it was taken. Served figures are read from
+      the pinned GRAPH_MANIFEST.json files and GRAPH_DEGREE_HUB.json, and a
+      served-substrate table is written as a NEW file. Nothing is rerun to
+      recreate a table whose rows already exist.
+    rows:
+      - row: "2wiki: structural present, KNN absent"
+        where: docs/M3A_GRAPH_SUBSTRATE.md; docs/M3A_COMPILATION_REPORT.md; substrate_blockers.blocker_3 matrix
+        served: 13643063 kNN edges
+        why_it_was_true_then: measured 2026-09-08, before family completion V1 (2026-09-09)
+      - row: "musique kNN 266,488 edges, max degree 1,475"
+        where: docs/M3A_GRAPH_SUBSTRATE.md lines 17, 34, 115; docs/M3A_COMPILATION_REPORT.md line 59; outputs/m3a/graph_substrate_stats.json
+        served: 265366 edges, max degree 41
+        why: >-
+          the frozen kNN had been searched over 1,473 musique rows whose dense
+          vectors were damaged; 4,402 of its edges could not be reproduced from
+          the frozen vectors and its 1,475-degree hub was an artefact of zeroed
+          vectors. Replaced by the audited rebuild (V2, exhaustive fp32 over the
+          resolved vectors); the squad and metaqa controls reproduce their
+          frozen kNN exactly. GRAPH_DEGREE_HUB keeps the superseded family
+          measured under knn@frozen_superseded with served:false.
+      - row: "nothing is stored reciprocally (max 0.2962)"
+        status: >-
+          SUPERSEDED for NER and kNN -- served adjacency is symmetric (one row per
+          unordered pair, directed:false, symmetrised by the loader); structural
+          stays directed as found (musique carries 185,592 real reverse rows).
+      - row: blocker 1 as filed
+        status: WITHDRAWN_WRONG_AT_FILING (see blocker_dispositions)
+
+  # ── WebQSP ─────────────────────────────────────────────────────────────────
+  webqsp_reinstated_2026_09_13:
+    ruling: user, 2026-09-13 -- since all 6 datasets are complete take all into consideration
+    previous_status: DEFERRED_PRE_M3B (2026-09-08 to 2026-09-13; the block above is retained as history)
+    premise_of_the_deferral: the WebQSP encode was believed unbuilt and costly
+    premise_now: >-
+      void. Built upstream and served: 4,737 queries (train 3,098 / test 1,639),
+      dense and splade query and document encodings over 2,592,894 nodes, both
+      top-1000 caches, structural 8,309,195 / ner 2,994,802 / knn 6,470,520.
+    deferred_items_disposition:
+      WebQSP query construction: DONE_UPSTREAM
+      WebQSP node and query encoding: DONE_UPSTREAM -- name-only node text, as the adoption recommended
+      WebQSP candidate-universe decision: >-
+        ADOPTED_AS_SERVED -- the RoG WebQSP+CWQ subgraph with name-only entity
+        text, never "full Freebase"; the corpus ceiling is a column.
+      WebQSP RoG-exact recomputation: >-
+        STILL_OPEN -- needed only for the WebQSP SOTA reference cell; to be
+        priced in the M3B declaration; not authorised by this amendment.
+    consistent_with: >-
+      configs/m3a_sota_information_contract.yaml amendment_3_2026_09_08.decision_1_webqsp_encode
+      (PRIORITY_DATASET_NOT_OPTIONAL_APPENDIX; M3B is a six-dataset experiment).
+    return_gate: >-
+      SUPERSEDED_BY_RULING -- retained above as history; its conditions decided
+      whether to spend the encode, and the encode is spent.
+    eval_split:
+      name: train_holdout
+      carve: train query_ids sorted, stride 2 -- seed-free
+      queries: 1549
+      zero_gold_excluded: 46
+      gold_bearing: 1503
+      carve_ids_sha256: a818f4614b84d143c802e3732f4861bc3a09752eb42246d1fdfd83f50cd76882
+      why_not_test: the standing rule bars test results and webqsp has no dev split
+    corpus_ceiling_column:
+      reference_level: 0.5255
+      query_level: 0.9703
+      query_level_of_answerable: 0.9792
+      gold_refs_upstream: 22379
+      gold_refs_resolved: 11760
+      gold_refs_lost_at_bridge: 10619
+      gold_coverage_classes: {FULL: 1462, PARTIAL: 41, NONE_IN_CORPUS: 32, NO_GOLD_GIVEN: 14}
+      source: freeze K_SEMANTICS.corpus_ceiling.datasets.webqsp.splits.train_holdout
+    hard_rule: >-
+      Never average any metric across the six without this column. Published
+      WebQSP GNN numbers sit on subgraphs that did not lose 47% of their gold
+      references at a bridge; the comparison is conditioned or it is not made.
+    datasets_now: [metaqa, squad, musique, hotpotqa, 2wiki, webqsp]
+
+  # ── the evaluation population, declared ────────────────────────────────────
+  evaluation_population:
+    rule: >-
+      One labelled non-test split per dataset, taken whole, as named by the
+      freeze EVAL_SPLITS block. Queries with zero resolved gold are excluded
+      from every ceiling and their count is reported on the row.
+    populations:
+      metaqa:   {split: dev,           queries: 39138, zero_gold: 0}
+      squad:    {split: dev,           queries: 11873, zero_gold: 0}
+      musique:  {split: dev,           queries: 2417,  zero_gold: 0}
+      hotpotqa: {split: validation,    queries: 7405,  zero_gold: 0}
+      2wiki:    {split: dev,           queries: 12576, zero_gold: 0}
+      webqsp:   {split: train_holdout, queries: 1549,  zero_gold: 46}
+    squad_note: >-
+      5,945 of the 11,873 squad dev questions are SQuAD-2.0 unanswerable; each
+      keeps the paragraph it was written against as gold and stays in the
+      population, with the unanswerable count reported on the row.
+    forbidden: >-
+      metaqa/queries/lanes/QUALITY_LOCKED.jsonl is the official TEST split
+      (39,093 rows) and is never an evaluation population (freeze QUERY_LANES
+      ruling; standing rule). The other five QUALITY_LOCKED lanes coincide with
+      their eval splits; webqsp has no lane files.
+    legacy_continuity:
+      lane: queries/lanes/LEGACY_CONTINUITY.jsonl
+      what_it_is: >-
+        this repository legacy 2,000-query evaluation subsets mapped onto
+        canonical ids (legacy_query_id, legacy_cache_row)
+      census:
+        squad:    2000 train-split questions, 664 unanswerable
+        musique:  2000 train
+        2wiki:    2000 train
+        hotpotqa: 1842 train + 158 validation
+        metaqa:   1998 dev, of which 46 have legacy gold sets that disagree with the canonical ones (the legacy substrate merged case variants of entity names)
+      status: NOT_AN_EVALUATION_POPULATION
+      how_it_may_appear: a paired continuity column only, labelled NOT_AN_EVALUATION_POPULATION on every row where it appears
+      consequence: >-
+        Every M0A-M2D number was computed on train-split questions on the legacy
+        substrate. A comparison between a legacy number and a canonical number
+        therefore carries BOTH a substrate column and a population column; this
+        extends substrate.historical_substrate_rule and does not replace it.
+
+  # ── K semantics, adopted from the record ───────────────────────────────────
+  k_semantics_adopted:
+    source: >-
+      freeze K_SEMANTICS (R1-R6), first filed as
+      _history/records/K_SEMANTICS_AND_EVAL_SPLITS.json. The package record is
+      evidence; this file is where the rule binds for this phase.
+    cache_depth: 1000
+    R1_report_with: [K, model, pool_provenance, dataset, split]
+    R2_naming: cache-derived ceilings are pool_ceiling@K; candidate_ceiling and corpus_ceiling are forbidden names for them
+    R3_corpus_ceiling: >-
+      1.0 by construction on metaqa, squad, musique, hotpotqa and 2wiki (their
+      gold IS a corpus document and every labelled gold ref resolves); a per-split
+      COLUMN on webqsp.
+    R4_binding_is_measured: report recall@{1,5,10,20,100,1000} beside every pool ceiling so the reader sees whether depth binds
+    R5_K_was_never_selected: one depth materialised; every shallower K is a prefix; no K was chosen from an outcome
+    R6_membership_by_position: gold at canonical position p is in the pool for q iff p is in ids[q]; never test membership over distinct source rows
+    relation_to_two_ceilings_rule: >-
+      unchanged -- recall_ceiling@K is K-aware; pool_ceiling@K is its name when
+      the pool is a cache prefix; candidate_ceiling remains the no-K pool
+      coverage of a declared pool and is never used for a cache-bounded number.
+
+  # ── headroom, amended ──────────────────────────────────────────────────────
+  headroom_amended:
+    regimes: [RETRIEVAL, STRUCT, NER, KNN, FULL]
+    why_ner_is_added: >-
+      The SOTA-matched graph substrate differs by dataset: typed STRUCT for
+      metaqa and webqsp (the NuTrea / ReaRev / GNN-RAG lineage), the entity
+      graph for hotpotqa, 2wiki and musique (the GraphER lineage), none
+      published for squad. Testing across the three graph substrates means each
+      family alone plus their union, so NER is a regime and not only a member of
+      FULL.
+    sota_matched_substrate: {metaqa: STRUCT, webqsp: STRUCT, hotpotqa: NER, 2wiki: NER, musique: NER, squad: none}
+    regime_caveat_now: blocker_dispositions.blocker_3_edge_families_are_not_uniform.caveat_that_survives
+    pools:
+      inherited_verbatim_from: configs/candidate_headroom.yaml
+      retrieval_pools:
+        - dense_top200
+        - splade_top200
+        - frozen_union
+        - equal_rrf_budget_50
+        - equal_rrf_budget_100
+        - equal_rrf_budget_200
+        - equal_rrf_budget_400
+      rrf: {dense_weight: 0.5, splade_weight: 0.5, constant: 60, tie_break: ascending_global_node_id, mirrors: src/mp_retrieval/candidate_budget.py::build_budget_dataset}
+      constructed_as_prefixes_of: the served top-1000 caches (R5)
+      seeds: dense top-5 union splade top-5 -- inference-safe; never gold; never assigned topic entities
+      graph_exposure_pools: >-
+        For each graph regime, the retrieval pool plus the bounded neighbourhood
+        of the seeds: hop-1 with a per-seed neighbour cap, and a hop-2 extension
+        under a per-query visited cap, neighbours ordered by a deterministic key
+        (descending edge weight for NER and kNN, ascending canonical position for
+        structural) so the pool is a function of the seeds and the graph alone.
+        The cap grid is declared in the runner config before it runs.
+      what_this_is_and_is_not: >-
+        These pools measure the gold exposure that parameter-free expansion
+        would add, which is the evidence HIGH_HEADROOM_CANDIDATE_CONTRACT needs
+        before it freezes one budget. No frozen Paper-1 pool is regenerated
+        (candidate_headroom.yaml prohibits that for its own pools, a different
+        object), no ranking is run over an expanded pool in this phase, and R3
+        stays closed.
+    ks: [1, 5, 20]
+    also_report:
+      - pool_ceiling at recall@{10,100,1000} beside every ceiling (R4)
+      - ANY and ALL / FullCov
+      - candidates, nodes and edges per query
+      - incremental unique-gold exposure of each expansion over its retrieval pool
+      - zero-gold and unanswerable counts on the row
+      - the corpus ceiling column (R3)
+    exposure_matching_rule: >-
+      Match the SOTA systems candidate exposure; do not exceed it. Each dataset
+      reports the knee of its own ceiling curve beside its SOTA exposure target;
+      the budget frozen later is the smallest defensible one that reaches the
+      target (>= 90% of attainable recall@5, as the candidate contract already
+      says). A pool larger than the SOTA pool is not headroom -- it is a
+      comparison tilted in our favour and a cost explosion.
+    sota_exposure_targets:
+      metaqa_webqsp: >-
+        The KB systems assign at least one topic entity per question (an oracle
+        under the archaeology oracle_rule) and extract a bounded subgraph around
+        it; the answer-in-subgraph rate is the exposure they had. We refuse
+        assigned topic entities; our seeds are retrieved. Target: the reported
+        subgraph answer coverage where a paper states it, otherwise the bounded
+        2-hop exposure from retrieved seeds, labelled as the inference-safe
+        counterpart.
+      hotpotqa_2wiki_musique: >-
+        GraphER reranks a 200-candidate scope drawn from a corpus induced from
+        2,000 sampled dev queries -- corpus subsetting by query, which the
+        freeze forbids for us -- and reports PR@K, a set-coverage metric. Target:
+        our frozen_union / equal_rrf_budget_200 over the full corpus, with the
+        corpus difference stated on the row.
+      squad: no graph-retrieval SOTA exists; retrieval pools only.
+    numbers_here: none -- the runner and its config are committed before they run and this block is not edited afterwards
+
+  # ── the universal GNN, recorded now because it is cheap now ────────────────
+  universal_gnn_calibration_rule:
+    scope: M3B; recorded here so the requirement exists before any fit does
+    single_family_across_datasets: true
+    no_per_dataset_gnn_family: true
+    no_dataset_router: true
+    screen_must_contain:
+      - question-conditioned, relation-aware attention (the ReaRev / NuTrea / GNN-RAG ingredient)
+      - GATv2-style neighbour aggregation (the GraphER ingredient)
+    screen_size: 1-2 depths x 1-2 hidden widths, selected by validation among GNN candidates only and never against a QLS-U number (the M3 firewall)
+    same_information: >-
+      Receives F(q, v) exactly as qls_u_sota_v1 and gat_no_mp do -- the compiled
+      features are the compensation the no-message-passing arms of the
+      literature were never given -- plus the raw edges, which are the treatment.
+    calibration_column: >-
+      Every result row carries the published SOTA number with its exposure
+      separated as the archaeology requires (subgraph coverage / oracle topic
+      entities / LLM reader / pretraining), and our universal GAT under our
+      exposure.
+    when_delta_mp_is_not_read: >-
+      If the universal GAT falls outside the SOTA band and the gap is not
+      explained by a named exposure difference, the GNN arm is not yet credible
+      and delta_MP is not reported for that cell. A delta_MP read off a weak GNN
+      is a strawman; the claim is only as strong as the message-passing arm.
+    target_versus_result: >-
+      universal MLP = universal GNN = SOTA GNN is the design target -- every arm
+      as strong as matched information allows. The result is whatever delta_MP
+      is measured, per dataset and per substrate; nonzero remains a valid
+      outcome and the registered question is unchanged.
+
+  # ── directions, touched only where the substrate changed ───────────────────
+  directions_amended:
+    C_reciprocity_note: >-
+      The d690859 finding that nothing is stored reciprocally described storage
+      on the deleted substrate. Served NER and kNN adjacency is symmetric;
+      neighbour direction remains a declared choice for STRUCT only.
+    hub_bound: >-
+      unchanged in kind, now on the served corpora: structural max degree
+      hotpotqa 189,410, 2wiki 158,048, webqsp 137,000, musique 14,364. The
+      radius bound of C is definitional and deterministic; the per-seed cap in
+      headroom_amended.pools is the same rule.
+    B_scope: >-
+      MetaQA stays the development substrate for typed relations. WebQSP typed
+      compilation (7,058 relations) is now in scope as PROVISIONAL diagnostics
+      over served artifacts. FINAL_TYPED_RELATION_BLOCK stays unfrozen until the
+      WebQSP typed compilation has been measured -- the freeze policy condition
+      "until WebQSP returns" is met by the ruling; the measurement is not.
+
+  # ── authorization, amended ─────────────────────────────────────────────────
+  authorization_amended:
+    authorised_additionally:
+      - six-dataset headroom analysis over the served caches and families (CPU arithmetic; zero GPU)
+      - WebQSP compilation diagnostics over served artifacts (zero GPU)
+    still_not_authorised:
+      - WebQSP RoG-exact recomputation, or any WebQSP GPU spend, before a filed compute record
+      - training QLS-U; training any GNN; large GNN sweeps; final M3B; Package F; E2; the final six-dataset contract
+    the_original_not_authorised_line_any_webqsp_work: >-
+      narrowed to the RoG-exact recomputation and GPU spend by the ruling; the
+      line is retained above as filed.
+    on_completion: STOP_FOR_REVIEW

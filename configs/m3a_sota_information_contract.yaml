@@ -1179,3 +1179,93 @@ adoption_execution_record_2026_09_08:
     - recompute headroom, which section I places after adoption and after the encode
 
   next: STOP_FOR_REVIEW
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Adoption supersession record — 2026-09-13. A new dated block, not an edit:
+# the execution record above is scoped to the run it describes and every
+# figure in it stays true in that scope. What changed is the package it
+# adopted, and the two findings that turned out to be wrong at filing.
+# ─────────────────────────────────────────────────────────────────────────────
+adoption_supersession_record_2026_09_13:
+  status: SUPERSESSION_FILED
+  filed: 2026-09-13
+  edits_the_execution_record: false
+  rule: a contract amendment is a new record with its own citation, never an edit
+
+  package_bytes_modified_field:
+    verdict: STANDS_AT_0
+    scope: >-
+      the adoption run's own I/O, beside verify_not_rebuild.held. The run read
+      the package and wrote nothing; the field was true and is true.
+    upstream_record_that_agrees: >-
+      PACKAGE_BYTES_LEDGER_SCOPE_ADDENDUM (created 2026-09-11T13:43:37Z, file
+      sha256 8b32dee1854efb0a18333b107c6dde276f1a7bd20205eafa259af3722e0109bd,
+      RECORD_SHA256 21267ba732a94f69184d2b69dc6eb03dde3a780b3505fcf5a329c00b77e2871a)
+      withdrew the ledger claim that the field was FALSE and placed the moved
+      bytes here, in a dated supersession record of the adopting repository.
+
+  package_bytes_moved_since_adoption:
+    measured_by: >-
+      PACKAGE_BYTES_LEDGER (generated 2026-09-11T02:26:44Z, file sha256
+      dda72ce8458baf13728d7830b72d835e1ad6cd692ccebba4181ce90795b2ebad)
+    through_utc: "2026-09-11T02:26:44Z"
+    bytes_deleted: 31584773088
+    bytes_written: 11709635209
+    total: 43294408297
+    moved_by:
+      - cleanup pass 1 (CANONICAL_CLEANUP_PLAN, 808 files, 30,797,900,687 bytes, each path confirmed absent)
+      - cleanup pass 2 (CANONICAL_DEDUP applied history, 105 files, 786,872,401 bytes, quoted not remeasured)
+      - the twelve top-1000 retrieval caches (16 files, 10,525,438,430 bytes)
+      - the encoder patch stores (since retired) and the sidecar records
+    after_the_ledger: >-
+      The 2026-09-12 consolidation and freeze moved further bytes that no ledger
+      tallies: the second root data/canonical, the pointer index, the reuse
+      maps, graph2/, the hop-tree query stores and every superseded copy were
+      deleted under the user rulings recorded in the freeze USER_RULINGS block,
+      and the patch stores were folded into the served rows. The served
+      footprint is read from the freeze instead: tree_bytes 88,853,267,180 and
+      embedding_bytes 60,027,139,409 across six trees (CANONICAL_FREEZE.json
+      RECORD_SHA256 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0,
+      frozen 2026-09-12T22:27:25Z).
+
+  transfer_inventory:
+    artifact: outputs/m3a/transfer_manifest.json
+    status: SUPERSEDED_AS_INVENTORY
+    what_it_remains: >-
+      a correct record of what the package held on 2026-09-08 (2,841 files,
+      81.618 GiB) and the object the adoption verified. It describes nothing
+      that is served now; the freeze and each DATASET.json are the inventory.
+    tests_that_still_hold: >-
+      tests/test_m3a_adoption.py checks the manifest against itself (sizes,
+      hashes, totals, exclusions) and against the record above. Both are
+      statements about 2026-09-08 and stay true.
+
+  findings_withdrawn:
+    webqsp_ships_no_queries:
+      filed_as: items.6_webqsp_encode.blockers[0] and open_for_review[1]
+      status: WRONG_AT_FILING
+      what_was_true: >-
+        the WebQSP query set had not been built on 2026-09-08; it was built
+        upstream on 2026-09-10 (4,737 queries, train 3,098 / test 1,639, from
+        the NSM source files in the package) and is served with both encodings
+        and both caches. The statement that building one is a BUILD the
+        adoption did not authorise was correct; the build happened upstream,
+        under the package owner, not in this repository.
+    webqsp_encode_budget:
+      filed_as: items.6_webqsp_encode (BUDGET_FILED_ENCODE_NOT_RUN) and outputs/m3a/webqsp_encode_budget.json
+      status: WITHDRAWN -- the encode was run upstream with name-only node text, the recommended representation
+      gpu_spent_by_this_repository: 0
+    open_decisions_disposition:
+      webqsp_node_text_representation: RESOLVED_UPSTREAM as name_only
+      build_a_canonical_webqsp_query_set: RESOLVED_UPSTREAM -- built, served, pinned
+      candidate_universe_for_webqsp_queries: >-
+        DECLARED -- the served RoG WebQSP+CWQ subgraph; the corpus ceiling is a
+        column (train_holdout reference level 0.5255, query level 0.9703), see
+        configs/m3a_compilation.yaml amendment_1_2026_09_13
+      rederive_rog_exact_from_raw_shards: STILL_OPEN -- to be priced in the M3B declaration
+
+  what_this_record_does_not_do:
+    - it does not change any figure in adoption_execution_record_2026_09_08
+    - it does not authorise the RoG-exact recomputation or any WebQSP GPU spend
+    - it does not authorise training, final features or the final candidate contract
+  next: STOP_FOR_REVIEW

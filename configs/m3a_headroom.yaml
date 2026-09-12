@@ -1,0 +1,203 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# M3A-COMPILATION headroom over the served canonical substrate.
+#
+# Declared under configs/m3a_compilation.yaml#amendment_1_2026_09_13.headroom_amended
+# and committed before it runs. Every quantity below is defined in
+# src/mp_retrieval/candidate_headroom.py or headroom_v2.py and reused; the
+# runner defines no ceiling of its own. Nothing here is a result.
+# ═════════════════════════════════════════════════════════════════════════════
+experiment: m3a_headroom_served_substrate
+phase: M3A-COMPILATION
+status: DECLARED_NOT_RUN
+declared: 2026-09-13
+declared_under: configs/m3a_compilation.yaml#amendment_1_2026_09_13.headroom_amended
+runner: scripts/m3a_headroom.py
+reuses:
+  - mp_retrieval.candidate_headroom.present_counts
+  - mp_retrieval.candidate_headroom.headroom_metrics
+  - mp_retrieval.candidate_headroom.ragged_from_rows
+  - mp_retrieval.candidate_headroom.missing_gold_reachability
+  - mp_retrieval.headroom_v2.regime_headroom
+  - mp_retrieval.headroom_v2.full_coverage_ceiling
+  - mp_retrieval.headroom_v2.pool_movement
+  - mp_retrieval.rank_fusion.rrf_rankings
+defines_no_new_ceiling: true
+zero_gpu: true
+
+substrate:
+  package_root: C:/Users/Swastik/Desktop/CRAG
+  served_root: data/final_canonical
+  access_mode: READ_ONLY
+  loader: data/final_canonical/canonical.py, imported from the package, never copied
+  byte_code: the runner sets sys.dont_write_bytecode before importing the loader and refuses to run if data/final_canonical/__pycache__ exists (see m3a_compilation.yaml amendment_1 package_footprint_of_this_phase)
+  freeze_RECORD_SHA256_expected: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+  on_freeze_mismatch: REFUSE_TO_RUN
+  why: >-
+    the package moved under this phase once already on 2026-09-12; a run against
+    an undeclared freeze would produce numbers nobody can cite.
+
+populations:
+  eval_splits:
+    metaqa: dev
+    squad: dev
+    musique: dev
+    hotpotqa: validation
+    2wiki: dev
+    webqsp: train_holdout
+  webqsp_train_holdout:
+    carve: train query_ids sorted lexicographically, every second id from index 0
+    ids_hash: sha256 of the comma-joined carved ids
+    expected_carve_ids_sha256: a818f4614b84d143c802e3732f4861bc3a09752eb42246d1fdfd83f50cd76882
+    expected_queries: 1549
+    on_mismatch: REFUSE_TO_RUN
+  zero_gold_queries: excluded from every ceiling; counted on the row (webqsp 46 expected)
+  paired_column:
+    lane: queries/lanes/LEGACY_CONTINUITY.jsonl
+    label: NOT_AN_EVALUATION_POPULATION
+    present_on: [metaqa, squad, musique, hotpotqa, 2wiki]
+    why: >-
+      the only bridge from the M0A-M2D numbers to the served substrate; it is
+      train-derived on four of five datasets and is reported beside the eval
+      row, never instead of it.
+
+gold:
+  field: gold_node_ids
+  resolution: id to position through the current nodes.jsonl (freeze GOLD_FIELD)
+  webqsp_gold_positions: cross-checked against the resolved positions, never used as the source
+  membership: by canonical position (R6)
+
+retrieval_pools:
+  source: retrieval_cache/{dense,splade}_top1000.npz, row j is query j, ids are positions
+  prefix_depths_for_R4: [1, 5, 10, 20, 50, 100, 200, 400, 1000]
+  single_model_prefixes: dense_top{K} and splade_top{K} at every depth above
+  frozen_union: dense_top200 union splade_top200 (the inherited name for the 400-max union pool)
+  equal_rrf:
+    fused_lists: [dense_top200, splade_top200]
+    top_k: 400
+    constant: 60
+    dense_weight: 0.5
+    splade_weight: 0.5
+    tie_break: as implemented by mp_retrieval.rank_fusion.rrf_rankings
+    budgets: [50, 100, 200, 400]
+    truncation: min(budget, size of the union), mirroring candidate_budget.build_budget_dataset
+    why_top200_lists: >-
+      the inherited protocol fused two top-200 lists; fusing deeper lists would
+      exceed the exposure the protocol had, and match-not-exceed applies to our
+      own history as much as to the SOTA.
+  seeds: dense_top5 union splade_top5, in that order, first occurrence kept
+  ks: [1, 5, 20]
+
+graph_regimes:
+  RETRIEVAL: []
+  STRUCT: [structural]
+  NER: [ner]
+  KNN: [knn]
+  FULL: [structural, ner, knn]
+  view: undirected -- every family symmetrised in memory, as the inherited reachability diagnostic does
+  full_is: the union of the per-family capped neighbourhoods, so its cap is up to three times a single family
+  neighbour_order:
+    ner: weight descending, then position ascending
+    knn: weight descending, then position ascending
+    structural: position ascending (unweighted; parallel typed edges collapse to one neighbour)
+  seed_order: the seed list order (dense top-5 then splade top-5); hop-1 neighbours are appended in that order and hop-2 expands them in order of first appearance
+  expansion_settings:
+    - {name: h1_c25,  hops: 1, per_seed_cap: 25}
+    - {name: h1_c100, hops: 1, per_seed_cap: 100}
+    - {name: h2_c25,  hops: 2, per_seed_cap: 25, per_frontier_cap: 25, visited_cap: 2000}
+  expansion_is_independent_of_the_base_pool: >-
+    the expansion set is a function of the seeds and the graph alone; it is
+    computed once per (query, regime, setting) and unioned with each base pool.
+  base_pools_for_exposure: [equal_rrf_budget_50, equal_rrf_budget_200]
+  quantities_per_cell:
+    - every field of headroom_metrics (recall_ceiling@K, hit_ceiling@K, ndcg_ceiling@K, ANY, ALL, candidate_ceiling summaries)
+    - full_coverage_ceiling@K
+    - pool_movement against the base pool (missing golds recovered, slots added, recovered per added candidate)
+    - candidates per query (mean, p50, p95, max)
+  fraction_of_attainable: recall_ceiling@5 divided by recall_ceiling_perfect_retrieval@5, reported per cell for the knee reading
+  knee_rule: >-
+    read, not chosen here: the smallest budget whose fraction_of_attainable at 5
+    is at least 0.90, per dataset, per regime, reported beside the SOTA exposure
+    target; the candidate contract freezes on that reading in the M3B declaration.
+
+reachability_diagnostic:
+  definition: mp_retrieval.candidate_headroom.missing_gold_reachability, unchanged
+  missing_relative_to: frozen_union
+  seeds: as above
+  max_hops: 3
+  max_visited_nodes_per_query: 2000000
+  graph: each regime, undirected
+  population:
+    metaqa: full eval split
+    squad: full eval split
+    musique: full eval split
+    webqsp: full eval split
+    hotpotqa: eval split, every 4th query from index 0 (declared stride; about 1,851 queries)
+    2wiki: eval split, every 6th query from index 0 (declared stride; about 2,096 queries)
+  why_strided: >-
+    an uncapped three-hop walk on a 5-6 million node corpus with hubs above
+    150,000 neighbours costs seconds per query; query subsetting is allowed, the
+    stride is fixed before the run, and the strided rows are labelled as such.
+
+oracle_topic_entity_exposure:
+  status: DIAGNOSTIC_COLUMN_ONLY
+  never: an input to any arm, a seed, or a candidate pool
+  what: >-
+    the exposure the KB-QA lineage had -- assigned topic entities and the
+    subgraph around them -- measured on our served STRUCT graph so the SOTA
+    exposure target is a number on our substrate and not a quotation.
+  datasets:
+    metaqa: topic_entity_node_id (one per question)
+    webqsp: topic_positions (one or more per question)
+  graph: structural, undirected
+  hops: [1, 2]
+  visited_cap: 2000000
+  report: gold coverage within 1 and 2 hops (reference and query level), subgraph size stats, queries with no topic entity
+
+sota_exposure_targets: configs/m3a_compilation.yaml#amendment_1_2026_09_13.headroom_amended.sota_exposure_targets
+
+outputs:
+  dir: outputs/m3a/headroom
+  per_dataset_json: outputs/m3a/headroom/<dataset>.json
+  per_query_npz: outputs/m3a/headroom/<dataset>_per_query.npz
+  combined: outputs/m3a/headroom/HEADROOM.json
+  provenance_on_every_file: [freeze_RECORD_SHA256, config_sha256, git_commit, runner_sha256, utc, seconds]
+  outputs_is_gitignored: true -- the committed record is docs/M3A_HEADROOM_REPORT.md plus the sha256 of each output filed in this config after the run
+
+execution:
+  order: validate on squad and musique first, file the cost, then the remaining four
+  memory_discipline: one dataset in memory at a time; per-family CSRs, never a union CSR
+  cost_record:
+    status: FILED_AFTER_VALIDATION_2026_09_13
+    filed_before_the_science_runs: true
+    validation_runs: two, squad then musique, each with --reachability-limit 300 (the reachability rows of a validation run are labelled limited_for_cost_validation and are overwritten by the full run)
+    machine: 12 CPUs, 15.7 GB RAM, no GPU
+    gpu_seconds: 0
+    squad:
+      queries: {eval: 11873, legacy_continuity: 2000}
+      wall_seconds: 575
+      stages_seconds: {populations_and_gold: 6.9, caches: 6.3, graph_csr: 2.3, eval_retrieval: 102.7, eval_graph_regimes: 370.2, legacy_retrieval: 18.3, legacy_graph_regimes: 67.3, reachability_300_queries: 0.5}
+      rows: 62
+    musique:
+      queries: {eval: 2417, legacy_continuity: 2000}
+      wall_seconds: 214
+      stages_seconds: {populations_and_gold: 5.7, caches: 1.3, graph_csr: 12.8, eval_retrieval: 20.1, eval_graph_regimes: 86.4, legacy_retrieval: 16.4, legacy_graph_regimes: 59.5, reachability_300_queries: 10.8}
+      rows: 62
+    where_the_time_goes: >-
+      membership counting (present_counts, an isin over row-keyed pools) scales
+      with candidates x queries; the h2_c25 FULL cells at ~1,800-2,100 candidates
+      per query dominate. Expansion itself is vectorised (about 4 ms per query
+      for h2_c25 FULL on squad, identical output to the per-node reference).
+    projection_for_the_remaining_four: >-
+      per-query cost about 40 ms (squad) to 60 ms (musique, denser graphs);
+      metaqa 39,138 + 1,998 queries is the largest population (30-45 min),
+      2wiki 12,576 + 2,000 and hotpotqa 7,405 + 2,000 carry the largest graphs
+      (CSR builds of 29-34 M stored edges; 15-30 min each), webqsp 1,549 (under
+      10 min). Whole table: under three hours wall, zero GPU. Within the abort rule.
+    two_runner_fixes_made_during_validation: >-
+      (1) the graph-regime selection read every list under graph_regimes,
+      including expansion_settings and base_pools_for_exposure -- now the
+      upper-case keys with a family list; (2) the equal-RRF ordering was
+      recomputed per budget -- now computed once per population and sliced
+      (identical pools: a budget-b pool is the b-prefix of the fused list).
+      Neither changes a declared quantity.
+  abort_if: any dataset exceeds 90 minutes wall or 12 GB resident
