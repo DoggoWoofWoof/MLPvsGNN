@@ -830,3 +830,587 @@ candidate_contract_frozen_2026_09_13:
         candidates_mean: 2119.6
   after_this_block: no pool changes; a different pool for any dataset is a new dated block with its reason, never
     an edit here
+
+# ── carve record, filed 2026-09-13T13:14:34Z from outputs/m3b/carves.json and the cache metas ──
+carve_record_2026_09_13:
+  status: FILED_BEFORE_ANY_WEIGHT
+  filed_utc: '2026-09-13T13:14:34Z'
+  carved_utc: '2026-09-13T09:10:33Z'
+  carves_file: outputs/m3b/carves.json
+  carves_sha256: ac481f1145cdb3b553eb9f75e2e3a48f515b8659a1f086fb6ff9759bb69dc2a1
+  feature_contract: SOTA_FEATURE_CONTRACT_v1
+  n_columns: 111
+  relations_record:
+    path: outputs/m3b/relations/RECORD.json
+    sha256: b3eca47592ac3d8b7312c43866a53003a7ecde6d2a2cd57cc312bbeb998f0980
+  compiled_by: scripts/m3b_compile.py --stage compile (per dataset; DiskGuard of amendment 2 active)
+  rule:
+    source: the train split, sorted lexicographically by query_id; for webqsp the non-holdout half, sorted(train)[1::2]
+    select:
+      size: min(1500, N // 5)
+      rule: sorted_train[::s_sel] with s_sel = max(2, round(N / size)); the select carve is the early-stopping and
+        model-selection population and never trains a weight
+    fit:
+      source: sorted_train minus select
+      size_cap: 6000
+      rule: remaining[::s_fit] with s_fit = max(1, ceil(len(remaining) / 6000))
+    zero_gold_and_no_gold_in_pool: zero-gold queries are dropped from both carves; a fit query whose candidate pool
+      contains no gold contributes no loss (the historical _listwise_batch_loss behaviour) and is counted in the
+      run record.
+    recorded_in_run_record: per dataset, N, select count, fit count, sha256 of the comma-joined ids of each carve
+    why_a_stride: a stride over the sorted ids samples every block of the id space in proportion (metaqa ids sort
+      by hop, so all three hop types are represented); it is reproducible from the rule alone and needs no seed.
+    why_capped: CPU-only training (compute below). The cap is a compute bound and is reported beside every result;
+      the SOTA systems train on the full split and that difference is named in the results table, never hidden.
+  per_dataset:
+    metaqa:
+      N: 329282
+      select: 1497
+      fit: 5960
+      source_sha256: ce7bafc9d664f1c79af7c3a4990cd9c95d9176cfbe66d8159fb850db99920c59
+      select_sha256: f0ec84fec4e07a050e8feacec5f4880342f10d60eb788b0cb0112334bc999828
+      fit_sha256: 161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188
+      source_rule: sorted(train)
+      select_compiled:
+        queries: 1497
+        zero_gold_excluded: 0
+        rows: 3015964
+        kept_ids_sha256: null
+        candidates_mean: 2014.7
+        gold_in_pool_mean: 6.2071
+        queries_with_no_gold_in_pool: 15
+        seeds_added_mean: 0.021
+        ms_per_query: 229.49
+        cache_bytes: 746644022
+        relation_table: true
+        pool: equal_rrf_budget_50+STRUCT:h3_c25_v2000
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: 1e4d288e04dcbf339e8e511ec34d85f32c873ede3675fcedf5f07f9c26c7933c
+      fit_compiled:
+        queries: 5960
+        zero_gold_excluded: 0
+        rows: 12021002
+        kept_ids_sha256: null
+        candidates_mean: 2016.9
+        gold_in_pool_mean: 6.3629
+        queries_with_no_gold_in_pool: 77
+        seeds_added_mean: 0.023
+        ms_per_query: 328.2
+        cache_bytes: 2975942430
+        relation_table: true
+        pool: equal_rrf_budget_50+STRUCT:h3_c25_v2000
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: d72ae8afe836beed1592c5b7142ca964a277ff41fb55f68b727b3ad3fdc27aa0
+    squad:
+      N: 130319
+      select: 1498
+      fit: 5856
+      source_sha256: 9af97085a313c5f16ef23448426d7d508a142f7f42b3ecce7f0cbb1d82ab4f58
+      select_sha256: d800e5e4d7c777ed6d69cb08ed8f084f4ab3f24c91cc39eef1b15e421d5664fd
+      fit_sha256: 39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515
+      source_rule: sorted(train)
+      select_compiled:
+        queries: 1498
+        zero_gold_excluded: 0
+        rows: 74946
+        kept_ids_sha256: null
+        candidates_mean: 50.0
+        gold_in_pool_mean: 0.984
+        queries_with_no_gold_in_pool: 24
+        seeds_added_mean: 0.031
+        ms_per_query: 27.29
+        cache_bytes: 23137608
+        relation_table: false
+        pool: equal_rrf_budget_50
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: c2472bce76d1576a7239accc34115dda72486a1909cbf6099ca66131dfa29e7f
+      fit_compiled:
+        queries: 5856
+        zero_gold_excluded: 0
+        rows: 292994
+        kept_ids_sha256: null
+        candidates_mean: 50.0
+        gold_in_pool_mean: 0.9833
+        queries_with_no_gold_in_pool: 98
+        seeds_added_mean: 0.033
+        ms_per_query: 26.79
+        cache_bytes: 90448838
+        relation_table: false
+        pool: equal_rrf_budget_50
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: 5ceb24a048a685e80fbbe4d5ba933943a603db0fc8e69216c1c600ff6e8822c0
+    musique:
+      N: 19938
+      select: 1534
+      fit: 4601
+      source_sha256: 0686f5e9dd8ffb4d20006fcf4006cf6e38bbbfae19235d82e8ef9a1ff9fd178e
+      select_sha256: 975ee3e580cadf719fe09d511b611fdde4fa0065bf444bff43216643a0a184b6
+      fit_sha256: 7976539fa1fbf0e132429f9983335b452c8f557b6f5bc13984a71a9c388fdfcf
+      source_rule: sorted(train)
+      select_compiled:
+        queries: 1534
+        zero_gold_excluded: 0
+        rows: 3215327
+        kept_ids_sha256: null
+        candidates_mean: 2096.0
+        gold_in_pool_mean: 2.1147
+        queries_with_no_gold_in_pool: 12
+        seeds_added_mean: 0.0
+        ms_per_query: 429.6
+        cache_bytes: 795789498
+        relation_table: false
+        pool: equal_rrf_budget_200+FULL:h2_c25
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: bb873713d945f70c4c9e75a8ca5470b733d1494af7672113be0f24e95c5d164e
+      fit_compiled:
+        queries: 4601
+        zero_gold_excluded: 0
+        rows: 9616637
+        kept_ids_sha256: null
+        candidates_mean: 2090.1
+        gold_in_pool_mean: 2.1371
+        queries_with_no_gold_in_pool: 13
+        seeds_added_mean: 0.0
+        ms_per_query: 502.01
+        cache_bytes: 2380143876
+        relation_table: false
+        pool: equal_rrf_budget_200+FULL:h2_c25
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: 71cd37bfcb468518d9b158c69716c8c201179f5036fbecf4050118f8774b3fb7
+    hotpotqa:
+      N: 90447
+      select: 1508
+      fit: 5930
+      source_sha256: 79cadb6d8f0f9091e6a15a1cb874280c8195857584fb7d6ed9d5cd9100916875
+      select_sha256: 700d8c8177da235a28da35866ee09bf2a5e5ff9dca100a758380692a8d7b760d
+      fit_sha256: 2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c
+      source_rule: sorted(train)
+      select_compiled:
+        queries: 1508
+        zero_gold_excluded: 0
+        rows: 142003
+        kept_ids_sha256: null
+        candidates_mean: 94.2
+        gold_in_pool_mean: 1.9662
+        queries_with_no_gold_in_pool: 9
+        seeds_added_mean: 0.023
+        ms_per_query: 69.01
+        cache_bytes: 39669328
+        relation_table: false
+        pool: equal_rrf_budget_50+STRUCT:h1_c25
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: bd8dfe19283a7fa9712d2204c4ba283220fb33aed2562d2d694fb3d777d8ef1a
+      fit_compiled:
+        queries: 5930
+        zero_gold_excluded: 0
+        rows: 557195
+        kept_ids_sha256: null
+        candidates_mean: 94.0
+        gold_in_pool_mean: 1.961
+        queries_with_no_gold_in_pool: 42
+        seeds_added_mean: 0.022
+        ms_per_query: 73.42
+        cache_bytes: 155690420
+        relation_table: false
+        pool: equal_rrf_budget_50+STRUCT:h1_c25
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: d7c50a2fdcefcdfeceadff03d1c9fc10fa1da9dc8fe86e6763005a05658b49c1
+    2wiki:
+      N: 167454
+      select: 1496
+      fit: 5928
+      source_sha256: 61d69568c2871a997d838fee931b98b1832f2557132b8ab29247f2350e080040
+      select_sha256: 72b50b99005beeccc1d8e5e19717dae49fb54101087fc800ec83e75d79eac974
+      fit_sha256: fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3
+      source_rule: sorted(train)
+      select_compiled:
+        queries: 1496
+        zero_gold_excluded: 0
+        rows: 159930
+        kept_ids_sha256: null
+        candidates_mean: 106.9
+        gold_in_pool_mean: 2.3302
+        queries_with_no_gold_in_pool: 0
+        seeds_added_mean: 0.005
+        ms_per_query: 131.96
+        cache_bytes: 44043782
+        relation_table: false
+        pool: equal_rrf_budget_50+STRUCT:h1_c25
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: cff830e32a2c847014d90ad2666401989dacc9fa5d2484921233c64857408fee
+      fit_compiled:
+        queries: 5928
+        zero_gold_excluded: 0
+        rows: 628354
+        kept_ids_sha256: null
+        candidates_mean: 106.0
+        gold_in_pool_mean: 2.2895
+        queries_with_no_gold_in_pool: 6
+        seeds_added_mean: 0.009
+        ms_per_query: 188.36
+        cache_bytes: 173197582
+        relation_table: false
+        pool: equal_rrf_budget_50+STRUCT:h1_c25
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: 56a6653a91372235d0098435a5fa91ff0476a6e501620012026c49f91f986332
+    webqsp:
+      N: 1549
+      select: 310
+      fit: 1239
+      source_sha256: f175bb0ae074cc50c483cdf56dc690f883866b9b2b8cacf4dc50eb7c92f0ad29
+      select_sha256: 1e0eff537583aa30777f7ce0f81f188740c6cab1cd5303f43b96da0d9f8091e6
+      fit_sha256: b744f21fcccf880290bd87c580052d2ebe0f29f1f4bb3af3bebb636e94d13eaa
+      source_rule: sorted(train)[1::2]
+      select_compiled:
+        queries: 305
+        zero_gold_excluded: 5
+        rows: 646437
+        kept_ids_sha256: d3c3cc4ba8d4d03983e3713500b585b1fabd0e597a8e317cf267c286591d4a96
+        candidates_mean: 2119.5
+        gold_in_pool_mean: 3.7246
+        queries_with_no_gold_in_pool: 25
+        seeds_added_mean: 0.193
+        ms_per_query: 378.98
+        cache_bytes: 159983828
+        relation_table: true
+        pool: dense_top200+FULL:h3_c25_v2000
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: da506991093a60bfdf6d082ea4c72bcc9ea68872030117233d75309293a7619a
+      fit_compiled:
+        queries: 1202
+        zero_gold_excluded: 37
+        rows: 2546884
+        kept_ids_sha256: fecf94bbfdff25925abd771421d4ad7276889d81b8449891783506bd087bdb90
+        candidates_mean: 2118.9
+        gold_in_pool_mean: 2.9884
+        queries_with_no_gold_in_pool: 100
+        seeds_added_mean: 0.242
+        ms_per_query: 526.24
+        cache_bytes: 630311660
+        relation_table: true
+        pool: dense_top200+FULL:h3_c25_v2000
+        contract_block: candidate_contract_frozen_2026_09_13
+        meta_sha256: ca638811019d0413f87da9bf3cedda8f3f3f073db046f8a143f1ff1c35604804
+  note: a fit query whose pool holds no gold contributes no loss and is counted here (queries_with_no_gold_in_pool);
+    zero-gold queries were dropped at the carve
+
+# ── fixed base score, selected under fixed_base_score.rule, filed 2026-09-13T13:14:34Z ──
+fixed_base_score_selected_2026_09_13:
+  status: SELECTED_ONCE
+  filed_utc: '2026-09-13T13:14:34Z'
+  selected_utc: '2026-09-13T13:08:11Z'
+  selected: rrf
+  base_index: 6
+  candidates:
+  - dense_cos
+  - rrf
+  - gcs_full
+  macro_select_recall5:
+    dense_cos: 0.4576
+    rrf: 0.4725
+    gcs_full: 0.4723
+  per_dataset_select_recall5:
+    metaqa:
+      dense_cos: 0.0115
+      rrf: 0.005
+      gcs_full: 0.005
+    squad:
+      dense_cos: 0.9111
+      rrf: 0.9247
+      gcs_full: 0.9247
+    musique:
+      dense_cos: 0.5197
+      rrf: 0.5379
+      gcs_full: 0.5377
+    hotpotqa:
+      dense_cos: 0.6708
+      rrf: 0.6935
+      gcs_full: 0.6935
+    2wiki:
+      dense_cos: 0.5048
+      rrf: 0.5899
+      gcs_full: 0.5894
+    webqsp:
+      dense_cos: 0.1275
+      rrf: 0.0837
+      gcs_full: 0.0837
+  rule: the candidate with the highest macro-average recall@5 over the six select carves when the pool is ranked
+    by it alone; ties go to the earlier entry. Applied once, filed in the run record, never revisited after a fit
+    exists.
+  population: the six select carves (train-derived); no eval population
+  output: outputs/m3b/base_score.json
+  output_sha256: b32b4c549c47c08c12aec645a72eb0f5b18fb2fbe1993ac34ba55394c35d422a
+  after_this_block: never revisited after a fit exists (fixed_base_score.rule)
+
+# ── QLS-U core contract, filed 2026-09-13T13:14:34Z from outputs/m3b/feature_screen.json ──
+qls_u_core_contract_2026_09_13:
+  status: FROZEN
+  filed_utc: '2026-09-13T13:14:34Z'
+  name: QLS_U_CORE_CONTRACT
+  utc: '2026-09-13T13:10:55Z'
+  screened_columns: 111
+  surviving_columns: 78
+  dropped:
+    dense_in: later_member_of_duplicate_pair
+    splade_in: later_member_of_duplicate_pair
+    splade_score_norm: later_member_of_duplicate_pair
+    seed_rank: later_member_of_duplicate_pair
+    dist0_STRUCT: later_member_of_duplicate_pair
+    reach_STRUCT: later_member_of_duplicate_pair
+    seeds_1hop_STRUCT: later_member_of_duplicate_pair
+    branch_div_STRUCT: later_member_of_duplicate_pair
+    dist0_NER: later_member_of_duplicate_pair
+    reach_NER: later_member_of_duplicate_pair
+    walks2_NER: later_member_of_duplicate_pair
+    branch_div_NER: later_member_of_duplicate_pair
+    dist0_KNN: later_member_of_duplicate_pair
+    reach_KNN: later_member_of_duplicate_pair
+    avail_KNN: zero_variance_everywhere
+    branch_div_KNN: later_member_of_duplicate_pair
+    dist0_FULL: later_member_of_duplicate_pair
+    reach_FULL: later_member_of_duplicate_pair
+    avail_FULL: zero_variance_everywhere
+    branch_div_FULL: later_member_of_duplicate_pair
+    wmax_seed_ner: later_member_of_duplicate_pair
+    wsum_seed_ner: later_member_of_duplicate_pair
+    wmax_seed_knn: later_member_of_duplicate_pair
+    wsum_seed_knn: later_member_of_duplicate_pair
+    max_q_nbr_ner: later_member_of_duplicate_pair
+    max_q_nbr_knn: later_member_of_duplicate_pair
+    cos_v_seedproto_h1: later_member_of_duplicate_pair
+    has_seed_h1: later_member_of_duplicate_pair
+    typed_available: zero_variance_everywhere
+    relmean_seed: later_member_of_duplicate_pair
+    has_typed_seed_edge: later_member_of_duplicate_pair
+    relchain2_mean: later_member_of_duplicate_pair
+    has_relchain2: later_member_of_duplicate_pair
+  duplicate_pairs:
+  - earlier: dense_rr
+    later: dense_in
+    abs_spearman: 0.997
+  - earlier: splade_rr
+    later: splade_in
+    abs_spearman: 0.9976
+  - earlier: splade_rr
+    later: splade_score_norm
+    abs_spearman: 0.9985
+  - earlier: splade_in
+    later: splade_score_norm
+    abs_spearman: 0.9976
+  - earlier: is_seed
+    later: seed_rank
+    abs_spearman: 1.0
+  - earlier: is_seed
+    later: dist0_STRUCT
+    abs_spearman: 1.0
+  - earlier: is_seed
+    later: dist0_NER
+    abs_spearman: 1.0
+  - earlier: is_seed
+    later: dist0_KNN
+    abs_spearman: 1.0
+  - earlier: is_seed
+    later: dist0_FULL
+    abs_spearman: 1.0
+  - earlier: seed_rank
+    later: dist0_STRUCT
+    abs_spearman: 1.0
+  - earlier: seed_rank
+    later: dist0_NER
+    abs_spearman: 1.0
+  - earlier: seed_rank
+    later: dist0_KNN
+    abs_spearman: 1.0
+  - earlier: seed_rank
+    later: dist0_FULL
+    abs_spearman: 1.0
+  - earlier: dist0_STRUCT
+    later: dist0_NER
+    abs_spearman: 1.0
+  - earlier: dist0_STRUCT
+    later: dist0_KNN
+    abs_spearman: 1.0
+  - earlier: dist0_STRUCT
+    later: dist0_FULL
+    abs_spearman: 1.0
+  - earlier: dist1_STRUCT
+    later: seeds_1hop_STRUCT
+    abs_spearman: 0.9846
+  - earlier: distunreached_STRUCT
+    later: reach_STRUCT
+    abs_spearman: 1.0
+  - earlier: walks2_STRUCT
+    later: branch_div_STRUCT
+    abs_spearman: 0.9911
+  - earlier: dist0_NER
+    later: dist0_KNN
+    abs_spearman: 1.0
+  - earlier: dist0_NER
+    later: dist0_FULL
+    abs_spearman: 1.0
+  - earlier: distunreached_NER
+    later: reach_NER
+    abs_spearman: 1.0
+  - earlier: seeds_1hop_NER
+    later: wmax_seed_ner
+    abs_spearman: 0.9997
+  - earlier: seeds_1hop_NER
+    later: wsum_seed_ner
+    abs_spearman: 0.9998
+  - earlier: seeds_2hop_frac_NER
+    later: walks2_NER
+    abs_spearman: 0.986
+  - earlier: seeds_2hop_frac_NER
+    later: branch_div_NER
+    abs_spearman: 0.9852
+  - earlier: walks2_NER
+    later: branch_div_NER
+    abs_spearman: 0.9996
+  - earlier: dist0_KNN
+    later: dist0_FULL
+    abs_spearman: 1.0
+  - earlier: distunreached_KNN
+    later: reach_KNN
+    abs_spearman: 1.0
+  - earlier: seeds_1hop_KNN
+    later: wmax_seed_knn
+    abs_spearman: 0.9999
+  - earlier: seeds_1hop_KNN
+    later: wsum_seed_knn
+    abs_spearman: 1.0
+  - earlier: walks2_KNN
+    later: branch_div_KNN
+    abs_spearman: 1.0
+  - earlier: distunreached_FULL
+    later: reach_FULL
+    abs_spearman: 1.0
+  - earlier: seeds_1hop_FULL
+    later: cos_v_seedproto_h1
+    abs_spearman: 0.9974
+  - earlier: seeds_1hop_FULL
+    later: has_seed_h1
+    abs_spearman: 0.9989
+  - earlier: walks2_FULL
+    later: branch_div_FULL
+    abs_spearman: 0.981
+  - earlier: wmax_seed_ner
+    later: wsum_seed_ner
+    abs_spearman: 1.0
+  - earlier: wmax_seed_knn
+    later: wsum_seed_knn
+    abs_spearman: 1.0
+  - earlier: cos_q_proto_ner
+    later: max_q_nbr_ner
+    abs_spearman: 0.9947
+  - earlier: cos_q_proto_knn
+    later: max_q_nbr_knn
+    abs_spearman: 0.9985
+  - earlier: cos_v_seedproto_h1
+    later: has_seed_h1
+    abs_spearman: 0.9978
+  - earlier: relmax_seed
+    later: relmean_seed
+    abs_spearman: 1.0
+  - earlier: relmax_seed
+    later: has_typed_seed_edge
+    abs_spearman: 1.0
+  - earlier: relmean_seed
+    later: has_typed_seed_edge
+    abs_spearman: 1.0
+  - earlier: relchain2_max
+    later: relchain2_mean
+    abs_spearman: 0.9996
+  - earlier: relchain2_max
+    later: has_relchain2
+    abs_spearman: 0.9947
+  - earlier: relchain2_mean
+    later: has_relchain2
+    abs_spearman: 0.9947
+  base_column_exempted_from_the_duplicate_rule: null
+  sha256_of_comma_joined_surviving_names: ce584194a751cf3cb6ba80f74659409b10ddc697470c68b1ff292d1eb0d49ffb
+  surviving:
+  - dense_cos
+  - dense_rr
+  - splade_rr
+  - rrf
+  - agreement
+  - is_seed
+  - dist1_STRUCT
+  - dist2_STRUCT
+  - dist3_STRUCT
+  - distunreached_STRUCT
+  - seeds_2hop_frac_STRUCT
+  - deg_pool_STRUCT
+  - deg_global_STRUCT
+  - walks2_STRUCT
+  - avail_STRUCT
+  - seed_component_STRUCT
+  - component_size_STRUCT
+  - dist1_NER
+  - dist2_NER
+  - dist3_NER
+  - distunreached_NER
+  - seeds_1hop_NER
+  - seeds_2hop_frac_NER
+  - deg_pool_NER
+  - deg_global_NER
+  - avail_NER
+  - seed_component_NER
+  - component_size_NER
+  - dist1_KNN
+  - dist2_KNN
+  - dist3_KNN
+  - distunreached_KNN
+  - seeds_1hop_KNN
+  - seeds_2hop_frac_KNN
+  - deg_pool_KNN
+  - deg_global_KNN
+  - walks2_KNN
+  - seed_component_KNN
+  - component_size_KNN
+  - dist1_FULL
+  - dist2_FULL
+  - dist3_FULL
+  - distunreached_FULL
+  - seeds_1hop_FULL
+  - seeds_2hop_frac_FULL
+  - deg_pool_FULL
+  - deg_global_FULL
+  - walks2_FULL
+  - seed_component_FULL
+  - component_size_FULL
+  - cos_q_proto_structural
+  - max_q_nbr_structural
+  - cohesion_structural
+  - has_nbr_structural
+  - cos_q_proto_ner
+  - cohesion_ner
+  - has_nbr_ner
+  - cos_q_proto_knn
+  - cohesion_knn
+  - has_nbr_knn
+  - gcs_full
+  - gcs_struct
+  - cos_v_seedproto
+  - max_cos_v_seed
+  - cos_v_reachproto
+  - has_reach_seed
+  - cos_v_seedproto_h2
+  - has_seed_h2
+  - relmax_seed
+  - relmax_in
+  - relmean_in
+  - has_typed_edge
+  - rel_ief
+  - rel_div
+  - dir_in_frac
+  - seed_edges_out
+  - seed_edges_in
+  - relchain2_max
+  screen_file: outputs/m3b/feature_screen.json
+  rule_applied: a column is dropped iff it is unavailable (below 0.5 percent) on every dataset, or has zero variance
+    on every dataset, or is the later member (in declared order) of a duplicate pair; nothing is dropped for weak
+    signal, because dropping by signal would turn the select carve into a training signal and remove exactly the
+    columns whose interaction effects the models are there to find.
+  screen_file_sha256: f5c87507bbf36e3f073e4f72c009706c0b9ecf70264905cd20d7251c95b00f0c
+  after_this_block: the models read this list and nothing else; a different list is a new dated block with its reason

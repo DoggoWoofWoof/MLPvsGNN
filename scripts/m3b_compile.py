@@ -620,9 +620,14 @@ def stage_file(cfg: dict, date: str, which: list[str]) -> int:
                 if not meta_path.exists():
                     raise SystemExit(f"{name}/{kind}: no compiled cache (meta.json missing); compile every carve before filing")
                 m = json.loads(meta_path.read_text(encoding="utf-8"))
-                if m["population"]["ids_sha256"] != entry[f"{kind}_sha256"]:
+                # the compiled population is the carve minus its zero-gold queries (training_carves.zero_gold_and_no_gold_in_pool):
+                # with none excluded the digests must agree; otherwise the carve size must, and the kept digest is filed beside it
+                excluded = int(m["population"]["zero_gold_excluded"])
+                same_digest = m["population"]["ids_sha256"] == entry[f"{kind}_sha256"]
+                if (excluded == 0 and not same_digest) or int(m["population"]["ids"]) != int(entry[kind]):
                     raise SystemExit(f"{name}/{kind}: the compiled population is not the carve in carves.json")
-                entry[f"{kind}_compiled"] = {"queries": m["n_queries"], "zero_gold_excluded": m["population"]["zero_gold_excluded"], "rows": m["n_rows"],
+                entry[f"{kind}_compiled"] = {"queries": m["n_queries"], "zero_gold_excluded": excluded, "rows": m["n_rows"],
+                                             "kept_ids_sha256": None if same_digest else m["population"]["ids_sha256"],
                                              "candidates_mean": round(m["candidates_mean"], 1), "gold_in_pool_mean": round(m["gold_in_pool_mean"], 4),
                                              "queries_with_no_gold_in_pool": m["queries_with_no_gold_in_pool"], "seeds_added_mean": round(m["seeds_added_mean"], 3),
                                              "ms_per_query": m["ms_per_query"], "cache_bytes": m["bytes"], "relation_table": m["relation_table"],

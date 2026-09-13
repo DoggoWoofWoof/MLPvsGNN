@@ -187,11 +187,12 @@ def test_stage_file_appends_each_block_once_and_refuses_a_second_filing(tmp_path
     m.OUT.mkdir()
     (tmp_path / "decl.yaml").write_text("status: DECLARED_NOT_RUN\npopulations:\n  eval_splits:\n    squad: dev\n", encoding="utf-8")
     carves = {"utc": "u", "rule": {"select": "s"}, "per_dataset": {"squad": {"N": 10, "select": 2, "fit": 4, "select_sha256": "S", "fit_sha256": "F"}}}
+    # the fit carve has one zero-gold query dropped at compile time: the sizes agree, the kept digest is filed beside the carve's
     (m.OUT / "carves.json").write_text(json.dumps(carves), encoding="utf-8")
-    for kind, sha in (("select", "S"), ("fit", "F")):
+    for kind, sha, ids, excluded in (("select", "S", 2, 0), ("fit", "KEPT", 4, 1)):
         d = m.CACHE / "squad" / kind
         d.mkdir(parents=True)
-        (d / "meta.json").write_text(json.dumps({"population": {"ids_sha256": sha, "zero_gold_excluded": 0}, "n_queries": 2, "n_rows": 9, "candidates_mean": 4.5,
+        (d / "meta.json").write_text(json.dumps({"population": {"ids_sha256": sha, "ids": ids, "zero_gold_excluded": excluded}, "n_queries": ids - excluded, "n_rows": 9, "candidates_mean": 4.5,
                                                  "gold_in_pool_mean": 1.0, "queries_with_no_gold_in_pool": 0, "seeds_added_mean": 0.0, "ms_per_query": 1.0,
                                                  "bytes": 100, "relation_table": False, "pool": "p", "contract_block": "c"}), encoding="utf-8")
     (m.OUT / "base_score.json").write_text(json.dumps({"utc": "u", "selected": "rrf", "base_index": 1, "candidates": ["dense_cos", "rrf"],
@@ -203,6 +204,8 @@ def test_stage_file_appends_each_block_once_and_refuses_a_second_filing(tmp_path
     m.stage_file(cfg, "2026_09_13", ["carves", "base", "core"])
     reloaded = yaml.safe_load((tmp_path / "decl.yaml").read_text(encoding="utf-8"))
     assert reloaded["carve_record_2026_09_13"]["per_dataset"]["squad"]["fit_compiled"]["rows"] == 9
+    assert reloaded["carve_record_2026_09_13"]["per_dataset"]["squad"]["fit_compiled"]["kept_ids_sha256"] == "KEPT"
+    assert reloaded["carve_record_2026_09_13"]["per_dataset"]["squad"]["select_compiled"]["kept_ids_sha256"] is None
     assert reloaded["fixed_base_score_selected_2026_09_13"]["selected"] == "rrf"
     assert reloaded["qls_u_core_contract_2026_09_13"]["surviving"] == ["rrf"]
     assert reloaded["status"] == "DECLARED_NOT_RUN"           # nothing above the appended blocks is touched
@@ -210,6 +213,6 @@ def test_stage_file_appends_each_block_once_and_refuses_a_second_filing(tmp_path
     with pytest.raises(SystemExit, match="already filed"):
         m.stage_file(reloaded, "2026_09_14", ["base"])
     # a compiled population that is not the carve refuses before anything is appended
-    (m.CACHE / "squad" / "fit" / "meta.json").write_text(json.dumps({"population": {"ids_sha256": "X"}}), encoding="utf-8")
+    (m.CACHE / "squad" / "fit" / "meta.json").write_text(json.dumps({"population": {"ids_sha256": "X", "ids": 4, "zero_gold_excluded": 0}}), encoding="utf-8")
     with pytest.raises(SystemExit, match="not the carve"):
         m.stage_file({"populations": {"eval_splits": {"squad": "dev"}}}, "2026_09_15", ["carves"])
