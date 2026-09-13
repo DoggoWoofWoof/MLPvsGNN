@@ -174,3 +174,42 @@ def test_disk_guard_reads_amendment_2_and_halts_at_its_floor(tmp_path, monkeypat
     with pytest.raises(SystemExit):
         bound.check(writing=tmp_path / "cache" / "x" / "fit")
     assert not (tmp_path / "cache" / "x" / "fit").exists()
+
+
+def test_stage_file_appends_each_block_once_and_refuses_a_second_filing(tmp_path, monkeypatch):
+    import json
+    import yaml
+    m = load_compile()
+    monkeypatch.setattr(m, "CONFIG", tmp_path / "decl.yaml")
+    monkeypatch.setattr(m, "OUT", tmp_path / "out")
+    monkeypatch.setattr(m, "CACHE", tmp_path / "out" / "cache")
+    monkeypatch.setattr(m, "RELATIONS", tmp_path / "out" / "relations")
+    m.OUT.mkdir()
+    (tmp_path / "decl.yaml").write_text("status: DECLARED_NOT_RUN\npopulations:\n  eval_splits:\n    squad: dev\n", encoding="utf-8")
+    carves = {"utc": "u", "rule": {"select": "s"}, "per_dataset": {"squad": {"N": 10, "select": 2, "fit": 4, "select_sha256": "S", "fit_sha256": "F"}}}
+    (m.OUT / "carves.json").write_text(json.dumps(carves), encoding="utf-8")
+    for kind, sha in (("select", "S"), ("fit", "F")):
+        d = m.CACHE / "squad" / kind
+        d.mkdir(parents=True)
+        (d / "meta.json").write_text(json.dumps({"population": {"ids_sha256": sha, "zero_gold_excluded": 0}, "n_queries": 2, "n_rows": 9, "candidates_mean": 4.5,
+                                                 "gold_in_pool_mean": 1.0, "queries_with_no_gold_in_pool": 0, "seeds_added_mean": 0.0, "ms_per_query": 1.0,
+                                                 "bytes": 100, "relation_table": False, "pool": "p", "contract_block": "c"}), encoding="utf-8")
+    (m.OUT / "base_score.json").write_text(json.dumps({"utc": "u", "selected": "rrf", "base_index": 1, "candidates": ["dense_cos", "rrf"],
+                                                       "macro_select_recall5": {"dense_cos": 0.1, "rrf": 0.2}, "per_dataset": {"squad": {"dense_cos": 0.1, "rrf": 0.2}},
+                                                       "rule": "r"}), encoding="utf-8")
+    (m.OUT / "feature_screen.json").write_text("{}", encoding="utf-8")
+    (m.OUT / "qls_u_core_contract_block.yaml").write_text(yaml.safe_dump({"name": "QLS_U_CORE_CONTRACT", "surviving": ["rrf"]}), encoding="utf-8")
+    cfg = yaml.safe_load((tmp_path / "decl.yaml").read_text(encoding="utf-8"))
+    m.stage_file(cfg, "2026_09_13", ["carves", "base", "core"])
+    reloaded = yaml.safe_load((tmp_path / "decl.yaml").read_text(encoding="utf-8"))
+    assert reloaded["carve_record_2026_09_13"]["per_dataset"]["squad"]["fit_compiled"]["rows"] == 9
+    assert reloaded["fixed_base_score_selected_2026_09_13"]["selected"] == "rrf"
+    assert reloaded["qls_u_core_contract_2026_09_13"]["surviving"] == ["rrf"]
+    assert reloaded["status"] == "DECLARED_NOT_RUN"           # nothing above the appended blocks is touched
+    import pytest
+    with pytest.raises(SystemExit, match="already filed"):
+        m.stage_file(reloaded, "2026_09_14", ["base"])
+    # a compiled population that is not the carve refuses before anything is appended
+    (m.CACHE / "squad" / "fit" / "meta.json").write_text(json.dumps({"population": {"ids_sha256": "X"}}), encoding="utf-8")
+    with pytest.raises(SystemExit, match="not the carve"):
+        m.stage_file({"populations": {"eval_splits": {"squad": "dev"}}}, "2026_09_15", ["carves"])

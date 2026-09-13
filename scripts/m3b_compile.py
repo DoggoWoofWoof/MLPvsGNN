@@ -590,11 +590,75 @@ def stage_base(cfg: dict, datasets: list[str]) -> dict:
     return record
 
 
+def append_block(cfg: dict, key: str, prefix: str, block: dict, header: str) -> None:
+    """Append one dated block to the declaration, once per prefix; it must read back identically."""
+    if any(k.startswith(prefix) for k in cfg):
+        raise SystemExit(f"a {prefix}* block is already filed; a change is a new dated block with its reason, never a re-file")
+    text = yaml.safe_dump({key: block}, sort_keys=False, width=110, allow_unicode=True)
+    with open(CONFIG, "a", encoding="utf-8", newline="\n") as f:
+        f.write(f"\n# ── {header} ──\n" + text)
+    reloaded = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+    if reloaded.get(key) != block:
+        raise SystemExit(f"{key}: the appended block does not read back identically")
+    cfg[key] = block
+    print(f"filed {key}")
+
+
+def stage_file(cfg: dict, date: str, which: list[str]) -> int:
+    """Order of operations step 3 (the carve record and the base score) and
+    amendment 1's feature_reduction_stage (qls_u_core_contract_<date>): each
+    block is copied from its sidecar output with the output's sha256, once."""
+    filed_utc = utc()
+    names = list(cfg["populations"]["eval_splits"])
+    if "carves" in which:
+        carves = json.loads((OUT / "carves.json").read_text(encoding="utf-8"))
+        per_dataset = {}
+        for name in names:
+            entry = dict(carves["per_dataset"][name])
+            for kind in ("select", "fit"):
+                meta_path = CACHE / name / kind / "meta.json"
+                if not meta_path.exists():
+                    raise SystemExit(f"{name}/{kind}: no compiled cache (meta.json missing); compile every carve before filing")
+                m = json.loads(meta_path.read_text(encoding="utf-8"))
+                if m["population"]["ids_sha256"] != entry[f"{kind}_sha256"]:
+                    raise SystemExit(f"{name}/{kind}: the compiled population is not the carve in carves.json")
+                entry[f"{kind}_compiled"] = {"queries": m["n_queries"], "zero_gold_excluded": m["population"]["zero_gold_excluded"], "rows": m["n_rows"],
+                                             "candidates_mean": round(m["candidates_mean"], 1), "gold_in_pool_mean": round(m["gold_in_pool_mean"], 4),
+                                             "queries_with_no_gold_in_pool": m["queries_with_no_gold_in_pool"], "seeds_added_mean": round(m["seeds_added_mean"], 3),
+                                             "ms_per_query": m["ms_per_query"], "cache_bytes": m["bytes"], "relation_table": m["relation_table"],
+                                             "pool": m["pool"], "contract_block": m["contract_block"], "meta_sha256": sha256_file(meta_path)}
+            per_dataset[name] = entry
+        rel = RELATIONS / "RECORD.json"
+        block = {"status": "FILED_BEFORE_ANY_WEIGHT", "filed_utc": filed_utc, "carved_utc": carves["utc"], "carves_file": "outputs/m3b/carves.json",
+                 "carves_sha256": sha256_file(OUT / "carves.json"), "feature_contract": contract_json()["name"], "n_columns": N_COLUMNS,
+                 "relations_record": {"path": "outputs/m3b/relations/RECORD.json", "sha256": sha256_file(rel)} if rel.exists() else None,
+                 "compiled_by": "scripts/m3b_compile.py --stage compile (per dataset; DiskGuard of amendment 2 active)",
+                 "rule": carves["rule"], "per_dataset": per_dataset,
+                 "note": "a fit query whose pool holds no gold contributes no loss and is counted here (queries_with_no_gold_in_pool); zero-gold queries were dropped at the carve"}
+        append_block(cfg, f"carve_record_{date}", "carve_record_", block, f"carve record, filed {filed_utc} from outputs/m3b/carves.json and the cache metas")
+    if "base" in which:
+        record = json.loads((OUT / "base_score.json").read_text(encoding="utf-8"))
+        block = {"status": "SELECTED_ONCE", "filed_utc": filed_utc, "selected_utc": record["utc"], "selected": record["selected"], "base_index": record["base_index"],
+                 "candidates": record["candidates"], "macro_select_recall5": record["macro_select_recall5"], "per_dataset_select_recall5": record["per_dataset"],
+                 "rule": record["rule"], "population": "the six select carves (train-derived); no eval population",
+                 "output": "outputs/m3b/base_score.json", "output_sha256": sha256_file(OUT / "base_score.json"),
+                 "after_this_block": "never revisited after a fit exists (fixed_base_score.rule)"}
+        append_block(cfg, f"fixed_base_score_selected_{date}", "fixed_base_score_selected_", block, f"fixed base score, selected under fixed_base_score.rule, filed {filed_utc}")
+    if "core" in which:
+        block = yaml.safe_load((OUT / "qls_u_core_contract_block.yaml").read_text(encoding="utf-8"))
+        block = {"status": "FROZEN", "filed_utc": filed_utc, **block, "screen_file_sha256": sha256_file(OUT / "feature_screen.json"),
+                 "after_this_block": "the models read this list and nothing else; a different list is a new dated block with its reason"}
+        append_block(cfg, f"qls_u_core_contract_{date}", "qls_u_core_contract_", block, f"QLS-U core contract, filed {filed_utc} from outputs/m3b/feature_screen.json")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=["carves", "compile", "base", "screen", "trim"], required=True)
+    parser.add_argument("--stage", choices=["carves", "compile", "base", "screen", "trim", "file"], required=True)
     parser.add_argument("--datasets", nargs="*", default=None)
     parser.add_argument("--kinds", nargs="*", default=["fit", "select"], help="populations to compile (fit, select)")
+    parser.add_argument("--date", default=None, help="file: the date suffix of the appended blocks, e.g. 2026_09_13")
+    parser.add_argument("--blocks", nargs="*", default=["carves", "base", "core"], help="file: which blocks to append (carves, base, core)")
     args = parser.parse_args()
     sys.dont_write_bytecode = True
     cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
@@ -612,6 +676,10 @@ def main() -> int:
         stage_base(cfg, datasets)
     elif args.stage == "trim":
         stage_trim(datasets, tuple(args.kinds))
+    elif args.stage == "file":
+        if not args.date:
+            raise SystemExit("--stage file needs --date")
+        stage_file(cfg, args.date, list(args.blocks))
     else:
         stage_screen(cfg, datasets)
     print(f"{args.stage}: {time.time() - t0:.0f}s", flush=True)

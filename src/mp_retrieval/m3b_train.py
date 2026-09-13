@@ -241,7 +241,8 @@ class CarveData:
         a, b = int(self.pool_ptr[i]), int(self.pool_ptr[i + 1])
         return {
             "pool": np.asarray(self.pool[a:b], dtype=np.int64),
-            "x": np.asarray(self.scalars[a:b], dtype=np.float32) if self.columns is None else np.asarray(self.scalars[a:b], dtype=np.float32)[:, self.columns],
+            # float16 as stored (the column subset taken before any conversion); pack_queries converts once per batch
+            "x": np.asarray(self.scalars[a:b]) if self.columns is None else np.asarray(self.scalars[a:b])[:, self.columns],
             "seedw": np.asarray(self.seedw[a:b], dtype=np.float32), "qemb": np.asarray(self.qemb[i], dtype=np.float32),
             "seeds": np.asarray(self.seeds[self.seeds_ptr[i]:self.seeds_ptr[i + 1]], dtype=np.int64),
             "gold": np.asarray(self.gold[self.gold_ptr[i]:self.gold_ptr[i + 1]], dtype=np.int64), "gold_total": int(self.gold_total[i]),
@@ -262,7 +263,7 @@ def pack_queries(queries: list[dict], context: DatasetContext, families: tuple[s
         n = pool.size
         off = ptr[-1]
         xs.append(qd["x"])
-        embs.append(qd["emb"] if "emb" in qd else context.nodes.read(pool))   # the eval pass passes the rows it already gathered
+        embs.append(qd["emb"] if "emb" in qd else context.nodes.read(pool, dtype=np.float16))   # the eval pass passes the rows it already gathered
         qembs.append(qd["qemb"])
         seedws.append(qd["seedw"])
         row = np.full(MAX_SEEDS, -1, dtype=np.int64)
@@ -287,11 +288,37 @@ def pack_queries(queries: list[dict], context: DatasetContext, families: tuple[s
         ptr.append(off + n)
     edge_index = np.concatenate(eis, axis=1) if eis else np.empty((2, 0), dtype=np.int64)
     edge_attr = np.concatenate(eas, axis=0) if eas else np.empty((0, N_EDGE_FEATURES), dtype=np.float32)
+    # scalars and embeddings arrive as stored (float16) or as the caller gathered them; one
+    # conversion to float32 per batch through torch (exact) replaces a per-query numpy astype
     return PackedBatch(
-        x=torch.from_numpy(np.concatenate(xs)), qptr=torch.tensor(ptr, dtype=torch.long), node_query=torch.from_numpy(np.concatenate(node_query)),
-        emb=torch.from_numpy(np.concatenate(embs)), qemb=torch.from_numpy(np.stack(qembs)), seedw=torch.from_numpy(np.concatenate(seedws)),
+        x=torch.from_numpy(np.concatenate(xs)).to(torch.float32), qptr=torch.tensor(ptr, dtype=torch.long), node_query=torch.from_numpy(np.concatenate(node_query)),
+        emb=torch.from_numpy(np.concatenate(embs)).to(torch.float32), qemb=torch.from_numpy(np.stack(qembs)), seedw=torch.from_numpy(np.concatenate(seedws)),
         seed_nodes=torch.from_numpy(np.stack(seed_nodes)), edge_index=torch.from_numpy(edge_index), edge_attr=torch.from_numpy(edge_attr),
         gold=torch.from_numpy(np.concatenate(golds)),
+    )
+
+
+def concat_batches(batches: list[PackedBatch]) -> PackedBatch:
+    """Several packed batches as one: node and query indices are offset, absent
+    seed slots (-1) stay absent. The per-query loss and metrics are unchanged by
+    the concatenation, so a mixed-dataset batch is packed per dataset and joined."""
+    if len(batches) == 1:
+        return batches[0]
+    node_off, query_off = 0, 0
+    qptr = [torch.zeros(1, dtype=torch.long)]
+    node_query, seed_nodes, edge_index = [], [], []
+    for b in batches:
+        qptr.append(b.qptr[1:] + node_off)
+        node_query.append(b.node_query + query_off)
+        seed_nodes.append(torch.where(b.seed_nodes >= 0, b.seed_nodes + node_off, b.seed_nodes))
+        edge_index.append(b.edge_index + node_off)
+        node_off += int(b.x.shape[0])
+        query_off += b.n_queries
+    return PackedBatch(
+        x=torch.cat([b.x for b in batches]), qptr=torch.cat(qptr), node_query=torch.cat(node_query),
+        emb=torch.cat([b.emb for b in batches]), qemb=torch.cat([b.qemb for b in batches]), seedw=torch.cat([b.seedw for b in batches]),
+        seed_nodes=torch.cat(seed_nodes), edge_index=torch.cat(edge_index, dim=1), edge_attr=torch.cat([b.edge_attr for b in batches]),
+        gold=torch.cat([b.gold for b in batches]),
     )
 
 
@@ -335,13 +362,45 @@ class FitRecord:
     batches_skipped_no_gold: int = 0
 
 
+def next_queries(fits: dict[str, CarveData], name: str, cursors: dict, rng: np.random.Generator, count: int) -> np.ndarray:
+    """The next ``count`` trainable fit queries of a dataset, without replacement
+    until the carve is exhausted, then a fresh permutation."""
+    perm, pos = cursors[name]
+    if pos + count > perm.size:
+        perm = rng.permutation(fits[name].trainable)
+        pos = 0
+    cursors[name] = [perm, pos + count]
+    return perm[pos:pos + count]
+
+
+def draw_batch(fits: dict[str, CarveData], names: list[str], cursors: dict, rng: np.random.Generator, batch_size: int,
+               families: tuple[str, ...], dataset_draw: str) -> PackedBatch:
+    """One training batch under the declared sampler (see fit_model)."""
+    if dataset_draw == "per_batch":
+        name = names[int(rng.integers(len(names)))]
+        return fits[name].pack(next_queries(fits, name, cursors, rng, batch_size), families)
+    draws = rng.integers(len(names), size=batch_size)
+    parts = []
+    for k, name in enumerate(names):
+        count = int((draws == k).sum())
+        if count:
+            parts.append(fits[name].pack(next_queries(fits, name, cursors, rng, count), families))
+    return concat_batches(parts)
+
+
 def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[str, CarveData], *, seed: int, arm: str, config: dict,
               max_epochs: int = 6, batches_per_epoch: int = 2000, batch_size: int = 16, patience: int = 2, lr: float = 1e-3,
-              weight_decay: float = 1e-4, clip: float = 1.0, families: tuple[str, ...] = FAMILIES, log=print) -> tuple[torch.nn.Module, FitRecord]:
-    """AdamW on dataset-balanced batches (one dataset per batch, drawn uniformly;
-    queries drawn without replacement per dataset until its trainable fit carve
-    is exhausted, then reshuffled); early stopping on the macro select
-    recall@5 with the declared patience; the best epoch's weights are returned."""
+              weight_decay: float = 1e-4, clip: float = 1.0, families: tuple[str, ...] = FAMILIES, dataset_draw: str = "per_query",
+              log=print) -> tuple[torch.nn.Module, FitRecord]:
+    """AdamW on dataset-balanced batches: for every slot of a batch the dataset
+    is drawn uniformly and then a fit query of that dataset (``dataset_draw``
+    "per_query", the declared sampler; "per_batch" draws one dataset for the
+    whole batch); queries are drawn without replacement per dataset until its
+    trainable fit carve is exhausted, then reshuffled. Early stopping on the
+    macro select recall@5 with the declared patience; the best epoch's weights
+    are returned."""
+    if dataset_draw not in ("per_query", "per_batch"):
+        raise ValueError(f"dataset_draw must be per_query or per_batch, got {dataset_draw!r}")
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     names = sorted(fits)
@@ -356,14 +415,7 @@ def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[
         t_epoch = time.time()
         losses = []
         for _ in range(batches_per_epoch):
-            name = names[int(rng.integers(len(names)))]
-            perm, pos = cursors[name]
-            if pos + batch_size > perm.size:
-                perm = rng.permutation(fits[name].trainable)
-                pos = 0
-            idx = perm[pos:pos + batch_size]
-            cursors[name] = [perm, pos + batch_size]
-            batch = fits[name].pack(idx, families)
+            batch = draw_batch(fits, names, cursors, rng, batch_size, families, dataset_draw)
             if not bool(batch.gold.any()):
                 record.batches_skipped_no_gold += 1
                 continue

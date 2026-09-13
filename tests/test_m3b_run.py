@@ -107,3 +107,15 @@ def test_shard_suffix_and_slices_partition_the_population():
     n = 101
     parts = [list(range(k, n, 4)) for k in range(4)]
     assert sorted(sum(parts, [])) == list(range(n))
+
+
+def test_the_training_rule_reads_the_filed_sampler_reading_or_refuses_to_fit():
+    import pytest
+    m = load_run()
+    cfg = {"training": {"batch_queries": 16}, "amendment_1": {"x": 1}}
+    assert "dataset_draw" not in m.training_rule(cfg, require_reading=False)
+    with pytest.raises(SystemExit, match="training_reading"):
+        m.training_rule(cfg, require_reading=True)
+    cfg["amendment_3_2026_09_13"] = {"training_reading": {"dataset_draw": "per_query"}}
+    rule = m.training_rule(cfg, require_reading=True)
+    assert rule["dataset_draw"] == "per_query" and rule["reading_block"] == "amendment_3_2026_09_13" and rule["batch_queries"] == 16

@@ -131,11 +131,15 @@ class DenseNodes:
         else:
             self._maps = [np.load(p, mmap_mode="r") for p in self._paths]
 
-    def read(self, rows: np.ndarray) -> np.ndarray:
+    def read(self, rows: np.ndarray, dtype=np.float32) -> np.ndarray:
+        """The rows as ``dtype``; float16 hands back the served bytes unconverted
+        (a batch converts them once through torch, which is far faster than a
+        per-query numpy astype -- the same values either way)."""
         rows = np.asarray(rows, dtype=np.int64)
         if self._matrix is not None:
-            return self._matrix[rows].astype(np.float32)
-        out = np.empty((rows.size, DIM), dtype=np.float32)
+            gathered = self._matrix[rows]
+            return gathered if gathered.dtype == dtype else gathered.astype(dtype)
+        out = np.empty((rows.size, DIM), dtype=dtype)
         shard = rows // self.shard_size
         off = rows % self.shard_size
         for s in np.unique(shard):

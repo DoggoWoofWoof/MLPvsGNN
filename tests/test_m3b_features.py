@@ -23,8 +23,8 @@ class _Nodes:
     def __init__(self, matrix):
         self.matrix = matrix
 
-    def read(self, rows):
-        return self.matrix[np.asarray(rows)].astype(np.float32)
+    def read(self, rows, dtype=np.float32):
+        return self.matrix[np.asarray(rows)].astype(dtype)
 
 
 def _graph(rng, n, m, weighted, typed, n_rel=4):

@@ -141,6 +141,21 @@ def open_carves(contexts: dict, columns: np.ndarray, kinds=("fit", "select")) ->
 # ── fits ─────────────────────────────────────────────────────────────────────
 
 
+def training_rule(cfg: dict, require_reading: bool) -> dict:
+    """The declared training block plus the filed reading of its sampler
+    (``training_reading`` in the latest amendment that carries one). A fit
+    refuses to start before the reading is filed: the rule precedes the number."""
+    training = dict(cfg["training"])
+    readings = [(k, v["training_reading"]) for k, v in cfg.items() if isinstance(v, dict) and isinstance(v.get("training_reading"), dict)]
+    if readings:
+        key, reading = readings[-1]
+        training.update(reading)
+        training["reading_block"] = key
+    elif require_reading:
+        raise SystemExit("no amendment carries a training_reading (dataset_draw); file the reading before any fit")
+    return training
+
+
 def run_fit(arm: str, cfg_m: dict, seed: int, inputs: dict, carves: dict, training: dict, substrate: str | None = None, log=print) -> dict:
     """One fit under the declared schedule; resumable through its record."""
     key = fit_key(arm, cfg_m, seed, substrate)
@@ -155,20 +170,38 @@ def run_fit(arm: str, cfg_m: dict, seed: int, inputs: dict, carves: dict, traini
     log(f"== fit {key}: {parameter_count(model)} parameters")
     model, record = fit_model(model, carves["fit"], carves["select"], seed=seed, arm=arm, config={**cfg_m, "substrate": substrate or "FULL"},
                               max_epochs=int(training["max_epochs"]), batches_per_epoch=int(str(training["epoch"]).split()[0]),
-                              batch_size=int(training["batch_queries"]), patience=2, lr=1e-3, weight_decay=1e-4, clip=1.0, log=log)
+                              batch_size=int(training["batch_queries"]), patience=2, lr=1e-3, weight_decay=1e-4, clip=1.0,
+                              dataset_draw=training["dataset_draw"], log=log)
     torch.save(model.state_dict(), MODELS / f"{key}.pt")
     out = {**asdict(record), "key": key, "substrate": substrate or "FULL", "core_sha256": inputs["core_sha256"], "base": inputs["base"], "utc": utc(),
+           "dataset_draw": training["dataset_draw"], "training_reading": training.get("reading_block"),
            "state_sha256": hashlib.sha256((MODELS / f"{key}.pt").read_bytes()).hexdigest()}
     rec_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
     log(f"   {key}: best epoch {record.best_epoch} select macro R@5 {record.best_select_macro_recall5:.4f} in {record.seconds:.0f}s")
     return out
 
 
-def stage_timing(inputs: dict, carves: dict, batch_size: int, log=print) -> dict:
-    """Seconds per training batch and per select-carve evaluation for the largest
-    configurations, on the real caches; the abort criterion reads this first."""
+def stage_timing(inputs: dict, carves: dict, batch_size: int, dataset_draw: str = "per_query", log=print) -> dict:
+    """Seconds per training batch, resident memory and the select-carve
+    evaluation cost for the largest configurations, on the real caches: one
+    single-dataset batch per dataset (the peak a per_batch draw produces) and
+    three mixed batches under the declared per_query draw; the abort criterion
+    (an epoch over 40 minutes) reads this before the first fit."""
+    from mp_retrieval.m3b_train import draw_batch, evaluate_carve, listwise_loss
+
     timing = {}
     names = sorted(carves["fit"])
+    rss0 = peak_rss_bytes()
+
+    def one_step(model, optimiser, batch) -> float:
+        model.train()
+        t = time.perf_counter()
+        loss = listwise_loss(model(batch), batch)
+        loss.backward()
+        optimiser.step()
+        optimiser.zero_grad(set_to_none=True)
+        return time.perf_counter() - t
+
     for arm, cfg_m in (("qls_u_sota_v1", {"H": 128}), ("gat_universal_v1", {"L": 3, "H": 128}), ("gat_no_mp_v1", {"L": 3, "H": 128})):
         torch.manual_seed(0)
         model = build_model(arm, cfg_m, inputs)
@@ -180,22 +213,51 @@ def stage_timing(inputs: dict, carves: dict, batch_size: int, log=print) -> dict
             t = time.perf_counter()
             batch = data.pack(idx)
             t_pack = time.perf_counter() - t
-            model.train()
-            t = time.perf_counter()
-            from mp_retrieval.m3b_train import listwise_loss
-            loss = listwise_loss(model(batch), batch)
-            loss.backward()
-            optimiser.step()
-            optimiser.zero_grad(set_to_none=True)
-            t_step = time.perf_counter() - t
+            t_step = one_step(model, optimiser, batch)
             per_dataset[name] = {"pack_s": round(t_pack, 3), "step_s": round(t_step, 3), "nodes": int(batch.x.shape[0]), "edges": int(batch.edge_attr.shape[0])}
-        mean_batch = float(np.mean([v["pack_s"] + v["step_s"] for v in per_dataset.values()]))
-        timing[arm] = {"config": cfg_m, "per_dataset": per_dataset, "mean_seconds_per_batch": round(mean_batch, 3),
-                       "projected_epoch_minutes_2000_batches": round(mean_batch * 2000 / 60, 1), "parameters": parameter_count(model)}
-        log(f"   {arm} {cfg_m}: {mean_batch:.2f} s/batch -> {mean_batch * 2000 / 60:.1f} min per epoch of 2000 batches; " +
+        rng = np.random.default_rng(0)
+        cursors = {n: [rng.permutation(carves["fit"][n].trainable), 0] for n in names}
+        mixed = []
+        for _ in range(3):
+            t = time.perf_counter()
+            batch = draw_batch(carves["fit"], names, cursors, rng, batch_size, FAMILIES, "per_query")
+            t_pack = time.perf_counter() - t
+            t_step = one_step(model, optimiser, batch)
+            mixed.append({"pack_s": round(t_pack, 3), "step_s": round(t_step, 3), "nodes": int(batch.x.shape[0]), "edges": int(batch.edge_attr.shape[0])})
+        select_eval = {}
+        for name in names:
+            data = carves["select"][name]
+            n_eval = min(64, data.n_queries)
+            t = time.perf_counter()
+            evaluate_carve(model, _CarveHead(data, n_eval))
+            seconds = time.perf_counter() - t
+            select_eval[name] = {"queries": n_eval, "seconds": round(seconds, 2), "projected_full_carve_s": round(seconds / n_eval * data.n_queries, 1)}
+        per_batch_mean = float(np.mean([v["pack_s"] + v["step_s"] for v in per_dataset.values()]))
+        per_query_mean = float(np.mean([v["pack_s"] + v["step_s"] for v in mixed]))
+        epoch_min = {"per_batch": round(per_batch_mean * 2000 / 60, 1), "per_query": round(per_query_mean * 2000 / 60, 1)}
+        select_min = round(sum(v["projected_full_carve_s"] for v in select_eval.values()) / 60, 1)
+        timing[arm] = {"config": cfg_m, "parameters": parameter_count(model), "single_dataset_batches": per_dataset, "mixed_batches_per_query_draw": mixed,
+                       "mean_seconds_per_batch": {"per_batch": round(per_batch_mean, 3), "per_query": round(per_query_mean, 3)},
+                       "projected_epoch_minutes_2000_batches": epoch_min, "select_evaluation": select_eval,
+                       "projected_select_evaluation_minutes_per_epoch": select_min, "peak_rss_gb_so_far": round((peak_rss_bytes() - rss0) / 2**30, 2)}
+        log(f"   {arm} {cfg_m}: per_batch {per_batch_mean:.2f} s/batch ({epoch_min['per_batch']} min/epoch), per_query {per_query_mean:.2f} s/batch "
+            f"({epoch_min['per_query']} min/epoch), select evaluation {select_min} min/epoch; " +
             " ".join(f"{n}={v['pack_s'] + v['step_s']:.2f}s({v['nodes']}n,{v['edges']}e)" for n, v in per_dataset.items()))
-    (OUT / "timing.json").write_text(json.dumps({"utc": utc(), "batch_size": batch_size, "threads": torch.get_num_threads(), "arms": timing}, indent=1), encoding="utf-8")
+        del model, optimiser
+    (OUT / "timing.json").write_text(json.dumps({"utc": utc(), "batch_size": batch_size, "threads": torch.get_num_threads(), "declared_dataset_draw": dataset_draw,
+                                                  "peak_rss_gb": round(peak_rss_bytes() / 2**30, 2), "arms": timing}, indent=1), encoding="utf-8")
     return timing
+
+
+class _CarveHead:
+    """The first n queries of a carve, for the timing stage's evaluation sample."""
+
+    def __init__(self, data, n: int):
+        self._data = data
+        self.n_queries = int(n)
+
+    def __getattr__(self, name):
+        return getattr(self._data, name)
 
 
 def stage_screen(inputs: dict, carves: dict, training: dict, log=print) -> dict:
@@ -525,7 +587,7 @@ def main() -> int:
     cfg_h = yaml.safe_load(HEADROOM_CONFIG.read_text(encoding="utf-8"))
     datasets = args.datasets or list(DATASETS)
     inputs = model_inputs()
-    training = cfg["training"]
+    training = training_rule(cfg, require_reading=args.stage in ("screen", "seeds", "ablation"))
     log_path = OUT / f"_run_{args.stage}{'' if shard is None else f'_shard{shard[0]}of{shard[1]}'}.log"
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -550,7 +612,7 @@ def main() -> int:
         contexts, _, _ = open_contexts(cfg, datasets, m3b_compile)
         carves = open_carves(contexts, inputs["columns"])
         if args.stage == "timing":
-            stage_timing(inputs, carves, int(training["batch_queries"]), log=log)
+            stage_timing(inputs, carves, int(training["batch_queries"]), dataset_draw=training.get("dataset_draw", "unfiled"), log=log)
         elif args.stage == "screen":
             stage_screen(inputs, carves, training, log=log)
         elif args.stage == "seeds":

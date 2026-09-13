@@ -114,39 +114,49 @@ class InputBlock(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, batch: PackedBatch) -> tuple[torch.Tensor, torch.Tensor]:
+        # Both projections are bias-free linear maps, so the projection of a mean is the
+        # mean of the projections: every prototype below is aggregated in the 64-wide
+        # projected space instead of the 1536-wide embedding space. Same function, same
+        # gradients; the edge-wide gathers shrink 24x (a systems choice, not a model change).
         B = batch.n_queries
         N = batch.x.shape[0]
+        P = self.semantic.projection_dim
         z = segment_zscore(batch.x, batch.node_query, B)
         base_z = z[:, self.base_index]
-        q_rows = batch.qemb[batch.node_query]
-        raw_q, q_state = _project(self.semantic.query_projection, q_rows)
-        raw_n, n_state = _project(self.semantic.node_projection, batch.emb)
+        pre_q = self.semantic.query_projection(batch.qemb)[batch.node_query]      # == query_projection(qemb[node_query])
+        raw_q = Fn.gelu(pre_q)
+        q_state = Fn.normalize(raw_q, dim=-1)
+        pre_n = self.semantic.node_projection(batch.emb)
+        raw_n = Fn.gelu(pre_n)
+        n_state = Fn.normalize(raw_n, dim=-1)
         semantic = torch.cat([
             q_state, n_state, q_state * n_state, (q_state - n_state).abs(),
             (q_state * n_state).sum(-1, keepdim=True), (raw_q * raw_n).sum(-1, keepdim=True) / raw_n.shape[-1] ** 0.5,
         ], dim=-1)
-        difference = semantic_difference_column(q_rows, batch.emb, self.difference_weight).unsqueeze(1)
+        difference = semantic_difference_column(batch.qemb[batch.node_query], batch.emb, self.difference_weight).unsqueeze(1)
         parts = [batch.x, z, semantic, difference]
         # C: fixed neighbour prototypes per family, projected strictly after the aggregation
+        # (node_projection(mean_u e_u) == mean_u node_projection(e_u), the map being linear)
         has_edges = batch.edge_attr.shape[0] > 0
         fam_of_edge = batch.edge_attr[:, : len(FAMILIES)].argmax(dim=1) if has_edges else None
         for f_i in range(len(FAMILIES)):
             if fam_of_edge is None:
-                parts.append(torch.zeros(N, PROJECTION_DIM, dtype=batch.x.dtype, device=batch.x.device))
+                parts.append(torch.zeros(N, P, dtype=batch.x.dtype, device=batch.x.device))
                 continue
             sel = fam_of_edge == f_i
             u, v = batch.edge_index[0, sel], batch.edge_index[1, sel]
-            proto, count = segment_mean_rows(batch.emb[u], v, N)
-            _, p_state = _project(self.semantic.node_projection, proto)
+            proto_pre, count = segment_mean_rows(pre_n[u], v, N)
+            p_state = Fn.normalize(Fn.gelu(proto_pre), dim=-1)
             p_state = torch.where((count > 0).unsqueeze(1), p_state, torch.zeros_like(p_state))
             parts.append(p_state * q_state)
-        # D: the 1/dist-weighted prototype of the seeds within two hops, projected after the aggregation
-        seed_emb = torch.zeros(B, MAX_SEEDS, DIM, dtype=batch.emb.dtype, device=batch.emb.device)
+        # D: the 1/dist-weighted prototype of the seeds within two hops, projected after the
+        # aggregation (an absent seed slot is the zero vector, whose image is zero)
+        seed_pre = torch.zeros(B, MAX_SEEDS, P, dtype=pre_n.dtype, device=pre_n.device)
         valid = batch.seed_nodes >= 0
-        seed_emb[valid] = batch.emb[batch.seed_nodes[valid]]
+        seed_pre[valid] = pre_n[batch.seed_nodes[valid]]
         w = batch.seedw
-        proto_reach = torch.einsum("ns,nsd->nd", w, seed_emb[batch.node_query]) / w.sum(1, keepdim=True).clamp_min(1e-12)
-        _, r_state = _project(self.semantic.node_projection, proto_reach)
+        reach_pre = torch.einsum("ns,nsp->np", w, seed_pre[batch.node_query]) / w.sum(1, keepdim=True).clamp_min(1e-12)
+        r_state = Fn.normalize(Fn.gelu(reach_pre), dim=-1)
         r_state = torch.where((w.sum(1) > 0).unsqueeze(1), r_state, torch.zeros_like(r_state))
         parts.append(r_state * n_state)
         h = self.dropout(Fn.gelu(self.linear(torch.cat(parts, dim=-1))))
