@@ -119,3 +119,14 @@ def test_the_training_rule_reads_the_filed_sampler_reading_or_refuses_to_fit():
     cfg["amendment_3_2026_09_13"] = {"training_reading": {"dataset_draw": "per_query"}}
     rule = m.training_rule(cfg, require_reading=True)
     assert rule["dataset_draw"] == "per_query" and rule["reading_block"] == "amendment_3_2026_09_13" and rule["batch_queries"] == 16
+
+
+def test_node_budgeted_batches_cover_every_query_once_in_order():
+    sys.path.insert(0, str(ROOT / "src"))
+    from mp_retrieval.m3b_train import node_budgeted_batches
+    ptr = np.asarray([0, 10, 30, 2030, 2040, 2050, 4050, 4060, 4070])          # pools of 10, 20, 2000, 10, 10, 2000, 10, 10
+    blocks = node_budgeted_batches(ptr, 8, batch_size=4, max_nodes=2020)
+    assert [b.tolist() for b in blocks] == [[0, 1], [2, 3, 4], [5, 6, 7]]      # a big pool closes the block it cannot join
+    assert np.concatenate(blocks).tolist() == list(range(8))
+    assert [b.tolist() for b in node_budgeted_batches(ptr, 8, batch_size=3, max_nodes=10**9)] == [[0, 1, 2], [3, 4, 5], [6, 7]]
+    assert node_budgeted_batches(ptr, 0, 4, 100) == []

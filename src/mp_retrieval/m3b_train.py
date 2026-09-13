@@ -325,12 +325,29 @@ def concat_batches(batches: list[PackedBatch]) -> PackedBatch:
 # ── evaluation ───────────────────────────────────────────────────────────────
 
 
+def node_budgeted_batches(pool_ptr: np.ndarray, n_queries: int, batch_size: int, max_nodes: int) -> list[np.ndarray]:
+    """Consecutive query index blocks of at most ``batch_size`` queries and, past
+    the first query of a block, at most ``max_nodes`` candidate rows -- so a
+    block of 2,000-candidate pools is a few queries and a block of 50-candidate
+    pools is the full ``batch_size``. Scores do not depend on the blocking."""
+    sizes = np.diff(pool_ptr[: n_queries + 1])
+    blocks, start = [], 0
+    while start < n_queries:
+        end, nodes = start + 1, int(sizes[start])
+        while end < n_queries and end - start < batch_size and nodes + int(sizes[end]) <= max_nodes:
+            nodes += int(sizes[end])
+            end += 1
+        blocks.append(np.arange(start, end))
+        start = end
+    return blocks
+
+
 @torch.no_grad()
-def evaluate_carve(model: torch.nn.Module, data: CarveData, batch_size: int = 32, families: tuple[str, ...] = FAMILIES) -> dict[str, np.ndarray]:
+def evaluate_carve(model: torch.nn.Module, data: CarveData, batch_size: int = 32, families: tuple[str, ...] = FAMILIES,
+                   max_nodes: int = 24_000) -> dict[str, np.ndarray]:
     model.eval()
     rows: list[dict] = []
-    for start in range(0, data.n_queries, batch_size):
-        idx = np.arange(start, min(start + batch_size, data.n_queries))
+    for idx in node_budgeted_batches(data.pool_ptr, data.n_queries, batch_size, max_nodes):
         batch = data.pack(idx, families)
         scores = model(batch).cpu().numpy()
         ptr = batch.qptr.numpy()
@@ -345,6 +362,10 @@ def macro_recall_at_5(per_dataset: dict[str, dict[str, np.ndarray]]) -> float:
 
 
 # ── the fit loop ─────────────────────────────────────────────────────────────
+
+
+class EpochTooLong(RuntimeError):
+    """compute.abort_criteria: an epoch over the declared limit halts the screen."""
 
 
 @dataclass
@@ -391,14 +412,15 @@ def draw_batch(fits: dict[str, CarveData], names: list[str], cursors: dict, rng:
 def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[str, CarveData], *, seed: int, arm: str, config: dict,
               max_epochs: int = 6, batches_per_epoch: int = 2000, batch_size: int = 16, patience: int = 2, lr: float = 1e-3,
               weight_decay: float = 1e-4, clip: float = 1.0, families: tuple[str, ...] = FAMILIES, dataset_draw: str = "per_query",
-              log=print) -> tuple[torch.nn.Module, FitRecord]:
+              epoch_limit_s: float | None = None, log=print) -> tuple[torch.nn.Module, FitRecord]:
     """AdamW on dataset-balanced batches: for every slot of a batch the dataset
     is drawn uniformly and then a fit query of that dataset (``dataset_draw``
     "per_query", the declared sampler; "per_batch" draws one dataset for the
     whole batch); queries are drawn without replacement per dataset until its
     trainable fit carve is exhausted, then reshuffled. Early stopping on the
     macro select recall@5 with the declared patience; the best epoch's weights
-    are returned."""
+    are returned. An epoch (training batches plus the select evaluation) longer
+    than ``epoch_limit_s`` raises EpochTooLong: the declared abort criterion."""
     if dataset_draw not in ("per_query", "per_batch"):
         raise ValueError(f"dataset_draw must be per_query or per_batch, got {dataset_draw!r}")
     torch.manual_seed(seed)
@@ -434,6 +456,9 @@ def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[
         record.epochs_run = epoch + 1
         log(f"      epoch {epoch}: loss {entry['train_loss']:.4f} select macro R@5 {macro:.4f} ({entry['seconds']}s) " +
             " ".join(f"{n}={v:.3f}" for n, v in entry["select_recall@5"].items()))
+        if epoch_limit_s is not None and entry["seconds"] > epoch_limit_s:
+            raise EpochTooLong(f"epoch {epoch} took {entry['seconds']}s, over the declared {epoch_limit_s:.0f}s: the screen halts; "
+                               "file the fallback as an amendment before continuing")
         if macro > record.best_select_macro_recall5 + 1e-9:
             record.best_select_macro_recall5 = macro
             record.best_epoch = epoch

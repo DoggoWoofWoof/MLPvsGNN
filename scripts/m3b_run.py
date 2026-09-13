@@ -141,6 +141,9 @@ def open_carves(contexts: dict, columns: np.ndarray, kinds=("fit", "select")) ->
 # ── fits ─────────────────────────────────────────────────────────────────────
 
 
+EPOCH_LIMIT_S = 40 * 60      # compute.abort_criteria: an epoch exceeding 40 minutes halts the screen
+
+
 def training_rule(cfg: dict, require_reading: bool) -> dict:
     """The declared training block plus the filed reading of its sampler
     (``training_reading`` in the latest amendment that carries one). A fit
@@ -171,7 +174,7 @@ def run_fit(arm: str, cfg_m: dict, seed: int, inputs: dict, carves: dict, traini
     model, record = fit_model(model, carves["fit"], carves["select"], seed=seed, arm=arm, config={**cfg_m, "substrate": substrate or "FULL"},
                               max_epochs=int(training["max_epochs"]), batches_per_epoch=int(str(training["epoch"]).split()[0]),
                               batch_size=int(training["batch_queries"]), patience=2, lr=1e-3, weight_decay=1e-4, clip=1.0,
-                              dataset_draw=training["dataset_draw"], log=log)
+                              dataset_draw=training["dataset_draw"], epoch_limit_s=float(training.get("epoch_limit_s", EPOCH_LIMIT_S)), log=log)
     torch.save(model.state_dict(), MODELS / f"{key}.pt")
     out = {**asdict(record), "key": key, "substrate": substrate or "FULL", "core_sha256": inputs["core_sha256"], "base": inputs["base"], "utc": utc(),
            "dataset_draw": training["dataset_draw"], "training_reading": training.get("reading_block"),

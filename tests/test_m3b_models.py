@@ -251,3 +251,10 @@ def test_the_per_query_draw_fills_every_slot_from_a_uniformly_drawn_dataset(worl
         assert batch.n_queries == 4
     with pytest.raises(ValueError):
         T.fit_model(M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"]), fits, fits, seed=0, arm="qls_u_sota_v1", config={}, dataset_draw="sometimes")
+
+
+def test_an_epoch_over_the_declared_limit_halts_the_fit(world):
+    fits = {"toy": world.fit}
+    with pytest.raises(T.EpochTooLong, match="over the declared"):
+        T.fit_model(M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"]), fits, {"toy": world.select}, seed=0, arm="qls_u_sota_v1", config={},
+                    max_epochs=1, batches_per_epoch=2, batch_size=4, epoch_limit_s=0.0, log=lambda m: None)
