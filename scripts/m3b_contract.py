@@ -4,6 +4,7 @@ the prospective cells the declaration names, per dataset
 
     python scripts/m3b_contract.py                 # metaqa and webqsp prospective cells, then the rule on all six
     python scripts/m3b_contract.py --datasets metaqa
+    python scripts/m3b_contract.py --reread             # re-read the measured cells; apply the rule as filed and the ruled reading
 
 Read-only against the package. The ceilings are the headroom's own functions
 (``scripts/m3a_headroom.py::cell``), the pools are built with the same helpers,
@@ -168,12 +169,152 @@ def setting_for(cell_: dict, cfg_h: dict) -> dict | None:
     raise KeyError(cell_["setting"])
 
 
+def cell_hops(cell_: dict, cfg_h: dict) -> int | None:
+    setting = setting_for(cell_, cfg_h)
+    return None if setting is None else int(setting["hops"])
+
+
+def in_ruled_family(cell_: dict, family: dict, cfg_h: dict) -> bool:
+    """The cell predicate of amendment_1.candidate_contract_amended.ruled_reading."""
+    if "regime" in family and cell_["regime"] != family["regime"]:
+        return False
+    if "hops" in family and cell_hops(cell_, cfg_h) != int(family["hops"]):
+        return False
+    if "base_pool_prefixes" in family:
+        base = cell_["base_pool"] if cell_["regime"] != "RETRIEVAL" else cell_["pool"]
+        if not any(base.startswith(pfx) for pfx in family["base_pool_prefixes"]):
+            return False
+    return True
+
+
+def readings(cells: list[dict], dataset: str, cfg: dict, cfg_h: dict) -> dict:
+    """The rule as filed over every cell, and the ruled reading where the
+    declaration names a family for the dataset."""
+    plain = apply_rule(cells, KNEE, BOUND)
+    ruled = cfg.get("amendment_1_2026_09_13", {}).get("candidate_contract_amended", {}).get("ruled_reading", {})
+    family = ruled.get(dataset)
+    out = {"rule_as_filed": plain, "ruled_family": None, "ruled_reading": None}
+    if isinstance(family, dict):
+        within = [c for c in cells if in_ruled_family(c, family, cfg_h)]
+        if not within:
+            raise RuntimeError(f"{dataset}: no measured cell in the ruled family {family}")
+        out["ruled_family"] = family
+        out["ruled_reading"] = apply_rule(within, KNEE, BOUND)
+        out["ruled_reading"]["cells_in_family"] = len(within)
+    return out
+
+
+def finish_record(record: dict, cells: list[dict], name: str, cfg: dict, cfg_h: dict) -> dict:
+    r = readings(cells, name, cfg, cfg_h)
+    chosen_reading = r["ruled_reading"] or r["rule_as_filed"]
+    chosen = chosen_reading["chosen"]
+    record.update({
+        "reading": "ruled_reading" if r["ruled_reading"] else "rule_as_filed", "ruled_family": r["ruled_family"],
+        "rule_as_filed": r["rule_as_filed"]["chosen"], "rule_as_filed_how": r["rule_as_filed"]["how"],
+        "verdict": {k: v for k, v in chosen_reading.items() if k != "chosen"}, "chosen": chosen,
+        "construction": {"base_pool": chosen["base_pool"] if chosen["regime"] != "RETRIEVAL" else chosen["pool"],
+                         "regime": chosen["regime"], "setting": setting_for(chosen, cfg_h)},
+        "cells": sorted(cells, key=lambda c: c["candidates_mean"]),
+    })
+    return record
+
+
+def write_contract(frozen: dict[str, dict], cfg_h: dict) -> str:
+    (OUT / "CONTRACT.json").write_text(json.dumps({n: {"chosen": r["chosen"], "construction": r["construction"], "verdict": r["verdict"],
+                                                        "reading": r["reading"], "rule_as_filed_pool": r["rule_as_filed"]["pool"]}
+                                                    for n, r in frozen.items()}, indent=1), encoding="utf-8")
+    block: dict = {"per_dataset": {}}
+    numeric = ("recall_ceiling@1", "recall_ceiling@5", "recall_ceiling@20", "fraction_of_attainable@5", "any_gold_at_pool",
+               "all_gold_at_pool", "candidates_mean", "candidates_p95", "candidates_max")
+    for name, r in frozen.items():
+        c = r["chosen"]
+        f = r["rule_as_filed"]
+        block["per_dataset"][name] = {
+            "pool": c["pool"], "construction": r["construction"], "eval_split": r["eval_split"], "queries": c.get("queries"),
+            **{k: (round(float(c[k]), 4) if isinstance(c[k], float) else c[k]) for k in numeric},
+            "reading": r["reading"], "ruled_family": r["ruled_family"], "rule_outcome": r["verdict"]["how"], "source": c["source"],
+            "rule_as_filed": {"pool": f["pool"], "recall_ceiling@5": round(float(f["recall_ceiling@5"]), 4),
+                              "fraction_of_attainable@5": round(float(f["fraction_of_attainable@5"]), 4),
+                              "candidates_mean": round(float(f["candidates_mean"]), 1)},
+        }
+    text = yaml.safe_dump(block, sort_keys=False, width=110)
+    (OUT / "contract_block.yaml").write_text(text, encoding="utf-8")
+    return text
+
+
+def file_contract(cfg: dict, date: str) -> int:
+    """Append the frozen candidate contract to the declaration, once: the
+    measured block from contract_block.yaml under a provenance header that pins
+    the run log, the per-dataset records, the config as run and the freeze."""
+    key = f"candidate_contract_frozen_{date}"
+    if any(k.startswith("candidate_contract_frozen_") for k in cfg):
+        raise SystemExit("a candidate_contract_frozen_* block is already filed; a different pool is a new block with a reason, not a re-file")
+    block_path, log_path = OUT / "contract_block.yaml", OUT / "_run.log"
+    if not block_path.exists() or not log_path.exists():
+        raise SystemExit("no contract_block.yaml / _run.log under outputs/m3b/contract: measure (and --reread) first")
+    block = yaml.safe_load(block_path.read_text(encoding="utf-8"))
+    names = list(cfg["populations"]["eval_splits"])
+    if set(block["per_dataset"]) != set(names):
+        raise SystemExit(f"contract_block.yaml covers {sorted(block['per_dataset'])}, the declaration needs {sorted(names)}")
+    records = {n: json.loads((OUT / f"{n}.json").read_text(encoding="utf-8")) for n in names}
+    config_shas = sorted({r["config_sha256"] for r in records.values()})
+    freezes = sorted({r["freeze_RECORD_SHA256"] for r in records.values()})
+    if len(config_shas) != 1 or len(freezes) != 1:
+        raise SystemExit(f"the per-dataset records disagree on the config as run {config_shas} or the freeze {freezes}")
+    sha = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()  # noqa: E731
+    provenance = {
+        "measured_by": "scripts/m3b_contract.py (main): the headroom's committed cells plus the prospective cells, per dataset",
+        "run_log": "outputs/m3b/contract/_run.log", "run_log_sha256": sha(log_path),
+        "records": {n: {"path": f"outputs/m3b/contract/{n}.json", "sha256": sha(OUT / f"{n}.json"), "utc": records[n]["utc"],
+                        "reread_utc": records[n].get("reread_utc"), "cells": len(records[n]["cells"])} for n in names},
+        "config_sha256_as_run": config_shas[0], "freeze_RECORD_SHA256": freezes[0],
+        "rule": f"knee {KNEE} within {BOUND} candidates (candidate_contract.selection_rule), readings per amendment_1_2026_09_13.candidate_contract_amended.ruled_reading",
+        "readings_applied_by": "scripts/m3b_contract.py --reread (re-reads the measured cells; nothing re-run)",
+        "filed_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+    out = {key: {"status": "FROZEN", "provenance": provenance, **block,
+                 "after_this_block": "no pool changes; a different pool for any dataset is a new dated block with its reason, never an edit here"}}
+    text = yaml.safe_dump(out, sort_keys=False, width=110, allow_unicode=True)
+    header = f"\n# ── frozen candidate contract, filed {provenance['filed_utc']} from outputs/m3b/contract (see provenance) ──\n"
+    with open(CONFIG, "a", encoding="utf-8", newline="\n") as f:
+        f.write(header + text)
+    reloaded = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+    if reloaded.get(key) != out[key]:
+        raise SystemExit("the appended block does not read back identically")
+    print(f"filed {key}: " + "; ".join(f"{n}={block['per_dataset'][n]['pool']}" for n in names))
+    return 0
+
+
+def reread(cfg: dict, cfg_h: dict, datasets: list[str]) -> int:
+    frozen: dict[str, dict] = {}
+    for name in datasets:
+        path = OUT / f"{name}.json"
+        if not path.exists():
+            raise SystemExit(f"{name}: no measured cells at {path}")
+        record = json.loads(path.read_text(encoding="utf-8"))
+        record = finish_record(record, record["cells"], name, cfg, cfg_h)
+        record["reread_utc"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        path.write_text(json.dumps(record, indent=1), encoding="utf-8")
+        frozen[name] = record
+        c, f = record["chosen"], record["rule_as_filed"]
+        print(f"   {name}: {record['reading']} -> {c['pool']} ({c['fraction_of_attainable@5']:.3f} at {c['candidates_mean']:.0f}); "
+              f"rule as filed -> {f['pool']} ({f['fraction_of_attainable@5']:.3f} at {f['candidates_mean']:.0f})", flush=True)
+    print(write_contract(frozen, cfg_h))
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--datasets", nargs="*", default=None)
+    parser.add_argument("--reread", action="store_true", help="apply the readings to the measured cells without re-running")
+    parser.add_argument("--file", metavar="DATE", default=None, help="append candidate_contract_frozen_DATE to the declaration from contract_block.yaml")
     args = parser.parse_args()
     cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
     cfg_h = yaml.safe_load(HEADROOM_CONFIG.read_text(encoding="utf-8"))
+    if args.reread:
+        return reread(cfg, cfg_h, args.datasets or list(cfg["populations"]["eval_splits"]))
+    if args.file:
+        return file_contract(cfg, args.file)
     m3a = load_headroom_module()
     package_root = Path(cfg["substrate"]["package_root"])
     canonical = m3a.import_loader(package_root)
@@ -201,34 +342,17 @@ def main() -> int:
         if name in additions:
             extra, info = prospective_cells(name, additions[name], cfg_h, m3a, canonical, package_root)
             cells.extend(extra)
-        verdict = apply_rule(cells, KNEE, BOUND)
-        chosen = verdict["chosen"]
         record = {
             "dataset": name, "eval_split": cfg_h["populations"]["eval_splits"][name], "knee": KNEE, "bound": BOUND,
             "utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "freeze_RECORD_SHA256": freeze["RECORD_SHA256"],
             "config_sha256": hashlib.sha256(CONFIG.read_bytes()).hexdigest(), "prospective": info,
-            "verdict": {k: v for k, v in verdict.items() if k != "chosen"}, "chosen": chosen,
-            "construction": {"base_pool": chosen["base_pool"] if chosen["regime"] != "RETRIEVAL" else chosen["pool"],
-                             "regime": chosen["regime"], "setting": setting_for(chosen, cfg_h)},
-            "cells": sorted(cells, key=lambda c: c["candidates_mean"]),
         }
+        record = finish_record(record, cells, name, cfg, cfg_h)
         (OUT / f"{name}.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
         frozen[name] = record
-        print(f"   -> {chosen['pool']}: ceiling@5 {chosen['recall_ceiling@5']:.4f} ({chosen['fraction_of_attainable@5']:.3f}) at {chosen['candidates_mean']:.0f} cand. [{verdict['how']}]", flush=True)
-    (OUT / "CONTRACT.json").write_text(json.dumps({n: {"chosen": r["chosen"], "construction": r["construction"], "verdict": r["verdict"]} for n, r in frozen.items()}, indent=1), encoding="utf-8")
-    block: dict = {"per_dataset": {}}
-    numeric = ("recall_ceiling@1", "recall_ceiling@5", "recall_ceiling@20", "fraction_of_attainable@5", "any_gold_at_pool",
-               "all_gold_at_pool", "candidates_mean", "candidates_p95", "candidates_max")
-    for name, r in frozen.items():
-        c = r["chosen"]
-        block["per_dataset"][name] = {
-            "pool": c["pool"], "construction": r["construction"], "eval_split": r["eval_split"], "queries": c.get("queries"),
-            **{k: (round(float(c[k]), 4) if isinstance(c[k], float) else c[k]) for k in numeric},
-            "rule_outcome": r["verdict"]["how"], "source": c["source"],
-        }
-    text = yaml.safe_dump(block, sort_keys=False, width=110)
-    (OUT / "contract_block.yaml").write_text(text, encoding="utf-8")
-    print(text)
+        chosen = record["chosen"]
+        print(f"   -> {chosen['pool']}: ceiling@5 {chosen['recall_ceiling@5']:.4f} ({chosen['fraction_of_attainable@5']:.3f}) at {chosen['candidates_mean']:.0f} cand. [{record['reading']}: {record['verdict']['how']}]", flush=True)
+    print(write_contract(frozen, cfg_h))
     return 0
 
 

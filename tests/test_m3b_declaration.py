@@ -139,3 +139,31 @@ def test_every_frozen_contract_block_carries_the_required_ceilings(decl):
         for name, cell in per_dataset.items():
             missing = required - set(cell)
             assert not missing, f"{key}/{name} lacks {sorted(missing)}"
+
+
+def test_every_frozen_contract_block_records_both_readings_and_a_construction(decl):
+    """The ruled reading (amendment 1) is applied within the family the plan
+    named; the rule-as-filed pick must stand beside it, and the construction
+    must be executable (base pool, regime, setting)."""
+    ruled = decl["amendment_1_2026_09_13"]["candidate_contract_amended"]["ruled_reading"]
+    for key, block in decl.items():
+        if not key.startswith("candidate_contract_frozen"):
+            continue
+        for name, cell in block["per_dataset"].items():
+            assert cell["reading"] in ("rule_as_filed", "ruled_reading"), (key, name)
+            assert {"pool", "fraction_of_attainable@5", "candidates_mean", "recall_ceiling@5"} <= set(cell["rule_as_filed"]), (key, name)
+            assert (cell["reading"] == "ruled_reading") == isinstance(ruled.get(name), dict), (key, name)
+            c = cell["construction"]
+            assert set(c) == {"base_pool", "regime", "setting"}
+            assert (c["setting"] is None) == (c["regime"] == "RETRIEVAL")
+            if c["setting"] is not None:
+                assert {"name", "hops", "per_seed_cap"} <= set(c["setting"])
+            if cell["reading"] == "ruled_reading":
+                fam = ruled[name]
+                if "regime" in fam:
+                    assert c["regime"] == fam["regime"]
+                if "hops" in fam:
+                    assert int(c["setting"]["hops"]) == int(fam["hops"])
+                if "base_pool_prefixes" in fam:
+                    assert any(c["base_pool"].startswith(p) for p in fam["base_pool_prefixes"])
+            assert cell["candidates_mean"] <= 2500, (key, name)   # candidate_contract.selection_rule.affordability_bound

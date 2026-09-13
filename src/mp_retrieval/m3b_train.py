@@ -1,0 +1,380 @@
+"""M3B training and evaluation (configs/m3b_controlled_comparison.yaml#training,
+#measurement): the carve caches, the packed-batch assembly, the metrics from
+raw ranks, the fit loop with dataset-balanced batches and early stopping on the
+select carves, and the evaluation pass.
+
+The cache holds what is expensive and deterministic (the scalar block per
+candidate, the pool, the seeds, the seed-reach weights, the in-pool gold and
+the query embedding); the pool-graph edges and the node embeddings are
+re-derived per batch from the stores and the served embeddings by the same
+functions the compiler used, so a cached and a freshly compiled query are the
+same object.
+"""
+
+from __future__ import annotations
+
+import copy
+import json
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import numpy as np
+import torch
+
+from mp_retrieval.m3b_features import (
+    DIM, FAMILIES, MAX_SEEDS, N_COLUMNS, DenseNodes, RelationTable, pool_edges,
+)
+from mp_retrieval.m3b_models import N_EDGE_FEATURES, PackedBatch, listwise_loss
+
+KS = (1, 5, 10, 20)
+METRIC_NAMES = tuple([f"recall@{k}" for k in KS] + ["hit@1", "mrr", "ndcg@5", "ndcg@20", "full_coverage@5", "full_coverage@20", "first_gold_rank", "gold_in_pool", "gold_total", "pool_size"])
+
+
+# ── metrics from raw ranks ───────────────────────────────────────────────────
+
+
+def rank_metrics(scores: np.ndarray, gold_local: np.ndarray, gold_total: int) -> dict[str, float]:
+    """All metrics of one query from its scores over the pool. Ties are broken
+    by pool order (ascending position), deterministically. recall@k divides by
+    the total gold count, so unretrieved gold counts against the model; MRR is
+    1 / rank of the first gold in the pool, 0 when no gold is in the pool."""
+    n = scores.shape[0]
+    order = np.argsort(-scores, kind="stable")
+    rank_of = np.empty(n, dtype=np.int64)
+    rank_of[order] = np.arange(1, n + 1)
+    gold_local = np.asarray(gold_local, dtype=np.int64)
+    gold_ranks = np.sort(rank_of[gold_local]) if gold_local.size else np.empty(0, dtype=np.int64)
+    first = int(gold_ranks[0]) if gold_ranks.size else 0
+    out: dict[str, float] = {}
+    total = max(int(gold_total), 1)
+    for k in KS:
+        out[f"recall@{k}"] = float((gold_ranks <= k).sum()) / total
+    out["hit@1"] = float(first == 1)
+    out["mrr"] = 1.0 / first if first else 0.0
+    for k in (5, 20):
+        hits = gold_ranks[gold_ranks <= k]
+        dcg = float((1.0 / np.log2(hits + 1.0)).sum())
+        ideal = float((1.0 / np.log2(np.arange(1, min(total, k) + 1) + 1.0)).sum())
+        out[f"ndcg@{k}"] = dcg / ideal if ideal > 0 else 0.0
+        out[f"full_coverage@{k}"] = float((gold_ranks <= k).sum() == total)
+    out["first_gold_rank"] = float(first)
+    out["gold_in_pool"] = float(gold_local.size)
+    out["gold_total"] = float(gold_total)
+    out["pool_size"] = float(n)
+    return out
+
+
+def mrr_audit(first_gold_rank: np.ndarray, mrr: np.ndarray) -> dict:
+    """Recompute MRR from the stored first-gold ranks and compare."""
+    first = np.asarray(first_gold_rank, dtype=np.float64)
+    recomputed = np.where(first > 0, 1.0 / np.maximum(first, 1.0), 0.0)
+    return {"max_abs_diff": float(np.abs(recomputed - np.asarray(mrr, dtype=np.float64)).max()) if first.size else 0.0,
+            "mean_recomputed": float(recomputed.mean()) if first.size else 0.0,
+            "mean_stored": float(np.asarray(mrr, dtype=np.float64).mean()) if first.size else 0.0,
+            "queries": int(first.size)}
+
+
+# ── the carve cache ──────────────────────────────────────────────────────────
+
+
+class NpyAppender:
+    """Writes one .npy file row-block by row-block without holding the array:
+    a header for a placeholder row count is written first and rewritten with
+    the final shape at close (padded to the same length, as the format allows)."""
+
+    PLACEHOLDER_ROWS = 10**15
+
+    def __init__(self, path: Path, dtype, columns: int | None):
+        self.path, self.dtype, self.columns, self.rows = Path(path), np.dtype(dtype), columns, 0
+        self.f = open(self.path, "wb")
+        self.header_len = len(self._header(self.PLACEHOLDER_ROWS))
+        self.f.write(self._header(self.PLACEHOLDER_ROWS))
+
+    def _shape(self, rows: int) -> tuple:
+        return (rows,) if self.columns is None else (rows, self.columns)
+
+    def _header(self, rows: int) -> bytes:
+        import io
+        buf = io.BytesIO()
+        np.lib.format.write_array_header_1_0(buf, {"descr": np.lib.format.dtype_to_descr(self.dtype), "fortran_order": False, "shape": self._shape(rows)})
+        return buf.getvalue()
+
+    def append(self, block: np.ndarray) -> None:
+        block = np.ascontiguousarray(np.asarray(block, dtype=self.dtype))
+        if block.shape[1:] != self._shape(0)[1:]:
+            raise ValueError(f"{self.path.name}: block shape {block.shape} does not match {self._shape(0)}")
+        self.f.write(block.tobytes())
+        self.rows += int(block.shape[0])
+
+    def close(self) -> None:
+        header = self._header(self.rows)
+        if len(header) > self.header_len:
+            raise RuntimeError(f"{self.path.name}: final header longer than the placeholder")
+        header = header[:-1] + b" " * (self.header_len - len(header)) + b"\n"   # the format pads its header with spaces before the newline
+        self.f.seek(0)
+        self.f.write(header)
+        self.f.close()
+
+
+class CacheWriter:
+    """Accumulates compiled queries of one carve and writes the cache directory.
+    The row-proportional arrays (pool, scalars, seedw) stream to disk as they
+    are added; only the per-query arrays are held until the end."""
+
+    STREAMED = ("pool", "scalars", "seedw")
+
+    def __init__(self, out_dir: Path, meta: dict):
+        self.out_dir = Path(out_dir)
+        self.out_dir.mkdir(parents=True, exist_ok=True)
+        self.meta = dict(meta)
+        self.qrow: list[int] = []
+        self.qemb: list[np.ndarray] = []
+        self.pool_ptr: list[int] = [0]
+        self.seeds: list[np.ndarray] = []
+        self.gold: list[np.ndarray] = []
+        self.gold_total: list[int] = []
+        self.edge_counts: list[list[int]] = []
+        self.query_ids: list[str] = []
+        self.streams = {"pool": NpyAppender(self.out_dir / "pool.npy", np.int32, None),
+                        "scalars": NpyAppender(self.out_dir / "scalars.npy", np.float16, N_COLUMNS),
+                        "seedw": NpyAppender(self.out_dir / "seedw.npy", np.float16, MAX_SEEDS)}
+
+    def add(self, query_id: str, qrow: int, qemb: np.ndarray, compiled, gold_local: np.ndarray, gold_total: int) -> None:
+        self.query_ids.append(query_id)
+        self.qrow.append(int(qrow))
+        self.qemb.append(np.asarray(qemb, dtype=np.float16))
+        self.streams["pool"].append(compiled.pool)
+        self.streams["scalars"].append(compiled.scalars)
+        self.streams["seedw"].append(compiled.seedw)
+        self.pool_ptr.append(self.pool_ptr[-1] + int(compiled.pool.shape[0]))
+        self.seeds.append(compiled.seeds_local.astype(np.int16))
+        self.gold.append(np.asarray(gold_local, dtype=np.int16))
+        self.gold_total.append(int(gold_total))
+        self.edge_counts.append([compiled.n_edges[f] for f in FAMILIES])
+
+    def write(self) -> dict:
+        for s in self.streams.values():
+            s.close()
+
+        def ptr(chunks):
+            return np.r_[0, np.cumsum([c.shape[0] for c in chunks])].astype(np.int64)
+
+        arrays = {
+            "qrow": np.asarray(self.qrow, dtype=np.int64), "qemb": np.stack(self.qemb) if self.qemb else np.empty((0, DIM), np.float16),
+            "pool_ptr": np.asarray(self.pool_ptr, dtype=np.int64),
+            "seeds_ptr": ptr(self.seeds), "seeds": np.concatenate(self.seeds) if self.seeds else np.empty(0, np.int16),
+            "gold_ptr": ptr(self.gold), "gold": np.concatenate(self.gold) if self.gold else np.empty(0, np.int16),
+            "gold_total": np.asarray(self.gold_total, dtype=np.int32),
+            "edge_counts": np.asarray(self.edge_counts, dtype=np.int32).reshape(-1, len(FAMILIES)),
+        }
+        for name, arr in arrays.items():
+            np.save(self.out_dir / f"{name}.npy", arr)
+        (self.out_dir / "query_ids.json").write_text(json.dumps(self.query_ids), encoding="utf-8")
+        n_rows = int(self.pool_ptr[-1])
+        for name in self.STREAMED:   # the streamed files must read back with the row count the pointers imply
+            shape = np.load(self.out_dir / f"{name}.npy", mmap_mode="r").shape
+            if shape[0] != n_rows:
+                raise RuntimeError(f"{name}.npy holds {shape[0]} rows, pool_ptr implies {n_rows}")
+        meta = {**self.meta, "n_queries": len(self.qrow), "n_rows": n_rows,
+                "candidates_mean": float(np.diff(arrays["pool_ptr"]).mean()) if self.qrow else 0.0,
+                "edges_per_query_mean": {f: float(arrays["edge_counts"][:, i].mean()) if self.qrow else 0.0 for i, f in enumerate(FAMILIES)},
+                "gold_in_pool_mean": float(np.diff(arrays["gold_ptr"]).mean()) if self.qrow else 0.0,
+                "queries_with_no_gold_in_pool": int((np.diff(arrays["gold_ptr"]) == 0).sum()),
+                "bytes": int(sum((self.out_dir / f"{n}.npy").stat().st_size for n in list(arrays) + list(self.STREAMED)))}
+        (self.out_dir / "meta.json").write_text(json.dumps(meta, indent=1), encoding="utf-8")
+        return meta
+
+
+@dataclass
+class DatasetContext:
+    """What a dataset needs at batch time besides the cache: its stores, node
+    embeddings and relation table."""
+
+    name: str
+    stores: dict
+    nodes: DenseNodes
+    rel_table: RelationTable | None
+
+
+class CarveData:
+    """One cached carve, read lazily (the scalar block is memory-mapped)."""
+
+    def __init__(self, cache_dir: Path, context: DatasetContext, columns: np.ndarray | None = None):
+        d = Path(cache_dir)
+        self.dir = d
+        self.context = context
+        # the QLS_U_CORE_CONTRACT column subset; None reads every compiled column
+        self.columns = None if columns is None else np.asarray(columns, dtype=np.int64)
+        self.meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
+        self.qrow = np.load(d / "qrow.npy")
+        self.qemb = np.load(d / "qemb.npy", mmap_mode="r")
+        self.pool_ptr = np.load(d / "pool_ptr.npy")
+        self.pool = np.load(d / "pool.npy", mmap_mode="r")
+        self.scalars = np.load(d / "scalars.npy", mmap_mode="r")
+        self.seedw = np.load(d / "seedw.npy", mmap_mode="r")
+        self.seeds_ptr = np.load(d / "seeds_ptr.npy")
+        self.seeds = np.load(d / "seeds.npy")
+        self.gold_ptr = np.load(d / "gold_ptr.npy")
+        self.gold = np.load(d / "gold.npy")
+        self.gold_total = np.load(d / "gold_total.npy")
+        self.n_queries = int(self.qrow.size)
+        self.trainable = np.flatnonzero(np.diff(self.gold_ptr) > 0)
+
+    def query(self, i: int) -> dict:
+        a, b = int(self.pool_ptr[i]), int(self.pool_ptr[i + 1])
+        return {
+            "pool": np.asarray(self.pool[a:b], dtype=np.int64),
+            "x": np.asarray(self.scalars[a:b], dtype=np.float32) if self.columns is None else np.asarray(self.scalars[a:b], dtype=np.float32)[:, self.columns],
+            "seedw": np.asarray(self.seedw[a:b], dtype=np.float32), "qemb": np.asarray(self.qemb[i], dtype=np.float32),
+            "seeds": np.asarray(self.seeds[self.seeds_ptr[i]:self.seeds_ptr[i + 1]], dtype=np.int64),
+            "gold": np.asarray(self.gold[self.gold_ptr[i]:self.gold_ptr[i + 1]], dtype=np.int64), "gold_total": int(self.gold_total[i]),
+        }
+
+    def pack(self, indices: np.ndarray, families: tuple[str, ...] = FAMILIES) -> PackedBatch:
+        return pack_queries([self.query(int(i)) for i in indices], self.context, families)
+
+
+def pack_queries(queries: list[dict], context: DatasetContext, families: tuple[str, ...] = FAMILIES) -> PackedBatch:
+    """Assemble a PackedBatch; edges are re-derived with pool_edges and node
+    embeddings gathered from the served store."""
+    xs, embs, qembs, seedws, seed_nodes, golds, eis, eas = [], [], [], [], [], [], [], []
+    ptr = [0]
+    node_query = []
+    for qi, qd in enumerate(queries):
+        pool = qd["pool"]
+        n = pool.size
+        off = ptr[-1]
+        xs.append(qd["x"])
+        embs.append(qd["emb"] if "emb" in qd else context.nodes.read(pool))   # the eval pass passes the rows it already gathered
+        qembs.append(qd["qemb"])
+        seedws.append(qd["seedw"])
+        row = np.full(MAX_SEEDS, -1, dtype=np.int64)
+        row[: qd["seeds"].size] = qd["seeds"][:MAX_SEEDS] + off
+        seed_nodes.append(row)
+        g = np.zeros(n, dtype=bool)
+        g[qd["gold"]] = True
+        golds.append(g)
+        relcos = (context.rel_table.embeddings @ qd["qemb"]).astype(np.float32) if context.rel_table is not None else None
+        edges, _ = pool_edges(pool, context.stores, relcos)
+        for f_i, fam in enumerate(FAMILIES):
+            if fam not in families:
+                continue
+            u, v, attr = edges[fam]
+            if u.size == 0:
+                continue
+            eis.append(np.stack((u.astype(np.int64) + off, v.astype(np.int64) + off)))
+            onehot = np.zeros((u.size, len(FAMILIES)), dtype=np.float32)
+            onehot[:, f_i] = 1.0
+            eas.append(np.concatenate((onehot, attr), axis=1))
+        node_query.append(np.full(n, qi, dtype=np.int64))
+        ptr.append(off + n)
+    edge_index = np.concatenate(eis, axis=1) if eis else np.empty((2, 0), dtype=np.int64)
+    edge_attr = np.concatenate(eas, axis=0) if eas else np.empty((0, N_EDGE_FEATURES), dtype=np.float32)
+    return PackedBatch(
+        x=torch.from_numpy(np.concatenate(xs)), qptr=torch.tensor(ptr, dtype=torch.long), node_query=torch.from_numpy(np.concatenate(node_query)),
+        emb=torch.from_numpy(np.concatenate(embs)), qemb=torch.from_numpy(np.stack(qembs)), seedw=torch.from_numpy(np.concatenate(seedws)),
+        seed_nodes=torch.from_numpy(np.stack(seed_nodes)), edge_index=torch.from_numpy(edge_index), edge_attr=torch.from_numpy(edge_attr),
+        gold=torch.from_numpy(np.concatenate(golds)),
+    )
+
+
+# ── evaluation ───────────────────────────────────────────────────────────────
+
+
+@torch.no_grad()
+def evaluate_carve(model: torch.nn.Module, data: CarveData, batch_size: int = 32, families: tuple[str, ...] = FAMILIES) -> dict[str, np.ndarray]:
+    model.eval()
+    rows: list[dict] = []
+    for start in range(0, data.n_queries, batch_size):
+        idx = np.arange(start, min(start + batch_size, data.n_queries))
+        batch = data.pack(idx, families)
+        scores = model(batch).cpu().numpy()
+        ptr = batch.qptr.numpy()
+        for j, i in enumerate(idx):
+            qd = data.query(int(i))
+            rows.append(rank_metrics(scores[ptr[j]:ptr[j + 1]], qd["gold"], qd["gold_total"]))
+    return {name: np.asarray([r[name] for r in rows], dtype=np.float64) for name in METRIC_NAMES}
+
+
+def macro_recall_at_5(per_dataset: dict[str, dict[str, np.ndarray]]) -> float:
+    return float(np.mean([m["recall@5"].mean() for m in per_dataset.values()]))
+
+
+# ── the fit loop ─────────────────────────────────────────────────────────────
+
+
+@dataclass
+class FitRecord:
+    arm: str
+    config: dict
+    seed: int
+    epochs_run: int = 0
+    best_epoch: int = -1
+    best_select_macro_recall5: float = -1.0
+    history: list = field(default_factory=list)
+    seconds: float = 0.0
+    parameters: int = 0
+    steps: int = 0
+    batches_skipped_no_gold: int = 0
+
+
+def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[str, CarveData], *, seed: int, arm: str, config: dict,
+              max_epochs: int = 6, batches_per_epoch: int = 2000, batch_size: int = 16, patience: int = 2, lr: float = 1e-3,
+              weight_decay: float = 1e-4, clip: float = 1.0, families: tuple[str, ...] = FAMILIES, log=print) -> tuple[torch.nn.Module, FitRecord]:
+    """AdamW on dataset-balanced batches (one dataset per batch, drawn uniformly;
+    queries drawn without replacement per dataset until its trainable fit carve
+    is exhausted, then reshuffled); early stopping on the macro select
+    recall@5 with the declared patience; the best epoch's weights are returned."""
+    torch.manual_seed(seed)
+    rng = np.random.default_rng(seed)
+    names = sorted(fits)
+    cursors = {n: [rng.permutation(fits[n].trainable), 0] for n in names}
+    optimiser = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
+    record = FitRecord(arm=arm, config=dict(config), seed=seed, parameters=sum(p.numel() for p in model.parameters() if p.requires_grad))
+    best_state = copy.deepcopy(model.state_dict())
+    t0 = time.time()
+    bad = 0
+    for epoch in range(max_epochs):
+        model.train()
+        t_epoch = time.time()
+        losses = []
+        for _ in range(batches_per_epoch):
+            name = names[int(rng.integers(len(names)))]
+            perm, pos = cursors[name]
+            if pos + batch_size > perm.size:
+                perm = rng.permutation(fits[name].trainable)
+                pos = 0
+            idx = perm[pos:pos + batch_size]
+            cursors[name] = [perm, pos + batch_size]
+            batch = fits[name].pack(idx, families)
+            if not bool(batch.gold.any()):
+                record.batches_skipped_no_gold += 1
+                continue
+            optimiser.zero_grad(set_to_none=True)
+            loss = listwise_loss(model(batch), batch)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
+            optimiser.step()
+            losses.append(float(loss.detach()))
+            record.steps += 1
+        per_dataset = {n: evaluate_carve(model, selects[n], families=families) for n in sorted(selects)}
+        macro = macro_recall_at_5(per_dataset)
+        entry = {"epoch": epoch, "train_loss": float(np.mean(losses)) if losses else None, "select_macro_recall@5": macro,
+                 "select_recall@5": {n: float(m["recall@5"].mean()) for n, m in per_dataset.items()}, "seconds": round(time.time() - t_epoch, 1)}
+        record.history.append(entry)
+        record.epochs_run = epoch + 1
+        log(f"      epoch {epoch}: loss {entry['train_loss']:.4f} select macro R@5 {macro:.4f} ({entry['seconds']}s) " +
+            " ".join(f"{n}={v:.3f}" for n, v in entry["select_recall@5"].items()))
+        if macro > record.best_select_macro_recall5 + 1e-9:
+            record.best_select_macro_recall5 = macro
+            record.best_epoch = epoch
+            best_state = copy.deepcopy(model.state_dict())
+            bad = 0
+        else:
+            bad += 1
+            if bad >= patience:
+                break
+    model.load_state_dict(best_state)
+    record.seconds = round(time.time() - t0, 1)
+    return model, record

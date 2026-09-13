@@ -497,6 +497,19 @@ amendment_1_2026_09_13:
           fusion is mp_retrieval.rank_fusion.rrf_rankings at that weight,
           truncated at the union size like the inherited pools.
     merge_rule: these base pools are added to the webqsp list in candidate_contract.selection_rule; the settings and regimes there are unchanged; the knee rule and the bound are unchanged
+    ruled_reading:
+      why: >-
+        user_plan_2026_09_13_condensed stage 1 names the pool family per dataset
+        (metaqa STRUCT h3; webqsp dense-only versus the weighted fusion instead
+        of equal RRF). The knee rule (0.90 of attainable, smallest pool, bound
+        2,500) is applied within the ruled family for those two datasets, and
+        the rule-as-filed outcome over every cell is recorded beside it in the
+        frozen block. The plan was filed in cec4d7a (13:59:57 +05:30) before the
+        measurement started; the filter below restates it as a cell predicate.
+      metaqa: {regime: STRUCT, hops: 3}
+      webqsp: {base_pool_prefixes: [dense_top, wrrf0.75_budget]}
+      others: the rule as filed over every measured cell
+      applied_by: scripts/m3b_contract.py --reread (re-reads the measured cells; nothing is re-run)
 
   feature_contract_amended:
     topology_added:  # per family f in {STRUCT, NER, KNN, FULL}
