@@ -1,0 +1,466 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# M3B — the controlled comparison: QLS-U, one universal GAT, and GAT-NO-MP,
+# under one information contract, on the served canonical substrate.
+#
+# Declared and committed before any candidate contract is frozen, before any
+# feature is compiled and before any weight is fitted. Every rule that a later
+# number depends on is in this file or in the dated blocks appended to it, in
+# order; nothing below is a result. ONE FILE PER PHASE: this is M3B's file.
+# ═════════════════════════════════════════════════════════════════════════════
+experiment: m3b_controlled_comparison
+phase: M3B
+status: DECLARED_NOT_RUN
+declared: 2026-09-13
+declared_under:
+  - configs/m3a_sota_information_contract.yaml   # model naming, feature / candidate / proposed-object contracts
+  - configs/m3a_compilation.yaml                 # directions A-D, qls_u_architecture, universal_gnn_calibration_rule, amendment 1
+  - configs/m3a_headroom.yaml                    # the pools, seeds, expansions and the knee rule the contract freezes on
+  - configs/m3_gnn_development.yaml              # the M3 firewall
+headroom_evidence: outputs/m3a/headroom/*.json as filed in configs/m3a_headroom.yaml#run_record (commit 9c807de)
+
+registered_question: >-
+  After matching candidate exposure and inference-time graph information to
+  modern graph-retrieval/GNN systems, how much effectiveness remains
+  attributable specifically to learned message passing?
+forbidden_framings:
+  - prove message passing is unnecessary
+  - show that we do not need message passing
+  - demonstrate that the MLP wins
+result_is: >-
+  whatever delta_MP is measured, per dataset and per substrate; nonzero remains
+  a valid outcome and the registered question is unchanged.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Authorization. The user's ruling, verbatim, and exactly what it lifts.
+# ─────────────────────────────────────────────────────────────────────────────
+authorization_2026_09_13:
+  ruling_verbatim: "no continue and get me the results or outputs"
+  context: >-
+    given in the review chat on 2026-09-13 after the headroom report
+    (docs/M3A_HEADROOM_REPORT.md, commit 9c807de) was filed with
+    STOP_FOR_REVIEW; the earlier rulings of the same day (proceed
+    autonomously; one universal GNN; all six datasets; the three substrates;
+    match-not-exceed the SOTA exposure) stand and are filed verbatim in
+    configs/m3a_compilation.yaml#amendment_1_2026_09_13.user_rulings_2026_09_13.
+  read_as: >-
+    the STOP_FOR_REVIEW of 9c807de is lifted and the phase is to be carried
+    through to results, not paused after the next declaration.
+  lifts_from_m3a_compilation_not_authorised:
+    - training QLS-U
+    - training any GNN
+    - final six-dataset contract   # frozen in this file, by the declared rule, after the declared measurements
+    - final M3B
+  narrows: large GNN sweeps -> the screen declared below and nothing wider
+  still_out_of_scope:
+    - Package F
+    - E2
+    - distillation of any kind (configs/m3a_sota_information_contract.yaml#distillation)
+    - WebQSP RoG-exact recomputation, or any GPU spend (no GPU exists on this machine; the WebQSP SOTA cell is reported from the archaeology with its exposure named)
+    - any test split of any dataset
+    - any edit to a frozen M2/M2B/M2C/M2D file or result, to configs/m3a_headroom.yaml's run record, or to scripts/m3a_headroom.py (its sha is filed there)
+  process_rules_kept:
+    - no scientific result from test data
+    - commit the rule before the number
+    - systems convenience never edits science
+    - the M3 firewall (below)
+    - CRAG is read-only; every output is a sidecar under outputs/m3b/
+  on_completion: >-
+    results filed in docs/M3B_RESULTS.md and committed with their provenance;
+    the user reads the results, not a request for permission.
+
+firewall:
+  source: configs/m3_gnn_development.yaml
+  rule: >-
+    the universal GAT's depth and width are selected among GAT candidates on
+    the select carve only; no QLS-U number enters that selection; QLS-U's width
+    is selected on its own; GAT-NO-MP inherits the GAT's selected (L, H) so
+    that the control differs from the treatment in message passing alone.
+  where_they_meet: the results table, after both selections are filed.
+
+substrate:
+  package_root: C:/Users/Swastik/Desktop/CRAG
+  served_root: data/final_canonical
+  access_mode: READ_ONLY
+  loader: data/final_canonical/canonical.py, imported from the package, never copied
+  byte_code: sys.dont_write_bytecode is set before the import; refuse to run if data/final_canonical/__pycache__ exists
+  freeze_RECORD_SHA256_expected: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+  on_freeze_mismatch: REFUSE_TO_RUN
+  embeddings:
+    dense: embeddings/dense/{docs,queries}, float16 (n, 1536), unit-L2, Alibaba-NLP/gte-Qwen2-1.5B-instruct
+    splade: embeddings/splade/{docs,queries}, CSR over 30522 terms; raw splade scores are never compared across datasets (SPLADE_POOLING caveat)
+  caches: retrieval_cache/{dense,splade}_top1000.npz; row j is query j, ids are positions
+  graphs: structural (directed as stored; rel int16 into rel_vocab on metaqa and webqsp), ner and knn (one row per unordered pair, weighted)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Populations. Evaluation = the headroom populations, whole. Training = carves
+# of the train split fixed by a stride rule, never by a random draw.
+# ─────────────────────────────────────────────────────────────────────────────
+populations:
+  eval_splits:
+    metaqa: dev
+    squad: dev
+    musique: dev
+    hotpotqa: validation
+    2wiki: dev
+    webqsp: train_holdout
+  eval_rule: >-
+    every query of the eval split, zero-gold queries excluded from every
+    metric and counted on the row (webqsp 46 expected), exactly as
+    configs/m3a_headroom.yaml#populations; webqsp train_holdout is
+    sorted(train query_ids)[::2] with carve sha
+    a818f4614b84d143c802e3732f4861bc3a09752eb42246d1fdfd83f50cd76882
+    (refuse on mismatch); test splits are never read.
+  training_carves:
+    source: the train split, sorted lexicographically by query_id; for webqsp the non-holdout half, sorted(train)[1::2]
+    select:
+      size: min(1500, N // 5)
+      rule: sorted_train[::s_sel] with s_sel = max(2, round(N / size)); the select carve is the early-stopping and model-selection population and never trains a weight
+    fit:
+      source: sorted_train minus select
+      size_cap: 6000
+      rule: remaining[::s_fit] with s_fit = max(1, ceil(len(remaining) / 6000))
+    zero_gold_and_no_gold_in_pool: >-
+      zero-gold queries are dropped from both carves; a fit query whose candidate
+      pool contains no gold contributes no loss (the historical
+      _listwise_batch_loss behaviour) and is counted in the run record.
+    recorded_in_run_record: per dataset, N, select count, fit count, sha256 of the comma-joined ids of each carve
+    why_a_stride: >-
+      a stride over the sorted ids samples every block of the id space in
+      proportion (metaqa ids sort by hop, so all three hop types are
+      represented); it is reproducible from the rule alone and needs no seed.
+    why_capped: >-
+      CPU-only training (compute below). The cap is a compute bound and is
+      reported beside every result; the SOTA systems train on the full split
+      and that difference is named in the results table, never hidden.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Candidate contract. One pool per dataset, parameter-free, identical for the
+# three arms, frozen by the knee rule after two prospective measurements.
+# ─────────────────────────────────────────────────────────────────────────────
+candidate_contract:
+  name: HIGH_HEADROOM_CANDIDATE_CONTRACT
+  identical_for: [qls_u_sota_v1, gat_universal_v1, gat_no_mp_v1]
+  must_not: no learned QLS score and no GNN score selects the candidate universe
+  construction_vocabulary: exactly configs/m3a_headroom.yaml -- base pools (dense_top{K}, splade_top{K}, frozen_union, equal_rrf_budget_{B}), seeds = dense_top5 union splade_top5, expansions over the declared regimes with the declared neighbour order and caps, expansion unioned with the base pool
+  selection_rule:
+    knee: >-
+      per dataset, the pool with the smallest mean candidates per query whose
+      fraction_of_attainable@5 (recall_ceiling@5 / recall_ceiling_perfect_retrieval@5)
+      on the eval population is at least 0.90, among the measured cells below;
+      ties (equal mean candidates) go to the higher ceiling.
+    affordability_bound: mean candidates per query <= 2500 (CPU compilation and training; the bound is declared here, before any cell is read for this purpose)
+    if_no_cell_reaches_0_90_within_the_bound: the highest fraction_of_attainable@5 within the bound, and the full curve is reported
+    cells_in_scope:
+      committed: every EVAL_POPULATION row of outputs/m3a/headroom/{dataset}.json with recall_ceiling@5 defined (the R4 prefix rows carry only recall at their own depth and are out of scope)
+      prospective_additions_measured_before_the_freeze:
+        metaqa:
+          why: missing golds lie 0.49 within 2 STRUCT hops and 0.996 within 3 (headroom reachability); KB systems expose up to 3 hops; the declared h2 settings cannot show a 3-hop knee
+          settings:
+            - {name: h3_c25_v2000, hops: 3, per_seed_cap: 25, per_frontier_cap: 25, visited_cap: 2000}
+            - {name: h3_c25_v4000, hops: 3, per_seed_cap: 25, per_frontier_cap: 25, visited_cap: 4000}
+          regimes: [STRUCT, FULL]
+          base_pools: [equal_rrf_budget_50, equal_rrf_budget_200]
+        webqsp:
+          why: equal RRF hurts on webqsp (0.316 < dense 0.358); the declared base pools are both RRF; a dense base and a 3-hop STRUCT setting are the KB-lineage-matched exposure
+          settings:
+            - {name: h1_c100, hops: 1, per_seed_cap: 100}
+            - {name: h2_c25, hops: 2, per_seed_cap: 25, per_frontier_cap: 25, visited_cap: 2000}
+            - {name: h3_c25_v2000, hops: 3, per_seed_cap: 25, per_frontier_cap: 25, visited_cap: 2000}
+          regimes: [STRUCT, FULL]
+          base_pools: [dense_top50, dense_top100, dense_top200]
+      hop_3_definition: >-
+        hop 3 expands the hop-2 nodes in order of first appearance under the
+        same per_frontier_cap and the same visited_cap (seeds included), i.e.
+        scripts/m3a_headroom.py::expand generalised to N hops; a test holds the
+        N <= 2 case byte-identical to the filed function on toy graphs.
+    measurement_population: the eval population (ceilings are properties of the pool, not fits; no weight sees them)
+  freeze_procedure: >-
+    scripts/m3b_contract.py applies the rule to the committed rows plus the
+    prospective cells, writes outputs/m3b/contract/{dataset}.json, and the
+    frozen per-dataset contract is appended to this file as
+    candidate_contract_frozen_<date> with the ceilings it carries
+    (recall_ceiling@1/5/20, ANY, ALL, candidates mean/p95, fraction of
+    attainable) and committed before any feature of any arm is compiled.
+  reported_per_dataset: [recall_ceiling@1, recall_ceiling@5, recall_ceiling@20, any_gold_at_pool, all_gold_at_pool, candidates_mean, candidates_p95, edges_per_query_mean, fraction_of_attainable@5]
+  ceiling_discipline: recall_ceiling@K is K-aware and bounds recall@K; candidate_ceiling is pool coverage with no K; the two are never conflated
+
+# ─────────────────────────────────────────────────────────────────────────────
+# The pool graph. What message passing runs on, and what the topology
+# features are computed on. A function of the pool and the served graphs.
+# ─────────────────────────────────────────────────────────────────────────────
+pool_graph:
+  nodes: the frozen candidate pool of the query (seeds are members by construction)
+  edges: >-
+    for every pool node v and every family f in {structural, ner, knn}, the
+    first in_pool_neighbour_cap pool members among the neighbours of v in the
+    declared neighbour order of configs/m3a_headroom.yaml#graph_regimes
+    (weight descending then position ascending; structural by position, parallel
+    typed edges collapsed for adjacency but kept for the relation statistics);
+    each kept neighbour u yields one message edge u -> v tagged with its family.
+  in_pool_neighbour_cap: 64
+  why_a_cap: >-
+    hubs (structural max degree hotpotqa 189,410, 2wiki 158,048, webqsp
+    137,000) would otherwise make the edge count of one query unbounded; 64 per
+    family per node is above the in-pool degree of all but hub nodes and is
+    the same rule for every arm and every feature. Declared before any number.
+  edge_attributes:
+    family_one_hot: 3
+    weight: ner / knn stored weight divided by the maximum weight of that family within the pool graph (0 for structural)
+    rel_compat: max over the parallel typed edges between u and v of cos(q, e_r), 0 where the dataset has no typed relations
+    rel_compat_mask: 1 where a typed relation exists on the edge
+    direction: two flags for structural edges (stored as u->v, stored as v->u), both 0 for the symmetric families
+  families_as_substrates:
+    FULL: all three families (the main GAT arm)
+    STRUCT: structural only
+    NER: ner only
+    KNN: knn only
+  relation_text_embeddings:
+    datasets: [metaqa, webqsp]
+    text: the rel_vocab string with dots and underscores replaced by spaces
+    encoder: Alibaba-NLP/gte-Qwen2-1.5B-instruct from the local HF hub, document mode (no instruction prefix), unit-L2, float16, same DIM 1536 as the served nodes
+    stored: outputs/m3b/relations/{dataset}_rel_embeddings.npy with the vocab sha256 beside it
+    why: cos(q, e_r) is the relation-query compatibility every KB-lineage GNN reads (ReaRev / NuTrea / GNN-RAG); the served query embeddings are used as q
+
+# ─────────────────────────────────────────────────────────────────────────────
+# F(q, v): the information contract, identical for the three arms.
+# Every scalar names its source, formula and availability; every optional
+# group carries a mask. No dataset id, no dataset branch, no gold-derived value.
+# ─────────────────────────────────────────────────────────────────────────────
+feature_contract:
+  name: SOTA_FEATURE_CONTRACT_v1
+  normalisation: >-
+    every scalar enters twice: its bounded raw form (cosines in [-1, 1],
+    reciprocal ranks in [0, 1], counts as log1p, fractions) and its within-query
+    z-score over the candidate pool (mean 0, std 1 per query; std < 1e-6 gives
+    0). No per-dataset statistic exists anywhere in the pipeline, so one set
+    of weights processes all six datasets.
+  groups:
+    retrieval:  # all datasets
+      dense_cos: q . e_v, exact, from the served unit-L2 embeddings (defined for every pool member, retrieved or expanded)
+      dense_rr: 1 / rank in the dense top-1000 cache, 0 if absent
+      dense_in: 1 if v is in the dense top-1000 cache
+      splade_rr: 1 / rank in the splade top-1000 cache, 0 if absent
+      splade_in: 1 if v is in the splade top-1000 cache
+      splade_score_norm: cached splade score divided by the top splade score of the query, 0 if absent (within-query, so comparable across datasets)
+      rrf: 1/(60 + dense rank) + 1/(60 + splade rank), an absent list contributes 0 (mp_retrieval.rank_fusion convention, c = 60)
+      agreement: dense_in * splade_in
+      is_seed: 1 if v is in the seed list
+      seed_rank: (1 + position in the seed list) / 10 if seed, 0 otherwise
+    topology:  # per family f in {STRUCT, NER, KNN, FULL}, computed on the pool graph
+      dist_bucket_f: one-hot over {0 (seed), 1, 2, 3, unreached within 3} of the BFS distance from the seed set inside the pool graph
+      reach_f: 1 if reached within 3 hops
+      seeds_1hop_f: log1p(number of distinct seeds adjacent to v)
+      seeds_2hop_frac_f: fraction of the seed set within 2 hops of v
+      deg_pool_f: log1p(in-pool degree, capped adjacency)
+      deg_global_f: log1p(global degree in the served family)
+      walks2_f: log1p(number of length-2 walks from the seed set to v in the pool graph)
+      avail_f: 1 if the family has at least one edge in this pool graph (mask)
+    edge_weights:  # ner, knn
+      wmax_seed_f: maximum stored weight on an edge between v and a seed, 0 if none
+      wsum_seed_f: log1p(sum of those weights)
+    neighbour_aggregation_C:  # per family f in {STRUCT, NER, KNN}; fixed aggregation, learned transformation strictly after
+      proto_f(v): mean of e_u over the in-pool neighbours of v in f (capped list); the zero vector when there are none
+      cos_q_proto_f: cos(q, proto_f(v)), 0 with mask 0 when there are no neighbours
+      max_q_nbr_f: max over neighbours of cos(q, e_u)
+      cohesion_f: cos(e_v, proto_f(v))
+      has_nbr_f: mask
+      in_model: proto_f(v) is projected by the shared node projection and multiplied elementwise with the projected query (64 columns per family); see the arms
+    fixed_propagation_GCS:  # parameter-free; the GraphER GCS rule with the pool graph as W
+      s: rrf divided by its maximum within the pool (0 for expansion-only nodes)
+      W: row-normalised symmetric adjacency of the pool graph (FULL, and separately STRUCT)
+      rule: p0 = s; p_{t+1} = alpha s + (1 - alpha) W p_t; alpha = 0.5; T = 2; gcs_f(v) = max(p_T(v), s(v))
+      columns: [gcs_full, gcs_struct]
+    seed_conditioned_D:
+      cos_v_seedproto: cos(e_v, mean of the seed embeddings)
+      max_cos_v_seed: max over seeds of cos(e_v, e_s)
+      cos_v_reachproto: cos(e_v, weighted mean of the embeddings of seeds within 2 hops of v in the FULL pool graph, weight 1/dist), 0 with mask 0 when none
+      has_reach_seed: mask
+      in_model: the projected reachable-seed prototype multiplied elementwise with the projected node (64 columns)
+    typed_relations_B:  # metaqa and webqsp; every column 0 and typed_available 0 elsewhere
+      typed_available: mask, 1 where the served structural graph carries rel and rel_vocab
+      relmax_seed: max over structural edges between v and a seed of cos(q, e_r); relmean_seed likewise; has_typed_seed_edge mask
+      relmax_in: max over all in-pool structural edges incident to v of cos(q, e_r); relmean_in likewise; has_typed_edge mask
+      rel_ief: max over incident in-pool typed edges of log((1 + n_nodes) / (1 + corpus count of edges carrying r)) -- a corpus statistic of the served graph
+      rel_div: log1p(number of distinct relations incident to v in the pool graph)
+      dir_in_frac: fraction of the in-pool structural edges of v in which v is the stored destination
+    semantic_in_model:  # learned inside each arm, on the same inputs
+      projection: ProjectionSemanticHead(1536, 64) from mp_retrieval.m2b_semantic_control -- bias-free query and node projections, GELU, normalise; 258 output columns (projected query, projected node, product, absolute difference, cosine, raw dot)
+      semantic_difference: sum_i w_i |q_i - e_v,i| with w zero-initialised over the 1536 dimensions (mp_retrieval.m2d_stage1_arms.semantic_difference_column), 1 column
+      prototype_products: as listed under C and D above, using the same node projection (no extra projection matrix)
+  prohibitions:
+    - no dataset id as a feature; no dataset-specific branch in the builder; no gold-derived value
+    - no feature added merely because a paper contains it -- every group above is a named direction (A topology, B typed relations, C neighbour aggregation, D seed-conditioned aggregation) or a retrieval score the SOTA systems also read
+  inference_availability: every column is computable at inference time from the query, the served caches, embeddings and graphs
+  outputs:
+    - outputs/m3b/feature_contract.json (the column list with formulas, written by the compiler and asserted by a test)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# The fixed base score. Chosen by a rule on the select carve, identical for
+# every arm, and the thing every arm can return unchanged at step 0.
+# ─────────────────────────────────────────────────────────────────────────────
+fixed_base_score:
+  candidates: [dense_cos, rrf, gcs_full]
+  rule: >-
+    the candidate with the highest macro-average recall@5 over the six select
+    carves when the pool is ranked by it alone; ties go to the earlier entry.
+    Applied once, filed in the run record, never revisited after a fit exists.
+  enters_the_model_as: base_z, the within-query z-score of the chosen candidate
+  do_not: hard-code the GraphER GCS as the base -- it is one candidate under the rule
+
+# ─────────────────────────────────────────────────────────────────────────────
+# The three arms. Same F(q, v), same projections, same readout, same loss,
+# same optimiser, same schedule. They differ in the mechanism named by the arm.
+# ─────────────────────────────────────────────────────────────────────────────
+arms:
+  shared:
+    input_block: >-
+      [scalar block (raw and within-query z-scored), ProjectionSemanticHead 258
+      columns, semantic_difference 1 column, C prototype products 3 x 64,
+      D reachable-seed prototype product 64] -> Linear -> H, GELU, dropout 0.2
+    residual_readout: score(v) = w_b * base_z(v) + r(v), with r(v) = Linear_out(h_v); Linear_out zero-initialised, w_b initialised to 1
+    why: >-
+      at step 0 every arm returns the fixed base score exactly, so returning it
+      unchanged is the easiest solution in the hypothesis class, not merely a
+      representable one (configs/m3a_compilation.yaml#qls_u_architecture); the
+      symmetry requirement filed there is met because the mechanism is
+      identical across the arms.
+    projection_dim: 64
+  qls_u_sota_v1:
+    display_name: QLS-U
+    role: the proposed efficient model
+    body: input block -> 2 hidden layers of width H (GELU, dropout 0.2) -> residual readout; no access to edges beyond the compiled F(q, v)
+    screen: H in [64, 128], selected on its own select-carve macro recall@5
+    prohibitions: no learned message passing anywhere; no ensemble; no dataset router; no distillation
+  gat_universal_v1:
+    display_name: universal GAT
+    role: the message-passing arm; one family across the six datasets, no per-dataset family, no router
+    body: >-
+      input block -> L layers of GATv2Conv(H -> H, heads 4, concat, edge_dim =
+      edge attribute width, add_self_loops) each followed by residual
+      connection, LayerNorm, GELU, dropout 0.2 -> residual readout; edges are
+      the pool graph of the FULL substrate
+    question_conditioned_relation_aware: >-
+      the attention logits read the projected query-conditioned node states and
+      the edge attributes (family, weight, rel_compat, direction), which is the
+      ReaRev / NuTrea / GNN-RAG ingredient; the GATv2 aggregation is the GraphER
+      ingredient (configs/m3a_compilation.yaml#universal_gnn_calibration_rule)
+    screen: L in [2, 3] x H in [64, 128], selected on the GAT candidates alone (firewall)
+  gat_no_mp_v1:
+    display_name: GAT-NO-MP
+    role: causal control, not a proposed model
+    body: identical module to gat_universal_v1 at the selected (L, H) with the message edge set replaced by self-loops only, so every layer sees its own node and nothing else
+    measures: the increment attributable to message passing itself, with capacity, normalisation, depth and training held fixed
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Training, selection, seeds. One universal set of weights per arm, trained
+# jointly on the six fit carves.
+# ─────────────────────────────────────────────────────────────────────────────
+training:
+  universality: one model per arm, weights shared across the six datasets; the batch sampler draws the dataset uniformly and then a fit query of that dataset (dataset-balanced batches)
+  loss: >-
+    listwise softmax cross-entropy per query with a uniform target over the
+    in-pool gold, averaged over the batch -- the historical
+    scripts/run_operator_screen.py::_listwise_batch_loss transcribed:
+    L_q = -sum_{g in gold} (1/|gold|) log softmax(scores_q)[g]; queries with
+    no in-pool gold contribute nothing
+  temperature: 1.0 (scores are free-scale; the M2 0.07 belonged to cosine-bounded heads)
+  optimiser: AdamW, lr 1e-3, weight decay 1e-4, gradient clip 1.0
+  batch_queries: 16
+  epoch: 2000 batches (32,000 query draws; the six fit carves total about 31,000 queries)
+  max_epochs: 6
+  early_stopping: macro-average over the six select carves of recall@5, evaluated after every epoch; patience 2; the best epoch is kept
+  seeds:
+    screen: 0
+    selected_configs: [0, 1, 2]
+    selected_configs_are: QLS-U at its selected H, the GAT at its selected (L, H), GAT-NO-MP at that (L, H)
+  selection:
+    gat: argmax over the screen of macro select recall@5 among GAT candidates only; ties to the smaller (L, H)
+    qls_u: argmax over its own screen; ties to the smaller H
+    filed_before_any_eval_number: the two selections are written to outputs/m3b/selection.json before any eval population is scored
+  substrate_ablation: the selected GAT (L, H), seed 0, retrained three times with the message edges restricted to STRUCT, NER and KNN respectively; F(q, v) unchanged
+  dropout: 0.2
+  compiled_feature_cache: outputs/m3b/cache/ (gitignored; float16 scalars, int32 pool ids and edges per carve; a deterministic function of the contract, recomputable, never a scientific object)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Measurement. Metrics, the paired statistic, the SOTA column.
+# ─────────────────────────────────────────────────────────────────────────────
+measurement:
+  population: the eval population of each dataset, whole; one pass compiles F(q, v) once per query and scores every selected model on it
+  metrics:
+    recall@k: golds in the top k divided by the total gold count of the query (mp_retrieval.m2d_semantic_fusion.metrics form), k in [1, 5, 10, 20]
+    hit@1: 1 if the top-ranked candidate is gold
+    mrr: 1 / rank of the first gold
+    ndcg@k: binary gains, ideal DCG over the total gold count, k in [5, 20]
+    full_coverage@k: 1 if every gold is in the top k, k in [5, 20]
+    unretrieved_gold: counts against recall (a gold outside the pool is a miss; the pool ceiling row says how many)
+  ceilings_beside_every_row: recall_ceiling@1/5/20 of the frozen pool (candidate contract) and, for webqsp, the corpus ceiling column 0.5255 (a column, never averaged)
+  delta_MP:
+    definition: gat_universal_v1 minus gat_no_mp_v1, per dataset, per metric, seed 0 paired over queries
+    interval: paired bootstrap over eval queries, 1000 resamples, numpy default_rng(0), percentile 95 percent
+    seeds: mean and standard deviation over seeds 0-2 reported beside the paired seed-0 interval
+    also_reported: gat_universal_v1 minus qls_u_sota_v1, same procedure
+    per_substrate: gat_universal_v1[substrate] minus gat_no_mp_v1 for STRUCT, NER, KNN, FULL (seed 0)
+  sota_column:
+    source: outputs/m3a/sota_archaeology.json (commit d291155)
+    cells:
+      hotpotqa: GraphER PR@5 GCS 78.8 / GAT 78.0 / MLP 78.9; PR@10 88.7 / 88.9 / 87.2
+      2wiki: GraphER PR@5 43.8 / 44.1 / 42.5; PR@10 51.1 / 53.0 / 51.1
+      musique: GraphER PR@5 25.4 / 25.6 / 21.6; PR@10 36.9 / 37.4 / 32.4
+      webqsp: NuTrea Hit@1 77.43; ReaRev 76.4
+      metaqa: NuTrea Hit@1 1-hop 97.4 / 2-hop 99.99 / 3-hop 98.89; ReaRev 3-hop 98.9
+      squad: no graph-retrieval SOTA in the archaeology; the retrieval ceiling row stands in
+    our_number_in_the_same_form: recall@5 and recall@10 for the GraphER rows (PR@K is gold-passage coverage at K); hit@1 for the KB rows, with metaqa split by hop
+    exposure_named_on_every_cell: >-
+      GraphER: 200-candidate query-induced corpus, per-dataset training on the
+      full split; NuTrea / ReaRev: assigned topic entities, full KB
+      neighbourhood up to 3 hops, per-dataset training, an LLM-free reader-side
+      metric; ours: the frozen pool under the knee rule, seeds from retrieval,
+      six-dataset shared weights, fit carve capped at 6000. The gap is read
+      against these named differences, never averaged across them.
+    when_delta_mp_is_not_read: >-
+      configs/m3a_compilation.yaml#universal_gnn_calibration_rule
+      .when_delta_mp_is_not_read applies: if the universal GAT falls outside the
+      SOTA band and no named exposure difference explains the gap, that cell
+      reports the numbers and marks delta_MP NOT_READ.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Compute record. Filed before the expensive step, as the discipline requires.
+# ─────────────────────────────────────────────────────────────────────────────
+compute:
+  hardware: local only -- 12 CPUs, 15.7 GB RAM, torch 2.8.0+cpu (10 threads), torch_geometric 2.6.1, no GPU; Modal workspaces hold no canonical data and are not used
+  storage: 27 GB free; the feature cache is bounded at 10 GB and is deleted if the bound is reached (recomputable)
+  steps_and_estimates:
+    contract_measurement: metaqa 8 prospective cells and webqsp 18, CPU, about 30-60 minutes
+    relation_embeddings: 9 + 7,058 texts through gte-Qwen2-1.5B on CPU, about 15 minutes
+    compile_fit_and_select: about 31,000 + 7,000 queries, 10-30 ms each plus embedding gathers, about 1-2 hours
+    fits: 16 (screen 4 GAT + 2 QLS-U + 1 NO-MP; seeds 6; ablation 3), each at most 6 epochs of 2000 batches; estimated 4-15 minutes per epoch, 12-20 hours total
+    eval_pass: about 75,000 queries compiled once and scored by every selected model, 1-2 hours
+  hard_ceiling: 36 hours of wall clock for the whole phase
+  abort_criteria:
+    - an epoch exceeding 40 minutes halts the screen; the declared fallback is fit cap 3000 with the same rule, and the change is filed as an amendment before continuing
+    - free disk below 8 GB halts compilation
+    - any freeze mismatch, carve sha mismatch or CRAG write refuses to run
+  gpu_seconds: 0
+  expected_cost: 0 (local CPU)
+
+# ─────────────────────────────────────────────────────────────────────────────
+outputs:
+  code:
+    - src/mp_retrieval/m3b_pools.py       # carves, seeds, N-hop expansion, the pool graph
+    - src/mp_retrieval/m3b_features.py    # F(q, v) compiler
+    - src/mp_retrieval/m3b_models.py      # the three arms
+    - src/mp_retrieval/m3b_train.py       # loss, sampler, loop, selection
+    - scripts/m3b_contract.py             # knee rule over committed + prospective cells; writes outputs/m3b/contract/
+    - scripts/m3b_relations.py            # relation text embeddings
+    - scripts/m3b_compile.py              # caches for the carves
+    - scripts/m3b_run.py                  # fits, selection, eval pass
+    - scripts/m3b_report.py               # docs/M3B_RESULTS.md from outputs/m3b/
+  sidecars_gitignored: outputs/m3b/**
+  committed: this file (with dated blocks), the code, tests, docs/M3B_RESULTS.md, and the run record (sha256 of every output that a number in the results cites)
+order_of_operations:
+  1: commit this declaration (status DECLARED_NOT_RUN)
+  2: measure the prospective contract cells; append candidate_contract_frozen_<date>; commit
+  3: relation embeddings, compile caches; append the base score selection and carve record; commit
+  4: screen, selection filed to outputs/m3b/selection.json, seeds, ablation
+  5: eval pass; docs/M3B_RESULTS.md; run record appended here; status RUN; commit
+on_completion: results filed and committed (authorization_2026_09_13.on_completion)
