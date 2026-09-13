@@ -594,3 +594,239 @@ amendment_2_2026_09_13_systems:
     the carve cache writer streams the row arrays (pool, scalars, seedw) to
     disk as queries are compiled instead of holding the carve in memory; the
     files and values are identical (tests/test_m3b_compile.py).
+
+# ── frozen candidate contract, filed 2026-09-13T10:41:14Z from outputs/m3b/contract (see provenance) ──
+candidate_contract_frozen_2026_09_13:
+  status: FROZEN
+  provenance:
+    measured_by: 'scripts/m3b_contract.py (main): the headroom''s committed cells plus the prospective cells, per
+      dataset'
+    run_log: outputs/m3b/contract/_run.log
+    run_log_sha256: abc982e4fa77eb44015fe0411c59364f0132a270fa46696ae9cad012ab37d231
+    records:
+      metaqa:
+        path: outputs/m3b/contract/metaqa.json
+        sha256: ad190f844c3a1bb3389427c622f07bd5de48bec3553eca8dbcb3532362781f4a
+        utc: '2026-09-13T10:35:58Z'
+        reread_utc: '2026-09-13T10:40:10Z'
+        cells: 41
+      squad:
+        path: outputs/m3b/contract/squad.json
+        sha256: 73e9c3354460578aaa35c67c23bf70719988dfea9260ff334bac445a329aeddc
+        utc: '2026-09-13T10:35:58Z'
+        reread_utc: '2026-09-13T10:40:10Z'
+        cells: 31
+      musique:
+        path: outputs/m3b/contract/musique.json
+        sha256: 09d0788d64347e5776cfb22de138d4c028f9d5e93f1bf9f83474ccefa67e767f
+        utc: '2026-09-13T10:35:58Z'
+        reread_utc: '2026-09-13T10:40:10Z'
+        cells: 31
+      hotpotqa:
+        path: outputs/m3b/contract/hotpotqa.json
+        sha256: d2807e03c9f508cbdce25097b089099c872d9fa07f48eb5244847923bdcd3f39
+        utc: '2026-09-13T10:35:58Z'
+        reread_utc: '2026-09-13T10:40:10Z'
+        cells: 31
+      2wiki:
+        path: outputs/m3b/contract/2wiki.json
+        sha256: a24c0b8690a1bd2ced9707a46fa2fbe42fce394597e14c5449780c660c2692dd
+        utc: '2026-09-13T10:35:58Z'
+        reread_utc: '2026-09-13T10:40:10Z'
+        cells: 31
+      webqsp:
+        path: outputs/m3b/contract/webqsp.json
+        sha256: 78e3b3282025535f70a4361914d2fc14649001e1bdc15f407ea27cbc77a241d6
+        utc: '2026-09-13T10:39:19Z'
+        reread_utc: '2026-09-13T10:40:10Z'
+        cells: 73
+    config_sha256_as_run: 7aee16def2946e49fc8a748e3603743e81611536659266a6b9e4ca346a12fd2f
+    freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+    rule: knee 0.9 within 2500.0 candidates (candidate_contract.selection_rule), readings per amendment_1_2026_09_13.candidate_contract_amended.ruled_reading
+    readings_applied_by: scripts/m3b_contract.py --reread (re-reads the measured cells; nothing re-run)
+    filed_utc: '2026-09-13T10:41:14Z'
+  per_dataset:
+    metaqa:
+      pool: equal_rrf_budget_50+STRUCT:h3_c25_v2000
+      construction:
+        base_pool: equal_rrf_budget_50
+        regime: STRUCT
+        setting:
+          name: h3_c25_v2000
+          hops: 3
+          per_seed_cap: 25
+          per_frontier_cap: 25
+          visited_cap: 2000
+      eval_split: dev
+      queries: 39138
+      recall_ceiling@1: 0.5257
+      recall_ceiling@5: 0.8094
+      recall_ceiling@20: 0.9262
+      fraction_of_attainable@5: 0.9776
+      any_gold_at_pool: 0.9876
+      all_gold_at_pool: 0.8938
+      candidates_mean: 2016.9624
+      candidates_p95: 2041.0
+      candidates_max: 2045
+      reading: ruled_reading
+      ruled_family:
+        regime: STRUCT
+        hops: 3
+      rule_outcome: smallest mean candidates among cells with fraction_of_attainable@5 >= 0.9 within 2500
+      source: prospective
+      rule_as_filed:
+        pool: equal_rrf_budget_200+FULL:h2_c25
+        recall_ceiling@5: 0.7469
+        fraction_of_attainable@5: 0.9021
+        candidates_mean: 1290.4
+    squad:
+      pool: equal_rrf_budget_50
+      construction:
+        base_pool: equal_rrf_budget_50
+        regime: RETRIEVAL
+        setting: null
+      eval_split: dev
+      queries: 11873
+      recall_ceiling@1: 0.9798
+      recall_ceiling@5: 0.9798
+      recall_ceiling@20: 0.9798
+      fraction_of_attainable@5: 0.9798
+      any_gold_at_pool: 0.9798
+      all_gold_at_pool: 0.9798
+      candidates_mean: 50.0
+      candidates_p95: 50.0
+      candidates_max: 50
+      reading: rule_as_filed
+      ruled_family: null
+      rule_outcome: smallest mean candidates among cells with fraction_of_attainable@5 >= 0.9 within 2500
+      source: committed:outputs/m3a/headroom/squad.json
+      rule_as_filed:
+        pool: equal_rrf_budget_50
+        recall_ceiling@5: 0.9798
+        fraction_of_attainable@5: 0.9798
+        candidates_mean: 50.0
+    musique:
+      pool: equal_rrf_budget_200+FULL:h2_c25
+      construction:
+        base_pool: equal_rrf_budget_200
+        regime: FULL
+        setting:
+          name: h2_c25
+          hops: 2
+          per_seed_cap: 25
+          per_frontier_cap: 25
+          visited_cap: 2000
+      eval_split: dev
+      queries: 2417
+      recall_ceiling@1: 0.4034
+      recall_ceiling@5: 0.9207
+      recall_ceiling@20: 0.9207
+      fraction_of_attainable@5: 0.9207
+      any_gold_at_pool: 0.995
+      all_gold_at_pool: 0.8026
+      candidates_mean: 2092.4435
+      candidates_p95: 2172.0
+      candidates_max: 2187
+      reading: rule_as_filed
+      ruled_family: null
+      rule_outcome: smallest mean candidates among cells with fraction_of_attainable@5 >= 0.9 within 2500
+      source: committed:outputs/m3a/headroom/musique.json
+      rule_as_filed:
+        pool: equal_rrf_budget_200+FULL:h2_c25
+        recall_ceiling@5: 0.9207
+        fraction_of_attainable@5: 0.9207
+        candidates_mean: 2092.4
+    hotpotqa:
+      pool: equal_rrf_budget_50+STRUCT:h1_c25
+      construction:
+        base_pool: equal_rrf_budget_50
+        regime: STRUCT
+        setting:
+          name: h1_c25
+          hops: 1
+          per_seed_cap: 25
+      eval_split: validation
+      queries: 7405
+      recall_ceiling@1: 0.4958
+      recall_ceiling@5: 0.98
+      recall_ceiling@20: 0.98
+      fraction_of_attainable@5: 0.98
+      any_gold_at_pool: 0.9916
+      all_gold_at_pool: 0.9684
+      candidates_mean: 93.6787
+      candidates_p95: 137.0
+      candidates_max: 236
+      reading: rule_as_filed
+      ruled_family: null
+      rule_outcome: smallest mean candidates among cells with fraction_of_attainable@5 >= 0.9 within 2500
+      source: committed:outputs/m3a/headroom/hotpotqa.json
+      rule_as_filed:
+        pool: equal_rrf_budget_50+STRUCT:h1_c25
+        recall_ceiling@5: 0.98
+        fraction_of_attainable@5: 0.98
+        candidates_mean: 93.7
+    2wiki:
+      pool: equal_rrf_budget_50+STRUCT:h1_c25
+      construction:
+        base_pool: equal_rrf_budget_50
+        regime: STRUCT
+        setting:
+          name: h1_c25
+          hops: 1
+          per_seed_cap: 25
+      eval_split: dev
+      queries: 12576
+      recall_ceiling@1: 0.4452
+      recall_ceiling@5: 0.9636
+      recall_ceiling@20: 0.9636
+      fraction_of_attainable@5: 0.9636
+      any_gold_at_pool: 0.9997
+      all_gold_at_pool: 0.9058
+      candidates_mean: 105.6446
+      candidates_p95: 144.0
+      candidates_max: 209
+      reading: rule_as_filed
+      ruled_family: null
+      rule_outcome: smallest mean candidates among cells with fraction_of_attainable@5 >= 0.9 within 2500
+      source: committed:outputs/m3a/headroom/2wiki.json
+      rule_as_filed:
+        pool: equal_rrf_budget_50+STRUCT:h1_c25
+        recall_ceiling@5: 0.9636
+        fraction_of_attainable@5: 0.9636
+        candidates_mean: 105.6
+    webqsp:
+      pool: dense_top200+FULL:h3_c25_v2000
+      construction:
+        base_pool: dense_top200
+        regime: FULL
+        setting:
+          name: h3_c25_v2000
+          hops: 3
+          per_seed_cap: 25
+          per_frontier_cap: 25
+          visited_cap: 2000
+      eval_split: train_holdout
+      queries: 1503
+      recall_ceiling@1: 0.5736
+      recall_ceiling@5: 0.7649
+      recall_ceiling@20: 0.8067
+      fraction_of_attainable@5: 0.8628
+      any_gold_at_pool: 0.9215
+      all_gold_at_pool: 0.688
+      candidates_mean: 2119.5961
+      candidates_p95: 2165.0
+      candidates_max: 2187
+      reading: ruled_reading
+      ruled_family:
+        base_pool_prefixes:
+        - dense_top
+        - wrrf0.75_budget
+      rule_outcome: no cell reaches 0.9 within 2500; highest fraction_of_attainable@5 within the bound
+      source: prospective
+      rule_as_filed:
+        pool: dense_top200+FULL:h3_c25_v2000
+        recall_ceiling@5: 0.7649
+        fraction_of_attainable@5: 0.8628
+        candidates_mean: 2119.6
+  after_this_block: no pool changes; a different pool for any dataset is a new dated block with its reason, never
+    an edit here
