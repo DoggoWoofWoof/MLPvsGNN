@@ -1414,3 +1414,118 @@ qls_u_core_contract_2026_09_13:
     columns whose interaction effects the models are there to find.
   screen_file_sha256: f5c87507bbf36e3f073e4f72c009706c0b9ecf70264905cd20d7251c95b00f0c
   after_this_block: the models read this list and nothing else; a different list is a new dated block with its reason
+
+# ── Amendment 3 -- 2026-09-13, after the caches and the feature screen, before the first fit: the sampler reading, the measured cost, the compute re-based ──
+amendment_3_2026_09_13_training_reading_and_compute:
+  status: FILED_BEFORE_ANY_FIT
+  filed_utc: '2026-09-13T14:44:10Z'
+  numbers_present: systems timings only (outputs/m3b/timing_before_pipelining.json, 13:22Z; outputs/m3b/timing.json,
+    14:25Z; the per-op profile of 2026-09-13 19:20 IST); no select or eval metric exists and no weight has been
+    trained
+  training_reading:
+    dataset_draw: per_query
+    why: training.universality says the sampler "draws the dataset uniformly and then a fit query of that dataset
+      (dataset-balanced batches)". The first implementation drew one dataset per batch of 16; the reading filed
+      here draws the dataset for every slot of the batch, which is the literal text and is what "one universal set
+      of weights" trains on -- every step sees the six datasets in expectation. It is also four times lighter at
+      the peak (a single-dataset musique batch is 34,000 candidates and a million message edges; a mixed batch is
+      about a quarter of that). All three arms, the seeds and the substrate ablation train under the same draw,
+      so the comparison is unchanged.
+    epoch_limit_s: 28800
+  systems_changes_before_the_first_fit:
+    projected_space_aggregation: the shared input block aggregates the Direction C neighbour prototypes and the
+      Direction D reach prototype in the 64-wide projected space; the projections are bias-free linear maps, so
+      the projection of a mean is the mean of the projections (outputs to 1e-5, gradients to 1e-4 against the embedding-space
+      reference kept in the test). Commit 98418a0.
+    one_conversion_per_batch: float16 scalars are widened once per batch through torch (exact); the served float16
+      rows stay in the packed batch and the input block widens them where it reads them. Commits 98418a0, 947f6a4.
+    node_budgeted_evaluation: the select-carve evaluation blocks queries by candidate rows (24,000); scores independent
+      of the blocking. Commit 256ee5e.
+    reader_thread_gather: 'DenseNodes.read gathers a memory-mapped store (hotpotqa 16 GB, 2wiki 18 GB, webqsp 8
+      GB) in sorted order from 16 reader threads; a cold row is a random 3 KB read and the NVMe serves many at once
+      where one thread served one. Measured on webqsp, the 33,094 rows of a 16-query fit batch, cold: 5.01 s in
+      one thread, 0.38 s with 16 (equal bytes, tested). Commit 947f6a4.'
+    packing_ahead: the fit loop draws every batch's indices in order on the main thread and packs them up to 2 ahead
+      on 2 worker threads; the select evaluation packs its blocks the same way. The batches are the sequential loop's,
+      field for field (tested over 18 mixed batches); the global-to-local lookup table the edge extraction reuses
+      is per thread. Commit 947f6a4.
+    checkpoint_per_epoch: every fit writes its whole state after each epoch (weights, optimiser, both random generators,
+      the draw cursors, the best weights, the record) and a restarted run continues as the uninterrupted run would
+      have (tested); the machine is the user's laptop and the fits are hours long. Commit 947f6a4.
+    torch_threads: 8 of the 12 logical CPUs for the fits (the pack workers and the user's own processes take the
+      rest); recorded in every fit record with the pack settings and the peak resident memory.
+    what_was_tried_and_dropped: 'recomputing the GATv2 layers in the backward pass (torch.utils.checkpoint) to cut
+      the per-step peak: measured on the heaviest mixed batch (19,436 candidates, 432,179 edges) it was 30-50 percent
+      slower for no measurable saving in the steady state, so it is not used.'
+  timing:
+    machine: 'the user''s laptop (12 logical CPUs, 15.7 GB), shared with the user''s own work throughout: a Next.js
+      dev server (up to 7 cores while it compiles, 4-6 GB resident), a media player, browsers and the Claude app;
+      the baseline load with nothing of this phase running was 55-75 percent and free physical memory 1.5-5.6 GB.
+      The same computation therefore varies several-fold with the hour: the GATv2 (L 3, H 128) step on the heaviest
+      mixed batch (19,436 candidates, 432,179 edges) took 2.2-2.4 s when the machine was quiet (per-op profile,
+      19:20 IST, 8-10 threads), 11.4 s in the 13:22Z timing and 22.5 s in the 14:25Z timing.'
+    per_epoch_minutes_2000_batches_plus_select_evaluation:
+      qls_u_sota_v1_H128:
+        training: 56.8
+        select_evaluation: 11.2
+        total: 68
+        seconds_per_batch: 1.705
+      gat_universal_v1_L3_H128:
+        training: 197.6
+        select_evaluation: 24.3
+        total: 222
+        seconds_per_batch: 5.929
+      gat_no_mp_v1_L3_H128:
+        training: 94.9
+        select_evaluation: 11.0
+        total: 106
+        seconds_per_batch: 2.847
+      before_the_systems_changes_13_22Z_threads_10:
+        qls_u_sota_v1_H128: 140.6 + 12.9
+        gat_universal_v1_L3_H128: 459.4 + 22.0
+        gat_no_mp_v1_L3_H128: 136.4 + 11.5
+    where_the_time_goes: the pack of a batch (memory-mapped row reads, the in-pool edge extraction) is now hidden
+      behind the step for the GAT and about half hidden for QLS-U; what remains is the GATv2 step itself -- per
+      edge and per layer it materialises several (edges x hidden) tensors, which is the module's arithmetic, not
+      an inefficiency of this code -- and whatever the other processes on the machine take. Peak resident memory
+      of the timing process 6.97 GB (the single-dataset musique batch of a per_batch draw, not a training condition);
+      the per_query training peak is about 5 GB.
+    declared_estimate: compute.steps_and_estimates said 4-15 minutes per epoch and 12-20 hours for the 16 fits;
+      it was unmeasured and is wrong by an order of magnitude.
+  compute_decision:
+    training_unchanged: 'epoch 2000 batches of 16, max_epochs 6, early stopping on macro select recall@5 with patience
+      2, AdamW 1e-3 / 1e-4 / clip 1.0, dropout 0.2, the fit and select carves as compiled (fit cap 6000), the GAT
+      grid, the QLS-U grid, the seeds, the substrate ablation, the selection rule and the firewall: none of it changes.'
+    pre_registered_fallback_not_taken: 'compute.abort_criteria names "fit cap 3000 with the same rule" as the fallback
+      for an epoch over 40 minutes. It is not taken, for three reasons filed before any number exists: (1) it would
+      halve the training data of every arm to protect a ceiling that was derived from the same unmeasured per-epoch
+      estimate that proved wrong -- the cost is a property of this machine, not of the comparison; (2) less data
+      disadvantages the arm that needs it most, the universal GAT, which is the opposite of what this phase is for
+      (the user''s ruling: keep as much headroom for the GNN as the SOTA systems have); (3) the fallback would not
+      even meet the 40-minute rule -- halving the pass leaves the GATv2 (3, 128) epoch near two hours under the
+      measured load. The fallback stays what it is: the declared response should an epoch exceed the re-based limit
+      below.'
+    abort_criterion: '"an epoch exceeding 40 minutes halts the screen" becomes "an epoch exceeding 8 hours (28,800
+      s, training batches plus the select evaluation) halts the screen"; 8 hours is about twice the largest configuration''s
+      measured epoch under the load above, so an epoch beyond it means the machine is paging or otherwise broken
+      rather than busy. The declared fallback (fit cap 3000, filed as an amendment before continuing) is unchanged.
+      Every epoch''s wall time is written to the fit record (history[].seconds) and reported.'
+    hard_ceiling: '36 hours becomes 264 hours (11 days) of wall clock for the fits and the eval pass, the worst
+      case of the measured costs: the screen (four GAT fits taken at the (3, 128) cost, two QLS-U) is 1,024
+      epoch-minutes per round, the seeds (three GAT-NO-MP, two GAT, two QLS-U) 898, the ablation 666, times six
+      epochs = 259 hours, plus 1-3
+      hours for the eval pass. Expected: early stopping at about four epochs gives 173 hours under the measured
+      load, and the same work ran 2-5x faster whenever the machine was quiet. Reaching the ceiling halts the phase;
+      what exists is filed, as declared.'
+    what_the_report_says: the training cost column of the main table reports the measured wall clock and the shared
+      machine beside it; the SOTA systems' GPU-hours are not comparable and are named as such.
+  order_of_operations_from_here:
+  - python scripts/m3b_run.py --stage screen --threads 8 (the four GAT and the two QLS-U fits, seed 0; selection.json
+    written once, the GAT chosen among GAT candidates only)
+  - --stage seeds (GAT-NO-MP at the selected shape, seed 0, then seeds 1-2 of the three selected configurations)
+  - --stage ablation (the selected GAT retrained on STRUCT, NER, KNN)
+  - --stage eval, sharded per dataset (metaqa 4 shards), then --stage merge; scripts/m3b_report.py
+  - the run record appended to this file, status RUN, with the foreign byte-code cache note, the relations record
+    and the timing files
+  unchanged: the contract, the carves, the feature contract and its core, the arms, the loss, the optimiser, batch_queries
+    16, epoch 2000 batches, max_epochs 6, early stopping, the selection rule, the firewall, the measurement
