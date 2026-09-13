@@ -40,7 +40,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from mp_retrieval import m3b_pools  # noqa: E402
-from mp_retrieval.m3b_features import COLUMNS, FAMILIES, IDX, DenseNodes, QueryInputs, compile_query  # noqa: E402
+from mp_retrieval.m3b_features import COLUMNS, FAMILIES, GATHER_THREADS, IDX, DenseNodes, QueryInputs, compile_query  # noqa: E402
 from mp_retrieval.m3b_models import QLSU, UniversalGAT, parameter_count  # noqa: E402
 from mp_retrieval.m3b_train import (METRIC_NAMES, CarveData, DatasetContext, fit_model, mrr_audit, pack_queries,  # noqa: E402
                                     rank_metrics)
@@ -56,6 +56,7 @@ GAT_GRID = [(L, H) for L in (2, 3) for H in (64, 128)]
 QLSU_GRID = [64, 128]
 HEADS = 4
 DROPOUT = 0.2
+PACK = {"workers": 2, "depth": 2}   # batches packed ahead of the step (systems; --pack-workers / --prefetch-depth)
 SUBSTRATES = {"STRUCT": ("structural",), "NER": ("ner",), "KNN": ("knn",)}
 LATENCY_QUERIES = 500
 
@@ -174,12 +175,15 @@ def run_fit(arm: str, cfg_m: dict, seed: int, inputs: dict, carves: dict, traini
     model, record = fit_model(model, carves["fit"], carves["select"], seed=seed, arm=arm, config={**cfg_m, "substrate": substrate or "FULL"},
                               max_epochs=int(training["max_epochs"]), batches_per_epoch=int(str(training["epoch"]).split()[0]),
                               batch_size=int(training["batch_queries"]), patience=2, lr=1e-3, weight_decay=1e-4, clip=1.0,
-                              dataset_draw=training["dataset_draw"], epoch_limit_s=float(training.get("epoch_limit_s", EPOCH_LIMIT_S)), log=log)
+                              dataset_draw=training["dataset_draw"], epoch_limit_s=float(training.get("epoch_limit_s", EPOCH_LIMIT_S)),
+                              pack_workers=PACK["workers"], prefetch_depth=PACK["depth"], checkpoint=MODELS / f"{key}.ckpt", log=log)
     torch.save(model.state_dict(), MODELS / f"{key}.pt")
     out = {**asdict(record), "key": key, "substrate": substrate or "FULL", "core_sha256": inputs["core_sha256"], "base": inputs["base"], "utc": utc(),
            "dataset_draw": training["dataset_draw"], "training_reading": training.get("reading_block"),
+           "threads": torch.get_num_threads(), "pack_workers": PACK["workers"], "prefetch_depth": PACK["depth"], "peak_rss_bytes": peak_rss_bytes(),
            "state_sha256": hashlib.sha256((MODELS / f"{key}.pt").read_bytes()).hexdigest()}
     rec_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    (MODELS / f"{key}.ckpt").unlink(missing_ok=True)   # the record and the weights are the durable objects
     log(f"   {key}: best epoch {record.best_epoch} select macro R@5 {record.best_select_macro_recall5:.4f} in {record.seconds:.0f}s")
     return out
 
@@ -190,7 +194,7 @@ def stage_timing(inputs: dict, carves: dict, batch_size: int, dataset_draw: str 
     single-dataset batch per dataset (the peak a per_batch draw produces) and
     three mixed batches under the declared per_query draw; the abort criterion
     (an epoch over 40 minutes) reads this before the first fit."""
-    from mp_retrieval.m3b_train import draw_batch, evaluate_carve, listwise_loss
+    from mp_retrieval.m3b_train import BatchPrefetcher, draw_batch, draw_indices, evaluate_carve, listwise_loss, pack_parts
 
     timing = {}
     names = sorted(carves["fit"])
@@ -227,6 +231,17 @@ def stage_timing(inputs: dict, carves: dict, batch_size: int, dataset_draw: str 
             t_pack = time.perf_counter() - t
             t_step = one_step(model, optimiser, batch)
             mixed.append({"pack_s": round(t_pack, 3), "step_s": round(t_step, 3), "nodes": int(batch.x.shape[0]), "edges": int(batch.edge_attr.shape[0])})
+        # the fit loop as run: batches packed ahead by PACK["workers"] threads while the model steps
+        n_pipe = 12
+        t = time.perf_counter()
+        with BatchPrefetcher(PACK["workers"], PACK["depth"]) as ahead:
+            drawn = 0
+            for _ in range(n_pipe):
+                while ahead.pending < ahead.depth and drawn < n_pipe:
+                    ahead.submit(pack_parts, carves["fit"], draw_indices(carves["fit"], names, cursors, rng, batch_size, "per_query"), FAMILIES)
+                    drawn += 1
+                one_step(model, optimiser, ahead.next())
+        pipelined = (time.perf_counter() - t) / n_pipe
         select_eval = {}
         for name in names:
             data = carves["select"][name]
@@ -237,17 +252,22 @@ def stage_timing(inputs: dict, carves: dict, batch_size: int, dataset_draw: str 
             select_eval[name] = {"queries": n_eval, "seconds": round(seconds, 2), "projected_full_carve_s": round(seconds / n_eval * data.n_queries, 1)}
         per_batch_mean = float(np.mean([v["pack_s"] + v["step_s"] for v in per_dataset.values()]))
         per_query_mean = float(np.mean([v["pack_s"] + v["step_s"] for v in mixed]))
-        epoch_min = {"per_batch": round(per_batch_mean * 2000 / 60, 1), "per_query": round(per_query_mean * 2000 / 60, 1)}
+        epoch_min = {"per_batch": round(per_batch_mean * 2000 / 60, 1), "per_query": round(per_query_mean * 2000 / 60, 1),
+                     "per_query_pipelined": round(pipelined * 2000 / 60, 1)}
         select_min = round(sum(v["projected_full_carve_s"] for v in select_eval.values()) / 60, 1)
         timing[arm] = {"config": cfg_m, "parameters": parameter_count(model), "single_dataset_batches": per_dataset, "mixed_batches_per_query_draw": mixed,
-                       "mean_seconds_per_batch": {"per_batch": round(per_batch_mean, 3), "per_query": round(per_query_mean, 3)},
+                       "mean_seconds_per_batch": {"per_batch": round(per_batch_mean, 3), "per_query": round(per_query_mean, 3),
+                                                  "per_query_pipelined": round(pipelined, 3)},
+                       "pipelined_batches_measured": n_pipe,
                        "projected_epoch_minutes_2000_batches": epoch_min, "select_evaluation": select_eval,
                        "projected_select_evaluation_minutes_per_epoch": select_min, "peak_rss_gb_so_far": round((peak_rss_bytes() - rss0) / 2**30, 2)}
         log(f"   {arm} {cfg_m}: per_batch {per_batch_mean:.2f} s/batch ({epoch_min['per_batch']} min/epoch), per_query {per_query_mean:.2f} s/batch "
-            f"({epoch_min['per_query']} min/epoch), select evaluation {select_min} min/epoch; " +
+            f"({epoch_min['per_query']} min/epoch), pipelined {pipelined:.2f} s/batch ({epoch_min['per_query_pipelined']} min/epoch), "
+            f"select evaluation {select_min} min/epoch; " +
             " ".join(f"{n}={v['pack_s'] + v['step_s']:.2f}s({v['nodes']}n,{v['edges']}e)" for n, v in per_dataset.items()))
         del model, optimiser
     (OUT / "timing.json").write_text(json.dumps({"utc": utc(), "batch_size": batch_size, "threads": torch.get_num_threads(), "declared_dataset_draw": dataset_draw,
+                                                  "pack_workers": PACK["workers"], "prefetch_depth": PACK["depth"], "gather_threads": GATHER_THREADS,
                                                   "peak_rss_gb": round(peak_rss_bytes() / 2**30, 2), "arms": timing}, indent=1), encoding="utf-8")
     return timing
 
@@ -575,6 +595,8 @@ def main() -> int:
     parser.add_argument("--stage", choices=["timing", "screen", "seeds", "ablation", "eval", "merge"], required=True)
     parser.add_argument("--datasets", nargs="*", default=None)
     parser.add_argument("--threads", type=int, default=10)
+    parser.add_argument("--pack-workers", type=int, default=PACK["workers"], help="threads packing batches ahead of the step")
+    parser.add_argument("--prefetch-depth", type=int, default=PACK["depth"], help="batches packed ahead")
     parser.add_argument("--chunk-nodes", type=int, default=24000, help="eval: candidate rows packed per forward pass")
     parser.add_argument("--shard", default=None, help="eval: k/N scores queries k::N of the population; --stage merge joins the shards")
     args = parser.parse_args()
@@ -586,6 +608,7 @@ def main() -> int:
         shard = (k, N)
     sys.dont_write_bytecode = True
     torch.set_num_threads(args.threads)
+    PACK["workers"], PACK["depth"] = max(1, args.pack_workers), max(1, args.prefetch_depth)
     cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
     cfg_h = yaml.safe_load(HEADROOM_CONFIG.read_text(encoding="utf-8"))
     datasets = args.datasets or list(DATASETS)
@@ -600,7 +623,8 @@ def main() -> int:
         with open(log_path, "a", encoding="utf-8") as f:
             f.write(line + "\n")
 
-    log(f"stage {args.stage}: core contract {inputs['n_scalars']} columns ({inputs['core_sha256'][:12]}), base {inputs['base']}, threads {torch.get_num_threads()}")
+    log(f"stage {args.stage}: core contract {inputs['n_scalars']} columns ({inputs['core_sha256'][:12]}), base {inputs['base']}, threads {torch.get_num_threads()}, "
+        f"pack workers {PACK['workers']} x depth {PACK['depth']}")
     t0 = time.time()
     if args.stage == "eval":
         stage_eval(cfg, cfg_h, inputs, datasets, args.chunk_nodes, shard=shard, log=log)

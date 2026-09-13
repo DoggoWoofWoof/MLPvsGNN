@@ -14,8 +14,10 @@ two together.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -114,6 +116,17 @@ IDX = {name: i for i, name in enumerate(COLUMNS)}
 # ── served inputs ────────────────────────────────────────────────────────────
 
 
+GATHER_THREADS = 16            # reader threads for a memory-mapped row gather (I/O bound; numpy releases the GIL)
+GATHER_THREAD_MIN_ROWS = 256   # below this a single thread is as fast
+_GATHER_POOL: list = []
+
+
+def _gather_pool() -> ThreadPoolExecutor:
+    if not _GATHER_POOL:
+        _GATHER_POOL.append(ThreadPoolExecutor(max_workers=GATHER_THREADS, thread_name_prefix="m3b-gather"))
+    return _GATHER_POOL[0]
+
+
 class DenseNodes:
     """The served dense node embeddings, read as float32 rows. Small corpora are
     held in RAM as float16; large ones keep every shard open as a memory map so
@@ -134,17 +147,30 @@ class DenseNodes:
     def read(self, rows: np.ndarray, dtype=np.float32) -> np.ndarray:
         """The rows as ``dtype``; float16 hands back the served bytes unconverted
         (a batch converts them once through torch, which is far faster than a
-        per-query numpy astype -- the same values either way)."""
+        per-query numpy astype -- the same values either way). A memory-mapped
+        gather is issued in sorted order from several threads at once: a cold
+        row is a random 3 KB read, and the drive serves many at a time but a
+        single thread only one -- the same bytes, about ten times sooner."""
         rows = np.asarray(rows, dtype=np.int64)
         if self._matrix is not None:
             gathered = self._matrix[rows]
             return gathered if gathered.dtype == dtype else gathered.astype(dtype)
         out = np.empty((rows.size, DIM), dtype=dtype)
-        shard = rows // self.shard_size
-        off = rows % self.shard_size
-        for s in np.unique(shard):
-            m = shard == s
-            out[m] = self._maps[int(s)][off[m]]
+        order = np.argsort(rows, kind="stable")
+        srows = rows[order]
+        shard = srows // self.shard_size
+        off = srows % self.shard_size
+
+        def gather(piece: np.ndarray) -> None:
+            for s in np.unique(shard[piece]):
+                m = piece[shard[piece] == s]
+                out[order[m]] = self._maps[int(s)][off[m]]
+
+        if rows.size < GATHER_THREAD_MIN_ROWS:
+            gather(np.arange(rows.size))
+            return out
+        pieces = np.array_split(np.arange(rows.size), GATHER_THREADS * 4)
+        list(_gather_pool().map(gather, pieces))
         return out
 
 
@@ -200,17 +226,20 @@ def _rank_within(sorted_groups: np.ndarray) -> np.ndarray:
     return np.arange(sorted_groups.size) - _runs_first(sorted_groups)
 
 
-_LOOKUPS: dict[int, np.ndarray] = {}
+_LOOKUPS = threading.local()   # one table per node universe per thread: batches are packed from several threads
 
 
 def _acquire_lookup(pool: np.ndarray, n_nodes: int) -> np.ndarray:
     """A reusable global -> local index table (-1 outside the pool), one per
-    node universe; release it with ``_release_lookup`` after use."""
-    table = _LOOKUPS.get(n_nodes)
+    node universe and per thread; release it with ``_release_lookup`` after use."""
+    tables = getattr(_LOOKUPS, "tables", None)
+    if tables is None:
+        tables = _LOOKUPS.tables = {}
+    table = tables.get(n_nodes)
     if table is None:
-        table = np.full(n_nodes, -1, dtype=np.int64)
-        _LOOKUPS[n_nodes] = table
-    table[pool] = np.arange(pool.size, dtype=np.int64)
+        table = np.full(n_nodes, -1, dtype=np.int32)   # a local index; int32 halves the per-thread table
+        tables[n_nodes] = table
+    table[pool] = np.arange(pool.size, dtype=np.int32)
     return table
 
 

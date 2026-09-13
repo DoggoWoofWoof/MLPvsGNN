@@ -34,7 +34,7 @@ class PackedBatch:
     x: torch.Tensor            # (N, F) raw scalars, float32
     qptr: torch.Tensor         # (B + 1,) int64 node offsets
     node_query: torch.Tensor   # (N,) int64 query index per node
-    emb: torch.Tensor          # (N, DIM) node embeddings
+    emb: torch.Tensor          # (N, DIM) node embeddings, as served (float16) or float32; the model widens at use
     qemb: torch.Tensor         # (B, DIM) query embeddings
     seedw: torch.Tensor        # (N, MAX_SEEDS) reach weights
     seed_nodes: torch.Tensor   # (B, MAX_SEEDS) global node index of each seed, -1 padded
@@ -126,14 +126,18 @@ class InputBlock(nn.Module):
         pre_q = self.semantic.query_projection(batch.qemb)[batch.node_query]      # == query_projection(qemb[node_query])
         raw_q = Fn.gelu(pre_q)
         q_state = Fn.normalize(raw_q, dim=-1)
-        pre_n = self.semantic.node_projection(batch.emb)
+        # the served float16 rows are widened to float32 here, once, where they are read (exact); a
+        # packed batch waiting its turn holds half the bytes
+        emb = batch.emb if batch.emb.dtype == torch.float32 else batch.emb.to(torch.float32)
+        pre_n = self.semantic.node_projection(emb)
         raw_n = Fn.gelu(pre_n)
         n_state = Fn.normalize(raw_n, dim=-1)
         semantic = torch.cat([
             q_state, n_state, q_state * n_state, (q_state - n_state).abs(),
             (q_state * n_state).sum(-1, keepdim=True), (raw_q * raw_n).sum(-1, keepdim=True) / raw_n.shape[-1] ** 0.5,
         ], dim=-1)
-        difference = semantic_difference_column(batch.qemb[batch.node_query], batch.emb, self.difference_weight).unsqueeze(1)
+        difference = semantic_difference_column(batch.qemb[batch.node_query], emb, self.difference_weight).unsqueeze(1)
+        del emb
         parts = [batch.x, z, semantic, difference]
         # C: fixed neighbour prototypes per family, projected strictly after the aggregation
         # (node_projection(mean_u e_u) == mean_u node_projection(e_u), the map being linear)

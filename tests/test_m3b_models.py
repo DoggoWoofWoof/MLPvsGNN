@@ -158,16 +158,17 @@ def test_a_short_fit_runs_through_the_cache_and_improves_on_the_planted_signal(w
 def _reference_input_forward(self, batch):
     B = batch.n_queries
     N = batch.x.shape[0]
+    emb = batch.emb.to(torch.float32)   # the batch carries the served float16 rows
     z = M.segment_zscore(batch.x, batch.node_query, B)
     base_z = z[:, self.base_index]
     q_rows = batch.qemb[batch.node_query]
     raw_q, q_state = M._project(self.semantic.query_projection, q_rows)
-    raw_n, n_state = M._project(self.semantic.node_projection, batch.emb)
+    raw_n, n_state = M._project(self.semantic.node_projection, emb)
     semantic = torch.cat([
         q_state, n_state, q_state * n_state, (q_state - n_state).abs(),
         (q_state * n_state).sum(-1, keepdim=True), (raw_q * raw_n).sum(-1, keepdim=True) / raw_n.shape[-1] ** 0.5,
     ], dim=-1)
-    difference = M.semantic_difference_column(q_rows, batch.emb, self.difference_weight).unsqueeze(1)
+    difference = M.semantic_difference_column(q_rows, emb, self.difference_weight).unsqueeze(1)
     parts = [batch.x, z, semantic, difference]
     # C: fixed neighbour prototypes per family, projected strictly after the aggregation
     has_edges = batch.edge_attr.shape[0] > 0
@@ -178,14 +179,14 @@ def _reference_input_forward(self, batch):
             continue
         sel = fam_of_edge == f_i
         u, v = batch.edge_index[0, sel], batch.edge_index[1, sel]
-        proto, count = M.segment_mean_rows(batch.emb[u], v, N)
+        proto, count = M.segment_mean_rows(emb[u], v, N)
         _, p_state = M._project(self.semantic.node_projection, proto)
         p_state = torch.where((count > 0).unsqueeze(1), p_state, torch.zeros_like(p_state))
         parts.append(p_state * q_state)
     # D: the 1/dist-weighted prototype of the seeds within two hops, projected after the aggregation
-    seed_emb = torch.zeros(B, F.MAX_SEEDS, F.DIM, dtype=batch.emb.dtype, device=batch.emb.device)
+    seed_emb = torch.zeros(B, F.MAX_SEEDS, F.DIM, dtype=emb.dtype, device=emb.device)
     valid = batch.seed_nodes >= 0
-    seed_emb[valid] = batch.emb[batch.seed_nodes[valid]]
+    seed_emb[valid] = emb[batch.seed_nodes[valid]]
     w = batch.seedw
     proto_reach = torch.einsum("ns,nsd->nd", w, seed_emb[batch.node_query]) / w.sum(1, keepdim=True).clamp_min(1e-12)
     _, r_state = M._project(self.semantic.node_projection, proto_reach)
@@ -258,3 +259,99 @@ def test_an_epoch_over_the_declared_limit_halts_the_fit(world):
     with pytest.raises(T.EpochTooLong, match="over the declared"):
         T.fit_model(M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"]), fits, {"toy": world.select}, seed=0, arm="qls_u_sota_v1", config={},
                     max_epochs=1, batches_per_epoch=2, batch_size=4, epoch_limit_s=0.0, log=lambda m: None)
+
+
+def _centred_scores(model, batch):
+    """Scores with the per-query mean removed: a shift common to a query's
+    candidates ranks nothing, so the readout bias (whose true gradient under the
+    listwise loss is zero and whose value is rounding noise) is left out."""
+    model.eval()
+    with torch.no_grad():
+        s = model(batch)
+    return s - _segment_mean(s, batch)
+
+
+def _segment_mean(s, batch):
+    ones = torch.ones_like(s)
+    n = torch.zeros(batch.n_queries).index_add_(0, batch.node_query, ones)
+    tot = torch.zeros(batch.n_queries).index_add_(0, batch.node_query, s)
+    return (tot / n)[batch.node_query]
+
+
+def test_packing_ahead_changes_the_clock_and_nothing_else(world):
+    """The fit loop draws every batch's indices in order on the main thread and
+    packs them on worker threads: the batches must be the ones the one-at-a-time
+    loop builds, field for field, and a fit and an evaluation through the
+    prefetcher must agree with the sequential ones to floating-point tolerance
+    (a reduction's rounding may differ between runs in one process; the batches
+    may not)."""
+    torch.set_num_threads(2)
+    fits = {"a": world.fit, "b": world.select}
+    names = ["a", "b"]
+
+    def batches(workers: int, depth: int, n: int = 18) -> list:
+        rng = np.random.default_rng(4)
+        cursors = {k: [rng.permutation(fits[k].trainable), 0] for k in names}
+        out = []
+        with T.BatchPrefetcher(workers, depth) as ahead:
+            drawn = 0
+            for _ in range(n):
+                while ahead.pending < ahead.depth and drawn < n:
+                    ahead.submit(T.pack_parts, fits, T.draw_indices(fits, names, cursors, rng, 6, "per_query"), F.FAMILIES)
+                    drawn += 1
+                out.append(ahead.next())
+        return out
+
+    rng = np.random.default_rng(4)
+    cursors = {k: [rng.permutation(fits[k].trainable), 0] for k in names}
+    sequential = [T.draw_batch(fits, names, cursors, rng, 6, F.FAMILIES, "per_query") for _ in range(18)]
+    ahead = batches(3, 4)
+    fields = ["x", "qptr", "node_query", "emb", "qemb", "seedw", "seed_nodes", "edge_index", "edge_attr", "gold"]
+    for a, b in zip(sequential, ahead):
+        for f in fields:
+            assert torch.equal(getattr(a, f), getattr(b, f)), f
+    states = []
+    for workers, depth in ((1, 1), (3, 4)):
+        torch.manual_seed(11)
+        model = M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"])
+        model, record = T.fit_model(model, fits, {"a": world.select}, seed=4, arm="qls_u_sota_v1", config={"H": 16}, max_epochs=2,
+                                    batches_per_epoch=9, batch_size=6, patience=5, pack_workers=workers, prefetch_depth=depth, log=lambda *_: None)
+        states.append((_centred_scores(model, world.select.pack(np.arange(6))), record.steps, record.history))
+    (s1, n1, h1), (s2, n2, h2) = states
+    assert n1 == n2
+    assert [e["train_loss"] for e in h1] == pytest.approx([e["train_loss"] for e in h2], rel=1e-6)
+    torch.testing.assert_close(s1, s2, atol=1e-5, rtol=1e-5)
+    one = T.evaluate_carve(model, world.select, pack_workers=1, prefetch_depth=1)
+    many = T.evaluate_carve(model, world.select, pack_workers=3, prefetch_depth=2)
+    for name in one:
+        assert np.allclose(one[name], many[name], atol=1e-9)
+
+
+def test_a_fit_resumed_from_its_checkpoint_is_the_uninterrupted_fit(world, tmp_path):
+    """The checkpoint carries the weights, the optimiser, both generators, the
+    draw cursors and the record: a fit stopped after one epoch and resumed for
+    two more sees the batches, losses and select scores of one three-epoch fit."""
+    torch.set_num_threads(2)
+    fits = {"a": world.fit, "b": world.select}
+    kw = dict(seed=4, arm="qls_u_sota_v1", config={"H": 16}, batches_per_epoch=7, batch_size=6, patience=9, log=lambda *_: None)
+    torch.manual_seed(11)
+    model_a, rec_a = T.fit_model(M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"]), fits, {"a": world.select}, max_epochs=3, **kw)
+    ck = tmp_path / "fit.ckpt"
+    torch.manual_seed(11)
+    model_b = M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"])
+    model_b, rec_1 = T.fit_model(model_b, fits, {"a": world.select}, max_epochs=1, checkpoint=ck, **kw)
+    assert ck.exists() and rec_1.epochs_run == 1
+    torch.manual_seed(999)                       # a fresh process would not have the generators' state; the checkpoint carries them
+    model_b = M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"])
+    model_b, rec_b = T.fit_model(model_b, fits, {"a": world.select}, max_epochs=3, checkpoint=ck, **kw)
+    assert rec_b.epochs_run == 3 and rec_b.steps == rec_a.steps and rec_b.best_epoch == rec_a.best_epoch
+    assert [e["train_loss"] for e in rec_b.history] == pytest.approx([e["train_loss"] for e in rec_a.history], rel=1e-6)
+    assert [e["select_macro_recall@5"] for e in rec_b.history] == pytest.approx([e["select_macro_recall@5"] for e in rec_a.history], abs=1e-9)
+    probe = world.select.pack(np.arange(6))
+    torch.testing.assert_close(_centred_scores(model_b, probe), _centred_scores(model_a, probe), atol=1e-5, rtol=1e-5)
+    with pytest.raises(ValueError, match="not to this fit"):
+        T.fit_model(M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"]), fits, {"a": world.select}, max_epochs=3, checkpoint=ck, **{**kw, "seed": 5})
+    # a finished checkpoint returns the best weights without training again
+    model_c, rec_c = T.fit_model(M.QLSU(F.N_COLUMNS, 16, F.IDX["rrf"]), fits, {"a": world.select}, max_epochs=3, checkpoint=ck, **kw)
+    assert rec_c.steps == rec_a.steps
+

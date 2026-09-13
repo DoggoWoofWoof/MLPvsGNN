@@ -16,7 +16,9 @@ from __future__ import annotations
 import copy
 import json
 import time
-from dataclasses import dataclass, field
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 import numpy as np
@@ -288,11 +290,12 @@ def pack_queries(queries: list[dict], context: DatasetContext, families: tuple[s
         ptr.append(off + n)
     edge_index = np.concatenate(eis, axis=1) if eis else np.empty((2, 0), dtype=np.int64)
     edge_attr = np.concatenate(eas, axis=0) if eas else np.empty((0, N_EDGE_FEATURES), dtype=np.float32)
-    # scalars and embeddings arrive as stored (float16) or as the caller gathered them; one
-    # conversion to float32 per batch through torch (exact) replaces a per-query numpy astype
+    # scalars arrive as stored (float16) and are widened once per batch through torch (exact); the
+    # embeddings stay as they arrive (float16 from the served store, float32 when the caller gathered
+    # them) and the model widens them where it reads them, so a batch packed ahead holds half the bytes
     return PackedBatch(
         x=torch.from_numpy(np.concatenate(xs)).to(torch.float32), qptr=torch.tensor(ptr, dtype=torch.long), node_query=torch.from_numpy(np.concatenate(node_query)),
-        emb=torch.from_numpy(np.concatenate(embs)).to(torch.float32), qemb=torch.from_numpy(np.stack(qembs)), seedw=torch.from_numpy(np.concatenate(seedws)),
+        emb=torch.from_numpy(np.concatenate(embs)), qemb=torch.from_numpy(np.stack(qembs)), seedw=torch.from_numpy(np.concatenate(seedws)),
         seed_nodes=torch.from_numpy(np.stack(seed_nodes)), edge_index=torch.from_numpy(edge_index), edge_attr=torch.from_numpy(edge_attr),
         gold=torch.from_numpy(np.concatenate(golds)),
     )
@@ -322,6 +325,44 @@ def concat_batches(batches: list[PackedBatch]) -> PackedBatch:
     )
 
 
+# ── packing ahead ────────────────────────────────────────────────────────────
+
+
+class BatchPrefetcher:
+    """Packs the next few batches in background threads while the model steps
+    on the current one. Packing is a pure function of the drawn query indices
+    (no random state, no weight), so the batches arrive in submission order
+    with exactly the content the sequential loop would have built; only the
+    wall clock changes. ``close`` must be called (or the context manager used)."""
+
+    def __init__(self, workers: int = 2, depth: int = 3):
+        self.depth = max(1, int(depth))
+        self._pool = ThreadPoolExecutor(max_workers=max(1, int(workers)), thread_name_prefix="m3b-pack")
+        self._queue: deque = deque()
+
+    def __enter__(self) -> "BatchPrefetcher":
+        return self
+
+    def __exit__(self, *exc) -> None:
+        self.close()
+
+    @property
+    def pending(self) -> int:
+        return len(self._queue)
+
+    def submit(self, fn, *args) -> None:
+        self._queue.append(self._pool.submit(fn, *args))
+
+    def next(self) -> PackedBatch:
+        return self._queue.popleft().result()
+
+    def close(self) -> None:
+        for f in self._queue:
+            f.cancel()
+        self._queue.clear()
+        self._pool.shutdown(wait=True)
+
+
 # ── evaluation ───────────────────────────────────────────────────────────────
 
 
@@ -344,16 +385,22 @@ def node_budgeted_batches(pool_ptr: np.ndarray, n_queries: int, batch_size: int,
 
 @torch.no_grad()
 def evaluate_carve(model: torch.nn.Module, data: CarveData, batch_size: int = 32, families: tuple[str, ...] = FAMILIES,
-                   max_nodes: int = 24_000) -> dict[str, np.ndarray]:
+                   max_nodes: int = 24_000, pack_workers: int = 2, prefetch_depth: int = 3) -> dict[str, np.ndarray]:
     model.eval()
     rows: list[dict] = []
-    for idx in node_budgeted_batches(data.pool_ptr, data.n_queries, batch_size, max_nodes):
-        batch = data.pack(idx, families)
-        scores = model(batch).cpu().numpy()
-        ptr = batch.qptr.numpy()
-        for j, i in enumerate(idx):
-            qd = data.query(int(i))
-            rows.append(rank_metrics(scores[ptr[j]:ptr[j + 1]], qd["gold"], qd["gold_total"]))
+    blocks = node_budgeted_batches(data.pool_ptr, data.n_queries, batch_size, max_nodes)
+    with BatchPrefetcher(pack_workers, prefetch_depth) as ahead:
+        submitted = 0
+        for idx in blocks:
+            while ahead.pending < ahead.depth and submitted < len(blocks):
+                ahead.submit(data.pack, blocks[submitted], families)
+                submitted += 1
+            batch = ahead.next()
+            scores = model(batch).cpu().numpy()
+            ptr = batch.qptr.numpy()
+            for j, i in enumerate(idx):
+                qd = data.query(int(i))
+                rows.append(rank_metrics(scores[ptr[j]:ptr[j + 1]], qd["gold"], qd["gold_total"]))
     return {name: np.asarray([r[name] for r in rows], dtype=np.float64) for name in METRIC_NAMES}
 
 
@@ -394,25 +441,38 @@ def next_queries(fits: dict[str, CarveData], name: str, cursors: dict, rng: np.r
     return perm[pos:pos + count]
 
 
-def draw_batch(fits: dict[str, CarveData], names: list[str], cursors: dict, rng: np.random.Generator, batch_size: int,
-               families: tuple[str, ...], dataset_draw: str) -> PackedBatch:
-    """One training batch under the declared sampler (see fit_model)."""
+def draw_indices(fits: dict[str, CarveData], names: list[str], cursors: dict, rng: np.random.Generator, batch_size: int,
+                 dataset_draw: str) -> list[tuple[str, np.ndarray]]:
+    """The query indices of one training batch under the declared sampler (see
+    fit_model), as (dataset, fit indices) parts in dataset order; every random
+    draw of the batch happens here, so packing can run ahead on other threads."""
     if dataset_draw == "per_batch":
         name = names[int(rng.integers(len(names)))]
-        return fits[name].pack(next_queries(fits, name, cursors, rng, batch_size), families)
+        return [(name, next_queries(fits, name, cursors, rng, batch_size))]
     draws = rng.integers(len(names), size=batch_size)
     parts = []
     for k, name in enumerate(names):
         count = int((draws == k).sum())
         if count:
-            parts.append(fits[name].pack(next_queries(fits, name, cursors, rng, count), families))
-    return concat_batches(parts)
+            parts.append((name, next_queries(fits, name, cursors, rng, count)))
+    return parts
+
+
+def pack_parts(fits: dict[str, CarveData], parts: list[tuple[str, np.ndarray]], families: tuple[str, ...]) -> PackedBatch:
+    return concat_batches([fits[name].pack(idx, families) for name, idx in parts])
+
+
+def draw_batch(fits: dict[str, CarveData], names: list[str], cursors: dict, rng: np.random.Generator, batch_size: int,
+               families: tuple[str, ...], dataset_draw: str) -> PackedBatch:
+    """One training batch under the declared sampler (see fit_model)."""
+    return pack_parts(fits, draw_indices(fits, names, cursors, rng, batch_size, dataset_draw), families)
 
 
 def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[str, CarveData], *, seed: int, arm: str, config: dict,
               max_epochs: int = 6, batches_per_epoch: int = 2000, batch_size: int = 16, patience: int = 2, lr: float = 1e-3,
               weight_decay: float = 1e-4, clip: float = 1.0, families: tuple[str, ...] = FAMILIES, dataset_draw: str = "per_query",
-              epoch_limit_s: float | None = None, log=print) -> tuple[torch.nn.Module, FitRecord]:
+              epoch_limit_s: float | None = None, pack_workers: int = 2, prefetch_depth: int = 3, checkpoint: Path | None = None,
+              log=print) -> tuple[torch.nn.Module, FitRecord]:
     """AdamW on dataset-balanced batches: for every slot of a batch the dataset
     is drawn uniformly and then a fit query of that dataset (``dataset_draw``
     "per_query", the declared sampler; "per_batch" draws one dataset for the
@@ -420,7 +480,15 @@ def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[
     trainable fit carve is exhausted, then reshuffled. Early stopping on the
     macro select recall@5 with the declared patience; the best epoch's weights
     are returned. An epoch (training batches plus the select evaluation) longer
-    than ``epoch_limit_s`` raises EpochTooLong: the declared abort criterion."""
+    than ``epoch_limit_s`` raises EpochTooLong: the declared abort criterion.
+    The batches of an epoch are drawn in order on this thread and packed up to
+    ``prefetch_depth`` ahead by ``pack_workers`` threads (BatchPrefetcher): the
+    same batches in the same order as packing them one at a time. With a
+    ``checkpoint`` path the whole state of the run -- weights, optimiser, both
+    random generators, the per-dataset draw cursors, the best weights and the
+    record -- is written after every epoch, and a run that finds the file
+    continues from it as the uninterrupted run would have (a multi-hour fit on
+    a shared machine survives a restart; the batches it sees are the same)."""
     if dataset_draw not in ("per_query", "per_batch"):
         raise ValueError(f"dataset_draw must be per_query or per_batch, got {dataset_draw!r}")
     torch.manual_seed(seed)
@@ -432,23 +500,59 @@ def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[
     best_state = copy.deepcopy(model.state_dict())
     t0 = time.time()
     bad = 0
-    for epoch in range(max_epochs):
+    first_epoch = 0
+    if checkpoint is not None and Path(checkpoint).exists():
+        ck = torch.load(checkpoint, weights_only=False)
+        if ck["arm"] != arm or ck["seed"] != seed or ck["config"] != dict(config):
+            raise ValueError(f"{checkpoint}: belongs to {ck['arm']} {ck['config']} seed {ck['seed']}, not to this fit")
+        model.load_state_dict(ck["model"])
+        optimiser.load_state_dict(ck["optimiser"])
+        best_state = ck["best_state"]
+        record = FitRecord(**ck["record"])
+        bad = int(ck["bad"])
+        rng.bit_generator.state = ck["numpy_rng_state"]
+        torch.set_rng_state(ck["torch_rng_state"])
+        cursors = {n: [np.asarray(perm), int(pos)] for n, (perm, pos) in ck["cursors"].items()}
+        t0 = time.time() - float(ck["elapsed_s"])
+        first_epoch = int(ck["epochs_done"])
+        log(f"      resumed from {Path(checkpoint).name} after epoch {first_epoch - 1}")
+        if ck["finished"]:
+            model.load_state_dict(best_state)
+            return model, record
+
+    def save_checkpoint(epochs_done: int, finished: bool) -> None:
+        if checkpoint is None:
+            return
+        tmp = Path(checkpoint).with_suffix(".tmp")
+        torch.save({"arm": arm, "seed": seed, "config": dict(config), "model": model.state_dict(), "optimiser": optimiser.state_dict(),
+                    "best_state": best_state, "record": asdict(record), "bad": bad, "numpy_rng_state": rng.bit_generator.state,
+                    "torch_rng_state": torch.get_rng_state(), "cursors": {n: [perm, pos] for n, (perm, pos) in cursors.items()},
+                    "elapsed_s": time.time() - t0, "epochs_done": epochs_done, "finished": finished}, tmp)
+        tmp.replace(checkpoint)
+
+    for epoch in range(first_epoch, max_epochs):
         model.train()
         t_epoch = time.time()
         losses = []
-        for _ in range(batches_per_epoch):
-            batch = draw_batch(fits, names, cursors, rng, batch_size, families, dataset_draw)
-            if not bool(batch.gold.any()):
-                record.batches_skipped_no_gold += 1
-                continue
-            optimiser.zero_grad(set_to_none=True)
-            loss = listwise_loss(model(batch), batch)
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
-            optimiser.step()
-            losses.append(float(loss.detach()))
-            record.steps += 1
-        per_dataset = {n: evaluate_carve(model, selects[n], families=families) for n in sorted(selects)}
+        with BatchPrefetcher(pack_workers, prefetch_depth) as ahead:
+            drawn = 0
+            for _ in range(batches_per_epoch):
+                while ahead.pending < ahead.depth and drawn < batches_per_epoch:
+                    ahead.submit(pack_parts, fits, draw_indices(fits, names, cursors, rng, batch_size, dataset_draw), families)
+                    drawn += 1
+                batch = ahead.next()
+                if not bool(batch.gold.any()):
+                    record.batches_skipped_no_gold += 1
+                    continue
+                optimiser.zero_grad(set_to_none=True)
+                loss = listwise_loss(model(batch), batch)
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
+                optimiser.step()
+                losses.append(float(loss.detach()))
+                record.steps += 1
+        per_dataset = {n: evaluate_carve(model, selects[n], families=families, pack_workers=pack_workers, prefetch_depth=prefetch_depth)
+                       for n in sorted(selects)}
         macro = macro_recall_at_5(per_dataset)
         entry = {"epoch": epoch, "train_loss": float(np.mean(losses)) if losses else None, "select_macro_recall@5": macro,
                  "select_recall@5": {n: float(m["recall@5"].mean()) for n, m in per_dataset.items()}, "seconds": round(time.time() - t_epoch, 1)}
@@ -456,9 +560,6 @@ def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[
         record.epochs_run = epoch + 1
         log(f"      epoch {epoch}: loss {entry['train_loss']:.4f} select macro R@5 {macro:.4f} ({entry['seconds']}s) " +
             " ".join(f"{n}={v:.3f}" for n, v in entry["select_recall@5"].items()))
-        if epoch_limit_s is not None and entry["seconds"] > epoch_limit_s:
-            raise EpochTooLong(f"epoch {epoch} took {entry['seconds']}s, over the declared {epoch_limit_s:.0f}s: the screen halts; "
-                               "file the fallback as an amendment before continuing")
         if macro > record.best_select_macro_recall5 + 1e-9:
             record.best_select_macro_recall5 = macro
             record.best_epoch = epoch
@@ -466,8 +567,14 @@ def fit_model(model: torch.nn.Module, fits: dict[str, CarveData], selects: dict[
             bad = 0
         else:
             bad += 1
-            if bad >= patience:
-                break
+        early_stop = bad >= patience
+        record.seconds = round(time.time() - t0, 1)
+        save_checkpoint(epoch + 1, finished=early_stop)   # after max_epochs the resumed loop is simply empty
+        if epoch_limit_s is not None and entry["seconds"] > epoch_limit_s:
+            raise EpochTooLong(f"epoch {epoch} took {entry['seconds']}s, over the declared {epoch_limit_s:.0f}s: the screen halts; "
+                               "file the fallback as an amendment before continuing")
+        if early_stop:
+            break
     model.load_state_dict(best_state)
     record.seconds = round(time.time() - t0, 1)
     return model, record

@@ -132,3 +132,49 @@ def test_contract_json_lists_every_column_once():
     j = F.contract_json()
     names = [c["name"] for c in j["columns"]]
     assert names == F.COLUMNS and len(set(names)) == len(names) == j["n_columns"]
+
+
+def test_pool_edges_from_several_threads_match_the_sequential_result(toy):
+    """Batches are packed from worker threads; the global -> local lookup table
+    the edge extraction reuses is per thread, so concurrent calls on the same
+    node universe cannot see each other's marks."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    rng = np.random.default_rng(3)
+    n = int(toy.stores["structural"].n_nodes)
+    pools = [np.union1d(toy.pool, rng.permutation(n)[: rng.integers(5, 40)]) for _ in range(24)]
+    relcos = (toy.rel.embeddings @ toy.inp.q).astype(np.float32)
+    sequential = [F.pool_edges(p, toy.stores, relcos) for p in pools]
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        threaded = list(ex.map(lambda p: F.pool_edges(p, toy.stores, relcos), pools * 3))
+    for k, (edges, typed) in enumerate(threaded):
+        ref_edges, ref_typed = sequential[k % len(pools)]
+        for fam in F.FAMILIES:
+            for a, b in zip(edges[fam], ref_edges[fam]):
+                assert np.array_equal(a, b)
+        for a, b in zip(typed, ref_typed):
+            assert np.array_equal(a, b)
+
+
+def test_a_memory_mapped_gather_from_reader_threads_returns_the_served_rows(tmp_path):
+    """DenseNodes.read on a sharded memory map gathers in sorted order from a
+    thread pool; the rows must be exactly the served ones, in request order,
+    with repeats, above and below the threading threshold."""
+    rng = np.random.default_rng(7)
+    shard_size, n_shards = 300, 3
+    paths = []
+    full = rng.normal(size=(shard_size * n_shards, F.DIM)).astype(np.float16)
+    for k in range(n_shards):
+        path = tmp_path / f"docs_{k}.npy"
+        np.save(path, full[k * shard_size:(k + 1) * shard_size])
+        paths.append(path)
+    store = SimpleNamespace(n_rows=full.shape[0], shard_size=shard_size, n_shards=n_shards, _path=lambda k: paths[k])
+    nodes = F.DenseNodes(store, ram_limit_bytes=0)
+    assert nodes._matrix is None and len(nodes._maps) == n_shards
+    for size in (17, F.GATHER_THREAD_MIN_ROWS + 3, 2000):
+        rows = rng.integers(0, full.shape[0], size=size)
+        rows[: size // 4] = rows[size // 2: size // 2 + size // 4]     # repeats
+        got16 = nodes.read(rows, dtype=np.float16)
+        assert got16.dtype == np.float16 and np.array_equal(got16, full[rows])
+        got32 = nodes.read(rows)
+        assert got32.dtype == np.float32 and np.array_equal(got32, full[rows].astype(np.float32))
