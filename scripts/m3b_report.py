@@ -299,12 +299,19 @@ def section_sota(cfg: dict, evals: dict) -> list[str]:
     return lines
 
 
-def section_cost(evals: dict) -> list[str]:
-    lines = ["## 7. Parameters, training cost, latency, memory", "", "| fit | parameters | epochs run | best epoch | seconds | select macro R@5 |", "|---|---|---|---|---|---|"]
+def section_cost(cfg: dict, evals: dict) -> list[str]:
+    lines = ["## 7. Parameters, training cost, latency, memory", "",
+             "| fit | parameters | epochs run | best epoch | seconds | per-epoch seconds | peak RSS GB | threads | select macro R@5 |", "|---|---|---|---|---|---|---|---|---|"]
     for path in sorted(MODELS.glob("*.json")):
         r = json.loads(path.read_text(encoding="utf-8"))
-        lines.append(f"| `{r['key']}` | {r['parameters']:,} | {r['epochs_run']} | {r['best_epoch']} | {r['seconds']:.0f} | {r['best_select_macro_recall5']:.4f} |")
+        per_epoch = " / ".join(f"{h['seconds']:.0f}" for h in r.get("history", []))
+        rss = f"{r['peak_rss_bytes'] / 1e9:.2f}" if r.get("peak_rss_bytes") else "—"
+        lines.append(f"| `{r['key']}` | {r['parameters']:,} | {r['epochs_run']} | {r['best_epoch']} | {r['seconds']:.0f} | {per_epoch} | {rss} | {r.get('threads', '—')} | {r['best_select_macro_recall5']:.4f} |")
     lines.append("")
+    compute = [v for k, v in cfg.items() if k.startswith("amendment_") and isinstance(v, dict) and isinstance(v.get("timing"), dict)]
+    if compute:
+        lines.append("Wall clock is CPU time on a shared machine and is not comparable with the SOTA systems' GPU-hours: " + compute[-1]["timing"]["machine"].strip())
+        lines.append("")
     lines.append("Cold per-query latency (first 500 eval queries, batch of one; compile = feature construction from the caches, embeddings and stores; forward per model) and the eval process's peak resident set:")
     lines.append("")
     lines.append("| dataset | compile p50 / p95 / p99 ms | pack p50 / p95 / p99 ms | forward per model p50 / p95 / p99 ms | peak RSS GB | threads | eval ms/query (batched) |")
@@ -391,7 +398,7 @@ def main() -> int:
         lines += main_lines
         lines += section_ablation(evals)
         lines += section_sota(cfg, evals)
-        lines += section_cost(evals)
+        lines += section_cost(cfg, evals)
         lines += section_audit(evals)
         lines += section_reading(stats, evals)
     rec_lines, record = run_record(cfg)
