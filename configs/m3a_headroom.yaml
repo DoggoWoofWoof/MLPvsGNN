@@ -8,7 +8,8 @@
 # ═════════════════════════════════════════════════════════════════════════════
 experiment: m3a_headroom_served_substrate
 phase: M3A-COMPILATION
-status: DECLARED_NOT_RUN
+status: RUN
+status_at_declaration: DECLARED_NOT_RUN
 declared: 2026-09-13
 declared_under: configs/m3a_compilation.yaml#amendment_1_2026_09_13.headroom_amended
 runner: scripts/m3a_headroom.py
@@ -201,3 +202,92 @@ execution:
       (identical pools: a budget-b pool is the b-prefix of the fused list).
       Neither changes a declared quantity.
   abort_if: any dataset exceeds 90 minutes wall or 12 GB resident
+
+run_record:
+  status: RUN
+  filed_utc: "2026-09-13T00:57:15Z"
+  datasets:
+    metaqa:
+      eval_split: dev
+      queries_scored: 39138
+      zero_gold_excluded: 0
+      rows: 62
+      depth_rows: 52
+      utc: "2026-09-13T00:28:36Z"
+      wall_seconds: 855.0
+      json: {path: outputs/m3a/headroom/metaqa.json, sha256: 14c03a4f4ec276cde8b9b831d4be3ecdec79fa8d8fe1e928ae61b055bcdf64a3}
+      npz: {path: outputs/m3a/headroom/metaqa_per_query.npz, sha256: 21f331e3c1265f799fac51c777a451cadfead80847b0ef7ec3f52af049fff8f5}
+    squad:
+      eval_split: dev
+      queries_scored: 11873
+      zero_gold_excluded: 0
+      rows: 62
+      depth_rows: 52
+      utc: "2026-09-13T00:02:31Z"
+      wall_seconds: 451.3
+      json: {path: outputs/m3a/headroom/squad.json, sha256: 51f4b27b31f050710e7194a007aeb57477171d94cc9b87d9bdbeaaea8b1e8ea3}
+      npz: {path: outputs/m3a/headroom/squad_per_query.npz, sha256: 59416da6d14a682fd1d90bbd1adff00f425e36af7ec5e2e91277a42d4fae8486}
+    musique:
+      eval_split: dev
+      queries_scored: 2417
+      zero_gold_excluded: 0
+      rows: 62
+      depth_rows: 52
+      utc: "2026-09-13T00:06:28Z"
+      wall_seconds: 218.7
+      json: {path: outputs/m3a/headroom/musique.json, sha256: f20cd59347f8ee0c240176354a30b8ce6f6ee7789cacef1cd26c5cc4e40aa802}
+      npz: {path: outputs/m3a/headroom/musique_per_query.npz, sha256: 8d6194b6b3ea27b484a3fc8fa93cebf9ebc8c915b1924e33ea5a1c1a06e5cf05}
+    hotpotqa:
+      eval_split: validation
+      queries_scored: 7405
+      zero_gold_excluded: 0
+      rows: 62
+      depth_rows: 52
+      utc: "2026-09-13T00:36:10Z"
+      wall_seconds: 449.0
+      json: {path: outputs/m3a/headroom/hotpotqa.json, sha256: f2f8ca901c6d8efd75911175f45d79d63e2d4dad6f755dc977d5b91c9f0e4dd0}
+      npz: {path: outputs/m3a/headroom/hotpotqa_per_query.npz, sha256: df74c537ee163ca4e012076a0385fd4c17d96635dc2ea8bba4771779dea5049a}
+    2wiki:
+      eval_split: dev
+      queries_scored: 12576
+      zero_gold_excluded: 0
+      rows: 62
+      depth_rows: 52
+      utc: "2026-09-13T00:55:40Z"
+      wall_seconds: 1164.6
+      json: {path: outputs/m3a/headroom/2wiki.json, sha256: 1bbe1449cfdf35450f33f3ffe72472c3f03a8f671a7af014e52037abb6c60fc9}
+      npz: {path: outputs/m3a/headroom/2wiki_per_query.npz, sha256: 618bd62a778b316b7923444af1c09fdf4e506702348776979446ba8b087c0b03}
+    webqsp:
+      eval_split: train_holdout
+      queries_scored: 1549
+      zero_gold_excluded: 46
+      rows: 31
+      depth_rows: 26
+      utc: "2026-09-13T00:14:02Z"
+      wall_seconds: 445.4
+      json: {path: outputs/m3a/headroom/webqsp.json, sha256: 50c769f1684463382d45659fd052c385534129b401a29ab9e23aad8d5f07ff97}
+      npz: {path: outputs/m3a/headroom/webqsp_per_query.npz, sha256: 01a72fa93fe6011efb4d2a04a927bd2daf8ffa209fd944138dac31ba4efcf0b3}
+  combined: {path: outputs/m3a/headroom/HEADROOM.json, sha256: 3e3b72acc3c200293dfe16cf4c97ea4727d6861bcca4687f93f9ac893e3987cb}
+  freeze_RECORD_SHA256_seen: [58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0]
+  git_commit_seen: [f2d15ac9b335221d2e31d77137d6f49922527da2-dirty]
+  runner_sha256_seen: [d3df956c55f852fbe1882d4a129c8a86ce70e429a49d92351b74c090dcf42a87]
+  config_sha256_seen: [3b3109ccc1028014baba2635da029a513722a7f263d07f1c03011b8c10bd90cf]
+  provenance_check: >-
+    the runner sha256 and the config sha256 every output reports are byte-identical
+    to scripts/m3a_headroom.py and to this file as committed at f2d15ac
+    (2026-09-12T23:53:48Z), which precedes the first run (2026-09-13T00:02:31Z):
+    the rule was committed before the numbers. The -dirty suffix is git status
+    --porcelain being non-empty at run time: the untracked report generator
+    (scripts/m3a_headroom_report.py), the run-record filer and the rendered
+    docs/M3A_HEADROOM_REPORT.md were being written beside the runs, and
+    configs/m3a_compilation.yaml was re-pinned during the 2wiki run after two
+    upstream rewrites (amendment_1 pins_refreshed_2026_09_13). No tracked file
+    the runs read was modified.
+  order_of_operations: >-
+    validated on squad and musique (cost_record) -> committed f2d15ac -> the
+    validation-era outputs deleted -> six science runs, one process each, in the
+    order squad, musique, webqsp, metaqa, hotpotqa, 2wiki -> pins re-checked ->
+    this record filed -> report rendered -> committed.
+  gpu_seconds: 0
+  report: docs/M3A_HEADROOM_REPORT.md (rendered by scripts/m3a_headroom_report.py from these files)
+  outputs_are_gitignored: true -- the sha256s above are the committed record of the numbers

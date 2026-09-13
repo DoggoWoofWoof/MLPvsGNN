@@ -440,19 +440,27 @@ amendment_1_2026_09_13:
     frozen_utc: "2026-09-12T22:27:25Z"
     verification:
       file: data/final_canonical/VERIFICATION.json
-      utc: "2026-09-12T23:20:06Z"
+      utc: "2026-09-13T00:10:16Z"
       mode: full
       checks: 686
       failed: 0
-      seconds: 3150.4
+      seconds: 2921.3
       pins_freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
       relation_to_the_served_freeze: >-
-        The served record is the verified record. This full verification was
-        written upstream at 23:20:06Z, after the pins below were first taken, and
-        the pin test caught the move (VERIFICATION.json and HANDOFF.md re-pinned,
-        old digests kept under pins_refreshed_2026_09_13). Nothing under the six
-        served trees changed: the freeze record 58958f33 is byte-identical to the
-        one pinned (file sha 039dcf32...).
+        The served record is the verified record. The upstream full verifier ran
+        twice against it: once written at 2026-09-12T23:20:06Z (3150.4 s) and
+        once at 2026-09-13T00:10:16Z (2921.3 s), the same 686 checks with 0
+        failed and the same pinned freeze both times. Each rewrite happened after
+        the pins below had been taken and each time the pin test caught the move
+        (VERIFICATION.json re-pinned twice, HANDOFF.md once; old digests kept
+        under pins_refreshed_2026_09_13). Nothing under the six served trees
+        changed: the freeze record 58958f33 is byte-identical to the one pinned
+        (file sha 039dcf32...), and the headroom runner checked that record
+        before every one of the six science runs.
+      earlier_run_of_the_same_verification:
+        utc: "2026-09-12T23:20:06Z"
+        seconds: 3150.4
+        file_sha256_then: a5efb16005e74cea91a237d8863d293ff0e84ab338e41deeb514c6160fe5139b
       previous_verification:
         utc: "2026-09-12T15:47:00Z"
         mode: full
@@ -530,7 +538,7 @@ amendment_1_2026_09_13:
         pin against the live package whenever it is present.
       pinned:
         data/final_canonical/CANONICAL_FREEZE.json: 039dcf327aa71e39994cdeedc731033279d81d854d74efc29c86f197546f3dc8
-        data/final_canonical/VERIFICATION.json: a5efb16005e74cea91a237d8863d293ff0e84ab338e41deeb514c6160fe5139b
+        data/final_canonical/VERIFICATION.json: bdb81f402c03467b695da0a1ad371f4715f366086dcb06dfa6e167efc1ded466
         data/final_canonical/HANDOFF.md: 8b8e7566e101d986566a85802128dc9e515e079c4cd545081b9d19f5e9a1e70b
         data/final_canonical/_history/INDEX.json: 22420857859d03fddcd06a489924a0ac02e28385832415c410dfcd34503a504f
         data/final_canonical/_history/logs/RECORD_MOVES.jsonl: f5860d2af31e532ec1e25874d0450bcb160a4e86adc9c13b988130cde4270de1
@@ -543,7 +551,7 @@ amendment_1_2026_09_13:
         data/final_canonical/_history/records/PACKAGE_BYTES_LEDGER_SCOPE_ADDENDUM.json: 8b32dee1854efb0a18333b107c6dde276f1a7bd20205eafa259af3722e0109bd
         data/final_canonical/_history/records/LOCKED_6_OF_6_FAMILY_COMPLETION_V1.json: 60910a6663d0ddc6f1262a31616ec99b8715d45a08cbecee5e3bace5599c5a7d
         data/final_canonical/_history/records/LOCKED_6_OF_6_FAMILY_COMPLETION_V2.json: 1a0c0ebf392950ebba9c5c0d770f7aed4ba7dc6fb8661b31330bebc80c4e3cb9
-        docs/CANONICAL_FREEZE_2026-09-12.md: 43f83d9f490980e99029bc5970f96d97ecb2f9f5560df1ed5f57b2eea1a44916
+        docs/CANONICAL_FREEZE_2026-09-12.md: 80ece583c624da3bd69f4042982a80d925ac21f9b1e2ac2247bedc47345fd62e
         data/final_canonical/metaqa/DATASET.json: 2998a69af9c1e7e4f88aa12d6e3113719ca30e8c5acfd0524079d1b28d5bcf09
         data/final_canonical/squad/DATASET.json: 54bcdb3007f56e30f1f4aaee864e5faa313839934bb139dbb88c0d38871629d1
         data/final_canonical/musique/DATASET.json: 7825b2315a2932f15386fc95eea80379f9e864ead7b5b1a1be4fd801ceb6473e
@@ -565,10 +573,16 @@ amendment_1_2026_09_13:
         why: >-
           the declaration test compares every pin to the live package; on the
           second run of the day two records had been rewritten upstream by the
-          full re-verification against the served freeze (686 checks, 0 failed).
-          The freeze record itself did not move.
-        VERIFICATION.json: {was: ddd2ae20b57159b00f9e00e33232f73c81eba50a16ea6c3f037e80e03f99fe3f, now: a5efb16005e74cea91a237d8863d293ff0e84ab338e41deeb514c6160fe5139b, upstream_utc: "2026-09-12T23:20:06Z"}
+          full re-verification against the served freeze (686 checks, 0 failed),
+          and after the headroom runs VERIFICATION.json had been rewritten once
+          more by a repeat of that verification with the same verdict and the
+          freeze diary had gained an addendum. The freeze record itself did not
+          move.
+        VERIFICATION.json:
+          - {was: ddd2ae20b57159b00f9e00e33232f73c81eba50a16ea6c3f037e80e03f99fe3f, now: a5efb16005e74cea91a237d8863d293ff0e84ab338e41deeb514c6160fe5139b, upstream_utc: "2026-09-12T23:20:06Z"}
+          - {was: a5efb16005e74cea91a237d8863d293ff0e84ab338e41deeb514c6160fe5139b, now: bdb81f402c03467b695da0a1ad371f4715f366086dcb06dfa6e167efc1ded466, upstream_utc: "2026-09-13T00:10:16Z", note: "second full run of the same verifier, same verdict (686 checks, 0 failed, pins 58958f33), 2921.3 s; found by the pin test after the six headroom runs, before the run record was filed; HANDOFF.md was not rewritten this time"}
         HANDOFF.md: {was: 716355160b9432858466d6906fa0d3de553772ee8c42379ff83f8f070f2ab69a, now: 8b8e7566e101d986566a85802128dc9e515e079c4cd545081b9d19f5e9a1e70b, upstream_utc: "2026-09-12T23:20:24Z"}
+        docs/CANONICAL_FREEZE_2026-09-12.md: {was: 43f83d9f490980e99029bc5970f96d97ecb2f9f5560df1ed5f57b2eea1a44916, now: 80ece583c624da3bd69f4042982a80d925ac21f9b1e2ac2247bedc47345fd62e, upstream_utc: "2026-09-13T00:13:58Z", note: "the freeze diary gained a section 9 addendum recording the terminal Freebase state (third re-freeze 58958f33, freebase_v3 sub-layer deleted under the owner authorisation, eaab0b8f moved to _history/records/); a documentation change, nothing under the seven trees moved"}
       package_footprint_of_this_phase:
         rule: nothing under the package root is written; verification output is a sidecar under outputs/m3a/
         incident: >-

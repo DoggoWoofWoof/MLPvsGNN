@@ -31,6 +31,18 @@ RETRIEVAL = ROOT / "outputs" / "m3a" / "retrieval_budget.json"
 needs_package = pytest.mark.skipif(
     not PACKAGE.exists(), reason="CRAG package not present on this host"
 )
+# The query-view feasibility measurement read the pre-freeze tree
+# CRAG/data/canonical/, which the package owner deleted on 2026-09-12 after the
+# served freeze (data/final_canonical/) superseded it; the blocker it priced is
+# WITHDRAWN_WRONG_AT_FILING in configs/m3a_compilation.yaml#amendment_1_2026_09_13.
+# The three tests that re-derive it from that tree therefore skip, with the
+# reason, wherever the tree is absent. Nothing they assert has changed.
+QUERY_VIEW_TREE = PACKAGE / "data" / "canonical" / "metaqa" / "documents.jsonl"
+needs_query_view_tree = pytest.mark.skipif(
+    not QUERY_VIEW_TREE.exists(),
+    reason="CRAG/data/canonical/ was deleted upstream on 2026-09-12 (superseded by data/final_canonical/); "
+    "the measurement these verify is withdrawn in m3a_compilation.yaml amendment 1",
+)
 needs_artifacts = pytest.mark.skipif(
     not (SUBSTRATE.exists() and FEASIBILITY.exists() and RETRIEVAL.exists()),
     reason="M3A compilation artifacts not generated on this host",
@@ -189,7 +201,7 @@ def test_ner_and_knn_weights_are_not_on_the_same_scale(substrate) -> None:
 # ── the rewrite, checked against the package and not against its own report ──
 
 
-@needs_package
+@needs_query_view_tree
 def test_the_metaqa_rewrite_is_verified_against_real_canonical_ids() -> None:
     """The first version of this rewrite scored 0.4152 and made metaqa look
     unusable. Re-deriving it here from the package means a regression shows up
@@ -214,7 +226,7 @@ def test_the_metaqa_rewrite_is_verified_against_real_canonical_ids() -> None:
     assert corrected in node_ids
 
 
-@needs_package
+@needs_query_view_tree
 def test_measure_split_actually_resolves_a_padded_gold_id(tmp_path: Path) -> None:
     """Exercises the real code path rather than re-deriving the answer beside
     it. Flipping strip_zero_padding off has to fail here -- the assertions
@@ -245,7 +257,7 @@ def test_measure_split_actually_resolves_a_padded_gold_id(tmp_path: Path) -> Non
     assert row["queries_with_no_resolved_gold"] == 0
 
 
-@needs_package
+@needs_query_view_tree
 def test_stripping_padding_never_empties_a_legitimate_zero_index() -> None:
     """lstrip('0') would turn `metaqa:e0` into `metaqa_ent_`. Node 0 exists."""
     import m3a_query_view_feasibility as feas
