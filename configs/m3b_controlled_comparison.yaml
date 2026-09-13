@@ -562,3 +562,35 @@ amendment_1_2026_09_13:
       the substrate ablation stands as declared (three joint fits); on a dataset
       where the headroom shows a family adds no exposure (squad, every family)
       the cell is reported and read as a control, not as a regime result.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Amendment 2 (systems). The machine changed under the phase; nothing
+# scientific does. Filed before the first cache byte is written.
+# ─────────────────────────────────────────────────────────────────────────────
+amendment_2_2026_09_13_systems:
+  status: FILED_BEFORE_ANY_CACHE_BYTE
+  numbers_present: false
+  what_changed: >-
+    During the contract measurement and the relation encode (two processes on
+    the 16 GB machine) the Windows system-managed page file grew from about
+    11 GB to 27.8 GB; it does not shrink before a reboot and system settings
+    are out of bounds for this work, so free disk fell from the 27 GB in
+    compute.storage to 9.9 GB before any cache was written. The declared
+    "free disk below 8 GB halts compilation" was a margin under 27 GB, not a
+    scientific quantity; the scientific bound is the cache size, and it stands.
+  unchanged: the candidate contract, the carves, the feature set, the arms, the training rule, the measurement, the firewall
+  disk_guard:  # read by scripts/m3b_compile.py, which refuses to compile without this block
+    free_gb_at_filing: 9.9
+    cache_bound_gb: 10           # compute.storage, unchanged: the cache is deleted (it is recomputable) if it reaches the bound
+    halt_below_free_gb: 2.0      # replaces the 8 GB margin; checked before each carve and every 500 compiled queries
+    expected_cache_gb: 7.2       # 111 float16 columns + 10 seed weights + int32 id per candidate row (246 bytes) over the RUN carves at the frozen pools
+  after_the_screen: >-
+    scripts/m3b_compile.py --stage trim rewrites each carve cache's scalars to
+    the QLS_U_CORE_CONTRACT columns (meta.json records columns_stored and its
+    sha256); the stored values are unchanged and the dropped columns are
+    recomputable from the contract, so the screen and the base-score rule,
+    which index the full 111-column layout, refuse to run on a trimmed cache.
+  streaming: >-
+    the carve cache writer streams the row arrays (pool, scalars, seedw) to
+    disk as queries are compiled instead of holding the carve in memory; the
+    files and values are identical (tests/test_m3b_compile.py).

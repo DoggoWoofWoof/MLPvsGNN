@@ -111,3 +111,66 @@ def test_cache_writer_streams_the_row_arrays_and_reads_back_identically(tmp_path
     a = NpyAppender(tmp_path / "e.npy", np.float16, 3)
     a.close()
     assert np.load(tmp_path / "e.npy").shape == (0, 3)
+
+
+def test_trim_keeps_every_requested_value_and_refuses_the_full_layout_stages(tmp_path, monkeypatch):
+    import json
+    from mp_retrieval.m3b_features import COLUMNS
+    from mp_retrieval.m3b_train import CarveData
+    m = load_compile()
+    rng = np.random.default_rng(5)
+    writer = CacheWriter(tmp_path / "fit", {"kind": "fit"})
+    for q in range(5):
+        n = int(rng.integers(3, 30))
+        pool = np.sort(rng.choice(200, size=n, replace=False)).astype(np.int64)
+        writer.add(f"q{q}", q, rng.standard_normal(1536), _Compiled(pool, rng.standard_normal((n, N_COLUMNS)).astype(np.float16), np.asarray([0])),
+                   np.asarray([1], dtype=np.int64), 1)
+    writer.write()
+    surviving = [COLUMNS[k] for k in (0, 7, 3, 50, 110)]          # declared order is whatever the screen keeps; positions are mapped by name
+    requested = np.asarray([50, 3, 110], dtype=np.int64)
+    before = CarveData(tmp_path / "fit", context=None, columns=requested)
+    ref = [before.query(i)["x"] for i in range(before.n_queries)]
+    full_before = np.asarray(np.load(tmp_path / "fit" / "scalars.npy"))
+    del before                                        # a reader's mapping would hold the file open on Windows
+    import gc
+    gc.collect()
+    meta = m.trim_cache(tmp_path / "fit", surviving, "sha")
+    assert meta["columns_stored"] == surviving and meta["scalars_bytes"] < meta["scalars_bytes_before_trim"]
+    trimmed = np.load(tmp_path / "fit" / "scalars.npy", mmap_mode="r")
+    assert trimmed.shape == (full_before.shape[0], 5)
+    np.testing.assert_array_equal(np.asarray(trimmed), full_before[:, [0, 7, 3, 50, 110]])
+    after = CarveData(tmp_path / "fit", context=None, columns=requested)
+    for i in range(after.n_queries):
+        np.testing.assert_array_equal(after.query(i)["x"], ref[i])
+    del trimmed, after
+    gc.collect()
+    # the same call again is a no-op, a missing column refuses, and the full-layout stages refuse
+    assert m.trim_cache(tmp_path / "fit", surviving, "sha")["columns_stored"] == surviving
+    import pytest
+    with pytest.raises(ValueError):
+        CarveData(tmp_path / "fit", context=None, columns=np.asarray([1]))
+    with pytest.raises(ValueError):
+        CarveData(tmp_path / "fit", context=None)
+    with pytest.raises(SystemExit):
+        m.univariate_recall5(tmp_path / "fit")
+    with pytest.raises(SystemExit):
+        m.column_stats(tmp_path / "fit")
+
+
+def test_disk_guard_reads_amendment_2_and_halts_at_its_floor(tmp_path, monkeypatch):
+    import pytest
+    m = load_compile()
+    with pytest.raises(SystemExit):
+        m.DiskGuard({})
+    guard = m.DiskGuard({"amendment_2_2026_09_13_systems": {"disk_guard": {"halt_below_free_gb": 0.0, "cache_bound_gb": 10}}})
+    monkeypatch.setattr(m, "CACHE", tmp_path / "cache")
+    guard.check()                                    # nothing written, plenty of disk above a 0 GB floor
+    tight = m.DiskGuard({"amendment_2_2026_09_13_systems": {"disk_guard": {"halt_below_free_gb": 10**6, "cache_bound_gb": 10}}})
+    with pytest.raises(SystemExit):
+        tight.check()
+    (tmp_path / "cache" / "x" / "fit").mkdir(parents=True)
+    (tmp_path / "cache" / "x" / "fit" / "scalars.npy").write_bytes(b"0" * 2048)
+    bound = m.DiskGuard({"amendment_2_2026_09_13_systems": {"disk_guard": {"halt_below_free_gb": 0.0, "cache_bound_gb": 1e-6}}})
+    with pytest.raises(SystemExit):
+        bound.check(writing=tmp_path / "cache" / "x" / "fit")
+    assert not (tmp_path / "cache" / "x" / "fit").exists()

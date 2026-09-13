@@ -31,6 +31,7 @@ import hashlib
 import importlib.util
 import json
 import math
+import shutil
 import sys
 import time
 from dataclasses import dataclass
@@ -258,7 +259,8 @@ def relation_table_for(ds, dataset: str, stores: dict) -> RelationTable | None:
     return RelationTable.from_arrays(emb, counts, int(ds.n_nodes))
 
 
-def compile_population(prep: Prepared, stores: dict, nodes: DenseNodes, rel_table: RelationTable | None, out_dir: Path, meta: dict, log=print) -> dict:
+def compile_population(prep: Prepared, stores: dict, nodes: DenseNodes, rel_table: RelationTable | None, out_dir: Path, meta: dict, log=print,
+                       guard: "DiskGuard | None" = None) -> dict:
     timings: dict = {}
     writer = CacheWriter(out_dir, meta)
     pop = prep.pop
@@ -270,6 +272,8 @@ def compile_population(prep: Prepared, stores: dict, nodes: DenseNodes, rel_tabl
         writer.add(pop.ids[i], int(pop.idx[i]), prep.qemb[i], compiled, gold_local, int(pop.golds[i].size))
         if (i + 1) % 500 == 0:
             log(f"      {pop.kind}: {i + 1}/{pop.idx.size} queries, {(time.time() - t0) / (i + 1) * 1000:.1f} ms/query")
+            if guard is not None:
+                guard.check(writing=out_dir)
     seconds = time.time() - t0
     written = writer.write()
     n = max(1, pop.idx.size)
@@ -297,9 +301,90 @@ def stage_carves(cfg: dict, canonical, served: Path, datasets: list[str]) -> dic
     return record
 
 
+class DiskGuard:
+    """amendment_2_2026_09_13_systems.disk_guard: halt below the free-disk floor,
+    delete the carve being written and halt if the cache reaches its bound."""
+
+    def __init__(self, cfg: dict):
+        block = cfg.get("amendment_2_2026_09_13_systems", {}).get("disk_guard")
+        if not block:
+            raise SystemExit("no amendment_2_2026_09_13_systems.disk_guard in the declaration; refusing to write a cache")
+        self.halt_below = float(block["halt_below_free_gb"]) * 1e9
+        self.bound = float(block["cache_bound_gb"]) * 1e9
+
+    @staticmethod
+    def cache_bytes() -> int:
+        return sum(p.stat().st_size for p in CACHE.rglob("*") if p.is_file()) if CACHE.exists() else 0
+
+    def check(self, writing: Path | None = None) -> None:
+        free = shutil.disk_usage(OUT).free
+        if free < self.halt_below:
+            raise SystemExit(f"free disk {free / 1e9:.2f} GB below the {self.halt_below / 1e9:.1f} GB floor (amendment 2); compilation halted")
+        used = self.cache_bytes()
+        if used >= self.bound:
+            if writing is not None and writing.exists():
+                shutil.rmtree(writing)          # the incomplete carve, recomputable
+            raise SystemExit(f"cache {used / 1e9:.2f} GB reached its {self.bound / 1e9:.0f} GB bound (compute.storage); the carve being written was deleted, compilation halted")
+
+
+def assert_untrimmed(cache_dir: Path) -> None:
+    meta = json.loads((Path(cache_dir) / "meta.json").read_text(encoding="utf-8"))
+    if meta.get("columns_stored") is not None:
+        raise SystemExit(f"{cache_dir}: trimmed to {len(meta['columns_stored'])} columns; the full-layout stages ran before the trim and are not repeated")
+
+
+def trim_cache(cache_dir: Path, surviving: list[str], core_sha: str, chunk_rows: int = 500_000) -> dict:
+    """Rewrite scalars.npy to the surviving columns, in declared order; values unchanged."""
+    from mp_retrieval.m3b_train import NpyAppender
+    d = Path(cache_dir)
+    meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
+    if meta.get("columns_stored") is not None:
+        return meta
+    take = np.asarray([IDX[c] for c in surviving], dtype=np.int64)
+    src = np.load(d / "scalars.npy", mmap_mode="r")
+    if src.shape[1] != N_COLUMNS:
+        raise SystemExit(f"{d}: scalars hold {src.shape[1]} columns, not the {N_COLUMNS} of the layout")
+    tmp = d / "scalars.trim.npy"
+    out = NpyAppender(tmp, np.float16, int(take.size))
+    for a in range(0, src.shape[0], chunk_rows):
+        out.append(np.asarray(src[a:a + chunk_rows])[:, take])
+    out.close()
+    del src
+    check = np.load(tmp, mmap_mode="r")
+    if check.shape != (int(np.load(d / "pool_ptr.npy")[-1]), int(take.size)):
+        raise SystemExit(f"{d}: trimmed scalars have shape {check.shape}")
+    del check
+    gc.collect()                                     # Windows keeps a mapped file locked until the mapping is gone
+    before = (d / "scalars.npy").stat().st_size
+    (d / "scalars.npy").unlink()
+    tmp.rename(d / "scalars.npy")
+    meta.update({"columns_stored": list(surviving), "columns_stored_sha256": core_sha, "trimmed_utc": utc(),
+                 "scalars_bytes_before_trim": int(before), "scalars_bytes": int((d / "scalars.npy").stat().st_size)})
+    (d / "meta.json").write_text(json.dumps(meta, indent=1), encoding="utf-8")
+    return meta
+
+
+def stage_trim(datasets: list[str], kinds: tuple[str, ...]) -> None:
+    screen_file = OUT / "feature_screen.json"
+    if not screen_file.exists():
+        raise SystemExit("no feature_screen.json: the screen runs on the full layout before any cache is trimmed")
+    screen = json.loads(screen_file.read_text(encoding="utf-8"))
+    surviving, core_sha = screen["surviving"], screen["core_contract_sha256"]
+    for name in datasets:
+        for kind in kinds:
+            d = CACHE / name / kind
+            if not (d / "scalars.npy").exists():
+                raise SystemExit(f"{name}/{kind}: no cache at {d}")
+            meta = trim_cache(d, surviving, core_sha)
+            print(f"   {name}/{kind}: {meta['n_rows']} rows x {len(surviving)} columns, {meta['scalars_bytes'] / 1e9:.2f} GB "
+                  f"(was {meta.get('scalars_bytes_before_trim', 0) / 1e9:.2f} GB)", flush=True)
+
+
 def stage_compile(cfg: dict, cfg_h: dict, m3a, canonical, served: Path, freeze: dict, datasets: list[str], kinds: tuple[str, ...]) -> None:
     m3b_contract = load_script("m3b_contract")
     key, frozen = frozen_contract(cfg)
+    guard = DiskGuard(cfg)
+    guard.check()
     contract = contract_json()
     (OUT / "feature_contract.json").write_text(json.dumps(contract, indent=1), encoding="utf-8")
     for name in datasets:
@@ -326,7 +411,8 @@ def stage_compile(cfg: dict, cfg_h: dict, m3a, canonical, served: Path, freeze: 
                                                                   "kept": int(prep.pop.idx.size), "ids_sha256": prep.pop.digest},
                     "feature_contract": contract["name"], "n_columns": N_COLUMNS, "relation_table": rel_table is not None,
                     "freeze_RECORD_SHA256": freeze["RECORD_SHA256"], "utc": utc()}
-            written = compile_population(prep, stores, nodes, rel_table, CACHE / name / prep.pop.kind, meta)
+            guard.check()
+            written = compile_population(prep, stores, nodes, rel_table, CACHE / name / prep.pop.kind, meta, guard=guard)
             print(f"   {prep.pop.kind}: {written['n_queries']} queries, {written['n_rows']} rows, {written['ms_per_query']} ms/query, "
                   f"{written['bytes'] / 1e9:.2f} GB, no-gold-in-pool {written['queries_with_no_gold_in_pool']}", flush=True)
         del prepared, nodes, stores
@@ -338,6 +424,7 @@ def univariate_recall5(cache_dir: Path, columns: np.ndarray | None = None) -> np
     """recall@5 of every column ranked alone on one cached carve, both signs:
     returns (F, 2) mean recall over the carve's queries with in-pool gold, sign
     order (+, -). Ties break by pool order, as the metric function does."""
+    assert_untrimmed(cache_dir)
     scalars = np.load(cache_dir / "scalars.npy", mmap_mode="r")
     pool_ptr = np.load(cache_dir / "pool_ptr.npy")
     gold_ptr = np.load(cache_dir / "gold_ptr.npy")
@@ -360,8 +447,9 @@ def univariate_recall5(cache_dir: Path, columns: np.ndarray | None = None) -> np
     return sums / max(n, 1)
 
 
-def column_stats(cache_dir: Path, chunk_rows: int = 2_000_000) -> dict:
+def column_stats(cache_dir: Path, chunk_rows: int = 500_000) -> dict:
     """Availability (non-zero fraction), mean and variance per column over one fit cache."""
+    assert_untrimmed(cache_dir)
     scalars = np.load(cache_dir / "scalars.npy", mmap_mode="r")
     n = scalars.shape[0]
     nonzero = np.zeros(scalars.shape[1])
@@ -477,7 +565,7 @@ def stage_base(cfg: dict, datasets: list[str]) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=["carves", "compile", "base", "screen"], required=True)
+    parser.add_argument("--stage", choices=["carves", "compile", "base", "screen", "trim"], required=True)
     parser.add_argument("--datasets", nargs="*", default=None)
     parser.add_argument("--kinds", nargs="*", default=["fit", "select"], help="populations to compile (fit, select)")
     args = parser.parse_args()
@@ -495,6 +583,8 @@ def main() -> int:
             stage_compile(cfg, cfg_h, m3a, canonical, served, freeze, datasets, tuple(args.kinds))
     elif args.stage == "base":
         stage_base(cfg, datasets)
+    elif args.stage == "trim":
+        stage_trim(datasets, tuple(args.kinds))
     else:
         stage_screen(cfg, datasets)
     print(f"{args.stage}: {time.time() - t0:.0f}s", flush=True)

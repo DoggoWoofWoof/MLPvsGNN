@@ -23,7 +23,7 @@ import numpy as np
 import torch
 
 from mp_retrieval.m3b_features import (
-    DIM, FAMILIES, MAX_SEEDS, N_COLUMNS, DenseNodes, RelationTable, pool_edges,
+    COLUMNS, DIM, FAMILIES, MAX_SEEDS, N_COLUMNS, DenseNodes, RelationTable, pool_edges,
 )
 from mp_retrieval.m3b_models import N_EDGE_FEATURES, PackedBatch, listwise_loss
 
@@ -204,9 +204,25 @@ class CarveData:
         d = Path(cache_dir)
         self.dir = d
         self.context = context
-        # the QLS_U_CORE_CONTRACT column subset; None reads every compiled column
-        self.columns = None if columns is None else np.asarray(columns, dtype=np.int64)
         self.meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
+        # the QLS_U_CORE_CONTRACT column subset (indices into the full layout); None reads every
+        # compiled column. A trimmed cache stores a named subset (meta columns_stored), so the
+        # requested layout indices are mapped through the stored names; a missing name refuses.
+        stored = self.meta.get("columns_stored")
+        if columns is None:
+            self.columns = None
+            if stored is not None:
+                raise ValueError(f"{d}: trimmed to {len(stored)} columns; the full layout is not available")
+        else:
+            requested = np.asarray(columns, dtype=np.int64)
+            if stored is None:
+                self.columns = requested
+            else:
+                position = {name: k for k, name in enumerate(stored)}
+                missing = [COLUMNS[c] for c in requested if COLUMNS[c] not in position]
+                if missing:
+                    raise ValueError(f"{d}: trimmed cache lacks {missing}")
+                self.columns = np.asarray([position[COLUMNS[c]] for c in requested], dtype=np.int64)
         self.qrow = np.load(d / "qrow.npy")
         self.qemb = np.load(d / "qemb.npy", mmap_mode="r")
         self.pool_ptr = np.load(d / "pool_ptr.npy")
