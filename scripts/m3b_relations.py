@@ -33,18 +33,24 @@ def relation_text(raw: str) -> str:
     return " ".join(raw.replace(".", " ").replace("_", " ").split())
 
 
+def load_script(name: str):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / f"{name}.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def main() -> int:
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
     os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
     cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
     package_root = Path(cfg["substrate"]["package_root"])
     served = package_root / "data" / "final_canonical"
-    sys.dont_write_bytecode = True
-    sys.path.insert(0, str(served))
-    import canonical  # type: ignore
-
-    if (served / "__pycache__").exists():
-        raise SystemExit("byte-code cache under the package root; refusing")
+    m3b_compile = load_script("m3b_compile")
+    canonical = m3b_compile.import_loader_readonly(served)   # never writes under the root; reports a cache left by others
     freeze = json.loads((served / "CANONICAL_FREEZE.json").read_text(encoding="utf-8"))
     if freeze["RECORD_SHA256"] != cfg["substrate"]["freeze_RECORD_SHA256_expected"]:
         raise SystemExit("served freeze mismatch; refusing")

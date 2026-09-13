@@ -88,13 +88,40 @@ def frozen_contract(cfg: dict) -> tuple[str, dict]:
     return keys[-1], cfg[keys[-1]]
 
 
+def pycache_state(served: Path) -> dict | None:
+    """What sits in data/final_canonical/__pycache__, if anything: name, size, mtime per file."""
+    d = served / "__pycache__"
+    if not d.exists():
+        return None
+    return {f.name: {"bytes": f.stat().st_size, "mtime_ns": f.stat().st_mtime_ns} for f in sorted(d.iterdir())}
+
+
+def import_loader_readonly(served: Path):
+    """Import the package loader in place without writing under the package root.
+    Byte-code writing is off; a byte-code cache that some other process left
+    there is reported, not deleted (deleting is a write too), and must be
+    byte-for-byte the same after our import -- otherwise this process wrote it
+    and refuses to continue."""
+    sys.dont_write_bytecode = True
+    before = pycache_state(served)
+    if before is not None:
+        print(f"   note: a byte-code cache exists under the package root, not created by this process: "
+              + ", ".join(f"{n} ({v['bytes']} B, mtime {datetime.fromtimestamp(v['mtime_ns'] / 1e9).isoformat(timespec='seconds')})" for n, v in before.items()),
+              flush=True)
+    if str(served) not in sys.path:
+        sys.path.insert(0, str(served))
+    import canonical  # type: ignore  # the package loader, imported in place
+
+    if pycache_state(served) != before:
+        raise SystemExit("the byte-code cache under the package root changed during our import; this process wrote under the root and refuses to continue")
+    return canonical
+
+
 def open_package(cfg: dict):
     m3a = load_script("m3a_headroom")
     package_root = Path(cfg["substrate"]["package_root"])
     served = package_root / "data" / "final_canonical"
-    if (served / "__pycache__").exists():
-        raise SystemExit("byte-code cache under the package root; refusing")
-    canonical = m3a.import_loader(package_root)
+    canonical = import_loader_readonly(served)
     freeze = m3a.served_freeze(package_root)
     if freeze["RECORD_SHA256"] != cfg["substrate"]["freeze_RECORD_SHA256_expected"]:
         raise SystemExit(f"served freeze {freeze['RECORD_SHA256']} != declared; refusing to run")
