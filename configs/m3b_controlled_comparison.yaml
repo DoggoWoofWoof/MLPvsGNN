@@ -464,3 +464,88 @@ order_of_operations:
   4: screen, selection filed to outputs/m3b/selection.json, seeds, ablation
   5: eval pass; docs/M3B_RESULTS.md; run record appended here; status RUN; commit
 on_completion: results filed and committed (authorization_2026_09_13.on_completion)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Amendment 1 — 2026-09-13, filed before any contract cell, feature or weight
+# exists. The user restated the plan in six stages in the review chat right
+# after the declaration was committed (05b711a); the sections above are left
+# as filed and the three gaps between them and the plan are closed here.
+# ─────────────────────────────────────────────────────────────────────────────
+amendment_1_2026_09_13:
+  status: FILED_BEFORE_ANY_NUMBER
+  numbers_present: false
+  user_plan_2026_09_13_condensed:
+    1: finish the candidate contract before training -- metaqa STRUCT h3; webqsp dense-only versus a prospectively specified weighted dense/splade fusion instead of equal RRF; no oracle topic entities in the mainline; one pool per dataset; hotpotqa/2wiki small (STRUCT h1 reaches the knee); squad retrieval-only; musique the richer bounded pool
+    2: compile directions A-D as the main research work -- exact deterministic topology, typed relations with direction and bounded chains, provenance-separated neighbour prototypes, seed-conditioned aggregates by hop; no learned propagation in any of them
+    3: reduce the features before any model, on train/dev only -- availability, variance, duplicates, incremental information, cost, latency; freeze a QLS-U core contract; masks not dataset ids
+    4: QLS-U = fixed compiled score + a learned MLP residual, one universal MLP, no router, no distillation
+    5: one genuinely strong universal GNN (GATv2, query-conditioned, relation-aware) plus GAT-NO-MP; the M3 firewall stands
+    6: the experiment -- fixed compiled score, QLS-U, GAT-NO-MP, GAT on the frozen contract; both GAT - QLS-U and GAT - GAT-NO-MP; R@1/5/20, audited MRR, full coverage, parameters, cold p50/p95/p99, memory, training cost; SOTA numbers in a calibration column with their exposure attached; audit MRR from raw ranks before publishing it
+  already_in_the_declaration: stages 1 (metaqa h3, dense base for webqsp), 4, 5, 6 (the two differences, the SOTA column with exposure)
+  gaps_closed_here: [webqsp weighted fusion, features added to A/B/D, the feature-reduction stage, the extra report columns and the MRR audit]
+
+  candidate_contract_amended:
+    no_oracle_topic_entities_in_the_mainline: true
+    prospective_additions:
+      webqsp:
+        weighted_rrf_dense_weights: [0.75]
+        base_pools: [wrrf0.75_budget_50, wrrf0.75_budget_100, wrrf0.75_budget_200]
+        why: >-
+          equal RRF (dense 0.5 / splade 0.5) degraded the webqsp base below dense
+          alone; the weight 0.75 is fixed here before any webqsp cell is read
+          for this purpose, as the one prospectively specified alternative; the
+          fusion is mp_retrieval.rank_fusion.rrf_rankings at that weight,
+          truncated at the union size like the inherited pools.
+    merge_rule: these base pools are added to the webqsp list in candidate_contract.selection_rule; the settings and regimes there are unchanged; the knee rule and the bound are unchanged
+
+  feature_contract_amended:
+    topology_added:  # per family f in {STRUCT, NER, KNN, FULL}
+      branch_div_f: log1p(number of distinct hop-1 intermediates x with seed - x - v paths in the pool graph)
+      seed_component_f: 1 if v is in the same connected component of the pool graph as any seed
+      component_size_f: log1p(size of the connected component of v in the pool graph)
+    typed_relations_added:
+      seed_edges_out: log1p(number of stored structural edges v -> seed), seed_edges_in likewise for seed -> v (direction-sensitive support)
+      relchain2_max: max over typed 2-hop chains seed - x - v inside the pool graph of the mean of cos(q, e_r1) and cos(q, e_r2); relchain2_mean likewise; has_relchain2 mask
+    seed_conditioned_added:
+      cos_v_seedproto_h1: cos(e_v, mean embedding of the seeds at exact FULL pool-graph distance 1 from v), with mask has_seed_h1
+      cos_v_seedproto_h2: the same at exact distance 2, with mask has_seed_h2
+    still_no_learned_propagation: every added column is a deterministic function of the pool graph, the embeddings and the relation texts
+
+  feature_reduction_stage:
+    when: after compilation, before any model; results filed as a dated block and outputs/m3b/feature_screen.json
+    population: the fit carves (train-derived) for availability, variance and duplicates; the select carves for the univariate signal; no eval population
+    measures:
+      availability: fraction of candidate rows on which the column is non-default (non-zero, or mask 1), per dataset
+      variance: per dataset, on the raw column
+      duplicates: absolute Spearman correlation on a stride sample of 200,000 fit rows pooled over the six datasets; pairs at or above 0.98 are duplicates
+      univariate_signal: recall@5 when the pool is ranked by the column alone, best of the two signs, on the select carve, per dataset (reported, never used to drop)
+      cost: construction seconds per group per 1000 queries and the storage per row
+    freeze_rule: >-
+      a column is dropped iff it is unavailable (below 0.5 percent) on every
+      dataset, or has zero variance on every dataset, or is the later member (in
+      declared order) of a duplicate pair; nothing is dropped for weak signal,
+      because dropping by signal would turn the select carve into a training
+      signal and remove exactly the columns whose interaction effects the models
+      are there to find.
+    output: QLS_U_CORE_CONTRACT -- the surviving column list, its sha256, appended as qls_u_core_contract_<date>; the models read that list and nothing else
+
+  reporting_amended:
+    fixed_compilation_column: the selected fixed base score ranked alone, and beside it the best of the three fixed candidates per dataset (both parameter-free)
+    parameters: trainable parameter count per arm
+    latency: >-
+      cold per-query latency (feature compilation from the caches, embeddings
+      and stores, plus the forward pass) on the first 500 eval queries of each
+      dataset, batch of one, torch threads as in the run, p50/p95/p99; and the
+      forward pass alone
+    memory: peak resident set of the eval process per dataset
+    training_cost: wall-clock seconds per fit, epochs run, best epoch
+    mrr_audit: >-
+      MRR is recomputed from the stored per-query first-gold rank by an
+      independent function and must agree with the metric function to 1e-12;
+      hit@1 <= MRR and MRR <= 1 are asserted on every row; a test holds the
+      metric function against a brute-force implementation on random inputs.
+      No MRR is published before the audit row is green.
+    regime_ablation: >-
+      the substrate ablation stands as declared (three joint fits); on a dataset
+      where the headroom shows a family adds no exposure (squad, every family)
+      the cell is reported and read as a control, not as a regime result.
