@@ -1529,3 +1529,37 @@ amendment_3_2026_09_13_training_reading_and_compute:
     and the timing files
   unchanged: the contract, the carves, the feature contract and its core, the arms, the loss, the optimiser, batch_queries
     16, epoch 2000 batches, max_epochs 6, early stopping, the selection rule, the firewall, the measurement
+
+# ── Amendment 4 -- 2026-09-14, during the screen: the 8-hour halt fired on a paging machine; the fit resumes from its checkpoint ──
+amendment_4_2026_09_14_paging_halt_and_resume:
+  status: FILED_BEFORE_CONTINUING
+  filed_utc: '2026-09-14T08:55:21Z'
+  what_happened: Fit 1 of the screen (gat_universal_v1, L 2, H 64, seed 0) closed epochs 0-4 in 122, 101, 94, 103
+    and 112 minutes (select macro R@5 0.7792, 0.7886, 0.7933, 0.8026, 0.8015; best epoch 3). Epoch 5 started at
+    2026-09-14 05:21 IST and had reached batch 1,760 of 2,000 at 14:08 IST, 8.9 hours in, past the 8-hour per-epoch
+    halt of amendment 3. The process was stopped at 14:17 IST before the epoch closed; the checkpoint written after
+    epoch 4 is intact (outputs/m3b/models/gat_universal_v1__H64_L2__s0.ckpt).
+  cause: 'The machine was paging, not the fit computing. At 14:08 the fit''s resident set was 0.16-0.63 GB of a
+    10 GB commit, its CPU share 1 percent over five minutes, free physical memory 0.00-0.20 GB, swap 14 GB. After
+    the fit was stopped, free physical memory stayed at 0.04-0.5 GB although the sum of all processes'' resident
+    sets was 1.6 GB: the kernel''s nonpaged pool measured 10.3-10.5 GB (Memory / Pool Nonpaged Bytes; a healthy
+    figure is well under 1 GB) and was still growing at about 1.5 GB per hour with nothing of this phase running
+    -- a driver-side leak on the shared laptop, outside this run, that only a reboot clears. Evidence: outputs/m3b/logs/halt_2026-09-14_fit1_epoch5.json
+    and outputs/m3b/logs/machine_health.log (five-minute samples of machine CPU, free RAM, swap, nonpaged pool,
+    disk, and the fit''s resident set, commit and CPU share).'
+  ruling:
+    resume: The fit resumes from its epoch-4 checkpoint with the same command. The resumed epoch 5 draws the same
+      batches in the same order and computes the same numbers the uninterrupted fit would have (tests/test_m3b_models.py::test_a_fit_resumed_from_its_checkpoint_is_the_uninterrupted_fit).
+      Nothing is retrained and no epoch is dropped.
+    fallback: 'The pre-registered fallback (fit cap 3000) is declined again: the halt measured the machine''s memory,
+      not the epoch''s cost -- the same fit''s five closed epochs took 94-122 minutes, a quarter of the limit.'
+    standing_rule: A halt whose epoch the health log documents as paging-bound (free physical memory under 0.25
+      GB, or the fit's resident set under a quarter of its commit, for most samples of that epoch) is resumed from
+      its checkpoint without retraining, and that epoch's wall time is reported flagged as paging-bound. A halt
+      without that evidence stops the phase for review, as declared. The 8-hour detector and the 264-hour ceiling
+      are unchanged; paging hours count against the ceiling.
+    reporting: history[].seconds in the fit record stays as measured; the report names the paging-bound epochs and
+      the machine condition beside the training cost, as amendment 3 already requires.
+  unchanged: 'Everything scientific: the contract, the carves, the feature contract and its core, the arms, the
+    loss, the optimiser, batch_queries 16, epoch 2000 batches, max_epochs 6, early stopping, the grids, the seeds,
+    the substrate ablation, the selection rule, the firewall, the measurement.'
