@@ -1563,3 +1563,60 @@ amendment_4_2026_09_14_paging_halt_and_resume:
   unchanged: 'Everything scientific: the contract, the carves, the feature contract and its core, the arms, the
     loss, the optimiser, batch_queries 16, epoch 2000 batches, max_epochs 6, early stopping, the grids, the seeds,
     the substrate ablation, the selection rule, the firewall, the measurement.'
+
+# ── Note 1 -- 2026-09-14, during the screen: the three regimes of a KB node text; the historical substrate was regime 2, this phase is regime 1; how the facts re-enter without message passing ──
+note_1_2026_09_14_node_text_regimes:
+  status: NOTED_DURING_THE_SCREEN
+  filed_utc: '2026-09-14T15:43:05Z'
+  changes_nothing_in_this_phase: A reading, filed so that every comparison between this phase's numbers and the
+    historical ones carries it. The candidate contract, the feature contract, the arms, the training and the measurement
+    are as declared; the screen keeps running.
+  the_three_regimes_of_a_KB_node_text:
+    1_NAME_ONLY: 'node text = the entity name. The semantic channel (Dense, SPLADE, e_v) knows identity; relations
+      stay in the graph channel. This is the served canonical substrate: metaqa node metaqa:e00000 has text "Kismet"
+      and nothing else (nodes.jsonl, source kb_entity_dict.txt), and the WebQSP encode was resolved upstream as
+      name-only (configs/m3a_compilation.yaml amendment_1, m3a_sota_information_contract.yaml open_decisions_disposition).'
+    2_NAME_PLUS_ALL_INCIDENT_TRIPLES: 'node text = the name plus every (or a bounded number of) local KB fact(s),
+      verbalised, e.g. "Kismet / directed by William Dieterle / starred actors Marlene Dietrich ...". Built from
+      the KB alone, embedded once, no query involved. This is the historical graph.pt substrate for MetaQA and WebQSP
+      (docs/DATASET_GRAPH_PROVENANCE.md: "Node text verbalizes a bounded number of incident facts", "entity text
+      verbalizes incident relations before embedding"), the substrate of the M2 results and of the frozen historical
+      S3 / S4 / A3.'
+    3_NAME_PLUS_QUERY_SELECTED_TRIPLES: the triples folded into the node text are chosen per question. Query-conditioned
+      representation; a real violation of a clean L1 setup. The historical substrate was NOT this.
+  what_the_historical_regime_was_and_was_not:
+    not_leakage: 'Regime 2 needs no query, its embeddings were computed once offline, and its evaluation was not
+      thereby leaked. The old numbers are valid for the task they define: retrieve over KB nodes whose documents
+      contain their local facts.'
+    confounded_for_the_mechanism_question: 'Under regime 2 the neighbouring entity names and relation phrases sit
+      inside the node''s own text, so a question can reach the answer node by text match alone -- Dense/SPLADE were
+      doing part of the graph retrieval before any structural channel ran, and the graph-versus-semantic isolation
+      was compromised. That is why the old MetaQA looked much better, and why regime 1 is the cleaner setting for
+      the question this phase asks even though its scores are lower. Named in the M3A budget already (docs/M3A_WEBQSP_ENCODE_BUDGET.md:
+      name_plus_facts moves relational information into the semantic channel and delta_MP stops isolating what it
+      is meant to isolate).'
+    comparability: No number from the graph.pt substrate (M2, S3 / S4 / A3, the old MetaQA and WebQSP rows) is comparable
+      with a number from this phase without this caveat beside it. The report prints it wherever the two meet.
+  how_this_phase_recreates_the_relational_information_without_message_passing: 'The semantic channel stays name-only.
+    The local facts re-enter as declared, parameter-free functions of the query and the served graph, computed at
+    inference time and fed identically to every arm: direction B (typed relations -- cos(q, e_r) over the edges
+    between v and the seeds and over v''s in-pool edges, relation IEF and diversity, edge direction), direction
+    C (neighbour aggregation -- the prototype and the max cosine over v''s neighbours'' name embeddings per family,
+    projected products in the model), direction D (seed-conditioned aggregation), and the fixed propagation GCS
+    (a two-step, alpha 0.5, parameter-free spread of the fused retrieval score over the pool graph). None of these
+    is learned message passing: they are fixed aggregations of the KG that a NAME_ONLY index cannot see. Whether
+    this is enough to recover the old scores is one of the readings of the main table (Fixed -> QLS-U on metaqa
+    and webqsp).'
+  how_much_learned_message_passing_adds: delta_MP = gat_universal_v1 minus gat_no_mp_v1, identical F(q, v), identical
+    training, seed-paired bootstrap over eval queries, per substrate (STRUCT, NER, KNN, FULL) -- measurement.delta_MP
+    as declared. That increment, read on top of the fixed aggregations above, is the registered question's answer.
+  possible_follow_up_not_taken_here: 'If the metaqa / webqsp rows stay far below the regime-2 numbers after this
+    phase, a later declaration may add a precomputed per-node "fact prototype" -- the embedding of the verbalised
+    incident facts, built offline from the KB alone -- as one more declared feature channel to the scorer, never
+    as the Dense/SPLADE index and never query-selected. It would be filed as its own amendment or phase with its
+    own ceiling; the frozen feature contract of this phase is not edited while fits exist. The caveat above would
+    then apply to that channel: it reintroduces graph facts into an embedding, so the reading "semantic = identity
+    only" would need its own column.'
+  user_instruction_2026_09_14_verbatim: '"make sure this distinction is noted and to improve scores we might need
+    to recreate these features but without ever relying on message passing, and for gnns have to check how much
+    message passing actually improves hence"'

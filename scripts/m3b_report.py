@@ -296,6 +296,14 @@ def section_sota(cfg: dict, evals: dict) -> list[str]:
     lines.append("")
     lines.append(cfg["measurement"]["sota_column"]["when_delta_mp_is_not_read"].strip())
     lines.append("")
+    notes = [v for k, v in cfg.items() if k.startswith("note_") and isinstance(v, dict) and "the_three_regimes_of_a_KB_node_text" in v]
+    if notes:
+        note = notes[-1]
+        lines.append("**The historical MetaQA and WebQSP rows are not comparable with these.** " + note["what_the_historical_regime_was_and_was_not"]["confounded_for_the_mechanism_question"].strip()
+                     + " " + note["what_the_historical_regime_was_and_was_not"]["comparability"].strip())
+        lines.append("")
+        lines.append("How the local facts re-enter here without message passing: " + note["how_this_phase_recreates_the_relational_information_without_message_passing"].strip())
+        lines.append("")
     return lines
 
 
