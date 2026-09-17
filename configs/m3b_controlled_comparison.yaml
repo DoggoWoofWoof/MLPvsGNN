@@ -1620,3 +1620,226 @@ note_1_2026_09_14_node_text_regimes:
   user_instruction_2026_09_14_verbatim: '"make sure this distinction is noted and to improve scores we might need
     to recreate these features but without ever relying on message passing, and for gnns have to check how much
     message passing actually improves hence"'
+
+# ── Note 2 -- 2026-09-17, during the seeds stage: retrieval-seeded rather than entity-linking-seeded; the published systems' exposure re-read from their tables; the like-for-like comparator to their coverage is any_gold_at_pool; the MP-vs-headroom sentence filed as a hypothesis for the eval ──
+note_2_2026_09_17_retrieval_seeded_framing_and_sota_calibration:
+  status: NOTED_DURING_THE_SEEDS_STAGE
+  filed_utc: '2026-09-17T18:02:18Z'
+  changes_nothing_in_this_phase: A reading and a set of checks, filed while the seeds stage is fitting gat_universal_v1__H128_L2__s2.
+    The candidate contract, the feature contract, the arms, the training and the measurement are as declared and
+    no fit is touched. What it adds is (i) the verified facts behind the published KB-QA systems' exposure, (ii)
+    which of our filed numbers is the like-for-like comparator to their "coverage", (iii) the wording adopted for
+    the calibration section, (iv) two extra reporting columns, and (v) one hypothesis filed as a hypothesis before
+    the eval reads it.
+  user_instruction_2026_09_17_verbatim: '"note all those down and check these thoo"'
+  what_was_asserted_and_checked: The user's message (2026-09-17, after the preliminary select-carve table) argued
+    that the asymmetry between the KB-QA lineage and this phase is how the headroom is obtained, not its amount;
+    that their 94.9 % / 99.0 % "coverage" is at-least-one-answer-in-subgraph and must not be set against our pool
+    ceiling@5; that "the closer comparison to their 94.9 % is our query-level any-answer exposure, around 97 %";
+    that MetaQA's missing gold is structurally reachable by hop 3; that QLS-U and the GNN have exactly the same
+    headroom; and that "the benefit of learned message passing depends on how much useful evidence remains beyond
+    what the initial retrievers expose locally". Each is checked below against the primary sources and the filed
+    records.
+  published_systems_reread_from_the_papers:
+    how: The PDFs were fetched and their text extracted locally (PyMuPDF); the tool's page summariser had hallucinated
+      details of GNN-RAG (k = 2, top-100, a GAT) and is not a source. Numbers below are copied from the tables.
+    rearev_emnlp_findings_2022:
+      citation: 'Mavromatis and Karypis, "ReaRev: Adaptive Reasoning for Question Answering over Knowledge Graphs",
+        Findings of EMNLP 2022, pages 2447-2458 (aclanthology 2022.findings-emnlp.181; arXiv 2210.13650).'
+      table_6_dataset_statistics:
+        webqsp: train 2,848 / dev 250 / test 1,639; avg |Vq| 1,429.8; coverage 94.9 %
+        cwq: train 27,639 / dev 3,519 / test 3,531; avg |Vq| 1,305.8; coverage 64.4 %
+        metaqa_2: train 118,980 / dev 14,872 / test 14,872; avg |Vq| 469.8; coverage 100.0 %
+        metaqa_3: train 114,196 / dev 14,274 / test 14,274; avg |Vq| 497.9; coverage 99.0 %
+        coverage_definition_verbatim: '"coverage denotes the ratio of at least one answer in subgraph"'
+      subgraph_construction_verbatim: '"We obtain subgraphs by (He et al., 2021). It runs the PageRank-Nibble (Andersen
+        et al., 2006) (PRN) method from the seed entities to select the top-m entiites to be included in the subgraph,
+        as in (Sun et al., 2018). We have m = 2,000 for Webqsp (full KG) and CWQ, and m = 500 for MetaQA-3 and Webqsp
+        (incomplete KG)." The seed entities are the ones provided with the datasets (Yih et al. 2015 for WebQSP,
+        Talmor and Berant 2018 for CWQ, Miller et al. 2016 for MetaQA-3).'
+      metrics: Hits@1 and F1 over answer entities; hyper-parameters T in {2, 3}, K in {2, 3}, L in {2, 3, 4}.
+    gnn_rag_2024:
+      citation: 'Mavromatis and Karypis, "GNN-RAG: Graph Neural Retrieval for Large Language Model Reasoning", arXiv
+        2405.20139 (the OpenReview copy is behind a verification page; the arXiv PDF was read).'
+      subgraph_construction_verbatim: '"For subgraph retrieval, we use the linked entities and the pagerank algorithm
+        to extract dense graph information [He et al., 2021]. We employ ReaRev [Mavromatis and Karypis, 2022] ..."
+        and, in the appendix, "We obtain dense subgraphs by He et al. [2021]. It runs the PageRank Nibble Andersen
+        et al. [2006] (PRN) method starting from the linked entities to select the top-m (m = 2,000) entities to
+        be included in the subgraph".'
+      table_7_dataset_statistics: WebQSP avg |Vq| 1,429.8, coverage 94.9 %; CWQ 1,305.8, 79.3 %; MetaQA-3 497.9,
+        99.0 % (same coverage definition).
+      limitation_named_by_the_paper: entity-linking errors can yield question subgraphs that contain no answer.
+    cwq_coverage_disagrees_between_the_two_tables: ReaRev Table 6 reports CWQ coverage 64.4 % and GNN-RAG Table
+      7 reports 79.3 % for subgraphs of the same average size (1,305.8). CWQ is not one of this phase's datasets;
+      the two figures are recorded so that neither is quoted as "the" CWQ coverage without its table.
+    what_this_updates_in_the_archaeology: outputs/m3a/sota_archaeology.json (frozen M3A output, not edited) has
+      ReaRev's candidate_count as "NOT STATED in the README" and GNN-RAG's seed source as "question entities assumed
+      given". The paper tables above supply the sizes (1,429.8 / 497.9 / 1,305.8 entities, m = 2,000 or 500) and
+      confirm the entry point (provided / linked topic entities plus PageRank-Nibble). NuTrea's own subgraph statistics
+      were not re-read here; its archaeology row (assigned topic entities, 2-hop subgraph) stands.
+  our_numbers_reread_from_the_filed_records:
+    webqsp_three_quantities_that_answer_different_questions:
+      corpus_reference_level: 0.5255 -- 11,760 of 22,379 gold references of the train_holdout queries resolve to
+        a node of the served KB (docs/M3A_HEADROOM_REPORT.md:31; configs/m3a_compilation.yaml reference_level).
+        A column, never averaged. The 62.42 % quoted elsewhere is the same quantity on the whole train split, a
+        different population.
+      corpus_query_level: 0.9703 -- queries with at least one resolvable gold anywhere in the KB (of the answerable
+        ones 0.9792). No pool, no seeds, no candidate limit is involved.
+      frozen_pool_ceiling_at_5: 0.7649 -- recall@5 a perfect ranker of the frozen pool dense_top200+FULL:h3_c25_v2000
+        would reach (fraction_of_attainable@5 0.8628; candidate_contract_frozen_2026_09_13).
+    the_like_for_like_comparator_to_published_coverage: 'Their coverage is at-least-one-answer-in-the-extracted-subgraph,
+      i.e. a property of the candidate set the model ranks. Our quantity of that kind is any_gold_at_pool of the
+      frozen pool, NOT the corpus query-level 0.9703 (which has no pool behind it) and NOT the pool ceiling@5 (which
+      is K-aware): webqsp any_gold_at_pool 0.9215 at 2,119.6 candidates on average (theirs 94.9 % at 1,429.8 entities);
+      metaqa 0.9876 at 2,017.0 (theirs 99.0 % at 497.9 for MetaQA-3; our metaqa eval population mixes the hops);
+      hotpotqa 0.9916 at 93.7; 2wiki 0.9997 at 105.6; musique 0.9950 at 2,092.4; squad 0.9798 at 50.0.'
+    retrieval_only_best_ceilings_at_5_for_the_graph_added_headroom: 'frozen_union (dense_top200 U splade_top200):
+      metaqa 0.1240, webqsp 0.3655, hotpotqa 0.8940, 2wiki 0.7698, musique 0.8131, squad 0.9955 (docs/M3A_HEADROOM_REPORT.md,
+      retrieval-only rows).'
+    reachability_of_the_gold_that_retrieval_misses: 'docs/M3A_HEADROOM_REPORT.md (reachability section): of the
+      golds the frozen_union pool misses, metaqa 0.486 lie within 2 undirected STRUCT hops of the retrieved seeds
+      and 0.996 within 3 (FULL 0.551 / 0.998); webqsp 0.898 within 2 and 0.989 within 3 (FULL 0.927 / 0.996). The
+      same report''s oracle-topic-entity diagnostic (never used by any pool): metaqa gold coverage within 1 STRUCT
+      hop of the assigned topic entities 0.301 (mean 8 nodes), within 2 hops 0.685 (mean 1,797); webqsp 0.653 within
+      1 hop (mean 1,920 nodes), 0.989 within 2 hops (mean 161,690).'
+  check_outcomes:
+    1_the_asymmetry_is_how_the_headroom_is_obtained:
+      verdict: CONFIRMED_AND_ALREADY_MEASURED
+      reading: 'Theirs: q + provided topic entity -> PageRank-Nibble top-m subgraph -> GNN. Ours: q -> Dense / SPLADE
+        -> seeds (dense_top5 U splade_top5) -> bounded typed expansion to the frozen pool -> the same F(q, v) to
+        every arm. The M3A headroom report measured both entry mechanisms on our substrate: the oracle diagnostic
+        (webqsp 0.653 / 0.989 of the gold within 1 / 2 hops of the assigned topic entities; metaqa 0.301 / 0.685)
+        is the exposure the lineage starts from, and no pool of this phase uses it; the retrieved-seed reachability
+        (0.989 / 0.996 of the missed gold within 3 hops) is what our expansion recovers. "They have more headroom
+        than us" is not the filed reading; "they obtain it from an entity the system did not have to find" is.'
+    2_the_comparator_to_their_coverage:
+      verdict: CORRECTED
+      reading: 'The message''s "closer comparison ... is our query-level any-answer exposure, around 97 %" points
+        at the corpus figure 0.9703, which has no candidate set behind it. The like-for-like figure is any_gold_at_pool
+        of the frozen pool: webqsp 0.9215 at 2,119.6 candidates against 94.9 % at 1,429.8 entities; metaqa 0.9876
+        at 2,017.0 against 99.0 % at 497.9. "Both pipelines expose answers at high rates, ours from retrieval" therefore
+        holds with these numbers beside it and with the two qualifications they carry: webqsp exposes 2.7 points
+        fewer questions in a pool 1.5 times larger, and webqsp is the one dataset whose pool fell short of the knee
+        (fraction_of_attainable@5 0.8628 < 0.90; rule_outcome "no cell reaches 0.9 within 2500; highest fraction
+        within the bound"). Wherever the calibration section says "high answer exposure" it prints these rows, never
+        the 97 %.'
+    3_the_three_webqsp_numbers:
+      verdict: CONFIRMED_WITH_THE_POPULATION_NAMED
+      reading: 0.5255 reference-level, 0.9703 query-level and 0.7649 pool ceiling@5 are all train_holdout figures
+        and answer three different questions; none of them is compared with 94.9 %. 62.42 % is the whole-train reference-level
+        figure, not a fourth holdout number.
+    4_metaqa_missing_gold_reachable_by_hop_3:
+      verdict: CONFIRMED
+      reading: 0.996 of the golds the retrieval-only pool misses lie within 3 undirected STRUCT hops of the retrieved
+        seeds (0.998 on FULL); that is why the frozen metaqa pool is the 3-hop STRUCT cell (h3_c25_v2000) and why
+        its any_gold_at_pool is 0.9876.
+    5_identical_headroom_for_every_arm:
+      verdict: CONFIRMED_BY_CONSTRUCTION
+      reading: 'QLS-U, the universal GAT and GAT-NO-MP read one compiled cache: one frozen pool per dataset, the
+        same 78-column F(q, v), the same fixed base score, the same carves, and the pool was frozen before any weight
+        existed (candidate_contract_frozen_2026_09_13 precedes the first fit). A difference between arms is a difference
+        of the scorer; delta_MP = GAT minus GAT-NO-MP is a difference of the mechanism alone.'
+    6_mp_benefit_tracks_evidence_beyond_what_retrieval_exposes:
+      verdict: NOT_CONFIRMED_AS_STATED -- filed as a refined hypothesis for the eval to read, not as a reading
+      what_prompted_it: 'Select-carve early-stopping values of the seeds finished at filing time (a diagnostic of
+        model selection; not eval numbers; not the phase''s result): GAT minus GAT-NO-MP metaqa +0.137, hotpotqa
+        +0.028, 2wiki +0.028, webqsp +0.015, musique +0.013, squad -0.006 (macro +0.036, seeds 0-1); GAT-NO-MP minus
+        QLS-U within seed noise (macro +0.003). The message read this ordering as "the benefit of learned message
+        passing depends on how much useful evidence remains beyond what the initial retrievers expose locally".'
+      the_test_it_fails: '"Evidence beyond what the retrievers expose" has a filed measure, the graph-added headroom:
+        pool ceiling@5 minus the best retrieval-only ceiling@5 -- metaqa +0.685, webqsp +0.399, 2wiki +0.194, musique
+        +0.108, hotpotqa +0.086, squad -0.016. The MP increment does not follow it: webqsp has the second-largest
+        graph-added headroom and one of the smallest increments, with all three arms at 0.60-0.62 against a 0.765
+        ceiling; hotpotqa has the smallest positive headroom and a larger increment than webqsp. The relation is
+        not monotone, so the sentence cannot be the paper''s interpretation as written.'
+      refined_hypothesis_H_MP: 'Learned message passing pays where the gold that retrieval misses is reachable through
+        paths that are discriminative inside the pool: few relation types, short chains, and a 1-3-hop neighbourhood
+        of the seeds that is not saturated with equally connected distractors (metaqa: 9 relation types, answers
+        at a fixed hop). It does not pay merely because the headroom is large: webqsp (7,058 relation types, 3-hop
+        FULL pools of ~2,100 nodes, any_gold_at_pool 0.9215 but all_gold_at_pool 0.688) is the case where the beyond-retrieval
+        gold exists in the pool and the arms cannot separate it, and learned propagation adds little over the fixed
+        aggregations B / C / D / GCS that every arm already receives.'
+      where_it_is_read: 'In the eval, not here: the per-dataset delta_MP with its seed-paired bootstrap (measurement.delta_MP),
+        the substrate ablation of the selected GAT (STRUCT / NER / KNN against FULL), and recall sliced by the gold''s
+        BFS distance from the seed set (the topology columns dist0_* .. dist3_* / distunreached_* of the feature
+        contract already hold that bucket per candidate, so the slice needs no new computation and no new model).
+        If webqsp''s delta_MP stays near zero while its 2-3-hop gold stays unranked by every arm, H_MP is supported
+        and the paper says so; if the increment concentrates on the far gold wherever it exists, the original "beyond-retrieval
+        evidence" reading is the better one and is used instead. Either way the sentence enters the paper after
+        the eval, with the slice beside it.'
+  calibration_columns_for_the_report:
+    why: 'Reporting, not science: the calibration section gains an entry-point / exposure table so that every published
+      row is read against how its candidate set was obtained. The values of our rows are read from candidate_contract_frozen_2026_09_13
+      at report time, never typed here.'
+    columns:
+    - method
+    - graph_entry_point
+    - avg_graph_or_pool
+    - any_answer_exposure
+    - retrieval_prior_retained
+    - ranking_metric
+    published_rows:
+    - method: ReaRev (EMNLP Findings 2022)
+      graph_entry_point: provided topic entities + PageRank-Nibble top-m (He et al. 2021)
+      avg_graph_or_pool: WebQSP 1,429.8 entities (m = 2,000); MetaQA-3 497.9 (m = 500)
+      any_answer_exposure: WebQSP 94.9 %; MetaQA-3 99.0 % (Table 6)
+      retrieval_prior_retained: no -- no dense / sparse retriever in the pipeline; the question enters through the
+        entity
+      ranking_metric: Hits@1 / F1 over answer entities
+    - method: GNN-RAG (2024)
+      graph_entry_point: linked entities + PageRank-Nibble top-2,000 (same preprocessing family; ReaRev is its GNN)
+      avg_graph_or_pool: WebQSP 1,429.8; MetaQA-3 497.9 (Table 7)
+      any_answer_exposure: WebQSP 94.9 %; MetaQA-3 99.0 % (Table 7)
+      retrieval_prior_retained: no -- the graph entry is the linked entity; its RA variant unions LLM-retrieved
+        paths, a different stage
+      ranking_metric: answer Hits@1 / F1 after the LLM; the GNN's own retrieval recall is reported separately
+    - method: NuTrea (NeurIPS 2023)
+      graph_entry_point: assigned topic entities, 2-hop subgraph (archaeology row; its statistics were not re-read
+        here)
+      avg_graph_or_pool: NOT STATED
+      any_answer_exposure: NOT STATED
+      retrieval_prior_retained: 'no'
+      ranking_metric: Hits@1 / F1
+    - method: GraphER
+      graph_entry_point: the base retriever's top-200 passages; the graph is candidate-induced at query time
+      avg_graph_or_pool: 200 candidates
+      any_answer_exposure: not reported in that form; its PR@K is coverage at K
+      retrieval_prior_retained: yes -- the retrieval score is an input to the GAT and to GCS; the closest comparator
+        to this phase
+      ranking_metric: PR@5 / PR@10
+    our_row: 'QLS-U, the universal GAT and GAT-NO-MP share one row per dataset: entry point Dense + SPLADE (seeds
+      dense_top5 U splade_top5; base pools equal_rrf_budget_B, webqsp dense_top200); avg pool = candidates_mean
+      and exposure = any_gold_at_pool, both read from candidate_contract_frozen_2026_09_13.per_dataset; retained
+      = yes (the retrieval group of the feature contract -- dense_cos, dense_rr, dense_in, splade_rr, splade_in,
+      splade_score_norm, rrf, agreement, is_seed, seed_rank -- and the fixed base score in the residual readout);
+      metric R@5 / R@10, hit@1 for the KB rows.'
+    the_row_property_that_carries_the_attribution: Within this phase the three arms have identical exposure (check
+      5); the published rows do not, and are read, never averaged.
+  wording_adopted_for_the_calibration_section:
+    not_written: '"Prior KG systems enjoy substantially greater candidate headroom due to oracle topic entities."
+      and "they have more headroom than us" -- neither is a filed reading.'
+    written_instead_verbatim_from_the_user: '"Prior KGQA systems commonly construct question-specific subgraphs
+      from linked topic entities, whereas our graph entry points are obtained from inference-safe dense and sparse
+      retrieval. We therefore measure candidate headroom explicitly before model comparison. Despite the different
+      entry mechanism, the resulting retrieval-seeded graphs attain high answer exposure, allowing us to study ranking
+      and message passing without assuming gold/topic-entity access."'
+    setting_sentence_verbatim_from_the_user: '"We study graph-aware retrieval in a retrieval-native setting. Rather
+      than assuming gold/topic entities as graph entry points, we construct query-local graph context from inference-safe
+      dense and sparse retrieval seeds and retain the original retrieval evidence throughout reranking. This allows
+      us to isolate the incremental value of graph compilation and learned message passing over a realistic modern
+      retrieval backbone."'
+    one_line: retrieval-seeded graph reasoning rather than entity-linking-seeded graph reasoning; the graph augments
+      retrieval, it does not replace it, and Dense / SPLADE stay features of the final scorer.
+    qualifier_that_travels_with_high_answer_exposure: the two rows of check 2 (webqsp 0.9215 at 2,120 candidates
+      vs 94.9 % at 1,430 entities; metaqa 0.9876 at 2,017 vs 99.0 % at 498) and webqsp's knee shortfall (0.8628
+      < 0.90, fallback rule).
+    kept_out_of_the_registered_question: The retrieval-native framing is the setting, not the question. The question
+      stays "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN
+      systems, how much effectiveness remains attributable specifically to learned message passing?", and neither
+      "retrieve first, reason only where retrieval leaves uncertainty" nor H_MP is a result until the eval prints
+      it.
+  what_this_note_does_not_do: No arm, feature, pool, carve, training or measurement changes; the running fit is
+    not touched; nothing is rerun. The universal-v2 twin-model direction discussed the same day (one joint checkpoint,
+    ID-free relation semantics, a compiled multi-scale basis for the non-message-passing twin, leave-one-dataset-out
+    as the universality test) is a prospective phase and gets its own declaration file after this phase closes,
+    not a line here.

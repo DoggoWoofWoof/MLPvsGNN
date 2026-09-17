@@ -258,6 +258,45 @@ def section_ablation(evals: dict) -> list[str]:
     return lines
 
 
+def section_exposure_table(cfg: dict) -> list[str]:
+    """Note 2's entry-point / exposure columns: the published rows as filed, our rows read from the frozen candidate
+    contract (never typed), one row per dataset shared by the three arms. Reporting; nothing here is a result."""
+    notes = [v for k, v in cfg.items() if k.startswith("note_") and isinstance(v, dict) and "calibration_columns_for_the_report" in v]
+    if not notes:
+        return []
+    note = notes[-1]
+    table = note["calibration_columns_for_the_report"]
+    pools = cfg["candidate_contract_frozen_2026_09_13"]["per_dataset"]
+    lines = ["**How each system enters the graph, and what its candidate set exposes.** Published coverage is "
+             "at-least-one-answer-in-the-extracted-subgraph (ReaRev Table 6 / GNN-RAG Table 7); our like-for-like figure is "
+             "`any_gold_at_pool` of the frozen pool (not the corpus query-level coverage, which has no pool behind it, and not "
+             "the pool ceiling@5, which is K-aware). The three arms share every row of ours: identical pool, identical "
+             "features, identical base score, so a difference between them is a difference of the scorer.", "",
+             "| method | graph entry point | avg graph / pool | any-answer exposure | retrieval prior retained? | ranking metric |",
+             "|---|---|---|---|---|---|"]
+    for row in table["published_rows"]:
+        lines.append("| " + " | ".join(str(row[c]).replace("|", "&#124;") for c in table["columns"]) + " |")
+    seeds = "Dense + SPLADE seeds (dense top-5 ∪ splade top-5)"
+    for name in DATASETS:
+        p = pools[name]
+        c = p["construction"]
+        entry = f"{seeds}; base pool `{c['base_pool']}`" + (f"; expansion `{c['regime']}:{c['setting']['name']}`" if c.get("setting") else "; no graph expansion (retrieval-only pool)")
+        knee = "" if p["fraction_of_attainable@5"] >= 0.9 else f" — below the 0.90 knee (fraction of attainable@5 {p['fraction_of_attainable@5']:.4f}; fallback rule)"
+        metric = "hit@1, R@5" if name in ("metaqa", "webqsp") else "R@5 / R@10"
+        lines.append(f"| **ours ({name}): QLS-U = universal GAT = GAT-NO-MP** | {entry} | {p['candidates_mean']:,.1f} candidates | "
+                     f"any-gold {p['any_gold_at_pool']:.4f}, all-gold {p['all_gold_at_pool']:.4f}, pool ceiling@5 {p['recall_ceiling@5']:.4f}{knee} | "
+                     f"yes — retrieval columns in F(q, v) and the fixed base score in the readout | {metric} |")
+    lines.append("")
+    w = note["wording_adopted_for_the_calibration_section"]
+    lines.append(w["written_instead_verbatim_from_the_user"].strip() + " " + w["qualifier_that_travels_with_high_answer_exposure"].strip()[0].upper()
+                 + w["qualifier_that_travels_with_high_answer_exposure"].strip()[1:] + ".")
+    lines.append("")
+    h = note["check_outcomes"]["6_mp_benefit_tracks_evidence_beyond_what_retrieval_exposes"]
+    lines.append("**Filed before the eval, read in it (note 2, H_MP):** " + h["refined_hypothesis_H_MP"].strip() + " " + h["where_it_is_read"].strip())
+    lines.append("")
+    return lines
+
+
 def section_sota(cfg: dict, evals: dict) -> list[str]:
     sota = cfg["measurement"]["sota_column"]
     lines = ["## 6. Calibration against the published systems (exposure attached)", "",
@@ -296,6 +335,7 @@ def section_sota(cfg: dict, evals: dict) -> list[str]:
     lines.append("")
     lines.append(cfg["measurement"]["sota_column"]["when_delta_mp_is_not_read"].strip())
     lines.append("")
+    lines += section_exposure_table(cfg)
     notes = [v for k, v in cfg.items() if k.startswith("note_") and isinstance(v, dict) and "the_three_regimes_of_a_KB_node_text" in v]
     if notes:
         note = notes[-1]
