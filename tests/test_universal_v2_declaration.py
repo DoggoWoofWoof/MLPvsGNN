@@ -163,68 +163,6 @@ def test_the_training_carves_are_the_m3b_carves(decl):
             assert src[key] == cell[key], (name, key)
 
 
-@pytest.mark.skipif(not M3B_EVAL.exists(), reason="M3B eval sidecars not present")
-def test_the_eval_populations_and_the_gate_split_are_recomputable_from_the_m3b_ids(decl):
-    pops = decl["m3b_incumbents"]["eval_populations_reused_here"]
-    counts = decl["measurement"]["gate_and_held_halves"]["counts_from_the_m3b_ids"]
-    for name in TRIO:
-        record = M3B_EVAL / f"{name}.json"
-        ids_file = M3B_EVAL / f"{name}_query_ids.json"
-        if not (record.exists() and ids_file.exists()):
-            pytest.skip(f"{name} eval record not present")
-        rec = json.loads(record.read_text(encoding="utf-8"))
-        assert rec["ids_sha256"] == pops[name]["ids_sha256"], name
-        assert rec["queries"] == pops[name]["queries"], name
-        ids = json.loads(ids_file.read_text(encoding="utf-8"))
-        assert len(ids) == pops[name]["queries"], name
-        gate = sum(1 for q in ids if int(hashlib.sha256(str(q).encode("utf-8")).hexdigest(), 16) % 2 == 0)
-        assert gate == counts[name]["gate"], name
-        assert len(ids) - gate == counts[name]["held"], name
-
-
-def test_the_gate_split_rule_is_the_even_sha256_rule(decl):
-    rule = squash(decl["measurement"]["gate_and_held_halves"]["rule"])
-    assert "sha256(query_id utf-8)" in rule and "is even" in rule
-    assert "gate half only" in rule and "held half is read once" in rule
-    counts = decl["measurement"]["gate_and_held_halves"]["counts_from_the_m3b_ids"]
-    pops = decl["m3b_incumbents"]["eval_populations_reused_here"]
-    for name in TRIO:
-        assert counts[name]["gate"] + counts[name]["held"] == pops[name]["queries"], name
-
-
-def test_the_gate_thresholds_are_numbers_above_their_frozen_references(decl):
-    gate = decl["pilot_gate"]
-    ref = gate["reference_numbers_from_m3b_on_the_gate_half_seed0"]
-    gnn = gate["gnn_gate"]
-    all_hops, three_hop = numbers(gnn["metaqa"]["materially_close_the_kb_gap"])[:2]
-    assert all_hops == 0.88 and three_hop == 0.82
-    incumbent = ref["metaqa"]["gat_universal_v1"]
-    band = ref["metaqa"]["published_kb_band_hit1"]["3hop"]
-    assert incumbent["hit1"] < all_hops < band
-    assert incumbent["hit1_3hop"] < three_hop < band
-    # one third of the gap, filed as the derivation
-    assert abs(all_hops - (incumbent["hit1"] + (band - incumbent["hit1"]) / 3)) < 0.006
-    assert abs(three_hop - (incumbent["hit1_3hop"] + (band - incumbent["hit1_3hop"]) / 3)) < 0.006
-    r5, fc5 = numbers(gnn["2wiki"]["no_regression_vs_the_universal_gat"])[:2]
-    assert r5 == 0.873 and fc5 == 0.742
-    assert abs(r5 - (ref["2wiki"]["gat_universal_v1"]["recall5"] - 0.010)) < 1e-9
-    assert abs(fc5 - (ref["2wiki"]["gat_universal_v1"]["full_coverage5"] - 0.010)) < 1e-9
-    squad = numbers(gnn["squad"]["no_meaningful_regression_from_fixed_retrieval"])[0]
-    assert squad == 0.899
-    assert ref["squad"]["fixed_rrf"]["recall5"] - 0.005 <= squad
-    assert squad > max(ref["squad"][k]["recall5"] for k in ("gat_universal_v1", "gat_no_mp_v1", "qls_u_sota_v1"))
-    twin = gate["twin_gate"]
-    t_metaqa = numbers(twin["metaqa"])[0]
-    t_2wiki = numbers(twin["2wiki"])[0]
-    t_squad = numbers(twin["squad"])[0]
-    assert t_metaqa == 0.70 and t_2wiki == 0.855 and t_squad == squad
-    assert ref["metaqa"]["qls_u_sota_v1"]["hit1"] < t_metaqa < incumbent["hit1"]
-    assert ref["2wiki"]["qls_u_sota_v1"]["recall5"] < t_2wiki < ref["2wiki"]["gat_universal_v1"]["recall5"]
-    assert "all three cells hold" in gnn["pass"] and "all three cells hold" in twin["pass"]
-    on_fail = squash(gate["on_fail"])
-    assert "no threshold is moved" in on_fail and "no candidate is added" in on_fail
-
-
 def test_selection_is_behind_the_firewall_and_written_before_any_eval(decl):
     sel = decl["arms"]["selection_behind_the_firewall"]
     assert "between u_gnn_v2 and u_gnn_v2_ef" in sel["gnn"]
@@ -267,13 +205,15 @@ def test_the_twin_has_no_learned_propagation_and_the_guard_is_named(decl):
     assert "trainable parameter" in squash(lvf["learned_propagation"])
 
 
-def test_the_contract_is_the_m3b_core_plus_a_64_column_depth_basis(decl):
+def test_the_contract_is_the_m3b_core_plus_the_depth_basis(decl):
     c = decl["information_contract_v2"]
     assert c["name"] == "UNIVERSAL_V2_FEATURE_CONTRACT"
     assert "ce584194a751" in c["base"]
     assert len(c["depth_basis_columns"]) == 13
     count = c["count"]
-    assert "= 64" in count and "142" in count
+    assert "= 64" in count and "142" in count   # as filed; amendment 1 adds the 9 mask columns
+    amended = decl["amendment_1_2026_09_19"]["check_3_firewalls_made_explicit"]["availability_masks"]["count_amended"]
+    assert "64 + 9 = 73" in amended and "151 raw" in amended
     prohibitions = " ".join(c["prohibitions"])
     for word in ("gold label", "test split", "dataset identity", "never edited"):
         assert word in prohibitions, word
@@ -324,3 +264,137 @@ def test_every_block_appended_after_the_declaration_is_dated(decl):
     assert "no scientific result from test data" in rules
     assert "Do not alter or rerun M3B" in rules
     assert "systems convenience never edits science" in rules
+
+
+# ── amendment 1 (2026-09-19): the review's three checks ──────────────────────
+
+SPLIT_AUDIT = ROOT / "outputs" / "universal_v2" / "split_audit.json"
+
+
+@pytest.fixture(scope="module")
+def amendment(decl) -> dict:
+    return decl["amendment_1_2026_09_19"]
+
+
+def test_the_halves_are_named_and_the_held_claim_is_the_narrow_one(amendment):
+    halves = amendment["check_1_the_halves"]
+    assert halves["names"] == {"gate": "V2_GATE", "held": "V2_HELD_CONFIRMATION"}
+    held = squash(halves["what_V2_HELD_CONFIRMATION_is"])
+    for phrase in ("architecture selection", "feature screening", "threshold decisions", "checkpoint selection", "seed-0 advance decision"):
+        assert phrase in held, phrase
+    not_claimed = squash(halves["what_it_is_not"])
+    assert "not previously unseen" in not_claimed and "not an independent test set" in not_claimed
+    assert "V2_HELD_CONFIRMATION was not used" in " ".join(amendment["ruling_verbatim"])
+
+
+def test_the_amended_split_hashes_the_problem_family_where_one_exists(amendment):
+    rule = amendment["check_1_the_halves"]["split_rule_amended"]
+    assert rule["key"]["metaqa"] == "query_id"
+    assert "sorted(gold_node_ids)" in rule["key"]["2wiki"] and "sorted(gold_node_ids)" in rule["key"]["squad"]
+    assert "is even" in rule["rule"] and "frozen M3B arrays" in rule["rule"]
+    audit = amendment["check_1_the_halves"]["group_audit"]["under_the_as_filed_query_id_parity_split"]
+    assert audit["metaqa"]["topic_entity_x_qtype_crossing"] < 0.01          # negligible: metaqa keeps the id split
+    assert audit["squad"]["gold_set_paragraph_crossing"] > 0.9              # the paragraph family: hashed
+    assert audit["2wiki"]["gold_set_crossing"] > 0.01                        # the gold-pair family: hashed
+    crossing = rule["problem_family_crossing_under_the_amended_split"]
+    assert crossing["2wiki"] == 0.0 and crossing["squad"] == 0.0 and crossing["metaqa"] < 0.01
+    counts = rule["counts"]
+    pops = {"metaqa": 39138, "2wiki": 12576, "squad": 11873}
+    for name, n in pops.items():
+        assert counts[name]["V2_GATE"] + counts[name]["V2_HELD_CONFIRMATION"] == n, name
+
+
+@pytest.mark.skipif(not M3B_EVAL.exists(), reason="M3B eval sidecars not present")
+def test_the_metaqa_split_is_recomputable_from_the_m3b_ids(decl, amendment):
+    ids_file = M3B_EVAL / "metaqa_query_ids.json"
+    record = M3B_EVAL / "metaqa.json"
+    if not (ids_file.exists() and record.exists()):
+        pytest.skip("metaqa eval record not present")
+    pops = decl["m3b_incumbents"]["eval_populations_reused_here"]
+    rec = json.loads(record.read_text(encoding="utf-8"))
+    assert rec["ids_sha256"] == pops["metaqa"]["ids_sha256"]
+    ids = json.loads(ids_file.read_text(encoding="utf-8"))
+    assert len(ids) == pops["metaqa"]["queries"]
+    gate = sum(1 for q in ids if int(hashlib.sha256(str(q).encode("utf-8")).hexdigest(), 16) % 2 == 0)
+    counts = amendment["check_1_the_halves"]["split_rule_amended"]["counts"]["metaqa"]
+    assert gate == counts["V2_GATE"] and len(ids) - gate == counts["V2_HELD_CONFIRMATION"]
+
+
+@pytest.mark.skipif(not SPLIT_AUDIT.exists(), reason="split audit sidecar not present")
+def test_the_filed_split_counts_and_references_are_the_audit_sidecar(amendment):
+    audit = json.loads(SPLIT_AUDIT.read_text(encoding="utf-8"))["per_dataset"]
+    counts = amendment["check_1_the_halves"]["split_rule_amended"]["counts"]
+    refs = amendment["pilot_gate_amended"]["reference_numbers_on_V2_GATE_seed0"]
+    for name in TRIO:
+        split = audit[name]["amended_split"]
+        assert split["V2_GATE"] == counts[name]["V2_GATE"] and split["V2_HELD_CONFIRMATION"] == counts[name]["V2_HELD_CONFIRMATION"], name
+        gat = audit[name]["frozen_m3b_references"]["gat_universal_v1_s0"]
+        filed = refs[name]["gat_universal_v1"]
+        for metric, key in (("recall@5", "recall5"), ("hit@1", "hit1"), ("full_coverage@5", "full_coverage5")):
+            if key in filed:
+                assert abs(gat[metric]["V2_GATE"] - filed[key]) < 1e-9, (name, key)
+    metaqa = audit["metaqa"]
+    assert abs(metaqa["ceilings_frozen_pool"]["hit_ceiling_any_gold_in_pool"]["V2_GATE"] - refs["metaqa"]["hit_ceiling"]) < 1e-9
+    assert abs(metaqa["frozen_m3b_references"]["by_hop_V2_GATE"]["3hop"]["hit_ceiling"] - refs["metaqa"]["hit_ceiling_3hop"]) < 1e-9
+    assert abs(metaqa["frozen_m3b_references"]["by_hop_V2_GATE"]["3hop"]["gat_universal_v1_s0/hit@1"] - refs["metaqa"]["gat_universal_v1"]["hit1_3hop"]) < 1e-9
+    assert abs(audit["squad"]["frozen_m3b_references"]["fixed_rrf"]["recall@5"]["V2_GATE"] - refs["squad"]["fixed_rrf"]["recall5"]) < 1e-9
+    assert abs(audit["2wiki"]["frozen_m3b_references"]["qls_u_sota_v1_s0"]["recall@5"]["V2_GATE"] - refs["2wiki"]["qls_u_sota_v1"]["recall5"]) < 1e-9
+
+
+def test_the_amended_gate_thresholds_follow_their_internal_rules(amendment):
+    refs = amendment["pilot_gate_amended"]["reference_numbers_on_V2_GATE_seed0"]
+    gnn = amendment["pilot_gate_amended"]["gnn_gate"]
+    twin = amendment["pilot_gate_amended"]["twin_gate"]
+    check2 = amendment["check_2_metaqa_threshold_anchored_internally"]
+    gat = refs["metaqa"]["gat_universal_v1"]
+    # metaqa: one third of the gap to the frozen pool's own hit ceiling, not the published band
+    assert abs(gnn["metaqa"]["hit1_all_hops"] - round(gat["hit1"] + (refs["metaqa"]["hit_ceiling"] - gat["hit1"]) / 3, 4)) < 1e-9
+    assert abs(gnn["metaqa"]["hit1_3hop"] - round(gat["hit1_3hop"] + (refs["metaqa"]["hit_ceiling_3hop"] - gat["hit1_3hop"]) / 3, 4)) < 1e-9
+    assert check2["all_hops"]["threshold_hit1"] == gnn["metaqa"]["hit1_all_hops"]
+    assert check2["3hop"]["threshold_hit1"] == gnn["metaqa"]["hit1_3hop"]
+    assert "published" in squash(check2["rule"]) and "calibration table only" in squash(check2["rule"])
+    assert "0.989" not in json.dumps(gnn)
+    # 2wiki: the GAT minus 0.010; squad: the fixed rrf minus 0.005
+    assert abs(gnn["2wiki"]["recall5"] - round(refs["2wiki"]["gat_universal_v1"]["recall5"] - 0.010, 4)) < 1e-9
+    assert abs(gnn["2wiki"]["full_coverage5"] - round(refs["2wiki"]["gat_universal_v1"]["full_coverage5"] - 0.010, 4)) < 1e-9
+    assert abs(gnn["squad"]["recall5"] - round(refs["squad"]["fixed_rrf"]["recall5"] - 0.005, 4)) < 1e-9
+    assert gnn["squad"]["recall5"] > max(refs["squad"][k]["recall5"] for k in ("gat_universal_v1", "gat_no_mp_v1", "qls_u_sota_v1"))
+    # twin: 40 percent of the residual to the GAT; the same do-nothing test
+    qls = refs["metaqa"]["qls_u_sota_v1"]["hit1"]
+    assert abs(twin["metaqa"]["hit1_all_hops"] - round(qls + 0.4 * (gat["hit1"] - qls), 4)) < 1e-9
+    q2 = refs["2wiki"]["qls_u_sota_v1"]["recall5"]
+    assert abs(twin["2wiki"]["recall5"] - round(q2 + 0.4 * (refs["2wiki"]["gat_universal_v1"]["recall5"] - q2), 4)) < 1e-9
+    assert twin["squad"]["recall5"] == gnn["squad"]["recall5"]
+    assert "all three cells hold" in gnn["pass"] and "all three cells hold" in twin["pass"]
+    assert set(amendment["supersedes"]) >= {"pilot_gate.gnn_gate", "pilot_gate.twin_gate"}
+
+
+def test_the_screen_and_mixture_firewalls_are_explicit(amendment):
+    fw = amendment["check_3_firewalls_made_explicit"]
+    seq = [squash(s) for s in fw["screen_sequence"]]
+    keys = ("fit carves", "screen on the fit carves only", "frozen", "fit and select", "V2_GATE read once", "advance or stop", "V2_HELD_CONFIRMATION read once")
+    order = [next(i for i, s in enumerate(seq) if key in s) for key in keys]
+    assert order == sorted(order) and len(set(order)) == 7
+    required = {"which of the 151 columns survive", "the redundancy threshold", "any normalisation constant", "block inclusion",
+                "relation-path inclusion", "the architecture", "the checkpoint epoch"}
+    assert set(fw["neither_half_may_determine"]) >= required
+    refusals = squash(fw["refusals_in_code"])
+    assert "fit only" in refusals and "not compiled until contract_frozen_<date>" in refusals and "refuses to read V2_HELD_CONFIRMATION" in refusals
+    masks = fw["availability_masks"]["added"]
+    assert set(masks) == {"ring_n_h{t}_{f}", "typed_walks_h{t}"}
+    mix = fw["data_mixture_frozen"]
+    assert "mp_retrieval.m3b_train" in mix["sampler"] and "uniformly at random" in mix["sampler"]
+    assert mix["balance"].startswith("balanced, not proportional")
+    assert "16 query draws" in mix["batch"]
+    for word in ("per-dataset loss weights", "curriculum", "over-sampling of metaqa"):
+        assert word in mix["not_allowed"], word
+    assert "byte-for-byte" in mix["control_conditions"]
+
+
+def test_step_2_is_authorised_without_any_fit(amendment):
+    step = amendment["step_2_authorised"]
+    for path in ("src/mp_retrieval/universal_v2_features.py", "src/mp_retrieval/universal_v2_models.py", "scripts/universal_v2_run.py"):
+        assert path in step["what"]
+    assert "no fit" in step["not"] and "no timing run" in step["not"] and "no compilation" in step["not"]
+    assert len(step["tests_required_beyond_shapes"]) >= 14
+    assert amendment["status_after"] == "DECLARED_NOT_RUN"

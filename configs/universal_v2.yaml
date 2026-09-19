@@ -701,3 +701,140 @@ process_rules_kept:
   - Modal only through scripts/spawn_modal_jobs.py, never modal run --detach; a write that overwrites an existing file on a result volume is silently discarded
   - the published comparisons carry their exposure; the band rule is diagnostic (methodological_ruling_band_rule)
   - forbidden framings above; the result is the number, the interval and the sentence that names what was matched
+
+# ══════════════════════════════════════════════════════════════════
+# Amendment 1 (2026-09-19): the review of the declaration. Three checks /
+# amendments, all filed before any v2 column, weight or number exists. Where
+# a block below names an as-filed block above, the block below supersedes it;
+# the as-filed text stays for the record. Step 2 (code + tests, no fit) is
+# authorised by this amendment.
+# ══════════════════════════════════════════════════════════════════
+amendment_1_2026_09_19:
+  filed_utc: "2026-09-19T14:45:00Z"
+  status_after: DECLARED_NOT_RUN
+  ruling_verbatim:
+    - "This is a strong declaration. I would authorize step 2 after three small amendments/checks, all before any weight exists. I would not redesign the phase."
+    - "Keep the gate/held split -- but be precise about what held means"
+    - "V2_HELD_CONFIRMATION was not used for Universal-v2 architecture selection, feature screening, threshold decisions, checkpoint selection, or the seed-0 advance decision."
+    - "If meaningful groups exist, hash the group, not individual query_id. ... If there is no useful grouping or cross-half duplication is negligible, keep the current SHA parity split exactly as declared."
+    - "recover at least one third of the gap between frozen M3B GAT performance and the protocol-matched attainable ceiling of the same frozen pool."
+    - "Make sure the 142->surviving-column screen cannot see either gate half or held half"
+    - "Also preserve explicit availability masks. A zero for no STRUCT relation/prototype available must not become indistinguishable from a genuine structural zero."
+    - "Make sure the declaration explicitly freezes how MetaQA/2Wiki/SQuAD are sampled during joint training."
+    - "After those checks/amendments, GO for step 2 only ... No compilation of the real six/trio caches and no fit yet."
+  check_1_the_halves:
+    names: {gate: V2_GATE, held: V2_HELD_CONFIRMATION}
+    what_V2_HELD_CONFIRMATION_is: >-
+      the half of each eval population that is not used for Universal-v2
+      architecture selection, feature screening, threshold decisions,
+      checkpoint selection or the seed-0 advance decision. It is read once, in
+      the final report of the phase, as the confirmatory column.
+    what_it_is_not: >-
+      not previously unseen data and not an independent test set. M3B scored
+      the whole of these populations, that behaviour motivated this phase, and
+      the M3B numbers on both halves are on file. Neither half is pristine with
+      respect to the research process; the claim is the narrower one above.
+    group_audit:
+      when: 2026-09-19, before any v2 code; scripts/universal_v2_split_audit.py; outputs/universal_v2/split_audit.json
+      families_measured: exact normalised question text; the dataset-native problem family (metaqa topic entity x question type; 2wiki and squad the sorted gold set); the coarse template family for context (metaqa qtype, 2wiki type, squad article)
+      under_the_as_filed_query_id_parity_split:
+        metaqa: {normalised_text_crossing: 0.0001, topic_entity_x_qtype_crossing: 0.0009, gold_set_crossing: 0.3471, qtype_template_crossing: 1.0}
+        2wiki: {normalised_text_crossing: 0.0, gold_set_crossing: 0.0523, type_crossing: 1.0}
+        squad: {normalised_text_crossing: 0.0015, gold_set_paragraph_crossing: 0.9981, article_crossing: 1.0}
+      reading: >-
+        metaqa has no meaningful problem families crossing the halves (36 of
+        39,138 queries share a topic entity and question type; 4 share a
+        text); its gold-set crossing is answer sets shared by different
+        problems ({Drama}, {English}) and its template crossing is the 49
+        templates, which are not problems -- so metaqa keeps the query-id
+        parity split exactly as declared. squad's problem family is the
+        paragraph (1,204 paragraphs, about ten questions each, 99.8 percent
+        crossing) and 2wiki's is the gold passage pair (5.2 percent crossing);
+        both are hashed by family.
+    split_rule_amended:   # supersedes measurement.gate_and_held_halves.rule for 2wiki and squad; metaqa unchanged
+      key: {metaqa: query_id, 2wiki: "dataset + ':' + ','.join(sorted(gold_node_ids))", squad: "dataset + ':' + ','.join(sorted(gold_node_ids))"}
+      rule: V2_GATE iff int(sha256(key utf-8).hexdigest(), 16) is even; V2_HELD_CONFIRMATION otherwise; the same halves apply to the frozen M3B arrays
+      later_datasets: hotpotqa and musique hash the sorted gold set; webqsp hashes the query id (each question is its own problem); their audits are filed when their stage opens
+      counts: {metaqa: {V2_GATE: 19738, V2_HELD_CONFIRMATION: 19400}, 2wiki: {V2_GATE: 6290, V2_HELD_CONFIRMATION: 6286}, squad: {V2_GATE: 5841, V2_HELD_CONFIRMATION: 6032}}
+      problem_family_crossing_under_the_amended_split: {metaqa: 0.0009, 2wiki: 0.0, squad: 0.0}
+      implemented_in: scripts/universal_v2_split_audit.py::in_v2_gate (the run script imports it; a test recomputes the counts from the M3B ids and the served rows)
+  check_2_metaqa_threshold_anchored_internally:   # supersedes pilot_gate.gnn_gate.metaqa and its derivation
+    rule: >-
+      recover at least one third of the gap between the frozen M3B GAT (seed
+      0, V2_GATE) and the protocol-matched attainable ceiling of the same
+      frozen pool on the same queries. For hit@1 the attainable ceiling is the
+      fraction of queries with at least one gold in the pool. The published KB
+      band stays in the calibration table only; no threshold of this phase
+      depends on it.
+    all_hops: {gat_universal_v1_s0: 0.8320, hit_ceiling: 0.9880, one_third_of_the_gap: 0.0520, threshold_hit1: 0.8840}
+    3hop: {gat_universal_v1_s0: 0.7385, hit_ceiling: 0.9746, one_third_of_the_gap: 0.0787, threshold_hit1: 0.8172}
+    seed_context: the M3B GAT seeds 0-2 on V2_GATE span 0.8320-0.8567 over all hops and 0.7385-0.7943 on 3-hop; the thresholds are 0.027 and 0.023 above the best seed
+    as_filed_for_the_record: 0.88 and 0.82, derived from the published band 0.989; replaced, not softened
+  check_3_firewalls_made_explicit:
+    screen_sequence:   # the only order in which the phase may run; the run script refuses any other
+      - fit carves (training data) -> the 151 raw columns compiled
+      - availability / redundancy screen on the fit carves only (the M3B rule verbatim)
+      - UNIVERSAL_V2_CORE_CONTRACT frozen and its column list hashed, filed as contract_frozen_<date>
+      - fit and select (the select carves choose the checkpoint epoch and the candidate within each family)
+      - V2_GATE read once for the selected GNN and the selected twin
+      - advance or stop
+      - V2_HELD_CONFIRMATION read once, in the final report
+    neither_half_may_determine: [which of the 151 columns survive, the redundancy threshold, any normalisation constant, block inclusion, relation-path inclusion, the architecture, the checkpoint epoch]
+    refusals_in_code: >-
+      the screen stage reads outputs/universal_v2/cache/<dataset>/fit only and
+      refuses any other cache; the eval populations are not compiled until
+      contract_frozen_<date> exists in this file with the column digest; the
+      gate stage refuses to run before selection.json exists and refuses to
+      read V2_HELD_CONFIRMATION; the held column is produced only by the
+      report stage, once.
+    no_data_learned_normalisation: the input block sees raw columns and their within-query z-scores (M3B); no population statistic (mean, variance, quantile) is estimated from any population and stored
+    availability_masks:   # supersedes information_contract_v2.depth_basis_columns.count; 9 mask columns added
+      why: a zero for no ring at depth t, or no typed walk of length t, must not be indistinguishable from a genuine zero cosine
+      added:
+        ring_n_h{t}_{f}: log1p(number of pool nodes at exact BFS distance t from v in view f); 0 iff ring_qmean and ring_qmax are unavailable; 2 views x 3 depths = 6
+        typed_walks_h{t}: log1p(number of typed STRUCT walks of length t from the seed set to v); 0 iff qsupport and relpath_* are unavailable; 3
+      already_present: has_h{t}_{f} masks seeds_at, seedmass and seedproto; a zero of paths, branch and support is a genuine absence of walks or mass; the M3B has_nbr per family masks the C prototypes
+      count_amended: 64 + 9 = 73 depth-basis columns; 78 + 73 = 151 raw columns before the screen
+    data_mixture_frozen:   # supersedes nothing; makes training.rule explicit and tested
+      sampler: mp_retrieval.m3b_train, pinned; for every query draw the dataset is drawn uniformly at random among the datasets of the stage, then a fit query of that dataset uniformly (amendment 3 of M3B, per_query)
+      balance: balanced, not proportional -- metaqa (5,960 fit queries), 2wiki (5,928) and squad (5,856) each receive one third of the draws regardless of size
+      batch: 16 query draws; the loss is the mean over the batch of the per-query listwise loss; a query with no in-pool gold contributes nothing and is counted
+      not_allowed: per-dataset loss weights, per-dataset batch quotas, a curriculum, re-weighting or over-sampling of metaqa because it is weak, or any change to the mixture between arms
+      control_conditions: gat_universal_v1_trio is fitted under exactly this sampler, batch, loss, optimiser, epoch budget, early-stopping rule and selection rule -- byte-for-byte the v2 arms' training loop
+      tests: tests/test_universal_v2_models.py asserts that the v2 run script builds its sampler and loss from m3b_train (identity of the functions), that one batch may hold queries of several datasets, and that no dataset id reaches a model
+  pilot_gate_amended:   # supersedes pilot_gate.reference_numbers_from_m3b_on_the_gate_half_seed0, gnn_gate and twin_gate
+    reference_numbers_on_V2_GATE_seed0:   # from outputs/m3b/eval/*.npz on the amended halves; outputs/universal_v2/split_audit.json
+      metaqa: {gat_universal_v1: {hit1: 0.8320, hit1_3hop: 0.7385, recall5: 0.7593, full_coverage5: 0.6350}, gat_no_mp_v1: {hit1: 0.6153}, qls_u_sota_v1: {hit1: 0.6155, recall5: 0.6087}, hit_ceiling: 0.9880, hit_ceiling_3hop: 0.9746}
+      2wiki: {gat_universal_v1: {recall5: 0.8858, full_coverage5: 0.7553, hit1: 0.8846}, gat_no_mp_v1: {recall5: 0.8335}, qls_u_sota_v1: {recall5: 0.8391}, gat_universal_v1_STRUCT: {recall5: 0.8901}, fixed_rrf: {recall5: 0.6123}, gat_seed_range_recall5: 0.0097, gat_seed_range_full_coverage5: 0.0136}
+      squad: {fixed_rrf: {recall5: 0.9046}, gat_universal_v1: {recall5: 0.8841}, gat_no_mp_v1: {recall5: 0.8891}, qls_u_sota_v1: {recall5: 0.8846}, gat_universal_v1_STRUCT: {recall5: 0.9019}}
+    gnn_gate:
+      metaqa: {hit1_all_hops: 0.8840, hit1_3hop: 0.8172, rule: "check_2; each with the paired interval against gat_universal_v1 (frozen, same queries) excluding zero on the positive side"}
+      2wiki: {recall5: 0.8758, full_coverage5: 0.7453, rule: the M3B GAT seed 0 on V2_GATE minus 0.010 (about one seed range)}
+      squad: {recall5: 0.8996, rule: the fixed rrf on V2_GATE minus 0.005; the do-nothing test}
+      pass: all three cells hold for the selected GNN at seed 0
+    twin_gate:
+      rule: the twin closes at least 40 percent of the residual between qls_u_sota_v1 and gat_universal_v1 (both frozen, seed 0, V2_GATE) on the cell metric, and holds the same do-nothing test on squad
+      metaqa: {hit1_all_hops: 0.7021, derivation: "0.6155 + 0.4 x (0.8320 - 0.6155); paired interval against qls_u_sota_v1 excluding zero"}
+      2wiki: {recall5: 0.8578, derivation: 0.8391 + 0.4 x (0.8858 - 0.8391)}
+      squad: {recall5: 0.8996}
+      pass: all three cells hold for the selected twin at seed 0
+    unchanged: on_pass, on_fail, what_the_gate_is_not, the selection rule, the seeds
+  step_2_authorised:
+    what: src/mp_retrieval/universal_v2_features.py, src/mp_retrieval/universal_v2_models.py, scripts/universal_v2_run.py, scripts/universal_v2_report.py, tests; committed
+    not: no compilation of the real trio or six-dataset caches, no timing run, no fit
+    tests_required_beyond_shapes:
+      - exact t = 1 / 2 / 3 propagation on a hand-built chain
+      - ring features exclude earlier-hop nodes
+      - seed-conditioned prototypes use only deterministically selected nodes
+      - reversing a relation's direction changes the direction descriptor and nothing else
+      - relation-path features distinguish r1 -> r2 from r2 -> r1
+      - missing STRUCT / NER / KNN channels set the masks
+      - the U-MLP has no adjacency access during forward; the U-GNN does
+      - disabling message passing reduces the learned propagation contribution exactly to zero
+      - the fixed-score residual reproduces s_fixed exactly when the correction is zero
+      - the shared recurrent cell shares its parameters across the steps
+      - the evidence-flow initialisation comes only from inference-safe retrieval columns
+      - no dataset id enters either model
+      - one batch may contain queries of several datasets
+      - one state dict handles metaqa-style typed edges and 2wiki-style structural edges
+  supersedes: [measurement.gate_and_held_halves.rule (2wiki and squad keys), pilot_gate.reference_numbers_from_m3b_on_the_gate_half_seed0, pilot_gate.gnn_gate, pilot_gate.twin_gate, information_contract_v2.depth_basis_columns.count]
