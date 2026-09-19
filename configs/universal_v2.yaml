@@ -1,0 +1,703 @@
+# ══════════════════════════════════════════════════════════════════
+# UNIVERSAL-v2 — two universal retrieval models, a GNN and its
+# non-message-passing twin, over one inference contract, on the served
+# canonical substrate. Declared after M3B closed (commit 0bbb3c4) and before
+# any v2 code that fits, any compiled v2 column and any v2 weight exists.
+# Every rule a later number depends on is in this file or in the dated blocks
+# appended to it, in order; nothing below is a result. ONE FILE PER PHASE:
+# this is the universal-v2 file. M3B's file is closed and is not edited.
+# ══════════════════════════════════════════════════════════════════
+experiment: universal_v2
+phase: UNIVERSAL_V2
+status: DECLARED_NOT_RUN
+declared: 2026-09-19
+declared_under:
+  - configs/m3b_controlled_comparison.yaml       # closed at 0bbb3c4 (status RUN, run_record_2026_09_19): the incumbents and every reference number below
+  - configs/m3a_sota_information_contract.yaml   # model naming, feature / candidate / proposed-object contracts
+  - configs/m3a_compilation.yaml                 # directions A-D, the calibration rule (read as diagnostic here, see methodological_ruling)
+  - configs/m3a_headroom.yaml                    # the pools, seeds, expansions and the knee rule the M3B contract froze on
+  - configs/m3_gnn_development.yaml              # the firewall, carried over
+place_in_the_track: >-
+  the phase after M3B in the development track (method selection on the
+  current datasets, development populations only, before canonical CRAG).
+  M3B answered whether learned message passing adds anything under matched
+  candidate exposure and matched inference-time graph information. This phase
+  asks whether genuinely strong universal models, with and without message
+  passing, can be built on what M3B measured. Two layers of contribution:
+  contribution 1 is M3B's and is closed; contribution 2 is this phase's.
+
+registered_question: >-
+  Can depth-preserving compiled reasoning and a query-conditioned
+  semantic-relation operator close the MetaQA weakness of the current universal
+  models without sacrificing their behaviour on text retrieval?
+registered_question_of_the_paper_unchanged: >-
+  After matching candidate exposure and inference-time graph information to
+  modern graph-retrieval/GNN systems, how much effectiveness remains
+  attributable specifically to learned message passing?
+contribution_2_as_registered: >-
+  A single retrieval-seeded architecture can operate across typed KGs and text
+  graphs, with either learned propagation or deterministic graph compilation.
+forbidden_framings:
+  - prove message passing is unnecessary
+  - show that we do not need message passing
+  - demonstrate that the MLP wins
+  - describe the READ / NOT_READ band threshold of M3B as pre-registered (methodological_ruling_band_rule below)
+  - architecture shopping -- fitting any candidate beyond the arms declared here without a dated amendment filed before its first fit
+result_is: >-
+  whatever the pilot gate reads for the selected GNN and the selected twin on
+  the three anchor datasets, and whatever the later stages measure if they
+  open; a failed gate is a valid outcome and closes the phase with its numbers.
+
+# ──────────────────────────────────────────────────────────────────
+# Authorization. The user's ruling of 2026-09-19, the sentences that bind.
+# ──────────────────────────────────────────────────────────────────
+authorization_2026_09_19:
+  ruling_verbatim:
+    - "So yes: authorize Universal-v2 now."
+    - "But start with the declaration and the 3-dataset pilot, not another giant run."
+    - "Do not alter or rerun M3B."
+    - "Keep this much smaller than M3B initially. Use development populations only."
+    - "Only after one architecture passes those three do we expand to: WebQSP HotpotQA MuSiQue"
+    - "For the final proposed models, I strongly want: one checkpoint trained jointly on all six datasets."
+    - "I would keep the SOTA READ / NOT_READ band rule as diagnostic, not elevate it into a preregistered confirmatory result."
+  context: >-
+    given in the review chat after M3B closed at 0bbb3c4 with
+    docs/M3B_RESULTS.md. The user's reading of M3B that this phase builds on,
+    in the user's words: the held-out evaluation preserved the central causal
+    story; GAT-NO-MP ~ QLS-U survives essentially everywhere; the passage-graph
+    increment is in full coverage of multi-gold queries, not top-1; on KB
+    retrieval, especially MetaQA, it also moves the top rank; STRUCT-only edges
+    reproduce nearly all the gain; the current GAT is good enough to establish
+    the causal value of MP but not strong enough on KBs to be the final
+    proposed universal GNN.
+  read_as: >-
+    this declaration is to be written and committed now; the three-dataset
+    pilot declared below is authorised to be coded and run after this file is
+    reviewed (order_of_operations, step 1 stops); the six-dataset stage, the
+    per-dataset copies and the leave-one-dataset-out stage are declared here
+    but open only on a dated authorization block appended after the pilot gate
+    record.
+  lifts: nothing beyond the pilot; no six-dataset sweep, no Modal spend, no test split
+  still_out_of_scope:
+    - any edit to, re-run of, or re-render of M3B (its files are pinned below; the v2 tests fail on a byte change)
+    - Package F, E2, distillation of any kind
+    - any test split of any dataset (webqsp stays on train_holdout)
+    - any candidate architecture beyond the arms declared here, until a dated amendment names it before its first fit
+    - the historical graph.pt substrate (regime 2, docs/M3B_RESULTS.md section 6); everything here is the served NAME_ONLY package
+  on_completion_of_each_stop: STOP_FOR_REVIEW with the numbers; nothing continues on its own past a stop
+
+# ──────────────────────────────────────────────────────────────────
+# M3B, the incumbents. Read-only. Every reference number of this phase comes
+# from the frozen M3B eval arrays; nothing of M3B is recomputed by refitting.
+# ──────────────────────────────────────────────────────────────────
+m3b_incumbents:
+  closed_at_commit: 0bbb3c4
+  pinned_files_sha256_lf_normalised:   # sha256 of the bytes with CRLF folded to LF; tests/test_universal_v2_declaration.py holds these
+    configs/m3b_controlled_comparison.yaml: 9c0e6e21e2fc8a88f35419e10e87f83b9018db0104500dad27a09de3dc10d09d
+    docs/M3B_RESULTS.md: 97daab6bbc3d63cb7bf32f9024793524d63c911b5aa33416db5fe7f60af10adc
+    src/mp_retrieval/m3b_features.py: 0310e553d2a49d6528cf47065ff0b11180544df5c11eca2d94eb13bcb0f47ed3
+    src/mp_retrieval/m3b_models.py: cbe32ea0772a22fd5cd1dfdb8f2b81e11a85a9e6b6e60bfc05036f5121aeb05c
+    src/mp_retrieval/m3b_train.py: b17722c11cd4ce3194d784bba41b7cb3dc514354b5cce70cd1980d9ab7376eb6
+    scripts/m3b_compile.py: 825ee987d27731c54f6e6a5a4f6d6cf68a4d746409b88533f8262be35cd263f8
+    scripts/m3b_run.py: 6dc5f13167e3e9e7bff64df1ceef85af42831bdaef47d6c9487b5b71473108a4
+  must_not: edit, rerun, re-render or re-hash anything of M3B; v2 code imports M3B modules unchanged or copies a function under a v2 name
+  eval_populations_reused_here:   # the M3B eval populations of the anchor trio, whole; ids sha256 from the M3B eval records
+    metaqa: {split: dev, queries: 39138, ids_sha256: bd5d8732b25494968b651b3955d89616b13062f5d62fad83c5308f9e28803426}
+    2wiki: {split: dev, queries: 12576, ids_sha256: 9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f}
+    squad: {split: dev, queries: 11873, ids_sha256: e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8}
+  training_carves_reused_here:   # M3B populations.training_carves rule verbatim; outputs/m3b/carves.json
+    metaqa: {N: 329282, select: 1497, fit: 5960, select_sha256: f0ec84fec4e07a050e8feacec5f4880342f10d60eb788b0cb0112334bc999828, fit_sha256: 161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188}
+    2wiki: {N: 167454, select: 1496, fit: 5928, select_sha256: 72b50b99005beeccc1d8e5e19717dae49fb54101087fc800ec83e75d79eac974, fit_sha256: fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3}
+    squad: {N: 130319, select: 1498, fit: 5856, select_sha256: d800e5e4d7c777ed6d69cb08ed8f084f4ab3f24c91cc39eef1b15e421d5664fd, fit_sha256: 39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515}
+  closed_numbers_eval_population_seed0_recall5:   # docs/M3B_RESULTS.md section 4; whole populations
+    macro_over_six: {gat_universal_v1: 0.759, gat_no_mp_v1: 0.715, qls_u_sota_v1: 0.713}
+    delta_mp_by_dataset: {metaqa: 0.147, 2wiki: 0.052, hotpotqa: 0.030, webqsp: 0.028, musique: 0.018, squad: -0.011}
+    metaqa: {gat: 0.763, no_mp: 0.617, qls_u: 0.612, gat_hit1: 0.831, no_mp_hit1: 0.611, gat_hit1_by_hop: {1hop: 0.888, 2hop: 0.882, 3hop: 0.737}}
+    2wiki: {gat: 0.885, no_mp: 0.834, qls_u: 0.838, rrf: 0.608, gat_full_coverage5: 0.756}
+    squad: {gat: 0.885, no_mp: 0.896, qls_u: 0.889, rrf: 0.905, gat_struct_only: 0.906}
+  what_m3b_established:
+    - GAT-NO-MP ~ QLS-U within about 0.005 on every dataset -- what the GAT adds over the MLP is the message passing, not the architecture around it
+    - on the passage graphs the increment is in full_coverage@5 (+0.049 musique, +0.068 hotpotqa, +0.126 2wiki) while hit@1 is not lifted; on the KB graphs it lifts the top rank as well (metaqa hit@1 +0.220)
+    - STRUCT-only message edges carry nearly all of it everywhere (metaqa +0.144 of +0.147); NER and KNN edges add nothing
+    - squad, the retrieval-only pool, measures message passing as a cost (-0.011); the fixed rrf (0.905) is above every learned arm there
+    - the universal GAT sits far below the published KB bands (metaqa 3-hop hit@1 0.737 vs 98.9; webqsp 0.595 vs 76.4-77.4) by far more than the measured exposure shortfall (0.002 / 0.027)
+    - capacity did not close it in the M3B screen (H64 -> H128 +0.007 select macro R@5; a third layer bought nothing)
+
+# ──────────────────────────────────────────────────────────────────
+# The two goals. Both models share one inference contract; neither carries a
+# dataset identity, a dataset-specific head or a router.
+# ──────────────────────────────────────────────────────────────────
+goals:
+  A_universal_gnn: >-
+    one checkpoint, one architecture, no dataset-specific head or router, that
+    does not have the current KB weakness while retaining the strong text
+    behaviour. It has to handle, without knowing which it is on: MetaQA (small
+    typed vocabulary, deterministic multi-hop relational composition); WebQSP
+    (about 7,000 relation types, noisy heterogeneous KG ranking); HotpotQA /
+    2Wiki / MuSiQue (document and entity-link structure); SQuAD (know when not
+    to propagate).
+  B_universal_non_mp_model: >-
+    a stronger compiled model without message passing, built from what M3B
+    taught. The key question is whether the STRUCT computation the GAT performs
+    can be compiled explicitly, motivated by the substrate ablation (STRUCT
+    carries almost the entire message-passing increment).
+  universality_criterion: >-
+    one joint checkpoint over all six datasets (the final proposed models);
+    per-dataset copies of the same architecture quantify the cost or benefit of
+    universality (H1); leave-one-dataset-out measures cross-substrate
+    generalisation (H2). The pilot below decides whether an architecture earns
+    those stages.
+
+# ──────────────────────────────────────────────────────────────────
+# The declared innovations. Five, each motivated by an M3B measurement, plus
+# the evidence-flow state as a separate GNN candidate. Nothing else is a
+# candidate in this phase without a dated amendment.
+# ──────────────────────────────────────────────────────────────────
+innovations:
+  1_depth_preserving_compiled_basis:
+    for: the U-MLP twin (and, through the shared input block, every arm)
+    what: >-
+      the compiled contract exposes graph depth explicitly -- seed / retrieval,
+      STRUCT hop 1, STRUCT hop 2, STRUCT hop 3 (and the FULL view at the same
+      depths) -- instead of compressing them into one support or path
+      statistic. For every depth, deterministic: reached-seed mass, distinct
+      supporting seeds, number and diversity of paths, relation-path
+      signatures, candidate support (depth-resolved propagation, plain and
+      query-modulated), the fixed semantic prototype of the depth ring, and the
+      seed-conditioned prototype at that depth. Columns in information_contract_v2.
+    why_from_m3b: >-
+      the metaqa residual sits on the 3-hop questions (universal GAT hit@1
+      0.737 at 3 hops vs 0.888 / 0.882 at 1 / 2) and STRUCT edges carry the
+      whole increment; the M3B contract holds depth 1 fully, depth 2 partly
+      (walks2, branch_div, relchain2, seedproto_h2) and depth 3 only as a BFS
+      bucket.
+    fixed_or_learned: fixed (compile time, no parameter); the boundary is in learned_vs_fixed_propagation
+  2_semantic_relation_encoder:
+    for: the U-GNN (edge descriptor); the compiled basis uses the same relation-text embeddings without parameters
+    what: >-
+      no dataset-specific relation ids. Every edge is represented as r_e =
+      W_r e_text(relation) * rel_mask + E_family[family] + E_direction[dir] +
+      w_weight * stored weight, where e_text is the served relation-text
+      embedding of M3B (outputs/m3b/relations, gte-Qwen2-1.5B-instruct,
+      unit-L2) and rel_mask is 0 on edges without relation text (hyperlink /
+      entity-link STRUCT edges of the passage graphs, NER, KNN). The same
+      encoder therefore covers MetaQA predicates, Freebase predicates,
+      hyperlinks, NER co-mention and KNN edges.
+    why_from_m3b: >-
+      M3B already used cos(q, e_r) as fixed columns and a family one-hot on
+      the edges; the GAT had no learned relation representation. WebQSP has
+      7,058 relation types, so an id table would not be universal.
+    fixed_or_learned: learned (W_r, E_family, E_direction, w_weight); the text embedding itself is fixed and served
+  3_query_conditioned_relation_aware_message_passing:
+    for: the U-GNN
+    what: >-
+      attention alpha_uv = A(h_u, h_v, q, r_uv), GATv2 form with a
+      multiplicative query-relation term -- score_uv = a . leakyrelu(W_h [h_u
+      | h_v] + (W_q q) * (W_r1 r_uv) + W_r2 r_uv), softmax over the in-edges of
+      v plus a self-loop, 4 heads; message m_v = sum_u alpha_uv W_m [h_u |
+      r_uv]. Messages depend explicitly on query semantics and on relation
+      semantics.
+    why_from_m3b: >-
+      the ordinary GAT established that message passing helps; on the KB
+      graphs it stays far below the published systems, and the M3B screen
+      showed capacity alone does not close it. The missing ingredient is the
+      operator, not its width.
+    fixed_or_learned: learned
+  4_recurrent_shared_depth_reasoning:
+    for: the U-GNN
+    what: >-
+      one shared message-passing cell applied T = 3 times (t = 0, 1, 2) with the
+      same parameters, and a per-node, per-step scalar update gate g_v^t =
+      sigmoid(W_g [h_v^t | m_v^t | q_proj]); h_v^(t+1) = (1 - g_v^t) h_v^t +
+      g_v^t LayerNorm(h_v^t + m_v^t). The same model can therefore stop
+      immediately (SQuAD), take about one useful step (HotpotQA), one to two
+      (2Wiki) or three (MetaQA) without knowing the dataset. The mean gate per
+      step per dataset is reported as the mechanism evidence.
+    why_from_m3b: >-
+      the increment differs qualitatively between SQuAD (a cost), the passage
+      graphs (coverage) and MetaQA (top rank at 3 hops); M3B fixed L = 2 for
+      every dataset and a third layer bought nothing.
+    fixed_or_learned: learned
+  5_retrieval_prior_preserved:
+    for: both models
+    what: >-
+      s_final = s_fixed + delta_s, as in M3B -- the within-query z-score of the
+      fixed base column (rrf) enters the readout with weight w_b = 1 and the
+      learned correction is zero-initialised, so every arm returns the fixed
+      base exactly at step 0 and never has to relearn good Dense / SPLADE
+      evidence. Universal-v2 must be capable of saying: do nothing. The SQuAD
+      cell of the pilot gate tests exactly that, and the report prints the
+      magnitude of delta_s relative to the base per dataset.
+    why_from_m3b: >-
+      on SQuAD the fixed rrf (0.905) is above every learned arm (0.885 -
+      0.896); the M3B arms already had the residual form and still lost there,
+      so the ability is tested, not assumed.
+    fixed_or_learned: architectural
+  6_evidence_flow_state:
+    for: the U-GNN, as a separate candidate (u_gnn_v2_ef), with a fixed analogue on the twin side
+    what: >-
+      beside the semantic node state h_v^t, a separate evidence state p_v^t (8
+      wide) initialised from the retrieval evidence of the node -- p_v^0 = W_p
+      [rrf_norm, dense_cos, splade_score_norm, is_seed] -- and propagated only
+      along typed STRUCT edges by query-relation compatibility: p_v^(t+1) =
+      (1 - g2_v^t) p_v^t + g2_v^t sum_u beta_uv W_pp p_u^t with beta_uv =
+      softmax_u(a2 . ((W_q2 q) * (W_r3 r_uv))) -- no dependence on h, so
+      evidence flows by relation compatibility, not by node semantics. The
+      readout sees [h^T | p^T]. On text retrieval the semantic state should
+      dominate; on MetaQA evidence should propagate through relation paths; on
+      SQuAD the gate should shut it down. Its fixed analogue on the twin is the
+      query-modulated depth-resolved propagation column qsupport_h{t}.
+    why_from_m3b: >-
+      the mechanism M3B measured on MetaQA is retrieval evidence reaching the
+      answer through discriminative typed paths (H_MP, docs/M3B_RESULTS.md
+      section 9); making that flow an explicit state is a cleaner universal
+      inductive bias than a wider GAT, which the screen showed does not help.
+    fixed_or_learned: learned
+
+learned_vs_fixed_propagation:
+  written_before_any_fit_because: without this line the twin is a GNN by another name
+  fixed: >-
+    any quantity computed at compile time from the query embedding, the served
+    graph, the seed set, the retrieval scores and the served relation-text
+    embeddings with no trainable parameter, including iterated propagation
+    with fixed weights (row-normalised adjacency, fixed temperature 0.1 in the
+    query-modulated variant, fixed T); and, inside the model, a parameter-free
+    aggregation of served embeddings over in-pool edges done once and then
+    passed through a shared linear projection (the M3B input block, directions
+    C and D, ruled fixed in M3B because the projection of a mean is the mean
+    of the projections).
+  learned_propagation: >-
+    any operator applied over the pool edges inside the model whose messages
+    or message weights depend on trainable parameters, or any repetition of an
+    aggregation with a trainable transform between repetitions.
+  the_twin_may: consume every fixed column and the M3B input block; it may not contain a per-step operator over the pool edges
+  guard: >-
+    tests/test_universal_v2_models.py asserts that the U-MLP body modules
+    receive only (h, base_z) and never the packed batch, and that the U-MLP
+    score is unchanged when every message edge is removed after the input
+    block (the input block is the only place edges are read).
+
+# ──────────────────────────────────────────────────────────────────
+# The v2 information contract: the M3B core unchanged plus the depth basis.
+# Compiled once per query from the frozen pool and the frozen pool graph;
+# nothing reads a gold label, a test split or a dataset identity.
+# ──────────────────────────────────────────────────────────────────
+information_contract_v2:
+  name: UNIVERSAL_V2_FEATURE_CONTRACT
+  base: >-
+    the 78 columns of QLS_U_CORE_CONTRACT (M3B, sha256 ce584194a751cf3c...),
+    compiled by the unchanged mp_retrieval.m3b_features.compile_query; the v2
+    module appends the depth basis after them and never reorders or edits a
+    base column (a test holds the first 111 raw columns equal to the M3B
+    module, and the 78 survivors are the M3B list).
+  candidate_contract: >-
+    the M3B frozen pools per dataset (candidate_contract_frozen_2026_09_13),
+    the same seeds (dense top-5 union splade top-5), the same pool graph
+    (in-pool neighbour cap 64 per family, 3-hop BFS), the same served
+    embeddings and caches. No new graph access.
+  notation: >-
+    per query, n pool nodes; A_f the symmetrised in-pool adjacency of view f
+    (STRUCT = the structural family; FULL = the union of the three families),
+    W_f its row-normalised form; S the seed set with s_u = rrf_u / max rrf
+    (the GCS normalisation); dist_f(v) the BFS distance of v from S in view f
+    (M3B topology); seeds_at_t(v) the seeds at exact distance t from v;
+    ring_t(v) the pool nodes at exact BFS distance t from v; e_u the served
+    unit embedding; q the served query embedding; e_r the served relation-text
+    embedding of a typed STRUCT edge (0 where rel_mask is 0); cos(q, e_r) is 0
+    on untyped edges.
+  depth_basis_columns:   # for f in (STRUCT, FULL) and t in (1, 2, 3) unless stated; 64 new columns
+    seeds_at_h{t}_{f}: log1p(number of distinct seeds at exact distance t from v in view f)
+    seedmass_h{t}_{f}: sum over the seeds at exact distance t of s_seed (reached-seed mass, retrieval-weighted)
+    paths_h{t}_{f}: log1p((A_f^t 1_S)_v), the number of walks of length t from the seed set to v
+    branch_h{t}_{f}: log1p(number of distinct nodes x adjacent to v that have a walk of length t-1 from the seed set); t in (2, 3) only
+    support_h{t}_{f}: (W_f^t s)_v, the retrieval mass reaching v after exactly t row-normalised steps (depth-resolved fixed propagation; GCS is max(p_2, s) of the damped form)
+    has_h{t}_{f}: 1 if seeds_at_h{t}_{f} > 0 (mask)
+    ring_qmean_h{t}_{f}: mean over u in ring_t(v) of cos(q, e_u), 0 if the ring is empty (the fixed semantic prototype of the depth ring)
+    ring_qmax_h{t}_{f}: max over u in ring_t(v) of cos(q, e_u), 0 if empty
+    seedproto_h{t}_{f}: cos(e_v, mean embedding of the seeds at exact distance t), 0 if none (the seed-conditioned prototype at depth t; M3B direction D generalised)
+    qsupport_h{t}: >-
+      STRUCT only, typed: (W_q^t s)_v with w_uv = exp(cos(q, e_r_uv) / 0.1) /
+      sum over the typed in-edges of v of the same, self-loop excluded; the
+      compiled query-conditioned relation-aware propagation, the fixed
+      analogue of innovations 3 and 6
+    relpath_max_h{t}: STRUCT only, typed; max over typed walks of length t from a seed to v of the mean of cos(q, e_r) along the walk (t = 1 and 2 duplicate relmax_seed and relchain2_max; t = 3 is new)
+    relpath_mean_h{t}: STRUCT only, typed; mean over those walks of the same
+    relpath_min_h{t}: STRUCT only, typed; max over those walks of the minimum cos(q, e_r) along the walk (the weakest link of the best path)
+  count: 2 views x (8 at t = 1 + 9 at t = 2 + 9 at t = 3) = 52, plus 12 typed STRUCT columns = 64; 78 + 64 = 142 raw columns before the screen
+  compile_cost_note: >-
+    every quantity is a sparse matrix-vector product, a tropical DP over the
+    edge list or a segment reduction on the pool graph already built by M3B;
+    the ring prototypes use mean and max of cos(q, e_u), never a mean
+    embedding, so no n x n x 1536 product is needed. The compile time per
+    query is measured in the timing run and reported.
+  screen: >-
+    the M3B feature_screen rule verbatim (fit carves of the pilot datasets;
+    duplicate pairs |Spearman| >= 0.98 on the 198,942-row stride sample, the
+    earlier member kept; zero-variance columns dropped; nothing dropped for
+    weak signal). The survivors are UNIVERSAL_V2_CORE_CONTRACT, filed with
+    their sha256 in a dated block before any fit. The M3B 78 always survive by
+    construction (they are the earlier members).
+  prohibitions:
+    - no column reads a gold label, a test split, a dataset identity or anything not available at inference time
+    - no column reads beyond the frozen pool and pool graph of the M3B contract
+    - no learned parameter inside any column (learned_vs_fixed_propagation)
+    - the M3B module is never edited; the v2 module imports it
+  normalisation: as M3B (raw and within-query z-scored copies enter the input block; a column constant within a query z-scores to 0)
+  outputs: outputs/universal_v2/feature_contract.json (columns, formulas, groups), feature_screen.json, the compiled caches per carve and population (gitignored)
+
+# ──────────────────────────────────────────────────────────────────
+# The arms of the pilot. Two twins, their ablations and the like-for-like
+# control. Width is not screened in the pilot: H = 128 (the M3B selection for
+# both families) is fixed, so the pilot screens architecture, not capacity.
+# ──────────────────────────────────────────────────────────────────
+arms:
+  shared:
+    input_block: the M3B InputBlock (mp_retrieval.m3b_models.InputBlock, unchanged code) over UNIVERSAL_V2_CORE_CONTRACT; base column rrf; dropout 0.2
+    readout: the M3B ResidualReadout (w_b = 1, zero-initialised correction); step-0 identity with the fixed base holds for every arm
+    hidden: 128
+    edge_descriptor: innovation 2 for the GNN arms (d_r = 32); the M3B five edge attributes plus the family one-hot remain available to the encoder
+    parameter_accounting: every arm reports its parameter count in the fit record and the report; the GNN arms are budgeted at or below 450,000 (M3B GAT 353,410) and the twins at or below 350,000
+    no_dataset_identity: no arm receives a dataset id, a per-dataset head, a router or a per-dataset normalisation statistic
+  u_mlp_v2:
+    role: candidate twin (goal B)
+    what: QLSU (M3B code, unchanged) over UNIVERSAL_V2_CORE_CONTRACT -- input block, two hidden layers of 128, residual readout; no edges beyond the input block
+    isolates: innovation 1 alone, against qls_u_sota_v1 (M3B, frozen arrays) and against gat_universal_v1
+  u_mlp_v2_mix:
+    role: candidate twin (goal B), the query-conditioned block mixer
+    what: >-
+      u_mlp_v2 with one addition before the input linear -- the depth-basis
+      columns are grouped into blocks B_{f,t}; each block is multiplied by a
+      scalar gate sigmoid(w_{f,t} . q_proj + b_{f,t}) computed from the
+      projected query (64-wide, the M3B query projection), so the twin can
+      switch depth 2 and 3 off per query. The mean gate per block per dataset
+      is reported (the twin analogue of the step gate).
+    isolates: the per-query depth gating on top of innovation 1
+  u_gnn_v2:
+    role: candidate GNN (goal A)
+    what: >-
+      input block -> h^0; one shared cell (innovations 2, 3, 4) applied T = 3
+      times over the FULL message edges with the scalar update gate; residual
+      readout on h^3. No evidence-flow state.
+    isolates: innovations 2-4 on top of the shared basis, against u_gnn_v2_ef (adds 6) and against u_gnn_v2_core78 (removes 1)
+  u_gnn_v2_ef:
+    role: candidate GNN (goal A), the evidence-flow variant
+    what: u_gnn_v2 plus the evidence state p (innovation 6, d_p = 8, propagated over typed STRUCT edges only); readout on [h^3 | p^3]
+    isolates: innovation 6
+  u_gnn_v2_core78:
+    role: ablation (not a selection candidate; reported)
+    what: the architecture selected between u_gnn_v2 and u_gnn_v2_ef, refitted over the M3B 78-column core instead of the v2 core
+    isolates: innovation 1 inside the GNN (the operator without the depth basis)
+  gat_universal_v1_trio:
+    role: control (not a selection candidate; reported)
+    what: gat_universal_v1 (M3B code and M3B 78-column core, unchanged; L = 2, H = 128) fitted on the pilot trio with the pilot training rule
+    isolates: the effect of training on three datasets instead of six, so that every v2-vs-M3B difference is read against a like-for-like incumbent and not only against the frozen six-dataset checkpoints
+  frozen_references_not_refitted:
+    what: the M3B seed-0 arrays of gat_universal_v1, gat_no_mp_v1, qls_u_sota_v1, gat_universal_v1[STRUCT] and the fixed columns on the trio eval populations (outputs/m3b/eval/*.npz), read only
+    why: the reference numbers of the gate and of every paired comparison; nothing of M3B is rerun
+  selection_behind_the_firewall:
+    gnn: argmax of macro select recall@5 over the pilot select carves between u_gnn_v2 and u_gnn_v2_ef; ties to the smaller parameter count; written to outputs/universal_v2/selection.json before any eval population is scored
+    twin: the same between u_mlp_v2 and u_mlp_v2_mix
+    rule: no eval number and no number of the other family enters either selection; the gate is read once, for the selected GNN and the selected twin; the non-selected candidate is reported and cannot advance
+    ablation_and_control: u_gnn_v2_core78 takes the selected GNN architecture; gat_universal_v1_trio is fixed by M3B
+
+# ──────────────────────────────────────────────────────────────────
+# Training: the M3B training rule, verbatim, with the datasets restricted to
+# the anchor trio in the pilot. Nothing scientific about training changes.
+# ──────────────────────────────────────────────────────────────────
+training:
+  rule: >-
+    configs/m3b_controlled_comparison.yaml#training as amended by amendment 3
+    (training_reading: dataset_draw per_query, epoch_limit_s 28800), applied
+    verbatim -- listwise loss, temperature 1.0, AdamW lr 1e-3 wd 1e-4 clip
+    1.0, batch 16 queries, epoch 2000 batches, max 6 epochs, patience 2 on the
+    macro select recall@5, dropout 0.2, checkpoint per epoch, resume from the
+    checkpoint; the batch sampler draws the dataset uniformly among the
+    datasets of the stage and then a fit query of that dataset.
+  pilot_datasets: [metaqa, 2wiki, squad]
+  why_these_three: >-
+    MetaQA is the deepest positive message-passing case; 2Wiki is the text
+    graph where message passing matters most; SQuAD is the negative control,
+    the do-not-hurt case. The trio detects whether an architecture is actually
+    universal before a six-dataset sweep.
+  carves: the M3B carves of the three datasets, identical ids (m3b_incumbents.training_carves_reused_here); the v2 compile records their sha256 and a test asserts equality
+  seeds:
+    pilot_seed0: every arm above, seed 0
+    confirmation: seeds 1 and 2 for every arm that passes its own gate (pilot_gate); a failing arm stops at seed 0 and is reported
+  training_code: >-
+    mp_retrieval.m3b_train unchanged for the loop, the loss, the sampler, the
+    checkpointing and the select-carve evaluation; the v2 run script adds the
+    v2 arms and the v2 contract only. Equivalence tests as M3B (per-query
+    centred scores atol 1e-5, losses rel 1e-6) hold the loop.
+  step_0_identity: every arm returns the fixed base score exactly before its first gradient step (test)
+
+# ──────────────────────────────────────────────────────────────────
+# Measurement. The M3B eval populations of the trio, whole, scored once per
+# model; every number read against the frozen M3B arrays of the same queries.
+# ──────────────────────────────────────────────────────────────────
+measurement:
+  populations: the three eval populations of m3b_incumbents.eval_populations_reused_here, whole; the ids sha256 must match or the eval refuses
+  gate_and_held_halves:
+    rule: >-
+      each eval population is split deterministically by query id: gate if
+      int(sha256(query_id utf-8).hexdigest(), 16) is even, held otherwise. The
+      pilot gate and every selection-like reading of this phase use the gate
+      half only; the held half is read once, in the final report of the
+      phase, as the confirmatory column. The same halves apply to the frozen
+      M3B arrays, so every reference number is on the same queries.
+    counts_from_the_m3b_ids: {metaqa: {gate: 19738, held: 19400}, 2wiki: {gate: 6344, held: 6232}, squad: {gate: 5957, held: 5916}}
+    why: >-
+      a threshold decided on the whole population and then reported on it is
+      a selection on the result population; halving costs nothing (the eval
+      pass scores every query anyway) and leaves a clean half. This is an
+      addition of this phase over M3B, filed here before any v2 number exists.
+  metrics: as M3B measurement.metrics (recall@1/5/10/20, hit@1, mrr, ndcg@5/20, full_coverage@5/20; unretrieved gold counts against recall); pool ceilings beside every row from the M3B contract
+  paired_procedures:
+    against_m3b: v2 arm minus the frozen M3B array of the named reference, per query, paired bootstrap 1000 resamples numpy default_rng(0), percentile 95 percent, on the gate half and separately on the held half
+    against_each_other: selected GNN minus selected twin (the v2 delta_MP), selected GNN minus u_gnn_v2_core78, selected GNN minus gat_universal_v1_trio, selected twin minus qls_u_sota_v1 (frozen), same procedure
+    seeds: mean and standard deviation over seeds 0-2 beside the paired seed-0 interval where seeds exist
+  slices_reported:
+    metaqa_by_hop: every metric per 1hop / 2hop / 3hop (query id prefix), the cell the registered question is about
+    gold_distance: recall@5 sliced by the gold node BFS distance from the seed set in the STRUCT view (the M3B dist0..dist3 / unreached buckets already compiled), per arm, per dataset -- the H_MP slice filed in M3B note 2
+    multi_gold: full_coverage@5 and recall@5 on the queries with 2 or more in-pool golds, per arm
+  mechanism_readouts:
+    step_gates: mean and quartiles of the update gate g per step per dataset (u_gnn_v2, u_gnn_v2_ef) and of the evidence gate g2 (u_gnn_v2_ef)
+    block_gates: mean gate per depth block per dataset (u_mlp_v2_mix)
+    delta_s_magnitude: per dataset, mean |delta_s| / mean |base_z| and the fraction of queries whose top-1 changes from the fixed base (how far each arm moves from doing nothing)
+  cost: parameters, per-epoch wall time, peak RSS, threads per fit; cold per-query compile / pack / forward latency on the first 500 eval queries and the batched eval throughput, as M3B section 7
+  audit: the M3B MRR audit verbatim on every scorer before any record is written
+
+# ──────────────────────────────────────────────────────────────────
+# The pilot gate. Three cells, read once, on the gate halves, for the selected
+# GNN and the selected twin (seed 0). The thresholds are numbers filed here,
+# derived from the frozen M3B arrays on the same halves, before any v2 weight.
+# ──────────────────────────────────────────────────────────────────
+pilot_gate:
+  reference_numbers_from_m3b_on_the_gate_half_seed0:   # computed 2026-09-19 from outputs/m3b/eval/*.npz with the split rule above
+    metaqa:
+      gat_universal_v1: {hit1: 0.832, hit1_1hop: 0.8946, hit1_2hop: 0.8811, hit1_3hop: 0.7385, recall5: 0.7593, full_coverage5: 0.635}
+      gat_no_mp_v1: {hit1: 0.6153, recall5: 0.612}
+      qls_u_sota_v1: {hit1: 0.6155, recall5: 0.6087}
+      gat_universal_v1_STRUCT: {hit1: 0.8334, recall5: 0.7568}
+      published_kb_band_hit1: {1hop: 0.974, 2hop: 0.9999, 3hop: 0.989, query_weighted_all: 0.989}
+    2wiki:
+      gat_universal_v1: {recall5: 0.883, full_coverage5: 0.752, hit1: 0.883}
+      gat_no_mp_v1: {recall5: 0.8332}
+      qls_u_sota_v1: {recall5: 0.8346}
+      fixed_rrf: {recall5: 0.6091}
+    squad:
+      fixed_rrf: {recall5: 0.9038}
+      gat_universal_v1: {recall5: 0.8865}
+      gat_no_mp_v1: {recall5: 0.8964}
+      qls_u_sota_v1: {recall5: 0.8919}
+      gat_universal_v1_STRUCT: {recall5: 0.9063}
+  gnn_gate:   # the selected GNN, seed 0, gate half; all three cells must hold
+    metaqa:
+      materially_close_the_kb_gap: >-
+        hit@1 over all hops >= 0.88 AND hit@1 on the 3-hop slice >= 0.82,
+        each with the paired interval against gat_universal_v1 (frozen M3B
+        arrays, same queries) excluding zero on the positive side.
+      derivation: >-
+        the gap to the published band is 0.989 - 0.832 = 0.157 over all hops
+        and 0.989 - 0.7385 = 0.2505 on the 3-hop slice; the thresholds close
+        one third of each (0.832 + 0.052 -> 0.88; 0.7385 + 0.084 -> 0.82).
+        The M3B GAT seed spread on metaqa hit@1 is 0.009, so the all-hop
+        threshold is about six seed spreads above the incumbent.
+    2wiki:
+      no_regression_vs_the_universal_gat: recall@5 >= 0.873 AND full_coverage@5 >= 0.742 (point estimates; the M3B GAT on the same half minus 0.010, 2.5 seed spreads)
+    squad:
+      no_meaningful_regression_from_fixed_retrieval: recall@5 >= 0.899 (the fixed rrf on the same half, 0.9038, minus 0.005); the do-nothing test -- no M3B learned arm meets it except the STRUCT-only GAT
+    pass: all three cells hold for the selected GNN at seed 0
+  twin_gate:   # the selected twin, seed 0, gate half; all three cells must hold
+    metaqa: hit@1 over all hops >= 0.70 (qls_u_sota_v1 0.6155 on the same half; closes at least 39 percent of the 0.2165 residual to the M3B GAT), paired interval against qls_u_sota_v1 excluding zero
+    2wiki: recall@5 >= 0.855 (qls_u_sota_v1 0.8346; closes at least 42 percent of the 0.0484 residual to the M3B GAT)
+    squad: recall@5 >= 0.899 (the same do-nothing test)
+    pass: all three cells hold for the selected twin at seed 0
+  on_pass: >-
+    seeds 1 and 2 of the passing arm are fitted; the pass is confirmed if the
+    mean over seeds 0-2 also holds every cell; a confirmed pass makes the arm
+    eligible for the six-dataset stage (later_stages), which still needs a
+    dated authorization block.
+  on_fail: >-
+    the arm stops at seed 0 with its numbers in the report; no threshold is
+    moved, no candidate is added and no fit is repeated to reach the gate. If
+    both selected arms fail, the phase closes with STOP_FOR_REVIEW and the
+    numbers; what to try next is a new dated amendment, filed before its fit.
+  what_the_gate_is_not: >-
+    not a result on the held half (never read for the gate), not a statement
+    about message passing (the registered question of the paper is answered
+    by M3B), and not a comparison to the published systems (their exposure is
+    named in the calibration table; methodological_ruling_band_rule).
+
+# ──────────────────────────────────────────────────────────────────
+# The later stages. Declared now so their matrices and rules are on file
+# before the pilot number that would motivate them; each opens only on a
+# dated authorization block appended after the pilot gate record.
+# ──────────────────────────────────────────────────────────────────
+later_stages:
+  stage_2_six_dataset_joint:
+    opens_when: at least one arm has a confirmed pass and a dated authorization block names it
+    what: >-
+      the passing architecture(s), one checkpoint each, trained jointly on the
+      six M3B datasets with the M3B carves and the M3B training rule (the
+      sampler draws among six); seeds 0-2; evaluated on the six M3B eval
+      populations. The three added datasets (webqsp on train_holdout,
+      hotpotqa, musique) are compiled under the v2 contract before any fit
+      and reported whole; the trio is reported on its gate and held halves.
+    fits: 3 per passing architecture (seeds 0-2), plus gat_universal_v1 and qls_u_sota_v1 are NOT refitted (the M3B six-dataset checkpoints are the incumbents)
+    reads: the six-dataset table against the frozen M3B arrays; the calibration table with exposure (calibration_for_the_report)
+  stage_3_per_dataset_copies:
+    opens_when: stage 2 is on record and a dated authorization block opens it (compute below)
+    what: the same architecture fitted on each dataset alone (its own carve, the same rule, seed 0); six fits per architecture
+    reads: H1 -- the joint checkpoint against the per-dataset copies, per dataset and macro
+  stage_4_leave_one_dataset_out:
+    opens_when: stage 2 is on record and a dated authorization block opens it
+    what: the same architecture fitted on five datasets and evaluated on the held-out sixth, for each of the six; six fits per architecture, seed 0
+    reads: H2 -- cross-substrate generalisation; the held-out KB and the held-out passage graph are the cells that matter
+  compute_placement: >-
+    stages 3 and 4 are 12 fits per architecture; on the laptop that is 70-150
+    hours per architecture. If they open, their placement (laptop or Modal
+    GPU through scripts/spawn_modal_jobs.py, never modal run --detach) is
+    filed in the authorization block with the measured per-epoch clock and
+    the spend limit, and an equivalence test on one fit carve holds the GPU
+    path to the CPU path (per-query centred scores atol 1e-5) before any
+    number is read from it.
+
+# ──────────────────────────────────────────────────────────────────
+# Hypotheses, filed before any fit. Each names its measurement and what a
+# failure looks like; a failure is a result.
+# ──────────────────────────────────────────────────────────────────
+hypotheses:
+  H_pilot:
+    claim: the selected GNN passes gnn_gate and the selected twin passes twin_gate
+    measurement: pilot_gate, gate halves, seed 0 then seeds 0-2
+    if_false: the registered question of this phase is answered in the negative for the declared innovations; the phase closes with the numbers and the mechanism readouts saying which cell failed and how the gates behaved
+  H_operator_vs_basis:
+    claim: on metaqa the selected GNN beats u_gnn_v2_core78 (the operator needs the basis) AND u_gnn_v2_core78 beats gat_universal_v1_trio (the operator alone beats the ordinary GAT), both on hit@1 with intervals excluding zero
+    measurement: measurement.paired_procedures.against_each_other
+    if_false: the attribution sentence of the paper changes accordingly; nothing else does
+  H_evidence_flow:
+    claim: u_gnn_v2_ef exceeds u_gnn_v2 on metaqa 3-hop hit@1 and on the multi-gold full_coverage@5 of 2wiki, and its evidence gate g2 is lower on squad than on metaqa at every step
+    measurement: select-carve numbers decide the selection; the eval-population comparison is reported for both whatever the selection
+    if_false: the evidence state is reported as not helping; the selected GNN proceeds alone
+  H_do_nothing:
+    claim: the passing arms hold the fixed rrf on squad within 0.005 and their delta_s magnitude on squad is the smallest of the trio
+    measurement: pilot_gate squad cell; measurement.mechanism_readouts.delta_s_magnitude
+  H1_universality_cost:
+    claim: the joint six-dataset checkpoint is within 0.010 macro recall@5 of the per-dataset copies of the same architecture
+    measurement: stage 3 against stage 2; if_false, the cost of universality is reported as measured
+  H2_lodo_transfer:
+    claim: for every held-out dataset d, LODO(d) - fixed_base(d) >= 0.5 x (joint(d) - fixed_base(d)) on recall@5
+    measurement: stage 4 against stage 2 and the fixed rrf; the KB held-out cells are read first
+  H3_twin_parity_where_mp_does_not_pay:
+    claim: on squad and on the passage graphs the twin is within 0.02 recall@5 of the GNN in stage 2; on the KB graphs the residual stays and is reported
+    measurement: stage 2, selected GNN minus selected twin, per dataset; conditioned on H_MP as measured in M3B
+  H_MP_carried_from_m3b: docs/M3B_RESULTS.md section 9; read again in stage 2 with the gold-distance slice
+
+# ──────────────────────────────────────────────────────────────────
+# The methodological ruling on the calibration band, and the calibration
+# columns the report carries.
+# ──────────────────────────────────────────────────────────────────
+methodological_ruling_band_rule:
+  ruling: >-
+    the READ / NOT_READ band rule of M3B (the operationalisation of
+    configs/m3a_compilation.yaml#universal_gnn_calibration_rule
+    .when_delta_mp_is_not_read as lowest published number minus the measured
+    exposure shortfall) is diagnostic. Its precise operational form was
+    written on 2026-09-19 at 13:36 IST, mid-evaluation, after four M3B
+    records existed (M3B run record, sections_beyond_the_declared_reporting).
+    It is never described as pre-registered, in this phase or in the paper.
+  what_stays: the published comparisons with their named exposure, and the fact that the M3B universal GAT is below the KB bands
+  confirmatory_reads_of_this_phase: the pilot gate thresholds above and the hypotheses, filed here before any fit; nothing else is confirmatory
+  in_the_report: the calibration table prints the published cells, the exposure columns and the diagnostic verdict, labelled diagnostic
+
+calibration_for_the_report:
+  columns: as M3B note 2 (calibration_columns_for_the_report) -- graph entry point, average graph or pool size, any-answer exposure, retrieval prior retained, ranking metric; published coverage against any_gold_at_pool, never averaged
+  families: GFM-RAG / G-reasoner (universal graph foundation rankers); GNN-RAG / ReaRev / NuTrea (KB, assigned topic entities); GraphER / GeAR (passage graphs, the closest comparator to the twin is the parameter-free GraphER arm); the fixed propagation baselines
+  rule: every comparison is under retrieved exposure unless a labelled oracle-entry lane is declared and run; none is declared here
+
+# ──────────────────────────────────────────────────────────────────
+# Compute, estimated from the M3B measured clock (its declaration estimated
+# 12-20 hours of fits and the phase measured about five days; the estimate
+# below is built from the measured epoch seconds, not from hope).
+# ──────────────────────────────────────────────────────────────────
+compute:
+  hardware: local only -- 12 CPUs, 15.7 GB RAM, torch 2.8.0+cpu, torch_geometric 2.6.1, no usable GPU (the Iris Xe XPU is NOT USABLE, outputs/m3b/xpu_check.json); Modal is not used by this declaration
+  m3b_measured_clock_the_estimate_rests_on:
+    gat_universal_v1_H128_L2_six_datasets: 4,700-7,100 s per epoch at 8 threads, 9.7 h per 6-epoch fit (seed 0); 12.4 h at seed 1 on a paging machine
+    gat_no_mp_v1: 2,200-3,800 s per epoch, 4.5-7 h per fit
+    qls_u_sota_v1_H128: 2,300-4,200 s per epoch, 4.6-5.5 h per fit
+    heap: process commit grows about 5 GB per 10 h; boundary restarts from the epoch checkpoint (amendment 4)
+  pilot_epoch: 2000 batches of 16 query draws as M3B (the sampler draws among three datasets, so each dataset is drawn about 10,700 times per epoch instead of 5,300)
+  per_fit_estimate:
+    u_gnn_v2: 1.0-1.5 x the M3B GAT per epoch (three shared-cell steps against two GATv2 layers, plus the typed attention term) -- 8-15 h per fit
+    u_gnn_v2_ef: u_gnn_v2 plus the evidence state on STRUCT edges -- 9-17 h
+    u_gnn_v2_core78: as u_gnn_v2 -- 8-15 h
+    gat_universal_v1_trio: as the M3B GAT -- 8-12 h
+    u_mlp_v2 and u_mlp_v2_mix: as QLS-U plus 64 columns -- 5-7 h each
+  seed_0_matrix: 6 fits (5 before the selection, u_gnn_v2_core78 after it), 43-73 fit-hours; two lanes of 8 threads on the 12 CPUs as M3B ran, so 3-5 days of wall clock on a shared laptop
+  confirmation_seeds: at most 2 arms x 2 seeds = 4 fits, 26-48 fit-hours
+  compile_and_screen: three datasets under the 142-column contract; the 64 depth-basis columns are sparse matrix powers over the pool and cost about 2-4 x the M3B compile per query; estimated 2-4 hours, measured and filed in the compile record
+  timing_run: >-
+    one epoch of u_gnn_v2_ef (the most expensive arm) on the trio, filed as
+    timing_<date> with its epoch seconds, peak RSS and threads BEFORE the
+    seed-0 matrix starts. If the epoch exceeds 3 hours at 8 threads, the
+    declared fallback is epoch = 1000 batches with max_epochs 12 and patience
+    4 (the same 192,000 query draws, finer early-stopping granularity),
+    applied to EVERY arm of the matrix including the control, filed as an
+    amendment before any fit starts under it. No architectural quantity
+    (T, H, heads, d_r, d_p) is reduced for speed.
+  hard_ceiling: 150 fit-hours for the pilot (seed-0 matrix plus confirmation seeds); a fit that would breach it is not started and the breach is filed
+  abort_criteria:
+    - an epoch exceeding 8 hours halts the fit (M3B amendment 3); a halt on a paging machine resumes from its checkpoint with the wall flagged (amendment 4)
+    - free disk below 8 GB halts compilation; the cache under outputs/universal_v2/cache/ is bounded at 12 GB and is recomputable
+    - any M3B pin mismatch (m3b_incumbents.pinned_files_sha256_lf_normalised), any population digest mismatch, any carve sha mismatch, or any write under the CRAG root refuses to run
+  gpu_seconds: 0
+  expected_cost: 0 (local CPU); Modal placement for the later stages only by a dated authorization block, only through scripts/spawn_modal_jobs.py, with the CPU-GPU equivalence test named under later_stages.compute_placement
+
+# ──────────────────────────────────────────────────────────────────
+# What this phase writes, and where.
+# ──────────────────────────────────────────────────────────────────
+outputs:
+  code:
+    - src/mp_retrieval/universal_v2_features.py -- the 64 depth-basis columns on top of the M3B compile (imports m3b_features, does not edit it)
+    - src/mp_retrieval/universal_v2_models.py -- UMLPv2, UMLPv2Mix, UGNNv2 (shared cell, update gate, typed attention, optional evidence state), the residual readout as M3B
+    - scripts/universal_v2_run.py -- stages compile, screen, timing, fit, select, eval, gate, merge; one dataset per eval process; finished records exist and are not repeated
+    - scripts/universal_v2_report.py -- docs/UNIVERSAL_V2_PILOT.md from the sidecars, every number pinned by sha256
+    - tests/test_universal_v2_declaration.py -- this file's invariants and the M3B pins
+    - tests/test_universal_v2_models.py -- step-0 identity, the fixed-propagation guard, the parameter budget, the contract count
+  reused_not_copied:
+    - src/mp_retrieval/m3b_features.py, m3b_models.py, m3b_train.py (pinned; imported)
+    - outputs/m3b/relations/ (the gte-Qwen2 relation-text embeddings; the shared relation encoder reads them)
+    - outputs/m3b/carves.json and the M3B eval population id lists
+  sidecars_gitignored: outputs/universal_v2/ -- cache/, feature_contract.json, feature_screen.json (information_contract_v2.outputs), timing.json, fits/, selection.json (written once), eval/ (per dataset, gate and held halves in one record with the half label per query), gate_record.json, population_overlap.json
+  committed: this file (its dated blocks appended in order, nothing above them edited), the two tests, docs/UNIVERSAL_V2_PILOT.md, the run record
+
+# ──────────────────────────────────────────────────────────────────
+# Order of operations. Each numbered step ends in a commit; the two
+# STOP_FOR_REVIEW points are where the user reads before anything runs
+# that could not be un-run.
+# ──────────────────────────────────────────────────────────────────
+order_of_operations:
+  "1": commit this declaration (status DECLARED_NOT_RUN) with tests/test_universal_v2_declaration.py; STOP_FOR_REVIEW -- no v2 code that fits is written before the user has read this file
+  "2": code and tests (outputs.code) committed with no fit run; the step-0 identity, the fixed-propagation guard, the parameter budget and the contract count are green
+  "3": compile the trio under the 142-column contract; run the screen; append contract_frozen_<date> naming UNIVERSAL_V2_CORE_CONTRACT (the surviving columns with the removed ones and why); commit
+  "4": timing run; append timing_<date>; if the fallback fires, append the amendment before any fit; commit
+  "5": seed-0 fits of the four selection candidates and the control gat_universal_v1_trio (training.seeds.pilot_seed0; 5 fits); fit records under outputs/universal_v2/fits/
+  "6": selection.json written once from the select carves (arms.selection_behind_the_firewall) BEFORE any eval population is scored; u_gnn_v2_core78 fitted on the selected GNN architecture (the sixth seed-0 fit; it feeds no selection); eval of every seed-0 arm on the three eval populations; the gate read on the gate halves for the selected GNN and the selected twin; append pilot_gate_record_<date> (the numbers, the intervals, the verdict per cell, the mechanism readouts); status PILOT_GATE_READ; commit; STOP_FOR_REVIEW
+  "7": on a pass, seeds 1-2 of the passing arm(s); the confirmation on the seed mean; the held halves reported for everything; docs/UNIVERSAL_V2_PILOT.md; run record appended; status RUN; commit. On a fail, the same document and record with the failure, status RUN_PILOT_FAILED; commit
+  "8": later stages only on dated authorization blocks appended below the pilot record (later_stages)
+
+# ──────────────────────────────────────────────────────────────────
+# Process rules carried unchanged.
+# ──────────────────────────────────────────────────────────────────
+process_rules_kept:
+  - no scientific result from test data -- the eval populations are the M3B dev / train_holdout populations; no test split is named anywhere in this file
+  - one file per phase; this file is appended, never edited above the last dated block; the rule is committed before the number
+  - systems convenience never edits science -- every fallback in this file applies to every arm equally and is filed before the fit it touches
+  - select-carve numbers select, they are never results; the gate halves gate; the held halves are the pilot's reported numbers
+  - the firewall -- the GNN is selected among GNN candidates only, the twin among twin candidates only; they meet in the eval table and nowhere else; no frozen M3B number enters either selection
+  - Do not alter or rerun M3B -- the pinned files are read-only, the frozen arrays are references, the M3B run record is not appended by this phase
+  - the CRAG package is read-only; every verification output is a sidecar; the foreign canonical.cpython-313.pyc (37,614 B) is reported in every run's note and never removed
+  - Modal only through scripts/spawn_modal_jobs.py, never modal run --detach; a write that overwrites an existing file on a result volume is silently discarded
+  - the published comparisons carry their exposure; the band rule is diagnostic (methodological_ruling_band_rule)
+  - forbidden framings above; the result is the number, the interval and the sentence that names what was matched
