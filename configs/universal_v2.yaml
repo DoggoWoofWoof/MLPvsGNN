@@ -1681,3 +1681,1513 @@ amendment_3_2026_09_19:
     are named, the statuses'
   - 'tests/test_universal_v2_run.py: the run record''s terminal state and status, the ceiling guard refusing a fit
     that would breach 150 fit-hours, hard_stop_<date> as a dated block'
+
+# -- UNIVERSAL_V2_CORE_CONTRACT, filed 2026-09-19T19:17:31Z from outputs/universal_v2/feature_screen.json --
+contract_frozen_2026_09_19:
+  status: FROZEN
+  filed_utc: '2026-09-19T19:17:31Z'
+  name: UNIVERSAL_V2_CORE_CONTRACT
+  utc: '2026-09-19T19:16:50Z'
+  raw_contract_pinned_in: amendment_2_2026_09_19
+  raw_contract_sha256: 41a3f66792de250ee424ea7370b0736fb6035fff5b834be318be1377086270ba
+  screened_columns: 164
+  surviving_columns: 129
+  m3b_core_first:
+    size: 78
+    sha256: ce584194a751cf3cb6ba80f74659409b10ddc697470c68b1ff292d1eb0d49ffb
+    always_survive: true
+    would_have_dropped_under_the_trio_statistics:
+      seed_component_NER: later_member_of_duplicate_pair
+      component_size_NER: later_member_of_duplicate_pair
+      cos_q_proto_ner: later_member_of_duplicate_pair
+      cohesion_ner: later_member_of_duplicate_pair
+      has_nbr_ner: later_member_of_duplicate_pair
+  v2_columns_screened: 86
+  depth_basis_screened: 73
+  ordered_relation_path_screened: 13
+  v2_columns_surviving: 51
+  depth_basis_surviving: 41
+  ordered_relation_path_surviving: 10
+  dropped:
+    seeds_at_h1_STRUCT: later_member_of_duplicate_pair
+    seedmass_h1_STRUCT: later_member_of_duplicate_pair
+    paths_h1_STRUCT: later_member_of_duplicate_pair
+    support_h1_STRUCT: later_member_of_duplicate_pair
+    has_h1_STRUCT: later_member_of_duplicate_pair
+    ring_qmax_h1_STRUCT: later_member_of_duplicate_pair
+    ring_n_h1_STRUCT: later_member_of_duplicate_pair
+    seedproto_h1_STRUCT: later_member_of_duplicate_pair
+    seedmass_h2_STRUCT: later_member_of_duplicate_pair
+    paths_h2_STRUCT: later_member_of_duplicate_pair
+    branch_h2_STRUCT: later_member_of_duplicate_pair
+    seeds_at_h1_FULL: later_member_of_duplicate_pair
+    seedmass_h1_FULL: later_member_of_duplicate_pair
+    paths_h1_FULL: later_member_of_duplicate_pair
+    support_h1_FULL: later_member_of_duplicate_pair
+    has_h1_FULL: later_member_of_duplicate_pair
+    ring_n_h1_FULL: later_member_of_duplicate_pair
+    seedproto_h1_FULL: later_member_of_duplicate_pair
+    seedmass_h2_FULL: later_member_of_duplicate_pair
+    paths_h2_FULL: later_member_of_duplicate_pair
+    branch_h2_FULL: later_member_of_duplicate_pair
+    has_h2_FULL: later_member_of_duplicate_pair
+    ring_n_h2_FULL: later_member_of_duplicate_pair
+    qsupport_h1: later_member_of_duplicate_pair
+    typed_walks_h1: later_member_of_duplicate_pair
+    relpath_max_h1: later_member_of_duplicate_pair
+    relpath_mean_h1: later_member_of_duplicate_pair
+    relpath_min_h1: later_member_of_duplicate_pair
+    typed_walks_h2: later_member_of_duplicate_pair
+    relpath_max_h2: later_member_of_duplicate_pair
+    relpath_mean_h2: later_member_of_duplicate_pair
+    relpath_min_h2: later_member_of_duplicate_pair
+    opath_h2_q1: later_member_of_duplicate_pair
+    opath_h2_q2: later_member_of_duplicate_pair
+    opath_h2_dir2: later_member_of_duplicate_pair
+  constant_columns_everywhere: []
+  unavailable_everywhere: []
+  duplicate_pairs:
+  - earlier: dist1_STRUCT
+    later: seeds_at_h1_STRUCT
+    abs_spearman: 0.9844
+  - earlier: dist1_STRUCT
+    later: seedmass_h1_STRUCT
+    abs_spearman: 0.9837
+  - earlier: dist1_STRUCT
+    later: paths_h1_STRUCT
+    abs_spearman: 0.9844
+  - earlier: dist1_STRUCT
+    later: support_h1_STRUCT
+    abs_spearman: 0.9848
+  - earlier: dist1_STRUCT
+    later: has_h1_STRUCT
+    abs_spearman: 0.9853
+  - earlier: dist1_STRUCT
+    later: seedproto_h1_STRUCT
+    abs_spearman: 0.9834
+  - earlier: deg_pool_STRUCT
+    later: ring_n_h1_STRUCT
+    abs_spearman: 1.0
+  - earlier: walks2_STRUCT
+    later: paths_h2_STRUCT
+    abs_spearman: 1.0
+  - earlier: walks2_STRUCT
+    later: branch_h2_STRUCT
+    abs_spearman: 0.9913
+  - earlier: distunreached_NER
+    later: seed_component_NER
+    abs_spearman: 0.9947
+  - earlier: deg_pool_NER
+    later: component_size_NER
+    abs_spearman: 0.9996
+  - earlier: deg_pool_NER
+    later: cos_q_proto_ner
+    abs_spearman: 0.9961
+  - earlier: deg_pool_NER
+    later: cohesion_ner
+    abs_spearman: 0.9923
+  - earlier: deg_pool_NER
+    later: has_nbr_ner
+    abs_spearman: 0.9983
+  - earlier: component_size_NER
+    later: cos_q_proto_ner
+    abs_spearman: 0.9964
+  - earlier: component_size_NER
+    later: cohesion_ner
+    abs_spearman: 0.9913
+  - earlier: component_size_NER
+    later: has_nbr_ner
+    abs_spearman: 0.998
+  - earlier: seeds_1hop_FULL
+    later: seeds_at_h1_FULL
+    abs_spearman: 1.0
+  - earlier: seeds_1hop_FULL
+    later: seedmass_h1_FULL
+    abs_spearman: 0.9995
+  - earlier: seeds_1hop_FULL
+    later: paths_h1_FULL
+    abs_spearman: 1.0
+  - earlier: seeds_1hop_FULL
+    later: support_h1_FULL
+    abs_spearman: 0.9987
+  - earlier: seeds_1hop_FULL
+    later: has_h1_FULL
+    abs_spearman: 0.9995
+  - earlier: seeds_1hop_FULL
+    later: seedproto_h1_FULL
+    abs_spearman: 0.999
+  - earlier: deg_pool_FULL
+    later: ring_n_h1_FULL
+    abs_spearman: 1.0
+  - earlier: walks2_FULL
+    later: paths_h2_FULL
+    abs_spearman: 1.0
+  - earlier: walks2_FULL
+    later: branch_h2_FULL
+    abs_spearman: 0.9895
+  - earlier: max_q_nbr_structural
+    later: ring_qmax_h1_STRUCT
+    abs_spearman: 0.9995
+  - earlier: cos_q_proto_ner
+    later: cohesion_ner
+    abs_spearman: 0.9895
+  - earlier: cos_q_proto_ner
+    later: has_nbr_ner
+    abs_spearman: 0.9956
+  - earlier: cohesion_ner
+    later: has_nbr_ner
+    abs_spearman: 0.996
+  - earlier: has_seed_h2
+    later: has_h2_FULL
+    abs_spearman: 0.9892
+  - earlier: relmax_seed
+    later: qsupport_h1
+    abs_spearman: 0.9992
+  - earlier: relmax_seed
+    later: typed_walks_h1
+    abs_spearman: 0.9992
+  - earlier: relmax_seed
+    later: relpath_max_h1
+    abs_spearman: 0.9997
+  - earlier: relmax_seed
+    later: relpath_mean_h1
+    abs_spearman: 0.9997
+  - earlier: relmax_seed
+    later: relpath_min_h1
+    abs_spearman: 0.9997
+  - earlier: relchain2_max
+    later: relpath_max_h2
+    abs_spearman: 0.9855
+  - earlier: relchain2_max
+    later: relpath_mean_h2
+    abs_spearman: 0.9857
+  - earlier: relchain2_max
+    later: relpath_min_h2
+    abs_spearman: 0.9812
+  - earlier: relchain2_max
+    later: opath_h2_q1
+    abs_spearman: 0.9837
+  - earlier: relchain2_max
+    later: opath_h2_q2
+    abs_spearman: 0.9815
+  - earlier: seeds_at_h1_STRUCT
+    later: seedmass_h1_STRUCT
+    abs_spearman: 0.9996
+  - earlier: seeds_at_h1_STRUCT
+    later: paths_h1_STRUCT
+    abs_spearman: 1.0
+  - earlier: seeds_at_h1_STRUCT
+    later: support_h1_STRUCT
+    abs_spearman: 0.9992
+  - earlier: seeds_at_h1_STRUCT
+    later: has_h1_STRUCT
+    abs_spearman: 0.9998
+  - earlier: seeds_at_h1_STRUCT
+    later: seedproto_h1_STRUCT
+    abs_spearman: 0.9994
+  - earlier: seedmass_h1_STRUCT
+    later: paths_h1_STRUCT
+    abs_spearman: 0.9996
+  - earlier: seedmass_h1_STRUCT
+    later: support_h1_STRUCT
+    abs_spearman: 0.9991
+  - earlier: seedmass_h1_STRUCT
+    later: has_h1_STRUCT
+    abs_spearman: 0.9994
+  - earlier: seedmass_h1_STRUCT
+    later: seedproto_h1_STRUCT
+    abs_spearman: 0.9991
+  - earlier: paths_h1_STRUCT
+    later: support_h1_STRUCT
+    abs_spearman: 0.9992
+  - earlier: paths_h1_STRUCT
+    later: has_h1_STRUCT
+    abs_spearman: 0.9998
+  - earlier: paths_h1_STRUCT
+    later: seedproto_h1_STRUCT
+    abs_spearman: 0.9994
+  - earlier: support_h1_STRUCT
+    later: has_h1_STRUCT
+    abs_spearman: 0.9994
+  - earlier: support_h1_STRUCT
+    later: seedproto_h1_STRUCT
+    abs_spearman: 0.999
+  - earlier: has_h1_STRUCT
+    later: seedproto_h1_STRUCT
+    abs_spearman: 0.9994
+  - earlier: seeds_at_h2_STRUCT
+    later: seedmass_h2_STRUCT
+    abs_spearman: 0.9907
+  - earlier: paths_h2_STRUCT
+    later: branch_h2_STRUCT
+    abs_spearman: 0.9913
+  - earlier: ring_n_h2_STRUCT
+    later: ring_n_h2_FULL
+    abs_spearman: 0.9879
+  - earlier: seeds_at_h1_FULL
+    later: seedmass_h1_FULL
+    abs_spearman: 0.9995
+  - earlier: seeds_at_h1_FULL
+    later: paths_h1_FULL
+    abs_spearman: 1.0
+  - earlier: seeds_at_h1_FULL
+    later: support_h1_FULL
+    abs_spearman: 0.9987
+  - earlier: seeds_at_h1_FULL
+    later: has_h1_FULL
+    abs_spearman: 0.9995
+  - earlier: seeds_at_h1_FULL
+    later: seedproto_h1_FULL
+    abs_spearman: 0.999
+  - earlier: seedmass_h1_FULL
+    later: paths_h1_FULL
+    abs_spearman: 0.9995
+  - earlier: seedmass_h1_FULL
+    later: support_h1_FULL
+    abs_spearman: 0.9987
+  - earlier: seedmass_h1_FULL
+    later: has_h1_FULL
+    abs_spearman: 0.999
+  - earlier: seedmass_h1_FULL
+    later: seedproto_h1_FULL
+    abs_spearman: 0.9986
+  - earlier: paths_h1_FULL
+    later: support_h1_FULL
+    abs_spearman: 0.9987
+  - earlier: paths_h1_FULL
+    later: has_h1_FULL
+    abs_spearman: 0.9995
+  - earlier: paths_h1_FULL
+    later: seedproto_h1_FULL
+    abs_spearman: 0.999
+  - earlier: support_h1_FULL
+    later: has_h1_FULL
+    abs_spearman: 0.999
+  - earlier: support_h1_FULL
+    later: seedproto_h1_FULL
+    abs_spearman: 0.9984
+  - earlier: has_h1_FULL
+    later: seedproto_h1_FULL
+    abs_spearman: 0.999
+  - earlier: seeds_at_h2_FULL
+    later: seedmass_h2_FULL
+    abs_spearman: 0.9885
+  - earlier: paths_h2_FULL
+    later: branch_h2_FULL
+    abs_spearman: 0.9895
+  - earlier: qsupport_h1
+    later: typed_walks_h1
+    abs_spearman: 0.9999
+  - earlier: qsupport_h1
+    later: relpath_max_h1
+    abs_spearman: 0.9995
+  - earlier: qsupport_h1
+    later: relpath_mean_h1
+    abs_spearman: 0.9995
+  - earlier: qsupport_h1
+    later: relpath_min_h1
+    abs_spearman: 0.9995
+  - earlier: typed_walks_h1
+    later: relpath_max_h1
+    abs_spearman: 0.9995
+  - earlier: typed_walks_h1
+    later: relpath_mean_h1
+    abs_spearman: 0.9995
+  - earlier: typed_walks_h1
+    later: relpath_min_h1
+    abs_spearman: 0.9995
+  - earlier: relpath_max_h1
+    later: relpath_mean_h1
+    abs_spearman: 1.0
+  - earlier: relpath_max_h1
+    later: relpath_min_h1
+    abs_spearman: 1.0
+  - earlier: relpath_mean_h1
+    later: relpath_min_h1
+    abs_spearman: 1.0
+  - earlier: qsupport_h2
+    later: typed_walks_h2
+    abs_spearman: 0.9828
+  - earlier: qsupport_h2
+    later: relpath_max_h2
+    abs_spearman: 0.9878
+  - earlier: qsupport_h2
+    later: relpath_mean_h2
+    abs_spearman: 0.9867
+  - earlier: qsupport_h2
+    later: relpath_min_h2
+    abs_spearman: 0.9826
+  - earlier: qsupport_h2
+    later: opath_h2_q1
+    abs_spearman: 0.9892
+  - earlier: qsupport_h2
+    later: opath_h2_q2
+    abs_spearman: 0.9818
+  - earlier: typed_walks_h2
+    later: relpath_max_h2
+    abs_spearman: 0.9827
+  - earlier: typed_walks_h2
+    later: relpath_min_h2
+    abs_spearman: 0.9818
+  - earlier: typed_walks_h2
+    later: opath_h2_q1
+    abs_spearman: 0.9824
+  - earlier: typed_walks_h2
+    later: opath_h2_q2
+    abs_spearman: 0.9815
+  - earlier: typed_walks_h2
+    later: opath_h2_adj12
+    abs_spearman: 0.9813
+  - earlier: relpath_max_h2
+    later: relpath_mean_h2
+    abs_spearman: 0.9986
+  - earlier: relpath_max_h2
+    later: relpath_min_h2
+    abs_spearman: 0.9959
+  - earlier: relpath_max_h2
+    later: opath_h2_q1
+    abs_spearman: 0.9975
+  - earlier: relpath_max_h2
+    later: opath_h2_q2
+    abs_spearman: 0.996
+  - earlier: relpath_mean_h2
+    later: relpath_min_h2
+    abs_spearman: 0.9941
+  - earlier: relpath_mean_h2
+    later: opath_h2_q1
+    abs_spearman: 0.9965
+  - earlier: relpath_mean_h2
+    later: opath_h2_q2
+    abs_spearman: 0.9944
+  - earlier: relpath_min_h2
+    later: opath_h2_q1
+    abs_spearman: 0.9909
+  - earlier: relpath_min_h2
+    later: opath_h2_q2
+    abs_spearman: 0.998
+  - earlier: relpath_min_h2
+    later: opath_h2_adj12
+    abs_spearman: 0.9823
+  - earlier: opath_h2_q1
+    later: opath_h2_q2
+    abs_spearman: 0.9886
+  - earlier: opath_h2_dir1
+    later: opath_h2_dir2
+    abs_spearman: 0.9888
+  sha256_of_comma_joined_surviving_names: 8d1da88b14dfdee13dd32ee6a05f6d9733d14a9899d5e011c41b0cce53000bf9
+  surviving:
+  - dense_cos
+  - dense_rr
+  - splade_rr
+  - rrf
+  - agreement
+  - is_seed
+  - dist1_STRUCT
+  - dist2_STRUCT
+  - dist3_STRUCT
+  - distunreached_STRUCT
+  - seeds_2hop_frac_STRUCT
+  - deg_pool_STRUCT
+  - deg_global_STRUCT
+  - walks2_STRUCT
+  - avail_STRUCT
+  - seed_component_STRUCT
+  - component_size_STRUCT
+  - dist1_NER
+  - dist2_NER
+  - dist3_NER
+  - distunreached_NER
+  - seeds_1hop_NER
+  - seeds_2hop_frac_NER
+  - deg_pool_NER
+  - deg_global_NER
+  - avail_NER
+  - seed_component_NER
+  - component_size_NER
+  - dist1_KNN
+  - dist2_KNN
+  - dist3_KNN
+  - distunreached_KNN
+  - seeds_1hop_KNN
+  - seeds_2hop_frac_KNN
+  - deg_pool_KNN
+  - deg_global_KNN
+  - walks2_KNN
+  - seed_component_KNN
+  - component_size_KNN
+  - dist1_FULL
+  - dist2_FULL
+  - dist3_FULL
+  - distunreached_FULL
+  - seeds_1hop_FULL
+  - seeds_2hop_frac_FULL
+  - deg_pool_FULL
+  - deg_global_FULL
+  - walks2_FULL
+  - seed_component_FULL
+  - component_size_FULL
+  - cos_q_proto_structural
+  - max_q_nbr_structural
+  - cohesion_structural
+  - has_nbr_structural
+  - cos_q_proto_ner
+  - cohesion_ner
+  - has_nbr_ner
+  - cos_q_proto_knn
+  - cohesion_knn
+  - has_nbr_knn
+  - gcs_full
+  - gcs_struct
+  - cos_v_seedproto
+  - max_cos_v_seed
+  - cos_v_reachproto
+  - has_reach_seed
+  - cos_v_seedproto_h2
+  - has_seed_h2
+  - relmax_seed
+  - relmax_in
+  - relmean_in
+  - has_typed_edge
+  - rel_ief
+  - rel_div
+  - dir_in_frac
+  - seed_edges_out
+  - seed_edges_in
+  - relchain2_max
+  - ring_qmean_h1_STRUCT
+  - seeds_at_h2_STRUCT
+  - support_h2_STRUCT
+  - has_h2_STRUCT
+  - ring_qmean_h2_STRUCT
+  - ring_qmax_h2_STRUCT
+  - ring_n_h2_STRUCT
+  - seedproto_h2_STRUCT
+  - seeds_at_h3_STRUCT
+  - seedmass_h3_STRUCT
+  - paths_h3_STRUCT
+  - branch_h3_STRUCT
+  - support_h3_STRUCT
+  - has_h3_STRUCT
+  - ring_qmean_h3_STRUCT
+  - ring_qmax_h3_STRUCT
+  - ring_n_h3_STRUCT
+  - seedproto_h3_STRUCT
+  - ring_qmean_h1_FULL
+  - ring_qmax_h1_FULL
+  - seeds_at_h2_FULL
+  - support_h2_FULL
+  - ring_qmean_h2_FULL
+  - ring_qmax_h2_FULL
+  - seedproto_h2_FULL
+  - seeds_at_h3_FULL
+  - seedmass_h3_FULL
+  - paths_h3_FULL
+  - branch_h3_FULL
+  - support_h3_FULL
+  - has_h3_FULL
+  - ring_qmean_h3_FULL
+  - ring_qmax_h3_FULL
+  - ring_n_h3_FULL
+  - seedproto_h3_FULL
+  - qsupport_h2
+  - qsupport_h3
+  - typed_walks_h3
+  - relpath_max_h3
+  - relpath_mean_h3
+  - relpath_min_h3
+  - opath_h2_dir1
+  - opath_h2_adj12
+  - opath_h3_q1
+  - opath_h3_q2
+  - opath_h3_q3
+  - opath_h3_dir1
+  - opath_h3_dir2
+  - opath_h3_dir3
+  - opath_h3_adj12
+  - opath_h3_adj23
+  screen_file: outputs/universal_v2/feature_screen.json
+  rule_applied: the M3B feature_screen rule verbatim (fit carves of the pilot datasets; duplicate pairs |Spearman|
+    >= 0.98 on the 198,942-row stride sample, the earlier member kept; zero-variance columns dropped; nothing dropped
+    for weak signal). The survivors are UNIVERSAL_V2_CORE_CONTRACT, filed with their sha256 in a dated block before
+    any fit. The M3B 78 always survive by construction (they are the earlier members).
+  screen_rule_sha256: 109632d8e6b5dc75836671c39f8e62222463a60c0803a74d02b3d11b186dbcdb
+  screen_file_sha256: c58b317e9ae0f34523e20b3b727e4394b16eaa1e9d836d34aa3730d08403551f
+  feature_contract_file: outputs/universal_v2/feature_contract.json
+  feature_contract_sha256: 21d30260c7ef71c7cc217c2b32054625780db7e6b40c79d3c03fded658109e91
+  hashes:
+    raw_contract_sha256: 41a3f66792de250ee424ea7370b0736fb6035fff5b834be318be1377086270ba
+    screen_rule_sha256: 109632d8e6b5dc75836671c39f8e62222463a60c0803a74d02b3d11b186dbcdb
+    surviving_columns_sha256: 8d1da88b14dfdee13dd32ee6a05f6d9733d14a9899d5e011c41b0cce53000bf9
+    six_caches_combined_sha256: 0042c258bd7bb7bfd5684521acb4e97bd80984d82a6cb70a5b18574c9c7c0aa1
+  compile_record:
+    metaqa:
+      fit:
+        queries: 5960
+        rows: 12021002
+        zero_gold_excluded: 0
+        kept_ids_sha256: 161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188
+        carve_sha256_declared: 161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188
+        candidates_mean: 2016.9
+        queries_with_no_gold_in_pool: 77
+        compile_seconds: 2521.2
+        ms_per_query: 423.02
+        queries_per_second: 2.364
+        group_seconds_per_1000_queries:
+          retrieval: 2.48
+          edges: 3.37
+          topology: 8.36
+          edge_weights: 0.17
+          C: 34.02
+          gcs: 1.78
+          D: 36.5
+          B: 2.04
+          depth_basis: 228.85
+          typed_basis: 88.26
+        peak_rss_bytes: 2931412992
+        seeds_added_mean: 0.022986577181208053
+        relation_slots:
+          k_rel: 4
+          queries: 5960
+          pairs: 54526866
+          truncated: 0
+          entries: 56279588
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        relation_table: true
+        diagnostics:
+          k_rel: 4
+          by_hop:
+            1hop:
+              queries: 1740
+              rows: 3503461
+              gold_rows: 3201
+              typed_queries: 1740
+              relation_slots:
+                pairs: 15374663
+                entries: 15898587
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram:
+                  '1': 14880139
+                  '2': 465124
+                  '3': 29400
+                max_relations_per_pair: 3
+              typed_walk_availability:
+                h1:
+                  rows: 0.025622
+                  gold_rows: 0.954077
+                  queries: 1.0
+                  queries_gold: 0.933908
+                h2:
+                  rows: 0.27487
+                  gold_rows: 0.163074
+                  queries: 1.0
+                  queries_gold: 0.177011
+                h3:
+                  rows: 0.8
+                  gold_rows: 0.999688
+                  queries: 1.0
+                  queries_gold: 0.994828
+              ordered_path:
+                h2:
+                  rows_with_walk: 962995
+                  fraction_of_walks_with_an_inverse_step: 0.994483
+                  fraction_of_walks_composing_different_relations: 0.190422
+                h3:
+                  rows_with_walk: 2802768
+                  fraction_of_walks_with_an_inverse_step: 0.999823
+                  fraction_of_walks_composing_different_relations: 0.858495
+            2hop:
+              queries: 2153
+              rows: 4311293
+              gold_rows: 12814
+              typed_queries: 2153
+              relation_slots:
+                pairs: 20484925
+                entries: 21063269
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram:
+                  '1': 19942555
+                  '2': 506396
+                  '3': 35974
+                max_relations_per_pair: 3
+              typed_walk_availability:
+                h1:
+                  rows: 0.023899
+                  gold_rows: 0.034025
+                  queries: 1.0
+                  queries_gold: 0.082211
+                h2:
+                  rows: 0.237898
+                  gold_rows: 0.97214
+                  queries: 1.0
+                  queries_gold: 0.943335
+                h3:
+                  rows: 0.838125
+                  gold_rows: 0.585766
+                  queries: 1.0
+                  queries_gold: 0.704598
+              ordered_path:
+                h2:
+                  rows_with_walk: 1025646
+                  fraction_of_walks_with_an_inverse_step: 0.997403
+                  fraction_of_walks_composing_different_relations: 0.334158
+                h3:
+                  rows_with_walk: 3613402
+                  fraction_of_walks_with_an_inverse_step: 0.999918
+                  fraction_of_walks_composing_different_relations: 0.856394
+            3hop:
+              queries: 2067
+              rows: 4206248
+              gold_rows: 21908
+              typed_queries: 2067
+              relation_slots:
+                pairs: 18667278
+                entries: 19317732
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram:
+                  '1': 18050486
+                  '2': 583130
+                  '3': 33662
+                max_relations_per_pair: 3
+              typed_walk_availability:
+                h1:
+                  rows: 0.02888
+                  gold_rows: 0.07924
+                  queries: 1.0
+                  queries_gold: 0.532172
+                h2:
+                  rows: 0.308443
+                  gold_rows: 0.14182
+                  queries: 1.0
+                  queries_gold: 0.488147
+                h3:
+                  rows: 0.819895
+                  gold_rows: 0.9979
+                  queries: 1.0
+                  queries_gold: 0.970489
+              ordered_path:
+                h2:
+                  rows_with_walk: 1297388
+                  fraction_of_walks_with_an_inverse_step: 0.995284
+                  fraction_of_walks_composing_different_relations: 0.242088
+                h3:
+                  rows_with_walk: 3448681
+                  fraction_of_walks_with_an_inverse_step: 0.999838
+                  fraction_of_walks_composing_different_relations: 0.862115
+            all:
+              queries: 5960
+              rows: 12021002
+              gold_rows: 37923
+              typed_queries: 5960
+              relation_slots:
+                pairs: 54526866
+                entries: 56279588
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram:
+                  '1': 52873180
+                  '2': 1554650
+                  '3': 99036
+                max_relations_per_pair: 3
+              typed_walk_availability:
+                h1:
+                  rows: 0.026144
+                  gold_rows: 0.137806
+                  queries: 1.0
+                  queries_gold: 0.486913
+                h2:
+                  rows: 0.273357
+                  gold_rows: 0.424175
+                  queries: 1.0
+                  queries_gold: 0.561745
+                h3:
+                  rows: 0.820635
+                  gold_rows: 0.858793
+                  queries: 1.0
+                  queries_gold: 0.881544
+              ordered_path:
+                h2:
+                  rows_with_walk: 3286029
+                  fraction_of_walks_with_an_inverse_step: 0.99571
+                  fraction_of_walks_composing_different_relations: 0.255684
+                h3:
+                  rows_with_walk: 9864851
+                  fraction_of_walks_with_an_inverse_step: 0.999863
+                  fraction_of_walks_composing_different_relations: 0.858991
+        cache_bytes: 5043554774
+        cache_files_sha256:
+          edge_counts.npy:
+            sha256: b72751ae16b69b41c41cf6585866569b5af4a050e80c9bd98f8104f3eaf99343
+            bytes: 71648
+          gold.npy:
+            sha256: 4f6633e00f9f64dfe86d5912a1dbda4466ddac60c593c02da0d858e4e8093af8
+            bytes: 75974
+          gold_ptr.npy:
+            sha256: 89103cfd1934bd78ea1f2aa906ce0f8c6a55e846a00a2e880fa767208e01c720
+            bytes: 47816
+          gold_total.npy:
+            sha256: 193199fc02a37ba9ddd14f2fc3f45e96e9b69e1e54f11709ea9a7d0f01b9f67c
+            bytes: 23968
+          pool.npy:
+            sha256: 5c70d4a7caaa02c11e6692aeb0a6fd1328fb81eee76b868a0cb12b8dc292fdae
+            bytes: 48084136
+          pool_ptr.npy:
+            sha256: 1461c90e4d1ad0d73556b1646bfedccfbf6686a4f8d0fd00ea3b32eb083a9eac
+            bytes: 47816
+          qemb.npy:
+            sha256: da1d4362a2186ec4d4ae34cd9334cc95ccc290c4520c3e18035e92868df05cf9
+            bytes: 18309248
+          qrow.npy:
+            sha256: 3390c33f5aa0aaf25c9d1901e4d567fdd0a6a72809201532d6e1a7cab2c23547
+            bytes: 47808
+          query_ids.json:
+            sha256: 1c5eceda5e0a0ea30a9b68a4fad850a0503d79ed3d23db778fc67981f17da105
+            bytes: 160915
+          scalars.npy:
+            sha256: 31407c5f507ad66ac98cd99be8a46fb615caf7e847b673278fd9e0c9d5fb03b7
+            bytes: 4736274916
+          seeds.npy:
+            sha256: fd4767276eb79ce5424366852ad185d8e2ee5b7c0707dfa0cfa42c0f1f5a96e2
+            bytes: 103460
+          seeds_ptr.npy:
+            sha256: ba9622dfe7373b0fe9268e2e0dd394005ca830c6470d480651ba4fbfb6d7972d
+            bytes: 47816
+          seedw.npy:
+            sha256: f1e89182493379e24c9becb980ea627003f22abc881b38d5e7328ff2f78c34ba
+            bytes: 240420168
+        cache_combined_sha256: 38674d30c418e894aa8c2632439fa9aa530eae6409a5abd356c5a5cd120c649a
+        meta_sha256: 86df15b12245051e27841b6e078b79790691a80bd945a6a370722049d6b601cc
+      select:
+        queries: 1497
+        rows: 3015964
+        zero_gold_excluded: 0
+        kept_ids_sha256: f0ec84fec4e07a050e8feacec5f4880342f10d60eb788b0cb0112334bc999828
+        carve_sha256_declared: f0ec84fec4e07a050e8feacec5f4880342f10d60eb788b0cb0112334bc999828
+        candidates_mean: 2014.7
+        queries_with_no_gold_in_pool: 15
+        compile_seconds: 601.5
+        ms_per_query: 401.77
+        queries_per_second: 2.489
+        group_seconds_per_1000_queries:
+          retrieval: 2.17
+          edges: 2.96
+          topology: 7.41
+          edge_weights: 0.15
+          C: 30.65
+          gcs: 1.56
+          D: 34.16
+          B: 1.75
+          depth_basis: 217.73
+          typed_basis: 87.21
+        peak_rss_bytes: 2931412992
+        seeds_added_mean: 0.02137608550434202
+        relation_slots:
+          k_rel: 4
+          queries: 1497
+          pairs: 13803202
+          truncated: 0
+          entries: 14236617
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        relation_table: true
+        diagnostics:
+          k_rel: 4
+          by_hop:
+            1hop:
+              queries: 437
+              rows: 880813
+              gold_rows: 798
+              typed_queries: 437
+              relation_slots:
+                pairs: 3897451
+                entries: 4027377
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram:
+                  '1': 3775015
+                  '2': 114946
+                  '3': 7490
+                max_relations_per_pair: 3
+              typed_walk_availability:
+                h1:
+                  rows: 0.025227
+                  gold_rows: 0.95614
+                  queries: 1.0
+                  queries_gold: 0.935927
+                h2:
+                  rows: 0.268773
+                  gold_rows: 0.170426
+                  queries: 1.0
+                  queries_gold: 0.199085
+                h3:
+                  rows: 0.802822
+                  gold_rows: 1.0
+                  queries: 1.0
+                  queries_gold: 0.997712
+              ordered_path:
+                h2:
+                  rows_with_walk: 236739
+                  fraction_of_walks_with_an_inverse_step: 0.994606
+                  fraction_of_walks_composing_different_relations: 0.209053
+                h3:
+                  rows_with_walk: 707136
+                  fraction_of_walks_with_an_inverse_step: 0.999792
+                  fraction_of_walks_composing_different_relations: 0.85707
+            2hop:
+              queries: 541
+              rows: 1079934
+              gold_rows: 2808
+              typed_queries: 541
+              relation_slots:
+                pairs: 5212023
+                entries: 5353325
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram:
+                  '1': 5079319
+                  '2': 124106
+                  '3': 8598
+                max_relations_per_pair: 3
+              typed_walk_availability:
+                h1:
+                  rows: 0.023397
+                  gold_rows: 0.042735
+                  queries: 1.0
+                  queries_gold: 0.085028
+                h2:
+                  rows: 0.232646
+                  gold_rows: 0.97151
+                  queries: 1.0
+                  queries_gold: 0.939002
+                h3:
+                  rows: 0.840233
+                  gold_rows: 0.569801
+                  queries: 1.0
+                  queries_gold: 0.641405
+              ordered_path:
+                h2:
+                  rows_with_walk: 251242
+                  fraction_of_walks_with_an_inverse_step: 0.997377
+                  fraction_of_walks_composing_different_relations: 0.348871
+                h3:
+                  rows_with_walk: 907396
+                  fraction_of_walks_with_an_inverse_step: 0.999901
+                  fraction_of_walks_composing_different_relations: 0.851879
+            3hop:
+              queries: 519
+              rows: 1055217
+              gold_rows: 5686
+              typed_queries: 519
+              relation_slots:
+                pairs: 4693728
+                entries: 4855915
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram:
+                  '1': 4540005
+                  '2': 145259
+                  '3': 8464
+                max_relations_per_pair: 3
+              typed_walk_availability:
+                h1:
+                  rows: 0.029509
+                  gold_rows: 0.077207
+                  queries: 1.0
+                  queries_gold: 0.522158
+                h2:
+                  rows: 0.31195
+                  gold_rows: 0.160218
+                  queries: 1.0
+                  queries_gold: 0.514451
+                h3:
+                  rows: 0.817745
+                  gold_rows: 0.998593
+                  queries: 1.0
+                  queries_gold: 0.976879
+              ordered_path:
+                h2:
+                  rows_with_walk: 329175
+                  fraction_of_walks_with_an_inverse_step: 0.995607
+                  fraction_of_walks_composing_different_relations: 0.243728
+                h3:
+                  rows_with_walk: 862898
+                  fraction_of_walks_with_an_inverse_step: 0.99983
+                  fraction_of_walks_composing_different_relations: 0.860468
+            all:
+              queries: 1497
+              rows: 3015964
+              gold_rows: 9292
+              typed_queries: 1497
+              relation_slots:
+                pairs: 13803202
+                entries: 14236617
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram:
+                  '1': 13394339
+                  '2': 384311
+                  '3': 24552
+                max_relations_per_pair: 3
+              typed_walk_availability:
+                h1:
+                  rows: 0.02607
+                  gold_rows: 0.142273
+                  queries: 1.0
+                  queries_gold: 0.48497
+                h2:
+                  rows: 0.270944
+                  gold_rows: 0.406263
+                  queries: 1.0
+                  queries_gold: 0.575818
+                h3:
+                  rows: 0.821439
+                  gold_rows: 0.869135
+                  queries: 1.0
+                  queries_gold: 0.861723
+              ordered_path:
+                h2:
+                  rows_with_walk: 817156
+                  fraction_of_walks_with_an_inverse_step: 0.995861
+                  fraction_of_walks_composing_different_relations: 0.266009
+                h3:
+                  rows_with_walk: 2477430
+                  fraction_of_walks_with_an_inverse_step: 0.999845
+                  fraction_of_walks_composing_different_relations: 0.856352
+        cache_bytes: 1265389830
+        cache_files_sha256:
+          edge_counts.npy:
+            sha256: ea8d611bce3ab32159b7928eb2f305d50b06aecae8b4ec8001f0bc33ccd93d85
+            bytes: 18092
+          gold.npy:
+            sha256: adcfa1bcb48a4dedc2501137d0a3c5e3c5675a8c0567f08cd03246d7178af5a2
+            bytes: 18712
+          gold_ptr.npy:
+            sha256: b7474fc9b0eec11b3245fb56550c9442033b80ccaaa3779c339e0d515f8bd774
+            bytes: 12112
+          gold_total.npy:
+            sha256: e51e033d433d39d078fe82f215ca6b6f928eb303891433b31b558c837318ee10
+            bytes: 6116
+          pool.npy:
+            sha256: 26b749f1f739d5d25aad5d2d183bae6ea2a33380f59663fa8b54704b77bf4bef
+            bytes: 12063984
+          pool_ptr.npy:
+            sha256: 6c6811acd31f1b4c3c0fbd9a0d6d8627f097dbf88f3c7731057c124bc73acad6
+            bytes: 12112
+          qemb.npy:
+            sha256: 6d9c0d22ef84fed15309d00925ca1b073108a52e76b75f3e4e27d3d902879628
+            bytes: 4598912
+          qrow.npy:
+            sha256: f9262770c224ec5295e24857d86c72943b870afe8bd8995ecf7e721e4f17eb9f
+            bytes: 12104
+          query_ids.json:
+            sha256: f9f7053067578811fa6e591ac586edfc44334c4b806c599f479744686e6e7172
+            bytes: 40375
+          scalars.npy:
+            sha256: 63cc06ee7fdee3f6ec08cfd0b691e6c495ef52caf0a9230329e9fc2d3f49dc27
+            bytes: 1188289944
+          seeds.npy:
+            sha256: 2b9875e03c0569d8fcb9d5300298f8c8523248a9acbd1c99529f24ecf45494c5
+            bytes: 26222
+          seeds_ptr.npy:
+            sha256: 29dc49b6c2deffe15cebd14f3da4a2e5d563690e9c9abf398c7d6f4abfc9d852
+            bytes: 12112
+          seedw.npy:
+            sha256: 765686e28e10156993e0851b6a4a0c9298cc8927a07e201a17c9f03b54f501bf
+            bytes: 60319408
+        cache_combined_sha256: 29ab784dcd40a173d4449cf8ee05a6e29d5be296df8d5871a604a0bf3b54fa98
+        meta_sha256: 9235d8fbdc7426b93f711e8071f35251a95760395561ede395fc76e3e842a9d7
+    2wiki:
+      fit:
+        queries: 5928
+        rows: 628354
+        zero_gold_excluded: 0
+        kept_ids_sha256: fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3
+        carve_sha256_declared: fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3
+        candidates_mean: 106.0
+        queries_with_no_gold_in_pool: 6
+        compile_seconds: 183.0
+        ms_per_query: 30.87
+        queries_per_second: 32.398
+        group_seconds_per_1000_queries:
+          retrieval: 0.5
+          edges: 4.88
+          topology: 3.53
+          edge_weights: 0.11
+          C: 2.45
+          gcs: 0.66
+          D: 1.48
+          B: 0.0
+          depth_basis: 2.95
+          typed_basis: 0.0
+        peak_rss_bytes: 4211077120
+        seeds_added_mean: 0.008940620782726045
+        relation_slots:
+          k_rel: 4
+          queries: 5928
+          pairs: 0
+          truncated: 0
+          entries: 0
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        relation_table: false
+        diagnostics:
+          k_rel: 4
+          by_hop:
+            all:
+              queries: 5928
+              rows: 628354
+              gold_rows: 13572
+              typed_queries: 0
+              relation_slots:
+                pairs: 0
+                entries: 0
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram: {}
+                max_relations_per_pair: 0
+              typed_walk_availability:
+                h1:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+                h2:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+                h3:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+              ordered_path:
+                h2:
+                  rows_with_walk: 0
+                  fraction_of_walks_with_an_inverse_step: 0.0
+                  fraction_of_walks_composing_different_relations: 0.0
+                h3:
+                  rows_with_walk: 0
+                  fraction_of_walks_with_an_inverse_step: 0.0
+                  fraction_of_walks_composing_different_relations: 0.0
+        cache_bytes: 281274470
+        cache_files_sha256:
+          edge_counts.npy:
+            sha256: c5b6403c10894ffb2e976d72c15aa888fd6e6a711485d9c5abff4b57ae92e86b
+            bytes: 71264
+          gold.npy:
+            sha256: 59837a00240e51f4eae4207cf8717fb69cd0dc9aed52212f69f5823f68da1f8a
+            bytes: 27272
+          gold_ptr.npy:
+            sha256: 0becdbd05e7e52b5d0b945c3dbb459cdae58c8ab3181e62cb55bdc5b78aa9f36
+            bytes: 47560
+          gold_total.npy:
+            sha256: 476e9ca2393ae36d0d7c6fd8a660bfd5298652f41af51bf67d7ed78dd0b46f2d
+            bytes: 23840
+          pool.npy:
+            sha256: f57852ba9cca328f67d8885f6b0045f0cff6754d4982be7dae811d17c5c9d384
+            bytes: 2513544
+          pool_ptr.npy:
+            sha256: 60a99f4519dfc923186d60b017fd9258d274243905cb8591030b93e298ecc3f7
+            bytes: 47560
+          qemb.npy:
+            sha256: 702567fcc44145b28638cf0d3680f897d6821b782565ba917e9ec742582ba8f1
+            bytes: 18210944
+          qrow.npy:
+            sha256: d132e9962d98cffd5df464e6cd687a87af7588551d1f29be5de5be7a24f19f42
+            bytes: 47552
+          query_ids.json:
+            sha256: 3ac46672cec636c606aea17b73214805838738e974b0287d4db52e5f77dadd43
+            bytes: 213408
+          scalars.npy:
+            sha256: b011f561651bfa2c7b5232e19e7f014ae8804f5fada8b0aa4e20a55e3ac83073
+            bytes: 247571604
+          seeds.npy:
+            sha256: 6db64fe8ec5b75605069c08d1621b0c03ee5b2d1f3a653505b9fa21780388a15
+            bytes: 98562
+          seeds_ptr.npy:
+            sha256: d51acef9032e546deb225315f079c54f6d96fafffcf5bae450cd01759f72d42c
+            bytes: 47560
+          seedw.npy:
+            sha256: 97ce17d3da59db5408995548a5b38338f50bac27f10c2298ecd78c23900ec301
+            bytes: 12567208
+        cache_combined_sha256: ff5f4f71eba41092aa084bab305de0c35be4112f79aebc10c2405f64799cc386
+        meta_sha256: fe288e6ddea941aa961b99e6d1218f0c6f3636f4b341478895804cf1b3d03ec3
+      select:
+        queries: 1496
+        rows: 159930
+        zero_gold_excluded: 0
+        kept_ids_sha256: 72b50b99005beeccc1d8e5e19717dae49fb54101087fc800ec83e75d79eac974
+        carve_sha256_declared: 72b50b99005beeccc1d8e5e19717dae49fb54101087fc800ec83e75d79eac974
+        candidates_mean: 106.9
+        queries_with_no_gold_in_pool: 0
+        compile_seconds: 39.5
+        ms_per_query: 26.38
+        queries_per_second: 37.908
+        group_seconds_per_1000_queries:
+          retrieval: 0.45
+          edges: 4.82
+          topology: 3.37
+          edge_weights: 0.11
+          C: 2.43
+          gcs: 0.65
+          D: 1.49
+          B: 0.0
+          depth_basis: 2.93
+          typed_basis: 0.0
+        peak_rss_bytes: 4523933696
+        seeds_added_mean: 0.0053475935828877
+        relation_slots:
+          k_rel: 4
+          queries: 1496
+          pairs: 0
+          truncated: 0
+          entries: 0
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        relation_table: false
+        diagnostics:
+          k_rel: 4
+          by_hop:
+            all:
+              queries: 1496
+              rows: 159930
+              gold_rows: 3486
+              typed_queries: 0
+              relation_slots:
+                pairs: 0
+                entries: 0
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram: {}
+                max_relations_per_pair: 0
+              typed_walk_availability:
+                h1:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+                h2:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+                h3:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+              ordered_path:
+                h2:
+                  rows_with_walk: 0
+                  fraction_of_walks_with_an_inverse_step: 0.0
+                  fraction_of_walks_composing_different_relations: 0.0
+                h3:
+                  rows_with_walk: 0
+                  fraction_of_walks_with_an_inverse_step: 0.0
+                  fraction_of_walks_composing_different_relations: 0.0
+        cache_bytes: 71551742
+        cache_files_sha256:
+          edge_counts.npy:
+            sha256: ca3cbc2db7d3324b83435010c9961a116f09291b1871bf0fe438e9ad37cf2194
+            bytes: 18080
+          gold.npy:
+            sha256: 8cca3a57ae82caad5049d12c243e7d9bd9f4e38ac47095d046558acf501e4ed0
+            bytes: 7100
+          gold_ptr.npy:
+            sha256: d364a744ec3325799003e45307df4668a87678cad90605ca253e194464c17e36
+            bytes: 12104
+          gold_total.npy:
+            sha256: 168d8cec0c5e37f23c7d434261dfbfc1154dfb493f43f754938602d0b813a8d3
+            bytes: 6112
+          pool.npy:
+            sha256: 7a8c26e854a358f2d4463cad7b6144baeabe3e13e6befb36fa541a8c616ffaae
+            bytes: 639848
+          pool_ptr.npy:
+            sha256: f3db0ebca72174ddd3a4f46a89935a73f79529ef3f83543570360d949b3dbd59
+            bytes: 12104
+          qemb.npy:
+            sha256: cc4c195a662ee1b6b0309e56b52ff4ab6cb543d59590880a56522e5bfa4696bc
+            bytes: 4595840
+          qrow.npy:
+            sha256: a9ce4801036feabcccd474d352092791982e14b9d5e3852ab16268a4d7ef1101
+            bytes: 12096
+          query_ids.json:
+            sha256: 0eae04fe6570c91df0aebf3a7053656019a8c8eff72ea44904ae75608d0481b7
+            bytes: 53856
+          scalars.npy:
+            sha256: c12ef967af56dd89bd021274c4fa68cf4fe321e20fdcdbbcc30b5cfebf1e85b5
+            bytes: 63012548
+          seeds.npy:
+            sha256: ec19e59af2a494ee1878f12633f2c0ab88c24310e6393497b313df8de3fd53ff
+            bytes: 25078
+          seeds_ptr.npy:
+            sha256: 5f81124cc95d4cd318c22df2991506328d3703c9e9b3c1338a059c3d1d023830
+            bytes: 12104
+          seedw.npy:
+            sha256: a552410ed2fc210fb574527c5348c8c0952f12d21a3c6baf3dcf49d2bc4a1dab
+            bytes: 3198728
+        cache_combined_sha256: 8e13137b8f465d638c879a5999c71de196781ac558db418566861db146adce83
+        meta_sha256: 4e78a1be3bf036fbfd38c226a0a2acc80e7abb47305dc69dff4de2fdcd3817b7
+    squad:
+      fit:
+        queries: 5856
+        rows: 292994
+        zero_gold_excluded: 0
+        kept_ids_sha256: 39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515
+        carve_sha256_declared: 39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515
+        candidates_mean: 50.0
+        queries_with_no_gold_in_pool: 98
+        compile_seconds: 50.7
+        ms_per_query: 8.66
+        queries_per_second: 115.506
+        group_seconds_per_1000_queries:
+          retrieval: 0.25
+          edges: 0.42
+          topology: 2.46
+          edge_weights: 0.09
+          C: 1.64
+          gcs: 0.54
+          D: 0.74
+          B: 0.0
+          depth_basis: 2.1
+          typed_basis: 0.0
+        peak_rss_bytes: 4523933696
+        seeds_added_mean: 0.03312841530054645
+        relation_slots:
+          k_rel: 4
+          queries: 5856
+          pairs: 0
+          truncated: 0
+          entries: 0
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        relation_table: false
+        diagnostics:
+          k_rel: 4
+          by_hop:
+            all:
+              queries: 5856
+              rows: 292994
+              gold_rows: 5758
+              typed_queries: 0
+              relation_slots:
+                pairs: 0
+                entries: 0
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram: {}
+                max_relations_per_pair: 0
+              typed_walk_availability:
+                h1:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+                h2:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+                h3:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+              ordered_path:
+                h2:
+                  rows_with_walk: 0
+                  fraction_of_walks_with_an_inverse_step: 0.0
+                  fraction_of_walks_composing_different_relations: 0.0
+                h3:
+                  rows_with_walk: 0
+                  fraction_of_walks_with_an_inverse_step: 0.0
+                  fraction_of_walks_composing_different_relations: 0.0
+        cache_bytes: 140843806
+        cache_files_sha256:
+          edge_counts.npy:
+            sha256: 52d841d8a14051b6552863c6c34b804061fb816540700d397ec684e1c5222558
+            bytes: 70400
+          gold.npy:
+            sha256: 17a4cd1b0c099483fac6f279be6d4df0882cb1113458628feb17e62d88043d2c
+            bytes: 11644
+          gold_ptr.npy:
+            sha256: 27e0c1cdff921cadbab690cd268acc1ed612404bacd1b57ec9db79e30b365606
+            bytes: 46984
+          gold_total.npy:
+            sha256: e7ce200029a3280f065121ecc18cc29ebb387ea8fadc8233a409233055b762a5
+            bytes: 23552
+          pool.npy:
+            sha256: 94801eb36dfb0df180179d540d7541d5594e2f841f8a4e7fe177296f7dbf030a
+            bytes: 1172104
+          pool_ptr.npy:
+            sha256: 128c69fe2c1e67ca90cb9c0405d2ff34c68e0cf2934fd3ceb798ca4a1ee692c7
+            bytes: 46984
+          qemb.npy:
+            sha256: ffe1a7a12633e51b122ad20d4a244e627ddbc07686ab4369ae34bf9b33fdc67d
+            bytes: 17989760
+          qrow.npy:
+            sha256: 176cd2413ef833dd92a35eca2b545a2453d65e3434e5d4642a1c35109454c0c9
+            bytes: 46976
+          query_ids.json:
+            sha256: 869ecbb0ccc1560350f67948b0c027980c1a9c7572e240326d5bcf2887cf1da4
+            bytes: 163968
+          scalars.npy:
+            sha256: f5b3aa31de95e5c8fe6772007521f1efe651fea1fd965c2415293bd3dd195f17
+            bytes: 115439764
+          seeds.npy:
+            sha256: b0d2911900e6dbb2fb6ec36f5976a85aad68791ecc759721dee23dc603d4d0a6
+            bytes: 88646
+          seeds_ptr.npy:
+            sha256: 7714dbb8001da9e1ab342f00b021eb6e3e282d39bd0d730c93edcc4cc554f903
+            bytes: 46984
+          seedw.npy:
+            sha256: 9656f3f5805c7dd379585743f7cd481a259158370264b1503c8e9b8f07516c9c
+            bytes: 5860008
+        cache_combined_sha256: b7d9d5aec9637f4e4603cd781887435900381eb047075cbc72b4e45656fba89c
+        meta_sha256: 49128b083b63436e9ae3ff16795aaaf31e8f10a1dcd55e159f815e92035d7344
+      select:
+        queries: 1498
+        rows: 74946
+        zero_gold_excluded: 0
+        kept_ids_sha256: d800e5e4d7c777ed6d69cb08ed8f084f4ab3f24c91cc39eef1b15e421d5664fd
+        carve_sha256_declared: d800e5e4d7c777ed6d69cb08ed8f084f4ab3f24c91cc39eef1b15e421d5664fd
+        candidates_mean: 50.0
+        queries_with_no_gold_in_pool: 24
+        compile_seconds: 13.0
+        ms_per_query: 8.67
+        queries_per_second: 115.401
+        group_seconds_per_1000_queries:
+          retrieval: 0.25
+          edges: 0.43
+          topology: 2.46
+          edge_weights: 0.09
+          C: 1.64
+          gcs: 0.53
+          D: 0.73
+          B: 0.0
+          depth_basis: 2.12
+          typed_basis: 0.0
+        peak_rss_bytes: 4523933696
+        seeds_added_mean: 0.030707610146862484
+        relation_slots:
+          k_rel: 4
+          queries: 1498
+          pairs: 0
+          truncated: 0
+          entries: 0
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        relation_table: false
+        diagnostics:
+          k_rel: 4
+          by_hop:
+            all:
+              queries: 1498
+              rows: 74946
+              gold_rows: 1474
+              typed_queries: 0
+              relation_slots:
+                pairs: 0
+                entries: 0
+                pairs_truncated: 0
+                fraction_of_pairs_truncated: 0.0
+                queries_with_any_truncated_pair: 0
+                fraction_of_queries_with_any_truncated_pair: 0.0
+                relations_per_pair_histogram: {}
+                max_relations_per_pair: 0
+              typed_walk_availability:
+                h1:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+                h2:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+                h3:
+                  rows: 0.0
+                  gold_rows: 0.0
+                  queries: 0.0
+                  queries_gold: 0.0
+              ordered_path:
+                h2:
+                  rows_with_walk: 0
+                  fraction_of_walks_with_an_inverse_step: 0.0
+                  fraction_of_walks_composing_different_relations: 0.0
+                h3:
+                  rows_with_walk: 0
+                  fraction_of_walks_with_an_inverse_step: 0.0
+                  fraction_of_walks_composing_different_relations: 0.0
+        cache_bytes: 36028320
+        cache_files_sha256:
+          edge_counts.npy:
+            sha256: dc17abf3a7884a3dd408af982de0be9171c51b6f15990f308ea23128937041d2
+            bytes: 18104
+          gold.npy:
+            sha256: 6dcde05b825c781e90a69041a0b1b2c06bf5081c47cdd2bff4a21bd1f6b8600e
+            bytes: 3076
+          gold_ptr.npy:
+            sha256: 779e4c0ef4d15ecb9fb4efadfd06f043119a2ffd39f353be2371c61c8cda0564
+            bytes: 12120
+          gold_total.npy:
+            sha256: 93f8e0ff0016cf449251f185e183f933add8671b5b1a18f40a71c11ce320d3ad
+            bytes: 6120
+          pool.npy:
+            sha256: aef38e51ab47d6ff90480ea5705dc24a70e34318cd1061e2e598a468bc60562d
+            bytes: 299912
+          pool_ptr.npy:
+            sha256: 15bdb4cd802312abbccb5dfff198382dde7a41698718df12af0fededf9f12197
+            bytes: 12120
+          qemb.npy:
+            sha256: 49674a053578f46552fb6731d1a1d0c143867af358b001295ea6791ed974d78f
+            bytes: 4601984
+          qrow.npy:
+            sha256: 0a6b01d9e55fdfd391791bfe4ebb13c2354dc8e78e4eaa2c3042d5efc244a7cd
+            bytes: 12112
+          query_ids.json:
+            sha256: f659f07263f1a16ef8e7f68ba5c4546cce2ea4e3d8b8dbabb728a8b1d7b30016
+            bytes: 41944
+          scalars.npy:
+            sha256: fa48bdd37fdee7726af3854229c93f7e9de682e6289b8e7632b018e567a79134
+            bytes: 29528852
+          seeds.npy:
+            sha256: bcd93df91a2fae03045839e7fcfb34f762448d03ea6287bef8213733acafddd8
+            bytes: 22752
+          seeds_ptr.npy:
+            sha256: 9255bd74161daf19849362a3a88447dc3f1929753e799f843e95db9104df6121
+            bytes: 12120
+          seedw.npy:
+            sha256: ace853406d2feb1f85d5409bc5e89ade634a1439187c2a897ee5b3f7f7e13f67
+            bytes: 1499048
+        cache_combined_sha256: 5137c71d5cb8f03374c035b94997711e1e04fefac075f45a9ae22747834478ae
+        meta_sha256: 2db328bdcc4ce64935d095683e72591ff00f7bac7d9043ba652bfebb5596288c
+  after_this_block: the arms read this list and nothing else; the eval populations may now be compiled per query
+    (check_3); a different list is a new dated block with its reason

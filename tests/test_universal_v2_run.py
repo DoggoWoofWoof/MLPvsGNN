@@ -97,7 +97,7 @@ def sandbox(tmp_path_factory):
     out = base / "outputs" / "universal_v2"
     m3b_out = base / "outputs" / "m3b"
     config = base / "universal_v2.yaml"
-    config.write_bytes(R.CONFIG.read_bytes())
+    config.write_bytes(_declaration_before_the_run().encode("utf-8"))
     for name, value in (("OUT", out), ("CACHE", out / "cache"), ("FITS", out / "fits"), ("EVAL", out / "eval"), ("CONFIG", config),
                         ("M3B_OUT", m3b_out), ("DOC", base / "docs" / "UNIVERSAL_V2_PILOT.md")):
         mp.setattr(R, name, value)
@@ -114,6 +114,21 @@ def sandbox(tmp_path_factory):
     yield SimpleNamespace(base=base, out=out, m3b_out=m3b_out, config=config, cfg=cfg, cfg_m3b=cfg_m3b, cfg_h=cfg_h, contexts=contexts, ctx2=ctx2,
                           bank=bank, rng=rng)
     mp.undo()
+
+
+def _declaration_before_the_run() -> str:
+    """The repository declaration as it stood before the real run: cut at the first run-produced block. append_block
+    writes every block the run files (contract_frozen_*, timing_*, pilot_gate_record_*, run_record_*, hard_stop_*)
+    under a '# -- ... --' header line; the hand-written declaration and its review amendments carry none, so the
+    sandbox re-runs the whole sequence from DECLARED_NOT_RUN however far the real pilot has progressed."""
+    lines = (R.ROOT / "configs" / "universal_v2.yaml").read_text(encoding="utf-8").split(LF)   # never R.CONFIG: the sandbox re-points it
+    cut = next((i for i, l in enumerate(lines) if l.startswith("# -- ")), len(lines))
+    text = LF.join(lines[:cut]).rstrip(LF) + LF
+    cfg = yaml.safe_load(text)
+    run_produced = [k for k in cfg if R.DATED.match(k) and not k.startswith("amendment_")]
+    assert not run_produced, run_produced
+    assert cfg["status"] == "DECLARED_NOT_RUN"
+    return text
 
 
 def _config_text(sb) -> str:
@@ -909,7 +924,7 @@ def test_27_run_record_filed_last_and_the_status_names_the_family_that_passed(sa
     assert [k for k in reloaded if R.DATED.match(k)] == ["amendment_1_2026_09_19", "amendment_2_2026_09_19", "amendment_3_2026_09_19", f"contract_frozen_{DATE}",
                                                           f"timing_{DATE}", f"pilot_gate_record_{DATE}", f"run_record_{DATE}"]
     # nothing above the dated blocks changed except the status line
-    original = (R.ROOT / "configs" / "universal_v2.yaml").read_text(encoding="utf-8").split(LF)   # the repository declaration, not the sandbox copy
+    original = _declaration_before_the_run().split(LF)   # the repository declaration before its run-produced blocks, not the sandbox copy
     now = _config_text(sandbox).split(LF)
     cut = next(i for i, l in enumerate(now) if l.startswith(f"# -- UNIVERSAL_V2_CORE_CONTRACT"))
     diff = [(a, b) for a, b in zip(original, now[:cut]) if a != b]
