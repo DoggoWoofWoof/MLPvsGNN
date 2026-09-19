@@ -246,11 +246,13 @@ def section_header(cfg: dict, held: dict, gate: dict) -> list[str]:
              "`scripts/universal_v2_report.py --stage held`). The held half is not previously unseen data and not an independent test set: M3B scored "
              "these populations whole, and the M3B numbers on both halves are on file. Select-carve numbers select and are never results. "
              "The substrate is the read-only served package pinned by its freeze record; M3B is pinned byte-for-byte and never re-run.", ""]
-    glance = []
+    fam = family_labels(held["selection"], gate)
+    glance = [f"**{R.FAMILY_GATES['gnn']} {fam[R.FAMILY_GATES['gnn']]}** / **{R.FAMILY_GATES['twin']} {fam[R.FAMILY_GATES['twin']]}** / overall **{fam['overall']}** "
+              "(amendment 2 family_status_vocabulary; a one-family pass is that family's pass, never a pass of the proposed universal pair)"]
     for family, arm in held["selection"].items():
         v = held["gate_cells_confirmatory"][arm]
         cells = "; ".join(f"{c['dataset']}/{c['metric']}/{c['slice']} {c['value']:.3f} vs {c['threshold']:.3f}" for c in v["cells"])
-        glance.append(f"{family} `{arm}`: gate **{gate['outcome'][arm]}** on {GATE} (seed 0); on {HELD} {cells}")
+        glance.append(f"{family} `{arm}` ({R.FAMILY_GATES[family]} {fam[R.FAMILY_GATES[family]]}): gate **{gate['outcome'][arm]}** on {GATE} (seed 0); on {HELD} {cells}")
     lines.append("**At a glance.** " + ". ".join(glance) + f". The held-half cells are confirmatory readings of the gate's arms, not a gate; "
                  "nothing here is a statement about message passing (the paper's question is answered by M3B) or a comparison to the published systems "
                  "(their exposure is named in section 10).")
@@ -258,13 +260,27 @@ def section_header(cfg: dict, held: dict, gate: dict) -> list[str]:
     return lines
 
 
+def family_labels(selection: dict, gate: dict) -> dict:
+    """The family / overall labels of the gate record (pilot_gate_record_<date>.family_outcome), never recomputed
+    from the cells here; the run tooling's function is the fallback for a record written before the vocabulary."""
+    return gate.get("family_outcome") or R.family_outcome(selection, gate["outcome"])
+
+
 def section_contract(cfg: dict, screen: dict) -> list[str]:
     key, block = R.frozen_contract_v2(cfg)
+    hashes = block.get("hashes") or {}
     lines = [f"## 1. The frozen contract (`{key}`)", "",
-             f"{block['screened_columns']} raw columns (the M3B 78 first, then the {block['depth_basis_screened']} depth-basis columns of "
-             f"`information_contract_v2`) were screened on the fit carves only, under the M3B rule verbatim; {block['surviving_columns']} survive as "
-             f"`{block['name']}` (sha256 `{block['sha256_of_comma_joined_surviving_names'][:16]}…`). The M3B 78 are protected earlier members and "
-             "always survive; the trio-only statistics that would have dropped one of them are recorded, not applied.", ""]
+             f"{block['screened_columns']} raw columns (the M3B 78 first, then the {block.get('v2_columns_screened', block['depth_basis_screened'])} v2 columns of "
+             f"`information_contract_v2`: {block['depth_basis_screened']} depth-basis and {block.get('ordered_relation_path_screened', 0)} ordered relation-path columns, "
+             f"pinned by `{block.get('raw_contract_pinned_in', 'the declaration')}`) were screened on the fit carves only, under the M3B rule verbatim; "
+             f"{block['surviving_columns']} survive as `{block['name']}` (sha256 `{block['sha256_of_comma_joined_surviving_names'][:16]}…`). "
+             "The M3B 78 are protected earlier members and always survive; the trio-only statistics that would have dropped one of them are recorded, not applied.", ""]
+    if hashes:
+        lines += ["| hashed at contract_frozen | sha256 |", "|---|---|"]
+        for k in ("raw_contract_sha256", "screen_rule_sha256", "surviving_columns_sha256", "six_caches_combined_sha256"):
+            if k in hashes:
+                lines.append(f"| {k} | `{hashes[k]}` |")
+        lines.append("")
     dropped = block.get("dropped", {})
     if dropped:
         lines += ["| dropped column | reason |", "|---|---|"]
@@ -279,14 +295,52 @@ def section_contract(cfg: dict, screen: dict) -> list[str]:
     if pairs:
         lines.append("Duplicate pairs among the new columns (earlier member kept): " + ", ".join(f"`{p['earlier']}`~`{p['later']}` ({p['abs_spearman']:.3f})" for p in pairs) + ".")
         lines.append("")
-    lines += ["| dataset | carve | queries | rows | candidates (mean) | compile ms/query | relation slots truncated (K_REL=4) | seeds added / query |", "|---|---|---|---|---|---|---|---|"]
+    lines += ["| dataset | carve | queries | rows | candidates (mean) | compile ms/query | queries / s | wall s | peak RSS GB | cache GB | seeds added / query |",
+              "|---|---|---|---|---|---|---|---|---|---|---|"]
     for name in R.PILOT:
         for kind in ("fit", "select"):
             m = block["compile_record"][name][kind]
-            slots = m.get("relation_slots") or {}
-            trunc = fmt(slots.get("fraction_of_pairs_truncated"), 4) if slots else "—"
-            lines.append(f"| {name} | {kind} | {m['queries']:,} | {m['rows']:,} | {m['candidates_mean']:.1f} | {m['ms_per_query']} | {trunc} | {fmt(m.get('seeds_added_mean'), 2)} |")
+            gb = m["cache_bytes"] / 2**30 if m.get("cache_bytes") is not None else None
+            rss = m["peak_rss_bytes"] / 2**30 if m.get("peak_rss_bytes") is not None else None
+            lines.append(f"| {name} | {kind} | {m['queries']:,} | {m['rows']:,} | {m['candidates_mean']:.1f} | {m['ms_per_query']} | {fmt(m.get('queries_per_second'), 2)} | "
+                         f"{fmt(m.get('compile_seconds'), 0)} | {fmt(rss, 2)} | {fmt(gb, 2)} | {fmt(m.get('seeds_added_mean'), 2)} |")
     lines.append("")
+    lines += section_compile_diagnostics(block)
+    return lines
+
+
+def section_compile_diagnostics(block: dict) -> list[str]:
+    """amendment 2 k_rel_truncation_report_required: the K_REL slot truncation and the typed / ordered relation-path
+    availability over every query of every carve, by dataset and (metaqa) by hop, as the compile record filed them."""
+    rows_t, rows_a = [], []
+    for name in R.PILOT:
+        for kind in ("fit", "select"):
+            m = block["compile_record"][name][kind]
+            d = m.get("diagnostics")
+            if not d:
+                continue
+            for hop, h in d["by_hop"].items():
+                rs = h["relation_slots"]
+                hist = rs.get("relations_per_pair_histogram") or {}
+                over = sum(int(c) for k, c in hist.items() if int(k) > d["k_rel"])
+                rows_t.append(f"| {name} | {kind} | {hop} | {h['queries']:,} | {h['typed_queries']:,} | {rs['pairs']:,} | {rs['entries']:,} | "
+                              f"{rs['pairs_truncated']:,} | {rs['fraction_of_pairs_truncated']:.4f} | {rs['fraction_of_queries_with_any_truncated_pair']:.4f} | "
+                              f"{rs['max_relations_per_pair']} | {over:,} |")
+                w, o = h["typed_walk_availability"], h["ordered_path"]
+                rows_a.append(f"| {name} | {kind} | {hop} | " + " | ".join(f"{w[f'h{t}']['rows']:.3f} / {w[f'h{t}']['gold_rows']:.3f} / {w[f'h{t}']['queries']:.3f}" for t in (1, 2, 3))
+                              + " | " + " | ".join(f"{o[f'h{t}']['rows_with_walk']:,} / {o[f'h{t}']['fraction_of_walks_with_an_inverse_step']:.3f} / "
+                                                   f"{o[f'h{t}']['fraction_of_walks_composing_different_relations']:.3f}" for t in (2, 3)) + " |")
+    if not rows_t:
+        return []
+    lines = [f"K_REL = {block['compile_record'][R.PILOT[0]]['fit']['diagnostics']['k_rel']} relation-text slots per structural message edge: how often a "
+             "structural pair carries more stored relations than the slots hold, over every query of every carve (amendment 2 "
+             "`k_rel_truncation_report_required`; untyped datasets have no structural relation table and report zero pairs).", "",
+             "| dataset | carve | hop | queries | typed queries | pairs | typed entries | pairs truncated | fraction of pairs | fraction of queries with any | max relations / pair | pairs beyond K_REL (histogram) |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|", *rows_t, "",
+             "Typed STRUCT relation-path availability (rows with a walk of length t / gold rows / queries with any such row) and the ordered channel "
+             "(best walks at t = 2, 3: rows with a walk / fraction with an inverse step / fraction composing two different relations):", "",
+             "| dataset | carve | hop | h1 rows / gold / queries | h2 | h3 | ordered h2 rows / inverse / heterogeneous | ordered h3 |", "|---|---|---|---|---|---|---|---|",
+             *rows_a, ""]
     return lines
 
 
@@ -655,6 +709,18 @@ def section_reading(cfg: dict, held: dict, gate: dict, conf: dict, hyps: dict) -
                                    + ", ".join(f"{n} {fmt(r, 4)}" for n, r in v["delta_ratio"].items()) + f" (squad smallest: {v['squad_smallest_of_the_trio']})" for arm, v in e["per_arm"].items()) or "no passing arm"
             parts.append(f"{half_name}: {verdict} ({detail})")
         lines.append(f"- **{name}**: {hyps[key][HELD]['claim']} — " + "; ".join(parts) + ".")
+    lines.append("")
+    fam = family_labels(held["selection"], gate)
+    passed = [R.FAMILY_GATES[f] for f in ("gnn", "twin") if fam[R.FAMILY_GATES[f]] == "PASS"]
+    if fam["overall"] == "BOTH_PASS":
+        pair = "both families passed their gate at seed 0, so the proposed universal pair (one GNN and its non-message-passing twin over one contract) has passed the pilot gate"
+    elif fam["overall"] == "PILOT_FAILED":
+        pair = "neither family passed its gate at seed 0; the proposed universal pair has not passed the pilot gate"
+    else:
+        pair = (f"only {passed[0]} passed at seed 0; this is a pass of that family and is written as such -- the proposed universal pair has NOT passed the pilot gate, "
+                "and no later document may describe this outcome as a pass of the pair")
+    lines.append(f"**Family outcome** (amendment 2 family_status_vocabulary): {R.FAMILY_GATES['gnn']} {fam[R.FAMILY_GATES['gnn']]}, {R.FAMILY_GATES['twin']} "
+                 f"{fam[R.FAMILY_GATES['twin']]}, overall **{fam['overall']}** -- {pair}.")
     lines.append("")
     lines.append(f"What this pilot is: {str(cfg['result_is']).strip().rstrip('.') if 'result_is' in cfg else 'the pilot of the declared innovations on the trio'}. "
                  "What it is not: a result on test data (none was read), a statement about message passing (M3B answers the paper's question), "

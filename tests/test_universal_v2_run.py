@@ -64,11 +64,26 @@ def _quiet(msg: str) -> None:
     pass
 
 
+def _toy_diagnostics(n: int, dataset: str) -> dict:
+    """The shape CompileDiagnostics.summary writes (the real values come from the compile); metaqa by hop."""
+    def slot(q):
+        return {"queries": q, "rows": 50 * q, "gold_rows": 2 * q, "typed_queries": q if dataset == "metaqa" else 0,
+                "relation_slots": {"pairs": 100, "entries": 130, "pairs_truncated": 3, "fraction_of_pairs_truncated": 0.03, "queries_with_any_truncated_pair": 1,
+                                   "fraction_of_queries_with_any_truncated_pair": 0.1, "relations_per_pair_histogram": {"1": 80, "2": 17, "5": 3}, "max_relations_per_pair": 5},
+                "typed_walk_availability": {f"h{t}": {"rows": 0.5, "gold_rows": 0.9, "queries": 1.0, "queries_gold": 0.9} for t in (1, 2, 3)},
+                "ordered_path": {f"h{t}": {"rows_with_walk": 25 * q, "fraction_of_walks_with_an_inverse_step": 0.4, "fraction_of_walks_composing_different_relations": 0.7} for t in (2, 3)}}
+    by_hop = {"1hop": slot(n // 3), "2hop": slot(n // 3), "3hop": slot(n - 2 * (n // 3)), "all": slot(n)} if dataset == "metaqa" else {"all": slot(n)}
+    return {"k_rel": 4, "by_hop": by_hop}
+
+
 def _extend_meta(path: Path, kind: str, ids_sha: str) -> None:
     meta = json.loads(path.read_text(encoding="utf-8"))
     meta.update({"population": {"ids": meta["n_queries"], "zero_gold_excluded": 0, "kept": meta["n_queries"], "ids_sha256": ids_sha},
-                 "carve_sha256_declared": ids_sha, "ms_per_query": 12.5, "group_seconds_per_1000_queries": {"depth": 4.0}, "seeds_added_mean": 0.0,
-                 "relation_slots": {"k_rel": 4, "sampled_queries": 10, "pairs": 100, "truncated": 3, "entries": 130, "fraction_of_pairs_truncated": 0.03},
+                 "carve_sha256_declared": ids_sha, "ms_per_query": 12.5, "queries_per_second": 80.0, "peak_rss_bytes": 1 << 30, "compile_seconds": 3.0,
+                 "group_seconds_per_1000_queries": {"depth_basis": 4.0, "typed_basis": 1.0}, "seeds_added_mean": 0.0,
+                 "relation_slots": {"k_rel": 4, "queries": meta["n_queries"], "pairs": 100, "truncated": 3, "entries": 130, "fraction_of_pairs_truncated": 0.03,
+                                    "fraction_of_queries_with_any_truncated_pair": 0.1},
+                 "diagnostics": _toy_diagnostics(meta["n_queries"], path.parent.parent.name),
                  "relation_table": None, "m3b_contract_block": "candidate_contract_frozen_2026_09_13", "pool": "toy", "kind": kind})
     path.write_text(json.dumps(meta, indent=1), encoding="utf-8")
 
@@ -203,6 +218,77 @@ def test_paired_bootstrap_is_the_declared_procedure():
     assert R.paired_bootstrap(a, b) == d   # default_rng(0): reproducible
 
 
+# ── compile: the diagnostics over every query ────────────────────────────────
+
+
+def _toy_prep(rng, name: str, n: int, typed: bool, count: int):
+    """A Prepared-shaped namespace over a toy substrate: metaqa-style ids carry the hop, untyped datasets do not."""
+    stores = {"structural": TOY.P.FamilyStore.from_graph(TOY._graph(rng, n, 3 * n, False, typed, n_rel=6 if typed else 1), "structural"),
+              "ner": TOY.P.FamilyStore.from_graph(TOY._graph(rng, n, n, True, False), "ner"),
+              "knn": TOY.P.FamilyStore.from_graph(TOY._graph(rng, n, 2 * n, True, False), "knn")}
+    emb = TOY._unit(rng, (n, V.M3B.DIM))
+    rel = V.RelationTable.from_arrays(TOY._unit(rng, (6, V.M3B.DIM)), stores["structural"].rel_count, n) if typed else None
+    ids, qemb, dense_ids, dense_scores, splade_ids, splade_scores, seeds, pools, golds = [], [], [], [], [], [], [], [], []
+    for i in range(count):
+        q = TOY._unit(rng, V.M3B.DIM)
+        d = np.argsort(-(emb @ q))[:40].astype(np.int64)
+        sp = rng.permutation(n)[:40].astype(np.int64)
+        sd = TOY.P.seeds_of(d, sp)
+        pool = np.union1d(np.union1d(d[:20], sp[:20]), TOY.P.expand_hops(sd, list(stores.values()), {"hops": 1, "per_seed_cap": 6}))
+        pool = np.union1d(pool, sd)
+        ids.append(f"metaqa:{1 + i % 3}hop:train:{i}" if name == "metaqa" else f"{name}-q{i}")
+        qemb.append(q); dense_ids.append(d); dense_scores.append(np.sort(emb[d] @ q)[::-1].astype(np.float32))
+        splade_ids.append(sp); splade_scores.append(np.sort(rng.random(40) * 10)[::-1].astype(np.float32))
+        seeds.append(sd); pools.append(pool); golds.append(np.sort(d[[0, 2, 5]]))
+    pop = SimpleNamespace(dataset=name, kind="fit", ids=ids, idx=np.arange(count), golds=golds, n_before=count, zero_gold_excluded=0, digest="toy")
+    prep = SimpleNamespace(pop=pop, qemb=np.stack(qemb), dense_ids=np.stack(dense_ids), dense_scores=np.stack(dense_scores), splade_ids=np.stack(splade_ids),
+                           splade_scores=np.stack(splade_scores), seeds=seeds, pools=pools, seeds_added=np.zeros(count), expansion_seconds=0.0)
+    return prep, stores, TOY._Nodes(emb), rel
+
+
+def test_compile_population_v2_records_the_diagnostics_over_every_query_by_hop(tmp_path):
+    """amendment 2 k_rel_truncation_report_required: the truncation and the ordered-path availability are read
+    from every query (no sampling), sliced by the hop in the metaqa id, and agree with a direct recount."""
+    rng = np.random.default_rng(3)
+    m3b_compile = R.M3B_RUN.load_script("m3b_compile")
+    prep, stores, nodes, rel = _toy_prep(rng, "metaqa", 240, True, 30)
+    meta = {"dataset": "metaqa", "kind": "fit", "feature_contract": V.CONTRACT_NAME, "n_columns": V.N_COLUMNS}
+    written = R.compile_population_v2(prep, stores, nodes, rel, tmp_path / "metaqa" / "fit", meta, m3b_compile.gold_local_of, log=_quiet)
+    d = written["diagnostics"]
+    assert d["k_rel"] == M.K_REL == 4 and set(d["by_hop"]) == {"1hop", "2hop", "3hop", "all"}
+    assert sum(d["by_hop"][h]["queries"] for h in ("1hop", "2hop", "3hop")) == d["by_hop"]["all"]["queries"] == 30
+    assert written["relation_slots"]["queries"] == 30 and written["relation_slots"]["pairs"] == d["by_hop"]["all"]["relation_slots"]["pairs"]
+    assert written["peak_rss_bytes"] > 0 and written["queries_per_second"] > 0 and written["compile_seconds"] >= 0
+    # the direct recount: typed_pool_edges pair ids per query, the cache scalars for the availability
+    pairs = truncated = 0
+    for i in range(30):
+        (_, _, _, _), pair_id, _ = V.typed_pool_edges(stores["structural"], np.asarray(prep.pools[i], dtype=np.int64), V.IN_POOL_CAP)
+        st = M.relation_slot_stats(pair_id)
+        pairs += st["pairs"]
+        truncated += st["truncated"]
+    allh = d["by_hop"]["all"]["relation_slots"]
+    assert allh["pairs"] == pairs and allh["pairs_truncated"] == truncated and allh["fraction_of_pairs_truncated"] == round(truncated / max(pairs, 1), 6)
+    assert sum(allh["relations_per_pair_histogram"].values()) == pairs
+    assert sum(int(c) for k, c in allh["relations_per_pair_histogram"].items() if int(k) > 4) == truncated
+    scalars = np.load(tmp_path / "metaqa" / "fit" / "scalars.npy", mmap_mode="r")
+    ptr = np.load(tmp_path / "metaqa" / "fit" / "pool_ptr.npy")
+    walk2 = np.asarray(scalars[:, V.IDX["typed_walks_h2"]]) > 0
+    assert d["by_hop"]["all"]["rows"] == scalars.shape[0] and d["by_hop"]["all"]["typed_walk_availability"]["h2"]["rows"] == round(float(walk2.mean()), 6)
+    per_query = [walk2[ptr[i]:ptr[i + 1]].any() for i in range(30)]
+    assert d["by_hop"]["all"]["typed_walk_availability"]["h2"]["queries"] == round(sum(per_query) / 30, 6)
+    inv = (np.asarray(scalars[:, [V.IDX["opath_h2_dir1"], V.IDX["opath_h2_dir2"]]]) < 0).any(axis=1)
+    assert d["by_hop"]["all"]["ordered_path"]["h2"]["fraction_of_walks_with_an_inverse_step"] == round(float(inv.sum() / max(walk2.sum(), 1)), 6)
+    hop1 = [i for i in range(30) if i % 3 == 0]
+    assert d["by_hop"]["1hop"]["queries"] == len(hop1) and d["by_hop"]["1hop"]["rows"] == sum(int(ptr[i + 1] - ptr[i]) for i in hop1)
+    # an untyped dataset: one slice, no typed query, every ordered column absent
+    prep_u, stores_u, nodes_u, _ = _toy_prep(rng, "squad", 200, False, 12)
+    written_u = R.compile_population_v2(prep_u, stores_u, nodes_u, None, tmp_path / "squad" / "fit", {**meta, "dataset": "squad"}, m3b_compile.gold_local_of, log=_quiet)
+    du = written_u["diagnostics"]["by_hop"]
+    assert set(du) == {"all"} and du["all"]["typed_queries"] == 0 and du["all"]["relation_slots"]["pairs"] == 0
+    assert du["all"]["typed_walk_availability"]["h2"]["rows"] == 0.0 and du["all"]["ordered_path"]["h3"]["rows_with_walk"] == 0
+    assert written_u["relation_slots"]["fraction_of_pairs_truncated"] == 0.0
+
+
 # ── the pipeline in declared order (the tests below share S and run in file order) ──
 
 
@@ -234,7 +320,16 @@ def test_11_screen_refuses_a_select_cache_a_trimmed_cache_and_a_foreign_dataset(
 def test_12_screen_reads_fit_caches_only_and_protects_the_m3b_78(sandbox):
     screen = R.stage_screen(sandbox.cfg, sandbox.cfg_m3b, PILOT, log=_quiet)
     core78, _, sha78 = R.m3b_core(sandbox.cfg_m3b)
-    assert len(screen["columns"]) == 151 and screen["columns"][:78] == core78
+    assert len(screen["columns"]) == 164 and screen["columns"][:78] == core78 and screen["columns"][78:] == list(V.V2_COLUMNS)
+    assert screen["raw_contract_pinned_in"] == "amendment_2_2026_09_19" and screen["raw_contract_sha256"] == R.sha_of_names(screen["columns"])
+    assert screen["screen_rule_sha256"] == hashlib.sha256(screen["rule"].encode("utf-8")).hexdigest() and "|Spearman| >= 0.98" in screen["rule"]
+    assert screen["v2_columns"]["screened"] == 86 and screen["v2_columns"]["depth_basis"] == 73 and screen["v2_columns"]["ordered_relation_path"] == 13
+    assert screen["v2_columns"]["surviving"] == screen["v2_columns"]["depth_basis_surviving"] + screen["v2_columns"]["ordered_relation_path_surviving"]
+    for name in PILOT:
+        per = screen["per_dataset"][name]
+        assert set(per["block_availability"]) == set(V.BLOCKS) and all(set(v) <= set(V.MASK_COLUMNS) for v in per["block_availability"].values())
+        assert set(per["constant_columns"]) <= set(screen["columns"])
+    assert set(screen["constant_columns_everywhere"]) <= set(screen["dropped"]) | set(core78)
     assert screen["surviving"][:78] == core78 and screen["m3b_core"] == {"size": 78, "sha256": sha78, "protected": True,
                                                                           "would_have_dropped_under_the_trio_statistics": screen["m3b_core"]["would_have_dropped_under_the_trio_statistics"]}
     assert not any(c in screen["dropped"] for c in core78)
@@ -243,7 +338,10 @@ def test_12_screen_reads_fit_caches_only_and_protects_the_m3b_78(sandbox):
     block = yaml.safe_load((sandbox.out / "universal_v2_core_contract_block.yaml").read_text(encoding="utf-8"))
     assert block["name"] == "UNIVERSAL_V2_CORE_CONTRACT" and block["surviving"] == screen["surviving"]
     assert block["sha256_of_comma_joined_surviving_names"] == hashlib.sha256(",".join(block["surviving"]).encode("utf-8")).hexdigest()
-    assert block["screened_columns"] == 151 and block["surviving_columns"] == len(block["surviving"]) and block["m3b_core_first"]["always_survive"]
+    assert block["screened_columns"] == 164 and block["surviving_columns"] == len(block["surviving"]) and block["m3b_core_first"]["always_survive"]
+    assert block["v2_columns_screened"] == 86 and block["v2_columns_surviving"] == block["depth_basis_surviving"] + block["ordered_relation_path_surviving"]
+    assert block["raw_contract_sha256"] == screen["raw_contract_sha256"] and block["screen_rule_sha256"] == screen["screen_rule_sha256"]
+    assert [c for c in screen["columns"] if c not in block["surviving"]] == list(block["dropped"])
     S.screen = screen
 
 
@@ -258,6 +356,15 @@ def test_13_file_contract_freezes_the_block_and_the_screen_is_not_repeated(sandb
     assert key == f"contract_frozen_{DATE}" and frozen["status"] == "FROZEN" and frozen["surviving"] == S.screen["surviving"]
     assert frozen["screen_file_sha256"] == R.sha256_file(sandbox.out / "feature_screen.json")
     assert set(frozen["compile_record"]) == set(PILOT) and frozen["compile_record"]["metaqa"]["fit"]["relation_slots"]["k_rel"] == 4
+    rec = frozen["compile_record"]["metaqa"]["fit"]
+    assert set(rec["diagnostics"]["by_hop"]) == {"1hop", "2hop", "3hop", "all"} and rec["peak_rss_bytes"] == 1 << 30 and rec["queries_per_second"] == 80.0
+    assert set(rec["cache_files_sha256"]) == {p.name for p in (sandbox.out / "cache" / "metaqa" / "fit").iterdir() if p.name != "meta.json"}
+    assert rec["cache_files_sha256"]["scalars.npy"]["sha256"] == R.sha256_file(sandbox.out / "cache" / "metaqa" / "fit" / "scalars.npy")
+    assert rec["cache_combined_sha256"] == R.cache_hashes(sandbox.out / "cache" / "metaqa" / "fit")["combined_sha256"]
+    assert frozen["hashes"] == {"raw_contract_sha256": frozen["raw_contract_sha256"], "screen_rule_sha256": frozen["screen_rule_sha256"],
+                                "surviving_columns_sha256": frozen["sha256_of_comma_joined_surviving_names"],
+                                "six_caches_combined_sha256": frozen["hashes"]["six_caches_combined_sha256"]}
+    assert len(frozen["hashes"]["six_caches_combined_sha256"]) == 64
     assert yaml.safe_load(_config_text(sandbox))[key] == frozen     # read back from the appended file
     assert _status_line(sandbox) == "status: DECLARED_NOT_RUN"
     with pytest.raises(SystemExit, match="not repeated"):
@@ -550,6 +657,10 @@ def test_20_gate_reads_v2_gate_only_once_for_the_selected_arms(sandbox):
     assert "NaN" not in text
     g, t = S.selection["gnn"]["arm"], S.selection["twin"]["arm"]
     assert gate["outcome"] == {g: "PASS", t: "FAIL"}
+    assert gate["family_outcome"] == {"GNN_GATE": "PASS", "TWIN_GATE": "FAIL", "overall": "GNN_ONLY_PASS", "selected": {"GNN_GATE": g, "TWIN_GATE": t}}
+    assert R.family_outcome({"gnn": "a", "twin": "b"}, {"a": "PASS", "b": "PASS"})["overall"] == "BOTH_PASS"
+    assert R.family_outcome({"gnn": "a", "twin": "b"}, {"a": "FAIL", "b": "PASS"})["overall"] == "TWIN_ONLY_PASS"
+    assert R.family_outcome({"gnn": "a", "twin": "b"}, {"a": "FAIL", "b": "FAIL"})["overall"] == "PILOT_FAILED"
     cells = {(c["dataset"], c["metric"], c["slice"]): c for c in gate["verdict"][g]["cells"]}
     half = S.world["metaqa"]["half"]
     arr = S.world["metaqa"]["arrays"][f"{R.fit_key(g, 0)}/hit@1"]
@@ -716,6 +827,17 @@ def test_26_doc_rendered_from_the_sidecars_reads_held_through_the_record_only(sa
     assert f"`{g}` — PASS" in text and "CONFIRMED" in text and "nan" not in text.lower().replace("nan)", "") or "NaN" not in text
     for f in sandbox.cfg["forbidden_framings"][:3]:
         assert f not in text.replace("Forbidden framings are not used: ", "").split("'prove message passing is unnecessary'")[0]
+    # amendment 2 family_status_vocabulary: the family labels at a glance and in the reading, and the one-family rule
+    assert "**GNN_GATE PASS** / **TWIN_GATE FAIL** / overall **GNN_ONLY_PASS**" in text.split("## 1. The frozen contract")[0]
+    reading = text.split("## 11. Reading")[1].split("## 12. Run record")[0]
+    assert "overall **GNN_ONLY_PASS**" in reading and "only GNN_GATE passed at seed 0" in reading and "the proposed universal pair has NOT passed" in reading
+    assert "has passed the pilot gate" not in reading
+    # the compile diagnostics of section 1: every carve and (metaqa) every hop, the hashes of contract_frozen
+    contract = text.split("## 1. The frozen contract")[1].split("## 2. Cost")[0]
+    for k in ("raw_contract_sha256", "screen_rule_sha256", "surviving_columns_sha256", "six_caches_combined_sha256"):
+        assert k in contract, k
+    assert "| metaqa | fit | 1hop |" in contract and "| metaqa | select | all |" in contract and "| squad | fit | all |" in contract
+    assert "K_REL = 4 relation-text slots" in contract and "queries / s | wall s | peak RSS GB | cache GB" in contract
     rec = R.read_json(sandbox.out / "report_run_record.json")
     assert rec["doc_sha256_lf"] == R.lf_sha256(doc) and set(rec["seed_confirmation"]) == {g}
     conf = rec["seed_confirmation"][g]
@@ -739,19 +861,22 @@ def test_26_doc_rendered_from_the_sidecars_reads_held_through_the_record_only(sa
     REPORT.stage_doc(sandbox.cfg, sandbox.cfg_m3b, log=_quiet)
 
 
-def test_27_run_record_filed_last_and_the_status_moves_to_run(sandbox):
+def test_27_run_record_filed_last_and_the_status_names_the_family_that_passed(sandbox):
+    """The toy world is GNN_ONLY_PASS: the status says so (amendment 2 family_status_vocabulary), never RUN."""
     R.stage_file(sandbox.cfg, DATE, ["run"], config=sandbox.config, log=_quiet)
     block = sandbox.cfg[f"run_record_{DATE}"]
     assert block["outcome"] == S.gate["outcome"] and block["held_record_sha256"] == R.sha256_file(sandbox.out / "held_record.json")
+    assert block["family_outcome"] == S.gate["family_outcome"] and block["family_outcome"]["overall"] == "GNN_ONLY_PASS"
     assert block["doc_sha256"] == R.lf_sha256(R.DOC) and block["incidents"] == []
     assert set(block["evals"]) == set(PILOT) | {f"{n}__{S.supplement_tag}" for n in PILOT}
     assert len(block["fits"]) == 8 and all(v["record_sha256"] for v in block["fits"].values())
-    assert _status_line(sandbox) == "status: RUN"
+    assert _status_line(sandbox) == "status: RUN_GNN_ONLY_PASS"
     reloaded = yaml.safe_load(_config_text(sandbox))
-    assert [k for k in reloaded if R.DATED.match(k)] == ["amendment_1_2026_09_19", f"contract_frozen_{DATE}", f"timing_{DATE}", f"pilot_gate_record_{DATE}", f"run_record_{DATE}"]
+    assert [k for k in reloaded if R.DATED.match(k)] == ["amendment_1_2026_09_19", "amendment_2_2026_09_19", f"contract_frozen_{DATE}", f"timing_{DATE}",
+                                                          f"pilot_gate_record_{DATE}", f"run_record_{DATE}"]
     # nothing above the dated blocks changed except the status line
     original = (R.ROOT / "configs" / "universal_v2.yaml").read_text(encoding="utf-8").split(LF)   # the repository declaration, not the sandbox copy
     now = _config_text(sandbox).split(LF)
     cut = next(i for i, l in enumerate(now) if l.startswith(f"# -- UNIVERSAL_V2_CORE_CONTRACT"))
     diff = [(a, b) for a, b in zip(original, now[:cut]) if a != b]
-    assert diff == [("status: DECLARED_NOT_RUN", "status: RUN")]
+    assert diff == [("status: DECLARED_NOT_RUN", "status: RUN_GNN_ONLY_PASS")]

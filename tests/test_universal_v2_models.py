@@ -86,10 +86,10 @@ def world(tmp_path_factory):
     base = tmp_path_factory.mktemp("v2cache")
     contexts = {"typed": _dataset(rng, "typed", 300, True, base), "untyped": _dataset(rng, "untyped", 260, False, base)}
     bank, ctx2 = M.build_relation_bank(contexts)
-    # a synthetic core: the M3B retrieval / topology columns plus every depth column (the screen is not run here)
+    # a synthetic core: the M3B retrieval / topology columns plus every v2 column (the screen is not run here)
     # (splade_score_norm left out as the M3B screen dropped it, so the evidence substitution is exercised)
     core78 = [c for c in F.COLUMNS if F.GROUP_OF[c] in ("retrieval", "topology", "typed_relations_B") and c != "splade_score_norm"]
-    core = core78 + list(V.DEPTH_COLUMNS)
+    core = core78 + list(V.V2_COLUMNS)
     idx = np.asarray([V.IDX[c] for c in core], dtype=np.int64)
     idx78 = np.asarray([V.IDX[c] for c in core78], dtype=np.int64)
     pairs = [{"earlier": "splade_rr", "later": "splade_score_norm", "abs_spearman": 0.9985}]
@@ -371,10 +371,12 @@ def test_one_state_dict_handles_typed_and_structural_edges(world):
 # ── budgets, the gated block, the v2 pack, the sampler and loss identity ─────
 
 
-def test_parameter_budgets_hold_at_the_151_column_screen_input(world):
+def test_parameter_budgets_hold_at_the_164_column_screen_input(world):
     """The declared budgets (GNN arms <= 450,000, twins <= 350,000) at the widest
-    possible core: 78 + 73 = 151 columns; the control is the M3B GAT count."""
-    core = [f"c{i}" for i in range(78)] + list(V.DEPTH_COLUMNS)
+    possible core: 78 + 86 = 164 columns (amendment 2); the control is the
+    M3B GAT count."""
+    core = [f"c{i}" for i in range(78)] + list(V.V2_COLUMNS)
+    assert len(core) == 164
     inputs = {"columns": core, "base_local": 0, "evidence_local": [0, 1, 2, 3], "core78_columns": core[:78], "core78_base_local": 0,
               "core78_evidence_local": [0, 1, 2, 3]}
     counts = {}
@@ -391,7 +393,7 @@ def test_parameter_budgets_hold_at_the_151_column_screen_input(world):
 def test_the_gated_input_block_with_open_gates_is_the_m3b_input_block(world):
     batch = _batch(world, "typed")
     block_index = M.block_index_of(world.core)
-    assert int((block_index >= 0).sum()) == 73 and block_index.max() == 8 and (block_index[: len(world.core78)] == -1).all()
+    assert int((block_index >= 0).sum()) == 86 and block_index.max() == 8 and (block_index[: len(world.core78)] == -1).all()
     plain = M3.InputBlock(len(world.core), 64, world.inputs["base_local"], dropout=0.0)
     gated = M.GatedInputBlock(len(world.core), 64, world.inputs["base_local"], block_index, dropout=0.0)
     gated.load_state_dict(plain.state_dict(), strict=False)

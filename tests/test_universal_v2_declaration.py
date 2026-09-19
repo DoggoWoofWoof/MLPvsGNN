@@ -8,7 +8,9 @@ verbatim, M3B is pinned read-only by content hash ("Do not alter or rerun
 M3B" fails loudly on a byte change), the pilot is the three anchor datasets on
 development populations only, the gate thresholds are numbers above their
 frozen references, the gate / held split is recomputable from the M3B query
-ids, and every block appended later must be dated.
+ids, and every block appended later must be dated. Amendment 2 pins the raw
+contract as an exact ordered list: the code contract, the declaration and,
+once filed, the frozen contract must be one and the same list.
 """
 
 from __future__ import annotations
@@ -16,12 +18,15 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import sys
 from pathlib import Path
 
 import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(ROOT / "src"))
 CONFIG = ROOT / "configs" / "universal_v2.yaml"
 M3B = ROOT / "configs" / "m3b_controlled_comparison.yaml"
 M3B_EVAL = ROOT / "outputs" / "m3b" / "eval"
@@ -45,7 +50,8 @@ CONTRIBUTION_2 = (
 TRIO = ["metaqa", "2wiki", "squad"]
 CANDIDATES = ["u_mlp_v2", "u_mlp_v2_mix", "u_gnn_v2", "u_gnn_v2_ef"]
 ARMS = CANDIDATES + ["u_gnn_v2_core78", "gat_universal_v1_trio"]
-STATUSES = {"DECLARED_NOT_RUN", "PILOT_GATE_READ", "RUN", "RUN_PILOT_FAILED"}
+OVERALL = ("BOTH_PASS", "GNN_ONLY_PASS", "TWIN_ONLY_PASS", "PILOT_FAILED")     # amendment 2 family_status_vocabulary
+STATUSES = {"DECLARED_NOT_RUN", "PILOT_GATE_READ"} | {f"RUN_{o}" for o in OVERALL}
 DATED = re.compile(
     r"^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$"
 )
@@ -211,9 +217,10 @@ def test_the_contract_is_the_m3b_core_plus_the_depth_basis(decl):
     assert "ce584194a751" in c["base"]
     assert len(c["depth_basis_columns"]) == 13
     count = c["count"]
-    assert "= 64" in count and "142" in count   # as filed; amendment 1 adds the 9 mask columns
+    assert "= 64" in count and "142" in count   # as filed; amendment 1 adds the 9 mask columns, amendment 2 the 13 ordered columns and the pin
     amended = decl["amendment_1_2026_09_19"]["check_3_firewalls_made_explicit"]["availability_masks"]["count_amended"]
     assert "64 + 9 = 73" in amended and "151 raw" in amended
+    assert decl["amendment_2_2026_09_19"]["raw_contract_pinned"]["screen_input_columns"] == 164   # the count that stands (test_the_raw_contract_is_pinned...)
     prohibitions = " ".join(c["prohibitions"])
     for word in ("gold label", "test split", "dataset identity", "never edited"):
         assert word in prohibitions, word
@@ -398,3 +405,134 @@ def test_step_2_is_authorised_without_any_fit(amendment):
     assert "no fit" in step["not"] and "no timing run" in step["not"] and "no compilation" in step["not"]
     assert len(step["tests_required_beyond_shapes"]) >= 14
     assert amendment["status_after"] == "DECLARED_NOT_RUN"
+
+
+# ── amendment 2 (2026-09-19): the step-2 review; the raw contract pinned ─────
+
+
+@pytest.fixture(scope="module")
+def amendment2(decl) -> dict:
+    return decl["amendment_2_2026_09_19"]
+
+
+def sha_of_names(names) -> str:
+    return hashlib.sha256(",".join(names).encode("utf-8")).hexdigest()
+
+
+def test_the_step_3_ruling_is_filed_verbatim_and_its_corrections_are_named(amendment2):
+    ruling = " ".join(amendment2["ruling_verbatim"])
+    for phrase in ("GO for step 3, but make two corrections before the real caches are compiled/frozen",
+                   "pin the exact ordered feature-name list plus total count",
+                   "code contract == declaration contract == frozen contract",
+                   "add a bounded ordered, direction-sensitive relation-path channel for typed STRUCT paths at t=2/3",
+                   "no dataset-specific relation-ID table",
+                   "the step-3 compile report must show how often truncation actually occurs by dataset/hop",
+                   "GNN_GATE = PASS / FAIL; TWIN_GATE = PASS / FAIL; overall = BOTH_PASS / GNN_ONLY_PASS / TWIN_ONLY_PASS / PILOT_FAILED",
+                   "AUTHORIZE STEP 3 ONLY", "No model fitting", "No V2_GATE or V2_HELD reads", "STOP_FOR_REVIEW before the one-epoch timing run",
+                   "MetaQA must not later receive extra training weight"):
+        assert phrase in ruling, phrase
+    assert amendment2["status_after"] == "DECLARED_NOT_RUN" and "bfdc4b2" in amendment2["reviewed"]
+    decided = squash(amendment2["correction_1_the_raw_contract_pinned"]["decided"])
+    assert "73 is intended" in decided and "78 + 86 = 164" in decided and "197 columns" in decided
+
+
+def test_the_raw_contract_is_pinned_and_equals_the_code_contract(decl, m3b, amendment2):
+    """Correction 1: code contract == declaration contract. The pinned ordered list is the module's V2_COLUMNS,
+    the counts and both shas agree, and the M3B 78 are the frozen M3B core in its order."""
+    from mp_retrieval import universal_v2_features as V
+    pin = amendment2["raw_contract_pinned"]
+    core78 = list(m3b["qls_u_core_contract_2026_09_13"]["surviving"])
+    assert pin["m3b_core"] == 78 == len(core78)
+    assert pin["m3b_core_sha256"] == sha_of_names(core78) == m3b["qls_u_core_contract_2026_09_13"]["sha256_of_comma_joined_surviving_names"]
+    assert list(pin["v2_column_names"]) == list(V.V2_COLUMNS)
+    assert pin["v2_column_names_sha256"] == sha_of_names(V.V2_COLUMNS)
+    assert pin["screen_input_sha256"] == sha_of_names(core78 + list(V.V2_COLUMNS)) == sha_of_names(V.screen_input_columns(core78))
+    assert (pin["depth_basis_columns"], pin["ordered_relation_path_columns"], pin["v2_columns"]) == (V.N_DEPTH, V.N_ORDERED, V.N_V2) == (73, 13, 86)
+    assert pin["screen_input_columns"] == 78 + 86 == 164 == len(V.screen_input_columns(core78))
+    assert pin["cache_layout_columns"] == V.N_COLUMNS == 111 + 86 == 197
+    assert len(set(pin["v2_column_names"])) == 86 and not set(pin["v2_column_names"]) & set(core78)
+    ordered = [c for c in pin["v2_column_names"] if c.startswith("opath_")]
+    assert len(ordered) == 13 and ordered == list(V.ORDERED_COLUMNS) and pin["v2_column_names"][-13:] == ordered
+
+
+def test_the_frozen_contract_when_filed_is_the_pinned_raw_contract_minus_the_recorded_drops(decl, m3b, amendment2):
+    """Correction 1: declaration contract == frozen contract, once contract_frozen_<date> exists; until then the
+    declaration carries no frozen block (step 3 is where it appears)."""
+    keys = [k for k in decl if k.startswith("contract_frozen_")]
+    pin = amendment2["raw_contract_pinned"]
+    core78 = list(m3b["qls_u_core_contract_2026_09_13"]["surviving"])
+    raw = core78 + list(pin["v2_column_names"])
+    rule_sha = hashlib.sha256(str(decl["information_contract_v2"]["screen"]).strip().encode("utf-8")).hexdigest()
+    for key in keys:
+        frozen = decl[key]
+        assert frozen["raw_contract_sha256"] == pin["screen_input_sha256"] and frozen["screened_columns"] == 164
+        assert frozen["raw_contract_pinned_in"] == "amendment_2_2026_09_19"
+        assert frozen["surviving"][:78] == core78 and not set(frozen["dropped"]) & set(core78)
+        assert [c for c in raw if c not in frozen["surviving"]] == list(frozen["dropped"]) and set(frozen["surviving"]) <= set(raw)
+        assert frozen["sha256_of_comma_joined_surviving_names"] == sha_of_names(frozen["surviving"]) == frozen["hashes"]["surviving_columns_sha256"]
+        assert frozen["hashes"]["raw_contract_sha256"] == pin["screen_input_sha256"]
+        assert frozen["hashes"]["screen_rule_sha256"] == frozen["screen_rule_sha256"] == rule_sha
+        assert len(frozen["hashes"]["six_caches_combined_sha256"]) == 64
+        for name in TRIO:
+            for kind in ("fit", "select"):
+                rec = frozen["compile_record"][name][kind]
+                assert len(rec["cache_combined_sha256"]) == 64 and rec["diagnostics"]["k_rel"] == 4 and "all" in rec["diagnostics"]["by_hop"]
+                assert rec["peak_rss_bytes"] > 0 and rec["queries_per_second"] > 0 and rec["cache_bytes"] > 0
+        assert set(frozen["compile_record"]["metaqa"]["fit"]["diagnostics"]["by_hop"]) >= {"1hop", "2hop", "3hop", "all"}
+
+
+def test_the_ordered_relation_path_channel_is_declared_bounded_semantic_and_directional(amendment2):
+    c2 = amendment2["correction_2_ordered_relation_path_channel"]
+    assert set(c2["columns"]) == {"opath_h{t}_q{k}", "opath_h{t}_dir{k}", "opath_h{t}_adj{k}{k+1}"}
+    best = squash(c2["best_walk"])
+    assert "relpath_max_h{t}" in best and "back-pointer" in best and "(owner, neighbour, relation)" in best
+    direction = squash(c2["direction_convention"])
+    assert "dir 2" in direction and "head -> tail (+1)" in direction and "dir 1" in direction and "(-1)" in direction
+    props = c2["properties"]
+    assert "one walk per node and depth" in props["bounded"] and "13 scalars" in props["fixed_dimensional"]
+    assert "no relation id" in props["semantic"] and "no per-dataset table" in props["semantic"]
+    assert "equals relpath_max_h{t}" in props["identity"]
+    budgets = c2["parameter_budgets_at_164_columns"]
+    assert budgets["holds"] is True
+    assert max(budgets[a] for a in ("u_mlp_v2", "u_mlp_v2_mix")) <= budgets["twin_budget"] == 350000
+    assert max(budgets[a] for a in ("u_gnn_v2", "u_gnn_v2_ef", "u_gnn_v2_core78")) <= budgets["gnn_budget"] == 450000
+    assert budgets["gat_universal_v1_trio"] == 353410
+    assert len(c2["tests_added"]) >= 4
+
+
+def test_the_family_status_vocabulary_and_the_one_family_rule(amendment2):
+    fam = amendment2["family_status_vocabulary"]
+    assert set(fam["per_family"]) == {"GNN_GATE", "TWIN_GATE"} and set(fam["overall"]) == set(OVERALL)
+    assert fam["statuses"]["after_the_gate"] == "PILOT_GATE_READ"
+    assert set(fam["statuses"]["after_the_run_record"].split(" | ")) == {f"RUN_{o}" for o in OVERALL} == STATUSES - {"DECLARED_NOT_RUN", "PILOT_GATE_READ"}
+    rule = squash(fam["reporting_rule"])
+    assert "has passed only under BOTH_PASS" in rule and "no sentence describes GNN_ONLY_PASS or TWIN_ONLY_PASS as a pass of the pair" in rule
+    assert "continues on GNN_ONLY_PASS or TWIN_ONLY_PASS" in squash(fam["continuation"])
+
+
+def test_the_training_mixture_is_pinned_balanced_and_metaqa_gets_no_extra_weight(amendment2):
+    mix = amendment2["training_mixture_pinned"]
+    assert "mp_retrieval.m3b_train.draw_indices" in mix["sampler"] and "per_query" in mix["sampler"]
+    assert "uniformly among the three pilot datasets" in mix["sampler"] and "16 query draws" in mix["sampler"] and "without replacement" in mix["sampler"]
+    assert mix["balance"].startswith("balanced, not proportional") and "5,960" in mix["balance"] and "5,928" in mix["balance"] and "5,856" in mix["balance"]
+    assert "mp_retrieval.m3b_models.listwise_loss" in mix["loss"] and "unweighted mean over the drawn queries" in mix["loss"] and "no per-dataset weight" in mix["loss"]
+    assert "receives no extra weight" in mix["metaqa"] and "because it is the weak dataset" in mix["metaqa"]
+    for word in ("per-dataset loss weights", "per-dataset batch quotas", "curriculum", "over-sampling of any dataset", "between arms"):
+        assert word in mix["not_allowed"], word
+    assert "6 epochs of 2,000 batches" in mix["optimiser_and_budget"] and "gat_universal_v1_trio" in mix["optimiser_and_budget"]
+
+
+def test_step_3_is_authorised_without_any_fit_or_gate_read(amendment2):
+    step = amendment2["step_3_authorised"]
+    what = " ".join(step["what"])
+    for phrase in ("--stage compile", "K_REL truncation by dataset and hop", "ordered relation-path availability", "peak RSS", "pre-registered screen only",
+                   "UNIVERSAL_V2_CORE_CONTRACT", "six compiled cache directories", "STOP_FOR_REVIEW before the one-epoch timing run"):
+        assert phrase in what, phrase
+    not_ = " ".join(step["not"])
+    assert "no model fitting" in not_ and "no timing run" in not_ and "no V2_GATE or V2_HELD_CONFIRMATION read" in not_ and "no eval population compiled" in not_
+    assert "committed before the first real cache is compiled" in step["order"]
+    k = amendment2["k_rel_truncation_report_required"]
+    assert "K_REL = 4" in k["what"] and "by dataset and (metaqa) by hop" in k["what"] and "none is pre-registered" in k["decision_rule"]
+    assert "CompileDiagnostics" in k["where"]
+    sup = " ".join(amendment2["supersedes"])
+    assert "64 / 142 / 151" in sup and "RUN / RUN_PILOT_FAILED" in sup and "86 / 164" in sup

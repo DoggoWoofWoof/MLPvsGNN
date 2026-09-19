@@ -62,15 +62,16 @@ for _p in (ROOT / "src", ROOT / "scripts"):
 import m3b_run as M3B_RUN  # noqa: E402  (pinned; imported, never edited)
 from universal_v2_split_audit import in_v2_gate  # noqa: E402
 from mp_retrieval import m3b_pools  # noqa: E402
-from mp_retrieval.m3b_features import FAMILIES, IN_POOL_CAP, DenseNodes, QueryInputs, typed_pool_edges  # noqa: E402
+from mp_retrieval.m3b_features import FAMILIES, DenseNodes, QueryInputs  # noqa: E402
 from mp_retrieval.m3b_models import parameter_count  # noqa: E402
 from mp_retrieval.m3b_train import (METRIC_NAMES, CarveData, draw_indices, fit_model, listwise_loss, mrr_audit,  # noqa: E402
                                     pack_parts, rank_metrics)
-from mp_retrieval.universal_v2_features import (CONTRACT_NAME, IDX, N_COLUMNS, N_DEPTH, CacheWriterV2, compile_query_v2,  # noqa: E402
-                                                 contract_json_v2, screen_input_columns)
+from mp_retrieval.universal_v2_features import (BLOCK_OF, BLOCKS, CONTRACT_NAME, DEPTHS, IDX, MASK_COLUMNS, N_COLUMNS, N_DEPTH,  # noqa: E402
+                                                 N_ORDERED, N_V2, ORDERED_COLUMNS, ORDERED_DEPTHS, V2_COLUMNS, CacheWriterV2,
+                                                 compile_query_v2, contract_json_v2, screen_input_columns)
 from mp_retrieval.universal_v2_models import (ARMS, FAMILY_OF_ARM, GNN_CANDIDATES, K_REL, N_EDGE_FEATURES_V2, PARAMETER_BUDGET,  # noqa: E402
                                                TWIN_CANDIDATES, CarveDataV2, UGNNv2, batch_view, build_arm, build_relation_bank,
-                                               check_parameter_budget, pack_queries_v2, relation_slot_stats, resolve_evidence_columns)
+                                               check_parameter_budget, pack_queries_v2, resolve_evidence_columns)
 
 CONFIG = ROOT / "configs" / "universal_v2.yaml"
 M3B_CONFIG = ROOT / "configs" / "m3b_controlled_comparison.yaml"
@@ -94,6 +95,8 @@ M3B_REFERENCES = {"gat_universal_v1": "gat_universal_v1__H128_L2__s0", "gat_no_m
 BOOTSTRAP = {"resamples": 1000, "seed": 0, "level": 95}     # measurement.paired_procedures
 DATED = re.compile("^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$")
 LF = chr(10)
+FAMILY_GATES = {"gnn": "GNN_GATE", "twin": "TWIN_GATE"}    # amendment 2 family_status_vocabulary
+OVERALL = {(True, True): "BOTH_PASS", (True, False): "GNN_ONLY_PASS", (False, True): "TWIN_ONLY_PASS", (False, False): "PILOT_FAILED"}
 
 
 # ── the declaration, the pins, the M3B core ──────────────────────────────────
@@ -156,6 +159,135 @@ def frozen_contract_v2(cfg: dict) -> tuple[str, dict]:
     if not keys:
         raise SystemExit("no contract_frozen_<date> block in the declaration: the screen is filed before any later stage (check_3)")
     return keys[-1], cfg[keys[-1]]
+
+
+def pinned_raw_contract(cfg: dict, core78: list[str]) -> tuple[str, dict]:
+    """amendment 2 raw_contract_pinned: the exact ordered v2 column names and the screen-input count and sha, filed
+    before any real cache; the code contract must equal it (correction 1: code == declaration == frozen)."""
+    keys = [k for k in dated_blocks(cfg, "amendment") if isinstance(cfg[k], dict) and isinstance(cfg[k].get("raw_contract_pinned"), dict)]
+    if not keys:
+        raise SystemExit("no dated amendment pins the raw contract (raw_contract_pinned); the screen refuses to run on an unpinned list")
+    key, pin = keys[-1], cfg[keys[-1]]["raw_contract_pinned"]
+    names = screen_input_columns(core78)
+    problems = []
+    if list(pin["v2_column_names"]) != list(V2_COLUMNS):
+        problems.append("v2_column_names differ from the code (universal_v2_features.V2_COLUMNS)")
+    for field, value in (("m3b_core", M3B_CORE_SIZE), ("depth_basis_columns", N_DEPTH), ("ordered_relation_path_columns", N_ORDERED),
+                         ("v2_columns", N_V2), ("screen_input_columns", len(names)), ("cache_layout_columns", N_COLUMNS)):
+        if int(pin[field]) != value:
+            problems.append(f"{field}: declaration {pin[field]} vs code {value}")
+    if pin["v2_column_names_sha256"] != sha_of_names(V2_COLUMNS):
+        problems.append("v2_column_names_sha256 differs from the code")
+    if pin["screen_input_sha256"] != sha_of_names(names):
+        problems.append("screen_input_sha256 differs from the code (the M3B 78 followed by the 86 v2 columns)")
+    if problems:
+        raise SystemExit(f"{key}.raw_contract_pinned does not match the code contract: " + "; ".join(problems) + "; nothing is compiled or screened")
+    return key, pin
+
+
+def hop_of(ids, dataset: str) -> np.ndarray:
+    """measurement.slices_reported: metaqa by hop, read from the query id (metaqa:<k>hop:...) exactly as the
+    eval stage slices it; 0 (one slice, all) elsewhere."""
+    if dataset == "metaqa":
+        return np.asarray([int(q.split(":")[1][0]) for q in ids], dtype=np.int64)
+    return np.zeros(len(ids), dtype=np.int64)
+
+
+def hop_label(h: int) -> str:
+    return "all" if h == 0 else f"{h}hop"
+
+
+class CompileDiagnostics:
+    """amendment 2 / step 3 compile diagnostics over EVERY query of the carve, by hop (metaqa) or in one slice: the
+    K_REL relation-slot truncation (structural pairs carrying more than K_REL stored relations, with the histogram of
+    relations per pair) and the availability of the typed / ordered relation-path channel (candidate rows and gold rows
+    with a typed STRUCT walk of length t, queries with any such row, best walks with an inverse step, best walks that
+    compose two different relations)."""
+
+    def __init__(self, dataset: str):
+        self.dataset = dataset
+        self.acc: dict[int, dict] = {}
+        self.walk_cols = {t: IDX[f"typed_walks_h{t}"] for t in DEPTHS}
+        self.dir_cols = {t: [IDX[f"opath_h{t}_dir{k}"] for k in range(1, t + 1)] for t in ORDERED_DEPTHS}
+        self.adj_cols = {t: [IDX[f"opath_h{t}_adj{k}{k + 1}"] for k in range(1, t)] for t in ORDERED_DEPTHS}
+
+    def _slot(self, hop: int) -> dict:
+        if hop not in self.acc:
+            self.acc[hop] = {"queries": 0, "rows": 0, "gold_rows": 0, "pairs": 0, "truncated": 0, "entries": 0, "pairs_with": [],
+                             "queries_with_truncation": 0, "typed_queries": 0,
+                             **{f"rows_walk_h{t}": 0 for t in DEPTHS}, **{f"gold_rows_walk_h{t}": 0 for t in DEPTHS},
+                             **{f"queries_walk_h{t}": 0 for t in DEPTHS}, **{f"queries_gold_walk_h{t}": 0 for t in DEPTHS},
+                             **{f"rows_inverse_step_h{t}": 0 for t in ORDERED_DEPTHS}, **{f"rows_heterogeneous_h{t}": 0 for t in ORDERED_DEPTHS}}
+        return self.acc[hop]
+
+    def add(self, hop: int, X: np.ndarray, gold_local: np.ndarray, pair_counts: dict | None) -> None:
+        a = self._slot(int(hop))
+        a["queries"] += 1
+        a["rows"] += int(X.shape[0])
+        gold = np.asarray(gold_local, dtype=np.int64)
+        a["gold_rows"] += int(gold.size)
+        if pair_counts:
+            a["typed_queries"] += 1
+            a["pairs"] += pair_counts["pairs"]
+            a["entries"] += pair_counts["entries"]
+            hist = pair_counts["pairs_with"]
+            if len(hist) > len(a["pairs_with"]):
+                a["pairs_with"].extend([0] * (len(hist) - len(a["pairs_with"])))
+            for k, c in enumerate(hist):
+                a["pairs_with"][k] += int(c)
+            truncated = int(sum(hist[K_REL:]))
+            a["truncated"] += truncated
+            a["queries_with_truncation"] += int(truncated > 0)
+        for t in DEPTHS:
+            walk = X[:, self.walk_cols[t]] > 0
+            a[f"rows_walk_h{t}"] += int(walk.sum())
+            a[f"queries_walk_h{t}"] += int(walk.any())
+            gw = walk[gold] if gold.size else walk[:0]
+            a[f"gold_rows_walk_h{t}"] += int(gw.sum())
+            a[f"queries_gold_walk_h{t}"] += int(gw.any())
+        for t in ORDERED_DEPTHS:
+            has = X[:, self.walk_cols[t]] > 0
+            a[f"rows_inverse_step_h{t}"] += int((X[:, self.dir_cols[t]] < 0).any(axis=1).sum())
+            a[f"rows_heterogeneous_h{t}"] += int((has & (X[:, self.adj_cols[t]] < 1.0 - 1e-4).any(axis=1)).sum())
+
+    @staticmethod
+    def _merge(total: dict, a: dict) -> None:
+        for k, v in a.items():
+            if k == "pairs_with":
+                if len(v) > len(total[k]):
+                    total[k].extend([0] * (len(v) - len(total[k])))
+                for i, c in enumerate(v):
+                    total[k][i] += c
+            else:
+                total[k] += v
+
+    def summary(self) -> dict:
+        hops = sorted(self.acc)
+        slots = {hop_label(h): self.acc[h] for h in hops}
+        if len(hops) > 1:
+            total = self._slot(-1)
+            for h in hops:
+                self._merge(total, self.acc[h])
+            slots["all"] = self.acc.pop(-1)
+        out = {"k_rel": K_REL, "by_hop": {}}
+        for label, a in slots.items():
+            q, rows, gold = max(a["queries"], 1), max(a["rows"], 1), max(a["gold_rows"], 1)
+            out["by_hop"][label] = {
+                "queries": a["queries"], "rows": a["rows"], "gold_rows": a["gold_rows"], "typed_queries": a["typed_queries"],
+                "relation_slots": {"pairs": a["pairs"], "entries": a["entries"], "pairs_truncated": a["truncated"],
+                                   "fraction_of_pairs_truncated": round(a["truncated"] / max(a["pairs"], 1), 6),
+                                   "queries_with_any_truncated_pair": a["queries_with_truncation"],
+                                   "fraction_of_queries_with_any_truncated_pair": round(a["queries_with_truncation"] / q, 6),
+                                   "relations_per_pair_histogram": {str(k + 1): c for k, c in enumerate(a["pairs_with"]) if c},
+                                   "max_relations_per_pair": len(a["pairs_with"])},
+                "typed_walk_availability": {f"h{t}": {"rows": round(a[f"rows_walk_h{t}"] / rows, 6), "gold_rows": round(a[f"gold_rows_walk_h{t}"] / gold, 6),
+                                                       "queries": round(a[f"queries_walk_h{t}"] / q, 6), "queries_gold": round(a[f"queries_gold_walk_h{t}"] / q, 6)}
+                                            for t in DEPTHS},
+                "ordered_path": {f"h{t}": {"rows_with_walk": a[f"rows_walk_h{t}"],
+                                           "fraction_of_walks_with_an_inverse_step": round(a[f"rows_inverse_step_h{t}"] / max(a[f"rows_walk_h{t}"], 1), 6),
+                                           "fraction_of_walks_composing_different_relations": round(a[f"rows_heterogeneous_h{t}"] / max(a[f"rows_walk_h{t}"], 1), 6)}
+                                 for t in ORDERED_DEPTHS}}
+        return out
 
 
 def training_overrides(cfg: dict) -> list[tuple[str, dict]]:
@@ -222,11 +354,18 @@ def model_inputs(cfg: dict, cfg_m3b: dict) -> dict:
     if sha_of_names(names) != frozen["sha256_of_comma_joined_surviving_names"]:
         raise SystemExit(f"{key}: the surviving list does not match its sha")
     core78, pairs, sha78 = m3b_core(cfg_m3b)
+    pin_key, _ = pinned_raw_contract(cfg, core78)
     if names[:M3B_CORE_SIZE] != core78:
         raise SystemExit(f"{key}: the first {M3B_CORE_SIZE} survivors are not the M3B core in its order")
     unknown = [n for n in names if n not in IDX]
     if unknown:
         raise SystemExit(f"{key}: columns outside the v2 layout: {unknown}")
+    screened = screen_input_columns(core78)
+    if frozen.get("raw_contract_sha256") != sha_of_names(screened) or int(frozen.get("screened_columns", -1)) != len(screened):
+        raise SystemExit(f"{key}: the frozen block was screened from a raw contract other than the one the code and {pin_key} pin "
+                         "(code == declaration == frozen is required)")
+    if [n for n in screened if n not in names] != list(frozen.get("dropped", {})):
+        raise SystemExit(f"{key}: the survivors are not the pinned raw contract minus the recorded drops, in order")
     evidence, subs = resolve_evidence_columns(names, pairs)
     evidence78, subs78 = resolve_evidence_columns(core78, pairs)
     return {"contract_block": key, "columns": names, "column_indices": np.asarray([IDX[n] for n in names], dtype=np.int64),
@@ -302,26 +441,23 @@ class DiskGuardV2:
 # ── compile: the fit and select carves under the v2 contract ─────────────────
 
 
-def compile_population_v2(prep, stores: dict, nodes, rel_table, out_dir: Path, meta: dict, gold_local_of, log=print, guard=None,
-                          slot_sample: int = 10) -> dict:
-    """scripts/m3b_compile.compile_population under a v2 name: compile_query_v2 into a CacheWriterV2; the
-    relation-slot truncation (K_REL bank rows per structural message edge) sampled every slot_sample-th query."""
+def compile_population_v2(prep, stores: dict, nodes, rel_table, out_dir: Path, meta: dict, gold_local_of, log=print, guard=None) -> dict:
+    """scripts/m3b_compile.compile_population under a v2 name: compile_query_v2 into a CacheWriterV2, and the
+    step-3 diagnostics over every query (CompileDiagnostics: the K_REL relation-slot truncation by dataset and hop,
+    the typed / ordered relation-path availability), the wall time, queries per second, peak RSS and bytes."""
     timings: dict = {}
     writer = CacheWriterV2(out_dir, meta)
     pop = prep.pop
-    slots = {"k_rel": K_REL, "sampled_queries": 0, "pairs": 0, "truncated": 0, "entries": 0}
+    diag = CompileDiagnostics(meta["dataset"])
+    hops = hop_of(pop.ids, meta["dataset"])
     t0 = time.time()
     for i in range(pop.idx.size):
         inp = QueryInputs(prep.qemb[i], prep.dense_ids[i], prep.dense_scores[i], prep.splade_ids[i], prep.splade_scores[i])
-        compiled = compile_query_v2(inp, prep.pools[i], prep.seeds[i], stores, nodes, rel_table, timings=timings)
+        pair_counts: dict = {}
+        compiled = compile_query_v2(inp, prep.pools[i], prep.seeds[i], stores, nodes, rel_table, timings=timings, pair_counts=pair_counts)
         gold_local = gold_local_of(prep.pools[i], pop.golds[i])
         writer.add(pop.ids[i], int(pop.idx[i]), prep.qemb[i], compiled, gold_local, int(pop.golds[i].size))
-        if rel_table is not None and i % slot_sample == 0:
-            _, pair_id, _ = typed_pool_edges(stores["structural"], compiled.pool, IN_POOL_CAP)
-            st = relation_slot_stats(pair_id)
-            slots["sampled_queries"] += 1
-            for k in ("pairs", "truncated", "entries"):
-                slots[k] += st[k]
+        diag.add(int(hops[i]), compiled.scalars, gold_local, pair_counts if rel_table is not None else None)
         if (i + 1) % 500 == 0:
             log(f"      {pop.kind}: {i + 1}/{pop.idx.size} queries, {(time.time() - t0) / (i + 1) * 1000:.1f} ms/query")
             if guard is not None:
@@ -329,12 +465,17 @@ def compile_population_v2(prep, stores: dict, nodes, rel_table, out_dir: Path, m
     seconds = time.time() - t0
     written = writer.write()
     n = max(1, pop.idx.size)
-    slots["fraction_of_pairs_truncated"] = round(slots["truncated"] / max(slots["pairs"], 1), 6)
-    written.update({"compile_seconds": round(seconds, 1), "ms_per_query": round(1000 * seconds / n, 2),
+    diagnostics = diag.summary()
+    overall = diagnostics["by_hop"]["all"]["relation_slots"]
+    slots = {"k_rel": K_REL, "queries": int(pop.idx.size), "pairs": overall["pairs"], "truncated": overall["pairs_truncated"], "entries": overall["entries"],
+             "fraction_of_pairs_truncated": overall["fraction_of_pairs_truncated"],
+             "fraction_of_queries_with_any_truncated_pair": overall["fraction_of_queries_with_any_truncated_pair"]}
+    written.update({"compile_seconds": round(seconds, 1), "ms_per_query": round(1000 * seconds / n, 2), "queries_per_second": round(n / max(seconds, 1e-9), 3),
                     "group_seconds_per_1000_queries": {g: round(1000 * s / n, 2) for g, s in timings.items()},
                     "expansion_seconds": round(prep.expansion_seconds, 1),
                     "seeds_added_mean": float(prep.seeds_added.mean()) if prep.seeds_added.size else 0.0,
-                    "queries_with_seeds_added": int((prep.seeds_added > 0).sum()), "relation_slots": slots})
+                    "queries_with_seeds_added": int((prep.seeds_added > 0).sum()), "relation_slots": slots,
+                    "peak_rss_bytes": M3B_RUN.peak_rss_bytes(), "diagnostics": diagnostics})
     (out_dir / "meta.json").write_text(json.dumps(written, indent=1), encoding="utf-8")
     return written
 
@@ -355,9 +496,14 @@ def stage_compile(cfg: dict, cfg_m3b: dict, cfg_h: dict, datasets: list[str], ki
     guard = DiskGuardV2(cfg)
     guard.check()
     core78, _, sha78 = m3b_core(cfg_m3b)
+    pin_key, _ = pinned_raw_contract(cfg, core78)       # correction 1: the code contract equals the pinned declaration, or nothing compiles
     contract = contract_json_v2(core78)
     contract["m3b_core_sha256"] = sha78
+    contract["raw_contract_pinned_in"] = pin_key
+    contract["screen_input_sha256"] = sha_of_names(screen_input_columns(core78))
     (OUT / "feature_contract.json").write_text(json.dumps(contract, indent=1), encoding="utf-8")
+    log(f"   {CONTRACT_NAME}: {N_COLUMNS} columns in the cache layout; screen input {len(screen_input_columns(core78))} = {M3B_CORE_SIZE} + {N_V2} "
+        f"({N_DEPTH} depth basis + {N_ORDERED} ordered relation path), pinned by {pin_key}")
     carves = cfg["m3b_incumbents"]["training_carves_reused_here"]
     for name in datasets:
         t_ds = time.time()
@@ -439,7 +585,8 @@ def column_stats_v2(cache_dir: Path, take: np.ndarray, chunk_rows: int = 500_000
 
 def stage_screen(cfg: dict, cfg_m3b: dict, datasets: list[str], log=print) -> dict:
     """information_contract_v2.screen: the M3B feature_screen rule verbatim (availability, variance, |Spearman| >= 0.98
-    with the later member dropped) on the 151 raw columns of the pilot fit caches, read from
+    with the later member dropped) on the 164 raw columns of the pilot fit caches (the M3B 78 + the 86 v2 columns
+    pinned by amendment 2, checked against the code before anything is read), read from
     outputs/universal_v2/cache/<dataset>/fit only. The M3B 78 come first and always survive by construction (they
     are the earlier members and were screened by M3B; a re-screen here would let the trio edit a frozen list) --
     what the rule would have said about them is recorded, not applied. No select cache and no eval population is read."""
@@ -449,7 +596,11 @@ def stage_screen(cfg: dict, cfg_m3b: dict, datasets: list[str], log=print) -> di
     if dated_blocks(cfg, "contract_frozen"):
         raise SystemExit("contract_frozen_<date> is filed; the screen is not repeated (a different list is a new dated block)")
     core78, _, sha78 = m3b_core(cfg_m3b)
+    pin_key, _ = pinned_raw_contract(cfg, core78)
     names = screen_input_columns(core78)
+    raw_sha = sha_of_names(names)
+    rule_text = str(cfg["information_contract_v2"]["screen"]).strip()
+    rule_sha = hashlib.sha256(rule_text.encode("utf-8")).hexdigest()
     take = np.asarray([IDX[n] for n in names], dtype=np.int64)
     n_in = len(names)
     dirs = {name: screen_cache_dir(name) for name in datasets}
@@ -461,8 +612,11 @@ def stage_screen(cfg: dict, cfg_m3b: dict, datasets: list[str], log=print) -> di
         meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
         scalars = np.load(d / "scalars.npy", mmap_mode="r")
         samples.append(np.asarray(scalars[::stride], dtype=np.float64)[:, take])
+        avail_of = dict(zip(names, stats["availability"].round(6).tolist()))
         per_dataset[name] = {"fit_rows": stats["rows"], "availability": stats["availability"].round(6).tolist(),
                              "variance": stats["variance"].round(8).tolist(),
+                             "block_availability": {b: {m: avail_of[m] for m in MASK_COLUMNS if BLOCK_OF[m] == b} for b in BLOCKS},
+                             "constant_columns": [c for c, v in zip(names, stats["variance"]) if v <= 0],
                              "cost": {"ms_per_query": meta.get("ms_per_query"), "group_seconds_per_1000_queries": meta.get("group_seconds_per_1000_queries"),
                                       "candidates_mean": meta.get("candidates_mean"), "bytes_per_row": 2 * N_COLUMNS}}
         log(f"   {name}: {stats['rows']} fit rows screened ({n_in} columns)")
@@ -488,30 +642,50 @@ def stage_screen(cfg: dict, cfg_m3b: dict, datasets: list[str], log=print) -> di
     reasons = {c: reason(k) for k, c in enumerate(names) if dropped[k]}
     core_would = {c: reason(k) for k, c in enumerate(names) if would_drop[k] and protected[k]}
     core_sha = sha_of_names(surviving)
+    surviving_v2 = [c for c in surviving if c in BLOCK_OF]
     screen = {"utc": utc(), "sample_rows": int(sample.shape[0]), "stride": stride, "total_fit_rows": total_rows,
               "duplicate_threshold": m3b_compile.DUPLICATE_RHO, "unavailable_below": m3b_compile.UNAVAILABLE_BELOW,
+              "rule": rule_text, "screen_rule_sha256": rule_sha, "raw_contract_pinned_in": pin_key, "raw_contract_sha256": raw_sha,
               "columns": names, "m3b_core": {"size": M3B_CORE_SIZE, "sha256": sha78, "protected": True,
                                              "would_have_dropped_under_the_trio_statistics": core_would},
+              "v2_columns": {"screened": N_V2, "depth_basis": N_DEPTH, "ordered_relation_path": N_ORDERED, "surviving": len(surviving_v2),
+                             "depth_basis_surviving": sum(c not in ORDERED_COLUMNS for c in surviving_v2),
+                             "ordered_relation_path_surviving": sum(c in ORDERED_COLUMNS for c in surviving_v2)},
+              "constant_columns_everywhere": [c for c, z in zip(names, zero_variance_everywhere) if z],
+              "unavailable_everywhere": [c for c, z in zip(names, unavailable_everywhere) if z],
               "per_dataset": per_dataset,
               "duplicate_pairs": [{"earlier": names[i], "later": names[j], "abs_spearman": round(r, 4)} for i, j, r in pairs],
               "dropped": reasons, "surviving": surviving, "core_contract_sha256": core_sha,
               "abs_spearman_max_offdiag": {names[i]: round(float(np.max(np.delete(C[i], i))), 4) for i in range(n_in)},
               "read": "outputs/universal_v2/cache/<dataset>/fit only (check_3)"}
     (OUT / "feature_screen.json").write_text(json.dumps(screen, indent=1), encoding="utf-8")
-    block = {"name": "UNIVERSAL_V2_CORE_CONTRACT", "utc": screen["utc"], "screened_columns": n_in, "surviving_columns": len(surviving),
+    block = {"name": "UNIVERSAL_V2_CORE_CONTRACT", "utc": screen["utc"], "raw_contract_pinned_in": pin_key, "raw_contract_sha256": raw_sha,
+             "screened_columns": n_in, "surviving_columns": len(surviving),
              "m3b_core_first": {"size": M3B_CORE_SIZE, "sha256": sha78, "always_survive": True,
                                 "would_have_dropped_under_the_trio_statistics": core_would},
-             "depth_basis_screened": N_DEPTH, "depth_basis_surviving": len(surviving) - M3B_CORE_SIZE, "dropped": reasons,
+             "v2_columns_screened": N_V2, "depth_basis_screened": N_DEPTH, "ordered_relation_path_screened": N_ORDERED,
+             "v2_columns_surviving": len(surviving_v2), "depth_basis_surviving": screen["v2_columns"]["depth_basis_surviving"],
+             "ordered_relation_path_surviving": screen["v2_columns"]["ordered_relation_path_surviving"], "dropped": reasons,
+             "constant_columns_everywhere": screen["constant_columns_everywhere"], "unavailable_everywhere": screen["unavailable_everywhere"],
              "duplicate_pairs": screen["duplicate_pairs"], "sha256_of_comma_joined_surviving_names": core_sha, "surviving": surviving,
-             "screen_file": "outputs/universal_v2/feature_screen.json", "rule_applied": str(cfg["information_contract_v2"]["screen"]).strip()}
+             "screen_file": "outputs/universal_v2/feature_screen.json", "rule_applied": rule_text, "screen_rule_sha256": rule_sha}
     text = yaml.safe_dump(block, sort_keys=False, width=110)
     (OUT / "universal_v2_core_contract_block.yaml").write_text(text, encoding="utf-8")
-    log(f"screen: {n_in} columns in, {len(surviving)} survive ({len(surviving) - M3B_CORE_SIZE} depth-basis), sha {core_sha[:12]}; "
-        f"dropped {len(reasons)}; M3B core would-have-dropped {len(core_would)} (recorded, not applied)")
+    log(f"screen: {n_in} columns in (raw contract {raw_sha[:12]}, pinned by {pin_key}), {len(surviving)} survive ({len(surviving_v2)} of the {N_V2} v2 "
+        f"columns), sha {core_sha[:12]}; dropped {len(reasons)}; M3B core would-have-dropped {len(core_would)} (recorded, not applied)")
     return screen
 
 
 # ── file: the dated blocks, each copied from its sidecar once ────────────────
+
+
+def cache_hashes(cache_dir: Path) -> dict:
+    """Every array file of one compiled carve hashed (meta.json excluded: it is hashed on its own), and one combined
+    sha256 over the sorted name:sha lines (amendment 2 step 3 item 7: the three compiled caches are hashed)."""
+    files = sorted(p for p in cache_dir.iterdir() if p.is_file() and p.name != "meta.json")
+    per_file = {p.name: {"sha256": sha256_file(p), "bytes": p.stat().st_size} for p in files}
+    combined = hashlib.sha256(LF.join(f"{name}:{v['sha256']}" for name, v in per_file.items()).encode("utf-8")).hexdigest()
+    return {"files": per_file, "combined_sha256": combined, "bytes": sum(v["bytes"] for v in per_file.values())}
 
 
 def stage_file(cfg: dict, date: str, which: list[str], config: Path = CONFIG, log=print) -> None:
@@ -536,15 +710,24 @@ def stage_file(cfg: dict, date: str, which: list[str], config: Path = CONFIG, lo
                 if not mp.exists():
                     raise SystemExit(f"{name}/{kind}: no compiled cache; compile every carve before filing")
                 m = json.loads(mp.read_text(encoding="utf-8"))
+                if int(m.get("n_columns", -1)) != N_COLUMNS or m.get("feature_contract") != CONTRACT_NAME:
+                    raise SystemExit(f"{name}/{kind}: a cache of {m.get('n_columns')} columns / {m.get('feature_contract')}; not this contract")
+                hashes = cache_hashes(mp.parent)
                 compiled[name][kind] = {"queries": m["n_queries"], "rows": m["n_rows"], "zero_gold_excluded": m["population"]["zero_gold_excluded"],
                                         "kept_ids_sha256": m["population"]["ids_sha256"], "carve_sha256_declared": m["carve_sha256_declared"],
                                         "candidates_mean": round(float(m["candidates_mean"]), 1), "queries_with_no_gold_in_pool": m["queries_with_no_gold_in_pool"],
-                                        "ms_per_query": m["ms_per_query"], "group_seconds_per_1000_queries": m.get("group_seconds_per_1000_queries"),
-                                        "seeds_added_mean": m.get("seeds_added_mean"), "relation_slots": m.get("relation_slots"), "relation_table": m.get("relation_table"), "cache_bytes": m["bytes"],
-                                        "meta_sha256": sha256_file(mp)}
+                                        "compile_seconds": m.get("compile_seconds"), "ms_per_query": m["ms_per_query"], "queries_per_second": m.get("queries_per_second"),
+                                        "group_seconds_per_1000_queries": m.get("group_seconds_per_1000_queries"), "peak_rss_bytes": m.get("peak_rss_bytes"),
+                                        "seeds_added_mean": m.get("seeds_added_mean"), "relation_slots": m.get("relation_slots"), "relation_table": m.get("relation_table"),
+                                        "diagnostics": m.get("diagnostics"), "cache_bytes": m["bytes"], "cache_files_sha256": hashes["files"],
+                                        "cache_combined_sha256": hashes["combined_sha256"], "meta_sha256": sha256_file(mp)}
+        caches_sha = hashlib.sha256(LF.join(f"{n}/{k}:{compiled[n][k]['cache_combined_sha256']}" for n in PILOT for k in ("fit", "select")).encode("utf-8")).hexdigest()
         block = {"status": "FROZEN", "filed_utc": filed, **block, "screen_file_sha256": sha256_file(OUT / "feature_screen.json"),
                  "feature_contract_file": "outputs/universal_v2/feature_contract.json",
-                 "feature_contract_sha256": sha256_file(OUT / "feature_contract.json"), "compile_record": compiled,
+                 "feature_contract_sha256": sha256_file(OUT / "feature_contract.json"),
+                 "hashes": {"raw_contract_sha256": block["raw_contract_sha256"], "screen_rule_sha256": block["screen_rule_sha256"],
+                            "surviving_columns_sha256": block["sha256_of_comma_joined_surviving_names"], "six_caches_combined_sha256": caches_sha},
+                 "compile_record": compiled,
                  "after_this_block": "the arms read this list and nothing else; the eval populations may now be compiled per query (check_3); "
                                      "a different list is a new dated block with its reason"}
         append_block(cfg, f"contract_frozen_{date}", block, f"UNIVERSAL_V2_CORE_CONTRACT, filed {filed} from outputs/universal_v2/feature_screen.json", config)
@@ -588,16 +771,17 @@ def stage_file(cfg: dict, date: str, which: list[str], config: Path = CONFIG, lo
         doc = DOC
         if not doc.exists():
             raise SystemExit("docs/UNIVERSAL_V2_PILOT.md is written before the run record (scripts/universal_v2_report.py --stage doc)")
-        failed = all(v == "FAIL" for v in gate["outcome"].values())
-        block = {"filed_utc": filed, "outcome": gate["outcome"], "fits": fits, "evals": evals,
+        family = gate.get("family_outcome") or family_outcome(gate["selection"], gate["outcome"])
+        overall = family["overall"]
+        block = {"filed_utc": filed, "outcome": gate["outcome"], "family_outcome": family, "fits": fits, "evals": evals,
                  "selection_sha256": sha256_file(OUT / "selection.json") if (OUT / "selection.json").exists() else None,
                  "gate_record_sha256": sha256_file(OUT / "gate_record.json") if (OUT / "gate_record.json").exists() else None,
                  "held_record_sha256": sha256_file(OUT / "held_record.json") if (OUT / "held_record.json").exists() else None,
                  "doc": "docs/UNIVERSAL_V2_PILOT.md", "doc_sha256": lf_sha256(doc) if doc.exists() else None,
                  "incidents": [], "note": "incidents and machine-health lines are appended by the review, dated; nothing above is edited"}
         append_block(cfg, f"run_record_{date}", block, f"run record, filed {filed} from the sidecars", config)
-        moved = set_status(config, "RUN_PILOT_FAILED" if failed else "RUN", ("PILOT_GATE_READ",))
-        log(f"filed run_record_{date}; status {moved} -> {'RUN_PILOT_FAILED' if failed else 'RUN'}")
+        moved = set_status(config, f"RUN_{overall}", ("PILOT_GATE_READ",))
+        log(f"filed run_record_{date}; status {moved} -> RUN_{overall} (GNN_GATE {family['GNN_GATE']}, TWIN_GATE {family['TWIN_GATE']})")
 
 
 # ── fits ─────────────────────────────────────────────────────────────────────
@@ -1309,6 +1493,16 @@ def mechanism_on(rows: dict) -> dict:
     return out
 
 
+def family_outcome(selection: dict, outcome: dict) -> dict:
+    """amendment 2 family_status_vocabulary: GNN_GATE and TWIN_GATE each PASS / FAIL for the selected arm of the
+    family, and overall = BOTH_PASS | GNN_ONLY_PASS | TWIN_ONLY_PASS | PILOT_FAILED. A one-family pass is never
+    described as a pass of the proposed universal pair."""
+    passes = {fam: outcome[selection[fam]] == "PASS" for fam in ("gnn", "twin")}
+    return {FAMILY_GATES["gnn"]: "PASS" if passes["gnn"] else "FAIL", FAMILY_GATES["twin"]: "PASS" if passes["twin"] else "FAIL",
+            "overall": OVERALL[(passes["gnn"], passes["twin"])],
+            "selected": {FAMILY_GATES[f]: selection[f] for f in ("gnn", "twin")}}
+
+
 def stage_gate(cfg: dict, inputs: dict, log=print) -> dict:
     """pilot_gate as amended: read once, on V2_GATE only, for the selected GNN and the selected twin; the
     non-selected candidates are reported and cannot advance; the paired tables, slices and mechanism readouts
@@ -1345,6 +1539,7 @@ def stage_gate(cfg: dict, inputs: dict, log=print) -> dict:
     record = {"utc": utc(), "half": "V2_GATE", "held_half_read": False, "thresholds_from": source, "selection": selected,
               "selection_sha256": sha256_file(OUT / "selection.json"), "contract_block": inputs["contract_block"], "core_sha256": inputs["core_sha256"],
               "verdict": verdict, "outcome": {arm: ("PASS" if v["pass"] else "FAIL") for arm, v in verdict.items()},
+              "family_outcome": family_outcome(selected, {arm: ("PASS" if v["pass"] else "FAIL") for arm, v in verdict.items()}),
               "reported_not_advancing": reported, "paired_on_V2_GATE": paired_table(rows, refs, pairs),
               "frozen_references_on_V2_GATE": {name: {label: {m: round(float(refs[name][f"{key}/{m}"].mean()), 4) for m in ("recall@5", "hit@1", "full_coverage@5")}
                                                       for label, key in M3B_REFERENCES.items()} for name in PILOT},
@@ -1356,6 +1551,8 @@ def stage_gate(cfg: dict, inputs: dict, log=print) -> dict:
     (OUT / "gate_record.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
     for arm, v in verdict.items():
         log(f"gate {arm}: {record['outcome'][arm]}; " + "; ".join(f"{c['dataset']}/{c['metric']}/{c['slice']} {c['value']} vs {c['threshold']} {'holds' if c['holds'] else 'FAILS'}" for c in v["cells"]))
+    fam = record["family_outcome"]
+    log(f"gate families: GNN_GATE {fam['GNN_GATE']}, TWIN_GATE {fam['TWIN_GATE']}, overall {fam['overall']}")
     return record
 
 

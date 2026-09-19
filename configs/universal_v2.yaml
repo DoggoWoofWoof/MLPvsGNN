@@ -838,3 +838,230 @@ amendment_1_2026_09_19:
       - one batch may contain queries of several datasets
       - one state dict handles metaqa-style typed edges and 2wiki-style structural edges
   supersedes: [measurement.gate_and_held_halves.rule (2wiki and squad keys), pilot_gate.reference_numbers_from_m3b_on_the_gate_half_seed0, pilot_gate.gnn_gate, pilot_gate.twin_gate, information_contract_v2.depth_basis_columns.count]
+
+# ══════════════════════════════════════════════════════════════════
+# Amendment 2 (2026-09-19): the review of step 2 (commit bfdc4b2). Two
+# corrections filed before any real cache is compiled or frozen -- the raw
+# contract pinned as an exact ordered list (correction 1) and an ordered,
+# direction-sensitive relation-path channel (correction 2) -- plus the family
+# status vocabulary, the training mixture restated, the truncation report
+# required of step 3, and step 3 authorised. Where a block below names an
+# as-filed block above, the block below supersedes it; the as-filed text
+# stays for the record. Nothing is compiled, timed or fitted by this amendment.
+# ══════════════════════════════════════════════════════════════════
+amendment_2_2026_09_19:
+  filed_utc: "2026-09-19T17:59:42Z"
+  status_after: DECLARED_NOT_RUN
+  reviewed: step 2 as committed at bfdc4b2 -- features, models, run and report tooling and their tests; no cache compiled, no weight fitted
+  ruling_verbatim:
+    - "Yes -- GO for step 3, but make two corrections before the real caches are compiled/frozen. Everything else in the step-2 tooling looks aligned with the experiment."
+    - "The first correction is mandatory: the declaration previously said 78 + 64 = 142 raw columns, while the implementation report now says 78 + 73 = 151. Do not let the real compile happen with that discrepancy hidden by passing tests. Decide which is actually intended, amend configs/universal_v2.yaml prospectively if 73 is correct, and pin the exact ordered feature-name list plus total count. After that, tests should assert code contract == declaration contract == frozen contract."
+    - "The second correction is more scientifically important: do not leave relation-path features endpoint/order-invariant only. That weakens exactly the MetaQA mechanism we are trying to test. r1 -> r2 and r2 -> r1, and forward versus inverse traversal, can encode different reasoning chains. Before any v2 fit exists, add a bounded ordered, direction-sensitive relation-path channel for typed STRUCT paths at t=2/3. You can keep the invariant summaries too, but the model must be able to distinguish ordered relation composition. Keep this fixed-dimensional and semantic -- no dataset-specific relation-ID table."
+    - "Everything else I approve: supplement scoring for seeds 1-2: keep; seed confirmation on V2_GATE: keep; held half read once only after gate/seeds: keep; seventh core78 - old GAT diagnostic: keep; protecting the original 78 columns during screening: keep; splade_rr as the declared sparse evidence quantity: fine; K_REL=4: keep for now, but the step-3 compile report must show how often truncation actually occurs by dataset/hop before the contract is frozen; mix gates initialized at 0.5: fine."
+    - "I would make one reporting tweak too. Instead of the overall run status being merely RUN whenever any selected arm passes, preserve family status separately: GNN_GATE = PASS / FAIL; TWIN_GATE = PASS / FAIL; overall = BOTH_PASS / GNN_ONLY_PASS / TWIN_ONLY_PASS / PILOT_FAILED. The phase can still continue if one family passes according to the declaration, but later we should not accidentally describe a one-family success as success of the proposed universal pair."
+    - "AUTHORIZE STEP 3 ONLY. 1. Compile the real MetaQA / 2Wiki / SQuAD v2 caches. 2. No model fitting. 3. No V2_GATE or V2_HELD reads. 4. Produce compile diagnostics: raw feature count and exact ordered names; availability/missingness by block and dataset; variance/constant columns; redundancy/correlation decisions; K_REL=4 truncation frequency by dataset and hop; ordered relation-path availability; compilation wall time / queries per second; peak RAM; bytes on disk. 5. Apply only the preregistered screen. 6. Freeze the surviving column list as UNIVERSAL_V2_CORE_CONTRACT. 7. Hash: raw contract, screen rule, surviving columns, three compiled caches. 8. Commit. 9. STOP_FOR_REVIEW before the one-epoch timing run."
+    - "One more check before later fitting: make sure the declaration pins the joint trio sampling/loss weighting -- e.g. balanced vs proportional dataset sampling, query counts per dataset/batch, and loss aggregation. MetaQA must not later receive extra training weight because we know it is the weak dataset."
+    - "So: yes, proceed with step 3 after fixing the 142/151 discrepancy and making relation paths ordered/directional. Those are exactly the kinds of things worth catching now; after contract_frozen they should be untouchable."
+  correction_1_the_raw_contract_pinned:
+    discrepancy: >-
+      the as-filed information_contract_v2.count says 64 depth-basis columns
+      and 78 + 64 = 142 raw columns; amendment 1 added the 9 availability
+      masks (count_amended: 73 and 151), but the as-filed prose still carries
+      64 / 142 (information_contract_v2.depth_basis_columns header,
+      compute.per_fit_estimate, compute.compile_and_screen, outputs.code,
+      order_of_operations "3", and the ruling line "142->surviving" quoted in
+      amendment 1), and the step-2 module carried 73 columns without the list
+      itself being pinned anywhere in this file -- a passing test compared the
+      code to the code.
+    decided: >-
+      73 is intended: the 64 depth-basis columns of the first draft plus the
+      9 availability masks of amendment 1. Correction 2 below adds 13 ordered
+      relation-path columns, so the v2 contract is 86 columns and the screen
+      input is 78 + 86 = 164; the cache layout is the 111 M3B raw columns
+      first, unchanged, then the 86, i.e. 197 columns. The exact ordered list
+      is pinned in raw_contract_pinned; every stage reads that pin and refuses
+      on any difference from the code; after contract_frozen_<date> the frozen
+      block must carry the same raw_contract_sha256 (code == declaration ==
+      frozen, asserted by tests/test_universal_v2_declaration.py).
+  raw_contract_pinned:   # machine-read: scripts/universal_v2_run.pinned_raw_contract; compile, screen and every later stage refuse on any mismatch with universal_v2_features
+    m3b_core: 78
+    m3b_core_sha256: ce584194a751cf3cb6ba80f74659409b10ddc697470c68b1ff292d1eb0d49ffb   # configs/m3b_controlled_comparison.yaml#qls_u_core_contract_2026_09_13, their frozen order
+    depth_basis_columns: 73
+    ordered_relation_path_columns: 13
+    v2_columns: 86
+    screen_input_columns: 164   # the M3B 78 first, then the 86 v2 columns in the order below
+    cache_layout_columns: 197   # the 111 M3B raw columns first, unchanged, then the 86
+    v2_column_names:
+      - seeds_at_h1_STRUCT
+      - seedmass_h1_STRUCT
+      - paths_h1_STRUCT
+      - support_h1_STRUCT
+      - has_h1_STRUCT
+      - ring_qmean_h1_STRUCT
+      - ring_qmax_h1_STRUCT
+      - ring_n_h1_STRUCT
+      - seedproto_h1_STRUCT
+      - seeds_at_h2_STRUCT
+      - seedmass_h2_STRUCT
+      - paths_h2_STRUCT
+      - branch_h2_STRUCT
+      - support_h2_STRUCT
+      - has_h2_STRUCT
+      - ring_qmean_h2_STRUCT
+      - ring_qmax_h2_STRUCT
+      - ring_n_h2_STRUCT
+      - seedproto_h2_STRUCT
+      - seeds_at_h3_STRUCT
+      - seedmass_h3_STRUCT
+      - paths_h3_STRUCT
+      - branch_h3_STRUCT
+      - support_h3_STRUCT
+      - has_h3_STRUCT
+      - ring_qmean_h3_STRUCT
+      - ring_qmax_h3_STRUCT
+      - ring_n_h3_STRUCT
+      - seedproto_h3_STRUCT
+      - seeds_at_h1_FULL
+      - seedmass_h1_FULL
+      - paths_h1_FULL
+      - support_h1_FULL
+      - has_h1_FULL
+      - ring_qmean_h1_FULL
+      - ring_qmax_h1_FULL
+      - ring_n_h1_FULL
+      - seedproto_h1_FULL
+      - seeds_at_h2_FULL
+      - seedmass_h2_FULL
+      - paths_h2_FULL
+      - branch_h2_FULL
+      - support_h2_FULL
+      - has_h2_FULL
+      - ring_qmean_h2_FULL
+      - ring_qmax_h2_FULL
+      - ring_n_h2_FULL
+      - seedproto_h2_FULL
+      - seeds_at_h3_FULL
+      - seedmass_h3_FULL
+      - paths_h3_FULL
+      - branch_h3_FULL
+      - support_h3_FULL
+      - has_h3_FULL
+      - ring_qmean_h3_FULL
+      - ring_qmax_h3_FULL
+      - ring_n_h3_FULL
+      - seedproto_h3_FULL
+      - qsupport_h1
+      - typed_walks_h1
+      - relpath_max_h1
+      - relpath_mean_h1
+      - relpath_min_h1
+      - qsupport_h2
+      - typed_walks_h2
+      - relpath_max_h2
+      - relpath_mean_h2
+      - relpath_min_h2
+      - qsupport_h3
+      - typed_walks_h3
+      - relpath_max_h3
+      - relpath_mean_h3
+      - relpath_min_h3
+      - opath_h2_q1
+      - opath_h2_q2
+      - opath_h2_dir1
+      - opath_h2_dir2
+      - opath_h2_adj12
+      - opath_h3_q1
+      - opath_h3_q2
+      - opath_h3_q3
+      - opath_h3_dir1
+      - opath_h3_dir2
+      - opath_h3_dir3
+      - opath_h3_adj12
+      - opath_h3_adj23
+    v2_column_names_sha256: e45193c619425da945c4ed7bd8383bc0ef47114624c8c4099bb0d1ef14e4b882   # sha256 of the comma-joined 86 names
+    screen_input_sha256: 41a3f66792de250ee424ea7370b0736fb6035fff5b834be318be1377086270ba   # sha256 of the comma-joined 164 names (the M3B 78 then the 86)
+    order: the 86 are registered by src/mp_retrieval/universal_v2_features.py in this order -- for f in (STRUCT, FULL), for t in (1, 2, 3), the 9 depth-basis columns of (f, t) (8 at t = 1, no branch); then for t in (1, 2, 3) the 5 typed columns; then for t in (2, 3) the ordered relation-path columns q1..qt, dir1..dirt, adj12..adj(t-1)t
+    blocks: 9 as declared -- STRUCT_h1..h3, FULL_h1..h3, TYPED_h1..h3; the ordered columns belong to TYPED_h2 and TYPED_h3, so arms.u_mlp_v2_mix keeps one gate per block and no new block exists
+    masks: 15 as amended -- has_h{t}_{f} (6), ring_n_h{t}_{f} (6), typed_walks_h{t} (3); every ordered column is masked by typed_walks_h{t}; the masked_by map of every v2 column is written in feature_contract.json
+    tests: tests/test_universal_v2_declaration.py asserts this list equals universal_v2_features.V2_COLUMNS, the counts and both shas; tests/test_universal_v2_features.py asserts the module registers exactly these names; after contract_frozen_<date>, the same declaration test asserts frozen.raw_contract_sha256 == screen_input_sha256 and frozen.surviving == the 164 minus frozen.dropped in order
+  correction_2_ordered_relation_path_channel:   # supersedes the endpoint-order invariance of information_contract_v2.depth_basis_columns.relpath_* as the only relation-path reading
+    why: >-
+      relpath_max / mean / min are functions of the multiset of cos(q, e_r)
+      along a walk: r1 -> r2 and r2 -> r1 give the same three numbers at the
+      endpoint, and a relation followed head -> tail is not told from the
+      same relation followed tail -> head. The MetaQA mechanism under test is
+      ordered relation composition (a 2-hop or 3-hop chain in a stated
+      direction), so the contract must let the model distinguish it; the
+      fixed-score twin must be given the same information, or the comparison
+      measures who has the input, not who has message passing.
+    channel: the best typed STRUCT walk of length t from a seed to v, reported position by position, for t in (2, 3)
+    best_walk: >-
+      the walk relpath_max_h{t} already scores -- the typed STRUCT walk of
+      length t from a seed to v with the maximum mean cos(q, e_r) -- kept by
+      one back-pointer per node and depth in the same dynamic programme;
+      position k = 1 is the step out of the seed, position k = t the step into
+      v. Ties: at every step the first entry in (owner, neighbour, relation)
+      order among those attaining the maximum (the M3B typed_pool_edges
+      order), so the chosen walk is deterministic and independent of the
+      machine.
+    columns:   # 13 = 5 at t = 2 + 8 at t = 3; group ordered_relation_path; block TYPED_h{t}; mask typed_walks_h{t}
+      opath_h{t}_q{k}: cos(q, e_r) of the relation at position k of the best walk; 0 if no typed walk of length t reaches v; k = 1..t
+      opath_h{t}_dir{k}: +1 if step k traverses its stored relation head -> tail (forward), -1 if tail -> head (inverse), 0 if no walk; k = 1..t
+      opath_h{t}_adj{k}{k+1}: cos(e_r at position k, e_r at position k + 1) of the best walk -- the served relation-text embeddings of consecutive steps (1 when a relation is composed with itself); 0 if no walk; k = 1..t-1
+    direction_convention: >-
+      a typed entry (owner v, neighbour u, rel, dir) as M3B reads it has dir 2
+      when the stored triple is u -> v, so the walk step u -> v follows the
+      relation head -> tail (+1), and dir 1 when the stored triple is v -> u,
+      so the step goes against it (-1)
+    properties:
+      bounded: one walk per node and depth, never the set of walks; the invariant summaries (max / mean / min over every walk) stay as declared
+      fixed_dimensional: 13 scalars whatever the dataset, the relation vocabulary or the pool size
+      semantic: every value is a cosine with the served relation-text embeddings (gte-Qwen2, outputs/m3b/relations/) or the sign of a stored orientation; no relation id, no per-dataset table, no learned relation vocabulary enters the contract
+      identity: the mean over k of opath_h{t}_q{k} equals relpath_max_h{t} wherever a walk exists (tested); the ordered channel adds the order and the direction to what the invariant summary already carries, nothing else
+      order_distinguished: on the chain 0 -a-> 1 -b-> 2 -c-> 3 versus 0 -b-> 1 -a-> 2 -c-> 3 the endpoint reads (a, b) versus (b, a) at t = 2 and its adj23 changes at t = 3, while relpath_* cannot tell them apart (tests/test_universal_v2_features.py)
+    untyped_datasets: 2wiki and squad carry no relation table; every ordered column is 0 with typed_walks_h{t} = 0, exactly as the typed depth-basis columns already are -- one contract, one state dict
+    parameter_budgets_at_164_columns: {u_mlp_v2: 339330, u_mlp_v2_mix: 339915, u_gnn_v2: 426563, u_gnn_v2_ef: 429892, u_gnn_v2_core78: 407876, gat_universal_v1_trio: 353410, twin_budget: 350000, gnn_budget: 450000, holds: true}
+    cost: one integer back-pointer array per node and depth plus a back-trace of length t and two gathers of relation rows; measured with the rest of the typed basis in the step-3 compile record (group_seconds_per_1000_queries.typed_basis)
+    tests_added:
+      - the ordered channel distinguishes r1 -> r2 from r2 -> r1 at the endpoint itself
+      - reversing a stored relation flips the sign of exactly the dir columns that read it and changes nothing else in the 86
+      - the argmax walk is taken and ties break by entry order (an inverse walk first when it is listed first)
+      - the mean of the ordered q columns equals relpath_max wherever a walk exists; no walk gives zeros and mask 0
+  family_status_vocabulary:   # supersedes the statuses RUN / RUN_PILOT_FAILED of order_of_operations "7"
+    per_family: {GNN_GATE: "PASS if the selected GNN holds all three gnn_gate cells at seed 0, else FAIL", TWIN_GATE: "PASS if the selected twin holds all three twin_gate cells at seed 0, else FAIL"}
+    overall: {BOTH_PASS: "GNN_GATE PASS and TWIN_GATE PASS", GNN_ONLY_PASS: "GNN_GATE PASS, TWIN_GATE FAIL", TWIN_ONLY_PASS: "GNN_GATE FAIL, TWIN_GATE PASS", PILOT_FAILED: "both FAIL"}
+    where: the gate record (pilot_gate_record_<date>.family_outcome) beside the per-arm outcome; the run record; the report at a glance; the top-level status line
+    statuses: {after_the_gate: PILOT_GATE_READ, after_the_run_record: "RUN_BOTH_PASS | RUN_GNN_ONLY_PASS | RUN_TWIN_ONLY_PASS | RUN_PILOT_FAILED"}
+    continuation: unchanged -- pilot_gate.on_pass applies per family (a passing family confirms with seeds 1-2; a failing family stops at seed 0 and is reported), so the phase continues on GNN_ONLY_PASS or TWIN_ONLY_PASS
+    reporting_rule: >-
+      a one-family pass is a pass of that family and is written as such; the
+      proposed universal pair (one GNN and its non-message-passing twin over
+      one contract) has passed only under BOTH_PASS. The report and every
+      later document name the family that passed; no sentence describes
+      GNN_ONLY_PASS or TWIN_ONLY_PASS as a pass of the pair.
+  training_mixture_pinned:   # restates check_3_firewalls_made_explicit.data_mixture_frozen with the code facts; nothing changes
+    sampler: mp_retrieval.m3b_train.draw_indices with dataset_draw per_query (M3B amendment 3, pinned) -- for each of the 16 query draws of a batch the dataset is drawn uniformly among the three pilot datasets (multinomial counts per batch, no quota), then that many fit queries of the dataset are taken from a per-dataset permutation without replacement, reshuffled when exhausted
+    balance: balanced, not proportional -- each dataset receives one third of the draws in expectation regardless of its carve size (metaqa 5,960 fit queries, 2wiki 5,928, squad 5,856); over an epoch of 2,000 batches each dataset is drawn about 10,700 times
+    drawn_from: the trainable fit queries of each carve (at least one gold in the pool), so every drawn query contributes to the loss
+    loss: mp_retrieval.m3b_models.listwise_loss, pinned -- per query, minus the mean over its in-pool golds of the log-softmax over its pool; the batch loss is the unweighted mean over the drawn queries of the batch; no per-dataset weight, no per-query weight, no normalisation by dataset
+    optimiser_and_budget: as training.rule -- Adam lr 1e-3, weight decay 1e-4, clip 1.0, 6 epochs of 2,000 batches, patience 2 on the select macro recall@5, 8-hour epoch limit; identical for every arm including the control gat_universal_v1_trio
+    metaqa: receives no extra weight, quota, curriculum, over-sampling or loss multiplier because it is the weak dataset, now or later in the phase; any change to the mixture is a dated amendment filed before the fit it touches and applies to every arm
+    not_allowed: per-dataset loss weights, per-dataset batch quotas, a curriculum, re-weighting or over-sampling of any dataset, temperature-scaled dataset sampling, or any change to the mixture between arms
+    tested: tests/test_universal_v2_models.py (sampler and loss are the pinned M3B functions; one batch may hold queries of several datasets; no dataset id reaches a model); tests/test_universal_v2_declaration.py (this block names the pinned functions and forbids the weights)
+  k_rel_truncation_report_required:
+    what: K_REL = 4 relation slots per structural message edge (arms.u_gnn_v2 innovations) stays; before contract_frozen_<date> the compile record must show, over every query of every carve, by dataset and (metaqa) by hop, the fraction of structural pairs carrying more than 4 stored relations, the fraction of queries with any such pair, and the histogram of relations per pair
+    also: the availability of the typed / ordered relation-path channel by dataset and hop -- candidate rows and gold rows with a typed STRUCT walk of length t, queries with any such row, the fraction of best walks with an inverse step, the fraction composing two different relations
+    where: scripts/universal_v2_run.py CompileDiagnostics -> meta.json diagnostics of every carve -> contract_frozen_<date>.compile_record -> section 1 of docs/UNIVERSAL_V2_PILOT.md
+    decision_rule: none is pre-registered on these numbers; K_REL is not changed by them in this phase; a change is a dated amendment before any fit
+  step_3_authorised:
+    what:
+      - compile the real metaqa / 2wiki / squad fit and select caches under the pinned 197-column layout (scripts/universal_v2_run.py --stage compile)
+      - compile diagnostics in every meta.json -- raw feature count and exact ordered names (feature_contract.json), availability by block and dataset, variance / constant columns, redundancy decisions (feature_screen.json), K_REL truncation by dataset and hop, ordered relation-path availability, wall time, queries per second, peak RSS, bytes on disk
+      - the pre-registered screen only (information_contract_v2.screen, the M3B rule verbatim, the M3B 78 protected), on the fit caches only
+      - freeze the survivors as UNIVERSAL_V2_CORE_CONTRACT in contract_frozen_<date> with the hashes of the raw contract, the screen rule, the surviving columns and the six compiled cache directories (per file and combined)
+      - commit; STOP_FOR_REVIEW before the one-epoch timing run (order_of_operations "4")
+    not:
+      - no model fitting, no timing run
+      - no V2_GATE or V2_HELD_CONFIRMATION read; no eval population compiled (check_3)
+    order: this amendment and the code it describes are committed before the first real cache is compiled (the rule before the number)
+  supersedes: [information_contract_v2.depth_basis_columns.count and every 64 / 142 / 151 count above, order_of_operations "3" (the 142-column contract), order_of_operations "7" (statuses RUN / RUN_PILOT_FAILED), check_3_firewalls_made_explicit.availability_masks.count_amended (73 / 151, now 86 / 164), the relpath_* endpoint-order invariance as the only relation-path reading]
