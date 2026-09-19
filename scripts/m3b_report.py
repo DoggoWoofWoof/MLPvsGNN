@@ -129,9 +129,9 @@ def section_features(cfg: dict) -> list[str]:
     base = json.loads((OUT / "base_score.json").read_text(encoding="utf-8"))
     carves = json.loads((OUT / "carves.json").read_text(encoding="utf-8"))["per_dataset"]
     lines = ["## 2. The information contract F(q, v) and the fixed base score", "",
-             f"{screen['screened_columns']} compiled columns (directions A-D plus retrieval and the fixed GCS propagation) were screened on the fit carves "
+             f"{len(screen['columns'])} compiled columns (directions A-D plus retrieval and the fixed GCS propagation) were screened on the fit carves "
              f"({screen['total_fit_rows']:,} candidate rows; duplicates on a {screen['sample_rows']:,}-row stride sample, |Spearman| >= {screen['duplicate_threshold']}); "
-             f"{screen['surviving_columns']} survive as `QLS_U_CORE_CONTRACT` (sha256 `{screen['core_contract_sha256'][:16]}…`). "
+             f"{len(screen['surviving'])} survive as `QLS_U_CORE_CONTRACT` (sha256 `{screen['core_contract_sha256'][:16]}…`). "
              "Nothing was dropped for weak signal.", ""]
     if screen["dropped"]:
         lines.append("| dropped column | reason |")
@@ -230,12 +230,63 @@ def section_main(cfg: dict, evals: dict, base_name: str) -> tuple[list[str], dic
     return lines, stats
 
 
+def section_select_vs_eval(evals: dict, base_name: str) -> list[str]:
+    """Reporting only, from records already on disk: the select-carve recall@5 that chose the epoch (fit record, best
+    epoch) beside the eval-population recall@5 of the same weights, with the parameter-free base score on both populations
+    as the control for the population shift itself. No rule reads this table."""
+    base = json.loads((OUT / "base_score.json").read_text(encoding="utf-8"))
+    overlap_path = OUT / "population_overlap.json"
+    overlap = json.loads(overlap_path.read_text(encoding="utf-8"))["per_dataset"] if overlap_path.exists() else {}
+    arms = ("qls_u_sota_v1", "gat_no_mp_v1", "gat_universal_v1")
+    lines = ["### 4b. Select carve → eval population, the fixed base as the population control", "",
+             "The select carve is a slice of the train split held out from the fit carve; it chose the epoch and the configuration (section 3) and is "
+             "not a result. For each arm (seed 0, the selected weights): recall@5 on the select carve at the best epoch (fit record) → on the eval population "
+             f"(section 4), and the same pair for the fixed base `{base_name}`, which has no parameters and moves only with the population. "
+             "`shift` = eval − select; `beyond base` = the arm's shift minus the base's shift, i.e. the part of the arm's select-carve advantage over the "
+             "fixed base that does not carry to the eval population. The last column (`scripts/m3b_population_overlap.py`, golds resolved by the headroom's "
+             "function) is the fraction of each population's queries that hold at least one gold node which is a gold node of some fit-carve query: where the "
+             "select carve shares fit golds and the eval population does not, the select carve was not distribution-matched with the eval population and its "
+             "learned lift is read as train-internal. Reporting only; no rule reads it.", "",
+             f"| dataset | `{base_name}` select → eval (shift) | " + " | ".join(f"{DISPLAY[a]} select → eval (shift; beyond base)" for a in arms)
+             + " | queries holding a fit gold: select / eval |",
+             "|---|---|" + "---|" * len(arms) + "---|"]
+    for name in DATASETS:
+        if name not in evals:
+            continue
+        rec, arrays, _ = evals[name]
+        b_sel = float(base["per_dataset"][name][base_name])
+        b_eval = float(arrays[f"fixed:{base_name}/recall@5"].mean())
+        row = [name, f"{b_sel:.4f} → {b_eval:.4f} ({b_eval - b_sel:+.3f})"]
+        for arm in arms:
+            keys = scorer_keys(rec, arm, 0)
+            if not keys:
+                row.append("—")
+                continue
+            fit = json.loads((MODELS / f"{keys[0]}.json").read_text(encoding="utf-8"))
+            a_sel = float(fit["history"][fit["best_epoch"]]["select_recall@5"][name])
+            a_eval = float(arrays[f"{keys[0]}/recall@5"].mean())
+            row.append(f"{a_sel:.4f} → {a_eval:.4f} ({a_eval - a_sel:+.3f}; {(a_eval - a_sel) - (b_eval - b_sel):+.3f})")
+        o = overlap.get(name)
+        if o:
+            extra = ""
+            if "queries_sharing_a_single_hop_component_with_fit" in o["select"]:
+                extra = (f" (single-hop components shared with a fit question: {o['select']['queries_sharing_a_single_hop_component_with_fit']:.3f} / "
+                         f"{o['eval']['queries_sharing_a_single_hop_component_with_fit']:.3f})")
+            row.append(f"{o['select']['queries_with_a_fit_gold']:.3f} / {o['eval']['queries_with_a_fit_gold']:.3f}{extra}")
+        else:
+            row.append("—")
+        lines.append("| " + " | ".join(row) + " |")
+    lines.append("")
+    return lines
+
+
 def section_ablation(evals: dict) -> list[str]:
     lines = ["## 5. The three substrates: message edges restricted to one family", "",
              "The selected GAT retrained (seed 0) with its message edges restricted to STRUCT, NER or KNN; F(q, v) unchanged, so the input block still reads every family's "
              "fixed prototypes. Cells are recall@5 and the paired difference to GAT-NO-MP; on a dataset where the headroom showed a family adds no exposure "
-             "(squad, every family) the cell is a control, not a regime result.", "",
-             "| dataset | GAT-NO-MP | GAT[STRUCT] | δ | GAT[NER] | δ | GAT[KNN] | δ | GAT[FULL] | δ_MP |", "|---|---|---|---|---|---|---|---|---|---|"]
+             "(squad, every family) the cell is a control, not a regime result. Each substrate cell is a single fit (seed 0): a δ smaller than the full GAT's "
+             "seed-to-seed spread on that dataset (last column, sd over seeds 0-2 from section 4) is not read.", "",
+             "| dataset | GAT-NO-MP | GAT[STRUCT] | δ | GAT[NER] | δ | GAT[KNN] | δ | GAT[FULL] | δ_MP | GAT seed sd |", "|---|---|---|---|---|---|---|---|---|---|---|"]
     for name in DATASETS:
         if name not in evals:
             continue
@@ -253,6 +304,8 @@ def section_ablation(evals: dict) -> list[str]:
             a = arrays[f"{k[0]}/recall@5"]
             m, lo, hi = paired_bootstrap(a, base)
             row += [f"{a.mean():.4f}", ci(m, lo, hi)]
+        _, sd, n = seed_stat(arrays, scorer_keys(rec, "gat_universal_v1"), "recall@5")
+        row.append(f"{sd:.4f} (n={n})" if sd is not None else "—")
         lines.append("| " + " | ".join(row) + " |")
     lines.append("")
     return lines
@@ -288,13 +341,71 @@ def section_exposure_table(cfg: dict) -> list[str]:
                      f"yes — retrieval columns in F(q, v) and the fixed base score in the readout | {metric} |")
     lines.append("")
     w = note["wording_adopted_for_the_calibration_section"]
-    lines.append(w["written_instead_verbatim_from_the_user"].strip() + " " + w["qualifier_that_travels_with_high_answer_exposure"].strip()[0].upper()
-                 + w["qualifier_that_travels_with_high_answer_exposure"].strip()[1:] + ".")
+    qualifier = w["qualifier_that_travels_with_high_answer_exposure"].strip().rstrip(".")
+    lines.append(w["written_instead_verbatim_from_the_user"].strip() + " " + qualifier[0].upper() + qualifier[1:] + ".")
     lines.append("")
     h = note["check_outcomes"]["6_mp_benefit_tracks_evidence_beyond_what_retrieval_exposes"]
     lines.append("**Filed before the eval, read in it (note 2, H_MP):** " + h["refined_hypothesis_H_MP"].strip() + " " + h["where_it_is_read"].strip())
     lines.append("")
     return lines
+
+
+def published_band(cfg: dict, name: str) -> dict:
+    """The lowest published number per cell, parsed from measurement.sota_column.cells (percent -> fraction)."""
+    cell = str(cfg["measurement"]["sota_column"]["cells"].get(name, ""))
+    if name in ("hotpotqa", "2wiki", "musique"):
+        head = cell.split(";")[0]   # "GraphER PR@5 GCS 78.8 / GAT 78.0 / MLP 78.9"
+        vals = [float(x) / 100 for x in re.findall(r"(\d+\.\d+)", head)]
+        return {"metric": "recall@5", "low": min(vals) if vals else None, "high": max(vals) if vals else None}
+    if name == "webqsp":
+        vals = [float(x) / 100 for x in re.findall(r"(\d+\.\d+)", cell)]
+        return {"metric": "hit@1", "low": min(vals) if vals else None, "high": max(vals) if vals else None}
+    if name == "metaqa":
+        hops = {}
+        for hp, v in re.findall(r"(\d)-hop (\d+\.\d+)", cell):
+            hops.setdefault(f"{hp}hop", []).append(float(v) / 100)
+        return {"metric": "hit@1", "per_hop_low": {h: min(v) for h, v in hops.items()}}
+    return {"metric": None}
+
+
+def exposure_shortfall(cfg: dict, name: str) -> float | None:
+    """Published any-answer coverage minus our any_gold_at_pool, where note 2 filed both (webqsp 94.9 %, metaqa-3 99.0 %)."""
+    published = {"webqsp": 0.949, "metaqa": 0.990}
+    if name not in published:
+        return None
+    ours = cfg["candidate_contract_frozen_2026_09_13"]["per_dataset"][name]["any_gold_at_pool"]
+    return published[name] - ours
+
+
+def band_verdict(cfg: dict, name: str, rec: dict, arrays: dict, ids: list[str]) -> tuple[str, str]:
+    """(READ | NOT_READ | CONTROL, why). The filed rule: outside the band with the gap not explained by a named
+    exposure difference -> delta_MP NOT_READ for that cell. Operationalised: inside when the universal GAT (seed 0)
+    is at or above the lowest published number minus the measured exposure shortfall (published coverage minus our
+    any_gold_at_pool); the differences that remain named but unmeasured here (training scale and universality, the
+    fit cap, the node-text regime) do not lift a cell into the band."""
+    band = published_band(cfg, name)
+    g0 = scorer_keys(rec, "gat_universal_v1", 0)
+    if not g0 or band["metric"] is None:
+        return "CONTROL", "no published graph-retrieval number for this dataset; the retrieval ceiling row stands in"
+    short = exposure_shortfall(cfg, name) or 0.0
+    if name == "metaqa":
+        hops = np.asarray([hop_of(q) or "?" for q in ids])
+        h = arrays[f"{g0[0]}/hit@1"]
+        parts, inside = [], True
+        for hp, low in band["per_hop_low"].items():
+            ours = float(h[hops == hp].mean()) if (hops == hp).any() else None
+            if ours is None:
+                continue
+            ok = ours >= low - short
+            inside &= ok
+            parts.append(f"{hp} {ours:.3f} vs {low:.3f}{'' if ok else f' (below by {low - ours:.3f}; measured exposure shortfall {short:.3f})'}")
+        return ("READ" if inside else "NOT_READ"), "; ".join(parts)
+    ours = float(arrays[f"{g0[0]}/{band['metric']}"].mean())
+    ok = ours >= band["low"] - short
+    why = f"{band['metric']} {ours:.3f} vs published {band['low']:.3f}-{band['high']:.3f}"
+    if not ok:
+        why += f" (below by {band['low'] - ours:.3f}; measured exposure shortfall {short:.3f})"
+    return ("READ" if ok else "NOT_READ"), why
 
 
 def section_sota(cfg: dict, evals: dict) -> list[str]:
@@ -304,18 +415,20 @@ def section_sota(cfg: dict, evals: dict) -> list[str]:
              "for the GraphER rows (their PR@K is gold-passage coverage at K on a 200-candidate query-induced corpus with per-dataset training), "
              "hit@1 for the KB rows (NuTrea / ReaRev: assigned topic entities, full KB neighbourhood up to 3 hops, per-dataset training). "
              f"Ours: {sota['exposure_named_on_every_cell'].strip().split('ours: ')[-1]}", "",
-             "| dataset | published (exposure) | ours: universal GAT s0 | ours: QLS-U s0 | ours: GAT-NO-MP s0 |", "|---|---|---|---|---|"]
+             "| dataset | published (exposure) | ours: universal GAT s0 | ours: QLS-U s0 | ours: GAT-NO-MP s0 | band check (universal GAT s0) | δ_MP |", "|---|---|---|---|---|---|---|"]
     for name in DATASETS:
         if name not in evals:
             continue
         rec, arrays, ids = evals[name]
-        g0, q0, c0 = scorer_keys(rec, "gat_universal_v1", 0), scorer_keys(rec, "gat_universal_v1", 0), scorer_keys(rec, "gat_no_mp_v1", 0)
+        g0, c0 = scorer_keys(rec, "gat_universal_v1", 0), scorer_keys(rec, "gat_no_mp_v1", 0)
         q0 = scorer_keys(rec, "qls_u_sota_v1", 0)
+        verdict, why = band_verdict(cfg, name, rec, arrays, ids)
+        tail = f" {why} | {verdict} |"
         pub = str(sota["cells"].get(name, "—"))
         if name in ("hotpotqa", "2wiki", "musique"):
             def our(keys):
                 return "—" if not keys else f"R@5 {arrays[f'{keys[0]}/recall@5'].mean():.3f} / R@10 {arrays[f'{keys[0]}/recall@10'].mean():.3f}"
-            lines.append(f"| {name} | {pub} (GraphER exposure) | {our(g0)} | {our(q0)} | {our(c0)} |")
+            lines.append(f"| {name} | {pub} (GraphER exposure) | {our(g0)} | {our(q0)} | {our(c0)} |" + tail)
         elif name == "metaqa":
             hops = np.asarray([hop_of(q) or "?" for q in ids])
             def our(keys):
@@ -323,17 +436,22 @@ def section_sota(cfg: dict, evals: dict) -> list[str]:
                     return "—"
                 h = arrays[f"{keys[0]}/hit@1"]
                 return " / ".join(f"{hp} {h[hops == hp].mean():.3f}" for hp in ("1hop", "2hop", "3hop") if (hops == hp).any()) + f" (all {h.mean():.3f})"
-            lines.append(f"| {name} | {pub} (KB exposure) | hit@1 {our(g0)} | hit@1 {our(q0)} | hit@1 {our(c0)} |")
+            lines.append(f"| {name} | {pub} (KB exposure) | hit@1 {our(g0)} | hit@1 {our(q0)} | hit@1 {our(c0)} |" + tail)
         elif name == "webqsp":
             def our(keys):
                 return "—" if not keys else f"hit@1 {arrays[f'{keys[0]}/hit@1'].mean():.3f}"
-            lines.append(f"| {name} | {pub} (KB exposure; corpus ceiling {WEBQSP_CORPUS_CEILING}) | {our(g0)} | {our(q0)} | {our(c0)} |")
+            lines.append(f"| {name} | {pub} (KB exposure; corpus ceiling {WEBQSP_CORPUS_CEILING}) | {our(g0)} | {our(q0)} | {our(c0)} |" + tail)
         else:
             def our(keys):
                 return "—" if not keys else f"R@5 {arrays[f'{keys[0]}/recall@5'].mean():.3f}"
-            lines.append(f"| {name} | {pub} | {our(g0)} | {our(q0)} | {our(c0)} |")
+            lines.append(f"| {name} | {pub} | {our(g0)} | {our(q0)} | {our(c0)} |" + tail)
     lines.append("")
     lines.append(cfg["measurement"]["sota_column"]["when_delta_mp_is_not_read"].strip())
+    lines.append("")
+    lines.append("**How the band check is applied.** " + " ".join(x.strip() for x in band_verdict.__doc__.split("Operationalised: ")[1].split(chr(10))).strip()
+                 + " READ: δ_MP is read for that cell. NOT_READ: the numbers stand and δ_MP is reported as a measurement on an arm below the published band, "
+                 "not as the answer to the question for that cell; what would lift it is a per-dataset fit at the published training scale, which is outside this phase. "
+                 "CONTROL: no published number to calibrate against.")
     lines.append("")
     lines += section_exposure_table(cfg)
     notes = [v for k, v in cfg.items() if k.startswith("note_") and isinstance(v, dict) and "the_three_regimes_of_a_KB_node_text" in v]
@@ -360,19 +478,30 @@ def section_cost(cfg: dict, evals: dict) -> list[str]:
     if compute:
         lines.append("Wall clock is CPU time on a shared machine and is not comparable with the SOTA systems' GPU-hours: " + compute[-1]["timing"]["machine"].strip())
         lines.append("")
-    lines.append("Cold per-query latency (first 500 eval queries, batch of one; compile = feature construction from the caches, embeddings and stores; forward per model) and the eval process's peak resident set:")
+    lines.append("Cold per-query latency (first 500 eval queries, batch of one; compile = feature construction from the caches, embeddings and stores; "
+                 "pack = the batch tensors; forward = one model on the packed query) and the eval process's peak resident set. "
+                 "The batched column is the whole pass (compile once, every model and fixed column scored) per query, node-budgeted chunks, "
+                 "on the shared machine with the other lane running.")
     lines.append("")
-    lines.append("| dataset | compile p50 / p95 / p99 ms | pack p50 / p95 / p99 ms | forward per model p50 / p95 / p99 ms | peak RSS GB | threads | eval ms/query (batched) |")
-    lines.append("|---|---|---|---|---|---|---|")
-    for name in DATASETS:
-        if name not in evals:
-            continue
+    lines.append("| dataset | compile p50 / p95 / p99 ms | pack p50 / p95 / p99 ms | peak RSS GB | threads | eval ms/query (batched, all models) |")
+    lines.append("|---|---|---|---|---|---|")
+    present = [name for name in DATASETS if name in evals]
+
+    def trip(d):
+        return "—" if not d else f"{d['p50_ms']:.1f} / {d['p95_ms']:.1f} / {d['p99_ms']:.1f}"
+
+    for name in present:
         rec = evals[name][0]
         lat = rec["latency"]
-        def trip(d):
-            return "—" if not d else f"{d['p50_ms']:.1f} / {d['p95_ms']:.1f} / {d['p99_ms']:.1f}"
-        fwd = "; ".join(f"{k.split('__')[0].replace('_v1', '')}{k[k.index('__s'):] if '__s' in k else ''}: {trip(v)}" for k, v in lat.items() if k not in ("compile", "pack"))
-        lines.append(f"| {name} | {trip(lat.get('compile'))} | {trip(lat.get('pack'))} | {fwd} | {rec['peak_rss_bytes'] / 1e9:.2f} | {rec['threads']} | {rec['ms_per_query']} |")
+        lines.append(f"| {name} | {trip(lat.get('compile'))} | {trip(lat.get('pack'))} | {rec['peak_rss_bytes'] / 1e9:.2f} | {rec['threads']} | {rec['ms_per_query']} |")
+    lines.append("")
+    lines.append("Forward pass per model, p50 / p95 / p99 ms (same 500 queries, batch of one):")
+    lines.append("")
+    lines.append("| model | " + " | ".join(present) + " |")
+    lines.append("|---|" + "---|" * len(present))
+    model_keys = [k for k in evals[present[0]][0]["latency"] if k not in ("compile", "pack")]
+    for k in model_keys:
+        lines.append(f"| `{k}` | " + " | ".join(trip(evals[name][0]["latency"].get(k)) for name in present) + " |")
     lines.append("")
     return lines
 
@@ -393,31 +522,141 @@ def section_audit(evals: dict) -> list[str]:
     return lines
 
 
-def section_reading(stats: dict, evals: dict) -> list[str]:
-    """What the two differences say, in the three-outcome frame the plan filed; numbers only, no forbidden framing."""
+def section_reading(cfg: dict, stats: dict, evals: dict) -> list[str]:
+    """What the two differences say, in the three-outcome frame the plan filed; every number computed here from the
+    stored arrays, the band verdicts from section 6, the population shift from section 4b; no forbidden framing."""
+    base = json.loads((OUT / "base_score.json").read_text(encoding="utf-8"))
+    base_name = base["selected"]
+    overlap_path = OUT / "population_overlap.json"
+    overlap = json.loads(overlap_path.read_text(encoding="utf-8"))["per_dataset"] if overlap_path.exists() else {}
     lines = ["## 9. Reading", "",
              "The registered question asks how much effectiveness remains attributable specifically to learned message passing once candidate exposure and "
-             "inference-time graph information are matched. Per dataset, `δ_MP` on recall@5 with its interval:", ""]
+             "inference-time graph information are matched. Per dataset, on recall@5 (seed 0 paired over eval queries; the seed column is GAT − GAT-NO-MP "
+             "seed by seed):", ""]
+    kb, passages = [], []
     for name in DATASETS:
         if name not in stats:
             continue
+        rec, arrays, ids = evals[name]
         s = stats[name]["recall@5"]
         d_mp, d_q = s["delta_mp"], s["gat_minus_qlsu"]
         if d_mp is None:
             continue
-        sign = "interval excludes zero" if (d_mp[1] > 0 or d_mp[2] < 0) else "interval includes zero"
-        sign_q = "" if d_q is None else (", GAT − QLS-U " + ci(*d_q) + (" (excludes zero)" if (d_q[1] > 0 or d_q[2] < 0) else " (includes zero)"))
-        lines.append(f"- **{name}**: δ_MP {ci(*d_mp)} — {sign}{sign_q}.")
+        verdict, _ = band_verdict(cfg, name, rec, arrays, ids)
+        per_seed = []
+        for seed in (0, 1, 2):
+            g, c = scorer_keys(rec, "gat_universal_v1", seed), scorer_keys(rec, "gat_no_mp_v1", seed)
+            if g and c:
+                per_seed.append(float(arrays[f"{g[0]}/recall@5"].mean() - arrays[f"{c[0]}/recall@5"].mean()))
+        sign = "excludes zero" if (d_mp[1] > 0 or d_mp[2] < 0) else "includes zero"
+        sub = []
+        c0 = scorer_keys(rec, "gat_no_mp_v1", 0)
+        for fam in ("STRUCT", "NER", "KNN"):
+            k = scorer_keys(rec, "gat_universal_v1", 0, fam)
+            if k and c0:
+                sub.append((fam, float(arrays[f"{k[0]}/recall@5"].mean() - arrays[f"{c0[0]}/recall@5"].mean())))
+        sub_txt = ""
+        if sub:
+            best = max(sub, key=lambda t: t[1])
+            sub_txt = (" Single-family message edges (one fit each): " + ", ".join(f"{f} {v:+.3f}" for f, v in sub)
+                       + f"; the best single family ({best[0]}) gives {best[1]:+.3f} against the full GAT's {d_mp[0]:+.3f}.")
+        q_txt = "" if d_q is None else f" GAT − QLS-U {ci(*d_q)}."
+        other = stats[name]
+        o_txt = " On the other metrics, δ_MP: " + "; ".join(f"{m} {ci(*other[m]['delta_mp'])}" for m in ("hit@1", "mrr", "full_coverage@5") if other.get(m, {}).get("delta_mp")) + "."
+        lines.append(f"- **{name}** ({verdict}): δ_MP {ci(*d_mp)} ({sign}); by seed " + ", ".join(f"{v:+.3f}" for v in per_seed) + f".{q_txt}{o_txt}{sub_txt}")
+        (kb if name in ("metaqa", "webqsp") else passages).append((name, d_mp[0], verdict))
     lines.append("")
-    lines.append("Read against the three outcomes filed in advance: δ_MP ≈ 0 everywhere; small on the passage graphs but substantial on the KB graphs; substantial everywhere. "
-                 "Cells where the universal GAT falls outside the published band without a named exposure difference are marked NOT_READ in section 6.")
+
+    def andjoin(names):
+        names = list(names)
+        return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+
+    def span(items):
+        vals = [d for _, d, _ in items]
+        return f"spans {min(vals):+.3f} to {max(vals):+.3f}" if len(vals) > 1 else (f"is {vals[0]:+.3f}" if vals else "is —")
+
+    read_p = [n for n, _, v in passages if v == "READ"]
+    ctrl = [n for n, _, v in passages if v == "CONTROL"]
+    frame = ("Read against the three outcomes filed in advance (δ_MP ≈ 0 everywhere; small on the passage graphs but substantial on the KB graphs; substantial everywhere): "
+             f"on the passage graphs inside the published band ({', '.join(read_p) or '—'}) δ_MP on recall@5 {span([x for x in passages if x[2] == 'READ'])}; "
+             f"on the KB graphs ({', '.join(n for n, _, _ in kb) or '—'}) it {span(kb)}")
+    nr = [n for n, _, v in kb if v == "NOT_READ"]
+    if nr:
+        frame += (f", but {andjoin(nr)} {'is' if len(nr) == 1 else 'are'} NOT_READ against the published band (section 6): the universal GAT sits below the band by "
+                  "more than the measured exposure shortfall, so that δ_MP is a measurement on an arm weaker than the published systems and is not read as the answer "
+                  "for the cell")
+    if ctrl:
+        frame += (f"; {andjoin(ctrl)} is the control with no graph exposure in its pool (retrieval-only), where message passing over the pool graph is measured "
+                  "as a cost, not a regime result")
+    lines.append(frame + ".")
+    lines.append("")
+    cov, top, further, both, lower = [], [], [], [], []
+    for name in DATASETS:
+        if name in stats and stats[name].get("full_coverage@5", {}).get("delta_mp") and stats[name].get("hit@1", {}).get("delta_mp"):
+            fc, h1 = stats[name]["full_coverage@5"]["delta_mp"], stats[name]["hit@1"]["delta_mp"]
+            cov.append((name, fc[0]))
+            top.append((name, h1[0]))
+            if fc[1] > 0 and h1[1] > 0:
+                both.append(name)
+            elif fc[1] > 0:
+                further.append(name)
+            elif fc[2] < 0 and h1[2] < 0:
+                lower.append(name)
+    if cov:
+        where = ("Where the increment sits: δ_MP on full_coverage@5 (every gold of the query in the top 5) is " + ", ".join(f"{n} {v:+.3f}" for n, v in cov)
+                 + "; on hit@1 it is " + ", ".join(f"{n} {v:+.3f}" for n, v in top) + " (intervals in section 4).")
+        parts = []
+        if further:
+            parts.append(f"on {andjoin(further)} message passing adds coverage of the further golds of a multi-gold query while the top rank is not lifted "
+                         "(its hit@1 interval does not exclude zero on the positive side)")
+        if both:
+            parts.append(f"on {andjoin(both)} it lifts the top rank as well")
+        if lower:
+            parts.append(f"on {andjoin(lower)} it lowers both")
+        if parts:
+            where += " " + "; ".join(parts).capitalize() + "."
+        lines.append(where)
+        lines.append("")
+    if "metaqa" in stats and "webqsp" in stats:
+        m, w = stats["metaqa"]["recall@5"]["delta_mp"], stats["webqsp"]["recall@5"]["delta_mp"]
+        pools = cfg["candidate_contract_frozen_2026_09_13"]["per_dataset"]
+        order = "The ordering H_MP predicted is the ordering measured" if m[0] > w[0] else "The ordering H_MP predicted is not the ordering measured"
+        lines.append("**H_MP (note 2, filed before the eval).** It predicted that learned message passing pays where the gold retrieval misses is reachable through paths that are "
+                     "discriminative inside the pool (metaqa: 9 relation types, answers at a fixed hop) and adds little where the pool is large and the relation vocabulary wide "
+                     f"(webqsp). Measured: metaqa δ_MP {ci(*m)} against webqsp {ci(*w)} (pool all-gold exposure {pools['metaqa']['all_gold_at_pool']:.3f} vs "
+                     f"{pools['webqsp']['all_gold_at_pool']:.3f}; any-gold {pools['metaqa']['any_gold_at_pool']:.3f} vs {pools['webqsp']['any_gold_at_pool']:.3f}). "
+                     + order + "; both KB cells carry the band verdict above.")
+        lines.append("")
+    shifted = []
+    for name in DATASETS:
+        if name not in evals or name not in overlap:
+            continue
+        o = overlap[name]
+        if o["select"]["queries_with_a_fit_gold"] >= 0.5 and o["eval"]["queries_with_a_fit_gold"] < 0.1:
+            rec, arrays, _ = evals[name]
+            b_shift = float(arrays[f"fixed:{base_name}/recall@5"].mean()) - float(base["per_dataset"][name][base_name])
+            arm_shifts = []
+            for arm in ("qls_u_sota_v1", "gat_no_mp_v1", "gat_universal_v1"):
+                k = scorer_keys(rec, arm, 0)
+                fit = json.loads((MODELS / f"{k[0]}.json").read_text(encoding="utf-8"))
+                arm_shifts.append(float(arrays[f"{k[0]}/recall@5"].mean()) - float(fit["history"][fit["best_epoch"]]["select_recall@5"][name]))
+            shifted.append(f"{name} (select carve: {o['select']['queries_with_a_fit_gold']:.3f} of queries hold a fit gold; eval: {o['eval']['queries_with_a_fit_gold']:.3f}; "
+                           f"fixed base shift {b_shift:+.3f}, arms {', '.join(f'{v:+.3f}' for v in arm_shifts)})")
+    if shifted:
+        lines.append("**Where the select carve was not distribution-matched with the eval population** (section 4b): " + "; ".join(shifted) + ". "
+                     "The three arms lose alike, so the controlled differences survive the shift; the absolute learned lift on such a dataset is population-specific and the "
+                     "select-carve numbers of section 3 are read as model selection only.")
+        lines.append("")
+    lines.append("Nothing here reads a negative or small δ_MP as a statement that message passing is unnecessary, and nothing reads a positive one beyond its interval; "
+                 "the NOT_READ cells are the calibration verdicts of section 6, not results.")
     lines.append("")
     return lines
 
 
 def run_record(cfg: dict) -> tuple[list[str], dict]:
     files = sorted(list(EVAL.glob("*.json")) + list(EVAL.glob("*.npz")) + list(MODELS.glob("*.json")) +
-                   [OUT / "selection.json", OUT / "feature_screen.json", OUT / "base_score.json", OUT / "carves.json", OUT / "contract" / "CONTRACT.json"])
+                   [OUT / "selection.json", OUT / "feature_screen.json", OUT / "base_score.json", OUT / "carves.json", OUT / "contract" / "CONTRACT.json",
+                    OUT / "population_overlap.json"])
     record = {p.relative_to(ROOT).as_posix(): sha256_file(p) for p in files if p.exists()}
     lines = ["## 10. Run record", "", f"Rendered {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')} by `scripts/m3b_report.py` from the sidecars below (sha256 of every output a number above cites; the sidecars are gitignored, the record is committed in the declaration).", "",
              "| file | sha256 |", "|---|---|"]
@@ -436,6 +675,7 @@ def main() -> int:
              f"Declaration: `configs/m3b_controlled_comparison.yaml` (status `{cfg['status']}`). Arms: `qls_u_sota_v1` (QLS-U), `gat_universal_v1` (universal GAT), "
              "`gat_no_mp_v1` (GAT-NO-MP, the causal control). Eval populations are the headroom populations, whole; test splits were never read; "
              "the substrate is the read-only served package pinned by its freeze record. Nothing here is a scientific result on test data.", ""]
+    glance_at = len(lines)   # the one-line summary is inserted here once the statistics exist
     lines += section_contract(cfg, evals)
     lines += section_features(cfg)
     if (OUT / "selection.json").exists():
@@ -444,11 +684,24 @@ def main() -> int:
     if evals:
         main_lines, stats = section_main(cfg, evals, base_name)
         lines += main_lines
+        lines += section_select_vs_eval(evals, base_name)
         lines += section_ablation(evals)
         lines += section_sota(cfg, evals)
         lines += section_cost(cfg, evals)
         lines += section_audit(evals)
-        lines += section_reading(stats, evals)
+        lines += section_reading(cfg, stats, evals)
+    if stats:
+        glance = []
+        for name in DATASETS:
+            if name not in stats:
+                continue
+            rec, arrays, ids = evals[name]
+            verdict, _ = band_verdict(cfg, name, rec, arrays, ids)
+            d = stats[name]["recall@5"]["delta_mp"]
+            if d:
+                glance.append(f"{name} {ci(*d)} ({verdict})")
+        lines[glance_at:glance_at] = ["**At a glance — δ_MP on recall@5, universal GAT − GAT-NO-MP, seed 0, paired 95 % interval, with the section-6 band verdict:** "
+                                      + "; ".join(glance) + ". The reading is section 9; nothing above is a result on test data.", ""]
     rec_lines, record = run_record(cfg)
     lines += rec_lines
     DOC.parent.mkdir(parents=True, exist_ok=True)

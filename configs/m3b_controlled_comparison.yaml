@@ -9,7 +9,7 @@
 # ═════════════════════════════════════════════════════════════════════════════
 experiment: m3b_controlled_comparison
 phase: M3B
-status: DECLARED_NOT_RUN
+status: RUN
 declared: 2026-09-13
 declared_under:
   - configs/m3a_sota_information_contract.yaml   # model naming, feature / candidate / proposed-object contracts
@@ -1843,3 +1843,621 @@ note_2_2026_09_17_retrieval_seeded_framing_and_sota_calibration:
     ID-free relation semantics, a compiled multi-scale basis for the non-message-passing twin, leave-one-dataset-out
     as the universality test) is a prospective phase and gets its own declaration file after this phase closes,
     not a line here.
+
+# ==================================================================
+# Run record - 2026-09-19. Appended after the eval pass and the report render, as order_of_operations step 5.
+# ==================================================================
+run_record_2026_09_19:
+  status: RUN
+  filed_utc: '2026-09-19T10:57:47Z'
+  what: 'M3B carried to results under authorization_2026_09_13: 16 fits (screen 4 GAT + 2 QLS-U, GAT-NO-MP seed
+    0, seeds 1-2 of the three arms, the three substrate ablations), the eval pass on the six eval populations, and
+    docs/M3B_RESULTS.md rendered by scripts/m3b_report.py. The sidecars are gitignored; every number the doc cites
+    is pinned by sha256 here and in the doc (section 10).'
+  substrate:
+    package_root_read_only: true
+    served_freeze_RECORD_SHA256_in_every_eval_record:
+    - 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+    foreign_byte_code_cache_under_the_package_root: canonical.cpython-313.pyc (37,614 B, mtime 2026-09-13T15:58:07)
+      under the served package root, not created by this phase, reported by every process that imported the loader
+      (sys.dont_write_bytecode), never removed, byte-identical before and after every import.
+    writes_under_the_package_root: 0
+  order_as_run:
+  - contract cells measured and frozen (candidate_contract_frozen_2026_09_13)
+  - relation embeddings, compile caches, feature screen, base score (2026-09-13)
+  - timing (outputs/m3b/timing.json; amendment 3 filed before any fit)
+  - screen 2026-09-13 20:29 -> 2026-09-16 04:58 IST; selection.json written once
+  - seeds 2026-09-16 04:59 -> 2026-09-18 12:27 IST
+  - ablation 2026-09-18 15:35 -> 2026-09-19 10:14 IST
+  - XPU check 2026-09-19 10:20-10:56 IST (user-authorised measurement; nothing ran on the XPU)
+  - eval pass 2026-09-19 10:56 IST onward in two lanes (below)
+  - merge of the metaqa shards, report render, this record, commit
+  selection_as_filed:
+    gat_universal_v1:
+      L: 2
+      H: 128
+    qls_u_sota_v1:
+      H: 128
+    gat_no_mp_v1:
+      L: 2
+      H: 128
+    file_sha256: d2455bb5cadb5b9c60e2b02e36be64e58e2a87a0bf2caf36a9f57a821148ba45
+    no_eval_number_existed: true
+  fits:
+  - key: gat_no_mp_v1__H128_L2__s0
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 4
+    best_select_macro_recall5: 0.7746
+    seconds: 17184.4
+    epoch_seconds:
+    - 2447.5
+    - 2478.4
+    - 2462.0
+    - 2618.1
+    - 3373.2
+    - 3804.1
+    peak_rss_gb: 8.15
+    threads: 8
+    finished_utc: '2026-09-16T04:17:13Z'
+    state_sha256: 6ada44036e7b0ede65911ccb0872056e48c1825423215eb0150c5a291e3ff1e7
+    record_sha256: f1c17437c8dc82d1f508505c8ab74ebed908b3c9d6c07954b1bafe9820e5ef37
+  - key: gat_no_mp_v1__H128_L2__s1
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 4
+    best_select_macro_recall5: 0.7752
+    seconds: 16178.9
+    epoch_seconds:
+    - 3996.3
+    - 3044.7
+    - 2387.3
+    - 2296.0
+    - 2244.2
+    - 2209.0
+    peak_rss_gb: 8.83
+    threads: 8
+    finished_utc: '2026-09-17T02:11:30Z'
+    state_sha256: 5cd8a2cb84bd1427b864dcee71f0a1a5555367c6f6f8e1aec56d705808e7c4f6
+    record_sha256: 6c838cf8a768a496d2ac926bf26aa046904b534a9164086af557c3a582b1e795
+  - key: gat_no_mp_v1__H128_L2__s2
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 3
+    best_select_macro_recall5: 0.774
+    seconds: 25133.9
+    epoch_seconds:
+    - 3913.3
+    - 3874.3
+    - 4844.5
+    - 4701.0
+    - 3850.1
+    - 3949.9
+    peak_rss_gb: 11.18
+    threads: 8
+    finished_utc: '2026-09-18T06:57:31Z'
+    state_sha256: 797f46a983756f83974196a9566e3d911c7d002a5bcf0612490da6416ae998bc
+    record_sha256: 7f341765caf7486e751e815d69a51801ce363579654b9bfad5cf49da9d8540c2
+  - key: gat_universal_v1__H128_L2__s0
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 5
+    best_select_macro_recall5: 0.8109
+    seconds: 34767.5
+    epoch_seconds:
+    - 5004.5
+    - 4711.7
+    - 5050.7
+    - 6681.8
+    - 6207.7
+    - 7109.5
+    peak_rss_gb: 9.67
+    threads: 8
+    finished_utc: '2026-09-14T20:00:59Z'
+    state_sha256: 6665f2ecc863ee6385d465e26771a79842ee7efb3980028fbffe1adf444eba37
+    record_sha256: 99ac7215d311a392b9a4a1f60b6d91abf4e6a32fda48b0dd6d7c9b252b3d6847
+  - key: gat_universal_v1__H128_L2__s0__KNN
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 5
+    best_select_macro_recall5: 0.7735
+    seconds: 15776.3
+    epoch_seconds:
+    - 2237.8
+    - 2247.2
+    - 2387.0
+    - 2883.7
+    - 3119.1
+    - 2900.9
+    peak_rss_gb: 10.92
+    threads: 8
+    finished_utc: '2026-09-19T04:44:27Z'
+    state_sha256: 1d200e538e509907ec44a44e3c11156eda9ffa23f54fe65af83345a51bd012b7
+    record_sha256: d9730f037b5789f3876a545f3760aaccc36f4b77089b4735da7c2e87cc9bc9d6
+  - key: gat_universal_v1__H128_L2__s0__NER
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 3
+    best_select_macro_recall5: 0.7718
+    seconds: 24270.6
+    epoch_seconds:
+    - 4661.7
+    - 4851.0
+    - 4955.4
+    - 4254.6
+    - 2805.6
+    - 2741.0
+    peak_rss_gb: 10.52
+    threads: 8
+    finished_utc: '2026-09-19T00:21:31Z'
+    state_sha256: 98b53f28e43cf2524d6726690f8169135bfece4c6cf3738c0185ad502905dc99
+    record_sha256: de1988eb847d694cfe1ad1cc07f0ae3476ec7f13bbb86e0b8d4f82478855dd87
+  - key: gat_universal_v1__H128_L2__s0__STRUCT
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 3
+    best_select_macro_recall5: 0.8101
+    seconds: 23206.6
+    epoch_seconds:
+    - 3718.8
+    - 3551.6
+    - 3840.6
+    - 3698.8
+    - 4416.3
+    - 3979.3
+    peak_rss_gb: 10.88
+    threads: 8
+    finished_utc: '2026-09-18T16:34:18Z'
+    state_sha256: faadbdd9fcbe6baca8fbf6a143ad48734fb930ac975cf70aa129d42fa6f25eca
+    record_sha256: 13a5f1c1b481fff212a8bb0268e6ffdcd71b535b4346f009f44c5c9b28a91b47
+  - key: gat_universal_v1__H128_L2__s1
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 4
+    best_select_macro_recall5: 0.8108
+    seconds: 44811.9
+    epoch_seconds:
+    - 6378.2
+    - 11068.1
+    - 7965.2
+    - 6156.0
+    - 6553.9
+    - 6689.4
+    peak_rss_gb: 8.93
+    threads: 8
+    finished_utc: '2026-09-16T21:39:42Z'
+    state_sha256: a67ae3c8704aa7ac9f7f7e73af762614d49a81b6ee58a3609fa75f9831c681e7
+    record_sha256: d03de19aa7156e990a115649fb9045e64c4725be44200e5fc71958e4bd2a7a78
+  - key: gat_universal_v1__H128_L2__s2
+    parameters: 353410
+    epochs_run: 6
+    best_epoch: 5
+    best_select_macro_recall5: 0.8107
+    seconds: 34653.5
+    epoch_seconds:
+    - 4097.4
+    - 3861.5
+    - 5245.5
+    - 7238.2
+    - 7237.5
+    - 6972.2
+    peak_rss_gb: 11.18
+    threads: 8
+    finished_utc: '2026-09-17T23:58:37Z'
+    state_sha256: b4c5f329ce319e669079bfec941c12d78969a026ac7a44e1e2a61d85340b6e8d
+    record_sha256: 0d489a72d569e151b70b484c6dbfbbbeba79ebfab4f0428f03bccb39aa0c1802
+  - key: gat_universal_v1__H128_L3__s0
+    parameters: 387970
+    epochs_run: 6
+    best_epoch: 3
+    best_select_macro_recall5: 0.8099
+    seconds: 36534.1
+    epoch_seconds:
+    - 5133.5
+    - 5125.4
+    - 6392.9
+    - 7465.6
+    - 6813.2
+    - 5602.3
+    peak_rss_gb: 10.56
+    threads: 8
+    finished_utc: '2026-09-15T14:40:38Z'
+    state_sha256: f14e1c8218c0631be774646ea17a4105459c350970caba136536804476d1508c
+    record_sha256: a7e2f8cb22b4f95ffa3d7aaa8a471d72df7fbe50b08227b7938f125d4d517b10
+  - key: gat_universal_v1__H64_L2__s0
+    parameters: 259394
+    epochs_run: 6
+    best_epoch: 5
+    best_select_macro_recall5: 0.8041
+    seconds: 35214.3
+    epoch_seconds:
+    - 7318.9
+    - 6071.3
+    - 5612.5
+    - 6159.4
+    - 6709.4
+    - 3341.5
+    peak_rss_gb: 8.75
+    threads: 8
+    finished_utc: '2026-09-14T10:21:32Z'
+    state_sha256: 0d5d890c6e4911cc9355f72e0be7a6bd2c48876c95d25168a456f6426d9f66d4
+    record_sha256: 26d350927734d778c99f9aed43859e717f42ab9fe56e098030e48df2e5742937
+  - key: gat_universal_v1__H64_L3__s0
+    parameters: 268482
+    epochs_run: 6
+    best_epoch: 5
+    best_select_macro_recall5: 0.8066
+    seconds: 30420.0
+    epoch_seconds:
+    - 6179.2
+    - 4970.9
+    - 4887.5
+    - 4971.7
+    - 5215.7
+    - 4193.6
+    peak_rss_gb: 9.3
+    threads: 8
+    finished_utc: '2026-09-15T04:30:38Z'
+    state_sha256: 6757d2e5851ac97cd947b9c2969fc11b1f8b5ae0f012ae7c5aa9a9b404ec4982
+    record_sha256: 26edd4006871f2040a9c217d60385d9b6b80669899e5e51af2a2372c2b918973
+  - key: qls_u_sota_v1__H128__s0
+    parameters: 317314
+    epochs_run: 6
+    best_epoch: 4
+    best_select_macro_recall5: 0.7729
+    seconds: 19702.3
+    epoch_seconds:
+    - 2913.3
+    - 3515.5
+    - 2481.9
+    - 2685.6
+    - 4243.1
+    - 3861.2
+    peak_rss_gb: 8.76
+    threads: 8
+    finished_utc: '2026-09-15T23:28:50Z'
+    state_sha256: 52c6df20b1d692b19ac5ca7f6e7523ba4f25f2e0ca8f903615c00539b2ab0c9d
+    record_sha256: e4e0c6b9b18e9075f6a7ea63e63cce5ea72e1535e3407568d36c9aae23c6a465
+  - key: qls_u_sota_v1__H128__s1
+    parameters: 317314
+    epochs_run: 6
+    best_epoch: 5
+    best_select_macro_recall5: 0.7725
+    seconds: 16484.7
+    epoch_seconds:
+    - 2939.5
+    - 2473.7
+    - 3203.8
+    - 2684.2
+    - 2417.9
+    - 2764.2
+    peak_rss_gb: 9.23
+    threads: 8
+    finished_utc: '2026-09-16T08:51:58Z'
+    state_sha256: 159a6be5d1b3b31a65bdc94d4737daa44fd668240fc03d6c73402ebb0082004d
+    record_sha256: 6674f75609763bc9f5bc8aa83c02a1da1a9b5ffa28be27b6546abc1ddb131e09
+  - key: qls_u_sota_v1__H128__s2
+    parameters: 317314
+    epochs_run: 6
+    best_epoch: 3
+    best_select_macro_recall5: 0.7702
+    seconds: 19827.9
+    epoch_seconds:
+    - 2272.1
+    - 2410.2
+    - 2410.1
+    - 8846.1
+    - 2170.5
+    - 1718.3
+    peak_rss_gb: 10.82
+    threads: 8
+    finished_utc: '2026-09-17T14:20:35Z'
+    state_sha256: 3f5015ca9f3273d65f237d9c0b3a2db7f49a131738d7163e0c00d9a82b8a23e5
+    record_sha256: 31599eb4fa7ee715d916b582a785df0f05fa0dced1d52ee7527c95e784d3ae95
+  - key: qls_u_sota_v1__H64__s0
+    parameters: 249538
+    epochs_run: 6
+    best_epoch: 4
+    best_select_macro_recall5: 0.769
+    seconds: 11916.9
+    epoch_seconds:
+    - 1588.3
+    - 1584.0
+    - 2040.4
+    - 1839.6
+    - 2166.0
+    - 2697.3
+    peak_rss_gb: 8.76
+    threads: 8
+    finished_utc: '2026-09-15T18:00:26Z'
+    state_sha256: 601d69ee682e4ac4d5cd5341e4af6f9356b2718cce1d249a1d19cb80684fc3c3
+    record_sha256: 96e988eb6f3f85b80aafc34b543ca9a5fe23a9a886296d3f693ccb09081d8a1e
+  training_incidents_in_order:
+  - 2026-09-13 20:29 IST screen launched (8 threads, pack workers 2 x depth 2) on the shared laptop.
+  - '2026-09-14 14:17 IST amendment 4: fit 1 (GAT L2 H64) epoch 5 halted paging-bound after 8.9 h (kernel nonpaged
+    pool 10.3-10.5 GB, a driver leak outside the phase); resumed from the epoch-4 checkpoint at 14:29 and, after
+    the amendment was filed, again at 14:55; fit 1 closed 15:51 IST (best epoch 5).'
+  - '2026-09-15 07:22, 10:01 and 20:11 IST boundary restarts of the screen process (private commit grows ~5 GB per
+    10 h of fitting; the working set stays 7-8 GB): the H64 L3 fit resumed from its epoch-3 checkpoint, the other
+    two restarts fell between fits; finished fits are "record exists, not repeated".'
+  - 2026-09-16 04:58 IST screen closed (31,631 s in the last launch); seeds stage launched 04:59 IST.
+  - '2026-09-16 16:21-16:27 IST amendment-4 standing rule applied to GAT seed 1 epoch 1: another process (review_paper/experiment.py,
+    4.6 GB private, not this phase) pushed the system commit charge to 37.5 of 38.4 GB and the fit was paging (free
+    RAM < 0.25 GB); stopped and relaunched at 16:27:32, resumed from its epoch-0 checkpoint; epoch 1 wall 11,068
+    s flagged paging-bound.'
+  - 2026-09-17 03:10 IST boundary restart after GAT seed 1 (commit 12.2 GB), nothing lost.
+  - '2026-09-17 09:41-11:26 IST the laptop slept (Kernel-Power 42 / resume 507): QLS-U seed 2 epoch 3 wall 8,846
+    s contains ~105 min of sleep; keep-awake prevents idle sleep only.'
+  - 2026-09-17 ~12:15 IST the machine stopped without a shutdown event (last health sample 12:13; OS started 12:39),
+    further user restarts 15:40 / 16:08 / 18:41; relaunched 18:44 IST, QLS-U seed 2 resumed from its epoch-3 checkpoint;
+    about 6 minutes of computation lost.
+  - '2026-09-17 23:31 -> 2026-09-18 05:29 IST GAT seed 2 epochs 3-5 ran ~1.8x slower than epochs 0-1 under shared
+    load overnight (machine CPU median 59 %, fit CPU median 464 %, free RAM min 0.47 GB): not paging-bound by the
+    amendment-4 test, no flag, no restart.'
+  - '2026-09-18 05:28 IST GAT-NO-MP seed 2 started in the same process without a boundary restart (the session was
+    detached; private commit stayed ~12 GB from the preceding GAT heap): its wall time (25,134 s) is not comparable
+    with seeds 0-1 (16-17 ks at ~7.5 GB commit); no science effect.'
+  - 2026-09-18 12:27 IST seeds stage closed (9 fits). 15:30 IST reboot while idle, nothing lost; ablation launched
+    15:35 IST on the quiet machine.
+  - 2026-09-19 04:14 IST user-initiated restart (User32 1074) killed the ablation process ~58 min into NER epoch
+    4; relaunched 04:17:29 from the epoch-3 checkpoint (STRUCT already on record); the lost partial epoch is not
+    in the NER record seconds (24,270.6 = the six recorded epochs). KNN ran to the 6-epoch maximum (37-52 min per
+    epoch on the rebooted machine vs 60-83 min before). Ablation closed 10:14 IST.
+  machine_health_log:
+    file: outputs/m3b/logs/machine_health.log
+    samples: 1340
+    first: '2026-09-14T14:11:22'
+    last: '2026-09-19T16:21:11'
+    samples_free_ram_below_0_25_gb: 7
+    max_swap_used_gb: 14.1
+    max_nonpaged_pool_gb: 10.86
+    nonpaged_pool_samples_over_2_gb: 4
+    sha256: 791ca14ab8d85f86c110cfb8bcf38bf39da0cde23588b7351aa66859de798225
+  xpu_check:
+    sidecar: outputs/m3b/xpu_check.json
+    sha256: 4f596c92114bd1811cc54714bac5e617c374d0c82a4e4d3c9939bb631e13d4a4
+    line: 'XPU check (user-authorised, 2026-09-19 10:20-10:56 IST, between the ablation''s exit and the eval launch;
+      sidecar outputs/m3b/xpu_check.json): the Iris Xe is visible to torch 2.14.0+xpu in a throwaway venv but cannot
+      run the GAT (fp16->fp32 cast kernel UR_RESULT_ERROR_INVALID_ARGUMENT at every size; device lost in the input
+      block with float32 embeddings); no forward pass completed; the eval runs on CPU as declared.'
+    verdict: 'NOT USABLE for M3B: the Iris Xe cannot run the M3B GAT through torch 2.14.0+xpu on this driver (a
+      failing fp16->fp32 cast and a device loss inside the input block), and where it runs it is not faster than
+      the 8-thread CPU. The eval stage starts on CPU as declared; nothing in the phase changes. Universal-v2 fits
+      go to Modal GPUs as planned.'
+  eval_pass:
+    how: scripts/m3b_run.py --stage eval, one dataset per process (open_contexts loads only the named dataset);
+      metaqa in four shards (--shard k/4 = queries k::4 of the population, 0-based) merged by --stage merge, which
+      interleaves the shards back into population order, recomputes the ceilings from the merged arrays and verifies
+      the population digest. Every query is compiled once and scored by the 12 selected models and the three fixed
+      columns; latency is measured on the first 500 queries of the unsharded or shard-0 process, batch of one; the
+      ceiling as compiled is checked against the frozen contract cell (SystemExit on mismatch); the MRR audit runs
+      before any record is written. Scoring under torch.no_grad (commit 0c76067).
+    incidents:
+    - '2026-09-19 10:56 IST eval launch 1 (lane A: squad, metaqa shards 0-3): every job crashed at its first scored
+      chunk -- eval_dataset called model(batch).cpu().numpy() with autograd on ("Can''t call numpy() on Tensor that
+      requires grad") while evaluate_carve, the select-carve evaluation used by every fit, already ran under torch.no_grad.
+      No eval record existed. Fixed by decorating eval_dataset with torch.no_grad (commit 0c76067, 11:08 IST, filed
+      before any eval number); the eval-mode forward is the same function with or without a graph. The failed launch
+      logs are kept as outputs/m3b/logs/eval_<tag>.{stdout,stderr}.launch1_failed.log.'
+    - 2026-09-19 11:09 IST relaunch of lane A (squad, then the metaqa shards, 8 threads); 11:22 IST lane B launched
+      on the idle cores (webqsp, musique, hotpotqa, 2wiki, 6 threads). Wall times below were measured with the other
+      lane sharing the 12 CPUs and the user working on the machine; the per-query latency columns are batch-of-one
+      measurements inside the same processes.
+    - 2026-09-19 13:53 IST, when lane B exited after 2wiki, a third driver (lane B', 6 threads) was launched on
+      the freed cores with the single job metaqa 3/4, so that metaqa shards 2 and 3 ran concurrently instead of
+      in series on lane A; lane A's driver skips a shard whose record already exists (the run script's own check),
+      and no duplicate shard process was allowed to run to completion. Shard 3/4 finished on lane B' at 15:43 IST
+      (6,588.6 s at 6 threads, peak RSS 3.63 GB) while shard 2/4 was still running on lane A; lane A reached shard
+      3/4 afterwards and found the record (16:23 IST, 'shard 3 of 4 exists, not repeated', 7 s, no scoring); both
+      drivers exited by 16:24 IST and the merge ran at 16:24 IST. The machine-health sampler ran for the whole eval
+      pass and was stopped at 16:26 IST.
+    lanes:
+      A: squad; metaqa 0/4; metaqa 1/4; metaqa 2/4; metaqa 3/4 skipped, record existed (8 threads; driver outputs/m3b/logs/eval_driver_A.log)
+      B: webqsp; musique; hotpotqa; 2wiki (6 threads; driver outputs/m3b/logs/eval_driver_B.log)
+      B_prime: metaqa 3/4 (6 threads; driver outputs/m3b/logs/eval_driver_Bp.log; launched 13:53 IST after lane
+        B exited)
+    per_dataset:
+      metaqa:
+        queries: 39138
+        zero_gold_excluded: 0
+        ids_sha256: bd5d8732b25494968b651b3955d89616b13062f5d62fad83c5308f9e28803426
+        pool: equal_rrf_budget_50+STRUCT:h3_c25_v2000
+        ceiling_as_compiled_recall5: 0.8094
+        candidates_mean_as_compiled: 2017.0
+        seconds: 25105.9
+        ms_per_query: 634.53
+        threads: 8
+        peak_rss_gb: 3.71
+        freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+        mrr_audit_green: true
+        scorers: 15
+        record_sha256: 0c49fa89194642c279b1cf7ed9661c2d479e129b0c9528ed7d24ba259f91499e
+        npz_sha256: a4739cf66a8d0eb4a751abb0e9480305986eceb3876aca7662a05c7f0dfb97dd
+        merged_from:
+        - metaqa__shard0of4.json
+        - metaqa__shard1of4.json
+        - metaqa__shard2of4.json
+        - metaqa__shard3of4.json
+      squad:
+        queries: 11873
+        zero_gold_excluded: 0
+        ids_sha256: e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8
+        pool: equal_rrf_budget_50
+        ceiling_as_compiled_recall5: 0.9798
+        candidates_mean_as_compiled: 50.0
+        seconds: 255.3
+        ms_per_query: 21.06
+        threads: 8
+        peak_rss_gb: 4.29
+        freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+        mrr_audit_green: true
+        scorers: 15
+        record_sha256: 1d1791cf71a445672834bd74fef719185c432e9c47f371faa0e641ceecec78ae
+        npz_sha256: c14fe820295dc18374ef8f0d5775f2d422af830bc9a579f527736929aeef8385
+      musique:
+        queries: 2417
+        zero_gold_excluded: 0
+        ids_sha256: de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08
+        pool: equal_rrf_budget_200+FULL:h2_c25
+        ceiling_as_compiled_recall5: 0.9207
+        candidates_mean_as_compiled: 2092.4
+        seconds: 3857.2
+        ms_per_query: 1585.82
+        threads: 6
+        peak_rss_gb: 5.95
+        freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+        mrr_audit_green: true
+        scorers: 15
+        record_sha256: e69e211d4deff1381c33942d8acc91bb535aa91e5bdb7d328b077c9338230a61
+        npz_sha256: 554b7a20605b6d965f3af62477103dc7c66e05079b716d781d2fa3d3408ee06c
+      hotpotqa:
+        queries: 7405
+        zero_gold_excluded: 0
+        ids_sha256: d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e
+        pool: equal_rrf_budget_50+STRUCT:h1_c25
+        ceiling_as_compiled_recall5: 0.98
+        candidates_mean_as_compiled: 93.7
+        seconds: 987.0
+        ms_per_query: 119.05
+        threads: 6
+        peak_rss_gb: 6.28
+        freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+        mrr_audit_green: true
+        scorers: 15
+        record_sha256: 00a0737d28175865a911fbdf8fad8b9d98d2cbda4ab13b72980f9251f6ce6739
+        npz_sha256: 38927e915433fb3aea7946d92676eb1281128693aff31e37f257976a2caa23dd
+      2wiki:
+        queries: 12576
+        zero_gold_excluded: 0
+        ids_sha256: 9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f
+        pool: equal_rrf_budget_50+STRUCT:h1_c25
+        ceiling_as_compiled_recall5: 0.9637
+        candidates_mean_as_compiled: 105.7
+        seconds: 1710.4
+        ms_per_query: 129.04
+        threads: 6
+        peak_rss_gb: 7.16
+        freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+        mrr_audit_green: true
+        scorers: 15
+        record_sha256: d9056d9c14368d10387819c03d621acbd9435976abf3c069de9537f955f6601f
+        npz_sha256: d2196c2f7769512071f1a9592504be6e1bdeff9729f1b2bcfae45f1ebdd76313
+      webqsp:
+        queries: 1503
+        zero_gold_excluded: 46
+        ids_sha256: faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e
+        pool: dense_top200+FULL:h3_c25_v2000
+        ceiling_as_compiled_recall5: 0.7649
+        candidates_mean_as_compiled: 2119.9
+        seconds: 2289.3
+        ms_per_query: 1495.46
+        threads: 6
+        peak_rss_gb: 5.73
+        freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+        mrr_audit_green: true
+        scorers: 15
+        record_sha256: 4fe1f0417678a5c5dea76da2680dfb3a267c3f3523255885c6d990df7d078cf0
+        npz_sha256: 8fd546c740a59d65e2d5952f563b07682a51b78fff873a87fcca29edfac446a9
+  population_overlap_sidecar:
+    file: outputs/m3b/population_overlap.json
+    sha256: 2f7be185f9a5142734605e4324c2aa8ddac6f499198d3e62230f27de4f63abc7
+    what: 'reporting only (doc section 4b): the share of each population (fit, select, eval) whose queries hold
+      at least one gold node that is a gold node of some fit-carve query, golds resolved by the headroom function
+      on the read-only package; written 2026-09-19 after the fits and after the first eval records; reads no score
+      and no weight; no rule depends on it.'
+    queries_with_a_fit_gold_select_vs_eval:
+      metaqa:
+      - 0.8283
+      - 0.8642
+      squad:
+      - 0.2904
+      - 0.0
+      musique:
+      - 0.9446
+      - 0.0
+      hotpotqa:
+      - 0.1625
+      - 0.1826
+      2wiki:
+      - 0.4285
+      - 0.3076
+      webqsp:
+      - 0.5279
+      - 0.517
+  report:
+    doc: docs/M3B_RESULTS.md
+    doc_sha256: da79da37edd3b1d94b50c1b4e403910d83d232076ec5f14fab854eb8e2efb84c
+    rendered_utc: '2026-09-19T10:57:19Z'
+    report_run_record_json_sha256: 305a96197eaf53a15d05a8a99b68a28f8b4f1746c49d041d4d929af5f60d5b07
+    sections_beyond_the_declared_reporting: 'Beyond the declared reporting (measurement + amendment 1 reporting_amended)
+      the doc renders: section 4b (the select-carve recall@5 that chose each epoch beside the eval-population recall@5
+      of the same weights, with the fixed base on both populations as the population control, and the population-overlap
+      column); a per-model forward-latency table; an at-a-glance line under the header; a GAT seed-sd column beside
+      the single-fit substrate cells of section 5; a computed section 9 (per-dataset delta_MP on every metric, the
+      single-family deltas, the three-outcome frame, the H_MP sentence, the population-shift note); and the band-check
+      column of section 6, which operationalises configs/m3a_compilation.yaml#universal_gnn_calibration_rule .when_delta_mp_is_not_read
+      as READ when the universal GAT (seed 0) is at or above the lowest published number minus the measured exposure
+      shortfall (published coverage minus our any_gold_at_pool), NOT_READ otherwise, CONTROL where no published
+      number exists. That operationalisation was written at 13:36 IST on 2026-09-19 while the eval pass ran, after
+      the squad, webqsp, musique and hotpotqa records and metaqa shard 0 existed and before 2wiki and metaqa shards
+      1-3; it is a reading of the filed calibration rule, it decides no number, and its verdicts are stated as verdicts.
+      Everything listed renders numbers already on disk.'
+    stats_recall5_seed0_paired:
+      metaqa:
+        delta_mp:
+        - 0.147
+        - 0.1441
+        - 0.1498
+        gat_minus_qlsu:
+        - 0.151
+        - 0.1482
+        - 0.154
+      squad:
+        delta_mp:
+        - -0.0113
+        - -0.0152
+        - -0.0077
+        gat_minus_qlsu:
+        - -0.0048
+        - -0.0086
+        - -0.0011
+      musique:
+        delta_mp:
+        - 0.0177
+        - 0.0083
+        - 0.0272
+        gat_minus_qlsu:
+        - 0.0295
+        - 0.0201
+        - 0.0383
+      hotpotqa:
+        delta_mp:
+        - 0.0301
+        - 0.0256
+        - 0.0348
+        gat_minus_qlsu:
+        - 0.0257
+        - 0.021
+        - 0.0298
+      2wiki:
+        delta_mp:
+        - 0.0515
+        - 0.0479
+        - 0.0553
+        gat_minus_qlsu:
+        - 0.0473
+        - 0.044
+        - 0.0507
+      webqsp:
+        delta_mp:
+        - 0.0281
+        - 0.0137
+        - 0.0435
+        gat_minus_qlsu:
+        - 0.0252
+        - 0.0113
+        - 0.0411
+  unchanged: 'Everything scientific as declared and amended before the first weight: the contract, the carves, the
+    feature contract and its core, the arms, the loss, the optimiser, the schedule, the grids, the seeds, the substrate
+    ablation, the selection rule, the firewall, the measurement. Systems commits after the first fit: 0c76067 (eval
+    scoring under no_grad, filed before any eval number existed). No test split was read.'
