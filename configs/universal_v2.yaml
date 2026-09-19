@@ -3191,3 +3191,143 @@ contract_frozen_2026_09_19:
         meta_sha256: 2db328bdcc4ce64935d095683e72591ff00f7bac7d9043ba652bfebb5596288c
   after_this_block: the arms read this list and nothing else; the eval populations may now be compiled per query
     (check_3); a different list is a new dated block with its reason
+
+# -- timing run (compute.timing_run), filed 2026-09-19T20:50:38Z from outputs/universal_v2/timing.json --
+timing_2026_09_19:
+  status: MEASURED_BEFORE_ANY_FIT
+  filed_utc: '2026-09-19T20:50:38Z'
+  utc: '2026-09-19T20:49:30Z'
+  threads: 8
+  batch_size: 16
+  batches_per_epoch: 2000
+  dataset_draw: per_query
+  pack_workers: 2
+  prefetch_depth: 2
+  contract_block: contract_frozen_2026_09_19
+  core_sha256: 8d1da88b14dfdee13dd32ee6a05f6d9733d14a9899d5e011c41b0cce53000bf9
+  arms:
+    u_mlp_v2:
+      parameters: 330370
+      architecture: u_mlp_v2
+      mixed_batches:
+      - pack_s: 0.234
+        step_s: 0.592
+        nodes: 9011
+        edges: 48491
+      - pack_s: 0.287
+        step_s: 0.426
+        nodes: 10970
+        edges: 63353
+      - pack_s: 0.258
+        step_s: 0.557
+        nodes: 12879
+        edges: 67911
+      mean_seconds_per_batch: 0.785
+      projected_epoch_minutes: 26.2
+    u_mlp_v2_mix:
+      parameters: 330955
+      architecture: u_mlp_v2_mix
+      mixed_batches:
+      - pack_s: 0.079
+        step_s: 0.4
+        nodes: 9011
+        edges: 48491
+      - pack_s: 0.107
+        step_s: 0.465
+        nodes: 10970
+        edges: 63353
+      - pack_s: 0.116
+        step_s: 0.545
+        nodes: 12879
+        edges: 67911
+      mean_seconds_per_batch: 0.571
+      projected_epoch_minutes: 19.0
+    u_gnn_v2:
+      parameters: 417603
+      architecture: u_gnn_v2
+      mixed_batches:
+      - pack_s: 0.183
+        step_s: 1.636
+        nodes: 9011
+        edges: 48491
+      - pack_s: 0.083
+        step_s: 2.746
+        nodes: 10970
+        edges: 63353
+      - pack_s: 0.111
+        step_s: 2.094
+        nodes: 12879
+        edges: 67911
+      mean_seconds_per_batch: 2.284
+      projected_epoch_minutes: 76.1
+    u_gnn_v2_ef:
+      parameters: 420932
+      architecture: u_gnn_v2_ef
+      mixed_batches:
+      - pack_s: 0.064
+        step_s: 1.809
+        nodes: 9011
+        edges: 48491
+      - pack_s: 0.076
+        step_s: 2.306
+        nodes: 10970
+        edges: 63353
+      - pack_s: 0.115
+        step_s: 2.372
+        nodes: 12879
+        edges: 67911
+      mean_seconds_per_batch: 2.247
+      projected_epoch_minutes: 74.9
+    u_gnn_v2_core78:
+      parameters: 407876
+      architecture: u_gnn_v2_ef
+      mixed_batches:
+      - pack_s: 0.063
+        step_s: 2.214
+        nodes: 9011
+        edges: 48491
+      - pack_s: 0.102
+        step_s: 2.42
+        nodes: 10970
+        edges: 63353
+      - pack_s: 0.101
+        step_s: 2.402
+        nodes: 12879
+        edges: 67911
+      mean_seconds_per_batch: 2.434
+      projected_epoch_minutes: 81.1
+    gat_universal_v1_trio:
+      parameters: 353410
+      architecture: gat_universal_v1_trio
+      mixed_batches:
+      - pack_s: 0.063
+        step_s: 0.568
+        nodes: 9011
+        edges: 48491
+      - pack_s: 0.073
+        step_s: 0.735
+        nodes: 10970
+        edges: 63353
+      - pack_s: 0.101
+        step_s: 0.874
+        nodes: 12879
+        edges: 67911
+      mean_seconds_per_batch: 0.805
+      projected_epoch_minutes: 26.8
+  full_epoch_u_gnn_v2_ef:
+    epoch_seconds: 4865.7
+    steps: 2000
+    batches_skipped_no_gold: 0
+    wall_seconds: 4865.8
+    select_evaluation_included: true
+    weights: discarded
+  peak_rss_gb: 8.51
+  fallback:
+    rule: one epoch of u_gnn_v2_ef (the most expensive arm) on the trio, filed as timing_<date> with its epoch seconds,
+      peak RSS and threads BEFORE the seed-0 matrix starts. If the epoch exceeds 3 hours at 8 threads, the declared
+      fallback is epoch = 1000 batches with max_epochs 12 and patience 4 (the same 192,000 query draws, finer early-stopping
+      granularity), applied to EVERY arm of the matrix including the control, filed as an amendment before any fit
+      starts under it. No architectural quantity (T, H, heads, d_r, d_p) is reduced for speed.
+    fires: false
+  output: outputs/universal_v2/timing.json
+  output_sha256: aaf7823452915354179bd79e98722f84b06f8b62a3a9a3f79960820b37c33ba1
