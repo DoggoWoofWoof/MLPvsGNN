@@ -50,10 +50,12 @@ CONTRIBUTION_2 = (
 TRIO = ["metaqa", "2wiki", "squad"]
 CANDIDATES = ["u_mlp_v2", "u_mlp_v2_mix", "u_gnn_v2", "u_gnn_v2_ef"]
 ARMS = CANDIDATES + ["u_gnn_v2_core78", "gat_universal_v1_trio"]
-OVERALL = ("BOTH_PASS", "GNN_ONLY_PASS", "TWIN_ONLY_PASS", "PILOT_FAILED")     # amendment 2 family_status_vocabulary
-STATUSES = {"DECLARED_NOT_RUN", "PILOT_GATE_READ"} | {f"RUN_{o}" for o in OVERALL}
+OVERALL = ("BOTH_PASS", "GNN_ONLY_PASS", "TWIN_ONLY_PASS", "PILOT_FAILED")     # amendment 2 family_status_vocabulary (the gate record)
+TERMINAL = ("BOTH_CONFIRMED", "GNN_ONLY_CONFIRMED", "TWIN_ONLY_CONFIRMED", "PILOT_FAILED")   # amendment 3 terminal_state_vocabulary (the run record)
+FAMILY_FINAL = ("GATE_FAIL", "CONFIRMATION_FAIL", "CONFIRMED_PASS")
+STATUSES = {"DECLARED_NOT_RUN", "PILOT_GATE_READ"} | {f"RUN_{t}" for t in TERMINAL}
 DATED = re.compile(
-    r"^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$"
+    r"^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|hard_stop|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$"
 )
 NUM = re.compile(r"[0-9]+[.][0-9]+")
 
@@ -504,7 +506,7 @@ def test_the_family_status_vocabulary_and_the_one_family_rule(amendment2):
     fam = amendment2["family_status_vocabulary"]
     assert set(fam["per_family"]) == {"GNN_GATE", "TWIN_GATE"} and set(fam["overall"]) == set(OVERALL)
     assert fam["statuses"]["after_the_gate"] == "PILOT_GATE_READ"
-    assert set(fam["statuses"]["after_the_run_record"].split(" | ")) == {f"RUN_{o}" for o in OVERALL} == STATUSES - {"DECLARED_NOT_RUN", "PILOT_GATE_READ"}
+    assert set(fam["statuses"]["after_the_run_record"].split(" | ")) == {f"RUN_{o}" for o in OVERALL}   # superseded by amendment 3 (RUN_<terminal>)
     rule = squash(fam["reporting_rule"])
     assert "has passed only under BOTH_PASS" in rule and "no sentence describes GNN_ONLY_PASS or TWIN_ONLY_PASS as a pass of the pair" in rule
     assert "continues on GNN_ONLY_PASS or TWIN_ONLY_PASS" in squash(fam["continuation"])
@@ -536,3 +538,60 @@ def test_step_3_is_authorised_without_any_fit_or_gate_read(amendment2):
     assert "CompileDiagnostics" in k["where"]
     sup = " ".join(amendment2["supersedes"])
     assert "64 / 142 / 151" in sup and "RUN / RUN_PILOT_FAILED" in sup and "86 / 164" in sup
+
+
+# ── amendment 3: the continuous execution authorization ──────────────────────
+
+
+@pytest.fixture(scope="module")
+def amendment3(decl) -> dict:
+    return decl["amendment_3_2026_09_19"]
+
+
+def test_the_continuous_execution_ruling_is_filed_verbatim(amendment3):
+    r = amendment3["ruling_verbatim"]
+    assert r.startswith("CONTINUOUS EXECUTION AUTHORIZATION") and r.rstrip().endswith("Do not stop for intermediate review.")
+    for phrase in ("The scientific contract MUST NOT change as a consequence of observed" + chr(10) + "results.",
+                   "M3B is frozen and MUST NOT be altered or rerun.", "No architecture shopping.", "No new arm may be added.", "No threshold may be relaxed.",
+                   "No test split may be read.", "selection.json is immutable.", "GNN_GATE = PASS / FAIL", "TWIN_GATE = PASS / FAIL",
+                   "mark family CONFIRMATION_FAIL", "mark family CONFIRMED_PASS.", "Do not stop for intermediate review.",
+                   "11. a genuinely new scientific decision not already covered by the", "Routine success is NOT a stop condition.",
+                   "HARD_STOP_WITH_REASON", "Respect the filed compute ceiling."):
+        assert phrase in r, phrase
+    assert amendment3["status_after"] == "DECLARED_NOT_RUN" and "0881d4b" in amendment3["reviewed"]
+    assert "you're doing" in amendment3["gloss_verbatim"] and "inventing Universal-v3" in amendment3["gloss_verbatim"]
+    assert "Autonomy applies to execution, not to scientific redesign" in squash(amendment3["what_this_is"])
+
+
+def test_the_terminal_state_vocabulary_and_the_statuses(amendment3):
+    v = amendment3["terminal_state_vocabulary"]
+    assert set(v["per_family_final"]) == set(FAMILY_FINAL) and set(v["terminal"]) == set(TERMINAL) | {"HARD_STOP_WITH_REASON"}
+    assert v["statuses"]["after_the_gate"] == "PILOT_GATE_READ"
+    assert set(v["statuses"]["after_the_run_record"].split(" | ")) == {f"RUN_{t}" for t in TERMINAL} == STATUSES - {"DECLARED_NOT_RUN", "PILOT_GATE_READ"}
+    computed = squash(v["computed_from"])
+    assert "pilot_gate.on_pass" in computed and "seed_confirmation" in computed and "report_run_record.json" in computed and "RUN_<terminal>" in computed
+    assert "confirmed only under BOTH_CONFIRMED" in squash(v["gate_level_labels_unchanged"])
+    assert "the status line is not moved" in v["terminal"]["HARD_STOP_WITH_REASON"]
+    # the run script carries the same vocabulary
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("universal_v2_run_decl_check", ROOT / "scripts" / "universal_v2_run.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert set(module.TERMINAL.values()) == set(TERMINAL) and module.FAMILY_FINAL == FAMILY_FINAL and module.HARD_STOP == "HARD_STOP_WITH_REASON"
+    assert module.FIT_HOURS_CEILING == 150.0 and module.DATED.pattern == DATED.pattern
+
+
+def test_the_reconciliations_name_the_declaration_as_governing(amendment3):
+    rec = amendment3["reconciliations_where_the_ruling_and_the_declaration_differ"]
+    assert "no eval cache is written" in squash(rec["evaluation_carves"]) and "check_3" in squash(rec["evaluation_carves"])
+    assert "patience 4" in squash(rec["timing_fallback"]) and "no third option" in squash(rec["timing_fallback"])
+    assert "H=128" in rec["h_128"] and "unchanged" in rec["h_128"]
+    assert "are not opened by this run" in squash(rec["later_stages"]) and "compute.hard_ceiling covers the pilot only" in squash(rec["later_stages"])
+    assert "terminal state" in squash(rec["eligible_family_fails"])
+    guard = squash(amendment3["compute_ceiling_guard"])
+    assert "150 fit-hours" in guard and "ceiling_breach.json" in guard and "hard_stop_<date>" in guard and "the timing run is not a fit" in guard
+    assert "the status line is not moved" in squash(amendment3["hard_stop_procedure"])
+    assert "resumes from its epoch checkpoint" in squash(amendment3["crash_and_reboot"])
+    sup = " ".join(amendment3["supersedes"])
+    assert "order_of_operations 6" in sup and "RUN_<terminal>" in sup and "STOP_FINAL" in sup

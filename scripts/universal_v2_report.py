@@ -236,7 +236,7 @@ def label(key: str) -> str:
     return f"{DISPLAY.get(arm_of(key), arm_of(key))} s{seed_of(key)}"
 
 
-def section_header(cfg: dict, held: dict, gate: dict) -> list[str]:
+def section_header(cfg: dict, held: dict, gate: dict, terminal: dict | None = None) -> list[str]:
     lines = ["# Universal-v2 pilot — the trio under UNIVERSAL_V2_CORE_CONTRACT", "",
              f"**Registered question of this phase.** {str(cfg['registered_question']).strip()}", "",
              f"**Registered question of the paper (unchanged).** {str(cfg['registered_question_of_the_paper_unchanged']).strip()}", "",
@@ -249,6 +249,10 @@ def section_header(cfg: dict, held: dict, gate: dict) -> list[str]:
     fam = family_labels(held["selection"], gate)
     glance = [f"**{R.FAMILY_GATES['gnn']} {fam[R.FAMILY_GATES['gnn']]}** / **{R.FAMILY_GATES['twin']} {fam[R.FAMILY_GATES['twin']]}** / overall **{fam['overall']}** "
               "(amendment 2 family_status_vocabulary; a one-family pass is that family's pass, never a pass of the proposed universal pair)"]
+    if terminal:
+        ff = terminal["family_final"]
+        glance.append(f"Terminal state **{terminal['terminal']}** (amendment 3 terminal_state_vocabulary: {R.FAMILY_GATES['gnn']} {ff[R.FAMILY_GATES['gnn']]}, "
+                      f"{R.FAMILY_GATES['twin']} {ff[R.FAMILY_GATES['twin']]}; a confirmation of one family is never a confirmation of the pair)")
     for family, arm in held["selection"].items():
         v = held["gate_cells_confirmatory"][arm]
         cells = "; ".join(f"{c['dataset']}/{c['metric']}/{c['slice']} {c['value']:.3f} vs {c['threshold']:.3f}" for c in v["cells"])
@@ -454,7 +458,7 @@ def section_confirmation(conf: dict, seeds_gate: dict) -> list[str]:
     if not conf:
         lines += ["No arm passed its gate; no seeds 1-2 were fitted (pilot_gate.on_fail).", ""]
     for arm, v in conf.items():
-        status = "CONFIRMED" if v["confirmed"] else ("NOT CONFIRMED" if v["complete"] else f"INCOMPLETE ({len(v['seeds_present'])} of 3 seeds)")
+        status = "CONFIRMED_PASS" if v["confirmed"] else ("CONFIRMATION_FAIL" if v["complete"] else f"INCOMPLETE ({len(v['seeds_present'])} of 3 seeds)")
         lines += [f"**`{arm}` — {status}** (seeds present: {v['seeds_present']}; the mean is per query over the seeds, on {GATE})", "",
                   "| dataset | metric | slice | per seed | mean over seeds | sd | threshold | paired interval of the seed mean | cell |", "|---|---|---|---|---|---|---|---|---|"]
         for c in v["cells"]:
@@ -688,7 +692,7 @@ def read_hypotheses(cfg: dict, held: dict, gate: dict, conf: dict) -> dict:
     return out
 
 
-def section_reading(cfg: dict, held: dict, gate: dict, conf: dict, hyps: dict) -> list[str]:
+def section_reading(cfg: dict, held: dict, gate: dict, conf: dict, hyps: dict, terminal: dict | None = None) -> list[str]:
     lines = ["## 11. Reading", "", "Each hypothesis was filed before any fit (`hypotheses`) and is read on its declared measurement; "
              f"`holds` is a reading of the filed claim, nothing is re-thresholded. Forbidden framings are not used: {', '.join(repr(f) for f in cfg['forbidden_framings'])}.", ""]
     h = hyps["H_pilot"]
@@ -722,6 +726,19 @@ def section_reading(cfg: dict, held: dict, gate: dict, conf: dict, hyps: dict) -
     lines.append(f"**Family outcome** (amendment 2 family_status_vocabulary): {R.FAMILY_GATES['gnn']} {fam[R.FAMILY_GATES['gnn']]}, {R.FAMILY_GATES['twin']} "
                  f"{fam[R.FAMILY_GATES['twin']]}, overall **{fam['overall']}** -- {pair}.")
     lines.append("")
+    if terminal:
+        ff = terminal["family_final"]
+        confirmed = [g for g in (R.FAMILY_GATES["gnn"], R.FAMILY_GATES["twin"]) if ff[g] == "CONFIRMED_PASS"]
+        if terminal["terminal"] == "BOTH_CONFIRMED":
+            sentence = "both families hold every cell on the mean over seeds 0-2, so the proposed universal pair is confirmed on V2_GATE"
+        elif terminal["terminal"] == "PILOT_FAILED":
+            sentence = "no family is confirmed; the proposed universal pair is not confirmed and no family is rescued"
+        else:
+            sentence = (f"only {confirmed[0]} is confirmed on the mean over seeds 0-2; this is a confirmation of that family and is written as such -- "
+                        "the proposed universal pair is NOT confirmed")
+        lines.append(f"**Terminal state** (amendment 3 terminal_state_vocabulary): {R.FAMILY_GATES['gnn']} {ff[R.FAMILY_GATES['gnn']]}, {R.FAMILY_GATES['twin']} "
+                     f"{ff[R.FAMILY_GATES['twin']]}, terminal **{terminal['terminal']}** -- {sentence}.")
+        lines.append("")
     lines.append(f"What this pilot is: {str(cfg['result_is']).strip().rstrip('.') if 'result_is' in cfg else 'the pilot of the declared innovations on the trio'}. "
                  "What it is not: a result on test data (none was read), a statement about message passing (M3B answers the paper's question), "
                  "a comparison to the published systems beyond the diagnostic calibration of section 9, or a six-dataset result (later_stages need their own dated authorization).")
@@ -773,7 +790,8 @@ def stage_doc(cfg: dict, cfg_m3b: dict, log=print) -> Path:
     conf = seed_confirmation(cfg, gate, rows, refs)
     seeds_gate = {name: seed_stats(rows[name]) for name in R.PILOT}
     hyps = read_hypotheses(cfg, held, gate, conf)
-    lines = section_header(cfg, held, gate)
+    terminal = R.terminal_state(family_labels(held["selection"], gate), conf)
+    lines = section_header(cfg, held, gate, terminal)
     lines += section_contract(cfg, screen)
     lines += section_cost(timing, fits, evals)
     lines += section_selection(sel)
@@ -784,7 +802,7 @@ def stage_doc(cfg: dict, cfg_m3b: dict, log=print) -> Path:
     lines += section_mechanism(held, gate)
     lines += section_calibration(cfg, cfg_m3b, held)
     lines += section_audit(cfg, evals)
-    lines += section_reading(cfg, held, gate, conf, hyps)
+    lines += section_reading(cfg, held, gate, conf, hyps, terminal)
     files = [R.CONFIG, R.M3B_CONFIG, R.OUT / "held_record.json", R.OUT / "gate_record.json", R.OUT / "selection.json", R.OUT / "timing.json",
              R.OUT / "feature_screen.json", R.OUT / "feature_contract.json"]
     files += sorted(R.FITS.glob("*.json")) if R.FITS.exists() else []
@@ -798,7 +816,7 @@ def stage_doc(cfg: dict, cfg_m3b: dict, log=print) -> Path:
     with open(DOC, "w", encoding="utf-8", newline=LF) as f:
         f.write(LF.join(lines) + LF)
     (R.OUT / "report_run_record.json").write_text(json.dumps({"utc": R.utc(), "doc": DOC.relative_to(ROOT).as_posix() if DOC.is_relative_to(ROOT) else DOC.as_posix(), "doc_sha256_lf": R.lf_sha256(DOC),
-                                                             "files": record, "seed_confirmation": conf, "hypotheses": hyps}, indent=1), encoding="utf-8")
+                                                             "files": record, "seed_confirmation": conf, "terminal_state": terminal, "hypotheses": hyps}, indent=1), encoding="utf-8")
     log(f"wrote {DOC} ({len(lines)} lines)")
     return DOC
 

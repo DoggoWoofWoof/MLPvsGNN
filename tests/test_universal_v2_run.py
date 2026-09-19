@@ -421,6 +421,19 @@ def test_16_seed0_fits_and_their_refusals(sandbox):
         R.run_fit("u_gnn_v2", 1, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet)
     with pytest.raises(SystemExit, match="no seed-0 fit record"):
         R.stage_select(sandbox.cfg, S.inputs, log=_quiet)
+    # amendment 3 compute_ceiling_guard: a fit whose projected hours would breach 150 fit-hours is not started
+    timing_path = sandbox.out / "timing.json"
+    saved = timing_path.read_text(encoding="utf-8")
+    inflated = json.loads(saved)
+    inflated["arms"]["u_gnn_v2"]["projected_epoch_minutes"] = 151 * 60 / S.training["max_epochs"] + 1
+    timing_path.write_text(json.dumps(inflated), encoding="utf-8")
+    with pytest.raises(SystemExit, match="compute.hard_ceiling"):
+        R.run_fit("u_gnn_v2", 0, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet)
+    breach = R.read_json(sandbox.out / "ceiling_breach.json")
+    assert breach["within_ceiling"] is False and breach["arm"] == "u_gnn_v2" and "remaining_work" in breach
+    (sandbox.out / "ceiling_breach.json").unlink()
+    timing_path.write_text(saved, encoding="utf-8")
+    assert not (sandbox.out / "fits").exists() or not list((sandbox.out / "fits").glob("*.json"))
     S.fits = {}
     for arm in list(M.GNN_CANDIDATES) + list(M.TWIN_CANDIDATES) + ["gat_universal_v1_trio"]:
         rec = R.run_fit(arm, 0, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet)
@@ -862,21 +875,50 @@ def test_26_doc_rendered_from_the_sidecars_reads_held_through_the_record_only(sa
 
 
 def test_27_run_record_filed_last_and_the_status_names_the_family_that_passed(sandbox):
-    """The toy world is GNN_ONLY_PASS: the status says so (amendment 2 family_status_vocabulary), never RUN."""
+    """The toy world is GNN_ONLY_PASS at the gate and the GNN confirms on seeds 0-2: terminal GNN_ONLY_CONFIRMED
+    (amendment 3 terminal_state_vocabulary), the status RUN_GNN_ONLY_CONFIRMED, never RUN."""
+    # the run record follows a complete confirmation of every family that passed at seed 0
+    report_path = sandbox.out / "report_run_record.json"
+    saved = report_path.read_text(encoding="utf-8")
+    partial = json.loads(saved)
+    g = S.selection["gnn"]["arm"]
+    partial["seed_confirmation"][g]["complete"] = False
+    report_path.write_text(json.dumps(partial), encoding="utf-8")
+    with pytest.raises(SystemExit, match="confirmation is incomplete"):
+        R.stage_file(sandbox.cfg, DATE, ["run"], config=sandbox.config, log=_quiet)
+    report_path.write_text(saved, encoding="utf-8")
+    assert R.terminal_state(S.gate["family_outcome"], json.loads(saved)["seed_confirmation"])["terminal"] == "GNN_ONLY_CONFIRMED"
+    failed = copy.deepcopy(json.loads(saved)["seed_confirmation"])
+    failed[g]["confirmed"] = False
+    t = R.terminal_state(S.gate["family_outcome"], failed)
+    assert t["terminal"] == "PILOT_FAILED" and t["family_final"] == {"GNN_GATE": "CONFIRMATION_FAIL", "TWIN_GATE": "GATE_FAIL"}
+    both = {"GNN_GATE": "PASS", "TWIN_GATE": "PASS", "overall": "BOTH_PASS", "selected": {"GNN_GATE": g, "TWIN_GATE": "u_mlp_v2"}}
+    assert R.terminal_state(both, {g: {"complete": True, "confirmed": True}, "u_mlp_v2": {"complete": True, "confirmed": True}})["terminal"] == "BOTH_CONFIRMED"
+    assert R.terminal_state(both, {g: {"complete": True, "confirmed": False}, "u_mlp_v2": {"complete": True, "confirmed": True}})["terminal"] == "TWIN_ONLY_CONFIRMED"
     R.stage_file(sandbox.cfg, DATE, ["run"], config=sandbox.config, log=_quiet)
     block = sandbox.cfg[f"run_record_{DATE}"]
     assert block["outcome"] == S.gate["outcome"] and block["held_record_sha256"] == R.sha256_file(sandbox.out / "held_record.json")
     assert block["family_outcome"] == S.gate["family_outcome"] and block["family_outcome"]["overall"] == "GNN_ONLY_PASS"
+    assert block["terminal_state"]["terminal"] == "GNN_ONLY_CONFIRMED" and block["terminal_state"]["family_final"] == {"GNN_GATE": "CONFIRMED_PASS", "TWIN_GATE": "GATE_FAIL"}
+    assert json.loads(saved)["terminal_state"] == block["terminal_state"]
     assert block["doc_sha256"] == R.lf_sha256(R.DOC) and block["incidents"] == []
     assert set(block["evals"]) == set(PILOT) | {f"{n}__{S.supplement_tag}" for n in PILOT}
     assert len(block["fits"]) == 8 and all(v["record_sha256"] for v in block["fits"].values())
-    assert _status_line(sandbox) == "status: RUN_GNN_ONLY_PASS"
+    assert _status_line(sandbox) == "status: RUN_GNN_ONLY_CONFIRMED"
     reloaded = yaml.safe_load(_config_text(sandbox))
-    assert [k for k in reloaded if R.DATED.match(k)] == ["amendment_1_2026_09_19", "amendment_2_2026_09_19", f"contract_frozen_{DATE}", f"timing_{DATE}",
-                                                          f"pilot_gate_record_{DATE}", f"run_record_{DATE}"]
+    assert [k for k in reloaded if R.DATED.match(k)] == ["amendment_1_2026_09_19", "amendment_2_2026_09_19", "amendment_3_2026_09_19", f"contract_frozen_{DATE}",
+                                                          f"timing_{DATE}", f"pilot_gate_record_{DATE}", f"run_record_{DATE}"]
     # nothing above the dated blocks changed except the status line
     original = (R.ROOT / "configs" / "universal_v2.yaml").read_text(encoding="utf-8").split(LF)   # the repository declaration, not the sandbox copy
     now = _config_text(sandbox).split(LF)
     cut = next(i for i, l in enumerate(now) if l.startswith(f"# -- UNIVERSAL_V2_CORE_CONTRACT"))
     diff = [(a, b) for a, b in zip(original, now[:cut]) if a != b]
-    assert diff == [("status: DECLARED_NOT_RUN", "status: RUN_GNN_ONLY_PASS")]
+    assert diff == [("status: DECLARED_NOT_RUN", "status: RUN_GNN_ONLY_CONFIRMED")]
+    # amendment 3 hard_stop_procedure: a dated block that moves no status line, filed once
+    key = R.file_hard_stop(sandbox.cfg, "2026_09_21", 9, "toy: the ceiling would be exceeded", {"ceiling_breach.json": "toy"}, ["one fit of 20 hours"],
+                           config=sandbox.config, log=_quiet)
+    assert key == "hard_stop_2026_09_21" and R.DATED.match(key) and sandbox.cfg[key]["condition"] == 9 and sandbox.cfg[key]["status"] == "HARD_STOP_WITH_REASON"
+    assert sandbox.cfg[key]["status_line"] == "RUN_GNN_ONLY_CONFIRMED" and _status_line(sandbox) == "status: RUN_GNN_ONLY_CONFIRMED"
+    assert any(k.endswith("gate_record.json") for k in sandbox.cfg[key]["sidecars"]) and not any(k.startswith("cache/") for k in sandbox.cfg[key]["sidecars"])
+    with pytest.raises(SystemExit, match="condition"):
+        R.file_hard_stop(sandbox.cfg, "2026_09_22", 12, "no such condition", {}, [], config=sandbox.config, log=_quiet)

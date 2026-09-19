@@ -93,10 +93,14 @@ FIXED_SCORERS = ("rrf", "support_h1_STRUCT", "support_h2_STRUCT", "support_h3_ST
 M3B_REFERENCES = {"gat_universal_v1": "gat_universal_v1__H128_L2__s0", "gat_no_mp_v1": "gat_no_mp_v1__H128_L2__s0",
                   "qls_u_sota_v1": "qls_u_sota_v1__H128__s0", "fixed_rrf": "fixed:rrf"}
 BOOTSTRAP = {"resamples": 1000, "seed": 0, "level": 95}     # measurement.paired_procedures
-DATED = re.compile("^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$")
+DATED = re.compile("^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|hard_stop|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$")
 LF = chr(10)
 FAMILY_GATES = {"gnn": "GNN_GATE", "twin": "TWIN_GATE"}    # amendment 2 family_status_vocabulary
 OVERALL = {(True, True): "BOTH_PASS", (True, False): "GNN_ONLY_PASS", (False, True): "TWIN_ONLY_PASS", (False, False): "PILOT_FAILED"}
+FAMILY_FINAL = ("GATE_FAIL", "CONFIRMATION_FAIL", "CONFIRMED_PASS")           # amendment 3 terminal_state_vocabulary.per_family_final
+TERMINAL = {(True, True): "BOTH_CONFIRMED", (True, False): "GNN_ONLY_CONFIRMED", (False, True): "TWIN_ONLY_CONFIRMED", (False, False): "PILOT_FAILED"}
+HARD_STOP = "HARD_STOP_WITH_REASON"
+FIT_HOURS_CEILING = 150.0                                     # compute.hard_ceiling; amendment 3 compute_ceiling_guard
 
 
 # ── the declaration, the pins, the M3B core ──────────────────────────────────
@@ -772,8 +776,12 @@ def stage_file(cfg: dict, date: str, which: list[str], config: Path = CONFIG, lo
         if not doc.exists():
             raise SystemExit("docs/UNIVERSAL_V2_PILOT.md is written before the run record (scripts/universal_v2_report.py --stage doc)")
         family = gate.get("family_outcome") or family_outcome(gate["selection"], gate["outcome"])
-        overall = family["overall"]
-        block = {"filed_utc": filed, "outcome": gate["outcome"], "family_outcome": family, "fits": fits, "evals": evals,
+        report_record = read_json(OUT / "report_run_record.json")
+        if report_record is None:
+            raise SystemExit("no report_run_record.json: the document and its seed confirmation precede the run record")
+        terminal = terminal_state(family, report_record.get("seed_confirmation") or {})
+        overall = terminal["terminal"]
+        block = {"filed_utc": filed, "outcome": gate["outcome"], "family_outcome": family, "terminal_state": terminal, "fits": fits, "evals": evals,
                  "selection_sha256": sha256_file(OUT / "selection.json") if (OUT / "selection.json").exists() else None,
                  "gate_record_sha256": sha256_file(OUT / "gate_record.json") if (OUT / "gate_record.json").exists() else None,
                  "held_record_sha256": sha256_file(OUT / "held_record.json") if (OUT / "held_record.json").exists() else None,
@@ -781,7 +789,8 @@ def stage_file(cfg: dict, date: str, which: list[str], config: Path = CONFIG, lo
                  "incidents": [], "note": "incidents and machine-health lines are appended by the review, dated; nothing above is edited"}
         append_block(cfg, f"run_record_{date}", block, f"run record, filed {filed} from the sidecars", config)
         moved = set_status(config, f"RUN_{overall}", ("PILOT_GATE_READ",))
-        log(f"filed run_record_{date}; status {moved} -> RUN_{overall} (GNN_GATE {family['GNN_GATE']}, TWIN_GATE {family['TWIN_GATE']})")
+        log(f"filed run_record_{date}; status {moved} -> RUN_{overall} (GNN_GATE {family['GNN_GATE']} {terminal['family_final']['GNN_GATE']}, "
+            f"TWIN_GATE {family['TWIN_GATE']} {terminal['family_final']['TWIN_GATE']})")
 
 
 # ── fits ─────────────────────────────────────────────────────────────────────
@@ -889,6 +898,7 @@ def run_fit(arm: str, seed: int, inputs: dict, carves: dict, bank, training: dic
         if gate is None or not gate["verdict"].get(arm, {}).get("pass"):
             raise SystemExit(f"seed {seed} of {arm}: seeds 1-2 are fitted only for an arm that passed its gate (pilot_gate.on_pass)")
     selected_gnn = None if selection is None else selection["gnn"]["arm"]
+    guard = fit_hours_guard(arm, training, log=log)
     torch.manual_seed(seed)
     model = make_model(arm, inputs, bank, selected_gnn=selected_gnn)
     params = parameter_count(model)
@@ -910,7 +920,7 @@ def run_fit(arm: str, seed: int, inputs: dict, carves: dict, bank, training: dic
            "selected_gnn_architecture": selected_gnn if arm == "u_gnn_v2_core78" else None,
            "relation_bank": {"rows": bank.n_rows, "sha256": bank.sha256, "k_rel": K_REL}, "training": training, "utc": utc(),
            "threads": torch.get_num_threads(), "pack_workers": PACK["workers"], "prefetch_depth": PACK["depth"],
-           "peak_rss_bytes": M3B_RUN.peak_rss_bytes(), "state_sha256": sha256_file(FITS / f"{key}.pt")}
+           "peak_rss_bytes": M3B_RUN.peak_rss_bytes(), "state_sha256": sha256_file(FITS / f"{key}.pt"), "ceiling_guard": guard}
     rec_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
     (FITS / f"{key}.ckpt").unlink(missing_ok=True)   # the record and the weights are the durable objects
     log(f"   {key}: best epoch {record.best_epoch} select macro R@5 {record.best_select_macro_recall5:.4f} in {record.seconds:.0f}s")
@@ -1501,6 +1511,68 @@ def family_outcome(selection: dict, outcome: dict) -> dict:
     return {FAMILY_GATES["gnn"]: "PASS" if passes["gnn"] else "FAIL", FAMILY_GATES["twin"]: "PASS" if passes["twin"] else "FAIL",
             "overall": OVERALL[(passes["gnn"], passes["twin"])],
             "selected": {FAMILY_GATES[f]: selection[f] for f in ("gnn", "twin")}}
+
+
+def terminal_state(family: dict, confirmation: dict) -> dict:
+    """amendment 3 terminal_state_vocabulary: per family GATE_FAIL | CONFIRMATION_FAIL | CONFIRMED_PASS from the gate
+    record's family_outcome and the report's seed confirmation (pilot_gate.on_pass: the mean over seeds 0-2 holds every
+    cell); terminal = BOTH_CONFIRMED | GNN_ONLY_CONFIRMED | TWIN_ONLY_CONFIRMED | PILOT_FAILED. A family that passed at
+    seed 0 without a complete confirmation refuses (the run record follows the confirmation seeds)."""
+    final, confirmed = {}, {}
+    for fam in ("gnn", "twin"):
+        gate_name = FAMILY_GATES[fam]
+        arm = family["selected"][gate_name]
+        if family[gate_name] != "PASS":
+            final[gate_name] = "GATE_FAIL"
+        else:
+            conf = confirmation.get(arm)
+            if conf is None or not conf.get("complete"):
+                raise SystemExit(f"{gate_name} {arm}: passed at seed 0 but its seed confirmation is incomplete; the run record follows seeds 1-2 (pilot_gate.on_pass)")
+            final[gate_name] = "CONFIRMED_PASS" if conf["confirmed"] else "CONFIRMATION_FAIL"
+        confirmed[fam] = final[gate_name] == "CONFIRMED_PASS"
+    return {"family_final": final, "terminal": TERMINAL[(confirmed["gnn"], confirmed["twin"])], "selected": dict(family["selected"]),
+            "gate_overall": family["overall"], "rule": "amendment_3_2026_09_19 terminal_state_vocabulary"}
+
+
+def file_hard_stop(cfg: dict, date: str, condition: int, reason: str, evidence: dict, remaining_work: list, config: Path = CONFIG, log=print) -> str:
+    """amendment 3 hard_stop_procedure: the dated block with the condition, the evidence, the exact remaining work and the
+    state of every sidecar; the status line is not moved."""
+    if condition not in range(1, 12):
+        raise SystemExit(f"hard stop condition {condition}: the ruling names conditions 1-11")
+    state = {}
+    for p in sorted(OUT.rglob("*")) if OUT.exists() else []:
+        if p.is_file() and p.suffix in (".json", ".yaml", ".pt", ".npz") and "cache" not in p.parts:
+            state[p.relative_to(OUT).as_posix()] = {"bytes": p.stat().st_size, "sha256": sha256_file(p)}
+    block = {"status": HARD_STOP, "filed_utc": utc(), "condition": condition, "reason": reason, "evidence": evidence,
+             "remaining_work": remaining_work, "sidecars": state, "status_line": yaml.safe_load(config.read_text(encoding="utf-8"))["status"],
+             "rule": "amendment_3_2026_09_19 hard_stop_procedure -- nothing further runs; the status line is not moved"}
+    key = f"hard_stop_{date}"
+    append_block(cfg, key, block, f"hard stop (amendment 3), condition {condition}, filed {block['filed_utc']}", config)
+    log(f"filed {key}: condition {condition} -- {reason}")
+    return key
+
+
+def fit_hours_guard(arm: str, training: dict, log=print) -> dict:
+    """amendment 3 compute_ceiling_guard: fit-hours spent (every fit record) plus the projected hours of this fit
+    (timing.json: projected epoch minutes x max_epochs, scaled by the measured full-epoch / projected ratio of
+    u_gnn_v2_ef) within compute.hard_ceiling 150 fit-hours; a breach is written and refuses the fit."""
+    spent = 0.0
+    for p in sorted(FITS.glob("*.json")) if FITS.exists() else []:
+        spent += float(json.loads(p.read_text(encoding="utf-8")).get("seconds", 0.0)) / 3600
+    timing = read_json(OUT / "timing.json")
+    if timing is None:
+        raise SystemExit("no timing.json: the timing run precedes every fit (order_of_operations 4)")
+    ef = timing["arms"]["u_gnn_v2_ef"]
+    ratio = float(timing["full_epoch_u_gnn_v2_ef"]["epoch_seconds"]) / max(60.0 * float(ef["projected_epoch_minutes"]), 1e-9)
+    projected = float(timing["arms"][arm]["projected_epoch_minutes"]) * max(ratio, 1.0) * int(training["max_epochs"]) / 60
+    out = {"arm": arm, "fit_hours_spent": round(spent, 3), "projected_fit_hours": round(projected, 3), "ratio_full_epoch_over_projected": round(ratio, 4),
+           "ceiling_fit_hours": FIT_HOURS_CEILING, "within_ceiling": bool(spent + projected <= FIT_HOURS_CEILING)}
+    if not out["within_ceiling"]:
+        out["remaining_work"] = f"{arm}: {projected:.1f} projected fit-hours after {spent:.1f} spent; ceiling {FIT_HOURS_CEILING:.0f}"
+        (OUT / "ceiling_breach.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
+        raise SystemExit(f"compute.hard_ceiling: {spent:.1f} fit-hours spent + {projected:.1f} projected for {arm} > {FIT_HOURS_CEILING:.0f}; not started (ceiling_breach.json)")
+    log(f"   ceiling guard: {spent:.1f} fit-hours spent + {projected:.1f} projected for {arm} <= {FIT_HOURS_CEILING:.0f}")
+    return out
 
 
 def stage_gate(cfg: dict, inputs: dict, log=print) -> dict:

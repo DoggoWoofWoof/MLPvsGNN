@@ -1065,3 +1065,619 @@ amendment_2_2026_09_19:
       - no V2_GATE or V2_HELD_CONFIRMATION read; no eval population compiled (check_3)
     order: this amendment and the code it describes are committed before the first real cache is compiled (the rule before the number)
   supersedes: [information_contract_v2.depth_basis_columns.count and every 64 / 142 / 151 count above, order_of_operations "3" (the 142-column contract), order_of_operations "7" (statuses RUN / RUN_PILOT_FAILED), check_3_firewalls_made_explicit.availability_masks.count_amended (73 / 151, now 86 / 164), the relpath_* endpoint-order invariance as the only relation-path reading]
+
+# ══════════════════════════════════════════════════════════════════
+# Amendment 3 (2026-09-19): the continuous execution authorization -- the
+# standing ruling to run the declared pilot to its terminal state without a
+# review stop at each mechanical checkpoint, filed verbatim before the first
+# real cache is frozen. Autonomy applies to execution, never to scientific
+# redesign; the terminal-state vocabulary and the ceiling guard it names.
+# ══════════════════════════════════════════════════════════════════
+amendment_3_2026_09_19:
+  filed_utc: '2026-09-19T18:28:49Z'
+  status_after: DECLARED_NOT_RUN
+  reviewed: 0881d4b (amendment 2 and the step-3 tooling), with the step-3 compile of the trio running (started 2026-09-19T18:13:59Z,
+    hidden process, outputs/universal_v2/logs/compile.*.log)
+  what_this_is: >-
+    the standing authorization of the user to run the declared pilot to its terminal state without a review stop
+    at each mechanical checkpoint, filed verbatim; it changes no scientific quantity; where its wording and the
+    declaration differ, the declaration governs and the difference is named under reconciliations. Autonomy applies
+    to execution, not to scientific redesign: a family that fails its frozen gate is recorded as a result and nothing
+    new is invented inside this phase.
+  ruling_verbatim: |
+    CONTINUOUS EXECUTION AUTHORIZATION — UNIVERSAL-v2
+    =================================================
+
+    From this point onward, do NOT stop for routine review between declared
+    Universal-v2 stages.
+
+    Continue autonomously through the already-preregistered pipeline,
+    committing each completed stage and resuming after crashes/reboots where
+    possible.
+
+    This message is authorization to advance through the existing declared
+    Universal-v2 pilot workflow without asking me again at each mechanical
+    checkpoint.
+
+    The scientific contract MUST NOT change as a consequence of observed
+    results.
+
+    ==================================================
+    CURRENT STATE
+    ==================================================
+
+    Declaration:
+        configs/universal_v2.yaml
+
+    Step-2 implementation:
+        bfdc4b2
+
+    Prospective amendment 2:
+        0881d4b
+
+    Final declared raw feature contract:
+        M3B core              = 78
+        Universal-v2 additions = 86
+        total raw contract     = 164
+
+    Cache layout:
+        197
+
+    The real step-3 compile is already running.
+
+    M3B is frozen and MUST NOT be altered or rerun.
+
+    ==================================================
+    GENERAL RULE
+    ==================================================
+
+    The execution loop is:
+
+        finish current stage
+            ↓
+        verify declared invariants
+            ↓
+        commit
+            ↓
+        automatically enter next already-declared stage
+            ↓
+        repeat
+
+    Do NOT stop merely because a stage completed successfully.
+
+    Do NOT ask for approval for:
+
+    - compilation completion
+    - screening
+    - contract freezing
+    - timing measurements
+    - choosing between the TWO already-declared compute schedules
+    - seed-0 training
+    - selection.json creation
+    - V2_GATE scoring
+    - seeds 1–2 after a declared PASS
+    - supplement evaluation
+    - seed-mean confirmation
+    - V2_HELD_CONFIRMATION
+    - report generation
+    - run-record generation
+    - commits
+    - crash/reboot recovery
+
+    All of those are already authorised.
+
+    ==================================================
+    HARD SCIENTIFIC FIREWALL
+    ==================================================
+
+    Never change after seeing results:
+
+    - feature definitions
+    - ordered relation-path definitions
+    - raw feature list
+    - screening rule
+    - surviving-column rule
+    - candidate pools
+    - model architectures
+    - H=128
+    - K_REL=4
+    - loss
+    - dataset sampling mixture
+    - gate thresholds
+    - gate populations
+    - held populations
+    - seed list
+    - checkpoint-selection rule
+    - evaluation metrics
+    - advance/fail criteria
+
+    No architecture shopping.
+
+    No new arm may be added.
+
+    No threshold may be relaxed.
+
+    No failed model may be replaced with a new idea inside this phase.
+
+    No test split may be read.
+
+    ==================================================
+    STEP 3 — COMPLETE AUTOMATICALLY
+    ==================================================
+
+    Allow the current real compile to finish.
+
+    Compile exactly:
+
+        MetaQA
+        2Wiki
+        SQuAD
+
+    for every declared fit/select/evaluation carve required by the pilot.
+
+    After compile:
+
+    1. verify input/carve/pool digests;
+    2. produce diagnostics:
+           exact ordered raw feature names
+           feature count = 164
+           block availability
+           missingness
+           constants
+           variance
+           correlation/redundancy
+           K_REL=4 truncation frequency by dataset/hop
+           ordered path availability
+           direction availability
+           wall time
+           query/s
+           peak RSS
+           bytes on disk;
+    3. apply ONLY the preregistered screen;
+    4. freeze UNIVERSAL_V2_CORE_CONTRACT;
+    5. hash:
+           raw feature contract
+           screen rule
+           surviving ordered columns
+           compiled caches;
+    6. run declaration/contract tests;
+    7. commit.
+
+    If all checks pass:
+
+        ADVANCE AUTOMATICALLY TO STEP 4.
+
+    ==================================================
+    STEP 4 — TIMING
+    ==================================================
+
+    Run the declared one-epoch timing measurement for:
+
+        u_gnn_v2_ef
+
+    Use the exact declared timing protocol.
+
+    Then apply the already-filed rule mechanically:
+
+    IF measured epoch time <= 3 hours:
+        use the declared full training schedule.
+
+    ELSE:
+        use exactly the declared fallback:
+            1000 batches / epoch
+            12 epochs
+            applied equally to every arm.
+
+    No third option.
+
+    File the timing decision and commit.
+
+    Then:
+
+        ADVANCE AUTOMATICALLY TO STEP 5.
+
+    ==================================================
+    STEP 5 — SEED-0 PILOT
+    ==================================================
+
+    Run exactly the declared seed-0 model matrix.
+
+    Families/arms remain the ones already registered, including:
+
+        u_mlp_v2
+        u_mlp_v2_mix
+
+        u_gnn_v2
+        u_gnn_v2_ef
+
+        u_gnn_v2_core78
+            only according to the declared selected-GNN dependency
+
+        gat_universal_v1_trio
+
+    Use exactly the frozen:
+
+        dataset mixture
+        loss aggregation
+        batches
+        optimizer
+        candidate pools
+        compiled contract
+        model-selection rule
+
+    No extra model.
+
+    ==================================================
+    SELECTION
+    ==================================================
+
+    Create:
+
+        selection.json
+
+    exactly ONCE.
+
+    Selection may use only the declared select carves.
+
+    Once written:
+
+        selection.json is immutable.
+
+    Do not rewrite it because a later gate looks bad.
+
+    ==================================================
+    V2_GATE
+    ==================================================
+
+    Read V2_GATE exactly once after seed-0 selection.
+
+    Evaluate the declared GNN and twin conditions exactly as filed.
+
+    Record separately:
+
+        GNN_GATE = PASS / FAIL
+        TWIN_GATE = PASS / FAIL
+
+    Do not collapse these prematurely into one generic PASS.
+
+    Suggested overall labels:
+
+        BOTH_PASS
+        GNN_ONLY_PASS
+        TWIN_ONLY_PASS
+        PILOT_FAILED
+
+    ==================================================
+    IF A FAMILY FAILS AT SEED 0
+    ==================================================
+
+    That family stops.
+
+    Do NOT:
+
+    - modify it
+    - replace it
+    - change threshold
+    - add features
+    - add capacity
+    - change propagation depth
+    - tune the dataset mixture
+
+    Preserve the failure as a result.
+
+    If the declaration allows the other family to continue, continue only
+    that family.
+
+    If every eligible family fails:
+
+        finish the failure report
+        file the run record
+        commit
+        STOP_FINAL
+
+    No new Universal-v2 architecture is to be invented automatically.
+
+    ==================================================
+    IF A FAMILY PASSES SEED 0
+    ==================================================
+
+    Automatically train declared seeds:
+
+        1
+        2
+
+    for that family.
+
+    Run the declared supplement evaluation.
+
+    Compute the declared seed-mean gate on V2_GATE.
+
+    Use the paired bootstrap exactly as declared.
+
+    If seed-mean confirmation fails:
+
+        mark family CONFIRMATION_FAIL
+        do not rescue it.
+
+    If it passes:
+
+        mark family CONFIRMED_PASS.
+
+    ==================================================
+    V2_HELD_CONFIRMATION
+    ==================================================
+
+    Once all eligible passing families have completed seed confirmation,
+    read:
+
+        V2_HELD_CONFIRMATION
+
+    exactly once.
+
+    The held half must never have influenced:
+
+    - feature screening
+    - architecture selection
+    - checkpoint selection
+    - seed-0 gate
+    - threshold choice
+    - model selection
+
+    Render held results only from the filed held record thereafter.
+
+    Do not repeatedly re-read/recompute the held decision to tune anything.
+
+    ==================================================
+    H_OPERATOR_VS_BASIS
+    ==================================================
+
+    Always report the declared diagnostic:
+
+        u_gnn_v2_core78
+            -
+        gat_universal_v1_trio
+
+    where available.
+
+    This is diagnostic only.
+
+    No gate threshold depends on it.
+
+    Use it to separate:
+
+        new operator contribution
+
+    from:
+
+        new compiled-basis contribution.
+
+    ==================================================
+    REPORTING
+    ==================================================
+
+    At the end of the pilot produce one complete report containing:
+
+    1. frozen feature contract
+    2. feature-screen results
+    3. compile cost
+    4. timing decision
+    5. selected arms
+    6. seed-0 results
+    7. seeds 1–2 results where authorised by gate
+    8. seed means
+    9. bootstrap intervals
+    10. V2_GATE result
+    11. V2_HELD_CONFIRMATION result
+    12. GNN_GATE
+    13. TWIN_GATE
+    14. overall family status
+    15. operator-vs-basis diagnostic
+    16. per-dataset results:
+            MetaQA
+            2Wiki
+            SQuAD
+    17. comparison against frozen M3B references
+    18. all incidents / reboots / resumptions
+    19. actual CPU/GPU hours
+    20. peak RAM / storage
+    21. every artifact SHA256
+    22. git commits
+
+    Clearly distinguish:
+
+        V2_GATE
+    from:
+        V2_HELD_CONFIRMATION
+
+    Neither is to be described as globally unseen data because M3B already
+    scored the parent development populations.
+
+    ==================================================
+    AUTOMATIC LATER-STAGE AUTHORIZATION
+    ==================================================
+
+    The purpose of this instruction is specifically to avoid requiring me
+    to approve every mechanical phase transition.
+
+    Therefore, where configs/universal_v2.yaml says that a later already-
+    declared stage requires a dated authorization block, you may add a dated
+    authorization block citing THIS ruling, provided:
+
+    1. every prerequisite declared gate has passed;
+    2. no scientific parameter changes;
+    3. the stage already exists in the declaration;
+    4. compute remains inside the existing filed ceiling.
+
+    This authorization applies to already-declared work only.
+
+    It does NOT authorize inventing a new experiment.
+
+    ==================================================
+    COMPUTE RULE
+    ==================================================
+
+    Continue to obey:
+
+        validate cheaply;
+        expand only when a declared gate permits expansion.
+
+    Do not launch undeclared sweeps.
+
+    Do not increase seeds beyond the declaration.
+
+    Do not automatically migrate to another paid compute account/workspace.
+
+    Respect the filed compute ceiling.
+
+    If the compute ceiling will be exceeded:
+
+        checkpoint
+        calculate exact remaining work
+        STOP_HARD
+
+    ==================================================
+    CRASH / REBOOT RULE
+    ==================================================
+
+    A crash or reboot is NOT a review point.
+
+    If an existing valid checkpoint/artifact exists:
+
+        verify it
+        resume deterministically
+        log the incident
+        continue.
+
+    Never repeat a completed expensive stage merely because the machine
+    restarted.
+
+    ==================================================
+    HARD STOP CONDITIONS
+    ==================================================
+
+    STOP and report only if one of these happens:
+
+    1. contract/hash/integrity violation;
+    2. compiled cache disagrees with its frozen source;
+    3. M3B pinned artifact changes;
+    4. declaration and code disagree;
+    5. test data is accidentally touched;
+    6. gate/held leakage is detected;
+    7. a result would require changing a frozen scientific choice;
+    8. all eligible v2 families fail their declared gate;
+    9. compute ceiling would be exceeded;
+    10. unrecoverable corruption / missing prerequisite;
+    11. a genuinely new scientific decision not already covered by the
+        declaration is required.
+
+    Routine success is NOT a stop condition.
+
+    ==================================================
+    END CONDITION
+    ==================================================
+
+    Keep running until the complete Universal-v2 pilot has reached a
+    terminal state.
+
+    Terminal states are:
+
+        BOTH_CONFIRMED
+        GNN_ONLY_CONFIRMED
+        TWIN_ONLY_CONFIRMED
+        PILOT_FAILED
+        HARD_STOP_WITH_REASON
+
+    At the terminal state:
+
+        render final report
+        append run record
+        run tests
+        commit
+        return the results and interpretation.
+
+    Do not stop for intermediate review.
+  gloss_verbatim: |
+    Yes. At this point, stop making yourself approve every mechanical checkpoint.
+    Give the agent a standing authorization to continue autonomously through the already-declared Universal-v2 pipeline, with hard stops only when something scientifically new has to be decided.
+    [the ruling above]
+    That gives the agent enough authority to behave like an actual experiment runner rather than asking you after every `commit`.
+    The important guardrail is that autonomy applies to execution, not to scientific redesign. If Universal-v2 fails its frozen gate, it records the failure; it does not spend the night inventing Universal-v3. That preserves the credibility of what you're doing while removing the annoying approval loop.
+  supersedes:
+  - 'order_of_operations 6: the STOP_FOR_REVIEW after pilot_gate_record_<date> -- the run continues per family (pilot_gate.on_pass
+    / on_fail, amendment_2 family_status_vocabulary.continuation) without a review stop'
+  - 'order_of_operations 3, 4 and 7 as review points: each stage still ends in its commit, the next declared stage
+    starts without asking'
+  - pilot_gate.on_fail 'If both selected arms fail, the phase closes with STOP_FOR_REVIEW' -> the failure report,
+    the run record and the commit are produced and the run ends (STOP_FINAL in the ruling; terminal PILOT_FAILED)
+  - amendment_2 family_status_vocabulary.statuses.after_the_run_record (RUN_<overall>) -> RUN_<terminal> of terminal_state_vocabulary
+    below; the gate-level labels of amendment 2 are unchanged
+  terminal_state_vocabulary:
+    per_family_final:
+      GATE_FAIL: the selected arm of the family failed its gate at seed 0; the family stops and the failure is a
+        result
+      CONFIRMATION_FAIL: the family passed at seed 0 and the mean over seeds 0-2 does not hold every cell (pilot_gate.on_pass);
+        not rescued
+      CONFIRMED_PASS: the family passed at seed 0 and the mean over seeds 0-2 holds every cell (pilot_gate.on_pass)
+    terminal:
+      BOTH_CONFIRMED: both families CONFIRMED_PASS
+      GNN_ONLY_CONFIRMED: the GNN family CONFIRMED_PASS, the twin family not
+      TWIN_ONLY_CONFIRMED: the twin family CONFIRMED_PASS, the GNN family not
+      PILOT_FAILED: no family CONFIRMED_PASS; each family carries its final label beside it, so a seed-0 pass that
+        failed confirmation stays visible
+      HARD_STOP_WITH_REASON: one of the eleven hard stop conditions fired; hard_stop_<date> carries the condition,
+        the evidence and the exact remaining work; the status line is not moved
+    computed_from: >-
+      the gate record (pilot_gate_record_<date>.family_outcome, amendment 2) and the seed confirmation of the report
+      (scripts/universal_v2_report.py seed_confirmation: the declared pilot_gate.on_pass rule -- the per-query mean
+      over seeds 0-2 on V2_GATE holds every cell, paired cells by the declared bootstrap -- written to outputs/universal_v2/report_run_record.json);
+      the run record copies it as terminal_state and the status moves PILOT_GATE_READ -> RUN_<terminal>; a family
+      whose confirmation is incomplete refuses the run record
+    statuses:
+      after_the_gate: PILOT_GATE_READ
+      after_the_run_record: RUN_BOTH_CONFIRMED | RUN_GNN_ONLY_CONFIRMED | RUN_TWIN_ONLY_CONFIRMED | RUN_PILOT_FAILED
+    gate_level_labels_unchanged: >-
+      GNN_GATE / TWIN_GATE PASS|FAIL and overall BOTH_PASS | GNN_ONLY_PASS | TWIN_ONLY_PASS | PILOT_FAILED stay
+      the vocabulary of the gate record (amendment 2); the one-family reporting rule applies to confirmation too
+      -- GNN_ONLY_CONFIRMED and TWIN_ONLY_CONFIRMED are confirmations of that family and never of the proposed universal
+      pair, which is confirmed only under BOTH_CONFIRMED
+  reconciliations_where_the_ruling_and_the_declaration_differ:
+    evaluation_carves: >-
+      the ruling says compile for every declared fit / select / evaluation carve; the declaration caches the fit
+      and select carves only and compiles the eval populations per query at eval time after contract_frozen_<date>
+      (amendment_1 check_3); that is what runs -- no eval cache is written
+    timing_fallback: >-
+      the ruling says 1000 batches per epoch, 12 epochs, applied equally to every arm; compute.timing_run says epoch
+      = 1000 batches, max_epochs 12 AND patience 4; the declared rule with patience 4 applies, filed as a training_override
+      in a dated amendment before any fit if the u_gnn_v2_ef epoch exceeds 3 hours at 8 threads; no third option
+    h_128: H=128 is the hidden width of every arm (HIDDEN in scripts/universal_v2_run.py, arms); unchanged
+    later_stages: >-
+      the END CONDITION of the ruling is the terminal state of the pilot; later_stages (stage 2 six-dataset joint,
+      stages 3-4) are not opened by this run: their compute has no filed ceiling (compute.hard_ceiling covers the
+      pilot only), so condition 4 of the automatic later-stage authorization cannot be verified; opening them is
+      the next decision, taken on the results of the pilot
+    eligible_family_fails: >-
+      hard stop condition 8 (all eligible v2 families fail their declared gate) and the END CONDITION PILOT_FAILED
+      describe the same event; it is closed as a terminal state with the report and the run record, not as a hard_stop_<date>
+      block
+  compute_ceiling_guard: >-
+    before every fit, the fit-hours already spent (the seconds of every fit record) plus the projected hours of
+    the fit (timing_<date>: the projected epoch minutes of the arm x max_epochs of the training rule, scaled by
+    the measured full-epoch / projected ratio of u_gnn_v2_ef, which carries the select evaluation) must stay within
+    compute.hard_ceiling 150 fit-hours; a fit that would breach it is not started, outputs/universal_v2/ceiling_breach.json
+    is written with the exact remaining work and hard_stop_<date> is filed (HARD_STOP_WITH_REASON); the timing run
+    is not a fit and does not count
+  hard_stop_procedure: >-
+    on any of the eleven conditions of the ruling nothing further runs; hard_stop_<date> (a dated block) is appended
+    with the condition, the evidence (paths, sha256), the exact remaining work and the state of every sidecar; the
+    status line is not moved; the report to the user follows
+  crash_and_reboot: >-
+    as the ruling and M3B amendment 4: fit_model resumes from its epoch checkpoint (outputs/universal_v2/fits/<key>.ckpt),
+    finished records exist and are not repeated, eval shards merge, and every incident is logged with its wall clock
+    in the incidents of the run record
+  execution_log: outputs/universal_v2/logs/ (hidden processes, stdout / stderr per stage, pid files); one commit
+    per completed stage as order_of_operations
+  tests:
+  - 'tests/test_universal_v2_declaration.py: this block is filed verbatim, its vocabulary, reconciliations and guard
+    are named, the statuses'
+  - 'tests/test_universal_v2_run.py: the run record''s terminal state and status, the ceiling guard refusing a fit
+    that would breach 150 fit-hours, hard_stop_<date> as a dated block'
