@@ -385,6 +385,7 @@ def shard_suffix(shard: tuple[int, int] | None) -> str:
     return "" if shard is None else f"__shard{shard[0]}of{shard[1]}"
 
 
+@torch.no_grad()   # scoring only, as evaluate_carve: no autograd graph is built and model outputs convert to numpy directly
 def eval_dataset(name: str, cfg: dict, cfg_h: dict, inputs: dict, models: dict, context: DatasetContext, ds, pkg, m3b_compile, m3b_contract,
                  chunk_nodes: int, fixed: tuple[str, ...], shard: tuple[int, int] | None = None, log=print) -> dict:
     m3a, canonical, served, freeze = pkg
