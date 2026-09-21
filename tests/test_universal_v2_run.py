@@ -123,7 +123,11 @@ def _declaration_before_the_run() -> str:
     sandbox re-runs the whole sequence from DECLARED_NOT_RUN however far the real pilot has progressed."""
     lines = (R.ROOT / "configs" / "universal_v2.yaml").read_text(encoding="utf-8").split(LF)   # never R.CONFIG: the sandbox re-points it
     cut = next((i for i, l in enumerate(lines) if l.startswith("# -- ")), len(lines))
-    text = LF.join(lines[:cut]).rstrip(LF) + LF
+    lines = lines[:cut]
+    hits = [i for i, l in enumerate(lines) if l.startswith("status: ")]   # set_status moves the one status line in place as the
+    assert len(hits) == 1, hits                                            # run files its records; the sandbox starts before the run
+    lines[hits[0]] = "status: DECLARED_NOT_RUN"
+    text = LF.join(lines).rstrip(LF) + LF
     cfg = yaml.safe_load(text)
     run_produced = [k for k in cfg if R.DATED.match(k) and not k.startswith("amendment_")]
     assert not run_produced, run_produced

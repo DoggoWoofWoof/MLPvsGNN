@@ -9,7 +9,7 @@
 # ══════════════════════════════════════════════════════════════════
 experiment: universal_v2
 phase: UNIVERSAL_V2
-status: DECLARED_NOT_RUN
+status: RUN_PILOT_FAILED
 declared: 2026-09-19
 declared_under:
   - configs/m3b_controlled_comparison.yaml       # closed at 0bbb3c4 (status RUN, run_record_2026_09_19): the incumbents and every reference number below
@@ -3331,3 +3331,1875 @@ timing_2026_09_19:
     fires: false
   output: outputs/universal_v2/timing.json
   output_sha256: aaf7823452915354179bd79e98722f84b06f8b62a3a9a3f79960820b37c33ba1
+
+# -- pilot gate record (pilot_gate, V2_GATE only), filed 2026-09-21T04:59:07Z from outputs/universal_v2/gate_record.json --
+pilot_gate_record_2026_09_21:
+  status: READ_ONCE_ON_V2_GATE
+  filed_utc: '2026-09-21T04:59:07Z'
+  utc: '2026-09-21T04:57:15Z'
+  half: V2_GATE
+  held_half_read: false
+  thresholds_from: amendment_1_2026_09_19.pilot_gate_amended
+  selection:
+    gnn: u_gnn_v2_ef
+    twin: u_mlp_v2_mix
+  selection_sha256: 3ed48ae3d04334ba367cb81b8b363d32db0e2bf746e4f692d7af0936bea4e3b6
+  contract_block: contract_frozen_2026_09_19
+  core_sha256: 8d1da88b14dfdee13dd32ee6a05f6d9733d14a9899d5e011c41b0cce53000bf9
+  verdict:
+    u_gnn_v2_ef:
+      key: u_gnn_v2_ef__H128__s0
+      cells:
+      - dataset: metaqa
+        metric: hit@1
+        slice: all
+        queries: 19738
+        value: 0.9175
+        threshold: 0.884
+        at_or_above_threshold: true
+        paired_vs: gat_universal_v1
+        interval:
+          mean: 0.0855
+          low: 0.0807
+          high: 0.0902
+          n: 19738
+          resamples: 1000
+          seed: 0
+        interval_excludes_zero_on_the_positive_side: true
+        holds: true
+      - dataset: metaqa
+        metric: hit@1
+        slice: 3hop
+        queries: 7273
+        value: 0.8679
+        threshold: 0.8172
+        at_or_above_threshold: true
+        paired_vs: gat_universal_v1
+        interval:
+          mean: 0.1294
+          low: 0.1195
+          high: 0.1396
+          n: 7273
+          resamples: 1000
+          seed: 0
+        interval_excludes_zero_on_the_positive_side: true
+        holds: true
+      - dataset: 2wiki
+        metric: recall@5
+        slice: all
+        queries: 6290
+        value: 0.8963
+        threshold: 0.8758
+        at_or_above_threshold: true
+        holds: true
+      - dataset: 2wiki
+        metric: full_coverage@5
+        slice: all
+        queries: 6290
+        value: 0.7674
+        threshold: 0.7453
+        at_or_above_threshold: true
+        holds: true
+      - dataset: squad
+        metric: recall@5
+        slice: all
+        queries: 5841
+        value: 0.8988
+        threshold: 0.8996
+        at_or_above_threshold: false
+        holds: false
+      pass: false
+    u_mlp_v2_mix:
+      key: u_mlp_v2_mix__H128__s0
+      cells:
+      - dataset: metaqa
+        metric: hit@1
+        slice: all
+        queries: 19738
+        value: 0.7772
+        threshold: 0.7021
+        at_or_above_threshold: true
+        paired_vs: qls_u_sota_v1
+        interval:
+          mean: 0.1617
+          low: 0.1549
+          high: 0.1689
+          n: 19738
+          resamples: 1000
+          seed: 0
+        interval_excludes_zero_on_the_positive_side: true
+        holds: true
+      - dataset: 2wiki
+        metric: recall@5
+        slice: all
+        queries: 6290
+        value: 0.8545
+        threshold: 0.8578
+        at_or_above_threshold: false
+        holds: false
+      - dataset: squad
+        metric: recall@5
+        slice: all
+        queries: 5841
+        value: 0.9105
+        threshold: 0.8996
+        at_or_above_threshold: true
+        holds: true
+      pass: false
+  outcome:
+    u_gnn_v2_ef: FAIL
+    u_mlp_v2_mix: FAIL
+  family_outcome:
+    GNN_GATE: FAIL
+    TWIN_GATE: FAIL
+    overall: PILOT_FAILED
+    selected:
+      GNN_GATE: u_gnn_v2_ef
+      TWIN_GATE: u_mlp_v2_mix
+  reported_not_advancing:
+    u_gnn_v2:
+      key: u_gnn_v2__H128__s0
+      cells:
+      - dataset: metaqa
+        metric: hit@1
+        slice: all
+        queries: 19738
+        value: 0.9167
+        threshold: 0.884
+        at_or_above_threshold: true
+        paired_vs: gat_universal_v1
+        interval:
+          mean: 0.0847
+          low: 0.0799
+          high: 0.0896
+          n: 19738
+          resamples: 1000
+          seed: 0
+        interval_excludes_zero_on_the_positive_side: true
+        holds: true
+      - dataset: metaqa
+        metric: hit@1
+        slice: 3hop
+        queries: 7273
+        value: 0.8633
+        threshold: 0.8172
+        at_or_above_threshold: true
+        paired_vs: gat_universal_v1
+        interval:
+          mean: 0.1248
+          low: 0.1148
+          high: 0.1345
+          n: 7273
+          resamples: 1000
+          seed: 0
+        interval_excludes_zero_on_the_positive_side: true
+        holds: true
+      - dataset: 2wiki
+        metric: recall@5
+        slice: all
+        queries: 6290
+        value: 0.8948
+        threshold: 0.8758
+        at_or_above_threshold: true
+        holds: true
+      - dataset: 2wiki
+        metric: full_coverage@5
+        slice: all
+        queries: 6290
+        value: 0.7653
+        threshold: 0.7453
+        at_or_above_threshold: true
+        holds: true
+      - dataset: squad
+        metric: recall@5
+        slice: all
+        queries: 5841
+        value: 0.8997
+        threshold: 0.8996
+        at_or_above_threshold: true
+        holds: true
+      pass: true
+      cannot_advance: true
+      why: not the selected candidate of its family (arms.selection_behind_the_firewall)
+    u_mlp_v2:
+      key: u_mlp_v2__H128__s0
+      cells:
+      - dataset: metaqa
+        metric: hit@1
+        slice: all
+        queries: 19738
+        value: 0.7941
+        threshold: 0.7021
+        at_or_above_threshold: true
+        paired_vs: qls_u_sota_v1
+        interval:
+          mean: 0.1786
+          low: 0.1718
+          high: 0.1853
+          n: 19738
+          resamples: 1000
+          seed: 0
+        interval_excludes_zero_on_the_positive_side: true
+        holds: true
+      - dataset: 2wiki
+        metric: recall@5
+        slice: all
+        queries: 6290
+        value: 0.8502
+        threshold: 0.8578
+        at_or_above_threshold: false
+        holds: false
+      - dataset: squad
+        metric: recall@5
+        slice: all
+        queries: 5841
+        value: 0.8867
+        threshold: 0.8996
+        at_or_above_threshold: false
+        holds: false
+      pass: false
+      cannot_advance: true
+      why: not the selected candidate of its family (arms.selection_behind_the_firewall)
+  paired_on_V2_GATE:
+    selected_gnn_minus_selected_twin:
+      metaqa:
+        recall@5:
+          mean: 0.0731
+          low: 0.0703
+          high: 0.0763
+          n: 19738
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.1403
+          low: 0.1347
+          high: 0.1459
+          n: 19738
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.081
+          low: 0.077
+          high: 0.0854
+          n: 19738
+          resamples: 1000
+          seed: 0
+      2wiki:
+        recall@5:
+          mean: 0.0418
+          low: 0.0375
+          high: 0.0461
+          n: 6290
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: -0.0097
+          low: -0.0177
+          high: -0.0027
+          n: 6290
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0922
+          low: 0.0827
+          high: 0.1016
+          n: 6290
+          resamples: 1000
+          seed: 0
+      squad:
+        recall@5:
+          mean: -0.0116
+          low: -0.0159
+          high: -0.0079
+          n: 5841
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: -0.0146
+          low: -0.0211
+          high: -0.0084
+          n: 5841
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: -0.0116
+          low: -0.0159
+          high: -0.0079
+          n: 5841
+          resamples: 1000
+          seed: 0
+    selected_gnn_minus_u_gnn_v2_core78:
+      metaqa:
+        recall@5:
+          mean: 0.0017
+          low: 0.0003
+          high: 0.0029
+          n: 19738
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0106
+          low: 0.0066
+          high: 0.0142
+          n: 19738
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0031
+          low: 0.001
+          high: 0.0052
+          n: 19738
+          resamples: 1000
+          seed: 0
+      2wiki:
+        recall@5:
+          mean: -0.0016
+          low: -0.0051
+          high: 0.0016
+          n: 6290
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0224
+          low: 0.0151
+          high: 0.0294
+          n: 6290
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: -0.0075
+          low: -0.014
+          high: -0.0013
+          n: 6290
+          resamples: 1000
+          seed: 0
+      squad:
+        recall@5:
+          mean: -0.0002
+          low: -0.0039
+          high: 0.0039
+          n: 5841
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0041
+          low: -0.0022
+          high: 0.0108
+          n: 5841
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: -0.0002
+          low: -0.0039
+          high: 0.0039
+          n: 5841
+          resamples: 1000
+          seed: 0
+    selected_gnn_minus_gat_universal_v1_trio:
+      metaqa:
+        recall@5:
+          mean: 0.0234
+          low: 0.0214
+          high: 0.0253
+          n: 19738
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0617
+          low: 0.0575
+          high: 0.066
+          n: 19738
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0283
+          low: 0.0254
+          high: 0.0313
+          n: 19738
+          resamples: 1000
+          seed: 0
+      2wiki:
+        recall@5:
+          mean: 0.0019
+          low: -0.0016
+          high: 0.0051
+          n: 6290
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: -0.0108
+          low: -0.018
+          high: -0.0044
+          n: 6290
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0008
+          low: -0.006
+          high: 0.0075
+          n: 6290
+          resamples: 1000
+          seed: 0
+      squad:
+        recall@5:
+          mean: -0.0046
+          low: -0.0086
+          high: -0.0009
+          n: 5841
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: -0.0014
+          low: -0.007
+          high: 0.0045
+          n: 5841
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: -0.0046
+          low: -0.0086
+          high: -0.0009
+          n: 5841
+          resamples: 1000
+          seed: 0
+    u_gnn_v2_core78_minus_gat_universal_v1_trio:
+      metaqa:
+        recall@5:
+          mean: 0.0217
+          low: 0.0199
+          high: 0.0235
+          n: 19738
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0511
+          low: 0.0472
+          high: 0.0555
+          n: 19738
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0252
+          low: 0.0226
+          high: 0.0281
+          n: 19738
+          resamples: 1000
+          seed: 0
+      2wiki:
+        recall@5:
+          mean: 0.0035
+          low: 0.0001
+          high: 0.0068
+          n: 6290
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: -0.0332
+          low: -0.0401
+          high: -0.0262
+          n: 6290
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0083
+          low: 0.0019
+          high: 0.0148
+          n: 6290
+          resamples: 1000
+          seed: 0
+      squad:
+        recall@5:
+          mean: -0.0045
+          low: -0.0084
+          high: -0.0005
+          n: 5841
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: -0.0055
+          low: -0.0122
+          high: 0.0014
+          n: 5841
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: -0.0045
+          low: -0.0084
+          high: -0.0005
+          n: 5841
+          resamples: 1000
+          seed: 0
+    selected_gnn_minus_gat_universal_v1_frozen:
+      metaqa:
+        recall@5:
+          mean: 0.0255
+          low: 0.0237
+          high: 0.0273
+          n: 19738
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0855
+          low: 0.0807
+          high: 0.0902
+          n: 19738
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0278
+          low: 0.0248
+          high: 0.0308
+          n: 19738
+          resamples: 1000
+          seed: 0
+      2wiki:
+        recall@5:
+          mean: 0.0105
+          low: 0.0063
+          high: 0.0145
+          n: 6290
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0164
+          low: 0.0078
+          high: 0.0246
+          n: 6290
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0121
+          low: 0.0037
+          high: 0.0199
+          n: 6290
+          resamples: 1000
+          seed: 0
+      squad:
+        recall@5:
+          mean: 0.0147
+          low: 0.0089
+          high: 0.0199
+          n: 5841
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0178
+          low: 0.0098
+          high: 0.0264
+          n: 5841
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0147
+          low: 0.0089
+          high: 0.0199
+          n: 5841
+          resamples: 1000
+          seed: 0
+    selected_twin_minus_qls_u_sota_v1_frozen:
+      metaqa:
+        recall@5:
+          mean: 0.103
+          low: 0.0991
+          high: 0.1072
+          n: 19738
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.1617
+          low: 0.1549
+          high: 0.1689
+          n: 19738
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0945
+          low: 0.0895
+          high: 0.0993
+          n: 19738
+          resamples: 1000
+          seed: 0
+      2wiki:
+        recall@5:
+          mean: 0.0155
+          low: 0.0105
+          high: 0.02
+          n: 6290
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0402
+          low: 0.0326
+          high: 0.0479
+          n: 6290
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0286
+          low: 0.0189
+          high: 0.0383
+          n: 6290
+          resamples: 1000
+          seed: 0
+      squad:
+        recall@5:
+          mean: 0.0259
+          low: 0.0204
+          high: 0.0306
+          n: 5841
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0214
+          low: 0.0149
+          high: 0.0282
+          n: 5841
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0259
+          low: 0.0204
+          high: 0.0306
+          n: 5841
+          resamples: 1000
+          seed: 0
+    selected_twin_minus_gat_no_mp_v1_frozen:
+      metaqa:
+        recall@5:
+          mean: 0.0997
+          low: 0.0957
+          high: 0.104
+          n: 19738
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.1619
+          low: 0.1549
+          high: 0.1694
+          n: 19738
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0903
+          low: 0.0855
+          high: 0.0948
+          n: 19738
+          resamples: 1000
+          seed: 0
+      2wiki:
+        recall@5:
+          mean: 0.021
+          low: 0.0167
+          high: 0.0255
+          n: 6290
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0046
+          low: -0.0019
+          high: 0.0113
+          n: 6290
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0453
+          low: 0.0361
+          high: 0.0541
+          n: 6290
+          resamples: 1000
+          seed: 0
+      squad:
+        recall@5:
+          mean: 0.0214
+          low: 0.0164
+          high: 0.0265
+          n: 5841
+          resamples: 1000
+          seed: 0
+        hit@1:
+          mean: 0.0151
+          low: 0.0089
+          high: 0.0217
+          n: 5841
+          resamples: 1000
+          seed: 0
+        full_coverage@5:
+          mean: 0.0214
+          low: 0.0164
+          high: 0.0265
+          n: 5841
+          resamples: 1000
+          seed: 0
+  frozen_references_on_V2_GATE:
+    metaqa:
+      gat_universal_v1:
+        recall@5: 0.7593
+        hit@1: 0.832
+        full_coverage@5: 0.635
+      gat_no_mp_v1:
+        recall@5: 0.612
+        hit@1: 0.6153
+        full_coverage@5: 0.4915
+      qls_u_sota_v1:
+        recall@5: 0.6087
+        hit@1: 0.6155
+        full_coverage@5: 0.4873
+      fixed_rrf:
+        recall@5: 0.0047
+        hit@1: 0.0006
+        full_coverage@5: 0.0023
+    2wiki:
+      gat_universal_v1:
+        recall@5: 0.8858
+        hit@1: 0.8846
+        full_coverage@5: 0.7553
+      gat_no_mp_v1:
+        recall@5: 0.8335
+        hit@1: 0.906
+        full_coverage@5: 0.6299
+      qls_u_sota_v1:
+        recall@5: 0.8391
+        hit@1: 0.8704
+        full_coverage@5: 0.6466
+      fixed_rrf:
+        recall@5: 0.6123
+        hit@1: 0.8762
+        full_coverage@5: 0.2609
+    squad:
+      gat_universal_v1:
+        recall@5: 0.8841
+        hit@1: 0.7146
+        full_coverage@5: 0.8841
+      gat_no_mp_v1:
+        recall@5: 0.8891
+        hit@1: 0.7319
+        full_coverage@5: 0.8891
+      qls_u_sota_v1:
+        recall@5: 0.8846
+        hit@1: 0.7256
+        full_coverage@5: 0.8846
+      fixed_rrf:
+        recall@5: 0.9046
+        hit@1: 0.7276
+        full_coverage@5: 0.9046
+  queries_V2_GATE:
+    metaqa: 19738
+    2wiki: 6290
+    squad: 5841
+  slices_V2_GATE:
+    metaqa_by_hop:
+      1hop:
+        queries: 5021
+        fixed:qsupport_h1:
+          hit@1: 0.1637
+          recall@5: 0.236
+        fixed:qsupport_h2:
+          hit@1: 0.001
+          recall@5: 0.0037
+        fixed:qsupport_h3:
+          hit@1: 0.1492
+          recall@5: 0.2385
+        fixed:rrf:
+          hit@1: 0.0016
+          recall@5: 0.0063
+        fixed:support_h1_STRUCT:
+          hit@1: 0.1155
+          recall@5: 0.2029
+        fixed:support_h2_STRUCT:
+          hit@1: 0.0014
+          recall@5: 0.0037
+        fixed:support_h3_STRUCT:
+          hit@1: 0.084
+          recall@5: 0.1766
+        gat_universal_v1_trio__H128__s0:
+          hit@1: 0.901
+          recall@5: 0.9582
+        u_gnn_v2__H128__s0:
+          hit@1: 0.9319
+          recall@5: 0.962
+        u_gnn_v2_core78__H128__s0:
+          hit@1: 0.9307
+          recall@5: 0.9655
+        u_gnn_v2_ef__H128__s0:
+          hit@1: 0.9428
+          recall@5: 0.9675
+        u_mlp_v2__H128__s0:
+          hit@1: 0.9018
+          recall@5: 0.9552
+        u_mlp_v2_mix__H128__s0:
+          hit@1: 0.8781
+          recall@5: 0.9468
+      2hop:
+        queries: 7444
+        fixed:qsupport_h1:
+          hit@1: 0.0001
+          recall@5: 0.0005
+        fixed:qsupport_h2:
+          hit@1: 0.0195
+          recall@5: 0.0785
+        fixed:qsupport_h3:
+          hit@1: 0.0005
+          recall@5: 0.0008
+        fixed:rrf:
+          hit@1: 0.0004
+          recall@5: 0.0069
+        fixed:support_h1_STRUCT:
+          hit@1: 0.0
+          recall@5: 0.0005
+        fixed:support_h2_STRUCT:
+          hit@1: 0.0341
+          recall@5: 0.0901
+        fixed:support_h3_STRUCT:
+          hit@1: 0.0003
+          recall@5: 0.0005
+        gat_universal_v1_trio__H128__s0:
+          hit@1: 0.8991
+          recall@5: 0.8281
+        u_gnn_v2__H128__s0:
+          hit@1: 0.9586
+          recall@5: 0.8444
+        u_gnn_v2_core78__H128__s0:
+          hit@1: 0.9262
+          recall@5: 0.8412
+        u_gnn_v2_ef__H128__s0:
+          hit@1: 0.949
+          recall@5: 0.8438
+        u_mlp_v2__H128__s0:
+          hit@1: 0.8846
+          recall@5: 0.81
+        u_mlp_v2_mix__H128__s0:
+          hit@1: 0.88
+          recall@5: 0.8103
+      3hop:
+        queries: 7273
+        fixed:qsupport_h1:
+          hit@1: 0.0025
+          recall@5: 0.011
+        fixed:qsupport_h2:
+          hit@1: 0.0008
+          recall@5: 0.001
+        fixed:qsupport_h3:
+          hit@1: 0.0049
+          recall@5: 0.0182
+        fixed:rrf:
+          hit@1: 0.0
+          recall@5: 0.0013
+        fixed:support_h1_STRUCT:
+          hit@1: 0.003
+          recall@5: 0.0203
+        fixed:support_h2_STRUCT:
+          hit@1: 0.0001
+          recall@5: 0.0008
+        fixed:support_h3_STRUCT:
+          hit@1: 0.0045
+          recall@5: 0.0203
+        gat_universal_v1_trio__H128__s0:
+          hit@1: 0.7804
+          recall@5: 0.5574
+        u_gnn_v2__H128__s0:
+          hit@1: 0.8633
+          recall@5: 0.5971
+        u_gnn_v2_core78__H128__s0:
+          hit@1: 0.8708
+          recall@5: 0.5978
+        u_gnn_v2_ef__H128__s0:
+          hit@1: 0.8679
+          recall@5: 0.5983
+        u_mlp_v2__H128__s0:
+          hit@1: 0.6271
+          recall@5: 0.4664
+        u_mlp_v2_mix__H128__s0:
+          hit@1: 0.6022
+          recall@5: 0.4484
+    gold_distance_recall5:
+      metaqa:
+        dist0:
+          queries: 582
+          fixed:qsupport_h1: 0.0543
+          fixed:qsupport_h2: 0.1252
+          fixed:qsupport_h3: 0.051
+          fixed:rrf: 0.123
+          fixed:support_h1_STRUCT: 0.0567
+          fixed:support_h2_STRUCT: 0.1197
+          fixed:support_h3_STRUCT: 0.0478
+          gat_universal_v1_trio__H128__s0: 0.5747
+          u_gnn_v2__H128__s0: 0.5908
+          u_gnn_v2_core78__H128__s0: 0.6108
+          u_gnn_v2_ef__H128__s0: 0.6063
+          u_mlp_v2__H128__s0: 0.5198
+          u_mlp_v2_mix__H128__s0: 0.4646
+        dist1:
+          queries: 10236
+          fixed:qsupport_h1: 0.1208
+          fixed:qsupport_h2: 0.0003
+          fixed:qsupport_h3: 0.1259
+          fixed:rrf: 0.0008
+          fixed:support_h1_STRUCT: 0.1111
+          fixed:support_h2_STRUCT: 0.0006
+          fixed:support_h3_STRUCT: 0.0976
+          gat_universal_v1_trio__H128__s0: 0.791
+          u_gnn_v2__H128__s0: 0.8051
+          u_gnn_v2_core78__H128__s0: 0.8062
+          u_gnn_v2_ef__H128__s0: 0.8074
+          u_mlp_v2__H128__s0: 0.745
+          u_mlp_v2_mix__H128__s0: 0.7342
+        dist2:
+          queries: 7094
+          fixed:qsupport_h1: 0.0
+          fixed:qsupport_h2: 0.0755
+          fixed:qsupport_h3: 0.0
+          fixed:rrf: 0.0018
+          fixed:support_h1_STRUCT: 0.0
+          fixed:support_h2_STRUCT: 0.0872
+          fixed:support_h3_STRUCT: 0.0
+          gat_universal_v1_trio__H128__s0: 0.8022
+          u_gnn_v2__H128__s0: 0.8225
+          u_gnn_v2_core78__H128__s0: 0.8198
+          u_gnn_v2_ef__H128__s0: 0.8214
+          u_mlp_v2__H128__s0: 0.7722
+          u_mlp_v2_mix__H128__s0: 0.768
+        dist3:
+          queries: 1588
+          fixed:qsupport_h1: 0.0
+          fixed:qsupport_h2: 0.0
+          fixed:qsupport_h3: 0.0112
+          fixed:rrf: 0.0
+          fixed:support_h1_STRUCT: 0.0
+          fixed:support_h2_STRUCT: 0.0
+          fixed:support_h3_STRUCT: 0.0071
+          gat_universal_v1_trio__H128__s0: 0.5712
+          u_gnn_v2__H128__s0: 0.6542
+          u_gnn_v2_core78__H128__s0: 0.6514
+          u_gnn_v2_ef__H128__s0: 0.6584
+          u_mlp_v2__H128__s0: 0.511
+          u_mlp_v2_mix__H128__s0: 0.5121
+        unreached:
+          queries: 1
+          fixed:qsupport_h1: 0.0
+          fixed:qsupport_h2: 0.0
+          fixed:qsupport_h3: 0.0
+          fixed:rrf: 0.0
+          fixed:support_h1_STRUCT: 0.0
+          fixed:support_h2_STRUCT: 0.0
+          fixed:support_h3_STRUCT: 0.0
+          gat_universal_v1_trio__H128__s0: 0.0
+          u_gnn_v2__H128__s0: 0.0
+          u_gnn_v2_core78__H128__s0: 0.0
+          u_gnn_v2_ef__H128__s0: 0.0
+          u_mlp_v2__H128__s0: 0.0
+          u_mlp_v2_mix__H128__s0: 0.0
+      2wiki:
+        dist0:
+          queries: 6267
+          fixed:qsupport_h1: 0.0425
+          fixed:qsupport_h2: 0.0425
+          fixed:qsupport_h3: 0.0425
+          fixed:rrf: 0.614
+          fixed:support_h1_STRUCT: 0.0837
+          fixed:support_h2_STRUCT: 0.5132
+          fixed:support_h3_STRUCT: 0.0717
+          gat_universal_v1_trio__H128__s0: 0.8966
+          u_gnn_v2__H128__s0: 0.897
+          u_gnn_v2_core78__H128__s0: 0.9002
+          u_gnn_v2_ef__H128__s0: 0.8986
+          u_mlp_v2__H128__s0: 0.8528
+          u_mlp_v2_mix__H128__s0: 0.8569
+        dist1:
+          queries: 8
+          fixed:qsupport_h1: 0.0
+          fixed:qsupport_h2: 0.0
+          fixed:qsupport_h3: 0.0
+          fixed:rrf: 0.0625
+          fixed:support_h1_STRUCT: 0.0
+          fixed:support_h2_STRUCT: 0.0
+          fixed:support_h3_STRUCT: 0.0
+          gat_universal_v1_trio__H128__s0: 0.375
+          u_gnn_v2__H128__s0: 0.375
+          u_gnn_v2_core78__H128__s0: 0.375
+          u_gnn_v2_ef__H128__s0: 0.375
+          u_mlp_v2__H128__s0: 0.125
+          u_mlp_v2_mix__H128__s0: 0.375
+        dist2:
+          queries: 4
+          fixed:qsupport_h1: 0.0
+          fixed:qsupport_h2: 0.0
+          fixed:qsupport_h3: 0.0
+          fixed:rrf: 0.125
+          fixed:support_h1_STRUCT: 0.0
+          fixed:support_h2_STRUCT: 0.0
+          fixed:support_h3_STRUCT: 0.0
+          gat_universal_v1_trio__H128__s0: 0.0
+          u_gnn_v2__H128__s0: 0.125
+          u_gnn_v2_core78__H128__s0: 0.0
+          u_gnn_v2_ef__H128__s0: 0.125
+          u_mlp_v2__H128__s0: 0.125
+          u_mlp_v2_mix__H128__s0: 0.0
+        unreached:
+          queries: 9
+          fixed:qsupport_h1: 0.0
+          fixed:qsupport_h2: 0.0
+          fixed:qsupport_h3: 0.0
+          fixed:rrf: 0.25
+          fixed:support_h1_STRUCT: 0.0
+          fixed:support_h2_STRUCT: 0.0
+          fixed:support_h3_STRUCT: 0.0
+          gat_universal_v1_trio__H128__s0: 0.4167
+          u_gnn_v2__H128__s0: 0.3333
+          u_gnn_v2_core78__H128__s0: 0.3611
+          u_gnn_v2_ef__H128__s0: 0.3333
+          u_mlp_v2__H128__s0: 0.2222
+          u_mlp_v2_mix__H128__s0: 0.1944
+      squad:
+        dist0:
+          queries: 5415
+          fixed:qsupport_h1: 0.0992
+          fixed:qsupport_h2: 0.0992
+          fixed:qsupport_h3: 0.0992
+          fixed:rrf: 0.9666
+          fixed:support_h1_STRUCT: 0.0659
+          fixed:support_h2_STRUCT: 0.3102
+          fixed:support_h3_STRUCT: 0.0827
+          gat_universal_v1_trio__H128__s0: 0.9673
+          u_gnn_v2__H128__s0: 0.9592
+          u_gnn_v2_core78__H128__s0: 0.961
+          u_gnn_v2_ef__H128__s0: 0.9607
+          u_mlp_v2__H128__s0: 0.9487
+          u_mlp_v2_mix__H128__s0: 0.9705
+        dist1:
+          queries: 62
+          fixed:qsupport_h1: 0.0806
+          fixed:qsupport_h2: 0.0806
+          fixed:qsupport_h3: 0.0806
+          fixed:rrf: 0.1774
+          fixed:support_h1_STRUCT: 0.3548
+          fixed:support_h2_STRUCT: 0.0806
+          fixed:support_h3_STRUCT: 0.3065
+          gat_universal_v1_trio__H128__s0: 0.1613
+          u_gnn_v2__H128__s0: 0.1613
+          u_gnn_v2_core78__H128__s0: 0.1452
+          u_gnn_v2_ef__H128__s0: 0.1613
+          u_mlp_v2__H128__s0: 0.129
+          u_mlp_v2_mix__H128__s0: 0.1774
+        dist2:
+          queries: 18
+          fixed:qsupport_h1: 0.0
+          fixed:qsupport_h2: 0.0
+          fixed:qsupport_h3: 0.0
+          fixed:rrf: 0.2222
+          fixed:support_h1_STRUCT: 0.0
+          fixed:support_h2_STRUCT: 0.1111
+          fixed:support_h3_STRUCT: 0.0
+          gat_universal_v1_trio__H128__s0: 0.0556
+          u_gnn_v2__H128__s0: 0.1111
+          u_gnn_v2_core78__H128__s0: 0.1111
+          u_gnn_v2_ef__H128__s0: 0.1111
+          u_mlp_v2__H128__s0: 0.0556
+          u_mlp_v2_mix__H128__s0: 0.0556
+        dist3:
+          queries: 2
+          fixed:qsupport_h1: 0.5
+          fixed:qsupport_h2: 0.5
+          fixed:qsupport_h3: 0.5
+          fixed:rrf: 0.0
+          fixed:support_h1_STRUCT: 0.5
+          fixed:support_h2_STRUCT: 0.0
+          fixed:support_h3_STRUCT: 0.5
+          gat_universal_v1_trio__H128__s0: 0.0
+          u_gnn_v2__H128__s0: 0.0
+          u_gnn_v2_core78__H128__s0: 0.0
+          u_gnn_v2_ef__H128__s0: 0.0
+          u_mlp_v2__H128__s0: 0.5
+          u_mlp_v2_mix__H128__s0: 0.0
+        unreached:
+          queries: 221
+          fixed:qsupport_h1: 0.0995
+          fixed:qsupport_h2: 0.0995
+          fixed:qsupport_h3: 0.0995
+          fixed:rrf: 0.1584
+          fixed:support_h1_STRUCT: 0.0543
+          fixed:support_h2_STRUCT: 0.0498
+          fixed:support_h3_STRUCT: 0.0543
+          gat_universal_v1_trio__H128__s0: 0.1267
+          u_gnn_v2__H128__s0: 0.2217
+          u_gnn_v2_core78__H128__s0: 0.1629
+          u_gnn_v2_ef__H128__s0: 0.1629
+          u_mlp_v2__H128__s0: 0.1448
+          u_mlp_v2_mix__H128__s0: 0.2308
+    multi_gold:
+      metaqa:
+        queries: 11836
+        fixed:qsupport_h1:
+          full_coverage@5: 0.0149
+          recall@5: 0.0366
+        fixed:qsupport_h2:
+          full_coverage@5: 0.0054
+          recall@5: 0.0182
+        fixed:qsupport_h3:
+          full_coverage@5: 0.0176
+          recall@5: 0.0355
+        fixed:rrf:
+          full_coverage@5: 0.0
+          recall@5: 0.004
+        fixed:support_h1_STRUCT:
+          full_coverage@5: 0.0118
+          recall@5: 0.0336
+        fixed:support_h2_STRUCT:
+          full_coverage@5: 0.0061
+          recall@5: 0.023
+        fixed:support_h3_STRUCT:
+          full_coverage@5: 0.0121
+          recall@5: 0.0289
+        gat_universal_v1_trio__H128__s0:
+          full_coverage@5: 0.4393
+          recall@5: 0.6478
+        u_gnn_v2__H128__s0:
+          full_coverage@5: 0.4801
+          recall@5: 0.6801
+        u_gnn_v2_core78__H128__s0:
+          full_coverage@5: 0.477
+          recall@5: 0.6793
+        u_gnn_v2_ef__H128__s0:
+          full_coverage@5: 0.4817
+          recall@5: 0.6816
+        u_mlp_v2__H128__s0:
+          full_coverage@5: 0.3794
+          recall@5: 0.5946
+        u_mlp_v2_mix__H128__s0:
+          full_coverage@5: 0.3698
+          recall@5: 0.5837
+      2wiki:
+        queries: 6020
+        fixed:qsupport_h1:
+          full_coverage@5: 0.0027
+          recall@5: 0.0436
+        fixed:qsupport_h2:
+          full_coverage@5: 0.0027
+          recall@5: 0.0436
+        fixed:qsupport_h3:
+          full_coverage@5: 0.0027
+          recall@5: 0.0436
+        fixed:rrf:
+          full_coverage@5: 0.2726
+          recall@5: 0.6187
+        fixed:support_h1_STRUCT:
+          full_coverage@5: 0.0012
+          recall@5: 0.0869
+        fixed:support_h2_STRUCT:
+          full_coverage@5: 0.189
+          recall@5: 0.5193
+        fixed:support_h3_STRUCT:
+          full_coverage@5: 0.0012
+          recall@5: 0.0745
+        gat_universal_v1_trio__H128__s0:
+          full_coverage@5: 0.801
+          recall@5: 0.9133
+        u_gnn_v2__H128__s0:
+          full_coverage@5: 0.7997
+          recall@5: 0.9138
+        u_gnn_v2_core78__H128__s0:
+          full_coverage@5: 0.8096
+          recall@5: 0.9173
+        u_gnn_v2_ef__H128__s0:
+          full_coverage@5: 0.8018
+          recall@5: 0.9154
+        u_mlp_v2__H128__s0:
+          full_coverage@5: 0.6987
+          recall@5: 0.8675
+        u_mlp_v2_mix__H128__s0:
+          full_coverage@5: 0.7055
+          recall@5: 0.8717
+      squad:
+        queries: 0
+        fixed:qsupport_h1:
+          full_coverage@5: null
+          recall@5: null
+        fixed:qsupport_h2:
+          full_coverage@5: null
+          recall@5: null
+        fixed:qsupport_h3:
+          full_coverage@5: null
+          recall@5: null
+        fixed:rrf:
+          full_coverage@5: null
+          recall@5: null
+        fixed:support_h1_STRUCT:
+          full_coverage@5: null
+          recall@5: null
+        fixed:support_h2_STRUCT:
+          full_coverage@5: null
+          recall@5: null
+        fixed:support_h3_STRUCT:
+          full_coverage@5: null
+          recall@5: null
+        gat_universal_v1_trio__H128__s0:
+          full_coverage@5: null
+          recall@5: null
+        u_gnn_v2__H128__s0:
+          full_coverage@5: null
+          recall@5: null
+        u_gnn_v2_core78__H128__s0:
+          full_coverage@5: null
+          recall@5: null
+        u_gnn_v2_ef__H128__s0:
+          full_coverage@5: null
+          recall@5: null
+        u_mlp_v2__H128__s0:
+          full_coverage@5: null
+          recall@5: null
+        u_mlp_v2_mix__H128__s0:
+          full_coverage@5: null
+          recall@5: null
+  mechanism_readouts_V2_GATE:
+    metaqa:
+      gat_universal_v1_trio__H128__s0:
+        delta_ratio: 30.2304
+        top1_changed: 0.9993
+      u_gnn_v2__H128__s0:
+        delta_ratio: 22.5026
+        gate_step1:
+          mean: 0.3321
+          q25: 0.2662
+          q50: 0.3262
+          q75: 0.3926
+        gate_step2:
+          mean: 0.3912
+          q25: 0.3053
+          q50: 0.3892
+          q75: 0.4706
+        gate_step3:
+          mean: 0.4524
+          q25: 0.3509
+          q50: 0.4559
+          q75: 0.5476
+        top1_changed: 0.9998
+      u_gnn_v2_core78__H128__s0:
+        delta_ratio: 20.8546
+        gate2_step1:
+          mean: 0.9472
+          q25: 0.9363
+          q50: 0.9516
+          q75: 0.9596
+        gate2_step2:
+          mean: 0.8167
+          q25: 0.791
+          q50: 0.8251
+          q75: 0.8479
+        gate2_step3:
+          mean: 0.9697
+          q25: 0.9617
+          q50: 0.9737
+          q75: 0.9796
+        gate_step1:
+          mean: 0.5426
+          q25: 0.4759
+          q50: 0.5544
+          q75: 0.6162
+        gate_step2:
+          mean: 0.5151
+          q25: 0.4469
+          q50: 0.5187
+          q75: 0.5856
+        gate_step3:
+          mean: 0.5247
+          q25: 0.4458
+          q50: 0.5269
+          q75: 0.5985
+        top1_changed: 0.9994
+      u_gnn_v2_ef__H128__s0:
+        delta_ratio: 19.8587
+        gate2_step1:
+          mean: 0.713
+          q25: 0.654
+          q50: 0.7207
+          q75: 0.7822
+        gate2_step2:
+          mean: 0.362
+          q25: 0.3133
+          q50: 0.3581
+          q75: 0.4091
+        gate2_step3:
+          mean: 0.6186
+          q25: 0.5025
+          q50: 0.6259
+          q75: 0.7398
+        gate_step1:
+          mean: 0.2733
+          q25: 0.21
+          q50: 0.2627
+          q75: 0.3328
+        gate_step2:
+          mean: 0.3069
+          q25: 0.2297
+          q50: 0.2999
+          q75: 0.3792
+        gate_step3:
+          mean: 0.3304
+          q25: 0.244
+          q50: 0.3233
+          q75: 0.4097
+        top1_changed: 0.999
+      u_mlp_v2__H128__s0:
+        delta_ratio: 67.3993
+        top1_changed: 0.9993
+      u_mlp_v2_mix__H128__s0:
+        block_gate0:
+          mean: 0.5134
+          q25: 0.4612
+          q50: 0.5122
+          q75: 0.5912
+        block_gate1:
+          mean: 0.5962
+          q25: 0.4765
+          q50: 0.651
+          q75: 0.7224
+        block_gate2:
+          mean: 0.5041
+          q25: 0.4439
+          q50: 0.5284
+          q75: 0.574
+        block_gate3:
+          mean: 0.4619
+          q25: 0.3013
+          q50: 0.3881
+          q75: 0.6289
+        block_gate4:
+          mean: 0.5803
+          q25: 0.4676
+          q50: 0.6339
+          q75: 0.7
+        block_gate5:
+          mean: 0.4439
+          q25: 0.4154
+          q50: 0.4501
+          q75: 0.4777
+        block_gate6:
+          mean: 0.5
+          q25: 0.5
+          q50: 0.5
+          q75: 0.5
+        block_gate7:
+          mean: 0.5571
+          q25: 0.506
+          q50: 0.561
+          q75: 0.6031
+        block_gate8:
+          mean: 0.5742
+          q25: 0.4754
+          q50: 0.6005
+          q75: 0.6763
+        delta_ratio: 42.0919
+        top1_changed: 0.9999
+    2wiki:
+      gat_universal_v1_trio__H128__s0:
+        delta_ratio: 9.5552
+        top1_changed: 0.3293
+      u_gnn_v2__H128__s0:
+        delta_ratio: 9.7043
+        gate_step1:
+          mean: 0.358
+          q25: 0.2732
+          q50: 0.3561
+          q75: 0.4408
+        gate_step2:
+          mean: 0.3205
+          q25: 0.2426
+          q50: 0.3176
+          q75: 0.3934
+        gate_step3:
+          mean: 0.3108
+          q25: 0.2333
+          q50: 0.3033
+          q75: 0.3809
+        top1_changed: 0.4523
+      u_gnn_v2_core78__H128__s0:
+        delta_ratio: 8.9632
+        gate2_step1:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate2_step2:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate2_step3:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate_step1:
+          mean: 0.4364
+          q25: 0.3217
+          q50: 0.4552
+          q75: 0.5448
+        gate_step2:
+          mean: 0.3026
+          q25: 0.2385
+          q50: 0.301
+          q75: 0.3627
+        gate_step3:
+          mean: 0.2629
+          q25: 0.2069
+          q50: 0.2569
+          q75: 0.314
+        top1_changed: 0.4776
+      u_gnn_v2_ef__H128__s0:
+        delta_ratio: 8.2816
+        gate2_step1:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate2_step2:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate2_step3:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate_step1:
+          mean: 0.3318
+          q25: 0.2519
+          q50: 0.3306
+          q75: 0.4107
+        gate_step2:
+          mean: 0.2629
+          q25: 0.1991
+          q50: 0.261
+          q75: 0.322
+        gate_step3:
+          mean: 0.2346
+          q25: 0.1768
+          q50: 0.2308
+          q75: 0.2866
+        top1_changed: 0.4493
+      u_mlp_v2__H128__s0:
+        delta_ratio: 12.7972
+        top1_changed: 0.37
+      u_mlp_v2_mix__H128__s0:
+        block_gate0:
+          mean: 0.3949
+          q25: 0.348
+          q50: 0.3834
+          q75: 0.4302
+        block_gate1:
+          mean: 0.2964
+          q25: 0.2573
+          q50: 0.2899
+          q75: 0.3269
+        block_gate2:
+          mean: 0.4068
+          q25: 0.3597
+          q50: 0.403
+          q75: 0.4508
+        block_gate3:
+          mean: 0.7316
+          q25: 0.6771
+          q50: 0.7557
+          q75: 0.8061
+        block_gate4:
+          mean: 0.3071
+          q25: 0.2695
+          q50: 0.2986
+          q75: 0.3348
+        block_gate5:
+          mean: 0.4372
+          q25: 0.4068
+          q50: 0.4393
+          q75: 0.4706
+        block_gate6:
+          mean: 0.5
+          q25: 0.5
+          q50: 0.5
+          q75: 0.5
+        block_gate7:
+          mean: 0.5135
+          q25: 0.4824
+          q50: 0.5068
+          q75: 0.544
+        block_gate8:
+          mean: 0.4992
+          q25: 0.4386
+          q50: 0.4914
+          q75: 0.5639
+        delta_ratio: 7.1523
+        top1_changed: 0.2653
+    squad:
+      gat_universal_v1_trio__H128__s0:
+        delta_ratio: 9.0298
+        top1_changed: 0.1395
+      u_gnn_v2__H128__s0:
+        delta_ratio: 9.7715
+        gate_step1:
+          mean: 0.1769
+          q25: 0.1137
+          q50: 0.1611
+          q75: 0.2246
+        gate_step2:
+          mean: 0.168
+          q25: 0.1086
+          q50: 0.1527
+          q75: 0.2124
+        gate_step3:
+          mean: 0.1615
+          q25: 0.1045
+          q50: 0.1459
+          q75: 0.2037
+        top1_changed: 0.1548
+      u_gnn_v2_core78__H128__s0:
+        delta_ratio: 9.3164
+        gate2_step1:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate2_step2:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate2_step3:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate_step1:
+          mean: 0.3281
+          q25: 0.2426
+          q50: 0.3219
+          q75: 0.4069
+        gate_step2:
+          mean: 0.2108
+          q25: 0.166
+          q50: 0.207
+          q75: 0.2524
+        gate_step3:
+          mean: 0.1683
+          q25: 0.1315
+          q50: 0.163
+          q75: 0.2005
+        top1_changed: 0.1623
+      u_gnn_v2_ef__H128__s0:
+        delta_ratio: 8.0459
+        gate2_step1:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate2_step2:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate2_step3:
+          mean: 0.0
+          q25: 0.0
+          q50: 0.0
+          q75: 0.0
+        gate_step1:
+          mean: 0.1304
+          q25: 0.0813
+          q50: 0.115
+          q75: 0.1635
+        gate_step2:
+          mean: 0.1166
+          q25: 0.0755
+          q50: 0.1049
+          q75: 0.1468
+        gate_step3:
+          mean: 0.1062
+          q25: 0.0704
+          q50: 0.0964
+          q75: 0.133
+        top1_changed: 0.1489
+      u_mlp_v2__H128__s0:
+        delta_ratio: 14.519
+        top1_changed: 0.1775
+      u_mlp_v2_mix__H128__s0:
+        block_gate0:
+          mean: 0.4432
+          q25: 0.4117
+          q50: 0.4403
+          q75: 0.4715
+        block_gate1:
+          mean: 0.2623
+          q25: 0.2188
+          q50: 0.2483
+          q75: 0.2902
+        block_gate2:
+          mean: 0.3352
+          q25: 0.308
+          q50: 0.3288
+          q75: 0.355
+        block_gate3:
+          mean: 0.6892
+          q25: 0.6263
+          q50: 0.7063
+          q75: 0.7716
+        block_gate4:
+          mean: 0.2796
+          q25: 0.2346
+          q50: 0.2662
+          q75: 0.3102
+        block_gate5:
+          mean: 0.3735
+          q25: 0.3509
+          q50: 0.3685
+          q75: 0.3912
+        block_gate6:
+          mean: 0.5
+          q25: 0.5
+          q50: 0.5
+          q75: 0.5
+        block_gate7:
+          mean: 0.482
+          q25: 0.4527
+          q50: 0.4816
+          q75: 0.5095
+        block_gate8:
+          mean: 0.4196
+          q25: 0.376
+          q50: 0.4131
+          q75: 0.4553
+        delta_ratio: 6.0219
+        top1_changed: 0.1192
+  bootstrap:
+    resamples: 1000
+    seed: 0
+    level: 95
+  eval_records:
+    metaqa:
+      record_sha256: 3db26c272e8d83c92c46392647da3c7ee0747f3561afceee32bb84b2d7824676
+      arrays_sha256: 380e0288b0e048cd18d83f06defd5f794fe7b7514a741bffbfbd6289e49eab5c
+    2wiki:
+      record_sha256: ab7ad34de918fafb9fac7f46eebff014e14a741394e786b2929a3af92858890f
+      arrays_sha256: 6d8c1dcd2f815cf8c5e67664ace3ceaada3f54c6625ceeee768d35b04f13b4c2
+    squad:
+      record_sha256: 8d7778ce4168b27fab4f187354bcc2336f0080ae6771977f386899b905641111
+      arrays_sha256: cda64047bea803936ce811e5fa0d006ebffa10473e7baed44f2d203bd55121f3
+  m3b_reference_arrays:
+    metaqa: a4739cf66a8d0eb4a751abb0e9480305986eceb3876aca7662a05c7f0dfb97dd
+    2wiki: d2196c2f7769512071f1a9592504be6e1bdeff9729f1b2bcfae45f1ebdd76313
+    squad: c14fe820295dc18374ef8f0d5775f2d422af830bc9a579f527736929aeef8385
+  on_pass: seeds 1 and 2 of the passing arm are fitted; the pass is confirmed if the mean over seeds 0-2 also holds
+    every cell; a confirmed pass makes the arm eligible for the six-dataset stage (later_stages), which still needs
+    a dated authorization block.
+  on_fail: the arm stops at seed 0 with its numbers in the report; no threshold is moved, no candidate is added
+    and no fit is repeated to reach the gate. If both selected arms fail, the phase closes with STOP_FOR_REVIEW
+    and the numbers; what to try next is a new dated amendment, filed before its fit.
+  output: outputs/universal_v2/gate_record.json
+  output_sha256: 8dcc217b08a75723af336e8d32ced4621aeed5f4e17cb1cfdb526433497d16e5
+
+# -- run record, filed 2026-09-21T05:00:01Z from the sidecars --
+run_record_2026_09_21:
+  filed_utc: '2026-09-21T05:00:01Z'
+  outcome:
+    u_gnn_v2_ef: FAIL
+    u_mlp_v2_mix: FAIL
+  family_outcome:
+    GNN_GATE: FAIL
+    TWIN_GATE: FAIL
+    overall: PILOT_FAILED
+    selected:
+      GNN_GATE: u_gnn_v2_ef
+      TWIN_GATE: u_mlp_v2_mix
+  terminal_state:
+    family_final:
+      GNN_GATE: GATE_FAIL
+      TWIN_GATE: GATE_FAIL
+    terminal: PILOT_FAILED
+    selected:
+      GNN_GATE: u_gnn_v2_ef
+      TWIN_GATE: u_mlp_v2_mix
+    gate_overall: PILOT_FAILED
+    rule: amendment_3_2026_09_19 terminal_state_vocabulary
+  fits:
+    gat_universal_v1_trio__H128__s0:
+      arm: gat_universal_v1_trio
+      seed: 0
+      parameters: 353410
+      best_epoch: 1
+      epochs_run: 4
+      best_select_macro_recall5: 0.8719246792791733
+      seconds: 12213.2
+      steps: 8000
+      threads: 8
+      peak_rss_bytes: 9782452224
+      state_sha256: 4e96fa7b11c8421f70af2a66783ab524b742b8b4a633c3f795e20cdf4c66bfd9
+      utc: '2026-09-20T12:44:30Z'
+      record_sha256: 0a946b1dda0b12eaa378210714b60eb9601c2d5f2367b922c67eb01c49f552ee
+    u_gnn_v2__H128__s0:
+      arm: u_gnn_v2
+      seed: 0
+      parameters: 417603
+      best_epoch: 1
+      epochs_run: 4
+      best_select_macro_recall5: 0.8747669592114002
+      seconds: 18622.1
+      steps: 8000
+      threads: 8
+      peak_rss_bytes: 9233182720
+      state_sha256: aabe19fea7b03dcdd964658d4b88568b041699d86c36acb86220800b502fd90e
+      utc: '2026-09-20T07:05:20Z'
+      record_sha256: 6378d64a734e68fda1ee9ea28eefe1d3368a35860b11480b160b0c00eecdf135
+    u_gnn_v2_core78__H128__s0:
+      arm: u_gnn_v2_core78
+      seed: 0
+      parameters: 407876
+      best_epoch: 1
+      epochs_run: 4
+      best_select_macro_recall5: 0.877725362974613
+      seconds: 31829.5
+      steps: 8000
+      threads: 8
+      peak_rss_bytes: 8748130304
+      state_sha256: c8a1116950e5a373a6ba5f31e5020ddccfee13d87619101a8330ff1bc1b6836d
+      utc: '2026-09-20T21:36:07Z'
+      record_sha256: 02fb61575f4c300b47a41792cf475f8ec5c31eaa2d757563ffeff7f88342237a
+    u_gnn_v2_ef__H128__s0:
+      arm: u_gnn_v2_ef
+      seed: 0
+      parameters: 420932
+      best_epoch: 1
+      epochs_run: 4
+      best_select_macro_recall5: 0.8776508707116774
+      seconds: 18059.8
+      steps: 8000
+      threads: 8
+      peak_rss_bytes: 9272262656
+      state_sha256: 9f749ad346afcef479f84436019771e0b940a1e647e4960908acf4105ea2ed0e
+      utc: '2026-09-20T01:54:23Z'
+      record_sha256: bfd3e8e5957b259b2d8b38f85008f659f48e00eb79cdf43220aeb39817993009
+    u_mlp_v2__H128__s0:
+      arm: u_mlp_v2
+      seed: 0
+      parameters: 330370
+      best_epoch: 1
+      epochs_run: 4
+      best_select_macro_recall5: 0.8456780797953245
+      seconds: 3923.7
+      steps: 8000
+      threads: 8
+      peak_rss_bytes: 9435717632
+      state_sha256: bc6917c982da063e78b41fa109218eaafa179caf3d06650cae5e6e87d39c9659
+      utc: '2026-09-20T08:11:16Z'
+      record_sha256: 74a50cc1657964321f31c85bdd889d0d732d75bc305aaf008d899a7c8ca812d7
+    u_mlp_v2_mix__H128__s0:
+      arm: u_mlp_v2_mix
+      seed: 0
+      parameters: 330955
+      best_epoch: 0
+      epochs_run: 3
+      best_select_macro_recall5: 0.8457380215648196
+      seconds: 4087.1
+      steps: 6000
+      threads: 8
+      peak_rss_bytes: 9915719680
+      state_sha256: f0e629a7347a08014ae00f6d164b6158695a71118c7dabf0dfaf56e1b8a3e8f3
+      utc: '2026-09-20T09:19:53Z'
+      record_sha256: 21fab0efc9c7538c08de6311d3ebdde0944f49543e17bd0487f42e50f68940fb
+  evals:
+    2wiki:
+      dataset: 2wiki
+      supplement: null
+      scorers:
+      - gat_universal_v1_trio__H128__s0
+      - u_gnn_v2__H128__s0
+      - u_gnn_v2_core78__H128__s0
+      - u_gnn_v2_ef__H128__s0
+      - u_mlp_v2__H128__s0
+      - u_mlp_v2_mix__H128__s0
+      - fixed:rrf
+      - fixed:support_h1_STRUCT
+      - fixed:support_h2_STRUCT
+      - fixed:support_h3_STRUCT
+      - fixed:qsupport_h1
+      - fixed:qsupport_h2
+      - fixed:qsupport_h3
+      utc: '2026-09-20T22:23:35Z'
+      queries: 12576
+      ids_sha256: 9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f
+      seconds: 1253.4
+      ms_per_query: 83.69
+      threads: 6
+      peak_rss_bytes: 5911228416
+      halves:
+        V2_GATE: 6290
+        V2_HELD_CONFIRMATION: 6286
+        label_array: half (True = V2_GATE)
+        rule: scripts/universal_v2_split_audit.py::in_v2_gate (check_1_the_halves.split_rule_amended)
+      record_sha256: ab7ad34de918fafb9fac7f46eebff014e14a741394e786b2929a3af92858890f
+      arrays_sha256: 6d8c1dcd2f815cf8c5e67664ace3ceaada3f54c6625ceeee768d35b04f13b4c2
+    metaqa:
+      dataset: metaqa
+      supplement: null
+      scorers:
+      - gat_universal_v1_trio__H128__s0
+      - u_gnn_v2__H128__s0
+      - u_gnn_v2_core78__H128__s0
+      - u_gnn_v2_ef__H128__s0
+      - u_mlp_v2__H128__s0
+      - u_mlp_v2_mix__H128__s0
+      - fixed:rrf
+      - fixed:support_h1_STRUCT
+      - fixed:support_h2_STRUCT
+      - fixed:support_h3_STRUCT
+      - fixed:qsupport_h1
+      - fixed:qsupport_h2
+      - fixed:qsupport_h3
+      utc: '2026-09-21T04:57:04Z'
+      queries: 39138
+      ids_sha256: bd5d8732b25494968b651b3955d89616b13062f5d62fad83c5308f9e28803426
+      seconds: 47599.3
+      ms_per_query: 1205.94
+      threads: 6
+      peak_rss_bytes: 3381993472
+      halves:
+        V2_GATE: 19738
+        V2_HELD_CONFIRMATION: 19400
+        label_array: half (True = V2_GATE)
+        rule: scripts/universal_v2_split_audit.py::in_v2_gate (check_1_the_halves.split_rule_amended)
+      record_sha256: 3db26c272e8d83c92c46392647da3c7ee0747f3561afceee32bb84b2d7824676
+      arrays_sha256: 380e0288b0e048cd18d83f06defd5f794fe7b7514a741bffbfbd6289e49eab5c
+    squad:
+      dataset: squad
+      supplement: null
+      scorers:
+      - gat_universal_v1_trio__H128__s0
+      - u_gnn_v2__H128__s0
+      - u_gnn_v2_core78__H128__s0
+      - u_gnn_v2_ef__H128__s0
+      - u_mlp_v2__H128__s0
+      - u_mlp_v2_mix__H128__s0
+      - fixed:rrf
+      - fixed:support_h1_STRUCT
+      - fixed:support_h2_STRUCT
+      - fixed:support_h3_STRUCT
+      - fixed:qsupport_h1
+      - fixed:qsupport_h2
+      - fixed:qsupport_h3
+      utc: '2026-09-20T22:01:41Z'
+      queries: 11873
+      ids_sha256: e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8
+      seconds: 1133.7
+      ms_per_query: 94.05
+      threads: 6
+      peak_rss_bytes: 3616776192
+      halves:
+        V2_GATE: 5841
+        V2_HELD_CONFIRMATION: 6032
+        label_array: half (True = V2_GATE)
+        rule: scripts/universal_v2_split_audit.py::in_v2_gate (check_1_the_halves.split_rule_amended)
+      record_sha256: 8d7778ce4168b27fab4f187354bcc2336f0080ae6771977f386899b905641111
+      arrays_sha256: cda64047bea803936ce811e5fa0d006ebffa10473e7baed44f2d203bd55121f3
+  selection_sha256: 3ed48ae3d04334ba367cb81b8b363d32db0e2bf746e4f692d7af0936bea4e3b6
+  gate_record_sha256: 8dcc217b08a75723af336e8d32ced4621aeed5f4e17cb1cfdb526433497d16e5
+  held_record_sha256: 862acbadaf72dbe27b0f1f691259bb36802268dc728ba5d2f04a6b43ccc27adc
+  doc: docs/UNIVERSAL_V2_PILOT.md
+  doc_sha256: d45471be7efd7e0fe0182a5a206bc0bd72fdf0534d901a836e696cf29d8fd129
+  incidents: []
+  note: incidents and machine-health lines are appended by the review, dated; nothing above is edited
