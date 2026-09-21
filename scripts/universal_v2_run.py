@@ -13,6 +13,9 @@ their declared order, each refusing what the declaration forbids.
     python scripts/universal_v2_run.py --stage file --which gate --date YYYY_MM_DD
     python scripts/universal_v2_run.py --stage eval --datasets metaqa --models u_gnn_v2_ef__H128__s1 u_gnn_v2_ef__H128__s2
                                                                   # seeds 1-2 after the gate: a supplement record beside the seed-0 record
+    python scripts/universal_v2_run.py --stage fit --arm u_gnn_v2_ef --seed 1
+                                                                  # amendment 4: seeds 1-2 of a selected arm that failed, under the filed replication
+    python scripts/universal_v2_run.py --stage file --which replication --date YYYY_MM_DD
 
 M3B is imported, never edited: the seven pinned files are hashed before any
 stage runs (m3b_incumbents.pinned_files_sha256_lf_normalised). The M3B 78
@@ -44,6 +47,7 @@ import json
 import math
 import re
 import shutil
+import subprocess
 import sys
 import time
 from dataclasses import asdict
@@ -82,6 +86,7 @@ CACHE = OUT / "cache"
 FITS = OUT / "fits"
 EVAL = OUT / "eval"
 DOC = ROOT / "docs" / "UNIVERSAL_V2_PILOT.md"     # written by scripts/universal_v2_report.py --stage doc
+REPLICATION_DOC = ROOT / "docs" / "UNIVERSAL_V2_REPLICATION.md"     # --stage replication_doc (amendment 4); the pilot document is not re-rendered
 PILOT = ("metaqa", "2wiki", "squad")
 HALVES = ("V2_GATE", "V2_HELD_CONFIRMATION")
 M3B_CORE_BLOCK = "qls_u_core_contract_2026_09_13"
@@ -93,7 +98,7 @@ FIXED_SCORERS = ("rrf", "support_h1_STRUCT", "support_h2_STRUCT", "support_h3_ST
 M3B_REFERENCES = {"gat_universal_v1": "gat_universal_v1__H128_L2__s0", "gat_no_mp_v1": "gat_no_mp_v1__H128_L2__s0",
                   "qls_u_sota_v1": "qls_u_sota_v1__H128__s0", "fixed_rrf": "fixed:rrf"}
 BOOTSTRAP = {"resamples": 1000, "seed": 0, "level": 95}     # measurement.paired_procedures
-DATED = re.compile("^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|hard_stop|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$")
+DATED = re.compile("^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|replication_record|hard_stop|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$")
 LF = chr(10)
 FAMILY_GATES = {"gnn": "GNN_GATE", "twin": "TWIN_GATE"}    # amendment 2 family_status_vocabulary
 OVERALL = {(True, True): "BOTH_PASS", (True, False): "GNN_ONLY_PASS", (False, True): "TWIN_ONLY_PASS", (False, False): "PILOT_FAILED"}
@@ -101,6 +106,9 @@ FAMILY_FINAL = ("GATE_FAIL", "CONFIRMATION_FAIL", "CONFIRMED_PASS")           # 
 TERMINAL = {(True, True): "BOTH_CONFIRMED", (True, False): "GNN_ONLY_CONFIRMED", (False, True): "TWIN_ONLY_CONFIRMED", (False, False): "PILOT_FAILED"}
 HARD_STOP = "HARD_STOP_WITH_REASON"
 FIT_HOURS_CEILING = 150.0                                     # compute.hard_ceiling; amendment 3 compute_ceiling_guard
+REPLICATION_FAMILY = ("REPLICATION_PASS", "REPLICATION_FAIL")               # amendment 4 post_pilot_replication.status_vocabulary
+REPLICATION_OVERALL = {(True, True): "BOTH_REPLICATION_PASS", (True, False): "GNN_REPLICATION_ONLY", (False, True): "TWIN_REPLICATION_ONLY",
+                       (False, False): "BOTH_REPLICATION_FAIL"}
 
 
 # ── the declaration, the pins, the M3B core ──────────────────────────────────
@@ -694,12 +702,14 @@ def cache_hashes(cache_dir: Path) -> dict:
 
 def stage_file(cfg: dict, date: str, which: list[str], config: Path = CONFIG, log=print) -> None:
     """order_of_operations 3, 4 and 6: contract_frozen_<date>, timing_<date> and pilot_gate_record_<date>, each copied
-    from its sidecar with the sidecar's sha256; run_record_<date> assembles the fit, eval and gate records."""
+    from its sidecar with the sidecar's sha256; run_record_<date> assembles the fit, eval and gate records;
+    replication_record_<date> (amendment 4) assembles the replication fits, the supplement evals and the two statuses
+    and moves no status line."""
     if not re.match("^[0-9]{4}_[0-9]{2}_[0-9]{2}$", date):
         raise SystemExit(f"--date {date}: YYYY_MM_DD")
-    unknown = [w for w in which if w not in ("contract", "timing", "gate", "run")]
+    unknown = [w for w in which if w not in ("contract", "timing", "gate", "run", "replication")]
     if unknown:
-        raise SystemExit(f"--which {unknown}: contract, timing, gate or run")
+        raise SystemExit(f"--which {unknown}: contract, timing, gate, run or replication")
     filed = utc()
     if "contract" in which:
         path = OUT / "universal_v2_core_contract_block.yaml"
@@ -791,6 +801,65 @@ def stage_file(cfg: dict, date: str, which: list[str], config: Path = CONFIG, lo
         moved = set_status(config, f"RUN_{overall}", ("PILOT_GATE_READ",))
         log(f"filed run_record_{date}; status {moved} -> RUN_{overall} (GNN_GATE {family['GNN_GATE']} {terminal['family_final']['GNN_GATE']}, "
             f"TWIN_GATE {family['TWIN_GATE']} {terminal['family_final']['TWIN_GATE']})")
+    if "replication" in which:
+        rep_key, rep = replication_amendment(cfg)
+        rec = read_json(OUT / "replication_record.json")
+        if rec is None:
+            raise SystemExit("no replication_record.json: scripts/universal_v2_report.py --stage replication precedes the record (amendment 4 execution)")
+        held = read_json(OUT / "replication_held_record.json")
+        if rec["passing_families"] and held is None:
+            raise SystemExit("a REPLICATION_PASS family reads the held half once (replication_held_record.json) before the record is filed")
+        if not rec["passing_families"] and held is not None:
+            raise SystemExit("replication_held_record.json exists although no family is REPLICATION_PASS; refusing")
+        report = read_json(OUT / "replication_report_record.json")
+        if not REPLICATION_DOC.exists() or report is None:
+            raise SystemExit("docs/UNIVERSAL_V2_REPLICATION.md and replication_report_record.json precede the record (--stage replication_doc)")
+        if report["doc_sha256_lf"] != lf_sha256(REPLICATION_DOC) or report["replication_record_sha256"] != sha256_file(OUT / "replication_record.json"):
+            raise SystemExit("the document or the replication record changed after the report record; render again first")
+        fits, spent, replication_hours = {}, 0.0, 0.0
+        for p in sorted(FITS.glob("*.json")) if FITS.exists() else []:
+            spent += float(json.loads(p.read_text(encoding="utf-8")).get("seconds", 0.0)) / 3600
+        for fam, arm in rec["selected"].items():
+            for seed in (0, 1, 2):
+                k = fit_key(arm, seed)
+                r = json.loads((FITS / f"{k}.json").read_text(encoding="utf-8"))
+                fits[k] = {kk: r.get(kk) for kk in ("arm", "seed", "parameters", "best_epoch", "epochs_run", "best_select_macro_recall5", "seconds",
+                                                    "steps", "threads", "peak_rss_bytes", "state_sha256", "utc")}
+                fits[k]["record_sha256"] = sha256_file(FITS / f"{k}.json")
+                fits[k]["authorised_by"] = (r.get("replication") or {}).get("block")
+                if seed != 0:
+                    replication_hours += float(r["seconds"]) / 3600
+        evals, lane_hours = {}, 0.0
+        for p in sorted(EVAL.glob("*__more_*.json")) if EVAL.exists() else []:
+            if p.name.endswith("_query_ids.json") or "__shard" in p.name:
+                continue
+            r = json.loads(p.read_text(encoding="utf-8"))
+            evals[p.stem] = {k: r.get(k) for k in ("dataset", "supplement", "scorers", "utc", "queries", "ids_sha256", "seconds", "ms_per_query",
+                                                   "threads", "peak_rss_bytes", "halves", "merged_from")}
+            evals[p.stem]["record_sha256"] = sha256_file(p)
+            evals[p.stem]["arrays_sha256"] = sha256_file(EVAL / f"{p.stem}.npz")
+            lane_hours += float(r["seconds"]) / 3600
+        try:
+            out = subprocess.run(["git", "log", "--format=%h %s", f"{rep['original_pilot_commit']}..HEAD"], cwd=ROOT, capture_output=True, text=True, check=True)
+            commits = [line for line in out.stdout.splitlines() if line.strip()]
+        except (OSError, subprocess.CalledProcessError) as e:   # the sandbox names no real commit
+            commits = [f"not read: {e}"]
+        incidents = read_json(OUT / "replication_incidents.json") or []
+        block = {"filed_utc": filed, "amendment": rep_key, "original_pilot_status": rec["original_pilot_status"], "original_pilot_commit": rep["original_pilot_commit"],
+                 "replication_status": rec["replication_status"], "family_status": rec["family_status"], "passing_families": rec["passing_families"],
+                 "held_half_read_for": rec["passing_families"], "never": rec.get("never", "PILOT_PASS"), "selected": rec["selected"], "fits": fits, "evals": evals,
+                 "compute": {"replication_fit_hours": round(replication_hours, 3), "fit_hours_spent_in_total": round(spent, 3), "ceiling_fit_hours": FIT_HOURS_CEILING,
+                             "supplement_eval_lane_hours": round(lane_hours, 3)},
+                 "replication_record_sha256": sha256_file(OUT / "replication_record.json"),
+                 "replication_held_record_sha256": sha256_file(OUT / "replication_held_record.json") if held is not None else None,
+                 "doc": REPLICATION_DOC.relative_to(ROOT).as_posix() if REPLICATION_DOC.is_relative_to(ROOT) else REPLICATION_DOC.as_posix(),
+                 "doc_sha256": lf_sha256(REPLICATION_DOC), "report_record_sha256": sha256_file(OUT / "replication_report_record.json"),
+                 "commits_since_the_pilot_closed": commits, "status_line": status_line(config), "status_line_moved": False, "incidents": incidents,
+                 "note": "the original status stays as filed (amendment 4 status_vocabulary.status_line); incidents are copied from "
+                         "outputs/universal_v2/replication_incidents.json as logged during the run; nothing above is edited"}
+        append_block(cfg, f"replication_record_{date}", block, f"post-pilot replication record (amendment 4), filed {filed} from the sidecars; the status line is not moved", config)
+        log(f"filed replication_record_{date}: ORIGINAL PILOT STATUS {block['original_pilot_status']}; POST-PILOT REPLICATION STATUS {block['replication_status']} "
+            f"({block['family_status']}); status line {block['status_line']} not moved")
 
 
 # ── fits ─────────────────────────────────────────────────────────────────────
@@ -878,10 +947,12 @@ def stage_timing(cfg: dict, inputs: dict, carves: dict, bank, training: dict, lo
     return out
 
 
-def run_fit(arm: str, seed: int, inputs: dict, carves: dict, bank, training: dict, log=print) -> dict:
+def run_fit(arm: str, seed: int, inputs: dict, carves: dict, bank, training: dict, log=print, cfg: dict | None = None) -> dict:
     """One fit under training.rule, resumable through its checkpoint; the record and the weights are the durable
     objects. Refusals: an unknown arm or seed; u_gnn_v2_core78 before selection.json; seeds 1-2 of an arm
-    without a gate pass (pilot_gate.on_pass); a parameter count over budget."""
+    without a gate pass (pilot_gate.on_pass) unless the dated post-pilot replication amendment names exactly that
+    (arm, seed) at the status it applies at (amendment 4, replication_authorisation); a parameter count over budget;
+    under the replication, a training rule or an architecture that differs from the seed-0 record of the arm."""
     if arm not in ARMS or seed not in (0, 1, 2):
         raise SystemExit(f"{arm} seed {seed}: not an arm of the declaration or not a declared seed")
     key = fit_key(arm, seed)
@@ -893,15 +964,34 @@ def run_fit(arm: str, seed: int, inputs: dict, carves: dict, bank, training: dic
     selection = read_json(OUT / "selection.json")
     if arm == "u_gnn_v2_core78" and selection is None:
         raise SystemExit("u_gnn_v2_core78 takes the selected GNN architecture; selection.json is written first (order_of_operations 6)")
+    replication = None
     if seed != 0:
         gate = read_json(OUT / "gate_record.json")
         if gate is None or not gate["verdict"].get(arm, {}).get("pass"):
-            raise SystemExit(f"seed {seed} of {arm}: seeds 1-2 are fitted only for an arm that passed its gate (pilot_gate.on_pass)")
+            replication = None if cfg is None else replication_authorisation(cfg, arm, seed)
+            if replication is None:
+                raise SystemExit(f"seed {seed} of {arm}: seeds 1-2 are fitted only for an arm that passed its gate (pilot_gate.on_pass) "
+                                 "or under a dated post-pilot replication amendment naming this arm and seed (amendment 4)")
     selected_gnn = None if selection is None else selection["gnn"]["arm"]
     guard = fit_hours_guard(arm, training, log=log)
     torch.manual_seed(seed)
     model = make_model(arm, inputs, bank, selected_gnn=selected_gnn)
     params = parameter_count(model)
+    on78 = arm in ("u_gnn_v2_core78", "gat_universal_v1_trio")
+    with_evidence = arm == "u_gnn_v2_ef" or (arm == "u_gnn_v2_core78" and selected_gnn == "u_gnn_v2_ef")
+    frozen = {"parameters": params, "hidden": HIDDEN, "contract_block": inputs["contract_block"], "columns": M3B_CORE_SIZE if on78 else inputs["n_scalars"],
+              "core_sha256": inputs["core78_sha256"] if on78 else inputs["core_sha256"],
+              "evidence": (inputs["core78_evidence"] if on78 else inputs["evidence"]) if with_evidence else None,
+              "evidence_substitutions": (inputs["core78_evidence_substitutions"] if on78 else inputs["evidence_substitutions"]) if with_evidence else None,
+              "relation_bank": {"rows": bank.n_rows, "sha256": bank.sha256, "k_rel": K_REL}, "training": training}
+    if replication is not None:   # amendment 4: the frozen protocol and the frozen architecture are the seed-0 record of the arm
+        seed0 = replication.pop("seed0_record")
+        differs = {k: {"this_fit": v, "seed_0": seed0.get(k)} for k, v in frozen.items() if seed0.get(k) != v}
+        if differs:
+            raise SystemExit(f"{key}: {sorted(differs)} differ from the seed-0 record of {arm}; the replication fits the frozen protocol and "
+                             f"architecture only (amendment 4 hard stop): {differs}")
+        replication["checks_against_seed_0"] = {k: "equal" for k in frozen}
+        log(f"   {key}: replication under {replication["block"]}; protocol and architecture equal the seed-0 record")
     log(f"== fit {key}: {params} parameters")
     data = carves_for_arm(arm, carves)
     model, record = fit_model(model, data["fit"], data["select"], seed=seed, arm=arm, config={"H": HIDDEN}, max_epochs=training["max_epochs"],
@@ -910,17 +1000,14 @@ def run_fit(arm: str, seed: int, inputs: dict, carves: dict, bank, training: dic
                               epoch_limit_s=training["epoch_limit_s"], pack_workers=PACK["workers"], prefetch_depth=PACK["depth"],
                               checkpoint=FITS / f"{key}.ckpt", log=log)
     torch.save(model.state_dict(), FITS / f"{key}.pt")
-    on78 = arm in ("u_gnn_v2_core78", "gat_universal_v1_trio")
-    with_evidence = arm == "u_gnn_v2_ef" or (arm == "u_gnn_v2_core78" and selected_gnn == "u_gnn_v2_ef")
     out = {**asdict(record), "key": key, "hidden": HIDDEN, "parameters": params, "parameter_budget": PARAMETER_BUDGET[FAMILY_OF_ARM[arm]],
-           "contract_block": inputs["contract_block"], "columns": M3B_CORE_SIZE if on78 else inputs["n_scalars"],
-           "core_sha256": inputs["core78_sha256"] if on78 else inputs["core_sha256"], "base": inputs["base"],
-           "evidence": (inputs["core78_evidence"] if on78 else inputs["evidence"]) if with_evidence else None,
-           "evidence_substitutions": (inputs["core78_evidence_substitutions"] if on78 else inputs["evidence_substitutions"]) if with_evidence else None,
+           "contract_block": frozen["contract_block"], "columns": frozen["columns"], "core_sha256": frozen["core_sha256"], "base": inputs["base"],
+           "evidence": frozen["evidence"], "evidence_substitutions": frozen["evidence_substitutions"],
            "selected_gnn_architecture": selected_gnn if arm == "u_gnn_v2_core78" else None,
-           "relation_bank": {"rows": bank.n_rows, "sha256": bank.sha256, "k_rel": K_REL}, "training": training, "utc": utc(),
+           "relation_bank": frozen["relation_bank"], "training": training, "utc": utc(),
            "threads": torch.get_num_threads(), "pack_workers": PACK["workers"], "prefetch_depth": PACK["depth"],
-           "peak_rss_bytes": M3B_RUN.peak_rss_bytes(), "state_sha256": sha256_file(FITS / f"{key}.pt"), "ceiling_guard": guard}
+           "peak_rss_bytes": M3B_RUN.peak_rss_bytes(), "state_sha256": sha256_file(FITS / f"{key}.pt"), "ceiling_guard": guard,
+           "replication": replication}
     rec_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
     (FITS / f"{key}.ckpt").unlink(missing_ok=True)   # the record and the weights are the durable objects
     log(f"   {key}: best epoch {record.best_epoch} select macro R@5 {record.best_select_macro_recall5:.4f} in {record.seconds:.0f}s")
@@ -1575,6 +1662,72 @@ def fit_hours_guard(arm: str, training: dict, log=print) -> dict:
     return out
 
 
+# ── amendment 4: the post-pilot replication of the two selected arms ────────
+
+
+def replication_amendment(cfg: dict) -> tuple[str, dict]:
+    """The latest dated amendment carrying post_pilot_replication (amendment 4), or a refusal: a replication runs
+    only under a block filed before its fits."""
+    keys = [k for k in dated_blocks(cfg, "amendment") if isinstance(cfg[k], dict) and isinstance(cfg[k].get("post_pilot_replication"), dict)]
+    if not keys:
+        raise SystemExit("no dated amendment carries post_pilot_replication; the replication is filed before any of its fits (amendment 4)")
+    return keys[-1], cfg[keys[-1]]["post_pilot_replication"]
+
+
+def status_line(config: Path | None = None) -> str:
+    """The one top-level status line as the file holds it (the loaded mapping may be stale in a long process)."""
+    config = CONFIG if config is None else config   # resolved at call time (the tests re-point CONFIG)
+    hits = [line for line in config.read_bytes().decode("utf-8").splitlines() if line.startswith("status: ")]
+    if len(hits) != 1:
+        raise SystemExit("the declaration must carry exactly one top-level status line")
+    return hits[0][len("status: "):].strip()
+
+
+def replication_authorisation(cfg: dict, arm: str, seed: int, config: Path | None = None) -> dict | None:
+    """amendment 4 post_pilot_replication: (arm, seed) is fitted after the pilot closed only when the amendment names
+    exactly that pair, the status line is the one it applies at, the pilot's run record is filed with the terminal state
+    it cites, the arm is the selected arm of its family in selection.json, gate_record.json and the amendment, the pinned
+    sidecars are unchanged and the seed-0 weights of the arm hash to what the run record pins. None when no amendment
+    names the pair (the pilot_gate.on_pass rule then stands alone); a refusal when one does and a premise fails."""
+    keys = [k for k in dated_blocks(cfg, "amendment") if isinstance(cfg[k], dict) and isinstance(cfg[k].get("post_pilot_replication"), dict)]
+    if not keys:
+        return None
+    key, rep = keys[-1], cfg[keys[-1]]["post_pilot_replication"]
+    if seed not in (rep.get("authorised_fits") or {}).get(arm, []):
+        return None
+    status = status_line(config)
+    if status != rep["applies_at_status"]:
+        raise SystemExit(f"{key}: applies at status {rep['applies_at_status']}; the declaration is at {status}")
+    runs = dated_blocks(cfg, "run_record")
+    if not runs:
+        raise SystemExit(f"{key}: no run_record_<date> is filed; the replication follows the closed pilot")
+    run = cfg[runs[-1]]
+    terminal = (run.get("terminal_state") or {}).get("terminal")
+    if terminal != rep["original_pilot_status"]:
+        raise SystemExit(f"{key}: the run record closed at {terminal}, not the {rep['original_pilot_status']} the amendment cites")
+    selection, gate = read_json(OUT / "selection.json"), read_json(OUT / "gate_record.json")
+    if selection is None or gate is None:
+        raise SystemExit(f"{key}: selection.json and gate_record.json are read; one is missing")
+    family = FAMILY_OF_ARM[arm]
+    if selection[family]["arm"] != arm or gate["selection"][family] != arm or rep["selected_arms"][family] != arm:
+        raise SystemExit(f"{key}: {arm} is not the selected {family} arm of selection.json, gate_record.json and the amendment alike")
+    pins = {}
+    for name in ("selection.json", "gate_record.json", "held_record.json"):
+        pinned = run.get(name.replace(".json", "") + "_sha256")
+        if pinned and sha256_file(OUT / name) != pinned:
+            raise SystemExit(f"{key}: {name} is not the file {runs[-1]} pins; nothing of the pilot is edited")
+        pins[name] = pinned
+    key0 = fit_key(arm, 0)
+    seed0 = read_json(FITS / f"{key0}.json")
+    if seed0 is None or not (FITS / f"{key0}.pt").exists():
+        raise SystemExit(f"{key}: no seed-0 fit of {arm}; the replication adds seeds to a fitted arm, seed 0 is never retrained")
+    pinned0 = ((run.get("fits") or {}).get(key0) or {}).get("state_sha256")
+    if pinned0 != seed0["state_sha256"] or sha256_file(FITS / f"{key0}.pt") != pinned0:
+        raise SystemExit(f"{key}: the seed-0 weights of {arm} do not hash to what {runs[-1]} pins; refusing")
+    return {"block": key, "arm": arm, "seed": seed, "status_line": status, "run_record_block": runs[-1], "seed0_state_sha256": pinned0,
+            "pins_verified": pins, "seed0_record": seed0}
+
+
 def stage_gate(cfg: dict, inputs: dict, log=print) -> dict:
     """pilot_gate as amended: read once, on V2_GATE only, for the selected GNN and the selected twin; the
     non-selected candidates are reported and cannot advance; the paired tables, slices and mechanism readouts
@@ -1704,7 +1857,7 @@ def main() -> int:
             else:
                 if not args.arm:
                     raise SystemExit("--stage fit needs --arm")
-                run_fit(args.arm, int(args.seed), inputs, carves, bank, training, log=log)
+                run_fit(args.arm, int(args.seed), inputs, carves, bank, training, log=log, cfg=cfg)
     log(f"stage {args.stage}: {time.time() - t0:.0f}s")
     return 0
 

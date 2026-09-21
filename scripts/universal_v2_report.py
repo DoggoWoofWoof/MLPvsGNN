@@ -4,6 +4,9 @@ order_of_operations 7). Two stages, in the declared order:
 
     python scripts/universal_v2_report.py --stage held   # V2_HELD_CONFIRMATION read once -> outputs/universal_v2/held_record.json
     python scripts/universal_v2_report.py --stage doc    # docs/UNIVERSAL_V2_PILOT.md, every number pinned by sha256
+    python scripts/universal_v2_report.py --stage replication      # amendment 4: seeds 0-2 of the selected arms on V2_GATE, once;
+                                                                   # the held half for a REPLICATION_PASS family only, once
+    python scripts/universal_v2_report.py --stage replication_doc  # docs/UNIVERSAL_V2_REPLICATION.md from the two records
 
 The held stage refuses before the gate is filed in the declaration
 (pilot_gate_record_<date> pinning gate_record.json), refuses a second time,
@@ -420,36 +423,48 @@ def section_gate(cfg: dict, gate: dict) -> list[str]:
     return lines
 
 
-def seed_confirmation(cfg: dict, gate: dict, rows: dict, refs: dict) -> dict:
+def seed_mean_cells(cells: list, arm: str, rows: dict, refs: dict) -> dict:
+    """The declared seed aggregation on the rows given: per cell, the per-query mean over the seeds of the arm that
+    are present on every population, its population mean against the threshold (a float tolerance of 1e-12 and
+    nothing else), the sd over the per-seed population means, and for a paired cell the declared bootstrap of the
+    per-query seed mean against the frozen reference; complete when the three seeds are present, confirmed when
+    complete and every cell holds."""
+    keys = [R.fit_key(arm, s) for s in (0, 1, 2)]
+    present = [k for k in keys if all(f"{k}/recall@5" in rows[n] for n in R.PILOT)]
+    entries, confirmed = [], len(present) == 3
+    for name, metric, slice_, threshold, paired in cells:
+        mask = R.slice_mask(rows[name], slice_)
+        per_seed = {str(seed_of(k)): round(float(rows[name][f"{k}/{metric}"][mask].mean()), 4) for k in present}
+        mean_q = np.mean([rows[name][f"{k}/{metric}"][mask] for k in present], axis=0) if present else np.zeros(int(mask.sum()))
+        e = {"dataset": name, "metric": metric, "slice": slice_, "queries": int(mask.sum()), "per_seed": per_seed,
+             "mean_over_seeds": round(float(mean_q.mean()) if mean_q.size else 0.0, 4),
+             "sd_over_seeds": round(float(np.std(list(per_seed.values()))), 4) if per_seed else None,
+             "threshold": threshold, "at_or_above_threshold": bool(mean_q.size and mean_q.mean() >= threshold - 1e-12)}
+        holds = e["at_or_above_threshold"]
+        if paired:
+            e["paired_vs"] = paired
+            e["interval"] = R.paired_bootstrap(mean_q, refs[name][f"{R.M3B_REFERENCES[paired]}/{metric}"][mask])
+            e["interval_excludes_zero_on_the_positive_side"] = bool(e["interval"]["low"] > 0)
+            holds = holds and e["interval_excludes_zero_on_the_positive_side"]
+        e["holds"] = bool(holds)
+        confirmed = confirmed and bool(holds)
+        entries.append(e)
+    return {"seeds_present": [seed_of(k) for k in present], "complete": len(present) == 3, "cells": entries, "confirmed": bool(confirmed)}
+
+
+def seed_confirmation(cfg: dict, gate: dict, rows: dict, refs: dict, arms: list | None = None) -> dict:
     """pilot_gate.on_pass: the pass is confirmed if the mean over seeds 0-2 also holds every cell. The mean is taken
     per query over the seeds present, on V2_GATE (the cells are gate-half quantities); a paired cell's interval is the
-    bootstrap of that per-query mean against the frozen reference."""
+    bootstrap of that per-query mean against the frozen reference. Without arms: the selected arms that passed their
+    gate (the pilot); with arms (amendment 4): those selected arms whatever their gate outcome, the same aggregation."""
     cells = R.gate_cells(*R.gate_thresholds(cfg)[:2])
     out: dict = {}
     for family, arm in gate["selection"].items():
-        if gate["outcome"].get(arm) != "PASS":
+        if arms is None and gate["outcome"].get(arm) != "PASS":
             continue
-        keys = [R.fit_key(arm, s) for s in (0, 1, 2)]
-        present = [k for k in keys if all(f"{k}/recall@5" in rows[n] for n in R.PILOT)]
-        entries, confirmed = [], len(present) == 3
-        for name, metric, slice_, threshold, paired in cells[family]:
-            mask = R.slice_mask(rows[name], slice_)
-            per_seed = {str(seed_of(k)): round(float(rows[name][f"{k}/{metric}"][mask].mean()), 4) for k in present}
-            mean_q = np.mean([rows[name][f"{k}/{metric}"][mask] for k in present], axis=0)
-            e = {"dataset": name, "metric": metric, "slice": slice_, "queries": int(mask.sum()), "per_seed": per_seed,
-                 "mean_over_seeds": round(float(mean_q.mean()), 4), "sd_over_seeds": round(float(np.std(list(per_seed.values()))), 4),
-                 "threshold": threshold, "at_or_above_threshold": bool(mean_q.mean() >= threshold - 1e-12)}
-            holds = e["at_or_above_threshold"]
-            if paired:
-                e["paired_vs"] = paired
-                e["interval"] = R.paired_bootstrap(mean_q, refs[name][f"{R.M3B_REFERENCES[paired]}/{metric}"][mask])
-                e["interval_excludes_zero_on_the_positive_side"] = bool(e["interval"]["low"] > 0)
-                holds = holds and e["interval_excludes_zero_on_the_positive_side"]
-            e["holds"] = bool(holds)
-            confirmed = confirmed and bool(holds)
-            entries.append(e)
-        out[arm] = {"family": family, "seeds_present": [seed_of(k) for k in present], "complete": len(present) == 3, "cells": entries,
-                    "confirmed": bool(confirmed), "half": GATE}
+        if arms is not None and arm not in arms:
+            continue
+        out[arm] = {"family": family, **seed_mean_cells(cells[family], arm, rows, refs), "half": GATE}
     return out
 
 
@@ -821,16 +836,346 @@ def stage_doc(cfg: dict, cfg_m3b: dict, log=print) -> Path:
     return DOC
 
 
+# ── amendment 4: the post-pilot replication ──────────────────────────────────
+
+
+def replication_premises(cfg: dict) -> dict:
+    """What the replication stands on, verified before any number is read: the amendment, the status line it applies
+    at, the pilot's run record with the terminal state it cites, the pinned sidecars unchanged, the selected arms one
+    and the same in selection.json, gate_record.json and the amendment, the thresholds block the amendment names."""
+    rep_key, rep = R.replication_amendment(cfg)
+    if cfg.get("status") != rep["applies_at_status"]:
+        raise SystemExit(f"status {cfg.get('status')}: the replication applies at {rep['applies_at_status']} (amendment 4)")
+    runs = R.dated_blocks(cfg, "run_record")
+    if not runs:
+        raise SystemExit("no run_record_<date>: the replication follows the closed pilot")
+    run = cfg[runs[-1]]
+    terminal = (run.get("terminal_state") or {}).get("terminal")
+    if terminal != rep["original_pilot_status"]:
+        raise SystemExit(f"{runs[-1]} closed at {terminal}, not the {rep['original_pilot_status']} the amendment cites")
+    pins = {}
+    for name in ("selection.json", "gate_record.json", "held_record.json"):
+        pinned = run.get(name.replace(".json", "") + "_sha256")
+        got = R.sha256_file(R.OUT / name)
+        if pinned != got:
+            raise SystemExit(f"{name} ({got[:12]}) is not the file {runs[-1]} pins ({str(pinned)[:12]}); nothing of the pilot is edited")
+        pins[name] = got
+    gate, sel = R.read_json(R.OUT / "gate_record.json"), R.read_json(R.OUT / "selection.json")
+    selected = {fam: sel[fam]["arm"] for fam in ("gnn", "twin")}
+    if selected != dict(rep["selected_arms"]) or dict(gate["selection"]) != selected:
+        raise SystemExit("the selected arms of selection.json, gate_record.json and the amendment differ; refusing")
+    thresholds_from = R.gate_thresholds(cfg)[2]
+    if not str(rep["thresholds"]).startswith(thresholds_from):
+        raise SystemExit(f"the gate thresholds come from {thresholds_from}, not the block the amendment names ({rep['thresholds']})")
+    return {"amendment": rep_key, "rep": rep, "run_record_block": runs[-1], "run": run, "pins": pins, "gate": gate, "selected": selected,
+            "thresholds_from": thresholds_from}
+
+
+def replication_fits(premises: dict) -> dict:
+    """The three seeds of each selected arm: seed 0 as the run record pins it, seeds 1-2 as the amendment authorises
+    them -- fitted under it, or under pilot_gate.on_pass for an arm that passed its gate; every weight file hashes
+    to its record."""
+    rep, run, runs = premises["rep"], premises["run"], premises["run_record_block"]
+    fits = {}
+    for fam, arm in premises["selected"].items():
+        for seed in (0, 1, 2):
+            k = R.fit_key(arm, seed)
+            rec = R.read_json(R.FITS / f"{k}.json")
+            if rec is None or not (R.FITS / f"{k}.pt").exists():
+                raise SystemExit(f"{k}: no fit record and weights; the replication reads three seeds of each selected arm")
+            state = R.sha256_file(R.FITS / f"{k}.pt")
+            if state != rec["state_sha256"]:
+                raise SystemExit(f"{k}: the weights do not hash to the record")
+            if seed == 0 and ((run.get("fits") or {}).get(k) or {}).get("state_sha256") != state:
+                raise SystemExit(f"{k}: the seed-0 weights differ from what {runs} pins")
+            if seed != 0:
+                if seed not in (rep.get("authorised_fits") or {}).get(arm, []):
+                    raise SystemExit(f"{k}: not an authorised fit of {premises['amendment']}")
+                passed = bool(premises["gate"]["verdict"].get(arm, {}).get("pass"))   # pilot_gate.on_pass fitted seeds 1-2 of a passing arm
+                if not passed and (rec.get("replication") or {}).get("block") != premises["amendment"]:
+                    raise SystemExit(f"{k}: not fitted under {premises['amendment']} (the arm did not pass its gate, so the pilot fitted no seeds 1-2)")
+            fits[k] = {"arm": arm, "seed": seed, "family": fam, "record_sha256": R.sha256_file(R.FITS / f"{k}.json"), "state_sha256": state,
+                       "seconds": rec["seconds"], "best_epoch": rec["best_epoch"], "epochs_run": rec["epochs_run"], "parameters": rec["parameters"],
+                       "best_select_macro_recall5": rec["best_select_macro_recall5"], "peak_rss_bytes": rec["peak_rss_bytes"], "threads": rec["threads"],
+                       "utc": rec["utc"], "authorised_by": (rec.get("replication") or {}).get("block"),
+                       "checks_against_seed_0": (rec.get("replication") or {}).get("checks_against_seed_0")}
+    return fits
+
+
+def stage_replication(cfg: dict, log=print) -> dict:
+    """amendment 4 post_pilot_replication: the V2_GATE reading of seeds 0-2 of the two selected arms by the declared
+    aggregation (seed_mean_cells, the pilot's seed confirmation) against the original frozen cells, once, into
+    replication_record.json with REPLICATION_PASS | REPLICATION_FAIL per family and the overall status; then, for a
+    REPLICATION_PASS family only, the held half read once (replication_held). Refused a second time, at any other
+    status, before the pilot's run record, on a changed pinned sidecar, on a missing seed or an unscored key."""
+    path = R.OUT / "replication_record.json"
+    if path.exists():
+        raise SystemExit("replication_record.json exists; the replication is read once (amendment 4)")
+    premises = replication_premises(cfg)
+    rep, selected, gate = premises["rep"], premises["selected"], premises["gate"]
+    fits = replication_fits(premises)
+    rows, refs, meta, masks = {}, {}, {}, {}
+    for name in R.PILOT:
+        rows[name], masks[name], meta[name] = pooled_rows(name, GATE)
+        refs[name] = m3b_rows(name, masks[name])
+        missing = [k for k in fits if f"{k}/recall@5" not in rows[name]]
+        if missing:
+            raise SystemExit(f"{name}: {missing} not scored on the population; the supplement pass precedes the reading")
+    conf = seed_confirmation(cfg, gate, rows, refs, arms=list(selected.values()))
+    family_status, passing = {}, []
+    for fam, arm in selected.items():
+        c = conf[arm]
+        for cell in c["cells"]:
+            cell["margin_of_the_seed_mean"] = round(cell["mean_over_seeds"] - cell["threshold"], 4)
+            cell["per_seed_margin"] = {s: round(v - cell["threshold"], 4) for s, v in cell["per_seed"].items()}
+        ok = bool(c["complete"] and c["confirmed"])
+        c["replication_status"] = R.REPLICATION_FAMILY[0] if ok else R.REPLICATION_FAMILY[1]
+        family_status[R.FAMILY_GATES[fam]] = c["replication_status"]
+        if ok:
+            passing.append(fam)
+    overall = R.REPLICATION_OVERALL[(family_status["GNN_GATE"] == R.REPLICATION_FAMILY[0], family_status["TWIN_GATE"] == R.REPLICATION_FAMILY[0])]
+    keys = set(fits)
+    seeds_gate = {name: seed_stats({k: v for k, v in rows[name].items() if "/" not in k or k.split("/")[0] in keys}) for name in R.PILOT}
+    record = {"utc": R.utc(), "amendment": premises["amendment"], "half": GATE, "read_once": True, "status_at_read": cfg["status"],
+              "original_pilot_status": rep["original_pilot_status"], "original_pilot_commit": rep["original_pilot_commit"],
+              "run_record_block": premises["run_record_block"], "pins_verified": premises["pins"], "selected": selected,
+              "outcome_on_V2_GATE_at_seed_0": gate["outcome"], "thresholds_from": premises["thresholds_from"],
+              "aggregation": "scripts/universal_v2_report.py seed_mean_cells (the pilot's seed confirmation, pilot_gate.on_pass): per cell the per-query "
+                             "mean over seeds 0-2 on V2_GATE against the frozen threshold; a paired cell by the declared bootstrap of that per-query mean",
+              "family_status": family_status, "replication_status": overall, "passing_families": passing, "never": "PILOT_PASS",
+              "confirmation": conf, "seeds": seeds_gate, "fits": fits, "records_read": meta, "bootstrap": R.BOOTSTRAP,
+              "queries": {name: int(masks[name].sum()) for name in R.PILOT},
+              "m3b_reference_arrays": {name: R.sha256_file(R.M3B_OUT / "eval" / f"{name}.npz") for name in R.PILOT},
+              "interpretation": rep["interpretation_rule"][overall],
+              "what_this_is": "the post-pilot replication of amendment 4 on V2_GATE: a separate status beside the original PILOT_FAILED, never a rename "
+                              "of it; GNN_REPLICATION_ONLY and TWIN_REPLICATION_ONLY replicate that family and never the proposed universal pair"}
+    path.write_text(json.dumps(record, indent=1), encoding="utf-8")
+    for arm, c in conf.items():
+        log(f"replication {arm} ({c['family']}): {c['replication_status']}; " + "; ".join(
+            f"{e['dataset']}/{e['metric']}/{e['slice']} mean {e['mean_over_seeds']} vs {e['threshold']} ({'holds' if e['holds'] else 'FAILS'})" for e in c["cells"]))
+    log(f"ORIGINAL PILOT STATUS: {rep['original_pilot_status']}; POST-PILOT REPLICATION STATUS: {overall}; wrote {path}")
+    if passing:
+        replication_held(cfg, premises, passing, R.sha256_file(path), log=log)
+    else:
+        log("no family is REPLICATION_PASS: V2_HELD_CONFIRMATION is not read (amendment 4 held_confirmation.not_read_for)")
+    return record
+
+
+def replication_held(cfg: dict, premises: dict, passing: list, record_sha: str, log=print) -> dict:
+    """amendment 4 held_confirmation: V2_HELD_CONFIRMATION read once for the REPLICATION_PASS families only, by the
+    declared held procedure and nothing new (stage_held: the gate cells re-read on the held half, labelled confirmatory,
+    no threshold of their own) -- for seeds 1 and 2 and for the per-query mean over seeds 0-2 by the same aggregation;
+    the seed-0 held cells are those held_record.json already carries and are copied, not re-read. The arrays of a
+    REPLICATION_FAIL family are dropped as they are read and no number of them is computed or written."""
+    path = R.OUT / "replication_held_record.json"
+    if path.exists():
+        raise SystemExit("replication_held_record.json exists; the held half is read once under the replication (amendment 4)")
+    selected = premises["selected"]
+    keep = {R.fit_key(selected[fam], s) for fam in passing for s in (0, 1, 2)}
+    dropped = {R.fit_key(selected[fam], s) for fam in selected if fam not in passing for s in (0, 1, 2)}
+    rows, masks, refs = {}, {}, {}
+    for name in R.PILOT:
+        r, masks[name], _ = pooled_rows(name, HELD)
+        rows[name] = {k: v for k, v in r.items() if "/" not in k or k.split("/")[0] in keep or k.startswith("fixed:")}
+        del r
+        refs[name] = m3b_rows(name, masks[name])
+    pilot_held = R.read_json(R.OUT / "held_record.json")
+    cells = R.gate_cells(*R.gate_thresholds(cfg)[:2])
+    out = {}
+    for fam in passing:
+        arm = selected[fam]
+        per_seed = {"0": {**pilot_held["gate_cells_confirmatory"][arm], "from": "held_record.json (the pilot's read-once column), copied, not re-read"}}
+        for s in (1, 2):
+            per_seed[str(s)] = {**R.evaluate_cells(R.fit_key(arm, s), cells[fam], rows, refs), "confirmatory_not_a_gate": True}
+        mean = {**seed_mean_cells(cells[fam], arm, rows, refs), "confirmatory_not_a_gate": True, "half": HELD}
+        for cell in mean["cells"]:
+            cell["margin_of_the_seed_mean"] = round(cell["mean_over_seeds"] - cell["threshold"], 4)
+        out[arm] = {"family": fam, "gate_half_status": R.REPLICATION_FAMILY[0], "per_seed": per_seed, "seed_mean": mean,
+                    "seeds": {name: seed_stats({k: v for k, v in rows[name].items() if "/" not in k or k.split("/")[0] in keep and arm_of(k.split("/")[0]) == arm})
+                              for name in R.PILOT},
+                    "read": "the gate cells re-read on V2_HELD_CONFIRMATION for seeds 1-2 and for the per-query mean over seeds 0-2; confirmatory, "
+                            "no threshold of its own; the replication status is the gate half's (amendment 4 held_confirmation)"}
+    record = {"utc": R.utc(), "amendment": premises["amendment"], "half": HELD, "read_once": True, "read_for": passing,
+              "not_read_for": [fam for fam in selected if fam not in passing], "arrays_dropped_unread": sorted(dropped),
+              "replication_record_sha256": record_sha, "queries": {name: int(masks[name].sum()) for name in R.PILOT},
+              "cells_confirmatory": out, "bootstrap": R.BOOTSTRAP,
+              "m3b_reference_arrays": {name: R.sha256_file(R.M3B_OUT / "eval" / f"{name}.npz") for name in R.PILOT},
+              "what_this_is": "a Universal-v2 architecture-selection holdout, not a globally unseen dataset (check_1_the_halves.what_it_is_not); "
+                              "the confirmatory column of the replication for the families that passed on V2_GATE; nothing here is a gate"}
+    path.write_text(json.dumps(record, indent=1), encoding="utf-8")
+    for arm, v in out.items():
+        log(f"held {arm}: seed mean " + "; ".join(f"{c['dataset']}/{c['metric']}/{c['slice']} {c['mean_over_seeds']}" for c in v["seed_mean"]["cells"]) + " (confirmatory, not a gate)")
+    log(f"wrote {path} (read for {passing}; not read for {record['not_read_for']})")
+    return record
+
+
+def replication_cell_rows(c: dict) -> str:
+    per = {s: c["per_seed"].get(s) for s in ("0", "1", "2")}
+    seeds = " | ".join("—" if per[s] is None else f"{per[s]:.4f}" for s in ("0", "1", "2"))
+    interval = f"{ci(c['interval'])} vs `{c['paired_vs']}`, excludes zero: {c['interval_excludes_zero_on_the_positive_side']}" if c.get("paired_vs") else "—"
+    sd = "—" if c.get("sd_over_seeds") is None else f"{c['sd_over_seeds']:.4f}"
+    return (f"| {c['dataset']} | {c['metric']} | {c['slice']} | {c['queries']:,} | {seeds} | {c['mean_over_seeds']:.4f} | {sd} | {c['threshold']:.4f} | "
+            f"{c.get('margin_of_the_seed_mean', c['mean_over_seeds'] - c['threshold']):+.4f} | {interval} | {'holds' if c['holds'] else 'FAILS'} |")
+
+
+CELL_HEADER = ["| dataset | metric | slice | queries | seed 0 | seed 1 | seed 2 | mean over seeds | sd | threshold | margin | paired interval of the seed mean | cell |",
+               "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+
+
+def stage_replication_doc(cfg: dict, log=print) -> Path:
+    """docs/UNIVERSAL_V2_REPLICATION.md from replication_record.json and, where it exists, replication_held_record.json:
+    the two statuses stated separately, the seed-wise cells, the means, sds, thresholds, margins and intervals, the
+    held reading where authorised, the compute, the incidents, the hashes and the commits. The pilot document is
+    not re-rendered. Every number comes from the records; nothing is recomputed here."""
+    rec = R.read_json(R.OUT / "replication_record.json")
+    if rec is None:
+        raise SystemExit("no replication_record.json: --stage replication precedes the document (amendment 4 execution)")
+    held = R.read_json(R.OUT / "replication_held_record.json")
+    if rec["passing_families"] and held is None:
+        raise SystemExit("a REPLICATION_PASS family reads the held half once before the document is rendered")
+    if held is not None and held["replication_record_sha256"] != R.sha256_file(R.OUT / "replication_record.json"):
+        raise SystemExit("replication_record.json changed after the held record was written; refusing")
+    rep_key, rep = R.replication_amendment(cfg)
+    run = cfg[rec["run_record_block"]]
+    selected = rec["selected"]
+    fits = {k: R.read_json(R.FITS / f"{k}.json") for k in rec["fits"]}
+    evals = {}
+    for name in R.PILOT:
+        for stem, r in eval_records(name):
+            evals[stem] = r
+    incidents = R.read_json(R.OUT / "replication_incidents.json") or []
+    try:
+        import subprocess
+        out = subprocess.run(["git", "log", "--format=%h %s", f"{rep['original_pilot_commit']}..HEAD"], cwd=ROOT, capture_output=True, text=True, check=True)
+        commits = [line for line in out.stdout.splitlines() if line.strip()]
+    except Exception as e:   # noqa: BLE001  (the sandbox names no real commit)
+        commits = [f"not read: {e}"]
+    fam_label = {fam: f"{R.FAMILY_GATES[fam]} family (`{arm}`) **{rec['family_status'][R.FAMILY_GATES[fam]]}**" for fam, arm in selected.items()}
+    lines = ["# Universal-v2 post-pilot replication (amendment 4)", "",
+             f"**ORIGINAL PILOT STATUS: {rec['original_pilot_status']}** (commit `{rec['original_pilot_commit']}`, `{rec['run_record_block']}`, "
+             "`docs/UNIVERSAL_V2_PILOT.md` as filed -- not re-rendered, not reinterpreted).", "",
+             f"**POST-PILOT REPLICATION STATUS: {rec['replication_status']}** -- {fam_label['gnn']} / {fam_label['twin']}.", "",
+             f"The two statuses are separate: nothing here renames the original pilot's result, and a replication pass is never `{rec['never']}` "
+             f"(`{rep_key}` status_vocabulary). GNN_REPLICATION_ONLY and TWIN_REPLICATION_ONLY replicate that family only, never the proposed universal pair. "
+             f"Read on {rec['half']} once ({rec['utc']}, status line `{rec['status_at_read']}`, unchanged). "
+             f"Interpretation rule for this outcome (verbatim from the amendment): {rec['interpretation']}", ""]
+    lines += ["## 1. What was frozen and verified", "",
+              f"- The amendment `{rep_key}` was filed and committed before any fit it authorises; it authorises {rep['authorised_fits']} and nothing else.",
+              f"- The selected arms are those of `selection.json` and `gate_record.json` ({selected}); the pilot's sidecars hash to what `{rec['run_record_block']}` pins: "
+              + ", ".join(f"`{k}` `{v[:12]}…`" for k, v in rec["pins_verified"].items()) + ".",
+              f"- Thresholds from `{rec['thresholds_from']}`, unchanged; the aggregation is {rec['aggregation']}; paired intervals: {rec['bootstrap']['resamples']} resamples, "
+              f"`default_rng({rec['bootstrap']['seed']})`, {rec['bootstrap']['level']} % percentile.",
+              "- Every seed-1/2 fit refused to start unless its training rule, parameter count, columns, core sha256, evidence fields and relation bank equalled the "
+              "seed-0 record of the same arm (the fit records carry `replication.checks_against_seed_0`); seed 0 was not retrained (its records exist and are not repeated).",
+              f"- M3B pins verified at every stage; the M3B reference arrays: " + ", ".join(f"{n} `{v[:12]}…`" for n, v in rec["m3b_reference_arrays"].items()) + ".",
+              f"- Queries on {rec['half']}: " + ", ".join(f"{n} {q:,}" for n, q in rec["queries"].items()) + ".", ""]
+    lines += ["## 2. The fits", "", "| key | family | seed | parameters | best epoch | epochs run | select macro R@5 | hours | peak RSS GB | authorised by | state sha256 (checkpoint hash) | record sha256 |",
+              "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    rep_hours, spent = 0.0, 0.0
+    for p in sorted(R.FITS.glob("*.json")) if R.FITS.exists() else []:
+        spent += float(R.read_json(p).get("seconds", 0.0)) / 3600
+    for k, f in rec["fits"].items():
+        if f["seed"] != 0:
+            rep_hours += float(f["seconds"]) / 3600
+        lines.append(f"| `{k}` | {f['family']} | {f['seed']} | {f['parameters']:,} | {f['best_epoch']} | {f['epochs_run']} | {f['best_select_macro_recall5']:.4f} | "
+                     f"{float(f['seconds']) / 3600:.2f} | {f['peak_rss_bytes'] / 2**30:.2f} | {f['authorised_by'] or 'pilot (seed 0)'} | `{f['state_sha256']}` | `{f['record_sha256']}` |")
+    lines += ["", f"Compute: the replication fits took {rep_hours:.2f} fit-hours (one lane, {next(iter(fits.values()))['threads']} threads); "
+              f"{spent:.2f} fit-hours spent in total against the ceiling of {R.FIT_HOURS_CEILING:.0f} (amendment 3 compute_ceiling_guard, unchanged). "
+              "The supplement eval pass is not a fit and does not count.", ""]
+    lines += ["## 3. The supplement eval pass", "", "| record | dataset | models | queries | V2_GATE / V2_HELD_CONFIRMATION | lane seconds | ms / query | threads | shards | record sha256 | arrays sha256 |",
+              "|---|---|---|---|---|---|---|---|---|---|---|"]
+    lane_hours = 0.0
+    for stem in sorted(evals):
+        r = evals[stem]
+        if not r.get("supplement"):
+            continue
+        lane_hours += float(r["seconds"]) / 3600
+        shards = len(r["merged_from"]) if r.get("merged_from") else 1
+        lines.append(f"| `{stem}` | {r['dataset']} | {', '.join(f'`{m}`' for m in r['supplement']['models'])} | {r['queries']:,} | {r['halves']['V2_GATE']:,} / {r['halves']['V2_HELD_CONFIRMATION']:,} | "
+                     f"{r['seconds']:.0f} | {r['ms_per_query']:.1f} | {r['threads']} | {shards} | `{R.sha256_file(R.EVAL / f'{stem}.json')}` | `{R.sha256_file(R.EVAL / f'{stem}.npz')}` |")
+    lines += ["", f"Lane time of the pass: {lane_hours:.2f} lane-hours. Each supplement record is pinned to its seed-0 record (query list, half labels, fixed rrf per query); "
+              "both halves are labelled as written and the pass reads nothing.", ""]
+    lines += [f"## 4. Replication on {rec['half']} (seeds 0-2, the declared aggregation)", ""]
+    for arm, c in rec["confirmation"].items():
+        lines += [f"**`{arm}` ({R.FAMILY_GATES[c['family']]}) — {c['replication_status']}** (seeds present {c['seeds_present']}; the mean is per query over the seeds; "
+                  f"a family passes only if every cell holds)", "", *CELL_HEADER]
+        lines += [replication_cell_rows(e) for e in c["cells"]]
+        failed = [f"{e['dataset']} {e['metric']} ({e['slice']})" for e in c["cells"] if not e["holds"]]
+        lines += ["", (f"Cells failing on the seed mean: {', '.join(failed)}." if failed else "Every cell holds on the seed mean."), ""]
+    lines += [f"Seed mean ± sd on {rec['half']} (three seeds) for every metric reported:", "", "| dataset | arm | seeds | recall@5 | hit@1 | full_coverage@5 | mrr |", "|---|---|---|---|---|---|---|"]
+    for name in R.PILOT:
+        for arm, s in rec["seeds"].get(name, {}).items():
+            lines.append(f"| {name} | `{arm}` | {s['seeds']} | " + " | ".join(f"{s[m]['mean']:.4f} ± {s[m]['sd']:.4f}" if s[m]['sd'] is not None else f"{s[m]['mean']:.4f}" for m in SEED_METRICS) + " |")
+    lines.append("")
+    lines += [f"## 5. {HELD} (read once, REPLICATION_PASS families only)", ""]
+    if held is None:
+        statuses = ", ".join(f"{R.FAMILY_GATES[f]} {rec['family_status'][R.FAMILY_GATES[f]]}" for f in selected)
+        lines += [f"Not read: no family is REPLICATION_PASS ({statuses}); the held half stays unread under the replication (amendment 4 held_confirmation.not_read_for). "
+                  "The seed-0 held cells of both selected arms stand in the pilot's `held_record.json` and are not re-read.", ""]
+    else:
+        lines += [f"Read {held['utc']} for {held['read_for']}; not read for {held['not_read_for']} (its arrays dropped unread: {len(held['arrays_dropped_unread'])} keys). "
+                  f"{held['what_this_is']}.", ""]
+        for arm, v in held["cells_confirmatory"].items():
+            lines += [f"**`{arm}` ({R.FAMILY_GATES[v['family']]}) — confirmatory, not a gate** (gate-half status {v['gate_half_status']})", "", *CELL_HEADER]
+            lines += [replication_cell_rows(e) for e in v["seed_mean"]["cells"]]
+            lines += ["", "Per seed on the held half (seed 0 copied from the pilot's held record):", "", "| seed | " + " | ".join(f"{e['dataset']} {e['metric']} ({e['slice']})" for e in v["seed_mean"]["cells"]) + " |",
+                      "|---|" + "---|" * len(v["seed_mean"]["cells"])]
+            for s in ("0", "1", "2"):
+                cells = v["per_seed"][s]["cells"]
+                lines.append(f"| {s} | " + " | ".join(f"{e['value']:.4f}" for e in cells) + " |")
+            lines.append("")
+    lines += ["## 6. Reading", "",
+              f"ORIGINAL PILOT STATUS: {rec['original_pilot_status']}. POST-PILOT REPLICATION STATUS: {rec['replication_status']}. {rec['interpretation']}.",
+              "The original pilot is still reported as failed; this document adds a replication reading beside it and changes no threshold, feature, architecture or population. "
+              "Forbidden framings are not used: the question of the paper is how much effectiveness remains attributable to learned message passing after matching exposure and information, "
+              "and this replication reads only whether two frozen arms hold their frozen cells on three seeds.", ""]
+    lines += ["## 7. Incidents", ""]
+    lines += ([f"- {i}" for i in incidents] if incidents else ["None logged during the replication (fits, eval pass, readings)."]) + [""]
+    lines += ["## 8. Commits since the pilot closed", ""] + ([f"- `{c}`" for c in commits] if commits else ["- none"]) + [""]
+    files = [R.CONFIG, R.OUT / "replication_record.json", R.OUT / "replication_held_record.json", R.OUT / "held_record.json", R.OUT / "gate_record.json",
+             R.OUT / "selection.json", R.OUT / "replication_incidents.json"]
+    files += [R.FITS / f"{k}.json" for k in rec["fits"]] + [R.FITS / f"{k}.pt" for k in rec["fits"]]
+    for stem in sorted(evals):
+        files += [R.EVAL / f"{stem}.json", R.EVAL / f"{stem}.npz", R.EVAL / f"{stem}_query_ids.json"]
+    files += [R.M3B_OUT / "eval" / f"{name}.npz" for name in R.PILOT]
+    record = {}
+    for p in files:
+        if p.exists():
+            try:
+                record[p.relative_to(ROOT).as_posix()] = R.sha256_file(p)
+            except ValueError:
+                record[p.as_posix()] = R.sha256_file(p)
+    lines += ["## 9. Run record", "", f"Rendered {R.utc()} by `scripts/universal_v2_report.py --stage replication_doc` from the files below (sha256 of every sidecar a number above cites; "
+              "the sidecars are gitignored, the record is committed as replication_record_<date>).", "", "| file | sha256 |", "|---|---|"]
+    lines += [f"| `{k}` | `{v}` |" for k, v in record.items()] + [""]
+    DOC = R.REPLICATION_DOC
+    DOC.parent.mkdir(parents=True, exist_ok=True)
+    with open(DOC, "w", encoding="utf-8", newline=LF) as f:
+        f.write(LF.join(lines) + LF)
+    (R.OUT / "replication_report_record.json").write_text(json.dumps({
+        "utc": R.utc(), "doc": DOC.relative_to(ROOT).as_posix() if DOC.is_relative_to(ROOT) else DOC.as_posix(), "doc_sha256_lf": R.lf_sha256(DOC),
+        "replication_record_sha256": R.sha256_file(R.OUT / "replication_record.json"),
+        "replication_held_record_sha256": R.sha256_file(R.OUT / "replication_held_record.json") if held is not None else None,
+        "original_pilot_status": rec["original_pilot_status"], "replication_status": rec["replication_status"], "family_status": rec["family_status"],
+        "files": record}, indent=1), encoding="utf-8")
+    log(f"wrote {DOC} ({len(lines)} lines): ORIGINAL PILOT STATUS {rec['original_pilot_status']}; POST-PILOT REPLICATION STATUS {rec['replication_status']}")
+    return DOC
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=["held", "doc"], required=True)
+    parser.add_argument("--stage", choices=["held", "doc", "replication", "replication_doc"], required=True)
     args = parser.parse_args()
     sys.dont_write_bytecode = True
     cfg, cfg_m3b, _ = R.load_configs()
     if args.stage == "held":
         stage_held(cfg)
-    else:
+    elif args.stage == "doc":
         stage_doc(cfg, cfg_m3b)
+    elif args.stage == "replication":
+        stage_replication(cfg)
+    else:
+        stage_replication_doc(cfg)
     return 0
 
 

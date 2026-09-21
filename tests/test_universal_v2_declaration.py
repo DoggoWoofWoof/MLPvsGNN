@@ -55,7 +55,7 @@ TERMINAL = ("BOTH_CONFIRMED", "GNN_ONLY_CONFIRMED", "TWIN_ONLY_CONFIRMED", "PILO
 FAMILY_FINAL = ("GATE_FAIL", "CONFIRMATION_FAIL", "CONFIRMED_PASS")
 STATUSES = {"DECLARED_NOT_RUN", "PILOT_GATE_READ"} | {f"RUN_{t}" for t in TERMINAL}
 DATED = re.compile(
-    r"^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|hard_stop|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$"
+    r"^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|replication_record|hard_stop|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$"
 )
 NUM = re.compile(r"[0-9]+[.][0-9]+")
 
@@ -595,3 +595,106 @@ def test_the_reconciliations_name_the_declaration_as_governing(amendment3):
     assert "resumes from its epoch checkpoint" in squash(amendment3["crash_and_reboot"])
     sup = " ".join(amendment3["supersedes"])
     assert "order_of_operations 6" in sup and "RUN_<terminal>" in sup and "STOP_FINAL" in sup
+
+
+# ── amendment 4: the post-pilot replication of the frozen selected arms ──────
+
+
+@pytest.fixture(scope="module")
+def amendment4(decl) -> dict:
+    return decl["amendment_4_2026_09_21"]
+
+
+def test_the_replication_ruling_is_filed_verbatim_after_the_closed_pilot(decl, amendment4):
+    r = amendment4["ruling_verbatim"]
+    assert r.startswith("AMENDMENT " + chr(0x2014) + " POST-PILOT REPLICATION OF FROZEN UNIVERSAL-v2 ARMS")
+    assert r.rstrip().endswith("Otherwise continue autonomously to terminal replication status.")
+    for phrase in ("This amendment is prospective with respect to every fit authorised below.",
+                   "Nothing in this amendment changes, reinterprets, overrides, or retroactively" + chr(10) + "passes the original seed-0 pilot.",
+                   "Do not retrain seed 0.", "Do not train any other Universal-v2 arm.", "Do not rerun model selection.",
+                   "No threshold is changed.", "No tolerance band is added.", "No epsilon is introduced.",
+                   "only if its THREE-SEED MEAN satisfies EVERY original frozen gate cell for", "Not merely the cell that failed seed 0.",
+                   "Never rename a replication pass to:", "do NOT read the held half for that family.", "Do not introduce a new held threshold.",
+                   "NO ARCHITECTURE REPAIR INSIDE THIS AMENDMENT", "ORIGINAL PILOT STATUS: PILOT_FAILED", "POST-PILOT REPLICATION STATUS: <status>",
+                   "Crashes/reboots are resumable operational incidents and do not require" + chr(10) + "review.",
+                   "This closes Universal-v2 without rescue."):
+        assert phrase in r, phrase
+    for status in ("REPLICATION_PASS", "REPLICATION_FAIL", "BOTH_REPLICATION_PASS", "GNN_REPLICATION_ONLY", "TWIN_REPLICATION_ONLY", "BOTH_REPLICATION_FAIL", "PILOT_PASS"):
+        assert status in r, status
+    assert amendment4["status_after"] == "RUN_PILOT_FAILED" and "d2850ab" in amendment4["reviewed"]
+    assert "not a retroactive rescue" in amendment4["gloss_verbatim"] and "cheapest and most defensible next experiment" in amendment4["gloss_verbatim"]
+    assert "nothing is redesigned inside it" in squash(amendment4["what_this_is"])
+    # filed after the pilot closed, in the order of the file: the declaration is chronological and append-only
+    keys = list(decl)
+    assert keys.index("run_record_2026_09_21") < keys.index("amendment_4_2026_09_21") and DATED.match(keys[-1])
+    original = amendment4["original_pilot"]
+    assert decl["run_record_2026_09_21"]["terminal_state"]["terminal"] == "PILOT_FAILED" == original["status"]
+    assert decl["status"] == "RUN_PILOT_FAILED" == original["status_line"] and original["commit"] == "d2850ab"
+    assert original["document"].startswith("docs/UNIVERSAL_V2_PILOT.md") and decl["run_record_2026_09_21"]["doc_sha256"] in original["document"]
+    assert "refuses on a mismatch" in squash(original["untouched"])
+
+
+def test_the_authorised_fits_are_the_selected_arms_seeds_1_2_and_nothing_else(decl, amendment4):
+    rep = amendment4["post_pilot_replication"]
+    assert rep["authorised_fits"] == {"u_gnn_v2_ef": [1, 2], "u_mlp_v2_mix": [1, 2]}
+    gate = decl["pilot_gate_record_2026_09_21"]
+    assert rep["selected_arms"] == gate["selection"] == {"gnn": "u_gnn_v2_ef", "twin": "u_mlp_v2_mix"}
+    assert gate["outcome"] == {"u_gnn_v2_ef": "FAIL", "u_mlp_v2_mix": "FAIL"}   # the replication is of the failed pilot's selected arms
+    assert set(rep["authorised_fits"]) == set(rep["selected_arms"].values()) and all(v == [1, 2] for v in rep["authorised_fits"].values())
+    assert rep["applies_at_status"] == "RUN_PILOT_FAILED" and rep["original_pilot_status"] == "PILOT_FAILED" and rep["original_pilot_commit"] == "d2850ab"
+    assert "seed 0 is never retrained" in squash(rep["selected_arms_are"])
+    assert "refuses a rule that differs" in squash(rep["frozen_training_protocol"]) and "max_epochs 6" in rep["frozen_training_protocol"]
+    assert "parameter count" in squash(rep["frozen_architecture"]) and "seed-0 fit record" in squash(rep["frozen_architecture"])
+    assert rep["thresholds"].startswith("amendment_1_2026_09_19.pilot_gate_amended")
+    assert "no epsilon" in rep["thresholds"] and "no averaging across datasets" in rep["thresholds"]
+    # the motivation cites the filed gate record's seed-0 cells, which stand unchanged: one failed cell per family
+    cells = {(c["dataset"], c["metric"], c["slice"]): c for c in gate["verdict"]["u_gnn_v2_ef"]["cells"]}
+    failed = [c for c in cells.values() if not c["holds"]]
+    assert len(failed) == 1 and (failed[0]["value"], failed[0]["threshold"]) == (0.8988, 0.8996) and failed[0]["dataset"] == "squad"
+    cells = {(c["dataset"], c["metric"], c["slice"]): c for c in gate["verdict"]["u_mlp_v2_mix"]["cells"]}
+    failed = [c for c in cells.values() if not c["holds"]]
+    assert len(failed) == 1 and (failed[0]["value"], failed[0]["threshold"]) == (0.8545, 0.8578) and failed[0]["dataset"] == "2wiki"
+    assert "0.8988" in amendment4["ruling_verbatim"] and "0.8545" in amendment4["ruling_verbatim"]
+    rec = amendment4["reconciliations_where_the_ruling_and_the_declaration_differ"]
+    assert "0.8988 against 0.8996" in rec["seed_0_of_the_gnn_and_the_twin"] and "0.8545 against 0.8578" in rec["seed_0_of_the_gnn_and_the_twin"]
+
+
+def test_the_replication_vocabulary_the_pass_rule_and_the_held_rule(amendment4):
+    rep = amendment4["post_pilot_replication"]
+    v = rep["status_vocabulary"]
+    assert v["per_family"] == ["REPLICATION_PASS", "REPLICATION_FAIL"] and v["never"] == "PILOT_PASS"
+    assert set(v["overall"]) == {"BOTH_REPLICATION_PASS", "GNN_REPLICATION_ONLY", "TWIN_REPLICATION_ONLY", "BOTH_REPLICATION_FAIL"}
+    assert "stays RUN_PILOT_FAILED" in squash(v["status_line"]) and "replication_record_<date>" in squash(v["status_line"])
+    assert "never of the proposed universal pair" in squash(v["one_family_rule"])
+    assert "EVERY original frozen gate cell" in squash(rep["pass_rule"]) and "no other cell may compensate" in squash(rep["pass_rule"])
+    assert "per-query mean over seeds 0, 1, 2 on V2_GATE" in squash(rep["aggregation"]) and "1e-12" in rep["aggregation"]
+    held = rep["held_confirmation"]
+    assert held["read_for"].startswith("REPLICATION_PASS families only")
+    assert "no threshold of their own" in squash(held["procedure"]) and "stage_held" in held["procedure"]
+    assert "dropped as the arrays are read" in squash(held["not_read_for"])
+    assert "not a globally unseen dataset" in squash(held["what_the_held_half_is"])
+    assert set(rep["interpretation_rule"]) == set(v["overall"])
+    assert "closes Universal-v2 without rescue" in rep["interpretation_rule"]["BOTH_REPLICATION_FAIL"]
+    assert "original pilot is still reported as failed" in rep["interpretation_rule"]["BOTH_REPLICATION_PASS"]
+    assert "no fixed-score gating mechanism" in squash(rep["no_architecture_repair"])
+    assert set(rep["reporting"]) >= {"seed-wise gate numbers", "three-seed means", "seed standard deviations", "original thresholds", "margins to threshold",
+                                     "bootstrap intervals", "family replication statuses", "held-confirmation results where authorised", "compute time",
+                                     "incidents", "artifact hashes", "checkpoint hashes", "commit IDs"}
+    stops = rep["hard_stops"]
+    assert len([k for k in stops if k != "procedure"]) == 8 and all("amendment_3 condition" in str(val) for k, val in stops.items() if k != "procedure")
+    assert "the status line is not moved" in stops["procedure"]
+    assert rep["execution"][:2] == ["file amendment", "commit before fitting"] and rep["execution"][-1] == "STOP" and len(rep["execution"]) == 11
+    assert "150 fit-hours" in squash(rep["compute"]) and "is not a fit and does not count" in squash(rep["compute"])
+    assert "checkpoint resumes the fit" in squash(rep["crash_and_reboot"])
+    assert rep["outputs"]["declaration_block"].startswith("replication_record_<date>") and "the status line is not moved" in rep["outputs"]["declaration_block"]
+    rec = amendment4["reconciliations_where_the_ruling_and_the_declaration_differ"]
+    assert "not an ensemble" in squash(rec["ensemble_wording"]) and "stays RUN_PILOT_FAILED" in squash(rec["status_line"])
+    assert "a REPLICATION_FAIL family gets none" in squash(rec["held_half_of_the_pilot"])
+    # the run script carries the vocabulary and the dated prefix of the replication record
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("universal_v2_run_decl_check_4", ROOT / "scripts" / "universal_v2_run.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module.REPLICATION_FAMILY == tuple(v["per_family"]) and set(module.REPLICATION_OVERALL.values()) == set(v["overall"])
+    assert module.REPLICATION_OVERALL[(True, True)] == "BOTH_REPLICATION_PASS" and module.REPLICATION_OVERALL[(False, False)] == "BOTH_REPLICATION_FAIL"
+    assert module.DATED.pattern == DATED.pattern and DATED.match("replication_record_2026_09_22") and not DATED.match("replication_2026_09_22")

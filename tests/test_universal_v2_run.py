@@ -9,8 +9,13 @@ once and refused after an eval record; the gate refused before the selection,
 read once, never reading V2_HELD_CONFIRMATION (held rows set to NaN leave every
 gate number finite); seeds 1-2 refused without a gate pass; the supplement
 eval pass; the held column produced once by the report and reused thereafter;
-the dated-block filing, the status moves and the run record. The M3B files
-are never touched; the real caches are never compiled; no real fit runs."""
+the dated-block filing, the status moves and the run record; then the post-pilot
+replication of amendment 4: seeds 1-2 of the selected arm that failed its gate
+fitted only under the filed amendment with the seed-0 record's protocol and
+architecture, the replication read once on V2_GATE, the held half read once for
+the REPLICATION_PASS family only, the document stating both statuses and the
+dated replication record that moves no status line. The M3B files are never
+touched; the real caches are never compiled; no real fit runs."""
 
 from __future__ import annotations
 
@@ -99,7 +104,7 @@ def sandbox(tmp_path_factory):
     config = base / "universal_v2.yaml"
     config.write_bytes(_declaration_before_the_run().encode("utf-8"))
     for name, value in (("OUT", out), ("CACHE", out / "cache"), ("FITS", out / "fits"), ("EVAL", out / "eval"), ("CONFIG", config),
-                        ("M3B_OUT", m3b_out), ("DOC", base / "docs" / "UNIVERSAL_V2_PILOT.md")):
+                        ("M3B_OUT", m3b_out), ("DOC", base / "docs" / "UNIVERSAL_V2_PILOT.md"), ("REPLICATION_DOC", base / "docs" / "UNIVERSAL_V2_REPLICATION.md")):
         mp.setattr(R, name, value)
     out.mkdir(parents=True)
     (m3b_out / "eval").mkdir(parents=True)
@@ -120,7 +125,10 @@ def _declaration_before_the_run() -> str:
     """The repository declaration as it stood before the real run: cut at the first run-produced block. append_block
     writes every block the run files (contract_frozen_*, timing_*, pilot_gate_record_*, run_record_*, hard_stop_*)
     under a '# -- ... --' header line; the hand-written declaration and its review amendments carry none, so the
-    sandbox re-runs the whole sequence from DECLARED_NOT_RUN however far the real pilot has progressed."""
+    sandbox re-runs the whole sequence from DECLARED_NOT_RUN however far the real pilot has progressed. An amendment
+    filed after the run-produced blocks (amendment 4, the post-pilot replication, appended after the pilot closed) lies
+    after the cut and is dropped with them; the tests re-file its replication section at its place in the sequence
+    (test 28), re-pointed at the sandbox world."""
     lines = (R.ROOT / "configs" / "universal_v2.yaml").read_text(encoding="utf-8").split(LF)   # never R.CONFIG: the sandbox re-points it
     cut = next((i for i, l in enumerate(lines) if l.startswith("# -- ")), len(lines))
     lines = lines[:cut]
@@ -941,3 +949,231 @@ def test_27_run_record_filed_last_and_the_status_names_the_family_that_passed(sa
     assert any(k.endswith("gate_record.json") for k in sandbox.cfg[key]["sidecars"]) and not any(k.startswith("cache/") for k in sandbox.cfg[key]["sidecars"])
     with pytest.raises(SystemExit, match="condition"):
         R.file_hard_stop(sandbox.cfg, "2026_09_22", 12, "no such condition", {}, [], config=sandbox.config, log=_quiet)
+
+
+# ── amendment 4: the post-pilot replication on the toy world ─────────────────
+
+REPLICATION_DATE = "2026_09_22"
+
+
+def _sandbox_replication_amendment(sb) -> dict:
+    """The real amendment 4 block's replication section re-pointed at the sandbox world: the status the sandbox
+    closed at, its terminal state, its selected arms; everything else (the vocabulary, the pass rule, the held rule,
+    the interpretation rule, the hard stops) is the real amendment's, deep-copied."""
+    real = yaml.safe_load((R.ROOT / "configs" / "universal_v2.yaml").read_text(encoding="utf-8"))["amendment_4_2026_09_21"]
+    g, t = S.selection["gnn"]["arm"], S.selection["twin"]["arm"]
+    rep = copy.deepcopy(real["post_pilot_replication"])
+    rep.update({"applies_at_status": "RUN_GNN_ONLY_CONFIRMED", "original_pilot_status": "GNN_ONLY_CONFIRMED", "original_pilot_commit": "0000000",
+                "authorised_fits": {g: [1, 2], t: [1, 2]}, "selected_arms": {"gnn": g, "twin": t}})
+    return {"filed_utc": R.utc(), "status_after": "RUN_GNN_ONLY_CONFIRMED", "what_this_is": "sandbox: the real amendment's replication section on the toy world",
+            "post_pilot_replication": rep}
+
+
+def test_28_replication_fits_only_under_the_amendment_at_its_status_and_the_frozen_seed0_record(sandbox):
+    """amendment 4: after the pilot closed, seeds 1-2 of a selected arm that failed its gate are fitted only under
+    the dated replication amendment, at the status it applies at, on the pilot's pinned sidecars, with the training
+    rule and the architecture of the seed-0 record of the arm; seed 0 is not repeated; no other arm or seed."""
+    sandbox.cfg["status"] = "RUN_GNN_ONLY_CONFIRMED"          # the loaded mapping catches up with the file (test 27 moved the line)
+    assert _status_line(sandbox) == "status: RUN_GNN_ONLY_CONFIRMED"
+    g, t = S.selection["gnn"]["arm"], S.selection["twin"]["arm"]
+    with pytest.raises(SystemExit, match="passed its gate"):
+        R.run_fit(t, 1, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet, cfg=sandbox.cfg)     # no amendment names the pair yet
+    with pytest.raises(SystemExit, match="no dated amendment carries post_pilot_replication"):
+        R.replication_amendment(sandbox.cfg)
+    R.append_block(sandbox.cfg, f"amendment_4_{REPLICATION_DATE}", _sandbox_replication_amendment(sandbox), "sandbox: the replication amendment", sandbox.config)
+    assert R.replication_amendment(sandbox.cfg)[0] == f"amendment_4_{REPLICATION_DATE}" and _status_line(sandbox) == "status: RUN_GNN_ONLY_CONFIRMED"
+    with pytest.raises(SystemExit, match="passed its gate"):
+        R.run_fit("u_gnn_v2_core78", 1, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet, cfg=sandbox.cfg)   # not an authorised arm
+    with pytest.raises(SystemExit, match="passed its gate"):
+        R.run_fit(t, 1, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet)                    # without the declaration in hand
+    # the premises: the status the amendment applies at, the pilot's terminal state, the pinned sidecars, the seed-0 weights
+    other = copy.deepcopy(sandbox.cfg)
+    other[f"amendment_4_{REPLICATION_DATE}"]["post_pilot_replication"]["applies_at_status"] = "RUN_PILOT_FAILED"
+    with pytest.raises(SystemExit, match="applies at status"):
+        R.replication_authorisation(other, t, 1)
+    other = copy.deepcopy(sandbox.cfg)
+    other[f"run_record_{DATE}"]["terminal_state"]["terminal"] = "PILOT_FAILED"
+    with pytest.raises(SystemExit, match="closed at"):
+        R.replication_authorisation(other, t, 1)
+    other = copy.deepcopy(sandbox.cfg)
+    other[f"run_record_{DATE}"]["gate_record_sha256"] = "0" * 64
+    with pytest.raises(SystemExit, match="is not the file"):
+        R.replication_authorisation(other, t, 1)
+    other = copy.deepcopy(sandbox.cfg)
+    other[f"run_record_{DATE}"]["fits"][R.fit_key(t, 0)]["state_sha256"] = "0" * 64
+    with pytest.raises(SystemExit, match="do not hash"):
+        R.replication_authorisation(other, t, 1)
+    assert R.replication_authorisation(sandbox.cfg, "u_gnn_v2_core78", 1) is None and R.replication_authorisation(sandbox.cfg, t, 0) is None
+    auth = R.replication_authorisation(sandbox.cfg, t, 1)
+    assert auth["block"] == f"amendment_4_{REPLICATION_DATE}" and auth["status_line"] == "RUN_GNN_ONLY_CONFIRMED" and auth["run_record_block"] == f"run_record_{DATE}"
+    assert auth["seed0_state_sha256"] == S.fits[t]["state_sha256"] and set(auth["pins_verified"]) == {"selection.json", "gate_record.json", "held_record.json"}
+    # a changed training rule is refused before any fit and leaves no record (the frozen protocol; a hard stop, not a fit)
+    with pytest.raises(SystemExit, match="differ from the seed-0 record"):
+        R.run_fit(t, 1, S.inputs, S.carves, sandbox.bank, {**S.training, "patience": 3}, log=_quiet, cfg=sandbox.cfg)
+    assert not (sandbox.out / "fits" / f"{R.fit_key(t, 1)}.json").exists()
+    assert R.run_fit(t, 0, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet, cfg=sandbox.cfg) == S.fits[t]    # seed 0 exists, not repeated
+    for seed in (1, 2):
+        rec = R.run_fit(t, seed, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet, cfg=sandbox.cfg)
+        assert rec["key"] == R.fit_key(t, seed) and rec["seed"] == seed and rec["replication"]["block"] == f"amendment_4_{REPLICATION_DATE}"
+        assert rec["replication"]["checks_against_seed_0"]["training"] == "equal" and rec["replication"]["seed0_state_sha256"] == S.fits[t]["state_sha256"]
+        assert "seed0_record" not in rec["replication"] and rec["parameters"] == S.fits[t]["parameters"] and rec["training"] == S.fits[t]["training"]
+        assert rec["state_sha256"] == R.sha256_file(sandbox.out / "fits" / f"{rec['key']}.pt")
+        S.fits[f"{t}__s{seed}"] = rec
+    with pytest.raises(SystemExit, match="not a declared seed"):
+        R.run_fit(t, 3, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet, cfg=sandbox.cfg)
+    assert R.run_fit(g, 1, S.inputs, S.carves, sandbox.bank, S.training, log=_quiet, cfg=sandbox.cfg) == S.fits[f"{g}__s1"]   # pilot_gate.on_pass fitted it; not repeated
+    assert S.fits[f"{g}__s1"].get("replication") is None
+
+
+def test_29_replication_read_once_on_v2_gate_and_the_held_half_for_the_passing_family_only(sandbox):
+    """The twin's seeds 1-2 scored beside the seed-0 records (a second supplement pass), then the replication reading:
+    the GNN (every cell on the seed mean) REPLICATION_PASS, the twin (metaqa hit@1 on the seed mean) REPLICATION_FAIL,
+    overall GNN_REPLICATION_ONLY; the held half read once for the GNN only, the twin's held arrays dropped unread."""
+    g, t = S.selection["gnn"]["arm"], S.selection["twin"]["arm"]
+    keys = [R.fit_key(t, 1), R.fit_key(t, 2)]
+    tag = "more_" + hashlib.sha256(",".join(sorted(keys)).encode("utf-8")).hexdigest()[:8]
+    with pytest.raises(SystemExit, match="not scored on the population"):
+        REPORT.stage_replication(sandbox.cfg, log=_quiet)       # fitted, not yet scored
+    assert not (sandbox.out / "replication_record.json").exists()
+    S.supplement_twin = {}
+    for name in PILOT:
+        world = S.world[name]
+        rng = np.random.default_rng({"metaqa": 31, "2wiki": 32, "squad": 33}[name])
+        two_gold = world["arrays"][f"{R.fit_key(t, 0)}/gold_total"] >= 2
+        extra = {}
+        for key in keys:
+            for m, a in _scorer_arrays(rng, N_EVAL[name], two_gold, 0.50, 0.95).items():    # the twin's biases: metaqa hit@1 stays short
+                extra[f"{key}/{m}"] = a
+            for m, a in _mechanism_arrays(rng, key, N_EVAL[name]).items():
+                extra[f"{key}/{m}"] = a
+        sup_world = {"ids": world["ids"], "half": world["half"], "scorers": keys + [s for s in world["scorers"] if s.startswith("fixed:")],
+                     "arrays": {**{k: v for k, v in world["arrays"].items() if "/" not in k or k.split("/")[0].startswith("fixed:")}, **extra}}
+        supplement = {"tag": tag, "models": sorted(keys), "seed0_record_sha256": R.sha256_file(sandbox.out / "eval" / f"{name}.json")}
+        rec = _record(sandbox, name, sup_world, file_base=f"{name}__{tag}", supplement=supplement, keys=keys)
+        assert rec["supplement"] == supplement and set(rec["scorers"]) == set(sup_world["scorers"])
+        S.supplement_twin[name] = sup_world
+    S.supplement_twin_tag, S.supplement_twin_keys = tag, keys
+    rows, mask, meta = REPORT.pooled_rows("squad", "V2_GATE")
+    assert set(meta) == {"squad", f"squad__{S.supplement_tag}", f"squad__{tag}"} and all(f"{k}/hit@1" in rows for k in keys + S.supplement_keys)
+    stale = copy.deepcopy(sandbox.cfg)
+    stale["status"] = "PILOT_GATE_READ"
+    with pytest.raises(SystemExit, match="applies at"):
+        REPORT.stage_replication(stale, log=_quiet)
+    assert not (sandbox.out / "replication_record.json").exists()
+    rec = REPORT.stage_replication(sandbox.cfg, log=_quiet)
+    assert rec["family_status"] == {"GNN_GATE": "REPLICATION_PASS", "TWIN_GATE": "REPLICATION_FAIL"} and rec["replication_status"] == "GNN_REPLICATION_ONLY"
+    assert rec["passing_families"] == ["gnn"] and rec["never"] == "PILOT_PASS" and rec["half"] == "V2_GATE" and rec["read_once"] is True
+    assert rec["original_pilot_status"] == "GNN_ONLY_CONFIRMED" and rec["status_at_read"] == "RUN_GNN_ONLY_CONFIRMED" and rec["run_record_block"] == f"run_record_{DATE}"
+    assert rec["outcome_on_V2_GATE_at_seed_0"] == S.gate["outcome"] and rec["thresholds_from"] == "amendment_1_2026_09_19.pilot_gate_amended"
+    assert rec["interpretation"].startswith("the proposed universal GNN is stable enough to continue")
+    assert set(rec["fits"]) == {R.fit_key(a, s) for a in (g, t) for s in (0, 1, 2)}
+    assert rec["fits"][R.fit_key(t, 1)]["authorised_by"] == f"amendment_4_{REPLICATION_DATE}" and rec["fits"][R.fit_key(g, 1)]["authorised_by"] is None
+    conf = rec["confirmation"]
+    assert set(conf) == {g, t} and conf[g]["replication_status"] == "REPLICATION_PASS" and conf[t]["replication_status"] == "REPLICATION_FAIL"
+    assert all(c["complete"] and c["seeds_present"] == [0, 1, 2] and c["half"] == "V2_GATE" for c in conf.values())
+    assert conf[g]["confirmed"] and all(e["holds"] for e in conf[g]["cells"]) and not conf[t]["confirmed"]
+    failing = [e for e in conf[t]["cells"] if not e["holds"]]
+    assert failing and all(e["dataset"] == "metaqa" and e["metric"] == "hit@1" for e in failing)
+    for c in conf.values():
+        for e in c["cells"]:
+            assert e["margin_of_the_seed_mean"] == round(e["mean_over_seeds"] - e["threshold"], 4) and set(e["per_seed"]) == {"0", "1", "2"}
+            assert e["per_seed_margin"] == {s: round(v - e["threshold"], 4) for s, v in e["per_seed"].items()} and e["sd_over_seeds"] is not None
+            assert (e["margin_of_the_seed_mean"] >= 0) == e["at_or_above_threshold"]
+    # the per-query mean over the three seeds recomputed for one cell: seed 0 from the seed-0 record, seeds 1-2 from the twin's supplement
+    half = S.world["2wiki"]["half"]
+    stack = [S.world["2wiki"]["arrays"][f"{R.fit_key(t, 0)}/recall@5"][half]] + [S.supplement_twin["2wiki"]["arrays"][f"{k}/recall@5"][half] for k in keys]
+    cell = [e for e in conf[t]["cells"] if e["dataset"] == "2wiki"][0]
+    assert cell["mean_over_seeds"] == round(float(np.mean(stack, axis=0).mean()), 4) and cell["per_seed"]["1"] == round(float(stack[1].mean()), 4)
+    assert set(rec["seeds"]["metaqa"]) == {g, t} and rec["seeds"]["metaqa"][t]["seeds"] == [0, 1, 2] and rec["seeds"]["metaqa"][t]["hit@1"]["n"] == 3
+    with pytest.raises(SystemExit, match="read once"):
+        REPORT.stage_replication(sandbox.cfg, log=_quiet)
+    S.replication = rec
+    # the held half: read once, for the REPLICATION_PASS family only, by the declared procedure; the twin's arrays dropped unread
+    held = R.read_json(sandbox.out / "replication_held_record.json")
+    assert held["read_for"] == ["gnn"] and held["not_read_for"] == ["twin"] and held["half"] == "V2_HELD_CONFIRMATION" and held["read_once"] is True
+    assert held["arrays_dropped_unread"] == sorted(R.fit_key(t, s) for s in (0, 1, 2)) and set(held["cells_confirmatory"]) == {g}
+    assert held["replication_record_sha256"] == R.sha256_file(sandbox.out / "replication_record.json") and held["amendment"] == f"amendment_4_{REPLICATION_DATE}"
+    assert held["queries"] == {name: int((~S.world[name]["half"]).sum()) for name in PILOT}
+    v = held["cells_confirmatory"][g]
+    assert v["family"] == "gnn" and v["gate_half_status"] == "REPLICATION_PASS" and v["seed_mean"]["confirmatory_not_a_gate"] and v["seed_mean"]["half"] == "V2_HELD_CONFIRMATION"
+    assert v["per_seed"]["0"]["from"].startswith("held_record.json") and v["per_seed"]["0"]["cells"] == S.held["gate_cells_confirmatory"][g]["cells"]
+    assert all(v["per_seed"][s]["confirmatory_not_a_gate"] for s in ("1", "2")) and v["per_seed"]["1"]["key"] == R.fit_key(g, 1)
+    heldmask = ~S.world["squad"]["half"]
+    stack = [S.world["squad"]["arrays"][f"{R.fit_key(g, 0)}/recall@5"][heldmask]] + [S.supplement["squad"]["arrays"][f"{k}/recall@5"][heldmask] for k in S.supplement_keys]
+    cell = [e for e in v["seed_mean"]["cells"] if e["dataset"] == "squad"][0]
+    assert cell["mean_over_seeds"] == round(float(np.mean(stack, axis=0).mean()), 4) and cell["per_seed"]["2"] == round(float(stack[2].mean()), 4)
+    assert cell["margin_of_the_seed_mean"] == round(cell["mean_over_seeds"] - cell["threshold"], 4)
+    assert set(v["seeds"]["metaqa"]) == {g} and v["seeds"]["metaqa"][g]["seeds"] == [0, 1, 2]
+    assert t not in json.dumps(held["cells_confirmatory"])
+    with pytest.raises(SystemExit, match="read once"):
+        REPORT.replication_held(sandbox.cfg, REPORT.replication_premises(sandbox.cfg), ["gnn"], "0" * 64, log=_quiet)
+    S.replication_held = held
+
+
+def test_30_replication_document_states_both_statuses_and_the_dated_record_moves_no_status_line(sandbox):
+    g, t = S.selection["gnn"]["arm"], S.selection["twin"]["arm"]
+    with pytest.raises(SystemExit, match="precede the record"):
+        R.stage_file(sandbox.cfg, REPLICATION_DATE, ["replication"], config=sandbox.config, log=_quiet)    # no document yet
+    doc = REPORT.stage_replication_doc(sandbox.cfg, log=_quiet)
+    text = doc.read_text(encoding="utf-8")
+    assert doc == R.REPLICATION_DOC and doc != R.DOC and "# Universal-v2 post-pilot replication (amendment 4)" in text
+    assert "**ORIGINAL PILOT STATUS: GNN_ONLY_CONFIRMED**" in text and "**POST-PILOT REPLICATION STATUS: GNN_REPLICATION_ONLY**" in text
+    assert "ORIGINAL PILOT STATUS: GNN_ONLY_CONFIRMED. POST-PILOT REPLICATION STATUS: GNN_REPLICATION_ONLY." in text.split("## 6. Reading")[1]
+    for section in ("## 1. What was frozen and verified", "## 2. The fits", "## 3. The supplement eval pass", "## 4. Replication on V2_GATE (seeds 0-2, the declared aggregation)",
+                    "## 5. V2_HELD_CONFIRMATION (read once, REPLICATION_PASS families only)", "## 6. Reading", "## 7. Incidents", "## 8. Commits since the pilot closed",
+                    "## 9. Run record"):
+        assert section in text, section
+    assert f"**`{g}` (GNN_GATE) — REPLICATION_PASS**" in text and f"**`{t}` (TWIN_GATE) — REPLICATION_FAIL**" in text and "never `PILOT_PASS`" in text
+    assert "GNN_REPLICATION_ONLY and TWIN_REPLICATION_ONLY replicate that family only, never the proposed universal pair" in text
+    fits_section = text.split("## 2. The fits")[1].split("## 3.")[0]
+    assert S.fits[f"{t}__s1"]["state_sha256"] in fits_section and S.fits[g]["state_sha256"] in fits_section and f"amendment_4_{REPLICATION_DATE}" in fits_section
+    assert "pilot (seed 0)" in fits_section and "against the ceiling of 150" in fits_section
+    evals_section = text.split("## 3. The supplement eval pass")[1].split("## 4.")[0]
+    assert f"`squad__{S.supplement_tag}`" in evals_section and f"`metaqa__{S.supplement_twin_tag}`" in evals_section
+    gate_section = text.split("## 4. Replication on V2_GATE")[1].split("## 5.")[0]
+    cell = [e for e in S.replication["confirmation"][t]["cells"] if e["dataset"] == "2wiki"][0]
+    assert f"| {cell['per_seed']['0']:.4f} | {cell['per_seed']['1']:.4f} | {cell['per_seed']['2']:.4f} | {cell['mean_over_seeds']:.4f} |" in gate_section
+    assert "Cells failing on the seed mean: metaqa hit@1 (all)" in gate_section and "Every cell holds on the seed mean." in gate_section
+    held_section = text.split("## 5. V2_HELD_CONFIRMATION")[1].split("## 6. Reading")[0]
+    assert f"**`{g}` (GNN_GATE) — confirmatory, not a gate**" in held_section and "not read for ['twin']" in held_section and f"`{t}`" not in held_section
+    assert "seed 0 copied from the pilot's held record" in held_section
+    assert "None logged during the replication" in text.split("## 7. Incidents")[1].split("## 8.")[0]
+    assert "nan" not in text.split("## 9. Run record")[0].lower()
+    for f in sandbox.cfg["forbidden_framings"][:3]:
+        assert f not in text
+    report = R.read_json(sandbox.out / "replication_report_record.json")
+    assert report["doc_sha256_lf"] == R.lf_sha256(doc) and report["replication_record_sha256"] == R.sha256_file(sandbox.out / "replication_record.json")
+    assert report["replication_held_record_sha256"] == R.sha256_file(sandbox.out / "replication_held_record.json")
+    assert report["original_pilot_status"] == "GNN_ONLY_CONFIRMED" and report["replication_status"] == "GNN_REPLICATION_ONLY"
+    assert any(k.endswith("replication_record.json") for k in report["files"]) and any(k.endswith(f"{R.fit_key(t, 2)}.pt") for k in report["files"])
+    # the document changed after the report record: the record is not filed until it is rendered again
+    original = doc.read_bytes()
+    doc.write_bytes(original + b"x")
+    with pytest.raises(SystemExit, match="render again first"):
+        R.stage_file(sandbox.cfg, REPLICATION_DATE, ["replication"], config=sandbox.config, log=_quiet)
+    doc.write_bytes(original)
+    R.stage_file(sandbox.cfg, REPLICATION_DATE, ["replication"], config=sandbox.config, log=_quiet)
+    block = sandbox.cfg[f"replication_record_{REPLICATION_DATE}"]
+    assert block["original_pilot_status"] == "GNN_ONLY_CONFIRMED" and block["replication_status"] == "GNN_REPLICATION_ONLY"
+    assert block["family_status"] == {"GNN_GATE": "REPLICATION_PASS", "TWIN_GATE": "REPLICATION_FAIL"} and block["passing_families"] == ["gnn"] == block["held_half_read_for"]
+    assert block["never"] == "PILOT_PASS" and block["status_line"] == "RUN_GNN_ONLY_CONFIRMED" and block["status_line_moved"] is False
+    assert _status_line(sandbox) == "status: RUN_GNN_ONLY_CONFIRMED"
+    assert block["amendment"] == f"amendment_4_{REPLICATION_DATE}" and block["original_pilot_commit"] == "0000000" and block["selected"] == {"gnn": g, "twin": t}
+    assert set(block["fits"]) == {R.fit_key(a, s) for a in (g, t) for s in (0, 1, 2)}
+    assert block["fits"][R.fit_key(t, 2)]["authorised_by"] == f"amendment_4_{REPLICATION_DATE}" and block["fits"][R.fit_key(g, 0)]["authorised_by"] is None
+    assert block["fits"][R.fit_key(t, 2)]["state_sha256"] == S.fits[f"{t}__s2"]["state_sha256"] and block["fits"][R.fit_key(g, 0)]["state_sha256"] == S.fits[g]["state_sha256"]
+    assert set(block["evals"]) == {f"{n}__{S.supplement_tag}" for n in PILOT} | {f"{n}__{S.supplement_twin_tag}" for n in PILOT}
+    assert all(v["supplement"]["tag"] in (S.supplement_tag, S.supplement_twin_tag) and v["record_sha256"] and v["arrays_sha256"] for v in block["evals"].values())
+    c = block["compute"]
+    assert c["ceiling_fit_hours"] == 150.0 and c["replication_fit_hours"] == round(sum(S.fits[k]["seconds"] for k in (f"{t}__s1", f"{t}__s2", f"{g}__s1", f"{g}__s2")) / 3600, 3)
+    assert c["fit_hours_spent_in_total"] >= c["replication_fit_hours"] and c["supplement_eval_lane_hours"] >= 0
+    assert block["replication_record_sha256"] == R.sha256_file(sandbox.out / "replication_record.json") and block["doc_sha256"] == R.lf_sha256(R.REPLICATION_DOC)
+    assert block["replication_held_record_sha256"] == R.sha256_file(sandbox.out / "replication_held_record.json") and block["incidents"] == []
+    assert block["commits_since_the_pilot_closed"] and "the status line is not moved" in _config_text(sandbox).split(f"replication_record_{REPLICATION_DATE}:")[0].splitlines()[-1]
+    reloaded = yaml.safe_load(_config_text(sandbox))
+    assert reloaded["status"] == "RUN_GNN_ONLY_CONFIRMED" and reloaded[f"replication_record_{REPLICATION_DATE}"] == block
+    dated = [k for k in reloaded if R.DATED.match(k)]
+    assert dated[-3:] == ["hard_stop_2026_09_21", f"amendment_4_{REPLICATION_DATE}", f"replication_record_{REPLICATION_DATE}"]
+    with pytest.raises(SystemExit, match="already filed"):
+        R.stage_file(sandbox.cfg, "2026_09_23", ["replication"], config=sandbox.config, log=_quiet)
+    assert _status_line(sandbox) == "status: RUN_GNN_ONLY_CONFIRMED"

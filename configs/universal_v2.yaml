@@ -5203,3 +5203,594 @@ run_record_2026_09_21:
   doc_sha256: d45471be7efd7e0fe0182a5a206bc0bd72fdf0534d901a836e696cf29d8fd129
   incidents: []
   note: incidents and machine-health lines are appended by the review, dated; nothing above is edited
+
+# ══════════════════════════════════════════════════════════════════
+# Amendment 4 (2026-09-21): the post-pilot replication of the two frozen
+# selected arms -- the user's prospective ruling filed verbatim after the
+# pilot closed at PILOT_FAILED (d2850ab), before any of the fits it
+# authorises. Seeds 1-2 of u_gnn_v2_ef and u_mlp_v2_mix under the frozen
+# protocol, the three-seed mean against the original frozen cells, a
+# separate replication status; the original status is not moved and
+# nothing is redesigned. Filed after the run-produced blocks: the file is
+# chronological and append-only.
+# ══════════════════════════════════════════════════════════════════
+amendment_4_2026_09_21:
+  filed_utc: '2026-09-21T10:01:22Z'
+  status_after: RUN_PILOT_FAILED
+  reviewed: 'd2850ab (the terminal state of the pilot: docs/UNIVERSAL_V2_PILOT.md, pilot_gate_record_2026_09_21,
+    run_record_2026_09_21, status RUN_PILOT_FAILED); filed after the run-produced blocks in the order the file is
+    written (chronological, append-only, as the M3B declaration filed its amendments 3 and 4 after its run-produced
+    blocks)'
+  what_this_is: >-
+    the user's prospective amendment, filed verbatim after the pilot closed at PILOT_FAILED: seeds 1 and 2 of the
+    two already-selected frozen arms are fitted under the frozen training protocol and the three-seed per-query
+    mean is read against the original frozen gate cells on V2_GATE by the aggregation the declaration already carries
+    for seed confirmation; the pilot's status, records and document are not touched and its result is not reinterpreted;
+    the replication carries its own status vocabulary, filed here before any of its fits; nothing is redesigned
+    inside it. Where its wording and the declaration differ, the declaration governs and the difference is named
+    under reconciliations.
+  ruling_verbatim: |
+    AMENDMENT — POST-PILOT REPLICATION OF FROZEN UNIVERSAL-v2 ARMS
+    ===============================================================
+
+    Date: 2026-09-21
+
+    This amendment is prospective with respect to every fit authorised below.
+
+    The original Universal-v2 pilot remains closed with its filed result:
+
+        PILOT_FAILED
+
+    at commit:
+
+        d2850ab
+
+    Nothing in this amendment changes, reinterprets, overrides, or retroactively
+    passes the original seed-0 pilot.
+
+    ===============================================================
+    MOTIVATION
+    ===============================================================
+
+    The two selected families failed exactly one gate cell each:
+
+    GNN:
+        selected arm:
+            u_gnn_v2_ef
+
+        failed cell:
+            SQuAD R@5
+
+        observed:
+            0.8988
+
+        frozen threshold:
+            0.8996
+
+        shortfall:
+            0.0008
+
+    Twin:
+        selected arm:
+            u_mlp_v2_mix
+
+        failed cell:
+            2Wiki R@5
+
+        observed:
+            0.8545
+
+        frozen threshold:
+            0.8578
+
+        shortfall:
+            0.0033
+
+    Every other gate cell for those selected arms passed.
+
+    Because both failures are small and only seed 0 has been fitted, the next
+    scientific question is:
+
+        Are the failures stable properties of the frozen models,
+        or seed-specific variation?
+
+    This must be answered before any architecture is modified.
+
+    ===============================================================
+    FROZEN OBJECTS
+    ===============================================================
+
+    Do NOT change:
+
+    - raw feature contract
+    - surviving 129-column contract
+    - feature screen
+    - compiled caches
+    - candidate pools
+    - model architectures
+    - H=128
+    - relation-path features
+    - K_REL
+    - dataset mixture
+    - loss
+    - optimizer
+    - training schedule
+    - checkpoint-selection rule
+    - model-selection result
+    - gate thresholds
+    - gate population
+    - held-confirmation population
+    - M3B artifacts
+    - seed-0 checkpoints/results
+
+    No feature may be added or removed.
+
+    No architecture may be modified.
+
+    No threshold may be relaxed.
+
+    No new candidate model may be introduced.
+
+    ===============================================================
+    AUTHORISED FITS
+    ===============================================================
+
+    Train ONLY:
+
+        u_gnn_v2_ef
+            seed 1
+            seed 2
+
+        u_mlp_v2_mix
+            seed 1
+            seed 2
+
+    using exactly the frozen training protocol.
+
+    Do not retrain seed 0.
+
+    Do not train any other Universal-v2 arm.
+
+    Do not rerun model selection.
+
+    ===============================================================
+    REPLICATION METRIC
+    ===============================================================
+
+    After seeds 1 and 2 complete, score all three seeds on the existing:
+
+        V2_GATE
+
+    Compute the per-query ensemble/seed mean exactly using the aggregation
+    already declared for Universal-v2 seed confirmation.
+
+    Evaluate against the ORIGINAL frozen gate thresholds.
+
+    No threshold is changed.
+
+    For each family report:
+
+        seed 0
+        seed 1
+        seed 2
+        mean
+        standard deviation
+        paired bootstrap interval where applicable
+
+    ===============================================================
+    STATUS VOCABULARY
+    ===============================================================
+
+    The original status remains:
+
+        PILOT_FAILED
+
+    The replication receives a SEPARATE status.
+
+    For each family:
+
+        REPLICATION_PASS
+        REPLICATION_FAIL
+
+    Overall:
+
+        BOTH_REPLICATION_PASS
+        GNN_REPLICATION_ONLY
+        TWIN_REPLICATION_ONLY
+        BOTH_REPLICATION_FAIL
+
+    Never rename a replication pass to:
+
+        PILOT_PASS
+
+    or imply that the original preregistered pilot passed.
+
+    ===============================================================
+    REPLICATION PASS RULE
+    ===============================================================
+
+    A family receives:
+
+        REPLICATION_PASS
+
+    only if its THREE-SEED MEAN satisfies EVERY original frozen gate cell for
+    that family.
+
+    Not merely the cell that failed seed 0.
+
+    No averaging across datasets is allowed to compensate for a failed cell.
+
+    No tolerance band is added.
+
+    No epsilon is introduced.
+
+    ===============================================================
+    HELD CONFIRMATION
+    ===============================================================
+
+    If a family obtains REPLICATION_PASS:
+
+        score/read V2_HELD_CONFIRMATION exactly once for that family.
+
+    If it obtains REPLICATION_FAIL:
+
+        do NOT read the held half for that family.
+
+    The held half remains a Universal-v2 architecture-selection holdout, not a
+    globally unseen dataset, because the parent M3B development population had
+    already been evaluated previously.
+
+    Use only the already-declared held evaluation procedure.
+
+    Do not introduce a new held threshold.
+
+    If the declaration already specifies how gate thresholds map to the held
+    half, use that rule unchanged.
+
+    Report:
+
+        V2_GATE seed-mean result
+        V2_HELD_CONFIRMATION result
+
+    separately.
+
+    ===============================================================
+    INTERPRETATION RULE
+    ===============================================================
+
+    Four scientifically different outcomes are possible.
+
+    1. BOTH_REPLICATION_PASS
+
+    Interpretation:
+
+        the seed-0 terminal PILOT_FAILED result was sensitive to initialization,
+        while the frozen architectures satisfy the original requirements on
+        three-seed mean.
+
+    The original pilot is still reported as failed.
+
+    2. GNN_REPLICATION_ONLY
+
+    Interpretation:
+
+        the proposed universal GNN is stable enough to continue;
+        the universal non-MP twin is not yet sufficiently robust.
+
+    3. TWIN_REPLICATION_ONLY
+
+    Interpretation:
+
+        the compiled non-MP architecture is stable enough to continue;
+        the proposed universal GNN is not yet sufficiently robust.
+
+    4. BOTH_REPLICATION_FAIL
+
+    Interpretation:
+
+        the seed-0 failures were not merely initialization noise.
+
+    This closes Universal-v2 without rescue.
+
+    Any architecture change must happen in a new phase.
+
+    ===============================================================
+    NO ARCHITECTURE REPAIR INSIDE THIS AMENDMENT
+    ===============================================================
+
+    Even if a failure is extremely small, do NOT automatically add:
+
+    - a fixed-score gating mechanism
+    - a no-harm loss
+    - another recurrent step
+    - more relation features
+    - more path features
+    - more hidden dimensions
+    - dataset balancing changes
+    - dataset-specific heads
+    - another model candidate
+
+    Those belong to a later Universal-v2.1 / Universal-v3 declaration.
+
+    ===============================================================
+    REPORTING
+    ===============================================================
+
+    Produce a post-pilot replication section containing:
+
+    - seed-wise gate numbers
+    - three-seed means
+    - seed standard deviations
+    - original thresholds
+    - margins to threshold
+    - bootstrap intervals
+    - family replication statuses
+    - held-confirmation results where authorised
+    - compute time
+    - incidents
+    - artifact hashes
+    - checkpoint hashes
+    - commit IDs
+
+    Explicitly state:
+
+        ORIGINAL PILOT STATUS: PILOT_FAILED
+
+    and separately:
+
+        POST-PILOT REPLICATION STATUS: <status>
+
+    ===============================================================
+    EXECUTION AUTHORIZATION
+    ===============================================================
+
+    This amendment authorises the complete replication workflow without
+    intermediate review:
+
+        file amendment
+            ↓
+        commit before fitting
+            ↓
+        train seeds 1–2 for the two frozen selected arms
+            ↓
+        score V2_GATE
+            ↓
+        compute three-seed confirmation
+            ↓
+        read V2_HELD_CONFIRMATION only for REPLICATION_PASS families
+            ↓
+        render report
+            ↓
+        append run record
+            ↓
+        run tests
+            ↓
+        commit
+            ↓
+        STOP
+
+    Crashes/reboots are resumable operational incidents and do not require
+    review.
+
+    ===============================================================
+    HARD STOP
+    ===============================================================
+
+    Stop immediately if:
+
+    - frozen contract hash changes;
+    - M3B pin changes;
+    - compiled-cache hash changes;
+    - model code differs from the frozen selected architecture;
+    - gate or held populations differ;
+    - test data is touched;
+    - compute exceeds the existing authorised ceiling;
+    - completing the work would require a scientific change.
+
+    Otherwise continue autonomously to terminal replication status.
+  gloss_verbatim: |
+    Yes — the clean next move is not to redesign anything yet. Both failures are tiny enough that the first question should be whether they are seed-0 noise.
+    The scientifically safest follow-up is a new dated amendment that trains seeds 1–2 for only the two already-selected frozen models, with no threshold changes and no model changes. The original pilot remains `PILOT_FAILED`; this is a post-pilot replication, not a retroactive rescue.
+    Send this verbatim:
+    [the ruling above]
+    Why I prefer this over immediately making v2.1
+    Because 0.0008 on SQuAD is tiny. If GNN seeds 1–2 are around or above the threshold, redesigning the GNN now would be architecture shopping around one initialization.
+    Likewise the MLP is only 0.0033 short on 2Wiki. Before we invent another compiled block, we should know whether that deficit is reproducible.
+    There are two particularly useful possible outcomes:
+
+    * If the three-seed GNN mean passes SQuAD and the other GNN cells remain strong, then Universal-v2's GNN idea may already be viable.
+    * If the MLP still consistently misses 2Wiki, then the next non-MP phase has a concrete weakness to fix rather than a noisy one.
+
+    And if both fail again, that is also valuable: then we open Universal-v2.1 prospectively, with the original v2 failure preserved cleanly.
+    So this is the cheapest and most defensible next experiment.
+  original_pilot:
+    status: PILOT_FAILED
+    status_line: RUN_PILOT_FAILED
+    commit: d2850ab
+    pilot_gate_record_block: pilot_gate_record_2026_09_21
+    run_record_block: run_record_2026_09_21
+    document: docs/UNIVERSAL_V2_PILOT.md (sha256 d45471be7efd7e0fe0182a5a206bc0bd72fdf0534d901a836e696cf29d8fd129,
+      pinned in run_record_2026_09_21)
+    untouched: >-
+      nothing of the pilot is edited, re-run or re-read for a decision: selection.json, gate_record.json, held_record.json,
+      the seed-0 fit records and weights, the seed-0 eval records, the document and the run record keep the sha256
+      the run record pins; the replication tooling refuses on a mismatch
+  post_pilot_replication:
+    applies_at_status: RUN_PILOT_FAILED
+    original_pilot_status: PILOT_FAILED
+    original_pilot_commit: d2850ab
+    authorised_fits:
+      u_gnn_v2_ef:
+      - 1
+      - 2
+      u_mlp_v2_mix:
+      - 1
+      - 2
+    selected_arms:
+      gnn: u_gnn_v2_ef
+      twin: u_mlp_v2_mix
+    selected_arms_are: >-
+      the arms selection.json and gate_record.json name (order_of_operations 5, behind the firewall); a fit of any
+      other arm, of seed 0, or of a seed outside the list is refused; seed 0 is never retrained (its record exists
+      and is not repeated; its weights must hash to run_record_2026_09_21.fits.<key>.state_sha256)
+    frozen_training_protocol: >-
+      training.rule as the seed-0 fit record of the same arm stores it (max_epochs 6, 2000 batches per epoch, batch
+      16, patience 2, AdamW lr 1e-3 wd 1e-4 clip 1.0, dataset_draw per_query, epoch_limit_s 28800, checkpoint per
+      epoch, resumable); the fit refuses a rule that differs from that record
+    frozen_architecture: >-
+      make_model(arm) on the frozen inputs (contract_frozen_2026_09_19, H=128, K_REL=4, the relation bank of the
+      seed-0 record): the parameter count, the column count, the core sha256, the evidence and evidence-substitution
+      fields must equal the seed-0 fit record of the same arm; the fit refuses otherwise (hard stop: model code
+      differs from the frozen selected architecture)
+    scoring: >-
+      one supplement eval pass per population through the order_of_operations 7 tooling (scripts/universal_v2_run.py
+      --stage eval --models <the four keys>: <name>__more_<sha8>, sharded and merged for metaqa), the same query
+      lists, pools, half labels and fixed rrf per query as the seed-0 records (pooled_rows refuses otherwise); both
+      halves are labelled as they are written and nothing is read from the pass
+    aggregation: >-
+      scripts/universal_v2_report.py seed_confirmation, the aggregation the declaration already carries (pilot_gate.on_pass;
+      amendment_3 terminal_state_vocabulary.computed_from): per cell, the per-query mean over seeds 0, 1, 2 on V2_GATE,
+      its population mean at or above the frozen threshold (a float tolerance of 1e-12 and nothing else), and for
+      a paired cell the declared paired bootstrap of that per-query seed mean against the frozen M3B reference (1000
+      resamples, default_rng(0), 95 percent percentile interval) excluding zero on the positive side; the sd is
+      over the three per-seed population means; the seed-wise values, the mean, the sd, the threshold, the margin
+      and the interval are reported per cell
+    thresholds: amendment_1_2026_09_19.pilot_gate_amended, unchanged (gate_thresholds reads the same block); no
+      epsilon, no tolerance band, no averaging across datasets
+    pass_rule: >-
+      a family is REPLICATION_PASS only if all three seeds are present on every population and the three-seed mean
+      holds EVERY original frozen gate cell of that family (the paired condition included where the cell is paired);
+      otherwise REPLICATION_FAIL; the cell that failed at seed 0 is not privileged and no other cell may compensate
+      for it
+    status_vocabulary:
+      per_family:
+      - REPLICATION_PASS
+      - REPLICATION_FAIL
+      overall:
+      - BOTH_REPLICATION_PASS
+      - GNN_REPLICATION_ONLY
+      - TWIN_REPLICATION_ONLY
+      - BOTH_REPLICATION_FAIL
+      never: PILOT_PASS
+      overall_rule: BOTH_REPLICATION_PASS = both families REPLICATION_PASS; GNN_REPLICATION_ONLY = the GNN family
+        only; TWIN_REPLICATION_ONLY = the twin family only; BOTH_REPLICATION_FAIL = neither
+      status_line: >-
+        the top-level status line stays RUN_PILOT_FAILED: the original preregistered pilot failed and is reported
+        so; the replication status lives in replication_record_<date> (a dated block) and in docs/UNIVERSAL_V2_REPLICATION.md,
+        stated separately from the original status on every surface that reports it
+      one_family_rule: >-
+        as amendment_2 family_status_vocabulary: GNN_REPLICATION_ONLY and TWIN_REPLICATION_ONLY are replications
+        of that family and never of the proposed universal pair, which replicates only under BOTH_REPLICATION_PASS
+    held_confirmation:
+      read_for: REPLICATION_PASS families only; once; outputs/universal_v2/replication_held_record.json (written
+        only if a family passes)
+      procedure: >-
+        the declared held procedure and nothing new (amendment_1 check_1_the_halves; scripts/universal_v2_report.py
+        stage_held): the gate cells re-read on V2_HELD_CONFIRMATION, labelled confirmatory, with no threshold of
+        their own -- here for each of the three seeds and for their per-query mean, by the same aggregation; the
+        replication status is the gate half's and the held reading never changes it
+      not_read_for: >-
+        a REPLICATION_FAIL family: its held rows are dropped as the arrays are read and no held number of it is
+        computed, written or reported; the seed-0 held cells of both selected arms already stand in held_record.json
+        (the pilot's read-once column) and are not re-read
+      what_the_held_half_is: >-
+        a Universal-v2 architecture-selection holdout, not a globally unseen dataset: the parent M3B development
+        population was evaluated before (check_1_the_halves.what_it_is_not); the two readings are reported separately
+    outputs:
+      replication_record: outputs/universal_v2/replication_record.json (the V2_GATE reading; written once)
+      replication_held_record: outputs/universal_v2/replication_held_record.json (written once, only for a REPLICATION_PASS
+        family)
+      document: 'docs/UNIVERSAL_V2_REPLICATION.md (re-renderable from the records; states ORIGINAL PILOT STATUS:
+        PILOT_FAILED and POST-PILOT REPLICATION STATUS: <status> separately)'
+      report_record: outputs/universal_v2/replication_report_record.json (the document's sha256 table)
+      declaration_block: replication_record_<date> (a dated block appended by scripts/universal_v2_run.py --stage
+        file --which replication; the status line is not moved)
+      fits: outputs/universal_v2/fits/<arm>__H128__s<1|2>.json and .pt, each record carrying the authorising block
+        and the checks it passed
+      evals: outputs/universal_v2/eval/<name>__more_<sha8>.json / .npz / _query_ids.json
+    reporting:
+    - seed-wise gate numbers
+    - three-seed means
+    - seed standard deviations
+    - original thresholds
+    - margins to threshold
+    - bootstrap intervals
+    - family replication statuses
+    - held-confirmation results where authorised
+    - compute time
+    - incidents
+    - artifact hashes
+    - checkpoint hashes
+    - commit IDs
+    interpretation_rule:
+      BOTH_REPLICATION_PASS: the seed-0 terminal PILOT_FAILED result was sensitive to initialization, while the
+        frozen architectures satisfy the original requirements on three-seed mean; the original pilot is still reported
+        as failed
+      GNN_REPLICATION_ONLY: the proposed universal GNN is stable enough to continue; the universal non-MP twin is
+        not yet sufficiently robust
+      TWIN_REPLICATION_ONLY: the compiled non-MP architecture is stable enough to continue; the proposed universal
+        GNN is not yet sufficiently robust
+      BOTH_REPLICATION_FAIL: the seed-0 failures were not merely initialization noise; this closes Universal-v2
+        without rescue; any architecture change must happen in a new phase
+    no_architecture_repair: >-
+      inside this amendment nothing is added: no fixed-score gating mechanism, no no-harm loss, no further recurrent
+      step, no relation or path feature, no hidden dimension, no dataset balancing change, no dataset-specific head,
+      no other candidate; those belong to a later Universal-v2.1 / Universal-v3 declaration
+    compute: >-
+      the amendment_3 compute_ceiling_guard applies unchanged (compute.hard_ceiling 150 fit-hours, 24.65 spent by
+      the pilot seed-0 matrix): two u_gnn_v2_ef fits of about 5.0 h and two u_mlp_v2_mix fits of about 1.1 h at
+      8 threads are expected, about 12.3 fit-hours, one fit lane; the supplement eval pass is not a fit and does
+      not count, as the timing run did not; the fit-hours and the eval lane-hours are reported
+    hard_stops:
+      frozen contract hash changes: amendment_3 condition 1 (model_inputs and the fit records pin contract_frozen_2026_09_19)
+      M3B pin changes: amendment_3 condition 3 (every stage verifies the pins first)
+      compiled-cache hash changes: amendment_3 condition 2 (the caches are read as compiled; the fit refuses a cache
+        that is not this contract)
+      model code differs from the frozen selected architecture: 'amendment_3 condition 4 (the seed-0 fit record:
+        parameter count, columns, core sha256 and evidence fields)'
+      gate or held populations differ: 'amendment_3 condition 6 (pooled_rows: query lists, half labels and fixed
+        rrf per query)'
+      test data is touched: amendment_3 condition 5
+      compute exceeds the existing authorised ceiling: amendment_3 condition 9 (the fit-hours guard)
+      completing the work would require a scientific change: amendment_3 conditions 7 and 11
+      procedure: 'amendment_3 hard_stop_procedure: hard_stop_<date> with the condition, the evidence and the remaining
+        work; the status line is not moved'
+    crash_and_reboot: 'as amendment_3 crash_and_reboot: the checkpoint resumes the fit, finished records are not
+      repeated, eval shards merge, every incident is logged with its wall clock in replication_record_<date>.incidents'
+    execution:
+    - file amendment
+    - commit before fitting
+    - train seeds 1-2 for the two frozen selected arms
+    - score V2_GATE (the supplement eval pass, both halves labelled)
+    - compute three-seed confirmation (replication_record.json)
+    - read V2_HELD_CONFIRMATION only for REPLICATION_PASS families (replication_held_record.json)
+    - render report (docs/UNIVERSAL_V2_REPLICATION.md)
+    - append run record (replication_record_<date>)
+    - run tests
+    - commit
+    - STOP
+  reconciliations_where_the_ruling_and_the_declaration_differ:
+    ensemble_wording: >-
+      the ruling says per-query ensemble/seed mean: the declared aggregation is the per-query mean of the per-seed
+      metric values (each seed scored on its own, the metric averaged per query over the seeds), not an ensemble
+      of the seeds' scores re-ranked; that is what runs, as it ran for the pilot's seed confirmation
+    held_half_of_the_pilot: >-
+      held_record.json was read once under the pilot for both selected arms at seed 0 (the pilot's reported column,
+      filed in run_record_2026_09_21); the replication does not re-read it; a REPLICATION_PASS family gets one further
+      held reading of seeds 1-2 and the seed mean; a REPLICATION_FAIL family gets none
+    status_line: the ruling keeps the original status; the declaration's one status line therefore stays RUN_PILOT_FAILED
+      and the replication status is a field of the dated replication record
+    hard_stop_conditions: the ruling's eight conditions are the amendment_3 conditions named under post_pilot_replication.hard_stops;
+      a stop is filed as amendment_3 states
+    seed_0_of_the_gnn_and_the_twin: >-
+      the ruling's motivation cites the seed-0 cells from pilot_gate_record_2026_09_21 (u_gnn_v2_ef squad recall@5
+      0.8988 against 0.8996; u_mlp_v2_mix 2wiki recall@5 0.8545 against 0.8578); the replication re-reads nothing
+      of seed 0: its per-query arrays enter the three-seed mean from the seed-0 eval records as they stand
+  tests:
+  - 'tests/test_universal_v2_declaration.py: this block is filed verbatim; the authorised fits are the selected
+    arms of the gate record and seeds 1-2 only; the vocabulary, the pass rule, the held rule, the hard stops and
+    the status line are named; replication_record is a dated prefix in the run script and the test alike'
+  - 'tests/test_universal_v2_run.py: the fit guard accepts exactly the authorised (arm, seed) pairs at the status
+    the amendment names and refuses every other arm, seed 0 and a changed training rule; the replication record
+    is written once with the family and overall statuses; the held half is read only for a REPLICATION_PASS family;
+    the document states both statuses; the dated replication record moves no status line'
