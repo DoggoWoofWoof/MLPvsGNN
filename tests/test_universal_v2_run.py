@@ -783,6 +783,23 @@ def test_23_supplement_eval_pass_refusals_and_tag(sandbox):
         assert [c["name"] for c in calls] == PILOT and all(c["only_keys"] == keys and c["tag"] == expected_tag for c in calls)
         assert all(c["supplement"] == {"tag": expected_tag, "models": sorted(keys), "seed0_record_sha256": R.sha256_file(sandbox.out / "eval" / f"{c['name']}.json")} for c in calls)
         assert all(set(keys) <= set(c["models"]) and R.fit_key(g, 0) in c["models"] for c in calls)
+        # a sharded supplement pass: the shard this lane already wrote is the same pass in progress, so the next
+        # shard is scored; a record of ANOTHER tag holding the same key on the same population still refuses, and
+        # so does the seed-0 record above -- the once-only rule is per model per population, not per file
+        eval_dir = sandbox.out / "eval"
+        shard = eval_dir / f"metaqa__{expected_tag}__shard0of6.json"
+        shard.write_text(json.dumps({"scorers": keys, "supplement": {"tag": expected_tag}}), encoding="utf-8")
+        calls.clear()
+        R.stage_eval(sandbox.cfg, sandbox.cfg_m3b, sandbox.cfg_h, S.inputs, ["metaqa"], 24000, shard=(1, 6), models_only=keys, log=_quiet)
+        assert [c["name"] for c in calls] == ["metaqa"] and calls[0]["only_keys"] == keys
+        other = eval_dir / "metaqa__more_0badtag.json"
+        other.write_text(json.dumps({"scorers": keys}), encoding="utf-8")
+        with pytest.raises(SystemExit, match="already scored"):
+            R.stage_eval(sandbox.cfg, sandbox.cfg_m3b, sandbox.cfg_h, S.inputs, ["metaqa"], 24000, shard=(2, 6), models_only=keys, log=_quiet)
+        shard.unlink()
+        other.unlink()
+        calls.clear()
+        R.stage_eval(sandbox.cfg, sandbox.cfg_m3b, sandbox.cfg_h, S.inputs, PILOT, 24000, models_only=keys, log=_quiet)
     S.supplement_tag = expected_tag
     S.supplement_keys = keys
 

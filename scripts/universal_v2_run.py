@@ -1420,7 +1420,12 @@ def stage_eval(cfg: dict, cfg_m3b: dict, cfg_h: dict, inputs: dict, datasets: li
             seed0 = read_json(EVAL / f"{name}.json")
             if seed0 is None:
                 raise SystemExit(f"{name}: the seed-0 eval record is scored first; a supplement pass adds models to an existing population record")
-            held = {k for p in EVAL.glob(f"{name}__more_*.json") if not p.name.endswith("_query_ids.json") for k in read_json(p)["scorers"]}
+            # the shards of THIS pass are the same pass in progress, not a second scoring of the same model: a
+            # sharded supplement writes <name>__<tag>__shard<k>of<N>.json, and the shard k+1 must not be refused by
+            # the once-only rule because shard k exists. Records of any OTHER tag, and the seed-0 record, still refuse.
+            held = {k for p in EVAL.glob(f"{name}__more_*.json")
+                    if not p.name.endswith("_query_ids.json") and not p.name.startswith(f"{name}__{tag}")
+                    for k in read_json(p)["scorers"]}
             already = [k for k in models_only if k in seed0["scorers"] or k in held]
             if already:
                 raise SystemExit(f"{name}: {already} already scored on this population; a model is scored once")
