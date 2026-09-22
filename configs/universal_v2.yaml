@@ -6840,3 +6840,518 @@ amendment_6_2026_09_23:
     - the reading carries the context on the trio and carries nothing on the three added datasets
     - the document prints the trio column with its asymmetry in the heading
     - no status line moves and no weight is fitted by this block
+
+# -- the three added carves compiled under the frozen contract (stage 2) --
+compile_record_stage_2_2026_09_23:
+  filed_utc: '2026-09-22T23:35:50Z'
+  stage: authorization_stage_2_2026_09_22
+  go_ahead: amendment_5_2026_09_23
+  what: the three added carves compiled under the frozen UNIVERSAL_V2_CORE_CONTRACT; no column moved and the screen
+    was not re-run
+  freeze_checked:
+    contract_block: contract_frozen_2026_09_19
+    columns: 129
+    core_sha256: 8d1da88b14dfdee13dd32ee6a05f6d9733d14a9899d5e011c41b0cce53000bf9
+    k_rel: 4
+    hidden: 128
+    arm: u_gnn_v2_ef
+    declared_parameters: 420932
+    raw_contract_sha256: 41a3f66792de250ee424ea7370b0736fb6035fff5b834be318be1377086270ba
+  per_dataset:
+    webqsp:
+      fit:
+        queries: 1202
+        rows: 2546884
+        candidates_mean: 2118.9
+        zero_gold_excluded: 37
+        queries_with_no_gold_in_pool: 100
+        ids_sha256: fecf94bbfdff25925abd771421d4ad7276889d81b8449891783506bd087bdb90
+        carve_sha256_declared: b744f21fcccf880290bd87c580052d2ebe0f29f1f4bb3af3bebb636e94d13eaa
+        compile_seconds: 1859.4
+        ms_per_query: 1546.9
+        gb: 1.068
+        relation_slots:
+          k_rel: 4
+          pairs: 11961751
+          truncated: 127760
+          fraction_of_pairs_truncated: 0.010681
+          fraction_of_queries_with_any_truncated_pair: 1.0
+        typed_walks_all_hops:
+          queries: 1202
+          rows: 2546884
+          gold_rows: 3592
+          typed_queries: 1202
+          relation_slots:
+            pairs: 11961751
+            entries: 16568017
+            pairs_truncated: 127760
+            fraction_of_pairs_truncated: 0.010681
+            queries_with_any_truncated_pair: 1202
+            fraction_of_queries_with_any_truncated_pair: 1.0
+            relations_per_pair_histogram:
+              '1': 8678619
+              '2': 2799487
+              '3': 192387
+              '4': 163498
+              '5': 22188
+              '6': 39662
+              '7': 5978
+              '8': 21600
+              '9': 1889
+              '10': 14653
+              '11': 2531
+              '12': 7240
+              '13': 103
+              '14': 3158
+              '15': 2
+              '16': 3131
+              '18': 1774
+              '20': 1255
+              '22': 974
+              '24': 624
+              '26': 555
+              '28': 183
+              '30': 45
+              '34': 148
+              '36': 67
+            max_relations_per_pair: 36
+          typed_walk_availability:
+            h1:
+              rows: 0.043575
+              gold_rows: 0.598831
+              queries: 1.0
+              queries_gold: 0.680532
+            h2:
+              rows: 0.315759
+              gold_rows: 0.860523
+              queries: 1.0
+              queries_gold: 0.814476
+            h3:
+              rows: 0.626934
+              gold_rows: 0.982739
+              queries: 1.0
+              queries_gold: 0.899334
+          ordered_path:
+            h2:
+              rows_with_walk: 804202
+              fraction_of_walks_with_an_inverse_step: 0.806749
+              fraction_of_walks_composing_different_relations: 0.680562
+            h3:
+              rows_with_walk: 1596727
+              fraction_of_walks_with_an_inverse_step: 0.938169
+              fraction_of_walks_composing_different_relations: 0.980684
+      select:
+        queries: 305
+        rows: 646437
+        candidates_mean: 2119.5
+        zero_gold_excluded: 5
+        queries_with_no_gold_in_pool: 25
+        ids_sha256: d3c3cc4ba8d4d03983e3713500b585b1fabd0e597a8e317cf267c286591d4a96
+        carve_sha256_declared: 1e0eff537583aa30777f7ce0f81f188740c6cab1cd5303f43b96da0d9f8091e6
+        compile_seconds: 333.4
+        ms_per_query: 1093.03
+        gb: 0.271
+        relation_slots:
+          k_rel: 4
+          pairs: 3073305
+          truncated: 32852
+          fraction_of_pairs_truncated: 0.010689
+          fraction_of_queries_with_any_truncated_pair: 1.0
+        typed_walks_all_hops:
+          queries: 305
+          rows: 646437
+          gold_rows: 1136
+          typed_queries: 305
+          relation_slots:
+            pairs: 3073305
+            entries: 4221034
+            pairs_truncated: 32852
+            fraction_of_pairs_truncated: 0.010689
+            queries_with_any_truncated_pair: 305
+            fraction_of_queries_with_any_truncated_pair: 1.0
+            relations_per_pair_histogram:
+              '1': 2263853
+              '2': 686437
+              '3': 48531
+              '4': 41632
+              '5': 5718
+              '6': 9854
+              '7': 1765
+              '8': 5637
+              '9': 497
+              '10': 3790
+              '11': 706
+              '12': 1817
+              '13': 32
+              '14': 821
+              '15': 2
+              '16': 810
+              '18': 471
+              '20': 317
+              '22': 232
+              '24': 148
+              '26': 136
+              '28': 36
+              '30': 7
+              '34': 33
+              '36': 23
+            max_relations_per_pair: 36
+          typed_walk_availability:
+            h1:
+              rows: 0.045444
+              gold_rows: 0.452465
+              queries: 1.0
+              queries_gold: 0.695082
+            h2:
+              rows: 0.321771
+              gold_rows: 0.877641
+              queries: 1.0
+              queries_gold: 0.836066
+            h3:
+              rows: 0.623428
+              gold_rows: 0.962148
+              queries: 1.0
+              queries_gold: 0.898361
+          ordered_path:
+            h2:
+              rows_with_walk: 208005
+              fraction_of_walks_with_an_inverse_step: 0.820201
+              fraction_of_walks_composing_different_relations: 0.674032
+            h3:
+              rows_with_walk: 403007
+              fraction_of_walks_with_an_inverse_step: 0.94181
+              fraction_of_walks_composing_different_relations: 0.97637
+      column_behaviour:
+        rows: 2546884
+        columns: 129
+        unavailable_kept: []
+        constant_kept:
+        - avail_NER
+        - avail_STRUCT
+        availability_min: 0.002799
+        availability_mean: 0.594074
+        action: reported and kept; the contract does not move for an added dataset
+      peak_rss_gb: 2.39
+      dataset_seconds: 2259.2
+    hotpotqa:
+      fit:
+        queries: 5930
+        rows: 557195
+        candidates_mean: 94.0
+        zero_gold_excluded: 0
+        queries_with_no_gold_in_pool: 42
+        ids_sha256: 2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c
+        carve_sha256_declared: 2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c
+        compile_seconds: 366.9
+        ms_per_query: 61.88
+        gb: 0.252
+        relation_slots:
+          k_rel: 4
+          pairs: 0
+          truncated: 0
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        typed_walks_all_hops:
+          queries: 5930
+          rows: 557195
+          gold_rows: 11629
+          typed_queries: 0
+          relation_slots:
+            pairs: 0
+            entries: 0
+            pairs_truncated: 0
+            fraction_of_pairs_truncated: 0.0
+            queries_with_any_truncated_pair: 0
+            fraction_of_queries_with_any_truncated_pair: 0.0
+            relations_per_pair_histogram: {}
+            max_relations_per_pair: 0
+          typed_walk_availability:
+            h1:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+            h2:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+            h3:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+          ordered_path:
+            h2:
+              rows_with_walk: 0
+              fraction_of_walks_with_an_inverse_step: 0.0
+              fraction_of_walks_composing_different_relations: 0.0
+            h3:
+              rows_with_walk: 0
+              fraction_of_walks_with_an_inverse_step: 0.0
+              fraction_of_walks_composing_different_relations: 0.0
+      select:
+        queries: 1508
+        rows: 142003
+        candidates_mean: 94.2
+        zero_gold_excluded: 0
+        queries_with_no_gold_in_pool: 9
+        ids_sha256: 700d8c8177da235a28da35866ee09bf2a5e5ff9dca100a758380692a8d7b760d
+        carve_sha256_declared: 700d8c8177da235a28da35866ee09bf2a5e5ff9dca100a758380692a8d7b760d
+        compile_seconds: 99.1
+        ms_per_query: 65.7
+        gb: 0.064
+        relation_slots:
+          k_rel: 4
+          pairs: 0
+          truncated: 0
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        typed_walks_all_hops:
+          queries: 1508
+          rows: 142003
+          gold_rows: 2965
+          typed_queries: 0
+          relation_slots:
+            pairs: 0
+            entries: 0
+            pairs_truncated: 0
+            fraction_of_pairs_truncated: 0.0
+            queries_with_any_truncated_pair: 0
+            fraction_of_queries_with_any_truncated_pair: 0.0
+            relations_per_pair_histogram: {}
+            max_relations_per_pair: 0
+          typed_walk_availability:
+            h1:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+            h2:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+            h3:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+          ordered_path:
+            h2:
+              rows_with_walk: 0
+              fraction_of_walks_with_an_inverse_step: 0.0
+              fraction_of_walks_composing_different_relations: 0.0
+            h3:
+              rows_with_walk: 0
+              fraction_of_walks_with_an_inverse_step: 0.0
+              fraction_of_walks_composing_different_relations: 0.0
+      column_behaviour:
+        rows: 557195
+        columns: 129
+        unavailable_kept:
+        - relmax_seed
+        - relmax_in
+        - relmean_in
+        - has_typed_edge
+        - rel_ief
+        - rel_div
+        - dir_in_frac
+        - seed_edges_out
+        - seed_edges_in
+        - relchain2_max
+        - qsupport_h2
+        - qsupport_h3
+        - typed_walks_h3
+        - relpath_max_h3
+        - relpath_mean_h3
+        - relpath_min_h3
+        - opath_h2_dir1
+        - opath_h2_adj12
+        - opath_h3_q1
+        - opath_h3_q2
+        - opath_h3_q3
+        - opath_h3_dir1
+        - opath_h3_dir2
+        - opath_h3_dir3
+        - opath_h3_adj12
+        - opath_h3_adj23
+        constant_kept:
+        - avail_STRUCT
+        availability_min: 0.0
+        availability_mean: 0.487027
+        action: reported and kept; the contract does not move for an added dataset
+      peak_rss_gb: 2.59
+      dataset_seconds: 591.7
+    musique:
+      fit:
+        queries: 4601
+        rows: 9616637
+        candidates_mean: 2090.1
+        zero_gold_excluded: 0
+        queries_with_no_gold_in_pool: 13
+        ids_sha256: 7976539fa1fbf0e132429f9983335b452c8f557b6f5bc13984a71a9c388fdfcf
+        carve_sha256_declared: 7976539fa1fbf0e132429f9983335b452c8f557b6f5bc13984a71a9c388fdfcf
+        compile_seconds: 6023.6
+        ms_per_query: 1309.2
+        gb: 4.034
+        relation_slots:
+          k_rel: 4
+          pairs: 0
+          truncated: 0
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        typed_walks_all_hops:
+          queries: 4601
+          rows: 9616637
+          gold_rows: 9833
+          typed_queries: 0
+          relation_slots:
+            pairs: 0
+            entries: 0
+            pairs_truncated: 0
+            fraction_of_pairs_truncated: 0.0
+            queries_with_any_truncated_pair: 0
+            fraction_of_queries_with_any_truncated_pair: 0.0
+            relations_per_pair_histogram: {}
+            max_relations_per_pair: 0
+          typed_walk_availability:
+            h1:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+            h2:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+            h3:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+          ordered_path:
+            h2:
+              rows_with_walk: 0
+              fraction_of_walks_with_an_inverse_step: 0.0
+              fraction_of_walks_composing_different_relations: 0.0
+            h3:
+              rows_with_walk: 0
+              fraction_of_walks_with_an_inverse_step: 0.0
+              fraction_of_walks_composing_different_relations: 0.0
+      select:
+        queries: 1534
+        rows: 3215327
+        candidates_mean: 2096.0
+        zero_gold_excluded: 0
+        queries_with_no_gold_in_pool: 12
+        ids_sha256: 975ee3e580cadf719fe09d511b611fdde4fa0065bf444bff43216643a0a184b6
+        carve_sha256_declared: 975ee3e580cadf719fe09d511b611fdde4fa0065bf444bff43216643a0a184b6
+        compile_seconds: 1722.1
+        ms_per_query: 1122.62
+        gb: 1.349
+        relation_slots:
+          k_rel: 4
+          pairs: 0
+          truncated: 0
+          fraction_of_pairs_truncated: 0.0
+          fraction_of_queries_with_any_truncated_pair: 0.0
+        typed_walks_all_hops:
+          queries: 1534
+          rows: 3215327
+          gold_rows: 3244
+          typed_queries: 0
+          relation_slots:
+            pairs: 0
+            entries: 0
+            pairs_truncated: 0
+            fraction_of_pairs_truncated: 0.0
+            queries_with_any_truncated_pair: 0
+            fraction_of_queries_with_any_truncated_pair: 0.0
+            relations_per_pair_histogram: {}
+            max_relations_per_pair: 0
+          typed_walk_availability:
+            h1:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+            h2:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+            h3:
+              rows: 0.0
+              gold_rows: 0.0
+              queries: 0.0
+              queries_gold: 0.0
+          ordered_path:
+            h2:
+              rows_with_walk: 0
+              fraction_of_walks_with_an_inverse_step: 0.0
+              fraction_of_walks_composing_different_relations: 0.0
+            h3:
+              rows_with_walk: 0
+              fraction_of_walks_with_an_inverse_step: 0.0
+              fraction_of_walks_composing_different_relations: 0.0
+      column_behaviour:
+        rows: 9616637
+        columns: 129
+        unavailable_kept:
+        - relmax_seed
+        - relmax_in
+        - relmean_in
+        - has_typed_edge
+        - rel_ief
+        - rel_div
+        - dir_in_frac
+        - seed_edges_out
+        - seed_edges_in
+        - relchain2_max
+        - qsupport_h2
+        - qsupport_h3
+        - typed_walks_h3
+        - relpath_max_h3
+        - relpath_mean_h3
+        - relpath_min_h3
+        - opath_h2_dir1
+        - opath_h2_adj12
+        - opath_h3_q1
+        - opath_h3_q2
+        - opath_h3_q3
+        - opath_h3_dir1
+        - opath_h3_dir2
+        - opath_h3_dir3
+        - opath_h3_adj12
+        - opath_h3_adj23
+        constant_kept:
+        - avail_NER
+        - avail_STRUCT
+        availability_min: 0.0
+        availability_mean: 0.555789
+        action: reported and kept; the contract does not move for an added dataset
+      peak_rss_gb: 1.24
+      dataset_seconds: 7872.2
+  cache:
+    total_bytes: 13877946520
+    total_gb: 13.88
+    added_combined_sha256:
+      webqsp/fit: bf7b373583e5c1d59af07f8c24b4185008b3676066ed9be21eeec1b47be4857d
+      webqsp/select: d0e97642043f9169d43b71e15000a412d88c7dc0704b95ba0141cfe16e501a07
+      hotpotqa/fit: 9b046f6b03139f741b4f44214cfa49e9bf83d38ed9ca35ebf77f82ee52de1955
+      hotpotqa/select: c84055afcff0ebd987bded59b81f6274765812e1417e45ff66a6f9d5087420b0
+      musique/fit: 58280f30ab06d5b3c1c1142d1a6a57245297688ec5d997e63523ce64cfe3f8be
+      musique/select: a4206e394af84fb105424676a4fc16d7d5fdb5ca70ce3a273c2be33f76f927c6
+    trio_combined_sha256:
+      metaqa/fit: 38674d30c418e894aa8c2632439fa9aa530eae6409a5abd356c5a5cd120c649a
+      metaqa/select: 29ab784dcd40a173d4449cf8ee05a6e29d5be296df8d5871a604a0bf3b54fa98
+      2wiki/fit: ff5f4f71eba41092aa084bab305de0c35be4112f79aebc10c2405f64799cc386
+      2wiki/select: 8e13137b8f465d638c879a5999c71de196781ac558db418566861db146adce83
+      squad/fit: b7d9d5aec9637f4e4603cd781887435900381eb047075cbc72b4e45656fba89c
+      squad/select: 5137c71d5cb8f03374c035b94997711e1e04fefac075f45a9ae22747834478ae
+  sidecar:
+    path: outputs/universal_v2/six/compile_record.json
+    sha256: c887547d2c8719d0f13950289463cc12ad755c031fca374f3f792960a6a2fc5e
+  status_lines_not_moved: true
