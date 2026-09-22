@@ -6581,3 +6581,206 @@ authorization_stage_2_2026_09_22:
       this stage (no review stop between its mechanical steps) and a hard stop
       or the terminal state ends it.
     incidents: outputs/universal_v2/six/incidents.json, one string per incident with its wall clock, as the replication
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# amendment 5 (2026-09-23): the stage-2 execution authorization, filed verbatim
+# before the first added cache exists, and the single systems bound it raises
+# ═══════════════════════════════════════════════════════════════════════════════
+amendment_5_2026_09_23:
+  filed_utc: '2026-09-22T19:59:17Z'
+  what_this_is: >-
+    the user go-ahead that authorization_stage_2_2026_09_22.execution.stop_after_this_block
+    waits for. It starts the six-dataset stage of UNIVERSAL_GNN_V2_SELECTED (u_gnn_v2_ef)
+    exactly as that block filed it, under amendment_3 continuous execution inside the stage.
+  authorises: the execution of authorization_stage_2_2026_09_22 from commit 00aabc9; nothing else
+  status_lines_not_moved:
+    file_status: RUN_PILOT_FAILED
+    original_pilot_status: PILOT_FAILED
+    post_pilot_replication_status: GNN_REPLICATION_ONLY
+    stage_2_status: DECLARED_NOT_RUN until run_record_stage_2_<date> is filed
+  filed_before: any stage-2 cache, fit, evaluation or number exists
+  ruling_verbatim: |
+    GO.
+    Start Universal-GNN Stage 2 exactly as filed in `00aabc9`, and then let amendment-3 continuous execution carry it all the way through the six-dataset report without stopping for routine review.
+    Use this ruling:
+
+    ```text
+    STAGE-2 EXECUTION AUTHORIZATION — 2026-09-23
+
+    Authorization granted to execute
+    authorization_stage_2_2026_09_22
+    from commit 00aabc9.
+
+    Proceed in the filed order:
+
+    1. Compile the added canonical carves:
+       - WebQSP
+       - HotpotQA
+       - MuSiQue
+
+       under the already-frozen 129-column
+       UNIVERSAL_V2_CORE_CONTRACT.
+
+       Do NOT rerun screening.
+       Do NOT drop, reorder, substitute, or modify columns based on the
+       newly-added datasets.
+
+    2. Run the declared measured one-epoch timing pass.
+
+    3. Train from scratch:
+
+           UNIVERSAL_GNN_V2_SELECTED
+           = u_gnn_v2_ef
+
+       seeds:
+           0
+           1
+           2
+
+       jointly across all six datasets.
+
+    4. Preserve exactly:
+       - H=128
+       - K_REL=4
+       - 420,932-parameter architecture
+       - evidence-flow state
+       - frozen feature contract
+       - uniform per-query dataset sampling
+       - no dataset identity
+       - no router
+       - no dataset-specific head
+       - no per-dataset loss weighting
+       - macro-six select R@5 checkpoint selection
+
+    5. Evaluate the three resulting universal checkpoints once on the six
+       declared M3B evaluation populations.
+
+       WebQSP remains train_holdout.
+       No test split is authorised.
+
+    6. Compare against the frozen M3B incumbents without refitting them.
+
+    7. Produce:
+       - per-seed results
+       - three-seed means and spread
+       - paired deltas vs M3B GAT
+       - R@1 / R@5 / R@20 as available
+       - full_coverage
+       - audited MRR where applicable
+       - Hit@1 for KB calibration
+       - exact GraphER-compatible PR@K where already declared/applicable
+       - any_gold_at_pool / candidate exposure context
+       - latency / memory / training cost
+       - compile cost
+       - incidents
+       - artifact hashes
+
+    8. Render:
+
+           docs/UNIVERSAL_GNN_SIX.md
+
+       and append:
+
+           run_record_stage_2_<date>
+
+    9. Run tests and commit the terminal Stage-2 state.
+
+    Continuous execution is authorised inside this stage.
+    Do not stop after compile, timing, individual seeds, or individual
+    dataset evaluations.
+
+    HARD STOP only for:
+
+    - frozen-contract/hash mismatch
+    - M3B pin drift
+    - test-data access
+    - column/order change required
+    - architecture/scientific change required
+    - unrecoverable corruption
+    - compute ceiling violation
+
+    Otherwise continue until the Stage-2 report is complete.
+    ```
+
+    This is the right run to spend the compute on. The question is now very concrete:
+    Does the replicated `u_gnn_v2_ef` improvement survive when one single checkpoint is trained across MetaQA, WebQSP, HotpotQA, 2Wiki, MuSiQue and SQuAD simultaneously?
+    The numbers I care most about when it finishes are MetaQA/WebQSP absolute improvement toward the KB SOTA band, whether the ~90 R@5 2Wiki performance survives six-way training, whether MuSiQue finally improves materially over the M3B 0.521, and whether SQuAD still learns effectively to leave retrieval alone.
+    If those four properties hold simultaneously, the universal GNN contribution becomes much more serious than the original causal GAT result.
+  reading_of_the_ruling:
+    the_order: >-
+      the nine numbered steps are the four steps of
+      authorization_stage_2_2026_09_22.execution.order expanded -- compile the three added
+      carves, the measured one-epoch timing pass, three fits from scratch (seeds 0, 1, 2)
+      jointly over the six, one evaluation pass of the three checkpoints on the six declared
+      M3B eval populations, the paired reading against the frozen M3B incumbents,
+      docs/UNIVERSAL_GNN_SIX.md, run_record_stage_2_<date>, the tests and the commit.
+    item_4_is_the_freeze: >-
+      H 128, K_REL 4, the 420,932-parameter architecture, the evidence-flow state, the frozen
+      129-column contract, uniform per-query dataset sampling, no dataset identity, no router,
+      no dataset-specific head, no per-dataset loss weighting and the macro-six select
+      recall@5 checkpoint selection are exactly the_freeze and training of the stage-2 block.
+    item_7_report_columns: >-
+      the requested columns are measurement.metrics as already filed -- per-seed values, the
+      three-seed mean and spread, paired deltas against the M3B GAT, recall@1/5/20,
+      full_coverage, the audited MRR (audit_scorers runs before any record is written), hit@1
+      for the KB rows, any_gold_at_pool and the pool ceilings beside every row, latency, peak
+      RSS, fit hours, compile cost, incidents and artifact hashes. Nothing new is measured.
+    pr_at_k_care: >-
+      the exact GraphER-compatible PR@K is printed only where it is already declared and
+      applicable -- it is set coverage, not recall, and the band verdicts of
+      calibration_against_published_systems stand unchanged (metaqa NOT_READ, webqsp
+      NOT_READ, musique READ, hotpotqa READ, 2wiki READ, squad CONTROL). A metaqa or webqsp
+      number is never presented as beating or approaching a published system.
+    the_four_properties_the_user_will_read: >-
+      metaqa and webqsp absolute movement toward the KB band (NOT_READ, so movement is
+      reported as our own number against our own incumbent, never as a band claim), whether
+      2wiki recall@5 near 0.90 survives six-way training, whether musique improves materially
+      over the M3B 0.5207, and whether squad is still left alone. They are read as they fall.
+      This stage has no gate and no threshold, and none of the four is a target.
+    continuous_execution: >-
+      amendment_3 applies inside the stage: no stop after the compile, after the timing pass,
+      after an individual seed or after an individual dataset evaluation.
+    hard_stops: >-
+      the seven conditions the ruling lists are the seven of
+      authorization_stage_2_2026_09_22.hard_stops -- frozen-contract or hash mismatch, M3B
+      pin drift, test-data access, a required column or order change, a required
+      architecture or scientific change, unrecoverable corruption, and the compute ceiling.
+      On any of them: file hard_stop_<date>, leave every status line where it is, report.
+    what_does_not_change: >-
+      no column, threshold, population, carve, architecture, seed, metric or split moves.
+      WebQSP stays train_holdout and no test split is touched anywhere in this stage.
+  systems_only_change:
+    what: >-
+      the v2 cache bound of compute.abort_criteria (12 GB, written for the trio) is raised to
+      20 GB for the six-dataset stage. The free-disk floor of 8 GB is unchanged.
+    why_measured_not_guessed:
+      trio_cache: 16,193,190 rows, 6.84 GB, 422.3 bytes per row (outputs/universal_v2/cache, the three pilot datasets, fit and select)
+      added_carve_rows_from_the_m3b_compile_records: webqsp 2,546,884 fit + 646,437 select; hotpotqa 557,195 + 142,003; musique 9,616,637 + 3,215,327; 16,724,483 rows in total
+      projected_added_cache_gb: 7.06 at the measured v2 rate
+      projected_six_dataset_cache_gb: 13.9, above the 12 GB bound written for the trio
+      free_disk_at_filing_gb: 23.57
+    enforced_by: >-
+      scripts/universal_v2_six.py carries its own guard and reads the bound from this block;
+      compute.abort_criteria is not edited and the pilot guard (DiskGuardV2) is unchanged, so
+      no pilot or replication artifact and no filed number is affected.
+    it_changes_no_science: >-
+      a disk bound is systems convenience. No column, threshold, population, carve,
+      architecture, seed or metric moves with it (roadmap rule: systems convenience never
+      edits science).
+  blocks_this_stage_will_append:
+    blocks:
+    - compile_record_stage_2_<date> -- the three added caches, their diagnostics and their hashes
+    - timing_stage_2_<date> -- the measured joint epoch, peak RSS and the three-seed projection
+    - run_record_stage_2_<date> -- the terminal state of the stage
+    naming_note: >-
+      they carry the stage-2 suffix the block names, so they sit outside the pilot DATED
+      convention on purpose and no status line moves with any of them.
+  tests:
+    - the amendment is dated, sits last, and moves no status line
+    - the ruling is filed verbatim with its nine steps and its seven hard stops
+    - the systems change is the cache bound alone, the disk floor is unchanged, and it is declared before any cache exists
+    - the reading keeps the band verdicts and the no-gate rule of the stage-2 block
+  execution: >-
+    the stage begins with this commit. The first work is the compile of the three added
+    carves under the frozen contract; nothing else in the repository is touched.

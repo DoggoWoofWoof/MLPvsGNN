@@ -710,8 +710,8 @@ def stage2(decl) -> dict:
 
 def test_the_stage_2_authorization_is_dated_last_and_moves_no_status_line(decl, stage2):
     dated = [k for k in decl if DATED.match(k)]
-    assert dated[-1] == "authorization_stage_2_2026_09_22"
     assert dated.index("replication_record_2026_09_22") < dated.index("authorization_stage_2_2026_09_22")
+    assert dated[dated.index("authorization_stage_2_2026_09_22") + 1:] == ["amendment_5_2026_09_23"]   # its go-ahead, nothing else after it
     assert decl["status"] == "RUN_PILOT_FAILED"
     assert stage2["stage_2_status"] == "DECLARED_NOT_RUN"
     lines = stage2["status_lines_not_moved"]
@@ -850,3 +850,74 @@ def test_stage_2_compute_hard_stops_and_execution_order(stage2):
     assert "go-ahead" in stop and "amendment_3 continuous execution applies within" in stop
     assert stage2["outputs"]["record"].startswith("run_record_stage_2_<date>") and "moving no status line" in stage2["outputs"]["record"]
     assert len(stage2["tests"]) >= 9
+
+# ── amendment 5 (2026-09-23): the stage-2 execution go-ahead and its one systems bound ──
+
+
+@pytest.fixture(scope="module")
+def amd5(decl) -> dict:
+    return decl["amendment_5_2026_09_23"]
+
+
+def test_amendment_5_is_dated_last_and_moves_no_status_line(decl, amd5):
+    dated = [k for k in decl if DATED.match(k)]
+    assert dated[-1] == "amendment_5_2026_09_23"
+    assert dated.index("authorization_stage_2_2026_09_22") < dated.index("amendment_5_2026_09_23")
+    assert decl["status"] == "RUN_PILOT_FAILED"
+    lines = amd5["status_lines_not_moved"]
+    assert lines["file_status"] == "RUN_PILOT_FAILED" and lines["original_pilot_status"] == "PILOT_FAILED"
+    assert lines["post_pilot_replication_status"] == "GNN_REPLICATION_ONLY"
+    assert "DECLARED_NOT_RUN until run_record_stage_2_" in lines["stage_2_status"]
+    assert squash(amd5["filed_before"]) == "any stage-2 cache, fit, evaluation or number exists"
+    assert "00aabc9" in amd5["authorises"]
+
+
+def test_the_go_ahead_is_filed_verbatim_with_its_nine_steps_and_seven_hard_stops(amd5):
+    ruling = amd5["ruling_verbatim"]
+    assert ruling.startswith("GO.") and "STAGE-2 EXECUTION AUTHORIZATION" in ruling
+    for step in ("1. Compile the added canonical carves", "2. Run the declared measured one-epoch timing pass",
+                 "3. Train from scratch", "4. Preserve exactly", "5. Evaluate the three resulting universal checkpoints",
+                 "6. Compare against the frozen M3B incumbents", "7. Produce", "8. Render", "9. Run tests and commit"):
+        assert step in ruling, step
+    for stop in ("frozen-contract/hash mismatch", "M3B pin drift", "test-data access", "column/order change required",
+                 "architecture/scientific change required", "unrecoverable corruption", "compute ceiling violation"):
+        assert stop in ruling, stop
+    assert "no dataset identity" in ruling and "no router" in ruling and "WebQSP remains train_holdout" in ruling
+    read = amd5["reading_of_the_ruling"]
+    assert "420,932-parameter architecture" in squash(read["item_4_is_the_freeze"])
+    assert "Nothing new is measured." in squash(read["item_7_report_columns"])
+    assert "no threshold" in squash(read["the_four_properties_the_user_will_read"])
+    assert "no stop after the compile" in squash(read["continuous_execution"])
+    assert "train_holdout" in squash(read["what_does_not_change"]) and "no test split" in squash(read["what_does_not_change"])
+
+
+def test_the_only_change_is_the_cache_bound_and_it_is_measured_and_declared_first(amd5):
+    sysc = amd5["systems_only_change"]
+    what = squash(sysc["what"])
+    assert "12 GB" in what and "raised to" in what and "20 GB" in what and "free-disk floor of 8 GB is unchanged" in what
+    why = sysc["why_measured_not_guessed"]
+    assert "16,193,190 rows" in why["trio_cache"] and "422.3 bytes per row" in why["trio_cache"]
+    assert "16,724,483 rows" in why["added_carve_rows_from_the_m3b_compile_records"]
+    assert str(why["projected_six_dataset_cache_gb"]).startswith("13.9") and float(why["free_disk_at_filing_gb"]) > 8
+    assert "compute.abort_criteria is not edited" in squash(sysc["enforced_by"])
+    assert "systems convenience never edits science" in squash(sysc["it_changes_no_science"])
+    assert "12 GB" in " ".join(str(x) for x in decl_compute_abort())
+
+
+def decl_compute_abort():
+    cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+    return cfg["compute"]["abort_criteria"]
+
+
+def test_the_go_ahead_keeps_the_band_verdicts_the_no_gate_rule_and_names_its_blocks(amd5):
+    read = amd5["reading_of_the_ruling"]
+    care = squash(read["pr_at_k_care"])
+    assert "set coverage, not recall" in care
+    for word in ("metaqa NOT_READ", "webqsp NOT_READ", "musique READ", "hotpotqa READ", "2wiki READ", "squad CONTROL"):
+        assert word in care, word
+    stops = squash(read["hard_stops"])
+    assert "hard_stop_<date>" in stops and "leave every status line where it is" in stops
+    blocks = amd5["blocks_this_stage_will_append"]["blocks"]
+    assert [b.split(" --")[0] for b in blocks] == ["compile_record_stage_2_<date>", "timing_stage_2_<date>", "run_record_stage_2_<date>"]
+    assert "no status line moves" in squash(amd5["blocks_this_stage_will_append"]["naming_note"])
+    assert "the compile of the three added" in squash(amd5["execution"])
