@@ -698,3 +698,155 @@ def test_the_replication_vocabulary_the_pass_rule_and_the_held_rule(amendment4):
     assert module.REPLICATION_FAMILY == tuple(v["per_family"]) and set(module.REPLICATION_OVERALL.values()) == set(v["overall"])
     assert module.REPLICATION_OVERALL[(True, True)] == "BOTH_REPLICATION_PASS" and module.REPLICATION_OVERALL[(False, False)] == "BOTH_REPLICATION_FAIL"
     assert module.DATED.pattern == DATED.pattern and DATED.match("replication_record_2026_09_22") and not DATED.match("replication_2026_09_22")
+
+
+# ── the stage-2 authorization (2026-09-22): the six-dataset checkpoint of the replicated GNN ──
+
+
+@pytest.fixture(scope="module")
+def stage2(decl) -> dict:
+    return decl["authorization_stage_2_2026_09_22"]
+
+
+def test_the_stage_2_authorization_is_dated_last_and_moves_no_status_line(decl, stage2):
+    dated = [k for k in decl if DATED.match(k)]
+    assert dated[-1] == "authorization_stage_2_2026_09_22"
+    assert dated.index("replication_record_2026_09_22") < dated.index("authorization_stage_2_2026_09_22")
+    assert decl["status"] == "RUN_PILOT_FAILED"
+    assert stage2["stage_2_status"] == "DECLARED_NOT_RUN"
+    lines = stage2["status_lines_not_moved"]
+    assert lines == {"file_status": "RUN_PILOT_FAILED", "original_pilot_status": "PILOT_FAILED",
+                     "post_pilot_replication_status": "GNN_REPLICATION_ONLY"}
+    assert squash(stage2["filed_before"]) == "any stage-2 cache, fit, evaluation or number exists"
+
+
+def test_the_stage_2_ruling_is_filed_verbatim_with_its_six_ordered_items(stage2):
+    ruling = stage2["ruling_verbatim"]
+    assert "UNIVERSAL_GNN_V2_SELECTED" in ruling and "u_gnn_v2_ef" in ruling
+    for item in ("1. **Freeze", "2. File a dated authorization", "3. Evaluate all six",
+                 "4. Separately run", "5. Then declare", "6. Do not modify M3B or Universal-v2 records"):
+        assert item in ruling, item
+    assert "The Universal-v2 GNN works. The Universal-v2 MLP idea is promising but not yet universal." in ruling
+    assert r"\Delta_{\text{MetaQA Hit@1}}" in ruling      # the LaTeX of the ruling survives the filing byte for byte
+    assert "as the universal MLP." in ruling
+
+
+def test_the_freeze_is_one_arm_pinned_to_the_trio_checkpoints_without_a_warm_start(stage2):
+    frozen = stage2["the_freeze"]
+    assert frozen["name"] == "UNIVERSAL_GNN_V2_SELECTED" and frozen["arm"] == "u_gnn_v2_ef"
+    what = squash(frozen["what_is_frozen"])
+    for word in ("hidden 128", "K_REL 4", "420,932", "8d1da88b14df", "129 columns", "evidence-flow"):
+        assert word in what, word
+    pins = frozen["trio_checkpoints_pinned_as_history"]
+    assert pins["seed_0_state_sha256"].startswith("9f749ad3") and pins["seed_1_state_sha256"].startswith("9b3a5521")
+    assert pins["seed_2_state_sha256"].startswith("4575c418") and all(len(v) == 64 for v in pins.values())
+    warm = squash(frozen["no_warm_start"])
+    assert "from scratch" in warm and "No trio checkpoint is loaded, fine-tuned or used as an initialization" in warm
+
+
+def test_the_opening_condition_is_the_replication_pass_and_renames_nothing(stage2):
+    rec = stage2["opening_condition_reconciliation"]
+    assert "at least one arm has a confirmed pass" in squash(rec["declared_rule"])
+    happened = squash(rec["what_actually_happened"])
+    assert "both arms failed" in happened and "PILOT_FAILED is terminal and is not reopened" in happened
+    assert "REPLICATION_PASS on all five cells" in happened and "TWIN_GATE REPLICATION_FAIL" in happened
+    assert "No threshold, cell, population, feature or architecture was changed" in squash(rec["the_ruling"])
+    never = squash(rec["what_this_does_not_do"])
+    for word in ("does not rename PILOT_FAILED", "does not move any status line", "PILOT_PASS",
+                 "selection_behind_the_firewall", "opens nothing for u_mlp_v2_mix"):
+        assert word in never, word
+
+
+def test_stage_2_authorises_five_items_and_bars_the_other_stages_and_the_mlp(stage2):
+    work = stage2["authorised_work"]
+    assert len(work) == 5
+    assert "compile the three added datasets" in work[0] and "before any fit" in work[0]
+    assert "one epoch" in work[1] and "three fits of u_gnn_v2_ef" in work[2] and "seeds 0, 1, 2" in work[2]
+    assert "one evaluation pass" in work[3] and "docs/UNIVERSAL_GNN_SIX.md" in work[4]
+    barred = " ".join(stage2["not_authorised"])
+    for word in ("stage_3_per_dataset_copies", "stage_4_leave_one_dataset_out", "Universal-MLP work",
+                 "any test split", "u_mlp_v2_mix", "gat_universal_v1_trio", "any threshold, gate or selection"):
+        assert word in barred, word
+    other = stage2["the_other_track_is_not_opened_here"]
+    assert "one file per phase" in squash(other["where"]) and "stays REPLICATION_FAIL as filed" in squash(other["bar"])
+
+
+def test_the_six_populations_and_carves_are_the_m3b_ones_and_no_test_split(stage2):
+    pops = stage2["populations_and_splits"]
+    assert "no test split anywhere in this stage" in squash(pops["rule"])
+    expect = {"metaqa": ("dev", 39138), "2wiki": ("dev", 12576), "squad": ("dev", 11873),
+              "hotpotqa": ("validation", 7405), "musique": ("dev", 2417), "webqsp": ("train_holdout", 1503)}
+    for name, (split, queries) in expect.items():
+        row = pops[name]
+        assert row["split"] == split and row["queries"] == queries and len(row["ids_sha256"]) == 64, name
+        assert "test" not in row["split"]
+    assert pops["webqsp"]["zero_gold_excluded"] == 46
+    halves = squash(pops["halves"])
+    assert "reported on each separately" in halves and "reported whole" in halves
+    carves = stage2["training_carves"]
+    m3b = json.loads(M3B_CARVES.read_text(encoding="utf-8"))["per_dataset"]
+    for name in expect:
+        assert carves[name]["fit"] == m3b[name]["fit"] and carves[name]["fit_sha256"] == m3b[name]["fit_sha256"], name
+        assert carves[name]["select"] == m3b[name]["select"] and carves[name]["N"] == m3b[name]["N"], name
+    assert carves["webqsp"]["source_rule"] == "sorted(train)[1::2]"
+    assert "0042c258bd7b" in carves["refusal"]
+
+
+def test_the_contract_does_not_move_for_the_added_datasets(stage2):
+    tr = stage2["contract_transfer_to_the_added_datasets"]
+    rule = squash(tr["rule"])
+    assert "same 129 columns in the same order" in rule and "screen is NOT re-run" in rule
+    bad = squash(tr["a_column_that_misbehaves_on_an_added_dataset"])
+    assert "REPORTED in the compile record" in bad and "kept" in bad and "hard stop" in bad
+    diag = squash(tr["diagnostics_required_before_any_fit"])
+    for word in ("K_REL 4", "truncat", "typed-walk", "queries_with_no_gold_in_pool"):
+        assert word in diag, word
+
+
+def test_the_sampler_is_uniform_over_six_with_no_dataset_identity(stage2):
+    tr = stage2["training"]
+    assert "max_epochs 6" in squash(tr["rule"]) and "patience 2" in squash(tr["rule"])
+    sampler = squash(tr["sampler"])
+    for word in ("uniformly at random among the SIX", "No per-dataset loss weight", "no curriculum",
+                 "no dataset identity feature", "no per-dataset head", "no router", "one checkpoint"):
+        assert word in sampler, word
+    assert "macro select recall@5 over the SIX select carves" in squash(tr["early_stopping"])
+    assert tr["seeds"] == [0, 1, 2]
+    timing = stage2["timing_before_the_schedule"]
+    assert "before the three fits" in squash(timing["rule"])
+    over = squash(timing["if_the_projection_exceeds_the_ceiling"])
+    assert "BEFORE any full fit" in over and "spawn_modal_jobs.py" in over
+
+
+def test_stage_2_reads_paired_against_m3b_has_no_gate_and_keeps_the_band_verdicts(stage2):
+    ev = stage2["evaluation_and_reading"]
+    assert "gat_universal_v1" in squash(ev["references"]) and "not refitted" in squash(ev["references"])
+    paired = squash(ev["paired_procedure"])
+    assert "1000 resamples" in paired and "default_rng(0)" in paired and "gate half and the held half separately" in paired
+    assert "three-seed mean and the standard deviation" in squash(ev["seeds_reported"])
+    gate = stage2["this_stage_has_no_gate"]
+    assert "no threshold, no pass or fail" in squash(gate["rule"]) and "never repaired inside this stage" in squash(gate["rule"])
+    cal = stage2["calibration_against_published_systems"]
+    assert cal["verdicts"] == {"metaqa": "NOT_READ", "webqsp": "NOT_READ", "musique": "READ",
+                               "hotpotqa": "READ", "2wiki": "READ", "squad": "CONTROL"}
+    care = squash(cal["care"])
+    assert "PR@K" in care and "set coverage, not recall" in care and "any_gold_at_pool" in care and "never an average" in care
+    assert "0.5255" in care and "train_holdout" in care
+
+
+def test_stage_2_compute_hard_stops_and_execution_order(stage2):
+    comp = stage2["compute"]
+    assert comp["ceiling_fit_hours"] == 150 and comp["spent_fit_hours"] == 46.36
+    assert round(comp["spent_fit_hours"] + comp["remaining_fit_hours"], 2) == 150.0
+    proj = comp["projection_filed_before_the_run"]
+    assert "24 to 33" in str(proj["three_seeds_hours"]) and "inside the remaining ceiling" in str(proj["three_seeds_hours"])
+    stops = stage2["hard_stops"]
+    assert len(stops["conditions"]) == 7 and "hard_stop_<date>" in squash(stops["rule"])
+    assert any("column would have to be added, dropped, reordered or replaced" in c for c in stops["conditions"])
+    assert any("pass 150" in c for c in stops["conditions"])
+    ex = stage2["execution"]
+    assert ex["order"][0].startswith("file this block and commit it before any stage-2 work")
+    stop = squash(ex["stop_after_this_block"])
+    assert "go-ahead" in stop and "amendment_3 continuous execution applies within" in stop
+    assert stage2["outputs"]["record"].startswith("run_record_stage_2_<date>") and "moving no status line" in stage2["outputs"]["record"]
+    assert len(stage2["tests"]) >= 9

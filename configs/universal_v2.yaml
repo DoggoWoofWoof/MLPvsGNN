@@ -6114,3 +6114,470 @@ replication_record_2026_09_22:
     or scored number changed, and no model was scored twice'
   note: the original status stays as filed (amendment 4 status_vocabulary.status_line); incidents are copied from
     outputs/universal_v2/replication_incidents.json as logged during the run; nothing above is edited
+
+# ═══════════════════════════════════════════════════════════════════════════
+# AUTHORIZATION -- STAGE 2, THE JOINT SIX-DATASET CHECKPOINT OF THE REPLICATED
+# UNIVERSAL-v2 GNN. Hand-written, appended after replication_record_2026_09_22,
+# filed before any stage-2 compile, fit or number. It opens
+# later_stages.stage_2_six_dataset_joint for u_gnn_v2_ef alone. It moves no
+# status line: the file status stays RUN_PILOT_FAILED, the original pilot
+# status stays PILOT_FAILED and the post-pilot replication status stays
+# GNN_REPLICATION_ONLY.
+# ═══════════════════════════════════════════════════════════════════════════
+authorization_stage_2_2026_09_22:
+  filed_utc: '2026-09-22T19:55:00Z'
+  opens: later_stages.stage_2_six_dataset_joint, for u_gnn_v2_ef and nothing else
+  stage_2_status: DECLARED_NOT_RUN
+  status_lines_not_moved:
+    file_status: RUN_PILOT_FAILED
+    original_pilot_status: PILOT_FAILED
+    post_pilot_replication_status: GNN_REPLICATION_ONLY
+  filed_before: any stage-2 cache, fit, evaluation or number exists
+  ruling_verbatim: |
+    This is a **good result**, even though the original Universal-v2 pilot remains correctly recorded as `PILOT_FAILED`.
+
+    The important scientific result is now:
+
+    > **The Universal-v2 GNN works. The Universal-v2 MLP idea is promising but not yet universal.**
+
+    The replication separated those two conclusions very cleanly.
+
+    ### What the GNN result means
+
+    `u_gnn_v2_ef` now has three seeds, and its three-seed mean clears **every original gate without moving a single threshold**:
+
+    | Criterion          | v2 GNN mean | Required |   Margin |
+    | ------------------ | ----------: | -------: | -------: |
+    | MetaQA Hit@1       |  **0.9099** |   0.8840 | +2.59 pp |
+    | MetaQA 3-hop Hit@1 |  **0.8508** |   0.8172 | +3.36 pp |
+    | 2Wiki R@5          |  **0.8996** |   0.8758 | +2.38 pp |
+    | 2Wiki FC@5         |  **0.7763** |   0.7453 | +3.10 pp |
+    | SQuAD R@5          |  **0.9020** |   0.8996 | +0.24 pp |
+
+    And critically, the held-confirmation half reproduces it:
+
+    * MetaQA Hit@1 **0.9095**
+    * MetaQA 3-hop **0.8478**
+    * 2Wiki R@5 **0.8977**
+    * 2Wiki FC@5 **0.7755**
+    * SQuAD R@5 **0.9071**
+
+    That's much more important than the seed-0 failure. Seed 0's SQuAD miss was only 0.0008, and seeds 1-2 showed that it was initialization noise.
+
+    The paired gains against the frozen v1 universal GAT are particularly valuable:
+
+    $$
+    \Delta_{\text{MetaQA Hit@1}}\approx +7.8\text{ pp}
+    $$
+
+    and
+
+    $$
+    \Delta_{\text{MetaQA 3-hop}}\approx +11.2\text{ pp}.
+    $$
+
+    So the v2 architectural changes are doing **exactly what we built them to do**: improve deep relational reasoning without destroying the text/retrieval cases.
+
+    That is a real advance over the M3B GAT.
+
+    ---
+
+    ## And the MLP failure is informative, not disastrous
+
+    The twin isn't some obviously broken model.
+
+    It gets:
+
+    * MetaQA Hit@1 **0.7753**, approximately **+16 pp** over frozen QLS-U on that gate.
+    * SQuAD **0.9063**, so it preserves the do-nothing/retrieval case.
+    * But 2Wiki R@5 is consistently low:
+
+    ```text
+    seed 0   .8545
+    seed 1   .8523
+    seed 2   .8481
+    mean     .8516
+    required .8578
+    ```
+
+    All three seeds miss.
+
+    That means **this is not seed noise**.
+
+    And that's exactly what we needed the replication to determine.
+
+    The current fixed/depth-compiled representation substantially improves the KB case, but something about the new universal non-MP model sacrifices a little of the text-graph ranking behavior on 2Wiki.
+
+    So don't patch it inside v2. Universal-v2 did its job: it told us where the non-MP model still fails.
+
+    ---
+
+    # The project has now split naturally into two tracks
+
+    ### Universal GNN: advance
+
+    I would now freeze:
+
+    ```text
+    UNIVERSAL_GNN_V2_SELECTED
+        = u_gnn_v2_ef
+    ```
+
+    and move it into the **six-dataset universal stage**.
+
+    This is the first point where I think it makes sense to pursue your "one GNN for KB + text" claim seriously.
+
+    It has demonstrated on the triangle that it can simultaneously:
+
+    ```text
+    MetaQA  -> improve deep typed reasoning massively
+    2Wiki   -> improve/retain text-graph performance
+    SQuAD   -> avoid harming retrieval
+    ```
+
+    Now we need to see whether that transfers to the three datasets it has not been optimized against:
+
+    ```text
+    WebQSP
+    HotpotQA
+    MuSiQue
+    ```
+
+    Those are exactly the right stress tests.
+
+    ### Universal MLP: new declaration
+
+    Don't advance `u_mlp_v2_mix` as the universal MLP.
+
+    Open a tiny **v2.1 non-MP phase** whose explicit problem is:
+
+    > **Retain the large MetaQA gain of v2 while recovering the 2Wiki regression.**
+
+    That is far better than vaguely "make MLP better."
+
+    ---
+
+    # I think I know the minimal MLP-v2.1 change worth testing
+
+    Do **not** add another huge feature family yet.
+
+    The existing v2 basis is clearly useful-MetaQA gained ~16 points.
+
+    The problem appears to be that the model cannot cleanly fall back to the old strong representation when the new depth/path basis is unhelpful.
+
+    So I would make the first v2.1 architecture a **residual block mixer with an explicit identity path**:
+
+    $$
+    s_{\text{v2.1}}
+    =
+    s_{\text{core}}
+    +
+    \sum_b g_b(q,v)\,\Delta_b(q,v),
+    $$
+
+    where \(b\) could be:
+
+    ```text
+    depth/support
+    ordered relation paths
+    fixed semantic prototypes
+    seed-conditioned aggregates
+    ```
+
+    and importantly:
+
+    $$
+    g_b \approx 0
+    $$
+
+    is an easy solution.
+
+    I'd initialize those new-block residual gates at or very near zero rather than the v2 mixer's 0.5.
+
+    This gives the model an easy behavior:
+
+    > "On 2Wiki, keep the strong old/core representation."
+
+    while still allowing:
+
+    > "On MetaQA, turn on the deep relation/path blocks."
+
+    No dataset ID. No per-dataset head. Still one universal MLP.
+
+    That is a very principled response to the observed failure.
+
+    Before fitting even that, use the already-existing outputs to diagnose **where** 2Wiki v2 loses to QLS-U/core: seed-distance bucket, multi-gold versus single-gold, STRUCT reach, depth block activation, and new-block gate values. That's analysis only and may tell us whether the residual-gating hypothesis is right.
+
+    ---
+
+    # Most important next experiment: six-dataset U-GNN
+
+    I would authorize this before spending much time on the MLP repair.
+
+    The question now is:
+
+    > **Does `u_gnn_v2_ef`, trained as one checkpoint across all six datasets, retain its new KB reasoning strength while remaining strong on passage retrieval?**
+
+    That gives us the potential method contribution.
+
+    The key six-dataset table should eventually be:
+
+    | Dataset |               M3B GAT-v1 | U-GNN-v2 |      Relevant SOTA calibration |
+    | ------- | -----------------------: | -------: | -----------------------------: |
+    | MetaQA  |                 .831 H@1 |        ? | ~high-90s dedicated KB systems |
+    | WebQSP  |                 .595 H@1 |        ? |                         ~76-77 |
+    | Hotpot  |                 .896 R@5 |        ? |         strong text retrievers |
+    | 2Wiki   |                 .885 R@5 |        ? |         strong text retrievers |
+    | MuSiQue |                 .521 R@5 |        ? |         strong text retrievers |
+    | SQuAD   | retrieval already strong |        ? |                        control |
+
+    We should not yet call the v2 GNN SOTA from the trio pilot. But **MetaQA moving from ~.83 to ~.91 while 2Wiki and SQuAD remain good is exactly the kind of movement we needed before spending six-dataset compute.**
+
+    ---
+
+    ## What I would authorize next
+
+    I would make the order:
+
+    1. **Freeze `u_gnn_v2_ef` as the successful replicated Universal-v2 GNN.**
+    2. File a dated authorization for its already-planned **joint six-dataset checkpoint**; keep uniform dataset sampling and no dataset-specific heads.
+    3. Evaluate all six using the existing frozen candidate contracts and report both our metrics and exact SOTA-compatible metrics where possible.
+    4. Separately run **analysis-only diagnostics** on why `u_mlp_v2_mix` loses 2Wiki.
+    5. Then declare **Universal-MLP-v2.1**, with the smallest defensible change, likely explicit zero-initialized residual/block gating.
+    6. Do not modify M3B or Universal-v2 records; both remain historical evidence exactly as filed.
+
+    The Modern Standby incident and shard-guard bug do not concern me scientifically based on your description. The fit resumed without redraw/change, and the eval bug was a bookkeeping guard that was fixed without changing populations or scores. Keeping both incidents in the run record is sufficient.
+
+    ### Where the paper stands now
+
+    This is stronger than it was two days ago.
+
+    You now have:
+
+    **M3B:** a clean causal result about *when message passing matters.*
+
+    **Universal-v2:** evidence that a relation/depth-aware universal GNN can materially improve the hardest KB regime **without sacrificing text retrieval**, replicated over three seeds and on a v2-held half.
+
+    **Universal MLP:** evidence that deterministic compilation can make a huge KB improvement, but also a concrete remaining universality failure on 2Wiki.
+
+    So I would **advance the GNN**, not repair it further, and **open a separate minimal MLP-v2.1 track**.
+
+    That keeps the paper clean: one successful universal GNN trajectory, one transparent non-MP trajectory, and the original causal experiment untouched.
+  the_freeze:
+    name: UNIVERSAL_GNN_V2_SELECTED
+    arm: u_gnn_v2_ef
+    what_is_frozen: >-
+      the architecture and the inference contract exactly as the pilot and the
+      replication used them: UGNNv2 with the shared cell, update gate, typed
+      attention and the evidence-flow state, hidden 128, K_REL 4, 420,932
+      parameters, the residual readout on the fixed base score, the
+      UNIVERSAL_V2_CORE_CONTRACT of contract_frozen_2026_09_19 (129 columns,
+      surviving_columns_sha256 8d1da88b14df, base rrf, evidence [rrf,
+      dense_cos, splade_rr, is_seed], substitution splade_score_norm ->
+      splade_rr), and the frozen training rule of
+      amendment_3_2026_09_13_training_reading_and_compute.
+    trio_checkpoints_pinned_as_history:
+      seed_0_state_sha256: 9f749ad346afcef479f84436019771e0b940a1e647e4960908acf4105ea2ed0e
+      seed_1_state_sha256: 9b3a5521babb814e83e8a0a40a94b9abd92bdee7f7f58b04f686558d0522c367
+      seed_2_state_sha256: 4575c41822f56d99b843aaa524a5eb407fa038ebc24a6ad04f4fef786433d4c4
+    no_warm_start: >-
+      the trio weights are historical evidence; stage 2 fits three NEW
+      checkpoints from scratch on the six datasets (seeds 0, 1, 2). No trio
+      checkpoint is loaded, fine-tuned or used as an initialization, and no
+      stage-2 weight is written into outputs/universal_v2/fits/ beside them.
+  opening_condition_reconciliation:
+    declared_rule: >-
+      later_stages.stage_2_six_dataset_joint.opens_when -- at least one arm has
+      a confirmed pass and a dated authorization block names it.
+    what_actually_happened: >-
+      the pilot gate was read once and both arms failed (GNN_GATE by squad
+      recall@5 0.8988 vs 0.8996, TWIN_GATE by 2wiki recall@5 0.8545 vs
+      0.8578); PILOT_FAILED is terminal and is not reopened. The post-pilot
+      replication (amendment_4_2026_09_21, replication_record_2026_09_22) then
+      read the three-seed per-query mean once on V2_GATE against the same
+      frozen cells: GNN_GATE REPLICATION_PASS on all five cells (squad 0.9020
+      vs 0.8996), TWIN_GATE REPLICATION_FAIL on 2wiki (0.8516 vs 0.8578, all
+      three seeds below).
+    the_ruling: >-
+      the user rules that the GNN family REPLICATION_PASS is the confirmed pass
+      that opens stage 2 for u_gnn_v2_ef. No threshold, cell, population,
+      feature or architecture was changed to obtain it, and the reading used
+      the aggregation the pilot had already declared for a passing arm.
+    what_this_does_not_do: >-
+      it does not rename PILOT_FAILED, does not move any status line, does not
+      make u_gnn_v2_ef a PILOT_PASS, does not revive the non-selected
+      u_gnn_v2 (selection_behind_the_firewall still bars it), and opens
+      nothing for u_mlp_v2_mix.
+  authorised_work:
+  - compile the three added datasets (webqsp, hotpotqa, musique) under the frozen v2 contract, fit and select carves, before any fit
+  - a measured timing run -- one epoch of the joint six-dataset schedule -- before the full schedule
+  - three fits of u_gnn_v2_ef jointly on the six datasets, seeds 0, 1, 2, under the frozen training rule
+  - one evaluation pass of the three checkpoints on the six M3B eval populations
+  - the reading, the report (docs/UNIVERSAL_GNN_SIX.md), a dated run record, the tests and the commit
+  not_authorised:
+  - any change to the architecture, the contract, the columns, K_REL, the hidden size, the loss, the readout or the training rule
+  - any other arm (u_gnn_v2, u_gnn_v2_core78, u_mlp_v2, u_mlp_v2_mix, gat_universal_v1_trio) and any refit of the M3B incumbents
+  - later_stages.stage_3_per_dataset_copies and later_stages.stage_4_leave_one_dataset_out; each still needs its own dated block
+  - any Universal-MLP work -- the diagnostics and v2.1 are a separate dated declaration in their own file
+  - any threshold, gate or selection on stage-2 numbers; any test split; any re-compile, re-hash or edit of the trio caches, of M3B or of any filed v2 record
+  populations_and_splits:
+    rule: the six M3B eval populations, whole, with the M3B eval_splits; no test split anywhere in this stage
+    metaqa: {split: dev, queries: 39138, ids_sha256: bd5d8732b25494968b651b3955d89616b13062f5d62fad83c5308f9e28803426, pool: 'equal_rrf_budget_50+STRUCT:h3_c25_v2000'}
+    2wiki: {split: dev, queries: 12576, ids_sha256: 9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f, pool: 'equal_rrf_budget_50+STRUCT:h1_c25'}
+    squad: {split: dev, queries: 11873, ids_sha256: e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8, pool: equal_rrf_budget_50}
+    hotpotqa: {split: validation, queries: 7405, ids_sha256: d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e, pool: 'equal_rrf_budget_50+STRUCT:h1_c25'}
+    musique: {split: dev, queries: 2417, ids_sha256: de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08, pool: 'equal_rrf_budget_200+FULL:h2_c25'}
+    webqsp: {split: train_holdout, queries: 1503, zero_gold_excluded: 46, ids_sha256: faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e, pool: 'dense_top200+FULL:h3_c25_v2000'}
+    halves: >-
+      the trio keeps the v2 gate and held halves and is reported on each
+      separately (the halves are already read, so no trio number of this stage
+      is a first reading); the three added datasets have no v2 halves and are
+      reported whole, as later_stages.stage_2_six_dataset_joint declares.
+  training_carves:
+    rule: the M3B training carves verbatim, outputs/m3b/carves.json; the fit carve trains, the select carve early-stops
+    metaqa: {N: 329282, select: 1497, fit: 5960, fit_sha256: 161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188}
+    2wiki: {N: 167454, select: 1496, fit: 5928, fit_sha256: fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3}
+    squad: {N: 130319, select: 1498, fit: 5856, fit_sha256: 39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515}
+    hotpotqa: {N: 90447, select: 1508, fit: 5930, fit_sha256: 2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c, select_sha256: 700d8c8177da235a28da35866ee09bf2a5e5ff9dca100a758380692a8d7b760d}
+    musique: {N: 19938, select: 1534, fit: 4601, fit_sha256: 7976539fa1fbf0e132429f9983335b452c8f557b6f5bc13984a71a9c388fdfcf, select_sha256: 975ee3e580cadf719fe09d511b611fdde4fa0065bf444bff43216643a0a184b6}
+    webqsp: {N: 1549, select: 310, fit: 1239, fit_sha256: b744f21fcccf880290bd87c580052d2ebe0f29f1f4bb3af3bebb636e94d13eaa, select_sha256: 1e0eff537583aa30777f7ce0f81f188740c6cab1cd5303f43b96da0d9f8091e6, source_rule: 'sorted(train)[1::2]'}
+    refusal: a carve whose sha256 differs from the value above stops the stage; the trio caches are not recompiled and their six_caches_combined_sha256 0042c258bd7b must not change
+  contract_transfer_to_the_added_datasets:
+    rule: >-
+      the contract is frozen. The three added datasets are compiled with the
+      same 129 columns in the same order, the same base, the same evidence
+      fields and the same substitutions as the trio. The screen is NOT re-run
+      and no column is added, dropped or reordered for them.
+    a_column_that_misbehaves_on_an_added_dataset: >-
+      a column that is constant, degenerate or unavailable on an added dataset
+      is REPORTED in the compile record (name, dataset, statistic) and kept.
+      Dropping or replacing a column after seeing the added data would be a
+      post-hoc contract change and is a hard stop.
+    diagnostics_required_before_any_fit: >-
+      per added dataset -- rows, candidates_mean, queries_with_no_gold_in_pool,
+      zero_gold_excluded, the K_REL 4 relation-slot truncation (pairs,
+      truncated, fraction of queries with any truncated pair; webqsp has about
+      7,000 relation types and is where truncation is expected), the typed-walk
+      diagnostics by hop, compile seconds and peak RSS.
+  training:
+    rule: >-
+      the frozen v2 training rule, unchanged -- max_epochs 6, 2000 batches per
+      epoch, batch 16 query draws, patience 2, lr 1e-3, weight decay 1e-4,
+      clip 1.0, dataset_draw per_query, epoch_limit_s 28800.
+    sampler: >-
+      each of the 16 draws picks a dataset uniformly at random among the SIX
+      and then a query uniformly at random from that dataset fit carve. No
+      per-dataset loss weight, no curriculum, no over-sampling of any dataset,
+      no dataset identity feature, no per-dataset head and no router -- one
+      checkpoint, one contract (goals.universality_criterion).
+    early_stopping: >-
+      the macro select recall@5 over the SIX select carves (the trio rule
+      extended to six, declared here before any fit); best epoch by that macro,
+      patience 2 as filed.
+    seeds: [0, 1, 2]
+    what_a_seed_is: the same seeded batch order and initialization mechanism as the pilot and the replication (m3b_train), so a restart from an epoch checkpoint draws the batches the uninterrupted fit would have drawn
+  timing_before_the_schedule:
+    rule: >-
+      one measured epoch of the joint schedule is run and filed as
+      timing_stage_2_<date> before the three fits. It reports the epoch wall
+      clock at 8 threads, peak RSS and the projected three-seed cost.
+    if_the_projection_exceeds_the_ceiling: >-
+      if three seeds would take the spend past the remaining ceiling, or an
+      epoch exceeds 3 hours at 8 threads, the placement or the reduced
+      schedule is filed in a dated amendment BEFORE any full fit -- never
+      decided silently at run time. Modal placement only through
+      scripts/spawn_modal_jobs.py with the CPU-GPU equivalence test of
+      later_stages.compute_placement.
+  evaluation_and_reading:
+    metrics: as measurement.metrics -- recall@1/5/10/20, hit@1, mrr, ndcg@5/20, full_coverage@5/20, unretrieved gold counted against recall, pool ceilings beside every row
+    headline_per_dataset: {metaqa: hit@1 and recall@5, webqsp: hit@1 and recall@5, hotpotqa: recall@5 and full_coverage@5, 2wiki: recall@5 and full_coverage@5, musique: recall@5 and full_coverage@5, squad: recall@5 (the control -- the fixed rrf 0.905 is the number to beat or leave alone)}
+    references: >-
+      the frozen M3B arrays on the same queries -- gat_universal_v1 (the
+      universal GAT), gat_no_mp_v1 and qls_u_sota_v1 -- read from
+      outputs/m3b/eval/*.npz. They are not refitted and not re-rendered.
+    paired_procedure: measurement.paired_procedures.against_m3b verbatim -- per query, paired bootstrap 1000 resamples, numpy default_rng(0), 95 percent percentile; on the trio, the gate half and the held half separately; on the added three, the whole population
+    seeds_reported: the per-seed value, the three-seed mean and the standard deviation for every cell of the table; the paired interval of the three-seed per-query mean
+    slices: measurement.slices_reported -- metaqa by hop, gold BFS distance buckets, multi-gold -- extended to the six datasets where the slice exists
+    mechanism_readouts: measurement.mechanism_readouts for the GNN -- step gates, evidence gate, delta_s magnitude and the fraction of queries whose top-1 moves from the fixed base, per dataset
+    cost_and_audit: parameters, per-epoch wall clock, peak RSS, threads, per-query latency, and the M3B MRR audit on every scorer before any record is written
+  this_stage_has_no_gate:
+    rule: >-
+      stage 2 is a measurement, not a selection. There is no threshold, no
+      pass or fail and no new arm to choose. A per-dataset regression against
+      the M3B GAT is REPORTED as it falls, never repaired inside this stage;
+      what to do about it is a new dated declaration filed before its fit.
+    what_would_be_a_finding: >-
+      whether one checkpoint over six datasets keeps the trio behaviour
+      (metaqa deep-hop gain, 2wiki lift, squad left alone) and what it does on
+      the three datasets it was never optimised against (webqsp, hotpotqa,
+      musique). Both directions are publishable; neither is a target.
+  calibration_against_published_systems:
+    rule: the M3B band verdicts carry over unchanged and are reprinted with every calibration row
+    verdicts: {metaqa: NOT_READ, webqsp: NOT_READ, musique: READ, hotpotqa: READ, 2wiki: READ, squad: CONTROL}
+    why: >-
+      the KB rows are NOT_READ because the published systems assign topic
+      entities while ours seeds the graph by inference-safe retrieval, and the
+      measured exposure shortfall does not cover the gap; a stage-2 number on
+      metaqa or webqsp is never presented as beating or approaching a
+      published system.
+    care: >-
+      PR@K in the GraphER tables is set coverage, not recall, and is not
+      compared to our recall@K without saying so; the webqsp comparator to a
+      published coverage number is the pool any_gold_at_pool column, never an
+      average; webqsp is on train_holdout and its corpus ceiling (0.5255
+      reference level) is printed on the row.
+  compute:
+    ceiling_fit_hours: 150
+    spent_fit_hours: 46.36
+    remaining_fit_hours: 103.64
+    projection_filed_before_the_run:
+      compile_the_three_added_carves_hours: 1.0 to 2.0 (about 16.8 M rows at the trio rate of 0.22 ms per row; webqsp typed basis may be slower)
+      per_epoch_hours: 2.0 uncontended (the trio epoch measured 4,866 s and the mean pool per draw rises from 724 to 1,080 candidates), up to 2.7 when another process shares the laptop
+      per_seed_hours: 8 to 11 (four epochs, as every u_gnn_v2_ef fit so far)
+      three_seeds_hours: 24 to 33, inside the remaining ceiling
+      one_eval_pass_lane_hours: about 19 (metaqa dominates at about 14.6; webqsp 1.3, musique 2.1, hotpotqa 0.5, 2wiki 0.6, squad 0.2), about 8 hours wall in three lanes
+      total_wall_clock_days: 2 to 3 on this laptop, less if it is not shared
+    guard: the fit-hour guard of amendment_3 runs before every fit and refuses the fit that would pass 150
+    placement: the laptop by default, one fit lane at 8 threads; any other placement is a dated amendment with the equivalence test
+  hard_stops:
+    rule: on any of these, file hard_stop_<date> with the condition, the evidence and the remaining work, leave every status line where it is, and report
+    conditions:
+    - the UNIVERSAL_V2_CORE_CONTRACT hash, the M3B pins or the trio cache hashes change
+    - a column would have to be added, dropped, reordered or replaced for an added dataset
+    - the model code, the training rule or the sampler differs from what is frozen above
+    - an eval population ids_sha256 or carve sha256 differs from the value filed above
+    - any test split is touched, or a trio held-half number is read as if it were new
+    - the projected or actual fit-hours would pass 150
+    - a genuinely new scientific decision appears (for example a dataset that cannot be compiled under the frozen contract)
+  outputs:
+    code: scripts/universal_v2_six.py (compile, timing, fit, eval, merge, read for the six-dataset stage; it imports the v2 and M3B modules unchanged and edits neither) and its tests
+    sidecars: outputs/universal_v2/six/ (caches, fits, eval, records; gitignored)
+    document: docs/UNIVERSAL_GNN_SIX.md -- the six-dataset table, the paired columns, the slices, the mechanism readouts, the calibration table with its verdicts, the compute and the incidents
+    record: run_record_stage_2_<date> appended to this file, moving no status line
+  the_other_track_is_not_opened_here:
+    what: the analysis-only diagnostics of why u_mlp_v2_mix loses 2wiki, and the Universal-MLP-v2.1 architecture (zero-initialised residual block gates)
+    where: their own dated declaration in their own file (one file per phase), filed before any diagnostic reading and before any v2.1 fit
+    bar: nothing in this block authorises an MLP fit, an MLP number or a new MLP reading; u_mlp_v2_mix stays REPLICATION_FAIL as filed
+  tests:
+  - the block exists, is dated, sits after replication_record_2026_09_22 and moves no status line
+  - the ruling is filed verbatim and the six ordered items of the user plan are present
+  - the freeze names u_gnn_v2_ef alone, pins the three trio state hashes and bars a warm start
+  - the authorised work is exactly the five items above; stages 3 and 4 and every MLP item are barred
+  - the six populations carry the M3B ids_sha256 and splits filed above and no test split
+  - the six carves carry the M3B sha256 filed above
+  - the contract transfer keeps 129 columns and makes a post-hoc column change a hard stop
+  - the sampler is uniform over six with no dataset identity, head or router, and early stopping is the macro over six select carves
+  - the stage has no gate and no threshold, and the calibration verdicts are metaqa NOT_READ, webqsp NOT_READ, musique READ, hotpotqa READ, 2wiki READ, squad CONTROL
+  execution:
+    order:
+    - file this block and commit it before any stage-2 work (commit the rule before the number)
+    - compile the three added carves under the frozen contract and file the compile record
+    - the timing run, then the three fits, then the one eval pass
+    - the reading, the document, the dated run record, the tests, the commit
+    stop_after_this_block: >-
+      this is a declaration. The compile and the fits begin on the user
+      go-ahead, because stage 2 commits two to three days of the shared
+      laptop; once they begin, amendment_3 continuous execution applies within
+      this stage (no review stop between its mechanical steps) and a hard stop
+      or the terminal state ends it.
+    incidents: outputs/universal_v2/six/incidents.json, one string per incident with its wall clock, as the replication
