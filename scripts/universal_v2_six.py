@@ -62,6 +62,7 @@ SIX_EVAL = SIX / "eval"
 DOC = ROOT / "docs" / "UNIVERSAL_GNN_SIX.md"
 STAGE2 = "authorization_stage_2_2026_09_22"
 AMD5 = "amendment_5_2026_09_23"
+AMD6 = "amendment_6_2026_09_23"
 ARM = "u_gnn_v2_ef"
 SEEDS = (0, 1, 2)
 DATASETS = ("metaqa", "2wiki", "squad", "hotpotqa", "musique", "webqsp")
@@ -102,6 +103,49 @@ def go_ahead_block(cfg: dict) -> dict:
     if block is None:
         raise SystemExit(f"{AMD5} is not in the declaration; the stage runs on the filed go-ahead only")
     return block
+
+
+def context_block(cfg: dict) -> dict:
+    """amendment_6: the pilot's trio checkpoint reprinted as context. Required before the column is printed."""
+    block = cfg.get(AMD6)
+    if not isinstance(block, dict):
+        raise SystemExit(f"{AMD6}: the declaration of the trio context column is not in the config; refusing to print it")
+    return block
+
+
+def trio_context(cfg: dict, name: str, ours: dict, our_keys: list, masks: dict, ours_ids: list) -> dict | None:
+    """amendment_6_2026_09_23: the pilot's already-filed trio cell of the same arm beside the joint checkpoint,
+    on the three datasets where a trio checkpoint exists, with one paired delta of the stage-2 three-seed
+    per-query mean against it. A different training set, not a seed comparison, and no threshold anywhere."""
+    added = context_block(cfg)["what_is_added"]
+    if name not in list(added["datasets"]):
+        return None
+    src = added["source_files"][name]
+    path = ROOT / str(src["path"])
+    if not path.exists():
+        raise SystemExit(f"{name}: {path} is not there; the trio context column is filed against that file")
+    digest = V2.sha256_file(path)
+    if digest != src["sha256"]:
+        raise SystemExit(f"{name}: {path} hashes {digest[:12]}, {AMD6} pins {str(src['sha256'])[:12]}; hard stop")
+    ids = json.loads((V2.EVAL / f"{name}_query_ids.json").read_text(encoding="utf-8"))
+    if ids != ours_ids:
+        raise SystemExit(f"{name}: the pilot and stage-2 query lists differ; refusing to print the trio column")
+    arm = str(added["context_arm"])
+    with np.load(path) as z:
+        theirs = {k: z[k] for k in z.files if k.startswith(arm + "/")}
+    missing = [m for m in REPORTED_METRICS if f"{arm}/{m}" not in theirs]
+    if missing:
+        raise SystemExit(f"{name}: the pilot arrays carry no {missing} for {arm}; refusing a partial context column")
+    out = {"arm": arm, "source": {"path": str(src["path"]), "sha256": digest}, "filed_in": str(added["filed_in"]),
+           "declared_in": AMD6, "seeds": 1, "trained_on": sorted(TRIO), "we_are_trained_on": sorted(DATASETS),
+           "label": " ".join(str(added["how_it_is_labelled"]).split()), "scopes": {}}
+    for scope, mask in masks.items():
+        out["scopes"][scope] = {
+            "queries": int(mask.sum()),
+            "trio": {m: cell(theirs, [arm], m, mask) for m in REPORTED_METRICS},
+            "paired_six_minus_trio": {m: V2.paired_bootstrap(seed_mean_per_query(ours, our_keys, m, mask),
+                                                             theirs[f"{arm}/{m}"][mask]) for m in REPORTED_METRICS}}
+    return out
 
 
 def fit_key(seed: int) -> str:
@@ -867,6 +911,7 @@ def stage_read_six(cfg: dict, log=log_utc) -> dict:
            "no_gate": " ".join(str(block["this_stage_has_no_gate"]["rule"]).split()),
            "paired_procedure": " ".join(str(block["evaluation_and_reading"]["paired_procedure"]).split()),
            "references_note": " ".join(str(block["evaluation_and_reading"]["references"]).split()),
+           "trio_context_note": " ".join(str(context_block(cfg)["what_this_is"]).split()),
            "per_dataset": {}, "compute": {}}
     for name in DATASETS:
         rec = V2.read_json(SIX_EVAL / f"{name}.json")
@@ -899,10 +944,13 @@ def stage_read_six(cfg: dict, log=log_utc) -> dict:
                           "latency_ms": {k: round(1000 * v["p50"], 2) for k, v in rec["latency"].items() if isinstance(v, dict) and "p50" in v}},
                  "mrr_audit_ok": all(a["ok"] for a in rec["mrr_audit"].values()),
                  "scopes": {"whole": read_scope(name, ours, theirs, our_keys, refs, whole)}}
+        masks = {"whole": whole}
         if "half" in ours:
             half = ours["half"].astype(bool)
             entry["scopes"]["V2_GATE"] = read_scope(name, ours, theirs, our_keys, refs, half)
             entry["scopes"]["V2_HELD_CONFIRMATION"] = read_scope(name, ours, theirs, our_keys, refs, ~half)
+            masks.update({"V2_GATE": half, "V2_HELD_CONFIRMATION": ~half})
+        entry["trio_context"] = trio_context(cfg, name, ours, our_keys, masks, ours_ids)
         out["per_dataset"][name] = entry
         log(f"   {name}: read on {n} queries ({'halves beside it' if 'half' in ours else 'whole'}), band {BAND[name]}")
     out["compute"] = compute_summary(cfg)
@@ -1073,13 +1121,34 @@ def doc_lines(read: dict, cfg: dict) -> list:
     L += ["", "Per-seed values, every reported metric (recall@1/5/10/20, hit@1, mrr, ndcg@5/20, full_coverage@5/20),",
           "the non-MP references (`gat_no_mp_v1`, `qls_u_sota_v1`) and the fixed rrf are in",
           "`outputs/universal_v2/six/read_record.json`.", ""]
+    contexts = {n: e["trio_context"] for n, e in read["per_dataset"].items() if e.get("trio_context")}
+    if contexts:
+        one = next(iter(contexts.values()))
+        L += ["## 3. The trio checkpoint beside the joint one", "",
+              "Declared in " + AMD6 + " before any stage-2 weight was fitted. The trio column is the pilot's",
+              "already-filed `" + one["arm"] + "` read from `outputs/universal_v2/eval/*.npz`; those arrays are not",
+              "rescored here. This is a different training set, not a seed comparison: three datasets against six,",
+              "and the single pilot seed that was scored on the whole population against this stage's three seeds.",
+              "webqsp, hotpotqa and musique have no trio checkpoint, so they have no column here rather than a",
+              "substitute one. No threshold is applied: the stage has no gate.", "",
+              "| dataset | metric | six datasets, 3 seeds | trio pilot, 1 seed, 3 datasets | paired six - trio [95% CI] |",
+              "| --- | --- | --- | --- | --- |"]
+        for name in DATASETS:
+            ctx = contexts.get(name)
+            if ctx is None:
+                continue
+            scope = ctx["scopes"]["whole"]
+            for m in read["per_dataset"][name]["headline"]:
+                L.append(f"| {name} | {m} | {fmt(read['per_dataset'][name]['scopes']['whole']['ours'][m])} | "
+                         f"{scope['trio'][m]['per_seed'][0]:.4f} | {fmt_paired(scope['paired_six_minus_trio'][m])} |")
+        L += ["", "Every reported metric and both trio halves are in the read record under `trio_context`.", ""]
     return L
 
 
 def doc_lines_tail(read: dict, cfg: dict) -> list:
     block = stage2_block(cfg)
     incidents = V2.read_json(SIX / "incidents.json") or []
-    L = ["## 3. The trio halves", "",
+    L = ["## 4. The trio halves", "",
          "The three pilot datasets carry the V2_GATE / V2_HELD_CONFIRMATION split of the pilot. Both halves were",
          "already read there, so neither is a first reading here; they are printed separately because the stage",
          "reports what it measures, and nothing in this stage is compared to a threshold.", "",
@@ -1092,7 +1161,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
         for m in e["headline"]:
             L.append(f"| {name} | {m} | {fmt(e['scopes']['V2_GATE']['ours'][m])} | "
                      f"{fmt(e['scopes']['V2_HELD_CONFIRMATION']['ours'][m])} | {fmt(e['scopes']['whole']['ours'][m])} |")
-    L += ["", "## 4. Slices", "",
+    L += ["", "## 5. Slices", "",
           "Each slice is a mask over the same population: metaqa by hop, the gold BFS-distance buckets in the STRUCT",
           "view, and the single-gold / multi-gold split. The paired column is against the M3B GAT on the same slice.", "",
           "| dataset | slice | queries | metric | this stage | M3B GAT | paired delta [95% CI] |",
@@ -1103,7 +1172,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
             for m in e["headline"]:
                 L.append(f"| {name} | {label} | {s['queries']} | {m} | {fmt(s['ours'][m])} | "
                          f"{fmt(s['gat_universal_v1'][m])} | {fmt_paired(s['paired_vs_gat'][m])} |")
-    L += ["", "## 5. What the one contract carries on each substrate", "",
+    L += ["", "## 6. What the one contract carries on each substrate", "",
           "The same 129 columns on six graphs. The three added datasets were scanned in full during this stage; the",
           "trio rows are the pilot screen's sampled availability, which is the number filed for them. Nothing is",
           "dropped, reordered or specialised anywhere: a column that no query of a dataset can populate stays in the",
@@ -1114,7 +1183,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
         L.append(f"| {name} | {c['rows']} | {c['availability_mean']:.4f} | {c['availability_min']:.4f} | "
                  f"{c['unavailable']} | {'' if c['constant'] is None else c['constant']} | {c['source']} |")
     mcols = mechanism_columns(read)
-    L += ["", "## 6. Mechanism readouts", "",
+    L += ["", "## 7. Mechanism readouts", "",
           "Per checkpoint, over the whole population: the mean |delta_s| over |base_z| ratio, the fraction of queries",
           "whose top-1 leaves the fixed base score, the message-passing step gates and, where the arm has them, the",
           "evidence-flow gates. These are the readouts measurement.mechanism_readouts declares; they are reported as",
@@ -1126,7 +1195,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
             cells = [f"{mech[m]:.4f}" if m in mech else "" for m in mcols]
             L.append(f"| {name} | `{key}` | " + " | ".join(cells) + " |")
     cal = read["calibration"]
-    L += ["", "## 7. Calibration against published systems", "",
+    L += ["", "## 8. Calibration against published systems", "",
           cal["rule"], "", cal["care"], "",
           "| dataset | band verdict | headline | this stage | M3B GAT | any_gold_at_pool | recall ceiling@5 | candidates mean |",
           "| --- | --- | --- | --- | --- | --- | --- | --- |"]
@@ -1139,7 +1208,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
           "coverage number is the `any_gold_at_pool` column of the pool, never an average. MetaQA and WebQSP stay",
           "NOT_READ: the published KB systems assign topic entities while this pipeline seeds the graph by",
           "inference-safe retrieval, so no number here is presented as beating or approaching a published system.",
-          "", "## 8. What the stage cost", "",
+          "", "## 9. What the stage cost", "",
           f"- compile of the three added carves: {c['compile_rows']} rows in {c['compile_hours']} hours",
           f"- the measured joint epoch: {c['measured_epoch_seconds']} s, peak RSS {c['timing_peak_rss_gb']} GB",
           f"- the three fits: {c['fit_hours_this_stage']} fit-hours (peak RSS {c['fit_peak_rss_gb']} GB); "
@@ -1147,8 +1216,8 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
           f"- the one eval pass: {c['eval_hours']} hours (peak RSS {c['eval_peak_rss_gb']} GB)",
           f"- placement: {c['placement']}", ""]
     if incidents:
-        L += ["## 9. Incidents", ""] + [f"- {line}" for line in incidents] + [""]
-    L += ["## 10. What this stage does not do", "",
+        L += ["## 10. Incidents", ""] + [f"- {line}" for line in incidents] + [""]
+    L += ["## 11. What this stage does not do", "",
           " ".join(str(block["this_stage_has_no_gate"]["rule"]).split()), "",
           " ".join(str(block["the_other_track_is_not_opened_here"]["bar"]).split()), ""]
     return L

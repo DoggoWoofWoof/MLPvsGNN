@@ -368,3 +368,43 @@ def test_every_mechanism_readout_the_pass_produced_reaches_the_document():
     assert SIXMOD.mechanism_columns(read) == ["delta_ratio", "top1_changed", "gate_step1", "gate_step2",
                                               "gate2_step1", "gate2_step2"]
     assert SIXMOD.mechanism_columns({"per_dataset": {"x": {"scopes": {"whole": {"mechanism": {}}}}}}) == []
+
+
+def test_the_trio_context_is_the_pilot_arrays_themselves_and_only_on_the_trio(cfg):
+    """amendment_6: the column is read from the pinned pilot file, on the three datasets that have a trio
+    checkpoint, and it is a paired delta against it -- nothing is rescored and no threshold appears."""
+    added = SIXMOD.context_block(cfg)["what_is_added"]
+    ids = json.loads((V2.EVAL / "2wiki_query_ids.json").read_text(encoding="utf-8"))
+    with np.load(V2.EVAL / "2wiki.npz") as z:
+        arm = added["context_arm"]
+        trio = {m: z[f"{arm}/{m}"] for m in SIXMOD.REPORTED_METRICS}
+    n = len(ids)
+    our_keys = [SIXMOD.fit_key(s) for s in SIXMOD.SEEDS]
+    ours = {f"{k}/{m}": trio[m] for k in our_keys for m in SIXMOD.REPORTED_METRICS}
+    mask = np.ones(n, dtype=bool)
+    out = SIXMOD.trio_context(cfg, "2wiki", ours, our_keys, {"whole": mask}, ids)
+    assert out["arm"] == arm and out["seeds"] == 1 and out["declared_in"] == SIXMOD.AMD6
+    assert out["trained_on"] == sorted(SIXMOD.TRIO) and out["we_are_trained_on"] == sorted(SIXMOD.DATASETS)
+    scope = out["scopes"]["whole"]
+    assert scope["queries"] == n and sorted(scope["trio"]) == sorted(SIXMOD.REPORTED_METRICS)
+    for m in SIXMOD.REPORTED_METRICS:                      # ours is the trio itself here: every delta is zero
+        p = scope["paired_six_minus_trio"][m]
+        assert abs(p["mean"]) < 1e-12 and abs(p["low"]) < 1e-12 and abs(p["high"]) < 1e-12
+        assert abs(scope["trio"][m]["mean"] - float(trio[m].mean())) < 5e-5
+    assert "PASS" not in json.dumps(out) and "verdict" not in json.dumps(out)
+    for name in SIXMOD.ADDED:                              # no trio checkpoint was ever fitted on these
+        assert SIXMOD.trio_context(cfg, name, ours, our_keys, {"whole": mask}, ids) is None
+
+
+def test_the_trio_context_refuses_a_moved_file_a_different_query_list_and_a_missing_declaration(cfg):
+    ids = json.loads((V2.EVAL / "2wiki_query_ids.json").read_text(encoding="utf-8"))
+    our_keys = [SIXMOD.fit_key(s) for s in SIXMOD.SEEDS]
+    mask = np.ones(len(ids), dtype=bool)
+    with pytest.raises(SystemExit, match="refusing to print it"):
+        SIXMOD.context_block({k: v for k, v in cfg.items() if k != SIXMOD.AMD6})
+    moved = copy.deepcopy(cfg)
+    moved[SIXMOD.AMD6]["what_is_added"]["source_files"]["2wiki"]["sha256"] = "0" * 64
+    with pytest.raises(SystemExit, match="hard stop"):
+        SIXMOD.trio_context(moved, "2wiki", {}, our_keys, {"whole": mask}, ids)
+    with pytest.raises(SystemExit, match="query lists differ"):
+        SIXMOD.trio_context(cfg, "2wiki", {}, our_keys, {"whole": mask}, ids[:-1] + ["not the same query"])

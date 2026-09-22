@@ -6784,3 +6784,59 @@ amendment_5_2026_09_23:
   execution: >-
     the stage begins with this commit. The first work is the compile of the three added
     carves under the frozen contract; nothing else in the repository is touched.
+
+# -- amendment 6: the pilot's trio checkpoint reprinted as context, filed before any stage-2 fit exists --
+amendment_6_2026_09_23:
+  filed_utc: '2026-09-22T21:58:01Z'
+  what_this_is: >-
+    A reporting amendment to authorization_stage_2_2026_09_22, filed before any stage-2 weight is fitted and
+    before any stage-2 model number exists. It adds one column to the reading and nothing else: the pilot's
+    already-filed trio checkpoint of the same arm, reprinted beside the joint six-dataset checkpoint on the
+    three datasets where a trio number exists, with one paired delta against it.
+  why_it_is_needed: >-
+    The stage was opened to ask whether the replicated u_gnn_v2_ef improvement survives when one checkpoint is
+    trained across six datasets at once. evaluation_and_reading.references names the frozen M3B arms, which
+    answer a different question -- how the stage compares to the incumbent GNN. Neither of them is the trio
+    checkpoint, so as filed the stage could not report whether its own predecessor was retained. That column is
+    the question, and it is declared here before the number rather than added to the document afterwards.
+  what_is_added:
+    context_arm: u_gnn_v2_ef__H128__s0
+    source_files:
+      metaqa: {path: outputs/universal_v2/eval/metaqa.npz, sha256: 380e0288b0e048cd18d83f06defd5f794fe7b7514a741bffbfbd6289e49eab5c}
+      2wiki: {path: outputs/universal_v2/eval/2wiki.npz, sha256: 6d8c1dcd2f815cf8c5e67664ace3ceaada3f54c6625ceeee768d35b04f13b4c2}
+      squad: {path: outputs/universal_v2/eval/squad.npz, sha256: cda64047bea803936ce811e5fa0d006ebffa10473e7baed44f2d203bd55121f3}
+    filed_in: run_record_2026_09_21 (d2850ab), the pilot eval pass; the arrays are read, never rewritten
+    datasets: [metaqa, 2wiki, squad]
+    populations: >-
+      the same query lists as the M3B eval populations and as this stage (checked equal id by id before the
+      column is printed); the whole population, with the two trio halves beside it as everywhere else
+    what_is_printed: >-
+      the trio cell for every reported metric, and one paired delta of the stage-2 three-seed per-query mean
+      against the trio per-query values under measurement.paired_procedures.against_m3b verbatim (1000
+      resamples, numpy default_rng(0), 95 percent percentile)
+    how_it_is_labelled: >-
+      a different training set, not a seed comparison -- three datasets against six, three stage-2 seeds
+      against the single pilot seed 0 that was scored on the whole population. The asymmetry is printed in
+      the table itself, in the column heading, not only in the prose.
+  what_this_does_not_authorise:
+    - no fit, no re-fit and no warm start; the trio weights are not loaded and not scored again
+    - no threshold, no gate, no pass or fail; this_stage_has_no_gate is unchanged
+    - not a replication claim -- GNN_REPLICATION_ONLY stands as filed and is not restated by this column
+    - >-
+      no context column on webqsp, hotpotqa or musique -- no trio checkpoint was ever fitted on them, and an
+      absent comparison is left absent rather than filled with the M3B arm
+    - no change to evaluation_and_reading.references, the headline metrics, the band verdicts or the populations
+    - no change to the architecture, the contract, the training rule, the seeds or the compute ceiling
+  status_lines_not_moved:
+    file_status: RUN_PILOT_FAILED
+    original_pilot_status: PILOT_FAILED
+    post_pilot_replication_status: GNN_REPLICATION_ONLY
+    stage_2_status: DECLARED_NOT_RUN until run_record_stage_2_<date> is filed
+  filed_before: any stage-2 fit, evaluation or model number exists
+  tests:
+    - the amendment is the last dated block and follows amendment_5_2026_09_23
+    - the three source files exist and hash to the pinned sha256 values
+    - the context arm is u_gnn_v2_ef seed 0 and the datasets are exactly the trio
+    - the reading carries the context on the trio and carries nothing on the three added datasets
+    - the document prints the trio column with its asymmetry in the heading
+    - no status line moves and no weight is fitted by this block

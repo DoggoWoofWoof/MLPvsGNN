@@ -711,7 +711,8 @@ def stage2(decl) -> dict:
 def test_the_stage_2_authorization_is_dated_last_and_moves_no_status_line(decl, stage2):
     dated = [k for k in decl if DATED.match(k)]
     assert dated.index("replication_record_2026_09_22") < dated.index("authorization_stage_2_2026_09_22")
-    assert dated[dated.index("authorization_stage_2_2026_09_22") + 1:] == ["amendment_5_2026_09_23"]   # its go-ahead, nothing else after it
+    # only the amendments that carry the stage follow it, in the order they were filed
+    assert dated[dated.index("authorization_stage_2_2026_09_22") + 1:] == ["amendment_5_2026_09_23", "amendment_6_2026_09_23"]
     assert decl["status"] == "RUN_PILOT_FAILED"
     assert stage2["stage_2_status"] == "DECLARED_NOT_RUN"
     lines = stage2["status_lines_not_moved"]
@@ -861,7 +862,7 @@ def amd5(decl) -> dict:
 
 def test_amendment_5_is_dated_last_and_moves_no_status_line(decl, amd5):
     dated = [k for k in decl if DATED.match(k)]
-    assert dated[-1] == "amendment_5_2026_09_23"
+    assert dated[-1] == "amendment_6_2026_09_23" and dated[-2] == "amendment_5_2026_09_23"
     assert dated.index("authorization_stage_2_2026_09_22") < dated.index("amendment_5_2026_09_23")
     assert decl["status"] == "RUN_PILOT_FAILED"
     lines = amd5["status_lines_not_moved"]
@@ -921,3 +922,43 @@ def test_the_go_ahead_keeps_the_band_verdicts_the_no_gate_rule_and_names_its_blo
     assert [b.split(" --")[0] for b in blocks] == ["compile_record_stage_2_<date>", "timing_stage_2_<date>", "run_record_stage_2_<date>"]
     assert "no status line moves" in squash(amd5["blocks_this_stage_will_append"]["naming_note"])
     assert "the compile of the three added" in squash(amd5["execution"])
+
+
+# ── amendment 6: the trio checkpoint reprinted as context ────────────────────
+
+
+@pytest.fixture(scope="module")
+def amd6(decl) -> dict:
+    return decl["amendment_6_2026_09_23"]
+
+
+def test_amendment_6_is_dated_last_and_moves_no_status_line(decl, amd6):
+    dated = [k for k in decl if DATED.match(k)]
+    assert dated[-1] == "amendment_6_2026_09_23"
+    assert dated.index("amendment_5_2026_09_23") < dated.index("amendment_6_2026_09_23")
+    assert decl["status"] == "RUN_PILOT_FAILED"
+    lines = amd6["status_lines_not_moved"]
+    assert lines["file_status"] == "RUN_PILOT_FAILED" and lines["original_pilot_status"] == "PILOT_FAILED"
+    assert lines["post_pilot_replication_status"] == "GNN_REPLICATION_ONLY"
+    assert squash(amd6["filed_before"]) == "any stage-2 fit, evaluation or model number exists"
+
+
+def test_amendment_6_adds_one_column_and_pins_the_files_it_reads(amd6):
+    added = amd6["what_is_added"]
+    assert added["context_arm"] == "u_gnn_v2_ef__H128__s0"
+    assert sorted(added["datasets"]) == ["2wiki", "metaqa", "squad"]
+    for name, src in added["source_files"].items():
+        path = ROOT / src["path"]
+        assert path.exists() and len(src["sha256"]) == 64
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == src["sha256"], f"{name}: the pilot arrays moved under the pin"
+    text = squash(str(added["how_it_is_labelled"]))
+    assert "different training set" in text and "not a seed comparison" in text
+
+
+def test_amendment_6_authorises_no_fit_no_gate_and_no_substitute_column(amd6):
+    bars = " ".join(squash(str(b)) for b in amd6["what_this_does_not_authorise"])
+    for phrase in ("no fit, no re-fit and no warm start", "no threshold, no gate, no pass or fail",
+                   "not a replication claim", "no context column on webqsp, hotpotqa or musique",
+                   "no change to evaluation_and_reading.references", "no change to the architecture"):
+        assert phrase in bars, phrase
+    assert "GNN_REPLICATION_ONLY stands as filed" in bars
