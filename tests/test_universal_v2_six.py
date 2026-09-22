@@ -1,0 +1,324 @@
+"""Tests for scripts/universal_v2_six.py: the stage-2 tooling refuses what
+authorization_stage_2_2026_09_22 and amendment_5_2026_09_23 forbid, and computes what they declare.
+
+No fit, no compile and no eval pass runs here: the stages are exercised through their refusals and their
+pure functions on synthetic arrays, as the pilot run tests do.
+"""
+
+from __future__ import annotations
+
+import copy
+import json
+import sys
+import types
+from pathlib import Path
+
+import numpy as np
+import pytest
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+for _p in (ROOT / "src", ROOT / "scripts"):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
+
+import universal_v2_six as SIXMOD          # noqa: E402
+import universal_v2_run as V2              # noqa: E402
+
+CONFIG = ROOT / "configs" / "universal_v2.yaml"
+CARVES = ROOT / "outputs" / "m3b" / "carves.json"
+
+
+@pytest.fixture(scope="module")
+def cfg() -> dict:
+    return yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+
+
+@pytest.fixture(scope="module")
+def block(cfg) -> dict:
+    return cfg[SIXMOD.STAGE2]
+
+
+@pytest.fixture(scope="module")
+def m3b() -> dict:
+    return yaml.safe_load(V2.M3B_CONFIG.read_text(encoding="utf-8"))
+
+
+def test_the_module_writes_beside_the_pilot_and_never_into_it():
+    assert SIXMOD.SIX == V2.OUT / "six" and SIXMOD.SIX_FITS == SIXMOD.SIX / "fits" and SIXMOD.SIX_EVAL == SIXMOD.SIX / "eval"
+    assert SIXMOD.SIX_FITS != V2.FITS and SIXMOD.SIX_EVAL != V2.EVAL
+    assert SIXMOD.DOC == ROOT / "docs" / "UNIVERSAL_GNN_SIX.md" and SIXMOD.DOC != V2.DOC
+    keys = {SIXMOD.fit_key(s) for s in SIXMOD.SEEDS}
+    assert keys.isdisjoint({V2.fit_key(SIXMOD.ARM, s) for s in (0, 1, 2)})    # no stage-2 weight lands beside the trio fits
+    assert all("__six__" in k for k in keys)
+
+
+def test_the_constants_are_the_filed_ones(cfg, block):
+    assert SIXMOD.ARM == block["the_freeze"]["arm"] == "u_gnn_v2_ef"
+    assert sorted(SIXMOD.DATASETS) == sorted(k for k in block["populations_and_splits"] if k not in ("rule", "halves"))
+    assert sorted(SIXMOD.ADDED) == ["hotpotqa", "musique", "webqsp"] and set(SIXMOD.TRIO) == set(SIXMOD.DATASETS) - set(SIXMOD.ADDED)
+    assert list(SIXMOD.SEEDS) == list(block["training"]["seeds"]) == [0, 1, 2]
+    assert SIXMOD.BAND == block["calibration_against_published_systems"]["verdicts"]
+    assert SIXMOD.PARAMETERS == 420932 and SIXMOD.COLUMNS == 129
+    head = block["evaluation_and_reading"]["headline_per_dataset"]
+    for name, metrics in SIXMOD.HEADLINE.items():
+        for m in metrics:
+            assert m in head[name], (name, m)
+
+
+def test_the_stage_blocks_are_required(cfg):
+    assert SIXMOD.stage2_block(cfg)["stage_2_status"] in ("DECLARED_NOT_RUN", "RUN")
+    assert SIXMOD.go_ahead_block(cfg)["filed_before"].startswith("any stage-2 cache")
+    for missing in (SIXMOD.STAGE2, SIXMOD.AMD5):
+        stripped = {k: v for k, v in cfg.items() if k != missing}
+        with pytest.raises(SystemExit, match="declaration"):
+            (SIXMOD.stage2_block if missing == SIXMOD.STAGE2 else SIXMOD.go_ahead_block)(stripped)
+
+
+def test_the_carve_check_reads_the_m3b_file_itself(cfg, block):
+    m3b = json.loads(CARVES.read_text(encoding="utf-8"))["per_dataset"]
+    for name in SIXMOD.ADDED:
+        for kind in ("fit", "select"):
+            d = SIXMOD.declared_carve(block, name, kind)
+            assert d["ids"] == int(m3b[name][kind]) and d["sha256"] == m3b[name][f"{kind}_sha256"]
+    bad = copy.deepcopy(block)
+    bad["training_carves"]["musique"]["fit"] = 1
+    with pytest.raises(SystemExit, match="differs from outputs/m3b/carves.json"):
+        SIXMOD.declared_carve(bad, "musique", "fit")
+
+
+def test_the_disk_guard_takes_the_raised_bound_from_the_amendment_and_the_floor_from_compute(cfg):
+    guard = SIXMOD.SixDiskGuard(cfg)
+    assert guard.bound == 20e9 and guard.halt_below == 8e9
+    stripped = copy.deepcopy({k: v for k, v in cfg.items() if k != "compute"})
+    stripped["compute"] = {"abort_criteria": ["no floor here"]}
+    with pytest.raises(SystemExit, match="disk floor"):
+        SIXMOD.SixDiskGuard(stripped)
+    no_bound = copy.deepcopy(cfg)
+    no_bound[SIXMOD.AMD5]["systems_only_change"]["what"] = "nothing is raised"
+    with pytest.raises(SystemExit, match="raised cache bound"):
+        SIXMOD.SixDiskGuard(no_bound)
+
+
+def test_compile_refuses_the_trio_and_anything_but_the_training_carves(cfg, m3b):
+    with pytest.raises(SystemExit, match="the trio caches are not recompiled"):
+        SIXMOD.stage_compile_six(cfg, m3b, {}, ["metaqa"], ("fit", "select"), log=lambda *a: None)
+    with pytest.raises(SystemExit, match="the eval populations are compiled at eval time"):
+        SIXMOD.stage_compile_six(cfg, m3b, {}, ["musique"], ("fit", "eval"), log=lambda *a: None)
+
+
+def test_the_fit_refuses_a_seed_outside_the_declaration_and_a_warm_start(cfg, m3b):
+    with pytest.raises(SystemExit, match=r"seed 3: the stage fits seeds \[0, 1, 2\]"):
+        SIXMOD.stage_fit_six(cfg, m3b, 3, log=lambda *a: None)
+    loosened = copy.deepcopy(cfg)
+    loosened[SIXMOD.STAGE2]["the_freeze"]["no_warm_start"] = "warm starting is fine"
+    with pytest.raises(SystemExit, match="no longer bars a warm start"):
+        SIXMOD.stage_fit_six(loosened, m3b, 0, log=lambda *a: None)
+
+
+def test_the_eval_pass_refuses_a_dataset_outside_the_six(cfg, m3b):
+    with pytest.raises(SystemExit, match=r"\['nq'\]: not datasets of the stage"):
+        SIXMOD.stage_eval_six(cfg, m3b, {}, ["nq"], 4096, log=lambda *a: None)
+
+
+def test_the_populations_are_the_filed_ones_and_webqsp_stays_on_train_holdout(block):
+    pops = {n: SIXMOD.declared_population(block, n) for n in SIXMOD.DATASETS}
+    assert pops["webqsp"]["split"] == "train_holdout" and pops["webqsp"]["queries"] == 1503
+    assert {n: p["queries"] for n, p in pops.items()} == {"metaqa": 39138, "2wiki": 12576, "squad": 11873,
+                                                          "hotpotqa": 7405, "musique": 2417, "webqsp": 1503}
+    assert all(p["split"] != "test" for p in pops.values()) and all(len(p["ids_sha256"]) == 64 for p in pops.values())
+
+
+def test_the_training_rule_is_the_frozen_one_and_a_changed_value_refuses(cfg, m3b, monkeypatch):
+    rule = SIXMOD.training_rule_six(cfg, m3b)
+    assert rule["max_epochs"] == 6 and rule["batches_per_epoch"] == 2000 and rule["dataset_draw"] == "per_query"
+    monkeypatch.setattr(V2, "training_rule_v2", lambda *a: {**rule, "max_epochs": 8})
+    with pytest.raises(SystemExit, match="differ from the frozen rule"):
+        SIXMOD.training_rule_six(cfg, m3b)
+
+
+def test_the_fit_hours_guard_needs_the_measured_epoch_and_stops_at_the_ceiling(tmp_path, monkeypatch):
+    monkeypatch.setattr(SIXMOD, "SIX", tmp_path)
+    monkeypatch.setattr(SIXMOD, "SIX_FITS", tmp_path / "fits")
+    with pytest.raises(SystemExit, match="the measured joint epoch precedes every stage-2 fit"):
+        SIXMOD.fit_hours_guard_six({"max_epochs": 6}, log=lambda *a: None)
+    (tmp_path / "timing.json").write_text(json.dumps({"epoch_seconds": 3600.0}), encoding="utf-8")
+    out = SIXMOD.fit_hours_guard_six({"max_epochs": 6}, log=lambda *a: None)
+    assert out["projected_fit_hours"] == 6.0 and out["ceiling_fit_hours"] == V2.FIT_HOURS_CEILING and out["within_ceiling"]
+    (tmp_path / "timing.json").write_text(json.dumps({"epoch_seconds": 3600.0 * 40}), encoding="utf-8")
+    with pytest.raises(SystemExit, match="compute ceiling"):
+        SIXMOD.fit_hours_guard_six({"max_epochs": 6}, log=lambda *a: None)
+    assert json.loads((tmp_path / "ceiling_breach.json").read_text(encoding="utf-8"))["within_ceiling"] is False
+
+
+def _arrays(keys, n=40, rng=None):
+    rng = rng or np.random.default_rng(0)
+    out = {}
+    for k in keys:
+        for m in SIXMOD.REPORTED_METRICS:
+            out[f"{k}/{m}"] = rng.random(n)
+        out[f"{k}/gold_total"] = rng.integers(1, 4, n).astype(np.int64)
+        for m in ("gate_step", "gate_evidence", "delta_ratio", "top1_changed"):
+            out[f"{k}/{m}"] = rng.random(n)
+    out["gold_dist_struct"] = rng.integers(-1, 4, n).astype(np.int64)
+    out["hop"] = rng.integers(1, 4, n).astype(np.int64)
+    return out
+
+
+def test_a_cell_is_three_seeds_and_the_paired_delta_of_a_scope_against_itself_is_zero():
+    ours_keys = [SIXMOD.fit_key(s) for s in SIXMOD.SEEDS]
+    ours = _arrays(ours_keys)
+    for k in SIXMOD.M3B_SEEDED.values():
+        ours.update({f"{k.format(s=s)}/{m}": ours[f"{ours_keys[s]}/{m}"] for s in (0, 1, 2) for m in SIXMOD.REPORTED_METRICS})
+    ours["fixed:rrf/recall@5"] = ours[f"{ours_keys[0]}/recall@5"]
+    mask = np.ones(40, dtype=bool)
+    c = SIXMOD.cell(ours, ours_keys, "recall@5", mask)
+    assert c["seeds"] == 3 and len(c["per_seed"]) == 3
+    assert abs(c["mean"] - float(np.mean([ours[f"{k}/recall@5"].mean() for k in ours_keys]))) < 5e-5
+    mean = SIXMOD.seed_mean_per_query(ours, ours_keys, "recall@5", mask)
+    assert mean.shape == (40,) and abs(float(mean.mean()) - c["mean"]) < 5e-5
+    paired = V2.paired_bootstrap(mean, SIXMOD.seed_mean_per_query(ours, [SIXMOD.M3B_SEEDED["gat_universal_v1"].format(s=s) for s in (0, 1, 2)], "recall@5", mask))
+    assert abs(paired["mean"]) < 1e-12 and abs(paired["low"]) < 1e-12 and abs(paired["high"]) < 1e-12
+
+
+def test_the_slices_are_masks_over_the_same_scope():
+    keys = [SIXMOD.fit_key(0)]
+    ours = _arrays(keys)
+    mask = np.zeros(40, dtype=bool)
+    mask[:25] = True
+    sl = SIXMOD.slices_for("metaqa", ours, mask)
+    assert {"1hop", "2hop", "3hop"} <= set(sl) and all(m.shape == (25,) for m in sl.values())
+    assert sum(int(sl[f"{h}hop"].sum()) for h in (1, 2, 3)) == 25
+    assert "1hop" not in SIXMOD.slices_for("squad", ours, mask)
+    buckets = [b for b in ("gold_at_seed", "gold_1_hop", "gold_2_hops", "gold_3_or_more", "no_gold_in_pool") if b in sl]
+    assert sum(int(sl[b].sum()) for b in buckets) == 25
+
+
+def test_the_reading_of_one_scope_carries_every_reported_metric_and_no_threshold():
+    ours_keys = [SIXMOD.fit_key(s) for s in SIXMOD.SEEDS]
+    ours = _arrays(ours_keys)
+    ours["fixed:rrf/recall@5"] = ours[f"{ours_keys[0]}/recall@5"]
+    for m in SIXMOD.REPORTED_METRICS:
+        ours[f"fixed:rrf/{m}"] = ours[f"{ours_keys[0]}/{m}"]
+    theirs = _arrays([p.format(s=s) for p in SIXMOD.M3B_SEEDED.values() for s in (0, 1, 2)], rng=np.random.default_rng(1))
+    refs = SIXMOD.reference_keys(theirs, "2wiki")
+    assert sorted(refs) == ["fixed:rrf", "gat_no_mp_v1", "gat_universal_v1", "qls_u_sota_v1"]
+    scope = SIXMOD.read_scope("2wiki", ours, theirs, ours_keys, refs, np.ones(40, dtype=bool))
+    assert scope["queries"] == 40 and sorted(scope["ours"]) == sorted(SIXMOD.REPORTED_METRICS)
+    assert sorted(scope["paired"]) == sorted(refs) and set(scope["paired"]["gat_universal_v1"]) == set(SIXMOD.REPORTED_METRICS)
+    assert set(scope["mechanism"]) == set(ours_keys)
+    text = json.dumps(scope)
+    assert "PASS" not in text and "FAIL" not in text and "verdict" not in text    # the stage has no gate
+
+
+def test_no_test_split_is_scored(cfg, m3b):
+    splits = m3b["populations"]["eval_splits"]
+    assert all("test" not in str(splits[n]) for n in SIXMOD.DATASETS), splits
+    assert splits["webqsp"] == "train_holdout"
+    stub = types.SimpleNamespace(frozen_contract=lambda c: ("key", {"per_dataset": {"2wiki": {"construction": {}}}}))
+    poisoned = copy.deepcopy(m3b)
+    poisoned["populations"]["eval_splits"]["2wiki"] = "test"
+    with pytest.raises(SystemExit, match="is a test split; no test split is authorised"):
+        SIXMOD.eval_dataset_six("2wiki", cfg, poisoned, {}, {}, {}, None, None, (None, None, None, None), stub, None, 4096,
+                                log=lambda *a: None)
+
+
+def test_only_a_dated_stage_2_key_is_appended_and_only_once(tmp_path, cfg):
+    config = tmp_path / "universal_v2.yaml"
+    with open(config, "w", encoding="utf-8", newline=V2.LF) as f:
+        f.write("status: RUN_PILOT_FAILED" + V2.LF)
+    live = {"status": "RUN_PILOT_FAILED"}
+    for bad in ("run_record_2026_09_21", "authorization_stage_2_2026_09_22", "run_record_stage_2", "notes_stage_2_2026_09_23"):
+        with pytest.raises(SystemExit, match="not a dated stage-2 block key"):
+            SIXMOD.append_block_six(live, bad, {"a": 1}, "h", config=config)
+    key = "run_record_stage_2_2026_09_23"
+    SIXMOD.append_block_six(live, key, {"stage_2_status": "RUN", "n": 1}, "the terminal state", config=config)
+    reloaded = yaml.safe_load(config.read_text(encoding="utf-8"))
+    assert reloaded[key] == {"stage_2_status": "RUN", "n": 1} and reloaded["status"] == "RUN_PILOT_FAILED"
+    assert "\r" not in config.read_text(encoding="utf-8", newline="") and "# -- the terminal state --" in config.read_text(encoding="utf-8")
+    with pytest.raises(SystemExit, match="never a re-file"):
+        SIXMOD.append_block_six(live, "run_record_stage_2_2026_09_24", {"n": 2}, "h", config=config)
+
+
+def test_a_moved_status_line_refuses_the_block(tmp_path):
+    config = tmp_path / "universal_v2.yaml"
+    with open(config, "w", encoding="utf-8", newline=V2.LF) as f:
+        f.write("status: RUN_PILOT_FAILED" + V2.LF)
+    live = {"status": "RUN_PILOT_FAILED"}
+    original = SIXMOD.yaml.safe_load
+
+    def moved(text):
+        out = original(text)
+        if "timing_stage_2" in text and isinstance(out, dict) and "timing_stage_2_2026_09_23" in out:
+            out["status"] = "RUN_SIX"
+        return out
+
+    SIXMOD.yaml.safe_load = moved
+    try:
+        with pytest.raises(SystemExit, match="the status line moved"):
+            SIXMOD.append_block_six(live, "timing_stage_2_2026_09_23", {"n": 1}, "h", config=config)
+    finally:
+        SIXMOD.yaml.safe_load = original
+
+
+def test_every_block_is_filed_from_its_sidecar_and_the_document_from_the_reading(cfg, tmp_path, monkeypatch):
+    monkeypatch.setattr(SIXMOD, "SIX", tmp_path)
+    monkeypatch.setattr(SIXMOD, "DOC", tmp_path / "UNIVERSAL_GNN_SIX.md")
+    for builder, match in ((SIXMOD.compile_block, "no six/compile_record.json"), (SIXMOD.timing_block, "no six/timing.json"),
+                           (SIXMOD.record_block, "no six/read_record.json")):
+        with pytest.raises(SystemExit, match=match):
+            builder(cfg)
+    with pytest.raises(SystemExit, match="the document is rendered from the reading"):
+        SIXMOD.stage_doc_six(cfg, log=lambda *a: None)
+    (tmp_path / "read_record.json").write_text(json.dumps({"per_dataset": {}}), encoding="utf-8")
+    with pytest.raises(SystemExit, match="the document precedes the run record"):
+        SIXMOD.record_block(cfg)
+
+
+def test_the_formatters_carry_the_spread_and_the_interval():
+    assert SIXMOD.fmt({"mean": 0.5213, "sd": 0.0041}) == "0.5213 +/- 0.0041"
+    assert SIXMOD.fmt_paired({"mean": 0.018, "low": -0.001, "high": 0.037}) == "+0.0180 [-0.0010, +0.0370]"
+
+
+def test_a_shard_is_a_slice_of_one_population_and_the_merge_waits_for_all_of_them(tmp_path, monkeypatch):
+    assert SIXMOD.parse_shard(None) is None and SIXMOD.parse_shard("0/4") == (0, 4) and SIXMOD.parse_shard("3/4") == (3, 4)
+    for bad in ("4/4", "5/4"):
+        with pytest.raises(SystemExit, match=r"k must be in \[0, N\)"):
+            SIXMOD.parse_shard(bad)
+    monkeypatch.setattr(SIXMOD, "SIX_EVAL", tmp_path)
+    assert SIXMOD.merge_shards_six("musique", log=lambda *a: None) is None
+    seen = []
+    (tmp_path / "musique__shard0of2.json").write_text(json.dumps({"shard": {"k": 0, "N": 2}}), encoding="utf-8")
+    assert SIXMOD.merge_shards_six("musique", log=seen.append) is None and "shards [0] of 2 present" in seen[-1]
+
+
+def test_a_column_that_is_constant_or_unavailable_on_an_added_dataset_is_reported_and_kept(monkeypatch):
+    names = [f"c{i}" for i in range(5)]
+    monkeypatch.setattr(V2, "column_stats_v2", lambda d, i: {"rows": 10, "availability": np.array([1.0, 0.0, 1.0, 1.0, 0.5]),
+                                                             "variance": np.array([1.0, 0.0, 0.0, 2.0, 1.0])})
+    out = SIXMOD.column_behaviour(Path("."), {"columns": names, "column_indices": None})
+    assert out["columns"] == 5 and out["rows"] == 10
+    assert out["unavailable_kept"] == ["c1"] and out["constant_kept"] == ["c2"]
+    assert out["availability_min"] == 0.0 and "kept" in out["action"] and "does not move" in out["action"]
+
+
+def test_the_freeze_check_refuses_a_moved_contract(cfg):
+    good = {"contract_block": V2.frozen_contract_v2(cfg)[0], "n_scalars": 129, "core_sha256": "8d1da88b14df" + "0" * 52,
+            "base": "rrf", "evidence": ["rrf", "dense_cos", "splade_rr", "is_seed"]}
+    out = SIXMOD.check_freeze(cfg, good)
+    assert out["columns"] == 129 and out["declared_parameters"] == 420932 and out["hidden"] == 128 and out["arm"] == SIXMOD.ARM
+    for field, value in (("n_scalars", 130), ("base", "dense_cos"), ("core_sha256", "0" * 64),
+                         ("evidence", ["rrf", "dense_cos", "is_seed"])):
+        with pytest.raises(SystemExit, match="hard stop"):
+            SIXMOD.check_freeze(cfg, {**good, field: value})
+    loosened = copy.deepcopy(cfg)
+    loosened[SIXMOD.STAGE2]["the_freeze"]["what_is_frozen"] = "the architecture is frozen"
+    with pytest.raises(SystemExit, match="no longer states the frozen architecture"):
+        SIXMOD.check_freeze(loosened, good)
+
+
+def test_the_cli_offers_the_filed_stages_only():
+    with pytest.raises(SystemExit):
+        SIXMOD.main(["--stage", "screen"])
+    with pytest.raises(SystemExit, match="the reading follows the three fits"):
+        SIXMOD.main(["--stage", "read"])
