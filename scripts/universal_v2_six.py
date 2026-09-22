@@ -444,12 +444,21 @@ def stage_fit_six(cfg: dict, cfg_m3b: dict, seed: int, log=log_utc) -> dict:
               "evidence_substitutions": inputs["evidence_substitutions"],
               "relation_bank": {"rows": bank.n_rows, "sha256": bank.sha256, "k_rel": K_REL}, "training": training}
     trio = V2.read_json(V2.FITS / f"{V2.fit_key(ARM, seed)}.json")
+    bank_vs_trio = None
     if trio is not None:
         differs = {k: {"stage_2": v, "trio_seed_" + str(seed): trio.get(k)} for k, v in frozen.items()
-                   if k not in ("training",) and trio.get(k) != v}
+                   if k not in ("training", "relation_bank") and trio.get(k) != v}
         if differs:
             raise SystemExit(f"{key}: {sorted(differs)} differ from the trio fit of the same arm; the stage fits the frozen "
                              f"architecture and contract only: {differs}")
+        # The served relation bank is the concatenation of the relation tables of the datasets that are open, so it
+        # necessarily grows when webqsp, hotpotqa and musique join the trio. It is an input the model reads rows of,
+        # never a parameter: the parameter count is pinned at PARAMETERS above and K_REL stays 4. It is reported.
+        bank_vs_trio = {"stage_2": frozen["relation_bank"], "trio_seed_" + str(seed): trio.get("relation_bank"),
+                        "why_it_differs": "the bank is the six datasets' relation embeddings concatenated in sorted order; "
+                                          "it is a served input, not a weight, and neither the parameter count nor K_REL moves"}
+        if int(frozen["relation_bank"]["k_rel"]) != 4:
+            raise SystemExit(f"{key}: K_REL {frozen['relation_bank']['k_rel']} is not the frozen 4; hard stop")
     log(f"== fit {key}: {params} parameters, {len(carves['fit'])} datasets, seed {seed}")
     model, record = fit_model(model, carves["fit"], carves["select"], seed=seed, arm=ARM, config={"H": V2.HIDDEN, "stage": "six"},
                               max_epochs=training["max_epochs"], batches_per_epoch=training["batches_per_epoch"],
@@ -463,7 +472,7 @@ def stage_fit_six(cfg: dict, cfg_m3b: dict, seed: int, log=log_utc) -> dict:
            "early_stopping": "macro select recall@5 over the six select carves", "warm_start": None,
            "contract_block": frozen["contract_block"], "columns": frozen["columns"], "core_sha256": frozen["core_sha256"],
            "base": inputs["base"], "evidence": frozen["evidence"], "evidence_substitutions": frozen["evidence_substitutions"],
-           "relation_bank": frozen["relation_bank"], "training": training, "utc": V2.utc(), "threads": torch.get_num_threads(),
+           "relation_bank": frozen["relation_bank"], "relation_bank_vs_trio": bank_vs_trio, "training": training, "utc": V2.utc(), "threads": torch.get_num_threads(),
            "pack_workers": V2.PACK["workers"], "prefetch_depth": V2.PACK["depth"], "peak_rss_bytes": V2.M3B_RUN.peak_rss_bytes(),
            "state_sha256": V2.sha256_file(SIX_FITS / f"{key}.pt"), "ceiling_guard": guard}
     rec_path.write_text(json.dumps(out, indent=1), encoding="utf-8")

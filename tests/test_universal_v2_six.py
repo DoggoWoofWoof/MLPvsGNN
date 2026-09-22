@@ -322,3 +322,20 @@ def test_the_cli_offers_the_filed_stages_only():
         SIXMOD.main(["--stage", "screen"])
     with pytest.raises(SystemExit, match="the reading follows the three fits"):
         SIXMOD.main(["--stage", "read"])
+
+
+def test_the_stage_matches_the_trio_fit_on_the_architecture_and_only_the_served_bank_may_grow(cfg):
+    """stage_fit_six compares its frozen dict against the trio fit of the same arm. Every field of that
+    comparison is checked here against the committed trio records; the served relation bank is excluded from it
+    because it is the concatenated relation embeddings of whichever datasets are open -- an input, not a weight."""
+    _, contract = V2.frozen_contract_v2(cfg)
+    for seed in SIXMOD.SEEDS:
+        trio = V2.read_json(V2.FITS / f"{V2.fit_key(SIXMOD.ARM, seed)}.json")
+        assert trio is not None, f"the replicated trio fit of seed {seed} is the thing this stage refits"
+        assert trio["parameters"] == SIXMOD.PARAMETERS and trio["hidden"] == 128 and trio["columns"] == SIXMOD.COLUMNS
+        assert trio["contract_block"] == V2.frozen_contract_v2(cfg)[0] and trio["core_sha256"].startswith("8d1da88b14df")
+        assert trio["evidence"] == ["rrf", "dense_cos", "splade_rr", "is_seed"]
+        assert trio["evidence_substitutions"] == {"splade_score_norm": "splade_rr"}
+        assert int(trio["relation_bank"]["k_rel"]) == 4
+    src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
+    assert 'if k not in ("training", "relation_bank")' in src and "never a parameter" in src
