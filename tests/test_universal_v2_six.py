@@ -339,3 +339,32 @@ def test_the_stage_matches_the_trio_fit_on_the_architecture_and_only_the_served_
         assert int(trio["relation_bank"]["k_rel"]) == 4
     src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
     assert 'if k not in ("training", "relation_bank")' in src and "never a parameter" in src
+
+
+def test_the_contract_is_reported_per_substrate_and_nothing_is_dropped_anywhere(cfg):
+    """contract_transfer_to_the_added_datasets is reported, not acted on: the same 129 columns on every dataset,
+    with the availability each substrate can give them."""
+    out = SIXMOD.contract_on_datasets(cfg)
+    assert list(out) == [n for n in SIXMOD.DATASETS if n in out]          # the filed dataset order, never sorted
+    for name, c in out.items():
+        assert c["columns"] == SIXMOD.COLUMNS and 0.0 <= c["availability_mean"] <= 1.0 and c["rows"] > 0
+        assert c["unavailable"] == len(c["unavailable_columns"])
+        assert "sampled" in c["source"] or "full scan" in c["source"]
+    for name in SIXMOD.TRIO:
+        assert name in out and "pilot screen" in out[name]["source"] and out[name]["constant"] is None
+    record = V2.read_json(SIXMOD.SIX / "compile_record.json") or {"per_dataset": {}}
+    for name in SIXMOD.ADDED:
+        if "column_behaviour" in record["per_dataset"].get(name, {}):
+            cb = record["per_dataset"][name]["column_behaviour"]
+            assert out[name]["unavailable"] == len(cb["unavailable_kept"]) and out[name]["rows"] == cb["rows"]
+            assert "reported and kept" in cb["action"]
+
+
+def test_every_mechanism_readout_the_pass_produced_reaches_the_document():
+    read = {"per_dataset": {
+        "metaqa": {"scopes": {"whole": {"mechanism": {"k0": {"delta_ratio": 1.0, "top1_changed": 0.5, "gate_step1": 0.2,
+                                                             "gate_step2": 0.3, "gate2_step1": 0.4, "gate2_step2": 0.1}}}}},
+        "squad": {"scopes": {"whole": {"mechanism": {"k0": {"delta_ratio": 0.0, "top1_changed": 0.0}}}}}}}
+    assert SIXMOD.mechanism_columns(read) == ["delta_ratio", "top1_changed", "gate_step1", "gate_step2",
+                                              "gate2_step1", "gate2_step2"]
+    assert SIXMOD.mechanism_columns({"per_dataset": {"x": {"scopes": {"whole": {"mechanism": {}}}}}}) == []

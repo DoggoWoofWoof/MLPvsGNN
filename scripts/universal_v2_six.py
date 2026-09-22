@@ -907,6 +907,7 @@ def stage_read_six(cfg: dict, log=log_utc) -> dict:
         log(f"   {name}: read on {n} queries ({'halves beside it' if 'half' in ours else 'whole'}), band {BAND[name]}")
     out["compute"] = compute_summary(cfg)
     out["calibration"] = calibration_table(cfg, out)
+    out["contract_on_datasets"] = contract_on_datasets(cfg)
     SIX.mkdir(parents=True, exist_ok=True)
     (SIX / "read_record.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
     log(f"read: {len(out['per_dataset'])} datasets, {len(our_keys)} checkpoints, no gate applied")
@@ -937,6 +938,59 @@ def compute_summary(cfg: dict) -> dict:
             "eval_hours": round(sum(e["seconds"] for e in evals) / 3600, 2),
             "eval_peak_rss_gb": round(max([e["peak_rss_bytes"] for e in evals], default=0) / 2**30, 2),
             "threads": timing.get("threads"), "placement": "the laptop, one fit lane at the declared threads"}
+
+
+def contract_on_datasets(cfg: dict) -> dict:
+    """What the one frozen contract actually carries on each of the six substrates, reported beside the mechanism
+    readouts: the mean availability of the 129 surviving columns and how many of them are unavailable there. The
+    three added datasets are measured in this stage (a full scan of the fit carve, contract_transfer_to_the_added
+    _datasets); the trio numbers are the pilot screen's sampled availability, which is what was filed for them.
+    Reporting only: no column moves on any dataset, and a difference here is a property of the substrate."""
+    out = {}
+    record = V2.read_json(SIX / "compile_record.json") or {}
+    for name in ADDED:
+        cb = (record.get("per_dataset", {}).get(name) or {}).get("column_behaviour")
+        if cb is None:
+            continue
+        out[name] = {"source": "this stage, full scan of the fit carve", "rows": cb["rows"], "columns": cb["columns"],
+                     "availability_mean": cb["availability_mean"], "availability_min": cb["availability_min"],
+                     "unavailable": len(cb["unavailable_kept"]), "constant": len(cb["constant_kept"]),
+                     "unavailable_columns": cb["unavailable_kept"], "constant_columns": cb["constant_kept"]}
+    screen = V2.read_json(V2.OUT / "feature_screen.json")
+    if screen is not None:
+        names = list(screen["columns"])
+        # the surviving names are the frozen contract's own list, never the screen file's counts
+        surviving = list(V2.frozen_contract_v2(cfg)[1]["surviving"])
+        missing = [c for c in surviving if c not in names]
+        if missing:
+            raise SystemExit(f"the pilot screen does not carry {missing[:3]} of the frozen contract; refusing to report availability")
+        idx = [names.index(c) for c in surviving]
+        floor = float(screen["unavailable_below"])
+        for name, entry in screen["per_dataset"].items():
+            if name not in TRIO:
+                continue
+            a = [float(entry["availability"][i]) for i in idx]
+            out[name] = {"source": f"pilot screen, sampled ({screen['sample_rows']} rows at stride {screen['stride']})",
+                         "rows": int(entry["fit_rows"]), "columns": len(a),
+                         "availability_mean": round(sum(a) / max(len(a), 1), 6), "availability_min": round(min(a), 6),
+                         "unavailable": sum(1 for v in a if v < floor), "constant": None,
+                         "unavailable_columns": [c for c, v in zip(surviving, a) if v < floor], "constant_columns": None,
+                         "note": f"unavailable here means below the screen floor {floor}, not a full-scan zero"}
+    return {name: out[name] for name in DATASETS if name in out}
+
+
+def mechanism_columns(read: dict) -> list:
+    """Every mechanism readout the pass actually produced, in a fixed order: the magnitude of the correction and
+    whether it moved the top-1, then the message-passing step gates, then the evidence-flow gates."""
+    seen = set()
+    for entry in read["per_dataset"].values():
+        for mech in entry["scopes"]["whole"]["mechanism"].values():
+            seen.update(mech)
+    head = [m for m in ("delta_ratio", "top1_changed") if m in seen]
+    steps = sorted(m for m in seen if m.startswith("gate_step"))
+    evidence = sorted(m for m in seen if m.startswith("gate2_step"))
+    rest = sorted(seen - set(head) - set(steps) - set(evidence))
+    return head + steps + evidence + rest
 
 
 def calibration_table(cfg: dict, read: dict) -> dict:
@@ -1049,18 +1103,30 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
             for m in e["headline"]:
                 L.append(f"| {name} | {label} | {s['queries']} | {m} | {fmt(s['ours'][m])} | "
                          f"{fmt(s['gat_universal_v1'][m])} | {fmt_paired(s['paired_vs_gat'][m])} |")
-    L += ["", "## 5. Mechanism readouts", "",
-          "Per checkpoint, over the whole population: the mean step gates and evidence gates, the mean |delta_s| over",
-          "|base_z| ratio, and the fraction of queries whose top-1 leaves the fixed base score.", "",
-          "| dataset | checkpoint | " + " | ".join(["delta_ratio", "top1_changed", "gate_step1", "gate_step2", "gate_step3"]) + " |",
+    L += ["", "## 5. What the one contract carries on each substrate", "",
+          "The same 129 columns on six graphs. The three added datasets were scanned in full during this stage; the",
+          "trio rows are the pilot screen's sampled availability, which is the number filed for them. Nothing is",
+          "dropped, reordered or specialised anywhere: a column that no query of a dataset can populate stays in the",
+          "layout and arrives as its declared absent value with its availability mask.", "",
+          "| dataset | rows scanned | mean availability | min | unavailable (kept) | constant (kept) | source |",
           "| --- | --- | --- | --- | --- | --- | --- |"]
+    for name, c in (read.get("contract_on_datasets") or {}).items():
+        L.append(f"| {name} | {c['rows']} | {c['availability_mean']:.4f} | {c['availability_min']:.4f} | "
+                 f"{c['unavailable']} | {'' if c['constant'] is None else c['constant']} | {c['source']} |")
+    mcols = mechanism_columns(read)
+    L += ["", "## 6. Mechanism readouts", "",
+          "Per checkpoint, over the whole population: the mean |delta_s| over |base_z| ratio, the fraction of queries",
+          "whose top-1 leaves the fixed base score, the message-passing step gates and, where the arm has them, the",
+          "evidence-flow gates. These are the readouts measurement.mechanism_readouts declares; they are reported as",
+          "they fell and nothing is tuned on them.", "",
+          "| dataset | checkpoint | " + " | ".join(mcols) + " |",
+          "| " + " | ".join(["---"] * (2 + len(mcols))) + " |"]
     for name in DATASETS:
         for key, mech in read["per_dataset"][name]["scopes"]["whole"]["mechanism"].items():
-            cells = [f"{mech.get(m, float('nan')):.4f}" if m in mech else "" for m in
-                     ("delta_ratio", "top1_changed", "gate_step1", "gate_step2", "gate_step3")]
+            cells = [f"{mech[m]:.4f}" if m in mech else "" for m in mcols]
             L.append(f"| {name} | `{key}` | " + " | ".join(cells) + " |")
     cal = read["calibration"]
-    L += ["", "## 6. Calibration against published systems", "",
+    L += ["", "## 7. Calibration against published systems", "",
           cal["rule"], "", cal["care"], "",
           "| dataset | band verdict | headline | this stage | M3B GAT | any_gold_at_pool | recall ceiling@5 | candidates mean |",
           "| --- | --- | --- | --- | --- | --- | --- | --- |"]
@@ -1073,7 +1139,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
           "coverage number is the `any_gold_at_pool` column of the pool, never an average. MetaQA and WebQSP stay",
           "NOT_READ: the published KB systems assign topic entities while this pipeline seeds the graph by",
           "inference-safe retrieval, so no number here is presented as beating or approaching a published system.",
-          "", "## 7. What the stage cost", "",
+          "", "## 8. What the stage cost", "",
           f"- compile of the three added carves: {c['compile_rows']} rows in {c['compile_hours']} hours",
           f"- the measured joint epoch: {c['measured_epoch_seconds']} s, peak RSS {c['timing_peak_rss_gb']} GB",
           f"- the three fits: {c['fit_hours_this_stage']} fit-hours (peak RSS {c['fit_peak_rss_gb']} GB); "
@@ -1081,8 +1147,8 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
           f"- the one eval pass: {c['eval_hours']} hours (peak RSS {c['eval_peak_rss_gb']} GB)",
           f"- placement: {c['placement']}", ""]
     if incidents:
-        L += ["## 8. Incidents", ""] + [f"- {line}" for line in incidents] + [""]
-    L += ["## 9. What this stage does not do", "",
+        L += ["## 9. Incidents", ""] + [f"- {line}" for line in incidents] + [""]
+    L += ["## 10. What this stage does not do", "",
           " ".join(str(block["this_stage_has_no_gate"]["rule"]).split()), "",
           " ".join(str(block["the_other_track_is_not_opened_here"]["bar"]).split()), ""]
     return L
