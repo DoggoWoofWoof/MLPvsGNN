@@ -721,7 +721,7 @@ def test_the_stage_2_authorization_is_dated_last_and_moves_no_status_line(decl, 
     assert dated.index("replication_record_2026_09_22") < dated.index("authorization_stage_2_2026_09_22")
     # only the amendments that carry the stage follow it, in the order they were filed
     assert dated[dated.index("authorization_stage_2_2026_09_22") + 1:] == [
-        "amendment_5_2026_09_23", "amendment_6_2026_09_23", "amendment_7_2026_09_23"]
+        "amendment_5_2026_09_23", "amendment_6_2026_09_23", "amendment_7_2026_09_23", "amendment_8_2026_09_23"]
     assert decl["status"] == "RUN_PILOT_FAILED"
     assert stage2["stage_2_status"] == "DECLARED_NOT_RUN"
     lines = stage2["status_lines_not_moved"]
@@ -871,7 +871,8 @@ def amd5(decl) -> dict:
 
 def test_amendment_5_is_dated_last_and_moves_no_status_line(decl, amd5):
     dated = [k for k in decl if DATED.match(k)]
-    assert dated[-3:] == ["amendment_5_2026_09_23", "amendment_6_2026_09_23", "amendment_7_2026_09_23"]
+    assert dated[-4:] == ["amendment_5_2026_09_23", "amendment_6_2026_09_23",
+                          "amendment_7_2026_09_23", "amendment_8_2026_09_23"]
     assert dated.index("authorization_stage_2_2026_09_22") < dated.index("amendment_5_2026_09_23")
     assert decl["status"] == "RUN_PILOT_FAILED"
     lines = amd5["status_lines_not_moved"]
@@ -943,8 +944,8 @@ def amd6(decl) -> dict:
 
 def test_amendment_6_is_dated_last_and_moves_no_status_line(decl, amd6):
     dated = [k for k in decl if DATED.match(k)]
-    assert dated[-2] == "amendment_6_2026_09_23" and dated[-1] == "amendment_7_2026_09_23"
-    assert dated.index("amendment_5_2026_09_23") < dated.index("amendment_6_2026_09_23")
+    assert dated.index("amendment_6_2026_09_23") == dated.index("amendment_5_2026_09_23") + 1
+    assert dated.index("amendment_7_2026_09_23") == dated.index("amendment_6_2026_09_23") + 1
     assert decl["status"] == "RUN_PILOT_FAILED"
     lines = amd6["status_lines_not_moved"]
     assert lines["file_status"] == "RUN_PILOT_FAILED" and lines["original_pilot_status"] == "PILOT_FAILED"
@@ -980,7 +981,7 @@ def amd7(decl) -> dict:
 
 def test_amendment_7_is_dated_last_and_moves_no_status_line(decl, amd7):
     dated = [k for k in decl if DATED.match(k)]
-    assert dated[-1] == "amendment_7_2026_09_23"
+    assert dated[-2] == "amendment_7_2026_09_23" and dated[-1] == "amendment_8_2026_09_23"
     assert dated.index("amendment_6_2026_09_23") < dated.index("amendment_7_2026_09_23")
     assert decl["status"] == "RUN_PILOT_FAILED"
     lines = amd7["status_lines_not_moved"]
@@ -1033,3 +1034,66 @@ def test_amendment_7_authorises_no_schedule_no_gate_and_no_second_timing(amd7):
     assert "147.76" in squash(ceiling["worst_case"]) and "150" in squash(ceiling["worst_case"])
     assert "fit_hours_guard_six refuses the fit before it starts" in squash(ceiling["what_happens_if_it_binds"])
     assert "does not enter fit_hours_spent" in squash(ceiling["not_counted"])
+
+
+@pytest.fixture(scope="module")
+def amd8(decl) -> dict:
+    return decl["amendment_8_2026_09_23"]
+
+
+def test_amendment_8_is_dated_last_and_moves_no_status_line(decl, amd8):
+    dated = [k for k in decl if DATED.match(k)]
+    assert dated[-1] == "amendment_8_2026_09_23"
+    assert dated.index("amendment_7_2026_09_23") < dated.index("amendment_8_2026_09_23")
+    assert decl["status"] == "RUN_PILOT_FAILED"
+    lines = amd8["status_lines_not_moved"]
+    assert lines["file_status"] == "RUN_PILOT_FAILED" and lines["original_pilot_status"] == "PILOT_FAILED"
+    assert squash(amd8["filed_before"]) == "any stage-2 fit record, checkpoint hash or evaluation number exists"
+
+
+def test_amendment_8_corrects_the_cache_total_to_what_is_on_disk(amd8):
+    """The corrected figure has to agree with the compile record AND with the caches themselves, and the trio
+    and added shares must sum to it -- the original error was adding the trio to a total that contained it."""
+    per = amd8["the_number_that_was_wrong"]["measured_per_dataset_gb"]
+    total = per["total"]
+    assert round(sum(v for k, v in per.items() if k != "total"), 2) == total == 13.88
+    record = json.loads((ROOT / "outputs" / "universal_v2" / "six" / "compile_record.json").read_text(encoding="utf-8"))
+    assert round(record["cache_bytes_total"] / 1e9, 2) == total
+    trio = sum(v["bytes"] for v in record["trio_caches_untouched"].values())
+    added = sum(v["bytes"] for v in record["cache_hashes"].values())
+    assert round(trio / 1e9, 2) == 6.84 and round(added / 1e9, 2) == 7.04
+    assert round((trio + added) / 1e9, 2) == total, "the trio and added shares must sum to the total, not exceed it"
+    said = squash(amd8["the_number_that_was_wrong"]["what_is_true"])
+    assert "13.88 GB, not 20.7 GB" in said
+
+
+def test_amendment_8_quotes_amendment_7_without_editing_it(decl, amd8):
+    wrong = amd8["the_number_that_was_wrong"]
+    where = wrong["where"].split(".")
+    node = decl[where[0]]
+    for part in where[1:]:
+        node = node[part]
+    # the quoted sentence must still be the one amendment 7 carries: quoted, never re-filed
+    assert squash(wrong["what_it_said"]) in squash(str(node))
+    bars = " ".join(squash(str(b)) for b in amd8["what_this_does_not_authorise"])
+    assert "no edit to amendment_7_2026_09_23" in bars
+
+
+def test_amendment_8_keeps_the_placement_and_files_no_schedule(amd8):
+    place = amd8["the_placement_is_not_changed"]
+    assert squash(place["decision"]) == "the three fits stay at 8 threads"
+    assert "EpochTooLong" in squash(place["what_would_change_it"])
+    bars = " ".join(squash(str(b)) for b in amd8["what_this_does_not_authorise"])
+    for phrase in ("no reduced schedule, and no new placement", "no change to the training rule",
+                   "no gate, no threshold", "no change to the runner while a fit is running"):
+        assert phrase in bars, phrase
+
+
+def test_amendment_8_records_that_the_filed_placement_did_not_help(decl, amd8):
+    measured = amd8["what_has_since_been_measured"]
+    at_8 = squash(measured["the_filed_placement_did_not_help"])
+    assert "23008.5 s" in at_8 and "20282.9 s" in at_8
+    assert decl["timing_stage_2_2026_09_23"]["epoch_seconds"] == 20282.9
+    assert "3.72 of the 8 threads" in squash(measured["the_constraint_is_memory_not_cores"])
+    assert "not falling" in squash(measured["disk_is_stable"])
+    assert "SixDiskGuard is enforced in the compile stage only" in squash(measured["a_gap_that_is_recorded_not_fixed"])

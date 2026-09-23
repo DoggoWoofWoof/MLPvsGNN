@@ -7491,3 +7491,73 @@ amendment_7_2026_09_23:
   - the frozen training rule is restated unchanged and no reduced schedule is filed
   - the filed fit placement is 8 threads, the placement every pilot fit record used
   - no status line moves, no weight is fitted and no model number is read by this block
+
+# -- amendment 8: the cache figure of amendment 7 corrected, and the filed placement measured --
+amendment_8_2026_09_23:
+  filed_utc: '2026-09-23T15:59:04Z'
+  what_this_is: A correction to amendment_7_2026_09_23. One number in its explanation of the slow epoch was wrong,
+    and the placement it filed has since been measured and did not help. Filed while the first fit is still running
+    -- no stage-2 fit record, checkpoint hash or evaluation number exists yet. Nothing scientific is changed and
+    no status line moves.
+  the_number_that_was_wrong:
+    where: amendment_7_2026_09_23.why_the_epoch_is_longer_than_the_filed_projection.the_part_that_is_the_machine.resident_cache
+    what_it_said: the six fit and select caches total about 20.7 GB (6.84 GB trio, 13.88 GB added) on a 16.8 GB
+      machine
+    what_is_true: the six caches total 13.88 GB, not 20.7 GB. cache_bytes_total in the compile record is the total
+      across all six datasets, and amendment 7 read it as the added three and then added the trio to it a second
+      time. Of the 13.88 GB the trio is 6.84 GB and the three added datasets are 7.04 GB.
+    measured_per_dataset_gb:
+      metaqa: 6.31
+      musique: 5.38
+      webqsp: 1.34
+      2wiki: 0.35
+      hotpotqa: 0.32
+      squad: 0.18
+      total: 13.88
+    what_it_does_not_touch: the compile record is itself correct and is not edited -- cache_bytes_total 13877946520
+      is the figure it filed, inside the 20 GB bound of amendment 5 on either reading. Neither the placement decision
+      nor the ceiling arithmetic of amendment 7 used this number, so no decision filed there rests on it.
+    what_it_does_change: the magnitude of the memory argument only. The argument stands on the measurements below
+      rather than on an inflated cache figure, and is restated here at its true size.
+  what_has_since_been_measured:
+    the_filed_placement_did_not_help: epoch 0 of seed 0 at the filed 8 threads took 23008.5 s, against 20282.9 s
+      for the same work at 6 threads in the timing pass. The placement amendment 7 filed cost about 13 percent rather
+      than saving the third the thread count would suggest.
+    the_constraint_is_memory_not_cores: the fit consumed 136672 s of CPU over 613 minutes of wall clock, which is
+      3.72 of the 8 threads it asked for. Swap in use ran between 16.1 and 17.8 GB and free RAM between 0.5 and
+      1.5 GB of 16.8. More threads raise concurrent memory demand on a machine that is already paging, which is
+      why 8 was slower than 6.
+    disk_is_stable: free space on the system disk is 8.81 to 8.85 GB across twelve one-minute samples, above the
+      8 GB floor of compute.abort_criteria and not falling. The earlier decline from 16.7 GB was the system pagefile
+      expanding to its allocated 37.4 GB, which has stopped.
+    a_gap_that_is_recorded_not_fixed: SixDiskGuard is enforced in the compile stage only. The fits, the eval pass
+      and the merge do not check free disk. That is recorded here as a known gap; changing the runner while a fit
+      is running would be a systems change made on top of a live number, which the process rules do not allow.
+  the_placement_is_not_changed:
+    decision: the three fits stay at 8 threads
+    why: the three seeds have to be comparable with one another and with the trio checkpoint amendment 6 reprints
+      beside them, and seed 0 has already spent two epochs at 8 threads. A 13 percent saving is not worth a fit
+      whose epochs ran at two different placements, and one comparison is weak evidence against a machine the pilot
+      showed to vary by 2.07 times from contention alone.
+    what_would_change_it: an EpochTooLong halt or a ceiling refusal, either of which stops the stage for a declaration
+      rather than being worked around at run time.
+  what_this_does_not_authorise:
+  - no change to the training rule, the seeds, the architecture, the contract or the columns
+  - no change to the populations, the splits, the metrics, the references or the band verdicts
+  - no reduced schedule, and no new placement -- the fits continue exactly as amendment 7 filed them
+  - no gate, no threshold and no reading of a model number; this_stage_has_no_gate is unchanged
+  - no edit to amendment_7_2026_09_23, to timing_stage_2_2026_09_23 or to the compile record
+  - no change to the runner while a fit is running
+  status_lines_not_moved:
+    file_status: RUN_PILOT_FAILED
+    original_pilot_status: PILOT_FAILED
+    post_pilot_replication_status: GNN_REPLICATION_ONLY
+    stage_2_status: DECLARED_NOT_RUN until run_record_stage_2_<date> is filed
+  filed_before: any stage-2 fit record, checkpoint hash or evaluation number exists
+  tests:
+  - the amendment is the last dated block and follows amendment_7_2026_09_23
+  - the corrected cache total equals the compile record cache_bytes_total and the caches measured on disk
+  - the trio and added shares sum to that total, so the trio is not counted twice
+  - amendment 7 is quoted, not edited, and its blocks are unchanged
+  - the placement stays 8 threads and no reduced schedule is filed
+  - no status line moves and no model number is read by this block
