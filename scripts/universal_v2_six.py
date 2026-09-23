@@ -71,6 +71,9 @@ TRIO = V2.PILOT
 STAGE2_DATED = re.compile("^(compile_record|timing|run_record|hard_stop)_stage_2_[0-9]{4}_[0-9]{2}_[0-9]{2}$")
 PARAMETERS = 420932
 COLUMNS = 129
+# the_freeze.no_warm_start must still bar a warm start; the declaration opens that sentence with a
+# capital N, so the clause is matched case-insensitively and the phrase is shared with its test
+NO_WARM_START = "no trio checkpoint is loaded"
 BAND = {"metaqa": "NOT_READ", "webqsp": "NOT_READ", "musique": "READ", "hotpotqa": "READ", "2wiki": "READ", "squad": "CONTROL"}
 HEADLINE = {"metaqa": ("hit@1", "recall@5"), "webqsp": ("hit@1", "recall@5"), "hotpotqa": ("recall@5", "full_coverage@5"),
             "2wiki": ("recall@5", "full_coverage@5"), "musique": ("recall@5", "full_coverage@5"), "squad": ("recall@5",)}
@@ -473,7 +476,7 @@ def stage_fit_six(cfg: dict, cfg_m3b: dict, seed: int, log=log_utc) -> dict:
     if rec_path.exists():
         log(f"   {key}: record exists, not repeated")
         return V2.read_json(rec_path)
-    if "no trio checkpoint is loaded" not in " ".join(str(block["the_freeze"]["no_warm_start"]).split()):
+    if NO_WARM_START not in " ".join(str(block["the_freeze"]["no_warm_start"]).split()).lower():
         raise SystemExit("the_freeze.no_warm_start no longer bars a warm start; refusing")
     inputs, freeze, contexts, handles, pkg, bank, carves, _ = open_six(cfg, cfg_m3b)
     training = training_rule_six(cfg, cfg_m3b)

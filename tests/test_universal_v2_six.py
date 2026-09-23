@@ -116,6 +116,15 @@ def test_the_fit_refuses_a_seed_outside_the_declaration_and_a_warm_start(cfg, m3
         SIXMOD.stage_fit_six(loosened, m3b, 0, log=lambda *a: None)
 
 
+def test_the_no_warm_start_clause_as_filed_satisfies_the_guard(cfg):
+    """The case above loosens the clause and expects a refusal; this is the other half -- the clause as the
+    declaration actually writes it must PASS. It did not: the sentence opens with a capital N and the guard
+    compared case-sensitively, so every fit refused in seven seconds before any weight was touched."""
+    clause = " ".join(str(SIXMOD.stage2_block(cfg)["the_freeze"]["no_warm_start"]).split())
+    assert SIXMOD.NO_WARM_START in clause.lower(), clause
+    assert "fine-tuned or used as an initialization" in clause
+
+
 def test_the_eval_pass_refuses_a_dataset_outside_the_six(cfg, m3b):
     with pytest.raises(SystemExit, match=r"\['nq'\]: not datasets of the stage"):
         SIXMOD.stage_eval_six(cfg, m3b, {}, ["nq"], 4096, log=lambda *a: None)
