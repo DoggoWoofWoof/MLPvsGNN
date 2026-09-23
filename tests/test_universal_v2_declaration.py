@@ -57,6 +57,9 @@ STATUSES = {"DECLARED_NOT_RUN", "PILOT_GATE_READ"} | {f"RUN_{t}" for t in TERMIN
 DATED = re.compile(
     r"^(contract_frozen|timing|amendment_[0-9]+|pilot_gate_record|run_record|replication_record|hard_stop|authorization_stage_[0-9])_[0-9]{4}_[0-9]{2}_[0-9]{2}$"
 )
+# the stage-2 blocks carry the stage-2 suffix and sit outside the pilot convention on purpose
+# (amendment_5_2026_09_23.blocks_this_stage_will_append.naming_note)
+STAGE2_DATED = re.compile(r"^(compile_record|timing|run_record|hard_stop)_stage_2_[0-9]{4}_[0-9]{2}_[0-9]{2}$")
 NUM = re.compile(r"[0-9]+[.][0-9]+")
 
 
@@ -267,7 +270,12 @@ def test_the_compute_record_precedes_the_expensive_step(decl):
 def test_every_block_appended_after_the_declaration_is_dated(decl):
     keys = list(decl)
     after = keys[keys.index("process_rules_kept") + 1:]
+    declared = " ".join(decl["amendment_5_2026_09_23"]["blocks_this_stage_will_append"]["blocks"])
     for key in after:
+        if STAGE2_DATED.match(key):
+            # dated, but under the stage-2 naming: it must be a block amendment 5 said this stage would append
+            assert key[:-11] + "_<date>" in declared, f"stage-2 block not declared in amendment 5: {key}"
+            continue
         assert DATED.match(key), f"undated block appended to the declaration: {key}"
     rules = " ".join(decl["process_rules_kept"])
     assert "no scientific result from test data" in rules
@@ -712,7 +720,8 @@ def test_the_stage_2_authorization_is_dated_last_and_moves_no_status_line(decl, 
     dated = [k for k in decl if DATED.match(k)]
     assert dated.index("replication_record_2026_09_22") < dated.index("authorization_stage_2_2026_09_22")
     # only the amendments that carry the stage follow it, in the order they were filed
-    assert dated[dated.index("authorization_stage_2_2026_09_22") + 1:] == ["amendment_5_2026_09_23", "amendment_6_2026_09_23"]
+    assert dated[dated.index("authorization_stage_2_2026_09_22") + 1:] == [
+        "amendment_5_2026_09_23", "amendment_6_2026_09_23", "amendment_7_2026_09_23"]
     assert decl["status"] == "RUN_PILOT_FAILED"
     assert stage2["stage_2_status"] == "DECLARED_NOT_RUN"
     lines = stage2["status_lines_not_moved"]
@@ -862,7 +871,7 @@ def amd5(decl) -> dict:
 
 def test_amendment_5_is_dated_last_and_moves_no_status_line(decl, amd5):
     dated = [k for k in decl if DATED.match(k)]
-    assert dated[-1] == "amendment_6_2026_09_23" and dated[-2] == "amendment_5_2026_09_23"
+    assert dated[-3:] == ["amendment_5_2026_09_23", "amendment_6_2026_09_23", "amendment_7_2026_09_23"]
     assert dated.index("authorization_stage_2_2026_09_22") < dated.index("amendment_5_2026_09_23")
     assert decl["status"] == "RUN_PILOT_FAILED"
     lines = amd5["status_lines_not_moved"]
@@ -934,7 +943,7 @@ def amd6(decl) -> dict:
 
 def test_amendment_6_is_dated_last_and_moves_no_status_line(decl, amd6):
     dated = [k for k in decl if DATED.match(k)]
-    assert dated[-1] == "amendment_6_2026_09_23"
+    assert dated[-2] == "amendment_6_2026_09_23" and dated[-1] == "amendment_7_2026_09_23"
     assert dated.index("amendment_5_2026_09_23") < dated.index("amendment_6_2026_09_23")
     assert decl["status"] == "RUN_PILOT_FAILED"
     lines = amd6["status_lines_not_moved"]
@@ -962,3 +971,65 @@ def test_amendment_6_authorises_no_fit_no_gate_and_no_substitute_column(amd6):
                    "no change to evaluation_and_reading.references", "no change to the architecture"):
         assert phrase in bars, phrase
     assert "GNN_REPLICATION_ONLY stands as filed" in bars
+
+
+@pytest.fixture(scope="module")
+def amd7(decl) -> dict:
+    return decl["amendment_7_2026_09_23"]
+
+
+def test_amendment_7_is_dated_last_and_moves_no_status_line(decl, amd7):
+    dated = [k for k in decl if DATED.match(k)]
+    assert dated[-1] == "amendment_7_2026_09_23"
+    assert dated.index("amendment_6_2026_09_23") < dated.index("amendment_7_2026_09_23")
+    assert decl["status"] == "RUN_PILOT_FAILED"
+    lines = amd7["status_lines_not_moved"]
+    assert lines["file_status"] == "RUN_PILOT_FAILED" and lines["original_pilot_status"] == "PILOT_FAILED"
+    assert lines["post_pilot_replication_status"] == "GNN_REPLICATION_ONLY"
+    assert squash(amd7["filed_before"]).startswith("any stage-2 fit exists")
+
+
+def test_amendment_7_answers_a_measured_epoch_that_is_over_three_hours(decl, amd7):
+    timing = decl["timing_stage_2_2026_09_23"]
+    assert timing["epoch_over_three_hours"] is True
+    measured = amd7["what_was_measured"]
+    assert measured["filed_as"] == "timing_stage_2_2026_09_23"
+    assert measured["epoch_seconds"] == timing["epoch_seconds"] == 20282.9
+    assert measured["threads_used"] == timing["threads"] == 6
+    # the rule asks for 8 threads: the deviation is recorded, and the trigger is shown to fire regardless
+    off = squash(str(amd7["the_measurement_was_taken_off_the_declared_placement"]))
+    assert "the rule asks for the epoch wall clock at 8 threads" in off
+    assert "thread scaling is at best linear" in off and "4.226 hours" in off
+    assert timing["epoch_seconds"] * 6 / 8 / 3600 > 3.0
+
+
+def test_amendment_7_files_a_placement_and_no_reduced_schedule(decl, amd7):
+    frozen = squash(decl["authorization_stage_2_2026_09_22"]["training"]["rule"])
+    kept = squash(amd7["what_does_not_change"]["training_rule"])
+    for number in ("max_epochs 6", "2000 batches", "patience 2", "clip 1.0", "per_query", "28800"):
+        assert number in frozen and number in kept, number
+    assert "No reduced schedule is filed" in kept
+    unchanged = amd7["what_does_not_change"]
+    assert squash(unchanged["seeds"]) == "three, 0 and 1 and 2, none dropped"
+    assert "420932 parameters" in squash(unchanged["architecture"]) and "129-column" in squash(unchanged["architecture"])
+    assert "train_holdout" in squash(unchanged["populations"]) and "no test split" in squash(unchanged["populations"])
+    assert "150 fit-hours" in squash(unchanged["the_ceiling"])
+
+
+def test_amendment_7_fit_placement_is_the_one_every_pilot_fit_used(amd7):
+    assert "8 threads" in squash(amd7["the_placement_that_is_filed"]["fits"])
+    fits = sorted((ROOT / "outputs" / "universal_v2" / "fits").glob("*.json"))
+    assert fits, "the pilot fit records are the evidence for the filed placement"
+    threads = {json.loads(p.read_text(encoding="utf-8"))["threads"] for p in fits}
+    assert threads == {8}, f"the pilot did not run at one placement: {threads}"
+
+
+def test_amendment_7_authorises_no_schedule_no_gate_and_no_second_timing(amd7):
+    bars = " ".join(squash(str(b)) for b in amd7["what_this_does_not_authorise"])
+    for phrase in ("no reduced schedule", "not a dropped seed", "no architecture, contract, column, K_REL or parameter change",
+                   "no change to the populations", "no gate", "no Modal placement and no GPU", "no second timing block"):
+        assert phrase in bars, phrase
+    ceiling = amd7["the_ceiling_arithmetic"]
+    assert "147.76" in squash(ceiling["worst_case"]) and "150" in squash(ceiling["worst_case"])
+    assert "fit_hours_guard_six refuses the fit before it starts" in squash(ceiling["what_happens_if_it_binds"])
+    assert "does not enter fit_hours_spent" in squash(ceiling["not_counted"])
