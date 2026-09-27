@@ -917,6 +917,8 @@ def stage_read_six(cfg: dict, log=log_utc) -> dict:
             raise SystemExit(f"{fit_key(s)}: no stage-2 fit record; the reading follows the three fits")
         fits[fit_key(s)] = {k: rec[k] for k in ("seed", "best_epoch", "epochs_run", "best_select_macro_recall5", "seconds",
                                                 "parameters", "state_sha256", "steps", "peak_rss_bytes", "threads")}
+        fits[fit_key(s)].update({"max_epochs": int(rec["training"]["max_epochs"]),
+                                 "select_macro_by_epoch": [round(float(h["select_macro_recall@5"]), 4) for h in rec["history"]]})
     out = {"utc": V2.utc(), "stage": STAGE2, "go_ahead": AMD5, "arm": ARM, "seeds": list(SEEDS), "checkpoints": fits,
            "no_gate": " ".join(str(block["this_stage_has_no_gate"]["rule"]).split()),
            "paired_procedure": " ".join(str(block["evaluation_and_reading"]["paired_procedure"]).split()),
@@ -1086,6 +1088,55 @@ def fmt_paired(p: dict) -> str:
     return f"{p['mean']:+.4f} [{p['low']:+.4f}, {p['high']:+.4f}]"
 
 
+def at_the_cap(f: dict) -> bool:
+    """Epochs count from 0. A best epoch of max_epochs - 1 means the last epoch the rule allows still improved the
+    select carves: the epoch cap ended that fit, not the patience."""
+    return int(f["best_epoch"]) == int(f["max_epochs"]) - 1
+
+
+def fitted_lines(checkpoints: dict) -> list:
+    """Section 1: each checkpoint with its select-carve trajectory, the selected epoch in bold, and a note naming any
+    seed the epoch cap ended. The select numbers are the early-stopping signal of the fit, never a result."""
+    L = ["| checkpoint | seed | best epoch | epochs run | select macro R@5 by epoch | fit hours | state sha256 |",
+         "| --- | --- | --- | --- | --- | --- | --- |"]
+    for key, f in checkpoints.items():
+        path = " / ".join(f"**{v:.4f}**" if e == f["best_epoch"] else f"{v:.4f}"
+                          for e, v in enumerate(f["select_macro_by_epoch"]))
+        L.append(f"| `{key}` | {f['seed']} | {f['best_epoch']} | {f['epochs_run']} | {path} | "
+                 f"{f['seconds'] / 3600:.2f} | `{f['state_sha256'][:12]}` |")
+    cap = int(next(iter(checkpoints.values()))["max_epochs"])
+    capped = [str(f["seed"]) for f in checkpoints.values() if at_the_cap(f)]
+    L += ["", f"Epochs count from 0, so epoch {cap - 1} is the last of the {cap} the rule allows. The select-carve",
+          "numbers are the early-stopping signal of the fit and never a result."]
+    if capped:
+        who = ("Seed " if len(capped) == 1 else "Seeds ") + ", ".join(capped)
+        L.append(f"{who} {'was' if len(capped) == 1 else 'were'} selected at that last epoch: still improving on the "
+                 "select carves when the cap ended the fit. No epoch was added.")
+    else:
+        L.append("No checkpoint was selected at the last epoch the rule allows.")
+    return L
+
+
+def per_seed_lines(read: dict) -> list:
+    """Section 2, per seed: the headline cells of each checkpoint under the epoch it was selected at, so the spread
+    can be read beside where each fit stopped. Reporting only; nothing is chosen from it."""
+    heads = []
+    for s in SEEDS:
+        f = read["checkpoints"][fit_key(s)]
+        heads.append(f"seed {f['seed']}, epoch {f['best_epoch']}" + (", at the cap" if at_the_cap(f) else ""))
+    L = ["The same cells per seed. Each column is headed by the epoch at which that checkpoint was selected on the",
+         "select carves; the spread in the table above is the spread of these three values.", "",
+         "| dataset | metric | " + " | ".join(heads) + " | mean +/- sd | max - min |",
+         "| " + " | ".join(["---"] * (len(heads) + 4)) + " |"]
+    for name in DATASETS:
+        e = read["per_dataset"][name]
+        for m in e["headline"]:
+            c = e["scopes"]["whole"]["ours"][m]
+            vals = c["per_seed"]
+            L.append(f"| {name} | {m} | " + " | ".join(f"{v:.4f}" for v in vals) + f" | {fmt(c)} | {max(vals) - min(vals):.4f} |")
+    return L
+
+
 def doc_lines(read: dict, cfg: dict) -> list:
     block = stage2_block(cfg)
     incidents = V2.read_json(SIX / "incidents.json") or []
@@ -1107,12 +1158,7 @@ def doc_lines(read: dict, cfg: dict) -> list:
          "per-dataset head, no router, no per-dataset loss weight. Early stopping on the macro select recall@5 over the",
          "six select carves.",
          ""]
-    L += ["## 1. What was fitted", "",
-          "| checkpoint | seed | best epoch | epochs | select macro R@5 | fit hours | state sha256 |",
-          "| --- | --- | --- | --- | --- | --- | --- |"]
-    for key, f in read["checkpoints"].items():
-        L.append(f"| `{key}` | {f['seed']} | {f['best_epoch']} | {f['epochs_run']} | {f['best_select_macro_recall5']:.4f} | "
-                 f"{f['seconds'] / 3600:.2f} | `{f['state_sha256'][:12]}` |")
+    L += ["## 1. What was fitted", "", *fitted_lines(read["checkpoints"])]
     L += ["", "## 2. The six datasets, whole populations", "",
           "Three-seed mean +/- sd. The reference is the frozen M3B universal GAT on the same queries (three seeds,",
           "not refitted); the paired column is the mean per-query difference of the two three-seed means with its 95%",
@@ -1129,6 +1175,7 @@ def doc_lines(read: dict, cfg: dict) -> list:
             L.append(f"| {name} | {e['population']['split']} | {e['population']['queries']} | {e['band_verdict']} | {m} | "
                      f"{fmt(ceil)} | {fmt(ref)} | {fmt_paired(scope['paired']['gat_universal_v1'][m])} | "
                      f"{('%.4f' % ceiling) if ceiling else ''} |")
+    L += ["", *per_seed_lines(read)]
     L += ["", "Per-seed values, every reported metric (recall@1/5/10/20, hit@1, mrr, ndcg@5/20, full_coverage@5/20),",
           "the non-MP references (`gat_no_mp_v1`, `qls_u_sota_v1`) and the fixed rrf are in",
           "`outputs/universal_v2/six/read_record.json`.", ""]

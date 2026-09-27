@@ -453,3 +453,39 @@ def test_the_cost_section_labels_every_number_with_the_threads_it_ran_at():
     assert "at 6, 8 threads" in SIXMOD.cost_lines(c, mixed)[2]  # a fit off the placement shows; it is not averaged away
     src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
     assert '*cost_lines(c, read["checkpoints"])' in src
+
+
+def _checkpoint(seed, best, path):
+    return {"seed": seed, "best_epoch": best, "epochs_run": len(path), "max_epochs": 6, "select_macro_by_epoch": path,
+            "seconds": 3600.0, "state_sha256": "ab" * 32, "threads": 8}
+
+
+def test_the_fitted_table_bolds_the_selected_epoch_and_names_a_seed_the_cap_ended():
+    cks = {SIXMOD.fit_key(0): _checkpoint(0, 3, [0.1, 0.2, 0.3, 0.4, 0.35, 0.3]),
+           SIXMOD.fit_key(1): _checkpoint(1, 5, [0.1, 0.2, 0.3, 0.4, 0.45, 0.5])}
+    assert not SIXMOD.at_the_cap(cks[SIXMOD.fit_key(0)]) and SIXMOD.at_the_cap(cks[SIXMOD.fit_key(1)])
+    lines = SIXMOD.fitted_lines(cks)
+    assert "| 3 | 6 | 0.1000 / 0.2000 / 0.3000 / **0.4000** / 0.3500 / 0.3000 | 1.00 |" in lines[2]
+    assert "| 5 | 6 | 0.1000 / 0.2000 / 0.3000 / 0.4000 / 0.4500 / **0.5000** | 1.00 |" in lines[3]
+    assert "never a result" in " ".join(lines) and "epoch 5 is the last of the 6" in " ".join(lines)
+    assert any(line.startswith("Seed 1 was selected at that last epoch") for line in lines)
+    both = {k: _checkpoint(v["seed"], 5, [0.1, 0.2, 0.3, 0.4, 0.45, 0.5]) for k, v in cks.items()}
+    assert any(line.startswith("Seeds 0, 1 were selected") for line in SIXMOD.fitted_lines(both))
+    neither = {SIXMOD.fit_key(0): cks[SIXMOD.fit_key(0)]}
+    assert SIXMOD.fitted_lines(neither)[-1] == "No checkpoint was selected at the last epoch the rule allows."
+
+
+def test_the_per_seed_table_heads_each_seed_with_the_epoch_it_was_selected_at():
+    read = {"checkpoints": {SIXMOD.fit_key(s): _checkpoint(s, b, [0.5] * 6) for s, b in zip(SIXMOD.SEEDS, (3, 5, 4))},
+            "per_dataset": {}}
+    for name in SIXMOD.DATASETS:
+        ours = {m: {"per_seed": [0.5, 0.52, 0.51], "mean": 0.51, "sd": 0.0082, "seeds": 3} for m in SIXMOD.HEADLINE[name]}
+        read["per_dataset"][name] = {"headline": list(SIXMOD.HEADLINE[name]), "scopes": {"whole": {"ours": ours}}}
+    lines = SIXMOD.per_seed_lines(read)
+    assert "| seed 0, epoch 3 | seed 1, epoch 5, at the cap | seed 2, epoch 4 | mean +/- sd | max - min |" in lines[3]
+    assert "| musique | recall@5 | 0.5000 | 0.5200 | 0.5100 | 0.5100 +/- 0.0082 | 0.0200 |" in lines
+    assert len(lines) - 5 == sum(len(SIXMOD.HEADLINE[n]) for n in SIXMOD.DATASETS)
+    src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
+    assert 'L += ["## 1. What was fitted", "", *fitted_lines(read["checkpoints"])]' in src
+    assert 'L += ["", *per_seed_lines(read)]' in src
+    assert '"select_macro_by_epoch": [round(float(h["select_macro_recall@5"]), 4) for h in rec["history"]]' in src
