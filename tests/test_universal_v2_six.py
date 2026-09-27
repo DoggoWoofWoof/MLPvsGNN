@@ -107,7 +107,9 @@ def test_compile_refuses_the_trio_and_anything_but_the_training_carves(cfg, m3b)
         SIXMOD.stage_compile_six(cfg, m3b, {}, ["musique"], ("fit", "eval"), log=lambda *a: None)
 
 
-def test_the_fit_refuses_a_seed_outside_the_declaration_and_a_warm_start(cfg, m3b):
+def test_the_fit_refuses_a_seed_outside_the_declaration_and_a_warm_start(cfg, m3b, tmp_path, monkeypatch):
+    # an empty fits directory: once the live seed-0 record exists the stage returns it before reaching the guard
+    monkeypatch.setattr(SIXMOD, "SIX_FITS", tmp_path / "fits")
     with pytest.raises(SystemExit, match=r"seed 3: the stage fits seeds \[0, 1, 2\]"):
         SIXMOD.stage_fit_six(cfg, m3b, 3, log=lambda *a: None)
     loosened = copy.deepcopy(cfg)
@@ -326,7 +328,10 @@ def test_the_freeze_check_refuses_a_moved_contract(cfg):
         SIXMOD.check_freeze(loosened, good)
 
 
-def test_the_cli_offers_the_filed_stages_only():
+def test_the_cli_offers_the_filed_stages_only(tmp_path, monkeypatch):
+    # an empty fits directory: on the live tree, once the eval pass exists, --stage read would run the reading
+    # and write outputs/universal_v2/six/read_record.json from inside a test
+    monkeypatch.setattr(SIXMOD, "SIX_FITS", tmp_path / "fits")
     with pytest.raises(SystemExit):
         SIXMOD.main(["--stage", "screen"])
     with pytest.raises(SystemExit, match="the reading follows the three fits"):
@@ -417,3 +422,34 @@ def test_the_trio_context_refuses_a_moved_file_a_different_query_list_and_a_miss
         SIXMOD.trio_context(moved, "2wiki", {}, our_keys, {"whole": mask}, ids)
     with pytest.raises(SystemExit, match="query lists differ"):
         SIXMOD.trio_context(cfg, "2wiki", {}, our_keys, {"whole": mask}, ids[:-1] + ["not the same query"])
+
+
+def test_the_graph_er_pr_at_k_is_full_coverage_and_never_recall():
+    from mp_retrieval.m3b_train import rank_metrics
+    scores = np.arange(10, 0, -1, dtype=np.float64)          # candidate i is ranked i + 1
+    both = rank_metrics(scores, np.array([0, 1, 7]), 3)      # golds at ranks 1, 2 and 8
+    assert abs(both["recall@5"] - 2 / 3) < 1e-12 and both["full_coverage@5"] == 0.0
+    assert both["recall@20"] == 1.0 and both["full_coverage@20"] == 1.0
+    missing = rank_metrics(scores, np.array([0, 1, 7]), 4)   # a fourth gold the pool never reached counts against it
+    assert missing["recall@20"] == 0.75 and missing["full_coverage@20"] == 0.0
+    text = " ".join(SIXMOD.PR_AT_K_EQUIVALENCE)
+    assert "`full_coverage@K` is the GraphER-compatible PR@K" in text and "never merged" in text
+    assert "full_coverage@5" in SIXMOD.REPORTED_METRICS and "full_coverage@20" in SIXMOD.REPORTED_METRICS
+    src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
+    assert 'cal["care"], "", *PR_AT_K_EQUIVALENCE, "",' in src
+
+
+def test_the_cost_section_labels_every_number_with_the_threads_it_ran_at():
+    c = {"compile_rows": 123, "compile_hours": 1.5, "measured_epoch_seconds": 20282.9, "timing_peak_rss_gb": 9.1,
+         "threads": 6, "fit_hours_this_stage": 84.67, "fit_peak_rss_gb": 10.2, "fit_hours_spent_total": 131.03,
+         "ceiling_fit_hours": 150.0, "eval_hours": 7.25, "eval_threads": [4], "eval_peak_rss_gb": 6.3,
+         "placement": "the laptop, one fit lane at the declared threads"}
+    checkpoints = {SIXMOD.fit_key(s): {"threads": 8} for s in SIXMOD.SEEDS}
+    lines = SIXMOD.cost_lines(c, checkpoints)
+    assert "20282.9 s at 6 threads" in lines[1]              # amendment 7: a 6-thread number, labelled wherever it is read
+    assert "84.67 fit-hours at 8 threads" in lines[2] and "131.03 of the 150 fit-hour ceiling" in lines[2]
+    assert "7.25 hours at 4 threads, one dataset at a time" in lines[3]
+    mixed = {**checkpoints, SIXMOD.fit_key(0): {"threads": 6}}
+    assert "at 6, 8 threads" in SIXMOD.cost_lines(c, mixed)[2]  # a fit off the placement shows; it is not averaged away
+    src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
+    assert '*cost_lines(c, read["checkpoints"])' in src

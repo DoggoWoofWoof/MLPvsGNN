@@ -79,6 +79,13 @@ HEADLINE = {"metaqa": ("hit@1", "recall@5"), "webqsp": ("hit@1", "recall@5"), "h
             "2wiki": ("recall@5", "full_coverage@5"), "musique": ("recall@5", "full_coverage@5"), "squad": ("recall@5",)}
 REPORTED_METRICS = ("recall@1", "recall@5", "recall@10", "recall@20", "hit@1", "mrr", "ndcg@5", "ndcg@20",
                     "full_coverage@5", "full_coverage@20")
+# GraphER's PR@K is set coverage -- 1 only when every gold is in the top K -- which is full_coverage@K here, never recall@K
+PR_AT_K_EQUIVALENCE = (
+    "Our `full_coverage@K` is the GraphER-compatible PR@K: per query it is 1 only when every gold is ranked in the",
+    "top K, counted over the whole gold set, so a gold the pool never reached counts against it",
+    "(`m3b_train.rank_metrics`). It is reported at K = 5 and K = 20 for every dataset, per seed in",
+    "`outputs/universal_v2/six/read_record.json`, beside recall and never merged with it; hotpotqa, 2wiki and",
+    "musique carry `full_coverage@5` as a headline metric.")
 M3B_SEEDED = {"gat_universal_v1": "gat_universal_v1__H128_L2__s{s}", "gat_no_mp_v1": "gat_no_mp_v1__H128_L2__s{s}",
               "qls_u_sota_v1": "qls_u_sota_v1__H128__s{s}"}
 
@@ -988,7 +995,8 @@ def compute_summary(cfg: dict) -> dict:
             "fit_peak_rss_gb": round(max([f["peak_rss_bytes"] for f in fits], default=0) / 2**30, 2),
             "eval_hours": round(sum(e["seconds"] for e in evals) / 3600, 2),
             "eval_peak_rss_gb": round(max([e["peak_rss_bytes"] for e in evals], default=0) / 2**30, 2),
-            "threads": timing.get("threads"), "placement": "the laptop, one fit lane at the declared threads"}
+            "threads": timing.get("threads"), "eval_threads": sorted({int(e["threads"]) for e in evals}),
+            "placement": "the laptop, one fit lane at the declared threads"}
 
 
 def contract_on_datasets(cfg: dict) -> dict:
@@ -1148,6 +1156,22 @@ def doc_lines(read: dict, cfg: dict) -> list:
     return L
 
 
+def cost_lines(c: dict, checkpoints: dict) -> list:
+    """Section 9's bullets, each cost at the threads it ran at. amendment_7_2026_09_23 keeps the measured epoch as the
+    number the timing pass took, labelled with its threads wherever it is read, and files the fits and the eval pass
+    at their own placements; every count printed here is read from the record it describes."""
+    fit_threads = ", ".join(str(t) for t in sorted({int(f["threads"]) for f in checkpoints.values()}))
+    return [f"- compile of the three added carves: {c['compile_rows']} rows in {c['compile_hours']} hours",
+            f"- the measured joint epoch: {c['measured_epoch_seconds']} s at {c['threads']} threads, "
+            f"peak RSS {c['timing_peak_rss_gb']} GB",
+            f"- the three fits: {c['fit_hours_this_stage']} fit-hours at {fit_threads} threads "
+            f"(peak RSS {c['fit_peak_rss_gb']} GB); "
+            f"{c['fit_hours_spent_total']} of the {c['ceiling_fit_hours']:.0f} fit-hour ceiling spent in total",
+            f"- the one eval pass: {c['eval_hours']} hours at {', '.join(str(t) for t in c['eval_threads'])} threads, "
+            f"one dataset at a time (peak RSS {c['eval_peak_rss_gb']} GB)",
+            f"- placement: {c['placement']}"]
+
+
 def doc_lines_tail(read: dict, cfg: dict) -> list:
     block = stage2_block(cfg)
     incidents = V2.read_json(SIX / "incidents.json") or []
@@ -1199,7 +1223,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
             L.append(f"| {name} | `{key}` | " + " | ".join(cells) + " |")
     cal = read["calibration"]
     L += ["", "## 8. Calibration against published systems", "",
-          cal["rule"], "", cal["care"], "",
+          cal["rule"], "", cal["care"], "", *PR_AT_K_EQUIVALENCE, "",
           "| dataset | band verdict | headline | this stage | M3B GAT | any_gold_at_pool | recall ceiling@5 | candidates mean |",
           "| --- | --- | --- | --- | --- | --- | --- | --- |"]
     for name, row in cal["rows"].items():
@@ -1211,13 +1235,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
           "coverage number is the `any_gold_at_pool` column of the pool, never an average. MetaQA and WebQSP stay",
           "NOT_READ: the published KB systems assign topic entities while this pipeline seeds the graph by",
           "inference-safe retrieval, so no number here is presented as beating or approaching a published system.",
-          "", "## 9. What the stage cost", "",
-          f"- compile of the three added carves: {c['compile_rows']} rows in {c['compile_hours']} hours",
-          f"- the measured joint epoch: {c['measured_epoch_seconds']} s, peak RSS {c['timing_peak_rss_gb']} GB",
-          f"- the three fits: {c['fit_hours_this_stage']} fit-hours (peak RSS {c['fit_peak_rss_gb']} GB); "
-          f"{c['fit_hours_spent_total']} of the {c['ceiling_fit_hours']:.0f} fit-hour ceiling spent in total",
-          f"- the one eval pass: {c['eval_hours']} hours (peak RSS {c['eval_peak_rss_gb']} GB)",
-          f"- placement: {c['placement']}", ""]
+          "", "## 9. What the stage cost", "", *cost_lines(c, read["checkpoints"]), ""]
     if incidents:
         L += ["## 10. Incidents", ""] + [f"- {line}" for line in incidents] + [""]
     L += ["## 11. What this stage does not do", "",
