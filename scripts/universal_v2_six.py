@@ -997,7 +997,8 @@ def compute_summary(cfg: dict) -> dict:
             "fit_peak_rss_gb": round(max([f["peak_rss_bytes"] for f in fits], default=0) / 2**30, 2),
             "eval_hours": round(sum(e["seconds"] for e in evals) / 3600, 2),
             "eval_peak_rss_gb": round(max([e["peak_rss_bytes"] for e in evals], default=0) / 2**30, 2),
-            "threads": timing.get("threads"), "eval_threads": sorted({int(e["threads"]) for e in evals}),
+            "measured_epoch_threads": timing.get("threads"), "fit_threads": sorted({int(f["threads"]) for f in fits}),
+            "eval_threads": sorted({int(e["threads"]) for e in evals}),
             "placement": "the laptop, one fit lane at the declared threads"}
 
 
@@ -1203,18 +1204,18 @@ def doc_lines(read: dict, cfg: dict) -> list:
     return L
 
 
-def cost_lines(c: dict, checkpoints: dict) -> list:
+def cost_lines(c: dict) -> list:
     """Section 9's bullets, each cost at the threads it ran at. amendment_7_2026_09_23 keeps the measured epoch as the
     number the timing pass took, labelled with its threads wherever it is read, and files the fits and the eval pass
-    at their own placements; every count printed here is read from the record it describes."""
-    fit_threads = ", ".join(str(t) for t in sorted({int(f["threads"]) for f in checkpoints.values()}))
+    at their own placements; every count printed here is read from the record it describes (compute_summary)."""
+    fit_threads, eval_threads = (", ".join(str(t) for t in c[k]) for k in ("fit_threads", "eval_threads"))
     return [f"- compile of the three added carves: {c['compile_rows']} rows in {c['compile_hours']} hours",
-            f"- the measured joint epoch: {c['measured_epoch_seconds']} s at {c['threads']} threads, "
+            f"- the measured joint epoch: {c['measured_epoch_seconds']} s at {c['measured_epoch_threads']} threads, "
             f"peak RSS {c['timing_peak_rss_gb']} GB",
             f"- the three fits: {c['fit_hours_this_stage']} fit-hours at {fit_threads} threads "
             f"(peak RSS {c['fit_peak_rss_gb']} GB); "
             f"{c['fit_hours_spent_total']} of the {c['ceiling_fit_hours']:.0f} fit-hour ceiling spent in total",
-            f"- the one eval pass: {c['eval_hours']} hours at {', '.join(str(t) for t in c['eval_threads'])} threads, "
+            f"- the one eval pass: {c['eval_hours']} hours at {eval_threads} threads, "
             f"one dataset at a time (peak RSS {c['eval_peak_rss_gb']} GB)",
             f"- placement: {c['placement']}"]
 
@@ -1282,7 +1283,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
           "coverage number is the `any_gold_at_pool` column of the pool, never an average. MetaQA and WebQSP stay",
           "NOT_READ: the published KB systems assign topic entities while this pipeline seeds the graph by",
           "inference-safe retrieval, so no number here is presented as beating or approaching a published system.",
-          "", "## 9. What the stage cost", "", *cost_lines(c, read["checkpoints"]), ""]
+          "", "## 9. What the stage cost", "", *cost_lines(c), ""]
     if incidents:
         L += ["## 10. Incidents", ""] + [f"- {line}" for line in incidents] + [""]
     L += ["## 11. What this stage does not do", "",
@@ -1414,7 +1415,8 @@ def record_block(cfg: dict) -> dict:
                          "the paired reading, docs/UNIVERSAL_GNN_SIX.md and this record"],
             "checkpoints": {k: {"seed": v["seed"], "best_epoch": v["best_epoch"], "epochs_run": v["epochs_run"],
                                 "select_macro_recall5": v["best_select_macro_recall5"], "fit_hours": round(v["seconds"] / 3600, 2),
-                                "parameters": v["parameters"], "state_sha256": v["state_sha256"]}
+                                "parameters": v["parameters"], "state_sha256": v["state_sha256"],
+                                "select_macro_by_epoch": v["select_macro_by_epoch"], "selected_at_the_epoch_cap": at_the_cap(v)}
                             for k, v in read["checkpoints"].items()},
             "headline_whole_population": headline,
             "no_gate": read["no_gate"], "paired_procedure": read["paired_procedure"],

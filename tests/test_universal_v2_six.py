@@ -441,18 +441,16 @@ def test_the_graph_er_pr_at_k_is_full_coverage_and_never_recall():
 
 def test_the_cost_section_labels_every_number_with_the_threads_it_ran_at():
     c = {"compile_rows": 123, "compile_hours": 1.5, "measured_epoch_seconds": 20282.9, "timing_peak_rss_gb": 9.1,
-         "threads": 6, "fit_hours_this_stage": 84.67, "fit_peak_rss_gb": 10.2, "fit_hours_spent_total": 131.03,
-         "ceiling_fit_hours": 150.0, "eval_hours": 7.25, "eval_threads": [4], "eval_peak_rss_gb": 6.3,
-         "placement": "the laptop, one fit lane at the declared threads"}
-    checkpoints = {SIXMOD.fit_key(s): {"threads": 8} for s in SIXMOD.SEEDS}
-    lines = SIXMOD.cost_lines(c, checkpoints)
+         "measured_epoch_threads": 6, "fit_threads": [8], "fit_hours_this_stage": 84.67, "fit_peak_rss_gb": 10.2,
+         "fit_hours_spent_total": 131.03, "ceiling_fit_hours": 150.0, "eval_hours": 7.25, "eval_threads": [4],
+         "eval_peak_rss_gb": 6.3, "placement": "the laptop, one fit lane at the declared threads"}
+    lines = SIXMOD.cost_lines(c)
     assert "20282.9 s at 6 threads" in lines[1]              # amendment 7: a 6-thread number, labelled wherever it is read
     assert "84.67 fit-hours at 8 threads" in lines[2] and "131.03 of the 150 fit-hour ceiling" in lines[2]
     assert "7.25 hours at 4 threads, one dataset at a time" in lines[3]
-    mixed = {**checkpoints, SIXMOD.fit_key(0): {"threads": 6}}
-    assert "at 6, 8 threads" in SIXMOD.cost_lines(c, mixed)[2]  # a fit off the placement shows; it is not averaged away
+    assert "at 6, 8 threads" in SIXMOD.cost_lines({**c, "fit_threads": [6, 8]})[2]  # a fit off the placement shows
     src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
-    assert '*cost_lines(c, read["checkpoints"])' in src
+    assert '*cost_lines(c), ""]' in src
 
 
 def _checkpoint(seed, best, path):
@@ -489,3 +487,25 @@ def test_the_per_seed_table_heads_each_seed_with_the_epoch_it_was_selected_at():
     assert 'L += ["## 1. What was fitted", "", *fitted_lines(read["checkpoints"])]' in src
     assert 'L += ["", *per_seed_lines(read)]' in src
     assert '"select_macro_by_epoch": [round(float(h["select_macro_recall@5"]), 4) for h in rec["history"]]' in src
+
+
+def test_the_compute_summary_names_the_threads_of_each_cost(tmp_path, monkeypatch):
+    monkeypatch.setattr(SIXMOD, "SIX", tmp_path)
+    monkeypatch.setattr(SIXMOD, "SIX_FITS", tmp_path / "fits")
+    monkeypatch.setattr(SIXMOD, "SIX_EVAL", tmp_path / "eval")
+    monkeypatch.setattr(V2, "FITS", tmp_path / "pilot_fits")
+    (tmp_path / "fits").mkdir()
+    (tmp_path / "eval").mkdir()
+    timing = {"epoch_seconds": 20282.9, "peak_rss_gb": 9.4, "threads": 6}
+    (tmp_path / "timing.json").write_text(json.dumps(timing), encoding="utf-8")
+    for s in SIXMOD.SEEDS:
+        rec = {"seconds": 3600.0 * (s + 1), "peak_rss_bytes": 2**30, "threads": 8}
+        (tmp_path / "fits" / f"{SIXMOD.fit_key(s)}.json").write_text(json.dumps(rec), encoding="utf-8")
+    for name in SIXMOD.DATASETS:
+        rec = {"seconds": 600.0, "peak_rss_bytes": 2**30, "threads": 4}
+        (tmp_path / "eval" / f"{name}.json").write_text(json.dumps(rec), encoding="utf-8")
+    c = SIXMOD.compute_summary({})
+    assert (c["measured_epoch_threads"], c["fit_threads"], c["eval_threads"]) == (6, [8], [4]) and "threads" not in c
+    assert c["fit_hours_this_stage"] == 6.0 and c["fit_hours_spent_total"] == 6.0 and c["eval_hours"] == 1.0
+    src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
+    assert '"selected_at_the_epoch_cap": at_the_cap(v)}' in src
