@@ -1,0 +1,39 @@
+# rx.toml -- put this at a project's root. Every table is optional except [project].
+
+[project]
+name = "myproj"            # letters, digits, . _ - ; the namespace on the host
+host = "gpu"               # a host set up with `rx setup gpu`
+
+[push]
+include = ["git:tracked"]  # or globs: ["src/**", "configs/**", "*.py"]; add "git:untracked" for new files
+exclude = []               # globs; a bare name ("__pycache__") matches at any depth
+max_mb = 512               # a push that would send more needs --force
+
+[run]
+env = "cpu"                # built by `rx env build cpu`; omit for the bare interpreter
+cpus = 4                   # reserved, and exported as OMP/MKL/OPENBLAS thread counts
+mem_gb = 8                 # reserved for scheduling
+# mem_hard_gb = 12         # the job is stopped above this (Windows Job Object)
+outputs = ["outputs/**"]   # what `rx fetch JOB` brings back
+# outputs_exclude = ["outputs/**/*.tmp"]
+# timeout_s = 86400
+# shell = "exec"           # exec | cmd | powershell | bash | wsl | sh
+env_vars = {}
+
+[profiles.gpu]             # rx run -p gpu -- ...
+env = "cuda"
+gpus = 1                   # 0.5 lets two jobs share one GPU
+
+[envs.cpu]
+requirements = ["numpy==2.3.2", "torch==2.8.0+cpu"]
+extra_index_urls = ["https://download.pytorch.org/whl/cpu"]
+# index_url = "https://pypi.org/simple"
+# find_links = []
+# constraints_file = "constraints.txt"
+# python = "3.13.5"        # a version rx setup installed; default: the host's rx python
+verify = ["import torch; print(torch.__version__)"]
+
+[envs.cuda]
+requirements = ["numpy==2.3.2", "torch==2.8.0+cu128"]
+extra_index_urls = ["https://download.pytorch.org/whl/cu128"]
+verify = ["import torch; assert torch.cuda.is_available(); print(torch.cuda.get_device_name(0))"]

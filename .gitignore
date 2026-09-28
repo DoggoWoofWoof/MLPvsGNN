@@ -27,3 +27,8 @@ data/processed/
 .env
 *.local.yaml
 *.local.toml
+
+# rx remote-execution state and interrupted transfers.
+.rx/
+*.rxpart
+*.rxpart.json
