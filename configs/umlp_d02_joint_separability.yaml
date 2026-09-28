@@ -1,6 +1,6 @@
 phase: UMLP_D02_JOINT_SEPARABILITY
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 extends: configs/umlp_d01_2wiki_feature_readout.yaml (run_record_umlp_d01_2026_09_29, commit c0099e9) -- D0 and D0.1 are not edited
 registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
@@ -112,3 +112,18 @@ incidents_to_record:
 execution:
   stop_after_this_block: true
   within_phase_go_ahead: given (authorization above)
+
+run_record_umlp_d02_2026_09_29:
+  utc: '2026-09-28T20:03:42Z'
+  record: outputs/umlp_d02/record.json
+  record_sha256: 6f2c2d5dff05b6ca0fae726800e9b38e71f9225b882feddb2a96589ddf9af795
+  document: docs/UMLP_D02_JOINT_SEPARABILITY.md
+  held_half_read: false
+  gat_loaded: false
+  clears_bar_all_three_seeds:
+    A: true
+    B: true
+    C: true
+  reading: D02_R1_LINEARLY_PRESENT
+  status_moves: DECLARED_NOT_RUN -> RUN
+  next: STOP with the scientific interpretation; v2.1 is its own declaration
