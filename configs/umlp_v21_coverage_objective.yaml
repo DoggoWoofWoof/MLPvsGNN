@@ -73,7 +73,7 @@ integrity:
 
 compute:
   placement: local CPU (the GPU host is offline; GPU placement of science still needs the equivalence test declared first)
-  expected: ~70 min per fit (control seed 0: 4,087 s), ~7 min 2wiki eval; stage B ~2.5 h fits + ~1 h trio eval
+  expected: "~70 min per fit (control seed 0: 4,087 s), ~7 min 2wiki eval; stage B ~2.5 h fits + ~1 h trio eval"
   memory: fit caches are memory-mapped; a fit is watched and a thrashing stall is reported, never silently re-placed
 
 outputs:
