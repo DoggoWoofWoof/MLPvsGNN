@@ -1,0 +1,114 @@
+phase: UMLP_D02_JOINT_SEPARABILITY
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+extends: configs/umlp_d01_2wiki_feature_readout.yaml (run_record_umlp_d01_2026_09_29, commit c0099e9) -- D0 and D0.1 are not edited
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+role_for_the_registered_question: >-
+  Diagnostic only. Probes are fitted to answer whether the frozen compiled representation jointly separates a
+  GNN-recovered extra gold from the twin's top-5 displacers. No retrieval model is improved, nothing is selected,
+  and v2.1 is not started by this file.
+
+authorization:
+  given: 2026-09-29, by the user, pasted as "UMLP-D0.2 AUTHORIZATION -- JOINT SEPARABILITY PROBE"
+  go_ahead: "Proceed immediately. Do not stop for another go-ahead after filing the declaration."
+  terminal: "Commit. Then STOP with the scientific interpretation."
+  question_verbatim: "Can the frozen compiled representation jointly distinguish an additional gold recovered by the GNN from the non-golds occupying the twin's top-5 slots?"
+
+this_file_does_not_touch:
+  held_half: V2_HELD_CONFIRMATION is not read; the only input rows are the D0.1 sidecar's V2_GATE rows
+  other_datasets: no MetaQA or SQuAD retrieval metric is read
+  m3b: the M3B GAT is not loaded or rerun
+  models: no Universal-v2 or Universal-MLP change; no retrieval checkpoint is fitted; no feature added; the screen and the gates unchanged
+  gnn: u_gnn_v2_ef defines the G_miss_mp subset only; no probe is trained against GNN logits or scores (no distillation)
+  v2_1: not started automatically
+
+inputs:
+  d01_sidecar: {path: outputs/umlp_d01/candidates_2wiki_gate.npz, sha256: 4b18d3d5fcff005ec7177500be2560afe9ad9e0f2a40ad9c8d7a4e923cbe38ef}
+  d01_record: {path: outputs/umlp_d01/record.json, sha256: 62b0d6bea89d970ed9c1b43a1d549bd42ff1a6e1bcd2b9cde4013128f8a706b3}
+  query_ids: {path: outputs/universal_v2/eval/2wiki_query_ids.json, sha256: d439a33c22f39186f8e54f596aeb2bcb83a5d27745a0dc9285e8990f16923cd2}
+  feature_screen: {path: outputs/universal_v2/feature_screen.json, sha256: c58b317e9ae0f34523e20b3b727e4394b16eaa1e9d836d34aa3730d08403551f}
+
+population:
+  base: the D0.1 sidecar (2wiki V2_GATE, 6,290 queries, integrity-checked forward pass of the frozen checkpoints)
+  groups: the D0.1 definitions, formed separately for each twin seed u_mlp_v2_mix__H128__s0/s1/s2
+  primary: G_miss_mp (in-pool extra gold below twin rank 5, in the u_gnn_v2_ef top 5 on >= 2 of 3 seeds) vs N_disp (non-golds at twin ranks 2-5), same query
+  secondary_descriptive: all G_miss vs N_disp; no verdict depends on it
+  analysed_queries: twin top-1 is a gold and the query has at least one pair of the task
+
+pairs:
+  construction: for each query, every (gold, displacer) pair; d = x_gold - x_neg; each pair enters as (d, 1) and (-d, 0)
+  weighting: every query carries total weight 1 -- each of its 2 * n_pairs oriented rows has weight 1 / (2 * n_pairs)
+  unit: the query
+
+cross_fitting:
+  folds: 5
+  fold_of_query: int(sha256(query_id utf-8).hexdigest(), 16) mod 5, query_id from the pinned query-id file by sidecar row
+  rule: fit on four folds, predict the fifth; every reported number is out-of-fold; all pairs of a query share a fold
+  normalisation: per-column mean and std over the training folds' task candidates (std < 1e-12 -> 1); applied to both folds
+  no_tuning: every hyperparameter below is fixed here; nothing is chosen from held-fold performance
+  per_seed: the full cross-fit runs independently on each twin seed's population
+
+probe_form: >-
+  Each probe is a per-candidate scorer g(x); the pair logit is g(x_gold) - g(x_neg). For the linear probe this is
+  exactly logistic regression on d without intercept, as the ruling specifies; for the nonlinear probes it is the
+  "equivalently small fixed architecture" the ruling allows, chosen because it is antisymmetric by construction and
+  because it asks what a per-candidate scorer -- the twin's own form -- could recover from these inputs. An MLP on d
+  could use cross-candidate interactions the twin cannot represent, which would answer a different question.
+
+probes:
+  A_retained_linear:
+    inputs: the 129 surviving columns (feature_screen.json "surviving" = the twin's read set) + the twin's fixed base term (readout.base_weight * base_z, a separate additive term in the twin's scoring path; per twin seed)
+    model: sklearn LogisticRegression(penalty l2, C 1.0, fit_intercept false, solver lbfgs, max_iter 5000) on the oriented rows with the query weights
+  B_retained_nonlinear:
+    inputs: exactly probe A's inputs
+    model: g = Linear(k, 64) -> GELU -> Linear(64, 1); pair loss = weighted binary cross-entropy of g(x_gold) - g(x_neg) over both orientations
+    training: full batch, AdamW lr 1e-3 weight_decay 1e-4, 500 steps, torch.manual_seed(0), float32, CPU; one probe seed; no dropout, no early stopping
+  C_raw_nonlinear:
+    inputs: the 164 pre-screen contract columns (feature_screen.json "columns") + the same fixed base term
+    model: identical to B
+  forbidden_inputs: GNN score, twin final score, twin residual, any rank, arm identity, dataset id
+
+metrics:
+  primary: within-query pair-AUC of the out-of-fold g over the task pairs, query-weighted (D0.1 pair_auc_query), query bootstrap 1000 resamples default_rng(0) 95% percentile
+  bar: lower 95% bound > 0.60 on all three twin-seed populations
+  also_reported: mean pair-AUC, unweighted pair accuracy, n queries, n positive golds, n pairs, probe parameter counts
+  reference_orderings_descriptive: fixed-base, twin-residual, final twin score and u_gnn_v2_ef score pair-AUC on the same pairs
+
+readings:   # the ruling's, filed before any number
+  D02_R1_LINEARLY_PRESENT:
+    SUPPORTED: probe A clears the bar on all three twin seeds
+    meaning: the retained basis already carries a simple joint signal; the twin's training/scoring objective does not exploit it (favours a scorer/objective change over new graph features)
+  D02_R2_NONLINEARLY_PRESENT:
+    evaluated_only_if: R1 is not SUPPORTED
+    SUPPORTED: probe B clears the bar on all three twin seeds
+    meaning: recoverable joint nonlinear information in the retained basis; the general retrieval objective does not teach the scorer secondary-gold coverage
+  D02_R3_SCREENED_INFORMATION:
+    evaluated_only_if: R2 is not SUPPORTED (and R1 not SUPPORTED)
+    SUPPORTED: probe B fails its bar AND probe C clears the bar on all three seeds
+    meaning: useful joint information exists in the raw compiler output and was discarded by the frozen screen
+  D02_R4_NOT_RECOVERED_FROM_COMPILED_BASIS:
+    SUPPORTED: none of A, B, C clears the bar on all three seeds
+    wording: '"No recoverable signal was demonstrated under the registered linear and small-nonlinear probe classes." Never "the compiled basis contains no information."'
+  exactly_one: the first SUPPORTED of R1, R2, R3 in order is the reading; R4 when none is
+
+outputs:
+  script: scripts/umlp_d02_joint_separability.py
+  record: outputs/umlp_d02/record.json
+  document: docs/UMLP_D02_JOINT_SEPARABILITY.md (population counts, feature lists and hashes, cross-fit scheme, parameter counts, out-of-fold metrics per seed, intervals, A/B/C, reading, incidents, artefact hashes)
+  run_record: run_record_umlp_d02_<date> appended to THIS file; status DECLARED_NOT_RUN -> RUN
+
+tests:
+  - folds are a function of the query id and keep every pair of a query in one fold
+  - each pair enters in both orientations and every query's weights sum to 1
+  - no forbidden input is in any probe's feature list; A and B share inputs; C is the 164 + base
+  - the sidecar rows are the V2_GATE rows (no held row can enter)
+  - out-of-fold: a probe never scores a query from its training folds
+  - configs/universal_v2.yaml, the D0 and the D0.1 declarations are byte-unchanged
+
+incidents_to_record:
+  - the ruling names "129" and "164"; checked against feature_screen.json before filing (surviving 129, columns 164, dropped 35; surviving == the twin's read set)
+
+execution:
+  stop_after_this_block: true
+  within_phase_go_ahead: given (authorization above)
