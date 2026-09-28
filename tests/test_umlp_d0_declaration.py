@@ -45,7 +45,7 @@ def pinned_inputs(declaration: dict) -> list[dict]:
 def test_header(declaration):
     assert declaration["phase"] == "UMLP_D0_2WIKI_DIAGNOSTICS"
     assert str(declaration["opened"]) == "2026-09-28"
-    assert declaration["status"] == "DECLARED_NOT_RUN"
+    assert declaration["status"] in ("DECLARED_NOT_RUN", "RUN")
     assert declaration["branch_type"] == "POST_HOC_ANALYSIS"
     assert declaration["execution"]["stop_after_this_block"] is True
 

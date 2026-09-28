@@ -16,7 +16,7 @@
 
 phase: UMLP_D0_2WIKI_DIAGNOSTICS
 opened: 2026-09-28
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 motivated_by: >-
   An observed result: TWIN_GATE REPLICATION_FAIL on 2wiki recall@5 (seed
@@ -285,3 +285,19 @@ amendment_a1_2026_09_28:
       no gold in the pool form their own bucket "no gold in pool". Computed
       separately for view STRUCT and view FULL.
   nothing_else_changes: the arms, metrics, intervals, slices, readings and bars above are unchanged
+
+run_record_umlp_d0_2026_09_29:
+  utc: '2026-09-28T18:42:19Z'
+  record: outputs/umlp_d0/record.json
+  record_sha256: 664abe908675576eb41fead720328749cfabfbebd703fbe534d404dc143c74c6
+  document: docs/UMLP_D0_2WIKI_DIAGNOSTICS.md
+  masks_sha256: 7f7768e6dc39fcfb2b8bf31a9abd6dcd62fb9d2fc3f29324f2ddb1b7265482d3
+  masks_mismatches: 0
+  held_half_read: false
+  queries: 6290
+  readings:
+    R1_residual_gating_hypothesis: NOT_SUPPORTED
+    R2_shortfall_sits_where_propagation_pays: NOT_SUPPORTED
+    R3_set_coverage: NOT_SUPPORTED
+  status_moves: DECLARED_NOT_RUN -> RUN
+  next: STOP_FOR_REVIEW; Universal-MLP-v2.1 is its own dated declaration
