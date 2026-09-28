@@ -953,7 +953,9 @@ def stage_read_six(cfg: dict, log=log_utc) -> dict:
                  "band_verdict": BAND[name], "headline": list(HEADLINE[name]),
                  "cost": {"ms_per_query": rec["ms_per_query"], "seconds": rec["seconds"],
                           "peak_rss_gb": round(rec["peak_rss_bytes"] / 2**30, 2),
-                          "latency_ms": {k: round(1000 * v["p50"], 2) for k, v in rec["latency"].items() if isinstance(v, dict) and "p50" in v}},
+                          "latency_ms": {k: {"p50": v["p50_ms"], "p95": v["p95_ms"], "p99": v["p99_ms"], "n": v["n"]}
+                                         for k, v in rec["latency"].items() if isinstance(v, dict) and "p50_ms" in v},
+                          "latency_measured_on": rec.get("latency_measured_on") or f"the first {V2.LATENCY_QUERIES} queries"},
                  "mrr_audit_ok": all(a["ok"] for a in rec["mrr_audit"].values()),
                  "scopes": {"whole": read_scope(name, ours, theirs, our_keys, refs, whole)}}
         masks = {"whole": whole}
@@ -1039,6 +1041,22 @@ def contract_on_datasets(cfg: dict) -> dict:
                          "unavailable_columns": [c for c, v in zip(surviving, a) if v < floor], "constant_columns": None,
                          "note": f"unavailable here means below the screen floor {floor}, not a full-scan zero"}
     return {name: out[name] for name in DATASETS if name in out}
+
+
+def evidence_note(read: dict) -> list:
+    """What a gate2 column of 0.0000 means. EvidenceFlow.step moves its state only along typed STRUCT relation edges
+    and reports a gate of 0 for a node with no incoming typed edge, so an all-zero column is the substrate having no
+    such edge, never a gate the fit learned to close. Names the datasets where every checkpoint reads 0 on every step."""
+    zero = [name for name, e in read["per_dataset"].items()
+            if all(v == 0 for mech in e["scopes"]["whole"]["mechanism"].values() for m, v in mech.items() if m.startswith("gate2_"))
+            and any(m.startswith("gate2_") for mech in e["scopes"]["whole"]["mechanism"].values() for m in mech)]
+    L = ["The evidence-flow step moves its state only along typed STRUCT relation edges, and reports a gate of 0 for a",
+         "node with no incoming typed edge, whose state then stays at its initial value (`EvidenceFlow.step`). A gate2",
+         "column of 0.0000 therefore means the block found no typed edge to flow over on that substrate, not a gate the",
+         "fit learned to close; the initial evidence state still enters the readout there."]
+    if zero:
+        L.append("Every checkpoint reads 0.0000 on every evidence-flow step on: " + ", ".join(zero) + ".")
+    return L
 
 
 def mechanism_columns(read: dict) -> list:
@@ -1177,6 +1195,7 @@ def doc_lines(read: dict, cfg: dict) -> list:
                      f"{fmt(ceil)} | {fmt(ref)} | {fmt_paired(scope['paired']['gat_universal_v1'][m])} | "
                      f"{('%.4f' % ceiling) if ceiling else ''} |")
     L += ["", *per_seed_lines(read)]
+    L += ["", *all_metric_lines(read)]
     L += ["", "Per-seed values, every reported metric (recall@1/5/10/20, hit@1, mrr, ndcg@5/20, full_coverage@5/20),",
           "the non-MP references (`gat_no_mp_v1`, `qls_u_sota_v1`) and the fixed rrf are in",
           "`outputs/universal_v2/six/read_record.json`.", ""]
@@ -1201,6 +1220,44 @@ def doc_lines(read: dict, cfg: dict) -> list:
                 L.append(f"| {name} | {m} | {fmt(read['per_dataset'][name]['scopes']['whole']['ours'][m])} | "
                          f"{scope['trio'][m]['per_seed'][0]:.4f} | {fmt_paired(scope['paired_six_minus_trio'][m])} |")
         L += ["", "Every reported metric and both trio halves are in the read record under `trio_context`.", ""]
+    return L
+
+
+def all_metric_lines(read: dict) -> list:
+    """Section 2, every reported metric: the three-seed mean against the M3B GAT on the same queries with the paired
+    delta, all ten metrics on all six datasets, printed whole so that no metric is picked after the reading."""
+    L = ["Every reported metric, whole populations, against the M3B GAT on the same queries. MRR is the audited value:",
+         "per query it was recomputed from the stored first-gold rank, matched the stored value within 1e-12, and lay",
+         "between hit@1 and 1, for every checkpoint (`mrr_audit` in each eval record; the audit column of section 9).",
+         "full_coverage@K is the GraphER-compatible PR@K (section 8).", "",
+         "| dataset | metric | this stage | M3B GAT | paired delta [95% CI] |",
+         "| --- | --- | --- | --- | --- |"]
+    for name in DATASETS:
+        scope = read["per_dataset"][name]["scopes"]["whole"]
+        for m in REPORTED_METRICS:
+            L.append(f"| {name} | {m} | {fmt(scope['ours'][m])} | {fmt(scope['references']['gat_universal_v1'][m])} | "
+                     f"{fmt_paired(scope['paired']['gat_universal_v1'][m])} |")
+    return L
+
+
+def dataset_cost_lines(read: dict) -> list:
+    """Section 9, per dataset: the eval pass wall clock, the single-query latency the pass sampled, and the MRR audit.
+    The pass scored the three checkpoints together, so its wall clock per query is not one model's latency."""
+    keys = [fit_key(s) for s in SEEDS]
+    L = ["", "Per dataset. The eval pass scored the three checkpoints together, so its wall clock per query covers compiling",
+         "the pool once, three forward passes and the fixed scorers; it is not one model's latency. The latency columns",
+         "are single-query timings, p50 / p95 in ms at the eval threads, on the sample the last column names: compile is",
+         "the per-query feature compile, pack the single-query batch, forward one checkpoint's forward pass (seeds 0, 1, 2).",
+         "",
+         "| dataset | queries | pass hours | pass ms per query | compile | pack | forward p50 | forward p95 | peak RSS GB | MRR audit | latency sample |",
+         "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
+    for name in DATASETS:
+        e = read["per_dataset"][name]
+        cost, lat = e["cost"], e["cost"]["latency_ms"]
+        L.append(f"| {name} | {e['population']['queries']} | {cost['seconds'] / 3600:.2f} | {cost['ms_per_query']:.0f} | "
+                 f"{lat['compile']['p50']:.0f} / {lat['compile']['p95']:.0f} | {lat['pack']['p50']:.0f} / {lat['pack']['p95']:.0f} | "
+                 + ", ".join(f"{lat[k]['p50']:.0f}" for k in keys) + " | " + ", ".join(f"{lat[k]['p95']:.0f}" for k in keys)
+                 + f" | {cost['peak_rss_gb']} | {'ok' if e['mrr_audit_ok'] else 'FAILED'} | {cost['latency_measured_on']} |")
     return L
 
 
@@ -1262,7 +1319,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
           "Per checkpoint, over the whole population: the mean |delta_s| over |base_z| ratio, the fraction of queries",
           "whose top-1 leaves the fixed base score, the message-passing step gates and, where the arm has them, the",
           "evidence-flow gates. These are the readouts measurement.mechanism_readouts declares; they are reported as",
-          "they fell and nothing is tuned on them.", "",
+          "they fell and nothing is tuned on them.", "", *evidence_note(read), "",
           "| dataset | checkpoint | " + " | ".join(mcols) + " |",
           "| " + " | ".join(["---"] * (2 + len(mcols))) + " |"]
     for name in DATASETS:
@@ -1283,7 +1340,7 @@ def doc_lines_tail(read: dict, cfg: dict) -> list:
           "coverage number is the `any_gold_at_pool` column of the pool, never an average. MetaQA and WebQSP stay",
           "NOT_READ: the published KB systems assign topic entities while this pipeline seeds the graph by",
           "inference-safe retrieval, so no number here is presented as beating or approaching a published system.",
-          "", "## 9. What the stage cost", "", *cost_lines(c), ""]
+          "", "## 9. What the stage cost", "", *cost_lines(c), *dataset_cost_lines(read), ""]
     if incidents:
         L += ["## 10. Incidents", ""] + [f"- {line}" for line in incidents] + [""]
     L += ["## 11. What this stage does not do", "",
@@ -1422,6 +1479,7 @@ def record_block(cfg: dict) -> dict:
             "no_gate": read["no_gate"], "paired_procedure": read["paired_procedure"],
             "calibration_verdicts": block["calibration_against_published_systems"]["verdicts"],
             "compute": read["compute"],
+            "per_dataset_cost": {n: {**e["cost"], "mrr_audit_ok": e["mrr_audit_ok"]} for n, e in read["per_dataset"].items()},
             "incidents": V2.read_json(SIX / "incidents.json") or [],
             "artifacts": {"document": {"path": "docs/UNIVERSAL_GNN_SIX.md", "sha256": V2.lf_sha256(DOC)},
                           "read_record": {"path": "outputs/universal_v2/six/read_record.json", "sha256": V2.sha256_file(SIX / "read_record.json")},

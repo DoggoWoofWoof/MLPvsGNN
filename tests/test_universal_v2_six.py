@@ -450,7 +450,7 @@ def test_the_cost_section_labels_every_number_with_the_threads_it_ran_at():
     assert "7.25 hours at 4 threads, one dataset at a time" in lines[3]
     assert "at 6, 8 threads" in SIXMOD.cost_lines({**c, "fit_threads": [6, 8]})[2]  # a fit off the placement shows
     src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
-    assert '*cost_lines(c), ""]' in src
+    assert '*cost_lines(c), *dataset_cost_lines(read), ""]' in src
 
 
 def _checkpoint(seed, best, path):
@@ -509,3 +509,55 @@ def test_the_compute_summary_names_the_threads_of_each_cost(tmp_path, monkeypatc
     assert c["fit_hours_this_stage"] == 6.0 and c["fit_hours_spent_total"] == 6.0 and c["eval_hours"] == 1.0
     src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
     assert '"selected_at_the_epoch_cap": at_the_cap(v)}' in src
+
+
+def test_the_evidence_note_names_only_the_substrates_where_no_evidence_flowed():
+    def entry(g2):
+        mech = {SIXMOD.fit_key(s): {"delta_ratio": 1.0, "gate_step1": 0.4, "gate2_step1": g2, "gate2_step2": g2}
+                for s in SIXMOD.SEEDS}
+        return {"scopes": {"whole": {"mechanism": mech}}}
+    read = {"per_dataset": {"2wiki": entry(0.0), "metaqa": entry(0.6), "squad": entry(0.0)}}
+    read["per_dataset"]["squad"]["scopes"]["whole"]["mechanism"][SIXMOD.fit_key(2)]["gate2_step2"] = 1e-4
+    lines = SIXMOD.evidence_note(read)
+    assert "not a gate the" in lines[2] and "`EvidenceFlow.step`" in lines[1]
+    assert lines[-1] == "Every checkpoint reads 0.0000 on every evidence-flow step on: 2wiki."
+    no_ef = {"per_dataset": {"2wiki": {"scopes": {"whole": {"mechanism": {"k": {"gate_step1": 0.0}}}}}}}
+    assert not SIXMOD.evidence_note(no_ef)[-1].startswith("Every checkpoint")  # an arm without the block names nothing
+    src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
+    assert '"they fell and nothing is tuned on them.", "", *evidence_note(read), "",' in src
+
+
+def _synthetic_reading():
+    c = {"per_seed": [0.5, 0.52, 0.51], "mean": 0.51, "sd": 0.0082, "seeds": 3}
+    p = {"mean": 0.01, "low": -0.002, "high": 0.02}
+    lat = {k: {"p50": 150.4, "p95": 350.6, "p99": 430.0, "n": 500} for k in ["compile", "pack"] + [SIXMOD.fit_key(s) for s in SIXMOD.SEEDS]}
+    read = {"per_dataset": {}}
+    for name in SIXMOD.DATASETS:
+        read["per_dataset"][name] = {
+            "population": {"queries": 1503}, "mrr_audit_ok": name != "squad",
+            "cost": {"ms_per_query": 1249.66, "seconds": 1899.1, "peak_rss_gb": 8.98, "latency_ms": lat,
+                     "latency_measured_on": "the first 500 queries"},
+            "scopes": {"whole": {"ours": {m: c for m in SIXMOD.REPORTED_METRICS},
+                                 "references": {"gat_universal_v1": {m: c for m in SIXMOD.REPORTED_METRICS}},
+                                 "paired": {"gat_universal_v1": {m: p for m in SIXMOD.REPORTED_METRICS}}}}}
+    return read
+
+
+def test_every_reported_metric_is_printed_for_every_dataset():
+    lines = SIXMOD.all_metric_lines(_synthetic_reading())
+    rows = [line for line in lines if line.startswith("| ") and not line.startswith("| dataset") and not line.startswith("| ---")]
+    assert len(rows) == len(SIXMOD.DATASETS) * len(SIXMOD.REPORTED_METRICS) == 60
+    assert "| webqsp | mrr | 0.5100 +/- 0.0082 | 0.5100 +/- 0.0082 | +0.0100 [-0.0020, +0.0200] |" in rows
+    assert "matched the stored value within 1e-12" in " ".join(lines) and "GraphER-compatible PR@K" in " ".join(lines)
+
+
+def test_the_per_dataset_cost_carries_the_sampled_latency_and_the_mrr_audit():
+    lines = SIXMOD.dataset_cost_lines(_synthetic_reading())
+    row = next(line for line in lines if line.startswith("| webqsp |"))
+    assert row == ("| webqsp | 1503 | 0.53 | 1250 | 150 / 351 | 150 / 351 | 150, 150, 150 | 351, 351, 351 | 8.98 | ok | "
+                   "the first 500 queries |")
+    assert next(line for line in lines if line.startswith("| squad |")).endswith("| FAILED | the first 500 queries |")
+    assert "not one model's latency" in " ".join(lines)
+    src = (ROOT / "scripts" / "universal_v2_six.py").read_text(encoding="utf-8")
+    assert '"latency_ms": {k: {"p50": v["p50_ms"], "p95": v["p95_ms"], "p99": v["p99_ms"], "n": v["n"]}' in src
+    assert '*cost_lines(c), *dataset_cost_lines(read), ""]' in src and 'L += ["", *all_metric_lines(read)]' in src
