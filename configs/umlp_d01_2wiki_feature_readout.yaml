@@ -1,6 +1,6 @@
 phase: UMLP_D01_2WIKI_FEATURE_READOUT
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 extends: configs/umlp_d0_2wiki_diagnostics.yaml (run_record_umlp_d0_2026_09_29, commit e73893c) -- D0 is not edited or re-read here
 registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
@@ -176,3 +176,20 @@ execution:
   go_ahead_required: true
   stop_after_this_block: true
   after_the_run: report R1-R3 and the C4 readout, then stop; v2.1 is its own dated declaration
+
+run_record_umlp_d01_2026_09_29:
+  utc: '2026-09-28T19:43:08Z'
+  record: outputs/umlp_d01/record.json
+  record_sha256: 62b0d6bea89d970ed9c1b43a1d549bd42ff1a6e1bcd2b9cde4013128f8a706b3
+  sidecar_sha256: 4b18d3d5fcff005ec7177500be2560afe9ad9e0f2a40ad9c8d7a4e923cbe38ef
+  integrity_mismatches: 0
+  document: docs/UMLP_D01_2WIKI_FEATURE_READOUT.md
+  held_half_read: false
+  gat_loaded: false
+  go_ahead: 'user 2026-09-29: ''run stop asking me for permissions all the time'' -- run with the declared default MP reference'
+  readings:
+    R1_visible_but_scored_down: INCONCLUSIVE
+    R2_invisible_in_the_compiled_basis: INCONCLUSIVE
+    R3_compiled_but_unread: NOT_SUPPORTED
+  status_moves: DECLARED_NOT_RUN -> RUN
+  next: report; v2.1 is its own dated declaration
