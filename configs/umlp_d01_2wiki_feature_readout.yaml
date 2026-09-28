@@ -1,0 +1,178 @@
+phase: UMLP_D01_2WIKI_FEATURE_READOUT
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+extends: configs/umlp_d0_2wiki_diagnostics.yaml (run_record_umlp_d0_2026_09_29, commit e73893c) -- D0 is not edited or re-read here
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+role_for_the_registered_question: >-
+  Diagnostic only. D0 located the twin's shortfall against message passing in set coverage: on 2wiki V2_GATE the
+  twin trails the GAT on full_coverage@5 by -0.078 (-0.142 at >=3 golds) while leading it on hit@1 (+0.010) and mrr,
+  with ~99% of the recall@5 gap in queries where a gold already has h1 support. D0.1 asks whether the golds the twin
+  leaves out of its top 5 are distinguishable in the deterministic compiled evidence it already has. It attributes
+  nothing to message passing and selects nothing; any Universal-MLP-v2.1 declaration may cite it as motivation only.
+
+question: >-
+  Among multi-gold 2wiki V2_GATE queries where the twin ranks a gold first, what deterministic compiled evidence
+  distinguishes the additional golds the twin leaves outside its top 5 from (a) the additional golds it does place in
+  its top 5 and (b) the non-golds it ranks above them; and do the golds it misses but the selected GNN recovers differ
+  from the golds both miss?
+
+requested_by_user: 2026-09-29, after the D0 summary -- "file only a D0.1 feature-readout declaration. No fit. No held half. No architecture."
+
+this_file_does_not_touch:
+  held_half: the V2_HELD_CONFIRMATION rows are removed before compilation and before any forward pass; never scored, never read
+  test_split: no test split of any dataset
+  no_fit: no parameter is fitted, tuned or updated; no new feature is defined; the compiler and the checkpoints are frozen
+  no_selection: no architecture, column, threshold or checkpoint is chosen from these numbers
+  other_datasets: 2wiki only; no metaqa, squad, hotpotqa, musique or webqsp row is compiled or scored
+  m3b: no M3B file is written; the M3B GAT checkpoints are NOT loaded (see open_decision)
+  universal_v2_yaml: configs/universal_v2.yaml is byte-unchanged (checked before and after)
+
+change_from_d0: >-
+  D0 read stored per-query arrays and ran no forward pass. D0.1 needs per-candidate scores, which no record stores
+  (the eval npz files hold per-query metrics and gates only). It therefore runs an INFERENCE-ONLY forward pass of
+  frozen checkpoints on the V2_GATE rows, on CPU, through the frozen v2 eval path (compile_query_v2, pack_queries_v2,
+  arm_view, the runner's chunking rule). The pass is admitted only as a reproduction: it must regenerate the stored
+  per-query metrics exactly (integrity below) or it is a hard stop.
+
+inputs:
+  v2_eval_seed0: {path: outputs/universal_v2/eval/2wiki.npz, sha256: 6d8c1dcd2f815cf8c5e67664ace3ceaada3f54c6625ceeee768d35b04f13b4c2}
+  v2_eval_seeds_1_2: {path: outputs/universal_v2/eval/2wiki__more_69caa3fe.npz, sha256: 76e4e3a9abd213040c9807c635a1bce0ac183e22919ca44149bc8910df4e4afe}
+  v2_query_ids: {path: outputs/universal_v2/eval/2wiki_query_ids.json, sha256: d439a33c22f39186f8e54f596aeb2bcb83a5d27745a0dc9285e8990f16923cd2}
+  d0_masks: {path: outputs/umlp_d0/masks_2wiki_gate.npz, sha256: 7f7768e6dc39fcfb2b8bf31a9abd6dcd62fb9d2fc3f29324f2ddb1b7265482d3, use: row alignment and first-support buckets only}
+  feature_contract: {path: outputs/universal_v2/feature_contract.json, sha256: 21d30260c7ef71c7cc217c2b32054625780db7e6b40c79d3c03fded658109e91}
+  selection: {path: outputs/universal_v2/selection.json, sha256: 3ed48ae3d04334ba367cb81b8b363d32db0e2bf746e4f692d7af0936bea4e3b6}
+  checkpoints:
+    u_mlp_v2_mix__H128__s0: f0e629a7347a08014ae00f6d164b6158695a71118c7dabf0dfaf56e1b8a3e8f3
+    u_mlp_v2_mix__H128__s1: 0926391ac70457ae0c7319fe1821aee5be17eb57af0879168f5b003c32effb85
+    u_mlp_v2_mix__H128__s2: d4b7157e3e272a01d815ac088b670aa99a9120c6fb3d2aa626f78fb67219a431
+    u_gnn_v2_ef__H128__s0: 9f749ad346afcef479f84436019771e0b940a1e647e4960908acf4105ea2ed0e
+    u_gnn_v2_ef__H128__s1: 9b3a5521babb814e83e8a0a40a94b9abd92bdee7f7f58b04f686558d0522c367
+    u_gnn_v2_ef__H128__s2: 4575c41822f56d99b843aaa524a5eb407fa038ebc24a6ad04f4fef786433d4c4
+  checkpoint_dir: outputs/universal_v2/fits/
+
+arms_scored:
+  twin: [u_mlp_v2_mix__H128__s0, u_mlp_v2_mix__H128__s1, u_mlp_v2_mix__H128__s2]
+  mp_reference: [u_gnn_v2_ef__H128__s0, u_gnn_v2_ef__H128__s1, u_gnn_v2_ef__H128__s2]
+  why_this_mp_reference: >-
+    u_gnn_v2_ef is the selected v2 GNN, scored by the same v2 eval path from the same compiled batch, and D0 shows it
+    carries the same pattern as the M3B GAT against the twin (full_coverage@5 +0.104, hit@1 -0.007). Scoring it needs
+    no M3B file.
+  open_decision: >-
+    The user's framing names "the GAT". Per-candidate GAT scores would need an inference pass of the frozen M3B
+    checkpoints (outputs/m3b/models/gat_universal_v1__H128_L2__s*.pt) through the M3B pack. Standing rule: "Do not
+    alter or rerun M3B." Whether an inference-only pass counts as a rerun is the user's ruling; until it is given the
+    GAT is NOT loaded and every "MP recovers" label below means u_gnn_v2_ef.
+
+integrity:
+  rule: >-
+    for every scored checkpoint and every V2_GATE query, rank_metrics of the forward-pass scores must equal the stored
+    per-query recall@1/5/10/20, hit@1, mrr, ndcg@5/20, full_coverage@5/20, first_gold_rank, gold_in_pool, gold_total
+    and pool_size exactly (seed 0 against 2wiki.npz, seeds 1-2 against 2wiki__more_69caa3fe.npz); the D0 mask rows and
+    first-support buckets must equal a recomputation from the same compiled scalars
+  on_mismatch: hard stop; report the first mismatching query and arm; no tolerance is introduced after the fact
+
+population:
+  base: 2wiki dev V2_GATE (6,290 queries; D0 row order)
+  analysed: queries with gold_total >= 2 (all 6,290 on 2wiki per D0) whose twin top-1 is a gold, defined per twin seed
+  per_seed: every group is formed separately for twin seeds 0, 1, 2; the readings require agreement on all three
+
+candidate_groups:   # per query, per twin seed; golds are in-pool golds only
+  G_top: the twin's rank-1 gold
+  G_rec: other golds at twin ranks 2-5
+  G_miss: other in-pool golds at twin rank > 5
+  G_miss_mp: G_miss that are in the top 5 of at least 2 of the 3 u_gnn_v2_ef seeds
+  G_miss_both: G_miss that are in the top 5 of at most 1 of the 3 u_gnn_v2_ef seeds
+  N_hard: non-golds at twin ranks 2-10
+  N_disp: non-golds at twin ranks 2-5 (the candidates that occupy the slots a missed gold would need)
+
+readout_columns:
+  read_tier: every column of the 197-column v2 contract that the twin reads (feature_contract.json columns, screened set)
+  unread_tier: the compiled columns the screen dropped (feature_screen.json dropped; duplicates of kept columns on the screen sample), reported separately as "compiled but not read"
+  score_terms:
+    twin_score: the twin's final score
+    twin_base: readout.base_weight * base_z (the fixed base term, as universal_v2_run.mechanism computes it)
+    twin_residual: twin_score - twin_base
+    gnn_score: u_gnn_v2_ef final score (seed-mean of per-seed within-query ranks, not raw scores)
+  families_for_readings:   # named by universal_v2_features column names
+    structural_local: [has_h1_*, ring_*_h1_*, seeds_at_h1_*, seedmass_h1_*, support_h1_*, paths_h1_*, seedproto_h1_*, dist*_STRUCT, dist*_FULL, seeds_*hop_*, walks*_*]
+    structural_deep: [the same families at h2 and h3, branch_*, opath_*, typed_walks_*, relpath_*, relchain2_*]
+    neighbour_semantic: [cos_q_proto_*, max_q_nbr_*, cohesion_*, has_nbr_*, cos_v_seedproto*, max_cos_v_seed, cos_v_reachproto, gcs_*]
+    lexical_dense: [dense_*, splade_*, rrf, agreement, is_seed, seed_rank]
+
+statistics:
+  within_query_pair_auc: >-
+    for groups X and Y and a column c, over every (x, y) pair from the same query: P(c(x) > c(y)) + 0.5 P(c(x) = c(y)),
+    averaged over pairs within a query, then over queries (each query weight 1). 0.5 = indistinguishable.
+  interval: query-level bootstrap, 1000 resamples, numpy default_rng(0), 95% percentile (the pilot rule)
+  also_reported: per group and column, the mean and the fraction non-zero; group sizes per query
+  strata: gold_count 2 vs >=3; D0 first-support bucket STRUCT (h1 / h2 / h3 / none) with h1 read first
+  multiplicity: every column is reported; the readings below count columns only against the fixed 0.60 bar on all three seeds, never pick one
+
+comparisons:
+  C1: G_miss vs G_rec    # does the missed extra gold look like the recovered extra gold?
+  C2: G_miss vs N_disp   # is the missed gold distinguishable from what displaced it?
+  C3: G_miss vs N_hard
+  C4: G_miss_mp vs G_miss_both   # what the GNN recovers that neither ranks
+  C5: score terms -- twin_base, twin_residual and gnn_score on C2 and C4
+
+readings:   # rules filed before any number; univariate, no fit
+  R1_visible_but_scored_down:
+    SUPPORTED: >-
+      on all three twin seeds, in the h1 stratum: at least one read-tier structural_local or structural_deep column has
+      C2 pair-AUC with CI wholly above 0.60, AND twin_residual has C2 pair-AUC with CI wholly below 0.50 (the residual
+      pushes the missed gold below its displacer)
+    NOT_SUPPORTED: no read-tier structural column has a C2 CI wholly above 0.55 on any seed
+    otherwise: INCONCLUSIVE
+    meaning_if_supported: the separating evidence is in the twin's inputs and its scorer does not use it -- a scorer/objective question (set-aware ranking), not a missing-feature question
+  R2_invisible_in_the_compiled_basis:
+    SUPPORTED: >-
+      on all three twin seeds, in the h1 stratum: no read-tier or unread-tier column has C2 pair-AUC with CI wholly
+      above 0.55, AND gnn_score has C2 pair-AUC with CI wholly above 0.60
+    NOT_SUPPORTED: any read-tier column has a C2 CI wholly above 0.60 on all three seeds
+    otherwise: INCONCLUSIVE
+    meaning_if_supported: the GNN separates candidates the compiled columns do not, one column at a time -- consistent with information the compiler does not preserve (or preserves only jointly)
+  R3_compiled_but_unread:
+    SUPPORTED: an unread-tier column has C2 CI wholly above 0.60 on all three seeds while its kept duplicate partner has C2 CI including 0.55 on some seed
+    otherwise: NOT_SUPPORTED
+    meaning_if_supported: the screen's duplicate rule dropped a column that separates on this population
+  R4_what_the_gnn_recovers:
+    report_only: C4 per column and score term; no verdict. It says where G_miss_mp and G_miss_both differ, not why.
+  not_decidable_here: >-
+    The user's "Case C" (evidence present but collapsed by max/mean/count aggregation) cannot be decided without a new
+    compiled summary, which this file bars. R2 SUPPORTED would be compatible with it, never evidence for it. A
+    multivariate separation (a combination of columns) also cannot be read without a fit; R2 NOT_SUPPORTED on a
+    univariate basis therefore does not show the basis is sufficient, and R1 is the only reading that can point at
+    the scorer.
+
+outputs:
+  script: scripts/umlp_d01_feature_readout.py
+  record: outputs/umlp_d01/record.json
+  candidate_sidecar: outputs/umlp_d01/candidates_2wiki_gate.npz   # per-candidate group labels, score terms and read/unread columns for the analysed rows
+  document: docs/UMLP_D01_2WIKI_FEATURE_READOUT.md
+  run_record: run_record_umlp_d01_<date> appended to THIS file; status moves DECLARED_NOT_RUN -> RUN
+
+compute:
+  placement: local CPU only (GPU/remote placement of science needs the CPU-GPU equivalence test declared first)
+  expected: one compile of 6,290 queries (~6.5 min per D0 A1) plus six inference passes; peak RSS checked before launch against free RAM
+  determinism: torch.set_num_threads and the BLAS thread env the runner sets; eval() mode; no_grad
+
+tests:
+  - held rows are removed before compilation; NaN-poisoning every held row of the eval records leaves the record unchanged
+  - only the six declared checkpoints are loaded (no M3B path is opened)
+  - the integrity rule refuses on a single injected metric mismatch
+  - candidate groups partition each analysed query's in-pool candidates as declared (G_top + G_rec + G_miss = in-pool golds; G_miss_mp + G_miss_both = G_miss)
+  - pair-AUC matches a brute-force count on a small synthetic query
+  - configs/universal_v2.yaml and configs/umlp_d0_2wiki_diagnostics.yaml are byte-unchanged
+
+hard_stops:
+  - any integrity mismatch
+  - any pinned input or checkpoint hash differs
+  - any held row reaches compilation, a forward pass or a statistic
+  - any parameter update, new column or selection
+  - any M3B file opened for write or any M3B checkpoint loaded without the user's ruling
+
+execution:
+  go_ahead_required: true
+  stop_after_this_block: true
+  after_the_run: report R1-R3 and the C4 readout, then stop; v2.1 is its own dated declaration
