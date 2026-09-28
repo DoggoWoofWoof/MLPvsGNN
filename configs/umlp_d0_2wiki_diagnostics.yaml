@@ -240,3 +240,48 @@ execution:
     STOP_FOR_REVIEW. On the user go-ahead: the script and its tests, one run,
     the record and document, run_record_umlp_d0_<date>, commit, report the
     three readings. Then stop again: v2.1 is its own declaration.
+
+# --------------------------------------------------------------------------
+# Amendment A1 (2026-09-28), filed before any number is formed
+# --------------------------------------------------------------------------
+
+amendment_a1_2026_09_28:
+  found: >-
+    inputs.compiled_cache_masks names "the 2wiki eval cache under
+    outputs/universal_v2/cache". No such cache exists: the eval pass
+    (universal_v2_run.eval_dataset) compiled every eval query in memory and
+    stored only the metric arrays; outputs/universal_v2/cache holds the fit
+    and select carves alone. The declared depth_block_activation slice
+    therefore has no stored source.
+  ruling_applied: >-
+    The user's go-ahead ("do all") on the declaration. The slice is kept and
+    its source is changed, before any array of this phase is read, rather
+    than silently dropped or approximated.
+  supersedes: [inputs.compiled_cache_masks, this_file_does_not_touch.no_fit (the words "no recompile" only)]
+  new_source:
+    what: >-
+      the fifteen mask columns (has_h{1,2,3}_{STRUCT,FULL},
+      ring_n_h{1,2,3}_{STRUCT,FULL}, typed_walks_h{1,2,3}) at each query's
+      in-pool gold candidates, recompiled for the 6,290 V2_GATE queries only
+      by the frozen compiler (universal_v2_run: M3B_RUN.open_contexts,
+      m3b_compile.population / prepare, compile_query_v2), imported and not
+      edited. No model is constructed or loaded; no score is computed except
+      the fixed rrf column the integrity check needs.
+    integrity_check: >-
+      for every recompiled query, (a) gold_distance_struct of the recompiled
+      scalars equals the stored gold_dist_struct, and (b) rank_metrics of the
+      recompiled fixed rrf column equals the stored fixed:rrf recall@5,
+      hit@1, gold_in_pool, gold_total and pool_size exactly. One mismatch is
+      a hard stop: the recompile is not the population that was scored.
+    held_rows: >-
+      held queries are removed from the population BEFORE compilation; their
+      features are never computed
+    sidecar: outputs/umlp_d0/masks_2wiki_gate.npz, its sha256 in the record
+  slice_definition_made_exact:
+    depth_block_activation: >-
+      has_h{t}_{view} is "a seed lies at exact BFS distance t from the node".
+      The bucket of a query is the smallest t in 1..3 with has_h{t}_{view} = 1
+      at ANY of its in-pool golds, else "no support at h<=3"; queries with
+      no gold in the pool form their own bucket "no gold in pool". Computed
+      separately for view STRUCT and view FULL.
+  nothing_else_changes: the arms, metrics, intervals, slices, readings and bars above are unchanged
