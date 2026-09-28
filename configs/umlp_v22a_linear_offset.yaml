@@ -1,0 +1,108 @@
+phase: UMLP_V22A_LINEAR_FROZEN_BASE_OFFSET
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: METHOD_CHANGE_RESIDUAL_OFFSET
+motivated_by: >-
+  D0.2 (abb7534): D02_R1_LINEARLY_PRESENT -- a linear probe on the twin's 129 columns orders GNN-recovered secondary
+  golds above the twin's rank 2-5 displacers (out-of-fold pair-AUC 0.70-0.82; selection caveat filed there).
+  v2.1 (d14c7f6): V21_STAGE_A_FAIL -- retraining the whole scorer with a coverage loss moved FullCov@5 by +0.001 and cost
+  hit@1 -0.028. The objective-only branch is CLOSED (no lambda or loss variants). Motivation only; no held number read.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+v22a_question: >-
+  With the proven u_mlp_v2_mix scorer frozen, can a zero-initialised, bounded, LINEAR score correction over the same
+  129 compiled columns -- trained only on secondary-gold vs displacer pairs, with the first gold protected -- raise 2wiki
+  multi-gold coverage without giving up first-gold ranking?
+
+authorization:
+  given: 2026-09-29, by the user, pasted ("graph-conditioned residual score offset"; ladder v2.2A linear -> v2.2B interaction -> v2.2C embedding)
+  this_file: v2.2A only. v2.2B and v2.2C each need their own file and are considered only after a v2.2A result.
+  arms: exactly two per seed -- the frozen control u_mlp_v2_mix__H128__s{k} (stored eval, re-scored for integrity) and u_mlp_v22a_off__H128__s{k} built on that same frozen checkpoint
+
+model:
+  base: the frozen checkpoint u_mlp_v2_mix__H128__s{k} (outputs/universal_v2/fits, sha256 checked against its fit record); every base parameter requires_grad false; the base always runs in eval mode (dropout off), also during the offset's training
+  base_score_units: s0_hat = the base score z-scored within the query (mean 0, std 1 over the query's pool, eps 1e-6, detached). Ranking by s0_hat equals ranking by s0.
+  features: z = segment_zscore(batch.x) -- the base's own per-query z-score of the same 129 read columns it consumes; no new column, no base score, no rank, no GNN output, no dataset id
+  offset: delta_hat = tau * tanh(w . z), w in R^129, no bias (a per-query constant does not change a ranking), w initialised to 0 (so s_hat = s0_hat exactly before training)
+  tau: 1.0 (one within-query standard deviation of the base score; fixed, not tuned)
+  score: s_hat = s0_hat + delta_hat
+  trainable_parameters: 129
+
+objective:   # for a training batch; all scores in within-query z units
+  L: L_secondary + lambda_p * L_protect + lambda_delta * L_size
+  L_secondary: >-
+    for every query with >= 2 in-pool golds: g1 = the gold ranked highest by s0_hat; G_extra = the other in-pool golds;
+    N_disp = the 5 highest-ranked in-pool non-golds under s0_hat (frozen, so fixed per query); the query term is the mean
+    over G_extra x N_disp of softplus(s_hat(n) - s_hat(g)); L_secondary = mean of the query terms over those queries
+    (0 when the batch has none)
+  L_protect: >-
+    for every query whose s0_hat top-1 is a gold g1: m0 = s0_hat(g1) - max over in-pool non-golds of s0_hat,
+    m = s_hat(g1) - max over in-pool non-golds of s_hat; the query term is relu(m0 - m) (only a LOSS of the first
+    gold's margin is penalised); L_protect = mean over those queries (0 when none)
+  L_size: mean over every candidate in the batch of delta_hat^2
+  lambda_p: 1.0
+  lambda_delta: 0.01
+  fixed: none of tau, lambda_p, lambda_delta, the 5, or the pair definition changes after any result
+
+training:   # the frozen training rule and fit_model, unchanged
+  rule: training_rule_v2 (max_epochs 6, 2000 batches/epoch, batch 16, per_query draw, AdamW lr 1e-3 wd 1e-4, clip 1.0, patience 2, epoch_limit 28800 s)
+  selection: the frozen checkpoint rule -- best macro select recall@5 over the trio select carves, patience 2
+  data: the trio fit/select carves under outputs/universal_v2/cache; no dataset identity
+  seed: fit seed k with base checkpoint seed k
+  mechanism: a wrapper module (frozen base + offset) passed to the pinned m3b_train.fit_model; the module-level listwise_loss is replaced by L for the v2.2A fits only and restored after; no frozen file is edited
+  resume: the fit_model checkpoint (full state) -- a fit stopped by the host's memory-pressure safeguard is resumed from it, never restarted
+
+populations:
+  gate: V2_GATE halves only (2wiki 6,290; metaqa 19,738; squad 5,841); held rows dropped before compilation
+  held: V2_HELD_CONFIRMATION is not read by this file
+
+stage_A:   # seed 0
+  fit: u_mlp_v22a_off__H128__s0 on u_mlp_v2_mix__H128__s0
+  eval: 2wiki V2_GATE, the control re-scored in the same pass (exact reproduction of every stored per-query metric required)
+  gate_2wiki_vs_control_s0:   # paired per query, universal_v2 paired bootstrap (1000, default_rng(0), 95%) -- the v2.1 gate, unchanged
+    full_coverage@5: paired delta lower 95% bound > 0
+    recall@5: paired delta mean >= 0
+    hit@1: paired delta mean >= -0.005
+  on_pass: stage B without a stop
+  on_fail: STOP v2.2A (status RUN, reading V22A_STAGE_A_FAIL); nothing here is altered after seeing results
+
+stage_B:   # only after a stage-A pass
+  fit: seeds 1 and 2, each on its own base checkpoint
+  eval: metaqa, 2wiki, squad V2_GATE; the offset arms s0-2 and the controls s0-2 in the same passes
+  confirm:   # seed-mean arm vs seed-mean control, paired per query -- as v2.1
+    2wiki: full_coverage@5 lower bound > 0; recall@5 mean >= 0; hit@1 mean >= -0.005
+    metaqa: recall@5 mean >= -0.005; hit@1 mean >= -0.005
+    squad: recall@5 mean >= -0.005; hit@1 mean >= -0.005
+  readings:
+    V22A_CONFIRMED: every condition holds
+    V22A_2WIKI_ONLY: the 2wiki conditions hold and a metaqa or squad condition fails
+    V22A_NOT_CONFIRMED: a 2wiki condition fails on the seed means
+
+also_reported: all metrics per dataset and seed; the learned w (129 weights, named) and the offset's magnitude (mean |delta_hat|, share of queries whose top-5 set changes, share whose top-1 changes); M3B GAT and u_gnn_v2_ef stored numbers for context only
+
+integrity:
+  - the base checkpoint's sha256 equals its fit record's state_sha256, and the base weights inside the wrapper are byte-identical after the fit
+  - the wrapper at w = 0 reproduces the base ranking exactly (test)
+  - every control re-scored reproduces its stored per-query metrics exactly; one mismatch is a hard stop
+  - configs/universal_v2.yaml, the D0 / D0.1 / D0.2 and v2.1 declarations byte-unchanged
+
+compute:
+  placement: local CPU (GPU host offline; GPU placement of science needs the equivalence test declared first)
+  memory: the host safeguard stops a fit about once an epoch; resume epoch by epoch from the checkpoint (user ruling 2026-09-29)
+
+outputs:
+  script: scripts/umlp_v22a_offset.py
+  fits: outputs/universal_v22a/fits/u_mlp_v22a_off__H128__s{k}.{pt,json}
+  eval: outputs/universal_v22a/eval/<dataset>.npz
+  gates: outputs/universal_v22a/gate_{A,B}.json
+  document: docs/UMLP_V22A_LINEAR_OFFSET.md
+  run_record: run_record_umlp_v22a_<date> appended to THIS file; status DECLARED_NOT_RUN -> RUN
+
+tests:
+  - w = 0 gives delta 0 and the base ranking exactly
+  - only w has requires_grad; the base stays in eval mode under train()
+  - L_secondary uses only G_extra x top-5 non-golds under s0_hat; L_protect is 0 when the first-gold margin does not shrink
+  - the patched loss is restored after the fit
+  - frozen configs byte-unchanged
+
+execution:
+  stop_after_this_block: true
