@@ -634,7 +634,9 @@ def test_the_replication_ruling_is_filed_verbatim_after_the_closed_pilot(decl, a
     assert "nothing is redesigned inside it" in squash(amendment4["what_this_is"])
     # filed after the pilot closed, in the order of the file: the declaration is chronological and append-only
     keys = list(decl)
-    assert keys.index("run_record_2026_09_21") < keys.index("amendment_4_2026_09_21") and DATED.match(keys[-1])
+    assert keys.index("run_record_2026_09_21") < keys.index("amendment_4_2026_09_21")
+    # the tail is a dated block: either naming, since stage 2 files its own (test_every_block_appended_after_the_declaration_is_dated)
+    assert DATED.match(keys[-1]) or STAGE2_DATED.match(keys[-1]), keys[-1]
     original = amendment4["original_pilot"]
     assert decl["run_record_2026_09_21"]["terminal_state"]["terminal"] == "PILOT_FAILED" == original["status"]
     assert decl["status"] == "RUN_PILOT_FAILED" == original["status_line"] and original["commit"] == "d2850ab"

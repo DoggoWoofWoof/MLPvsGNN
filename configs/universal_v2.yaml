@@ -7561,3 +7561,521 @@ amendment_8_2026_09_23:
   - amendment 7 is quoted, not edited, and its blocks are unchanged
   - the placement stays 8 threads and no reduced schedule is filed
   - no status line moves and no model number is read by this block
+
+# -- the terminal state of the six-dataset stage (stage 2) --
+run_record_stage_2_2026_09_28:
+  filed_utc: '2026-09-28T10:43:15Z'
+  stage: authorization_stage_2_2026_09_22
+  go_ahead: amendment_5_2026_09_23
+  stage_2_status: RUN
+  status_lines_not_moved:
+    file_status: RUN_PILOT_FAILED
+    original_pilot_status: PILOT_FAILED
+    post_pilot_replication_status: GNN_REPLICATION_ONLY
+  what_ran:
+  - the three added carves compiled under the frozen contract
+  - one measured joint epoch, filed before the fits
+  - three fits of u_gnn_v2_ef jointly on the six datasets, seeds 0, 1, 2, from scratch
+  - one evaluation pass of the three checkpoints on the six declared M3B eval populations
+  - the paired reading, docs/UNIVERSAL_GNN_SIX.md and this record
+  checkpoints:
+    u_gnn_v2_ef__H128__six__s0:
+      seed: 0
+      best_epoch: 3
+      epochs_run: 6
+      select_macro_recall5: 0.8165668818826588
+      fit_hours: 29.77
+      parameters: 420932
+      state_sha256: 88f56eeffbe53fb5e7db334d642ec2dc476410fa2e1fb84b196e748ed5e6e144
+      select_macro_by_epoch:
+      - 0.8008
+      - 0.8099
+      - 0.8158
+      - 0.8166
+      - 0.8158
+      - 0.8091
+      selected_at_the_epoch_cap: false
+    u_gnn_v2_ef__H128__six__s1:
+      seed: 1
+      best_epoch: 5
+      epochs_run: 6
+      select_macro_recall5: 0.817335101823582
+      fit_hours: 29.55
+      parameters: 420932
+      state_sha256: aabe9110122b51048d027a8fbeaed2e518beed2edcc677a034ab5594310161cd
+      select_macro_by_epoch:
+      - 0.7965
+      - 0.8087
+      - 0.8147
+      - 0.8163
+      - 0.8169
+      - 0.8173
+      selected_at_the_epoch_cap: true
+    u_gnn_v2_ef__H128__six__s2:
+      seed: 2
+      best_epoch: 4
+      epochs_run: 6
+      select_macro_recall5: 0.8163238014167312
+      fit_hours: 25.35
+      parameters: 420932
+      state_sha256: ac4bf9c2b1868249e4fd41cd16bdb2f5b7529e6ea5f406494344f149ce0ddd54
+      select_macro_by_epoch:
+      - 0.798
+      - 0.8111
+      - 0.8135
+      - 0.815
+      - 0.8163
+      - 0.8154
+      selected_at_the_epoch_cap: false
+  headline_whole_population:
+    metaqa:
+      split: dev
+      queries: 39138
+      band: NOT_READ
+      any_gold_at_pool: 0.987582
+      recall_ceiling_at_5: 0.8094419684229284
+      hit@1:
+        three_seed_mean: 0.909
+        sd: 0.0127
+        per_seed:
+        - 0.8913
+        - 0.9159
+        - 0.92
+        m3b_gat_three_seed_mean: 0.8411
+        paired_delta: 0.0679
+        paired_ci:
+        - 0.0654
+        - 0.0703
+      recall@5:
+        three_seed_mean: 0.7859
+        sd: 0.0018
+        per_seed:
+        - 0.7834
+        - 0.7863
+        - 0.7878
+        m3b_gat_three_seed_mean: 0.7645
+        paired_delta: 0.0213
+        paired_ci:
+        - 0.0204
+        - 0.0223
+    2wiki:
+      split: dev
+      queries: 12576
+      band: READ
+      any_gold_at_pool: 0.999682
+      recall_ceiling_at_5: 0.9636609414758269
+      recall@5:
+        three_seed_mean: 0.8886
+        sd: 0.0029
+        per_seed:
+        - 0.8906
+        - 0.8907
+        - 0.8845
+        m3b_gat_three_seed_mean: 0.8836
+        paired_delta: 0.005
+        paired_ci:
+        - 0.0033
+        - 0.0066
+      full_coverage@5:
+        three_seed_mean: 0.7609
+        sd: 0.0041
+        per_seed:
+        - 0.7588
+        - 0.7666
+        - 0.7573
+        m3b_gat_three_seed_mean: 0.7495
+        paired_delta: 0.0114
+        paired_ci:
+        - 0.0082
+        - 0.0144
+    squad:
+      split: dev
+      queries: 11873
+      band: CONTROL
+      any_gold_at_pool: 0.979786
+      recall_ceiling_at_5: 0.9797860692327128
+      recall@5:
+        three_seed_mean: 0.8908
+        sd: 0.0095
+        per_seed:
+        - 0.9038
+        - 0.8812
+        - 0.8873
+        m3b_gat_three_seed_mean: 0.8922
+        paired_delta: -0.0014
+        paired_ci:
+        - -0.0036
+        - 0.001
+    hotpotqa:
+      split: validation
+      queries: 7405
+      band: READ
+      any_gold_at_pool: 0.991627
+      recall_ceiling_at_5: 0.9800135043889264
+      recall@5:
+        three_seed_mean: 0.8967
+        sd: 0.0018
+        per_seed:
+        - 0.8993
+        - 0.8954
+        - 0.8955
+        m3b_gat_three_seed_mean: 0.8975
+        paired_delta: -0.0008
+        paired_ci:
+        - -0.0032
+        - 0.0016
+      full_coverage@5:
+        three_seed_mean: 0.8343
+        sd: 0.003
+        per_seed:
+        - 0.8363
+        - 0.83
+        - 0.8365
+        m3b_gat_three_seed_mean: 0.8367
+        paired_delta: -0.0024
+        paired_ci:
+        - -0.0064
+        - 0.0018
+    musique:
+      split: dev
+      queries: 2417
+      band: READ
+      any_gold_at_pool: 0.995035
+      recall_ceiling_at_5: 0.9207350710246862
+      recall@5:
+        three_seed_mean: 0.5242
+        sd: 0.0099
+        per_seed:
+        - 0.538
+        - 0.515
+        - 0.5198
+        m3b_gat_three_seed_mean: 0.5289
+        paired_delta: -0.0046
+        paired_ci:
+        - -0.0095
+        - 0.0003
+      full_coverage@5:
+        three_seed_mean: 0.2317
+        sd: 0.0126
+        per_seed:
+        - 0.2491
+        - 0.2197
+        - 0.2263
+        m3b_gat_three_seed_mean: 0.2322
+        paired_delta: -0.0006
+        paired_ci:
+        - -0.0077
+        - 0.0068
+    webqsp:
+      split: train_holdout
+      queries: 1503
+      band: NOT_READ
+      any_gold_at_pool: 0.92149
+      recall_ceiling_at_5: 0.7648572935462049
+      hit@1:
+        three_seed_mean: 0.6299
+        sd: 0.005
+        per_seed:
+        - 0.6367
+        - 0.6281
+        - 0.6248
+        m3b_gat_three_seed_mean: 0.5928
+        paired_delta: 0.037
+        paired_ci:
+        - 0.0233
+        - 0.051
+      recall@5:
+        three_seed_mean: 0.6194
+        sd: 0.0088
+        per_seed:
+        - 0.6289
+        - 0.6215
+        - 0.6076
+        m3b_gat_three_seed_mean: 0.6073
+        paired_delta: 0.012
+        paired_ci:
+        - 0.0034
+        - 0.0212
+  no_gate: stage 2 is a measurement, not a selection. There is no threshold, no pass or fail and no new arm to choose.
+    A per-dataset regression against the M3B GAT is REPORTED as it falls, never repaired inside this stage; what
+    to do about it is a new dated declaration filed before its fit.
+  paired_procedure: measurement.paired_procedures.against_m3b verbatim -- per query, paired bootstrap 1000 resamples,
+    numpy default_rng(0), 95 percent percentile; on the trio, the gate half and the held half separately; on the
+    added three, the whole population
+  calibration_verdicts:
+    metaqa: NOT_READ
+    webqsp: NOT_READ
+    musique: READ
+    hotpotqa: READ
+    2wiki: READ
+    squad: CONTROL
+  compute:
+    compile_hours: 2.89
+    compile_rows: 16724483
+    measured_epoch_seconds: 20282.9
+    timing_peak_rss_gb: 9.4
+    fit_hours_this_stage: 84.67
+    fit_hours_spent_total: 131.03
+    ceiling_fit_hours: 150.0
+    fit_peak_rss_gb: 10.38
+    eval_hours: 15.69
+    eval_peak_rss_gb: 10.97
+    measured_epoch_threads: 6
+    fit_threads:
+    - 8
+    eval_threads:
+    - 4
+    placement: the laptop, one fit lane at the declared threads
+  per_dataset_cost:
+    metaqa:
+      ms_per_query: 1159.83
+      seconds: 45756.7
+      peak_rss_gb: 8.12
+      latency_ms:
+        compile:
+          p50: 763.94
+          p95: 963.1
+          p99: 1044.94
+          n: 500
+        pack:
+          p50: 17.07
+          p95: 23.0
+          p99: 31.45
+          n: 500
+        u_gnn_v2_ef__H128__six__s0:
+          p50: 207.34
+          p95: 312.58
+          p99: 424.56
+          n: 500
+        u_gnn_v2_ef__H128__six__s1:
+          p50: 202.13
+          p95: 306.1
+          p99: 404.16
+          n: 500
+        u_gnn_v2_ef__H128__six__s2:
+          p50: 202.94
+          p95: 299.51
+          p99: 386.68
+          n: 500
+      latency_measured_on: shard 0 of 4, first 500 of its queries
+      mrr_audit_ok: true
+    2wiki:
+      ms_per_query: 78.68
+      seconds: 1041.3
+      peak_rss_gb: 8.22
+      latency_ms:
+        compile:
+          p50: 36.21
+          p95: 56.2
+          p99: 66.03
+          n: 500
+        pack:
+          p50: 6.6
+          p95: 23.13
+          p99: 30.74
+          n: 500
+        u_gnn_v2_ef__H128__six__s0:
+          p50: 46.0
+          p95: 67.14
+          p99: 98.62
+          n: 500
+        u_gnn_v2_ef__H128__six__s1:
+          p50: 44.59
+          p95: 68.16
+          p99: 99.6
+          n: 500
+        u_gnn_v2_ef__H128__six__s2:
+          p50: 44.16
+          p95: 65.03
+          p99: 87.15
+          n: 500
+      latency_measured_on: the first 500 queries
+      mrr_audit_ok: true
+    squad:
+      ms_per_query: 53.27
+      seconds: 641.4
+      peak_rss_gb: 7.17
+      latency_ms:
+        compile:
+          p50: 16.64
+          p95: 40.09
+          p99: 75.47
+          n: 500
+        pack:
+          p50: 2.26
+          p95: 3.64
+          p99: 4.76
+          n: 500
+        u_gnn_v2_ef__H128__six__s0:
+          p50: 40.03
+          p95: 63.25
+          p99: 79.49
+          n: 500
+        u_gnn_v2_ef__H128__six__s1:
+          p50: 39.51
+          p95: 60.13
+          p99: 80.7
+          n: 500
+        u_gnn_v2_ef__H128__six__s2:
+          p50: 39.28
+          p95: 60.1
+          p99: 77.2
+          n: 500
+      latency_measured_on: the first 500 queries
+      mrr_audit_ok: true
+    hotpotqa:
+      ms_per_query: 69.18
+      seconds: 567.3
+      peak_rss_gb: 7.81
+      latency_ms:
+        compile:
+          p50: 71.48
+          p95: 104.62
+          p99: 132.72
+          n: 500
+        pack:
+          p50: 5.74
+          p95: 20.58
+          p99: 26.6
+          n: 500
+        u_gnn_v2_ef__H128__six__s0:
+          p50: 43.4
+          p95: 63.96
+          p99: 77.13
+          n: 500
+        u_gnn_v2_ef__H128__six__s1:
+          p50: 41.67
+          p95: 61.77
+          p99: 70.46
+          n: 500
+        u_gnn_v2_ef__H128__six__s2:
+          p50: 41.54
+          p95: 61.82
+          p99: 70.86
+          n: 500
+      latency_measured_on: the first 500 queries
+      mrr_audit_ok: true
+    musique:
+      ms_per_query: 2713.42
+      seconds: 6572.1
+      peak_rss_gb: 10.97
+      latency_ms:
+        compile:
+          p50: 603.76
+          p95: 874.6
+          p99: 1213.28
+          n: 500
+        pack:
+          p50: 36.57
+          p95: 72.01
+          p99: 168.23
+          n: 500
+        u_gnn_v2_ef__H128__six__s0:
+          p50: 245.04
+          p95: 437.09
+          p99: 514.64
+          n: 500
+        u_gnn_v2_ef__H128__six__s1:
+          p50: 239.81
+          p95: 421.91
+          p99: 519.9
+          n: 500
+        u_gnn_v2_ef__H128__six__s2:
+          p50: 238.61
+          p95: 421.27
+          p99: 536.38
+          n: 500
+      latency_measured_on: the first 500 queries
+      mrr_audit_ok: true
+    webqsp:
+      ms_per_query: 1249.66
+      seconds: 1899.1
+      peak_rss_gb: 8.98
+      latency_ms:
+        compile:
+          p50: 674.7
+          p95: 933.61
+          p99: 1246.94
+          n: 500
+        pack:
+          p50: 49.75
+          p95: 93.09
+          p99: 222.64
+          n: 500
+        u_gnn_v2_ef__H128__six__s0:
+          p50: 155.63
+          p95: 356.77
+          p99: 435.11
+          n: 500
+        u_gnn_v2_ef__H128__six__s1:
+          p50: 154.03
+          p95: 359.26
+          p99: 485.07
+          n: 500
+        u_gnn_v2_ef__H128__six__s2:
+          p50: 155.33
+          p95: 349.52
+          p99: 429.7
+          n: 500
+      latency_measured_on: the first 500 queries
+      mrr_audit_ok: true
+  incidents:
+  - '2026-09-23T01:37Z to 02:03Z -- the stage-2 compile was queued, not launched: another session of the same user
+    held a SPLADE job of 4.8 to 6.3 GB on the same 16.85 GB laptop and free memory was between 0.5 and 2.7 GB. The
+    replication''s logged mistake was launching into that contention, so the compile waited. Nothing scientific
+    waited on this: no cache, weight or number existed yet.'
+  - '2026-09-23T02:03Z -- the wait was replaced by a driver that compiles the three added carves one process per
+    dataset (hotpotqa, then webqsp, then musique: smallest graph first) behind a 2.5 GB free-memory pre-flight,
+    beside the other session''s job rather than after it. The trio compile peaked at 2.73 GB on metaqa (329,282
+    nodes) and the three added graphs are smaller (90,447 / 1,549 / 19,938 nodes), and the row streams go to disk
+    through NpyAppender, so the footprint of each added compile is bounded well below that. Placement only: no science
+    moves.'
+  - '2026-09-24T20:45Z to 20:50Z -- free disk was observed oscillating at the 8 GB floor declared in compute.abort_criteria
+    during seed 1 of the stage-2 fit: 7.97 GB at 20:45Z, 8.58 GB at 20:50Z, 8.58-8.58 GB on re-measurement. The
+    floor was crossed at the first reading only, transiently. Nothing halted, and nothing should have: SixDiskGuard
+    is constructed only in stage_compile_six, which finished 2026-09-23T05:04Z, and the fit arms only fit_hours_guard_six;
+    stage_eval_six, stage_read_six, stage_doc_six and stage_file_six never construct it, so no remaining stage-2
+    stage can be halted by this floor. The pipeline is not the consumer -- outputs/universal_v2/six totals 8.5 MB,
+    8.4 MB of it checkpoints; the movement is the machine''s pagefile and other sessions. Recorded so the report
+    can state the floor was touched and why no stage stopped. No science, no placement.'
+  - '2026-09-25, between 20:48Z on the 24th and 09:47Z on the 25th -- a session restart killed both background shells
+    (exit 4): the stage-2 driver and the epoch watcher. Seed 1 died during epoch 2; no stage-2 process was alive
+    when this was checked. Seed 0 was already complete and its record and weights were untouched on disk. Seed 1
+    was RESUMED, not restarted, from the .ckpt m3b_train.fit_operator writes after every epoch: it restores weights,
+    optimiser, both RNG states, the per-dataset draw cursors, best_state, the record, the patience counter and elapsed_s,
+    and it refuses a checkpoint whose arm, seed or config do not match, so the resumed run sees the same batches
+    the uninterrupted run would have and the recorded seconds exclude the idle gap. This is continuation of the
+    declared fit; the_freeze.no_warm_start bars loading the TRIO checkpoint as an initialization, which nothing
+    here does. The replacement driver runs seeds (1, 2) only and refuses to start if seed 0''s artifacts are missing
+    -- drive_stage2b.py looped (0, 1, 2) unconditionally and would have overwritten a completed fit. Its per-seed
+    summary line also read a filename missing the __six segment, so it never printed; that is fixed. Placement and
+    recovery only: no science moves, no config is touched, and the compute guard is unchanged because the killed
+    partial wrote no fit record.'
+  artifacts:
+    document:
+      path: docs/UNIVERSAL_GNN_SIX.md
+      sha256: 9bb0c489f1c75ec3b393da22e234614b874896763d38653c488c1a5711862a1d
+    read_record:
+      path: outputs/universal_v2/six/read_record.json
+      sha256: dd67efc9a408cb9a49a117210fc14feeb1c787d796227a23773a3ebfc80cf968
+    compile_record:
+      path: outputs/universal_v2/six/compile_record.json
+      sha256: c887547d2c8719d0f13950289463cc12ad755c031fca374f3f792960a6a2fc5e
+    timing:
+      path: outputs/universal_v2/six/timing.json
+      sha256: 958f1a6d0a7f6d78e59fde035936146d43558c0df761e0967e6bf9810af04d35
+    fits:
+      u_gnn_v2_ef__H128__six__s0: 88f56eeffbe53fb5e7db334d642ec2dc476410fa2e1fb84b196e748ed5e6e144
+      u_gnn_v2_ef__H128__six__s1: aabe9110122b51048d027a8fbeaed2e518beed2edcc677a034ab5594310161cd
+      u_gnn_v2_ef__H128__six__s2: ac4bf9c2b1868249e4fd41cd16bdb2f5b7529e6ea5f406494344f149ce0ddd54
+    eval:
+      metaqa: 04e774f5d80671650d027f6cb22b0804175d1bda8534c920f1b4530e6aaaefe7
+      2wiki: 1510643f7f391f8dd1bddc019489720a720095b0f18ca042de1cdaa61b852d28
+      squad: 65165d12a90bf3bd7163527ed70c0def824b9d6a38391e8688e1dc4e1d58bc46
+      hotpotqa: 07d9638a89072c7ba9ab6d1dc713f2fb22a810661b29a48f6be313e89e4f6000
+      musique: 1577fbd667b91501f707375c27e0488d4770ceea1877488e5210ebb160074f9a
+      webqsp: 04a985da87b0a9edc83388c9b12d3462098e5faf733623af6c346d9f0ad3a78f
+  what_is_not_opened_by_this_record:
+  - stage 3 and stage 4, which still need their own dated blocks
+  - 'every Universal-MLP item: the 2wiki diagnostics and v2.1 are a separate dated declaration'
+  - 'any repair of a per-dataset regression: what to do about one is a new dated declaration'
