@@ -1,0 +1,242 @@
+# ==========================================================================
+# UMLP-D0 -- WHY u_mlp_v2_mix FALLS SHORT ON 2WIKI (ANALYSIS ONLY)
+#
+# One declaration per phase. This file declares item 4 of the user's ordered
+# plan filed in configs/universal_v2.yaml#authorization_stage_2_2026_09_22:
+#   "Separately run analysis-only diagnostics on why u_mlp_v2_mix loses 2Wiki."
+# It authorises reading EXISTING arrays and the compiled cache's mask
+# columns, on the V2_GATE half only. It authorises no fit, no forward pass,
+# no new eval and no v2.1 architecture. Universal-MLP-v2.1 (item 5) is a
+# separate dated declaration in its own file, filed after this reading.
+#
+# Opened by:   the turn after Universal-GNN stage 2 closed (c2cfda1).
+# Predecessor: configs/universal_v2.yaml -- every record and status line
+#              there is frozen and is not edited by this phase.
+# ==========================================================================
+
+phase: UMLP_D0_2WIKI_DIAGNOSTICS
+opened: 2026-09-28
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+motivated_by: >-
+  An observed result: TWIN_GATE REPLICATION_FAIL on 2wiki recall@5 (seed
+  mean 0.8516 against the filed cell 0.8578; seeds 0.8545 / 0.8523 /
+  0.8481). This phase is post-hoc and is labelled so wherever it is
+  reported. It selects nothing and confirms nothing.
+
+registered_question: >-
+  After matching candidate exposure and inference-time graph information to
+  modern graph-retrieval/GNN systems, how much effectiveness remains
+  attributable specifically to learned message passing?
+role_for_the_registered_question: >-
+  The 2wiki shortfall of the non-MP twin is measured against a
+  message-passing incumbent under the same exposure. Locating it tells us
+  whether the remaining gap is something a non-MP scorer could close with a
+  better fallback (a representation problem) or sits where only propagation
+  over the graph reaches (a candidate for effectiveness attributable to
+  message passing). Both outcomes are reported with equal weight.
+
+ruling_filed_verbatim:
+  source: configs/universal_v2.yaml#authorization_stage_2_2026_09_22 (the user plan, items 4 and 5)
+  text:
+  - "Separately run **analysis-only diagnostics** on why `u_mlp_v2_mix` loses 2Wiki."
+  - "Then declare **Universal-MLP-v2.1**, with the smallest defensible change, likely explicit zero-initialized residual/block gating."
+  - "Before fitting even that, use the already-existing outputs to diagnose **where** 2Wiki v2 loses to QLS-U/core: seed-distance bucket, multi-gold versus single-gold, STRUCT reach, depth block activation, and new-block gate values. That's analysis only and may tell us whether the residual-gating hypothesis is right."
+
+# --------------------------------------------------------------------------
+# 1. A correction filed before anything is read
+# --------------------------------------------------------------------------
+
+correction_before_reading:
+  what: >-
+    On the numbers already filed, u_mlp_v2_mix does NOT fall below its
+    non-MP incumbent on 2wiki as a whole: its seed-0 V2_GATE recall@5 is
+    0.8545 and qls_u_sota_v1's is 0.8391 (pilot_gate_amended
+    .reference_numbers_on_V2_GATE_seed0). The twin cell failed because the
+    twin closes less than the filed 40 percent of the residual between
+    qls_u_sota_v1 (0.8391) and gat_universal_v1 (0.8858). "Loses 2Wiki"
+    therefore means "leaves most of the gap to the GAT open", not "regresses
+    below the core".
+  consequence: >-
+    The diagnostics read two different gaps and never merge them:
+    GAP_TO_MP = u_mlp_v2_mix minus gat_universal_v1 (what the twin cell
+    measures), and GAP_TO_CORE = u_mlp_v2_mix minus qls_u_sota_v1 (whether the
+    new columns ever cost the twin something its core had). The residual
+    gating hypothesis is a claim about GAP_TO_CORE being negative somewhere;
+    the twin cell is a claim about GAP_TO_MP. A slice can show both.
+  caveat_on_the_core: >-
+    qls_u_sota_v1 is the M3B non-MP incumbent on the 78-column M3B contract,
+    not the twin with its v2 columns removed. It is the closest filed core;
+    it is not an ablation, and the record says so wherever it is used.
+
+# --------------------------------------------------------------------------
+# 2. What this phase may not touch
+# --------------------------------------------------------------------------
+
+this_file_does_not_touch:
+  universal_v2: >-
+    Every record, status line and verdict in configs/universal_v2.yaml stays
+    as filed: RUN_PILOT_FAILED, PILOT_FAILED, GNN_REPLICATION_ONLY,
+    u_mlp_v2_mix REPLICATION_FAIL, UNIVERSAL_GNN_V2_SELECTED = u_gnn_v2_ef,
+    the stage-2 run record. Nothing here re-reads a gate or moves a verdict.
+  m3b: "M3B is frozen; its arrays are read, never rewritten or re-scored."
+  held_half: >-
+    V2_HELD_CONFIRMATION is NOT read for any arm. The replication read it once
+    for the gnn family and dropped the twin arrays unread
+    (replication_held_record.json arrays_dropped_unread); they stay unread,
+    and so does every other arm's held half. The script drops held rows
+    before any metric is formed and a test proves it.
+  test_split: "No test split anywhere; 2wiki dev only (the M3B eval population)."
+  no_fit: "No fit, no checkpoint load, no forward pass, no new eval pass, no recompile."
+  no_selection: >-
+    Nothing here selects an architecture, a column, a threshold or a
+    population for any later phase. The v2.1 declaration may cite this
+    record as motivation only, and must file its own design and its own gate.
+
+# --------------------------------------------------------------------------
+# 3. Inputs (pinned; a mismatch stops the phase before any number is formed)
+# --------------------------------------------------------------------------
+
+inputs:
+  v2_eval_seed0: {path: outputs/universal_v2/eval/2wiki.npz, sha256: 6d8c1dcd2f815cf8c5e67664ace3ceaada3f54c6625ceeee768d35b04f13b4c2}
+  v2_eval_seeds_1_2: {path: outputs/universal_v2/eval/2wiki__more_69caa3fe.npz, sha256: 76e4e3a9abd213040c9807c635a1bce0ac183e22919ca44149bc8910df4e4afe}
+  v2_query_ids: {path: outputs/universal_v2/eval/2wiki_query_ids.json, sha256: d439a33c22f39186f8e54f596aeb2bcb83a5d27745a0dc9285e8990f16923cd2}
+  m3b_eval: {path: outputs/m3b/eval/2wiki.npz, sha256: d2196c2f7769512071f1a9592504be6e1bdeff9729f1b2bcfae45f1ebdd76313}
+  m3b_query_ids: {path: outputs/m3b/eval/2wiki_query_ids.json, sha256: d439a33c22f39186f8e54f596aeb2bcb83a5d27745a0dc9285e8990f16923cd2}
+  split_audit: {path: outputs/universal_v2/split_audit.json, sha256: edc106b25ded2d35d818e57c89807fe08f3dcb6ac53070de8bbd803a04a85738}
+  gate_value_context:   # the block gates only, V2_GATE rows only -- no metric column of these files is read
+    metaqa_seed0: {path: outputs/universal_v2/eval/metaqa.npz, sha256: 380e0288b0e048cd18d83f06defd5f794fe7b7514a741bffbfbd6289e49eab5c}
+    metaqa_seeds_1_2: {path: outputs/universal_v2/eval/metaqa__more_69caa3fe.npz, sha256: 07cb99f9bcb1d70bbccf7d2e55b1097e9c724b3b016f168eec88c0bb7d615a30}
+    squad_seed0: {path: outputs/universal_v2/eval/squad.npz, sha256: cda64047bea803936ce811e5fa0d006ebffa10473e7baed44f2d203bd55121f3}
+    squad_seeds_1_2: {path: outputs/universal_v2/eval/squad__more_69caa3fe.npz, sha256: 4f0d82a419415c5d4ffe33bfe8d8bb973f9a7454b09764eb41832885e0e81c95}
+  compiled_cache_masks:
+    what: >-
+      the 2wiki eval cache under outputs/universal_v2/cache, the mask columns
+      only (has_h{1,2,3}_STRUCT, ring_n_h{1,2,3}_STRUCT, has_h{1,2,3}_FULL,
+      ring_n_h{1,2,3}_FULL, typed_walks_h{1,2,3}) at each query's gold
+      candidates and over its pool
+    pin: the sha256 recorded in that cache's meta.json at compile time; the script recomputes it and refuses on mismatch
+  alignment_checks:
+  - the three query-id files are byte-identical (same sha256 above) -- 12,576 queries in one order
+  - half == True marks V2_GATE; it must count 6,290 on 2wiki (amendment_1 counts), 19,738 on metaqa and 5,841 on squad
+  - every arm below has 12,576 rows and pool_size equal across arms query by query
+
+arms_read:
+  twin: [u_mlp_v2_mix__H128__s0, u_mlp_v2_mix__H128__s1, u_mlp_v2_mix__H128__s2]
+  twin_ungated: [u_mlp_v2__H128__s0]      # the pilot's ungated twin, seed 0 only (the only seed that exists)
+  core: [qls_u_sota_v1__H128__s0, qls_u_sota_v1__H128__s1, qls_u_sota_v1__H128__s2]   # M3B
+  mp_incumbent: [gat_universal_v1__H128_L2__s0, gat_universal_v1__H128_L2__s1, gat_universal_v1__H128_L2__s2]   # M3B
+  mp_incumbent_struct_only: [gat_universal_v1__H128_L2__s0__STRUCT]   # M3B, the STRUCT-edge GAT
+  mp_no_mp_control: [gat_no_mp_v1__H128_L2__s0, gat_no_mp_v1__H128_L2__s1, gat_no_mp_v1__H128_L2__s2]   # M3B
+  selected_gnn: [u_gnn_v2_ef__H128__s0, u_gnn_v2_ef__H128__s1, u_gnn_v2_ef__H128__s2]   # the pilot trio checkpoints, context only
+  fixed: [fixed:rrf, fixed:support_h1_STRUCT, fixed:support_h2_STRUCT, fixed:support_h3_STRUCT]
+  seed_rule: >-
+    where three seeds exist the per-query mean over seeds 0-2 is the arm's
+    value; u_mlp_v2 and the STRUCT-only GAT are seed 0 and are labelled so
+
+# --------------------------------------------------------------------------
+# 4. Quantities and slices (all fixed here, before anything is read)
+# --------------------------------------------------------------------------
+
+metrics: [recall@5, full_coverage@5, hit@1, mrr]   # recall@5 is the twin-cell metric; full_coverage@5 is the GraphER PR@K set coverage
+paired_differences:
+  GAP_TO_MP: u_mlp_v2_mix minus gat_universal_v1
+  GAP_TO_CORE: u_mlp_v2_mix minus qls_u_sota_v1
+  GATING_EFFECT: u_mlp_v2_mix (seed 0) minus u_mlp_v2 (seed 0)     # the block gate against no gate, one seed each
+  PROPAGATION_EFFECT: gat_universal_v1 minus gat_no_mp_v1           # M3B's own MP contrast, for locating where MP pays
+  GNN_V2_OVER_TWIN: u_gnn_v2_ef minus u_mlp_v2_mix                   # context
+interval: paired bootstrap over queries, 1000 resamples, numpy default_rng(0), 95 percent percentile -- the same rule as the pilot
+
+slices:   # every slice partitions the 6,290 V2_GATE queries; each is reported whole, never selected from
+  gold_struct_distance: {source: gold_dist_struct, buckets: ["0 (seed is gold)", "1", "2", "3", ">=4 or unreachable"], name_in_the_plan: "seed-distance bucket / STRUCT reach"}
+  gold_count: {source: gold_total, buckets: ["1", "2", ">=3"], name_in_the_plan: "multi-gold versus single-gold"}
+  gold_in_pool: {source: "gold_in_pool / gold_total", buckets: ["all golds in pool", "some", "none"]}
+  hop: {source: hop, buckets: "as stored"}
+  depth_block_activation:
+    source: compiled_cache_masks at the query's gold candidates
+    buckets: ["a gold has STRUCT h1 support", "else h2", "else h3", "no STRUCT support at h<=3"]
+    and_separately: the same four buckets on FULL
+    name_in_the_plan: depth block activation
+  pool_size: {source: pool_size, buckets: tertiles fixed on the V2_GATE rows before any metric is joined}
+
+per_slice_report:
+- queries in the slice and its share of the 6,290
+- each arm's metric mean in the slice
+- GAP_TO_MP, GAP_TO_CORE, GATING_EFFECT, PROPAGATION_EFFECT with intervals
+- the slice's contribution to the whole-population GAP_TO_MP (sum of per-query differences in the slice over the whole sum), so the slices that carry the shortfall are read off directly
+
+gate_readouts:   # name_in_the_plan: new-block gate values
+  what: >-
+    block_gate0..8 of u_mlp_v2_mix (STRUCT_h1-3, FULL_h1-3, TYPED_h1-3, the
+    order of universal_v2_features.BLOCKS), per query, per seed, on V2_GATE
+  report:
+  - per block and dataset (2wiki, metaqa, squad): mean, q10 / q25 / q50 / q75 / q90, per seed
+  - on 2wiki, per block, the Spearman correlation between the query's gate and its GAP_TO_CORE and GAP_TO_MP (recall@5), with a bootstrap interval
+  - the TYPED blocks on 2wiki are reported as structurally inert (2wiki has no typed STRUCT relation edge, so their columns are zero whatever the gate) and are excluded from every reading below
+
+# --------------------------------------------------------------------------
+# 5. Readings, fixed before the numbers (diagnostic; no gate, no selection)
+# --------------------------------------------------------------------------
+
+readings:
+  R1_residual_gating_hypothesis:
+    claim: the twin cannot fall back to its core where the new depth columns carry nothing, so the new columns cost it there
+    SUPPORTED_if_all:
+    - on 2wiki the seed-mean median gate of every STRUCT and FULL block lies in [0.35, 0.65] (the gates stayed near their 0.5 initialisation)
+    - GAP_TO_CORE on recall@5 has an interval wholly below zero in the "no STRUCT support at h<=3" bucket OR in the ">=4 or unreachable" distance bucket
+    NOT_SUPPORTED_if: >-
+      no declared slice has a GAP_TO_CORE interval wholly below zero, or the
+      median gate of the STRUCT and FULL blocks on 2wiki is below 0.35 on
+      every seed (the twin already learned to close them)
+    otherwise: INCONCLUSIVE
+  R2_shortfall_sits_where_propagation_pays:
+    claim: GAP_TO_MP concentrates in the queries where M3B's own message-passing contrast pays
+    SUPPORTED_if_all:
+    - the distance buckets 2 and 3 together carry at least half of the whole-population GAP_TO_MP on recall@5
+    - PROPAGATION_EFFECT has an interval wholly above zero in those buckets
+    NOT_SUPPORTED_if: those buckets carry less than a quarter of GAP_TO_MP
+    otherwise: INCONCLUSIVE
+    note: >-
+      a SUPPORTED R2 is a location, not an attribution -- the twin and the
+      GAT differ in more than message passing. It is reported as "the
+      shortfall sits where M3B's propagation contrast is positive", never as
+      "message passing is required"
+  R3_set_coverage:
+    claim: the shortfall is a second-gold (set coverage) problem more than a first-gold problem
+    SUPPORTED_if: GAP_TO_MP on full_coverage@5 in the gold_count >= 2 buckets is at least twice GAP_TO_MP on hit@1 there, both with intervals below zero
+    otherwise: NOT_SUPPORTED
+  combination_rule: >-
+    the three readings are reported side by side; none overrides another.
+    The v2.1 declaration, if the user opens it, cites them as motivation only.
+    R1 SUPPORTED favours the user's zero-initialised residual block gate; R1
+    NOT_SUPPORTED with R2 SUPPORTED says a better fallback is unlikely to
+    close the 2wiki cell and the declaration must say so.
+
+# --------------------------------------------------------------------------
+# 6. Outputs, compute, tests, stop rule
+# --------------------------------------------------------------------------
+
+outputs:
+  code: scripts/umlp_d0_diagnostics.py (reads the pinned inputs, refuses on any mismatch, drops held rows first, writes the record)
+  record: outputs/umlp_d0/record.json (gitignored sidecar, sha256 printed into the run record)
+  document: docs/UMLP_D0_2WIKI_DIAGNOSTICS.md (rendered from the record only)
+  run_record: run_record_umlp_d0_<date> appended to THIS file; status moves DECLARED_NOT_RUN -> RUN
+compute: "laptop CPU, minutes; no remote placement is needed or requested"
+tests:
+- this file parses, is dated, names status DECLARED_NOT_RUN, and files the ruling verbatim
+- every input sha256 above matches the file on disk
+- the held half is never read -- a test NaN-poisons every held row and the record is unchanged
+- no arm outside arms_read is loaded; no metric column of metaqa or squad is loaded
+- the slices partition the 6,290 V2_GATE queries
+- configs/universal_v2.yaml is byte-unchanged by the run
+hard_stops:
+- an input hash or an alignment check fails
+- any held-half row or any test split would be read
+- a reading would need a quantity not declared above
+- anything in configs/universal_v2.yaml or outputs/m3b would have to change
+execution:
+  stop_after_this_block: true
+  next: >-
+    STOP_FOR_REVIEW. On the user go-ahead: the script and its tests, one run,
+    the record and document, run_record_umlp_d0_<date>, commit, report the
+    three readings. Then stop again: v2.1 is its own declaration.
