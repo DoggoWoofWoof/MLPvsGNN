@@ -1,6 +1,6 @@
 phase: UMLP_V21_COVERAGE_OBJECTIVE
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: METHOD_CHANGE_OBJECTIVE_ONLY
 motivated_by: >-
   D0 (e73893c): the twin's 2wiki shortfall to message passing is set coverage (full_coverage@5 -0.078, hit@1 +0.010).
@@ -93,3 +93,24 @@ tests:
 
 execution:
   stop_after_this_block: true
+
+run_record_umlp_v21_2026_09_29:
+  utc: '2026-09-28T23:06:29Z'
+  held_half_read: false
+  fits:
+    u_mlp_v21_cov__H128__s0:
+      best_epoch: 1
+      epochs_run: 4
+      select_macro_recall@5: 0.847
+      seconds: 6206.6
+      state_sha256: dc1c97cae628814d51e359a01beaeb870f3aa0f747eddb23bbb97c4214767dcd
+  gates:
+    A:
+      reading: V21_STAGE_A_FAIL
+      conditions:
+        full_coverage@5_lower_gt_0: false
+        recall@5_mean_ge_0: false
+        hit@1_mean_ge_-0.005: false
+      sha256: 2b5f36b8a9b225cd745d17a4e83b14aa1549bfb590fb4816d38e354e6c9a3650
+  document: docs/UMLP_V21_COVERAGE_OBJECTIVE.md
+  status_moves: DECLARED_NOT_RUN -> RUN
