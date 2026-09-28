@@ -1,0 +1,95 @@
+phase: UMLP_V21_COVERAGE_OBJECTIVE
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: METHOD_CHANGE_OBJECTIVE_ONLY
+motivated_by: >-
+  D0 (e73893c): the twin's 2wiki shortfall to message passing is set coverage (full_coverage@5 -0.078, hit@1 +0.010).
+  D0.1 (c0099e9): no single compiled column separates the missed extra gold; the twin's learned residual orders it
+  below the rank 2-5 displacers (pair-AUC 0.13-0.22). D0.2 (abb7534): D02_R1_LINEARLY_PRESENT -- a linear probe on the
+  twin's 129 columns orders those pairs at 0.70-0.82 out of fold (selection caveat filed there). Motivation only:
+  nothing here was selected from a held number.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+v21_question: >-
+  Can the frozen Universal-v2 non-message-passing representation close its 2wiki multi-gold coverage deficit by
+  changing only the training objective, without sacrificing first-gold ranking or the behaviour on MetaQA and SQuAD?
+
+authorization:
+  given: 2026-09-29, by the user, pasted ("UMLP-v2.1 -- COVERAGE-AWARE OBJECTIVE"); standing instruction not to stop for go-aheads
+  arms: exactly two -- the frozen control u_mlp_v2_mix (existing checkpoints and stored eval, not refitted) and u_mlp_v21_cov; no sweep
+
+frozen:   # identical to the control's seed-0 fit record; checked field by field before the fit, a difference is a hard stop
+  contract: the 129-column core (contract_frozen_2026_09_19, core_sha256 8d1da88b14dfdee13dd32ee6a05f6d9733d14a9899d5e011c41b0cce53000bf9)
+  architecture: u_mlp_v2_mix (UMLPv2Mix, GatedInputBlock), hidden 128, same gates, same residual readout, 330,955 parameters
+  data: the trio fit/select carves under outputs/universal_v2/cache (metaqa, 2wiki, squad), same candidate pools, no dataset identity
+  training: training_rule_v2 (max_epochs 6, 2000 batches/epoch, batch 16, per_query draw, AdamW lr 1e-3 wd 1e-4, clip 1.0, patience 2)
+  selection: the frozen checkpoint rule -- best macro select recall@5, patience 2
+  seeds: torch/numpy seed = fit seed, as fit_model does
+  features: no new column, no graph change, no GNN output anywhere in training
+
+intervention:
+  loss: L = L_existing + lambda * L_coverage
+  L_existing: mp_retrieval.m3b_models.listwise_loss, unchanged (per query minus the mean log-softmax of the in-pool golds; mean over queries with an in-pool gold)
+  L_coverage_per_query: >-
+    for a query with at least two in-pool golds G: mean over g in G of mean over n in H of softplus(s_n - s_g), where H
+    is the query's five highest-scoring in-pool non-golds under the current scores (the selection of H is detached;
+    s_n and s_g keep their gradients); a query with fewer than two in-pool golds contributes 0
+  aggregation: the sum of the per-query terms divided by the number of queries with an in-pool gold (the listwise loss's own denominator), so single-gold queries count as zeros
+  lambda: 1.0 (fixed; both terms are per-query means of O(1) log-losses; not tuned, not changed after any result)
+  mechanism: the script replaces the module-level listwise_loss that m3b_train.fit_model calls with L_existing + L_coverage for the v2.1 fits only; no frozen file is edited
+  inference: unchanged (same forward pass, same score)
+
+populations:
+  gate: V2_GATE halves only (2wiki 6,290; metaqa 19,738; squad 5,841); held rows removed before compilation
+  held: V2_HELD_CONFIRMATION is not read by this file; a held confirmation is its own later block
+  control_numbers: the stored per-query arrays of u_mlp_v2_mix s0-2 (outputs/universal_v2/eval/*.npz); every eval pass re-scores the frozen control checkpoints and must reproduce them exactly (integrity)
+
+stage_A:   # seed 0
+  fit: u_mlp_v21_cov__H128__s0 on the trio
+  eval: 2wiki V2_GATE, with u_mlp_v2_mix__H128__s0 re-scored in the same pass
+  gate_2wiki_vs_control_s0:   # paired per query, universal_v2 paired bootstrap (1000, default_rng(0), 95%)
+    full_coverage@5: paired delta lower 95% bound > 0
+    recall@5: paired delta mean >= 0
+    hit@1: paired delta mean >= -0.005
+  on_pass: proceed to stage B without a stop
+  on_fail: STOP v2.1 (status RUN, reading V21_STAGE_A_FAIL); lambda, features, architecture and loss are not altered after seeing results
+
+stage_B:   # only after a stage-A pass
+  fit: u_mlp_v21_cov__H128__s1 and __s2, same protocol
+  eval: metaqa, 2wiki, squad V2_GATE, v2.1 seeds 0-2 and the control seeds 0-2 re-scored in the same passes
+  confirm:   # seed-mean arm vs seed-mean control, paired per query
+    2wiki: full_coverage@5 lower bound > 0; recall@5 mean >= 0; hit@1 mean >= -0.005
+    metaqa: recall@5 mean >= -0.005; hit@1 mean >= -0.005
+    squad: recall@5 mean >= -0.005; hit@1 mean >= -0.005
+  readings:
+    V21_CONFIRMED: every condition holds
+    V21_2WIKI_ONLY: the 2wiki conditions hold and a metaqa or squad condition fails
+    V21_NOT_CONFIRMED: a 2wiki condition fails on the seed means
+  also_reported: all metrics (recall@1/5/10/20, full_coverage@5/20, hit@1, mrr, ndcg@5/20) per dataset and seed; the M3B GAT and u_gnn_v2_ef stored seed means for context only (no gate uses them)
+
+integrity:
+  - every control checkpoint re-scored in an eval pass reproduces its stored per-query metrics exactly; one mismatch is a hard stop
+  - the v2.1 fit record's protocol fields equal the control's seed-0 record except arm, key, seed, loss
+  - configs/universal_v2.yaml and the D0 / D0.1 / D0.2 declarations byte-unchanged
+
+compute:
+  placement: local CPU (the GPU host is offline; GPU placement of science still needs the equivalence test declared first)
+  expected: ~70 min per fit (control seed 0: 4,087 s), ~7 min 2wiki eval; stage B ~2.5 h fits + ~1 h trio eval
+  memory: fit caches are memory-mapped; a fit is watched and a thrashing stall is reported, never silently re-placed
+
+outputs:
+  script: scripts/umlp_v21_coverage.py
+  fits: outputs/universal_v21/fits/u_mlp_v21_cov__H128__s{0,1,2}.{pt,json}
+  eval: outputs/universal_v21/eval/<dataset>.npz (V2_GATE rows only)
+  record: outputs/universal_v21/record.json
+  document: docs/UMLP_V21_COVERAGE_OBJECTIVE.md
+  run_record: run_record_umlp_v21_<date> appended to THIS file; status DECLARED_NOT_RUN -> RUN
+
+tests:
+  - the coverage term is 0 for single-gold queries and matches a brute-force softplus mean on a toy batch
+  - H is the five highest-scoring non-golds and its selection carries no gradient
+  - the patched loss equals listwise_loss + coverage and fit_model's own reference is restored after the fit
+  - the gate reads V2_GATE rows only
+  - frozen configs byte-unchanged
+
+execution:
+  stop_after_this_block: true
