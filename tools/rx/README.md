@@ -143,7 +143,18 @@ The supervisor:
 * **queues** the job under a host-wide lock until its cpus/memory/GPUs fit
   (`~/rx/host.json` holds capacity: all CPUs and memory minus a reserve for the OS and
   other users; GPUs from `nvidia-smi`). FIFO with backfill: a small job may overtake a
-  big one that cannot fit, until the big one has waited `hold_after_s` (30 min);
+  big one that cannot fit, until the big one has waited `hold_after_s` (30 min).
+  **Project priority** (`host.json`'s `priority` map, set with
+  `rx capacity --priority PROJECT=N`; a project not in the map is 0) comes before FIFO:
+  a queued job of a higher-priority project goes first however young it is, and while it
+  cannot fit, lower-priority jobs may start only in what is left after its request is set
+  aside, so they cannot starve it. Equal priorities keep FIFO, backfill and the hold. A
+  job of a project below the map's top priority runs at **below-normal** OS priority
+  (the Job Object's priority class, which every child inherits), so under CPU contention
+  it gives way and otherwise uses the idle machine in full. Nothing running is ever
+  stopped or re-prioritised: the policy applies to jobs as they are admitted, and a
+  supervisor started by an older agent keeps the old rule until its job ends. Payloads
+  run inside WSL are outside the Job Object's priority class;
 * starts the command **suspended**, places it in a Windows **Job Object** (so every
   child process is accounted, limited by `--mem-hard`, and killed on cancel), then
   resumes it. On Linux it uses a process group;
@@ -213,6 +224,7 @@ need an interactive logon), so rx never uses it.
 | `rx dashboard [--open]` | the same in a browser at `http://127.0.0.1:8765` (local only; cancel needs a per-run token) |
 | `rx watch` | fetch jobs launched with `--fetch` as soon as they end, whenever the host is reachable |
 | `rx capacity [--cpus N --mem GB --reserve-cpus N ...]` | show or set what the scheduler shares out |
+| `rx capacity --priority mpr=10` | set a project's queue priority (repeatable or comma-separated; `=0` removes it); `rx monitor` shows the map |
 | `rx gc [--days 14 --keep 30] [--dry-run]` | remove old job dirs, stale partial files, superseded envs |
 
 `JOB` accepts a full id, any unique substring, or `last` (the default).
@@ -235,6 +247,7 @@ Run options: `-n NAME`, `-p PROFILE`, `--env`, `--cpus`, `--mem`, `--mem-hard`,
 | Host rebooted | running jobs are `lost` (heartbeat older than boot) | `rx rerun JOB`; checkpoint long jobs to the outputs dir so a rerun can resume |
 | Supervisor killed | `lost` after 120 s | `rx cancel` clears it; `rx rerun` |
 | Queue never admits | `rx status` shows `waiting for ...` / `impossible: ...` | lower the request, or `rx capacity` |
+| Queued behind another project | `rx status` shows `waiting for higher-priority job ...` | expected while that project's job waits; `rx capacity` shows the map |
 | Output file edited locally | `rx fetch` reports a conflict, exit 2 | `--into DIR` or `--overwrite` |
 | Agent updated | uploaded automatically on the next call | nothing |
 

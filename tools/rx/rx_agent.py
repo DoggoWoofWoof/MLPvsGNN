@@ -828,12 +828,14 @@ if IS_WIN:
     CREATE_BREAKAWAY_FROM_JOB = 0x01000000
     JOB_LIMIT_KILL_ON_CLOSE = 0x00002000
     JOB_LIMIT_JOB_MEMORY = 0x00000200
+    JOB_LIMIT_PRIORITY_CLASS = 0x00000020
+    BELOW_NORMAL_PRIORITY_CLASS = 0x00004000
 
     class WinJob:
         """A Job Object holding a job's whole process tree: one call kills all of
         it, and the kernel keeps its CPU time and peak memory."""
 
-        def __init__(self, mem_limit_bytes=None):
+        def __init__(self, mem_limit_bytes=None, priority_class=None):
             self.h = _k32.CreateJobObjectW(None, None)
             if not self.h:
                 raise ctypes.WinError(ctypes.get_last_error())
@@ -842,6 +844,9 @@ if IS_WIN:
             if mem_limit_bytes:
                 info.BasicLimitInformation.LimitFlags |= JOB_LIMIT_JOB_MEMORY
                 info.JobMemoryLimit = int(mem_limit_bytes)
+            if priority_class:
+                info.BasicLimitInformation.LimitFlags |= JOB_LIMIT_PRIORITY_CLASS
+                info.BasicLimitInformation.PriorityClass = int(priority_class)
             if not _k32.SetInformationJobObject(self.h, 9, ctypes.byref(info), ctypes.sizeof(info)):
                 raise ctypes.WinError(ctypes.get_last_error())
             self.lock = threading.Lock()
@@ -1030,13 +1035,49 @@ def load_capacity(home):
 #
 # Decentralised: each queued supervisor takes sched.lock, reads host.json and
 # the live entries of active/ and queue/, and admits itself if decide() says so.
-# FIFO with backfill -- a younger job may start in resources an older one
-# cannot use yet, but never if that would stop an older job that fits now, and
-# once the head of the queue has waited `hold_after_s` nothing overtakes it.
+# Priority, then FIFO with backfill. host.json's `priority` maps a project to a
+# number (default 0); a job of a higher-priority project is ahead of every job of
+# a lower one, whenever each was queued. Among equals: a younger job may start in
+# resources an older one cannot use yet, but never if that would stop an older job
+# that fits now, and once the head of the queue has waited `hold_after_s` nothing
+# overtakes it. A lower-priority job never takes what a waiting higher-priority
+# job needs: that job's request is set aside from the free resources first.
+# Running jobs are never stopped for anyone.
 
 def job_request(spec):
     return {"cpus": float(spec.get("cpus") or 1), "mem_gb": float(spec.get("mem_gb") or 1),
             "gpus": float(spec.get("gpus") or 0)}
+
+
+def project_priority(cap, project):
+    try:
+        return float((cap.get("priority") or {}).get(project) or 0)
+    except (TypeError, ValueError, AttributeError):
+        return 0.0
+
+
+def top_priority(cap):
+    vals = []
+    for v in (cap.get("priority") or {}).values():
+        try:
+            vals.append(float(v))
+        except (TypeError, ValueError):
+            pass
+    return max([0.0] + vals)
+
+
+def _hold_back(pool, req):
+    """The free resources left once a waiting job's request is set aside, clamped at zero."""
+    cpu, mem, g = pool
+    g = dict(g)
+    need = float(req.get("gpus") or 0)
+    for i in sorted(g, key=lambda i: (-g[i], i)):
+        if need <= 1e-9:
+            break
+        take = min(max(g[i], 0.0), need)
+        g[i] -= take
+        need -= take
+    return max(0.0, cpu - req["cpus"]), max(0.0, mem - req["mem_gb"]), g
 
 
 def _fit(req, cpu, mem, gfree):
@@ -1085,17 +1126,29 @@ def decide(me, cap, active, queue, now):
         return False, None, "waiting for resources (free: %g cpus, %.0f GB, gpu %s)" % (
             pool[0], pool[1], ",".join("%d:%.2g" % (i, v) for i, v in sorted(pool[2].items())) or "-")
     hold = cap.get("hold_after_s", 1800)
-    mine_key = (me["enq"], me["key"])
-    for q in sorted(queue, key=lambda q: (q["enq"], q["key"])):
-        if (q["enq"], q["key"]) >= mine_key:
+    mine_p = project_priority(cap, me.get("project"))
+
+    def order(q):
+        return (-project_priority(cap, q.get("project")), q["enq"], q["key"])
+
+    mine_key = order(me)
+    higher = None
+    for q in sorted(queue, key=order):
+        if order(q) >= mine_key:
             continue
+        above = project_priority(cap, q.get("project")) > mine_p
+        higher = higher or (q if above else None)
         qa = _fit(q["req"], *pool)
         if qa is not None:
             pool = _take(pool, qa)       # it goes first; see what is left for me
+        elif above:
+            pool = _hold_back(pool, q["req"])     # it waits, and what it needs is not mine to take
         elif now - q["enq"] > hold:
             return False, None, "holding for older job %s (queued %.0f min)" % (q.get("id"), (now - q["enq"]) / 60)
     mine = _fit(req, *pool)
     if mine is None:
+        if higher is not None:
+            return False, None, "waiting for higher-priority job %s (project %s)" % (higher.get("id"), higher.get("project"))
         return False, None, "waiting behind older queued jobs"
     return True, mine, None
 
@@ -1534,13 +1587,18 @@ class Supervisor:
         cmd = build_command(self.home, spec, env, envd, cwd)
         started = time.time()
         log = open(os.path.join(self.jd, "output.log"), "ab")
+        # a project below the host's top priority runs below normal, so it gives way under contention
+        cap = load_capacity(self.home)
+        lower = project_priority(cap, spec["project"]) < top_priority(cap)
         self.set(state="running", started=started, assign=assign, waiting=None,
+                 os_priority="below_normal" if lower and IS_WIN else "normal",
                  command_line=cmd if isinstance(cmd, str) else subprocess.list2cmdline(cmd))
         cancelled, rc = False, None
         try:
             if IS_WIN:
                 mem_hard = spec.get("mem_hard_gb")
-                self.win_job = WinJob(int(float(mem_hard) * 2 ** 30) if mem_hard else None)
+                self.win_job = WinJob(int(float(mem_hard) * 2 ** 30) if mem_hard else None,
+                                      BELOW_NORMAL_PRIORITY_CLASS if lower else None)
                 self.proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
                                              stdout=log, stderr=subprocess.STDOUT,
                                              creationflags=CREATE_SUSPENDED | CREATE_NO_WINDOW)
@@ -1761,6 +1819,14 @@ def op_capacity(req, home, inp, out):
                 cap[k] = float(req[k])
         if req.get("gpus") is not None:
             cap["gpus"] = req["gpus"]
+        if req.get("priority") is not None:
+            pr = dict(cap.get("priority") or {})
+            for project, v in dict(req["priority"]).items():
+                if v is None or float(v) == 0:
+                    pr.pop(project, None)          # 0 is the default
+                else:
+                    pr[project] = float(v)
+            cap["priority"] = pr
         cap["updated"] = time.time()
         write_json(home.p("host.json"), cap)
     return {"ok": True, "capacity": cap}

@@ -165,6 +165,80 @@ def test_decide_fifo_then_hold():
     assert not ok and "holding" in why              # the big job has waited long enough
 
 
+def pentry(key, enq, project, **kw):
+    return dict(entry(key, enq, **kw), project=project)
+
+
+PCAP = dict(CAP, priority={"mpr": 10})
+
+
+def test_decide_without_a_priority_map_is_unchanged():
+    active = [dict(entry("a", 0, cpus=20), assign={"cpus": 20, "mem_gb": 1, "gpus": [], "gpu_shares": {}})]
+    big, small = pentry("big", 1, "crag", cpus=20), pentry("small", 2, "mpr", cpus=4)
+    assert A.decide(small, CAP, active, [big, small], now=100)[0]
+    assert not A.decide(small, CAP, active, [big, small], now=1 + 1801)[0]
+
+
+def test_decide_higher_priority_goes_first_whenever_queued():
+    # 10 cpus free; an older crag job and a younger mpr job each want 8
+    active = [dict(entry("a", 0, cpus=20), assign={"cpus": 20, "mem_gb": 1, "gpus": [], "gpu_shares": {}})]
+    crag, mpr = pentry("crag1", 1, "crag", cpus=8), pentry("mpr1", 50, "mpr", cpus=8)
+    ok, _, _ = A.decide(mpr, PCAP, active, [crag, mpr], now=100)
+    assert ok                                       # mpr is ahead although it queued later
+    ok, _, why = A.decide(crag, PCAP, active, [crag, mpr], now=100)
+    assert not ok and "higher-priority" in why and "mpr1" in why
+
+
+def test_decide_lower_priority_never_takes_what_a_waiting_higher_job_needs():
+    # 10 cpus free; mpr wants 16 (blocked). A 4-cpu crag job must not start in them,
+    # even when it queued first and the mpr job is young.
+    active = [dict(entry("a", 0, cpus=20), assign={"cpus": 20, "mem_gb": 1, "gpus": [], "gpu_shares": {}})]
+    crag, mpr = pentry("crag1", 1, "crag", cpus=4), pentry("mpr1", 50, "mpr", cpus=16)
+    ok, _, why = A.decide(crag, PCAP, active, [crag, mpr], now=60)
+    assert not ok and "higher-priority" in why
+    # but a crag job may use what the blocked mpr job does not need: memory here
+    crag_mem_only = pentry("crag2", 1, "crag", cpus=1, mem=10)
+    mpr_gpu = pentry("mpr2", 50, "mpr", cpus=4, gpus=1)
+    gpu_busy = [dict(entry("g", 0, cpus=4, gpus=1), assign={"cpus": 4, "mem_gb": 1, "gpus": [0], "gpu_shares": {"0": 1.0}})]
+    ok, _, _ = A.decide(crag_mem_only, PCAP, gpu_busy, [crag_mem_only, mpr_gpu], now=60)
+    assert ok                                       # 26 cpus free, 4 set aside for mpr2
+    ok, _, _ = A.decide(pentry("crag3", 1, "crag", cpus=24), PCAP, gpu_busy, [mpr_gpu], now=60)
+    assert not ok                                   # 26 free - 4 set aside < 24
+
+
+def test_decide_higher_priority_ignores_lower_priority_holds():
+    # an old crag job that cannot fit would make an equal-priority job hold; mpr does not
+    active = [dict(entry("a", 0, cpus=20), assign={"cpus": 20, "mem_gb": 1, "gpus": [], "gpu_shares": {}})]
+    crag_big, mpr = pentry("crag-big", 1, "crag", cpus=20), pentry("mpr1", 5000, "mpr", cpus=4)
+    assert A.decide(mpr, PCAP, active, [crag_big, mpr], now=6000)[0]
+
+
+def test_decide_waiting_gpu_share_is_set_aside_for_higher_priority():
+    half = [dict(entry("t", 0, cpus=2, gpus=0.5), assign={"cpus": 2, "mem_gb": 1, "gpus": [0], "gpu_shares": {"0": 0.5}})]
+    mpr = pentry("mpr1", 50, "mpr", cpus=2, gpus=1)            # needs the whole GPU: blocked
+    other = pentry("jig1", 1, "jigsaw", cpus=2, gpus=0.5)       # would fit in the free half
+    assert not A.decide(other, PCAP, half, [other, mpr], now=60)[0]
+    assert A.decide(other, CAP, half, [other, mpr], now=60)[0]  # without priority it backfills
+
+
+def test_priority_helpers_and_parse():
+    assert A.project_priority(PCAP, "mpr") == 10 and A.project_priority(PCAP, "crag") == 0
+    assert A.top_priority(PCAP) == 10 and A.top_priority(CAP) == 0
+    assert A._hold_back((10.0, 50.0, {0: 0.5}), {"cpus": 16, "mem_gb": 8, "gpus": 1}) == (0.0, 42.0, {0: 0.0})
+    assert rx.parse_priority(["mpr=10", "crag=0,jigsaw="]) == {"mpr": 10.0, "crag": None, "jigsaw": None}
+
+
+def test_op_capacity_merges_priority(tmp_path):
+    home = A.Home(str(tmp_path))
+    A.write_json(home.p("host.json"), dict(CAP, updated=0))
+    cap = A.op_capacity({"priority": {"mpr": 10}}, home, None, None)["capacity"]
+    assert cap["priority"] == {"mpr": 10.0} and cap["cpus"] == 32
+    cap = A.op_capacity({"priority": {"crag": 3}}, home, None, None)["capacity"]
+    assert cap["priority"] == {"mpr": 10.0, "crag": 3.0}
+    cap = A.op_capacity({"priority": {"crag": None}, "hold_after_s": 900}, home, None, None)["capacity"]
+    assert cap["priority"] == {"mpr": 10.0} and cap["hold_after_s"] == 900
+
+
 # ── the job environment ──
 
 def test_build_env_hides_gpus_from_cpu_jobs(tmp_path):

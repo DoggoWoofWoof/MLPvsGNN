@@ -1268,7 +1268,7 @@ def cmd_status(args):
         return 0
     print_jobs([j], r["now"])
     for k in ("command_line", "waiting", "error", "note", "outputs", "outputs_bytes", "peak_mem_gb", "cpu_s",
-              "leftover_procs", "host"):
+              "leftover_procs", "host", "os_priority"):
         if j.get(k) not in (None, "", 0) or k in ("outputs",) and j.get(k) == 0 and j.get("state") in TERMINAL:
             print("  %-15s %s" % (k, j.get(k)))
     return 0
@@ -1411,10 +1411,31 @@ def cmd_exec(args):
     return int(end.get("rc") or 0)
 
 
+def parse_priority(items):
+    """["mpr=10", "crag=0,jigsaw="] -> {"mpr": 10.0, "crag": None, "jigsaw": None}; 0 or empty resets to the default."""
+    out = {}
+    for item in items:
+        for part in item.split(","):
+            if not part.strip():
+                continue
+            name, eq, val = part.partition("=")
+            name = name.strip()
+            if not eq or not A.NAME_RE.match(name):
+                die("--priority wants PROJECT=NUMBER, got %r" % part)
+            try:
+                num = float(val) if val.strip() else 0.0
+            except ValueError:
+                die("--priority wants PROJECT=NUMBER, got %r" % part)
+            out[name] = None if num == 0 else num
+    return out
+
+
 def cmd_capacity(args):
     proj, remote = context(args, need_project=False)
     req = {"op": "capacity", "cpus": args.cpus, "mem_gb": args.mem, "reserve_cpus": args.reserve_cpus,
            "reserve_mem_gb": args.reserve_mem, "hold_after_s": args.hold, "reset": args.reset}
+    if args.priority:
+        req["priority"] = parse_priority(args.priority)
     cap = remote.call(req, retry_for=30)["capacity"]
     print(json.dumps(cap, indent=1, sort_keys=True))
     return 0
@@ -1468,6 +1489,9 @@ def render_monitor(state, last_ok):
         lines.append("  scheduler: %g/%g cpus, %g/%g GB, %g/%d gpu reserved; %d running, %d queued" % (
             used_c, cap["cpus"] - cap.get("reserve_cpus", 0), used_m, cap["mem_gb"] - cap.get("reserve_mem_gb", 0),
             used_g, len(cap.get("gpus") or []), len(d["active"]), len(d["queue"])))
+        if cap.get("priority"):
+            lines.append("  priority: %s; every other project 0; higher goes first" % ", ".join(
+                "%s %g" % kv for kv in sorted(cap["priority"].items(), key=lambda kv: (-float(kv[1]), kv[0]))))
         rows = [(p, j) for p, jobs in d["projects"].items() for j in jobs]
         rows.sort(key=lambda pj: (pj[1].get("state") not in ACTIVE, -(pj[1].get("created") or 0)))
         for p, j in rows[:18]:
@@ -1850,6 +1874,8 @@ def build_parser():
     s.add_argument("--reserve-cpus", type=float)
     s.add_argument("--reserve-mem", type=float)
     s.add_argument("--hold", type=float, help="seconds before the queue head stops younger jobs overtaking")
+    s.add_argument("--priority", action="append", metavar="PROJECT=N",
+                   help="project priority, higher first (default 0; PROJECT=0 resets); repeatable or comma-separated")
     s.add_argument("--reset", action="store_true")
     s.set_defaults(fn=cmd_capacity)
 

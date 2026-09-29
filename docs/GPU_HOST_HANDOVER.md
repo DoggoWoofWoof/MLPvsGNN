@@ -74,7 +74,7 @@ Whenever your working tree differs from what another session may be running, use
 | path | what it is |
 |---|---|
 | `tools/rx/rx.py` | the CLI (standard library only; Python 3.11+): setup, doctor, push, run, ls, status, logs, wait, fetch, cancel, rerun, env, exec, capacity, gc, monitor, dashboard, watch |
-| `tools/rx/rx_agent.py` | the host agent: answers one request per ssh session and supervises detached jobs (WMI launch, Job Object, heartbeat, FIFO scheduler with backfill) |
+| `tools/rx/rx_agent.py` | the host agent: answers one request per ssh session and supervises detached jobs (WMI launch, Job Object, heartbeat, FIFO scheduler with backfill and project priority) |
 | `tools/rx/README.md` | the full manual: configuration, transport, transfers, jobs, environments, commands, failure modes, network, validation, WSL, security, porting |
 | `tools/rx/test_rx.py` | `python -m pytest tools/rx/test_rx.py -q`, including an end-to-end run on a local pseudo-host |
 | `tools/rx/example.rx.toml` | commented template for another project |
@@ -145,6 +145,8 @@ No ranking decision differed on any arm: 0 of 176 draws changed any metric. That
 - **Data.** Research data goes to no third-party service without consent. Pushing data to the host is a declared step of a declared stage, never a convenience.
 - **Other users.** Other accounts use the machine, and the rx scheduler only knows rx jobs. Before heavy GPU work, check `rx doctor` for GPU utilisation and memory. Never kill a process you did not start. Leave the capacity reserve (2 CPUs, 8 GB) as it is.
 - **Other Claude sessions.** `rx ls` shows jobs launched from every checkout of this project. Never cancel, rerun or garbage-collect a job you did not launch unless the user asks. Use your own `--ws` when your tree differs.
+- **Other projects share the scheduler.** CRAG and Jigsaw sessions on the laptop run this repository's `tools/rx/rx.py` by path, so an agent change here reaches their next job. Jigsaw's `scripts/canonical/launch/lowprio.py` mirrors the scheduler arithmetic and yields to other projects' queued jobs. Run `python -m pytest tools/rx/test_rx.py` before any agent change, and exercise a changed launch path on the host with a one-line job before others reach it.
+- **Priority (set 2026-09-29, at the user's request that mpr have priority wherever possible).** `host.json` holds `priority: {mpr: 10}`, and `rx monitor` prints it. A queued mpr job goes ahead of every other project's queued job. While it cannot fit, other projects start only in what is left after its request is set aside. Jobs of every other project run at below-normal OS priority, so they use the idle machine in full and give way under contention. Nothing running is ever stopped: the rule acts at admission. Supervisors started by an older agent keep the old rule until their jobs end, and WSL payloads are outside the priority class. Change it only on the user's word: `rx capacity --priority mpr=10` sets it and `--priority mpr=0` removes it.
 
 ## How to use it
 
