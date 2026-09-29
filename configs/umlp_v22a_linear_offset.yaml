@@ -1,6 +1,6 @@
 phase: UMLP_V22A_LINEAR_FROZEN_BASE_OFFSET
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: METHOD_CHANGE_RESIDUAL_OFFSET
 motivated_by: >-
   D0.2 (abb7534): D02_R1_LINEARLY_PRESENT -- a linear probe on the twin's 129 columns orders GNN-recovered secondary
@@ -106,3 +106,25 @@ tests:
 
 execution:
   stop_after_this_block: true
+
+run_record_umlp_v22a_2026_09_29:
+  utc: '2026-09-29T00:34:52Z'
+  held_half_read: false
+  fits:
+    u_mlp_v22a_off__H128__s0:
+      best_epoch: 4
+      epochs_run: 6
+      select_macro_recall@5: 0.8463
+      seconds: 3684.6
+      w_l2: 2.538987
+      state_sha256: de5acc3fda02b8fbe40574d4295246c7ce0bedf3fd62705afd5221a75035f37c
+  gates:
+    A:
+      reading: V22A_STAGE_A_FAIL
+      conditions:
+        full_coverage@5_lower_gt_0: false
+        recall@5_mean_ge_0: false
+        hit@1_mean_ge_-0.005: true
+      sha256: 6b1241b7dcffc8becb5bedc6ac2f8a2165ed9da016e4ea9309a1b88c81b8938a
+  document: docs/UMLP_V22A_LINEAR_OFFSET.md
+  status_moves: DECLARED_NOT_RUN -> RUN
