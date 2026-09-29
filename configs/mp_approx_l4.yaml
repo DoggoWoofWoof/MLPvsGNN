@@ -1,0 +1,326 @@
+phase: MP_APPROX_L4
+opened: 2026-09-30
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+track: MP-ORACLE
+extends: >-
+  configs/mp_approx_l3.yaml (RUN at 7106b7e): metaqa L3_LOW, 2wiki L3_HIGH, squad NOT_READ (the control). Level 3's
+  interpretation map named the remaining fixed rungs, "typed paths, neighbour moments", and said each needs its own
+  file. This is the typed-path rung: the ladder's Phi4 = Phi3 + typed path / WL sketches. Level 3's
+  one-hop attention probe is refitted unchanged, and the new question is what compiled multi-hop typed-walk sketches add
+  to it. Level 5 (neighbour moments) is a separate file, declared beside this one. Level 2 stays unopened.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+question: >-
+  Give each candidate a fixed, compiled summary of the typed walks that reach it from the query's seeds in the pool graph
+  the GNN's cell reads (FULL message edges, in their message direction, up to 3 hops), and of its typed in-paths from
+  anywhere in the pool (up to 2 hops). The summary is a count sketch of the walks' edge-token sequences, plus exact walk
+  totals and a path-query match. How much of the trained GNN's residual over its matched twin, and of its edge effect,
+  do these sketches add to level 3's one-hop attention over fixed rows? How much do they recover without any attention?
+  Does the listwise objective change the answer?
+role: >-
+  Measurement only, as at levels 0 to 3. The GNN's outputs are the probes' targets, which the proposal allows "only to
+  measure approximation capacity". No probe, sketch, target or number of this file enters QLS-U, the twin, a feature
+  contract, M3, M4 or any selection. A model that used these sketches without GNN outputs would be a competitor, and it
+  would need its own declaration under the QLS-U contract. This file does not open one.
+
+authorization:
+  given: '2026-09-30, the user: "parallely if you want and have the data, continue and finish l4 and l5 on the host and add those and give complete summary"'
+  ladder_text: >-
+    the advisor's MP-Approx ladder (pasted by the user, 2026-09-29), level 4: "typed path and WL-style kernels",
+    phi_path(q,v) = [relation-sequence sketches, directional walk sketches, typed subtree sketches, query/path semantic
+    similarity], with the examples "r1", "r1 -> r2", "r2^-1 -> r4", "STRUCT -> STRUCT", "STRUCT -> typed", and the
+    instruction to "hash/embed those patterns rather than creating dataset-specific relation-ID parameters"
+  licensed_by: >-
+    the user's message above, which names level 4 directly. Level 3's run record did not fire l3_low_weighting_flat on
+    metaqa (its query_weighting interval lies above 0), so no reading of level 3 opens this file; the user's message does.
+    Level 3's own entries still apply as filed: l3_high on 2wiki licenses the compiled-moment arm, which level 5 carries.
+  go_ahead: >-
+    standing: "keep continuing autonomusly without asking for perms and try to find improvements and pause only at
+    something substancial". This file is committed alone, before any code of the phase runs, and is then run as written.
+  placement_messages:
+    - '2026-09-29, the user: "use the damn host not on laptop"'
+    - '2026-09-29, the user: "you have the highest priority for cpu and gpu you should never wait and finish everything as fast as possible"'
+    - '2026-09-30, the user: "bro you can do these tests on host too"'
+    - answered in placement below
+  terminal: STOP_FOR_REVIEW after the run record. No later level or arm is opened by any reading here.
+
+corrections_to_the_proposal:   # checked against the code before this file was written
+  a_count_sketch_not_an_enumeration: >-
+    The number of distinct typed walks grows as tokens^length, so the walks are not enumerated. Each walk contributes its
+    sign to one bucket of a count sketch, and the bucket and sign are position-wise hashes of its edge tokens: bucket =
+    sum over positions l of h_l(token_l) mod B, sign = product of s_l(token_l) (a tensor sketch of the sequence). This is
+    linear in the walk counts, so a dynamic programme over the message edges computes it exactly, as integers in float64.
+    "r1 -> r2" and "r2 -> r1" use different position hashes and are different sequences.
+  relation_ids_are_hashed: >-
+    A token hashes the family, the two direction flags and the edge's relation slots (dataset-local relation ids, sorted).
+    The probe sees only hash buckets and never a relation-id parameter. The buckets are still dataset-specific in
+    practice, and each dataset is probed on its own, as at every level.
+  wl_as_typed_in_paths: >-
+    A WL colour refined three times is close to unique per node in pools of 40 to 2000 nodes, so a hashed colour would
+    be noise to a probe. The typed-subtree term is therefore the linear WL surrogate: the same sketch over every typed
+    walk that ends at the node, starting anywhere in the pool (lengths 1 and 2). Length 1 is the typed in-degree
+    histogram and length 2 the typed two-step in-paths. Seeds get no special role there. The seed-walk sketch is the
+    query-conditioned part.
+  one_hop_attention_is_refitted_not_borrowed: >-
+    Level 3's L3-att units were fitted on host_gpu_det from level 3's commit. The host-native protocol names one commit
+    per stage, so this file refits L3-att (and B0-mlp) with level 3's own fit_probe, imported unchanged, and files
+    whether each refitted unit is bit-identical to level 3's filed unit (flag L3_REFIT_DIFFERS). No level 3 number is
+    borrowed into a contrast.
+
+this_file_does_not_touch:
+  fits: nothing is fitted except the probes, which are cross-fitted analysis models. No GNN is run, and no checkpoint is read.
+  rows: >-
+    level 0's U_q rows exactly: the same queries (qids.json), the same pool positions (local.npy). V2_HELD_CONFIRMATION
+    rows leave the population before anything is compiled, as at levels 0 to 3. All three eval splits are dev splits;
+    no test row is read.
+  frozen: >-
+    M2-M3B, universal-v2, UMLP D0-D0.3, v2.1, v2.2A, the CPU-GPU equivalence file, the GPU task-level qualification,
+    and levels 0, 1 and 3 (their declarations, scripts, tests, sidecars, probes, records and documents) keep their bytes.
+    Level 0's, level 1's and level 3's scripts are imported unchanged.
+  package: >-
+    the CRAG package is read-only. Nothing is written under its root. Nothing from it enters git, and no package file
+    goes to the host: only this file's compiled sketch array does, as level 3's compiled arrays did.
+  competitors: no probe output, sketch, target or number becomes an input, target, teacher, gate or selection criterion of any retriever
+
+placement:   # under configs/gpu_task_qualification.yaml#host_native_protocol, as at level 3
+  probes_and_read: host_gpu_det
+  host_gpu_det_as_tested: >-
+    quoted from configs/gpu_task_qualification.yaml#placements.candidate.host_gpu_det, not changed: "DESKTOP-SLQMEQH, rx
+    env mpr-cu128@62fc45e9e1ba (torch 2.8.0+cu128, CUDA 12.8), NVIDIA RTX 4500 Ada Generation, driver 596.71; float32
+    only; torch.backends.cuda.matmul.allow_tf32 = False, torch.backends.cudnn.allow_tf32 = False, float32 matmul
+    precision "highest", cudnn.benchmark = False; torch.use_deterministic_algorithms(True, warn_only=True) with
+    CUBLAS_WORKSPACE_CONFIG=:4096:8 set before CUDA starts; every determinism warning recorded". 8 threads.
+  verdicts_relied_on: >-
+    configs/gpu_task_qualification.yaml#run_record_gpu_task_qualification_2026_09_29: host_gpu_det TASK_EQUIVALENT and
+    TRAINING_REPRODUCIBLE. The score-level NOT_EQUIVALENT verdict of configs/cpu_gpu_equivalence.yaml stands, so this
+    stage is host-native.
+  settings_applied_by: level 3's host_placement, imported unchanged (placement_settings("det", 8), read back, checked by environment_problems; any difference is a hard stop)
+  host_native_protocol:
+    same_placement_for_every_comparator: >-
+      every probe this file compares is fitted and evaluated on host_gpu_det, B0-mlp and L3-att included. Both are
+      refitted here as new draws, with level 3's code.
+    identical_inputs: >-
+      level 3's verify_mirror, imported unchanged, re-hashes every level 0 and level 3 file on the host against level
+      3's mirror.json, whose sha256 is pinned below per dataset. This file's own sketch sidecar carries its own
+      mirror.json (transfer below). Both checks run before any probe reads a byte.
+    identical_code: >-
+      every host job runs from one git commit, the commit that adds scripts/mp_approx_l4.py, and records the LF sha256
+      of every repository module it imports. The file stage checks that they are one set, equal to the committed files.
+    identical_checkpoints: no checkpoint is read on the host
+    repeat_check: >-
+      metaqa's (r, L4-att) unit is fitted a second time in a fresh process, after metaqa's grid. The stage files whether
+      its out-of-fold predictions are bit-identical (repeat below).
+    cross_stage_check: >-
+      the refitted (r, B0-mlp), (r, L3-att) and (e, L3-att) units are compared with level 3's filed units of the same
+      names (pinned through level 3's probe_meta.json below). Whether each is bit-identical is filed as a flag. It is
+      reproducibility evidence only, and never enters a contrast.
+    no_cross_machine_numbers: no number of this file is set beside a number made on the laptop
+  laptop_steps: >-
+    the sketch compile, the mirror manifest, the doc and the file stages run on the laptop CPU, at 6 threads. The
+    compile reads the served CRAG pool graph, which exists only on the laptop. The other three make no number.
+  scheduling: >-
+    one rx job per dataset, submitted to the host queue as soon as that dataset's sketch has landed, with mpr's priority
+    10. The GPU is shared by this file's and level 5's jobs. Nothing running is preempted.
+
+transfer:   # a declared step of this stage
+  what: >-
+    per dataset: this file's paths.npy, qids.json and meta.json, and the mirror.json listing them. Level 0's subset and
+    level 3's sidecars are already on the host (level 3's transfer). Nothing else is sent.
+  how: >-
+    rx push --inputs (with --force where a push exceeds push.max_mb 512). Order: metaqa, 2wiki, squad. The code arrives
+    as the git-tracked tree. No token or credential goes to the host.
+  mirror_verification: >-
+    the laptop writes outputs/mp_approx_l4/<name>/mirror.json with the sha256 of every file sent, after checking the
+    compile's arrays against its meta.json. Before any read, the host job recomputes every listed sha256, and it checks
+    paths.npy against the compile's meta.json and level 0's and level 3's files through level 3's verify_mirror. Any
+    difference is a hard stop. The run record pins mirror.json's sha256 as computed on the laptop and on the host.
+
+inputs:   # sha256 of the file bytes unless marked LF; checked before the first read and again at the end of the compile
+  level0:
+    declaration_lf: {path: configs/mp_approx_l0.yaml, sha256: 5df856890d6d1161795174ca4f84216b1bace34dc325eec5106ebccc7cdf3144}
+    script_lf: {path: scripts/mp_approx_l0.py, sha256: de51b154c82a3591e1cc9aefcbdf9c3e5b2965b6ac425d7af53a2c51044bd163}
+    tests_lf: {path: tests/test_mp_approx_l0.py, sha256: fa722b91730ff18867749d76ade44c4ff1c1cb202671474fb97f13992efa50e8}
+    sidecars:
+      metaqa: {dir: outputs/mp_approx_l0/metaqa, meta: d8d618cf128327c8a50fd05eb2f0e368b4adf06397c7805f6fa9d3064caf3e3c, qids: 557ea775c6f6050ed81647c6da6439e8425d615076a6903e67a18d76e090e684}
+      2wiki: {dir: outputs/mp_approx_l0/2wiki, meta: 78225a25ce4a803a035d0f2a1a547c4c69f5d193832da12f596a475edd40ddad, qids: f15a6fa7fcd1e9ee2e659d51003f305502ce5bd593587a64436c5d606eb6bbb7}
+      squad: {dir: outputs/mp_approx_l0/squad, meta: b520ccfb79cb02ec9cc7aa69836f9b600d4e7d55aee9b94536092196065e4a61, qids: ebff2bc610f8c4833992ce95fe55264423f033a82257f7376d246589eca56b57}
+  level1:
+    declaration_lf: {path: configs/mp_approx_l1.yaml, sha256: 6f22e331b67520bbcfe78feee42a99e54c3226f039c3e58af115f8ac2575d85f}
+    script_lf: {path: scripts/mp_approx_l1.py, sha256: b609e69184dcce3e36a4d5a6b3f23d623caab9656b72e7c41f090ffc0c1338a0}
+    tests_lf: {path: tests/test_mp_approx_l1.py, sha256: 720b25e105eb87cc35351b3120b50b1e619fcd90f27d395b57c107a8343c6ff7}
+  level3:
+    declaration_lf: {path: configs/mp_approx_l3.yaml, sha256: a05ec769528297ed00edaffa12cce5dfbc3f1cf8cce36fda324cf4e7432ce936}
+    script_lf: {path: scripts/mp_approx_l3.py, sha256: 5e30b49f27ba2511a6528f8e0815607746471d256f17395863f38ff634c46830}
+    tests_lf: {path: tests/test_mp_approx_l3.py, sha256: 556cf569759212ecbf9301c5b5a06b07a90816fe6d869b200cd79c3eacb1ca10}
+    sidecars:   # level 3's run record: compile meta.json, mirror.json and probe_meta.json, byte sha256
+      metaqa: {dir: outputs/mp_approx_l3/metaqa, meta: 23fd1c11fd7dd099cb950b5d7ac59c9ecae9e64b33dc598a11b52f8c18c1b462, mirror: 049d5cd2c3719895924b5add914c0749e79c0c5acba7ff175bb15955e98d2b91, probe_meta: 6905d694f9888a102d57330cb29c39142a3af81b6a8a67b57c0310222fc27112}
+      2wiki: {dir: outputs/mp_approx_l3/2wiki, meta: 337c140f081fa1a8342a988d04636b306ac4ee730fa7f2234e98d60d1eb3d54f, mirror: 4f2db84a5a1b0d806dd3579a24201e73202555d017d7945bc544583cc2cafb66, probe_meta: 513258a010d6cc8d92af070047402bdfc7d1b029017356ac19d25c266b2a59e3}
+      squad: {dir: outputs/mp_approx_l3/squad, meta: 53fddbe35596c3d4d020d823cccb143ec8efd0c75989cab653bb23618341b65e, mirror: de7c1917942862d24cf419ca09b0dcff0051b2ec3ceb69ab3a8f02dc557792ec, probe_meta: d772dd8afcf25705d6a0e2c0dd6d1148cb8421522bbc7122689cef1d13c48410}
+  placement:
+    qualification_lf: {path: configs/gpu_task_qualification.yaml, sha256: 1ecbe39b35476315d68ca7ef29922756141c3de34599cf9e0b94d3d073efcfbe}
+    equivalence_lf: {path: configs/cpu_gpu_equivalence.yaml, sha256: 9c7b4c11f2ef5a028f549adbb63603c232bc51a4462145a9c33b97edc3a2ddf0}
+    equivalence_script_lf: {path: scripts/cpu_gpu_equivalence.py, sha256: 71ffa5d89619e02f50618287c3891d7fefb0893b693c97c6dc1e8c6ae7a9a390}
+    device_placement_lf: {path: src/mp_retrieval/device_placement.py, sha256: eebc902bfcac629a80256b4434806c47934a1b5b392fc09a3d44d98ece716256}
+  from_earlier_levels: >-
+    level 3's verify_inputs (level 0's and level 1's pins, level 0's sidecars, the JL digest, and on the laptop level 1's
+    meta.json and every pin of level 0's own inputs) runs first, imported unchanged
+
+population:
+  rule: >-
+    level 0's, recomputed through level 1's population_l1, imported unchanged. The scored ids must equal level 0's
+    qids.json in order, and the population rows level 0's q_row.npy.
+  sizes: {metaqa: 2400 queries and 165893 U_q rows, 2wiki: 6290 and 245055, squad: 5841 and 176880}
+  squad: the control, NOT_READ at levels 0, 1 and 3 (the GNN is not above its twin on any metric within U_q)
+
+compile:   # laptop; one pass per dataset, in level 0's query order
+  per_query: >-
+    prepare the pools as level 0 did. Build the query's message edges with the frozen pack_queries_v2 on a single-query
+    record whose x, emb and seedw are zero placeholders (the packer only copies them; the edges and their v2 attributes
+    depend on the pool, the stores and qemb alone). Seeds are the query's prepared seeds as pool positions, and every
+    seed must be a pool member.
+  graph: the FULL message edges u -> v (structural, ner, knn, in packed order, duplicates kept), as the cell reads them
+  token: >-
+    per edge, a 64-bit hash (splitmix64 chaining) of (family, dir_fwd > 0.5, dir_bwd > 0.5, the four relation slots as
+    dataset-local ids sorted ascending, -1 for an empty slot). Position hashes, for position l in 1..3: h_l = mix(token
+    xor salt_h[l]) and s_l = +1 or -1 from the top bit of mix(token xor salt_s[l]); the salts are constants of the script.
+  block:   # per U_q row; float16; 267 columns
+    seed_walk_sketch: >-
+      L = 1, 2, 3, B = 64 each (192): S_0 = e_0 at every seed (weight 1 per seed); S_L(v) = sum over message edges
+      u -> v of s_L(token) * roll(S_{L-1}(u), h_L(token) mod 64). Every walk of length L from a seed to v contributes its
+      sign to its bucket. Stored as sign(S) log1p(|S|).
+    subtree_sketch: >-
+      L = 1, 2, B = 32 each (64): the same recursion with T_0 = e_0 at every pool node, so every typed walk of length L
+      that ends at v counts, from any start (h_L mod 32). Stored as sign(T) log1p(|T|).
+    walk_totals: log1p of the number of walks of length L from the seeds (L = 1, 2, 3) and from anywhere (L = 1, 2) (5)
+    path_query_match: >-
+      over the walks of length L from the seeds (L = 1, 2, 3), the walk's mean rel_compat (the edge attribute: 0 on ner
+      and knn edges and on datasets without relation text), averaged over the walks and maximised over the walks (6).
+      0 where no walk reaches v.
+    arithmetic: >-
+      the sketches and totals are integers held exactly in float64 (every count is far below 2^53), so they do not depend
+      on summation order. The path-query sums are float64 accumulated in edge order, and the maxima are exact.
+  integrity:
+    rows: the pool size equals level 0's q_pool_size, and the in-pool golds equal level 0's U_q rows with is_gold, as positions
+    graph: >-
+      the packed edges into the query's U_q rows reproduce level 3's stored entries exactly: level 3's query_entries,
+      imported unchanged, run on this pass's batch, must give level 3's ent_row, ent_halo, ent_family, ent_attr (float16)
+      and ent_slots for the query, and level 3's halo size and row_halo. The sketch therefore reads the graph level 3's
+      attention read.
+    seeds: every prepared seed is a pool member
+    on_mismatch: hard stop at the first mismatch, naming the query; no tolerance is added afterwards
+  outputs: >-
+    outputs/mp_approx_l4/<name>/: paths.npy (float16, U_q rows x 267, level 0's row order), qids.json, and meta.json
+    with the array's sha256, the column names, the integrity counts and the sizes; then mirror.json
+
+probe:   # host_gpu_det; cross-fitted with level 0's five folds and its inner split (imported unchanged)
+  inputs_per_row: >-
+    b_v, n_u, eps_e and q_tilde exactly as level 3 builds them (level 3's ProbeData, imported unchanged). p_v: the row's
+    267 path columns, standardised with level 0's rule (per fold, the training queries' U_q rows only; float64, two
+    passes; sd < 1e-6 gives 0; clipped to [-8, 8]).
+  L3_att: level 3's probe, refitted with level 3's fit_probe (imported unchanged)
+  B0_mlp: level 0's ProbeMLP on b_v, refitted with level 3's fit_probe (imported unchanged)
+  L4_mlp: level 0's ProbeMLP on [b_v | p_v] (258 + 267), no attention
+  L4_att: >-
+    level 3's L3-att with the readout's input widened to [b_v | p_v | m_v] (258 + 267 + 64). The attention's scores,
+    values and heads are level 3's, and so is their initialisation for the same seed (the wider readout is drawn after
+    them).
+  objectives: level 3's MSE and LIST, unchanged (LIST on r only; no gold enters any loss)
+  fitting: level 3's (seed 1000 + 10 k + fold; AdamW lr 1e-3, weight decay 1e-4; 64 queries per minibatch; at most 30 epochs; patience 3; best epoch restored)
+  grid:
+    r_k: [B0-mlp, L4-mlp, L3-att, L4-att, L4-list]   # -list: the LIST objective; every other probe MSE
+    e_k: [L3-att, L4-att]
+  units: >-
+    one unit per (target, probe): the three seeds times five folds, written atomically with its fit log and skipped on
+    a restart. The order within a job: r's L4-att first, then the rest of r's grid, then e's.
+  repeat: metaqa's unit (r, L4-att) again in a fresh process into repeat/; bit-identity and the largest absolute difference filed
+
+quantities: >-
+  level 0's, computed by level 0's functions (per_query_measures, read_family, reproducibility, strata_masks) over this
+  file's probes, with level 0's bootstrap: one resample matrix per dataset (1000 resamples, default_rng(0)), so every
+  contrast is paired. References: ref:twin, ref:other_seed (r) and ref:no_edge, ref:other_seed (e), as level 0 computes them.
+statistics:
+  contrasts:   # point and 95% interval of the paired difference of rho_bar
+    paths_over_attention: rho_bar(L4-att) - rho_bar(L3-att) on r -- the typed-walk sketches added to one-hop attention over fixed rows
+    paths_over_node_local: rho_bar(L4-mlp) - rho_bar(B0-mlp) on r -- the sketches added to node-local features, with no attention
+    paths_vs_attention: rho_bar(L4-mlp) - rho_bar(L3-att) on r -- an attention-free readout of the sketches against one-hop attention
+    objective_paths: rho_bar(L4-list) - rho_bar(L4-att) on r
+    edge_paths_over_attention: rho_bar(L4-att) - rho_bar(L3-att) on e
+
+readings:   # filed before any number; per dataset, no pooled reading
+  primary_probe: L4-att on r_k (the MSE objective, as the primary of every earlier level)
+  bands:   # of rho_bar, level 0's thresholds
+    L4_HIGH: rho_bar >= 0.75 and its interval's lower end >= 0.50
+    L4_LOW: rho_bar <= 0.25 and its interval's upper end <= 0.50
+    L4_MID: neither
+    NOT_READ: the dataset has no readable metric (squad is expected here; the control, not a failure)
+  exactly_one: per dataset, the band of the primary probe is the dataset's reading
+  flags:
+    FIT_NOT_RANK: a probe with R2 >= 0.5 whose band is L4_LOW
+    SEED_BOUND: mean reproducibility of r below 0.5
+    REPEAT_DIFFERS: the repeated unit is not bit-identical (its largest difference is filed)
+    L3_REFIT_DIFFERS: a refitted unit is not bit-identical to level 3's filed unit of the same name (the unit and its largest difference are filed)
+  interpretation_map:   # every entry that applies is listed; they are not exclusive, and none opens a stage
+    l4_high: >-
+      primary L4_HIGH: one-hop attention over fixed rows plus compiled typed-walk sketches predicts the GNN's ranking
+      effect within U_q on that dataset (an upper bound, not a full-pool claim)
+    l4_paths_add: >-
+      the paths_over_attention interval above 0: typed multi-hop walk structure from the seeds carries part of the GNN's
+      ranking effect that one-hop attention over fixed rows does not
+    l4_paths_flat: >-
+      the paths_over_attention interval reaches 0 or below: on that dataset the compiled typed-walk sketches add nothing
+      measurable to one-hop attention. With a primary of L4_LOW, the fixed rungs through level 4 do not reproduce the
+      GNN's ranking effect even with oracle access to its outputs.
+    paths_node_local_adds: the paths_over_node_local interval above 0 -- the sketches add to node-local features without any attention
+    paths_not_below_attention: >-
+      the paths_vs_attention interval's upper end at or above 0: an attention-free MLP on node-local features and the
+      compiled sketches is not measurably below one-hop attention on that dataset
+    objective_adds: the objective_paths interval above 0 -- the objective limits recovery, not only the features
+    edge_effect_paths: the band of L4-att on e is L4_HIGH, or edge_paths_over_attention's interval lies above 0
+  wording: >-
+    every probe is an oracle fit on the GNN's own outputs over V2_GATE queries of the same dataset. Recovery is a
+    statement of capacity within U_q, never of a deployable model. No reading may be phrased as "message passing is
+    unnecessary", "we do not need message passing" or "the MLP wins"; low and high recovery are both results.
+
+compute:
+  compile: >-
+    laptop, 6 threads, one lane per dataset, up to three at once. Level 1's pool pass took 7.1, 4.7 and 2.5 min; the
+    sketch adds a few passes over about 11,000 (metaqa) or 500 (2wiki, squad) edges per query, so about 5 to 15 min
+    per dataset
+  sizes: 534 bytes per U_q row -- about 89 MB (metaqa), 131 MB (2wiki) and 94 MB (squad)
+  probes: >-
+    per dataset, 7 units of 15 fits on the GPU (metaqa 8 with the repeat), four of them attention units like level 3's,
+    so about level 3's probe time
+  disk: host workspace outputs/mp_approx_l4/ and laptop outputs/mp_approx_l4/, git-ignored
+  resumable: every compile chunk and every probe unit is written atomically and skipped on a restart
+
+hard_stops:   # on any: file hard_stop_<date> with the evidence, leave the status line, report
+  - any pin in inputs fails, level 0's and level 3's included
+  - the population digest or count, the ids, the halves or the population rows differ from the declared or level 0's
+  - a held, select, fit or test row would be compiled
+  - integrity.rows, integrity.graph or integrity.seeds fails
+  - mirror_verification fails (this file's or level 3's), or a host job's placement settings read back differently from host_gpu_det_as_tested
+  - the host jobs' recorded code sha256 values are not one set equal to the committed files
+
+outputs:
+  script: scripts/mp_approx_l4.py (stages compile, mirror, probe, repeat, read, run, doc, file)
+  sidecars: outputs/mp_approx_l4/<name>/ (paths.npy, qids.json, meta.json, mirror.json; probes/ with the out-of-fold predictions, fit logs and probe_meta.json; repeat/; read.json)
+  record: outputs/mp_approx_l4/record.json, assembled on the laptop from the host's per-dataset read.json files without arithmetic
+  document: docs/MP_APPROX_L4.md
+  run_record: run_record_mp_approx_l4_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN
+
+tests:   # tests/test_mp_approx_l4.py
+  - this file parses; its pins are the files' current sha256; the placement spec is level 3's
+  - on small random typed graphs the seed-walk and subtree sketches, the walk totals and the path-query mean and max equal a brute-force enumeration of the walks
+  - the sketches are invariant to the order of the edges, and a token is invariant to the order of its slots
+  - reversing a two-edge typed path changes its bucket or sign pattern (position hashes differ)
+  - the block has 267 columns with the declared names; a row no walk reaches has zero sketches and totals
+  - L4-att's attention parameters initialise as L3-att's for the same seed, and its forward with p_v set to 0 and the extra readout columns zeroed equals L3-att's
+  - the bands carry the L4 labels; the contrasts are the declared pairs; the refit comparison is bitwise
+  - no held query id appears in any sidecar
+
+execution:
+  order: >-
+    this file alone (commit); the script and tests (commit); compile metaqa, 2wiki, squad (laptop); mirror and push
+    each dataset's sketch; one host job per dataset (probe, metaqa's repeat, read), each submitted as its data lands;
+    fetch; record, doc and run record on the laptop (commit)
+  stop_after_run: STOP_FOR_REVIEW
