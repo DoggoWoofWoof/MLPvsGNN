@@ -4,8 +4,8 @@ This guide is for any Claude session, or any person, that wants to use the lab G
 
 ## Read this first
 
-1. **Science runs on the host only where the equivalence test passed and a stage names it.** That covers fits, evaluations, selections and any number that enters a result. A stage can run there only after two things:
-   - [`configs/cpu_gpu_equivalence.yaml`](../configs/cpu_gpu_equivalence.yaml) has run and passed for that placement;
+1. **Science runs on the host only where a placement test passed and a stage names it.** That covers fits, evaluations, selections and any number that enters a result. A stage can run there only after two things:
+   - [`configs/cpu_gpu_equivalence.yaml`](../configs/cpu_gpu_equivalence.yaml) (host CPU) or [`configs/gpu_task_qualification.yaml`](../configs/gpu_task_qualification.yaml) (host GPU, host-native stages only) has run and passed for that placement;
    - a dated authorization block of the stage names that placement.
 
    The test ran on 2026-09-29 ([`docs/CPU_GPU_EQUIVALENCE.md`](CPU_GPU_EQUIVALENCE.md)). **Host CPU** (`mpr-cpu@31803e6457ab`, 8 threads): `EQUIVALENT_WITHIN_TOLERANCE`, so it is nameable. **Host GPU**: `NOT_EQUIVALENT` at score level in both modes. The route back that the equivalence file names is a new declaration. That declaration is [`configs/gpu_task_qualification.yaml`](../configs/gpu_task_qualification.yaml), which ran the same day ([`docs/GPU_TASK_QUALIFICATION.md`](GPU_TASK_QUALIFICATION.md)). **`host_gpu_det` is `TASK_EQUIVALENT` and `TRAINING_REPRODUCIBLE`**, so it is nameable as a **host-native** placement: every arm a stage compares runs on the host GPU, and its numbers are never compared with laptop numbers (see "The result" below). No stage has named the host yet. Everything else on the host is tests, environment builds, benchmarks and systems validation.
