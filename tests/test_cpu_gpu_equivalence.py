@@ -52,7 +52,9 @@ def _report():
         out = ROOT / "outputs" / "cpu_gpu_equivalence" / "device_path_tests"
         out.mkdir(parents=True, exist_ok=True)
         dev = "cuda" if CUDA else "cpu"
-        body = {"utc": E.utc(), "placement": D.placement_block(dev), "cuda_available": CUDA, "seen": REPORT}
+        body = {"utc": E.utc(), "placement_at_teardown": D.placement_block(dev), "cuda_available": CUDA, "seen": REPORT,
+                "sha256_lf": {rel: E.lf_sha256(ROOT / rel) for rel in ("tests/test_cpu_gpu_equivalence.py", "src/mp_retrieval/device_placement.py",
+                                                                       "scripts/cpu_gpu_equivalence.py")}}
         (out / f"{platform.node()}__{dev}.json").write_text(json.dumps(E.jsonable(body), indent=1, default=str), encoding="utf-8")
 
 
@@ -85,6 +87,7 @@ def det_cuda():
     """The host_gpu_det settings for one test, the process's own settings restored afterwards."""
     before = _flags()
     D.placement_settings("det", 8)
+    REPORT["settings_under_test"] = D.placement_block("cuda")
     yield
     _restore(before)
 
@@ -412,6 +415,12 @@ def test_a_cuda_fit_checkpoints_cpu_tensors_and_resumes_to_the_uninterrupted_fit
 def test_the_cuda_evaluation_is_the_cpu_evaluation_away_from_near_ties(world, det_cuda):
     torch.manual_seed(5)
     cpu_model = _gat().eval()
+    with torch.no_grad():
+        # off the step-0 identity: an untrained readout returns the base z-score, whose exact ties would leave no query
+        # to compare. With pools of ~190 candidates spread over ~6 score units, about a third of the queries still hold
+        # a near tie at twice the forward tolerance
+        for q in cpu_model.parameters():
+            q.add_(0.3 * torch.randn_like(q))
     gpu_model = D.model_to(copy.deepcopy(cpu_model), "cuda")
     seen = {}
     with warnings.catch_warnings(record=True) as caught:
@@ -430,7 +439,9 @@ def test_the_cuda_evaluation_is_the_cpu_evaluation_away_from_near_ties(world, de
                     ties.append(i)
                 elif not same:
                     differing.append(i)
-            seen[name] = {"queries": int(data.n_queries), "near_ties": len(ties), "differing_without_a_near_tie": differing}
+            seen[name] = {"queries": int(data.n_queries), "near_ties": len(ties), "compared": int(data.n_queries) - len(ties),
+                          "differing_without_a_near_tie": differing}
             assert differing == [], (name, differing)
+            assert data.n_queries - len(ties) >= 0.5 * data.n_queries, seen[name]       # the comparison is not vacuous
     seen["determinism_warnings"] = sorted({str(w.message) for w in caught if "determinis" in str(w.message).lower()})
     REPORT["cuda_evaluation"] = seen
