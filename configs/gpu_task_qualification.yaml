@@ -1,0 +1,259 @@
+phase: GPU_TASK_QUALIFICATION
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: PLACEMENT_QUALIFICATION
+extends: >-
+  configs/cpu_gpu_equivalence.yaml (RUN at 3872cd6). Its verdict on host_gpu_det was NOT_EQUIVALENT under the
+  score-level tolerance: 2 of 3,993 cells failed, both T1 and both u_mlp_v2_mix__H128__s1, with a largest ratio of 1.28.
+  The repeat was bit-identical, every T2 cell held, and 0 of 176 draws differed in any of the 14 metrics for any model.
+  That file's what_a_verdict_opens.fail names two routes: "a new arm (placement_arms_added_later) or a new
+  declaration". This file is the new declaration. It relaxes no tolerance of that file, edits nothing in it, and leaves
+  its verdicts standing. host_gpu_default stays barred and is not re-tested here.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+qualification_question: >-
+  Consider fresh probe draws that no earlier reading has seen. Does the lab host's GPU, in the tested determinism mode,
+  make the same retrieval decisions as the laptop CPU for the frozen universal-v2 models? Here "the same decisions"
+  means the same top-1 candidate and the same top-5 set per query, and therefore the same R@5, FullCov@5 and Hit@1. And
+  does the GPU compute those decisions reproducibly, both in evaluation and along a training trajectory?
+role_for_the_registered_question: >-
+  None directly. This file decides only where later stages may run and which readings may cross placements. It fits
+  nothing and selects nothing. Metric values on fit-carve queries are computed only to compare one placement with
+  another; their levels are never tabulated, reported or read.
+
+authorization:
+  advisor_ruling: >-
+    2026-09-29, pasted by the user: "Do not treat the failed historical cross-machine equivalence check as a permanent
+    ban on GPU science. After L1 finishes, diagnose and qualify the remote GPU." Qualification is to be task-level and
+    defined prospectively -- top-k agreement, R@5, FullCov@5, Hit@1, rather than bitwise score equality -- with three
+    outcomes: the scores match within tolerance; the scores differ but the rankings and metrics match (fine); or the
+    rankings differ (diagnose). "Do not compare a newly generated GPU number directly against an old laptop number
+    unless cross-machine equivalence has been established." For the next computational phase: "prefer a host-native
+    protocol".
+  user: >-
+    2026-09-29: "make sure you completly use the cpu and gpu of the host and even after that you want laptop cpu use
+    that as well, but make sure you complete your tasks fastest"; later "you have the highest priority for cpu and gpu
+    you should never wait and finish everything as fast as possible". The standing rule is to declare and then run in
+    the same turn.
+  this_commit: >-
+    the declaration, the script and its tests, filed before any number exists. No fresh bundle has been packed and no
+    arm has run.
+  timing: >-
+    The L1 probes of configs/mp_approx_l1.yaml are running on the laptop while this file is written. This file computes
+    nothing on the laptop until the laptop has memory for it, and its laptop arms run after the L1 probe lanes exit. The
+    host arms share no resource with L1 and run as soon as the bundle reaches the host.
+
+this_file_does_not_touch: >-
+  configs/cpu_gpu_equivalence.yaml and its record, bundle and arms; every M2-M3B, universal-v2, UMLP and MP-Approx
+  file, array and checkpoint; the test, held and V2_HELD_CONFIRMATION splits; the CRAG package.
+
+placements:   # the settings are those of configs/cpu_gpu_equivalence.yaml#placements, quoted and not changed
+  reference:
+    laptop_cpu_t8: the laptop, Python 3.13.5, torch 2.8.0+cpu, numpy 2.3.2, 8 threads -- as in the equivalence file
+  floor:
+    laptop_cpu_t4: the same machine at 4 threads -- as in the equivalence file
+  candidate:
+    host_gpu_det: >-
+      DESKTOP-SLQMEQH, rx env mpr-cu128@62fc45e9e1ba (torch 2.8.0+cu128, CUDA 12.8), NVIDIA RTX 4500 Ada Generation,
+      driver 596.71; float32 only; torch.backends.cuda.matmul.allow_tf32 = False, torch.backends.cudnn.allow_tf32 =
+      False, float32 matmul precision "highest", cudnn.benchmark = False; torch.use_deterministic_algorithms(True,
+      warn_only=True) with CUBLAS_WORKSPACE_CONFIG=:4096:8 set before CUDA starts; every determinism warning recorded
+  repeat:
+    host_gpu_det_r2: host_gpu_det again in a fresh process, held to every gate (every_process)
+  reported_beside_never_gating:
+    host_cpu_t8: >-
+      DESKTOP-SLQMEQH, rx env mpr-cpu@31803e6457ab (torch 2.8.0+cpu), Windows native, 8 threads -- the placement the
+      equivalence file passed. Beside host_gpu_det it separates the device from the machine: it is the same host,
+      bundle and bytes, on the CPU.
+    host_gpu_tf32: >-
+      a diagnosis arm, never a candidate, never opened by any verdict: host_gpu_det with
+      torch.backends.cuda.matmul.allow_tf32 = True, torch.backends.cudnn.allow_tf32 = True and float32 matmul precision
+      "high". TF32 is the one setting on the advisor's list that no filed arm has measured; this arm shows its size on
+      the same draws.
+  one_process_per_arm: every arm is one process reading the same bundle. It sets its settings, reads them back and records them.
+
+object_under_test:
+  models: >-
+    the six checkpoints of configs/cpu_gpu_equivalence.yaml#object_under_test.models -- u_gnn_v2_ef__H128__six__s0-s2 and
+    u_mlp_v2_mix__H128__s0-s2 -- pinned by weights and record sha256 in that file. Every arm checks them against those
+    pins, along with the relation bank (7,067 rows, sha256 57d34d36...), the contract (core sha256 8d1da88b..., 129
+    columns) and the parameter counts (420,932 and 330,955). A mismatch is a hard stop.
+  frozen_code: >-
+    configs/cpu_gpu_equivalence.yaml#frozen_code, all twelve files, checked in every arm. The equivalence script
+    (scripts/cpu_gpu_equivalence.py) is imported unchanged for its pins, packing, T1 forward and helpers. Its LF sha256
+    is pinned here: 71ffa5d89619e02f50618287c3891d7fefb0893b693c97c6dc1e8c6ae7a9a390.
+  scope: >-
+    A pass is evidence about these two families on these six datasets' inputs: typed relation cells with evidence flow,
+    untyped passage graphs, the gated input block, the MLP body, and the scatter, softmax and matmul kernels under them.
+    Any other model a later stage runs on the GPU is covered by host_native_protocol below, not by this pass alone.
+
+probe:
+  batches: >-
+    the stage-2 draw for seed 0, replayed exactly as the equivalence file replayed it (numpy default_rng(0), one
+    permutation of each fit carve's trainable queries in sorted dataset order, then draw_indices with batch 16 and
+    dataset_draw per_query). This probe takes the batches AFTER the equivalence probe's 11: batch 11 onward. 16
+    batches (11-26, 256 query draws) are packed, and the size cap below decides how many are kept.
+  fresh: >-
+    No arm, reading or document has seen these draws. The equivalence bundle stage packed batches 11-15 before its size
+    cap deleted them, and no arm ever scored them. The bundle stage refuses (hard stop) if any (dataset, fit_index) of
+    this probe is also a draw of outputs/cpu_gpu_equivalence/bundle/draws.json.
+  packing: >-
+    on the laptop, by the frozen code (scripts/universal_v2_six.open_six, fit kind; CarveDataV2.pack via
+    m3b_train.pack_parts), with each fit carve checked against configs/cpu_gpu_equivalence.yaml#probe.fit_carves_sha256
+    before a row is read. Fit-carve rows only.
+  size_cap: >-
+    1.0 GB, applied as in the equivalence file: if the bundle exceeds it, B drops to the largest value >= 8 whose bundle
+    fits. B and the per-dataset draw counts go into bundle/manifest.json before any arm starts, and every arm uses them.
+  bundle: >-
+    outputs/gpu_task_qualification/bundle/: the B PackedBatch files, the relation bank, the model inputs, draws.json, and
+    manifest.json with the sha256 of every file and of every field of every reconstructed batch. Git-ignored.
+  transfer: >-
+    rx push with --inputs for outputs/gpu_task_qualification/bundle/**, sent with --force: it exceeds push.max_mb 512,
+    and that guard is a convenience while this push is declared here. The code arrives as the git-tracked tree. The
+    checkpoints are already on the host from the equivalence push, and every arm verifies them by sha256. Nothing else is
+    sent, and no token or credential goes to the host.
+
+tiers:
+  T1_forward: >-
+    configs/cpu_gpu_equivalence.yaml#tiers.T1_forward, run by that script's tier_forward, imported unchanged. Every model
+    runs in eval() under no_grad on every probe batch. Per query draw it keeps the raw scores, the centred scores and the
+    14 METRIC_NAMES of rank_metrics.
+  T5_train_repeat: >-
+    new, and run only on host_gpu_det and host_gpu_det_r2. For seed 0 of each family: model.train() (dropout on),
+    torch.manual_seed(0) (which also seeds CUDA), a fresh AdamW at the frozen lr 1e-3, weight decay 1e-4 and clip 1.0,
+    taking the B probe batches as consecutive steps, the way fit_model steps. It keeps the loss at every step, the
+    sha256 of the final state_dict, and the centred eval-mode scores on every probe draw after the last step. It is
+    fit_model's arithmetic, not a fit: the weights are discarded.
+  T4_clock: the forward wall clock per batch (CUDA synchronised) -- systems only, never a gate
+  inventory: >-
+    every arm records torch.__config__.show(), torch.__config__.parallel_info(), the CUDA and cuDNN versions, the driver,
+    the device capability, the numpy and torch_geometric versions, the settings read back, and whether autocast is
+    active (it must not be)
+
+criteria:   # filed before the fresh bundle exists; the reference is laptop_cpu_t8
+  score_cells: >-
+    forward_inherited, unchanged: per query draw, elementwise |a - b| <= 1e-5 + 1e-5 * |b| on centred scores, where b is
+    the reference
+  order: >-
+    the frozen rank_metrics order: descending score, with ties broken by pool position (np.argsort(-s, kind="stable")).
+    top1 is the first candidate in that order and top5 is the set of its first five.
+  near_tie_swap: >-
+    For k in {1, 5}, let R be the reference's top-k set and X the arm's. The draw differs at k when X != R. The
+    difference is excused when every candidate that left R and every candidate that entered it are near-tied in the
+    reference: for each i in R \ X and j in X \ R, c_i - c_j < 2 * (1e-5 + 1e-5 * max(|c_i|, |c_j|)), where c are the
+    reference's centred scores. That is twice the forward tolerance: two scores that each hold forward_inherited can
+    swap only across such a gap. So an arm within score tolerance changes top1 or top5 only by excused swaps, and an
+    excused draw is one whose order the tolerance itself leaves undetermined. The pair is checked, not merely the
+    boundary: a reference near tie at rank k does not excuse a third candidate jumping into the top k. A draw with k
+    or fewer candidates has the whole pool as its top-k set.
+  Q_DET: host_gpu_det_r2's raw T1 scores equal host_gpu_det's (torch.equal) for all six models on every draw.
+  Q_RANK: >-
+    For every model, every draw, both host_gpu_det runs and the floor: top1 equals the reference's top1 or differs by an
+    excused swap (near_tie_swap at k = 1), and the top5 set equals the reference's or differs by excused swaps
+    (near_tie_swap at k = 5). Any other difference is a ranking difference.
+  Q_METRIC: >-
+    For every model, every draw and both runs: recall@5, full_coverage@5 and hit@1 equal the reference's, except on a
+    draw excused under Q_RANK. Q_RANK implies it, since the three metrics are functions of the top5 set and top1. It is
+    checked on its own as a guard on the code, and reported per model and dataset as the difference of means with the
+    number of draws that differ.
+  Q_TRAIN_DET: host_gpu_det_r2's T5 equals host_gpu_det's bit for bit -- every step loss, the final state_dict sha256 and the final centred scores
+  floor_first: laptop_cpu_t4 goes through score_cells, Q_RANK and Q_METRIC against the reference before any candidate is read
+
+verdicts:   # exactly one evaluation verdict and one training verdict for host_gpu_det; the first that holds
+  evaluation:
+    NOT_REPRODUCIBLE: Q_DET fails
+    SCORE_EQUIVALENT: >-
+      every score cell holds on both runs -- the advisor's first outcome. Q_RANK and Q_METRIC then hold by construction,
+      and the read checks that they do.
+    TASK_EQUIVALENT: >-
+      some score cell fails on a run, but Q_RANK and Q_METRIC hold on both runs. This is the advisor's second outcome:
+      the scores differ and the rankings and metrics match.
+    RANKING_DIFFERS: >-
+      a draw is a ranking or metric difference on a run of host_gpu_det, and the floor does not show the same difference
+      on the same (model, draw). This is the advisor's third outcome. The placement stays barred, and diagnosis.localize
+      opens as its own file.
+    INCONCLUSIVE_FLOOR: every ranking or metric difference of host_gpu_det is also one of the floor's
+  training:
+    TRAINING_REPRODUCIBLE: Q_TRAIN_DET holds
+    TRAINING_NOT_REPRODUCIBLE: Q_TRAIN_DET fails -- no fit may be placed on the GPU, whatever the evaluation verdict
+  wording: >-
+    A pass says that on fresh draws this GPU mode makes the laptop's retrieval decisions for these models, and makes
+    them repeatably. It never says that a GPU fit reproduces a laptop fit: a fit's thousands of steps compound rounding
+    differences, and placement_rules.new_seeds of the equivalence file stands unchanged.
+
+what_a_verdict_opens:
+  SCORE_EQUIVALENT_or_TASK_EQUIVALENT: >-
+    host_gpu_det, with exactly the settings above, becomes NAMEABLE as an EVALUATION placement for frozen checkpoints.
+    Its per-query decisions and its R@5, FullCov@5 and Hit@1 may stand beside laptop evaluations of the same
+    checkpoints, with each number's placement named beside it; score-level values never cross placements. With
+    TRAINING_REPRODUCIBLE also holding, it becomes NAMEABLE as the placement of a host-native stage (below). Naming
+    happens in a later dated authorization block of a declared stage, which quotes the settings verbatim and runs
+    mirror_verification (configs/cpu_gpu_equivalence.yaml) for the data it reads. A verdict opens no stage by itself.
+  RANKING_DIFFERS_or_INCONCLUSIVE_FLOOR_or_NOT_REPRODUCIBLE: >-
+    host_gpu_det stays barred. No criterion is relaxed under this file; the routes are diagnosis.localize and then a
+    new declaration.
+  host_cpu_t8_and_host_gpu_tf32: reported beside; no verdict here changes what the equivalence file opened for host_cpu_t8, and host_gpu_tf32 is never opened
+
+host_native_protocol:   # binds every later stage placed on the host GPU; the advisor's protocol, filed now
+  same_placement_for_every_comparator: >-
+    Every arm whose numbers the stage compares -- the new arm and every baseline, control and comparator -- is fitted
+    (if it is fitted) and evaluated on the same host placement, in the same env and with the same settings. A comparator
+    filed earlier on the laptop is re-run on the host as a new draw; it is not borrowed.
+  identical_inputs: >-
+    the stage's frozen inputs, pushed as a declared step of the stage, match their laptop copies byte for byte by sha256
+    (mirror_verification) before any arm reads them
+  identical_code: every arm of the stage runs from one git commit, recorded in each record
+  identical_checkpoints: every frozen checkpoint the stage reads is pinned by sha256 and checked on the host before use
+  repeat_check: >-
+    the stage runs one declared arm twice in fresh processes and files whether the repeat is bit-identical, as Q_DET
+    and Q_TRAIN_DET do here
+  no_cross_machine_numbers: >-
+    a number made on the host GPU is never compared directly with a number made on the laptop. The one exception is an
+    evaluation of the same frozen checkpoint read at the task level (R@5, FullCov@5, Hit@1, top-k), after
+    SCORE_EQUIVALENT or TASK_EQUIVALENT and with both placements named.
+
+diagnosis:
+  inventory: >-
+    Every arm records the inventory. The document tabulates what is identical by construction (bundle bytes, weights,
+    dtype float32, TF32 off, no autocast, torch 2.8.0, the settings read back) and what differs: the kernels -- MKL and
+    oneDNN GEMM on the CPU against cuBLAS; sequential index_add on the CPU against the deterministic CUDA scatter.
+  same_host: host_cpu_t8 against host_gpu_det on one host, and each against the reference, separates the device from the machine
+  tf32: host_gpu_tf32 shows the size of the setting the candidate keeps off
+  score_cells: >-
+    per model, the failing score cells, the largest ratio |a - b| / (1e-5 + 1e-5 |b|), and whether each failing cell's
+    draw keeps its top1 and top5 -- for the candidate, the floor and host_cpu_t8
+  localize: >-
+    Only on RANKING_DIFFERS, and as its own file: forward hooks on every leaf module for the first differing draws,
+    candidate against reference, naming the first module whose output leaves tolerance. It is not run under this file.
+
+hard_stops:   # on any of these: file hard_stop_<date> with the evidence, leave the status line where it is, and report
+  - any pin fails (bundle file or field, checkpoint, record, bank, contract, frozen_code, fit carve, parameter count, the imported script's sha256)
+  - a draw of this probe is a draw of the equivalence probe
+  - an arm's environment is not the one declared for it, or autocast is active
+  - a frozen model would have to be edited to run
+  - a select, eval, held or test row would be packed, scored or read
+  - anything beyond probe.transfer would have to go to the host, or a token or credential would be needed there
+  - the floor arm cannot run
+
+compute:
+  laptop: the bundle (the six contexts opened once, fit kind; about a minute), then laptop_cpu_t8 and laptop_cpu_t4 (T1 only, about a minute each)
+  host: >-
+    two rx jobs, submitted together once the push lands. The first is -p gpu (1 GPU, 8 CPUs), running host_gpu_det,
+    host_gpu_det_r2 and host_gpu_tf32 in order, one process each. The second runs host_cpu_t8 at --cpus 8. Results
+    land under outputs/gpu_task_qualification/arms/<arm>/ and come back with rx fetch. Minutes of host time, plus
+    about 14 minutes of upload.
+  fit_hours: 0
+
+outputs:
+  script: scripts/gpu_task_qualification.py (stages bundle, arm, arms, read, doc, file)
+  tests: >-
+    tests/test_gpu_task_qualification.py covers: the near-tie and top-k rules on toy scores, including ties broken by
+    pool position; the ladder order and the floor logic; the probe window starting after the equivalence probe, with
+    the overlap refusal; the pins against configs/cpu_gpu_equivalence.yaml; and the imported script's sha256
+  sidecars: outputs/gpu_task_qualification/bundle/, outputs/gpu_task_qualification/arms/<arm>/, outputs/gpu_task_qualification/record.json
+  document: docs/GPU_TASK_QUALIFICATION.md
+  run_record: run_record_gpu_task_qualification_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN
+  pointers_updated_on_run: docs/GPU_HOST_HANDOVER.md and tools/rx/README.md point at the verdicts
+
+execution:
+  order: script and tests; commit; bundle; push; host GPU job and host CPU job; laptop arms after the L1 probe lanes exit; fetch; read; document; run record; commit
+  go_ahead: the standing rule to declare and run in the same turn, and the messages quoted under authorization
