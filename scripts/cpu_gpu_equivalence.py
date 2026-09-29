@@ -783,6 +783,45 @@ def load_t2(arm: str, keys: list) -> dict:
     return {k: torch.load(ARMS_DIR / arm / f"t2__{k}.pt", map_location="cpu", weights_only=True) for k in keys}
 
 
+GATE_DIR = OUT / "device_path_tests"
+CUDA_TESTS = ("test_a_cuda_fit_checkpoints_cpu_tensors_and_resumes_to_the_uninterrupted_fit",
+              "test_the_cuda_evaluation_is_the_cpu_evaluation_away_from_near_ties")
+
+
+def junit_outcomes(path: Path) -> dict:
+    import xml.etree.ElementTree as ET  # noqa: E402
+    root = ET.parse(path).getroot()
+    out = {}
+    for tc in root.iter("testcase"):
+        out[tc.get("name")] = ("failed" if tc.find("failure") is not None or tc.find("error") is not None else
+                               "skipped" if tc.find("skipped") is not None else "passed")
+    return out
+
+
+def device_path_gate() -> dict:
+    """device_path.gate: the device-path tests passed on the laptop and on the host GPU (its CUDA tests run, not
+    skipped), on the module and test file every arm ran with."""
+    files = {"laptop": (GATE_DIR / "laptop_cpu.xml", GATE_DIR / "Inspiron-14__cpu.json"),
+             "host_gpu": (GATE_DIR / "host_gpu.xml", GATE_DIR / "DESKTOP-SLQMEQH__cuda.json")}
+    want = {"tests/test_cpu_gpu_equivalence.py": lf_sha256(ROOT / "tests" / "test_cpu_gpu_equivalence.py"),
+            "src/mp_retrieval/device_placement.py": lf_sha256(MODULE), "scripts/cpu_gpu_equivalence.py": lf_sha256(Path(__file__))}
+    gate = {}
+    for where, (xml, rep) in files.items():
+        if not xml.exists() or not rep.exists():
+            raise SystemExit(f"device_path.gate: no {where} report ({xml.name}, {rep.name}); the tests precede every candidate arm")
+        outcomes = junit_outcomes(xml)
+        report = json.loads(rep.read_text(encoding="utf-8"))
+        counts = {k: sum(v == k for v in outcomes.values()) for k in ("passed", "failed", "skipped")}
+        stale = sorted(k for k, v in want.items() if report.get("sha256_lf", {}).get(k) != v)
+        gate[where] = {**counts, "utc": report["utc"], "stale_files": stale, "seen": report.get("seen", {}),
+                       "cuda_tests": {t: outcomes.get(t) for t in CUDA_TESTS}}
+        if counts["failed"] or stale:
+            raise SystemExit(f"device_path.gate: {where} has {counts['failed']} failed tests, stale files {stale}")
+    if any(v != "passed" for v in gate["host_gpu"]["cuda_tests"].values()):
+        raise SystemExit(f"device_path.gate: the host GPU's CUDA tests did not all pass: {gate['host_gpu']['cuda_tests']}")
+    return gate
+
+
 def stage_read(log=log_utc) -> dict:
     """readings: floor_first, then each candidate from its first run (T1, T2) and its _r2 repeat (T1) against
     laptop_cpu_t8 over all six models and all probe batches; the reported statistics beside, never gating."""
@@ -805,6 +844,10 @@ def stage_read(log=log_utc) -> dict:
     early = [a for a, d in done.items() if d["utc_start"] < manifest["utc"]]
     if early:
         raise SystemExit(f"arms {early} started before the bundle's B was fixed ({manifest['utc']}); probe.size_cap files B before any arm")
+    gate = device_path_gate()
+    first_candidate = min(done[a]["utc_start"] for a in ARMS if ARMS[a]["host"] == "host")
+    if max(g["utc"] for g in gate.values()) > first_candidate:
+        raise SystemExit("device_path.gate: a device-path report is later than the first host arm")
     t1 = {a: np.load(ARMS_DIR / a / "t1.npz") for a in ARMS}
     ref_t2 = load_t2(REFERENCE, keys)
     log(f"read: {len(keys)} models, {ptr.size - 1} draws, {manifest['batches']} batches; floor first")
@@ -851,14 +894,15 @@ def stage_read(log=log_utc) -> dict:
         t3 = np.load(ARMS_DIR / arm / "t3.npz")
         trajectory[arm] = {}
         for name in ref_t3.files:
-            key, step = name.split("__s")[0].replace("centred__", ""), int(name.rsplit("__s", 1)[1])
+            key, step = name[len("centred__"):].rsplit("__s", 1)
+            step = int(step)
             trajectory[arm].setdefault(key, {})[step] = float(np.max(np.abs(t3[name].astype(np.float64) - ref_t3[name].astype(np.float64))))
     clocks = {a: json.loads((ARMS_DIR / a / "t4.json").read_text(encoding="utf-8")) for a in ARMS if (ARMS_DIR / a / "t4.json").exists()}
     record = {"phase": "CPU_GPU_EQUIVALENCE", "utc": utc(), "git_head": git_head(), "batches": int(manifest["batches"]), "draws": int(ptr.size - 1),
               "models": keys, "reference": REFERENCE, "bundle": {"manifest_sha256": msha, "bytes_total": manifest["bytes_total"],
                                                                 "draw_counts": manifest["draw_counts"], "utc": manifest["utc"],
                                                                 "seconds": manifest["seconds"]},
-              "floor": floor, "candidates": candidates, "reported": reported, "determinism": determinism, "trajectory": trajectory,
+              "device_path_gate": gate, "floor": floor, "candidates": candidates, "reported": reported, "determinism": determinism, "trajectory": trajectory,
               "clocks": {a: {k: {kk: v for kk, v in c.items() if not isinstance(v, list)} for k, c in cl.items()} for a, cl in clocks.items()},
               "arms": {a: {k: d[k] for k in ("utc_start", "utc_end", "seconds_total", "seconds", "placement", "deviations", "warnings",
                                              "integrity", "script_sha256", "module_sha256", "git_head", "rx_job_id")} for a, d in done.items()}}
@@ -870,8 +914,32 @@ def stage_read(log=log_utc) -> dict:
 # ── the document ─────────────────────────────────────────────────────────────
 
 
+def sentence(text) -> str:
+    t = " ".join(str(text).split())
+    return t[:1].upper() + t[1:]
+
+
 def e2(x) -> str:
     return "—" if x is None else f"{x:.1e}" if x != 0 else "0"
+
+
+def gate_paragraph(gate: dict) -> str:
+    lap, gpu = gate["laptop"], gate["host_gpu"]
+    seen = gpu["seen"]
+    resume, ev = seen.get("cuda_fit_resume", {}), seen.get("cuda_evaluation", {})
+    compared = sum(ev[c]["compared"] for c in ("select", "fit") if c in ev)
+    ties = sum(ev[c]["near_ties"] for c in ("select", "fit") if c in ev)
+    queries = sum(ev[c]["queries"] for c in ("select", "fit") if c in ev)
+    warned = sorted(set(resume.get("determinism_warnings", [])) | set(ev.get("determinism_warnings", [])))
+    return (f"`tests/test_cpu_gpu_equivalence.py` passed on the laptop ({lap['passed']} passed, {lap['skipped']} skipped: the two CUDA tests, "
+            f"no CUDA device) and on the host GPU in `mpr-cu128` under the `host_gpu_det` settings ({gpu['passed']} passed, {gpu['skipped']} "
+            "skipped) before any candidate arm ran. On the CPU the device-path copies give the pinned fit and evaluation exactly (weights "
+            "`torch.equal`, records equal apart from wall-clock fields, every metric array equal). On CUDA a synthetic GAT fit wrote CPU tensors "
+            "to its checkpoint and resumed to the uninterrupted fit " + ("bit for bit (weights `torch.equal`)" if resume.get("weights_torch_equal")
+                                                                          else "within tolerances.forward_inherited") +
+            f", and the CUDA evaluation gave the CPU evaluation's metrics on every compared synthetic query ({compared} of {queries} compared; "
+            f"{ties} with a near tie at twice the forward tolerance were counted and left out). Determinism warnings: "
+            + ("; ".join(warned) if warned else "none") + ".")
 
 
 def render_doc(rec: dict, decl: dict) -> str:
@@ -896,9 +964,10 @@ def render_doc(rec: dict, decl: dict) -> str:
           "Cells: T1, one per (model, query draw), the centred scores under `assert_close(atol=1e-5, rtol=1e-5)`; T2, one per (model, batch) for "
           "the loss (`|L - L_ref| <= 1e-5|L_ref| + 1e-6`) and the global gradient (`||g - g_ref|| <= 1e-4||g_ref||`), and one per (model, batch, "
           "parameter tensor) (`||g_p - g_ref_p|| <= 1e-4||g_ref_p|| + 1e-6||g_ref||`). A candidate's `_r2` repeat is held to the T1 gates too.", "",
-          "**What a pass says.** " + " ".join(str(decl["readings"]["wording"]).split()), "",
-          "**What it opens.** " + " ".join(str(decl["what_a_verdict_opens"]["pass"]).split()), "",
-          "**What a fail keeps.** " + " ".join(str(decl["what_a_verdict_opens"]["fail"]).split()), "",
+          "**Wording.** " + sentence(decl["readings"]["wording"]), "",
+          "**What a pass opens.** " + sentence(decl["what_a_verdict_opens"]["pass"]), "",
+          "**What a fail keeps.** " + sentence(decl["what_a_verdict_opens"]["fail"]), "",
+          "## The device-path gate", "", gate_paragraph(rec["device_path_gate"]), "",
           "## The probe", "",
           f"{rec['batches']} batches of the frozen stage-2 draw for seed 0 (batch 16, `dataset_draw per_query`), {rec['draws']} query draws from the "
           "six fit carves: " + ", ".join(f"{n} {c}" for n, c in rec["bundle"]["draw_counts"].items()) +
@@ -951,14 +1020,22 @@ def render_doc(rec: dict, decl: dict) -> str:
     for a, models in rec["trajectory"].items():
         for k, curve in models.items():
             L.append(f"| `{a}` | {short.get(k, k)} | " + " | ".join(e2(curve.get(str(s), curve.get(s))) for s in steps) + " |")
-    L += ["", "### Clock (T4, systems)", "", "Median milliseconds per probe batch, packing excluded, CUDA synchronised; peak GPU memory of the gradient pass.", "",
-          "| arm | model | forward | forward+backward | peak GPU MB |", "|---|---|---:|---:|---:|"]
+    L += ["", "### Clock (T4, systems)", "",
+          "Milliseconds per probe batch, timed on the T1 forward pass and the T2 gradient pass themselves (no separate pass), packing "
+          "excluded, CUDA synchronised around each batch: the median over the family's three checkpoints of each checkpoint's median "
+          "over the probe batches, and the first batch (warm-up included). Peak GPU memory is the gradient pass's, with the probe "
+          "batches resident on the device.", "",
+          "| arm | family | forward median | forward first | forward+backward median | peak GPU MB |", "|---|---|---:|---:|---:|---:|"]
     for a, cl in rec["clocks"].items():
-        for k, c in cl.items():
-            peak = c.get("peak_gpu_bytes")
-            L.append(f"| `{a}` | {short.get(k, k)} | {c['forward_ms_median']:.1f} | "
-                     f"{c['forward_backward_ms_median']:.1f} | {peak / 2**20:.0f} |" if peak else
-                     f"| `{a}` | {short.get(k, k)} | {c['forward_ms_median']:.1f} | {c['forward_backward_ms_median']:.1f} | — |")
+        for fam, prefix in (("GNN", GNN_ARM), ("twin", TWIN_ARM)):
+            cs = [c for k, c in cl.items() if k.startswith(prefix + "__")]
+            if not cs:
+                continue
+            peak = max((c.get("peak_gpu_bytes") or 0) for c in cs)
+            fb = [c["forward_backward_ms_median"] for c in cs if c.get("forward_backward_ms_median") is not None]
+            L.append(f"| `{a}` | {fam} | {np.median([c['forward_ms_median'] for c in cs]):.1f} | "
+                     f"{np.median([c['forward_ms_first'] for c in cs]):.1f} | {np.median(fb) if fb else float('nan'):.1f} | "
+                     + (f"{peak / 2**20:.0f} |" if peak else "— |"))
     devs = [f"`{a}`: {x}" for a, d in arms.items() for x in d["deviations"]]
     L += ["", "## Placement rules (filed with the declaration, binding every stage placed off the laptop)", ""]
     for name, text in decl["placement_rules"].items():
@@ -1003,7 +1080,8 @@ def stage_file(date: str, log=log_utc, extra: dict | None = None) -> None:
     run["cells"] = {c: {"failing": v["n_failing"], "checked": v["cells"], "bit_identical": v["bit_identical"],
                         "also_failing_for_the_floor": v["also_failing_for_the_floor"], "largest_excess": v["largest_excess"]}
                     for c, v in rec["candidates"].items()}
-    run["probe"] = {"batches": rec["batches"], "draws": rec["draws"], "draw_counts": rec["bundle"]["draw_counts"],
+    run["device_path_gate"] = {w: {k: g[k] for k in ("passed", "failed", "skipped", "utc", "cuda_tests")} for w, g in rec["device_path_gate"].items()}
+    run["probe"] = {"batches": rec["batches"], "b_fixed_utc": rec["bundle"]["utc"], "draws": rec["draws"], "draw_counts": rec["bundle"]["draw_counts"],
                     "bundle_bytes": rec["bundle"]["bytes_total"], "bundle_manifest_sha256": rec["bundle"]["manifest_sha256"]}
     run["arms"] = {a: {"host": d["placement"]["host"], "env": d["placement"]["env"], "torch": d["placement"]["torch"],
                        "device": d["placement"].get("device_name") or d["placement"]["device"], "driver": d["placement"].get("driver"),
