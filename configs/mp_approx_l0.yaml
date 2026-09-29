@@ -1,6 +1,6 @@
 phase: MP_APPROX_L0
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-ORACLE
 extends: >-
@@ -350,3 +350,146 @@ tests:   # tests/test_mp_approx_l0.py
 execution:
   order: this file alone (commit); script and tests (commit); score metaqa, 2wiki, squad; probe; read; doc; run record (commit)
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l0_2026_09_29:
+  utc: '2026-09-29T10:44:03Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  held_half_read: false
+  checkpoints_updated: 0
+  placement: laptop CPU; scoring 6 threads in one lane, probes 4 threads per process
+  record_sha256: 899b7f1291416504e25c29b6be6c1c0affca4a5d4470b8c76048fcd3f558aed2
+  document: docs/MP_APPROX_L0.md
+  document_sha256: 27fd595b08eec16191656cb35201edfdc313ae502a50ebf53b9822e5be82c352
+  datasets:
+    metaqa:
+      reading: L0_LOW
+      primary_rho_bar:
+        point: -0.6502180865126636
+        ci:
+        - -0.7693134409395539
+        - -0.548617912865365
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      - hit@1
+      flags:
+      - FIT_NOT_RANK (r, B0-mlp)
+      - FIT_NOT_RANK (r, B1-mlp)
+      - MESSAGE_NOT_RETRIEVAL
+      interpretation:
+      - primary_low_vectors_add
+      - b1_low
+      - message_not_retrieval
+      bands_r:
+        B0-ridge: L0_LOW
+        B0-mlp: L0_LOW
+        B1-ridge: L0_LOW
+        B1-mlp: L0_LOW
+        B2-ridge: L0_LOW
+        ref:twin: L0_LOW
+        ref:other_seed: L0_HIGH
+      bands_e:
+        B0-ridge: L0_MID
+        B1-ridge: L0_MID
+        ref:no_edge: L0_LOW
+        ref:other_seed: L0_HIGH
+      queries: 2400
+      uq_rows: 165893
+      scoring_mismatches: 0
+      sidecar_meta_sha256: d8d618cf128327c8a50fd05eb2f0e368b4adf06397c7805f6fa9d3064caf3e3c
+      probe_meta_sha256: 6634957b96de2df8518df35fa4e57e526ea92903de7c0aa0dcbc4d3f9a1cd581
+    2wiki:
+      reading: L0_LOW
+      primary_rho_bar:
+        point: 0.05515008953705951
+        ci:
+        - -0.0023080171961092923
+        - 0.10876124997411514
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      flags:
+      - FIT_NOT_RANK (r, B1-mlp)
+      - MESSAGE_NOT_RETRIEVAL
+      interpretation:
+      - primary_low_vectors_add
+      - b1_low
+      - message_not_retrieval
+      bands_r:
+        B0-ridge: L0_LOW
+        B0-mlp: L0_LOW
+        B1-ridge: L0_LOW
+        B1-mlp: L0_LOW
+        B2-ridge: L0_LOW
+        ref:twin: L0_LOW
+        ref:other_seed: L0_HIGH
+      bands_e:
+        B0-ridge: L0_MID
+        B1-ridge: L0_MID
+        ref:no_edge: L0_LOW
+        ref:other_seed: L0_HIGH
+      queries: 6290
+      uq_rows: 245055
+      scoring_mismatches: 0
+      sidecar_meta_sha256: 78225a25ce4a803a035d0f2a1a547c4c69f5d193832da12f596a475edd40ddad
+      probe_meta_sha256: dea344a2d66770ca7ba841b98231e123b315b26c46534dc69694e0e42da81ca2
+    squad:
+      reading: NOT_READ
+      primary_rho_bar:
+        point: null
+        ci: null
+      readable_metrics: []
+      flags:
+      - SEED_BOUND
+      interpretation: []
+      bands_r:
+        B0-ridge: NOT_READ
+        B0-mlp: NOT_READ
+        B1-ridge: NOT_READ
+        B1-mlp: NOT_READ
+        B2-ridge: NOT_READ
+        ref:twin: NOT_READ
+        ref:other_seed: NOT_READ
+      bands_e:
+        B0-ridge: NOT_READ
+        B1-ridge: NOT_READ
+        ref:no_edge: NOT_READ
+        ref:other_seed: NOT_READ
+      queries: 5841
+      uq_rows: 176880
+      scoring_mismatches: 0
+      sidecar_meta_sha256: b520ccfb79cb02ec9cc7aa69836f9b600d4e7d55aee9b94536092196065e4a61
+      probe_meta_sha256: c9349d1aed54ce0cd409a8dc1766594af74a84325162cc8b9c1de78033879c00
+  commits:
+    declaration: d378a99
+    scoring_stage_and_tests: 0bc9cd3
+    probe_read_doc_file_stages_and_tests: 612642a
+    run_record: the commit that adds this block, with docs/MP_APPROX_L0.md
+  tests: 'tests/test_mp_approx_l0.py: 21 passed once the sidecars existed (the held-query check on metaqa, 2wiki and squad included; none skipped)'
+  seconds:
+    scoring:
+      metaqa: 4225.1
+      2wiki: 763.8
+      squad: 489.6
+    probes:
+      metaqa: 1631.1
+      2wiki: 1832.3
+      squad: 1461.6
+    read:
+      metaqa: 45
+      2wiki: 89
+      squad: 67
+  deviations:
+  - compute.scoring estimated metaqa about 55 min, 2wiki about 15, squad about 12; they took 70.4, 12.7 and 8.2 min.
+  - compute.probes estimated about 10 to 20 min per dataset; they took 27.2 (metaqa), 30.5 (2wiki) and 24.4 min (squad), as three processes at 4 threads each on the
+    12-thread laptop.
+  - 'Concurrency: the metaqa probe (from 09:59:01Z) overlapped squad''s scoring (09:58:52Z-10:07:02Z); the three probes overlapped one another, the CPU-GPU equivalence
+    test''s laptop device-path tests (2 threads, about 10:15-10:17Z) and the two preview reads below. No number depends on it: scoring''s integrity checks were exact
+    (0 mismatches on every dataset), and each probe is a deterministic function of its fold, seed and thread count, which were fixed per process.'
+  - 'git_head in the sidecars is read at write time: the scoring meta.json files record 612642a (metaqa), cde1a52 (2wiki) and fbf9324 (squad), and every probe_meta.json
+    records 5434594. Between 612642a and 5434594 only three files were added (scripts/cpu_gpu_equivalence.py, src/mp_retrieval/device_placement.py, tests/test_cpu_gpu_equivalence.py),
+    none imported by scripts/mp_approx_l0.py, so the script, its imports, its tests and this file are byte-identical across those heads.'
+  - 'Preview reads: read_dataset was run on metaqa (10:27-10:29Z) and squad (10:37-10:38Z) into the session''s scratchpad at 2 threads while 2wiki was still probing,
+    to exercise the read on real sidecars early. Every band, flag, threshold and interpretation entry was filed at d378a99 before any number, and nothing was changed
+    after seeing them. The official read (6 threads) equals the previews to within 3e-15, with identical bands, flags and interpretation entries.'
