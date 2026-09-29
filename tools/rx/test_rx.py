@@ -165,6 +165,19 @@ def test_decide_fifo_then_hold():
     assert not ok and "holding" in why              # the big job has waited long enough
 
 
+# ── the job environment ──
+
+def test_build_env_hides_gpus_from_cpu_jobs(tmp_path):
+    home = A.Home(str(tmp_path))
+    spec = {"id": "j", "project": "p"}
+    env, _ = A.build_env(home, spec, {"cpus": 2, "gpus": []}, "jd", "ws")
+    # "" would leave every GPU visible to the Windows CUDA runtime while torch counted none
+    assert env["CUDA_VISIBLE_DEVICES"] == "-1" and env["RX_GPUS"] == ""
+    env, _ = A.build_env(home, spec, {"cpus": 2, "gpus": [0]}, "jd", "ws")
+    assert env["CUDA_VISIBLE_DEVICES"] == "0" and env["RX_GPUS"] == "0"
+    assert env["OMP_NUM_THREADS"] == "2"
+
+
 # ── fetch conflict rules (no network: fetch_files decides before it connects) ──
 
 class NoRemote:

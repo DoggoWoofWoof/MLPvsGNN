@@ -1302,13 +1302,15 @@ def build_env(home, spec, assign, jd, ws):
     threads = str(max(1, int(math.floor(assign["cpus"]))))
     for k in THREAD_VARS:
         env[k] = threads
+    gpus = ",".join(str(i) for i in assign.get("gpus") or [])
     env["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-    env["CUDA_VISIBLE_DEVICES"] = ",".join(str(i) for i in assign.get("gpus") or [])
+    # "-1", not "": the Windows CUDA runtime reads an empty value as unset and shows every GPU,
+    # while torch.cuda.device_count() reads it as none -- a CPU job could still use the GPU
+    env["CUDA_VISIBLE_DEVICES"] = gpus or "-1"
     env["PYTHONUNBUFFERED"] = "1"
     env["PYTHONIOENCODING"] = "utf-8"
     env.update({"RX_JOB_ID": spec["id"], "RX_PROJECT": spec["project"], "RX_JOB_DIR": jd,
-                "RX_WORKSPACE": ws, "RX_HOME": home.root, "RX_CPUS": threads,
-                "RX_GPUS": env["CUDA_VISIBLE_DEVICES"]})
+                "RX_WORKSPACE": ws, "RX_HOME": home.root, "RX_CPUS": threads, "RX_GPUS": gpus})
     for k, v in (spec.get("env_vars") or {}).items():
         env[str(k)] = str(v)
     if spec.get("shell") == "wsl":

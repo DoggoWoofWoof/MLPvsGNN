@@ -1364,8 +1364,9 @@ def cmd_env(args):
                 print("rx.toml env %-16s %s" % (n, state))
         return 0
     spec = env_spec(proj, args.name, remote.cfg)
+    gpus = float(proj.envs[args.name].get("gpus") or 0)      # reserved so `verify` can use a GPU
     job = {"project": proj.name, "id": make_id("env-" + args.name), "name": "env-" + args.name,
-           "internal": "envbuild", "env_spec": spec, "cpus": float(args.cpus), "mem_gb": 4.0, "gpus": 0.0,
+           "internal": "envbuild", "env_spec": spec, "cpus": float(args.cpus), "mem_gb": 4.0, "gpus": gpus,
            "outputs": [".rx-none"], "display": "env build %s (%s)" % (args.name, spec["hash"][:12]),
            "created": time.time()}
     launch(proj, remote, job)

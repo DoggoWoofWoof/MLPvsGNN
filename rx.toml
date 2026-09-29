@@ -51,6 +51,7 @@ requirements = [
 verify = ["import torch, torch_geometric, torch_scatter, torch_sparse, faiss, numpy; print(torch.__version__, numpy.__version__, torch_geometric.__version__)"]
 
 [envs.mpr-cu128]
+gpus = 1                   # the build reserves the GPU so `verify` can reach it
 extra_index_urls = ["https://download.pytorch.org/whl/cu128"]
 find_links = ["https://data.pyg.org/whl/torch-2.8.0+cu128.html"]
 requirements = [

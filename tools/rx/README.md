@@ -147,8 +147,13 @@ The supervisor:
 * starts the command **suspended**, places it in a Windows **Job Object** (so every
   child process is accounted, limited by `--mem-hard`, and killed on cancel), then
   resumes it. On Linux it uses a process group;
-* exports `CUDA_VISIBLE_DEVICES` (the assigned GPUs only; empty for CPU jobs),
-  `OMP/MKL/OPENBLAS/NUMEXPR_NUM_THREADS = cpus`, `RX_JOB_ID`, `RX_JOB_DIR`, `RX_CPUS`, `RX_GPUS`;
+* exports `CUDA_VISIBLE_DEVICES` (the assigned GPUs only; `-1` for CPU jobs),
+  `OMP/MKL/OPENBLAS/NUMEXPR_NUM_THREADS = cpus`, `RX_JOB_ID`, `RX_JOB_DIR`, `RX_CPUS`, `RX_GPUS`
+  (the assigned GPUs, empty for CPU jobs). Not an empty `CUDA_VISIBLE_DEVICES`: the Windows
+  CUDA runtime reads an empty value as unset and shows every GPU, while
+  `torch.cuda.device_count()` reads it as none, so a CPU job could still allocate on the
+  GPU (measured on the host 2026-09-29: `""` → runtime 1 device, torch 0, allocation
+  succeeds; `-1` → 0, 0, refused);
 * writes `output.log` (stdout+stderr), `status.json`, and a **heartbeat** every 10 s with
   live CPU seconds, process count and memory;
 * on exit, lists the job's **outputs**: files under the `outputs` globs modified since
@@ -177,6 +182,9 @@ CPython into `~/rx/envs/NAME@<spec-hash>/`, pip-installs the pinned requirements
 the `verify` snippets, and writes `rx-freeze.txt`. The environment is addressed by the
 hash of its spec, so editing `[envs.NAME]` in rx.toml builds a new directory and
 `rx env ls` reports the old one as `STALE`. Jobs name environments with `--env`.
+A CUDA environment whose `verify` touches the GPU needs `gpus = 1` in its table: the
+build job then reserves the GPU (a build without one is a CPU job and sees no GPU).
+`gpus` is not part of the hash.
 
 The host's base interpreter is the python.org **NuGet CPython** (signed by the PSF,
 same build as the laptop), installed by `rx setup` under `~/rx/python/<ver>/`. The
@@ -247,6 +255,13 @@ The laptop reaches the host over **Tailscale** (`ssh gpu` → `100.118.95.8`).
 * From a home connection with UDP and an endpoint-independent NAT, Tailscale can go
   **direct** — typically 10–100× the relay rate. Check with `tailscale ping 100.118.95.8`
   ("via DERP" vs "via <ip:port>") and measure with `rx doctor --speed 32`.
+* 2026-09-29, laptop on a home network where IPv4 UDP did not reach Tailscale's STUN
+  (`tailscale netcheck`: IPv4 none, IPv6 yes) and the host IPv4-only: DERP again.
+  Down ≈0.75 MB/s whatever the stream count (1–8); up 0.73 MB/s on one stream, 1.2 MB/s
+  on 4, 1.27 on 8. zlib level 6 stays the best trade on 1 MiB chunks: level 9 is 0.5 %
+  smaller on code (7 % on text logs) but 2.6–3.8× slower, which caps a text fetch below
+  level 6's rate; level 1 is 22–50 % larger. So `streams = 4`, `compress_level = 6`
+  (the defaults) until a direct path exists.
 * If the laptop is ever on the wired lab network, add a LAN route:
   `rx setup gpu --route gpu --route '-o HostName=10.1.12.23 gpu'`, preferring the LAN.
 
@@ -254,6 +269,25 @@ What this means for work placement: **move code, not data.** A push of the track
 is ~11 MB; results (metrics JSON, logs) are small. Large inputs (datasets, embedding
 caches) should be fetched or built on the host once, not pushed repeatedly; `max_mb`
 stops accidental bulk pushes.
+
+---
+
+## Validated on the lab host (2026-09-29)
+
+* `rx setup gpu`: Windows 11, NuGet CPython 3.13.5, 32 CPUs, 127.7 GB, RTX 4500 Ada 24 GB.
+* Detach: a 90 s job kept running after its launch session closed and after a `logs -f`
+  session was killed mid-stream; it ended rc=0 with all 90 ticks, and `wait --fetch`
+  brought them back.
+* Resume: a 12 MB push killed half-way re-sent only the missing 6.0 MB; the host's
+  sha256 matched the laptop's.
+* Environments: `mpr-cpu` and `mpr-cu128` built (2.8.0+cu128 on the RTX 4500 Ada). In a
+  `-p gpu` job: fp32 matmul ≈21 TFLOP/s (no warm-up), `torch_scatter` and PyG `GATConv`
+  on `cuda:0`. A CPU job in the same environment sees no GPU (`CUDA_VISIBLE_DEVICES=-1`,
+  allocation refused).
+* The repo's tests on the host (`mpr-cpu`, 8 CPUs, `--continue-on-collection-errors`):
+  6,554 passed in 2 min (8,759 locally in 6 min). Every test that passes locally but not
+  there needs something rx deliberately leaves behind: `outputs/` (never pushed), the git
+  history (the workspace holds files only) or the Modal SDK (not installed on the host).
 
 ---
 
@@ -265,6 +299,19 @@ workspace is the Windows directory seen through `/mnt/c`, and `WSLENV` forwards
 `RX_*`, `CUDA_VISIBLE_DEVICES` and the thread variables). The configuration is in
 `%USERPROFILE%\.wslconfig` (memory, processors, swap) and `/etc/wsl.conf` (systemd,
 default user). CUDA inside WSL uses the Windows driver; no Linux driver is installed.
+
+`tools/rx/wsl_setup.ps1` makes that configuration once: a Linux user named after the
+Windows account with passwordless sudo (checked by `visudo` first), `/etc/wsl.conf`
+(systemd, that default user, `appendWindowsPath=false`, `metadata` on `/mnt/c`), and
+`.wslconfig` (96 GB, 32 processors, 32 GB swap, `autoMemoryReclaim=dropCache`,
+`sparseVhd=true`). It then runs `wsl --shutdown` (this Windows account's distros
+only) and checks every setting from inside the distro, ending with `WSL SETUP OK`.
+Those are system and security settings, so **the account owner runs it**, not rx:
+
+```sh
+python tools/rx/rx.py push
+ssh gpu "powershell -NoProfile -ExecutionPolicy Bypass -File rx\projects\mpr\ws\tools\rx\wsl_setup.ps1"
+```
 
 Native Windows is the default for rx jobs: the Job Object accounting, the GPU and the
 file system are all first-class there, and `/mnt/c` I/O from WSL is slow for many small

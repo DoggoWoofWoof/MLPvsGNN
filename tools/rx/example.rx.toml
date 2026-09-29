@@ -34,6 +34,7 @@ extra_index_urls = ["https://download.pytorch.org/whl/cpu"]
 verify = ["import torch; print(torch.__version__)"]
 
 [envs.cuda]
+gpus = 1                   # the build reserves a GPU so `verify` can use it (not part of the env hash)
 requirements = ["numpy==2.3.2", "torch==2.8.0+cu128"]
 extra_index_urls = ["https://download.pytorch.org/whl/cu128"]
 verify = ["import torch; assert torch.cuda.is_available(); print(torch.cuda.get_device_name(0))"]
