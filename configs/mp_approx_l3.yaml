@@ -1,6 +1,6 @@
 phase: MP_APPROX_L3
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-ORACLE
 extends: >-
@@ -358,3 +358,333 @@ execution:
     compile metaqa, 2wiki, squad (laptop); mirror and push each dataset's sidecar; one host job per dataset (probe,
     metaqa's repeat, read), each submitted as its data lands; fetch; record, doc and run record on the laptop (commit)
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l3_2026_09_29:
+  utc: '2026-09-29T19:17:36Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  held_half_read: false
+  checkpoints_updated: 0
+  code_commit: b8c64b2
+  placement: compile, mirror, doc and file on the laptop CPU (6 threads); probe, repeat and read host-native on host_gpu_det
+  identical_code: 15 module paths over 7 host processes, one sha256 each, equal to the committed files
+  record_sha256: 83b0c3835c6902b849616d1169112b953b9a222106ea2deb01523f38d97514f8
+  document: docs/MP_APPROX_L3.md
+  document_sha256: 872c25d32c1d6762bf209fd910cb1080a345d2ab857d396ffe4ab064451e7524
+  datasets:
+    metaqa:
+      reading: L3_LOW
+      primary_rho_bar:
+        point: -0.07606954540831261
+        ci:
+        - -0.16111894784623154
+        - 0.002286047738100012
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      - hit@1
+      flags:
+      - FIT_NOT_RANK (r, B0-mlp)
+      - FIT_NOT_RANK (r, L3-mean)
+      - FIT_NOT_RANK (r, L3-att)
+      interpretation:
+      - neighbourhood_adds
+      - objective_adds
+      - edge_effect_weighted
+      contrasts:
+        query_weighting:
+          point: 0.44212348194719825
+          ci:
+          - 0.3802757757675269
+          - 0.5166473320266797
+        neighbourhood:
+          point: 0.13202505915715268
+          ci:
+          - 0.07290456262127823
+          - 0.19454627720661594
+        attention_over_node_local:
+          point: 0.574148541104351
+          ci:
+          - 0.49666046296531285
+          - 0.6606599237883441
+        objective_node_local:
+          point: 0.3940701580579285
+          ci:
+          - 0.31845536293436183
+          - 0.47525198325566714
+        objective_attention:
+          point: 0.31516603664711246
+          ci:
+          - 0.2558291760186994
+          - 0.3801232020955556
+        edge_weighting:
+          point: 0.04910605353746189
+          ci:
+          - 0.03892695217794582
+          - 0.05940316039128033
+        edge_neighbourhood:
+          point: 0.03268968932859284
+          ci:
+          - 0.022938987770564544
+          - 0.04267367774398986
+      bands_r:
+        B0-mlp: L3_LOW
+        B0-list: L3_LOW
+        L3-mean: L3_LOW
+        L3-att: L3_LOW
+        L3-list: L3_LOW
+        ref:twin: L3_LOW
+        ref:other_seed: L3_HIGH
+      bands_e:
+        B0-mlp: L3_MID
+        L3-mean: L3_MID
+        L3-att: L3_HIGH
+        ref:no_edge: L3_LOW
+        ref:other_seed: L3_HIGH
+      queries: 2400
+      uq_rows: 165893
+      halo_rows: 1419019
+      entries: 1967659
+      integrity_mismatches: 0
+      proto_max_abs_diff: 0.0001220405101776123
+      proto_max_ratio: 0.2494281360211786
+      repeat:
+        unit: r_L3-att
+        bit_identical: true
+        max_abs_diff: 0.0
+        repeat_json_sha256: 50c0f458367a6f4d2891c9e31b2f9150b8357bcb25f3e12cb2f0ba9c77ba2516
+      mirror_sha256:
+        laptop: 049d5cd2c3719895924b5add914c0749e79c0c5acba7ff175bb15955e98d2b91
+        host: 049d5cd2c3719895924b5add914c0749e79c0c5acba7ff175bb15955e98d2b91
+      compile_meta_sha256: 23fd1c11fd7dd099cb950b5d7ac59c9ecae9e64b33dc598a11b52f8c18c1b462
+      probe_meta_sha256: 6905d694f9888a102d57330cb29c39142a3af81b6a8a67b57c0310222fc27112
+      read_sha256: 75856c380656c5a81678e68c896c6d21f0e7de7978966a159a090218f2d0010e
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    2wiki:
+      reading: L3_HIGH
+      primary_rho_bar:
+        point: 0.798781103475703
+        ci:
+        - 0.7592336039603387
+        - 0.8384264892536124
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      flags: []
+      interpretation:
+      - l3_high
+      - l3_weighting_adds
+      - neighbourhood_adds
+      - objective_adds
+      - edge_effect_weighted
+      contrasts:
+        query_weighting:
+          point: 0.23676772480805142
+          ci:
+          - 0.19869566327090885
+          - 0.2761955192004019
+        neighbourhood:
+          point: 0.5068632891305921
+          ci:
+          - 0.4556779519622445
+          - 0.5599138120060845
+        attention_over_node_local:
+          point: 0.7436310139386435
+          ci:
+          - 0.6887537151905918
+          - 0.8028225123671835
+        objective_node_local:
+          point: 0.18929930184437627
+          ci:
+          - 0.15551892814273957
+          - 0.2267559893240606
+        objective_attention:
+          point: 0.1033272010689884
+          ci:
+          - 0.0743279085262326
+          - 0.13363810134239912
+        edge_weighting:
+          point: 0.11667275446342285
+          ci:
+          - 0.10491176135696263
+          - 0.12857565606751792
+        edge_neighbourhood:
+          point: 0.1814394808511003
+          ci:
+          - 0.16838208227735965
+          - 0.195451442057161
+      bands_r:
+        B0-mlp: L3_LOW
+        B0-list: L3_LOW
+        L3-mean: L3_MID
+        L3-att: L3_HIGH
+        L3-list: L3_HIGH
+        ref:twin: L3_LOW
+        ref:other_seed: L3_HIGH
+      bands_e:
+        B0-mlp: L3_MID
+        L3-mean: L3_MID
+        L3-att: L3_HIGH
+        ref:no_edge: L3_LOW
+        ref:other_seed: L3_HIGH
+      queries: 6290
+      uq_rows: 245055
+      halo_rows: 527882
+      entries: 1580750
+      integrity_mismatches: 0
+      proto_max_abs_diff: 0.00012201070785522461
+      proto_max_ratio: 0.24936722560945182
+      repeat: null
+      mirror_sha256:
+        laptop: 4f2db84a5a1b0d806dd3579a24201e73202555d017d7945bc544583cc2cafb66
+        host: 4f2db84a5a1b0d806dd3579a24201e73202555d017d7945bc544583cc2cafb66
+      compile_meta_sha256: 337c140f081fa1a8342a988d04636b306ac4ee730fa7f2234e98d60d1eb3d54f
+      probe_meta_sha256: 513258a010d6cc8d92af070047402bdfc7d1b029017356ac19d25c266b2a59e3
+      read_sha256: d4d31cb18f7c592fc63a2d1f0e5b2e48d4f0b8449f1ad6f33a0ed6ea1e92be92
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    squad:
+      reading: NOT_READ
+      primary_rho_bar:
+        point: null
+        ci: null
+      readable_metrics: []
+      flags:
+      - SEED_BOUND
+      interpretation: []
+      contrasts:
+        query_weighting:
+          point: null
+          ci: null
+        neighbourhood:
+          point: null
+          ci: null
+        attention_over_node_local:
+          point: null
+          ci: null
+        objective_node_local:
+          point: null
+          ci: null
+        objective_attention:
+          point: null
+          ci: null
+        edge_weighting:
+          point: null
+          ci: null
+        edge_neighbourhood:
+          point: null
+          ci: null
+      bands_r:
+        B0-mlp: NOT_READ
+        B0-list: NOT_READ
+        L3-mean: NOT_READ
+        L3-att: NOT_READ
+        L3-list: NOT_READ
+        ref:twin: NOT_READ
+        ref:other_seed: NOT_READ
+      bands_e:
+        B0-mlp: NOT_READ
+        L3-mean: NOT_READ
+        L3-att: NOT_READ
+        ref:no_edge: NOT_READ
+        ref:other_seed: NOT_READ
+      queries: 5841
+      uq_rows: 176880
+      halo_rows: 239982
+      entries: 1905184
+      integrity_mismatches: 0
+      proto_max_abs_diff: 7.048249244689941e-05
+      proto_max_ratio: 0.24898017719421248
+      repeat: null
+      mirror_sha256:
+        laptop: de7c1917942862d24cf419ca09b0dcff0051b2ec3ceb69ab3a8f02dc557792ec
+        host: de7c1917942862d24cf419ca09b0dcff0051b2ec3ceb69ab3a8f02dc557792ec
+      compile_meta_sha256: 53fddbe35596c3d4d020d823cccb143ec8efd0c75989cab653bb23618341b65e
+      probe_meta_sha256: d772dd8afcf25705d6a0e2c0dd6d1148cb8421522bbc7122689cef1d13c48410
+      read_sha256: ed46608c19c411dde9f55ef9341f060af9b69486957af6313b541a9f9f2ca695
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+  host_jobs:
+    metaqa:
+      rx_job: 260929-235912-mpr-l3-metaqa-8094
+      queued_utc: '2026-09-29T18:29:12Z'
+      waited_for_inputs_s: 285
+      probe_s: 1227
+      repeat: r_L3-att bit-identical, max |diff| 0
+      read_s: 39
+      rc: 0
+    2wiki:
+      rx_job: 260929-235915-mpr-l3-2wiki-f225
+      queued_utc: '2026-09-29T18:29:15Z'
+      waited_for_inputs_s: 450
+      probe_s: 2048
+      read_s: 127
+      rc: 0
+    squad:
+      rx_job: 260929-235917-mpr-l3-squad-5aef
+      queued_utc: '2026-09-29T18:29:17Z'
+      waited_for_inputs_s: 600
+      probe_s: 1450
+      read_s: 102
+      rc: 0
+    resources_each: 8 cpu, 16 GB, 0.33 GPU (one RTX 4500 Ada shared by the three), mpr priority 10
+  transfer:
+    route: rx push over the Tailscale DERP relay, declared order metaqa, 2wiki, squad
+    metaqa:
+      sent_MB: 943.9
+      wire_MB: 472.2
+      seconds: 587
+    2wiki:
+      sent_MB: 381.5
+      wire_MB: 162.7
+      seconds: 160
+    squad:
+      sent_MB: 214.0
+      wire_MB: 62.7
+      seconds: 132
+  laptop_compile:
+    threads: 6
+    metaqa:
+      seconds: 1241.2
+      peak_rss_GB: 2.71
+    2wiki:
+      seconds: 544.2
+      peak_rss_GB: 4.89
+    squad:
+      seconds: 179.2
+      peak_rss_GB: 1.39
+  systems_deviations:
+  - GPU share --gpus 0.33 per job, not the declared 0.34 (three 0.34 shares exceed the one card in the rx scheduler)
+  - rx run --mem 16 per job, not the gpu profile's 32 GB default (114 of 119.7 GB reserved at submission)
+  - 'all three jobs queued at 18:29Z before the 2wiki and squad inputs had landed (the user: ''no submit all the jobs and to the host in the queue''); the systems-only
+    wrapper outputs/mp_approx_l3/wait_landed.py (not committed, imports nothing from the repository) held each until its mirror.json files existed, then ran the committed
+    run stage'
+  - laptop compiles ran before the code commit from the committed bytes (meta git_head 8029942, script LF sha256 5e30b49f = b8c64b2's)
