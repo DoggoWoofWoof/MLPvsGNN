@@ -1,6 +1,6 @@
 phase: MP_APPROX_L5
 opened: 2026-09-30
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-ORACLE
 extends: >-
@@ -292,3 +292,535 @@ execution:
     this file alone (commit); the script and tests (commit); push; one host job per dataset (moments, probe, metaqa's
     repeat, read), submitted at once; fetch; record, doc and run record on the laptop (commit)
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l5_2026_09_30:
+  utc: '2026-09-29T23:47:18Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  held_half_read: false
+  checkpoints_updated: 0
+  code_commit: 03ce076
+  placement: moments on the host CPU; probe, repeat and read host-native on host_gpu_det; doc and file on the laptop
+  identical_code: 16 module paths over 10 host processes, one sha256 each, equal to the committed files
+  record_sha256: ff14842d3c77b1bd9f8c0eaebe1cf4f9fc45fb363594ab15909d83ec2b24d770
+  document: docs/MP_APPROX_L5.md
+  document_sha256: 9475a3086823ecaff346b74ffc8b2bd0ed6fc0722722dd1165640b5a63f2625a
+  datasets:
+    metaqa:
+      reading: L5_LOW
+      primary_rho_bar:
+        point: -0.5510547085734255
+        ci:
+        - -0.6703437072504671
+        - -0.45112862955103356
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      - hit@1
+      flags:
+      - FIT_NOT_RANK (r, B0-mlp)
+      - FIT_NOT_RANK (r, L3-mean)
+      - FIT_NOT_RANK (r, L3-att)
+      - FIT_NOT_RANK (r, L5-mom)
+      - FIT_NOT_RANK (r, L5-kern)
+      interpretation:
+      - moments_below_attention
+      - kernel_below_attention
+      - objective_adds
+      rho_bar_r:
+        B0-mlp:
+          point: -0.6502180865126636
+          ci:
+          - -0.7693134409395539
+          - -0.548617912865365
+        L3-mean:
+          point: -0.5181930273555109
+          ci:
+          - -0.6331422437074028
+          - -0.42334190738514266
+        L3-att:
+          point: -0.07606954540831261
+          ci:
+          - -0.16111894784623154
+          - 0.002286047738100012
+        L5-mom:
+          point: -0.5510547085734255
+          ci:
+          - -0.6703437072504671
+          - -0.45112862955103356
+        L5-list:
+          point: -0.1876422835679179
+          ci:
+          - -0.2742314462238962
+          - -0.1157320591314963
+        L5-kern:
+          point: -0.3583713831963052
+          ci:
+          - -0.46647831672799545
+          - -0.2676109263934019
+        ref:twin:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 1.0641403298566843
+          ci:
+          - 1.0439276753170708
+          - 1.0862734396128872
+      contrasts:
+        moments_over_mean:
+          point: -0.03286168121791466
+          ci:
+          - -0.09105744834736179
+          - 0.025766896577912403
+        moments_vs_attention:
+          point: -0.4749851631651129
+          ci:
+          - -0.5514307301666936
+          - -0.4047780103102326
+        moments_over_node_local:
+          point: 0.09916337793923802
+          ci:
+          - 0.029139684255015123
+          - 0.1696136469450933
+        kernel_vs_attention:
+          point: -0.28230183778799256
+          ci:
+          - -0.34671267455210936
+          - -0.22457331332630484
+        kernel_over_moments:
+          point: 0.19268332537712035
+          ci:
+          - 0.1348857187965034
+          - 0.25346915455052105
+        objective_moments:
+          point: 0.36341242500550763
+          ci:
+          - 0.2921706575831334
+          - 0.44178514479677683
+        edge_moments_vs_attention:
+          point: -0.058571322902100764
+          ci:
+          - -0.06929472518023698
+          - -0.047602489608912515
+        edge_moments_over_mean:
+          point: -0.009465269364638873
+          ci:
+          - -0.019851447967275566
+          - 0.0003567650078882845
+      shares:
+        moment_share:
+          point: 0.17271380285753468
+          ci:
+          - 0.054337288166507666
+          - 0.27662108010020925
+          readable: true
+        kernel_share:
+          point: 0.5083121917457167
+          ci:
+          - 0.41634781633233325
+          - 0.5957139903208745
+          readable: true
+      bands_r:
+        B0-mlp: L5_LOW
+        L3-mean: L5_LOW
+        L3-att: L5_LOW
+        L5-mom: L5_LOW
+        L5-list: L5_LOW
+        L5-kern: L5_LOW
+        ref:twin: L5_LOW
+        ref:other_seed: L5_HIGH
+      bands_e:
+        B0-mlp: L5_MID
+        L3-mean: L5_MID
+        L3-att: L5_HIGH
+        L5-mom: L5_MID
+        ref:no_edge: L5_LOW
+        ref:other_seed: L5_HIGH
+      queries: 2400
+      uq_rows: 165893
+      moments:
+        rows: 165893
+        columns: 3366
+        entries: 1967659
+        rows_without_entry: 449
+        moments_sha256: 6f69dd852882a7c0333dd2e92c5254a18b4991f067ab3226f1572fbab8af3232
+        seconds: 109.2
+      repeat:
+        unit: r_L5-mom
+        bit_identical: true
+        max_abs_diff: 0.0
+        moments_identical: true
+        moments_sha256:
+          probes: 6f69dd852882a7c0333dd2e92c5254a18b4991f067ab3226f1572fbab8af3232
+          repeat: 6f69dd852882a7c0333dd2e92c5254a18b4991f067ab3226f1572fbab8af3232
+        repeat_json_sha256: c0c073bd936d3e83499eacf207acc732464595b790ebba39530261234004c8bd
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-mean:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-mean:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      level3_mirror_sha256_host: 049d5cd2c3719895924b5add914c0749e79c0c5acba7ff175bb15955e98d2b91
+      moments_meta_sha256: 934591548b1e9c8ee9ac8285dc333476989229b1a0649e6b3c378a5c7cb1c82a
+      probe_meta_sha256: f5ba69aa3d5bbda61baf89ca85670ebda60d3d2cbce3d772c382a515d678206e
+      read_sha256: 2c79ff8a3598493c875cde9d1b3cff0a37a32a226ff28130e75a37ebfc348b4c
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    2wiki:
+      reading: L5_MID
+      primary_rho_bar:
+        point: 0.5993126585742528
+        ci:
+        - 0.555842177349409
+        - 0.6416019037616084
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      flags: []
+      interpretation:
+      - moments_add_over_mean
+      - moments_below_attention
+      - kernel_below_attention
+      - objective_adds
+      rho_bar_r:
+        B0-mlp:
+          point: 0.05515008953705951
+          ci:
+          - -0.0023080171961092923
+          - 0.10876124997411514
+        L3-mean:
+          point: 0.5620133786676516
+          ci:
+          - 0.5180369551142157
+          - 0.606143966709988
+        L3-att:
+          point: 0.798781103475703
+          ci:
+          - 0.7592336039603387
+          - 0.8384264892536124
+        L5-mom:
+          point: 0.5993126585742528
+          ci:
+          - 0.555842177349409
+          - 0.6416019037616084
+        L5-list:
+          point: 0.7192602554175758
+          ci:
+          - 0.6794775457787198
+          - 0.7658222352313635
+        L5-kern:
+          point: 0.746077286781
+          ci:
+          - 0.7056781451794062
+          - 0.7893193557545815
+        ref:twin:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.8671689526484379
+          ci:
+          - 0.8373145034304812
+          - 0.8928626771136463
+      contrasts:
+        moments_over_mean:
+          point: 0.0372992799066012
+          ci:
+          - 0.00410544592897526
+          - 0.07024152025324923
+        moments_vs_attention:
+          point: -0.19946844490145021
+          ci:
+          - -0.2355391280374672
+          - -0.16186859150707159
+        moments_over_node_local:
+          point: 0.5441625690371933
+          ci:
+          - 0.4928240179984095
+          - 0.6011328625641291
+        kernel_vs_attention:
+          point: -0.05270381669470292
+          ci:
+          - -0.08088864846689163
+          - -0.02451607159856355
+        kernel_over_moments:
+          point: 0.1467646282067473
+          ci:
+          - 0.11016513398738347
+          - 0.18248804819570175
+        objective_moments:
+          point: 0.11994759684332301
+          ci:
+          - 0.08894140119073014
+          - 0.15291298215266916
+        edge_moments_vs_attention:
+          point: -0.09978587548188711
+          ci:
+          - -0.11047870057962886
+          - -0.08827442393170203
+        edge_moments_over_mean:
+          point: 0.016886878981535736
+          ci:
+          - 0.00461058189035683
+          - 0.028230135924884735
+      shares:
+        moment_share:
+          point: 0.7317642202078621
+          ci:
+          - 0.6862511761227779
+          - 0.7786948740190474
+          readable: true
+        kernel_share:
+          point: 0.9291263870026655
+          ci:
+          - 0.8923699239941578
+          - 0.9664541659555796
+          readable: true
+      bands_r:
+        B0-mlp: L5_LOW
+        L3-mean: L5_MID
+        L3-att: L5_HIGH
+        L5-mom: L5_MID
+        L5-list: L5_MID
+        L5-kern: L5_MID
+        ref:twin: L5_LOW
+        ref:other_seed: L5_HIGH
+      bands_e:
+        B0-mlp: L5_MID
+        L3-mean: L5_MID
+        L3-att: L5_HIGH
+        L5-mom: L5_MID
+        ref:no_edge: L5_LOW
+        ref:other_seed: L5_HIGH
+      queries: 6290
+      uq_rows: 245055
+      moments:
+        rows: 245055
+        columns: 3366
+        entries: 1580750
+        rows_without_entry: 31654
+        moments_sha256: c9fb9df6073a84dd20a047958f6777ac79af8416df9621c1152d1dc1d06877cf
+        seconds: 89.2
+      repeat: null
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-mean:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-mean:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      level3_mirror_sha256_host: 4f2db84a5a1b0d806dd3579a24201e73202555d017d7945bc544583cc2cafb66
+      moments_meta_sha256: 1404a19bc78e9dd0dc1477f09f43ac89cc2664448da1c3824ffa688649759528
+      probe_meta_sha256: e027ba3fefe0acfb17f5a2d9bd8117a001a990105c6caba93eb616cd1d1c0934
+      read_sha256: a0497832ee312e096a02ea4ff291ad8a32d64f6bf14016e59d564c3a3e221d36
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    squad:
+      reading: NOT_READ
+      primary_rho_bar:
+        point: null
+        ci: null
+      readable_metrics: []
+      flags:
+      - SEED_BOUND
+      interpretation: []
+      rho_bar_r:
+        B0-mlp:
+          point: null
+          ci: null
+        L3-mean:
+          point: null
+          ci: null
+        L3-att:
+          point: null
+          ci: null
+        L5-mom:
+          point: null
+          ci: null
+        L5-list:
+          point: null
+          ci: null
+        L5-kern:
+          point: null
+          ci: null
+        ref:twin:
+          point: null
+          ci: null
+        ref:other_seed:
+          point: null
+          ci: null
+      contrasts:
+        moments_over_mean:
+          point: null
+          ci: null
+        moments_vs_attention:
+          point: null
+          ci: null
+        moments_over_node_local:
+          point: null
+          ci: null
+        kernel_vs_attention:
+          point: null
+          ci: null
+        kernel_over_moments:
+          point: null
+          ci: null
+        objective_moments:
+          point: null
+          ci: null
+        edge_moments_vs_attention:
+          point: null
+          ci: null
+        edge_moments_over_mean:
+          point: null
+          ci: null
+      shares:
+        moment_share:
+          point: null
+          ci: null
+          readable: false
+        kernel_share:
+          point: null
+          ci: null
+          readable: false
+      bands_r:
+        B0-mlp: NOT_READ
+        L3-mean: NOT_READ
+        L3-att: NOT_READ
+        L5-mom: NOT_READ
+        L5-list: NOT_READ
+        L5-kern: NOT_READ
+        ref:twin: NOT_READ
+        ref:other_seed: NOT_READ
+      bands_e:
+        B0-mlp: NOT_READ
+        L3-mean: NOT_READ
+        L3-att: NOT_READ
+        L5-mom: NOT_READ
+        ref:no_edge: NOT_READ
+        ref:other_seed: NOT_READ
+      queries: 5841
+      uq_rows: 176880
+      moments:
+        rows: 176880
+        columns: 3366
+        entries: 1905184
+        rows_without_entry: 20514
+        moments_sha256: 8f67e6011dbb181c9597b3f0871a64190e5b16706ff8c51dcc69746dd0f64a1e
+        seconds: 86.4
+      repeat: null
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-mean:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-mean:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      level3_mirror_sha256_host: de7c1917942862d24cf419ca09b0dcff0051b2ec3ceb69ab3a8f02dc557792ec
+      moments_meta_sha256: a0246c8b34ca749c1c36e43ede23de469fbb46f1a7376cf76fbf85ff56baa215
+      probe_meta_sha256: 31e24bb1fffc9f50e5183f0f956d912293609c4c3d801f189e7db1d3748e0de9
+      read_sha256: ea6c590b86f67afdc7006108551e5f4007e6b858bb50edb5e123db670018228c
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+  host_jobs:
+    metaqa:
+      rx_job: 260930-041141-mpr-l5-metaqa-b2bf
+      queued_utc: '2026-09-29T22:41:41Z'
+      rx_runtime: 45m40s
+      rx_cpu_s: 2711.2
+      rx_peak_mem_gb: 5.61
+      probe_fit_s_sum: 2134.8
+      rc: 0
+      moments_s: 109.2
+      repeat:
+        moments_identical: true
+        bit_identical: true
+        max_abs_diff: 0.0
+    2wiki:
+      rx_job: 260930-041146-mpr-l5-2wiki-7372
+      queued_utc: '2026-09-29T22:41:46Z'
+      rx_runtime: 1h01m
+      rx_cpu_s: 3672.2
+      rx_peak_mem_gb: 5.96
+      probe_fit_s_sum: 3414.8
+      rc: 0
+      moments_s: 89.2
+    squad:
+      rx_job: 260930-041150-mpr-l5-squad-55a0
+      queued_utc: '2026-09-29T22:41:50Z'
+      rx_runtime: 47m02s
+      rx_cpu_s: 2805.7
+      rx_peak_mem_gb: 5.02
+      probe_fit_s_sum: 2569.0
+      rc: 0
+      moments_s: 86.4
+    resources_each: rx reservation 2 cpu, 8 GB, 0.16 GPU per job (six jobs of levels 4 and 5 on one RTX 4500 Ada), mpr priority 10; rx caps job memory only, so the
+      declared 8 torch/BLAS threads ran as declared
+  transfer: none, as declared (level 0's subset and level 3's sidecars were on the host; code as the git-tracked tree)
