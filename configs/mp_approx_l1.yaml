@@ -1,6 +1,6 @@
 phase: MP_APPROX_L1
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-ORACLE
 extends: >-
@@ -260,3 +260,272 @@ tests:   # tests/test_mp_approx_l1.py
 execution:
   order: this file alone (commit); script and tests (commit); tokens metaqa, 2wiki, squad; probe; read; doc; run record (commit)
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l1_2026_09_29:
+  utc: '2026-09-29T14:26:58Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  held_half_read: false
+  checkpoints_updated: 0
+  placement: laptop CPU; tokens 6 threads in one lane, probes 4 threads per process
+  record_sha256: ed92faa5b3dee41e1d06a15126be442253d75a371d1227dd4d29416aabb5d3ff
+  document: docs/MP_APPROX_L1.md
+  document_sha256: 414a53464b5e4d402c1493c6f02ae55aca043869391d97eca8c09778a050578f
+  datasets:
+    metaqa:
+      reading: L1_LOW
+      primary_rho_bar:
+        point: -0.9348492944157577
+        ci:
+        - -1.088405989410022
+        - -0.8029224058172353
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      - hit@1
+      flags:
+      - FIT_NOT_RANK (r, L1d1-mlp)
+      - FIT_NOT_RANK (r, B0-mlp)
+      - FIT_NOT_RANK (r, B1-mlp)
+      interpretation:
+      - l1_low_tokens_flat
+      contrasts:
+        hop_tokens:
+          point: -0.28463120790309415
+          ci:
+          - -0.36996652544377967
+          - -0.206319235968211
+        beyond_twin_channels:
+          point: -0.7086622110218117
+          ci:
+          - -0.8281232295387312
+          - -0.6173949578577271
+        depth:
+          point: -0.06815934198897278
+          ci:
+          - -0.1320100600718877
+          - -0.00943366290394777
+        nonlinearity:
+          point: 0.2328212748472961
+          ci:
+          - 0.14390001683272163
+          - 0.3263648314876054
+        message_tokens:
+          point: -0.03888801834458627
+          ci:
+          - -0.040210549686425456
+          - -0.03749128991322312
+        message_depth:
+          point: 0.011191679074785188
+          ci:
+          - 0.010533997051426384
+          - 0.011814431019260654
+      bands_r:
+        L1-mlp: L1_LOW
+        L1d1-mlp: L1_LOW
+        L1-ridge: L1_LOW
+        L1d1-ridge: L1_LOW
+        B0-ridge: L1_LOW
+        B0-mlp: L1_LOW
+        B1-ridge: L1_LOW
+        B1-mlp: L1_LOW
+        B2-ridge: L1_LOW
+        ref:twin: L1_LOW
+        ref:other_seed: L1_HIGH
+      bands_e:
+        L1-ridge: L1_MID
+        L1d1-ridge: L1_MID
+        B0-ridge: L1_MID
+        B1-ridge: L1_MID
+        ref:no_edge: L1_LOW
+        ref:other_seed: L1_HIGH
+      message_R2_mean:
+        L1-ridge: 0.47687973200439754
+        L1d1-ridge: 0.46568805292961235
+        B0-ridge: 0.4376667763210614
+        B1-ridge: 0.5157677503489838
+      queries: 2400
+      uq_rows: 165893
+      integrity_mismatches: 0
+      proto_max_abs_diff: 0.0001220405101776123
+      proto_max_ratio: 0.2494281360211786
+      cited_rho_bar_max_abs_diff: 0.0
+      tokens_meta_sha256: 56e7b9161514d2e5d46be3fa738d07a67ca47068398f27b9026fe6edff1d2bb7
+      probe_meta_sha256: 77677409bc54e3f10d7d890f849b3b889cb5169531156fb51ed9202cea2fb94a
+    2wiki:
+      reading: L1_LOW
+      primary_rho_bar:
+        point: -0.20215828329598756
+        ci:
+        - -0.2673784049151857
+        - -0.14774238933474235
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      flags:
+      - FIT_NOT_RANK (r, B1-mlp)
+      interpretation:
+      - l1_low_tokens_flat
+      contrasts:
+        hop_tokens:
+          point: -0.2573083728330471
+          ci:
+          - -0.3051138616159284
+          - -0.20782992097964154
+        beyond_twin_channels:
+          point: -0.3498821969612807
+          ci:
+          - -0.4000918130634874
+          - -0.3004015969243061
+        depth:
+          point: -0.10728106311582218
+          ci:
+          - -0.145102458559462
+          - -0.0691469621070919
+        nonlinearity:
+          point: 0.026689482890082494
+          ci:
+          - -0.015095316672968442
+          - 0.06848608433119838
+        message_tokens:
+          point: -0.03566102531205895
+          ci:
+          - -0.036779283558496544
+          - -0.03461775874341307
+        message_depth:
+          point: 0.006187271080817736
+          ci:
+          - 0.005775992049374128
+          - 0.006578501129435682
+      bands_r:
+        L1-mlp: L1_LOW
+        L1d1-mlp: L1_LOW
+        L1-ridge: L1_LOW
+        L1d1-ridge: L1_LOW
+        B0-ridge: L1_LOW
+        B0-mlp: L1_LOW
+        B1-ridge: L1_LOW
+        B1-mlp: L1_LOW
+        B2-ridge: L1_LOW
+        ref:twin: L1_LOW
+        ref:other_seed: L1_HIGH
+      bands_e:
+        L1-ridge: L1_MID
+        L1d1-ridge: L1_MID
+        B0-ridge: L1_MID
+        B1-ridge: L1_MID
+        ref:no_edge: L1_LOW
+        ref:other_seed: L1_HIGH
+      message_R2_mean:
+        L1-ridge: 0.48188562886475794
+        L1d1-ridge: 0.4756983577839402
+        B0-ridge: 0.4514025445461886
+        B1-ridge: 0.5175466541768169
+      queries: 6290
+      uq_rows: 245055
+      integrity_mismatches: 0
+      proto_max_abs_diff: 0.00012201070785522461
+      proto_max_ratio: 0.24936722560945182
+      cited_rho_bar_max_abs_diff: 0.0
+      tokens_meta_sha256: efc7f0bc01e05cad4a9797f0c37d90910848397f1fdef287db9bae7fcc060652
+      probe_meta_sha256: c3a048ee4dcaa08d38b1b30355e4c32e48205c0a17350f55b7ac8deec51faa8b
+    squad:
+      reading: NOT_READ
+      primary_rho_bar:
+        point: null
+        ci: null
+      readable_metrics: []
+      flags:
+      - SEED_BOUND
+      interpretation:
+      - message_tokens_add
+      contrasts:
+        hop_tokens:
+          point: null
+          ci: null
+        beyond_twin_channels:
+          point: null
+          ci: null
+        depth:
+          point: null
+          ci: null
+        nonlinearity:
+          point: null
+          ci: null
+        message_tokens:
+          point: 0.004315239896565348
+          ci:
+          - 0.003619045121532119
+          - 0.004952306734329689
+        message_depth:
+          point: 0.007714176154518637
+          ci:
+          - 0.007348572452565474
+          - 0.008062696652879836
+      bands_r:
+        L1-mlp: NOT_READ
+        L1d1-mlp: NOT_READ
+        L1-ridge: NOT_READ
+        L1d1-ridge: NOT_READ
+        B0-ridge: NOT_READ
+        B0-mlp: NOT_READ
+        B1-ridge: NOT_READ
+        B1-mlp: NOT_READ
+        B2-ridge: NOT_READ
+        ref:twin: NOT_READ
+        ref:other_seed: NOT_READ
+      bands_e:
+        L1-ridge: NOT_READ
+        L1d1-ridge: NOT_READ
+        B0-ridge: NOT_READ
+        B1-ridge: NOT_READ
+        ref:no_edge: NOT_READ
+        ref:other_seed: NOT_READ
+      message_R2_mean:
+        L1-ridge: 0.6915413333600289
+        L1d1-ridge: 0.6838271572055102
+        B0-ridge: 0.6696506598429236
+        B1-ridge: 0.6872260934634635
+      queries: 5841
+      uq_rows: 176880
+      integrity_mismatches: 0
+      proto_max_abs_diff: 7.048249244689941e-05
+      proto_max_ratio: 0.24898017719421248
+      cited_rho_bar_max_abs_diff: 0.0
+      tokens_meta_sha256: 2503b30da07e9c999f1c60e9c5f50f48efeaeccb79f063b46e94e5ed701eb0b8
+      probe_meta_sha256: 5b0b3ff5e06ccc4b004e7f6a4facc1953edd61380cb429b4d31c9458e64df9a5
+  deviations:
+  - 'The first probe launch (13:23Z: metaqa and 2wiki, the declared --stage probe at 4 threads each) was stopped at about 13:31Z after the user asked for host placement
+    (''use the damn host not on laptop''). The stopped metaqa process had finished L1 folds 0-1 and 2wiki fold 0. Neither wrote a unit, and nothing they computed
+    was kept or read; their logs are kept as probe_<name>.stopped.log. The stage stayed on the laptop, for two reasons. Its token sidecars are laptop-only, about
+    3 GB, and uploading them at the measured 1.2 MB/s takes longer than the whole local run. And the cited level-0 probes it is compared with ran on the laptop (placement_rules.one_placement_per_comparison
+    of configs/cpu_gpu_equivalence.yaml). All three probes were then run from the start.'
+  - 'squad ran as a third lane, started at 13:47:53Z, two seconds after metaqa''s L1 unit had been written: two probe processes left about 1.4 GB free on the 15.7
+    GB laptop. Every process ran the declared --stage probe at the declared 4 threads, and the scheduler (a session-scratchpad launcher) only decided when each process
+    started.'
+  - Beside the read stage, the laptop ran the GPU task-level qualification's bundle and laptop arms (configs/gpu_task_qualification.yaml, declared at e0cb6d7). They
+    started after the last probe had exited (14:04:47Z) and share no file with this phase.
+  - compute.token_pass estimated metaqa about 25 to 40 min and 2wiki and squad about 5 to 10 min each; they took 7.1, 4.7 and 2.5 min. compute.probes estimated about
+    45 to 75 min per dataset; the fits took 24.0 (metaqa), 27.6 (2wiki) and 16.6 min (squad) of process time.
+  probe_lanes_utc:
+    2wiki: 13:31:37Z-13:59:33Z
+    metaqa: 13:31:37Z-13:55:52Z
+    squad: 13:47:53Z-14:04:47Z
+  commits:
+    declaration: 11ed823
+    token_probe_read_doc_file_stages_and_tests: 512e7c9
+    run_record: the commit that adds this block, with docs/MP_APPROX_L1.md
+  tests: 'tests/test_mp_approx_l1.py: 14 passed after the read (run together with tests/test_gpu_task_qualification.py, 28 passed in 152 s; none skipped)'
+  seconds:
+    tokens:
+      metaqa: 426.4
+      2wiki: 279.7
+      squad: 147.5
+    probes:
+      metaqa: 1439.9
+      2wiki: 1658.7
+      squad: 993.2
+    read:
+      metaqa: 420
+      2wiki: 212
+      squad: 143
