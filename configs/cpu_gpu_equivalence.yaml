@@ -1,0 +1,322 @@
+phase: CPU_GPU_EQUIVALENCE
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: PLACEMENT_EQUIVALENCE
+extends: >-
+  configs/universal_v2.yaml#later_stages.compute_placement -- "an equivalence test on one fit carve holds the GPU path to
+  the CPU path (per-query centred scores atol 1e-5) before any number is read from it" -- and every later line that
+  defers to it: stage 2's if_the_projection_exceeds_the_ceiling, amendment 7's local_only, and the placement lines of
+  the UMLP-D0.1, v2.1 and v2.2A declarations. This file is that test. None of those files is edited.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+equivalence_question: >-
+  On inputs that are bit-identical by construction, do the lab host's CPU and GPU compute the frozen universal-v2 models'
+  per-query scores and training gradients within the repository's own tolerance of the laptop CPU, the machine that
+  produced every filed number?
+role_for_the_registered_question: >-
+  None directly: it decides only WHERE later stages may run. It fits nothing, selects nothing and reads no retrieval
+  number. Metric values on fit-carve queries are computed only to compare one placement with another; their levels are
+  never tabulated, reported or read.
+
+authorization:
+  requested: 2026-09-29, by the user -- "draft the equivalence test declaration"
+  this_commit: >-
+    the declaration only, filed before any number exists. Nothing below has run: no bundle, no placement arm, no code
+    of device_path. The run opens on the user's go-ahead and follows this file as written.
+  hardware_ready: >-
+    the lab host was set up and validated on 2026-09-29 (commits d143ea5 and e22dee9; tools/rx/README.md, "Validated on
+    the lab host"): envs mpr-cpu@31803e6457ab and mpr-cu128@62fc45e9e1ba built, CUDA inside a job working, CPU jobs
+    unable to see the GPU. That work was systems only, and every rx job stays systems only until a verdict below says
+    otherwise.
+
+this_file_does_not_touch:
+  fits: no fit, no selection, no early stopping; the six checkpoints are loaded read-only by sha256
+  rows: fit-carve rows only (training data). No select, eval, held or test row is packed, scored or read; V2_HELD_CONFIRMATION is not touched
+  frozen: >-
+    M2-M3B, universal-v2 (pilot, replication, stage 2), UMLP-D0 to D0.3, v2.1 and v2.2A keep their files, arrays,
+    checkpoints and status lines. M3B code stays byte-pinned (configs/universal_v2.yaml#m3b_incumbents.must_not: "edit,
+    rerun, re-render or re-hash anything of M3B").
+  package: >-
+    the CRAG package is read-only. The bundle holds node rows that the frozen packer gathered through the served loader,
+    as the v2 caches already hold query embeddings. Nothing is written under the package root, and nothing from it
+    enters git.
+  placement: no stage is placed by this file. A passing verdict makes a placement nameable in a later dated authorization block, nothing more
+
+reconciliations:
+  route: >-
+    compute_placement (2026-09-19) named Modal, through scripts/spawn_modal_jobs.py, as the GPU route. The lab host,
+    driven by tools/rx (8b6d258), is a second route and the only one this file covers; Modal would enter as a new arm
+    (what_a_verdict_opens.placement_arms_added_later).
+  one_fit_carve: see probe.why_not_one_whole_carve
+  gradient_tier: >-
+    compute_placement asked for scores only. A gradient tier is added because the placement it would open is for fits.
+    It adds a condition and relaxes none, and it is filed before any number.
+
+placements:
+  reference:
+    laptop_cpu_t8: >-
+      the laptop (Intel Family 6 Model 186, 12 logical CPUs, AVX2, 15.7 GB), Python 3.13.5, torch 2.8.0+cpu (MKL 2025.2),
+      numpy 2.3.2, torch_geometric 2.6.1, at 8 threads -- the thread count of every universal-v2 fit
+  floor:
+    laptop_cpu_t4: >-
+      the same machine at 4 threads, the stage-2 evaluation's thread count. It measures a difference the filed science
+      already treats as the same computation.
+  candidates:
+    host_cpu_t8: >-
+      the lab host (ssh alias gpu; i9-14900 with 32 threads, AVX2, 128 GB, Windows 11), rx env mpr-cpu@31803e6457ab
+      (torch 2.8.0+cpu, numpy 2.3.2, torch_geometric 2.6.1), Windows native, 8 threads
+    host_gpu_det: >-
+      the same host, rx env mpr-cu128@62fc45e9e1ba (torch 2.8.0+cu128), NVIDIA RTX 4500 Ada Generation 24 GB, driver
+      596.71. float32 only; torch.backends.cuda.matmul.allow_tf32 = False, torch.backends.cudnn.allow_tf32 = False,
+      float32 matmul precision "highest", cudnn.benchmark = False; torch.use_deterministic_algorithms(True,
+      warn_only=True) with CUBLAS_WORKSPACE_CONFIG=:4096:8 set before CUDA starts; every determinism warning recorded
+    host_gpu_default: the same GPU and settings with the determinism request left off (TF32 still off, float32 only)
+  repeats: laptop_cpu_t8, host_gpu_det and host_gpu_default run T1 a second time in a fresh process (arm suffix _r2)
+  one_process_per_arm: every arm is one process reading the same bundle; it sets the settings above, reads them back and records them
+  not_covered: >-
+    WSL on the host, Modal, any other GPU, driver or torch build, mixed precision, and host CPU work at a thread count
+    other than 8. Each becomes a new arm (placement_arms_added_later) before it is used.
+
+object_under_test:
+  models:   # weights sha256 = the fit record's state_sha256; both verified in every arm, a mismatch is a hard stop
+    u_gnn_v2_ef__H128__six__s0: {weights: 88f56eeffbe53fb5e7db334d642ec2dc476410fa2e1fb84b196e748ed5e6e144, record: 3148c572d5a2d1ceaf62395f96531f95b53793a83a40370bb793f6796abc5241}
+    u_gnn_v2_ef__H128__six__s1: {weights: aabe9110122b51048d027a8fbeaed2e518beed2edcc677a034ab5594310161cd, record: 7f7df04d771a1d4ed68e936f4e448e801074654627cc4c56b8a998df7547cea0}
+    u_gnn_v2_ef__H128__six__s2: {weights: ac4bf9c2b1868249e4fd41cd16bdb2f5b7529e6ea5f406494344f149ce0ddd54, record: 3c480be2c6255cabcf36578a4d126acf359bbcfc7e7482f8b36a7e08570d8bfc}
+    u_mlp_v2_mix__H128__s0: {weights: f0e629a7347a08014ae00f6d164b6158695a71118c7dabf0dfaf56e1b8a3e8f3, record: 21fab0efc9c7538c08de6311d3ebdde0944f49543e17bd0487f42e50f68940fb}
+    u_mlp_v2_mix__H128__s1: {weights: 0926391ac70457ae0c7319fe1821aee5be17eb57af0879168f5b003c32effb85, record: f6cff3f3f05507908d244e37f5cef221fd7462dbc49d9f49192ed43ca0efd62d}
+    u_mlp_v2_mix__H128__s2: {weights: d4b7157e3e272a01d815ac088b670aa99a9120c6fb3d2aa626f78fb67219a431, record: 9302082f2acedc1b6ed39ed78f54d43e820584326bbd9a8320e94bfe0a9fa217}
+  paths: outputs/universal_v2/six/fits/<key>.pt|.json for the GNN, outputs/universal_v2/fits/<key>.pt|.json for the twin
+  why_these: >-
+    the selected universal GNN (UNIVERSAL_GNN_V2_SELECTED = u_gnn_v2_ef, its stage-2 six-dataset checkpoints) and the
+    non-message-passing twin u_mlp_v2_mix -- the pilot's fits on the trio (2wiki, metaqa, squad) under the same frozen
+    contract, the checkpoints the UMLP diagnostics read; no six-dataset twin has been fitted. The registered question
+    compares these two families; a device that treated them differently would be a confound, so both face the same
+    test. On typed-KB batches (metaqa, webqsp) the GNN runs its relation cells and evidence flow; on passage-graph
+    batches it runs the untyped path; the twin runs the gated input block and the MLP body. On hotpotqa, musique and
+    webqsp batches the twin scores rows it was not fitted on: valid inputs for a test of computation, whose levels are
+    not read.
+  relation_bank: >-
+    the six-dataset bank read by the stage-2 fits: 7,067 rows, sha256
+    57d34d3688602e634b92d401dfad9333cd1cfae448d8dffe2cee1be34f10a2ed, built on the laptop by build_relation_bank over
+    the six contexts and shipped in the bundle. The twin does not read it.
+  contract: >-
+    UNIVERSAL_V2_CORE_CONTRACT, contract_frozen_2026_09_19, 129 columns, core sha256
+    8d1da88b14dfdee13dd32ee6a05f6d9733d14a9899d5e011c41b0cce53000bf9; parameters 420,932 (GNN) and 330,955 (twin),
+    checked in every arm
+  not_covered: >-
+    gat_universal_v1 (PyG GATConv; no declared stage refits it), the trio u_gnn_v2_ef checkpoints (their 9-row bank
+    cannot index webqsp relations), the v2.1 and v2.2A heads, and any arm not listed. Each needs its own arm here before
+    it runs off the laptop.
+
+probe:
+  batches: >-
+    the first 16 batches of the frozen stage-2 draw for seed 0, exactly as mp_retrieval.m3b_train.fit_model draws them:
+    numpy default_rng(0) draws one permutation of each fit carve's trainable queries in sorted dataset order, then
+    draw_indices draws each batch (batch 16, dataset_draw per_query). These are the batches
+    u_gnn_v2_ef__H128__six__s0 trained on at steps 1-16 (its record: no warm start, no batch skipped): 256 query
+    draws, every one from a fit carve -- 2wiki 46, hotpotqa 43, metaqa 35, musique 52, squad 40, webqsp 40 (counted at
+    declaration by replaying the draw over the carves' gold pointers; no model was run and no batch was packed).
+  why_not_one_whole_carve: >-
+    compute_placement said "one fit carve". No single carve exercises both paths of the selected GNN (typed relations
+    with evidence flow on metaqa and webqsp; untyped passage graphs elsewhere). Packing a whole carve on the host would
+    also need its data mirrored first (metaqa's fit cache alone is 4.7 GB, over an hour of upload at the measured
+    1.2 MB/s, before its stores and served files), which would test the mirror and the device at once. The probe separates them: the device
+    sees batches packed on the laptop, and the mirror has its own check (mirror_verification). The first stage-2
+    batches are fit-carve queries of all six datasets, mixed exactly as training packs them. The tolerance is inherited
+    unchanged.
+  packing: >-
+    on the laptop, by the frozen code -- scripts/universal_v2_six.open_six (fit kind), CarveDataV2.pack,
+    pack_queries_v2 -- which refuses any cache that is not the filed carve
+  fit_carves_sha256:   # carve_sha256_declared in outputs/universal_v2/cache/<name>/fit/meta.json = the stage-2 training carves
+    2wiki: fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3
+    hotpotqa: 2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c
+    metaqa: 161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188
+    musique: 7976539fa1fbf0e132429f9983335b452c8f557b6f5bc13984a71a9c388fdfcf
+    squad: 39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515
+    webqsp: b744f21fcccf880290bd87c580052d2ebe0f29f1f4bb3af3bebb636e94d13eaa
+  bundle: >-
+    outputs/cpu_gpu_equivalence/bundle/: the 16 PackedBatch objects in any lossless encoding (node embeddings may be
+    stored once per dataset and gathered by index), the relation bank, the model inputs, and manifest.json with the
+    sha256 of every file and of every field of every reconstructed batch (x, qptr, node_query, emb, qemb, seedw,
+    seed_nodes, edge_index, edge_attr, gold). Estimated at 0.6-0.8 GB, of which about 0.49 GB is embeddings (counted
+    from the pools). Git-ignored, like everything under outputs/.
+  size_cap: if the bundle exceeds 1.0 GB, B drops to the largest value >= 8 whose bundle fits; B is filed in the run record before any arm runs, and every tier uses it
+  transfer: >-
+    rx push with --inputs for the bundle and the six checkpoints with their records; code arrives as the git-tracked
+    tree. The push exceeds push.max_mb 512 and is sent with --force: that guard is a convenience, and this push is
+    declared here. Nothing else is sent, and no token or credential goes to the host.
+  integrity_in_every_arm: >-
+    every bundle file and every reconstructed field matches its manifest sha256; every checkpoint and record matches
+    object_under_test.models; the bank matches its sha256; frozen_code holds. Any mismatch is a hard stop, never a
+    verdict.
+
+tiers:   # one script, one function per tier, identical in every arm; only the device differs
+  T1_forward:
+    what: >-
+      every model in eval() (dropout off) under no_grad, on every probe batch. Per query draw it keeps the centred scores
+      s - mean_q(s) as tests/test_m3b_models.py::_centred_scores takes them (a shift shared by a query's candidates
+      ranks nothing, and the readout bias's value is rounding noise), and the 14 METRIC_NAMES of rank_metrics on the raw
+      scores.
+  T2_gradient:
+    what: >-
+      every model in eval() (dropout off) with gradients on, on every probe batch separately, from the loaded weights:
+      loss = listwise_loss(model(batch), batch), then loss.backward(). Nothing is stepped. It keeps the loss and the
+      gradient of every parameter tensor.
+    why_dropout_off: >-
+      each device draws dropout masks from its own generator, so train-mode gradients differ by construction. With
+      dropout off the gradient is a deterministic function of the weights and the batch, and that function is what a
+      device computes.
+  T3_trajectory:   # descriptive; never a gate
+    what: >-
+      seed 0 of each family, dropout off, a fresh AdamW at the frozen lr 1e-3, weight decay 1e-4 and clip 1.0, taking the
+      probe batches as consecutive steps; centred scores on every probe draw after steps 1, 2, 4, 8 and 16
+    reads: how fast rounding differences grow along a trajectory, beside the same growth for laptop_cpu_t4 -- context for placement_rules.new_seeds only
+  T4_clock:   # systems; never a gate
+    what: per probe batch, the forward and the forward+backward wall clock (packing excluded, CUDA synchronised) and peak GPU memory
+
+tolerances:   # filed before any number
+  forward_inherited: >-
+    per query draw, the arm's centred scores against laptop_cpu_t8 under torch.testing.assert_close(atol=1e-5,
+    rtol=1e-5): elementwise |a - b| <= 1e-5 + 1e-5 * |b|, with b the reference. This is configs/universal_v2.yaml's
+    "per-query centred scores atol 1e-5" as tests/test_m3b_models.py applies it.
+  gradient:   # per batch
+    loss: "|L - L_ref| <= 1e-5 * |L_ref| + 1e-6"
+    global: "||g - g_ref||_2 <= 1e-4 * ||g_ref||_2, over all parameters"
+    per_tensor: "||g_p - g_ref_p||_2 <= 1e-4 * ||g_ref_p||_2 + 1e-6 * ||g_ref||_2 for every parameter tensor p"
+    absolute_term: the second term keeps near-null tensors (the readout bias, whose true gradient is zero) from failing on rounding noise
+    why_these: >-
+      float32 rounding through these models is of order 1e-6 relative, while a mathematical difference (a missing or
+      extra term, a different mask, a different op) moves a gradient by 1e-2 or more. 1e-4 sits two orders of magnitude
+      from each.
+  bit_identical: torch.equal on every centred-score vector, loss and gradient tensor
+  every_process: a candidate's first run and its _r2 repeat are both held to the gates
+  cell: a check is made per cell -- (model, query draw) for T1; (model, batch, loss | global | tensor p) for T2
+
+readings:   # per candidate, from T1 and T2 against laptop_cpu_t8 over all 6 models and all probe batches
+  floor_first: laptop_cpu_t4 goes through the same checks against laptop_cpu_t8 before any candidate is read
+  EQUIVALENT_BIT_IDENTICAL: every T1 and T2 value is bit_identical to the reference
+  EQUIVALENT_WITHIN_TOLERANCE: not bit-identical, and every cell of forward_inherited and gradient holds
+  NOT_EQUIVALENT: >-
+    any cell fails that the floor passes. The record names every failing cell and its largest excess over the
+    tolerance.
+  INCONCLUSIVE_FLOOR: >-
+    every failing cell of the candidate also fails for the floor -- the tolerance is tighter than the reference's own
+    thread-count reproducibility there, so the failure cannot be attributed to the placement
+  exactly_one: per candidate, the first of the four that holds
+  reported_beside_never_gating:
+    - per model and arm, the largest |centred difference| and the largest ratio |a - b| / (1e-5 + 1e-5 |b|); loss and gradient relative errors (largest and median over batches)
+    - decision agreement -- per model, how many query draws differ from the reference in any of the 14 metrics, and the largest |difference| of any metric's probe mean. When forward_inherited holds, each such draw is a near-tie swap between candidates within twice the tolerance
+    - determinism -- whether each _r2 run is bit-identical to its first run, and every warning the determinism request raised
+    - the T3 divergence curves and the T4 clocks
+  wording: >-
+    a pass says the placement computes these models' scores and gradients within the filed tolerance on these inputs. It
+    never says that a fit on the placement reproduces a laptop fit (placement_rules.new_seeds).
+
+what_a_verdict_opens:
+  pass: >-
+    EQUIVALENT_BIT_IDENTICAL or EQUIVALENT_WITHIN_TOLERANCE makes the placement NAMEABLE as the compute placement in a
+    later dated authorization block of a declared stage. That block quotes the tested settings verbatim (host, env
+    name@hash, torch and CUDA versions, the determinism mode that passed, TF32 off, float32, 8 threads for host CPU work)
+    and runs mirror_verification first. A verdict opens no stage by itself.
+  fail: >-
+    NOT_EQUIVALENT or INCONCLUSIVE_FLOOR keeps the placement barred. No tolerance is relaxed and no setting is changed
+    under this file; the only routes are a new arm (placement_arms_added_later) or a new declaration.
+  placement_arms_added_later: >-
+    another placement (Modal, WSL, another GPU, float64, another thread count) is admitted only by running this same
+    test -- the same bundle, reference arm, tolerances and readings -- filed as a dated amendment with its own verdict
+
+placement_rules:   # filed now; they bind every stage placed off the laptop
+  one_placement_per_comparison: >-
+    arms whose numbers a stage compares are fitted and evaluated on one placement, so a device is never a hidden
+    difference between an MP arm and a non-MP arm. A cross-placement reading is allowed only if the stage's block names
+    it in advance, and then only on seed means (never seed-paired), with each placement named beside its number.
+  new_seeds: >-
+    a GPU fit is a new draw of the frozen rule (its dropout masks come from the device's generator): it never replaces,
+    pairs with, or is averaged as the same seed as a laptop fit with the same seed number. A host CPU fit is treated
+    the same way, even after EQUIVALENT_BIT_IDENTICAL, unless a later block declares a replica check and it passes.
+  no_regeneration: filed arrays and checkpoints (M2-M3B, universal-v2, UMLP) are never re-produced on another placement to confirm or replace them
+  record_the_placement: >-
+    every fit and eval record names the host, env name@hash, device and driver, torch and CUDA versions, determinism and
+    TF32 flags, and threads. Weights are saved as CPU tensors and pinned by state_sha256.
+  passed_settings_only: a mode that did not pass is not used, even when another mode on the same GPU passed
+  packing_on_cpu: batches are packed on the host CPU by the frozen code; the device sees only packed tensors
+  reference: the laptop CPU stays the reference placement
+
+mirror_verification:   # named here as a prerequisite; each placement block runs it for the datasets it reads; this file does not
+  rule: >-
+    before a stage reads data on the host, every mirrored input it opens matches the laptop copy byte for byte by
+    sha256: v2 caches, CSR stores, relation embeddings, and the served loader files and dense-doc shards. The served
+    freeze check of scripts/m3b_compile.open_package passes on the host. The stage's own first 16 batches, packed on the
+    host, are field-for-field torch.equal to the same batches packed on the laptop.
+  package: >-
+    the CRAG package stays read-only on the laptop. A host mirror is written by reading it, lives outside the rx project
+    workspace (never inside the repository or its mirror), and reaches the frozen code as a placement-only, in-memory
+    substitution of substrate.package_root. No config file is edited.
+  sizes_for_planning: >-
+    dense-doc shards + CSR stores + v2 fit and select caches: squad 0.25 GB, metaqa 6.0, musique 5.5, webqsp 9.1,
+    hotpotqa 16.1, 2wiki 18.8 -- about 56 GB, roughly 13 h at the 2026-09-29 upload rate
+
+device_path:   # the systems code the run adds; no scientific module is edited
+  where: >-
+    a new module, src/mp_retrieval/device_placement.py, holds fit_model and evaluate_carve copied from the pinned
+    mp_retrieval.m3b_train under new names, with an optional device. This is the route m3b_incumbents.must_not
+    prescribes ("v2 code imports M3B modules unchanged or copies a function under a v2 name"); m3b_train.py keeps its
+    pinned bytes.
+  constraints:
+    - with device None or "cpu", the copies execute the pinned code path statement for statement
+    - the copies call the pinned draw_indices, pack_parts, listwise_loss, macro_recall_at_5, rank_metrics, node_budgeted_batches and BatchPrefetcher by identity; the sampler and the loss are never copied
+    - with a device, the model moves once before the optimiser is built, and each batch moves on the main thread after BatchPrefetcher.next(); packing stays on CPU threads
+    - checkpoints hold CPU tensors; the CUDA generator state is saved and restored beside the CPU one, so a resumed GPU fit continues as the uninterrupted fit on the same device
+    - records gain the placement block of placement_rules.record_the_placement
+  tests:
+    - on the synthetic world of tests/test_m3b_models.py, the copies with device None and "cpu" give the pinned originals' fits (weights torch.equal; history and record equal apart from wall-clock fields) and evaluations (every metric array equal)
+    - on CUDA (skipped where there is none; run on the host in mpr-cu128 under the host_gpu_det settings), a synthetic fit on device "cuda" runs, checkpoints CPU tensors and resumes to the uninterrupted fit -- weights torch.equal when the determinism request raised no warning, otherwise centred scores within tolerances.forward_inherited, with the warning recorded
+    - evaluate_carve's copy on CUDA gives, for the same weights, the CPU evaluation's metrics on every synthetic query without a near tie (two candidates whose CPU scores differ by less than twice the forward tolerance); near ties are counted and reported
+  gate: the device-path tests pass on the laptop and on the host GPU before any candidate arm runs
+  not_runnable: if a frozen model cannot run on a device as written, it is not edited; the run stops for review, naming the op and the model
+
+frozen_code:   # sha256 of the bytes with CRLF folded to LF, as m3b_incumbents pins them; fixed for the whole phase and checked by every arm and by a test
+  configs/universal_v2.yaml: bce0d1e92de4f184f09f0770fd378e2fa63bf469fdf31bb904d7471a11eeb562
+  configs/m3b_controlled_comparison.yaml: 9c0e6e21e2fc8a88f35419e10e87f83b9018db0104500dad27a09de3dc10d09d
+  src/mp_retrieval/m3b_train.py: b17722c11cd4ce3194d784bba41b7cb3dc514354b5cce70cd1980d9ab7376eb6
+  src/mp_retrieval/m3b_models.py: cbe32ea0772a22fd5cd1dfdb8f2b81e11a85a9e6b6e60bfc05036f5121aeb05c
+  src/mp_retrieval/m3b_features.py: 0310e553d2a49d6528cf47065ff0b11180544df5c11eca2d94eb13bcb0f47ed3
+  src/mp_retrieval/m3b_pools.py: 219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697
+  src/mp_retrieval/universal_v2_models.py: e49e7a1b2c143e2b6a7f039857046e7ec0d9a3f15fe5d032e22ab50fac1fd479
+  src/mp_retrieval/universal_v2_features.py: 34a5eec553d8fc1e576829f96a8461dbc4e9490088e082e9ef0a127ab73e8427
+  scripts/universal_v2_run.py: bc6badb19643a1f968e80ba22fb1497c50bfd344b06bffb306778dabecbf4dd4
+  scripts/universal_v2_six.py: 086525a8584b636692343f4ff11148aac91de076dfe12c8c23ef05c4f5ed7aa6
+  scripts/m3b_run.py: 6dc5f13167e3e9e7bff64df1ceef85af42831bdaef47d6c9487b5b71473108a4
+  scripts/m3b_compile.py: 825ee987d27731c54f6e6a5a4f6d6cf68a4d746409b88533f8262be35cd263f8
+
+hard_stops:   # on any of these: file hard_stop_<date> with the evidence, leave the status line where it is, and report
+  - any pin in this file fails (bundle file or field, checkpoint, record, bank, contract, frozen_code, fit carve, parameter count)
+  - an arm's environment is not the one declared for it (env name@hash, torch version, device name)
+  - a frozen model would have to be edited to run on a device (device_path.not_runnable)
+  - a select, eval, held or test row would be packed, scored or read
+  - anything beyond probe.transfer would have to go to the host, or a token or credential would be needed there
+  - the floor arm cannot run
+
+compute:
+  laptop: the bundle build (the six contexts opened once, fit kind), then laptop_cpu_t8, its _r2 and laptop_cpu_t4 -- about 1 to 1.5 h in one lane, with nothing else of this session beside it
+  host: >-
+    rx jobs: host_cpu_t8 at --cpus 8 --mem 16; the GPU arms in one -p gpu job (1 GPU, 8 CPUs, 32 GB), one process per
+    arm; results under outputs/cpu_gpu_equivalence/arms/<arm>/, brought back with rx wait --fetch. About 0.5 h of host
+    time, plus about 10 minutes of upload.
+  fit_hours: 0 -- nothing is fitted, and the universal-v2 ceiling is untouched
+
+outputs:
+  script: scripts/cpu_gpu_equivalence.py (stages bundle, arm, read, doc, file)
+  module: src/mp_retrieval/device_placement.py
+  tests: >-
+    tests/test_cpu_gpu_equivalence.py: the tolerance checks and the floor logic on toy arrays; the bundle round trip
+    bit-identical on a synthetic batch; the frozen_code pins; the device-path copies against the pinned originals on
+    CPU, and on CUDA where present
+  sidecars: outputs/cpu_gpu_equivalence/bundle/, outputs/cpu_gpu_equivalence/arms/<arm>/, outputs/cpu_gpu_equivalence/record.json
+  document: docs/CPU_GPU_EQUIVALENCE.md
+  run_record: run_record_cpu_gpu_equivalence_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN; each candidate's verdict on its own line
+  pointers_updated_on_run: the header comment of rx.toml and the science-placement note of tools/rx/README.md point at the verdicts
+
+execution:
+  order: device-path code and tests; bundle; laptop arms; push; host CPU arm; host GPU arms; fetch; read; document; run record; commit
+  go_ahead: not given -- the user asked for the draft
+  stop_after_this_block: true
