@@ -1,6 +1,6 @@
 phase: UMLP_D03_SCORE_GAP_FEASIBILITY
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 extends: >-
   configs/umlp_d01_2wiki_feature_readout.yaml (group and strata definitions, reused verbatim) and
@@ -147,3 +147,34 @@ tests:
 execution:
   stop_after_this_block: true
   within_phase_go_ahead: given (authorization above)
+
+run_record_umlp_d03_2026_09_29:
+  utc: '2026-09-29T03:58:21Z'
+  held_half_read: false
+  models_fitted: 0
+  queries: 6290
+  analysed_queries: 1293
+  missed_golds: 1424
+  pairs: 4570
+  reading: D03_A_CAPACITY_NOT_THE_LIMIT
+  d03_c_local_probe_not_global: true
+  reading_inputs:
+    share_required_ge_2tau: 0.0056
+    share_required_lt_tau: 0.889
+    share_bad_vs_nearest: 0.6433
+    units_with_nearest_displacer: 1424
+    share_mp_required_lt_tau: 0.9561
+    v22a_gate_hit@1_low: 0.0038
+    v22a_gate_full_coverage@5_high: -0.0078
+  integrity:
+    metric_mismatches: 0
+    s0_hat_max_abs_diff: 0.0
+    gold_rank_mismatch_vs_d01:
+      u_mlp_v2_mix__H128__s0: 0
+      u_mlp_v2_mix__H128__s1: 0
+      u_mlp_v2_mix__H128__s2: 0
+    groups_equal_d01: true
+  sidecar_sha256: c45985a74478447e627a1fd117e8cb80d3f038919916f021610ac62b314c63e9
+  record_sha256: 3dc98d1dd586411f81f306fd65aa3840b15df637e5108a0ad8dca91d94ca08b3
+  document: docs/UMLP_D03_SCORE_GAP_FEASIBILITY.md
+  status_moves: DECLARED_NOT_RUN -> RUN
