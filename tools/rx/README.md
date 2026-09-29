@@ -288,6 +288,12 @@ stops accidental bulk pushes.
   6,554 passed in 2 min (8,759 locally in 6 min). Every test that passes locally but not
   there needs something rx deliberately leaves behind: `outputs/` (never pushed), the git
   history (the workspace holds files only) or the Modal SDK (not installed on the host).
+* WSL, after the account owner ran `wsl_setup.ps1` (every check ok: 94 GB visible under
+  the 96 GB limit, systemd running, driver 596.71): `--shell wsl` jobs run as `student2`
+  in `/mnt/c/Users/Student2/rx/projects/mpr/ws`, with the `RX_*` and thread variables
+  forwarded; their outputs are written with Linux modes and fetched back. The WSL CUDA
+  driver finds 1 device in a `--gpu` job and none in a CPU job (`cuInit` returns 100,
+  no device). `nproc` inside a job reports the job's cpus: it honours `OMP_NUM_THREADS`.
 
 ---
 
