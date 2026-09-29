@@ -1,0 +1,262 @@
+phase: MP_APPROX_L1
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+track: MP-ORACLE
+extends: >-
+  configs/mp_approx_l0.yaml (RUN at 717e7dc), whose interpretation entry primary_low_vectors_add fired on metaqa and 2wiki
+  and "licenses level 1 (depth >= 2 vector tokens) as the next file". This is that file. It reads level 0's sidecars
+  and out-of-fold predictions, pinned by sha256, and rewrites none of them. None of level 0's files is edited.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+question: >-
+  When the node-local information of level 0 is extended by fixed vector hop tokens Z_{f,k} = P_f^k X over the same pool
+  graph the GNN's cell reads (families STRUCT, NER, KNN and FULL, depths 0 to 3), with only their mixing learned and no
+  learned neighbour-state propagation, how much of the trained GNN's residual over its matched twin, and of the
+  neighbour message its cell passes, can be predicted?
+role: >-
+  Measurement only, as in level 0. The GNN's outputs are the probes' targets, which the proposal allows "only to measure
+  approximation capacity". No probe, token, target or number of this file enters QLS-U, the twin, a feature contract,
+  M3, M4 or any selection. A model that used these tokens without GNN outputs would be a competitor and needs its own
+  declaration under the QLS-U contract. This file does not open one.
+
+authorization:
+  given: 2026-09-29, pasted by the user (advisor text). Verbatim excerpts
+  excerpts:
+    - "# Level 1 — vector-valued hop features"
+    - "This is what I think we are currently missing."
+    - "rather than reducing it immediately to a handful of scalars."
+    - "Project them deterministically to perhaps 32–64 dimensions:"
+    - "with a fixed random/JL projection or a train-only PCA projection."
+    - "No learned neighbor-state propagation."
+    - "For each level measure **both**:"
+  licensed_by: configs/mp_approx_l0.yaml#run_record_mp_approx_l0_2026_09_29 (primary_low_vectors_add on metaqa and 2wiki)
+  go_ahead: >-
+    standing: "keep continuing autonomusly without asking for perms and try to find improvements and pause only at
+    something substancial". This file is committed alone, before any code of the phase runs, and is then run as written.
+  placement_messages:
+    - '2026-09-29, the user: "now since you have the gpu etc you can choose to run there wherever needed and feasible, use all the systems at your disposal for a fast and quick outputs and runs"'
+    - '2026-09-29, the user: "make sure we have complete utilization of cpu and gpu at all times either irrespective of project but mpr has the priority wherever possible"'
+    - both are answered in placement below
+  terminal: STOP_FOR_REVIEW after the run record. Level 2 is not opened by any reading here.
+
+corrections_to_the_proposal:   # checked against the code before this file was written
+  depth_one_exists_as_a_learned_projection: >-
+    the twin's vector channels (level 0's B1) already hold depth-1 family prototypes. Each is
+    normalize(gelu(mean of the node projections of the node's structural, ner or knn in-neighbours)) times q_state, with a
+    learned 64-wide node projection. Level 1's tokens differ in three ways: the projection is fixed, depths 2 and 3 are
+    added, and FULL is added. The contrast beyond_twin_channels measures what that buys over B1.
+  the_families: >-
+    FAMILIES in the frozen code are structural, ner and knn, the proposal's STRUCT, NER and KNN. FULL is the cell's own
+    edge list: the three families' message edges concatenated in that order, duplicates kept as the cell keeps them
+    (u_gnn_v2_ef's family_mask admits all three).
+  the_operator: >-
+    P_f is the mean over a node's in-neighbours in family f within the pool, the direction and aggregation of the
+    prototypes (segment_mean_rows over edges u -> v). An edge listed twice counts twice. A node with no in-neighbour in f
+    gets a zero token, as a prototype does. There is no self-loop: the self token is depth 0. Z_{f,k} = P_f Z_{f,k-1}
+    with Z_{f,0} = X, over the whole pool; only the U_q rows are kept.
+  X: >-
+    the served node embeddings, 1536 wide (m3b_features.DIM), read exactly as level 0's scoring read them
+    (context.nodes.read of the pool, float32), propagated in float64
+  the_projection: >-
+    the proposal allows a fixed JL projection or a train-only PCA. This file uses one fixed Gaussian JL matrix
+    R = standard_normal((1536, 64)) / sqrt(64) from numpy default_rng(20260929), sha256 of its float64 bytes
+    de237d50d7e53a70fe7b36777bb0b7d6932a54b7002aa9b8b5e7baba482f2518. 64 is the models' PROJECTION_DIM. PCA would need a
+    fitting population inside every fold, and the proposal names either. Tokens are the propagated 1536-wide vectors times R.
+    The query enters as q_tilde = qemb R.
+  exact_cosines: >-
+    a 64-wide JL projection moves a cosine between unit vectors by about 1/sqrt(64) = 0.125, which is large beside the
+    differences between one query's candidates. So each token's cosine with the query, and each depth >= 1 token's
+    cosine with the node's own embedding, is computed exactly at 1536 wide. A zero token has cosine 0.
+  mixing_only: >-
+    the proposal's m_hat_v = sum_{f,k} g_{f,k}(q,v) Z_tilde_{f,k}(v). The ridge probes on L1 make the mixing linear in
+    the tokens with weights bilinear in q_tilde (the products q_tilde * Z_tilde). The MLP probes learn the mixing
+    nonlinearly. Neither propagates a learned state between candidates.
+
+this_file_does_not_touch:
+  fits: >-
+    nothing is fitted except the probes, which are cross-fitted analysis models. The three twin checkpoints are loaded
+    read-only, only to check the edge lists (integrity.edges). No GNN is run: every target comes from level 0's
+    sidecars.
+  rows: >-
+    level 0's U_q rows exactly: the same queries (qids.json), the same pool positions (local.npy). V2_HELD_CONFIRMATION
+    rows leave the population before anything is compiled, as in level 0. All three eval splits are dev splits; no test
+    row is read.
+  frozen: >-
+    M2-M3B, universal-v2, UMLP D0-D0.3, v2.1, v2.2A, the CPU-GPU equivalence file and level 0 (its declaration, script,
+    tests, sidecars, probes, record and document) keep their bytes. Level 0's script is imported unchanged; the only code
+    copied from it is the population steps of stage_score and the base builder, under new names in the new script.
+  package: the CRAG package is read-only. Nothing is written under its root and nothing from it enters git
+  competitors: no probe output, token, target or number becomes an input, target, teacher, gate or selection criterion of any retriever
+
+placement:
+  every_stage: laptop CPU (the reference machine of configs/cpu_gpu_equivalence.yaml#placements.reference)
+  threads: >-
+    the token pass runs at 6 threads in one lane, and the probes at 4 threads per process, one process per dataset, up to
+    three at once. Level 0's probes ran at 4 threads, and every probe is a deterministic function of its fold, seed and
+    thread count.
+  why_not_the_lab_host: >-
+    (1) The token pass compiles each pool from served CRAG files that exist only on the laptop, the same reason as level
+    0. (2) The probes read about 3 GB: level 0's scalars, targets and messages, plus this file's tokens. That is about 45
+    minutes of upload at the measured ~1.2 MB/s, against about 1 h 15 min of probing here. The host CPU is nameable
+    (configs/cpu_gpu_equivalence.yaml: host_cpu_t8 EQUIVALENT_WITHIN_TOLERANCE), but the upload plus the host's run
+    would not finish sooner. It would also need its own authorization block and mirror verification. (3) The host GPU
+    is barred (NOT_EQUIVALENT in both modes). (4) Since 2026-09-29 mpr has priority in the host's scheduler (f4576f1),
+    so a later level that pays off there can name the host CPU in its own dated block.
+
+inputs:   # sha256 of the file bytes unless marked LF; checked before the first read and again at the end of every stage
+  level0:
+    declaration_lf: {path: configs/mp_approx_l0.yaml, sha256: 5df856890d6d1161795174ca4f84216b1bace34dc325eec5106ebccc7cdf3144}
+    script_lf: {path: scripts/mp_approx_l0.py, sha256: de51b154c82a3591e1cc9aefcbdf9c3e5b2965b6ac425d7af53a2c51044bd163}
+    tests_lf: {path: tests/test_mp_approx_l0.py, sha256: fa722b91730ff18867749d76ade44c4ff1c1cb202671474fb97f13992efa50e8}
+    sidecars:   # meta.json pins every array by sha256 (Sidecar checks each); probe_meta.json pins every probe file; qids.json the query order
+      metaqa: {dir: outputs/mp_approx_l0/metaqa, meta: d8d618cf128327c8a50fd05eb2f0e368b4adf06397c7805f6fa9d3064caf3e3c, probe_meta: 6634957b96de2df8518df35fa4e57e526ea92903de7c0aa0dcbc4d3f9a1cd581, qids: 557ea775c6f6050ed81647c6da6439e8425d615076a6903e67a18d76e090e684}
+      2wiki: {dir: outputs/mp_approx_l0/2wiki, meta: 78225a25ce4a803a035d0f2a1a547c4c69f5d193832da12f596a475edd40ddad, probe_meta: dea344a2d66770ca7ba841b98231e123b315b26c46534dc69694e0e42da81ca2, qids: f15a6fa7fcd1e9ee2e659d51003f305502ce5bd593587a64436c5d606eb6bbb7}
+      squad: {dir: outputs/mp_approx_l0/squad, meta: b520ccfb79cb02ec9cc7aa69836f9b600d4e7d55aee9b94536092196065e4a61, probe_meta: c9349d1aed54ce0cd409a8dc1766594af74a84325162cc8b9c1de78033879c00, qids: ebff2bc610f8c4833992ce95fe55264423f033a82257f7376d246589eca56b57}
+  from_level0_inputs: >-
+    every pin of configs/mp_approx_l0.yaml#inputs (eval arrays, query ids, feature contract, selection, the six
+    checkpoints' weights and records, and the frozen code) is checked again here, from that file, by level 0's own
+    verify_pins
+  jl_matrix_sha256: de237d50d7e53a70fe7b36777bb0b7d6932a54b7002aa9b8b5e7baba482f2518
+
+population:
+  rule: >-
+    level 0's, recomputed through level 0's steps: the M3B eval population with its declared digest and count, the
+    stored id list, the stored halves, held rows out, then metaqa's 800 per hop (the sha256("mp_approx_l0|" + id)
+    rule) and every V2_GATE row of 2wiki and squad. The scored ids must equal level 0's qids.json in order, and the
+    population rows level 0's q_row.npy.
+  sizes: {metaqa: 2400 queries and 165893 U_q rows, 2wiki: 6290 and 245055, squad: 5841 and 176880}
+  squad: the control, NOT_READ at level 0 (the GNN is not above its twin on any metric within U_q)
+
+token_pass:
+  per_query: >-
+    prepare the pools as level 0 did. For each scored query, in level 0's order, read the pool's embeddings E and build
+    the message edges with pool_edges (relcos as pack_queries_v2 computes it). For each family f in structural, ner,
+    knn and FULL, and each k in 1, 2, 3, compute Z_{f,k} = P_f Z_{f,k-1} over the whole pool (float64, 1536 wide).
+    Keep level 0's U_q rows (local.npy), and store for each row:
+  per_row:
+    tokens: >-
+      13 x 64, float16: T_0 = X R, then for f in (structural, ner, knn, FULL) and k in (1, 2, 3), Z_{f,k} R, at index
+      1 + 3 f + (k - 1)
+    cos_q: 13, float32, the exact cosine of qemb with X and with each Z_{f,k}, in the same order
+    cos_self: 12, float32, the exact cosine of X with each Z_{f,k} (index 3 f + (k - 1))
+  per_query: q_tilde = qemb R (64, float32)
+  integrity:
+    rows: >-
+      the pool size equals level 0's q_pool_size, and the in-pool golds (gold_local_of) equal level 0's U_q rows with
+      is_gold, as positions
+    edges: >-
+      for each twin seed k, the three family prototypes are recomputed from this file's edge lists and embeddings with
+      the twin's own node and query projections: normalize(gelu(segment_mean_rows(W_n E[u], v))) times q_state, zero
+      without an in-neighbour. At every U_q row they must equal level 0's stored channels_k columns 259-450 (the
+      prototype block) to within 2 float16 ulps of the stored value plus 1e-6. The stored channels are the twin's input
+      as it scored the query, so the check ties each family's edge list and the embeddings to what the models read.
+    on_mismatch: hard stop at the first mismatch, naming the query, seed and family; no tolerance is added afterwards
+
+bases:   # node-local: no token reads another candidate's learned state
+  B0: level 0's, unchanged (258 columns; its base_raw rule)
+  L1: >-
+    B0 | cos_q (13) | cos_self (12) | tokens (13 x 64) | q_tilde * tokens (13 x 64): 1947 columns. The products are
+    formed on the fly from q_tilde and the stored tokens.
+  L1d1: >-
+    the same restricted to depth <= 1: the tokens at indices 0, 1, 4, 7, 10 (X and every family's k = 1), their
+    cos_q, the cos_self at 0, 3, 6, 9, and their products: 907 columns
+  standardisation: level 0's (per fold, training rows only; sd < 1e-6 gives 0; clipped to [-8, 8])
+
+probes:   # cross-fitted with level 0's folds, inner split, ridge, MLP, seeds and thread count, imported unchanged
+  grid:
+    r_k: [L1-mlp, L1d1-mlp, L1-ridge, L1d1-ridge]
+    e_k: [L1-ridge, L1d1-ridge]
+    m_k_t: [L1-ridge, L1d1-ridge]
+  units: >-
+    one unit per base (L1, L1d1), each holding the three seeds' MLPs on r (seed 1000 + 10 k + fold, as level 0) and one
+    multi-output ridge per fold on r, e and m, with lambda chosen per output group as level 0 chooses it
+  cited_from_level0:   # read from level 0's probes, pinned; not refitted
+    r_k: [B0-ridge, B0-mlp, B1-ridge, B1-mlp, B2-ridge]
+    e_k: [B0-ridge, B1-ridge]
+    m_k_t: [B0-ridge, B1-ridge]
+  references: level 0's ref:twin, ref:other_seed and ref:no_edge, recomputed from the targets as level 0 does
+
+quantities: >-
+  level 0's, computed by level 0's functions (per_query_measures, read_family, reproducibility, and the message R2 and
+  cosine per step) over the new and the cited probes together, with level 0's bootstrap: one resample matrix per
+  dataset (1000 resamples, default_rng(0)). That matrix is identical to level 0's, so every contrast is paired. A cited probe's
+  rho_bar recomputed here must equal level 0's filed value to within 1e-12, or the read stops.
+statistics:
+  contrasts:   # point and 95% interval of the paired difference
+    hop_tokens: rho_bar(L1-mlp) - rho_bar(B0-mlp) -- the proposal's Phi_1 against Phi_0
+    beyond_twin_channels: rho_bar(L1-mlp) - rho_bar(B1-mlp)
+    depth: rho_bar(L1-mlp) - rho_bar(L1d1-mlp)
+    nonlinearity: rho_bar(L1-mlp) - rho_bar(L1-ridge)
+    message_tokens: R2_mean(L1-ridge) - R2_mean(B1-ridge), messages, the step mean
+    message_depth: R2_mean(L1-ridge) - R2_mean(L1d1-ridge)
+
+readings:   # filed before any number; per dataset, no pooled reading
+  primary_probe: L1-mlp on r_k
+  bands:   # of rho_bar, level 0's thresholds
+    L1_HIGH: rho_bar >= 0.75 and its interval's lower end >= 0.50
+    L1_LOW: rho_bar <= 0.25 and its interval's upper end <= 0.50
+    L1_MID: neither
+    NOT_READ: the dataset has no readable metric (squad is expected here; the control, not a failure)
+  exactly_one: per dataset, the band of the primary probe is the dataset's reading
+  flags:
+    FIT_NOT_RANK: a probe with R2 >= 0.5 whose band is L1_LOW
+    SEED_BOUND: mean reproducibility of r below 0.5
+    MESSAGE_NOT_RETRIEVAL: L1-ridge message R2, averaged over steps, >= 0.5 while L1-mlp is L1_LOW
+  interpretation_map:   # every entry that applies is listed; they are not exclusive, and none opens a stage
+    l1_high: >-
+      primary L1_HIGH: fixed hop tokens with learned mixing predict the GNN's ranking effect within U_q on that dataset
+      (an upper bound, so this is not a full-pool claim). A competitor built on the tokens would need its own
+      declaration under the QLS-U contract, with no GNN output.
+    l1_low_depth_adds: >-
+      primary L1_LOW or L1_MID with the depth interval above 0: depth 2 and 3 carry part of the effect, which
+      mean-aggregated powers do not reach. It licenses level 2 (the fixed filter bank: PPR, heat and polynomial bases)
+      as the next file.
+    l1_low_tokens_flat: >-
+      primary L1_LOW with the hop_tokens interval's lower end at or below 0: fixed propagation of node semantics adds
+      no ranking effect that a probe recovers over the scalars. It points past levels 1 and 2 to query-conditioned
+      neighbourhood weighting (level 3, attention-kernel moments) as the next file.
+    message_tokens_add: >-
+      the message_tokens interval above 0: the fixed tokens reconstruct more of the cell's neighbour message than the
+      twin's learned depth-1 channels (the proposal's "current scalar compiler loses semantics")
+    message_not_retrieval: the flag fired; the proposal's "scorer/objective problem" diagnosis
+  wording: >-
+    every probe is an oracle fit on the GNN's own outputs over V2_GATE queries of the same dataset. Recovery is a
+    statement of capacity within U_q, never of a deployable model. No reading may be phrased as "message passing is
+    unnecessary", "we do not need message passing" or "the MLP wins"; low and high recovery are both results.
+
+compute:
+  token_pass: >-
+    metaqa about 25 to 40 min (2,400 pools of about 2,000 nodes), 2wiki and squad about 5 to 10 min each, one lane at 6
+    threads. Level 0's scoring took 70, 13 and 8 min, which included nine model forwards per query.
+  probes: >-
+    per dataset 30 MLP fits (15 at 1,947 columns, 15 at 907) and 10 closed-form fits. Level 0's fits took about 60 s at
+    258 columns and 80 s at 773 on 2wiki, so about 45 to 75 min per dataset, three processes at once.
+  disk: about 1.2 GB under outputs/mp_approx_l1/ (git-ignored)
+  resumable: every chunk and every probe unit is written atomically and skipped on a restart
+
+hard_stops:   # on any: file hard_stop_<date> with the evidence, leave the status line, report
+  - any pin in inputs fails, level 0's included
+  - the population digest or count, the ids, the halves or the population rows differ from the declared or level 0's
+  - a held, select, fit or test row would be compiled
+  - integrity.rows or integrity.edges fails
+  - a cited level 0 probe's recomputed rho_bar differs from level 0's filed value by more than 1e-12
+
+outputs:
+  script: scripts/mp_approx_l1.py (stages tokens, probe, read, doc, file)
+  sidecars: outputs/mp_approx_l1/<name>/ (tokens.npy, cos_q.npy, cos_self.npy, q_tilde.npy and meta.json with every array's sha256; probes/ with the out-of-fold predictions, fit logs and probe_meta.json)
+  record: outputs/mp_approx_l1/record.json
+  document: docs/MP_APPROX_L1.md
+  run_record: run_record_mp_approx_l1_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN
+
+tests:   # tests/test_mp_approx_l1.py
+  - this file parses; its pins are the files' current sha256; level 0's pins pass; the JL matrix has the declared digest
+  - P_f equals a dense reference on a random graph (duplicate edges counted twice, a node without in-edges zero); FULL is the concatenation
+  - projecting the propagated 1536-wide vectors equals propagating the projected ones (linearity, float64)
+  - the prototype recomputation of integrity.edges equals GatedInputBlock's prototype columns on a random batch
+  - L1 has 1947 columns and L1d1 907, in the declared order; the depth <= 1 indices are 0, 1, 4, 7, 10 and 3 f
+  - a zero token has cosine 0; the bands carry the L1 labels
+  - no held query id appears in any sidecar
+
+execution:
+  order: this file alone (commit); script and tests (commit); tokens metaqa, 2wiki, squad; probe; read; doc; run record (commit)
+  stop_after_run: STOP_FOR_REVIEW
