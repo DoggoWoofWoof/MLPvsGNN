@@ -1,6 +1,6 @@
 phase: CPU_GPU_EQUIVALENCE
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: PLACEMENT_EQUIVALENCE
 extends: >-
   configs/universal_v2.yaml#later_stages.compute_placement -- "an equivalence test on one fit carve holds the GPU path to
@@ -320,3 +320,277 @@ execution:
   order: device-path code and tests; bundle; laptop arms; push; host CPU arm; host GPU arms; fetch; read; document; run record; commit
   go_ahead: not given -- the user asked for the draft
   stop_after_this_block: true
+
+run_record_cpu_gpu_equivalence_2026_09_29:
+  utc: '2026-09-29T11:53:17Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  verdict_host_cpu_t8: EQUIVALENT_WITHIN_TOLERANCE
+  verdict_host_gpu_det: NOT_EQUIVALENT
+  verdict_host_gpu_default: NOT_EQUIVALENT
+  floor: 'laptop_cpu_t4 against laptop_cpu_t8: 0 failing cells of 2937; bit-identical False'
+  cells:
+    host_cpu_t8:
+      failing: 0
+      checked: 2937
+      bit_identical: false
+      also_failing_for_the_floor: 0
+      largest_excess: null
+    host_gpu_det:
+      failing: 2
+      checked: 3993
+      bit_identical: false
+      also_failing_for_the_floor: 0
+      largest_excess: 2.9348182678222654e-06
+    host_gpu_default:
+      failing: 245
+      checked: 3993
+      bit_identical: false
+      also_failing_for_the_floor: 0
+      largest_excess: 0.00024395851121127685
+  device_path_gate:
+    laptop:
+      passed: 16
+      failed: 0
+      skipped: 2
+      utc: '2026-09-29T10:16:51Z'
+      cuda_tests:
+        test_a_cuda_fit_checkpoints_cpu_tensors_and_resumes_to_the_uninterrupted_fit: skipped
+        test_the_cuda_evaluation_is_the_cpu_evaluation_away_from_near_ties: skipped
+    host_gpu:
+      passed: 18
+      failed: 0
+      skipped: 0
+      utc: '2026-09-29T10:15:06Z'
+      cuda_tests:
+        test_a_cuda_fit_checkpoints_cpu_tensors_and_resumes_to_the_uninterrupted_fit: passed
+        test_the_cuda_evaluation_is_the_cpu_evaluation_away_from_near_ties: passed
+  probe:
+    batches: 11
+    b_fixed_utc: '2026-09-29T10:46:26Z'
+    draws: 176
+    draw_counts:
+      2wiki: 30
+      hotpotqa: 28
+      metaqa: 24
+      musique: 42
+      squad: 26
+      webqsp: 26
+    bundle_bytes: 972148120
+    bundle_manifest_sha256: 26c61bf5e9764c548851c194e351897748a0b4d4894b9de792eae71604fa855d
+  arms:
+    laptop_cpu_t8:
+      host: Inspiron-14
+      env: Python313
+      torch: 2.8.0+cpu
+      device: cpu
+      driver: null
+      cuda: null
+      threads: 8
+      mode: null
+      deterministic_algorithms: false
+      tf32: null
+      float32_matmul_precision: highest
+      cublas_workspace_config: null
+      seconds: 422.7
+      determinism_warnings: 0
+      utc_end: '2026-09-29T10:53:41Z'
+      rx_job_id: null
+    laptop_cpu_t8_r2:
+      host: Inspiron-14
+      env: Python313
+      torch: 2.8.0+cpu
+      device: cpu
+      driver: null
+      cuda: null
+      threads: 8
+      mode: null
+      deterministic_algorithms: false
+      tf32: null
+      float32_matmul_precision: highest
+      cublas_workspace_config: null
+      seconds: 53.9
+      determinism_warnings: 0
+      utc_end: '2026-09-29T10:54:43Z'
+      rx_job_id: null
+    laptop_cpu_t4:
+      host: Inspiron-14
+      env: Python313
+      torch: 2.8.0+cpu
+      device: cpu
+      driver: null
+      cuda: null
+      threads: 4
+      mode: null
+      deterministic_algorithms: false
+      tf32: null
+      float32_matmul_precision: highest
+      cublas_workspace_config: null
+      seconds: 459.0
+      determinism_warnings: 0
+      utc_end: '2026-09-29T11:02:28Z'
+      rx_job_id: null
+    host_cpu_t8:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cpu@31803e6457ab
+      torch: 2.8.0+cpu
+      device: cpu
+      driver: null
+      cuda: null
+      threads: 8
+      mode: null
+      deterministic_algorithms: false
+      tf32: null
+      float32_matmul_precision: highest
+      cublas_workspace_config: null
+      seconds: 238.6
+      determinism_warnings: 0
+      utc_end: '2026-09-29T11:37:35Z'
+      rx_job_id: 260929-164435-cge-host-cpu-cdaf
+    host_gpu_det:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cu128@62fc45e9e1ba
+      torch: 2.8.0+cu128
+      device: NVIDIA RTX 4500 Ada Generation
+      driver: '596.71'
+      cuda: '12.8'
+      threads: 8
+      mode: det
+      deterministic_algorithms: true
+      tf32: false
+      float32_matmul_precision: highest
+      cublas_workspace_config: :4096:8
+      seconds: 28.7
+      determinism_warnings: 0
+      utc_end: '2026-09-29T11:38:14Z'
+      rx_job_id: 260929-164622-cge-host-gpu-e0ed
+    host_gpu_det_r2:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cu128@62fc45e9e1ba
+      torch: 2.8.0+cu128
+      device: NVIDIA RTX 4500 Ada Generation
+      driver: '596.71'
+      cuda: '12.8'
+      threads: 8
+      mode: det
+      deterministic_algorithms: true
+      tf32: false
+      float32_matmul_precision: highest
+      cublas_workspace_config: :4096:8
+      seconds: 5.8
+      determinism_warnings: 0
+      utc_end: '2026-09-29T11:38:22Z'
+      rx_job_id: 260929-164622-cge-host-gpu-e0ed
+    host_gpu_default:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cu128@62fc45e9e1ba
+      torch: 2.8.0+cu128
+      device: NVIDIA RTX 4500 Ada Generation
+      driver: '596.71'
+      cuda: '12.8'
+      threads: 8
+      mode: default
+      deterministic_algorithms: false
+      tf32: false
+      float32_matmul_precision: highest
+      cublas_workspace_config: null
+      seconds: 25.8
+      determinism_warnings: 0
+      utc_end: '2026-09-29T11:38:49Z'
+      rx_job_id: 260929-164622-cge-host-gpu-e0ed
+    host_gpu_default_r2:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cu128@62fc45e9e1ba
+      torch: 2.8.0+cu128
+      device: NVIDIA RTX 4500 Ada Generation
+      driver: '596.71'
+      cuda: '12.8'
+      threads: 8
+      mode: default
+      deterministic_algorithms: false
+      tf32: false
+      float32_matmul_precision: highest
+      cublas_workspace_config: null
+      seconds: 5.1
+      determinism_warnings: 0
+      utc_end: '2026-09-29T11:38:56Z'
+      rx_job_id: 260929-164622-cge-host-gpu-e0ed
+  determinism_r2_bit_identical:
+    laptop_cpu_t8_r2: true
+    host_gpu_det_r2: true
+    host_gpu_default_r2: false
+  record: outputs/cpu_gpu_equivalence/record.json
+  record_sha256: ac06d30c31812fa2b5bada3fa46b5117a3b651567404521da921011f4fd2c785
+  document: docs/CPU_GPU_EQUIVALENCE.md
+  document_sha256_lf: dd0a2ef41dcb4ef33f887a0ffc56dde55779caa78db55995c42244d85eae0759
+  what_it_opens: a passing verdict makes that placement NAMEABLE in a later dated authorization block of a declared stage, which quotes the tested settings verbatim
+    and runs mirror_verification first; no stage is placed by this record
+  go_ahead: '2026-09-29, the user: "now since you have the gpu etc you can choose to run there wherever needed and feasible, use all the systems at your disposal
+    for a fast and quick outputs and runs". The declaration''s execution.go_ahead line (''not given -- the user asked for the draft'') was written before that message;
+    the declaration above this block is unchanged apart from the status line.'
+  commits:
+    declaration: 1ee9e48
+    handover_docs: f193bc6
+    device_path_script_tests: cde1a52
+    cuda_evaluation_test_not_vacuous: fbf9324
+    gate_check_t3_keys_doc: '5434594'
+    arms_ran_at: 717e7dc (every arm's git_head; scripts/cpu_gpu_equivalence.py LF sha256 71ffa5d8..., the same bytes as 5434594)
+    run_record: the commit that adds this block, with docs/CPU_GPU_EQUIVALENCE.md
+  device_path_gate_history:
+  - 'cde1a52: the host GPU passed, but its CUDA evaluation comparison was vacuous -- an untrained UniversalGAT returns the base z-score, which has exact ties, so
+    all 12 select and 40 fit queries were near ties and none was compared. Reports kept under outputs/cpu_gpu_equivalence/device_path_tests/first_host_run_vacuous_eval/.'
+  - 'fbf9324: the test perturbs the weights (0.3 * randn) and requires at least half the queries compared; the host compared 8 of 12 and 26 of 40, none differing.
+    The report now records settings_under_test inside the fixture, not the flags restored at teardown. Reports kept under device_path_tests/superseded_fbf9324/, since
+    the script changed afterwards and the gate checks the current bytes.'
+  - '5434594: re-established on both machines -- host 18 passed (both CUDA tests), laptop 16 passed and 2 skipped (no CUDA); every report''s sha256_lf equals the
+    files the arms ran. The read checked that both reports precede the first host arm.'
+  failing_cells_named:
+    host_gpu_det: '2 cells, both T1, both u_mlp_v2_mix__H128__s1: draw 85 (metaqa, batch 5), excess 1.1e-06, and draw 143 (webqsp, batch 8), excess 2.9e-06 over a
+      tolerance of about 1e-05 (largest ratio 1.28). Each fails identically in host_gpu_det and host_gpu_det_r2 (the repeat is bit-identical to the first run). The
+      other five models'' largest ratios are 0.64-0.98; the floor''s are 0.47-0.74. Every T2 cell holds.'
+    host_gpu_default: '245 cells: 225 T1 (model, draw) cells failing in the first run, the repeat or both (132 in both; 180 first-run and 177 repeat failures), spread
+      over all six models (twin 159, GNN 66) and three datasets only -- webqsp 88, musique 87, metaqa 50; and 20 T2 cells, all GNN: s1 batch 7 (1 tensor) and s2 batch
+      8 (18 tensors and the global gradient). Largest excess 2.4e-04 (T2, s2); largest T1 ratio 13.0 (GNN s1). The repeat is not bit-identical to the first run for
+      any model.'
+    also_failing_for_the_floor: '0 for every candidate: the floor fails no cell, so INCONCLUSIVE_FLOOR could not hold.'
+    where: outputs/cpu_gpu_equivalence/record.json, candidates.<candidate>.failing, names every failing check with its run, model, draw or batch and check, and its
+      excess
+  counting_convention: '''failing'' counts distinct cells (tier, model, draw) or (tier, model, batch, check) over a candidate''s runs; ''checked'' counts each run''s
+    cells, so a GPU candidate''s denominator 3,993 = 2 x 1,056 T1 + 1,881 T2 while the distinct cells number 2,937, as for host_cpu_t8. No verdict depends on the
+    convention: a verdict reads only whether a failing cell exists and whether the floor fails it too.'
+  reported_beside_highlights:
+    host_cpu_t8: T1 bit-identical to the reference on all 1,056 (model, draw) cells; T2 not bit-identical (loss relative error 0, global-gradient relative error at
+      most 1.8e-07); so the verdict is WITHIN_TOLERANCE, not BIT_IDENTICAL, because of T2 alone.
+    decision_agreement: '0 of 176 query draws differ from the reference in any of the 14 metrics, for every model on every arm, the failing GPU arms included. Reported
+      beside, never gating: it does not change a verdict.'
+    determinism: laptop_cpu_t8_r2 and host_gpu_det_r2 are bit-identical to their first runs for all six models; host_gpu_default_r2 is not, for any model. No determinism
+      warning was raised.
+    clock_t4: 'median ms per probe batch, forward+backward: GNN laptop t8 5,842 / host CPU t8 3,131 / host GPU det 358; twin 562 / 285 / 24. Peak GPU memory of the
+      gradient pass: GNN about 6.6 GB, twin about 1.8 GB (GPU det).'
+    host_jobs: rx 260929-164435-cge-host-cpu-cdaf (8 cpu, 16 GB reserved; runtime 4m04s; rx peak_mem 8.11 GB) and 260929-164622-cge-host-gpu-e0ed (8 cpu, 16 GB, 1
+      GPU; runtime 1m19s for the four GPU arms; rx peak_mem 2.71 GB host RAM).
+  what_this_record_opens_and_keeps:
+    host_cpu_t8: 'EQUIVALENT_WITHIN_TOLERANCE: the lab host''s CPU (mpr-cpu@31803e6457ab, torch 2.8.0+cpu, Windows native, 8 threads) is NAMEABLE as a compute placement
+      in a later dated authorization block of a declared stage, which quotes these settings verbatim and runs mirror_verification first. Nothing is placed by this
+      record; a host CPU fit is a new draw of the frozen rule (placement_rules.new_seeds).'
+    host_gpu_det: 'NOT_EQUIVALENT: barred. No tolerance is relaxed and no setting is changed under this file; the routes are a new arm (placement_arms_added_later,
+      e.g. float64) or a new declaration.'
+    host_gpu_default: 'NOT_EQUIVALENT: barred, as above; placement_rules.passed_settings_only also bars it independently.'
+  deviations:
+  - 'probe.size_cap applied: the 16-batch bundle would have exceeded 1.0 GB (the declaration estimated 0.6-0.8 GB), so B = 11, the largest value >= 8 whose bundle
+    fits: 0.972 GB (972,148,120 bytes against the 1e9-byte cap), 176 query draws (2wiki 30, hotpotqa 28, metaqa 24, musique 42, squad 26, webqsp 26) instead of 256.
+    B was written to bundle/manifest.json at 10:46:26Z, before the first arm started (10:46:39Z); every tier of every arm used B = 11, and the read refuses an arm
+    that started before the manifest.'
+  - 'T3 has no ''after 16'' column: with B = 11 the consecutive-step trajectory ends at step 11, so its snapshots are steps 1, 2, 4 and 8 (the script keeps the declared
+    steps that B reaches). T3 is descriptive and never a gate.'
+  - compute.laptop estimated about 1 to 1.5 h; the bundle (45 s) and the three laptop arms (10:46:39-11:02:28Z) took about 17 min. Nothing else of this session computed
+    beside the lane; another session's CRAG processes (pytest and partition work, under half a core) were running on the laptop, which bears on the laptop T4 clocks
+    only.
+  - 'transfer: 927.2 MB (827.4 MB on the wire) pushed with --force in 11m18s at 1.2 MB/s (11:03:01-11:14:20Z), against the estimate of about 10 minutes. Nothing beyond
+    probe.transfer went to the host, and no token or credential.'
+  - 'compute.host: the host is shared, and both jobs queued behind other projects'' jobs (crag) under rx''s FIFO scheduler while others (crag, jigsaw) ran -- host_cpu_t8
+    for about 19 min (submitted about 11:14Z, arm started 11:33:37Z by the host clock, which runs about 33 s ahead of the laptop''s), and the GPU job for about 21
+    min, until the CPU arm''s 8 CPUs were freed (its first arm started 11:37:45Z). Other projects'' jobs ran beside both arms, which bears on the host T4 clocks only.
+    Host runtime was about 5.4 min against the estimate of about 0.5 h.'
+  - compute.host named the GPU job as '-p gpu (1 GPU, 8 CPUs, 32 GB)'; it was submitted with --mem 16 to fit the shared host sooner. rx's --mem is a scheduling reservation,
+    not a limit, and the job's peak host memory was 2.71 GB; nothing computed depends on it.
+  terminal: STOP_FOR_REVIEW

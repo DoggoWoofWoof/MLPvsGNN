@@ -1,10 +1,12 @@
 # rx: run this project's work on the lab GPU machine. See tools/rx/README.md.
 #   python tools/rx/rx.py run -- python scripts/some_script.py ...
 #
-# Systems only. Placing a SCIENTIFIC stage on the remote host (CPU or GPU)
-# needs a passing verdict of the CPU-GPU equivalence test for that placement
-# (configs/cpu_gpu_equivalence.yaml; declared 1ee9e48, not yet run) and the
-# stage's own dated authorization block. Guide: docs/GPU_HOST_HANDOVER.md.
+# Systems only unless a stage says otherwise. Placing a SCIENTIFIC stage on the
+# remote host needs a passing verdict of the CPU-GPU equivalence test for that
+# placement (configs/cpu_gpu_equivalence.yaml, RUN 2026-09-29; docs/CPU_GPU_EQUIVALENCE.md)
+# and the stage's own dated authorization block. Verdicts: host CPU (mpr-cpu, 8
+# threads) EQUIVALENT_WITHIN_TOLERANCE, so nameable; host GPU NOT_EQUIVALENT in
+# both modes, so barred. Guide: docs/GPU_HOST_HANDOVER.md.
 # Do not edit the [envs.*] tables: a verdict names these env hashes.
 
 [project]

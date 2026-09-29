@@ -4,11 +4,11 @@ This guide is for any Claude session, or any person, that wants to use the lab G
 
 ## Read this first
 
-1. **Nothing scientific runs on the host yet.** That covers fits, evaluations, selections and any number that enters a result, on the host's CPU as well as its GPU. A stage can run there only after two things:
+1. **Science runs on the host only where the equivalence test passed and a stage names it.** That covers fits, evaluations, selections and any number that enters a result. A stage can run there only after two things:
    - [`configs/cpu_gpu_equivalence.yaml`](../configs/cpu_gpu_equivalence.yaml) has run and passed for that placement;
    - a dated authorization block of the stage names that placement.
 
-   As of 2026-09-29 the test is declared (`1ee9e48`, `DECLARED_NOT_RUN`) and has not run. Until then the host is for tests, environment builds, benchmarks and systems validation.
+   The test ran on 2026-09-29 ([`docs/CPU_GPU_EQUIVALENCE.md`](CPU_GPU_EQUIVALENCE.md)). **Host CPU** (`mpr-cpu@31803e6457ab`, 8 threads): `EQUIVALENT_WITHIN_TOLERANCE`, so it is nameable. **Host GPU**: `NOT_EQUIVALENT` in both modes, so it stays barred for science. No stage has named the host yet. Everything else on the host is tests, environment builds, benchmarks and systems validation.
 2. **Drive the host only through `python tools/rx/rx.py …`, run from the repository root.** Don't do real work with a raw `ssh gpu "…"`. Windows OpenSSH kills every process a session started when the session ends. rx launches jobs through WMI, which is the only launch method that survives the disconnect.
 3. **Move code, not data.** The link is a Tailscale DERP relay: about 0.75 MB/s down and 1.2 MB/s up. The tracked tree (about 11 MB) pushes in seconds. The six datasets' inputs (about 56 GB) would take about 13 hours.
 4. **Put no credentials on the host.** It is a shared lab machine. That means no Modal, Hugging Face or cloud tokens, and no keys. Never read `~/.ssh/id_ed25519`.
@@ -84,7 +84,8 @@ Whenever your working tree differs from what another session may be running, use
 | `.rx/` (git-ignored) | `jobs.json` (jobs launched from this checkout), `hashcache.json`, `receipts.json` (what `rx fetch` wrote; rx never overwrites a local file it didn't write) |
 | `~/.rx/hosts/gpu.json` | written by `rx setup gpu`: route `gpu`, the agent path and sha, the Python path, 4 streams, zlib 6, Git's `ssh.exe`. It holds no secret |
 | `~/.rx/projects.json` | projects seen by `rx monitor` and `rx watch` |
-| `configs/cpu_gpu_equivalence.yaml` | the declared CPU-GPU equivalence test (below) |
+| `configs/cpu_gpu_equivalence.yaml` | the CPU-GPU equivalence test (below) and its run record `run_record_cpu_gpu_equivalence_2026_09_29` |
+| `docs/CPU_GPU_EQUIVALENCE.md` | the test's result: verdicts, failing cells, determinism, clocks |
 | `configs/universal_v2.yaml#later_stages.compute_placement` | where the placement rule comes from |
 | this file | the handover |
 
@@ -97,7 +98,7 @@ These come from `configs/universal_v2.yaml#later_stages.compute_placement` and f
   - Reference: the laptop CPU at 8 threads. Floor: the laptop at 4 threads.
   - Candidates: `host_cpu_t8` (`mpr-cpu`) and two GPU modes in `mpr-cu128`, both float32 with TF32 off. `host_gpu_det` requests deterministic algorithms; `host_gpu_default` does not.
 - **Models.** The six stage-2 `u_gnn_v2_ef` checkpoints and the pilot `u_mlp_v2_mix` twins s0–s2, each pinned by sha256.
-- **Probe.** The first 16 batches of the frozen stage-2 seed-0 draw: 256 fit-carve queries across all six datasets. The laptop packs them into a bundle of about 0.6–0.8 GB, which is the only data that goes to the host.
+- **Probe.** The first batches of the frozen stage-2 seed-0 draw, packed on the laptop into a bundle, which is the only data that goes to the host. 16 batches were declared; the 1.0 GB size cap cut them to 11 (176 fit-carve queries across all six datasets, 0.97 GB).
 - **Tiers.** T1 compares forward per-query centred scores at atol/rtol 1e-5 (inherited from `compute_placement`). T2 compares eval-mode gradients: loss within 1e-5 relative, gradients within 1e-4 relative. T3 (trajectory) and T4 (clock) are descriptive only.
 - **Verdicts, per candidate.** `EQUIVALENT_BIT_IDENTICAL`, `EQUIVALENT_WITHIN_TOLERANCE`, `NOT_EQUIVALENT`, or `INCONCLUSIVE_FLOOR`.
 
@@ -106,6 +107,16 @@ These come from `configs/universal_v2.yaml#later_stages.compute_placement` and f
 - run the file's `mirror_verification` before the stage reads any data on the host.
 
 A fail keeps the placement barred. No tolerance is relaxed afterwards.
+
+**The result (2026-09-29).**
+
+| candidate | verdict | detail |
+|---|---|---|
+| `host_cpu_t8` | `EQUIVALENT_WITHIN_TOLERANCE` | forward bit-identical to the laptop on every cell; gradients within 1.8e-07 relative |
+| `host_gpu_det` | `NOT_EQUIVALENT` | 2 forward cells over tolerance by at most 1.28×, both in twin s1 (one metaqa draw, one webqsp draw), identical in the repeat; every gradient cell holds |
+| `host_gpu_default` | `NOT_EQUIVALENT` | 245 cells, over tolerance by up to 13×; not reproducible run to run |
+
+No ranking decision differed on any arm: 0 of 176 draws changed any metric. That is reported beside the verdict and does not change it. On the clock, a GNN forward+backward batch takes 5.8 s on the laptop, 3.1 s on the host CPU and 0.36 s on the GPU. The declared routes back for the GPU are a new arm of the same test (for example float64) or a new declaration.
 
 **Placement rules** (filed in the declaration; they bind every stage placed off the laptop):
 - Arms whose numbers a stage compares are fitted and evaluated on **one placement**, so a device is never a hidden difference between a message-passing arm and a non-message-passing arm.
@@ -288,14 +299,6 @@ A direct Tailscale path, or the laptop on the wired lab network, would change th
 ## Where things stand and what comes next
 
 - The host is set up and validated (`8b6d258`, `d143ea5`, `e22dee9`). It was reachable and idle on 2026-09-29.
-- The CPU-GPU equivalence test is **declared, not run** (`1ee9e48`). The user asked for a draft; the run needs the user's go-ahead. The declaration's own `execution.order` gives the steps:
-  1. write `src/mp_retrieval/device_placement.py` and `tests/test_cpu_gpu_equivalence.py`, and pass them on the laptop and on the host GPU;
-  2. build the bundle on the laptop;
-  3. run the three laptop arms;
-  4. `rx push --inputs` the bundle and the six checkpoints with `--force`;
-  5. run `host_cpu_t8` as one CPU job, then the GPU arms as one `-p gpu` job;
-  6. `rx wait --fetch`;
-  7. read the result, write `docs/CPU_GPU_EQUIVALENCE.md`, append the run record, and commit.
-
-  Estimate: about 1–1.5 hours on the laptop, about 0.5 hours on the host, and about 10 minutes of upload.
-- After a pass, a stage that wants the host files a dated authorization block that quotes the passing settings and runs mirror verification first. Nothing opens by itself.
+- The CPU-GPU equivalence test **ran on 2026-09-29** (the user's go-ahead is quoted in its run record). Host CPU passed; host GPU failed in both modes (see above). In practice it took about 17 minutes on the laptop, about 5 minutes of host runtime after about 20 minutes in the shared queue, and 11 minutes of upload for the 0.97 GB bundle.
+- A stage that wants the host CPU files a dated authorization block that quotes the passing settings (`DESKTOP-SLQMEQH`, `mpr-cpu@31803e6457ab`, torch 2.8.0+cpu, Windows native, 8 threads per process) and runs mirror verification first. Nothing opens by itself, and a host CPU fit is a new draw, never a laptop seed's replica.
+- The GPU stays barred for science until a new arm passes. It is free for systems work and for other projects' jobs.

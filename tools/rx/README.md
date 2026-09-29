@@ -356,11 +356,18 @@ Hosts are shared across projects: one `~/rx` per host, one namespace per project
 rx is **systems infrastructure**. In this repository, running a scientific stage on the
 remote host — on its CPU or its GPU — is a *placement* decision that must be filed
 before any number is read from it, as `configs/universal_v2.yaml#later_stages.compute_placement`
-requires. The **CPU-GPU equivalence test** it asks for is declared in
-`configs/cpu_gpu_equivalence.yaml` (`1ee9e48`, declared, not yet run). A placement
-becomes usable only after that test returns `EQUIVALENT_BIT_IDENTICAL` or
-`EQUIVALENT_WITHIN_TOLERANCE` for it, and then only through a dated authorization
-block of a declared stage that quotes the tested settings and runs the file's mirror
-verification first. Until then, use rx for tests, environment builds, and systems
-validation only. `docs/GPU_HOST_HANDOVER.md` is the operator's guide: rules, layout,
-recipes and quirks for anyone picking the host up.
+requires. The **CPU-GPU equivalence test** it asks for is
+`configs/cpu_gpu_equivalence.yaml`. It ran on 2026-09-29 (`docs/CPU_GPU_EQUIVALENCE.md`):
+
+| placement | verdict | what it means |
+|---|---|---|
+| `host_cpu_t8` (`mpr-cpu@31803e6457ab`, 8 threads) | `EQUIVALENT_WITHIN_TOLERANCE` | nameable |
+| `host_gpu_det` (`mpr-cu128@62fc45e9e1ba`, float32, deterministic) | `NOT_EQUIVALENT` (2 cells) | barred |
+| `host_gpu_default` (same, determinism off) | `NOT_EQUIVALENT` (245 cells) | barred |
+
+A placement that passed is usable only through a dated authorization block of a
+declared stage that quotes the tested settings and runs the file's mirror
+verification first. A barred placement reopens only through a new arm of the same
+test or a new declaration. Everything else on the host is tests, environment builds,
+and systems validation. `docs/GPU_HOST_HANDOVER.md` is the operator's guide: rules,
+layout, recipes and quirks for anyone picking the host up.
