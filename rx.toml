@@ -2,8 +2,10 @@
 #   python tools/rx/rx.py run -- python scripts/some_script.py ...
 #
 # Systems only. Placing a SCIENTIFIC stage on the remote host (CPU or GPU)
-# needs its own dated authorization block with the CPU-GPU equivalence test
-# declared first (configs/universal_v2.yaml#later_stages.compute_placement).
+# needs a passing verdict of the CPU-GPU equivalence test for that placement
+# (configs/cpu_gpu_equivalence.yaml; declared 1ee9e48, not yet run) and the
+# stage's own dated authorization block. Guide: docs/GPU_HOST_HANDOVER.md.
+# Do not edit the [envs.*] tables: a verdict names these env hashes.
 
 [project]
 name = "mpr"

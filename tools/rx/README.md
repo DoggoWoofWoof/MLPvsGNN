@@ -329,8 +329,8 @@ files. Use WSL for tools that only exist on Linux.
 
 * rx uses your existing ssh key and `~/.ssh/config`; it stores no credentials, and puts
   none on the host. **Do not copy API tokens (Modal, Hugging Face, cloud) to a shared
-  lab machine**; pass what a job needs with `--var` for that job only, or keep the step
-  on your machine.
+  lab machine.** `--var` values are written into the job's `spec.json` on the host, so
+  they are not for secrets either: keep any step that needs a token on your machine.
 * The agent executes only what the CLI sends through your ssh session. Paths from the
   wire are validated (no absolute paths, `..`, drive letters, reserved names).
 * The dashboard binds `127.0.0.1`, checks the `Host` header, and requires a random
@@ -355,8 +355,12 @@ Hosts are shared across projects: one `~/rx` per host, one namespace per project
 
 rx is **systems infrastructure**. In this repository, running a scientific stage on the
 remote host — on its CPU or its GPU — is a *placement* decision that must be filed
-before any number is read from it: an authorization block with the measured per-epoch
-clock and a **CPU-GPU equivalence test** on one fit carve (per-query centred scores
-within atol 1e-5 of the laptop's CPU path), as `configs/universal_v2.yaml#later_stages.compute_placement`
-requires. Until that declaration exists, use rx for tests, environment builds, and
-systems validation only.
+before any number is read from it, as `configs/universal_v2.yaml#later_stages.compute_placement`
+requires. The **CPU-GPU equivalence test** it asks for is declared in
+`configs/cpu_gpu_equivalence.yaml` (`1ee9e48`, declared, not yet run). A placement
+becomes usable only after that test returns `EQUIVALENT_BIT_IDENTICAL` or
+`EQUIVALENT_WITHIN_TOLERANCE` for it, and then only through a dated authorization
+block of a declared stage that quotes the tested settings and runs the file's mirror
+verification first. Until then, use rx for tests, environment builds, and systems
+validation only. `docs/GPU_HOST_HANDOVER.md` is the operator's guide: rules, layout,
+recipes and quirks for anyone picking the host up.
