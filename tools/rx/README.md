@@ -375,8 +375,23 @@ requires. The **CPU-GPU equivalence test** it asks for is
 | placement | verdict | what it means |
 |---|---|---|
 | `host_cpu_t8` (`mpr-cpu@31803e6457ab`, 8 threads) | `EQUIVALENT_WITHIN_TOLERANCE` | nameable |
-| `host_gpu_det` (`mpr-cu128@62fc45e9e1ba`, float32, deterministic) | `NOT_EQUIVALENT` (2 cells) | barred |
+| `host_gpu_det` (`mpr-cu128@62fc45e9e1ba`, float32, deterministic) | `NOT_EQUIVALENT` (2 cells) | score level: barred |
 | `host_gpu_default` (same, determinism off) | `NOT_EQUIVALENT` (245 cells) | barred |
+
+The equivalence file's fail line names a new declaration as the way back. That
+declaration is `configs/gpu_task_qualification.yaml`, which ran on 2026-09-29
+(`docs/GPU_TASK_QUALIFICATION.md`). It used a fresh probe and read at the task level:
+top-k sets, R@5, FullCov@5 and Hit@1.
+
+| placement | verdict | what it means |
+|---|---|---|
+| `host_gpu_det` (the settings above) | `TASK_EQUIVALENT` and `TRAINING_REPRODUCIBLE` | nameable as a **host-native** placement |
+
+A host-native stage runs every arm it compares on the host GPU: the new arm and every
+baseline, control and comparator, from one commit and on byte-verified inputs. A
+number from the host GPU is never compared with a laptop number. The one exception is
+a task-level evaluation of the same frozen checkpoint. The rules are in the file's
+`host_native_protocol`.
 
 A placement that passed is usable only through a dated authorization block of a
 declared stage that quotes the tested settings and runs the file's mirror

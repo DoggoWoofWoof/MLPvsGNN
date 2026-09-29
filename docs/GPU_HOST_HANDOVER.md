@@ -8,7 +8,7 @@ This guide is for any Claude session, or any person, that wants to use the lab G
    - [`configs/cpu_gpu_equivalence.yaml`](../configs/cpu_gpu_equivalence.yaml) has run and passed for that placement;
    - a dated authorization block of the stage names that placement.
 
-   The test ran on 2026-09-29 ([`docs/CPU_GPU_EQUIVALENCE.md`](CPU_GPU_EQUIVALENCE.md)). **Host CPU** (`mpr-cpu@31803e6457ab`, 8 threads): `EQUIVALENT_WITHIN_TOLERANCE`, so it is nameable. **Host GPU**: `NOT_EQUIVALENT` in both modes, so it stays barred for science. No stage has named the host yet. Everything else on the host is tests, environment builds, benchmarks and systems validation.
+   The test ran on 2026-09-29 ([`docs/CPU_GPU_EQUIVALENCE.md`](CPU_GPU_EQUIVALENCE.md)). **Host CPU** (`mpr-cpu@31803e6457ab`, 8 threads): `EQUIVALENT_WITHIN_TOLERANCE`, so it is nameable. **Host GPU**: `NOT_EQUIVALENT` at score level in both modes. The route back that the equivalence file names is a new declaration. That declaration is [`configs/gpu_task_qualification.yaml`](../configs/gpu_task_qualification.yaml), which ran the same day ([`docs/GPU_TASK_QUALIFICATION.md`](GPU_TASK_QUALIFICATION.md)). **`host_gpu_det` is `TASK_EQUIVALENT` and `TRAINING_REPRODUCIBLE`**, so it is nameable as a **host-native** placement: every arm a stage compares runs on the host GPU, and its numbers are never compared with laptop numbers (see "The result" below). No stage has named the host yet. Everything else on the host is tests, environment builds, benchmarks and systems validation.
 2. **Drive the host only through `python tools/rx/rx.py …`, run from the repository root.** Don't do real work with a raw `ssh gpu "…"`. Windows OpenSSH kills every process a session started when the session ends. rx launches jobs through WMI, which is the only launch method that survives the disconnect.
 3. **Move code, not data.** The link is a Tailscale DERP relay: about 0.75 MB/s down and 1.2 MB/s up. The tracked tree (about 11 MB) pushes in seconds. The six datasets' inputs (about 56 GB) would take about 13 hours.
 4. **Put no credentials on the host.** It is a shared lab machine. That means no Modal, Hugging Face or cloud tokens, and no keys. Never read `~/.ssh/id_ed25519`.
@@ -86,6 +86,9 @@ Whenever your working tree differs from what another session may be running, use
 | `~/.rx/projects.json` | projects seen by `rx monitor` and `rx watch` |
 | `configs/cpu_gpu_equivalence.yaml` | the CPU-GPU equivalence test (below) and its run record `run_record_cpu_gpu_equivalence_2026_09_29` |
 | `docs/CPU_GPU_EQUIVALENCE.md` | the test's result: verdicts, failing cells, determinism, clocks |
+| `configs/gpu_task_qualification.yaml` | the task-level GPU qualification, its `host_native_protocol`, and its run record `run_record_gpu_task_qualification_2026_09_29` |
+| `docs/GPU_TASK_QUALIFICATION.md` | its result: task-level verdicts, training repeat, the host-CPU and TF32 readings beside them |
+| `scripts/gpu_task_qualification.py` | its stages (bundle, arm, arms, read, doc, file); imports the equivalence script unchanged |
 | `configs/universal_v2.yaml#later_stages.compute_placement` | where the placement rule comes from |
 | this file | the handover |
 
@@ -117,6 +120,28 @@ A fail keeps the placement barred. No tolerance is relaxed afterwards.
 | `host_gpu_default` | `NOT_EQUIVALENT` | 245 cells, over tolerance by up to 13×; not reproducible run to run |
 
 No ranking decision differed on any arm: 0 of 176 draws changed any metric. That is reported beside the verdict and does not change it. On the clock, a GNN forward+backward batch takes 5.8 s on the laptop, 3.1 s on the host CPU and 0.36 s on the GPU. The declared routes back for the GPU are a new arm of the same test (for example float64) or a new declaration.
+
+**The task-level qualification (2026-09-29).** That new declaration is [`configs/gpu_task_qualification.yaml`](../configs/gpu_task_qualification.yaml). It asks whether the GPU makes the laptop's *retrieval decisions*, reproducibly. The score-level test above stays as it was, and nothing in it was relaxed.
+- **Probe.** 12 fresh stage-2 batches (11–22), 192 fit-carve draws across the six datasets, none of them a draw of the equivalence probe.
+- **Criteria**, filed before the bundle existed. Top-1 and top-5 sets must match (a swap is excused only between near-tied candidates: a gap under twice the 1e-5 tolerance). R@5, FullCov@5 and Hit@1 must be equal. The repeat must be bit-identical. A short training run (T5) repeated twice must match exactly: every loss, the final weights' sha256 and the final scores.
+
+| arm | result |
+|---|---|
+| `host_gpu_det` | **`TASK_EQUIVALENT`**: 2 score cells over tolerance (both in twin s1, again; ratios 1.36 and 1.22), 0 top-1 or top-5 changes, 0 metric changes, repeat bit-identical |
+| `host_gpu_det` training | **`TRAINING_REPRODUCIBLE`**: losses, weights sha256 and final scores bit-identical across two fresh processes |
+| `host_cpu_t8` (beside) | bit-identical to the laptop on every raw score |
+| `host_gpu_tf32` (diagnosis) | 1,152 of 1,152 cells over tolerance (up to 714×) and one top-5 change: TF32 stays off |
+
+**What it opens.** `host_gpu_det`, with exactly the tested settings, is nameable in two ways:
+- as an **evaluation** placement for frozen checkpoints at the task level, with both placements named beside every number;
+- as the placement of a **host-native** stage, under the file's `host_native_protocol`:
+  - every compared arm is fitted and evaluated on the host GPU, and comparators filed on the laptop are rerun there as new draws;
+  - inputs are byte-verified by `mirror_verification`;
+  - every arm runs from one commit, and every checkpoint is pinned by sha256;
+  - one arm is run twice to check the repeat;
+  - no host-GPU number is compared with a laptop number.
+
+A GPU fit is still a new draw.
 
 **Placement rules** (filed in the declaration; they bind every stage placed off the laptop):
 - Arms whose numbers a stage compares are fitted and evaluated on **one placement**, so a device is never a hidden difference between a message-passing arm and a non-message-passing arm.
@@ -303,4 +328,5 @@ A direct Tailscale path, or the laptop on the wired lab network, would change th
 - The host is set up and validated (`8b6d258`, `d143ea5`, `e22dee9`). It was reachable and idle on 2026-09-29.
 - The CPU-GPU equivalence test **ran on 2026-09-29** (the user's go-ahead is quoted in its run record). Host CPU passed; host GPU failed in both modes (see above). In practice it took about 17 minutes on the laptop, about 5 minutes of host runtime after about 20 minutes in the shared queue, and 11 minutes of upload for the 0.97 GB bundle.
 - A stage that wants the host CPU files a dated authorization block that quotes the passing settings (`DESKTOP-SLQMEQH`, `mpr-cpu@31803e6457ab`, torch 2.8.0+cpu, Windows native, 8 threads per process) and runs mirror verification first. Nothing opens by itself, and a host CPU fit is a new draw, never a laptop seed's replica.
-- The GPU stays barred for science until a new arm passes. It is free for systems work and for other projects' jobs.
+- The task-level qualification **ran on 2026-09-29**: `host_gpu_det` is `TASK_EQUIVALENT` and `TRAINING_REPRODUCIBLE`. The host GPU is nameable for host-native stages (above). In practice it took 12 minutes of upload for the 0.99 GB bundle, 44 s for the host CPU arm, about 2 minutes queued behind another project's GPU job, and 35 s for the three GPU arms.
+- mpr has admission priority 10 in the shared scheduler (`f4576f1`): an mpr job goes to the head of the queue, but running jobs are never evicted. Submit to the queue and don't hold jobs back.

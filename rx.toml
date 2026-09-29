@@ -5,8 +5,12 @@
 # remote host needs a passing verdict of the CPU-GPU equivalence test for that
 # placement (configs/cpu_gpu_equivalence.yaml, RUN 2026-09-29; docs/CPU_GPU_EQUIVALENCE.md)
 # and the stage's own dated authorization block. Verdicts: host CPU (mpr-cpu, 8
-# threads) EQUIVALENT_WITHIN_TOLERANCE, so nameable; host GPU NOT_EQUIVALENT in
-# both modes, so barred. Guide: docs/GPU_HOST_HANDOVER.md.
+# threads) EQUIVALENT_WITHIN_TOLERANCE, so nameable; host GPU NOT_EQUIVALENT at
+# score level in both modes. The task-level qualification
+# (configs/gpu_task_qualification.yaml, RUN 2026-09-29) found host_gpu_det
+# TASK_EQUIVALENT and TRAINING_REPRODUCIBLE, so it is nameable for host-native
+# stages only: every compared arm runs on the host GPU.
+# Guide: docs/GPU_HOST_HANDOVER.md.
 # Do not edit the [envs.*] tables: a verdict names these env hashes.
 
 [project]

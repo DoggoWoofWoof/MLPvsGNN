@@ -1,6 +1,6 @@
 phase: GPU_TASK_QUALIFICATION
 opened: 2026-09-29
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: PLACEMENT_QUALIFICATION
 extends: >-
   configs/cpu_gpu_equivalence.yaml (RUN at 3872cd6). Its verdict on host_gpu_det was NOT_EQUIVALENT under the
@@ -257,3 +257,146 @@ outputs:
 execution:
   order: script and tests; commit; bundle; push; host GPU job and host CPU job; laptop arms after the L1 probe lanes exit; fetch; read; document; run record; commit
   go_ahead: the standing rule to declare and run in the same turn, and the messages quoted under authorization
+
+run_record_gpu_task_qualification_2026_09_29:
+  utc: '2026-09-29T14:28:00Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  verdict_host_gpu_det_evaluation: TASK_EQUIVALENT
+  verdict_host_gpu_det_training: TRAINING_REPRODUCIBLE
+  q_det: true
+  score_cells_hold_on_both_runs: false
+  rank_or_metric_differences: 0
+  floor:
+    score_cells_failing: 0
+    rank_or_metric_differences: 0
+    excused_near_tie_draws: 0
+  candidate:
+    host_gpu_det:
+      score_cells_failing: 2
+      rank_or_metric_differences: 0
+      excused_near_tie_draws: 0
+      raw_bit_identical: false
+    host_gpu_det_r2:
+      score_cells_failing: 2
+      rank_or_metric_differences: 0
+      excused_near_tie_draws: 0
+      raw_bit_identical: false
+  beside:
+    host_cpu_t8:
+      score_cells_failing: 0
+      rank_or_metric_differences: 0
+      excused_near_tie_draws: 0
+      raw_bit_identical: true
+    host_gpu_det_vs_host_cpu_t8:
+      score_cells_failing: 2
+      rank_or_metric_differences: 0
+      excused_near_tie_draws: 0
+      raw_bit_identical: false
+    host_gpu_tf32:
+      score_cells_failing: 1152
+      rank_or_metric_differences: 1
+      excused_near_tie_draws: 0
+      raw_bit_identical: false
+  probe:
+    batches: 12
+    first_stage2_batch: 11
+    draw_counts:
+      2wiki: 32
+      hotpotqa: 33
+      metaqa: 32
+      musique: 31
+      squad: 29
+      webqsp: 35
+    bytes_total: 993958569
+    utc: '2026-09-29T14:09:13Z'
+    manifest_sha256: af8479040149af95882d8c40443e43dc1895d8d13a2ac67b7260c29cb67b000e
+  draws: 192
+  arms:
+    laptop_cpu_t8:
+      host: Inspiron-14
+      env: Python313
+      torch: 2.8.0+cpu
+      device: cpu
+      threads: 8
+      seconds: 167.1
+      utc_end: '2026-09-29T14:12:45Z'
+      rx_job_id: null
+    laptop_cpu_t4:
+      host: Inspiron-14
+      env: Python313
+      torch: 2.8.0+cpu
+      device: cpu
+      threads: 4
+      seconds: 249.7
+      utc_end: '2026-09-29T14:17:20Z'
+      rx_job_id: null
+    host_gpu_det:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cu128@62fc45e9e1ba
+      torch: 2.8.0+cu128
+      device: NVIDIA RTX 4500 Ada Generation
+      threads: 8
+      seconds: 12.7
+      utc_end: '2026-09-29T14:24:05Z'
+      rx_job_id: 260929-195200-gtq-host-gpu-5266
+    host_gpu_det_r2:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cu128@62fc45e9e1ba
+      torch: 2.8.0+cu128
+      device: NVIDIA RTX 4500 Ada Generation
+      threads: 8
+      seconds: 11.7
+      utc_end: '2026-09-29T14:24:19Z'
+      rx_job_id: 260929-195200-gtq-host-gpu-5266
+    host_cpu_t8:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cpu@31803e6457ab
+      torch: 2.8.0+cpu
+      device: cpu
+      threads: 8
+      seconds: 43.6
+      utc_end: '2026-09-29T14:23:24Z'
+      rx_job_id: 260929-195203-gtq-host-cpu-97ad
+    host_gpu_tf32:
+      host: DESKTOP-SLQMEQH
+      env: mpr-cu128@62fc45e9e1ba
+      torch: 2.8.0+cu128
+      device: NVIDIA RTX 4500 Ada Generation
+      threads: 8
+      seconds: 6.8
+      utc_end: '2026-09-29T14:24:27Z'
+      rx_job_id: 260929-195200-gtq-host-gpu-5266
+  record: outputs/gpu_task_qualification/record.json
+  record_sha256: 9f251173ce6fc8aa85c1ca002a703f0134b2a7a00ad4746d2b2af88e43520842
+  document: docs/GPU_TASK_QUALIFICATION.md
+  document_sha256_lf: 5442ca5ad0ddbca572c2e5af230fa1f1017eb5c5c72a93496fdd4a1c2d23b9a5
+  go_ahead_quotes:
+  - '2026-09-29, the user: "you have the highest priority for cpu and gpu you should never wait and finish everything as fast as possible"'
+  - '2026-09-29, the user: "bro you can prempt just add you job in the queue and it should automatically have the higher priority" (received after the arms had run;
+    the jobs were queued at mpr''s admission priority, which is what it describes)'
+  commits:
+    declaration_script_and_tests: e0cb6d7
+    run_record: the commit that adds this block, with docs/GPU_TASK_QUALIFICATION.md and the pointer updates
+  tests: 'tests/test_gpu_task_qualification.py: 14 passed at e0cb6d7 before any arm ran, and 14 passed again after the read (run together with tests/test_mp_approx_l1.py,
+    28 passed; none skipped)'
+  transfer_and_queue:
+    push: 906.7 MB of the bundle (823.3 MB on the wire) in 12m20s, 1.1 MB/s, 14:09:34Z-14:21:56Z
+    host_cpu_job: 260929-195203-gtq-host-cpu-97ad, admitted at once; host_cpu_t8 ran 14:22:40Z-14:23:24Z
+    host_gpu_job: 260929-195200-gtq-host-gpu-5266, queued about 2 min at the head of the queue while another project's running job held the one GPU (the scheduler
+      orders the queue by project priority and evicts nothing); the three GPU arms ran 14:23:52Z-14:24:27Z
+    fetch: 9.8 MB (CPU job) and 32.7 MB (GPU job)
+  noted_not_gating:
+  - Both failing score cells are again in the twin u_mlp_v2_mix__H128__s1 (draw 57 metaqa, ratio 1.36; draw 191 webqsp, ratio 1.22), as in the equivalence run (draws
+    85 metaqa and 143 webqsp there). They are identical in the repeat and on the host GPU against the host CPU, and neither changes a top-1, a top-5 set or a task
+    metric.
+  - host_cpu_t8 is bit-identical to the laptop reference on every raw score of the fresh probe, as it was on the equivalence probe.
+  - 'host_gpu_tf32 fails 1,152 of 1,152 score cells (ratios up to 714) and changes one top-5 set (twin s2): TF32 stays unusable for this code, as the declaration
+    expected.'
+  deviations:
+  - compute.laptop estimated about a minute per laptop arm; laptop_cpu_t8 took 167.1 s and laptop_cpu_t4 249.7 s, beside the MP-Approx L1 read stage (one process).
+    T4 clocks are descriptive only.
+  - 'Before the host job, tier_train_repeat was smoke-run on the laptop CPU (4 threads) on one bundle batch (batch_03) at about 14:19Z, only to check the code path,
+    because no laptop arm runs T5. It wrote nothing under outputs/, and its printed losses and state-sha prefixes enter no criterion: T5 compares the two GPU runs
+    with each other.'
+  - The GPU job reserved --mem 16 instead of the gpu profile's 32 GB (a scheduler reservation only; the equivalence run's GPU peak was 2.71 GB).
+  terminal: STOP_FOR_REVIEW
