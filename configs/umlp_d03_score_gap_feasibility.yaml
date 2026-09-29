@@ -1,0 +1,149 @@
+phase: UMLP_D03_SCORE_GAP_FEASIBILITY
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+extends: >-
+  configs/umlp_d01_2wiki_feature_readout.yaml (group and strata definitions, reused verbatim) and
+  configs/umlp_v22a_linear_offset.yaml (the offset inspected; run_record_umlp_v22a_2026_09_29, commit 6ff664c).
+  Neither is edited.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+d03_question: >-
+  For the 2wiki secondary golds that the frozen twin misses from its top 5, how large is the score correction actually
+  required to enter the top 5, relative to (1) the twin's within-query score scale, (2) the maximum correction v2.2A was
+  allowed to make, and (3) the correction v2.2A actually learned?
+role_for_the_registered_question: >-
+  Diagnostic only. It explains the v2.2A failure (bound, or optimisation/objective/generalisation, or a local probe that
+  does not globalise). No retrieval model is fitted, improved or selected; v2.2B is not started by this file.
+
+authorization:
+  given: 2026-09-29, by the user, pasted as "UMLP-D0.3 AUTHORIZATION -- SCORE-GAP FEASIBILITY DIAGNOSTIC"
+  go_ahead: "Proceed immediately and autonomously."
+  terminal: "Write the diagnostic report and commit it. Then stop. Do not start v2.2B from this declaration."
+
+this_file_does_not_touch:
+  fits: no model is fitted or trained; v2.2A is not altered or refitted
+  held_half: V2_HELD_CONFIRMATION is not read; held rows are dropped before anything is compiled
+  other_datasets: no MetaQA or SQuAD number is read
+  gnn: u_gnn_v2_ef defines G_miss_mp / G_miss_both only, through the stored D0.1 sidecar ranks; no GNN is run
+  v2_2b: not started
+
+inputs:   # sha256 checked before the pass; a mismatch is a hard stop
+  d01_sidecar: {path: outputs/umlp_d01/candidates_2wiki_gate.npz, sha256: 4b18d3d5fcff005ec7177500be2560afe9ad9e0f2a40ad9c8d7a4e923cbe38ef, use: GNN top-5 votes of the golds, D0 first-support bucket, twin rank cross-check}
+  v2_eval_seed0: {path: outputs/universal_v2/eval/2wiki.npz, sha256: 6d8c1dcd2f815cf8c5e67664ace3ceaada3f54c6625ceeee768d35b04f13b4c2}
+  v2_eval_seeds_1_2: {path: outputs/universal_v2/eval/2wiki__more_69caa3fe.npz, sha256: 76e4e3a9abd213040c9807c635a1bce0ac183e22919ca44149bc8910df4e4afe}
+  v22a_eval: {path: outputs/universal_v22a/eval/2wiki.npz, sha256: fc83e1cdba98f1f7244982b68772cacd375f836dc7dee98645da03e5c240e511}
+  v22a_fit_record: {path: outputs/universal_v22a/fits/u_mlp_v22a_off__H128__s0.json, sha256: 1febabb03672f670711d4186e01a0b982555d46053140b6024bcfe337ad6e513}
+  v22a_checkpoint: {path: outputs/universal_v22a/fits/u_mlp_v22a_off__H128__s0.pt, sha256: de5acc3fda02b8fbe40574d4295246c7ce0bedf3fd62705afd5221a75035f37c}
+  v22a_gate: {path: outputs/universal_v22a/gate_A.json, sha256: 6b1241b7dcffc8becb5bedc6ac2f8a2165ed9da016e4ea9309a1b88c81b8938a}
+  twin_checkpoints:   # outputs/universal_v2/fits/<key>.pt, sha256 = the fit record's state_sha256
+    u_mlp_v2_mix__H128__s0: f0e629a7347a08014ae00f6d164b6158695a71118c7dabf0dfaf56e1b8a3e8f3
+    u_mlp_v2_mix__H128__s1: 0926391ac70457ae0c7319fe1821aee5be17eb57af0879168f5b003c32effb85
+    u_mlp_v2_mix__H128__s2: d4b7157e3e272a01d815ac088b670aa99a9120c6fb3d2aa626f78fb67219a431
+
+scoring_pass:   # the only compute: a forward pass of frozen checkpoints, as D0.1 and the v2.2A eval did
+  population: 2wiki V2_GATE (6,290 queries); held rows dropped before compilation
+  models: twin u_mlp_v2_mix s0, s1, s2 (raw score) and u_mlp_v22a_off s0 (its internal s0_hat, delta and final score)
+  why_needed: the within-query scale that defines v2.2A's tau needs the full pool, and v2.2A's per-candidate offsets were never stored
+  integrity:   # every one is a hard stop
+    - every twin seed's per-query metrics equal the stored v2 eval arrays exactly
+    - v2.2A's per-query metrics equal outputs/universal_v22a/eval/2wiki.npz exactly
+    - the within-query z-score of the separately loaded twin s0 equals v2.2A's internal s0_hat (max abs difference <= 1e-5)
+    - every gold's twin s0 rank equals the D0.1 sidecar's rank for the same (query, local) row
+  kept: per query every in-pool gold plus the top 20 of each model; full-pool ranks of every kept row under every model; per query the pool's v2.2A |delta| max, mean and share >= 0.9
+
+units:
+  s_hat: >-
+    the twin score z-scored within the query over the full pool (mean 0, population std 1, eps 1e-6) -- exactly the
+    s0_hat of v2.2A, whose tau = 1 correction is defined in these units
+  tau: 1.0 (v2.2A's declared bound -- a per-candidate offset lies in (-1, 1); a pairwise swing in (-2, 2))
+  epsilon: 1.0e-6
+
+population:
+  twin: u_mlp_v2_mix__H128__s0 (the base of v2.2A); seeds 1-2 descriptive for the capacity readouts only (no v2.2A exists for them; no reading uses them)
+  analysed_queries: twin rank 1 is a gold and at least one other in-pool gold is below twin rank 5 (D0.1 G_miss non-empty)
+  unit: the missed secondary gold g in G_miss (D0.1), each weighted 1; queries resampled for intervals
+  groups_reused_from_d01:
+    G_miss: other in-pool golds at twin rank > 5, in queries whose twin rank-1 is a gold
+    G_miss_mp: G_miss in the u_gnn_v2_ef top 5 on at least 2 of 3 seeds
+    G_miss_both: G_miss in the u_gnn_v2_ef top 5 on at most 1 of 3 seeds
+    N_disp: non-golds at twin ranks 2-5 of the same query
+
+quantities:   # all in s_hat units
+  kth: s_hat of the candidate at twin rank 5
+  required_lift: max(0, kth - s_hat(g) + epsilon)
+  pairwise_required: "r(g, n) = max(0, s_hat(n) - s_hat(g) + epsilon) for n in N_disp"
+  displacers:
+    all: every n in N_disp (pair-level)
+    hardest: the highest-s_hat n in N_disp
+    nearest: the lowest-s_hat n in N_disp (nearest to crossing)
+  rank5_is_gold: whether the twin's rank-5 candidate is itself a gold (then a lift of g alone swaps a gold for a gold -- coverage-neutral), reported
+  missing_displacer: a g whose query has no non-gold at ranks 2-5 has no pair; counted and excluded from pair readouts
+
+feasibility:   # under the v2.2A bound
+  one_sided_entry: required_lift < tau (the gold alone receives the maximum positive offset; nothing else moves)
+  two_sided_entry: required_lift < 2 * tau (the gold +tau and every other candidate -tau -- the most favourable configuration the bound permits)
+  pairwise: r < tau (one-sided) and r < 2 * tau (two-sided), for the all / hardest / nearest displacers
+  query_full_coverage_secondary: >-
+    for an analysed query with G_in in-pool golds: reachable only if gold_total == G_in <= 5; then required_fc =
+    max(0, s_hat of the (6 - G_in)-th highest non-gold - min over golds of s_hat + epsilon); one-sided (every gold +tau)
+    if required_fc < tau, two-sided (golds +tau, non-golds -tau) if required_fc < 2 * tau; queries with gold_total >
+    G_in or G_in > 5 are unreachable by any reranker and counted separately
+
+learned_offsets:   # v2.2A s0 on the same rows
+  per_candidate: delta(g), delta(n) (v2.2A's delta_hat, in s_hat units)
+  per_pair: "m = delta(g) - delta(n), compared with r(g, n); also m / r"
+  categories:
+    correct_direction: m > 0
+    wrong_direction: m < 0
+    no_movement: m == 0
+    reversed: v2.2A ranks g above n (its final scores, stable tie-break -- the order actually served)
+    far_too_small: 0 < m < r / 2 and not reversed
+  realised_entry: v2.2A's rank of g <= 5
+  saturation: per candidate |delta| >= 0.9 share; pool-level max |delta|
+  gold_flows_descriptive: over analysed queries and over all queries with >= 2 in-pool golds, golds entering and leaving the top 5 between the twin and v2.2A
+
+statistics:
+  distributions: mean, q10, q25, median, q75, q90, q95 (numpy percentile, linear)
+  shares: point estimate plus a query-level percentile bootstrap (1000 resamples, numpy default_rng(0), 95%), the share recomputed over the resampled queries' units
+  strata: gold_count 2 vs >= 3 (gold_total, D0.1); D0 first-support bucket STRUCT per query (h1 / h2 / h3 / none, D0.1); G_miss_mp vs G_miss_both
+  multiplicity: every stratum is reported; readings use the unstratified s0 point estimates only
+
+readings:   # the ruling's interpretations, operationalised here before any number; point estimates on the s0 missed golds
+  D03_B_BOUND_LIMITED:
+    rule: share of missed golds with required_lift >= 2 * tau is >= 0.25 ("a substantial fraction cannot be crossed even under the maximum permitted correction")
+    meaning: the bounded linear offset was structurally incapable of repairing much of the failure; any later interaction or representation offset needs a new declaration
+  D03_A_CAPACITY_NOT_THE_LIMIT:
+    evaluated_only_if: D03_B does not hold
+    rule: >-
+      share with required_lift < tau (one-sided -- reachable by the gold's own offset alone, the operational meaning of
+      "comfortably reachable") is >= 2/3, AND the share of missed golds whose learned movement against the nearest
+      displacer is wrong-way or far too small (m <= 0, or 0 < m < r / 2 without reversal) is > 0.5 ("usually")
+    meaning: the v2.2A failure is optimisation / objective / generalisation, not insufficient offset amplitude; v2.2B is not started automatically
+  D03_NEITHER:
+    rule: neither D03_B nor D03_A holds
+    meaning: capacity partly binding and / or learned movement not decisively wrong -- reported with the numbers, no further claim
+  exactly_one: D03_B, else D03_A, else D03_NEITHER
+  D03_C_LOCAL_PROBE_NOT_GLOBAL:   # a flag, evaluated independently of the primary reading
+    rule: >-
+      share of G_miss_mp missed golds (the D0.2-positive population) with required_lift < tau is >= 2/3, AND the filed
+      v2.2A gate shows hit@1 lower bound > 0 and full_coverage@5 upper bound < 0 (gate_A.json, pinned above)
+    meaning: the targeted pairwise separability found by D0.2 did not translate into a globally valid full-pool correction; evidence against architecture-shopping on that post-hoc subset
+  wording: descriptive of the frozen s0 twin and the one v2.2A fit; never "no correction can work"
+
+outputs:
+  script: scripts/umlp_d03_score_gap.py
+  sidecar: outputs/umlp_d03/gaps_2wiki_gate.npz
+  record: outputs/umlp_d03/record.json
+  document: docs/UMLP_D03_SCORE_GAP_FEASIBILITY.md
+  run_record: run_record_umlp_d03_<date> appended to THIS file; status DECLARED_NOT_RUN -> RUN
+
+tests:
+  - required_lift, pairwise r, hardest / nearest and the feasibility cuts on a toy query
+  - the categories (correct / wrong / none / reversed / far_too_small) on toy pairs
+  - the groups equal D0.1's groups_for_seed on the sidecar rows
+  - the query full-coverage requirement on a toy query
+  - the frozen configs byte-unchanged
+
+execution:
+  stop_after_this_block: true
+  within_phase_go_ahead: given (authorization above)
