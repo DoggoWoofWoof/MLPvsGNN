@@ -1,0 +1,352 @@
+phase: MP_APPROX_L0
+opened: 2026-09-29
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+track: MP-ORACLE
+extends: >-
+  configs/universal_v2.yaml (the pilot's frozen trio checkpoints and their V2_GATE evaluation arrays) and the UMLP
+  diagnostics chain (D0 to D0.3, v2.1, v2.2A). None of those files is edited. This is level 0 of the "Message-Passing
+  Approximation Ladder" proposed on 2026-09-29; every later level is its own dated file.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+question: >-
+  How much of what the trained GNN does to each candidate -- its score relative to the matched non-message-passing
+  twin, the part of that score its cell's edges produce, and the neighbour messages the cell passes -- can be predicted
+  from information that is already compiled at the candidate, with no propagation?
+role: >-
+  Measurement only. The GNN's outputs are the probes' targets, which the proposal allows "only to measure approximation
+  capacity". A probe is never a retriever, a competitor, a teacher or a feature: no probe, target or number of this
+  file enters QLS-U, the twin, a feature contract, M3, M4 or any selection. Distilling the GNN into a model that is then
+  evaluated as a competitor would need its own declaration, and the proposal rules it out for the QLS-U line.
+
+authorization:
+  given: 2026-09-29, pasted by the user (advisor text). Verbatim excerpts
+  excerpts:
+    - "We should **close only the two failed mechanisms** (`coverage-loss retrain` and `linear global offset`), not close the non-message-passing line."
+    - "**MP-Approx: How much of learned message passing can fixed graph compilation recover?**"
+    - "### Level 0 — current 129 scalars"
+    - "How well can we predict the GNN's actual effect?"
+    - "where using GNN outputs is explicitly allowed **only to measure approximation capacity**."
+    - "We should **not** use GNN distillation for the main QLS-U competitor because that breaks our causal information contract."
+    - "Not `MLP-v2.2B`."
+  go_ahead: >-
+    standing: "keep continuing autonomusly without asking for perms and try to find improvements and pause only at
+    something substancial". This file is committed alone, before any code of the phase runs, and is then run as written.
+  placement_message: >-
+    2026-09-29, the user: "now since you have the gpu etc you can choose to run there wherever needed and feasible, use
+    all the systems at your disposal for a fast and quick outputs and runs". Answered in placement below.
+  terminal: STOP_FOR_REVIEW after the run record. Level 1 is not opened by any reading here.
+
+rulings_recorded:   # the proposal's closures, recorded here; the v2.1 and v2.2A files keep their bytes and status lines
+  closed_as_mechanisms:
+    v2_1_coverage_objective: V21_STAGE_A_FAIL at d14c7f6 -- the coverage-loss retrain is closed as a mechanism
+    v2_2a_linear_offset: V22A_STAGE_A_FAIL at 6ff664c -- the frozen-base linear global offset is closed as a mechanism
+  stays_open: the non-message-passing line (the twin family and every compiled-feature model)
+  not_opened: v2.2B. Neither this file nor the proposal opens it
+
+corrections_to_the_proposal:   # checked against the code before this file was written
+  phi0_is_not_scalars_only: >-
+    the twin u_mlp_v2_mix and the GNN u_gnn_v2_ef share the M3B input block (the twin's copy adds query gates on the
+    depth-basis blocks), whose linear reads 773 columns. There are 258 scalar columns: the 129 contract scalars, raw and
+    within-query z-scored. The other 515 are vector channels. A 258-wide semantic head holds the projected query and node
+    embeddings, their product, their absolute difference and two dot products. One column is semantic_difference. Three
+    64-wide hop-1 family prototypes are normalize(gelu(mean of the projected embeddings of the node's structural, ner and
+    knn in-neighbours)) times q_state, and a 64-wide seed-reach prototype weights the seeds' projected embeddings by 1 at distance 1 and 0.5 at distance 2, times
+    n_state.
+    The proposal's level 1, vector hop tokens, therefore already exists at depth 1 in both models, as a learned
+    projection. Depth >= 2 tokens and fixed (random or PCA) projections do not exist in either model.
+  two_no_mp_references: >-
+    "s_NO-MP" has two meanings here, and both are measured. (a) The matched twin: u_mlp_v2_mix, fitted separately on the
+    same trio under the same contract, with the same input-block family and no cell. It is the non-message-passing
+    model the pilot compared. (b) The GNN's own no-edge counterfactual: UGNNv2 with message_passing = False, whose
+    forward removes every edge before the cell. The cell and the evidence flow then see only self-loops, and the input
+    block, hop-1 prototypes included, is unchanged. (b) was never trained in that regime. It isolates what the cell's
+    edges do inside the trained model, and (a) is the trained comparator.
+  the_message: >-
+    the cell's step-t message is m_v = sum over v's in-edges and one self-loop of alpha_uv (W_mh h_u + W_mr r_uv). The
+    proposal's m_v, a GAT sum over N(v), is its neighbour part m_nbr = m - alpha_vv (W_mh h_v + W_mr r_self). That part
+    is the message target here.
+  matched_pairs: >-
+    a trained GNN with a matched twin exists only for the pilot trio (2wiki, metaqa, squad):
+    u_gnn_v2_ef__H128__s{0,1,2} with u_mlp_v2_mix__H128__s{0,1,2}. The stage-2 six-dataset GNN has no six-dataset twin,
+    so this file does not use it.
+
+this_file_does_not_touch:
+  fits: >-
+    nothing is fitted except the probes, which are cross-fitted analysis models. The six checkpoints are loaded
+    read-only, and every weight file and record is checked against its sha256.
+  rows: >-
+    V2_GATE rows only. V2_HELD_CONFIRMATION rows leave the population before anything is compiled or scored. All three
+    eval splits are dev splits (m3b_controlled_comparison.yaml#populations.eval_splits); no test row is read.
+  frozen: >-
+    M2-M3B, universal-v2 (pilot, replication, stage 2), UMLP D0-D0.3, v2.1 and v2.2A keep their files, arrays,
+    checkpoints and status lines, and this file does not touch the CPU-GPU equivalence declaration (its own run appends
+    to it). M3B stays byte-pinned (configs/universal_v2.yaml#m3b_incumbents.must_not).
+    The frozen code is imported unchanged. The only code copied is the cell's attention (message split below), under a
+    new name in the new script, and the run verifies it against the cell.
+  package: the CRAG package is read-only. Nothing is written under its root and nothing from it enters git
+  competitors: no probe output, target, basis or number becomes an input, target, teacher, gate or selection criterion of any retriever
+
+placement:
+  every_stage: laptop CPU (the reference machine of configs/cpu_gpu_equivalence.yaml#placements.reference)
+  threads: >-
+    scoring runs at 6 threads, the thread count of the stored pilot eval records, so the integrity check below can be
+    exact. The probes run at 4 threads per process, one process per dataset, up to three at once. Every probe is a
+    deterministic function of its fold, seed and thread count.
+  why_not_the_lab_host: >-
+    (1) Scoring compiles each V2_GATE pool on the fly from served CRAG files that exist only on the laptop. For these
+    three datasets the planning sizes of the host mirror total about 25 GB (metaqa 6.0, 2wiki 18.8, squad 0.25;
+    configs/cpu_gpu_equivalence.yaml#mirror_verification.sizes_for_planning, caches included), several hours of upload
+    against about 1.3 h of scoring here. (2) No placement has passed configs/cpu_gpu_equivalence.yaml, so the host cannot
+    be named for a scientific stage (placement_rules). (3) The probe stage is small. The user's placement message is
+    answered by running the equivalence test under its own file; a later level may name the host in its own dated
+    block after a pass.
+
+inputs:   # sha256 of the file bytes; checked before the first compile and again at the end
+  eval_arrays:
+    metaqa: {seed0: {path: outputs/universal_v2/eval/metaqa.npz, sha256: 380e0288b0e048cd18d83f06defd5f794fe7b7514a741bffbfbd6289e49eab5c}, seeds_1_2: {path: outputs/universal_v2/eval/metaqa__more_69caa3fe.npz, sha256: 07cb99f9bcb1d70bbccf7d2e55b1097e9c724b3b016f168eec88c0bb7d615a30}, query_ids: {path: outputs/universal_v2/eval/metaqa_query_ids.json, sha256: b491d9e90e786c1d356d2a24142ec1b810e657efdfadff85a44ff1b489618692}}
+    2wiki: {seed0: {path: outputs/universal_v2/eval/2wiki.npz, sha256: 6d8c1dcd2f815cf8c5e67664ace3ceaada3f54c6625ceeee768d35b04f13b4c2}, seeds_1_2: {path: outputs/universal_v2/eval/2wiki__more_69caa3fe.npz, sha256: 76e4e3a9abd213040c9807c635a1bce0ac183e22919ca44149bc8910df4e4afe}, query_ids: {path: outputs/universal_v2/eval/2wiki_query_ids.json, sha256: d439a33c22f39186f8e54f596aeb2bcb83a5d27745a0dc9285e8990f16923cd2}}
+    squad: {seed0: {path: outputs/universal_v2/eval/squad.npz, sha256: cda64047bea803936ce811e5fa0d006ebffa10473e7baed44f2d203bd55121f3}, seeds_1_2: {path: outputs/universal_v2/eval/squad__more_69caa3fe.npz, sha256: 4f0d82a419415c5d4ffe33bfe8d8bb973f9a7454b09764eb41832885e0e81c95}, query_ids: {path: outputs/universal_v2/eval/squad_query_ids.json, sha256: 3ce32ec30d8920c8e0be25c2d53e325b29e4d16a5b16f7dfc9f564eb86d8a93c}}
+  feature_contract: {path: outputs/universal_v2/feature_contract.json, sha256: 21d30260c7ef71c7cc217c2b32054625780db7e6b40c79d3c03fded658109e91}
+  selection: {path: outputs/universal_v2/selection.json, sha256: 3ed48ae3d04334ba367cb81b8b363d32db0e2bf746e4f692d7af0936bea4e3b6}
+  checkpoint_dir: outputs/universal_v2/fits/
+  checkpoints:   # weights (.pt) and fit record (.json)
+    u_mlp_v2_mix__H128__s0: {weights: f0e629a7347a08014ae00f6d164b6158695a71118c7dabf0dfaf56e1b8a3e8f3, record: 21fab0efc9c7538c08de6311d3ebdde0944f49543e17bd0487f42e50f68940fb}
+    u_mlp_v2_mix__H128__s1: {weights: 0926391ac70457ae0c7319fe1821aee5be17eb57af0879168f5b003c32effb85, record: f6cff3f3f05507908d244e37f5cef221fd7462dbc49d9f49192ed43ca0efd62d}
+    u_mlp_v2_mix__H128__s2: {weights: d4b7157e3e272a01d815ac088b670aa99a9120c6fb3d2aa626f78fb67219a431, record: 9302082f2acedc1b6ed39ed78f54d43e820584326bbd9a8320e94bfe0a9fa217}
+    u_gnn_v2_ef__H128__s0: {weights: 9f749ad346afcef479f84436019771e0b940a1e647e4960908acf4105ea2ed0e, record: bfd3e8e5957b259b2d8b38f85008f659f48e00eb79cdf43220aeb39817993009}
+    u_gnn_v2_ef__H128__s1: {weights: 9b3a5521babb814e83e8a0a40a94b9abd92bdee7f7f58b04f686558d0522c367, record: 6e1efe41c8c2f27bfd1d37fa26e9b8e00685e1ffb8d12f8528d489b6b3a9a60a}
+    u_gnn_v2_ef__H128__s2: {weights: 4575c41822f56d99b843aaa524a5eb407fa038ebc24a6ad04f4fef786433d4c4, record: 4cb612e195c85fde11edaec8b6f0dcd293fc706b2554cbab4cf76f0fc2907532}
+  frozen_code:   # sha256 of the bytes with CRLF folded to LF; checked at the start and the end of every stage
+    configs/universal_v2.yaml: bce0d1e92de4f184f09f0770fd378e2fa63bf469fdf31bb904d7471a11eeb562
+    configs/m3b_controlled_comparison.yaml: 9c0e6e21e2fc8a88f35419e10e87f83b9018db0104500dad27a09de3dc10d09d
+    configs/umlp_v21_coverage_objective.yaml: cd786f7454c8734de4f8192132021a49a6b60eedad08aaa4c05051164ed0ccf3
+    configs/umlp_v22a_linear_offset.yaml: 8b2975d67232451ee2eaefda36658eba8aa17486ea59be3a211a7ba97f1025ec
+    configs/umlp_d03_score_gap_feasibility.yaml: 737d48b342a9a789b1e8447d179a6171353d23a3facf5ace620e056deac3556b
+    src/mp_retrieval/m3b_train.py: b17722c11cd4ce3194d784bba41b7cb3dc514354b5cce70cd1980d9ab7376eb6
+    src/mp_retrieval/m3b_models.py: cbe32ea0772a22fd5cd1dfdb8f2b81e11a85a9e6b6e60bfc05036f5121aeb05c
+    src/mp_retrieval/m3b_features.py: 0310e553d2a49d6528cf47065ff0b11180544df5c11eca2d94eb13bcb0f47ed3
+    src/mp_retrieval/m3b_pools.py: 219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697
+    src/mp_retrieval/universal_v2_models.py: e49e7a1b2c143e2b6a7f039857046e7ec0d9a3f15fe5d032e22ab50fac1fd479
+    src/mp_retrieval/universal_v2_features.py: 34a5eec553d8fc1e576829f96a8461dbc4e9490088e082e9ef0a127ab73e8427
+    scripts/universal_v2_run.py: bc6badb19643a1f968e80ba22fb1497c50bfd344b06bffb306778dabecbf4dd4
+    scripts/universal_v2_split_audit.py: b23d98e120f7587f61328eac4b0a6fbed2478a95657db78ce29e5c85f190d2df
+    scripts/m3b_run.py: 6dc5f13167e3e9e7bff64df1ceef85af42831bdaef47d6c9487b5b71473108a4
+    scripts/m3b_compile.py: 825ee987d27731c54f6e6a5a4f6d6cf68a4d746409b88533f8262be35cd263f8
+    scripts/m3b_contract.py: 3ea60222f0a8db92d23676b49f428acb02068d3d6e865dfcb9a8b74a1f3e65a1
+
+population:
+  metaqa: >-
+    V2_GATE (19,738 queries; hop 1: 5,021, hop 2: 7,444, hop 3: 7,273, the hop read from the query id as
+    universal_v2_run does), stratified subsample. For each hop, the 800 V2_GATE queries with the smallest
+    sha256("mp_approx_l0|" + query_id) are kept, 2,400 in all. The rule reads only ids, and the full gate would take
+    about 6.6 h at the pilot's 1.21 s per query.
+  2wiki: V2_GATE, all 6,290 queries
+  squad: >-
+    V2_GATE, all 5,841 queries. The control: the pilot's GNN and twin are level on squad (seed-mean recall@5 0.9020 vs
+    0.9063).
+  gaps_already_filed:   # pilot V2_GATE seed means (outputs/universal_v2/eval), GNN vs twin; cited, not recomputed
+    metaqa: {recall@5: [0.7822, 0.7157], hit@1: [0.9099, 0.7753], full_coverage@5: [0.6602, 0.5880]}
+    2wiki: {recall@5: [0.8996, 0.8516], hit@1: [0.8908, 0.8978], full_coverage@5: [0.7763, 0.6721]}
+    squad: {recall@5: [0.9020, 0.9063], hit@1: [0.7336, 0.7427], full_coverage@5: [0.9020, 0.9063]}
+
+scoring_pass:
+  path: >-
+    the D0.1 path, imported unchanged. The M3B eval population is recomputed and must equal the declared digest and
+    count. The halves are recomputed and must equal the stored halves, and held rows leave. m3b_compile.prepare,
+    compile_query_v2 and pack_queries_v2 then give one packed batch per chunk (24,000 // mean pool size queries), which
+    every scored function reads.
+  functions:   # per query, on the full pool
+    T_k: u_mlp_v2_mix__H128__s{k} (twin), k = 0, 1, 2
+    G_k: u_gnn_v2_ef__H128__s{k} (GNN)
+    G0_k: >-
+      G_k with message_passing = False for one forward. The attribute is restored at once and asserted True, and the
+      state_dict digest is equal before and after.
+  integrity:
+    stored: >-
+      for T_k and G_k, rank_metrics of the full-pool scores equals the stored per-query value of all 14 METRIC_NAMES
+      exactly, on every scored query. Seed 0 is checked against <name>.npz and seeds 1-2 against
+      <name>__more_69caa3fe.npz. G0_k has no stored counterpart.
+    message_split: >-
+      the copied attention's full message equals the tensor the cell passes to its dropout (torch.testing.assert_close,
+      atol 1e-5, rtol 1e-5) at every step of every chunk
+    analysis_set: >-
+      within U_q, for T_k, G_k and G0_k, the nine metrics fixed by the top 20 (recall@1/5/10/20, hit@1, ndcg@5/20,
+      full_coverage@5/20) and gold_in_pool equal their full-pool values. This holds by construction under the frozen
+      tie rule (score descending, then pool position) and is checked.
+    on_mismatch: hard stop at the first mismatch, naming the query, function and metric; no tolerance is added afterwards
+  analysis_set:
+    U_q: >-
+      the in-pool golds plus the top 20 of each of the nine functions, kept in pool order. It is the set the
+      approximations re-rank; KEEP_TOP = 20 as in D0.3.
+    why: >-
+      metaqa pools average 2,017 candidates, too many to keep with their vectors. Every candidate outside U_q is a
+      non-gold that none of the nine functions ranks in its top 20.
+    consequence: >-
+      the endpoints' metrics are exact within U_q. An approximation's recall@5, full_coverage@5 and hit@1 within U_q
+      can only be equal to or higher than on the full pool, because a candidate from outside U_q could only displace. So every
+      recovery below is an upper bound on the full-pool recovery of the same probe. A LOW reading is robust to this; a
+      HIGH reading is not a full-pool claim.
+  z_scores: every function's scores are z-scored within the query over the FULL pool (float64); U_q rows are kept afterwards
+  kept_per_U_q_row: >-
+    the 129 contract scalars (raw), their within-query z-scores (full pool), and z(T_k), z(G_k), z(G0_k) with their
+    full-pool ranks. For each k: B1's 515 vector channels of T_k (the columns 258-772 its input linear reads); B2 = T_k's
+    body output (128) and base_z; and G_k's neighbour message m_nbr at steps 1, 2, 3 (128 each). Vectors are stored as
+    float16, every score and scalar as float32 or wider.
+  kept_per_query: row, query id, hop, gold_total, pool size, |U_q|, fold, the first-support STRUCT bucket, and the full-pool 14 metrics of the nine functions
+  first_support_STRUCT: >-
+    the smallest t in {1, 2, 3} for which some in-pool gold has has_h{t}_STRUCT > 0 in the compiled scalars (0 when
+    none, -1 when no gold is in the pool). This is D0.1's rule.
+
+targets:   # per U_q row; per seed pair k
+  r_k: z(G_k) - z(T_k), the GNN's residual over the twin (primary)
+  e_k: z(G_k) - z(G0_k), the part of the GNN's score its cell's edges produce inside the trained model (secondary)
+  m_k_t: G_k's neighbour message at step t = 1, 2, 3, a 128-vector (secondary; the proposal's "message fidelity")
+  centring: >-
+    every target and every prediction is centred within the query over U_q before any fit or measure. A shift shared
+    by a query's candidates ranks nothing (the repository's per-query centred scores).
+
+bases:   # node-local: nothing here is computed by the cell or reads another candidate's state
+  B0: >-
+    the 129 contract scalars (Phi_129): raw values through sign(x) log1p(|x|), plus the within-query z-scores; 258
+    columns. The same for every k.
+  B1: >-
+    B0 plus T_k's 515 vector channels: the semantic head, semantic_difference, the three hop-1 family prototypes and the
+    seed-reach prototype, i.e. everything the twin's input linear reads except its gating of the scalars; 773 columns
+  B2: >-
+    T_k's own final representation: its body output (128) and base_z. A linear readout of it is the twin's own function
+    class.
+  standardisation: >-
+    per fold, mean and standard deviation from the training rows only. A column with sd < 1e-6 becomes 0, and values
+    are clipped to [-8, 8].
+
+probes:   # cross-fitted; every out-of-fold prediction comes from a probe that never saw the query
+  folds: 5 folds, fold = int(sha256(query_id)) mod 5 -- D0.2's rule; all rows of a query in one fold
+  inner_split: >-
+    the training-fold queries with int(sha256(query_id + "|inner")) mod 10 == 0 are the inner validation set, used
+    only to choose lambda and to stop the MLP
+  ridge: >-
+    closed form on within-query-centred standardised features and target, penalty lambda * n_rows * ||beta||^2. lambda
+    comes from {1e-3, 1e-2, 1e-1, 1, 10, 100}, chosen by inner-validation within-query MSE, and the probe is refitted
+    on all training folds. The messages are multi-output: one lambda per step, chosen on the summed MSE of the 128
+    outputs.
+  mlp: >-
+    Linear(d, 128), GELU, Linear(128, 128), GELU, Linear(128, 1) -- the twin body's width. AdamW (lr 1e-3, weight
+    decay 1e-4), minibatches of 64 queries (all their U_q rows), and a loss equal to the mean of the squared difference
+    between the within-query-centred prediction and target. At most 30 epochs; the MLP stops after 3 epochs without an
+    inner-validation improvement and restores its best epoch. torch.manual_seed and numpy default_rng both take
+    1000 + 10 k + fold.
+  grid:
+    r_k: [B0-ridge, B0-mlp, B1-ridge, B1-mlp, B2-ridge]
+    e_k: [B0-ridge, B1-ridge]
+    m_k_t: [B0-ridge, B1-ridge]
+  references:   # no fitting
+    twin: z(T_k) itself -- recovery 0 by definition
+    other_seed_residual: z(T_k) + the mean of r over the other two seeds (for e, z(G0_k) + the other seeds' mean e) -- how much of the residual transfers across GNN seeds
+    reproducibility: the within-query-centred Pearson correlation of r_k with r_k' over U_q rows, for the three seed pairs; likewise for e
+
+quantities:   # per dataset; per k, then averaged over k
+  fit:
+    R2: "1 - sum (rhat_c - r_c)^2 / sum r_c^2, pooled over U_q rows (within-query centred)"
+    spearman: per query over U_q, Spearman(rhat, r), averaged over queries with at least 3 rows and neither side constant
+    DPR: >-
+      discordant-pair recovery. Pairs of a query's U_q rows are counted when T_k and G_k order them with opposite
+      strict signs. DPR is the share of those pairs that the approximation orders as G_k does (a tie counts as not
+      recovered), per query, averaged over queries with at least one such pair.
+    gold_DPR: DPR over the discordant pairs with exactly one gold
+    top5_overlap: "|top5(approximation) intersect top5(G_k)| / 5 within U_q, beside the twin's own overlap with G_k"
+  retrieval:
+    approximation: shat_k = z(T_k) + rhat_k (for e, z(G0_k) + ehat_k), re-ranking U_q under the frozen tie rule
+    metrics: [recall@5, full_coverage@5, hit@1]
+    rho: >-
+      rho_M = (mean over k and queries of M(shat_k) - M(T_k)) / (mean of M(G_k) - M(T_k)), the proposal's "fraction of MP
+      task gain recovered" with the twin as NO-MP. For e: (M(shat_e) - M(G0)) / (M(G) - M(G0)).
+    readable: >-
+      a metric is readable on a dataset when its denominator's 95% bootstrap interval lies above 0. The proposal
+      requires a denominator that is "meaningful and nonzero", and one where the GNN is worse would make rho measure
+      the recovery of a loss.
+    rho_bar: the mean of rho_M over the dataset's readable metrics, with its interval from the same resamples
+  message:
+    R2_t: "1 - sum ||mhat_c - m_c||^2 / sum ||m_c||^2 over U_q rows and the 128 dimensions (within-query centred)"
+    cosine_t: the mean over U_q rows of cos(mhat_c, m_c), for rows where ||m_c|| > 0
+  strata: >-
+    metaqa by hop (1, 2, 3); 2wiki by gold_total (2; 3 or more); every dataset by the first-support STRUCT bucket.
+    Descriptive. A stratum's rho is read only if its own denominator interval lies above 0.
+
+statistics:
+  bootstrap: >-
+    queries resampled with replacement, 1000 resamples, numpy default_rng(0), 95% percentile interval. One resample
+    matrix per dataset serves every quantity, so contrasts are paired. Seeds are averaged inside each resample.
+  contrasts:
+    vector_channels: rho_bar(B1-mlp) - rho_bar(B0-mlp)
+    nonlinearity: rho_bar(B0-mlp) - rho_bar(B0-ridge)
+    twin_representation: rho_bar(B2-ridge) - rho_bar(B1-mlp)
+
+readings:   # filed before any number; per dataset, no pooled reading
+  primary_probe: B0-mlp on r_k -- the proposal's level 0 ("current 129 scalars"), with nonlinear capacity
+  bands:   # of rho_bar, for every probe on r_k (and on e_k, descriptively)
+    L0_HIGH: rho_bar >= 0.75 and its interval's lower end >= 0.50
+    L0_LOW: rho_bar <= 0.25 and its interval's upper end <= 0.50
+    L0_MID: neither
+    NOT_READ: the dataset has no readable metric (squad is expected here; that is the control, not a failure)
+  exactly_one: per dataset, the band of the primary probe is the dataset's reading
+  flags:   # descriptive, filed with the thresholds
+    FIT_NOT_RANK: a probe with R2 >= 0.5 whose band is L0_LOW -- it fits the residual's variance but not its ranking-relevant part
+    SEED_BOUND: mean reproducibility of r below 0.5 -- most of the residual is seed-specific, which caps any seed-agnostic probe
+    MESSAGE_NOT_RETRIEVAL: B1-ridge message R2, averaged over steps, >= 0.5 while B1-mlp on r is L0_LOW
+  interpretation_map:   # what each outcome licenses; none of it opens a stage
+    primary_high: >-
+      the compiled scalars already predict the GNN's effect at the ranking level on that dataset (within U_q). The
+      twin's shortfall there is not missing information at level 0. Closing it is a learning question, which no file
+      has opened: v2.1 and v2.2A are closed as mechanisms and v2.2B is not opened.
+    primary_low_vectors_add: >-
+      primary L0_LOW with the vector_channels interval above 0: the twin's depth-1 vector channels carry part of what
+      the scalars lose, which is the proposal's "scalar compiler loses semantics" diagnosis at depth 1. It licenses
+      level 1 (depth >= 2 vector tokens) as the next file.
+    b1_low: >-
+      B1-mlp L0_LOW: node-local information, depth-1 vectors included, does not predict the effect. What the cell adds
+      lies in depth >= 2, query-conditioned weighting or typed composition, the ground of levels 1 to 4.
+    twin_representation: >-
+      the twin_representation interval's upper end at or above 0, with B2-ridge not L0_LOW: the effect is linearly present in
+      the twin's own final representation, so what fails is its readout or objective.
+    message_not_retrieval: the proposal's "scorer/objective problem" diagnosis
+  wording: >-
+    every probe is an oracle fit on the GNN's own outputs over V2_GATE queries of the same dataset. Recovery is a
+    statement of capacity within U_q, never of a deployable model. No reading may be phrased as "message passing is
+    unnecessary", "we do not need message passing" or "the MLP wins"; low and high recovery are both results.
+
+compute:
+  scoring: metaqa about 55 min, 2wiki about 15 min, squad about 12 min, one lane at 6 threads. Peak memory is about the pilot's (5.5 GB on 2wiki), and chunks go to disk as they finish
+  probes: per dataset 30 MLP fits and 165 closed-form fits (each after a six-value lambda search), about 10 to 20 min
+  disk: about 3.5 GB under outputs/mp_approx_l0/ (git-ignored)
+  resumable: >-
+    each chunk is written atomically, and a restart resumes after the last complete chunk. The chunk boundaries are a
+    function of the population alone.
+
+hard_stops:   # on any: file hard_stop_<date> with the evidence, leave the status line, report
+  - any pin in inputs fails (eval arrays, query ids, contract, selection, weights, records, frozen code)
+  - the population digest or count, or the recomputed halves, differ from the declared or stored ones
+  - a held, select, fit or test row would be compiled or scored
+  - any integrity check of scoring_pass fails
+  - the message_passing attribute or a state_dict digest is not restored after a no-edge forward
+
+outputs:
+  script: scripts/mp_approx_l0.py (stages score, probe, read, doc, file)
+  sidecars: outputs/mp_approx_l0/<name>/ (arrays as .npy, meta.json with every array's sha256), outputs/mp_approx_l0/<name>/probes/ (out-of-fold predictions, fit log)
+  record: outputs/mp_approx_l0/record.json
+  document: docs/MP_APPROX_L0.md
+  run_record: run_record_mp_approx_l0_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN
+
+tests:   # tests/test_mp_approx_l0.py
+  - this file parses; its pins are the files' current sha256; the frozen code is unchanged
+  - the metaqa subsample rule is deterministic, 800 per hop, and reads ids only; the fold and inner-split rules equal D0.2's
+  - the copied attention reproduces QueryRelationCell's message on a random graph and splits it into a self and a neighbour part that sum to it
+  - a no-edge forward restores message_passing and leaves the state_dict unchanged
+  - U_q metrics equal full-pool metrics for the functions that built U_q (synthetic pools, ties included)
+  - ridge within-query centring recovers a planted linear residual; a query-constant shift in the target is ignored
+  - the MLP probe is deterministic at a fixed seed and thread count
+  - rho, DPR, gold_DPR, top-5 overlap, within-query R2 and the bands on hand-computed toy cases
+  - no held query id appears in any sidecar
+
+execution:
+  order: this file alone (commit); script and tests (commit); score metaqa, 2wiki, squad; probe; read; doc; run record (commit)
+  stop_after_run: STOP_FOR_REVIEW
