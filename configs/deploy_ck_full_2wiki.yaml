@@ -1,6 +1,6 @@
 phase: DEPLOY_CK_FULL_2WIKI
 opened: 2026-09-30
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (the deployable step, advisor step 4; not MP-ORACLE)
 extends: >-
@@ -351,3 +351,145 @@ execution:
     this file committed alone -> the script and its tests committed, the tests passing on the laptop -> (the six-base
     fits end; its records and eval are filed) -> the smoke -> score -> latency-prepare -> latency (nine timed processes)
     and memory (nine processes) -> read -> doc -> file (run record) -> STOP_FOR_REVIEW
+
+run_record_deploy_ck_full_2wiki_2026_10_01:
+  utc: '2026-09-30T23:31:17Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: 26f10f8
+  reading: FULL_KEEPS
+  speed: E2E_FASTER
+  flags: []
+  pareto_statement: 'ck_full keeps 0.895 [0.851, 0.944] of the GNN''s recall@5 gain over the twin on V2_HELD_CONFIRMATION at 0.656 [0.644, 0.670] of the GNN''s end-to-end
+    p50 latency (0.624 at p95, 0.534 at p99) and 0.877 of its model-side memory increase; laptop CPU, 8 threads, a batch of one, the fast compiler wired in. The twin,
+    the no-propagation floor: 0.664 of the GNN''s p50 (0.604 at p95, 0.527 at p99).'
+  arms_primary:
+    twin: 0.8533
+    ck_full: 0.8926
+    gnn: 0.8972
+  contrasts_primary:
+    gnn_gain:
+      point: 0.0439
+      ci:
+      - 0.0404
+      - 0.0473
+    full_gain:
+      point: 0.0393
+      ci:
+      - 0.0362
+      - 0.0424
+    full_vs_gnn:
+      point: -0.0046
+      ci:
+      - -0.0068
+      - -0.0024
+  full_share_primary:
+    point: 0.8952
+    ci:
+    - 0.8509
+    - 0.9443
+    readable: true
+    of:
+    - - ck_full
+      - twin
+    - - gnn
+      - twin
+  bands:
+    V2_HELD_CONFIRMATION:
+      recall@5: FULL_KEEPS
+      full_coverage@5: FULL_KEEPS
+      hit@1: GNN_GAIN_ABSENT
+    V2_GATE:
+      recall@5: FULL_KEEPS
+      full_coverage@5: FULL_KEEPS
+      hit@1: GNN_GAIN_ABSENT
+    whole:
+      recall@5: FULL_KEEPS
+      full_coverage@5: FULL_KEEPS
+      hit@1: GNN_GAIN_ABSENT
+  e2e_ratios:
+    ck_full/gnn:
+      p50:
+        point: 0.6561
+        ci:
+        - 0.6441
+        - 0.6704
+      p95:
+        point: 0.6238
+        ci:
+        - 0.6015
+        - 0.6466
+      p99:
+        point: 0.5341
+        ci:
+        - 0.4508
+        - 0.5958
+    twin/gnn:
+      p50:
+        point: 0.6644
+        ci:
+        - 0.6525
+        - 0.6801
+      p95:
+        point: 0.6037
+        ci:
+        - 0.5808
+        - 0.6336
+      p99:
+        point: 0.5266
+        ci:
+        - 0.4428
+        - 0.5998
+    ck_full/twin:
+      p50:
+        point: 0.9876
+        ci:
+        - 0.9691
+        - 1.0037
+      p95:
+        point: 1.0333
+        ci:
+        - 0.9951
+        - 1.0642
+      p99:
+        point: 1.0143
+        ci:
+        - 0.9445
+        - 1.0921
+  e2e_p50_ms:
+    twin: 25.121
+    ck_full: 24.81
+    gnn: 37.811
+  memory_ratio_ck_full/gnn: 0.877
+  identical_code: 28 module paths over 21 processes, one sha256 each, equal to the committed files
+  placement: every stage on the laptop CPU at 8 threads (BLAS, OpenMP, numba, torch)
+  held_half_read: true
+  record_sha256: becee410d639658e4cb137fa187f19297500ef0d84a1381a31b8619b86c5d30f
+  document: docs/DEPLOY_CK_FULL_2WIKI.md
+  document_sha256: 135262b16b8af3784293ac0a11812293f89aa4cf10fe5932b16159526c2615be
+  gate: 'the laptop stages started after the six-base fits ended and both of its records were filed: fits_record_2026_10_01 (cee041c) and run_record_2026_10_01 (84855f8),
+    the six-base''s eval having run on the host'
+  deviations:
+    smoke_round: the declared smoke names one timed process and one memory process; the smoke ran one round of all three arms (three timed and three memory processes)
+      on the 16 sampled queries. Systems only; its record is outputs/deploy_ck_full_2wiki/smoke/ and it is never read
+    first_stage_cache: latency-prepare writes latency/first_stage.npz (each sampled query's cached first-stage lists), a systems file the declared outputs list does
+      not name, so the timed processes start from the cached lists without the top-1000 caches; its sha256 is in the latency sample record
+  disclosed:
+    laptop_activity_during_latency: 'The laptop was not fully quiet during the latency stage (22:57:04Z to 23:25:09Z). This session was active on it for the host''s
+      MP-Approx level 10 jobs. The desktop app streamed long tool inputs, among them the level 10 fit module, written between about 23:13Z and 23:16Z. Short rx client
+      processes also ran: launches, status and log reads, with every push sending 0 bytes. One git commit (29ad1be) ran at about 23:19Z. No other python compute ran.
+      The driver''s idle check passed before every timed and memory process, with the laptop CPU between 5.1% and 13.9% at each start. The ratios are percentiles
+      of the pooled per-query totals, as declared, and are not adjusted.'
+    per_round_e2e_fast: 'Per-round p50 totals (ms): twin 18.16, 30.47, 26.27; ck_full 21.23, 20.10, 33.84; gnn 37.14, 27.23, 53.40. By round (r0, r1, r2), ck_full/gnn
+      is 0.572, 0.738, 0.634 at p50, 0.588, 0.814, 0.602 at p95, and 0.578, 0.835, 0.419 at p99. E2E_FASTER''s bound (0.90) therefore holds in each round on its own.
+      ck_full/twin is 1.169, 0.660, 1.288 at p50 and twin/gnn is 0.489, 1.119, 0.492, so these two are not stable across rounds. The pooled ck_full/twin ratio, 0.988
+      [0.969, 1.004], is not a reliable reading of ck_full''s cost over the twin. This file does not rerun the stage; a rerun on a quiet laptop would settle that
+      comparison.'
+  timings:
+    smoke: '2026-09-30T22:23Z to 22:27Z, exit 0: the fast compile and the reference gave the same top-5 on every query in every timed pass (differs on 0)'
+    score: 22:27:57Z to 22:50:48Z (the 2wiki pass 1367.9 s, 104 to 143 ms per query over 12,576 queries), fast == reference on every query
+    latency_prepare: '22:51:11Z to 22:54:24Z: 1,024 timed and 64 warm-up queries, pools rebuilt equal and fast == reference on all, 128 batches packed for memory'
+    latency: '22:57:04Z to 23:25:09Z: 9 timed processes (3 rounds x 3 arms, rotated) then 9 memory processes, top-5 differs on 0 in every timed pass'
+    read_and_doc: 23:28:57Z and 23:29:06Z
+  score_summary: 'held (V2_HELD_CONFIRMATION, 6,286 queries) recall@5 seed means: twin 0.8533, ck_full 0.8926, gnn 0.8972; V2_GATE (6,290): twin 0.8553, ck_full 0.8938,
+    gnn 0.9010'
