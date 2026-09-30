@@ -1,6 +1,6 @@
 phase: MP_APPROX_L9
 opened: 2026-10-01
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
 extends: >-
@@ -489,3 +489,250 @@ execution:
     repeat at once, then the read. Then fetch the read, check and meta files, and on the laptop build the record, the
     doc and the run record (commit).
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l9_2026_10_01:
+  utc: '2026-09-30T22:38:37Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: 63c2e52
+  placement: host CPU (rx env mpr-cpu), the verified mirror in memory; scoring at 6 threads, check, fits and read at 4
+  reading: L9_HIGH
+  primary: NB-hyb
+  primary_rho_bar:
+    point: 0.7570171844630255
+    ci:
+    - 0.6914394116672865
+    - 0.8147474028895911
+  bands:
+    NB-hyb: L9_HIGH
+    NB-hyb-mlp: L9_HIGH
+    NB-text: L9_MID
+    NB-id: L9_MID
+    NB-hash: L9_MID
+    STD-hyb: L9_MID
+    STD-text: L9_MID
+    STD-hash: L9_MID
+    NB-hyb@L8: L9_MID
+    NB-hyb-mlp@L8: L9_MID
+    NB-text@L8: L9_MID
+    NB-id@L8: L9_MID
+    NB-hash@L8: L9_MID
+    STD-hyb@L8: L9_MID
+    STD-text@L8: L9_MID
+    STD-hash@L8: L9_MID
+    NB-oracle: L9_ABOVE_GNN
+    STD-oracle: L9_HIGH
+  rho_bar:
+    NB-hyb:
+      point: 0.7570171844630255
+      ci:
+      - 0.6914394116672865
+      - 0.8147474028895911
+    NB-hyb-mlp:
+      point: 0.7516397589943106
+      ci:
+      - 0.690103491450644
+      - 0.8078958856490684
+    NB-text:
+      point: 0.6314766420382004
+      ci:
+      - 0.5695831382146221
+      - 0.6884821311845637
+    NB-id:
+      point: 0.7367943636745516
+      ci:
+      - 0.6763612886873621
+      - 0.7945492605361628
+    NB-hash:
+      point: 0.7033229446805597
+      ci:
+      - 0.6479842435504982
+      - 0.7613350061789687
+    STD-hyb:
+      point: 0.7240713704653744
+      ci:
+      - 0.6675970242781315
+      - 0.7777877995869233
+    STD-text:
+      point: 0.5951813943397081
+      ci:
+      - 0.5419563305151227
+      - 0.6512661246714186
+    STD-hash:
+      point: 0.685693417793157
+      ci:
+      - 0.6299241978864556
+      - 0.7371686823618141
+    NB-hyb@L8:
+      point: 0.7439146235390542
+      ci:
+      - 0.674605368518333
+      - 0.8045574205256638
+    NB-hyb-mlp@L8:
+      point: 0.7377198222551122
+      ci:
+      - 0.6767053731849356
+      - 0.794400110306997
+    NB-text@L8:
+      point: 0.5799352382837766
+      ci:
+      - 0.5154291559761572
+      - 0.6415322522678961
+    NB-id@L8:
+      point: 0.7167571127731579
+      ci:
+      - 0.6543175211915074
+      - 0.7747936789504404
+    NB-hash@L8:
+      point: 0.7077013481473027
+      ci:
+      - 0.6497832318668575
+      - 0.7670685531910026
+    STD-hyb@L8:
+      point: 0.708813646021775
+      ci:
+      - 0.6481087227172131
+      - 0.7652881778830685
+    STD-text@L8:
+      point: 0.5390104255454373
+      ci:
+      - 0.4803196192794968
+      - 0.6031990932437802
+    STD-hash@L8:
+      point: 0.660817296541411
+      ci:
+      - 0.6024958821299405
+      - 0.71793378519165
+    NB-oracle:
+      point: 1.068573915307517
+      ci:
+      - 1.0169643180708057
+      - 1.122499379427712
+    STD-oracle:
+      point: 0.9909071234003113
+      ci:
+      - 0.9408986422251672
+      - 1.0452793653472192
+  readable_metrics:
+  - recall@5
+  - full_coverage@5
+  - hit@1
+  flags:
+  - EM_NOT_MONOTONE
+  interpretation:
+  - l9_high
+  - id_residual_adds
+  - above_level8_primary
+  - nb_raises_ceiling
+  contrasts:
+    nb_adds:
+      point: 0.03294581399765106
+      ci:
+      - -0.0064364699439426595
+      - 0.07460987213487932
+    nb_adds_hash:
+      point: 0.017629526887402713
+      ci:
+      - -0.015871411758416373
+      - 0.05217612016303632
+    id_residual_adds:
+      point: 0.12554054242482504
+      ci:
+      - 0.08843643798453085
+      - 0.16299158628744956
+    text_residual_adds:
+      point: 0.020222820788473816
+      ci:
+      - -0.018392909167422825
+      - 0.06007358754824555
+    id_vs_hash:
+      point: 0.033471418993991975
+      ci:
+      - -0.007031973838143273
+      - 0.06953189585453179
+    query_mlp_adds:
+      point: -0.0053774254687148915
+      ci:
+      - -0.033778026255541375
+      - 0.021212259797247987
+    protocol_adds:
+      point: 0.013102560923971218
+      ci:
+      - -0.0015683153425568772
+      - 0.03095254912175625
+    over_level8_primary:
+      point: 0.21800675891758814
+      ci:
+      - 0.1679584775803902
+      - 0.26852868462369145
+    ceiling_gap:
+      point: 0.31155673084449165
+      ci:
+      - 0.2580154272650691
+      - 0.3670387331995385
+    nb_ceiling:
+      point: 0.07766679190720582
+      ci:
+      - 0.052295410255262534
+      - 0.10417953443097999
+  queries: 3000
+  scoring_mismatches: 0
+  held_rows_read: false
+  test_rows_read: false
+  checkpoints_updated: 0
+  jobs_checked_for_identical_code: 127
+  record_sha256: 7debb5fb0797ccd957c38647f1ae0eb255208496d2b14d2daa7593554d19b9ca
+  document: docs/MP_APPROX_L9.md
+  document_sha256: 3eaa6c1c4ceae0807df40ef3efe20bbaafd3a30ce782c2281aded40d5cd88e27
+  walks_nb_implementation: 'the declared exact int64 programme over (prefix, previous node, node) states, implemented as step-back subtraction: at each length the
+    previous length''s entries are expanded over the edges sorted by source, as level 8''s walk_entries expands its own, less, for every state (prefix, u, v) and
+    every edge v -> u, the walks that would step straight back to u; the last length sums its states over the previous node. tests/test_mp_approx_l9.py checks it
+    against a brute-force enumeration of the walks with v_{i+1} != v_{i-1} (6 seeds, lengths 1 to 3, on a multigraph with self-loops, a doubled edge and a two-cycle,
+    plus the hand example), for invariance to edge order and block size, and that its counts lie within the standard counts and equal them at length 1'
+  host_jobs:
+    smoke: 261001-022513-l9-smoke-492d
+    score:
+    - 261001-022631-l9-score-0-f6ca
+    - 261001-022634-l9-score-1-4374
+    - 261001-022636-l9-score-2-1de2
+    assemble_check: 261001-024648-l9-assemble-check-8e49
+    fit:
+      NB-hyb:
+      - 261001-033340-l9-fit-nb-hyb-fc91 (cancelled)
+      - 261001-034843-l9-fit-nb-hyb-r-c0e3
+      NB-hyb-mlp:
+      - 261001-033342-l9-fit-nb-hyb-mlp-6ad8 (cancelled)
+      - 261001-034845-l9-fit-nb-hyb-mlp-r-4169
+      NB-text:
+      - 261001-033344-l9-fit-nb-text-09ce (cancelled)
+      - 261001-034846-l9-fit-nb-text-r-bc59
+      NB-id:
+      - 261001-033346-l9-fit-nb-id-b7b5
+      NB-hash:
+      - 261001-033348-l9-fit-nb-hash-46c8 (cancelled)
+      - 261001-034848-l9-fit-nb-hash-r-986a
+      STD-hyb:
+      - 261001-033351-l9-fit-std-hyb-c230 (cancelled after 42 s)
+      - 261001-034849-l9-fit-std-hyb-r-2697
+      STD-text:
+      - 261001-033353-l9-fit-std-text-6391 (cancelled while queued)
+      - 261001-034851-l9-fit-std-text-r-a15d
+      STD-hash:
+      - 261001-033355-l9-fit-std-hash-33a4 (cancelled while queued)
+      - 261001-034853-l9-fit-std-hash-r-9887
+    repeat:
+    - 261001-033357-l9-repeat-ddc5 (cancelled while queued)
+    - 261001-034854-l9-repeat-r-adb0
+    read: 261001-040612-l9-read-51ac
+  compute_vs_estimate: scoring took 17.5 to 17.6 min per shard at 6 threads (about 1.03 s per query, 10,400 entries per query with both families), under the declared
+    20 to 30 min
+  fit_jobs_resized: 'systems only, on the user''s instruction to reserve only what a job uses: the fit jobs had reserved 4 CPUs and 12 GB each and used about 1.3
+    CPUs and 0.6 GB. Seven fit jobs and the repeat were cancelled (four of them running) and resubmitted with 1.5 CPUs and 2 GB. rx reserves without capping, and
+    the fit processes fix their own pools (4 torch threads, BLAS 4, deterministic algorithms) at start, so the threads and every rule are unchanged. stage_fit skips
+    a unit whose log exists (a unit with a log is complete) and each unit reseeds from (k, fold), so the resubmitted jobs went on at each arm''s next unit; a unit
+    in progress at the cancel was fitted again from its start'
+  grid_edges: 'on the wide grid, units with kappa or eta at an end of its grid: NB-hyb 1/15, NB-hyb-mlp 2/15, NB-text 0/15, NB-id 5/15, NB-hash 1/15, STD-hyb 1/15,
+    STD-text 1/15, STD-hash 0/15 (11 of 120): 10 at eta''s high end (100) and 1 at its low end (0.01, an NB-hyb-mlp unit), none at a kappa end. Under level 8''s protocol
+    in the same units, 14 or 15 of 15 per arm sat at an end, as in level 8. The wide grid was left unchanged'
+  em_not_monotone: 'flag EM_NOT_MONOTONE: in 7 of 120 units (NB-hyb-mlp k0_f3, k0_f4, k1_f3, k1_f4, k2_f1; NB-hyb k0_f2; STD-hyb k2_f1) the fit-set marginal log-likelihood
+    fell at one round (round 7 or 10); in every one the fall came after the kept round (kept rounds 2 to 5), so no kept model follows a fall'
