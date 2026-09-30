@@ -1,0 +1,93 @@
+phase: HOST_MIRROR_SIX
+status: DECLARED_NOT_RUN
+declared: 2026-09-30
+kind: >-
+  Systems only. This file moves the served package's six-dataset read set to the GPU host and verifies it. It computes
+  no number, places no stage on the host and edits no earlier file. A stage reads the mirror only after a later file
+  places it there, as configs/mp_approx_six_base.yaml requires ("files the authorization, the mirror and its
+  verification first").
+
+authorization:
+  quotes:   # the user, verbatim, 2026-09-30
+    - "keep relying less on the laptop and parallely move the data to host so that we can run faster and just sync the results and models and data"
+    - "why not just use hf as an intermediate syncer, crag did it"
+    - "The classifier blocked the Hugging Face upload as potential data exfiltration i give you permission do it"
+    - "bro crag is doing it please stop irritating me like that and complete"
+    - "bro start the hf i have given perms"
+  note: >-
+    Before the last quote the user took this session out of auto mode (bypass permissions). The research data leave
+    the laptop only for the user's own private repository named under transport, and reach only the host.
+
+package:
+  root_from: configs/m3b_controlled_comparison.yaml   # substrate.package_root, substrate.freeze_RECORD_SHA256_expected
+  read_only: >-
+    The package root is read in place. Nothing under it is written, moved, renamed or re-hashed by the package's own
+    tools. There is no staging copy (the laptop has 54 GB free against a 69 GB selection), no copy into this repository,
+    and no upload_large_folder (it keeps a cache inside the folder it uploads). The laptop reads every selected file
+    once to hash it, and the upload reads it again.
+
+selection:
+  datasets: [squad, musique, metaqa, webqsp, hotpotqa, 2wiki]   # the upload order: smallest first, webqsp before the two largest so that the host survey can spare it
+  package_files: [canonical.py, pointer_resolver.py, CANONICAL_FREEZE.json, VERIFICATION.json]
+  dataset_subfolders: [queries, embeddings/dense, graph, retrieval_cache]
+  also: every file directly in each dataset folder (DATASET.json, nodes.jsonl and the dataset's small records)
+  why: >-
+    These are the reads of this repository's code through the package loader (grep of scripts/ and src/, 2026-09-30):
+    Dataset.cache for dense and splade (m3b_compile, m3a_headroom, m3b_contract), embeddings("dense", "docs"|"queries")
+    (m3b_compile, m3b_run, m3b_relations, universal_v2_run, universal_v2_six), graph(family) (m3a_headroom,
+    m3b_pools, m3b_relations), nodes() and node_ids (m3a_headroom, m3b_relations, data.py), queries(split), and
+    queries/lanes/LEGACY_CONTINUITY.jsonl (m3a_headroom).
+  excluded: >-
+    embeddings/splade (no code here reads the SPLADE vectors; the splade retrieval cache is included), webqsp/_acquisition
+    (the raw download), webqsp/v1, freebase/, freebase_v3/, _history/, __pycache__/ and the package's markdown notes.
+  expected_size: about 573 files and 69.3 GB (manifest.json records the exact figure)
+
+transport:
+  repo: Swastik9895/mpr-six-mirror   # a private Hugging Face dataset repo; privacy is asserted before every write
+  laptop: >-
+    scripts/host_mirror_hf.py upload uses the token the user stored with `hf auth login`. The script never reads, prints
+    or writes the token, and sends it only to huggingface.co. The upload goes dataset by dataset in groups of about 1 GB,
+    one commit per group, so it is resumable. A file that the repo already holds with the manifest's hash is not sent
+    again, and neither is a file that the host survey found at the host source.
+  measured: >-
+    2026-09-30, a 100 MB random-byte probe from the laptop on home Wi-Fi: 0.67 MB/s (148.7 s). At that rate the selection
+    takes about 25 to 29 hours, less whatever the host survey spares. The rate is the home uplink's, and the upload can
+    finish from a faster network.
+  links: >-
+    For each dataset in the repo, the laptop resolves every needed file's signed link. It follows the redirect by hand, so
+    no Authorization header reaches a host other than huggingface.co. Files the hub keeps in git are inlined. The list
+    (outputs/host_mirror_six/_urls.json, git-ignored and short-lived) goes to the host by rx push --inputs. The download
+    job deletes it once every file verifies.
+  host: >-
+    The host holds no token of any kind. HF_TOKEN is removed and huggingface_hub is never imported. Files are fetched with
+    the standard library.
+
+host:
+  mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG   # outside the workspace; the files land under data/final_canonical/
+  read_only_sources: [C:/Users/Student2/rx/projects/crag/ws]   # another project's workspace: read and hashed, copied from only on a sha256 match; never written, moved or deleted
+  reaches_code: only as an in-memory substitution of substrate.package_root; no config file is edited
+
+verification:
+  - every mirrored file matches the manifest by size and sha256. It is hashed as it is written, and verify hashes it again
+  - the manifest's hashes match every pin the package carries itself (DATASET.json, the embedding shard manifests,
+    GRAPH_MANIFEST.json). One mismatch refuses the mirror
+  - the served-freeze check of scripts/m3b_compile.open_package passes on the host, with the mirror as package_root
+    and the loader imported from the mirror
+  - a stage that a later file places on the host runs its own 16-batch check before it reads anything (its first 16
+    batches, packed on the host, torch.equal to the laptop's)
+
+not_done_here:
+  - Place any stage on the host. The six-base twin fits stay on the laptop, because configs/mp_approx_six_base.yaml
+    says a host-CPU fit is a new draw, never a replica of a laptop seed.
+  - Move this repository's outputs (v2 caches, checkpoints, sidecars). Those travel by rx push --inputs when a stage
+    that reads them is placed on the host.
+
+execution:
+  - this file and scripts/host_mirror_hf.py with its tests (commit)
+  - manifest (laptop)
+  - push the manifest; the host survey job; fetch host_sources.json
+  - upload (laptop, in the background, resumable), in parallel with the survey
+  - for each dataset in the repo, the laptop runs urls, then pushes _urls.json, then the host runs download and then
+    verify, then the records are fetched
+  - a run record here; status RUN once all six datasets verify
+stop_after_run: STOP_FOR_REVIEW
