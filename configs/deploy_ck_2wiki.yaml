@@ -498,3 +498,33 @@ amendment_3_2026_09_30_doc_log_path:   # filed after the host test job failed an
     first verify.json is kept in outputs/deploy_ck_2wiki_superseded/. placement.host_native_protocol.identical_code's
     commit becomes the one that files this amendment.
   unchanged: everything else, amendment 2's check included
+
+amendment_4_2026_09_30_checkpoint_lock:   # filed after two fits ended rc 1 and before either runs again
+  what: >-
+    Two fits ended rc 1 at their epoch-3 checkpoint write, 4 s apart (11:42:05Z and 11:42:09Z): ck_qi seed 0
+    (260930-165639-mpr-ck-ck-qi-s0-7ea1) and ck_qi seed 1 (260930-165641-mpr-ck-ck-qi-s1-9b23). In
+    device_placement.fit_model_placed's save_checkpoint, os.replace of <key>.tmp onto <key>.ckpt was refused with
+    PermissionError (WinError 5, access denied). Neither wrote a record or weights, and their select traces (epochs 0
+    to 3) are not results of this file.
+  cause: >-
+    systems, outside the fit. rx lists a job's outputs, when it ends, as every workspace file changed since it began,
+    and all 16 fits share one workspace. The driver fetched each finished fit's outputs (rx fetch JOB --include
+    'outputs/deploy_ck_2wiki/**'). Twin seed 1's listing (11:37:45Z) held both ck_qi checkpoints as written after epoch
+    1; they were replaced at 11:38Z, and the fetch kept re-reading them on the sha mismatch. On Windows a file that
+    another process holds open for reading cannot be replaced.
+  fix: >-
+    systems only. No tracked file a job reads changes, so placement.host_native_protocol.identical_code's commit stays
+    e7bbd89. (1) Nothing is fetched while a job of this file runs: the driver follows job states alone and fetches
+    once, by pattern (rx fetch --glob 'outputs/deploy_ck_2wiki/**'), after eval and read end. (2) Every job submitted
+    from here on names only its own files as its rx outputs (--outputs), so its end reads no other fit's checkpoint;
+    the fits already running keep rx's default listing, one read at each end. (3) The two failed fits run again from
+    scratch, with the same command, code, placement and resources. Their <key>.ckpt (after epoch 2) and <key>.tmp
+    (after epoch 3) are first moved to outputs/deploy_ck_2wiki_superseded/ on the host, so that neither resumes: a
+    resumed ck_qi seed 0 would make the repeat compare a resumed fit with an uninterrupted one. (4) The repeat
+    (260930-165711-mpr-ck-ck-qi-s0-repeat-b3a6) had started at about 11:49:30Z, when two fits ended. It was cancelled
+    at 11:51:12Z, before its first checkpoint (no file of it exists), and is submitted again after the two reruns, so
+    that it stays after the grid, as fitting.repeat declares. gnn seed 2 (260930-165708-mpr-ck-gnn-s2-387d) had
+    started too, and runs on. A fit that ends this way again is run again this way and recorded.
+  unchanged: >-
+    every arm, seed, rule, population, statistic and reading, and eval and read after the last fit. The failed jobs and
+    the cancelled repeat are recorded in the run record as superseded.
