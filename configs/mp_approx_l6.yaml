@@ -1,6 +1,6 @@
 phase: MP_APPROX_L6
 opened: 2026-09-30
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-ORACLE
 extends: >-
@@ -323,3 +323,650 @@ execution:
     this file alone (commit); the script and tests (commit); push; one host job per dataset (probe, metaqa's repeat,
     read), submitted at once; fetch; record, doc and run record on the laptop (commit)
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l6_2026_09_30:
+  utc: '2026-09-30T07:01:34Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  held_half_read: false
+  checkpoints_updated: 0
+  code_commit: 32ad28d
+  placement: probe, repeat and read host-native on host_gpu_det; doc and file on the laptop
+  identical_code: 16 module paths over 7 host processes, one sha256 each, equal to the committed files
+  record_sha256: 467ffea63a0702521036e28bbf128d3854135ccc4ce5c80e1c90b7013170e8eb
+  document: docs/MP_APPROX_L6.md
+  document_sha256: 5047931f14f5ce5cb1a9b3f240dbc2b1b812f0d66b44b3e6a010b725f2275a37
+  cross_dataset:
+    advisor_ideal: false
+    positive_control_held: true
+    negative_control_as_expected: true
+  datasets:
+    metaqa:
+      reading: L6_LOW
+      primary_rho_bar:
+        point: -0.12939884423119732
+        ci:
+        - -0.23252059305557254
+        - -0.04509707883188678
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      - hit@1
+      flags:
+      - FIT_NOT_RANK (r, B0-mlp)
+      - FIT_NOT_RANK (r, L3-att)
+      - FIT_NOT_RANK (r, L6-1)
+      - FIT_NOT_RANK (r, L6-2)
+      - FIT_NOT_RANK (r, L6-3)
+      - FIT_NOT_RANK (r, L6-fix3)
+      - FIT_NOT_RANK (r, L6-att1)
+      - FIT_NOT_RANK (r, L6-att3)
+      interpretation:
+      - composition_recovers
+      - state_matters
+      - l6_below_attention
+      - objective_adds
+      - edge_effect_l6
+      rho_bar_r:
+        B0-mlp:
+          point: -0.6502180865126636
+          ci:
+          - -0.7693134409395539
+          - -0.548617912865365
+        L3-att:
+          point: -0.07606954540831261
+          ci:
+          - -0.16111894784623154
+          - 0.002286047738100012
+        L6-1:
+          point: -0.18460133691823177
+          ci:
+          - -0.2872738768906711
+          - -0.09563186347708336
+        L6-2:
+          point: -0.13325711216230246
+          ci:
+          - -0.23252649614258789
+          - -0.0528034489714767
+        L6-3:
+          point: -0.12939884423119732
+          ci:
+          - -0.23252059305557254
+          - -0.04509707883188678
+        L6-fix3:
+          point: -0.16697617831076747
+          ci:
+          - -0.27031756691545694
+          - -0.08317834417402147
+        L6-list:
+          point: 0.20187410242812265
+          ci:
+          - 0.13278764033587576
+          - 0.2651286037038934
+        L6-att1:
+          point: 0.032853684306127895
+          ci:
+          - -0.05539925937871146
+          - 0.11014261898277078
+        L6-att3:
+          point: -0.02116923097048908
+          ci:
+          - -0.11001889256046644
+          - 0.05522816299881812
+        ref:twin:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 1.0641403298566843
+          ci:
+          - 1.0439276753170708
+          - 1.0862734396128872
+      rho_bar_e:
+        B0-mlp:
+          point: 0.6711418281558569
+          ci:
+          - 0.6548151400362869
+          - 0.6872866412606435
+        L3-att:
+          point: 0.7529375710219116
+          ci:
+          - 0.7383556665722792
+          - 0.7685277283324474
+        L6-3:
+          point: 0.7521287862889895
+          ci:
+          - 0.7370326524676527
+          - 0.7672821027554709
+        ref:no_edge:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.7723165284481165
+          ci:
+          - 0.7608990438367087
+          - 0.7831152055866807
+      contrasts:
+        composition_2:
+          point: 0.05134422475592931
+          ci:
+          - 0.01238590368476947
+          - 0.08995682056057898
+        composition_3:
+          point: 0.05520249268703445
+          ci:
+          - 0.014248639812902742
+          - 0.0973976201063725
+        depth_3_over_2:
+          point: 0.003858267931105136
+          ci:
+          - -0.02967726462451585
+          - 0.03665770809880268
+        state_kernel:
+          point: 0.037577334079570146
+          ci:
+          - 0.010128372899175656
+          - 0.06610564153849133
+        l6_vs_attention:
+          point: -0.053329298822884716
+          ci:
+          - -0.10649774436348357
+          - -0.002263240773984459
+        one_step_vs_attention:
+          point: -0.10853179150991916
+          ci:
+          - -0.1627679666583467
+          - -0.057311817760087806
+        att_composition_3:
+          point: -0.05402291527661697
+          ci:
+          - -0.09657435815321466
+          - -0.01907314355287766
+        att_l6_vs_attention:
+          point: 0.05490031443782353
+          ci:
+          - 0.004185900784597297
+          - 0.10583947364420923
+        objective:
+          point: 0.33127294665931994
+          ci:
+          - 0.2682322914095079
+          - 0.4045534932927961
+        l6_over_node_local:
+          point: 0.5208192422814663
+          ci:
+          - 0.4407941680578051
+          - 0.6041387364723784
+        edge_l6_vs_attention:
+          point: -0.0008087847329221187
+          ci:
+          - -0.009711565758831383
+          - 0.007782185443596667
+      shares:
+        l6_share:
+          point: 0.9071158506815884
+          ci:
+          - 0.8193596370974575
+          - 0.9958502528191701
+          readable: true
+        gap_closed:
+          point: -0.04677147600610845
+          ci:
+          - -0.09189333449673105
+          - -0.002121268570737607
+          readable: true
+      bands_r:
+        B0-mlp: L6_LOW
+        L3-att: L6_LOW
+        L6-1: L6_LOW
+        L6-2: L6_LOW
+        L6-3: L6_LOW
+        L6-fix3: L6_LOW
+        L6-list: L6_LOW
+        L6-att1: L6_LOW
+        L6-att3: L6_LOW
+        ref:twin: L6_LOW
+        ref:other_seed: L6_HIGH
+      bands_e:
+        B0-mlp: L6_MID
+        L3-att: L6_HIGH
+        L6-3: L6_HIGH
+        ref:no_edge: L6_LOW
+        ref:other_seed: L6_HIGH
+      queries: 2400
+      uq_rows: 165893
+      entries: 1967659
+      repeat:
+        unit: r_L6-3
+        bit_identical: true
+        max_abs_diff: 0.0
+        repeat_json_sha256: 5aaedba8707bdca9b8129cd2e033b87027c9a69f4b1c25bddd565d34dc46b613
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      parameters:
+        L6-1: 253569
+        L6-2: 253569
+        L6-3: 253569
+        L6-fix3: 253569
+        L6-list: 253569
+        L6-att1: 208257
+        L6-att3: 208257
+      level3_mirror_sha256_host: 049d5cd2c3719895924b5add914c0749e79c0c5acba7ff175bb15955e98d2b91
+      probe_meta_sha256: 211218c7f0274ef90a8841982f116a29f81ac08a5029ace14632a64365fe50f1
+      read_sha256: d70553d17f1952e828d7f27bb2d91a2997bc94074cfd1385e6d44d60ee78bba3
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    2wiki:
+      reading: L6_HIGH
+      primary_rho_bar:
+        point: 0.8205322666699668
+        ci:
+        - 0.780370483917455
+        - 0.8620320490185995
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      flags: []
+      interpretation:
+      - l6_high
+      - composition_flat
+      - l6_not_below_attention
+      - objective_adds
+      - edge_effect_l6
+      rho_bar_r:
+        B0-mlp:
+          point: 0.05515008953705951
+          ci:
+          - -0.0023080171961092923
+          - 0.10876124997411514
+        L3-att:
+          point: 0.798781103475703
+          ci:
+          - 0.7592336039603387
+          - 0.8384264892536124
+        L6-1:
+          point: 0.8040554508198681
+          ci:
+          - 0.7644422046545908
+          - 0.8454161431812023
+        L6-2:
+          point: 0.8163301983877986
+          ci:
+          - 0.7762129096488456
+          - 0.8578581111512733
+        L6-3:
+          point: 0.8205322666699668
+          ci:
+          - 0.780370483917455
+          - 0.8620320490185995
+        L6-fix3:
+          point: 0.807118793894886
+          ci:
+          - 0.7677524787988503
+          - 0.8459597281140325
+        L6-list:
+          point: 0.8908898045878637
+          ci:
+          - 0.851123808368456
+          - 0.9326130835377675
+        L6-att1:
+          point: 0.831668289030747
+          ci:
+          - 0.789472417995988
+          - 0.8707915568158926
+        L6-att3:
+          point: 0.8297383273459146
+          ci:
+          - 0.788238038889801
+          - 0.8667894588617537
+        ref:twin:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.8671689526484379
+          ci:
+          - 0.8373145034304812
+          - 0.8928626771136463
+      rho_bar_e:
+        B0-mlp:
+          point: 0.518299591351174
+          ci:
+          - 0.5017344264309785
+          - 0.5344967226973752
+        L3-att:
+          point: 0.8164118266656971
+          ci:
+          - 0.8024182736784313
+          - 0.8292471579272047
+        L6-3:
+          point: 0.8302719412491479
+          ci:
+          - 0.8168176326852062
+          - 0.842625900680357
+        ref:no_edge:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.9162165148492982
+          ci:
+          - 0.9074916672819765
+          - 0.9247838816362408
+      contrasts:
+        composition_2:
+          point: 0.012274747567930566
+          ci:
+          - -0.011240252411396895
+          - 0.03383646724452307
+        composition_3:
+          point: 0.016476815850098747
+          ci:
+          - -0.008466706807530883
+          - 0.03871842725004534
+        depth_3_over_2:
+          point: 0.004202068282168181
+          ci:
+          - -0.013180900523480263
+          - 0.02040375861994047
+        state_kernel:
+          point: 0.01341347277508076
+          ci:
+          - -0.0017110687487796982
+          - 0.028312034225063183
+        l6_vs_attention:
+          point: 0.021751163194263845
+          ci:
+          - -0.005675574076168571
+          - 0.05114403373967695
+        one_step_vs_attention:
+          point: 0.005274347344165098
+          ci:
+          - -0.020811381406554023
+          - 0.03327047563531663
+        att_composition_3:
+          point: -0.001929961684832393
+          ci:
+          - -0.025046148826528197
+          - 0.021652010105983527
+        att_l6_vs_attention:
+          point: 0.030957223870211603
+          ci:
+          - 0.004574408696704166
+          - 0.05919569260460338
+        objective:
+          point: 0.0703575379178969
+          ci:
+          - 0.04237663092654645
+          - 0.10032005550886067
+        l6_over_node_local:
+          point: 0.7653821771329073
+          ci:
+          - 0.7089961857638091
+          - 0.8287200256084468
+        edge_l6_vs_attention:
+          point: 0.013860114583450822
+          ci:
+          - 0.005567733881191
+          - 0.02198096859938252
+      shares:
+        l6_share:
+          point: 1.0292499408800324
+          ci:
+          - 0.991972435840823
+          - 1.0696192415992347
+          readable: true
+        gap_closed:
+          point: 0.3180559625339947
+          ci:
+          - -0.13709646325353392
+          - 0.9091468859931733
+          readable: true
+      bands_r:
+        B0-mlp: L6_LOW
+        L3-att: L6_HIGH
+        L6-1: L6_HIGH
+        L6-2: L6_HIGH
+        L6-3: L6_HIGH
+        L6-fix3: L6_HIGH
+        L6-list: L6_HIGH
+        L6-att1: L6_HIGH
+        L6-att3: L6_HIGH
+        ref:twin: L6_LOW
+        ref:other_seed: L6_HIGH
+      bands_e:
+        B0-mlp: L6_MID
+        L3-att: L6_HIGH
+        L6-3: L6_HIGH
+        ref:no_edge: L6_LOW
+        ref:other_seed: L6_HIGH
+      queries: 6290
+      uq_rows: 245055
+      entries: 1580750
+      repeat: null
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      parameters:
+        L6-1: 253569
+        L6-2: 253569
+        L6-3: 253569
+        L6-fix3: 253569
+        L6-list: 253569
+        L6-att1: 208257
+        L6-att3: 208257
+      level3_mirror_sha256_host: 4f2db84a5a1b0d806dd3579a24201e73202555d017d7945bc544583cc2cafb66
+      probe_meta_sha256: 1e61215dc559ebeeae3bb0e0ac615f01dd6e3d0f03a8bd9434567c007b089ce7
+      read_sha256: a93b7a1ed6d1343e388ba8679206faf30c2904044cc712c9ee753944b9c6a270
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    squad:
+      reading: NOT_READ
+      primary_rho_bar:
+        point: null
+        ci: null
+      readable_metrics: []
+      flags:
+      - SEED_BOUND
+      interpretation: []
+      rho_bar_r:
+        B0-mlp:
+          point: null
+          ci: null
+        L3-att:
+          point: null
+          ci: null
+        L6-1:
+          point: null
+          ci: null
+        L6-2:
+          point: null
+          ci: null
+        L6-3:
+          point: null
+          ci: null
+        L6-fix3:
+          point: null
+          ci: null
+        L6-list:
+          point: null
+          ci: null
+        L6-att1:
+          point: null
+          ci: null
+        L6-att3:
+          point: null
+          ci: null
+        ref:twin:
+          point: null
+          ci: null
+        ref:other_seed:
+          point: null
+          ci: null
+      rho_bar_e:
+        B0-mlp:
+          point: null
+          ci: null
+        L3-att:
+          point: null
+          ci: null
+        L6-3:
+          point: null
+          ci: null
+        ref:no_edge:
+          point: null
+          ci: null
+        ref:other_seed:
+          point: null
+          ci: null
+      contrasts:
+        composition_2:
+          point: null
+          ci: null
+        composition_3:
+          point: null
+          ci: null
+        depth_3_over_2:
+          point: null
+          ci: null
+        state_kernel:
+          point: null
+          ci: null
+        l6_vs_attention:
+          point: null
+          ci: null
+        one_step_vs_attention:
+          point: null
+          ci: null
+        att_composition_3:
+          point: null
+          ci: null
+        att_l6_vs_attention:
+          point: null
+          ci: null
+        objective:
+          point: null
+          ci: null
+        l6_over_node_local:
+          point: null
+          ci: null
+        edge_l6_vs_attention:
+          point: null
+          ci: null
+      shares:
+        l6_share:
+          point: null
+          ci: null
+          readable: false
+        gap_closed:
+          point: null
+          ci: null
+          readable: false
+      bands_r:
+        B0-mlp: NOT_READ
+        L3-att: NOT_READ
+        L6-1: NOT_READ
+        L6-2: NOT_READ
+        L6-3: NOT_READ
+        L6-fix3: NOT_READ
+        L6-list: NOT_READ
+        L6-att1: NOT_READ
+        L6-att3: NOT_READ
+        ref:twin: NOT_READ
+        ref:other_seed: NOT_READ
+      bands_e:
+        B0-mlp: NOT_READ
+        L3-att: NOT_READ
+        L6-3: NOT_READ
+        ref:no_edge: NOT_READ
+        ref:other_seed: NOT_READ
+      queries: 5841
+      uq_rows: 176880
+      entries: 1905184
+      repeat: null
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      parameters:
+        L6-1: 253569
+        L6-2: 253569
+        L6-3: 253569
+        L6-fix3: 253569
+        L6-list: 253569
+        L6-att1: 208257
+        L6-att3: 208257
+      level3_mirror_sha256_host: de7c1917942862d24cf419ca09b0dcff0051b2ec3ceb69ab3a8f02dc557792ec
+      probe_meta_sha256: 2cf71e61ca1bc8a060bd1429bf0deda81deab88d86c68ace08e3426f905c8d86
+      read_sha256: 62716b4e6097eafc186ddbada71810f2e082b39ba92c9823c8e4377797650165
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+  host_jobs:
+    metaqa: 260930-105223-mpr-l6-metaqa-5d36 (probe, repeat, read; 1h14m runtime; 2 cpu, 8 GB, 0.16 gpu)
+    2wiki: 260930-105233-mpr-l6-2wiki-2720 (probe, read; 1h34m runtime; 2 cpu, 8 GB, 0.16 gpu)
+    squad: 260930-105239-mpr-l6-squad-e35e (probe, read; 1h23m runtime; 2 cpu, 8 GB, 0.16 gpu)
+  submitted: all three at once at 2026-09-30T05:22Z under priority 10; none waited in the queue
+  workspace_note: 'a push at 2026-09-30T06:43Z, while the squad and 2wiki jobs ran, added the host-mirror commit (1251387) and the six-base work-2 commit (e5be296)
+    to the workspace: six tracked files and one manifest, none imported or read by level 6; each read.json''s module_sha256 records the modules that ran'
