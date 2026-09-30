@@ -1,6 +1,6 @@
 phase: MP_APPROX_L4
 opened: 2026-09-30
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-ORACLE
 extends: >-
@@ -324,3 +324,541 @@ execution:
     each dataset's sketch; one host job per dataset (probe, metaqa's repeat, read), each submitted as its data lands;
     fetch; record, doc and run record on the laptop (commit)
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l4_2026_09_30:
+  utc: '2026-09-30T00:08:31Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  held_half_read: false
+  checkpoints_updated: 0
+  code_commit: a81451a
+  placement: compile, mirror, doc and file on the laptop CPU; probe, repeat and read host-native on host_gpu_det
+  identical_code: 16 module paths over 7 host processes, one sha256 each, equal to the committed files; every compile ran scripts/mp_approx_l4.py at the committed
+    LF sha256
+  record_sha256: 25f916c781119b5dddd2585e12f90f1c4db586f2d31eb515e5e378bd2540d622
+  document: docs/MP_APPROX_L4.md
+  document_sha256: 13dff6c900c6b13e46e9568e9d6c751f24659cd772706ec5f7f825b947afbab0
+  datasets:
+    metaqa:
+      reading: L4_LOW
+      primary_rho_bar:
+        point: -0.18245773213798153
+        ci:
+        - -0.27775034103009627
+        - -0.09721522259582421
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      - hit@1
+      flags:
+      - FIT_NOT_RANK (r, B0-mlp)
+      - FIT_NOT_RANK (r, L4-mlp)
+      - FIT_NOT_RANK (r, L3-att)
+      - FIT_NOT_RANK (r, L4-att)
+      interpretation:
+      - l4_paths_flat
+      - paths_node_local_adds
+      - objective_adds
+      - edge_effect_paths
+      rho_bar_r:
+        B0-mlp:
+          point: -0.6502180865126636
+          ci:
+          - -0.7693134409395539
+          - -0.548617912865365
+        L4-mlp:
+          point: -0.5853757131506468
+          ci:
+          - -0.7110753270210873
+          - -0.4772843135164618
+        L3-att:
+          point: -0.07606954540831261
+          ci:
+          - -0.16111894784623154
+          - 0.002286047738100012
+        L4-att:
+          point: -0.18245773213798153
+          ci:
+          - -0.27775034103009627
+          - -0.09721522259582421
+        L4-list:
+          point: 0.22195365382737656
+          ci:
+          - 0.1525438086388027
+          - 0.28881164486683136
+        ref:twin:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 1.0641403298566843
+          ci:
+          - 1.0439276753170708
+          - 1.0862734396128872
+      rho_bar_e:
+        L3-att:
+          point: 0.7529375710219116
+          ci:
+          - 0.7383556665722792
+          - 0.7685277283324474
+        L4-att:
+          point: 0.7641016656662076
+          ci:
+          - 0.7487361916694145
+          - 0.7787528101716567
+        ref:no_edge:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.7723165284481165
+          ci:
+          - 0.7608990438367087
+          - 0.7831152055866807
+      contrasts:
+        paths_over_attention:
+          point: -0.10638818672966892
+          ci:
+          - -0.1544574775441009
+          - -0.05817828521858804
+        paths_over_node_local:
+          point: 0.0648423733620167
+          ci:
+          - 0.0039755405107745785
+          - 0.1302423741823059
+        paths_vs_attention:
+          point: -0.5093061677423343
+          ci:
+          - -0.5962931599807779
+          - -0.4353629452812951
+        objective_paths:
+          point: 0.4044113859653581
+          ci:
+          - 0.34033425047387134
+          - 0.47483168170287227
+        edge_paths_over_attention:
+          point: 0.011164094644296019
+          ci:
+          - 0.0031782884755188205
+          - 0.01953634461395385
+      bands_r:
+        B0-mlp: L4_LOW
+        L4-mlp: L4_LOW
+        L3-att: L4_LOW
+        L4-att: L4_LOW
+        L4-list: L4_LOW
+        ref:twin: L4_LOW
+        ref:other_seed: L4_HIGH
+      bands_e:
+        L3-att: L4_HIGH
+        L4-att: L4_HIGH
+        ref:no_edge: L4_LOW
+        ref:other_seed: L4_HIGH
+      queries: 2400
+      uq_rows: 165893
+      paths:
+        uq_rows: 165893
+        columns: 267
+        queries: 2400
+        edges: 25831324
+        edges_per_query_mean: 10763.051666666666
+        seeds_per_query_mean: 8.6725
+        queries_with_duplicate_seeds: 0
+        max_seed_walks: 4373.0
+        max_any_walks: 1132.0
+        rows_unreached: 4313
+        entries_compared: 1967659
+        seconds_this_process: 105.5
+        threads: 6
+        paths_sha256: 426079a4e70ae4050e93e3a5075028fac21a118385e3deadbc2da792c635850e
+      repeat:
+        unit: r_L4-att
+        bit_identical: true
+        max_abs_diff: 0.0
+        repeat_json_sha256: 56896dc29bcb2d702527f0693367faca64d19369544e8c7d6220fcf92ca4684e
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      mirror_sha256:
+        laptop: d35c3ba9fa4c204db0e7186dccbd4c5229979c093d3fcdbd3851191c94a7484b
+        host: d35c3ba9fa4c204db0e7186dccbd4c5229979c093d3fcdbd3851191c94a7484b
+      level3_mirror_sha256_host: 049d5cd2c3719895924b5add914c0749e79c0c5acba7ff175bb15955e98d2b91
+      compile_meta_sha256: 11dbd2a58c2b328a3b545fcf3a4557e6dd7876c8deab0af0a884f583849e1278
+      probe_meta_sha256: 555b102b8aba962592c6deeaa594ffbeb542d2c14e2a7097cc23aba7c5659040
+      read_sha256: 7c13a1c6c6f9d8ee80d8ad9bf5dbc047072a0250201be2dafc5b484fd6cc9592
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    2wiki:
+      reading: L4_HIGH
+      primary_rho_bar:
+        point: 0.8193767365647301
+        ci:
+        - 0.7742285651282214
+        - 0.8586902444653094
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      flags: []
+      interpretation:
+      - l4_high
+      - l4_paths_flat
+      - paths_node_local_adds
+      - objective_adds
+      - edge_effect_paths
+      rho_bar_r:
+        B0-mlp:
+          point: 0.05515008953705951
+          ci:
+          - -0.0023080171961092923
+          - 0.10876124997411514
+        L4-mlp:
+          point: 0.25382807140801983
+          ci:
+          - 0.2025319780439987
+          - 0.3027423165164096
+        L3-att:
+          point: 0.798781103475703
+          ci:
+          - 0.7592336039603387
+          - 0.8384264892536124
+        L4-att:
+          point: 0.8193767365647301
+          ci:
+          - 0.7742285651282214
+          - 0.8586902444653094
+        L4-list:
+          point: 0.8911441280873551
+          ci:
+          - 0.8508406400631902
+          - 0.9279670585945353
+        ref:twin:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.8671689526484379
+          ci:
+          - 0.8373145034304812
+          - 0.8928626771136463
+      rho_bar_e:
+        L3-att:
+          point: 0.8164118266656971
+          ci:
+          - 0.8024182736784313
+          - 0.8292471579272047
+        L4-att:
+          point: 0.8233583171197336
+          ci:
+          - 0.8100897221752635
+          - 0.8361078954449596
+        ref:no_edge:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.9162165148492982
+          ci:
+          - 0.9074916672819765
+          - 0.9247838816362408
+      contrasts:
+        paths_over_attention:
+          point: 0.02059563308902712
+          ci:
+          - -0.004182699981067711
+          - 0.04670403474857095
+        paths_over_node_local:
+          point: 0.1986779818709603
+          ci:
+          - 0.16260463745886644
+          - 0.23799470571045125
+        paths_vs_attention:
+          point: -0.5449530320676832
+          ci:
+          - -0.5971580549512655
+          - -0.4932998751571088
+        objective_paths:
+          point: 0.07176739152262501
+          ci:
+          - 0.0424612193808615
+          - 0.0989288831801678
+        edge_paths_over_attention:
+          point: 0.0069464904540365024
+          ci:
+          - -0.00014145600751822027
+          - 0.0141061943937611
+      bands_r:
+        B0-mlp: L4_LOW
+        L4-mlp: L4_MID
+        L3-att: L4_HIGH
+        L4-att: L4_HIGH
+        L4-list: L4_HIGH
+        ref:twin: L4_LOW
+        ref:other_seed: L4_HIGH
+      bands_e:
+        L3-att: L4_HIGH
+        L4-att: L4_HIGH
+        ref:no_edge: L4_LOW
+        ref:other_seed: L4_HIGH
+      queries: 6290
+      uq_rows: 245055
+      paths:
+        uq_rows: 245055
+        columns: 267
+        queries: 6290
+        edges: 3091190
+        edges_per_query_mean: 491.4451510333863
+        seeds_per_query_mean: 8.18235294117647
+        queries_with_duplicate_seeds: 0
+        max_seed_walks: 24964.0
+        max_any_walks: 3993.0
+        rows_unreached: 40852
+        entries_compared: 1580750
+        seconds_this_process: 128.7
+        threads: 6
+        paths_sha256: 149310c5912448b9bcfa488d59ff9cc8d4200c89aad7a0f97d6dc6d97adb0907
+      repeat: null
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      mirror_sha256:
+        laptop: 0dbfa99f3c5986bfa266a004c8b3a4ea7388528d3cfdd2593d8a823365866ccb
+        host: 0dbfa99f3c5986bfa266a004c8b3a4ea7388528d3cfdd2593d8a823365866ccb
+      level3_mirror_sha256_host: 4f2db84a5a1b0d806dd3579a24201e73202555d017d7945bc544583cc2cafb66
+      compile_meta_sha256: 12a15e3f96903db060282785b448740790616cc127a8fb72237c4acfad3d2a3c
+      probe_meta_sha256: 42816d339ac7c97feda3d63f0301eb89399d8547c28af964f1c3c4c00d1e6409
+      read_sha256: 21c100ece4f5ac41b5180a54fcc0fddb3e200030b7cefac70b0d64cebb7f6d9f
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    squad:
+      reading: NOT_READ
+      primary_rho_bar:
+        point: null
+        ci: null
+      readable_metrics: []
+      flags:
+      - SEED_BOUND
+      interpretation: []
+      rho_bar_r:
+        B0-mlp:
+          point: null
+          ci: null
+        L4-mlp:
+          point: null
+          ci: null
+        L3-att:
+          point: null
+          ci: null
+        L4-att:
+          point: null
+          ci: null
+        L4-list:
+          point: null
+          ci: null
+        ref:twin:
+          point: null
+          ci: null
+        ref:other_seed:
+          point: null
+          ci: null
+      rho_bar_e:
+        L3-att:
+          point: null
+          ci: null
+        L4-att:
+          point: null
+          ci: null
+        ref:no_edge:
+          point: null
+          ci: null
+        ref:other_seed:
+          point: null
+          ci: null
+      contrasts:
+        paths_over_attention:
+          point: null
+          ci: null
+        paths_over_node_local:
+          point: null
+          ci: null
+        paths_vs_attention:
+          point: null
+          ci: null
+        objective_paths:
+          point: null
+          ci: null
+        edge_paths_over_attention:
+          point: null
+          ci: null
+      bands_r:
+        B0-mlp: NOT_READ
+        L4-mlp: NOT_READ
+        L3-att: NOT_READ
+        L4-att: NOT_READ
+        L4-list: NOT_READ
+        ref:twin: NOT_READ
+        ref:other_seed: NOT_READ
+      bands_e:
+        L3-att: NOT_READ
+        L4-att: NOT_READ
+        ref:no_edge: NOT_READ
+        ref:other_seed: NOT_READ
+      queries: 5841
+      uq_rows: 176880
+      paths:
+        uq_rows: 176880
+        columns: 267
+        queries: 5841
+        edges: 2603622
+        edges_per_query_mean: 445.74935798664615
+        seeds_per_query_mean: 7.569251840438281
+        queries_with_duplicate_seeds: 0
+        max_seed_walks: 49492.0
+        max_any_walks: 4366.0
+        rows_unreached: 33109
+        entries_compared: 1905184
+        seconds_this_process: 38.4
+        threads: 6
+        paths_sha256: 1db752b2bdf16938fa308f7554c24ae44f0711b8cdda92ecefed7cf5cbfaf2df
+      repeat: null
+      refit:
+        r/B0-mlp:
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          bit_identical: true
+          max_abs_diff: 0.0
+      mirror_sha256:
+        laptop: e4c32af527572e67c23ff83c0ff962026b69f1e1695828d569df496e6f1c3fe6
+        host: e4c32af527572e67c23ff83c0ff962026b69f1e1695828d569df496e6f1c3fe6
+      level3_mirror_sha256_host: de7c1917942862d24cf419ca09b0dcff0051b2ec3ceb69ab3a8f02dc557792ec
+      compile_meta_sha256: 1c15ef9b9573a071ba344dcfef58bebc5a956358ba9f4d2de1fe9f8383095cdd
+      probe_meta_sha256: 3b0cec69d93110713ae10072d941a3eba93186dd4e30c2d7d64d2e70d713bd73
+      read_sha256: 32d06397584cb3c988b9c3edd1a3938ed8196f9f4e861c21a7c93d8592d3e7af
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+  host_jobs:
+    metaqa:
+      rx_job: 260930-044251-mpr-l4-metaqa-de13
+      queued_utc: '2026-09-29T23:12:51Z'
+      rx_runtime: 43m42s
+      rx_cpu_s: 2611.9
+      rx_peak_mem_gb: 4.3
+      probe_fit_s_sum: 2190.6
+      rc: 0
+      repeat:
+        bit_identical: true
+        max_abs_diff: 0.0
+    2wiki:
+      rx_job: 260930-044534-mpr-l4-2wiki-6d63
+      queued_utc: '2026-09-29T23:15:34Z'
+      rx_runtime: 50m13s
+      rx_cpu_s: 3008.3
+      rx_peak_mem_gb: 4.53
+      probe_fit_s_sum: 2890.5
+      rc: 0
+    squad:
+      rx_job: 260930-044641-mpr-l4-squad-2b41
+      queued_utc: '2026-09-29T23:16:41Z'
+      rx_runtime: 40m52s
+      rx_cpu_s: 2447.5
+      rx_peak_mem_gb: 3.74
+      probe_fit_s_sum: 2337.8
+      rc: 0
+    resources_each: rx reservation 2 cpu, 8 GB, 0.16 GPU per job (six jobs of levels 4 and 5 on one RTX 4500 Ada), mpr priority 10; rx caps job memory only, so the
+      declared 8 torch/BLAS threads ran as declared
+  transfer:
+    route: rx push --inputs over the Tailscale DERP relay, declared order metaqa, 2wiki, squad; no credential sent
+    metaqa:
+      sent_MB: 84.6
+      wire_MB: 8.4
+      seconds: 12
+    2wiki:
+      sent_MB: 124.8
+      wire_MB: 12.7
+      seconds: 19
+    squad:
+      sent_MB: 90.1
+      wire_MB: 8.5
+      seconds: 13
+  laptop_compile:
+    threads: 6
+    order: 'sequential metaqa, 2wiki, squad (declared: up to three at once)'
+    metaqa:
+      seconds: 105.5
+      peak_wset_GB: 3.12
+      uq_rows: 165893
+      edges: 25831324
+      entries_equal_to_level3: 1967659
+      mismatches: 0
+      max_seed_walks: 4373.0
+      rows_unreached: 4313
+    2wiki:
+      seconds: 128.7
+      peak_wset_GB: 3.06
+      uq_rows: 245055
+      edges: 3091190
+      entries_equal_to_level3: 1580750
+      mismatches: 0
+      max_seed_walks: 24964.0
+      rows_unreached: 40852
+    squad:
+      seconds: 38.4
+      peak_wset_GB: 1.39
+      uq_rows: 176880
+      edges: 2603622
+      entries_equal_to_level3: 1905184
+      mismatches: 0
+      max_seed_walks: 49492.0
+      rows_unreached: 33109
+  systems_deviations:
+  - a 25-query metaqa smoke compile (--stage compile --limit 25, --out-dir in the session scratchpad) ran on the laptop at 2026-09-29T23:09:06Z, 32 s before a81451a
+    was committed, from script bytes identical to that commit's (LF sha256 a12c8a19feeb5538, git HEAD then 03ce076); 18 s, 0 mismatches against level 3; output discarded,
+    no probe fitted on it, nothing of it in the record
