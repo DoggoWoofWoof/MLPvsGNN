@@ -1,0 +1,400 @@
+phase: DEPLOY_CK_2WIKI
+opened: 2026-09-30
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+track: MP-APPROX (the deployable step; not MP-ORACLE)
+extends: >-
+  configs/mp_approx_l7.yaml (RUN at af27723). On 2wiki the oracle probes read: learned one-hop attention L3-att 0.799,
+  level 5's factorised kernel L5-kern 0.746 (its neighbour side reads the query), and the same kernel with a query-free
+  neighbour side L7-qi 0.133 [0.079, 0.183] (qi_share 0.113 of the kernel's gain over node-local; deploy_cost -0.613
+  [-0.670, -0.559]). L7's cross_dataset is compile_once_partial (qi_below_kernel and qi_above_node_local on 2wiki),
+  weight_needed no, kernel_reference_held yes. Its filed consequence for this file, quoted: "compile_once_partial: it
+  declares both forms, the per-query form as the reference, and measures the retrieval cost of the compiled form
+  directly."
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+question: >-
+  Trained from the gold labels alone on 2wiki's own carves, does u_mlp_v2_mix plus one hop of the compiled factorised
+  kernel keep the trained GNN's gain over its matched twin? Two forms are fitted: ck_qi (the compiled form: psi and the
+  values read only query-free inputs, so they can be computed once per node and edge type) and ck_full (the per-query
+  form: level 5's neighbour side, which reads the query; the reference). Beside them: the twin (u_mlp_v2_mix), the
+  kernel's self-entry control (ck_self: the same added capacity with every edge removed) and the GNN (u_gnn_v2_ef).
+  Every arm is fitted three times and scored on 2wiki's M3B eval population, all on host_gpu_det.
+role: >-
+  The advisor's next step after L6 ("then a deployable 2Wiki compiled-kernel MLP", quoted in
+  configs/mp_approx_l6.yaml#authorization.advisor_text.priority_after_this), in the form L7 fixed. It
+  is a competitor trained without GNN outputs: no GNN output, probe, kernel or number of the MP-Approx ladder enters any
+  arm as an input, a target, a teacher or an initialisation. The kernel is learned propagation by
+  configs/universal_v2.yaml#learned_vs_fixed_propagation ("any operator applied over the pool edges inside the model
+  whose messages or message weights depend on trainable parameters"), so every kernel arm is an MP arm, never QLS-U and
+  never the twin. What the file measures is how much of the GNN's gain one compiled hop keeps and what the compiled form
+  costs against the per-query form; its deployable property is cost, not the absence of message passing.
+
+authorization:
+  given: >-
+    2026-09-30, the advisor's analysis, pasted by the user with "parallely get ready to add the other datasets also into
+    the mix". Its priority order is quoted in configs/mp_approx_l6.yaml#authorization.advisor_text.priority_after_this:
+    L6 on MetaQA (RUN at 59b031d), its decomposition only if it works (not triggered: L6 read LOW on metaqa), then "a
+    deployable 2Wiki compiled-kernel MLP", then the fast compiler and the p50/p95/p99 retiming. L7 (af27723) fixed the
+    form.
+  go_ahead: >-
+    standing: "keep continuing autonomusly without asking for perms and try to find improvements and pause only at
+    something substancial". This file is committed alone (with the arm's module, src/mp_retrieval/compiled_kernel.py,
+    and its tests, which define the arms), before the script that runs it, and is then run as written.
+  placement_messages:
+    - '2026-09-29, the user: "use the damn host not on laptop"'
+    - '2026-09-30, the user: "keep relying less on the laptop and parallely move the data to host so that we can run faster and just sync the results and models and data"'
+    - answered in placement below
+  terminal: STOP_FOR_REVIEW after the run record. The fast-compiler wiring and the end-to-end timing (step 4), the fixed neighbourhood (b) and every other dataset each need their own file.
+
+corrections_to_the_proposal:   # checked against the code and L7's record before this file was written
+  it_is_an_mp_arm: >-
+    L7's role text placed the deployable model "under the QLS-U contract". By universal-v2's own definition of learned
+    propagation the kernel is not QLS-U: its message weights kappa = phi^T psi and its values W_val s_ue are trainable
+    and applied over the pool edges. The file therefore names the kernel arms MP arms, fits them under the GNN's
+    parameter budget (450,000; configs/universal_v2.yaml shared.parameter_accounting) and never under the twin's.
+  what_compile_once_means_here: >-
+    With ck_qi's query-free neighbour side, psi_h(u, e) and val(u, e) depend only on the node's served embedding (X_u R),
+    the entry's family, its relation mask and its direction, so they can be computed once per edge. At query time
+    only phi (which reads the query) and the sums over the pool's entries remain. ck_full computes psi and the values
+    from the query-conditioned halo row per query and edge, as a one-hop GNN layer does. The moments C_v = sum psi val^T
+    and c_v = sum psi are still summed over the pool's entries (in-pool), so they are per query.
+  the_fixed_neighbourhood_is_not_this_file: >-
+    Moments compiled once per node would sum over a fixed neighbourhood that includes nodes outside the pool (L7's
+    two_conditions_for_compile_once, (b)). Such a kernel reads graph information the GNN never sees: its context node set
+    and induced edge set differ from the GNN's, which docs/GRAPH_INFORMATION_FAIRNESS_CONTRACT.md section 2 (items 1 and
+    5) names a different condition ("A condition is named by its context"). It needs its own file with a GNN matched to
+    that context. This file is the in-pool condition: every arm reads the same pool and the same induced edges.
+  the_entries_and_inputs_are_the_gnns: >-
+    the kernel's entries are the message edges the GNN reads (universal_v2_models.pack_queries_v2: the first 64 in-pool
+    neighbours per family, in store order), plus one self entry per node, as level 3's entries were. Its neighbour side
+    reads only what the packed batch carries: under qi, the entry's family one-hot (structural, ner, knn, self), rel_mask,
+    dir_fwd and dir_bwd beside X_u R. Level 3's eps, which the L7 probes read, also carried 64 relation-text columns;
+    2wiki has no relation table, so no 2wiki edge carries a relation, and the deployable arm reads no relation text.
+  forward_compiled_is_an_exactness_check: >-
+    CKv2.forward_compiled computes the same scores through the moments (m_v = phi^T C_v / phi^T c_v). In-pool it is not
+    the cheaper path: forming C_v per query costs more than summing alpha val. It is scored beside the forward to show the
+    two agree (COMPILED_DIFFERS), never timed, and never a separate arm.
+  new_draws_single_dataset: >-
+    every arm is fitted on 2wiki alone (the sampler draws a 2wiki fit query per draw; early stopping reads 2wiki's select
+    recall@5). No arm here has been fitted before in this condition. No number is compared with the trio pilot, the
+    six-dataset stage 2, M3B or any laptop fit.
+  the_relation_bank: >-
+    with 2wiki alone open the served relation bank has no rows (2wiki has no relation table, offset -1, as in the trio).
+    The bank is an input, never a parameter; every parameter count below is pinned.
+
+this_file_does_not_touch:
+  rows: >-
+    2wiki's fit carve (5,928 queries, sha fd6ae7c1...) and select carve (1,496, sha 72b50b99...) from the train split,
+    as compiled by universal-v2 (outputs/universal_v2/cache/2wiki, pinned below), and 2wiki's M3B eval population (dev,
+    12,576). No test split is read.
+  frozen: >-
+    M2-M3B, universal-v2 (its declaration, scripts, caches, checkpoints and records), UMLP D0-D0.3, v2.1, v2.2A, the
+    CPU-GPU equivalence file, the GPU task-level qualification, the fast feature compile (f4fc3c2), the host mirror
+    (configs/host_mirror_six.yaml) and MP-Approx levels 0-7 keep their bytes. universal_v2_run.py, the M3B scripts, the
+    device placement module and the equivalence script are imported unchanged.
+  six_base: configs/mp_approx_six_base.yaml and its laptop fits are not read, written or waited on
+  package: >-
+    the CRAG package is read-only, and it is not read by this file on the laptop except by the laptop test's smoke (read
+    in place). On the host the package is the host mirror, read in place; substrate.package_root is replaced in memory
+    only, as configs/host_mirror_six.yaml declares, and no config file is edited.
+  competitors: no output of this file becomes an input, target, teacher, gate or selection criterion of QLS-U, M3 or M4
+
+arms:   # every arm under universal-v2's frozen contract (UNIVERSAL_V2_CORE_CONTRACT, 197 compiled columns) and H = 128
+  twin:
+    arm: u_mlp_v2_mix
+    parameters: 330955
+    what: the matched twin, built by universal_v2_run.make_model unchanged; no learned propagation
+  ck_qi:
+    side: qi
+    form: KERN
+    parameters: 377803
+    what: >-
+      the compiled form (primary): the twin plus one hop of the factorised kernel (4 heads of rank 32, value width 16)
+      with a query-free neighbour side, psi = softplus(W_psi s_ue) and val = W_val s_ue, s_ue = [X_u R | entry family
+      one-hot | rel_mask, dir_fwd, dir_bwd], R level 1's JL matrix (default_rng(20260929), 1536 x 64 over sqrt 64);
+      phi = softplus(W_phi [h_v | q_state_v]); alpha = kappa over its sum across the node's entries and its self entry;
+      the message W_msg m_v (W_msg zero-initialised) is added to the input block's h before the body
+      (compiled_kernel.build_ck(side="qi", form="KERN"))
+  ck_full:
+    side: full
+    form: KERN
+    parameters: 390475
+    what: >-
+      the per-query form (the reference): the same kernel with the full neighbour side, whose halo reads the query
+      (build_ck(side="full", form="KERN"))
+  ck_self:
+    side: qi
+    form: SELF
+    parameters: 343883
+    what: >-
+      the self-entry control: ck_qi's entries reduced to the self entry, so m_v = W_val [X_v R | self one-hot] and alpha
+      = 1. It adds the kernel's node-local path with every edge removed, separating what the edges carry from what the
+      added capacity carries (build_ck(side="qi", form="SELF"))
+  gnn:
+    arm: u_gnn_v2_ef
+    parameters: 420932
+    what: universal-v2's GNN (three steps, edge features, evidence flow structurally 0 on 2wiki), built by make_model unchanged
+
+parameter_budgets: >-
+  every arm is within the GNN's 450,000; the twin is within its own 350,000. The kernel arms add 46,848 (ck_qi), 59,520
+  (ck_full) and 12,928 (ck_self) parameters to the twin; tests/test_compiled_kernel.py holds each count.
+
+fitting:
+  seeds: [0, 1, 2]
+  repeat:
+    arm: ck_qi
+    seed: 0
+    why: the primary's seed-0 fit again, in a fresh process, after the grid; whether its weights and every metric are bit-identical is filed (REPEAT_DIFFERS)
+  rule:   # universal_v2_run.training_rule_v2, unchanged; the fit stage refuses if the frozen rule returns anything else
+    max_epochs: 6
+    batches_per_epoch: 2000
+    batch_size: 16
+    patience: 2
+    lr: 0.001
+    weight_decay: 0.0001
+    clip: 1.0
+    dataset_draw: per_query
+    epoch_limit_s: 28800.0
+    reading_block: amendment_3_2026_09_13_training_reading_and_compute
+    override_block: null
+  harness: >-
+    device_placement.fit_model_placed(device="cuda"), imported unchanged: AdamW, the listwise loss of m3b_train, pack
+    workers 2 and prefetch depth 2 (universal_v2_run.PACK), early stopping on 2wiki's select recall@5 with the best
+    weights restored, resumable through its checkpoint. torch.manual_seed(seed) before the model is built. Each fit is
+    one process; its weights (CPU tensors) and its record are written atomically.
+  select_numbers: each fit's early-stopping trace is filed with it and is never read as a result
+
+population:
+  split: dev
+  queries: 12576
+  ids_sha256: 9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f
+  halves: {V2_GATE: 6290, V2_HELD_CONFIRMATION: 6286}
+  rule: >-
+    configs/universal_v2.yaml#amendment_1_2026_09_19.check_1_the_halves.split_rule_amended (2wiki hashes the sorted gold
+    set; problem-family crossing 0.0), through universal_v2_run.half_labels unchanged. The eval stage refuses unless the
+    population's digest, size and split equal these values and universal-v2's filed ones, and the halves equal both.
+  why_the_held_half_is_primary: >-
+    the MP-Approx ladder, whose L7 reading fixed this file's form, read V2_GATE rows only. The reading is therefore made
+    on V2_HELD_CONFIRMATION, which no decision of the ladder saw. It is not pristine: M3B scored the whole population and
+    universal-v2's stage 2 reported both halves descriptively. V2_GATE and the whole population are read beside it with
+    the same bands (GATE_HALF_DIFFERS).
+
+measurement:
+  scoring: >-
+    universal_v2_six.eval_dataset_six's pass with a device (the script's eval_placed): each query compiled on the host
+    CPU by compile_query_v2 under the frozen contract, packed on the CPU (pack_queries_v2), moved to the GPU, scored by
+    every fit (15 fits and the repeat) and, on the CPU, by universal-v2's seven fixed scorers. Each kernel fit is also
+    scored by forward_compiled (named <fit>@compiled), whose largest score difference from the forward and whose metric
+    differences are filed. rank_metrics of m3b_train gives the 14 METRIC_NAMES per query.
+  checks: >-
+    the ceiling from the arrays equals the headroom cell (m3a.cell) to 1e-9; the M3B MRR audit on every scorer
+    (universal_v2_run.audit_scorers); the fixed rrf reproduces the frozen M3B eval arrays per query
+    (m3b_fixed_rrf_agreement, outputs/m3b/eval/2wiki.npz, pinned). Any failure is a hard stop.
+  metrics: recall@5 (primary), full_coverage@5 (co-read), hit@1 (descriptive; each fit's own); per arm, the per-query mean over its three seeds
+  mechanism: delta_ratio and top1_changed per fit (universal_v2_run.mechanism, descriptive)
+  latency: >-
+    systems only, never a reading: a batch of one on the first 500 eval queries -- the unchanged per-query compile, the
+    pack, the move to the GPU, and per arm (seed 0) the forward on host_gpu_det (synchronised) and on the host CPU at
+    8 threads. It is the model-side cost only; the end-to-end timing with the fast compiler is step 4's file. No latency
+    of this file is set beside a laptop number.
+
+statistics:
+  resamples: >-
+    one matrix per half: default_rng(0), 1000 resamples of the half's queries with replacement, drawn in sequence as
+    universal_v2_run.paired_bootstrap draws them (a test holds the two equal). 95% percentile intervals.
+  contrasts:   # paired differences of per-query seed means
+    gnn_gain: gnn - twin
+    ck_gain: ck_qi - twin
+    edge_gain: ck_qi - ck_self
+    self_gain: ck_self - twin
+    ck_vs_gnn: ck_qi - gnn
+    compiled_cost: ck_qi - ck_full -- the retrieval cost of the compiled form, measured directly
+    ref_gain: ck_full - twin
+    ref_vs_gnn: ck_full - gnn
+  shares:   # a ratio of two contrasts over the same resamples; read only where the denominator's interval lies above 0
+    ck_share: (ck_qi - twin) / (gnn - twin)
+    edge_share: (ck_qi - ck_self) / (gnn - twin)
+    ref_share: (ck_full - twin) / (gnn - twin)
+
+readings:   # filed before any weight exists
+  primary_kernel: ck_qi
+  per_query_reference: ck_full
+  primary_half: V2_HELD_CONFIRMATION
+  primary_metric: recall@5
+  co_read_metric: full_coverage@5
+  bands:   # exactly one, on the primary half and metric; the same bands are computed descriptively for ck_full (ref_gain, ref_share)
+    GNN_GAIN_ABSENT: gnn_gain's interval reaches 0 (lower end <= 0) -- there is no GNN gain on this half to keep; nothing else is read as a reading
+    CK_KEEPS: ck_share >= 0.75 and its interval's lower end >= 0.50
+    CK_PARTIAL: not CK_KEEPS, and ck_gain's interval lies above 0
+    CK_NO_GAIN: ck_gain's interval reaches 0 (lower end <= 0)
+  flags:
+    CK_NOT_BELOW_GNN: ck_vs_gnn's interval reaches 0 or above (upper end >= 0)
+    EDGES_CARRY: edge_gain's interval lies above 0 -- the in-pool edges carry gain beyond the kernel's self-entry capacity
+    SELF_CARRIES: self_gain's interval lies above 0 -- the added node-local capacity alone lifts the twin
+    COMPILED_COST: compiled_cost's interval lies below 0 -- the compiled form retrieves measurably less than the per-query form
+    COMPILED_DIFFERS: forward_compiled changes a metric of any query for any kernel fit (the largest score difference is filed)
+    REPEAT_DIFFERS: the repeat's weights are not bit-identical to the seed-0 fit's, or a metric differs
+    GATE_HALF_DIFFERS: the band on V2_GATE is not the reading
+    FC5_DIFFERS: the band on full_coverage@5 (primary half) is not the reading
+  interpretation: >-
+    CK_KEEPS: one compiled hop keeps most of the GNN's gain in the in-pool condition, and the deployable model is the
+    compiled form. CK_PARTIAL: it keeps some; the shares and ck_vs_gnn say how much is left to the GNN. CK_NO_GAIN: the
+    compiled form keeps none, and the reference's band says whether the per-query form does. L7 filed the oracle
+    expectation (qi_share 0.113), so CK_PARTIAL or CK_NO_GAIN with COMPILED_COST is the anticipated outcome, and
+    CK_KEEPS would contradict the oracle ladder. None of these opens a stage.
+  wording: >-
+    every kernel arm is learned propagation, one hop, in-pool. No reading may be phrased as "message passing is
+    unnecessary", "we do not need message passing" or "the MLP wins": the kernel is a message-passing arm, and whatever
+    it keeps is kept by message passing. All numbers are dev-split numbers on one dataset, fitted and scored on
+    host_gpu_det; none is a canonical result, and none is set beside a laptop or an earlier-stage number.
+
+inputs:   # sha256 of the file bytes unless marked LF
+  freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+  mirror:
+    root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+    verify_record: outputs/host_mirror_six/verify_2wiki.json
+    required: >-
+      scripts/host_mirror_hf.py verify's record for 2wiki alone, in the host workspace: status VERIFIED, the served
+      freeze equal to the declared one, the loader imported from the mirror, and the mirror path the served folder under
+      root. The verify, fit and eval stages refuse without it; its sha256 is filed in verify.json.
+  frozen_code_lf:   # imported unchanged; every host stage re-hashes them
+    scripts/universal_v2_run.py: bc6badb19643a1f968e80ba22fb1497c50bfd344b06bffb306778dabecbf4dd4
+    scripts/universal_v2_split_audit.py: b23d98e120f7587f61328eac4b0a6fbed2478a95657db78ce29e5c85f190d2df
+    scripts/m3b_run.py: 6dc5f13167e3e9e7bff64df1ceef85af42831bdaef47d6c9487b5b71473108a4
+    scripts/m3b_compile.py: 825ee987d27731c54f6e6a5a4f6d6cf68a4d746409b88533f8262be35cd263f8
+    scripts/m3b_contract.py: 3ea60222f0a8db92d23676b49f428acb02068d3d6e865dfcb9a8b74a1f3e65a1
+    scripts/m3a_headroom.py: d3df956c55f852fbe1882d4a129c8a86ce70e429a49d92351b74c090dcf42a87
+    scripts/cpu_gpu_equivalence.py: 71ffa5d89619e02f50618287c3891d7fefb0893b693c97c6dc1e8c6ae7a9a390
+    src/mp_retrieval/device_placement.py: eebc902bfcac629a80256b4434806c47934a1b5b392fc09a3d44d98ece716256
+    src/mp_retrieval/universal_v2_models.py: e49e7a1b2c143e2b6a7f039857046e7ec0d9a3f15fe5d032e22ab50fac1fd479
+    src/mp_retrieval/universal_v2_features.py: 34a5eec553d8fc1e576829f96a8461dbc4e9490088e082e9ef0a127ab73e8427
+    src/mp_retrieval/m3b_features.py: 0310e553d2a49d6528cf47065ff0b11180544df5c11eca2d94eb13bcb0f47ed3
+    src/mp_retrieval/m3b_models.py: cbe32ea0772a22fd5cd1dfdb8f2b81e11a85a9e6b6e60bfc05036f5121aeb05c
+    src/mp_retrieval/m3b_train.py: b17722c11cd4ce3194d784bba41b7cb3dc514354b5cce70cd1980d9ab7376eb6
+    src/mp_retrieval/m3b_pools.py: 219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697
+    src/mp_retrieval/compiled_kernel.py: cf28e2a44a1a9bc0ca62a5ee0de8ad25983c94abe37a8e19864c2304974d2095
+  configs_read: >-
+    configs/universal_v2.yaml, configs/m3b_controlled_comparison.yaml and the headroom config, through
+    universal_v2_run.load_configs unchanged: the seven M3B files by their own LF pins (verify_pins), the frozen contract
+    by its column digest (model_inputs), the training rule by value (fitting.rule), the population and the halves by
+    value (population)
+  pushed_sha256:   # the transfer carries exactly these; the verify stage re-hashes each on the host
+    outputs/universal_v2/cache/2wiki/fit/edge_counts.npy: c5b6403c10894ffb2e976d72c15aa888fd6e6a711485d9c5abff4b57ae92e86b
+    outputs/universal_v2/cache/2wiki/fit/gold.npy: 59837a00240e51f4eae4207cf8717fb69cd0dc9aed52212f69f5823f68da1f8a
+    outputs/universal_v2/cache/2wiki/fit/gold_ptr.npy: 0becdbd05e7e52b5d0b945c3dbb459cdae58c8ab3181e62cb55bdc5b78aa9f36
+    outputs/universal_v2/cache/2wiki/fit/gold_total.npy: 476e9ca2393ae36d0d7c6fd8a660bfd5298652f41af51bf67d7ed78dd0b46f2d
+    outputs/universal_v2/cache/2wiki/fit/meta.json: fe288e6ddea941aa961b99e6d1218f0c6f3636f4b341478895804cf1b3d03ec3
+    outputs/universal_v2/cache/2wiki/fit/pool.npy: f57852ba9cca328f67d8885f6b0045f0cff6754d4982be7dae811d17c5c9d384
+    outputs/universal_v2/cache/2wiki/fit/pool_ptr.npy: 60a99f4519dfc923186d60b017fd9258d274243905cb8591030b93e298ecc3f7
+    outputs/universal_v2/cache/2wiki/fit/qemb.npy: 702567fcc44145b28638cf0d3680f897d6821b782565ba917e9ec742582ba8f1
+    outputs/universal_v2/cache/2wiki/fit/qrow.npy: d132e9962d98cffd5df464e6cd687a87af7588551d1f29be5de5be7a24f19f42
+    outputs/universal_v2/cache/2wiki/fit/query_ids.json: 3ac46672cec636c606aea17b73214805838738e974b0287d4db52e5f77dadd43
+    outputs/universal_v2/cache/2wiki/fit/scalars.npy: b011f561651bfa2c7b5232e19e7f014ae8804f5fada8b0aa4e20a55e3ac83073
+    outputs/universal_v2/cache/2wiki/fit/seeds.npy: 6db64fe8ec5b75605069c08d1621b0c03ee5b2d1f3a653505b9fa21780388a15
+    outputs/universal_v2/cache/2wiki/fit/seeds_ptr.npy: d51acef9032e546deb225315f079c54f6d96fafffcf5bae450cd01759f72d42c
+    outputs/universal_v2/cache/2wiki/fit/seedw.npy: 97ce17d3da59db5408995548a5b38338f50bac27f10c2298ecd78c23900ec301
+    outputs/universal_v2/cache/2wiki/select/edge_counts.npy: ca3cbc2db7d3324b83435010c9961a116f09291b1871bf0fe438e9ad37cf2194
+    outputs/universal_v2/cache/2wiki/select/gold.npy: 8cca3a57ae82caad5049d12c243e7d9bd9f4e38ac47095d046558acf501e4ed0
+    outputs/universal_v2/cache/2wiki/select/gold_ptr.npy: d364a744ec3325799003e45307df4668a87678cad90605ca253e194464c17e36
+    outputs/universal_v2/cache/2wiki/select/gold_total.npy: 168d8cec0c5e37f23c7d434261dfbfc1154dfb493f43f754938602d0b813a8d3
+    outputs/universal_v2/cache/2wiki/select/meta.json: 4e78a1be3bf036fbfd38c226a0a2acc80e7abb47305dc69dff4de2fdcd3817b7
+    outputs/universal_v2/cache/2wiki/select/pool.npy: 7a8c26e854a358f2d4463cad7b6144baeabe3e13e6befb36fa541a8c616ffaae
+    outputs/universal_v2/cache/2wiki/select/pool_ptr.npy: f3db0ebca72174ddd3a4f46a89935a73f79529ef3f83543570360d949b3dbd59
+    outputs/universal_v2/cache/2wiki/select/qemb.npy: cc4c195a662ee1b6b0309e56b52ff4ab6cb543d59590880a56522e5bfa4696bc
+    outputs/universal_v2/cache/2wiki/select/qrow.npy: a9ce4801036feabcccd474d352092791982e14b9d5e3852ab16268a4d7ef1101
+    outputs/universal_v2/cache/2wiki/select/query_ids.json: 0eae04fe6570c91df0aebf3a7053656019a8c8eff72ea44904ae75608d0481b7
+    outputs/universal_v2/cache/2wiki/select/scalars.npy: c12ef967af56dd89bd021274c4fa68cf4fe321e20fdcdbbcc30b5cfebf1e85b5
+    outputs/universal_v2/cache/2wiki/select/seeds.npy: ec19e59af2a494ee1878f12633f2c0ab88c24310e6393497b313df8de3fd53ff
+    outputs/universal_v2/cache/2wiki/select/seeds_ptr.npy: 5f81124cc95d4cd318c22df2991506328d3703c9e9b3c1338a059c3d1d023830
+    outputs/universal_v2/cache/2wiki/select/seedw.npy: a552410ed2fc210fb574527c5348c8c0952f12d21a3c6baf3dcf49d2bc4a1dab
+    outputs/m3b/eval/2wiki.npz: d2196c2f7769512071f1a9592504be6e1bdeff9729f1b2bcfae45f1ebdd76313
+  csr_content_sha256:   # the three 2wiki family stores as m3b_pools.FamilyStore.load reads them, by content (the npz bytes carry zip timestamps)
+    structural: a425160055de11676a6e1636c116b8bea393a154b733bef9c25c8e15e1d28e7e
+    ner: dbcbc2732608a776c423cb84abb3ce33cfb73be652ad11e00f0972c896e791c2
+    knn: dffbd81b830b005c561c0ae72ad69c365cb58808360183339710e584de88f12a
+
+transfer:
+  what: the 28 pinned 2wiki carve-cache files and the frozen M3B eval arrays (29 files, about 354 MB), pushed by rx into the host workspace (rx push --force, the files named one by one), read in place
+  not_transferred: >-
+    the CSR family stores (about 1.4 GB) are built on the host from the host mirror by m3b_pools.load_or_build_store,
+    unchanged, at the verify stage, then compared by content with the pins above. Nothing else reaches the host but the
+    git-tracked tree.
+  verification: >-
+    the verify stage (host): every pushed file's sha256 and every frozen module's LF sha256; the mirror's 2wiki verify
+    record; the contexts opened from the mirror (the served freeze checked by m3b_compile.open_package); each family
+    store equal by content; the fit and select carves opened. It writes outputs/deploy_ck_2wiki/verify.json, which the
+    fit and eval stages require.
+
+placement:   # configs/gpu_task_qualification.yaml#host_native_protocol, as at levels 3 to 7
+  host_stages: verify, fit, eval and read run on the host; fits and eval on host_gpu_det. The laptop runs the pins, transfer, doc and file stages only (no number is made there).
+  host_gpu_det_as_tested: >-
+    quoted from configs/gpu_task_qualification.yaml#placements.candidate.host_gpu_det, not changed: "DESKTOP-SLQMEQH, rx
+    env mpr-cu128@62fc45e9e1ba (torch 2.8.0+cu128, CUDA 12.8), NVIDIA RTX 4500 Ada Generation, driver 596.71; float32
+    only; torch.backends.cuda.matmul.allow_tf32 = False, torch.backends.cudnn.allow_tf32 = False, float32 matmul
+    precision "highest", cudnn.benchmark = False; torch.use_deterministic_algorithms(True, warn_only=True) with
+    CUBLAS_WORKSPACE_CONFIG=:4096:8 set before CUDA starts; every determinism warning recorded". 8 threads.
+  verdicts_relied_on: >-
+    configs/gpu_task_qualification.yaml#run_record_gpu_task_qualification_2026_09_29: host_gpu_det TASK_EQUIVALENT and
+    TRAINING_REPRODUCIBLE (T5 held two fresh GPU runs of fit_model's arithmetic bit-identical). The score-level
+    NOT_EQUIVALENT verdict of configs/cpu_gpu_equivalence.yaml stands, so this file is host-native.
+  settings_applied_by: cpu_gpu_equivalence's placement_settings("det", 8), placement_block and environment_problems, imported unchanged; any difference read back is a hard stop; a driver other than 596.71 is a filed deviation
+  host_native_protocol:
+    same_placement_for_every_comparator: every arm is fitted and scored on host_gpu_det, every seed a new draw
+    identical_inputs: transfer.verification above
+    identical_code: >-
+      every host job runs from one git commit, the commit that adds scripts/deploy_ck_2wiki.py, and records the LF sha256
+      of every repository module it imported. The file stage checks that they are one set, equal to the committed files.
+    identical_checkpoints: the eval stage re-hashes every fit's weights (file bytes and content) against its record
+    repeat_check: fitting.repeat
+    no_cross_machine_numbers: no number of this file is set beside a number made on the laptop
+  scheduling: >-
+    rx jobs with mpr's priority 10, nothing running preempted. The verify job first (4 cpu, 24 GB, no GPU); once it has
+    written VERIFIED, all 16 fits are submitted at once (-p gpu, 0.2 GPU, 4 cpu, 12 GB each; the queue orders them);
+    after the last fit, one job runs eval then read (-p gpu, 0.25 GPU, 8 cpu, 24 GB).
+
+compute:
+  first_projection_hours: 1.5
+  fit_hours_ceiling: 60
+  basis: >-
+    no arm has been fitted on 2wiki alone, and none of these arms has been fitted on the host. The trio pilot's laptop
+    CPU fits (three datasets) took about 4,000-7,900 s (twin) and 18,000-37,000 s (GNN). A 2wiki fit draws from one
+    dataset of about 106 candidates a query, steps on the card and packs on the host CPU, so a fit is projected at
+    under 1.5 h. The projection is a guess: the guard sums the filed fits' wall hours plus the projection of the next
+    (the longest filed fit, else 1.5 h), and over 60 fit-hours it writes fits/ceiling_breach.json and starts no fit.
+  eval: the per-query compile of 12,576 queries on the host CPU, scoring 16 fits on the GPU and the fixed scorers on the CPU, and the latency block
+  disk: host workspace outputs/deploy_ck_2wiki/ (16 weight files of about 1.5 MB, the eval arrays, the records), fetched to the laptop
+
+hard_stops:   # on any: the evidence is written to outputs/deploy_ck_2wiki/hard_stop.json, nothing further runs in that process, and it is reported
+  - any pin in inputs fails, on the laptop or the host
+  - the host mirror's 2wiki verify record is missing, not VERIFIED, or names another root
+  - a family store built on the host differs by content from the laptop's
+  - a host job's placement settings read back differently from host_gpu_det_as_tested, or CUDA is unavailable to a fit or eval stage
+  - an arm's parameter count is not its pin, or exceeds the GNN's budget
+  - the frozen training rule returns anything other than fitting.rule
+  - the eval population, its split or its halves differ from population; any test split
+  - the ceiling check, the MRR audit or the M3B fixed-rrf agreement fails
+  - a fit's weights on the host are not the file or the content its record pins
+
+outputs:
+  host: outputs/deploy_ck_2wiki/{verify.json, fits/<key>.{pt,json}, eval/2wiki.{npz,json}, eval/2wiki_query_ids.json, read.json}, fetched to the laptop (git-ignored)
+  laptop: outputs/deploy_ck_2wiki/record.json (git-ignored, assembled from the host's records without arithmetic) and docs/DEPLOY_CK_2WIKI.md
+  run_record: run_record_deploy_ck_2wiki_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN
+
+tests:   # tests/test_deploy_ck_2wiki.py, laptop CPU, committed with the script and run before any host job
+  - this file parses; its arms are the script's (construction and parameter pins), its bands and flags are the script's in order, and the placement spec is level 3's
+  - the frozen code, the pushed files and the family stores equal their pins on the laptop
+  - every arm builds at its pinned parameter count
+  - a store's content digest ignores nothing and is stable (one changed element changes it)
+  - the resample matrix reproduces universal_v2_run.paired_bootstrap's interval
+  - the bands and shares on synthetic arrays land where the rules say (each band, an unreadable share)
+  - >-
+    a smoke on the real 2wiki data, CPU, read-only -- one ck_qi fit and its repeat under a two-batch rule
+    (bit-identical), the eval pass on a slice of the population with all 16 fits (the population, halves, ceiling,
+    audits and M3B agreement pass; forward_compiled within 1e-4 of the forward), then the read and doc stages on those
+    records
+
+execution:
+  order: >-
+    this file (with compiled_kernel.py and its tests) committed alone -> the script and its tests committed, the tests
+    passing on the laptop -> pushed -> the transfer -> the verify job once the mirror's 2wiki record is VERIFIED -> all
+    fits -> eval and read -> fetched -> doc -> file (run record) -> STOP_FOR_REVIEW
