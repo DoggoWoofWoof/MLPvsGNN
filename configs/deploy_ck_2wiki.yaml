@@ -421,3 +421,58 @@ amendment_1_2026_09_30_smoke_placement:   # filed before the transfer and before
     fits running together; at 0.125 up to eight are admitted, subject to the CPUs, the memory and the other projects'
     jobs, under mpr's priority 10 with nothing preempted. The test job takes 0.25 GPU, 8 cpu, 24 GB; verify, eval and
     read are as declared.
+
+amendment_2_2026_09_30_batch_check:   # filed before the verify job and before any fit; no host job of this file has run
+  what: >-
+    configs/host_mirror_six.yaml#verification requires that "a stage that a later file places on the host runs its own
+    16-batch check before it reads anything (its first 16 batches, packed on the host, torch.equal to the laptop's)";
+    configs/cpu_gpu_equivalence.yaml#mirror_verification says the same, field for field. transfer.verification above
+    omitted it. It is added here, before any host job of this file has run.
+  laptop_half: >-
+    a new laptop stage, reference, opens 2wiki from the laptop's package and stores (read-only) and packs, with the code
+    the host runs and at the host stages' BLAS thread count, the first 16 batches of each seed's fit draw under the
+    frozen rule (fit_draws replays fit_model_placed's generator, cursors and the pinned draw_indices; the pinned
+    pack_parts packs them) and the first 16 blocks of the eval pass (eval_population, then each query compiled and
+    packed as eval_placed does). Every batch is pinned field by field by cpu_gpu_equivalence.field_pins (dtype, shape,
+    sha256 of the bytes) with each floating field's NaN count. No model is built and no number is made.
+  reference: outputs/deploy_ck_2wiki_reference/batches_laptop.json
+  reference_sha256: 17353b736b2faf14add3d5148c66647fe96d120f242d7829fa41add7df821e2c
+  reference_made: 2026-09-30T11:06:46Z on the laptop at 8 BLAS threads, 1450.1 s, peak RSS 2.6 GB; 48 fit batches and 16 eval blocks of 227 queries, no NaN
+  threads: >-
+    compile_query_v2's features depend on the BLAS thread count, with the same OpenBLAS build. A first reference, packed
+    at the laptop stages' 6 threads (sha256 77dcf1e116af02f39faa7b35bff7fc3781069e0ae8957040438847d5632a145f), was set
+    aside before any host job read it: a laptop probe packed eval block 0 again and found it equal at 6 threads, and x
+    different at 8, 4 and 1 threads, every other field equal. Between the two references all 48 fit batches are equal
+    (they come from the pushed carve caches) and all 16 eval blocks differ in x only; the probe's 8-thread block 0, from
+    another process, equals the pinned reference's byte for byte. The host's env loads the same numpy 2.3.2 and
+    OpenBLAS 0.3.30 library file with the same Haswell kernels; rx limits a job's memory and priority, not its CPUs;
+    and the script sets 8 threads for every host stage before numpy loads, so the host packs at 8. The reference stage
+    therefore packs at the host stages' count, refuses any other, and records it; verify records both counts. The first
+    reference, its log and the probe stay in outputs/deploy_ck_2wiki_reference/ (git-ignored).
+  host_half: >-
+    the verify stage packs the same 48 fit batches and 16 eval blocks from the mirror and compares them before it
+    writes VERIFIED. Each fit stage packs its own seed's 16 again and compares them before its first step. The eval
+    stage compares each of its first 16 blocks once it is packed and before any fit scores it, so the latency block's
+    first queries stay the pass's own first compile. Equal pins are byte identity, which is torch.equal wherever a field
+    holds no NaN. Any difference is a hard stop, with the differing batches and fields in hard_stop.json. The reference
+    is refused unless its sha256 is the one above; it travels with the verify job (rx --inputs). The verify job now
+    also prepares the eval population and compiles 16 blocks (the laptop took 1450 s for the whole reference).
+  tested_by: >-
+    tests/test_deploy_ck_2wiki.py adds five tests (26 in all): the pins and their comparison (a changed field, draw,
+    block or count); fit_draws against fit_model_placed's own loop (its first 16 draws recorded as it makes them, across
+    two reshuffles); the reference refused unless it is the pinned file; the reference stage refused at any BLAS thread
+    count but the host stages'; the pinned file's shape, rule and count. The host smoke records the fit loop's own draws
+    and packs while it fits and holds them equal to the replay, and runs the eval pass's check on two blocks of its
+    slice, including a tampered reference that stops the pass before any scoring. The host test job must pass all 26
+    with none skipped.
+  identical_code: >-
+    placement.host_native_protocol.identical_code's commit is the one that files this amendment (the script's new stage
+    and checks, and the tests); no host job ran from 6a99244. The transfer (a laptop rx push of the pinned data files at
+    09:46Z) is unchanged.
+  driver: >-
+    systems only. The host driver stopped at 09:49:14Z before submitting any job: its wait for the mirror matched an
+    earlier route's "driver stops" line in outputs/host_mirror_six/driver.log. It now reads amendment 2's lines of that
+    log only, pushes the reference with the verify job, refuses to push while a tracked file differs from the commit, and
+    requires the host test job to pass every collected test with none failed, errored or skipped (a warnings count no
+    longer fails it). The mirror's 2wiki record is VERIFIED (configs/host_mirror_six.yaml, run record at 06b6667).
+  unchanged: every arm, the rule, the population, the statistics, the readings and amendment 1's placement and scheduling

@@ -4,6 +4,7 @@ carves, against its matched twin, the kernel's self-entry control and the GNN, e
 
     python scripts/deploy_ck_2wiki.py --stage pins                      # laptop: the input pins, printed for the declaration
     python scripts/deploy_ck_2wiki.py --stage transfer                  # laptop: the pinned caches and M3B arrays pushed by rx
+    python scripts/deploy_ck_2wiki.py --stage reference                 # laptop: amendment 2's reference, the first 16 batches packed here
     python scripts/deploy_ck_2wiki.py --stage verify                    # host: pins, the mirror, the CSR stores built from it and checked
     python scripts/deploy_ck_2wiki.py --stage fit --arm ck_qi --seed 0  # host_gpu_det: one fit in a fresh process (--repeat for the repeat)
     python scripts/deploy_ck_2wiki.py --stage eval                      # host_gpu_det: the eval population compiled per query, every fit scored
@@ -35,7 +36,7 @@ def _stage_in_argv() -> str | None:
 
 if __name__ == "__main__":   # placement: BLAS and OpenMP pools, and cuBLAS's workspace, are fixed before numpy and torch load (level 3's rule)
     _HOST = _stage_in_argv() in HOST_STAGES
-    _THREADS = "8" if _HOST else "6"
+    _THREADS = "8" if _HOST or _stage_in_argv() == "reference" else "6"   # amendment 2: the reference packs at the host stages' count
     for _var in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
         os.environ[_var] = _THREADS
     if _HOST:
@@ -69,7 +70,7 @@ from mp_retrieval import m3b_pools  # noqa: E402
 from mp_retrieval.device_placement import batch_to, fit_model_placed, model_to  # noqa: E402
 from mp_retrieval.m3b_features import QueryInputs  # noqa: E402
 from mp_retrieval.m3b_models import parameter_count  # noqa: E402
-from mp_retrieval.m3b_train import METRIC_NAMES, rank_metrics  # noqa: E402
+from mp_retrieval.m3b_train import METRIC_NAMES, draw_indices, pack_parts, rank_metrics  # noqa: E402
 from mp_retrieval.universal_v2_features import IDX, compile_query_v2  # noqa: E402
 from mp_retrieval.universal_v2_models import FAMILIES, CarveDataV2, pack_queries_v2  # noqa: E402
 
@@ -80,6 +81,9 @@ FITS = OUT / "fits"
 EVAL = OUT / "eval"
 RECORD = OUT / "record.json"
 DOC = ROOT / "docs" / "DEPLOY_CK_2WIKI.md"
+REFERENCE = ROOT / "outputs" / "deploy_ck_2wiki_reference" / "batches_laptop.json"   # amendment 2: packed on the laptop, pushed
+AMENDMENT_2 = "amendment_2_2026_09_30_batch_check"
+CHECK_BATCHES = 16
 NAME = "2wiki"
 PHASE = "DEPLOY_CK_2WIKI"
 SPEC = {"host": "host", "device": "cuda", "threads": 8, "mode": "det", "tf32": False, "env": "mpr-cu128@62fc45e9e1ba"}   # host_gpu_det, level 3's
@@ -440,6 +444,89 @@ def host_inputs(decl: dict, log=log_utc):
     return opened, {"verify_json_sha256": sha256_file(OUT / "verify.json"), "mirror_verify_record_sha256": mrec_sha}
 
 
+# ── amendment 2: the 16-batch check (configs/host_mirror_six.yaml#verification) ─
+
+
+def batch_pins(batch) -> dict:
+    """A packed batch field by field as the equivalence file pins it (cpu_gpu_equivalence.field_pins: the dtype, the shape
+    and the sha256 of the bytes), with the NaN count of every floating field beside it: equal pins are byte identity,
+    which is torch.equal wherever a field holds no NaN."""
+    import cpu_gpu_equivalence as CGE   # imported, never edited; pinned in inputs.frozen_code_lf
+
+    pins = CGE.field_pins(batch)
+    for f, p in pins.items():
+        t = getattr(batch, f)
+        p["nan"] = int(torch.isnan(t).sum()) if t.is_floating_point() else 0
+    return pins
+
+
+def parts_list(parts) -> list:
+    return [[name, [int(i) for i in idx]] for name, idx in parts]
+
+
+def fit_draws(fit, seed: int, rule: dict, n: int = CHECK_BATCHES) -> list:
+    """The first ``n`` draws of fit_model_placed for ``seed``: its generator and cursors, the pinned draw_indices called in
+    the order its loop calls it (packing ahead, epochs and batches skipped for want of gold change no draw)."""
+    rng = np.random.default_rng(seed)
+    fits = {NAME: fit}
+    names = sorted(fits)
+    cursors = {k: [rng.permutation(fits[k].trainable), 0] for k in names}
+    return [draw_indices(fits, names, cursors, rng, int(rule["batch_size"]), rule["dataset_draw"]) for _ in range(n)]
+
+
+def fit_batch_pins(fit, seed: int, rule: dict, n: int = CHECK_BATCHES) -> list[dict]:
+    """A fit's first ``n`` batches, packed by the pinned pack_parts as fit_model_placed packs them, pinned."""
+    return [{"batch": k, "parts": parts_list(parts), "fields": batch_pins(pack_parts({NAME: fit}, parts, FAMILIES))}
+            for k, parts in enumerate(fit_draws(fit, seed, rule, n))]
+
+
+def eval_chunks(n: int, chunk: int) -> list[np.ndarray]:
+    """The query blocks eval_placed packs, in its order."""
+    return [np.arange(start, min(start + chunk, n)) for start in range(0, n, chunk)]
+
+
+def eval_chunk_batch(ev: dict, context, columns, idx: np.ndarray, m3b_compile):
+    """One block of the eval pass compiled and packed exactly as eval_placed compiles and packs it."""
+    qds = []
+    for i in idx:
+        E, compiled = compile_eval_query(ev["prep"], context, int(i))
+        gold_local = m3b_compile.gold_local_of(ev["prep"].pools[i], ev["pop"].golds[i])
+        qds.append(eval_entry(compiled, E, ev["prep"], ev["pop"], int(i), gold_local, columns))
+    return pack_queries_v2(qds, context)
+
+
+def eval_batch_pins(ev: dict, context, columns, m3b_compile, n: int = CHECK_BATCHES) -> list[dict]:
+    """The eval pass's first ``n`` packed batches, pinned."""
+    return [{"batch": k, "queries": [int(idx[0]), int(idx[-1]) + 1], "fields": batch_pins(eval_chunk_batch(ev, context, columns, idx, m3b_compile))}
+            for k, idx in enumerate(eval_chunks(ev["n"], ev["chunk"])[:n])]
+
+
+def batch_problems(want: list[dict], got: list[dict]) -> dict:
+    """Every batch of ``want`` against ``got``, in order: the draw (or the query block) and each field's pin."""
+    bad = {}
+    if len(want) != len(got):
+        bad["count"] = {"reference": len(want), "here": len(got)}
+    for w, g in zip(want, got):
+        for key in ("batch", "parts", "queries"):
+            if w.get(key) != g.get(key):
+                bad[f"batch {w.get('batch')}: {key}"] = {"reference": w.get(key), "here": g.get(key)}
+        for f in sorted(set(w["fields"]) | set(g["fields"])):
+            if w["fields"].get(f) != g["fields"].get(f):
+                bad[f"batch {w.get('batch')}: {f}"] = {"reference": w["fields"].get(f), "here": g["fields"].get(f)}
+    return bad
+
+
+def load_reference(decl: dict) -> tuple[dict, str]:
+    """The laptop's batches (amendment 2), refused unless the file is the one the amendment pins."""
+    pin = (decl.get(AMENDMENT_2) or {}).get("reference_sha256")
+    if pin is None:
+        hard_stop(f"{AMENDMENT_2} is not filed; no host stage reads data without the 16-batch check")
+    got = sha256_file(REFERENCE) if REFERENCE.exists() else None
+    if got != pin:
+        hard_stop("the laptop's batch reference is not the file amendment 2 pins", path=str(REFERENCE), declared=pin, found=got)
+    return read_json(REFERENCE), got
+
+
 # ── stage: pins, transfer (laptop) ───────────────────────────────────────────
 
 
@@ -476,6 +563,59 @@ def stage_transfer(decl: dict, log=log_utc) -> None:
     log(f"transfer: pushed in {time.time() - t0:.0f}s")
 
 
+def stage_reference(decl: dict, log=log_utc) -> dict:
+    """Amendment 2, the laptop's half: from the laptop's package and stores, the first 16 batches of each seed's fit draw
+    under the frozen rule and the first 16 batches of the eval pass, packed by the code the host runs, pinned field by
+    field. No model is built and no number is made. compile_query_v2's features depend on the BLAS thread count, so the
+    reference is packed at the host stages' count and refused at any other."""
+    if REFERENCE.exists():
+        raise SystemExit(f"{REFERENCE.relative_to(ROOT)} exists; it is made once")
+    if os.environ.get("OPENBLAS_NUM_THREADS") != str(SPEC["threads"]):
+        raise SystemExit(f"the reference packs at the host stages' BLAS thread count ({SPEC['threads']}), not "
+                         f"{os.environ.get('OPENBLAS_NUM_THREADS')}: the packed features depend on it")
+    t0 = time.time()
+    verify_pins(decl)
+    cfg, cfg_m3b, cfg_h, inputs, contexts, handles, pkg, bank, m3b_compile = open_2wiki(decl, host=False, log=log)
+    bad = store_problems(decl)
+    if bad:
+        hard_stop("reference: the laptop's 2wiki family stores differ from their pins", stores=bad)
+    rule = training_rule(decl, cfg, cfg_m3b)
+    fit = CarveDataV2(V2.CACHE / NAME / "fit", contexts[NAME], columns=inputs["column_indices"])
+    fits = {}
+    for s in SEEDS:
+        fits[str(s)] = fit_batch_pins(fit, s, rule)
+        log(f"   fit seed {s}: {CHECK_BATCHES} batches packed, {time.time() - t0:.0f}s")
+    m3b_contract = V2.M3B_RUN.load_script("m3b_contract")
+    ev = eval_population(decl, cfg, cfg_m3b, cfg_h, contexts[NAME], handles[NAME], pkg, m3b_compile, m3b_contract, log=log)
+    t_eval = time.time()
+    batches = eval_batch_pins(ev, contexts[NAME], inputs["column_indices"], m3b_compile)
+    log(f"   eval: {len(batches)} batches of {ev['chunk']} queries packed in {time.time() - t_eval:.0f}s")
+    import cpu_gpu_equivalence as CGE
+    out = {"file": "configs/deploy_ck_2wiki.yaml", "amendment": AMENDMENT_2, "utc": V2.utc(), "where": "laptop",
+           "what": "the first 16 packed batches of each seed's fit draw and of the eval pass, packed from the laptop's package and stores",
+           "pins": "cpu_gpu_equivalence.field_pins (dtype, shape, sha256 of the bytes) and each floating field's NaN count",
+           "rule": {k: rule[k] for k in ("batch_size", "dataset_draw")}, "fit_queries": fit.n_queries, "fit": fits,
+           "eval": {"queries": ev["n"], "ids_sha256": ev["pop"].digest, "chunk": ev["chunk"], "batches": batches},
+           "freeze_RECORD_SHA256": pkg[3]["RECORD_SHA256"], "csr_content_sha256": store_digests(), "placement": CGE.placement_block(None),
+           "threads": torch.get_num_threads(), "blas_threads": int(os.environ["OPENBLAS_NUM_THREADS"]),
+           "seconds": round(time.time() - t0, 1), "peak_rss_bytes": V2.M3B_RUN.peak_rss_bytes(),
+           "git_head": git_head(), "module_sha256": module_shas()}
+    atomic_json(REFERENCE, out)
+    log(f"reference: {REFERENCE.relative_to(ROOT)} ({sha256_file(REFERENCE)}), {out['seconds']}s")
+    return out
+
+
+def reference_check(ref: dict, fit, rule: dict, ev: dict | None, context, columns, m3b_compile, seeds=SEEDS) -> dict:
+    """The host's half: the same batches packed here and compared with the laptop's; the problems by seed and for the eval."""
+    problems = {f"fit seed {s}": batch_problems(ref["fit"][str(s)], fit_batch_pins(fit, s, rule)) for s in seeds}
+    if ev is not None:
+        if ev["chunk"] != ref["eval"]["chunk"] or ev["pop"].digest != ref["eval"]["ids_sha256"]:
+            problems["eval blocks"] = {"reference": {"chunk": ref["eval"]["chunk"], "ids_sha256": ref["eval"]["ids_sha256"]},
+                                       "here": {"chunk": ev["chunk"], "ids_sha256": ev["pop"].digest}}
+        problems["eval"] = batch_problems(ref["eval"]["batches"], eval_batch_pins(ev, context, columns, m3b_compile))
+    return {k: v for k, v in problems.items() if v}
+
+
 # ── stage: verify (host) ─────────────────────────────────────────────────────
 
 
@@ -490,20 +630,35 @@ def stage_verify(decl: dict, log=log_utc) -> dict:
     mrec, mrec_sha = mirror_record(decl)
     csr = V2.M3B_OUT / "csr"
     built = {f: not (csr / f"{NAME}_{f}.npz").exists() for f in FAMILIES}
-    cfg, cfg_m3b, cfg_h, inputs, contexts, handles, pkg, bank, _ = open_2wiki(decl, host=True, log=log)
+    ref, ref_sha = load_reference(decl)
+    cfg, cfg_m3b, cfg_h, inputs, contexts, handles, pkg, bank, m3b_compile = open_2wiki(decl, host=True, log=log)
     stores_bad = store_problems(decl)
     if stores_bad:
         hard_stop("verify: the 2wiki family stores built on the host differ by content from the laptop's", stores=stores_bad, built=built)
     fit = CarveDataV2(V2.CACHE / NAME / "fit", contexts[NAME], columns=inputs["column_indices"])
     sel = CarveDataV2(V2.CACHE / NAME / "select", contexts[NAME], columns=inputs["column_indices"])
+    rule = training_rule(decl, cfg, cfg_m3b)
+    m3b_contract = V2.M3B_RUN.load_script("m3b_contract")
+    t_check = time.time()
+    ev = eval_population(decl, cfg, cfg_m3b, cfg_h, contexts[NAME], handles[NAME], pkg, m3b_compile, m3b_contract, log=log)
+    problems = reference_check(ref, fit, rule, ev, contexts[NAME], inputs["column_indices"], m3b_compile)
+    blas = {"reference": ref.get("blas_threads"), "here": os.environ.get("OPENBLAS_NUM_THREADS")}
+    if problems:
+        hard_stop("verify: batches packed on the host differ from the laptop's (amendment 2)", problems=problems, reference_sha256=ref_sha,
+                  blas_threads=blas)
+    check = {"reference": REFERENCE.relative_to(ROOT).as_posix(), "reference_sha256": ref_sha, "fit_seeds": list(SEEDS),
+             "fit_batches_per_seed": CHECK_BATCHES, "eval_batches": len(ref["eval"]["batches"]), "eval_chunk": ev["chunk"],
+             "blas_threads": blas, "all_equal": True, "seconds": round(time.time() - t_check, 1)}
     out = {"utc": V2.utc(), "status": "VERIFIED", "pushed_files": len(pushed_paths(decl)), "frozen_code_files": len(decl["inputs"]["frozen_code_lf"]),
            "mirror_verify_record": decl["inputs"]["mirror"]["verify_record"], "mirror_verify_record_sha256": mrec_sha,
            "mirror_verify_utc": mrec.get("utc"), "served": str(pkg[2]), "freeze_RECORD_SHA256": pkg[3]["RECORD_SHA256"],
            "stores_built_here": built, "csr_content_sha256": store_digests(), "fit_queries": fit.n_queries, "select_queries": sel.n_queries,
-           "bank_rows": bank.n_rows, "seconds": round(time.time() - t0, 1), "git_head": git_head(), "module_sha256": module_shas()}
+           "bank_rows": bank.n_rows, "batch_check": check, "seconds": round(time.time() - t0, 1), "git_head": git_head(),
+           "module_sha256": module_shas()}
     atomic_json(OUT / "verify.json", out)
     log(f"verify: {out['pushed_files']} pushed files and {out['frozen_code_files']} code pins equal; mirror VERIFIED; stores equal by content "
-        f"(built here: {[f for f, b in built.items() if b]}); fit {fit.n_queries}, select {sel.n_queries} -> VERIFIED")
+        f"(built here: {[f for f, b in built.items() if b]}); fit {fit.n_queries}, select {sel.n_queries}; the first {CHECK_BATCHES} batches "
+        f"of seeds {list(SEEDS)} and {check['eval_batches']} eval batches equal the laptop's -> VERIFIED")
     return out
 
 
@@ -530,6 +685,11 @@ def stage_fit(decl: dict, arm_key: str, seed: int, repeat: bool = False, log=log
     training = training_rule(decl, cfg, cfg_m3b)
     fit = CarveDataV2(V2.CACHE / NAME / "fit", contexts[NAME], columns=inputs["column_indices"])
     sel = CarveDataV2(V2.CACHE / NAME / "select", contexts[NAME], columns=inputs["column_indices"])
+    ref, ref_sha = load_reference(decl)   # amendment 2: this fit's own first batches, packed here, before any step
+    problems = reference_check(ref, fit, training, None, None, None, None, seeds=(seed,))
+    if problems:
+        hard_stop(f"{key}: its first {CHECK_BATCHES} batches packed on the host differ from the laptop's (amendment 2)", problems=problems)
+    batch_check = {"reference_sha256": ref_sha, "seed": seed, "batches": CHECK_BATCHES, "equal": True}
     torch.manual_seed(seed)
     model = build_model(arm_key, inputs, bank)
     params = parameter_count(model)
@@ -561,7 +721,7 @@ def stage_fit(decl: dict, arm_key: str, seed: int, repeat: bool = False, log=log
            "wall_seconds_this_process": round(time.time() - t0, 1), "threads": torch.get_num_threads(),
            "pack_workers": V2.PACK["workers"], "prefetch_depth": V2.PACK["depth"], "peak_rss_bytes": V2.M3B_RUN.peak_rss_bytes(),
            "cuda_peak_bytes": int(torch.cuda.max_memory_allocated()) if cuda else None, "placement": place, "deviations": deviations,
-           "warnings": warning_summary(caught), "inputs_checked": checked, "ceiling_guard": guard, "git_head": git_head(),
+           "warnings": warning_summary(caught), "inputs_checked": checked, "batch_check": batch_check, "ceiling_guard": guard, "git_head": git_head(),
            "module_sha256": module_shas(), "state_sha256": sha256_file(weights), "state_content_sha256": state_digest(state),
            "select_numbers": "the early-stopping trace of this fit only; never read as a result"}
     atomic_json(rec_path, out)
@@ -603,15 +763,25 @@ def _sync(device) -> None:
         torch.cuda.synchronize()
 
 
-@torch.no_grad()   # scoring only, as universal_v2_six.eval_dataset_six: no autograd graph
-def eval_placed(decl: dict, cfg: dict, cfg_m3b: dict, cfg_h: dict, inputs: dict, models: dict, cpu_models: dict, context, ds, pkg,
-                m3b_compile, m3b_contract, device, shard=None, log=log_utc) -> dict:
-    """universal_v2_six.eval_dataset_six for this file, with a device: 2wiki's M3B eval population (its digest, split and
-    halves checked against the declaration and universal-v2's filed values), compiled per query on the host CPU under the
-    frozen v2 contract, packed on the CPU, scored on ``device`` by every fit and on the CPU by the fixed scorers; every
-    kernel arm is also scored by its compiled form; batch-one latency on the first queries, on the GPU and the host CPU.
-    ``shard`` (k, N) keeps every N-th query from the k-th after the population checks: the laptop test's smoke only; the
-    host pass reads the whole population."""
+def compile_eval_query(prep, context, i: int):
+    """One eval query's dense rows and its compile under the frozen v2 contract (compile_query_v2, unchanged)."""
+    E = context.nodes.read(prep.pools[i])
+    inp = QueryInputs(prep.qemb[i], prep.dense_ids[i], prep.dense_scores[i], prep.splade_ids[i], prep.splade_scores[i])
+    return E, compile_query_v2(inp, prep.pools[i], prep.seeds[i], context.stores, context.nodes, context.rel_table, embeddings=E)
+
+
+def eval_entry(compiled, E, prep, pop, i: int, gold_local, columns) -> dict:
+    """One compiled eval query as pack_queries_v2 reads it."""
+    return {"pool": compiled.pool, "x": compiled.scalars[:, columns], "seedw": compiled.seedw, "qemb": prep.qemb[i],
+            "seeds": compiled.seeds_local, "gold": gold_local, "gold_total": int(pop.golds[i].size), "emb": E}
+
+
+def eval_population(decl: dict, cfg: dict, cfg_m3b: dict, cfg_h: dict, context, ds, pkg, m3b_compile, m3b_contract, shard=None,
+                    log=log_utc) -> dict:
+    """eval_placed's population, before any query is compiled: 2wiki's M3B eval population (its digest, split and halves
+    checked against the declaration and universal-v2's filed values), prepared under the frozen M3B contract, with the
+    headroom cell and the block size the pass packs by. ``shard`` (k, N) keeps every N-th query from the k-th after the
+    population checks: the laptop test's smoke only; the host pass reads the whole population."""
     m3a, canonical, served, freeze = pkg
     key_m3b, frozen = m3b_compile.frozen_contract(cfg_m3b)
     construction = frozen["per_dataset"][NAME]["construction"]
@@ -645,6 +815,22 @@ def eval_placed(decl: dict, cfg: dict, cfg_m3b: dict, cfg_h: dict, inputs: dict,
     ks = tuple(int(k) for k in cfg_h["retrieval_pools"]["ks"])
     ceiling, _ = m3a.cell(prep.pools, m3a.golds_ragged(pop.golds), int(ds.n_nodes), ks, dataset=NAME, population="eval",
                           pool=frozen["per_dataset"][NAME]["pool"])
+    chunk = max(1, int(CHUNK_NODES // max(sizes.mean(), 1)))
+    return {"pop": pop, "half": half, "counts": counts, "full_n": full_n, "prep": prep, "sizes": sizes, "n": n, "ceiling": ceiling,
+            "chunk": chunk, "construction": construction, "key_m3b": key_m3b, "frozen": frozen, "freeze": freeze, "t0": t0}
+
+
+@torch.no_grad()   # scoring only, as universal_v2_six.eval_dataset_six: no autograd graph
+def eval_placed(decl: dict, cfg: dict, cfg_m3b: dict, cfg_h: dict, inputs: dict, models: dict, cpu_models: dict, context, ds, pkg,
+                m3b_compile, m3b_contract, device, shard=None, check: list | None = None, log=log_utc) -> dict:
+    """universal_v2_six.eval_dataset_six for this file, with a device: the population of eval_population, compiled per
+    query on the host CPU under the frozen v2 contract, packed on the CPU, scored on ``device`` by every fit and on the
+    CPU by the fixed scorers; every kernel arm is also scored by its compiled form; batch-one latency on the first
+    queries, on the GPU and the host CPU. ``check`` (amendment 2): the laptop's pins of the pass's first batches; each of
+    those batches is compared field by field once packed and before any fit scores it, and a difference is a hard stop
+    (nothing is written)."""
+    ev = eval_population(decl, cfg, cfg_m3b, cfg_h, context, ds, pkg, m3b_compile, m3b_contract, shard=shard, log=log)
+    pop, half, prep, sizes, n, chunk, t0 = ev["pop"], ev["half"], ev["prep"], ev["sizes"], ev["n"], ev["chunk"], ev["t0"]
     columns = inputs["column_indices"]
     fixed = list(V2.FIXED_SCORERS)
     kernels = [k for k, m in models.items() if is_kernel(m)]
@@ -653,21 +839,18 @@ def eval_placed(decl: dict, cfg: dict, cfg_m3b: dict, cfg_h: dict, inputs: dict,
     arrays["gold_dist_struct"] = np.full(n, -1, dtype=np.int64)
     gap = {k: 0.0 for k in kernels}
     latency = {"compile": [], "pack": [], "to_device": [], **{f"{where}:{k}": [] for k in cpu_models for where in ("gpu", "cpu")}}
-    chunk = max(1, int(CHUNK_NODES // max(sizes.mean(), 1)))
+    checked = 0
     t_loop = time.time()
-    for start in range(0, n, chunk):
-        idx = np.arange(start, min(start + chunk, n))
+    for k_block, idx in enumerate(eval_chunks(n, chunk)):
+        start = int(idx[0])
         qds, gold_locals = [], []
         for i in idx:
             t = time.perf_counter()
-            E = context.nodes.read(prep.pools[i])
-            inp = QueryInputs(prep.qemb[i], prep.dense_ids[i], prep.dense_scores[i], prep.splade_ids[i], prep.splade_scores[i])
-            compiled = compile_query_v2(inp, prep.pools[i], prep.seeds[i], context.stores, context.nodes, context.rel_table, embeddings=E)
+            E, compiled = compile_eval_query(prep, context, i)
             if i < LATENCY_QUERIES:
                 latency["compile"].append(time.perf_counter() - t)
             gold_local = m3b_compile.gold_local_of(prep.pools[i], pop.golds[i])
-            qds.append({"pool": compiled.pool, "x": compiled.scalars[:, columns], "seedw": compiled.seedw, "qemb": prep.qemb[i],
-                        "seeds": compiled.seeds_local, "gold": gold_local, "gold_total": int(pop.golds[i].size), "emb": E})
+            qds.append(eval_entry(compiled, E, prep, pop, i, gold_local, columns))
             gold_locals.append(gold_local)
             arrays["gold_dist_struct"][i] = V2.gold_distance_struct(compiled.scalars, gold_local)
             for c in fixed:
@@ -694,6 +877,12 @@ def eval_placed(decl: dict, cfg: dict, cfg_m3b: dict, cfg_h: dict, inputs: dict,
                             _sync(device)
                         latency[f"{where}:{key}"].append(time.perf_counter() - t)
         batch = pack_queries_v2(qds, context)
+        if check is not None and k_block < len(check):
+            here = [{"batch": k_block, "queries": [start, int(idx[-1]) + 1], "fields": batch_pins(batch)}]
+            bad = batch_problems([check[k_block]], here)
+            if bad:
+                hard_stop(f"eval: batch {k_block} packed on the host differs from the laptop's (amendment 2)", problems=bad)
+            checked += 1
         ptr = batch.qptr.numpy()
         on_dev = batch_to(batch, device)
         for key, model in models.items():
@@ -718,8 +907,11 @@ def eval_placed(decl: dict, cfg: dict, cfg_m3b: dict, cfg_h: dict, inputs: dict,
             log(f"      {NAME}: {done}/{n} queries, {(time.time() - t_loop) / done * 1000:.0f} ms/query")
     arrays["pool_size"] = sizes.astype(np.int64)
     arrays["half"] = half.astype(bool)
-    return write_eval_record(arrays, scorers, pop, prep, ceiling, latency, gap, key_m3b, frozen, construction, chunk, t0, t_loop,
-                             freeze, inputs, shard, full_n, log)
+    rec = write_eval_record(arrays, scorers, pop, prep, ev["ceiling"], latency, gap, ev["key_m3b"], ev["frozen"], ev["construction"], chunk,
+                            t0, t_loop, ev["freeze"], inputs, shard, ev["full_n"], log)
+    if check is not None:
+        rec["batch_check"] = {"batches_compared": checked, "reference_batches": len(check), "equal": checked == min(len(check), len(eval_chunks(n, chunk)))}
+    return rec
 
 
 def write_eval_record(arrays, scorers, pop, prep, ceiling, latency, gap, key_m3b, frozen, construction, chunk, t0, t_loop, freeze,
@@ -771,6 +963,7 @@ def stage_eval(decl: dict, log=log_utc) -> dict:
         log("eval record exists, not repeated")
         return read_json(EVAL / f"{NAME}.json")
     place, deviations, (cfg, cfg_m3b, cfg_h, inputs, contexts, handles, pkg, bank, m3b_compile), checked = host_open(decl, log)
+    ref, ref_sha = load_reference(decl)   # amendment 2: the pass's first batches, compared as they are packed
     m3b_contract = V2.M3B_RUN.load_script("m3b_contract")
     models = load_fits(decl, inputs, bank)
     cpu_models = {fit_key(a, 0): copy.deepcopy(models[fit_key(a, 0)]) for a in decl["arms"]}   # seed 0 of each arm, timed on the CPU
@@ -782,7 +975,8 @@ def stage_eval(decl: dict, log=log_utc) -> dict:
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
         rec = eval_placed(decl, cfg, cfg_m3b, cfg_h, inputs, models, cpu_models, contexts[NAME], handles[NAME], pkg, m3b_compile, m3b_contract,
-                          SPEC["device"], log=log)
+                          SPEC["device"], check=ref["eval"]["batches"], log=log)
+    rec["batch_check"]["reference_sha256"] = ref_sha
     rec.update({"placement": place, "deviations": deviations, "warnings": warning_summary(caught), "inputs_checked": checked,
                 "git_head": git_head(), "module_sha256": module_shas()})
     atomic_json(EVAL / f"{NAME}.json", rec)
@@ -973,18 +1167,20 @@ def stage_doc(decl: dict, log=log_utc) -> Path:
                           "epochs_run": f["epochs_run"], "select_recall@5": f["best_select_macro_recall5"], "seconds": f["seconds"],
                           "state_content_sha256": f["state_content_sha256"], "cuda_peak_bytes": f.get("cuda_peak_bytes"),
                           "determinism_warnings": sum(w["count"] for w in f["warnings"] if w.get("determinism")),
-                          "deviations": f["deviations"]}
+                          "deviations": f["deviations"], "batch_check": f.get("batch_check")}
     record = {"file": "configs/deploy_ck_2wiki.yaml", "utc": V2.utc(), "reading": read["reading"], "flags": read["flags"],
               "primary": read["primary"], "primary_kernel": read["primary_kernel"], "per_query_reference": read["per_query_reference"],
               "bands": read["bands"], "reference_bands": read["reference_bands"], "halves": read["halves"], "compiled_form": read["compiled_form"],
               "repeat": read["repeat"], "mechanism": read["mechanism"], "fixed_rrf": read["fixed_rrf"], "latency": read["latency"],
               "fits": fits, "verify": {k: ver[k] for k in ("status", "mirror_verify_record_sha256", "freeze_RECORD_SHA256", "stores_built_here",
-                                                            "csr_content_sha256", "fit_queries", "select_queries", "bank_rows")},
+                                                            "csr_content_sha256", "fit_queries", "select_queries", "bank_rows")}
+                         | {"batch_check": ver.get("batch_check")},
               "eval": {"queries": ev["queries"], "ids_sha256": ev["ids_sha256"], "halves": ev["halves"], "ceiling_recall@5": ev["ceiling_as_compiled"].get("recall_ceiling@5"),
                        "any_gold_at_pool": ev["any_gold_at_pool"], "m3b_fixed_rrf_agreement": ev["m3b_fixed_rrf_agreement"]["ok"],
                        "mrr_audit_ok": all(v["ok"] for v in ev["mrr_audit"].values()), "seconds": ev["seconds"],
                        "placement": {k: ev["placement"].get(k) for k in ("host", "env", "device_name", "driver", "torch", "cuda")},
-                       "deviations": ev["deviations"], "determinism_warnings": sum(w["count"] for w in ev["warnings"] if w.get("determinism"))},
+                       "deviations": ev["deviations"], "determinism_warnings": sum(w["count"] for w in ev["warnings"] if w.get("determinism")),
+                       "batch_check": ev.get("batch_check")},
               "read_sha256": sha256_file(OUT / "read.json"), "eval_sha256": sha256_file(EVAL / f"{NAME}.json")}
     atomic_json(RECORD, record)
     DOC.write_text(LF.join(doc_lines(decl, record)) + LF, encoding="utf-8")
@@ -1033,6 +1229,12 @@ def doc_lines(decl: dict, rec: dict) -> list[str]:
     v = rec["verify"]
     L.append(f"- Inputs: the mirror's 2wiki record VERIFIED (sha256 {v['mirror_verify_record_sha256'][:12]}), freeze {v['freeze_RECORD_SHA256'][:12]}; "
              f"family stores equal by content to the laptop's (built on the host: {[f for f, b in v['stores_built_here'].items() if b]}).")
+    bc = v.get("batch_check")
+    if bc:
+        own = all((f.get("batch_check") or {}).get("equal") for f in rec["fits"].values()) and bool((e.get("batch_check") or {}).get("equal"))
+        L.append(f"- Batches (amendment 2): the first {bc['fit_batches_per_seed']} batches of seeds {bc['fit_seeds']} and the first "
+                 f"{bc['eval_batches']} eval batches, packed on the host, equal the laptop's field by field (reference "
+                 f"{bc['reference_sha256'][:12]}); each fit and the eval pass compared their own again before use: {own}.")
     L += ["", "## Fits", "", "| fit | best epoch | epochs | select R@5 | minutes | weights |", "|---|---:|---:|---:|---:|---|"]
     for k, f in rec["fits"].items():
         L.append(f"| {k} | {f['best_epoch']} | {f['epochs_run']} | {f['select_recall@5']:.4f} | {f['seconds'] / 60:.1f} | {f['state_content_sha256'][:12]} |")
@@ -1089,7 +1291,7 @@ def stage_file(decl: dict, date: str, commit: str, extra: dict | None = None, lo
 
 def main(argv: list[str] | None = None) -> None:
     ap = argparse.ArgumentParser(description="The deployable 2wiki compiled-kernel model (configs/deploy_ck_2wiki.yaml)")
-    ap.add_argument("--stage", required=True, choices=["pins", "transfer", "verify", "fit", "eval", "read", "doc", "file"])
+    ap.add_argument("--stage", required=True, choices=["pins", "transfer", "reference", "verify", "fit", "eval", "read", "doc", "file"])
     ap.add_argument("--arm", default=None)
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--repeat", action="store_true")
@@ -1104,6 +1306,8 @@ def main(argv: list[str] | None = None) -> None:
     decl = load_declaration()
     if args.stage == "transfer":
         stage_transfer(decl)
+    elif args.stage == "reference":
+        stage_reference(decl)
     elif args.stage == "verify":
         stage_verify(decl)
     elif args.stage == "fit":

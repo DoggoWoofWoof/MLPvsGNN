@@ -14,6 +14,7 @@ import dataclasses  # noqa: E402
 import json  # noqa: E402
 import sys  # noqa: E402
 from pathlib import Path  # noqa: E402
+from types import SimpleNamespace  # noqa: E402
 
 import numpy as np  # noqa: E402
 import pytest  # noqa: E402
@@ -28,9 +29,11 @@ for _p in (ROOT / "src", ROOT / "scripts"):
 import deploy_ck_2wiki as D  # noqa: E402
 import mp_approx_l3 as L3  # noqa: E402
 import universal_v2_run as V2  # noqa: E402
+from mp_retrieval import device_placement as DP  # noqa: E402
+from mp_retrieval.m3b_models import PackedBatch  # noqa: E402
 from mp_retrieval.m3b_pools import FamilyStore  # noqa: E402
 from mp_retrieval.m3b_train import METRIC_NAMES  # noqa: E402
-from mp_retrieval.universal_v2_models import FAMILIES  # noqa: E402
+from mp_retrieval.universal_v2_models import FAMILIES, CarveDataV2  # noqa: E402
 
 DECLARED_ARMS = ("twin", "ck_qi", "ck_full", "ck_self", "gnn")
 
@@ -146,6 +149,97 @@ def test_code_identity_needs_one_sha_per_module_equal_to_the_committed_file():
     assert set(D.code_problems(split, committed.get)) == {"scripts/a.py"}
     stale = {"verify": {"src/b.py": "9"}}
     assert set(D.code_problems(stale, committed.get)) == {"src/b.py"}
+
+
+# ── amendment 2: the 16-batch check ──────────────────────────────────────────
+
+
+def tiny_batch(scale: float = 1.0, nan: bool = False) -> PackedBatch:
+    x = torch.arange(12, dtype=torch.float32).reshape(4, 3) * scale
+    if nan:
+        x[0, 0] = float("nan")
+    return PackedBatch(x=x, qptr=torch.tensor([0, 2, 4]), node_query=torch.tensor([0, 0, 1, 1]), emb=torch.zeros(4, 2, dtype=torch.float16),
+                       qemb=torch.zeros(2, 2), seedw=torch.zeros(4, 1), seed_nodes=torch.tensor([[0], [2]]),
+                       edge_index=torch.tensor([[0, 2], [1, 3]]), edge_attr=torch.zeros(2, 5), gold=torch.tensor([True, False, False, True]))
+
+
+def test_the_batch_pins_compare_every_field_and_the_draw():
+    pins = D.batch_pins(tiny_batch(nan=True))
+    assert set(pins) == {f.name for f in dataclasses.fields(PackedBatch)} and pins["x"]["nan"] == 1 and pins["gold"]["nan"] == 0
+    a = [{"batch": 0, "parts": [["2wiki", [1, 2]]], "fields": D.batch_pins(tiny_batch())}]
+    assert D.batch_problems(a, copy.deepcopy(a)) == {}
+    assert list(D.batch_problems(a, [{**a[0], "fields": D.batch_pins(tiny_batch(scale=2.0))}])) == ["batch 0: x"]
+    assert list(D.batch_problems(a, [{**a[0], "parts": [["2wiki", [1, 3]]]}])) == ["batch 0: parts"]
+    e = [{"batch": 0, "queries": [0, 2], "fields": a[0]["fields"]}]
+    assert list(D.batch_problems(e, [{**e[0], "queries": [0, 3]}])) == ["batch 0: queries"]
+    assert list(D.batch_problems(a, [])) == ["count"]
+
+
+def test_the_replayed_draws_are_the_fit_loops_own(monkeypatch):
+    """fit_draws against fit_model_placed itself: its loop's first 16 draws, recorded as it makes them (packing stubbed
+    to a batch without gold, so no step is taken), cross two reshuffles of a 19-query carve."""
+    carve = SimpleNamespace(trainable=np.arange(3, 40, 2))
+    rule = {"batch_size": 4, "dataset_draw": "per_query"}
+    seen = []
+
+    class Enough(Exception):
+        pass
+
+    real = DP.draw_indices
+
+    def recording(*a, **k):
+        if len(seen) == D.CHECK_BATCHES:
+            raise Enough
+        parts = real(*a, **k)
+        seen.append(D.parts_list(parts))
+        return parts
+
+    monkeypatch.setattr(DP, "draw_indices", recording)
+    monkeypatch.setattr(DP, "pack_parts", lambda *a: SimpleNamespace(gold=torch.zeros(1, dtype=torch.bool)))
+    with pytest.raises(Enough):
+        DP.fit_model_placed(torch.nn.Linear(2, 1), {D.NAME: carve}, {}, seed=2, arm="t", config={}, batches_per_epoch=100,
+                            batch_size=rule["batch_size"], dataset_draw=rule["dataset_draw"], log=quiet)
+    assert len(seen) == D.CHECK_BATCHES == 16
+    assert seen == [D.parts_list(p) for p in D.fit_draws(carve, 2, rule)]
+    assert seen != [D.parts_list(p) for p in D.fit_draws(carve, 1, rule)]
+
+
+def test_the_batch_reference_must_be_the_file_amendment_2_pins(decl, out_dirs, tmp_path, monkeypatch):
+    ref = tmp_path / "batches_laptop.json"
+    ref.write_text(json.dumps({"fit": {}}), encoding="utf-8")
+    monkeypatch.setattr(D, "REFERENCE", ref)
+    d = copy.deepcopy(decl)
+    d.pop(D.AMENDMENT_2, None)
+    with pytest.raises(SystemExit, match="HARD STOP"):
+        D.load_reference(d)
+    d[D.AMENDMENT_2] = {"reference_sha256": "0" * 64}
+    with pytest.raises(SystemExit, match="HARD STOP"):
+        D.load_reference(d)
+    d[D.AMENDMENT_2] = {"reference_sha256": D.sha256_file(ref)}
+    assert D.load_reference(d) == ({"fit": {}}, D.sha256_file(ref))
+
+
+def test_the_reference_is_packed_at_the_host_stages_blas_count(decl, tmp_path, monkeypatch):
+    # the packed eval features depend on the BLAS thread count (block 0's x differed at 6, 4 and 1 threads from 8)
+    monkeypatch.setattr(D, "REFERENCE", tmp_path / "batches_laptop.json")
+    for count in ("6", "1", None):
+        if count is None:
+            monkeypatch.delenv("OPENBLAS_NUM_THREADS", raising=False)
+        else:
+            monkeypatch.setenv("OPENBLAS_NUM_THREADS", count)
+        with pytest.raises(SystemExit, match="BLAS thread count"):
+            D.stage_reference(decl)
+    assert not D.REFERENCE.exists()
+
+
+def test_the_batch_reference_here_is_the_pinned_one(decl):
+    if not D.REFERENCE.exists():
+        pytest.skip("the laptop's batch reference is not on this machine")
+    ref, sha = D.load_reference(decl)
+    assert sorted(ref["fit"]) == [str(s) for s in D.SEEDS] and all(len(v) == D.CHECK_BATCHES for v in ref["fit"].values())
+    assert len(ref["eval"]["batches"]) == D.CHECK_BATCHES and ref["eval"]["ids_sha256"] == decl["population"]["ids_sha256"]
+    assert ref["rule"] == {"batch_size": decl["fitting"]["rule"]["batch_size"], "dataset_draw": decl["fitting"]["rule"]["dataset_draw"]}
+    assert ref["blas_threads"] == D.SPEC["threads"]
 
 
 def test_the_ceiling_guard_stops_before_the_ceiling(decl, out_dirs):
@@ -302,11 +396,44 @@ def test_smoke_fit_repeat_eval_read_doc_on_real_2wiki(decl, opened, out_dirs, mo
         place, deviations = {"host": "laptop", "env": None, "device_name": "cpu", "driver": None, "torch": torch.__version__, "cuda": None}, []
     monkeypatch.setattr(D, "host_open", lambda d, log=None: (place, deviations, opened, {"smoke": True}))
     rule = D.training_rule(decl, cfg, cfg_m3b)
-    monkeypatch.setattr(D, "training_rule", lambda d, c, m: {**rule, "max_epochs": 1, "batches_per_epoch": 2, "batch_size": 4, "patience": 1})
+    smoke_rule = {**rule, "max_epochs": 1, "batches_per_epoch": 2, "batch_size": 4, "patience": 1}
+    monkeypatch.setattr(D, "training_rule", lambda d, c, m: smoke_rule)
     monkeypatch.setattr(D, "LATENCY_QUERIES", 6)
+    monkeypatch.setattr(D, "CHUNK_NODES", 2_000)   # several eval blocks on the slice, so the in-pass check sees more than one
+
+    # amendment 2's reference for the smoke: the slice's first eval blocks and seed 0's first batches under the smoke rule
+    m3b_contract = V2.M3B_RUN.load_script("m3b_contract")
+    fit = CarveDataV2(V2.CACHE / D.NAME / "fit", contexts[D.NAME], columns=inputs["column_indices"])
+    ev_slice = D.eval_population(decl, cfg, cfg_m3b, cfg_h, contexts[D.NAME], handles[D.NAME], pkg, m3b_compile, m3b_contract,
+                                 shard=(0, 64), log=quiet)
+    assert ev_slice["chunk"] == max(1, int(2_000 // max(ev_slice["sizes"].mean(), 1))) and ev_slice["n"] > 2 * ev_slice["chunk"]
+    smoke_ref = {"fit": {"0": D.fit_batch_pins(fit, 0, smoke_rule)},
+                 "eval": {"batches": D.eval_batch_pins(ev_slice, contexts[D.NAME], inputs["column_indices"], m3b_compile, n=2)}}
+    assert [b["queries"] for b in smoke_ref["eval"]["batches"]] == [[0, ev_slice["chunk"]], [ev_slice["chunk"], 2 * ev_slice["chunk"]]]
+    monkeypatch.setattr(D, "load_reference", lambda d: (smoke_ref, "smoke"))
+
+    # the fit loop's own draws and packs, recorded while the first fit runs: they are the replay's
+    drawn, packed = [], {}
+    real_draw, real_pack = DP.draw_indices, DP.pack_parts
+
+    def recording_draw(*a, **k):
+        parts = real_draw(*a, **k)
+        drawn.append(D.parts_list(parts))
+        return parts
+
+    def recording_pack(fits, parts, families):
+        batch = real_pack(fits, parts, families)
+        packed[json.dumps(D.parts_list(parts))] = D.batch_pins(batch)
+        return batch
+
+    monkeypatch.setattr(DP, "draw_indices", recording_draw)
+    monkeypatch.setattr(DP, "pack_parts", recording_pack)
 
     # one fit of the primary kernel and its repeat in the same process: bit-identical, both at the pinned count
     first = D.stage_fit(decl, "ck_qi", 0, log=quiet)
+    assert first["batch_check"] == {"reference_sha256": "smoke", "seed": 0, "batches": D.CHECK_BATCHES, "equal": True}
+    assert drawn == [b["parts"] for b in smoke_ref["fit"]["0"][:2]]
+    assert all(packed[json.dumps(b["parts"])] == b["fields"] for b in smoke_ref["fit"]["0"][:2])
     again = D.stage_fit(decl, "ck_qi", 0, repeat=True, log=quiet)
     assert first["parameters"] == again["parameters"] == 377_803 and first["steps"] >= 1
     assert first["state_content_sha256"] == again["state_content_sha256"]
@@ -318,11 +445,19 @@ def test_smoke_fit_repeat_eval_read_doc_on_real_2wiki(decl, opened, out_dirs, mo
         if not (D.FITS / f"{key}.json").exists():
             write_stand_in_fit(key, arm, seed, inputs, bank)
 
-    # the eval pass on every 64th query of the population, every fit, the compiled form beside each kernel
+    # the eval pass on every 64th query of the population, every fit, the compiled form beside each kernel; its first two
+    # blocks compared with the reference as they are packed. A reference that differs stops the pass before any scoring.
     original = D.eval_placed
+    tampered = copy.deepcopy(smoke_ref["eval"]["batches"])
+    tampered[0]["fields"]["x"]["sha256"] = "0" * 64
+    with pytest.raises(SystemExit, match="HARD STOP: eval: batch 0"):
+        original(decl, cfg, cfg_m3b, cfg_h, inputs, {}, {}, contexts[D.NAME], handles[D.NAME], pkg, m3b_compile, m3b_contract, D.SPEC["device"],
+                 shard=(0, 64), check=tampered, log=quiet)
+    assert not (D.EVAL / f"{D.NAME}.json").exists()
     monkeypatch.setattr(D, "eval_placed", lambda *a, **k: original(*a, shard=(0, 64), **k))
     ev = D.stage_eval(decl, log=quiet)
     n = len(range(0, 12576, 64))
+    assert ev["batch_check"] == {"batches_compared": 2, "reference_batches": 2, "equal": True, "reference_sha256": "smoke"}
     assert ev["queries"] == n and ev["shard"] == {"k": 0, "N": 64, "population_queries": 12576}
     assert ev["ids_sha256"] == decl["population"]["ids_sha256"]
     assert ev["halves"]["V2_GATE"] + ev["halves"]["V2_HELD_CONFIRMATION"] == n
