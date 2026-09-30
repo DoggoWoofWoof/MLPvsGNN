@@ -295,6 +295,162 @@ def test_the_held_row_count_reads_stage_2s_halves():
 
 
 def test_main_needs_its_arguments():
-    for argv in (["--stage", "equivalence"], ["--stage", "score"], ["--stage", "fits-record"], ["--stage", "file", "--date", "2026_10_01"]):
+    for argv in (["--stage", "equivalence"], ["--stage", "score"], ["--stage", "fits-record"], ["--stage", "file", "--date", "2026_10_01"],
+                 ["--stage", "fits-record", "--date", "2026_10_01", "--host"],
+                 ["--stage", "file", "--date", "2026_10_01", "--commit", "abc", "--host"], ["--stage", "run", "--host"],
+                 ["--stage", "verify"], ["--stage", "status", "--shard", "0/2"],
+                 ["--stage", "score", "--dataset", "squad", "--shard", "2/2"]):
         with pytest.raises(SystemExit):
             W2.main(argv)
+
+
+# ── amendment 2: the host, the shards, the sidecars that stay there ─────────
+
+
+def test_the_host_amendment_pins_the_six_verify_records():
+    block = SB.load_declaration()[W2.HOST_BLOCK]
+    m = block["mirror"]
+    assert m["root"] == yaml.safe_load(W2.MIRROR_CONFIG.read_text(encoding="utf-8"))["host"]["mirror_root"]
+    covered = []
+    for rel, want in m["verify_records"].items():
+        path = ROOT / rel
+        if not path.exists():
+            pytest.skip(f"{rel}: the fetched verify record is not on this machine")
+        assert SB.sha256_file(path) == want
+        rec = json.loads(path.read_text(encoding="utf-8"))
+        assert rec["status"] == "VERIFIED" and rec["freeze_RECORD_SHA256"] == m["freeze_RECORD_SHA256"]
+        covered += rec["datasets"]
+    assert sorted(covered) == sorted(W2.DATASETS)
+    assert "4 torch threads" in " ".join(block["host_placement"]["threads"].split())
+
+
+def test_host_mode_puts_the_mirror_in_memory_only(monkeypatch):
+    decl = SB.load_declaration()
+    if not all((ROOT / rel).exists() for rel in decl[W2.HOST_BLOCK]["mirror"]["verify_records"]):
+        pytest.skip("the fetched verify records are not on this machine")
+    monkeypatch.setattr(W2.V2, "load_configs", W2.V2.load_configs)   # restored after the test
+    monkeypatch.setattr(W2, "PLACEMENT", {"where": "laptop"})
+    m3b_config = ROOT / "configs" / "m3b_controlled_comparison.yaml"
+    before = SB.sha256_file(m3b_config)
+    placement = W2.host_mode(decl, log=lambda s: None)
+    _cfg, cfg_m3b, _cfg_h = W2.V2.load_configs()
+    root = decl[W2.HOST_BLOCK]["mirror"]["root"]
+    assert cfg_m3b["substrate"]["package_root"] == str(Path(root))
+    assert placement["where"] == "host" and placement["mirror_root"] == root and W2.PLACEMENT is placement
+    assert SB.sha256_file(m3b_config) == before
+    assert yaml.safe_load(m3b_config.read_text(encoding="utf-8"))["substrate"]["package_root"] != root
+
+
+def _host_decl(tmp_path: Path, records: dict, root: str | None = None) -> dict:
+    real = SB.load_declaration()[W2.HOST_BLOCK]["mirror"]
+    root = real["root"] if root is None else root
+    pins = {}
+    for i, rec in enumerate(records.values()):
+        p = tmp_path / "outputs" / "host_mirror_six" / f"verify_{i}.json"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(rec), encoding="utf-8")
+        pins[p.relative_to(tmp_path).as_posix()] = SB.sha256_file(p)
+    return {W2.HOST_BLOCK: {"mirror": {"root": root, "freeze_RECORD_SHA256": real["freeze_RECORD_SHA256"], "verify_records": pins}}}
+
+
+def _verified(datasets: list[str], **changes) -> dict:
+    real = SB.load_declaration()[W2.HOST_BLOCK]["mirror"]
+    rec = {"datasets": datasets, "mirror": f"{real['root']}/data/final_canonical", "status": "VERIFIED",
+           "freeze_matches_declared": True, "loader_imported_from_mirror": True, "freeze_RECORD_SHA256": real["freeze_RECORD_SHA256"]}
+    rec.update(changes)
+    return rec
+
+
+def test_host_mode_refuses_what_is_not_the_verified_mirror(tmp_path, monkeypatch):
+    monkeypatch.setattr(W2, "hard_stop", _raise)
+    monkeypatch.setattr(W2, "ROOT", tmp_path)
+    monkeypatch.setattr(W2.V2, "load_configs", W2.V2.load_configs)
+    monkeypatch.setattr(W2, "PLACEMENT", {"where": "laptop"})
+    with pytest.raises(SystemExit, match="not filed"):
+        W2.host_mode({}, log=lambda s: None)
+    six = {"a": _verified(["metaqa", "2wiki", "squad"]), "b": _verified(["hotpotqa", "musique", "webqsp"])}
+    decl = _host_decl(tmp_path, six)
+    W2.host_mode(decl, log=lambda s: None)   # the fake records pass
+    assert W2.PLACEMENT["where"] == "host"
+    with pytest.raises(SystemExit, match="root differs"):
+        W2.host_mode(_host_decl(tmp_path, six, root="D:/elsewhere/CRAG"), log=lambda s: None)
+    for bad, match in ((_verified(["metaqa", "2wiki", "squad"], status="MISMATCH"), "not VERIFIED"),
+                       (_verified(["metaqa", "2wiki", "squad"], loader_imported_from_mirror=False), "not VERIFIED"),
+                       (_verified(["metaqa", "2wiki", "squad"], mirror="C:/other/data/final_canonical"), "not VERIFIED"),
+                       (_verified(["metaqa", "2wiki", "squad"], freeze_RECORD_SHA256="0" * 64), "not VERIFIED"),
+                       (_verified(["metaqa", "2wiki"]), "cover the six")):
+        with pytest.raises(SystemExit, match=match):
+            W2.host_mode(_host_decl(tmp_path, {"a": bad, "b": six["b"]}), log=lambda s: None)
+    decl = _host_decl(tmp_path, six)
+    first = next(iter(decl[W2.HOST_BLOCK]["mirror"]["verify_records"]))
+    (tmp_path / first).write_text("{}", encoding="utf-8")   # not the pinned bytes
+    with pytest.raises(SystemExit, match="pinned verify record"):
+        W2.host_mode(decl, log=lambda s: None)
+
+
+def test_a_shard_is_i_of_n_and_the_shards_partition_the_chunks():
+    assert W2.parse_shard(None) is None and W2.parse_shard("0/4") == (0, 4) and W2.parse_shard("3/4") == (3, 4)
+    for text in ("4/4", "1/1", "-1/3", "a/b", "3", "1/2/3"):
+        with pytest.raises(SystemExit):
+            W2.parse_shard(text)
+    for n_chunks in (1, 2, 7, 43):
+        assert W2.shard_chunks(n_chunks, None) == list(range(n_chunks))
+        for n in (2, 3, 4):
+            parts = [W2.shard_chunks(n_chunks, (i, n)) for i in range(n)]
+            assert sorted(c for p in parts for c in p) == list(range(n_chunks))
+            assert all(c % n == i for i, p in enumerate(parts) for c in p)
+
+
+def _mini_sidecar(d: Path) -> None:
+    """Level 0's layout on two queries: the rows grouped by query, the fold rule, one array that will stay on the host."""
+    d.mkdir(parents=True)
+    qids = ["metaqa:1hop:x0", "metaqa:2hop:x1"]
+    (d / "qids.json").write_text(json.dumps(qids), encoding="utf-8")
+    arrays = {"query": np.asarray([0, 0, 1], dtype=np.int32), "q_row": np.asarray([3, 9], dtype=np.int64),
+              "q_fold": np.asarray([L0.fold_of(q) for q in qids], dtype=np.int64),
+              "q_metrics": np.zeros((2, len(L0.FUNCS), len(METRIC_NAMES))), "x": np.arange(6, dtype=np.float32).reshape(3, 2)}
+    shas = {}
+    for key, arr in arrays.items():
+        np.save(d / f"{key}.npy", arr)
+        shas[f"{key}.npy"] = SB.sha256_file(d / f"{key}.npy")
+    meta = {"arrays_sha256": shas, "qids_sha256": SB.sha256_file(d / "qids.json"), "pair": "six", "limit": None, "mismatches": 0}
+    (d / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+
+
+def test_the_host_verify_and_the_file_stage_take_a_sidecar_that_stays_on_the_host(tmp_path, monkeypatch):
+    monkeypatch.setattr(W2, "hard_stop", _raise)
+    monkeypatch.setattr(W2, "PLACEMENT", {"where": "host"})
+    d = tmp_path / "metaqa"
+    _mini_sidecar(d)
+    sc, where = W2.filed_sidecar("metaqa", d, None)
+    assert where == "laptop" and sc.n_q == 2 and sc.n_rows == 3
+    rec = W2.stage_verify(log=lambda s: None, out=tmp_path, datasets=("metaqa",))
+    assert rec["datasets"]["metaqa"] == {"meta_sha256": SB.sha256_file(d / "meta.json"), "arrays_checked": 5, "queries": 2, "uq_rows": 3}
+    assert json.loads((tmp_path / W2.HOST_VERIFY).read_text(encoding="utf-8"))["placement"] == {"where": "host"}
+    x = (d / "x.npy").read_bytes()
+    (d / "x.npy").unlink()   # the array that stays on the host
+    with pytest.raises(SystemExit, match="does not vouch"):
+        W2.filed_sidecar("metaqa", d, None)
+    sc, where = W2.filed_sidecar("metaqa", d, rec)
+    assert where == "host" and sc.n_q == 2
+    stale = {"datasets": {"metaqa": dict(rec["datasets"]["metaqa"], meta_sha256="0" * 64)}}
+    with pytest.raises(SystemExit, match="does not vouch"):
+        W2.filed_sidecar("metaqa", d, stale)
+    q_metrics = (d / "q_metrics.npy").read_bytes()
+    np.save(d / "q_metrics.npy", np.ones((2, len(L0.FUNCS), len(METRIC_NAMES))))
+    with pytest.raises(SystemExit, match="not the sha256"):
+        W2.filed_sidecar("metaqa", d, rec)
+    (d / "q_metrics.npy").write_bytes(q_metrics)
+    (d / "q_fold.npy").unlink()
+    with pytest.raises(SystemExit, match="fetch"):
+        W2.filed_sidecar("metaqa", d, rec)
+    np.save(d / "q_fold.npy", np.asarray([L0.fold_of(q) for q in ["metaqa:1hop:x0", "metaqa:2hop:x1"]], dtype=np.int64))
+    (d / "x.npy").write_bytes(x)
+    (d / "qids.json").write_text(json.dumps(["metaqa:1hop:x0", "metaqa:2hop:other"]), encoding="utf-8")
+    with pytest.raises(SystemExit, match="qids.json"):
+        W2.filed_sidecar("metaqa", d, rec)
+
+
+def test_the_verify_stage_waits_for_the_six_passes(tmp_path):
+    with pytest.raises(SystemExit, match="not scored"):
+        W2.stage_verify(log=lambda s: None, out=tmp_path, datasets=("squad",))

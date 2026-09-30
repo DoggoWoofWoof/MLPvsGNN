@@ -8,6 +8,15 @@ the six-dataset pair, and the filing of both works.
     python scripts/mp_approx_six_base_score.py --stage status
     python scripts/mp_approx_six_base_score.py --stage file --date 2026_10_01 --commit <sha>
 
+On the host (amendment_2_2026_09_30_host_placement): --host puts the verified mirror in place of the package, in memory
+only; --shard i/n scores every n-th chunk, and one later run without --shard assembles; --stage verify re-reads every
+array there, since the sidecars stay on the host.
+
+    python scripts/mp_approx_six_base_score.py --host --stage equivalence --dataset squad
+    python scripts/mp_approx_six_base_score.py --host --stage score --dataset musique --shard 0/4
+    python scripts/mp_approx_six_base_score.py --host --stage score --dataset musique    # assembles the shards' chunks
+    python scripts/mp_approx_six_base_score.py --host --stage verify
+
 The pair: T_k = u_mlp_v2_mix__H128__six__s{k} (work 1), G_k = u_gnn_v2_ef__H128__six__s{k} (universal-v2 stage 2) and
 G0_k = G_k with message_passing False for one forward. Measurement only: nothing here becomes a retriever, a feature, a
 teacher or a selection criterion, and the GNN's outputs are kept only as the ladder's targets.
@@ -37,6 +46,7 @@ import gc  # noqa: E402
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import math  # noqa: E402
+import platform  # noqa: E402
 import shutil  # noqa: E402
 import subprocess  # noqa: E402
 import time  # noqa: E402
@@ -71,6 +81,11 @@ EQUIVALENCE_LIMITS = {"metaqa": 24, "2wiki": 240, "squad": 500}   # the first N 
 RUN_ORDER = ("squad", "2wiki", "hotpotqa", "webqsp", "metaqa", "musique")   # the cheap populations first
 GAP_METRICS = ("recall@5", "hit@1", "full_coverage@5")
 LF = chr(10)
+HOST_BLOCK = "amendment_2_2026_09_30_host_placement"
+MIRROR_CONFIG = ROOT / "configs" / "host_mirror_six.yaml"
+HOST_VERIFY = "verify_host.json"
+PLACEMENT = {"where": "laptop"}   # --host makes it the host (amendment 2); filed with every record this process writes
+SIDECAR_FETCHED = ("query.npy", "q_row.npy", "q_fold.npy", "q_metrics.npy")   # what the file stage reads when the arrays stay on the host
 
 L0.HARD_STOP_DIR[0] = OUT   # a level-0 helper's hard stop (the no-edge forward's) lands here, never under outputs/mp_approx_l0
 
@@ -106,6 +121,68 @@ def write_json(path: Path, obj) -> None:
 
 def blas_env() -> dict:
     return {v: os.environ.get(v) for v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS")}
+
+
+# ── the host (amendment_2_2026_09_30_host_placement) ─────────────────────────
+
+
+def host_mode(decl: dict, log=print) -> dict:
+    """amendment_2.mirror.how_it_is_read: the root is the one configs/host_mirror_six.yaml names and the amendment
+    declares, and each pinned verify record is VERIFIED there with the declared freeze and the loader imported from
+    the mirror, the records covering the six datasets; anything else refuses the process before it opens anything.
+    universal_v2_run.load_configs is then wrapped in this process, so level 0's stage_score and score_pair both get
+    substrate.package_root = the mirror. No config file is edited; open_package's freeze check still runs."""
+    block = decl.get(HOST_BLOCK)
+    if not block:
+        raise SystemExit(f"--host: {HOST_BLOCK} is not filed in {CONFIG.name}; work 2 runs on the laptop")
+    m = block["mirror"]
+    root = yaml.safe_load(MIRROR_CONFIG.read_text(encoding="utf-8"))["host"]["mirror_root"]
+    if root != m["root"]:
+        hard_stop("--host: the host mirror root differs from the declared one", declared=m["root"], config=root)
+    served = (Path(root) / "data" / "final_canonical").as_posix()
+    covered = []
+    for rel, want in m["verify_records"].items():
+        path = ROOT / rel
+        if not path.exists() or SB.sha256_file(path) != want:
+            hard_stop(f"--host: {rel} is not the pinned verify record", path=rel)
+        rec = json.loads(path.read_text(encoding="utf-8"))
+        if not (rec.get("status") == "VERIFIED" and rec.get("freeze_matches_declared") is True
+                and rec.get("loader_imported_from_mirror") is True and Path(rec.get("mirror", "")).as_posix() == served
+                and rec.get("freeze_RECORD_SHA256") == m["freeze_RECORD_SHA256"]):
+            hard_stop(f"--host: {rel} is not VERIFIED at the declared root", record=rec)
+        covered += list(rec.get("datasets", []))
+    if sorted(covered) != sorted(DATASETS):
+        hard_stop("--host: the verify records do not cover the six datasets once each", covered=covered)
+    original = V2.load_configs
+
+    def load_configs_on_the_mirror(*args, **kwargs):
+        cfg, cfg_m3b, cfg_h = original(*args, **kwargs)
+        cfg_m3b["substrate"]["package_root"] = str(Path(root))   # in memory only
+        return cfg, cfg_m3b, cfg_h
+
+    V2.load_configs = load_configs_on_the_mirror
+    PLACEMENT.clear()
+    PLACEMENT.update({"where": "host", "node": platform.node(), "mirror_root": root, "amendment": HOST_BLOCK})
+    log(f"host: the mirror at {root} in place of the package, in memory; {len(m['verify_records'])} verify records VERIFIED")
+    return PLACEMENT
+
+
+def parse_shard(text: str | None) -> tuple[int, int] | None:
+    """--shard i/n (amendment_2.shards): 0 <= i < n, n >= 2."""
+    if text is None:
+        return None
+    try:
+        i, n = (int(v) for v in text.split("/"))
+    except ValueError:
+        raise SystemExit(f"--shard {text}: not i/n") from None
+    if n < 2 or not 0 <= i < n:
+        raise SystemExit(f"--shard {text}: needs 0 <= i < n and n >= 2")
+    return i, n
+
+
+def shard_chunks(n_chunks: int, shard: tuple[int, int] | None) -> list[int]:
+    """The chunks a process scores: all of them, or shard i's ci with ci mod n = i."""
+    return list(range(n_chunks)) if shard is None else [ci for ci in range(n_chunks) if ci % shard[1] == shard[0]]
 
 
 # ── the pair ─────────────────────────────────────────────────────────────────
@@ -297,10 +374,12 @@ def pair_rows(pair: Pair, name: str, ids: list[str], half: np.ndarray | None) ->
 # ── the copied scoring pass ──────────────────────────────────────────────────
 
 
-def score_pair(pair: Pair, name: str, log=print, limit: int | None = None, out_dir: Path | None = None) -> None:
+def score_pair(pair: Pair, name: str, log=print, limit: int | None = None, out_dir: Path | None = None,
+               shard: tuple[int, int] | None = None) -> None:
     """Level 0's stage_score (scripts/mp_approx_l0.py) copied under a new name with the pair passed in: its checkpoints,
     the functions with stored metrics, the population's declaration, id list, halves and rows, the pins and the thread
-    count. Every computation, its order and every array written are level 0's."""
+    count. Every computation, its order and every array written are level 0's. With a shard (amendment 2) the process
+    scores only its chunks and files shard_<i>of<n>.json; a later run without one assembles."""
     torch.set_num_threads(pair.threads)
     out_dir = out_dir or OUT / name
     if (out_dir / "meta.json").exists():
@@ -366,9 +445,10 @@ def score_pair(pair: Pair, name: str, log=print, limit: int | None = None, out_d
     taps = {k: L0.Taps(models[f"twin{k}"], models[f"gnn{k}"], 2 * n_sc) for k in SEEDS}
     chunks_dir = out_dir / "chunks"
     chunks_dir.mkdir(parents=True, exist_ok=True)
+    mine = shard_chunks(n_chunks, shard)
     t0, done_here = time.time(), 0
     with torch.no_grad():
-        for ci in range(n_chunks):
+        for pos, ci in enumerate(mine):
             idx = np.arange(ci * chunk, min((ci + 1) * chunk, n))
             path = chunks_dir / f"c{ci:05d}.npz"
             if path.exists():
@@ -467,14 +547,22 @@ def score_pair(pair: Pair, name: str, log=print, limit: int | None = None, out_d
                 tap.reset()
             gc.collect()
             done_here += idx.size
-            if ci % max(1, n_chunks // 25) == 0 or ci == n_chunks - 1:
+            if pos % max(1, len(mine) // 25) == 0 or pos == len(mine) - 1:
                 rate = (time.time() - t0) / done_here
-                left = n - int(idx[-1]) - 1
-                log(f"   {name}: chunk {ci + 1}/{n_chunks}, {int(idx[-1]) + 1}/{n} queries, {rate * 1000:.0f} ms/query, "
+                left = sum(min((cj + 1) * chunk, n) - cj * chunk for cj in mine[pos + 1:])
+                log(f"   {name}: chunk {ci + 1}/{n_chunks} ({pos + 1}/{len(mine)} of this process), {rate * 1000:.0f} ms/query, "
                     f"about {left * rate / 60:.0f} min left; integrity equal so far")
     for tap in taps.values():
         tap.remove()
     pair_verify(pair)   # again at the end
+    if shard is not None:
+        rec = {"dataset": name, "pair": pair.name, "shard": list(shard), "chunks": mine, "n_chunks": n_chunks, "chunk_queries": chunk,
+               "queries_scored_here": done_here, "utc": L0.utc(), "seconds_this_process": round(time.time() - t0, 1),
+               "threads": torch.get_num_threads(), "blas_threads": blas_env(), "peak_rss_bytes": V2.M3B_RUN.peak_rss_bytes(),
+               "placement": dict(PLACEMENT), "module_sha256": SB.module_shas(), "git_head": L0.git_head()}
+        write_json(out_dir / f"shard_{shard[0]}of{shard[1]}.json", rec)
+        log(f"{name}: shard {shard[0]}/{shard[1]} wrote {len(mine)} chunks ({done_here} queries here); a run without --shard assembles")
+        return
     meta = L0.assemble(chunks_dir, out_dir, n_chunks)
     (out_dir / "qids.json").write_text(json.dumps(list(pop.ids)), encoding="utf-8")
     meta.update({"dataset": name, "utc": L0.utc(), "git_head": L0.git_head(), "declaration_lf_sha256": SB.lf_sha256(CONFIG),
@@ -484,7 +572,9 @@ def score_pair(pair: Pair, name: str, log=print, limit: int | None = None, out_d
                  "seconds_this_process": round(time.time() - t0, 1), "functions": list(L0.FUNCS), "metric_names": list(METRIC_NAMES),
                  "columns": list(inputs["columns"]), "keep_top": L0.KEEP_TOP, "steps": L0.STEPS, "vector_channels": L0.N_VECTOR,
                  "mismatches": 0, "integrity": INTEGRITY[pair.name], "peak_rss_bytes": V2.M3B_RUN.peak_rss_bytes(),
-                 "module_sha256": SB.module_shas(), "qids_sha256": SB.sha256_file(out_dir / "qids.json")})
+                 "module_sha256": SB.module_shas(), "qids_sha256": SB.sha256_file(out_dir / "qids.json"),
+                 "placement": dict(PLACEMENT), "queries_scored_here": done_here,
+                 "shards": {p.name: json.loads(p.read_text(encoding="utf-8")) for p in sorted(out_dir.glob("shard_*.json"))}})
     write_json(out_dir / "meta.json", meta)
     shutil.rmtree(chunks_dir)
     log(f"{name}: scored {n} queries, {meta['uq_rows']} U_q rows, 0 mismatches")
@@ -535,7 +625,7 @@ def stage_equivalence(name: str, log=print, limit: int | None = None, root: Path
            "differ": differ, "compared": list(COMPARED), "arrays_sha256": a["arrays_sha256"],
            "copy_arrays_sha256": b["arrays_sha256"], "queries": a["queries"], "uq_rows": a["uq_rows"], "chunks": a["chunks"],
            "chunk_queries": a["chunk_queries"], "threads": {"level0": a["threads"], "copy": b["threads"]},
-           "blas_threads": blas_env(), "seconds": {"level0": s_level0, "copy": s_copy},
+           "blas_threads": blas_env(), "seconds": {"level0": s_level0, "copy": s_copy}, "placement": dict(PLACEMENT),
            "level_0_lf_sha256": SB.lf_sha256(ROOT / LEVEL_0_REL), "module_sha256": SB.module_shas(), "git_head": L0.git_head()}
     write_json(rec_path, rec)
     if differ:
@@ -610,10 +700,50 @@ def stage_fits_record(date: str, log=print) -> None:
 # ── stage: score, run, status ────────────────────────────────────────────────
 
 
-def stage_score(name: str, log=print) -> None:
+def stage_score(name: str, log=print, shard: tuple[int, int] | None = None) -> None:
     if name not in DATASETS:
         raise SystemExit(f"{name}: not a dataset of the base")
-    score_pair(SIX, name, log)
+    score_pair(SIX, name, log, shard=shard)
+
+
+def stage_verify(log=print, out: Path = OUT, datasets=DATASETS) -> dict:
+    """amendment_2.sidecars: where the sidecars are, every array of each scored dataset re-read against its meta.json by
+    level 0's Sidecar (which also holds the rows grouped by query and the fold rule), filed as verify_host.json. The file
+    stage takes it for the arrays that stay on the host."""
+    rec = {"utc": L0.utc(), "placement": dict(PLACEMENT), "module_sha256": SB.module_shas(), "git_head": L0.git_head(), "datasets": {}}
+    for name in datasets:
+        d = out / name
+        if not (d / "meta.json").exists():
+            raise SystemExit(f"{name}: not scored; verify follows the six scoring passes")
+        sc = L0.Sidecar(d)
+        rec["datasets"][name] = {"meta_sha256": SB.sha256_file(d / "meta.json"), "arrays_checked": len(sc.meta["arrays_sha256"]),
+                                 "queries": sc.n_q, "uq_rows": sc.n_rows}
+        log(f"verify {name}: {len(sc.meta['arrays_sha256'])} arrays equal their meta.json, {sc.n_q} queries, {sc.n_rows} U_q rows")
+    write_json(out / HOST_VERIFY, rec)
+    return rec
+
+
+def filed_sidecar(name: str, d: Path, host_verified: dict | None):
+    """The file stage's view of one sidecar: level 0's full check when every array is here; otherwise (amendment 2) the
+    host's verify record must name this meta.json and its array count, each array fetched here must be its meta.json's,
+    and the rows, ids and folds are checked by level 0's Sidecar without re-reading the arrays that stayed there."""
+    meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
+    if SB.sha256_file(d / "qids.json") != meta.get("qids_sha256"):
+        hard_stop(f"{name}: qids.json is not the sha256 its meta.json records", dataset=name)
+    files = meta["arrays_sha256"]
+    here = sorted(f for f in files if (d / f).exists())
+    if len(here) == len(files):
+        return L0.Sidecar(d), "laptop"
+    hv = ((host_verified or {}).get("datasets") or {}).get(name)
+    if hv is None or hv.get("meta_sha256") != SB.sha256_file(d / "meta.json") or hv.get("arrays_checked") != len(files):
+        hard_stop(f"{name}: the sidecar's arrays are not here and {HOST_VERIFY} does not vouch for this meta.json", dataset=name)
+    lacking = [f for f in SIDECAR_FETCHED if f not in here]
+    if lacking:
+        raise SystemExit(f"{name}: fetch {lacking} from the host before filing")
+    for f in here:
+        if SB.sha256_file(d / f) != files[f]:
+            hard_stop(f"{d / f}: not the sha256 its meta.json records", path=str(d / f))
+    return L0.Sidecar(d, check=False), "host"
 
 
 def run_step(args: list[str], log=print) -> None:
@@ -652,8 +782,12 @@ def stage_status(log=print) -> None:
     for name in DATASETS:
         meta = V2.read_json(OUT / name / "meta.json")
         chunks = sorted((OUT / name / "chunks").glob("c*.npz")) if (OUT / name / "chunks").exists() else []
+        shards = sorted(p.stem for p in (OUT / name).glob("shard_*.json")) if (OUT / name).exists() else []
         log(f"{name}: " + (f"scored {meta['queries']} queries, {meta['uq_rows']} U_q rows" if meta else
-                           f"{len(chunks)} chunks written" if chunks else "not scored"))
+                           f"{len(chunks)} chunks written" if chunks else "not scored") + (f"; shards filed {shards}" if shards else ""))
+    rec = V2.read_json(OUT / HOST_VERIFY)
+    if rec is not None:
+        log(f"{HOST_VERIFY}: {sorted(rec['datasets'])} verified at {rec['utc']}")
 
 
 # ── stage: file (run_record_<date>) ──────────────────────────────────────────
@@ -701,15 +835,20 @@ def stage_file(date: str, commit: str, log=print, extra: dict | None = None) -> 
         ran[f"equivalence/{name}"] = rec["module_sha256"].get(SCRIPT_REL)
         equivalence[name] = {"equal": rec["equal"], "limit": rec["limit"], "queries": rec["queries"], "uq_rows": rec["uq_rows"],
                              "chunks": rec["chunks"], "arrays": len(rec["arrays_sha256"]), "threads": rec["threads"],
+                             "placement": rec.get("placement", {"where": "laptop"}),
                              "record_sha256": SB.sha256_file(EQUIV / f"{name}.json")}
+    host_verified = V2.read_json(OUT / HOST_VERIFY)
     per = {}
     for name in DATASETS:
         d = OUT / name
-        sc = L0.Sidecar(d)   # every array's sha256 against meta.json, rows grouped by query, the fold rule
+        sc, sidecar_at = filed_sidecar(name, d, host_verified)
         meta = sc.meta
         if meta["pair"] != "six" or meta["limit"] is not None or meta["mismatches"] != 0:
             hard_stop(f"{name}: not a full six-pair scoring pass", pair=meta["pair"], limit=meta["limit"])
         ran[f"score/{name}"] = meta["module_sha256"].get(SCRIPT_REL)
+        shards = meta.get("shards") or {}
+        for sname, srec in shards.items():
+            ran[f"score/{name}/{sname}"] = srec["module_sha256"].get(SCRIPT_REL)
         q_row = np.load(d / "q_row.npy")
         held = held_rows_scored(name, q_row)
         if held:
@@ -718,17 +857,30 @@ def stage_file(date: str, commit: str, log=print, extra: dict | None = None) -> 
                      "chunks": meta["chunks"], "chunk_queries": meta["chunk_queries"], "seconds": meta["seconds_this_process"],
                      "threads": meta["threads"], "blas_threads": meta["blas_threads"], "peak_rss_bytes": meta["peak_rss_bytes"],
                      "mismatches": 0, "held_rows_scored": 0, "meta_sha256": SB.sha256_file(d / "meta.json"),
-                     "qids_sha256": meta["qids_sha256"], "descriptive_gap": descriptive_gap(np.load(d / "q_metrics.npy"))}
+                     "qids_sha256": meta["qids_sha256"], "placement": meta.get("placement", {"where": "laptop"}),
+                     "sidecar_at": sidecar_at,
+                     "shards": {s: {"chunks": len(r["chunks"]), "queries_scored_here": r["queries_scored_here"],
+                                    "seconds": r["seconds_this_process"], "peak_rss_bytes": r["peak_rss_bytes"],
+                                    "threads": r["threads"]} for s, r in shards.items()},
+                     "queries_scored_by_the_assembling_process": meta.get("queries_scored_here"),
+                     "descriptive_gap": descriptive_gap(np.load(d / "q_metrics.npy"))}
+    if any(v["sidecar_at"] == "host" for v in per.values()):
+        ran["verify_host"] = host_verified["module_sha256"].get(SCRIPT_REL)
     bad = sorted(k for k, v in ran.items() if v != want)
     if bad:
         hard_stop(f"identical_code: {bad} did not run the committed {SCRIPT_REL}", problems=bad)
+    work_2_where = sorted({v["placement"].get("where", "laptop") for v in per.values()}
+                          | {v["placement"].get("where", "laptop") for v in equivalence.values()})
     run = {"utc": L0.utc(), "status_moves": "DECLARED_NOT_RUN -> RUN", "terminal": "STOP_FOR_REVIEW", "code_commit": commit,
-           "code": SCRIPT_REL, "placement": "laptop CPU: the fits at 8 threads (work 1); the equivalence at level 0's 6, the "
-                                            "scoring passes at 4 (work 2)",
+           "code": SCRIPT_REL, "placement": (f"work 1 on the laptop CPU at 8 threads; work 2 on the {' and '.join(work_2_where)} CPU "
+                                             f"(amendment 2 where host), the equivalence at level 0's 6 threads, the scoring passes at 4"),
            "held_rows_read": False, "test_rows_read": False, "checkpoints_updated": 0,
            "fits_record": max(k for k in decl if k.startswith("fits_record_")), "equivalence": equivalence,
            "datasets": per, "descriptive_gap_note": "work_2.descriptive_gap: filed, not a result; no interval, no reading, never "
                                                      "set beside a number of another file"}
+    if host_verified is not None:
+        run["verify_host"] = {"utc": host_verified["utc"], "placement": host_verified["placement"],
+                              "record_sha256": SB.sha256_file(OUT / HOST_VERIFY), "datasets": sorted(host_verified["datasets"])}
     if extra:
         run.update(extra)
     append_block(f"run_record_{date}", run, status_to="RUN")
@@ -740,22 +892,35 @@ def stage_file(date: str, commit: str, log=print, extra: dict | None = None) -> 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--stage", required=True, choices=("fits-record", "equivalence", "score", "run", "status", "file"))
+    ap.add_argument("--stage", required=True, choices=("fits-record", "equivalence", "score", "run", "status", "file", "verify"))
     ap.add_argument("--dataset", help="equivalence and score: one dataset per process")
     ap.add_argument("--date", help="fits-record and file: the record's date, e.g. 2026_10_01")
     ap.add_argument("--commit", help="file: the commit every work-2 process ran from")
     ap.add_argument("--extra", type=Path, default=None, help="file: a JSON object of fields added to the run record")
+    ap.add_argument("--host", action="store_true", help="equivalence, score, verify, status: on the host, the mirror in place of the package (amendment 2)")
+    ap.add_argument("--shard", default=None, help="score: i/n, the chunks ci with ci mod n = i (amendment 2); a later run without it assembles")
     args = ap.parse_args(argv)
     if args.stage in ("equivalence", "score") and args.dataset is None:
         ap.error(f"--stage {args.stage} needs --dataset")
     if args.stage in ("fits-record", "file") and not args.date:
         ap.error(f"--stage {args.stage} needs --date")
+    if args.host and args.stage in ("fits-record", "file", "run"):
+        ap.error(f"--stage {args.stage} runs on the laptop (amendment 2)")
+    if args.shard is not None and args.stage != "score":
+        ap.error("--shard is for --stage score")
+    shard = parse_shard(args.shard)
+    if args.stage == "verify" and not args.host:
+        ap.error("--stage verify runs where the sidecars are, on the host (--host)")
+    if args.host:
+        host_mode(SB.load_declaration(), log_utc)
     if args.stage == "fits-record":
         stage_fits_record(args.date, log_utc)
     elif args.stage == "equivalence":
         stage_equivalence(args.dataset, log_utc)
     elif args.stage == "score":
-        stage_score(args.dataset, log_utc)
+        stage_score(args.dataset, log_utc, shard)
+    elif args.stage == "verify":
+        stage_verify(log_utc)
     elif args.stage == "run":
         stage_run(log_utc)
     elif args.stage == "status":
