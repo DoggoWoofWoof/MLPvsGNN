@@ -1,6 +1,6 @@
 phase: MP_APPROX_L8
 opened: 2026-09-30
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
 extends: >-
@@ -490,3 +490,137 @@ execution:
     read. Then fetch the read, check and meta files, and on the laptop build the record, the doc and the run record
     (commit).
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l8_2026_10_01:
+  utc: '2026-09-30T19:27:13Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: 4da2932
+  placement: host CPU (rx env mpr-cpu), the verified mirror in memory; scoring at 6 threads, check, fits and read at 4
+  reading: L8_MID
+  primary: TP
+  primary_rho_bar:
+    point: 0.528885594052439
+    ci:
+    - 0.4712191675600668
+    - 0.5909588138826943
+  bands:
+    TP: L8_MID
+    TP-bag: L8_MID
+    TP-pos: L8_MID
+    TP-hash: L8_MID
+    TP-direct: L8_LOW
+    TP-oracle: L8_HIGH
+  rho_bar:
+    TP:
+      point: 0.528885594052439
+      ci:
+      - 0.4712191675600668
+      - 0.5909588138826943
+    TP-bag:
+      point: 0.25995565752078037
+      ci:
+      - 0.18498318970572128
+      - 0.33237006413582176
+    TP-pos:
+      point: 0.5366529506346022
+      ci:
+      - 0.4781995258122935
+      - 0.5935351889841046
+    TP-hash:
+      point: 0.630175833322244
+      ci:
+      - 0.5680906300959004
+      - 0.6877440973241213
+    TP-direct:
+      point: -0.716816280516344
+      ci:
+      - -0.8677494000588448
+      - -0.5883406815085903
+    TP-oracle:
+      point: 1.0070012690946657
+      ci:
+      - 0.9541503922289474
+      - 1.0634820872487254
+  readable_metrics:
+  - recall@5
+  - full_coverage@5
+  - hit@1
+  flags: []
+  interpretation:
+  - l8_mid
+  - order_matters
+  - latent_beats_direct
+  contrasts:
+    order:
+      point: 0.2689299365316586
+      ci:
+      - 0.22232060760589234
+      - 0.3196609571455456
+    untied_positions:
+      point: 0.0077673565821632096
+      ci:
+      - -0.024663390964846245
+      - 0.041702211342058405
+    text_vs_hash:
+      point: -0.10129023926980507
+      ci:
+      - -0.1497069772119833
+      - -0.054385649602916676
+    latent_vs_direct:
+      point: 1.2457018745687831
+      ci:
+      - 1.1174854389068138
+      - 1.3850655720058516
+    ceiling_gap:
+      point: 0.47811567504222674
+      ci:
+      - 0.41631043385879685
+      - 0.5434838555630829
+  queries: 3000
+  scoring_mismatches: 0
+  held_rows_read: false
+  test_rows_read: false
+  checkpoints_updated: 0
+  jobs_checked_for_identical_code: 82
+  record_sha256: f9014c73794eda0045eba9b63b3d7f6e528e753d30250d95462d73642a1b76f6
+  document: docs/MP_APPROX_L8.md
+  document_sha256: aa16003cba926b4ba312d4d1acb2263cb7e447780d1ddaaf5c208e5bb699acbc
+  host_jobs:
+    smoke: 261001-002639-l8-smoke-9752 (32 s)
+    score:
+    - 261001-002729-l8-score-0-5ba8 (18m06s)
+    - 261001-002731-l8-score-1-ebbb (18m02s)
+    - 261001-002734-l8-score-2-ea50 (17m54s)
+    assemble_and_check: '261001-004643-l8-assemble-check-3c43 (23 s): the two stages ran as one rx job, assemble then check (cmd &&), in the declared order; each
+      stage wrote its own job fields'
+    fit:
+    - 261001-004725-l8-fit-tp-aa60 (6m34s)
+    - 261001-004727-l8-fit-tp-bag-9c7f (4m26s)
+    - 261001-004729-l8-fit-tp-pos-37b5 (4m56s)
+    - 261001-004732-l8-fit-tp-hash-dd8c (3m40s)
+    - 261001-004734-l8-fit-tp-direct-ccf5 (5m20s)
+    repeat: 261001-004736-l8-repeat-a1b9 (34 s)
+    read: 261001-005432-l8-read-f5ab (6 s)
+  smoke:
+    job: 261001-002639-l8-smoke-9752
+    queries: 24
+    mismatches: 0
+    entries_mean_per_query: 5247.375
+    note: a placement and integrity check before the shards; written outside outputs/mp_approx_l8 and read by no later stage
+  systems_settings:
+    deterministic_algorithms: 'the fit and repeat processes ran with torch.use_deterministic_algorithms(True) (fit_process, in the committed code); a systems setting
+      that changes no declared quantity: without it the backward of index_put_ with accumulate is not bit-repeatable on the CPU at more than one thread, and the repeat
+      unit differed by up to 5e-7 in a laptop probe'
+    git_head_on_host: unknown in every host job (the rx workspace carries no .git); code identity is the module sha256 check against the commit
+    log_warning: the fit logs carry a torch UserWarning, 'Converting a tensor with requires_grad=True to a scalar', from float(loss) in the training loop's running
+      mean (line 1258); it is a log line and changes no number
+  grid_edges_descriptive:
+    note: transcribed from read.json units; the declared grid and round count were not changed. The chosen values sit at the grid's edge, so a wider grid or more
+      EM rounds is untested and would need its own file
+    kappa_at_lowest_0.25: 59 of 60 mixture units
+    eta_at_highest_1.0: 57 of 60 mixture units
+    kept_round_at_the_last_round_5: 46 of 60 mixture units
+    tp_direct_best_epoch_range:
+    - 6
+    - 16
