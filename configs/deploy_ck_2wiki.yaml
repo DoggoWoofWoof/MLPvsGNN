@@ -398,3 +398,26 @@ execution:
     this file (with compiled_kernel.py and its tests) committed alone -> the script and its tests committed, the tests
     passing on the laptop -> pushed -> the transfer -> the verify job once the mirror's 2wiki record is VERIFIED -> all
     fits -> eval and read -> fetched -> doc -> file (run record) -> STOP_FOR_REVIEW
+
+amendment_1_2026_09_30_smoke_placement:   # filed before the transfer and before any host job
+  what: >-
+    The tests' real-data smoke (test_smoke_fit_repeat_eval_read_doc_on_real_2wiki) and the family-store content test run
+    on the host, in one rx job after the verify stage and before any fit, on host_gpu_det: the smoke fits, repeats and
+    scores on the GPU, so it also exercises the CUDA path the fits and the eval take, which the laptop cannot. Every
+    other test ran on the laptop before the transfer (19 passed), as declared.
+  why: >-
+    at 09:40Z the laptop had 0.7 GB of memory available while the six-base fit (configs/mp_approx_six_base.yaml, PID
+    16744) held 8.6 GB; the smoke opens 2wiki's family stores (about 1.4 GB) and its package. Running it there would
+    page both processes.
+  unchanged: >-
+    the tests themselves, the rule that they pass before any fit starts, and every reading. The smoke writes only under
+    pytest's temporary directory; it makes no number of this file, and its fits are not fits of this file.
+  order: >-
+    transfer -> verify job -> test job (the smoke and the store test, pytest on the host; a failure stops the file here)
+    -> all fits -> eval and read
+  scheduling: >-
+    placement.scheduling's fit jobs take 0.125 GPU, 4 cpu and 10 GB each instead of 0.2, 4 and 12 (systems only): the
+    arms are small (at most 420,932 parameters, batches of 16 queries), so the GPU share is what would bind the number of
+    fits running together; at 0.125 up to eight are admitted, subject to the CPUs, the memory and the other projects'
+    jobs, under mpr's priority 10 with nothing preempted. The test job takes 0.25 GPU, 8 cpu, 24 GB; verify, eval and
+    read are as declared.
