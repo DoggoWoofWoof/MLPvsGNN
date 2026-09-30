@@ -1,0 +1,220 @@
+phase: MP_APPROX_SIX_BASE
+opened: 2026-09-30
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+track: MP-ORACLE
+extends: >-
+  the MP-Approx ladder (configs/mp_approx_l0.yaml to configs/mp_approx_l5.yaml), which reads only the pilot trio
+  (metaqa, 2wiki, squad), and universal-v2 stage 2 (configs/universal_v2.yaml#run_record_stage_2_2026_09_28, RUN at
+  c2cfda1), which fitted u_gnn_v2_ef jointly on the six datasets and nothing else. Level 0 recorded why the ladder
+  stops at three datasets (configs/mp_approx_l0.yaml#corrections_to_the_proposal.matched_pairs): "a trained GNN with a
+  matched twin exists only for the pilot trio ... The stage-2 six-dataset GNN has no six-dataset twin". This file
+  builds that twin and the scored base the ladder reads, so a later level can run on six datasets. No level runs here.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+question: >-
+  Build the six-dataset base of the ladder. (1) Fit the matched non-message-passing twin of the stage-2 six-dataset
+  GNN: u_mlp_v2_mix jointly on the six datasets under stage 2's frozen training rule, seeds 0 to 2. (2) Score the
+  six-dataset pair (T_k, G_k, G0_k) on each dataset's evaluation rows and keep level 0's sidecar, so that the ladder's
+  targets r_k = z(G_k) - z(T_k) and e_k = z(G_k) - z(G0_k) exist on hotpotqa, musique and webqsp, and on the trio
+  under the same pair.
+role: >-
+  An analysis base only. The twin is fitted so that the GNN's residual over a matched non-message-passing model can be
+  measured; it is not a Universal-MLP candidate. The stage-2 ruling stands unchanged: "Don't advance u_mlp_v2_mix as the
+  universal MLP" (configs/universal_v2.yaml#authorization_stage_2_2026_09_22.ruling_verbatim). No checkpoint, score,
+  target or number of this file enters QLS-U, a feature contract, M3, M4, any gate or any selection. The twin's
+  select-carve numbers are the early-stopping trace of its own fit and are never read as a result.
+
+authorization:
+  given: '2026-09-30, the user: "parallely get ready to add the other datasets also into the mix"'
+  context: >-
+    the advisor's L6 plan, pasted by the user with that message, keeps metaqa as the target, 2wiki as the positive
+    control and squad as the negative control of the next level. That level runs on the trio base. This file prepares
+    the base on which the ladder can later add hotpotqa, musique and webqsp.
+  go_ahead: >-
+    standing: "keep continuing autonomusly without asking for perms and try to find improvements and pause only at
+    something substancial". This file is committed alone, before any code of the phase runs, and is then run as written.
+  terminal: >-
+    STOP_FOR_REVIEW after the run record. No level is run on the six-dataset base by this file; each needs its own
+    dated file (or a dated block in its level's file) that names this base.
+
+rulings_respected:
+  stage_2_scope: >-
+    authorization_stage_2_2026_09_22 opened stage 2 "for u_gnn_v2_ef and nothing else". This file does not edit that
+    block, its run record or any stage-2 artifact. The twin is fitted under a new file, into new directories.
+  universal_mlp_ruling: >-
+    u_mlp_v2_mix is not advanced. v2.1 (V21_STAGE_A_FAIL at d14c7f6) and v2.2A (V22A_STAGE_A_FAIL at 6ff664c) stay
+    closed, and v2.2B stays unopened. This twin is the ladder's reference model, exactly as the trio twin was at level 0.
+  stages_3_and_4: universal_v2 later_stages.stage_3_per_dataset_copies and stage_4_leave_one_dataset_out are not opened
+  h3_twin_parity: >-
+    configs/universal_v2.yaml#hypotheses.H3_twin_parity_where_mp_does_not_pay names a stage-2 GNN-minus-twin
+    measurement that stage 2 could not make, because it fitted no twin. This file does not read that hypothesis. Any
+    reading of it would be a separate dated block in configs/universal_v2.yaml.
+
+what_exists:
+  gnn: >-
+    u_gnn_v2_ef__H128__six__s{0,1,2}: stage 2's three joint six-dataset checkpoints, 420,932 parameters each, fitted on
+    the laptop CPU at 8 threads (best epochs 3, 5, 4; 107,168 s, 106,387 s and 91,249 s). They are read-only here.
+  trio_twin_not_used: >-
+    u_mlp_v2_mix__H128__s{0,1,2} (outputs/universal_v2/fits/) was fitted on the trio only. Scoring hotpotqa, musique or
+    webqsp with it would mix transfer to an unseen dataset into r_k, so it is not used by this file.
+  no_six_twin: no checkpoint of any non-message-passing arm fitted on the six datasets exists
+
+work_1_twin_fits:
+  arm: u_mlp_v2_mix
+  architecture: >-
+    universal_v2_run.make_model("u_mlp_v2_mix", inputs, bank), imported unchanged: UMLPv2Mix (the QLSU body and readout
+    over the GatedInputBlock), hidden 128, dropout 0.2, over the frozen 129-column contract
+    (contract_frozen_2026_09_19, core sha256 8d1da88b14df...). The relation bank is the served six-dataset bank, an
+    input and not a weight, as in stage 2.
+  parameters: 330955   # the trio twin's count over the same 129 columns; any other count is a hard stop
+  training_rule: >-
+    stage 2's, read through universal_v2_six.training_rule_six (imported unchanged), which refuses unless it is the
+    frozen rule: max_epochs 6, 2000 batches per epoch, batch 16, patience 2, lr 1e-3, weight_decay 1e-4, clip 1.0,
+    dataset_draw per_query (for every slot the dataset is drawn uniformly over the six, then a fit query of it),
+    epoch_limit_s 28800. Early stopping on the macro select recall@5 over the six select carves, the best epoch's
+    weights kept. m3b_train.fit_model, imported unchanged, with pack_workers 2 and prefetch_depth 2 (universal_v2_run.PACK),
+    as stage 2's fits.
+  carves: >-
+    the six fit and select caches under outputs/universal_v2/cache/, opened through universal_v2_six.open_six (imported
+    unchanged), which checks each against the frozen contract and against the carve that stage 2 filed before a weight
+    moves. The meta.json files are pinned below by sha256.
+  seeds: [0, 1, 2]
+  seeding: torch.manual_seed(seed) before the model is built, then fit_model(seed=seed), as stage 2's stage_fit_six
+  warm_start: none. Every fit starts from its seed's initialisation; no trio or stage-2 checkpoint is loaded
+  config_passed_to_fit_model: '{"H": 128, "stage": "six", "file": "mp_approx_six_base"}'
+  resumable: >-
+    through fit_model's own checkpoint (outputs/mp_approx_six_base/fits/<key>.ckpt, written after every epoch), so a
+    restart continues as the uninterrupted fit would have. The checkpoint is deleted once the record is written.
+  outputs: outputs/mp_approx_six_base/fits/u_mlp_v2_mix__H128__six__s{seed}.pt and .json (state_sha256 in the record)
+  record_fields: >-
+    fit_model's record (epochs run, best epoch, the per-epoch history with its per-dataset select recall@5, seconds),
+    plus the key, arm, seed, parameters, datasets, the training rule as read, threads, pack settings, peak RSS, the
+    placement, the LF sha256 of every repository module the process imported, and state_sha256.
+
+work_2_scoring_pass:   # declared now, before any number of it exists; its code is committed before it runs
+  runs_after: work 1's three fit records exist
+  path: >-
+    level 0's scoring pass (configs/mp_approx_l0.yaml#scoring_pass), with the six-dataset pair in place of the trio
+    pair: T_k = u_mlp_v2_mix__H128__six__s{k} (this file), G_k = u_gnn_v2_ef__H128__six__s{k} (stage 2), G0_k = G_k
+    with message_passing = False for one forward, restored at once and asserted, state_dict digest equal before and
+    after. Level 0's code is imported unchanged wherever it is parameterised by paths; anything that is not is copied
+    under a new name in this file's script, and a test holds the copy equal to level 0's on level 0's trio pair.
+  populations:
+    metaqa: level 0's 2,400 queries exactly (800 per hop among the V2_GATE rows, level 0's sha256 rule and salt)
+    2wiki: level 0's 6,290 queries exactly (V2_GATE)
+    squad: level 0's 5,841 queries exactly (V2_GATE)
+    hotpotqa: stage 2's evaluation population, all 7,405 queries (it has no V2 halves)
+    musique: stage 2's evaluation population, all 2,417 queries (it has no V2 halves)
+    webqsp: stage 2's evaluation population, the 1,503 queries it scored (46 zero-gold queries were excluded there and stay excluded)
+    held_rows: V2_HELD_CONFIRMATION rows are never read; they exist only on the trio and are outside level 0's queries
+    test_rows: every population is a dev split (m3b_controlled_comparison.yaml#populations.eval_splits); no test row is read
+  integrity:
+    gnn_against_stage_2: >-
+      for G_k, rank_metrics of the full-pool scores equals the stage-2 stored per-query value of all 14 METRIC_NAMES
+      exactly, on every scored query (outputs/universal_v2/six/eval/<name>.npz, pinned below). The scoring runs at 4
+      threads, the thread count of the stage-2 eval records, so the check can be exact.
+    twin: T_k has no stored counterpart; its full-pool metrics are computed and filed, and nothing is checked against them
+    analysis_set: level 0's (the nine functions' top-20 metrics equal within U_q and on the full pool)
+    on_mismatch: hard stop at the first mismatch, naming the query, function and metric; no tolerance is added afterwards
+  sidecar: >-
+    level 0's layout exactly (the files level 0's Sidecar class reads), under outputs/mp_approx_six_base/<name>/, with
+    U_q = the in-pool golds plus the top 20 of each of the nine functions (KEEP_TOP 20), folds and the inner split by
+    level 0's rules, and the first-support STRUCT bucket by D0.1's rule. On metaqa, 2wiki and squad the queries are
+    level 0's, so a later level can set the six-dataset pair beside the trio pair on the same rows.
+  descriptive_gap: >-
+    the seed-mean full-pool recall@5, hit@1 and full_coverage@5 of G_k and T_k per dataset are filed as the gap that
+    the ladder's levels would approximate (as level 0's gaps_already_filed). They are not a result of this file, carry
+    no interval and no reading, and are never set beside a number of another file.
+
+placement:
+  every_stage: laptop CPU, the machine and thread count of stage 2's six-dataset fits
+  threads: work 1 runs at 8 threads (stage 2's fits, amendment_7_2026_09_23); work 2 at 4 (stage 2's eval records)
+  one_at_a_time: >-
+    the laptop has 15.7 GB of RAM and stage 2's joint fit peaked at 9.4 GB, so the fits run one after another (seed 0,
+    1, 2), each in a fresh process, and work 2 starts after the last fit
+  why_not_the_host: >-
+    the joint fit and the scoring pass read the node embeddings of every pool of all six datasets from the served CRAG
+    files through the frozen packer. A host mirror of those files is about 56 GB, about 13 hours of upload at the rate
+    measured on 2026-09-29 (docs/GPU_HOST_HANDOVER.md#the-data-problem), and a host-CPU stage would also need its own
+    dated authorization and mirror verification. The laptop runs the fits without the transfer and on the platform of
+    the six-dataset GNN they are matched to.
+  a_later_host_placement: >-
+    if a later file moves any part of this base to the host, it files the authorization, the mirror and its
+    verification first; a host-CPU fit is a new draw, never a replica of a laptop seed
+
+compute:
+  estimate: >-
+    the trio twin's epochs took about 23 to 40 minutes against 75 to 156 for the trio GNN; stage 2's joint GNN epochs
+    took 3.6 to 6.4 hours on this laptop at 8 threads. At the same ratio a joint twin epoch is about 1 to 2 hours, so a
+    fit of up to 6 epochs is about 4 to 12 hours and the three fits about 12 to 36 hours. The scoring pass is about 3
+    to 5 hours at 4 threads (stage 2's per-query eval times, nine forwards instead of three).
+  ceiling: >-
+    45 fit-hours for the three fits. Before a fit starts, the seconds of the fits already filed plus that fit's
+    projection (the longest filed fit, or 15 hours before any is filed) must stay within it; otherwise ceiling_breach.json
+    is written and no further fit starts. The frozen rule's epoch_limit_s (28800 s) stays the per-epoch abort.
+  disk: about 5 MB per checkpoint and a checkpoint file while a fit runs; work 2's sidecars about 1 to 4 GB per dataset
+
+inputs:   # sha256 of the file bytes unless marked LF (CRLF folded to LF)
+  gnn_checkpoints:   # outputs/universal_v2/six/fits/, weights (.pt) and fit record (.json)
+    u_gnn_v2_ef__H128__six__s0: {weights: 88f56eeffbe53fb5e7db334d642ec2dc476410fa2e1fb84b196e748ed5e6e144, record: 3148c572d5a2d1ceaf62395f96531f95b53793a83a40370bb793f6796abc5241}
+    u_gnn_v2_ef__H128__six__s1: {weights: aabe9110122b51048d027a8fbeaed2e518beed2edcc677a034ab5594310161cd, record: 7f7df04d771a1d4ed68e936f4e448e801074654627cc4c56b8a998df7547cea0}
+    u_gnn_v2_ef__H128__six__s2: {weights: ac4bf9c2b1868249e4fd41cd16bdb2f5b7529e6ea5f406494344f149ce0ddd54, record: 3c480be2c6255cabcf36578a4d126acf359bbcfc7e7482f8b36a7e08570d8bfc}
+  caches:   # outputs/universal_v2/cache/<name>/<kind>/meta.json
+    metaqa: {fit: 86df15b12245051e27841b6e078b79790691a80bd945a6a370722049d6b601cc, select: 9235d8fbdc7426b93f711e8071f35251a95760395561ede395fc76e3e842a9d7}
+    2wiki: {fit: fe288e6ddea941aa961b99e6d1218f0c6f3636f4b341478895804cf1b3d03ec3, select: 4e78a1be3bf036fbfd38c226a0a2acc80e7abb47305dc69dff4de2fdcd3817b7}
+    squad: {fit: 49128b083b63436e9ae3ff16795aaaf31e8f10a1dcd55e159f815e92035d7344, select: 2db328bdcc4ce64935d095683e72591ff00f7bac7d9043ba652bfebb5596288c}
+    hotpotqa: {fit: 9e44cb0821c6dd96762bc01555fc348a9a0bc6d44d4c5e41748bccbe59d6fb41, select: 699a43bfdfc742ebbc2bd31feb8129feb79aa4627b9e5dc488acd4d3bc8c1e02}
+    musique: {fit: db46c8e396bc9dbc371fb177015688705ddce9ee60b04443a8fd7fdce44c7bf7, select: 9e16f118da2f5252acad8f3a68b46948a7731d46a3ac1e293ace43e8b398d3a8}
+    webqsp: {fit: 19598124b2baada8db6913b424e921a411065c1e581d43c6fc5448ccf737c4d4, select: c50c45185f0f58023958160023d6fa24e6896839c238bcaf0d5d2870c081c6b4}
+  contract:
+    feature_contract: {path: outputs/universal_v2/feature_contract.json, sha256: 21d30260c7ef71c7cc217c2b32054625780db7e6b40c79d3c03fded658109e91}
+    selection: {path: outputs/universal_v2/selection.json, sha256: 3ed48ae3d04334ba367cb81b8b363d32db0e2bf746e4f692d7af0936bea4e3b6}
+  frozen_code_lf:   # checked at the start and the end of every stage
+    configs/universal_v2.yaml: bce0d1e92de4f184f09f0770fd378e2fa63bf469fdf31bb904d7471a11eeb562
+    configs/m3b_controlled_comparison.yaml: 9c0e6e21e2fc8a88f35419e10e87f83b9018db0104500dad27a09de3dc10d09d
+    scripts/universal_v2_run.py: bc6badb19643a1f968e80ba22fb1497c50bfd344b06bffb306778dabecbf4dd4
+    scripts/universal_v2_six.py: 086525a8584b636692343f4ff11148aac91de076dfe12c8c23ef05c4f5ed7aa6
+    scripts/m3b_run.py: 6dc5f13167e3e9e7bff64df1ceef85af42831bdaef47d6c9487b5b71473108a4
+    scripts/m3b_compile.py: 825ee987d27731c54f6e6a5a4f6d6cf68a4d746409b88533f8262be35cd263f8
+    scripts/m3b_contract.py: 3ea60222f0a8db92d23676b49f428acb02068d3d6e865dfcb9a8b74a1f3e65a1
+    src/mp_retrieval/m3b_train.py: b17722c11cd4ce3194d784bba41b7cb3dc514354b5cce70cd1980d9ab7376eb6
+    src/mp_retrieval/m3b_models.py: cbe32ea0772a22fd5cd1dfdb8f2b81e11a85a9e6b6e60bfc05036f5121aeb05c
+    src/mp_retrieval/m3b_features.py: 0310e553d2a49d6528cf47065ff0b11180544df5c11eca2d94eb13bcb0f47ed3
+    src/mp_retrieval/m3b_pools.py: 219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697
+    src/mp_retrieval/universal_v2_models.py: e49e7a1b2c143e2b6a7f039857046e7ec0d9a3f15fe5d032e22ab50fac1fd479
+    src/mp_retrieval/universal_v2_features.py: 34a5eec553d8fc1e576829f96a8461dbc4e9490088e082e9ef0a127ab73e8427
+  stage_2_eval:   # for work 2's integrity check; pinned when work 2's code is committed, before it runs
+    dir: outputs/universal_v2/six/eval/
+    files: '<name>.npz and <name>_query_ids.json for the six datasets'
+
+this_file_does_not_touch:
+  stage_2: every stage-2 cache, checkpoint, eval array, record and document keeps its bytes; universal_v2_six.py and universal_v2_run.py are imported unchanged
+  ladder: levels 0 to 5 keep their declarations, scripts, tests, sidecars, probes, records and documents
+  package: the CRAG package is read in place and never written; nothing from it enters git
+  competitors: no checkpoint, score, target or number becomes an input, target, teacher, gate or selection criterion of any retriever
+
+hard_stops:   # on any: file hard_stop_<date> with the evidence, leave the status line, report
+  - a pinned input or frozen code file differs from its sha256
+  - the twin's parameter count is not 330955
+  - universal_v2_six.open_six or training_rule_six refuses (a cache that is not the frozen contract or the filed carve, or a training rule that is not the frozen one)
+  - the frozen rule's EpochTooLong abort
+  - the fit-hour ceiling above
+  - in work 2, any integrity mismatch
+
+outputs:
+  work_1: outputs/mp_approx_six_base/fits/ (weights, fit records, the fit log)
+  work_2: outputs/mp_approx_six_base/<name>/ (level 0's sidecar layout), scoring records
+  record: dated blocks appended to this file (fits_record_<date> after work 1, run_record_<date> after work 2)
+
+tests:   # tests/test_mp_approx_six_base.py
+  - the declaration's pins parse and the frozen code files hash to them
+  - the fit stage builds u_mlp_v2_mix through the frozen make_model with 330,955 parameters on the frozen contract's inputs
+  - a fit whose record exists is not repeated; the fit-hour ceiling refuses a fit that would breach it
+  - fit keys and output paths are this file's, never stage 2's directories
+
+execution:
+  - commit this file alone
+  - commit scripts/mp_approx_six_base.py (work 1) and its tests, with no number
+  - run the three fits in order on the laptop; file fits_record_<date>
+  - commit work 2's code and its tests, pinning the stage-2 eval arrays, with no number
+  - run work 2; file run_record_<date>; status RUN; commit; STOP_FOR_REVIEW
