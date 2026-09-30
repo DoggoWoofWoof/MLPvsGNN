@@ -186,6 +186,15 @@ inputs:   # sha256 of the file bytes unless marked LF (CRLF folded to LF)
   stage_2_eval:   # for work 2's integrity check; pinned when work 2's code is committed, before it runs
     dir: outputs/universal_v2/six/eval/
     files: '<name>.npz and <name>_query_ids.json for the six datasets'
+    pins:   # sha256 of the file bytes, filed 2026-09-30 with work 2's code (scripts/mp_approx_six_base_score.py), before it ran
+      metaqa: {npz: 04e774f5d80671650d027f6cb22b0804175d1bda8534c920f1b4530e6aaaefe7, query_ids: b491d9e90e786c1d356d2a24142ec1b810e657efdfadff85a44ff1b489618692}
+      2wiki: {npz: 1510643f7f391f8dd1bddc019489720a720095b0f18ca042de1cdaa61b852d28, query_ids: d439a33c22f39186f8e54f596aeb2bcb83a5d27745a0dc9285e8990f16923cd2}
+      squad: {npz: 65165d12a90bf3bd7163527ed70c0def824b9d6a38391e8688e1dc4e1d58bc46, query_ids: 3ce32ec30d8920c8e0be25c2d53e325b29e4d16a5b16f7dfc9f564eb86d8a93c}
+      hotpotqa: {npz: 07d9638a89072c7ba9ab6d1dc713f2fb22a810661b29a48f6be313e89e4f6000, query_ids: 4d171f8d6c9b67d7a7edd01fd14dcc842d8ed42a0054b7ea32e87e728327141a}
+      musique: {npz: 1577fbd667b91501f707375c27e0488d4770ceea1877488e5210ebb160074f9a, query_ids: 4412638ce9a31e412545fb750130f843f5abbdc8e52849cfe6dea840acbd1024}
+      webqsp: {npz: 04a985da87b0a9edc83388c9b12d3462098e5faf733623af6c346d9f0ad3a78f, query_ids: 6292e45188980c4dd91606656f405d9435932fa9368fa575019590d68143ef19}
+    level_0_code_lf:   # the level-0 module work 2 imports unchanged (CRLF folded to LF)
+      scripts/mp_approx_l0.py: de51b154c82a3591e1cc9aefcbdf9c3e5b2965b6ac425d7af53a2c51044bd163
 
 this_file_does_not_touch:
   stage_2: every stage-2 cache, checkpoint, eval array, record and document keeps its bytes; universal_v2_six.py and universal_v2_run.py are imported unchanged
