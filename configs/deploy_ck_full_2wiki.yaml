@@ -1,0 +1,353 @@
+phase: DEPLOY_CK_FULL_2WIKI
+opened: 2026-09-30
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+track: MP-APPROX (the deployable step, advisor step 4; not MP-ORACLE)
+extends: >-
+  configs/deploy_ck_2wiki.yaml (RUN at d2e51c3). On 2wiki's V2_HELD_CONFIRMATION half (6,286 queries), recall@5, seed
+  means over three host_gpu_det fits: twin 0.8533, ck_qi 0.8574, ck_full 0.8926, ck_self 0.8504, gnn 0.8972. Its reading
+  was CK_PARTIAL for the compiled form ck_qi (ck_share 0.093 [0.045, 0.142]) with COMPILED_COST (ck_qi - ck_full -0.0352
+  [-0.0381, -0.0321]); the per-query form ck_full, its reference, read CK_KEEPS descriptively (ref_share 0.895 [0.851,
+  0.944]; ck_full - gnn -0.0046 [-0.0068, -0.0024]). Its latency table timed each arm's forward alone at a batch of one on
+  the host and named the end-to-end timing with the fast compiler as step 4's file. This is that file, for ck_full.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+question: >-
+  End to end, from a query's cached first-stage lists to its top-5, with the fast feature compiler wired in and on one
+  machine, how much of the GNN's recall@5 gain over its matched twin does ck_full keep, and at what fraction of the GNN's
+  latency (p50, p95, p99) and memory? Every arm is deploy_ck_2wiki's sealed fits, unchanged: the twin (u_mlp_v2_mix),
+  ck_full and the GNN (u_gnn_v2_ef), seeds 0, 1 and 2.
+role: >-
+  The advisor's decision after deploy_ck_2wiki, quoted in authorization. The selected arm is ck_full; its role is a
+  compressed, query-conditioned one-hop message-passing approximation. It is not a non-message-passing MLP and it is not
+  a QLS-U replacement: its kernel is learned propagation by configs/universal_v2.yaml#learned_vs_fixed_propagation (its
+  message weights kappa and its values are trainable and applied over the pool edges), and its neighbour side reads the
+  query, so the kernel is built per query and cannot be compiled once (L7, deploy_ck_2wiki). What this file measures is
+  the retrieval it keeps and the time and memory it costs, beside the GNN on the same machine.
+
+authorization:
+  given: >-
+    2026-09-30, the advisor's reply to the two questions filed after deploy_ck_2wiki, pasted by the user. Quoted:
+    "Yes, advance `ck_full` — but do not call it the non-MP solution"; the declaration "DEPLOY_CK_FULL_2WIKI / selected
+    arm: ck_full / role: compressed/query-conditioned one-hop MP approximation / NOT: non-message-passing MLP, QLS-U
+    replacement"; "Then measure it properly end-to-end against GNN"; "don't claim a speed advantage until that stage";
+    "Keep it small: same held population; same three seeds; ck_full frozen architecture; GNN as same-machine comparator;
+    no architecture changes"; the measurements R@5, FullCov@5, Hit@1, end-to-end p50/p95/p99, peak RAM, the
+    query-dependent kernel-build time, the forward time and the total latency; and the result as the fraction of the GNN
+    gain retained beside the runtime ratio.
+  order_quoted: >-
+    "Do not pause the six-dataset fits. Let them finish." Then: "finish six-dataset base seeds 1–2; file their
+    records/eval; then make the laptop idle; wire `fast_features.py`; run the final p50/p95/p99 end-to-end latency stage."
+  go_ahead: >-
+    standing: "keep continuing autonomusly without asking for perms and try to find improvements and pause only at
+    something substancial". This file is committed alone, before the script that runs it, and is then run as written.
+  terminal: STOP_FOR_REVIEW after the run record. Any other dataset, a refit, a batch size other than one, a GPU timing, or a compiled form of ck_full each need their own file.
+
+corrections_to_the_proposal:   # checked against the code and deploy_ck_2wiki's record before this file was written
+  same_three_seeds_are_the_sealed_fits: >-
+    "same three seeds" is read as deploy_ck_2wiki's nine sealed fits of these arms (seeds 0, 1, 2), pinned below by the
+    bytes and the content of their weights. Nothing is refitted: a laptop refit would be a new draw on another placement,
+    and "ck_full frozen architecture" with "no architecture changes" leaves nothing to fit.
+  the_kernel_is_built_inside_the_forward: >-
+    ck_full's query-dependent kernel (psi and the values from the query-conditioned halo row of every entry, kappa, alpha,
+    the sum) is computed inside its forward, so deploy's forward-only table already contained it. What that table did
+    not time is the path around the forward: the per-query pool, the embedding gather, the feature compile, the pack and
+    the top-K. This file times the whole path, and times the kernel module separately inside the forward.
+  what_the_arms_share: >-
+    all three arms read the same compile (universal-v2's frozen contract, 197 columns) and the same packed batch. The
+    pack builds the message edges for every arm and the twin reads none of them, so the twin's end-to-end time is an
+    upper bound for a server that runs the twin alone. The shared stages are timed per arm all the same: each arm is
+    timed as a whole server.
+  scores_are_remade_on_this_machine: >-
+    the Pareto point pairs a retention with a latency, and no number is set beside a number made on another machine. The
+    retention is therefore scored again, on the laptop CPU, from the same weights and the same population, and is never
+    set beside deploy_ck_2wiki's host_gpu_det numbers. The CPU's scores of the same weights may differ from the GPU's in
+    the last bits (configs/cpu_gpu_equivalence.yaml: score-level NOT_EQUIVALENT); the number of queries where a metric
+    differs from deploy_ck_2wiki's host eval arrays is filed per fit as a systems count, never a reading.
+  wiring_the_fast_compiler: >-
+    src/mp_retrieval/fast_features.py (f4fc3c2) reproduces compile_query_v2 bit for bit under one BLAS configuration (its
+    tests; the BLAS-thread trap of configs/host_mirror_six.yaml). Every stage of this file that compiles runs at 8
+    OpenBLAS threads, the count at which amendment 2's laptop reference was packed, and compiles every query with the
+    fast compiler and, outside any clock, with the reference; any difference is a hard stop. The fast compiler is
+    imported unchanged and is not edited by this file (its freeze stands).
+  forward_compiled_is_not_timed: >-
+    ck_full has no compile-once form (L7: its neighbour side reads the query). Its forward_compiled (the moments) is
+    scored beside the forward by the imported eval pass as deploy_ck_2wiki scored it, as an exactness check only; it is
+    never timed and never an arm.
+
+this_file_does_not_touch:
+  fits: deploy_ck_2wiki's weights and records are read and pinned, never written; no arm is fitted
+  rows: >-
+    2wiki's M3B eval population (dev, 12,576 queries), as deploy_ck_2wiki declared it. No carve is read; no test split
+    is read.
+  frozen: >-
+    M2-M3B, universal-v2, the MP-Approx levels, deploy_ck_2wiki (its declaration, script, weights, records and document),
+    the fast feature compile (f4fc3c2), the equivalence and qualification files keep their bytes. scripts/deploy_ck_2wiki.py
+    is imported unchanged; the module globals it reads at call time are rebound in this process only, as scoring.rebinding
+    lists, and no file is edited.
+  six_base: configs/mp_approx_six_base.yaml and its fits are not read or written; this file's laptop stages start only after its fits end and its records and eval are filed (the advisor's order)
+  package: the CRAG package is read in place on the laptop, read-only, never written, moved or copied
+  competitors: no output of this file becomes an input, target, teacher, gate or selection criterion of QLS-U, M3 or M4
+
+arms:   # deploy_ck_2wiki's arms and builds, unchanged; weights sha256 = file bytes, content sha256 = deploy_ck_2wiki.state_digest
+  twin:
+    build: universal_v2_run.make_model("u_mlp_v2_mix") unchanged
+    parameters: 330955
+    role: the matched twin; no learned propagation; the floor of the gain
+    fits:
+      twin__H128__2wiki__s0: {weights_sha256: 52abdfd9b62a932b8db8156e9ee3729e4f2ba417dcad15538dbdfb93e20db604, content_sha256: 7ca0d7d2ea0bd13a01481970f5e5dd036adb0fd41315f875a1ada83de6dd7ec1, record_sha256: 05c63e112bf4ddae35f1ea1688528733c03e3716e915ad07a7c6b9d26d302166}
+      twin__H128__2wiki__s1: {weights_sha256: e6437e2855f3fd00b0778a0da708d8b41a85c4e8c29e8fa2233e2a7dd6645fb2, content_sha256: 645330806544fda082fd274bdd6be6eb1068a552baa5e8c95d8146372e47eb22, record_sha256: fb14508aa708fb3689fa7cac68e931d76f9352d07699b6c868f3c789c7fdfb69}
+      twin__H128__2wiki__s2: {weights_sha256: b55a431baadf6f86da5c0e13b37b8a04984c08e1faeb819b8412731bd9bf9ea1, content_sha256: 8d52a4e70770397343cb8ea7f74daacc4123f2b229becbca7aa1ae7c2c609755, record_sha256: 00def42f6c525a8fa7742235ed6b49b73545e5a449ce4687f270c592fe7e7729}
+  ck_full:
+    build: compiled_kernel.build_ck(side="full", form="KERN") unchanged
+    parameters: 390475
+    role: >-
+      the selected arm: a compressed, query-conditioned one-hop message-passing approximation (the twin plus one hop of
+      the factorised kernel, 4 heads of rank 32, value width 16, whose neighbour side reads the query)
+    fits:
+      ck_full__H128__2wiki__s0: {weights_sha256: 835b3b6d800bedf689873d4ce67033e10d97bc0c878763c8a5d6bfb6b2a1072f, content_sha256: cbd7b8facc90e4cd1b38b9983a5c38fb4d6e42b4afe6d8535f2da9afe8c59a7b, record_sha256: cf612d93a876d453670b80d1be11398b680de79ef5bf757433d9e4ccaa71c5f6}
+      ck_full__H128__2wiki__s1: {weights_sha256: 3599e375b4ce1c6cc3f9570bb388b2a6ec1664cef2cc9b1fc3e5560af218698b, content_sha256: 307ce52750ebec446e1651d00014b2b9258a9627e026d5f788dcdf0668baffa1, record_sha256: e50c52db2b5a2126a0ae89e6a8346a451f2708054dc8f79ad520c1b94971c9d1}
+      ck_full__H128__2wiki__s2: {weights_sha256: 3d2ce734bfc2b9f1d1279714fcfdc6a85c5c06651e8193d2b3eac8616d5a5a82, content_sha256: fa6452b946c094376b58e2923acf3d925c856729fbe167eb84ff70a863de25f5, record_sha256: 4219ce7156a7a8bbf9e82d14c48fd6d91e50908b978edb83f93f876d8891d023}
+  gnn:
+    build: universal_v2_run.make_model("u_gnn_v2_ef") unchanged
+    parameters: 420932
+    role: the same-machine comparator (three message-passing steps, edge features, evidence flow structurally 0 on 2wiki)
+    fits:
+      gnn__H128__2wiki__s0: {weights_sha256: 4b7eb3488ee5620d0d788c0bd74e1be56afdfdbf98a7e43a8ba87c013a5d7d9a, content_sha256: ae2fa7d5e31f1cd2c94c2602b8db68cc22b349af065e36f2c3dbcc96ff965cb0, record_sha256: fb43aab3cf945ad501285db0566f347c9ade939f8862fc444a28da76f23ff7a9}
+      gnn__H128__2wiki__s1: {weights_sha256: c32ba3c54eb5259522ec3b3406a8a795eda5c89c9c7a3d82efa90c186c6a4504, content_sha256: 13899d6a3765f44e2b6b7f691373fef0b6f6523c1db570f75dde1a064253f302, record_sha256: cd025d9fb8b2f1952ca646b38eab9c930dbbabe0b05facbe9b8514a85c03e3ab}
+      gnn__H128__2wiki__s2: {weights_sha256: 8ec5310606dea773e105592b40ba3a01fdf490c730faf6000609ea3e816dd77e, content_sha256: 6feac3b84f764c6b5f822ca06259fc65bed9eaa30317725b975c53cf20f24fda, record_sha256: 367c4daba20ae532f50d7477df5333be3d4c3a5c19aa4c6fb847922342575186}
+
+population:
+  split: dev
+  queries: 12576
+  ids_sha256: 9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f
+  halves: {V2_GATE: 6290, V2_HELD_CONFIRMATION: 6286}
+  rule: deploy_ck_2wiki's population, checked by its eval_population unchanged (digest, size, split and halves against this block and universal-v2's filed values)
+  primary_half: V2_HELD_CONFIRMATION, deploy_ck_2wiki's primary half; V2_GATE and the whole population are read beside it with the same bands
+
+scoring:   # stage score: the retrieval of every fit, on the laptop CPU
+  pass: >-
+    deploy_ck_2wiki.eval_placed, imported unchanged, with device "cpu", no CPU-timed copies (cpu_models empty) and
+    amendment 2's laptop reference as its batch check (outputs/deploy_ck_2wiki_reference/batches_laptop.json, sha256
+    17353b73..., the first 16 eval batches compared field by field as they are packed). Its checks stand: the population,
+    the halves, the ceiling against the headroom cell, the M3B MRR audit on every scorer, the agreement with the frozen
+    M3B fixed rrf, the compiled-form scores of ck_full beside its forward. The nine fits are loaded by this file's own
+    loader against the pins above and built by deploy_ck_2wiki.build_model (its parameter pins).
+  rebinding:   # deploy_ck_2wiki's module globals, rebound in memory in this process only; the sealed script is not edited
+    compile_eval_query: >-
+      this file's checked compile: the dense rows gathered as before (nodes.read), then the fast compiler
+      (fast_features.compiler_for at 8 threads; none, i.e. the reference would serve, is a hard stop) and the reference
+      compile_query_v2 on the same inputs; pool, seeds_local, scalars (bit for bit), seedw and every edge array compared
+      as tests/test_fast_features.py compares them; any difference is a hard stop; the fast compile is returned
+    EVAL: outputs/deploy_ck_full_2wiki/eval
+    OUT: outputs/deploy_ck_full_2wiki (where a hard stop writes its evidence)
+    LATENCY_QUERIES: 0 (deploy_ck_2wiki's forward-only latency block does not run; this file's latency stage owns timing)
+  record_fields_rewritten: the eval record's file field names this file and the rebinding is recorded beside it
+  metrics: recall@5 (primary), full_coverage@5 (co-read), hit@1 (descriptive); per arm, the per-query mean over its three seeds
+  host_agreement: >-
+    systems only: per fit, the number of queries where recall@5, full_coverage@5 or hit@1 differs from
+    deploy_ck_2wiki's host eval arrays (outputs/deploy_ck_2wiki/eval/2wiki.npz, pinned), with the query ids aligned by
+    the pinned id list. Filed, never read, never used to change anything.
+
+latency:   # stages latency-prepare, latency, memory: systems measurements, all on the laptop
+  sample:
+    timed: 1024 queries of V2_HELD_CONFIRMATION, evenly spaced over its positions in population order (numpy linspace over the half's positions, rounded; all distinct)
+    warm_up: 64 queries of V2_GATE, evenly spaced the same way, run through the whole path before each timed pass and never timed
+  arms_and_seed: twin, ck_full and gnn, seed 0 of each (the architecture, not the weights, sets the cost)
+  path:   # per query, a batch of one; each stage timed with time.perf_counter; total = the wall time of the whole path
+    pool: >-
+      the query's pool rebuilt from its cached first-stage lists under the frozen construction (equal_rrf_budget_50 +
+      STRUCT h1_c25): m3b_pools.seeds_of, m3b_compile.base_rows on the query's own row, m3b_pools.expand_hops,
+      m3b_compile.build_pool, all imported unchanged; outside the clock it must equal the pool the population's prepare
+      built (a difference is a hard stop)
+    gather: the pool's served embeddings (context.nodes.read), as deploy_ck_2wiki's compile_eval_query gathers them
+    compile: the fast compiler (compiler_for(...).compile, v2), from the gathered rows
+    pack: universal_v2_models.pack_queries_v2 of the one query
+    forward: V2.arm_view and the model's forward, under torch.no_grad, in eval mode
+    topk: torch.topk of the scores at k = min(5, pool size) and the global ids of the top entries
+  not_charged: >-
+    the first-stage retrieval (the query's dense embedding and its dense and SPLADE top-1000 lists, read from the M3B
+    caches; upstream of every arm and identical for all), loading the context and the weights, the numba JIT (filed as
+    startup seconds), the fixed scorers and every check
+  passes:   # in each timed process, in this order
+    e2e_fast: the primary; the whole path with the fast compiler, no hooks
+    e2e_reference: descriptive; the same path with compile_query_v2 in place of the fast compiler (what the wiring saves)
+    breakdown: >-
+      descriptive; the e2e_fast path again with forward pre- and post-hooks on the node-local modules each arm shares
+      with the twin (input, body where present, readout) and on ck_full's kernel module. graph_part = forward minus the
+      node-local modules (the GNN's edge encoding, relations, cells and evidence flow; ck_full's q_state, kernel and
+      message projection; about 0 for the twin); kernel = ck_full's kernel module alone, the query-dependent kernel
+      built from the query-conditioned halo and applied. The hooks are kept out of the primary pass.
+  checks_outside_the_clock: >-
+    before any timing (latency-prepare, one process): for every sampled and warm-up query the rebuilt pool equals the
+    prepared pool and the fast compile equals the reference (hard stops), and each arm's seed-0 scores and top-5 from the
+    cached compile are filed. After each timed pass, every query's top-5 ids and the largest score difference from the
+    filed ones (E2E_PATH_DIFFERS if a top-5 differs).
+  rounds: >-
+    3 rounds; in each, every arm in a fresh process, in the rotated order round 0 twin, ck_full, gnn; round 1 ck_full,
+    gnn, twin; round 2 gnn, twin, ck_full. Every process records its startup seconds (context, weights, JIT), its ready
+    working set, its peak working set and the CPU frequency at its start and end.
+  memory: >-
+    peak RAM is filed two ways. (a) Each timed process's peak working set (psutil peak_wset): the whole server, the shared
+    context included. (b) The model-side working memory: per arm and round a fresh process that loads only the arm's
+    seed-0 weights and the pre-packed batches of the 128 sampled queries with the largest pools (latency-prepare writes
+    them, pinned by sha256), runs one warm-up forward, records the working set, runs the forward over all 128, and files
+    the peak working set's increase over that point, beside the arm's parameter and buffer bytes.
+  laptop_state: >-
+    before each timed or memory process: AC power (psutil.sensors_battery; on battery the driver waits up to 30 minutes,
+    then hard stops) and the system CPU below 15% over a 3-second sample (the driver waits up to 20 minutes, polling
+    every 30 seconds, then runs and flags LAPTOP_NOT_IDLE). The active power scheme (powercfg /getactivescheme) is read
+    and filed, never changed. No other stage of this project runs while the latency processes run.
+
+statistics:
+  retention: >-
+    deploy_ck_2wiki's procedure: one resample matrix per half, default_rng(0), 1000 resamples of the half's queries with
+    replacement (deploy_ck_2wiki.resample_matrix), 95% percentile intervals; contrasts are paired differences of per-query
+    seed means.
+  contrasts:
+    gnn_gain: gnn - twin
+    full_gain: ck_full - twin
+    full_vs_gnn: ck_full - gnn
+  shares:   # read only where the denominator's interval lies above 0
+    full_share: (ck_full - twin) / (gnn - twin)
+  latency: >-
+    a cluster bootstrap over the 1024 timed queries: default_rng(0), 1000 resamples of query positions with replacement;
+    a drawn query brings its three rounds. Per resample and arm the p50, p95 and p99 of the pooled e2e_fast totals; the
+    ratios ck_full / gnn (primary), twin / gnn and ck_full / twin per percentile; 95% percentile intervals. Points are the
+    same statistics on all 3 x 1024 values. The forward alone, the graph part and the kernel get the same treatment,
+    descriptively.
+  memory: the median over the three rounds of each arm's model-side increase, and its ratio ck_full / gnn; descriptive, with the parameter bytes
+
+readings:   # filed before any number of this file exists
+  primary_half: V2_HELD_CONFIRMATION
+  retention:
+    metric: recall@5
+    co_read: full_coverage@5
+    descriptive: hit@1
+    bands:   # exactly one, on the primary half and metric
+      GNN_GAIN_ABSENT: gnn_gain's interval reaches 0 (lower end <= 0) -- there is no GNN gain on this half to keep
+      FULL_KEEPS: full_share >= 0.75 and its interval's lower end >= 0.50
+      FULL_PARTIAL: not FULL_KEEPS, and full_gain's interval lies above 0
+      FULL_NO_GAIN: full_gain's interval reaches 0 (lower end <= 0)
+  speed:
+    statistic: the e2e_fast p50 ratio ck_full / gnn
+    bands:   # exactly one
+      E2E_FASTER: the ratio's interval lies at or below 0.90 (upper end <= 0.90)
+      E2E_MARGINAL: the upper end lies above 0.90 and below 1.00
+      E2E_NOT_FASTER: the upper end is 1.00 or more
+  flags:
+    FULL_NOT_BELOW_GNN: full_vs_gnn's interval reaches 0 or above (upper end >= 0)
+    GATE_HALF_DIFFERS: the retention band on V2_GATE is not the reading
+    FC5_DIFFERS: the retention band on full_coverage@5 (primary half) is not the reading
+    E2E_SLOWER: the p50 ratio's interval lies above 1.00 (lower end > 1.00)
+    TAIL_DIFFERS: the speed band computed on p95 or on p99 is not the p50's
+    FORWARD_ONLY_DIFFERS: the speed band computed on the forward alone is not the end-to-end one
+    MEMORY_ABOVE_GNN: ck_full's model-side memory increase (median over rounds) exceeds the GNN's
+    E2E_PATH_DIFFERS: any timed query's top-5 differs from the cached pass's
+    LAPTOP_NOT_IDLE: any timed or memory process started without the idle condition
+  pareto_statement: >-
+    filed from the numbers, in this form: "ck_full keeps {full_share} [{lo}, {hi}] of the GNN's recall@5 gain over the
+    twin on V2_HELD_CONFIRMATION at {r50} [{lo}, {hi}] of the GNN's end-to-end p50 latency ({r95} at p95, {r99} at p99)
+    and {m} of its model-side memory increase; laptop CPU, 8 threads, a batch of one, the fast compiler wired in." The
+    twin's ratios are filed beside it as the no-propagation floor.
+  interpretation: >-
+    FULL_KEEPS with E2E_FASTER: one query-conditioned hop keeps most of the GNN's gain for measurably less end-to-end
+    time, which is the Pareto point the advisor asked for. FULL_KEEPS with E2E_MARGINAL or E2E_NOT_FASTER: the retention
+    holds but the shared path dominates the time, so the forward's saving does not reach the server. FULL_PARTIAL or
+    FULL_NO_GAIN would contradict deploy_ck_2wiki's host reading of the same weights. None of these opens a stage.
+  anticipated: >-
+    FULL_KEEPS (deploy_ck_2wiki's ref_share on the same weights). The speed band is open: deploy_ck_2wiki's host CPU
+    forward ratio ck_full / gnn was about 0.56 at p50 (a host number, the basis of the anticipation only, never compared
+    with this file's), and every arm also pays the shared path, which dilutes the ratio; E2E_FASTER or E2E_MARGINAL is
+    anticipated.
+  wording: >-
+    ck_full is named a compressed, query-conditioned one-hop message-passing approximation. No reading may call it a
+    non-message-passing model, an MLP or a QLS-U replacement, and none may be phrased as "message passing is unnecessary",
+    "we do not need message passing" or "the MLP wins": whatever ck_full keeps is kept by message passing. No speed
+    claim is made except the band this file reads. All numbers are dev-split numbers on one dataset, scored and timed on
+    the laptop; none is a canonical result, and none is set beside a host number or an earlier stage's number.
+
+inputs:   # sha256 of the file bytes unless marked LF
+  freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+  frozen_code_lf:   # imported unchanged; every stage re-hashes them
+    scripts/deploy_ck_2wiki.py: b132abfa5ae170b049d283ce567473b86f66c8f3476194b957d48aa45ccf1071
+    scripts/universal_v2_run.py: bc6badb19643a1f968e80ba22fb1497c50bfd344b06bffb306778dabecbf4dd4
+    scripts/universal_v2_split_audit.py: b23d98e120f7587f61328eac4b0a6fbed2478a95657db78ce29e5c85f190d2df
+    scripts/m3b_run.py: 6dc5f13167e3e9e7bff64df1ceef85af42831bdaef47d6c9487b5b71473108a4
+    scripts/m3b_compile.py: 825ee987d27731c54f6e6a5a4f6d6cf68a4d746409b88533f8262be35cd263f8
+    scripts/m3b_contract.py: 3ea60222f0a8db92d23676b49f428acb02068d3d6e865dfcb9a8b74a1f3e65a1
+    scripts/m3a_headroom.py: d3df956c55f852fbe1882d4a129c8a86ce70e429a49d92351b74c090dcf42a87
+    scripts/cpu_gpu_equivalence.py: 71ffa5d89619e02f50618287c3891d7fefb0893b693c97c6dc1e8c6ae7a9a390
+    src/mp_retrieval/device_placement.py: eebc902bfcac629a80256b4434806c47934a1b5b392fc09a3d44d98ece716256
+    src/mp_retrieval/universal_v2_models.py: e49e7a1b2c143e2b6a7f039857046e7ec0d9a3f15fe5d032e22ab50fac1fd479
+    src/mp_retrieval/universal_v2_features.py: 34a5eec553d8fc1e576829f96a8461dbc4e9490088e082e9ef0a127ab73e8427
+    src/mp_retrieval/m3b_features.py: 0310e553d2a49d6528cf47065ff0b11180544df5c11eca2d94eb13bcb0f47ed3
+    src/mp_retrieval/m3b_models.py: cbe32ea0772a22fd5cd1dfdb8f2b81e11a85a9e6b6e60bfc05036f5121aeb05c
+    src/mp_retrieval/m3b_train.py: b17722c11cd4ce3194d784bba41b7cb3dc514354b5cce70cd1980d9ab7376eb6
+    src/mp_retrieval/m3b_pools.py: 219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697
+    src/mp_retrieval/compiled_kernel.py: cf28e2a44a1a9bc0ca62a5ee0de8ad25983c94abe37a8e19864c2304974d2095
+    src/mp_retrieval/fast_features.py: 58c48286a7c891e1b1e04cba5dcdc5ba8f1c025b7c005146e9e67207ee759ca2
+  files_sha256:
+    outputs/deploy_ck_2wiki_reference/batches_laptop.json: 17353b736b2faf14add3d5148c66647fe96d120f242d7829fa41add7df821e2c
+    outputs/deploy_ck_2wiki/eval/2wiki.npz: 868e7dc08fd1cb5111c76e0d4485426b899c489ba29ad6332f947cd0cb627cfb
+    outputs/deploy_ck_2wiki/eval/2wiki_query_ids.json: d439a33c22f39186f8e54f596aeb2bcb83a5d27745a0dc9285e8990f16923cd2
+    outputs/m3b/eval/2wiki.npz: d2196c2f7769512071f1a9592504be6e1bdeff9729f1b2bcfae45f1ebdd76313
+  configs_read: configs/universal_v2.yaml, configs/m3b_controlled_comparison.yaml and the headroom config, through universal_v2_run.load_configs unchanged, as deploy_ck_2wiki read them
+
+placement:
+  machine: >-
+    the laptop (Inspiron-14; 12 logical and 10 physical CPUs; 15.7 GB), CPU only, float32; torch 2.8.0+cpu, numpy 2.3.2,
+    numba 0.67.0. Every stage sets OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, NUMEXPR_NUM_THREADS and
+    NUMBA_NUM_THREADS to 8 before numpy, numba and torch load, and torch.set_num_threads(8).
+  why_the_laptop: >-
+    the fast compiler needs numba, which only the laptop's environment carries (the host's rx environments are not
+    edited), and the Pareto point needs the retention and the latency from one machine.
+  identical_code: >-
+    every stage runs from one git commit, the commit that adds scripts/deploy_ck_full_2wiki.py, and records the LF sha256
+    of every repository module it imported (the absolute-path guard of deploy_ck_2wiki.module_shas). The file stage checks
+    that they are one set, equal to the committed files.
+  no_cross_machine_numbers: no number of this file is set beside a number made on the host
+
+compute:
+  score: >-
+    12,576 queries compiled twice (the fast compiler and, as its check, the reference), nine fits and ck_full's compiled
+    form scored on the CPU in blocks of 227 queries, and the fixed scorers; projected under 1.5 h, peak working set a few GB
+  latency: nine timed processes (startup, three passes of 1,088 queries) and nine memory processes; projected under 2 h
+  ceiling: >-
+    a stage over 4 hours is stopped by the driver and filed as a deviation; nothing else changes. The six-base's laptop
+    fits and eval end before any stage here starts, so no stage competes with them for memory.
+
+hard_stops:   # on any: the evidence is written to outputs/deploy_ck_full_2wiki/hard_stop.json, nothing further runs in that process, and it is reported
+  - any pin in inputs or arms fails (code, files, weights bytes or content, records)
+  - the fast compiler does not serve 2wiki's context, or a query's fast compile differs from the reference in any array
+  - the population, its split or its halves differ from population; any test split
+  - amendment 2's batch check, the ceiling check, the MRR audit or the M3B fixed-rrf agreement fails
+  - a rebuilt pool differs from the prepared pool
+  - the laptop is on battery for 30 minutes before a timed process
+  - an arm's parameter count is not its pin
+
+outputs:
+  laptop: >-
+    outputs/deploy_ck_full_2wiki/{eval/2wiki.{npz,json}, eval/2wiki_query_ids.json, latency/sample.json,
+    latency/packed_top128.pt, latency/<arm>__r<round>.json, memory/<arm>__r<round>.json, read.json, record.json}
+    (git-ignored) and docs/DEPLOY_CK_FULL_2WIKI.md
+  run_record: run_record_deploy_ck_full_2wiki_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN
+
+tests:   # tests/test_deploy_ck_full_2wiki.py, laptop CPU, committed with the script and run before any stage
+  - this file parses; its arms, fits, bands and flags are the script's in order; every fit key is deploy_ck_2wiki's
+  - the frozen code and the pinned files equal their pins
+  - the rebinding sets exactly the four globals and is undone by the context that made it
+  - the checked compile detects a one-bit change in the scalars, the seed weights, an edge array or the pool
+  - the latency sample has 1024 distinct held positions and 64 distinct gate positions, evenly spaced, and is deterministic
+  - the cluster bootstrap reproduces a known ratio on synthetic latencies, and every speed band and flag lands where its rule says
+  - the retention bands on synthetic arrays land where the rules say (each band, an unreadable share)
+  - module_shas survives torch.ops' relative __file__ (torch.ops.aten imported first)
+  - >-
+    a smoke on the real 2wiki data, laptop CPU, read-only, run first once the six-base has ended: the score pass on a
+    shard of the population with the nine fits (the fast and reference compiles equal on every query), then
+    latency-prepare, one timed process and one memory process on 16 sampled queries, then read and doc on those records
+
+execution:
+  order: >-
+    this file committed alone -> the script and its tests committed, the tests passing on the laptop -> (the six-base
+    fits end; its records and eval are filed) -> the smoke -> score -> latency-prepare -> latency (nine timed processes)
+    and memory (nine processes) -> read -> doc -> file (run record) -> STOP_FOR_REVIEW
