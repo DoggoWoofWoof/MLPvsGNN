@@ -250,3 +250,76 @@ amendment_1_2026_09_30_record_crash:   # filed after seed 0's first process ende
     --stage fits runs seeds 1 and 2 in order on the laptop, as placement declares, each in a fresh process at 8 threads
     with the first launch's environment. Its output is appended to fits.log and fits.err, which keep the first process's.
   unchanged: everything else
+
+amendment_2_2026_09_30_host_placement:   # filed while seed 2 fits on the laptop, before any work-2 process runs anywhere
+  authorization: >-
+    the user, in session on 2026-09-30 (about 17:05Z): "pls mpve and do on the host for faster execution".
+    placement.a_later_host_placement asks a later file for the authorization, the mirror and its verification before
+    any part of this base moves; this block files all three, and it moves work 2 only.
+  what_moves: >-
+    work 2: the three equivalence runs and the six scoring passes run on the host CPU. Work 1 stays on the laptop. Seed
+    2's fit (running since 15:40Z) finishes there, because a host-CPU fit would be a new draw, never a replica
+    (placement.a_later_host_placement), and fits_record_<date> is filed on the laptop from the three records. The file
+    stage (run_record_<date>) also runs on the laptop, which holds git.
+  mirror:   # configs/host_mirror_six.yaml, RUN at 06b6667: all six datasets VERIFIED
+    root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+    freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+    verify_records:   # sha256 of the file bytes; outputs/host_mirror_six/ on the host, where scripts/host_mirror_hf.py verify wrote them
+      outputs/host_mirror_six/verify_metaqa.json: 1afb2506fb85f6df532d27bed5ecfa11580de55614222bb504145f57b76c02ec
+      outputs/host_mirror_six/verify_2wiki.json: 3924f3a6e52b77ac2d053d68b92be3e22224ee68548ff99bc1d5a48b978f471d
+      outputs/host_mirror_six/verify_squad_musique.json: 82c031e20b3f535789115c71d2951d9a49483ac51347d254789f4c0846d9fb8f
+      outputs/host_mirror_six/verify_hotpotqa.json: 7bf639021d627bee5c036d12c8c5e09d681d887831334a8707a454a04935d335
+      outputs/host_mirror_six/verify_webqsp.json: 35c5e4114b803e74e9908e467dedc5326200f10eb048b17f7b18f5a2e52ea349
+    how_it_is_read: >-
+      before a host process opens anything, it checks that the root is the one configs/host_mirror_six.yaml names
+      (host.mirror_root). It also checks that each verify record has its pinned sha256 and is VERIFIED at
+      <root>/data/final_canonical, with the declared freeze and the loader imported from the mirror, and that together
+      the records cover the six datasets. Anything else refuses the process. The mirror reaches the frozen code only in
+      memory: universal_v2_run.load_configs is wrapped in the process so that substrate.package_root is the mirror, for
+      level 0's stage_score and for score_pair alike. No config file is edited, and m3b_compile.open_package's own check
+      of the served freeze still runs.
+  host_placement:
+    machine: >-
+      the lab host through tools/rx (docs/GPU_HOST_HANDOVER.md): host CPU only, rx env mpr-cpu (torch 2.8.0+cpu, numpy
+      2.3.2, the laptop's pinned closure), Windows native. No GPU is used.
+    threads: >-
+      unchanged from placement.threads. Each scoring process runs at 4 torch threads with BLAS pools of 2
+      (M3B_BLAS_THREADS unset, as on the laptop); each equivalence runs at level 0's 6 and 6.
+    verdict_and_this_deviation: >-
+      configs/cpu_gpu_equivalence.yaml's verdict_host_cpu_t8 (EQUIVALENT_WITHIN_TOLERANCE; T1 bit-identical to the laptop
+      on all 1,056 cells) names the host CPU at 8 threads. These processes run at work 2's declared counts instead,
+      because work 2's integrity check compares against stage 2's stored per-query values, which were computed at 4
+      threads. That check stays exact, and it is this placement's proof, query by query, that the host reproduces the
+      laptop's forwards at these counts: G_k's 14 metrics on every scored query of the six datasets, and in each trio
+      equivalence level 0's own check of T_k and G_k against the pilot's laptop values. A mismatch is the declared hard
+      stop (hard_stops: in work 2, any integrity mismatch). Work 2 then returns to the laptop under a further amendment,
+      and no tolerance is added. T_k of the six pair has no stored counterpart (work_2_scoring_pass.integrity.twin). Its
+      host forwards stand on the same arm's exact trio check and on G_k's.
+    at_once: >-
+      placement.one_at_a_time was the laptop's RAM (15.7 GB). The host's 127.7 GB holds several scoring processes at
+      once (stage 2's eval peaked at 7.7 to 11.8 GB per process), so the jobs are submitted together and the host
+      scheduler orders them.
+  shards: >-
+    systems only. A scoring pass may run as n shard processes (--shard i/n). Shard i scores the chunks ci with ci mod n
+    = i of the declared chunking, which is unchanged (level 0's CHUNK_NODES over the mean pool size). One process
+    without --shard then finds every chunk written and assembles them through level 0's assemble. Stage 2's metaqa eval
+    ran in four shards the same way. The rows, the chunks, the arrays and every check are one process's, and a chunk no
+    shard wrote is scored by the assembling process. Each shard files shard_<i>of<n>.json (its chunks, seconds, peak
+    RSS, threads, placement and module sha256), and the assembling process carries these records into meta.json.
+    Declared shards: musique 4, metaqa 3, webqsp 2; squad, 2wiki and hotpotqa one process each.
+  sidecars: >-
+    the sidecars stay on the host, under outputs/mp_approx_six_base/<name>/ there, where the ladder's host-native levels
+    read them. The link down is about 0.75 MB/s (docs/GPU_HOST_HANDOVER.md), and level 0's trio sidecars were 1.2 to
+    1.8 GB each. After the six passes, a host process (--stage verify) re-reads every array against its meta.json
+    through level 0's Sidecar and files verify_host.json. The laptop fetches meta.json, qids.json, query.npy, the
+    q_*.npy arrays, the shard records, the equivalence records and verify_host.json. It checks each fetched array
+    against meta.json, takes verify_host.json for the arrays that stayed on the host, and files run_record_<date>. The
+    record says where each sidecar is.
+  transfer: >-
+    pushed with rx --inputs before the jobs that read them, each checked on the host by the existing pin checks. For
+    work 2: the six stage-2 eval arrays and id lists (inputs.stage_2_eval), outputs/universal_v2/feature_contract.json
+    and selection.json (inputs.contract), the twelve cache meta.json files (inputs.caches) and the three stage-2
+    checkpoints (inputs.gnn_checkpoints). For the equivalence: level 0's inputs, which are the trio's pilot eval arrays
+    and id lists and the pilot's six checkpoints. After fits_record_<date>: the three twin fits.
+  identical_code: every work-2 process, on the host or the laptop, runs the commit that adds this amendment's code; the file stage checks it as declared, shards included
+  unchanged: everything else, including every population, the integrity checks, the hard stops, the sidecar layout and the thread counts
