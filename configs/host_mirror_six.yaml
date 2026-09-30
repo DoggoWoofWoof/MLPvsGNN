@@ -1,5 +1,5 @@
 phase: HOST_MIRROR_SIX
-status: DECLARED_NOT_RUN
+status: RUN
 declared: 2026-09-30
 kind: >-
   Systems only. This file moves the served package's six-dataset read set to the GPU host and verifies it. It computes
@@ -138,3 +138,37 @@ execution:
     verify, then the records are fetched
   - a run record here; status RUN once all six datasets verify
 stop_after_run: STOP_FOR_REVIEW
+
+run_2026_09_30:   # the record of this file's execution: all six datasets VERIFIED on the host
+  manifest: {path: outputs/host_mirror_six/manifest.json, sha256: 0c929af723f0091ae54771b103dfa85004f0592b77a93c96eb4951d867bec361, files: 577, bytes: 69297874669, pins_mismatched: 0}
+  survey:
+    job: 260930-121406-mirror-survey-618c
+    found: >-
+      97 files (8.61 GB) at the read-only host source with the manifest's size and sha256, and none with an equal size
+      and a different hash. They were copied on the host and never uploaded.
+  upload:
+    first_repo: >-
+      Swastik9895/mpr-six-mirror, 06:44Z to 07:10Z: the package files, squad, musique, metaqa and webqsp in full, then
+      hotpotqa's first 13 files, when the hub answered 403 "Private repository storage limit reached"
+      (transport_amendment_1).
+    rx_route: >-
+      transport_amendment_1's rx push of 2wiki was stopped at 07:29Z after about 0.9 GB. All of it is partial files
+      (.rxpart and .rxpart.json) in the host's 2wiki folder, which verify does not read. They are left for the user to
+      remove.
+    second_repo: >-
+      KK9895/mpr-six-mirror (transport_amendment_2), 07:31Z to 10:37:32Z: hotpotqa (166 files, 22.28 GB) and 2wiki
+      (188 files, 27.79 GB), 50.07 GB in 11,136 s, 4.50 MB/s overall from the laptop (1.95 to 9 MB/s per group).
+    left_on_the_hub: both private repos still hold what was sent (10.64 GB and 50.07 GB); removing them is the user's call
+  datasets:   # the host download job, the bytes by how each file reached the mirror, and the host verify
+    squad_musique: {job: 260930-122839-mirror-dl-squad-musique-99be, files: 62, seconds: 54.0, download: 3286497681, host_copy: 118444, inline: 43059815, verify: VERIFIED}
+    metaqa: {job: 260930-123905-mirror-dl-metaqa-c571, files: 42, seconds: 137.7, download: 6277598620, host_copy: 444925419, inline: 5629647, already_present: 157889, verify: VERIFIED}
+    webqsp: {job: 260930-124333-mirror-dl-webqsp-8158, files: 125, seconds: 27.1, download: 997902223, host_copy: 8168952161, inline: 1975675, already_present: 157889, verify: VERIFIED}
+    hotpotqa: {job: 260930-142226-mirror-dl-hotpotqa-13eb, files: 171, seconds: 326.0, download: 22251069184, host_copy: 16537, inline: 32420606, already_present: 157889, verify: VERIFIED}
+    2wiki: {job: 260930-160903-mirror-dl-2wiki-89a2, files: 193, seconds: 393.7, download: 27768016659, host_copy: 19391, inline: 19672607, already_present: 157889, verify: VERIFIED}
+  verify: >-
+    every dataset: 0 missing and 0 hash mismatches against the manifest, the served freeze 58958f33a3af... equal to the
+    declared one, and the loader imported from the mirror. Each job's file count includes the four package files.
+  host_rate: hub to host 70 MB/s for 2wiki (27.77 GB in 394 s) and 68 MB/s for hotpotqa
+  places_nothing: >-
+    This record places no stage. configs/deploy_ck_2wiki.yaml places its 2wiki stages on the host and reads this mirror
+    through its own verify stage, which includes the 16-batch check above (its amendment 2).
