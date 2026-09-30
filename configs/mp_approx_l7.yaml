@@ -1,6 +1,6 @@
 phase: MP_APPROX_L7
 opened: 2026-09-30
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-ORACLE
 extends: >-
@@ -322,3 +322,609 @@ execution:
     this file alone (commit); the script and tests (commit); push; one host job per dataset (probe, 2wiki's repeat,
     read), submitted at once; fetch; record, doc and run record on the laptop (commit)
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l7_2026_09_30:
+  utc: '2026-09-30T09:05:56Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  held_half_read: false
+  checkpoints_updated: 0
+  code_commit: a5a53aa
+  placement: probe, repeat and read host-native on host_gpu_det; doc and file on the laptop
+  identical_code: 17 module paths over 7 host processes, one sha256 each, equal to the committed files
+  record_sha256: ea111b6de423c034a9dcf8da38ef38a07c95113b9be448c8d24820017f12517d
+  document: docs/MP_APPROX_L7.md
+  document_sha256: 2385898f038eaa289765a93b4ed616942a59870ce0666830130428b8bdec8944
+  cross_dataset:
+    compile_once_supported: false
+    compile_once_partial: true
+    compile_once_not_supported: false
+    weight_needed: false
+    kernel_reference_held: true
+    negative_control_as_expected: true
+  datasets:
+    metaqa:
+      reading: L7_LOW
+      primary_rho_bar:
+        point: -0.5771345375884321
+        ci:
+        - -0.691120585461445
+        - -0.4773205865207032
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      - hit@1
+      flags:
+      - FIT_NOT_RANK (r, B0-mlp)
+      - FIT_NOT_RANK (r, L3-att)
+      - FIT_NOT_RANK (r, L5-kern)
+      - FIT_NOT_RANK (r, L7-qi)
+      - FIT_NOT_RANK (r, L7-qw)
+      - FIT_NOT_RANK (r, L7-qi-mean)
+      interpretation:
+      - qi_below_kernel
+      - qi_above_node_local
+      - halo_carries
+      - objective_adds
+      rho_bar_r:
+        B0-mlp:
+          point: -0.6502180865126636
+          ci:
+          - -0.7693134409395539
+          - -0.548617912865365
+        L3-att:
+          point: -0.07606954540831261
+          ci:
+          - -0.16111894784623154
+          - 0.002286047738100012
+        L5-kern:
+          point: -0.3583713831963052
+          ci:
+          - -0.46647831672799545
+          - -0.2676109263934019
+        L7-qi:
+          point: -0.5771345375884321
+          ci:
+          - -0.691120585461445
+          - -0.4773205865207032
+        L7-qw:
+          point: -0.6069957567079483
+          ci:
+          - -0.7292942494600438
+          - -0.5072890630206982
+        L7-qi-mean:
+          point: -0.567494708403755
+          ci:
+          - -0.6844505222037996
+          - -0.46877603804677
+        L7-qi-list:
+          point: -0.16759352143006767
+          ci:
+          - -0.2450751421763001
+          - -0.10279866531460387
+        ref:twin:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 1.0641403298566843
+          ci:
+          - 1.0439276753170708
+          - 1.0862734396128872
+      rho_bar_e:
+        B0-mlp:
+          point: 0.6711418281558569
+          ci:
+          - 0.6548151400362869
+          - 0.6872866412606435
+        L3-att:
+          point: 0.7529375710219116
+          ci:
+          - 0.7383556665722792
+          - 0.7685277283324474
+        L7-qi:
+          point: 0.6942774071451486
+          ci:
+          - 0.6772170697657027
+          - 0.7122044175152475
+        ref:no_edge:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.7723165284481165
+          ci:
+          - 0.7608990438367087
+          - 0.7831152055866807
+      contrasts:
+        deploy_cost:
+          point: -0.21876315439212696
+          ci:
+          - -0.2819267725010592
+          - -0.15553866864263427
+        halo_cost:
+          point: -0.24862437351164307
+          ci:
+          - -0.317709154722731
+          - -0.18795267215953312
+        weight_cost:
+          point: 0.029861219119516114
+          ci:
+          - -0.011666654498171402
+          - 0.07416413582227738
+        qi_vs_attention:
+          point: -0.5010649921801196
+          ci:
+          - -0.583221257618091
+          - -0.4322867170363743
+        qi_over_node_local:
+          point: 0.07308354892423141
+          ci:
+          - 0.013066144331067335
+          - 0.13387544769472684
+        query_conditioning:
+          point: -0.009639829184677096
+          ci:
+          - -0.058664517122239725
+          - 0.03479500824771748
+        objective:
+          point: 0.40954101615836447
+          ci:
+          - 0.3356432606448907
+          - 0.488128489691321
+        kernel_vs_attention:
+          point: -0.28230183778799256
+          ci:
+          - -0.34671267455210936
+          - -0.22457331332630484
+        edge_qi_vs_attention:
+          point: -0.05866016387676298
+          ci:
+          - -0.06945943837892268
+          - -0.046864190236291584
+      shares:
+        qi_share:
+          point: 0.25041759284500026
+          ci:
+          - 0.04867173528694395
+          - 0.42955268915893474
+          readable: true
+        qi_attention_share:
+          point: 0.12729031547072858
+          ci:
+          - 0.023385307352698427
+          - 0.22337503385860924
+          readable: true
+      bands_r:
+        B0-mlp: L7_LOW
+        L3-att: L7_LOW
+        L5-kern: L7_LOW
+        L7-qi: L7_LOW
+        L7-qw: L7_LOW
+        L7-qi-mean: L7_LOW
+        L7-qi-list: L7_LOW
+        ref:twin: L7_LOW
+        ref:other_seed: L7_HIGH
+      bands_e:
+        B0-mlp: L7_MID
+        L3-att: L7_HIGH
+        L7-qi: L7_MID
+        ref:no_edge: L7_LOW
+        ref:other_seed: L7_HIGH
+      queries: 2400
+      uq_rows: 165893
+      entries: 1967659
+      repeat: null
+      refit:
+        r/B0-mlp:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L5-kern:
+          level: 5
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+      parameters:
+        L7-qi: 133633
+        L7-qw: 133825
+        L7-qi-mean: 66689
+        L7-qi-list: 133633
+        L5-kern: 183553
+      level3_mirror_sha256_host: 049d5cd2c3719895924b5add914c0749e79c0c5acba7ff175bb15955e98d2b91
+      probe_meta_sha256: 506979cd2f9c0d620c5a36d434e65e0ae64f5cd19fbb0cab42c69fb12e5dac4f
+      read_sha256: e39a994760abab56d2834a683b515ae1d925d4e02ff1ee51016ce44b4e25f672
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    2wiki:
+      reading: L7_LOW
+      primary_rho_bar:
+        point: 0.13345887553153402
+        ci:
+        - 0.07936197106026277
+        - 0.18324722509836178
+      readable_metrics:
+      - recall@5
+      - full_coverage@5
+      flags: []
+      interpretation:
+      - qi_below_kernel
+      - qi_above_node_local
+      - halo_carries
+      - objective_adds
+      rho_bar_r:
+        B0-mlp:
+          point: 0.05515008953705951
+          ci:
+          - -0.0023080171961092923
+          - 0.10876124997411514
+        L3-att:
+          point: 0.798781103475703
+          ci:
+          - 0.7592336039603387
+          - 0.8384264892536124
+        L5-kern:
+          point: 0.746077286781
+          ci:
+          - 0.7056781451794062
+          - 0.7893193557545815
+        L7-qi:
+          point: 0.13345887553153402
+          ci:
+          - 0.07936197106026277
+          - 0.18324722509836178
+        L7-qw:
+          point: 0.13340923428446713
+          ci:
+          - 0.0827574955187331
+          - 0.18277528266817683
+        L7-qi-mean:
+          point: 0.15429280066915838
+          ci:
+          - 0.09988919003045228
+          - 0.2057098803128909
+        L7-qi-list:
+          point: 0.3251471448126585
+          ci:
+          - 0.27799893708966117
+          - 0.37145679299673406
+        ref:twin:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.8671689526484379
+          ci:
+          - 0.8373145034304812
+          - 0.8928626771136463
+      rho_bar_e:
+        B0-mlp:
+          point: 0.518299591351174
+          ci:
+          - 0.5017344264309785
+          - 0.5344967226973752
+        L3-att:
+          point: 0.8164118266656971
+          ci:
+          - 0.8024182736784313
+          - 0.8292471579272047
+        L7-qi:
+          point: 0.6227307215016251
+          ci:
+          - 0.6068640287339411
+          - 0.6372235677601998
+        ref:no_edge:
+          point: 0.0
+          ci:
+          - 0.0
+          - 0.0
+        ref:other_seed:
+          point: 0.9162165148492982
+          ci:
+          - 0.9074916672819765
+          - 0.9247838816362408
+      contrasts:
+        deploy_cost:
+          point: -0.612618411249466
+          ci:
+          - -0.66985781043899
+          - -0.5586926391390141
+        halo_cost:
+          point: -0.6126680524965329
+          ci:
+          - -0.6665211178575733
+          - -0.5601047140959243
+        weight_cost:
+          point: 4.964124706688389e-05
+          ci:
+          - -0.02962593094840133
+          - 0.026676951787286015
+        qi_vs_attention:
+          point: -0.665322227944169
+          ci:
+          - -0.7211265924406928
+          - -0.6128583576954365
+        qi_over_node_local:
+          point: 0.07830878599447451
+          ci:
+          - 0.0376778711228262
+          - 0.11798680895452812
+        query_conditioning:
+          point: -0.02083392513762436
+          ci:
+          - -0.0551898924532988
+          - 0.012874427152280012
+        objective:
+          point: 0.19168826928112448
+          ci:
+          - 0.15311176700939466
+          - 0.231010797703816
+        kernel_vs_attention:
+          point: -0.05270381669470292
+          ci:
+          - -0.08088864846689163
+          - -0.02451607159856355
+        edge_qi_vs_attention:
+          point: -0.193681105164072
+          ci:
+          - -0.2078397392394722
+          - -0.1792654134858618
+      shares:
+        qi_share:
+          point: 0.11333869372466836
+          ci:
+          - 0.05808884838859024
+          - 0.16700354117191102
+          readable: true
+        qi_attention_share:
+          point: 0.10530597100800279
+          ci:
+          - 0.0537199316768347
+          - 0.15682426917163902
+          readable: true
+      bands_r:
+        B0-mlp: L7_LOW
+        L3-att: L7_HIGH
+        L5-kern: L7_MID
+        L7-qi: L7_LOW
+        L7-qw: L7_LOW
+        L7-qi-mean: L7_LOW
+        L7-qi-list: L7_MID
+        ref:twin: L7_LOW
+        ref:other_seed: L7_HIGH
+      bands_e:
+        B0-mlp: L7_MID
+        L3-att: L7_HIGH
+        L7-qi: L7_MID
+        ref:no_edge: L7_LOW
+        ref:other_seed: L7_HIGH
+      queries: 6290
+      uq_rows: 245055
+      entries: 1580750
+      repeat:
+        unit: r_L7-qi
+        bit_identical: true
+        max_abs_diff: 0.0
+        repeat_json_sha256: 7a2eb11fd46b4981a4584cc2eacfeedded466dcb5498137c7529386f586351e2
+      refit:
+        r/B0-mlp:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L5-kern:
+          level: 5
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+      parameters:
+        L7-qi: 133633
+        L7-qw: 133825
+        L7-qi-mean: 66689
+        L7-qi-list: 133633
+        L5-kern: 183553
+      level3_mirror_sha256_host: 4f2db84a5a1b0d806dd3579a24201e73202555d017d7945bc544583cc2cafb66
+      probe_meta_sha256: cccd1d88e94b718a0010fa55ebfd4e9543626ca79c6268359d5c4be856f11c45
+      read_sha256: 7131ad24e1c18b662e687fd3f397f4e2d36f4b2dcb735a8479dbe6ff57dc39ab
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+    squad:
+      reading: NOT_READ
+      primary_rho_bar:
+        point: null
+        ci: null
+      readable_metrics: []
+      flags:
+      - SEED_BOUND
+      interpretation: []
+      rho_bar_r:
+        B0-mlp:
+          point: null
+          ci: null
+        L3-att:
+          point: null
+          ci: null
+        L5-kern:
+          point: null
+          ci: null
+        L7-qi:
+          point: null
+          ci: null
+        L7-qw:
+          point: null
+          ci: null
+        L7-qi-mean:
+          point: null
+          ci: null
+        L7-qi-list:
+          point: null
+          ci: null
+        ref:twin:
+          point: null
+          ci: null
+        ref:other_seed:
+          point: null
+          ci: null
+      rho_bar_e:
+        B0-mlp:
+          point: null
+          ci: null
+        L3-att:
+          point: null
+          ci: null
+        L7-qi:
+          point: null
+          ci: null
+        ref:no_edge:
+          point: null
+          ci: null
+        ref:other_seed:
+          point: null
+          ci: null
+      contrasts:
+        deploy_cost:
+          point: null
+          ci: null
+        halo_cost:
+          point: null
+          ci: null
+        weight_cost:
+          point: null
+          ci: null
+        qi_vs_attention:
+          point: null
+          ci: null
+        qi_over_node_local:
+          point: null
+          ci: null
+        query_conditioning:
+          point: null
+          ci: null
+        objective:
+          point: null
+          ci: null
+        kernel_vs_attention:
+          point: null
+          ci: null
+        edge_qi_vs_attention:
+          point: null
+          ci: null
+      shares:
+        qi_share:
+          point: null
+          ci: null
+          readable: false
+        qi_attention_share:
+          point: null
+          ci: null
+          readable: false
+      bands_r:
+        B0-mlp: NOT_READ
+        L3-att: NOT_READ
+        L5-kern: NOT_READ
+        L7-qi: NOT_READ
+        L7-qw: NOT_READ
+        L7-qi-mean: NOT_READ
+        L7-qi-list: NOT_READ
+        ref:twin: NOT_READ
+        ref:other_seed: NOT_READ
+      bands_e:
+        B0-mlp: NOT_READ
+        L3-att: NOT_READ
+        L7-qi: NOT_READ
+        ref:no_edge: NOT_READ
+        ref:other_seed: NOT_READ
+      queries: 5841
+      uq_rows: 176880
+      entries: 1905184
+      repeat: null
+      refit:
+        r/B0-mlp:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L3-att:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        r/L5-kern:
+          level: 5
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/B0-mlp:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+        e/L3-att:
+          level: 3
+          bit_identical: true
+          max_abs_diff: 0.0
+      parameters:
+        L7-qi: 133633
+        L7-qw: 133825
+        L7-qi-mean: 66689
+        L7-qi-list: 133633
+        L5-kern: 183553
+      level3_mirror_sha256_host: de7c1917942862d24cf419ca09b0dcff0051b2ec3ceb69ab3a8f02dc557792ec
+      probe_meta_sha256: 87b9353bc70144ae218f46ec273b7af870d4d12a0d625f0cee708ae0e6528845
+      read_sha256: 6cf68fea058233dd5c5bee163dd4451f3c1807da9041a55314f9acbace381058
+      placement:
+        host: DESKTOP-SLQMEQH
+        env: mpr-cu128@62fc45e9e1ba
+        device_name: NVIDIA RTX 4500 Ada Generation
+        driver: '596.71'
+        torch: 2.8.0+cu128
+        cuda: '12.8'
+      deviations: []
+      determinism_warnings:
+        probe: 0
+        read: 0
+  host_jobs:
+    2wiki: 260930-133611-mpr-l7-2wiki-6724 (probe, repeat, read; 53m10s runtime; 2 cpu, 8 GB, 0.16 gpu)
+    metaqa: 260930-133618-mpr-l7-metaqa-d9d9 (probe, read; 38m01s runtime; 2 cpu, 8 GB, 0.16 gpu)
+    squad: 260930-133622-mpr-l7-squad-4399 (probe, read; 44m55s runtime; 2 cpu, 8 GB, 0.16 gpu)
+  submitted: all three at once at 2026-09-30T08:06Z under priority 10; each started at 08:08Z, after about two minutes in the queue behind another project's GPU job;
+    nothing was preempted
+  workspace_note: no commit was pushed while the three jobs ran; each read.json's module_sha256 records the modules that ran
