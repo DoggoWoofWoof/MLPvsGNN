@@ -227,3 +227,26 @@ execution:
   - run the three fits in order on the laptop; file fits_record_<date>
   - commit work 2's code and its tests, pinning the stage-2 eval arrays, with no number
   - run work 2; file run_record_<date>; status RUN; commit; STOP_FOR_REVIEW
+
+amendment_1_2026_09_30_record_crash:   # filed after seed 0's first process ended rc 1 and before any process runs again
+  what: >-
+    Seed 0's first fit process (started 04:57Z by --stage fits) ran the frozen rule to its end: six epochs, early stop
+    after epoch 5, best epoch 3, 25,373.9 s. At 12:00Z it wrote the best weights (u_mlp_v2_mix__H128__six__s0.pt,
+    sha256 0b2702d70ae3...) and its checkpoint (finished, epochs_done 6). It then raised FileNotFoundError in module_shas
+    while building the record: torch.ops and torch.classes carry __file__ = "_ops.py" and "_classes.py", which resolve
+    under the repository and name no file. No record was written and the checkpoint was kept. --stage fits exited as
+    declared ("the next seed is not started"); seeds 1 and 2 had not started.
+  fix: >-
+    systems only. module_shas skips a __file__ that is not absolute, as scripts/mp_approx_l3.py and
+    scripts/deploy_ck_2wiki.py already do, and one test is added. No code that packs, fits or scores changes, and no
+    pinned file changes.
+  seed_0: >-
+    runs again through its own finished checkpoint, as work_1.resumable declares: fit_model restores the checkpoint's
+    record and best weights and takes no step. The weights it writes must equal the first process's by content; the first
+    file is kept as outputs/mp_approx_six_base_superseded/u_mlp_v2_mix__H128__six__s0.first_process.pt. Its record's
+    module_sha256 names the fixed script. Its peak RSS and wall seconds are the resuming process's, while the fit's
+    seconds come from the checkpoint.
+  then: >-
+    --stage fits runs seeds 1 and 2 in order on the laptop, as placement declares, each in a fresh process at 8 threads
+    with the first launch's environment. Its output is appended to fits.log and fits.err, which keep the first process's.
+  unchanged: everything else

@@ -128,7 +128,7 @@ def module_shas() -> dict:
     out = {}
     for mod in list(sys.modules.values()):
         f = getattr(mod, "__file__", None)
-        if not f:
+        if not isinstance(f, str) or not os.path.isabs(f):   # torch.ops carries __file__ = "_ops.py", which names no file (amendment 1)
             continue
         p = Path(f).resolve()
         try:

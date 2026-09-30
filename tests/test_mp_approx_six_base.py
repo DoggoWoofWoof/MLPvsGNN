@@ -83,3 +83,16 @@ def test_an_existing_record_is_not_repeated(tmp_path, monkeypatch):
 def test_fit_refuses_another_thread_count():
     with pytest.raises(SystemExit):
         SB.main(["--stage", "fit", "--seed", "0", "--threads", "4"])
+
+
+def test_module_shas_skips_a_module_whose_file_is_not_absolute(monkeypatch):
+    # amendment 1: torch.ops and torch.classes carry __file__ = "_ops.py" and "_classes.py", which resolve under the
+    # repository and name no file; seed 0's first process raised FileNotFoundError there while building its record
+    import torch
+
+    _ = torch.ops.aten
+    assert any(isinstance(getattr(m, "__file__", None), str) and getattr(m, "__file__") == "_ops.py" for m in list(sys.modules.values()))
+    monkeypatch.chdir(ROOT)
+    shas = SB.module_shas()
+    assert "_ops.py" not in shas and "_classes.py" not in shas
+    assert "scripts/mp_approx_six_base.py" in shas and all((ROOT / rel).is_file() for rel in shas)
