@@ -296,6 +296,11 @@ def git_head() -> str | None:
         return None
 
 
+def shown(p: Path) -> str:
+    """A path for a log line: relative to the repository when it lies inside it (the tests write under a temporary directory)."""
+    return p.relative_to(ROOT).as_posix() if p.is_relative_to(ROOT) else str(p)
+
+
 def committed_lf_sha(commit: str, path: str) -> str | None:
     try:
         blob = subprocess.run(["git", "show", f"{commit}:{path}"], cwd=ROOT, capture_output=True, check=True).stdout
@@ -1184,7 +1189,7 @@ def stage_doc(decl: dict, log=log_utc) -> Path:
               "read_sha256": sha256_file(OUT / "read.json"), "eval_sha256": sha256_file(EVAL / f"{NAME}.json")}
     atomic_json(RECORD, record)
     DOC.write_text(LF.join(doc_lines(decl, record)) + LF, encoding="utf-8")
-    log(f"doc: {RECORD.relative_to(ROOT)} and {DOC.relative_to(ROOT)}")
+    log(f"doc: {shown(RECORD)} and {shown(DOC)}")
     return DOC
 
 

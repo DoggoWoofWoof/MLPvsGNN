@@ -476,3 +476,25 @@ amendment_2_2026_09_30_batch_check:   # filed before the verify job and before a
     requires the host test job to pass every collected test with none failed, errored or skipped (a warnings count no
     longer fails it). The mirror's 2wiki record is VERIFIED (configs/host_mirror_six.yaml, run record at 06b6667).
   unchanged: every arm, the rule, the population, the statistics, the readings and amendment 1's placement and scheduling
+
+amendment_3_2026_09_30_doc_log_path:   # filed after the host test job failed and before any fit; no fit has run
+  what: >-
+    The host test job 260930-164321-mpr-ck-tests-f205 (from ed4abd8) passed 25 of 26 tests and failed the real-data
+    smoke at its last step: stage_doc's log line took RECORD.relative_to(ROOT) of a path the smoke places under pytest's
+    temporary directory, and raised ValueError. Every step before it passed on real 2wiki data (the fits, the repeat, the
+    fit and eval batch checks, the tampered reference's stop, eval and read). The record and doc it had already written
+    satisfy the smoke's remaining assertions, as read on the host from its temporary directory. The smoke had not run
+    before: the laptop deselects it (amendment 1). The driver stopped there, as declared, and submitted no fit.
+  fix: >-
+    systems only. stage_doc's log line shows a path relative to the repository only when it lies inside it (shown). One
+    test is added (27 in all). No code that packs, fits, scores or reads changes.
+  reference: >-
+    kept, sha256 17353b73... as amendment 2 pins it. The fix touches no code that packs a batch, and the verify job runs
+    again from the new commit, where it must again find all 64 batches equal.
+  rerun: >-
+    the verify job and the test job run again from the commit that files this amendment, then the fits, eval and read
+    as declared. The first verify job (260930-163908-mpr-ck-verify-cdb8, from ed4abd8: VERIFIED, all 64 batches equal,
+    the three stores built from the mirror and equal by content) and the failed test job are recorded as superseded. The
+    first verify.json is kept in outputs/deploy_ck_2wiki_superseded/. placement.host_native_protocol.identical_code's
+    commit becomes the one that files this amendment.
+  unchanged: everything else, amendment 2's check included

@@ -252,6 +252,12 @@ def test_the_ceiling_guard_stops_before_the_ceiling(decl, out_dirs):
     assert json.loads((D.FITS / "ceiling_breach.json").read_text(encoding="utf-8"))["within_ceiling"] is False
 
 
+def test_a_log_path_outside_the_repository_is_shown_whole(tmp_path):
+    # amendment 3: the host smoke's doc stage logged RECORD.relative_to(ROOT) of a temporary path and raised
+    assert D.shown(D.ROOT / "docs" / "DEPLOY_CK_2WIKI.md") == "docs/DEPLOY_CK_2WIKI.md"
+    assert D.shown(tmp_path / "out" / "record.json") == str(tmp_path / "out" / "record.json")
+
+
 def test_the_mirror_record_must_be_verified_at_the_declared_root(decl, out_dirs, tmp_path):
     good = {"status": "VERIFIED", "freeze_matches_declared": True, "loader_imported_from_mirror": True, "datasets": ["2wiki"],
             "mirror": decl["inputs"]["mirror"]["root"] + "/data/final_canonical"}
