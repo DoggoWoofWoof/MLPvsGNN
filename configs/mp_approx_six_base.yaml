@@ -323,3 +323,130 @@ amendment_2_2026_09_30_host_placement:   # filed while seed 2 fits on the laptop
     and id lists and the pilot's six checkpoints. After fits_record_<date>: the three twin fits.
   identical_code: every work-2 process, on the host or the laptop, runs the commit that adds this amendment's code; the file stage checks it as declared, shards included
   unchanged: everything else, including every population, the integrity checks, the hard stops, the sidecar layout and the thread counts
+
+fits_record_2026_10_01:
+  filed: '2026_10_01'
+  work: work_1_twin_fits
+  arm: u_mlp_v2_mix
+  parameters: 330955
+  fits:
+    u_mlp_v2_mix__H128__six__s0:
+      seed: 0
+      epochs_run: 6
+      best_epoch: 3
+      best_epoch_at_the_cap: false
+      seconds: 25373.9
+      epoch_seconds:
+      - 4359.9
+      - 4976.6
+      - 5028.1
+      - 4743.6
+      - 4153.1
+      - 2110.8
+      select_macro_recall5_trace:
+      - 0.7698
+      - 0.7864
+      - 0.7907
+      - 0.7935
+      - 0.7911
+      - 0.7831
+      state_sha256: 0b2702d70ae33a9e1c58ee06c4f2186398aa54259135bbaf47df00a568367327
+      record_sha256: f678b69536e9e021e5709d36bf026e379a752a766051f82355d8c2ae1622ac67
+      threads: 8
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      pack_workers: 2
+      peak_rss_bytes: 3687796736
+      placement:
+        host: Inspiron-14
+        machine: AMD64
+        python: 3.13.5
+        torch: 2.8.0+cpu
+        device: cpu
+      git_head: f3647d222bb6d5aa4313482c897094c5ebb236f6
+      script_lf_sha256: 8d654fcb00eebc3ee53c92db82438f6a5e84af6e0d8623f46c742a24bf5cdc39
+      utc: '2026-09-30T12:08:29Z'
+    u_mlp_v2_mix__H128__six__s1:
+      seed: 1
+      epochs_run: 6
+      best_epoch: 4
+      best_epoch_at_the_cap: false
+      seconds: 12670.7
+      epoch_seconds:
+      - 2311.1
+      - 1835.4
+      - 2344.2
+      - 2370.3
+      - 1845.1
+      - 1963.7
+      select_macro_recall5_trace:
+      - 0.7718
+      - 0.7854
+      - 0.7791
+      - 0.7861
+      - 0.7905
+      - 0.7882
+      state_sha256: 952922f77fdadf8dca4481d7e3e8f7b988a3195103c1ef23f8bcc326eff148bc
+      record_sha256: f295a9b01bd6e08ea88ffa481339009fcabc43a3d281de7fcd02025b38b4a7d9
+      threads: 8
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      pack_workers: 2
+      peak_rss_bytes: 9358913536
+      placement:
+        host: Inspiron-14
+        machine: AMD64
+        python: 3.13.5
+        torch: 2.8.0+cpu
+        device: cpu
+      git_head: d2e51c37d02862789b16c5aab25d249199ca50f7
+      script_lf_sha256: 8d654fcb00eebc3ee53c92db82438f6a5e84af6e0d8623f46c742a24bf5cdc39
+      utc: '2026-09-30T15:40:02Z'
+    u_mlp_v2_mix__H128__six__s2:
+      seed: 2
+      epochs_run: 6
+      best_epoch: 3
+      best_epoch_at_the_cap: false
+      seconds: 19608.8
+      epoch_seconds:
+      - 3819.3
+      - 2650.2
+      - 3073.0
+      - 2911.5
+      - 3860.4
+      - 3292.7
+      select_macro_recall5_trace:
+      - 0.7693
+      - 0.7855
+      - 0.7924
+      - 0.7956
+      - 0.794
+      - 0.7899
+      state_sha256: 529d5413b1b3e188d2e58ec814129513e48452c48a8881372d574624c71f0241
+      record_sha256: e62877c12c8d83bc52f02f44583c16fa9e6506f2058a2bf3ee774f4c2856422d
+      threads: 8
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      pack_workers: 2
+      peak_rss_bytes: 8567975936
+      placement:
+        host: Inspiron-14
+        machine: AMD64
+        python: 3.13.5
+        torch: 2.8.0+cpu
+        device: cpu
+      git_head: 63c2e5235b7d17b4046d39a60815d9cc9355b752
+      script_lf_sha256: 8d654fcb00eebc3ee53c92db82438f6a5e84af6e0d8623f46c742a24bf5cdc39
+      utc: '2026-09-30T21:07:22Z'
+  fit_hours: 16.015
+  ceiling_fit_hours: 45.0
+  within_ceiling: true
+  one_script: true
+  select_numbers: the early-stopping trace of each fit only; never read as a result (role)
+  next: work 2 (its code is scripts/mp_approx_six_base_score.py); then run_record_<date>
