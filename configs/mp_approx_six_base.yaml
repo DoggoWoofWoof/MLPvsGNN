@@ -1,6 +1,6 @@
 phase: MP_APPROX_SIX_BASE
 opened: 2026-09-30
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-ORACLE
 extends: >-
@@ -450,3 +450,405 @@ fits_record_2026_10_01:
   one_script: true
   select_numbers: the early-stopping trace of each fit only; never read as a result (role)
   next: work 2 (its code is scripts/mp_approx_six_base_score.py); then run_record_<date>
+
+run_record_2026_10_01:
+  utc: '2026-09-30T22:22:10Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: 32bc5b9
+  code: scripts/mp_approx_six_base_score.py
+  placement: work 1 on the laptop CPU at 8 threads; work 2 on the host CPU (amendment 2 where host), the equivalence at level 0's 6 threads, the scoring passes at
+    4
+  held_rows_read: false
+  test_rows_read: false
+  checkpoints_updated: 0
+  fits_record: 'fits_record_2026_10_01 (cee041c): each fit record''s git_head is the repository HEAD when that record was written, not a change of code; the three
+    fits ran one script (LF 8d654fcb)'
+  equivalence:
+    metaqa:
+      equal: true
+      limit: 24
+      queries: 24
+      uq_rows: 1473
+      chunks: 2
+      arrays: 27
+      threads:
+        level0: 6
+        copy: 6
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      record_sha256: f19feaa9cee20bdc27c61bd82419019ba8d8d7d304e9f0d755f1fd450c0aab48
+    2wiki:
+      equal: true
+      limit: 240
+      queries: 240
+      uq_rows: 9312
+      chunks: 2
+      arrays: 27
+      threads:
+        level0: 6
+        copy: 6
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      record_sha256: b34191c76dfb6ceff9e7f9c4beecc87347ff2bf2c313d5f3a7fd4fe9747bfb7d
+    squad:
+      equal: true
+      limit: 500
+      queries: 500
+      uq_rows: 15009
+      chunks: 2
+      arrays: 27
+      threads:
+        level0: 6
+        copy: 6
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      record_sha256: 1bc676e60ffa4594f63c6f842a805af456f884f03e5e64243cd21d78a975e888
+  datasets:
+    metaqa:
+      queries: 2400
+      population_queries: 39138
+      uq_rows: 158237
+      chunks: 219
+      chunk_queries: 11
+      seconds: 11.6
+      threads: 4
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      peak_rss_bytes: 6359740416
+      mismatches: 0
+      held_rows_scored: 0
+      meta_sha256: 88808e48528801e065e091a7c3ac494fdd90c80f85123badd11e17416dc558f0
+      qids_sha256: 557ea775c6f6050ed81647c6da6439e8425d615076a6903e67a18d76e090e684
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      sidecar_at: host
+      shards:
+        shard_0of3.json:
+          chunks: 73
+          queries_scored_here: 803
+          seconds: 2043.6
+          peak_rss_bytes: 7689981952
+          threads: 4
+        shard_1of3.json:
+          chunks: 73
+          queries_scored_here: 803
+          seconds: 2031.4
+          peak_rss_bytes: 8174731264
+          threads: 4
+        shard_2of3.json:
+          chunks: 73
+          queries_scored_here: 794
+          seconds: 2010.8
+          peak_rss_bytes: 7752314880
+          threads: 4
+      queries_scored_by_the_assembling_process: 0
+      descriptive_gap:
+        G:
+          recall@5: 0.7911
+          hit@1: 0.9146
+          full_coverage@5: 0.6736
+        T:
+          recall@5: 0.7284
+          hit@1: 0.7762
+          full_coverage@5: 0.6069
+        G_minus_T:
+          recall@5: 0.0627
+          hit@1: 0.1383
+          full_coverage@5: 0.0667
+    2wiki:
+      queries: 6290
+      population_queries: 12576
+      uq_rows: 262275
+      chunks: 28
+      chunk_queries: 227
+      seconds: 469.9
+      threads: 4
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      peak_rss_bytes: 10211856384
+      mismatches: 0
+      held_rows_scored: 0
+      meta_sha256: 99462ccbc27e5e4eebd0cc0d1d5a01519acddc6121afef79357b815d966a04ba
+      qids_sha256: f15a6fa7fcd1e9ee2e659d51003f305502ce5bd593587a64436c5d606eb6bbb7
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      sidecar_at: host
+      shards: {}
+      queries_scored_by_the_assembling_process: 6290
+      descriptive_gap:
+        G:
+          recall@5: 0.8891
+          hit@1: 0.8886
+          full_coverage@5: 0.7607
+        T:
+          recall@5: 0.8498
+          hit@1: 0.8819
+          full_coverage@5: 0.6667
+        G_minus_T:
+          recall@5: 0.0393
+          hit@1: 0.0067
+          full_coverage@5: 0.0941
+    squad:
+      queries: 5841
+      population_queries: 11873
+      uq_rows: 196013
+      chunks: 13
+      chunk_queries: 479
+      seconds: 261.3
+      threads: 4
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      peak_rss_bytes: 9302786048
+      mismatches: 0
+      held_rows_scored: 0
+      meta_sha256: 495bbb092f6306208a8c5218017d2cd04063f3fd4e85a20fbf92c1b2960f1c81
+      qids_sha256: ebff2bc610f8c4833992ce95fe55264423f033a82257f7376d246589eca56b57
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      sidecar_at: host
+      shards: {}
+      queries_scored_by_the_assembling_process: 5841
+      descriptive_gap:
+        G:
+          recall@5: 0.8869
+          hit@1: 0.7159
+          full_coverage@5: 0.8869
+        T:
+          recall@5: 0.8881
+          hit@1: 0.7237
+          full_coverage@5: 0.8881
+        G_minus_T:
+          recall@5: -0.0012
+          hit@1: -0.0078
+          full_coverage@5: -0.0012
+    hotpotqa:
+      queries: 7405
+      population_queries: 7405
+      uq_rows: 309397
+      chunks: 29
+      chunk_queries: 256
+      seconds: 894.1
+      threads: 4
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      peak_rss_bytes: 11055755264
+      mismatches: 0
+      held_rows_scored: 0
+      meta_sha256: eb28ba53b307100234078bf9b602481399a326c323684b8cfb97b41687c6a226
+      qids_sha256: 4d171f8d6c9b67d7a7edd01fd14dcc842d8ed42a0054b7ea32e87e728327141a
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      sidecar_at: host
+      shards: {}
+      queries_scored_by_the_assembling_process: 7405
+      descriptive_gap:
+        G:
+          recall@5: 0.8967
+          hit@1: 0.832
+          full_coverage@5: 0.8343
+        T:
+          recall@5: 0.8783
+          hit@1: 0.8361
+          full_coverage@5: 0.7937
+        G_minus_T:
+          recall@5: 0.0184
+          hit@1: -0.0041
+          full_coverage@5: 0.0406
+    musique:
+      queries: 2417
+      population_queries: 2417
+      uq_rows: 142460
+      chunks: 220
+      chunk_queries: 11
+      seconds: 12.1
+      threads: 4
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      peak_rss_bytes: 4065230848
+      mismatches: 0
+      held_rows_scored: 0
+      meta_sha256: 8ed957e9b59b815e8e1b4dbaabd3b54dd9ea601f4c93d574c961de7063639afd
+      qids_sha256: 4412638ce9a31e412545fb750130f843f5abbdc8e52849cfe6dea840acbd1024
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      sidecar_at: host
+      shards:
+        shard_0of4.json:
+          chunks: 55
+          queries_scored_here: 605
+          seconds: 2903.7
+          peak_rss_bytes: 13934768128
+          threads: 4
+        shard_1of4.json:
+          chunks: 55
+          queries_scored_here: 605
+          seconds: 2934.4
+          peak_rss_bytes: 13886246912
+          threads: 4
+        shard_2of4.json:
+          chunks: 55
+          queries_scored_here: 605
+          seconds: 2974.8
+          peak_rss_bytes: 15257153536
+          threads: 4
+        shard_3of4.json:
+          chunks: 55
+          queries_scored_here: 602
+          seconds: 2963.0
+          peak_rss_bytes: 13781950464
+          threads: 4
+      queries_scored_by_the_assembling_process: 0
+      descriptive_gap:
+        G:
+          recall@5: 0.5242
+          hit@1: 0.6267
+          full_coverage@5: 0.2317
+        T:
+          recall@5: 0.5082
+          hit@1: 0.6206
+          full_coverage@5: 0.2011
+        G_minus_T:
+          recall@5: 0.016
+          hit@1: 0.0061
+          full_coverage@5: 0.0306
+    webqsp:
+      queries: 1503
+      population_queries: 1503
+      uq_rows: 91191
+      chunks: 137
+      chunk_queries: 11
+      seconds: 6.9
+      threads: 4
+      blas_threads:
+        OPENBLAS_NUM_THREADS: '2'
+        OMP_NUM_THREADS: '2'
+        MKL_NUM_THREADS: '2'
+      peak_rss_bytes: 3949842432
+      mismatches: 0
+      held_rows_scored: 0
+      meta_sha256: 9a0f8b9149a7a3e6b31c78e9d0d3918ff81ea3fbe42eb4882f8651953375e836
+      qids_sha256: 6292e45188980c4dd91606656f405d9435932fa9368fa575019590d68143ef19
+      placement:
+        where: host
+        node: DESKTOP-SLQMEQH
+        mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+        amendment: amendment_2_2026_09_30_host_placement
+      sidecar_at: host
+      shards:
+        shard_0of2.json:
+          chunks: 69
+          queries_scored_here: 755
+          seconds: 1669.8
+          peak_rss_bytes: 10935939072
+          threads: 4
+        shard_1of2.json:
+          chunks: 68
+          queries_scored_here: 748
+          seconds: 1665.4
+          peak_rss_bytes: 10921959424
+          threads: 4
+      queries_scored_by_the_assembling_process: 0
+      descriptive_gap:
+        G:
+          recall@5: 0.6194
+          hit@1: 0.6299
+          full_coverage@5: 0.5045
+        T:
+          recall@5: 0.5968
+          hit@1: 0.5582
+          full_coverage@5: 0.4815
+        G_minus_T:
+          recall@5: 0.0225
+          hit@1: 0.0716
+          full_coverage@5: 0.0231
+  descriptive_gap_note: 'work_2.descriptive_gap: filed, not a result; no interval, no reading, never set beside a number of another file'
+  verify_host:
+    utc: '2026-09-30T22:21:51Z'
+    placement:
+      where: host
+      node: DESKTOP-SLQMEQH
+      mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+      amendment: amendment_2_2026_09_30_host_placement
+    record_sha256: 8db6542a25d70a1bfcb9999b35a8e874e42761df3b2787409fe278b883933503
+    datasets:
+    - 2wiki
+    - hotpotqa
+    - metaqa
+    - musique
+    - squad
+    - webqsp
+  amendments:
+    amendment_1_f3647d2: 'systems only: seed 0''s fit ran to its end and wrote its best weights, then its record failed in module_shas on torch.ops'' relative __file__;
+      the isabs guard was added, seed 0''s record was written from its finished checkpoint (no step taken), and seeds 1 and 2 ran on the laptop as declared'
+    amendment_2_fe4a887_code_32bc5b9: 'work 2 on the host CPU on the user''s authorization: the verified mirror (06b6667) in place of the package, in memory only;
+      shards (musique 4, metaqa 3, webqsp 2); the sidecars stay on the host and --stage verify re-reads every array there'
+  equivalence_rerun: the first metaqa equivalence job (host 260930-225449-six-equiv-metaqa-b72) stopped before any scoring because outputs/m3b/relations/metaqa_rel_embeddings.npy
+    was not yet on the host; it was pushed, and 260930-225549-six-equiv-metaqa-e6be ran the equivalence from the start
+  host_jobs:
+    scoring:
+    - 261001-023926-six-score-hotpotqa-3313
+    - 261001-023929-six-score-musique-0-a6d1
+    - 261001-023931-six-score-musique-1-765c
+    - 261001-023933-six-score-musique-2-6e27
+    - 261001-023934-six-score-musique-3-b29c
+    - 261001-023936-six-score-metaqa-0-5c58
+    - 261001-023938-six-score-metaqa-1-d921
+    - 261001-023940-six-score-metaqa-2-6b1c
+    - 261001-023942-six-score-webqsp-0-6223
+    - 261001-023943-six-score-webqsp-1-e77e
+    - 261001-025057-six-score-squad-r-7377
+    - 261001-025059-six-score-2wiki-r-0eeb
+    scoring_stopped_before_scoring:
+    - 261001-023923-six-score-squad-9125
+    - 261001-023924-six-score-2wiki-d6ff
+    csr_digest: 261001-025100-csr-digest-913c
+    assemble:
+      musique: 261001-035010-six-assemble-musique-67c4
+      webqsp: 261001-035011-six-assemble-webqsp-4366
+      metaqa: 261001-035013-six-assemble-metaqa-0d98
+    verify: 261001-035117-six-verify-a069
+  csr_cache_race: 'two of the first three scoring jobs (261001-023923-six-score-squad-9125, 261001-023924-six-score-2wiki-d6ff) stopped before scoring any query:
+    the six pair''s open_six builds every CSR store cache it lacks (outputs/m3b/csr), and the three jobs that started together raced to write the same webqsp store
+    (os.replace, WinError 32); neither wrote an array. All 18 host stores were then compared with the laptop''s by content (each array''s dtype, shape and sha256;
+    host job 261001-025100-csr-digest-913c): all 18 equal, no temporary file left. squad and 2wiki were resubmitted unchanged as 261001-025057-six-score-squad-r-7377
+    and 261001-025059-six-score-2wiki-r-0eeb'
+  csr_digest_sha256:
+    host: a34bd61c904935fac523554f8c3310d83bf386f25ed431d1be0ba9432da6dfe9
+    laptop: a34bd61c904935fac523554f8c3310d83bf386f25ed431d1be0ba9432da6dfe9
+  assembles: musique, metaqa and webqsp were assembled by three processes of the committed script without --shard, one per dataset, after every shard had written
+    its chunks; each found every chunk written and scored none
