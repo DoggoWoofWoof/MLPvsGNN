@@ -86,6 +86,29 @@ transport_amendment_1:
     If the user frees hub storage, the files the host still lacks may go by the declared HF route instead. The host
     download step does not fetch a file that is already in the mirror with the manifest's hash.
 
+transport_amendment_2:
+  filed: 2026-09-30, before any byte moved by it
+  authorization:
+    quotes:   # the user, verbatim, 2026-09-30; the token the first message carried is written nowhere
+      - "use this token for antoher account"
+      - "done"
+    note: >-
+      The user pasted a second account's token in the chat. This session did not use it. The user registered it in
+      their own terminal (hf auth login), where it is stored under the name mpr.
+  repo: KK9895/mpr-six-mirror      # private, under the second account; privacy is asserted before every write
+  token_name: mpr
+  token_rule: >-
+    The laptop modes take the token from the user's own token store by name (huggingface_hub's get_stored_tokens) and
+    hand it only to huggingface_hub, and the link resolver sends it only to huggingface.co. It is never printed,
+    logged or written. The active token, which other projects use, is neither read nor changed. The host still holds
+    no token.
+  datasets: [hotpotqa, 2wiki]
+  route: >-
+    The declared HF route, unchanged except for the repo and the token: upload (read in place, one commit per group),
+    then per dataset urls, rx push of the link list, host download and verify. It replaces amendment 1's rx route for
+    these two datasets. That push was stopped at 07:29Z after about 0.9 GB, all of it partial files (.rxpart and
+    .rxpart.json in the mirror folder, which verify does not read). The run record lists them.
+
 host:
   mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG   # outside the workspace; the files land under data/final_canonical/
   read_only_sources: [C:/Users/Student2/rx/projects/crag/ws]   # another project's workspace: read and hashed, copied from only on a sha256 match; never written, moved or deleted

@@ -130,10 +130,12 @@ def test_the_resolver_sends_authorization_to_huggingface_only(monkeypatch):
 
     fake = types.ModuleType("huggingface_hub.utils")
     fake.get_session = lambda: Sess()
-    fake.build_hf_headers = lambda: {"authorization": "Bearer <never printed>"}
+    tokens_seen = []
+    fake.build_hf_headers = lambda token=None: tokens_seen.append(token) or {"authorization": "Bearer <never printed>"}
     monkeypatch.setitem(sys.modules, "huggingface_hub.utils", fake)
     assert HM.resolve("https://huggingface.co/datasets/u/r/resolve/main/a") == ("url", "https://cas-bridge.xethub.hf.co/x?X-Amz-Expires=3600")
-    assert HM.resolve("https://huggingface.co/datasets/u/r/resolve/main/b") == ("inline", b"tiny")
+    assert HM.resolve("https://huggingface.co/datasets/u/r/resolve/main/b", "named") == ("inline", b"tiny")
+    assert tokens_seen == [None, "named"]                    # the named token is the one handed to huggingface.co
     assert all(auth for url, auth in seen if url.startswith("https://huggingface.co/"))
     assert not any(auth for url, auth in seen if not url.startswith("https://huggingface.co/"))
 
@@ -155,3 +157,25 @@ def test_the_declaration_names_a_private_repo_a_mirror_outside_the_workspace_and
     assert "/ws" not in decl["host"]["mirror_root"] and decl["host"]["mirror_root"].endswith("/mirror/CRAG")
     assert decl["package"]["root_from"] == "configs/m3b_controlled_comparison.yaml"
     assert len(decl["authorization"]["quotes"]) == 5
+
+
+def test_only_a_declared_repo_is_used_and_a_named_token_must_be_stored(monkeypatch):
+    decl = {"transport": {"repo": "u/one"}, "transport_amendment_1": {"route": "rx"},
+            "transport_amendment_2": {"repo": "k/two", "token_name": "mpr"}}
+    assert HM.declared_repo(decl, None) == "u/one" and HM.declared_repo(decl, "k/two") == "k/two"
+    with pytest.raises(SystemExit):
+        HM.declared_repo(decl, "someone/else")
+    fake = types.ModuleType("huggingface_hub.utils")
+    fake.get_stored_tokens = lambda: {"mpr": "<a stored token>"}
+    monkeypatch.setitem(sys.modules, "huggingface_hub.utils", fake)
+    assert HM.stored_token(None) is None and HM.stored_token("mpr") == "<a stored token>"
+    with pytest.raises(SystemExit):
+        HM.stored_token("missing")
+
+
+def test_amendment_2_names_a_second_private_repo_and_writes_no_token():
+    text = (ROOT / "configs" / "host_mirror_six.yaml").read_text(encoding="utf-8")
+    decl = yaml.safe_load(text)
+    am = decl["transport_amendment_2"]
+    assert am["repo"] == "KK9895/mpr-six-mirror" and am["token_name"] == "mpr" and am["datasets"] == ["hotpotqa", "2wiki"]
+    assert "hf_" not in text.replace("hf_hub", "").replace("host_mirror_hf", "")

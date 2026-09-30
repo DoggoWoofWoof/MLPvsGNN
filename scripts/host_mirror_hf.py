@@ -173,11 +173,33 @@ def stage_manifest(decl: dict, threads: int = 3) -> dict:
     return out
 
 
-def hf_api():
+def hf_api(token: str | None = None):
     os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
     os.environ.setdefault("HF_XET_HIGH_PERFORMANCE", "1")
     from huggingface_hub import HfApi
-    return HfApi()
+    return HfApi(token=token)
+
+
+def declared_repo(decl: dict, repo: str | None) -> str:
+    """transport.repo, or the repo a later transport amendment names; any other repo is refused."""
+    repos = [decl["transport"]["repo"]] + [v["repo"] for k, v in decl.items()
+                                           if k.startswith("transport_amendment_") and isinstance(v, dict) and "repo" in v]
+    repo = repo or repos[0]
+    if repo not in repos:
+        raise SystemExit(f"{repo}: not a declared repo ({repos})")
+    return repo
+
+
+def stored_token(name: str | None) -> str | None:
+    """The token the user stored under this name with `hf auth login`, or None for the active one. It is handed only to
+    huggingface_hub and never printed, logged or written."""
+    if name is None:
+        return None
+    from huggingface_hub.utils import get_stored_tokens
+    tokens = get_stored_tokens()
+    if name not in tokens:
+        raise SystemExit(f"no stored token named {name!r} (see `hf auth list`)")
+    return tokens[name]
 
 
 def private_repo(api, repo: str) -> None:
@@ -212,13 +234,14 @@ def load_survey() -> dict | None:
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
 
-def stage_upload(decl: dict, datasets: list[str], group_bytes: float, group_files: int) -> None:
+def stage_upload(decl: dict, datasets: list[str], group_bytes: float, group_files: int, repo: str | None = None,
+                 token: str | None = None) -> None:
     """Dataset by dataset in the declared order; the repo state and the host survey are read again before each, so a
     survey that lands while the upload runs still spares the files it found."""
     from huggingface_hub import CommitOperationAdd
     man = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    api = hf_api()
-    repo = decl["transport"]["repo"]
+    api = hf_api(token)
+    repo = declared_repo(decl, repo)
     private_repo(api, repo)
     served = Path(man["served"])
     sent, t_all = 0, time.time()
@@ -261,10 +284,10 @@ def stage_upload(decl: dict, datasets: list[str], group_bytes: float, group_file
     print(f"{utc()} upload done: {sent / 1e9:.2f} GB in {time.time() - t_all:.0f}s", flush=True)
 
 
-def stage_status(decl: dict) -> dict:
+def stage_status(decl: dict, repo: str | None = None, token: str | None = None) -> dict:
     man = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    api = hf_api()
-    state = repo_state(api, decl["transport"]["repo"])
+    api = hf_api(token)
+    state = repo_state(api, declared_repo(decl, repo))
     survey = load_survey()
     by = {}
     for f in man["files"]:
@@ -283,13 +306,13 @@ def stage_status(decl: dict) -> dict:
     return by
 
 
-def resolve(url: str):
+def resolve(url: str, token: str | None = None):
     """('url', signed link) or ('inline', bytes). The Authorization header goes to huggingface.co only."""
     from huggingface_hub.utils import build_hf_headers, get_session
     s = get_session()
     for _ in range(6):
         host = urllib.parse.urlparse(url).hostname or ""
-        hdr = build_hf_headers() if host == "huggingface.co" or host.endswith(".huggingface.co") else {}
+        hdr = build_hf_headers(token=token) if host == "huggingface.co" or host.endswith(".huggingface.co") else {}
         r = s.get(url, headers=hdr, allow_redirects=False, timeout=60, stream=True)
         if r.status_code in (301, 302, 303, 307, 308):
             url = urllib.parse.urljoin(url, r.headers["Location"])
@@ -309,11 +332,11 @@ def resolve(url: str):
     raise SystemExit("too many redirects")
 
 
-def stage_urls(decl: dict, datasets: list[str]) -> None:
+def stage_urls(decl: dict, datasets: list[str], repo: str | None = None, token: str | None = None) -> None:
     from huggingface_hub import hf_hub_url
     man = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    api = hf_api()
-    repo = decl["transport"]["repo"]
+    api = hf_api(token)
+    repo = declared_repo(decl, repo)
     state = repo_state(api, repo)
     survey = load_survey()
     want = [f for f in man["files"] if f["dataset"] is None or f["dataset"] in datasets]
@@ -323,7 +346,7 @@ def stage_urls(decl: dict, datasets: list[str]) -> None:
             continue
         if not in_repo(f, state):
             raise SystemExit(f"{f['rel']}: neither in the repo nor at the host source; upload first")
-        kind, v = resolve(hf_hub_url(repo, REPO_PREFIX + f["rel"], repo_type="dataset"))
+        kind, v = resolve(hf_hub_url(repo, REPO_PREFIX + f["rel"], repo_type="dataset"), token)
         if kind == "url":
             q = urllib.parse.parse_qs(urllib.parse.urlparse(v).query)
             if "X-Amz-Expires" in q:
@@ -516,6 +539,8 @@ def main(argv=None) -> None:
     ap.add_argument("--group-gb", type=float, default=1.0)
     ap.add_argument("--group-files", type=int, default=40)
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--repo", default=None, help="a repo the declaration names (default transport.repo)")
+    ap.add_argument("--token-name", default=None, help="a token stored with `hf auth login` (default the active one)")
     a = ap.parse_args(argv)
     decl = load_decl()
     ds = a.datasets or list(decl["selection"]["datasets"])
@@ -525,11 +550,11 @@ def main(argv=None) -> None:
     if a.mode == "manifest":
         stage_manifest(decl)
     elif a.mode == "upload":
-        stage_upload(decl, ds, a.group_gb * 1e9, a.group_files)
+        stage_upload(decl, ds, a.group_gb * 1e9, a.group_files, a.repo, stored_token(a.token_name))
     elif a.mode == "status":
-        stage_status(decl)
+        stage_status(decl, a.repo, stored_token(a.token_name))
     elif a.mode == "urls":
-        stage_urls(decl, ds)
+        stage_urls(decl, ds, a.repo, stored_token(a.token_name))
     elif a.mode == "survey":
         stage_survey(decl)
     elif a.mode == "download":
