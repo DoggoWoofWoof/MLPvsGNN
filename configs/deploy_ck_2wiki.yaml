@@ -1,6 +1,6 @@
 phase: DEPLOY_CK_2WIKI
 opened: 2026-09-30
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (the deployable step; not MP-ORACLE)
 extends: >-
@@ -528,3 +528,262 @@ amendment_4_2026_09_30_checkpoint_lock:   # filed after two fits ended rc 1 and 
   unchanged: >-
     every arm, seed, rule, population, statistic and reading, and eval and read after the last fit. The failed jobs and
     the cancelled repeat are recorded in the run record as superseded.
+
+run_record_deploy_ck_2wiki_2026_09_30:
+  utc: '2026-09-30T12:16:53Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: e7bbd89
+  reading: CK_PARTIAL
+  flags:
+  - EDGES_CARRY
+  - COMPILED_COST
+  primary:
+    half: V2_HELD_CONFIRMATION
+    metric: recall@5
+    co_read: full_coverage@5
+  arms_primary:
+    twin: 0.8533
+    ck_qi: 0.8574
+    ck_full: 0.8926
+    ck_self: 0.8504
+    gnn: 0.8972
+  contrasts_primary:
+    gnn_gain:
+      point: 0.0439
+      ci:
+      - 0.0404
+      - 0.0473
+    ck_gain:
+      point: 0.0041
+      ci:
+      - 0.0019
+      - 0.0064
+    edge_gain:
+      point: 0.007
+      ci:
+      - 0.0048
+      - 0.0091
+    self_gain:
+      point: -0.0029
+      ci:
+      - -0.0048
+      - -0.0009
+    ck_vs_gnn:
+      point: -0.0398
+      ci:
+      - -0.043
+      - -0.0367
+    compiled_cost:
+      point: -0.0352
+      ci:
+      - -0.0381
+      - -0.0321
+    ref_gain:
+      point: 0.0393
+      ci:
+      - 0.0362
+      - 0.0424
+    ref_vs_gnn:
+      point: -0.0046
+      ci:
+      - -0.0068
+      - -0.0024
+  shares_primary:
+    ck_share:
+      point: 0.093
+      ci:
+      - 0.0452
+      - 0.1416
+      readable: true
+    edge_share:
+      point: 0.1586
+      ci:
+      - 0.1106
+      - 0.2088
+      readable: true
+    ref_share:
+      point: 0.8952
+      ci:
+      - 0.8509
+      - 0.9443
+      readable: true
+  bands:
+    V2_HELD_CONFIRMATION:
+      recall@5: CK_PARTIAL
+      full_coverage@5: CK_PARTIAL
+      hit@1: GNN_GAIN_ABSENT
+    V2_GATE:
+      recall@5: CK_PARTIAL
+      full_coverage@5: CK_PARTIAL
+      hit@1: GNN_GAIN_ABSENT
+    whole:
+      recall@5: CK_PARTIAL
+      full_coverage@5: CK_PARTIAL
+      hit@1: GNN_GAIN_ABSENT
+  compiled_form:
+    ck_qi__H128__2wiki__s0:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 7.62939453125e-06
+    ck_qi__H128__2wiki__s1:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 7.62939453125e-06
+    ck_qi__H128__2wiki__s2:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 3.814697265625e-06
+    ck_full__H128__2wiki__s0:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 1.1444091796875e-05
+    ck_full__H128__2wiki__s1:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 1.52587890625e-05
+    ck_full__H128__2wiki__s2:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 1.52587890625e-05
+    ck_self__H128__2wiki__s0:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 0.0
+    ck_self__H128__2wiki__s1:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 0.0
+    ck_self__H128__2wiki__s2:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 0.0
+    ck_qi__H128__2wiki__s0__repeat:
+      queries_where_a_metric_differs: 0
+      max_abs_score_difference: 7.62939453125e-06
+  repeat:
+    fit: ck_qi__H128__2wiki__s0
+    repeat: ck_qi__H128__2wiki__s0__repeat
+    weights_bit_identical: true
+    metrics_identical: true
+    largest_metric_difference: 0.0
+    trace_identical: true
+  identical_code: 26 module paths over 19 host processes, one sha256 each, equal to the committed files
+  placement: verify, fits, eval and read host-native (fits and eval on host_gpu_det); doc and file on the laptop
+  fits:
+    twin__H128__2wiki__s0:
+      best_epoch: 1
+      epochs_run: 4
+      minutes: 13.8
+    twin__H128__2wiki__s1:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 10.5
+    twin__H128__2wiki__s2:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 10.4
+    ck_qi__H128__2wiki__s0:
+      best_epoch: 1
+      epochs_run: 4
+      minutes: 12.5
+    ck_qi__H128__2wiki__s1:
+      best_epoch: 1
+      epochs_run: 4
+      minutes: 12.5
+    ck_qi__H128__2wiki__s2:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 11.1
+    ck_full__H128__2wiki__s0:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 11.1
+    ck_full__H128__2wiki__s1:
+      best_epoch: 2
+      epochs_run: 5
+      minutes: 17.9
+    ck_full__H128__2wiki__s2:
+      best_epoch: 2
+      epochs_run: 5
+      minutes: 17.9
+    ck_self__H128__2wiki__s0:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 10.6
+    ck_self__H128__2wiki__s1:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 10.7
+    ck_self__H128__2wiki__s2:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 10.7
+    gnn__H128__2wiki__s0:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 14.5
+    gnn__H128__2wiki__s1:
+      best_epoch: 2
+      epochs_run: 5
+      minutes: 22.7
+    gnn__H128__2wiki__s2:
+      best_epoch: 0
+      epochs_run: 3
+      minutes: 13.3
+    ck_qi__H128__2wiki__s0__repeat:
+      best_epoch: 1
+      epochs_run: 4
+      minutes: 12.0
+  record_sha256: 31ee9382306400f8a427cebe07571b02d9167c3e9236306cdaf48e79897b21f1
+  document: docs/DEPLOY_CK_2WIKI.md
+  document_sha256: a5508142226ea0645d81c586f1a38ad7b7a7c94faf248bd70eb7d395284651d0
+  jobs:
+    transfer: laptop rx push of the 29 pinned data files at 09:46Z (354.4 MB, 84 s)
+    verify: 260930-165017-mpr-ck-verify-3c6f
+    tests: 260930-165344-mpr-ck-tests-8822 (27 passed)
+    fits:
+      mpr-ck-twin-s0: 260930-165630-mpr-ck-twin-s0-136c
+      mpr-ck-twin-s1: 260930-165633-mpr-ck-twin-s1-67c3
+      mpr-ck-twin-s2: 260930-165636-mpr-ck-twin-s2-c0cb
+      mpr-ck-ck-qi-s0: 260930-172331-mpr-ck-ck-qi-s0-6b1c
+      mpr-ck-ck-qi-s1: 260930-172334-mpr-ck-ck-qi-s1-92c1
+      mpr-ck-ck-qi-s2: 260930-165644-mpr-ck-ck-qi-s2-1b1f
+      mpr-ck-ck-full-s0: 260930-165647-mpr-ck-ck-full-s0-6988
+      mpr-ck-ck-full-s1: 260930-165649-mpr-ck-ck-full-s1-5da2
+      mpr-ck-ck-full-s2: 260930-165652-mpr-ck-ck-full-s2-c221
+      mpr-ck-ck-self-s0: 260930-165655-mpr-ck-ck-self-s0-27bb
+      mpr-ck-ck-self-s1: 260930-165658-mpr-ck-ck-self-s1-9b78
+      mpr-ck-ck-self-s2: 260930-165700-mpr-ck-ck-self-s2-cd5c
+      mpr-ck-gnn-s0: 260930-165703-mpr-ck-gnn-s0-2247
+      mpr-ck-gnn-s1: 260930-165705-mpr-ck-gnn-s1-7019
+      mpr-ck-gnn-s2: 260930-165708-mpr-ck-gnn-s2-387d
+      mpr-ck-ck-qi-s0-repeat: 260930-172338-mpr-ck-ck-qi-s0-repeat-1d29
+    eval_read: 260930-173749-mpr-ck-eval-f6ed (eval then read, one job, 0.25 GPU, 8 cpu, 24 GB; its rx outputs listing named outputs/deploy_ck_2wiki/**)
+    superseded:
+      260930-163908-mpr-ck-verify-cdb8: 'verify from ed4abd8: VERIFIED, all 64 batches equal, the three stores built from the mirror and equal by content; its verify.json
+        is kept in outputs/deploy_ck_2wiki_superseded/'
+      260930-164321-mpr-ck-tests-f205: 'tests from ed4abd8: 25 of 26 passed; the smoke failed at stage_doc''s log line (amendment 3)'
+      260930-165639-mpr-ck-ck-qi-s0-7ea1: 'ck_qi seed 0 from e7bbd89: rc 1 at its epoch-3 checkpoint write (WinError 5, the driver''s fetch held the file); no record
+        or weights; its checkpoints are kept on the host in outputs/deploy_ck_2wiki_superseded/fits_260930_checkpoint_lock/ (amendment 4)'
+      260930-165641-mpr-ck-ck-qi-s1-9b23: 'ck_qi seed 1 from e7bbd89: rc 1 at its epoch-3 checkpoint write, as seed 0; no record or weights (amendment 4)'
+      260930-165711-mpr-ck-ck-qi-s0-repeat-b3a6: 'the repeat from e7bbd89: started about 11:49:30Z and cancelled at 11:51:12Z before its first checkpoint, so that
+        it is submitted after the two reruns (amendment 4); no file of it exists'
+    fetch: 'one rx fetch --glob ''outputs/deploy_ck_2wiki/**'' at 12:14Z, after eval and read ended (amendment 4): 37 files, 32.1 MB; fetched 26, already here 11
+      (sha256-equal copies an earlier per-job fetch had brought), conflicts 0'
+  mirror: configs/host_mirror_six.yaml, run record at 06b6667 (2wiki VERIFIED 10:46Z)
+  deviations:
+  - 'driver 1 stopped at 09:49:14Z before submitting any job: its wait for the mirror matched an earlier route''s line; driver 2 (amendment 2) reads amendment 2''s
+    lines only'
+  - a first laptop batch reference packed at 6 BLAS threads (sha256 77dcf1e1...) was set aside before any host job read it; the pinned reference is packed at the
+    host stages' 8 (amendment 2, threads)
+  - the host test job from ed4abd8 failed the real-data smoke at stage_doc's log line; fixed at e7bbd89 (amendment 3), and verify and tests ran again from e7bbd89
+  - 'two fits (ck_qi seeds 0 and 1) ended rc 1 at 11:42Z when their epoch-3 checkpoint could not replace the one the driver''s rx fetch was re-reading; amendment
+    4 (d5f7da7): both ran again from scratch with their checkpoints set aside, the repeat was cancelled before its first checkpoint and submitted again last, every
+    later job lists only its own outputs, and nothing was fetched until eval and read ended (driver 3)'
+  blas_thread_difference:
+    what: eval block 0 (227 queries, 23,914 rows) packed on the laptop at 6 and at 8 BLAS threads, x compared element by element
+    entries_differing: 4188
+    entries: 3084906
+    rows_differing: 1870
+    max_abs: 5.364418029785156e-07
+    max_rel: 1.9276899365650024e-06
+    columns:
+      max_cos_v_seed: 1493
+      seedproto_h2_STRUCT: 494
+      seedproto_h3_STRUCT: 760
+      seedproto_h2_FULL: 610
+      seedproto_h3_FULL: 831
+    evidence: outputs/deploy_ck_2wiki_reference/thread_probe.log and thread_diff.log
+  amendment_4_commit: d5f7da7
