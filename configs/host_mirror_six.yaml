@@ -62,6 +62,30 @@ transport:
     The host holds no token of any kind. HF_TOKEN is removed and huggingface_hub is never imported. Files are fetched with
     the standard library.
 
+transport_amendment_1:
+  filed: 2026-09-30, after the HF upload stopped and before any byte moved by the route below
+  why: >-
+    At hotpotqa group 2 of 22 (07:10Z) the hub refused the upload: 403 "Private repository storage limit reached". The
+    account's private storage is shared with another project's repo, which holds 85.27 GB. This repo held 10.64 GB:
+    squad, musique, metaqa and webqsp in full, all four already VERIFIED on the host, and hotpotqa's first 13 files
+    (0.03 GB). This session does not delete files from the hub or change the account's plan. Both are the user's call.
+  route: >-
+    hotpotqa and 2wiki (the manifest's rows for them, 50.1 GB) go over rx's own channel instead: laptop to host, no third
+    party. scripts/host_mirror_rx.py imports tools/rx/rx.py unchanged and calls its push with the file list replaced by
+    the manifest's rows for the named datasets. Every file is read in place from the package root and nothing is written
+    under it; rx's hash cache lives in outputs/host_mirror_six/rx_state. The files go to rx workspace "mirror" of project
+    mpr, the folder that holds host.mirror_root, so each lands at its declared path. Prune is off.
+  checks: >-
+    Before anything is sent, every file's size and rx's sha256 of it must equal the manifest's, or the script refuses.
+    The rx agent checks each file's sha256 as it lands and never renames a partial file into place. Then the host
+    verify stage runs unchanged for the dataset.
+  rate: >-
+    About 1.2 MB/s up over the Tailscale DERP relay (docs/GPU_HOST_HANDOVER.md), so about 6.4 h for 2wiki and 5.2 h
+    for hotpotqa. 2wiki goes first, because the next stages read it first.
+  back_to_hf: >-
+    If the user frees hub storage, the files the host still lacks may go by the declared HF route instead. The host
+    download step does not fetch a file that is already in the mirror with the manifest's hash.
+
 host:
   mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG   # outside the workspace; the files land under data/final_canonical/
   read_only_sources: [C:/Users/Student2/rx/projects/crag/ws]   # another project's workspace: read and hashed, copied from only on a sha256 match; never written, moved or deleted
