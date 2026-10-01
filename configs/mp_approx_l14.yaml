@@ -1,6 +1,6 @@
 phase: MP_APPROX_L14
 opened: 2026-10-01
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
 extends: >-
@@ -686,3 +686,727 @@ execution:
     repeat run at once. Then the read. Then fetch the read, check and meta files, and on the laptop build the record,
     the doc and the run record (commit).
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l14_2026_10_01:
+  utc: '2026-10-01T15:43:36Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: 89a79c2
+  placement: host CPU (rx env mpr-cpu), the verified mirror in memory; r's scoring pass and assemble at 6 threads, the check, units, repeat and read at 4
+  population: 'r: metaqa train-split rows, the union of the M3B fit stride''s offsets 8 and 9; every reading is a reading on train-split rows'
+  reading: L14_HIGH
+  primary: TW-1x-b0
+  primary_rho_bar:
+    point: 0.9051003195922626
+    ci:
+    - 0.8791816781195502
+    - 0.9326039780589606
+  primary_label_matched: true
+  bands:
+    TW-1x-dsh: L14_HIGH
+    TW-1x-b1d: L14_HIGH
+    TW-1x-b0: L14_HIGH
+    TW-4x-dsh: L14_HIGH
+    TW-4x-b1d: L14_HIGH
+    TW-4x-b0: L14_HIGH
+    NB-oracle: L14_ABOVE_GNN
+    NB-oracle-b0: L14_HIGH
+  rho_bar:
+    TW-1x-dsh:
+      point: 0.8682290652351696
+      ci:
+      - 0.8422451686350262
+      - 0.8959380586700901
+    TW-1x-b1d:
+      point: 0.8945531328058075
+      ci:
+      - 0.8687471044154591
+      - 0.9216967404056968
+    TW-1x-b0:
+      point: 0.9051003195922626
+      ci:
+      - 0.8791816781195502
+      - 0.9326039780589606
+    TW-4x-dsh:
+      point: 0.9096176234567128
+      ci:
+      - 0.8825482168026783
+      - 0.9369706611783954
+    TW-4x-b1d:
+      point: 0.9370535521981148
+      ci:
+      - 0.9118854890090543
+      - 0.9634916854559918
+    TW-4x-b0:
+      point: 0.9468458365529516
+      ci:
+      - 0.9213620611237713
+      - 0.9735723562803904
+    NB-oracle:
+      point: 1.08066504428976
+      ci:
+      - 1.0559641870512042
+      - 1.107439682343941
+    NB-oracle-b0:
+      point: 1.0040427152755977
+      ci:
+      - 0.978269920332086
+      - 1.0301393824679188
+  gap_to_gnn:
+    TW-1x-dsh:
+      recall@5:
+        point: -0.008310891763266642
+        ci:
+        - -0.010256485782267335
+        - -0.006223619852640479
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.01244407158836689
+        ci:
+        - -0.015297818791946312
+        - -0.009618987695749445
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.010598434004474275
+        ci:
+        - -0.014934284116331064
+        - -0.006347874720357949
+        flag: BELOW_GNN
+    TW-1x-b1d:
+      recall@5:
+        point: -0.007808308030338672
+        ci:
+        - -0.00973894193870774
+        - -0.005694904979280603
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.010822147651006711
+        ci:
+        - -0.013479446308724838
+        - -0.00810892058165548
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.004614093959731543
+        ci:
+        - -0.008809423937360174
+        - -0.0005585850111856802
+        flag: BELOW_GNN
+    TW-1x-b0:
+      recall@5:
+        point: -0.007277883794043084
+        ci:
+        - -0.009272917671865773
+        - -0.0051971708569385315
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.008193512304250559
+        ci:
+        - -0.010906739373601794
+        - -0.005508249440715886
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.006403803131991052
+        ci:
+        - -0.010542505592841162
+        - -0.002013422818791948
+        flag: BELOW_GNN
+    TW-4x-dsh:
+      recall@5:
+        point: -0.006157207881783723
+        ci:
+        - -0.008171990656010425
+        - -0.004153288791458244
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.009871364653243847
+        ci:
+        - -0.012527964205816549
+        - -0.007019015659955259
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.003970917225950783
+        ci:
+        - -0.008501817673378074
+        - 0.0005592841163310963
+        flag: null
+    TW-4x-b1d:
+      recall@5:
+        point: -0.005187236968059092
+        ci:
+        - -0.006996048387842297
+        - -0.0032853650532223815
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.007522371364653244
+        ci:
+        - -0.010039149888143167
+        - -0.004948965324384789
+        flag: BELOW_GNN
+      hit@1:
+        point: 0.00019574944071588327
+        ci:
+        - -0.0037499999999999994
+        - 0.0043127796420581585
+        flag: null
+    TW-4x-b0:
+      recall@5:
+        point: -0.00543762501157922
+        ci:
+        - -0.007326527872988303
+        - -0.003494899309513965
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.006431767337807606
+        ci:
+        - -0.009060402684563757
+        - -0.0037751677852349004
+        flag: BELOW_GNN
+      hit@1:
+        point: 0.0024328859060402676
+        ci:
+        - -0.0014848993288590613
+        - 0.006571588366890372
+        flag: null
+    NB-oracle:
+      recall@5:
+        point: 0.0027136984512996735
+        ci:
+        - 0.0010597644779985576
+        - 0.00442948405122719
+        flag: BEATS_GNN
+      full_coverage@5:
+        point: 0.0005033557046979866
+        ci:
+        - -0.0020700503355704706
+        - 0.003104026845637584
+        flag: null
+      hit@1:
+        point: 0.023937360178970916
+        ci:
+        - 0.020385906040268444
+        - 0.027825083892617446
+        flag: BEATS_GNN
+    NB-oracle-b0:
+      recall@5:
+        point: -0.002172950817119897
+        ci:
+        - -0.004015389555361988
+        - -0.00022985569454881066
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.002628635346756152
+        ci:
+        - -0.005259368008948546
+        - 5.5928411633104336e-05
+        flag: null
+      hit@1:
+        point: 0.010570469798657717
+        ci:
+        - 0.0067932046979865745
+        - 0.014429530201342263
+        flag: BEATS_GNN
+  by_hop:
+    hop=1:
+      TW-1x-dsh:
+        point: 0.9135959362327695
+        ci:
+        - 0.7875443460638188
+        - 1.0728766364209747
+      TW-1x-b1d:
+        point: 0.8056506971543801
+        ci:
+        - 0.6824525949151286
+        - 0.9405049932216061
+      TW-1x-b0:
+        point: 0.7836541670346925
+        ci:
+        - 0.6635068790290033
+        - 0.9182282108939349
+      TW-4x-dsh:
+        point: 0.9467626628061523
+        ci:
+        - 0.8220449780069468
+        - 1.1065432048640065
+      TW-4x-b1d:
+        point: 0.8619403113134473
+        ci:
+        - 0.7391905991486053
+        - 1.0010477590267768
+      TW-4x-b0:
+        point: 0.8518814528029374
+        ci:
+        - 0.7313967611655622
+        - 0.9876125316839534
+      NB-oracle:
+        point: 1.3605200899754537
+        ci:
+        - 1.2014110657408061
+        - 1.5820541861285027
+      NB-oracle-b0:
+        point: 0.9247470886711633
+        ci:
+        - 0.8013312944911002
+        - 1.0735728549035106
+    hop=2:
+      TW-1x-dsh:
+        point: 1.0454350357879463
+        ci:
+        - 0.9862435841619989
+        - 1.112819218145005
+      TW-1x-b1d:
+        point: 1.0912999612737109
+        ci:
+        - 1.0288043706791865
+        - 1.161407713358581
+      TW-1x-b0:
+        point: 1.096873898699428
+        ci:
+        - 1.034452722154325
+        - 1.1663969479731158
+      TW-4x-dsh:
+        point: 1.1011436700557262
+        ci:
+        - 1.03713390265713
+        - 1.170996113659435
+      TW-4x-b1d:
+        point: 1.1329180318738963
+        ci:
+        - 1.0711065918398137
+        - 1.2028429487418424
+      TW-4x-b0:
+        point: 1.1449030662781772
+        ci:
+        - 1.0800015151230546
+        - 1.2132674021472791
+      NB-oracle:
+        point: 1.2586910987051956
+        ci:
+        - 1.1929773899840546
+        - 1.3319906889088198
+      NB-oracle-b0:
+        point: 1.2334680798158357
+        ci:
+        - 1.168929521829809
+        - 1.306686644442659
+    hop=3:
+      TW-1x-dsh:
+        point: 0.816833782964039
+        ci:
+        - 0.7876357859219905
+        - 0.8451711814276512
+      TW-1x-b1d:
+        point: 0.850640625224834
+        ci:
+        - 0.8204582846248968
+        - 0.878815921076405
+      TW-1x-b0:
+        point: 0.8653291505834885
+        ci:
+        - 0.8348265120843215
+        - 0.8951620492330851
+      TW-4x-dsh:
+        point: 0.8552891757441512
+        ci:
+        - 0.8256677558442571
+        - 0.8858360904832991
+      TW-4x-b1d:
+        point: 0.8915830443204168
+        ci:
+        - 0.8641508062320568
+        - 0.9205375213064622
+      TW-4x-b0:
+        point: 0.9028239545794136
+        ci:
+        - 0.8734958714177217
+        - 0.9318489158612753
+      NB-oracle:
+        point: 1.000359213136978
+        ci:
+        - 0.9726084806702283
+        - 1.028527717627397
+      NB-oracle-b0:
+        point: 0.9495163506923294
+        ci:
+        - 0.9215811685331026
+        - 0.9783893976903326
+  readable_metrics:
+  - recall@5
+  - full_coverage@5
+  - hit@1
+  flags: []
+  interpretation:
+  - l14_high
+  - matched_below_gnn
+  - b1d_adds
+  - b1d_adds_4x
+  - data_adds_4x
+  - data_adds_4x_b1d
+  - data_adds_4x_b0
+  - b0_ceiling_binds
+  contrasts:
+    b0_adds:
+      point: 0.010547186786455054
+      ci:
+      - -0.002854756822469781
+      - 0.024438577520111956
+    b0_adds_4x:
+      point: 0.009792284354836811
+      ci:
+      - -0.0023411530778598144
+      - 0.021513178472984232
+    b1d_adds:
+      point: 0.026324067570637877
+      ci:
+      - 0.012038081230227189
+      - 0.0400994418928687
+    b1d_adds_4x:
+      point: 0.027435928741401994
+      ci:
+      - 0.013473168999399727
+      - 0.041051732671793836
+    data_4x:
+      point: 0.04138855822154319
+      ci:
+      - 0.026810448503739884
+      - 0.05583526384124469
+    data_4x_b1d:
+      point: 0.04250041939230731
+      ci:
+      - 0.029696181289747183
+      - 0.055804312888205844
+    data_4x_b0:
+      point: 0.041745516960689066
+      ci:
+      - 0.02788569007138715
+      - 0.05594315751179997
+    ceiling_gap:
+      point: 0.18611191148395256
+      ci:
+      - 0.166504308240255
+      - 0.20714209695694402
+    ceiling_gap_b0:
+      point: 0.09894239568333518
+      ci:
+      - 0.08313057227520308
+      - 0.11492532084398414
+    ceiling_gap_b0_4x:
+      point: 0.057196878722646116
+      ci:
+      - 0.04600673745757673
+      - 0.06964704881460546
+    bucket_ceiling:
+      point: 0.07662232901416233
+      ci:
+      - 0.06254575032706754
+      - 0.0926567923568916
+  hop_contrasts:
+    hop=1:
+      b0_adds:
+        point: -0.021996530119687607
+        ci:
+        - -0.07205044343933431
+        - 0.022117487987459578
+      b1d_adds:
+        point: -0.10794523907838938
+        ci:
+        - -0.1956016870553521
+        - -0.03568684021625338
+    hop=2:
+      b0_adds:
+        point: 0.0055739374257171015
+        ci:
+        - -0.02134918164121366
+        - 0.030816610367977736
+      b1d_adds:
+        point: 0.045864925485764596
+        ci:
+        - 0.01812360062268237
+        - 0.07460229759989943
+    hop=3:
+      b0_adds:
+        point: 0.014688525358654503
+        ci:
+        - -0.0011615076034900583
+        - 0.03154067082437644
+      b1d_adds:
+        point: 0.033806842260795
+        ci:
+        - 0.018318500859698862
+        - 0.05064679088557734
+  training_rows:
+    full/TW-1x:
+      fit: 5883
+      inner: 1482
+    full/TW-4x:
+      fit: 23538
+      inner: 1482
+    b0/TW-1x:
+      fit: 5883
+      inner: 1482
+    b0/TW-4x:
+      fit: 23538
+      inner: 1482
+  reaches_gnn: null
+  beta_choices:
+    TW-1x-dsh:
+      '1.0': 0
+      '1.5': 1
+      '2.0': 1
+      '3.0': 1
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+    TW-1x-b1d:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 1
+      '4.0': 2
+      '8.0': 0
+      inf: 0
+    TW-1x-b0:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 1
+      '4.0': 1
+      '8.0': 1
+      inf: 0
+    TW-4x-dsh:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 3
+      '3.0': 0
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+    TW-4x-b1d:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 2
+      '3.0': 0
+      '4.0': 1
+      '8.0': 0
+      inf: 0
+    TW-4x-b0:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 0
+      '4.0': 1
+      '8.0': 1
+      inf: 1
+  b1d_moved:
+    TW-1x:
+      changed_scored_mean: 11920.0
+      changed_inner_mean: 1482.0
+      mass_moved_mean: 0.10555881753730094
+    TW-4x:
+      changed_scored_mean: 11920.0
+      changed_inner_mean: 1482.0
+      mass_moved_mean: 0.11257405076849981
+  b0_view:
+    rows: 11920
+    types: 177.484144295302
+    entries: 5104.154530201342
+    types_b0: 45.81065436241611
+    entries_b0: 1080.828187919463
+    no_b0_type_share: 0.0
+  queries: 11920
+  stored_metrics_checked: false
+  dev_rows_read: false
+  held_rows_read: false
+  test_rows_read: false
+  train_split_rows_scored: 11920
+  checkpoints_updated: 0
+  jobs_checked_for_identical_code: 28
+  record_sha256: d5e4970392df64cd619a40c9b3531f0ff8629fbc9dcb5933b1a950d5ce8fdea2
+  document: docs/MP_APPROX_L14.md
+  document_sha256: 65d54962dfa8d3f710d5770ebfac2b1e948b0205f52cc1183b348e3230c61726
+  placement_notes:
+  - Every job reserved the declared figures (placement.reservations), and rx reserves without capping, so a reservation changes no number.
+  - 'Measured against reserved (rx status: cpu_s over wall time, and the peak memory) is under measured_jobs. Peaks above the reservation: full TW-1x units: 2.61
+    GB peak against 2.25 GB; full TW-4x units: 3.19 GB peak against 2.75 GB; b0 TW-1x units: 1.75 GB peak against 1.6 GB; b0 TW-4x units: 2.1 GB peak against 1.9
+    GB; repeat: 1.75 GB peak against 1.6 GB; read: 1.32 GB peak against 1.1 GB. Reservations well above the peak (more than 1/0.6 of it): tests: 0.22 GB peak against
+    0.4 GB; r-assemble: 1.01 GB peak against 3.1 GB; r-check: 0.73 GB peak against 1.25 GB.'
+  - 'Why the fit-side jobs peaked above their reservations: placement.reservations scaled level 13''s units by view size and by scored rows, and it under-counted
+    what scoring r costs per row (level 13''s units scored 2,000 rows; these score r''s 11,920). The overrun was full TW-1x units +0.36 GB (16%), full TW-4x units
+    +0.44 GB (16%), b0 TW-1x units +0.15 GB (9%), b0 TW-4x units +0.2 GB (11%), repeat +0.15 GB (9%), read +0.22 GB (20%). rx reserves without capping, so no job
+    was stopped or slowed by its reservation and no number depends on it. The measured peaks under measured_jobs are the basis for the next level''s reservations.'
+  - The population module's host tests and r's twelve score shards were submitted at once. The fit module's host tests ran while the shards scored, and the assemble
+    and the check followed the shards. The twelve units and the repeat were then submitted together, and the read ran after all thirteen had finished. Every job was
+    submitted once.
+  - 'The population module''s host tests pushed dfd8088''s tree and r''s twelve score shards ran on it without a push. The fit module''s host tests then pushed 89a79c2,
+    which adds only the fit module and its tests, so the assemble and the check (submitted after it without a push), the units, the repeat and the read all ran with
+    89a79c2''s tree. The code check is by module: every module has one LF sha256 across all jobs, equal to the file at code_commit.'
+  measured_jobs:
+    tests:
+      jobs: 1
+      reserved:
+        cpus: 1.0
+        mem_gb: 0.4
+      cpu_rate:
+      - 0.64
+      - 0.64
+      peak_mem_gb:
+      - 0.22
+      - 0.22
+      wall_min:
+      - 0.4
+      - 0.4
+      all_done_rc0: true
+    r score shards:
+      jobs: 12
+      reserved:
+        cpus: 2.0
+        mem_gb: 3.1
+      cpu_rate:
+      - 1.78
+      - 1.84
+      peak_mem_gb:
+      - 2.68
+      - 2.8
+      wall_min:
+      - 41.9
+      - 42.4
+      all_done_rc0: true
+    fit-tests:
+      jobs: 1
+      reserved:
+        cpus: 1.0
+        mem_gb: 0.4
+      cpu_rate:
+      - 0.89
+      - 0.89
+      peak_mem_gb:
+      - 0.36
+      - 0.36
+      wall_min:
+      - 3.1
+      - 3.1
+      all_done_rc0: true
+    r-assemble:
+      jobs: 1
+      reserved:
+        cpus: 1.0
+        mem_gb: 3.1
+      cpu_rate:
+      - 0.99
+      - 0.99
+      peak_mem_gb:
+      - 1.01
+      - 1.01
+      wall_min:
+      - 1.7
+      - 1.7
+      all_done_rc0: true
+    r-check:
+      jobs: 1
+      reserved:
+        cpus: 1.0
+        mem_gb: 1.25
+      cpu_rate:
+      - 0.99
+      - 0.99
+      peak_mem_gb:
+      - 0.73
+      - 0.73
+      wall_min:
+      - 0.5
+      - 0.5
+      all_done_rc0: true
+    full TW-1x units:
+      jobs: 3
+      reserved:
+        cpus: 1.15
+        mem_gb: 2.25
+      cpu_rate:
+      - 1.13
+      - 1.13
+      peak_mem_gb:
+      - 2.61
+      - 2.61
+      wall_min:
+      - 16.3
+      - 16.5
+      all_done_rc0: true
+    full TW-4x units:
+      jobs: 3
+      reserved:
+        cpus: 1.35
+        mem_gb: 2.75
+      cpu_rate:
+      - 1.29
+      - 1.3
+      peak_mem_gb:
+      - 3.16
+      - 3.19
+      wall_min:
+      - 28.3
+      - 28.3
+      all_done_rc0: true
+    b0 TW-1x units:
+      jobs: 3
+      reserved:
+        cpus: 1.1
+        mem_gb: 1.6
+      cpu_rate:
+      - 1.06
+      - 1.07
+      peak_mem_gb:
+      - 1.74
+      - 1.75
+      wall_min:
+      - 10.9
+      - 11.1
+      all_done_rc0: true
+    b0 TW-4x units:
+      jobs: 3
+      reserved:
+        cpus: 1.25
+        mem_gb: 1.9
+      cpu_rate:
+      - 1.19
+      - 1.2
+      peak_mem_gb:
+      - 2.08
+      - 2.1
+      wall_min:
+      - 21.9
+      - 22.0
+      all_done_rc0: true
+    repeat:
+      jobs: 1
+      reserved:
+        cpus: 1.1
+        mem_gb: 1.6
+      cpu_rate:
+      - 1.07
+      - 1.07
+      peak_mem_gb:
+      - 1.75
+      - 1.75
+      wall_min:
+      - 10.8
+      - 10.8
+      all_done_rc0: true
+    read:
+      jobs: 1
+      reserved:
+        cpus: 1.0
+        mem_gb: 1.1
+      cpu_rate:
+      - 1.03
+      - 1.03
+      peak_mem_gb:
+      - 1.32
+      - 1.32
+      wall_min:
+      - 1.4
+      - 1.4
+      all_done_rc0: true
+  population_commit: dfd8088
+  train_split_rows_scored_note: 'r''s rows are metaqa train-split rows, scored once by r''s scoring pass (the population module''s twelve score shards) and read once
+    here. The fits read level 12''s carve sidecars in place (fit, select, x1 to x3), which level 12 scored and its run record counts. The training rows each (view,
+    fit) used are under training_rows: full/TW-1x 5,883 fit / 1,482 inner; full/TW-4x 23,538 fit / 1,482 inner; b0/TW-1x 5,883 fit / 1,482 inner; b0/TW-4x 23,538
+    fit / 1,482 inner.'
