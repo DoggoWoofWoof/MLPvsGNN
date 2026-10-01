@@ -1,6 +1,6 @@
 phase: MP_APPROX_L12
 opened: 2026-10-01
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
 extends: >-
@@ -635,3 +635,294 @@ execution:
     three units run. Then the read. Then fetch the read, check, loopcheck and meta files, and on the laptop build the
     record, the doc and the run record (commit).
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l12_2026_10_01:
+  utc: '2026-10-01T08:02:36Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: 863f800
+  placement: host CPU (rx env mpr-cpu), the verified mirror in memory; scoring at 6 threads, checks, fits and read at 4
+  reading: L12_HIGH
+  primary: TW-1x-dsh
+  primary_rho_bar:
+    point: 0.8781211115042481
+    ci:
+    - 0.8261240795419473
+    - 0.9342319314039463
+  primary_label_matched: true
+  bands:
+    TW-1x-dsh: L12_HIGH
+    TW-1x-cov: L12_HIGH
+    TW-2x-dsh: L12_HIGH
+    TW-2x-cov: L12_HIGH
+    TW-4x-dsh: L12_HIGH
+    TW-4x-cov: L12_HIGH
+    TW-8x-dsh: L12_HIGH
+    TW-8x-cov: L12_HIGH
+    NB-oracle: L12_HIGH
+  rho_bar:
+    TW-1x-dsh:
+      point: 0.8781211115042481
+      ci:
+      - 0.8261240795419473
+      - 0.9342319314039463
+    TW-1x-cov:
+      point: 0.8419315261039123
+      ci:
+      - 0.7871477364620018
+      - 0.8969234463321958
+    TW-2x-dsh:
+      point: 0.8908778342473506
+      ci:
+      - 0.8305985884681907
+      - 0.9497268597929752
+    TW-2x-cov:
+      point: 0.8797322901054342
+      ci:
+      - 0.8249070284958632
+      - 0.9392209512157785
+    TW-4x-dsh:
+      point: 0.9164016905140858
+      ci:
+      - 0.8670597550899769
+      - 0.9713747037108923
+    TW-4x-cov:
+      point: 0.895152081451922
+      ci:
+      - 0.8419540929542957
+      - 0.953227567204819
+    TW-8x-dsh:
+      point: 0.9147260210663565
+      ci:
+      - 0.8601676980160619
+      - 0.968108400685508
+    TW-8x-cov:
+      point: 0.8993269699479534
+      ci:
+      - 0.8424515754715631
+      - 0.9553921603858972
+    NB-oracle:
+      point: 1.0421343002529397
+      ci:
+      - 0.9881873527913494
+      - 1.101348419637759
+  readable_metrics:
+  - recall@5
+  - full_coverage@5
+  - hit@1
+  flags: []
+  interpretation:
+  - l12_high
+  - matched_below_gnn
+  - data_adds_4x
+  - data_adds_8x
+  - last_doubling_flat
+  - dsh_adds
+  contrasts:
+    data_2x:
+      point: 0.012756722743102467
+      ci:
+      - -0.020872248728438066
+      - 0.04448903381564603
+    data_4x:
+      point: 0.03828057900983772
+      ci:
+      - 0.010965105366561805
+      - 0.06806862232814216
+    data_8x:
+      point: 0.03660490956210838
+      ci:
+      - 0.005349320961537995
+      - 0.07021535872543831
+    step_4x:
+      point: 0.025523856266735256
+      ci:
+      - -0.004626481180147154
+      - 0.059302504122602046
+    step_8x:
+      point: -0.0016756694477293443
+      ci:
+      - -0.02022208410572122
+      - 0.016341183110528356
+    dsh_adds:
+      point: 0.03618958540033579
+      ci:
+      - 0.012225516110939656
+      - 0.0604151478513225
+    dsh_adds_8x:
+      point: 0.015399051118403118
+      ci:
+      - -0.0027550535043621093
+      - 0.03268125351434728
+    ceiling_gap:
+      point: 0.16401318874869164
+      ci:
+      - 0.12228418453507814
+      - 0.21271831553732112
+    ceiling_gap_8x:
+      point: 0.12740827918658326
+      ci:
+      - 0.08833570076513089
+      - 0.1705779184571267
+  training_rows:
+    TW-1x:
+      fit: 5883
+      inner: 1482
+    TW-2x:
+      fit: 11777
+      inner: 1482
+    TW-4x:
+      fit: 23538
+      inner: 1482
+    TW-8x:
+      fit: 47108
+      inner: 1482
+  reaches_gnn: null
+  beta_choices:
+    TW-1x-dsh:
+      '1.0': 0
+      '1.5': 1
+      '2.0': 1
+      '3.0': 1
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+    TW-2x-dsh:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 0
+      '4.0': 2
+      '8.0': 1
+      inf: 0
+    TW-4x-dsh:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 3
+      '3.0': 0
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+    TW-8x-dsh:
+      '1.0': 0
+      '1.5': 2
+      '2.0': 1
+      '3.0': 0
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+  queries: 2221
+  scoring_mismatches: 0
+  held_rows_read: false
+  test_rows_read: false
+  train_split_rows_scored: 49177
+  checkpoints_updated: 0
+  jobs_checked_for_identical_code: 71
+  record_sha256: e245d3a9f6b2acf813f4abbb1d7d7197612e6d82726c786922be4d9e397d2646
+  document: docs/MP_APPROX_L12.md
+  document_sha256: 2d29ced44be551a6d504a9bc90750ef2238f1f320bdeacc6c5da0b7e606b4f09
+  placement_notes:
+  - The laptop waiter read rx's output wrongly and submitted the select carve's assemble twice; the second (261001-101311-l12-select-assemble-156c) was cancelled
+    while queued and never ran. The waiter was fixed to read the job id by pattern and to never retry a submit.
+  - 19 queued carve score shards (x3 shards 1 to 3, x4 to x7) were cancelled before they started and resubmitted with the same commands at 1.9 CPUs and 3 GB, against
+    the declared 2.25 CPUs and 3.5 GB, from the measured use of the shards already running (1.79 to 1.87 CPUs on average and a 2.84 GB peak; the dev shards 1.88 CPUs
+    and 2.5 GB, the select shards 1.87 CPUs and 2.3 GB). Every process fixes its own pools at start and rx reserves without capping, so a reservation changes no number.
+  - rx ls truncates job ids to 34 characters, so the waiter did not see the dev, select and fit assembles end, and their checks were submitted about 20 minutes late.
+    The waiter was fixed to match the listed prefix.
+  - After a laptop session ended, the previous session's waiters kept running beside restarted copies for about 15 minutes. x3's assemble was submitted twice; the
+    second copy (261001-115852-l12-x3-assemble-59d3) was cancelled during its preparation, before it wrote anything, and the first (261001-115823-l12-x3-assemble-516f)
+    assembled x3 and passed its check. No other job was duplicated. Each waiter now holds a single-instance lock.
+  - x1's first assemble (261001-104517-l12-x1-assemble-79b7) stopped with WinError 32 at level 8's os.replace of e_code.tmp.npy, because another process held the
+    freshly written file. It released its own memory map before the rename. It was rerun from the same chunks (261001-120640-l12-x1-assemble-5e59), and the chunks
+    are removed only after a successful assemble.
+  - 'The units and the repeat reserve their measured use rather than the declared 1.5 CPUs and 1.5 GB: TW-1x''s units 1.35 CPUs and 1 GB, from level 11''s NB-setX
+    units (about 1.3 CPUs and a 0.77 GB peak on views of about 9,000 queries). The repeat, TW-2x, TW-4x and TW-8x reserve TW-1x k = 0''s measured CPU rate plus 0.1
+    (at least 1 CPU). Their memory is the declared rule: k = 0''s peak, scaled by the view''s queries, plus 0.5 GB, rounded up to the next 0.5 GB. rx reserves without
+    capping, so a reservation changes no number.'
+  - 'Measured against reserved (rx status, cpu_s over wall time and peak memory): the CPU reservations matched use within 0.15 CPU (1.20 to 1.43 used against 1.35
+    reserved), but the declared memory rule over-reserved the larger fits, whose peaks were 1.22, 1.63 and 2.46 GB against 2.5, 3.5 and 6 GB reserved. A unit''s memory
+    grows sub-linearly with its view: TW-8x''s view is 5.3 times TW-1x''s and its peak 2.4 times.'
+  measured_units:
+    TW-1x:
+      reserved:
+        cpus: 1.35
+        mem_gb: 1
+      cpu_rate:
+      - 1.22
+      - 1.23
+      peak_mem_gb:
+      - 1.02
+      - 1.03
+      wall_min: 11.7
+    repeat:
+      reserved:
+        cpus: 1.35
+        mem_gb: 2
+      cpu_rate:
+      - 1.2
+      - 1.2
+      peak_mem_gb:
+      - 1.03
+      - 1.03
+      wall_min: 12.0
+    TW-2x:
+      reserved:
+        cpus: 1.35
+        mem_gb: 2.5
+      cpu_rate:
+      - 1.25
+      - 1.25
+      peak_mem_gb:
+      - 1.21
+      - 1.22
+      wall_min: 18.8
+    TW-4x:
+      reserved:
+        cpus: 1.35
+        mem_gb: 3.5
+      cpu_rate:
+      - 1.34
+      - 1.35
+      peak_mem_gb:
+      - 1.63
+      - 1.63
+      wall_min: 28.4
+    TW-8x:
+      reserved:
+        cpus: 1.35
+        mem_gb: 6
+      cpu_rate:
+      - 1.42
+      - 1.43
+      peak_mem_gb:
+      - 2.46
+      - 2.46
+      wall_min: 39.0
+    read:
+      reserved:
+        cpus: 1
+        mem_gb: 1.5
+      cpu_rate:
+      - 1.02
+      - 1.02
+      peak_mem_gb:
+      - 0.35
+      - 0.35
+      wall_min: 0.3
+  resized_shards:
+    cpus: 1.9
+    mem_gb: 3
+    declared:
+      cpus: 2.25
+      mem_gb: 3.5
+    jobs: 19
+  resized_units:
+    TW-1x:
+      cpus: 1.35
+      mem_gb: 1
+    declared:
+      cpus: 1.5
+      mem_gb: 1.5
+    later_fits_and_repeat: TW-1x k = 0's measured CPU rate plus 0.1 (at least 1); memory by the declared rule
+  train_split_rows_scored_note: 'The file stage''s default of 0 is level 11''s; this file scores the nine metaqa train-split carves as its training rows (fit, x1
+    to x7: 5,960 each; select: 1,497), so the count is 49,177, checked against the record''s carves before filing.'
