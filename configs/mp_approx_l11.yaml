@@ -1,6 +1,6 @@
 phase: MP_APPROX_L11
 opened: 2026-10-01
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
 extends: >-
@@ -530,3 +530,128 @@ execution:
     that unit's peak memory is known, the other 14 NB-setX units and the repeat at once. Then the read. Then fetch the
     read, check and meta files, and on the laptop build the record, the doc and the run record (commit).
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l11_2026_10_01:
+  utc: '2026-10-01T02:09:00Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: 94b70df
+  placement: host CPU (rx env mpr-cpu), the verified mirror in memory; scoring at 6 threads, check, fits and read at 4
+  reading: L11_HIGH
+  primary: NB-setX-dsh
+  primary_rho_bar:
+    point: 0.8789814105289916
+    ci:
+    - 0.8253945617871186
+    - 0.9301800567218607
+  bands:
+    NB-setX-dsh: L11_HIGH
+    NB-setX-cov: L11_HIGH
+    NB-set-dsh: L11_HIGH
+    NB-set-cov: L11_HIGH
+    NB-oracle: L11_ABOVE_GNN
+  rho_bar:
+    NB-setX-dsh:
+      point: 0.8789814105289916
+      ci:
+      - 0.8253945617871186
+      - 0.9301800567218607
+    NB-setX-cov:
+      point: 0.8716371692493671
+      ci:
+      - 0.8185043205057102
+      - 0.9283548865107996
+    NB-set-dsh:
+      point: 0.7956051664429585
+      ci:
+      - 0.7442619447159631
+      - 0.852295707978616
+    NB-set-cov:
+      point: 0.7722213605899775
+      ci:
+      - 0.7218910674927795
+      - 0.8290769745672699
+    NB-oracle:
+      point: 1.0775806065419358
+      ci:
+      - 1.023861958921847
+      - 1.1324882020601952
+  readable_metrics:
+  - recall@5
+  - full_coverage@5
+  - hit@1
+  flags: []
+  interpretation:
+  - l11_high
+  - data_adds
+  - above_level10_primary
+  contrasts:
+    data_adds:
+      point: 0.08337624408603306
+      ci:
+      - 0.04855977265423348
+      - 0.11742769513320524
+    data_adds_cov:
+      point: 0.09941580865938959
+      ci:
+      - 0.06729554764189538
+      - 0.13404553092762048
+    dsh_adds:
+      point: 0.007344241279624519
+      ci:
+      - -0.01271217543271978
+      - 0.02677447416354908
+    dsh_adds_own:
+      point: 0.023383805852981054
+      ci:
+      - -0.0025227233115908436
+      - 0.04937055170793287
+    over_level10_primary:
+      point: 0.10676004993901411
+      ci:
+      - 0.07323620991851272
+      - 0.141736204322711
+    ceiling_gap:
+      point: 0.19859919601294418
+      ci:
+      - 0.16045112160724184
+      - 0.24190866886707446
+  fit_queries_per_unit_mean:
+    NB-set: 2152.8
+    NB-setX: 7472.8
+  beta_choices:
+    NB-setX-dsh:
+      '1.0': 0
+      '1.5': 1
+      '2.0': 2
+      '3.0': 3
+      '4.0': 6
+      '8.0': 3
+      inf: 0
+    NB-set-dsh:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 2
+      '3.0': 4
+      '4.0': 4
+      '8.0': 4
+      inf: 1
+  queries: 3000
+  scoring_mismatches: 0
+  held_rows_read: false
+  test_rows_read: false
+  checkpoints_updated: 0
+  jobs_checked_for_identical_code: 37
+  record_sha256: 2982212d63183be7a76e767503ae96433831972896aac4f35a2b45b34d75a9b9
+  document: docs/MP_APPROX_L11.md
+  document_sha256: d3d894d2eca7dc0de58a5919aa70e51c17e075ecf9e806c07ff6b60d15e8f5ae
+  reservations: 'as placement.reservations declares: score shards 2.5 CPUs and 3 GB, assemble and check 1 CPU and 3 GB, NB-set jobs 1.5 CPUs and 1 GB, the first NB-setX
+    unit 1.5 CPUs and 3 GB, the other 14 NB-setX units and the repeat 1.5 CPUs and 1.5 GB (that unit''s measured peak 0.77 GB plus 0.5 GB, rounded up to the next
+    0.5 GB), the read 1 CPU and 1 GB. rx reserves without capping and every process fixes its own pools, so no number moves.'
+  measured_use:
+    score_shards: peak 2.48 to 2.65 GB, 2,730 to 2,760 CPU seconds in 21 min 09 s to 21 min 23 s
+    assemble: peak 2.70 GB, 33 CPU seconds in 34 s
+    check: 8 CPU seconds in 8 s
+    nb_set_jobs: five units each; peak 0.64 GB, 836 to 845 CPU seconds in 11 min 19 s to 11 min 22 s
+    nb_setx_unit_jobs_and_repeat: peak 0.77 GB, 594 to 612 CPU seconds in 7 min 22 s to 7 min 53 s
+    read: peak 0.40 GB, 12 CPU seconds in 11 s
