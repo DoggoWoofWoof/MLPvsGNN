@@ -1,6 +1,6 @@
 phase: MP_APPROX_L10
 opened: 2026-10-01
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
 extends: >-
@@ -474,3 +474,183 @@ execution:
     those tests on the host. Once the check has passed, the nine fit jobs and the repeat at once, then the read. Then
     fetch the read, check and meta files, and on the laptop build the record, the doc and the run record (commit).
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l10_2026_10_01:
+  utc: '2026-10-01T00:06:13Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: 70666ca
+  placement: host CPU (rx env mpr-cpu), the verified mirror in memory; scoring at 6 threads, check, fits and read at 4
+  reading: L10_MID
+  primary: NB-set-cov
+  primary_rho_bar:
+    point: 0.719340424796748
+    ci:
+    - 0.6652659012118325
+    - 0.7720359140885302
+  bands:
+    NB-set-cov: L10_MID
+    NB-set-dens: L10_MID
+    NB-draw-cov: L10_MID
+    NB-draw-dens: L10_MID
+    STD-set-cov: L10_MID
+    STD-set-dens: L10_MID
+    NB-oracle: L10_HIGH
+    STD-oracle: L10_HIGH
+  rho_bar:
+    NB-set-cov:
+      point: 0.719340424796748
+      ci:
+      - 0.6652659012118325
+      - 0.7720359140885302
+    NB-set-dens:
+      point: 0.7177779633038096
+      ci:
+      - 0.66526920068575
+      - 0.7695974716361341
+    NB-draw-cov:
+      point: 0.6807185479153265
+      ci:
+      - 0.6204652060853276
+      - 0.7427942583549019
+    NB-draw-dens:
+      point: 0.6994197548501092
+      ci:
+      - 0.6462638922175602
+      - 0.7562282097440586
+    STD-set-cov:
+      point: 0.6646389451856456
+      ci:
+      - 0.6107870865829343
+      - 0.7201173533695713
+    STD-set-dens:
+      point: 0.6425642952948709
+      ci:
+      - 0.5906073434976187
+      - 0.6962507628529336
+    NB-oracle:
+      point: 1.0485517891844784
+      ci:
+      - 0.9929127352748224
+      - 1.1019858073085194
+    STD-oracle:
+      point: 0.9482743365003197
+      ci:
+      - 0.894538730069618
+      - 1.0018032459417698
+  readable_metrics:
+  - recall@5
+  - full_coverage@5
+  - hit@1
+  flags:
+  - GRID_EDGE
+  interpretation:
+  - l10_mid
+  - set_adds
+  - nb_adds
+  contrasts:
+    set_adds:
+      point: 0.03862187688142149
+      ci:
+      - 0.00615051655506749
+      - 0.07420552061116933
+    set_adds_dens:
+      point: 0.018358208453700398
+      ci:
+      - -0.008213506520106842
+      - 0.04563123456378326
+    cov_adds:
+      point: 0.0015624614929383718
+      ci:
+      - -0.02527232969082741
+      - 0.02804853174069457
+    cov_adds_draw:
+      point: -0.01870120693478272
+      ci:
+      - -0.052212481758828914
+      - 0.014347025327648411
+    over_level9_primary:
+      point: 0.01992066994663877
+      ci:
+      - -0.010226920178539928
+      - 0.04779983469225104
+    nb_adds:
+      point: 0.05470147961110239
+      ci:
+      - 0.016743262497778817
+      - 0.08967421587462925
+    ceiling_gap:
+      point: 0.32921136438773047
+      ci:
+      - 0.27698036946430105
+      - 0.378702327642196
+  queries: 3000
+  scoring_mismatches: 0
+  held_rows_read: false
+  test_rows_read: false
+  checkpoints_updated: 0
+  jobs_checked_for_identical_code: 52
+  record_sha256: 534d82574bd5929954e8fa74b437547e6325a7bceedd1fa3542cd75105490233
+  document: docs/MP_APPROX_L10.md
+  document_sha256: df71a19d0ecce30aca680c249ad5def36124eb3416880937409ccdfd1cefa268
+  population_module_commit: 29ad1be (scripts/mp_approx_l10.py and tests/test_mp_approx_l10.py), unchanged after it; the fit module and its tests are 70666ca, the
+    commit this record names
+  host_jobs:
+    population_tests:
+    - '261001-044229-l10-pop-tests-60fe (13 passed, 1 skipped: the sidecar id test, before the sidecar existed)'
+    - 261001-052140-l10-pop-ids-test-2d4b (that test after the check, 1 passed)
+    fit_tests:
+    - 261001-051221-l10-fit-tests-385d (15 passed, the planted catch-all test deselected)
+    - 261001-051227-l10-fit-catchall-cde4 (the planted catch-all test, 1 passed)
+    smoke: 261001-044928-l10-smoke-5599
+    score:
+    - 261001-045128-l10-score-0-3b82
+    - 261001-045132-l10-score-1-6bd3
+    - 261001-045134-l10-score-2-e91d
+    assemble: 261001-051731-l10-assemble-d77b
+    check: 261001-051834-l10-check-bdd5
+    fit:
+      NB-set:
+      - 261001-051929-l10-fit-nb-set-k0-de5b
+      - 261001-051932-l10-fit-nb-set-k1-770a
+      - 261001-051935-l10-fit-nb-set-k2-de68
+      NB-draw:
+      - 261001-051938-l10-fit-nb-draw-k0-df1a
+      - 261001-051941-l10-fit-nb-draw-k1-dd38
+      - 261001-051944-l10-fit-nb-draw-k2-f923
+      STD-set:
+      - 261001-051947-l10-fit-std-set-k0-66dd
+      - 261001-051950-l10-fit-std-set-k1-666f
+      - 261001-051953-l10-fit-std-set-k2-9cd2
+    repeat: 261001-051956-l10-repeat-2698
+    read: 261001-053019-l10-read-8de7
+  catch_all_toy: 'The declared planted test (tests/test_mp_approx_l10_fit.py): 240 synthetic queries. The chain''s nb reach set holds every gold but one per query.
+    A catch-all type (has_genre fwd, has_genre bwd, the same in every query, its tokens on no other edge) reaches every gold plus a fifth of the pool''s other nodes.
+    With 5 EM rounds, NB-set''s argmax is the true chain on 1.00 of the fold-0 queries and the catch-all on 0.00, with kept theta rho_1 = rho_2 = rho_3 = 1 - 1e-6
+    (the upper clip) and eps_s = 0.0164. Level 9''s draw likelihood (NB-draw) on the same toy puts its argmax on the catch-all on 1.00 and the chain on 0.00 (printed
+    by the test, descriptive).'
+  check_summary: The declared chain reaches an in-pool gold on 0.938 of queries on the std view and 0.925 on the nb view. The direction check passes in both families.
+    The non-backtracking rule removes 0.094 of the standard R* and 0.0184 of the in-pool golds.
+  check_anchor_beyond_declared: 'The check stage files gold_unreached_nb: the share of in-pool golds that lie in no nb reach set, by hop. The declaration''s anchor
+    list does not name it. It is descriptive, 0.0009 overall (hop 1 0, hop 2 0.0007, hop 3 0.0020), and the document says it is beyond the declared list.'
+  reservations: The score shards (2.5 CPUs, 3 GB), the assemble and check (1 CPU, 3 GB) and the tests (1 CPU, 2 GB) reserved what placement.reservations declares.
+    The fit jobs and the repeat reserved 1.5 CPUs and 1 GB, and the read 1 CPU and 1 GB; the declaration names 2 GB for both. Level 9's fit jobs peaked at 0.44 to
+    0.61 GB and its read at 0.49 GB, and the set likelihood's per-type arrays add about 30 MB, so the memory reservations were lowered on the user's instruction to
+    reserve only what a job uses. The smoke reserved the score shard's 2.5 CPUs and 3 GB, not the declared 1 CPU and 2 GB, because it runs the scoring pass (on a
+    few queries); it peaked at 2.65 GB. The sidecar id test reserved 1 CPU and 1 GB. rx reserves without capping and sets no hard memory limit, so none of this changes
+    a number.
+  measured_use: 'From rx status (peak memory; cpu seconds over runtime). Score shards: 2.51 to 2.53 GB, 2,876 to 2,915 cpu s over 23m16s to 23m23s, about 2.1 CPUs
+    each. Smoke: 2.65 GB, 29 cpu s over 22 s. Assemble: 2.19 GB, 36 cpu s over 36 s. Check: 7.5 cpu s over 7 s. Fit jobs: 0.61 to 0.64 GB, 746 to 766 cpu s over 9m23s
+    to 9m37s, about 1.33 CPUs each. Repeat: 0.46 GB, 155 cpu s over 2m00s. Read: 0.49 GB, 22.7 cpu s over 22 s.'
+  compute_vs_estimate: 'Scoring took 23m16s to 23m23s per shard at 6 threads (1,000 queries a shard, about 1.40 s per query, 10,467 walk entries per query on average
+    and 31.4 million in all), against the 17.5 to 17.6 min the declaration expected from level 9. The cause was not measured; other projects'' jobs shared the host
+    while the shards ran. The sidecar''s size is of level 9''s order, as expected. Units took 105.5 to 115.2 s (declared: under 2 min), and a fit job of five units
+    took 9m23s to 9m37s (declared: about 10 min). The repeat took 2m00s and the read 22 s. The nine fit jobs and the repeat ran at once, about 10 min of wall time
+    from the first fit''s start to the last fit''s end.'
+  grid_edge_disclosure: 'GRID_EDGE is raised: 8 of the primary''s 15 units (NB-set-cov) chose eta = 100, the grid''s high end, and none chose kappa at an end. The
+    other arms have eta at an end in 3 to 6 of their 15 units (all at the high end except one NB-set-dens unit at the low end, 0.01), and kappa at an end in none.
+    No unit kept its last EM round. The grid is unchanged, as declared. At eta = 100 the prior term kappa log(a_q(v) + eta) is close to linear in a_q(v) wherever
+    a_q(v) is well below 100 (a_q has pool mean 1), so whether a larger eta or a linear prior term reads higher is untested here and would need its own file.'
+  em_and_theta: 'No unit''s fit-set marginal log-likelihood fell between rounds (EM_NOT_MONOTONE not raised; level 9 had 7 of 120). No set unit''s kept theta sits
+    at a clip bound (THETA_AT_CLIP not raised): eps_s is 6e-5 to 1.2e-4, far above the 1e-6 clip, and rho_1, rho_2, rho_3 are 0.75 to 0.98. The kept round is 3 to
+    9 of 10 (NB-set 4 to 9, NB-draw 3 to 6, STD-set 5 to 8).'
