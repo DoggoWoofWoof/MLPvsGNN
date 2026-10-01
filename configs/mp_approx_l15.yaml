@@ -1,6 +1,6 @@
 phase: MP_APPROX_L15
 opened: 2026-10-01
-status: DECLARED_NOT_RUN
+status: RUN
 branch_type: POST_HOC_ANALYSIS
 track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
 extends: >-
@@ -755,3 +755,1401 @@ execution:
     run at once. Then the read. Then fetch the read, check and meta files, and on the laptop build the record, the doc
     and the run record (commit).
   stop_after_run: STOP_FOR_REVIEW
+
+run_record_mp_approx_l15_2026_10_01:
+  utc: '2026-10-01T19:13:50Z'
+  status_moves: DECLARED_NOT_RUN -> RUN
+  terminal: STOP_FOR_REVIEW
+  code_commit: d3fb83d
+  placement: host CPU (rx env mpr-cpu), the verified mirror in memory; r2's scoring pass and assemble at 6 threads, the check, units, repeat and read at 4
+  population: 'r2: metaqa train-split rows, the union of the M3B fit stride''s offsets 10 and 11; every reading is a reading on train-split rows'
+  reading: L15_HIGH
+  primary: FZ-TW-1x-b1d
+  primary_rho_bar:
+    point: 0.9294009443383794
+    ci:
+    - 0.9021725792686034
+    - 0.9566367968114793
+  primary_label_matched: true
+  norms:
+  - sm
+  - fz
+  bands:
+    TW-1x-dsh: L15_HIGH
+    TW-1x-b1d: L15_HIGH
+    TW-1x-b0: L15_HIGH
+    TW-4x-dsh: L15_HIGH
+    TW-4x-b1d: L15_HIGH
+    TW-4x-b0: L15_HIGH
+    FZ-TW-1x-dsh: L15_HIGH
+    FZ-TW-1x-b1d: L15_HIGH
+    FZ-TW-1x-b0: L15_HIGH
+    FZ-TW-4x-dsh: L15_HIGH
+    FZ-TW-4x-b1d: L15_HIGH
+    FZ-TW-4x-b0: L15_HIGH
+    NB-oracle: L15_ABOVE_GNN
+    NB-oracle-b0: L15_HIGH
+  rho_bar:
+    TW-1x-dsh:
+      point: 0.8580195004761837
+      ci:
+      - 0.8306037616862262
+      - 0.8860240638836384
+    TW-1x-b1d:
+      point: 0.8942192841104123
+      ci:
+      - 0.867754557936794
+      - 0.9224280865257436
+    TW-1x-b0:
+      point: 0.9097631590689054
+      ci:
+      - 0.8811380734778222
+      - 0.937553636407891
+    TW-4x-dsh:
+      point: 0.9089881617899475
+      ci:
+      - 0.8821139446770948
+      - 0.9380555577219016
+    TW-4x-b1d:
+      point: 0.9357753418439628
+      ci:
+      - 0.9088671812668644
+      - 0.9636612967528488
+    TW-4x-b0:
+      point: 0.9606282732040562
+      ci:
+      - 0.9316216609154764
+      - 0.9885307547614672
+    FZ-TW-1x-dsh:
+      point: 0.8284871936553703
+      ci:
+      - 0.8001335147960019
+      - 0.8553243650503914
+    FZ-TW-1x-b1d:
+      point: 0.9294009443383794
+      ci:
+      - 0.9021725792686034
+      - 0.9566367968114793
+    FZ-TW-1x-b0:
+      point: 0.928553862829494
+      ci:
+      - 0.9017459304275862
+      - 0.9557093712310101
+    FZ-TW-4x-dsh:
+      point: 0.8618624110927758
+      ci:
+      - 0.8351224398981493
+      - 0.8886972027186333
+    FZ-TW-4x-b1d:
+      point: 0.9735251904797328
+      ci:
+      - 0.9463814790492197
+      - 0.9999089503506735
+    FZ-TW-4x-b0:
+      point: 0.9825965040457415
+      ci:
+      - 0.9553778002045757
+      - 1.0089975445480892
+    NB-oracle:
+      point: 1.0764252849213676
+      ci:
+      - 1.0492989243484143
+      - 1.1032555208391546
+    NB-oracle-b0:
+      point: 1.0133758187796948
+      ci:
+      - 0.9857077049864498
+      - 1.0406416616658707
+  gap_to_gnn:
+    TW-1x-dsh:
+      recall@5:
+        point: -0.009590585139555569
+        ci:
+        - -0.011508832318338574
+        - -0.007544775642724821
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.012164429530201342
+        ci:
+        - -0.01493288590604027
+        - -0.009199524608501118
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.01174496644295302
+        ci:
+        - -0.0159682606263982
+        - -0.007633529082774052
+        flag: BELOW_GNN
+    TW-1x-b1d:
+      recall@5:
+        point: -0.008048254664656931
+        ci:
+        - -0.009934242440916397
+        - -0.006150950561419473
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.009451901565995525
+        ci:
+        - -0.012165128635346762
+        - -0.006683445190156602
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.006124161073825503
+        ci:
+        - -0.010151705816554807
+        - -0.002068652125279638
+        flag: BELOW_GNN
+    TW-1x-b0:
+      recall@5:
+        point: -0.0075780424354284625
+        ci:
+        - -0.009694155999783004
+        - -0.005701128406781956
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.007522371364653243
+        ci:
+        - -0.01040268456375838
+        - -0.004751817673378078
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.0047818791946308715
+        ci:
+        - -0.008781459731543626
+        - -0.0005578859060402685
+        flag: BELOW_GNN
+    TW-4x-dsh:
+      recall@5:
+        point: -0.0064775907283230166
+        ci:
+        - -0.008323515564219437
+        - -0.004663807192710326
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.00947986577181208
+        ci:
+        - -0.012332913870246084
+        - -0.006627516778523492
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.0036073825503355715
+        ci:
+        - -0.00785934004474272
+        - 0.00039289709172259145
+        flag: null
+    TW-4x-b1d:
+      recall@5:
+        point: -0.005613391945141942
+        ci:
+        - -0.007482027915315491
+        - -0.0036739992350048184
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.0074384787472035795
+        ci:
+        - -0.01031879194630872
+        - -0.00475321588366891
+        flag: BELOW_GNN
+      hit@1:
+        point: 0.001062639821029082
+        ci:
+        - -0.0029935682326621927
+        - 0.005145413870246085
+        flag: null
+    TW-4x-b0:
+      recall@5:
+        point: -0.004910392133295427
+        ci:
+        - -0.0069716061836991895
+        - -0.0029694303646216123
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.0047259507829977634
+        ci:
+        - -0.0076342281879194646
+        - -0.0019567953020134233
+        flag: BELOW_GNN
+      hit@1:
+        point: 0.004026845637583891
+        ci:
+        - -0.00022511185682326344
+        - 0.007914569351230428
+        flag: null
+    FZ-TW-1x-dsh:
+      recall@5:
+        point: -0.010950253771335197
+        ci:
+        - -0.012977179921740706
+        - -0.008914271817763386
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.013758389261744964
+        ci:
+        - -0.016834451901565996
+        - -0.010821448545861296
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.017309843400447427
+        ci:
+        - -0.021533836689038036
+        - -0.013112416107382535
+        flag: BELOW_GNN
+    FZ-TW-1x-b1d:
+      recall@5:
+        point: -0.006157079485644168
+        ci:
+        - -0.008026935898528273
+        - -0.004406791514497103
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.0063478747203579424
+        ci:
+        - -0.009284116331096194
+        - -0.003634647651006712
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.0023769574944071596
+        ci:
+        - -0.006348573825503361
+        - 0.0016226230425056029
+        flag: null
+    FZ-TW-1x-b0:
+      recall@5:
+        point: -0.006425719083064931
+        ci:
+        - -0.008246895930512112
+        - -0.00461544598320641
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.006431767337807606
+        ci:
+        - -0.009088366890380306
+        - -0.003914289709172261
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.0019854586129753925
+        ci:
+        - -0.006068931767337799
+        - 0.002041387024608494
+        flag: null
+    FZ-TW-4x-dsh:
+      recall@5:
+        point: -0.010099169658491173
+        ci:
+        - -0.01212978307045754
+        - -0.008220047825693882
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.012220357941834452
+        ci:
+        - -0.015157298657718126
+        - -0.009199524608501118
+        flag: BELOW_GNN
+      hit@1:
+        point: -0.009088366890380313
+        ci:
+        - -0.013506711409395975
+        - -0.004781180089485459
+        flag: BELOW_GNN
+    FZ-TW-4x-b1d:
+      recall@5:
+        point: -0.0038584669931624096
+        ci:
+        - -0.0056839837620419826
+        - -0.002074709877609091
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.0031599552572706938
+        ci:
+        - -0.005929110738255033
+        - -0.0005872483221476517
+        flag: BELOW_GNN
+      hit@1:
+        point: 0.003831096196868008
+        ci:
+        - -8.529082774048746e-05
+        - 0.007885906040268443
+        flag: null
+    FZ-TW-4x-b0:
+      recall@5:
+        point: -0.0036069452924791232
+        ci:
+        - -0.005457400006307787
+        - -0.0017798137384288752
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.002125279642058165
+        ci:
+        - -0.0049496644295302
+        - 0.0005320190156599507
+        flag: null
+      hit@1:
+        point: 0.00483780760626398
+        ci:
+        - 0.0008095637583892605
+        - 0.008754893736017882
+        flag: BEATS_GNN
+    NB-oracle:
+      recall@5:
+        point: 0.0020548855558901193
+        ci:
+        - 0.0002934871167522456
+        - 0.003739609768665364
+        flag: BEATS_GNN
+      full_coverage@5:
+        point: 0.0012583892617449653
+        ci:
+        - -0.0015939597315436176
+        - 0.003999580536912751
+        flag: null
+      hit@1:
+        point: 0.022958612975391497
+        ci:
+        - 0.019183445190156623
+        - 0.026817673378076032
+        flag: BEATS_GNN
+    NB-oracle-b0:
+      recall@5:
+        point: -0.0021853067146733415
+        ci:
+        - -0.004027369020244683
+        - -0.00039023148473166556
+        flag: BELOW_GNN
+      full_coverage@5:
+        point: -0.0007829977628635352
+        ci:
+        - -0.0035255872483221456
+        - 0.0018736017897091701
+        flag: null
+      hit@1:
+        point: 0.011241610738255034
+        ci:
+        - 0.007213366890380317
+        - 0.015185262863534709
+        flag: BEATS_GNN
+  by_hop:
+    hop=1:
+      TW-1x-dsh:
+        point: 0.8141105126898815
+        ci:
+        - 0.7315640906021676
+        - 0.904981551671171
+      TW-1x-b1d:
+        point: 0.7900524191220658
+        ci:
+        - 0.704314997047449
+        - 0.8831160944511856
+      TW-1x-b0:
+        point: 0.7590966862132925
+        ci:
+        - 0.6723005460166805
+        - 0.8581439418631794
+      TW-4x-dsh:
+        point: 0.9128605580799075
+        ci:
+        - 0.8314052963003742
+        - 1.0049737166506076
+      TW-4x-b1d:
+        point: 0.8396090381049636
+        ci:
+        - 0.7616672256196324
+        - 0.9275036755395616
+      TW-4x-b0:
+        point: 0.8248288548353978
+        ci:
+        - 0.7391394661701961
+        - 0.9239805597865608
+      FZ-TW-1x-dsh:
+        point: 0.8428880207461468
+        ci:
+        - 0.7608279687125152
+        - 0.9330601059864455
+      FZ-TW-1x-b1d:
+        point: 0.846080606583218
+        ci:
+        - 0.7612417426124519
+        - 0.9428647065932745
+      FZ-TW-1x-b0:
+        point: 0.8256553492824444
+        ci:
+        - 0.7424367555493498
+        - 0.9208037115357179
+      FZ-TW-4x-dsh:
+        point: 0.8672697233697667
+        ci:
+        - 0.7842240464172501
+        - 0.9651625809538791
+      FZ-TW-4x-b1d:
+        point: 0.9009959469663494
+        ci:
+        - 0.8165099903304613
+        - 0.9995160492175423
+      FZ-TW-4x-b0:
+        point: 0.8429448437311677
+        ci:
+        - 0.7506226967889221
+        - 0.9550863029990245
+      NB-oracle:
+        point: 1.199983801288149
+        ci:
+        - 1.1036948573477023
+        - 1.3311797357835073
+      NB-oracle-b0:
+        point: 0.9142788501777824
+        ci:
+        - 0.8294219831179486
+        - 1.0154701858415833
+    hop=2:
+      TW-1x-dsh:
+        point: 0.9652805023697478
+        ci:
+        - 0.9051119842786417
+        - 1.0316584369632502
+      TW-1x-b1d:
+        point: 1.0729239256183465
+        ci:
+        - 1.0120161679686526
+        - 1.1397191232137558
+      TW-1x-b0:
+        point: 1.0743349904476354
+        ci:
+        - 1.0082749806293254
+        - 1.1457213254782848
+      TW-4x-dsh:
+        point: 1.0405822844707995
+        ci:
+        - 0.9796637855665329
+        - 1.108123918857486
+      TW-4x-b1d:
+        point: 1.1097201762782343
+        ci:
+        - 1.0487329523035769
+        - 1.176891585978818
+      TW-4x-b0:
+        point: 1.1424663205334618
+        ci:
+        - 1.0819624437925301
+        - 1.2106319990739578
+      FZ-TW-1x-dsh:
+        point: 0.9351496503349971
+        ci:
+        - 0.8708220304045089
+        - 1.001201723672701
+      FZ-TW-1x-b1d:
+        point: 1.1432021125870295
+        ci:
+        - 1.0767263995896434
+        - 1.2111268607425245
+      FZ-TW-1x-b0:
+        point: 1.1141817238745786
+        ci:
+        - 1.05277142639607
+        - 1.1795052052741024
+      FZ-TW-4x-dsh:
+        point: 0.9773507876665389
+        ci:
+        - 0.9156599486999991
+        - 1.0462873711244105
+      FZ-TW-4x-b1d:
+        point: 1.2081140284804455
+        ci:
+        - 1.142456224487022
+        - 1.273509503600139
+      FZ-TW-4x-b0:
+        point: 1.2275665287514037
+        ci:
+        - 1.1642327180663965
+        - 1.2960577730423302
+      NB-oracle:
+        point: 1.2423061858860815
+        ci:
+        - 1.1727232716629834
+        - 1.3104067789674325
+      NB-oracle-b0:
+        point: 1.2398350022582614
+        ci:
+        - 1.1774821389866006
+        - 1.3111902707445533
+    hop=3:
+      TW-1x-dsh:
+        point: 0.83393406141581
+        ci:
+        - 0.8022777218042787
+        - 0.8678611255061431
+      TW-1x-b1d:
+        point: 0.8561576596044392
+        ci:
+        - 0.8260321362787635
+        - 0.8885766850536093
+      TW-1x-b0:
+        point: 0.8814162329770913
+        ci:
+        - 0.8494790087304953
+        - 0.9138162639250121
+      TW-4x-dsh:
+        point: 0.8721683236016858
+        ci:
+        - 0.8401627495632086
+        - 0.9051360532399771
+      TW-4x-b1d:
+        point: 0.8979388190273485
+        ci:
+        - 0.8667317393227246
+        - 0.9304599673049505
+      TW-4x-b0:
+        point: 0.92530885950664
+        ci:
+        - 0.8924827942825877
+        - 0.9599672906269684
+      FZ-TW-1x-dsh:
+        point: 0.7977230632199782
+        ci:
+        - 0.764536267781353
+        - 0.8318905721864378
+      FZ-TW-1x-b1d:
+        point: 0.8783777432256449
+        ci:
+        - 0.8461869249978338
+        - 0.9098153860869624
+      FZ-TW-1x-b0:
+        point: 0.8875891777341178
+        ci:
+        - 0.8567849803070001
+        - 0.9170720610177218
+      FZ-TW-4x-dsh:
+        point: 0.8288744961198621
+        ci:
+        - 0.796662443641511
+        - 0.8613114079802926
+      FZ-TW-4x-b1d:
+        point: 0.9147382683796393
+        ci:
+        - 0.8836451263169867
+        - 0.9461089245023364
+      FZ-TW-4x-b0:
+        point: 0.9290102790139155
+        ci:
+        - 0.8973176797727916
+        - 0.9604590749337425
+      NB-oracle:
+        point: 1.012304222525105
+        ci:
+        - 0.9810572283445581
+        - 1.044566959972829
+      NB-oracle-b0:
+        point: 0.9601412648102893
+        ci:
+        - 0.9281719418484202
+        - 0.9911833301826564
+  by_where:
+    where=true_from_b0:
+      TW-1x-dsh:
+        point: 0.9288725773624522
+        ci:
+        - 0.9032627778106177
+        - 0.9556617044371916
+      TW-1x-b1d:
+        point: 0.959215448876302
+        ci:
+        - 0.9331902590313874
+        - 0.9869840519651276
+      TW-1x-b0:
+        point: 0.9898134322911329
+        ci:
+        - 0.9625469846847619
+        - 1.017999256053151
+      TW-4x-dsh:
+        point: 0.9703055133544458
+        ci:
+        - 0.9440543337872119
+        - 0.9974474181873492
+      TW-4x-b1d:
+        point: 0.994793503904814
+        ci:
+        - 0.9689677277689553
+        - 1.022454439616819
+      TW-4x-b0:
+        point: 1.0270842464718368
+        ci:
+        - 0.9993966943357949
+        - 1.0542612544491767
+      FZ-TW-1x-dsh:
+        point: 0.9189809058013029
+        ci:
+        - 0.8935270805099814
+        - 0.9456736770606067
+      FZ-TW-1x-b1d:
+        point: 0.9807862399820623
+        ci:
+        - 0.9539853649097843
+        - 1.0087812627600672
+      FZ-TW-1x-b0:
+        point: 0.9735215028091447
+        ci:
+        - 0.947535284766201
+        - 1.0003311490525386
+      FZ-TW-4x-dsh:
+        point: 0.9453662131676513
+        ci:
+        - 0.9198966567024077
+        - 0.9725228317465676
+      FZ-TW-4x-b1d:
+        point: 1.0184801640037178
+        ci:
+        - 0.9914512960643603
+        - 1.0465987327120336
+      FZ-TW-4x-b0:
+        point: 1.0293429847473805
+        ci:
+        - 1.0021061339681976
+        - 1.0569566434899647
+      NB-oracle:
+        point: 1.117404267814816
+        ci:
+        - 1.0908201303119134
+        - 1.1435581266969392
+      NB-oracle-b0:
+        point: 1.0585603623761113
+        ci:
+        - 1.0304384052173299
+        - 1.0864829666771183
+    where=true_from_b1_only:
+      TW-1x-dsh:
+        point: -0.6904944572438625
+        ci:
+        - -1.1566220180637392
+        - -0.40037346128941503
+      TW-1x-b1d:
+        point: -0.48339718742052734
+        ci:
+        - -0.7645597965026883
+        - -0.2956548750444223
+      TW-1x-b0:
+        point: -0.8261278654314124
+        ci:
+        - -1.268038243939577
+        - -0.5611082748574451
+      TW-4x-dsh:
+        point: -0.4553526898166327
+        ci:
+        - -0.8483587541671643
+        - -0.18935223822496441
+      TW-4x-b1d:
+        point: -0.32696566239203456
+        ci:
+        - -0.5864221418576029
+        - -0.1486870429558014
+      TW-4x-b0:
+        point: -0.5424538767185573
+        ci:
+        - -0.9026210523634917
+        - -0.30993424165724565
+      FZ-TW-1x-dsh:
+        point: -1.309899898261247
+        ci:
+        - -1.9855439779873272
+        - -0.9099349011941692
+      FZ-TW-1x-b1d:
+        point: -0.22648312284098102
+        ci:
+        - -0.39850016994214454
+        - -0.11152428426860989
+      FZ-TW-1x-b0:
+        point: -0.10923559769468709
+        ci:
+        - -0.22664372315343462
+        - -0.02415713461430607
+      FZ-TW-4x-dsh:
+        point: -1.1368316628736426
+        ci:
+        - -1.7565443774721368
+        - -0.7343665263099074
+      FZ-TW-4x-b1d:
+        point: -0.01576357007819661
+        ci:
+        - -0.08395072182377317
+        - 0.04975400044523706
+      FZ-TW-4x-b0:
+        point: -0.05530311285126719
+        ci:
+        - -0.1387959063092079
+        - 0.009205336690635894
+      NB-oracle:
+        point: 0.17158160049191504
+        ci:
+        - -0.10584300901877852
+        - 0.4028711459872813
+      NB-oracle-b0:
+        point: 0.0
+        ci:
+        - 0.0
+        - 0.0
+    where=true_nowhere:
+      TW-1x-dsh:
+        point: null
+        ci: null
+      TW-1x-b1d:
+        point: null
+        ci: null
+      TW-1x-b0:
+        point: null
+        ci: null
+      TW-4x-dsh:
+        point: null
+        ci: null
+      TW-4x-b1d:
+        point: null
+        ci: null
+      TW-4x-b0:
+        point: null
+        ci: null
+      FZ-TW-1x-dsh:
+        point: null
+        ci: null
+      FZ-TW-1x-b1d:
+        point: null
+        ci: null
+      FZ-TW-1x-b0:
+        point: null
+        ci: null
+      FZ-TW-4x-dsh:
+        point: null
+        ci: null
+      FZ-TW-4x-b1d:
+        point: null
+        ci: null
+      FZ-TW-4x-b0:
+        point: null
+        ci: null
+      NB-oracle:
+        point: null
+        ci: null
+      NB-oracle-b0:
+        point: null
+        ci: null
+  where_rows:
+    where=true_from_b0: 10652
+    where=true_from_b1_only: 1009
+    where=true_nowhere: 259
+  readable_metrics:
+  - recall@5
+  - full_coverage@5
+  - hit@1
+  flags: []
+  interpretation:
+  - l15_high
+  - matched_below_gnn
+  - fz_adds
+  - fz_adds_b0
+  - fz_hurts_dsh
+  - fz_adds_4x
+  - fz_adds_4x_b0
+  - fz_hurts_4x_dsh
+  - over_l14_primary
+  - data_adds_4x_fz
+  - data_adds_4x_fz_b0
+  - b0_ceiling_binds
+  - fz_adds_hop1
+  - fz_adds_hop2
+  - fz_adds_hop3
+  contrasts:
+    fz_adds:
+      point: 0.03518166022796709
+      ci:
+      - 0.022514123649457887
+      - 0.04782249214624249
+    fz_adds_b0:
+      point: 0.018790703760588667
+      ci:
+      - 0.006218783085087823
+      - 0.03293184086601834
+    fz_adds_dsh:
+      point: -0.029532306820813425
+      ci:
+      - -0.04434365671587777
+      - -0.01598928759376253
+    fz_adds_4x:
+      point: 0.03774984863577002
+      ci:
+      - 0.02554517706106611
+      - 0.05009326439471327
+    fz_adds_4x_b0:
+      point: 0.02196823084168531
+      ci:
+      - 0.009500178672100342
+      - 0.035271722992643494
+    fz_adds_4x_dsh:
+      point: -0.04712575069717162
+      ci:
+      - -0.061924990504609125
+      - -0.03344523057564694
+    over_l14_primary:
+      point: 0.019637785269474017
+      ci:
+      - 0.0043713613903251765
+      - 0.03574368123206482
+    b1d_over_b0_fz:
+      point: 0.00084708150888535
+      ci:
+      - -0.01022657742325431
+      - 0.012335459327865833
+    b1d_over_b0_fz_4x:
+      point: -0.009071313566008654
+      ci:
+      - -0.01747958682817039
+      - 0.0002242256687974802
+    data_4x_fz:
+      point: 0.04412424614135346
+      ci:
+      - 0.03091981393577812
+      - 0.056169099498022325
+    data_4x_fz_b0:
+      point: 0.05404264121624747
+      ci:
+      - 0.04325773872191468
+      - 0.06682205158104287
+    ceiling_gap:
+      point: 0.1470243405829882
+      ci:
+      - 0.12810138402828644
+      - 0.167714426472144
+    ceiling_gap_4x:
+      point: 0.10290009444163473
+      ci:
+      - 0.08573356203113751
+      - 0.1202664501695642
+    ceiling_gap_b0:
+      point: 0.08482195595020081
+      ci:
+      - 0.07227791377975983
+      - 0.09857964958196962
+    bucket_ceiling:
+      point: 0.06304946614167273
+      ci:
+      - 0.04862048838114266
+      - 0.07823510502076339
+  hop_contrasts:
+    hop=1:
+      fz_adds:
+        point: 0.056028187461152235
+        ci:
+        - 0.022209422543382255
+        - 0.09544787763895683
+      fz_adds_b0:
+        point: 0.06655866306915192
+        ci:
+        - 0.01814889285973146
+        - 0.11591277706774997
+      over_l14_primary:
+        point: 0.08698392036992553
+        ci:
+        - 0.041468461405600995
+        - 0.13960527720545918
+    hop=2:
+      fz_adds:
+        point: 0.07027818696868304
+        ci:
+        - 0.044030355388177
+        - 0.09886612969883189
+      fz_adds_b0:
+        point: 0.039846733426943226
+        ci:
+        - 0.014728323963722856
+        - 0.06674038743805497
+      over_l14_primary:
+        point: 0.06886712213939417
+        ci:
+        - 0.04097430947703686
+        - 0.1010546527551511
+    hop=3:
+      fz_adds:
+        point: 0.022220083621205644
+        ci:
+        - 0.005962093538752828
+        - 0.03829059057669351
+      fz_adds_b0:
+        point: 0.006172944757026566
+        ci:
+        - -0.009553478123335577
+        - 0.02388166043739366
+      over_l14_primary:
+        point: -0.0030384897514463827
+        ci:
+        - -0.021968439916624165
+        - 0.016305727526735606
+  where_contrasts:
+    where=true_from_b0:
+      fz_adds:
+        point: 0.021570791105760323
+        ci:
+        - 0.009831911986906758
+        - 0.032371424137405895
+      fz_adds_b0:
+        point: -0.01629192948198821
+        ci:
+        - -0.026993478177908013
+        - -0.005974893714736333
+    where=true_from_b1_only:
+      fz_adds:
+        point: 0.25691406457954635
+        ci:
+        - 0.10123144224836468
+        - 0.4762676537309713
+      fz_adds_b0:
+        point: 0.7168922677367253
+        ci:
+        - 0.480912629197204
+        - 1.0809297681344348
+    where=true_nowhere:
+      fz_adds:
+        point: null
+        ci: null
+      fz_adds_b0:
+        point: null
+        ci: null
+  training_rows:
+    sm/full/TW-1x:
+      fit: 5883
+      inner: 1482
+    sm/full/TW-4x:
+      fit: 23538
+      inner: 1482
+    sm/b0/TW-1x:
+      fit: 5883
+      inner: 1482
+    sm/b0/TW-4x:
+      fit: 23538
+      inner: 1482
+    fz/full/TW-1x:
+      fit: 5883
+      inner: 1482
+    fz/full/TW-4x:
+      fit: 23538
+      inner: 1482
+    fz/b0/TW-1x:
+      fit: 5883
+      inner: 1482
+    fz/b0/TW-4x:
+      fit: 23538
+      inner: 1482
+  agreement_mean:
+    sm/full/TW-1x: 0.882410514541387
+    sm/full/TW-4x: 0.899244966442953
+    sm/b0/TW-1x: 0.8683445190156599
+    sm/b0/TW-4x: 0.8722315436241611
+    fz/full/TW-1x: 0.8940995525727069
+    fz/full/TW-4x: 0.9137863534675615
+    fz/b0/TW-1x: 0.8427852348993289
+    fz/b0/TW-4x: 0.8699384787472035
+  null_mode_mean:
+    sm/full/TW-1x: 0.0060961968680089485
+    sm/full/TW-4x: 0.020469798657718124
+    sm/b0/TW-1x: 0.06873601789709173
+    sm/b0/TW-4x: 0.08523489932885907
+    fz/full/TW-1x: 0.053495525727069344
+    fz/full/TW-4x: 0.050615212527964214
+    fz/b0/TW-1x: 0.1309563758389262
+    fz/b0/TW-4x: 0.11208053691275167
+  reaches_gnn: null
+  beta_choices:
+    TW-1x-dsh:
+      '1.0': 0
+      '1.5': 1
+      '2.0': 1
+      '3.0': 1
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+    TW-1x-b1d:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 1
+      '4.0': 2
+      '8.0': 0
+      inf: 0
+    TW-1x-b0:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 1
+      '4.0': 1
+      '8.0': 1
+      inf: 0
+    TW-4x-dsh:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 3
+      '3.0': 0
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+    TW-4x-b1d:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 2
+      '3.0': 0
+      '4.0': 1
+      '8.0': 0
+      inf: 0
+    TW-4x-b0:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 0
+      '4.0': 1
+      '8.0': 1
+      inf: 1
+    FZ-TW-1x-dsh:
+      '1.0': 1
+      '1.5': 0
+      '2.0': 2
+      '3.0': 0
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+    FZ-TW-1x-b1d:
+      '1.0': 0
+      '1.5': 1
+      '2.0': 2
+      '3.0': 0
+      '4.0': 0
+      '8.0': 0
+      inf: 0
+    FZ-TW-1x-b0:
+      '1.0': 0
+      '1.5': 1
+      '2.0': 0
+      '3.0': 1
+      '4.0': 1
+      '8.0': 0
+      inf: 0
+    FZ-TW-4x-dsh:
+      '1.0': 0
+      '1.5': 1
+      '2.0': 1
+      '3.0': 0
+      '4.0': 0
+      '8.0': 1
+      inf: 0
+    FZ-TW-4x-b1d:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 1
+      '4.0': 2
+      '8.0': 0
+      inf: 0
+    FZ-TW-4x-b0:
+      '1.0': 0
+      '1.5': 0
+      '2.0': 0
+      '3.0': 0
+      '4.0': 1
+      '8.0': 2
+      inf: 0
+  b1d_moved:
+    sm/TW-1x:
+      changed_scored_mean: 11920.0
+      changed_inner_mean: 1482.0
+      mass_moved_mean: 0.10557014660019863
+    sm/TW-4x:
+      changed_scored_mean: 11920.0
+      changed_inner_mean: 1482.0
+      mass_moved_mean: 0.11170726172561689
+    fz/TW-1x:
+      changed_scored_mean: 11920.0
+      changed_inner_mean: 1482.0
+      mass_moved_mean: 0.14255904242841444
+    fz/TW-4x:
+      changed_scored_mean: 11920.0
+      changed_inner_mean: 1482.0
+      mass_moved_mean: 0.12716737480439003
+  fz_vocabulary:
+    full/TW-1x:
+      vocab: 2069
+      partners: 1976
+      scored_rows: 11920
+      scored_entries_outside_v_mean: 348.0
+      scored_rows_outside_v_mean: 81.0
+    full/TW-4x:
+      vocab: 2350
+      partners: 2072
+      scored_rows: 11920
+      scored_entries_outside_v_mean: 108.0
+      scored_rows_outside_v_mean: 26.0
+    b0/TW-1x:
+      vocab: 929
+      partners: 0
+      scored_rows: 11920
+      scored_entries_outside_v_mean: 147.0
+      scored_rows_outside_v_mean: 47.0
+    b0/TW-4x:
+      vocab: 1022
+      partners: 0
+      scored_rows: 11920
+      scored_entries_outside_v_mean: 37.0
+      scored_rows_outside_v_mean: 17.0
+  b0_view:
+    rows: 11920
+    types: 177.71803691275167
+    entries: 5071.124664429531
+    types_b0: 45.84521812080537
+    entries_b0: 1049.9566275167786
+    no_b0_type_share: 0.0
+  queries: 11920
+  stored_metrics_checked: false
+  dev_rows_read: false
+  held_rows_read: false
+  test_rows_read: false
+  train_split_rows_scored: 11920
+  checkpoints_updated: 0
+  jobs_checked_for_identical_code: 40
+  record_sha256: 374debfd8e368661218c5db41fb6dd5d5e646aea7d21ee61862cd363d77a0dbd
+  document: docs/MP_APPROX_L15.md
+  document_sha256: b9ab192a83aa9784067abdbf20360509d051ab7f61b4106d31e283c92d4d4366
+  placement_notes:
+  - Every job reserved the declared figures (placement.reservations), and rx reserves without capping, so a reservation changes no number.
+  - 'Measured against reserved (rx status: cpu_s over wall time, and the peak memory) is under measured_jobs. Peaks above the reservation: r2-assemble: 1.83 GB peak
+    against 1.2 GB; r2-check: 1.08 GB peak against 0.85 GB. Every unit and the repeat peaked below its reservation, by 0.05 to 0.16 GB.'
+  - The assemble and the check reserved level 14's measured peaks plus a margin (1.01 and 0.73 GB there) and peaked higher here; why was not diagnosed. rx reserves
+    without capping, so neither job was stopped or slowed by its reservation and no number depends on it. The measured peaks under measured_jobs are the basis for
+    the next level's reservations.
+  - The population module's host tests and r2's twelve score shards were submitted at once, right after e3b79f2. The assemble and the check followed the shards. The
+    fit module was committed next (d3fb83d), and the 24 units and the repeat were submitted together, with the fit module's host tests just after them. The read ran
+    after all 25 had finished. Every job was submitted once.
+  - 'The population module''s host tests pushed e3b79f2''s tree, and r2''s twelve score shards, the assemble and the check ran on it without a push. The first unit''s
+    submit pushed d3fb83d''s tree, which adds only the fit module and its tests, and every other unit, the repeat, the fit module''s host tests and the read ran on
+    it without a push. Design looks for a later level pushed untracked files under outputs/mp_approx_l16_design while these jobs ran, with no tracked file changed,
+    and no job of this level imports them. The code check is by module: every module has one LF sha256 across all jobs, equal to the file at code_commit.'
+  measured_jobs:
+    tests:
+      jobs: 1
+      reserved:
+        cpus: 0.7
+        mem_gb: 0.3
+      cpu_rate:
+      - 0.79
+      - 0.79
+      peak_mem_gb:
+      - 0.22
+      - 0.22
+      wall_min:
+      - 0.3
+      - 0.3
+      all_done_rc0: true
+    r2 score shards:
+      jobs: 12
+      reserved:
+        cpus: 1.85
+        mem_gb: 2.95
+      cpu_rate:
+      - 1.77
+      - 1.83
+      peak_mem_gb:
+      - 2.71
+      - 2.86
+      wall_min:
+      - 42.5
+      - 43.0
+      all_done_rc0: true
+    r2-assemble:
+      jobs: 1
+      reserved:
+        cpus: 1.0
+        mem_gb: 1.2
+      cpu_rate:
+      - 0.97
+      - 0.97
+      peak_mem_gb:
+      - 1.83
+      - 1.83
+      wall_min:
+      - 1.5
+      - 1.5
+      all_done_rc0: true
+    r2-check:
+      jobs: 1
+      reserved:
+        cpus: 1.0
+        mem_gb: 0.85
+      cpu_rate:
+      - 0.99
+      - 0.99
+      peak_mem_gb:
+      - 1.08
+      - 1.08
+      wall_min:
+      - 0.4
+      - 0.4
+      all_done_rc0: true
+    sm full TW-1x units:
+      jobs: 3
+      reserved:
+        cpus: 1.15
+        mem_gb: 2.8
+      cpu_rate:
+      - 1.07
+      - 1.08
+      peak_mem_gb:
+      - 2.6
+      - 2.64
+      wall_min:
+      - 17.0
+      - 17.6
+      all_done_rc0: true
+    sm full TW-4x units:
+      jobs: 3
+      reserved:
+        cpus: 1.3
+        mem_gb: 3.35
+      cpu_rate:
+      - 1.21
+      - 1.21
+      peak_mem_gb:
+      - 3.16
+      - 3.3
+      wall_min:
+      - 31.0
+      - 31.1
+      all_done_rc0: true
+    sm b0 TW-1x units:
+      jobs: 3
+      reserved:
+        cpus: 1.1
+        mem_gb: 1.9
+      cpu_rate:
+      - 1.01
+      - 1.02
+      peak_mem_gb:
+      - 1.73
+      - 1.76
+      wall_min:
+      - 11.3
+      - 11.6
+      all_done_rc0: true
+    sm b0 TW-4x units:
+      jobs: 3
+      reserved:
+        cpus: 1.2
+        mem_gb: 2.25
+      cpu_rate:
+      - 1.08
+      - 1.08
+      peak_mem_gb:
+      - 2.09
+      - 2.12
+      wall_min:
+      - 24.9
+      - 24.9
+      all_done_rc0: true
+    fz full TW-1x units:
+      jobs: 3
+      reserved:
+        cpus: 1.3
+        mem_gb: 2.8
+      cpu_rate:
+      - 1.19
+      - 1.19
+      peak_mem_gb:
+      - 2.63
+      - 2.65
+      wall_min:
+      - 20.6
+      - 20.8
+      all_done_rc0: true
+    fz full TW-4x units:
+      jobs: 3
+      reserved:
+        cpus: 1.5
+        mem_gb: 3.4
+      cpu_rate:
+      - 1.43
+      - 1.44
+      peak_mem_gb:
+      - 3.2
+      - 3.25
+      wall_min:
+      - 37.2
+      - 37.3
+      all_done_rc0: true
+    fz b0 TW-1x units:
+      jobs: 3
+      reserved:
+        cpus: 1.15
+        mem_gb: 1.95
+      cpu_rate:
+      - 1.04
+      - 1.05
+      peak_mem_gb:
+      - 1.79
+      - 1.83
+      wall_min:
+      - 13.8
+      - 14.0
+      all_done_rc0: true
+    fz b0 TW-4x units:
+      jobs: 3
+      reserved:
+        cpus: 1.3
+        mem_gb: 2.3
+      cpu_rate:
+      - 1.19
+      - 1.21
+      peak_mem_gb:
+      - 2.12
+      - 2.15
+      wall_min:
+      - 29.1
+      - 30.7
+      all_done_rc0: true
+    repeat:
+      jobs: 1
+      reserved:
+        cpus: 1.3
+        mem_gb: 2.8
+      cpu_rate:
+      - 1.24
+      - 1.24
+      peak_mem_gb:
+      - 2.68
+      - 2.68
+      wall_min:
+      - 18.5
+      - 18.5
+      all_done_rc0: true
+    fit-tests:
+      jobs: 1
+      reserved:
+        cpus: 0.9
+        mem_gb: 0.45
+      cpu_rate:
+      - 0.93
+      - 0.93
+      peak_mem_gb:
+      - 0.39
+      - 0.39
+      wall_min:
+      - 3.3
+      - 3.3
+      all_done_rc0: true
+    read:
+      jobs: 1
+      reserved:
+        cpus: 1.0
+        mem_gb: 1.6
+      cpu_rate:
+      - 1.03
+      - 1.03
+      peak_mem_gb:
+      - 1.05
+      - 1.05
+      wall_min:
+      - 2.2
+      - 2.2
+      all_done_rc0: true
+  population_commit: e3b79f2
+  train_split_rows_scored_note: 'r2''s rows are metaqa train-split rows, scored once by r2''s scoring pass (the population module''s twelve score shards) and read
+    once here. The fits read level 12''s carve sidecars in place, which level 12 scored and its run record counts. The training rows each (view, fit) used are under
+    training_rows: sm/full/TW-1x 5,883 fit / 1,482 inner; sm/full/TW-4x 23,538 fit / 1,482 inner; sm/b0/TW-1x 5,883 fit / 1,482 inner; sm/b0/TW-4x 23,538 fit / 1,482
+    inner; fz/full/TW-1x 5,883 fit / 1,482 inner; fz/full/TW-4x 23,538 fit / 1,482 inner; fz/b0/TW-1x 5,883 fit / 1,482 inner; fz/b0/TW-4x 23,538 fit / 1,482 inner.'
