@@ -1,0 +1,532 @@
+phase: MP_APPROX_L11
+opened: 2026-10-01
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
+extends: >-
+  Level 10 (configs/mp_approx_l10.yaml, RUN at a5d6b1e). On metaqa, level 10's primary arm NB-set-cov read L10_MID, with
+  rho_bar 0.719 [0.665, 0.772], and every learned arm stayed below the GNN on all three metrics. The set likelihood added
+  to level 8's under the coverage score (set_adds +0.039 [0.006, 0.074]), and non-backtracking walks added to standard
+  ones (nb_adds +0.055 [0.017, 0.090]). The coverage score added nothing over level 8's mixture (cov_adds +0.002 [-0.025,
+  0.028]). The non-backtracking true-chain oracle read 1.049 [0.993, 1.102], and ceiling_gap was 0.329 [0.277, 0.379].
+  The argmax type had the true chain's tokens on 0.868 of queries, and 0.211 of the ceiling gap sat on the (query, seed)
+  pairs where it did. This file makes two changes, each aimed at a limit that a descriptive look at level 10's units
+  measured, and gives each its own paired contrast on the same queries. First, levels 9's and 10's 6,000 compiled rows
+  join every unit as training and inner-validation queries; they are never scored. Second, the score reads level 8's
+  mixture under the posterior raised to a power beta and renormalised, with beta chosen on the inner queries together
+  with kappa and eta. Level 10's model, likelihood, EM and fit_unit are imported and called unchanged.
+design_informed_by: >-
+  This design was informed by two descriptive looks at level 10's filed units on the host, made after level 10's run
+  record and neither of them a result nor filed: outputs/mp_approx_l10_diag/diag.py (sha256
+  e547bbc9c4ea1eb4e9cfc6ebcd0fe02800cdb1f1f2e6cc70f310a74c37e45671) with its diag.json (sha256
+  5f930a1c3404c16d04808bddebb1a9eb4bc508ef3bedc74c29a2808c437706c9), and outputs/mp_approx_l10_diag/diag_curve.py (sha256
+  42cf640dfcfe7b3871fe1c47e5855fd6d38fc6e09d91ca56c19258c9dc0e6d7e) with its curve.json (sha256
+  59b617678b74b00c8cecaf86df34dea640700644e45d59ae3e320473306c20b4), all untracked. diag.py refitted level 10's NB-set and
+  NB-draw units through level 10's fit_unit, called unchanged; all 30 refits were bit-identical to the filed units. It
+  kept the per-query type log-probabilities and scored each fold again under variants, each chosen on the unit's inner
+  queries by level 9's rule. It found six things, in rho_bar on level 10's 3,000 queries.
+  (a) The fit is data-limited. diag_curve.py refitted NB-set at k = 0 with each unit's fit set cut to 25%, 50% and 100%
+  (531, 1,062 and 2,123 queries per unit on average; at 100% all five units were bit-identical to the filed ones).
+  Under level 10's coverage score it read 0.613, 0.662 and 0.712. Under the mixture at beta = 2 it read 0.598, 0.672
+  and 0.755, and each hop rose by 0.156 to 0.167 from 25% to 100% (hop 3: 0.558, 0.639, 0.714). Under both scores the
+  gain per doubling did not shrink between the two doublings.
+  (b) A sharper posterior helps under level 8's mixture. With p raised to beta = 2 and renormalised, the mixture read
+  0.757 [0.706, 0.810], +0.038 [0.015, 0.061] over NB-set-cov; beta = 3 read 0.754, and beta chosen with kappa and eta on
+  the inner queries read 0.753 (+0.033 [0.008, 0.058]). Under the coverage score, sharpening added at most +0.014 (beta
+  = 3, interval spanning 0). The argmax type alone (beta = infinity) read 0.731 under both. Under the mixture at beta =
+  2, the gap split was 0.187 on the pairs whose argmax sequence was the true chain's and 0.104 on the others, against
+  0.211 and 0.119 for NB-set-cov.
+  (c) Gates tuned per subgroup of the inner queries did not help. Per tercile of the posterior's largest probability,
+  three of four variants read 0.009 to 0.020 below the same variant with one gate per unit, and the fourth (the
+  unnormalised coverage) read 0.010 above it. Per argmax length, all five read 0.016 to 0.056 below. The set model's
+  posterior predictive P(v gold | q) as the gate, with beta chosen, read 0.742 (+0.023 [0.009, 0.040]). The
+  unnormalised coverage read 0.725 to 0.727. Hard gates lost: the argmax type's reach set under level 8's hard gate
+  read 0.587. It closed the gap on the right-chain pairs to 0.129 but opened it on the others to 0.332.
+  (d) The right-chain gap is the posterior's, not the gate form's. The true chain's R* as a point mass under a soft gate
+  chosen on the inner queries' own R* read 1.048, against the oracle's 1.049. On right-chain pairs the posterior put
+  mean 0.863 on the true chain's types; the argmax bucket was R*'s on 0.955 of them (0.918 at hop 3). The true chain
+  from bucket 0 under the hard gate read 0.965.
+  (e) Confidence separates the pairs. The share of pairs whose argmax sequence was the true chain's, by quintile of the
+  posterior's largest probability, was 0.49, 0.87, 0.98, 1.00 and 1.00.
+  (f) The wrong argmax still clusters by qtype. directed_by:fwd was the argmax on 52 of 213 movie_to_writer_to_movie_to_director
+  pairs, "release_year:fwd > release_year:bwd > has_genre:fwd" on 61 of 258 movie_to_actor_to_movie_to_genre pairs,
+  and movie_to_genre's right share was 0.60.
+  These looks used level 10's 3,000 queries, and this file's population excludes them. Level 10's rows enter this file
+  only as training rows, never scored.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+question: >-
+  On metaqa, how far toward the GNN's gain over its twin can level 10's non-message-passing typed-walk model go when it
+  is fitted on more gold-labelled queries and scored through a sharpened mixture? It reads how much of the GNN's gain the
+  primary arm NB-setX-dsh recovers: rho on recall@5, full_coverage@5 and hit@1, against the twin and the GNN of each
+  seed pair, on 3,000 fresh V2_GATE queries disjoint from levels 0 to 10. As paired contrasts on the same queries, it
+  also reads what each change adds: the added training rows under each score, and the sharpened mixture under each
+  set of training rows. It reads the total against level 10's primary procedure, re-run on these queries. The
+  non-backtracking true-chain oracle bounds what choosing the right chain can give.
+role: >-
+  Measurement, as at levels 8 to 10. The object is a set of non-message-passing models fitted to gold labels,
+  cross-fitted within V2_GATE. No GNN output enters any fit, target, loss or selection. The twin's z-scored output is
+  the base score, as at every level. No model, number or reading of this file enters QLS-U, the twin, a feature
+  contract, M3, M4 or any selection. A deployable model of this form would be a competitor trained on the fit split
+  under the QLS-U contract, and it would need its own declaration. This file does not open one, and it opens no later
+  level.
+
+boundary:   # configs/universal_v2.yaml#learned_vs_fixed_propagation (pinned below), applied before any code, as at levels 8 to 10
+  learned_propagation_quoted: >-
+    "any operator applied over the pool edges inside the model whose messages or message weights depend on trainable
+    parameters, or any repetition of an aggregation with a trainable transform between repetitions."
+  why_this_is_fixed: >-
+    Level 10's argument (configs/mp_approx_l10.yaml#boundary) holds unchanged: the model, the walks, the reach sets and
+    the set likelihood are level 10's. The added training rows change only the queries the query map and theta are
+    fitted on. The sharpened mixture reads the same type weights, raised to one power per unit and renormalised over the
+    query's types and the null type, and the same compiled reach sets, through level 8's mixture called unchanged.
+    Inside the model, every learned quantity is still a function of the query embedding and a discrete walk type only.
+    Nothing in any model reads the edge list or a neighbour's embedding, score or state, and nothing is repeated.
+  what_it_is: >-
+    The function class is a query-weighted count of typed walks, as at levels 9 and 10. Under the sharpened mixture, a
+    node's structural term is a tempered posterior's average of uniform reach sets. It has no learned per-edge message,
+    no neighbour state and no nonlinearity between hops.
+  crossing_the_line:   # none of these appears in any arm; a test checks every arm's inputs
+    - a learned function of a neighbour's embedding, scalars, score or state, applied per edge
+    - learned weights inside an iterated aggregation over the edges
+    - a continuous edge attribute passed through a learned nonlinearity per edge
+    - candidate scores pooled back into the type weights at inference (a cross-candidate arm, which is not in this file)
+  equal_graph_information: >-
+    As at levels 8 to 10, the walks read only the packed structural message edges the GNN's cell reads: the same pool,
+    the same cap of 64 in-pool in-neighbours per receiver, the same K_REL = 4 relation slots and the same direction
+    flags. The ner and knn families are not read. The fairness contract holds, because both models read the same pool
+    graph. The training rows of levels 9 and 10 were compiled by the same walk programme from the same pilot.
+
+authorization:
+  given:
+    - '2026-09-30, the user: "basically i dont want message passing but approximations to it, and pushing it as far as possible and targeting the weakpoints, i think offsets or rope based methods can work because all the stuff is anyways in the semantic space we just need to learn those transformations from the query etc and work from that, and explicit positions so that we have a proper way to represnt, what else do you think we should focus on"'
+    - '2026-09-30, the user: "i think we can do something like learn the proper edge representation that works for us in our space and not hash then use that as extra feature, keep improving that feature and the learning from it, like how isonet++ worked, idk some sort of estimation maximization"'
+  how_the_messages_are_answered: >-
+    "Pushing it as far as possible and targeting the weakpoints" becomes this file's two changes. Each is aimed at a
+    limit the descriptive looks measured. The added training rows address the learning curve, which was still rising
+    at level 10's fit-set size. The sharpened mixture addresses the posterior mass left outside the argmax type's reach
+    set, which a single soft gate per unit can trade against the wrong-chain pairs. Level 10's model (non-backtracking
+    walks, the rotary text composition plus the exact per-sequence residual, the linear query map), its set likelihood
+    and its EM over the latent chain are kept unchanged. "Keep improving that feature and the learning from it" is the
+    same EM fitted on more queries.
+  go_ahead: >-
+    Standing: "keep continuing autonomusly without asking for perms and try to find improvements and pause only at
+    something substancial". This file is committed alone, before any code of the phase runs, and is then run as written.
+  placement_messages:
+    - '2026-09-29, the user: "use the damn host not on laptop"'
+    - '2026-09-30, the user: "pls mpve and do on the host for faster execution"'
+    - '2026-10-01, the user: "dont request resources if you wont use them i want the best utilization at all times dont create a deadlock for other projects if you wont use the resources and whatever you request use them fully"'
+    - '2026-10-01, the user: "parallely keep stuff i want full utilization and less time stuck waiting by any project or process request only what you can actually use and dont over request and keep underutilizing"'
+    - answered in placement below
+  terminal: STOP_FOR_REVIEW after the run record. No later level, arm or deployable model is opened by any reading here.
+
+this_file_does_not_touch:
+  fits: >-
+    No GNN or twin is fitted. The pilot's six checkpoints are read. Only this file's arms are fitted, and they are
+    cross-fitted measurement models.
+  rows: >-
+    Level 0's 2,400 metaqa rows (which levels 1 to 7 reused), level 8's 3,000 rows, level 9's 3,000 rows and level 10's
+    3,000 rows leave the population before anything is scored. Level 9's and level 10's compiled sidecars are read as
+    training rows only (training_rows), and no number is read on them. Level 8's and level 0's rows are not read.
+    V2_HELD_CONFIRMATION is never read. The metaqa eval split is a dev split, and no test row is read.
+  frozen: >-
+    M2-M3B, universal-v2, UMLP D0-D0.3, v2.1, v2.2A, the CPU-GPU equivalence file, the GPU task-level qualification, the
+    six-dataset base, DEPLOY_CK_2WIKI, DEPLOY_CK_FULL_2WIKI and levels 0 to 10 all keep their bytes: declarations,
+    scripts, tests, sidecars, probes, records and documents. Level 8's, level 9's and level 10's scripts are imported
+    unchanged, and this file's scripts rebind some of their module names inside their own processes only. Level 0's and
+    level 4's scripts are imported unchanged. Level 9's and level 10's sidecars are opened read-only.
+  package: >-
+    The CRAG package is read-only. On the host, the verified mirror stands in for it in memory only. Nothing is written
+    under either root, and nothing from them enters git.
+  competitors: no arm output, type weight, target or number becomes an input, target, teacher, gate or selection criterion of any retriever
+
+placement:
+  where: >-
+    The host CPU, through tools/rx (docs/GPU_HOST_HANDOVER.md), in rx env mpr-cpu (torch 2.8.0+cpu, numpy 2.3.2, the
+    laptop's pinned closure), Windows native. No GPU is used, and scipy and numba are not used. The tests run there too.
+  why_the_host: >-
+    The user's placement messages. Level 9's and level 10's full sidecars, the training rows, are on the host only.
+  package: As at level 10 (configs/mp_approx_l10.yaml#placement.package), through the pinned verify_metaqa.json.
+  threads:
+    score: 6 torch threads and BLAS and OpenMP pools of 6, set before numpy loads (level 9's scoring counts)
+    fit_and_read: 4 torch threads and pools of 4, with torch's deterministic algorithms (level 8's fit_process)
+  reservations: >-
+    Each job reserves what the same kind of job measurably used at level 10, plus a small margin, and never more than it
+    can use. Score shard: 2.5 CPUs and 3 GB (level 10 measured about 2.1 and 2.5). Assemble and check: 1 CPU and 3 GB.
+    NB-set fit job: 1.5 CPUs and 1 GB (level 10's fit jobs measured about 1.3 and 0.46 to 0.64). The first NB-setX unit
+    job runs before the other 14, with 1.5 CPUs and 3 GB. The other NB-setX unit jobs and the repeat reserve 1.5 CPUs
+    and that job's measured peak plus 0.5 GB, rounded up to the next 0.5 GB. Read: 1 CPU and 1 GB (the read does not
+    open the training rows). Tests and smoke: 1 CPU and 2 GB. rx reserves without capping, and every process
+    fixes its own pools at start, so a reservation changes no number. Jobs whose inputs exist are submitted at once,
+    so they run in parallel under mpr's priority, and nothing running is preempted.
+  proof_per_query: >-
+    The scoring pass checks the 14 metrics of T_k and G_k against the pilot's stored per-query values on every scored
+    query. That check is this placement's proof, query by query. A mismatch is a hard stop, and no tolerance is added.
+    The training rows were checked the same way by level 9's and level 10's scoring passes.
+  host_native: >-
+    Every arm and reference is fitted, scored and read on the host CPU. The twin's and the GNN's metrics are the stored
+    values, checked exactly. No number of this file is set beside a number made on the laptop.
+  identical_code: >-
+    Every host job runs from a commit of this phase and records the LF sha256 of every repository module it imports.
+    The file stage checks that each module has one value across all jobs, equal to the file at the commit it names.
+    scripts/mp_approx_l11.py is committed first and is not edited after that commit. scripts/mp_approx_l11_fit.py
+    follows in a second commit, and the score jobs never import it.
+  laptop_steps: the doc and file stages, which make no number
+
+transfer: >-
+  None of the data moves. Level 8's, level 9's and level 10's inputs are already on the host, as are level 9's and level
+  10's sidecars and qids.json files (written there by their scoring passes). Every host job checks each pinned input's
+  sha256 before reading it. A missing file is pushed with rx push --inputs, as the same bytes, before the job. The code
+  arrives as the git-tracked tree. No token or credential goes to the host.
+
+inputs:   # sha256 of the file bytes unless marked LF (CRLF folded to LF); checked before the first read and at the end of every stage
+  pilot:   # copied from configs/mp_approx_l10.yaml#inputs, where level 10 copied them from level 9
+    eval_arrays:
+      metaqa: {seed0: {path: outputs/universal_v2/eval/metaqa.npz, sha256: 380e0288b0e048cd18d83f06defd5f794fe7b7514a741bffbfbd6289e49eab5c}, seeds_1_2: {path: outputs/universal_v2/eval/metaqa__more_69caa3fe.npz, sha256: 07cb99f9bcb1d70bbccf7d2e55b1097e9c724b3b016f168eec88c0bb7d615a30}, query_ids: {path: outputs/universal_v2/eval/metaqa_query_ids.json, sha256: b491d9e90e786c1d356d2a24142ec1b810e657efdfadff85a44ff1b489618692}}
+    feature_contract: {path: outputs/universal_v2/feature_contract.json, sha256: 21d30260c7ef71c7cc217c2b32054625780db7e6b40c79d3c03fded658109e91}
+    selection: {path: outputs/universal_v2/selection.json, sha256: 3ed48ae3d04334ba367cb81b8b363d32db0e2bf746e4f692d7af0936bea4e3b6}
+    checkpoint_dir: outputs/universal_v2/fits/
+    checkpoints:   # weights (.pt) and fit record (.json)
+      u_mlp_v2_mix__H128__s0: {weights: f0e629a7347a08014ae00f6d164b6158695a71118c7dabf0dfaf56e1b8a3e8f3, record: 21fab0efc9c7538c08de6311d3ebdde0944f49543e17bd0487f42e50f68940fb}
+      u_mlp_v2_mix__H128__s1: {weights: 0926391ac70457ae0c7319fe1821aee5be17eb57af0879168f5b003c32effb85, record: f6cff3f3f05507908d244e37f5cef221fd7462dbc49d9f49192ed43ca0efd62d}
+      u_mlp_v2_mix__H128__s2: {weights: d4b7157e3e272a01d815ac088b670aa99a9120c6fb3d2aa626f78fb67219a431, record: 9302082f2acedc1b6ed39ed78f54d43e820584326bbd9a8320e94bfe0a9fa217}
+      u_gnn_v2_ef__H128__s0: {weights: 9f749ad346afcef479f84436019771e0b940a1e647e4960908acf4105ea2ed0e, record: bfd3e8e5957b259b2d8b38f85008f659f48e00eb79cdf43220aeb39817993009}
+      u_gnn_v2_ef__H128__s1: {weights: 9b3a5521babb814e83e8a0a40a94b9abd92bdee7f7f58b04f686558d0522c367, record: 6e1efe41c8c2f27bfd1d37fa26e9b8e00685e1ffb8d12f8528d489b6b3a9a60a}
+      u_gnn_v2_ef__H128__s2: {weights: 4575c41822f56d99b843aaa524a5eb407fa038ebc24a6ad04f4fef786433d4c4, record: 4cb612e195c85fde11edaec8b6f0dcd293fc706b2554cbab4cf76f0fc2907532}
+  frozen_code_lf:   # level 0's frozen_code list, checked through level 0's verify_pins, plus the modules level 8 reads directly
+    via_level0: configs/mp_approx_l0.yaml#inputs.frozen_code (16 files, m3b_pools.py among them, checked by level 0's verify_pins, imported unchanged)
+    scripts/m3a_headroom.py: d3df956c55f852fbe1882d4a129c8a86ce70e429a49d92351b74c090dcf42a87
+  level0:
+    declaration_lf: {path: configs/mp_approx_l0.yaml, sha256: 5df856890d6d1161795174ca4f84216b1bace34dc325eec5106ebccc7cdf3144}
+    script_lf: {path: scripts/mp_approx_l0.py, sha256: de51b154c82a3591e1cc9aefcbdf9c3e5b2965b6ac425d7af53a2c51044bd163}
+    tests_lf: {path: tests/test_mp_approx_l0.py, sha256: fa722b91730ff18867749d76ade44c4ff1c1cb202671474fb97f13992efa50e8}
+    excluded_rows:   # rows that leave this file's population
+      qids: {path: outputs/mp_approx_l0/metaqa/qids.json, sha256: 557ea775c6f6050ed81647c6da6439e8425d615076a6903e67a18d76e090e684}
+      q_row: {path: outputs/mp_approx_l0/metaqa/q_row.npy, sha256: e7fd801dc9a739f90208db3b03c848d2851b4f01f1af4ba2c4576a25ada424dc}
+  level4:   # mix64 and SALT_H, imported unchanged through level 8
+    declaration_lf: {path: configs/mp_approx_l4.yaml, sha256: 031d3a9f620db93190f604ecb2438d32d720c875564b4cff28de64014427e080}
+    script_lf: {path: scripts/mp_approx_l4.py, sha256: a12c8a19feeb55386964c3f06911aec491d6461a61104fb135f7042d79320c10}
+  level8:   # imported unchanged; its rows leave this file's population
+    declaration_lf: {path: configs/mp_approx_l8.yaml, sha256: 654f4999a429e7cc251d57eed79e58599a0638a1c7930f27dc12bd07d79bbc6f}
+    script_lf: {path: scripts/mp_approx_l8.py, sha256: 542dc1f2df51e23937b41dd5fb4ea2098b502bbf0f848259a83d19cb7d9b6a02}
+    tests_lf: {path: tests/test_mp_approx_l8.py, sha256: cac01af62a93ff87778d17ea73b63a7ae6a656cda87f7bd59c2e017d11e1f35d}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l8/metaqa/qids.json, sha256: 83ccb559e35c20129223f5b1eb16339e1423f615f174f441d5d29324910bb039}
+  level9:   # imported unchanged (at its run record, 4667e9b); its rows leave this file's population and are training rows
+    declaration_lf: {path: configs/mp_approx_l9.yaml, sha256: 521353984a321cbe631c7426b83ca8b08c071ab75de20bad3e5fa6bff0904b4c}
+    script_lf: {path: scripts/mp_approx_l9.py, sha256: 6c18d6c46a48c0664d774272430541b2aaa2192459813278306c67f09a544677}
+    tests_lf: {path: tests/test_mp_approx_l9.py, sha256: abcdd32d0b43082da0bad68d781678ee6e153c062ee8630f0ba9b00a763962d8}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l9/metaqa/qids.json, sha256: 3e2cb8d7a4a911098db9e00e04ac0d70976db40ba152351fd36f51b65b09d68a}
+  level10:   # imported unchanged (at its run record, a5d6b1e); its rows leave this file's population and are training rows
+    declaration_lf: {path: configs/mp_approx_l10.yaml, sha256: 1d51671620cfeec581bb1823105a71f83b1b7e394068a7d2853e71ff1c16e4c7}
+    script_lf: {path: scripts/mp_approx_l10.py, sha256: cf232a799ce5c2f18ce91003010a4b2a37c1e17aa52d584e02ed2e6df785d002}
+    tests_lf: {path: tests/test_mp_approx_l10.py, sha256: 4db50a7df714f6ef78595dc91368da1d13b63d7b70547e642c2a8c933aca989e}
+    fit_script_lf: {path: scripts/mp_approx_l10_fit.py, sha256: 26ccdb1f71fc09ee8a7d9b174eef6d9b4451bd4542b479f474395428215eb643}
+    fit_tests_lf: {path: tests/test_mp_approx_l10_fit.py, sha256: 3212582ffb8266ba936b0dcc552e882258ba8c0a2e116cf630dca2f6d8fa2bbb}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l10/metaqa/qids.json, sha256: c61f08bc84fed009a048a53d32a9e820f22a27135aa065c1a5bcd290d493f9ba}
+  training_sidecars:   # training_rows: each sidecar is opened through level 9's View, which checks every array and qids.json against its meta.json
+    level9: {path: outputs/mp_approx_l9/metaqa/meta.json, sha256: 927058d213fd004036b1cd5bb9384111ec04ad86bae5b9f5f21ae1f1d9489c38}
+    level10: {path: outputs/mp_approx_l10/metaqa/meta.json, sha256: 4cf2e75f3d61d83101b6b2deaf496c8a97b81cd40e5eabad7285ce6f619508e6}
+  relations:
+    embeddings: {path: outputs/m3b/relations/metaqa_rel_embeddings.npy, sha256: 752964ecfae44c7e4ebf10468d7d0241cca53b0fdb2488af04ec30deed38b4af}
+    vocab: {path: outputs/m3b/relations/metaqa_rel_vocab.json, sha256: 000bddbe799a60cf0c4e806e0819a9822bc520c2a5d55a4c0b6a669e1b779d11}
+    order: [directed_by, has_genre, has_imdb_rating, has_imdb_votes, has_tags, in_language, release_year, starred_actors, written_by]
+  boundary_and_fairness_lf:
+    universal_v2: {path: configs/universal_v2.yaml, sha256: bce0d1e92de4f184f09f0770fd378e2fa63bf469fdf31bb904d7471a11eeb562}
+    fairness_contract: {path: docs/GRAPH_INFORMATION_FAIRNESS_CONTRACT.md, sha256: 550b2afaa56f6085252065b8fd55cfcd744c8eee3149cb0e0e5463b18c9a94dc}
+  host:
+    mirror_config_lf: {path: configs/host_mirror_six.yaml, sha256: 3d70a44f81f62a51bc17ce30943caaf2e8a613de46daffa574258a66b063b04b}
+    mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+    freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+    verify_record: {path: outputs/host_mirror_six/verify_metaqa.json, sha256: 1afb2506fb85f6df532d27bed5ecfa11580de55614222bb504145f57b76c02ec}
+
+population:
+  rule: >-
+    Start from metaqa V2_GATE, recomputed as level 8's stage_score does (the M3B eval population with its declared
+    digest and count, the stored halves and hops, held rows out). Level 0's 2,400 rows leave it (recomputed through
+    level 0's metaqa_subsample, equal to level 0's pinned qids.json and q_row.npy). Level 8's, level 9's and level 10's
+    3,000 rows each leave it, each recomputed through its own level's rule and salt and checked against its pinned
+    qids.json (level 10's through l10_rows, "mp_approx_l10|", which checks level 9's, whose l9_rows checks level 8's).
+    Per hop, the remaining rows are sorted by sha256("mp_approx_l11|" + query_id), and the first 1,000 are kept: 3,000
+    queries in population order. The rule reads only ids, hops and the gate mask.
+  available_per_hop: {1: 1221, 2: 3644, 3: 3473}   # level 10's available rows per hop (2,221, 4,644, 4,473) less level 10's 1,000 each
+  budget: >-
+    After this file, 221 hop-1 V2_GATE rows remain outside every level's population. A later level that draws fresh
+    metaqa rows cannot draw 1,000 per hop, and its own file says how it draws.
+  folds: level 0's fold_of (sha256(id) mod 5) and is_inner (sha256(id + "|inner") mod 10 == 0), imported unchanged
+  gold: >-
+    The in-pool golds are m3b_compile.gold_local_of's. A query with no in-pool gold is scored and read, but it enters no
+    fit, because it carries no evidence about the chain.
+  why_disjoint: >-
+    Levels 0 to 7 were read on level 0's rows, and levels 8, 9 and 10 on their own rows. This file's design follows level
+    10's readings and the descriptive looks at level 10's rows. A fresh draw keeps all of those rows out of every number
+    here. Level 9's and level 10's rows enter only as training rows (training_rows) and are never scored.
+
+training_rows:   # read by the NB-setX fit only
+  what: >-
+    Level 9's and level 10's 6,000 compiled rows, from the sidecars their own scoring passes wrote on the host, read as
+    their non-backtracking family. They are V2_GATE rows, disjoint from each other and from this file's population. Each
+    passed its own level's scoring integrity check (the 14 metrics of T_k and G_k equal to the pilot's stored values on
+    every query, with 0 mismatches) and its own level's check stage.
+  why_these: >-
+    The learning curve (design_informed_by (a)) was still rising at level 10's fit-set size. Level 8's sidecar holds
+    the standard family only, and level 0's sidecar is in level 0's form, so neither carries non-backtracking walks.
+    Level 9's and level 10's sidecars are the only compiled non-backtracking metaqa rows outside this file's population.
+  role_in_a_unit: >-
+    In every NB-setX unit, an added row is a training row whatever the unit's fold. If it has an in-pool gold, it is a
+    fit row, or an inner-validation row when level 0's is_inner holds for its id. If it has no in-pool gold, it is in no
+    set of the unit. No added row is ever scored. So the added rows enter the fit set, the per-epoch early stopping,
+    the kept round's inner marginal log-likelihood and the inner selection of each score's parameters. data_adds reads
+    all of these together.
+  merged_view: >-
+    The NB-setX fitter reads one view of three sidecars' non-backtracking families: this file's 3,000 rows, then level
+    9's 3,000, then level 10's 3,000. Each part is level 9's View with its checks on, so every array and qids.json is
+    checked against its meta.json, and its folds and inner flags against level 0's rules. The per-query and per-type
+    arrays are concatenated in that order. Node-level and entry-level reads (a query's entries, reach sets, golds and
+    the twin's z-scores) go to the query's own part, at its index there. The added rows' fold is set to -1, which is no
+    fold, so level 8's unit_queries puts them in every unit's training rows. qtype indices map into one merged list:
+    this file's qtypes, then any new names in order of first appearance. Level 8's Fitter, level 10's SetFitter and
+    level 10's fit_unit read the merged view through the same attributes and methods as a single view, unchanged.
+  reads_no_number: >-
+    No number of this file is read on an added row. On added rows, the fits compute only their losses, their marginal
+    log-likelihoods and the inner metrics that choose the kept epoch, kappa, eta and beta.
+
+scoring_pass:   # host CPU, score threads; level 8's stage_score, imported unchanged, with its names rebound in this process
+  path: >-
+    As at level 10, level 8's scoring pass runs unchanged, with the names of its module that level 9 rebinds, rebound in
+    this process only. The population rule becomes this file's. The walk programme is level 9's combined programme
+    (walk_entries_both, imported unchanged). The pins become this file's, which include every one of level 10's. The
+    declaration and output paths become this file's. The chunking, the six forwards, the integrity check, the kept
+    per-query and per-node arrays and the shards are level 8's, and the sidecar has level 9's combined form.
+  integrity: >-
+    As at levels 8 to 10. rank_metrics of T_k and G_k on the full pool must equal the pilot's stored per-query values of
+    all 14 metrics exactly, on every scored query. The first mismatch is a hard stop.
+  shards: three processes, --shard i/3, then one process without --shard that assembles, as at levels 9 and 10
+
+walks: >-
+  Level 9's (configs/mp_approx_l9.yaml#walks), unchanged: the std family (level 8's counts) and the nb family
+  (non-backtracking counts), compiled in one pass into one sidecar and read back as two views; the per-query checks,
+  the null type, the ceilings and level 8's true-chain map. The fits read the nb family only.
+
+check: >-
+  Before any fit, the check stage runs level 9's check_family on each view, imported unchanged: level 8's direction
+  check (a swapped share above the declared share, in either family, is a hard stop) and level 9's anchors. It
+  refuses any level 0, 8, 9 or 10 query id and any held row in the sidecar.
+
+arms:   # each arm reads z(T_k), the query embedding, the relation text and the nb family's compiled types and counts, nothing else
+  model: >-
+    Level 10's NB-set model, unchanged, on both fits: level 9's NB-hyb model (level 8's TP composition plus the exact
+    per-sequence residual, the linear query map A q, 1536 x 64, w(q, tau) = <A q, e(tau) + beta_b + lambda_L> +
+    c_{b,L} and the null logit <A q, nu> + c_null) on non-backtracking walks, with level 10's set likelihood and its
+    closed-form theta. p(tau | q) is the softmax of w(q, .) over the query's nb types and the null type.
+  fits:   # fit: its training rows
+    NB-set: this file's rows only (level 10's fit on this file's population, the control)
+    NB-setX: this file's rows, plus level 9's and level 10's rows (training_rows)
+  procedure: >-
+    Each unit of both fits is level 10's fit_unit for NB-set (scripts/mp_approx_l10_fit.py, imported unchanged), called
+    unchanged on level 10's SetFitter over the fit's view. For NB-set that view is level 9's View of this file's
+    sidecar. For NB-setX it is the merged view. fit_unit runs the EM, keeps a round by the inner marginal
+    log-likelihood, scores the fold under level 10's two scores and chooses kappa and eta for each on the inner
+    queries. This file keeps fit_unit's arrays and fit log as they are. The log-probabilities of the inner and scored
+    queries under the kept round are captured from the arguments fit_unit passes to level 10's score_fold. score_fold
+    is wrapped in this process only, and the capture is checked to be the same for both of its calls. The dsh score is
+    computed from the capture.
+  scores:   # s_k(v) = z(T_k)(v) + kappa log(a_q(v) + eta)
+    cov: level 10's coverage score, as fit_unit computes and selects it (configs/mp_approx_l10.yaml#arms.scores.cov)
+    dsh: >-
+      a_q(v) = n_q m_q(v) under the tempered posterior, through level 8's mixture (Fitter.mixture, called unchanged):
+      p_beta(tau | q) = p(tau | q)^beta / sum of p^beta over the query's types and the null type. At beta = infinity,
+      all mass goes to the largest p, the first one in the order of the query's types then the null type on a tie.
+      At beta = 1, dsh is level 10's dens.
+  selection: >-
+    The kept round is fit_unit's. For dsh, beta in {1, 1.5, 2, 3, 4, 8, infinity}, kappa in {1/32, 1/16, 1/8, 1/4,
+    1/2, 1, 2, 4, 8, 16} and eta in {0.01, 0.1, 1, 10, 100} are chosen together on the unit's inner queries by the mean
+    of recall@5, full_coverage@5 and hit@1, from rank_metrics. Ties go to the smaller beta, then the smaller kappa, then
+    the larger eta. For cov, fit_unit's own choice is kept.
+  read_arms:   # arm: fit, score
+    NB-setX-dsh: [NB-setX, dsh]   # the primary arm
+    NB-setX-cov: [NB-setX, cov]
+    NB-set-dsh: [NB-set, dsh]
+    NB-set-cov: [NB-set, cov]     # level 10's primary procedure on these queries
+  references:
+    NB-oracle: level 8's oracle rule on the nb view (R*, the true chain's reach set from the bucket with the larger Jaccard with the golds, plus 1e6)
+
+em:
+  e_step_m_step: >-
+    Level 10's, unchanged (configs/mp_approx_l10.yaml#em): level 8's E-step and M-step through level 10's SetFitter,
+    AdamW (lr 1e-3, weight decay 1e-4), 64 queries per minibatch and 10 epochs per M-step, with the epoch that has the
+    best inner-validation soft cross-entropy restored, theta in closed form after each M-step, and 10 rounds after
+    round 0. On the merged view, the minibatches, the E-step and theta's sums run over the merged fit set.
+  set_equals_level10: >-
+    NB-set's units are level 10's NB-set units on this file's sidecar. A test checks on a synthetic combined sidecar that
+    this file's unit returns level 10's arrays and fit log bit for bit. A second test checks that a merged view of one
+    sidecar alone gives the same unit as that sidecar's own view, bit for bit.
+
+cross_fitting:
+  units: >-
+    As at level 10: one unit per (fit, k, fold), 30 units. A unit trains on the other four folds' queries of this file
+    that have an in-pool gold, and for NB-setX also on every added row with an in-pool gold. Inner-validation queries
+    are held out of the gradient. The unit scores its fold's queries under both scores. torch.manual_seed and numpy
+    default_rng both take 1000 + 10 k + fold.
+  out_of_fold: every scored query's arm score comes from the unit that did not see the query
+  unit_files: >-
+    Each unit is written atomically. It holds fit_unit's arrays (the scored queries, both of level 10's scores and their
+    metrics, the argmax), the dsh scores and metrics, and the fit log: fit_unit's log, the dsh choice (beta, kappa, eta
+    and its inner mean), the dsh inner grid, and the fit and inner queries by source (this file, level 9, level 10). A
+    unit already written is skipped on a restart.
+  repeat: >-
+    The unit (NB-setX, k = 0, fold 0) runs again in a fresh process. Its out-of-fold arrays and fit log are compared
+    bitwise with the first run's (REPEAT_DIFFERS).
+
+quantities:
+  metrics: >-
+    recall@5, full_coverage@5 and hit@1 of each arm's s_k on the full pool, by m3b_train.rank_metrics under the frozen
+    tie rule. T_k's and G_k's values are the stored ones, checked in the scoring pass.
+  rho_readable_rho_bar_gap: >-
+    As at levels 8 to 10: rho_M = (mean over k and queries of M(arm_k) - M(T_k)) / (mean of M(G_k) - M(T_k)). A metric
+    is readable when its denominator's 95% interval lies above 0. rho_bar is the mean of rho_M over the readable
+    metrics, and gap_to_gnn is the mean of M(arm_k) - M(G_k) per metric.
+  strata: per hop (1, 2, 3); a stratum's rho is read only if its own denominator interval lies above 0
+  anchors:   # descriptive
+    level9_anchors: level 9's check anchors on each view (topic entity, chain reach, gold in pool, sizes, edges, self_reach, nb_trim)
+    agreement: >-
+      Per fit, the share of queries on which the out-of-fold argmax type has the true chain's token sequence, with the
+      bucket ignored; per k, then the mean over k; overall and per hop. A null argmax does not agree.
+    genre_agreement: the same share, on the queries whose qtype's last kind is genre
+    gap_split: >-
+      For NB-setX-dsh and NB-set-cov: (NB-oracle - arm) per metric, summed over the (query, seed) pairs on which the
+      fit's argmax sequence is the true chain's, and over those on which it is not, each divided by the seed count and
+      the metric's summed denominator; the mean over the readable metrics; overall and per hop.
+    theta: per fit, the kept theta (rho_1, rho_2, rho_3, eps_s), the mean, minimum and maximum over units
+    grid_edges: per read arm, the number of units whose kappa or eta sits at an end of the grid, and the number whose kept round is the last
+    beta_choices: per dsh arm, the number of units that choose each beta
+    training_rows: per fit, the fit and inner queries per unit by source (this file, level 9, level 10)
+
+statistics:
+  bootstrap: >-
+    Level 0's bootstrap: queries resampled with replacement, 1000 resamples, numpy default_rng(0) (level 0's
+    boot_weights), and a 95% percentile interval. Seeds are averaged inside each resample. One resample matrix serves
+    every quantity, so contrasts are paired.
+  contrasts:   # point and 95% interval of the paired difference of rho_bar
+    data_adds: NB-setX-dsh - NB-set-dsh
+    data_adds_cov: NB-setX-cov - NB-set-cov
+    dsh_adds: NB-setX-dsh - NB-setX-cov
+    dsh_adds_own: NB-set-dsh - NB-set-cov
+    over_level10_primary: NB-setX-dsh - NB-set-cov
+    ceiling_gap: NB-oracle - NB-setX-dsh
+
+readings:   # filed before any number
+  primary: NB-setX-dsh
+  bands:   # of rho_bar; the first that applies; the same thresholds as levels 8 to 10
+    L11_ABOVE_GNN: the interval's lower end is above 1
+    L11_HIGH: rho_bar >= 0.75 and the interval's lower end >= 0.50
+    L11_LOW: rho_bar <= 0.25 and the interval's upper end <= 0.50
+    L11_MID: none of the above
+    NOT_READ: no readable metric
+  exactly_one: the primary's band is the file's reading
+  per_metric_flags:
+    BEATS_GNN: the interval of M(arm) - M(G) lies above 0
+    BELOW_GNN: the interval of M(arm) - M(G) lies below 0
+  flags:
+    CEILING_LOW: NB-oracle's rho_bar interval upper end <= 0.50
+    REPEAT_DIFFERS: the repeated unit is not bit-identical (its largest difference is filed)
+    EM_NOT_MONOTONE: the fit-set marginal log-likelihood falls between two consecutive rounds of a unit (the units are listed)
+    GRID_EDGE: more than half of the primary's 15 units choose kappa or eta at an end of the grid
+    THETA_AT_CLIP: a unit's kept theta has a component at a clip bound (the units are listed)
+  interpretation_map:   # every entry that applies is listed; they are not exclusive, and none opens a stage
+    l11_above_gnn: >-
+      Primary L11_ABOVE_GNN. On this metaqa population, a non-message-passing model scores above the GNN on the readable
+      metrics on average. It reads compiled non-backtracking typed walks and the relation text, and it is fitted to
+      golds. The GNN's metaqa advantage over its twin is then reproducible without learned message passing, given those
+      inputs and that many gold-labelled training queries.
+    l11_high: primary L11_HIGH -- the model recovers most of the GNN's gain on this population
+    l11_mid: primary L11_MID -- it recovers part of the gain
+    l11_low: primary L11_LOW -- it recovers little of the gain; read it with CEILING_LOW and the agreement anchor
+    data_adds: the data_adds interval lies above 0 -- the added training rows add under the sharpened mixture
+    data_hurts: the data_adds interval lies below 0 -- the added training rows lose under the sharpened mixture
+    dsh_adds: the dsh_adds interval lies above 0 -- the sharpened mixture adds to the coverage score with the added rows
+    dsh_hurts: the dsh_adds interval lies below 0 -- the sharpened mixture loses to the coverage score with the added rows
+    above_level10_primary: the over_level10_primary interval lies above 0 -- the primary beats level 10's primary procedure on the same queries
+    chain_not_identified: the primary fit's agreement below 0.5 with ceiling_gap's interval above 0 -- the chain is not learned from the question
+  wording: >-
+    Every arm is cross-fitted on metaqa V2_GATE queries with gold labels. The file measures what non-message-passing
+    typed-walk models recover of the GNN's gain on this population. It is never a deployable or selected model, and it
+    says nothing about another dataset. No reading may be phrased as "message passing is unnecessary", "we do not need
+    message passing" or "the MLP wins". NB-setX's units fit on about 3.5 times as many gold-labelled queries as NB-set's,
+    and a reading of either names its number (the training_rows anchor). rho here is level 8's quantity on a fresh
+    population.
+    Level 10's numbers are quoted beside this file's only with the population named, and the paired comparison with
+    level 10 is the NB-set-cov arm on this file's queries. rho is not the within-U_q oracle rho of levels 0 to 7, and
+    the two are never set side by side as one quantity.
+
+compute:
+  scoring: level 10's pass took about 18 to 23 min per shard at 6 threads; the same is expected here
+  storage: level 10's sidecar held about 31 million entries (both families); the same order is expected here
+  fits: >-
+    NB-set: 15 units in three jobs, one per seed, five units each. Each unit should take about 2 min, as at level 10,
+    plus the dsh selection (7 x 50 grid points on its inner queries). NB-setX: 15 units in 15 jobs, one per unit, with
+    about 3.5 times the fit queries and about 3.5 times the inner queries, so about 6 to 9 min each. Then the repeat.
+  resumable: every chunk, shard, unit and read file is written atomically and skipped on a restart
+
+hard_stops:   # on any: file hard_stop_<date> with the evidence, leave the status line, report
+  - any pin in inputs fails, level 0's frozen code included, or the host mirror check fails
+  - >-
+    the population digest or count, the halves, the hops, level 0's, level 8's, level 9's or level 10's recomputed rows
+    differ from the declared or stored ones, or a level 0, 8, 9 or 10 row, a held row or a test row would be scored
+  - any integrity check of scoring_pass fails
+  - any hard stop of level 9's walks or check
+  - the relation table differs from the pinned embeddings or vocabulary order
+  - a set likelihood's theta or marginal log-likelihood is not finite
+  - >-
+    a training sidecar's meta.json is not its pin, one of its arrays or its qids.json is not the sha256 its meta.json
+    records, its folds or inner flags are not level 0's rules, or one of its query ids is in this file's population or
+    in the other training sidecar
+  - the merged view's concatenated arrays do not line up with its parts (types per query, type rows, pool sizes, golds)
+  - level 10's two calls of score_fold in a unit did not receive the same log-probabilities
+  - the host jobs' recorded code sha256 values are not one value per module equal to the committed files
+
+outputs:
+  scripts: >-
+    scripts/mp_approx_l11.py (stages score [--shard i/n], assemble, check; the population rule and the pins) and
+    scripts/mp_approx_l11_fit.py (stages fit [--fit F --k K [--fold F]], repeat, read, doc, file; the merged view and
+    the dsh score)
+  sidecars: >-
+    outputs/mp_approx_l11/metaqa/ on the host. It holds the per-query and per-node arrays, the walk entries of both
+    families, qids.json and meta.json (the sha256 of every array), check.json, units/<fit>/ with the out-of-fold scores
+    and metrics of each score and the fit logs, repeat/ and read.json.
+  record: outputs/mp_approx_l11/record.json, assembled on the laptop from the fetched read.json, check.json and meta.json without arithmetic
+  document: docs/MP_APPROX_L11.md
+  run_record: run_record_mp_approx_l11_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN
+
+tests:   # tests/test_mp_approx_l11.py and tests/test_mp_approx_l11_fit.py, run on the host in rx env mpr-cpu
+  - this file parses, its pins are the files' current sha256, and the declared constants are the scripts'
+  - >-
+    the population rule on toy ids is disjoint from level 0's, level 8's, level 9's and level 10's rows, recomputes
+    level 10's rows by level 10's rule, sorts per hop by this file's salted sha256 and keeps the first N
+  - the rebound scoring pass restores level 8's names after it runs, and reads this file's rule, pins and paths inside it
+  - >-
+    NB-set's unit equals level 10's fit_unit for NB-set bit for bit on a synthetic combined sidecar (arrays and fit
+    log), and the captured log-probabilities are the ones level 10's score_fold received
+  - >-
+    a merged view of one sidecar alone gives the same unit as that sidecar's own view, bit for bit. On a merged view of
+    synthetic sidecars, every added row with an in-pool gold is in the fit set or the inner set of every unit, by its
+    inner flag, and no added row is scored. Per-query reads (entries, reach, golds, z) equal the part's.
+  - >-
+    the tempered posterior equals p^beta renormalised over the types and the null type. beta = 1 gives level 10's dens
+    a_q exactly, and beta = infinity gives a point mass on the first largest p. The dsh selection follows the declared
+    grid and tie order.
+  - each arm's inputs are only z(T_k), q, the relation text and the view's types and counts
+  - metrics, rho, readability, the band order and the gap split come out right on toy cases, and the contrasts are the declared pairs
+  - the check, fit, repeat, read, doc and file stages run end to end on synthetic combined sidecars
+  - no held, level 0, level 8, level 9 or level 10 query id appears in this file's sidecar
+
+execution:
+  order: >-
+    This file alone (commit). Then scripts/mp_approx_l11.py and tests/test_mp_approx_l11.py (commit), those tests on
+    the host, a smoke on a few queries written outside outputs/mp_approx_l11, the three score shards at once, then the
+    assemble and the check. In parallel, scripts/mp_approx_l11_fit.py and tests/test_mp_approx_l11_fit.py (commit) and
+    those tests on the host. Once the check has passed, the three NB-set jobs and the first NB-setX unit at once. Once
+    that unit's peak memory is known, the other 14 NB-setX units and the repeat at once. Then the read. Then fetch the
+    read, check and meta files, and on the laptop build the record, the doc and the run record (commit).
+  stop_after_run: STOP_FOR_REVIEW
