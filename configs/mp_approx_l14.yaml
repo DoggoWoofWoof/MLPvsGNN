@@ -1,0 +1,688 @@
+phase: MP_APPROX_L14
+opened: 2026-10-01
+status: DECLARED_NOT_RUN
+branch_type: POST_HOC_ANALYSIS
+track: MP-APPROX (a gold-label, non-message-passing rung; not MP-ORACLE)
+extends: >-
+  Level 13 (configs/mp_approx_l13.yaml, RUN at 0fc7feb). On 2,000 fresh metaqa hop-2 and hop-3 V2_GATE dev rows, level
+  12's non-message-passing typed-walk model, with its bucket-1 walk types' probability moved to the null type after the
+  fit (b1d), read L13_HIGH: TW-1x-b1d rho_bar 0.967 [0.911, 1.031] at the GNN's own labels. It stayed below the GNN on
+  recall@5 (-0.006 [-0.011, -0.001]), and full_coverage@5 and hit@1 did not read. b1d added +0.051 [0.022, 0.080] over
+  dsh, and by hop the primary read 1.062 (hop 2) and 0.934 [0.864, 1.010] (hop 3). This file keeps level 12's model,
+  level 11's selection and level 12's carves, and changes one thing, before the fit: b0. Every part of a deploy view
+  keeps only its bucket-0 walk types (and the null type), so the model is fitted, selected and scored on them. Every arm
+  is read once on a new population, r: 11,920 metaqa train-split rows that the twin, the GNN and every level have never
+  trained on, selected on or read. r holds rows of all three hops, so hop 1 is read again.
+design_informed_by: >-
+  Level 13's run record, and design looks made before this file and not filed as results, all untracked and pinned by
+  raw sha256. Three looks read level 12's 2,221 dev rows, which r does not hold (r is train-split rows).
+  outputs/mp_approx_l12_diag/diag_confuse.py (ac8049cb1677ed225b1be9967797a4c55943211f0cec026c12feecdf9abbeca2) with
+  diag_confuse.json (17561e5b1ad68d2378b01eaa789d346c4bebef885567e01bcf71175cc8838ee8) and diag_renorm.py
+  (17772c448607a93d2883e5bd684fbe2eef368c493bb4c160eb49274eca096de2) with diag_renorm.json
+  (c626e0611ba4a0952a2bff82d33119f0c201a999ccabc0a468631a7ecf2c94b3) found that b1d leaves the null type the argmax on
+  0.054, 0.106 and 0.120 of the hop-1, hop-2 and hop-3 (row, seed) pairs. Two changes made after the fit read below
+  b1d: renormalising over the bucket-0 types (b1renorm), -0.039 [-0.066, -0.012], and moving each bucket-1 type's mass
+  to the bucket-0 type of the same token sequence (b1tob0), -0.041 [-0.068, -0.014]. diag_b0.py
+  (fbefc98a917b13de268e591bcdcb385fee9a6e9118a77cfc91b6163cb2ea01f5) with diag_b0.json
+  (9cd60733ecaff4bc1c7b3ac39cadf8a0f911b4f2a2b84a5cb00827dc9d819b7e) refitted the three TW-1x units on the bucket-0
+  types only (b0train there, b0 here). It read 0.936 [0.880, 0.992] against b1d's 0.915 [0.863, 0.969], a paired +0.021
+  [-0.009, 0.051] whose interval spans 0. By hop, b0 read 1.001, 1.078 and 0.899 against b1d's 1.074, 1.063 and 0.872:
+  a gain on hops 2 and 3 and a loss on hop 1. On the 207 hop-3 rows whose qtype ends in genre it read 0.762 against
+  0.607. Three looks read only ids, strides, qtypes and topic entities, and no gold, score or metric (pins excepted).
+  outputs/mp_approx_l14_design/l14_read_carve_pins.py (40d859ddd7a8e23bb08af0252ee0d5abb7c54e95219d5fef0973343e59568094)
+  with l14_read_carve_pins.json (97e77ebcde63084f2efde07211b995a0e92e1c8227fab8a3522b9dff8e804aab) computed r's ids,
+  golds' count, hops and digest, and checked r disjoint from level 12's nine carves. l14_read_carve_adjacency.py
+  (f44f2df5719127fa0c2b2cb6f9db13d23afd4d93002160b80c08685cdd2ae1a8) with l14_read_carve_adjacency.json
+  (fa01e3103ce18ac120fb4113d2c8f993b09e676c395c3ef13ca10cb8e554400a) found that rows at neighbouring positions of the
+  sorted train ids share no topic entity (0 to 0.0002 of pairs at gaps of 1, 2, 5, 28 and 55) and share a qtype at 0.27
+  to 0.30, about the rate of any two rows. l14_read_carve_overlap.py
+  (9fd05181dbbe2edf88b806373fdd9b7d026f182347c703800a9a4d2b7275c012) with l14_read_carve_overlap.json
+  (a94eafd6a77c848ed274bf5be8eaa4345a5954567f5d82f0f7e01c2c1216cbf6) found that 0.172 of r's rows share a topic entity
+  with a fit-carve row (level 12's dev rows 0.195, level 13's 0.178), and 0.0002 their (topic entity, qtype) pair (the
+  dev rows 0). Against TW-4x's carves the shares are 0.509 and 0.001 (dev rows 0.539 and 0.537, and 0). So r is no
+  closer to the training rows than the dev rows are. No number of these looks enters a reading here.
+registered_question: "After matching candidate exposure and inference-time graph information to modern graph-retrieval/GNN systems, how much effectiveness remains attributable specifically to learned message passing?"
+question: >-
+  On metaqa, how much of the GNN's gain over its twin does level 12's non-message-passing typed-walk model recover when
+  it is fitted, selected and scored on its bucket-0 walk types only (b0), at the GNN's own labels? It reads rho on
+  recall@5, full_coverage@5 and hit@1 of the primary arm TW-1x-b0, against the twin and the GNN of each seed pair, on r:
+  11,920 metaqa train-split rows (3,480 of hop 1, 4,306 of hop 2 and 4,134 of hop 3) that no model was trained or
+  selected on and no level has read. As paired contrasts on the same rows it reads what b0 adds over b1d (level 13's
+  primary score) at 1x and at 4x the labels, what b1d adds over dsh, and what 4x the labels add under each score; the
+  first two also per hop. Two references bound the arms. The non-backtracking true-chain oracle (NB-oracle) bounds what
+  choosing the right chain can give, and its bucket-0 form (NB-oracle-b0) bounds it for a model that reads bucket-0
+  types only. It also reads the first arm at which no readable metric stays below the GNN.
+role: >-
+  Measurement, as at levels 8 to 13. The objects are non-message-passing models fitted to gold labels of the metaqa train
+  split and read on train-split rows that neither they, the twin nor the GNN saw. No GNN output enters any fit, target,
+  loss or selection. The twin's z-scored output is the base score, as at every level. TW-1x is fitted and selected under
+  the GNN's own metaqa labels and carves, as at levels 12 and 13. It is still a measurement, not a deployable or
+  selected model. No model, number or reading of this file enters QLS-U, the twin, a feature contract, M3, M4 or any
+  selection. A deployable model of this form would be a competitor under the QLS-U contract on every dataset, with its
+  compiled form timed, and it would need its own declaration. This file does not open one, and it opens no later level.
+
+boundary:   # configs/universal_v2.yaml#learned_vs_fixed_propagation (pinned below), applied before any code, as at levels 8 to 13
+  learned_propagation_quoted: >-
+    "any operator applied over the pool edges inside the model whose messages or message weights depend on trainable
+    parameters, or any repetition of an aggregation with a trainable transform between repetitions."
+  why_this_is_fixed: >-
+    Level 12's argument (configs/mp_approx_l12.yaml#boundary) holds for every unit unchanged: the model, the walks, the
+    reach sets, the set likelihood, the fits and the dsh score are level 12's, and b1d is level 13's. b0 is one fixed
+    filter, applied to every part of a deploy view before the fit. Each query keeps the walk types whose bucket digit is
+    0, and the null type. The filter reads the bucket digit of each type's code, which is part of the discrete type, and
+    nothing else: no edge, no neighbour's embedding, score or state, and no gold. It has no trainable parameter, and it
+    is applied once. The model is then fitted, and its settings chosen, by level 12's procedure on what is left.
+  what_it_is: >-
+    The function class is a query-weighted count of typed walks, as at levels 9 to 13. Under b0, a node's structural
+    term is a tempered posterior's average of the uniform reach sets of the walks that start from the dense and splade
+    rank-1 seeds, and the posterior is fitted on those walks only. It has no learned per-edge message, no neighbour state
+    and no nonlinearity between hops.
+  crossing_the_line:   # none of these appears in any arm; a test checks every arm's inputs
+    - a learned function of a neighbour's embedding, scalars, score or state, applied per edge
+    - learned weights inside an iterated aggregation over the edges
+    - a continuous edge attribute passed through a learned nonlinearity per edge
+    - candidate scores pooled back into the type weights at inference (a cross-candidate arm, which is not in this file)
+  equal_graph_information: >-
+    As at levels 8 to 13, the walks read only the packed structural message edges the GNN's cell reads: the same pool,
+    the same cap of 64 in-pool in-neighbours per receiver, the same K_REL = 4 relation slots and the same direction
+    flags. The ner and knn families are not read. The bucket digit comes from the seed lists the twin and the GNN also
+    read: bucket 0 holds the seeds that are the dense or the splade rank-1 node, bucket 1 the other seeds. Under b0 the
+    model reads the walks from bucket-0 seeds only, which is less of the graph than the GNN reads.
+
+authorization:
+  given:
+    - '2026-09-30, the user: "basically i dont want message passing but approximations to it, and pushing it as far as possible and targeting the weakpoints, i think offsets or rope based methods can work because all the stuff is anyways in the semantic space we just need to learn those transformations from the query etc and work from that, and explicit positions so that we have a proper way to represnt, what else do you think we should focus on"'
+  how_the_messages_are_answered: >-
+    "Targeting the weakpoints" becomes level 13's weak points. At the GNN's own labels the model stayed below the GNN on
+    recall@5, and hop 3 was its weakest stratum. The design looks found that b1d's change, made after the fit, leaves
+    the null type the argmax on part of the rows, and that fitting on the bucket-0 types alone read higher on hops 2 and
+    3 and lower on hop 1. This file reads that one change on a population large enough to read every hop, and keeps
+    everything else level 12's and level 13's.
+  go_ahead: >-
+    Standing: "keep continuing autonomusly without asking for perms and try to find improvements and pause only at
+    something substancial". This file is committed alone, before any code of the phase runs, and is then run as written.
+  placement_messages:
+    - '2026-09-29, the user: "use the damn host not on laptop"'
+    - '2026-09-30, the user: "pls mpve and do on the host for faster execution"'
+    - '2026-10-01, the user: "dont request resources if you wont use them i want the best utilization at all times dont create a deadlock for other projects if you wont use the resources and whatever you request use them fully"'
+    - '2026-10-01, the user: "parallely keep stuff i want full utilization and less time stuck waiting by any project or process request only what you can actually use and dont over request and keep underutilizing"'
+    - answered in placement below
+  terminal: STOP_FOR_REVIEW after the run record. No later level, arm or deployable model is opened by any reading here.
+
+this_file_does_not_touch:
+  fits: >-
+    No GNN or twin is fitted or refitted, on any carve. The pilot's six checkpoints are read. Only this file's arms are
+    fitted, and they are measurement models.
+  rows: >-
+    r is train-split rows, so it holds none of level 0's 2,400 metaqa rows and none of the dev rows of levels 8 to 13,
+    which are V2_GATE rows; a check refuses any of them. None of their sidecars is read, except level 12's carve sidecars
+    (carves.sidecars). V2_HELD_CONFIRMATION is never read, and no dev row or test row is read. The train-split rows
+    scored here are r's 11,920. The training rows are level 12's carve sidecars, read in place, and no row of level 12's
+    nine carves is in r.
+  frozen: >-
+    M2-M3B, universal-v2 (its training caches included), UMLP D0-D0.3, v2.1, v2.2A, the CPU-GPU equivalence file, the GPU
+    task-level qualification, the six-dataset base, DEPLOY_CK_2WIKI, DEPLOY_CK_FULL_2WIKI and levels 0 to 13 all keep
+    their bytes: declarations, scripts, tests, caches, sidecars, probes, records and documents. The design looks keep
+    theirs. The scripts of levels 8 to 13 are imported unchanged, and this file's scripts rebind some of their module
+    names inside their own processes only. Level 12's carve sidecars are opened read-only and pinned.
+  package: >-
+    The CRAG package is read-only. On the host, the verified mirror stands in for it in memory only. Nothing is written
+    under either root, and nothing from them enters git.
+  competitors: no arm output, type weight, target or number becomes an input, target, teacher, gate or selection criterion of any retriever
+
+placement:
+  where: >-
+    The host CPU, through tools/rx (docs/GPU_HOST_HANDOVER.md), in rx env mpr-cpu (torch 2.8.0+cpu, numpy 2.3.2, the
+    laptop's pinned closure), Windows native. No GPU is used, and scipy and numba are not used. The tests run there too.
+  why_the_host: >-
+    The user's placement messages. Level 12's carve sidecars are on the host, and the units read them in place, so no
+    sidecar moves.
+  package: As at level 12 (configs/mp_approx_l12.yaml#placement.package), through the pinned verify_metaqa.json.
+  threads:
+    score: 6 torch threads and BLAS and OpenMP pools of 6, set before numpy loads, for r's scoring pass and its assemble (level 12's carve pass counts)
+    fit_and_read: 4 torch threads and pools of 4, with torch's deterministic algorithms (level 8's fit_process), for the check, the units, the repeat and the read
+  reservations: >-
+    Each job reserves what the same kind of job measurably used at levels 12 and 13 (rx status: cpu_s over wall time and
+    peak memory), scaled where r is larger, plus a small margin. A score shard reserves 2 CPUs and 3.1 GB. Level 13's dev
+    shards ran at 1.94 to 2.0 CPUs and peaked at 2.42 to 2.87 GB, and level 12's carve shards ran at 1.79 to 1.87 CPUs
+    and peaked at 2.84 GB. Every shard prepares the whole carve, and r has twice a carve's rows, which adds an estimated
+    0.1 to 0.2 GB. The assemble reserves 1 CPU and 3.1 GB: it also prepares the whole carve, and level 12's carve
+    assembles reached 3.05 GB of working set. The check reserves 1 CPU and 1.25 GB (level 12's carve checks reached 0.73
+    GB of working set on 5,960 rows). The full TW-1x units reserve 1.15 CPUs and 2.25 GB, and the full TW-4x units 1.35
+    CPUs and 2.75 GB. Level 13's ran at 1.14 to 1.15 and 1.33 CPUs and peaked at 1.03 to 1.04 and 1.61 GB, on views of
+    9,457 and 27,337 queries with 2,000 scored; here the views hold 19,377 and 37,257 queries with 11,920 scored. Level
+    12's and level 13's units grew about 0.037 GB per 1,000 view queries, and each score's per-node array adds about
+    0.017 GB per 1,000 scored rows. The b0 TW-1x units and the repeat reserve 1.1 CPUs and 1.6 GB, and the b0 TW-4x
+    units 1.25 CPUs and 1.9 GB. The design look's b0 units ran at 1.08 CPUs and peaked at 0.76 GB on a 9,678-query view
+    with 2,221 rows scored, and a b0 unit keeps two per-node scores (cov and dsh) where a full unit keeps three. The read
+    reserves 1 CPU and 1.1 GB: it holds two of the repeat's per-node arrays at a time, about 0.2 GB each. Each test job
+    reserves 1 CPU and 0.4 GB (level 13's peaked at 0.22 and 0.36 GB). rx reserves without capping, and every process
+    fixes its own pools at start, so a reservation changes no number. Jobs whose inputs exist are submitted at once, so
+    they run in parallel under mpr's priority, and nothing running is preempted. A job that waits on others is submitted
+    by a local waiter once its inputs exist, so a waiting job holds no reservation. Measured against reserved goes into
+    the run record.
+  proof_per_query: >-
+    r's rows have no stored per-query metrics: the pilot never evaluated on them. So the twin's and the GNN's metrics on
+    r are computed by the carve pass's six forwards, as on level 12's x carves, and nothing stored is checked against
+    them. Level 12's loopcheck (inputs.level12_loopcheck) ran the carve loop on 24 dev rows whose metrics the pilot
+    stored. Their stored metrics were checked as level 8 checks them, and every array of level 8's ARRAY_KEYS equalled
+    level 8's pass by dtype, shape and bytes. Its record is pinned, and it must be on file as equal before any fit. The
+    carve sidecars were checked by level 12 (its carve pass and carve check) and are pinned by their meta.json and
+    check.json. Each of their arrays is checked against its meta.json when a deploy view opens it.
+  host_native: >-
+    Every arm and reference is fitted, scored and read on the host CPU, and the twin's and the GNN's metrics on r are
+    computed there. No number of this file is set beside a number made on the laptop.
+  identical_code: >-
+    Every host job runs from a commit of this phase and records the LF sha256 of every repository module it imports.
+    The file stage checks that each module has one value across all jobs, equal to the file at the commit it names.
+    scripts/mp_approx_l14.py is committed first and is not edited after that commit. scripts/mp_approx_l14_fit.py
+    follows in a second commit, and the score, assemble and check jobs never import it.
+  laptop_steps: the doc and file stages, which make no number
+
+transfer: >-
+  The inputs of levels 8 to 13, the pinned qids.json and read.json files and level 12's carve sidecars and loopcheck are
+  already on the host. The code arrives as the git-tracked tree. No token or credential goes to the host.
+
+inputs:   # sha256 of the file bytes unless marked LF (CRLF folded to LF); checked before the first read and at the end of every stage
+  pilot:   # copied from configs/mp_approx_l11.yaml#inputs
+    eval_arrays:
+      metaqa: {seed0: {path: outputs/universal_v2/eval/metaqa.npz, sha256: 380e0288b0e048cd18d83f06defd5f794fe7b7514a741bffbfbd6289e49eab5c}, seeds_1_2: {path: outputs/universal_v2/eval/metaqa__more_69caa3fe.npz, sha256: 07cb99f9bcb1d70bbccf7d2e55b1097e9c724b3b016f168eec88c0bb7d615a30}, query_ids: {path: outputs/universal_v2/eval/metaqa_query_ids.json, sha256: b491d9e90e786c1d356d2a24142ec1b810e657efdfadff85a44ff1b489618692}}
+    feature_contract: {path: outputs/universal_v2/feature_contract.json, sha256: 21d30260c7ef71c7cc217c2b32054625780db7e6b40c79d3c03fded658109e91}
+    selection: {path: outputs/universal_v2/selection.json, sha256: 3ed48ae3d04334ba367cb81b8b363d32db0e2bf746e4f692d7af0936bea4e3b6}
+    checkpoint_dir: outputs/universal_v2/fits/
+    checkpoints:   # weights (.pt) and fit record (.json)
+      u_mlp_v2_mix__H128__s0: {weights: f0e629a7347a08014ae00f6d164b6158695a71118c7dabf0dfaf56e1b8a3e8f3, record: 21fab0efc9c7538c08de6311d3ebdde0944f49543e17bd0487f42e50f68940fb}
+      u_mlp_v2_mix__H128__s1: {weights: 0926391ac70457ae0c7319fe1821aee5be17eb57af0879168f5b003c32effb85, record: f6cff3f3f05507908d244e37f5cef221fd7462dbc49d9f49192ed43ca0efd62d}
+      u_mlp_v2_mix__H128__s2: {weights: d4b7157e3e272a01d815ac088b670aa99a9120c6fb3d2aa626f78fb67219a431, record: 9302082f2acedc1b6ed39ed78f54d43e820584326bbd9a8320e94bfe0a9fa217}
+      u_gnn_v2_ef__H128__s0: {weights: 9f749ad346afcef479f84436019771e0b940a1e647e4960908acf4105ea2ed0e, record: bfd3e8e5957b259b2d8b38f85008f659f48e00eb79cdf43220aeb39817993009}
+      u_gnn_v2_ef__H128__s1: {weights: 9b3a5521babb814e83e8a0a40a94b9abd92bdee7f7f58b04f686558d0522c367, record: 6e1efe41c8c2f27bfd1d37fa26e9b8e00685e1ffb8d12f8528d489b6b3a9a60a}
+      u_gnn_v2_ef__H128__s2: {weights: 4575c41822f56d99b843aaa524a5eb407fa038ebc24a6ad04f4fef786433d4c4, record: 4cb612e195c85fde11edaec8b6f0dcd293fc706b2554cbab4cf76f0fc2907532}
+  frozen_code_lf:   # level 0's frozen_code list (m3b_compile.py, m3b_pools.py and universal_v2_run.py among its 16 files), plus the modules level 8 reads directly
+    via_level0: configs/mp_approx_l0.yaml#inputs.frozen_code (16 files, checked by level 0's verify_pins, imported unchanged)
+    scripts/m3a_headroom.py: d3df956c55f852fbe1882d4a129c8a86ce70e429a49d92351b74c090dcf42a87
+  level0:
+    declaration_lf: {path: configs/mp_approx_l0.yaml, sha256: 5df856890d6d1161795174ca4f84216b1bace34dc325eec5106ebccc7cdf3144}
+    script_lf: {path: scripts/mp_approx_l0.py, sha256: de51b154c82a3591e1cc9aefcbdf9c3e5b2965b6ac425d7af53a2c51044bd163}
+    tests_lf: {path: tests/test_mp_approx_l0.py, sha256: fa722b91730ff18867749d76ade44c4ff1c1cb202671474fb97f13992efa50e8}
+    excluded_rows:   # rows that leave this file's population
+      qids: {path: outputs/mp_approx_l0/metaqa/qids.json, sha256: 557ea775c6f6050ed81647c6da6439e8425d615076a6903e67a18d76e090e684}
+      q_row: {path: outputs/mp_approx_l0/metaqa/q_row.npy, sha256: e7fd801dc9a739f90208db3b03c848d2851b4f01f1af4ba2c4576a25ada424dc}
+  level4:   # mix64 and SALT_H, imported unchanged through level 8
+    declaration_lf: {path: configs/mp_approx_l4.yaml, sha256: 031d3a9f620db93190f604ecb2438d32d720c875564b4cff28de64014427e080}
+    script_lf: {path: scripts/mp_approx_l4.py, sha256: a12c8a19feeb55386964c3f06911aec491d6461a61104fb135f7042d79320c10}
+  level8:   # imported unchanged; its rows leave this file's population
+    declaration_lf: {path: configs/mp_approx_l8.yaml, sha256: 654f4999a429e7cc251d57eed79e58599a0638a1c7930f27dc12bd07d79bbc6f}
+    script_lf: {path: scripts/mp_approx_l8.py, sha256: 542dc1f2df51e23937b41dd5fb4ea2098b502bbf0f848259a83d19cb7d9b6a02}
+    tests_lf: {path: tests/test_mp_approx_l8.py, sha256: cac01af62a93ff87778d17ea73b63a7ae6a656cda87f7bd59c2e017d11e1f35d}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l8/metaqa/qids.json, sha256: 83ccb559e35c20129223f5b1eb16339e1423f615f174f441d5d29324910bb039}
+  level9:   # imported unchanged (at its run record, 4667e9b); its rows leave this file's population
+    declaration_lf: {path: configs/mp_approx_l9.yaml, sha256: 521353984a321cbe631c7426b83ca8b08c071ab75de20bad3e5fa6bff0904b4c}
+    script_lf: {path: scripts/mp_approx_l9.py, sha256: 6c18d6c46a48c0664d774272430541b2aaa2192459813278306c67f09a544677}
+    tests_lf: {path: tests/test_mp_approx_l9.py, sha256: abcdd32d0b43082da0bad68d781678ee6e153c062ee8630f0ba9b00a763962d8}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l9/metaqa/qids.json, sha256: 3e2cb8d7a4a911098db9e00e04ac0d70976db40ba152351fd36f51b65b09d68a}
+  level10:   # imported unchanged (at its run record, a5d6b1e); its rows leave this file's population
+    declaration_lf: {path: configs/mp_approx_l10.yaml, sha256: 1d51671620cfeec581bb1823105a71f83b1b7e394068a7d2853e71ff1c16e4c7}
+    script_lf: {path: scripts/mp_approx_l10.py, sha256: cf232a799ce5c2f18ce91003010a4b2a37c1e17aa52d584e02ed2e6df785d002}
+    tests_lf: {path: tests/test_mp_approx_l10.py, sha256: 4db50a7df714f6ef78595dc91368da1d13b63d7b70547e642c2a8c933aca989e}
+    fit_script_lf: {path: scripts/mp_approx_l10_fit.py, sha256: 26ccdb1f71fc09ee8a7d9b174eef6d9b4451bd4542b479f474395428215eb643}
+    fit_tests_lf: {path: tests/test_mp_approx_l10_fit.py, sha256: 3212582ffb8266ba936b0dcc552e882258ba8c0a2e116cf630dca2f6d8fa2bbb}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l10/metaqa/qids.json, sha256: c61f08bc84fed009a048a53d32a9e820f22a27135aa065c1a5bcd290d493f9ba}
+  level11:   # imported unchanged (at its run record, c8d3f24); its rows leave this file's population
+    declaration_lf: {path: configs/mp_approx_l11.yaml, sha256: e28934e3a1642e98a9172d0cc7eee67a42e63caad3405cbc829e51799752f16b}
+    script_lf: {path: scripts/mp_approx_l11.py, sha256: dfbba2060b68b913cfba534206cf6408a4b72af784dfa13381f7e66c45edcb56}
+    tests_lf: {path: tests/test_mp_approx_l11.py, sha256: c8908d0538f5665188c7f477a3f9c063f441b446e9217466b17e7078ef0df2c0}
+    fit_script_lf: {path: scripts/mp_approx_l11_fit.py, sha256: 505059901fab7ffdc465311972a8763198d2fda24eefa1ba07d8603ccf0db04b}
+    fit_tests_lf: {path: tests/test_mp_approx_l11_fit.py, sha256: e48dc16ece3c48400df11df5e1b5700f5373dcbd757f3f70548d826a67f7f73e}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l11/metaqa/qids.json, sha256: fff1860594e0f77875d89df9b44d95dfa759997e192ac8a7d9c77bbbbd00d55f}
+  level12:   # imported unchanged (at its run record, a43746a); its rows leave this file's population
+    declaration_lf: {path: configs/mp_approx_l12.yaml, sha256: 5be5f5aa7bf692bfdb9f4ffe1da91d201017506131348fd7d9de690df95180f3}
+    script_lf: {path: scripts/mp_approx_l12.py, sha256: 05a16f347f47714ca870406dffa8a69e5ba2d94848adf38f982fc02f02f09cf1}
+    tests_lf: {path: tests/test_mp_approx_l12.py, sha256: 6eed91d060fadb98feb5b18210727ef7919ff8964dca602679fb3a1681fda77b}
+    fit_script_lf: {path: scripts/mp_approx_l12_fit.py, sha256: 9d75df55cfc10e573e2f52c5bfcbe83a48f7409ef1b3406ae9c19c8248e5da9f}
+    fit_tests_lf: {path: tests/test_mp_approx_l12_fit.py, sha256: fb8e0ea53ff24cd19b51fe2fd7bb1ed4403031f8eaf77cc0363ed6a3bd536c4c}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l12/metaqa/qids.json, sha256: cc1effbd1dea4faa6dc5afe3e2425b45764cbc492301eaffc25b33964b7d994a}
+  level12_carves:   # level 12's carve sidecars, read in place on the host and never rewritten; raw sha256 of each carve's meta.json (the sha256 of every array) and check.json
+    dir: outputs/mp_approx_l12/carves/
+    fit: {meta.json: 33638ce3a581fb6f889670665e689b980114fa5d4a2e65715c938bb79aa1f3c2, check.json: 50add9a7d2a826a4cf42c363255b86dda613bc244bda2ab2103fff0f6d995c5d}
+    select: {meta.json: 028c3bff465398836266b79a954548e3b859f7e3635bd5febe49061a7123fb2b, check.json: aca28e51003880c21af29ba4f6d9dfe28431b90e3642e0f337ab22c3940a7cdf}
+    x1: {meta.json: 11cbcb288c69a3f4545984059ebf7e59c3b0aabe5eb48d5341498af320fc7ee9, check.json: 8a84fa5898bdf674f4054c6fa5077e81a517f3524078269c5459d4b0bc027c87}
+    x2: {meta.json: 3707fff2af219d3c6cfe049567be7f6a06091ae94c5740d9186fde0aa7c4aa2d, check.json: e5c659187aed3632f4dcdb3eed3d3ad2531549e18db7456e1513db56eb364655}
+    x3: {meta.json: 89838bb772efbf4a4c10409d697e44a4e69739d44928f8142879224c4cd65213, check.json: 44872a1102f732eb63af63937fb00c31c5c87ef8266b1ae404e9140b62e07fa4}
+  carve_cache:   # the pilot's training caches of the fit and select carves (universal_v2_run.stage_compile), raw sha256; read-only
+    dir: outputs/universal_v2/cache/metaqa/
+    fit:
+      meta.json: 86df15b12245051e27841b6e078b79790691a80bd945a6a370722049d6b601cc
+      query_ids.json: 1c5eceda5e0a0ea30a9b68a4fad850a0503d79ed3d23db778fc67981f17da105
+      qrow.npy: 3390c33f5aa0aaf25c9d1901e4d567fdd0a6a72809201532d6e1a7cab2c23547
+      pool.npy: 5c70d4a7caaa02c11e6692aeb0a6fd1328fb81eee76b868a0cb12b8dc292fdae
+      pool_ptr.npy: 1461c90e4d1ad0d73556b1646bfedccfbf6686a4f8d0fd00ea3b32eb083a9eac
+      seeds.npy: fd4767276eb79ce5424366852ad185d8e2ee5b7c0707dfa0cfa42c0f1f5a96e2
+      seeds_ptr.npy: ba9622dfe7373b0fe9268e2e0dd394005ca830c6470d480651ba4fbfb6d7972d
+      gold.npy: 4f6633e00f9f64dfe86d5912a1dbda4466ddac60c593c02da0d858e4e8093af8
+      gold_ptr.npy: 89103cfd1934bd78ea1f2aa906ce0f8c6a55e846a00a2e880fa767208e01c720
+      gold_total.npy: 193199fc02a37ba9ddd14f2fc3f45e96e9b69e1e54f11709ea9a7d0f01b9f67c
+      edge_counts.npy: b72751ae16b69b41c41cf6585866569b5af4a050e80c9bd98f8104f3eaf99343
+      qemb.npy: da1d4362a2186ec4d4ae34cd9334cc95ccc290c4520c3e18035e92868df05cf9
+    select:
+      meta.json: 9235d8fbdc7426b93f711e8071f35251a95760395561ede395fc76e3e842a9d7
+      query_ids.json: f9f7053067578811fa6e591ac586edfc44334c4b806c599f479744686e6e7172
+      qrow.npy: f9262770c224ec5295e24857d86c72943b870afe8bd8995ecf7e721e4f17eb9f
+      pool.npy: 26b749f1f739d5d25aad5d2d183bae6ea2a33380f59663fa8b54704b77bf4bef
+      pool_ptr.npy: 6c6811acd31f1b4c3c0fbd9a0d6d8627f097dbf88f3c7731057c124bc73acad6
+      seeds.npy: 2b9875e03c0569d8fcb9d5300298f8c8523248a9acbd1c99529f24ecf45494c5
+      seeds_ptr.npy: 29dc49b6c2deffe15cebd14f3da4a2e5d563690e9c9abf398c7d6f4abfc9d852
+      gold.npy: adcfa1bcb48a4dedc2501137d0a3c5e3c5675a8c0567f08cd03246d7178af5a2
+      gold_ptr.npy: b7474fc9b0eec11b3245fb56550c9442033b80ccaaa3779c339e0d515f8bd774
+      gold_total.npy: e51e033d433d39d078fe82f215ca6b6f928eb303891433b31b558c837318ee10
+      edge_counts.npy: ea8d611bce3ab32159b7928eb2f305d50b06aecae8b4ec8001f0bc33ccd93d85
+      qemb.npy: 6d9c0d22ef84fed15309d00925ca1b073108a52e76b75f3e4e27d3d902879628
+  relations:
+    embeddings: {path: outputs/m3b/relations/metaqa_rel_embeddings.npy, sha256: 752964ecfae44c7e4ebf10468d7d0241cca53b0fdb2488af04ec30deed38b4af}
+    vocab: {path: outputs/m3b/relations/metaqa_rel_vocab.json, sha256: 000bddbe799a60cf0c4e806e0819a9822bc520c2a5d55a4c0b6a669e1b779d11}
+    order: [directed_by, has_genre, has_imdb_rating, has_imdb_votes, has_tags, in_language, release_year, starred_actors, written_by]
+  boundary_and_fairness_lf:   # universal_v2.yaml also carries the fit and select carves' digests (m3b_incumbents.training_carves_reused_here)
+    universal_v2: {path: configs/universal_v2.yaml, sha256: bce0d1e92de4f184f09f0770fd378e2fa63bf469fdf31bb904d7471a11eeb562}
+    fairness_contract: {path: docs/GRAPH_INFORMATION_FAIRNESS_CONTRACT.md, sha256: 550b2afaa56f6085252065b8fd55cfcd744c8eee3149cb0e0e5463b18c9a94dc}
+  host:
+    mirror_config_lf: {path: configs/host_mirror_six.yaml, sha256: 3d70a44f81f62a51bc17ce30943caaf2e8a613de46daffa574258a66b063b04b}
+    mirror_root: C:/Users/Student2/rx/projects/mpr/mirror/CRAG
+    freeze_RECORD_SHA256: 58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0
+    verify_record: {path: outputs/host_mirror_six/verify_metaqa.json, sha256: 1afb2506fb85f6df532d27bed5ecfa11580de55614222bb504145f57b76c02ec}
+  level13:   # imported unchanged (at its run record, 0fc7feb); its rows are V2_GATE dev rows, and r holds none of them
+    declaration_lf: {path: configs/mp_approx_l13.yaml, sha256: cf50ad875866fe7e1deaced2c4dde9ad12f3b34261841d1d571821a93192949d}
+    script_lf: {path: scripts/mp_approx_l13.py, sha256: c3705ae06bb9a6c4d68f6ec4dc826a97d450515352b9719421ae17e497d76d24}
+    tests_lf: {path: tests/test_mp_approx_l13.py, sha256: 05de19543c3d9a7dd6be24eda0615c2acd0320dcc9ca5969560332bc840b4574}
+    fit_script_lf: {path: scripts/mp_approx_l13_fit.py, sha256: 8d13e69447b8f0762cbd3e7cb9820a8498df7f1574829ef8930d9519aed61daf}
+    fit_tests_lf: {path: tests/test_mp_approx_l13_fit.py, sha256: 14d6c73e7adc07424083d1bd4c134966bbd7ba9037f00fa342ac3f513a8862fe}
+    excluded_rows:
+      qids: {path: outputs/mp_approx_l13/metaqa/qids.json, sha256: fcd0f09c15be815af3e3a66b6f5f30a1e22461c96a0e3d1c19038e790fb6a7e4}
+  level12_carves_x4_x7:   # the rest of level 12's carve sidecars, read in place for r's disjointness check only; raw sha256 of meta.json and check.json
+    dir: outputs/mp_approx_l12/carves/
+    x4: {meta.json: b5ecc126bb41acc99efbb02ac0ba0e49a253b1e18be5bd503e22b31f96aa9b72, check.json: e6cf937a3a3a9e4063fd366e1deea08ad4c0955835d507dcacd7755e0dc5b8f2}
+    x5: {meta.json: 570a49f6e71cd882c6d3d646a34fcd59c16a74676255b94738cc9ecf71035fbf, check.json: d0879624c5311290de9f17f2fab7967a1ad201609449acad99c1d262320425c4}
+    x6: {meta.json: 1bf59b0f04e197be0513fcb16206e735c92f748c865648b06f37c4e1503a7a3c, check.json: 3b4792e2180c91471261502d645454f87eab3916ca79c59cc76267a995dd7915}
+    x7: {meta.json: 29afdcc60e551e0632e271d55deb18a966155124f1db2abf77268f680113e26b, check.json: 00bb4487882fb3309aec7793c5e1f66db9e186e205f0766d04e3a03d653c4707}
+  level12_loopcheck: {path: outputs/mp_approx_l12/loopcheck.json, sha256: 60f156c5d37ddb8b926c1e55759de679d0dc8d68564f25e59fdd091bf3fdfa1d}   # raw; equal must be true
+  earlier_reads:   # raw sha256; read for quantities.anchors.exchangeability only, which is descriptive
+    level12: {path: outputs/mp_approx_l12/metaqa/read.json, sha256: 03605539eecf8ad5c2b5b095d2f4cf9c11ebeaa6c80c1ef2df36ebb639ad13d8}
+    level13: {path: outputs/mp_approx_l13/metaqa/read.json, sha256: ce6c2675d94691e0a2237750ca23f3d8bf12e1105fe708099225bc333d9a02c8}
+
+population:   # the scored rows: the read carve r, all of them metaqa train-split rows
+  rule: >-
+    Level 12's carve rule (configs/mp_approx_l12.yaml#carves.rule), unchanged: the train split's sorted ids (N), the
+    select stride s_sel, the ids outside it (remaining) and the fit stride s_fit, recomputed and checked against the pins.
+    r is remaining[i] for every position i with i mod s_fit in {8, 9}, in position order: the union of the fit stride's
+    offsets 8 and 9, which no level has read. Its population is m3b_compile.population's train branch, line for line, on
+    those ids (level 12's carve_population): the golds by m3a.resolve_gold, and an id with no gold leaves. The rule reads
+    only ids and the strides.
+  offsets: [8, 9]
+  pin: carves.pins.r
+  hops: {1: 3480, 2: 4306, 3: 4134}   # 11,920 rows; no id has zero golds
+  why_train_split_rows: >-
+    No hop-1 V2_GATE dev row is left, and the 644 hop-2 and 473 hop-3 that are left are too few to read every hop at
+    level 13's precision. The train split holds 329,282 rows. The twin and the GNN trained on its fit carve and selected
+    on its select carve, and levels 12 and 13 fitted on those and on x1 to x7. No model trained or selected on, and no
+    level read, the fit stride's offsets 8 to 54, and r takes two of them. On r, the twin's, the GNN's and every arm's
+    metrics are all measured on rows none of them saw, so the comparison is paired and out of sample for all of them.
+  exchangeability: >-
+    MetaQA's train and dev questions come from one generator. The design looks found r no closer to the training carves
+    than the dev rows are (design_informed_by). The read files r's twin and GNN metrics beside those of level 12's and
+    level 13's dev rows and of level 12's carves (quantities.anchors.exchangeability). A reading on r is a reading on
+    train-split rows, and it is named so beside every number. It is not a dev-split or a test-split reading.
+  budget: >-
+    After this file, the fit stride's offsets 10 to 54 (45 strides of 5,960 rows) stay unread, and so do 644 hop-2 and
+    473 hop-3 V2_GATE dev rows. A later level that draws from them says in its own file how it draws.
+  folds: >-
+    The carve pass stores level 0's fold_of and is_inner on every row, as on level 12's carves, and level 9's View checks
+    them. The units do not read them: every row of r is in the one scored set (units.roles).
+  gold: >-
+    The in-pool golds are m3b_compile.gold_local_of's, as on every carve. A row with no in-pool gold is scored and read,
+    but it enters no fit.
+  why_disjoint: >-
+    r is disjoint from level 12's nine carves by the stride: the population check recomputes all ten sets and refuses
+    any shared id, and the check stage compares r's ids with every assembled carve's. r holds no V2_GATE row. b0 was
+    chosen from a look at level 12's dev rows, which are not in r.
+
+carves:   # the training rows: level 12's carves (configs/mp_approx_l12.yaml#carves), unchanged; no carve of level 12's is recomputed or rescored here
+  rule: configs/mp_approx_l12.yaml#carves.rule, unchanged; r by population.rule
+  sidecars: >-
+    Level 12's carve sidecars, outputs/mp_approx_l12/carves/<carve>/ on the host, read in place. Level 12's carve pass
+    scored them (the fit and select carves checked equal to the pilot's training cache, the carve loop checked equal to
+    level 8's scoring pass), and each passed level 12's carve check. Their meta.json and check.json are pinned
+    (inputs.level12_carves and inputs.level12_carves_x4_x7). A deploy view checks every array of a carve against its
+    meta.json, and its ids, count and hops against the pins below. x4 to x7 are read only for r's disjointness check.
+    r's sidecar is this file's, outputs/mp_approx_l14/metaqa/ on the host.
+  pins:   # level 12's, copied unchanged, and r's; ids_sha256 is m3b_pools.ids_digest of the carve's kept ids in order
+    N: 329282
+    source_sha256: ce7bafc9d664f1c79af7c3a4990cd9c95d9176cfbe66d8159fb850db99920c59
+    s_sel: 220
+    s_fit: 55
+    remaining: 327785
+    fit: {queries: 5960, zero_gold_excluded: 0, ids_sha256: 161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188, hops: {1: 1740, 2: 2153, 3: 2067}}
+    select: {queries: 1497, zero_gold_excluded: 0, ids_sha256: f0ec84fec4e07a050e8feacec5f4880342f10d60eb788b0cb0112334bc999828, hops: {1: 437, 2: 541, 3: 519}}
+    x1: {queries: 5960, zero_gold_excluded: 0, ids_sha256: fbad6b74b28676888e51f18405da842e50e723b646a07fce0af2ae5ec8eb3b89, hops: {1: 1740, 2: 2153, 3: 2067}}
+    x2: {queries: 5960, zero_gold_excluded: 0, ids_sha256: 0b31fdad6280eb9feb46e12fe8c904f83e47e9ecbe574f387f14b5240b620311, hops: {1: 1740, 2: 2153, 3: 2067}}
+    x3: {queries: 5960, zero_gold_excluded: 0, ids_sha256: cc84887b0b2bb318da23a12db6c7494c225bded4370243619f66aa9e60ffdd9b, hops: {1: 1740, 2: 2153, 3: 2067}}
+    x4: {queries: 5960, zero_gold_excluded: 0, ids_sha256: 2b69ca637c929236f3770233cdc120a484d629fbd73312ae2ef7026bfb64652d, hops: {1: 1740, 2: 2153, 3: 2067}}
+    x5: {queries: 5960, zero_gold_excluded: 0, ids_sha256: 877e1db5f983eea9e45f3845b94496c6a74b28b6a4c959c9980081df669e8b23, hops: {1: 1740, 2: 2153, 3: 2067}}
+    x6: {queries: 5960, zero_gold_excluded: 0, ids_sha256: 638b4a652d95577c6a5ef0fb5c98cc020ec5db80c6dd48fd776eabfcf0fa6d3c, hops: {1: 1740, 2: 2153, 3: 2067}}
+    x7: {queries: 5960, zero_gold_excluded: 0, ids_sha256: 6ce0e53092beec8a52153b34d459b47ad53b19520a929770c261c0d2498dcc7d, hops: {1: 1740, 2: 2153, 3: 2067}}
+    r: {queries: 11920, zero_gold_excluded: 0, ids_sha256: 62a963e146f7b8ee4d077278947b239561485df1bf99d651a3e0afda4f19ca1a, hops: {1: 3480, 2: 4306, 3: 4134}}
+  fits:   # fit: its training carves; the select carve is every fit's inner set, and r is every fit's scored set
+    TW-1x: [fit]
+    TW-4x: [fit, x1, x2, x3]
+  label_counts: >-
+    Level 13's training_rows anchor gives 5,883 fit rows with an in-pool gold for TW-1x and 23,538 for TW-4x, and 1,482
+    select rows with an in-pool gold for both. Under b0 the same rows are fitted, and a row left with no bucket-0 type
+    keeps the null type only. The read files the rows again per fit and view, and each fit's count is named beside every
+    reading of it.
+
+scoring_pass:   # r; host CPU, score threads; level 12's carve pass, imported unchanged, with four of its module's names rebound in this process
+  path: >-
+    Level 12's stage_carve (scripts/mp_approx_l12.py), called unchanged, with four names of its module rebound in this
+    process only and restored after it: CARVES gains r; carve_ids_of returns r by population.rule and every other carve
+    by level 12's own function; verify_inputs becomes this file's; and CONFIG becomes this file's declaration. Its
+    population check (carve_population_checked) then recomputes the source, the strides and all ten carves, refuses any
+    shared id, checks x_0 through the train-branch lines against m3b_compile.population's fit carve, and checks r against
+    its pin and every id as a metaqa train-split id. The whole of r is prepared, and the chunk loop (level 12's
+    score_rows: level 8's loop, line for line, with level 9's combined walks), the chunk rule and the assemble are level
+    12's. r has no training cache, so no cache is opened. The sidecar is written to outputs/mp_approx_l14/metaqa/.
+  integrity: >-
+    Level 12's carve pass checks: every prepared seed set equals seeds_of and is in the pool, every structural edge
+    carries a relation slot and a direction flag, every walk count is below 2^32 and no ceiling is passed. The metrics of
+    T_k and G_k on r are computed, not checked against stored values (placement.proof_per_query).
+  shards: twelve processes, --shard i/12 (the chunks ci with ci mod 12 = i), then one process without --shard that assembles
+
+walks: >-
+  Level 9's (configs/mp_approx_l9.yaml#walks), unchanged: the std family (level 8's counts) and the nb family
+  (non-backtracking counts), compiled in one pass into one sidecar and read back as two views; the per-query checks,
+  the null type, the ceilings and level 8's true-chain map. The fits read the nb family only.
+
+check: >-
+  Before any fit, the check stage runs level 9's check_family on each family of r's sidecar, imported unchanged: level
+  8's direction check (a swapped share above the declared share, in either family, is a hard stop) and level 9's
+  anchors, as level 12 files them for a carve. It refuses a smoke sidecar, a sidecar whose meta.json does not name carve
+  r and r's ids digest, any id that is not a metaqa train-split id, ids other than r's pin, a q_row other than each
+  row's position in r, any query id of the populations of level 0 and levels 8 to 13, any id of level 12's nine carve
+  sidecars (each must be assembled, and its ids are checked against its meta.json), and a loopcheck not on file as
+  equal.
+
+arms:   # each arm reads z(T_k), the query embedding, the relation text and the nb family's compiled types and counts, nothing else
+  model: >-
+    Level 12's, unchanged (configs/mp_approx_l12.yaml#arms.model): level 10's NB-set model, level 9's NB-hyb model on
+    non-backtracking walks with level 10's set likelihood and its closed-form theta. p(tau | q) is the softmax of
+    w(q, .) over the query's nb types in the view and the null type.
+  fits: carves.fits
+  views:
+    full: level 12's deploy view, every nb type, as at levels 12 and 13
+    b0: >-
+      The same deploy view with every part's nb types filtered before the fit. Each query keeps the types whose bucket
+      digit is 0 (code // 28^3 = 0: the walks that start from a seed that is the dense or the splade rank-1 node) and the
+      null type, and drops the rest. A query's bucket-0 types are a prefix of its types (codes ascend), and their entries
+      are one block; a view in which they are not is a hard stop. The filter is applied alike to the eval part (r), the
+      select carve and every fit carve, inside the unit's process only, by rebinding level 9's View to the filtered View
+      (the design look's B0View, copied unchanged). Nothing on disk changes.
+  procedure: >-
+    A full unit is level 13's run_unit (scripts/mp_approx_l13_fit.py, imported unchanged) on the fit's full deploy
+    view: level 12's run_unit (level 11's fit_and_capture, which runs level 10's fit_unit for NB-set unchanged, then
+    level 11's score_dsh), then level 11's score_dsh on the b1d capture. A b0 unit is level 12's run_unit, called
+    unchanged, on the fit's b0 view: fitted, its kept round and its dsh settings chosen, and its rows scored, all on the
+    b0 view. Its dsh score is this file's b0 score. b1d is not computed on a b0 view, where no bucket-1 type is left
+    and it would equal dsh bit for bit.
+  scores:   # s_k(v) = z(T_k)(v) + kappa log(n_q m_beta(v) + eta)
+    dsh: level 11's sharpened mixture (configs/mp_approx_l11.yaml#arms.scores.dsh) on the full view, as levels 12 and 13 score it
+    b1d: level 13's (configs/mp_approx_l13.yaml#arms.scores.b1d), on the full view's capture
+    b0: level 11's sharpened mixture of a b0 unit, a model fitted and selected on the bucket-0 types only
+  selection: >-
+    Level 11's (configs/mp_approx_l11.yaml#arms.selection), on the select carve's rows with an in-pool gold, for each
+    score on its own: beta in {1, 1.5, 2, 3, 4, 8, infinity}, kappa in {1/32, 1/16, 1/8, 1/4, 1/2, 1, 2, 4, 8, 16} and
+    eta in {0.01, 0.1, 1, 10, 100} chosen together by the mean of recall@5, full_coverage@5 and hit@1. Ties go to the
+    smaller beta, then the smaller kappa, then the larger eta. A b0 unit chooses on its own view.
+  read_arms:   # arm: [fit, score]; in this order
+    TW-1x-dsh: [TW-1x, dsh]
+    TW-1x-b1d: [TW-1x, b1d]
+    TW-1x-b0: [TW-1x, b0]   # the primary arm: the GNN's metaqa labels and carves
+    TW-4x-dsh: [TW-4x, dsh]
+    TW-4x-b1d: [TW-4x, b1d]
+    TW-4x-b0: [TW-4x, b0]
+  references:
+    NB-oracle: level 8's oracle rule on r's nb view (R*, the true chain's reach set from the bucket with the larger Jaccard with the golds, plus 1e6), as at level 13
+    NB-oracle-b0: >-
+      the true chain's bucket-0 reach set on r's nb view (the bucket-0 part of level 8's chain_reach), plus 1e6; empty,
+      and so no bonus, when the query has no bucket-0 walk of the true chain. It bounds what choosing the right chain
+      can give a model that reads bucket-0 types only.
+  not_arms: >-
+    Level 10's cov score is still computed inside fit_unit and kept in the unit arrays of both views, and it is not
+    read. The design look's changes made after the fit (b1renorm, b1tob0) are not arms.
+
+em: >-
+  Level 10's, unchanged (configs/mp_approx_l10.yaml#em), as at levels 12 and 13. On a deploy view, the minibatches, the
+  E-step and theta's sums run over the fit's training rows with an in-pool gold, and the per-epoch early stopping and the
+  kept round read the select carve's rows with an in-pool gold. On a b0 view they run over its types.
+
+units:
+  deploy_view: >-
+    Level 12's deploy view with one part's check changed. It is level 11's MultiView, imported unchanged, of the parts
+    eval (r's sidecar), select, then the fit's carves in the order of carves.fits, with the folds and inner flags then
+    set by role (level 12's with_roles). The select and fit parts are level 12's part_view, called unchanged on level
+    12's carve sidecars. Each has passed its carve check (both direction checks) on the meta.json it now has, is level
+    9's View with its checks on, is not a smoke run, and has its pinned ids, count and hops. The eval part is this
+    file's. r's sidecar has passed this file's check (both direction checks) on the meta.json it now has, is level 9's
+    View with its checks on, is not a smoke run, names carve r and r's ids digest, and has r's pinned ids, count and
+    hops, every id a train-split id.
+  roles:   # part: [q_fold, q_inner] -> its set in level 8's unit_queries at fold 0 (level 12's, unchanged)
+    eval: [0, 0]          # r: the scored set; never a fit or inner row
+    select: [-1, 1]       # the inner set (rows with an in-pool gold); never scored
+    fit_and_x: [-1, 0]    # the fit set (rows with an in-pool gold); never scored
+  per_fit: >-
+    One unit per (view, fit, k) at fold 0, for the views full and b0, the fits TW-1x and TW-4x, and k = 0, 1 and 2: 12
+    units. Each is its view's procedure (arms.procedure), so its seeds and its fit are level 12's. Every unit reads its
+    own seed's twin, z(T_k), on the inner and scored rows only.
+  type_table: As at level 12 (configs/mp_approx_l12.yaml#units.type_table), on the view's types; a b0 view's table holds bucket-0 codes only.
+  unit_files: >-
+    Each unit is written atomically, to units/<view>/<fit>/k<k>_f0. A full unit holds level 13's arrays and fit log, and
+    a b0 unit level 12's. Both add the view and the fit. A unit already written is skipped on a restart.
+  repeat: >-
+    The unit (b0, TW-1x, k = 0), which the primary reads, runs again in a fresh process, into repeat/. Its arrays and
+    fit log are compared bitwise with the first run's (REPEAT_DIFFERS).
+
+quantities:
+  metrics: >-
+    recall@5, full_coverage@5 and hit@1 of each arm's s_k on the full pool, by m3b_train.rank_metrics under the frozen
+    tie rule. T_k's and G_k's values on r are the carve pass's (placement.proof_per_query).
+  rho_readable_rho_bar_gap: >-
+    As at levels 8 to 13: rho_M = (mean over k and rows of M(arm_k) - M(T_k)) / (mean of M(G_k) - M(T_k)). A metric is
+    readable when its denominator's 95% interval lies above 0. rho_bar is the mean of rho_M over the readable metrics,
+    and gap_to_gnn is the mean of M(arm_k) - M(G_k) per metric.
+  strata: per hop (1, 2, 3); a stratum's rho is read only if its own denominator interval lies above 0
+  anchors:   # descriptive
+    level9_anchors: level 9's check anchors on each view of r's sidecar and of every carve read (fit, select, x1, x2, x3)
+    carve_metrics: per carve read and on r, the mean over k of recall@5, full_coverage@5 and hit@1 of T_k and G_k
+    exchangeability: >-
+      r's carve_metrics beside those of level 12's dev rows and carves (fit, select, x1 to x7) and of level 13's dev
+      rows, from their pinned read.json (inputs.earlier_reads); the twin and the GNN trained on the fit carve and
+      selected on the select carve, and saw none of the other populations
+    training_rows: per fit and view, the fit and inner rows with an in-pool gold, by part and in total
+    unseen_sequences: >-
+      Per fit and view, the number of distinct walk token sequences among r's types that occur on none of the fit's
+      training rows, and the share of r's rows whose true chain's sequence occurs on none of them
+    agreement: >-
+      Per fit and view, the share of r's rows on which the argmax type has the true chain's token sequence, with the
+      bucket ignored; per k, then the mean over k; overall and per hop. A null argmax does not agree.
+    genre_agreement: the same share, on r's rows whose qtype's last kind is genre
+    gap_split: >-
+      For TW-1x-b1d and TW-4x-b1d against NB-oracle, and for TW-1x-b0 and TW-4x-b0 against NB-oracle-b0: (reference -
+      arm) per metric, summed over the (row, seed) pairs on which the fit's argmax sequence is the true chain's, and
+      over those on which it is not, each divided by the seed count and the metric's summed denominator; the mean over
+      the readable metrics; overall and per hop.
+    theta: per fit and view, the kept theta (rho_1, rho_2, rho_3, eps_s), the mean, minimum and maximum over units
+    grid_edges: per read arm, the number of units whose kappa or eta sits at an end of the grid, and the number whose kept round is the last
+    beta_choices: per read arm, the number of units that choose each beta
+    b1d_moved: per fit, the mean over the full units of the inner and scored rows with a bucket-1 type and of the posterior mass b1d moves to the null type on the scored rows
+    b0_view: >-
+      On r's nb view: the mean nb types and walk entries per row, the same over the bucket-0 types, and the share of
+      rows with no bucket-0 type; overall and per hop
+    reaches_gnn: >-
+      The first read arm, in the order of arms.read_arms, with no readable metric flagged BELOW_GNN, with its fit's
+      training rows; none when every one has such a metric or no metric is readable
+
+statistics:
+  bootstrap: >-
+    Level 0's bootstrap over r's rows: rows resampled with replacement, 1000 resamples, numpy default_rng(0) (level 0's
+    boot_weights), and a 95% percentile interval. Seeds are averaged inside each resample. One resample matrix serves
+    every quantity, so contrasts are paired. A stratum's quantities use the same matrix restricted to its rows. The
+    intervals resample the scored rows. They do not resample the training carves or the fits.
+  contrasts:   # point and 95% interval of the paired difference of rho_bar
+    b0_adds: TW-1x-b0 - TW-1x-b1d
+    b0_adds_4x: TW-4x-b0 - TW-4x-b1d
+    b1d_adds: TW-1x-b1d - TW-1x-dsh
+    b1d_adds_4x: TW-4x-b1d - TW-4x-dsh
+    data_4x: TW-4x-dsh - TW-1x-dsh
+    data_4x_b1d: TW-4x-b1d - TW-1x-b1d
+    data_4x_b0: TW-4x-b0 - TW-1x-b0
+    ceiling_gap: NB-oracle - TW-1x-b1d
+    ceiling_gap_b0: NB-oracle-b0 - TW-1x-b0
+    ceiling_gap_b0_4x: NB-oracle-b0 - TW-4x-b0
+    bucket_ceiling: NB-oracle - NB-oracle-b0
+  hop_contrasts: >-
+    b0_adds and b1d_adds per hop (1, 2, 3), each the paired difference of the stratum's rho_bar under the same resample
+    matrix; read only where the stratum has a readable metric
+
+readings:   # filed before any number
+  primary: TW-1x-b0
+  bands:   # of rho_bar; the first that applies; the same thresholds as levels 8 to 13
+    L14_ABOVE_GNN: the interval's lower end is above 1
+    L14_HIGH: rho_bar >= 0.75 and the interval's lower end >= 0.50
+    L14_LOW: rho_bar <= 0.25 and the interval's upper end <= 0.50
+    L14_MID: none of the above
+    NOT_READ: no readable metric
+  exactly_one: the primary's band is the file's reading
+  per_metric_flags:
+    BEATS_GNN: the interval of M(arm) - M(G) lies above 0
+    BELOW_GNN: the interval of M(arm) - M(G) lies below 0
+  flags:
+    CEILING_LOW: NB-oracle-b0's rho_bar interval upper end <= 0.50 (the primary's own ceiling)
+    REPEAT_DIFFERS: the repeated unit is not bit-identical (its largest difference is filed)
+    EM_NOT_MONOTONE: the fit-set marginal log-likelihood falls between two consecutive rounds of a unit (the units are listed)
+    GRID_EDGE: more than half of the primary's 3 units choose kappa or eta at an end of the grid
+    THETA_AT_CLIP: a unit's kept theta has a component at a clip bound (the units are listed)
+  interpretation_map:   # every entry that applies is listed; they are not exclusive, and none opens a stage
+    l14_above_gnn: >-
+      Primary L14_ABOVE_GNN. On r, a non-message-passing model fitted on the GNN's own metaqa labels and on the bucket-0
+      walk types only scores above the GNN on the readable metrics on average. It reads compiled non-backtracking typed
+      walks from the dense and splade rank-1 seeds and the relation text.
+    l14_high: primary L14_HIGH -- at the GNN's own labels, the b0 model recovers most of the GNN's gain on r
+    l14_mid: primary L14_MID -- at the GNN's own labels, it recovers part of the gain
+    l14_low: primary L14_LOW -- at the GNN's own labels, it recovers little of the gain; read it with CEILING_LOW and the agreement anchor
+    matched_below_gnn: the primary has a readable metric flagged BELOW_GNN -- at the GNN's labels, the model stays measurably below the GNN on that metric
+    matched_not_below_gnn: no readable metric of the primary is flagged BELOW_GNN -- at the GNN's labels, the model is not measurably below the GNN on any readable metric
+    b0_adds: the b0_adds interval lies above 0 -- fitting on the bucket-0 types adds over dropping bucket 1 after the fit, at the GNN's labels
+    b0_hurts: the b0_adds interval lies below 0
+    b0_adds_4x: the b0_adds_4x interval lies above 0 -- it still adds at four times the labels
+    b0_hurts_4x: the b0_adds_4x interval lies below 0
+    b1d_adds: the b1d_adds interval lies above 0 -- level 13's change adds on r at the GNN's labels
+    b1d_hurts: the b1d_adds interval lies below 0
+    b1d_adds_4x: the b1d_adds_4x interval lies above 0
+    b1d_hurts_4x: the b1d_adds_4x interval lies below 0
+    data_adds_4x: the data_4x interval lies above 0 (under dsh)
+    data_adds_4x_b1d: the data_4x_b1d interval lies above 0 (under b1d)
+    data_adds_4x_b0: the data_4x_b0 interval lies above 0 (under b0)
+    b0_ceiling_binds: the bucket_ceiling interval lies above 0 -- reading bucket-0 types only lowers what the right chain can give
+    chain_not_identified: the primary fit's agreement on the b0 view below 0.5 with ceiling_gap_b0's interval above 0 -- the chain is not learned from the question
+    b0_adds_hop1: the hop-1 b0_adds interval lies above 0
+    b0_hurts_hop1: the hop-1 b0_adds interval lies below 0 -- the design look's hop-1 loss holds on r
+    b0_adds_hop2: the hop-2 b0_adds interval lies above 0
+    b0_hurts_hop2: the hop-2 b0_adds interval lies below 0
+    b0_adds_hop3: the hop-3 b0_adds interval lies above 0
+    b0_hurts_hop3: the hop-3 b0_adds interval lies below 0
+  wording: >-
+    TW-1x is label-matched to the GNN on metaqa: its fit rows are the GNN's metaqa fit carve, its settings are chosen on
+    the GNN's select carve, and it is read on train-split rows that neither model saw (r). The GNN also trained on 2wiki's
+    and squad's fit carves, which hold no metaqa label. TW-4x fits on four times as many metaqa train-split labels as the
+    GNN, the GNN is not refitted on them, and its readings name its label count; none is a matched comparison. r is
+    train-split rows, not dev rows. Every number here is named a reading on r, and it is never set beside a dev-row
+    number as one quantity; level 13's dev-row numbers are quoted beside this file's only with their population named.
+    b0 was chosen from a look at level 12's dev rows, where it read +0.021 [-0.009, 0.051] over b1d with a loss on hop
+    1. The file measures what non-message-passing typed-walk models recover of the GNN's gain on r. It is never a
+    deployable or selected model, and it says nothing about another dataset. b0 reads the walks from two of the seeds
+    only, so it reads less of the graph than the GNN reads. No reading may be phrased as "message passing is
+    unnecessary", "we do not need message passing" or "the MLP wins". rho here is level 8's quantity. It is not the
+    within-U_q oracle rho of levels 0 to 7, and the two are never set side by side as one quantity.
+
+compute:
+  scoring: >-
+    11,920 rows in twelve shards of about 993. Level 12's carve shards scored 1,485 to 1,496 rows in 2,669 to 4,459 s,
+    so a shard should take about 30 to 50 min, with all twelve at once when the host has room.
+  fits: >-
+    Level 13's TW-1x units took about 12.7 min and its TW-4x units about 22.4 min with 2,000 rows scored; scoring 11,920
+    adds a few minutes per score. So about 15 to 25 and 25 to 35 min for the full units. The design look's b0 units took
+    about 7.3 min, so about 10 to 15 and 15 to 25 min here.
+  storage: >-
+    r's sidecar, about twice one of level 12's carve sidecars, and the units, each holding its scores' per-node arrays
+    (about 0.2 GB per score); about 15 GB on the host. The carve sidecars are read in place.
+  resumable: every chunk, shard, unit and read file is written atomically and skipped on a restart
+
+hard_stops:   # on any: file hard_stop_<date> with the evidence, leave the status line, report
+  - any pin in inputs fails, level 0's frozen code included, or the host mirror check fails
+  - >-
+    the source, the strides or any of the ten carves differ from the pins or from carves_for, two carves share an id, a
+    row of r is not a metaqa train-split id, or a V2_GATE row, a held row or a test row would be scored
+  - any integrity check of scoring_pass fails, or level 12's loopcheck is not on file as equal
+  - any hard stop of level 9's walks or check
+  - the relation table differs from the pinned embeddings or vocabulary order
+  - a set likelihood's theta or marginal log-likelihood is not finite
+  - >-
+    a deploy view's part has not passed its check, is a smoke run, its meta.json or one of its arrays is not what its
+    pins and meta.json record, its arrays do not line up with the view's, or a row's set is not its role's (a carve row
+    scored, a row of r fitted)
+  - a b0 view holds a type outside bucket 0, or a query's bucket-0 entries are not one block
+  - level 10's two calls of score_fold in a unit did not receive the same log-probabilities
+  - the host jobs' recorded code sha256 values are not one value per module equal to the committed files
+
+outputs:
+  scripts: >-
+    scripts/mp_approx_l14.py (stages score [--shard i/n], assemble and check; r's rule, the rebound carve pass and the
+    pins) and scripts/mp_approx_l14_fit.py (stages fit --view V --fit F --k K, repeat, read, doc and file; the deploy
+    views and b0)
+  sidecars: >-
+    outputs/mp_approx_l14/metaqa/, on the host: r's per-query and per-node arrays, the walk entries of both families,
+    qids.json, meta.json (the sha256 of every array), check.json, units/<view>/<fit>/, repeat/ and read.json
+  record: outputs/mp_approx_l14/record.json, assembled on the laptop without arithmetic from the fetched read.json, check.json and meta.json files
+  document: docs/MP_APPROX_L14.md
+  run_record: run_record_mp_approx_l14_<date>, appended to this file; status DECLARED_NOT_RUN -> RUN
+
+tests:   # tests/test_mp_approx_l14.py and tests/test_mp_approx_l14_fit.py, run on the host in rx env mpr-cpu
+  - this file parses, its pins are the files' current sha256, level 13's inputs and level 12's carve pins are copied unchanged, and the declared constants are the scripts'
+  - r's rule on toy strides is the union of offsets 8 and 9 in position order, disjoint from every other carve, and every other carve is level 12's function's
+  - >-
+    the rebound carve pass restores level 12's names after it runs, on success and on an error, and reads this file's
+    carves, rule, pins, declaration and paths inside it
+  - >-
+    the check on synthetic sidecars, and its refusals: a smoke, a sidecar not r's, a non-train id, ids other than the
+    pin's, a q_row out of order, an earlier level's id, an id of one of level 12's carves, an unassembled carve, a
+    loopcheck not equal and a failed direction check
+  - the eval part's refusals: no check, a failed direction check, a changed meta.json, a smoke, and ids other than r's pin
+  - >-
+    the b0 view on toy sidecars: only bucket-0 types are kept, the per-query pointers and entry blocks agree, and a
+    query with no bucket-0 type keeps the null type only; a view whose bucket-0 entries are not one block is refused
+  - a full unit equals level 13's run_unit on the same view bit for bit, and a b0 unit level 12's run_unit on the b0 view
+  - >-
+    permuting the scored rows' golds, the other seeds' twins and the stored metrics changes none of a unit's dsh, b1d
+    or b0 scores (each arm's inputs are only z(T_k), q, the relation text and the view's types and counts)
+  - bands, reaches_gnn and the interpretation (per hop included) on toy cases, and the contrasts are the declared pairs
+  - the fit, repeat, read, doc and file stages run end to end on synthetic sidecars
+
+execution:
+  order: >-
+    This file alone (commit). Then scripts/mp_approx_l14.py and tests/test_mp_approx_l14.py (commit), run first on the
+    laptop with scratch outputs that make no number, then on the host, with r's twelve score shards submitted at once
+    beside them. The assemble and the check follow as the shards finish. In parallel, scripts/mp_approx_l14_fit.py and
+    tests/test_mp_approx_l14_fit.py (commit) and those tests on the host. Once r is checked, the twelve units and the
+    repeat run at once. Then the read. Then fetch the read, check and meta files, and on the laptop build the record,
+    the doc and the run record (commit).
+  stop_after_run: STOP_FOR_REVIEW
