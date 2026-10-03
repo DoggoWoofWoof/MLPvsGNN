@@ -274,6 +274,23 @@ python tools/rx/rx.py run -p gpu -n cuda-check -w -- python -c "import torch; x 
 
 **A job whose outputs come back:** write results under `outputs/<something>/` in the script, then run `rx run -n NAME --fetch -w -- python scripts/x.py`, or run `rx wait NAME --fetch` later.
 
+**Archiving host outputs to the hub, and restoring them onto a new host** (`scripts/host_archive_hf.py`). No credential goes to the host:
+- The laptop holds the token and asks the hub for each object's signed upload links.
+- The host streams the bytes to those links. It completes an object only when the bytes it sent hash to the planned sha256.
+- The laptop then commits the objects at `ws/<rel>` in a private dataset repo, re-reads the tree and checks every file's size and sha256.
+
+Archive one tag (a host job of 1 CPU; one tag per directory keeps each wave inside the links' 10 h life):
+```bash
+python scripts/host_archive_hf.py drive --repo OWNER/mpr-host-archive --tag NAME --token-name TOKEN --include "outputs/DIR/**" --cpus 1 --mem 0.5
+```
+Restore it. `--dest .` writes into the workspace; a file already there with other bytes is left alone unless `--overwrite` is given:
+```bash
+python scripts/host_archive_hf.py drive-restore --repo OWNER/mpr-host-archive --tag NAME --token-name TOKEN --dest .
+```
+- `status --repo OWNER/mpr-host-archive` checks every manifest in a repo against its tree.
+- Upload links live 10 h and download links about 1 h. Both are deleted once used.
+- Validated on 2026-10-03 (`archive-t0`, `restore-t0`): three files went up and came back, each matching by sha256.
+
 ## Quirks that cost time before
 
 - **Detaching.** Windows OpenSSH puts a session's processes in a Job Object that is killed on disconnect. `start /b`, `DETACHED_PROCESS`, `CREATE_BREAKAWAY_FROM_JOB` and `Start-Process` all die with the session. Only WMI `Win32_Process.Create` escapes it, and rx uses that. rx's WSL jobs go through the same supervisor.
