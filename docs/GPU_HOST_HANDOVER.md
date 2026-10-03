@@ -291,6 +291,13 @@ python scripts/host_archive_hf.py drive-restore --repo OWNER/mpr-host-archive --
 - Upload links live 10 h and download links about 1 h. Both are deleted once used.
 - Validated on 2026-10-03 (`archive-t0`, `restore-t0`): three files went up and came back, each matching by sha256.
 
+**If the host is lost:** [HOST_RECOVERY.md](HOST_RECOVERY.md) lists what is kept where and gives the steps. In short:
+- the mirror is in the two `mpr-six-mirror` repos plus the tag `mirror-spared`;
+- the anchors are in `KK9895/mpr-host-archive`;
+- every other output that queued work reads is in `JGY9895/mpr-host-archive`.
+
+`python scripts/host_restore.py run` puts it all back. While the host is up, `outputs/host_ops/host_sync.py` on the laptop keeps the copies current: results hourly, the hub every 6 h.
+
 ## Quirks that cost time before
 
 - **Detaching.** Windows OpenSSH puts a session's processes in a Job Object that is killed on disconnect. `start /b`, `DETACHED_PROCESS`, `CREATE_BREAKAWAY_FROM_JOB` and `Start-Process` all die with the session. Only WMI `Win32_Process.Create` escapes it, and rx uses that. rx's WSL jobs go through the same supervisor.
