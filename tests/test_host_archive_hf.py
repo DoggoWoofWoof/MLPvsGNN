@@ -267,7 +267,7 @@ def test_plan_and_commit(tmp_path, monkeypatch):
 
     tree = {}
     sess = FakeSession(tree)
-    monkeypatch.setattr(HA, "host_manifest", lambda inc, exc: [dict(r) for r in rows])
+    monkeypatch.setattr(HA, "host_manifest", lambda inc, exc, src="ws": [dict(r) for r in rows])
     monkeypatch.setattr(HA, "lfs_batch", fake_batch)
     monkeypatch.setattr(HA, "hf_api", lambda name: FakeApi(tree))
     monkeypatch.setattr(HA, "hf_session", lambda name: (sess, {"authorization": "secret"}))
@@ -298,6 +298,39 @@ def test_plan_and_commit(tmp_path, monkeypatch):
     assert rec["status"] == "INCOMPLETE" and rec["archived"] == 3 and not rec["tree_mismatch"]
     with pytest.raises(SystemExit, match="not u/other"):
         HA.stage_commit("u/other", "t2", None, per_commit=1)
+
+
+def test_src_ws_mirror(tmp_path, server, monkeypatch):
+    """A wave from a sibling workspace (the host mirror): the host reads ws/../mirror/<rel>, the repo path is mirror/<rel>."""
+    store, base = server
+    proj = tmp_path / "proj"
+    ws = proj / "ws"
+    (ws / "outputs").mkdir(parents=True)
+    row = write(proj / "mirror", "CRAG/webqsp/x.bin", os.urandom(40))
+    asked = []
+    monkeypatch.setattr(HA, "OUT", tmp_path / "ha")
+    monkeypatch.setattr(HA, "host_manifest", lambda inc, exc, src="ws": asked.append(src) or [dict(row)])
+    monkeypatch.setattr(HA, "lfs_batch", lambda s, h, repo, chunk: [
+        {"href": f"{base}/complete/{x['sha256']}", "chunk_size": 16,
+         "parts": [f"{base}/part/{x['sha256']}/{i + 1}" for i in range(3)], "expires_in": 36000} for x in chunk])
+    tree = {}
+    sess = FakeSession(tree)
+    monkeypatch.setattr(HA, "hf_api", lambda name: FakeApi(tree))
+    monkeypatch.setattr(HA, "hf_session", lambda name: (sess, {}))
+    HA.stage_plan("u/r", "m1", ["CRAG/webqsp/*"], [], None, src_ws="mirror")
+    assert asked == ["mirror"]
+    wave = json.loads((tmp_path / "ha/wave_m1.json").read_text())
+    assert wave["src_ws"] == "mirror"
+    HA.atomic_json(ws / "outputs/host_archive/wave_m1.json", wave)
+    monkeypatch.chdir(ws)
+    monkeypatch.delitem(sys.modules, "huggingface_hub", raising=False)
+    out = HA.stage_upload("m1", workers=1)
+    assert out["by_status"] == {"uploaded": 1} and store.objects[row["sha256"]] == (proj / "mirror" / row["rel"]).read_bytes()
+    HA.atomic_json(tmp_path / "ha/done_m1.json", json.loads((ws / "outputs/host_archive/done_m1.json").read_text()))
+    rec = HA.stage_commit("u/r", "m1", None, per_commit=10)
+    assert rec["status"] == "VERIFIED" and ("mirror/CRAG/webqsp/x.bin") in tree and not any(p.startswith("ws/") for p in tree)
+    man = json.loads(base64.b64decode([l for l in sess.bodies[-1] if l["key"] == "file"][0]["value"]["content"]))
+    assert man["prefix"] == "mirror/"
 
 
 def test_check_tag_and_safe_rel():

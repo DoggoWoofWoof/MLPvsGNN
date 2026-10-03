@@ -8,10 +8,11 @@ the host downloads and hashes.
 
 Laptop modes (a token the user stored with `hf auth login`, chosen by --token-name, else the active one; it is never
 printed, logged or written, and it is sent only to huggingface.co):
-  plan     the host's manifest of --include/--exclude (rx's manifest op: size, mtime and sha256, hashed on the host), then
+  plan     the host's manifest of --include/--exclude (rx's manifest op: size, mtime and sha256, hashed on the host) in
+           the workspace --src-ws (default ws; e.g. mirror, a sibling of ws in the project), then
            the repo's upload links for every object it does not hold -> outputs/host_archive/wave_<tag>.json (links only,
            host-bound) and plan_<tag>.json (no links)
-  commit   the wave's uploaded and already-held objects as LFS files at ws/<rel>, in commits of --per-commit, then
+  commit   the wave's uploaded and already-held objects as LFS files at <src-ws>/<rel>, in commits of --per-commit, then
            manifests/<tag>.json; the tree is re-read and every file checked by size and sha256 -> commit_<tag>.json
   links    a restore's signed download links for manifests/<tag>.json (or --manifest-from a local file), the redirect
            followed by hand -> outputs/host_archive/links_<tag>.json (host-bound, short-lived)
@@ -118,14 +119,14 @@ def raise_for(r, what: str) -> None:
         raise SystemExit(f"{what}: HTTP {r.status_code} {body}")
 
 
-def host_manifest(include: list[str], exclude: list[str]) -> list[dict]:
-    """rx's own manifest op on the host workspace: [rel, bytes, mtime_ns, sha256], hashed on the host."""
+def host_manifest(include: list[str], exclude: list[str], src_ws: str = "ws") -> list[dict]:
+    """rx's own manifest op on a host workspace of this project: [rel, bytes, mtime_ns, sha256], hashed on the host."""
     sys.path.insert(0, str(ROOT / "tools" / "rx"))
     import rx as RX
     proj = RX.Project(RX.find_project(str(ROOT)))
     remote = RX.Remote(RX.load_host(proj.host))
-    r = remote.call({"op": "manifest", "project": proj.name, "ws": "ws", "include": include,
-                     "exclude": list(exclude) + list(NEVER)}, retry_for=600)
+    r = remote.call({"op": "manifest", "project": proj.name, "ws": check_tag(src_ws), "include": include,
+                     "exclude": list(exclude) + (list(NEVER) if src_ws == "ws" else [])}, retry_for=600)
     if r.get("truncated"):
         raise SystemExit("the host manifest was truncated; narrow --include")
     rows = [{"rel": safe_rel(rel), "bytes": size, "mtime_ns": mt, "sha256": sha} for rel, size, mt, sha in r["files"]]
@@ -171,12 +172,13 @@ def lfs_batch(session, headers, repo: str, rows: list[dict]) -> list[dict]:
     return [parse_action(objs[x["sha256"]]) for x in rows]
 
 
-def stage_plan(repo: str, tag: str, include: list[str], exclude: list[str], token_name: str | None) -> dict:
+def stage_plan(repo: str, tag: str, include: list[str], exclude: list[str], token_name: str | None,
+               src_ws: str = "ws") -> dict:
     api = hf_api(token_name)
     private_repo(api, repo)
     session, headers = hf_session(token_name)
     t0 = time.time()
-    rows = host_manifest(include, exclude)
+    rows = host_manifest(include, exclude, src_ws)
     if not rows:
         raise SystemExit("nothing matched")
     print(f"plan {tag}: host manifest {len(rows)} files, {sum(x['bytes'] for x in rows) / 1e9:.2f} GB ({time.time() - t0:.0f}s)",
@@ -203,7 +205,7 @@ def stage_plan(repo: str, tag: str, include: list[str], exclude: list[str], toke
             plan.append({**x, "upload": False, "dup_of": owner[x["sha256"]]})
     acts = list(acts.values())
     lifetimes = [a.get("expires_in") for a in acts if a.get("expires_in")]
-    common = {"repo": repo, "tag": tag, "include": include, "exclude": exclude, "generated_utc": utc(),
+    common = {"repo": repo, "tag": tag, "src_ws": src_ws, "include": include, "exclude": exclude, "generated_utc": utc(),
               "generated_epoch": int(time.time()), "link_lifetime_s": min(lifetimes) if lifetimes else None}
     atomic_json(OUT / f"wave_{tag}.json", {**common, "files": wave})
     atomic_json(OUT / f"plan_{tag}.json", {**common, "files": plan})
@@ -213,10 +215,11 @@ def stage_plan(repo: str, tag: str, include: list[str], exclude: list[str], toke
     return common
 
 
-def commit_lines(entries: list[dict], summary: str, regular: dict[str, bytes] | None = None) -> bytes:
+def commit_lines(entries: list[dict], summary: str, regular: dict[str, bytes] | None = None,
+                 prefix: str = REPO_PREFIX) -> bytes:
     lines = [{"key": "header", "value": {"summary": summary, "description": ""}}]
     for e in entries:
-        lines.append({"key": "lfsFile", "value": {"path": REPO_PREFIX + safe_rel(e["rel"]), "algo": "sha256",
+        lines.append({"key": "lfsFile", "value": {"path": prefix + safe_rel(e["rel"]), "algo": "sha256",
                                                   "oid": e["sha256"], "size": e["bytes"]}})
     for path, content in (regular or {}).items():
         lines.append({"key": "file", "value": {"content": base64.b64encode(content).decode("ascii"), "path": path,
@@ -254,6 +257,7 @@ def stage_commit(repo: str, tag: str, token_name: str | None, per_commit: int) -
     plan = read_json(OUT / f"plan_{tag}.json")
     if plan["repo"] != repo:
         raise SystemExit(f"plan_{tag} is for {plan['repo']}, not {repo}")
+    prefix = check_tag(plan.get("src_ws") or "ws") + "/"
     done_p = OUT / f"done_{tag}.json"
     done = {d["rel"]: d for d in read_json(done_p)["files"]} if done_p.exists() else {}
     session, headers = hf_session(token_name)
@@ -275,22 +279,23 @@ def stage_commit(repo: str, tag: str, token_name: str | None, per_commit: int) -
         else:
             d = done.get(p.get("dup_of") or p["rel"]) or {}
             missing.append([p["rel"], d.get("status", "not uploaded"), d.get("error")])
-    tree = repo_tree(api, repo, REPO_PREFIX.rstrip("/")) if ready else {}
-    todo = [p for p in ready if tree.get(REPO_PREFIX + p["rel"]) != (p["bytes"], p["sha256"])]
+    tree = repo_tree(api, repo, prefix.rstrip("/")) if ready else {}
+    todo = [p for p in ready if tree.get(prefix + p["rel"]) != (p["bytes"], p["sha256"])]
     commits = []
     for i in range(0, len(todo), per_commit):
         part = todo[i:i + per_commit]
         oid = post_commit(session, headers, repo, commit_lines(part, f"archive {tag}: {i + len(part)}/{len(todo)} "
-                                                                     f"files of the host workspace"))
+                                                                     f"files of the host's {prefix.rstrip('/')}",
+                                                               prefix=prefix))
         commits.append(oid)
         print(f"   commit {len(commits)}: {len(part)} files -> {oid[:12]}", flush=True)
-    man = {"tag": tag, "repo": repo, "created_utc": utc(), "prefix": REPO_PREFIX, "include": plan["include"],
+    man = {"tag": tag, "repo": repo, "created_utc": utc(), "prefix": prefix, "include": plan["include"],
            "exclude": plan["exclude"], "files": [[p["rel"], p["bytes"], p["sha256"]] for p in ready],
            "bytes": sum(p["bytes"] for p in ready), "not_archived": missing}
     commits.append(post_commit(session, headers, repo, commit_lines(
         [], f"archive {tag}: manifest", {f"manifests/{tag}.json": json.dumps(man, indent=0).encode("utf-8")})))
-    tree = repo_tree(api, repo, REPO_PREFIX.rstrip("/"))
-    bad = [p["rel"] for p in ready if tree.get(REPO_PREFIX + p["rel"]) != (p["bytes"], p["sha256"])]
+    tree = repo_tree(api, repo, prefix.rstrip("/"))
+    bad = [p["rel"] for p in ready if tree.get(prefix + p["rel"]) != (p["bytes"], p["sha256"])]
     rec = {"tag": tag, "repo": repo, "utc": utc(), "files": len(plan["files"]), "archived": len(ready) - len(bad),
            "archived_bytes": sum(p["bytes"] for p in ready if p["rel"] not in set(bad)), "tree_mismatch": bad,
            "not_uploaded": missing, "commits": commits, "status": "VERIFIED" if not bad and not missing else "INCOMPLETE"}
@@ -335,8 +340,9 @@ def stage_links(repo: str, tag: str, token_name: str | None, include: list[str],
     rows = [{"rel": r, "bytes": n, "sha256": s} for r, n, s in man["files"]
             if not include or any(fnmatch.fnmatch(r, g) for g in include)]
     out, lifetime = [], None
+    prefix = man.get("prefix") or REPO_PREFIX
     for x in rows:
-        kind, v = resolve(session, headers, f"{HUB}/datasets/{repo}/resolve/main/{REPO_PREFIX}{urllib.parse.quote(x['rel'])}")
+        kind, v = resolve(session, headers, f"{HUB}/datasets/{repo}/resolve/main/{prefix}{urllib.parse.quote(x['rel'])}")
         if kind == "url":
             q = urllib.parse.parse_qs(urllib.parse.urlparse(v).query)
             if "X-Amz-Expires" in q:
@@ -363,7 +369,7 @@ def stage_status(repo: str, token_name: str | None) -> None:
             with urllib.request.urlopen(urllib.request.Request(v, headers={"User-Agent": "mpr-host-archive"}), timeout=120) as r:
                 v = r.read()
         man = json.loads(v.decode("utf-8"))
-        ok = sum(1 for r, n, s in man["files"] if tree.get(REPO_PREFIX + r) == (n, s))
+        ok = sum(1 for r, n, s in man["files"] if tree.get((man.get("prefix") or REPO_PREFIX) + r) == (n, s))
         print(f"{path}: {ok}/{len(man['files'])} files present with their size and sha256, {man['bytes'] / 1e9:.2f} GB, "
               f"{len(man.get('not_archived') or [])} not archived", flush=True)
 
@@ -378,8 +384,8 @@ def rx(*args: str, check: bool = True) -> str:
 
 
 def stage_drive(repo: str, tag: str, include: list[str], exclude: list[str], token_name: str | None, workers: int,
-                cpus: float, mem: float, per_commit: int, env: str = "mpr-cpu") -> None:
-    stage_plan(repo, tag, include, exclude, token_name)
+                cpus: float, mem: float, per_commit: int, env: str = "mpr-cpu", src_ws: str = "ws") -> None:
+    stage_plan(repo, tag, include, exclude, token_name, src_ws)
     plan = read_json(OUT / f"plan_{tag}.json")
     rel = lambda p: p.relative_to(ROOT).as_posix()                                        # noqa: E731
     if any(p["upload"] for p in plan["files"]):
@@ -486,11 +492,13 @@ def stage_upload(tag: str, workers: int) -> dict:
     ws = Path.cwd().resolve()
     wave_p = OUT_HOST(ws) / f"wave_{tag}.json"
     wave = read_json(wave_p)
+    src = check_tag(wave.get("src_ws") or "ws")
+    root = ws if src == "ws" else ws.parent / src         # a sibling workspace of the same project, read only
     left = (wave.get("generated_epoch") or 0) + (wave.get("link_lifetime_s") or 0) - time.time()
     print(f"upload {tag}: {len(wave['files'])} files, links live {left / 60:.0f} min more", flush=True)
     t0, recs = time.time(), []
     with ThreadPoolExecutor(workers) as ex:
-        futs = [ex.submit(upload_one, ws, f) for f in wave["files"]]
+        futs = [ex.submit(upload_one, root, f) for f in wave["files"]]
         for fu in as_completed(futs):
             r = fu.result()
             recs.append(r)
@@ -601,6 +609,7 @@ def main(argv=None) -> None:
     ap.add_argument("--dest")
     ap.add_argument("--overwrite", action="store_true", help="restore: replace a file that differs")
     ap.add_argument("--env", default="mpr-cpu", help="drive/drive-restore: the rx environment of the host job")
+    ap.add_argument("--src-ws", default="ws", help="plan/drive: the host workspace of this project to archive from")
     ap.add_argument("--manifest-from")
     a = ap.parse_args(argv)
     if a.mode in ("upload", "restore"):
@@ -619,7 +628,7 @@ def main(argv=None) -> None:
         return
     tag = check_tag(a.tag)
     if a.mode == "plan":
-        stage_plan(a.repo, tag, a.include, a.exclude, a.token_name)
+        stage_plan(a.repo, tag, a.include, a.exclude, a.token_name, a.src_ws)
     elif a.mode == "commit":
         stage_commit(a.repo, tag, a.token_name, a.per_commit)
     elif a.mode == "links":
@@ -627,7 +636,8 @@ def main(argv=None) -> None:
     elif a.mode == "drive":
         if not a.include:
             ap.error("drive needs --include")
-        stage_drive(a.repo, tag, a.include, a.exclude, a.token_name, a.workers, a.cpus, a.mem, a.per_commit, a.env)
+        stage_drive(a.repo, tag, a.include, a.exclude, a.token_name, a.workers, a.cpus, a.mem, a.per_commit, a.env,
+                    a.src_ws)
     elif a.mode == "drive-restore":
         if not a.dest:
             ap.error("drive-restore needs --dest ('.' restores into the workspace itself)")
