@@ -1,0 +1,4 @@
+# hostfeed smoke: a dependent pair (the feeder exits while hf-t2 still runs) and a quarter-GPU check
+line|x||hf-t1|0.2|0.2||python -c __import__('time').sleep(45);print('hf-t1-ok')
+line|x|hf-t1|hf-t2|0.2|0.2||python -c __import__('time').sleep(90);print('hf-t2-ok')
+line|x||hf-t3|0.5|2||python -c t=__import__('torch');print(t.cuda.is_available(),t.cuda.get_device_name(0),t.__version__)|gpu:0.25

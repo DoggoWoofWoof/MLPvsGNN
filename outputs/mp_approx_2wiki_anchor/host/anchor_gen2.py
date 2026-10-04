@@ -1,0 +1,234 @@
+"""Design look (untracked; not a result and not filed): relation dropout, so a model fitted on a typed graph also has an
+untyped mode.
+
+anchor_gen.py (sha256 bdc938f5...) reads a model fitted on 2wiki's typed graph under NR (every structural phrase sent to
+'other'). The free A256-1 reads rho 0.697 on ID and -0.387 on NR, below the twin: 'other' was fitted as 'a rare phrase
+among typed neighbours', and under NR every edge is one. This look fits anchor_gen's models with relation dropout on
+the training rows only. A seeded fraction p_row of the rows has every structural phrase sent to 'other'. On each
+remaining row, each structural edge (unit edge) or each distinct phrase of the row (unit phrase) goes to 'other' with
+probability p_edge. Each row's draws come from its own generator (seed, row), fixed for the run. Selection and the reads
+ID, NR, MASK and REV are anchor_gen's, unchanged: no select or read row is dropped. A new read, PR50, sends each
+structural edge of B to 'other' with probability 0.5 (a partly typed graph; with --hold, on top of MASK). The models are
+saved in anchor_gen's format, so anchor_gen.py --xread reads them.
+
+    python outputs/mp_approx_2wiki_anchor/host/anchor_gen2.py --dataset 2wiki --variants x4+x5+x6:A256-1 --rdrop_row 0.25
+           [--rdrop_edge 0.2 --rdrop_unit edge|phrase] [--hold 0/5] [--kd 1 --lr 1e-3]
+"""
+import os
+import sys
+
+for _v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ[_v] = "4"
+
+import argparse  # noqa: E402
+import json  # noqa: E402
+import time  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+import numpy as np  # noqa: E402
+import torch  # noqa: E402
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+sys.path.insert(0, str(HERE))
+import anchor_gen as AG  # noqa: E402
+
+AW11, AW8, AW7, AW6, A16, AW, AW3 = AG.AW11, AG.AW8, AG.AW7, AG.AW6, AG.A16, AG.AW, AG.AW3
+ANCHOR_GEN_SHA = "bdc938f546cff1192dda82701e92cf7003fce8aded07831c2c7930119ce4f108"
+R_TOP = AG.R_TOP
+DROP_SEED, PR_SEED = 20261004, 20261006
+log = AG.log
+
+
+def drop_masks(Q, rows, K, p_row, p_edge, unit, seed):
+    """{row: boolean mask over the row's structural edges, True = sent to 'other'} (rows with nothing dropped left out),
+    and the number of rows dropped whole. A row's draws come from its own generator (seed, row): the row draw first,
+    then the edge or phrase draws."""
+    out, whole = {}, 0
+    for i in rows:
+        q = Q[i]
+        m = q["fam"] == 0
+        if not m.any():
+            continue
+        ns = int(m.sum())
+        g = np.random.default_rng([seed, int(i)])
+        u = g.random()
+        if u < p_row:
+            out[i] = np.ones(ns, dtype=bool)
+            whole += 1
+            continue
+        if p_edge <= 0:
+            continue
+        if unit == "edge":
+            dm = g.random(ns) < p_edge
+        else:
+            _m, _d, a = AG.edge_ranks(q)
+            key = np.minimum(a, R_TOP)
+            uniq = np.unique(key)
+            dm = np.isin(key, uniq[g.random(uniq.size) < p_edge])
+        if dm.any():
+            out[i] = dm
+    return out, whole
+
+
+def types_dropped(Q, sp, rmap, drops, rows=None):
+    """anchor_gen.types_for with the dropped structural edges of each row in drops sent to 'other' (d (K+1) + K)."""
+    K = sp["K"]
+    nt, tk = AG.tokens_mapped(Q, K, rmap, rows)
+    for i, dm in drops.items():
+        if tk[i] is None:
+            continue
+        m, d, _a = AG.edge_ranks(Q[i])
+        t = tk[i].copy()
+        t[np.flatnonzero(m)[dm]] = d[dm] * (K + 1) + K
+        tk[i] = t
+    TY = [None] * len(Q)
+    for i in (range(len(Q)) if rows is None else rows):
+        TY[i] = A16.walk_types(Q[i], tk[i], nt, sp["max_len"])
+    return nt, TY
+
+
+def main_fit(a):
+    AW6.rebind(a.dataset)
+    out_path = Path(a.out) if a.out else HERE / f"anchor_gen2_{a.dataset}.json"
+    torch.set_num_threads(2)
+    t0 = time.time()
+    train_looks = AW6.TRAIN[a.dataset] if a.dataset != "2wiki" else ("fit", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12")
+    specs = {name: AG.parse(name, train_looks) for name in a.variants.split(",")}
+    if any(sp["tok"] != "A" for sp in specs.values()):
+        raise SystemExit("relation dropout needs a phrase base (A...)")
+    if not (0 <= a.rdrop_row < 1 and 0 <= a.rdrop_edge < 1):
+        raise SystemExit("--rdrop_row and --rdrop_edge in [0, 1)")
+    hold = None
+    if a.hold:
+        h, F = (int(x) for x in a.hold.split("/"))
+        if not 0 <= h < F or F < 2:
+            raise SystemExit("--hold h/F with 0 <= h < F, F >= 2")
+        hold = (h, F)
+    phi, phi_sha = (None, None)
+    if any(sp["family"] != "free" for sp in specs.values()):
+        phi, phi_sha = AG.phrase_table(a.dataset)
+    looks = ["x1", "select"] + [lk for lk in train_looks if any(lk in sp["train"] for sp in specs.values())]
+    Q, part, rec_sha, load_state = AG.load_looks(looks, max(sp["max_len"] for sp in specs.values()), t0)
+    checks, vocab = AW.anchor_tables(Q)
+    vocab_w2 = vocab.get("w2", [])
+    if len(vocab_w2) < max(sp["K"] for sp in specs.values()):
+        raise SystemExit("the compact's phrase strings do not cover K")
+    log(f"anchors attached to {len(Q)} rows: {checks}, {time.time() - t0:.0f}s")
+    x1 = part["x1"]
+    B_rows = x1[1::2]
+    RB, RX = AG.Reader(Q, B_rows, 20261002), AG.Reader(Q, x1, 20261003)
+    z_of = [A16.zscore(q["score"][:, 0]) for q in Q]
+    zT_of = [None] * len(Q)
+    if a.kd > 0:
+        for i in sorted({i for sp in specs.values() for lk in sp["train"] for i in part[lk]}):
+            zT_of[i] = AW8.teacher_of(Q[i], a.teacher)
+    rdrop = {"row": a.rdrop_row, "edge": a.rdrop_edge, "unit": a.rdrop_unit, "seed": DROP_SEED, "pr_read": {"edge": 0.5, "seed": PR_SEED}}
+    res = {"look": "anchor_gen2", "mode": "fit", "dataset": a.dataset, "script_sha256": AW.sha(Path(__file__)),
+           "pins": {"anchor_gen": ANCHOR_GEN_SHA, **AG.PINS, "anchor_walk10": AW11.AW10_SHA, **AW6.PINS, "compact": AW.COMPACT_SHA,
+                    "struct": AW.STRUCT_SHA, "phrase_table": phi_sha, "look_score_records": rec_sha}, "flag_checks": checks,
+           "pruned_loader": load_state, "looks": {lk: len(r) for lk, r in part.items()}, "epochs": a.epochs, "lr": a.lr, "wd": a.wd,
+           "kd": {"ce": a.ce, "kd": a.kd, "T": a.T, "teacher": a.teacher} if a.kd > 0 else None, "hold": a.hold, "rdrop": rdrop,
+           "B": RB.base(), "x1": RX.base(), "variants": {}}
+    per_row = {}
+    model_dir = out_path.parent / (out_path.stem + "_models")
+    model_dir.mkdir(parents=True, exist_ok=True)
+
+    def save():
+        out_path.write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
+        np.savez(out_path.with_suffix(".npz"), **per_row, B_rows=np.asarray(B_rows))
+
+    cache = {}
+    for name, sp in specs.items():
+        t1 = time.time()
+        K = sp["K"]
+        rm_train, held = AG.hold_map(K, vocab_w2, *hold) if hold else (AG.identity_map(K), None)
+        tr = [i for lk in sp["train"] for i in part[lk]]
+        key = (K, sp["max_len"], tuple(sp["train"]))
+        if key not in cache:
+            cache.clear()
+            drops, whole = drop_masks(Q, tr, K, a.rdrop_row, a.rdrop_edge, a.rdrop_unit, DROP_SEED)
+            nt, TY = types_dropped(Q, sp, rm_train, drops)
+            n_struct = sum(int((Q[i]["fam"] == 0).sum()) for i in tr)
+            stats = {"rows_whole": whole, "rows_partial": len(drops) - whole, "train_rows": len(tr), "struct_edges": n_struct,
+                     "edges_dropped": int(sum(int(dm.sum()) for dm in drops.values()))}
+            cache[key] = (nt, TY, stats)
+        nt, TY, stats = cache[key]
+        alt = {"NR": AG.types_for(Q, sp, np.full(R_TOP + 1, K, dtype=np.int64), B_rows)[1]}
+        if hold and sp["family"] != "free":
+            alt["REV"] = AG.types_for(Q, sp, AG.identity_map(K), B_rows)[1]
+        pr, _w = drop_masks(Q, B_rows, K, 0.0, 0.5, "edge", PR_SEED)
+        alt["PR50"] = types_dropped(Q, sp, rm_train, pr, B_rows)[1]
+        make = AG.make_for(sp, nt, phi)
+        hrows = AG.held_reach_rows(Q, B_rows, held, K) if hold else None
+        models, seeds_out = [], {}
+        main_key = "ID" if not hold else "MASK"
+        for sd in sp["seeds"]:
+            t2 = time.time()
+            model, reads, best_ep, curve, margin, by_margin = AW8.fit_read_kd(Q, TY, nt, tr, part["select"], {"B": B_rows, "x1": x1}, z_of, zT_of,
+                                                                              make, a.epochs, sd, sp["rule"], a.lr, a.wd, a.ce, a.kd, a.T)
+            models.append(model)
+            vi = len(res["variants"])
+            rd = {main_key: RB.record(reads["B"]), main_key + "_x1": RX.record(reads["x1"], by_type=False)}
+            per_row[f"{vi}_{sd}_{main_key}"] = reads["B"]
+            for nm, TYa in alt.items():
+                m_alt = AG.read(model, Q, TYa, nt, B_rows, z_of, margin)
+                rd[nm] = RB.record(m_alt)
+                per_row[f"{vi}_{sd}_{nm}"] = m_alt
+                rd[f"{nm} - {main_key}"] = AW3.boot_pair(m_alt - reads["B"], RB.W)
+            if hold:
+                rd["held_reach_rows"] = {"MASK": RB.subset(reads["B"], hrows)}
+                if "REV" in alt:
+                    rd["held_reach_rows"]["REV"] = RB.subset(per_row[f"{vi}_{sd}_REV"], hrows)
+            pt = model_dir / f"v{vi}_s{sd}.pt"
+            AG.save_model(pt, model, sp, nt, margin, a.dataset, vocab_w2, phi_sha, {"hold": a.hold, "name": name, "seed": sd, "rdrop": rdrop})
+            seeds_out[str(sd)] = {"best_epoch": best_ep, "curve": curve, "margin": None if margin is None else str(margin), "by_margin_select": by_margin,
+                                  "kappa": float(torch.exp(model.log_kappa).item()), "beta": float(torch.nn.functional.softplus(model.beta_raw).item()),
+                                  "gam": model.gam.detach().round(decimals=4).tolist() if hasattr(model, "gam") else None,
+                                  "model_file": str(pt.relative_to(ROOT)) if pt.is_relative_to(ROOT) else str(pt), "reads": rd,
+                                  "seconds": round(time.time() - t2, 1)}
+            log(f"{name}#{sd} ({sp['family']}): ep {best_ep}, " + ", ".join(f"{k} {v['rho (R@5, FC@5, hit@1)']}" for k, v in rd.items()
+                                                                       if isinstance(v, dict) and "rho (R@5, FC@5, hit@1)" in v))
+        m0 = models[0]
+        v = {**sp, "train_rows": len(tr), "tokens": nt, "types_per_row": round(float(np.mean([len(TY[i]) for i in tr])), 1),
+             "params": int(sum(p.numel() for p in m0.parameters())), "params_used": AG.params_used(m0, sp), "rdrop_stats": stats,
+             "seeds_read": seeds_out}
+        if hold:
+            v["held"] = {"phrases": int(held[:K].sum()), "of_K": K, "held_reach_rows": len(hrows)}
+        v["seconds"] = round(time.time() - t1, 1)
+        res["variants"][name] = v
+        save()
+    res["seconds"] = round(time.time() - t0, 1)
+    save()
+    log(f"done in {res['seconds']}s")
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dataset", default="2wiki")
+    ap.add_argument("--variants", default="x4+x5+x6:A256-1")
+    ap.add_argument("--out", default=None)
+    ap.add_argument("--epochs", type=int, default=12)
+    ap.add_argument("--lr", type=float, default=3e-3)
+    ap.add_argument("--wd", type=float, default=0.0)
+    ap.add_argument("--ce", type=float, default=1.0)
+    ap.add_argument("--kd", type=float, default=0.0)
+    ap.add_argument("--T", type=float, default=1.0)
+    ap.add_argument("--teacher", default="gm", choices=AW8.TEACHERS)
+    ap.add_argument("--hold", default=None)
+    ap.add_argument("--rdrop_row", type=float, default=0.0)
+    ap.add_argument("--rdrop_edge", type=float, default=0.0)
+    ap.add_argument("--rdrop_unit", default="edge", choices=("edge", "phrase"))
+    a = ap.parse_args(argv)
+    if a.ce < 0 or a.kd < 0 or a.ce + a.kd <= 0 or a.T <= 0:
+        raise SystemExit("ce and kd must be non-negative, not both 0, and T positive")
+    if AW.sha(Path(AG.__file__)) != ANCHOR_GEN_SHA:
+        raise SystemExit("anchor_gen.py is not the pinned file")
+    AG.check_pins()
+    if a.dataset not in AG.DATASETS:
+        raise SystemExit(f"--dataset among {AG.DATASETS}")
+    main_fit(a)
+
+
+if __name__ == "__main__":
+    main()
