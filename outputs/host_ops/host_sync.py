@@ -18,7 +18,8 @@ Each cycle (--every-min, default 60):
 Every --archive-every-h hours (default 6), and on the first cycle:
   coverage  each file under the host's outputs/ and logs/ is classed: hub (a VERIFIED tag's plan holds it at the same size
             and mtime), records (outputs/host_archive, outputs/host_cleanup), delete_list, in_flux (a running job's, or
-            modified in the last 30 min) or uncovered. With --mirror (first cycle) the mirror workspace is checked file by
+            modified in the last 30 min), regenerable (REGEN: builds and caches that committed code rebuilds from the
+            mirror; never archived) or uncovered. With --mirror (first cycle) the mirror workspace is checked file by
             file against the three repos that hold it -> outputs/host_ops/coverage_latest.json
   archive   the uncovered files -> JGY9895/mpr-host-archive as tag o-inc-<stamp> (scripts/host_archive_hf.py's drive:
             signed links, no credential on the host), unless an archive or restore job is active; then the ops folder ->
@@ -74,7 +75,29 @@ RECORDS = ("outputs/host_archive/", "outputs/host_cleanup/")
 ROUTED = ("outputs/mp_approx_l", "outputs/mp_approx_six_base", "outputs/mp_approx_mq_design", "outputs/universal_v2",
           "outputs/graph_context_pilot", "outputs/pilot3")
 HOSTCOPY = Path("C:/Users/Swastik/Desktop/MPR_Host_Archive/host")
+# Builds and caches that committed code rebuilds from the mirror (the hub holds both) stay on the host as a cache and
+# are never archived or fetched, so the hub's space goes to results and models: the chainscore builds
+# (lean/cs<N>[e]-<graph>-<carve>.npz), a killed build's temporary root, the look chunks, the cs_cache caches and
+# __pycache__. Their small records (record*.json, ids.json, info.json) are archived. After a host loss, rerunning the
+# jobs that wrote them rebuilds them (docs/HOST_RECOVERY.md).
+REGEN = re.compile(r"^outputs/mp_unified/(lean/cs\d+e?-[a-z0-9]+(-[a-z0-9]+)*\.npz|lean/cs\d+[a-z]*tmp_[^/]+/|"
+                   r"look/[^/]+/[^/]+/chunks/|cache/)|/__pycache__/")
 QUIET_S = 1800
+# Scratch files that quote or edit the local-only progress log or the memory never leave the laptop: they are not
+# copied to the ops folder and not packed into the hub snapshot (the user's rule: the progress log is never
+# published, HF included). .md and .html files are left out of both for the same reason.
+PRIVATE_MARKERS = (b"Progress_Log", b"Progress Log", b"MEMORY.md", b"retrieval\\memory", b"retrieval/memory",
+                   b".claude\\projects", b".claude/projects")
+
+
+def private_text(p: Path) -> bool:
+    if p.suffix.lower() in (".md", ".html"):
+        return True
+    try:
+        b = p.read_bytes()
+    except OSError:
+        return True
+    return any(m in b for m in PRIVATE_MARKERS)
 
 
 def log(msg: str) -> None:
@@ -114,7 +137,7 @@ def ops_mirror() -> tuple[int, int]:
         if not p.is_file() or "__pycache__" in p.parts or p.suffix.lower() not in OPS_EXT or p.name.endswith(".tmp"):
             continue
         st = p.stat()
-        if st.st_size > 5_000_000:
+        if st.st_size > 5_000_000 or private_text(p):
             continue
         q = dst / p.relative_to(SCRATCH)
         try:
@@ -209,7 +232,7 @@ def results(proj, r, rows: list, names: list[str], a, state: dict) -> dict:
     cand = []
     for rel, size, mtime_ns, _ in rows:
         ext = Path(rel).suffix.lower()
-        if rel.startswith("outputs/host_archive/") or rel in dele or (rel, size) in known:
+        if rel.startswith("outputs/host_archive/") or rel in dele or (rel, size) in known or REGEN.search(rel):
             continue
         cap = a.file_mb if ext in RES_EXT else a.model_mb if ext in MOD_EXT else None
         if cap is None or size > cap * 1e6 or in_flux(rel, mtime_ns, names, now) or on_laptop(rel, size):
@@ -311,6 +334,8 @@ def coverage(proj, r, rows: list, names: list[str], mirror: bool) -> dict:
         h = hub.get(("ws", rel))
         if h and h[0] == size and h[1] == mtime_ns:
             k = "hub"
+        elif REGEN.search(rel):
+            k = "regenerable"
         elif h and h[0] == size and not rel.startswith(RECORDS) and rel not in dele and not in_flux(rel, mtime_ns, names, now):
             maybe[rel] = (size, h[4])               # same size, another mtime (a restored or touched file): sha256 decides
             continue
@@ -369,7 +394,7 @@ def ops_to_hub(stamp: str) -> int:
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w:gz") as tf:
         for p in sorted((OPS / "scratchpad").rglob("*")):
-            if p.is_file() and not p.name.endswith(".tmp"):
+            if p.is_file() and not p.name.endswith(".tmp") and not private_text(p):
                 tf.add(p, arcname=p.relative_to(OPS).as_posix())
         for p in (OPS / "host_sync.py", OPS / "coverage_latest.json", OPS / "sync_state.json",
                   LOGS / "status_latest.json", ROOT / ".rx" / "jobs.json"):
