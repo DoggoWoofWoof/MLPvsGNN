@@ -17,6 +17,12 @@ waited --hol-min minutes; then nothing behind it is sent until it is, except tha
 CPUs and memory fit) holds only the GPU items behind it: items without a GPU go on. An item whose dep or REF ends
 badly is dropped.
 STATE holds sent, dropped, measured and terminal, so a restart is safe.
+--queue-gpu K (the user, 5 Oct: "you have always more priority just queue and preempt"): a ready GPU item whose CPUs and
+memory fit now but whose GPU share does not is sent anyway, to wait in rx's queue, while fewer than K mpr GPU jobs wait
+there. mpr's priority makes rx set that share aside from every other project's admissions, so the next GPU share freed
+on the host goes to mpr (nothing running is stopped). Queued jobs count toward the caps. A queued mpr job without a GPU
+still stops all sending (the old rule), and so does a queued GPU job older than rx's hold_after_s less two polls: rx then
+holds every younger mpr job behind it, so anything sent would only wait there, holding resources from other projects.
 
 ITEMS is re-read every poll (the laptop may push a longer list while this runs). One item per line, '#' comments:
     line|JOBSFILE|DEPS|name|cpus|mem|inputs|command[|gpu]
@@ -61,6 +67,7 @@ ap.add_argument("--min-run", type=float, default=1500.0)
 ap.add_argument("--max-h", type=float, default=60.0)
 ap.add_argument("--linger-h", type=float, default=0.0, help="once every item is handled, keep re-reading ITEMS this long")
 ap.add_argument("--adopt-h", type=float, default=48.0)
+ap.add_argument("--queue-gpu", type=int, default=0, help="keep up to K GPU items waiting in rx's queue (0: none)")
 ap.add_argument("--dry", action="store_true")
 a = ap.parse_args()
 
@@ -164,6 +171,7 @@ def overview():
     cap = d["capacity"]
     act = d["active"]
     mine = [x for x in act if x.get("project") == PROJECT]
+    qm = [q for q in d["queue"] if q.get("project") == PROJECT]
     gpus_total = len(cap.get("gpus") or [])
     jobs = agent({"op": "status", "project": PROJECT, "limit": 5000}, timeout=180)["jobs"]
     newest = {}
@@ -175,7 +183,13 @@ def overview():
             "free_g": gpus_total - sum(float(x["req"].get("gpus") or 0) for x in act),
             "mpr_c": sum(float(x["req"]["cpus"]) for x in mine), "mpr_m": sum(float(x["req"]["mem_gb"]) for x in mine),
             "mpr_g": sum(float(x["req"].get("gpus") or 0) for x in mine),
-            "queued_mpr": [q["id"] for q in d["queue"] if q.get("project") == PROJECT],
+            "queued_mpr": [q["id"] for q in qm],
+            "queued_mpr_gpu": [q["id"] for q in qm if float((q.get("req") or {}).get("gpus") or 0) > 0],
+            "q_c": sum(float((q.get("req") or {}).get("cpus") or 0) for q in qm),
+            "q_m": sum(float((q.get("req") or {}).get("mem_gb") or 0) for q in qm),
+            "q_g": sum(float((q.get("req") or {}).get("gpus") or 0) for q in qm),
+            "q_age": time.time() - min((float(q.get("enq") or time.time()) for q in qm), default=time.time()),
+            "hold_s": float(cap.get("hold_after_s", 1800)),
             "by_id": {j["id"]: j for j in jobs}, "newest": newest}
 
 
@@ -286,12 +300,17 @@ while True:
         time.sleep(a.poll)
         continue
     done_since = None
-    if ov["queued_mpr"]:
-        log(f"mpr has {len(ov['queued_mpr'])} job(s) queued in rx ({ov['queued_mpr'][:3]}); sending nothing this poll")
+    if ov["queued_mpr"] and (a.queue_gpu <= 0 or len(ov["queued_mpr_gpu"]) < len(ov["queued_mpr"])
+                             or ov["q_age"] > ov["hold_s"] - 2 * a.poll):
+        log(f"mpr has {len(ov['queued_mpr'])} job(s) queued in rx ({ov['queued_mpr'][:3]}, oldest "
+            f"{ov['q_age'] / 60:.0f} min); sending nothing this poll")
         time.sleep(a.poll)
         continue
     free_c, free_m, free_g = ov["free_c"], ov["free_m"], ov["free_g"]
-    mpr_c, mpr_m, mpr_g = ov["mpr_c"], ov["mpr_m"], ov["mpr_g"]
+    mpr_c, mpr_m, mpr_g = ov["mpr_c"] + ov["q_c"], ov["mpr_m"] + ov["q_m"], ov["mpr_g"] + ov["q_g"]
+    n_q = len(ov["queued_mpr_gpu"])
+    if n_q:   # their CPUs and memory are set aside for them ahead of anything sent now
+        free_c, free_m = free_c - ov["q_c"], free_m - ov["q_m"]
     sent_now, blocked_head, gpu_head = [], None, None
     for it in left:
         n = it["name"]
@@ -340,6 +359,13 @@ while True:
         fits_cm = (mpr_c + c <= a.cap_cpus + 1e-9 and mpr_m + m <= a.cap_mem + 1e-9 and c <= free_c + 1e-9
                    and m <= free_m + 1e-9)
         fits = fits_cm and mpr_g + g <= a.cap_gpus + 1e-9 and g <= free_g + 1e-9
+        if not fits and g > 0 and fits_cm and n_q < a.queue_gpu and mpr_g + g <= a.cap_gpus + 1e-9:
+            jid = submit(it, mem)       # waits in rx's queue; mpr's priority sets its share aside
+            if jid or a.dry:
+                n_q += 1
+                mpr_c, mpr_m, mpr_g, free_c, free_m = mpr_c + c, mpr_m + m, mpr_g + g, free_c - c, free_m - m
+                sent_now.append(f"{n}({c:g}c/{m:g}G/{g:g}gpu, queued)")
+            continue
         if not fits:
             if time.time() - ready_since[n] > a.hol_min * 60:
                 if fits_cm and g > 0:
