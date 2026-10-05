@@ -103,20 +103,22 @@ The GNN family passes its replication gate. The MLP twin fails its gate on 2wiki
 0.858), so the universal MLP stands as `REPLICATION_FAIL`. Two repairs of the MLP, UMLP-v2.1 and v2.2A, stopped at
 stage A on 29 Sep.
 
-## 3. Can an MLP get the GNN's in-domain gain without message passing? Mostly, yes, in-domain
+## 3. Can an MLP recover the GNN's in-domain gain? Much of it
 
-These tracks ask how much of the GNN's gain an MLP, or a cheaper form, can recover in-domain on 2wiki. The share is
-measured against the gap between the twin and the GNN.
+These tracks ask how much of the GNN's gain over its MLP twin an MLP, or a cheaper form, can recover in-domain. A
+share of 1 would match the GNN.
 
-| attempt | in-domain result on 2wiki | record |
-| --- | --- | --- |
-| MP-Approx, best arm (L15, FZ-TW-1x-b1d) | 0.929 of the GNN, BELOW it on R@5 and FC@5 | `MP_APPROX_L15.md`, 2c246c1 |
-| Deploy CK, ck_qi (compiled, no neighbours) | keeps 0.093 of the GNN's R@5 gain | `DEPLOY_CK_2WIKI.md`, d2e51c3 |
-| Deploy CK, ck_full (a compressed, query-conditioned one-hop message-passing form) | keeps 0.895 [0.851, 0.944] of the gain at 0.656 of the GNN's end-to-end p50 latency | `DEPLOY_CK_FULL_2WIKI.md`, 0c4f370 |
-| Lean MLP, AW pick | R@5 0.9964 of the GNN | `outputs/mp_unified/lean/` |
+| attempt | dataset | share of the GNN's gain recovered | record |
+| --- | --- | --- | --- |
+| MP-Approx, the best arm without message passing (L15, FZ-TW-1x-b1d) | metaqa | 0.929 (0.983 with 4× the labels); still BELOW the GNN on R@5 and FC@5 | `MP_APPROX_L15.md`, 2c246c1 |
+| MP-Approx, anchor-phrase walks | 2wiki | about 0.70 (0.75 as an ensemble) | `MP_APPROX_L*.md` |
+| Deploy CK, ck_qi | 2wiki | 0.093 | `DEPLOY_CK_2WIKI.md`, d2e51c3 |
+| Deploy CK, ck_full (a compressed, query-conditioned one-hop message-passing form) | 2wiki | 0.895 [0.851, 0.944], at 0.656 of the GNN's end-to-end p50 latency | `DEPLOY_CK_FULL_2WIKI.md`, 0c4f370 |
+| Lean MLP with the AW edge-label block | 2wiki | 0.865; its R@5 is 0.9964 of the GNN's | `outputs/mp_unified/lean/` |
 
-So in-domain, a well-built MLP can come close to the GNN. Whatever does it best still uses the neighbours in some form
-(ck_full, AW).
+So in-domain, an MLP recovers much of the GNN's gain, but the best arm without message passing stays below the GNN.
+The forms that come closest still use the neighbours in some way: ck_full through one hop of message passing, and the
+AW block through fixed edge labels on one- and two-hop walks.
 
 ## 4. Zero-shot: this is the open problem
 
@@ -127,7 +129,7 @@ tested.
 
 | result | number |
 | --- | --- |
-| Lean MLP trained on 2wiki, read on hotpotqa | −9.3 against the twin |
+| Lean MLP trained on 2wiki, read on hotpotqa | −6.6 to −9.3 against the twin |
 | QD-GNN trained on one graph | hurts the unseen graphs; a 0.2 tanh bound with edge dropout keeps them within noise |
 | QD-GNN with edge-family dropout (`-fd25`) | the first one-graph message-passing arm with no unseen graph below the twin on R@5 |
 | Joint four-graph training (W4-T0) | +0.51 (2wiki) and +0.57 (hotpotqa) over the twin, about 0 on metaqa, musique and webqsp |

@@ -42,12 +42,13 @@ gold.
 - Its MLP twin (`u_mlp_v2_mix`) is below it on metaqa (R@5 0.716 against 0.782) and 2wiki (0.852 against 0.900). It
   fails its replication gate on 2wiki.
 
-**In-domain, an MLP can come close to the GNN.**
+**In-domain, an MLP recovers much of the GNN's gain.**
 
-- The best approximation without message passing (MP-Approx L15) reaches 0.929 of the GNN on 2wiki.
-- The lean MLP's AW pick reaches 0.9964.
+- The best approximation without message passing (MP-Approx L15) recovers 0.929 of the GNN's gain over its twin on
+  metaqa, and about 0.70 on 2wiki. It stays below the GNN.
+- The lean MLP with the AW edge-label block recovers 0.865 of the gain on 2wiki. Its R@5 is 0.9964 of the GNN's.
 - ck_full, a compressed, query-conditioned one-hop message-passing form, keeps 0.895 of the GNN's gain at 0.656 of
-  its end-to-end p50 latency.
+  its end-to-end p50 latency on 2wiki.
 
 **Zero-shot is the open problem.** On a graph it was not trained on, every model, MLP or GNN, loses most of its gain.
 
