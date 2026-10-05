@@ -32,8 +32,8 @@ MLP, QD-GNN and MP-unified results are exploratory and not citable in the paper.
     of its end-to-end p50 latency on 2wiki ([DEPLOY_CK_FULL_2WIKI.md](docs/DEPLOY_CK_FULL_2WIKI.md)).
 - **Transfer without labels (1 to 5 Oct, exploratory).** S1 to S6, with metaqa as the training KB and webqsp as the
   zero-shot KB.
-  - S6 parts 1 to 11 found what carries the KB-to-KB transfer: the granularity transforms, EM-typed attention in the
-    GNN scorer, the population map pq, and lb.
+  - S6 parts 1 to 8 found what carries the KB-to-KB transfer: the granularity transforms, EM-typed attention in the
+    GNN scorer, the population map pq, and lb. Parts 7 and 9 to 11 have not been graded yet.
   - Parts 12 to 15 ask where the zero-shot gap comes from, with the MLP and the GNN on the same features.
     - Part 12 measures the gap against directly trained counterparts, and part 13 trains sg2, rgu and rga.
     - Part 14 tests EM rounds as the balancer, and message passing as going back to the neighbours.
