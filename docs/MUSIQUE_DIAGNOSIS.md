@@ -141,5 +141,7 @@ generalization included. These steps are proposed, not run, and each needs its o
    the same from the question's entities. Grade it on every dataset's multi-hop slices and on the zero-shot reads.
 4. **Pool reach on every graph.** Apply one expansion rule to all six graphs, and measure the all-golds-in-the-pool
    share against the cost. musique's four-hop share is now 0.48.
-5. **A stronger encoder for every dataset.** This is the largest lever in the literature: NV-Embed-v2 alone reaches
-   69.7 on MuSiQue. It changes the frozen substrate, so it is a separate decision.
+
+**The encoder is not on this list and never will be.** It stays frozen with the substrate; Swastik ruled this out on 5
+October 2026. The part of the gap to HippoRAG 2 that comes from its 7B encoder is a named difference in exposure, and
+nothing here tries to close it.
