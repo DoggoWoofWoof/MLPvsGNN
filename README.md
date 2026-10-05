@@ -9,43 +9,57 @@ Aggregation*
 
 ## Current status
 
-**Update, 5 October 2026.** The timeline, the main changes, every phase's result and what is left are in
-[docs/STATUS_2026_10_05.md](docs/STATUS_2026_10_05.md). Every number after 2 September is development-only. The lean
-MLP, QD-GNN and MP-unified results are exploratory and not citable in the paper.
+**Where we stand, 5 October 2026.** Start with [docs/WHERE_WE_STAND.md](docs/WHERE_WE_STAND.md). It explains the
+models, the three levels of generalization (in-domain, universal, zero-shot), every main result table, and how we got
+here. Every number after 2 September is a development number: chosen on development splits, often after many arms. The
+tracks in its sections 3 and 4 are how we build the best universal MLP and the best universal GNN. The paper's numbers
+come from one declared confirmation run of the chosen MLP and GNN on held-out data.
 
-- **M0 to M2 (3 to 8 Sep).**
-  - The zero-training regime map: M0A to M0C, six datasets.
-  - The first trained effect map: M1A and M1B.
-  - The QLS-v2 freeze. M2B's semantic selection returned `SELECTED_S3`.
-  - S4 repair closed on both routes: M2C, and M2D with `STOP_S4_DEVELOPMENT_CONFIRMED`. S3 is retained.
-- **M3, the GNN track (8 to 19 Sep).**
-  - M3A adopted the transferred substrate and measured six-dataset headroom.
-  - M3B, the controlled comparison, is closed ([M3B_RESULTS.md](docs/M3B_RESULTS.md)). Message passing lifts
-    full_coverage@5 on musique, hotpotqa and 2wiki, not hit@1.
-- **Universal-v2 (19 to 29 Sep).**
-  - The pilot returned `PILOT_FAILED` and was replicated.
-  - The stage 2 joint six-dataset GNN ran ([UNIVERSAL_GNN_SIX.md](docs/UNIVERSAL_GNN_SIX.md)).
-  - UMLP-v2.1 and v2.2A stopped at stage A.
-- **MP-Approx L0 to L15 and Deploy CK (29 Sep to 1 Oct).**
-  - The best approximation without message passing (L15) stays BELOW the GNN.
-  - ck_full, a compressed, query-conditioned one-hop message-passing form, keeps 0.895 of the GNN's R@5 gain at 0.656
-    of its end-to-end p50 latency on 2wiki ([DEPLOY_CK_FULL_2WIKI.md](docs/DEPLOY_CK_FULL_2WIKI.md)).
-- **Transfer without labels (1 to 5 Oct, exploratory).** S1 to S6, with metaqa as the training KB and webqsp as the
-  zero-shot KB.
-  - S6 parts 1 to 8 found what carries the KB-to-KB transfer: the granularity transforms, EM-typed attention in the
-    GNN scorer, the population map pq, and lb. Parts 7 and 9 to 11 have not been graded yet.
-  - Parts 12 to 15 ask where the zero-shot gap comes from, with the MLP and the GNN on the same features.
-    - Part 12 measures the gap against directly trained counterparts, and part 13 trains sg2, rgu and rga.
-    - Part 14 tests EM rounds as the balancer, and message passing as going back to the neighbours.
-    - Part 15 computes feature-group Shapley values.
-- **Systems.**
-  - Remote execution on the lab GPU host ([tools/rx](tools/rx/README.md),
-    [GPU_HOST_HANDOVER.md](docs/GPU_HOST_HANDOVER.md)).
-  - A feeder on the host that runs the declared queue while the laptop is off.
-  - Host recovery ([HOST_RECOVERY.md](docs/HOST_RECOVERY.md)), and a fast feature compile that is bit-identical.
-- **Running 5 to 7 October on the host:** S6 parts 9 to 15, about 40 GPU-hours and 450 CPU-hours. Part 14's first
-  interim read is in: one more EM round at read time gains a little, re-estimating the level mix on the new graph hurts
-  the zero-shot read, and the MLP's static neighbour summaries hurt it beyond one step.
+The aim is to build the best universal MLP and the best universal GNN on the same features, make both generalize to
+graphs they were not trained on, and then measure what message passing adds.
+
+**In-domain, message passing helps multi-hop coverage** (M3B, closed 19 Sep). R@5, seed 0, with the paired 95%
+interval of δ_MP = GAT − GAT-NO-MP. GAT-NO-MP is the same GAT with its message edges switched off, and QLS-U is our
+MLP scorer (QLS-MLP).
+
+| dataset | `rrf` | QLS-U | GAT-NO-MP | GAT | δ_MP (R@5) | band |
+| --- | --- | --- | --- | --- | --- | --- |
+| metaqa | 0.005 | 0.612 | 0.617 | **0.763** | +0.147 [+0.144, +0.150] | not read |
+| squad | 0.905 | 0.889 | 0.896 | 0.885 | −0.011 [−0.015, −0.008] | control |
+| musique | 0.473 | 0.491 | 0.503 | **0.521** | +0.018 [+0.008, +0.027] | **read** |
+| hotpotqa | 0.685 | 0.870 | 0.866 | **0.896** | +0.030 [+0.026, +0.035] | **read** |
+| 2wiki | 0.608 | 0.838 | 0.834 | **0.885** | +0.052 [+0.048, +0.055] | **read** |
+| webqsp | 0.054 | 0.577 | 0.574 | **0.602** | +0.028 [+0.014, +0.044] | not read |
+
+On musique, hotpotqa and 2wiki the gain is in full_coverage@5 (+0.049, +0.068, +0.126), not hit@1. metaqa and webqsp
+are not read because the GAT sits below the published systems there. squad is a control whose graph exposes no extra
+gold.
+
+**Universal, one model for all six datasets.**
+
+- The universal GNN (`u_gnn_v2_ef`, 28 Sep) matches the six per-dataset GATs on the passage datasets. It beats them on
+  the KBs: hit@1 +0.068 on metaqa and +0.037 on webqsp.
+- Its MLP twin (`u_mlp_v2_mix`) is below it on metaqa (R@5 0.716 against 0.782) and 2wiki (0.852 against 0.900). It
+  fails its replication gate on 2wiki.
+
+**In-domain, an MLP can come close to the GNN.**
+
+- The best approximation without message passing (MP-Approx L15) reaches 0.929 of the GNN on 2wiki.
+- The lean MLP's AW pick reaches 0.9964.
+- ck_full, a compressed, query-conditioned one-hop message-passing form, keeps 0.895 of the GNN's gain at 0.656 of
+  its end-to-end p50 latency.
+
+**Zero-shot is the open problem.** On a graph it was not trained on, every model, MLP or GNN, loses most of its gain.
+
+- Joint training on four graphs keeps about 70% of the gain on a held-out passage graph.
+- For unseen KB relations (train on metaqa, read webqsp), three things carry: the granularity transforms (+6.4 R@5
+  points over an untyped walk), EM typing, and a GNN scorer with EM-typed attention (+3.5 more).
+- Nothing yet closes the gap to a model trained on webqsp itself: about 0.60 R@5, against 0.20 to 0.25 for the lean
+  MLP trained elsewhere.
+- S6 parts 12 to 15 run on the lab host until about 7 October to find where that gap comes from.
+
+The timeline since 2 September and the full list of what is left are in
+[docs/STATUS_2026_10_05.md](docs/STATUS_2026_10_05.md).
 
 **As of 2 September 2026** (this still holds for Packages A to F):
 
@@ -977,6 +991,7 @@ docs/LEGACY_CANDIDATE_COMPATIBILITY.md legacy candidate-equivalence proof
 docs/SIX_DATASET_RESULTS.md      earlier plain-MLP/GNN boundary
 docs/CONFIRMATION_RESULTS.md     five-seed plain/Offset confirmation
 docs/COVERAGE_VARIANT_RESULTS.md failed preregistered Offset remedy
+docs/WHERE_WE_STAND.md           start here: the models, the result tables, where generalization stands
 docs/STATUS_2026_10_05.md       timeline, main changes, results and what is left (5 Oct)
 docs/GPU_HOST_HANDOVER.md        the lab GPU host: rules, layout, recipes, quirks
 docs/HOST_RECOVERY.md            restarting the host work on another machine
@@ -984,7 +999,7 @@ docs/MP_APPROX_L*.md             MP-Approx levels 0-15, one declared file per le
 docs/DEPLOY_CK_*.md              the deployable compiled kernels on 2wiki
 docs/M3B_RESULTS.md              the closed controlled comparison
 tools/rx/                        remote execution on the lab GPU host
-outputs/mp_unified/              exploratory tracks (lean MLP, QD-GNN, S6 chainscore18-31); tracked, not citable
+outputs/mp_unified/              the MLP and GNN development tracks (lean MLP, QD-GNN, S6 chainscore18-31)
 outputs/host_ops/                the host feeder, its item list, the retry wrapper and the cleanup loops
 legacy/crag_snapshot/            provenance snapshots; not production code
 src/mp_retrieval/                standalone research implementation
