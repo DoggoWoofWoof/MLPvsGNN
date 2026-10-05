@@ -14,19 +14,22 @@ Arms (MASK: the groups kept, bit b for the b-th group in that order; 15 keeps al
     kn-MASK  the node groups in MASK kept, every pair group kept
     kp-MASK  the pair groups in MASK kept, every node group kept
 Classes, seeds 0, 1, 2:
-    mlp (chainscore24 k5, CPU) and ena (chainscore25 e-b-lb-pq, GPU): every MASK in 0..14 (exact Shapley);
-    rgu (chainscore29 rgu, CPU) and rga (chainscore29 rga, GPU): the four MASKs with one bit off (leave one out).
+    every MASK in 0..14 (exact Shapley): mlp (chainscore24 k5), sg2 (chainscore29 sg2), en (chainscore25 n-b-lb-pq)
+    and rgu (chainscore29 rgu) on the CPU; ena (chainscore25 e-b-lb-pq) on the GPU;
+    the four MASKs with one bit off (leave one out): rga (chainscore29 rga) on the GPU.
     Each arm's control: for the CPU classes, chainscore30's base runs (the family's run unchanged, on the CPU, one
     thread); for the GPU classes, the parts 9 / 13 runs.
+    (Amended at 11:30, before any part 15 run but the smokes: sg2 and en added and rgu raised from leave one out to
+    every subset, so each CPU class, static or message passing, has an exact Shapley; the CPU had the room.)
 
 Grade (R@5 per question; seeds averaged per row over the seeds every arm of the set has; paired row bootstrap):
-    S1 exact Shapley (mlp, ena), per kind and read: phi_g = sum over S without g of |S|! (3 - |S|)! / 4! [v(S + g) -
+    S1 exact Shapley (mlp, sg2, en, rgu, ena), per kind and read: phi_g = sum over S without g of |S|! (3 - |S|)! / 4! [v(S + g) -
        v(S)], v(S) the arm keeping S (v(all) the control), per row; efficiency (sum phi = v(all) - v(none)) checked.
        A group HELPS a class on a read if phi's CI is above 0, COSTS it if below.
     S2 leave one out (every class): v(all) - v(all - g); DROP carries for g if the arm without g, against the control,
        meets chainscore30's CARRY rule (ABOVE on webqsp selectf + fit and not BELOW on metaqa, or AT and ABOVE).
-    S3 the regimes against each other: phi_g(ena) - phi_g(mlp) (S1), and [rga - rga without g] - [rgu - rgu without
-       g] (S2), per read, bootstrapped by rows.
+    S3 the regimes against each other, per read, bootstrapped by rows: phi_g(A) - phi_g(B) (S1) for (ena, mlp),
+       (en, mlp), (sg2, mlp), (en, sg2) and (rgu, mlp); and [rga - rga without g] - [rgu - rgu without g] (S2).
     2wiki and hotpotqa are reported beside the KB reads, without a rule.
 No webqsp label is used in training or selection; webqsp train_holdout and test are not touched. Smokes write under
 smoke30/ and are never graded.
@@ -58,8 +61,10 @@ SEEDS = C30.SEEDS
 KB_READS, P_SECOND, PRIMARY, GUARD = C30.KB_READS, C30.P_SECOND, C30.PRIMARY, C30.GUARD
 NODE, PAIR = tuple(C28.NODE_GROUPS), tuple(C28.PAIR_GROUPS)
 FULL = 15
-CLASSES = {"mlp": "shapley", "ena": "shapley", "rgu": "loo", "rga": "loo"}
-PAIRS = (("ena", "mlp", "S1"), ("rga", "rgu", "S2"))
+CLASSES = {"mlp": "shapley", "sg2": "shapley", "en": "shapley", "rgu": "shapley", "ena": "shapley", "rga": "loo"}
+CPU_CLASSES = ("mlp", "sg2", "en", "rgu")
+PAIRS = (("ena", "mlp", "S1"), ("en", "mlp", "S1"), ("sg2", "mlp", "S1"), ("en", "sg2", "S1"), ("rgu", "mlp", "S1"),
+         ("rga", "rgu", "S2"))
 OUT_PREFIX = "outputs/mp_unified/lean/cs31-"
 log, sha = C30.log, C30.sha
 
@@ -159,8 +164,8 @@ def grade_cmd(a):
         p14 = js.get("part14")
         if p14:
             cls = p14["cls"]
-            if p14["axis"] != "base" or cls not in ("mlp", "rgu") or js["device"] != "cpu":
-                raise SystemExit(f"{p}: a part 14 control is a CPU base run of mlp or rgu")
+            if p14["axis"] != "base" or cls not in CPU_CLASSES or js["device"] != "cpu":
+                raise SystemExit(f"{p}: a part 14 control is a CPU base run of {CPU_CLASSES}")
         else:
             cls = C30.cls_of(js)
             if cls not in ("ena", "rga") or js["device"] != "cuda":
@@ -237,7 +242,8 @@ def grade_cmd(a):
 
 def selftest():
     import torch
-    assert len(arms_of("mlp")) == 30 and len(arms_of("rgu")) == 8
+    assert len(arms_of("mlp")) == 30 and len(arms_of("rgu")) == 30 and len(arms_of("rga")) == 8
+    assert all(C30.CLASSES[k][3] == ("cpu" if k in CPU_CLASSES else "cuda") for k in CLASSES)
     assert dropped("kn-0") == (list(NODE), []) and dropped("kp-14") == ([], [PAIR[0]])
     assert dropped("kn-13") == ([NODE[1]], [])
     rng = np.random.default_rng(0)
