@@ -124,17 +124,22 @@ So whole groups can be assigned to the select carve. Then no select question sha
 which is the relation dev has to train. No question has to be dropped. Holding out random components instead would drop
 10% to 48% of the training questions.
 
-### 5. What would improve musique
+### 5. What would improve the training, for every dataset
 
-These are proposed, not run. Each one needs its own declared file before any number.
+**Rule (5 October 2026).** Every step below is a change to the training of all six datasets, graded on all six. None
+is a musique-only fix. musique is where the causes showed up, but a step counts only if every dataset gains,
+generalization included. These steps are proposed, not run, and each needs its own declared file before any number.
 
-1. **A group-disjoint, hop-matched carve.** Put whole linked groups in the select carve, matching dev's hop mix
-   (52 / 31 / 17). Selection then rewards what dev rewards. This is the cheapest step, and it comes first.
-2. **A hop-balanced fit.** Weight three- and four-hop questions up to dev's mix, so the models see the long chains.
-3. **Depth for three and four hops.** Use three or four message-passing layers, or read-time rounds that go back to
-   the neighbours of the top passages. That is S6's idea of going back, and HippoRAG's personalised PageRank does the
-   same from the question's entities. Grade it on the three- and four-hop slices.
-4. **Pool reach.** Expand three or four graph steps for musique, and measure the all-golds-in-the-pool share at four
-   hops (now 0.48) against the cost.
-5. **A stronger encoder.** This is the largest lever in the literature: NV-Embed-v2 alone reaches 69.7. It changes the
-   frozen substrate, so it is a separate decision.
+1. **Distribution-matched selection on every dataset.** Each dataset's select carve gets the same overlap with the fit
+   carve as its eval population has, and the same hop or difficulty mix. On musique that means whole linked groups,
+   since dev shares no component with train. On squad it means no shared gold. On the KBs it keeps their natural
+   entity overlap. Selection then rewards what each eval rewards. This is the cheapest step, and it comes first.
+2. **A difficulty-balanced fit on every dataset.** Weight long chains up to each eval's mix: musique's three- and
+   four-hop questions, metaqa's three-hop questions, and multi-gold questions on hotpotqa and 2wiki.
+3. **Depth in the universal models.** Use three or four message-passing layers, or read-time rounds that go back to
+   the neighbours of the top candidates. That is S6's idea of going back, and HippoRAG's personalised PageRank does
+   the same from the question's entities. Grade it on every dataset's multi-hop slices and on the zero-shot reads.
+4. **Pool reach on every graph.** Apply one expansion rule to all six graphs, and measure the all-golds-in-the-pool
+   share against the cost. musique's four-hop share is now 0.48.
+5. **A stronger encoder for every dataset.** This is the largest lever in the literature: NV-Embed-v2 alone reaches
+   69.7 on MuSiQue. It changes the frozen substrate, so it is a separate decision.
