@@ -364,6 +364,21 @@ Hosts are shared across projects: one `~/rx` per host, one namespace per project
 
 ---
 
+## Feeding a long queue (5 October 2026)
+
+For runs that outlast the laptop, `outputs/host_ops/hostfeed.py` runs on the host itself as an rx job. It reads
+`outputs/host_ops/hostfeed_items.txt`, which is pushed from the laptop, and sends each item in file order once its
+dependencies have ended and its CPU, memory and GPU share fit. Two of its behaviours matter:
+
+- An item whose dependency ended badly is dropped along with its dependents. A rerun needs a new item name, and
+  so does every item that reads it.
+- An item that misses CPU or memory for more than `--hol-min` minutes holds every later item. An item that misses
+  only the GPU holds only later GPU items.
+
+`outputs/host_ops/retry_cmd.py` reruns a command that failed on a transient Windows file race. With `--cuda` it
+also reruns one that failed on a CUDA fault. The GPU items run under it, because a single failed run would drop
+every grade that reads it.
+
 ## This repository's rule for scientific work
 
 rx is **systems infrastructure**. In this repository, running a scientific stage on the

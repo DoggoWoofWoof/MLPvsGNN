@@ -9,6 +9,46 @@ Aggregation*
 
 ## Current status
 
+**Update, 5 October 2026.** The timeline, the main changes, every phase's result and what is left are in
+[docs/STATUS_2026_10_05.md](docs/STATUS_2026_10_05.md). Every number after 2 September is development-only. The lean
+MLP, QD-GNN and MP-unified results are exploratory and not citable in the paper.
+
+- **M0 to M2 (3 to 8 Sep).**
+  - The zero-training regime map: M0A to M0C, six datasets.
+  - The first trained effect map: M1A and M1B.
+  - The QLS-v2 freeze. M2B's semantic selection returned `SELECTED_S3`.
+  - S4 repair closed on both routes: M2C, and M2D with `STOP_S4_DEVELOPMENT_CONFIRMED`. S3 is retained.
+- **M3, the GNN track (8 to 19 Sep).**
+  - M3A adopted the transferred substrate and measured six-dataset headroom.
+  - M3B, the controlled comparison, is closed ([M3B_RESULTS.md](docs/M3B_RESULTS.md)). Message passing lifts
+    full_coverage@5 on musique, hotpotqa and 2wiki, not hit@1.
+- **Universal-v2 (19 to 29 Sep).**
+  - The pilot returned `PILOT_FAILED` and was replicated.
+  - The stage 2 joint six-dataset GNN ran ([UNIVERSAL_GNN_SIX.md](docs/UNIVERSAL_GNN_SIX.md)).
+  - UMLP-v2.1 and v2.2A stopped at stage A.
+- **MP-Approx L0 to L15 and Deploy CK (29 Sep to 1 Oct).**
+  - The best approximation without message passing (L15) stays BELOW the GNN.
+  - ck_full, a compressed, query-conditioned one-hop message-passing form, keeps 0.895 of the GNN's R@5 gain at 0.656
+    of its end-to-end p50 latency on 2wiki ([DEPLOY_CK_FULL_2WIKI.md](docs/DEPLOY_CK_FULL_2WIKI.md)).
+- **Transfer without labels (1 to 5 Oct, exploratory).** S1 to S6, with metaqa as the training KB and webqsp as the
+  zero-shot KB.
+  - S6 parts 1 to 11 found what carries the KB-to-KB transfer: the granularity transforms, EM-typed attention in the
+    GNN scorer, the population map pq, and lb.
+  - Parts 12 to 15 ask where the zero-shot gap comes from, with the MLP and the GNN on the same features.
+    - Part 12 measures the gap against directly trained counterparts, and part 13 trains sg2, rgu and rga.
+    - Part 14 tests EM rounds as the balancer, and message passing as going back to the neighbours.
+    - Part 15 computes feature-group Shapley values.
+- **Systems.**
+  - Remote execution on the lab GPU host ([tools/rx](tools/rx/README.md),
+    [GPU_HOST_HANDOVER.md](docs/GPU_HOST_HANDOVER.md)).
+  - A feeder on the host that runs the declared queue while the laptop is off.
+  - Host recovery ([HOST_RECOVERY.md](docs/HOST_RECOVERY.md)), and a fast feature compile that is bit-identical.
+- **Running 5 to 7 October on the host:** S6 parts 9 to 15, about 40 GPU-hours and 450 CPU-hours. Part 14's first
+  interim read is in: one more EM round at read time gains a little, re-estimating the level mix on the new graph hurts
+  the zero-shot read, and the MLP's static neighbour summaries hurt it beyond one step.
+
+**As of 2 September 2026** (this still holds for Packages A to F):
+
 **Fairness-confirmed six-dataset study: COMPLETE. Package A1/A2/A3 controls:
 COMPLETE. Candidate-generation headroom diagnostic: COMPLETE. Package C
 (candidate budget): COMPLETE AND FROZEN. Package E1 (validation-only phase
@@ -659,6 +699,20 @@ of the project record:
 
 ## Prioritized Remaining Work
 
+**Now (5 October 2026)**, in order. Details are in [docs/STATUS_2026_10_05.md](docs/STATUS_2026_10_05.md#what-is-left).
+
+1. **Read S6 parts 12 to 15 as their grades land** (interim grades from 5 Oct, full grades about 7 Oct). Then act where
+   they point, with each model class's own implementation: the largest component of the zero-shot gap, and the
+   significant feature groups.
+2. **Finish M2 to M9 on the current datasets before canonical CRAG**, one declared file per phase. M3 compares GNNs
+   only; M4 is where QLS and the GNN meet.
+3. **Write the paper.** No paper text exists yet. The targets are a WWW 2027 short paper (16 Nov), SIGIR 2027 (21 Jan)
+   and NeurIPS 2027 (Evaluations and Datasets).
+4. **Systems:** wire the fast feature compile in under a declared stage, and split every speed claim into graph index,
+   query-local compile, and forward plus per-edge update.
+
+The package plan below stays as filed on 2 September.
+
 The sealed confirmation remains closed to retuning. Package A1/A2/A3 below were
 resumed only under new preregistered protocols and separate outputs. Every
 remaining experiment still requires its own freeze and must not tune or filter
@@ -923,6 +977,15 @@ docs/LEGACY_CANDIDATE_COMPATIBILITY.md legacy candidate-equivalence proof
 docs/SIX_DATASET_RESULTS.md      earlier plain-MLP/GNN boundary
 docs/CONFIRMATION_RESULTS.md     five-seed plain/Offset confirmation
 docs/COVERAGE_VARIANT_RESULTS.md failed preregistered Offset remedy
+docs/STATUS_2026_10_05.md       timeline, main changes, results and what is left (5 Oct)
+docs/GPU_HOST_HANDOVER.md        the lab GPU host: rules, layout, recipes, quirks
+docs/HOST_RECOVERY.md            restarting the host work on another machine
+docs/MP_APPROX_L*.md             MP-Approx levels 0-15, one declared file per level
+docs/DEPLOY_CK_*.md              the deployable compiled kernels on 2wiki
+docs/M3B_RESULTS.md              the closed controlled comparison
+tools/rx/                        remote execution on the lab GPU host
+outputs/mp_unified/              exploratory tracks (lean MLP, QD-GNN, S6 chainscore18-31); tracked, not citable
+outputs/host_ops/                the host feeder, its item list, the retry wrapper and the cleanup loops
 legacy/crag_snapshot/            provenance snapshots; not production code
 src/mp_retrieval/                standalone research implementation
 tests/                           unit, parity, and contract tests
@@ -938,5 +1001,5 @@ pytest
 Compute credentials are resolved at runtime from an ignored local file or
 environment variables. Private CRAG credentials must never be copied into this
 repository. Experimental launch commands remain in the historical protocol
-record for reproducibility, but the project status above takes precedence: no
-new runs are currently scheduled.
+record for reproducibility, but the project status above takes precedence. From 5 to
+7 October 2026 the lab host runs the declared S6 queue (parts 9 to 15) on its own; see the status update above.

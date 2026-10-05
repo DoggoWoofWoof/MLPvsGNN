@@ -1,5 +1,9 @@
 # Experiment execution status
 
+> **5 October 2026:** after 2 September the operational record moved to each phase's own documents. The current
+> execution state, the timeline since 2 September and what is left are in
+> [STATUS_2026_10_05.md](STATUS_2026_10_05.md). The Package A to F record below is unchanged.
+
 Last audited: 2026-09-02 (spend limit re-imposed; E2 stalled at 48/96;
 Phase −1 built and blocked; cross-workspace replication path measured).
 
