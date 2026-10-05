@@ -63,6 +63,16 @@ Where the help comes from:
 | hotpotqa | +0.068 [+0.060, +0.077] | −0.010 [−0.018, −0.003] |
 | 2wiki | +0.126 [+0.118, +0.133] | −0.021 [−0.026, −0.015] |
 
+**musique is the weak dataset** ([MUSIQUE_DIAGNOSIS.md](MUSIQUE_DIAGNOSIS.md)).
+
+- **Only its two-hop half gains.** There message passing adds +0.046 R@5 and +0.101 FC@5. On three- and four-hop
+  questions it adds nothing, and almost none of those get every passage into the top 5.
+- **Its training carve rewards a shortcut.** 94.5% of the select carve shares a gold passage with training questions;
+  dev shares none.
+- **The published number is a different metric.** GraphER's PR@5 (21.6 to 25.6) is set coverage, our FC@5 (0.224),
+  not our R@5. On recall@5, HippoRAG 2 reports 74.7, on a corpus a tenth the size of ours and with a 7B
+  encoder.
+
 **Reading.** On the three readable datasets, message passing helps R@5 by 0.018 to 0.052. The help is in
 full_coverage@5, which means getting every supporting passage of a multi-hop question into the top 5. It is not in
 hit@1, where the GAT is level or slightly below its no-MP control. QLS-U and GAT-NO-MP are close to each other
