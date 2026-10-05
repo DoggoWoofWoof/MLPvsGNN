@@ -20,7 +20,9 @@ Classes, seeds 0, 1, 2:
     Each arm's control: for the CPU classes, chainscore30's base runs (the family's run unchanged, on the CPU, one
     thread); for the GPU classes, the parts 9 / 13 runs.
     (Amended at 11:30, before any part 15 run but the smokes: sg2 and en added and rgu raised from leave one out to
-    every subset, so each CPU class, static or message passing, has an exact Shapley; the CPU had the room.)
+    every subset, so each CPU class, static or message passing, has an exact Shapley; the CPU had the room. At 11:50,
+    still before any part 15 run but the smokes, a run also records this file's sha256 in its part15 block, beside
+    chainscore30's.)
 
 Grade (R@5 per question; seeds averaged per row over the seeds every arm of the set has; paired row bootstrap):
     S1 exact Shapley (mlp, sg2, en, rgu, ena), per kind and read: phi_g = sum over S without g of |S|! (3 - |S|)! / 4! [v(S + g) -
@@ -109,8 +111,8 @@ def train_cmd(a, rest):
     nd, pd = dropped(a.arm)
     seen = patch_drop(nd, pd)
     js = C30.run_family(look, arm, device, rest, a.threads, "part15",
-                        {"cls": a.cls, "arm15": a.arm, "drop_node": nd, "drop_pair": pd, "zeroed": seen}, a.smoke,
-                        prefix=OUT_PREFIX)
+                        {"cls": a.cls, "arm15": a.arm, "drop_node": nd, "drop_pair": pd, "zeroed": seen,
+                         "chainscore31_sha256": sha(__file__)}, a.smoke, prefix=OUT_PREFIX)
     if not seen["batches"] or (pd and not seen["pair_batches"]):
         raise SystemExit("no batch had its columns zeroed")
     log(f"  part 15 {a.cls} {a.arm} (drops {nd + pd}) s{js['seed']}: " + ", ".join(
