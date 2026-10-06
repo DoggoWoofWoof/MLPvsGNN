@@ -14,6 +14,10 @@ CUDNN status, "CUDA out of memory"). cs30-sg2g-dirfwd-s1 (5 Oct 11:50) died in e
 memory access was encountered" while seeds 0 and 2 of the same arm passed, and in the feeder a failed run drops every
 grade that reads it. A seeded training run started again from scratch is the same run, so the GPU items run under
 --cuda; a fault that repeats on every try still ends with the command's code.
+
+Under --cuda, a run that failed on "CUDA out of memory" while running under a capped PyTorch pool (cuda_alloc.py
+--frac F, F < 1: the host feeder caps two runs that share the card) is run again with --frac 1: the same run with the
+whole card's bound, which cannot hit the same cap again (6 Oct, 20:55). Nothing else in the command changes.
 """
 import argparse
 import subprocess
@@ -22,6 +26,20 @@ import time
 
 RACE = ("[WinError 5]", "[WinError 32]")
 CUDA = ("CUDA error", "AcceleratorError", "CUBLAS_STATUS_", "CUDNN_STATUS_", "CUDA out of memory")
+
+
+def uncap(cmd):
+    """cmd with cuda_alloc.py's --frac F (the runner's own options, before its --) set to 1."""
+    out = list(cmd)
+    for i, t in enumerate(out):
+        if t.replace("\\", "/").endswith("cuda_alloc.py"):
+            j = i + 1
+            while j < len(out) - 1 and out[j] != "--":
+                if out[j] == "--frac":
+                    out[j + 1] = "1"
+                j += 1
+            break
+    return out
 
 
 def main(argv=None):
@@ -51,6 +69,10 @@ def main(argv=None):
                 print(f"[retry_cmd] run {k} of {a.tries} failed on {race}; no runs left (rc {rc})", flush=True)
             return rc
         print(f"[retry_cmd] run {k} of {a.tries} failed on {race} (rc {rc}); again in {a.wait:g} s", flush=True)
+        if a.cuda and b"CUDA out of memory" in tail and uncap(cmd) != cmd:
+            cmd = uncap(cmd)
+            print("[retry_cmd] out of memory under a capped pool: the next run has the whole card's bound (--frac 1)",
+                  flush=True)
         time.sleep(a.wait)
     return rc
 

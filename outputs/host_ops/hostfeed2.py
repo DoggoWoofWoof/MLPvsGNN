@@ -60,6 +60,17 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    identical to one run alone (IDENTICAL, 20:33). --no-corun turns this off.
    A GPU item waiting behind mpr's own GPU job, running or still in rx's queue or sent this poll, holds only the GPU
    items behind it (before 20:45 a job still in rx's queue did not count, and the GPU item behind it held every item).
+   Since 20:55: an arm with no finished run of its own takes its class's peak only when at least --corun-cls-arms of the
+   class's arms are measured and their peaks agree within --corun-cls-spread (cs31-rga: every arm 6.72 GB; cs30-rga's
+   arms run from 0.46 to 10.97 GB, so one arm says nothing about the next, and a run that outgrows its capped pool fails).
+   A GPU item waits as a GPU head (CPU items go on) only while mpr's own GPU jobs fill mpr's GPU cap. When the cap has
+   room for it, on a card that is free or held by another project's job (crag's jobs yield to a queued mpr job), and
+   host memory or CPUs fall short, it holds every item behind it at once, so memory collects for it to start or to
+   wait in rx's queue (at 20:50 crag took the half of the card a finished run freed, and the next run that would share
+   the card waited behind CPU sends). A head that shares the card and waits on one run of ours that has the card
+   alone sets aside the memory of the next GPU item that shares the card too, so the pair starts together when that
+   run ends. While the card spills into system memory (GPU shared memory more than 2 GB above its lowest reading), no
+   GPU run starts sharing the card.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -312,6 +323,8 @@ def overview():
             "q_g": sum(float((q.get("req") or {}).get("gpus") or 0) for q in qm),
             "q_gpu_mem": [float((q.get("req") or {}).get("mem_gb") or 0) for q in qm
                           if float((q.get("req") or {}).get("gpus") or 0) > 0],
+            "q_gpu_g": [float((q.get("req") or {}).get("gpus") or 0) for q in qm
+                        if float((q.get("req") or {}).get("gpus") or 0) > 0],
             "q_age": time.time() - min((float(q.get("enq") or time.time()) for q in qm), default=time.time()),
             "hold_s": float(cap.get("hold_after_s", 1800)),
             "jobs": jobs, "by_id": {j["id"]: j for j in jobs}, "newest": newest}
@@ -426,7 +439,7 @@ def measure(jobs, items_by):
     """Peaks and runtimes by arm from mpr's jobs (done with rc 0), live use of running ones."""
     M = {"peak": {}, "live": {}, "sib": {}, "rt": {}, "cls_rt": {}, "commit": {}, "gap_min": {}, "gap_max": {},
          "live_commit": {}, "cls_peak": {}, "cls_commit": {}, "cls_gap_min": {}, "cls_gap_max": {},
-         "gpu_peak": {}, "cls_gpu_peak": {}}
+         "gpu_peak": {}, "cls_gpu_peak": {}, "cls_gpu_arms": {}}
     for j in jobs:
         n = j.get("name") or ""
         if not n:
@@ -455,6 +468,8 @@ def measure(jobs, items_by):
                 if gp:
                     M["gpu_peak"][k] = max(M["gpu_peak"].get(k, 0.0), gp)
                     M["cls_gpu_peak"][klass(n)] = max(M["cls_gpu_peak"].get(klass(n), 0.0), gp)
+                    ca = M["cls_gpu_arms"].setdefault(klass(n), {})
+                    ca[k] = max(ca.get(k, 0.0), gp)
             if j.get("started") and j.get("ended"):
                 rt = float(j["ended"]) - float(j["started"])
                 if rt > 0:
@@ -508,12 +523,22 @@ def shared_pages(items_by, M):
     return S
 
 
+def cls_gpu_peak(kc, M):
+    """The largest measured torch peak of class kc when at least --corun-cls-arms of its arms are measured and agree
+    within --corun-cls-spread (largest/smallest), else None."""
+    ps = list((M["cls_gpu_arms"].get(kc) or {}).values())
+    if len(ps) < a.corun_cls_arms or max(ps) > a.corun_cls_spread * min(ps):
+        return None
+    return max(ps)
+
+
 def corun(it, M):
     """torch's measured peak (GB) of a GPU item that may share the card with another, else None."""
-    if not a.corun or it["gpu"] <= 0 or "cuda_alloc.py " not in it["command"] or "--frac" in it["command"]:
+    if (not a.corun or M.get("gpu_spill") or it["gpu"] <= 0 or "cuda_alloc.py " not in it["command"]
+            or "--frac" in it["command"]):
         return None
     k, kc = arm(it["name"]), klass(it["name"])
-    p = M["gpu_peak"][k] if k in M["gpu_peak"] else M["cls_gpu_peak"].get(kc)
+    p = M["gpu_peak"][k] if k in M["gpu_peak"] else cls_gpu_peak(kc, M)
     if p is None or p > a.corun_frac * a.card_gb - a.corun_slack:
         return None
     return p
@@ -668,6 +693,10 @@ def main(argv=None):
     ap.add_argument("--corun-share", type=float, default=0.5, help="rx GPU share of a run sharing the card")
     ap.add_argument("--corun-slack", type=float, default=2.0, help="GB between a measured peak and its cap")
     ap.add_argument("--card-gb", type=float, default=23.99, help="the card's memory as torch counts it (GiB)")
+    ap.add_argument("--corun-cls-arms", type=int, default=3,
+                    help="measured arms a class needs before its peak stands for an unmeasured arm")
+    ap.add_argument("--corun-cls-spread", type=float, default=1.25,
+                    help="largest/smallest torch peak of a class's measured arms for its peak to stand for the rest")
     a = ap.parse_args(argv)
 
     HOME = os.environ.get("RX_HOME") or ""
@@ -765,15 +794,21 @@ def main(argv=None):
                 dyn["margin"] = round(max(a.margin_min, margin - a.margin_down), 3)
                 dyn["calm"] = 0
         margin = float(dyn["margin"])
-        if gshared is not None and gshared_base is not None and gshared - gshared_base > 2.0:
-            say_once("_gspill", f"GPU memory spills to system memory: shared {gshared:.1f} GB (base {gshared_base:.1f})")
+        spill = gshared is not None and gshared_base is not None and gshared - gshared_base > 2.0
+        if spill:
+            say_once("_gspill", f"GPU memory spills to system memory: shared {gshared:.1f} GB (base {gshared_base:.1f}); "
+                     f"no GPU run starts sharing the card until it clears")
         else:
             st["said"].pop("_gspill", None)
         M = measure(ov["jobs"], by)
-        if a.corun and M["cls_gpu_peak"]:
+        M["gpu_spill"] = spill
+        if a.corun and M["cls_gpu_arms"]:
             lim = a.corun_frac * a.card_gb - a.corun_slack
-            say_once("_gpeaks", f"torch GPU peaks by class (GB; at most {lim:.1f} may share the card): " + ", ".join(
-                f"{k} {v:g}" for k, v in sorted(M["cls_gpu_peak"].items()) if k in {klass(x) for x in by}))
+            say_once("_gpeaks", f"torch GPU peaks by class (GB, largest/smallest of n measured arms, '*' = stands for "
+                     f"the unmeasured arms; at most {lim:.1f} may share the card): " + ", ".join(
+                         f"{k} {max(v.values()):g}/{min(v.values()):g} n{len(v)}"
+                         f"{'*' if cls_gpu_peak(k, M) is not None else ''}"
+                         for k, v in sorted(M["cls_gpu_arms"].items()) if k in {klass(x) for x in by}))
         grow = growth(ov, M)
         budget = (avail - grow - a.avail_floor) if avail is not None else float("inf")
         S_sig = shared_pages(by, M)
@@ -829,7 +864,9 @@ def main(argv=None):
         # the GPU (and that memory) from one of them, so it holds only the GPU items behind it
         own_gpu = ([float(x["req"]["mem_gb"]) for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
                    + list(ov["q_gpu_mem"]))
-        sent_now, blocked_head, gpu_head = [], None, None
+        own_gs = ([float(x["req"].get("gpus") or 0) for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
+                  + list(ov["q_gpu_g"]))
+        sent_now, blocked_head, gpu_head, pair_wait = [], None, None, False
         for it in longest_first(left, items, M):
             n = it["name"]
             try:
@@ -882,6 +919,11 @@ def main(argv=None):
                     "cuda_alloc.py ", f"cuda_alloc.py --frac {a.corun_frac:g} ", 1))
             c, g = it["cpus"], it["gpu"]
             if gpu_head and g > 0:
+                if pair_wait and cr is not None:      # starts beside the head when the run they wait on ends
+                    pair_wait = False
+                    mpr_m, free_m, budget = mpr_m + m, free_m - m, budget - m
+                    rec["set_aside"] = round(rec.get("set_aside", 0.0) + m, 1)
+                    rec["pair"] = n
                 continue
             ready_since.setdefault(n, time.time())
             sig = signature(it) if basis == "private" else None
@@ -898,29 +940,30 @@ def main(argv=None):
                 if jid or a.dry:
                     n_q += 1
                     own_gpu.append(m)
+                    own_gs.append(g)
                     mpr_c, mpr_m, mpr_g, free_c, free_m = mpr_c + c, mpr_m + m, mpr_g + g, free_c - c, free_m - m
                     budget -= m
                     sent_now.append(f"{tag}/{g:g}gpu, queued)")
                 continue
             if not fits:
                 if g > 0:
-                    if own_gpu and not gpu_ok:
+                    if own_gpu and mpr_g + g > a.cap_gpus + 1e-9:
                         gpu_head = n          # mpr's own GPU job hands it the GPU and its memory together;
                         extra = max(0.0, m - max(own_gpu))   # what that does not cover is set aside from now on
                         if extra > 0:
                             mpr_m, free_m, budget = mpr_m + extra, free_m - extra, budget - extra
                             rec["set_aside"] = round(extra, 1)
+                        # a head sharing the card that waits on one run of ours holding the card alone: when that
+                        # run ends two such runs start, so the next one's memory is set aside as well
+                        pair_wait = (cr is not None and len(own_gs) == 1 and own_gs[0] > a.corun_share + 1e-9
+                                     and free_g + own_gs[0] >= 2 * a.corun_share - 1e-9)
                         continue
-                    if not own_gpu and not n_q:
-                        if fits_cm:
-                            gpu_head = n      # another project's GPU share; --queue-gpu decides above
-                            continue
-                        blocked_head = n      # GPU first: memory and CPUs collect for it now
-                        break
+                    if fits_cm:
+                        gpu_head = n          # another project's share holds the card and --queue-gpu is used up
+                        continue
+                    blocked_head = n          # GPU first: memory and CPUs collect for it now, so it can start (the
+                    break                     # card is free) or wait in rx's queue (another project's job yields)
                 if time.time() - ready_since[n] > a.hol_min * 60:
-                    if fits_cm and g > 0:
-                        gpu_head = n
-                        continue
                     blocked_head = n
                     break
                 continue
@@ -935,6 +978,7 @@ def main(argv=None):
                 sent_now.append(f"{tag}{f'/{g:g}gpu' if g else ''})")
                 if g > 0:
                     own_gpu.append(m)
+                    own_gs.append(g)
         rec["sent"], rec["head"], rec["gpu_head"] = sent_now, blocked_head, gpu_head
         rec["shared"] = round(shared, 2)
         if sent_now:
