@@ -770,6 +770,10 @@ def main(argv=None):
         else:
             st["said"].pop("_gspill", None)
         M = measure(ov["jobs"], by)
+        if a.corun and M["cls_gpu_peak"]:
+            lim = a.corun_frac * a.card_gb - a.corun_slack
+            say_once("_gpeaks", f"torch GPU peaks by class (GB; at most {lim:.1f} may share the card): " + ", ".join(
+                f"{k} {v:g}" for k, v in sorted(M["cls_gpu_peak"].items()) if k in {klass(x) for x in by}))
         grow = growth(ov, M)
         budget = (avail - grow - a.avail_floor) if avail is not None else float("inf")
         S_sig = shared_pages(by, M)
