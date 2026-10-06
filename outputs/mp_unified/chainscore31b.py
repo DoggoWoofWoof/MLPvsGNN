@@ -1,6 +1,6 @@
 """S6 part 15, amended (chainscore31b.py): ena by leave one out, and the GPU arms seed 0 first.
 
-Amended at 17:15 on 6 Oct 2026, before any part 15 ena run, at Swastik's request for faster runs. At about 44 minutes a
+Amended at 16:55 on 6 Oct 2026 (committed at 16:59), before any part 15 ena run, at Swastik's request for faster runs. At about 44 minutes a
 run on the GPU (part 9's ena runs), ena's exact Shapley (15 MASKs x 2 kinds x 3 seeds = 90 runs) would hold the one GPU
 for about 66 hours, after part 14's GPU arms. So ena joins rga: the four MASKs with one bit off, per kind, seeds 0, 1
 and 2 (24 runs).
