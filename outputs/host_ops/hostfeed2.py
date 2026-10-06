@@ -40,6 +40,14 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
 6. Telemetry. Each poll appends one JSON line to --util-log (host CPU % over the poll, available memory, commit headroom,
    page-ins, GPU use and memory, GPU shared (system) memory, mpr's requests, the margin, what was sent, what holds);
    every --summary-polls polls a summary line goes to the job's log.
+7. Mapped pages counted once (6 Oct, 20:10). rx's peak_mem_gb is a job's working set, which counts the pages it maps
+   from files (cs_cache.py memory-maps every cached array of 1 MB or more; DLL images) in every job that maps them,
+   though they sit in host memory once. A part-15 CPU job: working set 7.4 GB, private commit (rx's peak_commit_gb)
+   6.15 GB. A CPU item whose arm's finished jobs all kept at least --shared-min GB of their working set outside their
+   commit asks rx for (1 + margin) x its peak commit + --pad ("private"); the largest working-set-less-commit of a job
+   with the same mapped files (the paths after --cache/--fit/--aug/--select/--read/--pread/--edges/--map-from: its
+   signature) is reserved once under --cap-mem while any such job runs. GPU items keep their working set (a CUDA job's
+   commit, 17-44 GB, is reservations, not use). --no-private turns this off.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -385,7 +393,8 @@ def sibling(armkey):
 
 def measure(jobs, items_by):
     """Peaks and runtimes by arm from mpr's jobs (done with rc 0), live use of running ones."""
-    M = {"peak": {}, "live": {}, "sib": {}, "rt": {}, "cls_rt": {}}
+    M = {"peak": {}, "live": {}, "sib": {}, "rt": {}, "cls_rt": {}, "commit": {}, "gap_min": {}, "gap_max": {},
+         "live_commit": {}, "cls_peak": {}, "cls_commit": {}, "cls_gap_min": {}, "cls_gap_max": {}}
     for j in jobs:
         n = j.get("name") or ""
         if not n:
@@ -395,10 +404,20 @@ def measure(jobs, items_by):
             p = float(j.get("peak_mem_gb") or 0.0)
             if p > 0:
                 M["peak"][k] = max(M["peak"].get(k, 0.0), p)
+                kc = klass(n)
+                M["cls_peak"][kc] = max(M["cls_peak"].get(kc, 0.0), p)
                 it, sk = items_by.get(n), sibling(k)
                 if it is not None and sk:
                     key = (sk, it["gpu"] > 0)
                     M["sib"][key] = max(M["sib"].get(key, 0.0), p)
+                pc = float(j.get("peak_commit_gb") or 0.0)
+                if pc > 0:     # private commit; the working set less this is mapped (shareable) pages
+                    M["commit"][k] = max(M["commit"].get(k, 0.0), pc)
+                    M["gap_min"][k] = min(M["gap_min"].get(k, p - pc), p - pc)
+                    M["gap_max"][k] = max(M["gap_max"].get(k, p - pc), p - pc)
+                    M["cls_commit"][kc] = max(M["cls_commit"].get(kc, 0.0), pc)
+                    M["cls_gap_min"][kc] = min(M["cls_gap_min"].get(kc, p - pc), p - pc)
+                    M["cls_gap_max"][kc] = max(M["cls_gap_max"].get(kc, p - pc), p - pc)
             if j.get("started") and j.get("ended"):
                 rt = float(j["ended"]) - float(j["started"])
                 if rt > 0:
@@ -408,13 +427,57 @@ def measure(jobs, items_by):
             lv = float(j.get("live_mem_gb") or 0.0)
             if lv > 0:
                 M["live"][k] = max(M["live"].get(k, 0.0), lv)
+            lc = float(j.get("live_peak_commit_gb") or 0.0)
+            if lc > 0:
+                M["live_commit"][k] = max(M["live_commit"].get(k, 0.0), lc)
     return M
+
+
+INFLAGS = ("--cache", "--fit", "--aug", "--select", "--read", "--pread", "--edges", "--map-from")
+
+
+def signature(it):
+    """The files an item maps from disk: jobs with the same signature share those pages."""
+    t = it["command"].split()
+    return " ".join(sorted(t[i + 1] for i in range(len(t) - 1) if t[i] in INFLAGS))
+
+
+def private_basis(it, M):
+    """(peak private commit in GB to size a CPU item by, GB of mapped pages it shares), or None: size it by its working
+    set. Its arm's finished jobs decide; an arm with none takes its class's (cs31-rgu for cs31-rgu-kp-3-s0) when every
+    finished job of the class qualifies."""
+    if not a.private or it["gpu"] != 0:
+        return None
+    k, kc = arm(it["name"]), klass(it["name"])
+    if k in M["commit"]:
+        return (M["commit"][k], M["gap_max"][k]) if M["gap_min"][k] >= a.shared_min else None
+    if kc in M["cls_commit"] and M["cls_gap_min"][kc] >= a.shared_min:
+        return M["cls_commit"][kc], M["cls_gap_max"][kc]
+    return None
+
+
+def private_sized(it, M):
+    return private_basis(it, M) is not None
+
+
+def shared_pages(items_by, M):
+    """GB of mapped pages per signature: the largest working set less commit of a job of its private-sized arms."""
+    S = {}
+    for it in items_by.values():
+        pb = private_basis(it, M)
+        if pb is not None:
+            s = signature(it)
+            S[s] = max(S.get(s, 0.0), pb[1])
+    return S
 
 
 def request(it, decl, M, margin):
     """(GB to ask rx for, basis) for an item whose written (or REF) memory is decl."""
     k = arm(it["name"])
     meas, live = M["peak"].get(k), M["live"].get(k, 0.0)
+    pb = private_basis(it, M)
+    if pb is not None:                    # its mapped pages are reserved once per signature (main loop)
+        return max(0.5, ceil1((1 + margin) * max(pb[0], M["live_commit"].get(k, 0.0)) + a.pad)), "private"
     if meas:
         return max(0.5, ceil1((1 + margin) * max(meas, live) + a.pad)), "measured"
     sk = sibling(k)
@@ -467,7 +530,7 @@ def growth(ov, M):
     for x in ov["mine"]:
         j = ov["by_id"].get(x.get("id")) or {}
         live = float(j.get("live_mem_gb") or 0.0)
-        est = M["peak"].get(arm(j.get("name") or ""))
+        est = M["peak"].get(arm(j.get("name") or "")) or M["cls_peak"].get(klass(j.get("name") or ""))
         if est is None:
             ran = ov["now"] - float(j.get("started") or ov["now"])
             est = float(x["req"]["mem_gb"]) if ran < a.plateau_min * 60 else live
@@ -548,6 +611,9 @@ def main(argv=None):
     ap.add_argument("--calm-polls", type=int, default=5)
     ap.add_argument("--plateau-min", type=float, default=30.0)
     ap.add_argument("--summary-polls", type=int, default=15)
+    ap.add_argument("--no-private", dest="private", action="store_false",
+                    help="size every item by its working set (as before 6 Oct 20:10)")
+    ap.add_argument("--shared-min", type=float, default=0.5)
     a = ap.parse_args(argv)
 
     HOME = os.environ.get("RX_HOME") or ""
@@ -652,6 +718,13 @@ def main(argv=None):
         M = measure(ov["jobs"], by)
         grow = growth(ov, M)
         budget = (avail - grow - a.avail_floor) if avail is not None else float("inf")
+        S_sig = shared_pages(by, M)
+        act_sigs = set()
+        for x in ov["mine"]:
+            it_ = by.get((ov["by_id"].get(x.get("id")) or {}).get("name") or "")
+            if it_ is not None and private_sized(it_, M):
+                act_sigs.add(signature(it_))
+        shared = sum(S_sig.get(s, 0.0) for s in act_sigs)     # mapped pages, once per signature, under --cap-mem
         rec = {"t": round(time.time()), "cpu": cpu_pct, "avail": None if avail is None else round(avail, 1),
                "commit": None if commit is None else round(commit, 1), "pagein": None if pin is None else round(pin),
                "gpu_util": g0.get("util_pct"), "gpu_mem": g0.get("mem_used_gb"),
@@ -659,7 +732,8 @@ def main(argv=None):
                "mpr": [round(ov["mpr_c"] + ov["q_c"], 2), round(ov["mpr_m"] + ov["q_m"], 1),
                        round(ov["mpr_g"] + ov["q_g"], 2)],
                "free": [round(ov["free_c"], 1), round(ov["free_m"], 1), round(ov["free_g"], 2)],
-               "grow": round(grow, 1), "margin": margin, "pressure": why, "sent": [], "head": None, "gpu_head": None}
+               "grow": round(grow, 1), "margin": margin, "pressure": why, "sent": [], "head": None, "gpu_head": None,
+               "shared": round(shared, 2)}
 
         left = [i for i in items if i["name"] not in st["sent"] and i["name"] not in st["dropped"]]
         if not left:
@@ -745,8 +819,10 @@ def main(argv=None):
             if gpu_head and g > 0:
                 continue
             ready_since.setdefault(n, time.time())
-            fits_cm = (mpr_c + c <= a.cap_cpus + 1e-9 and mpr_m + m <= a.cap_mem + 1e-9 and c <= free_c + 1e-9
-                       and m <= free_m + 1e-9 and m <= budget + 1e-9)
+            sig = signature(it) if basis == "private" else None
+            new_sh = S_sig.get(sig, 0.0) if sig is not None and sig not in act_sigs else 0.0
+            fits_cm = (mpr_c + c <= a.cap_cpus + 1e-9 and mpr_m + shared + new_sh + m <= a.cap_mem + 1e-9
+                       and c <= free_c + 1e-9 and m <= free_m + 1e-9 and m + new_sh <= budget + 1e-9)
             gpu_ok = mpr_g + g <= a.cap_gpus + 1e-9 and g <= free_g + 1e-9
             fits = fits_cm and gpu_ok
             tag = f"{n}({c:g}c/{m:g}G{'' if basis == 'written' else f' {basis}, written {decl:g}'}"
@@ -784,13 +860,17 @@ def main(argv=None):
             if jid or a.dry:
                 mpr_c, mpr_m, mpr_g = mpr_c + c, mpr_m + m, mpr_g + g
                 free_c, free_m, free_g = free_c - c, free_m - m, free_g - g
-                budget -= m
+                budget -= m + new_sh
+                if sig is not None and sig not in act_sigs:
+                    act_sigs.add(sig)
+                    shared += new_sh
                 sent_now.append(f"{tag}{f'/{g:g}gpu' if g else ''})")
         rec["sent"], rec["head"], rec["gpu_head"] = sent_now, blocked_head, gpu_head
+        rec["shared"] = round(shared, 2)
         if sent_now:
-            log(f"sent {len(sent_now)}: {' '.join(sent_now)} | mpr now {mpr_c:.1f}c/{mpr_m:.1f}G/{mpr_g:g}g, "
-                f"free {free_c:.1f}c/{free_m:.1f}G/{free_g:g}g, host {avail if avail is None else round(avail, 1)} GB "
-                f"available, margin {margin:g}")
+            log(f"sent {len(sent_now)}: {' '.join(sent_now)} | mpr now {mpr_c:.1f}c/{mpr_m:.1f}G/{mpr_g:g}g "
+                f"+ {shared:.1f}G mapped once, free {free_c:.1f}c/{free_m:.1f}G/{free_g:g}g, host "
+                f"{avail if avail is None else round(avail, 1)} GB available, margin {margin:g}")
         if blocked_head:
             say_once("_head", f"head {blocked_head} cannot start; holding later items for it")
         else:
@@ -824,8 +904,8 @@ def summary(polls, rec, ov):
         return
     log(f"util: host cpu {rec['cpu']}%, available {rec['avail']} GB (commit headroom {rec['commit']}), page-ins "
         f"{rec['pagein']}/s, gpu {rec['gpu_util']}% {rec['gpu_mem']} GB (shared {rec['gshared']}) | mpr "
-        f"{rec['mpr'][0]:g}c/{rec['mpr'][1]:g}G/{rec['mpr'][2]:g}g of {a.cap_cpus:g}/{a.cap_mem:g}/{a.cap_gpus:g}, "
-        f"growth {rec['grow']} GB, margin {rec['margin']:g}")
+        f"{rec['mpr'][0]:g}c/{rec['mpr'][1]:g}G/{rec['mpr'][2]:g}g + {rec.get('shared', 0):g}G mapped once, of "
+        f"{a.cap_cpus:g}/{a.cap_mem:g}/{a.cap_gpus:g}, growth {rec['grow']} GB, margin {rec['margin']:g}")
 
 
 if __name__ == "__main__":
