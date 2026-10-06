@@ -66,6 +66,11 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    Since 20:55: an arm with no finished run of its own takes its class's peak only when at least --corun-cls-arms of the
    class's arms are measured and their peaks agree within --corun-cls-spread (cs31-rga: every arm 6.72 GB; cs30-rga's
    arms run from 0.46 to 10.97 GB, so one arm says nothing about the next, and a run that outgrows its capped pool fails).
+   Since 22:30: else its sibling arm's peak (the same arm in another class of the same part) times the largest ratio of
+   the two classes' peaks over at least --corun-sib-arms arms measured in both. cs30-ena/cs30-rga ran 0.63 on L1, 0.59
+   on L3 and 0.65 on dirfwd, so ena-T4 is expected at 7.1 GB from rga-T4's 10.97. Part 15 runs each ena arm once, so
+   none would otherwise ever be measured before it ran, and all 24 would run alone on a card one ena run keeps 20-40%
+   busy.
    A GPU item waits as a GPU head (CPU items go on) only while mpr's own GPU jobs fill mpr's GPU cap. When the cap has
    room for it, on a card that is free or held by another project's job (crag's jobs yield to a queued mpr job), and
    host memory or CPUs fall short, it holds every item behind it at once, so memory collects for it to start or to
@@ -565,13 +570,37 @@ def cls_gpu_peak(kc, M):
     return max(ps)
 
 
+def sib_gpu_peak(k, M):
+    """torch peak expected of arm k from its sibling arm in another class of the same part: the sibling's peak times
+    the largest ratio of the two classes' peaks over at least --corun-sib-arms arms measured in both, else None."""
+    sk, kc = sibling(k), klass(k)
+    if not sk:
+        return None
+    mine = {sibling(x): p for x, p in (M["cls_gpu_arms"].get(kc) or {}).items() if sibling(x)}
+    best = None
+    for oc, arms in M["cls_gpu_arms"].items():
+        if oc == kc or oc.split("-")[0] != kc.split("-")[0]:
+            continue
+        other = {sibling(x): p for x, p in arms.items() if sibling(x)}
+        if sk not in other:
+            continue
+        ratios = [mine[x] / other[x] for x in mine if x in other and other[x] > 0]
+        if len(ratios) >= a.corun_sib_arms:
+            v = other[sk] * max(ratios)
+            best = v if best is None else max(best, v)
+    return best
+
+
 def corun(it, M):
-    """torch's measured peak (GB) of a GPU item that may share the card with another, else None."""
+    """torch's measured (or, from a sibling arm, expected) peak (GB) of a GPU item that may share the card with
+    another, else None."""
     if (not a.corun or M.get("gpu_spill") or it["gpu"] <= 0 or "cuda_alloc.py " not in it["command"]
             or "--frac" in it["command"]):
         return None
     k, kc = arm(it["name"]), klass(it["name"])
     p = M["gpu_peak"][k] if k in M["gpu_peak"] else cls_gpu_peak(kc, M)
+    if p is None and k not in M["gpu_peak"]:
+        p = sib_gpu_peak(k, M)
     if p is None or p > a.corun_frac * a.card_gb - a.corun_slack:
         return None
     return p
@@ -780,6 +809,9 @@ def main(argv=None):
                     help="measured arms a class needs before its peak stands for an unmeasured arm")
     ap.add_argument("--corun-cls-spread", type=float, default=1.25,
                     help="largest/smallest torch peak of a class's measured arms for its peak to stand for the rest")
+    ap.add_argument("--corun-sib-arms", type=int, default=2,
+                    help="arms measured in two classes of a part before a sibling arm's peak, times the classes' "
+                         "largest ratio, stands for an unmeasured arm")
     a = ap.parse_args(argv)
 
     HOME = os.environ.get("RX_HOME") or ""
@@ -1034,7 +1066,7 @@ def main(argv=None):
             fits = fits_cm and gpu_ok
             tag = f"{n}({c:g}c/{m:g}G{'' if basis == 'written' else f' {basis}, written {decl:g}'}"
             if cr is not None:
-                tag += f", shares the card: torch peak {cr:g} GB, --frac {a.corun_frac:g}"
+                tag += f", shares the card: torch peak {round(cr, 2):g} GB, --frac {a.corun_frac:g}"
             if not fits and g > 0 and fits_cm and n_q < a.queue_gpu and mpr_g + g <= a.cap_gpus + 1e-9:
                 jid = submit(it, m)       # waits in rx's queue; mpr's priority sets its share aside
                 if jid or a.dry:
