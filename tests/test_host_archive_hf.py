@@ -339,3 +339,58 @@ def test_check_tag_and_safe_rel():
         with pytest.raises(SystemExit):
             HA.check_tag(bad)
     assert HA.safe_rel("outputs/a.npz") == "outputs/a.npz"
+
+
+def test_drive_sends_the_laptops_copies_and_leaves_the_rest_to_the_host(tmp_path, server, monkeypatch):
+    """--local-root: a planned file the laptop holds with the host's sha256 goes up from the laptop (under any of the
+    roots); one it holds with other bytes, or not at all, is left to the host job. With every file here, no host job."""
+    store, base = server
+    lap, routed = tmp_path / "lap", tmp_path / "routed"
+    a = write(lap, "outputs/x/a.json", b"alpha" * 10)
+    write(lap, "outputs/x/b.json", b"BRAVO!")                       # the host's b.json: same size, other bytes
+    b = {"rel": "outputs/x/b.json", "bytes": 6, "mtime_ns": 1, "sha256": hashlib.sha256(b"bravo!").hexdigest()}
+    write(lap, "outputs/l12/c.npz", b"x" * 40)                      # a laptop file of the same size, other bytes ...
+    c = write(routed, "outputs/l12/c.npz", os.urandom(40))         # ... and the host's copy under the second root
+    d = {"rel": "outputs/x/d.rows.npz", "bytes": 9, "mtime_ns": 1, "sha256": hashlib.sha256(b"d" * 9).hexdigest()}
+    rows = [dict(a, mtime_ns=5), b, dict(c, mtime_ns=7), d]         # the host's mtimes are not the laptop's
+    monkeypatch.setattr(HA, "OUT", tmp_path / "ha")
+    monkeypatch.setattr(HA, "host_manifest", lambda inc, exc, src="ws": [dict(r) for r in rows])
+    monkeypatch.setattr(HA, "lfs_batch", lambda s, h, repo, chunk: [
+        {"present": True} if x["sha256"] in store.objects else
+        {"href": f"{base}/single/{x['sha256']}", "expires_in": 3600} for x in chunk])
+    tree = {}
+    sess = FakeSession(tree)
+    monkeypatch.setattr(HA, "hf_api", lambda name: FakeApi(tree))
+    monkeypatch.setattr(HA, "hf_session", lambda name: (sess, {}))
+    calls = []
+
+    def fake_host(tag, workers, cpus, mem, env):                     # the host: every TLS connection fails
+        calls.append(tag)
+        wave = json.loads((tmp_path / f"ha/wave_{tag}.json").read_text())
+        assert sorted(f["rel"] for f in wave["files"]) == ["outputs/x/b.json", "outputs/x/d.rows.npz"]
+        HA.atomic_json(tmp_path / f"ha/done_{tag}.json", {"tag": tag, "files": [
+            {"rel": f["rel"], "bytes": f["bytes"], "sha256": None, "status": "failed", "error": "SSL"}
+            for f in wave["files"]]})
+
+    monkeypatch.setattr(HA, "host_upload", fake_host)
+    HA.stage_drive("u/r", "t5", ["outputs/**"], [], None, workers=2, cpus=1, mem=0.5, per_commit=10,
+                   local_roots=[lap, routed])
+    assert calls == ["t5"] and not (tmp_path / "ha/wave_t5.json").exists()
+    assert store.objects[a["sha256"]] == b"alpha" * 10 and store.objects[c["sha256"]] == (routed / c["rel"]).read_bytes()
+    assert b["sha256"] not in store.objects                           # the laptop's bytes differ: never sent
+    done = json.loads((tmp_path / "ha/done_t5.json").read_text())
+    assert done["from_laptop"] == 2 and {f["rel"]: f["status"] for f in done["files"]} == {
+        "outputs/l12/c.npz": "uploaded", "outputs/x/a.json": "uploaded", "outputs/x/b.json": "failed",
+        "outputs/x/d.rows.npz": "failed"}
+    rec = json.loads((tmp_path / "ha/commit_t5.json").read_text())
+    assert rec["status"] == "INCOMPLETE" and rec["archived"] == 2
+    assert sorted(m[0] for m in rec["not_uploaded"]) == ["outputs/x/b.json", "outputs/x/d.rows.npz"]
+    assert tree["ws/outputs/x/a.json"] == (a["bytes"], a["sha256"]) and tree["ws/outputs/l12/c.npz"][1] == c["sha256"]
+    # the laptop now holds the host's bytes of b and d: no host job, VERIFIED
+    write(lap, "outputs/x/b.json", b"bravo!")
+    write(lap, "outputs/x/d.rows.npz", b"d" * 9)
+    calls.clear()
+    HA.stage_drive("u/r", "t6", ["outputs/**"], [], None, workers=2, cpus=1, mem=0.5, per_commit=10,
+                   local_roots=[lap, routed])
+    assert calls == [] and json.loads((tmp_path / "ha/commit_t6.json").read_text())["status"] == "VERIFIED"
+    assert json.loads((tmp_path / "ha/done_t6.json").read_text())["from_laptop"] == 2      # a and c were held already

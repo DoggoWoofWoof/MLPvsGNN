@@ -17,7 +17,11 @@ printed, logged or written, and it is sent only to huggingface.co):
   links    a restore's signed download links for manifests/<tag>.json (or --manifest-from a local file), the redirect
            followed by hand -> outputs/host_archive/links_<tag>.json (host-bound, short-lived)
   status   each manifest in the repo against its tree
-  drive    plan, push, the host's upload as an rx job, fetch, commit, for one tag
+  drive    plan, push, the host's upload as an rx job, fetch, commit, for one tag. With --local-root DIR (repeatable),
+           a planned file the laptop holds under one of those folders at the planned size is sent from the laptop
+           instead (the links never reach the host); it counts only when its bytes hash to the sha256 the host
+           computed, and the host job gets only the rest. Since 6 Oct the host's network re-signs every TLS
+           connection with a CA the host does not trust (a TLS-inspecting firewall), so the host's own uploads fail
   drive-restore  links, the host's restore as an rx job (into --dest, '.' = the workspace itself), fetch its record
 Host modes (no token of any kind: HF_TOKEN is removed and huggingface_hub is never imported):
   upload   each planned file streamed to its links, hashed as sent -> outputs/host_archive/done_<tag>.json
@@ -383,18 +387,65 @@ def rx(*args: str, check: bool = True) -> str:
     return out
 
 
+def upload_local(files: list[dict], roots: list[Path], workers: int) -> list[dict]:
+    """Wave files sent from the laptop's own copies: a copy under roots at the planned size counts only when its bytes
+    hash to the sha256 the host computed (upload_one completes no other object); a file with no such copy is
+    'not_here' (or 'hash_mismatch') and stays for the host."""
+    def one(f: dict) -> dict:
+        last = None
+        for base in roots:
+            try:
+                st = (base / safe_rel(f["rel"])).stat()
+            except OSError:
+                continue
+            if st.st_size == f["bytes"]:
+                last = upload_one(base, {**f, "mtime_ns": st.st_mtime_ns})       # the laptop copy's own mtime: the hash decides
+                if last["status"] != "hash_mismatch":
+                    return last
+        return last or {"rel": f["rel"], "bytes": f["bytes"], "sha256": None, "status": "not_here", "seconds": 0.0}
+
+    with ThreadPoolExecutor(max(1, workers)) as ex:
+        return list(ex.map(one, files))
+
+
+def host_upload(tag: str, workers: int, cpus: float, mem: float, env: str) -> None:
+    """The host streams wave_<tag>.json's files to their links (an rx job); its record comes back as done_<tag>.json."""
+    rel = lambda p: p.relative_to(ROOT).as_posix()                                        # noqa: E731
+    out = rx("run", "--name", f"archive-{tag}", "--env", env, "--cpus", str(cpus), "--mem", str(mem), "-w",
+             "--inputs", rel(Path(__file__).resolve()), "--inputs", rel(OUT / f"wave_{tag}.json"),
+             "--", "python", rel(Path(__file__).resolve()), "upload", "--tag", tag, "--workers", str(workers), check=False)
+    print(out[-1500:], flush=True)
+    rx("fetch", "--glob", f"outputs/host_archive/done_{tag}.json", "--overwrite")
+
+
 def stage_drive(repo: str, tag: str, include: list[str], exclude: list[str], token_name: str | None, workers: int,
-                cpus: float, mem: float, per_commit: int, env: str = "mpr-cpu", src_ws: str = "ws") -> None:
+                cpus: float, mem: float, per_commit: int, env: str = "mpr-cpu", src_ws: str = "ws",
+                local_roots: list | None = None) -> None:
     stage_plan(repo, tag, include, exclude, token_name, src_ws)
     plan = read_json(OUT / f"plan_{tag}.json")
-    rel = lambda p: p.relative_to(ROOT).as_posix()                                        # noqa: E731
+    wave_p, done_p = OUT / f"wave_{tag}.json", OUT / f"done_{tag}.json"
+    local = []
     if any(p["upload"] for p in plan["files"]):
-        out = rx("run", "--name", f"archive-{tag}", "--env", env, "--cpus", str(cpus), "--mem", str(mem), "-w",
-                 "--inputs", rel(Path(__file__).resolve()), "--inputs", rel(OUT / f"wave_{tag}.json"),
-                 "--", "python", rel(Path(__file__).resolve()), "upload", "--tag", tag, "--workers", str(workers), check=False)
-        print(out[-1500:], flush=True)
-        rx("fetch", "--glob", f"outputs/host_archive/done_{tag}.json", "--overwrite")
-    (OUT / f"wave_{tag}.json").unlink(missing_ok=True)                                    # spent links stay nowhere
+        wave = read_json(wave_p)
+        if local_roots:
+            t0 = time.time()
+            recs = upload_local(wave["files"], [Path(x) for x in local_roots], workers)
+            local = [r for r in recs if r["status"] == "uploaded"]
+            by: dict[str, int] = {}
+            for r in recs:
+                by[r["status"]] = by.get(r["status"], 0) + 1
+            print(f"upload {tag} from the laptop: {by} in {time.time() - t0:.0f}s", flush=True)
+            sent = {r["rel"] for r in local}
+            wave = {**wave, "files": [f for f in wave["files"] if f["rel"] not in sent]}
+            atomic_json(wave_p, wave)
+        if wave["files"]:
+            host_upload(tag, workers, cpus, mem, env)
+    wave_p.unlink(missing_ok=True)                                                        # spent links stay nowhere
+    if local:                                  # the laptop's uploads join the host's record (or make it, with no host job)
+        host = read_json(done_p) if done_p.exists() else {"tag": tag, "utc": utc(), "files": []}
+        files = {r["rel"]: r for r in host["files"]}
+        files.update({r["rel"]: r for r in local})
+        atomic_json(done_p, {**host, "files": sorted(files.values(), key=lambda r: r["rel"]), "from_laptop": len(local)})
     stage_commit(repo, tag, token_name, per_commit)
 
 
@@ -610,6 +661,8 @@ def main(argv=None) -> None:
     ap.add_argument("--overwrite", action="store_true", help="restore: replace a file that differs")
     ap.add_argument("--env", default="mpr-cpu", help="drive/drive-restore: the rx environment of the host job")
     ap.add_argument("--src-ws", default="ws", help="plan/drive: the host workspace of this project to archive from")
+    ap.add_argument("--local-root", action="append", default=[],
+                    help="drive: a laptop folder whose copies of planned files are sent from the laptop (repeatable)")
     ap.add_argument("--manifest-from")
     a = ap.parse_args(argv)
     if a.mode in ("upload", "restore"):
@@ -637,7 +690,7 @@ def main(argv=None) -> None:
         if not a.include:
             ap.error("drive needs --include")
         stage_drive(a.repo, tag, a.include, a.exclude, a.token_name, a.workers, a.cpus, a.mem, a.per_commit, a.env,
-                    a.src_ws)
+                    a.src_ws, a.local_root)
     elif a.mode == "drive-restore":
         if not a.dest:
             ap.error("drive-restore needs --dest ('.' restores into the workspace itself)")

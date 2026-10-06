@@ -8,8 +8,9 @@ Each cycle (--every-min, default 60):
             turns the copy off
   status    the host's job table -> outputs/host_job_logs/status_latest.json; each finished job's log (its last --log-kb KB)
             -> outputs/host_job_logs/<id>.log, once (at most --logs-per-cycle a cycle, newest first)
-  results   result-like files under the host's outputs/ and logs/ (json md txt log yaml yml csv tsv jsonl up to --file-mb,
-            models pt ckpt pth safetensors up to --model-mb) that the laptop lacks or holds at another size. A running
+  results   result-like files under the host's outputs/ and logs/ (json md txt log yaml yml csv tsv jsonl and the per-row
+            predictions *.rows.npz up to --file-mb, models pt ckpt pth safetensors up to --model-mb) that the laptop
+            lacks or holds at another size. A running
             job's files and anything modified in the last 30 min wait for a later cycle; a delete list's files and
             outputs/host_archive/ are never fetched. rx's own fetch, by exact path: a local file rx did not write is left
             alone and reported once. Filed stages' files (ROUTED: the levels, six-base, mq design, the universal-v2 pilot)
@@ -23,7 +24,10 @@ Every --archive-every-h hours (default 6), and on the first cycle:
             file against the three repos that hold it -> outputs/host_ops/coverage_latest.json
   archive   the uncovered files -> JGY9895/mpr-host-archive as tag o-inc-<stamp> (scripts/host_archive_hf.py's drive:
             signed links, no credential on the host), unless an archive or restore job is active; then the ops folder ->
-            the same repo at ops/host_ops.tar.gz, uploaded from the laptop.
+            the same repo at ops/host_ops.tar.gz, uploaded from the laptop. A file the laptop holds (the results step
+            brings them) goes up from the laptop, counted only when its bytes hash to the host's sha256; the host job
+            sends the rest. Since 6 Oct the host's network re-signs every TLS connection with a CA the host does not
+            trust (a TLS-inspecting firewall), so the host's own uploads fail: 7 archives from 16:54 to 23:25 sent nothing.
 Tokens are chosen by name (mpr-archive2 = JGY9895, mpr = KK9895, freebase = Swastik9895); their values go to
 huggingface_hub only and are never printed or written. Systems only: nothing is deleted anywhere and no host file changes.
 
@@ -66,6 +70,8 @@ MIRROR_PREFIX = "CRAG/data/final_canonical/"
 OPS_EXT = {".py", ".txt", ".json", ".log", ".yaml", ".yml", ".sh", ".md", ".b64", ".sha", ".csv", ".ps1", ".toml",
            ".tsv", ".jsonl", ".html"}
 RES_EXT = {".json", ".md", ".txt", ".log", ".yaml", ".yml", ".csv", ".tsv", ".jsonl"}
+ROWS = ".rows.npz"     # per-row predictions (the grades' paired tests read them): small, and on 6 Oct the only results
+                       # the laptop lacked; other .npz (builds, caches, anchors) stay on the host and the hub
 MOD_EXT = {".pt", ".ckpt", ".pth", ".safetensors"}
 ACTIVE = ("running", "queued", "waiting", "starting", "launching")
 FINISHED = ("done", "failed", "cancelled", "lost", "error")
@@ -234,7 +240,7 @@ def results(proj, r, rows: list, names: list[str], a, state: dict) -> dict:
         ext = Path(rel).suffix.lower()
         if rel.startswith("outputs/host_archive/") or rel in dele or (rel, size) in known or REGEN.search(rel):
             continue
-        cap = a.file_mb if ext in RES_EXT else a.model_mb if ext in MOD_EXT else None
+        cap = a.file_mb if ext in RES_EXT or rel.endswith(ROWS) else a.model_mb if ext in MOD_EXT else None
         if cap is None or size > cap * 1e6 or in_flux(rel, mtime_ns, names, now) or on_laptop(rel, size):
             continue
         cand.append((rel, size))
@@ -447,7 +453,7 @@ def cycle(a, state: dict, first: bool) -> None:
                 log(f"archive {tag}: {len(unc)} files, {sum(s for _, s in unc) / 1e9:.2f} GB -> {REPO}")
                 try:
                     HA.stage_drive(REPO, tag, [glob.escape(x) for x, _ in unc], [], TOKEN, workers=6, cpus=1, mem=0.5,
-                                   per_commit=200, env="mpr-cpu")
+                                   per_commit=200, env="mpr-cpu", local_roots=[ROOT, HOSTCOPY])
                     com = json.loads((ARCH / f"commit_{tag}.json").read_text(encoding="utf-8"))
                     ok = com.get("status") == "VERIFIED"
                     log(f"archive {tag}: {com.get('status')}, {com.get('archived')} files")
