@@ -71,11 +71,14 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    alone sets aside the memory of the next GPU item that shares the card too, so the pair starts together when that
    run ends. While the card spills into system memory (GPU shared memory more than 2 GB above its lowest reading), no
    GPU run starts sharing the card.
-   Queued ahead (21:20): when mpr's GPU jobs that would hand the card to the head are expected to end within
-   --prequeue-min minutes (a job's arm's median finished runtime, else its class's longest, times --corun-slow while
-   it shares the card), the head waits in rx's queue from then on (at most --queue-gpu queued): it starts the moment
-   the card frees, and another project's job on the card yields to it. Gaps between GPU runs were 11-84 s, and at
-   20:50 crag's job took the half of the card a finished run freed; kp-11 ran beside it at half speed.
+   Queued ahead (21:20, 21:25): a GPU head that waits for mpr's own GPU jobs is queued in rx (at most --queue-gpu
+   queued) once they are expected to free enough of the card for it within --prequeue-min minutes, or within
+   --prequeue-max while part of the card is already free for mpr (a job's runtime: its arm's median finished
+   runtime, else its class's longest; for a job sharing the card, the median of its arm's, else its class's, runs that
+   shared the card, else the former times --corun-slow). It starts the moment the card
+   frees, and another project's job yields to it. Gaps between GPU runs were 11-84 s; at 20:50 and again at 21:19
+   crag's job took the half of the card a finished run of ours freed, and our run still going ran beside it at
+   about half speed (epochs 109-157 s against 63-73 alone; two of our runs together: 108-116 s each).
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -444,7 +447,7 @@ def measure(jobs, items_by):
     """Peaks and runtimes by arm from mpr's jobs (done with rc 0), live use of running ones."""
     M = {"peak": {}, "live": {}, "sib": {}, "rt": {}, "cls_rt": {}, "commit": {}, "gap_min": {}, "gap_max": {},
          "live_commit": {}, "cls_peak": {}, "cls_commit": {}, "cls_gap_min": {}, "cls_gap_max": {},
-         "gpu_peak": {}, "cls_gpu_peak": {}, "cls_gpu_arms": {}}
+         "gpu_peak": {}, "cls_gpu_peak": {}, "cls_gpu_arms": {}, "rt_co": {}, "cls_rt_co": {}}
     for j in jobs:
         n = j.get("name") or ""
         if not n:
@@ -477,7 +480,10 @@ def measure(jobs, items_by):
                     ca[k] = max(ca.get(k, 0.0), gp)
             if j.get("started") and j.get("ended"):
                 rt = float(j["ended"]) - float(j["started"])
-                if rt > 0:
+                if rt > 0 and abs(float((j.get("req") or {}).get("gpus") or 0) - a.corun_share) < 1e-9:
+                    M["rt_co"].setdefault(k, []).append(rt)          # it shared the card
+                    M["cls_rt_co"].setdefault(klass(n), []).append(rt)
+                elif rt > 0:
                     M["rt"].setdefault(k, []).append(rt)
                     M["cls_rt"].setdefault(klass(n), []).append(rt)
         elif j.get("state") in RUNNING:
@@ -557,12 +563,31 @@ def gpu_ends(ov, M):
         if j.get("state") not in RUNNING or g <= 0 or not j.get("started"):
             continue
         n = j.get("name") or ""
-        rts = M["rt"].get(arm(n))
-        est = statistics.median(rts) if rts else max(M["cls_rt"].get(klass(n)) or [0.0])
-        if est and abs(g - a.corun_share) < 1e-9:     # it shares the card; its arm's runs mostly had it alone
-            est *= a.corun_slow
+        co = abs(g - a.corun_share) < 1e-9          # it shares the card
+        rco = (M["rt_co"].get(arm(n)) or M["cls_rt_co"].get(klass(n))) if co else None
+        if rco:
+            est = statistics.median(rco)
+        else:
+            rts = M["rt"].get(arm(n))
+            est = statistics.median(rts) if rts else max(M["cls_rt"].get(klass(n)) or [0.0])
+            if est and co:      # runs that had the card alone, slowed by sharing it
+                est *= a.corun_slow
         out.append((float(j["started"]) + est if est else None, g))
     return out
+
+
+def start_eta(g, have, ends):
+    """Host time at which mpr's running GPU jobs (ends: sorted [(end, share)]) leave g of the card free for mpr,
+    which has `have` free now; None when they never do or an estimate is missing."""
+    if have + 1e-9 >= g:
+        return 0.0
+    for e, x in ends:
+        if e is None:
+            return None
+        have += x
+        if have + 1e-9 >= g:
+            return e
+    return None
 
 
 def request(it, decl, M, margin):
@@ -717,6 +742,8 @@ def main(argv=None):
     ap.add_argument("--prequeue-min", type=float, default=8.0,
                     help="queue the GPU head in rx this many minutes before the mpr GPU job that frees the card for it "
                          "is expected to end (0: off)")
+    ap.add_argument("--prequeue-max", type=float, default=20.0,
+                    help="... or this many minutes ahead while part of the card is already free for mpr")
     ap.add_argument("--corun-slow", type=float, default=1.6,
                     help="runtime factor of a job sharing the card, in --prequeue-min's estimate")
     ap.add_argument("--corun-cls-arms", type=int, default=3,
@@ -893,12 +920,11 @@ def main(argv=None):
         own_gs = ([float(x["req"].get("gpus") or 0) for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
                   + list(ov["q_gpu_g"]))
         sent_now, blocked_head, gpu_head, pair_wait = [], None, None, False
-        # GPU share mpr will have free once its GPU jobs expected to end within --prequeue-min have ended
-        pq_room = a.cap_gpus - mpr_g + sum(x for e, x in (gpu_ends(ov, M) if a.prequeue_min > 0 else [])
-                                           if e is not None and e - ov["now"] <= a.prequeue_min * 60)
+        ends = gpu_ends(ov, M) if a.prequeue_min > 0 else []
+        ends = sorted(ends, key=lambda t: float("inf") if t[0] is None else t[0])
         if a.dry:
-            log("GPU jobs' expected minutes left (share):", [(None if e is None else round((e - ov["now"]) / 60, 1), x)
-                                                            for e, x in gpu_ends(ov, M)], f"queue-ahead room {pq_room:.2f}")
+            log("GPU jobs' expected minutes left (share):",
+                [(None if e is None else round((e - ov["now"]) / 60, 1), x) for e, x in ends])
         for it in longest_first(left, items, M):
             n = it["name"]
             try:
@@ -973,7 +999,6 @@ def main(argv=None):
                     n_q += 1
                     own_gpu.append(m)
                     own_gs.append(g)
-                    pq_room -= g
                     mpr_c, mpr_m, mpr_g, free_c, free_m = mpr_c + c, mpr_m + m, mpr_g + g, free_c - c, free_m - m
                     budget -= m
                     sent_now.append(f"{tag}/{g:g}gpu, queued)")
@@ -981,16 +1006,17 @@ def main(argv=None):
             if not fits:
                 if g > 0:
                     if own_gpu and mpr_g + g > a.cap_gpus + 1e-9:
-                        if n_q < a.queue_gpu and g <= pq_room + 1e-9:
-                            # the card it needs frees within --prequeue-min: it waits in rx's queue from now, so it
-                            # starts the moment the card frees and another project's job on the card yields to it
+                        eta = start_eta(g, a.cap_gpus - mpr_g, ends) if ends else None
+                        ahead = (a.prequeue_max if a.cap_gpus - mpr_g > 1e-9 else a.prequeue_min) * 60
+                        if n_q < a.queue_gpu and eta is not None and eta - ov["now"] <= ahead:
+                            # mpr's jobs free the card it needs soon: it waits in rx's queue from now, so it starts
+                            # the moment the card frees and another project's job on the card yields to it
                             if fits_cm:
                                 jid = submit(it, m)
                                 if jid or a.dry:
                                     n_q += 1
                                     own_gpu.append(m)
                                     own_gs.append(g)
-                                    pq_room -= g
                                     mpr_c, mpr_m, mpr_g = mpr_c + c, mpr_m + m, mpr_g + g
                                     free_c, free_m = free_c - c, free_m - m
                                     budget -= m
@@ -1029,7 +1055,6 @@ def main(argv=None):
                 if g > 0:
                     own_gpu.append(m)
                     own_gs.append(g)
-                    pq_room -= g
         rec["sent"], rec["head"], rec["gpu_head"] = sent_now, blocked_head, gpu_head
         rec["shared"] = round(shared, 2)
         if sent_now:
