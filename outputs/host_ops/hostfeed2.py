@@ -48,6 +48,9 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    with the same mapped files (the paths after --cache/--fit/--aug/--select/--read/--pread/--edges/--map-from: its
    signature) is reserved once under --cap-mem while any such job runs. GPU items keep their working set (a CUDA job's
    commit, 17-44 GB, is reservations, not use). --no-private turns this off.
+   A GPU job that ran without cuda_alloc.py's cache bound sizes only items that also run without it (21:55): its
+   working set counts PyTorch's cache spilled into system memory (cs30-rga-L3: 17.8 GB, 12.3 of them spilled), and
+   through the sibling rule it had cs30-ena-L3, which runs bounded, ask for 18.6 GB.
 8. Two GPU runs share the card (6 Oct, 20:45). A sub-second probe of the card (gpu_busy_probe.py) read it 50-60% busy
    in every 5 s slice of a part-15 rga run's epochs: one run leaves about half the card idle. A GPU item that runs
    under cuda_alloc.py, and whose arm (else its class) has a measured torch peak of at most
@@ -79,6 +82,10 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    frees, and another project's job yields to it. Gaps between GPU runs were 11-84 s; at 20:50 and again at 21:19
    crag's job took the half of the card a finished run of ours freed, and our run still going ran beside it at
    about half speed (epochs 109-157 s against 63-73 alone; two of our runs together: 108-116 s each).
+   A queued GPU job that cannot start before one of mpr's running GPU jobs ends (the card lacks room for it even
+   without other projects' jobs) takes that job's memory over, so that memory is counted once: in the cap, in rx's
+   free memory and in the host budget (21:45). The head waiting to be queued ahead needs only the memory beyond it;
+   at 21:38 it held every CPU item for want of 11 GB that the GPU run it waited for would hand it.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -318,7 +325,7 @@ def overview():
     newest = {}
     for j in jobs:            # newest first
         newest.setdefault(j.get("name"), j)
-    return {"now": d.get("now") or time.time(), "sys": d.get("sysinfo") or {},
+    return {"now": d.get("now") or time.time(), "sys": d.get("sysinfo") or {}, "gpus_total": gpus_total,
             "free_c": cap["cpus"] - cap.get("reserve_cpus", 0) - sum(float(x["req"]["cpus"]) for x in act),
             "free_m": cap["mem_gb"] - cap.get("reserve_mem_gb", 0) - sum(float(x["req"]["mem_gb"]) for x in act),
             "free_g": gpus_total - sum(float(x["req"].get("gpus") or 0) for x in act),
@@ -447,7 +454,7 @@ def measure(jobs, items_by):
     """Peaks and runtimes by arm from mpr's jobs (done with rc 0), live use of running ones."""
     M = {"peak": {}, "live": {}, "sib": {}, "rt": {}, "cls_rt": {}, "commit": {}, "gap_min": {}, "gap_max": {},
          "live_commit": {}, "cls_peak": {}, "cls_commit": {}, "cls_gap_min": {}, "cls_gap_max": {},
-         "gpu_peak": {}, "cls_gpu_peak": {}, "cls_gpu_arms": {}, "rt_co": {}, "cls_rt_co": {}}
+         "gpu_peak": {}, "cls_gpu_peak": {}, "cls_gpu_arms": {}, "rt_co": {}, "cls_rt_co": {}, "peak_unb": {}}
     for j in jobs:
         n = j.get("name") or ""
         if not n:
@@ -455,6 +462,12 @@ def measure(jobs, items_by):
         k = arm(n)
         if j.get("state") == "done" and j.get("rc") == 0:
             p = float(j.get("peak_mem_gb") or 0.0)
+            if (p > 0 and float((j.get("req") or {}).get("gpus") or 0) > 0
+                    and "cuda_alloc.py" not in (j.get("display") or "")):
+                # without the cache bound its working set counts PyTorch's cache spilled into system memory: it
+                # sizes only items that also run unbounded (request())
+                M["peak_unb"][k] = max(M["peak_unb"].get(k, 0.0), p)
+                p = 0.0
             if p > 0:
                 M["peak"][k] = max(M["peak"].get(k, 0.0), p)
                 kc = klass(n)
@@ -594,6 +607,8 @@ def request(it, decl, M, margin):
     """(GB to ask rx for, basis) for an item whose written (or REF) memory is decl."""
     k = arm(it["name"])
     meas, live = M["peak"].get(k), M["live"].get(k, 0.0)
+    if not meas and it["gpu"] > 0 and "cuda_alloc.py " not in it["command"]:
+        meas = M["peak_unb"].get(k)
     pb = private_basis(it, M)
     if pb is not None:                    # its mapped pages are reserved once per signature (main loop)
         return max(0.5, ceil1((1 + margin) * max(pb[0], M["live_commit"].get(k, 0.0)) + a.pad)), "private"
@@ -862,7 +877,16 @@ def main(argv=None):
                          f"{k} {max(v.values()):g}/{min(v.values()):g} n{len(v)}"
                          f"{'*' if cls_gpu_peak(k, M) is not None else ''}"
                          for k, v in sorted(M["cls_gpu_arms"].items()) if k in {klass(x) for x in by}))
-        grow = growth(ov, M)
+        # A queued mpr GPU job that cannot start before one of mpr's running GPU jobs ends (the card lacks room for it
+        # even without other projects' jobs) takes that job's memory when it starts: that memory is counted once.
+        run_gm = [float(x["req"]["mem_gb"]) for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
+        run_g = sum(float(x["req"].get("gpus") or 0) for x in ov["mine"])
+        hand, hand_left = 0.0, sum(run_gm)
+        for gq, mq in zip(ov["q_gpu_g"], ov["q_gpu_mem"]):
+            if run_gm and ov["gpus_total"] - run_g + 1e-9 < gq:
+                cov = min(mq, min(run_gm), hand_left)
+                hand, hand_left = hand + cov, hand_left - cov
+        grow = growth(ov, M) - hand
         budget = (avail - grow - a.avail_floor) if avail is not None else float("inf")
         S_sig = shared_pages(by, M)
         act_sigs = set()
@@ -875,11 +899,11 @@ def main(argv=None):
                "commit": None if commit is None else round(commit, 1), "pagein": None if pin is None else round(pin),
                "gpu_util": g0.get("util_pct"), "gpu_mem": g0.get("mem_used_gb"),
                "gshared": None if gshared is None else round(gshared, 2),
-               "mpr": [round(ov["mpr_c"] + ov["q_c"], 2), round(ov["mpr_m"] + ov["q_m"], 1),
+               "mpr": [round(ov["mpr_c"] + ov["q_c"], 2), round(ov["mpr_m"] + ov["q_m"] - hand, 1),
                        round(ov["mpr_g"] + ov["q_g"], 2)],
                "free": [round(ov["free_c"], 1), round(ov["free_m"], 1), round(ov["free_g"], 2)],
                "grow": round(grow, 1), "margin": margin, "pressure": why, "sent": [], "head": None, "gpu_head": None,
-               "shared": round(shared, 2)}
+               "shared": round(shared, 2), "hand": round(hand, 1)}
 
         left = [i for i in items if i["name"] not in st["sent"] and i["name"] not in st["dropped"]]
         if not left:
@@ -909,10 +933,10 @@ def main(argv=None):
             continue
 
         free_c, free_m, free_g = ov["free_c"], ov["free_m"], ov["free_g"]
-        mpr_c, mpr_m, mpr_g = ov["mpr_c"] + ov["q_c"], ov["mpr_m"] + ov["q_m"], ov["mpr_g"] + ov["q_g"]
+        mpr_c, mpr_m, mpr_g = ov["mpr_c"] + ov["q_c"], ov["mpr_m"] + ov["q_m"] - hand, ov["mpr_g"] + ov["q_g"]
         n_q = len(ov["queued_mpr_gpu"])
-        if n_q:   # their CPUs and memory are set aside for them ahead of anything sent now
-            free_c, free_m = free_c - ov["q_c"], free_m - ov["q_m"]
+        if n_q:   # their CPUs and memory are set aside for them ahead of anything sent now (less what they take over)
+            free_c, free_m = free_c - ov["q_c"], free_m - ov["q_m"] + hand
         # mpr's GPU jobs running or waiting in rx's queue, and the GPU items sent this poll: the next GPU item takes
         # the GPU (and that memory) from one of them, so it holds only the GPU items behind it
         own_gpu = ([float(x["req"]["mem_gb"]) for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
@@ -924,7 +948,9 @@ def main(argv=None):
         ends = sorted(ends, key=lambda t: float("inf") if t[0] is None else t[0])
         if a.dry:
             log("GPU jobs' expected minutes left (share):",
-                [(None if e is None else round((e - ov["now"]) / 60, 1), x) for e, x in ends])
+                [(None if e is None else round((e - ov["now"]) / 60, 1), x) for e, x in ends],
+                f"| queued GPU jobs take over {hand:g} GB | mpr {mpr_c:g}c/{mpr_m:.1f}G/{mpr_g:g}g, rx free "
+                f"{free_c:.1f}c/{free_m:.1f}G/{free_g:g}g, budget {budget:.1f} GB")
         for it in longest_first(left, items, M):
             n = it["name"]
             try:
@@ -1010,17 +1036,25 @@ def main(argv=None):
                         ahead = (a.prequeue_max if a.cap_gpus - mpr_g > 1e-9 else a.prequeue_min) * 60
                         if n_q < a.queue_gpu and eta is not None and eta - ov["now"] <= ahead:
                             # mpr's jobs free the card it needs soon: it waits in rx's queue from now, so it starts
-                            # the moment the card frees and another project's job on the card yields to it
-                            if fits_cm:
+                            # the moment the card frees and another project's job on the card yields to it. When it
+                            # cannot start before one of mpr's running GPU jobs ends, it takes over that job's memory:
+                            # only memory beyond that must be free now
+                            cov = (min(m, min(run_gm), hand_left)
+                                   if run_gm and ov["gpus_total"] - run_g + 1e-9 < g else 0.0)
+                            mq = m - cov
+                            if (mpr_c + c <= a.cap_cpus + 1e-9 and mpr_m + shared + new_sh + mq <= a.cap_mem + 1e-9
+                                    and c <= free_c + 1e-9 and mq <= free_m + 1e-9 and mq + new_sh <= budget + 1e-9):
                                 jid = submit(it, m)
                                 if jid or a.dry:
                                     n_q += 1
                                     own_gpu.append(m)
                                     own_gs.append(g)
-                                    mpr_c, mpr_m, mpr_g = mpr_c + c, mpr_m + m, mpr_g + g
-                                    free_c, free_m = free_c - c, free_m - m
-                                    budget -= m
-                                    sent_now.append(f"{tag}/{g:g}gpu, queued ahead)")
+                                    hand_left -= cov
+                                    mpr_c, mpr_m, mpr_g = mpr_c + c, mpr_m + mq, mpr_g + g
+                                    free_c, free_m = free_c - c, free_m - mq
+                                    budget -= mq
+                                    sent_now.append(f"{tag}/{g:g}gpu, queued ahead"
+                                                    + (f", takes over {cov:g} GB" if cov else "") + ")")
                                 continue
                             blocked_head = n      # memory and CPUs collect so it can be queued ahead
                             break
@@ -1095,7 +1129,8 @@ def summary(polls, rec, ov):
     log(f"util: host cpu {rec['cpu']}%, available {rec['avail']} GB (commit headroom {rec['commit']}), page-ins "
         f"{rec['pagein']}/s, gpu {rec['gpu_util']}% {rec['gpu_mem']} GB (shared {rec['gshared']}) | mpr "
         f"{rec['mpr'][0]:g}c/{rec['mpr'][1]:g}G/{rec['mpr'][2]:g}g + {rec.get('shared', 0):g}G mapped once, of "
-        f"{a.cap_cpus:g}/{a.cap_mem:g}/{a.cap_gpus:g}, growth {rec['grow']} GB, margin {rec['margin']:g}")
+        f"{a.cap_cpus:g}/{a.cap_mem:g}/{a.cap_gpus:g}, growth {rec['grow']} GB, margin {rec['margin']:g}"
+        + (f", {rec['hand']:g} GB taken over by queued GPU jobs" if rec.get("hand") else ""))
 
 
 if __name__ == "__main__":
