@@ -81,7 +81,9 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    class of the same part: cs30-rga-L3 took 23.7 min, cs30-ena's longest arm then 10.3); for a job sharing the card,
    the median of its arm's, else its class's, runs that shared the card, else the former times --corun-slow). Only
    --prequeue-min applies while the estimate rests on a class's runs alone (22:05): a queued job older than rx's hold
-   (30 min) stops the feeder's sends. It starts the moment the card
+   (30 min) stops the feeder's sends. A run queued ahead counts its share in mpr's GPU total before the run it waits
+   for ends, so that total can exceed --cap-gpus; a CPU item needs no GPU room (22:12: from 21:58 every CPU item had
+   failed the GPU test, and none was sent for 14 min). It starts the moment the card
    frees, and another project's job yields to it. Gaps between GPU runs were 11-84 s; at 20:50 and again at 21:19
    crag's job took the half of the card a finished run of ours freed, and our run still going ran beside it at
    about half speed (epochs 109-157 s against 63-73 alone; two of our runs together: 108-116 s each).
@@ -1028,7 +1030,7 @@ def main(argv=None):
             new_sh = S_sig.get(sig, 0.0) if sig is not None and sig not in act_sigs else 0.0
             fits_cm = (mpr_c + c <= a.cap_cpus + 1e-9 and mpr_m + shared + new_sh + m <= a.cap_mem + 1e-9
                        and c <= free_c + 1e-9 and m <= free_m + 1e-9 and m + new_sh <= budget + 1e-9)
-            gpu_ok = mpr_g + g <= a.cap_gpus + 1e-9 and g <= free_g + 1e-9
+            gpu_ok = g <= 0 or (mpr_g + g <= a.cap_gpus + 1e-9 and g <= free_g + 1e-9)   # queued ahead: mpr_g > cap
             fits = fits_cm and gpu_ok
             tag = f"{n}({c:g}c/{m:g}G{'' if basis == 'written' else f' {basis}, written {decl:g}'}"
             if cr is not None:
