@@ -48,6 +48,18 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    with the same mapped files (the paths after --cache/--fit/--aug/--select/--read/--pread/--edges/--map-from: its
    signature) is reserved once under --cap-mem while any such job runs. GPU items keep their working set (a CUDA job's
    commit, 17-44 GB, is reservations, not use). --no-private turns this off.
+8. Two GPU runs share the card (6 Oct, 20:45). A sub-second probe of the card (gpu_busy_probe.py) read it 50-60% busy
+   in every 5 s slice of a part-15 rga run's epochs: one run leaves about half the card idle. A GPU item that runs
+   under cuda_alloc.py, and whose arm (else its class) has a measured torch peak of at most
+   --corun-frac x --card-gb - --corun-slack GB, asks rx for --corun-share of the GPU, so two such runs fit, and runs
+   with cuda_alloc.py --frac --corun-frac, so both PyTorch pools fit on the card (two unbounded pools spilled into
+   system memory and thrashed, 4 Oct). The torch peak of a finished GPU job is read from its log: the runner's exit
+   line ("[cuda_alloc] peak allocated X GB") or a script's own "peak X GB" lines (chainscore29's train). Larger or
+   unmeasured arms keep the share written in ITEMS (0.55: alone on the card) until a finished job measures them.
+   cuda_corun_check.py gated this: two rga L3 smokes sharing the card under --frac 0.45 wrote rows and records
+   identical to one run alone (IDENTICAL, 20:33). --no-corun turns this off.
+   A GPU item waiting behind mpr's own GPU job, running or still in rx's queue or sent this poll, holds only the GPU
+   items behind it (before 20:45 a job still in rx's queue did not count, and the GPU item behind it held every item).
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -298,6 +310,8 @@ def overview():
             "q_c": sum(float((q.get("req") or {}).get("cpus") or 0) for q in qm),
             "q_m": sum(float((q.get("req") or {}).get("mem_gb") or 0) for q in qm),
             "q_g": sum(float((q.get("req") or {}).get("gpus") or 0) for q in qm),
+            "q_gpu_mem": [float((q.get("req") or {}).get("mem_gb") or 0) for q in qm
+                          if float((q.get("req") or {}).get("gpus") or 0) > 0],
             "q_age": time.time() - min((float(q.get("enq") or time.time()) for q in qm), default=time.time()),
             "hold_s": float(cap.get("hold_after_s", 1800)),
             "jobs": jobs, "by_id": {j["id"]: j for j in jobs}, "newest": newest}
@@ -391,10 +405,28 @@ def sibling(armkey):
     return (t[0], tuple(t[2:])) if len(t) > 2 else None
 
 
+GPU_PEAK_RES = (re.compile(rb"\[cuda_alloc\] peak allocated (\d+(?:\.\d+)?) GB"),
+                re.compile(rb"\bpeak (\d+(?:\.\d+)?) GB"))
+GPU_PEAKS = {}       # finished job id -> torch's peak GPU allocation in GB, or None when its log names none
+
+
+def job_gpu_peak(jid):
+    """torch's peak GPU allocation of a finished job, from its log (a finished job's log does not change)."""
+    if jid not in GPU_PEAKS:
+        try:
+            b = (Path(HOME) / "projects" / PROJECT / "jobs" / jid / "output.log").read_bytes()
+        except OSError:      # a cleaned-up job: no log will appear
+            b = b""
+        v = [float(m.group(1)) for r in GPU_PEAK_RES for m in r.finditer(b)]
+        GPU_PEAKS[jid] = max(v) if v else None
+    return GPU_PEAKS[jid]
+
+
 def measure(jobs, items_by):
     """Peaks and runtimes by arm from mpr's jobs (done with rc 0), live use of running ones."""
     M = {"peak": {}, "live": {}, "sib": {}, "rt": {}, "cls_rt": {}, "commit": {}, "gap_min": {}, "gap_max": {},
-         "live_commit": {}, "cls_peak": {}, "cls_commit": {}, "cls_gap_min": {}, "cls_gap_max": {}}
+         "live_commit": {}, "cls_peak": {}, "cls_commit": {}, "cls_gap_min": {}, "cls_gap_max": {},
+         "gpu_peak": {}, "cls_gpu_peak": {}}
     for j in jobs:
         n = j.get("name") or ""
         if not n:
@@ -418,6 +450,11 @@ def measure(jobs, items_by):
                     M["cls_commit"][kc] = max(M["cls_commit"].get(kc, 0.0), pc)
                     M["cls_gap_min"][kc] = min(M["cls_gap_min"].get(kc, p - pc), p - pc)
                     M["cls_gap_max"][kc] = max(M["cls_gap_max"].get(kc, p - pc), p - pc)
+            if a.corun and float((j.get("req") or {}).get("gpus") or 0) > 0 and j.get("id"):
+                gp = job_gpu_peak(j["id"])
+                if gp:
+                    M["gpu_peak"][k] = max(M["gpu_peak"].get(k, 0.0), gp)
+                    M["cls_gpu_peak"][klass(n)] = max(M["cls_gpu_peak"].get(klass(n), 0.0), gp)
             if j.get("started") and j.get("ended"):
                 rt = float(j["ended"]) - float(j["started"])
                 if rt > 0:
@@ -469,6 +506,17 @@ def shared_pages(items_by, M):
             s = signature(it)
             S[s] = max(S.get(s, 0.0), pb[1])
     return S
+
+
+def corun(it, M):
+    """torch's measured peak (GB) of a GPU item that may share the card with another, else None."""
+    if not a.corun or it["gpu"] <= 0 or "cuda_alloc.py " not in it["command"] or "--frac" in it["command"]:
+        return None
+    k, kc = arm(it["name"]), klass(it["name"])
+    p = M["gpu_peak"][k] if k in M["gpu_peak"] else M["cls_gpu_peak"].get(kc)
+    if p is None or p > a.corun_frac * a.card_gb - a.corun_slack:
+        return None
+    return p
 
 
 def request(it, decl, M, margin):
@@ -614,6 +662,12 @@ def main(argv=None):
     ap.add_argument("--no-private", dest="private", action="store_false",
                     help="size every item by its working set (as before 6 Oct 20:10)")
     ap.add_argument("--shared-min", type=float, default=0.5)
+    ap.add_argument("--no-corun", dest="corun", action="store_false",
+                    help="every GPU item keeps the share written in ITEMS (as before 6 Oct 20:45)")
+    ap.add_argument("--corun-frac", type=float, default=0.45, help="cuda_alloc.py --frac for a run sharing the card")
+    ap.add_argument("--corun-share", type=float, default=0.5, help="rx GPU share of a run sharing the card")
+    ap.add_argument("--corun-slack", type=float, default=2.0, help="GB between a measured peak and its cap")
+    ap.add_argument("--card-gb", type=float, default=23.99, help="the card's memory as torch counts it (GiB)")
     a = ap.parse_args(argv)
 
     HOME = os.environ.get("RX_HOME") or ""
@@ -767,7 +821,10 @@ def main(argv=None):
         n_q = len(ov["queued_mpr_gpu"])
         if n_q:   # their CPUs and memory are set aside for them ahead of anything sent now
             free_c, free_m = free_c - ov["q_c"], free_m - ov["q_m"]
-        own_gpu = [float(x["req"]["mem_gb"]) for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
+        # mpr's GPU jobs running or waiting in rx's queue, and the GPU items sent this poll: the next GPU item takes
+        # the GPU (and that memory) from one of them, so it holds only the GPU items behind it
+        own_gpu = ([float(x["req"]["mem_gb"]) for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
+                   + list(ov["q_gpu_mem"]))
         sent_now, blocked_head, gpu_head = [], None, None
         for it in longest_first(left, items, M):
             n = it["name"]
@@ -815,6 +872,10 @@ def main(argv=None):
                                         + float(it["ref"].group(3))) * 10) / 10
             decl = float(mem)
             m, basis = request(it, decl, M, margin)
+            cr = corun(it, M)
+            if cr is not None:     # two such runs fit on the card; each one's pool is capped to its half
+                it = dict(it, gpu=a.corun_share, command=it["command"].replace(
+                    "cuda_alloc.py ", f"cuda_alloc.py --frac {a.corun_frac:g} ", 1))
             c, g = it["cpus"], it["gpu"]
             if gpu_head and g > 0:
                 continue
@@ -826,10 +887,13 @@ def main(argv=None):
             gpu_ok = mpr_g + g <= a.cap_gpus + 1e-9 and g <= free_g + 1e-9
             fits = fits_cm and gpu_ok
             tag = f"{n}({c:g}c/{m:g}G{'' if basis == 'written' else f' {basis}, written {decl:g}'}"
+            if cr is not None:
+                tag += f", shares the card: torch peak {cr:g} GB, --frac {a.corun_frac:g}"
             if not fits and g > 0 and fits_cm and n_q < a.queue_gpu and mpr_g + g <= a.cap_gpus + 1e-9:
                 jid = submit(it, m)       # waits in rx's queue; mpr's priority sets its share aside
                 if jid or a.dry:
                     n_q += 1
+                    own_gpu.append(m)
                     mpr_c, mpr_m, mpr_g, free_c, free_m = mpr_c + c, mpr_m + m, mpr_g + g, free_c - c, free_m - m
                     budget -= m
                     sent_now.append(f"{tag}/{g:g}gpu, queued)")
@@ -865,6 +929,8 @@ def main(argv=None):
                     act_sigs.add(sig)
                     shared += new_sh
                 sent_now.append(f"{tag}{f'/{g:g}gpu' if g else ''})")
+                if g > 0:
+                    own_gpu.append(m)
         rec["sent"], rec["head"], rec["gpu_head"] = sent_now, blocked_head, gpu_head
         rec["shared"] = round(shared, 2)
         if sent_now:

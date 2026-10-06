@@ -25,8 +25,13 @@ record with and without it.
 The script runs in this process (runpy, as __main__, with sys.argv = [SCRIPT, ARGS...]). torch is not imported here
 before the script's own imports, so the thread and CUBLAS variables a script sets before importing numpy and torch take
 effect as before; the fraction is queued with torch.cuda._lazy_call at the script's first import of torch.
+
+At exit it prints "[cuda_alloc] peak allocated X GB, peak reserved Y GB" for the whole run (a script's own
+torch.cuda.reset_peak_memory_stats calls are folded in first), so the feeder can learn each arm's GPU memory from
+its log whatever the script prints.
 """
 import argparse
+import atexit
 import builtins
 import os
 import runpy
@@ -48,12 +53,36 @@ def main(argv=None):
     frac = float(a.frac)
     orig = builtins.__import__
     done = []
+    peak = [0, 0]          # allocated, reserved: the largest seen before any reset
 
     def bound():
         import torch
         torch.cuda.set_per_process_memory_fraction(frac)
         print(f"[cuda_alloc] fraction {frac:g} of {torch.cuda.get_device_name(torch.cuda.current_device())}, "
               f"PYTORCH_CUDA_ALLOC_CONF={os.environ.get('PYTORCH_CUDA_ALLOC_CONF')}", flush=True)
+        reset0 = torch.cuda.reset_peak_memory_stats
+
+        def reset(device=None):            # statistics only: what the kernels compute is untouched
+            try:
+                peak[0] = max(peak[0], torch.cuda.max_memory_allocated(device))
+                peak[1] = max(peak[1], torch.cuda.max_memory_reserved(device))
+            except Exception:
+                pass
+            return reset0(device)
+
+        torch.cuda.reset_peak_memory_stats = reset
+        torch.cuda.memory.reset_peak_memory_stats = reset
+
+        def report():
+            try:
+                al = max(peak[0], torch.cuda.max_memory_allocated())
+                rs = max(peak[1], torch.cuda.max_memory_reserved())
+                print(f"[cuda_alloc] peak allocated {al / 2 ** 30:.2f} GB, peak reserved {rs / 2 ** 30:.2f} GB",
+                      flush=True)
+            except Exception:
+                pass
+
+        atexit.register(report)
 
     def hooked(name, globals=None, locals=None, fromlist=(), level=0):
         m = orig(name, globals, locals, fromlist, level)
