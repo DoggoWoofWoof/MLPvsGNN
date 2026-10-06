@@ -172,6 +172,13 @@ IDENTICAL on all four variants; a 2wiki smoke on the card (each run twice; a rep
 and its CPU read check gate the six fits and their reads. The grade runs on the host once all six checks pass. Expected
 between 9 and 11 am, 7 October.
 
+Revised 04:30, 7 October (no number of this step exists yet). The smoke passed on the card at 03:45: both repeats
+IDENTICAL, the read check PASS. A training step takes 65 to 130 ms beside another GPU run, so a variant is about 43
+minutes (8 epochs of about 320 s), not 3. A fit (four variants) is about 2.8 hours. The fits need a fifth to a third
+of the card (process peaks 3.8 to 6.3 GB), so J5 and the heavy leave-outs take 0.3 of it and L-metaqa and L-musique
+0.2: four fits train at once. L-musique, sent at half the card, was restarted at 0.2 as s1i-train-L-musique.
+Expected: the first four fits by about 7:45 am, the other two by about 10:30, the grade about 11:00 to 11:30 am.
+
 ## 10. What this does not do
 
 - The encoder and the substrate embeddings stay frozen; no step will change them.

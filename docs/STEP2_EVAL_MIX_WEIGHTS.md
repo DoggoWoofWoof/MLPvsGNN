@@ -111,6 +111,9 @@ difference per question, and later steps train with these weights.
    reads and CPU checks.
 3. The grade, once step 1's grade exists. Expected one to two hours after step 1's verdict.
 
+Queued 04:27, 7 October (076cf5c): a 2wiki smoke on the card first, then the six weighted fits at step 1's
+shares as step 1's fits free the card, then reads and checks. Expected verdict: about 2 to 3 pm, 7 October.
+
 ## 8. What this does not do
 
 - No new carves. The selection is step 1's.
