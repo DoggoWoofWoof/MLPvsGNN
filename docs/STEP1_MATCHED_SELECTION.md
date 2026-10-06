@@ -179,6 +179,13 @@ of the card (process peaks 3.8 to 6.3 GB), so J5 and the heavy leave-outs take 0
 0.2: four fits train at once. L-musique, sent at half the card, was restarted at 0.2 as s1i-train-L-musique.
 Expected: the first four fits by about 7:45 am, the other two by about 10:30, the grade about 11:00 to 11:30 am.
 
+Revised 05:15, 7 October (no number of this step exists yet). A fit's GPU peak is the context-statistics pass at the
+start of each FiLM variant, not its training epochs. That pass is float64 over 256-question batches: about 520k
+rows on metaqa and musique, about 1.3 GB above the resident carves. Both L-musique fits ran out of memory there
+under the 0.18 cap, after their first variant, and restarted from scratch with no cap (retry_cmd). The first
+epoch's loss repeated exactly. The unsent fits now cap at 0.32 of the card (heavy; share 0.3) and 0.22 (L-metaqa;
+share 0.2). Expected: the last fit (L-2wiki) starts about 8:05 am, and the grade lands about 11:30 am.
+
 ## 10. What this does not do
 
 - The encoder and the substrate embeddings stay frozen; no step will change them.

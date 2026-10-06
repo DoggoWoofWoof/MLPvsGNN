@@ -113,6 +113,8 @@ difference per question, and later steps train with these weights.
 
 Queued 04:27, 7 October (076cf5c): a 2wiki smoke on the card first, then the six weighted fits at step 1's
 shares as step 1's fits free the card, then reads and checks. Expected verdict: about 2 to 3 pm, 7 October.
+Revised 05:15: step 2's L-musique fit ran out of GPU memory at its first context-statistics pass and restarted with
+no cap (docs/STEP1_MATCHED_SELECTION.md section 9). Expected verdict: about 2 to 2:30 pm.
 
 ## 8. What this does not do
 
