@@ -71,6 +71,11 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    alone sets aside the memory of the next GPU item that shares the card too, so the pair starts together when that
    run ends. While the card spills into system memory (GPU shared memory more than 2 GB above its lowest reading), no
    GPU run starts sharing the card.
+   Queued ahead (21:20): when mpr's GPU jobs that would hand the card to the head are expected to end within
+   --prequeue-min minutes (a job's arm's median finished runtime, else its class's longest, times --corun-slow while
+   it shares the card), the head waits in rx's queue from then on (at most --queue-gpu queued): it starts the moment
+   the card frees, and another project's job on the card yields to it. Gaps between GPU runs were 11-84 s, and at
+   20:50 crag's job took the half of the card a finished run freed; kp-11 ran beside it at half speed.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -544,6 +549,22 @@ def corun(it, M):
     return p
 
 
+def gpu_ends(ov, M):
+    """[(expected end in host seconds or None, GPU share)] of mpr's running GPU jobs."""
+    out = []
+    for j in ov["jobs"]:
+        g = float((j.get("req") or {}).get("gpus") or 0)
+        if j.get("state") not in RUNNING or g <= 0 or not j.get("started"):
+            continue
+        n = j.get("name") or ""
+        rts = M["rt"].get(arm(n))
+        est = statistics.median(rts) if rts else max(M["cls_rt"].get(klass(n)) or [0.0])
+        if est and abs(g - a.corun_share) < 1e-9:     # it shares the card; its arm's runs mostly had it alone
+            est *= a.corun_slow
+        out.append((float(j["started"]) + est if est else None, g))
+    return out
+
+
 def request(it, decl, M, margin):
     """(GB to ask rx for, basis) for an item whose written (or REF) memory is decl."""
     k = arm(it["name"])
@@ -693,6 +714,11 @@ def main(argv=None):
     ap.add_argument("--corun-share", type=float, default=0.5, help="rx GPU share of a run sharing the card")
     ap.add_argument("--corun-slack", type=float, default=2.0, help="GB between a measured peak and its cap")
     ap.add_argument("--card-gb", type=float, default=23.99, help="the card's memory as torch counts it (GiB)")
+    ap.add_argument("--prequeue-min", type=float, default=8.0,
+                    help="queue the GPU head in rx this many minutes before the mpr GPU job that frees the card for it "
+                         "is expected to end (0: off)")
+    ap.add_argument("--corun-slow", type=float, default=1.6,
+                    help="runtime factor of a job sharing the card, in --prequeue-min's estimate")
     ap.add_argument("--corun-cls-arms", type=int, default=3,
                     help="measured arms a class needs before its peak stands for an unmeasured arm")
     ap.add_argument("--corun-cls-spread", type=float, default=1.25,
@@ -867,6 +893,12 @@ def main(argv=None):
         own_gs = ([float(x["req"].get("gpus") or 0) for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
                   + list(ov["q_gpu_g"]))
         sent_now, blocked_head, gpu_head, pair_wait = [], None, None, False
+        # GPU share mpr will have free once its GPU jobs expected to end within --prequeue-min have ended
+        pq_room = a.cap_gpus - mpr_g + sum(x for e, x in (gpu_ends(ov, M) if a.prequeue_min > 0 else [])
+                                           if e is not None and e - ov["now"] <= a.prequeue_min * 60)
+        if a.dry:
+            log("GPU jobs' expected minutes left (share):", [(None if e is None else round((e - ov["now"]) / 60, 1), x)
+                                                            for e, x in gpu_ends(ov, M)], f"queue-ahead room {pq_room:.2f}")
         for it in longest_first(left, items, M):
             n = it["name"]
             try:
@@ -941,6 +973,7 @@ def main(argv=None):
                     n_q += 1
                     own_gpu.append(m)
                     own_gs.append(g)
+                    pq_room -= g
                     mpr_c, mpr_m, mpr_g, free_c, free_m = mpr_c + c, mpr_m + m, mpr_g + g, free_c - c, free_m - m
                     budget -= m
                     sent_now.append(f"{tag}/{g:g}gpu, queued)")
@@ -948,6 +981,23 @@ def main(argv=None):
             if not fits:
                 if g > 0:
                     if own_gpu and mpr_g + g > a.cap_gpus + 1e-9:
+                        if n_q < a.queue_gpu and g <= pq_room + 1e-9:
+                            # the card it needs frees within --prequeue-min: it waits in rx's queue from now, so it
+                            # starts the moment the card frees and another project's job on the card yields to it
+                            if fits_cm:
+                                jid = submit(it, m)
+                                if jid or a.dry:
+                                    n_q += 1
+                                    own_gpu.append(m)
+                                    own_gs.append(g)
+                                    pq_room -= g
+                                    mpr_c, mpr_m, mpr_g = mpr_c + c, mpr_m + m, mpr_g + g
+                                    free_c, free_m = free_c - c, free_m - m
+                                    budget -= m
+                                    sent_now.append(f"{tag}/{g:g}gpu, queued ahead)")
+                                continue
+                            blocked_head = n      # memory and CPUs collect so it can be queued ahead
+                            break
                         gpu_head = n          # mpr's own GPU job hands it the GPU and its memory together;
                         extra = max(0.0, m - max(own_gpu))   # what that does not cover is set aside from now on
                         if extra > 0:
@@ -979,6 +1029,7 @@ def main(argv=None):
                 if g > 0:
                     own_gpu.append(m)
                     own_gs.append(g)
+                    pq_room -= g
         rec["sent"], rec["head"], rec["gpu_head"] = sent_now, blocked_head, gpu_head
         rec["shared"] = round(shared, 2)
         if sent_now:
