@@ -164,6 +164,14 @@ epoch state and report both picks, which costs a few reads.
    for the earlier joint lean fits), then their reads, two runs sharing the card.
 5. The grade (`scripts/step1_grade.py`), and the results below. Expected around midday, 7 October.
 
+Revised 03:05, 7 October (no number of this step exists yet). The look shards stopped three times within seconds on
+inputs the host no longer held: the six base's stage-2 checkpoints, the stage-2 eval arrays and webqsp's relation
+embeddings. Each was pushed back from the laptop and checked against its pinned sha256. The shards now wait on two
+two-question smokes on the host, which passed, and they started at 02:46. The GPU trainer's CPU identity with fit8 is
+IDENTICAL on all four variants; a 2wiki smoke on the card (each run twice; a repeat that differs drops the fits)
+and its CPU read check gate the six fits and their reads. The grade runs on the host once all six checks pass. Expected
+between 9 and 11 am, 7 October.
+
 ## 10. What this does not do
 
 - The encoder and the substrate embeddings stay frozen; no step will change them.
