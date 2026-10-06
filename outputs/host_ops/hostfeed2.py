@@ -68,9 +68,9 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    arms run from 0.46 to 10.97 GB, so one arm says nothing about the next, and a run that outgrows its capped pool fails).
    Since 22:30: else its sibling arm's peak (the same arm in another class of the same part) times the largest ratio of
    the two classes' peaks over at least --corun-sib-arms arms measured in both. cs30-ena/cs30-rga ran 0.63 on L1, 0.59
-   on L3 and 0.65 on dirfwd, so ena-T4 is expected at 7.1 GB from rga-T4's 10.97. Part 15 runs each ena arm once, so
-   none would otherwise ever be measured before it ran, and all 24 would run alone on a card one ena run keeps 20-40%
-   busy.
+   on L3 and 0.65 on dirfwd, so ena-T4 is expected at 7.1 GB from rga-T4's 10.97. A class's seed-0 runs come before
+   any of its arms is measured: part 15's 8 ena arms would all run seed 0 alone, on a card one ena run keeps 20-40%
+   busy; now the first two measure the ratio and the other six share the card.
    A GPU item waits as a GPU head (CPU items go on) only while mpr's own GPU jobs fill mpr's GPU cap. When the cap has
    room for it, on a card that is free or held by another project's job (crag's jobs yield to a queued mpr job), and
    host memory or CPUs fall short, it holds every item behind it at once, so memory collects for it to start or to
