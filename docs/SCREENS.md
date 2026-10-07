@@ -1100,3 +1100,23 @@ seed null's floors:
   - Its floor (0.0200) covers both.
 - **The full run** (`fgc-*`, docs/FULL_ROUND9.md) does not run: `fgc-gate-rc` exits 1. With gcs out, round nine's
   combined screen (rel with gcs) is not needed.
+
+### Hop depth of the top-1 errors (a diagnosis, declared 8 October about 03:10, before its numbers)
+
+`outputs/mp_unified/hopdiag.py` (its selftest passes), on the host's CPU: no training, and it decides nothing. It
+asks whether a question-to-depth input, the KB systems' hop attention (NuTrea, ReaRev, TransferNet weigh a node by how
+many hops the question asks for), is worth a screen.
+- **Why:** metaqa's 3-hop questions hold most of the gap left after rel (hit@1 0.595 against the GNN's 0.802 in the
+  screens). Step 1's MLP reads each node's depth from the seeds (WALK's first-hop and is-seed columns), but nothing
+  tells it the question's hop count, so it can only prefer a depth for every question alike.
+- **What it reads:** step 1's J5 fit and rel's J5 fit (p@swa), with rrf and the look's twin0 and gnn0 scores, on
+  metaqa and webqsp s1eval. A node's depth: 0 is-seed, 1 to 3 the first structural hop from a seed, 4 unreached.
+  - hit@1 and R@5, as the reads compute them;
+  - **off-depth:** the top-1 is not gold and sits at a depth where no in-pool gold is;
+  - **the oracle:** hit@1 and R@5 with every row at such a depth removed. That is a perfect question-to-depth attention
+    over this classing, an upper bound and not a model.
+  - Each is given over all questions and by metaqa's hop label (from the question ids).
+- **How it is used:** if the oracle lifts the MLP's 3-hop hit@1 well past its misses' noise, and the GNN's top-1s sit
+  off-depth far less often than the MLP's, a question-to-depth arm is declared as round eleven before its numbers.
+  Otherwise the gap is within a depth (which relation chain), and round eleven goes there.
+- `outputs/diag/hopdiag-J5.{md,json}`, about 03:30.
