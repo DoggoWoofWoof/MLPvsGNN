@@ -77,8 +77,16 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    wait in rx's queue (at 20:50 crag took the half of the card a finished run freed, and the next run that would share
    the card waited behind CPU sends). A head that shares the card and waits on one run of ours that has the card
    alone sets aside the memory of the next GPU item that shares the card too, so the pair starts together when that
-   run ends. While the card spills into system memory (GPU shared memory more than 2 GB above its lowest reading), no
-   GPU run starts sharing the card.
+   run ends. While the card spills into system memory (GPU shared memory more than --spill-gb above its lowest
+   reading), no GPU item starts or is queued ahead.
+   Measured card memory (7 Oct 08:40): a run's pool can outgrow its share (retry_cmd reruns a capped run uncapped after
+   an out-of-memory: J5 then held 11.5 GiB on a 0.3 share, and with two fits sent on shares alone the card spilled for
+   35 min). Each poll reads every process's card memory (PDH: dedicated, plus shared above 0.1 GiB) and sums it per
+   running rx job (its supervisor's pid from the heartbeat, and every descendant). What a job holds beyond its share
+   (less --job-slack), and what processes in no job hold beyond --vram-slack, count as taken: that much less of the
+   card is free. Each job is taken alone, since a job under its share may still grow to its cap. While one of mpr's
+   jobs holds more than its share, no GPU item is queued ahead, since rx starts a queued job on shares alone. Without
+   psutil the card's totals stand in (its use and shared memory above the lowest reading, less every share).
    Queued ahead (21:20, 21:25): a GPU head that waits for mpr's own GPU jobs is queued in rx (at most --queue-gpu
    queued) once they are expected to free enough of the card for it within --prequeue-min minutes, or within
    --prequeue-max while part of the card is already free for mpr (a job's runtime: its arm's median finished
@@ -117,6 +125,11 @@ import sys
 import time
 import tomllib
 from pathlib import Path
+
+try:
+    import psutil
+except ImportError:      # our processes' GPU memory is then unread
+    psutil = None
 
 REF = re.compile(r"@([A-Za-z0-9_.-]+)\*([0-9.]+)\+([0-9.]+)")
 SEED = re.compile(r"-s\d{1,2}(?=-|$)")
@@ -201,6 +214,7 @@ class Counters:
     """Windows PDH counters by English name, each summed over its instances; a rate is the mean since the last read."""
     FMT_DOUBLE = 0x00000200
     MORE_DATA = 0x800007D2
+    PER_INSTANCE = ("gproc", "gproc_sh")      # {instance: value}, not summed
 
     def __init__(self, paths):
         self.h, self.q = {}, ctypes.c_void_p()
@@ -237,6 +251,10 @@ class Counters:
                                                          buf) != 0:
                     continue
                 arr = ctypes.cast(buf, ctypes.POINTER(_ITEM))
+                if k in self.PER_INSTANCE:
+                    out[k] = {arr[i].szName: arr[i].FmtValue.doubleValue for i in range(count.value)
+                              if arr[i].FmtValue.CStatus in (0, 1)}
+                    continue
                 vals = [arr[i].FmtValue.doubleValue for i in range(count.value) if arr[i].FmtValue.CStatus in (0, 1)]
                 if vals:
                     out[k] = sum(vals)
@@ -247,7 +265,38 @@ class Counters:
 
 COUNTERS = {"pagein": r"\Memory\Pages Input/sec",
             "gshared": r"\GPU Adapter Memory(*)\Shared Usage",
-            "gded": r"\GPU Adapter Memory(*)\Dedicated Usage"}
+            "gded": r"\GPU Adapter Memory(*)\Dedicated Usage",
+            "gproc": r"\GPU Process Memory(*)\Dedicated Usage",
+            "gproc_sh": r"\GPU Process Memory(*)\Shared Usage"}
+
+
+def job_vram(active, ded, shr):
+    """({job id: GiB of the card held by its processes}, GiB held by processes in no job) for rx's running jobs, or
+    None when processes cannot be told apart. A process holds its dedicated memory plus shared memory above 0.1 GiB;
+    a job's processes are its supervisor's (the pid in its heartbeat) and every descendant. A reading above twice the
+    card is a counter's garbage (LockApp.exe read 1.7e10 GB) and is skipped."""
+    if psutil is None or not ded:
+        return None
+    per_pid = {}
+    for name, v in ded.items():
+        m = re.match(r"pid_(\d+)_", name)
+        if not m or not 0 <= v / 2 ** 30 <= 2 * a.card_gb:
+            continue
+        sh = (shr or {}).get(name, 0.0) / 2 ** 30
+        sh = sh if 0 <= sh <= 2 * a.card_gb else 0.0
+        pid = int(m.group(1))
+        per_pid[pid] = per_pid.get(pid, 0.0) + v / 2 ** 30 + max(0.0, sh - 0.1)
+    out, seen = {}, set()
+    for e in active:
+        try:
+            hb = json.loads(Path(e.get("jd") or "", "heartbeat.json").read_text(encoding="utf-8"))
+            root = psutil.Process(int(hb["pid"]))
+            pids = {root.pid} | {c.pid for c in root.children(recursive=True)}
+        except Exception:
+            continue
+        out[e.get("id")] = sum(per_pid.get(p, 0.0) for p in pids)
+        seen |= pids
+    return out, sum(v for p, v in per_pid.items() if p not in seen)
 
 
 # ------------------------------------------------------------------ rx agent (as hostfeed.py)
@@ -340,7 +389,7 @@ def overview():
             "free_m": cap["mem_gb"] - cap.get("reserve_mem_gb", 0) - sum(float(x["req"]["mem_gb"]) for x in act),
             "free_g": gpus_total - sum(float(x["req"].get("gpus") or 0) for x in act),
             "mpr_c": sum(float(x["req"]["cpus"]) for x in mine), "mpr_m": sum(float(x["req"]["mem_gb"]) for x in mine),
-            "mpr_g": sum(float(x["req"].get("gpus") or 0) for x in mine), "mine": mine,
+            "mpr_g": sum(float(x["req"].get("gpus") or 0) for x in mine), "mine": mine, "act": act,
             "queued_mpr": [q["id"] for q in qm],
             "queued_mpr_gpu": [q["id"] for q in qm if float((q.get("req") or {}).get("gpus") or 0) > 0],
             "q_c": sum(float((q.get("req") or {}).get("cpus") or 0) for q in qm),
@@ -798,6 +847,15 @@ def main(argv=None):
     ap.add_argument("--corun-share", type=float, default=0.5, help="rx GPU share of a run sharing the card")
     ap.add_argument("--corun-slack", type=float, default=2.0, help="GB between a measured peak and its cap")
     ap.add_argument("--card-gb", type=float, default=23.99, help="the card's memory as torch counts it (GiB)")
+    ap.add_argument("--spill-gb", type=float, default=1.0,
+                    help="GPU shared memory this far above its lowest reading is a spill (GiB; 2.0 before 7 Oct 08:40)")
+    ap.add_argument("--vram-slack", type=float, default=0.8,
+                    help="GiB of the card held by processes in no rx job (desktop, drivers) before the rest counts as "
+                         "taken")
+    ap.add_argument("--job-slack", type=float, default=0.25,
+                    help="GiB a job may hold beyond its GPU share before the rest counts as taken")
+    ap.add_argument("--no-vram", dest="vram", action="store_false",
+                    help="GPU room from rx's shares alone (as before 7 Oct 08:40)")
     ap.add_argument("--prequeue-min", type=float, default=8.0,
                     help="queue the GPU head in rx this many minutes before the mpr GPU job that frees the card for it "
                          "is expected to end (0: off)")
@@ -893,6 +951,34 @@ def main(argv=None):
         gshared = pc["gshared"] / 2 ** 30 if "gshared" in pc else None
         if gshared is not None:
             gshared_base = gshared if gshared_base is None else min(gshared_base, gshared)
+        # what running jobs hold beyond their GPU shares (each job alone: one job's unused share cannot take another's
+        # excess, since that job may still grow to its cap) is not free, whatever the shares say
+        vram = pc["gded"] / 2 ** 30 if "gded" in pc else None
+        over_g = mine_over_g = 0.0
+        jv = None
+        if a.vram and vram is not None:
+            jv = job_vram(ov["act"], pc.get("gproc"), pc.get("gproc_sh"))
+            if jv is not None:
+                per_job, rest = jv
+                over = max(0.0, rest - a.vram_slack)
+                for e in ov["act"]:
+                    if e.get("id") in per_job:
+                        ex = per_job[e["id"]] - float(e["req"].get("gpus") or 0) * a.card_gb - a.job_slack
+                        if ex > 0:
+                            over += ex
+                            if e.get("project") == PROJECT:
+                                mine_over_g += ex / a.card_gb
+                over_g = over / a.card_gb
+            else:        # the totals alone: the card's use and shared memory above its lowest reading, less the shares
+                sp_ex = max(0.0, gshared - gshared_base) if gshared is not None else 0.0
+                held = (ov["gpus_total"] - ov["free_g"]) * a.card_gb
+                over_g = max(0.0, vram + sp_ex - held - a.vram_slack) / a.card_gb
+            if over_g > 0:
+                say_once("_vram", f"running jobs hold ~{round(over_g * a.card_gb):g} GiB of the card beyond their GPU shares "
+                         f"(ours ~{round(mine_over_g * a.card_gb):g}): that much less of the card is free"
+                         + ("; no GPU item is queued ahead" if mine_over_g > 0 else ""))
+            else:
+                st["said"].pop("_vram", None)
         gpus = (ov["sys"] or {}).get("gpus") or []
         g0 = gpus[0] if gpus else {}
         cpu_pct = cpu.read()
@@ -909,7 +995,7 @@ def main(argv=None):
                 dyn["margin"] = round(max(a.margin_min, margin - a.margin_down), 3)
                 dyn["calm"] = 0
         margin = float(dyn["margin"])
-        spill = gshared is not None and gshared_base is not None and gshared - gshared_base > 2.0
+        spill = gshared is not None and gshared_base is not None and gshared - gshared_base > a.spill_gb
         if spill:
             say_once("_gspill", f"GPU memory spills to system memory: shared {gshared:.1f} GB (base {gshared_base:.1f}); "
                      f"no GPU run starts sharing the card until it clears")
@@ -950,7 +1036,10 @@ def main(argv=None):
                        round(ov["mpr_g"] + ov["q_g"], 2)],
                "free": [round(ov["free_c"], 1), round(ov["free_m"], 1), round(ov["free_g"], 2)],
                "grow": round(grow, 1), "margin": margin, "pressure": why, "sent": [], "head": None, "gpu_head": None,
-               "shared": round(shared, 2), "hand": round(hand, 1)}
+               "shared": round(shared, 2), "hand": round(hand, 1),
+               "vram": None if vram is None else round(vram, 2),
+               "job_vram": None if jv is None else {k: round(v, 2) for k, v in jv[0].items() if v > 0.05},
+               "over_g": round(over_g, 3), "mine_over_g": round(mine_over_g, 3), "spill": spill}
 
         left = [i for i in items if i["name"] not in st["sent"] and i["name"] not in st["dropped"]]
         if not left:
@@ -979,7 +1068,10 @@ def main(argv=None):
             time.sleep(a.poll)
             continue
 
-        free_c, free_m, free_g = ov["free_c"], ov["free_m"], ov["free_g"]
+        free_c, free_m, free_g = ov["free_c"], ov["free_m"], ov["free_g"] - over_g   # measured: see the readings
+        if spill:
+            free_g = min(free_g, 0.0)          # no GPU item starts while the card spills
+        hold_gq = spill or mine_over_g > 0     # rx starts a queued job on shares alone: none is queued ahead then
         mpr_c, mpr_m, mpr_g = ov["mpr_c"] + ov["q_c"], ov["mpr_m"] + ov["q_m"] - hand, ov["mpr_g"] + ov["q_g"]
         n_q = len(ov["queued_mpr_gpu"])
         if n_q:   # their CPUs and memory are set aside for them ahead of anything sent now (less what they take over)
@@ -1067,7 +1159,7 @@ def main(argv=None):
             tag = f"{n}({c:g}c/{m:g}G{'' if basis == 'written' else f' {basis}, written {decl:g}'}"
             if cr is not None:
                 tag += f", shares the card: torch peak {round(cr, 2):g} GB, --frac {a.corun_frac:g}"
-            if not fits and g > 0 and fits_cm and n_q < a.queue_gpu and mpr_g + g <= a.cap_gpus + 1e-9:
+            if not fits and g > 0 and fits_cm and n_q < a.queue_gpu and mpr_g + g <= a.cap_gpus + 1e-9 and not hold_gq:
                 jid = submit(it, m)       # waits in rx's queue; mpr's priority sets its share aside
                 if jid or a.dry:
                     n_q += 1
@@ -1082,7 +1174,7 @@ def main(argv=None):
                     if own_gpu and mpr_g + g > a.cap_gpus + 1e-9:
                         eta, sure = start_eta(g, a.cap_gpus - mpr_g, ends) if ends else (None, False)
                         ahead = (a.prequeue_max if a.cap_gpus - mpr_g > 1e-9 and sure else a.prequeue_min) * 60
-                        if n_q < a.queue_gpu and eta is not None and eta - ov["now"] <= ahead:
+                        if n_q < a.queue_gpu and eta is not None and eta - ov["now"] <= ahead and not hold_gq:
                             # mpr's jobs free the card it needs soon: it waits in rx's queue from now, so it starts
                             # the moment the card frees and another project's job on the card yields to it. When it
                             # cannot start before one of mpr's running GPU jobs ends, it takes over that job's memory:
@@ -1175,7 +1267,8 @@ def summary(polls, rec, ov):
     if polls % max(1, a.summary_polls) != 1 and not a.dry:
         return
     log(f"util: host cpu {rec['cpu']}%, available {rec['avail']} GB (commit headroom {rec['commit']}), page-ins "
-        f"{rec['pagein']}/s, gpu {rec['gpu_util']}% {rec['gpu_mem']} GB (shared {rec['gshared']}) | mpr "
+        f"{rec['pagein']}/s, gpu {rec['gpu_util']}% {rec['gpu_mem']} GB (shared {rec['gshared']}"
+        + (f", {rec['over_g']:g} of the card beyond the shares" if rec.get("over_g") else "") + ") | mpr "
         f"{rec['mpr'][0]:g}c/{rec['mpr'][1]:g}G/{rec['mpr'][2]:g}g + {rec.get('shared', 0):g}G mapped once, of "
         f"{a.cap_cpus:g}/{a.cap_mem:g}/{a.cap_gpus:g}, growth {rec['grow']} GB, margin {rec['margin']:g}"
         + (f", {rec['hand']:g} GB taken over by queued GPU jobs" if rec.get("hand") else ""))
