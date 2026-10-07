@@ -95,3 +95,8 @@ Development numbers; the paper's numbers come from one declared confirmation run
 while musique and webqsp read zero-shot GAIN (+0.139, +0.0175). One LOSS among the pair's twelve reads rules out
 PROMISING, so `fzt-gate` fails when the pair verdict is filed (about 22:00) and the four fits do not run. ztop50 is
 not adopted, and no later screen builds on it.
+
+**Not run (21:25).** The screen's pair verdict is MIXED (`outputs/screen/scr-ztop50-pair.md`): GAINs on 3 of the
+12 reads, LOSSes on 4. The L-hotpotqa fit lost metaqa in-domain (−0.025), hotpotqa read zero-shot (−0.008) and
+webqsp read zero-shot (−0.017), and gained musique in-domain (+0.012). `fzt-gate` exited 1 and the feeder dropped
+the four fits, their reads, comparisons and the grade. ztop50 is NOT_ADOPTED without a full run.

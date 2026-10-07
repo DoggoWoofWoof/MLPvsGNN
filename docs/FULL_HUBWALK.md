@@ -66,6 +66,9 @@ out of the queue.
   (`outputs/screen/scr-hubwalk-pair.json`, through screen_pair.py).
   - It exits 0 only when that verdict is PROMISING, and the four fits wait on it.
   - On any other verdict the feeder drops them with their reads, comparisons and grade.
+- **Amended about 21:27, before any number:** two of the screen's builds failed on a transient file lock on the host
+  (docs/SCREENS.md, sixth round). They and every item dropped behind them run again with `-b` added to their item
+  names: the gate is `fhw-gate-b`, the grade `fhw-grade-b`. Nothing else changes.
 - **ETA if PROMISING:** the pair lands about 23:45 to 00:30. The fits take about 25 to 35 minutes each, three at a time
   on the card, so the grade comes about 01:15 to 02:00, sooner at a LOSS.
 

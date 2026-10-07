@@ -168,6 +168,36 @@ def query_arrays(A, i, ea, eb, check):
 # ── build ────────────────────────────────────────────────────────────────────
 
 
+def replace_retried(src, dst, tries=60):
+    """os.replace, retried for about two minutes: on the host a freshly written file can be held open for a moment by
+    another process, and os.replace then fails with WinError 32 (7 October, 21:23: two builds)."""
+    for k in range(tries):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError:
+            if k == tries - 1:
+                raise
+            time.sleep(2)
+
+
+def save_npy(d, name, a):
+    """lean_cache.save_npy with the replace retried."""
+    tmp = d / f"{name}.tmp.npy"
+    np.save(tmp, np.ascontiguousarray(a))
+    replace_retried(tmp, d / f"{name}.npy")
+    return LC.sha_file(d / f"{name}.npy")
+
+
+def write_json(p, obj):
+    """lean_cache.write_json with the replace retried."""
+    p = Path(p)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    tmp = p.with_name(p.name + ".tmp")
+    tmp.write_text(json.dumps(obj, indent=1), encoding="utf-8")
+    replace_retried(tmp, p)
+
+
 def build(ds, carve, out_root=HW_OUT, cache_root=LC.OUT, look_root=LM.LOOK, check=True, placement=None):
     t0 = time.time()
     d, files, ids, head = LC.look_chunks(ds, carve, look_root)
@@ -209,14 +239,14 @@ def build(ds, carve, out_root=HW_OUT, cache_root=LC.OUT, look_root=LM.LOOK, chec
                 against = "step 1's arrays are not on disk here"
         out = Path(out_root) / ds / carve / p.name
         out.mkdir(parents=True, exist_ok=True)
-        shas = {k: LC.save_npy(out, k, v) for k, v in sorted(arrays.items())}
+        shas = {k: save_npy(out, k, v) for k, v in sorted(arrays.items())}
         rec = {"dataset": ds, "carve": carve, "part": p.name, "step1_record_sha256": LC.sha_file(p / "record.json"),
                "chunks": [lo, hi], "queries": nq, "rows": r["rows"], "look": head["records"],
                "carve_ids_sha256": head["carve_ids_sha256"], "path_counts_against_step1": against,
                "arrays": {k: {"dtype": str(v.dtype), "shape": list(v.shape), "sha256": shas[k]} for k, v in arrays.items()},
                "placement": placement or {"where": "laptop"}, "script_sha256": LC.sha_src(__file__),
                "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
-        LC.write_json(out / "record.json", rec)
+        write_json(out / "record.json", rec)
         summary[p.name] = {"queries": nq, "rows": r["rows"], "against": against}
         log(f"  {ds}/{carve} {p.name}: {nq} queries, {r['rows']} rows; path counts {against} ({time.time() - t0:.0f}s)")
     log(f"hubwalk build {ds}/{carve}: {len(parts)} part(s) ({time.time() - t0:.0f}s)")
@@ -407,6 +437,26 @@ def selftest():
         assert built, "no whole carve's look on disk here"
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+    # 3b. the retried replace: a replace that fails twice with PermissionError, then works
+    calls = {"n": 0}
+    real = os.replace
+
+    def flaky(a, b):
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise PermissionError(32, "held")
+        return real(a, b)
+    tmp2 = Path(tempfile.mkdtemp(prefix="hubwalk_r_"))
+    try:
+        os.replace = flaky
+        sleep, time.sleep = time.sleep, (lambda s: None)
+        try:
+            save_npy(tmp2, "x", np.arange(3, dtype=np.float16))
+        finally:
+            os.replace, time.sleep = real, sleep
+        assert calls["n"] == 3 and np.array_equal(np.load(tmp2 / "x.npy"), np.arange(3, dtype=np.float16))
+    finally:
+        shutil.rmtree(tmp2, ignore_errors=True)
     # 4. the arm
     assert S.ARMS["hubwalk"] == (S.ARMS["base"][0], HubCarve)
     with S.patched("hubwalk"):
@@ -415,7 +465,7 @@ def selftest():
     log(f"selftest: path counts are lean_mlp's WALK and lean_cache's WALKF bit for bit on {seen} real queries; mass sums "
         "to at most 1 per hop, reaches what the counts reach, keeps degree, first-hop and seed columns; a path "
         "through the toy hub carries 2/101 of a plain path's mass; the lift holds when the pool doubles; a whole carve builds with "
-        f"step 1's rows; the arm patches. all checks passed ({time.time() - t0:.0f}s)")
+        f"step 1's rows; a held file is replaced once it frees; the arm patches. all checks passed ({time.time() - t0:.0f}s)")
     return 0
 
 

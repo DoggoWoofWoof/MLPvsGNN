@@ -284,6 +284,12 @@ mass columns must have moved, and the reached nodes and every other column must 
 **If the pair verdict is PROMISING, its full run starts by itself** (docs/FULL_HUBWALK.md, declared with this round,
 before its numbers). On any other verdict its items are dropped unrun.
 
+**Amended about 21:27, before any of this round's numbers.** Two of the thirteen builds (metaqa fit, webqsp s1eval)
+failed on the host. Moving a finished file into place hit a file another process held for a moment (WinError 32 at
+os.replace). The other eleven passed, their path counts equal to step 1's bit for bit. hubwalk.py now retries the move
+for up to two minutes; nothing it computes changed. The two builds, and every item the feeder dropped behind them, run
+again under the same commands with `-b` added to their item names (`fhw-gate-b` for the gate).
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -522,3 +528,23 @@ Bold: a GAIN or LOSS call.
   the fit had learned from metaqa's pools alone.
 - One LOSS among the twelve reads already rules out PROMISING. scr-ztop50-hp still runs to its end and is reported
   here; fzt-gate fails on the pair verdict and the feeder drops the full run's items.
+
+### scr-ztop50-hp (L-hotpotqa): MIXED (21:22). The pair is MIXED, and ztop50's full run was dropped (21:25)
+
+`outputs/screen/scr-ztop50-hp.md`, `outputs/screen/scr-ztop50-pair.md`. R@5 of ztop50 minus step 1's L-hotpotqa
+p@swa:
+
+| metaqa | squad | musique | hotpotqa (zero-shot) | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| **−0.0252 LOSS** | −0.0003 WITHIN | **+0.0115 GAIN** | **−0.0082 LOSS** | −0.0025 WITHIN | **−0.0172 LOSS** |
+
+- **Over both fits: MIXED**, with GAINs on 3 of the 12 reads and LOSSes on 4. `fzt-gate` failed at 21:25 and the
+  feeder dropped the full run's items.
+- **Read zero-shot, hotpotqa still loses** (−0.008). zret's full-run L-hotpotqa fit, reported here as a second base,
+  lost 0.014. ztop50 recovers 0.006 of that (WITHIN against zret's fit) but still loses against step 1. webqsp, read
+  zero-shot, loses 0.017 here, where it gained 0.0175 in the L-musique fit.
+- **metaqa in-domain loses in both fits** (−0.018 and −0.025); **musique gains in both roles** (+0.139 zero-shot,
+  +0.012 in-domain).
+- Every change to how a pool's z-scores are taken (zonly, dnorm, zret, ztop50) moves metaqa and musique in opposite
+  directions. No further screen of that kind is planned. Rounds five and six change the inputs and the objective
+  instead.
