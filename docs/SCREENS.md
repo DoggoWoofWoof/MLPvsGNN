@@ -140,6 +140,23 @@ step 1's p@swa on the same split, with the call. rrf is in brackets.
   scorer costs squad, a control whose graph exposes no extra gold, about 0.02 to 0.03 R@5 when it has not trained on
   it. That is the zero-shot harm these screens target.
 
+### The null check: IDENTICAL (14:52)
+
+`outputs/screen/null.json`: the base arm trained one epoch through lean_screen.py gives step 1's L-musique p@ep0 bit
+for bit, all nine tensors. A screen's difference from step 1's fit is its arm's alone.
+
+### scr-zonly: NO_GAIN. Dropped.
+
+`outputs/screen/scr-zonly.md`. R@5 of zonly minus step 1's L-musique p@swa:
+
+| metaqa | squad | musique (zero-shot) | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| −0.1072 LOSS | −0.0035 WITHIN | −0.1297 LOSS | −0.0115 LOSS | −0.0374 LOSS | −0.0014 WITHIN |
+
+The raw values carry real information in-domain, and dropping them does not help musique either (0.140 against
+0.270 and rrf's 0.473). The z-scores alone carry the big-pool shift too: in a big pool, the few retrieved nodes sit
+far out in each rank column's tail.
+
 ### The diagnosis: block ablation of step 1's L-musique p@swa (14:50)
 
 `outputs/screen/ablate-L-musique/ablate.md`. Pool sizes per question: musique 2,092 rows and webqsp 2,120 (both read
