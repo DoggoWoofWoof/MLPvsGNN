@@ -677,3 +677,22 @@ step 1's p@swa of the same split, with the 95% interval where a call is made:
   in-domain (+0.0091) and webqsp gains zero-shot (+0.0124).
 - **Over both fits: MIXED**, with GAINs on 3 of the 12 reads and a LOSS on 1. `fgs-gate` fails on the pair verdict
   and the feeder drops gsurg's full run. prank's pair (round five's other arm) is still to come.
+
+### scr-hubwalk (L-musique): NO_GAIN (23:10). scr-hubwalk-hp (L-hotpotqa): NO_GAIN (23:31). The pair is NO_GAIN, so hubwalk is dropped
+
+`outputs/screen/scr-hubwalk.md`, `outputs/screen/scr-hubwalk-hp.md`, `outputs/screen/scr-hubwalk-pair.md`. R@5 of
+hubwalk minus step 1's p@swa of the same split, with the 95% interval where a call is made:
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.0041 WITHIN | −0.0002 WITHIN | **−0.0288 LOSS** (zero-shot) [−0.037, −0.021] | +0.0009 WITHIN | −0.0009 WITHIN | **−0.0131 LOSS** (zero-shot) [−0.024, −0.003] |
+| L-hotpotqa | −0.0073 WITHIN | +0.0003 WITHIN | +0.0035 WITHIN | **−0.0155 LOSS** (zero-shot) [−0.019, −0.012] | −0.0026 WITHIN | −0.0053 WITHIN (zero-shot) |
+
+- **Walk mass in place of path counts gains nothing.** Every read that moves past the floor is a zero-shot LOSS:
+  musique and webqsp in the L-musique fit, and hotpotqa in the L-hotpotqa fit (FC@5 −0.031). Step 1's path counts
+  transfer better on all three.
+- **In-domain reads stay within the floor.** metaqa in the L-hotpotqa fit (−0.0073) has its interval below 0 but sits
+  just under the floor.
+- **hotpotqa, read zero-shot, is the LOSS read for the fourth time** (zret, ztop50, gsurg, hubwalk).
+- **Over both fits: NO_GAIN,** with no GAIN among the 12 reads and a LOSS on 3. `fhw-gate-b` fails, and the feeder drops
+  hubwalk's full run.

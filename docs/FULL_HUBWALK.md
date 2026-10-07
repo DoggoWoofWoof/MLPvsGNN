@@ -83,3 +83,10 @@ out of the queue.
 ## Results
 
 Development numbers; the paper's numbers come from one declared confirmation run.
+
+### Not run (23:32)
+
+Its screen pair is NO_GAIN (`outputs/screen/scr-hubwalk-pair.md`; docs/SCREENS.md, Results). No read of the 12 GAINs,
+and three LOSE, all read zero-shot: musique (−0.0288) and webqsp (−0.0131) in the L-musique fit, and hotpotqa (−0.0155)
+in the L-hotpotqa fit. `fhw-gate-b` fails, and the feeder drops the four fits, their reads and comparisons, and the
+grade.
