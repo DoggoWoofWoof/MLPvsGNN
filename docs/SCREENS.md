@@ -157,6 +157,27 @@ The raw values carry real information in-domain, and dropping them does not help
 0.270 and rrf's 0.473). The z-scores alone carry the big-pool shift too: in a big pool, the few retrieved nodes sit
 far out in each rank column's tail.
 
+### scr-dnorm: NO_GAIN. Dropped. scr-bound1: MIXED. Step 1's variants pf, n, nf: NO_GAIN (14:56)
+
+`outputs/screen/scr-dnorm.md`, `scr-bound1.md`, `variants-L-musique.md`. R@5 minus step 1's L-musique p@swa:
+
+| screen | metaqa | squad | musique (zero-shot) | hotpotqa | 2wiki | webqsp (zero-shot) | verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| dnorm | +0.0004 | +0.0000 | **−0.1330** | +0.0025 | +0.0005 | −0.0002 | NO_GAIN |
+| bound1 | **−0.6226** | −0.0006 | **+0.1420** | **−0.0190** | **−0.0420** | **−0.1000** | MIXED |
+| pf (FiLM context) | **−0.0080** | +0.0028 | **−0.0293** | +0.0034 | −0.0040 | **−0.0217** | NO_GAIN |
+| n (no SEMB) | **−0.1199** | −0.0012 | **−0.0229** | **−0.0076** | **−0.0462** | +0.0031 | NO_GAIN |
+| nf (no SEMB, FiLM) | **−0.1108** | +0.0023 | **−0.0992** | −0.0011 | **−0.0430** | **−0.0535** | NO_GAIN |
+
+Bold: a GAIN or LOSS call.
+
+- **bound1 shows the trade.** Kept within one pool sd of rrf, the model recovers most of musique (0.412 against
+  0.270; rrf 0.473), and metaqa falls to rrf's level (0.031). metaqa's golds are the nodes rrf ranks lowest, so a
+  model that must stay near rrf cannot find them. One model has to stay near rrf on musique and move far from it on
+  metaqa, and in this training set nothing but metaqa has big pools.
+- **Per-dataset standardisation (dnorm) changes nothing in-domain and makes musique worse**, as zonly did.
+- p stays the best of step 1's four variants on this split.
+
 ### The diagnosis: block ablation of step 1's L-musique p@swa (14:50)
 
 `outputs/screen/ablate-L-musique/ablate.md`. Pool sizes per question: musique 2,092 rows and webqsp 2,120 (both read
