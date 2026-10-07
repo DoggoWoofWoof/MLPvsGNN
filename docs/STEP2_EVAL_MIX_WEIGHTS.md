@@ -122,8 +122,8 @@ The heavy fits are capped at 0.31 (docs/STEP1_MATCHED_SELECTION.md section 9), s
 Expected verdict: about 4:30 to 5:30 pm.
 
 Revised about 14:00: the user's rule is now one training run per idea on one split (docs/SCREENS.md). Three fits had
-trained: J5, L-metaqa and L-squad. The other three (L-musique, L-hotpotqa, L-2wiki) were cancelled before they
-started, so section 5's grade does not run. Each of the three is compared with step 1's fit of the same split by
+trained: J5, L-metaqa and L-squad. The other three (L-musique, L-hotpotqa, L-2wiki) were cancelled 18 to 40
+minutes into training, so section 5's grade does not run. Each of the three is compared with step 1's fit of the same split by
 the screen rule (`outputs/screen/s2-*.md`).
 
 ## 8. What this does not do

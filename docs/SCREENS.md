@@ -90,8 +90,8 @@ It is run four ways:
 It shows which blocks carry the in-domain gain and which carry the zero-shot loss. The next screens come from it.
 
 **Step 2, read as a screen.** Step 2's eval-mix weighted fits of J5, L-metaqa and L-squad trained before the rule. Its
-other three fits (L-musique, L-hotpotqa, L-2wiki) were cancelled at about 14:00, so step 2's declared grade does not
-run. Each of the three is compared with step 1's fit of the same split by this rule (`outputs/screen/s2-*.md`).
+other three fits (L-musique, L-hotpotqa, L-2wiki) were cancelled at about 14:00, 18 to 40 minutes into training, so
+step 2's declared grade does not run. Each of the three is compared with step 1's fit of the same split by this rule (`outputs/screen/s2-*.md`).
 
 **Held at about 14:40:**
 
