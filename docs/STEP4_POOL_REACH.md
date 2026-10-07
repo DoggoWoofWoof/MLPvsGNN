@@ -144,4 +144,39 @@ Expected: select about 20 minutes, eval about an hour, grade minutes.
 
 ## Results
 
-Filled in after the run.
+Run 7 October 2026, 06:31 to 06:52, on the laptop. Files: `outputs/step4/alpha.json`, `result.json` and `result.md`.
+
+**Verdict: NOT_ADOPTED.** Restart value 0.5. On the select carves the pooled ΔALL(P − I) was −0.0455 at 0.5 and
+−0.0483 at 0.25.
+
+| dataset | frozen expansion graph | questions | ALL: I | P | U | ΔALL P − I [95%] | label |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| metaqa | structural | 9,785 | 0.895 | 0.820 | 0.791 | −0.075 [−0.082, −0.068] | BELOW |
+| squad | none | 11,873 | 0.980 | 0.980 | 0.980 | 0 | AT |
+| musique | all three | 2,417 | 0.803 | 0.835 | 0.803 | +0.032 [+0.024, +0.042] | ABOVE |
+| hotpotqa | structural | 7,405 | 0.968 | 0.897 | 0.946 | −0.071 [−0.078, −0.066] | BELOW |
+| 2wiki | structural | 12,576 | 0.906 | 0.824 | 0.785 | −0.082 [−0.087, −0.077] | BELOW |
+| webqsp (zero-shot) | all three | 1,503 | 0.688 | 0.782 | 0.688 | +0.094 [+0.074, +0.116] | ABOVE |
+
+- **Where the frozen pools already expand over all three families, the walk wins:**
+  - musique gains at every hop: two-hop +0.015, three-hop +0.054, four-hop +0.044 (0.481 to 0.526);
+  - webqsp gains most on questions with four or more golds (0.290 to 0.501).
+
+  On these two datasets U, breadth-first over the union, equals I exactly: their frozen expansions are already
+  breadth-first over the union. The gain is the walk's order.
+- **Where the frozen pools use structural edges only, both rules over the union lose.** So the union graph costs these
+  datasets, not the walk:
+  - hotpotqa: bridge questions 0.964 to 0.875;
+  - 2wiki: bridge-comparison 0.769 to 0.518, compositional 0.926 to 0.866;
+  - metaqa: one-hop +0.005 and two-hop +0.014, but three-hop 0.772 to 0.547.
+- **Frontier: bigger walk pools reach more golds on every graph.** Examples: hotpotqa 0.976 at 250 nodes (I: 0.968 at
+  94), 2wiki 0.932 at 250 (I: 0.906 at 106), musique 0.837 at 2,200, webqsp 0.786 at 2,200. A bigger pool is a cost
+  choice, not decided here.
+- **squad's graph exposes a few golds:** 0.980 at 50 nodes, 0.991 at 2,039.
+- **Cost** (laptop, numba, one thread per question, unpinned):
+  - the walk reads 0.30M to 0.75M union entries per question at the median, 13 to 70 thread-ms per question;
+  - breadth-first takes 2.4 to 5.6 ms at the median;
+  - convergence: the top-2,000 overlap of ε with ε/10 is 0.86 (musique) to 0.98 (metaqa).
+
+These are development numbers. The pools stay as frozen. The next step, docs/STEP4B_POOL_REACH_FROZEN_GRAPH.md, runs the
+same walk on each dataset's own expansion graph.

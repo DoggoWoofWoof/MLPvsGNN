@@ -1,0 +1,32 @@
+{
+ "rule": "the restart value with the larger mean over the five datasets of dALL(P - I) at matched size on s1sel; a tie goes to 0.5",
+ "per_dataset_dALL": {
+  "metaqa": {
+   "0.25": -0.07281,
+   "0.5": -0.07882
+  },
+  "squad": {
+   "0.25": 0.0,
+   "0.5": 0.0
+  },
+  "musique": {
+   "0.25": 0.02477,
+   "0.5": 0.02999
+  },
+  "hotpotqa": {
+   "0.25": -0.07029,
+   "0.5": -0.06963
+  },
+  "2wiki": {
+   "0.25": -0.12299,
+   "0.5": -0.10896
+  }
+ },
+ "pooled_mean_dALL": {
+  "0.25": -0.04826,
+  "0.5": -0.04548
+ },
+ "alpha": 0.5,
+ "script_sha256": "5ce9b3dd698121ca269e222631b29616203a506f11822f9a5fa014d8c6081c24",
+ "utc": "2026-10-07T01:08:58Z"
+}

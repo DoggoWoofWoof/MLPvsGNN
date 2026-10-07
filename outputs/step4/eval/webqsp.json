@@ -1,0 +1,55 @@
+{
+ "P": {
+  "0.5": {
+   "seconds": 8.7,
+   "threads": 5
+  }
+ },
+ "U": {
+  "seconds": 9.0,
+  "setting": {
+   "name": "full_h3_c25",
+   "hops": 3,
+   "per_seed_cap": 25,
+   "per_frontier_cap": 25,
+   "visited_cap": "|base and seeds| + 2010"
+  }
+ },
+ "convergence": {
+  "questions": 20,
+  "alpha": 0.5,
+  "eps": 1e-07,
+  "against": 1e-08,
+  "top": 2000,
+  "overlap_mean": 0.9179,
+  "overlap_min": 0.864
+ },
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "questions": 1503,
+ "carve_sha256": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e",
+ "construction": {
+  "base_pool": "dense_top200",
+  "regime": "FULL",
+  "setting": {
+   "name": "h3_c25_v2000",
+   "hops": 3,
+   "per_seed_cap": 25,
+   "per_frontier_cap": 25,
+   "visited_cap": 2000
+  }
+ },
+ "frozen_contract": "candidate_contract_frozen_2026_09_13",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "carves_sha256": "53cfb89f1e41a76257113719639f96318d14279f86b50a970f9a0bbf6686d746",
+ "script_sha256": "5ce9b3dd698121ca269e222631b29616203a506f11822f9a5fa014d8c6081c24",
+ "eps": 1e-07,
+ "bmax": 2000,
+ "alphas": [
+  0.5
+ ],
+ "nodes": 2592894,
+ "union_entries": 30747220,
+ "seconds": 41.8,
+ "utc": "2026-10-07T01:22:17Z"
+}
