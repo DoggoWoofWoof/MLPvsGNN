@@ -96,3 +96,17 @@ are taken out of the queue, since no read they could give changes the verdict.
 ## Results
 
 Development numbers; the paper's numbers come from one declared confirmation run.
+
+### rel: the re-call is PROMISING (01:46), and the run starts
+
+The pair is MIXED (`outputs/screen/scr-rel-pair.md`). Its re-call under the seed null's floors is PROMISING
+(`outputs/screen/scr-rel-pair-recall.md`; docs/SCREENS.md, Results): 5 GAINs and no LOSS over the twelve reads.
+- **metaqa in-domain:** +0.0716 and +0.0677; hit@1 0.637 → 0.781 and 0.638 → 0.777.
+- **webqsp read zero-shot:** +0.0635 and +0.0702.
+- **musique read zero-shot** in the L-musique fit: +0.0868, above its floor of 0.0720.
+- **hotpotqa read zero-shot** in the L-hotpotqa fit (−0.0132) is within its floor of 0.0200.
+
+`frl-gate-rc` passes. At 01:50 the run's items were moved ahead of gsurg's `-rc` run in the feeder, behind vshare's run
+already on the card. The four fits run about 02:00 to 03:00, and the grade and re-grade come about 03:15 to 03:45.
+- rel's L-metaqa fit must reproduce step 1's model, every difference exactly 0 (section 2).
+- **The first LOSS settles NOT_ADOPTED** (section 4).

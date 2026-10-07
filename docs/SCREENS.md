@@ -936,3 +936,43 @@ The other seven reads are all in-domain. Each moves by at most 0.0023 between se
     the card first.
   - vshare's reads and its L-metaqa fit follow. Its grade and re-grade land about 03:30 to 04:15.
   - gsurg's four fits come after those. Its grade lands about 04:30 to 05:30.
+
+### scr-rel (L-musique): PROMISING. scr-rel-hp (L-hotpotqa): MIXED. The pair is MIXED; its re-call is PROMISING (01:46), and rel's full run starts
+
+`outputs/screen/scr-rel.md`, `outputs/screen/scr-rel-hp.md`, `outputs/screen/scr-rel-pair.md`,
+`outputs/screen/scr-rel-pair-recall.md`. R@5 of rel minus step 1's p@swa of the same split, with the 95% interval where
+a call is made, and the call under the seed null's floors:
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | **+0.0716 GAIN** [+0.067, +0.076] | −0.0008 WITHIN | **+0.0868 GAIN** (zero-shot; floor 0.0720) [+0.077, +0.097] | +0.0005 WITHIN | −0.0012 WITHIN | **+0.0635 GAIN** (zero-shot) [+0.048, +0.079] |
+| L-hotpotqa | **+0.0677 GAIN** [+0.063, +0.072] | −0.0012 WITHIN | +0.0053 WITHIN | −0.0132 LOSS → WITHIN (zero-shot; floor 0.0200) | +0.0015 WITHIN | **+0.0702 GAIN** (zero-shot) [+0.051, +0.089] |
+
+- **metaqa in-domain.** The relation columns pass the twin and close more than half of the MLP's gap to the GNN.
+  - hit@1 0.637 → 0.781 (L-musique) and 0.638 → 0.777 (L-hotpotqa). R@5 +0.072 and +0.068, FC@5 +0.061 and +0.062.
+  - On the same carve, step 1's grade has the twin at 0.721 / 0.596 / 0.771 and the six-dataset GNN at 0.784 /
+    0.667 / 0.889 (R@5 / FC@5 / hit@1). The L-musique fit now reads 0.725 / 0.600 / 0.781: above the twin on all
+    three (by 0.004, 0.004 and 0.010), and 57% of step 1's hit@1 gap to the GNN closed.
+  - Added to step 1's model, the 26 columns are worth more than the twin's whole lead over it on metaqa (hit@1
+    +0.144 against +0.134), though the twin reads 68 more of the look's columns and trains on webqsp.
+- **webqsp read zero-shot.** A channel learned on metaqa's 9 relations carries to webqsp's 7,058.
+  - R@5 0.178 → 0.241 and 0.120 → 0.190. hit@1 0.069 → 0.124 and 0.059 → 0.099.
+  - Absolute webqsp zero-shot is still low. The twin and the GNN train on webqsp (R@5 0.60 and 0.63 there), and no
+    fit here does.
+- **musique read zero-shot gains (+0.0868, 0.270 → 0.356, above its floor of 0.0720), though rel is 0 on every
+  musique row.**
+  - A likely reading: the relation columns tell the fit which rows are metaqa's, so metaqa's big pools no longer pull
+    the weights the passage graphs share. That is the big-pool confound every pool-normalisation arm traded on
+    (ztop50, zret, prank).
+  - The gain is only 0.015 above its floor, so the full run's other splits are what can confirm it.
+- **The passage graphs in-domain** (squad, hotpotqa, 2wiki, and musique in the L-hotpotqa fit) are all WITHIN
+  (|Δ| ≤ 0.0053).
+  - Calls are on R@5 (section 2). Two secondary metrics on 2wiki in-domain have intervals below 0: FC@5 in the
+    L-musique fit (−0.0047 [−0.0085, −0.0009]) and hit@1 in the L-hotpotqa fit (−0.0085 [−0.0121, −0.0051]). The
+    full run reads 2wiki in-domain in three more fits.
+- **hotpotqa read zero-shot** in the L-hotpotqa fit (−0.0132) LOSES on the filed rule and is WITHIN under its floor of
+  0.0200, like the other arms (the seed null).
+- **The full run** (docs/FULL_ROUND9.md) starts on `frl-gate-rc`.
+  - At 01:50 its items were moved ahead of gsurg's `-rc` run in the feeder. rel's re-call is the stronger lead, and it
+    answers the SOTA gap the round was declared for. vshare's run, already on the card, finishes first.
+  - ETAs: its four fits about 02:00 to 03:00, the grade and re-grade about 03:15 to 03:45.
