@@ -89,6 +89,12 @@ It is run four ways:
 
 It shows which blocks carry the in-domain gain and which carry the zero-shot loss. The next screens come from it.
 
+**Step 1's other variants, read as screens (no training; declared 14:55).** Step 1's L-musique fit trained four
+variants on the screen split: p, pf (p with FiLM context), n (p without SEMB) and nf (n with FiLM context). Every
+state was read on the six s1eval carves. pf@swa, n@swa and nf@swa are each compared with p@swa by this rule
+(`outputs/mp_unified/screen_variants.py`, `outputs/screen/variants-L-musique.md`). n tests whether the model does
+better without SEMB, the block that carries metaqa.
+
 **Step 2, read as a screen.** Step 2's eval-mix weighted fits of J5, L-metaqa and L-squad trained before the rule. Its
 other three fits (L-musique, L-hotpotqa, L-2wiki) were cancelled at about 14:00, 18 to 40 minutes into training, so
 step 2's declared grade does not run. Each of the three is compared with step 1's fit of the same split by this rule (`outputs/screen/s2-*.md`).
