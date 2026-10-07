@@ -1,0 +1,40 @@
+{
+ "dataset": "2wiki",
+ "carve": "select",
+ "part": "part_0of1",
+ "step1_record_sha256": "e2aff3415739b9c67bdf659ed19d04e898191efe2b38f788dcc71f1fce508ecb",
+ "chunks": [
+  0,
+  7
+ ],
+ "queries": 1496,
+ "rows": 159930,
+ "look": {
+  "record.json": "6800735df50d0321f9e06facb9f4530d716faab84661bb6ed3bca49c8b751b31"
+ },
+ "carve_ids_sha256": "72b50b99005beeccc1d8e5e19717dae49fb54101087fc800ec83e75d79eac974",
+ "path_counts_against_step1": "IDENTICAL",
+ "arrays": {
+  "walk": {
+   "dtype": "float16",
+   "shape": [
+    159930,
+    16
+   ],
+   "sha256": "88c1fb8fe625948d3b331229b8b510c2fa9c27169200b67a21f6b81f36f22427"
+  },
+  "walkf": {
+   "dtype": "float16",
+   "shape": [
+    159930,
+    18
+   ],
+   "sha256": "f29455b34953bca21e99fc7ea20d9737db501a2f4c1c0cf4a63f69877fad3d3c"
+  }
+ },
+ "placement": {
+  "where": "host"
+ },
+ "script_sha256": "520ea15e8db2aed57f12dec8c9b4f93f9b97dfba780079da0b4298411d1d1ede",
+ "utc": "2026-10-07T15:52:08Z"
+}

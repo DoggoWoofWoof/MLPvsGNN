@@ -290,6 +290,17 @@ os.replace). The other eleven passed, their path counts equal to step 1's bit fo
 for up to two minutes; nothing it computes changed. The two builds, and every item the feeder dropped behind them, run
 again under the same commands with `-b` added to their item names (`fhw-gate-b` for the gate).
 
+**Builds and smoke, 21:37.** All thirteen carves are built: 40 parts, 53,885,351 rows, and every part's path counts
+equal step 1's bit for bit (`path_counts_against_step1: IDENTICAL` in each part's record.json). The smoke passed
+(`outputs/screen/smoke6/smoke.json`):
+- On WALK and WALKF, the kept columns equal step 1's, the reached nodes are the same, and the mass moved; every other
+  column is unchanged.
+- The one-epoch repeat is IDENTICAL, and the read runs.
+
+The feeder runs GPU items in file order, and the smoke (0.12 of the card) was queued behind scr-train-prank-hp, which
+waits for 0.28. About 21:34 it was moved ahead of that item, into the 0.145 of the card left idle; prank-hp still fits
+when the first running fit ends. This changes when the smoke ran, not anything it computes.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -324,6 +335,14 @@ again under the same commands with `-b` added to their item names (`fhw-gate-b` 
   - hubwalk's two fits queue behind round five's (cap 0.26, share 0.28). They start as those finish, about 22:50 to
     23:10, and take about 25 to 35 minutes each: the arm adds no work to a step.
   - Verdict about 23:45 to 00:30.
+- **Amended about 21:40,** from the epochs logged so far:
+  - The seed-0 GNN chain had freed the card by 21:22, so three of round five's fits started together at 21:22.
+  - With three fits sharing the card, prank's epochs take about 387 s and gsurg's about 490 to 500 s. Over 8 epochs,
+    scr-prank ends about 22:14 and both gsurg fits about 22:27 to 22:30.
+  - gsurg's verdict comes about 22:40 to 22:50 and prank's about 23:15 to 23:25, since scr-prank-hp starts only when
+    scr-prank frees the card.
+  - hubwalk's fits start about 22:35 to 22:45, after the round-five reads get the card. Its verdict comes about 23:50
+    to 00:10.
 
 ## Results
 

@@ -1,0 +1,41 @@
+{
+ "dataset": "squad",
+ "carve": "fit",
+ "part": "part_0of1",
+ "step1_record_sha256": "33877692e17a6de7d71b756c90b512d124c30598658e9e8eee86b6471471f496",
+ "chunks": [
+  0,
+  13
+ ],
+ "queries": 5856,
+ "rows": 292994,
+ "look": {
+  "record_0of2.json": "6a13ab282e1cf392fad2b2ac7e21a17d57a2057f8e1e4660e1ee6001c916204f",
+  "record_1of2.json": "1b2a7a4d4be192a7bb25eb8092c0a5574f55e3421f6d699389c2649351cdb432"
+ },
+ "carve_ids_sha256": "39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515",
+ "path_counts_against_step1": "IDENTICAL",
+ "arrays": {
+  "walk": {
+   "dtype": "float16",
+   "shape": [
+    292994,
+    16
+   ],
+   "sha256": "8fc4c3cd6225e48489634df3eacbbdebe75a8ef5649bff6a16aa79168c56472c"
+  },
+  "walkf": {
+   "dtype": "float16",
+   "shape": [
+    292994,
+    18
+   ],
+   "sha256": "c4b22d5b6f0cfb87443bf4bae72062486c81b253eeae159ddac4801795cedacf"
+  }
+ },
+ "placement": {
+  "where": "host"
+ },
+ "script_sha256": "520ea15e8db2aed57f12dec8c9b4f93f9b97dfba780079da0b4298411d1d1ede",
+ "utc": "2026-10-07T15:52:11Z"
+}

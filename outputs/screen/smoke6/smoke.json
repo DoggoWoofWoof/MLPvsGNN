@@ -1,0 +1,21 @@
+{
+ "carve_check": {
+  "WALK": {
+   "kept_equal": true,
+   "reach_equal": true,
+   "mass_moved": true
+  },
+  "WALKF": {
+   "kept_equal": true,
+   "reach_equal": true,
+   "mass_moved": true
+  },
+  "rest_equal": true
+ },
+ "train_rc": 0,
+ "repeat": "IDENTICAL",
+ "read_rc": 0,
+ "ok": true,
+ "seconds": 8.095968008041382,
+ "script_sha256": "e2211d10343a5687918d5aa9b0bd58d9d304a49d5586a4a9e228856696b1d31c"
+}

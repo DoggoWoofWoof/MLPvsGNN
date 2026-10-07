@@ -1,0 +1,41 @@
+{
+ "dataset": "hotpotqa",
+ "carve": "fit",
+ "part": "part_0of1",
+ "step1_record_sha256": "9402d4a4337d473f9a3b2eb20eecb37b2cd75aa5fb3ebc86e9fb3d4aa95509d3",
+ "chunks": [
+  0,
+  24
+ ],
+ "queries": 5930,
+ "rows": 557195,
+ "look": {
+  "record_0of2.json": "9ab661bd05b3c52781125cf848b29eb00b84fd31f4023d1df934755e60f06df5",
+  "record_1of2.json": "e999d42a8e22791ceb25cca997d394a75dafe2fa4fd49cc7f62b3019096d4302"
+ },
+ "carve_ids_sha256": "2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c",
+ "path_counts_against_step1": "IDENTICAL",
+ "arrays": {
+  "walk": {
+   "dtype": "float16",
+   "shape": [
+    557195,
+    16
+   ],
+   "sha256": "8e2c3a6490d0ae2dfa73536c40ed7a5ed25742a8a521f40ff9440451283a675b"
+  },
+  "walkf": {
+   "dtype": "float16",
+   "shape": [
+    557195,
+    18
+   ],
+   "sha256": "e097b478383ffa078202e98517c08546f665abf641a8bd21fe5490a0e8082a04"
+  }
+ },
+ "placement": {
+  "where": "host"
+ },
+ "script_sha256": "520ea15e8db2aed57f12dec8c9b4f93f9b97dfba780079da0b4298411d1d1ede",
+ "utc": "2026-10-07T15:52:13Z"
+}

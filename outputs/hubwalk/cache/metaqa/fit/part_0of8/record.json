@@ -1,0 +1,45 @@
+{
+ "dataset": "metaqa",
+ "carve": "fit",
+ "part": "part_0of8",
+ "step1_record_sha256": "5cec419808005f4c6bbe1a3c0de316e8aaf53d0f69ca2efdc2723eee09fd0d25",
+ "chunks": [
+  0,
+  67
+ ],
+ "queries": 737,
+ "rows": 1495546,
+ "look": {
+  "record_0of6.json": "b3c49601c380d24e08f3d19fa6882f8ec9c10c06db626e74f4bd29e329eedec9",
+  "record_1of6.json": "4b7bcbda53bda122aa64edc49b0e888e4a81eef27c511e6abbe03eb976be588e",
+  "record_2of6.json": "bd41cd09ee0494ea5e5193d376275a066d72d77b7b91d6edb11d2672432ab8ec",
+  "record_3of6.json": "eccc63d29b55e43d8ddb7038907f84ade5c6f4fbd28b07d47209d8c2bb8c6aaf",
+  "record_4of6.json": "f790a9f42799ec80b9eb2992bdd64ebadb550e5acd4c8cfb83d23ed29a072523",
+  "record_5of6.json": "d7d906b33ee606a240d097942ea666551d2cbd9a1255eb22d5627e75eede07d5"
+ },
+ "carve_ids_sha256": "161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188",
+ "path_counts_against_step1": "IDENTICAL",
+ "arrays": {
+  "walk": {
+   "dtype": "float16",
+   "shape": [
+    1495546,
+    16
+   ],
+   "sha256": "6e74dab35604dfda7556ae8cf3fcde35a20a7418439ffaf8d27c6ad21d1b14c1"
+  },
+  "walkf": {
+   "dtype": "float16",
+   "shape": [
+    1495546,
+    18
+   ],
+   "sha256": "082dcd11715dfe5d996ef3f772b17e6dfd95629c2f3f795e644f5355511fb19a"
+  }
+ },
+ "placement": {
+  "where": "host"
+ },
+ "script_sha256": "e2211d10343a5687918d5aa9b0bd58d9d304a49d5586a4a9e228856696b1d31c",
+ "utc": "2026-10-07T15:58:31Z"
+}

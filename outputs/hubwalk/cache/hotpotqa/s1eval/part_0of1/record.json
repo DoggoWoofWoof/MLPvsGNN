@@ -1,0 +1,41 @@
+{
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "part": "part_0of1",
+ "step1_record_sha256": "2e6d4f51af34c46278c12e6e90679d4f85ea769373e201fb70a2c4093383f6f7",
+ "chunks": [
+  0,
+  29
+ ],
+ "queries": 7405,
+ "rows": 693828,
+ "look": {
+  "record_0of2.json": "d717f0c9f2757bbdea740b51d4e6cb6c4dc55968b5e81a31ab0a7c715efd319e",
+  "record_1of2.json": "00bbd2635f7dbda65a23f3a40d5a489fdaec2803784c1701dcfa8e919306e545"
+ },
+ "carve_ids_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+ "path_counts_against_step1": "IDENTICAL",
+ "arrays": {
+  "walk": {
+   "dtype": "float16",
+   "shape": [
+    693828,
+    16
+   ],
+   "sha256": "680dcfe3692ee9a0a5b1af9eb0746f1d3e9961a92f15494a0b8e2ac00e220c05"
+  },
+  "walkf": {
+   "dtype": "float16",
+   "shape": [
+    693828,
+    18
+   ],
+   "sha256": "f9cf95ad02cf9c02841b0f0821e50cd6dc95937574b00dfb2952c93c732ec1ee"
+  }
+ },
+ "placement": {
+  "where": "host"
+ },
+ "script_sha256": "520ea15e8db2aed57f12dec8c9b4f93f9b97dfba780079da0b4298411d1d1ede",
+ "utc": "2026-10-07T15:52:16Z"
+}

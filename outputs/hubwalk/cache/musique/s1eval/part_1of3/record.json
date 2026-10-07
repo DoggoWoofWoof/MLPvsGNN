@@ -1,0 +1,43 @@
+{
+ "dataset": "musique",
+ "carve": "s1eval",
+ "part": "part_1of3",
+ "step1_record_sha256": "8936cf766b6959fc7cbe7c6390b6400ba9f62ad7f0f126a3e57a8faed67a1426",
+ "chunks": [
+  73,
+  146
+ ],
+ "queries": 803,
+ "rows": 1660012,
+ "look": {
+  "record_0of4.json": "fb33b2c13a07806795d54a0461d3fcfbe7cfcc7e14fadd4d31b10a99013e8f1f",
+  "record_1of4.json": "7a7970443cdc56e33ff56eb55a81efd4e0d1766ae9375a8e11712646352f1d9d",
+  "record_2of4.json": "5621b1df72ddae21f15f807c6060197c78d5a5ac21c223401e23052236ed098d",
+  "record_3of4.json": "e19c7e7d07e4c6a42820415f70e9321a52d68c90b0da07af242fb0815b3c6109"
+ },
+ "carve_ids_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+ "path_counts_against_step1": "IDENTICAL",
+ "arrays": {
+  "walk": {
+   "dtype": "float16",
+   "shape": [
+    1660012,
+    16
+   ],
+   "sha256": "06353f472cec36740941f673b8bf3fb7e2f5c2e876b06c36adc9586097a54500"
+  },
+  "walkf": {
+   "dtype": "float16",
+   "shape": [
+    1660012,
+    18
+   ],
+   "sha256": "a409c03a38e13c04b75768cc0030c827022bf0dc146159f29331cac1bafcf154"
+  }
+ },
+ "placement": {
+  "where": "host"
+ },
+ "script_sha256": "520ea15e8db2aed57f12dec8c9b4f93f9b97dfba780079da0b4298411d1d1ede",
+ "utc": "2026-10-07T15:52:37Z"
+}
