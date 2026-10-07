@@ -170,7 +170,7 @@ dropped unrun.
   each (padded pools add rows to hotpotqa's and 2wiki's batches), then reads and compares. Verdicts about 16:15 to
   16:30. (They landed at 15:46 and 15:48.)
 - **Third round** (queued about 16:00): the smoke takes about 5 minutes, the fit about 25 (8 epochs at about 3
-  minutes), the read about 2. Verdict about 16:35 to 16:45.
+  minutes), the read about 2. Verdict about 16:35 to 16:45. (It landed at 16:46: the fit took 43 minutes.)
 
 ## Results
 
@@ -334,3 +334,23 @@ Bold: a GAIN or LOSS call.
   nothing against bdrop20's screen. That is section 2's amendment of about 15:55, made after these numbers.
 - **pad is not followed with a narrower padding screen.** zret (the third round) tests the same cause without changing
   the training data.
+
+### scr-zret: PROMISING (16:46). Its full run started by itself (docs/FULL_ZRET.md)
+
+`outputs/screen/scr-zret.md`. R@5 of zret minus step 1's L-musique p@swa, with the 95% interval:
+
+| metaqa | squad | musique (zero-shot) | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| −0.0041 WITHIN | +0.0007 WITHIN | **+0.1202 GAIN** [+0.110, +0.130] | +0.0046 WITHIN | −0.0018 WITHIN | −0.0012 WITHIN |
+
+- **musique, read zero-shot, rises from 0.270 to 0.390** (hit@1 +0.154, FC@5 +0.068). rrf alone is 0.473, so the
+  model is still below plain retrieval there.
+- **The share of retrieved rows was the channel.** Taking it out of the z-scores recovers most of what padding and
+  block dropout recovered, with no change to the training data and no new parameters.
+- **Elsewhere it is cleaner than block dropout's screen.** hotpotqa +0.0046 (bdrop20 −0.0048), 2wiki −0.0018
+  (−0.0050), webqsp −0.0012 (−0.0037). metaqa −0.0041 (−0.0047) has an interval below 0, but under the 0.0075
+  floor, so the call is WITHIN.
+- **It trains about twice as slowly:** epochs of 308 to 341 s against about 160 s, from the second set of per-block
+  z-scores. The fit took 43 minutes, not the 25 expected.
+- **The gate passed at 16:47.** J5, L-metaqa and L-squad started at once; L-hotpotqa and L-2wiki start as the card
+  frees.

@@ -69,6 +69,11 @@ comparison (`scr-compare-zret`) is filed:
 ETA if PROMISING: the screen's comparison lands about 16:30. The five fits take about 25 to 40 minutes each, two
 waves on the card. The verdict comes about 17:40 to 18:00.
 
+**16:50: the screen is PROMISING, and the run started by itself at 16:47** (J5, L-metaqa and L-squad first). zret's
+epochs take about twice the base's (the screen's fit: 43 minutes). The fits take about 50 to 70 minutes each, three
+at a time on the card. J5's and L-metaqa's comparisons come about 18:00; the verdict about 18:45 to 19:15, sooner if
+a comparison shows a LOSS.
+
 ## 6. What this does not do
 
 - No new carves, seeds or variants.
