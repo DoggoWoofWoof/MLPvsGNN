@@ -67,6 +67,15 @@ out of the queue.
 - **ETA if PROMISING:** the pair lands about 00:30 to 01:15. The fits take about 25 to 35 minutes each alone, about
   50 with three on the card, so the grade comes about 02:00 to 03:00, sooner at a LOSS.
 
+- **Amended 7 October, about 23:45, before the L-hotpotqa fit of the screen's numbers (the L-musique fit was PROMISING): the seed null** (docs/SCREENS.md, section 2).
+  - The four fits now wait on `fvs-gate-r`, which runs `screen_gate.py pass` on the screen's re-call
+    (`outputs/screen/scr-vshare-pair-recall.json`), in place of `fvs-gate`. The re-call is the pair verdict
+    with each read's floor raised to twice the seed-only spread where that spread is larger than 0.0075.
+  - `fvs-gate` still runs on the pair verdict and is reported; nothing waits on it.
+  - The fits start only when the re-call is PROMISING, once the null lands: about 01:00 to 01:30 at the earliest.
+  - The grade's twelve reused screen reads (L-musique, L-hotpotqa) are called under the null's floors. Its other 24
+    reads keep 0.0075, since no null covers their splits.
+
 ## 6. What this does not do
 
 - No new carves, seeds or variants. The arm's form (probability 0.5, the two share ranges, the 0.375 split, the

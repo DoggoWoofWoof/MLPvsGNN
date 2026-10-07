@@ -58,6 +58,40 @@ the card) and six reads.
   musique in-domain (J5); zret lost on hotpotqa and 2wiki read zero-shot. Under this rule, zret's two fits (its screen
   and its full run's L-hotpotqa fit) are MIXED: the L-hotpotqa fit LOSEs on hotpotqa zero-shot (−0.014) and on metaqa
   in-domain (−0.012). The two fits run side by side on the card, so a verdict comes about one fit later than before.
+- **Amended 7 October, about 23:45, before any of its numbers and before vshare's L-hotpotqa numbers: the seed null.**
+  Step 1's base arm, unchanged, is trained with seeds 1 and 2 on both screen splits. Each fit is compared with step
+  1's seed-0 p@swa of its split by the compare above, which gives two seed-only differences on each of the twelve
+  reads.
+  - **Why:**
+    - On L-hotpotqa, hotpotqa read zero-shot has LOST under four different arms: zret (−0.014), ztop50 (−0.008),
+      gsurg (−0.015) and hubwalk (−0.016). hubwalk does not touch the pool-share confound the others target.
+    - If the arms were neutral on that read, four losses in four would come about one time in sixteen. A seed-0
+      baseline that is a high draw on that read would explain them.
+    - The same can turn a low draw into an apparent GAIN, by regression to the mean: step 1's L-musique fit reads
+      musique zero-shot at 0.270, below rrf's 0.473.
+    - Models that agree in-domain can differ widely out of distribution (underspecification, D'Amour et al. 2020),
+      and the floor 0.0075 was measured in-domain.
+  - **Fits:** `scr-null-s1` and `scr-null-s2` (L-musique), and `scr-null-s1-hp` and `scr-null-s2-hp` (L-hotpotqa).
+    - Each is the base arm through lean_screen2.py's train with `--seed 1` or `--seed 2`.
+    - Everything else is step 1's: variant p, config 2e-3:1e-4:0.1:8:2, hidden 128, p@swa, the six s1eval reads.
+    - Seed 0 is step 1's fit itself.
+  - **Floors:** for each read r (split × dataset), let Δ_s(r) be seed s's R@5 minus seed 0's. Then
+    floor(r) = max(0.0075, 2·√((Δ_1(r)² + Δ_2(r)²) / 2)), twice the seed-only spread.
+    - A read is GAIN when Δ ≥ floor(r) and its 95% interval lies above 0, LOSS in the mirror case, WITHIN otherwise.
+    - The verdict rule over the twelve reads is unchanged.
+    - The form is fixed here and is not tuned.
+  - **Use:** `outputs/mp_unified/screen_recall.py` re-calls a pair under the floors and files
+    `scr-<arm>-pair-recall.{md,json}` beside its verdict. It is committed before the null's numbers exist.
+    - Every pair filed so far (ztop50, gsurg, prank, hubwalk) is re-called when the null lands. Later pairs (vshare,
+      pret, and every round after) are called both ways. **The re-call decides.**
+    - A pair that is PROMISING under its re-call gets its full run as its FULL file declares it. The run is
+      re-queued under new item names, behind a gate on the re-call.
+    - vshare's and pret's full runs now wait on their re-calls in place of their pair verdicts (docs/FULL_VSHARE.md
+      and docs/FULL_PRET.md, amended at the same time).
+    - A full-run grade's twelve reused screen reads take the floors. Its other 24 reads keep 0.0075, since no null
+      covers their splits, and the grade says so.
+  - **Order:** the four null fits queue behind round eight's screen and ahead of every full run. They take about 25 to
+    35 minutes each; the null lands about 01:00 to 01:30.
 - **rrf** (plain retrieval, no learned scorer) is reported beside every read as the zero-shot floor.
 - **The floor 0.0075** is the lean track's measured one-seed training noise: across the lean_mlp to lean_mlp8 fits,
   one-seed differences under about 0.75 R@5 points are noise. The bootstrap covers question sampling and the floor
