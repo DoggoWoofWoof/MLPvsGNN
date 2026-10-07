@@ -1,0 +1,47 @@
+{
+ "arms": {
+  "vshare": {
+   "train_rc": 0,
+   "repeat": "IDENTICAL",
+   "read_rc": 0,
+   "thinned": 754,
+   "enriched": 757,
+   "vshare": {
+    "p_apply": 0.5,
+    "thin": [
+     0.08,
+     0.2
+    ],
+    "rich": [
+     0.55,
+     0.95
+    ],
+    "mid": 0.375,
+    "seed": 20261008,
+    "last_fit": [
+     {
+      "dataset": "2wiki",
+      "carve": "select",
+      "batches": 94,
+      "questions": 1496,
+      "thinned": 754,
+      "enriched": 11,
+      "t_sum": 114.41405985362067
+     },
+     {
+      "dataset": "metaqa",
+      "carve": "select",
+      "batches": 94,
+      "questions": 1497,
+      "thinned": 0,
+      "enriched": 746,
+      "t_sum": 554.837611389238
+     }
+    ]
+   }
+  }
+ },
+ "ok": true,
+ "seconds": 27.478508472442627,
+ "script_sha256": "dbdcc2ad13ac854de1584305550a61ab3d966ce0d7887b416317959c6683d576"
+}

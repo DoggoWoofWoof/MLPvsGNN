@@ -336,6 +336,50 @@ enriched at least one pool each. The two fits wait on it.
 **If the pair verdict is PROMISING, its full run starts by itself** (docs/FULL_VSHARE.md, declared with this round,
 before its numbers). On any other verdict its items are dropped unrun.
 
+### Eighth round (declared about 23:20, before any of its numbers)
+
+Code: `outputs/mp_unified/lean_screen8.py` (its selftest passes). It runs lean_screen2's commands and lean_screen's
+rule unchanged and adds one arm: prank narrowed. Section 2 allows this after a MIXED screen ("a narrower screen may
+follow, declared here"). As in rounds five to seven, the screen trains two fits, L-musique and L-hotpotqa. Each is
+compared with step 1's p@swa of its split, and the verdict is taken over both fits' twelve reads.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-pret, scr-pret-hp | pret | **Rank inputs for the retrieval blocks only (a preprocessing step; prank, narrowed).** The two retrieval blocks take prank's form: the raw values, each column's competition rank in the pool from the top and from the bottom as 60 / (60 + min(rank, 50)), and the presence flag (`lean_screen5.rank_inputs`, unchanged). They are rank (dense_rr, splade_rr, rrf, agreement, is_seed) and dense_cos: 6 of the 86 fixed columns, where prank ranked all 86. Every other block keeps step 1's form [raw, z, flag]: the structure blocks (topo_STRUCT, depth_STRUCT, WALK, WALKF, SEED, DISTS) and SEMB keep their within-pool z-scores. rrf's base z-score is step 1's. Label-free, the same in training and at read time; no new hyperparameter. With no block ranked the model is step 1's, and with every fixed block ranked it is prank: the selftest checks both, weight for weight. |
+
+**Why pret.** prank's L-musique fit (`outputs/screen/scr-prank.md`) is MIXED. It has the largest zero-shot gain any
+screen has had, and it loses in-domain:
+- **Gains:** musique read zero-shot +0.2016 (0.270 to 0.471; rrf 0.473), and webqsp zero-shot +0.0269.
+- **Losses:** metaqa in-domain −0.0310 and hotpotqa in-domain −0.0080. 2wiki −0.0068 is WITHIN.
+
+A rank cut at 50 keeps a row's place among a column's top 50 and erases everything past it.
+- **Retrieval columns:** a ranked row's z-score moves with the share of the pool that retrieval ranked. In a thinly
+  ranked pool the ranked rows sit far out in the column's tail; its rank among the top 50 does not move (the
+  selftest checks this on one column). That share is the confound the diagnosis found: in L-musique's training set
+  only metaqa's pools are thinly ranked.
+- **Structure columns:** in metaqa's pools of about 2,000 rows, retrieval misses 57% of the golds. The walks, seed
+  similarity and distances find them, mostly past the top 50 of those columns, where a cut at 50 flattens them and a
+  z-score does not.
+
+pret ranks the retrieval columns and keeps the structure z-scores. It asks one question: does the zero-shot gain come
+through the retrieval columns?
+- **If it does,** pret keeps musique's gain without metaqa's loss.
+- **If it does not,** pret is NO_GAIN on musique. The gain then needs the structure ranks too: the structure z-scores
+  carry the share as well (as vshare's declaration says, the share sets every pool z-score).
+
+Timing and the amendment:
+- prank's L-hotpotqa fit was still training when this was declared; pret does not wait on its numbers.
+- prank has no full run (its pair cannot be PROMISING), so section 2's amendment of about 15:55 does not apply.
+
+**What the screens can show.** As in round five: L-musique reads musique and webqsp zero-shot. L-hotpotqa reads
+hotpotqa and webqsp zero-shot, and musique in-domain.
+
+**The smoke** (`scr8-smoke`) trains the arm for one epoch twice on 2wiki's select carve, then reads it. The repeat must
+be IDENTICAL. The two fits wait on it.
+
+**If the pair verdict is PROMISING, its full run starts by itself** (docs/FULL_PRET.md, declared with this round,
+before its numbers). On any other verdict its items are dropped unrun.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -384,6 +428,12 @@ before its numbers). On any other verdict its items are dropped unrun.
     else to a step, so each takes about as long as step 1's fit: 25 to 35 minutes alone, about 50 with three fits on
     the card. They start as prank's and hubwalk's fits free the card, about 23:10 to 23:45.
   - Verdict about 00:30 to 01:15.
+- **Eighth round** (queued about 23:30):
+  - The smoke takes about 5 to 10 minutes on 0.12 of the card.
+  - The two fits (cap 0.26, share 0.28) queue behind round seven's fits and prank-hp's read. pret ranks 6
+    columns where prank ranked 86, so a step costs about step 1's: 25 to 35 minutes alone, about 50 with three
+    fits on the card. They start as prank-hp and hubwalk free the card, about 23:45 to 00:30.
+  - Verdict about 01:00 to 01:45.
 
 ## Results
 
