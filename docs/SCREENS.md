@@ -154,6 +154,10 @@ three times larger in a pool with a share of 0.1 than in one with 0.7.
 IDENTICAL. A stronger block dropout (0.4) was drafted beside zret and dropped before any run, because block dropout
 was NOT_ADOPTED in its full run.
 
+**If scr-zret is PROMISING, its full run starts by itself** (docs/FULL_ZRET.md, declared about 16:15, before zret's
+numbers): a gate on the host reads the screen's verdict, and on any other verdict the full run's items are
+dropped unrun.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
