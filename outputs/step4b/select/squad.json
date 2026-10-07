@@ -1,0 +1,37 @@
+{
+ "P": {
+  "0.25": {
+   "seconds": 0.0,
+   "threads": 5
+  },
+  "0.5": {
+   "seconds": 0.0,
+   "threads": 5
+  }
+ },
+ "dataset": "squad",
+ "carve": "s1sel",
+ "questions": 1498,
+ "carve_sha256": "60e0b78420adb1cd1b9f239bb80831ba7916bb09c5c21009b4350fb01942cf06",
+ "construction": {
+  "base_pool": "equal_rrf_budget_50",
+  "regime": "RETRIEVAL",
+  "setting": null
+ },
+ "walk_families": [],
+ "frozen_contract": "candidate_contract_frozen_2026_09_13",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "carves_sha256": "53cfb89f1e41a76257113719639f96318d14279f86b50a970f9a0bbf6686d746",
+ "script_sha256": "31906120cea487041081e01a6914511a945e8138078e2bb710dde591a2873c7f",
+ "step4_script_sha256": "5ce9b3dd698121ca269e222631b29616203a506f11822f9a5fa014d8c6081c24",
+ "eps": 1e-07,
+ "bmax": 2000,
+ "alphas": [
+  0.25,
+  0.5
+ ],
+ "nodes": 20233,
+ "walk_entries": 0,
+ "seconds": 4.7,
+ "utc": "2026-10-07T01:25:01Z"
+}

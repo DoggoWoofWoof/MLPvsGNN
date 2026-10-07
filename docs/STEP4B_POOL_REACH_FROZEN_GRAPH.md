@@ -104,4 +104,44 @@ Expected: about 10 minutes for select and 15 for eval. A single family has fewer
 
 ## Results
 
-Filled in after the run.
+Run 7 October 2026, 06:54 to 07:11, on the laptop. Files: `outputs/step4b/alpha.json`, `result.json` and `result.md`.
+
+**Verdict: ADOPT.** Restart value 0.5. On the select carves the pooled ΔALL(P_F − I) was +0.0067 at 0.5 and +0.0048
+at 0.25.
+
+| dataset | P_F walks | questions | ALL: I | P_F | ΔALL P_F − I [95%] | label | step 4's union walk |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| metaqa | structural | 9,785 | 0.895 | 0.898 | +0.003 [−0.003, +0.009] | AT | 0.820 |
+| squad | nothing | 11,873 | 0.980 | 0.980 | 0 | AT | 0.980 |
+| musique | all three | 2,417 | 0.803 | 0.835 | +0.032 [+0.024, +0.042] | ABOVE | 0.835 |
+| hotpotqa | structural | 7,405 | 0.968 | 0.970 | +0.001 [−0.001, +0.003] | AT | 0.897 |
+| 2wiki | structural | 12,576 | 0.906 | 0.908 | +0.002 [+0.001, +0.003] | ABOVE | 0.824 |
+| webqsp (zero-shot) | all three | 1,503 | 0.688 | 0.782 | +0.094 [+0.074, +0.116] | ABOVE | 0.782 |
+
+- **What is new evidence.** As section 6 says, musique and webqsp repeat step 4's reads and labels: the same walk on
+  the same graph at the same restart value. The ADOPT rests on metaqa, hotpotqa and 2wiki not being BELOW. 2wiki's
+  ABOVE is new but small: 40 questions gain all their golds and 14 lose them.
+- **On its own graph the walk recovers what the union cost:**
+  - hotpotqa bridge questions: 0.966 (union walk 0.875, I 0.964);
+  - 2wiki bridge-comparison: 0.773 (union walk 0.518, I 0.769);
+  - metaqa overall: 0.898 (union walk 0.820, I 0.895).
+- **metaqa trades depth.**
+  - Two-hop questions rise from 0.948 to 0.992 (+0.045).
+  - Three-hop questions fall from 0.772 to 0.732 (−0.040 [−0.054, −0.026]).
+  - At restart 0.5 the walk's mass falls off with depth. The frozen expansion's three hops of 25 reach three-hop golds
+    that the walk ranks beyond the pool size.
+  - On the select carves, restart 0.25 gave metaqa more (+0.006 against +0.003) but cost hotpotqa (−0.005).
+  - metaqa's recall (the share of golds in the pool) falls from 0.957 to 0.947, while ALL rises.
+- **Frontier:** bigger walk pools keep reaching more golds:
+  - hotpotqa 0.977 at 250 nodes (I: 0.968 at 94);
+  - 2wiki 0.919 at 250 (I: 0.906 at 106);
+  - musique 0.837 at 2,200;
+  - webqsp 0.786 at 2,200.
+- **Cost** (laptop, numba, one thread per question, unpinned):
+  - 0.30M to 0.75M entries read per question at the median;
+  - 19 to 84 thread-ms per question, highest on hotpotqa and 2wiki, whose structural families are large;
+  - convergence: the top-2,000 overlap of ε with ε/10 is 0.86 to 0.98. squad's 0.0 is an empty comparison, 0 of 0
+    nodes, because squad has no expansion.
+
+These are development numbers. Section 6's confirmation is the next step, docs/STEP4C_WALK_POOLS_RETRAINED.md. It
+rebuilds the caches with P_F and retrains, graded on all six, zero-shot included.

@@ -1,0 +1,47 @@
+{
+ "P": {
+  "0.5": {
+   "seconds": 117.0,
+   "threads": 5
+  }
+ },
+ "convergence": {
+  "questions": 20,
+  "alpha": 0.5,
+  "eps": 1e-07,
+  "against": 1e-08,
+  "top": 2000,
+  "overlap_mean": 0.9348,
+  "overlap_min": 0.8455
+ },
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "questions": 7405,
+ "carve_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+ "construction": {
+  "base_pool": "equal_rrf_budget_50",
+  "regime": "STRUCT",
+  "setting": {
+   "name": "h1_c25",
+   "hops": 1,
+   "per_seed_cap": 25
+  }
+ },
+ "walk_families": [
+  "structural"
+ ],
+ "frozen_contract": "candidate_contract_frozen_2026_09_13",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "carves_sha256": "53cfb89f1e41a76257113719639f96318d14279f86b50a970f9a0bbf6686d746",
+ "script_sha256": "31906120cea487041081e01a6914511a945e8138078e2bb710dde591a2873c7f",
+ "step4_script_sha256": "5ce9b3dd698121ca269e222631b29616203a506f11822f9a5fa014d8c6081c24",
+ "eps": 1e-07,
+ "bmax": 2000,
+ "alphas": [
+  0.5
+ ],
+ "nodes": 5233329,
+ "walk_entries": 30190574,
+ "seconds": 183.8,
+ "utc": "2026-10-07T01:35:58Z"
+}
