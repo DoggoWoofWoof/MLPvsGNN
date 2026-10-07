@@ -639,6 +639,72 @@ this round, before its numbers). Otherwise its items are dropped unrun. The pair
 - The screen's items queue after round ten's. Each fit takes about 45 to 60 minutes beside the others, then a read of
   about 10. The pair and its re-call land about 07:15 to 07:45.
 
+### Twelfth round (declared 8 October at about 05:30, before any of its numbers)
+
+Code: `outputs/mp_unified/rmatch.py` (its selftest passes). One idea, a learned match between the question and the
+relations along the graph's own typed chains, screened on one base, as in round eleven: rel's if rel's full run is
+ADOPTED under the seed null over every split, step 1's if it is NOT_ADOPTED. The screen trains two fits, L-musique and
+L-hotpotqa.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-rmatch, scr-rmatch-hp (step 1's base); scr-relrm, scr-relrm-hp (rel's base) | rmatch; relrm | **A learned question-relation match along typed chains.** Every row's score gains g_m log(1 + S_m(v)/0.01) + g_r log(1 + S_r(v)). S_m(v) sums w_q(c) m_c(v) over the typed relation chains c that reach row v from the question's seeds, and S_r(v) sums w_q(c). A chain is up to three typed steps z = 2r + d (relation r, read forward or back). m_c(v) is the mass chainpop17's exact walk sends to v along c: 1/\|S\| on each seed of one bucket, split equally over each node's out-edges of type z in the pool, renormalised over the chain's non-seed rows. Per row and bucket the 64 heaviest entries are kept. log w_q(c) = log π_q(L) + β_b + Σ_k log σ(h_qk(z_k)), with h_qk(2r + d) = κ_k zcos_q(r) + (A_k q)·(B ẽ_r + D_d) + dir_kd + bias_k. q is the question's unit embedding (SEMB's input) and e_r the name embedding of relation r from the same frozen encoder (`outputs/m3b/relations`). zcos_q(r) is their cosine, z-scored over the relations on the question's own pool; ẽ_r is e_r's unit vector less the graph's mean. π_q is a softmax over the chain length from q. A (3 × 8 × 1536) starts random, κ at 1, and B (8 × 1536), D, dir, bias, π's weights, β and the gates at zero. So each fit starts as its base model, bit for bit, from the same initialisation and batches; the listwise loss alone trains the match, with the model's own Adam, learning rate and weight decay. 53,795 parameters. No new column, block or hyperparameter of the fit, and nothing reads a label at read time. A graph without typed relations (squad, musique, hotpotqa, 2wiki) has no chains, and there the arm is its base model. A question whose SEMB block is dropped takes no match. |
+
+**Why (section 'Within the depth that holds a gold' in the results, filed at about 04:07).**
+- **The gap is in the match, not the inputs.** On rel's metaqa 3-hop misses at a depth that holds a gold, the gold
+  and the top-1 never share their relation columns (same_rel 0.000). Yet no fixed question-relation match column
+  favours the gold: the best does on 0.533. The GNN prefers the gold on 0.743 of them, the twin on 0.338.
+- **The KB systems learn which relation each hop of the question asks for.** TransferNet, ReaRev and NuTrea score
+  each hop's relations against the question. Step 1's and rel's MLPs read a fixed cosine between the question and
+  each relation name, summed over paths. This arm learns that match, per hop
+  position, from the same frozen embeddings, along the chains the existing graph already holds.
+- **Zero-shot on webqsp:** B, D and κ are learned on metaqa's nine relations. On webqsp's 7,058 the match leans on the
+  per-pool z-scored cosine and on B's map of the name embeddings. Whether that transfers is part of the test.
+
+**The chains are built once per carve** (`rmatch.py build`, on the host's CPU), from the look's chunks, beside step
+1's cache: metaqa fit, select and s1eval, and webqsp s1eval. Each part is tied to its step-1 part's record, and its
+pool sizes are checked against step 1's. No other carve has typed relations.
+
+**The base is named by rel's re-grade, as in round eleven.**
+- `rmatch.py base --rel-grade outputs/full_rel/grade-nullx.json --want rel` exits 0 only on ADOPT, and `--want
+  step1` only on NOT_ADOPTED. A missing or INCOMPLETE re-grade runs neither.
+- **On rel's base (relrm):** rel's carve and blocks. Each fit is compared with rel's screen fit of its split, which
+  decides, and with step 1's, reported. The pair, its re-call and the grade are relz.py's under relrm's name
+  (`rmatch.py pair-rel`, `recall-rel`, `grade-rel`).
+- **On step 1's base (rmatch):** each fit is compared with step 1's fit of its split. The pair and its re-call are
+  screen_pair.py's and screen_recall.py's, unchanged.
+- Caps: rmatch 0.26 (share 0.28) on both fits; relrm 0.26 (0.28) on L-musique and 0.30 (0.32) on L-hotpotqa. Reads
+  0.30 (0.32). The chain entries stay in host memory, and each batch's go to the card a chunk at a time.
+
+**What the screen can show.**
+- **metaqa in-domain** (both fits train on metaqa): the 3-hop questions are the test, where the GNN leads most.
+- **webqsp, read zero-shot:** whether a match learned on nine relations transfers to 7,058.
+- **The passage graphs:** they have no typed chains, so there the arm differs from its base only through training on
+  metaqa's batches beside theirs. No LOSS is the test.
+
+**The smoke** (`scr12-smoke`, `rmatch.py smoke`).
+- It first checks the carves on metaqa select, webqsp s1eval and 2wiki select. The base's matrix, golds and rows must
+  be unchanged, and typed carves must hold entries. On their first questions the arm at its start must score as its
+  base model, bit for bit, with finite chain features.
+- It then trains step 1's base arm once, rmatch twice (the repeat must be IDENTICAL) and relrm once, one epoch each
+  on metaqa's select carve, and reads that carve.
+- rmatch's and relrm's gates and B must have moved from zero and be finite, and the base arm's fit must hold none.
+- relrm must hold rel's blocks live, and rmatch's blocks must be the base arm's.
+- All three must read the same questions, and rmatch's scores must differ from the base arm's.
+- It runs in the card's free share (0.16) once the chains of metaqa select and webqsp s1eval are built. The fits wait
+  on it.
+
+**If the re-call is PROMISING, the full run starts by itself** on the same base (docs/FULL_ROUND12.md, declared with
+this round, before its numbers). Otherwise its items are dropped unrun. The pair and its re-call are filed either way.
+
+**Order and ETAs.**
+- The four chain builds start now on the host's idle CPU: a few minutes for each of metaqa's carves, and about 10
+  to 15 for webqsp s1eval (measured on the laptop: 0.02 seconds a question on metaqa, 0.3 on webqsp). The smoke
+  follows, about 10 minutes.
+- rel's re-grade lands about 06:15 to 06:30. The two gate items run at once after it.
+- The screen's items queue after round eleven's. Each fit takes about 45 to 60 minutes beside the others, then a read
+  of about 10 to 15. The pair and its re-call land about 08:00 to 09:00.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
