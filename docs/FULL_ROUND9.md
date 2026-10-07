@@ -142,3 +142,35 @@ section 4 is not needed: only rel can be ADOPTED.
 - **rel's remaining items keep running:** J5's fit and the L-squad, J5 and L-metaqa reads, comparisons and grade.
   Under the wider null their reads can change the verdict, so section 4's reason to stop them no longer holds. Its
   re-grade `outputs/full_rel/grade-nullx` lands with the null, about 04:30 to 05:30.
+
+### rel: all six splits graded (02:42). NOT_ADOPTED as filed and under the first null; the null over every split decides
+
+`outputs/full_rel/grade.md` and `grade-recall.md`. R@5 of rel's p@swa minus step 1's p@swa of the same split. Bold:
+step 1's eleven primary reads. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| J5 | **+0.0759 GAIN** | **−0.0013** | **−0.0013** | **+0.0019** | **+0.0001** | **+0.1013 GAIN zs** |
+| L-metaqa | **+0.0000 zs** | +0.0000 | +0.0000 | +0.0000 | +0.0000 | +0.0000 zs |
+| L-squad | +0.0721 GAIN | **+0.0013 zs** | **−0.0093 LOSS** | −0.0010 | +0.0022 | +0.1127 GAIN zs |
+| L-musique | +0.0716 GAIN | −0.0008 | **+0.0868 GAIN zs** | +0.0005 | −0.0012 | +0.0635 GAIN zs |
+| L-hotpotqa | +0.0677 GAIN | −0.0012 | +0.0053 | **−0.0132 LOSS zs** (WITHIN under the null) | +0.0015 | +0.0702 GAIN zs |
+| L-2wiki | +0.0795 GAIN | −0.0025 | −0.0033 | +0.0059 | **−0.0136 LOSS zs** | +0.1156 GAIN zs |
+
+Unmarked reads are WITHIN.
+
+- **J5, the model trained on all five datasets, is PROMISING by itself.**
+  - metaqa in-domain: R@5 0.644 to 0.720, hit@1 0.634 to 0.770.
+  - webqsp read zero-shot: R@5 0.117 to 0.218, hit@1 0.055 to 0.116.
+  - The four passage graphs are WITHIN (−0.0013 to +0.0019).
+- **L-squad** gains on metaqa (+0.0721, hit@1 0.641 to 0.783) and on webqsp zero-shot (+0.1127). It loses musique
+  in-domain: −0.0093 [−0.0150, −0.0032], FC@5 −0.014.
+- **L-metaqa reads +0.0000 everywhere,** as the dead-block rule says it must: no KB trains in that split, so rel's
+  blocks are 0 on every training row and the fit is step 1's model. The harness's identity check holds.
+- **Filed: NOT_ADOPTED,** with 3 primary GAINs and 3 LOSSes. The first null's re-call (`grade-recall`) turns L-hotpotqa's
+  hotpotqa zero-shot LOSS WITHIN (floor 0.0200). That leaves two LOSSes on splits no null covered yet:
+  - L-squad, musique in-domain −0.0093;
+  - L-2wiki, 2wiki read zero-shot −0.0136.
+- **The re-grade under the null over every split decides** (`outputs/full_rel/grade-nullx`, docs/SCREENS.md, section 2).
+  It meets those two LOSSes, and every GAIN, with the floors of their own splits. The eight null fits wait behind
+  round ten's screen fits on the card, so it lands about 05:30 to 06:30.
