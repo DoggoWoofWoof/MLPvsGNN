@@ -1,0 +1,240 @@
+{
+ "declared_in": "docs/STEP4C_WALK_POOLS_RETRAINED.md",
+ "manifest_sha256": "c7af9bac5900fca04e19fc5e45b984dd53a215f14876145636444c646aaa9b22",
+ "squad": {
+  "fit": {
+   "parts": [
+    1,
+    1
+   ],
+   "arrays": {},
+   "score2_max_abs_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "select": {
+   "parts": [
+    1,
+    1
+   ],
+   "arrays": {},
+   "score2_max_abs_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "s1sel": {
+   "parts": [
+    1,
+    1
+   ],
+   "arrays": {},
+   "score2_max_abs_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "s1eval": {
+   "parts": [
+    1,
+    1
+   ],
+   "arrays": {},
+   "score2_max_abs_diff": 0.0,
+   "verdict": "PASS"
+  }
+ },
+ "rows": {
+  "metaqa=fit": {
+   "questions": 5960,
+   "short": 0,
+   "changed": 5960,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "metaqa=select": {
+   "questions": 1497,
+   "short": 0,
+   "changed": 1497,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "metaqa=s1sel": {
+   "questions": 1497,
+   "short": 0,
+   "changed": 1497,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "metaqa=s1eval": {
+   "questions": 9785,
+   "short": 0,
+   "changed": 9785,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "squad=fit": {
+   "questions": 5856,
+   "short": 0,
+   "changed": 0,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "squad=select": {
+   "questions": 1498,
+   "short": 0,
+   "changed": 0,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "squad=s1sel": {
+   "questions": 1498,
+   "short": 0,
+   "changed": 0,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "squad=s1eval": {
+   "questions": 11873,
+   "short": 0,
+   "changed": 0,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "musique=s1fit": {
+   "questions": 4601,
+   "short": 0,
+   "changed": 4601,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "musique=select": {
+   "questions": 1534,
+   "short": 0,
+   "changed": 1534,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "musique=s1sel": {
+   "questions": 1534,
+   "short": 0,
+   "changed": 1534,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "musique=s1eval": {
+   "questions": 2417,
+   "short": 0,
+   "changed": 2417,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "hotpotqa=fit": {
+   "questions": 5930,
+   "short": 0,
+   "changed": 3631,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "hotpotqa=select": {
+   "questions": 1508,
+   "short": 0,
+   "changed": 909,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "hotpotqa=s1sel": {
+   "questions": 1508,
+   "short": 0,
+   "changed": 908,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "hotpotqa=s1eval": {
+   "questions": 7405,
+   "short": 0,
+   "changed": 4448,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "2wiki=fit": {
+   "questions": 5928,
+   "short": 0,
+   "changed": 3316,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "2wiki=select": {
+   "questions": 1496,
+   "short": 0,
+   "changed": 870,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "2wiki=s1sel": {
+   "questions": 1496,
+   "short": 0,
+   "changed": 842,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "2wiki=s1eval": {
+   "questions": 12576,
+   "short": 0,
+   "changed": 7260,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  },
+  "webqsp=s1eval": {
+   "questions": 1503,
+   "short": 0,
+   "changed": 1503,
+   "step1_rows_are_frozen_sizes": true,
+   "rows_are_pf_sizes": true,
+   "verdict": "PASS"
+  }
+ },
+ "looks": {
+  "metaqa=fit": "PASS",
+  "metaqa=select": "PASS",
+  "metaqa=s1sel": "PASS",
+  "metaqa=s1eval": "PASS",
+  "squad=fit": "PASS",
+  "squad=select": "PASS",
+  "squad=s1sel": "PASS",
+  "squad=s1eval": "PASS",
+  "musique=s1fit": "PASS",
+  "musique=select": "PASS",
+  "musique=s1sel": "PASS",
+  "musique=s1eval": "PASS",
+  "hotpotqa=fit": "PASS",
+  "hotpotqa=select": "PASS",
+  "hotpotqa=s1sel": "PASS",
+  "hotpotqa=s1eval": "PASS",
+  "2wiki=fit": "PASS",
+  "2wiki=select": "PASS",
+  "2wiki=s1sel": "PASS",
+  "2wiki=s1eval": "PASS",
+  "webqsp=s1eval": "PASS"
+ },
+ "script_sha256": "ee5398f4d2f60892f5098068347517e622681c9a5eebebca4a1f8f872f019949",
+ "failures": [],
+ "verdict": "PASS",
+ "seconds": 1.7,
+ "utc": "2026-10-07T05:44:28Z"
+}

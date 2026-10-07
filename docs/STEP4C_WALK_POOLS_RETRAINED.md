@@ -185,4 +185,63 @@ decides nothing. The models were trained on the frozen pools' negatives.
 
 ## Results
 
-None yet.
+Development numbers; the paper's numbers come from one declared confirmation run.
+
+### Pools and identity gate (7 October, before any fit)
+
+- **Pools:** the laptop built the pools of the 21 carves. There are 88,900 questions; 52,512 pools changed and none is
+  short. The manifest `pools.json` has sha256 `c7af9bac…`.
+- **Looks and cache:** the 69 look shards and the cache parts ran on the host.
+- **Gate:** `outputs/step4c/gate.json` (05:44 UTC, script sha256 `ee5398f4…`) is PASS.
+  - squad's four carves have step 1's cache arrays sha256 for sha256, score2 included (largest difference 0).
+  - On every other carve, step 1's rows are the frozen pool sizes and the new rows are P_F's; no question is short.
+  - Every look filed its pools record.
+
+### Early read (12:33; reported, not graded)
+
+Step 1's six fits, unchanged, were read on the P_F s1eval caches (`outputs/step4c/screen.md`). Each cell is R@5 on P_F
+minus the same pick on the frozen pools, with the M-pick that step 1's verdict adopts.
+
+| fit | read | role | R@5 frozen | R@5 P_F | diff [95%] | label |
+| --- | --- | --- | --- | --- | --- | --- |
+| J5 | metaqa | in-domain | 0.6443 | 0.6366 | −0.0077 [−0.0106, −0.0049] | BELOW |
+| J5 | squad | in-domain | 0.9095 | 0.9095 | 0 (no pool changed) | AT |
+| J5 | musique | in-domain | 0.5609 | 0.5525 | −0.0083 [−0.0123, −0.0043] | BELOW |
+| J5 | hotpotqa | in-domain | 0.9013 | 0.9022 | +0.0009 [−0.0003, +0.0021] | AT |
+| J5 | 2wiki | in-domain | 0.8694 | 0.8698 | +0.0003 [−0.0005, +0.0011] | AT |
+| J5 | webqsp | zero-shot | 0.1167 | 0.1155 | −0.0013 [−0.0092, +0.0061] | AT |
+| L-metaqa | metaqa | zero-shot | 0.0888 | 0.0945 | +0.0058 [+0.0037, +0.0080] | ABOVE |
+| L-squad | squad | zero-shot | 0.8797 | 0.8797 | 0 (no pool changed) | AT |
+| L-musique | musique | zero-shot | 0.2696 | 0.2882 | +0.0186 [+0.0131, +0.0244] | ABOVE |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8510 | 0.8502 | −0.0009 [−0.0022, +0.0004] | AT |
+| L-2wiki | 2wiki | zero-shot | 0.8070 | 0.8076 | +0.0005 [−0.0005, +0.0015] | AT |
+
+- **Unchanged models, new pools.** The models trained on metaqa and musique lose there. On metaqa, J5 and every
+  leave-out fit that trains on it are BELOW (−0.0074 to −0.0081). On musique, J5 (−0.0083) and two of the four
+  leave-out fits that train on it (L-metaqa −0.0056, L-squad −0.0094) are BELOW; the other two are AT. The fits that
+  never saw metaqa or musique gain on them: metaqa +0.0058 and musique +0.0186. webqsp is mixed: L-musique −0.0118
+  (BELOW), L-2wiki +0.0083 (ABOVE), the others AT. hotpotqa and 2wiki are AT throughout.
+- **The pools themselves** (eval reads, frozen → P_F):
+
+  | dataset | every gold in the pool | golds in the pool |
+  | --- | --- | --- |
+  | metaqa | 0.8949 → 0.8980 | 0.9565 → 0.9467 |
+  | musique | 0.8026 → 0.8349 | 0.9207 → 0.9339 |
+  | hotpotqa | 0.9684 → 0.9695 | 0.9800 → 0.9805 |
+  | 2wiki | 0.9059 → 0.9079 | 0.9637 → 0.9645 |
+  | webqsp | 0.6880 → 0.7824 | 0.8110 → 0.8834 |
+  | squad | 0.9798 (unchanged) | 0.9798 (unchanged) |
+
+  On metaqa, the walk puts every gold in the pool slightly more often but holds fewer golds overall (−0.0098). R@5
+  counts golds, and no model ranks a gold its pool does not hold, so J5's metaqa loss (−0.0077) can stay after the
+  refit. On musique the pools hold more golds (+0.0132), so the loss of the unchanged models there is theirs (they
+  trained on the frozen pools' negatives); the refit tests exactly that.
+- **References on the same rows** (P_F − frozen): the twin on metaqa −0.0035 (BELOW) and the GNN +0.0029 (ABOVE); on
+  musique the GNN −0.0080 (BELOW) and the twin AT; on webqsp the GNN +0.0149 (ABOVE) and the twin +0.0099 (AT); every
+  other reference AT or unchanged.
+
+### Grade
+
+Not yet. The six 4c fits queue behind step 2's six fits and reads. Step 2's fits started late (J5 at 11:00, the others
+from 12:21 on, once step 1's reads and this early read had freed the card). Expected: the 4c fits from about 4 pm, two
+waves of three at once, and the grade about 11 pm to 1 am, 7 to 8 October.

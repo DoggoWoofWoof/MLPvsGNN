@@ -213,4 +213,54 @@ about 10:50, and the grade lands about 11:30 am to noon.
 
 ## Results
 
-None yet.
+Graded 7 October 2026 at 12:22 (seed 0) by `scripts/step1_grade.py --host` (script sha256 `fe85dda8…`), in
+`outputs/step1/grade.md` and `outputs/step1/grade.json`. The committed grade.json has the host's machine name and path
+in `placement` replaced; the host's file has sha256 `8e754bce…`. Development numbers; the paper's numbers come from one
+declared confirmation run.
+
+**Verdict: NOT_ADOPTED.** Two primary reads are BELOW and one is ABOVE. In the other eight, both carves pick the same
+candidate.
+
+| fit | read | role | M-pick | D-pick | R@5 M | R@5 D | D − M R@5 [95%] | label |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| J5 | metaqa / squad / musique / hotpotqa / 2wiki | in-domain | p@swa | p@swa | 0.6443 / 0.9095 / 0.5609 / 0.9013 / 0.8694 | same | 0 | SAME ×5 |
+| J5 | webqsp | zero-shot | p@swa | p@swa | 0.1167 | 0.1167 | 0 | SAME |
+| L-metaqa | metaqa | zero-shot | p@ep7 | pf@swa | 0.0888 | 0.0709 | −0.0179 [−0.0213, −0.0145] | BELOW |
+| L-squad | squad | zero-shot | p@swa | p@swa | 0.8797 | 0.8797 | 0 | SAME |
+| L-musique | musique | zero-shot | p@swa | p@swa | 0.2696 | 0.2696 | 0 | SAME |
+| L-hotpotqa | hotpotqa | zero-shot | p@ep7 | pf@swa | 0.8510 | 0.8563 | +0.0053 [+0.0013, +0.0090] | ABOVE |
+| L-2wiki | 2wiki | zero-shot | pf@swa | p@ep5 | 0.8070 | 0.7897 | −0.0173 [−0.0201, −0.0146] | BELOW |
+
+What the reads say:
+
+- **The pick rarely moves.** J5 and three of the five leave-out fits pick the same saved state on both carves. Where
+  the pick moves (L-metaqa, L-hotpotqa, L-2wiki), the D-pick is better in-domain on six of the twelve secondary reads
+  and worse on none: L-metaqa on squad +0.0050, hotpotqa +0.0080 and 2wiki +0.0045; L-hotpotqa on squad +0.0051 and
+  2wiki +0.0053; L-2wiki on metaqa +0.0104. On the held-out dataset it is worse for metaqa and 2wiki and better for
+  hotpotqa. On webqsp it is BELOW for L-metaqa (−0.0180) and L-hotpotqa (−0.0138) and ABOVE for L-2wiki (+0.0161).
+- **By stratum:**
+  - L-metaqa loses on every hop: hop1 −0.0442, hop2 −0.0108, hop3 −0.0068.
+  - L-2wiki loses on bridge_comparison (−0.0372), compositional (−0.0154) and inference (−0.0271); comparison is AT.
+  - L-hotpotqa gains on both types: bridge +0.0046, comparison +0.0081.
+- **Neither select carve predicts a held-out dataset.** The Spearman correlation over the 36 candidates, between
+  pooled select quality and R@5 on the held-out read (M / D):
+
+  | metaqa | squad | musique | hotpotqa | 2wiki |
+  | --- | --- | --- | --- | --- |
+  | +0.08 / +0.04 | −0.38 / −0.33 | +0.16 / +0.16 | −0.49 / −0.48 | +0.64 / +0.62 |
+
+  In-domain, a dataset's own select carve predicts its eval: 0.263 to 0.992 on M and 0.575 to 0.995 on D. D's own
+  carve predicts squad better on every fit (0.575 to 0.784, against 0.263 to 0.604 on M) and musique on four fits
+  of five.
+- **The zero-shot gap is not a selection problem.** The held-out levels sit far below the twin (twin0, in brackets) on
+  three datasets: metaqa 0.089 (0.721), musique 0.270 (0.512), and webqsp 0.104 to 0.178 (0.602). The other three are
+  closer: hotpotqa 0.851 (0.879), 2wiki 0.807 (0.849) and squad 0.880 (0.897). The best of the 36 candidates on the
+  eval itself is an oracle that no rule reaches, and even it gets only 0.148 on metaqa and 0.312 on musique.
+
+What follows:
+
+- Seeds 1 and 2 do not run; they follow ADOPT only.
+- Later steps pick on M3B's select carves (the M-pick), save every epoch state, and report both picks (section 7).
+  Step 2's and step 4c's grades read this verdict from the host's grade.json.
+- The zero-shot gaps on metaqa, musique and webqsp are for the training steps to close (steps 2 to 4 of
+  MUSIQUE_DIAGNOSIS section 5); a better select carve does not close them.
