@@ -158,6 +158,35 @@ was NOT_ADOPTED in its full run.
 numbers): a gate on the host reads the screen's verdict, and on any other verdict the full run's items are
 dropped unrun.
 
+### Fourth round (declared about 19:55, before any of its numbers)
+
+Code: `outputs/mp_unified/lean_screen4.py` (its selftest passes). It runs lean_screen2's commands and lean_screen's
+rule unchanged and adds one arm, scored by section 2's rule against step 1's L-musique p@swa. zret's screen fit
+(scr-zret) is a second base, reported only.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-ztop50 | ztop50 | zret with a reference of fixed size. Every pool z-score, rrf's base z-score included, is taken against the pool's top 50 retrieved rows by rrf (rrf > 0; ties by row order) instead of all of its retrieved rows. A pool with fewer than two reference rows, or a column constant over them, keeps its whole-pool z-score there, as in zret. Label-free, the same in training and at read, no new parameters. Where no pool has more than 50 retrieved rows it is zret bit for bit; on squad's pools (50 rows, all retrieved) it is the base model bit for bit. |
+
+**Why ztop50.** zret's full run (docs/FULL_ZRET.md) gained on the big pools read zero-shot (metaqa +0.064, musique
++0.120, webqsp +0.025) and lost on the small ones (hotpotqa −0.014, 2wiki −0.008). zret took the retrieved share
+out of the z-scores, but not the number of retrieved rows they are taken over. That number is 205 to 379 in the big
+pools and 57 to 63 in hotpotqa's and 2wiki's (pool composition, Results). A top row's z-score depends on it: the best
+of 300 rows sits further out in the tail than the best of 60. So the same z-score still means different things in
+the two kinds of pool, and a fit learns that from its training datasets. With the top 50 as every pool's reference,
+a z-score is measured against the same number of rows, drawn from the head of retrieval's list, in every pool. 50
+is the most that squad's pools hold, and close to the small pools' medians (55 and 60).
+
+**What the screen can show.** On L-musique it reads musique zero-shot, where zret gained 0.120. It cannot show the
+small-pool losses: hotpotqa and 2wiki are in this split's training set, and only L-hotpotqa and L-2wiki read them
+zero-shot. Both earlier full runs failed on reads their screens did not make. Those reads come only from the full run.
+
+**The smoke** (`scr4-smoke`) trains ztop50 one epoch on 2wiki select, twice, and reads it. The repeat must be
+IDENTICAL.
+
+**If scr-ztop50 is PROMISING, its full run starts by itself** (docs/FULL_ZTOP50.md, declared with this round, before
+its numbers). On any other verdict the full run's items are dropped unrun.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -171,6 +200,9 @@ dropped unrun.
   16:30. (They landed at 15:46 and 15:48.)
 - **Third round** (queued about 16:00): the smoke takes about 5 minutes, the fit about 25 (8 epochs at about 3
   minutes), the read about 2. Verdict about 16:35 to 16:45. (It landed at 16:46: the fit took 43 minutes.)
+- **Fourth round** (queued about 20:00, beside the seed-0 GNN chain, which holds half the card until about 22:30):
+  the smoke takes about 10 minutes, the fit about 45 to 55 (zret's took 43 minutes; ztop50 adds a sort per batch),
+  then the read and comparison take about 10. Verdict about 21:00 to 21:15.
 
 ## Results
 
@@ -335,7 +367,7 @@ Bold: a GAIN or LOSS call.
 - **pad is not followed with a narrower padding screen.** zret (the third round) tests the same cause without changing
   the training data.
 
-### scr-zret: PROMISING (16:46). Its full run started by itself (docs/FULL_ZRET.md)
+### scr-zret: PROMISING (16:46). Its full run is NOT_ADOPTED (docs/FULL_ZRET.md)
 
 `outputs/screen/scr-zret.md`. R@5 of zret minus step 1's L-musique p@swa, with the 95% interval:
 
@@ -354,3 +386,7 @@ Bold: a GAIN or LOSS call.
   z-scores. The fit took 43 minutes, not the 25 expected.
 - **The gate passed at 16:47.** J5, L-metaqa and L-squad started at once; L-hotpotqa and L-2wiki start as the card
   frees.
+- **Its full run is NOT_ADOPTED (17:57).** Three of the eleven primary reads GAIN, all read zero-shot: metaqa +0.064,
+  musique +0.120 (this fit) and webqsp +0.025. Four of the thirty-six reads LOSE: hotpotqa and 2wiki read zero-shot
+  (−0.014, −0.008), metaqa in L-hotpotqa's fit (−0.012) and musique in L-squad's fit (−0.009). zret gains on the
+  big, thinly retrieved pools and loses on the small ones (docs/FULL_ZRET.md).

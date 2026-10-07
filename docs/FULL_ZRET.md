@@ -83,3 +83,40 @@ a comparison shows a LOSS.
 ## Results
 
 Development numbers; the paper's numbers come from one declared confirmation run.
+
+### NOT_ADOPTED (grade filed 17:57)
+
+`outputs/full_zret/grade.md`. R@5 of zret's p@swa minus step 1's p@swa of the same split, on the six s1eval
+carves, with the call by docs/SCREENS.md's rule. Bold: step 1's eleven primary reads. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+|---|---|---|---|---|---|---|
+| J5 | **−0.0011 WITHIN** | **+0.0013 WITHIN** | **+0.0031 WITHIN** | **−0.0005 WITHIN** | **−0.0035 WITHIN** | **+0.0250 GAIN zs** |
+| L-metaqa | **+0.0644 GAIN zs** | +0.0029 WITHIN | +0.0087 GAIN | −0.0032 WITHIN | +0.0066 WITHIN | +0.0071 WITHIN zs |
+| L-squad | −0.0063 WITHIN | **+0.0056 WITHIN zs** | −0.0093 LOSS | −0.0017 WITHIN | −0.0048 WITHIN | +0.0166 GAIN zs |
+| L-musique | −0.0041 WITHIN | +0.0007 WITHIN | **+0.1202 GAIN zs** | +0.0046 WITHIN | −0.0018 WITHIN | −0.0012 WITHIN zs |
+| L-hotpotqa | −0.0121 LOSS | +0.0011 WITHIN | +0.0073 WITHIN | **−0.0140 LOSS zs** | +0.0056 WITHIN | −0.0005 WITHIN zs |
+| L-2wiki | −0.0004 WITHIN | −0.0003 WITHIN | +0.0055 WITHIN | +0.0058 WITHIN | **−0.0081 LOSS zs** | +0.0262 GAIN zs |
+
+Three of the eleven primary reads GAIN, and four of the thirty-six reads LOSE. The L-musique row is the screen's fit
+(`--reuse`).
+
+- **It gains where the pools are big and thinly retrieved.** All of these are zero-shot reads. metaqa from L-metaqa
+  rises from 0.077 to 0.142 (+0.064 [+0.059, +0.070]). musique from L-musique rises from 0.270 to 0.390. webqsp from
+  J5 rises from 0.117 to 0.142 (+0.025), and it gains in L-squad's and L-2wiki's fits too (+0.017, +0.026).
+- **It loses where the pools are small.** hotpotqa read zero-shot falls from 0.859 to 0.845 (−0.014 [−0.018, −0.010];
+  FC@5 −0.026). 2wiki read zero-shot falls from 0.807 to 0.799 (−0.008 [−0.011, −0.005]; FC@5 −0.018). Two in-domain
+  reads also lose: metaqa in L-hotpotqa's fit (−0.012) and musique in L-squad's fit (−0.009).
+- **J5 is within the floor on all five in-domain datasets** (−0.0035 to +0.0031).
+- **The screen could not see the losses.** In L-musique's fit, hotpotqa and 2wiki are training datasets; only L-hotpotqa
+  and L-2wiki read them zero-shot. Block dropout's full run failed the same way, on reads its screen did not make
+  (docs/FULL_BDROP20.md).
+- **What zret left in.** The retrieved shares are 0.10 to 0.18 in the big pools (metaqa, webqsp, musique) and 0.56 to
+  0.69 in hotpotqa's and 2wiki's (docs/SCREENS.md, pool composition). zret took the share out of the z-scores but kept
+  the number of retrieved rows they are taken over: 205 to 379 in the big pools, 50 to 63 in the small ones. Over
+  more rows, a pool's best rows sit further out in the tail. The fourth round (ztop50, docs/SCREENS.md) tests whether
+  that number is the channel left.
+- **Nothing was stopped early.** The first LOSS (L-squad's comparison, 17:47) came while the laptop could not reach
+  the host (a laptop-side Tailscale fault, 17:06 to 19:24). L-hotpotqa and L-2wiki were not stopped; their
+  comparisons landed at 17:54 and 17:56. The grade released the seed-0 GNN chain at 17:57, as section 5 declared.
+- zret is not the base of later screens. Step 1's fits stay the base.
