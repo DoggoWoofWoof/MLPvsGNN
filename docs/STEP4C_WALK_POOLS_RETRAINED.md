@@ -242,6 +242,11 @@ minus the same pick on the frozen pools, with the M-pick that step 1's verdict a
 
 ### Grade
 
-Not yet. The six 4c fits queue behind step 2's six fits and reads. Step 2's fits started late (J5 at 11:00, the others
+Held at about 14:00, 7 October, under the user's rule of one training run per idea (docs/SCREENS.md). The six 4c
+fits and the grade do not run. One screen fit replaces them: scr-pools, step 1's L-musique split trained on the 4c
+cache. It is compared with step 1's L-musique (this decides) and with this early read. If the screen shows a gain,
+the six fits and the grade run as this file declares them.
+
+Before the hold: The six 4c fits queue behind step 2's six fits and reads. Step 2's fits started late (J5 at 11:00, the others
 from 12:21 on, once step 1's reads and this early read had freed the card). Expected: the 4c fits from about 4 pm, two
 waves of three at once, and the grade about 11 pm to 1 am, 7 to 8 October.

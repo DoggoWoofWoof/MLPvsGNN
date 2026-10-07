@@ -257,6 +257,10 @@ What the reads say:
   closer: hotpotqa 0.851 (0.879), 2wiki 0.807 (0.849) and squad 0.880 (0.897). The best of the 36 candidates on the
   eval itself is an oracle that no rule reaches, and even it gets only 0.148 on metaqa and 0.312 on musique.
 
+  Amended 7 October, about 14:45: twin0 is trained on the dataset it is read on, so it is an in-domain reference,
+  not a zero-shot target. A zero-shot read's floor is rrf (plain retrieval, no learned scorer). The screens report
+  rrf beside every read (docs/SCREENS.md).
+
 What follows:
 
 - Seeds 1 and 2 do not run; they follow ADOPT only.
