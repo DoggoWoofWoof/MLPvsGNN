@@ -133,3 +133,29 @@ step 1's p@swa on the same split, with the call. rrf is in brackets.
 - Squad read zero-shot (L-squad): rrf alone (0.905) is above both fits (step 1's 0.880, step 2's 0.886). The learned
   scorer costs squad, a control whose graph exposes no extra gold, about 0.02 to 0.03 R@5 when it has not trained on
   it. That is the zero-shot harm these screens target.
+
+### The diagnosis: block ablation of step 1's L-musique p@swa (14:50)
+
+`outputs/screen/ablate-L-musique/ablate.md`. Pool sizes per question: musique 2,092 rows and webqsp 2,120 (both read
+zero-shot), metaqa 2,017, 2wiki 106, hotpotqa 94, squad 50. Every big-pool dataset in training is a KB.
+
+| read | model | rrf | only rank kept (+rank) | only dense_cos kept | only SEED kept |
+| --- | --- | --- | --- | --- | --- |
+| musique (zero-shot) | 0.270 | 0.473 | 0.154 | 0.479 | 0.023 |
+| webqsp (zero-shot) | 0.178 | 0.054 | 0.034 | 0.091 | 0.000 |
+| metaqa (in-domain) | 0.654 | 0.005 | 0.004 | 0.008 | 0.005 |
+| hotpotqa (in-domain) | 0.902 | 0.685 | 0.701 | 0.681 | 0.011 |
+| 2wiki (in-domain) | 0.873 | 0.608 | 0.631 | 0.569 | 0.018 |
+| squad (in-domain) | 0.910 | 0.905 | 0.912 | 0.892 | 0.019 |
+
+- **No single block makes musique's zero-shot loss.** Removing any one block's order (−B) leaves musique no better
+  than the full model (rank −0.086, dense_cos −0.059, WALK −0.042, WALKF −0.033, DISTS −0.018; the other four within
+  ±0.006). The loss is in how the blocks are combined.
+- **The rank block reads differently on big pools.** With every other block flattened, the model's use of the
+  retrieval ranks lifts rrf on the three small-pool passage datasets (+0.006 to +0.023), but on musique it costs
+  0.32 (0.154 against rrf's 0.473). On metaqa it is flat. musique's big pools make the model act as it does on
+  metaqa, whose golds rrf does not find (rrf R@5 0.005).
+- **What follows.** The raw values carry the pool's size (ranks reach 2,000 in big pools and about 100 in small
+  ones), and in training the only big pools are a KB's. zonly drops the raw values and dnorm standardises them per
+  dataset; their screens test this directly. On webqsp, the KB read zero-shot, the structure blocks carry the
+  model's lead over rrf (only DISTS kept: +0.099; only WALK kept: +0.070).
