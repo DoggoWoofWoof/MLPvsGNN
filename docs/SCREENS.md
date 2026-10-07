@@ -434,6 +434,11 @@ before its numbers). On any other verdict its items are dropped unrun.
     columns where prank ranked 86, so a step costs about step 1's: 25 to 35 minutes alone, about 50 with three
     fits on the card. They start as prank-hp and hubwalk free the card, about 23:45 to 00:30.
   - Verdict about 01:00 to 01:45.
+  - **Amended about 23:40:** the smoke passed at 23:23 (repeat IDENTICAL, 12 s) and scr-train-pret started at 23:35,
+    so the verdict comes nearer 00:20 to 00:45. vshare's L-musique fit is PROMISING, so if its pair is too, its four
+    full-run fits would be ready before pret's reads, and the feeder runs GPU items in file order. Round eight's
+    screen items were therefore moved ahead of vshare's full run in the feeder's file. This changes when its reads
+    (about 3 minutes each) run, not anything they compute.
 
 ## Results
 
