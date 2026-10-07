@@ -42,6 +42,9 @@ the card) and six reads.
   - **PROMISING:** at least one GAIN and no LOSS. The idea gets its full run, declared in its own file.
   - **MIXED:** GAIN and LOSS both. No full run as it stands; a narrower screen may follow, declared here.
   - **NO_GAIN:** no GAIN. The idea is dropped.
+  - **Amended 7 October, about 15:55, after scr-padbd20's numbers:** a PROMISING screen whose arm contains an arm
+    that was NOT_ADOPTED in its own full run gets a full run only if it also GAINs against that arm's screen. Without
+    such a gain, the full run would repeat the failed arm's loss with nothing added.
 - **rrf** (plain retrieval, no learned scorer) is reported beside every read as the zero-shot floor.
 - **The floor 0.0075** is the lean track's measured one-seed training noise: across the lean_mlp to lean_mlp8 fits,
   one-seed differences under about 0.75 R@5 points are noise. The bootstrap covers question sampling and the floor
@@ -131,6 +134,26 @@ train builds them, against step 1's train.json. A failure drops the second round
 
 **scr-pools was MIXED (15:12),** so step 4c's six fits do not run (docs/STEP4C_WALK_POOLS_RETRAINED.md).
 
+### Third round (declared about 15:55, before any of its numbers)
+
+Code: `outputs/mp_unified/lean_screen3.py` (its selftest passes). It runs lean_screen2's commands and lean_screen's
+rule unchanged and adds one arm, scored by section 2's rule against step 1's L-musique p@swa.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-zret | zret | Every pool z-score is taken against the pool's retrieved rows (rrf > 0) instead of all of its rows: each block's z-scores in the model, and rrf's base z-score. A pool with fewer than two retrieved rows, or a column constant over them, keeps its whole-pool z-score there. Label-free, the same in training and at read, no new parameters. On squad's pools, where every row is retrieved, it is the base model bit for bit. |
+
+**Why zret.** scr-pad showed that the share of a pool's rows that retrieval ranked is part of what musique's zero-shot
+read misuses: padding the passage pools down to the big pools' share lifted musique by 0.083. Padding changes the
+training data, and that cost hotpotqa 0.009 in-domain. zret takes the share out of the inputs instead. A retrieved
+row's z-scores no longer depend on how many unretrieved rows share its pool. Nor does rrf's base z-score: against the
+whole pool, a top row's z-score grows roughly as one over the square root of the retrieved share, so it is two to
+three times larger in a pool with a share of 0.1 than in one with 0.7.
+
+**The smoke** (`scr3-smoke`) trains zret one epoch on 2wiki select, twice, and reads it. The repeat must be
+IDENTICAL. A stronger block dropout (0.4) was drafted beside zret and dropped before any run, because block dropout
+was NOT_ADOPTED in its full run.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -141,7 +164,9 @@ train builds them, against step 1's train.json. A failure drops the second round
 - **The ablate** (CPU): about 14:50 to 15:00.
 - **Second round** (queued about 15:25): the smoke takes about 10 minutes. The two fits take about 25 to 35 minutes
   each (padded pools add rows to hotpotqa's and 2wiki's batches), then reads and compares. Verdicts about 16:15 to
-  16:30.
+  16:30. (They landed at 15:46 and 15:48.)
+- **Third round** (queued about 16:00): the smoke takes about 5 minutes, the fit about 25 (8 epochs at about 3
+  minutes), the read about 2. Verdict about 16:35 to 16:45.
 
 ## Results
 
@@ -244,6 +269,8 @@ zero-shot), metaqa 2,017, 2wiki 106, hotpotqa 94, squad 50. Every big-pool datas
 
 - musique, read zero-shot, rises from 0.270 to 0.404 (hit@1 +0.171, FC@5 +0.067). rrf alone is 0.473, so the model
   is still below plain retrieval there.
+- **Its full run is NOT_ADOPTED (15:45).** On L-metaqa, webqsp read zero-shot loses 0.0081 and metaqa read zero-shot
+  does not move (docs/FULL_BDROP20.md).
 - metaqa, hotpotqa and 2wiki each fall about 0.005, with intervals below 0. That is under the 0.0075 floor (one-seed
   training noise), so the calls are WITHIN. The full run shows whether it repeats.
 - Unlike bound1, nothing collapses: metaqa keeps 0.649.
@@ -281,3 +308,25 @@ is one with rrf > 0: a node in the dense or the splade top-1000 list.
 - musique's pools are as big and as thinly ranked, but retrieval ranks 93 to 96% of musique's golds.
 - A model that learns "few ranked rows, so look past the ranked ones" from metaqa applies it to musique. That is
   the zero-shot loss the ablation located in the rank block's use on big pools. scr-pad tests it.
+
+### scr-pad: MIXED (15:46). scr-padbd20: PROMISING, but no full run (15:48)
+
+`outputs/screen/scr-pad.md`, `scr-padbd20.md`. R@5 minus step 1's L-musique p@swa (the last row against scr-bdrop20,
+reported only):
+
+| screen | metaqa | squad | musique (zero-shot) | hotpotqa | 2wiki | webqsp (zero-shot) | verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| pad | −0.0036 | −0.0005 | **+0.0831** | **−0.0086** | −0.0058 | +0.0001 | MIXED |
+| padbd20 | −0.0053 | +0.0010 | **+0.1095** | −0.0055 | −0.0069 | −0.0111 | PROMISING |
+| padbd20 against scr-bdrop20 | −0.0007 | +0.0017 | **−0.0248** | −0.0007 | −0.0018 | −0.0074 | NO_GAIN |
+
+Bold: a GAIN or LOSS call.
+
+- **Padding alone lifts musique from 0.270 to 0.353** (hit@1 +0.104). The share of ranked rows is part of what the
+  zero-shot read misuses, as the pool composition suggested.
+- **It costs hotpotqa 0.0086 in-domain.** Half of hotpotqa's training pools were padded, and the reads are not.
+- **Padding adds nothing to block dropout.** Together they are 0.025 below block dropout alone on musique.
+- **padbd20 gets no full run.** It is PROMISING by the rule, but its block dropout failed its own full run, and it gains
+  nothing against bdrop20's screen. That is section 2's amendment of about 15:55, made after these numbers.
+- **pad is not followed with a narrower padding screen.** zret (the third round) tests the same cause without changing
+  the training data.

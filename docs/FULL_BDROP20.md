@@ -66,4 +66,36 @@ fits finish in two waves. Expected verdict: about 17:00 to 17:30.
 
 ## Results
 
-None yet.
+Development numbers; the paper's numbers come from one declared confirmation run.
+
+### NOT_ADOPTED (15:45): L-metaqa's comparison has a LOSS
+
+`outputs/full_bdrop20/compare-L-metaqa.md`. R@5 of bdrop20's L-metaqa p@swa minus step 1's, with the 95% interval:
+
+| metaqa (zero-shot, primary) | squad | musique | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| −0.0049 WITHIN | +0.0019 WITHIN | −0.0031 WITHIN | −0.0051 WITHIN | +0.0021 WITHIN | **−0.0081 LOSS** [−0.0161, −0.0003] |
+
+- Section 4 admits no LOSS among the 36 reads, so the verdict is NOT_ADOPTED whatever the other reads show.
+- metaqa read zero-shot does not move (0.077 to 0.072; rrf 0.005). Block dropout's gain on musique read zero-shot
+  (+0.134 on L-musique) does not carry to the KB held out here.
+- **Order of work changed at 15:50.** The fits of L-squad (8 minutes in), L-hotpotqa (5 minutes in) and L-2wiki (just
+  started) were cancelled, with their reads and comparisons, and the grade does not run: no read they could give can
+  change the verdict. J5, 6 of its 8 epochs done, completes with its read and comparison (below, when it lands).
+- Block dropout does not join later screens. Their baseline stays step 1's L-musique p@swa.
+
+### J5 (15:56): one more LOSS, musique in-domain
+
+`outputs/full_bdrop20/compare-J5.md`. R@5 of bdrop20's J5 p@swa minus step 1's (all five trained on; webqsp read
+zero-shot):
+
+| metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| +0.0018 WITHIN | −0.0009 WITHIN | **−0.0082 LOSS** [−0.0140, −0.0024] | −0.0029 WITHIN | −0.0028 WITHIN | −0.0089 WITHIN [−0.0177, +0.0005] |
+
+- With musique in training, block dropout costs musique in-domain (0.561 to 0.553), the dataset whose zero-shot read
+  it lifted on L-musique.
+- webqsp, read zero-shot, falls on both fits that ran (J5 −0.0089, L-metaqa −0.0081).
+- Two of the twelve reads that ran are LOSSes and none is a GAIN on its primary read: block dropout helps one
+  zero-shot read (musique on L-musique) and costs a little nearly everywhere else.
+
