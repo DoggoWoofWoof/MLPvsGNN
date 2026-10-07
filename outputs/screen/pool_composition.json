@@ -1,0 +1,382 @@
+{
+ "cache_root": "outputs/step1/cache",
+ "carves": {
+  "metaqa=fit": {
+   "questions": 5960,
+   "questions_with_gold_in_pool": 5883,
+   "rows": {
+    "mean": 2016.9466,
+    "p10": 2031.0,
+    "median": 2037.0,
+    "p90": 2040.0
+   },
+   "ranked_share": {
+    "mean": 0.1018,
+    "p10": 0.0715,
+    "median": 0.1017,
+    "p90": 0.1313
+   },
+   "golds": {
+    "mean": 6.3629,
+    "p10": 1.0,
+    "median": 2.0,
+    "p90": 17.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.4266,
+    "p10": 0.0,
+    "median": 0.3333,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 205.3795,
+    "p10": 141.0,
+    "median": 206.0,
+    "p90": 266.0
+   }
+  },
+  "squad=fit": {
+   "questions": 5856,
+   "questions_with_gold_in_pool": 5758,
+   "rows": {
+    "mean": 50.0331,
+    "p10": 50.0,
+    "median": 50.0,
+    "p90": 50.0
+   },
+   "ranked_share": {
+    "mean": 1.0,
+    "p10": 1.0,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "golds": {
+    "mean": 0.9833,
+    "p10": 1.0,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "golds_ranked_share": {
+    "mean": 1.0,
+    "p10": 1.0,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 50.0331,
+    "p10": 50.0,
+    "median": 50.0,
+    "p90": 50.0
+   }
+  },
+  "hotpotqa=fit": {
+   "questions": 5930,
+   "questions_with_gold_in_pool": 5888,
+   "rows": {
+    "mean": 93.9621,
+    "p10": 68.0,
+    "median": 90.0,
+    "p90": 125.0
+   },
+   "ranked_share": {
+    "mean": 0.6933,
+    "p10": 0.5347,
+    "median": 0.6974,
+    "p90": 0.8488
+   },
+   "golds": {
+    "mean": 1.961,
+    "p10": 2.0,
+    "median": 2.0,
+    "p90": 2.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.9462,
+    "p10": 0.5,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 63.1966,
+    "p10": 52.0,
+    "median": 60.0,
+    "p90": 78.0
+   }
+  },
+  "2wiki=fit": {
+   "questions": 5928,
+   "questions_with_gold_in_pool": 5922,
+   "rows": {
+    "mean": 105.9976,
+    "p10": 79.0,
+    "median": 104.0,
+    "p90": 135.0
+   },
+   "ranked_share": {
+    "mean": 0.5567,
+    "p10": 0.4306,
+    "median": 0.5443,
+    "p90": 0.6942
+   },
+   "golds": {
+    "mean": 2.2895,
+    "p10": 2.0,
+    "median": 2.0,
+    "p90": 4.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.8022,
+    "p10": 0.5,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 57.1555,
+    "p10": 51.0,
+    "median": 55.0,
+    "p90": 66.0
+   }
+  },
+  "musique=s1fit": {
+   "questions": 4601,
+   "questions_with_gold_in_pool": 4584,
+   "rows": {
+    "mean": 2091.5466,
+    "p10": 2060.0,
+    "median": 2134.0,
+    "p90": 2167.0
+   },
+   "ranked_share": {
+    "mean": 0.1783,
+    "p10": 0.1339,
+    "median": 0.1708,
+    "p90": 0.2333
+   },
+   "golds": {
+    "mean": 2.1278,
+    "p10": 2.0,
+    "median": 2.0,
+    "p90": 3.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.9593,
+    "p10": 1.0,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 369.0176,
+    "p10": 285.0,
+    "median": 357.0,
+    "p90": 471.0
+   }
+  },
+  "metaqa=s1eval": {
+   "questions": 9785,
+   "questions_with_gold_in_pool": 9661,
+   "rows": {
+    "mean": 2017.6252,
+    "p10": 2031.0,
+    "median": 2037.0,
+    "p90": 2040.0
+   },
+   "ranked_share": {
+    "mean": 0.1015,
+    "p10": 0.0711,
+    "median": 0.1015,
+    "p90": 0.1312
+   },
+   "golds": {
+    "mean": 6.4084,
+    "p10": 1.0,
+    "median": 2.0,
+    "p90": 18.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.4221,
+    "p10": 0.0,
+    "median": 0.3333,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 204.8272,
+    "p10": 141.0,
+    "median": 206.0,
+    "p90": 266.0
+   }
+  },
+  "squad=s1eval": {
+   "questions": 11873,
+   "questions_with_gold_in_pool": 11633,
+   "rows": {
+    "mean": 50.0348,
+    "p10": 50.0,
+    "median": 50.0,
+    "p90": 50.0
+   },
+   "ranked_share": {
+    "mean": 1.0,
+    "p10": 1.0,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "golds": {
+    "mean": 0.9798,
+    "p10": 1.0,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "golds_ranked_share": {
+    "mean": 1.0,
+    "p10": 1.0,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 50.0348,
+    "p10": 50.0,
+    "median": 50.0,
+    "p90": 50.0
+   }
+  },
+  "musique=s1eval": {
+   "questions": 2417,
+   "questions_with_gold_in_pool": 2405,
+   "rows": {
+    "mean": 2092.4435,
+    "p10": 2055.6,
+    "median": 2132.0,
+    "p90": 2166.0
+   },
+   "ranked_share": {
+    "mean": 0.1825,
+    "p10": 0.1342,
+    "median": 0.1749,
+    "p90": 0.2436
+   },
+   "golds": {
+    "mean": 2.3959,
+    "p10": 2.0,
+    "median": 2.0,
+    "p90": 3.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.9311,
+    "p10": 0.5,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 378.5358,
+    "p10": 288.0,
+    "median": 365.0,
+    "p90": 492.4
+   }
+  },
+  "hotpotqa=s1eval": {
+   "questions": 7405,
+   "questions_with_gold_in_pool": 7343,
+   "rows": {
+    "mean": 93.6972,
+    "p10": 68.0,
+    "median": 90.0,
+    "p90": 125.0
+   },
+   "ranked_share": {
+    "mean": 0.6915,
+    "p10": 0.5392,
+    "median": 0.6932,
+    "p90": 0.8443
+   },
+   "golds": {
+    "mean": 1.96,
+    "p10": 2.0,
+    "median": 2.0,
+    "p90": 2.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.944,
+    "p10": 0.5,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 62.9712,
+    "p10": 52.0,
+    "median": 60.0,
+    "p90": 78.0
+   }
+  },
+  "2wiki=s1eval": {
+   "questions": 12576,
+   "questions_with_gold_in_pool": 12572,
+   "rows": {
+    "mean": 105.6548,
+    "p10": 80.0,
+    "median": 104.0,
+    "p90": 134.0
+   },
+   "ranked_share": {
+    "mean": 0.5672,
+    "p10": 0.436,
+    "median": 0.5545,
+    "p90": 0.7215
+   },
+   "golds": {
+    "mean": 2.3361,
+    "p10": 2.0,
+    "median": 2.0,
+    "p90": 4.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.8337,
+    "p10": 0.5,
+    "median": 1.0,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 58.0254,
+    "p10": 51.0,
+    "median": 56.0,
+    "p90": 68.0
+   }
+  },
+  "webqsp=s1eval": {
+   "questions": 1503,
+   "questions_with_gold_in_pool": 1385,
+   "rows": {
+    "mean": 2119.8703,
+    "p10": 2084.0,
+    "median": 2124.0,
+    "p90": 2157.0
+   },
+   "ranked_share": {
+    "mean": 0.1522,
+    "p10": 0.1163,
+    "median": 0.1451,
+    "p90": 0.1954
+   },
+   "golds": {
+    "mean": 3.3174,
+    "p10": 1.0,
+    "median": 1.0,
+    "p90": 8.0
+   },
+   "golds_ranked_share": {
+    "mean": 0.5807,
+    "p10": 0.0,
+    "median": 0.8333,
+    "p90": 1.0
+   },
+   "ranked_rows": {
+    "mean": 321.9541,
+    "p10": 250.0,
+    "median": 308.0,
+    "p90": 409.8
+   }
+  }
+ },
+ "script_sha256": "13c2233624e8515607b3c159c5e5cea917d9cf1e30b33983e1936af0f07419d2",
+ "utc": "2026-10-07T09:27:48Z",
+ "redacted": "cache_root: the host's absolute path replaced by the repo-relative one"
+}

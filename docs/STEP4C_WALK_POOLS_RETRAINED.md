@@ -247,6 +247,10 @@ fits and the grade do not run. One screen fit replaces them: scr-pools, step 1's
 cache. It is compared with step 1's L-musique (this decides) and with this early read. If the screen shows a gain,
 the six fits and the grade run as this file declares them.
 
+**Screen result (15:12): MIXED, so the six fits and the grade do not run** (`outputs/screen/scr-pools.md`). Against step
+1's L-musique, musique read zero-shot gains (+0.0203 R@5) and webqsp read zero-shot loses (−0.0200). The other four
+reads are within. These are development numbers.
+
 Before the hold: The six 4c fits queue behind step 2's six fits and reads. Step 2's fits started late (J5 at 11:00, the others
 from 12:21 on, once step 1's reads and this early read had freed the card). Expected: the 4c fits from about 4 pm, two
 waves of three at once, and the grade about 11 pm to 1 am, 7 to 8 October.

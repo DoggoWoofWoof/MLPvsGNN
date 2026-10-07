@@ -107,6 +107,30 @@ step 2's declared grade does not run. Each of the three is compared with step 1'
 
 cs26-g-k6w-s0 was cancelled at 14:30 so that the screens get the card.
 
+### Second round (declared about 15:20, before any of its numbers)
+
+Code: `outputs/mp_unified/lean_screen2.py`. It runs lean_screen's arms, commands and rule unchanged and adds two arms.
+Both are scored by section 2's rule against step 1's L-musique p@swa.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-pad | pad | Pool padding in training. With probability 0.5, a training question's pool gets copies of its own unranked non-gold rows (rrf 0) until retrieval's ranked rows are a share t of it. t is uniform in [0.08, 0.20], the measured ranked shares of the big pools (metaqa 0.10, webqsp 0.15, musique 0.18); a pool holds at most 4,096 rows. A pool with no unranked non-gold row (squad's) or no ranked row is never padded. Each training carve draws from its own generator, reset at the start of each fit. Reads are never padded. |
+| scr-padbd20 | pad and bdrop20 | Both together: do they add? Compared with step 1's L-musique (decides) and with scr-bdrop20 (reported only). |
+
+**Why padding.** The pool composition (Results) shows that in this split's training set, the only pools in which
+retrieval ranks few rows are metaqa's, and retrieval misses most of metaqa's golds. musique's pools have as few
+ranked rows, but retrieval ranks almost all of musique's golds. Padding gives the passage datasets such pools with
+ranked golds, so a low ranked share no longer marks a KB. The copies enter the pool z-scores, rrf's base z-score and
+the listwise softmax as rows of their own.
+
+**The smoke** (`scr2-smoke`) trains both arms for one epoch on 2wiki select, twice, and reads them. A repeat must be
+IDENTICAL and padding must pad some questions. It also checks every split's fit carves and basis, as lean_screen's
+train builds them, against step 1's train.json. A failure drops the second round and the full run below.
+
+**bdrop20's full run** (PROMISING at 14:57) is declared in `docs/FULL_BDROP20.md` and runs beside these screens.
+
+**scr-pools was MIXED (15:12),** so step 4c's six fits do not run (docs/STEP4C_WALK_POOLS_RETRAINED.md).
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -115,6 +139,9 @@ cs26-g-k6w-s0 was cancelled at 14:30 so that the screens get the card.
 - **Reads** take about 8 minutes each.
 - **Compares:** about 15:05 to 15:15 for the four arms, about 15:30 for pools.
 - **The ablate** (CPU): about 14:50 to 15:00.
+- **Second round** (queued about 15:25): the smoke takes about 10 minutes. The two fits take about 25 to 35 minutes
+  each (padded pools add rows to hotpotqa's and 2wiki's batches), then reads and compares. Verdicts about 16:15 to
+  16:30.
 
 ## Results
 
@@ -199,7 +226,58 @@ zero-shot), metaqa 2,017, 2wiki 106, hotpotqa 94, squad 50. Every big-pool datas
   retrieval ranks lifts rrf on the three small-pool passage datasets (+0.006 to +0.023), but on musique it costs
   0.32 (0.154 against rrf's 0.473). On metaqa it is flat. musique's big pools make the model act as it does on
   metaqa, whose golds rrf does not find (rrf R@5 0.005).
-- **What follows.** The raw values carry the pool's size (ranks reach 2,000 in big pools and about 100 in small
-  ones), and in training the only big pools are a KB's. zonly drops the raw values and dnorm standardises them per
-  dataset; their screens test this directly. On webqsp, the KB read zero-shot, the structure blocks carry the
-  model's lead over rrf (only DISTS kept: +0.099; only WALK kept: +0.070).
+- **What follows** (corrected about 15:20). An earlier version of this bullet said the raw values carry the pool's
+  size. They do not. The rank block's raw values are reciprocal ranks in each retriever's top-1000 list over the
+  whole corpus, the same scale in every pool. What differs with pool size is how many of a pool's rows retrieval
+  ranked at all: 10 to 18% in the big pools against 56 to 100% in the small ones (the composition below). That share
+  sets every pool z-score, and in training the only pools with a low share are a KB's. zonly and dnorm changed the
+  raw values and found nothing there. On webqsp, the KB read zero-shot, the structure blocks carry the model's lead
+  over rrf (only DISTS kept: +0.099; only WALK kept: +0.070).
+
+### scr-bdrop20: PROMISING (14:57). Its full run: docs/FULL_BDROP20.md
+
+`outputs/screen/scr-bdrop20.md`. R@5 of bdrop20 minus step 1's L-musique p@swa, with the 95% interval:
+
+| metaqa | squad | musique (zero-shot) | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| −0.0047 WITHIN | −0.0007 WITHIN | **+0.1344 GAIN** [+0.124, +0.145] | −0.0048 WITHIN | −0.0050 WITHIN | −0.0037 WITHIN |
+
+- musique, read zero-shot, rises from 0.270 to 0.404 (hit@1 +0.171, FC@5 +0.067). rrf alone is 0.473, so the model
+  is still below plain retrieval there.
+- metaqa, hotpotqa and 2wiki each fall about 0.005, with intervals below 0. That is under the 0.0075 floor (one-seed
+  training noise), so the calls are WITHIN. The full run shows whether it repeats.
+- Unlike bound1, nothing collapses: metaqa keeps 0.649.
+
+### scr-pools: MIXED (15:12). Step 4c's six fits do not run
+
+`outputs/screen/scr-pools.md`. One fit of step 1's L-musique on step 4c's P_F pools, read on P_F:
+
+| metaqa | squad | musique (zero-shot) | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| +0.0027 WITHIN | +0.0007 WITHIN | **+0.0203 GAIN** | +0.0020 WITHIN | −0.0005 WITHIN | **−0.0200 LOSS** |
+
+Against step 4c's early read (step 1's unchanged fit read on P_F; reported only), retraining on P_F gains on metaqa
+(+0.0108) and is within on the rest. Read on P_F pools, step 1's unchanged fit already lost 0.012 on webqsp.
+
+### Pool composition (a diagnosis, 14:57)
+
+`outputs/mp_unified/pool_composition.py`, `outputs/screen/pool_composition.md`. Per question, averaged:
+
+| carve | rows (median) | ranked rows (median) | ranked share | golds in pool | golds ranked |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| metaqa fit | 2,017 (2,037) | 205 (206) | 0.102 | 6.36 | 0.427 |
+| squad fit | 50 (50) | 50 (50) | 1.000 | 0.98 | 1.000 |
+| hotpotqa fit | 94 (90) | 63 (60) | 0.693 | 1.96 | 0.946 |
+| 2wiki fit | 106 (104) | 57 (55) | 0.557 | 2.29 | 0.802 |
+| musique s1fit | 2,092 (2,134) | 369 (357) | 0.178 | 2.13 | 0.959 |
+| musique s1eval | 2,092 (2,132) | 379 (365) | 0.182 | 2.40 | 0.931 |
+| webqsp s1eval | 2,120 (2,124) | 322 (308) | 0.152 | 3.32 | 0.581 |
+
+The s1eval carves of metaqa, squad, hotpotqa and 2wiki match their fit carves to the second decimal. A ranked row
+is one with rrf > 0: a node in the dense or the splade top-1000 list.
+
+- In L-musique's training set, the only pools in which retrieval ranks few rows are metaqa's, and retrieval misses
+  57% of metaqa's golds.
+- musique's pools are as big and as thinly ranked, but retrieval ranks 93 to 96% of musique's golds.
+- A model that learns "few ranked rows, so look past the ranked ones" from metaqa applies it to musique. That is
+  the zero-shot loss the ablation located in the rank block's use on big pools. scr-pad tests it.
