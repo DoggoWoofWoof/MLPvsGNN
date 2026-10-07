@@ -1,0 +1,92 @@
+# Full runs: rank inputs (prank) and gradient surgery (gsurg) on all six splits, each only if its screen is PROMISING
+
+Declared 7 October 2026 at about 21:15, before any number of round five's screens exists (docs/SCREENS.md, fifth
+round). Each arm's run starts only if its screen's verdict over both fits (`scr-prank-pair`, `scr-gsurg-pair`) is
+PROMISING by section 2's rule. Otherwise none of that arm's run happens, and this file records why. Numbers here are
+development numbers; the paper's numbers come from one declared confirmation run.
+
+## 1. Question
+
+- **prank** replaces each fixed block's within-pool z-score with the column's rank in the pool from the top and from
+  the bottom, each as 60 / (60 + min(rank, 50)). The raw values, the presence flags, SEMB's z-score and rrf's base
+  z-score stay as in step 1.
+- **gsurg** trains step 1's model with lean_gpu's loop. The only change: before each step, the step's gradient loses
+  its component along any other training dataset's gradient in the same chunk that it conflicts with (PCGrad).
+
+Both are label-free and add no hyperparameter. prank changes every read alike; gsurg changes no read.
+
+For an arm whose screen is PROMISING: does the gain hold on every split, and does nothing else lose? The splits are
+J5 (in-domain on all five training datasets) and each leave-one-out fit on its held-out dataset. The screens read
+musique, hotpotqa and webqsp zero-shot. Only these runs read metaqa, squad and 2wiki zero-shot, and every dataset
+in-domain under J5.
+
+## 2. Fits
+
+- **Splits:** the six seed-0 splits of step 1: J5 and the leave-one-out fits L-metaqa, L-squad, L-musique,
+  L-hotpotqa and L-2wiki. Each split's fit carves and basis are step 1's; the second-round smoke (`scr2-smoke`, passed)
+  checked them against step 1's train.json.
+- **The screens' fits are this run's L-musique and L-hotpotqa fits** (`outputs/screen/fits/scr-<arm>` and
+  `scr-<arm>-hp`): the same arm, carves, config and seed. The null check showed the harness reproduces step 1 bit for
+  bit, so a second fit would equal them. Each run trains four fits, in the order L-2wiki, L-squad, J5, L-metaqa.
+  L-2wiki goes first because 2wiki read zero-shot is the read no screen makes.
+- **One fit per split:** variant p, seed 0, config 2e-3:1e-4:0.1:8:2, hidden 128, the SWA state p@swa. No select
+  carves, no pick: the screen's rule (docs/SCREENS.md).
+- **Arms:** lean_screen5.py's prank and gsurg, trained through `outputs/mp_unified/lean_screen5.py train --split`, into
+  `outputs/full_prank/fits` and `outputs/full_gsurg/fits`.
+- **On the card:** zret's and ztop50's caps. J5, L-squad and L-2wiki cap 0.26 of the card (share 0.28); L-metaqa caps
+  0.18 (share 0.20).
+  - prank adds sorts over 16 columns at a time (tens of MB against about 5 GB).
+  - gsurg keeps a chunk's batches together: the same 32 questions, one extra forward and backward at a time.
+
+## 3. Reads and comparison
+
+- Each fit is read on the six s1eval carves.
+- Each read is compared, question by question, with step 1's fit of the same split, p@swa, on the same carves.
+  - That is lean_screen's compare: the R@5 difference with a 2,000-resample question bootstrap, called GAIN, LOSS or
+    WITHIN with the floor 0.0075.
+  - Twenty-four reads come from these fits and twelve from the screens: 36 in all.
+- **Primary reads** are step 1's eleven: J5 on all six datasets (five in-domain, webqsp zero-shot), and each
+  leave-out fit on its held-out dataset.
+
+## 4. Verdict (`lean_screen2.py grade --grade-arm prank` or `--grade-arm gsurg`)
+
+- **ADOPT:** at least one primary read GAINs, and none of the 36 reads LOSEs.
+- **NOT_ADOPTED:** otherwise.
+- **INCOMPLETE:** a comparison is missing or is not the declared one (exit 1).
+
+**After ADOPT,** the arm becomes the base of every later screen and run. A later screen's arm is added on top of it,
+and its baseline becomes the adopted L-musique and L-hotpotqa fits. Step 1's fits stay the reference for everything
+already read.
+
+**If both arms are ADOPTED,** one changes the inputs and the other the objective, so they combine. A screen of the two
+together decides the next base. It is declared in docs/SCREENS.md before its numbers.
+
+**The first LOSS settles NOT_ADOPTED.** That arm's fits still running are then stopped, and the ones not yet started
+are taken out of the queue, since no read they could give changes the verdict.
+
+## 5. Gates and order of work (7 October)
+
+- **`fpr-gate` and `fgs-gate`** (`outputs/mp_unified/screen_gate.py pass`, unchanged) run when the screen's pair
+  verdict is filed (`outputs/screen/scr-prank-pair.json`, `scr-gsurg-pair.json`, through screen_pair.py).
+  - Each exits 0 only when its pair is PROMISING, and its arm's four fits wait on it.
+  - On any other verdict the feeder drops them with their reads, comparisons and grade.
+- **No hold on the seed-0 GNN chain.** Its last items end about 22:30, before either gate can run.
+- **ETAs if PROMISING:**
+  - prank: the pair lands about 23:15 to 23:30. Its fits take about 25 to 35 minutes each, three at a time on the
+    card, so the grade comes about 00:30 to 01:00.
+  - gsurg: the pair lands about 23:40 to 00:15. Its fits take about 50 to 80 minutes each. J5 trains five datasets,
+    so each of its steps adds four passes, and it takes longest. The grade comes about 01:30 to 02:30.
+  - Both grades come sooner at a LOSS.
+
+## 6. What this does not do
+
+- No new carves, seeds or variants.
+- prank's constants (60, from rank fusion; 50, ztop50's reference size) are fixed here, before any number, and are not
+  tuned. gsurg has no constant.
+- No new graph, text, encoder or model: both arms work on the graphs and features step 1 trains on. The encoder and the
+  substrate embeddings stay frozen.
+- webqsp never trains. Test splits are never read.
+
+## Results
+
+Development numbers; the paper's numbers come from one declared confirmation run.

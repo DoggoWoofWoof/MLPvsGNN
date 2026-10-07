@@ -90,3 +90,8 @@ LOSS.
 ## Results
 
 Development numbers; the paper's numbers come from one declared confirmation run.
+
+**The screen's L-musique fit is MIXED (20:39; docs/SCREENS.md, Results).** metaqa in-domain LOSEs (−0.0176),
+while musique and webqsp read zero-shot GAIN (+0.139, +0.0175). One LOSS among the pair's twelve reads rules out
+PROMISING, so `fzt-gate` fails when the pair verdict is filed (about 22:00) and the four fits do not run. ztop50 is
+not adopted, and no later screen builds on it.

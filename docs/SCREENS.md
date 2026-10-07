@@ -208,6 +208,45 @@ in-domain. The screen's verdict is taken over both fits' twelve reads (`scr-pair
 the full run's gate reads that verdict instead of scr-ztop50's alone. 2wiki read zero-shot still comes only from the
 full run.
 
+### Fifth round (declared about 21:15, before any of its numbers)
+
+Code: `outputs/mp_unified/lean_screen5.py` (its selftest passes). It runs lean_screen2's commands and lean_screen's
+rule unchanged and adds two arms. Each screen trains two fits under section 2's amended rule: L-musique and
+L-hotpotqa, each compared with step 1's p@swa of its split, the verdict taken over both fits' twelve reads
+(`screen_pair.py`).
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-prank, scr-prank-hp | prank | **Rank inputs (a preprocessing step).** Each fixed block's within-pool z-score is replaced by two rank columns: the column's competition rank in the pool from the top and from the bottom (ties share the best position), each as 60 / (60 + min(rank, 50)). That is reciprocal rank fusion's form, cut at ztop50's reference size. The raw values and the presence flags stay. SEMB (learned) keeps its z-score. rrf's base z-score is step 1's, unchanged. Label-free, the same in training and at read time; no new hyperparameter. |
+| scr-gsurg, scr-gsurg-hp | gsurg | **Gradient surgery across the training datasets (an objective; PCGrad, Yu et al. 2020; for domain generalisation, Mansilla et al. 2021).** lean_gpu's loop step for step: one step per training dataset per chunk of 32 questions, the same batches. Before each step, its gradient loses its component along any other training dataset's gradient in the same chunk that it conflicts with (a negative dot product). The other datasets are taken in sorted order, on the gradient as projected so far. Their gradients are taken at the step's parameters with dropout off, so the fit's own dropout draws are step 1's. Where no pair conflicts, a step is step 1's exactly. Reads are the base model's. No hyperparameter. |
+
+**Why these two.** Every arm so far changed how a pool's z-scores are taken (zonly, dnorm, zret, ztop50) or what the
+fit sees (padding, block dropout). Each traded metaqa in-domain for musique zero-shot or the reverse. The reason is
+the same in each case. In L-musique's training set only metaqa has big pools, so a fit learns "big pool, so trust rrf
+less" from one dataset, and every change to the pool statistics moves that one dataset against the others. ztop50's
+musique gain also came mostly from a stronger rrf base z-score: musique read zero-shot is still below rrf alone
+(0.408 against 0.473).
+
+- **prank** keeps step 1's base, so a gain here comes from the correction's inputs alone. A z-score moves with the
+  pool's size and tail: a retrieved node in a 2,000-row pool sits far out in its column's tail, and in a 60-row pool
+  it does not. Raw scales also differ between graphs. A node's rank among the pool's top 50 does neither. This is the
+  preprocessing that rank fusion and learning-to-rank's query-level normalisation rest on (Cormack et al. 2009; the
+  LETOR benchmarks).
+- **gsurg** changes no input and adds no parameter. It acts on the conflict itself. Where metaqa's step says "trust
+  rrf less" and a passage dataset's says "trust it more", neither step may undo the other along the shared direction.
+  The selftest's toy datasets showed that early in a fit, rrf's weight (base_w) carries most of a step's gradient.
+- Both change every training dataset alike, and prank every read alike. No new graph, encoder, text or model is used.
+
+**What the screens can show.** L-musique reads musique and webqsp zero-shot. L-hotpotqa reads hotpotqa and webqsp
+zero-shot and musique in-domain. 2wiki read zero-shot comes only from a full run.
+
+**The smoke** (`scr5-smoke`) trains each arm for one epoch twice and reads it. prank trains on 2wiki select; gsurg on
+2wiki and hotpotqa select, so that its fit meets other datasets' gradients. Each repeat must be IDENTICAL, and
+gsurg's fit must meet at least one conflicting pair. The four fits wait on it.
+
+**If a pair verdict is PROMISING, that arm's full run starts by itself** (docs/FULL_ROUND5.md, declared with this
+round, before its numbers). On any other verdict the arm's full-run items are dropped unrun.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -228,6 +267,13 @@ full run.
     comparison land about 20:50. scr-ztop50-hp starts when that fit frees the card (it needs 0.28; 0.24 was free at
     20:26), about 20:45 to 21:00. It takes about 50 to 60 minutes, then about 15 more for its read and comparison.
     The verdict over both fits comes about 22:00 to 22:15.
+- **Fifth round** (queued about 21:15, beside the seed-0 GNN chain until about 22:30):
+  - The smoke takes about 10 minutes; it fits beside the chain and scr-ztop50-hp.
+  - The four fits cap 0.26 of the card each (share 0.28). Until about 22:30, one runs beside the chain; after that,
+    three at a time. gsurg's fits start first: they take longest. Each step adds a forward and backward over each
+    other training dataset's batch of the same chunk (three more on these splits), while the batches are built once,
+    so about 50 to 80 minutes each. prank's take about 25 to 35.
+  - Verdicts: prank about 23:15 to 23:30, gsurg about 23:40 to 00:15.
 
 ## Results
 
@@ -415,3 +461,20 @@ Bold: a GAIN or LOSS call.
   musique +0.120 (this fit) and webqsp +0.025. Four of the thirty-six reads LOSE: hotpotqa and 2wiki read zero-shot
   (−0.014, −0.008), metaqa in L-hotpotqa's fit (−0.012) and musique in L-squad's fit (−0.009). zret gains on the
   big, thinly retrieved pools and loses on the small ones (docs/FULL_ZRET.md).
+
+### scr-ztop50 (L-musique): MIXED (20:39). The pair cannot be PROMISING, so ztop50's full run does not start
+
+`outputs/screen/scr-ztop50.md`. R@5 of ztop50 minus step 1's L-musique p@swa, with the 95% interval:
+
+| metaqa | squad | musique (zero-shot) | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| **−0.0176 LOSS** [−0.021, −0.014] | +0.0013 WITHIN | **+0.1387 GAIN** [+0.128, +0.149] | +0.0004 WITHIN | −0.0041 WITHIN | **+0.0175 GAIN** [+0.004, +0.032] |
+
+- **musique, read zero-shot, rises from 0.270 to 0.408** (hit@1 +0.176, FC@5 +0.074), 0.019 above zret's screen fit
+  (reported base, a GAIN). rrf alone is 0.473, so the model is still below plain retrieval there. webqsp read
+  zero-shot gains too (+0.0175; zret's screen: −0.0012).
+- **metaqa in-domain LOSEs (−0.0176; against zret's screen −0.0135).** metaqa is the only dataset with big pools in
+  this split's training set. A reference of fixed size takes the pool's size out of its z-scores, and with it what
+  the fit had learned from metaqa's pools alone.
+- One LOSS among the twelve reads already rules out PROMISING. scr-ztop50-hp still runs to its end and is reported
+  here; fzt-gate fails on the pair verdict and the feeder drops the full run's items.
