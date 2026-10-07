@@ -78,6 +78,16 @@ are taken out of the queue, since no read they could give changes the verdict.
     so each of its steps adds four passes, and it takes longest. The grade comes about 01:30 to 02:30.
   - Both grades come sooner at a LOSS.
 
+- **Amended 8 October, about 00:10, before any of the seed null's numbers** (docs/SCREENS.md, section 2): the
+  screen's pair is re-called under the null's floors, and the re-call decides.
+  - If `scr-gsurg-pair-recall` (or `scr-prank-pair-recall`) is PROMISING, that arm's run is re-queued as declared
+    above, under new item names: `fgs-*-rc` behind `fgs-gate-rc` (or `fpr-*-rc` behind `fpr-gate-rc`), which runs
+    `screen_gate.py pass` on the re-call.
+  - The grade's twelve reused screen reads take the null's floors: `fgs-grade-rc-r` (`fpr-grade-rc-r`) re-calls
+    the grade into `outputs/full_gsurg/grade-recall.{md,json}` (`outputs/full_prank/...`), and the re-grade
+    decides.
+  - On any other re-call verdict nothing here runs. The re-calls land about 01:15 to 01:30.
+
 ## 6. What this does not do
 
 - No new carves, seeds or variants.

@@ -81,6 +81,14 @@ ETA if PROMISING (as declared at 19:55, before the amendment): the screen's comp
 L-hotpotqa's and L-2wiki's comparisons come about 22:15 to 22:45; the verdict about 23:30 to 00:30, sooner at a
 LOSS.
 
+- **Amended 8 October, about 00:10, before any of the seed null's numbers** (docs/SCREENS.md, section 2): the
+  screen's pair is re-called under the null's floors, and the re-call decides.
+  - If `scr-ztop50-pair-recall` is PROMISING, this run is re-queued as declared above, under new item names:
+    `fzt-*-rc` behind `fzt-gate-rc`, which runs `screen_gate.py pass` on the re-call.
+  - The grade's twelve reused screen reads take the null's floors: `fzt-grade-rc-r` re-calls the grade into
+    `outputs/full_ztop50/grade-recall.{md,json}`, and the re-grade decides.
+  - On any other re-call verdict nothing here runs. The re-calls land about 01:15 to 01:30.
+
 ## 6. What this does not do
 
 - No new carves, seeds or variants. The reference size (50) is fixed here, before any number, and is not tuned.
