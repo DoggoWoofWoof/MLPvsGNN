@@ -114,4 +114,22 @@ cs26-g-k6w-s0 was cancelled at 14:30 so that the screens get the card.
 
 Development numbers; the paper's numbers come from one declared confirmation run.
 
-None yet.
+### Step 2, eval-mix weights: NO_GAIN on all three splits. Dropped.
+
+Read at 14:24 (`outputs/screen/s2-J5.md`, `s2-L-metaqa.md`, `s2-L-squad.md`). Each cell is R@5 of step 2's p@swa minus
+step 1's p@swa on the same split, with the call. rrf is in brackets.
+
+| dataset | J5 | L-metaqa | L-squad |
+| --- | --- | --- | --- |
+| metaqa | +0.0019 WITHIN | **−0.0086 LOSS** (zero-shot; rrf 0.005) | −0.0025 WITHIN |
+| squad | −0.0016 WITHIN | +0.0014 WITHIN | +0.0059 WITHIN (zero-shot; rrf 0.905) |
+| musique | −0.0050 WITHIN | −0.0065 WITHIN | **−0.0166 LOSS** |
+| hotpotqa | −0.0014 WITHIN | −0.0071 WITHIN | **−0.0086 LOSS** |
+| 2wiki | +0.0001 WITHIN | +0.0047 WITHIN | −0.0021 WITHIN |
+| webqsp (zero-shot; rrf 0.054) | **−0.0099 LOSS** | **−0.0092 LOSS** | −0.0078 WITHIN |
+
+- No read gains. Five of the eighteen lose: webqsp twice, zero-shot metaqa once, and musique and hotpotqa in-domain
+  once each.
+- Squad read zero-shot (L-squad): rrf alone (0.905) is above both fits (step 1's 0.880, step 2's 0.886). The learned
+  scorer costs squad, a control whose graph exposes no extra gold, about 0.02 to 0.03 R@5 when it has not trained on
+  it. That is the zero-shot harm these screens target.
