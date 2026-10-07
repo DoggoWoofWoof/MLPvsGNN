@@ -79,11 +79,11 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    alone sets aside the memory of the next GPU item that shares the card too, so the pair starts together when that
    run ends. While the card spills into system memory (GPU shared memory more than --spill-gb above its lowest
    reading), no GPU item starts or is queued ahead.
-   Measured card memory (7 Oct 08:40): a run's pool can outgrow its share (retry_cmd reruns a capped run uncapped after
-   an out-of-memory: J5 then held 11.5 GiB on a 0.3 share, and with two fits sent on shares alone the card spilled for
-   35 min). Each poll reads every process's card memory (PDH: dedicated, plus shared above 0.1 GiB) and sums it per
+   Measured card memory (7 Oct 08:40): a run's pool can outgrow its share (until 7 Oct 08:55 retry_cmd reran a capped
+   run uncapped after an out-of-memory: J5 then held 11.5 GiB on a 0.3 share, and with two fits sent on shares alone
+   the card spilled for 35 min; now the rerun's cap steps up to what the failed run asked for). Each poll reads every process's card memory (PDH: dedicated, plus shared above 0.1 GiB) and sums it per
    running rx job (its supervisor's pid from the heartbeat, and every descendant). What a job holds beyond its share
-   (less --job-slack), and what processes in no job hold beyond --vram-slack, count as taken: that much less of the
+   (less --job-slack), and what processes in no job hold (beyond --vram-slack, 0) count as taken: that much less of the
    card is free. Each job is taken alone, since a job under its share may still grow to its cap. While one of mpr's
    jobs holds more than its share, no GPU item is queued ahead, since rx starts a queued job on shares alone. Without
    psutil the card's totals stand in (its use and shared memory above the lowest reading, less every share).
@@ -849,9 +849,9 @@ def main(argv=None):
     ap.add_argument("--card-gb", type=float, default=23.99, help="the card's memory as torch counts it (GiB)")
     ap.add_argument("--spill-gb", type=float, default=1.0,
                     help="GPU shared memory this far above its lowest reading is a spill (GiB; 2.0 before 7 Oct 08:40)")
-    ap.add_argument("--vram-slack", type=float, default=0.8,
-                    help="GiB of the card held by processes in no rx job (desktop, drivers) before the rest counts as "
-                         "taken")
+    ap.add_argument("--vram-slack", type=float, default=0.0,
+                    help="GiB of the card held by processes in no rx job (desktop, drivers) that does not count as taken "
+                         "(0: all of it counts, so the shares leave room for the desktop)")
     ap.add_argument("--job-slack", type=float, default=0.25,
                     help="GiB a job may hold beyond its GPU share before the rest counts as taken")
     ap.add_argument("--no-vram", dest="vram", action="store_false",
