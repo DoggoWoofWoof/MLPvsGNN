@@ -301,6 +301,41 @@ The feeder runs GPU items in file order, and the smoke (0.12 of the card) was qu
 waits for 0.28. About 21:34 it was moved ahead of that item, into the 0.145 of the card left idle; prank-hp still fits
 when the first running fit ends. This changes when the smoke ran, not anything it computes.
 
+### Seventh round (declared about 22:35, before any of its numbers)
+
+Code: `outputs/mp_unified/lean_screen7.py` (its selftest passes). It runs lean_screen2's commands and lean_screen's
+rule unchanged and adds one arm. As in rounds five and six, the screen trains two fits, L-musique and L-hotpotqa. Each
+is compared with step 1's p@swa of its split, and the verdict is taken over both fits' twelve reads.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-vshare, scr-vshare-hp | vshare | **Share augmentation of the pool statistics (a preprocessing step, in training only; feature-statistics augmentation for domain generalisation, as in MixStyle, Zhou et al. 2021, and DSU, Li et al. 2022).** With probability 0.5, a training question's pool z-scores (every fixed block's, SEMB's and rrf's base z-score) are taken with row weights that make retrieval's ranked rows a share t of the pool's weight. t is uniform in [0.08, 0.20] (the big pools' measured shares) when the pool's own share is at least 0.375, and in [0.55, 0.95] (the small passage pools' 0.56 to 0.69, and above) when it is below. Ranked rows weigh 1; unranked rows weigh r(1 − t) / (t u), for r ranked and u unranked rows. No row is added or removed: the listwise softmax, the raw values and the golds are the pool's own. A pool with no ranked or no unranked row (squad's) is never reweighted. Each training carve draws from its own generator, reset at the start of each fit. Label-free; reads unchanged; no new parameter. |
+
+**Why vshare.** The diagnosis located the channel (pool composition, 14:57; scr-pad, 15:46; scr-zret, 16:46). The
+share of a pool's rows that retrieval ranked sets every pool z-score, and in L-musique's training set only metaqa's
+pools are thinly ranked.
+- **pad** changed the share in one direction only, by copying rows. musique read zero-shot gained 0.083, but hotpotqa
+  in-domain lost 0.0086: half of hotpotqa's training pools were full of copies the softmax had to rank.
+- **zret and ztop50** took the share out of the z-scores at read time too, and each moved metaqa and musique in
+  opposite directions.
+- **vshare** keeps the reads and the softmax as they are. It changes only the statistics a training pool is
+  normalised by, in both directions: small passage pools are seen as thinly ranked and the big pools as richly ranked.
+  A ranked share then no longer names the kind of graph in training, and the fit must tell metaqa's unranked golds
+  from musique's unranked noise by the rows themselves.
+- **A weight w on a row is that row copied w times** in the statistics (the selftest checks it on integer weights).
+  The thinning half is pad's statistics without pad's copies in the softmax.
+- It changes every training dataset alike. No new graph, encoder, text or model is used.
+
+**What the screens can show.** As in round five: L-musique reads musique and webqsp zero-shot. L-hotpotqa reads
+hotpotqa and webqsp zero-shot, and musique in-domain, whose big pools are enriched there beside metaqa's.
+
+**The smoke** (`scr7-smoke`) trains the arm for one epoch twice on 2wiki's and metaqa's select carves, so that it both
+thins (2wiki) and enriches (metaqa), then reads both. The repeat must be IDENTICAL, and the fit must have thinned and
+enriched at least one pool each. The two fits wait on it.
+
+**If the pair verdict is PROMISING, its full run starts by itself** (docs/FULL_VSHARE.md, declared with this round,
+before its numbers). On any other verdict its items are dropped unrun.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -343,6 +378,12 @@ when the first running fit ends. This changes when the smoke ran, not anything i
     scr-prank frees the card.
   - hubwalk's fits start about 22:35 to 22:45, after the round-five reads get the card. Its verdict comes about 23:50
     to 00:10.
+- **Seventh round** (queued about 22:40):
+  - The smoke takes about 10 minutes once the card has room.
+  - The two fits (cap 0.26, share 0.28) queue behind round six's. The arm adds a weighted sum per z-score and nothing
+    else to a step, so each takes about as long as step 1's fit: 25 to 35 minutes alone, about 50 with three fits on
+    the card. They start as prank's and hubwalk's fits free the card, about 23:10 to 23:45.
+  - Verdict about 00:30 to 01:15.
 
 ## Results
 
