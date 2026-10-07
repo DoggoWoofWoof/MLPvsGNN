@@ -99,3 +99,12 @@ Its screen pair is MIXED (`outputs/screen/scr-pret-pair.md`; docs/SCREENS.md, Re
 PROMISING (musique read zero-shot +0.0219), but in the L-hotpotqa fit hotpotqa, read zero-shot, LOSEs (−0.0253).
 `fpt-gate` fails; the four fits wait on `fpt-gate-r`, the re-call under the seed null's floors (section 5), about 01:20
 to 01:40. They start only if it is PROMISING.
+
+### The re-call is NO_GAIN (00:54); not run
+
+Under the seed null's floors (`outputs/screen/scr-pret-pair-recall.md`; docs/SCREENS.md, Results):
+- musique read zero-shot in the L-musique fit (+0.0219) is within its floor of 0.0720;
+- hotpotqa read zero-shot in the L-hotpotqa fit (−0.0253) still LOSES (floor 0.0200).
+
+`fpt-gate-r` exited 1, and the feeder dropped the four fits, their reads and comparisons, and the grade. pret is
+NOT_ADOPTED without a full run.

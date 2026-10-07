@@ -878,3 +878,57 @@ step 1's p@swa of the same split, with the 95% interval where a call is made:
   WITHIN when the null's spread on L-hotpotqa's hotpotqa read is above 0.01265, a floor above 0.0253. The GAIN holds
   while the spread on L-musique's musique read is at most 0.01095, a floor of at most 0.0219. Every other read is WITHIN
   under any floor. So the re-call is PROMISING exactly when both hold.
+
+### The seed null (00:54): five of the twelve floors are above 0.0075. The re-calls make gsurg and vshare PROMISING, and their full runs start
+
+`outputs/screen/scr-null-floors.md`; the four fits are in `outputs/screen/scr-null-s1.md`, `scr-null-s2.md`,
+`scr-null-s1-hp.md` and `scr-null-s2-hp.md`. Each fit is step 1's base arm with seed 1 or 2, compared with step 1's
+seed-0 p@swa of its split (R@5). The floors above 0.0075:
+
+| split | read | seed-0 R@5 | seed 1 | seed 2 | floor |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | musique, zero-shot | 0.2696 | +0.0503 | −0.0079 | **0.0720** |
+| L-musique | webqsp, zero-shot | 0.1779 | −0.0070 | −0.0018 | **0.0102** |
+| L-hotpotqa | metaqa, in-domain | 0.6540 | −0.0092 | −0.0051 | **0.0149** |
+| L-hotpotqa | hotpotqa, zero-shot | 0.8585 | −0.0055 | −0.0130 | **0.0200** |
+| L-hotpotqa | webqsp, zero-shot | 0.1200 | +0.0102 | +0.0129 | **0.0233** |
+
+The other seven reads are all in-domain. Each moves by at most 0.0023 between seeds and keeps the floor 0.0075.
+
+- **Both suspicions in the declaration hold (section 2).**
+  - Seeds 1 and 2 both read hotpotqa zero-shot below seed 0 (−0.0055, −0.0130). So seed 0 is a high draw on the
+    read that had lost under seven arms in seven.
+  - On musique read zero-shot, seed 1 alone gains 0.0503 with training unchanged. The read where every musique gain
+    was seen swings by five points with the seed.
+  - Zero-shot reads move by up to 0.0503. That is over twenty times the most any in-domain read moves (0.0023), except
+    L-hotpotqa's metaqa (−0.0092, −0.0051).
+- **The re-calls** (`outputs/screen/scr-<arm>-pair-recall.md`):
+
+| arm | filed | re-called | calls the floors change, and what is left | full run |
+| --- | --- | --- | --- | --- |
+| gsurg | MIXED | **PROMISING** | L-hotpotqa: hotpotqa zero-shot LOSS → WITHIN (−0.0147), webqsp zero-shot GAIN → WITHIN (+0.0124). GAINs left: musique zero-shot in L-musique (+0.0842, floor 0.0720) and 2wiki in-domain in L-hotpotqa (+0.0091) | starts (`fgs-*-rc`, docs/FULL_ROUND5.md) |
+| vshare | MIXED | **PROMISING** | L-hotpotqa: hotpotqa zero-shot LOSS → WITHIN (−0.0140). GAIN left: musique zero-shot in L-musique (+0.0891) | started 00:55 (`fvs-*`, docs/FULL_VSHARE.md) |
+| ztop50 | MIXED | MIXED | L-hotpotqa: hotpotqa and webqsp zero-shot LOSS → WITHIN. metaqa in-domain still LOSES in both fits (−0.0176; −0.0252, floor 0.0149) | dropped |
+| prank | MIXED | MIXED | none. metaqa in-domain (−0.0310, −0.0320), hotpotqa in-domain in L-musique (−0.0080) and hotpotqa zero-shot in L-hotpotqa (−0.0255) still LOSE | dropped |
+| pret | MIXED | NO_GAIN | L-musique: musique zero-shot GAIN → WITHIN (+0.0219). hotpotqa zero-shot in L-hotpotqa still LOSES (−0.0253) | dropped |
+| hubwalk | NO_GAIN | NO_GAIN | musique and hotpotqa zero-shot LOSS → WITHIN. webqsp zero-shot in L-musique still LOSES (−0.0131, floor 0.0102) | none |
+
+- **The arithmetic written before the null's numbers called vshare and pret correctly.**
+  - vshare: its hotpotqa spread, 0.0100, is above 0.0070, and its musique spread, 0.0360, is at most 0.0445.
+  - pret: its hotpotqa spread is not above 0.01265, and its musique spread is above 0.01095.
+- **What is left of the hotpotqa zero-shot pattern.** Six arms are re-called. Four of them now read hotpotqa
+  zero-shot WITHIN seed noise: ztop50, gsurg, hubwalk and vshare. Two still LOSE, by 0.025 each: prank and pret, the
+  two arms that rank the retrieval columns within the pool.
+- **The musique zero-shot gains.** gsurg's +0.0842 clears the floor 0.0720 by 0.012, and vshare's +0.0891 by 0.017.
+  ztop50 (+0.1387) and prank (+0.2016) clear it by far, but both lose metaqa in-domain.
+- **What runs now (01:10).**
+  - vshare's L-2wiki, L-squad and J5 fits have been on the card since 00:55. They end about 01:45.
+  - **Round nine's thirteen builds all passed on the host (00:58 to 01:00).** Each is IDENTICAL to step 1's cached
+    columns, with no non-finite value. rel is live on 99.4% of metaqa's rows and 85% of webqsp's, and 0 on the
+    passage graphs. gcs is live on all six.
+  - Round nine's smoke has been running since 00:59.
+  - Round nine's four fits come first in file order and take the card as vshare's fits leave it, about 01:45. Their
+    pair verdicts and re-calls land about 03:00 to 03:30. That is later than section 5 gave, because vshare's run took
+    the card first.
+  - vshare's reads and its L-metaqa fit follow. Its grade and re-grade land about 03:30 to 04:15.
+  - gsurg's four fits come after those. Its grade lands about 04:30 to 05:30.

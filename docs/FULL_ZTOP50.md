@@ -108,3 +108,10 @@ not adopted, and no later screen builds on it.
 12 reads, LOSSes on 4. The L-hotpotqa fit lost metaqa in-domain (−0.025), hotpotqa read zero-shot (−0.008) and
 webqsp read zero-shot (−0.017), and gained musique in-domain (+0.012). `fzt-gate` exited 1 and the feeder dropped
 the four fits, their reads, comparisons and the grade. ztop50 is NOT_ADOPTED without a full run.
+
+### The re-call is MIXED (00:54); not run
+
+Under the seed null's floors (`outputs/screen/scr-ztop50-pair-recall.md`; docs/SCREENS.md, Results), two reads in the
+L-hotpotqa fit turn WITHIN: hotpotqa and webqsp read zero-shot. metaqa in-domain still LOSES in both fits: −0.0176
+(floor 0.0075) and −0.0252 (floor 0.0149). `fzt-gate-rc` failed, and the feeder dropped `fzt-*-rc`. ztop50 stays
+NOT_ADOPTED.

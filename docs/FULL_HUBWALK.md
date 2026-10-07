@@ -90,3 +90,9 @@ Its screen pair is NO_GAIN (`outputs/screen/scr-hubwalk-pair.md`; docs/SCREENS.m
 and three LOSE, all read zero-shot: musique (−0.0288) and webqsp (−0.0131) in the L-musique fit, and hotpotqa (−0.0155)
 in the L-hotpotqa fit. `fhw-gate-b` fails, and the feeder drops the four fits, their reads and comparisons, and the
 grade.
+
+### The re-call is NO_GAIN (00:54)
+
+Under the seed null's floors (`outputs/screen/scr-hubwalk-pair-recall.md`; docs/SCREENS.md, Results), musique and
+hotpotqa read zero-shot turn WITHIN. webqsp read zero-shot in the L-musique fit still LOSES (−0.0131, floor 0.0102),
+and no read GAINs. Nothing was queued behind it.

@@ -115,3 +115,26 @@ gains 0.2016 and webqsp read zero-shot 0.0269 in the L-musique fit. metaqa in-do
 −0.0320), as do hotpotqa in-domain in the L-musique fit (−0.0080) and hotpotqa read zero-shot in the L-hotpotqa fit
 (−0.0255). `fpr-gate` fails and the feeder drops the four fits, their reads and comparisons, and the grade. The
 re-queued run (`fpr-*-rc`, section 5) starts only if the seed null's re-call turns the pair PROMISING.
+
+### gsurg: the re-call is PROMISING (00:54), and its run starts
+
+Under the seed null's floors (`outputs/screen/scr-gsurg-pair-recall.md`; docs/SCREENS.md, Results), two reads in the
+L-hotpotqa fit turn WITHIN:
+- hotpotqa read zero-shot (−0.0147, floor 0.0200);
+- webqsp read zero-shot (+0.0124, floor 0.0233).
+
+Two reads GAIN:
+- musique read zero-shot in the L-musique fit (+0.0842, floor 0.0720);
+- 2wiki in-domain in the L-hotpotqa fit (+0.0091, floor 0.0075).
+
+No read LOSES. `fgs-gate-rc` passed. The four fits (`fgs-*-rc`) queue behind round nine's screens and vshare's run.
+The grade and re-grade come about 04:30 to 05:30, and the re-grade (`outputs/full_gsurg/grade-recall`) decides.
+
+### prank: the re-call is MIXED (00:54); not run
+
+No call changes under the seed null's floors (`outputs/screen/scr-prank-pair-recall.md`). These reads still LOSE:
+- metaqa in-domain (−0.0310, −0.0320);
+- hotpotqa in-domain in the L-musique fit (−0.0080);
+- hotpotqa read zero-shot in the L-hotpotqa fit (−0.0255, floor 0.0200).
+
+`fpr-gate-rc` exited 1, and the feeder dropped `fpr-*-rc`. prank is NOT_ADOPTED without a full run.

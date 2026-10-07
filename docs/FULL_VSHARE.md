@@ -98,3 +98,14 @@ Development numbers; the paper's numbers come from one declared confirmation run
 - `fvs-gate` fails on the MIXED pair, and nothing waits on it (section 5, amended before these numbers). The four fits
   wait on `fvs-gate-r`. It passes only if the seed null's spread is above 0.0070 on L-hotpotqa's hotpotqa read and
   at most 0.0445 on L-musique's musique read (docs/SCREENS.md, Results).
+
+### The re-call: PROMISING (00:54). The run started at 00:55
+
+Under the seed null's floors (`outputs/screen/scr-vshare-pair-recall.md`; docs/SCREENS.md, Results):
+- In the L-hotpotqa fit, hotpotqa read zero-shot (−0.0140) is within its floor of 0.0200.
+- In the L-musique fit, musique read zero-shot (+0.0891) clears its floor of 0.0720.
+- No read LOSES.
+
+`fvs-gate-r` passed. The L-2wiki, L-squad and J5 fits started at 00:55. The L-metaqa fit follows round nine's screens
+on the card. The grade and re-grade come about 03:30 to 04:15, and the re-grade (`outputs/full_vshare/grade-recall`)
+decides.
