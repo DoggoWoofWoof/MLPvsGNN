@@ -1,0 +1,12 @@
+{
+ "arms": {
+  "pret": {
+   "train_rc": 0,
+   "repeat": "IDENTICAL",
+   "read_rc": 0
+  }
+ },
+ "ok": true,
+ "seconds": 10.289179563522339,
+ "script_sha256": "44c8104cd4de0b45f4c2bdfc5e97816b7550b3e5e56565f8980b3f8348e4ffaa"
+}

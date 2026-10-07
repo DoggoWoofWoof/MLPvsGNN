@@ -90,6 +90,17 @@ the card) and six reads.
       and docs/FULL_PRET.md, amended at the same time).
     - A full-run grade's twelve reused screen reads take the floors. Its other 24 reads keep 0.0075, since no null
       covers their splits, and the grade says so.
+  - **How screen_recall.py calls a read** (committed about 23:55, before any of the null's numbers):
+    - A floor of at least 0.0075 can only turn a GAIN or a LOSS into WITHIN, never the reverse. So a read whose floor
+      is 0.0075 keeps its filed call, and a read with a larger floor keeps a filed GAIN (LOSS) only when its filed
+      difference is at least its floor (at most minus its floor).
+    - The interval half of the rule is the filed call's, computed before rounding. The floor half uses the filed
+      difference, rounded to 4 places like the null's. A read within 0.00015 of its floor is flagged; its call stands.
+    - The null itself is refused unless it is the declared one: the base arm, seeds 1 and 2 on each of L-musique and
+      L-hotpotqa (read from each fit's screen.json), compared with step 1's fits on p@swa and s1eval. A pair is refused
+      when its seed-0 R@5 on a read is not the null's.
+    - `screen_recall.py floors` files the twelve floors as `outputs/screen/scr-null-floors.{md,json}`, and
+      `screen_recall.py grade` re-calls a full run's grade into its `grade-recall.{md,json}`.
   - **Order:** the four null fits queue behind round eight's screen and ahead of every full run. They take about 25 to
     35 minutes each; the null lands about 01:00 to 01:30.
 - **rrf** (plain retrieval, no learned scorer) is reported beside every read as the zero-shot floor.

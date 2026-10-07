@@ -75,6 +75,8 @@ out of the queue.
   - The fits start only when the re-call is PROMISING, once the null lands: about 01:00 to 01:30 at the earliest.
   - The grade's twelve reused screen reads (L-musique, L-hotpotqa) are called under the null's floors. Its other 24
     reads keep 0.0075, since no null covers their splits.
+  - That re-grade is `screen_recall.py grade` on the filed grade (item `fvs-grade-r`, after the grade), into
+    `outputs/full_vshare/grade-recall.{md,json}`. **The re-grade decides** ADOPT or NOT_ADOPTED.
 
 ## 6. What this does not do
 
