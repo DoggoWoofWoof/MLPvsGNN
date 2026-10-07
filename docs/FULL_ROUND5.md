@@ -107,3 +107,11 @@ Its screen pair is MIXED (`outputs/screen/scr-gsurg-pair.md`; docs/SCREENS.md, R
 PROMISING (musique read zero-shot +0.0842, metaqa in-domain +0.0012), but in the L-hotpotqa fit hotpotqa, read
 zero-shot, LOSEs (−0.0147). `fgs-gate` fails, and the feeder drops the four fits, their reads and comparisons, and
 the grade.
+
+### prank: not run (00:08)
+
+Its screen pair is MIXED (`outputs/screen/scr-prank-pair.md`; docs/SCREENS.md, Results). musique read zero-shot
+gains 0.2016 and webqsp read zero-shot 0.0269 in the L-musique fit. metaqa in-domain LOSEs in both fits (−0.0310,
+−0.0320), as do hotpotqa in-domain in the L-musique fit (−0.0080) and hotpotqa read zero-shot in the L-hotpotqa fit
+(−0.0255). `fpr-gate` fails and the feeder drops the four fits, their reads and comparisons, and the grade. The
+re-queued run (`fpr-*-rc`, section 5) starts only if the seed null's re-call turns the pair PROMISING.

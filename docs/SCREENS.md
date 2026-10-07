@@ -769,3 +769,23 @@ vshare minus step 1's p@swa of the same split, with the 95% interval where a cal
   WITHIN when the null's spread on L-hotpotqa's hotpotqa read is above 0.0070, a floor above 0.0140. The GAIN holds
   while the spread on L-musique's musique read is at most 0.0445, a floor of at most 0.0891. Every other read is WITHIN
   under any floor. So the re-call is PROMISING exactly when both hold.
+
+### scr-prank (L-musique): MIXED (23:08). scr-prank-hp (L-hotpotqa): NO_GAIN (00:07). The pair is MIXED, so prank's full run does not start
+
+`outputs/screen/scr-prank.md`, `outputs/screen/scr-prank-hp.md`, `outputs/screen/scr-prank-pair.md`. R@5 of prank
+minus step 1's p@swa of the same split, with the 95% interval where a call is made:
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | **−0.0310 LOSS** [−0.035, −0.027] | +0.0011 WITHIN | **+0.2016 GAIN** (zero-shot) [+0.190, +0.213] | **−0.0080 LOSS** [−0.011, −0.005] | −0.0068 WITHIN | **+0.0269 GAIN** (zero-shot) [+0.013, +0.041] |
+| L-hotpotqa | **−0.0320 LOSS** [−0.036, −0.028] | −0.0035 WITHIN | −0.0067 WITHIN | **−0.0255 LOSS** (zero-shot) [−0.030, −0.021] | −0.0004 WITHIN | +0.0054 WITHIN (zero-shot) |
+
+- **Ranks in place of z-scores close musique's zero-shot gap to plain retrieval:** 0.270 → 0.471 against rrf's
+  0.473, with hit@1 +0.252 and FC@5 +0.124. webqsp, read zero-shot, gains 0.027.
+- **metaqa in-domain loses in both fits** (−0.031 and −0.032). Ranks cut at 50 drop the structure magnitudes that
+  metaqa's unranked golds need. This is the reason for pret (eighth round), which ranks the retrieval blocks only.
+  hotpotqa in-domain also loses in the L-musique fit (−0.008).
+- **hotpotqa, read zero-shot, LOSES for the sixth arm in six,** and by the most (−0.0255, FC@5 −0.048).
+- **Over both fits: MIXED,** with 2 GAINs and 4 LOSSes among the 12 reads. `fpr-gate` fails and the feeder drops the
+  full run. Under the re-call (about 01:20), each metaqa in-domain LOSS would need a floor above 0.031, an in-domain
+  seed spread above 0.016, before prank could turn PROMISING (written before the null's numbers).
