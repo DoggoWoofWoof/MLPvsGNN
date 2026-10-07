@@ -425,6 +425,63 @@ be IDENTICAL. The two fits wait on it.
 **If the pair verdict is PROMISING, its full run starts by itself** (docs/FULL_PRET.md, declared with this round,
 before its numbers). On any other verdict its items are dropped unrun.
 
+### Ninth round (declared 8 October at about 01:00, before any of its numbers)
+
+Code: `outputs/mp_unified/relcols.py` (its selftest passes). It runs lean_screen2's commands and lean_screen's rule
+unchanged and adds two arms. Each adds a block set that the look already compiles and step 1's pick does not read. As
+in rounds five to eight, each screen trains two fits, L-musique and L-hotpotqa. Each fit is compared with step 1's
+p@swa of its split, and the verdict is taken over both fits' twelve reads. Both pairs are re-called under the seed
+null, and the re-call decides (section 2).
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-rel, scr-rel-hp | rel | **Question-relation inputs (the KB systems' matching, as a preprocessing step).** Three blocks of the look's compiled columns, 26 in all, enter after step 1's nine as [raw, z, flag]. typed_rel (10): the cosine of the question with each relation's text over the typed edges to a seed and over those incident to the node (max, max, mean); relation IEF; relation diversity; direction; edges to and from the seeds; the best two-step relation chain from a seed. typed_v2 (6): retrieval mass moved 2 and 3 steps over typed in-edges weighted exp(cos(q, e_r) / 0.1); typed walk counts; the best, mean and weakest-step question-relation match along 3-step typed walks from a seed. ordered (10): the best 3-step walk's question-relation match, direction and consecutive-relation similarity, step by step. On a graph without typed relations (the four passage graphs) every one is 0. |
+| scr-gcs, scr-gcs-hp | gcs | **Parameter-free propagation of retrieval (GraphER's GCS: a two-step personalised PageRank from retrieval's scores).** Two columns: max(p_2, s) with p_{t+1} = 0.5 s + 0.5 W p_t, s = rrf / max rrf in the pool, W the row-normalised pool graph over every edge family (gcs_full) or over the structural edges (gcs_struct). Live on every graph. |
+
+Both arms are label-free and the same in training and at read time, and they change every dataset alike. No new graph,
+text, encoder or model is used. The values are the look's float16 columns row for row, the inputs the twin and the GNN
+read, copied as step 1's 35 cached columns are. The build checks that the same chunks give step 1's cached columns bit
+for bit.
+
+**Why these two (8 October; the user asked which features or methods we are missing against the published systems).**
+- **The gap on the KB datasets is relational.** NuTrea and ReaRev (MetaQA, WebQSP) score a node by matching the
+  question against the relations on the paths to it. Step 1's MLP reads no relation at all: its pick was chosen on
+  2wiki, an untyped graph.
+- **The twin reads these 26 columns** (twin0: the six-dataset MLP on the look's 129 columns) and is ahead of J5's MLP
+  on metaqa at every hop, both in-domain. s1eval R@5 / hit@1 (`outputs/step1/grade.json`), J5 against the twin:
+  - 1-hop: .9215 / .7950 against .9523 / .8883.
+  - 2-hop: .7513 / .7265 against .8190 / .8835.
+  - 3-hop: .3387 / .4253 against .4576 / .5707.
+
+  The twin also reads 66 other columns step 1 does not, and it trains on webqsp too. So the screen tests whether the
+  relation columns carry that gap; the twin's lead does not show it.
+- **It is not the topic-entity oracle.** The KB papers start from the gold topic entity. Our seeds (dense top-5 and
+  SPLADE top-5) hold metaqa's topic entity for 98.1% of questions (by hop .992, .993, .959).
+- **gcs** is GraphER's parameter-free arm, within 0.2 to 1.9 PR@10 of its GAT (its Table 5). It is also HippoRAG's
+  mechanism in short form: retrieval's own scores spread over the graph. Step 1's walks spread a seed indicator, not
+  retrieval's scores.
+- **Out of reach of a preprocessing step:** MuSiQue R@5 against HippoRAG 2 (74.7). Its encoder alone (NV-Embed-v2)
+  gives 69.7, on a corpus ten times smaller; our structure lifts rrf by 8.8 points, theirs lifts its retriever by 5.0.
+  The encoder stays frozen.
+
+**What the screens can show.**
+- Both fits train metaqa, the only typed KB in training, and read webqsp zero-shot. metaqa in-domain is where rel
+  should gain. webqsp tests whether a channel learned on metaqa's 9 relations carries to webqsp's 7,058.
+- The passage reads see the rel blocks at 0, so only a change in how training weighs the other blocks can move them.
+  Their calls test that.
+- gcs is live on all six reads.
+
+**A split with no KB in training (L-metaqa) has its rel blocks at 0 on every training row.** lean_gpu's dead-block
+rule drops them, so that fit is step 1's model. rel can change only the splits that train metaqa.
+
+**The smoke** (`scr9-smoke`) first loads metaqa select, webqsp s1eval and 2wiki select through each arm's carve. The
+base matrix, golds and rows must equal lean_gpu's carve, and the arm's columns its build's. It then trains each arm for
+one epoch twice on metaqa's select carve: the repeat must be IDENTICAL and the arm's blocks live. Then it reads that
+carve. The fits wait on it.
+
+**If a pair's re-call is PROMISING, its full run starts by itself** (docs/FULL_ROUND9.md, declared with this round,
+before its numbers). On any other re-call verdict its items are dropped unrun.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -484,6 +541,15 @@ before its numbers). On any other verdict its items are dropped unrun.
     full-run fits would be ready before pret's reads, and the feeder runs GPU items in file order. Round eight's
     screen items were therefore moved ahead of vshare's full run in the feeder's file. This changes when its reads
     (about 3 minutes each) run, not anything they compute.
+
+- **Ninth round** (queued about 01:05 on 8 October):
+  - The thirteen CPU builds read the look chunks once each, a few minutes per carve on the host's idle cores.
+  - The smoke takes about 5 to 10 minutes once its three carves are built.
+  - The four fits queue ahead of every gated full run, behind the seed null's reads. rel caps 0.30 of the card (share
+    0.32): its 26 columns add about 0.7 GB on L-musique and 1.2 GB on L-hotpotqa to the base fit's measured 5.2 GB.
+    gcs keeps the earlier cap, 0.26 (share 0.28). Each takes about 25 to 35 minutes alone, about 50 with three on the
+    card. They start as the null's reads free the card, about 01:20 to 01:40.
+  - Verdicts and re-calls about 02:30 to 03:15.
 
 ## Results
 
@@ -789,3 +855,26 @@ minus step 1's p@swa of the same split, with the 95% interval where a call is ma
 - **Over both fits: MIXED,** with 2 GAINs and 4 LOSSes among the 12 reads. `fpr-gate` fails and the feeder drops the
   full run. Under the re-call (about 01:20), each metaqa in-domain LOSS would need a floor above 0.031, an in-domain
   seed spread above 0.016, before prank could turn PROMISING (written before the null's numbers).
+
+### scr-pret (L-musique): PROMISING (00:19). scr-pret-hp (L-hotpotqa): NO_GAIN (00:45). The pair is MIXED; the seed null's re-call decides
+
+`outputs/screen/scr-pret.md`, `outputs/screen/scr-pret-hp.md`, `outputs/screen/scr-pret-pair.md`. R@5 of pret minus
+step 1's p@swa of the same split, with the 95% interval where a call is made:
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.0006 WITHIN | +0.0003 WITHIN | **+0.0219 GAIN** (zero-shot) [+0.010, +0.035] | −0.0028 WITHIN | +0.0035 WITHIN | −0.0090 WITHIN (zero-shot) |
+| L-hotpotqa | −0.0064 WITHIN | −0.0013 WITHIN | −0.0038 WITHIN | **−0.0253 LOSS** (zero-shot) [−0.030, −0.021] | +0.0037 WITHIN | −0.0042 WITHIN (zero-shot) |
+
+- **Ranking only the retrieval blocks keeps metaqa** (+0.0006 and −0.0064, both within the floor), where prank lost
+  0.031 and 0.032. But it keeps only a ninth of prank's musique gain: 0.270 → 0.292, against prank's 0.471, with
+  hit@1 −0.060. So most of prank's zero-shot gain needs the structure ranks too: close to the declaration's second
+  case, with a small part through the retrieval columns.
+- **hotpotqa, read zero-shot, LOSES for the seventh arm in seven** (−0.0253, FC@5 −0.049): zret, ztop50, gsurg,
+  hubwalk, vshare, prank and pret.
+- **Over both fits: MIXED,** with 1 GAIN and 1 LOSS among the 12 reads. `fpt-gate` fails; nothing waits on it.
+  pret's full run waits on `fpt-gate-r`.
+- **What the re-call needs (arithmetic on the declared rule, written before the null's numbers):** the LOSS turns
+  WITHIN when the null's spread on L-hotpotqa's hotpotqa read is above 0.01265, a floor above 0.0253. The GAIN holds
+  while the spread on L-musique's musique read is at most 0.01095, a floor of at most 0.0219. Every other read is WITHIN
+  under any floor. So the re-call is PROMISING exactly when both hold.

@@ -92,3 +92,10 @@ out of the queue.
 ## Results
 
 Development numbers; the paper's numbers come from one declared confirmation run.
+
+### Not run on the pair verdict (00:45); the re-call decides
+
+Its screen pair is MIXED (`outputs/screen/scr-pret-pair.md`; docs/SCREENS.md, Results). The L-musique fit is
+PROMISING (musique read zero-shot +0.0219), but in the L-hotpotqa fit hotpotqa, read zero-shot, LOSEs (−0.0253).
+`fpt-gate` fails; the four fits wait on `fpt-gate-r`, the re-call under the seed null's floors (section 5), about 01:20
+to 01:40. They start only if it is PROMISING.
