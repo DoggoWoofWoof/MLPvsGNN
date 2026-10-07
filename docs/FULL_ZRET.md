@@ -120,3 +120,11 @@ Three of the eleven primary reads GAIN, and four of the thirty-six reads LOSE. T
   the host (a laptop-side Tailscale fault, 17:06 to 19:24). L-hotpotqa and L-2wiki were not stopped; their
   comparisons landed at 17:54 and 17:56. The grade released the seed-0 GNN chain at 17:57, as section 5 declared.
 - zret is not the base of later screens. Step 1's fits stay the base.
+
+### Re-graded under the seed null over every split (declared 8 October about 02:45, before its numbers)
+
+docs/SCREENS.md, section 2. zret's grade is complete, so `nullx.py regrade` re-grades its 36 reads with the floors of
+the null over all six splits, into `outputs/full_zret/grade-nullx.{md,json}`, when the null lands (about 04:30 to
+05:30). Its filed LOSSes (L-squad musique −0.0093, L-hotpotqa metaqa −0.0121 and hotpotqa read zero-shot −0.0140,
+L-2wiki 2wiki read zero-shot −0.0081) and its GAINs (L-metaqa metaqa read zero-shot +0.0644 among them) each meet
+their read's floor. The re-grade is filed; what an ADOPT would change is declared in a later round.

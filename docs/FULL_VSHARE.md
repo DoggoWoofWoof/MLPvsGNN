@@ -130,3 +130,11 @@ p@swa of the same split:
     musique: musique in-domain LOSES in two of the three (−0.0127, −0.0108) and is WITHIN in the third (−0.0047).
   - The reads that gain are all zero-shot: squad read zero-shot on L-squad (+0.0120) and webqsp read zero-shot on
     L-2wiki (+0.0127).
+
+### Re-graded under the seed null over every split (declared 8 October about 02:45, before its numbers)
+
+docs/SCREENS.md, section 2. vshare's L-metaqa fit ended before its items were taken out at 02:00, so its read,
+comparison and grade are re-queued under `-x` names (`fvs-read-L-metaqa-x`, `fvs-compare-L-metaqa-x`, `fvs-grade-x`).
+`nullx.py regrade` then re-grades its 36 reads with the floors of the null over all six splits, into
+`outputs/full_vshare/grade-nullx.{md,json}`, about 04:30 to 05:30. Its filed LOSSes (L-squad metaqa −0.0094 and musique
+−0.0127, J5 musique −0.0108) each meet their read's floor.

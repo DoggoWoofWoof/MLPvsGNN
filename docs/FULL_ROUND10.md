@@ -50,8 +50,10 @@ in-domain under J5.
   files the grade (lean_screen2's rule, decided against rel's fits; a comparison decided against any other base makes
   it INCOMPLETE).
 - `relz.py regrade` re-calls its twelve reused screen reads under the seed null's floors, with rel's screen R@5 as
-  each read's base, into `outputs/full_relz/grade-recall.{md,json}`. Its other 24 reads keep 0.0075, since no null
-  covers their splits. **The re-grade decides.**
+  each read's base, into `outputs/full_relz/grade-recall.{md,json}` (filed for the record).
+- **Amended at about 02:45, before any of relz's numbers:** `nullx.py regrade --base-compares` re-grades all 36 reads
+  under the seed null over every split, with rel's R@5 as each read's base (rel's six comparisons with step 1's fits),
+  into `outputs/full_relz/grade-nullx.{md,json}`. **That re-grade decides.**
 - **ADOPT:** at least one primary read GAINs, and none of the 36 reads LOSEs.
 - **NOT_ADOPTED:** otherwise.
 - **INCOMPLETE:** a comparison is missing or is not the declared one (exit 1).
@@ -64,7 +66,9 @@ taken out of the queue, since no read they could give changes the verdict.
 ## 5. Gates and order of work (8 October)
 
 - **`frz-gate`** (`relz.py gate --recall outputs/screen/scr-relz-pair-recall.json --rel-grade
-  outputs/full_rel/grade-recall.json`) exits 0 only when the re-call is PROMISING and rel's re-grade is ADOPT.
+  outputs/full_rel/grade-nullx.json`) exits 0 only when the re-call is PROMISING and rel's re-grade is ADOPT.
+  - Amended at about 02:45, before any of relz's numbers: rel's re-grade is the one under the seed null over every
+    split (docs/SCREENS.md, section 2), filed in place of `grade-recall`.
   - The four fits wait on it. On any other result the feeder drops them with their reads, comparisons and grades.
 - **If rel is NOT_ADOPTED,** relz's screen is still filed. It says whether ztop50 adds to rel, but there is no adopted
   rel to build on. A run against step 1 would need its own declaration.

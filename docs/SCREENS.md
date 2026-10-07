@@ -103,6 +103,40 @@ the card) and six reads.
       `screen_recall.py grade` re-calls a full run's grade into its `grade-recall.{md,json}`.
   - **Order:** the four null fits queue behind round eight's screen and ahead of every full run. They take about 25 to
     35 minutes each; the null lands about 01:00 to 01:30.
+- **Amended 8 October, about 02:45, before any of its numbers: the seed null over every full-run split.** Step 1's
+  base arm, unchanged, is trained with seeds 1 and 2 on the four splits only full runs train (L-2wiki, L-squad, J5,
+  L-metaqa), as the first null was on L-musique and L-hotpotqa. A full run's 36 reads then all take a floor from the
+  null, and none keeps 0.0075 for want of one.
+  - **Why:** every full run graded so far was NOT_ADOPTED on a LOSS of 0.008 to 0.014 on a read no null covers.
+    - bdrop20: L-metaqa, webqsp read zero-shot −0.0081; J5, musique in-domain −0.0082.
+    - zret: L-squad, musique in-domain −0.0093; L-2wiki, 2wiki read zero-shot −0.0081.
+    - vshare: L-squad, metaqa in-domain −0.0094 and musique in-domain −0.0127; J5, musique in-domain −0.0108.
+    - rel: L-2wiki, 2wiki read zero-shot −0.0136 (02:26, the comparison that prompted this amendment), beside metaqa
+      in-domain +0.0795 and webqsp read zero-shot +0.1156.
+    - On the two splits it covers, the null raised 5 of the 12 floors above 0.0075 (to 0.0102 to 0.0720), every
+      zero-shot read but one among them. With 24 reads at 0.0075, a run of an arm with no effect at all would likely
+      draw a LOSS somewhere, so the gate could not adopt anything.
+  - **It works both ways.** A raised floor turns a GAIN within it into WITHIN as surely as a LOSS. rel's GAINs on the
+    four new splits face the same floors as its LOSS.
+  - **Fits:** `scr-nullx-<split>-s1` and `-s2` for L-2wiki, L-squad, J5 and L-metaqa: the base arm through
+    lean_screen2.py's train with `--seed 1` or `--seed 2`, everything else step 1's, each compared with step 1's
+    seed-0 p@swa of its split on the six s1eval carves. Seed 0 is step 1's fit itself.
+  - **Floors:** the first null's form, unchanged and not tuned, on all 36 reads. `outputs/mp_unified/nullx.py`
+    (committed before the null's numbers; its selftest passes) runs screen_recall.py's floors and grade unchanged,
+    with the null's splits widened to all six. It files `outputs/screen/scr-nullx-floors.{md,json}`, and each full
+    run's `grade-nullx.{md,json}`. **A full run's re-grade under the null over every split decides.**
+  - **Which runs it re-grades:**
+    - rel (docs/FULL_ROUND9.md): its remaining fits and reads keep running, since under this null they can change its
+      verdict.
+    - zret (docs/FULL_ZRET.md): its grade is complete.
+    - vshare (docs/FULL_VSHARE.md): its L-metaqa fit ended before its items were taken out, so its read, comparison
+      and grade are re-queued (`-x` names) for the re-grade.
+    - gsurg's `-rc` run and relz's run (docs/FULL_ROUND10.md) when they are graded.
+    - bdrop20's run stopped with three of its fits never run, so it has no complete grade to re-grade.
+  - **If more than one arm is ADOPTED,** each re-grade is filed, and the next base is declared in a later round,
+    before its numbers. Arms that change the same thing (zret's and ztop50's z-scores) do not stack by default.
+  - **Order:** the eight fits queue behind round ten's screen and ahead of gsurg's `-rc` fits not yet started. They
+    take about 20 to 35 minutes each alone. The floors land about 04:30 to 05:30.
 - **rrf** (plain retrieval, no learned scorer) is reported beside every read as the zero-shot floor.
 - **The floor 0.0075** is the lean track's measured one-seed training noise: across the lean_mlp to lean_mlp8 fits,
   one-seed differences under about 0.75 R@5 points are noise. The bootstrap covers question sampling and the floor

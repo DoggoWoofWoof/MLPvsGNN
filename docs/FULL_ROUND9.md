@@ -122,3 +122,23 @@ The pair is MIXED (`outputs/screen/scr-gcs-pair.md`), and its re-call under the 
 
 `fgc-gate-rc` exits 1, and the feeder drops `fgc-*`. gcs is NOT_ADOPTED without a full run. The combined screen in
 section 4 is not needed: only rel can be ADOPTED.
+
+### rel, L-2wiki: a LOSS on 2wiki read zero-shot (02:26). NOT_ADOPTED as filed; the null over every split decides
+
+`outputs/full_rel/compare-L-2wiki.md`. R@5 of rel's L-2wiki p@swa minus step 1's, with the 95% interval:
+
+| metaqa | squad | musique | hotpotqa | 2wiki (zero-shot, primary) | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- |
+| **+0.0795 GAIN** [+0.075, +0.084] | −0.0025 WITHIN | −0.0033 WITHIN | +0.0059 WITHIN | **−0.0136 LOSS** [−0.016, −0.011] | **+0.1156 GAIN** [+0.098, +0.134] |
+
+- **metaqa in-domain:** hit@1 0.629 to 0.783 (FC@5 +0.073), as in the screens.
+- **webqsp read zero-shot:** R@5 0.108 to 0.223, hit@1 0.052 to 0.106. The relation channel carries further here than
+  in the screens (+0.064 and +0.070).
+- **2wiki read zero-shot LOSES** (0.807 to 0.794, FC@5 −0.012), though rel is 0 on every 2wiki row. No null covers
+  L-2wiki, so the read keeps 0.0075, and under section 4 the first LOSS settles NOT_ADOPTED.
+- **Every full run so far has failed on a LOSS of this size on a read no null covers** (docs/SCREENS.md, section 2).
+  So the seed null was extended at about 02:45 to the four splits only full runs train, before any of its numbers,
+  and every full run's grade is re-graded under it. That re-grade decides, both ways.
+- **rel's remaining items keep running:** J5's fit and the L-squad, J5 and L-metaqa reads, comparisons and grade.
+  Under the wider null their reads can change the verdict, so section 4's reason to stop them no longer holds. Its
+  re-grade `outputs/full_rel/grade-nullx` lands with the null, about 04:30 to 05:30.

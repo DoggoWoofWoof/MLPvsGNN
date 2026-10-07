@@ -138,3 +138,10 @@ No call changes under the seed null's floors (`outputs/screen/scr-prank-pair-rec
 - hotpotqa read zero-shot in the L-hotpotqa fit (−0.0255, floor 0.0200).
 
 `fpr-gate-rc` exited 1, and the feeder dropped `fpr-*-rc`. prank is NOT_ADOPTED without a full run.
+
+### gsurg: re-graded under the seed null over every split (declared 8 October about 02:45, before its numbers)
+
+docs/SCREENS.md, section 2. When `fgs-grade-rc` files gsurg's grade, `nullx.py regrade` re-grades its 36 reads with the
+floors of the null over all six splits, into `outputs/full_gsurg/grade-nullx.{md,json}`. **That re-grade decides,** in
+place of `grade-recall`, which is still filed. It works both ways: a GAIN within its read's floor turns WITHIN as
+surely as a LOSS. The null's fits run before gsurg's `-rc` fits not yet started, so both land about 04:30 to 05:30.
