@@ -247,6 +247,43 @@ gsurg's fit must meet at least one conflicting pair. The four fits wait on it.
 **If a pair verdict is PROMISING, that arm's full run starts by itself** (docs/FULL_ROUND5.md, declared with this
 round, before its numbers). On any other verdict the arm's full-run items are dropped unrun.
 
+### Sixth round (declared about 21:25, before any of its numbers)
+
+Code: `outputs/mp_unified/hubwalk.py` (its selftest passes). It runs lean_screen2's commands and lean_screen's rule
+unchanged, and adds one arm and the build of its arrays. As in the fifth round, the screen trains two fits, L-musique
+and L-hotpotqa. Each is compared with step 1's p@swa of its split, and the verdict is taken over both fits' twelve
+reads.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-hubwalk, scr-hubwalk-hp | hubwalk | **Hub-discounted walks (a preprocessing step).** Every walk column the model reads becomes the walk's probability mass instead of its path count. A walk starts uniform on its seeds; at each hop, each node's mass splits evenly over its out-edges in that walk's edge set. A column is log1p(n × mass): the mass's lift over the pool's uniform distribution, for a pool of n nodes. This covers WALK's eleven walk columns and WALKF's thirteen. The degree column, the first-hop flags and the seed flag stay step 1's bit for bit, and so does every other block (topo_STRUCT's two-hop count is a column of the look's and stays). Label-free, the same in training and at read time, on step 1's graphs and seeds; no new hyperparameter. |
+
+**Why hubwalk.** Step 1's walk features are path counts (log1p). A path count grows with the pool's density. Through
+a KB hub (a genre, a country), a two-hop count runs into the thousands; in a passage pool of about 100 nodes it stays
+in single digits. So the same column means different things on the KB graphs and on the passage graphs, and a fit
+learns the difference from the datasets it trains on: the big-pool confound again, in the walk features.
+
+- **Mass splits at every hub**, so a path through a node with many edges counts for less. That is resource
+  allocation (Zhou, Lü and Zhang 2009), Adamic and Adar's weighting (2003), and personalised PageRank's random-walk
+  mass, read hop by hop.
+- **The lift n × mass stays put when a pool's size and degrees grow together.** A pool made of two copies of a pool
+  gives the same columns, and the selftest checks this.
+
+**The build** (`hubwalk.py build`, CPU, one item per carve) covers:
+- the five fit carves of the two splits' training sets: metaqa, squad, hotpotqa and 2wiki fit, and musique s1fit;
+- the six s1eval carves;
+- the smoke's 2wiki select carve.
+
+Every query is also computed as path counts. Those must equal step 1's cached walk and walkf bit for bit, so the rows
+line up. The mass columns must reach exactly the nodes the counts reach. Any difference refuses the carve.
+
+**The smoke** (`scr6-smoke`) runs on 2wiki select. It reads the carve through the arm and through step 1's carve: the
+mass columns must have moved, and the reached nodes and every other column must not. Then it trains one epoch twice
+(the repeat must be IDENTICAL) and reads.
+
+**If the pair verdict is PROMISING, its full run starts by itself** (docs/FULL_HUBWALK.md, declared with this round,
+before its numbers). On any other verdict its items are dropped unrun.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -274,6 +311,13 @@ round, before its numbers). On any other verdict the arm's full-run items are dr
     other training dataset's batch of the same chunk (three more on these splits), while the batches are built once,
     so about 50 to 80 minutes each. prank's take about 25 to 35.
   - Verdicts: prank about 23:15 to 23:30, gsurg about 23:40 to 00:15.
+- **Sixth round** (queued about 21:30):
+  - The builds take a few minutes each on the host's idle CPUs (2wiki select, 1,496 questions, took about 1 second on
+    the laptop).
+  - The smoke takes about 10 minutes, once the card has room.
+  - hubwalk's two fits queue behind round five's (cap 0.26, share 0.28). They start as those finish, about 22:50 to
+    23:10, and take about 25 to 35 minutes each: the arm adds no work to a step.
+  - Verdict about 23:45 to 00:30.
 
 ## Results
 
