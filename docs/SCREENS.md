@@ -137,6 +137,9 @@ the card) and six reads.
     before its numbers. Arms that change the same thing (zret's and ztop50's z-scores) do not stack by default.
   - **Order:** the eight fits queue behind round ten's screen and ahead of gsurg's `-rc` fits not yet started. They
     take about 20 to 35 minutes each alone. The floors land about 04:30 to 05:30.
+    - Moved at about 03:15, before any of the null's or relz's numbers: the null's fits go ahead of round ten's
+      screen fits. relz's full run needs rel's re-grade under this null either way, so the screen gains nothing by
+      going first, and every re-grade lands about 40 minutes sooner. No rule changes.
 - **rrf** (plain retrieval, no learned scorer) is reported beside every read as the zero-shot floor.
 - **The floor 0.0075** is the lean track's measured one-seed training noise: across the lean_mlp to lean_mlp8 fits,
   one-seed differences under about 0.75 R@5 points are noise. The bootstrap covers question sampling and the floor
