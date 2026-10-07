@@ -976,3 +976,32 @@ a call is made, and the call under the seed null's floors:
   - At 01:50 its items were moved ahead of gsurg's `-rc` run in the feeder. rel's re-call is the stronger lead, and it
     answers the SOTA gap the round was declared for. vshare's run, already on the card, finishes first.
   - ETAs: its four fits about 02:00 to 03:00, the grade and re-grade about 03:15 to 03:45.
+
+### scr-gcs (L-musique): MIXED. scr-gcs-hp (L-hotpotqa): NO_GAIN. The pair is MIXED and its re-call NO_GAIN (02:03); gcs is not run
+
+`outputs/screen/scr-gcs.md`, `outputs/screen/scr-gcs-hp.md`, `outputs/screen/scr-gcs-pair.md`,
+`outputs/screen/scr-gcs-pair-recall.md`. R@5 of gcs minus step 1's p@swa of the same split, with the call under the
+seed null's floors:
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | −0.0060 WITHIN | −0.0018 WITHIN | +0.0436 GAIN → WITHIN (zero-shot; floor 0.0720) | −0.0022 WITHIN | −0.0018 WITHIN | **−0.0220 LOSS** (zero-shot; floor 0.0102) [−0.033, −0.011] |
+| L-hotpotqa | −0.0084 LOSS → WITHIN (floor 0.0149) | −0.0009 WITHIN | +0.0032 WITHIN | −0.0132 LOSS → WITHIN (zero-shot; floor 0.0200) | +0.0050 WITHIN | −0.0005 WITHIN (zero-shot) |
+
+- **GraphER's propagation of retrieval's scores adds nothing step 1's model lacks.**
+  - No in-domain read gains. The largest, 2wiki in the L-hotpotqa fit, is +0.0050 [+0.0030, +0.0072], below 0.0075
+    (its FC@5 +0.0160).
+  - musique read zero-shot (+0.0436) is within its floor, and webqsp read zero-shot in the L-musique fit LOSES beyond
+    its floor.
+  - A likely reading: rank and dense_cos already carry retrieval's scores, and step 1's walks (WALK, WALKF, DISTS)
+    already spread the seeds over the pool graph. The two columns are a two-step mix of what the model already reads.
+- **Against the published systems.** GCS is the parameter-free part of GraphER's method that step 1's model did not
+  have. Our MLP's FC@5 was already above GraphER's on hotpotqa and 2wiki (the deck: 84.1 and 70.8 against 78.0 to
+  78.9 and 42.5 to 44.1), so this round's open gap was the KB rows, which rel answers.
+- **hotpotqa read zero-shot in the L-hotpotqa fit** is −0.0132 in both of round nine's arms (FC@5 −0.0259 and
+  −0.0258), though rel's columns are 0 on every hotpotqa row and gcs's are not.
+  - A likely reading: an added live block widens the first layer, which changes the initial weights and every later
+    torch draw (the batch order is numpy's and stays the same). Each arm is then another seed on that read.
+  - Its floor (0.0200) covers both.
+- **The full run** (`fgc-*`, docs/FULL_ROUND9.md) does not run: `fgc-gate-rc` exits 1. With gcs out, round nine's
+  combined screen (rel with gcs) is not needed.

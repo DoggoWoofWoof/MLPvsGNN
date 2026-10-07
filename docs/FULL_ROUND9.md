@@ -110,3 +110,15 @@ The pair is MIXED (`outputs/screen/scr-rel-pair.md`). Its re-call under the seed
 already on the card. The four fits run about 02:00 to 03:00, and the grade and re-grade come about 03:15 to 03:45.
 - rel's L-metaqa fit must reproduce step 1's model, every difference exactly 0 (section 2).
 - **The first LOSS settles NOT_ADOPTED** (section 4).
+
+### gcs: the re-call is NO_GAIN (02:03); not run
+
+The pair is MIXED (`outputs/screen/scr-gcs-pair.md`), and its re-call under the seed null's floors is NO_GAIN
+(`outputs/screen/scr-gcs-pair-recall.md`; docs/SCREENS.md, Results).
+- musique read zero-shot in the L-musique fit (+0.0436) is within its floor of 0.0720.
+- webqsp read zero-shot in the L-musique fit still LOSES (−0.0220, floor 0.0102).
+- In the L-hotpotqa fit, metaqa in-domain (−0.0084, floor 0.0149) and hotpotqa read zero-shot (−0.0132, floor 0.0200)
+  turn WITHIN.
+
+`fgc-gate-rc` exits 1, and the feeder drops `fgc-*`. gcs is NOT_ADOPTED without a full run. The combined screen in
+section 4 is not needed: only rel can be ADOPTED.

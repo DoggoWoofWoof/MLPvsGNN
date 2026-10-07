@@ -109,3 +109,24 @@ Under the seed null's floors (`outputs/screen/scr-vshare-pair-recall.md`; docs/S
 `fvs-gate-r` passed. The L-2wiki, L-squad and J5 fits started at 00:55. The L-metaqa fit follows round nine's screens
 on the card. The grade and re-grade come about 03:30 to 04:15, and the re-grade (`outputs/full_vshare/grade-recall`)
 decides.
+
+### NOT_ADOPTED (02:00): two fits LOSE musique in-domain, and L-squad also LOSES metaqa in-domain
+
+`outputs/full_vshare/compare-L-2wiki.md`, `compare-L-squad.md` and `compare-J5.md`. R@5 of vshare minus step 1's
+p@swa of the same split:
+
+| split (verdict) | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-2wiki (PROMISING) | +0.0043 | −0.0022 | −0.0047 | +0.0030 | −0.0021 (zero-shot) | **+0.0127 GAIN** (zero-shot) |
+| L-squad (MIXED) | **−0.0094 LOSS** | **+0.0120 GAIN** (zero-shot) | **−0.0127 LOSS** | −0.0049 | −0.0013 | +0.0008 (zero-shot) |
+| J5 (NO_GAIN) | +0.0023 | −0.0031 | **−0.0108 LOSS** | −0.0030 | −0.0010 | −0.0070 (zero-shot) |
+
+- **The LOSSes stand under the re-grade.** No seed null covers these three splits, so their reads keep the floor
+  0.0075 (section 5). The first LOSS settles NOT_ADOPTED (section 4).
+- **The run stopped.** At 02:00 the L-metaqa fit's read, comparison, grade and re-grade were taken out of the queue.
+  The fit itself (on the card from 01:41) had just ended, so nothing was cancelled.
+- **What it says.**
+  - The screen's gain was musique read zero-shot (+0.0891 on L-musique). It does not carry into fits that train on
+    musique: musique in-domain LOSES in two of the three (−0.0127, −0.0108) and is WITHIN in the third (−0.0047).
+  - The reads that gain are all zero-shot: squad read zero-shot on L-squad (+0.0120) and webqsp read zero-shot on
+    L-2wiki (+0.0127).
