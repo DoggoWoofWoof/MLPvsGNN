@@ -926,7 +926,11 @@ The other seven reads are all in-domain. Each moves by at most 0.0023 between se
   - **Round nine's thirteen builds all passed on the host (00:58 to 01:00).** Each is IDENTICAL to step 1's cached
     columns, with no non-finite value. rel is live on 99.4% of metaqa's rows and 85% of webqsp's, and 0 on the
     passage graphs. gcs is live on all six.
-  - Round nine's smoke has been running since 00:59.
+  - **Round nine's smoke passed (01:00, 43 s; `outputs/screen/smoke9/smoke.json`).**
+    - On metaqa select, webqsp s1eval and 2wiki select, each arm's carve keeps lean_gpu's base matrix, golds and rows,
+      and the arm's columns equal its build's.
+    - Each arm's one-epoch repeat is IDENTICAL. Its blocks follow step 1's nine in the fit and are live, and its read
+      runs.
   - Round nine's four fits come first in file order and take the card as vshare's fits leave it, about 01:45. Their
     pair verdicts and re-calls land about 03:00 to 03:30. That is later than section 5 gave, because vshare's run took
     the card first.

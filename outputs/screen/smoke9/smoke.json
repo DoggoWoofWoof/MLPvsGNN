@@ -1,0 +1,173 @@
+{
+ "carves": {
+  "metaqa=select": {
+   "rel": {
+    "base_equal": true,
+    "columns_equal": true,
+    "nonzero": [
+     0.0261,
+     0.9935,
+     0.9935,
+     0.9935,
+     0.9935,
+     0.9935,
+     0.4757,
+     0.0112,
+     0.0149,
+     0.2661,
+     0.2709,
+     0.8214,
+     0.8214,
+     0.8214,
+     0.8214,
+     0.8214,
+     0.2709,
+     0.2709,
+     0.8214,
+     0.8214,
+     0.8214,
+     0.8214,
+     0.8214,
+     0.8214,
+     0.8214,
+     0.8214
+    ]
+   },
+   "gcs": {
+    "base_equal": true,
+    "columns_equal": true,
+    "nonzero": [
+     0.911,
+     0.9011
+    ]
+   }
+  },
+  "webqsp=s1eval": {
+   "rel": {
+    "base_equal": true,
+    "columns_equal": true,
+    "nonzero": [
+     0.045,
+     0.8508,
+     0.8508,
+     0.8508,
+     0.8508,
+     0.8508,
+     0.6468,
+     0.0343,
+     0.0348,
+     0.3074,
+     0.3244,
+     0.6254,
+     0.6254,
+     0.6254,
+     0.6254,
+     0.6254,
+     0.3244,
+     0.3244,
+     0.6254,
+     0.6254,
+     0.6254,
+     0.6254,
+     0.6254,
+     0.6254,
+     0.6254,
+     0.6254
+    ]
+   },
+   "gcs": {
+    "base_equal": true,
+    "columns_equal": true,
+    "nonzero": [
+     0.8819,
+     0.7508
+    ]
+   }
+  },
+  "2wiki=select": {
+   "rel": {
+    "base_equal": true,
+    "columns_equal": true,
+    "nonzero": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "gcs": {
+    "base_equal": true,
+    "columns_equal": true,
+    "nonzero": [
+     1.0,
+     1.0
+    ]
+   }
+  }
+ },
+ "arms": {
+  "rel": {
+   "train_rc": 0,
+   "repeat": "IDENTICAL",
+   "blocks": [
+    "rank",
+    "dense_cos",
+    "topo_STRUCT",
+    "depth_STRUCT",
+    "SEMB",
+    "SEED",
+    "WALK",
+    "DISTS",
+    "WALKF",
+    "typed_rel",
+    "typed_v2",
+    "ordered"
+   ],
+   "arm_blocks_live": true,
+   "read_rc": 0
+  },
+  "gcs": {
+   "train_rc": 0,
+   "repeat": "IDENTICAL",
+   "blocks": [
+    "rank",
+    "dense_cos",
+    "topo_STRUCT",
+    "depth_STRUCT",
+    "SEMB",
+    "SEED",
+    "WALK",
+    "DISTS",
+    "WALKF",
+    "gcs"
+   ],
+   "arm_blocks_live": true,
+   "read_rc": 0
+  }
+ },
+ "ok": true,
+ "seconds": 43.409934520721436,
+ "script_sha256": "3e86b04cfd5f80b02b3955986baf0c0f9fa7fd04e8e3ddf9467347c3a2e32b8a"
+}
