@@ -89,3 +89,12 @@ out of the queue.
 ## Results
 
 Development numbers; the paper's numbers come from one declared confirmation run.
+
+### The screen's pair: MIXED (00:01). The re-call decides, about 01:20
+
+- **L-musique fit: PROMISING.** musique read zero-shot +0.0891 (0.270 → 0.359), no read lost.
+- **L-hotpotqa fit: NO_GAIN.** hotpotqa read zero-shot −0.0140 LOSS, the fifth arm in five to lose that read; nothing
+  gains.
+- `fvs-gate` fails on the MIXED pair, and nothing waits on it (section 5, amended before these numbers). The four fits
+  wait on `fvs-gate-r`. It passes only if the seed null's spread is above 0.0070 on L-hotpotqa's hotpotqa read and
+  at most 0.0445 on L-musique's musique read (docs/SCREENS.md, Results).

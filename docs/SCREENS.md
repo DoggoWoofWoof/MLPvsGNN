@@ -746,3 +746,26 @@ hubwalk minus step 1's p@swa of the same split, with the 95% interval where a ca
 - **hotpotqa, read zero-shot, is the LOSS read for the fourth time** (zret, ztop50, gsurg, hubwalk).
 - **Over both fits: NO_GAIN,** with no GAIN among the 12 reads and a LOSS on 3. `fhw-gate-b` fails, and the feeder drops
   hubwalk's full run.
+
+### scr-vshare (L-musique): PROMISING (23:35). scr-vshare-hp (L-hotpotqa): NO_GAIN (00:00). The pair is MIXED; the seed null's re-call decides
+
+`outputs/screen/scr-vshare.md`, `outputs/screen/scr-vshare-hp.md`, `outputs/screen/scr-vshare-pair.md`. R@5 of
+vshare minus step 1's p@swa of the same split, with the 95% interval where a call is made:
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | −0.0030 WITHIN | −0.0004 WITHIN | **+0.0891 GAIN** (zero-shot) [+0.079, +0.099] | −0.0017 WITHIN | −0.0011 WITHIN | +0.0045 WITHIN (zero-shot) |
+| L-hotpotqa | −0.0055 WITHIN | +0.0003 WITHIN | +0.0030 WITHIN | **−0.0140 LOSS** (zero-shot) [−0.018, −0.010] | −0.0013 WITHIN | −0.0057 WITHIN (zero-shot) |
+
+- **musique, read zero-shot, gains the most of any arm that keeps metaqa:** 0.270 → 0.359, with hit@1 +0.149 and
+  FC@5 +0.043. metaqa in-domain stays within the floor (−0.0030). For comparison, prank lifted musique to 0.471 but lost
+  0.031 on metaqa, and gsurg lifted it by 0.084 with metaqa at +0.0012.
+- **hotpotqa, read zero-shot, LOSES for the fifth arm in five** (zret −0.014, ztop50 −0.008, gsurg −0.015, hubwalk
+  −0.016, vshare −0.014), with FC@5 −0.029. This is the read the seed null was declared for (section 2), before these
+  numbers.
+- **Over both fits: MIXED,** with 1 GAIN and 1 LOSS among the 12 reads. `fvs-gate` fails, but nothing waits on it any
+  more. vshare's full run waits on `fvs-gate-r`, the re-call under the null's floors, about 01:20.
+- **What the re-call needs (arithmetic on the declared rule, written before the null's numbers):** the LOSS turns
+  WITHIN when the null's spread on L-hotpotqa's hotpotqa read is above 0.0070, a floor above 0.0140. The GAIN holds
+  while the spread on L-musique's musique read is at most 0.0445, a floor of at most 0.0891. Every other read is WITHIN
+  under any floor. So the re-call is PROMISING exactly when both hold.
