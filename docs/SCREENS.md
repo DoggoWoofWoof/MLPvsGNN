@@ -45,6 +45,19 @@ the card) and six reads.
   - **Amended 7 October, about 15:55, after scr-padbd20's numbers:** a PROMISING screen whose arm contains an arm
     that was NOT_ADOPTED in its own full run gets a full run only if it also GAINs against that arm's screen. Without
     such a gain, the full run would repeat the failed arm's loss with nothing added.
+- **Amended 7 October, about 20:35, at the user's request ("yeah do them"), before any number of the fourth round:
+  two fits per screen.** From the fourth round on, a screen trains its arm on two splits:
+  - **L-musique**, as before;
+  - **L-hotpotqa**, which reads hotpotqa zero-shot and musique in-domain.
+
+  Each fit is compared with step 1's fit of the same split (p@swa), read by read, under the call above. The verdict
+  above is taken over all twelve reads: PROMISING needs at least one GAIN and no LOSS among the twelve.
+  `outputs/mp_unified/screen_pair.py` files the verdict over both fits, and the full-run gate reads it.
+
+  Why: both PROMISING screens so far failed their full runs on reads the L-musique fit cannot make. bdrop20 lost on
+  musique in-domain (J5); zret lost on hotpotqa and 2wiki read zero-shot. Under this rule, zret's two fits (its screen
+  and its full run's L-hotpotqa fit) are MIXED: the L-hotpotqa fit LOSEs on hotpotqa zero-shot (−0.014) and on metaqa
+  in-domain (−0.012). The two fits run side by side on the card, so a verdict comes about one fit later than before.
 - **rrf** (plain retrieval, no learned scorer) is reported beside every read as the zero-shot floor.
 - **The floor 0.0075** is the lean track's measured one-seed training noise: across the lean_mlp to lean_mlp8 fits,
   one-seed differences under about 0.75 R@5 points are noise. The bootstrap covers question sampling and the floor
@@ -187,6 +200,14 @@ IDENTICAL.
 **If scr-ztop50 is PROMISING, its full run starts by itself** (docs/FULL_ZTOP50.md, declared with this round, before
 its numbers). On any other verdict the full run's items are dropped unrun.
 
+**Amended about 20:35, before any of this round's numbers (section 2: two fits per screen).** A second fit,
+**scr-ztop50-hp**, trains ztop50 on L-hotpotqa: the same config, seed and caps as zret's full-run fit of that split
+(cap 0.26, share 0.28). It is read on the six s1eval carves and compared with step 1's L-hotpotqa p@swa (decides) and
+with zret's full-run L-hotpotqa fit (reported only). It reads hotpotqa zero-shot, where zret lost 0.014, and musique
+in-domain. The screen's verdict is taken over both fits' twelve reads (`scr-pair-ztop50`, through screen_pair.py), and
+the full run's gate reads that verdict instead of scr-ztop50's alone. 2wiki read zero-shot still comes only from the
+full run.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -203,6 +224,10 @@ its numbers). On any other verdict the full run's items are dropped unrun.
 - **Fourth round** (queued about 20:00, beside the seed-0 GNN chain, which holds half the card until about 22:30):
   the smoke takes about 10 minutes, the fit about 45 to 55 (zret's took 43 minutes; ztop50 adds a sort per batch),
   then the read and comparison take about 10. Verdict about 21:00 to 21:15.
+  - Amended about 20:35: the L-musique fit was at epoch 4 of 8 at 20:26 (about 2 minutes an epoch), so its read and
+    comparison land about 20:50. scr-ztop50-hp starts when that fit frees the card (it needs 0.28; 0.24 was free at
+    20:26), about 20:45 to 21:00. It takes about 50 to 60 minutes, then about 15 more for its read and comparison.
+    The verdict over both fits comes about 22:00 to 22:15.
 
 ## Results
 

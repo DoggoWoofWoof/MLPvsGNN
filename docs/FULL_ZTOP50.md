@@ -33,6 +33,11 @@ read hotpotqa or 2wiki zero-shot, where zret lost. Only this run reads them.
 - **On the card:** zret's caps. ztop50 adds two sorts per batch (tens of MB against about 5 GB). J5, L-squad,
   L-hotpotqa and L-2wiki cap 0.26 of the card (share 0.28); L-metaqa caps 0.18 (share 0.20).
 - **Order:** L-hotpotqa and L-2wiki first, where zret lost read zero-shot; then L-squad, J5 and L-metaqa.
+- **Amended 7 October, about 20:35, before any ztop50 number (docs/SCREENS.md section 2: two fits per screen):**
+  L-hotpotqa's fit is now the screen's second fit (`outputs/screen/fits/scr-ztop50-hp`): the same arm, carves, config,
+  seed and caps as declared here. The full run trains four fits, in the order L-2wiki, L-squad, J5, L-metaqa. The grade
+  reuses both screen comparisons: L-musique from `outputs/screen/scr-ztop50.json` and L-hotpotqa from
+  `outputs/screen/scr-ztop50-hp.json`.
 
 ## 3. Reads and comparison
 
@@ -67,7 +72,12 @@ out of the queue, since no read they could give changes the verdict.
   zret's run did, would bring this verdict no sooner than about half an hour, and would leave the chain for after
   midnight.
 
-ETA if PROMISING: the screen's comparison lands about 21:00 to 21:15. The fits take about 50 to 70 minutes each.
+- **Amended about 20:35:** `fzt-gate` now runs on the screen's verdict over both fits
+  (`outputs/screen/scr-ztop50-pair.json`, filed by `scr-pair-ztop50` through screen_pair.py) and exits 0 only when that
+  verdict is PROMISING. The pair verdict lands about 22:00 to 22:15. The four fits then take about 50 to 70 minutes
+  each, two or three at a time on the card, so the grade comes about 00:00 to 01:00, sooner at a LOSS.
+
+ETA if PROMISING (as declared at 19:55, before the amendment): the screen's comparison lands about 21:00 to 21:15. The fits take about 50 to 70 minutes each.
 L-hotpotqa's and L-2wiki's comparisons come about 22:15 to 22:45; the verdict about 23:30 to 00:30, sooner at a
 LOSS.
 
