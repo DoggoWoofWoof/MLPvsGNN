@@ -169,11 +169,12 @@ def test_every_look_shard_files_its_pools_record(tmp_path, monkeypatch):
         (d / f"record{tag}.json").write_text("{}", encoding="utf-8")
     (d / "pools_0of2.json").write_text(json.dumps({"pools_sha256": "a" * 64, "manifest_sha256": "m", "changed": 2,
                                                    "short": 1}), encoding="utf-8")
-    assert S4C.look_pools_records("metaqa", "s1eval", ent, "m")            # shard 1 has no pools record
+    assert S4C.look_pools_records("metaqa", "s1eval", ent)                 # shard 1 has no pools record
     (d / "pools_1of2.json").write_text(json.dumps({"pools_sha256": "a" * 64, "manifest_sha256": "m", "changed": 2,
                                                    "short": 1}), encoding="utf-8")
-    assert S4C.look_pools_records("metaqa", "s1eval", ent, "m") == []
-    assert S4C.look_pools_records("metaqa", "s1eval", ent, "other manifest")
+    assert S4C.look_pools_records("metaqa", "s1eval", ent) == []
+    assert S4C.look_pools_records("metaqa", "s1eval", dict(ent, sha256="b" * 64))
+    assert S4C.look_pools_records("metaqa", "s1eval", dict(ent, short=0))
 
 
 @pytest.mark.parametrize("verdict, rule", [("ADOPT", "D"), ("NOT_ADOPTED", "M"), ("NO_EFFECT", "M")])

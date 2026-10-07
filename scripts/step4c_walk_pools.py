@@ -455,8 +455,9 @@ def carve_rows(root, ds, carve):
     return ids, n, parts, recs
 
 
-def look_pools_records(ds, carve, ent, manifest_sha):
-    """Every look shard of the carve filed a pools record naming the manifest's file; returns problems."""
+def look_pools_records(ds, carve, ent):
+    """Every look shard of the carve filed a pools record naming the manifest's file (by its sha256; the manifest
+    grows as datasets are filed, so a look may have run under an earlier copy of it); returns problems."""
     d = LOOK / ds / carve
     looks = sorted(p.name[len("record"):-len(".json")] for p in d.glob("record*.json"))
     pools = sorted(p.name[len("pools"):-len(".json")] for p in d.glob("pools*.json"))
@@ -465,8 +466,8 @@ def look_pools_records(ds, carve, ent, manifest_sha):
         bad.append(f"look records {looks} and pools records {pools} differ")
     for tag in pools:
         r = json.loads((d / f"pools{tag}.json").read_text(encoding="utf-8"))
-        if r.get("pools_sha256") != ent["sha256"] or r.get("manifest_sha256") != manifest_sha:
-            bad.append(f"pools{tag}.json names another pools file or manifest")
+        if r.get("pools_sha256") != ent["sha256"]:
+            bad.append(f"pools{tag}.json names another pools file")
         if r.get("changed") != ent["changed"] or r.get("short") != ent["short"]:
             bad.append(f"pools{tag}.json counts {r.get('changed')}/{r.get('short')} changed/short, the manifest "
                        f"{ent['changed']}/{ent['short']}")
@@ -485,7 +486,7 @@ def gate():
             filed, ent, msha = load_filed(ds, cv)
             if msha != manifest_sha:
                 raise SystemExit("the manifest changed while the gate ran")
-            bad = look_pools_records(ds, cv, ent, manifest_sha)
+            bad = look_pools_records(ds, cv, ent)
             rec["looks"][f"{ds}={cv}"] = bad or "PASS"
             fails += [f"{ds}/{cv}: {b}" for b in bad]
             ids1, n1, p1, r1 = carve_rows(STEP1_CACHE, ds, cv)
