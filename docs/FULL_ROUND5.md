@@ -90,3 +90,10 @@ are taken out of the queue, since no read they could give changes the verdict.
 ## Results
 
 Development numbers; the paper's numbers come from one declared confirmation run.
+
+### gsurg: not run (23:08)
+
+Its screen pair is MIXED (`outputs/screen/scr-gsurg-pair.md`; docs/SCREENS.md, Results). The L-musique fit is
+PROMISING (musique read zero-shot +0.0842, metaqa in-domain +0.0012), but in the L-hotpotqa fit hotpotqa, read
+zero-shot, LOSEs (−0.0147). `fgs-gate` fails, and the feeder drops the four fits, their reads and comparisons, and
+the grade.

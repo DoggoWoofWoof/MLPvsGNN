@@ -608,3 +608,22 @@ p@swa:
 - Every change to how a pool's z-scores are taken (zonly, dnorm, zret, ztop50) moves metaqa and musique in opposite
   directions. No further screen of that kind is planned. Rounds five and six change the inputs and the objective
   instead.
+
+### scr-gsurg (L-musique): PROMISING (23:04). scr-gsurg-hp (L-hotpotqa): MIXED (23:07). The pair is MIXED, so gsurg's full run does not start
+
+`outputs/screen/scr-gsurg.md`, `outputs/screen/scr-gsurg-hp.md`, `outputs/screen/scr-gsurg-pair.md`. R@5 of gsurg minus
+step 1's p@swa of the same split, with the 95% interval where a call is made:
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.0012 WITHIN | −0.0011 WITHIN | **+0.0842 GAIN** (zero-shot) [+0.076, +0.092] | +0.0003 WITHIN | +0.0014 WITHIN | −0.0007 WITHIN (zero-shot) |
+| L-hotpotqa | +0.0016 WITHIN | −0.0019 WITHIN | +0.0049 WITHIN | **−0.0147 LOSS** (zero-shot) [−0.019, −0.011] | **+0.0091 GAIN** [+0.007, +0.011] | **+0.0124 GAIN** (zero-shot) [+0.002, +0.023] |
+
+- **gsurg is the first arm that lifts musique, read zero-shot, without costing metaqa in-domain.** In the L-musique
+  fit, musique rises from 0.270 to 0.354 (hit@1 +0.067, FC@5 +0.038) while metaqa stays at 0.655 (+0.0012). zret,
+  ztop50 and pad each traded metaqa for musique. rrf alone is still higher on musique (0.473).
+- **hotpotqa, read zero-shot, loses again** (−0.0147; FC@5 −0.028, hit@1 −0.007): mostly the second gold. It was
+  also the LOSS read of zret's full run (−0.014) and of ztop50's pair (−0.008). In the same fit, 2wiki gains
+  in-domain (+0.0091) and webqsp gains zero-shot (+0.0124).
+- **Over both fits: MIXED**, with GAINs on 3 of the 12 reads and a LOSS on 1. `fgs-gate` fails on the pair verdict
+  and the feeder drops gsurg's full run. prank's pair (round five's other arm) is still to come.
