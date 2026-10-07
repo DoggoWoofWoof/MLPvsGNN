@@ -186,6 +186,23 @@ under the 0.18 cap, after their first variant, and restarted from scratch with n
 epoch's loss repeated exactly. The unsent fits now cap at 0.32 of the card (heavy; share 0.3) and 0.22 (L-metaqa;
 share 0.2). Expected: the last fit (L-2wiki) starts about 8:05 am, and the grade lands about 11:30 am.
 
+Revised 06:15, 7 October (no number of this step exists yet). Three things happened between 05:36 and 06:05:
+
+- Two metaqa eval cache shards failed on a transient Windows file lock. The feeder then dropped every read,
+  check and grade of both steps. The shards were rebuilt under retry_cmd. The reads now wait on a cache gate
+  (outputs/host_ops/wait_cache.py) instead of on each shard, and were renamed s1j-* (step 1) and s2x-* (step 2).
+  The gate passed at 05:46.
+- The card ran out of memory and spilled into system memory: 23.4 of 24 GB used, 1.0 GB shared. The three fits
+  rerun with no cap kept their peaks. Four fits plus their CUDA contexts no longer fit, and every fit ran about
+  ten times slower. Step 2's L-musique fit was cancelled at 05:57 and requeued with a cap (s2y-train-L-musique).
+  The card dropped to 17.0 GB and the epochs went back to normal (L-metaqa 189 s).
+- J5 ran out of memory at its context pass under 6.72 GiB (5.62 GiB allocated, 0.90 GiB fragmented, a 344 MiB
+  request). It restarted from scratch with no cap at 06:04. The unsent heavy fits are now capped at 0.31 of the
+  card (7.44 GiB), with a share of 0.33 that counts the CUDA context. So at most three heavy fits share the card.
+
+Expected: L-squad starts about 7:15 am, L-hotpotqa about 7:30 and L-2wiki about 8:45 (after J5). The last fit ends
+about 10:50, and the grade lands about 11:30 am to noon.
+
 ## 10. What this does not do
 
 - The encoder and the substrate embeddings stay frozen; no step will change them.

@@ -116,6 +116,11 @@ shares as step 1's fits free the card, then reads and checks. Expected verdict: 
 Revised 05:15: step 2's L-musique fit ran out of GPU memory at its first context-statistics pass and restarted with
 no cap (docs/STEP1_MATCHED_SELECTION.md section 9). Expected verdict: about 2 to 2:30 pm.
 
+Revised 06:15: step 2's L-musique fit was cancelled at 05:57 to end the card's spill. It runs again later as
+s2y-train-L-musique (cap 0.21, share 0.24). Step 2's reads, checks and grade are s2x-*, behind the cache gate.
+The heavy fits are capped at 0.31 (docs/STEP1_MATCHED_SELECTION.md section 9), so at most three share the card.
+Expected verdict: about 4:30 to 5:30 pm.
+
 ## 8. What this does not do
 
 - No new carves. The selection is step 1's.
