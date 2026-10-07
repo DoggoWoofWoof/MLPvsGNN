@@ -580,6 +580,65 @@ and its re-call are filed either way.
   took 43 alone), then a read of about 10.
 - The pair and its re-call land about 04:15 to 05:00.
 
+### Eleventh round (declared 8 October at about 03:50, before any of its numbers)
+
+Code: `outputs/mp_unified/qdepth.py` (its selftest passes). One idea, a learned depth prior for each question, screened
+on one base: rel's if rel's full run is ADOPTED under the seed null over every split, step 1's if it is NOT_ADOPTED. As
+in rounds five to ten, the screen trains two fits, L-musique and L-hotpotqa.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-qdepth, scr-qdepth-hp (step 1's base); scr-relqd, scr-relqd-hp (rel's base) | qdepth; relqd | **A question-to-depth prior.** Every row's score gains l_q[depth(v)]. depth(v) is the row's class from WALK's raw columns: 0 a seed, 1 to 3 the first structural hop from a seed (the nearest, should a row carry two), 4 unreached. l_q = q U + P_q W + b, five values per question, from its embedding q (SEMB's input) and its pool's profile P_q: the share of its rows in each depth class, and log(1 + the pool's size). U (1536 × 5), W (6 × 5) and b (5) start at zero, so each fit starts as its base model, bit for bit, from the same initialisation and batches; the listwise loss alone trains them, with the model's own Adam, learning rate and weight decay. 7,715 parameters. No new column, block or hyperparameter, and nothing reads a label at read time. A question whose WALK or SEMB block is dropped takes no prior. |
+
+**Why (section 'Hop depth of the top-1 errors' in the results, filed at about 03:06).**
+- **A perfect question-to-depth attention lifts the MLPs' metaqa 3-hop hit@1 by 0.074 and 0.083,** about ten standard
+  errors, and the GNN's top-1 sits off-depth about half as often as the MLPs'. The KB systems (NuTrea, ReaRev,
+  TransferNet) weigh a node by the hop count the question asks for. Step 1's MLP reads each row's depth but not the
+  question's hop count, so it can only prefer one depth for every question alike.
+- **On webqsp, read zero-shot, the MLPs rank a seed first on 0.60 to 0.95 of the questions,** where 0.07 of the golds
+  are seeds, and the oracle doubles their hit@1. On metaqa the same fits rank a seed first on 0.02 to 0.03. The
+  question alone cannot say which graph it is asked on; the pool's profile is in the prior for that.
+- **What it cannot do:** most of rel's 3-hop misses sit at a depth that holds a gold (0.263 of the questions, the
+  GNN's 0.108). A depth prior closes about a third of rel's 3-hop gap to the GNN, at most.
+
+**The base is named by rel's re-grade, not by this screen.**
+- `qdepth.py base --rel-grade outputs/full_rel/grade-nullx.json --want rel` exits 0 only on ADOPT, and `--want step1`
+  only on NOT_ADOPTED. A missing or INCOMPLETE re-grade runs neither.
+- **On rel's base (relqd):** rel's carve and blocks (relcols.py). Each fit is compared with rel's screen fit of its
+  split, which decides, and with step 1's, reported. The pair, its re-call and the grade are relz.py's (rel's R@5 as
+  each read's base), run under relqd's name: `qdepth.py pair-rel`, `recall-rel` and `grade-rel`. This is
+  docs/FULL_ROUND9.md's rule: after ADOPT, rel is the base of every later screen.
+- **On step 1's base (qdepth):** each fit is compared with step 1's fit of its split. The pair and its re-call are
+  screen_pair.py's and screen_recall.py's, unchanged.
+- The fits wait for the re-grade. That costs no time: the null's fits and round ten's hold the card until about then.
+- Caps: qdepth step 1's screen caps, 0.26 (share 0.28) on both fits; relqd rel's, 0.26 (0.28) on L-musique and 0.30
+  (0.32) on L-hotpotqa. Reads 0.28 (0.30).
+
+**What the screen can show.**
+- **metaqa in-domain** (both fits train on metaqa): the 3-hop questions are the test. The oracle is a ceiling, not a
+  target.
+- **webqsp, read zero-shot:** whether the prior, from the question and its pool's profile, stops ranking seeds first
+  on a graph no fit trains on.
+- **musique and hotpotqa** (each read zero-shot by one fit and in-domain by the other): whether a depth prior helps
+  or harms the passage graphs, where depth comes from the same WALK columns.
+- **The passage graphs in-domain:** the prior starts at zero, and the loss decides its size. No LOSS is the test.
+
+**The smoke** (`scr11-smoke`, `qdepth.py smoke`) trains step 1's base arm once, qdepth twice (the repeat must be
+IDENTICAL) and relqd once, one epoch each on metaqa's select carve, and reads that carve.
+- qdepth's and relqd's priors must have moved from zero and be finite, and the base arm's fit must hold none.
+- relqd must hold rel's blocks live, and qdepth's blocks must be the base arm's.
+- All three must read the same questions, and qdepth's scores must differ from the base arm's.
+- It runs at once, in the card's free share (0.14). The fits wait on it.
+
+**If the re-call is PROMISING, the full run starts by itself** on the same base (docs/FULL_ROUND11.md, declared with
+this round, before its numbers). Otherwise its items are dropped unrun. The pair and its re-call are filed either way.
+
+**Order and ETAs.**
+- The smoke takes about 5 minutes and starts now.
+- rel's re-grade lands about 06:15 to 06:30, when the null's fits end. The two gate items run at once after it.
+- The screen's items queue after round ten's. Each fit takes about 45 to 60 minutes beside the others, then a read of
+  about 10. The pair and its re-call land about 07:15 to 07:45.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -1123,3 +1182,42 @@ many hops the question asks for), is worth a screen.
   off-depth far less often than the MLP's, a question-to-depth arm is declared as round eleven before its numbers.
   Otherwise the gap is within a depth (which relation chain), and round eleven goes there.
 - `outputs/diag/hopdiag-J5.{md,json}`, about 03:30.
+
+**Filed at about 03:06** (`outputs/diag/hopdiag-J5.{md,json}`; 191 s on the host's CPU). The record's host placement
+is redacted for the public repository, with the original's sha256.
+
+**metaqa, the 3-hop questions** (3,569; a gold in the pool 0.972; the golds by depth 0 to 4: 0.003, 0.075, 0.144,
+0.778, 0.001):
+
+| scorer | hit@1 | oracle hit@1 | R@5 | oracle R@5 | off-depth | off-depth share of misses |
+| --- | --- | --- | --- | --- | --- | --- |
+| step 1's J5 | 0.425 | 0.499 | 0.339 | 0.403 | 0.206 | 0.358 |
+| rel's J5 | 0.576 | 0.659 | 0.451 | 0.495 | 0.161 | 0.380 |
+| twin0 | 0.571 | 0.676 | 0.458 | 0.507 | 0.200 | 0.467 |
+| gnn0 | 0.802 | 0.839 | 0.586 | 0.599 | 0.090 | 0.453 |
+
+- **Both halves of the rule hold, so round eleven is a question-to-depth arm** (section 4, eleventh round).
+  - The oracle lifts the MLPs' 3-hop hit@1 by 0.074 (step 1) and 0.083 (rel). One standard error of a hit@1 over
+    3,569 questions is about 0.008, so each lift is about ten of them.
+  - The GNN's top-1 sits off-depth on 0.090 of the 3-hop questions, the MLPs' on 0.161 and 0.206: about half as often.
+- **A depth prior can close about a third of rel's 3-hop gap to the GNN, at most.** rel's hit@1 is 0.226 below the
+  GNN's, and its oracle is still 0.180 below the GNN's oracle. Most of rel's misses sit at a depth that holds a gold
+  (0.263 of the questions, the GNN's 0.108). Which chain of relations, within a depth, is the larger part of the gap.
+- On the 1-hop and 2-hop questions the oracle adds 0.034 and 0.022 to rel's hit@1 (0.858 to 0.892, 0.897 to 0.919).
+  Over all metaqa questions: rel 0.770 (oracle 0.817), the GNN 0.889 (0.913), step 1 0.634 (0.677).
+
+**webqsp, read zero-shot** (1,503 questions; a gold in the pool 0.921; the golds by depth 0 to 4: 0.066, 0.505, 0.310,
+0.109, 0.010):
+
+| scorer | hit@1 | oracle hit@1 | R@5 | oracle R@5 | off-depth | top-1 a seed |
+| --- | --- | --- | --- | --- | --- | --- |
+| step 1's J5 | 0.055 | 0.121 | 0.117 | 0.246 | 0.802 | 0.945 |
+| rel's J5 | 0.116 | 0.239 | 0.218 | 0.371 | 0.667 | 0.595 |
+| twin0 | 0.563 | 0.642 | 0.602 | 0.647 | 0.242 | 0.150 |
+| gnn0 | 0.637 | 0.695 | 0.629 | 0.671 | 0.214 | 0.170 |
+
+- **The MLPs rank a seed first on most webqsp questions** (0.945 and 0.595 of them), where 0.066 of the golds are
+  seeds. The oracle doubles their hit@1.
+- **This is a failure to transfer, not a KB failure.** On metaqa, a KB graph J5 trains on, the same fits rank a seed
+  first on 0.026 and 0.020 of the questions. The question alone cannot say which graph it is asked on, so round
+  eleven's prior also reads the pool's profile.
