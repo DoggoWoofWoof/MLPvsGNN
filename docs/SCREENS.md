@@ -1252,3 +1252,29 @@ nothing about adoption. It names the direction of round twelve.
     question-relation match from the frozen embeddings, in place of the fixed cosine.
   - Whichever it is gets its own declared round before its numbers, as the same change on all six datasets.
 - `outputs/diag/chaindiag-J5.{md,json}`, about 04:20 to 04:30.
+
+**Filed at about 04:07** (`outputs/diag/chaindiag-J5.{md,json}`; 155 s on the host's CPU). The record's host placement
+is redacted for the public repository, with the original's sha256.
+
+**The reading is MATCH_GAP.** The metaqa 3-hop questions (3,569), on each fit's at-depth misses:
+
+| fit | at-depth misses (share) | same_rel | same_all | columns differing (mean) | qrel_max (column) | gnn0 prefers gold | twin0 prefers gold |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| step 1's J5 | 1,316 (0.369) | 0.000 | 0.000 | 37.8 | 0.697 (relpath_max_h3) | 0.866 | 0.673 |
+| rel's J5 | 938 (0.263) | 0.000 | 0.000 | 37.7 | 0.533 (opath_h3_q3) | 0.743 | 0.338 |
+
+- **It is not an input gap.** The gold and the top-1 never share their relation columns (same_rel 0.000). They differ
+  on about 38 of the 112 columns.
+- **On rel's misses no match column favours the gold.** The best is 0.533. The fixed cosine between the question and
+  the relation names does not tell the right chain from the wrong one there.
+- **The GNN does tell them apart:** it prefers the gold on 0.743 of rel's misses. The twin reads the same 129 columns
+  without message passing and prefers the gold on 0.338. So what separates them is how the GNN uses the relations,
+  not a column the MLP lacks.
+- **On step 1's misses the match columns do favour the gold** (step 1 does not read them): 0.697 on the 3-hop
+  questions, and relchain2_max 0.907 on the 2-hop ones. That is the part rel already recovered: rel's at-depth misses
+  are 0.263 of the 3-hop questions against step 1's 0.369, and 0.071 of the 2-hop ones against 0.235.
+- **webqsp, read zero-shot:** rel's at-depth misses are 0.217 of the questions, step 1's 0.142. Step 1 mostly ranks a
+  seed first (off-depth), and rel moves its top-1 to the right depth but to the wrong node there. The GNN prefers the
+  gold on 0.865 of rel's misses.
+
+So round twelve learns the question-relation match from the frozen embeddings, declared next before its numbers.
