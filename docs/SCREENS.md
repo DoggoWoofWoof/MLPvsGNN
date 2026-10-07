@@ -482,6 +482,67 @@ carve. The fits wait on it.
 **If a pair's re-call is PROMISING, its full run starts by itself** (docs/FULL_ROUND9.md, declared with this round,
 before its numbers). On any other re-call verdict its items are dropped unrun.
 
+### Tenth round (declared 8 October at about 02:35, before any of its numbers)
+
+Code: `outputs/mp_unified/relz.py` (its selftest passes). One arm, relz: ztop50's model (lean_screen4.py) on rel's carve
+and blocks (relcols.py), both used unchanged. As in rounds five to nine, the screen trains two fits, L-musique and
+L-hotpotqa, with rel's screen fits' config, seed and caps.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-relz, scr-relz-hp | relz | **Pool normalisation on top of the relation inputs.** rel's blocks (step 1's nine, then typed_rel, typed_v2 and ordered) under ztop50's forward: every block's within-pool z-score, rel's included, and rrf's base z-score are taken against the pool's top 50 retrieved rows by rrf, not the whole pool. A pool with fewer than two such rows, or a column with no spread over them, keeps the whole-pool z-score. No new column, block or hyperparameter. |
+
+**The base is rel, not step 1.**
+- Each fit is compared with rel's screen fit of its split (`scr-rel`, `scr-rel-hp`), which decides, and with step 1's,
+  reported.
+- relz's model has rel's parameters and widths: ztop50 changes only the forward. With the same seed, its initial
+  weights and batch order are rel's, so a difference comes from ztop50's forward and what training does with it.
+- The pair's verdict is screen_pair.py's rule over the twelve reads. Its re-call is screen_recall.py's under the seed
+  null's floors, with each read's base R@5 rel's screen fit's (`relz.py pair` and `relz.py recall`: both files are
+  used unchanged, only their loaders are swapped). rel's screens were compared with the null's seed 0, and the
+  re-call checks that. The re-call decides.
+
+**Why (8 October; the gap to the published systems).**
+- **ztop50 gave the largest zero-shot gain of any screen:** musique read zero-shot +0.1387 in the L-musique fit
+  (0.270 to 0.408), and musique in-domain +0.0115 in the L-hotpotqa fit.
+  - Under the seed null its only LOSSes left are metaqa in-domain, in both fits: −0.0176, and −0.0252 against a floor
+    of 0.0149.
+  - Its hotpotqa and webqsp zero-shot LOSSes in the L-hotpotqa fit are within their floors.
+- **The reading filed then:** a reference of fixed size takes the pool's size out of the z-scores. metaqa, the only
+  training dataset with big pools, lost what its fit had learned from them.
+- **rel gives metaqa's rows a signal of their own,** the question-relation match (hit@1 0.637 to 0.781). If metaqa's
+  loss under ztop50 came from losing the one cue that set its rows apart, rel's columns now carry another, and the
+  two may add.
+- **They may also overlap.** rel's musique zero-shot gain (+0.0868) and ztop50's (+0.1387) may be one effect: metaqa's
+  big pools no longer pulling the weights the passage graphs share. Then relz adds little on musique over rel, and
+  the screen shows that.
+- **This departs from the note filed at 21:22 on 7 October** (no further screen of how a pool's z-scores are taken).
+  That trade, metaqa against musique, was measured on a model with no KB signal. One pair tests whether rel removes
+  it.
+
+**What the screen can show.**
+- **metaqa in-domain:** whether rel's columns hold metaqa when ztop50 takes the pool's size away. Against rel, no
+  LOSS is the test.
+- **musique,** read zero-shot (L-musique) and in-domain (L-hotpotqa): whether ztop50's gain survives on rel's base.
+- **webqsp read zero-shot:** rel's relation channel under the new normalisation.
+- **The passage graphs in-domain:** ztop50 left them WITHIN on step 1's base.
+
+**The smoke** (`scr10-smoke`, `relz.py smoke`) trains rel and relz for one epoch on metaqa's select carve, relz twice
+(the repeat must be IDENTICAL), and reads that carve. relz's fit must hold rel's blocks live, with the same blocks as
+rel's fit, the same questions, and scores that differ from rel's. The fits wait on it.
+
+**If the re-call is PROMISING and rel's full run is ADOPTED under its re-grade, relz's full run starts by itself**
+(docs/FULL_ROUND10.md, declared with this round, before its numbers). Otherwise its items are dropped unrun. The pair
+and its re-call are filed either way.
+
+**Order and ETAs.**
+- The smoke and the two fits go ahead of gsurg's `-rc` fits not yet started, so the screen's verdict comes before
+  that full run's.
+- rel's L-squad and J5 fits end about 02:45 to 03:00, and its L-metaqa fit runs next.
+- The smoke takes about 5 minutes. Each fit takes about 45 to 60 minutes beside the others (ztop50's L-musique fit
+  took 43 alone), then a read of about 10.
+- The pair and its re-call land about 04:15 to 05:00.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
