@@ -1221,3 +1221,34 @@ is redacted for the public repository, with the original's sha256.
 - **This is a failure to transfer, not a KB failure.** On metaqa, a KB graph J5 trains on, the same fits rank a seed
   first on 0.026 and 0.020 of the questions. The question alone cannot say which graph it is asked on, so round
   eleven's prior also reads the pool's profile.
+
+### Within the depth that holds a gold: what tells the gold from the top-1 (a diagnosis, declared 8 October about 04:05, before its numbers)
+
+`outputs/mp_unified/chaindiag.py` (its selftest passes), on the host's CPU. There is no training, and it decides
+nothing about adoption. It names the direction of round twelve.
+- **Why:** most of rel's metaqa 3-hop misses sit at a depth that holds a gold: 0.263 of the questions, against the
+  GNN's 0.108. Round eleven's depth prior cannot reach these. So the question is whether the MLP's inputs can tell the
+  gold from its wrong top-1 at that depth, or whether they can and the fit does not.
+- **What it reads:** step 1's J5 fit and rel's J5 fit (p@swa), with the look's twin0 and gnn0 scores, on metaqa and
+  webqsp s1eval.
+  - An **at-depth miss**: the top-1 is not gold, and it sits at a depth that holds a gold.
+  - g is the gold at that depth that the fit scores highest.
+- **What it measures**, over all questions and by metaqa's hop label:
+  - **same_rel:** the share of misses where g and the top-1 are equal on rel's 26 relation columns. same_own and
+    same_all are the same over the fit's own columns except SEMB, and over all 112 (step 1's eight blocks and rel's
+    three).
+  - **favours_gold:** per column, the share of misses where g's value is above the top-1's (ties count half).
+  - **qrel_max:** the largest favours_gold over the twelve question-relation match columns.
+  - **gnn0 and twin0 prefer the gold:** the share of misses where the look's GNN (or twin) scores g above the top-1.
+- **A caution on favours_gold:** it is read on the fit's own errors, so selection bends it. A column the fit scores
+  higher tends to sit higher on the top-1 the fit chose. A better match should score higher, so for the match columns
+  the bias works against the gold. That makes qrel_max >= 0.65 a conservative sign.
+- **How it is read** (rel's J5 fit, metaqa s1eval, the 3-hop questions; the script applies the rule):
+  - **INPUT_GAP** if same_rel >= 0.5. On at least half the misses the relation columns are identical. Round twelve
+    adds columns from the existing graph that tell relation chains apart.
+  - **TRAINING_GAP** otherwise, if qrel_max >= 0.65. A match column favours the gold against the selection. Round
+    twelve is an objective: a contrast between each gold and the rows at its own depth, on every dataset.
+  - **MATCH_GAP** otherwise. The relation columns differ, but no match favours the gold. Round twelve learns the
+    question-relation match from the frozen embeddings, in place of the fixed cosine.
+  - Whichever it is gets its own declared round before its numbers, as the same change on all six datasets.
+- `outputs/diag/chaindiag-J5.{md,json}`, about 04:20 to 04:30.
