@@ -137,4 +137,12 @@ The stage runs in three parts:
 - `choose`: section 4's rule;
 - `file`: the chosen arm's pools for all 21 carves, in step 4d's layout.
 
+*Amended 8 October about 22:40, before the choice and before any webqsp coverage number (musique's and hotpotqa's
+coverage lines had printed):* the user (22:38): "not all 5, all 6".
+- **The choice reads all six datasets.** Section 4's means are over six carves: the five s1sel carves and webqsp's
+  s1eval carve. webqsp has no select carve: it never trains, and step 1 carves only its eval questions.
+- **What that costs.** webqsp's pool coverage is then in-sample for the choice. The choice is one of 20 settings (four
+  arms, five k), made on gold coverage alone. Its model reads stay zero-shot: no model trains on webqsp.
+- The rest of section 4 is unchanged, including the stop when a chosen pool falls below U_q on any s1eval carve.
+
 ## Results

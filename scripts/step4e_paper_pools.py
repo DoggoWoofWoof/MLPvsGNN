@@ -444,9 +444,9 @@ def coverage_stage(names, threads):
 
 
 def choose(cov):
-    """Section 4: the arm by mean s1sel ALL at k = 1 (a lower-numbered arm within ARM_TIE wins), then the smallest k
+    """Section 4, as amended: the arm by mean ALL over the five s1sel carves and webqsp's s1eval at k = 1 (a lower-numbered arm within ARM_TIE wins), then the smallest k
     within K_TOL of k = 3's mean, one k for every dataset."""
-    sel = [f"{n}__s1sel" for n in TRAIN5]
+    sel = [f"{n}__s1sel" for n in TRAIN5] + ["webqsp__s1eval"]     # all six (amended before the choice)
     missing = [c for c in sel if c not in cov["carves"]]
     if missing:
         raise SystemExit(f"coverage is missing {missing}")
