@@ -2178,3 +2178,68 @@ the reads that are not WITHIN are shown; P marks a primary read. The other 26 re
 - **It runs only if zrm's re-grade is ADOPT.** Otherwise zrs is the base.
 - Both arms' reads against zret's fits are already known on five of six splits, so this is not blind. The rule is the
   one every round uses, unchanged.
+
+### zrcd: PROMISING, and every read but webqsp's is zrm's bit for bit (09:45; decides nothing about any arm). Round eighteen is declared next
+
+Records: `outputs/diag/zrcd-L-musique.md` and `zrcd-L-hotpotqa.md` with their `-same.md`, `zrcd-pair.md`,
+`zrcd-pair-recall.md` and `zrcd-count-metaqa-fit.md`. The table gives R@5 of zrm's screen fits read with zrc's
+entries, against the same fits read with rmatch's.
+
+| split | read | zrm | zrcd | delta R@5 [95% CI] | floor | call | delta hit@1 |
+| --- | --- | ---: | ---: | --- | ---: | --- | ---: |
+| L-musique | webqsp zs | 0.3128 | 0.3342 | +0.0215 [+0.0074, +0.0358] | 0.0102 | GAIN | −0.0459 |
+| L-hotpotqa | webqsp zs | 0.2416 | 0.2860 | +0.0444 [+0.0313, +0.0577] | 0.0233 | GAIN | −0.0053 |
+
+- **The re-call is PROMISING.** webqsp read zero-shot GAINs in both fits. The other ten reads are +0.0000.
+- **Every read of squad, musique, hotpotqa, 2wiki and metaqa is zrm's bit for bit** (the `-same` files: IDENTICAL).
+  Only webqsp's reads differ: the golds in the top five change for 312 and 263 of its 1,503 questions.
+- **On webqsp, R@5 rises but hit@1 falls in both fits,** by 0.046 in L-musique's fit and 0.005 in L-hotpotqa's. The
+  screens decide on R@5. The hit@1 drop is reported beside it, and round eighteen reports it too.
+- **The count.** On metaqa's fit carve, the two builds keep a different set in 2 of 5,960 questions, in one row each.
+  Each swaps one entry, so 2 of 45,883,297 entries differ, and their walk mass rounds to 0.0000.
+- **The declared rule holds on both counts:** the re-call is PROMISING, and every untyped read is IDENTICAL. So round
+  eighteen is declared next, in its own file, before its numbers. It trains zrc on its own entries, with two screen
+  fits decided against zrm's.
+
+### zrm's full run, re-graded under the null over every split: ADOPT (09:51). Three primary GAINs and no LOSS
+
+`outputs/full_zrm/grade-nullx.md` (filed ADOPT in `grade.md`). R@5 of zrm minus zret's fit of the same split. Only
+the reads that are not WITHIN are shown; P marks a primary read.
+
+| split | dataset | read | zret | zrm | delta | floor | filed → re-call |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| J5 | metaqa | in-domain (P) | 0.6431 | 0.7788 | +0.1357 | 0.0154 | GAIN → GAIN |
+| J5 | webqsp | zero-shot (P) | 0.1417 | 0.2558 | +0.1140 | 0.0295 | GAIN → GAIN |
+| L-squad | metaqa | in-domain | 0.6472 | 0.7792 | +0.1321 | 0.0075 | GAIN → GAIN |
+| L-squad | webqsp | zero-shot | 0.1469 | 0.2505 | +0.1036 | 0.0260 | GAIN → GAIN |
+| L-musique | metaqa | in-domain | 0.6496 | 0.7789 | +0.1293 | 0.0075 | GAIN → GAIN |
+| L-musique | musique | zero-shot (P) | 0.3897 | 0.5231 | +0.1334 | 0.0720 | GAIN → GAIN |
+| L-musique | webqsp | zero-shot | 0.1766 | 0.3128 | +0.1361 | 0.0102 | GAIN → GAIN |
+| L-hotpotqa | metaqa | in-domain | 0.6419 | 0.7801 | +0.1381 | 0.0149 | GAIN → GAIN |
+| L-hotpotqa | webqsp | zero-shot | 0.1195 | 0.2416 | +0.1221 | 0.0233 | GAIN → GAIN |
+| L-2wiki | metaqa | in-domain | 0.6464 | 0.7794 | +0.1330 | 0.0075 | GAIN → GAIN |
+| L-2wiki | webqsp | zero-shot | 0.1338 | 0.2644 | +0.1306 | 0.0473 | GAIN → GAIN |
+
+- **Three primary GAINs and no LOSS among the 36 reads, so zrm is ADOPTED:**
+  - J5's metaqa in-domain: +0.1357 R@5, +0.2694 hit@1.
+  - J5's webqsp read zero-shot: +0.1140 R@5, +0.0699 hit@1.
+  - musique read zero-shot in L-musique's fit: +0.1334 R@5, +0.2305 hit@1.
+
+  No call changed under the null.
+- **zrm gains more than zrs on the typed graphs, in every fit that trains metaqa.**
+
+  | read | zrm | zrs |
+  | --- | --- | --- |
+  | metaqa in-domain | +0.129 to +0.138 | +0.114 to +0.122 |
+  | webqsp read zero-shot | +0.104 to +0.136 | +0.077 to +0.091 |
+- **The untyped reads move, but only within their floors.** The model's own weights train beside the match. The
+  largest moves, all within 0.0075:
+  - squad read zero-shot in L-squad's fit, +0.0051;
+  - 2wiki in L-hotpotqa's fit, −0.0047;
+  - 2wiki in J5's, +0.0046.
+
+  2wiki read zero-shot in L-2wiki's fit was rmatch's LOSS on step 1's base. Here it is −0.0020 (floor 0.0112).
+- **L-metaqa's fit is zret's bit for bit** on all six reads, since it trains no typed graph.
+- **What follows.** Both zrm and zrs are ADOPTED, so docs/BASE_ZRM_ZRS.md runs: zrm's fits against zrs's, read by read.
+  It was declared at 09:50, before this grade. Its gate passes on these two re-grades, and its verdict lands about
+  10:15 to 10:30.
