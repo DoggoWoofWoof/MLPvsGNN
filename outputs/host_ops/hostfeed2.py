@@ -1158,6 +1158,9 @@ def main(argv=None):
             free_g = min(free_g, 0.0)          # no GPU item starts while the card spills
         hold_gq = spill or mine_over_g > 0     # rx starts a queued job on shares alone: none is queued ahead then
         hold_gq = hold_gq or ov["unres_g"] > 0  # nor while rx has lost the reservations of GPU jobs still running
+        # nor while other projects' jobs hold more of the card than their shares (8 Oct 18:10: with others ~13 GiB over,
+        # two reads queued with 0.185 of the card free started on shares and the card spilled again within a minute)
+        hold_gq = hold_gq or over_g - mine_over_g > 0.05
         mpr_c, mpr_m, mpr_g = ov["mpr_c"] + ov["q_c"], ov["mpr_m"] + ov["q_m"] - hand, ov["mpr_g"] + ov["q_g"]
         n_q = len(ov["queued_mpr_gpu"])
         if n_q:   # their CPUs and memory are set aside for them ahead of anything sent now (less what they take over)
