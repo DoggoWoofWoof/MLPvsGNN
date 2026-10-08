@@ -2651,3 +2651,25 @@ Code: `outputs/mp_unified/zlink.py` (its selftest passes).
 - **Speed.** Per question, one sort of its pool's scores and one pass over its pool's edges, after zrm's forward. Any
   latency figure for zlk is cold (8216ffe): each question timed from scratch, with the walk, the move of its entries
   and edges to the device and the forward, no warm-up pass and nothing kept from an earlier question.
+
+### scr-zrk (L-musique): NO_GAIN. scr-zrk-hp (L-hotpotqa): NO_GAIN. The pair and its re-call are NO_GAIN (19:39), so zrk is dropped
+
+`outputs/screen/scr-zrk.md` and `scr-zrk-hp.md`, `scr-zrk-pair.md` and `scr-zrk-pair-recall.md`. R@5 of zrk (zrm with a
+smooth recall at five added to listwiseD, the twentieth round) minus zrm's screen fit of the same split, called with
+the null's floors. Every read is WITHIN. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | −0.0003 | +0.0002 | +0.0007 zs | +0.0005 | +0.0015 | +0.0069 zs (floor 0.0102) |
+| L-hotpotqa | +0.0006 | +0.0014 | +0.0003 | −0.0041 zs (floor 0.0200) | +0.0004 | +0.0016 zs |
+
+- **The objective moves nothing.** Eleven of the twelve reads move by 0.0041 R@5 or less. The largest move is webqsp
+  read zero-shot in L-musique's fit, +0.0069 (0.313 to 0.320), under its floor of 0.0102; its hit@1 falls −0.0153.
+- **FC@5 does not move either**, though the loss was aimed at the questions found only in part: 2wiki +0.0042 and
+  +0.0024, musique −0.0033 zs and −0.0054. hotpotqa read zero-shot in L-hotpotqa's fit falls −0.0108 FC@5
+  (−0.0041 R@5).
+- **What this says.** Re-weighting the gradient toward the golds outside the top five changes no ranking that zrm's
+  listwise loss had not already set. With D2 (FEATURE_LIMIT), the missing R@5 is not in how zrm is trained on its
+  inputs but in the inputs.
+- **What follows.** `frk-gate` exits 1, so the feeder drops round twenty's full run (docs/FULL_ROUND20.md): its four
+  fits, reads, comparisons and grades never run.

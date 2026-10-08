@@ -107,3 +107,6 @@ early.
   forward included, no warm-up pass, and nothing kept from an earlier question.
 
 ## Results
+
+- **The screen's re-call: NO_GAIN (19:39; docs/SCREENS.md).** No GAIN and no LOSS among the twelve reads; every read
+  moves by 0.0069 R@5 or less. `frk-gate` exits 1, and this full run does not run.
