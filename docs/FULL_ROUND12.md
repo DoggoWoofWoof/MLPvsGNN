@@ -89,5 +89,10 @@ early.
   typed edges, and the relation embeddings are the frozen encoder's, already on disk.
 - No new graph, text, encoder or model. The encoder and the substrate embeddings stay frozen.
 - webqsp never trains. Test splits are never read.
+- No speed figure rests on chains built ahead of time. The run's chains are prebuilt only to save the card's time. Any
+  latency figure for this arm is cold: each question's walk from its own pool, the move of its entries to the device
+  and the forward, with no warm-up pass and nothing kept from an earlier question (docs/SCREENS.md, twelfth round:
+  about 0.02 seconds a question on metaqa and 0.3 on webqsp for the walk alone, on the laptop). Its latency stage is
+  declared in its own file.
 
 ## Results

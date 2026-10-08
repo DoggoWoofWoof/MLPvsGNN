@@ -682,6 +682,20 @@ pool sizes are checked against step 1's. No other carve has typed relations.
 - **The passage graphs:** they have no typed chains, so there the arm differs from its base only through training on
   metaqa's batches beside theirs. No LOSS is the test.
 
+**Speed is timed cold (the user's rule, 8 October).** The chains are a query-local compile: a new question's chains
+must be walked from its own pool when it arrives. The screen builds them ahead of time only to save the card's time,
+and no speed figure may rest on that.
+- Any latency figure for this arm times each question from scratch, with no warm-up pass and nothing kept from an
+  earlier question: the typed walk from the pool's arrays (the typed graph, the walk, the seed drop and the row cap),
+  the move of its entries to the device, and the forward. It goes in the cost table's split: graph index,
+  query-local compile, forward.
+- The relation-name tables are built once per graph. They are index cost, on their own row.
+- **Measured already** (the laptop, unpinned, one process, on the local look chunks): the walk takes about 0.02
+  seconds a question on metaqa and 0.3 on webqsp, cold. On webqsp that is about twice the GNN's single-query forward
+  p50 there (about 0.155 seconds, docs/UNIVERSAL_GNN_SIX.md; another thread setting). On a graph with webqsp's
+  relation fan-out the arm may cost the MLP its speed lead. An adoption is reported with that cost, and its latency
+  stage is declared in its own file.
+
 **The smoke** (`scr12-smoke`, `rmatch.py smoke`).
 - It first checks the carves on metaqa select, webqsp s1eval and 2wiki select. The base's matrix, golds and rows must
   be unchanged, and typed carves must hold entries. On their first questions the arm at its start must score as its
