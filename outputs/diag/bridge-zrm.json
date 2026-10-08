@@ -1,0 +1,67 @@
+{
+ "free_rules": [],
+ "label_free_pays": {
+  "scr-zrm": {
+   "C1": {
+    "2wiki": false,
+    "musique": false
+   },
+   "C2": {
+    "2wiki": false,
+    "musique": false
+   }
+  },
+  "scr-zrm-hp": {
+   "C1": {
+    "2wiki": false,
+    "musique": false
+   },
+   "C2": {
+    "2wiki": false,
+    "musique": false
+   }
+  }
+ },
+ "oracle_pays": {
+  "scr-zrm": {
+   "2wiki": false,
+   "musique": false
+  },
+  "scr-zrm-hp": {
+   "2wiki": false,
+   "musique": false
+  }
+ },
+ "reachable": {
+  "scr-zrm": {
+   "2wiki": true,
+   "musique": false
+  },
+  "scr-zrm-hp": {
+   "2wiki": true,
+   "musique": false
+  }
+ },
+ "rule": {
+  "adj_min": 0.5,
+  "free_harm": 0.0075,
+  "free_min": 0.0075,
+  "lift_min": 2.0,
+  "multi": [
+   "musique",
+   "2wiki"
+  ],
+  "oracle_min": 0.02
+ },
+ "runs": {
+  "scr-zrm": {
+   "identity": "PASS",
+   "models_sha256": "9d2e42e5cd80b8e014136486916678262f506ac1e0e3ea79f94f69c74f2cf67c"
+  },
+  "scr-zrm-hp": {
+   "identity": "PASS",
+   "models_sha256": "ba9d529d53e96438a9663d00be3367b9f51b4fd5fb29589ffb9eed7f11918176"
+  }
+ },
+ "verdict": "REACHABLE_NOT_RANKED"
+}

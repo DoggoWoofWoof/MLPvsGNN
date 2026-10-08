@@ -102,3 +102,34 @@ Records go to `outputs/diag/bridge-*` and `gbm-*`, with host paths cut before co
 (`outputs/diag/bridge-work`, `gbm-work`) are never committed.
 
 Any latency figure is cold. These diagnostics time nothing.
+
+## D1's result: REACHABLE_NOT_RANKED (filed about 14:15)
+
+`outputs/diag/bridge-scr-zrm.md`, `bridge-scr-zrm-hp.md` and `bridge-zrm.json`. All twelve reads reproduce zrm's filed
+R@5 exactly. The changes in R@5 are against zrm. Each pair gives L-musique's fit, then L-hotpotqa's.
+
+| read | adj | lift | 2-hop | missed gold ranked 1st or 2nd among found golds' neighbours | C1 | O1 | O2 (reach bound) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| musique | 0.378, 0.375 | 14.7, 13.9 | 0.77 | 0.22, 0.28 | −0.010, −0.011 | −0.014, −0.016 | +0.125, +0.116 |
+| 2wiki | 0.773, 0.778 | 6.1, 6.1 | 0.81 | 0.71, 0.69 | −0.020, −0.017 | −0.012, −0.010 | +0.061, +0.063 |
+| hotpotqa | 0.931, 0.920 | 6.3, 7.0 | 0.93 | 0.61, 0.57 | −0.006, +0.011 | +0.006, +0.017 | +0.048, +0.098 |
+| metaqa | 0.075, 0.075 | 1.4, 1.5 | 0.51 | 0.45 | −0.063, −0.062 | −0.064, −0.065 | +0.003, +0.002 |
+| webqsp | 0.175, 0.164 | 6.1, 6.3 | 0.98 | 0.22 | −0.016, −0.002 | −0.055, −0.043 | +0.022, +0.019 |
+
+- **The bridge exists on the passage graphs.**
+  - On 2wiki and hotpotqa, 0.77 to 0.93 of the golds zrm misses in partly-found questions sit next to a found gold,
+    mostly by structural edges. That is about 6 to 7 times the rate of non-gold rows.
+  - On musique, 0.38 are next to a found gold, mostly by NER edges, and 0.77 within two hops. The lift is about 14,
+    because few non-gold rows are next to a found gold.
+  - The reach bound O2 is +0.06 R@5 on 2wiki, +0.05 to +0.10 on hotpotqa and +0.12 on musique.
+- **Fixed re-ranks do not use it.**
+  - Even anchored on a known gold (O1), filling ranks 4 and 5 with the anchor's best-scored neighbours loses R@5 on
+    musique and 2wiki. Those ranks often already hold golds, and zrm's score does not single the missed gold out
+    among the anchor's neighbours on musique (median rank 5 to 9 of about 45).
+  - On 2wiki and hotpotqa the missed gold is first or second among them 0.57 to 0.71 of the time. A hard swap still
+    costs more than it gains.
+- **The KB answer sets are not chains.** On metaqa only 0.075 of missed golds sit next to a found one, with a lift of
+  1.4. Conditioning on a found answer does not apply there.
+- **What follows (by the rule).** This verdict is reported and weighed with D2. The signal a next screen would use is a
+  soft one: a row's link to the rows zrm ranks highly, as a learned input or objective term inside the scorer, not a
+  hard swap. It is weighed with D2's verdict before any screen is declared.
