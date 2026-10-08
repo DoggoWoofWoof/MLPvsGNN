@@ -771,6 +771,66 @@ IDENTICAL), one epoch each on 2wiki's and hotpotqa's select carves. Each is read
   a minute before rmatch's gate passed. rmatch's full run, first in the list, then waited behind them. The two fits
   were re-queued under `-b` names behind rmatch's fits, with every item after them (the same commands, outputs and
   gates), and the two running fits were cancelled. A fit writes nothing until it ends. No rule changes.
+- **Moved again at about 07:05, before any of its numbers.** Round fourteen's smoke and screen go ahead of zgs's two
+  fits in the list, behind rmatch's full run (fourteenth round, 'Caps and order'). zgs's fits had not started. No rule
+  changes.
+
+### Fourteenth round (declared 8 October at about 07:05, before any of its numbers)
+
+Code: `outputs/mp_unified/zrm.py` (its selftest passes). One arm, rmatch's match on zret's base, decided against zret's
+fits. The screen trains two fits, L-musique and L-hotpotqa.
+
+**Why this arm.** rmatch's screen and its re-call are PROMISING against step 1's fits (06:40), with the largest gains on
+the typed graphs of any arm so far, and its full run is on the card. zret is ADOPTED, and it is the base of every later
+screen and run unless zgs is ADOPTED (thirteenth round). The two change different parts of the score: zret how each
+block is normalised, rmatch a learned match along the graph's typed relation chains. So the question is whether the
+match adds to zret's base as it adds to step 1's.
+- **zret's fits** are the thirteenth round's: its screen fit on L-musique, its full run's fits on every other split.
+- **rmatch's fits** are reported beside them: its screen fits (`scr-rmatch`, `scr-rmatch-hp`) and its full run's
+  (`outputs/full_rmatch/fits/<split>`).
+- **rmatch's own grade does not gate this round.** zrm's full run faces the same test against zret's fits, over every
+  split, that rmatch's faces against step 1's.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-zrm, scr-zrm-hp | zrm | **rmatch's match added to zret's model.** zret's forward (every block's within-pool z-score, and rrf's base z-score, taken against the pool's retrieved rows), plus rmatch's learned match of the question to each hop of the typed relation chains that reach a row from the question's seeds. The match's gates start at zero, so the arm starts as zret's model bit for bit. Both parts are used unchanged, on rmatch's chains as built for the twelfth round: no new column, block or hyperparameter. On the untyped graphs (squad, musique, hotpotqa, 2wiki) it is zret's model. |
+
+**How it is decided.**
+- Each fit is compared with zret's fit of its split, which decides. rmatch's fit and step 1's are reported beside it.
+  The reads are the six s1eval carves at p@swa.
+- The pair and its re-call under the seed null are relz.py's, run under zrm's name, with zret's R@5 as each read's
+  base and the null's floors, as in the thirteenth round.
+- **If the re-call is PROMISING, the full run starts by itself** (docs/FULL_ROUND14.md, declared with this round). Its
+  four fits are graded against zret's fits and re-graded under the null over every split.
+  - ADOPT makes zrm the base of every later screen and run.
+  - If zgs is ADOPTED too, each re-grade is filed and the next base is declared in a later round, before its numbers.
+  - On any other result zret stays the base (or zgs, if it is ADOPTED), and the match is not carried.
+
+**What the screen can show.** rmatch's GAINs were on the typed graphs (metaqa in-domain, webqsp read zero-shot) and on
+musique read zero-shot in L-musique's fit. zret's model has no relation match, so a GAIN on the typed graphs with no
+LOSS means the match adds on zret's base. musique read zero-shot is the read zret already moves (+0.1202 against step
+1's fit). If zrm moves it little against zret's fit, rmatch's move there was work zret already does.
+
+**The smoke** (`scr14-smoke`, `zrm.py smoke`):
+- The carve check on metaqa select, webqsp s1eval and 2wiki select: on the first questions, zrm at its start scores as
+  zret's model bit for bit, with finite chain features on the typed graphs.
+- Then zret once, rmatch once and zrm twice (the repeat must be IDENTICAL), one epoch each on metaqa's and 2wiki's
+  select carves. Each is read on both.
+- zrm's match must move from zero and stay finite, and zret's fit must hold none.
+- zrm's scores must differ from zret's on metaqa (the same initialisation and batches, so the difference is the match)
+  and from rmatch's on 2wiki (the same match, so the difference is zret's forward).
+- It runs as soon as 0.16 of the card is free (cap 0.14). The fits wait on it.
+
+**Speed.** The chains are a query-local compile, as for rmatch (8216ffe; twelfth round, 'Speed is timed cold'). Any
+latency figure for zrm is cold.
+
+**Caps and order.**
+- rmatch's caps: 0.26 (share 0.28) for both fits, reads 0.30 (0.32).
+- **The items go ahead of round thirteen's two fits in the feeder's list, behind rmatch's full run.** rmatch's screen
+  fits took about 15 minutes each, and zgs's take about 1.5 to 2 hours. Going first, the short screen returns its
+  verdict about two hours sooner, and it holds zgs's fits back by at most its own length. No rule changes.
+- **ETAs:** rmatch's full run holds the card until about 07:30 to 08:00, and its reads come first. Then the smoke, and
+  the two fits and their reads take about 30 to 45 minutes. The pair and its re-call land about 08:15 to 09:00.
 
 ## 5. ETAs (7 October)
 
