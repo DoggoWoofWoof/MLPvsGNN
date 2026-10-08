@@ -118,4 +118,23 @@ The pools stage runs on the laptop (numba). The miss diagnostic, which measures 
 seeds and its retrieval rank, runs beside it as context only; it decides nothing here. The looks queue on the host's
 CPU behind rounds twenty-four and twenty-five's CPU items.
 
+*Amended 8 October about 22:25, before any number of the step (three points the code met):*
+1. **The walk's length.** k = 3 needs up to 3 × B_q nodes past U_q, more than 2,000 on metaqa, musique and webqsp. Each
+   arm's walk keeps the first 3 × B_q nodes outside U_q, not 2,000.
+2. **squad's budget.** squad's B_q is 0: its pool is its base. On squad, B_q is read as |I_q| (50), so k × 50 rows of
+   the equal-RRF lists past its pool.
+3. **Linking reads the plain question.** MetaQA's question text marks its topic entity in brackets, and the records
+   carry topic-entity fields. Linking reads the question with brackets removed (`question_plain` where the record
+   has it) and never reads a topic-entity, context or gold field.
+4. **A title's qualifier.** Wikipedia-style titles carry a qualifier in parentheses ("Gasera (woreda)"). Each name is
+   indexed twice: as written, and with a trailing parenthetical removed. A KB name's surrounding whitespace is
+   stripped. The ambiguity guard (more than 50 nodes) counts both forms.
+5. **The RRF weight.** A row's restart weight is 1/(c + its dense rank) + 1/(c + its SPLADE rank) over the two top-1000
+   lists, with c = `retrieval_pools.equal_rrf.constant`. A list the row is absent from adds 0.
+
+The stage runs in three parts:
+- `coverage`: every arm and budget on the five s1sel carves and the six s1eval carves;
+- `choose`: section 4's rule;
+- `file`: the chosen arm's pools for all 21 carves, in step 4d's layout.
+
 ## Results
