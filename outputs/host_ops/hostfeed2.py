@@ -883,8 +883,8 @@ def main(argv=None):
     ap.add_argument("--lost-grace", type=float, default=1800.0,
                     help="s: a job rx calls lost with a heartbeat this young still runs and holds its request")
     ap.add_argument("--shed-polls", type=int, default=5,
-                    help="polls of spill in a row, with mpr's running GPU shares above the card, before the feeder "
-                         "cancels mpr's newest GPU run and puts its item back (0: never)")
+                    help="polls of spill in a row, with mpr's running GPU shares above the card or more than one mpr GPU "
+                         "run, before the feeder cancels mpr's newest GPU run and puts its item back (0: never)")
     ap.add_argument("--spill-gb", type=float, default=1.0,
                     help="GPU shared memory this far above its lowest reading is a spill (GiB; 2.0 before 7 Oct 08:40)")
     ap.add_argument("--vram-slack", type=float, default=0.0,
@@ -1066,8 +1066,10 @@ def main(argv=None):
         dyn["spill_polls"] = dyn["spill_polls"] + 1 if spill else 0
         own_run = [x for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
         own_g = sum(float(x["req"].get("gpus") or 0) for x in own_run)
-        if (a.shed_polls > 0 and dyn["spill_polls"] >= a.shed_polls and own_g > ov["gpus_total"] + 1e-9
-                and not a.dry):
+        # 8 Oct 18:10: others' jobs held ~13 GiB beyond their shares while mpr's three runs (0.92) spilled 7.5 GB for
+        # 2.5 h (a read's first carve took 5381 s, not 7): with more than one run of ours, the spill sheds one too
+        if (a.shed_polls > 0 and dyn["spill_polls"] >= a.shed_polls
+                and (own_g > ov["gpus_total"] + 1e-9 or len(own_run) > 1) and not a.dry):
             def started(x):
                 return float((ov["by_id"].get(x["id"]) or {}).get("started") or 0)
             vic = max(own_run, key=started)
@@ -1080,8 +1082,8 @@ def main(argv=None):
                 st["terminal"].pop(vic["id"], None)
                 dyn["spill_polls"] = 0
                 save()
-                log(f"SHED {vic['id']} ({', '.join(names) or 'no item'}): the card spills and mpr's running GPU shares "
-                    f"are {own_g:g} of {ov['gpus_total']}; its item goes back unsent")
+                log(f"SHED {vic['id']} ({', '.join(names) or 'no item'}): the card spills and mpr runs {len(own_run)} GPU "
+                    f"job(s), shares {own_g:g} of {ov['gpus_total']}; its item goes back unsent")
             except Exception as e:  # noqa: BLE001
                 log("shed failed:", repr(e)[:200])
         M = measure(ov["jobs"], by)
