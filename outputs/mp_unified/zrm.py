@@ -164,6 +164,11 @@ def carve_check(ds, carve, device):
     """One carve through rmatch's chain carve: on its first questions zrm at its start scores as zret's model bit for
     bit (the same seed), with finite chain features on a typed graph. Whether zret's forward differs from lean_gpu's
     there is recorded (equal only when every row of those pools is retrieved)."""
+    # 8 Oct fix (07:20): the forwards run under train's and read's flags (lean_gpu.set_flags: deterministic algorithms,
+    # TF32 off). zret's z-scores against the retrieved rows sum with index_add_, which on the card is not deterministic
+    # without them: two forwards of one model differed, and the first smoke (07:06) failed its identity on every
+    # carve, 2wiki's untyped one included. zret's own repeat is now recorded and required.
+    LG.set_flags(device)
     LG.bind_device_ops()
     b = RM.ChainCarveBase(ds, carve, "2wiki", device)
     rec = {"typed": b.chains is not None}
@@ -179,6 +184,7 @@ def carve_check(ds, carve, device):
         nets[k] = cls(blocks, widths, 32, seed=0).to(b.device).eval()
     with torch.no_grad():
         s = {k: m(feats, keep, nq, qs.size, base_z) for k, m in nets.items()}
+        rec["zret_repeat_equal"] = bool(torch.equal(nets[BASE_ARM](feats, keep, nq, qs.size, base_z), s[BASE_ARM]))
         rec["identity_at_start"] = bool(torch.equal(s[ARM], s[BASE_ARM]))
         rec["zret_differs_from_lean_gpu"] = bool(not torch.equal(s[BASE_ARM], s["base"]))
         rec["retrieved_share_first_questions"] = round(float(S3.retrieved(feats).mean()), 4)
@@ -187,7 +193,7 @@ def carve_check(ds, carve, device):
             rec["entries_first_questions"] = int(feats[RM.CH_KEY]["eq"].size)
             rec["features_finite"] = bool(torch.isfinite(fm).all() and torch.isfinite(fr).all())
             ok = ok and rec["features_finite"] and rec["entries_first_questions"] > 0
-    ok = ok and rec["identity_at_start"]
+    ok = ok and rec["zret_repeat_equal"] and rec["identity_at_start"]
     del b, nets
     if str(device).startswith("cuda"):
         torch.cuda.empty_cache()

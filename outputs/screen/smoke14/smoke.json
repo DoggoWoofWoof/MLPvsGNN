@@ -1,0 +1,144 @@
+{
+ "carves": {
+  "metaqa=select": {
+   "typed": true,
+   "identity_at_start": false,
+   "zret_differs_from_lean_gpu": true,
+   "retrieved_share_first_questions": 0.0891,
+   "entries_first_questions": 122655,
+   "features_finite": true
+  },
+  "webqsp=s1eval": {
+   "typed": true,
+   "identity_at_start": false,
+   "zret_differs_from_lean_gpu": true,
+   "retrieved_share_first_questions": 0.1476,
+   "entries_first_questions": 1462842,
+   "features_finite": true
+  },
+  "2wiki=select": {
+   "typed": false,
+   "identity_at_start": false,
+   "zret_differs_from_lean_gpu": true,
+   "retrieved_share_first_questions": 0.5499
+  }
+ },
+ "zret": {
+  "train_rc": 0,
+  "repeats": 1,
+  "read_rc": 0,
+  "screen_arm": "zret",
+  "blocks": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF"
+  ],
+  "head_norms": {
+   "p@ep0": null,
+   "p@swa": null
+  },
+  "peak_gpu_gb": 1.215237632
+ },
+ "rmatch": {
+  "train_rc": 0,
+  "repeats": 1,
+  "read_rc": 0,
+  "screen_arm": "rmatch",
+  "blocks": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF"
+  ],
+  "head_norms": {
+   "p@ep0": [
+    0.1840125471353531,
+    4.9150214195251465,
+    0.3639257252216339,
+    3.9755613803863525
+   ],
+   "p@swa": [
+    0.1840125471353531,
+    4.9150214195251465,
+    0.3639257252216339,
+    3.9755613803863525
+   ]
+  },
+  "peak_gpu_gb": 1.79045888
+ },
+ "zrm": {
+  "train_rc": 0,
+  "repeats": 2,
+  "read_rc": 0,
+  "screen_arm": "zrm",
+  "blocks": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF"
+  ],
+  "head_norms": {
+   "p@ep0": [
+    0.20436246693134308,
+    5.202247142791748,
+    0.41904571652412415,
+    4.145838260650635
+   ],
+   "p@swa": [
+    0.20436246693134308,
+    5.202247142791748,
+    0.41904571652412415,
+    4.145838260650635
+   ]
+  },
+  "peak_gpu_gb": 1.79045888,
+  "repeat": "IDENTICAL"
+ },
+ "match_moved": {
+  "rmatch": true,
+  "zrm": true
+ },
+ "zret_has_no_match": true,
+ "same_blocks": true,
+ "reads": {
+  "metaqa": {
+   "same_questions": true,
+   "differ_from_zret": true,
+   "differ_from_rmatch": true,
+   "p@ep0_hit@1": {
+    "zret": 0.48697394789579157,
+    "rmatch": 0.5283901135604543,
+    "zrm": 0.518370073480294
+   }
+  },
+  "2wiki": {
+   "same_questions": true,
+   "differ_from_zret": true,
+   "differ_from_rmatch": true,
+   "p@ep0_hit@1": {
+    "zret": 0.8763368983957219,
+    "rmatch": 0.8997326203208557,
+    "zrm": 0.8743315508021391
+   }
+  }
+ },
+ "ok": false,
+ "seconds": 122.12673258781433,
+ "script_sha256": "9e889e5500eab94c47818b38c62089703a82f3dc7af3cd5c086f680d97fc4c45"
+}

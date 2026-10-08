@@ -1665,3 +1665,25 @@ re-grade is NOT_ADOPTED. Unmarked reads are WITHIN. zs: read zero-shot.
 - **What follows.** `frm-gate-b` exited 0 at 06:41. The full run (docs/FULL_ROUND12.md) trains L-2wiki, L-squad, J5 and
   L-metaqa, decided against step 1's fits. If it is ADOPTED, three arms are adopted (zret, gsurg, rmatch), and the
   next base is declared in a later round, before its numbers. Any speed figure for this arm is cold (8216ffe).
+
+### Round fourteen's first smoke failed (07:06) on its identity check alone. Re-queued under `-b` names (07:20)
+
+`outputs/screen/smoke14/smoke.json`.
+- **Every other check passed.** zrm's repeat is IDENTICAL. rmatch's and zrm's matches moved and are finite, and zret's
+  fit holds none. All three fits have the same blocks and read the same questions. zrm's scores differ from zret's on
+  metaqa and from rmatch's on 2wiki. The chain features are finite on both typed carves.
+- **The identity at the start failed on all three carves, 2wiki's untyped one included.** There zrm's forward is
+  zret's line for line, so two forwards of the same model differed, not the models.
+- **Cause.** The carve check ran its forwards before train's and read's flags (`lean_gpu.set_flags`: deterministic
+  algorithms, TF32 off). zret's z-scores against the retrieved rows sum with `index_add_`, which on the card is not
+  deterministic without them. rmatch's carve check passed the same test because lean_gpu's own z-score does not sum
+  that way. Every fit and read runs under the flags, which is why zrm's training repeat is IDENTICAL.
+- **The fix** is in the smoke's check only (`zrm.py`, documented there). The carve check sets the flags first. It also
+  records and requires zret's own repeat: two forwards of zret's model must be equal. The model, training and reading
+  code are unchanged.
+- **Re-queued** under `-b` names with the same commands and outputs, at the same place in the list. The smoke writes
+  `outputs/screen/smoke14b`, and the full run's gate is `fzm-gate-b`. No rule changes.
+- **Order.** zgs's L-musique fit (`scr-train-zgs-b`) was sent at 07:05 while the smoke ran (only ready items lead the
+  card), and it keeps its place. zgs's L-hotpotqa fit waits behind round fourteen's items, as declared.
+- **ETAs:** the smoke takes about 2 minutes once 0.16 of the card is free. The pair and its re-call land about 08:30 to
+  09:15.
