@@ -400,6 +400,7 @@ def overview():
     elif "said" in st:
         st["said"].pop("_unres", None)
     return {"now": d.get("now") or time.time(), "sys": d.get("sysinfo") or {}, "gpus_total": gpus_total,
+            "unres_g": sum(float(x["req"].get("gpus") or 0) for x in unres),
             "free_c": cap["cpus"] - cap.get("reserve_cpus", 0) - sum(float(x["req"]["cpus"]) for x in act),
             "free_m": cap["mem_gb"] - cap.get("reserve_mem_gb", 0) - sum(float(x["req"]["mem_gb"]) for x in act),
             "free_g": gpus_total - sum(float(x["req"].get("gpus") or 0) for x in act),
@@ -877,6 +878,8 @@ def main(argv=None):
                     help="once at start: dropped items whose names start with one of these (comma list) wait again")
     ap.add_argument("--unsend", default="",
                     help="once at start: these items (comma list) forget their jobs and run again")
+    ap.add_argument("--gshared-base", type=float, default=None,
+                    help="GB: the card's shared GPU memory when nothing spills (the spill base until a lower reading)")
     ap.add_argument("--lost-grace", type=float, default=1800.0,
                     help="s: a job rx calls lost with a heartbeat this young still runs and holds its request")
     ap.add_argument("--shed-polls", type=int, default=5,
@@ -965,7 +968,8 @@ def main(argv=None):
     cpu = CpuMeter()
     ctr = Counters(COUNTERS)
     log("PDH counters:", sorted(ctr.h) or "none (page-ins and GPU shared memory unread)")
-    gshared_base = None
+    gshared_base = dyn.get("gshared_base", a.gshared_base)   # kept across restarts: a feeder started on a spilling
+                                                              # card must not take the spill as the base
     t0, polls = time.time(), 0
     done_since = None
     ready_since = {}
@@ -1008,6 +1012,7 @@ def main(argv=None):
         gshared = pc["gshared"] / 2 ** 30 if "gshared" in pc else None
         if gshared is not None:
             gshared_base = gshared if gshared_base is None else min(gshared_base, gshared)
+            dyn["gshared_base"] = gshared_base
         # what running jobs hold beyond their GPU shares (each job alone: one job's unused share cannot take another's
         # excess, since that job may still grow to its cap) is not free, whatever the shares say
         vram = pc["gded"] / 2 ** 30 if "gded" in pc else None
@@ -1150,6 +1155,7 @@ def main(argv=None):
         if spill:
             free_g = min(free_g, 0.0)          # no GPU item starts while the card spills
         hold_gq = spill or mine_over_g > 0     # rx starts a queued job on shares alone: none is queued ahead then
+        hold_gq = hold_gq or ov["unres_g"] > 0  # nor while rx has lost the reservations of GPU jobs still running
         mpr_c, mpr_m, mpr_g = ov["mpr_c"] + ov["q_c"], ov["mpr_m"] + ov["q_m"] - hand, ov["mpr_g"] + ov["q_g"]
         n_q = len(ov["queued_mpr_gpu"])
         if n_q:   # their CPUs and memory are set aside for them ahead of anything sent now (less what they take over)
