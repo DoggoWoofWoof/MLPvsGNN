@@ -3010,3 +3010,55 @@ enters it. The graph is used only in training, as a loss.
   04:30, and the re-call lands about 04:30 to 05:00.
 - **Speed.** Per question, two small matrix products (its pool's rows and its question to 64 wide) and ten cosines a
   row. No edge is read. Any latency figure for zgf is cold (8216ffe).
+
+## Twenty-seventh round: the KB's relations as the space's helper (zgr; declared 9 October about 02:50)
+
+Declared before any of its numbers, and before any number of round twenty-six. Code: `outputs/mp_unified/zgr.py` (its
+selftest passes). **The MLP track:** at read a row's score uses the question, the row, their frozen vectors and the
+names of the relations its question's pool holds (the graph's fixed structure, as zrm's own chain match reads them). No
+edge, neighbour, walk mass or other row's score enters it.
+
+- **Why.** Round twenty-six gives each edge family one offset, so the KB's relations share one. The user (9 October):
+  "fix this too we should use that rel what we have as a helper". The KB graphs store each triple's relation, and each
+  relation's name has a vector by the same frozen encoder (`outputs/m3b/relations`, the tables rmatch reads). zrm's
+  chain carve already hands every KB batch its pools' relations and the typed chains from the question's seeds.
+  Nothing new is built.
+- **What trains.** The arm zgr: round twenty-six's zgf (zrm plus the shared 64-wide space and its ten family targets),
+  plus relation offsets.
+  - **An offset per relation, from its name.** A learned map of the relation's frozen name vector into the space. Every
+    relation gets one through the same map, so a relation no fit saw (webqsp's 7,058, all read zero-shot) still gets
+    one.
+  - **The question moved along a relation**, either way: question plus or minus the offset, set to unit length.
+  - **Relation attention.** Over the relations on the question's pool: a fixed text match (the question's cosine to
+    the relation's name, its weight learned from 1) plus a learned term (starting at zero). The 16 highest are kept and
+    softmaxed.
+  - **Two more inputs a row:** the attention-weighted best cosine to the moved question, and the best over the kept
+    relations. They join zgf's three, z-scored in the pool, into Linear(5, 16), GELU, Linear(16, 1). On a graph without
+    typed relations (squad, musique, hotpotqa, 2wiki), or a pool with none, the two read 0.
+  - **Start.** The last layer starts at zero and every new weight is drawn from zgr's own generator (seed + 2701), so at
+    the start zgr's forward is zrm's bit for bit and no draw of zrm's moves.
+- **The graph, in training only.**
+  - zgf's family-edge loss stays.
+  - The **chains** add one more: for at most 20,000 of the batch's typed chain entries (a row reached from the
+    question's seeds by up to three typed steps), the question moved by the chain's relation offsets, forward plus and
+    back minus, should sit nearer that row than a row drawn from the same pool. Same margin, temperature and weight as
+    zgf's.
+  - The chains are the KB's walks from the seeds, gold or not; no label enters.
+  - At read no edge or chain entry is used: the selftest requires the same inputs with both removed.
+- **The same rule on all six datasets.** No new graph, column, text, encoder or model; the encoder stays frozen. The
+  relation vectors are the existing ones.
+- **On the card, against zrm's card fits,** as round twenty-six:
+  - two fits, `scr-zgr` (L-musique) and `scr-zgr-hp` (L-hotpotqa), each read on the six s1eval carves;
+  - each read is decided against zrm's card fit of its split, with zret's and step 1's beside.
+  - zgr against zgf (what the relations add) is reported from the two rounds' records and decides nothing.
+- **The rule is the screens' rule.** zgr.py's comparison, pair and re-call under the seed null decide. A PROMISING
+  re-call earns a full run declared in its own file.
+- **Checks before the fits.** `zgr-check-metaqa` and `zgr-check-webqsp` (s1eval) require zgr at the start to equal zrm
+  in eval and training, and every input and both losses to be finite. They report beside, without deciding, the
+  untrained relation inputs for gold rows against the rest.
+- **Caps and order.** The checks take 2 CPUs and 10 GB each. Each fit and read takes 1.1 CPUs, 11 GB and 0.32 of the
+  card, queued after round twenty-six's.
+- **ETAs.** The checks take about 5 minutes. zgf's fits hold the card from about 02:45 to 04:00; zgr's run about 04:00
+  to 05:15, the reads to about 05:45, and the re-call lands about 06:00.
+- **Speed.** Per question, its pool's relations mapped into the space, a sort of their logits, and 32 cosines a row. No
+  edge is read. Any latency figure for zgr is cold (8216ffe).
