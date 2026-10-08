@@ -146,3 +146,57 @@ coverage lines had printed):* the user (22:38): "not all 5, all 6".
 - The rest of section 4 is unchanged, including the stop when a chosen pool falls below U_q on any s1eval carve.
 
 ## Results
+
+**Coverage and choice (9 October 00:21).** `outputs/step4e/coverage.json`, `outputs/step4e/choice.json`. Every gold in
+the pool (ALL) at k = 1 / k = 3 per arm; k = 0 is step 4d's U_q; the last columns are the chosen A3 at k = 2 and the
+mean pool size from U_q to it.
+
+| carve | U_q | A0 | A1 | A2 | A3 | chosen (A3, k = 2) | pool |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| metaqa s1sel | 0.947 | 0.953 / 0.971 | 0.955 / 0.960 | 0.955 / 0.961 | 0.956 / 0.962 | **0.960** | 3,150 -> 7,093 |
+| metaqa s1eval | 0.941 | 0.954 / 0.973 | 0.947 / 0.952 | 0.946 / 0.952 | 0.949 / 0.954 | **0.953** | 3,147 -> 7,082 |
+| squad s1sel | 0.979 | 0.989 / 0.993 | 0.989 / 0.993 | 0.989 / 0.993 | 0.989 / 0.993 | **0.992** | 50 -> 150 |
+| squad s1eval | 0.980 | 0.989 / 0.994 | 0.989 / 0.994 | 0.989 / 0.994 | 0.989 / 0.994 | **0.992** | 50 -> 150 |
+| musique s1sel | 0.819 | 0.861 / 0.882 | 0.926 / 0.949 | 0.925 / 0.947 | 0.934 / 0.958 | **0.950** | 3,134 -> 6,921 |
+| musique s1eval | 0.844 | 0.876 / 0.906 | 0.918 / 0.946 | 0.918 / 0.946 | 0.921 / 0.948 | **0.937** | 3,114 -> 6,899 |
+| hotpotqa s1sel | 0.970 | 0.974 / 0.978 | 0.979 / 0.985 | 0.977 / 0.982 | 0.975 / 0.979 | **0.978** | 100 -> 188 |
+| hotpotqa s1eval | 0.972 | 0.974 / 0.978 | 0.978 / 0.984 | 0.977 / 0.983 | 0.976 / 0.980 | **0.979** | 100 -> 188 |
+| 2wiki s1sel | 0.897 | 0.906 / 0.908 | 0.914 / 0.921 | 0.915 / 0.920 | 0.938 / 0.951 | **0.947** | 109 -> 220 |
+| 2wiki s1eval | 0.909 | 0.916 / 0.920 | 0.921 / 0.929 | 0.919 / 0.928 | 0.936 / 0.949 | **0.945** | 110 -> 221 |
+| webqsp s1eval | 0.838 | 0.862 / 0.876 | 0.897 / 0.916 | 0.894 / 0.912 | 0.893 / 0.915 | **0.909** | 3,374 -> 7,213 |
+
+Mean ALL over the six choice carves (five s1sel, webqsp's s1eval):
+
+| arm | k = 0 | 0.5 | 1 | 2 | 3 |
+| --- | --- | --- | --- | --- | --- |
+| A0 | 0.9084 | 0.9182 | 0.9242 | 0.9308 | 0.9348 |
+| A1 | 0.9084 | 0.9343 | 0.9432 | 0.9497 | 0.9541 |
+| A2 | 0.9084 | 0.9326 | 0.9424 | 0.9482 | 0.9524 |
+| A3 | 0.9084 | 0.9374 | 0.9474 | 0.9558 | 0.9597 |
+
+- **The choice: A3 at k = 2, CHOSEN.** A3 leads at k = 1 (0.9474 against A1's 0.9432, beyond the 0.002 tie). Its k = 3
+  mean is 0.9597; k = 2's 0.9558 is within 0.005 of it, and k = 1's 0.9474 is not.
+- **No s1eval carve falls below U_q.** From today's frozen pools I_q through U_q to the chosen pools, every gold in
+  the pool on s1eval:
+
+| dataset | I_q | U_q | chosen |
+| --- | --- | --- | --- |
+| metaqa | 0.895 | 0.941 | **0.953** |
+| squad | 0.980 | 0.980 | **0.992** |
+| musique | 0.803 | 0.844 | **0.937** |
+| hotpotqa | 0.968 | 0.972 | **0.979** |
+| 2wiki | 0.906 | 0.909 | **0.945** |
+| webqsp | 0.688 | 0.838 | **0.909** |
+
+- **What worked, by paper.**
+  - HippoRAG 2's retrieval-weighted restart (A1) carries most of the gain on musique, webqsp and hotpotqa.
+  - PullNet's exact title and name linking (A3) adds most on 2wiki (s1sel 0.915 to 0.938 at k = 1) and on musique.
+  - HippoRAG's node specificity (A2) adds nothing over A1 here.
+  - On metaqa, today's seeds (A0) reach further at k = 3 (s1eval 0.973 against A3's 0.954). Its three-hop answer
+    sets sit deep around one topic entity, and spreading the restart moves mass off it. One rule serves all six
+    datasets, so metaqa takes A3: it still rises from 0.941 to 0.953 over U_q.
+- **The cost.** Pools grow about 2.2 times past U_q: metaqa 3,147 to 7,083 rows, musique 3,114 to 6,899, webqsp 3,374
+  to 7,213, hotpotqa 100 to 188, 2wiki 110 to 221, squad 50 to 150. Against today's I_q, that is about 3.5 times on
+  the three large datasets. Looks, caches, fits and cold latency grow with it.
+- **Next.** The file stage builds the chosen pools for all 21 carves on the laptop. Then step 4d's stages 2 to 5 run
+  on them, in the declared order (looks, caches, identity gate, zrm screen).
