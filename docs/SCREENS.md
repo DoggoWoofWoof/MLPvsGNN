@@ -2598,3 +2598,56 @@ Unmarked reads are WITHIN. zs: read zero-shot.
   - Any speed figure for this arm is cold (8216ffe).
 - **ETAs.** The four fits start as the card frees, about 13:30 to 15:00, and take about 35 to 60 minutes each. The grade
   lands about 16:00 to 17:30.
+
+### Twenty-second round: a row's link to the pool's leading rows, on zrm (declared 8 October about 18:15, before any of its numbers; full run docs/FULL_ROUND22.md)
+
+Code: `outputs/mp_unified/zlink.py` (its selftest passes).
+
+- **Why.** docs/DIAG_BRIDGE.md, read together:
+  - **D1, REACHABLE_NOT_RANKED.** In partly-found questions, the golds zrm misses sit next to a found gold in the
+    question's own pool graph: 2wiki 0.77, hotpotqa 0.92 to 0.93, musique 0.38 (0.77 within two hops). That is 6 to
+    14 times the rate of non-gold rows. No fixed re-rank uses it.
+  - **D2, FEATURE_LIMIT.** Boosted trees on zrm's per-row inputs plus zrm's own score add at most +0.006 R@5. The gap
+    is in the inputs, not the scorer.
+  - **What the inputs lack.** Every per-row input is computed before any row is scored. The graph inputs (WALK, WALKF,
+    SEED, DISTS) tie a row to the retrieval's fixed seeds. None ties it to the rows the scorer itself ranks highly.
+- **What trains.** The arm zlk: zrm's model, settings and training (rmatch.py's train), seed 0, plus a small head added
+  to zrm's score.
+  - zrm scores the pool. Its top five rows and its top row, ranked in lean_gpu.top_hit's order under no_grad, are the
+    question's leaders.
+  - Each row gets 9 inputs:
+    - its edges from the top five, per edge family (3);
+    - its edges from the top row, per family (3);
+    - its two-step paths from the top five over any family (1);
+    - its top-five flag (1);
+    - the z-score of zrm's score in its pool (1, detached).
+    The counts enter as log1p.
+  - The head is Linear(9, 32), GELU, Linear(32, 1), 353 weights. Its last layer starts at zero and its first is drawn
+    from its own generator, so at the start zlk's forward is zrm's bit for bit and no draw of zrm's moves (selftest;
+    `zlink.py check` on real carves).
+- **The edges.** Each question's pool graph as the look's chunks already hold it (structural, NER and kNN on the
+  passage graphs; the KB's relation edges on metaqa and webqsp). They are read undirected: both directions, once per
+  family, no self-loops. `zlink.py build` caches them per step-1 part, tied to its record (`outputs/zlink/cache`).
+- **The same rule on all six datasets.** No new graph, column, text, encoder or model. The leaders come from zrm's own
+  scores, so the inputs are query-local and label-free, the same in training and at read.
+- **The screen's two fits:** `scr-zlk` (L-musique) and `scr-zlk-hp` (L-hotpotqa), each read on the six s1eval carves.
+- **Decided against zrm's screen fits** (`scr-zrm` and `scr-zrm-hp`), with zret's screen fits and step 1's beside.
+  zlink.py's comparison, pair and re-call under the seed null (relz.py's, with zrc.py's mapping to zrm's fits) decide.
+  Each read's base R@5 comes from `outputs/zrc/base-zrm-<split>.json`.
+- **What follows.** The full run (docs/FULL_ROUND22.md) starts only if both hold:
+  - the re-call is PROMISING (a GAIN and no LOSS among its twelve reads);
+  - zrm is the base (docs/BASE_ZRM_ZRS.md re-graded ADOPT, as it is since 10:05).
+- **Checks before the fits.** The eleven edge builds (the five training datasets' fit carves and the six s1eval
+  carves) are host CPU items. `zlk-check-hotpotqa` and `zlk-check-webqsp` load a passage and a KB carve with their
+  edges, and require zlk's forward at the start to equal zrm's, in eval and in training with the same dropout draws.
+  The fits wait on both.
+- **Caps and order.**
+  - Each fit takes 0.30 of the card (share 0.32) and 11 GB; each read 0.30 (share 0.32) and 8 GB. That is zrm's, plus
+    the edges in host memory (about 4 to 10 per row).
+  - The screen's GPU items go ahead of every waiting GPU item but round twenty's two reads (the user's priority), and
+    behind the fits already running. The full run goes at the end of the list. Nothing is preempted.
+- **ETAs.** The builds and checks take about 15 minutes. The fits start when the card has room, about 18:45 to 19:30,
+  and take about 45 to 60 minutes each. The re-call lands about 20:15 to 21:00.
+- **Speed.** Per question, one sort of its pool's scores and one pass over its pool's edges, after zrm's forward. Any
+  latency figure for zlk is cold (8216ffe): each question timed from scratch, with the walk, the move of its entries
+  and edges to the device and the forward, no warm-up pass and nothing kept from an earlier question.
