@@ -2452,3 +2452,58 @@ null's floors. Unmarked reads are WITHIN. zs: read zero-shot.
 - **ETAs.** The card holds zgs's L-hotpotqa fit until about 11:40 and round nineteen's two screen fits until about
   11:45 to 11:50. The four fits take about 40 minutes each, two or three at a time. The grade lands about 13:30 to
   14:30.
+
+### Twentieth round: an objective for recall at five, on zrm (declared 8 October about 11:33, before any of its numbers; full run docs/FULL_ROUND20.md)
+
+Code: `outputs/mp_unified/zrk.py` (its selftest passes).
+
+- **Why: the screens decide on R@5, and zrm loses most of its R@5 on questions it finds only in part.**
+  - Where zrm's screen fits lose R@5, some of the question's golds are found and some are not. That is 0.737 and 0.765
+    of musique's lost R@5 in L-musique's and L-hotpotqa's fits, 0.887 and 0.875 of 2wiki's, 0.605 and 0.725 of
+    hotpotqa's, and 0.825 and 0.818 of metaqa's (outputs/diag/goldsplit-zrm). FC@5 of musique's questions is 0.215
+    and 0.252.
+  - lean_gpu's loss (listwiseD) trains for R@5 only through a softmax over the whole pool. Each gold's term pushes on
+    every row by its share, so most of the push goes to the rows already on top.
+  - zsep (round sixteen) took each question's other golds out of each gold's softmax. It was NO_GAIN, with a LOSS on
+    musique read in-domain in L-hotpotqa's fit.
+- **What trains.** The arm zrk: zrm's model, carve, settings and training (rmatch.py's train), seed 0, with a smooth
+  recall at five added to listwiseD:
+  - loss = listwiseD + 1 x (1 - the question's smooth recall at five), averaged over the questions with a gold, as
+    listwiseD is;
+  - a gold's rank in its pool is made smooth by a sigmoid, temperature 0.1 score units, over the pool's other rows
+    (ApproxNDCG's form, Qin, Liu and Li 2010);
+  - "rank at most five" is made smooth by a sigmoid, temperature 1 rank (the Recall@k surrogate of Patel, Tolias and
+    Matas, CVPR 2022);
+  - another gold above a gold counts toward its rank but carries no gradient, since two golds that swap never change
+    R@5. So no gold is pushed down by another, and no row but a gold is pushed up;
+  - the surrogate's gradient sits on the golds just below the fifth row and on the rows just above them.
+- **The same loss on every training question, on every dataset.** The settings are fixed before any number: K = 5 (the
+  metric's cutoff), temperatures 0.1 and 1, weight 1. No new column, block, carve, graph or model. Reads and serving
+  are zrm's.
+- **A check before training.** Each fit checks the loss and its gradient on the first eight questions of every
+  training carve, at the fit's start, against a float64 reference. A mismatch stops the fit (exit 1). Each fit also
+  records its training carves' census: questions with two or more golds, the largest pool, and the largest golds-by-rows
+  count of one question.
+- **The screen's two fits:** `scr-zrk` (L-musique) and `scr-zrk-hp` (L-hotpotqa). Each is read on the six s1eval carves,
+  as zrm's fits were.
+- **Decided against zrm's screen fits** (`scr-zrm` and `scr-zrm-hp`), with zret's and step 1's beside. The pieces are
+  zrk.py's: the comparison, the pair, and the re-call under the seed null (relz.py's, with zrc.py's mapping to zrm's
+  fits). Each read's base R@5 comes from `outputs/zrc/base-zrm-<split>.json`.
+- **What can move.** Every read, since the loss changes training on every dataset. hit@1 is reported beside R@5. It may
+  fall, since the surrogate does not care about the order inside the top five.
+- **What follows.** The full run (docs/FULL_ROUND20.md) starts only if both hold: the re-call is PROMISING (a GAIN and
+  no LOSS among its twelve reads), and zrm is the base (docs/BASE_ZRM_ZRS.md re-graded ADOPT, as it is since 10:05).
+- **Caps and order.**
+  - Each fit takes 0.26 of the card (share 0.28) and 9 GB, as zrm's screen fits did. Their torch peaks were 3.5 and
+    5.2 GB under a 6.2 GB cap. On metaqa's training carve the surrogate's largest batch holds about 0.5 million gold-row
+    pairs, about 2 MB a tensor.
+  - Each read takes 0.30 (share 0.32) and 6 GB.
+  - The fits go after round nineteen's screen items, ahead of the queued full runs' fits. The full run goes at the end
+    of the list. Nothing is preempted.
+- **ETAs.** The fits start when the card has room, about 11:55 to 12:15, and take about 35 minutes each (zrm's screen
+  fits took 34). The re-call lands about 12:45 to 13:15.
+- **Numbering.** Rounds are numbered in the order they are declared. zgs's re-call (round thirteen) is due about 11:50.
+  If it is PROMISING, its combination with zrm (zrg, by the amendment of 10:15) is declared next, as round twenty-one.
+- **Speed.** The objective changes training only. zrk reads and serves as zrm does, so any latency figure for it is
+  zrm's, and cold (8216ffe): each question timed from scratch, with the walk, the move of its entries to the device and
+  the forward.
