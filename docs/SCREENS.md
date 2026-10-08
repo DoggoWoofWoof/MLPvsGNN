@@ -2950,3 +2950,63 @@ declared in its own file before any of its numbers.
 - **The requeue.** The two fits and every item after them run under new names:
   - round twenty-four's select, reads, compares, pair, re-call and gate (`scr24b-*`, `ffs-gate-b`);
   - round twenty-five's (`scr25b-*`).
+
+## Twenty-sixth round: a graph-shaped space, read without the graph, on zrm (zgf; declared 9 October about 02:05)
+
+Declared before any of its numbers. Code: `outputs/mp_unified/zgf.py` (its selftest passes). **The MLP track:** at read
+a row's score uses only the question, the row and their frozen vectors. No edge, neighbour, walk or other row's score
+enters it. The graph is used only in training, as a loss.
+
+- **Why.** The user (9 October): can the semantic space itself do the retrieval, through a new space built from the
+  graph (offsets as in the parallelogram rule, transformations, relation attention), so that the graph is never needed;
+  and can passages and KB share one representation, so that what is learned on one carries to the other?
+  docs/DIAG_GAPS.md (first run, a1e441d) and docs/DIAG_BRIDGE.md give the target:
+  - the MLP loses to the GNN track on partly-found and multi-gold questions (2wiki, hotpotqa) and on unseen graphs
+    (metaqa one-hop golds +0.140 zero-shot);
+  - no per-row input carries a row's place beside the rows it is linked to (D2, FEATURE_LIMIT).
+
+  This round asks whether that place can be written into the vectors once, in training, so that at read a row's vector
+  alone says where it sits.
+- **What trains.** The arm zgf: zrm's model, settings and training (rmatch.py's train), seed 0, plus a space head added
+  to zrm's score.
+  - **One space for every graph.** The question's frozen 1536-wide embedding and the row's frozen 257-wide store vector
+    (SEMB's two sides) are mapped by two learned matrices to a 64-wide space and set to unit length. The same maps serve
+    all six graphs, passages and KB alike: one representation for both.
+  - **Offsets (the parallelogram rule).** One learned offset per edge family (3). From the question, ten targets: the
+    question itself, one step (each family's offset) and two steps (each pair's sum), each set to unit length.
+  - **Relation attention.** The question's softmax over the ten targets.
+  - **Three inputs a row**, z-scored in its question's pool: the attention-weighted cosine to the targets, the best
+    cosine, and the plain cosine to the question.
+  - **The head** is Linear(3, 16), GELU, Linear(16, 1), added to zrm's score; a question whose SEMB is masked reads zrm's
+    score. In all, 115,675 weights, most of them the two maps.
+  - **Start.** The last layer starts at zero and every other weight is drawn from the head's own generator (seed +
+    2601), so at the start zgf's forward is zrm's bit for bit and no draw of zrm's moves (selftest; `zgf.py check` on
+    real carves).
+- **The graph, in training only.** Each batch's pool edges are round twenty-two's (`outputs/zlink/cache`): each question's
+  own pool graph, undirected, once per family. Nothing new is built. For at most 20,000 edges a batch, drawn from the
+  model's own generator, the row moved by its family's offset should sit nearer its neighbour than a row drawn from the
+  same pool: a softplus margin on the cosines, temperature 0.1, weight 0.1 beside zrm's listwise loss. The loss reported
+  per epoch stays zrm's. At read no edge is loaded into the score: the selftest requires the same scores with the edges
+  removed.
+- **The same rule on all six datasets.** No new graph, column, text, encoder or model; the encoder stays frozen.
+- **On the card, against zrm's card fits.** Two fits: `scr-zgf` (L-musique) and `scr-zgf-hp` (L-hotpotqa), each read on
+  the six s1eval carves, with deterministic algorithms as every card fit. Each read is decided against zrm's card fit of
+  its split (`scr-zrm`, `scr-zrm-hp`; zlink.py's mapping), with zret's and step 1's beside.
+- **The rule is the screens' rule.** zgf.py's comparison, pair and re-call under the seed null (relz.py's, mapped to
+  zrm's fits) decide. A PROMISING re-call (a GAIN and no LOSS among its twelve reads) earns a full run, declared in its
+  own file before its numbers.
+- **What this round does not test.** The KB's relations get no offset of their own here: the cached edges carry their
+  family, not their relation. Offsets built from the relation's text (so a relation never seen still gets one) need the
+  relation of each edge, and are a later round of their own. Nor does it read the space alone as a retriever (whether it
+  reaches golds without zrm); that read is reported with the later round.
+- **Checks before the fits.** `zgf-check-hotpotqa` and `zgf-check-webqsp` load a passage and a KB carve with their
+  edges, and require zgf's forward at the start to equal zrm's, in eval and in training with the same dropout draws, and
+  every input and the edge loss to be finite. They report beside, without deciding, the untrained space's z-scores for
+  gold rows against the rest. The fits wait on both.
+- **Caps and order.** The checks take 2 CPUs and 8 to 10 GB each and start at once. Each fit and read takes 1.1 CPUs,
+  11 GB and 0.32 of the card. They queue after round twenty-five's card items.
+- **ETAs.** The checks take about 5 minutes. zgn's fits hold the card until about 02:25 and 02:45; round twenty-five's
+  reads follow. A zrm-sized card fit takes about an hour, so zgf's fits run about 02:45 to 04:00, the reads to about
+  04:30, and the re-call lands about 04:30 to 05:00.
+- **Speed.** Per question, two small matrix products (its pool's rows and its question to 64 wide) and ten cosines a
+  row. No edge is read. Any latency figure for zgf is cold (8216ffe).
