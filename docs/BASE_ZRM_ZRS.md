@@ -74,3 +74,14 @@ one is ADOPTED, it is combined with the base in a later round, declared before i
 - No speed figure. Any latency figure for the base is cold (8216ffe), timed in its own declared stage.
 
 ## Results
+
+**ADOPT (10:05): zrm is the base.** `outputs/zbase/grade-nullx.md`; filed ADOPT in `grade.md`.
+- One primary GAIN: musique read zero-shot in L-musique's fit, +0.1334 R@5 (floor 0.0720), +0.2305 hit@1.
+- No LOSS among the 36 reads. Three calls changed under the null, each a GAIN that turned WITHIN: J5's metaqa and
+  webqsp, and L-squad's webqsp.
+- metaqa in-domain gains +0.015 to +0.016 in all five fits that train it. webqsp read zero-shot gains +0.023 to +0.054.
+  The untyped reads stay within their floors.
+- zrm is the base of every later round. Round eighteen's full run waits only on its screen's re-call. zgs and zsep are
+  still decided against zret's fits, as declared; if either is adopted, it is combined with zrm in a later round.
+
+docs/SCREENS.md has the table under 'The next base: zrm'.

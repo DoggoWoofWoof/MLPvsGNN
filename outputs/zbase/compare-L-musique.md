@@ -1,0 +1,36 @@
+# Screen scr-zrm (p@swa, s1eval carves)
+
+## Against outputs\screen\fits\scr-zrs (decides the verdict): **PROMISING**
+
+| dataset | read | questions | base R@5 | new R@5 | delta R@5 [95% CI] | call | rrf R@5 | delta FC@5 | delta hit@1 |
+|---|---|---:|---:|---:|---|---|---:|---:|---:|
+| metaqa | in-domain | 9785 | 0.7637 | 0.7789 | +0.0153 [+0.0130, +0.0176] | GAIN | 0.0047 | +0.0203 | +0.0621 |
+| squad | in-domain | 11873 | 0.9106 | 0.9111 | +0.0004 [-0.0015, +0.0024] | WITHIN | 0.9054 | +0.0004 | +0.0023 |
+| musique | zero-shot | 2417 | 0.3897 | 0.5231 | +0.1334 [+0.1234, +0.1434] | GAIN | 0.4734 | +0.0815 | +0.2305 |
+| hotpotqa | in-domain | 7405 | 0.9061 | 0.9040 | -0.0021 [-0.0044, +0.0003] | WITHIN | 0.6846 | -0.0046 | -0.0046 |
+| 2wiki | in-domain | 12576 | 0.8714 | 0.8709 | -0.0005 [-0.0023, +0.0014] | WITHIN | 0.6079 | -0.0011 | -0.0063 |
+| webqsp | zero-shot | 1503 | 0.2623 | 0.3128 | +0.0504 [+0.0346, +0.0654] | GAIN | 0.0535 | +0.0439 | +0.0466 |
+
+## Against outputs\screen\fits\scr-zret (reported only): **PROMISING**
+
+| dataset | read | questions | base R@5 | new R@5 | delta R@5 [95% CI] | call | rrf R@5 | delta FC@5 | delta hit@1 |
+|---|---|---:|---:|---:|---|---|---:|---:|---:|
+| metaqa | in-domain | 9785 | 0.6496 | 0.7789 | +0.1293 [+0.1241, +0.1347] | GAIN | 0.0047 | +0.1329 | +0.2532 |
+| squad | in-domain | 11873 | 0.9106 | 0.9111 | +0.0004 [-0.0015, +0.0024] | WITHIN | 0.9054 | +0.0004 | +0.0023 |
+| musique | zero-shot | 2417 | 0.3897 | 0.5231 | +0.1334 [+0.1234, +0.1434] | GAIN | 0.4734 | +0.0815 | +0.2305 |
+| hotpotqa | in-domain | 7405 | 0.9061 | 0.9040 | -0.0021 [-0.0044, +0.0003] | WITHIN | 0.6846 | -0.0046 | -0.0046 |
+| 2wiki | in-domain | 12576 | 0.8714 | 0.8709 | -0.0005 [-0.0023, +0.0014] | WITHIN | 0.6079 | -0.0011 | -0.0063 |
+| webqsp | zero-shot | 1503 | 0.1766 | 0.3128 | +0.1361 [+0.1127, +0.1597] | GAIN | 0.0535 | +0.1091 | +0.1111 |
+
+## Against outputs\step1\fits\L-musique (reported only): **PROMISING**
+
+| dataset | read | questions | base R@5 | new R@5 | delta R@5 [95% CI] | call | rrf R@5 | delta FC@5 | delta hit@1 |
+|---|---|---:|---:|---:|---|---|---:|---:|---:|
+| metaqa | in-domain | 9785 | 0.6537 | 0.7789 | +0.1252 [+0.1201, +0.1306] | GAIN | 0.0047 | +0.1273 | +0.2521 |
+| squad | in-domain | 11873 | 0.9100 | 0.9111 | +0.0011 [-0.0011, +0.0032] | WITHIN | 0.9054 | +0.0011 | -0.0017 |
+| musique | zero-shot | 2417 | 0.2696 | 0.5231 | +0.2535 [+0.2422, +0.2648] | GAIN | 0.4734 | +0.1498 | +0.3844 |
+| hotpotqa | in-domain | 7405 | 0.9015 | 0.9040 | +0.0025 [-0.0000, +0.0050] | WITHIN | 0.6846 | +0.0030 | -0.0012 |
+| 2wiki | in-domain | 12576 | 0.8732 | 0.8709 | -0.0023 [-0.0042, -0.0004] | WITHIN | 0.6079 | -0.0066 | -0.0021 |
+| webqsp | zero-shot | 1503 | 0.1779 | 0.3128 | +0.1349 [+0.1131, +0.1576] | GAIN | 0.0535 | +0.1098 | +0.1058 |
+
+Rule (docs/SCREENS.md): a read's call is GAIN when its R@5 difference is at least 0.0075 and its 95% question-bootstrap interval lies above 0, LOSS when the mirror holds, WITHIN otherwise; PROMISING = a GAIN and no LOSS, MIXED = both, NO_GAIN = no GAIN. rrf is the zero-shot floor (plain retrieval).

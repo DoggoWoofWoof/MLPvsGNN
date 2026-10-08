@@ -2276,3 +2276,38 @@ Code: `outputs/mp_unified/zrct.py` (its selftest passes).
 - **ETAs.** Each fit takes about 35 minutes once the card has room. zgs's and zsep's fits hold the card until about
   10:10 to 10:25. The re-call lands about 11:00 to 11:30.
 - **Speed.** Any latency figure is cold (8216ffe), timing the walk, w0, the selection and the forward per question.
+
+### The next base: zrm (10:05). zrm's fits against zrs's, re-graded under the null over every split: ADOPT
+
+`outputs/zbase/grade-nullx.md` (filed ADOPT in `grade.md`; declared in docs/BASE_ZRM_ZRS.md). The table gives R@5 of
+zrm minus zrs's fit of the same split. Only the reads that are not WITHIN are shown; P marks a primary read.
+
+| split | dataset | read | zrs | zrm | delta | floor | filed → re-call | delta hit@1 |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- | ---: |
+| J5 | metaqa | in-domain (P) | 0.7636 | 0.7788 | +0.0152 | 0.0154 | GAIN → WITHIN | +0.0642 |
+| J5 | webqsp | zero-shot (P) | 0.2329 | 0.2558 | +0.0229 | 0.0295 | GAIN → WITHIN | +0.0166 |
+| L-squad | metaqa | in-domain | 0.7631 | 0.7792 | +0.0162 | 0.0075 | GAIN → GAIN | +0.0445 |
+| L-squad | webqsp | zero-shot | 0.2264 | 0.2505 | +0.0242 | 0.0260 | GAIN → WITHIN | +0.0140 |
+| L-musique | metaqa | in-domain | 0.7637 | 0.7789 | +0.0153 | 0.0075 | GAIN → GAIN | +0.0621 |
+| L-musique | musique | zero-shot (P) | 0.3897 | 0.5231 | +0.1334 | 0.0720 | GAIN → GAIN | +0.2305 |
+| L-musique | webqsp | zero-shot | 0.2623 | 0.3128 | +0.0504 | 0.0102 | GAIN → GAIN | +0.0466 |
+| L-hotpotqa | metaqa | in-domain | 0.7642 | 0.7801 | +0.0159 | 0.0149 | GAIN → GAIN | +0.0490 |
+| L-hotpotqa | webqsp | zero-shot | 0.2100 | 0.2416 | +0.0316 | 0.0233 | GAIN → GAIN | +0.0160 |
+| L-2wiki | metaqa | in-domain | 0.7642 | 0.7794 | +0.0152 | 0.0075 | GAIN → GAIN | +0.0441 |
+| L-2wiki | webqsp | zero-shot | 0.2108 | 0.2644 | +0.0536 | 0.0473 | GAIN → GAIN | +0.0319 |
+
+- **One primary GAIN and no LOSS among the 36 reads, so zrm is the base of every later round.** The GAIN is musique
+  read zero-shot in L-musique's fit: +0.1334 R@5 (floor 0.0720) and +0.2305 hit@1. zrs's untyped reads are zret's, so
+  this is what training the match jointly with the model's own weights adds there.
+- **The typed reads gain too.**
+  - metaqa in-domain: +0.015 to +0.016 in all five fits that train it. Four are GAINs; J5's +0.0152 is WITHIN its floor
+    of 0.0154.
+  - webqsp read zero-shot: +0.023 to +0.054. Three are GAINs; J5's and L-squad's turn WITHIN under the null.
+- **The untyped reads stay within their floors.** The largest moves are squad read zero-shot in L-squad's fit
+  (+0.0051), 2wiki in L-hotpotqa's (−0.0047) and 2wiki in J5's (+0.0046). L-metaqa's fit is zret's under both arms, so
+  its six reads are +0.0000.
+- **What follows.**
+  - zrm is the base. Round eighteen's full run (docs/FULL_ROUND18.md) now waits only on its screen's re-call.
+  - zgs (round thirteen) and zsep (round sixteen) are still decided against zret's fits, as declared. If either is
+    adopted, it is combined with zrm in a later round, declared before its numbers.
+  - Any latency figure for zrm is cold (8216ffe).
