@@ -1885,3 +1885,17 @@ read.
 - **What follows.** rmatch is not adopted, and zret stays the base. Round fourteen (zrm: rmatch's match and zret's
   model trained together) is screening. Round fifteen (zrs: the match trained alone on zret's frozen fits, so the
   untyped reads cannot move) is declared next, before its numbers.
+
+### Round fifteen's smoke passed (07:57; `outputs/screen/smoke15/smoke.json`)
+
+- **The identity holds on all three carves** (metaqa select, webqsp s1eval, 2wiki select), under train's and read's
+  flags. Two forwards of zret's model are equal, and zrs at its start scores as zret's model bit for bit. The chain
+  features are finite on both typed carves.
+- **zrs's repeat is IDENTICAL, and every state of its fit holds zret's p@swa state bit for bit.** Its match moved and
+  is finite, and only metaqa's select carve trained it (47 steps). zret's fit holds no match. Both fits have the same
+  blocks and read the same questions.
+- **On 2wiki, which has no typed relations, zrs's scores equal zret's bit for bit.** On metaqa they differ.
+- It ran `zrs.py` as committed in ae5976c, in 65 seconds.
+- One epoch's metaqa select hit@1 (zret 0.487, zrs 0.499) checks the mechanics only.
+- **What follows:** the two screen fits start as the card frees. A zrs fit trains the match alone, so it takes minutes.
+  The pair and its re-call land about 08:30 to 09:30.

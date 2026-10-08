@@ -1,0 +1,136 @@
+{
+ "carves": {
+  "metaqa=select": {
+   "typed": true,
+   "zret_repeat_equal": true,
+   "identity_at_start": true,
+   "entries_first_questions": 122655,
+   "features_finite": true
+  },
+  "webqsp=s1eval": {
+   "typed": true,
+   "zret_repeat_equal": true,
+   "identity_at_start": true,
+   "entries_first_questions": 1462842,
+   "features_finite": true
+  },
+  "2wiki=select": {
+   "typed": false,
+   "zret_repeat_equal": true,
+   "identity_at_start": true
+  }
+ },
+ "zret": {
+  "train_rc": 0,
+  "repeats": 1,
+  "read_rc": 0,
+  "screen_arm": "zret",
+  "blocks": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF"
+  ],
+  "head_norms": {
+   "p@ep0": null,
+   "p@swa": null
+  },
+  "curve": [
+   {
+    "epoch": 0,
+    "loss": 3.2849449039773737,
+    "steps": 188,
+    "seconds": 21.798242807388306
+   }
+  ],
+  "peak_gpu_gb": 1.237989888
+ },
+ "zrs": {
+  "train_rc": 0,
+  "repeats": 2,
+  "read_rc": 0,
+  "screen_arm": "zrs",
+  "blocks": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF"
+  ],
+  "head_norms": {
+   "p@ep0": [
+    0.12470239400863647,
+    3.9991910457611084,
+    0.2686072587966919,
+    2.8169779777526855
+   ],
+   "p@swa": [
+    0.12470239400863647,
+    3.9991910457611084,
+    0.2686072587966919,
+    2.8169779777526855
+   ]
+  },
+  "curve": [
+   {
+    "epoch": 0,
+    "loss": 3.041395126505101,
+    "steps": 47,
+    "seconds": 8.109044790267944,
+    "gate": [
+     0.08758405596017838,
+     0.08876778930425644
+    ]
+   }
+  ],
+  "peak_gpu_gb": 1.79045888,
+  "stack": {
+   "model": "zrm.ZRM (rmatch.ChainMatch over lean_screen3.ZRet)",
+   "carve": "rmatch.ChainCarveBase",
+   "stage": "the match trained on zret's frozen fit",
+   "base_fit": "outputs/screen/smoke15/smoke-zret",
+   "base_models_sha256": "22855aecde63490d423daaae24330f1511b40e71a934c3ee2d318746156dc8df",
+   "base_candidate": "p@swa",
+   "base_unchanged_in_every_state": true,
+   "typed_training_carves": [
+    "metaqa=select"
+   ],
+   "match_steps_per_epoch": 47
+  },
+  "repeat": "IDENTICAL"
+ },
+ "base_kept": true,
+ "match_moved": true,
+ "zret_has_no_match": true,
+ "same_blocks": true,
+ "reads": {
+  "metaqa": {
+   "same_questions": true,
+   "equal_to_zret": false,
+   "p@swa_hit@1": {
+    "zret": 0.48697394789579157,
+    "zrs": 0.49899799599198397
+   }
+  },
+  "2wiki": {
+   "same_questions": true,
+   "equal_to_zret": true,
+   "p@swa_hit@1": {
+    "zret": 0.8763368983957219,
+    "zrs": 0.8763368983957219
+   }
+  }
+ },
+ "ok": true,
+ "seconds": 65.4743721485138,
+ "script_sha256": "e5cbc7e34b9b0786bdda84b2e90776aec10997dda9628c6d7db1d5d2c2692a96"
+}
