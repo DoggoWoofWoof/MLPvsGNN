@@ -2168,3 +2168,13 @@ the reads that are not WITHIN are shown; P marks a primary read. The other 26 re
 - **What follows (docs/FULL_ROUND15.md, section 4).** zrs is the base of every later screen and run, unless zrm's
   re-grade is ADOPT too (due about 10:15 to 10:45). In that case the next base is declared in a later round, before its
   numbers. That round is declared next, before zrm's grade lands.
+
+### The next base if zrm is ADOPTED too (declared 8 October about 09:50, before zrm's re-grade; docs/BASE_ZRM_ZRS.md)
+
+- **zrs is the incumbent.** It was ADOPTED first, and it changes less: zret's fits are frozen and the match is added on
+  top.
+- **zrm's six fits are compared with zrs's, read by read** (36 reads, under the seed null over every split). zrm
+  becomes the base if at least one primary read GAINs and none of the 36 LOSEs. Otherwise zrs stays the base.
+- **It runs only if zrm's re-grade is ADOPT.** Otherwise zrs is the base.
+- Both arms' reads against zret's fits are already known on five of six splits, so this is not blind. The rule is the
+  one every round uses, unchanged.
