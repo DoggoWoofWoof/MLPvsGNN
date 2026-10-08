@@ -2418,3 +2418,37 @@ Code: `outputs/mp_unified/zkind.py` (its selftest passes).
   twenty, by the amendment (10:15).
 - **Speed.** On a typed graph the offsets add one sum per weight, once per batch. Any latency figure is cold
   (8216ffe): each question timed from scratch, with the walk, the move of its entries to the device and the forward.
+
+### scr-zrct (L-musique): PROMISING. scr-zrct-hp (L-hotpotqa): PROMISING. The pair and its re-call are PROMISING (11:08), so round eighteen's full run starts
+
+`outputs/screen/scr-zrct.md` and `scr-zrct-hp.md` with their `-same.md`, `scr-zrct-pair.md` and
+`scr-zrct-pair-recall.md`. R@5 of zrc (trained on its own entries) minus zrm's fit of the same split, called with the
+null's floors. Unmarked reads are WITHIN. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | −0.0007 | −0.0006 | +0.0004 zs | +0.0001 | +0.0024 | +0.0257 GAIN zs (floor 0.0102) |
+| L-hotpotqa | −0.0008 | −0.0003 | +0.0045 | −0.0006 zs | +0.0051 | +0.0450 GAIN zs (floor 0.0233) |
+
+- **webqsp read zero-shot GAINs in both fits,** as zrcd's diagnosis found. R@5 rises from 0.313 to 0.338 in
+  L-musique's fit and from 0.242 to 0.287 in L-hotpotqa's. Trained on its own entries, zrc keeps what zrcd measured
+  with zrm's weights (+0.0215 and +0.0444).
+- **hit@1 on webqsp falls in both fits,** by 0.0532 and 0.0160 (zrcd: 0.046 and 0.005). The screens decide on R@5; the
+  full run reports hit@1 beside it.
+- **The other ten reads move by 0.0051 or less.**
+  - 2wiki in-domain rises +0.0024 and +0.0051, with FC@5 +0.0054 and +0.0146.
+  - metaqa in-domain moves −0.0007 and −0.0008.
+- **Every read differs from zrm's** (the `-same` files: DIFFERENT on all six datasets in both fits). That is expected:
+  two entries of metaqa's training carve differ, so the weights differ. The golds in the top five change for 124 to
+  906 questions a read.
+- **No call changed under the null.** In the filed re-call record, the host's absolute paths of zrm's two comparisons
+  are cut to relative ones. Nothing else in it changed.
+- **What follows.**
+  - `fzk-gate` passes: the re-call is PROMISING, and zrm is the base (ADOPT, 10:05).
+  - The full run (docs/FULL_ROUND18.md) trains L-2wiki, L-squad, J5 and L-metaqa when the card has room, decided
+    against zrm's fits and re-graded under the null over every split.
+  - L-metaqa's fit trains no typed graph, so its six reads must be zrm's bit for bit (`compare-L-metaqa-same.md`).
+  - Any speed figure for this arm is cold (8216ffe).
+- **ETAs.** The card holds zgs's L-hotpotqa fit until about 11:40 and round nineteen's two screen fits until about
+  11:45 to 11:50. The four fits take about 40 minutes each, two or three at a time. The grade lands about 13:30 to
+  14:30.

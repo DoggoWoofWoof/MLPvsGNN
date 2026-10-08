@@ -1,0 +1,73 @@
+{
+ "new": "outputs/screen/fits/scr-zrct-hp",
+ "base": "outputs/screen/fits/scr-zrm-hp",
+ "rows": [
+  {
+   "dataset": "2wiki",
+   "status": "DIFFERENT",
+   "differ": [
+    "hit",
+    "scores64",
+    "top"
+   ],
+   "questions_top_differs": 906,
+   "questions": 12576
+  },
+  {
+   "dataset": "hotpotqa",
+   "status": "DIFFERENT",
+   "differ": [
+    "hit",
+    "scores64",
+    "top"
+   ],
+   "questions_top_differs": 487,
+   "questions": 7405
+  },
+  {
+   "dataset": "metaqa",
+   "status": "DIFFERENT",
+   "differ": [
+    "hit",
+    "scores64",
+    "top"
+   ],
+   "questions_top_differs": 295,
+   "questions": 9785
+  },
+  {
+   "dataset": "musique",
+   "status": "DIFFERENT",
+   "differ": [
+    "hit",
+    "scores64",
+    "top"
+   ],
+   "questions_top_differs": 247,
+   "questions": 2417
+  },
+  {
+   "dataset": "squad",
+   "status": "DIFFERENT",
+   "differ": [
+    "hit",
+    "scores64",
+    "top"
+   ],
+   "questions_top_differs": 124,
+   "questions": 11873
+  },
+  {
+   "dataset": "webqsp",
+   "status": "DIFFERENT",
+   "differ": [
+    "hit",
+    "scores64",
+    "top"
+   ],
+   "questions_top_differs": 296,
+   "questions": 1503
+  }
+ ],
+ "script_sha256": "bf2bebf38f463fd1222eb39a808f38d25e109615d13779e2242a43d9a51b81e3"
+}
