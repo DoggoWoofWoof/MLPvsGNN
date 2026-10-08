@@ -978,6 +978,81 @@ question.
   smoke takes about 10 minutes. The two fits take about 15 to 25 minutes each, and their reads about 10. The pair and
   its re-call land about 09:30 to 10:30.
 
+### Seventeenth round (declared 8 October at about 09:10, before any of its numbers)
+
+Code: `outputs/mp_unified/zrc.py` (its selftest passes). One arm, a preprocessing change to rmatch's chain entries,
+decided against zrm's fits. Nothing is trained: zrm's two screen fits, and its four full-run fits if the screen passes,
+are read again with the new entries.
+
+**Why this arm.**
+- rmatch's build keeps, per row and seed bucket, the 64 chain entries with the most walk mass. Walk mass is set by the
+  graph's degrees, not by the question.
+- The diagnosis filed below ('what rmatch's chain caps cost a chain match'): on webqsp's s1eval carve those entries
+  keep 0.132 of the starting match's sum on gold rows. Ranking rows by the match at its start alone, R@5 is 0.2109
+  with the build's entries, 0.2138 with every entry, and 0.2493 with the 64 entries per row and bucket that add most
+  to the match.
+- On metaqa's s1eval carve no cap binds, and the three are equal (0.2938).
+- zrm's largest gain is on webqsp read zero-shot (R@5 0.177 to 0.313 in L-musique's fit). Better entries may lift it
+  further, with no training.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-zrc, scr-zrc-hp | zrc | **Chain entries kept by what they add to the match (preprocessing).** rmatch's walk, chain cap (20,000 chains), renormalised mass and arrays, with one change: per row and seed bucket, the 64 entries kept are those with the largest w0(c)·m_c(v) in place of the largest m_c(v). w0 is the match at its start, (1/3)∏σ(zcos_q(r_k)) over the chain's relations (rmatch.ChainMatch before training), from the frozen encoder's question and relation embeddings. Ties go to the earlier chain. zrm's model and weights, unchanged. No new column, block or hyperparameter. |
+
+**Why nothing is trained.**
+- webqsp never trains. metaqa is the only typed graph a fit trains on (every split but L-metaqa), on its fit carve.
+- If that carve never fills a row's 64 entries, zrc's build of it is rmatch's array for array. Then zrc's training is
+  zrm's bit for bit (the same arrays, initialisation, batches and seed), and zrm's fits are zrc's.
+- **The identity gate** (`zrc-identity`: `zrc.py identity --carves metaqa=fit`) checks every part of that carve, array
+  for array. Only if it is IDENTICAL are zrm's fits copied (`zrc.py fork`: models and training records unchanged,
+  under arm zrc, in new folders) and read on the six s1eval carves with zrc's entries. zrm's folders are not written.
+- If the gate is not IDENTICAL, nothing is forked or read, and the round stops. A round that trains would be declared
+  in its own file.
+
+**What this arm can and cannot change.**
+- Only the reads of the typed graphs can change: webqsp's (read zero-shot in every split), and metaqa's if its s1eval
+  carve fills a row's 64 entries (the diagnosis says it does not).
+- The reads of squad, musique, hotpotqa and 2wiki must be zrm's bit for bit. Each comparison files that check beside
+  it (`<out>-same.md`: every array of every read against zrm's). A difference there is a bug, and the round stops.
+- L-metaqa's fit trains no typed graph, so its match's gates stay at zero, and its reads must be zrm's too.
+
+**How it is decided.**
+- Each read is compared with zrm's fit of its split, which decides. zret's fit and step 1's are reported beside it.
+- The pair and its re-call under the seed null are relz.py's, run under zrc's name. Each read's base R@5 is zrm's
+  (zrm's fits compared with step 1's, `outputs/zrc/base-zrm-<split>.json`), with the null's floors.
+- **If the re-call is PROMISING, the full run starts by itself** (docs/FULL_ROUND17.md, declared with this round).
+  zrm's four full-run fits are forked and read, graded against zrm's fits, and re-graded under the null over every
+  split.
+- **Adoption is relative to zrm.**
+  - If zrm's own re-grade (docs/FULL_ROUND14.md) is ADOPT, zrc ADOPT makes zrc the base of every later screen and run.
+  - If zrm is NOT_ADOPTED, zrc's grade decides nothing about the base. A grade of zrc against zret's fits would be
+    declared in a later round, before its numbers.
+  - If another arm of rounds thirteen to sixteen is ADOPTED too, each re-grade is filed and the next base is declared
+    in a later round, before its numbers.
+
+**What the screen can show.**
+- A GAIN on webqsp read zero-shot means the build's mass rule held zrm's match back on a graph it never trained on.
+  The diagnosis puts that at about 0.035 to 0.04 of R@5 for the match at its start, before its trained weights.
+- NO_GAIN means the trained match already makes up for it.
+- A LOSS on webqsp means the trained match leans on the entries kept by mass.
+
+**Speed.** The rule changes which entries a row keeps, at build time. It takes one cosine per pool relation and a
+product per chain, inside the walk the build already makes. Any latency figure for this arm is cold (8216ffe): each
+question from scratch, the walk, the selection and the forward included, with no warm-up pass and nothing kept from
+an earlier question.
+
+**Caps and order.**
+- The builds, the identity gate and the comparisons are CPU only: 1 CPU and 2 GB per build (the diagnosis's walk
+  peaked under 0.5 GB). The forks copy two files (1 CPU, 1 GB).
+- Reads: 0.30 of the card (share 0.32) and 6 GB, as zrm's reads (measured peak 3.6 GB).
+- **The items go after round fifteen's (zrs's full run), ahead of zgs's re-queued screen** (`scr-train-zgs-b`'s
+  block): reads of minutes ahead of a fit of about 2 hours. zrm's full run and zrs's keep their places. No rule
+  changes.
+- **ETAs:** the builds and the gate take about 5 minutes. The screen's two reads wait for zrm's full-run reads and
+  zrs's fits on the card, then take about 3 minutes each. The pair and its re-call land about 09:45 to 10:30. If it
+  passes, each full-run fork waits for its zrm fit and its comparison for zrm's read. The grade lands about 10:30 to
+  11:30.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -1979,3 +2054,30 @@ fit of the same split, called with the null's floors. Unmarked reads are WITHIN.
   and L-metaqa; each fit trains the match alone, so it takes minutes. Its items follow zrm's full run on the card. If
   both zrm and zrs are ADOPTED, each re-grade is filed and the next base is declared in a later round, before its
   numbers. Any speed figure for this arm is cold (8216ffe).
+
+### A diagnosis: what rmatch's chain caps cost a chain match (08:47; `outputs/diag/chaincov-webqsp-s1eval.md`, `chaincov-metaqa-s1eval.md`; decides nothing)
+
+`outputs/mp_unified/chaincov.py` (af8b615) walks rmatch's chains on the typed graphs' s1eval carves, as rmatch's build
+does, and scores each row by the match at its start alone: S0(v), the sum over a row's entries of w0(c)·m_c(v), with
+w0(c) = (1/3)∏σ(zcos_q(r_k)) (rmatch.ChainMatch before training). Nothing is trained or read. Three entry sets: every
+entry the walk makes ('all'), the build's 64 per row and seed bucket with the most mass ('mass'), and the 64 with the
+largest w0(c)·m_c(v) ('contrib').
+
+webqsp (1,503 questions, each with a gold; the chain cap stopped bucket 0's walk on 593 and some bucket's on 1,259):
+
+| entry set | R@5 by S0 | R@5 by S0, questions the chain cap stopped | S0 kept on gold rows | on other rows |
+| --- | ---: | ---: | ---: | ---: |
+| all | 0.2138 | 0.2051 | 1.000 | 1.000 |
+| mass (the build's) | 0.2109 | 0.2051 | 0.132 | 0.305 |
+| contrib | 0.2493 | 0.2466 | 0.174 | 0.358 |
+
+- **The chain cap costs little.** Some chain reaches 0.993 of the golds in the pools of questions it stopped (4,164 of
+  4,195), and 0.995 elsewhere (787 of 791).
+- **The row cap costs little R@5 as built** (0.2109 against 0.2138 with every entry), though it keeps only 0.132 of
+  the starting match's sum on gold rows.
+- **Keeping entries by what they add to the match lifts R@5 by 0.0384** over the build's entries, and by 0.0355 over
+  every entry.
+- **metaqa** (9,785 questions): no cap binds, and all three sets give 0.2938. Some chain reaches 62,693 of its 62,706
+  golds in the pools.
+- This scores the match at its start, without zrm's trained weights. It is why round seventeen (zrc) re-reads zrm's
+  fits with the 'contrib' entries.

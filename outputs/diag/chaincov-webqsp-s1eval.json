@@ -1,0 +1,58 @@
+{
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "look": {
+  "record_0of3.json": "3e9882e6c947eec8936a9fbdbdca8fa5ad725f7a9df9e62c495e0c43b6c93066",
+  "record_1of3.json": "d6d6d73bf4a4bb5cb5bf33a3c964e235f79e78fee89d55c6bdc6a815c1e5ca27",
+  "record_2of3.json": "9d60325155ed85e9ae19654e03470de1dfd1300251b0702c6f14e3797aa70b5e"
+ },
+ "carve_ids_sha256": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e",
+ "walk": {
+  "hops": 3,
+  "max_chains": 20000,
+  "k_row": 64,
+  "buckets": 2
+ },
+ "prior": "w0(c) = (1/3) prod_k sigmoid(zcos_q(r_k)): rmatch.ChainMatch at its start",
+ "questions": 1503,
+ "with_gold": 1503,
+ "capped_b0": 593,
+ "capped_any": 1259,
+ "R@5_by_S0": {
+  "all": 0.2137880090568765,
+  "mass": 0.21092440707052643,
+  "contrib": 0.2492517851161307
+ },
+ "R@5_by_S0_capped_questions": {
+  "all": 0.20514646837280712,
+  "mass": 0.20514308005977375,
+  "contrib": 0.2466140900546074
+ },
+ "capped_questions_with_gold": 1259,
+ "S0_kept_share": {
+  "mass": {
+   "gold": 0.13156357870744279,
+   "other": 0.3047718630828771
+  },
+  "contrib": {
+   "gold": 0.17411987461838854,
+   "other": 0.35760189852634006
+  }
+ },
+ "golds_reached": {
+  "capped": {
+   "reached": 4164,
+   "golds_in_pool": 4195,
+   "share": 0.9926102502979738
+  },
+  "not_capped": {
+   "reached": 787,
+   "golds_in_pool": 791,
+   "share": 0.9949431099873578
+  }
+ },
+ "limit": null,
+ "script_sha256": "9008b769c441d29893c62b7766d42cb8f9f68cdc648ae00612273b3103a0f173",
+ "rmatch_sha256": "db335f85b69a04bc0583e8c381f239a6c480ddc675d2426065126320fd158001",
+ "seconds": 203.3
+}
