@@ -1899,3 +1899,20 @@ read.
 - One epoch's metaqa select hit@1 (zret 0.487, zrs 0.499) checks the mechanics only.
 - **What follows:** the two screen fits start as the card frees. A zrs fit trains the match alone, so it takes minutes.
   The pair and its re-call land about 08:30 to 09:30.
+
+### A diagnosis: where zret's lost R@5 sits (08:05; `outputs/diag/goldsplit-zret.md`, decides nothing)
+
+`outputs/mp_unified/goldsplit.py` (e2098d2) reads zret's six fits' s1eval reads at p@swa and counts, per dataset, the
+questions with two or more golds, FC@5 among them, and how the lost R@5 (one minus each question's R@5) splits between
+questions with some of their golds in the top 5 but not all (partly found) and questions with none in it.
+- **Read in-domain, the multi-hop datasets lose most of their R@5 in partly-found questions.** Every musique, hotpotqa
+  and 2wiki question has two or more golds. In J5, partly-found questions hold 0.770 of musique's lost R@5, 0.620 of
+  hotpotqa's and 0.884 of 2wiki's. FC@5 among them is 0.257, 0.839 and 0.701. metaqa (0.605 of its questions have two
+  or more golds; the 90th percentile is 20) holds 0.637. This is the question zsep (round sixteen) aims at.
+- **Read zero-shot, the KB datasets lose nearly all of it in questions with no gold in the top 5.** webqsp: 0.89 to
+  0.94 in every fit. metaqa read zero-shot in L-metaqa's fit: 0.916 (R@5 0.142). An objective that separates a
+  question's golds cannot reach these questions.
+- **musique read zero-shot in L-musique's fit is between:** R@5 0.390 (0.564 in J5), with 0.460 of its loss in
+  none-found questions (0.230 in J5). Its R@5 is below plain retrieval's (rrf 0.473).
+- squad has one gold per question, so all of its loss is none-found, and zsep trains its questions as zret did.
+- The same count on zrm's two screen fits is queued after their reads (`diag-goldsplit-zrm`).
