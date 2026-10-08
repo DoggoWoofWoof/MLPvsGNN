@@ -96,3 +96,18 @@ early.
   declared in its own file.
 
 ## Results
+
+Development numbers; the paper's numbers come from one declared confirmation run.
+
+### rmatch's screen: PROMISING, and its re-call PROMISING (06:40). The full run has started
+
+docs/SCREENS.md, 'scr-rmatch'.
+- **The base is step 1's.** rel's re-grade is NOT_ADOPTED, so `scr12-base-step1` exited 0 at 05:33 and relrm was
+  dropped.
+- **Five of the twelve reads GAIN against step 1's fits, and none LOSES** under the null's floors:
+  - metaqa in-domain in both fits (+0.1268, +0.1250);
+  - webqsp read zero-shot in both (+0.1376, +0.1446);
+  - musique read zero-shot in L-musique's fit (+0.2324).
+- **The full run:** `frm-gate-b` exited 0 at 06:41. L-2wiki's fit started at 06:42. L-squad, J5 and L-metaqa start as
+  the card frees, ahead of round thirteen's fits, which were re-queued behind them at about 06:47.
+- **ETAs:** rmatch's screen fits took about 15 minutes each. The grade and its re-grade come about 07:30 to 08:15.

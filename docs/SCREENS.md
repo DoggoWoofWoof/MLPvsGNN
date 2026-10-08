@@ -767,6 +767,10 @@ IDENTICAL), one epoch each on 2wiki's and hotpotqa's select carves. Each is read
   1.5 hours each, and its full run's up to about 3.5 hours beside three to five other items on the card. So each zgs
   fit takes about 1.5 to 2 hours, then a read of about 10 minutes. The pair and its re-call land about 09:00 to
   10:00.
+- **Moved at about 06:47, before any of its numbers.** The smoke passed at 06:40, and the two fits started at 06:41,
+  a minute before rmatch's gate passed. rmatch's full run, first in the list, then waited behind them. The two fits
+  were re-queued under `-b` names behind rmatch's fits, with every item after them (the same commands, outputs and
+  gates), and the two running fits were cancelled. A fit writes nothing until it ends. No rule changes.
 
 ## 5. ETAs (7 October)
 
@@ -1563,3 +1567,41 @@ never ran), called with the null's floors. Unmarked reads are WITHIN. zs: read z
   (−0.0025).
 - **What follows (section 2):** zret and gsurg change different things, so the next base comes from a screen of the
   two together, declared as the thirteenth round before its numbers.
+
+### Round thirteen's smoke passed (06:40; `outputs/screen/smoke13/smoke.json`)
+
+- zgs's repeat is IDENTICAL, and it holds zret's model.
+- Its loop met conflicting pairs, 70 of 188 (gsurg's own loop met 60 of 188 on step 1's inputs). zret's loop has no
+  surgery.
+- All three read the same questions. zgs's scores differ from zret's (the surgery) and from gsurg's (zret's forward).
+- One epoch's 2wiki select hit@1 (zret 0.898, gsurg 0.904, zgs 0.904) checks the mechanics only.
+- The two fits were re-queued behind rmatch's full run at about 06:47 (thirteenth round, 'Caps and order').
+
+### scr-rmatch (L-musique): PROMISING. scr-rmatch-hp (L-hotpotqa): PROMISING. The pair and its re-call are PROMISING (06:40), and its full run has started
+
+`outputs/screen/scr-rmatch.md`, `scr-rmatch-hp.md`, `scr-rmatch-pair.md` and `scr-rmatch-pair-recall.md`. R@5 of rmatch
+minus step 1's fit of the same split, called with the null's floors. Step 1's fits are rmatch's base, since rel's
+re-grade is NOT_ADOPTED. Unmarked reads are WITHIN. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.1268 GAIN | +0.0007 | +0.2324 GAIN zs | +0.0023 | +0.0003 | +0.1376 GAIN zs |
+| L-hotpotqa | +0.1250 GAIN | −0.0015 | +0.0038 | −0.0072 zs | +0.0051 | +0.1446 GAIN zs |
+
+- **The largest gains on both typed graphs of any arm screened so far.**
+  - **metaqa in-domain:** R@5 rises from 0.654 to 0.781 in L-musique's fit and to 0.779 in L-hotpotqa's. hit@1 rises
+    from 0.637 to 0.892 and from 0.638 to 0.891. rel's relation columns moved the same R@5 by +0.068 to +0.080 in its
+    full run.
+  - **webqsp read zero-shot** (webqsp never trains): R@5 rises from 0.178 to 0.316 and from 0.120 to 0.265, and hit@1
+    from 0.069 to 0.170 and from 0.059 to 0.130. rel moved this R@5 by +0.064 to +0.116. The match is learned on
+    metaqa's relations alone and carries to webqsp's unseen ones through their frozen text embeddings.
+- **musique read zero-shot in L-musique's fit rises from 0.270 to 0.502,** above plain retrieval's 0.473; hit@1 rises
+  from 0.283 to 0.641.
+  - musique's graph has no typed relations, so the match adds nothing to its scores. The change is in the base
+    model's weights, trained beside the match.
+  - Eleven of the seventeen earlier arms moved this read by +0.08 to +0.24.
+- **The untyped reads hold.** squad, hotpotqa and 2wiki in-domain stay within their floors, and so does hotpotqa read
+  zero-shot in L-hotpotqa's fit (−0.0072, floor 0.0200).
+- **What follows.** `frm-gate-b` exited 0 at 06:41. The full run (docs/FULL_ROUND12.md) trains L-2wiki, L-squad, J5 and
+  L-metaqa, decided against step 1's fits. If it is ADOPTED, three arms are adopted (zret, gsurg, rmatch), and the
+  next base is declared in a later round, before its numbers. Any speed figure for this arm is cold (8216ffe).

@@ -1,0 +1,46 @@
+{
+ "zret": {
+  "train_rc": 0,
+  "repeats": 1,
+  "read_rc": 0,
+  "screen_arm": "zret",
+  "gsurg": null
+ },
+ "gsurg": {
+  "train_rc": 0,
+  "repeats": 1,
+  "read_rc": 0,
+  "screen_arm": "gsurg",
+  "gsurg": {
+   "pairs": 188,
+   "conflicts": 60,
+   "share": 0.3191489361702128
+  }
+ },
+ "zgs": {
+  "train_rc": 0,
+  "repeats": 2,
+  "read_rc": 0,
+  "screen_arm": "zgs",
+  "gsurg": {
+   "pairs": 188,
+   "conflicts": 70,
+   "share": 0.3723404255319149
+  },
+  "repeat": "IDENTICAL"
+ },
+ "zgs_met_conflicts": true,
+ "zret_has_no_surgery": true,
+ "zgs_is_zrets_model": true,
+ "same_questions": true,
+ "scores_differ_from_zret": true,
+ "scores_differ_from_gsurg": true,
+ "p@ep0_hit@1": {
+  "zret": 0.8977272727272727,
+  "gsurg": 0.9044117647058824,
+  "zgs": 0.9044117647058824
+ },
+ "ok": true,
+ "seconds": 88.29406023025513,
+ "script_sha256": "6dbb6aa92488b9b79d864affa5d0c2a7a7e5091282be108577f7d6d9774e084c"
+}
