@@ -2339,3 +2339,38 @@ zrm minus zrs's fit of the same split. Only the reads that are not WITHIN are sh
   - Round eighteen: no numbers exist.
 
   The amendment applies to both arms whatever their re-calls say.
+
+### scr-zsep (L-musique): NO_GAIN. scr-zsep-hp (L-hotpotqa): MIXED. The pair is MIXED and its re-call NO_GAIN (10:28); zsep is dropped
+
+`outputs/screen/scr-zsep.md`, `outputs/screen/scr-zsep-hp.md`, `outputs/screen/scr-zsep-pair.md`,
+`outputs/screen/scr-zsep-pair-recall.md`. R@5 of zsep minus zret's fit of the same split, with the call under the seed
+null's floors:
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.0043 WITHIN | −0.0012 WITHIN | −0.0687 LOSS → WITHIN (zero-shot; floor 0.0720) | −0.0030 WITHIN | −0.0007 WITHIN | +0.0003 WITHIN (zero-shot) |
+| L-hotpotqa | +0.0104 GAIN → WITHIN (floor 0.0149) | −0.0015 WITHIN | **−0.0101 LOSS** (floor 0.0075) [−0.0163, −0.0043] | −0.0026 WITHIN (zero-shot) | −0.0003 WITHIN | −0.0006 WITHIN (zero-shot) |
+
+- **No GAIN among the twelve reads, and one LOSS:** musique read in-domain in L-hotpotqa's fit. So the re-call is
+  NO_GAIN.
+- **hit@1 rises, R@5 does not.**
+  - hit@1 rises on metaqa, hotpotqa and 2wiki read in-domain: metaqa +0.0169 and +0.0216, hotpotqa +0.0205, 2wiki
+    +0.0151 and +0.0120.
+  - On hotpotqa and 2wiki in-domain, R@5 and FC@5 fall slightly (R@5 −0.0003 to −0.0030, FC@5 −0.0035 to −0.0068).
+    metaqa's R@5 rises within its floors (+0.0043 and +0.0104).
+  - The objective was meant to help the golds that trail a leading gold, which R@5 counts. On hotpotqa and 2wiki it
+    moved the top one instead.
+- **musique falls both ways.**
+  - Read zero-shot in L-musique's fit: −0.0687 R@5, −0.0401 FC@5 and −0.0530 hit@1. That is within its floor of
+    0.0720, but the largest move in the pair.
+  - Read in-domain in L-hotpotqa's fit: the LOSS.
+- **The loss changed most training questions.** Questions with two or more golds in the pool, per training carve:
+  - metaqa: 3,488 of 5,960;
+  - hotpotqa: 5,741 of 5,930;
+  - 2wiki: 5,621 of 5,928;
+  - musique: 4,224 of 4,601;
+  - squad: none (one gold each).
+- **What follows.**
+  - By the amendment (10:15), only a PROMISING re-call led to a combination with zrm. None is declared.
+  - `fzp-gate` exits 1. Its full-run items were already commented out.
+  - zgs's re-call (round thirteen) is next, about 11:50 to 12:00. Round eighteen's re-call lands about 11:05 to 11:30.

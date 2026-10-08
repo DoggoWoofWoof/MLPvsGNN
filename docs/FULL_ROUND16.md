@@ -91,3 +91,12 @@ full-run items are commented out in the feeder; the gate stays and starts nothin
 zrm the base').
 
 ## Results
+
+**Not run: the screen's re-call is NO_GAIN (10:28).** `outputs/screen/scr-zsep-pair-recall.md`; filed MIXED in
+`scr-zsep-pair.md`.
+- No GAIN among the twelve reads, and one LOSS: musique read in-domain in L-hotpotqa's fit, −0.0101 R@5 (floor 0.0075).
+- musique read zero-shot in L-musique's fit: −0.0687 R@5, within its floor of 0.0720.
+- hit@1 rises on metaqa, hotpotqa and 2wiki read in-domain (+0.012 to +0.022). R@5 does not.
+- `fzp-gate` exits 1. By the amendment, no combination with zrm is declared, and zsep is dropped.
+
+docs/SCREENS.md has the table under 'scr-zsep'.
