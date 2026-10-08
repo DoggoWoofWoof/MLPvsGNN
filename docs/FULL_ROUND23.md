@@ -5,6 +5,10 @@ twenty-third round). zrm is the base (docs/BASE_ZRM_ZRS.md, re-graded ADOPT at 1
 decides whether zsp's gain over zrm holds on every split, and whether anything else loses. These are development
 numbers. The paper's numbers come from one declared confirmation run.
 
+**Label (8 October about 20:20; docs/SCREENS.md).** zsp is zrm plus one propagation step over the pool graph:
+message passing, not the MLP. The rule and verdict above are unchanged. Every record and claim names it "zrm + one
+propagation step (message passing)". An ADOPT makes it the base of a hybrid track; zrm stays the MLP's base.
+
 ## 1. Question
 
 zsp is zrm plus a small head added to its score. For each row the head reads, per edge family of the question's own

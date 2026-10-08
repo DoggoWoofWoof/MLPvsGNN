@@ -2731,3 +2731,18 @@ Code: `outputs/mp_unified/zprop.py` (its selftest passes).
 - **Speed.** Per question, one pass over its pool's edges after zrm's forward. Any latency figure for zsp is cold
   (8216ffe): each question timed from scratch, with the walk, the move of its entries and edges to the device and the
   forward, no warm-up pass and nothing kept from an earlier question.
+
+### Label: rounds twenty-two and twenty-three are message passing (8 October about 20:20)
+
+- zlk (round twenty-two) and zsp (round twenty-three) add one propagation step after zrm's forward. Each row
+  aggregates from its neighbours in the question's own pool graph: zlk counts its edges from zrm's top rows, and zsp
+  pools its neighbours' scores. The step has no learned weights and passes no gradient, but it runs over the edges at
+  read time and uses other rows' scores. That is message passing (an MLP plus one propagation step, as Correct &
+  Smooth is), not the MLP.
+- They keep running as declared, and their rules and verdicts are unchanged. Every record, table and claim names them
+  **"zrm + one propagation step (message passing)"**. Neither is ever called the MLP or non-MP, and neither is set
+  against the GNN as the MLP.
+- zrm stays the MLP's base. An ADOPT of zlk or zsp makes it the base of a hybrid track, not of the MLP's screens.
+- The MLP's screens stay message-passing-free from here on. A row's inputs are computed before any row is scored,
+  from the question, the row, the frozen features and the graph's fixed structure, and never from another row's
+  score.
