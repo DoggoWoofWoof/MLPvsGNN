@@ -1700,3 +1700,42 @@ re-grade is NOT_ADOPTED. Unmarked reads are WITHIN. zs: read zero-shot.
 - One epoch's metaqa select hit@1 (zret 0.487, rmatch 0.528, zrm 0.518) checks the mechanics only.
 - **What follows:** the two screen fits start as the card frees, ahead of zgs's L-hotpotqa fit. The pair and its
   re-call land about 08:30 to 09:15.
+
+### rmatch's full run, re-graded under the null over every split: NOT_ADOPTED (07:32). Four primary GAINs and one LOSS, on 2wiki read zero-shot
+
+`outputs/full_rmatch/grade-nullx.md` (filed NOT_ADOPTED in `grade.md`). R@5 of rmatch minus step 1's fit of the same
+split. Only the reads that are not WITHIN under the null, or were not WITHIN as filed, are shown; P marks a primary
+read.
+
+| split | dataset | read | step 1 | rmatch | delta | floor | filed → re-call |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| J5 | metaqa | in-domain (P) | 0.6443 | 0.7788 | +0.1345 | 0.0154 | GAIN → GAIN |
+| J5 | musique | in-domain (P) | 0.5609 | 0.5685 | +0.0077 | 0.0158 | GAIN → WITHIN |
+| J5 | webqsp | zero-shot (P) | 0.1167 | 0.2795 | +0.1628 | 0.0295 | GAIN → GAIN |
+| L-squad | metaqa | in-domain | 0.6535 | 0.7785 | +0.1251 | 0.0075 | GAIN → GAIN |
+| L-squad | squad | zero-shot (P) | 0.8797 | 0.8893 | +0.0096 | 0.0075 | GAIN → GAIN |
+| L-squad | webqsp | zero-shot | 0.1302 | 0.2711 | +0.1409 | 0.0260 | GAIN → GAIN |
+| L-musique | metaqa | in-domain | 0.6537 | 0.7805 | +0.1268 | 0.0075 | GAIN → GAIN |
+| L-musique | musique | zero-shot (P) | 0.2696 | 0.5020 | +0.2324 | 0.0720 | GAIN → GAIN |
+| L-musique | webqsp | zero-shot | 0.1779 | 0.3155 | +0.1376 | 0.0102 | GAIN → GAIN |
+| L-hotpotqa | metaqa | in-domain | 0.6540 | 0.7790 | +0.1250 | 0.0149 | GAIN → GAIN |
+| L-hotpotqa | webqsp | zero-shot | 0.1200 | 0.2646 | +0.1446 | 0.0233 | GAIN → GAIN |
+| L-2wiki | metaqa | in-domain | 0.6468 | 0.7803 | +0.1334 | 0.0075 | GAIN → GAIN |
+| L-2wiki | webqsp | zero-shot | 0.1075 | 0.2607 | +0.1532 | 0.0473 | GAIN → GAIN |
+| L-2wiki | 2wiki | zero-shot (P) | 0.8074 | 0.7937 | −0.0136 | 0.0112 | LOSS → LOSS |
+
+- **Four primary GAINs and one LOSS, so rmatch is NOT_ADOPTED.** The LOSS is 2wiki read zero-shot in L-2wiki's fit,
+  beyond its floor (−0.0136 against 0.0112). Its hit@1 holds (+0.0006): the loss is in ranks 2 to 5.
+- **The typed gains hold in every fit that trains metaqa.**
+  - metaqa in-domain: +0.125 to +0.135 R@5, and +0.25 to +0.27 hit@1. In J5, R@5 rises from 0.644 to 0.779.
+  - webqsp read zero-shot (webqsp never trains): +0.138 to +0.163 R@5. In J5, R@5 rises from 0.117 to 0.280 and hit@1
+    by +0.089.
+- **L-metaqa's fit is step 1's bit for bit:** all six reads +0.0000. It trains no typed graph (metaqa is held out and
+  webqsp never trains), so the match took no step, and the model trained as step 1's did, from the same
+  initialisation and batches. metaqa read zero-shot gets nothing from the match: no fit without metaqa learns one.
+- **The untyped reads move only through the model's own weights.** The match adds nothing to a graph without typed
+  relations. Yet training it beside the model moved three untyped reads: squad read zero-shot in L-squad's fit up
+  (+0.0096), musique read zero-shot in L-musique's up (+0.2324), and 2wiki read zero-shot in L-2wiki's down (−0.0136).
+- **What follows.** rmatch is not adopted, and zret stays the base. Round fourteen (zrm: rmatch's match and zret's
+  model trained together) is screening. Round fifteen (zrs: the match trained alone on zret's frozen fits, so the
+  untyped reads cannot move) is declared next, before its numbers.

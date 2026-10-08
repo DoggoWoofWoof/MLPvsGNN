@@ -1,0 +1,243 @@
+{
+ "new": "outputs\\full_rmatch\\fits\\L-metaqa",
+ "bases": [
+  "outputs\\step1\\fits\\L-metaqa"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "hotpotqa",
+  "musique",
+  "squad"
+ ],
+ "by_base": {
+  "outputs\\step1\\fits\\L-metaqa": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "zero-shot",
+     "questions": 9785,
+     "base": [
+      0.0773,
+      0.0588,
+      0.0032
+     ],
+     "new": [
+      0.0773,
+      0.0588,
+      0.0032
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "lo": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "hi": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9076,
+      0.9076,
+      0.7469
+     ],
+     "new": [
+      0.9076,
+      0.9076,
+      0.7469
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "lo": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "hi": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5614,
+      0.2553,
+      0.6872
+     ],
+     "new": [
+      0.5614,
+      0.2553,
+      0.6872
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "lo": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "hi": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "in-domain",
+     "questions": 7405,
+     "base": [
+      0.9046,
+      0.8482,
+      0.8512
+     ],
+     "new": [
+      0.9046,
+      0.8482,
+      0.8512
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "lo": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "hi": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.8639,
+      0.7023,
+      0.8876
+     ],
+     "new": [
+      0.8639,
+      0.7023,
+      0.8876
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "lo": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "hi": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "zero-shot",
+     "questions": 1503,
+     "base": [
+      0.0926,
+      0.0719,
+      0.0546
+     ],
+     "new": [
+      0.0926,
+      0.0719,
+      0.0546
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "lo": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "hi": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "call": "WITHIN"
+    }
+   ],
+   "verdict": "NO_GAIN",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-08T02:00:04Z",
+ "verdict": "NO_GAIN"
+}

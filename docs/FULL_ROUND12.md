@@ -111,3 +111,14 @@ docs/SCREENS.md, 'scr-rmatch'.
 - **The full run:** `frm-gate-b` exited 0 at 06:41. L-2wiki's fit started at 06:42. L-squad, J5 and L-metaqa start as
   the card frees, ahead of round thirteen's fits, which were re-queued behind them at about 06:47.
 - **ETAs:** rmatch's screen fits took about 15 minutes each. The grade and its re-grade come about 07:30 to 08:15.
+
+### The full run, re-graded under the null over every split: NOT_ADOPTED (07:32)
+
+`outputs/full_rmatch/grade-nullx.md`, filed NOT_ADOPTED in `grade.md`; docs/SCREENS.md, 'rmatch's full run'.
+- **Four primary GAINs** (J5's metaqa +0.1345 and webqsp read zero-shot +0.1628, squad read zero-shot in L-squad's fit
+  +0.0096, musique read zero-shot in L-musique's +0.2324) **and one LOSS**, 2wiki read zero-shot in L-2wiki's fit
+  (−0.0136, floor 0.0112). J5's musique (+0.0077) falls within its floor (0.0158).
+- metaqa in-domain GAINs in all five fits that train it (+0.125 to +0.135), and webqsp read zero-shot in all five
+  (+0.138 to +0.163). L-metaqa's fit is step 1's bit for bit.
+- 2wiki has no typed relations, so its LOSS comes from the model's own weights, trained beside the match. Round
+  fifteen (docs/FULL_ROUND15.md) trains the match alone on zret's frozen fits.
