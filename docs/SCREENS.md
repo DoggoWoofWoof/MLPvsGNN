@@ -1463,3 +1463,12 @@ zero-shot.
   05:33, and `scr12-base-step1` exited 0.
 - **ETAs:** the smoke takes about 10 minutes once it is sent. rmatch's two fits follow round eleven's, and the pair and
   its re-call land about 08:00 to 09:00.
+
+**The re-queued smoke passed** (06:05, 57 s; `outputs/screen/smoke12/smoke.json`).
+- The carve checks hold on metaqa select, webqsp s1eval and 2wiki select. The base's matrix, golds and rows are
+  unchanged. At its start the arm scores as its base model, bit for bit, and its chain features are finite. On the first
+  questions the chains reach 0.988 of metaqa's rows and 0.771 of webqsp's. 2wiki has no typed chains.
+- rmatch's repeat is IDENTICAL. Both arms' gates and relation maps moved from zero and are finite, and the base arm's
+  fit holds none. relrm's relation blocks are live, and rmatch's blocks are the base's.
+- All three arms read the same questions, and rmatch's scores differ from the base's. After one epoch, metaqa select's
+  hit@1 is 0.445 for the base, 0.464 for rmatch and 0.558 for relrm. That is a check of the mechanics, not a result.

@@ -1,0 +1,134 @@
+{
+ "carves": {
+  "metaqa=select": {
+   "base_equal": true,
+   "typed": true,
+   "identity_at_start": true,
+   "entries": 11559788,
+   "entries_first_questions": 122655,
+   "features_finite": true,
+   "rows_reached_first_questions": 0.9875
+  },
+  "webqsp=s1eval": {
+   "base_equal": true,
+   "typed": true,
+   "identity_at_start": true,
+   "entries": 133769136,
+   "entries_first_questions": 1462842,
+   "features_finite": true,
+   "rows_reached_first_questions": 0.7713
+  },
+  "2wiki=select": {
+   "base_equal": true,
+   "typed": false,
+   "identity_at_start": true
+  }
+ },
+ "base": {
+  "train_rc": 0,
+  "repeats": 1,
+  "read_rc": 0,
+  "screen_arm": "base",
+  "blocks": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF"
+  ],
+  "head_norms": {
+   "p@ep0": null,
+   "p@swa": null
+  },
+  "peak_gpu_gb": 2.103360512
+ },
+ "rmatch": {
+  "train_rc": 0,
+  "repeats": 2,
+  "read_rc": 0,
+  "screen_arm": "rmatch",
+  "blocks": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF"
+  ],
+  "head_norms": {
+   "p@ep0": [
+    0.10631750524044037,
+    4.738894939422607,
+    0.19341295957565308,
+    3.025286912918091
+   ],
+   "p@swa": [
+    0.10631750524044037,
+    4.738894939422607,
+    0.19341295957565308,
+    3.025286912918091
+   ]
+  },
+  "peak_gpu_gb": 2.103360512,
+  "repeat": "IDENTICAL"
+ },
+ "relrm": {
+  "train_rc": 0,
+  "repeats": 1,
+  "read_rc": 0,
+  "screen_arm": "relrm",
+  "blocks": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF",
+   "typed_rel",
+   "typed_v2",
+   "ordered"
+  ],
+  "head_norms": {
+   "p@ep0": [
+    0.09187029302120209,
+    4.2521653175354,
+    0.14414575695991516,
+    2.6399052143096924
+   ],
+   "p@swa": [
+    0.09187029302120209,
+    4.2521653175354,
+    0.14414575695991516,
+    2.6399052143096924
+   ]
+  },
+  "peak_gpu_gb": 2.103360512
+ },
+ "match_moved": {
+  "rmatch": true,
+  "relrm": true
+ },
+ "base_has_no_match": true,
+ "relrm_rel_blocks_live": true,
+ "rmatch_blocks_are_base": true,
+ "same_questions": true,
+ "scores_differ_from_base": true,
+ "p@ep0_hit@1": {
+  "base": 0.44488977955911824,
+  "rmatch": 0.4635938543754175,
+  "relrm": 0.5577822311289246
+ },
+ "ok": true,
+ "seconds": 57.15923023223877,
+ "script_sha256": "db335f85b69a04bc0583e8c381f239a6c480ddc675d2426065126320fd158001"
+}
