@@ -87,3 +87,16 @@ early.
 - webqsp never trains. Test splits are never read.
 
 ## Results
+
+Development numbers; the paper's numbers come from one declared confirmation run.
+
+### qdepth's screen: MIXED, and its re-call MIXED (06:16). The full run is dropped at its gate
+
+docs/SCREENS.md, 'scr-qdepth'. The base is step 1's: rel's re-grade is NOT_ADOPTED (docs/FULL_ROUND9.md, 05:14), so
+`scr11-base-rel` exited 1 and relqd never ran. Against step 1's fits, musique read zero-shot rises from 0.270 to 0.380
+(+0.1106, floor 0.0720), and webqsp read zero-shot in L-musique's fit LOSES (0.178 to 0.158, −0.0204, floor 0.0102).
+hotpotqa read zero-shot in L-hotpotqa's fit (−0.0125) is within its floor 0.0200. metaqa in-domain hit@1 moves +0.0065
+and +0.0022, far below the oracle's 3-hop lift of 0.074 to 0.083.
+
+`fqd-gate` (`screen_gate.py pass` on the re-call) exited 1 at 06:17. The feeder dropped the four fits with their reads,
+comparisons and grades. No fit of the full run started.

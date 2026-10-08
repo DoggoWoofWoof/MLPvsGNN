@@ -1472,3 +1472,24 @@ zero-shot.
   fit holds none. relrm's relation blocks are live, and rmatch's blocks are the base's.
 - All three arms read the same questions, and rmatch's scores differ from the base's. After one epoch, metaqa select's
   hit@1 is 0.445 for the base, 0.464 for rmatch and 0.558 for relrm. That is a check of the mechanics, not a result.
+
+### scr-qdepth (L-musique): MIXED. scr-qdepth-hp (L-hotpotqa): NO_GAIN. The pair and its re-call are MIXED (06:16), so round eleven's full run was dropped at its gate
+
+`outputs/screen/scr-qdepth.md`, `scr-qdepth-hp.md`, `scr-qdepth-pair.md` and `scr-qdepth-pair-recall.md`. R@5 of
+qdepth minus step 1's fit of the same split (rel's re-grade is NOT_ADOPTED, so the prior ran on step 1's base and relqd
+never ran), called with the null's floors. Unmarked reads are WITHIN. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | −0.0014 | +0.0001 | +0.1106 GAIN zs | −0.0038 | −0.0054 | −0.0204 LOSS zs |
+| L-hotpotqa | −0.0034 | +0.0013 | +0.0035 | −0.0125 zs (LOSS → WITHIN under the null) | +0.0035 | −0.0035 zs |
+
+- **The learned prior does not find the depth the oracle found.** metaqa in-domain moves hit@1 by +0.0065 and +0.0022
+  over all its questions, and R@5 by −0.0014 and −0.0034. A perfect question-to-depth attention lifted the 3-hop
+  questions' hit@1 alone by 0.074 to 0.083 (section 'Hop depth of the top-1 errors').
+- **webqsp, read zero-shot, loses in L-musique's fit:** R@5 0.178 to 0.158 (−0.0204, floor 0.0102), hit@1 −0.0086;
+  in L-hotpotqa's fit hit@1 −0.0100. A prior learned on the training graphs' pools does not stop the seeds ranking
+  first on webqsp.
+- **musique read zero-shot rises from 0.270 to 0.380** (+0.1106, floor 0.0720). Eleven of the seventeen arms screened
+  against step 1's L-musique fit moved this read by +0.08 to +0.24, so it is not the prior's own effect.
+- `fqd-gate` exited 1 at 06:17, and the feeder dropped the four fits with their reads, comparisons and grades.
