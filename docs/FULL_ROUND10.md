@@ -84,3 +84,16 @@ taken out of the queue, since no read they could give changes the verdict.
 - webqsp never trains. Test splits are never read.
 
 ## Results
+
+Development numbers; the paper's numbers come from one declared confirmation run.
+
+### relz's screen: MIXED, and its re-call MIXED (05:52). Its full run is dropped at its gate
+
+docs/SCREENS.md, 'scr-relz'. Against rel's screen fits, read zero-shot, musique rises from 0.356 to 0.513 (+0.1563,
+floor 0.0720) and webqsp in L-hotpotqa's fit from 0.190 to 0.250 (+0.0601, floor 0.0233). metaqa in-domain LOSES in
+both fits (−0.0196, floor 0.0075; −0.0242, floor 0.0149). hotpotqa read zero-shot (−0.0117) is within its floor
+0.0200.
+
+The gate (section 5) needs relz's re-call PROMISING and rel's re-grade under the null over every split ADOPT. Neither
+holds: the re-call is MIXED, and rel's re-grade is NOT_ADOPTED (docs/FULL_ROUND9.md, 05:14). No fit of the full run
+starts.

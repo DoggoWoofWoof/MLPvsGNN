@@ -1426,3 +1426,25 @@ each of its six reads.
   declared before these numbers. On webqsp, read zero-shot, a WITHIN or LOSS can come from the caps, not only from the
   match.
 - The webqsp build took 2.5 minutes, not the 10 to 15 the declaration gave from the laptop's 0.3 seconds a question.
+
+### scr-relz (L-musique): MIXED. scr-relz-hp (L-hotpotqa): MIXED. The pair and its re-call are MIXED (05:52), and its full run was dropped at its gate
+
+`outputs/screen/scr-relz.md`, `scr-relz-hp.md`, `scr-relz-pair.md` and `scr-relz-pair-recall.md`. R@5 of relz minus rel's
+screen fit of the same split (relz's base), called with the null's floors. Unmarked reads are WITHIN. zs: read
+zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | −0.0196 LOSS | +0.0051 | +0.1563 GAIN zs | +0.0018 | +0.0005 | +0.0127 zs |
+| L-hotpotqa | −0.0242 LOSS | +0.0030 | +0.0051 | −0.0117 zs (LOSS → WITHIN under the null) | −0.0018 | +0.0601 GAIN zs |
+
+- **ztop50's trade comes back on rel's inputs.**
+  - musique read zero-shot rises from rel's 0.356 to 0.513, above rrf's 0.473.
+  - webqsp read zero-shot in L-hotpotqa's fit rises from 0.190 to 0.250.
+  - metaqa in-domain loses in both fits (−0.0196, −0.0242), as ztop50's did on step 1's inputs.
+- **Every arm that ranks or clips a pool's statistics (ztop50, prank, relz) lifts musique read zero-shot far past its
+  floor and costs metaqa in-domain.** zret, now adopted, takes a smaller musique gain (0.270 to 0.390) and keeps metaqa
+  within its floors.
+- **relz's full run needed rel's ADOPT as well** (`relz.py gate`), so it was dropped either way when its re-call landed.
+- The re-call record names rel's two screen comparisons by absolute host paths. The committed copy has them relative
+  to the workspace, with the host original's sha256 in its `redacted` field.
