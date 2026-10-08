@@ -2807,6 +2807,11 @@ PROMISING opens the full run (docs/FULL_ROUND24.md, `ffs-gate`).
 **The GNN side.** The same seven blocks plus the three left out above are the GNN track's candidates, selected the same
 way on the GNN in a round of its own.
 
+*Amended before any of this round's numbers (8 October about 21:00):* the selection in step 3 is joint with the GNN's.
+One subset serves zfs and zgn: the largest smaller of the two models' mean gains, admissible for both (twenty-fifth
+round). The GNN's candidates are these seven, so that the two models read the same features. nbr_agg, gcs and typed_v2
+stay out of both.
+
 **Order and ETAs (8 October, about 20:45).**
 - The 16 builds are CPU items (1 CPU, about 5 minutes each); they start now, beside round twenty-three's CPU fits.
 - The two fits are card items placed straight after round twenty-two's screen, ahead of the full runs (rounds
@@ -2822,3 +2827,69 @@ The user: rounds twenty-two (zlk) and twenty-three (zsp) count as **GNN improvem
 which aims at the state of the art. The MLP's screens aim to come as close to the GNN as possible without message
 passing; round twenty-four is the first. Each track's features are selected over all six datasets, including reads
 zero-shot.
+
+## Twenty-fifth round: feature selection for the GNN, with the MLP's features (zgn; declared 8 October about 21:00)
+
+Declared before any of its numbers, and before any number of round twenty-four. `outputs/mp_unified/zgnn.py`. **The
+GNN track. Message passing:** zgn passes each row's hidden state over its question's pool graph. It is never "the MLP"
+and never "non-MP".
+
+**Why.** The user (8 October about 20:55): "also declare the gnn feature selection round, because want both models to
+have the same features". The MLP and the GNN should read one feature set, chosen on all six datasets and on zero-shot
+reads, so that whatever separates them is the message passing and not their inputs.
+
+**The model.** zgn is zfs's model (round twenty-four: zrm over the pick and the seven candidates, the candidates dropped
+at 0.5 per question and block in training and masked at read outside the chosen subset) with two residual
+message-passing layers between its hidden layers and its output:
+- Each row takes the mean hidden state of its neighbours, separately per edge family (0 for a family with none).
+- Then h ← h + GELU(W_t [a_0, a_1, a_2] + b_t), for t = 1, 2. This is GraphSAGE's mean form.
+- The graph is round twenty-two's pool graph (zlink.py): the look's pool edges, undirected, once per family, with no
+  self-loops. On the passage graphs the families are structural, NER and kNN; on metaqa and webqsp they are the KB's
+  relation edges.
+- W_t and b_t start at zero and draw nothing, and the messages have no dropout. At the start zgn's forward is zfs's,
+  and every random draw of zfs's (initial weights, dropout, candidate masks) is also zgn's.
+- 98,560 extra weights at H = 128.
+- Settings and training are zrm's, on the card, seed 0, p@swa.
+
+**The same features.** The candidates are round twenty-four's seven blocks. nbr_agg, gcs and typed_v2 stay out of both
+models: they move frozen features or retrieval scores over the pool graph, and zgn moves its own hidden state, so it
+needs none of them. The two models' inputs are therefore the same columns.
+
+**Round twenty-four amended before any of its numbers.** The selection is joint: one subset for both models.
+- Both models' p@swa are read on the same ten select reads: two fits, the five training datasets, in-domain on four and
+  zero-shot on the held-out one. Every one of the 128 subsets is read, with the rest masked.
+- The chosen subset has the largest smaller of the two models' mean gains, and is admissible for both: no read of
+  either model below −0.002.
+- Ties go to fewer blocks. Below +0.001 the choice is empty for both, NO_SELECTION, and both rounds stop.
+- Each model's own best subset is reported beside, and is not used.
+- zfs's screen, re-call and full run are otherwise as declared, read with the common subset.
+- The amendment's code is in zfeat.py (`joint`, `select --gnn-fits`). The selftest passes.
+
+**The screen, per split (L-musique and L-hotpotqa):**
+1. **Build** the select carves' pool edges (zlink.py build; the fit and s1eval carves' edges exist from round
+   twenty-two).
+2. **Train** zgn: scr-zgn and scr-zgn-hp.
+3. **Select** jointly with zfs (above).
+4. **Read** each zgn fit on the six s1eval carves twice:
+   - with the common subset kept;
+   - with every candidate masked, into a work copy of the same fit (scr-zgn-none, scr-zgn-none-hp), so that the
+     fit's own folder is never written by the second read.
+5. **Compare** the subset read with the same fit's every-candidate-masked read; this decides. zfs's, zrm's and step
+   1's beside. zgn against zfs, with the same features, shows what the message passing adds, and is reported only.
+6. **Pair and re-call** under the seed null, as every round: relz.py's machinery, each read's base R@5 the masked
+   read's (zgnn.py on_none; base compares of scr-zgn-none against step 1's fits, as zrc's base-zrm files).
+
+**Verdict.** The re-call's: PROMISING is at least one GAIN and no LOSS among the twelve reads. A full run, if any, is
+declared in its own file before any of its numbers.
+
+**What it changes and what it does not.**
+- No new graph, column, text, encoder or embedding. The edges are round twenty-two's, from the look.
+- No label, gold flag or dataset name enters any input. webqsp never trains. Test splits are never read.
+- Its numbers are the GNN track's. They are never cited as the MLP's.
+
+**Order and ETAs (8 October, about 21:00).**
+- The five edge builds are CPU items, about 5 minutes each; they start when the CPU cap frees, about 21:00 to 21:15.
+- The two zgn fits are card items after zfs's fits, about an hour each. They start when the card has room, about 21:30
+  to 22:30.
+- The joint selection runs after all four fits (about 25 minutes), then the reads, about 23:30 to midnight.
+- The re-calls of rounds twenty-four and twenty-five land about midnight to 00:45.

@@ -34,10 +34,17 @@ The round, per split (L-musique and L-hotpotqa, the screen's two fits):
   compare against zrm's screen fit of the split (scr-zrm, scr-zrm-hp), zret's and step 1's beside: lean_screen's
           comparison; pair and re-call under the seed null as every round (relz.py under zfs's name, zrc.py's mapping).
 
+Amended before any number of the round existed (8 October about 21:00; docs/SCREENS.md, twenty-fifth round): one
+subset for both models. The GNN track's model zgn (zgnn.py: zfs's model with two message-passing layers over the pool
+graph, trained the same way on the same blocks) is read over the same 128 subsets and ten reads, and the chosen subset
+is the one with the largest smaller of the two models' mean gains, admissible for both (no read of either below
+-MIN_DROP); ties go to fewer blocks; below MIN_GAIN the choice is empty for both (NO_SELECTION). Each model's own best
+subset is reported beside. Both models read with the common subset.
+
     python outputs/mp_unified/zfeat.py build --dataset metaqa --carve fit --host
     python outputs/mp_unified/zfeat.py train --split L-musique --name scr-zfs --arm zfs --device cuda --host
     python outputs/mp_unified/zfeat.py select --fits outputs/screen/fits/scr-zfs,outputs/screen/fits/scr-zfs-hp \\
-        --out outputs/zfeat/select --device cuda --host
+        --gnn-fits outputs/screen/fits/scr-zgn,outputs/screen/fits/scr-zgn-hp --out outputs/zfeat/select --device cuda --host
     python outputs/mp_unified/zfeat.py read --name scr-zfs --select outputs/zfeat/select.json --device cuda --host
     python outputs/mp_unified/zfeat.py compare --new outputs/screen/fits/scr-zfs \\
         --base outputs/screen/fits/scr-zrm,outputs/screen/fits/scr-zret,outputs/step1/fits/L-musique --out outputs/screen/scr-zfs
@@ -73,6 +80,8 @@ import numpy as np  # noqa: E402
 import torch  # noqa: E402
 
 import zrc as ZC  # noqa: E402
+
+sys.modules.setdefault("zfeat", sys.modules[__name__])      # zgnn.py imports this module, never a second copy of it
 
 ZM, RM = ZC.ZM, ZC.RM
 Z, R = RM.Z, RM.R
@@ -110,7 +119,9 @@ MIN_DROP = 0.002
 MIN_GAIN = 0.001
 SETTINGS = {"candidates": list(CAND), "p_drop": P_DROP, "mask_seed_offset": MASK_SEED_OFF,
             "select_carves": [list(x) for x in SEL_CARVES], "min_drop": MIN_DROP, "min_gain": MIN_GAIN,
-            "left_out_as_message_passing": list(MP_LEFT_OUT)}
+            "left_out_as_message_passing": list(MP_LEFT_OUT),
+            "joint_with": "zgn (zgnn.py): the largest smaller of the two models' mean gains, admissible for both"}
+GNN_ARM = "zgn"
 
 
 # ── build: the candidates' look columns, part by part as step 1's cache holds them ──
@@ -293,7 +304,8 @@ class ZFS(ZM.ZRM):
         keep[:, js] = 0.0
         return keep
 
-    def forward(self, feats, keep, nq, B, base_z):
+    def keep_of(self, keep):
+        """keep as this model reads it: the training draw on the candidates, or READ_KEEP's mask at read."""
         if self.training and self.j_cand:
             if self.gen is None:
                 self.gen = torch.Generator(device=keep.device)
@@ -304,7 +316,10 @@ class ZFS(ZM.ZRM):
             keep[:, self.j_cand] = keep[:, self.j_cand] * m
         elif not self.training and type(self).READ_KEEP is not None:
             keep = self.masked(keep, set(type(self).READ_KEEP))
-        return super().forward(feats, keep, nq, B, base_z)
+        return keep
+
+    def forward(self, feats, keep, nq, B, base_z):
+        return super().forward(feats, self.keep_of(keep), nq, B, base_z)
 
 
 S.ARMS.update({ARM: (ZFS, FeatChainCarve)})
@@ -362,6 +377,34 @@ def objective(table, n_reads):
     """table: {subset (tuple of blocks): [R@5 per read]}, the empty subset included. Returns (chosen subset, its row,
     the rows of every subset): gain = R@5 minus the empty subset's per read; admissible when no read falls below
     -MIN_DROP; the largest mean gain wins, ties to fewer blocks; below MIN_GAIN the empty subset."""
+    rows = gain_rows(table, n_reads)
+    ok = [r for r in rows if r["admissible"]]
+    best = max(ok, key=lambda r: (r["mean_gain"], -len(r["subset"]))) if ok else None
+    if best is None or best["mean_gain"] < MIN_GAIN:
+        best = next(r for r in rows if not r["subset"])
+    return tuple(best["subset"]), best, sorted(rows, key=lambda r: -r["mean_gain"])
+
+
+def joint(table_m, table_g, n_reads):
+    """The common subset of the two models (zfs's table, zgn's): admissible for both, the largest smaller of the two
+    mean gains, ties to fewer blocks; below MIN_GAIN the empty subset. Returns (chosen, its joint row, joint rows)."""
+    rm = {tuple(r["subset"]): r for r in gain_rows(table_m, n_reads)}
+    rg = {tuple(r["subset"]): r for r in gain_rows(table_g, n_reads)}
+    if sorted(rm) != sorted(rg):
+        raise SystemExit("zfeat select: the two models' tables hold different subsets")
+    rows = [{"subset": list(s), "joint_gain": min(rm[s]["mean_gain"], rg[s]["mean_gain"]),
+             "mlp_mean_gain": rm[s]["mean_gain"], "gnn_mean_gain": rg[s]["mean_gain"],
+             "mlp_min_gain": rm[s]["min_gain"], "gnn_min_gain": rg[s]["min_gain"],
+             "admissible": rm[s]["admissible"] and rg[s]["admissible"]} for s in rm]
+    ok = [r for r in rows if r["admissible"]]
+    best = max(ok, key=lambda r: (r["joint_gain"], -len(r["subset"]))) if ok else None
+    if best is None or best["joint_gain"] < MIN_GAIN:
+        best = next(r for r in rows if not r["subset"])
+    return tuple(best["subset"]), best, sorted(rows, key=lambda r: -r["joint_gain"])
+
+
+def gain_rows(table, n_reads):
+    """Each subset's gains over the empty subset, read by read, and whether it is admissible."""
     base = np.asarray(table[()], np.float64)
     rows = []
     for sub, r5 in table.items():
@@ -370,11 +413,7 @@ def objective(table, n_reads):
             raise SystemExit(f"zfeat select: subset {sub} has {g.size} reads, not {n_reads}")
         rows.append({"subset": list(sub), "mean_gain": round(float(g.mean()), 6), "min_gain": round(float(g.min()), 6),
                      "gains": [round(float(x), 6) for x in g], "admissible": bool(g.min() >= -MIN_DROP)})
-    ok = [r for r in rows if r["admissible"]]
-    best = max(ok, key=lambda r: (r["mean_gain"], -len(r["subset"]))) if ok else None
-    if best is None or best["mean_gain"] < MIN_GAIN:
-        best = next(r for r in rows if not r["subset"])
-    return tuple(best["subset"]), best, sorted(rows, key=lambda r: -r["mean_gain"])
+    return rows
 
 
 @torch.no_grad()
@@ -399,25 +438,17 @@ def subset_reads(c, model, blocks, subsets, rows_cap=LG.READ_ROWS):
     return {s: [float(x) for x in LG.metrics_of(tops[s], hits[s], c.gt_np)[ok].mean(0)] for s in subsets}
 
 
-def select(fits, out, device, host=False, verify=True):
-    t0 = time.time()
-    flags = LG.set_flags(device)
-    LG.bind_device_ops()
-    placement = None
-    if host:
-        import lean_host as LH
-        placement = LH.substitute()
-    subsets = [()] + [tuple(b for b in CAND if b in comb) for k in range(1, len(CAND) + 1)
-                      for comb in itertools.combinations(CAND, k)]
+def model_reads(fits, arm, cls, carve_cls, device, verify, subsets):
+    """Every subset's (R@5, FC@5, hit@1) on the select carves, fit by fit, for one model; and the reads' records."""
     per_read, reads = {s: [] for s in subsets}, []
     for f in fits:
         fdir = Path(f)
         sj = json.loads((fdir / "screen.json").read_text(encoding="utf-8"))
-        if sj.get("arm") != ARM:
-            raise SystemExit(f"zfeat select: {fdir} is arm {sj.get('arm')}'s, not {ARM}'s")
+        if sj.get("arm") != arm:
+            raise SystemExit(f"zfeat select: {fdir} is arm {sj.get('arm')}'s, not {arm}'s")
         blob = torch.load(fdir / "models.pt", weights_only=False)
         with with_sets():
-            models = [x for x in LG.load_models(blob, device, cls=ZFS) if x[0] == "p@swa"]
+            models = [x for x in LG.load_models(blob, device, cls=cls) if x[0] == "p@swa"]
         if len(models) != 1:
             raise SystemExit(f"zfeat select: {fdir} has no single p@swa")
         _n, model, blocks = models[0]
@@ -427,50 +458,85 @@ def select(fits, out, device, host=False, verify=True):
         train = [d for d, _cv in blob["train"]]
         for ds, cv in SEL_CARVES:
             tc = time.time()
-            c = FeatChainCarve(ds, cv, blob["basis"], device, LC.OUT, verify)
+            c = carve_cls(ds, cv, blob["basis"], device, LC.OUT, verify)
             if c.basis_sha256 != blob["basis_sha256"]:
                 raise SystemExit(f"{ds}/{cv}: the cache's basis is not the fit's")
             m = subset_reads(c, model, blocks, subsets)
             for s in subsets:
                 per_read[s].append(m[s])
-            reads.append({"fit": fdir.name, "split": sj.get("split"), "dataset": ds, "carve": cv,
+            reads.append({"model": arm, "fit": fdir.name, "split": sj.get("split"), "dataset": ds, "carve": cv,
                           "zero_shot": ds not in train, "questions": c.rows, "with_gold": int((c.gt_np > 0).sum()),
                           "none": [round(x, 4) for x in m[()]], "all": [round(x, 4) for x in m[tuple(CAND)]]})
-            log(f"  {fdir.name} {ds}={cv}{' (zero-shot)' if ds not in train else ''}: {c.rows} questions; R@5 "
+            log(f"  {arm} {fdir.name} {ds}={cv}{' (zero-shot)' if ds not in train else ''}: {c.rows} questions; R@5 "
                 f"none {m[()][0]:.4f}, all {m[tuple(CAND)][0]:.4f} ({time.time() - tc:.0f}s)")
             del c
             if str(device).startswith("cuda"):
                 torch.cuda.empty_cache()
-    table = {s: [r[0] for r in per_read[s]] for s in subsets}
-    chosen, best, rows = objective(table, len(reads))
+    return per_read, reads
+
+
+def select(fits, out, device, host=False, verify=True, gnn_fits=()):
+    t0 = time.time()
+    flags = LG.set_flags(device)
+    LG.bind_device_ops()
+    placement = None
+    if host:
+        import lean_host as LH
+        placement = LH.substitute()
+    if len(gnn_fits) != len(fits):
+        raise SystemExit("zfeat select: one zgn fit per zfs fit (the joint selection, twenty-fifth round)")
+    import zgnn as ZG
+    subsets = [()] + [tuple(b for b in CAND if b in comb) for k in range(1, len(CAND) + 1)
+                      for comb in itertools.combinations(CAND, k)]
+    per_m, reads_m = model_reads(fits, ARM, ZFS, FeatChainCarve, device, verify, subsets)
+    per_g, reads_g = model_reads(gnn_fits, GNN_ARM, ZG.ZGNN, ZG.GNNCarve, device, verify, subsets)
+    if [(r["split"], r["dataset"]) for r in reads_m] != [(r["split"], r["dataset"]) for r in reads_g]:
+        raise SystemExit("zfeat select: the two models' reads are not the same splits and carves")
+    n = len(reads_m)
+    tm = {s: [r[0] for r in per_m[s]] for s in subsets}
+    tg = {s: [r[0] for r in per_g[s]] for s in subsets}
+    chosen, best, rows = joint(tm, tg, n)
+    own = {}
+    for arm, tab, per in ((ARM, tm, per_m), (GNN_ARM, tg, per_g)):
+        ch, bst, rws = objective(tab, n)
+        own[arm] = {"chosen_alone": list(ch), "best_alone": bst,
+                    "subsets": [dict(r, fc5=[round(x[1], 4) for x in per[tuple(r["subset"])]],
+                                     hit1=[round(x[2], 4) for x in per[tuple(r["subset"])]]) for r in rws],
+                    "single_blocks": {b: next(r for r in rws if r["subset"] == [b]) for b in CAND}}
     verdict = "SELECTED" if chosen else "NO_SELECTION"
-    rec = {"round": "twenty-fourth", "arm": ARM, "verdict": verdict, "chosen": list(chosen), "best": best,
-           "reads": reads, "settings": SETTINGS, "fits": [Path(f).name for f in fits],
-           "subsets": [dict(r, fc5=[round(x[1], 4) for x in per_read[tuple(r["subset"])]],
-                            hit1=[round(x[2], 4) for x in per_read[tuple(r["subset"])]]) for r in rows],
-           "single_blocks": {b: next(r for r in rows if r["subset"] == [b]) for b in CAND},
+    rec = {"round": "twenty-fourth (joint with the twenty-fifth)", "arm": ARM, "gnn_arm": GNN_ARM, "verdict": verdict,
+           "chosen": list(chosen), "best": best, "joint": rows, "models": own, "reads": reads_m + reads_g,
+           "settings": SETTINGS, "fits": [Path(f).name for f in fits], "gnn_fits": [Path(f).name for f in gnn_fits],
            "flags": flags, "placement": placement, "zfeat_sha256": LC.sha_src(__file__),
-           "message_passing": False, "seconds": round(time.time() - t0, 1)}
+           "zgnn_sha256": LC.sha_src(ZG.__file__), "seconds": round(time.time() - t0, 1)}
     out = Path(out)
     LC.write_json(out.with_suffix(".json"), rec)
-    lines = [f"# Round twenty-four's selection: {verdict}", "",
-             f"Chosen: {', '.join(chosen) if chosen else 'none'}. Mean R@5 gain over every candidate masked "
-             f"{best['mean_gain']:+.4f}, lowest read {best['min_gain']:+.4f} (ten select reads, two fits).", "",
-             "| subset | mean gain | lowest | admissible |", "| --- | --- | --- | --- |"]
+    lines = [f"# Rounds twenty-four and twenty-five: the common selection, {verdict}", "",
+             f"Chosen for both models: {', '.join(chosen) if chosen else 'none'}. Mean R@5 gain over every candidate "
+             f"masked: zfs {best['mlp_mean_gain']:+.4f} (lowest read {best['mlp_min_gain']:+.4f}), zgn "
+             f"{best['gnn_mean_gain']:+.4f} (lowest {best['gnn_min_gain']:+.4f}); ten select reads per model, two fits.",
+             "", f"Each model alone would choose: zfs {'+'.join(own[ARM]['chosen_alone']) or 'none'} "
+             f"({own[ARM]['best_alone']['mean_gain']:+.4f}), zgn {'+'.join(own[GNN_ARM]['chosen_alone']) or 'none'} "
+             f"({own[GNN_ARM]['best_alone']['mean_gain']:+.4f}).", "",
+             "| subset | smaller mean gain | zfs mean | zfs lowest | zgn mean | zgn lowest | admissible |",
+             "| --- | --- | --- | --- | --- | --- | --- |"]
     for r in rows[:15]:
-        lines.append(f"| {'+'.join(r['subset']) or 'none'} | {r['mean_gain']:+.4f} | {r['min_gain']:+.4f} | "
+        lines.append(f"| {'+'.join(r['subset']) or 'none'} | {r['joint_gain']:+.4f} | {r['mlp_mean_gain']:+.4f} | "
+                     f"{r['mlp_min_gain']:+.4f} | {r['gnn_mean_gain']:+.4f} | {r['gnn_min_gain']:+.4f} | "
                      f"{'yes' if r['admissible'] else 'no'} |")
-    lines += ["", "Each block alone:", "", "| block | mean gain | lowest |", "| --- | --- | --- |"]
+    lines += ["", "Each block alone:", "", "| block | zfs mean | zfs lowest | zgn mean | zgn lowest |",
+              "| --- | --- | --- | --- | --- |"]
     for b in CAND:
-        r = rec["single_blocks"][b]
-        lines.append(f"| {b} | {r['mean_gain']:+.4f} | {r['min_gain']:+.4f} |")
-    lines += ["", "| fit | read | zero-shot | R@5 none | R@5 all |", "| --- | --- | --- | --- | --- |"]
-    for r in reads:
-        lines.append(f"| {r['fit']} | {r['dataset']}={r['carve']} | {'yes' if r['zero_shot'] else ''} | "
+        m_, g_ = own[ARM]["single_blocks"][b], own[GNN_ARM]["single_blocks"][b]
+        lines.append(f"| {b} | {m_['mean_gain']:+.4f} | {m_['min_gain']:+.4f} | {g_['mean_gain']:+.4f} | "
+                     f"{g_['min_gain']:+.4f} |")
+    lines += ["", "| model | fit | read | zero-shot | R@5 none | R@5 all |", "| --- | --- | --- | --- | --- | --- |"]
+    for r in reads_m + reads_g:
+        lines.append(f"| {r['model']} | {r['fit']} | {r['dataset']}={r['carve']} | {'yes' if r['zero_shot'] else ''} | "
                      f"{r['none'][0]:.4f} | {r['all'][0]:.4f} |")
     out.with_suffix(".md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    log(f"zfeat select: {verdict}; chosen {list(chosen)}; mean gain {best['mean_gain']:+.4f}, lowest "
-        f"{best['min_gain']:+.4f} ({time.time() - t0:.0f}s)")
+    log(f"zfeat select: {verdict}; chosen {list(chosen)}; mean gains zfs {best['mlp_mean_gain']:+.4f}, zgn "
+        f"{best['gnn_mean_gain']:+.4f} ({time.time() - t0:.0f}s)")
     return 0 if chosen else 1
 
 
@@ -599,6 +665,14 @@ def selftest():
     assert not next(r for r in rows if r["subset"] == ["b"])["admissible"]
     ch2, _b, _r = objective({(): [0.5, 0.5], ("a",): [0.5004, 0.5004]}, 2)
     assert ch2 == ()                                                         # below MIN_GAIN: nothing chosen
+    # the joint choice: admissible for both, the largest smaller mean gain ('b' is best for the MLP alone, but the
+    # GNN loses on it; 'a' helps both)
+    tg = {(): [0.6, 0.6, 0.6], ("a",): [0.605, 0.606, 0.604], ("b",): [0.59, 0.6, 0.6], ("a", "b"): [0.6, 0.6, 0.6]}
+    tm = {(): [0.5, 0.5, 0.5], ("a",): [0.505, 0.505, 0.505], ("b",): [0.52, 0.52, 0.52], ("a", "b"): [0.52, 0.52, 0.52]}
+    cj, bj, rj = joint(tm, tg, 3)
+    assert cj == ("a",) and abs(bj["joint_gain"] - 0.005) < 1e-6 and objective(tm, 3)[0] == ("b",)
+    assert not next(r for r in rj if r["subset"] == ["b"])["admissible"]
+    assert joint({(): [0.5], ("a",): [0.51]}, {(): [0.5], ("a",): [0.5005]}, 1)[0] == ()
     # the sets: the candidates after the pick, restored after
     before = {k: list(v) for k, v in LG.SETS.items()}
     with with_sets():
@@ -698,12 +772,13 @@ def main(argv=None):
     if k.cmd == "select":
         sp = argparse.ArgumentParser()
         sp.add_argument("--fits", required=True)
+        sp.add_argument("--gnn-fits", required=True)
         sp.add_argument("--out", required=True)
         sp.add_argument("--device", default="cuda")
         sp.add_argument("--host", action="store_true")
         sp.add_argument("--no-verify", action="store_true")
         s = sp.parse_args(rest)
-        return select(s.fits.split(","), s.out, s.device, s.host, not s.no_verify)
+        return select(s.fits.split(","), s.out, s.device, s.host, not s.no_verify, s.gnn_fits.split(","))
     if k.cmd == "read":
         return read(rest)
     if k.cmd == "compare":

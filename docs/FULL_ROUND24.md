@@ -22,6 +22,8 @@ held-out dataset.
   - Seed 0, on the card.
 - **The subset is the screen's.** It comes from `outputs/zfeat/select.json` and is not selected again. Every read keeps
   that subset and masks the other candidates.
+  - *Amended before any number (8 October about 21:00):* that selection is joint with the GNN's (docs/SCREENS.md,
+    twenty-fifth round). It is one subset for zfs and zgn.
 - **Fits.** Four: L-2wiki, L-squad, L-metaqa and J5.
   - Command: `zfeat.py train --split S --name S --arm zfs --out-root outputs/full_zfs/fits --device cuda`.
   - The screen's two fits (scr-zfs, scr-zfs-hp) are this run's L-musique and L-hotpotqa fits.
