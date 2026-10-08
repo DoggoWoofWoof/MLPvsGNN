@@ -71,7 +71,7 @@ early.
   (docs/SCREENS.md, fourteenth round, 'Caps and order').
 - **ETAs if it passes:** the re-call lands about 08:15 to 09:00. The four fits run together beside zgs's and take
   about 30 to 60 minutes. The grade comes about 09:30 to 10:30.
-- **Re-queued at about 07:20, before any of its numbers** (docs/SCREENS.md, 'Round fourteen's first smoke failed'):
+- **Re-queued at about 07:13, before any of its numbers** (docs/SCREENS.md, 'Round fourteen's first smoke failed'):
   the gate is `fzm-gate-b` and the items are `fzm-*-b`, with the same commands and outputs. The re-call now lands about
   08:30 to 09:15. No rule changes.
 

@@ -1666,7 +1666,7 @@ re-grade is NOT_ADOPTED. Unmarked reads are WITHIN. zs: read zero-shot.
   L-metaqa, decided against step 1's fits. If it is ADOPTED, three arms are adopted (zret, gsurg, rmatch), and the
   next base is declared in a later round, before its numbers. Any speed figure for this arm is cold (8216ffe).
 
-### Round fourteen's first smoke failed (07:06) on its identity check alone. Re-queued under `-b` names (07:20)
+### Round fourteen's first smoke failed (07:06) on its identity check alone. Re-queued under `-b` names (07:13)
 
 `outputs/screen/smoke14/smoke.json`.
 - **Every other check passed.** zrm's repeat is IDENTICAL. rmatch's and zrm's matches moved and are finite, and zret's
@@ -1687,3 +1687,16 @@ re-grade is NOT_ADOPTED. Unmarked reads are WITHIN. zs: read zero-shot.
   card), and it keeps its place. zgs's L-hotpotqa fit waits behind round fourteen's items, as declared.
 - **ETAs:** the smoke takes about 2 minutes once 0.16 of the card is free. The pair and its re-call land about 08:30 to
   09:15.
+
+### Round fourteen's re-queued smoke passed (07:16; `outputs/screen/smoke14b/smoke.json`)
+
+- **The identity holds on all three carves** (metaqa select, webqsp s1eval, 2wiki select): two forwards of zret's
+  model are equal, and zrm at its start scores as zret's model bit for bit. The chain features are finite on both
+  typed carves.
+- The rest is as in the first smoke. zrm's repeat is IDENTICAL. rmatch's and zrm's matches moved and are finite, and
+  zret's fit holds none. All three fits have the same blocks and read the same questions. zrm's scores differ from
+  zret's on metaqa and from rmatch's on 2wiki.
+- It ran `zrm.py` as committed in 1e54e4b.
+- One epoch's metaqa select hit@1 (zret 0.487, rmatch 0.528, zrm 0.518) checks the mechanics only.
+- **What follows:** the two screen fits start as the card frees, ahead of zgs's L-hotpotqa fit. The pair and its
+  re-call land about 08:30 to 09:15.
