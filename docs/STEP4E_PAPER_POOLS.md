@@ -1,0 +1,121 @@
+# Step 4e: pools built the way the papers build them, toward every gold in the pool
+
+Declared 8 October 2026 at about 22:10, before any number of its pools stage, looks, fits or reads. It follows two
+messages from the user:
+- 21:55: "we need to improve every gold in the pool as close to 100 because that is the entire point, check how the
+  papers do it see if we can take something from them".
+- 22:05: "take whatever works from the papers and declare it, dont wait".
+
+## 1. Why
+
+A gold outside a question's pool is lost to every model. Step 4d's union pool U_q (today's frozen pool I_q plus the
+walk's first B_q nodes it does not hold) raises the share of questions with every gold in the pool. The figures below
+are filed in `outputs/step4d/pools/pools.json` on the s1eval carves, before this file:
+
+| dataset | I_q | U_q |
+| --- | --- | --- |
+| metaqa | 0.895 | 0.941 |
+| squad | 0.980 | 0.980 |
+| musique | 0.803 | 0.844 |
+| hotpotqa | 0.968 | 0.972 |
+| 2wiki | 0.906 | 0.909 |
+| webqsp | 0.688 | 0.838 |
+
+That is still far from 1 on four datasets. Twice step 4d's walk budget adds at most 0.007, and almost every gold U_q
+misses lies outside the walk's top 2,000 nodes (step 4b's arrays). So a longer walk from the same seeds does not close
+the gap. The walk starts from about ten seeds: the dense and SPLADE top five. The papers start elsewhere.
+
+## 2. What the papers do, and what is taken
+
+Each item is a fixed rule over the existing graph, retrieval lists and node names. Nothing here uses a transformer, an
+LLM, a new graph, a new embedding or a finer text unit. The encoder stays frozen.
+
+1. **Seed the walk from every retrieved row, weighted by its retrieval score (HippoRAG 2).** HippoRAG 2 seeds its
+   personalized PageRank with every passage node, at its dense similarity times 0.05, beside its matched phrase nodes.
+   - Taken: the walk's restart distribution covers every row of the question's dense and SPLADE top-1000 lists (the
+     frozen caches `prepare` already slices), each weighted by its equal-RRF score (the constant of
+     `retrieval_pools.equal_rrf`).
+   - Today's seeds (dense and SPLADE top five) keep their place: they carry half the restart mass, and the RRF-weighted
+     lists carry the other half. HippoRAG 2's split is not carried over: its 0.05 weights passage nodes against phrase
+     nodes, and our graphs have no phrase nodes.
+2. **Weight the restart by node specificity (HippoRAG).** HippoRAG's node specificity is the inverse of how many
+   passages a node appears in, a graph-native IDF; removing it costs MuSiQue R@2 3.3 points in their ablation.
+   - Taken: each restart weight is multiplied by 1 / log(e + degree), the degree over the regime's families. Hubs then
+     cannot draw the walk's mass from rare bridge nodes.
+3. **Link the question's entities by exact surface match (PullNet and GraftNet).** PullNet links MetaQA's questions by
+   "simple exact match on surface forms", and WebQSP's by exact match against FACC1's surface forms; the longer of two
+   overlapping matches wins. SR and NSM take topic entities as given. Those entities are an oracle we do not use.
+   - Taken: every node whose name equals a question n-gram (n up to 8) becomes a linked seed. The name is the node
+     record's `title`, `display_name_disambiguated` or `display_name`; a Wikipedia slug's underscores read as spaces.
+     Names and n-grams are lowercased and stripped of punctuation.
+   - The longest non-overlapping matches win. A name of fewer than three characters, or made only of stopwords
+     (sklearn's English list), never links. A name shared by more than 50 nodes never links (ambiguous).
+   - Linked seeds join the seeds' half of the restart mass, with equal weight. On the passage datasets the names are
+     titles, which is title matching (HotpotQA's and 2Wiki's bridge entities are titled pages). squad links nothing:
+     it has no graph and its titles are articles, not passages.
+4. **Keep the whole neighbourhood the frozen construction reaches (GraftNet and PullNet).** The papers' subgraphs are
+   the topic entities' multi-hop neighbourhood, cut by PPR. Taken: U_q stays whole, so I_q's hops stay, and the new
+   walk only adds.
+5. **Retrieval depth on the graph-free dataset.** squad's pool is retrieval's top 50 rows; it has no graph to walk.
+   Taken: its expansion is the equal-RRF list's next rows in order, the walk's degenerate case with no edges.
+
+**Not taken now:** SR's trained path retriever (relations scored against the question, trained on the shortest paths
+from topic entities to answers) and PullNet's trained expansion classifier. Both are learned. They are the next step
+if this fixed rule stops short, declared in their own file.
+
+## 3. Arms and budgets
+
+Each arm ranks the nodes outside U_q by a walk (step 4b's kernel, the regime's families, restart alpha 0.5, the same
+EPS, top 2,000 outside U_q). The pool is U_q plus the arm's first k × B_q nodes (B_q is step 4c's budget).
+
+| arm | restart |
+| --- | --- |
+| A0 | today's seeds (step 4d's walk, again past U_q) |
+| A1 | item 1: seeds plus the RRF-weighted top-1000 lists |
+| A2 | A1 with item 2's specificity weights |
+| A3 | A2 with item 3's linked seeds |
+
+The budgets are k ∈ {0, 0.5, 1, 2, 3}; k = 0 is step 4d's U_q. On squad every arm is item 5's RRF order.
+
+## 4. The rule, fixed before any number
+
+Pools are built for every carve. Coverage ("every gold in the pool", ALL) is read on the five training datasets'
+s1sel carves; webqsp has none and is read only on s1eval, beside the choice.
+
+1. **The arm.** The arm with the highest mean ALL over the five s1sel carves at k = 1 is chosen. An arm within 0.002
+   of a lower-numbered (simpler) arm loses to it.
+2. **The budget.** The smallest k whose mean ALL is within 0.005 of k = 3's is chosen, for every dataset (one rule, one
+   k).
+3. **No pool may lose a gold** that U_q holds: U_q is inside every pool. The stage stops if one does.
+4. The s1eval coverage of the chosen pools, on all six datasets, is filed with the choice. A choice whose s1eval ALL
+   falls below step 4d's U_q on any dataset stops the step.
+
+## 5. What follows the choice
+
+Step 4d's stages 2 to 5 (looks, caches, identity gate, the zrm screen) move here and run once, on the chosen pools:
+- This is an amendment to docs/STEP4D_UNION_POOLS.md made before any number of those stages.
+- Step 4d's U_q is k = 0 of every arm here, so its pools are not looked at separately.
+
+The screen and verdict are step 4d's section 4:
+- zrm refit on the chosen pools for L-musique and L-hotpotqa, against zrm's screen fits on today's pools, under the
+  seed null;
+- R@5 over the question's golds;
+- PROMISING opens a full run in its own file; an ADOPT moves both models, the MLP and the GNN track, to the chosen
+  pools.
+
+## 6. Cost and speed
+
+- Pools grow by up to 3 × B_q past U_q, about 2 to 4 times today's size on metaqa, musique and webqsp. The stage files
+  the exact sizes.
+- Every model's per-question compile and forward grow with the pool, and so does the walk's cost per question. The
+  restart covers about 2,000 rows instead of ten.
+- Latency is cold (8216ffe) and reported beside the pool sizes.
+- Exact-match linking is a dictionary lookup per question n-gram, built once per dataset from node names.
+
+## 7. Order
+
+The pools stage runs on the laptop (numba). The miss diagnostic, which measures each missed gold's hop distance from the
+seeds and its retrieval rank, runs beside it as context only; it decides nothing here. The looks queue on the host's
+CPU behind rounds twenty-four and twenty-five's CPU items.
+
+## Results

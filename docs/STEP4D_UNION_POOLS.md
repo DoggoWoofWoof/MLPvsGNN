@@ -93,4 +93,20 @@ Stage 1 starts on the laptop now. Stages 2 and 3 queue on the host CPU behind ro
 CPU items. Step 4c's looks took about 3 hours of wall time; the union's are up to about twice as large. Stage 5's
 fits queue on the card behind round twenty-five's. Each stage's numbers are filed as they land.
 
+*Amended 8 October about 22:10, before any number of stages 2 to 5:* stages 2 to 5 move to step 4e
+(docs/STEP4E_PAPER_POOLS.md), which runs them once on the pools its fixed rule chooses. U_q is k = 0 of every one of
+step 4e's arms, and every one of its pools holds U_q, so no question loses a gold its U_q holds.
+
 ## Results
+
+**Stage 1, pools (21:58).** 21 of 21 carves filed; on every s1sel and s1eval carve the walk equals step 4b's, and every
+U_q holds its I_q (`outputs/step4d/pools/pools.json`). s1eval:
+
+| dataset | pool I | pool U | ALL: I | P_F | U | golds in the pool: I | P_F | U |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| metaqa | 2,017.6 | 3,147.3 | 0.895 | 0.898 | 0.941 | 0.957 | 0.947 | 0.977 |
+| squad | 50.0 | 50.0 | 0.980 | 0.980 | 0.980 | 0.980 | 0.980 | 0.980 |
+| musique | 2,092.4 | 3,113.7 | 0.803 | 0.835 | 0.844 | 0.921 | 0.934 | 0.939 |
+| hotpotqa | 93.7 | 100.2 | 0.968 | 0.970 | 0.972 | 0.980 | 0.981 | 0.982 |
+| 2wiki | 105.7 | 109.9 | 0.906 | 0.908 | 0.909 | 0.964 | 0.965 | 0.965 |
+| webqsp | 2,119.9 | 3,374.0 | 0.688 | 0.782 | 0.838 | 0.811 | 0.883 | 0.921 |
