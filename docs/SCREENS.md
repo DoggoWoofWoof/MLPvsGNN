@@ -2746,3 +2746,79 @@ Code: `outputs/mp_unified/zprop.py` (its selftest passes).
 - The MLP's screens stay message-passing-free from here on. A row's inputs are computed before any row is scored,
   from the question, the row, the frozen features and the graph's fixed structure, and never from another row's
   score.
+
+## Twenty-fourth round: feature selection for the MLP over all six datasets (zfs; declared 8 October about 20:45)
+
+Declared before any of its numbers. `outputs/mp_unified/zfeat.py`; full run docs/FULL_ROUND24.md. **No message
+passing:** every candidate is a column of the look, computed in preprocessing from the question, the row, the frozen
+embeddings and the graph's fixed structure around the fixed seeds, before any row is scored. None reads another row's
+score, and nothing passes over neighbours at read time.
+
+**Why.** zrm's inputs are step 1's pick, and the pick came from one greedy on 2wiki's select carve (l3-2w, 2 October).
+That greedy dropped the NER, kNN and all-family views of the structure, the all-family depth rings and the seed
+similarities "at no select cost" on 2wiki alone. A later greedy with the edge-label block (l4-2w) took the NER and kNN
+topologies, the all-family depth and DISTF back. D1 finds the golds zrm misses linked to the ones it finds, on musique
+mostly over NER edges, and D2 finds that zrm's own inputs hold nothing more. No selection of zrm's inputs has looked at
+all six datasets or at a dataset read zero-shot. The user (8 October): select "the best possible combinations of the
+features that help both across all the datasets and also help in generalization".
+
+**The candidates** (76 look columns in seven blocks the pick leaves out):
+
+| block | columns | what |
+| --- | --- | --- |
+| topo_NER, topo_KNN, topo_FULL | 11 each | distances to the seeds, seeds within one and two hops, pool and global degree, walks and the seeds' component, in the NER, kNN and all-family views (topo_STRUCT, in the pick, is the structural view) |
+| depth_FULL | 17 | depth_STRUCT's rings and seed counts over every edge family |
+| seedcond | 6 | the row's cosine with the seeds' prototype, its nearest seed and the reached seeds |
+| typed_rel, ordered | 10 each | the question's cosine with the relation text on the row's typed edges and along the best typed walk from a seed (0 on graphs without types) |
+
+Left out as message passing, for the GNN track: nbr_agg (neighbours' frozen features pooled per family), gcs and
+typed_v2 (retrieval scores moved over the pool graph).
+
+**The screen, per split (L-musique and L-hotpotqa, two fits as every round):**
+
+1. **Build.** The candidates' columns, part by part as step 1's cache holds each carve (fit, select and s1eval carves of
+   the six datasets, 16 carves), from the same look chunks. Step 1's cached columns and pool sizes from the same
+   chunks must equal its cache bit for bit.
+2. **Train: zfs.** zrm's model, settings and training with the seven blocks after the pick's. Each enters as every block
+   does: raw, within-pool z and keep flag. In training each (question, candidate block) is kept with probability 0.5,
+   drawn from the model's own generator (bdrop20's form, on the candidates only). A masked block then reads as the
+   model learned to read its absence. The pick's blocks are never dropped. Seed 0, p@swa, on the card.
+3. **Select.** Both fits' p@swa are read on the five training datasets' select carves: four in-domain, the held-out one
+   zero-shot. Every one of the 128 subsets of the candidates is kept in turn, the rest masked. Each subset's R@5 minus
+   R@5 with every candidate masked gives ten reads.
+   - The chosen subset has the largest mean of the ten with no read below −0.002. Ties go to fewer blocks.
+   - Below a mean of +0.001 the choice is empty: NO_SELECTION, and the round stops.
+   - The selection reads no evaluation carve. webqsp has no other carve, so it is graded but not selected on.
+   - One subset serves both fits.
+4. **Read.** Each fit on the six s1eval carves with the chosen subset kept and the other candidates masked.
+5. **Compare** against zrm's screen fit of the split (scr-zrm, scr-zrm-hp; same card, same training), with zret's and
+   step 1's beside. lean_screen's comparison, then the pair and the re-call under the seed null, as every round
+   (relz.py under zfs's name, zrc.py's mapping).
+
+**Verdict.** The re-call's, as every round: PROMISING is at least one GAIN and no LOSS among the twelve reads.
+PROMISING opens the full run (docs/FULL_ROUND24.md, `ffs-gate`).
+
+**What it changes and what it does not.**
+- Nothing new is computed: the columns are the look's, already compiled for the twin and the GNN. No graph, text,
+  encoder or embedding changes.
+- The 0.5 block dropout on the candidates is the one change to training. zrm's settings are otherwise unchanged.
+- No label, gold flag or dataset name enters any input. webqsp never trains. Test splits are never read.
+
+**The GNN side.** The same seven blocks plus the three left out above are the GNN track's candidates, selected the same
+way on the GNN in a round of its own.
+
+**Order and ETAs (8 October, about 20:45).**
+- The 16 builds are CPU items (1 CPU, about 5 minutes each); they start now, beside round twenty-three's CPU fits.
+- The two fits are card items placed straight after round twenty-two's screen, ahead of the full runs (rounds
+  eighteen, nineteen and twenty-one). Round twenty-two's L-hotpotqa fit starts about 21:00. The zfs fits start
+  when the card has room for them: from about 21:00 if they fit beside it, about 21:55 if not. A zrm fit on the card
+  takes about 55 minutes.
+- The selection takes about 15 minutes, the reads about 10, then compares, pair and re-call.
+- The selection lands about 22:15 to 23:00, the re-call about 22:45 to 23:30.
+
+### Tracks (8 October about 20:45)
+
+The user: rounds twenty-two (zlk) and twenty-three (zsp) count as **GNN improvements**. They are the GNN track's,
+which aims at the state of the art. The MLP's screens aim to come as close to the GNN as possible without message
+passing; round twenty-four is the first. Each track's features are selected over all six datasets, including reads
+zero-shot.
