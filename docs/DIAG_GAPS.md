@@ -66,3 +66,35 @@ pool or rule. Its numbers are development numbers.
   Each rerun is a diagnostic too.
 - **No MLP-against-GNN number from here is cited before M4** (the M3 firewall). These tables steer the two tracks'
   next screens.
+
+## Results
+
+**First run (9 October 01:48, `outputs/gapdiag/zsp-zrm/gaps.{md,json}`).** zsp (the GNN track) against zrm (the MLP),
+on the six splits and the six s1eval carves. A diagnostic; it decides nothing.
+
+1. **GNN against MLP.**
+   - In-domain, zsp adds +0.000 to +0.010 R@5. Most of it comes from 2wiki and hotpotqa: questions with three or more
+     golds, and partly-found questions (2wiki partial +0.008 in-domain, +0.022 zero-shot).
+   - Zero-shot, zsp adds more: metaqa +0.030 and 2wiki +0.014, with webqsp +0.009 to +0.027.
+     - metaqa's gain sits on questions whose golds are one hop from the seeds (+0.140); its two-hop golds lose
+       (−0.022).
+     - 2wiki's gain sits on questions with three or more golds (+0.040).
+   - zsp loses on hotpotqa zero-shot (−0.007) and on musique in J5's fit (−0.007).
+   - **Message passing changes neither track's musique.** By hop count, both models lose the same questions. Their
+     ranked-out miss is 0.35 to 0.41 of R@5 on every split, whichever model reads.
+2. **Where every model misses.**
+   - **metaqa and webqsp lose most outside the pool.** Today's ceiling is 0.811 and 0.765, so 0.189 and 0.235 of R@5
+     no ranking can recover. Step 4e's pools hold every gold for 0.953 and 0.909 of s1eval's questions (0.988 and
+     0.966 of golds).
+   - **musique loses most inside the pool.** It has 0.079 outside the pool, against 0.35 ranked out. Its 4-hop
+     questions read R@5 0.33 against a ceiling of 0.80.
+   - **squad, hotpotqa and 2wiki in-domain** lose 0.02 to 0.04 outside the pool and 0.07 to 0.10 ranked out.
+   - **Zero-shot, the ranked-out share grows.** metaqa grows 0.03 → 0.62 to 0.65, 2wiki 0.09 → 0.17 to 0.18, and
+     hotpotqa 0.08 → 0.13 to 0.14. The models do not carry their ranking to an unseen graph; the pool is unchanged.
+3. **Against the published numbers** (never direct; each setup differs, and the traps stand).
+   - **FC@5 against GraphER's PR@5:** hotpotqa 0.849 against 0.78 to 0.79; 2wiki 0.721 against 0.425 to 0.441;
+     musique 0.259 against 0.216 to 0.256.
+   - **musique R@5 0.566 against HippoRAG 2's 0.747** and NV-Embed-v2's 0.697. Both use a 7B encoder over a corpus a
+     tenth of ours; this is the one published row we sit well below.
+   - **KB.** metaqa hit@1 is 0.888 in J5's fit, against NuTrea's answer Hit@1 of 0.99 with topic entities assigned (an
+     oracle we refuse). webqsp is read only zero-shot.
