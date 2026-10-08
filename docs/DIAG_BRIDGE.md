@@ -133,3 +133,30 @@ R@5 exactly. The changes in R@5 are against zrm. Each pair gives L-musique's fit
 - **What follows (by the rule).** This verdict is reported and weighed with D2. The signal a next screen would use is a
   soft one: a row's link to the rows zrm ranks highly, as a learned input or objective term inside the scorer, not a
   hard swap. It is weighed with D2's verdict before any screen is declared.
+
+## D2's result: FEATURE_LIMIT (filed about 14:50)
+
+`outputs/diag/gbm-L-musique.md`, `gbm-L-hotpotqa.md` and `gbm-zrm.json`. All twelve reads reproduce zrm's filed R@5
+exactly.
+
+- **G1 adds at most +0.0059 R@5 over zrm on all eight in-domain reads.** G1 is boosted trees given zrm's inputs plus
+  zrm's own score.
+  - 2wiki: +0.0059 and +0.0057.
+  - hotpotqa: +0.0040.
+  - metaqa: +0.0007 and −0.0012.
+  - squad: −0.0003 and −0.0024.
+  - musique (in L-hotpotqa's fit): −0.0717. Its fit carve is where zrm's score is most in-sample.
+- **Zero-shot, G1 falls:** webqsp −0.17 and −0.06, musique −0.010, hotpotqa −0.0015.
+- **G0, the trees on the cache's columns without SEMB or the chain match, sits far below zrm.**
+  - metaqa −0.27 and −0.26.
+  - musique zero-shot −0.41.
+  - 2wiki −0.04.
+  - It is above zrm only on hotpotqa read zero-shot, +0.0205. This is reported, not decided.
+- **What follows (by the rule).** A stronger scorer on the same per-row inputs gains nothing. zrm already takes from
+  them what they hold, and its learned SEMB and chain terms carry much of its lead over plain trees.
+  - The next screens are new preprocessing of the existing graph, not capacity or a new learner.
+  - Read with D1: the signal the per-row inputs lack is relational. The golds zrm misses are linked, in the question's
+    own pool graph, to the rows it ranks highly (2wiki 0.77, hotpotqa 0.92, musique 0.38 directly and 0.77 within two
+    hops). No per-row column says so, because every column is computed before any row is scored.
+  - The next screen is a row's link to the pool's leading rows, as an input computed query-locally from the existing
+    edges. It is declared in its own file before its numbers, with the same change on all six datasets.

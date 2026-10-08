@@ -1,0 +1,64 @@
+{
+ "gains": [],
+ "in_domain_G1": [
+  [
+   "L-musique",
+   "2wiki=s1eval",
+   0.005943861323155216
+  ],
+  [
+   "L-musique",
+   "hotpotqa=s1eval",
+   0.003983794733288319
+  ],
+  [
+   "L-musique",
+   "metaqa=s1eval",
+   0.0006728539291508102
+  ],
+  [
+   "L-musique",
+   "squad=s1eval",
+   -0.000336898846121452
+  ],
+  [
+   "L-hotpotqa",
+   "2wiki=s1eval",
+   0.005685432569974554
+  ],
+  [
+   "L-hotpotqa",
+   "metaqa=s1eval",
+   -0.001184346103847186
+  ],
+  [
+   "L-hotpotqa",
+   "musique=s1eval",
+   -0.07174872431388775
+  ],
+  [
+   "L-hotpotqa",
+   "squad=s1eval",
+   -0.002358291922850164
+  ]
+ ],
+ "rule": {
+  "decides": "G1",
+  "flat": 0.01,
+  "gain": 0.02,
+  "gain_n": 2
+ },
+ "runs": {
+  "L-hotpotqa": {
+   "fit": "scr-zrm-hp",
+   "identity": "PASS",
+   "models_sha256": "ba9d529d53e96438a9663d00be3367b9f51b4fd5fb29589ffb9eed7f11918176"
+  },
+  "L-musique": {
+   "fit": "scr-zrm",
+   "identity": "PASS",
+   "models_sha256": "9d2e42e5cd80b8e014136486916678262f506ac1e0e3ea79f94f69c74f2cf67c"
+  }
+ },
+ "verdict": "FEATURE_LIMIT"
+}
