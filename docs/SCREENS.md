@@ -774,6 +774,9 @@ IDENTICAL), one epoch each on 2wiki's and hotpotqa's select carves. Each is read
 - **Moved again at about 07:05, before any of its numbers.** Round fourteen's smoke and screen go ahead of zgs's two
   fits in the list, behind rmatch's full run (fourteenth round, 'Caps and order'). zgs's fits had not started. No rule
   changes.
+- **Moved a third time at about 07:40, before any of its numbers.** Round fifteen's smoke and screen go ahead of
+  zgs's L-hotpotqa fit (`scr-train-zgs-hp-b`) in the list (fifteenth round, 'Caps and order'). That fit had not
+  started. zgs's L-musique fit is running and keeps its place. No rule changes.
 
 ### Fourteenth round (declared 8 October at about 07:05, before any of its numbers)
 
@@ -831,6 +834,79 @@ latency figure for zrm is cold.
   verdict about two hours sooner, and it holds zgs's fits back by at most its own length. No rule changes.
 - **ETAs:** rmatch's full run holds the card until about 07:30 to 08:00, and its reads come first. Then the smoke, and
   the two fits and their reads take about 30 to 45 minutes. The pair and its re-call land about 08:15 to 09:00.
+
+### Fifteenth round (declared 8 October at about 07:40, before any of its numbers)
+
+Code: `outputs/mp_unified/zrs.py` (its selftest passes). One arm, rmatch's match trained on zret's finished fit,
+decided against zret's fits. The screen trains two fits, L-musique and L-hotpotqa.
+
+**Why this arm.** rmatch's full run is NOT_ADOPTED under the null over every split (07:32; 'rmatch's full run' in
+the results below). In every fit that trains metaqa it GAINs on the two typed graphs: metaqa in-domain (+0.125 to
++0.135) and webqsp read zero-shot (+0.138 to +0.163). Its one LOSS is 2wiki read zero-shot in L-2wiki's fit (−0.0136,
+floor 0.0112).
+- 2wiki has no typed relations, so the match adds nothing to its scores. The change there comes from training the
+  match and the model together: the model's own weights move while the match learns. The same joint training moved
+  two other untyped reads up (squad read zero-shot in L-squad's fit, +0.0096; musique read zero-shot in L-musique's,
+  +0.2324).
+- zrm (fourteenth round) trains the two together too, on zret's base.
+- zrs trains the match alone, on top of zret's finished fit. The question is whether the match keeps its typed gains
+  when the model does not move. zrs gives up every move of the untyped reads, the gains with the LOSS.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-zrs, scr-zrs-hp | zrs | **rmatch's match trained on zret's frozen fit.** zret's fit of the split (its p@swa state) is loaded and frozen, and scores as it reads (no dropout). Only the match's parameters train: on the fit's typed training carves (metaqa's; webqsp never trains), against the frozen model's scores, with the fit's own config, seed, loss and batches of 32 questions. The model is zrm's (rmatch's match over zret's forward), on rmatch's chains as built for the twelfth round: no new column, block or hyperparameter. |
+
+**What this arm can and cannot change.**
+- Every state of a zrs fit holds zret's p@swa state bit for bit. Training checks this, and refuses a base trained as
+  another arm or with other carves, basis, blocks, config, seed or hidden size.
+- So on the four passage graphs (squad, musique, hotpotqa, 2wiki) its scores are zret's fit's bit for bit. Its reads
+  there are WITHIN by construction, not by evidence, and the results will say so.
+- **This round tests the match on the typed graphs only:** metaqa in-domain and webqsp read zero-shot.
+- L-metaqa's fit trains no typed graph (metaqa is held out and webqsp never trains). There the match takes no step and
+  its gates stay at zero, so that fit is zret's bit for bit, metaqa's held-out read included.
+
+**How it is decided.**
+- Each fit is compared with zret's fit of its split, which decides. rmatch's fit and step 1's are reported beside it.
+  The reads are the six s1eval carves at p@swa.
+- zrm's screen is compared with the same zret fits on the same questions, so the two arms' differences from zret can
+  be set side by side as they are. That is reported, not decided.
+- The pair and its re-call under the seed null are relz.py's, run under zrs's name, with zret's R@5 as each read's
+  base and the null's floors, as in the thirteenth and fourteenth rounds.
+- **If the re-call is PROMISING, the full run starts by itself** (docs/FULL_ROUND15.md, declared with this round). Its
+  four fits are graded against zret's fits and re-graded under the null over every split.
+  - ADOPT makes zrs (zret's fits with the match trained on them) the base of every later screen and run.
+  - If zgs or zrm is ADOPTED too, each re-grade is filed and the next base is declared in a later round, before its
+    numbers.
+  - On any other result zret stays the base (or the arm adopted in round thirteen or fourteen), and the match is not
+    carried.
+
+**What the screen can show.** If zrs keeps most of rmatch's typed gains, they do not need the model to move, and the
+2wiki LOSS was the price of training the two together. If it keeps little, the match's gains came with the model's
+own change, and so did the LOSS.
+
+**The smoke** (`scr15-smoke`, `zrs.py smoke`):
+- The carve check on metaqa select, webqsp s1eval and 2wiki select, under train's and read's flags: zret's model
+  repeats bit for bit, and zrs at its start (zero gates) scores as zret's model bit for bit, with finite chain
+  features on the typed graphs.
+- Then zret once, and zrs twice on that zret fit (the repeat must be IDENTICAL), one epoch each on metaqa's and
+  2wiki's select carves. Each is read on both.
+- Every state of zrs's fit must hold that zret fit's p@swa state bit for bit. zrs's match must move from zero and stay
+  finite, and zret's fit must hold none.
+- zrs's scores must equal zret's on 2wiki (no typed relations) bit for bit, and differ on metaqa.
+- It runs as soon as 0.16 of the card is free (cap 0.14). The fits wait on it.
+
+**Speed.** zrs serves as zrm does: zret's forward plus the match on the chains, which are a query-local compile
+(8216ffe; twelfth round, 'Speed is timed cold'). Any latency figure for zrs is cold.
+
+**Caps and order.**
+- rmatch's caps: 0.26 (share 0.28) for both fits, reads 0.30 (0.32). A fit loads its training carves as zret's did,
+  though only metaqa's questions train.
+- **The items go after round fourteen's and ahead of zgs's L-hotpotqa fit** (`scr-train-zgs-hp-b`) in the feeder's
+  list. A zrs fit makes one pass over metaqa's fit questions an epoch, with no backward pass through the model, so it
+  takes minutes; zgs's fit takes about 1.5 to 2 hours. The short screen holds zgs's fit back by at most its own
+  length. zgs's L-musique fit is running and keeps its place. No rule changes.
+- **ETAs:** zrm's two fits hold the card until about 07:45 to 08:00, and their reads come first. Then the smoke, and
+  the two fits and their reads take about 30 to 45 minutes. The pair and its re-call land about 08:30 to 09:30.
 
 ## 5. ETAs (7 October)
 
