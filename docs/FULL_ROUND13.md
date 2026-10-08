@@ -76,3 +76,8 @@ full-run items are commented out in the feeder; the gate stays and starts nothin
 zrm the base').
 
 ## Results
+
+- **The screen's re-call: PROMISING (11:47; docs/SCREENS.md).** One GAIN among the twelve reads (webqsp read
+  zero-shot in L-musique's fit, +0.0109 R@5 against a floor of 0.0102) and no LOSS. By the amendment above, this full
+  run does not run: `fzg-gate-b` starts nothing. gsurg's loop is combined with zrm in round twenty-one
+  (docs/FULL_ROUND21.md), declared before its numbers.

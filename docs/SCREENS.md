@@ -2507,3 +2507,63 @@ Code: `outputs/mp_unified/zrk.py` (its selftest passes).
 - **Speed.** The objective changes training only. zrk reads and serves as zrm does, so any latency figure for it is
   zrm's, and cold (8216ffe): each question timed from scratch, with the walk, the move of its entries to the device and
   the forward.
+
+### scr-zgs (L-musique): MIXED. scr-zgs-hp (L-hotpotqa): PROMISING. The pair is MIXED and its re-call PROMISING (11:47), so gsurg's loop is combined with zrm (round twenty-one)
+
+`outputs/screen/scr-zgs.md` and `scr-zgs-hp.md`, `scr-zgs-pair.md` and `scr-zgs-pair-recall.md`. R@5 of zgs (gsurg's
+loop on zret's model, the thirteenth round) minus zret's fit of the same split, called with the null's floors. Unmarked
+reads are WITHIN. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.0030 | +0.0009 | −0.0100 zs (LOSS as filed; floor 0.0720) | −0.0014 | +0.0005 | +0.0109 GAIN zs (floor 0.0102) |
+| L-hotpotqa | +0.0078 (GAIN as filed; floor 0.0149) | −0.0010 | −0.0065 | −0.0053 zs | +0.0009 | +0.0032 zs |
+
+- **One GAIN, just above its floor:** webqsp read zero-shot in L-musique's fit, +0.0109 R@5 (0.177 to 0.188) against
+  a floor of 0.0102. hit@1 there barely moves (+0.0006).
+- **No LOSS under the null.** musique read zero-shot in L-musique's fit falls −0.0100 R@5 (hit@1 −0.0165), a LOSS at
+  the floor 0.0075 and WITHIN its floor of 0.0720. metaqa in L-hotpotqa's fit (+0.0078) turns from GAIN to WITHIN.
+- **musique read in-domain in L-hotpotqa's fit falls −0.0065** (hit@1 −0.0182), under its floor of 0.0075.
+- **The loop is slow.** zgs's L-hotpotqa fit took 2.1 hours (8 epochs of about 15.5 minutes), about 3.5 times
+  lean_gpu's loop.
+- **What follows.** By the amendment of 10:15, the full run against zret's fits does not run (`fzg-gate-b` starts
+  nothing). gsurg's loop is combined with zrm, the base, in round twenty-one, declared next before its numbers.
+
+### Twenty-first round: gsurg's loop on zrm (declared 8 October about 11:55, before any of its numbers; full run docs/FULL_ROUND21.md)
+
+Code: `outputs/mp_unified/zrg.py` (its selftest passes).
+
+- **Why.** zgs's screen (round thirteen: gsurg's loop on zret's model) re-called PROMISING at 11:47 (the section
+  above). By the amendment of 10:15 ('Amendment: with zrm the base'), a PROMISING re-call of zgs leads to a combination
+  with zrm, the base, declared before its numbers. This is that round.
+- **What trains.** The arm zrg: zrm's model, carve, settings and training (rmatch.py's train), run inside lean_screen5's
+  gsurg loop, seed 0.
+  - At each step, the gradient on each training dataset's questions loses its component along the gradient of every
+    other dataset in the step that it conflicts with (lean_screen5.fit_gsurg, as gsurg and zgs).
+  - Each epoch's surgery counts land in train.json's curve. A fit whose curve lacks them trained outside the loop and
+    stops (exit 1).
+- **The same loop on every training question, on every dataset.** No new column, block, carve, graph, model or
+  hyperparameter. Reads and serving are zrm's. On L-metaqa's fit (no typed graph in training) zrm is zret's model bit
+  for bit, so there zrg is zgs's model and loop.
+- **The screen's two fits:** `scr-zrg` (L-musique) and `scr-zrg-hp` (L-hotpotqa). Each is read on the six s1eval carves,
+  as zrm's fits were.
+- **Decided against zrm's screen fits** (`scr-zrm` and `scr-zrm-hp`), with zgs's screen fits and step 1's beside. The
+  pieces are zrg.py's: the comparison, the pair, and the re-call under the seed null (relz.py's, with zrc.py's mapping
+  to zrm's fits). Each read's base R@5 comes from `outputs/zrc/base-zrm-<split>.json`.
+- **What follows.** The full run (docs/FULL_ROUND21.md) starts only if both hold: the re-call is PROMISING (a GAIN and
+  no LOSS among
+  its twelve reads), and zrm is the base (docs/BASE_ZRM_ZRS.md re-graded ADOPT, as it is since 10:05).
+- **Caps and order.**
+  - Each fit takes 0.30 of the card (share 0.32) and 9 GB. zgs's L-hotpotqa fit in the loop reserved 5.5 GB of its
+    6.2 GB cap (0.26), and zrm's chain entries add to the loop's batches. The full run's L-metaqa fit takes 0.18
+    (share 0.20), as gsurg's did.
+  - Each read takes 0.30 (share 0.32) and 6 GB.
+  - The screen's fits go after round eighteen's full-run items, which are under way, and ahead of the later full runs'
+    fits (rounds nineteen and twenty). They take about two hours each, so ahead of round eighteen's remaining fits they
+    would delay its grade by about an hour. The full run goes at the end of the list. Nothing is preempted.
+- **ETAs.** The fits start once round eighteen's last fits have started, about 12:30 to 13:15, and take about 2 to 2.5
+  hours each (zgs's L-hotpotqa fit took 2.1 hours: 8 epochs of about 15.5 minutes). The re-call lands about 15:00 to
+  16:00.
+- **Speed.** The loop changes training only (about 3.5 times lean_gpu's time per epoch, since each step takes every
+  other present dataset's gradient). zrg reads and serves as zrm does, so any latency figure for it is zrm's, and cold
+  (8216ffe): each question timed from scratch, with the walk, the move of its entries to the device and the forward.
