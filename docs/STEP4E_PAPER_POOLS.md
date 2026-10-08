@@ -145,6 +145,30 @@ coverage lines had printed):* the user (22:38): "not all 5, all 6".
   arms, five k), made on gold coverage alone. Its model reads stay zero-shot: no model trains on webqsp.
 - The rest of section 4 is unchanged, including the stop when a chosen pool falls below U_q on any s1eval carve.
 
+*Amended 9 October about 00:55, before any number of the looks, caches, gate or screen (section 5's host stages):*
+- **Code.** `scripts/step4e_host.py` (numba-free: the host has no numba) holds the pool replacement and the gate;
+  `outputs/mp_unified/look_step4e.py` is step 4c's look binding on the chosen pools; `outputs/mp_unified/zrm4e.py` runs
+  zrm's own train, read and compare and rmatch's chain build with step 4e's roots (`outputs/step4e/cache`,
+  `outputs/step4e/chains`), and zlink's pair and re-call, decided against zrm's screen fit of each split.
+- **What the replacement checks.** Base and seeds and the frozen pool are the filed ones (sha256). The expansion repeats
+  no node, holds no node of base and seeds and is at least its new nodes long. The pool is base and seeds plus the
+  expansion and holds every node of the frozen pool. Each look shard records its question count and row total, and
+  both must be the file's.
+- **The gate has two scopes.** `gate --screen` covers the eleven carves the screen reads: the five fit carves it trains
+  on and the six s1eval carves. The plain gate covers all 21, for full runs. The checks are step 4c's:
+  - every look shard ran on the manifest's pools file;
+  - every cache row count is the chosen pool's size;
+  - step 1's cache rows are the frozen pools' sizes.
+  The screen waits only for its own gate.
+- **The look cost is about quadratic in the pool.** On two musique s1sel questions on the laptop, a look took 31.5 s
+  per question on the chosen pools against 3.7 s on today's (3.35 times the rows). Step 4c's shard counts are scaled
+  by (pool ratio)^1.8 to shards of about 30 minutes, and its cache parts by the row ratio.
+- **R@5's denominator is the question's gold count** (`look_x_six`: `gold_total = pop.golds[j].size`). Reads on the
+  chosen pools and on today's pools therefore compare question by question; zrm's compare checks the question ids and
+  gold totals are the same.
+- **GPU share.** Each fit and read of the screen takes 0.62 of the card (cap 0.6). That is zrm's measured torch peak of
+  about 4 GB times the chosen pools' 3.4 times the rows on metaqa and musique; the whole carve sits on the device.
+
 ## Results
 
 **Coverage and choice (9 October 00:21).** `outputs/step4e/coverage.json`, `outputs/step4e/choice.json`. Every gold in
