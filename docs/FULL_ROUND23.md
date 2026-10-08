@@ -116,3 +116,24 @@ early.
   own file.
 
 ## Results
+
+**Full run (9 October 00:52): ADOPT, and ADOPT under the seed null over all six splits.** `outputs/full_zsp/grade.md`,
+`outputs/full_zsp/grade-nullx.md`. R@5 of zsp minus zrm refit on the host's CPU, same split; bold: step 1's primary
+reads; zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| J5 | **+0.0016** | **−0.0007** | **−0.0073** | **+0.0026** | **+0.0041** | **+0.0268 zs** (WITHIN its floor 0.0295) |
+| L-metaqa | **+0.0303 zs GAIN** | +0.0016 | −0.0007 | +0.0026 | +0.0105 (WITHIN 0.0175) | +0.0092 zs GAIN |
+| L-squad | +0.0003 | **+0.0008 zs** | +0.0012 | +0.0032 | −0.0007 | +0.0154 zs (WITHIN 0.0260) |
+| L-musique | +0.0006 | −0.0018 | **+0.0004 zs** | +0.0013 | +0.0052 | +0.0035 zs |
+| L-hotpotqa | +0.0013 | +0.0035 | +0.0034 | **−0.0074 zs** | +0.0100 GAIN | −0.0030 zs |
+| L-2wiki | +0.0011 | +0.0000 | +0.0028 | +0.0099 GAIN | **+0.0141 zs GAIN** | +0.0163 zs (WITHIN 0.0473) |
+
+- **Two primary GAINs, both zero-shot, and no LOSS in 36 reads.** metaqa read by a model that never trained on it,
+  +0.0303 (floor 0.0168); 2wiki read zero-shot, +0.0141 (floor 0.0112). Three more reads GAIN past their floors: webqsp
+  zero-shot in L-metaqa's fit, hotpotqa in L-2wiki's, 2wiki in L-hotpotqa's.
+- **What carries.** Each row reads its neighbours' zrm scores, and that summary transfers to graphs the model never
+  trained on. metaqa (a typed KB) gains most when it is held out.
+- **It is message passing.** zsp is zrm plus one propagation step over the pool graph: the GNN track. Its numbers are
+  never the MLP's.
