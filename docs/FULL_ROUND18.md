@@ -93,3 +93,16 @@ early.
   its own file.
 
 ## Results
+
+Filed 9 October about 03:40 (`outputs/full_zrct/grade.json`, `grade.md`; re-grade `grade-nullx.json`, `grade-nullx.md`).
+
+- **ADOPT**, and **ADOPT under the seed null over all six splits** (section 4). 0 of 36 reads LOSE.
+- **The gain is on webqsp, read zero-shot.** J5 +0.0513 (the one primary read that GAINs; floor 0.0295), L-squad
+  +0.0406, L-musique +0.0257, L-hotpotqa +0.0450. L-2wiki's +0.0398 GAINs at 0.0075 and turns WITHIN under its null
+  floor 0.0473.
+- **Everywhere else zrc reads as zrm.** Every other read lies within 0.006 of zrm's. L-metaqa's six reads are
+  +0.0000 (why the L-metaqa fit reads as zrm's is not checked here).
+- **What this changes.** zrc (zrm with each row keeping the 64 entries w0 ranks highest) is adopted as a full-run result
+  against zrm. Whether the MLP track's base moves from zrm to zrc is not decided here. That needs its own declared
+  file, as `docs/BASE_ZRM_ZRS.md` was for zrs, committed before any number it reads. Until then zrm stays the MLP's
+  base and every screen keeps deciding against zrm's fits.
