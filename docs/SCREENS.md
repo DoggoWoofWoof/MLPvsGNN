@@ -2567,3 +2567,34 @@ Code: `outputs/mp_unified/zrg.py` (its selftest passes).
 - **Speed.** The loop changes training only (about 3.5 times lean_gpu's time per epoch, since each step takes every
   other present dataset's gradient). zrg reads and serves as zrm does, so any latency figure for it is zrm's, and cold
   (8216ffe): each question timed from scratch, with the walk, the move of its entries to the device and the forward.
+
+### scr-zkind (L-musique): PROMISING. scr-zkind-hp (L-hotpotqa): MIXED. The pair is MIXED and its re-call PROMISING (11:51), so round nineteen's full run starts
+
+`outputs/screen/scr-zkind.md` and `scr-zkind-hp.md`, `scr-zkind-pair.md` and `scr-zkind-pair-recall.md`. R@5 of zkind
+(zrm with a head for graphs with typed relations) minus zrm's fit of the same split, called with the null's floors.
+Unmarked reads are WITHIN. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | −0.0003 | −0.0001 | +0.0100 zs (GAIN as filed; floor 0.0720) | −0.0012 | −0.0022 | +0.0168 GAIN zs (floor 0.0102) |
+| L-hotpotqa | −0.0022 | +0.0024 | +0.0078 GAIN (floor 0.0075) | −0.0113 zs (LOSS as filed; floor 0.0200) | +0.0007 | +0.0591 GAIN zs (floor 0.0233) |
+
+- **webqsp read zero-shot GAINs in both fits, and its hit@1 rises with it.** R@5 rises from 0.313 to 0.330 in
+  L-musique's fit and from 0.242 to 0.301 in L-hotpotqa's; hit@1 rises +0.021 and +0.049 (zrc's fell, −0.053 and
+  −0.016).
+- **musique read in-domain in L-hotpotqa's fit GAINs:** +0.0078 R@5 against a floor of 0.0075, FC@5 +0.0132, hit@1
+  −0.0108.
+- **hotpotqa read zero-shot in L-hotpotqa's fit falls −0.0113 R@5** (FC@5 −0.0245): a LOSS at the floor 0.0075 and
+  WITHIN its floor of 0.0200. The full run reuses this fit, and its re-grade under the null decides.
+- **musique read zero-shot in L-musique's fit rises +0.0100 R@5, but its hit@1 falls −0.0381.**
+- **The untyped reads move although the head acts on typed batches only.** The offsets train on metaqa's batches, so
+  the shared weights take a different path. Elsewhere every read moves by 0.0024 or less.
+- **What follows.**
+  - `fkd-gate` passes: the re-call is PROMISING, and zrm is the base (ADOPT, 10:05).
+  - The full run (docs/FULL_ROUND19.md) trains L-2wiki, L-squad, J5 and L-metaqa, decided against zrm's fits and
+    re-graded under the null over every split.
+  - L-metaqa's fit trains no typed graph, so its six reads must be zrm's bit for bit, or the round stops.
+  - Its items sit behind round twenty-one's two screen fits (zrg, about two hours each), as declared at 11:55.
+  - Any speed figure for this arm is cold (8216ffe).
+- **ETAs.** The four fits start as the card frees, about 13:30 to 15:00, and take about 35 to 60 minutes each. The grade
+  lands about 16:00 to 17:30.
