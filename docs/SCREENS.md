@@ -908,6 +908,76 @@ own change, and so did the LOSS.
 - **ETAs:** zrm's two fits hold the card until about 07:45 to 08:00, and their reads come first. Then the smoke, and
   the two fits and their reads take about 30 to 45 minutes. The pair and its re-call land about 08:30 to 09:30.
 
+### Sixteenth round (declared 8 October at about 08:00, before any of its numbers)
+
+Code: `outputs/mp_unified/zsep.py` (its selftest passes). One arm, an objective on zret's base, decided against zret's
+fits. The screen trains two fits, L-musique and L-hotpotqa.
+
+**Why this arm.** Every arm so far changed the inputs, the model or the training loop. None changed what a question's
+loss asks of its golds. A multi-hop question (musique, hotpotqa and 2wiki ask for two to four supporting passages) and
+a KB question with several answers has more than one gold in its pool.
+- lean_gpu's loss (listwiseD, the loss of every fit since step 1) scores a question as the mean over its golds of
+  minus the log of each gold's softmax share over every row of the pool. The question's other golds sit in each gold's
+  denominator, so the golds compete with each other.
+- Once one gold leads, its own term pushes it down: its gradient is its share minus one over the number of golds.
+- The non-gold rows between the leader and a trailing gold get almost no push, since their share is small next to the
+  leader's. That is the question R@5 and FC@5 count against on the multi-hop datasets: its first gold is found, and
+  its second is not.
+- zsep sets each gold against the question's non-gold rows only. No gold is pushed down. Each gold's term pushes the
+  non-gold rows down, the highest first, and hardest for the golds that trail them.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-zsep, scr-zsep-hp | zsep | **Each gold against the non-gold rows only (an objective).** zret's model, carves, batches, config and seed, trained with a question's loss as the mean over its golds of −log(e^{s_g} / (e^{s_g} + Σ e^{s_n})), the sum over the pool's non-gold rows, in place of the mean over its golds of −log softmax over every row. A question with one gold trains as before (the same loss and gradient, up to rounding), and a pool whose rows are all gold adds nothing. The objective acts in training only, so reads and serving are zret's model. No new column, block or hyperparameter. |
+
+**What this arm can and cannot change.**
+- Only the terms of questions with two or more golds in the pool change. Each fit records, per training carve, how
+  many questions have two or more (screen.json, `zsep`, `census`). Where a training dataset has none, its own terms
+  are zret's.
+- The model's weights are shared, so the changed terms move every read, single-gold and zero-shot reads included. All
+  36 reads are decided as usual.
+- The objective changes training only. zsep's reads and its serving cost are zret's model.
+
+**How it is decided.**
+- Each fit is compared with zret's fit of its split, which decides. Step 1's fit is reported beside it. The reads are
+  the six s1eval carves at p@swa. FC@5's difference (every gold in the top 5) is in each comparison's table, and does
+  not decide.
+- The pair and its re-call under the seed null are relz.py's, run under zsep's name, with zret's R@5 as each read's
+  base and the null's floors, as in rounds thirteen to fifteen.
+- **If the re-call is PROMISING, the full run starts by itself** (docs/FULL_ROUND16.md, declared with this round). Its
+  four fits are graded against zret's fits and re-graded under the null over every split.
+  - ADOPT makes zsep the base of every later screen and run.
+  - If an arm of rounds thirteen to fifteen is ADOPTED too, each re-grade is filed and the next base is declared in a
+    later round, before its numbers.
+  - On any other result zret stays the base (or the arm adopted in rounds thirteen to fifteen), and the objective is
+    not carried.
+
+**What the screen can show.** A GAIN on the multi-hop reads (musique, hotpotqa, 2wiki) with no LOSS means the golds'
+competition held zret back there. If FC@5 moves with it, the gain is in questions whose last gold was missing.
+NO_GAIN means the competition costs nothing at R@5.
+
+**The smoke** (`scr16-smoke`, `zsep.py smoke`):
+- The loss on real carves, 2wiki's and hotpotqa's select. Each carve's census is recorded. On its first 64 questions,
+  under zret's model at its start, the loss and its gradient must match a float64 reference. Where a question has one
+  gold, they must equal listwiseD's, up to rounding.
+- Then zret once and zsep twice (the repeat must be IDENTICAL), one epoch each on both carves. Each is read on 2wiki's.
+- zsep must hold zret's model (its state's keys). Its census must be the check's, with questions of two or more golds.
+- Its scores must differ from zret's: the same initialisation and batches, so the difference is the objective.
+- It runs as soon as 0.16 of the card is free (cap 0.14). The fits wait on it.
+
+**Speed.** The objective changes training only. zsep reads and serves as zret's model does, so any latency figure for
+it is zret's, and cold (8 October): each question from scratch, with no warm-up pass and nothing kept from an earlier
+question.
+
+**Caps and order.**
+- zret's caps: 0.26 (share 0.28) for both fits, reads 0.28 (0.30).
+- **The items go at the end of the feeder's list, after zgs's L-hotpotqa fit** (`scr-train-zgs-hp-b`). GPU items
+  start in the list's order, so zsep's smoke and fits start once that fit has started, as the card has room beside
+  it. zgs's fits keep their places. No rule changes.
+- **ETAs:** zrm's and zrs's screens hold the card until about 08:30 to 09:00, then zgs's L-hotpotqa fit starts. The
+  smoke takes about 10 minutes. The two fits take about 15 to 25 minutes each, and their reads about 10. The pair and
+  its re-call land about 09:30 to 10:30.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
