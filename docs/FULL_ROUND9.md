@@ -174,3 +174,17 @@ Unmarked reads are WITHIN.
 - **The re-grade under the null over every split decides** (`outputs/full_rel/grade-nullx`, docs/SCREENS.md, section 2).
   It meets those two LOSSes, and every GAIN, with the floors of their own splits. The eight null fits wait behind
   round ten's screen fits on the card, so it lands about 05:30 to 06:30.
+
+### rel: NOT_ADOPTED under the seed null over every split (05:14)
+
+`outputs/full_rel/grade-nullx.md` (docs/SCREENS.md, 'The seed null over every split').
+- **Three primary GAINs stand:**
+  - metaqa in-domain in J5: +0.0759, floor 0.0154;
+  - webqsp read zero-shot in J5: +0.1013, floor 0.0295;
+  - musique read zero-shot in L-musique: +0.0868, floor 0.0720.
+- **musique in L-squad's fit is within its floor** (−0.0093 against 0.0239).
+- **One LOSS is left: 2wiki read zero-shot in L-2wiki's fit, −0.0136 against its floor 0.0112.** Seeds 1 and 2 moved
+  that read by −0.0030 and −0.0073.
+- **NOT_ADOPTED.**
+  - Rounds eleven and twelve read this in their base gates, and run on step 1's base.
+  - relz's full run is dropped at its gate, which needs rel's ADOPT.

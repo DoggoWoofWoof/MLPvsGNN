@@ -138,3 +138,16 @@ comparison and grade are re-queued under `-x` names (`fvs-read-L-metaqa-x`, `fvs
 `nullx.py regrade` then re-grades its 36 reads with the floors of the null over all six splits, into
 `outputs/full_vshare/grade-nullx.{md,json}`, about 04:30 to 05:30. Its filed LOSSes (L-squad metaqa −0.0094 and musique
 −0.0127, J5 musique −0.0108) each meet their read's floor.
+
+### NOT_ADOPTED under the seed null over every split (05:14)
+
+`outputs/full_vshare/grade-nullx.md` (docs/SCREENS.md, 'The seed null over every split').
+- **Three primary GAINs:**
+  - metaqa read zero-shot in L-metaqa: +0.0180, floor 0.0168;
+  - squad read zero-shot in L-squad: +0.0120, floor 0.0075;
+  - musique read zero-shot in L-musique: +0.0891, floor 0.0720.
+- **Three filed LOSSes are within their floors:** musique in J5 (−0.0108 against 0.0158), musique in L-squad (−0.0127
+  against 0.0239) and hotpotqa read zero-shot (−0.0140 against 0.0200).
+- **One LOSS is left: metaqa in-domain in L-squad's fit, −0.0094 against 0.0075.** Seeds 1 and 2 moved that read by
+  −0.0037 and −0.0010.
+- **NOT_ADOPTED.**

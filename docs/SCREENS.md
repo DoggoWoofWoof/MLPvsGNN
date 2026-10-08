@@ -1358,3 +1358,71 @@ is redacted for the public repository, with the original's sha256.
   gold on 0.865 of rel's misses.
 
 So round twelve learns the question-relation match from the frozen embeddings, declared next before its numbers.
+
+### The seed null over every split (05:14): 17 of the 36 floors are above 0.0075. zret is ADOPTED; rel and vshare are not
+
+`outputs/screen/scr-nullx-floors.md`. The eight new fits are `outputs/screen/scr-nullx-<split>-s1.md` and `-s2.md` for
+L-2wiki, L-squad, J5 and L-metaqa. With the first null's four fits, every split now has two seed-only differences on
+each of its six reads.
+
+- **Twelve of the 24 new reads take a floor above 0.0075:**
+  - J5: metaqa 0.0154, musique 0.0158, webqsp read zero-shot 0.0295.
+  - L-metaqa: metaqa read zero-shot 0.0168, 2wiki 0.0175.
+  - L-squad: musique 0.0239, 2wiki 0.0117, webqsp read zero-shot 0.0260.
+  - L-2wiki: squad 0.0099, hotpotqa 0.0089, 2wiki read zero-shot 0.0112, webqsp read zero-shot 0.0473.
+- **In-domain reads move with the seed too.** On the first null's two splits, in-domain reads stayed within 0.0023 of
+  seed 0, except L-hotpotqa's metaqa. Over all six splits, 8 of the 30 in-domain reads take a raised floor. musique
+  moves by up to 0.0144 (L-squad, seed 2), and 2wiki by up to 0.0110 (L-metaqa, seed 1).
+- **The LOSSes that stopped the full runs were this size.** They were 0.008 to 0.014 (section 2). With training
+  unchanged, the seed alone moves 13 of the 36 reads by more than 0.008.
+
+**The re-grades** (`outputs/full_<run>/grade-nullx.md`):
+
+| run | filed | under the null | calls the floors change | what decides |
+| --- | --- | --- | --- | --- |
+| zret (docs/FULL_ZRET.md) | NOT_ADOPTED | **ADOPT** | All four LOSSes become WITHIN: musique in L-squad (−0.0093, floor 0.0239), metaqa in L-hotpotqa (−0.0121, 0.0149), hotpotqa read zero-shot (−0.0140, 0.0200), 2wiki read zero-shot (−0.0081, 0.0112). Three webqsp zero-shot GAINs become WITHIN | Two primary reads GAIN: metaqa read zero-shot in L-metaqa (+0.0644, floor 0.0168) and musique read zero-shot in L-musique (+0.1202, 0.0720). No read LOSES |
+| rel (docs/FULL_ROUND9.md) | NOT_ADOPTED | NOT_ADOPTED | musique in L-squad (−0.0093, 0.0239) and hotpotqa read zero-shot (−0.0132, 0.0200) become WITHIN | Three primary GAINs stand, and one LOSS is left: 2wiki read zero-shot in L-2wiki, −0.0136 against 0.0112 |
+| vshare (docs/FULL_VSHARE.md) | NOT_ADOPTED | NOT_ADOPTED | musique in J5 (−0.0108, 0.0158) and in L-squad (−0.0127, 0.0239), and hotpotqa read zero-shot (−0.0140, 0.0200), become WITHIN | Three primary GAINs, and one LOSS is left: metaqa in L-squad, −0.0094 against 0.0075 |
+
+- **zret is the first screen arm adopted.** It takes each pool z-score against the pool's retrieved rows instead of all
+  of its rows. Read zero-shot, musique's R@5 rises from 0.270 to 0.390 and metaqa's from 0.077 to 0.142. J5, trained on
+  all five datasets, is within the floor on every one of them.
+- **rel misses by one read,** 0.0024 beyond its floor. Its gains stand under the null: metaqa in-domain +0.068 to
+  +0.080 in every fit that trains on a KB, and webqsp read zero-shot +0.064 to +0.116. rel's columns are 0 on every
+  passage graph, so its difference on 2wiki can only come through the weights it trains.
+- **vshare misses by one read,** metaqa in-domain in L-squad's fit, which seeds 1 and 2 moved by at most 0.0037.
+
+**What follows, as declared:**
+- **Rounds eleven and twelve run on step 1's base.** Their gates read rel's re-grade and dropped the rel branches with
+  everything behind them (`scr11-base-rel` at 05:15 and `scr12-base-rel` at 05:32, each exiting 1 with "NOT_ADOPTED;
+  the rel base does not run"). qdepth and rmatch go on.
+- **relz's full run is dropped at its gate,** which needs rel's ADOPT (`relz.py gate`). Its screen pair and re-call are
+  still filed, as a report, about 06:00 to 06:30.
+- **gsurg's `-rc` run is the last re-grade** (`fgs-grade-nullx`). Its L-metaqa fit ends about 06:15, and the re-grade
+  lands about 06:35 to 06:50.
+- **zret's adoption does not change rounds already declared.** Section 2 says that when more than one arm is ADOPTED,
+  the next base is declared in a later round, before its numbers. So that round is declared once gsurg's re-grade is
+  in. zret's z-scores and gsurg's gradient surgery do not change the same thing.
+
+**Round eleven's smoke passed** (03:45, 37 s; `outputs/screen/smoke11/smoke.json`).
+- qdepth's repeat is IDENTICAL.
+- Both arms' depth priors moved off zero, and the base arm has none.
+- relqd's relation blocks are live, and every arm read the same questions.
+
+**Round twelve's four chain builds passed** (05:32 to 05:35, on the host's CPU). Each part's pools are IDENTICAL to step
+1's cache, and every record names rmatch.py's committed sha256.
+
+| carve | questions | entries a question (mean; max) | walks stopped by the chain cap (bucket 0; 1) | walk mass the row cap keeps (bucket 0; 1) | took |
+| --- | --- | --- | --- | --- | --- |
+| metaqa select | 1,497 | 7,722; 18,309 | 0; 0 | 1.000; 1.000 | 13 s |
+| metaqa fit | 5,960 | 7,699; 18,610 | 0; 0 | 1.000; 1.000 | 42 s |
+| metaqa s1eval | 9,785 | 7,730; 21,807 | 0; 0 | 1.000; 1.000 | 67 s |
+| webqsp s1eval | 1,503 | 89,001; 193,417 | 593; 1,078 | 0.383; 0.297 | 150 s |
+
+- **On metaqa the arm sees every chain.** No walk reaches the 20,000-chain cap. The 64-entry row cap drops 4 entries in
+  all, out of the fit carve's 46 million.
+- **On webqsp it sees a cut-down walk.** The chain cap stops 593 of the 1,503 bucket-0 walks and 1,078 of the bucket-1
+  walks, each after the level that crossed it. The row cap then keeps 0.383 and 0.297 of the walk's mass. Both caps were
+  declared before these numbers. On webqsp, read zero-shot, a WITHIN or LOSS can come from the caps, not only from the
+  match.
+- The webqsp build took 2.5 minutes, not the 10 to 15 the declaration gave from the laptop's 0.3 seconds a question.

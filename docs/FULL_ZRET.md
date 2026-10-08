@@ -128,3 +128,32 @@ the null over all six splits, into `outputs/full_zret/grade-nullx.{md,json}`, wh
 05:30). Its filed LOSSes (L-squad musique −0.0093, L-hotpotqa metaqa −0.0121 and hotpotqa read zero-shot −0.0140,
 L-2wiki 2wiki read zero-shot −0.0081) and its GAINs (L-metaqa metaqa read zero-shot +0.0644 among them) each meet
 their read's floor. The re-grade is filed; what an ADOPT would change is declared in a later round.
+
+### ADOPT under the seed null over every split (05:14)
+
+`outputs/full_zret/grade-nullx.md` (docs/SCREENS.md, 'The seed null over every split'). Each of the 36 reads is called
+with its own floor from the null over all six splits. Bold: step 1's eleven primary reads. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+|---|---|---|---|---|---|---|
+| J5 | **−0.0011 WITHIN (floor 0.0154)** | **+0.0013 WITHIN (floor 0.0075)** | **+0.0031 WITHIN (floor 0.0158)** | **−0.0005 WITHIN (floor 0.0075)** | **−0.0035 WITHIN (floor 0.0075)** | **+0.0250 GAIN → WITHIN zs (floor 0.0295)** |
+| L-metaqa | **+0.0644 GAIN zs (floor 0.0168)** | +0.0029 WITHIN (floor 0.0075) | +0.0087 GAIN (floor 0.0075) | −0.0032 WITHIN (floor 0.0075) | +0.0066 WITHIN (floor 0.0175) | +0.0071 WITHIN zs (floor 0.0075) |
+| L-squad | −0.0063 WITHIN (floor 0.0075) | **+0.0056 WITHIN zs (floor 0.0075)** | −0.0093 LOSS → WITHIN (floor 0.0239) | −0.0017 WITHIN (floor 0.0075) | −0.0048 WITHIN (floor 0.0117) | +0.0166 GAIN → WITHIN zs (floor 0.0260) |
+| L-musique | −0.0041 WITHIN (floor 0.0075) | +0.0007 WITHIN (floor 0.0075) | **+0.1202 GAIN zs (floor 0.0720)** | +0.0046 WITHIN (floor 0.0075) | −0.0018 WITHIN (floor 0.0075) | −0.0012 WITHIN zs (floor 0.0102) |
+| L-hotpotqa | −0.0121 LOSS → WITHIN (floor 0.0149) | +0.0011 WITHIN (floor 0.0075) | +0.0073 WITHIN (floor 0.0075) | **−0.0140 LOSS → WITHIN zs (floor 0.0200)** | +0.0056 WITHIN (floor 0.0075) | −0.0005 WITHIN zs (floor 0.0233) |
+| L-2wiki | −0.0004 WITHIN (floor 0.0075) | −0.0003 WITHIN (floor 0.0099) | +0.0055 WITHIN (floor 0.0075) | +0.0058 WITHIN (floor 0.0089) | **−0.0081 LOSS → WITHIN zs (floor 0.0112)** | +0.0262 GAIN → WITHIN zs (floor 0.0473) |
+
+- **Every filed LOSS is within its floor:**
+  - musique in L-squad's fit: −0.0093, floor 0.0239;
+  - metaqa in L-hotpotqa's fit: −0.0121, floor 0.0149;
+  - hotpotqa read zero-shot: −0.0140, floor 0.0200;
+  - 2wiki read zero-shot: −0.0081, floor 0.0112.
+- **Two primary reads GAIN:** metaqa read zero-shot in L-metaqa's fit (+0.0644, floor 0.0168) and musique read zero-shot
+  in L-musique's fit (+0.1202, floor 0.0720). musique in-domain in L-metaqa's fit also gains (+0.0087, floor 0.0075).
+- **The webqsp zero-shot GAINs are within their floors:** J5 +0.0250 against 0.0295, L-squad +0.0166 against 0.0260,
+  and L-2wiki +0.0262 against 0.0473.
+- **zret is ADOPTED** by section 4's rule under the null (docs/SCREENS.md, section 2, amended 8 October): at least one
+  primary read GAINs and none of the 36 LOSES. It is the first screen arm adopted.
+- **What it changes** is declared in a later round, before its numbers, once gsurg's re-grade is in (docs/SCREENS.md,
+  section 2). Rounds eleven and twelve keep step 1's base, as they were declared. The note above, that zret is not the
+  base of later screens, held until this re-grade.
