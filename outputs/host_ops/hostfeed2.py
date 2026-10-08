@@ -384,6 +384,20 @@ def overview():
     newest = {}
     for j in jobs:            # newest first
         newest.setdefault(j.get("name"), j)
+    # A job whose heartbeat lapsed past rx's 120 s loses its rx reservation for good, though it runs on (8 Oct 12:20):
+    # it still holds what it asked for.
+    now_ = d.get("now") or time.time()
+    act_ids = {x.get("id") for x in act}
+    unres = [{"project": PROJECT, "id": j["id"], "req": j["req"], "unreserved": True} for j in jobs
+             if j.get("id") not in act_ids and j.get("req") and alive(j, now_)]
+    if unres:
+        act = act + unres
+        mine = mine + unres
+        say_once("_unres", f"{len(unres)} running mpr job(s) hold no rx reservation (heartbeat lapsed): counted as "
+                 f"holding {sum(float(x['req'].get('gpus') or 0) for x in unres):g} GPU, "
+                 f"{sum(float(x['req']['mem_gb']) for x in unres):g} GB: " + " ".join(x["id"] for x in unres)[:400])
+    else:
+        st["said"].pop("_unres", None)
     return {"now": d.get("now") or time.time(), "sys": d.get("sysinfo") or {}, "gpus_total": gpus_total,
             "free_c": cap["cpus"] - cap.get("reserve_cpus", 0) - sum(float(x["req"]["cpus"]) for x in act),
             "free_m": cap["mem_gb"] - cap.get("reserve_mem_gb", 0) - sum(float(x["req"]["mem_gb"]) for x in act),
@@ -404,6 +418,15 @@ def overview():
             "jobs": jobs, "by_id": {j["id"]: j for j in jobs}, "newest": newest}
 
 
+def alive(j, now):
+    """A job that still runs: running, finishing or launching, or 'lost' with a heartbeat younger than --lost-grace
+    (rx calls a job lost 120 s after its last heartbeat, though a stalled host can delay heartbeats for minutes)."""
+    s = j.get("state")
+    if s in ("running", "finishing", "launching"):
+        return True
+    return s == "lost" and now - float(j.get("heartbeat") or 0) < a.lost_grace
+
+
 def job_state(name, items_by, ov, exact=False):
     """(state, rc, use_gb, ran_s) of the job a name resolves to; 'pending' for an unsent item of ITEMS."""
     if name in items_by and name not in st["sent"]:
@@ -411,7 +434,7 @@ def job_state(name, items_by, ov, exact=False):
     jid = st["sent"].get(name) or (ov["newest"].get(name) or {}).get("id")
     if jid is None:
         return ("unknown", None, None, 0.0)
-    if jid in st["terminal"]:
+    if jid in st["terminal"] and st["terminal"][jid][0] != "lost":
         return tuple(st["terminal"][jid])
     j = ov["by_id"].get(jid)
     if exact or j is None:
@@ -422,6 +445,8 @@ def job_state(name, items_by, ov, exact=False):
     use = max(float(j.get("peak_mem_gb") or 0.0), float(j.get("live_mem_gb") or 0.0))
     ran = ((j.get("ended") or ov["now"]) - float(j["started"])) if j.get("started") else 0.0
     out = (j.get("state"), j.get("rc"), use, ran)
+    if out[0] == "lost" and alive(j, ov["now"]):
+        return ("running", None, use, ran)          # a stalled heartbeat, not an end
     if out[0] in BAD or out[0] == "done":
         st["terminal"][jid] = list(out)
     return out
@@ -847,6 +872,15 @@ def main(argv=None):
     ap.add_argument("--corun-share", type=float, default=0.5, help="rx GPU share of a run sharing the card")
     ap.add_argument("--corun-slack", type=float, default=2.0, help="GB between a measured peak and its cap")
     ap.add_argument("--card-gb", type=float, default=23.99, help="the card's memory as torch counts it (GiB)")
+    ap.add_argument("--undrop-prefix", default="",
+                    help="once at start: dropped items whose names start with one of these (comma list) wait again")
+    ap.add_argument("--unsend", default="",
+                    help="once at start: these items (comma list) forget their jobs and run again")
+    ap.add_argument("--lost-grace", type=float, default=1800.0,
+                    help="s: a job rx calls lost with a heartbeat this young still runs and holds its request")
+    ap.add_argument("--shed-polls", type=int, default=5,
+                    help="polls of spill in a row, with mpr's running GPU shares above the card, before the feeder "
+                         "cancels mpr's newest GPU run and puts its item back (0: never)")
     ap.add_argument("--spill-gb", type=float, default=1.0,
                     help="GPU shared memory this far above its lowest reading is a spill (GiB; 2.0 before 7 Oct 08:40)")
     ap.add_argument("--vram-slack", type=float, default=0.0,
@@ -901,11 +935,31 @@ def main(argv=None):
         time.sleep(30)
 
     st = json.loads(state_p.read_text(encoding="utf-8")) if state_p.exists() else {}
-    for k in ("sent", "dropped", "measured", "terminal", "said"):
+    for k in ("sent", "dropped", "measured", "terminal", "said", "shed"):
         st.setdefault(k, {})
     dyn = st.setdefault("dyn", {})
     dyn.setdefault("margin", a.margin)
     dyn.setdefault("calm", 0)
+    dyn.setdefault("spill_polls", 0)
+    pre = tuple(x for x in a.undrop_prefix.split(",") if x)
+    if pre:
+        und = sorted(n for n in st["dropped"] if n.startswith(pre))
+        for n in und:
+            st["dropped"].pop(n, None)
+        log(f"REPAIR undropped {len(und)} item(s) starting {', '.join(pre)}: " + " ".join(und)[:1500])
+    uns = [x for x in a.unsend.split(",") if x]
+    for n in uns:
+        jid = st["sent"].pop(n, None)
+        if jid:
+            st["terminal"].pop(jid, None)
+            st["shed"][jid] = n
+        st["dropped"].pop(n, None)
+    if uns:
+        log(f"REPAIR unsent {len(uns)} item(s): " + " ".join(uns))
+    for jid in [j for j, v in st["terminal"].items() if v and v[0] == "lost"]:
+        st["terminal"].pop(jid)                     # re-read: a stalled heartbeat is not an end
+    if (pre or uns) and not a.dry:
+        save()
 
     cpu = CpuMeter()
     ctr = Counters(COUNTERS)
@@ -936,6 +990,8 @@ def main(argv=None):
             n = i["name"]
             if n not in st["sent"] and n not in st["dropped"] and n in ov["newest"]:
                 j = ov["newest"][n]
+                if j.get("id") in st["shed"] or j.get("state") in ("failed", "cancelled", "error"):
+                    continue
                 if ov["now"] - float(j.get("created") or 0) < a.adopt_h * 3600:
                     st["sent"][n] = j["id"]
                     if not a.dry:
@@ -1001,6 +1057,27 @@ def main(argv=None):
                      f"no GPU run starts sharing the card until it clears")
         else:
             st["said"].pop("_gspill", None)
+        dyn["spill_polls"] = dyn["spill_polls"] + 1 if spill else 0
+        own_run = [x for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
+        own_g = sum(float(x["req"].get("gpus") or 0) for x in own_run)
+        if (a.shed_polls > 0 and dyn["spill_polls"] >= a.shed_polls and own_g > ov["gpus_total"] + 1e-9
+                and not a.dry):
+            def started(x):
+                return float((ov["by_id"].get(x["id"]) or {}).get("started") or 0)
+            vic = max(own_run, key=started)
+            names = [n for n, i in st["sent"].items() if i == vic["id"]]
+            try:
+                agent({"op": "cancel", "project": PROJECT, "id": vic["id"]}, timeout=120)
+                st["shed"][vic["id"]] = names[0] if names else None
+                for n in names:
+                    st["sent"].pop(n, None)
+                st["terminal"].pop(vic["id"], None)
+                dyn["spill_polls"] = 0
+                save()
+                log(f"SHED {vic['id']} ({', '.join(names) or 'no item'}): the card spills and mpr's running GPU shares "
+                    f"are {own_g:g} of {ov['gpus_total']}; its item goes back unsent")
+            except Exception as e:  # noqa: BLE001
+                log("shed failed:", repr(e)[:200])
         M = measure(ov["jobs"], by)
         M["gpu_spill"] = spill
         if a.corun and M["cls_gpu_arms"]:
