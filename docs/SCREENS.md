@@ -2674,6 +2674,24 @@ the null's floors. Every read is WITHIN. zs: read zero-shot.
 - **What follows.** `frk-gate` exits 1, so the feeder drops round twenty's full run (docs/FULL_ROUND20.md): its four
   fits, reads, comparisons and grades never run.
 
+### scr-zlk (L-musique): NO_GAIN. scr-zlk-hp (L-hotpotqa): PROMISING. The pair and its re-call are PROMISING (21:49); flk-gate decides the full run
+
+`outputs/screen/scr-zlk-pair-recall.md`. **Message passing (the GNN track):** zrm plus a head over each row's links to
+zrm's own leading rows (one propagation step). R@5 of zlk minus zrm's screen fit of the same split, called with the
+null's floors. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | −0.0044 | −0.0007 | −0.0027 zs | +0.0001 | −0.0041 | +0.0083 zs (floor 0.0102) |
+| L-hotpotqa | −0.0014 | +0.0019 | **+0.0084 GAIN** | +0.0011 zs | +0.0047 | +0.0055 zs |
+
+- **One GAIN, no LOSS.** musique in L-hotpotqa's fit, 0.560 to 0.568 [+0.003, +0.014], the 2-hop bridge D1 pointed
+  at (missed golds linked to found ones).
+- **L-musique's fit leans down in-domain:** metaqa −0.0044 and 2wiki −0.0041, both inside the floor of 0.0075.
+  Both webqsp reads rise (+0.0083, +0.0055 zs), under their floors.
+- **What follows.** flk-gate waits for zb-grade-nullx as declared, then starts docs/FULL_ROUND22.md's full run. Its
+  numbers are the GNN track's, never the MLP's.
+
 ### Twenty-third round: each row's neighbours' scores, on zrm, on the host's CPU (declared 8 October about 20:05, before any of its numbers; full run docs/FULL_ROUND23.md)
 
 Code: `outputs/mp_unified/zprop.py` (its selftest passes).
