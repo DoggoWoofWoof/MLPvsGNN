@@ -2930,3 +2930,12 @@ declared in its own file before any of its numbers.
   to 22:30.
 - The joint selection runs after all four fits (about 25 minutes), then the reads, about 23:30 to midnight.
 - The re-calls of rounds twenty-four and twenty-five land about midnight to 00:45.
+
+### Bases after round twenty-three's full run (9 October 00:52)
+
+- **docs/FULL_ROUND23.md is ADOPT, and ADOPT under the seed null over all six splits.** Its two primary GAINs are both
+  zero-shot: metaqa in L-metaqa's fit, +0.0303; 2wiki in L-2wiki's, +0.0141. No read of 36 LOSEs.
+- **zsp (zrm + one propagation step, message passing) is the base of the GNN track's later screens and runs,** its
+  fits the host CPU's, as FULL_ROUND23.md section 4 declares. Rounds twenty-two and twenty-five keep the bases they were
+  declared on; a combination with zsp is a round of its own.
+- **zrm stays the MLP's base.** zsp's numbers are never cited as the MLP's.
