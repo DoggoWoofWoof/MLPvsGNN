@@ -393,10 +393,11 @@ def overview():
     if unres:
         act = act + unres
         mine = mine + unres
+    if unres and "said" in st:               # the wait loop runs before the state loads: it logs and saves nothing
         say_once("_unres", f"{len(unres)} running mpr job(s) hold no rx reservation (heartbeat lapsed): counted as "
                  f"holding {sum(float(x['req'].get('gpus') or 0) for x in unres):g} GPU, "
                  f"{sum(float(x['req']['mem_gb']) for x in unres):g} GB: " + " ".join(x["id"] for x in unres)[:400])
-    else:
+    elif "said" in st:
         st["said"].pop("_unres", None)
     return {"now": d.get("now") or time.time(), "sys": d.get("sysinfo") or {}, "gpus_total": gpus_total,
             "free_c": cap["cpus"] - cap.get("reserve_cpus", 0) - sum(float(x["req"]["cpus"]) for x in act),
