@@ -2732,6 +2732,25 @@ Code: `outputs/mp_unified/zprop.py` (its selftest passes).
   (8216ffe): each question timed from scratch, with the walk, the move of its entries and edges to the device and the
   forward, no warm-up pass and nothing kept from an earlier question.
 
+### scr-zsp (L-musique): NO_GAIN. scr-zsp-hp (L-hotpotqa): PROMISING. The pair and its re-call are PROMISING (21:43); the full run started
+
+`outputs/screen/scr-zsp-pair-recall.md`. **Message passing (the GNN track):** zrm plus one propagation step over the
+pool graph. R@5 of zsp minus zrm refit on the host's CPU (scr-zrm-cpu, scr-zrm-cpu-hp), called with the null's floors.
+zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.0006 | −0.0018 | +0.0004 zs | +0.0013 | +0.0052 | +0.0035 zs |
+| L-hotpotqa | +0.0013 | +0.0035 | +0.0034 | −0.0074 zs (floor 0.0200) | **+0.0100 GAIN** | −0.0030 zs |
+
+- **One GAIN, no LOSS.** 2wiki in L-hotpotqa's fit, 0.866 to 0.876 [+0.008, +0.012]. 2wiki also rises in L-musique's
+  fit, +0.0052 [+0.003, +0.007], under its floor of 0.0075. These are the passage graphs where D1 found most missed
+  golds linked to found ones (2wiki 0.77).
+- **Zero-shot is flat.** hotpotqa read zero-shot falls −0.0074, within its floor of 0.0200. webqsp moves by 0.0035 or
+  less.
+- **What follows.** `fsp-gate` exits 0, so the full run of docs/FULL_ROUND23.md started at 21:45, on the host's CPU.
+  Its numbers are the GNN track's, never the MLP's.
+
 ### Label: rounds twenty-two and twenty-three are message passing (8 October about 20:20)
 
 - zlk (round twenty-two) and zsp (round twenty-three) add one propagation step after zrm's forward. Each row
