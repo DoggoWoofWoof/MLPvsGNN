@@ -2673,3 +2673,61 @@ the null's floors. Every read is WITHIN. zs: read zero-shot.
   inputs but in the inputs.
 - **What follows.** `frk-gate` exits 1, so the feeder drops round twenty's full run (docs/FULL_ROUND20.md): its four
   fits, reads, comparisons and grades never run.
+
+### Twenty-third round: each row's neighbours' scores, on zrm, on the host's CPU (declared 8 October about 20:05, before any of its numbers; full run docs/FULL_ROUND23.md)
+
+Code: `outputs/mp_unified/zprop.py` (its selftest passes).
+
+- **Why.** The same reading of docs/DIAG_BRIDGE.md as round twenty-two, from the other side:
+  - **D1.** The golds zrm misses in partly-found questions sit next to rows it ranks highly (2wiki 0.77, hotpotqa 0.92
+    to 0.93, musique 0.38 and 0.77 within two hops), but zrm's score does not single them out among those rows'
+    neighbours (musique median rank 5 to 9 of about 45).
+  - **D2.** A stronger scorer on the per-row inputs gains nothing (FEATURE_LIMIT); what they lack is relational.
+  - **Round twenty-two** gives each row its edges to zrm's top five and top row: a cut at five. When the found gold is
+    ranked sixth or tenth, its neighbours get nothing from it. This round gives each row every neighbour's score, and
+    the head learns how much a neighbour's rank counts.
+- **What trains.** The arm zsp: zrm's model, settings and training (rmatch.py's train), seed 0, plus a small head added
+  to zrm's score.
+  - zrm scores the pool. Its scores are z-scored within each pool under no_grad.
+  - Each row gets 10 inputs:
+    - per edge family, the mean of its neighbours' z-scores (3);
+    - per family, their soft maximum, the log of the sum of their exponentials, each z-score clipped to [-8, 8] (3);
+    - per family, log1p of its degree (3);
+    - its own z-score (1).
+    A row with no neighbour in a family reads 0 there.
+  - The head is Linear(10, 32), GELU, Linear(32, 1), 385 weights. Its last layer starts at zero and its first is drawn
+    from its own generator, so at the start zsp's forward is zrm's bit for bit and no draw of zrm's moves (selftest;
+    `zprop.py check` on real carves).
+- **The edges are round twenty-two's** (`outputs/zlink/cache`, built and checked at 18:15): each question's own pool
+  graph, undirected, once per family, no self-loops. Nothing new is built.
+- **The same rule on all six datasets.** No new graph, column, text, encoder or model. The inputs come from zrm's own
+  scores, so they are query-local and label-free, the same in training and at read.
+- **On the host's CPU, against zrm on the CPU.** The card holds about half of what it did, so its queue runs one fit at
+  a time while the CPU idles. This round runs on the CPU beside it.
+  - Four fits, on 6 threads each: zsp's `scr-zsp` (L-musique) and `scr-zsp-hp` (L-hotpotqa), and zrm's refits on the
+    same splits, `scr-zrm-cpu` and `scr-zrm-cpu-hp` (`zprop.py base`: zrm.py's train with `--device cpu`). Each fit is
+    read on the six s1eval carves on the CPU.
+  - **Each read is decided against zrm's CPU fit of its split**, so both sides ran on the same device. zrm's card fits
+    (`scr-zrm`, `scr-zrm-hp`) and step 1's are reported beside.
+  - Each read's base R@5 for the re-call comes from `outputs/zprop/base-zrm-cpu-<split>.json`: zrm's CPU fit compared
+    with step 1's (the null's seed 0). The same comparison reports zrm's CPU fit against its card fit: the device's
+    own spread. That is reported only and decides nothing.
+  - zprop.py refuses to train or read zsp, or train zrm's base, on any device but the CPU, and its pair and grade
+    refuse a comparison whose new fit or deciding base is not a CPU fit (their screen.json stamps).
+- **The rule is the screens' rule.** zprop.py's comparison, pair and re-call under the seed null (relz.py's, mapped to
+  zrm's CPU fits) decide. The full run (docs/FULL_ROUND23.md) starts only if both hold:
+  - the re-call is PROMISING (a GAIN and no LOSS among its twelve reads);
+  - zrm is the base (docs/BASE_ZRM_ZRS.md re-graded ADOPT, as it is since 10:05).
+- **If rounds twenty-two and twenty-three both pass.** Each full run decides its own arm against zrm. Which becomes the
+  base, or whether the two combine, is decided in a file declared before either grade, as docs/BASE_ZRM_ZRS.md was.
+- **Checks before the fits.** `zsp-check-hotpotqa` and `zsp-check-webqsp` load a passage and a KB carve with their
+  edges, and require zsp's forward at the start to equal zrm's, in eval and in training with the same dropout draws, and
+  every input to be finite. The fits wait on both.
+- **Caps and order.** Each fit and read takes 6 CPUs and 16 GB of host memory; no card. The four fits start together,
+  beside the card's queue, and take nothing from it.
+- **ETAs.** The checks take about 5 minutes. A CPU fit's pace is not yet measured: the first epoch's time gives it, and
+  the ETAs are restated then. At 3 to 6 times the card's 6.5 minutes per epoch, a fit takes about 2.5 to 5 hours, so
+  the re-call lands about 23:30 to 03:00.
+- **Speed.** Per question, one pass over its pool's edges after zrm's forward. Any latency figure for zsp is cold
+  (8216ffe): each question timed from scratch, with the walk, the move of its entries and edges to the device and the
+  forward, no warm-up pass and nothing kept from an earlier question.
