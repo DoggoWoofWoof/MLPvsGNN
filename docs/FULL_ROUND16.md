@@ -82,4 +82,12 @@ early.
 - No speed figure. zsep serves as zret's model does; any latency figure for it is cold, and its latency stage is
   declared in its own file.
 
+## Amendment (8 October about 10:15, before this round's re-call)
+
+zrm became the base at 10:05 (docs/BASE_ZRM_ZRS.md), so a full run against zret's fits can no longer change the base.
+This round's re-call is filed as declared. If it is PROMISING, the idea is combined with zrm in a later round, declared
+before its numbers, instead of this full run: two screen fits against zrm's, then a full run against zrm's fits. The
+full-run items are commented out in the feeder; the gate stays and starts nothing (docs/SCREENS.md, 'Amendment: with
+zrm the base').
+
 ## Results

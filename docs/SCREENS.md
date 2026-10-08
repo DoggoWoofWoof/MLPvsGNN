@@ -2311,3 +2311,31 @@ zrm minus zrs's fit of the same split. Only the reads that are not WITHIN are sh
   - zgs (round thirteen) and zsep (round sixteen) are still decided against zret's fits, as declared. If either is
     adopted, it is combined with zrm in a later round, declared before its numbers.
   - Any latency figure for zrm is cold (8216ffe).
+
+### Amendment: with zrm the base, a PROMISING re-call of zgs or zsep leads to a combination with zrm, not a full run against zret (declared 8 October about 10:15, before either re-call)
+
+- **Why.**
+  - zrm became the base at 10:05 (docs/BASE_ZRM_ZRS.md). zgs (round thirteen) and zsep (round sixteen) were declared
+    against zret's fits, and an arm adopted against zret is only combined with the base in a later round
+    (docs/BASE_ZRM_ZRS.md, section 4). So their full runs against zret can no longer change the base.
+  - Those runs would still hold the card ahead of round eighteen's full run, which can. zgs's four fits take about 2 to
+    3.5 hours beside others (gsurg's loop).
+- **What changes.**
+  - The re-calls of zgs and zsep are filed as declared, and still decide whether each idea goes on.
+  - A PROMISING re-call no longer starts a full run against zret's fits. Instead the idea is combined with zrm in a
+    later round, declared before its numbers. That round has two screen fits decided against zrm's screen fits, then a
+    full run against zrm's fits, re-graded under the null over every split, as every round.
+  - The bar for adoption is unchanged: a full run against the base.
+- **In the feeder,** the full-run items of rounds thirteen and sixteen are commented out unrun:
+  - `fzg-train-*-b` to `fzg-grade-nullx-b`;
+  - `fzp-train-*` to `fzp-grade-nullx`.
+
+  Their gates (`fzg-gate-b`, `fzp-gate`) stay. They record each re-call's verdict and start nothing.
+- **Round eighteen's full run (`fzk-*`) is unaffected.** It still starts only on its screen's PROMISING re-call.
+- **What exists at this point.**
+  - zgs: its L-musique fit's comparison was computed on the host at 09:45. Its L-hotpotqa fit is still training,
+    and its pair and re-call do not exist.
+  - zsep: its two fits are still training, so none of its numbers exist.
+  - Round eighteen: no numbers exist.
+
+  The amendment applies to both arms whatever their re-calls say.
