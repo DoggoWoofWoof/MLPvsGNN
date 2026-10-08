@@ -1,0 +1,151 @@
+{
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "rows": [
+  {
+   "fit": "screen/fits/scr-zrm",
+   "dataset": "2wiki",
+   "questions": 12576,
+   "R@5": 0.8709247773536896,
+   "two_or_more": 1.0,
+   "FC@5_two_or_more": 0.7081743002544529,
+   "lost_partly_found": 0.8872632065301094,
+   "lost_none_found": 0.11273679346989066,
+   "golds_median": 2.0,
+   "golds_p90": 4.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm",
+   "dataset": "hotpotqa",
+   "questions": 7405,
+   "R@5": 0.9039837947332883,
+   "two_or_more": 1.0,
+   "FC@5_two_or_more": 0.8459149223497636,
+   "lost_partly_found": 0.6047819971870605,
+   "lost_none_found": 0.3952180028129395,
+   "golds_median": 2.0,
+   "golds_p90": 2.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm",
+   "dataset": "metaqa",
+   "questions": 9785,
+   "R@5": 0.7789369580412274,
+   "two_or_more": 0.6049054675523761,
+   "FC@5_two_or_more": 0.46595708734583546,
+   "lost_partly_found": 0.8247886491001075,
+   "lost_none_found": 0.17521135089989254,
+   "golds_median": 2.0,
+   "golds_p90": 20.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm",
+   "dataset": "musique",
+   "questions": 2417,
+   "R@5": 0.523100262032823,
+   "two_or_more": 1.0,
+   "FC@5_two_or_more": 0.21514273893256103,
+   "lost_partly_found": 0.7371312897628687,
+   "lost_none_found": 0.26286871023713126,
+   "golds_median": 2.0,
+   "golds_p90": 4.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm",
+   "dataset": "squad",
+   "questions": 11873,
+   "R@5": 0.9110587046239367,
+   "two_or_more": 0.0,
+   "FC@5_two_or_more": null,
+   "lost_partly_found": 0.0,
+   "lost_none_found": 1.0,
+   "golds_median": 1.0,
+   "golds_p90": 1.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm",
+   "dataset": "webqsp",
+   "questions": 1503,
+   "R@5": 0.3127681002309141,
+   "two_or_more": 0.49234863606121093,
+   "FC@5_two_or_more": 0.04594594594594595,
+   "lost_partly_found": 0.2177436992085173,
+   "lost_none_found": 0.7822563007914826,
+   "golds_median": 1.0,
+   "golds_p90": 13.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm-hp",
+   "dataset": "2wiki",
+   "questions": 12576,
+   "R@5": 0.8680621819338422,
+   "two_or_more": 1.0,
+   "FC@5_two_or_more": 0.7018129770992366,
+   "lost_partly_found": 0.8746421576013259,
+   "lost_none_found": 0.1253578423986741,
+   "golds_median": 2.0,
+   "golds_p90": 4.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm-hp",
+   "dataset": "hotpotqa",
+   "questions": 7405,
+   "R@5": 0.8457123565158676,
+   "two_or_more": 1.0,
+   "FC@5_two_or_more": 0.7338284942606347,
+   "lost_partly_found": 0.725164113785558,
+   "lost_none_found": 0.274835886214442,
+   "golds_median": 2.0,
+   "golds_p90": 2.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm-hp",
+   "dataset": "metaqa",
+   "questions": 9785,
+   "R@5": 0.7800691748907599,
+   "two_or_more": 0.6049054675523761,
+   "FC@5_two_or_more": 0.46747761446190234,
+   "lost_partly_found": 0.8183105024778478,
+   "lost_none_found": 0.1816894975221523,
+   "golds_median": 2.0,
+   "golds_p90": 20.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm-hp",
+   "dataset": "musique",
+   "questions": 2417,
+   "R@5": 0.5599572472762377,
+   "two_or_more": 1.0,
+   "FC@5_two_or_more": 0.2515515101365329,
+   "lost_partly_found": 0.7649455457180913,
+   "lost_none_found": 0.2350544542819086,
+   "golds_median": 2.0,
+   "golds_p90": 4.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm-hp",
+   "dataset": "squad",
+   "questions": 11873,
+   "R@5": 0.9115640528931188,
+   "two_or_more": 0.0,
+   "FC@5_two_or_more": null,
+   "lost_partly_found": 0.0,
+   "lost_none_found": 1.0,
+   "golds_median": 1.0,
+   "golds_p90": 1.0
+  },
+  {
+   "fit": "screen/fits/scr-zrm-hp",
+   "dataset": "webqsp",
+   "questions": 1503,
+   "R@5": 0.24157881363766276,
+   "two_or_more": 0.49234863606121093,
+   "FC@5_two_or_more": 0.024324324324324326,
+   "lost_partly_found": 0.17186229727063895,
+   "lost_none_found": 0.8281377027293612,
+   "golds_median": 1.0,
+   "golds_p90": 13.0
+  }
+ ],
+ "script": "goldsplit.py"
+}

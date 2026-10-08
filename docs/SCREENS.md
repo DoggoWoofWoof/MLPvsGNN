@@ -1916,3 +1916,35 @@ questions with some of their golds in the top 5 but not all (partly found) and q
   none-found questions (0.230 in J5). Its R@5 is below plain retrieval's (rrf 0.473).
 - squad has one gold per question, so all of its loss is none-found, and zsep trains its questions as zret did.
 - The same count on zrm's two screen fits is queued after their reads (`diag-goldsplit-zrm`).
+
+### scr-zrm (L-musique): PROMISING. scr-zrm-hp (L-hotpotqa): PROMISING. The pair and its re-call are PROMISING (08:09), and zrm's full run has started
+
+`outputs/screen/scr-zrm.md`, `scr-zrm-hp.md`, `scr-zrm-pair.md` and `scr-zrm-pair-recall.md` (the `-b` items of round
+fourteen). R@5 of zrm minus zret's fit of the same split, called with the null's floors. Unmarked reads are WITHIN.
+zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.1293 GAIN | +0.0004 | +0.1334 GAIN zs | −0.0021 | −0.0005 | +0.1361 GAIN zs |
+| L-hotpotqa | +0.1381 GAIN | −0.0012 | −0.0023 | +0.0012 zs | −0.0047 | +0.1221 GAIN zs |
+
+- **rmatch's gains carry onto zret's model.**
+  - metaqa in-domain: R@5 rises from 0.650 to 0.779 in L-musique's fit and from 0.642 to 0.780 in L-hotpotqa's.
+    hit@1 rises by +0.253 and +0.265.
+  - webqsp read zero-shot (webqsp never trains): R@5 rises from 0.177 to 0.313 and from 0.120 to 0.242.
+- **musique read zero-shot in L-musique's fit rises from 0.390 to 0.523** (floor 0.0720), above plain retrieval's
+  0.473. Beside rmatch's fit (reported only) it is +0.0211 GAIN. musique's graph has no typed relations, so the change
+  is in the base model's weights, trained beside the match.
+- **The gains are in questions that had no gold in the top 5** (the diagnosis on zrm's fits,
+  `outputs/diag/goldsplit-zrm.md`, beside zret's):
+  - musique read zero-shot: the none-found share of the lost R@5 falls from 0.460 to 0.263.
+  - webqsp read zero-shot: from 0.889 to 0.782 in L-musique's fit, and from 0.923 to 0.828 in L-hotpotqa's.
+  - metaqa in-domain: FC@5 among questions with two or more golds rises from 0.284 to 0.466.
+- **The untyped reads hold.** The largest move is 2wiki in-domain in L-hotpotqa's fit, −0.0047 (CI −0.0068 to
+  −0.0025, floor 0.0075; FC@5 −0.0130). rmatch's full run lost on 2wiki read zero-shot in L-2wiki's fit, a read the
+  full run now trains.
+- In the filed re-call record, the host's absolute paths of zret's two comparisons are cut to relative ones. Nothing
+  else in it changed.
+- **What follows.** `fzm-gate-b` exited 0 at 08:09, and `fzm-train-L-2wiki-b` started at 08:10. The full run
+  (docs/FULL_ROUND14.md) trains L-2wiki, L-squad, J5 and L-metaqa, decided against zret's fits and re-graded under the
+  null over every split. Any speed figure for this arm is cold (8216ffe). ETA of the grade: about 10:00 to 10:45.
