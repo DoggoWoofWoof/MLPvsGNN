@@ -2192,7 +2192,8 @@ entries, against the same fits read with rmatch's.
 
 - **The re-call is PROMISING.** webqsp read zero-shot GAINs in both fits. The other ten reads are +0.0000.
 - **Every read of squad, musique, hotpotqa, 2wiki and metaqa is zrm's bit for bit** (the `-same` files: IDENTICAL).
-  Only webqsp's reads differ: the golds in the top five change for 312 and 263 of its 1,503 questions.
+  Only webqsp's reads differ: the number of golds in the top five changes for 312 and 263 of its 1,503
+  questions.
 - **On webqsp, R@5 rises but hit@1 falls in both fits,** by 0.046 in L-musique's fit and 0.005 in L-hotpotqa's. The
   screens decide on R@5. The hit@1 drop is reported beside it, and round eighteen reports it too.
 - **The count.** On metaqa's fit carve, the two builds keep a different set in 2 of 5,960 questions, in one row each.
@@ -2243,3 +2244,35 @@ the reads that are not WITHIN are shown; P marks a primary read.
 - **What follows.** Both zrm and zrs are ADOPTED, so docs/BASE_ZRM_ZRS.md runs: zrm's fits against zrs's, read by read.
   It was declared at 09:50, before this grade. Its gate passes on these two re-grades, and its verdict lands about
   10:15 to 10:30.
+
+### Eighteenth round: zrc trained on its own entries (declared 8 October about 10:00, before any of its numbers; full run docs/FULL_ROUND18.md)
+
+Code: `outputs/mp_unified/zrct.py` (its selftest passes).
+
+- **Why: zrcd's declared rule holds.** zrcd's re-call is PROMISING, and every read but webqsp's is zrm's bit for bit.
+  Round seventeen could not fork zrm's fits as zrc's, since the two training carves differ in two entries. So zrc trains.
+- **What trains.** The arm zrc, (zrm.ZRM, zrc.ChainCarveZRC): zrm's model, settings and training (rmatch.py's train),
+  over zrc's builds (`outputs/zrc/cache`). Seed 0. Only the entries kept on the typed graphs change.
+- **The screen's two fits:** `scr-zrct` (L-musique) and `scr-zrct-hp` (L-hotpotqa). Each is read on the six s1eval
+  carves with zrc's entries.
+- **Decided against zrm's screen fits** (`scr-zrm` and `scr-zrm-hp`), with zret's and step 1's beside. The pieces are
+  zrc.py's: the comparison (with its `-same` file), the pair, and the re-call under the seed null. Each read's base R@5
+  comes from `outputs/zrc/base-zrm-<split>.json`.
+- **What can move.**
+  - webqsp's reads, through the entries.
+  - Every other read, through the weights alone: two entries of metaqa's training carve differ, so the weights may
+    differ slightly.
+  - hit@1 is reported beside R@5. On webqsp, zrcd's R@5 rose while its hit@1 fell.
+- **What follows.**
+  - The full run (docs/FULL_ROUND18.md) starts only if both hold: the re-call is PROMISING (a GAIN and no LOSS among
+    its twelve reads), and zrm is the base (docs/BASE_ZRM_ZRS.md re-graded ADOPT).
+  - If zrs stays the base, nothing follows here. A grade of zrc against zrs's fits would be declared in a later round.
+- **Caps and order.**
+  - Each fit takes 0.26 of the card (share 0.28) and 9 GB. Each read takes 0.30 (share 0.32) and 6 GB, as
+    zrcd's did (zrm's J5 read peaked at 3.9 GB).
+  - The two fits go after zgs's and zsep's screen reads and ahead of the queued full runs' fits in the feeder's list.
+    zsep's reads were moved up from the end of the list, so its verdict does not wait behind these fits. The full run
+    goes at the end. Nothing is preempted.
+- **ETAs.** Each fit takes about 35 minutes once the card has room. zgs's and zsep's fits hold the card until about
+  10:10 to 10:25. The re-call lands about 11:00 to 11:30.
+- **Speed.** Any latency figure is cold (8216ffe), timing the walk, w0, the selection and the forward per question.
