@@ -145,3 +145,10 @@ docs/SCREENS.md, section 2. When `fgs-grade-rc` files gsurg's grade, `nullx.py r
 floors of the null over all six splits, into `outputs/full_gsurg/grade-nullx.{md,json}`. **That re-grade decides,** in
 place of `grade-recall`, which is still filed. It works both ways: a GAIN within its read's floor turns WITHIN as
 surely as a LOSS. The null's fits run before gsurg's `-rc` fits not yet started, so both land about 04:30 to 05:30.
+
+### gsurg's re-grade under the null over every split: ADOPT (06:21)
+
+docs/SCREENS.md, 'gsurg's full run, re-graded'. One primary GAIN, musique read zero-shot in L-musique's fit (+0.0842,
+floor 0.0720), and no LOSS among the 36 reads (`outputs/full_gsurg/grade-nullx.md`). zret is ADOPTED too (05:14). The
+two change different things, so this file's rule holds: a screen of the two together decides the next base,
+declared as the thirteenth round in docs/SCREENS.md before its numbers.

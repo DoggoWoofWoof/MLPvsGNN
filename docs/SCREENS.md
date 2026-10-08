@@ -719,6 +719,55 @@ this round, before its numbers). Otherwise its items are dropped unrun. The pair
 - The screen's items queue after round eleven's. Each fit takes about 45 to 60 minutes beside the others, then a read
   of about 10 to 15. The pair and its re-call land about 08:00 to 09:00.
 
+### Thirteenth round (declared 8 October at about 06:45, before any of its numbers)
+
+Code: `outputs/mp_unified/zgs.py` (its selftest passes). One arm, the two adopted arms together, decided against
+zret's fits. The screen trains two fits, L-musique and L-hotpotqa.
+
+**The base.** Both re-grades under the null over every split are ADOPT: zret's (05:14) and gsurg's (06:21, filed in the
+results below). They change different things, zret the inputs' normalisation and gsurg the objective. So by section 2
+and docs/FULL_ROUND5.md they combine, and a screen of the two together decides the next base.
+- **zret is the base this screen is decided against, and the base of every later screen and run unless zgs is
+  ADOPTED.** Of the two, zret has two primary GAINs: musique read zero-shot in L-musique's fit (+0.1202) and metaqa
+  read zero-shot in L-metaqa's (+0.0644). gsurg has one: musique read zero-shot (+0.0842). Eleven of the seventeen
+  arms screened against step 1's L-musique fit before qdepth moved that read by +0.08 to +0.24, gsurg among them.
+- **zret's fits:** L-musique is its screen fit (`outputs/screen/fits/scr-zret`). Every other split, L-hotpotqa
+  included, is its full run's (`outputs/full_zret/fits/<split>`), since zret's screen came before the two-fit screens.
+- Section 2's amendment of 15:55 does not apply: neither arm is NOT_ADOPTED.
+
+| screen | arm | idea |
+| --- | --- | --- |
+| scr-zgs, scr-zgs-hp | zgs | **zret's model trained by gsurg's loop.** zret's forward (every block's within-pool z-score, and rrf's base z-score, taken against the pool's retrieved rows), trained with gsurg's gradient surgery across the training datasets (before each step, its gradient loses its component along any other dataset's gradient in the same chunk that it conflicts with). Both parts are used unchanged: no new column, block or hyperparameter. Reads are zret's model, so its serving cost is zret's. |
+
+**How it is decided.**
+- Each fit is compared with zret's fit of its split, which decides. gsurg's fit and step 1's are reported beside it.
+  The reads are the six s1eval carves at p@swa.
+- The pair and its re-call under the seed null are relz.py's, run under zgs's name, with zret's R@5 as each read's
+  base and the null's floors, as relz was decided against rel's screen fits.
+- **If the re-call is PROMISING, the full run starts by itself** (docs/FULL_ROUND13.md, declared with this round). Its
+  four fits are graded against zret's fits and re-graded under the null over every split. ADOPT makes zgs the base of
+  every later screen and run. On any other result zret stays the base, and gsurg's objective is not carried.
+
+**What the screen can show.** gsurg's one primary GAIN is on the read most arms move, and zret moves it further. A GAIN against zret's fits with no LOSS means the surgery adds something on zret's inputs. NO_GAIN means the two
+do the same work there, and zret alone stays.
+
+**The smoke** (`scr13-smoke`, `zgs.py smoke`) trains zret once, gsurg once and zgs twice (the repeat must be
+IDENTICAL), one epoch each on 2wiki's and hotpotqa's select carves. Each is read on 2wiki's.
+- zgs must hold zret's model, and its loop must meet conflicting pairs.
+- Its scores must differ from zret's (the same initialisation and batches, so the difference is the surgery) and from
+  gsurg's (the same loop, so the difference is zret's forward).
+- It runs as soon as 0.16 of the card is free (cap 0.14). The fits wait on it.
+
+**Caps and order.**
+- gsurg's caps: 0.26 (share 0.28) for both fits, reads 0.28 (0.30). The items go at the end of the feeder's list.
+- rmatch's two screen reads hold 0.64 of the card until about 06:45.
+- If rmatch's re-call is PROMISING, its full run's fits come first in the list (GPU items start in the list's order),
+  and zgs's fits start as those free the card, about 07:30. Otherwise zgs's fits start after the smoke, about 07:00.
+- gsurg's loop takes an extra forward and backward for each other dataset in a chunk. gsurg's screen fits took about
+  1.5 hours each, and its full run's up to about 3.5 hours beside three to five other items on the card. So each zgs
+  fit takes about 1.5 to 2 hours, then a read of about 10 minutes. The pair and its re-call land about 09:00 to
+  10:00.
+
 ## 5. ETAs (7 October)
 
 - **The four arm fits** started 14:25 to 14:27. An epoch takes 154 to 168 s, so each fit finishes about 14:50 to 14:55.
@@ -1493,3 +1542,24 @@ never ran), called with the null's floors. Unmarked reads are WITHIN. zs: read z
 - **musique read zero-shot rises from 0.270 to 0.380** (+0.1106, floor 0.0720). Eleven of the seventeen arms screened
   against step 1's L-musique fit moved this read by +0.08 to +0.24, so it is not the prior's own effect.
 - `fqd-gate` exited 1 at 06:17, and the feeder dropped the four fits with their reads, comparisons and grades.
+
+### gsurg's full run, re-graded under the null over every split: ADOPT (06:21). Both zret and gsurg are now adopted
+
+`outputs/full_gsurg/grade-nullx.md` (filed NOT_ADOPTED in `grade.md` and `grade-recall.md`). R@5 of gsurg minus step
+1's fit of the same split. Only the reads that are not WITHIN under the null are shown; P marks a primary read.
+
+| split | dataset | read | step 1 | gsurg | delta | floor | filed → re-call |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| L-musique | musique | zero-shot (P) | 0.2696 | 0.3537 | +0.0842 | 0.0720 | GAIN → GAIN |
+| L-squad | webqsp | zero-shot | 0.1302 | 0.1576 | +0.0274 | 0.0260 | GAIN → GAIN |
+| L-hotpotqa | 2wiki | in-domain | 0.8672 | 0.8763 | +0.0091 | 0.0075 | GAIN → GAIN |
+| L-2wiki | metaqa | in-domain | 0.6468 | 0.6571 | +0.0103 | 0.0075 | GAIN → GAIN |
+
+- **One primary GAIN and no LOSS, so gsurg is ADOPTED.** Its filed LOSSes fall within their floors: hotpotqa read
+  zero-shot in L-hotpotqa's fit (−0.0147, floor 0.0200) and musique in-domain in L-squad's (−0.0094, floor 0.0239).
+  Four filed GAINs fall within theirs as well, J5's metaqa among them (+0.0121, floor 0.0154).
+- **Its one primary GAIN is the read most arms move.** zret moves the same read further (0.270 to 0.390, against
+  gsurg's 0.354) and also GAINs on metaqa read zero-shot in L-metaqa's fit (+0.0644), where gsurg is WITHIN
+  (−0.0025).
+- **What follows (section 2):** zret and gsurg change different things, so the next base comes from a screen of the
+  two together, declared as the thirteenth round before its numbers.
