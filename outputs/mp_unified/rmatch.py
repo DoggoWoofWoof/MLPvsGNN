@@ -709,6 +709,9 @@ def carve_check(ds, carve, device):
     """One carve through rmatch's carve against lean_gpu.CacheCarve: the base matrix, golds and rows unchanged; on a
     typed graph its entries loaded (load_chains checks each in range); on its first questions the arm at its start
     scores as its base model bit for bit, with finite chain features."""
+    # Its forwards run before train or read has bound lean_mlp's z-score to the device (8 Oct fix: the smoke failed in
+    # 4 s on the card, before any training).
+    LG.bind_device_ops()
     a = LG.CacheCarve(ds, carve, "2wiki", device)
     b = ChainCarveBase(ds, carve, "2wiki", device)
     rec = {"base_equal": bool(torch.equal(a.X, b.X) and torch.equal(a.gold, b.gold) and torch.equal(a.row, b.row)),

@@ -1448,3 +1448,18 @@ zero-shot.
 - **relz's full run needed rel's ADOPT as well** (`relz.py gate`), so it was dropped either way when its re-call landed.
 - The re-call record names rel's two screen comparisons by absolute host paths. The committed copy has them relative
   to the workspace, with the host original's sha256 in its `redacted` field.
+
+### Round twelve's first smoke failed on the card in 4 s (05:54), before any training. Fixed and re-queued (06:05)
+
+- **What failed.** The smoke's first step, the carve check, runs a forward of the base model and of the arm. It ran
+  before `lean_mlp`'s z-score had been bound to the device, which train and read do first, so on the card the
+  z-score's index and its values sat on different devices. The CPU selftest cannot see this.
+- **The fix** (`rmatch.py`, a bug fix only): the carve check binds the device ops first, as train, read, chaindiag and
+  hopdiag do. Nothing else changes, and the selftest passes. No chain, fit or read existed yet, so nothing is redone.
+- **The feeder dropped every item behind the smoke** (05:55): rmatch's two screen fits, their reads and comparisons,
+  the pair, its re-call and the full run. They are re-queued under -b names with the same commands, outputs and
+  gates. The smoke goes ahead of gsurg's reads again, in the card's free share (0.16).
+- **relrm stays dropped**, as declared: rel's re-grade is NOT_ADOPTED, so its base gate (`scr12-base-rel`) exited 1 at
+  05:33, and `scr12-base-step1` exited 0.
+- **ETAs:** the smoke takes about 10 minutes once it is sent. rmatch's two fits follow round eleven's, and the pair and
+  its re-call land about 08:00 to 09:00.
