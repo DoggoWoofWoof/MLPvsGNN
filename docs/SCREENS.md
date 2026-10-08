@@ -2939,3 +2939,14 @@ declared in its own file before any of its numbers.
   fits the host CPU's, as FULL_ROUND23.md section 4 declares. Rounds twenty-two and twenty-five keep the bases they were
   declared on; a combination with zsp is a round of its own.
 - **zrm stays the MLP's base.** zsp's numbers are never cited as the MLP's.
+
+### Round twenty-five's fits: a bug fix (9 October about 01:00, before any of its numbers)
+
+- **The failure.** Both zgn fits stopped at their first step. zgn's forward asked for chains on every carve, but the
+  graphs without typed relations (squad, musique, hotpotqa, 2wiki) hold none.
+- **The fix.** zgnn.py skips the chain match on a carve without chains, as rmatch.ChainMatch's forward does. The
+  selftest now checks that a carve without chains runs and is zfs at the start, and that a carve without pool edges is
+  refused. Nothing else changes.
+- **The requeue.** The two fits and every item after them run under new names:
+  - round twenty-four's select, reads, compares, pair, re-call and gate (`scr24b-*`, `ffs-gate-b`);
+  - round twenty-five's (`scr25b-*`).

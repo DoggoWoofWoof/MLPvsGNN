@@ -127,8 +127,8 @@ class ZGNN(ZF.ZFS):
         return h
 
     def forward(self, feats, keep, nq, B, base_z):
-        if RM.CH_KEY not in feats or ZL.LK_KEY not in feats:
-            raise SystemExit("zgn reads its chains and its pool edges (zgnn.GNNCarve)")
+        if ZL.LK_KEY not in feats:
+            raise SystemExit("zgn reads its pool edges (zgnn.GNNCarve)")
         keep = self.keep_of(keep)
         # lean_screen3.ZRet's forward, the message passing between its hidden layers and its output, then
         # rmatch.ChainMatch's gated chain match (zkind.py's form)
@@ -143,6 +143,11 @@ class ZGNN(ZF.ZFS):
         h = self.propagate(h, feats[ZL.LK_KEY])
         bz = S3.seg_zscore_ref(feats["rank"][:, S3.I_RRF:S3.I_RRF + 1], nq, B, ref).squeeze(1)
         s = self.base_w * bz + self.out(h).squeeze(-1)
+        if RM.CH_KEY not in feats:
+            # a graph without typed relations holds no chains: no chain match, as in rmatch.ChainMatch's forward
+            # (bug fix, 9 October about 01:00: the guard above asked for chains on every carve, and the first fit
+            # stopped at squad's)
+            return s
         fm, fr = self.chain_feats(feats, nq.numel())
         return s + (self.cm_gate[0] * fm + self.cm_gate[1] * fr) * keep[nq, self.j_semb]
 
@@ -366,6 +371,15 @@ def selftest():
         feats, nq, bz, _g = tc.batch(qs, tb)
         one = torch.ones(qs.size, len(tb))
         assert torch.equal(zf(feats, one, nq, qs.size, bz), zg(feats, one, nq, qs.size, bz))
+        # a carve without typed relations (squad's, musique's, hotpotqa's, 2wiki's) holds no chains: zgn still runs,
+        # and at the start it is zfs there too
+        plain = {k: v for k, v in feats.items() if k != RM.CH_KEY}
+        assert torch.equal(zf(plain, one, nq, qs.size, bz), zg(plain, one, nq, qs.size, bz))
+        try:
+            zg({k: v for k, v in feats.items() if k != ZL.LK_KEY}, one, nq, qs.size, bz)
+            raise AssertionError("zgn without its pool edges")
+        except SystemExit:
+            pass
         cfg = {"lr": 2e-2, "wd": 1e-4, "dropout": 0.1, "epochs": 3, "swa_from": 1, "cos": False, "adamw": False,
                "drop": False}
         with S.patched(ARM):
