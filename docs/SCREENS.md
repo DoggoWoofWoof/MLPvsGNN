@@ -2097,7 +2097,7 @@ webqsp (1,503 questions, each with a gold; the chain cap stopped bucket 0's walk
 - **A fit trained on zrc's entries would be a round of its own,** declared in its own file. The diagnosis below
   decides whether one is worth two fits on the card.
 
-### A diagnosis: zrm's screen fits read with zrc's entries (zrcd; declared 8 October about 09:40, before its numbers; decides nothing about any arm)
+### A diagnosis: zrm's screen fits read with zrc's entries (zrcd; declared 8 October about 09:30, before its numbers; decides nothing about any arm)
 
 Code: `outputs/mp_unified/zrcd.py` (its selftest passes). Nothing trains.
 
@@ -2136,3 +2136,35 @@ Code: `outputs/mp_unified/zrcd.py` (its selftest passes). Nothing trains.
 - **ETAs.** The forks and the count take minutes. Each read waits for a free share (zrs's full-run reads hold the card
   now), then takes about 3 minutes. The re-call lands about 10:00 to 10:30.
 - **Speed.** This times nothing. Any latency figure for zrc's entries is cold (8216ffe).
+
+### zrs's full run, re-graded under the null over every split: ADOPT (09:38). Two primary GAINs and no LOSS
+
+`outputs/full_zrs/grade-nullx.md` (filed ADOPT in `grade.md`). R@5 of zrs minus zret's fit of the same split. Only
+the reads that are not WITHIN are shown; P marks a primary read. The other 26 reads are zret's bit for bit (+0.0000).
+
+| split | dataset | read | zret | zrs | delta | floor | filed → re-call |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| J5 | metaqa | in-domain (P) | 0.6431 | 0.7636 | +0.1205 | 0.0154 | GAIN → GAIN |
+| J5 | webqsp | zero-shot (P) | 0.1417 | 0.2329 | +0.0912 | 0.0295 | GAIN → GAIN |
+| L-squad | metaqa | in-domain | 0.6472 | 0.7631 | +0.1159 | 0.0075 | GAIN → GAIN |
+| L-squad | webqsp | zero-shot | 0.1469 | 0.2264 | +0.0795 | 0.0260 | GAIN → GAIN |
+| L-musique | metaqa | in-domain | 0.6496 | 0.7637 | +0.1140 | 0.0075 | GAIN → GAIN |
+| L-musique | webqsp | zero-shot | 0.1766 | 0.2623 | +0.0857 | 0.0102 | GAIN → GAIN |
+| L-hotpotqa | metaqa | in-domain | 0.6419 | 0.7642 | +0.1223 | 0.0149 | GAIN → GAIN |
+| L-hotpotqa | webqsp | zero-shot | 0.1195 | 0.2100 | +0.0905 | 0.0233 | GAIN → GAIN |
+| L-2wiki | metaqa | in-domain | 0.6464 | 0.7642 | +0.1178 | 0.0075 | GAIN → GAIN |
+| L-2wiki | webqsp | zero-shot | 0.1338 | 0.2108 | +0.0770 | 0.0473 | GAIN → GAIN |
+
+- **Two primary GAINs and no LOSS among the 36 reads, so zrs is ADOPTED.** They are J5's metaqa in-domain (+0.1205
+  R@5, +0.2052 hit@1) and J5's webqsp read zero-shot (+0.0912 R@5, +0.0532 hit@1). No call changed under the null.
+- **The match lifts both typed graphs in every fit that trains metaqa.**
+  - metaqa in-domain: +0.114 to +0.122 R@5, and +0.19 to +0.23 hit@1.
+  - webqsp read zero-shot (webqsp never trains): +0.077 to +0.091 R@5.
+- **Every untyped read is zret's bit for bit, as declared.** Each fit trains the match alone on zret's frozen fit.
+- **L-metaqa's fit is zret's on all six reads.** It trains no typed graph, so the match's gates stay at zero. metaqa
+  read zero-shot stays at 0.1417 and webqsp at 0.0997: no fit without metaqa learns a match.
+- **Beside rmatch's J5 fit (reported only), zrs is lower on both typed reads:** metaqa −0.0152 and webqsp read
+  zero-shot −0.0466. The screen's fits showed the same pattern: the match gains more when it trains beside the model.
+- **What follows (docs/FULL_ROUND15.md, section 4).** zrs is the base of every later screen and run, unless zrm's
+  re-grade is ADOPT too (due about 10:15 to 10:45). In that case the next base is declared in a later round, before its
+  numbers. That round is declared next, before zrm's grade lands.

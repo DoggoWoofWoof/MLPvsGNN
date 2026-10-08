@@ -95,3 +95,14 @@ early.
   (docs/FULL_ROUND12.md, section 6). Its latency stage is declared in its own file.
 
 ## Results
+
+**ADOPT (09:38).** `outputs/full_zrs/grade-nullx.md`; filed ADOPT in `grade.md`.
+- Two primary GAINs: J5's metaqa in-domain (+0.1205 R@5) and J5's webqsp read zero-shot (+0.0912). No LOSS among the
+  36 reads, and no call changed under the null.
+- metaqa in-domain GAINs in all five fits that train it (+0.114 to +0.122), and webqsp read zero-shot GAINs in all five
+  (+0.077 to +0.091).
+- Every untyped read, and every read of L-metaqa's fit, is zret's bit for bit.
+- zrs becomes the base of every later screen and run, unless zrm's re-grade (docs/FULL_ROUND14.md) is ADOPT too. In
+  that case the next base is declared in a later round, before its numbers.
+
+docs/SCREENS.md has the details under 'zrs's full run'.
