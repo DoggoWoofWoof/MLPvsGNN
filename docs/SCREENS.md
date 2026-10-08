@@ -2081,3 +2081,58 @@ webqsp (1,503 questions, each with a gold; the chain cap stopped bucket 0's walk
   golds in the pools.
 - This scores the match at its start, without zrm's trained weights. It is why round seventeen (zrc) re-reads zrm's
   fits with the 'contrib' entries.
+
+### Round seventeen stopped at its identity gate (09:13; `outputs/zrc/identity.md`). Nothing was forked or read
+
+- **The gate filed DIFFERENT.** zrc's build of metaqa's fit carve is rmatch's, array for array, on six of its eight
+  parts. On part_2of8 and part_3of8 (748 questions each), ent_row, ent_z and ent_m differ; q_ent, ent_b, q_nrel and
+  q_rel are IDENTICAL.
+- **Why.** The round assumed that no row cap binds on the fit carve, as on metaqa's s1eval carve (the diagnosis of
+  08:47). The build records say it binds in two parts, in bucket 1. Each build drops 2 entries there: of 4,669,299 in
+  part 2 and of 4,942,862 in part 3 (zrc's dropped walk mass is 0.001 of 114,057 and 0.002 of 119,321). The two builds
+  do not drop the same entries. Nothing else differs among the carve's 45,883,297 entries.
+- **As declared, nothing was forked, read or graded.** The feeder dropped the forks and everything after them: the
+  screen's reads, comparisons, pair and re-call, and the full run behind `fzc-gate`. zrm's base comparisons
+  (`zrc-base-S`: zrm's fits against step 1's) still run. Later rounds on zrm's fits use them.
+- **A fit trained on zrc's entries would be a round of its own,** declared in its own file. The diagnosis below
+  decides whether one is worth two fits on the card.
+
+### A diagnosis: zrm's screen fits read with zrc's entries (zrcd; declared 8 October about 09:40, before its numbers; decides nothing about any arm)
+
+Code: `outputs/mp_unified/zrcd.py` (its selftest passes). Nothing trains.
+
+- **What it reads.** zrm's two screen fits, `scr-zrm` and `scr-zrm-hp`, copied unchanged into `outputs/diag/fits/zrcd`
+  and `zrcd-hp` under the arm zrcd. There is no gate: each fork's record names the gate's verdict and says the fit
+  trained on rmatch's entries. Each fork is read on the six s1eval carves with zrc's entries (`outputs/zrc/cache`).
+  zrm's folders are only read.
+- **What it compares.**
+  - Each read with zrm's fit of its split, with zret's and step 1's beside (`outputs/diag/zrcd-<split>.md`).
+  - Every read's arrays against zrm's (`-same.md`).
+  - The pair and its re-call under the seed null are relz.py's, decided against zrm's screen fits, under zrcd's name
+    (`outputs/diag/zrcd-pair`, `zrcd-pair-recall`). Each read's base R@5 is zrm's
+    (`outputs/zrc/base-zrm-<split>.json`).
+- **What it counts.** `zrcd.py count` on metaqa's fit carve: the questions, rows and entries whose kept set differs
+  between the two builds, and their walk mass (`outputs/diag/zrcd-count-metaqa-fit.md`).
+- **What can move.**
+  - The reads of squad, musique, hotpotqa and 2wiki must be zrm's bit for bit. A difference is a bug, and then no number
+    here is filed.
+  - metaqa's reads should be zrm's too, since no row cap binds on its s1eval carve.
+  - webqsp's reads (zero-shot in both fits) can move.
+- **Why it is not zrc.** The fits trained on rmatch's entries. The two builds of the training carve differ in at most
+  four entries of 45.9 million. Even so, a fit trained on zrc's entries would not be zrm's bit for bit, and only such a
+  fit can be graded as zrc.
+- **The rule, declared before its numbers.**
+  - Round eighteen is declared in its own file, before any of its numbers, if both of these hold:
+    - the re-call is PROMISING (a GAIN and no LOSS among its twelve reads, each called with the seed null's floor);
+    - every read of squad, musique, hotpotqa and 2wiki is IDENTICAL to zrm's.
+
+    Round eighteen trains zrc and reads it with its own entries. Its screen trains two fits (L-musique, L-hotpotqa) and
+    is decided against zrm's.
+  - Otherwise the contribution rule is dropped. Nothing else follows from this diagnosis.
+- **Caps and order.**
+  - CPU only, 1 CPU each: the count (2 GB), the forks, the comparisons, the pair and the re-call (1 to 4 GB).
+  - The reads take 0.30 of the card (share 0.32) and 6 GB, as zrm's.
+  - They go right after round seventeen's items, ahead of zgs's re-queued screen and zsep's fits. No rule changes.
+- **ETAs.** The forks and the count take minutes. Each read waits for a free share (zrs's full-run reads hold the card
+  now), then takes about 3 minutes. The re-call lands about 10:00 to 10:30.
+- **Speed.** This times nothing. Any latency figure for zrc's entries is cold (8216ffe).

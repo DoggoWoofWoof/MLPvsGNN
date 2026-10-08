@@ -90,3 +90,11 @@ early.
   from scratch, the walk, the selection and the forward included. Its latency stage is declared in its own file.
 
 ## Results
+
+**Stopped at the identity gate (09:13).** `zrc-identity` filed DIFFERENT (`outputs/zrc/identity.md`).
+- On metaqa's fit carve, parts 2 and 3 of 8 differ in ent_row, ent_z and ent_m.
+- The row cap binds there: each build drops 2 entries in each part, of about 4.7 and 4.9 million in bucket 1, and not
+  the same ones.
+- As declared (section 5), nothing was forked, read or graded. The feeder dropped the forks and everything after them.
+
+docs/SCREENS.md has the details under 'Round seventeen stopped at its identity gate', followed by the diagnosis zrcd.

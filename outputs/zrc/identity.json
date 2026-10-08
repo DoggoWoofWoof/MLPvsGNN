@@ -1,0 +1,139 @@
+{
+ "verdict": "DIFFERENT",
+ "carves": [
+  "metaqa=fit"
+ ],
+ "rows": [
+  {
+   "carve": "metaqa=fit",
+   "part": "part_0of8",
+   "status": "IDENTICAL",
+   "arrays": {
+    "q_ent": "IDENTICAL",
+    "q_nrel": "IDENTICAL",
+    "ent_row": "IDENTICAL",
+    "ent_z": "IDENTICAL",
+    "ent_b": "IDENTICAL",
+    "ent_m": "IDENTICAL",
+    "q_rel": "IDENTICAL"
+   },
+   "queries": 737,
+   "record_sha256": "b648d991a270d2c1884d9b619a42be8ca175eacf4e8cef9a530fb372586ca43d"
+  },
+  {
+   "carve": "metaqa=fit",
+   "part": "part_1of8",
+   "status": "IDENTICAL",
+   "arrays": {
+    "q_ent": "IDENTICAL",
+    "q_nrel": "IDENTICAL",
+    "ent_row": "IDENTICAL",
+    "ent_z": "IDENTICAL",
+    "ent_b": "IDENTICAL",
+    "ent_m": "IDENTICAL",
+    "q_rel": "IDENTICAL"
+   },
+   "queries": 748,
+   "record_sha256": "75d27f98166fe0173de58f76f1a244b2c5ecd760cca9171e2b5761c4badce078"
+  },
+  {
+   "carve": "metaqa=fit",
+   "part": "part_2of8",
+   "status": "DIFFERENT",
+   "arrays": {
+    "q_ent": "IDENTICAL",
+    "q_nrel": "IDENTICAL",
+    "ent_row": "DIFFERENT",
+    "ent_z": "DIFFERENT",
+    "ent_b": "IDENTICAL",
+    "ent_m": "DIFFERENT",
+    "q_rel": "IDENTICAL"
+   },
+   "queries": 748,
+   "record_sha256": "e67ef8f9cef56f436ade494c225e12291eb1dfbeecb50baa8da8066b03e9044f"
+  },
+  {
+   "carve": "metaqa=fit",
+   "part": "part_3of8",
+   "status": "DIFFERENT",
+   "arrays": {
+    "q_ent": "IDENTICAL",
+    "q_nrel": "IDENTICAL",
+    "ent_row": "DIFFERENT",
+    "ent_z": "DIFFERENT",
+    "ent_b": "IDENTICAL",
+    "ent_m": "DIFFERENT",
+    "q_rel": "IDENTICAL"
+   },
+   "queries": 748,
+   "record_sha256": "ec6a78459583715f5c6d4fa95178999ea1fc22889b022a78e8082ef5875a806a"
+  },
+  {
+   "carve": "metaqa=fit",
+   "part": "part_4of8",
+   "status": "IDENTICAL",
+   "arrays": {
+    "q_ent": "IDENTICAL",
+    "q_nrel": "IDENTICAL",
+    "ent_row": "IDENTICAL",
+    "ent_z": "IDENTICAL",
+    "ent_b": "IDENTICAL",
+    "ent_m": "IDENTICAL",
+    "q_rel": "IDENTICAL"
+   },
+   "queries": 737,
+   "record_sha256": "7edb5b6260b042688b12a65c3acbfdfb948c17534492b0c5e33d0d2597e81eaf"
+  },
+  {
+   "carve": "metaqa=fit",
+   "part": "part_5of8",
+   "status": "IDENTICAL",
+   "arrays": {
+    "q_ent": "IDENTICAL",
+    "q_nrel": "IDENTICAL",
+    "ent_row": "IDENTICAL",
+    "ent_z": "IDENTICAL",
+    "ent_b": "IDENTICAL",
+    "ent_m": "IDENTICAL",
+    "q_rel": "IDENTICAL"
+   },
+   "queries": 748,
+   "record_sha256": "0067758fee87e15c2d61bd3c331405834c1abc3e2dfe774b616dede74bb873ba"
+  },
+  {
+   "carve": "metaqa=fit",
+   "part": "part_6of8",
+   "status": "IDENTICAL",
+   "arrays": {
+    "q_ent": "IDENTICAL",
+    "q_nrel": "IDENTICAL",
+    "ent_row": "IDENTICAL",
+    "ent_z": "IDENTICAL",
+    "ent_b": "IDENTICAL",
+    "ent_m": "IDENTICAL",
+    "q_rel": "IDENTICAL"
+   },
+   "queries": 748,
+   "record_sha256": "c5871b1e0479efb4bdf8b3f1679ae23a2e429ddbae61e32f7346b09168e0845a"
+  },
+  {
+   "carve": "metaqa=fit",
+   "part": "part_7of8",
+   "status": "IDENTICAL",
+   "arrays": {
+    "q_ent": "IDENTICAL",
+    "q_nrel": "IDENTICAL",
+    "ent_row": "IDENTICAL",
+    "ent_z": "IDENTICAL",
+    "ent_b": "IDENTICAL",
+    "ent_m": "IDENTICAL",
+    "q_rel": "IDENTICAL"
+   },
+   "queries": 746,
+   "record_sha256": "bf7930a4b0ede7a64300ba13a507d6818211bcc43dac8ed399646ed4bb0818fa"
+  }
+ ],
+ "rule": "per row and seed bucket the k_row entries with the largest w0(c) m_c(v), ties to the earlier chain",
+ "script_sha256": "bf2bebf38f463fd1222eb39a808f38d25e109615d13779e2242a43d9a51b81e3",
+ "utc": "2026-10-08T03:43:15Z"
+}
