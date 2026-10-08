@@ -115,8 +115,15 @@ def load_read(fit, ds):
     if CAND not in names:
         raise SystemExit(f"{p}: {CAND} is not among {names}")
     k = names.index(CAND)
+    # lean_screen keeps rrf as the row "rrf" of ref_top / ref_hit (bug fix, 9 October about 01:45: this read asked for
+    # rrf_top, a key no read has, and the first run stopped at its first read)
+    refs = [str(x) for x in z["refs"]]
+    if "rrf" not in refs:
+        raise SystemExit(f"{p}: rrf is not among its refs {refs}")
+    r = refs.index("rrf")
     return {"ids": [str(x) for x in z["ids"]], "gt": z["gold_total"].astype(np.int64), "top": z["top"][k].astype(np.int64),
-            "hit": z["hit"][k].astype(np.int64), "rtop": z["rrf_top"].astype(np.int64), "rhit": z["rrf_hit"].astype(np.int64)}
+            "hit": z["hit"][k].astype(np.int64), "rtop": z["ref_top"][r].astype(np.int64),
+            "rhit": z["ref_hit"][r].astype(np.int64)}
 
 
 def metrics(top, hit, gt):
@@ -383,8 +390,9 @@ def selftest():
                 rd.mkdir(parents=True, exist_ok=True)
                 np.savez(rd / f"{ds}__s1eval.npz", candidates=np.asarray(["p@ep7", CAND]), ids=np.asarray(ids),
                          gold_total=gt.astype(np.int32), top=np.stack([top * 0, top]).astype(np.int16),
-                         hit=np.stack([top * 0, (top > 0)]).astype(np.uint8), rrf_top=(top * 0).astype(np.int16),
-                         rrf_hit=(top * 0).astype(np.uint8))
+                         hit=np.stack([top * 0, (top > 0)]).astype(np.uint8), refs=np.asarray(["rrf", "twin0"]),
+                         ref_top=np.stack([top * 0, top]).astype(np.int16),
+                         ref_hit=np.stack([top * 0, top * 0]).astype(np.uint8))
         facts = {}
         rows = split_rows("J5", tmp / "g", tmp / "m", cache, facts, 0)
         for r in rows:
