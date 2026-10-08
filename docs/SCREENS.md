@@ -2374,3 +2374,47 @@ null's floors:
   - By the amendment (10:15), only a PROMISING re-call led to a combination with zrm. None is declared.
   - `fzp-gate` exits 1. Its full-run items were already commented out.
   - zgs's re-call (round thirteen) is next, about 11:50 to 12:00. Round eighteen's re-call lands about 11:05 to 11:30.
+
+### Nineteenth round: a head for graphs with typed relations, on zrm (declared 8 October about 11:00, before any of its numbers; full run docs/FULL_ROUND19.md)
+
+Code: `outputs/mp_unified/zkind.py` (its selftest passes).
+
+- **Why: the typed graphs need their own read.**
+  - On metaqa and webqsp a seed is the question's topic entity. It holds only 0.066 of webqsp's in-pool golds and
+    0.005 of metaqa's. On the passage graphs a seed is a retrieved passage, and often gold.
+  - What the MLPs learn of metaqa does not carry to webqsp. step 1's and rel's J5 fits rank a seed first for 0.9454
+    and 0.5948 of webqsp's questions, against 0.0262 and 0.0198 of metaqa's (outputs/diag/hopdiag-J5). hopdiag reads
+    only step 1's and rel's fits, so zrm's rate is not measured.
+  - zrm reads metaqa in-domain at 0.78 R@5, and webqsp zero-shot at 0.24 to 0.31 in the same five fits
+    (outputs/zbase/grade-nullx.json).
+  - One output layer serves both kinds of graph.
+- **What trains.** The arm zkind, (zkind.ZKind, rmatch.ChainCarveBase): zrm's model, settings and training
+  (rmatch.py's train), with learned offsets on its output layer's weights and bias and on rrf's base weight. Seed 0.
+  - The offsets apply only to a batch that carries chain entries: a graph with typed relations (metaqa, webqsp). They
+    start at zero: 130 new weights.
+  - The graph's kind is read from the batch, never from a dataset's name. So the head applies to any typed graph,
+    seen in training or not.
+  - An offset takes a gradient only from a typed graph's batch. With no typed graph in training (L-metaqa's fit) the
+    offsets stay at zero, and the fit is zrm's bit for bit. The full run's L-metaqa comparison checks this (`-same`).
+- **The screen's two fits:** `scr-zkind` (L-musique) and `scr-zkind-hp` (L-hotpotqa). Both train metaqa, so both fit
+  the offsets. Each is read on the six s1eval carves, as zrm's fits were.
+- **Decided against zrm's screen fits** (`scr-zrm` and `scr-zrm-hp`), with zret's and step 1's beside. The pieces are
+  zkind.py's: the comparison, the pair, and the re-call under the seed null (relz.py's, with zrc.py's mapping to zrm's
+  fits). Each read's base R@5 comes from `outputs/zrc/base-zrm-<split>.json`.
+- **What can move.**
+  - metaqa's reads (in-domain in both fits) and webqsp's (zero-shot in both), through the offsets.
+  - The passage datasets' reads, through the shared weights alone.
+  - hit@1 is reported beside R@5.
+- **What follows.** The full run (docs/FULL_ROUND19.md) starts only if both hold: the re-call is PROMISING (a GAIN and
+  no LOSS among its twelve reads), and zrm is the base (docs/BASE_ZRM_ZRS.md re-graded ADOPT, as it is since 10:05).
+- **Caps and order.**
+  - Each fit takes 0.26 of the card (share 0.28) and 9 GB. Each read takes 0.30 (share 0.32) and 6 GB, as round
+    eighteen's.
+  - The two fits go after round eighteen's screen items, ahead of the queued full runs' fits. The full run goes at
+    the end of the list. Nothing is preempted.
+- **ETAs.** The fits start when round eighteen's reads leave room on the card, about 11:10, and take about 40 minutes
+  each. The re-call lands about 11:55 to 12:15.
+- **Numbering.** If zgs's re-call (round thirteen, about 11:50) is PROMISING, its combination with zrm is round
+  twenty, by the amendment (10:15).
+- **Speed.** On a typed graph the offsets add one sum per weight, once per batch. Any latency figure is cold
+  (8216ffe): each question timed from scratch, with the walk, the move of its entries to the device and the forward.
