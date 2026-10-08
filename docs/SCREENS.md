@@ -1948,3 +1948,34 @@ zs: read zero-shot.
 - **What follows.** `fzm-gate-b` exited 0 at 08:09, and `fzm-train-L-2wiki-b` started at 08:10. The full run
   (docs/FULL_ROUND14.md) trains L-2wiki, L-squad, J5 and L-metaqa, decided against zret's fits and re-graded under the
   null over every split. Any speed figure for this arm is cold (8216ffe). ETA of the grade: about 10:00 to 10:45.
+
+### scr-zrs (L-musique): PROMISING. scr-zrs-hp (L-hotpotqa): PROMISING. The pair and its re-call are PROMISING (08:15), so zrs's full run starts
+
+`outputs/screen/scr-zrs.md`, `scr-zrs-hp.md`, `scr-zrs-pair.md` and `scr-zrs-pair-recall.md`. R@5 of zrs minus zret's
+fit of the same split, called with the null's floors. Unmarked reads are WITHIN. zs: read zero-shot.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.1140 GAIN | +0.0000 | +0.0000 zs | +0.0000 | +0.0000 | +0.0857 GAIN zs |
+| L-hotpotqa | +0.1223 GAIN | +0.0000 | +0.0000 | +0.0000 zs | +0.0000 | +0.0905 GAIN zs |
+
+- **The untyped reads are zret's bit for bit, as declared.** A zrs fit trains the match alone on zret's frozen fit,
+  and the match adds nothing to a graph without typed relations.
+- **On the typed graphs, the match trained alone gains, but less than trained jointly.** Beside zrm's fits of the same
+  splits (round fourteen):
+
+  | read | zret | zrs (match alone) | zrm (match and model together) |
+  | --- | ---: | ---: | ---: |
+  | L-musique, metaqa in-domain | 0.650 | 0.764 | 0.779 |
+  | L-musique, webqsp zs | 0.177 | 0.262 | 0.313 |
+  | L-musique, musique zs | 0.390 | 0.390 | 0.523 |
+  | L-hotpotqa, metaqa in-domain | 0.642 | 0.764 | 0.780 |
+  | L-hotpotqa, webqsp zs | 0.120 | 0.210 | 0.242 |
+
+  Beside rmatch's L-musique fit (reported only), zrs LOSES on metaqa (−0.0168), musique read zero-shot (−0.1123) and
+  webqsp read zero-shot (−0.0531). Training the match beside the model adds to the match's own gain on the typed
+  graphs, and it is the only way the match moves an untyped read.
+- **What follows.** `fzs-gate` runs on this re-call. The full run (docs/FULL_ROUND15.md) trains L-2wiki, L-squad, J5
+  and L-metaqa; each fit trains the match alone, so it takes minutes. Its items follow zrm's full run on the card. If
+  both zrm and zrs are ADOPTED, each re-grade is filed and the next base is declared in a later round, before its
+  numbers. Any speed figure for this arm is cold (8216ffe).
