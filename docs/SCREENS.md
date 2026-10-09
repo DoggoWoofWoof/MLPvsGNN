@@ -3062,3 +3062,21 @@ edge, neighbour, walk mass or other row's score enters it.
   to 05:15, the reads to about 05:45, and the re-call lands about 06:00.
 - **Speed.** Per question, its pool's relations mapped into the space, a sort of their logits, and 32 cosines a row. No
   edge is read. Any latency figure for zgr is cold (8216ffe).
+
+## Rounds twenty-four and twenty-five: result (filed 9 October about 05:45)
+
+**NO_SELECTION: both rounds stop, as declared** (`outputs/zfeat/select.json`, `select.md`; the placement block is
+redacted). The joint selection over the 128 subsets of the seven candidate blocks found no subset whose smaller mean
+gain (zfs's or zgn's, ten select reads each) reached +0.001.
+
+- The best admissible subset (topo_KNN, depth_FULL, seedcond, typed_rel, ordered) gains +0.0007 for zfs and +0.0008
+  for zgn. The best of all, without seedcond, gains +0.0008 but has a zgn read at -0.0020, so it is not admissible.
+- On its own, zfs would choose depth_FULL, seedcond, typed_rel and ordered (+0.0012). zgn alone would choose nothing.
+  Both are reported beside and are not used.
+- Each block alone moves either model's mean by at most 0.0013 either way. The three topology blocks are at or below
+  zero for both.
+- What this says: the seven dropped look blocks hold nothing either model reads beyond the pick's blocks, on any of the
+  five training datasets, in-domain or zero-shot. With the same inputs, zgn's message passing does not make a block
+  useful that zfs cannot use. The MLP-to-GNN gap is not in these columns.
+- No s1eval carve was read. The reads, comparisons, pair and re-call of both rounds were dropped with the selection, so
+  zgn has no screen verdict. The select-carve R@5 in the record are selection numbers, not results.
