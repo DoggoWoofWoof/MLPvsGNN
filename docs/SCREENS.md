@@ -3275,3 +3275,36 @@ against a floor of 0.0102). No full run.
 - **Reading.** Two more propagation steps over the same pool edges reach nothing new. The bridges musique misses are
   reachable, but the pool's edges do not single them out (D1, D2, round 29). The next lever is the graph itself: U1d's
   precise links (docs/U1D_PRECISE_LINKS.md), then step 4h's pools, then one retrain on both (the user, 10 October).
+
+## Thirty-first round: a query-conditioned deeper GNN on zsp (zg1; declared 10 October about 01:55)
+
+Declared before any of its numbers. Code: `outputs/mp_unified/zg1.py` (its selftest passes). **The GNN track, stage G1
+of docs/PROGRAM_2026_10_09.md:** learned message passing over the pool's own graph, several layers.
+
+- **Why.** Round thirty (zdp) repeated zsp's fixed summary of the neighbours' scores twice more and changed nothing, on
+  musique included. A fixed summary of scores cannot carry a path; a learned state can. The golds zsp misses sit next
+  to found rows (D1), and on musique's 3- and 4-hop questions two or three edges from them. HippoRAG 2 (PPR) and GFM-RAG
+  (NBFNet-style) propagate learned or weighted signals over many steps; musique is Claim 2's gap (66.3 against 74.7).
+- **What trains.** The arm zg1 (`zg1.ZG1`) runs zsp's forward (`zprop.ZProp`), then a 4-layer stack with 32-wide row
+  states, NBFNet-style:
+  - the boundary: each row starts from `zprop.prop_inputs` of zsp's score (10 per row, under no_grad as zsp's). The
+    question enters through zsp's query-conditioned score;
+  - each layer: m = W_self h + the sum over families of W_f times the neighbours' mean state + w_z z + b, with z the
+    row's own z-score fed again at every layer; then h = h + GELU(layer_norm(m));
+  - the output Linear(32, 1) starts at zero and is added to zsp's score.
+  - All draws come from the module's own generator (seed + 3101). From the same seed zg1 is zsp's state plus 17,025
+    parameters, and its forward is zsp's bit for bit (the selftest requires it). Settings and training are zrm's
+    (rmatch.py's train).
+- **The same rule on all six datasets,** on zlink's edges. No new graph, column, encoder or text. webqsp never trains.
+- **On the host's card, against zsp on the card.** zsp's fits so far were trained on the CPU. So this round first
+  refits zsp on the card on both splits (`scr-zspg`, `scr-zspg-hp`), then trains `scr-zg1` (L-musique) and
+  `scr-zg1-hp` (L-hotpotqa). Each is read on the six s1eval carves and decided against zsp's card fit of its split.
+  zsp's CPU screen fits and step 1's are beside. The re-call's base R@5 is zsp's card fits against step 1's
+  (`outputs/zg1/base-zspg-<split>`).
+- **The rule is the screens' rule.** zg1.py's comparison, pair and re-call under the seed null decide. PROMISING (at
+  least one GAIN and no LOSS among the twelve reads) earns a full run, declared in its own file. Reported beside, not
+  decided: the musique hop slices.
+- **Caps and order.** GPU items under cuda_alloc (frac 0.45, so two share the card), 2 CPUs and 16 GB each.
+- **ETAs.** zrm-sized fits take minutes on the card; four fits and four reads should land within about two hours.
+- **Speed.** Four passes over each question's pool edges with 32-wide states after zsp's forward. Any latency figure for
+  zg1 is cold (8216ffe), timed in its own declared stage.
