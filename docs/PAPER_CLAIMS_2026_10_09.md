@@ -39,6 +39,26 @@ are those of docs/PROGRAM_2026_10_09.md. The M3 firewall still holds: no MLP-aga
 
 ## Claim 2: a SOTA GNN without any LLM
 
+**What "without any LLM" means.** No generative LLM call (no text generation) at indexing or at query time.
+Embedding models are encoders, even when they are built on a language-model backbone. Our gte-Qwen2-1.5B is built on
+Qwen2-1.5B, and NV-Embed-v2 on Mistral-7B, so the definition has to say this. By it:
+- **Using a generative LLM:** HippoRAG 2 (OpenIE triples and the recognition filter), GFM-RAG and G-reasoner (an
+  LLM-built graph at indexing), and RAPTOR (LLM summaries).
+- **LLM-free:** the dense retrievers.
+
+**The numbers to beat** (HippoRAG 2, Table 3, R@5):
+- **Best LLM-free:** NV-Embed-v2 dense, 7B, at 69.7 / 76.5 / 94.5 (MuSiQue / 2Wiki / HotpotQA). Over our first stage
+  (RRF 56.4 / 71.2 / 85.0), that needs +13.3 / +5.3 / +9.5 points.
+- **Best overall:** HippoRAG 2, at 74.7 / 90.4 / 96.3.
+
+**Matched encoder.** With our 1.5B encoder fixed, our GNN is compared against the other graph methods on the same
+encoder:
+- HippoRAG 2's personalised-PageRank recipe on our graphs (B1c);
+- GFM-RAG's and G-reasoner's released GNNs on our graphs (B2).
+
+HippoRAG 2 as a whole cannot be rerun without its LLM. Against it, the comparison is its published number, with the
+7B encoder and the LLM named, together with B1a's split of the gap into encoder and method.
+
 - **Definition.** On HippoRAG 2's MuSiQue, 2WikiMultiHopQA and HotpotQA settings (same 1,000 questions, same corpora,
   passage R@5, B1), the GNN has the best R@5:
   - among retrievers that use no LLM at indexing or at query time;
