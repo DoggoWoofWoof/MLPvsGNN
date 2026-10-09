@@ -78,3 +78,13 @@ before its numbers.
 - No speed figure. Any latency figure for the base is cold (8216ffe), timed in its own declared stage.
 
 ## Results
+
+**NOT_ADOPTED (08:01): zrc is the base.** `outputs/zbase2/grade-nullx.md`; filed NOT_ADOPTED in `grade.md`.
+- No primary read GAINs against zrc's fits, and none of the 36 LOSEs under the null. Two calls changed, both to
+  WITHIN: L-musique's musique read zero-shot (+0.0096 against its floor 0.0720), and L-hotpotqa's hotpotqa read
+  zero-shot (-0.0107 against its floor 0.0200).
+- The two arms are level. webqsp read zero-shot, where both gained against zrm, reads -0.0141 to +0.0142 between them,
+  all WITHIN. L-metaqa's six reads are +0.0000.
+- **From here zrc is the base of every later screen and run.** Screens already declared against zrm's fits keep their
+  declared base (section 4): rounds twenty-one, twenty-two, twenty-six and twenty-seven. zrc's entries under zkind's head
+  is a later round, declared before its numbers.
