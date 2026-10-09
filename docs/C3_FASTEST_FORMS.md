@@ -132,3 +132,79 @@ compile, which the two families share. They are the next stage's target, under t
 - The GNN track's own exact forms for other GNN arms.
 - Warm caches of compiled pools: latency is cold, as in C1; warm is only the forward.
 - Any server or batching policy beyond batch 16.
+
+## Result (filed 10 October 2026, about 03:55)
+
+Run on the laptop under the protocol above (outputs/c3/{2wiki,hotpotqa,squad,musique}.json, report.{json,md}).
+
+**Every check passed on every question: 800 of 800.**
+- The pools, seeds, rows and links are bit for bit on all four datasets.
+- The largest score differences are well inside TOL:
+  - zrc3, against zrc2: 8.5e-5 (musique) and 3.6e-6 to 7.6e-6 elsewhere;
+  - zsp3: 5.6e-5;
+  - gnn3, against gnn6: 3.8e-6.
+- Every fast form has the same top 5 as its reference on every question.
+- Batch 16 is within 8.3e-5 of batch 1.
+
+**Cold, batch 1, p50 ms per question** (bootstrap 95% CI on the ratios):
+
+| dataset | MLP zrc3 | GNN track zsp3 | six GNN gnn3 | **gnn3 / zrc3** | gnn3 / zsp3 | gnn6 / gnn3 (GNN's speed-up) | zrc2 / zrc3 (MLP's speed-up) |
+| --- | ---: | ---: | ---: | --- | --- | --- | --- |
+| 2wiki | 6.2 | 7.0 | 11.4 | **1.84 [1.73, 1.90]** | 1.62 [1.58, 1.70] | 1.10 [1.05, 1.14] | 1.57 [1.48, 1.62] |
+| hotpotqa | 5.7 | 6.2 | 10.4 | **1.84 [1.72, 1.95]** | 1.67 [1.59, 1.74] | 1.09 [1.05, 1.14] | 1.57 [1.50, 1.66] |
+| squad | 2.6 | 3.0 | 5.9 | **2.23 [2.17, 2.31]** | 1.98 [1.94, 2.05] | 1.17 [1.14, 1.25] | 2.10 [2.04, 2.15] |
+| musique | 52.9 | 60.1 | 179.3 | **3.39 [3.34, 3.41]** | 2.98 [2.95, 3.01] | 1.84 [1.83, 1.87] | 1.24 [1.23, 1.25] |
+
+p99 cold, MLP vs six GNN:
+
+| dataset | MLP | six GNN |
+| --- | ---: | ---: |
+| 2wiki | 13.9 | 19.8 |
+| hotpotqa | 10.9 | 15.8 |
+| squad | 4.4 | 9.7 |
+| musique | 65.0 | 212.5 |
+
+**Warm forward, p50 ms per question** (inputs already built; labelled warm, not the headline):
+
+| dataset | MLP b1 | six GNN b1 | **gnn3 / zrc3 b1** | MLP b16 | six GNN b16 | gnn3 / zrc3 b16 |
+| --- | ---: | ---: | --- | ---: | ---: | ---: |
+| 2wiki | 0.91 | 4.34 | **4.77 [4.62, 4.90]** | 0.58 | 3.07 | 5.3× |
+| hotpotqa | 0.84 | 4.04 | **4.84 [4.68, 5.06]** | 0.51 | 2.97 | 5.8× |
+| squad | 0.60 | 3.16 | **5.28 [5.09, 5.56]** | 0.31 | 1.84 | 6.0× |
+| musique | 8.11 | 102.9 | **12.69 [12.50, 12.88]** | 11.95 | 111.3 | 9.3× |
+
+### What it says
+
+**Both families are at their fastest exact form, under the same rule.**
+- The six GNN gained 1.09–1.84× cold, most on musique, where its forward is large.
+- The MLP gained 1.24–2.10×.
+- The MLP is faster than the six GNN on every dataset:
+  - cold: **1.8–3.4×**;
+  - warm at batch 1: **4.8–12.7×**;
+  - warm at batch 16: **5.3–9.3×**.
+- The GNN track's base (zsp) costs 1.08–1.14× the MLP cold. It stays 1.6–3.0× faster than the six GNN.
+
+**The cold lead is under 6× everywhere.** The per-stage p50s say why:
+
+| stage | 2wiki (MLP) | 2wiki (GNN) | musique (MLP) | musique (GNN) |
+| --- | ---: | ---: | ---: | ---: |
+| pool + embedding read (shared) | 1.42 | 1.40 | 11.27 | 10.91 |
+| compile | 2.53 | 4.33 | 17.05 | 60.44 |
+| inputs (edges, lean or pack) | 0.78 | 0.24 | 15.50 | 3.38 |
+| forward | 1.36 | 5.07 | 8.81 | 102.98 |
+
+- The pool and the embedding read are the same for both families: 21–23% of the MLP's cold time.
+- On the small graphs, the MLP's compile is 41% of its cold time and its forward only 22%.
+- On musique, the MLP's compile and lean inputs are 61% of its cold time.
+
+On 2wiki, even a free MLP forward and free MLP inputs would leave the MLP at about 4 ms against the GNN's 11.4. The
+MLP's remaining cold cost is its compile (retrieval, the pool's edges, topology and the depth basis) and its lean
+inputs (walks, seed distances). The GNN pays for most of the same compile, and more.
+
+**Next (each in its own file):**
+- **C4, exact:** fuse the MLP's compile kernels and lean inputs (walk with walkf, the depth basis, the seed distances)
+  under this file's rule. Whatever kernel the GNN's compile shares gets the same fused form, so the comparison stays
+  even.
+- **Cost-aware inputs (a model change):** an MLP that reads cheaper inputs is a training question, not a serving form.
+  It belongs to the joint feature-selection stage (docs/PROGRAM_2026_10_09.md), where accuracy and cold cost are read
+  together on all six datasets.
