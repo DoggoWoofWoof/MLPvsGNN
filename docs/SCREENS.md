@@ -3357,3 +3357,28 @@ identical bit for bit). **The MLP track, stage S1 of docs/PROGRAM_2026_10_09.md:
   two hours.
 - **Speed.** Per row, 5 x 4 x 16 products against fixed rows, query-local. Any latency figure for zof is cold
   (8216ffe), timed in its own declared stage.
+
+## Round thirty-two: result (zof; filed 10 October about 04:20)
+
+**NO_GAIN, and it harms.** Both fits are NO_GAIN, filed and under the seed null. No read is a GAIN and 7 of the 12 are
+a LOSS (outputs/screen/scr-zof-pair{,-recall}.{md,json}).
+
+| fit | read | delta R@5 [95% CI] | re-call |
+| --- | --- | --- | --- |
+| L-hotpotqa | musique in-domain | −0.087 [−0.096, −0.078] | LOSS |
+| L-hotpotqa | hotpotqa zero-shot | −0.049 [−0.054, −0.044] | LOSS |
+| both | squad in-domain | −0.017 | LOSS |
+| L-hotpotqa | webqsp zero-shot | −0.025 | LOSS |
+| L-hotpotqa | 2wiki in-domain | −0.012 | LOSS |
+| L-musique | hotpotqa in-domain | −0.008 | LOSS |
+| both | metaqa in-domain | +0.004 to +0.005 | under its floor |
+| L-musique | musique zero-shot | −0.038 | under its 0.072 floor |
+
+What this says:
+- zof starts as zrc bit for bit, but it trains jointly, so the base moves along with the head (as rmatch's did).
+- A query-conditioned offset against rrf's top five rows does not add what zrc misses. It costs most where the
+  anchors are least often gold (musique, webqsp).
+- The two-hop "translate from the leading rows" signal that the offset spaces sharpened in docs/OFFSET_SCREEN_RESULTS.md
+  does not carry over as an input on these graphs.
+
+No full run follows. A GNN-track counterpart of zof is not queued.
