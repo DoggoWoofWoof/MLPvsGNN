@@ -319,23 +319,17 @@ def look_first(ds, nq):
 
 
 def carve_population(m3b_compile, ds, ids, kind, m3a, positions, name):
-    """look_x_six.carve_population (look_score_six's), without the info records. The laptop's copy files the s1eval
-    questions under dev where the host's files them under train; the rows are looked up in train, then dev (never
-    test), and the pool check against the look holds the two the same."""
+    """The questions' rows of the dataset's query table, for prepare() (which reads only idx: the first-stage lists
+    and query embeddings). No split's rows are read and no gold is resolved: the timing needs neither, and the pool
+    check against the look holds the questions the same. (The laptop's package copy files hotpotqa's s1eval questions
+    under a label the host's does not; positions in query_ids are the same on both.)"""
     row_of = {qid: j for j, qid in enumerate(ds.query_ids)}
-    keep = set(ids)
-    by_id = {}
-    for split in ("train", "dev"):
-        by_id.update({row["query_id"]: row for row in ds.queries(split) if row["query_id"] in keep and row["query_id"] not in by_id})
-        if len(by_id) == len(keep):
-            break
-    rows = [by_id[q] for q in ids]
+    missing = [q for q in ids if q not in row_of]
+    if missing:
+        raise SystemExit(f"{name}: {len(missing)} of the look's questions are not in query_ids")
     idx = np.asarray([row_of[q] for q in ids], dtype=np.int64)
-    golds = m3a.resolve_gold(rows, positions, name)
-    zero = np.asarray([g.size == 0 for g in golds], dtype=bool)
-    kept = [q for q, z in zip(ids, zero) if not z]
-    return m3b_compile.Population(name, kind, kept, idx[~zero], [g for g, z in zip(golds, zero) if not z], len(ids),
-                                  int(zero.sum()), m3b_pools.ids_digest(kept))
+    return m3b_compile.Population(name, kind, list(ids), idx, [np.zeros(0, np.int64) for _ in ids], len(ids), 0,
+                                  m3b_pools.ids_digest(list(ids)))
 
 
 def shared(su, i, T):
