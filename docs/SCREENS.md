@@ -3170,3 +3170,51 @@ reads against zrm's card fits, and four LOSSes. No full run.
   still not diagnosed.
 - What this says for question three: at screen size, neither the shared space nor relation offsets built from the KB's
   relation names add to zrm's inputs on any of the six datasets.
+
+## Twenty-ninth round: the first stage's bridge rows as per-row inputs, on zrc (zbr; declared 9 October about 16:45)
+
+Declared before any of its numbers. Code: `outputs/mp_unified/zbr.py` (its selftest passes). This is G1b of
+docs/G1A_UNIVERSAL_BRIDGE_SIX.md. **The MLP track:** every input is fixed before any row is scored; no score of any row
+enters another's (not message passing in section "rounds twenty-two and twenty-three are message passing").
+
+- **Why.** G1a (65e66e1) applied B1d's training-free bridge rule, untuned, to all six datasets:
+  - it gains over RRF on metaqa, hotpotqa, 2wiki and webqsp (+6.9 to +11.6);
+  - it is level on musique;
+  - it loses on squad (-2.2).
+
+  A fixed rule gives up slots 4-5 on single-hop and comparison questions as well as on bridge questions. Its quantities
+  are known before scoring, so a model can learn per question when a bridge row beats a first-stage row.
+  docs/DIAG_BRIDGE.md's D1 found the missed golds next to found ones; D2 found the present inputs at their limit.
+- **What trains.** The arm zbr: zrc's model (`zrm.ZRM` over `zrc.ChainCarveZRC`) plus a head over 13 per-row inputs
+  added to its score. The inputs are computed from rrf's order in the pool (the batch's base_z) and zlink's pool edges
+  (outputs/zlink/cache; undirected, once per family, no self-loops):
+  - edges from rrf's top 1, top 2 and top 5, per family (9);
+  - two-step paths from the top 5 (1);
+  - the bridge flag: linked to rrf's top 2 and not one of them (1);
+  - the bridge rank: 1/(1+rank by dense_cos among the flagged rows), which is G1a's rule's order over every family (1);
+  - the source rank: 1/(1+the best rrf rank among the row's neighbours) (1).
+
+  Head: Linear(13, 32), GELU, Linear(32, 1). The last layer starts at zero and the first comes from its own generator
+  (seed + 2901). From the same seed zbr is zrc's state plus the head, and its forward is zrc's bit for bit (the
+  selftest requires it). Settings and training are zrm's (rmatch.py's train).
+- **The same rule on all six datasets.** zlink's edges exist for every carve; on the KB graphs they are the relation
+  edges (families 0 and 2). No new graph, encoder, text or hyperparameter. webqsp never trains.
+- **First, a carve check** (`zbr.py check`, hotpotqa and webqsp s1eval): identity against zrc at the start. Reported,
+  not decided: the gold share of rows outside rrf's top five, split by bridge rank and unflagged. A check that is not
+  IDENTICAL stops the round.
+- **On the card, against zrc's card fits** (the base): two fits, `scr-zbr` (L-musique) and `scr-zbr-hp` (L-hotpotqa).
+  Each is read on the six s1eval carves and decided against zrc's card fit of its split (`scr-zrct`, `scr-zrct-hp`),
+  with zrm's and step 1's beside. The re-call's base R@5 is `outputs/zbase2/base-zrc-<split>`.
+- **The rule is the screens' rule.** zbr.py's comparison, pair and re-call under the seed null decide. PROMISING (at
+  least one GAIN, no LOSS among the twelve reads) earns a full run declared in its own file. The full run is the one that
+  B1b would re-read under its own declared re-run.
+- **Caps and order.** As round twenty-two's:
+  - fits 1.1 CPUs, 11 GB and 0.32 of the card;
+  - reads 1.1 CPUs, 8 GB and 0.32;
+  - checks 2 CPUs and 8 GB.
+
+  Queued after B1b's items, ahead of step 4e's block.
+- **ETAs.** zlk's fits took about 40 minutes each, so the re-call lands about 2.5 hours after the card frees from B1b's
+  reads.
+- **Speed.** Per question, one sort of rrf, one sort of the flagged rows' dense_cos and three passes over the pool's
+  edges, all before the forward. Any latency figure for zbr is cold (8216ffe), timed in its own declared stage.
