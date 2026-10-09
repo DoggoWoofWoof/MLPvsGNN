@@ -3121,3 +3121,19 @@ zkind's inputs, no edge or neighbour read.
   card, about 09:00; the re-call lands about 10:30.
 - **Speed.** zkind's one product per row on a typed graph, over zrc's entries. Any latency figure for zck is cold
   (8216ffe), timed in its own declared stage.
+
+## Round twenty-six: result (zgf; filed 9 October about 09:05)
+
+**NO_GAIN under the seed null** (`outputs/screen/scr-zgf-pair-recall.md`; filed NO_GAIN). No GAIN in 12 reads, and three
+LOSSes, all in L-hotpotqa's fit. No full run.
+
+- L-musique's fit (`scr-zgf`) is level with zrm's card fit: every read WITHIN, from -0.0035 (squad) to +0.0060 (musique
+  read zero-shot) and +0.0043 (2wiki).
+- L-hotpotqa's fit (`scr-zgf-hp`) loses on three passage graphs: musique in-domain -0.0599 [-0.0683, -0.0511], hotpotqa
+  read zero-shot -0.0437, squad -0.0143. 2wiki is -0.0055, metaqa and webqsp level.
+- Its training ran cleanly (loss falling each epoch to 1.286, no retry). Why the space head harms this fit and not
+  L-musique's is not diagnosed here. zrm's card fit's training log is no longer on the host, so the two training losses
+  cannot be compared.
+- What this says for question three (a graph-free space shaped by the graph's edges): at screen size, a 64-wide space
+  shared by passages and KB, read through a zero-started head, adds nothing over zrm's inputs, and on one fit it hurts.
+- Round twenty-seven (zgr) is zgf plus relation offsets, so its reads are read beside these.
