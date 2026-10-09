@@ -165,3 +165,27 @@ without hyperlinks is the entity-level link, which is what the LLM-free entity-n
   - how far to chain, which is musique's 3–4 hops.
 - Musique is the setting that needs the most. Its misses are 14 points from HippoRAG 2, and they are 3–4 hop chains,
   where one fixed slot step adds almost nothing.
+
+## Addendum (9 October, 15:45, before its numbers): one universal rule
+
+The user's ruling: every fix must be universal and dataset-agnostic. The choice above picked a different arm per
+setting (musique `s1m4/ner/Q`, 2wiki and hotpotqa `s2m3/structural/Q`). That is a per-dataset choice, and it is not
+the result.
+
+**The universal rule.**
+- **Choice.** One arm for all three settings: the arm with the highest mean, over the three settings, of its
+  even-half R@5. Ties go to the earlier arm.
+- **Call.** It is called on each setting's odd half against R0, as above.
+- **HippoRAG 2.** It is scored against HippoRAG 2 by Claim 2's rule.
+
+**Families.** Family sets are kinds of edge, and each kind is built by one rule wherever it exists:
+- `structural` means the corpus's own document links. These are hyperlinks where the source has them; on musique,
+  title mentions.
+- `ner` is shared spaCy entities.
+- `knn` is the 3 nearest neighbours.
+
+A family absent from a dataset is empty there, never replaced.
+
+Run with `python scripts/b1d_universal.py`, which writes `outputs/bench/hipporag2/b1d_universal.json`. The per-setting
+table above stays as the upper bound of a per-dataset choice. From now on, the universal arm is the number that is
+cited.
