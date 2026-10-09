@@ -66,7 +66,9 @@ PINS = (
     (re.compile(r"qd_gnn\d*\.py|qd_six\.py|qd_tdiag\.py"), ("outputs/mp_unified/look/", "outputs/mp_unified/qd/") + _BASES),
     (re.compile(r"lean_(?:host|mlp|read|fast|time)\d*\.py|pair9\.py|qfam9\.py|colshift10\.py|floor10\.py"),
      ("outputs/mp_unified/look/", "outputs/mp_unified/lean/") + _ANCHORS + _BASES),
-    (re.compile(r"look_x_six\.py|mp_approx_\w+\.py|universal_v2_\w+\.py"),
+    # 9 Oct: look_b1u.py (a wrapper over look_b1 -> look_x_six) matched nothing here and the cleaner took
+    # universal_v2/six/fits from under its queued looks; every look_*.py wrapper now pins, and items' inputs are scanned
+    (re.compile(r"look_\w+\.py|mp_approx_\w+\.py|universal_v2_\w+\.py"),
      ("outputs/mp_unified/look/", "outputs/universal_v2/") + _ANCHORS + _BASES),
     (re.compile(r"chainscore\d+\.py|chainpop\d+\.py|cs_cache\.py|cs_dev\.py|cs21_rmdiag\d*\.py|reltype\d+\.py"),
      ("outputs/mp_unified/lean/", "outputs/mp_unified/cache/")),
@@ -147,7 +149,7 @@ def feeder_refs(ws: Path) -> tuple[set[str], list[str], list[str]]:
             continue
         names.append(name)
         refs.update(PATHTOK.findall(f[6].replace(";", " ") + " " + f[7]))
-        cmds.append(f[7])
+        cmds.append(f[6].replace(";", " ") + " " + f[7])   # inputs too: wrappers list the scripts they import there
     return refs, names, cmds
 
 
