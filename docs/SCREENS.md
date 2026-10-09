@@ -3308,3 +3308,52 @@ of docs/PROGRAM_2026_10_09.md:** learned message passing over the pool's own gra
 - **ETAs.** zrm-sized fits take minutes on the card; four fits and four reads should land within about two hours.
 - **Speed.** Four passes over each question's pool edges with 32-wide states after zsp's forward. Any latency figure for
   zg1 is cold (8216ffe), timed in its own declared stage.
+
+## Round thirty-one: result (zg1; filed 10 October about 03:35)
+
+**NO_GAIN** (`outputs/screen/scr-zg1-pair-recall.md`): the pair was filed MIXED. Under the seed null, L-musique's one
+GAIN (musique zero-shot, +0.0077 [+0.0017, +0.0136]) falls WITHIN its floor (0.0720). L-musique keeps a LOSS on webqsp
+zero-shot (-0.0156 against a floor of 0.0102). No full run.
+
+- **2wiki in-domain moves on both fits**, just under its floor: +0.0062 [+0.0043, +0.0082] (L-musique) and +0.0072
+  [+0.0048, +0.0094] (L-hotpotqa), against 0.0075. Every other read lies between -0.0024 and +0.0050.
+- **musique** in-domain (L-hotpotqa): +0.0030 [-0.0027, +0.0090].
+- **Reading.** A learned four-layer state over the pool's own edges finds a little more on 2wiki, whose pools carry
+  dense links, and nothing on musique, whose bridges the pool's edges do not single out (D1, D2, rounds 29 and 30).
+  Three rounds now agree: on these graphs, the GNN track gains only with new information in the graph. U1d's links and
+  step 4h's pools come next, then U1c's retrain of zrc and zsp on both.
+
+## Thirty-second round: a query-conditioned offset from the leading rows, on zrc (zof; declared 10 October about 03:35)
+
+Declared before any of its numbers. Code: `outputs/mp_unified/zof.py` (its selftest passes, including a repeat fit
+identical bit for bit). **The MLP track, stage S1 of docs/PROGRAM_2026_10_09.md:** an offset space learned end to end.
+
+- **Why.** D1 found the golds zrc misses linked to rows it found, and D2 found zrc's per-row inputs at their limit.
+  Rounds 29 to 31 counted the leading rows' edges (zbr) or propagated scores over them (zdp, zg1). None of them asks
+  what the next hop's text should look like, given the question and a row already found. An offset space does: a
+  relation, set by the question, that maps a found row onto the row it leads to (S1). The old offset screen
+  (docs/OFFSET_SCREEN_RESULTS.md) found such translations sharpen the top ranks; here the offset is an input to zrc, not
+  a replacement for it.
+- **What trains.** The arm zof (`zof.ZOff`) is zrc's model (zrm.ZRM over zrc.ChainCarveZRC) plus a head added to its
+  score:
+  - **anchors:** each question's top 5 rows by rrf (the batch's base_z, ranked by zlink.pool_rank). No row's score
+    enters and no edge is read, so the head is not message passing; it reads fixed rows, as SEED and DISTS do;
+  - **offset scores:** 4 channels, each 16 wide, in DistMult's form: 16 * sum(norm(P_anchor Wa) * norm(q Wq) *
+    norm(P_row Wt)). P is the row's decoded store vector (as SEMB reads it), q the question's embedding. The encoder's
+    vectors are read, never changed;
+  - **the head's inputs (25 per row):** the score against each anchor in rrf's order (0 for the row itself and a
+    missing anchor), each channel's maximum, and whether the row is an anchor;
+  - **head:** Linear(25, 32), GELU, Linear(32, 1). The last layer starts at zero, and every other draw comes from the
+    module's own generator (seed + 3201). From the same seed zof's forward is zrc's bit for bit (the selftest requires
+    it). Settings and training are zrm's (rmatch.py's train).
+- **The same rule on all six datasets.** No new graph, column, encoder, text or edge. webqsp never trains.
+- **On the host's card, against zrc's fits** (scr-zrct, scr-zrct-hp; the re-call's base is outputs/zbase2), as round 29
+  was decided. zof trains `scr-zof` (L-musique) and `scr-zof-hp` (L-hotpotqa), each read on the six s1eval carves.
+- **The rule is the screens' rule.** zof.py's comparison, pair and re-call under the seed null decide. PROMISING (at
+  least one GAIN and no LOSS among the twelve reads) earns a full run, declared in its own file.
+- **Caps and order.** GPU items under cuda_alloc (frac 0.3, so both fits share the card), queued ahead of U1d's block
+  so the link shards' memory hold does not keep the card idle.
+- **ETAs.** Round 29's fits of the same size took under an hour each on the card; the round should land within about
+  two hours.
+- **Speed.** Per row, 5 x 4 x 16 products against fixed rows, query-local. Any latency figure for zof is cold
+  (8216ffe), timed in its own declared stage.
