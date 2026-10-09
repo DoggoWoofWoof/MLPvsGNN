@@ -110,4 +110,62 @@ The ratios, as p50 ratios with bootstrap intervals: six GNN / zrc2, zsp2 / zrc2,
 
 ## Results
 
-Not yet run.
+Filed 10 October 2026, about 02:45. The four untyped datasets ran on the laptop:
+- pinned to logical processor 2, EcoQoS off, ABOVE_NORMAL (each record's `pin`);
+- one thread; the first 200 s1eval questions; cold.
+
+The table is outputs/c2/report.md (report.json and the per-question records beside it). The run log is
+outputs/c2/run.log.
+
+**Checks.** All 200 questions pass every check on every dataset. No question was excluded.
+- Pools, seeds and edges equal the look's.
+- C2's rows and store codes equal C1's form bit for bit.
+- zrc's scores are equal on 200/200, and so are zsp's.
+- The six GNN is within 5.3e-6 of the look's stored scores, with the same top 5.
+- Against the step-1 cache:
+  - on 2wiki, hotpotqa and squad, zrc's and zsp's scores are exact;
+  - on musique, they are within 0.0085, top 5 unchanged. This is C1's BLAS-thread note: the host built that cache on
+    2 threads.
+
+**Batch 1, total per question, p50 ms (95% interval of the ratio):**
+
+| dataset | zrc2 (MLP) | zsp2 (GNN track) | six GNN | zrc1 (C1 form) | six GNN / zrc2 | zsp2 / zrc2 | zrc1 / zrc2 |
+| --- | ---: | ---: | ---: | ---: | --- | --- | --- |
+| 2wiki | 8.8 | 9.5 | 11.5 | 12.2 | 1.30 [1.26, 1.33] | 1.08 [1.05, 1.09] | 1.38 [1.34, 1.40] |
+| hotpotqa | 8.1 | 8.7 | 10.6 | 11.1 | 1.31 [1.25, 1.35] | 1.08 [1.05, 1.10] | 1.36 [1.32, 1.40] |
+| squad | 5.1 | 5.6 | 6.3 | 6.9 | 1.22 [1.19, 1.26] | 1.09 [1.08, 1.10] | 1.36 [1.34, 1.37] |
+| musique | 99.9 | 119.6 | 488.9 | 362.3 | 4.89 [4.69, 5.17] | 1.20 [1.16, 1.24] | 3.63 [3.39, 3.74] |
+
+**Where the time goes now (p50 ms, batch 1):**
+
+| dataset | path | pool + read | compile | lean inputs | links | forward |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 2wiki | zrc2 | 1.4 | 2.3 | 0.7 | – | 4.2 |
+| 2wiki | six GNN | 1.3 | 3.9 | – | – | 6.2 (pack + forward) |
+| musique | zrc2 | 15.9 | 25.2 | 26.5 | – | 28.4 |
+| musique | zsp2 | 15.8 | 24.9 | 27.2 | 18.4 | 29.6 |
+| musique | six GNN | 15.9 | 88.8 | – | – | 378.2 (pack + forward) |
+
+**Batch 16, forward per question (ms).** zrc2 against the six GNN:
+
+| dataset | zrc2 | six GNN | multiple |
+| --- | ---: | ---: | ---: |
+| 2wiki | 0.96 | 8.0 | 8× |
+| hotpotqa | 0.87 | 7.2 | 8× |
+| squad | 0.54 | 3.6 | 7× |
+| musique | 26.3 | 513 | 20× |
+
+**Reading.**
+- **The exact partial path makes the MLP 1.4× faster cold on the three small-pool datasets, and 3.6× faster on musique.**
+  It changes no bit of any input or score.
+- **Claim 3 now holds cold on all four datasets**, against the six GNN:
+  - 1.2–1.3× on the small-pool datasets;
+  - 4.9× on musique.
+- **The GNN track's base (zsp) gets every one of these savings.** It reads the same inputs, so it stays within 8–20% of
+  the MLP. Its extra cost is the links and its propagation step.
+- **The lead is under 6× everywhere**, so per this file's rule the remaining stages come next. On the small-pool
+  datasets, the batch-1 forward is now the largest stage for every path: about 4 ms of torch per-call overhead around
+  a forward that costs about 1 ms per question at batch 16.
+- **The six GNN has not yet had the same treatment.** Its compile and forward are its C1 forms. The next stage, C3,
+  gives every model, the GNNs included, its fastest exact form under one rule. No path gets an optimisation the others
+  are denied.
