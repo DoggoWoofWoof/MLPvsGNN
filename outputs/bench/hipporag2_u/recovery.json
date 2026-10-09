@@ -1,0 +1,97 @@
+{
+ "declared_in": "docs/U1A_B1_WITHOUT_HYPERLINKS.md",
+ "rule": {
+  "source": "CRAG scratchpad/c3_derived.py",
+  "min_title_len": 4,
+  "directed": true,
+  "relation": 0
+ },
+ "settings": {
+  "musique": {
+   "passages": 11656,
+   "b1": {
+    "edges": 45568,
+    "mean_degree": 7.819,
+    "isolated": 3351,
+    "max_out_degree": 117
+   },
+   "b1u": {
+    "edges": 45586,
+    "mean_degree": 7.822,
+    "isolated": 3349,
+    "max_out_degree": 117
+   },
+   "b1_structural_is": "title mentions (the package's graph)",
+   "identity": {
+    "rule_pairs": 45568,
+    "b1_pairs": 45568,
+    "differing_pairs": 0,
+    "differing_outside_whitespace_only_sources": 0,
+    "whitespace_only_passages": 1
+   }
+  },
+  "2wiki": {
+   "passages": 6119,
+   "b1": {
+    "edges": 2200,
+    "mean_degree": 0.719,
+    "isolated": 3425,
+    "max_out_degree": 4
+   },
+   "b1u": {
+    "edges": 2346,
+    "mean_degree": 0.767,
+    "isolated": 3290,
+    "max_out_degree": 4
+   },
+   "b1_structural_is": "the corpus's hyperlinks",
+   "recovery_directed": {
+    "rule_pairs": 2346,
+    "hyperlink_pairs": 2200,
+    "both": 1778,
+    "precision": 0.7579,
+    "recall": 0.8082
+   },
+   "recovery_undirected": {
+    "rule_pairs": 2191,
+    "hyperlink_pairs": 1984,
+    "both": 1673,
+    "precision": 0.7636,
+    "recall": 0.8432
+   }
+  },
+  "hotpotqa": {
+   "passages": 9811,
+   "b1": {
+    "edges": 4856,
+    "mean_degree": 0.99,
+    "isolated": 4990,
+    "max_out_degree": 8
+   },
+   "b1u": {
+    "edges": 5858,
+    "mean_degree": 1.194,
+    "isolated": 4486,
+    "max_out_degree": 7
+   },
+   "b1_structural_is": "the corpus's hyperlinks",
+   "recovery_directed": {
+    "rule_pairs": 5858,
+    "hyperlink_pairs": 4856,
+    "both": 3851,
+    "precision": 0.6574,
+    "recall": 0.793
+   },
+   "recovery_undirected": {
+    "rule_pairs": 5537,
+    "hyperlink_pairs": 4400,
+    "both": 3596,
+    "precision": 0.6494,
+    "recall": 0.8173
+   }
+  }
+ },
+ "script_sha256": "d175036184e4e1662e240ef0ecc120bcab87f42e1ee82e28c886b4995dfef0c1",
+ "seconds": 87.2,
+ "utc": "2026-10-09T17:58:33Z"
+}

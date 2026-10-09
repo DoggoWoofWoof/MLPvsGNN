@@ -1,0 +1,96 @@
+{
+ "declared_in": "docs/B1_HIPPORAG2_ALIGNMENT.md",
+ "script_sha256": "b3da0e3b06ce0fe848098a93d29294d440f27620383d235f0ce982d8fdd834a1",
+ "setting": "2wiki",
+ "source_files": {
+  "2wikimultihopqa.json": {
+   "bytes": 6505789,
+   "sha256": "895cba294064df0c3302c76847b1fc08d99b5619f7663dfaa3b65cd780f1cac4"
+  },
+  "2wikimultihopqa_corpus.json": {
+   "bytes": 3083943,
+   "sha256": "9d6e352952aafb18dab22bf8195039461321a44a949df902ae83bce134ad238a"
+  }
+ },
+ "package": {
+  "dataset": "2wiki",
+  "split": "dev",
+  "nodes_jsonl_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+ },
+ "passages": 6119,
+ "passages_exact": 6119,
+ "passages_whitespace_only": 0,
+ "distinct_package_rows": 6119,
+ "questions": 1000,
+ "questions_without_gold": 0,
+ "gold_refs_unresolved": 0,
+ "gold_titles_multi": 0,
+ "gold_mean": 2.47,
+ "gold_agrees_with_package": 1.0,
+ "graph": {
+  "structural": {
+   "edges": 2200,
+   "mean_degree": 0.719,
+   "isolated": 3425,
+   "max_out_degree": 4
+  },
+  "ner": {
+   "edges": 36147,
+   "mean_degree": 11.815,
+   "isolated": 1252,
+   "max_out_degree": 157,
+   "entities": 30635
+  },
+  "knn": {
+   "edges": 13415,
+   "mean_degree": 4.385,
+   "isolated": 0,
+   "max_out_degree": 21
+  }
+ },
+ "structural_relations": {
+  "0": 2200
+ },
+ "first_stage_R": {
+  "dense": {
+   "R@2": 0.6115,
+   "R@5": 0.708,
+   "R@10": 0.7432
+  },
+  "splade": {
+   "R@2": 0.6282,
+   "R@5": 0.7045,
+   "R@10": 0.7382
+  },
+  "rrf": {
+   "R@2": 0.6335,
+   "R@5": 0.7117,
+   "R@10": 0.7565
+  }
+ },
+ "gold_within_hops_of_dense_top5": {
+  "1": 0.9732,
+  "2": 0.977
+ },
+ "files": {
+  "first_stage.npz": "65b4982490afca7c0e24f8680137c6b719beb071e153d41604fcc8bd6ebbba68",
+  "graph_knn.npz": "86d806eca300025ee26050573775cc463299b53dec4f839ba125a14ad2de0a7d",
+  "graph_ner.npz": "a2bd795e310629da93080bf86f35646c7b60f03acfa065ffaccc5aeb89543323",
+  "graph_structural.npz": "ef8b63bda79e422c6021dfae97c78dfe0554c0486f57fd137ca4866b2f25de23",
+  "nodes.json": "0c9fbc25ed479ebc4a38ea0600bdc87820f725cb4f5544a18c2eeb244a9de92b",
+  "queries.json": "4d3b6ef6650fae65d8221f47090e22ec1e25603dec31afeca98d6564c6c38498"
+ },
+ "seconds": 433.1,
+ "utc": "2026-10-09T09:06:08Z",
+ "u1a": {
+  "declared_in": "docs/U1A_B1_WITHOUT_HYPERLINKS.md",
+  "variant": "t",
+  "carve": "b1t",
+  "structural": "empty",
+  "b1a_structural_sha256": "e42193eeef61c7db60a2f6e88d80890e42bdb5bdf7adb7947d9bd03736b985a4",
+  "edges": 0,
+  "script_sha256": "d175036184e4e1662e240ef0ecc120bcab87f42e1ee82e28c886b4995dfef0c1",
+  "utc": "2026-10-09T17:57:47Z"
+ }
+}
