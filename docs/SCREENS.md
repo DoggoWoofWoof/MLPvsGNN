@@ -3249,3 +3249,17 @@ message passing over the pool's own graph, more steps.
   re-call lands this evening or overnight.
 - **Speed.** Three passes over each question's pool edges after zrm's forward, instead of zsp's one. Any latency figure
   for zdp is cold (8216ffe), timed in its own declared stage.
+
+## Round twenty-nine: result (zbr; filed 9 October about 19:15)
+
+**NO_GAIN** (`outputs/screen/scr-zbr-pair-recall.md`; the seed-null re-call changed no call). All 12 reads are WITHIN,
+against zrc's card fits. No full run.
+
+- **musique**, the setting B1b names as the gap, moves least where it matters:
+  - L-musique's fit, musique read zero-shot: +0.0053 [+0.0003, +0.0099];
+  - L-hotpotqa's fit, musique in-domain: +0.0015 [-0.0042, +0.0071].
+- **Every other read** lies between -0.0056 (webqsp zero-shot, L-musique) and +0.0042 (webqsp zero-shot, L-hotpotqa).
+- **Reading.** The first stage's bridge rows, given to zrc as per-row inputs, add nothing the walks do not already
+  carry. This agrees with D2 (FEATURE_LIMIT): the missed bridges are reachable but not separable from the inputs zrc
+  has. The musique gap needs new information in the graph (the universal links, docs/U1A_*), not a re-description of
+  the same lists.
