@@ -1,0 +1,30 @@
+{
+ "fetched": "2026-10-09T14:47:48+0530",
+ "approved": "the user, 9 Oct 2026 ('yes download both')",
+ "files": {
+  "rmanluo/GFM-RAG-8M/config.json": {
+   "bytes": 1698,
+   "sha256": "e39dedea31165ee048c48c352dc13fd2ccfeee7c47e5b3ac2630466472a5e440"
+  },
+  "rmanluo/GFM-RAG-8M/README.md": {
+   "bytes": 11923,
+   "sha256": "a9f5e78eb13f3b9eb62e94bce197f9f6fe0798a7a478edbe807fce83f5c275d7"
+  },
+  "rmanluo/GFM-RAG-8M/model.pth": {
+   "bytes": 32597750,
+   "sha256": "578b1af29201beda2ef61af7fadbd7261a4964c3fcd1c68a22b90a62f6ff1247"
+  },
+  "rmanluo/G-reasoner-34M/config.json": {
+   "bytes": 1294,
+   "sha256": "75d14b97d6a077ebc17b09a21170a3ad9272251db59f7ac8cc853165efb2efd5"
+  },
+  "rmanluo/G-reasoner-34M/README.md": {
+   "bytes": 11350,
+   "sha256": "86397a51a1c246eee300a248e8c9f0b6aeca9d93b2435aa34545abee0442329d"
+  },
+  "rmanluo/G-reasoner-34M/model.pth": {
+   "bytes": 138583777,
+   "sha256": "2f2a1a2d2f5725133428941b785f3898255666b06041b58420f75e60599d387d"
+  }
+ }
+}
