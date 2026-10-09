@@ -77,3 +77,50 @@ A question failing any gating check is kept out of the summaries. More than 2% f
 
 There are no thresholds. If the MLP is not faster cold on a KB graph, that is the result, and its stage table says
 which stage costs it.
+
+## Result (filed 10 October 2026, about 04:55)
+
+Run on the laptop under the protocol above (outputs/c5/{metaqa,webqsp}.json, report.{json,md}).
+
+**Every gating check passed on every question: 400 of 400.**
+- Pool, seeds, edges and e_rel equal the look's.
+- Chain entries equal the filed builds bit for bit.
+- FastZ5 is within 8.8e-5 of the fit's forward, with the same top 5.
+- gnn5 is within 1.5e-5 of the look's scores, with the same top 5.
+- On the cache's own rows and the filed entries, the fit's forward has the same top 5 as FastZ5 on 400 of 400.
+
+**Cold, batch 1, p50 ms per question** (bootstrap 95% CI on the ratios):
+
+| dataset | pool rows | MLP zrc5 | zsp5 | six GNN gnn5 | **gnn5 / zrc5** | gnn5 / zsp5 | warm forward gnn5 / zrc5 |
+| --- | ---: | ---: | ---: | ---: | --- | --- | --- |
+| metaqa | 2,038 | 42.0 | 44.1 | 98.1 | **2.34 [2.32, 2.36]** | 2.22 [2.20, 2.25] | 5.91 [5.83, 6.00] |
+| webqsp | 2,122 | 152.6 | 145.3 | 127.8 | **0.84 [0.78, 0.89]** | 0.88 [0.81, 0.93] | 2.34 [2.29, 2.40] |
+
+Stage p50 ms:
+
+| stage | metaqa zrc5 | metaqa gnn5 | webqsp zrc5 | webqsp gnn5 |
+| --- | ---: | ---: | ---: | ---: |
+| pool + read | 9.2 | 9.2 | 14.3 | 14.4 |
+| compile | 9.0 | 31.3 | 16.3 | 47.5 |
+| edges + lean | 7.9 | – | 9.3 | – |
+| **chains** | **5.6** | – | **83.1** | – |
+| pack | – | 1.5 | – | 1.9 |
+| forward | 9.6 | 55.8 | 26.4 | 63.4 |
+
+Chain entries per question (p50): 6,408 on metaqa, 87,299 on webqsp.
+
+### What it says
+
+- On **metaqa** the MLP is 2.3× faster cold, in line with the untyped graphs (2.0–3.4×, C4).
+- On **webqsp** the MLP is **slower cold** than the six GNN, at 0.84×. The gap comes from the chain match:
+  - building the chain entries takes 83 ms, more than half the MLP's time;
+  - the chain term then makes its forward 26 ms, against 10 ms on metaqa.
+
+  Without both, the MLP's other stages total about 40 ms against the GNN's 128 ms.
+- Claim 3 therefore does **not** hold on webqsp in the fits' current serving form. The chain entries are a per-question
+  walk (rmatch.walk, then a lexsort over every (chain, row) pair before the k_row cap) written for offline builds, not
+  for serving.
+
+Next, C6 (its own declaration): an exact serving form of the chain build and the chain term. It must give the same
+entries bit for bit and the same scores under C3's rule. If it cannot close the gap, the paper states Claim 3 for five
+datasets and gives webqsp's number as measured.
