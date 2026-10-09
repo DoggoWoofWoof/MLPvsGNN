@@ -3,7 +3,7 @@ as parallel host jobs without sharing budget.json. The stage is scripts/step4f_p
 output path differs. The laptop merges the files into budget.json (merge), refusing a carve that differs from one it
 already holds (hotpotqa, read on both machines, is the device control).
 
-    python outputs/host_ops/pylib_run.py outputs/step4f/run_one.py DATASET [--threads 5]
+    python outputs/host_ops/pylib_run.py outputs/step4f/run_one.py DATASET [--threads 5] [--host]
     python outputs/step4f/run_one.py merge FILE...
 """
 import argparse
@@ -13,6 +13,40 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
+
+
+def on_the_mirror(F):
+    """--host: the host mirror in place of the package, as every host look reads it. mp_approx_six_base_score's
+    host_mode checks the declared mirror root and the pinned VERIFIED records (refusing otherwise). Then, in memory
+    only: step 4's load_script hands back an m3b_compile whose open_package reads a config copy with package_root = that
+    root (its freeze check still runs), and the opened config itself names the root."""
+    import copy
+    import mp_approx_six_base as SB
+    import mp_approx_six_base_score as S6
+    root = str(Path(S6.host_mode(SB.load_declaration(), print)["mirror_root"]))
+    S4 = F.E.S4
+    orig_load = S4.load_script
+
+    def load_script(name, *args, **kwargs):
+        m = orig_load(name, *args, **kwargs)
+        if name == "m3b_compile" and not getattr(m, "_on_the_mirror", False):
+            orig = m.open_package
+
+            def open_package(cfg):
+                c = copy.deepcopy(cfg)
+                c["substrate"]["package_root"] = root
+                return orig(c)
+            m.open_package = open_package
+            m._on_the_mirror = True
+        return m
+    S4.load_script = load_script
+    base = S4.Opened
+
+    class OpenedOnTheMirror(base):
+        def __init__(self):
+            super().__init__()
+            self.cfg["substrate"]["package_root"] = root
+    S4.Opened = OpenedOnTheMirror
 
 
 def merge(files):
@@ -43,8 +77,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("dataset")
     ap.add_argument("--threads", type=int, default=5)
+    ap.add_argument("--host", action="store_true")
     a = ap.parse_args()
     import step4f_pool_budget as F
+    if a.host:
+        on_the_mirror(F)
     F.BUDGET = F.OUT / f"budget_{a.dataset}.json"
     return F.coverage_stage([a.dataset], a.threads)
 
