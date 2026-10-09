@@ -3263,3 +3263,15 @@ against zrc's card fits. No full run.
   carry. This agrees with D2 (FEATURE_LIMIT): the missed bridges are reachable but not separable from the inputs zrc
   has. The musique gap needs new information in the graph (the universal links, docs/U1A_*), not a re-description of
   the same lists.
+
+## Round thirty: result (zdp; filed 10 October about 01:25)
+
+**NO_GAIN** (`outputs/screen/scr-zdp-pair-recall.md`): the pair was filed MIXED. Under the seed null, L-hotpotqa's one
+GAIN (webqsp zero-shot, +0.0173) falls WITHIN its floor (0.0233). L-musique keeps a LOSS on webqsp zero-shot (-0.0133
+against a floor of 0.0102). No full run.
+
+- **musique**, the setting depth was for, does not move: -0.0029 zero-shot (L-musique), -0.0071 in-domain
+  (L-hotpotqa).
+- **Reading.** Two more propagation steps over the same pool edges reach nothing new. The bridges musique misses are
+  reachable, but the pool's edges do not single them out (D1, D2, round 29). The next lever is the graph itself: U1d's
+  precise links (docs/U1D_PRECISE_LINKS.md), then step 4h's pools, then one retrain on both (the user, 10 October).
