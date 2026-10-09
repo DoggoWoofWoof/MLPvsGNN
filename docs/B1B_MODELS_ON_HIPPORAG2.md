@@ -47,7 +47,14 @@ The same pipeline and the same fits for all three settings.
      inner product of the frozen vectors. Ties go by the passage's first position in the setting, as in B1a's lists.
      B1a's list, mapped to package rows with repeats dropped, must be a prefix of this list. On 2wiki and hotpotqa it
      equals it. MuSiQue's corpus repeats two passages (no gold among them), and each pair shares one package row,
-     counted once;
+     counted once.
+
+     *Amended 16:55, before any number:* the host's mirror carries no SPLADE document vectors, and the first looks
+     stopped there. So the lists are computed on the laptop from the package (`look_b1.py lists`), each checked
+     against B1a's as above, and saved per setting (outputs/bench/hipporag2/<dataset>/b1_lists.npz with a sha256
+     record). The host's look reads them, and its own dense lists must equal them up to near-ties (scores within 1e-5
+     at each rank where the rows differ). The count of such lists is reported. Near-tie swaps against B1a's lists:
+     dense 39 / 31 / 33 lists (2wiki / hotpotqa / musique), SPLADE none;
    - **graph:** the context's three family stores replaced by the setting's graph, as package rows. structural is the
      package's family induced on the setting's rows; ner and knn are rebuilt on the setting by the package's rules.
      A repeated passage's edges land on its one row: self-loops are dropped, and a repeated edge is kept once with its

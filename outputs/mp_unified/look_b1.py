@@ -22,6 +22,7 @@ b1<tag>.json naming the setting's files, the stores' edge counts, the pools' siz
 """
 import hashlib
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -145,6 +146,78 @@ def top_lists(st, b1a, q, X, kind, k=1000):
     return ids, sc, changed, swapped[0]
 
 
+LISTS = "b1_lists.npz"
+
+
+def splade_docs(ds_):
+    """Whether this machine's package holds SPLADE document vectors (the host's mirror does not)."""
+    return os.path.exists(os.path.join(ds_.dir, "embeddings", "splade", "docs", "manifest.json"))
+
+
+def load_lists(st):
+    """The laptop's lists for the setting (write_lists), checked against their record and the setting's questions."""
+    d = BENCH / st.name
+    rec = json.loads((d / "b1_lists.json").read_text(encoding="utf-8"))
+    if sha_file(d / LISTS) != rec["sha256"] or rec["setting_files_sha256"] != st.shas:
+        raise SystemExit(f"{st.name}: {LISTS} is not its record's, or was built on other setting files")
+    with np.load(d / LISTS) as z:
+        lz = {k: z[k] for k in z.files}
+    if not np.array_equal(lz["query_rows"].astype(np.int64), st.qrows):
+        raise SystemExit(f"{st.name}: {LISTS} holds other questions")
+    lz["record"] = rec
+    return lz
+
+
+def same_up_to_ties(ids, sc, ids2, sc2):
+    """Lists equal but where near-ties swap rows: at each rank where the rows differ, the two scores are within TIE (a
+    swap at the list's end may change which row is the thousandth). The count of lists that differ; anything else
+    stops."""
+    n = 0
+    for i in range(ids.shape[0]):
+        diff = np.flatnonzero(ids[i] != ids2[i])
+        if diff.size:
+            if float(np.abs(sc[i, diff] - sc2[i, diff]).max()) > TIE:
+                raise SystemExit(f"dense list {i}: this machine's ranking departs from the laptop's beyond near-ties")
+            n += 1
+    return n
+
+
+def write_lists(name):
+    """On the laptop, from the package: each setting question's dense and SPLADE top-1000 over the setting's distinct
+    passages (top_lists, each checked against B1a's), saved for machines whose package lacks SPLADE document vectors."""
+    sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "src")]
+    import step4_pool_reach as S4  # noqa: E402
+    import step4e_paper_pools as E  # noqa: E402
+    t0 = time.time()
+    st = load_setting(name)
+    op = S4.Opened()
+    ds, _construction, _f, _s, _u = E.open_dataset(op, name)
+    if not splade_docs(ds):
+        raise SystemExit(f"{name}: this package has no SPLADE document vectors; write the lists where it has")
+    Xd = np.asarray(ds.embeddings("dense", "docs").read(st.rows), dtype=np.float32)
+    qd = np.asarray(ds.embeddings("dense", "queries").read(st.qrows), dtype=np.float32)
+    d_ids, d_sc, d_ch, d_sw = top_lists(st, st.first["dense"], qd, Xd, "dense")
+    del Xd
+    Xs = ds.embeddings("splade", "docs").read(st.rows)
+    Qs = ds.embeddings("splade", "queries").read(st.qrows)
+    s_ids, s_sc, s_ch, s_sw = top_lists(st, st.first["splade"], Qs.astype(np.float32), Xs.astype(np.float32), "splade")
+    d = BENCH / name
+    tmp = d / "b1_lists.tmp.npz"
+    np.savez(tmp, query_rows=st.qrows, dense_ids=d_ids, dense_sc=d_sc, splade_ids=s_ids, splade_sc=s_sc)
+    os.replace(tmp, d / LISTS)
+    rec = {"dataset": name, "file": LISTS, "sha256": sha_file(d / LISTS), "setting_files_sha256": st.shas,
+           "freeze_RECORD_SHA256": st.build["package"]["freeze_RECORD_SHA256"], "questions": int(st.qrows.size),
+           "k": int(d_ids.shape[1]), "dense_lists_with_repeats_dropped": d_ch, "dense_lists_with_near_tie_swaps": d_sw,
+           "splade_lists_with_repeats_dropped": s_ch, "splade_lists_with_near_tie_swaps": s_sw,
+           "why": "the host's mirror carries no SPLADE document vectors (docs/B1B_MODELS_ON_HIPPORAG2.md)",
+           "script_sha256": sha_src(__file__), "seconds": round(time.time() - t0, 1), "utc": utc()}
+    tmp = d / "b1_lists.json.tmp"
+    tmp.write_text(json.dumps(rec, indent=1), encoding="utf-8")
+    os.replace(tmp, d / "b1_lists.json")
+    print(f"{name}: {LISTS} written: {rec}", flush=True)
+    return 0
+
+
 def install(name, st, stats):
     def carve_ids_of(carve, rule):
         if carve == CARVE:
@@ -214,10 +287,22 @@ def install(name, st, stats):
             qemb = np.asarray(ds_.embeddings("dense", "queries").read(pop.idx), dtype=np.float32)
             d_ids, d_sc, d_changed, d_swap = top_lists(st, st.first["dense"][qi], qemb, Xd, "dense")
             del Xd
-            Xs = ds_.embeddings("splade", "docs").read(st.rows)
-            Qs = ds_.embeddings("splade", "queries").read(pop.idx)
-            s_ids, s_sc, s_changed, s_swap = top_lists(st, st.first["splade"][qi], Qs.astype(np.float32), Xs.astype(np.float32), "splade")
-            del Xs, Qs
+            if splade_docs(ds_):
+                Xs = ds_.embeddings("splade", "docs").read(st.rows)
+                Qs = ds_.embeddings("splade", "queries").read(pop.idx)
+                s_ids, s_sc, s_changed, s_swap = top_lists(st, st.first["splade"][qi], Qs.astype(np.float32), Xs.astype(np.float32), "splade")
+                del Xs, Qs
+                stats["lists"] = "computed here"
+            else:
+                # the host's mirror carries no SPLADE document vectors: the lists the laptop computed from the package
+                # (lists below), sha-checked, and this machine's dense lists must equal them up to near-ties
+                lz = load_lists(st)
+                s_ids, s_sc = lz["splade_ids"][qi], lz["splade_sc"][qi]
+                s_changed, s_swap = lz["record"]["splade_lists_with_repeats_dropped"], lz["record"]["splade_lists_with_near_tie_swaps"]
+                ties = same_up_to_ties(d_ids, d_sc, lz["dense_ids"][qi], lz["dense_sc"][qi])
+                d_ids, d_sc = lz["dense_ids"][qi], lz["dense_sc"][qi]
+                stats["lists"] = {"from": "b1_lists.npz (the laptop's, from the package)", "sha256": lz["record"]["sha256"],
+                                  "dense_lists_here_differing_by_near_ties": ties}
             constant = int(cfg_h["retrieval_pools"]["equal_rrf"]["constant"])
             regime = construction["regime"]
             fams_ = [stores[f] for f in m3c.regime_families(cfg_h, regime)] if regime != "RETRIEVAL" else None
@@ -258,6 +343,8 @@ def install(name, st, stats):
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ["lists"]:
+        return write_lists(argv[argv.index("--dataset") + 1])
     name = argv[argv.index("--dataset") + 1]
     if name not in SETTINGS:
         raise SystemExit(f"--dataset {name}: one of {SETTINGS}")
