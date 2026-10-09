@@ -83,4 +83,85 @@ to choose.
 
 ## Results
 
-(filled after the run)
+Run 9 October 2026, 15:27–15:33, on the laptop. Records: `outputs/bench/hipporag2/b1d.json` and `b1d.md`.
+
+**The call: ABOVE on all three settings.** The bridge is in our vectors and graphs, and nothing is trained.
+
+| setting | R0 (RRF) R@5 | chosen arm | R@5 (all) | odd-half gain [95% CI] | call |
+| --- | ---: | --- | ---: | --- | --- |
+| musique | 56.4 | s1m4/ner/Q | 60.4 | +4.0 [+2.5, +5.7] | ABOVE |
+| 2wiki | 71.2 | s2m3/structural/Q | 92.8 | +21.2 [+18.9, +23.2] | ABOVE |
+| hotpotqa | 85.0 | s2m3/structural/Q | 95.2 | +10.0 [+8.0, +11.9] | ABOVE |
+
+**Against HippoRAG 2**, scored by Claim 2's rule (the bootstrap interval of our R@5 against the published number):
+
+| setting | ours, all 1,000 [95% CI] | ours, odd half [95% CI] | HippoRAG 2 | call |
+| --- | --- | --- | ---: | --- |
+| musique | 60.4 [58.6, 62.4] | 60.3 [57.7, 62.9] | 74.7 | BELOW |
+| 2wiki | 92.8 [91.7, 93.8] | 92.3 [90.7, 93.9] | 90.4 | **ABOVE** |
+| hotpotqa | 95.2 [94.2, 96.2] | 94.9 [93.4, 96.2] | 96.3 | BELOW (the interval's top is 0.1 below) |
+
+**E1, the method's lift.** This compares our gain over our own dense list with HippoRAG 2's gain over NV-Embed-v2's
+dense list:
+
+| setting | ours | HippoRAG 2 |
+| --- | ---: | ---: |
+| musique | +3.7 | +5.0 |
+| 2wiki | +22.0 | +13.9 |
+| hotpotqa | +10.7 | +1.8 |
+
+**E2, a weaker first stage.** The same rule on SPLADE's list gains as much or more:
+
+| setting | SPLADE R@5 | with the rule | gain |
+| --- | ---: | ---: | ---: |
+| musique | 50.8 | 56.5 | +5.7 |
+| 2wiki | 70.5 | 92.6 | +22.1 |
+| hotpotqa | 80.3 | 94.1 | +13.8 |
+
+The gain does not come from the dense encoder.
+
+**The offset question: no.** Adding the source to the question (QR) does not beat the question alone (Q) where it
+matters. On the structural and ner rules it is 0 to −3 points. It helps only without edges (`none`: +2 to +5 on 2wiki),
+or with knn. A fixed vector sum is not the bridge; the edge is. Any offset must be learned (G1).
+
+**By question kind.** The gain sits where the ledger said it would:
+
+| setting | kind | R@5 before | R@5 after |
+| --- | --- | ---: | ---: |
+| 2wiki | compositional | 0.654 | 0.925 |
+| 2wiki | bridge-comparison | 0.531 | 0.879 |
+| 2wiki | inference | 0.727 | 0.935 |
+| hotpotqa | bridge | 0.822 | 0.953 |
+| musique | 2-hop | 0.652 | 0.715 |
+| musique | 3-hop | 0.525–0.539 | 0.531–0.543 |
+| musique | 4-hop | 0.333–0.435 | 0.370–0.444 |
+
+The fixed rule gives up a little on comparison questions: hotpotqa 0.971 to 0.947, and 2wiki 0.978 to 0.975. A
+comparison question's two golds are both near the question, so spending two slots on neighbours costs it.
+
+**The caveat to state in the paper.** On 2wiki and hotpotqa, the winning family is `structural`: the documents' own
+Wikipedia hyperlinks.
+- **Provenance.** These come from the source corpora (2Wiki's `para_with_hyperlink`, HotpotQA's `text_with_links`).
+  They are question-independent and LLM-free, and the package's provenance rules hold them as node-local source facts.
+- **But HippoRAG 2 does not use them**, and both datasets built their bridge questions along hyperlinks.
+
+So the comparison must also be shown with a text-only graph (ner, knn and `none`; musique's structural family is title
+mentions, already text-derived). Text-only, best arm, R@5 (all):
+
+| setting | R@5 | gain over R0 |
+| --- | ---: | ---: |
+| musique | 60.4 | +4.0 (unchanged) |
+| 2wiki | 81.8 | +10.6 |
+| hotpotqa | 86.7 | +1.7 |
+
+These are read from the arm table, not chosen. Text-only, 2wiki and hotpotqa stay below HippoRAG 2. The gap to close
+without hyperlinks is the entity-level link, which is what the LLM-free entity-node graph is for.
+
+**What this decides.**
+- The bridge is a real, LLM-free signal: ABOVE on all three settings, with nothing trained.
+- G1 (declared next, in its own file) makes the slot rule's quantities per-row inputs to both models. These are the
+  best bridge score, the source rank, the edge family and a slot indicator. G1 learns:
+  - when to spend the slots, which fixes the comparison questions;
+  - how far to chain, which is musique's 3–4 hops.
+- Musique is the setting that needs the most. Its misses are 14 points from HippoRAG 2, and they are 3–4 hop chains,
+  where one fixed slot step adds almost nothing.
