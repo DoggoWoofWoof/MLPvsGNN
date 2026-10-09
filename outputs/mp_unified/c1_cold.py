@@ -124,9 +124,18 @@ def pin(lp=2):
     if os.name != "nt":
         return {"pinned": False, "why": "not Windows"}
     k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    HANDLE, BOOL, DWORD = ctypes.c_void_p, ctypes.c_int, ctypes.c_ulong
+    k32.GetCurrentProcess.restype = HANDLE           # a 64-bit pseudo-handle: ctypes' default int would truncate it
+    k32.GetCurrentProcess.argtypes = []
+    k32.SetProcessAffinityMask.argtypes = [HANDLE, ctypes.c_size_t]
+    k32.SetProcessAffinityMask.restype = BOOL
+    k32.SetProcessInformation.argtypes = [HANDLE, ctypes.c_int, ctypes.c_void_p, DWORD]
+    k32.SetProcessInformation.restype = BOOL
+    k32.SetPriorityClass.argtypes = [HANDLE, DWORD]
+    k32.SetPriorityClass.restype = BOOL
     h = k32.GetCurrentProcess()
     out = {"affinity_lp": lp}
-    out["affinity_ok"] = bool(k32.SetProcessAffinityMask(h, ctypes.c_size_t(1 << lp)))
+    out["affinity_ok"] = bool(k32.SetProcessAffinityMask(h, 1 << lp))
     st = _PTS(1, 0x1, 0)                                  # EXECUTION_SPEED controlled, state off: EcoQoS opted out
     out["ecoqos_off_ok"] = bool(k32.SetProcessInformation(h, 4, ctypes.byref(st), ctypes.sizeof(st)))
     out["above_normal_ok"] = bool(k32.SetPriorityClass(h, 0x8000))
@@ -488,6 +497,8 @@ def run(a):
     pinned = pin() if not a.no_pin else {"pinned": False, "why": "--no-pin"}
     torch.set_num_threads(THREADS)
     log(f"{a.dataset}: pin {pinned}")
+    if not a.no_pin and not pinned.get("pinned"):
+        raise SystemExit("the process could not pin itself; nothing is timed unpinned")
     if a.dataset in TYPED:
         raise SystemExit(f"{a.dataset}: typed graphs come after the four untyped datasets (docs/C1_COLD_COST.md)")
     su = Setup(a.dataset, a.queries)
