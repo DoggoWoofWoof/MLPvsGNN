@@ -189,3 +189,28 @@ A family absent from a dataset is empty there, never replaced.
 Run with `python scripts/b1d_universal.py`, which writes `outputs/bench/hipporag2/b1d_universal.json`. The per-setting
 table above stays as the upper bound of a per-dataset choice. From now on, the universal arm is the number that is
 cited.
+
+### Addendum results (9 October, 15:50; `outputs/bench/hipporag2/b1d_universal.json`)
+
+**The universal arm is `s2m3/structural/Q`**, with a mean even-half R@5 of 0.818. The next four arms are all
+`structural` variants, 0.805–0.813. One rule for all three settings: keep the top 3, then fill slots 4 and 5 with the
+best document-link neighbours (by cos with the question) of the top 2.
+
+| setting | R0 R@5 | universal R@5 (all) [95% CI] | odd-half gain [CI] | vs R0 | HippoRAG 2 | vs HippoRAG 2 | per-setting best |
+| --- | ---: | --- | --- | --- | ---: | --- | ---: |
+| musique | 56.4 | 57.0 [55.1, 59.0] | +1.1 [-0.7, +2.9] | SAME | 74.7 | BELOW | 60.4 (ner) |
+| 2wiki | 71.2 | 92.8 [91.7, 93.8] | +21.2 [+19.0, +23.3] | ABOVE | 90.4 | **ABOVE** | 92.8 |
+| hotpotqa | 85.0 | 95.2 [94.2, 96.2] | +10.0 [+8.0, +11.9] | ABOVE | 96.3 | BELOW | 95.2 |
+
+**Reading.**
+- **musique's 4-point gain was a per-dataset choice.** It came from picking the ner family for musique. Under one
+  rule, musique gets +1.1 (SAME).
+- **The universal fix needs a graph whose links mean the same thing on every dataset.** Today, `structural` is
+  hyperlinks on two datasets and title mentions on the third, and `ner` helps where `structural` does not.
+
+  The next stage is one LLM-free graph representation, built by one rule on all six datasets and the B1 settings.
+  Its link kinds, the rule's quantities and the model that combines them are all fixed once and are never chosen
+  per dataset:
+  - document links where the source has them;
+  - entity nodes from spaCy entities;
+  - kNN.

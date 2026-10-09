@@ -1,0 +1,109 @@
+{
+ "declared_in": "docs/B1D_BRIDGE_SLOTS.md#addendum",
+ "script_sha256": "e20896bef882cf8b13236d003ff7b2bbe511bfe481278abcc250f8662006f92c",
+ "b1d_json_sha256": "ba860f47cc9d6d9b443083f6c34e57383c3e9a8849d8ad57b7b9c2e4b315d049",
+ "chosen": "s2m3/structural/Q",
+ "mean_even_R5": 0.8179,
+ "top5_by_mean_even": [
+  [
+   "s2m3/structural/Q",
+   0.8179
+  ],
+  [
+   "s2m3/structural/QR",
+   0.8129333333333334
+  ],
+  [
+   "s1m3/structural/Q",
+   0.8075666666666667
+  ],
+  [
+   "s1m4/structural/Q",
+   0.8059
+  ],
+  [
+   "s1m3/structural/QR",
+   0.8054
+  ]
+ ],
+ "settings": {
+  "musique": {
+   "R0_R5": 0.5643,
+   "R5_all": 0.5703,
+   "R5_all_ci": [
+    0.5511,
+    0.5895
+   ],
+   "R5_odd": 0.574,
+   "R5_odd_ci": [
+    0.5482,
+    0.6
+   ],
+   "odd_gain": 0.0112,
+   "odd_gain_ci": [
+    -0.0067,
+    0.0292
+   ],
+   "call_vs_R0": "SAME",
+   "published": 0.747,
+   "call_vs_published_all": "BELOW",
+   "call_vs_published_odd": "BELOW",
+   "per_setting_best": {
+    "arm": "s1m4/ner/Q",
+    "R5_all": 0.6037
+   }
+  },
+  "2wiki": {
+   "R0_R5": 0.7117,
+   "R5_all": 0.9275,
+   "R5_all_ci": [
+    0.9165,
+    0.9375
+   ],
+   "R5_odd": 0.923,
+   "R5_odd_ci": [
+    0.907,
+    0.9385
+   ],
+   "odd_gain": 0.212,
+   "odd_gain_ci": [
+    0.1895,
+    0.2325
+   ],
+   "call_vs_R0": "ABOVE",
+   "published": 0.904,
+   "call_vs_published_all": "ABOVE",
+   "call_vs_published_odd": "ABOVE",
+   "per_setting_best": {
+    "arm": "s2m3/structural/Q",
+    "R5_all": 0.9275
+   }
+  },
+  "hotpotqa": {
+   "R0_R5": 0.85,
+   "R5_all": 0.952,
+   "R5_all_ci": [
+    0.9415,
+    0.962
+   ],
+   "R5_odd": 0.949,
+   "R5_odd_ci": [
+    0.934,
+    0.962
+   ],
+   "odd_gain": 0.1,
+   "odd_gain_ci": [
+    0.08,
+    0.119
+   ],
+   "call_vs_R0": "ABOVE",
+   "published": 0.963,
+   "call_vs_published_all": "BELOW",
+   "call_vs_published_odd": "BELOW",
+   "per_setting_best": {
+    "arm": "s2m3/structural/Q",
+    "R5_all": 0.952
+   }
+  }
+ }
+}
