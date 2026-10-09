@@ -122,3 +122,25 @@ early.
   question. Its latency stage is declared in its own file.
 
 ## Results
+
+**Full run (9 October 15:49): NOT_ADOPTED, and NOT_ADOPTED under the seed null over all six splits.** Records:
+`outputs/full_zlk/grade.md` and `outputs/full_zlk/grade-nullx.md`. The table gives R@5 of zlk minus zrm, on the same
+split. Bold marks step 1's primary reads; zs marks a zero-shot read.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| J5 | **-0.0022** | **+0.0000** | **+0.0065** | **+0.0038** | **+0.0032** | **+0.0008 zs** |
+| L-metaqa | **-0.0014 zs** | +0.0015 | -0.0026 | +0.0031 | +0.0047 | -0.0042 zs |
+| L-squad | -0.0022 | **-0.0013 zs** | +0.0092 (GAIN -> WITHIN) | +0.0019 | +0.0073 | +0.0263 zs GAIN |
+| L-musique | -0.0044 | -0.0007 | **-0.0027 zs** | +0.0001 | -0.0041 | +0.0083 zs |
+| L-hotpotqa | -0.0014 | +0.0019 | +0.0084 GAIN | **+0.0011 zs** | +0.0047 | +0.0055 zs |
+| L-2wiki | -0.0021 | +0.0006 | +0.0008 | +0.0000 | **-0.0179 zs LOSS** | +0.0095 zs |
+
+- **No primary read GAINs. One read LOSES: 2wiki read zero-shot by L-2wiki's fit, -0.0179, and the LOSS stands under
+  the null.**
+- **What this says.** A learned head over each row's links to zrm's own top rows adds nothing past seed noise in
+  domain. It also costs 2wiki when 2wiki is held out. The link signal that B1d finds training-free at the first stage
+  (docs/B1D_BRIDGE_SLOTS.md) is not reached this way.
+- **G1a and G1b take the question up again**, with the rule fixed before any model sees it. G1a: the untuned rule on
+  all six datasets. G1b: its quantities as pre-scoring inputs.
+- **zrc stays the MLP base, and zsp the GNN track's base.**
