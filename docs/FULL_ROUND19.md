@@ -123,3 +123,18 @@ early.
   declared in its own file.
 
 ## Results
+
+Filed 9 October about 07:50 (`outputs/full_zkind/grade.json`, `grade.md`; re-grade `grade-nullx.json`,
+`grade-nullx.md`).
+
+- **ADOPT. The re-grade decides** (section 4): under the seed null over every split, 1 of the 11 primary reads GAINs
+  (J5 on webqsp, read zero-shot, +0.0372; floor 0.0295) and 0 of 36 LOSE. Filed at the floor 0.0075 the grade was
+  NOT_ADOPTED, with one LOSS (L-hotpotqa on hotpotqa, read zero-shot, -0.0113), which turns WITHIN under its null floor
+  0.0200.
+- **The gain is webqsp, read zero-shot:** J5 +0.0372, L-squad +0.0461, L-musique +0.0168, L-hotpotqa +0.0591. L-2wiki's
+  +0.0328 turns WITHIN under its floor 0.0473.
+- **Elsewhere:** L-hotpotqa on musique +0.0078 and L-musique on musique +0.0100 GAIN at 0.0075. The second turns WITHIN
+  under its floor 0.0720. Every other read is within 0.007 of zrm's, and L-metaqa's six reads are +0.0000.
+- **The base.** Round eighteen's zrc was ADOPTED against zrm too (03:35). By section 4, the next base is decided in a
+  file declared before that decision. zrm stays the base, and screens keep deciding against zrm's fits, until that
+  file is filed.
