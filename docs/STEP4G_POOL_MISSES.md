@@ -57,4 +57,40 @@ mirror, as step 4f's host jobs did.
 
 ## Results
 
-(Filed after the run.)
+Run 9 October 2026 (filed 10 October). squad, hotpotqa and 2wiki ran on the laptop; metaqa, musique and webqsp ran on
+the host, one job per dataset. Every carve passed its identity gate. Records: outputs/step4g/misses_<dataset>.json,
+report.json, report.md.
+
+Shares of the misses by bucket (s1sel / s1eval):
+
+| dataset | questions missing a gold | F | W | H1 | H2 | H3 | X | within 2 hops of a found gold |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| metaqa | 60 / 1,497; 464 / 9,785 | 0 / 0 | 0.09 / 0.11 | **0.89 / 0.88** | 0.02 / 0.01 | 0 | 0 | 0.54 / 0.53 |
+| musique | 77 / 1,534; 153 / 2,417 | 0.01 / 0 | 0.19 / 0.19 | **0.78 / 0.79** | 0.01 / 0.02 | 0 | 0 | 0.71 / 0.59 |
+| webqsp | -; 137 / 1,503 | - / 0.00 | - / 0.07 | - / **0.88** | - / 0.06 | 0 | 0 | - / 0.92 |
+| 2wiki | 80 / 1,496; 692 / 12,576 | 0.16 / 0.23 | 0.10 / 0.13 | **0.42 / 0.30** | 0.24 / 0.24 | 0.06 / 0.08 | 0.02 / 0.01 | 0.35 / 0.39 |
+| hotpotqa | 34 / 1,508; 158 / 7,405 | **0.68 / 0.69** | 0.02 / 0.07 | 0.23 / 0.18 | 0.05 / 0.04 | 0.02 / 0.02 | 0 | 0.55 / 0.51 |
+| squad | 12 / 1,498; 94 / 11,873 | **0.75 / 0.89** | 0 | 0 | 0 | 0 | 0.25 / 0.11 | 0 |
+
+What this says:
+
+- **One hop is the main gap.** On metaqa, musique and webqsp, 78-89% of the missing golds sit one hop from the
+  pool. On 2wiki it is the largest bucket too (30-42%), with 24% more at two hops. The first hop runs almost entirely
+  over the `structural` family: KB triples on metaqa and webqsp, hyperlinks on 2wiki and hotpotqa. musique's
+  title mentions carry about half of its first hops; ner and knn carry the rest.
+- **The walk's cut is the second gap** (W: 7-19% on metaqa, musique, webqsp and 2wiki). These golds are reached but
+  ranked below 2 x B_q, at a median of about 2.5 x B_q.
+- **On hotpotqa and squad the first stage misses.** These golds are in the dense or SPLADE top 1000, but at a
+  median dense rank of about 250-600 (hotpotqa, 2wiki) or about 350 (squad). squad's graph cannot reach them: its
+  misses have degree 0 or are unreachable.
+- **The missing golds sit next to found golds.** 51-92% of them are within two hops of a gold already in the pool
+  (squad excepted). The question's own found evidence points at the rest of the chain.
+- **Hyperlinks carry the reach on 2wiki and hotpotqa.** Every first hop into a missing gold there is a hyperlink.
+  So U1's universal links matter for the pools as well as for the models.
+
+**Step 4h targets H1 and W:**
+- a second expansion round from the pool's highest-ranked nodes, over the regime's families, rather than from all of
+  the pool (which would multiply its size);
+- graded on ALL and pool size against step 4e, on all six.
+
+The F bucket (hotpotqa, squad) is a first-stage question. It is noted for a later step, not mixed into 4h.

@@ -1,0 +1,422 @@
+{
+ "declared_in": "docs/STEP4G_POOL_MISSES.md",
+ "script_sha256": "bd46c4eb71e28ec43bfd485e4694a3e7a168f387c15008ffe2a61f6622bc1e78",
+ "carves": {
+  "metaqa__s1sel": {
+   "questions": 1497,
+   "ALL": 0.9599,
+   "questions_missing": 60,
+   "misses": 799,
+   "pool_mean": 7093.4,
+   "share": {
+    "F": 0.0,
+    "W": 0.093,
+    "H1": 0.886,
+    "H2": 0.021,
+    "H3": 0.0,
+    "X": 0.0
+   },
+   "F_dense_rank_median": 0.0,
+   "W_rank_over_B_median": 2.475,
+   "linked_share": 0.0,
+   "degree0_share": 0.0,
+   "within1_of_found_share": 0.001,
+   "within2_of_found_share": 0.536,
+   "H1_families": {
+    "structural": 708
+   },
+   "by_kind": {
+    "2": {
+     "W": 8,
+     "H1": 2
+    },
+    "3": {
+     "H1": 706,
+     "W": 66,
+     "H2": 17
+    }
+   }
+  },
+  "metaqa__s1eval": {
+   "questions": 9785,
+   "ALL": 0.9526,
+   "questions_missing": 464,
+   "misses": 4446,
+   "pool_mean": 7082.5,
+   "share": {
+    "F": 0.0,
+    "W": 0.114,
+    "H1": 0.879,
+    "H2": 0.007,
+    "H3": 0.0,
+    "X": 0.0
+   },
+   "F_dense_rank_median": 0.0,
+   "W_rank_over_B_median": 2.491,
+   "linked_share": 0.0,
+   "degree0_share": 0.0,
+   "within1_of_found_share": 0.0,
+   "within2_of_found_share": 0.532,
+   "H1_families": {
+    "structural": 3909
+   },
+   "by_kind": {
+    "1": {
+     "W": 3,
+     "H1": 1
+    },
+    "2": {
+     "W": 27,
+     "H1": 16
+    },
+    "3": {
+     "H1": 3892,
+     "W": 478,
+     "H2": 29
+    }
+   }
+  },
+  "squad__s1sel": {
+   "questions": 1498,
+   "ALL": 0.992,
+   "questions_missing": 12,
+   "misses": 12,
+   "pool_mean": 150.1,
+   "share": {
+    "F": 0.75,
+    "W": 0.0,
+    "H1": 0.0,
+    "H2": 0.0,
+    "H3": 0.0,
+    "X": 0.25
+   },
+   "F_dense_rank_median": 374.0,
+   "W_rank_over_B_median": 0.0,
+   "linked_share": 0.0,
+   "degree0_share": 1.0,
+   "within1_of_found_share": 0.0,
+   "within2_of_found_share": 0.0,
+   "H1_families": {},
+   "by_kind": {
+    "": {
+     "F": 9,
+     "X": 3
+    }
+   }
+  },
+  "squad__s1eval": {
+   "questions": 11873,
+   "ALL": 0.9921,
+   "questions_missing": 94,
+   "misses": 94,
+   "pool_mean": 150.1,
+   "share": {
+    "F": 0.894,
+    "W": 0.0,
+    "H1": 0.0,
+    "H2": 0.0,
+    "H3": 0.0,
+    "X": 0.106
+   },
+   "F_dense_rank_median": 350.5,
+   "W_rank_over_B_median": 0.0,
+   "linked_share": 0.0,
+   "degree0_share": 1.0,
+   "within1_of_found_share": 0.0,
+   "within2_of_found_share": 0.0,
+   "H1_families": {},
+   "by_kind": {
+    "": {
+     "F": 84,
+     "X": 10
+    }
+   }
+  },
+  "musique__s1sel": {
+   "questions": 1534,
+   "ALL": 0.9498,
+   "questions_missing": 77,
+   "misses": 83,
+   "pool_mean": 6921.0,
+   "share": {
+    "F": 0.012,
+    "W": 0.193,
+    "H1": 0.783,
+    "H2": 0.012,
+    "H3": 0.0,
+    "X": 0.0
+   },
+   "F_dense_rank_median": 0.0,
+   "W_rank_over_B_median": 2.2935,
+   "linked_share": 0.0,
+   "degree0_share": 0.0,
+   "within1_of_found_share": 0.145,
+   "within2_of_found_share": 0.711,
+   "H1_families": {
+    "structural": 64,
+    "ner": 35,
+    "knn": 33
+   },
+   "by_kind": {
+    "2hop": {
+     "H1": 11,
+     "W": 3,
+     "H2": 1
+    },
+    "3hop": {
+     "H1": 36,
+     "W": 10,
+     "F": 1
+    },
+    "4hop": {
+     "H1": 18,
+     "W": 3
+    }
+   }
+  },
+  "musique__s1eval": {
+   "questions": 2417,
+   "ALL": 0.9367,
+   "questions_missing": 153,
+   "misses": 180,
+   "pool_mean": 6898.6,
+   "share": {
+    "F": 0.0,
+    "W": 0.189,
+    "H1": 0.794,
+    "H2": 0.017,
+    "H3": 0.0,
+    "X": 0.0
+   },
+   "F_dense_rank_median": 0.0,
+   "W_rank_over_B_median": 2.4755000000000003,
+   "linked_share": 0.0,
+   "degree0_share": 0.0,
+   "within1_of_found_share": 0.089,
+   "within2_of_found_share": 0.589,
+   "H1_families": {
+    "structural": 133,
+    "knn": 70,
+    "ner": 78
+   },
+   "by_kind": {
+    "2hop": {
+     "H1": 11,
+     "W": 1
+    },
+    "3hop": {
+     "H1": 27,
+     "W": 6
+    },
+    "4hop": {
+     "H1": 105,
+     "W": 27,
+     "H2": 3
+    }
+   }
+  },
+  "hotpotqa__s1sel": {
+   "questions": 1508,
+   "ALL": 0.9775,
+   "questions_missing": 34,
+   "misses": 44,
+   "pool_mean": 188.4,
+   "share": {
+    "F": 0.682,
+    "W": 0.023,
+    "H1": 0.227,
+    "H2": 0.045,
+    "H3": 0.023,
+    "X": 0.0
+   },
+   "F_dense_rank_median": 224.0,
+   "W_rank_over_B_median": 7.53,
+   "linked_share": 0.0,
+   "degree0_share": 0.0,
+   "within1_of_found_share": 0.545,
+   "within2_of_found_share": 0.545,
+   "H1_families": {
+    "structural": 10
+   },
+   "by_kind": {
+    "bridge": {
+     "H1": 10,
+     "F": 30,
+     "W": 1,
+     "H2": 2,
+     "H3": 1
+    }
+   }
+  },
+  "hotpotqa__s1eval": {
+   "questions": 7405,
+   "ALL": 0.9787,
+   "questions_missing": 158,
+   "misses": 208,
+   "pool_mean": 187.5,
+   "share": {
+    "F": 0.688,
+    "W": 0.067,
+    "H1": 0.178,
+    "H2": 0.043,
+    "H3": 0.024,
+    "X": 0.0
+   },
+   "F_dense_rank_median": 269.0,
+   "W_rank_over_B_median": 7.463,
+   "linked_share": 0.0,
+   "degree0_share": 0.0,
+   "within1_of_found_share": 0.514,
+   "within2_of_found_share": 0.514,
+   "H1_families": {
+    "structural": 37
+   },
+   "by_kind": {
+    "bridge": {
+     "F": 142,
+     "H3": 5,
+     "W": 14,
+     "H2": 9,
+     "H1": 37
+    },
+    "comparison": {
+     "F": 1
+    }
+   }
+  },
+  "2wiki__s1sel": {
+   "questions": 1496,
+   "ALL": 0.9465,
+   "questions_missing": 80,
+   "misses": 82,
+   "pool_mean": 219.6,
+   "share": {
+    "F": 0.159,
+    "W": 0.098,
+    "H1": 0.415,
+    "H2": 0.244,
+    "H3": 0.061,
+    "X": 0.024
+   },
+   "F_dense_rank_median": 589.5,
+   "W_rank_over_B_median": 2.794,
+   "linked_share": 0.0,
+   "degree0_share": 0.012,
+   "within1_of_found_share": 0.098,
+   "within2_of_found_share": 0.354,
+   "H1_families": {
+    "structural": 34
+   },
+   "by_kind": {
+    "bridge_comparison": {
+     "H1": 15,
+     "F": 4,
+     "H3": 2,
+     "H2": 7,
+     "W": 5,
+     "X": 2
+    },
+    "compositional": {
+     "H2": 11,
+     "F": 8,
+     "H1": 16,
+     "W": 2,
+     "H3": 3
+    },
+    "inference": {
+     "H1": 3,
+     "H2": 2,
+     "W": 1,
+     "F": 1
+    }
+   }
+  },
+  "2wiki__s1eval": {
+   "questions": 12576,
+   "ALL": 0.945,
+   "questions_missing": 692,
+   "misses": 708,
+   "pool_mean": 221.1,
+   "share": {
+    "F": 0.234,
+    "W": 0.133,
+    "H1": 0.302,
+    "H2": 0.239,
+    "H3": 0.082,
+    "X": 0.01
+   },
+   "F_dense_rank_median": 282.0,
+   "W_rank_over_B_median": 4.1845,
+   "linked_share": 0.0,
+   "degree0_share": 0.01,
+   "within1_of_found_share": 0.144,
+   "within2_of_found_share": 0.386,
+   "H1_families": {
+    "structural": 214
+   },
+   "by_kind": {
+    "bridge_comparison": {
+     "H1": 104,
+     "W": 77,
+     "H2": 88,
+     "H3": 26,
+     "F": 38,
+     "X": 4
+    },
+    "comparison": {
+     "F": 1
+    },
+    "compositional": {
+     "H1": 94,
+     "H2": 78,
+     "F": 108,
+     "H3": 31,
+     "W": 10,
+     "X": 3
+    },
+    "inference": {
+     "H1": 16,
+     "F": 19,
+     "H3": 1,
+     "H2": 3,
+     "W": 7
+    }
+   }
+  },
+  "webqsp__s1eval": {
+   "questions": 1503,
+   "ALL": 0.9088,
+   "questions_missing": 137,
+   "misses": 2310,
+   "pool_mean": 7212.8,
+   "share": {
+    "F": 0.001,
+    "W": 0.067,
+    "H1": 0.877,
+    "H2": 0.055,
+    "H3": 0.0,
+    "X": 0.0
+   },
+   "F_dense_rank_median": 0.0,
+   "W_rank_over_B_median": 2.573,
+   "linked_share": 0.0,
+   "degree0_share": 0.0,
+   "within1_of_found_share": 0.086,
+   "within2_of_found_share": 0.92,
+   "H1_families": {
+    "structural": 2012,
+    "knn": 291,
+    "ner": 44
+   },
+   "by_kind": {
+    "": {
+     "H1": 2026,
+     "W": 155,
+     "H2": 126,
+     "F": 3
+    }
+   }
+  }
+ },
+ "utc": "2026-10-09T18:51:14Z"
+}
