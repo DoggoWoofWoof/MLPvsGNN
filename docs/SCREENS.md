@@ -3153,3 +3153,20 @@ LOSS in 12 reads, against zrc's card fits. No full run (section 2: a MIXED scree
   hotpotqa +0.0000 and -0.0032 (zero-shot).
 - zrc stays the base. A narrower screen that keeps the webqsp gain without the 2wiki loss would be declared here, before
   its numbers; none is declared now.
+
+## Round twenty-seven: result (zgr; filed 9 October about 10:25)
+
+**NO_GAIN under the seed null** (`outputs/screen/scr-zgr-pair-recall.md`; filed NO_GAIN, no call changed). No GAIN in 12
+reads against zrm's card fits, and four LOSSes. No full run.
+
+- **The KB relation offsets from relation-name vectors do not move the KB graphs.** metaqa reads +0.0034 and +0.0026,
+  webqsp read zero-shot -0.0004 and -0.0065, all WITHIN. Beside round twenty-six's zgf (the same space with no
+  relation offsets) they add at most +0.0011 on metaqa and nothing on webqsp.
+- **L-musique's fit** loses on squad (-0.0118 [-0.0149, -0.0086]); hotpotqa -0.0063 and musique read zero-shot -0.0057
+  are WITHIN. zgf's L-musique fit read squad -0.0035, so here the offsets cost passage graphs a little.
+- **L-hotpotqa's fit** repeats zgf's harm on the passage graphs, smaller: musique in-domain -0.0474 (zgf -0.0599), hotpotqa
+  read zero-shot -0.0263 (zgf -0.0437), squad -0.0141 (zgf -0.0143). Two rounds now show it, so the shared space read
+  through its zero-started head harms L-hotpotqa's fit on passage graphs; it is not a single fit's accident. Its cause is
+  still not diagnosed.
+- What this says for question three: at screen size, neither the shared space nor relation offsets built from the KB's
+  relation names add to zrm's inputs on any of the six datasets.
