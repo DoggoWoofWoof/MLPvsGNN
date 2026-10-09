@@ -73,3 +73,36 @@ The calls are made for each fit on the reads it lost (section 1), comparing off 
   webqsp never trains. Test splits are never read.
 
 ## Results
+
+**HEAD_AT_READ on all three fits (11:40).** Records: `outputs/diag/zgfoff/scr-*.md`.
+
+**The device control reads exactly as filed.** zgf's L-hotpotqa fit, read as trained on the CPU, matches its filed card
+reads on all six datasets (+0.0000 [+0.0000, +0.0000]). So the off reads below are compared with the card's reads with no
+device term.
+
+The off reads are compared with zrm's card fit, on the reads each fit lost. The share is (on − off) / (on − zrm).
+
+| fit | read | zrm | on (filed) | off | off − zrm | call | share |
+|---|---|---:|---:|---:|---:|---|---:|
+| zgf, L-hotpotqa | musique in-domain | 0.5600 | 0.5001 | 0.5640 | +0.0041 | WITHIN | 1.07 |
+| zgf, L-hotpotqa | hotpotqa zero-shot | 0.8457 | 0.8020 | 0.8408 | -0.0049 | WITHIN | 0.89 |
+| zgf, L-hotpotqa | squad in-domain | 0.9116 | 0.8972 | 0.9116 | +0.0000 | WITHIN | 1.00 |
+| zgr, L-hotpotqa | musique in-domain | 0.5600 | 0.5125 | 0.5644 | +0.0044 | WITHIN | 1.09 |
+| zgr, L-hotpotqa | hotpotqa zero-shot | 0.8457 | 0.8194 | 0.8467 | +0.0010 | WITHIN | 1.04 |
+| zgr, L-hotpotqa | squad in-domain | 0.9116 | 0.8975 | 0.9128 | +0.0013 | WITHIN | 1.09 |
+| zgr, L-musique | squad in-domain | 0.9111 | 0.8993 | 0.9119 | +0.0008 | WITHIN | 1.07 |
+
+- **The passage-graph harm is the head's score at read.** Leaving the head out brings every lost read back level with zrm.
+  The head carries 0.89 to 1.09 of each loss. zrm's own weights did not drift on the passage graphs.
+- **The other way round on the KB graph and 2wiki.** With the head out, the fits lose against zrm on metaqa (zgf -0.0152,
+  zgr -0.0231 and -0.0205) and on 2wiki (-0.0093, -0.0079, -0.0113). With the head in, they were level or above on both
+  (metaqa +0.0015 to +0.0034). So zrm's weights did co-adapt there: the head took over part of zrm's job on metaqa and
+  2wiki, while it misranks passages on musique, hotpotqa and squad.
+- **webqsp** reads -0.0038 to -0.0086 off, all WITHIN.
+
+**What follows (section 4).** A bound on the head's score is the candidate (the MP-unified track's 0.2 tanh with
+dropout of the whole head in training, so that zrm alone stays whole). It would be a later round, declared before its
+numbers.
+
+Neither space round gained on any read, so a bound would at best bring zgf/zgr back to level. It is not queued ahead
+of rounds that have shown gains (round 28's webqsp gain, round 21's full run). zgf and zgr stay NO_GAIN.
