@@ -60,7 +60,16 @@ Per question, at batch 1, every stage is timed with `time.perf_counter`:
 
 - **Batch 16:** the same 200 questions in 13 groups of 16 (the last group smaller). Each group's inputs are built
   question by question, then one forward. Its per-question cost is the group's time over its size.
-- **Order:** the paths rotate question by question, so no path always runs first on a question.
+- **Order:** the stages every path shares (pool, embedding read, compile) run once per question and are counted in
+  every path's total. The model-specific stages then run in an order that rotates question by question, so no path
+  always runs first on a question.
+- **The embedding read** (the pool's rows from the node table) is its own stage. On the laptop, 2wiki's and
+  hotpotqa's tables do not fit in memory, so those reads come from disk. Totals are given with it and without it.
+- *Amended about 17:25, before any number:* numba compiles its kernels on first use. One question outside the
+  measured set (the carve's 201st) is run once at process start to trigger that compile. Its time is index time, and
+  nothing from it is reused by a measured question beyond the compiled code.
+- Typed graphs (metaqa, webqsp) need relation slots and chains in the cold path. They follow the four untyped
+  datasets, in the same file.
 
 ## Checks (untimed, each question)
 

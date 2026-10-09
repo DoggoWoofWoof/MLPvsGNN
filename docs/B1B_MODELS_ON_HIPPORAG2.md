@@ -123,4 +123,33 @@ The same pipeline and the same fits for all three settings.
 
 ## Results
 
-(filed after the run)
+Filed 9 October 2026, about 17:35. All eight reads ran (zrc and zsp; J5 and the three held-out fits), `p@swa`, on
+the 1,000 questions of each setting. Table: outputs/b1b/report.md (report.json beside it). R@5 ×100, 95% bootstrap
+intervals.
+
+| setting | HippoRAG 2 | our RRF | **zsp J5 (GNN)** | zrc J5 (MLP) | zsp zero-shot | zrc zero-shot | MLP share of GNN gain |
+| --- | ---: | ---: | --- | --- | --- | --- | ---: |
+| musique | 74.7 | 56.4 | 66.3 [64.5, 68.1] **BELOW** | 66.1 [64.3, 67.9] BELOW | 60.2 BELOW | 61.3 BELOW | 0.98 |
+| 2wiki | 90.4 | 71.2 | 97.2 [96.5, 97.8] **ABOVE** | 96.4 [95.7, 97.0] ABOVE | 93.4 ABOVE | 93.3 ABOVE | 0.97 |
+| hotpotqa | 96.3 | 85.0 | 98.2 [97.6, 98.9] **ABOVE** | 98.2 [97.5, 98.8] ABOVE | 95.9 AT | 96.5 AT | 0.99 |
+
+**Claim 2 holds on 2wiki and hotpotqa, not on musique.**
+
+- **2wiki and hotpotqa.** zsp's interval sits above HippoRAG 2's published R@5 on both. The MLP, with no message
+  passing, is ABOVE on both too, and keeps 0.97 and 0.99 of the GNN's gain over RRF. Held out of training, both arms
+  are still ABOVE on 2wiki and AT on hotpotqa. The hyperlink caveat applies to both settings: the structural family
+  is the documents' own hyperlinks, which HippoRAG 2 does not use.
+- **musique: BELOW, and the gap is the ranking's, not the pool's.** The pools hold 98.2% of golds, and every gold for
+  95.3% of questions, but R@5 is 66.3. Per "What it decides", the ranking gap goes to G1b (round 29, zbr, running) and
+  the universal graph, each graded on all six datasets. Nothing here is tuned on B1.
+- **E1 (the encoder check).** Our lift over our own first stage is larger than HippoRAG 2's lift over NV-Embed-v2 on
+  all three settings: +9.9 vs +5.0 (musique), +25.9 vs +13.9 (2wiki), +13.2 vs +1.8 (hotpotqa). Our first stage
+  (RRF of our frozen dense encoder and SPLADE) is below NV-Embed-v2 on all three: 56.4 vs 69.7, 71.2 vs 76.5 and
+  85.0 vs 94.5. So the ABOVEs come from the features and models, not the encoder, and on musique a weaker first stage
+  is part of the gap.
+- **The MLP** is within 0.8 points of the GNN in every in-domain row and keeps 0.97 to 0.99 of its gain (Claim 1's
+  ≥90% bar holds on all three).
+- **Protocol.** J5 trained on the five datasets' train questions; B1's questions are dev questions it never saw, as
+  GFM-RAG trains on these datasets' train splits. HippoRAG 2 trains nothing. Both are stated beside the numbers.
+
+Development reads under this file's declared calls, one fit per arm; nothing chosen on B1.
