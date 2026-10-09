@@ -1,0 +1,130 @@
+{
+ "declared_in": "docs/STEP4F_POOL_BUDGET.md",
+ "verdict": "NO_SHRINK",
+ "per_dataset": {
+  "metaqa": {
+   "carve": "metaqa__s1sel",
+   "step4e_ALL": 0.9599,
+   "step4e_pool": 7093.4,
+   "target": 0.9549,
+   "N_star": null,
+   "order": null,
+   "pool_at_N_star": null,
+   "ratio": null,
+   "best_ALL": 0.9005,
+   "best_at": [
+    7000,
+    "O2"
+   ],
+   "s1eval_ALL_at_N_star": null,
+   "s1eval_step4e_ALL": 0.9526,
+   "s1eval_step4e_pool": 7082.5,
+   "est_look_GiB": null,
+   "step4e_look_GiB": 23.0
+  },
+  "squad": {
+   "carve": "squad__s1sel",
+   "step4e_ALL": 0.992,
+   "step4e_pool": 150.1,
+   "target": 0.987,
+   "N_star": 100,
+   "order": "O1",
+   "pool_at_N_star": 100.0,
+   "ratio": 0.666,
+   "best_ALL": 0.998,
+   "best_at": [
+    2000,
+    "O2"
+   ],
+   "s1eval_ALL_at_N_star": 0.9885,
+   "s1eval_step4e_ALL": 0.9921,
+   "s1eval_step4e_pool": 150.1,
+   "est_look_GiB": 0.4,
+   "step4e_look_GiB": 0.6
+  },
+  "musique": {
+   "carve": "musique__s1sel",
+   "step4e_ALL": 0.9498,
+   "step4e_pool": 6921.0,
+   "target": 0.9448,
+   "N_star": 7000,
+   "order": "O1",
+   "pool_at_N_star": 7000.0,
+   "ratio": 1.011,
+   "best_ALL": 0.9459,
+   "best_at": [
+    7000,
+    "O2"
+   ],
+   "s1eval_ALL_at_N_star": 0.9404,
+   "s1eval_step4e_ALL": 0.9367,
+   "s1eval_step4e_pool": 6898.6,
+   "est_look_GiB": 16.1,
+   "step4e_look_GiB": 15.9
+  },
+  "hotpotqa": {
+   "carve": "hotpotqa__s1sel",
+   "step4e_ALL": 0.9775,
+   "step4e_pool": 188.4,
+   "target": 0.9725,
+   "N_star": 500,
+   "order": "O1",
+   "pool_at_N_star": 500.0,
+   "ratio": 2.654,
+   "best_ALL": 0.9987,
+   "best_at": [
+    4000,
+    "O2"
+   ],
+   "s1eval_ALL_at_N_star": 0.9816,
+   "s1eval_step4e_ALL": 0.9787,
+   "s1eval_step4e_pool": 187.5,
+   "est_look_GiB": 1.3,
+   "step4e_look_GiB": 0.5
+  },
+  "2wiki": {
+   "carve": "2wiki__s1sel",
+   "step4e_ALL": 0.9465,
+   "step4e_pool": 219.6,
+   "target": 0.9415,
+   "N_star": 750,
+   "order": "O1",
+   "pool_at_N_star": 750.0,
+   "ratio": 3.415,
+   "best_ALL": 0.9766,
+   "best_at": [
+    7000,
+    "O2"
+   ],
+   "s1eval_ALL_at_N_star": 0.9573,
+   "s1eval_step4e_ALL": 0.945,
+   "s1eval_step4e_pool": 221.1,
+   "est_look_GiB": 3.1,
+   "step4e_look_GiB": 0.9
+  },
+  "webqsp": {
+   "carve": "webqsp__s1eval",
+   "step4e_ALL": 0.9088,
+   "step4e_pool": 7212.8,
+   "target": 0.9038,
+   "N_star": null,
+   "order": null,
+   "pool_at_N_star": null,
+   "ratio": null,
+   "best_ALL": 0.8656,
+   "best_at": [
+    7000,
+    "O2"
+   ],
+   "s1eval_ALL_at_N_star": null,
+   "s1eval_step4e_ALL": 0.9088,
+   "s1eval_step4e_pool": 7212.8,
+   "est_look_GiB": null,
+   "step4e_look_GiB": 3.5
+  }
+ },
+ "budget_sha256": "4efdb0bffb89bfb533773eef53ac9aa7da88d31f2690cadfd1d8d47f269195ae",
+ "step4e_coverage_sha256": "f7ee347bc49423600aa455943c599204e119a81b2e67851cd7c2e7df89929aaa",
+ "script_sha256": "097f6b9462631f442d78e1d978a0a74c69130f1dfd9ed3161e3aafbc699f70c1",
+ "utc": "2026-10-09T08:40:48Z"
+}
