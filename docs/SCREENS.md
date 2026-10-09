@@ -3137,3 +3137,19 @@ LOSSes, all in L-hotpotqa's fit. No full run.
 - What this says for question three (a graph-free space shaped by the graph's edges): at screen size, a 64-wide space
   shared by passages and KB, read through a zero-started head, adds nothing over zrm's inputs, and on one fit it hurts.
 - Round twenty-seven (zgr) is zgf plus relation offsets, so its reads are read beside these.
+
+## Round twenty-eight: result (zck; filed 9 October about 10:15)
+
+**MIXED under the seed null** (`outputs/screen/scr-zck-pair-recall.md`; filed MIXED, no call changed). Two GAINs and one
+LOSS in 12 reads, against zrc's card fits. No full run (section 2: a MIXED screen does not earn one).
+
+- **The gains add on webqsp read zero-shot.** L-musique's fit +0.0160 [+0.0042, +0.0270] (floor 0.0102), L-hotpotqa's
+  +0.0402 [+0.0257, +0.0557] (floor 0.0233). zkind against zrc read -0.0141 to +0.0142 there (docs/BASE_ZRC_ZKIND.md),
+  so zrc's entries under zkind's head gain where neither alone gains over the other.
+- **The LOSS:** L-hotpotqa's fit on 2wiki in-domain, -0.0082 [-0.0103, -0.0061] against the floor 0.0075. L-musique's
+  fit reads 2wiki -0.0041, WITHIN. 2wiki has no chain entries, so the offsets never act on its batches; the shift comes
+  through the shared weights in joint training.
+- Every other read is WITHIN: metaqa -0.0001 to +0.0000, squad +0.0011/+0.0015, musique +0.0039 (zero-shot) and +0.0030,
+  hotpotqa +0.0000 and -0.0032 (zero-shot).
+- zrc stays the base. A narrower screen that keeps the webqsp gain without the 2wiki loss would be declared here, before
+  its numbers; none is declared now.
