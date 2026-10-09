@@ -39,50 +39,65 @@ are those of docs/PROGRAM_2026_10_09.md. The M3 firewall still holds: no MLP-aga
 
 ## Claim 2: a SOTA GNN without any LLM
 
+The user's ruling of 9 October: we aim higher than "best LLM-free". The claim is that **better features and models
+beat a better encoder**. HippoRAG 2 has a 7B encoder and an LLM-built graph; we keep our frozen 1.5B encoder and win
+on features and models. The encoder risk is answered by measurement (below), not by changing our encoder, which stays
+frozen.
+
 **What "without any LLM" means.** No generative LLM call (no text generation) at indexing or at query time.
 Embedding models are encoders, even when they are built on a language-model backbone. Our gte-Qwen2-1.5B is built on
 Qwen2-1.5B, and NV-Embed-v2 on Mistral-7B, so the definition has to say this. By it:
 - **Using a generative LLM:** HippoRAG 2 (OpenIE triples and the recognition filter), GFM-RAG and G-reasoner (an
   LLM-built graph at indexing), and RAPTOR (LLM summaries).
-- **LLM-free:** the dense retrievers.
+- **LLM-free:** the dense retrievers, and our system.
 
-**The numbers to beat** (HippoRAG 2, Table 3, R@5):
-- **Best LLM-free:** NV-Embed-v2 dense, 7B, at 69.7 / 76.5 / 94.5 (MuSiQue / 2Wiki / HotpotQA). Over our first stage
-  (RRF 56.4 / 71.2 / 85.0), that needs +13.3 / +5.3 / +9.5 points.
-- **Best overall:** HippoRAG 2, at 74.7 / 90.4 / 96.3.
+**Definition (the headline).** On HippoRAG 2's MuSiQue, 2WikiMultiHopQA and HotpotQA settings (B1: the same 1,000
+questions and corpora, passage R@5), our GNN's R@5 is compared with HippoRAG 2's published R@5 (74.7 / 90.4 / 96.3,
+Table 3):
 
-**Matched encoder.** With our 1.5B encoder fixed, our GNN is compared against the other graph methods on the same
-encoder:
-- HippoRAG 2's personalised-PageRank recipe on our graphs (B1c);
-- GFM-RAG's and G-reasoner's released GNNs on our graphs (B2).
+| call | the 95% bootstrap interval of our R@5 (2,000 resamples of the 1,000 questions, seed 0) |
+| --- | --- |
+| ABOVE | lies wholly above the published number |
+| AT | contains it |
+| BELOW | lies wholly below it |
 
-HippoRAG 2 as a whole cannot be rerun without its LLM. Against it, the comparison is its published number, with the
-7B encoder and the LLM named, together with B1a's split of the gap into encoder and method.
+The claim holds on a setting when the call is ABOVE or AT, and is reported setting by setting. A setting that is
+BELOW is reported as BELOW. Over our first stage (RRF 56.4 / 71.2 / 85.0), reaching HippoRAG 2 needs
++18.3 / +19.2 / +11.3 points.
 
-- **Definition.** On HippoRAG 2's MuSiQue, 2WikiMultiHopQA and HotpotQA settings (same 1,000 questions, same corpora,
-  passage R@5, B1), the GNN has the best R@5:
-  - among retrievers that use no LLM at indexing or at query time;
-  - at a matched encoder, against the published systems run with our encoder where their code allows it (B2:
-    GFM-RAG and G-reasoner checkpoints on our graphs).
+**Encoder risk, answered by measurement.** A reviewer will say "you are behind or ahead because of the encoder". Each
+answer below keeps our encoder fixed.
+- **E1, the method's lift against the method's lift.** Our GNN's R@5 gain over our own dense list, set beside each
+  published system's gain over its own encoder's dense list. HippoRAG 2 over NV-Embed-v2 dense gains
+  +5.0 / +13.9 / +1.8. If our lift is larger, our features and models add more than theirs, on any encoder. This
+  comparison is fixed now as the paper's main encoder-free statement.
+- **E2, a weaker first stage.** The same trained models, fed the SPLADE-only first stage (50.8 / 70.5 / 80.3, the
+  package's own vectors), and with the dense list removed from the inputs where the model allows it. If the lift holds
+  on a weaker first stage, the gain is not the dense encoder's.
+- **E3, matched encoder.** The other graph methods on our encoder and our graphs:
+  - HippoRAG 2's personalised-PageRank core (B1c: SAME on all three);
+  - GFM-RAG's and G-reasoner's released GNNs (B2).
+- **E4, the cost.** Encoder size (1.5B against 7B), LLM calls at indexing (0 against one per passage), and indexing
+  time, beside accuracy.
 
-  Against LLM-built systems with a larger encoder (HippoRAG 2 with NV-Embed-v2 7B), the comparison is reported with
-  the encoder size and the LLM use named. B1a's dense rows separate the encoder's share of the gap from the
-  method's.
+The best LLM-free published number (NV-Embed-v2 dense, 69.7 / 76.5 / 94.5) stays in the table as a second line. It is
+no longer the target.
+
 - **Evidence.**
   - B1 settings with golds verified (agreement 1.0).
-  - Selection never touches the benchmark questions. Choices are made on our own training carves, or on the even
-    half, and reported on the odd half and on all of them.
+  - Selection never touches the benchmark questions as a whole. Choices are made on our own training carves, or on
+    the even half, and reported on the odd half and on all of them.
   - Published numbers are quoted from the papers' tables, with table numbers given.
-  - Indexing cost (LLM calls, GPU hours) is shown beside accuracy.
 - **Attacks answered in advance:**
-  - *"Smaller encoder."* The matched-encoder table and the encoder/method split answer it.
+  - *"Smaller encoder."* E1–E3. And with a smaller encoder, a win is stronger, not weaker.
   - *"Tuned on the test questions."* Answered by the even/odd rule and the dev-split provenance.
   - *"An LLM-free graph is weaker by construction."* Show what each LLM-free graph element buys, family by family.
 - **The gap, as measured on 9 October** (B1a, B1c):
   - Our first stage is 18.0, 19.6 and 11.8 points below HippoRAG 2.
   - Of that, 13.0, 5.7 and 10.0 points are the encoder (NV-Embed-v2 dense against our dense).
-  - The misses are second steps of chains: 86% to 99.5% have a sibling gold already in the top 5. The fix is bridge
-    scoring and entity-level links, in G1 and an LLM-free entity-node graph.
+  - The misses are second steps of chains: 86% to 99.5% have a sibling gold already in the top 5, and 1 hop from the
+    dense top 5 holds 87% / 97% / 99% of all golds. The fix is bridge scoring and entity-level links (B1d, G1, an
+    LLM-free entity-node graph).
 
 ## Claim 3: the MLP is faster
 
