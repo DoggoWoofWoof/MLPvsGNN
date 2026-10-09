@@ -1,0 +1,88 @@
+{
+ "declared_in": "docs/G1A_UNIVERSAL_BRIDGE_SIX.md",
+ "script_sha256": "428e74b697f741d74d528a2504bf61afcfc8a1c8861e33c9b918ab36f47a9a8c",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "dataset": "webqsp",
+ "regime": "FULL",
+ "families_with_store": [
+  "knn",
+  "ner",
+  "structural"
+ ],
+ "rrf_constant": 60,
+ "carves": {
+  "s1eval": {
+   "questions": 1503,
+   "arms": {
+    "R0": {
+     "R@2": 0.0372,
+     "R@5": 0.0535,
+     "R@10": 0.0709,
+     "FC@5": 0.0379,
+     "no_family": false
+    },
+    "U": {
+     "R@2": 0.0372,
+     "R@5": 0.1225,
+     "R@10": 0.1331,
+     "FC@5": 0.0905,
+     "no_family": false,
+     "gain_R5": 0.069,
+     "gain_ci": [
+      0.0573,
+      0.0812
+     ],
+     "call": "ABOVE"
+    },
+    "U-ner": {
+     "R@2": 0.0372,
+     "R@5": 0.0695,
+     "R@10": 0.0882,
+     "FC@5": 0.0519,
+     "no_family": false,
+     "gain_R5": 0.016,
+     "gain_ci": [
+      0.0087,
+      0.0237
+     ],
+     "call": "ABOVE"
+    },
+    "U-knn": {
+     "R@2": 0.0372,
+     "R@5": 0.062,
+     "R@10": 0.0757,
+     "FC@5": 0.0446,
+     "no_family": false,
+     "gain_R5": 0.0084,
+     "gain_ci": [
+      0.0029,
+      0.0142
+     ],
+     "call": "ABOVE"
+    },
+    "U-all": {
+     "R@2": 0.0372,
+     "R@5": 0.0869,
+     "R@10": 0.0957,
+     "FC@5": 0.0665,
+     "no_family": false,
+     "gain_R5": 0.0333,
+     "gain_ci": [
+      0.0248,
+      0.0431
+     ],
+     "call": "ABOVE"
+    }
+   },
+   "kinds": {
+    "": {
+     "n": 1503,
+     "R0": 0.0535,
+     "U": 0.1225
+    }
+   },
+   "seconds": 53.0
+  }
+ },
+ "utc": "2026-10-09T10:17:33Z"
+}

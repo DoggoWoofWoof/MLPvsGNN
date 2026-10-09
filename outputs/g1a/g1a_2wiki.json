@@ -1,0 +1,190 @@
+{
+ "declared_in": "docs/G1A_UNIVERSAL_BRIDGE_SIX.md",
+ "script_sha256": "428e74b697f741d74d528a2504bf61afcfc8a1c8861e33c9b918ab36f47a9a8c",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "dataset": "2wiki",
+ "regime": "STRUCT",
+ "families_with_store": [
+  "knn",
+  "ner",
+  "structural"
+ ],
+ "rrf_constant": 60,
+ "carves": {
+  "s1sel": {
+   "questions": 1496,
+   "arms": {
+    "R0": {
+     "R@2": 0.4972,
+     "R@5": 0.5842,
+     "R@10": 0.6305,
+     "FC@5": 0.2172,
+     "no_family": false
+    },
+    "U": {
+     "R@2": 0.4972,
+     "R@5": 0.6566,
+     "R@10": 0.7134,
+     "FC@5": 0.3529,
+     "no_family": false,
+     "gain_R5": 0.0724,
+     "gain_ci": [
+      0.061,
+      0.0841
+     ],
+     "call": "ABOVE"
+    },
+    "U-ner": {
+     "R@2": 0.4972,
+     "R@5": 0.5744,
+     "R@10": 0.6427,
+     "FC@5": 0.2152,
+     "no_family": false,
+     "gain_R5": -0.0099,
+     "gain_ci": [
+      -0.0185,
+      -0.0013
+     ],
+     "call": "BELOW"
+    },
+    "U-knn": {
+     "R@2": 0.4972,
+     "R@5": 0.5617,
+     "R@10": 0.6303,
+     "FC@5": 0.1932,
+     "no_family": false,
+     "gain_R5": -0.0226,
+     "gain_ci": [
+      -0.0301,
+      -0.0154
+     ],
+     "call": "BELOW"
+    },
+    "U-all": {
+     "R@2": 0.4972,
+     "R@5": 0.577,
+     "R@10": 0.6422,
+     "FC@5": 0.2213,
+     "no_family": false,
+     "gain_R5": -0.0072,
+     "gain_ci": [
+      -0.0155,
+      0.001
+     ],
+     "call": "SAME"
+    }
+   },
+   "kinds": {
+    "bridge_comparison": {
+     "n": 327,
+     "R0": 0.4266,
+     "U": 0.4778
+    },
+    "comparison": {
+     "n": 362,
+     "R0": 0.8246,
+     "U": 0.7417
+    },
+    "compositional": {
+     "n": 623,
+     "R0": 0.5281,
+     "U": 0.6918
+    },
+    "inference": {
+     "n": 184,
+     "R0": 0.5815,
+     "U": 0.6875
+    }
+   },
+   "seconds": 44.5
+  },
+  "s1eval": {
+   "questions": 12576,
+   "arms": {
+    "R0": {
+     "R@2": 0.5124,
+     "R@5": 0.6079,
+     "R@10": 0.6573,
+     "FC@5": 0.2537,
+     "no_family": false
+    },
+    "U": {
+     "R@2": 0.5124,
+     "R@5": 0.6837,
+     "R@10": 0.7435,
+     "FC@5": 0.4007,
+     "no_family": false,
+     "gain_R5": 0.0758,
+     "gain_ci": [
+      0.0715,
+      0.08
+     ],
+     "call": "ABOVE"
+    },
+    "U-ner": {
+     "R@2": 0.5124,
+     "R@5": 0.6082,
+     "R@10": 0.6782,
+     "FC@5": 0.274,
+     "no_family": false,
+     "gain_R5": 0.0003,
+     "gain_ci": [
+      -0.0027,
+      0.0035
+     ],
+     "call": "SAME"
+    },
+    "U-knn": {
+     "R@2": 0.5124,
+     "R@5": 0.5934,
+     "R@10": 0.6629,
+     "FC@5": 0.2481,
+     "no_family": false,
+     "gain_R5": -0.0146,
+     "gain_ci": [
+      -0.0175,
+      -0.0117
+     ],
+     "call": "BELOW"
+    },
+    "U-all": {
+     "R@2": 0.5124,
+     "R@5": 0.6024,
+     "R@10": 0.6708,
+     "FC@5": 0.263,
+     "no_family": false,
+     "gain_R5": -0.0056,
+     "gain_ci": [
+      -0.0085,
+      -0.0026
+     ],
+     "call": "BELOW"
+    }
+   },
+   "kinds": {
+    "bridge_comparison": {
+     "n": 2751,
+     "R0": 0.445,
+     "U": 0.4957
+    },
+    "comparison": {
+     "n": 3040,
+     "R0": 0.8498,
+     "U": 0.7762
+    },
+    "compositional": {
+     "n": 5236,
+     "R0": 0.5582,
+     "U": 0.7216
+    },
+    "inference": {
+     "n": 1549,
+     "R0": 0.5907,
+     "U": 0.7082
+    }
+   },
+   "seconds": 262.9
+  }
+ },
+ "utc": "2026-10-09T10:31:09Z"
+}

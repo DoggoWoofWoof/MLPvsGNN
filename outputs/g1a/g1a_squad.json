@@ -1,0 +1,160 @@
+{
+ "declared_in": "docs/G1A_UNIVERSAL_BRIDGE_SIX.md",
+ "script_sha256": "428e74b697f741d74d528a2504bf61afcfc8a1c8861e33c9b918ab36f47a9a8c",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "dataset": "squad",
+ "regime": "RETRIEVAL",
+ "families_with_store": [
+  "knn",
+  "ner",
+  "structural"
+ ],
+ "rrf_constant": 60,
+ "carves": {
+  "s1sel": {
+   "questions": 1498,
+   "arms": {
+    "R0": {
+     "R@2": 0.8131,
+     "R@5": 0.8992,
+     "R@10": 0.9372,
+     "FC@5": 0.8992,
+     "no_family": false
+    },
+    "U": {
+     "R@2": 0.8131,
+     "R@5": 0.8678,
+     "R@10": 0.9306,
+     "FC@5": 0.8678,
+     "no_family": false,
+     "gain_R5": -0.0314,
+     "gain_ci": [
+      -0.0407,
+      -0.022
+     ],
+     "call": "BELOW"
+    },
+    "U-ner": {
+     "R@2": 0.8131,
+     "R@5": 0.8758,
+     "R@10": 0.9326,
+     "FC@5": 0.8758,
+     "no_family": false,
+     "gain_R5": -0.0234,
+     "gain_ci": [
+      -0.0334,
+      -0.0134
+     ],
+     "call": "BELOW"
+    },
+    "U-knn": {
+     "R@2": 0.8131,
+     "R@5": 0.8718,
+     "R@10": 0.9346,
+     "FC@5": 0.8718,
+     "no_family": false,
+     "gain_R5": -0.0274,
+     "gain_ci": [
+      -0.0381,
+      -0.0174
+     ],
+     "call": "BELOW"
+    },
+    "U-all": {
+     "R@2": 0.8131,
+     "R@5": 0.8812,
+     "R@10": 0.9366,
+     "FC@5": 0.8812,
+     "no_family": false,
+     "gain_R5": -0.018,
+     "gain_ci": [
+      -0.0274,
+      -0.008
+     ],
+     "call": "BELOW"
+    }
+   },
+   "kinds": {
+    "": {
+     "n": 1498,
+     "R0": 0.8992,
+     "U": 0.8678
+    }
+   },
+   "seconds": 14.2
+  },
+  "s1eval": {
+   "questions": 11873,
+   "arms": {
+    "R0": {
+     "R@2": 0.833,
+     "R@5": 0.9053,
+     "R@10": 0.9397,
+     "FC@5": 0.9053,
+     "no_family": false
+    },
+    "U": {
+     "R@2": 0.833,
+     "R@5": 0.883,
+     "R@10": 0.9351,
+     "FC@5": 0.883,
+     "no_family": false,
+     "gain_R5": -0.0223,
+     "gain_ci": [
+      -0.0255,
+      -0.0193
+     ],
+     "call": "BELOW"
+    },
+    "U-ner": {
+     "R@2": 0.833,
+     "R@5": 0.8916,
+     "R@10": 0.9381,
+     "FC@5": 0.8916,
+     "no_family": false,
+     "gain_R5": -0.0137,
+     "gain_ci": [
+      -0.0168,
+      -0.0108
+     ],
+     "call": "BELOW"
+    },
+    "U-knn": {
+     "R@2": 0.833,
+     "R@5": 0.8866,
+     "R@10": 0.9384,
+     "FC@5": 0.8866,
+     "no_family": false,
+     "gain_R5": -0.0187,
+     "gain_ci": [
+      -0.0218,
+      -0.0156
+     ],
+     "call": "BELOW"
+    },
+    "U-all": {
+     "R@2": 0.833,
+     "R@5": 0.8914,
+     "R@10": 0.9399,
+     "FC@5": 0.8914,
+     "no_family": false,
+     "gain_R5": -0.0139,
+     "gain_ci": [
+      -0.0171,
+      -0.0107
+     ],
+     "call": "BELOW"
+    }
+   },
+   "kinds": {
+    "": {
+     "n": 11873,
+     "R0": 0.9053,
+     "U": 0.883
+    }
+   },
+   "seconds": 106.7
+  }
+ },
+ "utc": "2026-10-09T10:15:51Z"
+}

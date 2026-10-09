@@ -71,4 +71,53 @@ store.
 
 ## Results
 
-(filed after the run)
+**Run (9 October 16:11): NOT UNIVERSAL. ABOVE on four datasets, SAME on musique, BELOW on squad.** Records:
+`outputs/g1a/report.md`, `outputs/g1a/report.json` and `outputs/g1a/g1a_<dataset>.json`. The table gives R@5 on s1eval
+(×100); the gain is U minus R0 with its 95% bootstrap interval.
+
+| dataset | R0 | U | gain [95% CI] | call | zsp (J5) |
+| --- | ---: | ---: | --- | --- | ---: |
+| metaqa | 0.5 | 11.8 | +11.3 [+10.8, +11.9] | ABOVE | 77.9 |
+| squad | 90.5 | 88.3 | -2.2 [-2.5, -1.9] | **BELOW** | 91.0 |
+| musique | 47.3 | 47.6 | +0.2 [-0.6, +1.1] | SAME | 56.6 |
+| hotpotqa | 68.5 | 80.1 | +11.6 [+11.1, +12.2] | ABOVE | 90.5 |
+| 2wiki | 60.8 | 68.4 | +7.6 [+7.1, +8.0] | ABOVE | 87.3 |
+| webqsp | 5.3 | 12.2 | +6.9 [+5.7, +8.1] | ABOVE | 26.8 (zero-shot) |
+
+The s1sel carves give the same calls.
+
+- **Not universal as it stands.** squad is BELOW, so the declared outcome is "any BELOW".
+- **What breaks it is the question, not the graph.** The rule gives up slots 4 and 5 on every question. Where the
+  golds are already in the first stage's top five, that costs:
+
+  | dataset | questions | R0 → U |
+  | --- | --- | --- |
+  | squad | all (single-hop) | 0.905 → 0.883 |
+  | hotpotqa | comparison | 0.897 → 0.845 |
+  | 2wiki | comparison | 0.850 → 0.776 |
+  | musique | 3-hop | 0.437 → 0.406 |
+  | musique | 4-hop | 0.269 → 0.246 |
+
+  Bridge questions gain: hotpotqa bridge 0.631 → 0.790, 2wiki compositional 0.558 → 0.722, metaqa 1-hop
+  0.007 → 0.410. A fixed slot rule cannot tell the two kinds apart.
+- **The trained models are far above the rule on all six.** zsp's J5 R@5 is above U's by:
+
+  | dataset | zsp − U |
+  | --- | ---: |
+  | metaqa | +66 |
+  | squad | +2.7 |
+  | musique | +9.0 |
+  | hotpotqa | +10.4 |
+  | 2wiki | +18.9 |
+  | webqsp | +14.6 |
+
+  The bridge signal is real, but on our datasets the models already take most of it.
+- **Families, reported only:**
+  - U-ner is the best arm on musique (49.1, +1.8 over R0). Title mentions are sparse there and entity overlap
+    carries the chain.
+  - U-all is below U wherever U gains: mixing families dilutes the hop, as step 4's union walk did.
+- **Next.**
+  - **B1b** (docs/B1B_MODELS_ON_HIPPORAG2.md): the models on HippoRAG 2's settings, Claim 2's critical path.
+  - **G1b:** the rule's quantities as pre-scoring per-row inputs, so the model decides per question whether a bridge
+    row beats the first stage's row. These are the bridge score, membership per family and the source's rank. G1b
+    goes in its own file and is graded on all six datasets, zero-shot included.
