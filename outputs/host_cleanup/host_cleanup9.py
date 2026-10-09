@@ -1,4 +1,4 @@
-"""The 9 October clean-up of the host workspace: host_cleanup.py's checks and record, for four more groups of derived arrays.
+"""The 9 October clean-up of the host workspace: host_cleanup.py's checks and record, for four more groups of closed stages' files.
 Run on the host, in the rx workspace. `make` writes the list from the host's own files (read only); host_cleanup.py does
 the dry run and, when the user runs it with --delete, the removal (only files whose size and mtime still match).
 
@@ -6,11 +6,12 @@ the dry run and, when the user runs it with --delete, the removal (only files wh
     python outputs/host_cleanup/host_cleanup9.py --list outputs/host_cleanup/delete_2026-10-09.json             # dry run
     python outputs/host_cleanup/host_cleanup9.py --list outputs/host_cleanup/delete_2026-10-09.json --delete    # the user
 
-The groups (arrays of 1 MB or more only; every text and small file stays):
-  outputs/step4c/look/, outputs/step4c/cache/  step 4c's looks and caches. Step 4c closed: scr-pools was MIXED, so its
-                                               fits never ran (docs/STEP4C_WALK_POOLS_RETRAINED.md). Its pools
-                                               (outputs/step4c/pools) and screen records stay, so the arrays can be
-                                               rebuilt by committed code.
+The groups (arrays of 1 MB or more only, except step 4c, where every file goes):
+  outputs/step4c/                              all of step 4c (looks, caches, pools, screen fits, records), the user's
+                                               call (9 Oct). Step 4c closed: scr-pools was MIXED, so its fits never ran
+                                               (docs/STEP4C_WALK_POOLS_RETRAINED.md). Step 4e imports step 4c's script but
+                                               reads no step 4c file. Its three git-tracked records (gate.json,
+                                               screen.json, screen.md) stay; git holds them anyway.
   outputs/mp_unified/lean/                     the lean-MLP and S6 results' arrays (l1-l12, cs18-cs27 builds), closed
                                                tracks; most of them are on the HF archive. crag_profile/ and scores/
                                                stay (lean_mlp.py reads crag_profile at import).
@@ -32,10 +33,12 @@ if str(HERE) not in sys.path:
 import host_cleanup as H  # noqa: E402
 
 ARR = (".npz", ".npy", ".pt")
-GROUPS = ("outputs/step4c/look/", "outputs/step4c/cache/", "outputs/mp_unified/lean/", "outputs/mp_unified/cache/",
-          "outputs/zfeat/cache/")
+RULE = {"outputs/step4c/": (None, 0), "outputs/mp_unified/lean/": (ARR, 1 << 20),
+        "outputs/mp_unified/cache/": (ARR, 1 << 20), "outputs/zfeat/cache/": (ARR, 1 << 20)}   # dir: (extensions, min bytes)
+GROUPS = tuple(RULE)
 KEEP_SUB = ("outputs/mp_unified/lean/crag_profile/", "outputs/mp_unified/lean/scores/")
-H.ALLOWED.update({d: ARR for d in GROUPS})
+KEEP_FILES = {"outputs/step4c/gate.json", "outputs/step4c/screen.json", "outputs/step4c/screen.md"}   # git-tracked
+H.ALLOWED.update({d: ext for d, (ext, _m) in RULE.items()})
 LIST = "outputs/host_cleanup/delete_2026-10-09.json"
 PATHTOK = re.compile(r"outputs/[A-Za-z0-9_./@=+-]+")
 
@@ -65,9 +68,10 @@ def make(ws, live=None):
                 p = Path(dp) / name
                 rel = p.relative_to(ws).as_posix()
                 st = p.stat()
-                if not rel.lower().endswith(ARR) or st.st_size < 1 << 20:
+                ext, least = RULE[g]
+                if (ext is not None and not rel.lower().endswith(ext)) or st.st_size < least:
                     continue
-                if rel.startswith(KEEP_SUB):
+                if rel.startswith(KEEP_SUB) or rel in KEEP_FILES or rel.endswith(".tmp"):
                     continue
                 if any(rel == t or rel.startswith(t + "/") or t.startswith(rel) for t in pend):
                     held.append(rel)
@@ -75,8 +79,9 @@ def make(ws, live=None):
                 files.append([rel, st.st_size, int(st.st_mtime)])
     files.sort()
     doc = {"created": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "dirs": list(GROUPS),
-           "rule": "arrays (.npz/.npy/.pt, >= 1 MB) of closed stages: step 4c's looks and caches, the lean-MLP and S6 "
-                   "results and chain caches, rounds 24-25's zfeat cache; nothing a queued or running item names",
+           "rule": "all of step 4c but its three git-tracked records; arrays (.npz/.npy/.pt, >= 1 MB) of closed "
+                   "stages: the lean-MLP and S6 results and chain caches, rounds 24-25's zfeat cache; nothing a queued "
+                   "or running item names",
            "files": files, "bytes": sum(s for _r, s, _m in files), "held_named_by_pending": held,
            "live_jobs_given": sorted(live) if live is not None else None}
     out = ws / LIST
