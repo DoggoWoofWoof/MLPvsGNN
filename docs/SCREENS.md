@@ -3092,3 +3092,32 @@ twenty-six and twenty-seven's screens.
 - L-musique's fit is NO_GAIN: every read is within 0.005 of zrm's, and musique read zero-shot is -0.0040.
 - Against zgs's fits (reported only), L-musique's fit reads PROMISING. gsurg's loop on zrm keeps zrm's level and adds
   little on top of it at screen size.
+
+## Twenty-eighth round: zrc's entries under zkind's head (zck; declared 9 October about 08:10)
+
+Declared before any of its numbers. Code: `outputs/mp_unified/zck.py` (its selftest passes). **The MLP track:** zrc's and
+zkind's inputs, no edge or neighbour read.
+
+- **Why.** zrc (round eighteen) and zkind (round nineteen) were both ADOPTED against zrm, and neither beats the other
+  (docs/BASE_ZRC_ZKIND.md, NOT_ADOPTED 08:01: zrc is the base). Both declarations name their combination as a round of
+  its own. zrc changes which entries a typed row keeps (the 64 w0 ranks highest), and zkind the head that reads them (an
+  offset on the output layer and rrf's base weight for a batch from a graph with typed relations). Both gain on webqsp
+  read zero-shot. Whether the gains add is the question.
+- **What trains.** The arm zck: zkind's model (`zkind.ZKind`) over zrc's builds (`zrc.ChainCarveZRC`, the entries
+  `outputs/zrc/cache`). The offsets add no draw, so from the same seed zck is zrc's model and state plus three zero
+  offsets, and its forward is zrc's bit for bit until an offset moves (the selftest requires it). No new column, block,
+  carve, graph or hyperparameter; settings and training are zrm's (rmatch.py's train).
+- **The same rule on all six datasets.** The offsets act only on a batch with chain entries (metaqa and webqsp); every
+  other batch is zrc's. The encoder stays frozen. webqsp never trains.
+- **On the card, against zrc's card fits** (the base): two fits, `scr-zck` (L-musique) and `scr-zck-hp` (L-hotpotqa), each
+  read on the six s1eval carves. Each read is decided against zrc's card fit of its split (`scr-zrct`, `scr-zrct-hp`),
+  with zrm's and step 1's beside. The re-call's base R@5 is zrc's against step 1's (`outputs/zbase2/base-zrc-S`, from
+  docs/BASE_ZRC_ZKIND.md).
+- **The rule is the screens' rule.** zck.py's comparison, pair and re-call under the seed null decide. PROMISING (at
+  least one GAIN, no LOSS among the twelve reads) earns a full run declared in its own file.
+- **Caps and order.** As round nineteen's: each fit 1.1 CPUs, 9 GB and 0.28 of the card; each read 0.32. Queued after
+  round twenty-seven's screens, ahead of the full runs fzrg and flk.
+- **ETAs.** zkind's fits took about 35 minutes each. zck's fits start when round twenty-six's or twenty-seven's free the
+  card, about 09:00; the re-call lands about 10:30.
+- **Speed.** zkind's one product per row on a typed graph, over zrc's entries. Any latency figure for zck is cold
+  (8216ffe), timed in its own declared stage.
