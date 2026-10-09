@@ -107,4 +107,61 @@ Outputs per setting:
 
 ## Results
 
-(Filed after the run.)
+Built 9 October 2026, 14:23–14:45, on the laptop (records: `outputs/bench/hipporag2/<setting>/build.json`; the
+setting files beside them are not committed, being derived from third-party data).
+
+**Mapping.**
+- Every passage and question mapped to the package; no build stopped.
+- musique: 11,655 passages map exactly, and 1 differs only in whitespace.
+- 2wiki: all 6,119 passages map exactly.
+- hotpotqa: 9,606 passages map exactly, and 205 differ only in whitespace.
+- No gold reference is unresolved, and no question is without a gold.
+- HippoRAG 2's gold passages equal the package's gold rows on every question of all three settings (agreement 1.0).
+
+**Graphs** (edges; mean degree over both endpoints; nodes with no edge in the family):
+
+| setting | passages | structural | ner | knn |
+| --- | ---: | --- | --- | --- |
+| musique | 11,656 | 45,568 (7.819; 3,351) | 75,002 (12.869; 1,987) | 25,722 (4.414; 0) |
+| 2wiki | 6,119 | 2,200 (0.719; 3,425) | 36,147 (11.815; 1,252) | 13,415 (4.385; 0) |
+| hotpotqa | 9,811 | 4,856 (0.99; 4,990) | 68,698 (14.004; 1,030) | 21,805 (4.445; 0) |
+
+On 2wiki and hotpotqa, few Wikipedia hyperlinks survive inside these small corpora (mean degree below 1, and over
+half the passages have none). There, the graph is carried by the ner and knn families. On musique, title mentions
+stay dense.
+
+**First stage, R@5 (%), beside the published table.** Published numbers are from HippoRAG 2 (arXiv 2502.14802),
+Table 3, passage recall@5 on the same 1,000 questions and corpora:
+
+| retriever | MuSiQue | 2Wiki | HotpotQA |
+| --- | ---: | ---: | ---: |
+| ours: dense (gte-Qwen2-1.5B, frozen) | 56.7 | 70.8 | 84.5 |
+| ours: SPLADE | 50.8 | 70.5 | 80.3 |
+| ours: RRF of the two | 56.4 | 71.2 | 85.0 |
+| published: GTE-Qwen2-7B-Instruct | 63.6 | 74.8 | 89.1 |
+| published: NV-Embed-v2 (7B) | 69.7 | 76.5 | 94.5 |
+| published: HippoRAG 2 | 74.7 | 90.4 | 96.3 |
+
+Our 1.5B encoder sits below its own 7B sibling on all three settings. The ordering is as expected, and it checks
+that the settings are read correctly. The distance from our first stage to HippoRAG 2 is:
+
+| setting | points |
+| --- | ---: |
+| MuSiQue | 18.3 |
+| 2Wiki | 19.2 |
+| HotpotQA | 11.3 |
+
+Measured from our RRF list, this is what the graph models must close in B1b. A bigger encoder is a named exposure
+difference, never a change to ours.
+
+**Reach.** This is the share of gold passages within 1 and 2 hops (all three families, undirected) of the dense
+top 5:
+
+| setting | 1 hop | 2 hops |
+| --- | ---: | ---: |
+| musique | 0.869 | 0.9537 |
+| 2wiki | 0.9732 | 0.977 |
+| hotpotqa | 0.9905 | 0.9955 |
+
+The golds are within reach of the graph; the gap is ranking, not reach. That is what the models are for, and what
+B1b measures.

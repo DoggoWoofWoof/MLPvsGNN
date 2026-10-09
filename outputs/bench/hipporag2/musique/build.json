@@ -1,0 +1,86 @@
+{
+ "declared_in": "docs/B1_HIPPORAG2_ALIGNMENT.md",
+ "script_sha256": "b3da0e3b06ce0fe848098a93d29294d440f27620383d235f0ce982d8fdd834a1",
+ "setting": "musique",
+ "source_files": {
+  "musique.json": {
+   "bytes": 12543629,
+   "sha256": "98ed4e21d3076532f6388d42320fb809599c63a0d8dffca8ece5e41922be6b46"
+  },
+  "musique_corpus.json": {
+   "bytes": 6239261,
+   "sha256": "73157a03ce3f0b1a5673dd5dc12bb970c24976dbffc688af9eecdd758c97ffcb"
+  }
+ },
+ "package": {
+  "dataset": "musique",
+  "split": "dev",
+  "nodes_jsonl_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+ },
+ "passages": 11656,
+ "passages_exact": 11655,
+ "passages_whitespace_only": 1,
+ "distinct_package_rows": 11654,
+ "questions": 1000,
+ "questions_without_gold": 0,
+ "gold_refs_unresolved": 0,
+ "gold_titles_multi": 0,
+ "gold_mean": 2.648,
+ "gold_agrees_with_package": 1.0,
+ "graph": {
+  "structural": {
+   "edges": 45568,
+   "mean_degree": 7.819,
+   "isolated": 3351,
+   "max_out_degree": 117
+  },
+  "ner": {
+   "edges": 75002,
+   "mean_degree": 12.869,
+   "isolated": 1987,
+   "max_out_degree": 283,
+   "entities": 51135
+  },
+  "knn": {
+   "edges": 25722,
+   "mean_degree": 4.414,
+   "isolated": 0,
+   "max_out_degree": 25
+  }
+ },
+ "structural_relations": {
+  "0": 45568
+ },
+ "first_stage_R": {
+  "dense": {
+   "R@2": 0.425,
+   "R@5": 0.5666,
+   "R@10": 0.6588
+  },
+  "splade": {
+   "R@2": 0.3867,
+   "R@5": 0.5082,
+   "R@10": 0.5887
+  },
+  "rrf": {
+   "R@2": 0.4153,
+   "R@5": 0.5643,
+   "R@10": 0.6502
+  }
+ },
+ "gold_within_hops_of_dense_top5": {
+  "1": 0.869,
+  "2": 0.9537
+ },
+ "files": {
+  "first_stage.npz": "7f46d6361291b5fac20550cbfa42aa903717422bd6981c33a943d5e470464cdb",
+  "graph_knn.npz": "8fd49aa6a75b7b433f407f2e201b5a40ab965c25ebabbb6984dfc07a85724a06",
+  "graph_ner.npz": "62564bec50321a94b9b2f7c2a1d69df9add1f4b4eea869c1746d81ba2e19dc26",
+  "graph_structural.npz": "03a0f1ad79cb981014eb32edd5272d9fddef8d1a7379437f2f739290b44e2a40",
+  "nodes.json": "513ce2ba38fd396bbb44ee11624453671351c68147f648dcb4d148cfef633a15",
+  "queries.json": "76cd99c74625220c457c4f7260ab2dd2462b1352d7ef9a381c4497eecd3f8a19"
+ },
+ "seconds": 353.3,
+ "utc": "2026-10-09T08:58:45Z"
+}

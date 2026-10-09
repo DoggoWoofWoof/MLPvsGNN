@@ -1,0 +1,31 @@
+{
+ "source": "https://huggingface.co/datasets/osunlp/HippoRAG_2 (main)",
+ "fetched": "2026-10-09T14:01:25+0530",
+ "approved": "the user, 9 Oct 2026 14:00 ('yes download both, build the graphs for B1')",
+ "files": {
+  "musique.json": {
+   "bytes": 12543629,
+   "sha256": "98ed4e21d3076532f6388d42320fb809599c63a0d8dffca8ece5e41922be6b46"
+  },
+  "musique_corpus.json": {
+   "bytes": 6239261,
+   "sha256": "73157a03ce3f0b1a5673dd5dc12bb970c24976dbffc688af9eecdd758c97ffcb"
+  },
+  "2wikimultihopqa.json": {
+   "bytes": 6505789,
+   "sha256": "895cba294064df0c3302c76847b1fc08d99b5619f7663dfaa3b65cd780f1cac4"
+  },
+  "2wikimultihopqa_corpus.json": {
+   "bytes": 3083943,
+   "sha256": "9d6e352952aafb18dab22bf8195039461321a44a949df902ae83bce134ad238a"
+  },
+  "hotpotqa.json": {
+   "bytes": 8183058,
+   "sha256": "3ad9c0bcbf93f41d7004ca6007049c904d2605046b314a2f7ecfb379c64cba6d"
+  },
+  "hotpotqa_corpus.json": {
+   "bytes": 6414109,
+   "sha256": "9333647b922382776cd2cb02893b390d77984df85a91bfa8be411284978aca7d"
+  }
+ }
+}
