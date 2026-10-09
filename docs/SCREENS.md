@@ -3218,3 +3218,34 @@ enters another's (not message passing in section "rounds twenty-two and twenty-t
   reads.
 - **Speed.** Per question, one sort of rrf, one sort of the flagged rows' dense_cos and three passes over the pool's
   edges, all before the forward. Any latency figure for zbr is cold (8216ffe), timed in its own declared stage.
+
+## Thirtieth round: zsp's propagation repeated, on zsp (zdp; declared 9 October about 16:50)
+
+Declared before any of its numbers. Code: `outputs/mp_unified/zdeep.py` (its selftest passes). **The GNN track:**
+message passing over the pool's own graph, more steps.
+
+- **Why.** zsp, the GNN track's base, propagates the neighbours' scores once. Its gains have come on 2-hop questions;
+  musique's 3- and 4-hop slices gain nothing. A chain's third or fourth passage sits two or three edges from the first
+  stage's rows. HippoRAG 2 (PPR) and GFM-RAG (NBFNet-style) propagate over many steps. Depth is the first lever that
+  docs/PROGRAM_2026_10_09.md's stage G1 names, ahead of relation-conditioned messages, and Claim 2's musique gap is
+  where it should show.
+- **What trains.** The arm zdp (`zdeep.ZDeep`) runs zsp's forward (`zprop.ZProp`) and then two more steps. Each step adds
+  a new head over `zprop.prop_inputs` of the score so far: per family, the neighbours' mean and soft-maximum z-score
+  and the degree, plus the row's own z-score.
+  - Each head is Linear(10, 32), GELU, Linear(32, 1). The last layer starts at zero; the first is drawn from its own
+    generator (seed + 3001, + 3002).
+  - From the same seed zdp is zsp's state plus 770 parameters, and its forward is zsp's bit for bit (the selftest
+    requires it).
+  - Settings and training are zrm's (rmatch.py's train).
+- **The same rule on all six datasets,** on zlink's edges. No new graph, column, encoder or text. webqsp never trains.
+- **On the host's CPU, against zsp's CPU screen fits** (`scr-zsp`, `scr-zsp-hp`): two fits, `scr-zdp` (L-musique) and
+  `scr-zdp-hp` (L-hotpotqa), each read on the six s1eval carves. zrm's CPU fits and step 1's are beside. The re-call's
+  base R@5 is zsp's screen fits against step 1's (`outputs/zdeep/base-zsp-<split>`, made first).
+- **The rule is the screens' rule.** zdeep.py's comparison, pair and re-call under the seed null decide. PROMISING earns
+  a full run declared in its own file. Reported beside, not decided: the musique hop slices.
+- **Caps and order.** As round twenty-three's: 6 CPUs and 16 GB per fit and read. Queued after round twenty-nine's
+  items, ahead of step 4e's block.
+- **ETAs.** zsp's CPU fits took a few hours each. Three passes over the edges instead of one add perhaps 30%. The
+  re-call lands this evening or overnight.
+- **Speed.** Three passes over each question's pool edges after zrm's forward, instead of zsp's one. Any latency figure
+  for zdp is cold (8216ffe), timed in its own declared stage.
