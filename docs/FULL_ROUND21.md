@@ -94,3 +94,24 @@ early.
   included, no warm-up pass, and nothing kept from an earlier question.
 
 ## Results
+
+**Full run (9 October 15:32): NOT_ADOPTED, and NOT_ADOPTED under the seed null over all six splits.** Records:
+`outputs/full_zrg/grade.md` and `outputs/full_zrg/grade-nullx.md`. The table gives R@5 of zrg minus zrm, on the same
+split. Bold marks step 1's primary reads; zs marks a zero-shot read.
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| J5 | **+0.0017** | **-0.0002** | **+0.0058** | **+0.0051** | **+0.0026** | **+0.0138 zs** (GAIN -> WITHIN its floor 0.0295) |
+| L-metaqa | **+0.0027 zs** | +0.0001 | -0.0045 | +0.0018 | +0.0012 | +0.0058 zs |
+| L-squad | +0.0008 | **-0.0032 zs** | -0.0001 | +0.0028 | +0.0034 | +0.0273 zs GAIN (floor 0.0260) |
+| L-musique | +0.0012 | +0.0016 | **-0.0040 zs** | +0.0022 | +0.0027 | +0.0018 zs |
+| L-hotpotqa | +0.0003 | +0.0008 | +0.0087 GAIN | **-0.0094 zs** (LOSS -> WITHIN its floor 0.0200) | +0.0053 | +0.0081 zs |
+| L-2wiki | +0.0014 | +0.0008 | -0.0060 | +0.0021 | **-0.0068 zs** | +0.0041 zs |
+
+- **No primary read GAINs past its floor, and none LOSES.** Under the null, J5's webqsp GAIN and L-hotpotqa's
+  hotpotqa LOSS both fall to WITHIN.
+- **The gsurg loop on zrm's model moves nothing past seed noise.** The screen's PROMISING call did not carry to the six
+  splits. The only reads past their floors are webqsp zero-shot in L-squad's fit (+0.0273) and musique in
+  L-hotpotqa's fit (+0.0087), neither of them primary.
+- **zrc stays the MLP base.** zrg is dropped. The base is unchanged, and nothing is written into zrm's or zrc's fit
+  folders.

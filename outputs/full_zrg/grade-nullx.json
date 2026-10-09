@@ -16,12 +16,12 @@
   "L-hotpotqa seed 2": "outputs\\screen\\scr-null-s2-hp.json",
   "L-2wiki seed 1": "outputs\\screen\\scr-nullx-L-2wiki-s1.json",
   "L-2wiki seed 2": "outputs\\screen\\scr-nullx-L-2wiki-s2.json",
-  "base L-musique": "C:\\Users\\Student2\\rx\\projects\\mpr\\ws\\outputs\\zrc\\base-zrm-L-musique.json",
-  "base L-hotpotqa": "C:\\Users\\Student2\\rx\\projects\\mpr\\ws\\outputs\\zrc\\base-zrm-L-hotpotqa.json",
-  "base L-2wiki": "C:\\Users\\Student2\\rx\\projects\\mpr\\ws\\outputs\\zrc\\base-zrm-L-2wiki.json",
-  "base L-squad": "C:\\Users\\Student2\\rx\\projects\\mpr\\ws\\outputs\\zrc\\base-zrm-L-squad.json",
-  "base J5": "C:\\Users\\Student2\\rx\\projects\\mpr\\ws\\outputs\\zrc\\base-zrm-J5.json",
-  "base L-metaqa": "C:\\Users\\Student2\\rx\\projects\\mpr\\ws\\outputs\\zrc\\base-zrm-L-metaqa.json"
+  "base L-musique": "outputs/zrc/base-zrm-L-musique.json",
+  "base L-hotpotqa": "outputs/zrc/base-zrm-L-hotpotqa.json",
+  "base L-2wiki": "outputs/zrc/base-zrm-L-2wiki.json",
+  "base L-squad": "outputs/zrc/base-zrm-L-squad.json",
+  "base J5": "outputs/zrc/base-zrm-J5.json",
+  "base L-metaqa": "outputs/zrc/base-zrm-L-metaqa.json"
  },
  "rule": "floor(r) = max(0.0075, 2 * sqrt((D_1(r)^2 + D_2(r)^2) / 2)), D_s(r) = seed s's R@5 minus seed 0's on read r (docs/SCREENS.md, section 2, the seed null)",
  "floor_min": 0.0075,
