@@ -118,6 +118,7 @@ import math
 import os
 import re
 import secrets
+import shutil
 import socket
 import statistics
 import subprocess
@@ -356,7 +357,12 @@ def save():
     if a.dry:          # a dry run writes nothing
         return
     tmp = state_p.with_suffix(".tmp")
-    tmp.write_text(json.dumps(st, indent=1), encoding="utf-8")
+    try:
+        tmp.write_text(json.dumps(st, indent=1), encoding="utf-8")
+    except OSError as e:   # 9 Oct 23:24: a full drive (ENOSPC) ended the feeder here; the state stays in memory
+        say_once("_save", f"state not saved ({type(e).__name__}: {e}); kept in memory, retried next poll")
+        return
+    st["said"].pop("_save", None)
     for _ in range(60):
         try:
             tmp.replace(state_p)
@@ -845,6 +851,8 @@ def main(argv=None):
     ap.add_argument("--min-run", type=float, default=1500.0)
     ap.add_argument("--max-h", type=float, default=60.0)
     ap.add_argument("--linger-h", type=float, default=0.0)
+    ap.add_argument("--disk-floor-gb", type=float, default=100.0,
+                    help="send nothing while the workspace's drive has less free (the user, 9 Oct: 100 GB+ free always)")
     ap.add_argument("--adopt-h", type=float, default=48.0)
     ap.add_argument("--queue-gpu", type=int, default=0)
     ap.add_argument("--dry", action="store_true")
@@ -1143,7 +1151,14 @@ def main(argv=None):
                            f"{ov['q_age'] / 60:.0f} min); sending nothing")
         else:
             st["said"].pop("_q", None)
-        if why or hold_q:
+        disk_gb = shutil.disk_usage(str(WS)).free / 1e9
+        hold_disk = disk_gb < a.disk_floor_gb
+        if hold_disk:
+            say_once("_disk", f"drive free {disk_gb:.1f} GB < {a.disk_floor_gb:g} GB: sending nothing until the clean-up "
+                              f"frees it")
+        else:
+            st["said"].pop("_disk", None)
+        if why or hold_q or hold_disk:
             if not a.dry:
                 save()
             write_util(rec)

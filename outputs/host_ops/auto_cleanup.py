@@ -21,7 +21,9 @@ written within the age limit (NTFS last access, which this drive keeps, and mtim
 
 A file is removed only if it is hub, regen or smoke, unreferenced, and cold for the limit that the drive's free space
 sets: free >= --ideal-gb (200): smoke older than --smoke-h and other files untouched for --idle-days (14); free below
---ideal-gb: untouched for --cold-days (3); free below --floor-gb (100): untouched for --urgent-days (1). Within a cycle
+--ideal-gb: untouched for --cold-days (3); free below --floor-gb (100): untouched for --urgent-days (1); free below
+--emergency-gb (50): any age. The loop's next cycle comes after --every-h (3) at the ideal, 30 min below it and 10 min
+below the floor (9 Oct: the drive went from 71 GB free to 0 within one 3 h cycle). Within a cycle
 the largest go first, and removal stops once free space reaches --ideal-gb (smoke and the idle limit still apply). A
 file that is open elsewhere (WinError 32) is skipped. Folders left empty are removed.
 
@@ -51,7 +53,9 @@ KEEP_DIRS = ("outputs/host_ops/", "outputs/host_cleanup/", "outputs/host_archive
 MIN_BYTES = 1 << 20
 # host_sync.py's REGEN: builds and caches that committed code rebuilds from the mirror
 REGEN = re.compile(r"^outputs/mp_unified/(lean/cs\d+e?-[a-z0-9]+(-[a-z0-9]+)*\.npz|lean/cs\d+[a-z]*tmp_[^/]+/|"
-                   r"look/[^/]+/[^/]+/chunks/|cache/)|/__pycache__/")
+                   r"look/[^/]+/[^/]+/chunks/|cache/)|/__pycache__/|"
+                   # 9 Oct: step 4e's look chunks (look_step4e.py rebuilds them bit for bit; its caches are read instead)
+                   r"^outputs/step4e/look/[^/]+/[^/]+/chunks/")
 SMOKE = re.compile(r"(^|/)smoke[^/]*/")
 PATHTOK = re.compile(r"(?:outputs|logs)/[A-Za-z0-9_./@=+-]+")
 # Folders a script family reads without naming them on its command line: pinned while such a job is queued or running.
@@ -238,7 +242,9 @@ def cycle(a, ws: Path) -> dict:
     refs = {x.rstrip("/.") for x in r1 | r2}
     pins = sorted({d for rx_, ds in PINS if any(rx_.search(c) for c in c1 + c2) for d in ds})
     prefixes = [x + "/" for x in refs] + pins
-    if free_gb < a.floor_gb:
+    if free_gb < a.emergency_gb:   # 9 Oct: the drive filled within one 3 h cycle; below this, no age limit
+        tier, limit_d = "emergency", 0.0
+    elif free_gb < a.floor_gb:
         tier, limit_d = "urgent", a.urgent_days
     elif free_gb < a.ideal_gb:
         tier, limit_d = "low", a.cold_days
@@ -361,6 +367,8 @@ def main(argv=None) -> int:
     r.add_argument("--idle-days", type=float, default=14.0)
     r.add_argument("--cold-days", type=float, default=3.0)
     r.add_argument("--urgent-days", type=float, default=1.0)
+    r.add_argument("--emergency-gb", type=float, default=50.0,
+                   help="below this free space, unreferenced hub/regen files go whatever their age")
     r.add_argument("--smoke-h", type=float, default=24.0)
     r.add_argument("--rx-root", default="C:/Users/Student2/rx")
     a = ap.parse_args(argv)
@@ -380,7 +388,10 @@ def main(argv=None) -> int:
                 raise
         if not a.loop:
             return 0
-        time.sleep(a.every_h * 3600)
+        # the cadence follows the free space: every --every-h at the ideal, 30 min below it, 10 min below the floor
+        free = shutil.disk_usage(str(ws)).free / GB
+        time.sleep(3600 * (a.every_h if free >= a.ideal_gb else min(a.every_h, 0.5) if free >= a.floor_gb
+                           else min(a.every_h, 1 / 6)))
 
 
 if __name__ == "__main__":
