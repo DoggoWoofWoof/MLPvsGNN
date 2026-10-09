@@ -3080,3 +3080,15 @@ gain (zfs's or zgn's, ten select reads each) reached +0.001.
   useful that zfs cannot use. The MLP-to-GNN gap is not in these columns.
 - No s1eval carve was read. The reads, comparisons, pair and re-call of both rounds were dropped with the selection, so
   zgn has no screen verdict. The select-carve R@5 in the record are selection numbers, not results.
+
+## Round twenty-one: result (zrg; filed 9 October about 08:05)
+
+**PROMISING under the seed null** (`outputs/screen/scr-zrg-pair-recall.md`; filed MIXED). The full run
+(docs/FULL_ROUND21.md) is gated on it: `fzrg-gate` passed at 07:50 and its four fits are queued behind rounds
+twenty-six and twenty-seven's screens.
+
+- One GAIN of 12: musique, in-domain, in L-hotpotqa's fit, +0.0087 R@5 [+0.0032, +0.0142] against zrm's card fit.
+- The filed LOSS, hotpotqa read zero-shot in L-hotpotqa's fit (-0.0094), is WITHIN under its null floor.
+- L-musique's fit is NO_GAIN: every read is within 0.005 of zrm's, and musique read zero-shot is -0.0040.
+- Against zgs's fits (reported only), L-musique's fit reads PROMISING. gsurg's loop on zrm keeps zrm's level and adds
+  little on top of it at screen size.
