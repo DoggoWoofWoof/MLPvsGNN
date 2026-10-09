@@ -316,13 +316,18 @@ def choose_targets(S, i, hits, common, need):
     return res
 
 
+# Code versions whose stat stage is this file's, byte for byte (only cmd_link's cache changed since): their capstat
+# merges are accepted by link. 836a25e0... is 94acfb9's u1d.py.
+STAT_SAME = ("836a25e0d22dd833c858d617fdf29a141b6b14a202d19a0af0d3a99a5ce3c5c0",)
+
+
 def cmd_link(a):
     t0 = time.time()
     served, freeze, titles, texts, n, nodes_sha, lo, hi, tag = open_inputs(a)
     S = Surfaces(titles)
     del titles
     cs = json.loads((OUT / a.dataset / "capstat.json").read_text(encoding="utf-8"))
-    if cs["n_low"] != S.n_low or cs["nodes_sha256"] != nodes_sha or cs["u1d_sha256"] != u1b.sha_src(__file__):
+    if cs["n_low"] != S.n_low or cs["nodes_sha256"] != nodes_sha or cs["u1d_sha256"] not in (u1b.sha_src(__file__),) + STAT_SAME:
         raise SystemExit(f"{a.dataset}: capstat.json is not this code's or these nodes'")
     z = np.load(OUT / a.dataset / "capstat.npz")
     if hashlib.sha256((OUT / a.dataset / "capstat.npz").read_bytes()).hexdigest() != cs["npz_sha256"]:
@@ -335,11 +340,12 @@ def cmd_link(a):
     gcache = {}
 
     def group_vecs(g):
-        if g not in gcache:
-            gcache[g] = D.get(S.group_nodes(g))
-            if len(gcache) > 200000:
+        v = gcache.get(g)
+        if v is None:
+            if len(gcache) >= 200000:          # bounded cache (fix 10 Oct 01:50: it was cleared after the insert)
                 gcache.clear()
-        return gcache[g]
+            v = gcache[g] = D.get(S.group_nodes(g))
+        return v
 
     for c0 in range(0, len(texts), CHUNK):
         chosen = {}
