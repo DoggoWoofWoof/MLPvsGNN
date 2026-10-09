@@ -1,0 +1,154 @@
+{
+ "dataset": "webqsp",
+ "n_nodes": 2592894,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "shards": 4,
+ "package_structural": {
+  "subtype": "kb_relation",
+  "npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95"
+ },
+ "secs_shards": 703.3,
+ "mentions": {
+  "edges": 321938109,
+  "mean_degree": 248.323,
+  "isolated": 108957,
+  "isolated_share": 0.042,
+  "max_out_degree": 9841,
+  "max_in_degree": 1588545
+ },
+ "package": {
+  "edges": 8309195,
+  "mean_degree": 6.409,
+  "isolated": 0,
+  "isolated_share": 0.0,
+  "max_out_degree": 2186,
+  "max_in_degree": 134935
+ },
+ "kb": {
+  "mention_pairs": 174749802,
+  "kb_pairs": 5934075,
+  "mention_pairs_in_kb": 2471869,
+  "share": 0.0141
+ },
+ "relations": {
+  "kb": 7058,
+  "title_mention": 7058
+ },
+ "structural_u": {
+  "edges": 330247304,
+  "mean_degree": 254.733,
+  "isolated": 0,
+  "isolated_share": 0.0,
+  "max_out_degree": 9940,
+  "max_in_degree": 1588551
+ },
+ "top_mentioned": [
+  [
+   663980,
+   "Record",
+   1588545
+  ],
+  [
+   848273,
+   "Topic",
+   447858
+  ],
+  [
+   296713,
+   "Film",
+   380395
+  ],
+  [
+   926321,
+   "film",
+   380395
+  ],
+  [
+   665833,
+   "Region",
+   300673
+  ],
+  [
+   749637,
+   "Statistical region",
+   275295
+  ],
+  [
+   627321,
+   "Performance",
+   207089
+  ],
+  [
+   593810,
+   "Notable for",
+   195745
+  ],
+  [
+   204232,
+   "Common",
+   121769
+  ],
+  [
+   890824,
+   "Webpage",
+   121318
+  ],
+  [
+   848276,
+   "Topic Webpage",
+   120810
+  ],
+  [
+   103759,
+   "Article",
+   119002
+  ],
+  [
+   112617,
+   "Award",
+   110662
+  ],
+  [
+   923828,
+   "award",
+   110662
+  ],
+  [
+   641553,
+   "Population",
+   108433
+  ],
+  [
+   62222,
+   "Actor",
+   96909
+  ],
+  [
+   277367,
+   "Entity",
+   84041
+  ],
+  [
+   627905,
+   "Person",
+   73971
+  ],
+  [
+   865407,
+   "United",
+   70185
+  ],
+  [
+   226935,
+   "Dated",
+   64137
+  ]
+ ],
+ "graph_structural_u": {
+  "file": "outputs/u1b/webqsp/graph_structural_u.npz",
+  "sha256": "493a4bb93aabaa7b529cc029895a649ac7ff8f0485081ba99e664c9adc9c5da3",
+  "bytes": 3302473864
+ }
+}

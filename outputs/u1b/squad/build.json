@@ -1,0 +1,154 @@
+{
+ "dataset": "squad",
+ "n_nodes": 20233,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "shards": 1,
+ "package_structural": {
+  "subtype": "title_mention",
+  "npz_sha256": "4ed2985819db203f9874dbec4a25f187a12226ff6430c8778da95e9e2bd10746"
+ },
+ "secs_shards": 3.3,
+ "mentions": {
+  "edges": 874190,
+  "mean_degree": 86.412,
+  "isolated": 6349,
+  "isolated_share": 0.3138,
+  "max_out_degree": 414,
+  "max_in_degree": 2433
+ },
+ "package": {
+  "edges": 874190,
+  "mean_degree": 86.412,
+  "isolated": 6349,
+  "isolated_share": 0.3138,
+  "max_out_degree": 414,
+  "max_in_degree": 2433
+ },
+ "identity": {
+  "equal": true,
+  "only_rule": 0,
+  "only_package": 0,
+  "examples_only_rule": [],
+  "examples_only_package": []
+ },
+ "relations": {
+  "title_mention": 0
+ },
+ "structural_u": {
+  "edges": 874190,
+  "mean_degree": 86.412,
+  "isolated": 6349,
+  "isolated_share": 0.3138,
+  "max_out_degree": 414,
+  "max_in_degree": 2433
+ },
+ "top_mentioned": [
+  [
+   1624,
+   "Time",
+   2433
+  ],
+  [
+   17962,
+   "Time",
+   2433
+  ],
+  [
+   553,
+   "Time",
+   2432
+  ],
+  [
+   2093,
+   "Time",
+   2432
+  ],
+  [
+   2526,
+   "Time",
+   2432
+  ],
+  [
+   3354,
+   "Time",
+   2432
+  ],
+  [
+   3770,
+   "Time",
+   2432
+  ],
+  [
+   3988,
+   "Time",
+   2432
+  ],
+  [
+   4360,
+   "Time",
+   2432
+  ],
+  [
+   4490,
+   "Time",
+   2432
+  ],
+  [
+   6157,
+   "Time",
+   2432
+  ],
+  [
+   6812,
+   "Time",
+   2432
+  ],
+  [
+   8618,
+   "Time",
+   2432
+  ],
+  [
+   8868,
+   "Time",
+   2432
+  ],
+  [
+   8938,
+   "Time",
+   2432
+  ],
+  [
+   9601,
+   "Time",
+   2432
+  ],
+  [
+   10110,
+   "Time",
+   2432
+  ],
+  [
+   10217,
+   "Time",
+   2432
+  ],
+  [
+   12018,
+   "Time",
+   2432
+  ],
+  [
+   12908,
+   "Time",
+   2432
+  ]
+ ],
+ "graph_structural_u": {
+  "file": "outputs/u1b/squad/graph_structural_u.npz",
+  "sha256": "2ecbb8c385572954f7ab2a1e6fdb15005fda1eb30ee7fb477d399011dc7f518c",
+  "bytes": 8742636
+ }
+}

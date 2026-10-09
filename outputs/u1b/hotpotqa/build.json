@@ -1,0 +1,163 @@
+{
+ "dataset": "hotpotqa",
+ "n_nodes": 5233329,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "shards": 8,
+ "package_structural": {
+  "subtype": "hyperlink",
+  "npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608"
+ },
+ "secs_shards": 2236.3,
+ "mentions": {
+  "edges": 76327595,
+  "mean_degree": 29.17,
+  "isolated": 3143,
+  "isolated_share": 0.0006,
+  "max_out_degree": 236,
+  "max_in_degree": 552106
+ },
+ "package": {
+  "edges": 15367541,
+  "mean_degree": 5.873,
+  "isolated": 551848,
+  "isolated_share": 0.1054,
+  "max_out_degree": 79,
+  "max_in_degree": 189394
+ },
+ "recovery": {
+  "directed": {
+   "rule": 76327595,
+   "reference": 15367541,
+   "both": 10566659,
+   "precision": 0.1384,
+   "recall": 0.6876
+  },
+  "unordered": {
+   "rule": 76129624,
+   "reference": 15095287,
+   "both": 10438993,
+   "precision": 0.1371,
+   "recall": 0.6915
+  }
+ },
+ "relations": {
+  "title_mention": 0
+ },
+ "structural_u": {
+  "edges": 76327595,
+  "mean_degree": 29.17,
+  "isolated": 3143,
+  "isolated_share": 0.0006,
+  "max_out_degree": 236,
+  "max_in_degree": 552106
+ },
+ "top_mentioned": [
+  [
+   2260369,
+   "That",
+   552106
+  ],
+  [
+   3894001,
+   "Which",
+   474717
+  ],
+  [
+   1226003,
+   "It Was",
+   469148
+  ],
+  [
+   4784173,
+   "First",
+   421337
+  ],
+  [
+   2909560,
+   "County",
+   376467
+  ],
+  [
+   679272,
+   "District",
+   359616
+  ],
+  [
+   41428,
+   "Family",
+   321829
+  ],
+  [
+   4976186,
+   "South",
+   307882
+  ],
+  [
+   5159251,
+   "This",
+   298820
+  ],
+  [
+   2670829,
+   "United States",
+   292059
+  ],
+  [
+   4518995,
+   "Village",
+   275283
+  ],
+  [
+   4694094,
+   "North",
+   264169
+  ],
+  [
+   1636121,
+   "WERE",
+   246789
+  ],
+  [
+   4934421,
+   "Were",
+   246789
+  ],
+  [
+   4557417,
+   "City",
+   243755
+  ],
+  [
+   3115654,
+   "World",
+   232892
+  ],
+  [
+   669569,
+   "Former",
+   226721
+  ],
+  [
+   4798658,
+   "Part",
+   220595
+  ],
+  [
+   1347077,
+   "Species",
+   219028
+  ],
+  [
+   1363210,
+   "Played",
+   217572
+  ]
+ ],
+ "graph_structural_u": {
+  "file": "outputs/u1b/hotpotqa/graph_structural_u.npz",
+  "sha256": "96dc488db6c8335ff19889551a123731f2b4265923e880743e62659fedf2f2c4",
+  "bytes": 763276686
+ }
+}

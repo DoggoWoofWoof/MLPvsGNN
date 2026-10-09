@@ -1,0 +1,947 @@
+{
+ "declared_in": "docs/U1B_UNIVERSAL_LINKS_SIX.md",
+ "datasets": {
+  "musique": {
+   "dataset": "musique",
+   "n_nodes": 117534,
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+   "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+   "shards": 1,
+   "package_structural": {
+    "subtype": "title_mention",
+    "npz_sha256": "ad2f6dd4cd5adbbf9eaa5f68cb977920725e8bc5a317121cbbbe5f4e4bf881bc"
+   },
+   "secs_shards": 31.0,
+   "mentions": {
+    "edges": 2744076,
+    "mean_degree": 46.694,
+    "isolated": 9858,
+    "isolated_share": 0.0839,
+    "max_out_degree": 796,
+    "max_in_degree": 14152
+   },
+   "package": {
+    "edges": 2744076,
+    "mean_degree": 46.694,
+    "isolated": 9858,
+    "isolated_share": 0.0839,
+    "max_out_degree": 796,
+    "max_in_degree": 14152
+   },
+   "identity": {
+    "equal": true,
+    "only_rule": 0,
+    "only_package": 0,
+    "examples_only_rule": [],
+    "examples_only_package": []
+   },
+   "relations": {
+    "title_mention": 0
+   },
+   "structural_u": {
+    "edges": 2744076,
+    "mean_degree": 46.694,
+    "isolated": 9858,
+    "isolated_share": 0.0839,
+    "max_out_degree": 796,
+    "max_in_degree": 14152
+   },
+   "top_mentioned": [
+    [
+     86881,
+     "United States",
+     14152
+    ],
+    [
+     5509,
+     "United States",
+     14151
+    ],
+    [
+     36707,
+     "United States",
+     14151
+    ],
+    [
+     82953,
+     "United States",
+     14151
+    ],
+    [
+     107276,
+     "United States",
+     14151
+    ],
+    [
+     108014,
+     "United States",
+     14151
+    ],
+    [
+     109968,
+     "United States",
+     14151
+    ],
+    [
+     9881,
+     "Time",
+     8050
+    ],
+    [
+     104451,
+     "Time",
+     8050
+    ],
+    [
+     20077,
+     "Time",
+     8049
+    ],
+    [
+     24042,
+     "Time",
+     8049
+    ],
+    [
+     26269,
+     "Time",
+     8049
+    ],
+    [
+     36448,
+     "Time",
+     8049
+    ],
+    [
+     52410,
+     "Time",
+     8049
+    ],
+    [
+     56085,
+     "Time",
+     8049
+    ],
+    [
+     70232,
+     "Time",
+     8049
+    ],
+    [
+     92306,
+     "Time",
+     8049
+    ],
+    [
+     96307,
+     "Time",
+     8049
+    ],
+    [
+     108580,
+     "Time",
+     8049
+    ],
+    [
+     109116,
+     "Time",
+     8049
+    ]
+   ],
+   "graph_structural_u": {
+    "file": "outputs/u1b/musique/graph_structural_u.npz",
+    "sha256": "595a5a9650bbe7b51b51f9b6293229581ea8df7e4506ac0ee158b1acd3c97b74",
+    "bytes": 27441496
+   }
+  },
+  "squad": {
+   "dataset": "squad",
+   "n_nodes": 20233,
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+   "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+   "shards": 1,
+   "package_structural": {
+    "subtype": "title_mention",
+    "npz_sha256": "4ed2985819db203f9874dbec4a25f187a12226ff6430c8778da95e9e2bd10746"
+   },
+   "secs_shards": 3.3,
+   "mentions": {
+    "edges": 874190,
+    "mean_degree": 86.412,
+    "isolated": 6349,
+    "isolated_share": 0.3138,
+    "max_out_degree": 414,
+    "max_in_degree": 2433
+   },
+   "package": {
+    "edges": 874190,
+    "mean_degree": 86.412,
+    "isolated": 6349,
+    "isolated_share": 0.3138,
+    "max_out_degree": 414,
+    "max_in_degree": 2433
+   },
+   "identity": {
+    "equal": true,
+    "only_rule": 0,
+    "only_package": 0,
+    "examples_only_rule": [],
+    "examples_only_package": []
+   },
+   "relations": {
+    "title_mention": 0
+   },
+   "structural_u": {
+    "edges": 874190,
+    "mean_degree": 86.412,
+    "isolated": 6349,
+    "isolated_share": 0.3138,
+    "max_out_degree": 414,
+    "max_in_degree": 2433
+   },
+   "top_mentioned": [
+    [
+     1624,
+     "Time",
+     2433
+    ],
+    [
+     17962,
+     "Time",
+     2433
+    ],
+    [
+     553,
+     "Time",
+     2432
+    ],
+    [
+     2093,
+     "Time",
+     2432
+    ],
+    [
+     2526,
+     "Time",
+     2432
+    ],
+    [
+     3354,
+     "Time",
+     2432
+    ],
+    [
+     3770,
+     "Time",
+     2432
+    ],
+    [
+     3988,
+     "Time",
+     2432
+    ],
+    [
+     4360,
+     "Time",
+     2432
+    ],
+    [
+     4490,
+     "Time",
+     2432
+    ],
+    [
+     6157,
+     "Time",
+     2432
+    ],
+    [
+     6812,
+     "Time",
+     2432
+    ],
+    [
+     8618,
+     "Time",
+     2432
+    ],
+    [
+     8868,
+     "Time",
+     2432
+    ],
+    [
+     8938,
+     "Time",
+     2432
+    ],
+    [
+     9601,
+     "Time",
+     2432
+    ],
+    [
+     10110,
+     "Time",
+     2432
+    ],
+    [
+     10217,
+     "Time",
+     2432
+    ],
+    [
+     12018,
+     "Time",
+     2432
+    ],
+    [
+     12908,
+     "Time",
+     2432
+    ]
+   ],
+   "graph_structural_u": {
+    "file": "outputs/u1b/squad/graph_structural_u.npz",
+    "sha256": "2ecbb8c385572954f7ab2a1e6fdb15005fda1eb30ee7fb477d399011dc7f518c",
+    "bytes": 8742636
+   }
+  },
+  "2wiki": {
+   "dataset": "2wiki",
+   "n_nodes": 5989847,
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+   "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+   "shards": 12,
+   "package_structural": {
+    "subtype": "hyperlink",
+    "npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85"
+   },
+   "secs_shards": 4307.9,
+   "mentions": {
+    "edges": 205604282,
+    "mean_degree": 68.651,
+    "isolated": 10444,
+    "isolated_share": 0.0017,
+    "max_out_degree": 1707,
+    "max_in_degree": 1582529
+   },
+   "package": {
+    "edges": 28963600,
+    "mean_degree": 9.671,
+    "isolated": 515830,
+    "isolated_share": 0.0861,
+    "max_out_degree": 305,
+    "max_in_degree": 157983
+   },
+   "recovery": {
+    "directed": {
+     "rule": 205604282,
+     "reference": 28963600,
+     "both": 20414221,
+     "precision": 0.0993,
+     "recall": 0.7048
+    },
+    "unordered": {
+     "rule": 205104853,
+     "reference": 28208857,
+     "both": 20059963,
+     "precision": 0.0978,
+     "recall": 0.7111
+    }
+   },
+   "relations": {
+    "title_mention": 0
+   },
+   "structural_u": {
+    "edges": 205604282,
+    "mean_degree": 68.651,
+    "isolated": 10444,
+    "isolated_share": 0.0017,
+    "max_out_degree": 1707,
+    "max_in_degree": 1582529
+   },
+   "top_mentioned": [
+    [
+     1570728,
+     "From",
+     1582529
+    ],
+    [
+     5906603,
+     "With",
+     1533469
+    ],
+    [
+     1088978,
+     "Also",
+     1050367
+    ],
+    [
+     2356492,
+     "That",
+     974960
+    ],
+    [
+     812147,
+     "Born",
+     937047
+    ],
+    [
+     4046019,
+     "Which",
+     890858
+    ],
+    [
+     5470709,
+     "First",
+     784185
+    ],
+    [
+     1277507,
+     "It Was",
+     686043
+    ],
+    [
+     5912730,
+     "This",
+     637512
+    ],
+    [
+     2724947,
+     "American",
+     621588
+    ],
+    [
+     1707868,
+     "WERE",
+     558824
+    ],
+    [
+     5677511,
+     "Were",
+     558824
+    ],
+    [
+     783232,
+     "After",
+     539848
+    ],
+    [
+     3471277,
+     "United",
+     499526
+    ],
+    [
+     783200,
+     "Been",
+     488683
+    ],
+    [
+     1972238,
+     "National",
+     475204
+    ],
+    [
+     3030493,
+     "County",
+     442672
+    ],
+    [
+     1237718,
+     "The First",
+     437469
+    ],
+    [
+     703344,
+     "District",
+     436918
+    ],
+    [
+     43439,
+     "Family",
+     428037
+    ]
+   ],
+   "graph_structural_u": {
+    "file": "outputs/u1b/2wiki/graph_structural_u.npz",
+    "sha256": "c8c2c5e61b225f9827bf5999026d3e556e7eaecc4234de4751ee35f7004cc36d",
+    "bytes": 2056043556
+   }
+  },
+  "hotpotqa": {
+   "dataset": "hotpotqa",
+   "n_nodes": 5233329,
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+   "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+   "shards": 8,
+   "package_structural": {
+    "subtype": "hyperlink",
+    "npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608"
+   },
+   "secs_shards": 2236.3,
+   "mentions": {
+    "edges": 76327595,
+    "mean_degree": 29.17,
+    "isolated": 3143,
+    "isolated_share": 0.0006,
+    "max_out_degree": 236,
+    "max_in_degree": 552106
+   },
+   "package": {
+    "edges": 15367541,
+    "mean_degree": 5.873,
+    "isolated": 551848,
+    "isolated_share": 0.1054,
+    "max_out_degree": 79,
+    "max_in_degree": 189394
+   },
+   "recovery": {
+    "directed": {
+     "rule": 76327595,
+     "reference": 15367541,
+     "both": 10566659,
+     "precision": 0.1384,
+     "recall": 0.6876
+    },
+    "unordered": {
+     "rule": 76129624,
+     "reference": 15095287,
+     "both": 10438993,
+     "precision": 0.1371,
+     "recall": 0.6915
+    }
+   },
+   "relations": {
+    "title_mention": 0
+   },
+   "structural_u": {
+    "edges": 76327595,
+    "mean_degree": 29.17,
+    "isolated": 3143,
+    "isolated_share": 0.0006,
+    "max_out_degree": 236,
+    "max_in_degree": 552106
+   },
+   "top_mentioned": [
+    [
+     2260369,
+     "That",
+     552106
+    ],
+    [
+     3894001,
+     "Which",
+     474717
+    ],
+    [
+     1226003,
+     "It Was",
+     469148
+    ],
+    [
+     4784173,
+     "First",
+     421337
+    ],
+    [
+     2909560,
+     "County",
+     376467
+    ],
+    [
+     679272,
+     "District",
+     359616
+    ],
+    [
+     41428,
+     "Family",
+     321829
+    ],
+    [
+     4976186,
+     "South",
+     307882
+    ],
+    [
+     5159251,
+     "This",
+     298820
+    ],
+    [
+     2670829,
+     "United States",
+     292059
+    ],
+    [
+     4518995,
+     "Village",
+     275283
+    ],
+    [
+     4694094,
+     "North",
+     264169
+    ],
+    [
+     1636121,
+     "WERE",
+     246789
+    ],
+    [
+     4934421,
+     "Were",
+     246789
+    ],
+    [
+     4557417,
+     "City",
+     243755
+    ],
+    [
+     3115654,
+     "World",
+     232892
+    ],
+    [
+     669569,
+     "Former",
+     226721
+    ],
+    [
+     4798658,
+     "Part",
+     220595
+    ],
+    [
+     1347077,
+     "Species",
+     219028
+    ],
+    [
+     1363210,
+     "Played",
+     217572
+    ]
+   ],
+   "graph_structural_u": {
+    "file": "outputs/u1b/hotpotqa/graph_structural_u.npz",
+    "sha256": "96dc488db6c8335ff19889551a123731f2b4265923e880743e62659fedf2f2c4",
+    "bytes": 763276686
+   }
+  },
+  "metaqa": {
+   "dataset": "metaqa",
+   "n_nodes": 43234,
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+   "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+   "shards": 1,
+   "package_structural": {
+    "subtype": "kb",
+    "npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570"
+   },
+   "secs_shards": 0.5,
+   "mentions": {
+    "edges": 26938,
+    "mean_degree": 1.246,
+    "isolated": 22706,
+    "isolated_share": 0.5252,
+    "max_out_degree": 8,
+    "max_in_degree": 577
+   },
+   "package": {
+    "edges": 133582,
+    "mean_degree": 6.179,
+    "isolated": 0,
+    "isolated_share": 0.0,
+    "max_out_degree": 61,
+    "max_in_degree": 4176
+   },
+   "kb": {
+    "mention_pairs": 23865,
+    "kb_pairs": 124680,
+    "mention_pairs_in_kb": 996,
+    "share": 0.0417
+   },
+   "relations": {
+    "kb": 9,
+    "title_mention": 9
+   },
+   "structural_u": {
+    "edges": 160520,
+    "mean_degree": 7.426,
+    "isolated": 0,
+    "isolated_share": 0.0,
+    "max_out_degree": 62,
+    "max_in_degree": 4185
+   },
+   "top_mentioned": [
+    [
+     29534,
+     "john",
+     577
+    ],
+    [
+     4296,
+     "Michael",
+     437
+    ],
+    [
+     12566,
+     "Paul",
+     234
+    ],
+    [
+     2676,
+     "love",
+     219
+    ],
+    [
+     17783,
+     "Love",
+     219
+    ],
+    [
+     6456,
+     "night",
+     151
+    ],
+    [
+     42702,
+     "Jack",
+     145
+    ],
+    [
+     42737,
+     "Frank",
+     136
+    ],
+    [
+     364,
+     "life",
+     125
+    ],
+    [
+     31576,
+     "Life",
+     125
+    ],
+    [
+     5867,
+     "Daniel",
+     122
+    ],
+    [
+     14330,
+     "Girl",
+     121
+    ],
+    [
+     17389,
+     "girl",
+     121
+    ],
+    [
+     36,
+     "black",
+     115
+    ],
+    [
+     11285,
+     "Black",
+     115
+    ],
+    [
+     4854,
+     "dead",
+     105
+    ],
+    [
+     33341,
+     "Martin",
+     105
+    ],
+    [
+     112,
+     "House",
+     104
+    ],
+    [
+     10558,
+     "house",
+     104
+    ],
+    [
+     377,
+     "story",
+     94
+    ]
+   ],
+   "graph_structural_u": {
+    "file": "outputs/u1b/metaqa/graph_structural_u.npz",
+    "sha256": "0b6712f04943522fca9fd5c9d5bea7ae9bed4c8c1bff903a281b45ef0535303a",
+    "bytes": 1605936
+   }
+  },
+  "webqsp": {
+   "dataset": "webqsp",
+   "n_nodes": 2592894,
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+   "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+   "shards": 4,
+   "package_structural": {
+    "subtype": "kb_relation",
+    "npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95"
+   },
+   "secs_shards": 703.3,
+   "mentions": {
+    "edges": 321938109,
+    "mean_degree": 248.323,
+    "isolated": 108957,
+    "isolated_share": 0.042,
+    "max_out_degree": 9841,
+    "max_in_degree": 1588545
+   },
+   "package": {
+    "edges": 8309195,
+    "mean_degree": 6.409,
+    "isolated": 0,
+    "isolated_share": 0.0,
+    "max_out_degree": 2186,
+    "max_in_degree": 134935
+   },
+   "kb": {
+    "mention_pairs": 174749802,
+    "kb_pairs": 5934075,
+    "mention_pairs_in_kb": 2471869,
+    "share": 0.0141
+   },
+   "relations": {
+    "kb": 7058,
+    "title_mention": 7058
+   },
+   "structural_u": {
+    "edges": 330247304,
+    "mean_degree": 254.733,
+    "isolated": 0,
+    "isolated_share": 0.0,
+    "max_out_degree": 9940,
+    "max_in_degree": 1588551
+   },
+   "top_mentioned": [
+    [
+     663980,
+     "Record",
+     1588545
+    ],
+    [
+     848273,
+     "Topic",
+     447858
+    ],
+    [
+     296713,
+     "Film",
+     380395
+    ],
+    [
+     926321,
+     "film",
+     380395
+    ],
+    [
+     665833,
+     "Region",
+     300673
+    ],
+    [
+     749637,
+     "Statistical region",
+     275295
+    ],
+    [
+     627321,
+     "Performance",
+     207089
+    ],
+    [
+     593810,
+     "Notable for",
+     195745
+    ],
+    [
+     204232,
+     "Common",
+     121769
+    ],
+    [
+     890824,
+     "Webpage",
+     121318
+    ],
+    [
+     848276,
+     "Topic Webpage",
+     120810
+    ],
+    [
+     103759,
+     "Article",
+     119002
+    ],
+    [
+     112617,
+     "Award",
+     110662
+    ],
+    [
+     923828,
+     "award",
+     110662
+    ],
+    [
+     641553,
+     "Population",
+     108433
+    ],
+    [
+     62222,
+     "Actor",
+     96909
+    ],
+    [
+     277367,
+     "Entity",
+     84041
+    ],
+    [
+     627905,
+     "Person",
+     73971
+    ],
+    [
+     865407,
+     "United",
+     70185
+    ],
+    [
+     226935,
+     "Dated",
+     64137
+    ]
+   ],
+   "graph_structural_u": {
+    "file": "outputs/u1b/webqsp/graph_structural_u.npz",
+    "sha256": "493a4bb93aabaa7b529cc029895a649ac7ff8f0485081ba99e664c9adc9c5da3",
+    "bytes": 3302473864
+   }
+  }
+ }
+}

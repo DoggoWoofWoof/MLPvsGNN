@@ -1,0 +1,154 @@
+{
+ "dataset": "musique",
+ "n_nodes": 117534,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "shards": 1,
+ "package_structural": {
+  "subtype": "title_mention",
+  "npz_sha256": "ad2f6dd4cd5adbbf9eaa5f68cb977920725e8bc5a317121cbbbe5f4e4bf881bc"
+ },
+ "secs_shards": 31.0,
+ "mentions": {
+  "edges": 2744076,
+  "mean_degree": 46.694,
+  "isolated": 9858,
+  "isolated_share": 0.0839,
+  "max_out_degree": 796,
+  "max_in_degree": 14152
+ },
+ "package": {
+  "edges": 2744076,
+  "mean_degree": 46.694,
+  "isolated": 9858,
+  "isolated_share": 0.0839,
+  "max_out_degree": 796,
+  "max_in_degree": 14152
+ },
+ "identity": {
+  "equal": true,
+  "only_rule": 0,
+  "only_package": 0,
+  "examples_only_rule": [],
+  "examples_only_package": []
+ },
+ "relations": {
+  "title_mention": 0
+ },
+ "structural_u": {
+  "edges": 2744076,
+  "mean_degree": 46.694,
+  "isolated": 9858,
+  "isolated_share": 0.0839,
+  "max_out_degree": 796,
+  "max_in_degree": 14152
+ },
+ "top_mentioned": [
+  [
+   86881,
+   "United States",
+   14152
+  ],
+  [
+   5509,
+   "United States",
+   14151
+  ],
+  [
+   36707,
+   "United States",
+   14151
+  ],
+  [
+   82953,
+   "United States",
+   14151
+  ],
+  [
+   107276,
+   "United States",
+   14151
+  ],
+  [
+   108014,
+   "United States",
+   14151
+  ],
+  [
+   109968,
+   "United States",
+   14151
+  ],
+  [
+   9881,
+   "Time",
+   8050
+  ],
+  [
+   104451,
+   "Time",
+   8050
+  ],
+  [
+   20077,
+   "Time",
+   8049
+  ],
+  [
+   24042,
+   "Time",
+   8049
+  ],
+  [
+   26269,
+   "Time",
+   8049
+  ],
+  [
+   36448,
+   "Time",
+   8049
+  ],
+  [
+   52410,
+   "Time",
+   8049
+  ],
+  [
+   56085,
+   "Time",
+   8049
+  ],
+  [
+   70232,
+   "Time",
+   8049
+  ],
+  [
+   92306,
+   "Time",
+   8049
+  ],
+  [
+   96307,
+   "Time",
+   8049
+  ],
+  [
+   108580,
+   "Time",
+   8049
+  ],
+  [
+   109116,
+   "Time",
+   8049
+  ]
+ ],
+ "graph_structural_u": {
+  "file": "outputs/u1b/musique/graph_structural_u.npz",
+  "sha256": "595a5a9650bbe7b51b51f9b6293229581ea8df7e4506ac0ee158b1acd3c97b74",
+  "bytes": 27441496
+ }
+}

@@ -1,0 +1,163 @@
+{
+ "dataset": "2wiki",
+ "n_nodes": 5989847,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "shards": 12,
+ "package_structural": {
+  "subtype": "hyperlink",
+  "npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85"
+ },
+ "secs_shards": 4307.9,
+ "mentions": {
+  "edges": 205604282,
+  "mean_degree": 68.651,
+  "isolated": 10444,
+  "isolated_share": 0.0017,
+  "max_out_degree": 1707,
+  "max_in_degree": 1582529
+ },
+ "package": {
+  "edges": 28963600,
+  "mean_degree": 9.671,
+  "isolated": 515830,
+  "isolated_share": 0.0861,
+  "max_out_degree": 305,
+  "max_in_degree": 157983
+ },
+ "recovery": {
+  "directed": {
+   "rule": 205604282,
+   "reference": 28963600,
+   "both": 20414221,
+   "precision": 0.0993,
+   "recall": 0.7048
+  },
+  "unordered": {
+   "rule": 205104853,
+   "reference": 28208857,
+   "both": 20059963,
+   "precision": 0.0978,
+   "recall": 0.7111
+  }
+ },
+ "relations": {
+  "title_mention": 0
+ },
+ "structural_u": {
+  "edges": 205604282,
+  "mean_degree": 68.651,
+  "isolated": 10444,
+  "isolated_share": 0.0017,
+  "max_out_degree": 1707,
+  "max_in_degree": 1582529
+ },
+ "top_mentioned": [
+  [
+   1570728,
+   "From",
+   1582529
+  ],
+  [
+   5906603,
+   "With",
+   1533469
+  ],
+  [
+   1088978,
+   "Also",
+   1050367
+  ],
+  [
+   2356492,
+   "That",
+   974960
+  ],
+  [
+   812147,
+   "Born",
+   937047
+  ],
+  [
+   4046019,
+   "Which",
+   890858
+  ],
+  [
+   5470709,
+   "First",
+   784185
+  ],
+  [
+   1277507,
+   "It Was",
+   686043
+  ],
+  [
+   5912730,
+   "This",
+   637512
+  ],
+  [
+   2724947,
+   "American",
+   621588
+  ],
+  [
+   1707868,
+   "WERE",
+   558824
+  ],
+  [
+   5677511,
+   "Were",
+   558824
+  ],
+  [
+   783232,
+   "After",
+   539848
+  ],
+  [
+   3471277,
+   "United",
+   499526
+  ],
+  [
+   783200,
+   "Been",
+   488683
+  ],
+  [
+   1972238,
+   "National",
+   475204
+  ],
+  [
+   3030493,
+   "County",
+   442672
+  ],
+  [
+   1237718,
+   "The First",
+   437469
+  ],
+  [
+   703344,
+   "District",
+   436918
+  ],
+  [
+   43439,
+   "Family",
+   428037
+  ]
+ ],
+ "graph_structural_u": {
+  "file": "outputs/u1b/2wiki/graph_structural_u.npz",
+  "sha256": "c8c2c5e61b225f9827bf5999026d3e556e7eaecc4234de4751ee35f7004cc36d",
+  "bytes": 2056043556
+ }
+}

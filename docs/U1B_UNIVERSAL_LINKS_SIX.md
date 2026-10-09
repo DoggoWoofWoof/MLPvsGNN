@@ -100,4 +100,45 @@ by U1c, not by U1b's numbers.
 
 ## Results
 
-Not yet run.
+Run 10 October 2026, 00:00-00:50: musique and squad on the laptop, the other four on the host (25 shards, 4 merges).
+Records: outputs/u1b/<dataset>/build.json, outputs/u1b/report.json, outputs/u1b/report.md.
+
+**Checks.** The self-test passed. Identity is EQUAL on musique (2,744,076 edges) and squad (874,190): the matcher gives
+c3_derived's edge set exactly, in 31 s against c3_derived's 920 s on musique. Every input sha256 matched.
+
+**Hyperlink recovery** (directed; unordered is within 0.01):
+
+| dataset | rule edges | hyperlinks | precision | recall |
+| --- | ---: | ---: | ---: | ---: |
+| 2wiki | 205,604,282 | 28,963,600 | 0.099 | 0.705 |
+| hotpotqa | 76,327,595 | 15,367,541 | 0.138 | 0.688 |
+
+**The graphs:**
+
+| dataset | structural today (edges) | structural_U (edges) | isolated nodes, today -> U |
+| --- | ---: | ---: | --- |
+| musique | 2,744,076 | 2,744,076 (identity) | 0.084 -> 0.084 |
+| squad | 874,190 | 874,190 (identity) | 0.314 -> 0.314 |
+| 2wiki | 28,963,600 | 205,604,282 | 0.086 -> 0.002 |
+| hotpotqa | 15,367,541 | 76,327,595 | 0.105 -> 0.001 |
+| metaqa | 133,582 | 160,520 (+26,938 mentions; 4.2% already KB pairs) | 0 -> 0 |
+| webqsp | 8,309,195 | 330,247,304 (+321,938,109 mentions; 1.4% already KB pairs) | 0 -> 0 |
+
+What this says:
+
+- **The rule finds about 70% of the hyperlinks on the full corpora**, as on B1's settings (U1a: 0.79-0.81), but at
+  a precision of 0.10-0.14. On B1's small settings it was 0.66-0.76: a title table of 5-6 million titles holds
+  thousands of common words and phrases.
+- **The hubs are common words.** The most-mentioned titles are "From", "With", "Also", "That", "Born", "Which",
+  "It Was" (2wiki: 1.6 million in-edges each), "That", "Which", "County", "District" (hotpotqa). On webqsp they are
+  Freebase schema words that the KB's node texts repeat ("Record" 1.6 million, "Topic", "Film", "Notable for"). Mention
+  edges are 39 times webqsp's KB.
+- **So structural_U as built here is not usable on 2wiki, hotpotqa and webqsp.** It is 7 times (2wiki), 5 times
+  (hotpotqa) and 40 times (webqsp) today's structural family, and mostly hub edges.
+
+**Next: U1d** (its own file) keeps the recall and removes the common-word hubs with one rule for all six. A design
+look at the first 30,000 passages, against their hyperlinks only (no question read), shows:
+- a case-sensitive match plus a corpus statistic (a surface the corpus writes lowercase more often than capitalized
+  mid-sentence is a common word, not a name) halves the edges and doubles the precision on hotpotqa at the same
+  recall;
+- on 2wiki the statistic, estimated on the sample alone, lost recall. U1d estimates it on the full corpus.

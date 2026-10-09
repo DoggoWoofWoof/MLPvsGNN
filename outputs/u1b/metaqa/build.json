@@ -1,0 +1,154 @@
+{
+ "dataset": "metaqa",
+ "n_nodes": 43234,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "shards": 1,
+ "package_structural": {
+  "subtype": "kb",
+  "npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570"
+ },
+ "secs_shards": 0.5,
+ "mentions": {
+  "edges": 26938,
+  "mean_degree": 1.246,
+  "isolated": 22706,
+  "isolated_share": 0.5252,
+  "max_out_degree": 8,
+  "max_in_degree": 577
+ },
+ "package": {
+  "edges": 133582,
+  "mean_degree": 6.179,
+  "isolated": 0,
+  "isolated_share": 0.0,
+  "max_out_degree": 61,
+  "max_in_degree": 4176
+ },
+ "kb": {
+  "mention_pairs": 23865,
+  "kb_pairs": 124680,
+  "mention_pairs_in_kb": 996,
+  "share": 0.0417
+ },
+ "relations": {
+  "kb": 9,
+  "title_mention": 9
+ },
+ "structural_u": {
+  "edges": 160520,
+  "mean_degree": 7.426,
+  "isolated": 0,
+  "isolated_share": 0.0,
+  "max_out_degree": 62,
+  "max_in_degree": 4185
+ },
+ "top_mentioned": [
+  [
+   29534,
+   "john",
+   577
+  ],
+  [
+   4296,
+   "Michael",
+   437
+  ],
+  [
+   12566,
+   "Paul",
+   234
+  ],
+  [
+   2676,
+   "love",
+   219
+  ],
+  [
+   17783,
+   "Love",
+   219
+  ],
+  [
+   6456,
+   "night",
+   151
+  ],
+  [
+   42702,
+   "Jack",
+   145
+  ],
+  [
+   42737,
+   "Frank",
+   136
+  ],
+  [
+   364,
+   "life",
+   125
+  ],
+  [
+   31576,
+   "Life",
+   125
+  ],
+  [
+   5867,
+   "Daniel",
+   122
+  ],
+  [
+   14330,
+   "Girl",
+   121
+  ],
+  [
+   17389,
+   "girl",
+   121
+  ],
+  [
+   36,
+   "black",
+   115
+  ],
+  [
+   11285,
+   "Black",
+   115
+  ],
+  [
+   4854,
+   "dead",
+   105
+  ],
+  [
+   33341,
+   "Martin",
+   105
+  ],
+  [
+   112,
+   "House",
+   104
+  ],
+  [
+   10558,
+   "house",
+   104
+  ],
+  [
+   377,
+   "story",
+   94
+  ]
+ ],
+ "graph_structural_u": {
+  "file": "outputs/u1b/metaqa/graph_structural_u.npz",
+  "sha256": "0b6712f04943522fca9fd5c9d5bea7ae9bed4c8c1bff903a281b45ef0535303a",
+  "bytes": 1605936
+ }
+}
