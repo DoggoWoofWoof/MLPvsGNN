@@ -259,7 +259,9 @@ def check_shards(d, k, n, what):
     recs = [json.loads((d / f"s{i}of{k}.json").read_text(encoding="utf-8")) for i in range(k)]
     if [r["lo"] for r in recs] != [i * n // k for i in range(k)] or recs[-1]["hi"] != n:
         raise SystemExit(f"{d}: the {what} shards do not cover [0, {n})")
-    if len({(r["nodes_sha256"], r["u1d_sha256"], r["freeze_RECORD_SHA256"]) for r in recs}) != 1:
+    same = {h: u1b.sha_src(__file__) for h, stages in SAME.items() if what in stages}
+    if len({(r["nodes_sha256"], same.get(r["u1d_sha256"], r["u1d_sha256"]), r["freeze_RECORD_SHA256"])
+            for r in recs}) != 1:
         raise SystemExit(f"{d}: the {what} shards ran on different inputs or code")
     for i, r in enumerate(recs):
         if hashlib.sha256((d / f"s{i}of{k}.npz").read_bytes()).hexdigest() != r["npz_sha256"]:
@@ -319,6 +321,10 @@ def choose_targets(S, i, hits, common, need):
 # Code versions whose stat stage is this file's, byte for byte (only cmd_link's cache changed since): their capstat
 # merges are accepted by link. 836a25e0... is 94acfb9's u1d.py.
 STAT_SAME = ("836a25e0d22dd833c858d617fdf29a141b6b14a202d19a0af0d3a99a5ce3c5c0",)
+# Earlier versions whose named stages are this file's, byte for byte; their shards merge with this file's (fix 10 Oct
+# 01:55: hotpotqa's stat shards straddled a2e50d1). a32fdaf3... is a2e50d1's u1d.py (only check_shards changed since).
+SAME = {STAT_SAME[0]: ("stat",),
+        "a32fdaf3b4b20063fb3432236e8fc04718d8e98757b4aaf09fdaf27b95e97556": ("stat", "link")}
 
 
 def cmd_link(a):
@@ -327,7 +333,7 @@ def cmd_link(a):
     S = Surfaces(titles)
     del titles
     cs = json.loads((OUT / a.dataset / "capstat.json").read_text(encoding="utf-8"))
-    if cs["n_low"] != S.n_low or cs["nodes_sha256"] != nodes_sha or cs["u1d_sha256"] not in (u1b.sha_src(__file__),) + STAT_SAME:
+    if cs["n_low"] != S.n_low or cs["nodes_sha256"] != nodes_sha or cs["u1d_sha256"] not in (u1b.sha_src(__file__),) + tuple(SAME):
         raise SystemExit(f"{a.dataset}: capstat.json is not this code's or these nodes'")
     z = np.load(OUT / a.dataset / "capstat.npz")
     if hashlib.sha256((OUT / a.dataset / "capstat.npz").read_bytes()).hexdigest() != cs["npz_sha256"]:
