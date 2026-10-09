@@ -96,3 +96,45 @@ B1b's filed reads (outputs/b1b/fits).
     outputs/bench/hipporag2_u/recovery.json        the rule against the hyperlinks; the musique identity check
     outputs/u1a/fits/<variant>/<arm>/<split>/      the fit copies and their reads
     outputs/u1a/report.json, report.md             the table
+
+## Results
+
+Run 9-10 October 2026 (the zsp reads 00:10-00:30, the zrc reads 01:08-01:12 once the GPU was free); missing 0.
+Records: outputs/u1a/report.json and report.md. R@5 x100 on B1's settings, 95% bootstrap intervals; HippoRAG 2's
+published numbers beside them.
+
+**The rule on B1's settings.** It gives musique's graph exactly (0 of 45,568 row pairs differ). It recovers the
+hyperlinks at P 0.76 / R 0.81 on 2wiki and P 0.66 / R 0.79 on hotpotqa (directed).
+
+| setting | read | hyperlinks (b1) | no links (b1t) | the rule (b1u) | HippoRAG 2 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 2wiki | zsp/J5 | 97.2 ABOVE | 77.3 BELOW | **95.9 ABOVE** | 90.4 |
+| 2wiki | zrc/J5 | 96.4 ABOVE | 75.6 BELOW | **95.3 ABOVE** | 90.4 |
+| 2wiki | zsp/L-2wiki | 93.4 ABOVE | 77.1 BELOW | 92.2 ABOVE | 90.4 |
+| 2wiki | zrc/L-2wiki | 93.3 ABOVE | 75.6 BELOW | 92.2 ABOVE | 90.4 |
+| hotpotqa | zsp/J5 | 98.2 ABOVE | 90.0 BELOW | **95.0 BELOW** | 96.3 |
+| hotpotqa | zrc/J5 | 98.2 ABOVE | 88.7 BELOW | 94.8 BELOW | 96.3 |
+| hotpotqa | zsp/L-hotpotqa | 95.9 AT | 89.1 BELOW | 93.8 BELOW | 96.3 |
+| hotpotqa | zrc/L-hotpotqa | 96.5 AT | 88.5 BELOW | 94.2 BELOW | 96.3 |
+| musique | zsp/J5 | 66.3 BELOW | 62.9 BELOW | 66.3 BELOW (identical) | 74.7 |
+| musique | zrc/J5 | 66.1 BELOW | 63.4 BELOW | 66.1 BELOW (identical) | 74.7 |
+
+Paired differences (zsp/J5; the other three reads agree in sign, intervals in report.md):
+- the rule over no links (b1u - b1t): +18.5 on 2wiki, +5.0 on hotpotqa, +3.3 on musique;
+- the rule against the hyperlinks (b1u - b1): -1.3 on 2wiki and -3.3 on hotpotqa.
+
+What this says:
+
+- **The lead over HippoRAG 2 on 2wiki does not need the hyperlinks.** One LLM-free rule built from the passages alone
+  keeps the GNN 5.5 points above HippoRAG 2 (95.9 against 90.4), and the MLP 4.9 points above it (95.3). It keeps
+  94% of the gain the hyperlinks give over no links on 2wiki (18.5 of 19.8), and 61% on hotpotqa (5.0 of 8.2).
+- **On hotpotqa the rule falls 1.3 points short of HippoRAG 2** (95.0 against 96.3), where the hyperlinks were 1.9
+  above it. The gap is the hyperlinks the rule misses or adds, and U1d works on it.
+- **Without any links, the models fall well below HippoRAG 2**: 77.3 on 2wiki, 90.0 on hotpotqa. A few precise edges are
+  what the models need, not an LLM-built graph.
+- **The MLP stays close to the GNN** under the rule: zrc / zsp = 95.3 / 95.9 on 2wiki, 94.8 / 95.0 on hotpotqa, 66.1 /
+  66.3 on musique (J5).
+- **musique stays below HippoRAG 2** (66.3 against 74.7) whatever its links: its gap is ranking, as B1b found.
+
+These are B1b's fits, unchanged and trained on graphs with hyperlinks. U1c retrains on the universal graphs (U1d's rule)
+and reads B1 again.

@@ -1,0 +1,904 @@
+{
+ "declared_in": "docs/U1A_B1_WITHOUT_HYPERLINKS.md",
+ "candidate": "p@swa",
+ "published": {
+  "musique": 0.747,
+  "2wiki": 0.904,
+  "hotpotqa": 0.963
+ },
+ "boot": {
+  "resamples": 2000,
+  "seed": 0
+ },
+ "settings": {
+  "musique": {
+   "questions": 1000,
+   "hipporag2": 0.747,
+   "carves": {
+    "b1": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.6628,
+       "FC@5": 0.368,
+       "hit@1": 0.773,
+       "R5_ci": [
+        0.6451,
+        0.6808
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "f4b8f3a57948344ebdd394e2047ec36d1fa12bfd36d6f18b9db48fed00ce469d"
+      },
+      "zsp/L-musique": {
+       "R@5": 0.6025,
+       "FC@5": 0.289,
+       "hit@1": 0.697,
+       "R5_ci": [
+        0.5838,
+        0.6218
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "0461addb77c6d1b8239df2bee5cfad2c6a4631a86f89ab77369839532be86cf1"
+      },
+      "zrc/J5": {
+       "R@5": 0.6612,
+       "FC@5": 0.358,
+       "hit@1": 0.777,
+       "R5_ci": [
+        0.643,
+        0.6787
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "49c2d9adc358a1f2c51ad75299af13d01916d09f9bf668b0db06ad3b8f0d9de4"
+      },
+      "zrc/L-musique": {
+       "R@5": 0.6132,
+       "FC@5": 0.304,
+       "hit@1": 0.732,
+       "R5_ci": [
+        0.5946,
+        0.6321
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "30d2c002ccd888959ce6193806421cf0d812388405ed90e4f85278332c79903b"
+      }
+     },
+     "rrf": {
+      "R@5": 0.5643,
+      "FC@5": 0.213,
+      "hit@1": 0.714
+     }
+    },
+    "b1t": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.6294,
+       "FC@5": 0.307,
+       "hit@1": 0.775,
+       "R5_ci": [
+        0.6124,
+        0.6475
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "fa675c731ccd689dff18d77eb6e5053257a2057110fe8e20ea3131f3d900d2b1"
+      },
+      "zsp/L-musique": {
+       "R@5": 0.5775,
+       "FC@5": 0.227,
+       "hit@1": 0.749,
+       "R5_ci": [
+        0.5599,
+        0.5944
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "e253eb8c4bf48a4bec3e002ce4ef0cba66c67be9900862ec48fd296fa1602779"
+      },
+      "zrc/J5": {
+       "R@5": 0.634,
+       "FC@5": 0.302,
+       "hit@1": 0.772,
+       "R5_ci": [
+        0.6172,
+        0.6516
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "67b4653b5ce92d022b53692a6c4ed047b0daae063c92f6b235ad30d5c4db2c0c"
+      },
+      "zrc/L-musique": {
+       "R@5": 0.5837,
+       "FC@5": 0.23,
+       "hit@1": 0.748,
+       "R5_ci": [
+        0.5671,
+        0.6004
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "02668d7dc2078f2ceafa28bcedd73df40f43d0bf354b6476a8badbd22df074c8"
+      }
+     },
+     "rrf": {
+      "R@5": 0.5643,
+      "FC@5": 0.213,
+      "hit@1": 0.714
+     }
+    },
+    "b1u": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.6628,
+       "FC@5": 0.368,
+       "hit@1": 0.773,
+       "R5_ci": [
+        0.6451,
+        0.6808
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "f4b8f3a57948344ebdd394e2047ec36d1fa12bfd36d6f18b9db48fed00ce469d"
+      },
+      "zsp/L-musique": {
+       "R@5": 0.6025,
+       "FC@5": 0.289,
+       "hit@1": 0.697,
+       "R5_ci": [
+        0.5838,
+        0.6218
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "0461addb77c6d1b8239df2bee5cfad2c6a4631a86f89ab77369839532be86cf1"
+      },
+      "zrc/J5": {
+       "R@5": 0.6612,
+       "FC@5": 0.358,
+       "hit@1": 0.777,
+       "R5_ci": [
+        0.643,
+        0.6787
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "49c2d9adc358a1f2c51ad75299af13d01916d09f9bf668b0db06ad3b8f0d9de4"
+      },
+      "zrc/L-musique": {
+       "R@5": 0.6132,
+       "FC@5": 0.304,
+       "hit@1": 0.732,
+       "R5_ci": [
+        0.5946,
+        0.6321
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "30d2c002ccd888959ce6193806421cf0d812388405ed90e4f85278332c79903b"
+      }
+     },
+     "rrf": {
+      "R@5": 0.5643,
+      "FC@5": 0.213,
+      "hit@1": 0.714
+     }
+    }
+   },
+   "paired": {
+    "b1t-b1 zsp/J5": {
+     "R@5": -0.0334,
+     "ci": [
+      -0.0452,
+      -0.021
+     ]
+    },
+    "b1t-b1 zsp/L-musique": {
+     "R@5": -0.025,
+     "ci": [
+      -0.0393,
+      -0.0104
+     ]
+    },
+    "b1t-b1 zrc/J5": {
+     "R@5": -0.0272,
+     "ci": [
+      -0.038,
+      -0.016
+     ]
+    },
+    "b1t-b1 zrc/L-musique": {
+     "R@5": -0.0295,
+     "ci": [
+      -0.0429,
+      -0.0163
+     ]
+    },
+    "b1u-b1 zsp/J5": {
+     "R@5": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ]
+    },
+    "b1u-b1 zsp/L-musique": {
+     "R@5": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ]
+    },
+    "b1u-b1 zrc/J5": {
+     "R@5": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ]
+    },
+    "b1u-b1 zrc/L-musique": {
+     "R@5": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ]
+    },
+    "b1u-b1t zsp/J5": {
+     "R@5": 0.0334,
+     "ci": [
+      0.021,
+      0.0452
+     ]
+    },
+    "b1u-b1t zsp/L-musique": {
+     "R@5": 0.025,
+     "ci": [
+      0.0104,
+      0.0393
+     ]
+    },
+    "b1u-b1t zrc/J5": {
+     "R@5": 0.0272,
+     "ci": [
+      0.016,
+      0.038
+     ]
+    },
+    "b1u-b1t zrc/L-musique": {
+     "R@5": 0.0295,
+     "ci": [
+      0.0163,
+      0.0429
+     ]
+    }
+   }
+  },
+  "2wiki": {
+   "questions": 1000,
+   "hipporag2": 0.904,
+   "carves": {
+    "b1": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.9715,
+       "FC@5": 0.926,
+       "hit@1": 0.975,
+       "R5_ci": [
+        0.9645,
+        0.9778
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "in-domain",
+       "file_sha256": "6587f80a71e4fd9cba09641845d58e658ea8156fbeea2bf5574a3eff852b1cea"
+      },
+      "zsp/L-2wiki": {
+       "R@5": 0.934,
+       "FC@5": 0.798,
+       "hit@1": 0.973,
+       "R5_ci": [
+        0.925,
+        0.9427
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "zero-shot",
+       "file_sha256": "7c4e286798defd7b4daa057f50833f85b34d8c89bbe37466749b271929b38495"
+      },
+      "zrc/J5": {
+       "R@5": 0.9637,
+       "FC@5": 0.9,
+       "hit@1": 0.968,
+       "R5_ci": [
+        0.9567,
+        0.9705
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "in-domain",
+       "file_sha256": "d4cf9c93994d038f2a742c6ae1f8c175e36cfd83d5090bddfaf0c499c95ed6c0"
+      },
+      "zrc/L-2wiki": {
+       "R@5": 0.933,
+       "FC@5": 0.792,
+       "hit@1": 0.97,
+       "R5_ci": [
+        0.9243,
+        0.9413
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "zero-shot",
+       "file_sha256": "7999985323b4215644e08bf6f2e042679b121b3ef5638b27ae219144568a7ae7"
+      }
+     },
+     "rrf": {
+      "R@5": 0.7123,
+      "FC@5": 0.412,
+      "hit@1": 0.971
+     }
+    },
+    "b1t": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.7735,
+       "FC@5": 0.52,
+       "hit@1": 0.978,
+       "R5_ci": [
+        0.758,
+        0.7883
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "5f3dca25e01b1538c674b2a178a9d1d9d23409b9ada9c8072b87c5093251cb1c"
+      },
+      "zsp/L-2wiki": {
+       "R@5": 0.7708,
+       "FC@5": 0.511,
+       "hit@1": 0.97,
+       "R5_ci": [
+        0.756,
+        0.7863
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "adef031c042cbf77b47f4182add9fb5db0820cd955a7a854c3a5f0e52a2c0bb8"
+      },
+      "zrc/J5": {
+       "R@5": 0.7558,
+       "FC@5": 0.492,
+       "hit@1": 0.972,
+       "R5_ci": [
+        0.7405,
+        0.7715
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "af5dac5807774245eaba5bf9a636cf5b486a627edbe0c86ff3573f1485edfcd9"
+      },
+      "zrc/L-2wiki": {
+       "R@5": 0.7558,
+       "FC@5": 0.484,
+       "hit@1": 0.97,
+       "R5_ci": [
+        0.741,
+        0.7705
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "47c169f7814184edcc87e034f7315342ab396e6e06e57415011d0f2d36511bee"
+      }
+     },
+     "rrf": {
+      "R@5": 0.7123,
+      "FC@5": 0.412,
+      "hit@1": 0.971
+     }
+    },
+    "b1u": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.9585,
+       "FC@5": 0.891,
+       "hit@1": 0.97,
+       "R5_ci": [
+        0.951,
+        0.9663
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "in-domain",
+       "file_sha256": "bb074e0f1bc84e06f1ff2d730c0b099b73f71be137fa75b17e05032955f7a7b4"
+      },
+      "zsp/L-2wiki": {
+       "R@5": 0.9223,
+       "FC@5": 0.769,
+       "hit@1": 0.965,
+       "R5_ci": [
+        0.9125,
+        0.9317
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "zero-shot",
+       "file_sha256": "447d39dd92dd67aef72e01f4d246332008fd2781510a7be351fbf8aeeeba8fba"
+      },
+      "zrc/J5": {
+       "R@5": 0.9533,
+       "FC@5": 0.871,
+       "hit@1": 0.971,
+       "R5_ci": [
+        0.9453,
+        0.961
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "in-domain",
+       "file_sha256": "c970aa10996bcd9c62010632c83c22550bf79b7f4c8732dd4a483d6a3b246d48"
+      },
+      "zrc/L-2wiki": {
+       "R@5": 0.9217,
+       "FC@5": 0.766,
+       "hit@1": 0.961,
+       "R5_ci": [
+        0.9117,
+        0.9313
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "zero-shot",
+       "file_sha256": "8fb2dad16b374712e59af8703db7b002ec83521abad0509ef11f83d1c29d34c6"
+      }
+     },
+     "rrf": {
+      "R@5": 0.7123,
+      "FC@5": 0.412,
+      "hit@1": 0.971
+     }
+    }
+   },
+   "paired": {
+    "b1t-b1 zsp/J5": {
+     "R@5": -0.198,
+     "ci": [
+      -0.2122,
+      -0.183
+     ]
+    },
+    "b1t-b1 zsp/L-2wiki": {
+     "R@5": -0.1633,
+     "ci": [
+      -0.176,
+      -0.1497
+     ]
+    },
+    "b1t-b1 zrc/J5": {
+     "R@5": -0.208,
+     "ci": [
+      -0.2225,
+      -0.1933
+     ]
+    },
+    "b1t-b1 zrc/L-2wiki": {
+     "R@5": -0.1772,
+     "ci": [
+      -0.1905,
+      -0.164
+     ]
+    },
+    "b1u-b1 zsp/J5": {
+     "R@5": -0.013,
+     "ci": [
+      -0.021,
+      -0.005
+     ]
+    },
+    "b1u-b1 zsp/L-2wiki": {
+     "R@5": -0.0118,
+     "ci": [
+      -0.0195,
+      -0.0035
+     ]
+    },
+    "b1u-b1 zrc/J5": {
+     "R@5": -0.0105,
+     "ci": [
+      -0.0187,
+      -0.0022
+     ]
+    },
+    "b1u-b1 zrc/L-2wiki": {
+     "R@5": -0.0112,
+     "ci": [
+      -0.0183,
+      -0.0035
+     ]
+    },
+    "b1u-b1t zsp/J5": {
+     "R@5": 0.185,
+     "ci": [
+      0.1705,
+      0.2003
+     ]
+    },
+    "b1u-b1t zsp/L-2wiki": {
+     "R@5": 0.1515,
+     "ci": [
+      0.138,
+      0.1653
+     ]
+    },
+    "b1u-b1t zrc/J5": {
+     "R@5": 0.1975,
+     "ci": [
+      0.1827,
+      0.212
+     ]
+    },
+    "b1u-b1t zrc/L-2wiki": {
+     "R@5": 0.166,
+     "ci": [
+      0.1527,
+      0.1802
+     ]
+    }
+   }
+  },
+  "hotpotqa": {
+   "questions": 1000,
+   "hipporag2": 0.963,
+   "carves": {
+    "b1": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.9825,
+       "FC@5": 0.97,
+       "hit@1": 0.916,
+       "R5_ci": [
+        0.976,
+        0.9885
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "in-domain",
+       "file_sha256": "c424e14e39beb0cea8109c8b5da2732cf45f301b866f5c2d6b1911d52ebc2efe"
+      },
+      "zsp/L-hotpotqa": {
+       "R@5": 0.9585,
+       "FC@5": 0.922,
+       "hit@1": 0.901,
+       "R5_ci": [
+        0.9495,
+        0.9675
+       ],
+       "vs_hipporag2": "AT",
+       "read": "zero-shot",
+       "file_sha256": "8d639f8279d2aa9b6abd64efa3ac7c247cc077a175624aa7fc0de376e7ba60bd"
+      },
+      "zrc/J5": {
+       "R@5": 0.9815,
+       "FC@5": 0.967,
+       "hit@1": 0.909,
+       "R5_ci": [
+        0.975,
+        0.9875
+       ],
+       "vs_hipporag2": "ABOVE",
+       "read": "in-domain",
+       "file_sha256": "4d10d8520d3e4c5bc9dfd23cf792eb8d4a82b7150a23cbd2dc872901256e1746"
+      },
+      "zrc/L-hotpotqa": {
+       "R@5": 0.9655,
+       "FC@5": 0.936,
+       "hit@1": 0.9,
+       "R5_ci": [
+        0.9565,
+        0.9735
+       ],
+       "vs_hipporag2": "AT",
+       "read": "zero-shot",
+       "file_sha256": "20ad42d5d44e3c439e21566b495adbb2de14f8d8cf30de438bebc1d88a449063"
+      }
+     },
+     "rrf": {
+      "R@5": 0.8505,
+      "FC@5": 0.713,
+      "hit@1": 0.889
+     }
+    },
+    "b1t": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.9,
+       "FC@5": 0.806,
+       "hit@1": 0.901,
+       "R5_ci": [
+        0.888,
+        0.9125
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "e333b293ff51565007a7579fff68c8619c76b078c641920149b72515ad82518d"
+      },
+      "zsp/L-hotpotqa": {
+       "R@5": 0.891,
+       "FC@5": 0.788,
+       "hit@1": 0.906,
+       "R5_ci": [
+        0.8775,
+        0.9045
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "6b09b9d508ecdb9da5c86af1e95338d48d110a009906ddcec59745c1ff55e695"
+      },
+      "zrc/J5": {
+       "R@5": 0.887,
+       "FC@5": 0.78,
+       "hit@1": 0.911,
+       "R5_ci": [
+        0.8745,
+        0.9005
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "064eb7410fd3ad8e63d56b944a280209c0056530efbb39652926fcb53c3efd59"
+      },
+      "zrc/L-hotpotqa": {
+       "R@5": 0.8855,
+       "FC@5": 0.779,
+       "hit@1": 0.901,
+       "R5_ci": [
+        0.872,
+        0.899
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "b4675edc2d4d1f80bec0c0fd6887d9353976dd11824eb7a6725b5386d4b0fc2c"
+      }
+     },
+     "rrf": {
+      "R@5": 0.8505,
+      "FC@5": 0.713,
+      "hit@1": 0.889
+     }
+    },
+    "b1u": {
+     "reads": {
+      "zsp/J5": {
+       "R@5": 0.9495,
+       "FC@5": 0.903,
+       "hit@1": 0.893,
+       "R5_ci": [
+        0.94,
+        0.9595
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "4564ec3709fe0f886a43dc7fb48516da7efe00b68c97b2adf64042399bd271d1"
+      },
+      "zsp/L-hotpotqa": {
+       "R@5": 0.9375,
+       "FC@5": 0.882,
+       "hit@1": 0.895,
+       "R5_ci": [
+        0.9265,
+        0.9485
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "b2d45064e36c00a026cfab3ca64a03ab763013a140c2f67d5734e4d568f04e4d"
+      },
+      "zrc/J5": {
+       "R@5": 0.948,
+       "FC@5": 0.902,
+       "hit@1": 0.901,
+       "R5_ci": [
+        0.938,
+        0.958
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "in-domain",
+       "file_sha256": "6ecad7906c9797c050734a297ff3a842f2756d8207977c3c727de750a1d16013"
+      },
+      "zrc/L-hotpotqa": {
+       "R@5": 0.9425,
+       "FC@5": 0.89,
+       "hit@1": 0.903,
+       "R5_ci": [
+        0.9325,
+        0.953
+       ],
+       "vs_hipporag2": "BELOW",
+       "read": "zero-shot",
+       "file_sha256": "afebda9ed2c6b00331de0d66be3909c223f92dadc4edb2f5118de2921c34f3ff"
+      }
+     },
+     "rrf": {
+      "R@5": 0.8505,
+      "FC@5": 0.713,
+      "hit@1": 0.889
+     }
+    }
+   },
+   "paired": {
+    "b1t-b1 zsp/J5": {
+     "R@5": -0.0825,
+     "ci": [
+      -0.094,
+      -0.0695
+     ]
+    },
+    "b1t-b1 zsp/L-hotpotqa": {
+     "R@5": -0.0675,
+     "ci": [
+      -0.079,
+      -0.0565
+     ]
+    },
+    "b1t-b1 zrc/J5": {
+     "R@5": -0.0945,
+     "ci": [
+      -0.1065,
+      -0.0815
+     ]
+    },
+    "b1t-b1 zrc/L-hotpotqa": {
+     "R@5": -0.08,
+     "ci": [
+      -0.0925,
+      -0.0675
+     ]
+    },
+    "b1u-b1 zsp/J5": {
+     "R@5": -0.033,
+     "ci": [
+      -0.041,
+      -0.025
+     ]
+    },
+    "b1u-b1 zsp/L-hotpotqa": {
+     "R@5": -0.021,
+     "ci": [
+      -0.029,
+      -0.0135
+     ]
+    },
+    "b1u-b1 zrc/J5": {
+     "R@5": -0.0335,
+     "ci": [
+      -0.042,
+      -0.0255
+     ]
+    },
+    "b1u-b1 zrc/L-hotpotqa": {
+     "R@5": -0.023,
+     "ci": [
+      -0.031,
+      -0.015
+     ]
+    },
+    "b1u-b1t zsp/J5": {
+     "R@5": 0.0495,
+     "ci": [
+      0.0385,
+      0.06
+     ]
+    },
+    "b1u-b1t zsp/L-hotpotqa": {
+     "R@5": 0.0465,
+     "ci": [
+      0.036,
+      0.057
+     ]
+    },
+    "b1u-b1t zrc/J5": {
+     "R@5": 0.061,
+     "ci": [
+      0.05,
+      0.072
+     ]
+    },
+    "b1u-b1t zrc/L-hotpotqa": {
+     "R@5": 0.057,
+     "ci": [
+      0.046,
+      0.068
+     ]
+    }
+   }
+  }
+ },
+ "rule": {
+  "declared_in": "docs/U1A_B1_WITHOUT_HYPERLINKS.md",
+  "rule": {
+   "source": "CRAG scratchpad/c3_derived.py",
+   "min_title_len": 4,
+   "directed": true,
+   "relation": 0
+  },
+  "settings": {
+   "musique": {
+    "passages": 11656,
+    "b1": {
+     "edges": 45568,
+     "mean_degree": 7.819,
+     "isolated": 3351,
+     "max_out_degree": 117
+    },
+    "b1u": {
+     "edges": 45586,
+     "mean_degree": 7.822,
+     "isolated": 3349,
+     "max_out_degree": 117
+    },
+    "b1_structural_is": "title mentions (the package's graph)",
+    "identity": {
+     "rule_pairs": 45568,
+     "b1_pairs": 45568,
+     "differing_pairs": 0,
+     "differing_outside_whitespace_only_sources": 0,
+     "whitespace_only_passages": 1
+    }
+   },
+   "2wiki": {
+    "passages": 6119,
+    "b1": {
+     "edges": 2200,
+     "mean_degree": 0.719,
+     "isolated": 3425,
+     "max_out_degree": 4
+    },
+    "b1u": {
+     "edges": 2346,
+     "mean_degree": 0.767,
+     "isolated": 3290,
+     "max_out_degree": 4
+    },
+    "b1_structural_is": "the corpus's hyperlinks",
+    "recovery_directed": {
+     "rule_pairs": 2346,
+     "hyperlink_pairs": 2200,
+     "both": 1778,
+     "precision": 0.7579,
+     "recall": 0.8082
+    },
+    "recovery_undirected": {
+     "rule_pairs": 2191,
+     "hyperlink_pairs": 1984,
+     "both": 1673,
+     "precision": 0.7636,
+     "recall": 0.8432
+    }
+   },
+   "hotpotqa": {
+    "passages": 9811,
+    "b1": {
+     "edges": 4856,
+     "mean_degree": 0.99,
+     "isolated": 4990,
+     "max_out_degree": 8
+    },
+    "b1u": {
+     "edges": 5858,
+     "mean_degree": 1.194,
+     "isolated": 4486,
+     "max_out_degree": 7
+    },
+    "b1_structural_is": "the corpus's hyperlinks",
+    "recovery_directed": {
+     "rule_pairs": 5858,
+     "hyperlink_pairs": 4856,
+     "both": 3851,
+     "precision": 0.6574,
+     "recall": 0.793
+    },
+    "recovery_undirected": {
+     "rule_pairs": 5537,
+     "hyperlink_pairs": 4400,
+     "both": 3596,
+     "precision": 0.6494,
+     "recall": 0.8173
+    }
+   }
+  },
+  "script_sha256": "d175036184e4e1662e240ef0ecc120bcab87f42e1ee82e28c886b4995dfef0c1",
+  "seconds": 87.2,
+  "utc": "2026-10-09T17:58:33Z"
+ },
+ "missing": [],
+ "script_sha256": "d175036184e4e1662e240ef0ecc120bcab87f42e1ee82e28c886b4995dfef0c1",
+ "utc": "2026-10-09T19:47:58Z"
+}
