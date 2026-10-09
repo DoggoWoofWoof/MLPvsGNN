@@ -2,7 +2,7 @@
 Run on the host, in the rx workspace. `make` writes the list from the host's own files (read only); host_cleanup.py does
 the dry run and, when the user runs it with --delete, the removal (only files whose size and mtime still match).
 
-    python outputs/host_cleanup/host_cleanup9.py make                                             # writes the list
+    python outputs/host_cleanup/host_cleanup9.py make [--live ID,ID,...]                          # writes the list
     python outputs/host_cleanup/host_cleanup9.py --list outputs/host_cleanup/delete_2026-10-09.json             # dry run
     python outputs/host_cleanup/host_cleanup9.py --list outputs/host_cleanup/delete_2026-10-09.json --delete    # the user
 
@@ -40,10 +40,13 @@ LIST = "outputs/host_cleanup/delete_2026-10-09.json"
 PATHTOK = re.compile(r"outputs/[A-Za-z0-9_./@=+-]+")
 
 
-def named_by_pending(ws):
-    """Paths named by feeder items not yet finished (unsent or sent and not terminal)."""
+def named_by_pending(ws, live=None):
+    """Paths named by feeder items not yet finished: unsent, or sent and not terminal. With `live` (the ids rx lists as
+    running or queued), a sent item counts only if its job is live: S6's items of 4-7 October were sent, ended, and
+    have no terminal record in the feeder's state."""
     st = json.loads((ws / "outputs/host_ops/hostfeed_state.json").read_text(encoding="utf-8"))
-    done = {n for n, j in st.get("sent", {}).items() if j in st.get("terminal", {})}
+    sent, term = st.get("sent", {}), st.get("terminal", {})
+    done = {n for n, j in sent.items() if j in term or (live is not None and j not in live)}
     toks = set()
     for line in (ws / "outputs/host_ops/hostfeed_items.txt").read_text(encoding="utf-8").splitlines():
         if line.startswith("line|"):
@@ -53,8 +56,8 @@ def named_by_pending(ws):
     return toks
 
 
-def make(ws):
-    pend = named_by_pending(ws)
+def make(ws, live=None):
+    pend = named_by_pending(ws, live)
     files, held = [], []
     for g in GROUPS:
         for dp, _dn, fn in os.walk(ws / g):
@@ -74,7 +77,8 @@ def make(ws):
     doc = {"created": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "dirs": list(GROUPS),
            "rule": "arrays (.npz/.npy/.pt, >= 1 MB) of closed stages: step 4c's looks and caches, the lean-MLP and S6 "
                    "results and chain caches, rounds 24-25's zfeat cache; nothing a queued or running item names",
-           "files": files, "bytes": sum(s for _r, s, _m in files), "held_named_by_pending": held}
+           "files": files, "bytes": sum(s for _r, s, _m in files), "held_named_by_pending": held,
+           "live_jobs_given": sorted(live) if live is not None else None}
     out = ws / LIST
     tmp = out.with_name(out.name + ".tmp")
     tmp.write_text(json.dumps(doc, indent=1), encoding="utf-8")
@@ -92,5 +96,7 @@ def make(ws):
 if __name__ == "__main__":
     ws = Path.cwd().resolve()
     if sys.argv[1:2] == ["make"]:
-        sys.exit(make(ws))
+        # make [--live ID,ID,...]: the ids `rx ls` shows running or queued (the laptop passes them; rx is not on the host)
+        live = set(sys.argv[3].split(",")) if sys.argv[2:3] == ["--live"] else None
+        sys.exit(make(ws, live))
     sys.exit(H.main())
