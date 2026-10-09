@@ -73,3 +73,51 @@ A question failing any check is kept out of the summaries. More than 2% failing 
 - the compile p50 per path.
 
 There are no thresholds. The forward and the warm numbers are C3's and are not re-timed.
+
+## Result (filed 10 October 2026, about 04:20)
+
+Run on the laptop under the protocol above (outputs/c4/{2wiki,hotpotqa,squad,musique}.json, report.{json,md}).
+
+**Every check passed on every question: 800 of 800.**
+- For each family, the compiled scalars, edges and scores equal C3's form bit for bit.
+- The six GNN's scores are within 4.8e-6 of the look's stored scores, with the same top 5.
+
+**Cold, batch 1, p50 ms per question** (bootstrap 95% CI on the ratios):
+
+| dataset | MLP zrc4 | zsp4 | six GNN gnn4 | **gnn4 / zrc4** | gnn4 / zsp4 | MLP speed-up zrc3 / zrc4 | GNN speed-up gnn3 / gnn4 |
+| --- | ---: | ---: | ---: | --- | --- | --- | --- |
+| 2wiki | 4.5 | 4.8 | 9.2 | **2.05 [2.00, 2.11]** | 1.90 [1.86, 1.95] | 1.38 [1.31, 1.44] | 1.25 [1.21, 1.29] |
+| hotpotqa | 3.9 | 4.2 | 7.7 | **2.00 [1.96, 2.06]** | 1.86 [1.82, 1.91] | 1.34 [1.27, 1.46] | 1.29 [1.24, 1.35] |
+| squad | 2.5 | 2.8 | 5.6 | **2.27 [2.22, 2.34]** | 2.01 [1.95, 2.06] | 0.98 [0.97, 1.00] | 0.99 [0.97, 1.02] |
+| musique | 51.5 | 58.2 | 176.7 | **3.43 [3.39, 3.47]** | 3.03 [2.99, 3.06] | 1.00 [0.99, 1.01] | 0.99 [0.99, 1.01] |
+
+Compile p50 ms, C3 form → C4 form:
+
+| dataset | MLP | six GNN |
+| --- | --- | --- |
+| 2wiki | 2.59 → 1.14 | 4.53 → 2.71 |
+| hotpotqa | 2.03 → 0.92 | 3.81 → 2.22 |
+| musique | 16.66 → 16.71 | 58.99 → 59.02 |
+| squad | 0.58 → 0.61 | 1.54 → 1.57 |
+
+### What it says
+
+- On **2wiki and hotpotqa** the hub rows made the typed-edge scan the largest part of the compile, and the merge
+  removes most of it. Both families gain:
+  - the MLP is 1.34–1.38× faster;
+  - the six GNN is 1.25–1.29× faster;
+  - the MLP's cold lead over the six GNN moves from 1.85–1.92× (C3's forms, same run) to **2.00–2.05×**.
+- On **squad and musique** the merge changes nothing; every CI includes 1.00. squad's graph has no hub rows, and
+  musique's pools of about 2,150 nodes mostly read short rows.
+- The best exact cold forms now stand at:
+
+  | | 2wiki, hotpotqa | squad | musique |
+  | --- | --- | --- | --- |
+  | MLP over the six GNN | 2.0× | 2.3× | 3.4× |
+  | MLP's cold time | 3.9–4.5 ms | 2.5 ms | 51.5 ms |
+
+  The GNN track's base (zsp) costs 1.06–1.13× the MLP.
+
+On the small graphs the MLP's cold time is now mostly the pool, the embedding read and its forward, so another exact
+serving form has little left to take. A larger cold lead needs an MLP that reads cheaper inputs. That is a model
+change, read for accuracy and cost together on all six datasets (C3's "Next").
