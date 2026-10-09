@@ -107,4 +107,55 @@ the compile.
 
 ## Results
 
-(Filed after the run.)
+Filed 9 October 2026, about 19:00. The four untyped datasets ran on the laptop, pinned (logical processor 2, EcoQoS off,
+ABOVE_NORMAL; each record's `pin`), one thread, the first 200 s1eval questions, cold. Table: outputs/c1/report.md
+(report.json and the per-question records beside it). The typed graphs (metaqa, webqsp) follow.
+
+**Checks.** On every dataset, all 200 questions pass:
+- pools, seeds and edges equal the look's on all 200;
+- the top 5 of every path is the training form's on all 200;
+- on 2wiki, hotpotqa and squad the rebuilt rows equal the step-1 cache bit for bit, and zrc's and zsp's scores equal
+  the cache's exactly;
+- on musique, 20 questions' rows differ from the cache by at most 7e-4. The compile's BLAS thread count differs from the
+  host build's (2 threads). The scores differ by at most 0.008, with the top 5 unchanged;
+- the six GNN is within 5e-6 of the look's stored scores everywhere.
+
+No question was excluded.
+
+**Batch 1, total per question, p50 ms (95% interval of the ratio):**
+
+| dataset | zrc (MLP) | zsp (GNN) | six GNN | zsp / zrc | six GNN / zrc |
+| --- | ---: | ---: | ---: | --- | --- |
+| 2wiki | 31.0 | 31.4 | 30.3 | 1.01 [0.99, 1.05] | 0.98 [0.95, 1.01] |
+| hotpotqa | 12.7 | 13.4 | 11.9 | 1.05 [1.01, 1.07] | 0.94 [0.91, 0.96] |
+| squad | 7.9 | 8.6 | 7.2 | 1.08 [1.06, 1.11] | 0.90 [0.86, 0.93] |
+| musique | 269.2 | 284.3 | 349.7 | 1.06 [1.04, 1.07] | 1.30 [1.29, 1.32] |
+
+**Where the time goes (p50 ms, batch 1):**
+
+| dataset | pool + read | compile (shared) | zrc lean inputs | zrc forward | six GNN pack + forward |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2wiki | 1.3 | 22.1 | 2.4 | 4.2 | 6.3 |
+| hotpotqa | 1.2 | 4.2 | 2.3 | 4.2 | 6.1 |
+| squad | 0.6 | 1.7 | 1.6 | 3.6 | 4.7 |
+| musique | 16.5 | 62.5 | 165.1 | 19.5 | 268.8 |
+
+**The model forward alone, batch 16, per question (ms):** zrc 1.1 / 0.96 / 0.59 / 17.1 against the six GNN 9.3 / 8.0 /
+4.1 / 335.7 (2wiki, hotpotqa, squad, musique). That is 8×, 8×, 7× and 20×.
+
+**Reading.**
+- **Claim 3, as the models are served today, does not hold cold.** End to end at batch 1, the MLP is at the six GNN's
+  cost on the three small-pool datasets (0.90–0.98×) and 1.3× faster on musique.
+- The MLP's forward is 7–20× cheaper than the GNN's. That is the 6–9× filed earlier, measured warm on the forward
+  alone. Cold, two things eat it:
+  - the shared compile, which the MLP needs only four blocks of (rank, dense_cos, topo_STRUCT, depth_STRUCT);
+  - the MLP's own walk inputs, which cost as much as message passing on large pools (musique: 165 ms against the
+    GNN's 265 ms forward).
+- zsp costs within 1–8% of zrc on every dataset, as the code predicted.
+- Per this file's rule (lead under 6×), the next stage attacks the cost. In order of size:
+  1. an exact partial compile for the MLP (only the blocks it reads);
+  2. an exact fast form of the walk inputs (WALK, WALKF, SEED and DISTS in numba, as lean_fast did for the
+     MP-free blocks);
+  3. a fused batch-1 forward without torch's per-call overhead.
+
+  Each is checked bit for bit against these records' scores, and each is declared in its own file.
