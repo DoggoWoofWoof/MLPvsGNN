@@ -80,6 +80,26 @@ One construction and one rule for all six datasets. Nothing is chosen per datase
 - Disk: step 4e's caches, chains and looks for every carve were about 70 GB. The screen's 11 carves at no more than
   step 4e's pool size need less. The stage is queued only with at least twice that free, under the 100 GB floor.
 
+## Amendment 1: the mention relation on the KB datasets (declared 10 October 2026, about 07:40, before any number)
+
+U1d adds its mention links on metaqa and webqsp as one new relation id after the KB vocabulary (metaqa 9, webqsp
+7,058). The relation table has no row for that id, so all 64 of metaqa's fit looks stopped at the compile
+(`relcos[erel]`: index 9 out of bounds for 9 relations). No number was read.
+
+The fix, one rule for all six datasets: **a mention link is a relation with no text.**
+- **The relation table** gets one zero row for the mention id. Its compatibility cos(q, e_r) is 0, the value an
+  untyped pair already gets. Its ief uses M3B's formula on structural_U's count. The KB relations' ief must equal
+  today's table bit for bit, or the look refuses.
+- **The relation slots** take no bank row for a mention entry. A pair with only a mention link has every slot −1,
+  as an untyped pair has, so rmatch's and zrc's chains skip it. A pair's mention entry sorts last, so its KB slots
+  are unchanged.
+- **The topology keeps every mention link**: pools, STRUCT columns, reach, depth, message edges.
+
+On the four datasets without a relation table it changes nothing, so their looks stand. It runs as
+outputs/mp_unified/look_u1c2.py, which is look_u1c with the two changes. Its selftest checks the zero row, the ief bit
+for bit, the refusals and the KB-only slots. The metaqa and webqsp looks and everything after them are requeued
+under new item names. The screen's rule, fits and reads are unchanged.
+
 ## Results
 
 Not yet run.
