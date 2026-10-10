@@ -80,7 +80,7 @@ One construction and one rule for all six datasets. Nothing is chosen per datase
 - Disk: step 4e's caches, chains and looks for every carve were about 70 GB. The screen's 11 carves at no more than
   step 4e's pool size need less. The stage is queued only with at least twice that free, under the 100 GB floor.
 
-## Amendment 1: the mention relation on the KB datasets (declared 10 October 2026, about 07:40, before any number)
+## Amendment 1: the mention relation on the KB datasets (declared 10 October 2026, about 07:25, before any number)
 
 U1d adds its mention links on metaqa and webqsp as one new relation id after the KB vocabulary (metaqa 9, webqsp
 7,058). The relation table has no row for that id, so all 64 of metaqa's fit looks stopped at the compile

@@ -1,6 +1,6 @@
 # U1e: damped links (a cap on a link target's in-degree)
 
-Declared 10 October 2026, about 07:55, before any U1e graph is built or any pool is read. It follows U1d
+Declared 10 October 2026, about 07:30, before any U1e graph is built or any pool is read. It follows U1d
 (docs/U1D_PRECISE_LINKS.md) and step 4h (docs/STEP4H_U_POOLS.md).
 
 ## Why
