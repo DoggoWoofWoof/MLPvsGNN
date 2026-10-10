@@ -3382,3 +3382,40 @@ What this says:
   does not carry over as an input on these graphs.
 
 No full run follows. A GNN-track counterpart of zof is not queued.
+
+## Thirty-third round: twice zrc's training steps (zep; declared 10 October about 07:20)
+
+**Why.** D3 (docs/DIAG_DATA_SCALE.md) found zrc, the MLP's base, DATA_LIMITED: refit on every 2nd question of its
+fit carves it LOSES on 4 of 12 reads. But its half fits ran zrc's 8 epochs, so they took half the optimiser steps too.
+Before any second fit carve is built (CPU, memory and disk that U1c holds now), this round asks whether the steps
+alone carry the gain. It needs no new look, cache or build, so it uses the card while U1c's looks hold the CPU.
+
+**Arms.** Both use `outputs/mp_unified/zep.py` (new; frozen once run). Everything is zrc's: zrm.ZRM over
+zrc.ChainCarveZRC, rmatch.py's train, zrm's settings, seed 0, p@swa. Only the config changes, from zrc's
+2e-3:1e-4:0.1:8:2 (lr:wd:dropout:epochs:swa_from) to **2e-3:1e-4:0.1:16:4**: twice the epochs, with SWA from twice
+zrc's first SWA epoch, so the same share of the run is averaged.
+- **zep** (the screen): zrc's full fit carves at that config. `scr-zep` (L-musique) and `scr-zep-hp` (L-hotpotqa).
+- **zeh** (D3's step control, reported only): every 2nd question (zds.subset(2), D3's half) at that config, so it
+  takes as many steps as zrc. `dsx-zeh` and `dsx-zeh-hp`.
+
+zep.py's selftest checks:
+- the doubled run's first epochs are zrc's bit for bit (same seed, same order draws);
+- its SWA state moves;
+- a repeat is identical.
+
+**Rule.**
+- **zep** is decided by the screens' rule: zep.py's comparison, pair and re-call against zrc's fits (scr-zrct,
+  scr-zrct-hp; the re-call's base is outputs/zbase2) under the seed null. PROMISING (at least one GAIN and no LOSS among
+  the twelve reads) earns a full run, declared in its own file. That full run applies the same doubling to the GNN
+  track's base (zsp) too, so neither model gets more training than the other.
+- **zeh** reads D3:
+  - if its half fits still LOSE on 2 or more of the 12 reads against zrc, the loss is the data's, and the second fit
+    carve is declared (docs/FIT2_CARVES.md);
+  - otherwise D3's loss was the steps'. No carve is built, and zep's verdict is the answer.
+
+**Caps and order.** GPU items under cuda_alloc (frac 0.3), placed right after D3's block, ahead of U1c's GPU fits
+(which wait on U1c's looks and caches). Four fits; three share the card at a time.
+
+**ETAs.** D3's half fits took under 10 minutes each on the card. The doubled fits should take about four times that
+(twice the data, twice the epochs), so the round should land within about two hours.
+

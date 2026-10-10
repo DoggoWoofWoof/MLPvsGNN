@@ -109,6 +109,46 @@ the F1 winner is the best graph for retrieval.
 Code: `outputs/mp_unified/u1d.py`. Records: `outputs/u1d/<dataset>/{capstat,score,build}.json`,
 `outputs/u1d/choice.json`, `outputs/u1d/report.{json,md}` (committed). Arrays are untracked.
 
-## Results
+## Results (filed 10 October 2026, about 07:20)
 
-Not yet run.
+Run on the host (records: `outputs/u1d/choice.json`, `outputs/u1d/<dataset>/{score,build}.json`). Every check passed;
+the builds name the freeze's RECORD_SHA256.
+
+**Hyperlink recovery, directed** (the rule's links against the corpora's own hyperlinks; V0 = U1b's rule):
+
+| variant | 2wiki P | 2wiki R | 2wiki F1 | hotpotqa P | hotpotqa R | hotpotqa F1 | mean F1 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| V0 (U1b) | 0.099 | 0.705 | 0.174 | 0.138 | 0.688 | 0.230 | 0.202 |
+| **V2 (chosen)** | **0.228** | **0.566** | **0.325** | **0.318** | **0.675** | **0.433** | **0.379** |
+| V5e | 0.209 | 0.577 | 0.307 | 0.231 | 0.710 | 0.348 | 0.327 |
+| V5 | 0.198 | 0.533 | 0.288 | 0.199 | 0.606 | 0.299 | 0.294 |
+| V6e | 0.210 | 0.578 | 0.308 | 0.257 | 0.707 | 0.377 | 0.342 |
+| V6 | 0.294 | 0.457 | 0.358 | 0.285 | 0.512 | 0.366 | 0.362 |
+
+**Chosen: V2** (highest mean F1, 0.379). It builds `structural_U` on all six.
+
+- Against U1b's rule, V2 more than doubles precision on both corpora (2wiki 0.099 to 0.228, hotpotqa 0.138 to 0.318)
+  with 2.9x and 2.3x fewer links, at a recall cost of 0.14 on 2wiki and 0.01 on hotpotqa.
+
+**The chosen graph per dataset** (edges; isolated share; against today's structural family):
+
+| dataset | structural_U edges | today's edges | isolated, U | isolated, today | mean degree, U |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| metaqa | 154,477 | 133,582 | 0 | 0 | 7.1 |
+| musique | 2,302,233 | 2,744,076 | 0.155 | 0.084 | 39.2 |
+| squad | 495,843 | 874,190 | 0.608 | 0.314 | 49.0 |
+| webqsp | 319,125,759 | 8,309,195 | 0 | 0 | 246.2 |
+| 2wiki | 71,904,846 | 28,963,600 | 0.029 | 0.086 | 24.0 |
+| hotpotqa | 32,603,680 | 15,367,541 | 0.042 | 0.105 | 12.5 |
+
+The KB graphs keep every triple and add the mention links as one new relation (metaqa id 9, webqsp id 7,058).
+
+### What it says
+
+- **The rule's links are still imprecise.** Three of four V2 links on 2wiki and two of three on hotpotqa are not
+  hyperlinks. The most-linked titles are one-word or generic names ("American", "United", "County", "District",
+  "January"): a mention of a common word becomes a link to the page with that title.
+- **On webqsp the mention links swamp the KB**: 311 million mention edges beside 8.3 million triples, mean degree 246
+  against 6.4. Step 4h's pools show the cost (below and docs/STEP4H_U_POOLS.md).
+- Both are rule-level gaps for one universal fix, its own file: damp links whose target title is a common word or is
+  reached from too many sources, on all six alike.

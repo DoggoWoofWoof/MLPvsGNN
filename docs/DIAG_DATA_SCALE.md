@@ -68,3 +68,41 @@ decide`).
 - It reads the MLP's base only. The GNN track (zsp) is not refit.
 - A NOT_DATA_LIMITED verdict at seed 0 on two splits does not rule out a gain from a different data mix: for example,
   more musique-like multi-hop questions where they exist.
+
+## Result (filed 10 October 2026, about 07:20)
+
+**DATA_LIMITED.** The half fits LOSE on 4 of 12 reads under the seed null, with no GAIN; the quarter fits LOSE on 10
+(outputs/screen/dsx-decide.{json,md}, dsx-{h2,q4}{,-hp}{,-pair,-pair-recall}.{json,md}).
+
+| split | dataset | read | zrc R@5 | half delta | half call | quarter delta | quarter call |
+| --- | --- | --- | ---: | ---: | --- | ---: | --- |
+| L-musique | metaqa | in-domain | 0.7782 | -0.0043 | WITHIN | -0.0259 | LOSS |
+| L-musique | squad | in-domain | 0.9105 | -0.0019 | WITHIN | -0.0084 | LOSS |
+| L-musique | musique | zero-shot | 0.5235 | -0.0071 | WITHIN | -0.0180 | WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9041 | -0.0068 | WITHIN | -0.0146 | LOSS |
+| L-musique | 2wiki | in-domain | 0.8733 | -0.0078 | **LOSS** | -0.0175 | LOSS |
+| L-musique | webqsp | zero-shot | 0.3384 | -0.0310 | **LOSS** | -0.0813 | LOSS |
+| L-hotpotqa | metaqa | in-domain | 0.7793 | -0.0064 | WITHIN | -0.0298 | LOSS |
+| L-hotpotqa | squad | in-domain | 0.9112 | -0.0015 | WITHIN | -0.0089 | LOSS |
+| L-hotpotqa | musique | in-domain | 0.5645 | +0.0036 | WITHIN | -0.0093 | LOSS |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8451 | -0.0018 | WITHIN | -0.0084 | WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.8731 | -0.0118 | **LOSS** | -0.0242 | LOSS |
+| L-hotpotqa | webqsp | zero-shot | 0.2865 | -0.0381 | **LOSS** | -0.0542 | LOSS |
+
+Mean delta: half -0.0096, quarter -0.0250.
+
+### What it says
+
+- The curve is still rising at the full carve: each halving costs about 0.01-0.015 R@5 on average. **webqsp read
+  zero-shot is the most data-hungry read** (-0.031 / -0.038 at half), then 2wiki in-domain. musique, the B1 gap, is
+  not: its in-domain read is within noise at half.
+- **A confound the rule did not separate:** a half fit runs zrc's epochs, so it also takes half the optimiser steps.
+  Round 33 (docs/SCREENS.md, zep) separates them before any carve is built:
+  - zrc at twice its epochs on its full carves (the screen);
+  - zrc at twice its epochs on the half (as many steps as zrc; D3's step control).
+- **Under the rule, a second fit carve per dataset is declared as its own screen** (docs/FIT2_CARVES.md, to be written
+  once round 33's step control reads). Its build waits for U1c's stages and for disk, as above. Measured on the host
+  today: the step-1 looks and caches of the five fit carves total about 14 GB (metaqa 7.1, musique 6.2, the other three
+  under 0.6 each), before the chain builds (measured when the file is written). A second carve needs at least twice
+  that free above the 100 GB floor.
+

@@ -94,6 +94,51 @@ B_q is step 4d's filed budget on both graphs.
 - The configurations are now W0, W0.5, W1, W2, W3, B1, B2 and B3. W2 on GU is step 4e's chosen pool rebuilt on the
   universal graph.
 
-## Results
+## Results (filed 10 October 2026, about 07:25)
 
-Not yet run.
+Run on the host (records: `outputs/step4h/{choice,coverage_<dataset>}.json`, `report.md`). On G0 every stage equals
+steps 4c-4e on every dataset (the amendment's identity check).
+
+**Choice reads** (the five s1sel carves and webqsp's s1eval, on GU):
+
+| config | mean ALL | pool / step 4e | eligible |
+| --- | ---: | ---: | --- |
+| W0 | 0.8808 | 0.514 | yes |
+| W0.5 | 0.9074 | 0.651 | yes |
+| **W1** | **0.9172** | **0.787** | **yes, chosen** |
+| B1 | 0.9120 | 0.787 | yes |
+| W2 | 0.9263 | 1.060 | no (larger than step 4e) |
+| B2 | 0.9293 | 1.060 | no |
+| W3 | 0.9312 | 1.332 | no |
+| B3 | 0.9360 | 1.332 | no |
+
+**Chosen: W1 on GU**, at 0.79 of step 4e's mean pool size. U1c retrains on these pools.
+
+**ALL / mean pool size, every carve:**
+
+| dataset | carve | step 4e (G0, A3 k=2) | G0 W1 | **GU W1** | GU W2 |
+| --- | --- | --- | --- | --- | --- |
+| metaqa | s1sel | 0.960 / 7,093 | 0.956 / 5,122 | 0.947 / 5,099 | 0.949 / 7,071 |
+| metaqa | s1eval | 0.953 / 7,082 | 0.949 / 5,115 | 0.938 / 5,091 | 0.941 / 7,058 |
+| squad | s1sel | 0.992 / 150 | 0.989 / 100 | 0.989 / 100 | 0.992 / 150 |
+| squad | s1eval | 0.992 / 150 | 0.989 / 100 | 0.989 / 100 | 0.992 / 150 |
+| musique | s1sel | 0.950 / 6,921 | 0.934 / 5,028 | 0.937 / 4,966 | 0.954 / 6,859 |
+| musique | s1eval | 0.937 / 6,899 | 0.921 / 5,006 | 0.924 / 4,937 | 0.940 / 6,829 |
+| hotpotqa | s1sel | 0.978 / 188 | 0.975 / 144 | 0.905 / 167 | 0.908 / 211 |
+| hotpotqa | s1eval | 0.979 / 188 | 0.976 / 144 | 0.896 / 166 | 0.905 / 210 |
+| 2wiki | s1sel | 0.947 / 220 | 0.938 / 164 | 0.870 / 220 | 0.879 / 275 |
+| 2wiki | s1eval | 0.945 / 221 | 0.936 / 166 | 0.873 / 222 | 0.882 / 278 |
+| webqsp | s1eval | 0.909 / 7,213 | 0.893 / 5,293 | 0.857 / 5,249 | 0.877 / 7,169 |
+
+### What it says
+
+- **GU keeps musique's and squad's reach** (musique +0.003 over G0 at W1; squad equal). There the rule replaces
+  today's structural family with no loss.
+- **On 2wiki and hotpotqa GU loses 0.06-0.08 ALL against G0**, the hyperlinks' share of the pools' reach. The rule's
+  links recover 0.57-0.68 of the hyperlinks at 0.23-0.32 precision (docs/U1D_PRECISE_LINKS.md); the pools pay for
+  both the missed and the spurious links. This is the price U1c's rule names for those two datasets.
+- **webqsp loses 0.036 ALL** (0.893 to 0.857 at W1). The mention links (mean degree 246 against the KB's 6.4) take the
+  walk's mass away from the KB's triples. metaqa loses 0.011 for the same reason, on a much smaller scale.
+- At the size cap no configuration on GU reaches step 4e's ALL on any dataset but musique (W2) and squad (W2).
+- The next link fix (damping links to common-word titles and to over-linked targets, one rule for all six) is the
+  universal answer to both losses. It needs its own file; U1c runs on today's choice.
