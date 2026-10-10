@@ -3419,3 +3419,31 @@ zep.py's selftest checks:
 **ETAs.** D3's half fits took under 10 minutes each on the card. The doubled fits should take about four times that
 (twice the data, twice the epochs), so the round should land within about two hours.
 
+## Round thirty-three: result (zep; filed 10 October about 08:55)
+
+**zep is PROMISING; zeh is NO_GAIN.** Both were re-called under the seed null
+(outputs/screen/scr-zep-pair{,-recall}.{md,json} and dsx-zeh-pair{,-recall}.{md,json}). R@5 is each arm's p@swa minus
+zrc's of the same split.
+
+**zep (zrc at twice its epochs, full carves):** 1 GAIN and 0 LOSS in 12 reads.
+
+| fit | read | delta R@5 [95% CI] | re-call |
+| --- | --- | --- | --- |
+| L-musique | webqsp zero-shot | +0.0118 [+0.0016, +0.0214] | GAIN (floor 0.0102) |
+| L-hotpotqa | webqsp zero-shot | +0.0228 [+0.0107, +0.0347] | under its 0.0233 floor (GAIN at 0.0075) |
+| both | metaqa, squad, 2wiki, hotpotqa in-domain | +0.0004 to +0.0026 | WITHIN |
+| both | musique (zero-shot / in-domain) | −0.0068 / −0.0066 | WITHIN |
+
+**zeh (D3's half, at twice the epochs, as many steps as zrc):** 0 GAIN and 1 LOSS (L-hotpotqa 2wiki in-domain
+−0.0089). The other eleven reads are −0.016 to +0.001, all WITHIN under the null.
+
+What this says:
+- **D3's loss was mostly the steps'.** At equal steps the half carve loses only one read under the null, where D3's
+  half fits lost four. By the declared rule (fewer than 2 LOSS), no second fit carve is built.
+- **More steps help where the model reads a graph it never trained on.** webqsp zero-shot rises on both fits, by
+  +0.012 and +0.023. In-domain reads move by under 0.003.
+- **musique dips by 0.007 on both fits.** That is within the null, but it is the one consistent negative. The full
+  run reads it on every split.
+
+Following the declared rule, the full run is declared before any of its numbers (docs/FULL_ROUND33.md). It covers zep
+on the four other splits, and the same doubling for zsp (zspx) on all six, each against its own base on the card.
