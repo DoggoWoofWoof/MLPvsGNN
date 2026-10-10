@@ -1,0 +1,563 @@
+{
+ "dataset": "2wiki",
+ "shards": 24,
+ "package_structural": "hyperlink",
+ "variants": {
+  "V2": {
+   "edges": 71904846,
+   "mean_degree": 24.009,
+   "isolated": 170743,
+   "isolated_share": 0.0285,
+   "max_out_degree": 1176,
+   "max_in_degree": 621581,
+   "ambiguous": 0,
+   "directed": {
+    "rule": 71904846,
+    "reference": 28963600,
+    "both": 16401707,
+    "precision": 0.2281,
+    "recall": 0.5663,
+    "f1": 0.3252
+   },
+   "unordered": {
+    "rule": 71482411,
+    "reference": 28208857,
+    "both": 16085017,
+    "precision": 0.225,
+    "recall": 0.5702
+   },
+   "top_in": [
+    [
+     "American",
+     621581
+    ],
+    [
+     "United",
+     499500
+    ],
+    [
+     "National",
+     475191
+    ],
+    [
+     "County",
+     442667
+    ],
+    [
+     "District",
+     436913
+    ],
+    [
+     "South",
+     422668
+    ],
+    [
+     "World",
+     406262
+    ],
+    [
+     "United States",
+     391953
+    ],
+    [
+     "North",
+     376611
+    ],
+    [
+     "University",
+     312882
+    ],
+    [
+     "An American",
+     306386
+    ],
+    [
+     "The United",
+     296196
+    ],
+    [
+     "March",
+     288653
+    ],
+    [
+     "January",
+     285142
+    ],
+    [
+     "September",
+     279672
+    ],
+    [
+     "October",
+     277798
+    ],
+    [
+     "August",
+     270546
+    ],
+    [
+     "July",
+     267662
+    ],
+    [
+     "June",
+     267357
+    ],
+    [
+     "November",
+     266530
+    ]
+   ]
+  },
+  "V5e": {
+   "edges": 80002582,
+   "mean_degree": 26.713,
+   "isolated": 153885,
+   "isolated_share": 0.0257,
+   "max_out_degree": 1258,
+   "max_in_degree": 621581,
+   "ambiguous": 5163963,
+   "directed": {
+    "rule": 80002582,
+    "reference": 28963600,
+    "both": 16699502,
+    "precision": 0.2087,
+    "recall": 0.5766,
+    "f1": 0.3065
+   },
+   "unordered": {
+    "rule": 79298627,
+    "reference": 28208857,
+    "both": 16355558,
+    "precision": 0.2063,
+    "recall": 0.5798
+   },
+   "top_in": [
+    [
+     "American",
+     621581
+    ],
+    [
+     "United",
+     499500
+    ],
+    [
+     "National",
+     475191
+    ],
+    [
+     "County",
+     442667
+    ],
+    [
+     "District",
+     436913
+    ],
+    [
+     "South",
+     422668
+    ],
+    [
+     "World",
+     406262
+    ],
+    [
+     "United States",
+     391953
+    ],
+    [
+     "North",
+     376611
+    ],
+    [
+     "University",
+     312882
+    ],
+    [
+     "An American",
+     306386
+    ],
+    [
+     "The United",
+     296196
+    ],
+    [
+     "March",
+     288653
+    ],
+    [
+     "January",
+     285142
+    ],
+    [
+     "States (automobile)",
+     280978
+    ],
+    [
+     "September",
+     279672
+    ],
+    [
+     "October",
+     277798
+    ],
+    [
+     "August",
+     270546
+    ],
+    [
+     "July",
+     267662
+    ],
+    [
+     "June",
+     267357
+    ]
+   ]
+  },
+  "V5": {
+   "edges": 78079867,
+   "mean_degree": 26.071,
+   "isolated": 155439,
+   "isolated_share": 0.026,
+   "max_out_degree": 1241,
+   "max_in_degree": 306386,
+   "ambiguous": 53858619,
+   "directed": {
+    "rule": 78079867,
+    "reference": 28963600,
+    "both": 15434691,
+    "precision": 0.1977,
+    "recall": 0.5329,
+    "f1": 0.2884
+   },
+   "unordered": {
+    "rule": 77186235,
+    "reference": 28208857,
+    "both": 14995953,
+    "precision": 0.1943,
+    "recall": 0.5316
+   },
+   "top_in": [
+    [
+     "An American",
+     306386
+    ],
+    [
+     "The United",
+     296196
+    ],
+    [
+     "States (automobile)",
+     280978
+    ],
+    [
+     "United States",
+     232319
+    ],
+    [
+     "British",
+     228577
+    ],
+    [
+     "District (Vietnam)",
+     187976
+    ],
+    [
+     "National (curling)",
+     177628
+    ],
+    [
+     "County (United States)",
+     166946
+    ],
+    [
+     "League (non-profit)",
+     156027
+    ],
+    [
+     "States (album)",
+     152951
+    ],
+    [
+     "County",
+     136621
+    ],
+    [
+     "Province (disambiguation)",
+     125706
+    ],
+    [
+     "District (Austria)",
+     119814
+    ],
+    [
+     "American (1902 automobile)",
+     117291
+    ],
+    [
+     "Award",
+     117254
+    ],
+    [
+     "American (album)",
+     115723
+    ],
+    [
+     "World War (disambiguation)",
+     106029
+    ],
+    [
+     "World (band)",
+     105994
+    ],
+    [
+     "Records (album)",
+     105712
+    ],
+    [
+     "January (Pilot song)",
+     104184
+    ]
+   ]
+  },
+  "V6e": {
+   "edges": 79812649,
+   "mean_degree": 26.649,
+   "isolated": 152900,
+   "isolated_share": 0.0255,
+   "max_out_degree": 1276,
+   "max_in_degree": 621581,
+   "ambiguous": 5764746,
+   "directed": {
+    "rule": 79812649,
+    "reference": 28963600,
+    "both": 16741848,
+    "precision": 0.2098,
+    "recall": 0.578,
+    "f1": 0.3079
+   },
+   "unordered": {
+    "rule": 78898999,
+    "reference": 28208857,
+    "both": 16396140,
+    "precision": 0.2078,
+    "recall": 0.5812
+   },
+   "top_in": [
+    [
+     "American",
+     621581
+    ],
+    [
+     "United",
+     499500
+    ],
+    [
+     "National",
+     475191
+    ],
+    [
+     "County",
+     442667
+    ],
+    [
+     "District",
+     436913
+    ],
+    [
+     "South",
+     422668
+    ],
+    [
+     "World",
+     406262
+    ],
+    [
+     "United States",
+     391953
+    ],
+    [
+     "North",
+     376611
+    ],
+    [
+     "University",
+     312882
+    ],
+    [
+     "An American",
+     306386
+    ],
+    [
+     "The United",
+     296196
+    ],
+    [
+     "March",
+     288653
+    ],
+    [
+     "January",
+     285142
+    ],
+    [
+     "September",
+     279672
+    ],
+    [
+     "October",
+     277798
+    ],
+    [
+     "August",
+     270546
+    ],
+    [
+     "July",
+     267662
+    ],
+    [
+     "June",
+     267357
+    ],
+    [
+     "November",
+     266530
+    ]
+   ]
+  },
+  "V6": {
+   "edges": 44961745,
+   "mean_degree": 15.013,
+   "isolated": 251341,
+   "isolated_share": 0.042,
+   "max_out_degree": 814,
+   "max_in_degree": 306386,
+   "ambiguous": 27911465,
+   "directed": {
+    "rule": 44961745,
+    "reference": 28963600,
+    "both": 13234570,
+    "precision": 0.2944,
+    "recall": 0.4569,
+    "f1": 0.3581
+   },
+   "unordered": {
+    "rule": 43761579,
+    "reference": 28208857,
+    "both": 12818569,
+    "precision": 0.2929,
+    "recall": 0.4544
+   },
+   "top_in": [
+    [
+     "An American",
+     306386
+    ],
+    [
+     "The United",
+     296196
+    ],
+    [
+     "United States",
+     232319
+    ],
+    [
+     "World War (disambiguation)",
+     106029
+    ],
+    [
+     "United States (TV series)",
+     86548
+    ],
+    [
+     "The British (TV series)",
+     81439
+    ],
+    [
+     "The U (film)",
+     69421
+    ],
+    [
+     "National Register of Historic Places",
+     64167
+    ],
+    [
+     "World War II",
+     60772
+    ],
+    [
+     "Jody February",
+     60529
+    ],
+    [
+     "Charles January",
+     60157
+    ],
+    [
+     "Ma\u0142a Gmina",
+     52042
+    ],
+    [
+     "Kienning Colloquial Romanized",
+     44166
+    ],
+    [
+     "United States (album)",
+     43753
+    ],
+    [
+     "Football League (disambiguation)",
+     41791
+    ],
+    [
+     "United Kingdom",
+     39771
+    ],
+    [
+     "Miss European",
+     39582
+    ],
+    [
+     "In September",
+     39574
+    ],
+    [
+     "U.S. state",
+     39022
+    ],
+    [
+     "The German",
+     37878
+    ]
+   ]
+  }
+ },
+ "V0_c3": {
+  "recovery": {
+   "directed": {
+    "rule": 205604282,
+    "reference": 28963600,
+    "both": 20414221,
+    "precision": 0.0993,
+    "recall": 0.7048
+   },
+   "unordered": {
+    "rule": 205104853,
+    "reference": 28208857,
+    "both": 20059963,
+    "precision": 0.0978,
+    "recall": 0.7111
+   }
+  },
+  "mentions": {
+   "edges": 205604282,
+   "mean_degree": 68.651,
+   "isolated": 10444,
+   "isolated_share": 0.0017,
+   "max_out_degree": 1707,
+   "max_in_degree": 1582529
+  }
+ }
+}

@@ -1,0 +1,477 @@
+{
+ "dataset": "metaqa",
+ "shards": 1,
+ "package_structural": null,
+ "variants": {
+  "V2": {
+   "edges": 20895,
+   "mean_degree": 0.967,
+   "isolated": 27086,
+   "isolated_share": 0.6265,
+   "max_out_degree": 8,
+   "max_in_degree": 577,
+   "ambiguous": 0,
+   "already_kb_pair": 0.0425,
+   "top_in": [
+    [
+     "john",
+     577
+    ],
+    [
+     "Michael",
+     437
+    ],
+    [
+     "Paul",
+     234
+    ],
+    [
+     "love",
+     219
+    ],
+    [
+     "Love",
+     219
+    ],
+    [
+     "night",
+     151
+    ],
+    [
+     "Jack",
+     145
+    ],
+    [
+     "Frank",
+     136
+    ],
+    [
+     "life",
+     125
+    ],
+    [
+     "Life",
+     125
+    ],
+    [
+     "Daniel",
+     122
+    ],
+    [
+     "Girl",
+     121
+    ],
+    [
+     "girl",
+     121
+    ],
+    [
+     "black",
+     115
+    ],
+    [
+     "Black",
+     115
+    ],
+    [
+     "dead",
+     105
+    ],
+    [
+     "Martin",
+     105
+    ],
+    [
+     "House",
+     104
+    ],
+    [
+     "house",
+     104
+    ],
+    [
+     "story",
+     94
+    ]
+   ]
+  },
+  "V5e": {
+   "edges": 21642,
+   "mean_degree": 1.001,
+   "isolated": 26672,
+   "isolated_share": 0.6169,
+   "max_out_degree": 8,
+   "max_in_degree": 577,
+   "ambiguous": 93,
+   "already_kb_pair": 0.0412,
+   "top_in": [
+    [
+     "john",
+     577
+    ],
+    [
+     "Michael",
+     437
+    ],
+    [
+     "Paul",
+     234
+    ],
+    [
+     "love",
+     219
+    ],
+    [
+     "Love",
+     219
+    ],
+    [
+     "night",
+     151
+    ],
+    [
+     "Jack",
+     145
+    ],
+    [
+     "Frank",
+     136
+    ],
+    [
+     "life",
+     125
+    ],
+    [
+     "Life",
+     125
+    ],
+    [
+     "Daniel",
+     122
+    ],
+    [
+     "Girl",
+     121
+    ],
+    [
+     "girl",
+     121
+    ],
+    [
+     "black",
+     115
+    ],
+    [
+     "Black",
+     115
+    ],
+    [
+     "dead",
+     105
+    ],
+    [
+     "Martin",
+     105
+    ],
+    [
+     "House",
+     104
+    ],
+    [
+     "house",
+     104
+    ],
+    [
+     "story",
+     94
+    ]
+   ]
+  },
+  "V5": {
+   "edges": 21641,
+   "mean_degree": 1.001,
+   "isolated": 26672,
+   "isolated_share": 0.6169,
+   "max_out_degree": 8,
+   "max_in_degree": 577,
+   "ambiguous": 985,
+   "already_kb_pair": 0.0412,
+   "top_in": [
+    [
+     "john",
+     577
+    ],
+    [
+     "Michael",
+     437
+    ],
+    [
+     "Paul",
+     234
+    ],
+    [
+     "love",
+     219
+    ],
+    [
+     "night",
+     151
+    ],
+    [
+     "Jack",
+     145
+    ],
+    [
+     "Frank",
+     136
+    ],
+    [
+     "life",
+     125
+    ],
+    [
+     "Daniel",
+     122
+    ],
+    [
+     "girl",
+     121
+    ],
+    [
+     "black",
+     115
+    ],
+    [
+     "Black",
+     115
+    ],
+    [
+     "dead",
+     105
+    ],
+    [
+     "Martin",
+     105
+    ],
+    [
+     "House",
+     104
+    ],
+    [
+     "house",
+     104
+    ],
+    [
+     "Love, Rosie",
+     100
+    ],
+    [
+     "story",
+     94
+    ],
+    [
+     "king",
+     94
+    ],
+    [
+     "Adam",
+     93
+    ]
+   ]
+  },
+  "V6e": {
+   "edges": 58470,
+   "mean_degree": 2.705,
+   "isolated": 8954,
+   "isolated_share": 0.2071,
+   "max_out_degree": 9,
+   "max_in_degree": 577,
+   "ambiguous": 28126,
+   "already_kb_pair": 0.018,
+   "top_in": [
+    [
+     "john",
+     577
+    ],
+    [
+     "Michael",
+     437
+    ],
+    [
+     "Yves Robert",
+     369
+    ],
+    [
+     "Christopher St. John",
+     345
+    ],
+    [
+     "Paul",
+     234
+    ],
+    [
+     "Ren\u00e9 Peter",
+     222
+    ],
+    [
+     "love",
+     219
+    ],
+    [
+     "Love",
+     219
+    ],
+    [
+     "Warren William",
+     207
+    ],
+    [
+     "James St. James",
+     193
+    ],
+    [
+     "Al St. John",
+     179
+    ],
+    [
+     "Laura E. Richard",
+     172
+    ],
+    [
+     "The Mark",
+     172
+    ],
+    [
+     "night",
+     151
+    ],
+    [
+     "Alki David",
+     146
+    ],
+    [
+     "Jack",
+     145
+    ],
+    [
+     "Frank",
+     136
+    ],
+    [
+     "Leo the Last",
+     127
+    ],
+    [
+     "life",
+     125
+    ],
+    [
+     "Life",
+     125
+    ]
+   ]
+  },
+  "V6": {
+   "edges": 57730,
+   "mean_degree": 2.671,
+   "isolated": 8954,
+   "isolated_share": 0.2071,
+   "max_out_degree": 9,
+   "max_in_degree": 577,
+   "ambiguous": 36209,
+   "already_kb_pair": 0.0168,
+   "top_in": [
+    [
+     "john",
+     577
+    ],
+    [
+     "Michael",
+     421
+    ],
+    [
+     "Yves Robert",
+     369
+    ],
+    [
+     "Christopher St. John",
+     345
+    ],
+    [
+     "Ren\u00e9 Peter",
+     222
+    ],
+    [
+     "love",
+     219
+    ],
+    [
+     "Warren William",
+     207
+    ],
+    [
+     "James St. James",
+     193
+    ],
+    [
+     "Al St. John",
+     179
+    ],
+    [
+     "Laura E. Richard",
+     172
+    ],
+    [
+     "The Mark",
+     172
+    ],
+    [
+     "Paul",
+     167
+    ],
+    [
+     "night",
+     151
+    ],
+    [
+     "Alki David",
+     146
+    ],
+    [
+     "Leo the Last",
+     127
+    ],
+    [
+     "life",
+     125
+    ],
+    [
+     "Jack",
+     125
+    ],
+    [
+     "girl",
+     121
+    ],
+    [
+     "Daniel",
+     118
+    ],
+    [
+     "black",
+     115
+    ]
+   ]
+  }
+ },
+ "V0_c3": {
+  "mentions": {
+   "edges": 26938,
+   "mean_degree": 1.246,
+   "isolated": 22706,
+   "isolated_share": 0.5252,
+   "max_out_degree": 8,
+   "max_in_degree": 577
+  }
+ }
+}

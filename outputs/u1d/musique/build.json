@@ -1,0 +1,28 @@
+{
+ "dataset": "musique",
+ "variant": "V2",
+ "n_nodes": 117534,
+ "mention_edges": 2302233,
+ "kb_triples_kept": 0,
+ "mention_rel_id": 0,
+ "structural_u": {
+  "edges": 2302233,
+  "mean_degree": 39.176,
+  "isolated": 18174,
+  "isolated_share": 0.1546,
+  "max_out_degree": 796,
+  "max_in_degree": 14152
+ },
+ "package_structural": {
+  "edges": 2744076,
+  "mean_degree": 46.694,
+  "isolated": 9858,
+  "isolated_share": 0.0839,
+  "max_out_degree": 796,
+  "max_in_degree": 14152
+ },
+ "npz_sha256": "2f573d226682a574de7d7d7cbf26689bf5d17bfbe324445caa80b42da9e541a7",
+ "u1d_sha256": "a32fdaf3b4b20063fb3432236e8fc04718d8e98757b4aaf09fdaf27b95e97556",
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+}

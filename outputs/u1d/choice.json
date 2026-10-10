@@ -1,0 +1,97 @@
+{
+ "rule": "highest mean directed F1 over 2wiki and hotpotqa; within 0.005 the earlier (simpler) variant",
+ "mean_f1": {
+  "V2": 0.379,
+  "V5e": 0.3273,
+  "V5": 0.2939,
+  "V6e": 0.3424,
+  "V6": 0.3619
+ },
+ "chosen": "V2",
+ "per_dataset": {
+  "2wiki": {
+   "V2": {
+    "rule": 71904846,
+    "reference": 28963600,
+    "both": 16401707,
+    "precision": 0.2281,
+    "recall": 0.5663,
+    "f1": 0.3252
+   },
+   "V5e": {
+    "rule": 80002582,
+    "reference": 28963600,
+    "both": 16699502,
+    "precision": 0.2087,
+    "recall": 0.5766,
+    "f1": 0.3065
+   },
+   "V5": {
+    "rule": 78079867,
+    "reference": 28963600,
+    "both": 15434691,
+    "precision": 0.1977,
+    "recall": 0.5329,
+    "f1": 0.2884
+   },
+   "V6e": {
+    "rule": 79812649,
+    "reference": 28963600,
+    "both": 16741848,
+    "precision": 0.2098,
+    "recall": 0.578,
+    "f1": 0.3079
+   },
+   "V6": {
+    "rule": 44961745,
+    "reference": 28963600,
+    "both": 13234570,
+    "precision": 0.2944,
+    "recall": 0.4569,
+    "f1": 0.3581
+   }
+  },
+  "hotpotqa": {
+   "V2": {
+    "rule": 32603680,
+    "reference": 15367541,
+    "both": 10378762,
+    "precision": 0.3183,
+    "recall": 0.6754,
+    "f1": 0.4327
+   },
+   "V5e": {
+    "rule": 47286298,
+    "reference": 15367541,
+    "both": 10906501,
+    "precision": 0.2306,
+    "recall": 0.7097,
+    "f1": 0.3481
+   },
+   "V5": {
+    "rule": 46855597,
+    "reference": 15367541,
+    "both": 9316759,
+    "precision": 0.1988,
+    "recall": 0.6063,
+    "f1": 0.2994
+   },
+   "V6e": {
+    "rule": 42317899,
+    "reference": 15367541,
+    "both": 10869575,
+    "precision": 0.2569,
+    "recall": 0.7073,
+    "f1": 0.3769
+   },
+   "V6": {
+    "rule": 27641818,
+    "reference": 15367541,
+    "both": 7867071,
+    "precision": 0.2846,
+    "recall": 0.5119,
+    "f1": 0.3658
+   }
+  }
+ }
+}

@@ -1,0 +1,39 @@
+{
+ "rule": "highest mean ALL over the five s1sel carves and webqsp's s1eval on GU, among configurations whose mean pool size is at most step 4e's (ratio <= 1); within 0.002 the smaller pools",
+ "configs": {
+  "W0": {
+   "mean_ALL": 0.8808,
+   "size_ratio_to_4e": 0.514
+  },
+  "W0.5": {
+   "mean_ALL": 0.9074,
+   "size_ratio_to_4e": 0.651
+  },
+  "W1": {
+   "mean_ALL": 0.9172,
+   "size_ratio_to_4e": 0.787
+  },
+  "W2": {
+   "mean_ALL": 0.9263,
+   "size_ratio_to_4e": 1.06
+  },
+  "W3": {
+   "mean_ALL": 0.9312,
+   "size_ratio_to_4e": 1.332
+  },
+  "B1": {
+   "mean_ALL": 0.912,
+   "size_ratio_to_4e": 0.787
+  },
+  "B2": {
+   "mean_ALL": 0.9293,
+   "size_ratio_to_4e": 1.06
+  },
+  "B3": {
+   "mean_ALL": 0.936,
+   "size_ratio_to_4e": 1.332
+  }
+ },
+ "chosen": "W1",
+ "utc": "2026-10-10T00:35:58Z"
+}

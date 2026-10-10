@@ -1,0 +1,28 @@
+{
+ "dataset": "2wiki",
+ "variant": "V2",
+ "n_nodes": 5989847,
+ "mention_edges": 71904846,
+ "kb_triples_kept": 0,
+ "mention_rel_id": 0,
+ "structural_u": {
+  "edges": 71904846,
+  "mean_degree": 24.009,
+  "isolated": 170743,
+  "isolated_share": 0.0285,
+  "max_out_degree": 1176,
+  "max_in_degree": 621581
+ },
+ "package_structural": {
+  "edges": 28963600,
+  "mean_degree": 9.671,
+  "isolated": 515830,
+  "isolated_share": 0.0861,
+  "max_out_degree": 305,
+  "max_in_degree": 157983
+ },
+ "npz_sha256": "0218ed7bd36fea7255c975febe147feacc3940007d06ac1ed03ae80c1d650404",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+}

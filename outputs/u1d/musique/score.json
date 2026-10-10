@@ -1,0 +1,472 @@
+{
+ "dataset": "musique",
+ "shards": 1,
+ "package_structural": "title_mention",
+ "variants": {
+  "V2": {
+   "edges": 2302233,
+   "mean_degree": 39.176,
+   "isolated": 18174,
+   "isolated_share": 0.1546,
+   "max_out_degree": 796,
+   "max_in_degree": 14152,
+   "ambiguous": 0,
+   "top_in": [
+    [
+     "United States",
+     14152
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ]
+   ]
+  },
+  "V5e": {
+   "edges": 2898119,
+   "mean_degree": 49.315,
+   "isolated": 5219,
+   "isolated_share": 0.0444,
+   "max_out_degree": 806,
+   "max_in_degree": 14152,
+   "ambiguous": 84342,
+   "top_in": [
+    [
+     "United States",
+     14152
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "North (Elvis Costello album)",
+     7060
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ]
+   ]
+  },
+  "V5": {
+   "edges": 2812120,
+   "mean_degree": 47.852,
+   "isolated": 5213,
+   "isolated_share": 0.0444,
+   "max_out_degree": 804,
+   "max_in_degree": 14152,
+   "ambiguous": 141347,
+   "top_in": [
+    [
+     "United States",
+     14152
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "North (Elvis Costello album)",
+     7060
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ]
+   ]
+  },
+  "V6e": {
+   "edges": 3532819,
+   "mean_degree": 60.116,
+   "isolated": 926,
+   "isolated_share": 0.0079,
+   "max_out_degree": 865,
+   "max_in_degree": 14152,
+   "ambiguous": 530481,
+   "top_in": [
+    [
+     "United States",
+     14152
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "AIDS United",
+     6050
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6025
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ],
+    [
+     "University",
+     6024
+    ]
+   ]
+  },
+  "V6": {
+   "edges": 2980517,
+   "mean_degree": 50.718,
+   "isolated": 1054,
+   "isolated_share": 0.009,
+   "max_out_degree": 771,
+   "max_in_degree": 14152,
+   "ambiguous": 635037,
+   "top_in": [
+    [
+     "United States",
+     14152
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "United States",
+     14151
+    ],
+    [
+     "AIDS United",
+     6050
+    ],
+    [
+     "The Greatest American",
+     5728
+    ],
+    [
+     "September, gouden roos",
+     5575
+    ],
+    [
+     "Don January",
+     5566
+    ],
+    [
+     "Marigolds in August (film)",
+     5166
+    ],
+    [
+     "Sweet November (2001 film)",
+     5108
+    ],
+    [
+     "February",
+     4763
+    ],
+    [
+     "Growing Up American",
+     4656
+    ],
+    [
+     "Hebrew National",
+     3839
+    ],
+    [
+     "The Fighting American",
+     3542
+    ],
+    [
+     "Death in June",
+     3137
+    ],
+    [
+     "Square United",
+     2858
+    ],
+    [
+     "Morvant Caledonia United",
+     2671
+    ]
+   ]
+  }
+ },
+ "V0_c3": {
+  "mentions": {
+   "edges": 2744076,
+   "mean_degree": 46.694,
+   "isolated": 9858,
+   "isolated_share": 0.0839,
+   "max_out_degree": 796,
+   "max_in_degree": 14152
+  }
+ }
+}

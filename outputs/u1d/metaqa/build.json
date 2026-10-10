@@ -1,0 +1,28 @@
+{
+ "dataset": "metaqa",
+ "variant": "V2",
+ "n_nodes": 43234,
+ "mention_edges": 20895,
+ "kb_triples_kept": 133582,
+ "mention_rel_id": 9,
+ "structural_u": {
+  "edges": 154477,
+  "mean_degree": 7.146,
+  "isolated": 0,
+  "isolated_share": 0.0,
+  "max_out_degree": 62,
+  "max_in_degree": 4176
+ },
+ "package_structural": {
+  "edges": 133582,
+  "mean_degree": 6.179,
+  "isolated": 0,
+  "isolated_share": 0.0,
+  "max_out_degree": 61,
+  "max_in_degree": 4176
+ },
+ "npz_sha256": "3c51f930a5925efbb4e42d40c6009f1542e6109cfe3a467197ca5cb29775754a",
+ "u1d_sha256": "836a25e0d22dd833c858d617fdf29a141b6b14a202d19a0af0d3a99a5ce3c5c0",
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+}

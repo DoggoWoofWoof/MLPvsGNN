@@ -1,0 +1,38 @@
+{
+ "verdict": "DATA_LIMITED",
+ "rule": "DATA_LIMITED if the half fits read LOSS (seed null) on >= 2 reads",
+ "half": {
+  "loss": [
+   "L-musique 2wiki in-domain",
+   "L-musique webqsp zero-shot",
+   "L-hotpotqa 2wiki in-domain",
+   "L-hotpotqa webqsp zero-shot"
+  ],
+  "gain": [],
+  "mean_delta": -0.009575,
+  "reads": 12
+ },
+ "quarter": {
+  "loss": [
+   "L-musique metaqa in-domain",
+   "L-musique squad in-domain",
+   "L-musique hotpotqa in-domain",
+   "L-musique 2wiki in-domain",
+   "L-musique webqsp zero-shot",
+   "L-hotpotqa metaqa in-domain",
+   "L-hotpotqa squad in-domain",
+   "L-hotpotqa musique in-domain",
+   "L-hotpotqa 2wiki in-domain",
+   "L-hotpotqa webqsp zero-shot"
+  ],
+  "gain": [],
+  "mean_delta": -0.025041666666666667,
+  "reads": 12
+ },
+ "files": {
+  "half": "outputs\\screen\\dsx-h2-pair-recall.json",
+  "quarter": "outputs\\screen\\dsx-q4-pair-recall.json"
+ },
+ "zds_sha256": "8d093e09507ec082911dfe57221e139672d28912d75284935d1096ad4d363a3f",
+ "utc": "2026-10-09T23:37:07Z"
+}

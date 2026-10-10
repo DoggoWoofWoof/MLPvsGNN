@@ -1,0 +1,472 @@
+{
+ "dataset": "squad",
+ "shards": 1,
+ "package_structural": "title_mention",
+ "variants": {
+  "V2": {
+   "edges": 495843,
+   "mean_degree": 49.013,
+   "isolated": 12309,
+   "isolated_share": 0.6084,
+   "max_out_degree": 381,
+   "max_in_degree": 837,
+   "ambiguous": 0,
+   "top_in": [
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ]
+   ]
+  },
+  "V5e": {
+   "edges": 566356,
+   "mean_degree": 55.983,
+   "isolated": 11633,
+   "isolated_share": 0.575,
+   "max_out_degree": 381,
+   "max_in_degree": 837,
+   "ambiguous": 0,
+   "top_in": [
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ]
+   ]
+  },
+  "V5": {
+   "edges": 566356,
+   "mean_degree": 55.983,
+   "isolated": 11633,
+   "isolated_share": 0.575,
+   "max_out_degree": 381,
+   "max_in_degree": 837,
+   "ambiguous": 0,
+   "top_in": [
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ]
+   ]
+  },
+  "V6e": {
+   "edges": 566356,
+   "mean_degree": 55.983,
+   "isolated": 11633,
+   "isolated_share": 0.575,
+   "max_out_degree": 381,
+   "max_in_degree": 837,
+   "ambiguous": 0,
+   "top_in": [
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ]
+   ]
+  },
+  "V6": {
+   "edges": 566356,
+   "mean_degree": 55.983,
+   "isolated": 11633,
+   "isolated_share": 0.575,
+   "max_out_degree": 381,
+   "max_in_degree": 837,
+   "ambiguous": 0,
+   "top_in": [
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     837
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ],
+    [
+     "University",
+     836
+    ]
+   ]
+  }
+ },
+ "V0_c3": {
+  "mentions": {
+   "edges": 874190,
+   "mean_degree": 86.412,
+   "isolated": 6349,
+   "isolated_share": 0.3138,
+   "max_out_degree": 414,
+   "max_in_degree": 2433
+  }
+ }
+}

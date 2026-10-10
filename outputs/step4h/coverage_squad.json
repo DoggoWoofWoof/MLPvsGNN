@@ -1,0 +1,138 @@
+{
+ "declared_in": "docs/STEP4H_U_POOLS.md",
+ "dataset": "squad",
+ "arm": "A3",
+ "ks": [
+  "0",
+  "0.5",
+  "1",
+  "2",
+  "3"
+ ],
+ "bridge_ks": [
+  1,
+  2,
+  3
+ ],
+ "top": 10,
+ "script_sha256": "91e1acfc132081b99291ed0e947da7de7130f765dbb8129d83ffb430bfc0609f",
+ "step4e_sha256": "246c0166f0a452458a89982d5125e76c5f66946c9586fb3f0d181fafc72f3ec4",
+ "host": true,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "carves": {
+  "s1sel": {
+   "questions": 1498,
+   "B_q_mean": 50.0,
+   "bs_mean": 50.0,
+   "step4e": {
+    "ALL": 0.992,
+    "recall": 0.992,
+    "pool": 150.1
+   },
+   "graphs": {
+    "G0": {
+     "I": {
+      "ALL": 0.9793,
+      "recall": 0.9793,
+      "pool": 50.0
+     },
+     "U": {
+      "ALL": 0.9793,
+      "recall": 0.9793,
+      "pool": 50.0
+     },
+     "W0": {
+      "ALL": 0.9793,
+      "recall": 0.9793,
+      "pool": 50.0
+     },
+     "W0.5": {
+      "ALL": 0.9833,
+      "recall": 0.9833,
+      "pool": 75.1
+     },
+     "W1": {
+      "ALL": 0.9887,
+      "recall": 0.9887,
+      "pool": 100.1
+     },
+     "W2": {
+      "ALL": 0.992,
+      "recall": 0.992,
+      "pool": 150.1
+     },
+     "W3": {
+      "ALL": 0.9933,
+      "recall": 0.9933,
+      "pool": 200.2
+     },
+     "identity_to_step4e": {
+      "I": true,
+      "U": true,
+      "W": true
+     },
+     "seconds": 1.4
+    }
+   }
+  },
+  "s1eval": {
+   "questions": 11873,
+   "B_q_mean": 50.0,
+   "bs_mean": 50.0,
+   "step4e": {
+    "ALL": 0.9921,
+    "recall": 0.9921,
+    "pool": 150.1
+   },
+   "graphs": {
+    "G0": {
+     "I": {
+      "ALL": 0.9798,
+      "recall": 0.9798,
+      "pool": 50.0
+     },
+     "U": {
+      "ALL": 0.9798,
+      "recall": 0.9798,
+      "pool": 50.0
+     },
+     "W0": {
+      "ALL": 0.9798,
+      "recall": 0.9798,
+      "pool": 50.0
+     },
+     "W0.5": {
+      "ALL": 0.9851,
+      "recall": 0.9851,
+      "pool": 75.1
+     },
+     "W1": {
+      "ALL": 0.9885,
+      "recall": 0.9885,
+      "pool": 100.1
+     },
+     "W2": {
+      "ALL": 0.9921,
+      "recall": 0.9921,
+      "pool": 150.1
+     },
+     "W3": {
+      "ALL": 0.9936,
+      "recall": 0.9936,
+      "pool": 200.1
+     },
+     "identity_to_step4e": {
+      "I": true,
+      "U": true,
+      "W": true
+     },
+     "seconds": 13.2
+    }
+   }
+  }
+ },
+ "GU": {
+  "note": "no graph family is read: GU's pools are G0's (step 4e's RRF pools)"
+ },
+ "utc": "2026-10-09T20:51:26Z"
+}

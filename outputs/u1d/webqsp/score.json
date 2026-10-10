@@ -1,0 +1,477 @@
+{
+ "dataset": "webqsp",
+ "shards": 8,
+ "package_structural": "kb_relation",
+ "variants": {
+  "V2": {
+   "edges": 310816564,
+   "mean_degree": 239.745,
+   "isolated": 166445,
+   "isolated_share": 0.0642,
+   "max_out_degree": 9836,
+   "max_in_degree": 275294,
+   "ambiguous": 0,
+   "already_kb_pair": 0.0144,
+   "top_in": [
+    [
+     "Statistical region",
+     275294
+    ],
+    [
+     "Common",
+     121769
+    ],
+    [
+     "United",
+     70180
+    ],
+    [
+     "United States",
+     62751
+    ],
+    [
+     "Entertainment",
+     51145
+    ],
+    [
+     "Weekly",
+     48335
+    ],
+    [
+     "County",
+     48233
+    ],
+    [
+     "county",
+     48233
+    ],
+    [
+     "Entertainment Weekly",
+     47782
+    ],
+    [
+     "Entertainment Weekly annotation index",
+     47542
+    ],
+    [
+     "World",
+     46625
+    ],
+    [
+     "University",
+     33599
+    ],
+    [
+     "Bank",
+     31502
+    ],
+    [
+     "World Bank",
+     29955
+    ],
+    [
+     "Indicators",
+     29843
+    ],
+    [
+     "Film character",
+     29652
+    ],
+    [
+     "Best",
+     25077
+    ],
+    [
+     "John",
+     24425
+    ],
+    [
+     "Global",
+     24374
+    ],
+    [
+     "Finance",
+     24255
+    ]
+   ]
+  },
+  "V5e": {
+   "edges": 316567673,
+   "mean_degree": 244.181,
+   "isolated": 158769,
+   "isolated_share": 0.0612,
+   "max_out_degree": 9845,
+   "max_in_degree": 275294,
+   "ambiguous": 237954,
+   "already_kb_pair": 0.0142,
+   "top_in": [
+    [
+     "Statistical region",
+     275294
+    ],
+    [
+     "Common",
+     121769
+    ],
+    [
+     "United",
+     70180
+    ],
+    [
+     "United States",
+     62751
+    ],
+    [
+     "Entertainment",
+     51145
+    ],
+    [
+     "Weekly",
+     48335
+    ],
+    [
+     "County",
+     48233
+    ],
+    [
+     "county",
+     48233
+    ],
+    [
+     "Entertainment Weekly",
+     47782
+    ],
+    [
+     "Entertainment Weekly annotation index",
+     47542
+    ],
+    [
+     "World",
+     46625
+    ],
+    [
+     "University",
+     33599
+    ],
+    [
+     "Bank",
+     31502
+    ],
+    [
+     "World Bank",
+     29955
+    ],
+    [
+     "Indicators",
+     29843
+    ],
+    [
+     "Film character",
+     29652
+    ],
+    [
+     "Best",
+     25077
+    ],
+    [
+     "John",
+     24425
+    ],
+    [
+     "Global",
+     24374
+    ],
+    [
+     "Finance",
+     24255
+    ]
+   ]
+  },
+  "V5": {
+   "edges": 316506967,
+   "mean_degree": 244.134,
+   "isolated": 158842,
+   "isolated_share": 0.0613,
+   "max_out_degree": 9845,
+   "max_in_degree": 275294,
+   "ambiguous": 2932338,
+   "already_kb_pair": 0.0137,
+   "top_in": [
+    [
+     "Statistical region",
+     275294
+    ],
+    [
+     "Common",
+     113104
+    ],
+    [
+     "United",
+     70180
+    ],
+    [
+     "Entertainment",
+     51145
+    ],
+    [
+     "Weekly",
+     48335
+    ],
+    [
+     "County",
+     48233
+    ],
+    [
+     "county",
+     48233
+    ],
+    [
+     "Entertainment Weekly",
+     47782
+    ],
+    [
+     "Entertainment Weekly annotation index",
+     47542
+    ],
+    [
+     "United States",
+     36403
+    ],
+    [
+     "Indicators",
+     29843
+    ],
+    [
+     "Film character",
+     29652
+    ],
+    [
+     "University, Denver",
+     26846
+    ],
+    [
+     "United States, with Territories",
+     26349
+    ],
+    [
+     "Global",
+     24374
+    ],
+    [
+     "World",
+     21803
+    ],
+    [
+     "National",
+     21487
+    ],
+    [
+     "Best",
+     20777
+    ],
+    [
+     "World Bank, World Development Indicators, Gross Domestic Pro",
+     20122
+    ],
+    [
+     "Festival",
+     19965
+    ]
+   ]
+  },
+  "V6e": {
+   "edges": 317148546,
+   "mean_degree": 244.629,
+   "isolated": 117034,
+   "isolated_share": 0.0451,
+   "max_out_degree": 9845,
+   "max_in_degree": 275294,
+   "ambiguous": 1067235,
+   "already_kb_pair": 0.0142,
+   "top_in": [
+    [
+     "Statistical region",
+     275294
+    ],
+    [
+     "Common",
+     121769
+    ],
+    [
+     "United",
+     70180
+    ],
+    [
+     "United States",
+     62751
+    ],
+    [
+     "Entertainment",
+     51145
+    ],
+    [
+     "Weekly",
+     48335
+    ],
+    [
+     "County",
+     48233
+    ],
+    [
+     "county",
+     48233
+    ],
+    [
+     "Entertainment Weekly",
+     47782
+    ],
+    [
+     "Entertainment Weekly annotation index",
+     47542
+    ],
+    [
+     "World",
+     46625
+    ],
+    [
+     "University",
+     33599
+    ],
+    [
+     "Bank",
+     31502
+    ],
+    [
+     "World Bank",
+     29955
+    ],
+    [
+     "Indicators",
+     29843
+    ],
+    [
+     "Film character",
+     29652
+    ],
+    [
+     "Best",
+     25077
+    ],
+    [
+     "John",
+     24425
+    ],
+    [
+     "Global",
+     24374
+    ],
+    [
+     "Finance",
+     24255
+    ]
+   ]
+  },
+  "V6": {
+   "edges": 314295765,
+   "mean_degree": 242.429,
+   "isolated": 186399,
+   "isolated_share": 0.0719,
+   "max_out_degree": 9845,
+   "max_in_degree": 275294,
+   "ambiguous": 3939029,
+   "already_kb_pair": 0.0125,
+   "top_in": [
+    [
+     "Statistical region",
+     275294
+    ],
+    [
+     "United",
+     52464
+    ],
+    [
+     "county",
+     48233
+    ],
+    [
+     "Entertainment Weekly",
+     47782
+    ],
+    [
+     "Entertainment Weekly annotation index",
+     47542
+    ],
+    [
+     "Nothing In Common",
+     38103
+    ],
+    [
+     "United States",
+     36403
+    ],
+    [
+     "Something In Common",
+     29988
+    ],
+    [
+     "World Bank, World Development Indicators",
+     29842
+    ],
+    [
+     "Film character",
+     29652
+    ],
+    [
+     "United States, with Territories",
+     26349
+    ],
+    [
+     "United States Census",
+     22439
+    ],
+    [
+     "World Bank, World Development Indicators, Gross Domestic Pro",
+     20122
+    ],
+    [
+     "United States Census Bureau",
+     19987
+    ],
+    [
+     "festival",
+     19965
+    ],
+    [
+     "United States Census Bureau, Population",
+     19945
+    ],
+    [
+     "Russell Common",
+     19156
+    ],
+    [
+     "United States Dollar",
+     18066
+    ],
+    [
+     "Playing 'In the Company of Men'",
+     16776
+    ],
+    [
+     "music",
+     15590
+    ]
+   ]
+  }
+ },
+ "V0_c3": {
+  "mentions": {
+   "edges": 321938109,
+   "mean_degree": 248.323,
+   "isolated": 108957,
+   "isolated_share": 0.042,
+   "max_out_degree": 9841,
+   "max_in_degree": 1588545
+  }
+ }
+}

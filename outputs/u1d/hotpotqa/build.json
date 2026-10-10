@@ -1,0 +1,28 @@
+{
+ "dataset": "hotpotqa",
+ "variant": "V2",
+ "n_nodes": 5233329,
+ "mention_edges": 32603680,
+ "kb_triples_kept": 0,
+ "mention_rel_id": 0,
+ "structural_u": {
+  "edges": 32603680,
+  "mean_degree": 12.46,
+  "isolated": 218740,
+  "isolated_share": 0.0418,
+  "max_out_degree": 128,
+  "max_in_degree": 376466
+ },
+ "package_structural": {
+  "edges": 15367541,
+  "mean_degree": 5.873,
+  "isolated": 551848,
+  "isolated_share": 0.1054,
+  "max_out_degree": 79,
+  "max_in_degree": 189394
+ },
+ "npz_sha256": "99b1a9c2d67d7b8ddd2e24d5c2c90637e9089054d660b30dd05e3dedf9ae2424",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+}

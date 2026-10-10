@@ -1,0 +1,28 @@
+{
+ "dataset": "squad",
+ "variant": "V2",
+ "n_nodes": 20233,
+ "mention_edges": 495843,
+ "kb_triples_kept": 0,
+ "mention_rel_id": 0,
+ "structural_u": {
+  "edges": 495843,
+  "mean_degree": 49.013,
+  "isolated": 12309,
+  "isolated_share": 0.6084,
+  "max_out_degree": 381,
+  "max_in_degree": 837
+ },
+ "package_structural": {
+  "edges": 874190,
+  "mean_degree": 86.412,
+  "isolated": 6349,
+  "isolated_share": 0.3138,
+  "max_out_degree": 414,
+  "max_in_degree": 2433
+ },
+ "npz_sha256": "62cf320aa7f41a8f977673af467f1f44cc28369d23ac05aa56c85ad1f2194f0b",
+ "u1d_sha256": "a32fdaf3b4b20063fb3432236e8fc04718d8e98757b4aaf09fdaf27b95e97556",
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+}

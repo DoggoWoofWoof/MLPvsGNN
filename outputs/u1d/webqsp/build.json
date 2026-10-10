@@ -1,0 +1,28 @@
+{
+ "dataset": "webqsp",
+ "variant": "V2",
+ "n_nodes": 2592894,
+ "mention_edges": 310816564,
+ "kb_triples_kept": 8309195,
+ "mention_rel_id": 7058,
+ "structural_u": {
+  "edges": 319125759,
+  "mean_degree": 246.154,
+  "isolated": 0,
+  "isolated_share": 0.0,
+  "max_out_degree": 9935,
+  "max_in_degree": 276020
+ },
+ "package_structural": {
+  "edges": 8309195,
+  "mean_degree": 6.409,
+  "isolated": 0,
+  "isolated_share": 0.0,
+  "max_out_degree": 2186,
+  "max_in_degree": 134935
+ },
+ "npz_sha256": "3ae467e80301cb21df59c1100454f8496b0852ab77abb975af557cdb0a9919e9",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+}
