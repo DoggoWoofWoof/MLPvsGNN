@@ -1,0 +1,15 @@
+{
+ "declared_in": "docs/U1E_DAMPED_LINKS.md",
+ "dataset": "metaqa",
+ "cap": 16384,
+ "n_nodes": 43234,
+ "mention_rel_id": 9,
+ "variant": "V2-cap16384",
+ "u1d_npz_sha256": "3c51f930a5925efbb4e42d40c6009f1542e6109cfe3a467197ca5cb29775754a",
+ "mention_edges": 20895,
+ "mention_kept": 20895,
+ "kb_triples_kept": 133582,
+ "u1e_sha256": "c87ec91ce2d69672e0406f85cc07d34aadd79fee30bb402d0ce5ad119d0641cc",
+ "removed_share": 0.0,
+ "same_as_gu": true
+}

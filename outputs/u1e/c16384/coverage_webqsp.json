@@ -1,0 +1,158 @@
+{
+ "declared_in": "docs/STEP4H_U_POOLS.md",
+ "dataset": "webqsp",
+ "arm": "A3",
+ "ks": [
+  "0",
+  "0.5",
+  "1",
+  "2",
+  "3"
+ ],
+ "bridge_ks": [
+  1,
+  2,
+  3
+ ],
+ "top": 10,
+ "script_sha256": "91e1acfc132081b99291ed0e947da7de7130f765dbb8129d83ffb430bfc0609f",
+ "step4e_sha256": "246c0166f0a452458a89982d5125e76c5f66946c9586fb3f0d181fafc72f3ec4",
+ "host": true,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "carves": {
+  "s1eval": {
+   "questions": 1503,
+   "B_q_mean": 1919.4,
+   "bs_mean": 200.5,
+   "step4e": {
+    "ALL": 0.9088,
+    "recall": 0.9655,
+    "pool": 7212.8
+   },
+   "graphs": {
+    "G0": {
+     "I": {
+      "ALL": 0.688,
+      "recall": 0.811,
+      "pool": 2119.9
+     },
+     "U": {
+      "ALL": 0.8377,
+      "recall": 0.9211,
+      "pool": 3374.0
+     },
+     "W0": {
+      "ALL": 0.8377,
+      "recall": 0.9211,
+      "pool": 3374.0
+     },
+     "W0.5": {
+      "ALL": 0.8736,
+      "recall": 0.9482,
+      "pool": 4333.7
+     },
+     "W1": {
+      "ALL": 0.8929,
+      "recall": 0.9585,
+      "pool": 5293.4
+     },
+     "W2": {
+      "ALL": 0.9088,
+      "recall": 0.9655,
+      "pool": 7212.8
+     },
+     "W3": {
+      "ALL": 0.9148,
+      "recall": 0.9693,
+      "pool": 9132.2
+     },
+     "B1": {
+      "ALL": 0.8816,
+      "recall": 0.9479,
+      "pool": 5293.4
+     },
+     "B2": {
+      "ALL": 0.9142,
+      "recall": 0.9651,
+      "pool": 7212.8
+     },
+     "B3": {
+      "ALL": 0.9215,
+      "recall": 0.9699,
+      "pool": 9132.2
+     },
+     "identity_to_step4e": {
+      "I": true,
+      "U": true,
+      "W": true
+     },
+     "seconds": 170.1
+    },
+    "GU": {
+     "I": {
+      "ALL": 0.6747,
+      "recall": 0.802,
+      "pool": 2121.4
+     },
+     "U": {
+      "ALL": 0.8031,
+      "recall": 0.8959,
+      "pool": 3329.0
+     },
+     "W0": {
+      "ALL": 0.8031,
+      "recall": 0.8959,
+      "pool": 3329.0
+     },
+     "W0.5": {
+      "ALL": 0.835,
+      "recall": 0.9256,
+      "pool": 4288.8
+     },
+     "W1": {
+      "ALL": 0.8589,
+      "recall": 0.9411,
+      "pool": 5248.4
+     },
+     "W2": {
+      "ALL": 0.8789,
+      "recall": 0.9512,
+      "pool": 7167.8
+     },
+     "W3": {
+      "ALL": 0.8862,
+      "recall": 0.9554,
+      "pool": 9087.2
+     },
+     "B1": {
+      "ALL": 0.8436,
+      "recall": 0.9218,
+      "pool": 5248.4
+     },
+     "B2": {
+      "ALL": 0.8836,
+      "recall": 0.9518,
+      "pool": 7167.8
+     },
+     "B3": {
+      "ALL": 0.8989,
+      "recall": 0.9582,
+      "pool": 9087.2
+     },
+     "seconds": 140.1
+    }
+   }
+  }
+ },
+ "GU": {
+  "variant": "V2-cap16384",
+  "npz_sha256": "437f5948bc7127a3fff0a3ddc6bae36aae00b13c036d144c0cd4f525736274c7",
+  "edges": 317790289
+ },
+ "utc": "2026-10-10T03:00:15Z",
+ "u1e": {
+  "cap": 16384,
+  "u1e_sha256": "c87ec91ce2d69672e0406f85cc07d34aadd79fee30bb402d0ce5ad119d0641cc",
+  "build": "437f5948bc7127a3fff0a3ddc6bae36aae00b13c036d144c0cd4f525736274c7"
+ }
+}

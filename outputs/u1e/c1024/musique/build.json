@@ -1,0 +1,24 @@
+{
+ "declared_in": "docs/U1E_DAMPED_LINKS.md",
+ "dataset": "musique",
+ "cap": 1024,
+ "n_nodes": 117534,
+ "mention_rel_id": 0,
+ "variant": "V2-cap1024",
+ "u1d_npz_sha256": "2f573d226682a574de7d7d7cbf26689bf5d17bfbe324445caa80b42da9e541a7",
+ "mention_edges": 2302233,
+ "mention_kept": 1355991,
+ "kb_triples_kept": 0,
+ "u1e_sha256": "c87ec91ce2d69672e0406f85cc07d34aadd79fee30bb402d0ce5ad119d0641cc",
+ "removed_share": 0.411,
+ "npz_sha256": "5b357dfbbdee2ed1997b5efb2f6013667998cdea1688cfd9cb80622e22041be9",
+ "edges": 1355991,
+ "structural_u": {
+  "edges": 1355991,
+  "mean_degree": 23.074,
+  "isolated": 32000,
+  "isolated_share": 0.2723,
+  "max_out_degree": 734,
+  "max_in_degree": 919
+ }
+}

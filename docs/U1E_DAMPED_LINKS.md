@@ -65,4 +65,26 @@ python outputs/mp_unified/u1e.py choose                                   -> out
 
 ## Results
 
-Not yet run.
+Run 10 October 2026, 08:42 (outputs/u1e/choice.json, report.md; builds and coverages under outputs/u1e/c<c>/).
+
+**Chosen: c = 1,024.** It has the highest mean ALL, and it is also the smallest c.
+
+| c | mean ALL (W1, six choice reads) | pool / step 4e | 2wiki s1sel | hotpotqa s1sel | musique s1sel | webqsp s1eval | F1 2wiki | F1 hotpotqa |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1,024 | **0.9227** | **0.735** | 0.8971 | 0.8985 | 0.9302 | 0.8749 | 0.3954 | 0.4667 |
+| 4,096 | 0.9224 | 0.750 | 0.8951 | 0.9012 | 0.9368 | 0.8663 | 0.3936 | 0.4742 |
+| 16,384 | 0.9200 | 0.763 | 0.8864 | 0.9025 | 0.9368 | 0.8589 | 0.3904 | 0.4851 |
+| ∞ (GU) | 0.9172 | 0.787 | 0.8697 | 0.9045 | 0.9368 | 0.8570 | 0.3252 | 0.4327 |
+
+- metaqa (0.9466) and squad (0.9887) are the same at every c: no link is removed on either.
+- **Against GU**: 2wiki gains +0.027 and webqsp +0.018; hotpotqa loses 0.006 and musique 0.007 on s1sel. Pools are 7%
+  smaller.
+- **On s1eval** (not read by the choice): 2wiki 0.8949 against 0.8731, hotpotqa 0.8894 against 0.8963, musique 0.9264
+  against 0.9243, and webqsp 0.8749 against 0.8570.
+- **Links removed at c = 1,024**: 41% of musique's mention links, 63% of 2wiki's, 59% of hotpotqa's and 97.5% of
+  webqsp's (16.1M edges kept). Every KB triple is kept.
+- The hyperlink F1 rises on both datasets against GU. On hotpotqa it peaks at a larger c (16,384); that is reported,
+  not chosen.
+
+**What follows**: c = 1,024 is not ∞, so the U1c rerun on GU_1024 is declared in its own file
+(docs/U1F_RETRAIN_ON_GU1024.md). U1c's screen on GU keeps running.

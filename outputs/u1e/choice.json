@@ -1,0 +1,201 @@
+{
+ "rule": "highest mean ALL of W1 over step 4h's six reads (five s1sel, webqsp s1eval) among caps whose mean pool size is at most step 4e's; within 0.002 the smaller c",
+ "configs": {
+  "1024": {
+   "mean_ALL": 0.9227,
+   "size_ratio_to_4e": 0.735,
+   "reads": {
+    "metaqa/s1sel": {
+     "ALL": 0.9466,
+     "pool": 5099.0,
+     "from": "step4h"
+    },
+    "musique/s1sel": {
+     "ALL": 0.9302,
+     "pool": 4873.8,
+     "from": "u1e c1024"
+    },
+    "squad/s1sel": {
+     "ALL": 0.9887,
+     "pool": 100.1,
+     "from": "step4h"
+    },
+    "2wiki/s1sel": {
+     "ALL": 0.8971,
+     "pool": 178.3,
+     "from": "u1e c1024"
+    },
+    "hotpotqa/s1sel": {
+     "ALL": 0.8985,
+     "pool": 146.5,
+     "from": "u1e c1024"
+    },
+    "webqsp/s1eval": {
+     "ALL": 0.8749,
+     "pool": 5260.3,
+     "from": "u1e c1024"
+    }
+   },
+   "s1eval": {
+    "metaqa": 0.9381,
+    "musique": 0.9264,
+    "squad": 0.9885,
+    "2wiki": 0.8949,
+    "hotpotqa": 0.8894,
+    "webqsp": 0.8749
+   }
+  },
+  "4096": {
+   "mean_ALL": 0.9224,
+   "size_ratio_to_4e": 0.75,
+   "reads": {
+    "metaqa/s1sel": {
+     "ALL": 0.9466,
+     "pool": 5099.0,
+     "from": "step4h"
+    },
+    "musique/s1sel": {
+     "ALL": 0.9368,
+     "pool": 4958.9,
+     "from": "u1e c4096"
+    },
+    "squad/s1sel": {
+     "ALL": 0.9887,
+     "pool": 100.1,
+     "from": "step4h"
+    },
+    "2wiki/s1sel": {
+     "ALL": 0.8951,
+     "pool": 190.5,
+     "from": "u1e c4096"
+    },
+    "hotpotqa/s1sel": {
+     "ALL": 0.9012,
+     "pool": 151.5,
+     "from": "u1e c4096"
+    },
+    "webqsp/s1eval": {
+     "ALL": 0.8663,
+     "pool": 5252.9,
+     "from": "u1e c4096"
+    }
+   },
+   "s1eval": {
+    "metaqa": 0.9381,
+    "musique": 0.9255,
+    "squad": 0.9885,
+    "2wiki": 0.8918,
+    "hotpotqa": 0.8953,
+    "webqsp": 0.8663
+   }
+  },
+  "16384": {
+   "mean_ALL": 0.92,
+   "size_ratio_to_4e": 0.763,
+   "reads": {
+    "metaqa/s1sel": {
+     "ALL": 0.9466,
+     "pool": 5099.0,
+     "from": "step4h"
+    },
+    "musique/s1sel": {
+     "ALL": 0.9368,
+     "pool": 4965.5,
+     "from": "step4h"
+    },
+    "squad/s1sel": {
+     "ALL": 0.9887,
+     "pool": 100.1,
+     "from": "step4h"
+    },
+    "2wiki/s1sel": {
+     "ALL": 0.8864,
+     "pool": 201.4,
+     "from": "u1e c16384"
+    },
+    "hotpotqa/s1sel": {
+     "ALL": 0.9025,
+     "pool": 156.0,
+     "from": "u1e c16384"
+    },
+    "webqsp/s1eval": {
+     "ALL": 0.8589,
+     "pool": 5248.4,
+     "from": "u1e c16384"
+    }
+   },
+   "s1eval": {
+    "metaqa": 0.9381,
+    "musique": 0.9243,
+    "squad": 0.9885,
+    "2wiki": 0.8849,
+    "hotpotqa": 0.8948,
+    "webqsp": 0.8589
+   }
+  },
+  "inf": {
+   "mean_ALL": 0.9172,
+   "size_ratio_to_4e": 0.787,
+   "reads": {
+    "metaqa/s1sel": {
+     "ALL": 0.9466,
+     "pool": 5099.0,
+     "from": "step4h"
+    },
+    "musique/s1sel": {
+     "ALL": 0.9368,
+     "pool": 4965.5,
+     "from": "step4h"
+    },
+    "squad/s1sel": {
+     "ALL": 0.9887,
+     "pool": 100.1,
+     "from": "step4h"
+    },
+    "2wiki/s1sel": {
+     "ALL": 0.8697,
+     "pool": 220.3,
+     "from": "step4h"
+    },
+    "hotpotqa/s1sel": {
+     "ALL": 0.9045,
+     "pool": 167.2,
+     "from": "step4h"
+    },
+    "webqsp/s1eval": {
+     "ALL": 0.857,
+     "pool": 5249.3,
+     "from": "step4h"
+    }
+   },
+   "s1eval": {
+    "metaqa": 0.9381,
+    "musique": 0.9243,
+    "squad": 0.9885,
+    "2wiki": 0.8731,
+    "hotpotqa": 0.8963,
+    "webqsp": 0.857
+   }
+  }
+ },
+ "chosen": "1024",
+ "hyperlink_f1_reported_not_chosen": {
+  "1024": {
+   "2wiki": 0.3954,
+   "hotpotqa": 0.4667
+  },
+  "4096": {
+   "2wiki": 0.3936,
+   "hotpotqa": 0.4742
+  },
+  "16384": {
+   "2wiki": 0.3904,
+   "hotpotqa": 0.4851
+  },
+  "inf": {
+   "2wiki": 0.3252,
+   "hotpotqa": 0.4327
+  }
+ },
+ "utc": "2026-10-10T03:12:01Z"
+}

@@ -1,0 +1,32 @@
+{
+ "declared_in": "docs/U1E_DAMPED_LINKS.md",
+ "dataset": "2wiki",
+ "cap": 4096,
+ "n_nodes": 5989847,
+ "mention_rel_id": 0,
+ "variant": "V2-cap4096",
+ "u1d_npz_sha256": "0218ed7bd36fea7255c975febe147feacc3940007d06ac1ed03ae80c1d650404",
+ "mention_edges": 71904846,
+ "mention_kept": 35544781,
+ "kb_triples_kept": 0,
+ "u1e_sha256": "c87ec91ce2d69672e0406f85cc07d34aadd79fee30bb402d0ce5ad119d0641cc",
+ "removed_share": 0.5057,
+ "npz_sha256": "33fd1a6f7502d3d864856a899e27058b692b763c69503c7601efceac81dd78ed",
+ "edges": 35544781,
+ "structural_u": {
+  "edges": 35544781,
+  "mean_degree": 11.868,
+  "isolated": 341872,
+  "isolated_share": 0.0571,
+  "max_out_degree": 876,
+  "max_in_degree": 4092
+ },
+ "directed": {
+  "rule": 35544781,
+  "reference": 28963600,
+  "both": 12694851,
+  "precision": 0.3572,
+  "recall": 0.4383,
+  "f1": 0.3936
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "declared_in": "docs/U1E_DAMPED_LINKS.md",
+ "dataset": "hotpotqa",
+ "cap": 16384,
+ "n_nodes": 5233329,
+ "mention_rel_id": 0,
+ "variant": "V2-cap16384",
+ "u1d_npz_sha256": "99b1a9c2d67d7b8ddd2e24d5c2c90637e9089054d660b30dd05e3dedf9ae2424",
+ "mention_edges": 32603680,
+ "mention_kept": 21969531,
+ "kb_triples_kept": 0,
+ "u1e_sha256": "c87ec91ce2d69672e0406f85cc07d34aadd79fee30bb402d0ce5ad119d0641cc",
+ "removed_share": 0.3262,
+ "npz_sha256": "22e67e11147baf2569d09ab63dd91ce48da947108aa0cf59cdda09cd88d9bc67",
+ "edges": 21969531,
+ "structural_u": {
+  "edges": 21969531,
+  "mean_degree": 8.396,
+  "isolated": 345756,
+  "isolated_share": 0.0661,
+  "max_out_degree": 123,
+  "max_in_degree": 16246
+ },
+ "directed": {
+  "rule": 21969531,
+  "reference": 15367541,
+  "both": 9055872,
+  "precision": 0.4122,
+  "recall": 0.5893,
+  "f1": 0.4851
+ }
+}
