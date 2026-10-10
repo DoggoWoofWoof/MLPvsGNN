@@ -69,3 +69,36 @@ FastZ6 is within 8.1e-5.
 
 There are no thresholds. If the MLP stays slower cold on webqsp, the paper states Claim 3 on five datasets and gives
 webqsp's number as measured.
+
+## Result (filed 10 October 2026, about 07:05)
+
+Run on the laptop under the protocol above (outputs/c6/{metaqa,webqsp}.json, report.{json,md}).
+
+**Every check passed on every question: 400 of 400.**
+- C5's gating checks pass on its three paths.
+- zrc6's and zsp6's entries equal zrc5's and zsp5's bit for bit.
+- FastZ6 is within 8.8e-5 of the fit's forward, with the same top 5.
+
+**Cold, batch 1, p50 ms per question** (bootstrap 95% CI on the ratios):
+
+| dataset | MLP zrc6 | zsp6 | six GNN gnn5 | **gnn5 / zrc6** | gnn5 / zsp6 | gnn5 / zrc5 (same run) | zrc5 / zrc6 | warm forward gnn5 / zrc6 |
+| --- | ---: | ---: | ---: | --- | --- | --- | --- | --- |
+| metaqa | 40.5 | 42.5 | 97.8 | **2.42 [2.40, 2.44]** | 2.30 [2.29, 2.32] | 2.31 [2.29, 2.34] | 1.05 [1.04, 1.06] | 6.28 [6.23, 6.36] |
+| webqsp | 99.2 | 95.7 | 131.9 | **1.33 [1.27, 1.38]** | 1.38 [1.34, 1.44] | 0.86 [0.79, 0.90] | 1.54 [1.50, 1.62] | 3.63 [3.51, 3.75] |
+
+Stage p50 ms, zrc5 → zrc6:
+
+| dataset | chains | forward |
+| --- | --- | --- |
+| metaqa | 5.64 → 4.51 | 9.71 → 8.97 |
+| webqsp | 84.69 → 39.86 | 27.16 → 17.70 |
+
+### What it says
+
+- **Claim 3 now holds on all six datasets cold**: the MLP is faster than the six GNN on webqsp (1.33×), where C5
+  measured 0.84×. The fits, the entries and the scores are unchanged; only the serving form changed.
+- On webqsp the chain build is still the MLP's largest stage (40 ms of 99). The GNN's compile (49 ms) and forward
+  (66 ms) are at C4/C5's fastest exact form.
+- The remaining chain cost is the walk over ~87,000 entries a question and the step scores over all 7,058 relations.
+  A larger lead on webqsp needs a cheaper chain input in the fit itself (fewer hops or a smaller k_row). That is a
+  training change with its own declaration, not a serving form.
