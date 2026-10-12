@@ -172,4 +172,87 @@ in rotated order (60 questions, twice; not filed) gave zn10 1.15, zsp10 3.33, zn
 
 ## Results
 
-To be filled after the run.
+Run 12 October 2026, 19:01-19:11, on the laptop under the protocol above: pinned to logical processor 2, EcoQoS off,
+above-normal priority, one thread, the session idle. 200 questions per dataset. **Every question passed every check
+on every dataset** (kept 200/200 everywhere). Files: outputs/c10/<dataset>.json and outputs/c10/report.{json,md}.
+
+### The headline: the fastest GNN form over zn10, cold
+
+Cold p50 per question in ms, 95% bootstrap intervals (2,000 resamples). The faster GNN form is zsp10 on all six.
+
+| dataset | zn10 | zsp10 | zsp's filed path | **fastest GNN / zn10** | at least 2× | CI above 2 |
+| --- | ---: | ---: | ---: | --- | --- | --- |
+| 2wiki | 1.11 | 5.79 | 11.68 (zsp4) | **5.22 [3.50, 13.57]** | yes | yes |
+| hotpotqa | 1.05 | 2.78 | 4.73 (zsp4) | **2.65 [2.58, 2.75]** | yes | yes |
+| squad | 0.75 | 2.02 | 3.18 (zsp4) | **2.71 [2.62, 2.86]** | yes | yes |
+| musique | 9.05 | 48.11 | 65.26 (zsp4) | **5.31 [5.20, 5.43]** | yes | yes |
+| metaqa | 7.78 | 30.71 | 44.87 (zsp6) | **3.95 [3.88, 4.01]** | yes | yes |
+| webqsp | 8.86 | 85.07 | 106.35 (zsp6) | **9.61 [9.05, 10.08]** | yes | yes |
+
+Beside it:
+
+| dataset | zsp filed / zn10 | zn4 / zn10 | zsp filed / zsp10 | zsp filed / zn4 | warm forward zsp10 / zn10 (warm) |
+| --- | --- | --- | --- | --- | --- |
+| 2wiki | 10.53 [6.09, 15.21] | 2.43 [2.36, 2.51] | 2.02 [0.45, 4.22] | 4.34 [2.48, 6.27] | 1.43 [1.38, 1.49] |
+| hotpotqa | 4.50 [4.37, 4.76] | 2.40 [2.34, 2.49] | 1.70 [1.64, 1.79] | 1.88 [1.81, 1.99] | 1.44 [1.40, 1.49] |
+| squad | 4.26 [4.12, 4.41] | 2.07 [2.02, 2.16] | 1.57 [1.50, 1.62] | 2.06 [1.98, 2.12] | 1.41 [1.38, 1.44] |
+| musique | 7.21 [7.08, 7.38] | 2.61 [2.55, 2.66] | 1.36 [1.34, 1.38] | 2.77 [2.72, 2.83] | 1.55 [1.51, 1.59] |
+| metaqa | 5.77 [5.69, 5.85] | 2.57 [2.53, 2.61] | 1.46 [1.44, 1.48] | 2.25 [2.21, 2.27] | 1.72 [1.69, 1.76] |
+| webqsp | 12.01 [11.24, 12.66] | 3.09 [2.97, 3.16] | 1.25 [1.21, 1.28] | 3.89 [3.69, 4.08] | 4.12 [3.99, 4.26] |
+
+- **This stage's forms** make zn 2.07-3.09× faster (zn4 / zn10) and zsp 1.25-2.02× faster (zsp filed / zsp10), with
+  the same scores (the checks above).
+- **Where zsp10's cold time goes** (stage p50s, report.md): on musique, the compile 20.3 ms, the lean inputs 13.7, the
+  links 6.1 and the forward 7.1, against 9.05 ms for zn10's whole path. On webqsp, the chain entries 36.3, the compile
+  20.6 and the lean inputs 7.0. The inputs computed over the pool graph's edges are most of the GNN's time.
+- p95 and p99 per path are in report.md.
+
+### 2wiki: two groups of GNN times, from the run's untimed checks
+
+On 2wiki only, whichever GNN path (zsp10 or zsp4) ran first on a question took far longer in its compile than the one
+run after it. Read by group (split after the run; not the declared headline):
+
+| path | first GNN path on the question (100 questions) | after the other GNN path (100) |
+| --- | --- | --- |
+| zsp10 total, p50 | 24.63 ms; / zn10 22.21 [18.28, 28.26] | 2.94 ms; / zn10 2.65 [2.54, 2.84] |
+| zsp4 total, p50 | 25.41 ms | 5.25 ms |
+| zsp10 compile, p50 | 22.66 ms | 1.29 ms |
+
+- The MLP paths do not depend on their position: zn10's p50 is 0.99-1.15 ms at every position.
+- On the other five datasets, the gap between the groups is at most 0.4 ms on the passage graphs (hotpotqa 2.96 against
+  2.64 ms) and 2.4 ms on webqsp.
+- The all-question p50 sits between the two groups, which is why 2wiki's interval is wide.
+
+**The cause is the run's own untimed checks.** A probe and a diagnostic were run after the run; neither is filed.
+- **The probe.** The edge stores the compile reads are held in RAM. The node table is a 17.14 GiB memory map (150 shards
+  of 40,000 rows); hotpotqa's is 14.97 GiB.
+- **The diagnostic.** 40 questions, each running zn10 and then zsp10's compile twice, with nothing else between questions
+  (no checks and no C9-era paths). The first compile's p50 is 2.80 ms and the second's 1.90 ms. The edge read accounts
+  for most of the gap (1.12 against 0.54 ms). The 22 ms does not come back.
+- **The explanation.** C10's run checks every question after its four paths, untimed: module forwards, nodes.read,
+  Store.decode and the filed path's comparisons. On this 16.8 GB laptop that work pushes the edge stores out of the
+  process's memory. The next question's first path that reads them pays the page faults. zn reads no edge, so it never
+  pays.
+- **What this means for zsp's time.** It is not zsp's own cold cost. A server that answers question after question
+  keeps its stores resident. The headline stands as declared. The conservative reading of 2wiki is the second group:
+  zsp10 / zn10 = 2.65 [2.54, 2.84], still above 2.
+- **For later stages.** The checks move out of the timed loop: each timed path records its scores, and a separate
+  untimed pass checks them.
+
+### What it means
+
+- **zn10 is at least 2× faster than the fastest GNN form on all six datasets, with every interval above 2**
+  (2.65-9.61×).
+- **zn is not a model the paper ships.** It keeps 13-73% of zsp's gain (ZN), not the 90% of Claim 1
+  (docs/PAPER_CLAIMS_2026_10_09.md; this file's declaration calls it claim 2). It is the
+  ceiling: how fast an MLP gets when it reads no edge. Together with ZN, it shows that the inputs computed over the
+  edges are both where the GNN's time goes and where the accuracy comes from.
+- **The user, 12 October, after this run:** "all these models should be the best models wrt to the recall coverage
+  etc, we are not removing stuff to make it faster we are making faster keeping the wins". No model loses an input
+  to gain speed.
+- **The next stage, C11,** runs the best models of both families at this stage's forms, every input kept, with the
+  same scores:
+  - the lean pair, zrc and zsp;
+  - the universal pair, the twin and the six GNN.
+- **The lean pair is bounded by construction.** zsp is zrc's inputs plus one propagation step over scores. C9 bounds
+  zsp / zrc under about 1.6×, however cheap the shared stages get. C11 files it as it is.
