@@ -1,4 +1,4 @@
-# Where we stand, 12 October 2026 (22:15)
+# Where we stand, 13 October 2026 (01:00)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -15,7 +15,7 @@ The claims are fixed in [PAPER_CLAIMS_2026_10_09.md](PAPER_CLAIMS_2026_10_09.md)
 | --- | --- | --- |
 | 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). The six-dataset test is the confirmation run's. |
 | 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. |
-| 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.42-1.85×; zrc 2.49-4.15×, webqsp 1.32×). Against the lean GNN, whose message passing is one cheap step, zrc is 0.95-1.18× (section 3). |
+| 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.42-1.85×; zrc 2.49-4.15×, webqsp 1.32×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there yet: zrc is 0.95-1.18× (section 3). |
 
 ## The models
 
@@ -52,8 +52,13 @@ J5 is the fit trained on five datasets. Nothing was chosen on B1.
   HippoRAG 2. On hotpotqa it falls 1.3 points short. Without any links the models fall well below it (77.3 on 2wiki,
   90.0 on hotpotqa), so a few precise edges are what the models need, not an LLM-built graph.
 - **musique: the gap is ranking, not reach.** The pools hold 98.2% of its golds and every gold for 95.3% of questions,
-  but R@5 is 66.3. The gain is on two-hop questions; three- and four-hop questions get almost none
-  ([MUSIQUE_DIAGNOSIS.md](MUSIQUE_DIAGNOSIS.md)).
+  but R@5 is 66.3 ([MUSIQUE_DIAGNOSIS.md](MUSIQUE_DIAGNOSIS.md), [DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md)).
+  - **Where the 8.4 points come from.** Our first stage starts 13.3 points below NV-Embed-v2 (56.4 against 69.7).
+    Our models add 9.9 over it, twice HippoRAG 2's lift over its own encoder (5.0), which wins back 4.9 of the 13.3.
+  - **By hop count** (zsp J5): R@5 is 77.0 on two-hop, 61.8 on three-hop and 41.3 on four-hop questions. 752 of the
+    990 golds it misses are in three- and four-hop questions.
+  - **The missed golds are next to found ones** (D1): 0.38 are direct neighbours of a found gold and 0.77 are within
+    two hops, but among about 45 such neighbours the model ranks the missed gold 5th to 9th.
 - **A training-free rule** (B1d: two of the five slots go to the neighbours of the top passages) is already ABOVE
   on 2wiki (92.8) and close on hotpotqa (95.2). It is not universal: it costs squad and comparison questions (G1a).
 
@@ -108,11 +113,14 @@ one thread. Records: [C11_BOTH_FAMILIES_FAST.md](C11_BOTH_FAMILIES_FAST.md) (int
   - The universal MLP is 1.42-1.85× faster.
   - The lean MLP is 2.49-4.15× faster on five datasets. On webqsp it is 1.32× faster, because its chain entries are its
     largest stage.
+- **No MLP is yet 2× faster than the fastest GNN.** The fastest GNN form is zsp's (zsp10) on all six datasets. zrc is
+  0.95-1.18× faster than it. twin0 is slower than it (zsp10 / twin0 0.52-0.64, 1.09 on webqsp).
 - **Within a family, the MLP does not reach 2×.**
   - **Universal.** The compile both models run is 60-74% of twin0's time. Even if it cost nothing, the ratio would top
     out at 2.04 (2wiki) to 4.20 (musique).
-  - **Lean.** zsp is zrc plus its links and one propagation step over scores, which costs 3-17% of zrc's time. No fair
-    change makes zrc 2× faster than zsp.
+  - **Lean.** zsp is zrc plus its links and one propagation step over scores, which cost 3-17% of zrc's time. Even if
+    everything before the forwards cost nothing (the compile, the lean inputs and the chain entries), zsp / zrc would
+    be 1.17-1.33 on five datasets and 2.13 on musique. These figures are worked out from C11's stage p50s, not timed.
 - **zn**, the lean MLP with every edge-derived input removed, is 2.65-9.61× faster than zsp. It keeps only 13-73% of
   the gain, so it is a ceiling, not a model.
 - **C11's forms made every model faster at the same scores:** twin0 by 1.32-1.52×, gnn0 by 1.16-1.38×, zrc by
@@ -136,8 +144,15 @@ hyperlinks.
 | U1d | Case and corpus-statistic filters (V2 chosen) | Hyperlink F1 0.325 (2wiki), 0.433 (hotpotqa): precision more than doubled, recall 0.57 / 0.68. webqsp still gets 311M mention edges beside 8.3M triples. |
 | U1e | Cap each target's in-degree (c = 1,024 chosen) | F1 rises to 0.395 / 0.467. 97.5% of webqsp's mention links go, every KB triple stays, pools are 0.735 of step 4e's size. |
 | G1a | A fixed bridge-slot rule on all six | NOT universal: ABOVE on four datasets, SAME on musique, BELOW on squad. The trained models are 2.7-66 points above it. |
+| U1c | zrc and zsp refit on U1d's graph with step 4h's pools ([U1C_RETRAIN_ON_U.md](U1C_RETRAIN_ON_U.md)) | NOT_ADOPTED: no GAIN in 24 reads, under the seed null too; zsp loses webqsp zero-shot (−0.056). |
+| U1f | The same on U1e's damped graph, GU_1024 ([U1F_RETRAIN_ON_GU1024.md](U1F_RETRAIN_ON_GU1024.md)) | NOT_ADOPTED: no GAIN in 24 reads; LOSSes on musique (zrc, −0.010) and webqsp zero-shot (zsp, −0.043). |
 
 The rule's links are still imprecise: on 2wiki about three in four are not hyperlinks. That is in the gap ledger.
+
+By U1f's rule, no full run uses either graph, and both bases keep today's graph and pools. The hyperlink price, what
+the trained models lose without the hyperlinks on the eval carves, goes to the gap ledger. For both arms it is
+0.035-0.065 R@5 on hotpotqa and 0.010-0.020 on 2wiki. The rule's links recover the hyperlinks as edges, but the
+models do not get the hyperlinks' value back from them.
 
 ## 5. Pools (step 4)
 
@@ -154,41 +169,39 @@ A pool is the candidate set a model reranks. ALL is the share of questions with 
 | 4g | Where the misses are | One hop away on the KBs and musique (78-89%); the first stage on hotpotqa and squad. |
 | 4h | A second expansion from the top-ranked nodes (W1, on U1d's graph) | CHOSEN: mean ALL 0.917 at 0.787 of 4e's size. On U1d's graph, hotpotqa (0.896) and 2wiki (0.873) lose reach the hyperlinks gave. |
 
-Today's models were trained and read on step 1's frozen pools and today's graph. U1c and U1f move both bases onto the
-universal graph and step 4h's pools.
+Today's models were trained and read on step 1's frozen pools and today's graph. U1c and U1f tried both bases on the
+universal graph with step 4h's pools. Neither was adopted, so the bases stay where they were.
 
-## 6. Running now (12 October, 22:15)
+## 6. Running now (13 October, 01:00)
 
-- **U1c screen** ([U1C_RETRAIN_ON_U.md](U1C_RETRAIN_ON_U.md)): zrc and zsp refit on U1d's graph (GU) with step 4h's
-  pools, on L-musique and L-hotpotqa. Three of the four fits have been read.
-  - **zrc: NO_GAIN on both splits**, also under the seed null. None of its 12 reads gains. Its four LOSSes are all on
-    2wiki and hotpotqa, the hyperlink price the rule reports but does not count.
-  - **zsp on L-musique: NO_GAIN.** Its reads include a webqsp zero-shot LOSS of -0.056 [-0.072, -0.041], which the
-    rule counts.
-  - zsp's L-hotpotqa fit was at epoch 4 of 8 at 21:54. Its read, the pair and the seed-null re-call follow, around
-    23:00.
-  - The rule needs each arm to have no counted LOSS and the two arms at least one GAIN between them. So far no read
-    gains.
-- **U1f screen** ([U1F_RETRAIN_ON_GU1024.md](U1F_RETRAIN_ON_GU1024.md)): the same screen on U1e's graph (GU_1024).
-  Its link and chain builds are running, and the result is expected on 13 October.
-- **Which graph goes to the full run is fixed by rule.**
-  - If both screens pass, GU_1024.
-  - If one passes, that one.
-  - If neither passes, there is no full run, and the reads go to the gap ledger.
-- **Host disk:** under the 90 GB clean-up point since 19:20. The next clean-up list follows U1f's builds.
+- **D4, the words of a link** ([DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md)), a diagnostic declared before its numbers.
+  - The question: on musique, do the words around a link (a title mention, a KB relation name, a shared entity) pick
+    out the neighbour a question follows, where zrc's score ranks it 5th to 9th?
+  - It reads zrc's two card fits on CPU. The NER mentions were built on the laptop and rebuild every NER edge of
+    musique and squad exactly.
+  - The first run stopped at musique's read, after metaqa and squad had passed identity. Clean-up 13 had removed step
+    1's musique look chunks, which look_step1.py rebuilds bit for bit.
+  - They are being rebuilt now, about 20 minutes. D4 then runs again unchanged, about 25 minutes.
+- **What D4 decides, fixed before any number.**
+  - SIGNAL declares round 34: the link words as an input of both families, screened on two fits under the seed null.
+    For the MLP they are computed before any row is scored, so there is no message passing.
+  - NO_SIGNAL reports musique's gap as the first stage's: 13.3 points below NV-Embed-v2 at the start.
+- **Host disk: 30.5 GB free.** Clean-up 15, U1c's and U1f's arrays, is listed and dry-run: about 143 GB once both
+  names of each hard-linked pair go. It is the user's command.
 
 ## 7. Open gaps
 
 | gap | the number | what works on it |
 | --- | --- | --- |
-| musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds | Ranking, not reach. Three- and four-hop questions get almost nothing. |
-| Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c / U1f: retrain on the universal graph. |
+| musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions | D4 (link words); round 34 if SIGNAL. Rounds 29-32 and U1c moved nothing here. |
+| Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
 | Pool misses | One hop on the KBs and musique; first stage on hotpotqa and squad | Step 4h covers the one-hop misses; the first-stage misses are open. |
 | Zero-shot to webqsp | zsp 26.8 zero-shot; a model trained on webqsp reached about 60 (S6) | Longer training lifts the MLP's transfer, but under seed noise (round 33). |
 | Training data | DATA_LIMITED | No new data source declared. |
+| MLP vs the fastest GNN | zsp10 is the fastest GNN on all six; zrc is 0.95-1.18× faster, twin0 slower | The 2× target is not met. Every input stays, so this is open. |
 | Universal speed | gnn0 / twin0 1.42-1.85× (C11) | C12: a faster compile for both models; it is 60-74% of twin0's time. |
-| Lean speed | zsp / zrc 0.95-1.18× (C11) | Bounded by the lean design: zsp is zrc plus links and one step (3-17%). |
+| Lean speed | zsp / zrc 0.95-1.18× (C11) | Bounded by the lean design: 1.17-1.33 even with free shared stages, 2.13 on musique. |
 
 ## How we got here
 
@@ -203,10 +216,13 @@ universal graph and step 4h's pools.
   zrc became the MLP base and zsp the GNN base. B1b put both against HippoRAG 2.
 - **9 to 12 October: links, pools and speed.** U1a to U1e built one LLM-free link rule. Steps 4e to 4h rebuilt the
   pools. C1 to C11 made every model cold-fast at identical scores. Round 33 found that longer training does not help.
+- **12 to 13 October: the universal graph tried on the bases.** U1c and U1f refit zrc and zsp on it, and neither was
+  adopted. D4 asks whether a link's words can close musique's ranking gap.
 
 ## What is next
 
-1. **U1c and U1f**, then the full run on the chosen graph, with B1 read beside it (never used to choose).
+1. **D4's verdict.** Round 34 is declared if it is SIGNAL: the link words for both families, one universal change
+   graded on all six datasets.
 2. **C12**: the compile both models of a family share, made faster for both alike, then timed as C11 was.
-3. **The musique ranking gap**: three- and four-hop questions, as one universal change graded on all six datasets.
-4. **The confirmation run** of the chosen MLP and GNN on held-out questions, for the paper.
+3. **The confirmation run** of the chosen MLP and GNN on held-out questions, for the paper, with B1 read beside it
+   (never used to choose).
