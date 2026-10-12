@@ -120,7 +120,8 @@ under 0.01.
 
 - **Below zsp on every read that has a gain.** Every 95% interval of zn − zsp lies below 0. squad is the exception:
   within ±0.003, since nothing there has a gain.
-- **Same picture against zrc.** zn − zrc is within 0.03 of zn − zsp on every read (`outputs/zn/compare-*.md`).
+- **Same picture against zrc.** zn − zrc is within 0.015 of zn − zsp on every read but one (`outputs/zn/compare-*.md`).
+  The exception is L-hotpotqa's webqsp read: 0.06 apart, with zrc at 0.2865 and zsp at 0.2262.
 - **The share of zsp's gain zn keeps:**
   - 2wiki 0.71-0.73;
   - hotpotqa 0.53 in-domain, 0.35 zero-shot;
