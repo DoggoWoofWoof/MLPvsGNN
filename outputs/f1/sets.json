@@ -1,0 +1,88 @@
+{
+ "stage": "F1 step 2's sets",
+ "declared_in": "docs/F1_ONE_INPUT_SET.md",
+ "mlp": "zrc",
+ "gnn": "zsp",
+ "S_both": [
+  "rank",
+  "dense_cos",
+  "topo_STRUCT",
+  "depth_STRUCT",
+  "SEMB",
+  "SEED",
+  "WALK",
+  "DISTS",
+  "WALKF",
+  "chains"
+ ],
+ "S_mlp": [
+  "rank",
+  "dense_cos",
+  "topo_STRUCT",
+  "depth_STRUCT",
+  "SEMB",
+  "SEED",
+  "WALK",
+  "DISTS",
+  "WALKF",
+  "chains"
+ ],
+ "S_gnn": [
+  "rank",
+  "dense_cos",
+  "topo_STRUCT",
+  "depth_STRUCT",
+  "SEMB",
+  "SEED",
+  "WALK",
+  "DISTS",
+  "WALKF",
+  "chains"
+ ],
+ "mlp_only": [],
+ "gnn_only": [],
+ "cut_from_both": [],
+ "beside": {},
+ "records": {
+  "usage-zrc.json": "cab9ca3155d52bfee5a804c630956d6bc42071e9a39ab2fa04829c221efbb4c8",
+  "usage-zsp.json": "a9da6e1a6b1fd23593535b67321943fd456b729e2fea995ce3e81e25fa52f5fa"
+ },
+ "settings": {
+  "seeds": [
+   0,
+   1
+  ],
+  "min_drop": 0.002,
+  "never_cut": [
+   "rank"
+  ],
+  "mp_only": [
+   "links"
+  ],
+  "select_carves": [
+   [
+    "metaqa",
+    "select"
+   ],
+   [
+    "squad",
+    "select"
+   ],
+   [
+    "musique",
+    "select"
+   ],
+   [
+    "hotpotqa",
+    "select"
+   ],
+   [
+    "2wiki",
+    "select"
+   ]
+  ],
+  "rule": "USED by a model: a drop of at least min_drop on at least one of its reads",
+  "sets": "S_both = used by both the MLP and the GNN; S_mlp, S_gnn = used by each; rank always; links never"
+ },
+ "f1_usage_sha256": "3c28e605ae03d4246f8642cdcad9dadeb1a582ecfffe514d5946890fb6a0812e"
+}

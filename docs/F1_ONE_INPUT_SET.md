@@ -1,6 +1,7 @@
 # F1: one input set for the MLP and the GNN, and each model's own fastest set
 
-Declared 12 October 2026, about 13:40, before any number of the stage. It sits under docs/PROGRAM_2026_10_09.md's
+Declared 12 October 2026, about 13:15, before any number of the stage. (Times in this file are corrected to the
+commit times: they had been written ahead of the clock.) It sits under docs/PROGRAM_2026_10_09.md's
 claims 2 and 3. Step 1 only reads existing fits; nothing trains before step 1's records exist.
 
 ## Why
@@ -78,20 +79,29 @@ each at its fastest exact form, each compiling only its own set's columns:
 Claim 3 is stated from the controlled pair, with the ceilings beside it. It is stated whatever the ratio turns out to
 be.
 
-**Amended 12 October 2026, about 13:35, before any number of F1.** The user asked for the MLP's lead cold and warm.
+**Amended 12 October 2026, about 13:25, before any number of F1.** The user asked for the MLP's lead cold and warm.
 - C8 also times each form **warm**, as C1-C6 did: the graph index and every per-question input built beforehand, so
   only the forward is timed.
 - Warm sits beside cold, labelled. The headline stays cold.
 - What is already known, and why the controlled pair matters: C3 filed zsp at 1.08-1.14× zrc's cold cost
   (docs/C3_FASTEST_FORMS.md). The 1.6-3.0× lead is over the six GNN, whose inputs are not the MLP's.
 
-**Amended 12 October 2026, about 14:05, before any number of F1.** zgn's step-1 read is dropped.
+**Amended 12 October 2026, about 13:50, before any number of F1.** zgn's step-1 read is dropped.
 - Its select-carve caches (outputs/zfeat/cache) were removed in clean-up 9, after rounds 24-25 filed NO_SELECTION.
   The read failed on the first missing array (`f1-read-zgn`).
 - zgn is reported beside and chooses nothing, so rebuilding those caches would spend host hours and disk on a read
   that decides nothing.
 - Step 2's sets read zrc's and zsp's records only (`f1-sets2`). C8 can still time zgn beside, from its per-question
   compile.
+
+**Amended 12 October 2026, about 14:00, after step 1's records and before any number of step 2 or C8.** The user,
+12 October: two model families, universal and universal-lean; the MLP against the GNN within each family, every model at
+its fastest, cold first; everything else stays the same, including the links, the pools and the edges.
+- Step 2 trains nothing. zsp keeps its own chain entries (rmatch's mass cap); zsp on zrc's entries is not fitted.
+- C8 is C9's lean pair (docs/C9_UNIVERSAL_PAIR.md): zrc against zsp, each on its current inputs, at its fastest exact
+  form, cold, with the warm forward beside. zgn is in neither pair and is not timed.
+- On the typed graphs, the lean ratio therefore includes each model's own chain rule. Each chain build is timed as its
+  own stage and reported, so its share of the ratio is visible.
 
 ## What this does not do
 
@@ -113,4 +123,28 @@ be.
 
 ## Results
 
-Not yet run.
+**Step 1, filed 12 October 2026, about 14:00.** Records: `outputs/f1/usage-zrc.{json,md}`, `usage-zsp.{json,md}`.
+Each model has 2 shuffle seeds × 10 reads on the select carves. Drops are in R@5; `chains` is read on metaqa only (webqsp
+never trains).
+
+| family | zrc: largest drop | zrc: mean | zsp: largest drop | zsp: mean |
+| --- | ---: | ---: | ---: | ---: |
+| rank (never cut) | +0.5376 | +0.3192 | +0.5537 | +0.3145 |
+| dense_cos | +0.2732 | +0.1068 | +0.3332 | +0.1128 |
+| SEMB | +0.1144 | +0.0365 | +0.1198 | +0.0325 |
+| SEED | +0.0667 | +0.0296 | +0.0706 | +0.0296 |
+| WALK | +0.0647 | +0.0219 | +0.0473 | +0.0176 |
+| DISTS | +0.0350 | +0.0158 | +0.0284 | +0.0133 |
+| WALKF | +0.0288 | +0.0086 | +0.0177 | +0.0080 |
+| topo_STRUCT | +0.0160 | +0.0056 | +0.0165 | +0.0047 |
+| depth_STRUCT | +0.0068 | +0.0027 | +0.0081 | +0.0042 |
+| chains (metaqa) | +0.7209 | +0.7086 | +0.7443 | +0.7120 |
+| links (message passing, beside) | | | +0.0167 | +0.0068 |
+
+- Every family is USED by both models. The smallest largest-drop is depth_STRUCT's: +0.0068 for zrc and +0.0081 for
+  zsp, over the 0.002 bar.
+- **Step 2's sets** (`outputs/f1/sets.{json,md}`): S_both = S_mlp = S_gnn = every family both models read today.
+  - Nothing is cut.
+  - No family is used by one model only.
+- So no column is computed for nothing, and neither model's cold cost comes down by computing less. It comes down only
+  through faster exact forms of the same stages. With amendment 3, C8 is C9's lean pair.

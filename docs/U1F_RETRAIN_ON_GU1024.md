@@ -55,7 +55,7 @@ The screens' numbers do not choose between the graphs when both pass. Choosing b
   above the feeder's 100 GB floor.
 - **Before the gate opens.** Clean-up 12 (U1d's link shards and U1e's unchosen graphs, 22 GB, the user's command)
   comes first. Everything before the looks (pools, adoption) is small and runs at once.
-- **Amended 12 October 2026, about 13:20, before any number of U1f.** The user's disk rule: 90 GB free is the point
+- **Amended 12 October 2026, about 13:05 (corrected to the commit time), before any number of U1f.** The user's disk rule: 90 GB free is the point
   where a clean-up survey happens, never a reason to hold jobs. The 100 GB hold had idled the host from 10 October.
   - The feeder now holds heavy writers only when the drive is near full: below 30 GB free it sends only light items,
     and below 15 GB nothing.
