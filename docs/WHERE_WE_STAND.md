@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (01:00)
+# Where we stand, 13 October 2026 (00:50)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -172,7 +172,7 @@ A pool is the candidate set a model reranks. ALL is the share of questions with 
 Today's models were trained and read on step 1's frozen pools and today's graph. U1c and U1f tried both bases on the
 universal graph with step 4h's pools. Neither was adopted, so the bases stay where they were.
 
-## 6. Running now (13 October, 01:00)
+## 6. Running now (13 October, 00:50)
 
 - **D4, the words of a link** ([DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md)), a diagnostic declared before its numbers.
   - The question: on musique, do the words around a link (a title mention, a KB relation name, a shared entity) pick
