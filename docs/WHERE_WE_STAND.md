@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (01:25)
+# Where we stand, 13 October 2026 (01:58)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -15,7 +15,7 @@ The claims are fixed in [PAPER_CLAIMS_2026_10_09.md](PAPER_CLAIMS_2026_10_09.md)
 | --- | --- | --- |
 | 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). The six-dataset test is the confirmation run's. |
 | 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. |
-| 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.42-1.85×; zrc 2.49-4.15×, webqsp 1.32×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there yet: zrc is 0.95-1.18× (section 3). |
+| 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.46-1.89×; zrc 2.38-3.99×, webqsp 1.30×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there: zrc is 0.96-1.18× faster, and twin0 is faster than zsp only on webqsp. With every input kept, each MLP stays below 2× zsp on five datasets even if every shared stage cost nothing (section 3). |
 
 ## The models
 
@@ -88,59 +88,56 @@ hotpotqa 90.5, 2wiki 87.3, and webqsp 26.8 zero-shot (webqsp never trains) ([G1A
 
 Cold means one question at a time from scratch: no prebuilt per-question caches and no warm-up. Every model runs at its
 fastest form that keeps its scores (within 1e-4 and the same top 5) and reads every one of its inputs. Laptop, pinned,
-one thread. Records: [C11_BOTH_FAMILIES_FAST.md](C11_BOTH_FAMILIES_FAST.md) (intervals there) and
-[C10_ZN_COLD.md](C10_ZN_COLD.md).
+one thread. Records: [C12_SHARED_COMPILE.md](C12_SHARED_COMPILE.md) (intervals there),
+[C11_BOTH_FAMILIES_FAST.md](C11_BOTH_FAMILIES_FAST.md) and [C10_ZN_COLD.md](C10_ZN_COLD.md).
 
-**Cold p50 per question, ms (C11):**
+**Cold p50 per question, ms (C12, each model at its fastest form):**
 
 | dataset | twin0 (universal MLP) | gnn0 (universal GNN) | zrc (lean MLP) | zsp (lean GNN) |
 | --- | ---: | ---: | ---: | ---: |
-| 2wiki | 4.71 | 6.76 | 2.72 | 2.76 |
-| hotpotqa | 4.35 | 6.18 | 2.41 | 2.52 |
-| squad | 2.95 | 4.61 | 1.81 | 1.90 |
-| musique | 83.26 | 154.13 | 37.16 | 43.71 |
-| metaqa | 57.24 | 88.42 | 29.77 | 32.18 |
-| webqsp | 77.79 | 117.33 | 88.66 | 84.54 |
+| 2wiki | 4.11 | 6.00 | 2.52 | 2.61 |
+| hotpotqa | 3.91 | 5.88 | 2.36 | 2.48 |
+| squad | 2.67 | 4.24 | 1.65 | 1.73 |
+| musique | 75.66 | 143.26 | 35.87 | 42.19 |
+| metaqa | 49.47 | 77.45 | 26.42 | 28.07 |
+| webqsp | 69.87 | 107.26 | 82.65 | 79.62 |
 
 **GNN time over MLP time, cold:**
 
 | dataset | universal: gnn0 / twin0 | lean: zsp / zrc | gnn0 / zrc | zsp / zn (C10) |
 | --- | --- | --- | --- | --- |
-| 2wiki | 1.44 | 1.01 | 2.49 | 5.22 |
-| hotpotqa | 1.42 | 1.04 | 2.56 | 2.65 |
-| squad | 1.56 | 1.05 | 2.54 | 2.71 |
-| musique | 1.85 | 1.18 | 4.15 | 5.31 |
-| metaqa | 1.54 | 1.08 | 2.97 | 3.95 |
-| webqsp | 1.51 | 0.95 | 1.32 | 9.61 |
+| 2wiki | 1.46 | 1.04 | 2.38 | 5.22 |
+| hotpotqa | 1.50 | 1.05 | 2.49 | 2.65 |
+| squad | 1.59 | 1.05 | 2.57 | 2.71 |
+| musique | 1.89 | 1.18 | 3.99 | 5.31 |
+| metaqa | 1.57 | 1.06 | 2.93 | 3.95 |
+| webqsp | 1.54 | 0.96 | 1.30 | 9.61 |
 
 - **Both MLPs are faster than the universal GNN on all six datasets.**
-  - The universal MLP is 1.42-1.85× faster.
-  - The lean MLP is 2.49-4.15× faster on five datasets. On webqsp it is 1.32× faster, because its chain entries are its
+  - The universal MLP is 1.46-1.89× faster.
+  - The lean MLP is 2.38-3.99× faster on five datasets. On webqsp it is 1.30× faster, because its chain entries are its
     largest stage.
-- **No MLP is yet 2× faster than the fastest GNN.** The fastest GNN form is zsp's (zsp10) on all six datasets. zrc is
-  0.95-1.18× faster than it. twin0 is slower than it (zsp10 / twin0 0.52-0.64, 1.09 on webqsp).
-- **Within a family, the MLP does not reach 2×.**
-  - **Universal.** The compile both models run is 60-74% of twin0's time. Even if it cost nothing, the ratio would top
-    out at 2.04 (2wiki) to 4.20 (musique).
-  - **Lean.** zsp is zrc plus its links and one propagation step over scores, which cost 3-17% of zrc's time. Even if
-    everything before the forwards cost nothing (the compile, the lean inputs and the chain entries), zsp / zrc would
-    be 1.17-1.33 on five datasets and 2.13 on musique. These figures are worked out from C11's stage p50s, not timed.
-- **zn**, the lean MLP with every edge-derived input removed, is 2.65-9.61× faster than zsp. It keeps only 13-73% of
-  the gain, so it is a ceiling, not a model.
-- **C11's forms made every model faster at the same scores:** twin0 by 1.32-1.52×, gnn0 by 1.16-1.38×, zrc by
-  1.26-1.64× and zsp by 1.28-1.74×.
-- **C12, being timed now: the shared compile made faster for both models of each family**
-  ([C12_SHARED_COMPILE.md](C12_SHARED_COMPILE.md)).
-  - A development profile on the 2,000-row pools puts most of musique's 66 ms compile in three stages: the per-family
-    neighbour prototypes (24 ms), the depth basis (16) and the seed prototypes (12).
-  - For 2× in the universal family, the compile must get 1.26× faster on musique and about 3.2× faster on squad,
-    metaqa and webqsp.
-  - On 2wiki and hotpotqa, the forwards keep the ratio near 2 even with a free compile.
-  - C12 makes the seed cosines once per weight pattern (8.3 to 3.2 ms on musique, inside the compile) and widens the
-    node rows with one instruction. Every compile, lean row, link, chain entry and score equals C11's bit for bit,
-    checked on 30 questions of each dataset.
-  - Expected from the development numbers: the full compile about 1.1× faster on musique and webqsp, so not 2×. The
-    per-family prototypes and the depth basis are untouched.
+- **No MLP is 2× faster than the fastest GNN.** The fastest GNN is zsp on all six datasets. zrc is 1.04-1.18×
+  faster than it on five datasets and slower on webqsp (0.96). twin0 is slower than it on five (zsp / twin0 0.56-0.65)
+  and faster only on webqsp (1.14).
+- **Why, with every input kept.** These figures are worked out from C12's stage p50s, not timed.
+  - **Universal.** The compile both models run is 58-71% of twin0's time. Even if it cost nothing, gnn0 / twin0 would
+    top out at 2.17 (2wiki, hotpotqa) to 4.08 (musique). For 2×, the compile would have to get 1.18× faster on
+    musique, 3.0-3.7× on squad, metaqa and webqsp, and 8-9× on 2wiki and hotpotqa.
+  - **Lean.** zsp is zrc plus its links and one propagation step, which cost 3-17% of zrc's time. Even if everything
+    before the forwards cost nothing, zsp / zrc would be 1.16-1.34 on five datasets and 2.12 on musique.
+  - **Across families.** On five datasets, zsp's whole time is only 1.47-1.95× twin0's forward alone, so no compile,
+    however fast, brings twin0 to 2× zsp there. On webqsp it would take twin0's compile 2.6× faster.
+- **zn**, the lean MLP with every edge-derived input removed, is 2.65-9.61× faster than zsp (C10). It keeps only
+  13-73% of the gain, so it is a ceiling, not a model.
+- **What made each model faster at the same scores:**
+  - C11's forms: twin0 by 1.32-1.52×, gnn0 by 1.16-1.38×, zrc by 1.26-1.64× and zsp by 1.28-1.74×.
+  - C12's kernels (the seed cosines made once per weight pattern; the node rows widened in one instruction): the full
+    compile both universal models share got 1.02-1.10× faster (1.10 on musique). gnn0 / twin0 on musique went from
+    1.84 to 1.89 with one form on both sides. The lean pair did not move (0.97-1.04×, every interval includes 1).
+  - C12's compiles, lean rows, links, chain entries and scores equal C11's bit for bit on all 1,200 questions.
+- **What is left in the universal compile.** A development profile of musique's compile put the per-family
+  neighbour prototypes (about 24 ms) and the depth basis (about 16 ms) at the top. C12 did not touch either.
 
 ## 4. Links and edges (U1, G1a)
 
@@ -182,17 +179,16 @@ A pool is the candidate set a model reranks. ALL is the share of questions with 
 Today's models were trained and read on step 1's frozen pools and today's graph. U1c and U1f tried both bases on the
 universal graph with step 4h's pools. Neither was adopted, so the bases stay where they were.
 
-## 6. Running now (13 October, 01:25)
+## 6. Running now (13 October, 01:58)
 
-- **C12's timed run** on the laptop: 200 questions per dataset, the eight paths in a rotated order, C11's protocol
-  (pinned, one thread, the session idle). About 35 minutes.
-- **D4 is done: NO_SIGNAL** ([DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md)); section 1 has the numbers.
-  - Both fits passed identity on every carve read, and the NER mentions rebuilt every NER edge of musique and squad.
-  - The first run had stopped because clean-up 13 had removed step 1's musique look chunks. They were rebuilt on the
-    host, matched the laptop's copies array for array, and D4 ran again unchanged.
-- **The host:** nothing of ours is running, and no GPU stage is declared.
-- **Host disk: 30.5 GB free at 00:50.** Clean-up 15, U1c's and U1f's arrays, is listed and dry-run: about 143 GB once
-  both names of each hard-linked pair go. It is the user's command.
+- **Nothing of ours is running** on the host or the laptop.
+- **Done since the last update:** C12, timed and filed ([C12_SHARED_COMPILE.md](C12_SHARED_COMPILE.md)); section 3
+  has its numbers. D4 is filed as NO_SIGNAL ([DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md)).
+- **Next on the laptop:** C13's development, exact forms of the per-family prototypes and the depth basis. No timed
+  number before its declaration.
+- **Host disk: 28.7 GB free at 01:54**, below the 30 GB line where the feeder holds heavy writers. Clean-up 15,
+  U1c's and U1f's arrays, is listed and dry-run: about 143 GB once both names of each hard-linked pair go. It is the
+  user's command.
 
 ## 7. Open gaps
 
@@ -204,9 +200,9 @@ universal graph with step 4h's pools. Neither was adopted, so the bases stay whe
 | Pool misses | One hop on the KBs and musique; first stage on hotpotqa and squad | Step 4h covers the one-hop misses; the first-stage misses are open. |
 | Zero-shot to webqsp | zsp 26.8 zero-shot; a model trained on webqsp reached about 60 (S6) | Longer training lifts the MLP's transfer, but under seed noise (round 33). |
 | Training data | DATA_LIMITED | No new data source declared. |
-| MLP vs the fastest GNN | zsp10 is the fastest GNN on all six; zrc is 0.95-1.18× faster, twin0 slower | The 2× target is not met. Every input stays, so this is open. |
-| Universal speed | gnn0 / twin0 1.42-1.85× (C11) | C12 (being timed): a faster compile for both models; it is 60-74% of twin0's time. Then the per-family prototypes and the depth basis. |
-| Lean speed | zsp / zrc 0.95-1.18× (C11) | Bounded by the lean design: 1.17-1.33 even with free shared stages, 2.13 on musique. |
+| MLP vs the fastest GNN | zsp is the fastest GNN on all six; zrc is 0.96-1.18× faster, twin0 slower except on webqsp (1.14× faster) | Not met. With every input kept, the forwards keep each MLP below 2× on five datasets (section 3). How Claim 3 is worded is open. |
+| Universal speed | gnn0 / twin0 1.46-1.89× (C12) | C13: the per-family prototypes and the depth basis, exact, for both models. 2× needs the compile 1.18× faster on musique, 3.0-3.7× on squad, metaqa and webqsp. |
+| Lean speed | zsp / zrc 0.96-1.18× (C12) | Bounded by the lean design: 1.16-1.34 even with free shared stages, 2.12 on musique. |
 
 ## How we got here
 
@@ -222,13 +218,17 @@ universal graph with step 4h's pools. Neither was adopted, so the bases stay whe
 - **9 to 12 October: links, pools and speed.** U1a to U1e built one LLM-free link rule. Steps 4e to 4h rebuilt the
   pools. C1 to C11 made every model cold-fast at identical scores. Round 33 found that longer training does not help.
 - **12 to 13 October: the universal graph tried on the bases.** U1c and U1f refit zrc and zsp on it, and neither was
-  adopted. D4 found that a link's words do not pick the neighbour a musique question follows (NO_SIGNAL).
+  adopted. D4 found that a link's words do not pick the neighbour a musique question follows (NO_SIGNAL). C12 made
+  the full compile both universal models share faster, bit for bit (gnn0 / twin0 up to 1.89×).
 
 ## What is next
 
-1. **C12's results**, filed as C11's were: every model's fastest form, the family ratios and the cross-family ratios.
-2. **The rest of the universal compile.** If C12 leaves gnn0 / twin0 below 2×, the next speed stage takes the two
-   largest stages left in the shared compile: the per-family neighbour prototypes and the depth basis. Exact forms
-   only, one form for all six datasets, both models alike.
+1. **C13: the rest of the universal compile.** The per-family neighbour prototypes and the depth basis, the two
+   largest stages left, in exact forms for both models alike and one form for all six datasets. Developed on the
+   laptop and declared before any timed number. It can bring gnn0 / twin0 to 2× on musique (1.18× needed);
+   elsewhere it narrows the gap.
+2. **Claim 3's wording.** No MLP reaches 2× the fastest GNN on five datasets while every input stays, so the claim
+   needs its final form: within each family, the MLP against the full GNN, or what message passing costs on top of
+   the same inputs.
 3. **The confirmation run** of the chosen MLP and GNN on held-out questions, for the paper, with B1 read beside it
    (never used to choose).
