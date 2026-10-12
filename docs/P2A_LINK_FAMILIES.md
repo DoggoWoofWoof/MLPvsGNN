@@ -229,3 +229,48 @@ fits. A drop needs both parts (section 4).
 - **ETA:** about 0.45 s per question, 45,559 questions, so about 5.7 CPU hours, in parts of about 10 minutes. The call
   should land about 40 minutes after the development items pass.
 - The encoder stays frozen. No model trains, nothing is adopted, and test splits are never read.
+
+## 11. Part 1: results
+
+Filed 13 October 2026, about 04:45. The six host jobs ran on the full corpora, and `verdict` ran locally
+(`outputs/p2a/reach_verdict.{json,md}`, script sha256 `ba89856f…`). Check passed: on every carve, the regime subsets
+equal P1a's records.
+
+**Each family against the dataset's regime** (s1eval, A3, ALL at |I_q|; the label covers every N, both measures and
+every restart):
+
+| dataset | regime | structural | ner | knn |
+| --- | --- | --- | --- | --- |
+| metaqa | S | LOO CARRIES, +0.540 | ADD HARMS, −0.014 | ADD HARMS, −0.063 |
+| squad | none | ADD HARMS, −0.025 | ADD HARMS, −0.020 | ADD HARMS, −0.019 |
+| musique | SNK | LOO CARRIES, +0.015 | LOO CARRIES, +0.032 | LOO CARRIES (A1 MIXED), +0.008 |
+| hotpotqa | S | LOO MIXED (A1 CARRIES), +0.165 | ADD HARMS, −0.044 | ADD MIXED, −0.035 |
+| 2wiki | S | LOO CARRIES, +0.310 | ADD MIXED, −0.114 | ADD MIXED, −0.111 |
+| webqsp | SNK | LOO CARRIES, +0.265 | LOO HARMS, −0.018 | LOO HARMS, −0.049 |
+
+**Candidates (section 3's rule):**
+- **DROP_CANDIDATE:** webqsp's ner and knn. Both are HARMS under A3, A1 and LINKED. Under A3, S alone holds 0.829 of
+  webqsp's questions whole at |I_q|, against the regime's 0.759 (+0.070).
+- **ADD_CANDIDATE:** none.
+- **One subset for all six:** none. Every subset is below some dataset's regime by more than the tie. The
+  per-dataset best at |I_q| (an upper bound, deciding nothing) is the regime on five datasets and S on webqsp.
+
+**What it says:**
+- **The structural family carries the reach** wherever a dataset has one: the KB triples (metaqa +0.540, webqsp
+  +0.265), the hyperlinks (2wiki +0.310, hotpotqa +0.165) and musique's own (+0.015). The one exception is hotpotqa's
+  head under A3: at N = 25 the walk pushes golds out (ALL 0.512 against 0.554 without it). A1's restart has no such
+  point.
+- **ner and knn add reach only on musique**, the one passage graph without corpus hyperlinks. There ner is the
+  largest family (+0.032 at |I_q|). On every other graph they push golds out at today's sizes. On 2wiki they help only
+  far down the order (N ≥ 1,500 under A3; N ≥ 300 for ner under A1) and hurt the head. Step 4's union walk showed the
+  same pattern: a looser family dilutes the structural hop.
+- **The MIXED families name where a better rule starts** (P2b), as section 4 says: on 2wiki, ner and knn add golds
+  below N = 1,500 and push them out above it. A rule that walks them only after the structural family keeps the head
+  and adds the tail. It would be one rule for all six, not a per-dataset subset.
+
+**What follows (section 4):**
+- webqsp's ner and knn are dropped only if part 2 also finds the models do not rely on them.
+- A drop screen makes the change on every dataset where the family is in the regime. Those are musique and webqsp,
+  and on musique both families carry the reach. So a plain drop of either family is not universal, and the
+  universal form of what part 1 found is a rule over the families (P2b), declared in its own file.
+- No graph changes in this part.
