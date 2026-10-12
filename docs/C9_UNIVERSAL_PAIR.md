@@ -112,3 +112,60 @@ questions, every path of the run, untimed, pinned.
   order.
 - **Against the look's stored twin0** (scored on the host, batched), the largest difference is 1.1e-5, under TOL.
 - **C4's and C6's checks** pass on every question of every path.
+
+## Results
+
+Run 12 October 2026, 14:03-14:30: the laptop, pinned, one thread, the first 200 s1eval questions of each dataset.
+Records are in `outputs/c9/<dataset>.json` and `outputs/c9/report.{json,md}`. Every check passes on every question:
+1,200 / 1,200, with FastTwin bit-identical to the twin module (largest difference 0.0).
+
+**Conditions.** Other applications were running on the laptop during this run; the CPU load was 74% when checked
+afterwards. Absolute times are 1.5-1.9× C4's and C6's filed stage times; for example, musique gnn4's compile took
+106.5 ms here against 59.0 ms filed. Both members of each pair ran in the same rotating order on the same questions.
+The cross-family ratio gnn4 / zrc4 (1.94-3.46×) matches C4's filed 2.0-3.4×. Read the ratios from this run. Its
+absolute times are inflated and are not quoted.
+
+Cold per question, p50 in ms (this run's), and GNN / MLP within each family with 95% CIs:
+
+| dataset | universal MLP | universal GNN | **universal GNN / MLP** | zrc | zsp | **zsp / zrc** | warm forward: universal GNN / MLP | warm forward: zsp / zrc |
+| --- | ---: | ---: | --- | ---: | ---: | --- | ---: | ---: |
+| 2wiki | 12.0 | 15.2 | **1.27 [1.22, 1.32]** | 7.8 | 8.2 | **1.04 [0.97, 1.13]** | 2.03 | 1.35 |
+| hotpotqa | 10.9 | 14.1 | **1.29 [1.24, 1.34]** | 6.5 | 7.8 | **1.21 [1.11, 1.28]** | 1.78 | 1.42 |
+| squad | 7.8 | 10.9 | **1.40 [1.32, 1.53]** | 4.4 | 5.0 | **1.16 [1.06, 1.27]** | 2.21 | 1.50 |
+| musique | 195.9 | 322.6 | **1.65 [1.60, 1.70]** | 93.3 | 105.8 | **1.13 [1.10, 1.16]** | 3.20 | 1.16 |
+| metaqa | 125.3 | 175.6 | **1.40 [1.36, 1.43]** | 68.2 | 71.4 | **1.05 [1.03, 1.07]** | 2.10 | 1.06 |
+| webqsp | 152.0 | 215.4 | **1.42 [1.33, 1.49]** | 163.0 | 153.8 | **0.94 [0.91, 0.98]** | 2.49 | 1.00 |
+
+**Universal family.** The MLP is faster on all six datasets: 1.27-1.65× cold, 1.78-3.20× warm. Cold, that is not much
+faster.
+- The pool, read and compile, which both models run, are 53-66% of the MLP's cold time.
+- The MLP's forward (32-45%) is mostly the input block, and the GNN runs the same input-block code.
+
+**Lean family.** zsp costs 0.94-1.21× zrc cold.
+- zsp's message passing is one propagation step over scores. Its GNN-only work is the link build (0.19-9.57 ms) and
+  0.46-1.24 ms more forward.
+- The stages both run (pool, read, compile, lean inputs, chains) are 68-81% of zrc's cold time.
+- On webqsp zsp is the faster: its chain rule (rmatch's mass cap) builds in 52.2 ms, zrc's contribution rule in 61.7 ms.
+
+**Beside.**
+- The universal GNN over zrc is 1.32-3.46× (C1-C6's comparison).
+- The universal MLP over zrc is 0.93-2.10×. On webqsp the universal MLP is faster than zrc, because zrc's chain build
+  costs more than the twin's heavier inputs.
+
+**What bounds each family's lead.** Suppose every stage both members of a family run cost nothing, and only the
+GNN-only work and the forwards remained. The cold ratio would reach:
+
+| dataset | universal | lean |
+| --- | ---: | ---: |
+| 2wiki | 1.76× | 1.43× |
+| hotpotqa | 1.74× | 1.55× |
+| squad | 2.00× | 1.50× |
+| musique | 2.85× | 1.51× |
+| metaqa | 1.92× | 1.21× |
+| webqsp | 2.25× | 1.15× |
+
+- **Universal.** The lead can grow past that only if the input block, which both models run, also gets cheaper. The next
+  stage makes the shared stages and the input block faster, for both models alike.
+- **Lean.** No fair change makes zrc much faster than zsp. zsp is zrc plus one cheap propagation step, so the ratio stays
+  under about 1.6× whatever the shared stages cost. The lean family's finding is that its GNN's message passing costs
+  4-21% more cold (webqsp aside, where zsp is the faster).
