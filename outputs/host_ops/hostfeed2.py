@@ -851,14 +851,18 @@ def main(argv=None):
     ap.add_argument("--min-run", type=float, default=1500.0)
     ap.add_argument("--max-h", type=float, default=60.0)
     ap.add_argument("--linger-h", type=float, default=0.0)
-    ap.add_argument("--disk-floor-gb", type=float, default=100.0,
-                    help="below this free on the workspace's drive, send only items that write little (--light-re) "
-                         "(the user, 9 Oct: 100 GB+ free always)")
-    ap.add_argument("--disk-hard-gb", type=float, default=60.0,
-                    help="send nothing at all below this free (12 Oct: the 100 GB hold idled the host for two days "
-                         "while others' jobs, not mpr's, took the drive from 100 to 90 GB)")
-    ap.add_argument("--light-re", default=r"-(train|read|compare|pair|recall|grade|gate|base)\d*(-|$)",
-                    help="items whose names match write only MBs (fits, reads, records): they go on below the floor")
+    ap.add_argument("--disk-target-gb", type=float, default=90.0,
+                    help="below this free, log once that a clean-up survey is due; nothing is held (the user, 12 Oct: "
+                         "90 GB is the point to clean up and check what takes the space, never a reason to block jobs; "
+                         "the 100 GB hold had idled the host for two days)")
+    ap.add_argument("--disk-floor-gb", type=float, default=30.0,
+                    help="near-full: below this free on the workspace's drive, send only items that write little "
+                         "(--light-re), so the shared drive never fills (9 Oct 22:26 it reached 0)")
+    ap.add_argument("--disk-hard-gb", type=float, default=15.0,
+                    help="send nothing at all below this free")
+    ap.add_argument("--light-re", default=r"-(train|read|compare|pair|recall|grade|gate|base|pools|adopt|copy)\d*(-|$)",
+                    help="items whose names match write only MBs (fits, reads, records, pool lists, hard links, the "
+                         "bases' copies): they go on below the floor")
     ap.add_argument("--adopt-h", type=float, default=48.0)
     ap.add_argument("--queue-gpu", type=int, default=0)
     ap.add_argument("--dry", action="store_true")
@@ -1166,6 +1170,9 @@ def main(argv=None):
         elif light_only:
             say_once("_disk", f"drive free {disk_gb:.0f} GB < {a.disk_floor_gb:g} GB: sending only items that write "
                               f"little ({a.light_re}) until the clean-up frees it")
+        elif disk_gb < a.disk_target_gb:
+            say_once("_disk", f"drive free under the {a.disk_target_gb:g} GB target: a clean-up survey is due; "
+                              f"nothing is held")
         else:
             st["said"].pop("_disk", None)
         if why or hold_q or hold_disk:
