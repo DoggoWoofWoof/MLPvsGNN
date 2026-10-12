@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (00:50)
+# Where we stand, 13 October 2026 (01:25)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -59,6 +59,10 @@ J5 is the fit trained on five datasets. Nothing was chosen on B1.
     990 golds it misses are in three- and four-hop questions.
   - **The missed golds are next to found ones** (D1): 0.38 are direct neighbours of a found gold and 0.77 are within
     two hops, but among about 45 such neighbours the model ranks the missed gold 5th to 9th.
+  - **The words around a link do not pick that neighbour** (D4, NO_SIGNAL). Ranking the neighbours by the question's
+    words near each link (title mentions, shared entities, KB relation names) puts the missed gold in the top two
+    0.261 of the time against zrc's 0.225, and 0.308 against 0.291 in the second fit. The declared bar was +0.05 and
+    1.25× in both. As declared, no ranking screen follows, and musique's gap is reported as the first stage's.
 - **A training-free rule** (B1d: two of the five slots go to the neighbours of the top passages) is already ABOVE
   on 2wiki (92.8) and close on hotpotqa (95.2). It is not universal: it costs squad and comparison questions (G1a).
 
@@ -125,12 +129,18 @@ one thread. Records: [C11_BOTH_FAMILIES_FAST.md](C11_BOTH_FAMILIES_FAST.md) (int
   the gain, so it is a ceiling, not a model.
 - **C11's forms made every model faster at the same scores:** twin0 by 1.32-1.52×, gnn0 by 1.16-1.38×, zrc by
   1.26-1.64× and zsp by 1.28-1.74×.
-- **Next, C12: the shared compile made faster for both models of each family.**
+- **C12, being timed now: the shared compile made faster for both models of each family**
+  ([C12_SHARED_COMPILE.md](C12_SHARED_COMPILE.md)).
   - A development profile on the 2,000-row pools puts most of musique's 66 ms compile in three stages: the per-family
     neighbour prototypes (24 ms), the depth basis (16) and the seed prototypes (12).
   - For 2× in the universal family, the compile must get 1.26× faster on musique and about 3.2× faster on squad,
     metaqa and webqsp.
   - On 2wiki and hotpotqa, the forwards keep the ratio near 2 even with a free compile.
+  - C12 makes the seed cosines once per weight pattern (8.3 to 3.2 ms on musique, inside the compile) and widens the
+    node rows with one instruction. Every compile, lean row, link, chain entry and score equals C11's bit for bit,
+    checked on 30 questions of each dataset.
+  - Expected from the development numbers: the full compile about 1.1× faster on musique and webqsp, so not 2×. The
+    per-family prototypes and the depth basis are untouched.
 
 ## 4. Links and edges (U1, G1a)
 
@@ -172,35 +182,30 @@ A pool is the candidate set a model reranks. ALL is the share of questions with 
 Today's models were trained and read on step 1's frozen pools and today's graph. U1c and U1f tried both bases on the
 universal graph with step 4h's pools. Neither was adopted, so the bases stay where they were.
 
-## 6. Running now (13 October, 00:50)
+## 6. Running now (13 October, 01:25)
 
-- **D4, the words of a link** ([DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md)), a diagnostic declared before its numbers.
-  - The question: on musique, do the words around a link (a title mention, a KB relation name, a shared entity) pick
-    out the neighbour a question follows, where zrc's score ranks it 5th to 9th?
-  - It reads zrc's two card fits on CPU. The NER mentions were built on the laptop and rebuild every NER edge of
-    musique and squad exactly.
-  - The first run stopped at musique's read, after metaqa and squad had passed identity. Clean-up 13 had removed step
-    1's musique look chunks, which look_step1.py rebuilds bit for bit.
-  - They are being rebuilt now, about 20 minutes. D4 then runs again unchanged, about 25 minutes.
-- **What D4 decides, fixed before any number.**
-  - SIGNAL declares round 34: the link words as an input of both families, screened on two fits under the seed null.
-    For the MLP they are computed before any row is scored, so there is no message passing.
-  - NO_SIGNAL reports musique's gap as the first stage's: 13.3 points below NV-Embed-v2 at the start.
-- **Host disk: 30.5 GB free.** Clean-up 15, U1c's and U1f's arrays, is listed and dry-run: about 143 GB once both
-  names of each hard-linked pair go. It is the user's command.
+- **C12's timed run** on the laptop: 200 questions per dataset, the eight paths in a rotated order, C11's protocol
+  (pinned, one thread, the session idle). About 35 minutes.
+- **D4 is done: NO_SIGNAL** ([DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md)); section 1 has the numbers.
+  - Both fits passed identity on every carve read, and the NER mentions rebuilt every NER edge of musique and squad.
+  - The first run had stopped because clean-up 13 had removed step 1's musique look chunks. They were rebuilt on the
+    host, matched the laptop's copies array for array, and D4 ran again unchanged.
+- **The host:** nothing of ours is running, and no GPU stage is declared.
+- **Host disk: 30.5 GB free at 00:50.** Clean-up 15, U1c's and U1f's arrays, is listed and dry-run: about 143 GB once
+  both names of each hard-linked pair go. It is the user's command.
 
 ## 7. Open gaps
 
 | gap | the number | what works on it |
 | --- | --- | --- |
-| musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions | D4 (link words); round 34 if SIGNAL. Rounds 29-32 and U1c moved nothing here. |
+| musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions | D4 (link words): NO_SIGNAL, so the gap is reported as the first stage's. Rounds 29-32, U1c and D4 moved nothing here. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
 | Pool misses | One hop on the KBs and musique; first stage on hotpotqa and squad | Step 4h covers the one-hop misses; the first-stage misses are open. |
 | Zero-shot to webqsp | zsp 26.8 zero-shot; a model trained on webqsp reached about 60 (S6) | Longer training lifts the MLP's transfer, but under seed noise (round 33). |
 | Training data | DATA_LIMITED | No new data source declared. |
 | MLP vs the fastest GNN | zsp10 is the fastest GNN on all six; zrc is 0.95-1.18× faster, twin0 slower | The 2× target is not met. Every input stays, so this is open. |
-| Universal speed | gnn0 / twin0 1.42-1.85× (C11) | C12: a faster compile for both models; it is 60-74% of twin0's time. |
+| Universal speed | gnn0 / twin0 1.42-1.85× (C11) | C12 (being timed): a faster compile for both models; it is 60-74% of twin0's time. Then the per-family prototypes and the depth basis. |
 | Lean speed | zsp / zrc 0.95-1.18× (C11) | Bounded by the lean design: 1.17-1.33 even with free shared stages, 2.13 on musique. |
 
 ## How we got here
@@ -217,12 +222,13 @@ universal graph with step 4h's pools. Neither was adopted, so the bases stay whe
 - **9 to 12 October: links, pools and speed.** U1a to U1e built one LLM-free link rule. Steps 4e to 4h rebuilt the
   pools. C1 to C11 made every model cold-fast at identical scores. Round 33 found that longer training does not help.
 - **12 to 13 October: the universal graph tried on the bases.** U1c and U1f refit zrc and zsp on it, and neither was
-  adopted. D4 asks whether a link's words can close musique's ranking gap.
+  adopted. D4 found that a link's words do not pick the neighbour a musique question follows (NO_SIGNAL).
 
 ## What is next
 
-1. **D4's verdict.** Round 34 is declared if it is SIGNAL: the link words for both families, one universal change
-   graded on all six datasets.
-2. **C12**: the compile both models of a family share, made faster for both alike, then timed as C11 was.
+1. **C12's results**, filed as C11's were: every model's fastest form, the family ratios and the cross-family ratios.
+2. **The rest of the universal compile.** If C12 leaves gnn0 / twin0 below 2×, the next speed stage takes the two
+   largest stages left in the shared compile: the per-family neighbour prototypes and the depth basis. Exact forms
+   only, one form for all six datasets, both models alike.
 3. **The confirmation run** of the chosen MLP and GNN on held-out questions, for the paper, with B1 read beside it
    (never used to choose).
