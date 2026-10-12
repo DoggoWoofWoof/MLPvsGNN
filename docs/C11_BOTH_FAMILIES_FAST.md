@@ -230,3 +230,156 @@ are not the stage's timing and are not used. The stage p50s it prints say where 
   42 ms.
 
 ## Results
+
+Run 12 October 2026, 21:11-21:45, on the laptop under the protocol above: pinned to logical processor 2, EcoQoS off,
+above-normal priority, one thread, the session idle. The CPU load before each dataset was 7.8-27.7%, with 3.7-5.3 GB
+free. 200 questions per dataset. Files: outputs/c11/<dataset>.json and outputs/c11/report.{json,md}.
+
+- **Every question passed every check on every dataset** (kept 200/200 everywhere).
+- The re-run gave every path exactly its timed scores (largest difference 0).
+- The largest score difference from the module, per path:
+  - umlp11 1.1e-5 and gnn11 6.7e-6;
+  - zrc11 9.2e-5 and zsp10 7.8e-5, both on webqsp. Their filed paths reach 8.8e-5 and 7.7e-5 there.
+  - TOL is 1e-4.
+
+### Universal: gnn0 over twin0, cold
+
+Cold p50 per question in ms. The ratios have 95% bootstrap intervals (2,000 resamples). The new path is each model's
+fastest form on all six datasets.
+
+| dataset | twin0: umlp11 | twin0: umlp9 (C9) | gnn0: gnn11 | gnn0: filed | **gnn0 / twin0** | at least 2× | warm forward, gnn0 / twin0 (warm) |
+| --- | ---: | ---: | ---: | ---: | --- | --- | --- |
+| 2wiki | 4.71 | 7.14 | 6.76 | 9.29 (gnn4) | **1.44 [1.36, 1.48]** | no | 2.27 [2.20, 2.33] |
+| hotpotqa | 4.35 | 6.53 | 6.18 | 8.30 (gnn4) | **1.42 [1.36, 1.48]** | no | 2.29 [2.20, 2.39] |
+| squad | 2.95 | 4.25 | 4.61 | 6.09 (gnn4) | **1.56 [1.52, 1.62]** | no | 2.73 [2.60, 2.87] |
+| musique | 83.26 | 109.57 | 154.13 | 178.98 (gnn4) | **1.85 [1.81, 1.88]** | no | 4.14 [4.05, 4.19] |
+| metaqa | 57.24 | 80.29 | 88.42 | 106.91 (gnn5) | **1.54 [1.52, 1.57]** | no | 2.40 [2.36, 2.45] |
+| webqsp | 77.79 | 106.41 | 117.33 | 141.14 (gnn5) | **1.51 [1.49, 1.52]** | no | 2.73 [2.70, 2.78] |
+
+C9 filed 1.27-1.65× for the same pair. Both models got the same forms. The ratio rose because those forms shrank the
+work the two models share, which is a larger part of the MLP's time.
+
+### Universal-lean: zsp over zrc, cold
+
+| dataset | zrc: zrc11 | zrc: filed | zsp: zsp10 | zsp: filed | **zsp / zrc** | at least 2× | warm forward, zsp / zrc (warm) |
+| --- | ---: | ---: | ---: | ---: | --- | --- | --- |
+| 2wiki | 2.72 | 4.34 (zrc4) | 2.76 | 4.80 (zsp4) | **1.01 [0.99, 1.05]** | no | 1.11 [1.09, 1.14] |
+| hotpotqa | 2.41 | 3.95 (zrc4) | 2.52 | 4.27 (zsp4) | **1.04 [1.02, 1.09]** | no | 1.14 [1.10, 1.17] |
+| squad | 1.81 | 2.61 (zrc4) | 1.90 | 3.00 (zsp4) | **1.05 [1.02, 1.08]** | no | 1.15 [1.11, 1.17] |
+| musique | 37.16 | 54.36 (zrc4) | 43.71 | 61.55 (zsp4) | **1.18 [1.16, 1.19]** | no | 1.12 [1.10, 1.13] |
+| metaqa | 29.77 | 45.52 (zrc6) | 32.18 | 47.68 (zsp6) | **1.08 [1.06, 1.10]** | no | 1.06 [1.02, 1.10] |
+| webqsp | 88.66 | 111.79 (zrc6) | 84.54 | 108.30 (zsp6) | **0.95 [0.93, 0.98]** | no | 1.02 [1.00, 1.04] |
+
+### Across the families
+
+The fastest GNN form of all is zsp10, on all six datasets.
+
+| dataset | zsp10 / twin0 | zsp10 / zrc | gnn0 / zrc |
+| --- | --- | --- | --- |
+| 2wiki | 0.59 [0.56, 0.61] | 1.01 [0.99, 1.05] | 2.49 [2.38, 2.56] |
+| hotpotqa | 0.58 [0.56, 0.61] | 1.04 [1.02, 1.09] | 2.56 [2.45, 2.66] |
+| squad | 0.64 [0.62, 0.66] | 1.05 [1.02, 1.08] | 2.54 [2.45, 2.64] |
+| musique | 0.52 [0.52, 0.53] | 1.18 [1.16, 1.19] | 4.15 [4.07, 4.19] |
+| metaqa | 0.56 [0.55, 0.57] | 1.08 [1.06, 1.09] | 2.97 [2.92, 3.02] |
+| webqsp | 1.09 [1.05, 1.18] | 0.95 [0.93, 0.98] | 1.32 [1.24, 1.36] |
+
+### What this stage's forms give each model
+
+Each model's filed path over its new path, cold:
+
+| dataset | twin0: umlp9 / umlp11 | gnn0: filed / gnn11 | zrc: filed / zrc11 | zsp: filed / zsp10 |
+| --- | --- | --- | --- | --- |
+| 2wiki | 1.52 [1.43, 1.57] | 1.38 [1.32, 1.43] | 1.60 [1.55, 1.66] | 1.74 [1.66, 1.78] |
+| hotpotqa | 1.50 [1.43, 1.56] | 1.34 [1.29, 1.41] | 1.64 [1.58, 1.71] | 1.70 [1.60, 1.77] |
+| squad | 1.44 [1.41, 1.48] | 1.32 [1.25, 1.37] | 1.44 [1.40, 1.48] | 1.58 [1.52, 1.63] |
+| musique | 1.32 [1.29, 1.33] | 1.16 [1.15, 1.18] | 1.46 [1.43, 1.48] | 1.41 [1.39, 1.43] |
+| metaqa | 1.40 [1.38, 1.43] | 1.21 [1.18, 1.23] | 1.53 [1.49, 1.55] | 1.48 [1.45, 1.51] |
+| webqsp | 1.37 [1.35, 1.39] | 1.20 [1.19, 1.22] | 1.26 [1.21, 1.29] | 1.28 [1.22, 1.31] |
+
+- Every model is faster with the same scores: twin0 by 1.32-1.52×, gnn0 by 1.16-1.38×, zrc by 1.26-1.64× and zsp by
+  1.28-1.74×. zsp10 is C10's path, unchanged.
+- p95 and p99 per path are in report.md.
+
+### Where the time goes
+
+Stage p50s in ms. They do not add up exactly to the totals' p50s.
+
+**Universal:**
+
+| dataset | the compile both models run | twin0's forward | gnn0's pack + forward | the compile's share of twin0's p50 |
+| --- | ---: | ---: | ---: | ---: |
+| 2wiki | 2.86 | 1.72 | 0.20 + 3.48 | 61% |
+| hotpotqa | 2.66 | 1.52 | 0.19 + 3.19 | 61% |
+| squad | 1.76 | 1.08 | 0.18 + 2.61 | 60% |
+| musique | 61.28 | 21.72 | 3.64 + 88.63 | 74% |
+| metaqa | 35.98 | 20.79 | 1.74 + 50.99 | 63% |
+| webqsp | 55.35 | 22.01 | 2.23 + 59.38 | 71% |
+
+**Lean:**
+
+| dataset | zrc: compile / lean inputs / chains / forward | zsp: compile / lean inputs / chains / links / forward |
+| --- | --- | --- |
+| 2wiki | 1.27 / 0.60 / – / 0.66 | 1.19 / 0.58 / – / 0.14 / 0.72 |
+| hotpotqa | 1.08 / 0.56 / – / 0.60 | 1.00 / 0.56 / – / 0.13 / 0.66 |
+| squad | 0.75 / 0.45 / – / 0.45 | 0.68 / 0.43 / – / 0.12 / 0.48 |
+| musique | 18.40 / 12.51 / – / 5.64 | 18.37 / 12.53 / – / 5.76 / 6.27 |
+| metaqa | 11.71 / 5.94 / 4.99 / 6.86 | 11.68 / 6.08 / 4.89 / 1.65 / 7.42 |
+| webqsp | 19.97 / 7.24 / 44.54 / 16.30 | 20.16 / 7.10 / 37.30 / 2.31 / 16.73 |
+
+- **In the universal family, the compile both models run is 60-74% of twin0's cold time.**
+- **How far a faster compile could go.** These numbers are worked out from the stage p50s above, not timed.
+  - With the compile at zero, gnn0 / twin0 would be 2.04 (2wiki), 2.12 (hotpotqa), 2.47 (squad), 4.20 (musique),
+    2.52 (metaqa) and 2.77 (webqsp).
+  - For 2×, the compile would have to fall to:
+    - 48.5 ms on musique (1.26× faster);
+    - 17.3 ms on webqsp (3.2×);
+    - 10.9 ms on metaqa (3.3×);
+    - 0.55 ms on squad (3.2×).
+  - On 2wiki and hotpotqa it would have to fall to 0.07 and 0.19 ms, so the compile alone cannot get there. twin0's
+    forward there is half of gnn0's.
+- **In the lean family, zsp's message passing costs its links and its second forward:** 0.15-6.4 ms, which is 3-17% of
+  zrc's time.
+- **On webqsp, zrc is the slower model.** Its chain rule takes 44.5 ms, against 37.3 ms for zsp's.
+
+### 2wiki: the first path on each question pays for its edge reads
+
+- On 2wiki, whichever path runs first on a question takes 36-52 ms longer in its compile. This is the p50 over the 25
+  questions each path is first on. On hotpotqa the extra is 2-3 ms. The paths after it do not pay.
+- **It is the compile's edge reads, not the node rows.**
+  - umlp9 reads its node rows in a stage of its own, and that stage does not pay: 0.91 ms first, 0.80 ms otherwise.
+  - umlp9's compile, which reads the edge stores, does pay: 54.5 ms first, 2.5 ms otherwise.
+- **Every model pays it alike.** Each path runs first on 25 of the 200 questions, so the p50s are each model's cost
+  with the question's edges in memory.
+- **This corrects C10.** C10 found the same effect on 2wiki and put it down to its untimed checks between questions.
+  C11's timed pass has no checks between questions, and the first path still pays, so the checks were not the only
+  cause. This laptop has 16.8 GB of memory, and 2wiki's node table is a 17.14 GiB memory map.
+
+### What it means
+
+- **The best models of both families now run at their fastest exact forms**, with every input kept and the same
+  scores.
+- **Neither family's MLP reaches 2× its GNN.**
+  - **Universal: 1.42-1.85×.** The compile both models share is most of the MLP's time. Making it faster for both is
+    the next lever. It can reach 2× on musique, webqsp, metaqa and squad (a compile 1.26-3.3× faster). On 2wiki and
+    hotpotqa, the forwards keep the ratio near 2 even with a free compile.
+  - **Lean: 0.95-1.18×.** zsp is zrc plus its links and one propagation step over scores, so it costs only 1-18% more in all.
+    No fair change makes zrc 2× faster than zsp. The lean GNN's message passing is cheap, and the lean MLP keeps
+    0.97-0.99 of its gain on B1 without it.
+- **Against the universal GNN, the lean MLP (zrc) is 2.49-4.15× faster on five datasets**, and 1.32× on webqsp, where
+  zrc's chain entries are its largest stage.
+- **The lean GNN (zsp10) is faster than the universal MLP (twin0)** on five datasets (0.52-0.64×): the lean inputs
+  cost less than the universal compile.
+- **Where the shared compile's time goes.** A development profile (not filed; 40 questions, the serial table, pinned)
+  covered the three datasets with about 2,000-row pools.
+
+  | stage, ms | musique | metaqa | webqsp |
+  | --- | ---: | ---: | ---: |
+  | C: per-family neighbour prototypes over the 1,536-wide rows | 24.1 | 11.6 | 14.9 |
+  | depth basis | 16.0 | 8.1 | 11.1 |
+  | D: seed prototypes | 11.6 | 5.8 | 10.1 |
+  | typed basis | – | 1.5 | 10.2 |
+  | whole compile | 66.0 | 33.1 | 65.0 |
+
+  At about 2,000 rows, the pool's float32 rows (13 MB) do not fit in the core's cache. C reads them once per edge.
+- **The next stage, C12,** makes the shared compile faster, the same for both models of each family. It is declared in
+  its own file, before any number.
