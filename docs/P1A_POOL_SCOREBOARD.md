@@ -1,6 +1,6 @@
 # P1a: our pools against the state-of-the-art pools, on the full corpora (a diagnostic)
 
-Declared 13 October 2026 at about 02:45, before any number of the stage. P1's first stage in
+Declared 13 October 2026, committed at 02:37 (54d6d12), before any number of the stage (the first job started at 02:38). P1's first stage in
 [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md). Nothing here is adopted, and no model trains or reads.
 
 ## 1. Question
@@ -87,3 +87,52 @@ Reported beside each call, deciding nothing:
   that. 2wiki and hotpotqa take about 45-60 minutes; the other four datasets take minutes. The call should land within
   about an hour of the start.
 - The encoder stays frozen. No model trains or reads, nothing is adopted, and test splits are never read.
+
+## 6. Results (filed 13 October, 03:10)
+
+**The call on s1eval: BELOW on five datasets.** squad is AT_OR_ABOVE only because it has no graph (every order there is
+its RRF order). Records: `outputs/p1a/scoreboard_<dataset>.json`, `outputs/p1a/verdict.{json,md}`.
+
+| dataset | call | the order that leads | where A3 is below (ALL, A3 against the leader) |
+| --- | --- | --- | --- |
+| metaqa | BELOW | LINKED | every N: 0.237 against 0.546 at N = 25, 0.800 against 0.959 at 2,000 |
+| squad | AT_OR_ABOVE | (all equal) | nowhere |
+| musique | BELOW | A1 | N <= 300 (0.548 against 0.575 at N = 100) and N = 4,000 (0.003) |
+| hotpotqa | BELOW | A1 | N <= 750: 0.512 against 0.830 at N = 25, 0.868 against 0.973 at 100 |
+| 2wiki | BELOW | A1 | N <= 300: 0.578 against 0.838 at N = 50; A3 leads at 500 to 2,000 (0.962 against 0.951 at 1,000) |
+| webqsp | BELOW | A1 | every N: 0.005 to 0.043 |
+
+s1sel (beside, not part of the call) says the same: BELOW on the same five datasets.
+
+**At the sizes the models read** (each order cut at each question's own |I_q|; ALL):
+
+| dataset | rows (mean) | today's pools I_q | A3 | the best SOTA order |
+| --- | ---: | ---: | ---: | ---: |
+| metaqa | 2,018 | 0.895 | 0.800 | 0.961 (LINKED) |
+| squad | 50 | 0.980 | 0.981 | 0.981 (A1) |
+| musique | 2,092 | 0.803 | 0.884 | 0.883 (A2) |
+| hotpotqa | 94 | 0.968 | 0.857 | 0.973 (A1) |
+| 2wiki | 106 | 0.906 | 0.772 | 0.911 (A1) |
+| webqsp | 2,120 | 0.688 | 0.759 | 0.790 (A1) |
+
+At the same size and look cost, a walk's own top N holds more golds than today's pools on every dataset with a graph:
++0.066 on metaqa (LINKED), +0.082 on musique (A3), +0.102 on webqsp (A1), and +0.005 on hotpotqa and 2wiki (A1).
+
+**Why A3 is below, from the columns:**
+- **The linked names dilute the head on passages.** A3 restarts from the seeds and the linked names at equal weight. On
+  hotpotqa, the walk from the linked names alone holds 0.617 at N = 100, the walk from the seeds alone (A0) 0.947.
+- **The lists waste half the restart on the KB.** metaqa's nodes carry names only. Its dense and SPLADE lists hold every
+  gold of 0.079 and 0.202 of the questions at N = 1,000 (ALL). A3 and A1 put half their restart there, LINKED none. On
+  webqsp, the seeds alone (A0, ours before step 4e) lead A1 at N = 100 to 1,500 (0.723 against 0.697 at 1,000).
+
+**The KB-QA line (diagnostic).**
+- metaqa, m = 500: the assigned topic entities' walk (ORACLE) 0.903, our linked entities' (LINKED) 0.868, A3 0.670. A3
+  does not reach ORACLE's 0.903 by N = 7,000.
+- webqsp, m = 2,000: ORACLE 0.816, LINKED 0.656, A3 0.752. A3 reaches ORACLE's 0.816 at N = 4,000.
+
+Our own linking gets metaqa within 0.036 of the assigned entities at ReaRev's m. On webqsp, our exact-match linking is
+the weak part (LINKED 0.656 against ORACLE 0.816).
+
+**What follows (section 4):** P1b, one pool change for all six, aimed at the measured gap
+([P1B_RESTART_MIXTURE.md](P1B_RESTART_MIXTURE.md)): one restart whose source weights a question's own label-free
+features set, fit by EM. The KB line goes to P3's ledger as the linking gap.
