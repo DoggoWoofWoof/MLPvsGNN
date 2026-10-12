@@ -274,3 +274,75 @@ every restart):
   and on musique both families carry the reach. So a plain drop of either family is not universal, and the
   universal form of what part 1 found is a rule over the families (P2b), declared in its own file.
 - No graph changes in this part.
+
+## 12. Part 2: results
+
+Filed 13 October 2026, about 05:15.
+- **Runs:** the 37 host parts, after the two development items, ran on the host. `verdict` ran locally
+  (`outputs/p2a/rank_verdict.{json,md}`, script sha256 `b3fbf46b…`).
+- **Exact checks** passed on every question: the pools equal step 1's, and each masked arm drops exactly its family's
+  edges.
+- **Rows:** the unmasked rows are within the tolerance of step 1's on every question of all six datasets. They match
+  bit for bit on 88% (musique) to 99.9% (squad) of the questions, and the largest difference is 0.0017 (hotpotqa).
+- **Unmasked R@5** equals the filed J5 reads to four places on all six datasets, for both fits.
+
+**What each fit loses without each family** (s1eval). Each cell gives the label for zrc / zsp, then the losses that
+count: the fit's measure unmasked minus masked, beyond 0.002 with its 95% interval clear of 0. A negative loss is a
+gain without the family.
+
+| dataset | structural | ner | knn |
+| --- | --- | --- | --- |
+| metaqa | RELIES / RELIES: R@5 0.772 / 0.773, FC@5 0.664 / 0.664, hit@1 0.889 / 0.887 | NOTHING / NOTHING | RELIES / RELIES: hit@1 0.006 / 0.003 |
+| squad | NOTHING / NOTHING | NOTHING / NOTHING | NOTHING / RELIES: hit@1 0.003 (zsp) |
+| musique | RELIES / RELIES: R@5 0.029 / 0.026, FC@5 0.055 / 0.044, hit@1 0.028 / 0.015 | RELIES / RELIES: R@5 0.009 / 0.014, FC@5 0.015 / 0.019 | NOTHING / RELIES: hit@1 0.016 (zsp) |
+| hotpotqa | RELIES / RELIES: R@5 0.169 / 0.168, FC@5 0.333 / 0.330 | RELIES / NOTHING: hit@1 0.005 (zrc) | RELIES / RELIES: hit@1 0.006 / 0.008 |
+| 2wiki | MIXED / MIXED: R@5 0.169 / 0.165, FC@5 0.309 / 0.311, hit@1 −0.016 / −0.010 | RELIES / NOTHING: hit@1 0.005 (zrc) | RELIES / RELIES: hit@1 0.004 (zrc), FC@5 0.003 (zsp) |
+| webqsp | RELIES / RELIES: R@5 0.223 / 0.187, FC@5 0.174 / 0.144, hit@1 0.049 / 0.080 | NOTHING / NOTHING | NOTHING / RELIES: R@5 0.013, FC@5 0.009 (zsp) |
+
+Beside:
+- **SNK:** masking all three families costs more than masking S alone on musique (R@5 0.053 against 0.026 to
+  0.029), hotpotqa (0.190 to 0.200 against 0.168 to 0.169) and 2wiki (0.224 against 0.165 to 0.169). With the
+  structural family gone, ner and knn carry part of what it carried. One label is new: zsp on squad is BETTER_WITHOUT
+  (R@5 and FC@5 −0.0025).
+- **Questions whose top 5 changes:** 3% to 50% without ner, and 21% to 52% without knn.
+
+**Families (section 8's rule):**
+- **No feature drop candidate.** Each family is RELIES for some fit on some dataset:
+  - structural on five datasets, for both fits (RELIES on four, MIXED on 2wiki);
+  - ner on musique for both fits, and on hotpotqa's and 2wiki's hit@1 for zrc;
+  - knn on all six for zsp, and on metaqa, hotpotqa and 2wiki for zrc.
+- **So no graph drop candidate.**
+- **webqsp, against part 1.** Part 1 made webqsp's ner and knn drop candidates for the pools. Neither fit relies on
+  webqsp's ner. zsp relies on its knn, zero-shot (R@5 0.013).
+  - Section 9 applies: the features keep the family, and the pools may drop it under P1's rules.
+  - A pool drop of either family is not universal, because musique's pools need both (part 1). It waits for P2b's
+    family rule.
+
+**What it says:**
+- **The structural family is what both fits read from the graph.** Masking it costs R@5 0.17 to 0.77 on the four
+  datasets with corpus or KB links (hotpotqa, 2wiki, webqsp, metaqa), and 0.026 to 0.029 on musique.
+- **On 2wiki it also costs the top 1.** Without it, hit@1 rises by 0.016 (zrc) and 0.010 (zsp), while R@5 falls by
+  0.17. Rows the graph favours displace the row the text scores would put first.
+  - This is the one counted gain from masking a single family.
+  - Part 1 found the same shape in 2wiki's pools: ner and knn add golds far down the order and push them out at the
+    head.
+- **ner and knn act mostly at the top 1.** Three exceptions:
+  - on musique, ner carries R@5 and FC@5 for both fits, as it carries musique's pools (part 1);
+  - zsp's knn on webqsp (R@5 0.013);
+  - zsp's knn on 2wiki (FC@5 0.003).
+
+  Every other counted reliance on them is hit@1, by 0.003 to 0.016. They change the top 5 on up to half the
+  questions, mostly within the tie on R@5.
+- **The GNN reads knn more than the MLP does.** zsp relies on knn on all six datasets, zrc on three. zsp's propagation
+  step has a knn slot. zrc reads knn only through WALKF, which is computed from the pool's edges before any row is
+  scored, so its reliance is not message passing (section 9).
+
+**What follows (section 9):**
+- **No drop screen,** since there is no graph drop candidate. No graph changes in P2a.
+- **P2b,** declared in its own file before any number: one link rule for all six that orders the families, the
+  structural family first. Its starting points:
+  - from part 1, the families' pool shapes: ner and knn add golds on musique, and on 2wiki only far down the order;
+  - webqsp's ner and knn in the pools;
+  - from part 2, the top 1: 2wiki's hit@1 without the structural family, and ner's and knn's hit@1 reliance.
+
+  It is graded on all six, the pools first and then a one-fit screen.
