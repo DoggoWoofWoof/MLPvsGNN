@@ -111,4 +111,23 @@ early.
 
 ## Results
 
-Not yet run.
+### zep (zrc, 16 epochs): NOT_ADOPTED (12 October 2026, 13:02)
+
+The filed grade (outputs/full_zep/grade.json) is ADOPT: 2 of 11 primary reads GAIN, 0 of 36 LOSE. The re-grade under
+the seed null over every split decides (section 4), and it is **NOT_ADOPTED** (outputs/full_zep/grade-nullx.json):
+
+- **0 primary GAINs, 0 LOSSes in 36.** All 36 reads sit under the null's floors.
+- Five calls change from GAIN to WITHIN: webqsp zero-shot on J5 (+0.020, floor 0.030), L-squad (+0.015, floor 0.026),
+  L-hotpotqa (+0.023, floor 0.023) and L-2wiki (+0.012, floor 0.047), and metaqa zero-shot on L-metaqa (+0.012,
+  floor 0.017).
+- L-musique's webqsp zero-shot read stays a GAIN (+0.012 over a floor of 0.010). It is not a primary read.
+- In-domain reads move by at most 0.007 either way.
+
+**So zrc keeps 8 epochs.** Doubling the steps never hurts, and it lifts webqsp zero-shot on every split (+0.002 to
++0.023), but no lift clears what reseeding the same fit moves. webqsp zero-shot goes to the gap ledger as a direction
+(training length helps transfer to the large KB), not as a result.
+
+### zspx (zsp, 16 epochs)
+
+Running (12 October, 13:30). Of zsp's four new base fits on the card, L-2wiki and L-squad are done, and J5 and
+L-metaqa are training. Of the six zspx fits, L-musique is training and five wait.
