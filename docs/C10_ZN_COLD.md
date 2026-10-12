@@ -144,7 +144,31 @@ the float16 table and the decode bit for bit; ZFast within 1.0e-5 of FastZ (TOL 
 
 ## Development check
 
-To be filled before any timed run.
+Run 12 October 18:35-18:43, 30 questions per dataset, untimed (`check --dataset X --queries 30`), before any timed
+run. No question failed any check on any dataset.
+
+- **Bit for bit, 30/30 on every dataset:** the pool and seeds of every path; zn10's node rows; the decoded store rows;
+  zn's rows against zsp's filed columns; zsp10's compile (the serial table at every pool size, including musique's,
+  metaqa's and webqsp's pools of 256 rows or more), its rows and its links.
+- **On metaqa and webqsp, 30/30:** zsp10's chain entries equal zsp6's and the filed build's, bit for bit; its e_rel
+  equals the look's.
+- **Every path's top 5 equals its module's, 30/30.** The largest score difference from the module, per path:
+
+| dataset | zn10 | zn4 | zsp10 | zsp's filed path |
+| --- | ---: | ---: | ---: | ---: |
+| 2wiki | 3.8e-6 | 3.8e-6 | 3.8e-6 | 3.8e-6 (zsp4) |
+| hotpotqa | 3.8e-6 | 3.3e-6 | 3.8e-6 | 3.8e-6 (zsp4) |
+| squad | 3.6e-6 | 2.7e-6 | 1.9e-6 | 1.4e-6 (zsp4) |
+| musique | 8.1e-6 | 7.9e-6 | 3.3e-5 | 3.3e-5 (zsp4) |
+| metaqa | 4.8e-6 | 4.3e-6 | 6.3e-5 | 6.4e-5 (zsp6) |
+| webqsp | 1.3e-5 | 1.3e-5 | 7.8e-5 | 7.7e-5 (zsp6) |
+
+TOL is 1e-4. zsp10's largest differences match its filed path's to within 1e-6, so they come from zsp's own forward on
+the large pools, not from this stage's forms. C9 kept 200/200 webqsp questions at the same TOL.
+
+The check also prints p50s, but in a fixed order (zn10, zsp10, zn4, then zsp's filed path), so whichever path first
+touches the graph's data pays for it. They are not the stage's timing and are not used. A development diagnostic on 2wiki
+in rotated order (60 questions, twice; not filed) gave zn10 1.15, zsp10 3.33, zn4 3.06 and zsp4 5.66 ms.
 
 ## Results
 
