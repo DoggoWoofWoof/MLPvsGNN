@@ -71,4 +71,37 @@ The screens' numbers do not choose between the graphs when both pass. Choosing b
 
 ## Results
 
-Not yet run.
+Filed 13 October 2026, about 00:30. **NOT_ADOPTED.**
+- Both arms are NO_GAIN, filed and under the seed null: no GAIN in 24 reads.
+- Each arm also has a LOSS on a dataset the rule protects:
+  - zrc on musique, in-domain on L-hotpotqa's fit (−0.0098 against a 0.0075 floor);
+  - zsp on webqsp zero-shot, L-musique's fit (−0.043).
+- U1c did not pass either, so by the rule no full run happens on either graph.
+
+Files: `outputs/screen/scr-u1f-{zrc,zsp}{,-hp}.{md,json}`, `scr-u1f-{zrc,zsp}-pair{,-recall}.{md,json}` (host paths
+cut from the re-call records).
+
+delta R@5 against each arm's base on today's graph and pools, with the re-call (W = WITHIN; zs = zero-shot):
+
+| arm | fit | metaqa | squad | musique | webqsp (zs) | hotpotqa | 2wiki |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| zrc | L-musique | +0.0074 W | +0.0013 W | −0.0259 W (zs) | +0.0037 W | −0.0586 LOSS | −0.0098 LOSS |
+| zrc | L-hotpotqa | +0.0059 W | +0.0023 W | **−0.0098 LOSS** | +0.0142 W | −0.0452 LOSS (zs) | −0.0108 LOSS |
+| zsp | L-musique | +0.0040 W | +0.0008 W | −0.0133 W (zs) | **−0.0427 LOSS** | −0.0648 LOSS | −0.0100 LOSS |
+| zsp | L-hotpotqa | +0.0065 W | +0.0026 W | +0.0038 W | +0.0152 W | −0.0353 LOSS (zs) | −0.0127 LOSS |
+
+The re-call changed one call per arm: L-musique's musique zero-shot read, filed LOSS, is WITHIN its 0.072 floor.
+
+What this says, against U1c (docs/U1C_RETRAIN_ON_U.md):
+- **Damping the links changes little.** Capping each mention target's in-degree at 1,024 moves no read to a GAIN.
+  - metaqa still leans up (+0.004 to +0.007), under its floor.
+  - zsp's webqsp zero-shot loss shrinks (−0.056 to −0.043) but stays a LOSS.
+  - zrc picks up a musique loss on L-hotpotqa's fit (U1c: −0.001).
+- **The hyperlink price stands (to the gap ledger).** Both arms still lose hotpotqa (−0.035 to −0.065, U1c −0.040 to
+  −0.063) and 2wiki (−0.010 to −0.013, U1c −0.011 to −0.020).
+  - The LLM-free links recover the hyperlinks as edges (docs/U1A_B1_WITHOUT_HYPERLINKS.md), on both U1d's and U1e's
+    graphs.
+  - The trained models do not get the hyperlinks' value back from them.
+
+What follows, by the rule: no full run on either graph. Both bases keep today's graph and pools. The U1 reads go to
+the gap ledger. The ranking gap on musique is taken up by D4 (docs/DIAG_LINK_WORDS.md), on today's graph.

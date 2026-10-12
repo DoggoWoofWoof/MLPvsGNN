@@ -1,0 +1,177 @@
+{
+ "verdict": "NO_GAIN",
+ "fits": [
+  {
+   "file": "outputs/screen/scr-u1f-zsp.json",
+   "split": "L-musique",
+   "verdict": "NO_GAIN",
+   "gains": 0,
+   "losses": 4
+  },
+  {
+   "file": "outputs/screen/scr-u1f-zsp-hp.json",
+   "split": "L-hotpotqa",
+   "verdict": "NO_GAIN",
+   "gains": 0,
+   "losses": 2
+  }
+ ],
+ "rows": [
+  {
+   "split": "L-musique",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "base": 0.7794,
+   "new": 0.7834,
+   "rrf": 0.0047,
+   "delta": 0.004,
+   "lo": 0.0019,
+   "hi": 0.0061,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "squad",
+   "read": "in-domain",
+   "base": 0.9125,
+   "new": 0.9132,
+   "rrf": 0.9054,
+   "delta": 0.0008,
+   "lo": -0.0014,
+   "hi": 0.0027,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "musique",
+   "read": "zero-shot",
+   "base": 0.5111,
+   "new": 0.4978,
+   "rrf": 0.4734,
+   "delta": -0.0133,
+   "lo": -0.0214,
+   "hi": -0.005,
+   "call": "LOSS"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "base": 0.9065,
+   "new": 0.8417,
+   "rrf": 0.6846,
+   "delta": -0.0648,
+   "lo": -0.0693,
+   "hi": -0.0602,
+   "call": "LOSS"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "base": 0.8724,
+   "new": 0.8624,
+   "rrf": 0.6079,
+   "delta": -0.01,
+   "lo": -0.0132,
+   "hi": -0.0067,
+   "call": "LOSS"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "base": 0.3245,
+   "new": 0.2819,
+   "rrf": 0.0535,
+   "delta": -0.0427,
+   "lo": -0.059,
+   "hi": -0.0258,
+   "call": "LOSS"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "base": 0.7807,
+   "new": 0.7873,
+   "rrf": 0.0047,
+   "delta": 0.0065,
+   "lo": 0.0046,
+   "hi": 0.0085,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "squad",
+   "read": "in-domain",
+   "base": 0.9109,
+   "new": 0.9135,
+   "rrf": 0.9054,
+   "delta": 0.0026,
+   "lo": 0.0006,
+   "hi": 0.0048,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "musique",
+   "read": "in-domain",
+   "base": 0.5647,
+   "new": 0.5685,
+   "rrf": 0.4734,
+   "delta": 0.0038,
+   "lo": -0.0023,
+   "hi": 0.0099,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "hotpotqa",
+   "read": "zero-shot",
+   "base": 0.8435,
+   "new": 0.8082,
+   "rrf": 0.6846,
+   "delta": -0.0353,
+   "lo": -0.0401,
+   "hi": -0.0308,
+   "call": "LOSS"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "base": 0.8744,
+   "new": 0.8617,
+   "rrf": 0.6079,
+   "delta": -0.0127,
+   "lo": -0.0161,
+   "hi": -0.0092,
+   "call": "LOSS"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "base": 0.2262,
+   "new": 0.2414,
+   "rrf": 0.0535,
+   "delta": 0.0152,
+   "lo": -0.0002,
+   "hi": 0.0301,
+   "call": "WITHIN"
+  }
+ ],
+ "floor": 0.0075,
+ "script_sha256": "0b662232ef3e38b7b695f3024591e42a22c53ba2cb5634e3e1f988641b665762",
+ "utc": "2026-10-12T18:18:19Z",
+ "arm": "zsp",
+ "base_arm": "zsp",
+ "decided_against": "zsp's card fit of each split on today's graph and pools (scr-zspg)",
+ "relz_sha256": "fae8b5ba4a2e49c15efc670f457257a09a398f97a4c36500ce87aec615002c7d",
+ "stage": "U1f",
+ "declared_in": "docs/U1F_RETRAIN_ON_GU1024.md",
+ "device": "cuda",
+ "zu1c_sha256": "d27a6363a1e046b69c2f2c4c27eb1d02bdf8fe5d6b3c90fc9657bda318b49822",
+ "declared_in_u1c": "docs/U1C_RETRAIN_ON_U.md"
+}
