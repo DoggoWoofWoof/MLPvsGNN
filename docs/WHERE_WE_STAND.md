@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (03:10)
+# Where we stand, 13 October 2026 (05:11)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -160,6 +160,20 @@ hyperlinks.
 
 The rule's links are still imprecise: on 2wiki about three in four are not hyperlinks. That is in the gap ledger.
 
+**P2a, 13 October: what each link family is worth on the full corpora** ([P2A_LINK_FAMILIES.md](P2A_LINK_FAMILIES.md)).
+Each family was left out of, or added to, the pools (part 1), and masked in today's fits' inputs with no retraining
+(part 2).
+
+| family | in the pools (part 1, ALL at \|I_q\|) | in today's fits (part 2, R@5 lost when masked) |
+| --- | --- | --- |
+| structural (KB triples, hyperlinks, musique's own) | Carries the reach on every graph: metaqa +0.540, 2wiki +0.310, webqsp +0.265, hotpotqa +0.165, musique +0.015 | Both fits rely on it: 0.17 to 0.77 on the linked datasets, 0.026 to 0.029 on musique. On 2wiki, masking it raises hit@1 by 0.010 to 0.016. |
+| ner | Adds reach only on musique (+0.032); pushes golds out elsewhere | Carries musique for both fits (0.009 / 0.014); elsewhere only hit@1, for the MLP |
+| knn | Adds reach only on musique; pushes golds out elsewhere | Mostly hit@1 (0.003 to 0.016). The GNN relies on it on all six (webqsp zero-shot R@5 0.013), the MLP on three. |
+
+No family is a drop candidate, and no subset of families suits all six datasets, so no graph changes. The universal
+form of what P2a found is a rule over the families (P2b): the structural family first, then ner and knn, which keeps
+the head and adds musique's tail.
+
 By U1f's rule, no full run uses either graph, and both bases keep today's graph and pools. The hyperlink price, what
 the trained models lose without the hyperlinks on the eval carves, goes to the gap ledger. For both arms it is
 0.035-0.065 R@5 on hotpotqa and 0.010-0.020 on 2wiki. The rule's links recover the hyperlinks as edges, but the
@@ -195,27 +209,52 @@ five datasets. squad has no graph, so every order there is the same.
 - **Headroom at no extra look cost.** Cut at each question's own pool size today, a walk's top N holds more golds than
   today's pools: metaqa +0.066, musique +0.082, webqsp +0.102, hotpotqa and 2wiki +0.005.
 
-No fixed restart is best on all six. P1b (running) fits one restart for all of them: a per-question mixture of the
-seed, linked-entity and first-stage walks, weighted by the question's own label-free features and fit by EM on the
-training datasets' fit carves ([P1B_RESTART_MIXTURE.md](P1B_RESTART_MIXTURE.md)).
+**P1b and P1b2: one restart for all six** ([P1B_RESTART_MIXTURE.md](P1B_RESTART_MIXTURE.md),
+[P1B2_RANK_GATE.md](P1B2_RANK_GATE.md)). No fixed restart is best on all six, so both fit one per-question rule on the
+training datasets' fit carves.
+- **P1b's mixture (MX)** weights the seed, linked-entity and first-stage walks from fifteen label-free features of the
+  question, fit by EM to the golds' mass. It is BELOW the best SOTA order on five datasets, because the call reads
+  rank and the fit moved weight to the peaked seed walk.
+- **P1b2's rank gate (RC)** adds HippoRAG 2's own walk and fits a hard choice among eight fixed blends to the golds'
+  ranks.
+  - It is AT_OR_ABOVE the best SOTA order on metaqa, squad, hotpotqa and 2wiki.
+  - It is BELOW on musique (up to −0.070) and on webqsp's head (up to −0.083).
+  - The per-question oracle over the same blends is AT_OR_ABOVE on all six, so the gap is the gate's. Its soft read
+    is AT_OR_ABOVE on musique.
+- **At each question's own size of today's pools, both are above today's pools on all six** (ALL, s1eval):
 
-## 6. Running now (13 October, 03:10)
+  | order | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+  | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+  | today's pools | 0.895 | 0.980 | 0.803 | 0.968 | 0.906 | 0.688 |
+  | MX | 0.923 | 0.981 | 0.892 | 0.969 | 0.914 | 0.806 |
+  | RC | 0.963 | 0.981 | 0.844 | 0.971 | 0.913 | 0.782 |
+  | best SOTA order | 0.961 | 0.981 | 0.883 | 0.973 | 0.911 | 0.790 |
 
-- **P1b on the host, since 03:08** ([P1B_RESTART_MIXTURE.md](P1B_RESTART_MIXTURE.md)): the five gathers on the fit
-  carves (squad's done), then the EM fit, then the six reads on s1sel and s1eval. The call should land around 04:00.
+- **P1c reads MX,** by P1b2's declared rule: its mean over the five s1sel carves is 0.936, against RC's 0.926.
+  - [P1C_POOLS_RETRAINED.md](P1C_POOLS_RETRAINED.md) (6996aea) rebuilds the models' pools from MX's order at each
+    question's own size, so the look cost is unchanged.
+  - It runs one screen fit per family, zrc and zsp.
+
+## 6. Running now (13 October, 05:11)
+
+- **P1c on the host** ([P1C_POOLS_RETRAINED.md](P1C_POOLS_RETRAINED.md)).
+  - The six pool builds run first; they are light items.
+  - Then the looks, caches and builds, about 45 GB, then the identity gate.
+  - Then the four screen fits and their reads on the card, then the call.
 - **Done since the last update:**
-  - the 13 October program ([PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)), which moves the target to the full
-    corpora;
-  - P1a, declared, run and filed (section 5).
-- **Host disk: 26.7 GB free at 03:08**, below the 30 GB line where the feeder sends only light items (P1b's are).
-  Clean-up 15, U1c's and U1f's arrays, is listed and dry-run: about 143 GB once both names of each hard-linked pair
-  go. It is the user's command.
+  - P1b and P1b2, declared, run and filed (section 5);
+  - P2a, both parts, declared, run and filed (section 4).
+- **Host disk: 28.6 GB free at 05:10.** That is below the 30 GB line, where the feeder sends only light items, so
+  P1c's looks wait for room.
+  - Clean-up 15 (U1c's and U1f's arrays) is listed and dry-run. It frees about 143 GB once both names of each
+    hard-linked pair go.
+  - It is the user's command.
 
 ## 7. Open gaps
 
 | gap | the number | what works on it |
 | --- | --- | --- |
-| Pools against SOTA (full corpora) | P1a: below the best SOTA order on five datasets; HippoRAG 2's restart leads on the passage graphs and webqsp, the linked-entity walk on metaqa | P1b (running): one restart mixture for all six, fit by EM. |
+| Pools against SOTA (full corpora) | P1b2's rank gate: at or above the best SOTA order on four datasets; below on musique (up to −0.070) and webqsp's head (up to −0.083). The oracle over the same blends is above on all six, so the gap is the gate's. | P1c screens the models on MX's pools (above today's on all six at the same size). A gate change goes in its own file. |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions | D4 (link words): NO_SIGNAL, so the gap is reported as the first stage's. Rounds 29-32, U1c and D4 moved nothing here. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
@@ -243,17 +282,21 @@ training datasets' fit carves ([P1B_RESTART_MIXTURE.md](P1B_RESTART_MIXTURE.md))
   adopted. D4 found that a link's words do not pick the neighbour a musique question follows (NO_SIGNAL). C12 made
   the full compile both universal models share faster, bit for bit (gnn0 / twin0 up to 1.89×).
 - **13 October: the full corpora.** The target moved to our own corpora on all six datasets (2wiki 6.0M and hotpotqa
-  5.2M passages). P1a put our pools against the SOTA pool constructions there: below on five datasets.
+  5.2M passages).
+  - P1a put our pools against the SOTA pool constructions there: below on five datasets.
+  - P1b and P1b2 fit one restart rule for all six. The rank gate is at or above the SOTA order on four datasets, and
+    both rules are above today's pools on all six at the same size.
+  - P2a measured each link family: the structural family carries the reach and the ranking, and no family can be
+    dropped.
 
 ## What is next
 
 The order is [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)'s. Each stage gets its own file, committed before its
 numbers.
-1. **P1b, then P1c or the next pool change.** If one restart mixture is at or above the best SOTA order on all six,
-   P1c rebuilds the models' pools as its top N at today's sizes and runs one fit as a screen.
-2. **P2a: what each link family is worth.** Each family left out in turn, on the pools (reach) and today's fits
-   (ranking), with no retraining. Then better links where information is missing (musique), and dropping what carries
-   nothing.
+1. **P1c: the models on MX's pools** (running). One screen fit per family. A full run follows only if no read loses.
+   The rank gate's gap on musique and webqsp is a gate change, in its own file.
+2. **P2b: one link rule over the families.** The structural family first, then ner and knn, keeping the head and
+   adding musique's tail. It is graded on all six, the pools first and then a one-fit screen.
 3. **P3: the SOTA rankers beside our four models**, and the gap ledger for SOTA, GNN and MLP by hop slice.
 4. **P5a: the model's own representation, read as a retriever first.** Per-node vectors and relation offsets, fit by
    EM and composed for multi-hop targets without walking the graph, with offsets for unseen relations from their
