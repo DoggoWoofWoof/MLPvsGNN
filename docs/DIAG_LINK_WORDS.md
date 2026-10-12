@@ -143,3 +143,26 @@ O1w, C1w, 2wiki, hotpotqa, squad and the KB reads are reported, not decided.
   - `outputs/linkwords/<ds>_ents.{npz,json}` (the npz is never committed);
   - `outputs/diag/linkwords-scr-zrct{,-hp}.{json,md}`;
   - `outputs/diag/linkwords-zrc.{json,md}` (the verdict).
+
+## Amendment 1 (13 October, 00:25, before the run)
+
+The rule is unchanged. Three things about how it runs changed.
+
+- **The NER mentions were built on the laptop, not on the host.** The laptop runs the same spaCy (3.8.15),
+  en_core_web_sm (3.8.0), Python (3.13.5) and numpy (2.3.2) over the same served nodes, with nodes.jsonl's sha256
+  checked. The files reach the host by `rx push --inputs`. The run checks each file's content digest and the nodes'
+  sha256 when it loads them. The host needs no spaCy, and the zip stays only as a fallback.
+- **The rebuild gate is met in full.** The mentions rebuild every NER edge of both graphs, with none extra:
+  - musique: 800,278 of 800,278 edges;
+  - squad: 156,130 of 156,130 edges;
+  - weights within 7.1e-7 of the graph's (float32 rounding);
+  - records: `outputs/linkwords/<ds>_ents.json`.
+
+  They were built twice, the second time by the committed script. Both builds give the same content digest.
+- **Two guards were added to the run:**
+  - the words are read only on the s1eval carves, while identity is still checked on every carve the read covers;
+  - each fit's record is written after each dataset, so a later failure keeps the reads already done.
+- **The job:** one item on the host's CPU lane, 4 threads.
+  - The two reads take about 4 minutes each.
+  - One pass over each corpus: about 6 minutes for 2wiki (6.0M nodes) and 5 for hotpotqa (5.2M nodes), timed on the
+    laptop at 58 µs a node.

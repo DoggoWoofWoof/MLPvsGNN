@@ -1,0 +1,53 @@
+# NER mentions, squad
+
+```
+{
+ "dataset": "squad",
+ "nodes": 20233,
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "spacy": "3.8.15",
+ "model": "3.8.0",
+ "from": "laptop",
+ "settings": {
+  "disable": [
+   "parser",
+   "lemmatizer"
+  ],
+  "labels": [
+   "PERSON",
+   "GPE",
+   "ORG",
+   "LOC",
+   "FAC",
+   "WORK_OF_ART",
+   "EVENT",
+   "PRODUCT",
+   "NORP"
+  ],
+  "key": "e.text.lower().strip()",
+  "min_chars": 3,
+  "df": [
+   2,
+   25
+  ]
+ },
+ "mentions": 188101,
+ "keys": 64439,
+ "keys_in_df_range": 13804,
+ "arrays_sha256": "46af69d2c464aae70ae25750a462d0b04ce28260db75f69ec7b3f08009a24d5d",
+ "graph": {
+  "graph_edges": 156130,
+  "rebuilt_edges": 156130,
+  "common": 156130,
+  "reproduced": 1.0,
+  "extra_share": 0.0,
+  "weight_max_abs_diff": 5.676632834905604e-07,
+  "weight_within_1e-4": 1.0
+ },
+ "procs": 4,
+ "seconds": 94.1277539730072,
+ "utc": "2026-10-12T18:59:30Z",
+ "script_sha256": "21bfe5f1875db2ae8c109e2d987f8b04b02e095e6e6438c03448bf307a82c1d4"
+}
+```
