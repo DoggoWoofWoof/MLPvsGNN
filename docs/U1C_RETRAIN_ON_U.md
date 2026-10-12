@@ -138,4 +138,32 @@ The screen's rule, fits and reads are unchanged.
 
 ## Results
 
-Not yet run.
+Filed 12 October 2026, about 23:00. **NOT_ADOPTED.** Both arms are NO_GAIN, filed and under the seed null: no GAIN in
+24 reads. zsp also has a LOSS on webqsp zero-shot (L-musique's fit, −0.056), one of the four datasets the rule protects.
+Files: `outputs/screen/scr-u1c-{zrc,zsp}{,-hp}.{md,json}`, `scr-u1c-{zrc,zsp}-pair{,-recall}.{md,json}` (host paths
+cut from the re-call records).
+
+delta R@5 against each arm's base on today's graph and pools, with the re-call (W = WITHIN; zs = zero-shot):
+
+| arm | fit | metaqa | squad | musique | webqsp (zs) | hotpotqa | 2wiki |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| zrc | L-musique | +0.0061 W | +0.0010 W | −0.0323 W (zs) | −0.0084 W | −0.0596 LOSS | −0.0196 LOSS |
+| zrc | L-hotpotqa | +0.0071 W | −0.0005 W | −0.0011 W | +0.0079 W | −0.0428 LOSS (zs) | −0.0133 LOSS |
+| zsp | L-musique | +0.0041 W | +0.0008 W | −0.0189 W (zs) | **−0.0562 LOSS** | −0.0634 LOSS | −0.0112 LOSS |
+| zsp | L-hotpotqa | +0.0056 W | +0.0012 W | −0.0034 W | +0.0102 W | −0.0397 LOSS (zs) | −0.0139 LOSS |
+
+The re-call changed one call per arm: L-musique's musique zero-shot read, filed LOSS, is WITHIN its 0.072 floor.
+
+What this says:
+- **No gain anywhere.** On the four datasets the rule protects, the universal graph and step 4h's pools move R@5 by
+  −0.056 to +0.010. Only metaqa leans up (+0.004 to +0.007), under its floor.
+- **The hyperlink price (to the gap ledger).** Without the corpus hyperlinks, net of U1d's links and the new pools,
+  both arms lose hotpotqa (−0.040 to −0.063) and 2wiki (−0.011 to −0.020). U1d's links recover most of the hyperlinks
+  as edges (docs/U1A_B1_WITHOUT_HYPERLINKS.md), not their value to the trained models.
+- **musique does not move** (−0.032 to −0.001, all WITHIN). zsp's musique zero-shot hit@1 falls by 0.147 (reported
+  only).
+- **The GNN carries the new graph to webqsp worse than the MLP:** zsp −0.056 (LOSS) against zrc −0.008 on L-musique's
+  fit.
+
+What follows, by the rule: no full run. Both bases keep today's graph and pools. U1f (docs/U1F_RETRAIN_ON_GU1024.md)
+runs the same screen on U1e's damped links and is filed by its own rule.
