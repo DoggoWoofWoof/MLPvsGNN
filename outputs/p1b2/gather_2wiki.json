@@ -1,0 +1,46 @@
+{
+ "declared_in": "docs/P1B2_RANK_GATE.md",
+ "dataset": "2wiki",
+ "carve": "fit",
+ "questions": 5928,
+ "carve_sha256": "fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3",
+ "classes": [
+  "S",
+  "L",
+  "R",
+  "A1",
+  "LR",
+  "SL",
+  "SLR",
+  "MX"
+ ],
+ "tau": 1.0,
+ "mean_area": {
+  "S": 3.4291,
+  "L": 2.6896,
+  "R": 6.0222,
+  "A1": 1.8621,
+  "LR": 2.3797,
+  "SL": 1.9686,
+  "SLR": 1.8758,
+  "MX": 1.5766
+ },
+ "least_area_share": {
+  "S": 0.5653,
+  "L": 0.1044,
+  "R": 0.0248,
+  "A1": 0.0223,
+  "LR": 0.0054,
+  "SL": 0.004,
+  "SLR": 0.0015,
+  "MX": 0.0013
+ },
+ "all_classes_tied": 0.2709,
+ "features_equal_p1b": true,
+ "npz_sha256": "7ed55b0c06a18f9aeba5bfdd839425a525644a26da7b18ba8775a793c286c48d",
+ "p1b_gate_sha256": "e1aa6a9911746295812c594406063a4e95e8063b303da18b200bdfceb95dd3f3",
+ "script_sha256": "6f057a31871b0c5950028e2ef657d79fe10591b2f193ae7ec5a0e322f1415d27",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "seconds": 950.5,
+ "utc": "2026-10-12T22:46:38Z"
+}

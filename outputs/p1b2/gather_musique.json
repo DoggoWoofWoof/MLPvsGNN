@@ -1,0 +1,46 @@
+{
+ "declared_in": "docs/P1B2_RANK_GATE.md",
+ "dataset": "musique",
+ "carve": "s1fit",
+ "questions": 4601,
+ "carve_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+ "classes": [
+  "S",
+  "L",
+  "R",
+  "A1",
+  "LR",
+  "SL",
+  "SLR",
+  "MX"
+ ],
+ "tau": 1.0,
+ "mean_area": {
+  "S": 7.9306,
+  "L": 14.7703,
+  "R": 5.4255,
+  "A1": 4.8881,
+  "LR": 4.7405,
+  "SL": 6.6509,
+  "SLR": 4.4088,
+  "MX": 4.4587
+ },
+ "least_area_share": {
+  "S": 0.3754,
+  "L": 0.1178,
+  "R": 0.2958,
+  "A1": 0.0317,
+  "LR": 0.0485,
+  "SL": 0.0265,
+  "SLR": 0.0059,
+  "MX": 0.0183
+ },
+ "all_classes_tied": 0.0802,
+ "features_equal_p1b": true,
+ "npz_sha256": "ee2b42169df67372da1f40bcecbaa50589df25fa1c3a3c663a35a90da71c979f",
+ "p1b_gate_sha256": "e1aa6a9911746295812c594406063a4e95e8063b303da18b200bdfceb95dd3f3",
+ "script_sha256": "6f057a31871b0c5950028e2ef657d79fe10591b2f193ae7ec5a0e322f1415d27",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "seconds": 269.4,
+ "utc": "2026-10-12T22:54:46Z"
+}

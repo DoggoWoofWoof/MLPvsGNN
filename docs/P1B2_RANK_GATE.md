@@ -162,3 +162,88 @@ and both models of a family read the same pool, so the MLP's own scoring stays f
 - **ETA:** P1b took 10 s to 7.7 minutes per gather, 28 s for the fit and up to 14.5 minutes per apply (2wiki). P1b2
   adds one walk and eight class areas per question. The call should land about 35 minutes after the start.
 - The encoder stays frozen. No model trains or reads, nothing is adopted, and test splits are never read.
+
+## 7. Results (filed 13 October, 05:05)
+
+Records: `outputs/p1b2/` (gate.json, gather_*, rc_*, verdict.json and verdict.md). The stage was declared at 03:53
+(adb15d9), and the call landed at 04:59.
+
+The checks passed on every carve:
+- the features equal P1b's gather, question by question;
+- S, L and A1 equal P1a's A0, LINKED and A1 at every point (on squad, L and A1), and MX equals P1b's MX.
+
+EM ran to its 200-iteration limit. The penalized log-likelihood rose at every step (from -0.527 to -0.285), and it was
+still gaining about 2e-6 relatively per iteration when the limit stopped it.
+
+**The call on s1eval: AT_OR_ABOVE on four datasets (metaqa, squad, hotpotqa, 2wiki), BELOW on musique and webqsp.**
+
+| dataset | call | where RC is below the best SOTA order | where it is above |
+| --- | --- | --- | --- |
+| metaqa | AT_OR_ABOVE | nowhere | 12 points from N = 1,000, over LINKED by up to 0.003 |
+| squad | AT_OR_ABOVE | nowhere | nowhere |
+| musique | BELOW | 28 of 30 points (N >= 50), under A1 and A2 by up to 0.070 (0.667 against A1's 0.737 at N = 300) | nowhere |
+| hotpotqa | AT_OR_ABOVE | nowhere | nowhere |
+| 2wiki | AT_OR_ABOVE | nowhere | N = 25 and 50, over A1 by up to 0.023 |
+| webqsp | BELOW | 19 points: the head (ALL to N = 200, recall to N = 300; under A1 by up to 0.083 in recall at N = 25), recall from N = 1,000 and ALL at N = 2,000 | ALL at N = 300 to 1,500 and from 4,000, by up to 0.033 |
+
+On s1sel (beside):
+- metaqa and squad are AT_OR_ABOVE;
+- musique is BELOW at every point, by up to 0.081;
+- hotpotqa is BELOW at the head (N <= 500, under A1 by up to 0.007);
+- 2wiki is BELOW in ALL at N = 200 to 750 (under LINKED by up to 0.009).
+
+Beside, on s1eval:
+- **ORC**, the oracle over the eight classes, is AT_OR_ABOVE on all six. It leads the best SOTA order at every point
+  on musique (by up to 0.124) and on webqsp (by up to 0.132).
+- **RCS**, the soft read, is AT_OR_ABOVE on squad, musique, hotpotqa and 2wiki. On musique it leads A1 at the head
+  (0.490 against 0.453 at N = 50). It is BELOW on metaqa (up to 0.024) and on webqsp's head (up to 0.070).
+
+**At each question's own size of today's pools (|I_q|, ALL, s1eval), the same look cost:**
+
+| dataset | rows (mean) | today's pools | A3 | MX | RC | best SOTA order |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| metaqa | 2,018 | 0.895 | 0.800 | 0.923 | 0.963 | 0.961 (LINKED) |
+| squad | 50 | 0.980 | 0.981 | 0.981 | 0.981 | 0.981 (A1) |
+| musique | 2,092 | 0.803 | 0.884 | 0.892 | 0.844 | 0.883 (A2) |
+| hotpotqa | 94 | 0.968 | 0.857 | 0.969 | 0.971 | 0.973 (A1) |
+| 2wiki | 106 | 0.906 | 0.772 | 0.914 | 0.913 | 0.911 (A1) |
+| webqsp | 2,120 | 0.688 | 0.759 | 0.806 | 0.782 | 0.790 (A1) |
+
+Each column is the order's own top |I_q|. Both RC and MX are above today's pools on all six at the same size: RC by
++0.001 to +0.094, MX by +0.001 to +0.118.
+
+KB line: at ReaRev's m, RC holds 0.869 against ORACLE's 0.903 on metaqa (m = 500), and 0.778 against 0.816 on webqsp
+(m = 2,000). It reaches ORACLE's ALL at N = 1,000 and 3,000. P1b's MX held 0.840 and 0.801.
+
+**The pick (section 5): P1c reads MX.**
+- Not all six are AT_OR_ABOVE, so the claim that our pools are at or above the SOTA pools on all six is not made.
+- Mean ALL at |I_q| over the five training datasets' s1sel carves: MX 0.936, RC 0.926.
+
+| s1sel, ALL at \|I_q\| | metaqa | squad | musique | hotpotqa | 2wiki |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| RC | 0.954 | 0.979 | 0.809 | 0.970 | 0.920 |
+| MX | 0.923 | 0.979 | 0.883 | 0.966 | 0.928 |
+
+musique's 0.074 decides it.
+
+**Where RC is below, the gap is the gate's (section 5's test).** ORC is AT_OR_ABOVE on both datasets, so for every
+question set some choice among the eight classes reaches the best order. The gate does not find it.
+- **musique.**
+  - The least-area class is S for 0.48 of the questions. RC gives S 0.01 and takes R (0.43), L (0.22) and A1 (0.17).
+  - The fit made the same picks on musique's fit questions: R 0.46, L 0.23 and A1 0.14.
+  - A hard read commits each question to one class. The soft read, which blends the classes by the gate's weights, is
+    AT_OR_ABOVE.
+- **webqsp** (zero-shot; it never fits).
+  - RC takes MX for 0.70 of the questions and L for 0.24. The least-area class is S for 0.55, R for 0.18 and L for 0.17.
+  - The head belongs to A1, as under P1b: at N = 25, RC holds 0.232 against MX's 0.256 and A1's 0.301. The soft read
+    is below there too.
+- **Elsewhere the hard read is what wins.**
+  - On metaqa, RC takes L for 0.994 of the questions and leads LINKED. The soft read dilutes L and falls below it.
+  - On hotpotqa and 2wiki, RC takes A1 (HippoRAG 2's walk) for 0.82 and 0.85.
+
+**What follows (section 5).**
+- P1c reads MX. It is declared in its own file, [P1C_POOLS_RETRAINED.md](P1C_POOLS_RETRAINED.md): the models' pools
+  from MX's order at each question's own |I_q|, with a screen on each family.
+- The gate's gap on musique and webqsp stands between our pools and the SOTA pool order on all six. One of this
+  gate's two reads is AT_OR_ABOVE on every dataset but webqsp: the hard read on metaqa, the soft read on musique, and
+  both on squad, hotpotqa and 2wiki. Any change to the gate is declared in its own file before any number.
