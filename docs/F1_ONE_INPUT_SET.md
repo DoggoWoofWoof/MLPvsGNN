@@ -29,7 +29,8 @@ passing.
 - **Models.** p@swa of the screen fits on the card, seed 0:
   - zrc: scr-zrct (L-musique), scr-zrct-hp (L-hotpotqa);
   - zsp: scr-zspg, scr-zspg-hp;
-  - zgn: scr-zgn, scr-zgn-hp (beside: message passing over hidden states with the MLP's inputs).
+  - zgn: scr-zgn, scr-zgn-hp (beside: message passing over hidden states with the MLP's inputs). Dropped by the
+    amendment below: its caches are gone.
 - **Reads.** The select carves of the five training datasets, as rounds 24-25 read them: ten reads per model. Each fit's
   held-out dataset is read zero-shot: musique for L-musique, hotpotqa for L-hotpotqa. No s1eval, test or B1 carve is
   read.
@@ -84,6 +85,14 @@ be.
 - What is already known, and why the controlled pair matters: C3 filed zsp at 1.08-1.14× zrc's cold cost
   (docs/C3_FASTEST_FORMS.md). The 1.6-3.0× lead is over the six GNN, whose inputs are not the MLP's.
 
+**Amended 12 October 2026, about 14:05, before any number of F1.** zgn's step-1 read is dropped.
+- Its select-carve caches (outputs/zfeat/cache) were removed in clean-up 9, after rounds 24-25 filed NO_SELECTION.
+  The read failed on the first missing array (`f1-read-zgn`).
+- zgn is reported beside and chooses nothing, so rebuilding those caches would spend host hours and disk on a read
+  that decides nothing.
+- Step 2's sets read zrc's and zsp's records only (`f1-sets2`). C8 can still time zgn beside, from its per-question
+  compile.
+
 ## What this does not do
 
 - No new column, objective, graph or encoder. The encoder and the substrate embeddings stay frozen.
@@ -100,7 +109,7 @@ be.
     python outputs/mp_unified/f1_usage.py read --model zrc --fits outputs/screen/fits/scr-zrct,outputs/screen/fits/scr-zrct-hp \
         --out outputs/f1/usage-zrc --device cuda --host
     python outputs/mp_unified/f1_usage.py sets --mlp outputs/f1/usage-zrc.json --gnn outputs/f1/usage-zsp.json \
-        --beside outputs/f1/usage-zgn.json --out outputs/f1/sets
+        --out outputs/f1/sets
 
 ## Results
 
