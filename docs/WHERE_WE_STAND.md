@@ -81,8 +81,10 @@ hotpotqa 90.5, 2wiki 87.3, and webqsp 26.8 zero-shot (webqsp never trains) ([G1A
   computed from the graph and the question before any row is scored.
 - **Training longer moves nothing** (round 33, [FULL_ROUND33.md](FULL_ROUND33.md)). Doubling the steps gives no read
   past what reseeding the same fit moves, for either model, so both keep 8 epochs.
-- **More data would help.** Halving zrc's training data loses on 4 of 12 reads under the seed null, and quartering it
-  loses on 10 ([DIAG_DATA_SCALE.md](DIAG_DATA_SCALE.md): DATA_LIMITED).
+- **More training questions are not the lever.** Halving zrc's training data loses on 4 of 12 reads under the seed
+  null ([DIAG_DATA_SCALE.md](DIAG_DATA_SCALE.md)). At the same number of optimiser steps, the half loses only one
+  (round 33's step control, [SCREENS.md](SCREENS.md)), so D3's loss was mostly the steps', and by its rule no second
+  fit carve is built.
 
 ## 3. Speed (Claim 3)
 
@@ -199,7 +201,7 @@ universal graph with step 4h's pools. Neither was adopted, so the bases stay whe
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
 | Pool misses | One hop on the KBs and musique; first stage on hotpotqa and squad | Step 4h covers the one-hop misses; the first-stage misses are open. |
 | Zero-shot to webqsp | zsp 26.8 zero-shot; a model trained on webqsp reached about 60 (S6) | Longer training lifts the MLP's transfer, but under seed noise (round 33). |
-| Training data | DATA_LIMITED | No new data source declared. |
+| Training data | At equal steps, half the data loses 1 read of 12 (round 33's step control) | Not the lever: no second fit carve, by D3's rule. |
 | MLP vs the fastest GNN | zsp is the fastest GNN on all six; zrc is 0.96-1.18× faster, twin0 slower except on webqsp (1.14× faster) | Not met. With every input kept, the forwards keep each MLP below 2× on five datasets (section 3). How Claim 3 is worded is open. |
 | Universal speed | gnn0 / twin0 1.46-1.89× (C12) | C13: the per-family prototypes and the depth basis, exact, for both models. 2× needs the compile 1.18× faster on musique, 3.0-3.7× on squad, metaqa and webqsp. |
 | Lean speed | zsp / zrc 0.96-1.18× (C12) | Bounded by the lean design: 1.16-1.34 even with free shared stages, 2.12 on musique. |
