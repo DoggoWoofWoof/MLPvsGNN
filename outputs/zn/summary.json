@@ -1,0 +1,300 @@
+{
+ "declared_in": "docs/ZN_LEAN_NO_MP.md",
+ "min_gain": 0.01,
+ "compares": {
+  "L-musique": "outputs\\zn\\compare-L-musique.json",
+  "L-hotpotqa": "outputs\\zn\\compare-L-hotpotqa.json"
+ },
+ "rows": [
+  {
+   "split": "L-musique",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "questions": 9785,
+   "rrf": 0.0047,
+   "zn": 0.2212,
+   "zrc": 0.7782,
+   "zsp": 0.7794,
+   "zn_minus_zrc": [
+    -0.557,
+    -0.5659,
+    -0.5484
+   ],
+   "zn_minus_zsp": [
+    -0.5582,
+    -0.567,
+    -0.5495
+   ],
+   "fc5_minus_zsp": -0.5183,
+   "hit1_minus_zsp": -0.6957,
+   "share_of_zsp_gain": 0.279,
+   "share_of_zrc_gain": 0.28
+  },
+  {
+   "split": "L-musique",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "rrf": 0.9054,
+   "zn": 0.9121,
+   "zrc": 0.9105,
+   "zsp": 0.9125,
+   "zn_minus_zrc": [
+    0.0016,
+    -0.0008,
+    0.004
+   ],
+   "zn_minus_zsp": [
+    -0.0004,
+    -0.0029,
+    0.002
+   ],
+   "fc5_minus_zsp": -0.0004,
+   "hit1_minus_zsp": 0.0025,
+   "share_of_zsp_gain": null,
+   "share_of_zrc_gain": null
+  },
+  {
+   "split": "L-musique",
+   "dataset": "musique",
+   "read": "zero-shot",
+   "questions": 2417,
+   "rrf": 0.4734,
+   "zn": 0.4783,
+   "zrc": 0.5235,
+   "zsp": 0.5111,
+   "zn_minus_zrc": [
+    -0.0453,
+    -0.0548,
+    -0.0358
+   ],
+   "zn_minus_zsp": [
+    -0.0329,
+    -0.0433,
+    -0.0226
+   ],
+   "fc5_minus_zsp": -0.0513,
+   "hit1_minus_zsp": -0.1953,
+   "share_of_zsp_gain": 0.13,
+   "share_of_zrc_gain": 0.098
+  },
+  {
+   "split": "L-musique",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "questions": 7405,
+   "rrf": 0.6846,
+   "zn": 0.8018,
+   "zrc": 0.9041,
+   "zsp": 0.9065,
+   "zn_minus_zrc": [
+    -0.1022,
+    -0.1075,
+    -0.0968
+   ],
+   "zn_minus_zsp": [
+    -0.1047,
+    -0.1101,
+    -0.0993
+   ],
+   "fc5_minus_zsp": -0.2054,
+   "hit1_minus_zsp": -0.0088,
+   "share_of_zsp_gain": 0.528,
+   "share_of_zrc_gain": 0.534
+  },
+  {
+   "split": "L-musique",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "rrf": 0.6079,
+   "zn": 0.7996,
+   "zrc": 0.8733,
+   "zsp": 0.8724,
+   "zn_minus_zrc": [
+    -0.0737,
+    -0.0772,
+    -0.0698
+   ],
+   "zn_minus_zsp": [
+    -0.0728,
+    -0.0766,
+    -0.069
+   ],
+   "fc5_minus_zsp": -0.1534,
+   "hit1_minus_zsp": 0.01,
+   "share_of_zsp_gain": 0.725,
+   "share_of_zrc_gain": 0.722
+  },
+  {
+   "split": "L-musique",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "questions": 1503,
+   "rrf": 0.0535,
+   "zn": 0.0943,
+   "zrc": 0.3384,
+   "zsp": 0.3245,
+   "zn_minus_zrc": [
+    -0.2441,
+    -0.2696,
+    -0.2203
+   ],
+   "zn_minus_zsp": [
+    -0.2302,
+    -0.2552,
+    -0.2061
+   ],
+   "fc5_minus_zsp": -0.1796,
+   "hit1_minus_zsp": -0.1284,
+   "share_of_zsp_gain": 0.151,
+   "share_of_zrc_gain": 0.143
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "questions": 9785,
+   "rrf": 0.0047,
+   "zn": 0.2192,
+   "zrc": 0.7793,
+   "zsp": 0.7807,
+   "zn_minus_zrc": [
+    -0.56,
+    -0.5687,
+    -0.5515
+   ],
+   "zn_minus_zsp": [
+    -0.5615,
+    -0.57,
+    -0.5529
+   ],
+   "fc5_minus_zsp": -0.5198,
+   "hit1_minus_zsp": -0.7032,
+   "share_of_zsp_gain": 0.276,
+   "share_of_zrc_gain": 0.277
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "rrf": 0.9054,
+   "zn": 0.9093,
+   "zrc": 0.9112,
+   "zsp": 0.9109,
+   "zn_minus_zrc": [
+    -0.0019,
+    -0.0045,
+    0.0007
+   ],
+   "zn_minus_zsp": [
+    -0.0016,
+    -0.0041,
+    0.0009
+   ],
+   "fc5_minus_zsp": -0.0016,
+   "hit1_minus_zsp": -0.0009,
+   "share_of_zsp_gain": null,
+   "share_of_zrc_gain": null
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "musique",
+   "read": "in-domain",
+   "questions": 2417,
+   "rrf": 0.4734,
+   "zn": 0.5184,
+   "zrc": 0.5645,
+   "zsp": 0.5647,
+   "zn_minus_zrc": [
+    -0.0461,
+    -0.0546,
+    -0.038
+   ],
+   "zn_minus_zsp": [
+    -0.0463,
+    -0.0546,
+    -0.0386
+   ],
+   "fc5_minus_zsp": -0.0761,
+   "hit1_minus_zsp": 0.0046,
+   "share_of_zsp_gain": 0.493,
+   "share_of_zrc_gain": 0.494
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "hotpotqa",
+   "read": "zero-shot",
+   "questions": 7405,
+   "rrf": 0.6846,
+   "zn": 0.7398,
+   "zrc": 0.8451,
+   "zsp": 0.8435,
+   "zn_minus_zrc": [
+    -0.1053,
+    -0.1111,
+    -0.0997
+   ],
+   "zn_minus_zsp": [
+    -0.1036,
+    -0.1095,
+    -0.0982
+   ],
+   "fc5_minus_zsp": -0.2,
+   "hit1_minus_zsp": -0.0036,
+   "share_of_zsp_gain": 0.347,
+   "share_of_zrc_gain": 0.344
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "rrf": 0.6079,
+   "zn": 0.797,
+   "zrc": 0.8731,
+   "zsp": 0.8744,
+   "zn_minus_zrc": [
+    -0.0762,
+    -0.0799,
+    -0.0725
+   ],
+   "zn_minus_zsp": [
+    -0.0775,
+    -0.0813,
+    -0.0738
+   ],
+   "fc5_minus_zsp": -0.1578,
+   "hit1_minus_zsp": -0.0063,
+   "share_of_zsp_gain": 0.71,
+   "share_of_zrc_gain": 0.713
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "questions": 1503,
+   "rrf": 0.0535,
+   "zn": 0.0973,
+   "zrc": 0.2865,
+   "zsp": 0.2262,
+   "zn_minus_zrc": [
+    -0.1892,
+    -0.2117,
+    -0.1668
+   ],
+   "zn_minus_zsp": [
+    -0.1289,
+    -0.1503,
+    -0.1078
+   ],
+   "fc5_minus_zsp": -0.1011,
+   "hit1_minus_zsp": -0.0585,
+   "share_of_zsp_gain": 0.254,
+   "share_of_zrc_gain": 0.188
+  }
+ ],
+ "script_sha256": "07d9705a79be7de03dce9e1dbc9fa671984cd0e95efb967534174e0d0506a474",
+ "utc": "2026-10-12T11:01:35Z"
+}

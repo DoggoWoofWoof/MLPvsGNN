@@ -103,4 +103,34 @@ file before any timed number.
 
 ## Results
 
-Not yet run.
+Run 12 October 2026: fits 15:45-16:20, reads and summary by 16:31 (`outputs/zn/summary.md`). Both fits passed the smoke
+(a repeat IDENTICAL).
+
+R@5 on the six s1eval carves, p@swa, seed 0. The share is (zn − rrf) / (zsp − rrf); "n/a" means zsp's gain over rrf is
+under 0.01.
+
+| dataset | rrf | zn (L-musique) | zsp (L-musique) | share | zn (L-hotpotqa) | zsp (L-hotpotqa) | share |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| metaqa | 0.0047 | 0.2212 | 0.7794 | 0.279 | 0.2192 | 0.7807 | 0.276 |
+| squad | 0.9054 | 0.9121 | 0.9125 | n/a | 0.9093 | 0.9109 | n/a |
+| musique | 0.4734 | 0.4783 (zero-shot) | 0.5111 | 0.130 | 0.5184 | 0.5647 | 0.493 |
+| hotpotqa | 0.6846 | 0.8018 | 0.9065 | 0.528 | 0.7398 (zero-shot) | 0.8435 | 0.347 |
+| 2wiki | 0.6079 | 0.7996 | 0.8724 | 0.725 | 0.7970 | 0.8744 | 0.710 |
+| webqsp | 0.0535 | 0.0943 (zero-shot) | 0.3245 | 0.151 | 0.0973 (zero-shot) | 0.2262 | 0.254 |
+
+- **Below zsp on every read that has a gain.** Every 95% interval of zn − zsp lies below 0. squad is the exception:
+  within ±0.003, since nothing there has a gain.
+- **Same picture against zrc.** zn − zrc is within 0.03 of zn − zsp on every read (`outputs/zn/compare-*.md`).
+- **The share of zsp's gain zn keeps:**
+  - 2wiki 0.71-0.73;
+  - hotpotqa 0.53 in-domain, 0.35 zero-shot;
+  - musique 0.49 in-domain, 0.13 zero-shot;
+  - metaqa 0.28;
+  - webqsp 0.15-0.25.
+
+**What it means.** The five edge-derived families (topology, depth, walks, walks by family, distances) and the KB chains
+carry most of the lean models' gain over retrieval. Without them, the MLP keeps between 13% and 73% of the GNN's gain,
+not the 90% that claim 2 needs. This is the cost of reading no edges at query time.
+
+These reads go to the gap ledger as one gap: **structure without query-time edges**. The next stage works on that gap
+and is declared in its own file before its numbers.
