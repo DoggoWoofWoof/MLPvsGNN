@@ -127,7 +127,28 @@ the seed null over every split decides (section 4), and it is **NOT_ADOPTED** (o
 +0.023), but no lift clears what reseeding the same fit moves. webqsp zero-shot goes to the gap ledger as a direction
 (training length helps transfer to the large KB), not as a result.
 
-### zspx (zsp, 16 epochs)
+### zspx (zsp, 16 epochs): NOT_ADOPTED (12 October 2026, 18:03)
 
-Running (12 October, 13:30). Of zsp's four new base fits on the card, L-2wiki and L-squad are done, and J5 and
-L-metaqa are training. Of the six zspx fits, L-musique is training and five wait.
+The filed grade against zsp's card fits (outputs/full_zspx/grade.json) is NOT_ADOPTED: 2 of 11 primary reads GAIN, and
+4 of 36 LOSE. The re-grade under the seed null over every split (outputs/full_zspx/grade-nullx.json) is also
+**NOT_ADOPTED**:
+
+- **0 primary GAINs, 1 LOSS in 36.** The LOSS is webqsp zero-shot on L-musique (-0.0125, floor 0.0102). It is not a
+  primary read.
+- Six calls change, all to WITHIN:
+  - the two primary GAINs: metaqa zero-shot on L-metaqa (+0.0130, floor 0.0168) and hotpotqa zero-shot on L-hotpotqa
+    (+0.0086, floor 0.0200);
+  - three LOSSes: webqsp zero-shot on J5 (-0.0099, floor 0.0295) and on L-squad (-0.0187, floor 0.0260), and musique
+    zero-shot on L-musique (-0.0086, floor 0.0720);
+  - one GAIN: webqsp zero-shot on L-hotpotqa (+0.0174, floor 0.0233).
+- L-musique's 2wiki read stays a GAIN (+0.0083 over a floor of 0.0075). It is not a primary read.
+- The 25 in-domain reads move by -0.003 to +0.008. The largest is that 2wiki GAIN.
+
+**So zsp keeps 8 epochs.** Unlike zrc's, the GNN's webqsp zero-shot reads go both ways when the steps double (-0.019
+to +0.017). For the GNN, training length is not a direction for transfer to the large KB.
+
+### What round 33 settles
+
+Both bases keep their 8-epoch configs: zrc (the MLP's) and zsp (the GNN track's). Neither doubling moves a primary
+read past what reseeding the same fit moves. The MLP's webqsp zero-shot lift from longer training goes to the gap
+ledger as a direction, not a result.
