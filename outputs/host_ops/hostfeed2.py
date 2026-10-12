@@ -852,7 +852,13 @@ def main(argv=None):
     ap.add_argument("--max-h", type=float, default=60.0)
     ap.add_argument("--linger-h", type=float, default=0.0)
     ap.add_argument("--disk-floor-gb", type=float, default=100.0,
-                    help="send nothing while the workspace's drive has less free (the user, 9 Oct: 100 GB+ free always)")
+                    help="below this free on the workspace's drive, send only items that write little (--light-re) "
+                         "(the user, 9 Oct: 100 GB+ free always)")
+    ap.add_argument("--disk-hard-gb", type=float, default=60.0,
+                    help="send nothing at all below this free (12 Oct: the 100 GB hold idled the host for two days "
+                         "while others' jobs, not mpr's, took the drive from 100 to 90 GB)")
+    ap.add_argument("--light-re", default=r"-(train|read|compare|pair|recall|grade|gate|base)\d*(-|$)",
+                    help="items whose names match write only MBs (fits, reads, records): they go on below the floor")
     ap.add_argument("--adopt-h", type=float, default=48.0)
     ap.add_argument("--queue-gpu", type=int, default=0)
     ap.add_argument("--dry", action="store_true")
@@ -1152,10 +1158,14 @@ def main(argv=None):
         else:
             st["said"].pop("_q", None)
         disk_gb = shutil.disk_usage(str(WS)).free / 1e9
-        hold_disk = disk_gb < a.disk_floor_gb
+        light_only = disk_gb < a.disk_floor_gb
+        hold_disk = disk_gb < a.disk_hard_gb
         if hold_disk:
-            say_once("_disk", f"drive free {disk_gb:.1f} GB < {a.disk_floor_gb:g} GB: sending nothing until the clean-up "
+            say_once("_disk", f"drive free {disk_gb:.1f} GB < {a.disk_hard_gb:g} GB: sending nothing until the clean-up "
                               f"frees it")
+        elif light_only:
+            say_once("_disk", f"drive free {disk_gb:.0f} GB < {a.disk_floor_gb:g} GB: sending only items that write "
+                              f"little ({a.light_re}) until the clean-up frees it")
         else:
             st["said"].pop("_disk", None)
         if why or hold_q or hold_disk:
@@ -1195,8 +1205,11 @@ def main(argv=None):
                  for e, x, s in ends],
                 f"| queued GPU jobs take over {hand:g} GB | mpr {mpr_c:g}c/{mpr_m:.1f}G/{mpr_g:g}g, rx free "
                 f"{free_c:.1f}c/{free_m:.1f}G/{free_g:g}g, budget {budget:.1f} GB")
+        light = re.compile(a.light_re)
         for it in longest_first(left, items, M):
             n = it["name"]
+            if light_only and not light.search(n):
+                continue           # writes much: waits for the clean-up (its deps are checked when it may go)
             try:
                 sts = {d: job_state(d, by, ov) for d in it["deps"]}
             except Exception as e:
