@@ -100,6 +100,42 @@ outputs/mp_unified/look_u1c2.py, which is look_u1c with the two changes. Its sel
 for bit, the refusals and the KB-only slots. The metaqa and webqsp looks and everything after them are requeued
 under new item names. The screen's rule, fits and reads are unchanged.
 
+## Amendment 2: the chain builds read amendment 1's table (declared 12 October 2026, about 19:05, before any number)
+
+Amendment 1 extended the relation table in the look's memory only. rmatch's and zrc's chain builds read the relation
+table from its file (outputs/m3b/relations/<D>_rel_embeddings.npy, the KB rows only) and refuse a table with fewer rows
+than the look has relations. All three of U1c's rmatch builds stopped at that check (metaqa fit and s1eval, webqsp
+s1eval: "(7058, 1536), the look has 7059 relations"). No chain was built and no number was read. Everything after
+the builds (the zrc builds, the fits, reads, compares, pairs and re-calls) was dropped with them.
+
+The fix applies amendment 1's rule to the file:
+- **The table.** `zu1c.py relations --dataset D` writes outputs/u1c/relations/<D>_rel_embeddings.npy. It holds the KB
+  table's rows bit for bit (float16, as filed), then one zero row for the mention id. It refuses unless the mention id
+  equals the KB table's row count (outputs/u1d/<D>/build.json). The record (`<D>_record.json`) gives both files'
+  sha256. A second run must find the same bytes, or it refuses.
+- **The chain builds.** U1c's rmatch and zrc builds read that table.
+- **The chain carves.** At training and reading time, U1c's chain carves read the same table: zu1c's on_u1c swaps
+  their table directory together with their chain roots.
+- **U1f.** U1f runs zu1c on its own roots and reads the same table. U1e's GU_1024 has U1d's relations and the same
+  mention id (metaqa 9, webqsp 7,058).
+
+What it changes:
+- **The chain entries: nothing.** A mention entry takes no relation slot, so no chain step and no question relation is
+  the mention id. Both builds use the table only for its shape, its sha256 and (zrc) the z-scored cosines of the
+  pool's own relations.
+- **One thing in the model.** rmatch's centred relation table (rel_centered = U − mean U, used by both arms' chain
+  match) is centred over the table it reads, and that table now includes the zero row:
+  - the mean is 9/10 of the KB rows' mean on metaqa and 7,058/7,059 of it on webqsp;
+  - every relation's centred vector moves by the same amount, so at each hop every step's logit gets the same
+    question-dependent offset;
+  - the per-question z-scored cosines are over the pool's relations only, which never include the mention id, so
+    they are unchanged.
+- **The four datasets without a relation table:** nothing.
+
+The relation tables are built first (u1c-rel-metaqa, u1c-rel-webqsp). U1c's rmatch and zrc builds and everything
+after them are requeued under new item names (u1c-*3-*). U1f's chain builds, not yet sent, wait for the same two items.
+The screen's rule, fits and reads are unchanged.
+
 ## Results
 
 Not yet run.
