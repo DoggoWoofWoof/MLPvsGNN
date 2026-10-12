@@ -1,0 +1,33 @@
+{
+ "fits": {
+  "scr-zrct": {
+   "base": 0.22467532467532467,
+   "fused": 0.261038961038961,
+   "pass": false
+  },
+  "scr-zrct-hp": {
+   "base": 0.2907608695652174,
+   "fused": 0.30842391304347827,
+   "pass": false
+  }
+ },
+ "rule": {
+  "dataset": "musique",
+  "le2_abs": 0.05,
+  "le2_rel": 1.25,
+  "repro_min": 0.9
+ },
+ "runs": {
+  "scr-zrct": {
+   "complete": true,
+   "identity": "PASS",
+   "models_sha256": "b846282e037ddd9d0f6985f54fde89a3353b6105b170c5f4667d49419f08324f"
+  },
+  "scr-zrct-hp": {
+   "complete": true,
+   "identity": "PASS",
+   "models_sha256": "ee4f166d163f8599d59ad185690f95dd858de5557f9ab4a8c672c66b8ec3c0e9"
+  }
+ },
+ "verdict": "NO_SIGNAL"
+}

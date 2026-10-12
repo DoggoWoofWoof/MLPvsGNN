@@ -166,3 +166,69 @@ The rule is unchanged. Three things about how it runs changed.
   - The two reads take about 4 minutes each.
   - One pass over each corpus: about 6 minutes for 2wiki (6.0M nodes) and 5 for hotpotqa (5.2M nodes), timed on the
     laptop at 58 µs a node.
+
+## Results (13 October, 01:19)
+
+**NO_SIGNAL.** Neither fit passes the rule on musique.
+
+| fit | le2, zrc's score | le2, fused | difference | ratio | the rule's bar | passes |
+| --- | ---: | ---: | ---: | ---: | --- | --- |
+| scr-zrct | 0.225 | 0.261 | +0.036 | 1.16 | +0.050 and 1.25 | no |
+| scr-zrct-hp | 0.291 | 0.308 | +0.018 | 1.06 | +0.050 and 1.25 | no |
+
+What follows, as declared:
+- The words around a link do not say which neighbour a question follows.
+- No ranking screen follows from D4. Round thirty-four is not declared.
+- musique's gap is reported as the first stage's. Our list starts 13.3 points below NV-Embed-v2 (56.4 against
+  69.7), and our models add 9.9 over it, twice HippoRAG 2's lift over its own encoder (5.0).
+
+**Both runs are complete, and identity passed on every carve read.** zrc's R@5 equals each fit's filed read:
+- scr-zrct: 2wiki 0.8733, hotpotqa 0.9041, metaqa 0.7782, musique 0.5235, squad 0.9105, webqsp 0.3384.
+- scr-zrct-hp: 2wiki 0.8731, hotpotqa 0.8451, metaqa 0.7793, musique 0.5645, squad 0.9112, webqsp 0.2865.
+- The NER mentions rebuilt 800,278 of musique's 800,278 NER edges and 156,130 of squad's 156,130, with none extra.
+
+**Every read.** The missed golds are those next to a found gold, ranked among the found golds' neighbours
+outside the top five. Rank 1 is the best. O1, O1w, C1 and C1w are R@5 against zrc's, over every question with a
+gold.
+
+| fit | read | partly found | missed golds ranked | le2 base / words / fused | median rank base / words / fused | missed with a window | missed with words | O1 / O1w | C1 / C1w |
+| --- | --- | ---: | ---: | --- | --- | ---: | ---: | --- | --- |
+| scr-zrct | musique | 1,471 | 770 | 0.225 / 0.294 / 0.261 | 9 / 8 / 8 | 0.956 | 0.600 | -0.0135 / -0.0101 | -0.0099 / -0.0079 |
+| scr-zrct | 2wiki | 2,523 | 2,182 | 0.706 / 0.667 / 0.733 | 2 / 2 / 1 | 0.855 | 0.650 | -0.0118 / -0.0115 | -0.0195 / -0.0199 |
+| scr-zrct | hotpotqa | 739 | 681 | 0.583 / 0.526 / 0.599 | 2 / 2 / 2 | 0.705 | 0.548 | +0.0027 / +0.0023 | -0.0068 / -0.0076 |
+| scr-zrct | metaqa | 2,713 | 2,739 | 0.447 / 0.117 / 0.127 | 3 / 64 / 31 | 0.093 | 0.081 | -0.0646 / -0.0684 | -0.0628 / -0.0666 |
+| scr-zrct | webqsp | 319 | 338 | 0.237 / 0.192 / 0.210 | 8 / 10 / 9 | 0.713 | 0.216 | -0.0529 / -0.0552 | -0.0076 / +0.0016 |
+| scr-zrct | squad | 0 | 0 | | | | | -0.0264 / -0.0264 | -0.0059 / -0.0062 |
+| scr-zrct-hp | musique | 1,411 | 736 | 0.291 / 0.300 / 0.308 | 5 / 6 / 5.5 | 0.969 | 0.594 | -0.0235 / -0.0225 | -0.0143 / -0.0174 |
+| scr-zrct-hp | 2wiki | 2,472 | 2,022 | 0.697 / 0.682 / 0.737 | 2 / 2 / 1 | 0.854 | 0.648 | -0.0149 / -0.0146 | -0.0228 / -0.0233 |
+| scr-zrct-hp | hotpotqa | 1,573 | 1,444 | 0.549 / 0.564 / 0.578 | 2 / 2 / 2 | 0.701 | 0.533 | +0.0176 / +0.0201 | +0.0102 / +0.0128 |
+| scr-zrct-hp | metaqa | 2,695 | 2,692 | 0.454 / 0.111 / 0.123 | 3 / 61 / 30 | 0.091 | 0.081 | -0.0654 / -0.0691 | -0.0624 / -0.0665 |
+| scr-zrct-hp | webqsp | 275 | 285 | 0.225 / 0.193 / 0.204 | 8 / 9 / 8 | 0.649 | 0.260 | -0.0594 / -0.0626 | -0.0111 / -0.0038 |
+| scr-zrct-hp | squad | 0 | 0 | | | | | -0.0270 / -0.0270 | -0.0076 / -0.0083 |
+
+squad has no partly found question in either fit, so it ranks nothing.
+
+**Reported, not decided:**
+- **musique, the words alone.** The words alone rank the missed gold 1st or 2nd more often than zrc's score in
+  scr-zrct (0.294 against 0.225), but barely in scr-zrct-hp (0.300 against 0.291). The rule reads the fused order.
+- **musique, coverage.** 96% of the missed golds have a window and 60% have a non-zero score, against 41% of all
+  candidates. Of the missed golds with words in scr-zrct, 343 take them from NER links and 119 from title links.
+- **The two hyperlink datasets.** The fused order is above zrc's score in both fits:
+  - 2wiki: 0.733 and 0.737, against 0.706 and 0.697;
+  - hotpotqa: 0.599 and 0.578, against 0.583 and 0.549.
+- **The KB graphs.** The relation names lead away from the gold. In scr-zrct, le2 falls from 0.447 to 0.127 on
+  metaqa and from 0.237 to 0.210 on webqsp. On metaqa, 75% of all candidates carry a question stem in their
+  relation names, but only 8% of the missed golds do.
+- **The re-orders as retrieval.** Each swaps the top five's last two rows for an anchor's two best neighbours (the
+  highest-ranked gold in O1, zrc's top-1 in C1).
+  - On musique, all four lose R@5 in both fits, and the fused order moves them by at most 0.0034.
+  - The only gains: hotpotqa in scr-zrct (O1 +0.0027, O1w +0.0023), webqsp in scr-zrct (C1w +0.0016), and hotpotqa
+    in scr-zrct-hp (O1 +0.0176, O1w +0.0201, C1 +0.0102, C1w +0.0128).
+
+**The first run stopped.**
+- The first run (lw-read-zrc) stopped at musique's read. Clean-up 13 had removed step 1's musique s1eval look
+  chunks. Their records were kept, and the chunks were marked to be made again.
+- It read no words. metaqa and squad passed identity first (R@5 0.7782 and 0.9105, as filed).
+- The chunks were made again on the host (lk1r-musique-s1eval-0..3, step 1's lines under new names). The 20
+  chunks the laptop still held matched the rebuilt ones array for array.
+- D4 then ran again unchanged (lw-read-zrc2), and its records are the ones above.
