@@ -4,9 +4,10 @@ Declared 13 October 2026, before any number of the stage. P2's first stage in
 [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md). Nothing here is adopted, and no model trains.
 
 Two parts, each declared before it runs:
-- **Part 1, reach (this declaration):** what each family adds to the pools, walked under the same kernel as P1a.
-- **Part 2, ranking:** what today's fits lose when one family is masked at read time. It is declared in this file
-  before it runs; until then only part 1 runs.
+- **Part 1, reach (sections 2 to 5):** what each family adds to the pools, walked under the same kernel as P1a.
+  Committed at 03:38 (c866653).
+- **Part 2, ranking (sections 6 to 10):** what today's fits lose when one family is masked at read time. Declared 13
+  October, before any number of part 2.
 
 ## 1. The question
 
@@ -118,3 +119,113 @@ and both models of a family read the same pool, so the MLP's own scoring stays f
 - **ETA:** 7 subsets × 2 or 3 restarts per carve, about 3 times P1a's walks. 2wiki is the longest, at about 35 minutes
   on 8 threads. The call should land about 45 minutes after the start.
 - The encoder stays frozen. No model trains or reads, nothing is adopted, and test splits are never read.
+
+## 6. Part 2: the question
+
+Part 1 asks what each family adds to the pools. Part 2 asks what today's lean fits read from each family once the pool
+is fixed. The pool is the same in every arm; only the inputs computed from the pool's edges change:
+
+| input | the families it reads |
+| --- | --- |
+| rank, dense_cos, SEMB, SEED | none |
+| the compile's STRUCT topology and depth columns, WALK, DISTS | structural |
+| the chain entries (metaqa and webqsp) | structural (typed) |
+| WALKF | all three |
+| zsp's links, its one propagation step | all three, one slot per family |
+
+So masking N or K changes only WALKF and zsp's N or K slot. Masking S changes the rest of the graph inputs.
+
+Read-time masking measures reliance, not value. A family the fits rely on might be replaced by a refit without it, and
+masked inputs are out of the fits' training distribution. A family they do not rely on carries nothing through these
+fits. A drop needs both parts (section 4).
+
+## 7. Part 2: the read
+
+- **Fits:** today's lean bases as filed, zrc (the MLP) and zsp (the GNN: zrc's inputs plus one propagation step), J5,
+  candidate p@swa, basis 2wiki (`outputs/b1b/fits`, the fits C11 timed). webqsp is zero-shot.
+- **Forms:** C11's serial forms (zrc11 and zsp10), which C11 checked against the modules within 1e-4 with the same top
+  5 on 200 questions of every dataset.
+- **Carve:** s1eval, every question, all six datasets.
+- **Pools:** step 1's, from C10's pool builder, the same in every arm.
+- **Arms:** none (unmasked), S, N and K; SNK (all three) is reported beside.
+- **Masking:** for one question's compile only, the masked family's arrays in the compiler are emptied: no entries, all
+  offsets zero. Its pool edges and its global degrees are gone, as if the graph did not hold the family. The other
+  families' edges are unchanged, since the 64-neighbour cap is per family. One compile per arm is read by both fits.
+- **Measures:** R@5, FC@5 and hit@1 per question, by the grades' own code (lean_gpu's top_hit and metrics_of), with step
+  1's golds. A question's gold total counts golds outside the pool, as the filed grades do.
+- **Checks:**
+  - Exact, every question, fatal: the pool equals step 1's cached pool, and each masked arm's edges are the unmasked
+    arm's without the masked families' edges.
+  - The unmasked rows against step 1's cached rows. They must be bit for bit equal, or within 1e-3 + 2^-8 of the
+    cached value (a few float16 steps). A dataset with more than 1% of its questions beyond that is not read.
+  - C1 and C5 measured laptop-against-host differences of at most 7.3e-4, in 10 to 20 of 200 questions on musique,
+    metaqa and webqsp. The run uses the host, where step 1's cache was built.
+
+## 8. Part 2: the reading, fixed before any number
+
+- **The loss:** per question, the fit's measure unmasked minus masked, which is what it loses without the family. Its
+  mean over the carve gets a paired bootstrap 95% interval: 2,000 resamples of the questions, seed 0.
+- **A difference counts** when the mean loss is beyond 0.002 (step 4e's tie) and its interval excludes 0.
+- **Labels,** per dataset, fit and family, over R@5, FC@5 and hit@1:
+
+  | label | counted differences |
+  | --- | --- |
+  | RELIES | a loss on some measure, a gain on none |
+  | BETTER_WITHOUT | a gain on some measure, a loss on none |
+  | MIXED | both |
+  | NOTHING | neither |
+
+- **Feature drop candidate:** a family labelled NOTHING or BETTER_WITHOUT for both fits on all six datasets.
+- **Graph drop candidate:** a feature drop candidate that part 1 also labels DROP_CANDIDATE on every dataset whose
+  regime walks it.
+- **Reported beside, deciding nothing:**
+  - the SNK arm;
+  - the unmasked R@5 beside the filed J5 reads, which were read on a GPU from step 1's rows;
+  - the share of questions whose top 5 changes in each arm;
+  - edges per question per family, and the share of questions with any;
+  - the rows against step 1.
+
+## 9. What follows part 2
+
+- **A graph drop candidate:** a one-fit drop screen, declared in its own file, on all six.
+- **RELIES where part 1 says DROP_CANDIDATE:** the features keep the family, and the pools may drop it under P1's rules.
+  The pool and the features are two separate reads of the graph.
+- **BETTER_WITHOUT:** goes to P2b (a better link rule), naming the measure where it shows.
+- **The MLP's reliance on a family is not message passing.** zrc's graph inputs are counts and walks computed from the
+  pool's edges before any row is scored (the 8 October rule). zsp's links are its one propagation step.
+
+## 10. Part 2: how it runs
+
+- **Code:** `scripts/p2a_rank.py` (stages `read` and `verdict`). Its self-test passes:
+  - part ranges;
+  - emptied family arrays keep their dtypes and leave the live ones untouched;
+  - kept edges;
+  - row differences against the tolerance;
+  - top_hit's top-5 order;
+  - the paired bootstrap, counted differences and labels.
+- **Development check, no number:** with `--limit 16` on the laptop, on musique (FULL, untyped) and metaqa (STRUCT,
+  typed, chains):
+  - the pools equal step 1's;
+  - each arm drops exactly its family's edges;
+  - the unmasked rows are bit for bit step 1's on 15 of 16 and 16 of 16 questions (the other within 1.2e-4);
+  - 0.39 to 0.49 s per question for five arms and two fits, with peaks of 3.7 and 5.7 GB.
+- **Host jobs:** light lane, one CPU each.
+  - First, two development items (`p2a-read-dev-musique` and `p2a-read-dev-metaqa`, `--limit 16 --host`). They write
+    nothing.
+  - Then 37 parts that depend on both, `p2a-read-<dataset>-<k>of<N>`, each a contiguous range of about 1,250
+    questions (`--part k/N`). Each writes `outputs/p2a/rank_<dataset>_<k>of<N>.{json,npz}`.
+
+  | dataset | questions | parts | memory per part |
+  | --- | ---: | ---: | ---: |
+  | metaqa | 9,785 | 8 | 6.5 GB |
+  | squad | 11,873 | 9 | 4.5 GB |
+  | musique | 2,417 | 2 | 4.5 GB |
+  | hotpotqa | 7,405 | 6 | 5 GB |
+  | 2wiki | 12,576 | 10 | 4.5 GB |
+  | webqsp | 1,503 | 2 | 6.5 GB |
+
+- **The verdict,** run locally, writes `outputs/p2a/rank_verdict.{json,md}`. It refuses parts that run on different
+  scripts, fits or frozen modules, and parts that do not cover the carve once.
+- **ETA:** about 0.45 s per question, 45,559 questions, so about 5.7 CPU hours, in parts of about 10 minutes. The call
+  should land about 40 minutes after the development items pass.
+- The encoder stays frozen. No model trains, nothing is adopted, and test splits are never read.
