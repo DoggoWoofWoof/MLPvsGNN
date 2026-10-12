@@ -1,6 +1,7 @@
 # P1b: one restart for all six datasets, its source weights set per question and fit by EM (a diagnostic)
 
-Declared 13 October 2026, before any number of the stage. P1's second stage in
+Declared 13 October 2026, committed at 03:07 (3941ebe), before any number of the stage (the first job started at
+03:08). P1's second stage in
 [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md), after [P1A_POOL_SCOREBOARD.md](P1A_POOL_SCOREBOARD.md). Nothing here is
 adopted, and no model trains or reads.
 
@@ -122,3 +123,55 @@ are already built by graph hops from the seeds.
   - apply: 2wiki's 14,072 questions take about 15 minutes.
   - The call should land about 45 minutes after the start.
 - The encoder stays frozen. No model trains or reads, nothing is adopted, and test splits are never read.
+
+## 7. Results (filed 13 October, 03:50)
+
+Records: `outputs/p1b/` (gate.json, gather_*, mx_*, verdict.json and verdict.md). The check passed on every carve: S and
+L equal P1a's A0 and LINKED at every point (on squad, L). EM stopped after 195 iterations.
+
+**The call on s1eval: BELOW on five datasets, AT_OR_ABOVE on squad.**
+
+| dataset | call | where MX is below the best SOTA order | where it is above |
+| --- | --- | --- | --- |
+| metaqa | BELOW | 28 of 30 points, under LINKED by up to 0.037 (0.923 against 0.959 at N = 2,000) | nowhere |
+| squad | AT_OR_ABOVE | nowhere | nowhere |
+| musique | BELOW | one point, N = 300 (ALL): 0.732 against A1's 0.737 | every N, by up to 0.030 |
+| hotpotqa | BELOW | the head: 0.806 against A1's 0.830 at N = 25; also N = 750 and 3,000 (0.002) | nowhere |
+| 2wiki | BELOW | one point, N = 4,000 (ALL): 0.9717 against A1's 0.9739 | N <= 750, by up to 0.015 |
+| webqsp | BELOW | N = 25 and 50: 0.256 against A1's 0.301 at N = 25 | N >= 100, by up to 0.060 (N = 500) |
+
+On s1sel (beside): musique is AT_OR_ABOVE; metaqa and hotpotqa are BELOW as on s1eval, and 2wiki only at N = 4,000 and
+7,000.
+
+**At each question's own size of today's pools (|I_q|, ALL, s1eval), the same look cost:**
+
+| dataset | today's pools | A3 | MX | best SOTA order |
+| --- | ---: | ---: | ---: | ---: |
+| metaqa | 0.895 | 0.800 | 0.923 | 0.961 (LINKED) |
+| squad | 0.980 | 0.981 | 0.981 | 0.981 (A1) |
+| musique | 0.803 | 0.884 | 0.892 | 0.883 (A2) |
+| hotpotqa | 0.968 | 0.857 | 0.969 | 0.973 (A1) |
+| 2wiki | 0.906 | 0.772 | 0.914 | 0.911 (A1) |
+| webqsp | 0.688 | 0.759 | 0.806 | 0.790 (A1) |
+
+MX is above today's pools on all six at the same size (+0.001 to +0.118) and above A3 on every graph dataset.
+
+KB line: at ReaRev's m, MX holds 0.840 against ORACLE's 0.903 on metaqa (m = 500) and 0.801 against 0.816 on webqsp
+(m = 2,000). It reaches ORACLE's ALL at N = 1,500 and 3,000.
+
+**Why it is below (section 5's test): the gate missed; the sources do not fall short.**
+- **metaqa.** The leading order, LINKED, is the source L itself. The gate gives L 0.85 on average and spreads 0.15
+  over the rest, mostly R (0.09). Those sources' top nodes then sit ahead of L's mid-ranked golds.
+- **hotpotqa, and webqsp's head.** The leading order, A1, walks half from the seeds and half from the lists. The
+  half-and-half mixture of P1b's own S and R (A1MIX, recorded beside) tracks A1 within 0.006 at every N shown. Yet the
+  gate gives the list side (R0 and R) 0.029 on hotpotqa and 0.088 on webqsp, where A1 gives it half.
+- **The cause is the objective.** EM maximizes the golds' mass under the mixture; the call reads their rank.
+  - The walk from the seeds holds its mass near them, so a gold it holds carries more mass than under the list walk,
+    even where the list walk ranks it higher.
+  - EM therefore moves weight to the peaked source, and it hedges against misses.
+  - Neither helps the head.
+
+**What follows (section 5).** MX is not taken as is. The next change is declared in its own file,
+[P1B2_RANK_GATE.md](P1B2_RANK_GATE.md):
+- it keeps the six sources and adds HippoRAG 2's own walk (A1) as a seventh;
+- it fits the gate by EM to the golds' ranks over fixed blends of the sources, rather than to their mass.

@@ -1,0 +1,47 @@
+{
+ "declared_in": "docs/P1B_RESTART_MIXTURE.md",
+ "dataset": "musique",
+ "carve": "s1fit",
+ "questions": 4601,
+ "carve_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+ "golds": 10756,
+ "features": [
+  "log_seeds",
+  "log_linked",
+  "no_link",
+  "dense_top",
+  "dense_gap",
+  "splade_top",
+  "splade_gap",
+  "linked_in_lists",
+  "seeds_linked",
+  "S_top",
+  "L_top",
+  "R_top",
+  "S_top10",
+  "L_top10",
+  "R_top10"
+ ],
+ "sources": [
+  "S0",
+  "L0",
+  "R0",
+  "S",
+  "L",
+  "R"
+ ],
+ "golds_reached_by_source": {
+  "S0": 0.5463,
+  "L0": 0.3313,
+  "R0": 0.916,
+  "S": 0.9187,
+  "L": 0.7158,
+  "R": 0.9758
+ },
+ "golds_reached_by_any": 0.9903,
+ "npz_sha256": "d3f3d870a89126bafd0e2ec493dd84b0d1b62b71ffa56f3c83b96baf79a4cfbc",
+ "script_sha256": "004b4b977c5be42b59e51d1738009cfa601e4c990289c25e41264d901a245141",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "seconds": 56.6,
+ "utc": "2026-10-12T21:39:37Z"
+}

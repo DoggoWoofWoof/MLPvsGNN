@@ -1,0 +1,47 @@
+{
+ "declared_in": "docs/P1B_RESTART_MIXTURE.md",
+ "dataset": "hotpotqa",
+ "carve": "fit",
+ "questions": 5930,
+ "carve_sha256": "2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c",
+ "golds": 11860,
+ "features": [
+  "log_seeds",
+  "log_linked",
+  "no_link",
+  "dense_top",
+  "dense_gap",
+  "splade_top",
+  "splade_gap",
+  "linked_in_lists",
+  "seeds_linked",
+  "S_top",
+  "L_top",
+  "R_top",
+  "S_top10",
+  "L_top10",
+  "R_top10"
+ ],
+ "sources": [
+  "S0",
+  "L0",
+  "R0",
+  "S",
+  "L",
+  "R"
+ ],
+ "golds_reached_by_source": {
+  "S0": 0.7442,
+  "L0": 0.5067,
+  "R0": 0.9411,
+  "S": 0.9806,
+  "L": 0.8761,
+  "R": 0.9983
+ },
+ "golds_reached_by_any": 0.9987,
+ "npz_sha256": "0767888f0c31fe0db9afda57dcb5f8ff7fe10ab12961fcae2c843b4360db5b28",
+ "script_sha256": "004b4b977c5be42b59e51d1738009cfa601e4c990289c25e41264d901a245141",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "seconds": 268.6,
+ "utc": "2026-10-12T21:45:10Z"
+}

@@ -1,0 +1,47 @@
+{
+ "declared_in": "docs/P1B_RESTART_MIXTURE.md",
+ "dataset": "metaqa",
+ "carve": "fit",
+ "questions": 5960,
+ "carve_sha256": "161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188",
+ "golds": 44325,
+ "features": [
+  "log_seeds",
+  "log_linked",
+  "no_link",
+  "dense_top",
+  "dense_gap",
+  "splade_top",
+  "splade_gap",
+  "linked_in_lists",
+  "seeds_linked",
+  "S_top",
+  "L_top",
+  "R_top",
+  "S_top10",
+  "L_top10",
+  "R_top10"
+ ],
+ "sources": [
+  "S0",
+  "L0",
+  "R0",
+  "S",
+  "L",
+  "R"
+ ],
+ "golds_reached_by_source": {
+  "S0": 0.0039,
+  "L0": 0.0002,
+  "R0": 0.2858,
+  "S": 0.9318,
+  "L": 0.9919,
+  "R": 0.6812
+ },
+ "golds_reached_by_any": 0.9974,
+ "npz_sha256": "ea2834cabbbfc588ea0e2f88f2f9769bcc6d2ebbb5d55e83bfe32230286baff1",
+ "script_sha256": "004b4b977c5be42b59e51d1738009cfa601e4c990289c25e41264d901a245141",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "seconds": 62.8,
+ "utc": "2026-10-12T21:39:55Z"
+}

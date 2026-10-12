@@ -1,0 +1,47 @@
+{
+ "declared_in": "docs/P1B_RESTART_MIXTURE.md",
+ "dataset": "2wiki",
+ "carve": "fit",
+ "questions": 5928,
+ "carve_sha256": "fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3",
+ "golds": 14204,
+ "features": [
+  "log_seeds",
+  "log_linked",
+  "no_link",
+  "dense_top",
+  "dense_gap",
+  "splade_top",
+  "splade_gap",
+  "linked_in_lists",
+  "seeds_linked",
+  "S_top",
+  "L_top",
+  "R_top",
+  "S_top10",
+  "L_top10",
+  "R_top10"
+ ],
+ "sources": [
+  "S0",
+  "L0",
+  "R0",
+  "S",
+  "L",
+  "R"
+ ],
+ "golds_reached_by_source": {
+  "S0": 0.6109,
+  "L0": 0.6243,
+  "R0": 0.7537,
+  "S": 0.9349,
+  "L": 0.9766,
+  "R": 0.9872
+ },
+ "golds_reached_by_any": 0.9904,
+ "npz_sha256": "517e6c53555511e953954b55dd103b6fff4e40c94c8c46a5b91c8d71952f6bed",
+ "script_sha256": "004b4b977c5be42b59e51d1738009cfa601e4c990289c25e41264d901a245141",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "seconds": 281.8,
+ "utc": "2026-10-12T21:46:01Z"
+}
