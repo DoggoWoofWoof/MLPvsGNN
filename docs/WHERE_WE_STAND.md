@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (01:58)
+# Where we stand, 13 October 2026 (03:10)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -9,12 +9,14 @@ come from one declared confirmation run of the chosen MLP and GNN on questions n
 ## The three claims
 
 The claims are fixed in [PAPER_CLAIMS_2026_10_09.md](PAPER_CLAIMS_2026_10_09.md), and the stages that test them are in
-[PROGRAM_2026_10_09.md](PROGRAM_2026_10_09.md).
+[PROGRAM_2026_10_09.md](PROGRAM_2026_10_09.md). Since 13 October the target is our own full corpora on all six datasets,
+with B1 a calibration line, in the order of [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md): pools, links, the SOTA
+models and the gap ledger, speed, and one model with its own representation.
 
 | claim | what it says | where it stands |
 | --- | --- | --- |
 | 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). The six-dataset test is the confirmation run's. |
-| 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. |
+| 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. On the full corpora the pools come first: ours are below the best LLM-free SOTA pool order on five datasets (P1a, section 5). |
 | 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.46-1.89×; zrc 2.38-3.99×, webqsp 1.30×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there: zrc is 0.96-1.18× faster, and twin0 is faster than zsp only on webqsp. With every input kept, each MLP stays below 2× zsp on five datasets even if every shared stage cost nothing (section 3). |
 
 ## The models
@@ -163,7 +165,7 @@ the trained models lose without the hyperlinks on the eval carves, goes to the g
 0.035-0.065 R@5 on hotpotqa and 0.010-0.020 on 2wiki. The rule's links recover the hyperlinks as edges, but the
 models do not get the hyperlinks' value back from them.
 
-## 5. Pools (step 4)
+## 5. Pools (step 4, P1)
 
 A pool is the candidate set a model reranks. ALL is the share of questions with every gold in the pool.
 
@@ -181,21 +183,39 @@ A pool is the candidate set a model reranks. ALL is the share of questions with 
 Today's models were trained and read on step 1's frozen pools and today's graph. U1c and U1f tried both bases on the
 universal graph with step 4h's pools. Neither was adopted, so the bases stay where they were.
 
-## 6. Running now (13 October, 01:58)
+**P1a, 13 October: our pools against the SOTA pool constructions, on the full corpora**
+([P1A_POOL_SCOREBOARD.md](P1A_POOL_SCOREBOARD.md)). Every order walks the same graph with step 4e's kernel; only the
+restart differs. On s1eval, our construction (A3, step 4e's chosen restart) is BELOW the best LLM-free SOTA order on
+five datasets. squad has no graph, so every order there is the same.
+- **HippoRAG 2's restart rule (A1) leads on the passage graphs and webqsp.** hotpotqa up to N = 750 (0.830 against
+  0.512 at N = 25), 2wiki up to N = 300 (0.838 against 0.578 at N = 50; ours leads at 500 to 2,000), musique up to
+  N = 300 (by up to 0.027), webqsp at every N (by 0.005 to 0.043).
+- **The walk from our linked entities alone (LINKED) leads on metaqa** at every N (0.959 against 0.800 at N = 2,000).
+  It comes within 0.036 of the walk from the assigned topic entities at ReaRev's m = 500 (0.868 against 0.903).
+- **Headroom at no extra look cost.** Cut at each question's own pool size today, a walk's top N holds more golds than
+  today's pools: metaqa +0.066, musique +0.082, webqsp +0.102, hotpotqa and 2wiki +0.005.
 
-- **Nothing of ours is running** on the host or the laptop.
-- **Done since the last update:** C12, timed and filed ([C12_SHARED_COMPILE.md](C12_SHARED_COMPILE.md)); section 3
-  has its numbers. D4 is filed as NO_SIGNAL ([DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md)).
-- **Next on the laptop:** C13's development, exact forms of the per-family prototypes and the depth basis. No timed
-  number before its declaration.
-- **Host disk: 28.7 GB free at 01:54**, below the 30 GB line where the feeder holds heavy writers. Clean-up 15,
-  U1c's and U1f's arrays, is listed and dry-run: about 143 GB once both names of each hard-linked pair go. It is the
-  user's command.
+No fixed restart is best on all six. P1b (running) fits one restart for all of them: a per-question mixture of the
+seed, linked-entity and first-stage walks, weighted by the question's own label-free features and fit by EM on the
+training datasets' fit carves ([P1B_RESTART_MIXTURE.md](P1B_RESTART_MIXTURE.md)).
+
+## 6. Running now (13 October, 03:10)
+
+- **P1b on the host, since 03:08** ([P1B_RESTART_MIXTURE.md](P1B_RESTART_MIXTURE.md)): the five gathers on the fit
+  carves (squad's done), then the EM fit, then the six reads on s1sel and s1eval. The call should land around 04:00.
+- **Done since the last update:**
+  - the 13 October program ([PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)), which moves the target to the full
+    corpora;
+  - P1a, declared, run and filed (section 5).
+- **Host disk: 26.7 GB free at 03:08**, below the 30 GB line where the feeder sends only light items (P1b's are).
+  Clean-up 15, U1c's and U1f's arrays, is listed and dry-run: about 143 GB once both names of each hard-linked pair
+  go. It is the user's command.
 
 ## 7. Open gaps
 
 | gap | the number | what works on it |
 | --- | --- | --- |
+| Pools against SOTA (full corpora) | P1a: below the best SOTA order on five datasets; HippoRAG 2's restart leads on the passage graphs and webqsp, the linked-entity walk on metaqa | P1b (running): one restart mixture for all six, fit by EM. |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions | D4 (link words): NO_SIGNAL, so the gap is reported as the first stage's. Rounds 29-32, U1c and D4 moved nothing here. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
@@ -203,7 +223,7 @@ universal graph with step 4h's pools. Neither was adopted, so the bases stay whe
 | Zero-shot to webqsp | zsp 26.8 zero-shot; a model trained on webqsp reached about 60 (S6) | Longer training lifts the MLP's transfer, but under seed noise (round 33). |
 | Training data | At equal steps, half the data loses 1 read of 12 (round 33's step control) | Not the lever: no second fit carve, by D3's rule. |
 | MLP vs the fastest GNN | zsp is the fastest GNN on all six; zrc is 0.96-1.18× faster, twin0 slower except on webqsp (1.14× faster) | Not met. With every input kept, the forwards keep each MLP below 2× on five datasets (section 3). How Claim 3 is worded is open. |
-| Universal speed | gnn0 / twin0 1.46-1.89× (C12) | C13: the per-family prototypes and the depth basis, exact, for both models. 2× needs the compile 1.18× faster on musique, 3.0-3.7× on squad, metaqa and webqsp. |
+| Universal speed | gnn0 / twin0 1.46-1.89× (C12) | P4, after P5a: per-question structural work moved to index time. C13 (exact per-family prototypes and depth basis) is parked: it reaches 2× on musique only; squad, metaqa and webqsp need the compile 3.0-3.7× faster. |
 | Lean speed | zsp / zrc 0.96-1.18× (C12) | Bounded by the lean design: 1.16-1.34 even with free shared stages, 2.12 on musique. |
 
 ## How we got here
@@ -222,15 +242,22 @@ universal graph with step 4h's pools. Neither was adopted, so the bases stay whe
 - **12 to 13 October: the universal graph tried on the bases.** U1c and U1f refit zrc and zsp on it, and neither was
   adopted. D4 found that a link's words do not pick the neighbour a musique question follows (NO_SIGNAL). C12 made
   the full compile both universal models share faster, bit for bit (gnn0 / twin0 up to 1.89×).
+- **13 October: the full corpora.** The target moved to our own corpora on all six datasets (2wiki 6.0M and hotpotqa
+  5.2M passages). P1a put our pools against the SOTA pool constructions there: below on five datasets.
 
 ## What is next
 
-1. **C13: the rest of the universal compile.** The per-family neighbour prototypes and the depth basis, the two
-   largest stages left, in exact forms for both models alike and one form for all six datasets. Developed on the
-   laptop and declared before any timed number. It can bring gnn0 / twin0 to 2× on musique (1.18× needed);
-   elsewhere it narrows the gap.
-2. **Claim 3's wording.** No MLP reaches 2× the fastest GNN on five datasets while every input stays, so the claim
-   needs its final form: within each family, the MLP against the full GNN, or what message passing costs on top of
-   the same inputs.
-3. **The confirmation run** of the chosen MLP and GNN on held-out questions, for the paper, with B1 read beside it
-   (never used to choose).
+The order is [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)'s. Each stage gets its own file, committed before its
+numbers.
+1. **P1b, then P1c or the next pool change.** If one restart mixture is at or above the best SOTA order on all six,
+   P1c rebuilds the models' pools as its top N at today's sizes and runs one fit as a screen.
+2. **P2a: what each link family is worth.** Each family left out in turn, on the pools (reach) and today's fits
+   (ranking), with no retraining. Then better links where information is missing (musique), and dropping what carries
+   nothing.
+3. **P3: the SOTA rankers beside our four models**, and the gap ledger for SOTA, GNN and MLP by hop slice.
+4. **P5a: the model's own representation, read as a retriever first.** Per-node vectors and relation offsets, fit by
+   EM and composed for multi-hop targets without walking the graph, with offsets for unseen relations from their
+   names, all inside one model.
+5. **P4: speed, after P5a.** 2-3× in every family with every win kept.
+6. **Claim 3's wording and the confirmation run** of the chosen MLP and GNN on held-out questions (B1 read beside it,
+   never used to choose).
