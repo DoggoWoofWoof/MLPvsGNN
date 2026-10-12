@@ -77,6 +77,13 @@ each at its fastest exact form, each compiling only its own set's columns:
 Claim 3 is stated from the controlled pair, with the ceilings beside it. It is stated whatever the ratio turns out to
 be.
 
+**Amended 12 October 2026, about 13:35, before any number of F1.** The user asked for the MLP's lead cold and warm.
+- C8 also times each form **warm**, as C1-C6 did: the graph index and every per-question input built beforehand, so
+  only the forward is timed.
+- Warm sits beside cold, labelled. The headline stays cold.
+- What is already known, and why the controlled pair matters: C3 filed zsp at 1.08-1.14× zrc's cold cost
+  (docs/C3_FASTEST_FORMS.md). The 1.6-3.0× lead is over the six GNN, whose inputs are not the MLP's.
+
 ## What this does not do
 
 - No new column, objective, graph or encoder. The encoder and the substrate embeddings stay frozen.
