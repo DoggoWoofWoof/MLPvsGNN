@@ -212,3 +212,114 @@ Records go to `outputs/p3b/`:
 - So the verdict should land about 20 minutes after the items start, if the host's CPUs are free.
 
 The encoder stays frozen. No model trains, nothing is adopted, and test splits are never read.
+
+## 10. Results (filed 13 October 2026, about 10:05)
+
+`python scripts/p3b_gap_ledger.py verdict` on the 43 fetched records and P3a's (`outputs/p3b/verdict.json`,
+`verdict.md` and `ledger_<dataset>.npz`). Every check in section 8 held on all six:
+- the 37 read parts reproduce P2a part 2's measures on every question;
+- the gathers match step 1's cache, and P3a's questions, golds, counts and means;
+- every ledger sums to 1, with FOUND equal to the ranking's R@5;
+- every R@5 gap adds up to its difference, and GNN>MLP has no POOL part;
+- on metaqa and webqsp, every ranking's first ten agree with its golds' positions;
+- one script, P3a's freeze, and no `--limit`.
+
+**The readings** (section 6, R@5's lost parts, slice `all`; the total lost in brackets):
+
+| dataset (the R@5 bar) | lean bar>GNN | lean GNN>MLP | universal bar>GNN | universal GNN>MLP |
+| --- | --- | --- | --- | --- |
+| metaqa (LINKED) | LEAD RANKED (0.005) | LEAD RANKED (0.020) | LEAD RANKED (0.004) | LEAD RANKED (0.096) |
+| squad (A1) | LEAD RANKED (0.014) | LEAD RANKED (0.006) | LEAD RANKED (0.020) | LEAD RANKED (0.020) |
+| musique (RRF) | LEAD RANKED (0.026) | SPLIT RANKED+BRIDGE (0.023) | LEAD RANKED (0.052) | SPLIT BRIDGE+RANKED (0.072) |
+| hotpotqa (RRF) | SPLIT RANKED+BRIDGE (0.010) | LEAD BRIDGE (0.011) | LEAD RANKED (0.009) | LEAD BRIDGE (0.041) |
+| 2wiki (RRF) | LEAD RANKED (0.016) | LEAD BRIDGE (0.019) | LEAD RANKED (0.012) | LEAD BRIDGE (0.061) |
+| webqsp (DENSE) | LEAD RANKED (0.063) | LEAD RANKED (0.039) | LEAD RANKED (0.007) | LEAD RANKED (0.071) |
+
+- **The bar's leads are small.** What the bar finds and a GNN misses is 0.004 to 0.063 of R@5. Over the same questions,
+  the GNN finds 0.02 to 0.55 that the bar misses. Squad is the exception: for gnn0, lost (0.0198) is more than won back
+  (0.0183), the 0.0015 within the tie that P3a filed.
+- **What the bar wins, the GNNs had in their pools.** The bar's golds outside our pools are 0.0006 of R@5 on metaqa
+  and 0 on the other five, so no part of any bar lead is out of our pools' reach. The GNNs ranked those golds out.
+- **The lean pair on metaqa** trade golds evenly: lost 0.0202, won back 0.0204. The reading only says where the
+  difference lives (ranking, not links).
+- **The lean pair on webqsp** (zero-shot): zrc is above its GNN (R@5 0.307 against 0.268; GNN>MLP lost 0.039, won
+  back 0.079).
+
+**Slices** (where they differ from `all`):
+- **metaqa:** bar>GNN is NONE on hop2 in both families (lost 0.0008 and 0.0009). Lean's hop3 is SPLIT RANKED+POOL.
+- **musique:** GNN>MLP leads BRIDGE on hop2 in the universal family (lean: SPLIT BRIDGE+RANKED), and RANKED on hop3
+  and hop4 in both.
+- **hotpotqa:** GNN>MLP leads BRIDGE on hard/bridge and RANKED on hard/comparison, in both families.
+- **2wiki:** GNN>MLP leads BRIDGE on bridge_comparison, compositional and inference, and RANKED on comparison, in both
+  families. Universal bar>GNN is SPLIT RANKED+BRIDGE on inference.
+
+So the BRIDGE leads sit where a question needs a second passage reached through a link. The comparison slices are
+RANKED.
+
+**Where each ranking misses** (R@5 shares, slice `all`; the range over zrc, zsp, twin0 and gnn0):
+
+| dataset | POOL | BRIDGE | RANKED (of which 51+) | CAPACITY |
+| --- | --- | --- | --- | --- |
+| metaqa | 0.020-0.021 (hop3 0.047-0.049) | 0.001-0.004 | 0.025-0.084 (0.001-0.004) | 0.170 |
+| squad | 0.020 | 0 | 0.069-0.083 (0.000) | 0 |
+| musique | 0.079 (hop4 0.198) | 0.107-0.135 | 0.233-0.276 (0.091-0.126) | 0 |
+| hotpotqa | 0.020 | 0.045-0.072 | 0.028-0.030 (0.002) | 0 |
+| 2wiki | 0.036 (bridge_comparison 0.066) | 0.044-0.083 | 0.029-0.037 (0.001) | 0 |
+| webqsp | 0.126-0.135 | 0.010-0.020 | universal 0.122-0.145, lean 0.425-0.466 (0.023-0.154) | 0.114 |
+
+- **Which family carries a BRIDGE gold's link** (zsp and gnn0; a gold can count on more than one):
+  - hotpotqa: structural 1.00, ner 0.24-0.25;
+  - 2wiki: structural 0.92-0.93, ner 0.40-0.43;
+  - musique: ner 0.68-0.70, structural 0.44-0.46;
+  - metaqa: knn 0.90-0.92;
+  - webqsp: structural 0.53-0.62, knn 0.48-0.59.
+- **hit@1's top rank only** (a gold in the first five, none first; reported, not called):
+  - webqsp: lean 0.27-0.35, universal 0.18-0.23;
+  - musique: 0.20-0.22;
+  - squad: 0.16;
+  - hotpotqa: 0.10-0.13;
+  - 2wiki: 0.07-0.12;
+  - metaqa: 0.07 (twin0 0.17).
+
+**Beside the bar: the seeds removed (section 7).** zrc, zsp, twin0 and gnn0 are all AT_OR_ABOVE, on metaqa and on
+webqsp. The read is thin:
+- It decides 17 of 9,785 metaqa questions and 12 of 1,503 webqsp questions.
+- The walk rows (A1, A2, A1_all, A2_all) spend their first ten on the seeds and linked nodes. The read removes 9.08
+  nodes per metaqa question and 10.84 per webqsp question, so these rows leave their five undecided on 9,714 and 1,353
+  questions.
+- 51 and 136 questions have no gold left.
+
+On the questions it reads (R@5, FC@5, hit@1):
+
+| dataset | the bar | zsp | gnn0 |
+| --- | --- | --- | --- |
+| metaqa | LINKED 0.510, 0.471, 0.176 | 0.861, 0.824, 0.765 | 0.861, 0.824, 0.882 |
+| webqsp | A1 0.333, 0.333, 0.250 | 0.583, 0.500, 0.167 | 0.847, 0.833, 0.750 |
+
+**What it decides.**
+- **Claim 2 on metaqa and webqsp.** Both GNNs are AT_OR_ABOVE, so the claim is cited with both reads (section 7), and
+  the seeds-removed read is cited with its size. On 17 and 12 questions it finds nothing against the claim; it cannot
+  show more than that. A fuller read needs P3a's walk rows kept past ten nodes. That would be its own file.
+- Nothing in P3a's file changes.
+
+**Where the leads go** (section 6's table):
+- **RANKED → P5's representation.** RANKED leads every bar>GNN gap but one (lean's hotpotqa is SPLIT). It also leads
+  GNN>MLP on metaqa, squad and webqsp, and on musique's 3- and 4-hop questions. The bar's wins over the GNNs are golds
+  the GNN had in its pool and ranked out, with no link to anything it found.
+- **BRIDGE in GNN>MLP → P5's offsets.** BRIDGE leads GNN>MLP on hotpotqa and 2wiki in both families, and on musique's
+  2-hop questions in the universal family. What message passing buys there is the gold one link from a found gold. P5's
+  offsets are the MP-free route to it. P5a's fixed map STOPS ([P5A_NODE_SPACE.md](P5A_NODE_SPACE.md) section 8), so
+  the route is the learned offset g(question, seed, graph features), declared in its own file.
+- **POOL leads no gap.** Each ranking's own POOL share stays the pool stages' target (P1c, held for host disk):
+  - musique's hop4: 0.198;
+  - webqsp: 0.13;
+  - 2wiki's bridge_comparison: 0.066;
+  - metaqa's hop3: 0.048.
+- **BRIDGE in bar>GNN leads nowhere.** It is only ever half of a SPLIT: lean's hotpotqa, hotpotqa's hard/bridge in
+  both families and 2wiki's inference in the universal family. A second step from the found golds is not a stage of its
+  own.
+- **The zero-shot lean pair on webqsp has the largest RANKED share in the ledger:** 0.43 to 0.47 of R@5, against 0.12
+  to 0.15 for the universal pair trained on it. That is the representation gap P5 is for, and zero-shot stays graded on
+  it.
+
+Nothing is adopted.

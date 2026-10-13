@@ -1,0 +1,46 @@
+{
+ "declared_in": "docs/P3B_GAP_LEDGER.md",
+ "stage": "gather",
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "checks": {
+  "questions": 12576,
+  "golds": 30654,
+  "pairs": 11751,
+  "pairs_by_family": {
+   "structural": 11234,
+   "ner": 5304,
+   "knn": 2805
+  },
+  "golds_in_pool": 29379,
+  "pools_agree": true
+ },
+ "strata": {
+  "bridge_comparison": 2751,
+  "comparison": 3040,
+  "compositional": 5236,
+  "inference": 1549
+ },
+ "npz_sha256": "a5d1fe5c0c56332679b3773710064673a0458d134ee41367f51b115d8a4b6ff9",
+ "csr_sha256": {
+  "structural": "123aa638c39a600d34e3086bbe99b778fc8f3d3b06e076d0c5c7c14272bb4492",
+  "ner": "18008f526d383cbcc24667db5884bdb5fe2dd6a8708dc2fd18a125420f4a1294",
+  "knn": "b194b514af5d1524238e8b1f02cf644b06acb5e759e6e656061f9a4085ff3b00"
+ },
+ "step1_records": {
+  "part_0of2": "90be0f3cb5e08c5381078e30044c050da2f399f096b7b02f985dade8590889c4",
+  "part_1of2": "ff556ba86b1529eb93497f68bd44b15c5f597926784df864223363c20148898b"
+ },
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "p3a_script_sha256": "aeee453339b71bf5856a2bc1f5ad5201b6d559d11fc7ca028637277f77a33834",
+ "step4e_script_sha256": "246c0166f0a452458a89982d5125e76c5f66946c9586fb3f0d181fafc72f3ec4",
+ "seed_sets": false,
+ "seeds_s": 0.0,
+ "script_sha256": "7a7c130a2a86d1d87efe6ebfa4930c059d3b69e02fd18666a77a188f12eebd02",
+ "limit": 0,
+ "where": "host",
+ "links_s": 2.7,
+ "seconds": 51.3,
+ "peak_rss_bytes": 1742278656,
+ "utc": "2026-10-13T03:44:12Z"
+}

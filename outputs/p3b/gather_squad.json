@@ -1,0 +1,43 @@
+{
+ "declared_in": "docs/P3B_GAP_LEDGER.md",
+ "stage": "gather",
+ "dataset": "squad",
+ "carve": "s1eval",
+ "checks": {
+  "questions": 11873,
+  "golds": 11873,
+  "pairs": 0,
+  "pairs_by_family": {
+   "structural": 0,
+   "ner": 0,
+   "knn": 0
+  },
+  "golds_in_pool": 11633,
+  "pools_agree": true
+ },
+ "strata": {
+  "answerable=False": 5945,
+  "answerable=True": 5928
+ },
+ "npz_sha256": "8002c6dd1d69c7de015a43b22b40237fe6a0879b5a7c02a5a613141aa336a60a",
+ "csr_sha256": {
+  "structural": "d2d448f2b4c4a7fb87b31c5bdca9dec327d180eef7dc2ddfdc232b3fe83dba65",
+  "ner": "75725555253375ebefd908410fd304761ac5c0de1e03480077b7f443d875d066",
+  "knn": "d70ab3eaff58a9b44ef292d6c72f692ade3874ae391f3763b808dc5a272f9648"
+ },
+ "step1_records": {
+  "part_0of1": "42d5ab65b3bf09606477ae4c229f8bcddff65bc3a825278191165127eff287bf"
+ },
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "p3a_script_sha256": "aeee453339b71bf5856a2bc1f5ad5201b6d559d11fc7ca028637277f77a33834",
+ "step4e_script_sha256": "246c0166f0a452458a89982d5125e76c5f66946c9586fb3f0d181fafc72f3ec4",
+ "seed_sets": false,
+ "seeds_s": 0.0,
+ "script_sha256": "7a7c130a2a86d1d87efe6ebfa4930c059d3b69e02fd18666a77a188f12eebd02",
+ "limit": 0,
+ "where": "host",
+ "links_s": 0.0,
+ "seconds": 1.9,
+ "peak_rss_bytes": 316473344,
+ "utc": "2026-10-13T03:43:26Z"
+}

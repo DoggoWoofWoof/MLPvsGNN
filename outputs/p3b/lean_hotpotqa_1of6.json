@@ -1,0 +1,55 @@
+{
+ "declared_in": "docs/P3B_GAP_LEDGER.md",
+ "stage": "read",
+ "dataset": "hotpotqa",
+ "part": [
+  1,
+  6
+ ],
+ "questions": [
+  1234,
+  2468
+ ],
+ "carve_questions": 7405,
+ "checks": {
+  "questions": 1234,
+  "pool_equal_step1": 1234,
+  "measures_differ_from_p2a": {
+   "zrc": 0,
+   "zsp": 0
+  },
+  "ranks_differ_from_measures": {
+   "zrc": 0,
+   "zsp": 0
+  }
+ },
+ "npz_sha256": "703dee5ba26f40e84093f272b9b6e82908581151833be0eb00a1ee20f25b9773",
+ "p2a_npz_sha256": "bb509b8eece106dfe1f9c042089e69c7734c7aa62d8a8c08c7b472716f1ced27",
+ "step1_records": {
+  "part_0of1": "2e6d4f51af34c46278c12e6e90679d4f85ea769373e201fb70a2c4093383f6f7"
+ },
+ "fits": {
+  "zrc": "38ad128de6f9a6e41f8871e1f8d9fe94cae6d9400f7b5f23420e0364e9971127",
+  "zsp": "966796eaf22e4d086c7c5a8a08df316e12265c13541a0942ce59541c1e0ca2fa"
+ },
+ "frozen_module_sha256": {
+  "c1_cold.py": "c830f71dab6467e0a1891acbd1c911d64c4741203d7198ed097e956800408f86",
+  "c2_fast.py": "f0a53b6cc88c02cad55429280a57edb3c2f12dbe0f4aff85e13c01eff6522971",
+  "c3_fast.py": "e5a5e7210961f58e220e91f5ed6eeccf698a7208aabcbdf59a855c3c29fe83cd",
+  "c4_fast.py": "7235244be7df7f96cc3ec5062cdf45111e22490473e43ad2ec51cb123b42677b",
+  "c5_typed.py": "94828ef4a540f216bd9165adb4ab5d3763e5b21bb1b05abe21cb612a08f91d24",
+  "c6_chains.py": "ff570af52cca20749a439675a5da661b5782baf809303eb3c53cbfdce491dabb",
+  "c10_zn.py": "3464b10a732735b2f8bbce39eaaafc02d1cbe97cbf6cbbfa8ba6cafdba694c76",
+  "c11_fast.py": "48d5f65783e44ece33598070f1a98adf703f997984a52556f970d596f588036b",
+  "lean_gpu.py": "242e62a613fe10d31d23271780756bdbd5d256923cf1e1fbc91dc868324e5a8c",
+  "lean_cache.py": "19bcc079c742b05d4998221cd2c4dac3c641d8ef69b6e7c59420191c6ff76c2c"
+ },
+ "p2a_script_sha256": "b3fbf46bfcce76d9c3142bb37459d897397ec2bf79fbbcb1486b8842815bf006",
+ "script_sha256": "7a7c130a2a86d1d87efe6ebfa4930c059d3b69e02fd18666a77a188f12eebd02",
+ "limit": 0,
+ "where": "host",
+ "setup_s": 45.9,
+ "read_s": 9.1,
+ "peak_rss_bytes": 4913262592,
+ "utc": "2026-10-13T03:51:54Z"
+}

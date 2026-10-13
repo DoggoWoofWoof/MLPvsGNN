@@ -1,0 +1,56 @@
+{
+ "declared_in": "docs/P3B_GAP_LEDGER.md",
+ "stage": "gather",
+ "dataset": "metaqa",
+ "carve": "s1eval",
+ "checks": {
+  "questions": 9785,
+  "golds": 72697,
+  "pairs": 12561,
+  "pairs_by_family": {
+   "structural": 589,
+   "ner": 123,
+   "knn": 11929
+  },
+  "golds_in_pool": 62706,
+  "pools_agree": true
+ },
+ "strata": {
+  "hop1": 2498,
+  "hop2": 3718,
+  "hop3": 3569
+ },
+ "npz_sha256": "c0b4ed4150077c43bf5598572c3afba2e66bb27fa21abb6aae42fe7ef17727f0",
+ "csr_sha256": {
+  "structural": "f1e0536f1588f3a0310f5d377b2afbf140db77e473986ae4f63b162610bc9b6b",
+  "ner": "9cbdbde241fbd92a1cf1ccd55ac421eafb7b212844f366d0f653adfdfd367551",
+  "knn": "a2913c9ad32882545a8a72d5704dd7c46929653f8e727809b4ac2658b56a3626"
+ },
+ "step1_records": {
+  "part_0of13": "ab74bad625e7e65b139e42dc5ace4927f81c0afd9ea22c828463a01c141d2fab",
+  "part_1of13": "9a3a756a3944319ead9f6a449e33d615307f58748da5a965cf3c0d8e5211a1b5",
+  "part_2of13": "2354544f554545fc0698332ccf9817c16b66286a13c13f569b64d4b06eb3313f",
+  "part_3of13": "be6e303246170a9d6149fdb855eb080233e875c75fba0b6e4e7466dfdf48fdb5",
+  "part_4of13": "5f6dade740db229eb1cd1e7e06c8030c8b2260b7b33add08ef9d059d69c085b7",
+  "part_5of13": "ae768f9f35645866690054003f5e13eed81c7c1a7d1e6753dfd1a425e2604105",
+  "part_6of13": "cb131adebf03cf67b7c4ab92b48cc71478ea5abfcfb9f5e67f388856f0a00000",
+  "part_7of13": "029bf326e7121201182f22e0def5e9d56179f3b5a3f7b4fb739c9b5c9c59a42e",
+  "part_8of13": "18a072f1bb87e9f4eac4556705d3d575978699cbca672ab48b442289f217c338",
+  "part_9of13": "ba53a524fdbd3f0c825d47c731858c1c8dbbc68cfe37fe4dc00ab2ff33302605",
+  "part_10of13": "ba596ae70ae048e8acbe607fa7d7e962d38812702bce9906845de98ed8223868",
+  "part_11of13": "121bb0c598799ec03e966e42934a8e0720ecdcbe40fe6852a6fdc0efefca9c68",
+  "part_12of13": "1062446facea76905262f37f6254967f73e783e8081fb076215d39403ec815a1"
+ },
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "p3a_script_sha256": "aeee453339b71bf5856a2bc1f5ad5201b6d559d11fc7ca028637277f77a33834",
+ "step4e_script_sha256": "246c0166f0a452458a89982d5125e76c5f66946c9586fb3f0d181fafc72f3ec4",
+ "seed_sets": true,
+ "seeds_s": 43.3,
+ "script_sha256": "7a7c130a2a86d1d87efe6ebfa4930c059d3b69e02fd18666a77a188f12eebd02",
+ "limit": 0,
+ "where": "host",
+ "links_s": 6.6,
+ "seconds": 58.8,
+ "peak_rss_bytes": 3128463360,
+ "utc": "2026-10-13T03:44:22Z"
+}
