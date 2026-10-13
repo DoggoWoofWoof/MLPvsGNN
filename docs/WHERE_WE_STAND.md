@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (13:03)
+# Where we stand, 13 October 2026 (14:05)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -341,6 +341,21 @@ chosen, and the call is NOT_ALL_SIX.
     seven 'Paris'), while the second gold is found by its words.
   - P1e, the next pool change with nothing fit, targets this split.
 
+**P1e: what the links land on decides how they are used** ([P1E_ANCHOR_KIND.md](P1E_ANCHOR_KIND.md), declared
+11629d0, running on the host).
+- **The branch:** a question is an entity question when the nodes it starts from (its corroborated links, or its
+  seeds) are all name-only, KB nodes whose text is only a name. Entity questions take the walk from the links, cut
+  where its mass falls to the uniform level and backfilled by A1. Passage questions take a fusion like RRF5.
+- **The new walks:** K and A1 walked with the first stage's steer. Within a family, a neighbour's share of the mass
+  follows its RRF weight in the dense and SPLADE lists. This is aimed at musique's flood and at hotpotqa's N = 50 to
+  100.
+- **Five fixed rules, RRF5 among them.** P1d's choice on s1sel and call on s1eval are unchanged.
+- **Stated in the file:**
+  - the candidates were shaped on the fit carves;
+  - the call is a second read of s1eval;
+  - on these six datasets the kind acts almost as a KB switch;
+  - metaqa may keep ROUTEst's four small points.
+
 ## 6. P5: the model's own representation
 
 **P5a, 13 October: the node space read as a retriever on its own** ([P5A_NODE_SPACE.md](P5A_NODE_SPACE.md)). STOPS.
@@ -359,15 +374,16 @@ chosen, and the call is NOT_ALL_SIX.
   - Its target is P3b's BRIDGE part of GNN>MLP.
   - It goes in its own file.
 
-## 7. Running now (13 October, 13:03)
+## 7. Running now (13 October, 14:05)
 
-- **P1e's design on the laptop.** Candidate fixed rules are read on samples of the fit carves, the models' training
-  questions, which P1e's choice and call never read. Its file comes before any s1sel or s1eval number.
+- **P1e on the host** since 14:02: six items, with 2wiki the longest at about 45 minutes. The verdict runs on the
+  laptop at about 15:00.
 - **P2c's parse of the four passage corpora is done on the host:** all 103 parts. Part 2, the fourth family in the
-  pool walks, is next, in its own file.
+  pool walks, comes after P1e, in its own file, read under P1e's chosen rule.
 - **P1c is held** by the user's rule (f8da4b0). Its 124 unsent items stay commented out until the pools are final.
-- **Clean-up 15** (U1c's and U1f's arrays, about 143 GB) is the user's command.
-- **Done since the last update:** P1d (section 5), filed 8d6bdc7.
+- **Clean-up 15** (U1c's and U1f's arrays, about 143 GB) is the user's command. The host's drive has about 22 GB
+  free, so the feeder sends only light items until it runs.
+- **Done since the last update:** P1e declared (section 5), 11629d0, with its items in 0f5678e.
 
 ## 8. Open gaps
 
@@ -426,7 +442,8 @@ The order is [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)'s, under the user's 
 file, committed before its numbers.
 1. **The pool, with nothing learned.**
    - P1d's RRF5 is the parameter-free pool for now (NOT_ALL_SIX).
-   - P1e: the next fixed rule, aimed at metaqa, hotpotqa and webqsp's head.
+   - P1e (declared 11629d0, running): the question's kind decides how the links are used, and the walks are steered
+     by the lists. It is aimed at metaqa, hotpotqa and webqsp's head.
    - P2c part 2 reads our triples as a fourth family with the chosen rule, on the four passage corpora.
 2. **The models on the final pools.** P1c is re-declared on the final pool, with one screen fit per family. A full run
    follows only if no read loses.
