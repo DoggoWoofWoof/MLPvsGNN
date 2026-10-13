@@ -136,7 +136,8 @@ L equal P1a's A0 and LINKED at every point (on squad, L). EM stopped after 195 i
   question's positions were appended twice. The at-size reading then pairs the first half of the questions with
   shifted sizes and divides by twice the count, which comes out at about half the true value (metaqa's s1sel: S
   0.498 filed, 0.8965 true).
-- **Shown exactly.** On metaqa's s1sel, P1b's walks were rebuilt with this script's own functions:
+- **Shown exactly.** On four carves, P1b's walks were rebuilt with this script's own functions: metaqa's and
+  musique's s1sel and s1eval, S and L at both sizes, 16 points.
   - read with the doubled list, they give the filed values;
   - read with each question once, they give P1a's A0 and LINKED at the same sizes.
 - **What to read instead.** The true values are P1a's A0 and LINKED at the same sizes, in

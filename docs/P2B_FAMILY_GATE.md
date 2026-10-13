@@ -187,3 +187,78 @@ runs, and both models of a family read the same pool, so the MLP's own scoring s
   The call should land about 45 minutes after the start, if the host's CPUs are free.
 - The encoder stays frozen. No model trains or reads, nothing is adopted by this file, and test splits are never
   read.
+
+## 7. Results (filed 13 October, about 08:50)
+
+Records: `outputs/p2b/`. These are gate.json, gather_*.json and .npz, mxu_*.json, pos_*.npz, verdict.json and verdict.md.
+check_failed.json is the first verdict run's refusal (section 4).
+- **The checks passed on every carve, after section 4's fix to the check:**
+  - MX, S0, L0 and R0 equal P1b's at every point;
+  - the regime's walks equal P1b's S, L and R at every N, and R at both sizes;
+  - S and L at both sizes equal P1a's A0 and LINKED.
+- **The doubled lists, shown on 16 points.** P1b's walks were rebuilt with P1b's own functions on four carves: metaqa's
+  and musique's s1sel and s1eval, both sizes, S and L. On every point, the doubled reading equals P1b's filed value
+  and the single reading equals P2b's.
+- **The fit.** EM stopped after 128 iterations (25 s).
+- **Correction to section 6.** 2wiki's s1eval has 12,576 questions, not 14,072.
+
+**The call: REGIME_STAYS.**
+- **The shortfalls.** At |I_q| on s1eval, MXU is more than 0.002 below MX on three datasets:
+  - metaqa: ALL −0.0036, recall −0.0024;
+  - squad: −0.0029 on both;
+  - musique: ALL −0.0041.
+- **The gains.** It is above MX on webqsp (ALL +0.0513, recall +0.0341) and on 2wiki (ALL +0.0024).
+- **On s1sel.** On the five s1sel carves, MXU's mean ALL at |I_q| is 0.934 against MX's 0.936 (within the tie).
+
+**At each question's size of today's pools (|I_q|, ALL, s1eval), with the curves beside:**
+
+| dataset | today's pools | MX | MXU | MXU − MX (ALL / recall) | curves, MXU against MX | MXU against the best SOTA order (beside) |
+| --- | ---: | ---: | ---: | --- | --- | --- |
+| metaqa | 0.895 | 0.923 | 0.920 | −0.0036 / −0.0024 | MIXED | BELOW: under LINKED at 24 points, by up to 0.040; above at 2 |
+| squad | 0.980 | 0.981 | 0.978 | −0.0029 / −0.0029 | BELOW | BELOW: N = 25 and 50, by up to 0.006 |
+| musique | 0.803 | 0.892 | 0.887 | −0.0041 / −0.0016 | MIXED (13 points above, 8 below) | AT_OR_ABOVE: above at 25 points, by up to 0.036 |
+| hotpotqa | 0.968 | 0.969 | 0.969 | −0.0004 / −0.0007 | TIE | BELOW: the head, 0.805 against A1's 0.830 at N = 25 |
+| 2wiki | 0.906 | 0.914 | 0.917 | +0.0024 / +0.0011 | ABOVE (every N, up to +0.011) | AT_OR_ABOVE: above at 30 points, by up to 0.019 |
+| webqsp | 0.688 | 0.806 | 0.857 | +0.0513 / +0.0341 | ABOVE (every N, up to +0.059) | AT_OR_ABOVE: above at 30 points, by up to 0.103 |
+
+**Where the nine sources help.**
+- **webqsp, zero-shot for the gate.** The gate was fit on the five training datasets only.
+  - MXU moves weight from the walks on all three families to the linked seeds and to the walks on the structural
+    family alone:
+
+    | gate | L0 | walks on the structural family | walks on all three families |
+    | --- | ---: | ---: | ---: |
+    | MXU | 0.37 | 0.23 (L_st 0.14) | 0.23 (S_all 0.19) |
+    | MX | 0.21 | none | 0.60 (S 0.33, L 0.25) |
+  - P2a part 1 found the structural family alone reaches more there (0.829 against the regime's 0.759).
+  - At |I_q|, MXU's 0.857 is above MX by 0.051, above today's pools by 0.169, and above A1 (0.790) by 0.067.
+  - At the head (N = 25), webqsp was where P1b's MX and P1b2's RC fell short of A1. MXU is above it there: 0.306
+    against 0.301.
+- **2wiki.** MXU gains a little at every N.
+
+**Where they cost.**
+- **metaqa.** The gate's leading source is unchanged: L_st 0.854, against MX's L at 0.848. Two things moved:
+  - R_st has 0.113, against MX's R at 0.090;
+  - 0.014 sits on the walks over all three families (S_all and L_all), which are far below the structural ones there
+    (L_all 0.875 against L_st 0.961 at |I_q|).
+
+  Which of the two costs the 0.004 is not isolated.
+- **musique.** MX gave S and L 0.32 and 0.31. MXU splits that weight across both graphs (S_st 0.08, S_all 0.17, L_st
+  0.11, L_all 0.13) and S0 (0.21). It gains up to N = 500 (by up to 0.019) and loses from N = 1,000 on, where |I_q|
+  sits (2,092 rows on average).
+- **squad.** MXU puts 0.043 on S_all, the walk from today's seeds over squad's three families (MX's S had 0.016). At
+  N = 25 that walk is below the lists: 0.948 against R0's 0.969.
+
+**Beside, against the best SOTA order (P1b's rule).**
+- MXU is AT_OR_ABOVE on musique, 2wiki and webqsp, and BELOW on metaqa, squad and hotpotqa.
+- P1b2's rank gate (RC) is the complement: AT_OR_ABOVE on metaqa, squad, hotpotqa and 2wiki, BELOW on musique and
+  webqsp's head.
+- So between them, the two gates are at or above the SOTA order on all six, but neither is on its own.
+
+**What follows (section 5).**
+- **The regimes stay.** MX stays the construction P1c's pools read.
+- **The shortfalls name the next change, in its own file (P1b3).**
+  - It should fit the gate to the golds' ranks, P1b2's objective, over these nine sources. P1b2 found that the
+    objective, not the sources, was the gate's gap.
+  - It should judge the call at |I_q| and against the SOTA orders on all six.
+- **Nothing is adopted by this file.**
