@@ -1,0 +1,65 @@
+{
+ "declared_in": "docs/P5A_NODE_SPACE.md",
+ "stage": "read",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "carve_questions": 2417,
+ "questions": 2000,
+ "carve_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+ "sample_sha256": "c292e9e7e219cdf24d7ad88de93b9f9ff45e0919345db0b079f6debcfdc87433",
+ "checks": {
+  "pools_and_seeds_equal_p2a_reader": 2000,
+  "zsp_r5_differs_from_p2a": 0,
+  "zsp_r5_questions": 2000
+ },
+ "orders": [
+  "V",
+  "V0",
+  "VO",
+  "H2",
+  "H1"
+ ],
+ "grid": {
+  "miss": [
+   10,
+   25,
+   50,
+   100,
+   200,
+   500,
+   1000
+  ],
+  "low": [
+   5,
+   10,
+   25,
+   50,
+   100
+  ]
+ },
+ "h1_setting": {
+  "name": "h3_c25_v2000",
+  "hops": 3,
+  "per_seed_cap": 25,
+  "per_frontier_cap": 25,
+  "visited_cap": 2000
+ },
+ "npz_sha256": "74cf8652c6509f8ee9cade8f6a86792fed3fdddd99510858b24b28f4c1235adb",
+ "read1_records": {
+  "musique_0of2.json": "13778ab9765a4ce3ed244b08e870e84d11c56c2a2e6097de98f7640a31c267d8",
+  "musique_1of2.json": "d8cd725282465c061569d33d5cecf751ade027f649f526ee0ad797ccc23ac477"
+ },
+ "frame_sha256": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+ "space_record_sha256": "152b777097739fbd77fa8796f2461c584da4a1f9447f82241f255a9ab96f79c4",
+ "space_sha256": "2ca1ce1e16d267545355207da086a6ed350477e4abc7e8299621e47ed7d29b51",
+ "u_sha256": "b957c1bbdfbf6f81922f08d2980d191570d8d1f04496003b144efaaa2e0458fe",
+ "map_sha256": "53578b66812d4a84e4415f4b6aa80ab24f1da07d8854125861c79270b27affb9",
+ "script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 1103915520,
+ "peak_rss_bytes": 37297799168,
+ "read_s": 498.3,
+ "seconds": 570.3,
+ "utc": "2026-10-13T03:14:37Z"
+}

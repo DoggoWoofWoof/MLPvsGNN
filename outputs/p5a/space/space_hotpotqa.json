@@ -1,0 +1,249 @@
+{
+ "declared_in": "docs/P5A_NODE_SPACE.md",
+ "stage": "train",
+ "dataset": "hotpotqa",
+ "nodes": 5233329,
+ "fit": {
+  "gamma": 0.674850368747241,
+  "loss_hist": [
+   [
+    0,
+    1.21706
+   ],
+   [
+    300,
+    1.15939
+   ],
+   [
+    600,
+    1.14635
+   ],
+   [
+    900,
+    1.14258
+   ],
+   [
+    1200,
+    1.14118
+   ],
+   [
+    1500,
+    1.14041
+   ],
+   [
+    1800,
+    1.13974
+   ],
+   [
+    2100,
+    1.13989
+   ],
+   [
+    2400,
+    1.13923
+   ],
+   [
+    2700,
+    1.13885
+   ],
+   [
+    2999,
+    1.13873
+   ]
+  ],
+  "seconds": 899.5,
+  "fit_nodes": true,
+  "delta_rms": 0.2267981916666031,
+  "families": {
+   "structural": {
+    "edges": 15367541,
+    "offsets": 8,
+    "named": false,
+    "signed": false,
+    "residual2_median": 0.2687968909740448,
+    "displacement2_median": 0.5264281034469604,
+    "latent_share": [
+     0.0099,
+     0.0298,
+     0.014,
+     0.8356,
+     0.013,
+     0.0157,
+     0.0525,
+     0.0294
+    ]
+   },
+   "ner": {
+    "edges": 20369074,
+    "offsets": 8,
+    "named": false,
+    "signed": true,
+    "residual2_median": 0.15863627195358276,
+    "displacement2_median": 0.18640971183776855,
+    "latent_share": [
+     0.0051,
+     0.0222,
+     0.0104,
+     0.0257,
+     0.8183,
+     0.0492,
+     0.0216,
+     0.0476
+    ]
+   },
+   "knn": {
+    "edges": 11946289,
+    "offsets": 8,
+    "named": false,
+    "signed": true,
+    "residual2_median": 0.09879090636968613,
+    "displacement2_median": 0.11295173317193985,
+    "latent_share": [
+     0.0444,
+     0.1188,
+     0.0003,
+     0.6237,
+     0.0002,
+     0.1087,
+     0.1035,
+     0.0004
+    ]
+   }
+  }
+ },
+ "start_fit": {
+  "gamma": 0.674850368747241,
+  "loss_hist": [
+   [
+    0,
+    1.21706
+   ],
+   [
+    300,
+    1.22075
+   ],
+   [
+    600,
+    1.22184
+   ],
+   [
+    900,
+    1.22203
+   ],
+   [
+    1200,
+    1.22214
+   ],
+   [
+    1500,
+    1.2223
+   ],
+   [
+    1800,
+    1.22229
+   ],
+   [
+    2100,
+    1.22256
+   ],
+   [
+    2400,
+    1.22262
+   ],
+   [
+    2700,
+    1.22234
+   ],
+   [
+    2999,
+    1.22225
+   ]
+  ],
+  "seconds": 242.1,
+  "fit_nodes": false,
+  "delta_rms": 0.0,
+  "families": {
+   "structural": {
+    "edges": 15367541,
+    "offsets": 8,
+    "named": false,
+    "signed": false,
+    "residual2_median": 0.35972166061401367,
+    "displacement2_median": 0.32959771156311035,
+    "latent_share": [
+     0.0036,
+     0.0007,
+     0.0032,
+     0.9715,
+     0.0026,
+     0.0066,
+     0.0039,
+     0.008
+    ]
+   },
+   "ner": {
+    "edges": 20369074,
+    "offsets": 8,
+    "named": false,
+    "signed": true,
+    "residual2_median": 0.2911512851715088,
+    "displacement2_median": 0.2965254485607147,
+    "latent_share": [
+     0.0027,
+     0.0024,
+     0.0072,
+     0.0047,
+     0.9707,
+     0.0016,
+     0.0017,
+     0.0089
+    ]
+   },
+   "knn": {
+    "edges": 11946289,
+    "offsets": 8,
+    "named": false,
+    "signed": true,
+    "residual2_median": 0.13347353041172028,
+    "displacement2_median": 0.142205610871315,
+    "latent_share": [
+     0.6892,
+     0.0601,
+     0.0148,
+     0.0808,
+     0.0184,
+     0.052,
+     0.0635,
+     0.0211
+    ]
+   }
+  }
+ },
+ "steps": 3000,
+ "batch": 65536,
+ "neg": 16,
+ "lr": 0.001,
+ "lambda": 1.0,
+ "u_sha256": "153fea1719a2aca5dcf25cc1ad975771413839c0f47a5b1bcf05de66376ccbd2",
+ "space_sha256": "46c4b24d6323c0ad5b31e5470f48c55df1b18fe96a8ac0e31a85a69102e9d5ac",
+ "frame_sha256": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+ "u0_sha256": "8a2861c35a673c089e605aff3729258ff50d019dfa006c93794c92ca714ccdd9",
+ "evidence": {
+  "carve": "fit",
+  "carve_questions": 5930,
+  "sampled": 2000,
+  "without_a_non_seed_gold": 1017,
+  "kept": 983,
+  "carve_sha256": "2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c",
+  "sample_ids_sha256": "e7428901af0e3ae9e2ff3115740467713d4dc5c125c6c3b89f0f1cded3a1facc",
+  "seconds": 1143.9,
+  "npz_sha256": "85cecdfa7ebe581532753e9c8393ee26944055d5d58fb1902d1e9d15cced964b"
+ },
+ "script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 7461709824,
+ "peak_rss_bytes": 8640557056,
+ "seconds": 2391.0,
+ "utc": "2026-10-13T02:19:12Z"
+}

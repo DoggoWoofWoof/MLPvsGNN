@@ -1,0 +1,69 @@
+{
+ "declared_in": "docs/P5A_NODE_SPACE.md",
+ "stage": "read",
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "carve_questions": 7405,
+ "questions": 2000,
+ "carve_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+ "sample_sha256": "1b4360dc52b57e5830f75cce6beb8adb1ce7ffe8da83650ecddad2730082a3a4",
+ "checks": {
+  "pools_and_seeds_equal_p2a_reader": 2000,
+  "zsp_r5_differs_from_p2a": 0,
+  "zsp_r5_questions": 2000
+ },
+ "orders": [
+  "V",
+  "V0",
+  "VO",
+  "H2",
+  "H1"
+ ],
+ "grid": {
+  "miss": [
+   10,
+   25,
+   50,
+   100,
+   200,
+   500,
+   1000
+  ],
+  "low": [
+   5,
+   10,
+   25,
+   50,
+   100
+  ]
+ },
+ "h1_setting": {
+  "name": "h3_c25_v2000",
+  "hops": 3,
+  "per_seed_cap": 25,
+  "per_frontier_cap": 25,
+  "visited_cap": 2000
+ },
+ "npz_sha256": "96b1116c6a84c4e878950cd5a7dd2d9b0da7319099580375ef47ead09feb70cc",
+ "read1_records": {
+  "hotpotqa_0of6.json": "f14c2e74c3ede5b00f588c4489750222b1d291c825a39e784feb9a33a0deea8c",
+  "hotpotqa_1of6.json": "a63ee78ef81765d9a427f481ba2b3009fab9f3d7c950bd15bf1a29fd9c78d7dd",
+  "hotpotqa_2of6.json": "fc81519cae807f7c5cdc04791b4d6b88ffef6e110580113c8e3a280fc229cc0f",
+  "hotpotqa_3of6.json": "a1464afadbb1877254400fb4ef21d96fdf5508d226160f48861d7b3d0850b281",
+  "hotpotqa_4of6.json": "7ec8143773ca74cb94cc665c47c44a6afe9ad4c0d0a5a41c552e264a709920bc",
+  "hotpotqa_5of6.json": "9e3dd60e6a0797b290af816ab6c0b250e33f32bb790c2bfc3a6d8336c27dd124"
+ },
+ "frame_sha256": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+ "space_record_sha256": "aa87c0ee38af5c7f61b013209d197485ebff80636588030adb41c23a357bf18d",
+ "space_sha256": "46c4b24d6323c0ad5b31e5470f48c55df1b18fe96a8ac0e31a85a69102e9d5ac",
+ "u_sha256": "153fea1719a2aca5dcf25cc1ad975771413839c0f47a5b1bcf05de66376ccbd2",
+ "map_sha256": "53578b66812d4a84e4415f4b6aa80ab24f1da07d8854125861c79270b27affb9",
+ "script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 4429937152,
+ "peak_rss_bytes": 10962804736,
+ "read_s": 3143.4,
+ "seconds": 3307.7,
+ "utc": "2026-10-13T04:00:12Z"
+}

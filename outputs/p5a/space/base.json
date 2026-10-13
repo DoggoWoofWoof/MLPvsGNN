@@ -1,0 +1,77 @@
+{
+ "declared_in": "docs/P5A_NODE_SPACE.md",
+ "stage": "base",
+ "dim": 64,
+ "frame_n": 50000,
+ "parts": {
+  "metaqa": {
+   "rows": 43234,
+   "corpus": 43234,
+   "pick_sha256": "443b21311ae2237524a9a72e2ecc257b0f43cbdb71e4dbce8815007888bffe7f"
+  },
+  "squad": {
+   "rows": 20233,
+   "corpus": 20233,
+   "pick_sha256": "b77618429e62a982a9859313c7be81abf18ab886aec01a8942b69e7585a2cd83"
+  },
+  "musique": {
+   "rows": 50000,
+   "corpus": 117534,
+   "pick_sha256": "64dd3af0d3290e898ca2c622d9b27fefc0a1dcc1486d7958ab734bed55828d17"
+  },
+  "hotpotqa": {
+   "rows": 50000,
+   "corpus": 5233329,
+   "pick_sha256": "0895ddb8e063bd7e7c99b0ae0e53b391cd732035b440e05292c2661da1a41fec"
+  },
+  "2wiki": {
+   "rows": 50000,
+   "corpus": 5989847,
+   "pick_sha256": "8c80b112375a6e075350e5b0a730bfeaf3621fe24a955cf7b1783613c64186f7"
+  },
+  "webqsp": {
+   "rows": 50000,
+   "corpus": 2592894,
+   "pick_sha256": "a3c88e02b4de3c5b6a073853a93bfa2f3d5893d821919b30e229f4b3c5026de6"
+  }
+ },
+ "orthonormal_max_error": 8.248103977592791e-09,
+ "frame_sha256": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+ "u0": {
+  "metaqa": {
+   "rows": 43234,
+   "sha256": "5b88f49e3461a59667e14b7da5f63b95042ae7f0a0a1ea0f6222f012a3a0050c",
+   "bytes": 5534080
+  },
+  "squad": {
+   "rows": 20233,
+   "sha256": "9988eb8aa1d9b35f91cc1e441445cdd188373862aa08b03d60586d8daa06df99",
+   "bytes": 2589952
+  },
+  "musique": {
+   "rows": 117534,
+   "sha256": "5a65a267a157b76e9d951cfaef3a593a60447791c135c93a546a504090b74398",
+   "bytes": 15044480
+  },
+  "hotpotqa": {
+   "rows": 5233329,
+   "sha256": "8a2861c35a673c089e605aff3729258ff50d019dfa006c93794c92ca714ccdd9",
+   "bytes": 669866240
+  },
+  "2wiki": {
+   "rows": 5989847,
+   "sha256": "f1a5bf0be1e7ddd8f7d9615780378da99b3ddd999ec58696bbc30ad2806d53a1",
+   "bytes": 766700544
+  },
+  "webqsp": {
+   "rows": 2592894,
+   "sha256": "efb770dd335221b4ce6e0b783b991a489c6c07917fbf0e3c027b99083989b761",
+   "bytes": 331890560
+  }
+ },
+ "script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "seconds": 217.5,
+ "peak_rss_bytes": 4466872320,
+ "utc": "2026-10-13T01:38:20Z"
+}

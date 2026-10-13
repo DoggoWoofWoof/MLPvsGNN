@@ -1,0 +1,73 @@
+{
+ "declared_in": "docs/P5A_NODE_SPACE.md",
+ "stage": "read",
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "carve_questions": 12576,
+ "questions": 2000,
+ "carve_sha256": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+ "sample_sha256": "497750ec4b497b04b2d7d8b543eee9b884b38cc38cca902758c9d81b2c826d82",
+ "checks": {
+  "pools_and_seeds_equal_p2a_reader": 2000,
+  "zsp_r5_differs_from_p2a": 0,
+  "zsp_r5_questions": 2000
+ },
+ "orders": [
+  "V",
+  "V0",
+  "VO",
+  "H2",
+  "H1"
+ ],
+ "grid": {
+  "miss": [
+   10,
+   25,
+   50,
+   100,
+   200,
+   500,
+   1000
+  ],
+  "low": [
+   5,
+   10,
+   25,
+   50,
+   100
+  ]
+ },
+ "h1_setting": {
+  "name": "h3_c25_v2000",
+  "hops": 3,
+  "per_seed_cap": 25,
+  "per_frontier_cap": 25,
+  "visited_cap": 2000
+ },
+ "npz_sha256": "af890e2fa56ea94a707e847e4a56e2c0a10ba34aca1a56bd5fddb44a49b5b8bb",
+ "read1_records": {
+  "2wiki_0of10.json": "de5e6ed48b0f71fee26a3aba9531ab60268da4bdc88e81e6bf18c4076768aa84",
+  "2wiki_1of10.json": "ab04a39f48e7d232d90f2193c71bc494d2a693d627c2877b5a9afa794838262b",
+  "2wiki_2of10.json": "2727dd5eff8a698120d34d823629e0559fdd469e3a94d3b5a61624ae86ff5b57",
+  "2wiki_3of10.json": "81b394fdeb08c9728ca9759133f4087377327410f13032f95b3cab21fb1f0cf4",
+  "2wiki_4of10.json": "b01128f582a3ff05672db1a05a72c903e826ba61a7d363ba2a6e4dd55be631a2",
+  "2wiki_5of10.json": "cfba616ce65f61adac683f31ee5286e9bdb20d9241d98e68c90f21e1870b71e2",
+  "2wiki_6of10.json": "ae8f0046ac707b8673eafa42150e95969b5b0fa991445e468a3fbabc5d39025f",
+  "2wiki_7of10.json": "d27d71e988a83c21b2616171fe85eb3722cb25240221790e78233d11b217520a",
+  "2wiki_8of10.json": "72b09adcb30a0c5c53b243053f0f40258b79ead9faccaa59c082b0e46245a301",
+  "2wiki_9of10.json": "9012ffb8b27aca50bed3b9f4c79def0db926742f2a9590a46e93e306dfc4e65f"
+ },
+ "frame_sha256": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+ "space_record_sha256": "c27154198dc846992466e82f1dca0e7c9acf5f4a1be834800b9d77ac53b4d17e",
+ "space_sha256": "8858d1c5e78fa0a5a47bb21405f4bf1a1a81ab5c023d0a244bd416f44bb77a1e",
+ "u_sha256": "554696c148580c1212b59af04db9063b678ad86523c150a6a4f68a1ff01ddfa5",
+ "map_sha256": "53578b66812d4a84e4415f4b6aa80ab24f1da07d8854125861c79270b27affb9",
+ "script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 4822384640,
+ "peak_rss_bytes": 12905304064,
+ "read_s": 3445.9,
+ "seconds": 3659.5,
+ "utc": "2026-10-13T04:06:01Z"
+}

@@ -211,3 +211,51 @@ Reported beside, deciding nothing:
 - **ETA:** the frame about 10 minutes, the spaces about 30 (2wiki and hotpotqa side by side on the card), the map a
   few minutes, the reads about 30. The call should land 1.5 to 2 hours after the start, if the card is free.
 - No ranking model trains, nothing is adopted, test splits are never read, and the encoder stays frozen.
+
+## 8. Results (filed 13 October 2026, about 10:00): STOPS
+
+`python scripts/p5a_space.py verdict` on the fetched records (`outputs/p5a/verdict.json` and `verdict.md`). Every
+check held: each read's pools and seeds equal P2a's reader's on all 2,000 sampled questions (all 1,503 on webqsp); zsp's
+R@5 equals P2a's filed read on every sampled question (0 differ on all six); one script, one frame and one map; every
+fit's loss is finite.
+
+**The call: STOPS.** Neither read FINDS_MORE. V finds more golds than H2 only on metaqa:
+
+| read | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- | --- |
+| miss (golds outside I_q) | MORE | FEWER | FEWER | FEWER | FEWER | FEWER |
+| low (in I_q, below zsp's 5) | MORE | TIE | FEWER | FEWER | FEWER | FEWER |
+| VO against H2, miss (beside) | MORE | MORE | MORE | FEWER | TIE | MIXED |
+| VO against H2, low (beside) | MORE | MORE | MIXED | MORE | MORE | MORE |
+| where it fell short, miss | - | the map | the map | the space | the space | the space |
+| where it fell short, low | - | the map | the space | the map | the map | the map |
+
+Examples (found(N), V against H2):
+- miss, N = 100: metaqa 0.072 against 0.034; musique 0.024 against 0.062; hotpotqa 0.085 against 0.268; webqsp 0.006
+  against 0.146.
+- low, N = 10: metaqa 0.048 against 0.007; musique 0.036 against 0.183; 2wiki 0.128 against 0.191; webqsp 0.030
+  against 0.041.
+
+**What the reads say.**
+- **The map collapsed.** On squad, musique, hotpotqa and 2wiki, one chain is the map's first choice for all 2,000
+  questions; on metaqa two chains share them (1,365 and 635), and on webqsp one chain takes 1,425 of 1,503. V is
+  close to one fixed chain per corpus, not a chain chosen by the question.
+- **The space holds more than the map reads.** The oracle chain (VO: one chain per question, chosen with the golds, so
+  not a result) is MORE than H2 on the low read on five of six datasets, and on the miss read on metaqa, squad and
+  musique. On the low read, the record puts the shortfall on the map on four datasets (squad, hotpotqa, 2wiki, webqsp)
+  and on the space only on musique.
+- **Where the space reaches past the hops.** Beyond ring 2, H2 has only the dense list's remainder. In the miss read
+  at N = 1,000, V finds more of those golds: metaqa 0.148 against 0.000 (1,262 golds), musique 0.038 against 0.000
+  (130), 2wiki 0.025 against 0.000 (81), webqsp 0.006 against 0.002 (656). On the low read at N = 100, V is ahead on
+  ring-2 golds on metaqa (0.308 against 0.050), webqsp (0.168 against 0.122) and hotpotqa (1.000 against 0.789, 19
+  golds). On ring 1, H2 is ahead everywhere (squad's low read ties): V loses the hops' own neighbours.
+- **The node fit.** Each node moved by a root mean square of 0.21 to 0.23 from its start. The fit lowered the loss
+  (metaqa 1.253 to 1.137) where the start-only fit barely moved it (1.253 to 1.245). On the miss read, V is above V0
+  at every N on 2wiki and up to N = 500 on metaqa, and below it at every N on musique (N = 1,000: 0.130 against
+  0.197).
+
+**What follows (section 6, STOPS).** P5's space closes in this form. The shortfall is mostly the map: offsets chosen
+per corpus from the question alone, without the seed or the graph around it. The next offset stage is the user's
+13 October direction: a learned offset g(question, seed, graph features), a function of all three, with no walk at
+read time. It gets its own file, declared before any number, and is read against the same H2 and on the same two
+reads. Nothing here is adopted, and nothing in P1-P3's files changes.

@@ -1,0 +1,231 @@
+{
+ "declared_in": "docs/P5A_NODE_SPACE.md",
+ "stage": "train",
+ "dataset": "metaqa",
+ "nodes": 43234,
+ "fit": {
+  "gamma": 0.5584250291270828,
+  "loss_hist": [
+   [
+    0,
+    1.25257
+   ],
+   [
+    300,
+    1.13945
+   ],
+   [
+    600,
+    1.13829
+   ],
+   [
+    900,
+    1.13784
+   ],
+   [
+    1200,
+    1.13712
+   ],
+   [
+    1500,
+    1.13786
+   ],
+   [
+    1800,
+    1.13735
+   ],
+   [
+    2100,
+    1.1374
+   ],
+   [
+    2400,
+    1.1378
+   ],
+   [
+    2700,
+    1.13787
+   ],
+   [
+    2999,
+    1.13696
+   ]
+  ],
+  "seconds": 1144.1,
+  "fit_nodes": true,
+  "delta_rms": 0.20562174916267395,
+  "families": {
+   "structural": {
+    "edges": 133571,
+    "offsets": 9,
+    "named": true,
+    "signed": false,
+    "residual2_median": 0.4075193405151367,
+    "displacement2_median": 0.9154430627822876,
+    "latent_share": null
+   },
+   "ner": {
+    "edges": 5949,
+    "offsets": 8,
+    "named": false,
+    "signed": true,
+    "residual2_median": 1.0609765922708903e-05,
+    "displacement2_median": 0.04188121482729912,
+    "latent_share": [
+     0.0583,
+     0.0975,
+     0.416,
+     0.0935,
+     0.0615,
+     0.1037,
+     0.1067,
+     0.0627
+    ]
+   },
+   "knn": {
+    "edges": 97920,
+    "offsets": 8,
+    "named": false,
+    "signed": true,
+    "residual2_median": 0.12395095825195312,
+    "displacement2_median": 0.14572519063949585,
+    "latent_share": [
+     0.5289,
+     0.0879,
+     0.1325,
+     0.0266,
+     0.0744,
+     0.056,
+     0.0204,
+     0.0734
+    ]
+   }
+  }
+ },
+ "start_fit": {
+  "gamma": 0.5584250291270828,
+  "loss_hist": [
+   [
+    0,
+    1.25257
+   ],
+   [
+    300,
+    1.24405
+   ],
+   [
+    600,
+    1.24478
+   ],
+   [
+    900,
+    1.24457
+   ],
+   [
+    1200,
+    1.2445
+   ],
+   [
+    1500,
+    1.24468
+   ],
+   [
+    1800,
+    1.24458
+   ],
+   [
+    2100,
+    1.24419
+   ],
+   [
+    2400,
+    1.24493
+   ],
+   [
+    2700,
+    1.24445
+   ],
+   [
+    2999,
+    1.2446
+   ]
+  ],
+  "seconds": 500.6,
+  "fit_nodes": false,
+  "delta_rms": 0.0,
+  "families": {
+   "structural": {
+    "edges": 133571,
+    "offsets": 9,
+    "named": true,
+    "signed": false,
+    "residual2_median": 0.49187514185905457,
+    "displacement2_median": 0.5679337382316589,
+    "latent_share": null
+   },
+   "ner": {
+    "edges": 5949,
+    "offsets": 8,
+    "named": false,
+    "signed": true,
+    "residual2_median": 0.1855263113975525,
+    "displacement2_median": 0.2072163075208664,
+    "latent_share": [
+     0.0197,
+     0.0074,
+     0.8048,
+     0.0069,
+     0.002,
+     0.0177,
+     0.1383,
+     0.0032
+    ]
+   },
+   "knn": {
+    "edges": 97920,
+    "offsets": 8,
+    "named": false,
+    "signed": true,
+    "residual2_median": 0.15216171741485596,
+    "displacement2_median": 0.1626279652118683,
+    "latent_share": [
+     0.7056,
+     0.0535,
+     0.0811,
+     0.0134,
+     0.0523,
+     0.0128,
+     0.0164,
+     0.065
+    ]
+   }
+  }
+ },
+ "steps": 3000,
+ "batch": 65536,
+ "neg": 16,
+ "lr": 0.001,
+ "lambda": 1.0,
+ "u_sha256": "75f61c4abb0229f190422b744e8e00cc079f8d8a42fa723cd81feb3c5421284f",
+ "space_sha256": "79db2f2e3a55558c7257e59f1752f3361e5f9e8629601cdfb4c3262ec3c66147",
+ "frame_sha256": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+ "u0_sha256": "5b88f49e3461a59667e14b7da5f63b95042ae7f0a0a1ea0f6222f012a3a0050c",
+ "evidence": {
+  "carve": "fit",
+  "carve_questions": 5960,
+  "sampled": 2000,
+  "without_a_non_seed_gold": 20,
+  "kept": 1980,
+  "carve_sha256": "161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188",
+  "sample_ids_sha256": "8127ba266984c68ebe0a8432fd63071725834c9950299d257a29a80567447b14",
+  "seconds": 309.7,
+  "npz_sha256": "6a76e3088528578a8de5fd5588f163783dff6eb6375440666c1177fb0f7d7973"
+ },
+ "script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 1708216832,
+ "peak_rss_bytes": 4117499904,
+ "seconds": 2004.9,
+ "utc": "2026-10-13T02:52:59Z"
+}
