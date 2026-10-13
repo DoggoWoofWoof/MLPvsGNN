@@ -1,0 +1,37 @@
+{
+ "declared_in": "docs/P5B_LEARNED_OFFSETS.md",
+ "stage": "base",
+ "dataset": "metaqa",
+ "carve": "fit",
+ "carve_questions": 5960,
+ "sampled": 2000,
+ "kept": 1974,
+ "without_a_counted_gold": 26,
+ "carve_sha256": "161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188",
+ "sample_ids_sha256": "8127ba266984c68ebe0a8432fd63071725834c9950299d257a29a80567447b14",
+ "seconds": 31.2,
+ "pools": {
+  "file": "metaqa__fit.npz",
+  "sha256": "972dfc79a27f62d607816ae8281be4036ba9fad2d294dd9d5ec68afefd2ec00d",
+  "manifest_sha256": "cb96d2f85decea000996f60bbaaa4175a0780a2b8a6f1169e40ab1626738d2e5",
+  "construction": "KIND_T",
+  "questions": 5960
+ },
+ "tables": {
+  "frame": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+  "V": "75f61c4abb0229f190422b744e8e00cc079f8d8a42fa723cd81feb3c5421284f",
+  "V0": "5b88f49e3461a59667e14b7da5f63b95042ae7f0a0a1ea0f6222f012a3a0050c",
+  "space_record": "edd54f6375cae5e42fdfa66bb749329c2bacd79a915a6a50ea4248c2291ad143"
+ },
+ "tables_made": "filed",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "npz_sha256": "5b7772785c15c428ff422b6e291c9018438ab37f847799ec6645a624f560965d",
+ "seeds_mean": 8.67,
+ "candidates_mean": 2005.9,
+ "golds_mean": 7.01,
+ "index_time": "m_s (each seed's mean neighbour displacement over the three families' union) and the per-family degrees depend on the node and the graph alone: rows of an index-time table, flagged as index-time graph aggregations; nothing comes from the question's scored rows",
+ "script_sha256": "d1fe54765dbe31c8950f1b0f6a253a440c00eb1e66adf55fc1ee708a0cdeb134",
+ "p5a_script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "peak_rss_bytes": 2922020864,
+ "utc": "2026-10-13T10:36:57Z"
+}

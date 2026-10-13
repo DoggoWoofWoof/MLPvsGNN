@@ -1,0 +1,70 @@
+{
+ "declared_in": "docs/P5B_LEARNED_OFFSETS.md",
+ "stage": "read",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "carve_questions": 2417,
+ "questions": 2000,
+ "carve_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+ "sample_sha256": "c292e9e7e219cdf24d7ad88de93b9f9ff45e0919345db0b079f6debcfdc87433",
+ "checks": {
+  "pools_and_seeds_equal_read1": 2000,
+  "final_pools": "every check of section 5 held"
+ },
+ "pools": {
+  "file": "musique__s1eval.npz",
+  "sha256": "5e175990557684892e144e1cf0890b5de44e6132a4def0466424a6098a500715",
+  "manifest_sha256": "6ad837d24999a624cfd56ee9c53f47d35e2d9c9364a0a4cbbf2be630a4b33872",
+  "construction": "KIND_T",
+  "questions": 2417
+ },
+ "tables": {
+  "frame": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+  "V": "b957c1bbdfbf6f81922f08d2980d191570d8d1f04496003b144efaaa2e0458fe",
+  "V0": "5a65a267a157b76e9d951cfaef3a593a60447791c135c93a546a504090b74398",
+  "space_record": "152b777097739fbd77fa8796f2461c584da4a1f9447f82241f255a9ab96f79c4"
+ },
+ "tables_made": "filed",
+ "kappa": {
+  "V": 1.1292942326149797,
+  "V0": 1.4943516193596174
+ },
+ "g_sha256": "5c850a0b1203d7c8317629350f30746627fa3c3a648d25f693b8e1036fad3134",
+ "train_record_sha256": "6e8cb10cab96f80ef39be78c9c81dbfbe65126fd2e4317a8c9684dab5c004bcb",
+ "read1_records": {
+  "musique_0of2.json": "13778ab9765a4ce3ed244b08e870e84d11c56c2a2e6097de98f7640a31c267d8",
+  "musique_1of2.json": "d8cd725282465c061569d33d5cecf751ade027f649f526ee0ad797ccc23ac477"
+ },
+ "orders": [
+  "F",
+  "H2",
+  "G",
+  "G0",
+  "F0",
+  "NEAR",
+  "FN",
+  "COS"
+ ],
+ "reads": [
+  "low",
+  "pool"
+ ],
+ "grid": [
+  5,
+  10,
+  25,
+  50,
+  100
+ ],
+ "index_time": "m_s (each seed's mean neighbour displacement over the three families' union) and the per-family degrees depend on the node and the graph alone: rows of an index-time table, flagged as index-time graph aggregations; nothing comes from the question's scored rows",
+ "npz_sha256": "a8b2b6d763d82a6415a2c7dd1cabb746ab7fcae590c100fe861a806988ac2ee5",
+ "script_sha256": "d1fe54765dbe31c8950f1b0f6a253a440c00eb1e66adf55fc1ee708a0cdeb134",
+ "p5a_script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 618459648,
+ "peak_rss_bytes": 36204122112,
+ "read_s": 34.9,
+ "seconds": 88.9,
+ "utc": "2026-10-13T10:42:15Z"
+}

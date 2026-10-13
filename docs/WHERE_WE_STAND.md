@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (15:15)
+# Where we stand, 13 October 2026 (16:45)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -319,6 +319,21 @@ training datasets' fit carves.
   model's own POOL share is largest on musique's 4-hop questions (0.198) and webqsp (0.13). That is what the later
   pool stages target.
 
+**P1c2's pools, 13 October 15:48: the final pools, written per question** ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)).
+Each question keeps base and seeds, then takes KIND_T's first nodes outside them up to today's size. All six jobs pass
+their checks, and no question is short. All golds in the pool (ALL, s1eval):
+
+| pool | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| today's pools | 0.895 | 0.980 | 0.803 | 0.968 | 0.906 | 0.688 |
+| P1c2's final pools | **0.961** | 0.980 | **0.900** | 0.959 | **0.959** | **0.841** |
+
+- Above today's pools on four datasets, the same on squad (its 50-node pools are base and seeds), and 0.009 below on
+  hotpotqa.
+- Keeping base and seeds moves KIND_T's own top |I_q| by at most 0.009: hotpotqa 0.965 to 0.959, webqsp 0.832 to
+  0.841.
+- The pools hold about 2,000 nodes on metaqa, musique and webqsp, about 100 on hotpotqa and 2wiki, and 50 on squad.
+
 **The user's rule, 13 October, about 10:40: the pools first, with nothing learned**
 ([PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)).
 - The links and the final pool are one rule for all six datasets: nothing fit to golds, nothing set per dataset, and
@@ -404,18 +419,46 @@ filed db5ce0a). KIND_T is chosen, and the call is NOT_ALL_SIX. **It is the final
   - Its target is P3b's BRIDGE part of GNN>MLP.
   - It goes in its own file.
 
-## 7. Running now (13 October, 15:15)
+**P5b, declared 16:05 (55c3bbb): the learned offset as a reranker on the final pools**
+([P5B_LEARNED_OFFSETS.md](P5B_LEARNED_OFFSETS.md)).
+- **g:** one network for all six corpora (200,465 weights). For each seed it reads the question, the seed's vector in
+  P5a's space, the seed's index-time neighbour mean and degrees, and its first-stage ranks. It gives four offsets and
+  their weights; a candidate's score is its nearness to the seeds' targets.
+- **The fit:** EM over which seed and offset explain each gold, on P5a's fit samples over P1c2's final pools. webqsp
+  never fits.
+- **The call:** H2 (ring 1, ring 2, then the rest, each by cosine) fused with g's order, against H2 alone, on the golds
+  zsp leaves below its top 5. GOES_FURTHER if it finds more on some dataset and fewer on none; then P5c gives the
+  models g's scores as inputs.
 
-- **P1c2 is declared** ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)). It retrains the two lean bases, zrc and zsp,
-  on KIND_T's pools at today's sizes, with one screen fit per family on L-musique and L-hotpotqa. P1c's rule decides:
-  a full run follows only if neither arm loses a read and one gains.
-  - **Running now:** its pools step, in the feeder's light lane (about 45 minutes).
+**P5b's result, 16:45: STOPS** ([P5B_LEARNED_OFFSETS.md](P5B_LEARNED_OFFSETS.md), section 8).
+- **The call.** Fused with H2, g finds more of the low golds on metaqa and 2wiki, ties on squad and hotpotqa, finds
+  fewer on musique, and is mixed on webqsp (zero-shot).
+- **Where it works: 2wiki and metaqa.** At 10 candidates, g alone finds 0.322 of 2wiki's low golds against H2's
+  0.136, and 0.076 of metaqa's against 0.009. It finds golds two or more links from the seeds, which the rings cannot
+  order (2wiki at 25: 0.394 of the golds beyond ring 2, H2 none).
+- **Where it fails.** musique is near chance (0.007 at 10, against H2's 0.159), and webqsp, which g never saw, is
+  below H2 (0.012 against 0.026).
+- **Why (beside the call): the fit memorized its questions.** Its own loss on musique's fit questions fell to 0.88
+  nats per gold, with 200,465 weights, 30 epochs and no held-out check. On squad's 104 fit questions it fell to 0.004.
+- **Next: P5b2.** The same g, stopped at the epoch that best predicts held-out golds no training question had, with
+  every number split into golds the fit questions had and new ones. It gets its own file before any number.
+
+## 7. Running now (13 October, 16:45)
+
+- **P5b** filed: STOPS (section 6). It ran in about 10 minutes on the host. **P5b2** is next, declared in its own
+  file before any number; it reuses P5b's bases on the host.
+- **P1c2** ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)) retrains the two lean bases, zrc and zsp, on the final pools,
+  with one screen fit per family on L-musique and L-hotpotqa. P1c's rule decides: a full run follows only if neither
+  arm loses a read and one gains.
+  - **Done:** its pools, on all six (section 5).
   - **Waiting for clean-up 15:** its looks, caches and fits need about 45 GB. The host's drive has about 22 GB free.
 - **Clean-up 15** (U1c's and U1f's arrays, about 143 GB freed) is the user's command. Until it runs, the feeder sends
   only light items.
 - **Done since the last update:**
   - P1e filed (db5ce0a): KIND_T, the final pool;
-  - P2c part 2 closed as a screen, NO_GAIN (6a5aedc).
+  - P2c part 2 closed as a screen, NO_GAIN (6a5aedc);
+  - P1c2's pools written on all six;
+  - P5b declared (55c3bbb) and filed: STOPS.
 
 ## 8. Open gaps
 
@@ -423,7 +466,7 @@ filed db5ce0a). KIND_T is chosen, and the call is NOT_ALL_SIX. **It is the final
 | --- | --- | --- |
 | Pools against SOTA (full corpora) | P1e's KIND_T, parameter-free, the final pool: at or above the best SOTA order on squad, musique, 2wiki and webqsp; below on metaqa (up to −0.005) and hotpotqa (up to −0.007). Like-for-like, webqsp is below A1 on the structural family (up to −0.051). | Closed. metaqa and webqsp pull the entity branch in opposite directions, so no further fixed rule is declared. The learned gates stay beside. |
 | SOTA rankers (full corpora) | Both GNNs at or above the best LLM-free SOTA ranking on all six (P3a). Where the bar wins, the gold was in our pool and ranked out (P3b). | P5's representation. A seeds-removed read on more than 17 and 12 questions needs P3a's walk rows kept past ten nodes. |
-| What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | After the final pools: P5's learned offset g(question, seed, graph features), as a reranker, MP-free (section 6). P5a's fixed map STOPS. |
+| What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5b STOPS: the learned offset g(question, seed, graph features) finds more of these golds on 2wiki and metaqa, but its fit memorized (musique near chance). P5b2 next: the same g with a held-out stop (section 6). P5a's fixed map STOPS. |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions. On the full corpus (P3b): ranked out 0.23-0.28 of R@5, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop). | D4 (link words): NO_SIGNAL. P2c part 1: on B1 musique our LLM-free graph adds more than the LLM-built graphs, so the LLM graph is not what our walks lack. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
@@ -471,6 +514,9 @@ filed db5ce0a). KIND_T is chosen, and the call is NOT_ALL_SIX. **It is the final
     passage questions. It is at or above the SOTA pools on four datasets and within 0.007 on the other two. It is the
     final pool.
   - P2c part 2: our triples add no golds per node to it on our corpora, so the links stay the three families.
+  - P1c2 wrote the final pools per question: above today's pools on four datasets at the same size.
+  - P5b read a learned offset as a reranker on them. It finds more of the golds zsp leaves low on 2wiki and metaqa, but
+    its fit memorized its questions, and it STOPS.
 
 ## What is next
 
@@ -480,9 +526,10 @@ file, committed before its numbers.
    −0.007). The links stay the three families: P2c part 2's fourth family is NO_GAIN.
 2. **The models on the final pools.** P1c2 ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)) retrains both bases on
    KIND_T's pools at today's sizes, with one screen fit per family. A full run follows only if no read loses. Its
-   pools step runs in the light lane; its looks, caches and fits wait for clean-up 15.
-3. **Rerankers on the final pools:** P5's node-space EM and the learned offset g(question, seed, graph features).
-   They are aimed at the BRIDGE part of GNN>MLP and at the RANKED misses.
+   pools are written; its looks, caches and fits wait for clean-up 15.
+3. **Rerankers on the final pools:** the learned offset g(question, seed, graph features), fit by EM over the latent
+   seed and offset, aimed at the BRIDGE part of GNN>MLP and at the RANKED misses. P5b STOPS: its fit memorized. P5b2
+   stops the fit on held-out new golds. If it goes further, P5c gives the models its scores as inputs.
 4. **P4: speed.** 2-3× in every family with every win kept.
 5. **Claim 3's wording and the confirmation run** of the chosen MLP and GNN on held-out questions. B1 is read beside
    it and never used to choose.

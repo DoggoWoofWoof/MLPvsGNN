@@ -218,3 +218,68 @@ Reported beside, deciding nothing:
   - the reads take 5 to 15 minutes each, side by side.
 
   The call should land about 45 minutes after the items start, if the card is free.
+
+## 8. Results (filed 13 October 2026, about 16:45): STOPS
+
+`python scripts/p5b_offsets.py verdict` on the fetched records (`outputs/p5b/verdict.json` and `verdict.md`). Every
+check held:
+- on all 2,000 sampled questions (all 1,503 on webqsp), today's pool and seeds equal read1's, and each final pool is
+  P1c2's KIND_T file's;
+- the node tables are P5a's filed ones, and kappa is the fit's;
+- every read ran on one script and one g;
+- every fit's loss is finite.
+
+The host ran the stage in about 10 minutes: the bases in 10 seconds to 2 minutes, the two fits in 2 minutes on the
+card, the reads in 35 seconds to 4.5 minutes.
+
+**The call: STOPS.** F does not find more on every dataset: it is MORE on metaqa and 2wiki, FEWER on musique and MIXED
+on webqsp.
+
+| low read, against H2 | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- | --- |
+| **F (the call)** | **MORE** | TIE | **FEWER** | TIE | **MORE** | **MIXED** |
+| G (beside) | MORE | FEWER | FEWER | FEWER | MORE | FEWER |
+| F0 (beside) | MORE | TIE | FEWER | TIE | MORE | FEWER |
+| FN (beside) | FEWER | TIE | FEWER | FEWER | FEWER | FEWER |
+| where it fell short (the record) | - | what g reaches | what g reaches | what g reaches | - | what g reaches |
+| low golds (questions) | 9,267 (681) | 79 (79) | 1,959 (1,318) | 238 (225) | 509 (438) | 6,436 (1,054) |
+
+F against H2, Delta at N = 5, 10, 25, 50 and 100:
+- metaqa: +0.026, +0.041, +0.079, +0.137, +0.210;
+- 2wiki: +0.118, +0.187, +0.163, +0.081, +0.024;
+- musique: -0.038, -0.066, -0.070, -0.097, -0.099;
+- webqsp: +0.006, +0.008, -0.005 (not counted), -0.037, -0.080.
+
+**What the reads say.**
+- **Where g works: 2wiki and metaqa.** At N = 10, G alone finds 0.322 of 2wiki's low golds against H2's 0.136, and
+  0.076 of metaqa's against 0.009. It reaches past the hops. At N = 25:
+  - 2wiki: 0.458 of the ring-2 golds (H2 0.034) and 0.394 of those beyond ring 2 (H2 none);
+  - metaqa: 0.196 of ring 2 (H2 0.000) and 0.137 beyond (H2 none).
+
+  On 2wiki these are the golds one link from a found gold, which is what message passing buys there (P3b's BRIDGE).
+- **Where it fails: musique, and webqsp zero-shot.**
+  - musique: G's top 10 holds 0.007 of the low golds, against 0.159 for H2, 0.077 for g before any fit (NEAR) and
+    0.140 for the cosine. Its pools hold about 2,083 candidates, so chance at N = 10 is about 0.005.
+  - webqsp, which g never saw: G finds 0.012 against H2's 0.026.
+  - hotpotqa and squad: G is below H2 alone; fused, it ties.
+- **The fit memorized its questions (read beside, after the call).**
+  - The fit's own loss on musique's fit questions fell to 0.88 nats per gold: the golds took about 0.42 of g's
+    probability, as a geometric mean. On s1eval, g is near chance there. On squad's 104 fit questions the loss fell to
+    0.004.
+  - g has 200,465 weights and fit 5,783 questions for 30 epochs, with no held-out check.
+  - Its offsets are 5 to 10 times the median distance between two nodes (root mean square |Delta| 5.5 to 9.6, against
+    0.9 to 1.0). So its targets sit far outside the cloud of nodes, and the score acts as a direction in the space, not
+    a nearby point.
+
+  The record's diagnosis reads "what g reaches in this space", because neither F0 nor FN is MORE where F is not. The
+  gap between the fit's own loss and s1eval says the fit is the first thing to fix. Whether 2wiki's and metaqa's gains
+  are golds that fit questions also had is not in these records: the reads count golds per question, not which.
+- **V against V0.** G and G0 move together: F0 is MORE where F is, and FEWER on webqsp. The space does not decide it.
+
+**What follows (section 6, STOPS).** The learned offsets close in this form, and P5c does not start from it. The next
+form is P5b2:
+- the same g, with its fit stopped at the epoch that best predicts, on held-out fit questions, the golds no training
+  question had;
+- every number split into golds that fit questions had and golds they did not.
+
+It is declared in its own file before any number. Nothing here is adopted, and nothing in P1-P3's files changes.
