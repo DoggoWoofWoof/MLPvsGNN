@@ -175,3 +175,76 @@ Flagged: the SOTA walks propagate over the graph. They are rows to beat, never i
 
   The six run side by side, so the call should land about half an hour after the start, if the host's CPUs are free.
 - The encoder stays frozen. No model trains or reads, nothing is adopted, and test splits are never read.
+
+## 7. Results (filed 13 October, about 09:00)
+
+Records: `outputs/p3a/`. These are orders_<dataset>.json and .npz, verdict.json and verdict.md.
+- **The checks held on all six:**
+  - P1a's curves;
+  - P2a part 1's A1 on the three families;
+  - step 1's grade for twin0 and gnn0;
+  - the J5 reads for zrc and zsp;
+  - the questions and gold counts;
+  - one script and one freeze, and no part ran with `--limit`.
+
+**The call: zsp SOTA_GNN, gnn0 SOTA_GNN.** Both GNNs are AT_OR_ABOVE the best LLM-free SOTA row on all six full
+corpora, on R@5, FC@5 and hit@1. On our corpora, against these rows, Claim 2 holds as a development read.
+
+**Means on every s1eval question (R@5 / FC@5 / hit@1).** The bar is the best of the eight SOTA rows per measure:
+
+| dataset | bar's row | bar | zrc (lean MLP) | zsp (lean GNN) | twin0 (universal MLP) | gnn0 (universal GNN) |
+| --- | --- | --- | --- | --- | --- | --- |
+| metaqa | LINKED / LINKED / A1 | 0.241 / 0.208 / 0.007 | 0.780 / 0.667 / 0.892 | 0.779 / 0.667 / 0.889 | 0.721 / 0.596 / 0.771 | 0.784 / 0.667 / 0.889 |
+| squad | A1 (= RRF) | 0.905 / 0.905 / 0.735 | 0.911 / 0.911 / 0.751 | 0.910 / 0.910 / 0.749 | 0.897 / 0.897 / 0.736 | 0.904 / 0.904 / 0.743 |
+| musique | RRF / DENSE / RRF | 0.473 / 0.136 / 0.635 | 0.567 / 0.259 / 0.705 | 0.566 / 0.259 / 0.695 | 0.512 / 0.199 / 0.650 | 0.538 / 0.249 / 0.650 |
+| hotpotqa | RRF / A1 / RRF | 0.685 / 0.437 / 0.829 | 0.905 / 0.848 / 0.852 | 0.905 / 0.849 / 0.856 | 0.879 / 0.795 / 0.833 | 0.899 / 0.836 / 0.866 |
+| 2wiki | RRF / SPLADE / RRF | 0.608 / 0.256 / 0.875 | 0.870 / 0.706 / 0.894 | 0.873 / 0.721 / 0.898 | 0.849 / 0.666 / 0.871 | 0.891 / 0.759 / 0.919 |
+| webqsp | DENSE | 0.110 / 0.088 / 0.071 | 0.307 / 0.242 / 0.110 | 0.268 / 0.209 / 0.134 | 0.602 / 0.488 / 0.563 | 0.629 / 0.511 / 0.637 |
+
+webqsp is zero-shot for zrc and zsp, and in-domain for twin0 and gnn0.
+
+**Where the margins are thin.** Everywhere else every model is above the bar by at least 0.018 on every measure.
+- **squad.** The bar there is the first stage's RRF order. gnn0's R@5 is −0.0015 [−0.0052, +0.0019], within the tie,
+  and its hit@1 is +0.0082. zsp is +0.0045 [+0.0014, +0.0077]. twin0 is BELOW (R@5 −0.0083), the only call below the
+  bar among the four models.
+- **hit@1 on musique.** The universal pair is +0.015, and the interval crosses 0.
+- **hit@1 on hotpotqa and 2wiki.** twin0 is within the tie (+0.0035 and −0.0045).
+
+**Claim 1's quantity, beside: the MLP's share of its GNN's gain over RRF.** It is left out where the GNN's gain is
+within 0.002.
+
+| family | measure | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| lean (zrc of zsp) | R@5 | 1.000 | 1.174 | 1.013 | 0.999 | 0.989 | 1.184 |
+| lean | FC@5 | 0.999 | 1.174 | 1.000 | 0.998 | 0.968 | 1.191 |
+| lean | hit@1 | 1.004 | 1.083 | 1.171 | 0.840 | 0.795 | 0.731 |
+| universal (twin0 of gnn0) | R@5 | 0.920 | n/a | 0.596 | 0.904 | 0.852 | 0.952 |
+| universal | FC@5 | 0.893 | n/a | 0.560 | 0.899 | 0.816 | 0.951 |
+| universal | hit@1 | 0.867 | 0.171 | 1.027 | 0.094 | −0.103 | 0.875 |
+
+- **The lean MLP** keeps at least 0.968 of the GNN's gain on R@5 and FC@5 on all six. On hit@1 it is below 0.9 on
+  hotpotqa, 2wiki and webqsp (zero-shot).
+- **The universal MLP** keeps at least 0.9 on R@5 on metaqa, hotpotqa and webqsp. It falls short on musique (0.596) and
+  2wiki (0.852), and on hit@1 everywhere but metaqa and musique.
+
+**What the bar is, and what it is not.**
+- **Every bar row runs on our LLM-free graphs**, from our linking. That covers HippoRAG 2's two restart rules (on the
+  regime graph and on all three families), the first-stage lists and RRF, and the KB-QA line's walk from the linked
+  nodes.
+  - It is not HippoRAG 2 as released, with its LLM-extracted triples, its LLM fact filter and its encoder.
+  - It is not the KB-QA line's trained reasoners (ReaRev, NuTrea, GNN-RAG).
+  - Both stay calibration lines, as decision 1's default says. On B1, HippoRAG 2's own corpora, our GNN was above
+    HippoRAG 2's published R@5 on 2wiki and hotpotqa and below it on musique: 66.3 against 74.7 (B1b, 3b033f6).
+- **On the passage datasets the bar is mostly the first stage.** RRF, SPLADE or DENSE sets every cell but hotpotqa's
+  FC@5, where A1 leads. On our graphs, HippoRAG 2's walk adds coverage deep in the order (P1a), not the top five.
+- **On metaqa and webqsp, the walk rows put the seeds first.** Those are the linked or topic entities, and they are
+  rarely the answers (A1's hit@1 on metaqa: 0.007). Taking the seeds out of those orders was not declared here.
+  Removing them moves any other node up by at most the number of seeds. P3b's file declares that read beside the bar.
+
+**What follows (section 5).**
+- **Claim 2.** It holds on our corpora against these rows, as a development read; the paper's confirmation run
+  follows.
+- **P3b's ledger** reads these records, in its own file.
+- **The comparison with an LLM-built graph** is the 13 October link direction: how much of an LLM graph's gain an
+  LLM-free construction can recover. It gets its own file.
+- **No model changes here.**
