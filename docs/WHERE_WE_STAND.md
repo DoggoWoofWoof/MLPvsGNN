@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (05:11)
+# Where we stand, 13 October 2026 (10:25)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -15,8 +15,8 @@ models and the gap ledger, speed, and one model with its own representation.
 
 | claim | what it says | where it stands |
 | --- | --- | --- |
-| 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). The six-dataset test is the confirmation run's. |
-| 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. On the full corpora the pools come first: ours are below the best LLM-free SOTA pool order on five datasets (P1a, section 5). |
+| 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). On the full corpora (P3a, beside): the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all six; the universal MLP keeps at least 0.9 on metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique. Where the MLP loses to its GNN, it is mostly golds one link from a found gold on hotpotqa and 2wiki, and ranking elsewhere (P3b). The six-dataset test is the confirmation run's. |
+| 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. On the full corpora both GNNs are at or above the best LLM-free SOTA ranking on all six datasets, on R@5, FC@5 and hit@1 (P3a), and still at or above on metaqa and webqsp with the seeds removed, on a thin read (P3b). The pools are below the best LLM-free SOTA pool order on five datasets (P1a, section 5). |
 | 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.46-1.89×; zrc 2.38-3.99×, webqsp 1.30×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there: zrc is 0.96-1.18× faster, and twin0 is faster than zsp only on webqsp. With every input kept, each MLP stays below 2× zsp on five datasets even if every shared stage cost nothing (section 3). |
 
 ## The models
@@ -71,9 +71,56 @@ J5 is the fit trained on five datasets. Nothing was chosen on B1.
 On the six datasets' own eval carves (s1eval, full corpora), zsp J5's R@5 is metaqa 77.9, squad 91.0, musique 56.6,
 hotpotqa 90.5, 2wiki 87.3, and webqsp 26.8 zero-shot (webqsp never trains) ([G1A_UNIVERSAL_BRIDGE_SIX.md](G1A_UNIVERSAL_BRIDGE_SIX.md)).
 
+**P3a and P3b, 13 October: the SOTA rankings on our full corpora** ([P3A_SOTA_RANKERS.md](P3A_SOTA_RANKERS.md),
+[P3B_GAP_LEDGER.md](P3B_GAP_LEDGER.md)). The bar is the best of eight LLM-free SOTA rankings per measure, run on our
+encoder and graph:
+- HippoRAG 2's restart walk, in two forms and each on all three families;
+- the walk from our linked entities;
+- the dense list, SPLADE and RRF.
+
+Each is cut at the models' pool size. R@5 on s1eval:
+
+| dataset | the bar (R@5) | zrc (lean MLP) | zsp (lean GNN) | twin0 (universal MLP) | gnn0 (universal GNN) |
+| --- | --- | ---: | ---: | ---: | ---: |
+| metaqa | LINKED 0.241 | 0.780 | 0.779 | 0.721 | 0.784 |
+| squad | A1 0.905 | 0.911 | 0.910 | 0.897 | 0.904 |
+| musique | RRF 0.473 | 0.567 | 0.566 | 0.512 | 0.538 |
+| hotpotqa | RRF 0.685 | 0.905 | 0.905 | 0.879 | 0.899 |
+| 2wiki | RRF 0.608 | 0.870 | 0.873 | 0.849 | 0.891 |
+| webqsp | DENSE 0.110 | 0.307 | 0.268 | 0.602 | 0.629 |
+
+webqsp is zero-shot for the lean pair and trained on for the universal pair.
+
+- **Both GNNs are AT_OR_ABOVE the bar on all six datasets,** on R@5, FC@5 and hit@1 (paired bootstrap, tie 0.002):
+  SOTA_GNN for zsp and for gnn0.
+  - **Thin places:** squad (gnn0's R@5 is 0.0015 below, within the tie; twin0 is the only model BELOW anywhere),
+    musique's hit@1 (gnn0 +0.015, the interval crosses 0), and twin0's hit@1 on hotpotqa and 2wiki (ties).
+- **The caveat.** The bar runs on our LLM-free graphs. It is not HippoRAG 2 as released (an LLM-built graph and
+  NV-Embed-v2; on B1 musique our GNN is below it, 66.3 against 74.7), and not the trained KB-QA reasoners.
+- **With the seeds removed** (metaqa and webqsp, whose walk rows put the seeds first): all four models are AT_OR_ABOVE.
+  The read is thin, though. The walk rows spend their first ten on the seeds, so it decides only 17 of 9,785 metaqa
+  questions and 12 of 1,503 webqsp questions.
+- **Where the bar wins, the GNN had the gold in its pool and ranked it out** (P3b). The bar's golds outside our pools
+  are 0.0006 of R@5 on metaqa and 0 elsewhere. Every bar>GNN gap is mostly RANKED (lean's hotpotqa splits ranked and
+  bridge). These leads are small: 0.004 to 0.063 of R@5 lost, against 0.02 to 0.55 won back.
+- **Each model's own misses** (R@5 shares, P3b):
+  - musique: ranked out 0.23-0.28, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop);
+  - webqsp, lean pair zero-shot: ranked out 0.43-0.47, against 0.12-0.15 for the universal pair trained on it;
+  - outside the pool: webqsp 0.13, 2wiki 0.036, metaqa, squad and hotpotqa 0.020.
+
 ## 2. The MLP against the GNN (Claim 1)
 
 - **On B1, the MLP keeps 0.97-0.99 of the GNN's gain** and is within 0.8 points of it in every in-domain row.
+- **On the full corpora (P3a, P3b),** the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all
+  six datasets (hit@1 0.73-0.84 on hotpotqa, 2wiki and webqsp). The universal MLP keeps at least 0.9 of gnn0's gain on
+  metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique.
+- **What message passing buys over the MLP** (P3b's GNN>MLP ledger):
+  - **hotpotqa and 2wiki:** golds one link from a gold the model found (BRIDGE), on their bridge-type questions. On
+    the comparison questions it is ranking.
+  - **musique:** split, with BRIDGE on 2-hop questions and ranking on 3- and 4-hop.
+  - **metaqa, squad and webqsp:** ranking.
+
+  The BRIDGE part is the MP-free target of P5's offsets (section 6).
 - **On the six eval carves**, zrc and zsp are within 0.015 R@5 of each other on every read of two splits but one
   ([ZN_LEAN_NO_MP.md](ZN_LEAN_NO_MP.md)). The exception is webqsp zero-shot on L-hotpotqa, where the MLP is higher
   (0.287 against 0.226).
@@ -174,6 +221,20 @@ No family is a drop candidate, and no subset of families suits all six datasets,
 form of what P2a found is a rule over the families (P2b): the structural family first, then ner and knn, which keeps
 the head and adds musique's tail.
 
+**P2b, 13 October: one gate over the families, with no per-dataset regime** ([P2B_FAMILY_GATE.md](P2B_FAMILY_GATE.md)).
+REGIME_STAYS. The gate over nine sources (MXU) is below P1b's MX by more than the tie on metaqa, squad and musique, and
+above it on webqsp (0.857 against 0.806, zero-shot for the gate) and 2wiki. Beside, it is at or above the best SOTA
+order on musique, 2wiki and webqsp, the three where P1b2's rank gate is not, so the two gates cover all six but neither
+alone. The regimes stay, and P1b3 (its own file) fits a gate to the ranks over the nine sources.
+
+**P2c, 13 October: an LLM's graph without the LLM** ([P2C_LLM_FREE_TRIPLES.md](P2C_LLM_FREE_TRIPLES.md), the user's
+direction of 08:50).
+- Triples come from a parser and fixed rules: spaCy's small CNN pipeline, no transformer.
+- Part 1 compares them with LLM-built extractions of B1's musique and 2wiki passages: HippoRAG 2's OpenIE (gpt-4o-mini;
+  Llama-3.3-70B beside) and SiReRAG's propositions. It reads how close the triples come and what share of the LLM
+  graph's walk gain they recover.
+- Part 2 adds them to our four passage corpora as a fourth family. Their parse runs on the host meanwhile.
+
 By U1f's rule, no full run uses either graph, and both bases keep today's graph and pools. The hyperlink price, what
 the trained models lose without the hyperlinks on the eval carves, goes to the gap ledger. For both arms it is
 0.035-0.065 R@5 on hotpotqa and 0.010-0.020 on 2wiki. The rule's links recover the hyperlinks as edges, but the
@@ -234,28 +295,49 @@ training datasets' fit carves.
   - [P1C_POOLS_RETRAINED.md](P1C_POOLS_RETRAINED.md) (6996aea) rebuilds the models' pools from MX's order at each
     question's own size, so the look cost is unchanged.
   - It runs one screen fit per family, zrc and zsp.
+- **P2b's gate (MXU) without regimes** is the complement of RC: at or above the best SOTA order on musique, 2wiki and
+  webqsp (webqsp 0.857 at |I_q|). The regimes stay (section 4).
+- **What the pools still miss** (P3b): no bar>GNN gap is the pool's, since the bar's golds are inside our pools. Each
+  model's own POOL share is largest on musique's 4-hop questions (0.198) and webqsp (0.13). That is what P1c and later
+  pool stages target.
 
-## 6. Running now (13 October, 05:11)
+## 6. P5: the model's own representation
 
-- **P1c on the host** ([P1C_POOLS_RETRAINED.md](P1C_POOLS_RETRAINED.md)).
-  - The six pool builds run first; they are light items.
-  - Then the looks, caches and builds, about 45 GB, then the identity gate.
-  - Then the four screen fits and their reads on the card, then the call.
-- **Done since the last update:**
-  - P1b and P1b2, declared, run and filed (section 5);
-  - P2a, both parts, declared, run and filed (section 4).
-- **Host disk: 28.6 GB free at 05:10.** That is below the 30 GB line, where the feeder sends only light items, so
-  P1c's looks wait for room.
-  - Clean-up 15 (U1c's and U1f's arrays) is listed and dry-run. It frees about 143 GB once both names of each
-    hard-linked pair go.
-  - It is the user's command.
+**P5a, 13 October: the node space read as a retriever on its own** ([P5A_NODE_SPACE.md](P5A_NODE_SPACE.md)). STOPS.
+- **What was built.** Each node got its own vector, fit to its corpus's graph from the frozen vector (TransE-like, with
+  latent relation offsets by EM). A map from the question to a chain of one or two offsets was trained on the fit
+  carves.
+- **The result.** From the s1eval seeds, the space found more of the golds that today's pools miss, and of those zsp
+  ranks below 5, than the graph's own two hops only on metaqa. It found fewer on the other five datasets.
+- **The map collapsed.** One chain took all 2,000 sampled questions on squad, musique, hotpotqa and 2wiki. With the best
+  chain per question (an oracle, not a result), the space beats the hops on the low read on five of six datasets, and
+  beyond two hops it finds golds the hops cannot (metaqa 0.148 against 0 at 1,000 candidates). So the space holds more
+  than the map reads.
+- **Next, the user's direction of 08:50: a learned offset g(question, seed, graph features).** It is a function of all
+  three, with the seed's graph features computed at index time, so the MLP stays MP-free. Its target is P3b's BRIDGE
+  part of GNN>MLP. It goes in its own file.
 
-## 7. Open gaps
+## 7. Running now (13 October, 10:25)
+
+- **P2c part 1 on the laptop** (declared in 3511cd1). 2wiki's parse, references and run are done; musique's run and the
+  verdict follow, in about 20 minutes.
+- **P2c's parse of the four passage corpora on the host** (part 2's input, fee0c90). spaCy is unpacked and checked, and
+  the 103 parse parts run in the feeder's light lane: a part writes at most about 28 MB, about 2.5 GB in all, and the
+  whole parse is about 37 CPU-hours.
+- **P1c waits for host disk** ([P1C_POOLS_RETRAINED.md](P1C_POOLS_RETRAINED.md)). Its looks, caches and builds (about
+  45 GB) need the free space above the 30 GB line, where the feeder sends heavy items again. Clean-up 15 (U1c's and
+  U1f's arrays, about 143 GB) is the user's command.
+- **Done since the last update:** P2b (section 4), P3a and P3b (section 1) and P5a (above), each declared, run and
+  filed.
+
+## 8. Open gaps
 
 | gap | the number | what works on it |
 | --- | --- | --- |
-| Pools against SOTA (full corpora) | P1b2's rank gate: at or above the best SOTA order on four datasets; below on musique (up to −0.070) and webqsp's head (up to −0.083). The oracle over the same blends is above on all six, so the gap is the gate's. | P1c screens the models on MX's pools (above today's on all six at the same size). A gate change goes in its own file. |
-| musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions | D4 (link words): NO_SIGNAL, so the gap is reported as the first stage's. Rounds 29-32, U1c and D4 moved nothing here. |
+| Pools against SOTA (full corpora) | P1b2's rank gate: at or above the best SOTA order on four datasets; below on musique (up to −0.070) and webqsp's head (up to −0.083). The oracle over the same blends is above on all six, so the gap is the gate's. P2b's gate without regimes covers the other three. | P1c screens the models on MX's pools (above today's on all six at the same size). P1b3 fits one gate to the ranks over the nine sources, in its own file. |
+| SOTA rankers (full corpora) | Both GNNs at or above the best LLM-free SOTA ranking on all six (P3a). Where the bar wins, the gold was in our pool and ranked out (P3b). | P5's representation. A seeds-removed read on more than 17 and 12 questions needs P3a's walk rows kept past ten nodes. |
+| What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5's learned offset g(question, seed, graph features), MP-free (section 6). P5a's fixed map STOPS. |
+| musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions. On the full corpus (P3b): ranked out 0.23-0.28 of R@5, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop). | D4 (link words): NO_SIGNAL. P2c's triples test whether an LLM-like graph helps here. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
 | Pool misses | One hop on the KBs and musique; first stage on hotpotqa and squad | Step 4h covers the one-hop misses; the first-stage misses are open. |
@@ -287,20 +369,25 @@ training datasets' fit carves.
   - P1b and P1b2 fit one restart rule for all six. The rank gate is at or above the SOTA order on four datasets, and
     both rules are above today's pools on all six at the same size.
   - P2a measured each link family: the structural family carries the reach and the ranking, and no family can be
-    dropped.
+    dropped. P2b found that one gate without the per-dataset regimes is not enough (REGIME_STAYS).
+  - P3a put both GNNs at or above the best LLM-free SOTA ranking on all six datasets. P3b's ledger found that the
+    bar's wins are golds our GNNs had and ranked out, and that message passing buys golds one link from a found one.
+  - P5a's node space, read as a retriever, STOPS: its question-to-chain map collapsed to one chain per corpus.
+  - The user's direction at 08:50: LLM-free triples in place of an LLM-built graph (P2c), and offsets learned as a
+    function of the question, the seed and the graph.
 
 ## What is next
 
 The order is [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)'s. Each stage gets its own file, committed before its
 numbers.
-1. **P1c: the models on MX's pools** (running). One screen fit per family. A full run follows only if no read loses.
-   The rank gate's gap on musique and webqsp is a gate change, in its own file.
-2. **P2b: one link rule over the families.** The structural family first, then ner and knn, keeping the head and
-   adding musique's tail. It is graded on all six, the pools first and then a one-fit screen.
-3. **P3: the SOTA rankers beside our four models**, and the gap ledger for SOTA, GNN and MLP by hop slice.
-4. **P5a: the model's own representation, read as a retriever first.** Per-node vectors and relation offsets, fit by
-   EM and composed for multi-hop targets without walking the graph, with offsets for unseen relations from their
-   names, all inside one model.
-5. **P4: speed, after P5a.** 2-3× in every family with every win kept.
+1. **P2c: LLM-free triples** (running). Part 1 calibrates against the LLM-built extractions on B1. Part 2 adds our
+   triples to the four passage corpora as a fourth family, graded on the pools and then a one-fit screen.
+2. **P5's next offset stage: a learned g(question, seed, graph features),** read against the graph's hops on P5a's two
+   reads. Its target is the BRIDGE part of GNN>MLP.
+3. **P1c: the models on MX's pools** (waiting for host disk). One screen fit per family. A full run follows only if no
+   read loses. **P1b3** fits one gate to the ranks over P2b's nine sources.
+4. **P5's representation for the RANKED misses,** which lead every bar>GNN gap and most of musique's and webqsp's
+   misses.
+5. **P4: speed.** 2-3× in every family with every win kept.
 6. **Claim 3's wording and the confirmation run** of the chosen MLP and GNN on held-out questions (B1 read beside it,
    never used to choose).
