@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (14:50)
+# Where we stand, 13 October 2026 (15:15)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -309,9 +309,10 @@ training datasets' fit carves.
   | RC | 0.963 | 0.981 | 0.844 | 0.971 | 0.913 | 0.782 |
   | best SOTA order | 0.961 | 0.981 | 0.883 | 0.973 | 0.911 | 0.790 |
 
-- **P1c is held** (f8da4b0). It would retrain the models on MX's pools ([P1C_POOLS_RETRAINED.md](P1C_POOLS_RETRAINED.md)),
-  and MX is fit to the golds. Under the user's rule (below), MX, RC and MXU stay beside as learned upper lines and
-  are never the pool.
+- **P1c is held** (f8da4b0) and superseded by P1c2. It would have retrained the models on MX's pools
+  ([P1C_POOLS_RETRAINED.md](P1C_POOLS_RETRAINED.md)), and MX is fit to the golds. Under the user's rule (below), MX,
+  RC and MXU stay beside as learned upper lines and are never the pool. P1c2
+  ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)) runs the same stage on the final pool, KIND_T.
 - **P2b's gate (MXU) without regimes** is the complement of RC: at or above the best SOTA order on musique, 2wiki and
   webqsp (webqsp 0.857 at |I_q|). The regimes stay (section 4).
 - **What the pools still miss** (P3b): no bar>GNN gap is the pool's, since the bar's golds are inside our pools. Each
@@ -403,15 +404,15 @@ filed db5ce0a). KIND_T is chosen, and the call is NOT_ALL_SIX. **It is the final
   - Its target is P3b's BRIDGE part of GNN>MLP.
   - It goes in its own file.
 
-## 7. Running now (13 October, 14:50)
+## 7. Running now (13 October, 15:15)
 
-- **Nothing of ours runs on the host.** P1e's six items ran from 14:02 to 14:35, and P2c part 2's two fit screens from
-  14:20 to 14:40.
-- **Next: P1c re-declared on KIND_T's pools** at today's sizes.
-  - Its pools step fits the feeder's light lane.
-  - Its looks, caches and fits need about 45 GB. The host's drive has about 22 GB free, so they wait for clean-up 15.
-- **Clean-up 15** (U1c's and U1f's arrays, about 143 GB) is the user's command. Until it runs, the feeder sends only
-  light items.
+- **P1c2 is declared** ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)). It retrains the two lean bases, zrc and zsp,
+  on KIND_T's pools at today's sizes, with one screen fit per family on L-musique and L-hotpotqa. P1c's rule decides:
+  a full run follows only if neither arm loses a read and one gains.
+  - **Running now:** its pools step, in the feeder's light lane (about 45 minutes).
+  - **Waiting for clean-up 15:** its looks, caches and fits need about 45 GB. The host's drive has about 22 GB free.
+- **Clean-up 15** (U1c's and U1f's arrays, about 143 GB freed) is the user's command. Until it runs, the feeder sends
+  only light items.
 - **Done since the last update:**
   - P1e filed (db5ce0a): KIND_T, the final pool;
   - P2c part 2 closed as a screen, NO_GAIN (6a5aedc).
@@ -477,9 +478,9 @@ The order is [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)'s, under the user's 
 file, committed before its numbers.
 1. **The pool, with nothing learned: final.** P1e's KIND_T (NOT_ALL_SIX: metaqa up to −0.005, hotpotqa up to
    −0.007). The links stay the three families: P2c part 2's fourth family is NO_GAIN.
-2. **The models on the final pools.** P1c is re-declared on KIND_T's pools at today's sizes, with one screen fit per
-   family. A full run follows only if no read loses. Its pools step runs in the light lane; its looks, caches and fits
-   wait for clean-up 15.
+2. **The models on the final pools.** P1c2 ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)) retrains both bases on
+   KIND_T's pools at today's sizes, with one screen fit per family. A full run follows only if no read loses. Its
+   pools step runs in the light lane; its looks, caches and fits wait for clean-up 15.
 3. **Rerankers on the final pools:** P5's node-space EM and the learned offset g(question, seed, graph features).
    They are aimed at the BRIDGE part of GNN>MLP and at the RANKED misses.
 4. **P4: speed.** 2-3× in every family with every win kept.

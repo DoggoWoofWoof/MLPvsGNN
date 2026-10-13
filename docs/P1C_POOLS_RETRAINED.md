@@ -1,5 +1,10 @@
 # P1c: the models' pools from P1b2's pick at today's sizes, one screen per family
 
+**Held at 10:45 before any fit, and superseded on 13 October at about 15:10 by P1c2**
+([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)). The rule is that nothing is learned until the pools are final,
+and MX's gate is fit to golds. P1c2 runs this stage, unchanged, on the final pool, P1e's KIND_T. MX's pools ran on
+the host (`outputs/p1c/pools`) and are never read; P1c's other items stay held.
+
 Declared 13 October 2026, about 05:09, after P1b2's verdict (docs/P1B2_RANK_GATE.md, section 7) and before any
 number of this stage. P1's fourth stage in [PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md), as section 5 of
 [P1B2_RANK_GATE.md](P1B2_RANK_GATE.md) names it. Numbers here are development numbers.
