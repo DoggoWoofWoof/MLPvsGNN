@@ -1,0 +1,257 @@
+{
+ "declared_in": "docs/P2C_LLM_FREE_TRIPLES.md",
+ "script_sha256": "3ef83852e7ea36fb624277e93909cd5c4fce26b20f5f52435985d362e5aabead",
+ "setting": "2wiki",
+ "questions": 1000,
+ "passages": 6119,
+ "checks": {
+  "dense_list_equal": true,
+  "vector_norm_range": [
+   0.9995,
+   1.0005
+  ],
+  "P_rule_equals_graph_ner": true,
+  "WP_today_equals_B1c": true,
+  "resets_sum_to_one": true
+ },
+ "parse": {
+  "declared_in": "docs/P2C_LLM_FREE_TRIPLES.md",
+  "script_sha256": "3ef83852e7ea36fb624277e93909cd5c4fce26b20f5f52435985d362e5aabead",
+  "setting": "2wiki",
+  "spacy": "3.8.15",
+  "model": "3.8.0",
+  "passages": 6119,
+  "words": 519995,
+  "phrases": 72824,
+  "mentions": 136029,
+  "triples": 83717,
+  "relations": 4937,
+  "ner_keys": 30635,
+  "corpus_sha256": "9d6e352952aafb18dab22bf8195039461321a44a949df902ae83bce134ad238a",
+  "limit": null,
+  "seconds": 130.9,
+  "utc": "2026-10-13T04:46:40Z"
+ },
+ "references": {
+  "SR": {
+   "script_sha256": "3ef83852e7ea36fb624277e93909cd5c4fce26b20f5f52435985d362e5aabead",
+   "reference": "SR",
+   "kind": "sirerag",
+   "file": "SiReRAG/2wiki_kg.json",
+   "bytes": 7861132,
+   "sha256": "e69ad8ecf923907161d5e21e2cb750dfa34ac99296a0ab104aad53fe63ed3089",
+   "items": 6119,
+   "passages": 6119,
+   "phrases": 29282,
+   "pairs": 83971,
+   "mentions": 42453,
+   "propositions": 27959,
+   "seconds": 1.1
+  }
+ },
+ "agreement": {
+  "SR": {
+   "ours": {
+    "phrases": {
+     "recall": 0.8379,
+     "precision": 0.2615
+    },
+    "pairs": {
+     "recall": 0.0718,
+     "precision": 0.0625
+    },
+    "P_edges": {
+     "recall": 0.7804,
+     "precision": 0.1851,
+     "reference": 27364,
+     "ours": 115384
+    }
+   },
+   "NER": {
+    "phrases": {
+     "recall": 0.6928,
+     "precision": 0.5989
+    },
+    "pairs": {
+     "recall": 0.0,
+     "precision": null
+    },
+    "P_edges": {
+     "recall": 0.6756,
+     "precision": 0.4951,
+     "reference": 27364,
+     "ours": 37336
+    }
+   },
+   "ours-noREL": {
+    "phrases": {
+     "recall": 0.8379,
+     "precision": 0.2615
+    },
+    "pairs": {
+     "recall": 0.0,
+     "precision": null
+    },
+    "P_edges": {
+     "recall": 0.7804,
+     "precision": 0.1851,
+     "reference": 27364,
+     "ours": 115384
+    }
+   }
+  }
+ },
+ "walks": {
+  "WP-T5": {
+   "today": {
+    "R@2": 0.3713,
+    "R@5": 0.7117,
+    "R@10": 0.9377
+   },
+   "today+ours": {
+    "R@2": 0.3668,
+    "R@5": 0.7117,
+    "R@10": 0.9393
+   },
+   "today+SR": {
+    "R@2": 0.374,
+    "R@5": 0.7117,
+    "R@10": 0.9383
+   }
+  },
+  "WP-RW": {
+   "today": {
+    "R@2": 0.2657,
+    "R@5": 0.4738,
+    "R@10": 0.6685
+   },
+   "today+ours": {
+    "R@2": 0.2908,
+    "R@5": 0.512,
+    "R@10": 0.7097
+   },
+   "today+SR": {
+    "R@2": 0.2742,
+    "R@5": 0.4888,
+    "R@10": 0.6777
+   }
+  },
+  "WH": {
+   "NER": {
+    "R@2": 0.394,
+    "R@5": 0.5453,
+    "R@10": 0.71
+   },
+   "ours": {
+    "R@2": 0.325,
+    "R@5": 0.6723,
+    "R@10": 0.7712
+   },
+   "ours-noREL": {
+    "R@2": 0.4868,
+    "R@5": 0.6657,
+    "R@10": 0.7745
+   },
+   "SR": {
+    "R@2": 0.509,
+    "R@5": 0.7107,
+    "R@10": 0.7833
+   },
+   "SR-noREL": {
+    "R@2": 0.5573,
+    "R@5": 0.766,
+    "R@10": 0.8405
+   },
+   "dense": {
+    "R@2": 0.6115,
+    "R@5": 0.708,
+    "R@10": 0.7432
+   }
+  }
+ },
+ "wh_matched": {
+  "NER": 0.997,
+  "ours": 1.0,
+  "ours-noREL": 1.0,
+  "SR": 0.988,
+  "SR-noREL": 0.988
+ },
+ "shares": {
+  "WP-T5": {
+   "SR": {
+    "gain_ref": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "gain_ours": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ours_minus_ref": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "share": null,
+    "share_ci": null,
+    "call": "NO_REFERENCE_GAIN"
+   }
+  },
+  "WP-RW": {
+   "SR": {
+    "gain_ref": [
+     0.015,
+     0.0057,
+     0.0243
+    ],
+    "gain_ours": [
+     0.0382,
+     0.0255,
+     0.0505
+    ],
+    "ours_minus_ref": [
+     0.0232,
+     0.0115,
+     0.035
+    ],
+    "share": 2.55,
+    "share_ci": [
+     1.5817,
+     5.8587
+    ],
+    "share_resamples": 1999,
+    "call": "MATCHED"
+   }
+  },
+  "WH": {
+   "SR": {
+    "gain_ref": [
+     0.1655,
+     0.1472,
+     0.184
+    ],
+    "gain_ours": [
+     0.127,
+     0.1098,
+     0.145
+    ],
+    "ours_minus_ref": [
+     -0.0385,
+     -0.0518,
+     -0.025
+    ],
+    "share": 0.7674,
+    "share_ci": [
+     0.695,
+     0.8434
+    ],
+    "share_resamples": 2000,
+    "call": "PARTIAL"
+   }
+  }
+ },
+ "seconds": 236.7,
+ "utc": "2026-10-13T04:50:40Z"
+}

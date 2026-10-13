@@ -274,3 +274,71 @@ About 37 CPU-hours in all: about 2 hours on 20 of the host's CPUs, if they run a
 The parse's records hold counts and seconds only. Part 2 measures before it decides anything.
 
 The encoder stays frozen. No LLM or transformer is called, no model trains, and test splits are never read.
+
+## 9. Results (filed 13 October 2026, about 10:55)
+
+`python scripts/p2c_triples.py verdict` on the laptop's records (`outputs/p2c/verdict.json` and `verdict.md`, with
+`b1_<setting>.json` and the per-question R@5 in `b1_<setting>_r5.npz`). The references' files and our parse of B1's
+passages hold the passages' words, so they are not committed; the parse records (counts) are.
+
+**The checks held on both settings:**
+- the dense list equals B1's `first_stage.npz`, and the vectors are unit length (0.9995 to 1.0005);
+- the P rule rebuilds `graph_ner.npz` from NER's keys;
+- WP's base equals B1c's filed R@5;
+- every reset sums to 1.
+
+One script ran the parse, the references, the runs and the verdict, and no filed record has a limit. The first
+verdict run wrote both files, then failed to print a minus sign to the laptop's console. It was run again with a
+UTF-8 console, on the same script and records.
+
+**The calls** (in brackets, the share: our gain over the reference's):
+
+| walk | musique, H4o | musique, H70 | musique, SR | 2wiki, SR |
+| --- | --- | --- | --- | --- |
+| WP-T5 | NO_REFERENCE_GAIN | NO_REFERENCE_GAIN | NO_REFERENCE_GAIN | NO_REFERENCE_GAIN |
+| WP-RW | MATCHED (1.76) | MATCHED (1.73) | MATCHED (2.29) | MATCHED (2.55) |
+| WH | MATCHED (1.43) | MATCHED (1.39) | MATCHED (1.21) | PARTIAL (0.77 [0.69, 0.84]) |
+
+**R@5 (%)** on B1's 1,000 questions per setting. The base is today's three families in WP and NER's graph in WH:
+
+| setting and walk | base | + ours | + H4o | + H70 | + SR | the dense list |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| musique, WP-RW | 28.8 | 37.2 | 33.6 | 33.7 | 32.5 | |
+| musique, WH | 36.2 | 47.9 | 44.4 | 44.6 | 45.8 | 56.7 |
+| 2wiki, WP-RW | 47.4 | 51.2 | | | 48.9 | |
+| 2wiki, WH | 54.5 | 67.2 | | | 71.1 | 70.8 |
+
+**Agreement:**
+- Our phrases hold 73 to 87% of the references' phrases (musique: H4o 73.3, H70 77.7, SR 86.6; 2wiki: SR 83.8).
+  Their precision is 26 to 44%, since ours has about 1.7 to 3.3 times as many phrases.
+- Relation pairs match far less: 7 to 15% recall, on string-equal pairs. An LLM words a relation differently from a
+  parse.
+- P edges (passages that share a phrase): 61 to 78% recall at 19 to 25% precision.
+
+**What the reads say.**
+- **In the pool walk** (WP-RW), our graph adds more than every LLM graph on both settings: +8.4 points on musique
+  against +3.7 to +4.8, and +3.8 on 2wiki against +1.5.
+- **In HippoRAG 2's search with a string link** (WH), ours adds more than the LLM graphs on musique: +11.6 against
+  +8.2 to +9.6. On 2wiki it adds 0.77 of SiReRAG's gain: +12.7 against +16.6.
+- **On 2wiki, SiReRAG's gain in WH is in its phrases, not its relation pairs.** Its graph without relations
+  (SR-noREL, 76.6) is above its full graph (71.1) and the dense list (70.8). Ours is 66.6 without relations and 67.2
+  with them.
+- **WP-T5's R@5 is the same with every graph** (56.4 on musique, 71.2 on 2wiki): the walk keeps its restart's five
+  passages on top. R@10 moves by at most 1.6 points (musique: 67.5 today, 68.4 with ours, 69.1 with SR).
+- **WH is a test bed for the graphs, not a retriever.** On musique it is below the dense list for every graph (47.9 at
+  best, against 56.7). HippoRAG 2 as released links the question to facts with triple embeddings and an LLM filter;
+  WH links by strings.
+
+**What follows (section 6).**
+- **Part 2 runs.** It reads the P form of our graph as a fourth family in the pool walks on our four passage corpora,
+  in its own file. Its parse runs on the host now (items fee0c90).
+- **2wiki's WH is PARTIAL,** and SiReRAG's gain there is in its phrases. So a version 2 would select phrases: our
+  precision against SiReRAG's phrases is 26%. Under the user's rule of 13 October (about 10:40), links stay
+  parameter-free and the same for all six datasets. A version 2 changes fixed rules, chosen on agreement only, and
+  fits no weights. It goes in its own file.
+- **On B1 musique, the LLM graph is not what our walks lack.** The references do gain in WP-RW and WH, and our
+  LLM-free graph gains at least as much in both. What remains of the 74.7 against 66.3 gap to HippoRAG 2 as released
+  is outside the graph:
+  - its question-to-fact link through triple embeddings (finer than a node, so not added here);
+  - its encoder: NV-Embed-v2's dense R@5 is 69.7, against our 56.7.
+- Nothing is adopted here.

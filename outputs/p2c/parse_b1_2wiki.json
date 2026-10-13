@@ -1,0 +1,18 @@
+{
+ "declared_in": "docs/P2C_LLM_FREE_TRIPLES.md",
+ "script_sha256": "3ef83852e7ea36fb624277e93909cd5c4fce26b20f5f52435985d362e5aabead",
+ "setting": "2wiki",
+ "spacy": "3.8.15",
+ "model": "3.8.0",
+ "passages": 6119,
+ "words": 519995,
+ "phrases": 72824,
+ "mentions": 136029,
+ "triples": 83717,
+ "relations": 4937,
+ "ner_keys": 30635,
+ "corpus_sha256": "9d6e352952aafb18dab22bf8195039461321a44a949df902ae83bce134ad238a",
+ "limit": null,
+ "seconds": 130.9,
+ "utc": "2026-10-13T04:46:40Z"
+}

@@ -1,0 +1,18 @@
+{
+ "declared_in": "docs/P2C_LLM_FREE_TRIPLES.md",
+ "script_sha256": "3ef83852e7ea36fb624277e93909cd5c4fce26b20f5f52435985d362e5aabead",
+ "setting": "musique",
+ "spacy": "3.8.15",
+ "model": "3.8.0",
+ "passages": 11656,
+ "words": 1095817,
+ "phrases": 141768,
+ "mentions": 271288,
+ "triples": 160791,
+ "relations": 9788,
+ "ner_keys": 51135,
+ "corpus_sha256": "73157a03ce3f0b1a5673dd5dc12bb970c24976dbffc688af9eecdd758c97ffcb",
+ "limit": null,
+ "seconds": 252.4,
+ "utc": "2026-10-13T04:48:41Z"
+}
