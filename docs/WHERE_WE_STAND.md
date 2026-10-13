@@ -1,4 +1,4 @@
-# Where we stand, 13 October 2026 (16:45)
+# Where we stand, 13 October 2026 (16:50)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -440,13 +440,14 @@ filed db5ce0a). KIND_T is chosen, and the call is NOT_ALL_SIX. **It is the final
   below H2 (0.012 against 0.026).
 - **Why (beside the call): the fit memorized its questions.** Its own loss on musique's fit questions fell to 0.88
   nats per gold, with 200,465 weights, 30 epochs and no held-out check. On squad's 104 fit questions it fell to 0.004.
-- **Next: P5b2.** The same g, stopped at the epoch that best predicts held-out golds no training question had, with
-  every number split into golds the fit questions had and new ones. It gets its own file before any number.
+- **Next: P5b2, declared (f8e9e41,** [P5B2_HELD_OUT_STOP.md](P5B2_HELD_OUT_STOP.md)**).** The same g, stopped at the
+  epoch that best predicts held-out golds no training question had, with every number split into golds the fit
+  questions had and new ones. P5b's own g is read beside it on the same questions.
 
-## 7. Running now (13 October, 16:45)
+## 7. Running now (13 October, 16:50)
 
-- **P5b** filed: STOPS (section 6). It ran in about 10 minutes on the host. **P5b2** is next, declared in its own
-  file before any number; it reuses P5b's bases on the host.
+- **P5b2** declared (f8e9e41, section 6). Its seven items read P5b's bases and g on the host and take about 15
+  minutes. They wait for the host, which has been off the network since about 16:42.
 - **P1c2** ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)) retrains the two lean bases, zrc and zsp, on the final pools,
   with one screen fit per family on L-musique and L-hotpotqa. P1c's rule decides: a full run follows only if neither
   arm loses a read and one gains.
@@ -458,7 +459,8 @@ filed db5ce0a). KIND_T is chosen, and the call is NOT_ALL_SIX. **It is the final
   - P1e filed (db5ce0a): KIND_T, the final pool;
   - P2c part 2 closed as a screen, NO_GAIN (6a5aedc);
   - P1c2's pools written on all six;
-  - P5b declared (55c3bbb) and filed: STOPS.
+  - P5b declared (55c3bbb) and filed: STOPS (a13b484);
+  - P5b2 declared (f8e9e41).
 
 ## 8. Open gaps
 
