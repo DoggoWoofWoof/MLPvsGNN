@@ -250,10 +250,13 @@ and 260 seconds in two runs beside other jobs, with a peak of 0.86 GB. B1 musiqu
 WH's nine graphs took 35 and 9 seconds on 50 questions. So a setting's full run takes about 15 minutes, and the verdict
 should land about 45 minutes after the commit.
 
-**Host (part 2's input, no number):** items `p2c-parse-<dataset>-<k>of<n>`, light lane, 1 CPU each, from the host's
-verified mirror. The host runs spaCy from `outputs/host_ops/pylib/spacy3815_cp313_win_amd64.zip` (never committed).
-One item, `p2c-unpack-spacy`, unpacks it once (`unpack-spacy`, which then parses a test sentence), and the parse items
-wait for it. A parse refuses to run when the unpack is missing or came from another zip.
+**Host (part 2's input, no number):** items `p2c-read-parse-<dataset>-<k>of<n>`, light lane, 1 CPU each, from the
+host's verified mirror. The host runs spaCy from `outputs/host_ops/pylib/spacy3815_cp313_win_amd64.zip` (never
+committed). One item, `p2c-copy-spacy`, unpacks it once (`unpack-spacy`, which then parses a test sentence), and the
+parse items wait for it. A parse refuses to run when the unpack is missing or came from another zip. The names put the
+items in the feeder's light lane (its `--light-re`, for items that write only MBs), which keeps running while the
+host's drive is below the 30 GB floor (24 GB free when they were queued): from B1's parse files (about 3 bytes a
+word), a part writes at most about 28 MB and the 103 parts about 2.5 GB in all; the unpacked spaCy takes 147 MB.
 
 The sizes come from the laptop's slower measured speed and the mean words per passage (one line in 50 of each
 corpus). Each part takes 25 minutes or less at that speed. The memory is the 0.86 GB peak of a 20,000-passage part,
