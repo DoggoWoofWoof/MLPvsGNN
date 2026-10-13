@@ -183,3 +183,138 @@ and both models of a family read the same pool, so the MLP's own scoring stays f
 - **ETA:** four walks per question against P2b's six. 2wiki is the longest, at about 20 minutes on 8 CPUs. The call
   should land about 30 minutes after the items start.
 - The encoder stays frozen. No model trains or reads, nothing is fit, and test splits are never read.
+
+## 8. Results (filed 13 October 2026)
+
+The six host items ran from 11:32 to 11:50. The verdict ran locally at 12:26 and wrote `outputs/p1d/verdict.json` and
+`verdict.md`, with each dataset's curves, shares and gold positions beside them in `outputs/p1d/`.
+
+**The checks held on all eleven carves.** A1(st) and A1(all) equal P2a part 1's filed A1 on S and SNK, and R0 equals
+P1a's RRF order. They agree at every N of the grid, on both measures, and at both matched sizes.
+
+### The choice (s1sel): RRF5
+
+| rule | points below the bar | largest gap | mean ALL at \|I_q\| | metaqa | squad | musique | hotpotqa | 2wiki |
+| --- | ---: | ---: | ---: | --- | --- | --- | --- | --- |
+| A1st | 76 | -0.317 | 0.893 | BELOW (30) | BELOW (10) | BELOW (30) | AT_OR_ABOVE | BELOW (6) |
+| A1both | 72 | -0.334 | 0.896 | BELOW (30) | BELOW (8) | BELOW (16) | BELOW (10) | BELOW (8) |
+| ROUTEst | 53 | -0.149 | 0.905 | BELOW (7) | BELOW (10) | BELOW (30) | AT_OR_ABOVE | BELOW (6) |
+| ROUTEboth | 82 | -0.089 | 0.910 | BELOW (27) | BELOW (8) | BELOW (30) | BELOW (9) | BELOW (8) |
+| SUM5 | 42 | -0.174 | 0.924 | BELOW (30) | BELOW (2) | AT_OR_ABOVE | BELOW (10) | AT_OR_ABOVE |
+| **RRF5** | **38** | -0.112 | **0.938** | BELOW (29) | BELOW (2) | AT_OR_ABOVE | BELOW (7) | AT_OR_ABOVE |
+
+### The call (s1eval): NOT_ALL_SIX
+
+RRF5 is AT_OR_ABOVE on squad, musique and 2wiki, and BELOW on three datasets:
+- **metaqa:** 29 points, all against LINKED (the walk from our linked entities). The largest gap is -0.114 (N = 150,
+  ALL), and the gaps are -0.09 to -0.11 from N = 25 to 300.
+- **hotpotqa:** 4 points against A1 on the structural family, the largest -0.008:
+  - N = 50, ALL -0.004;
+  - N = 100, ALL -0.008 and gold recall -0.004;
+  - N = 750, ALL -0.002.
+- **webqsp, the head:** 3 points against A1 on all three families: N = 25, ALL -0.054 and gold recall -0.058; N = 50,
+  ALL -0.003. Against the like-for-like bar, where A1 on the structural family leads, it is 8 points and -0.144.
+
+Every rule against the bar on s1eval (points below and the largest gap), deciding nothing:
+
+| rule | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| A1st | BELOW (30, -0.316) | BELOW (14, -0.019) | BELOW (30, -0.084) | AT_OR_ABOVE | AT_OR_ABOVE | AT_OR_ABOVE |
+| A1both | BELOW (30, -0.335) | BELOW (10, -0.015) | BELOW (21, -0.025) | BELOW (5, -0.011) | BELOW (4, -0.018) | AT_OR_ABOVE |
+| ROUTEst | BELOW (4, -0.005) | BELOW (14, -0.019) | BELOW (30, -0.132) | AT_OR_ABOVE | AT_OR_ABOVE | AT_OR_ABOVE |
+| ROUTEboth | BELOW (27, -0.068) | BELOW (10, -0.015) | BELOW (30, -0.057) | BELOW (4, -0.010) | BELOW (4, -0.018) | BELOW (1, -0.005) |
+| SUM5 | BELOW (30, -0.179) | BELOW (4, -0.003) | BELOW (1, -0.003) | BELOW (6, -0.008) | AT_OR_ABOVE | BELOW (1, -0.003) |
+| **RRF5** | BELOW (29, -0.114) | AT_OR_ABOVE | AT_OR_ABOVE | BELOW (4, -0.008) | AT_OR_ABOVE | BELOW (3, -0.058) |
+
+No rule is AT_OR_ABOVE on all six. ROUTEst comes closest on the KB datasets and loses musique and squad.
+
+### At the models' sizes (ALL, s1eval)
+
+At each question's size of today's pools, |I_q|:
+
+| dataset (mean rows) | today's pools | RRF5 | the best SOTA order | MX (learned) | RC (learned) | MXU (learned) |
+| --- | ---: | ---: | --- | ---: | ---: | ---: |
+| metaqa (2,018) | 0.895 | 0.910 | LINKED 0.961 | 0.923 | 0.963 | 0.920 |
+| squad (50) | 0.980 | 0.979 | A1 0.981 | 0.981 | 0.981 | 0.978 |
+| musique (2,092) | 0.803 | **0.899** | A2 0.883 | 0.892 | 0.844 | 0.887 |
+| hotpotqa (94) | 0.968 | 0.963 | A1 0.973 | 0.969 | 0.971 | 0.969 |
+| 2wiki (106) | 0.906 | **0.961** | A1 0.911 | 0.914 | 0.913 | 0.917 |
+| webqsp (2,120) | 0.688 | **0.876** | A1 0.790 | 0.806 | 0.782 | 0.857 |
+
+At step 4e's pool sizes, |P4e|:
+
+| dataset (mean rows) | today's pools | RRF5 | the best SOTA order | MX (learned) | RC (learned) | MXU (learned) |
+| --- | ---: | ---: | --- | ---: | ---: | ---: |
+| metaqa (7,082) | 0.953 | 0.971 | LINKED 0.992 | 0.979 | 0.994 | 0.976 |
+| squad (150) | 0.992 | 0.991 | A1 0.992 | 0.992 | 0.992 | 0.991 |
+| musique (6,899) | 0.937 | 0.944 | A2 0.939 | 0.947 | 0.905 | 0.945 |
+| hotpotqa (188) | 0.979 | 0.981 | A1 0.982 | 0.981 | 0.980 | 0.980 |
+| 2wiki (221) | 0.945 | 0.970 | A1 0.926 | 0.928 | 0.927 | 0.932 |
+| webqsp (7,213) | 0.909 | 0.925 | A1 0.862 | 0.890 | 0.864 | 0.927 |
+
+- **Against today's pools at |I_q|,** RRF5 gains on four datasets: musique +0.096, 2wiki +0.055, webqsp +0.188 and
+  metaqa +0.015. It is level on squad (-0.001) and below on hotpotqa (-0.005).
+- **Against the learned gates,** RRF5, with nothing fit, is above all three on musique, 2wiki and webqsp at
+  |I_q|. It is below them on metaqa (RC 0.963) and hotpotqa (RC 0.971), and on squad by 0.002.
+
+**Golds per node:** the smallest N at which an order reaches today's pools' ALL at |I_q|.
+
+| dataset | today's rows | RRF5 | the bar |
+| --- | ---: | ---: | ---: |
+| metaqa | 2,018 | 2,000 | 750 |
+| squad | 50 | 50 | 50 |
+| musique | 2,092 | **500** | 750 |
+| hotpotqa | 94 | 150 | 100 |
+| 2wiki | 106 | **50** | 100 |
+| webqsp | 2,120 | **500** | 1,000 |
+
+So RRF5 holds today's golds in about a quarter of the nodes on musique and webqsp, and in half on 2wiki.
+
+**Shares of questions** (s1eval): with a linked node, with a corroborated one, and on ROUTE's K branch.
+- metaqa 0.997, 0.996 and 0.949.
+- squad 0 for all three.
+- musique 0.943, 0.792 and 0.266.
+- hotpotqa 1.000, 0.904 and 0.019.
+- 2wiki 1.000, 0.998 and 0.004.
+- webqsp 0.997, 0.954 and 0.293.
+
+### Where RRF5 falls short (diagnostics, deciding nothing)
+
+- **metaqa needs the walk from the links to lead.** K(st) alone is the bar's LINKED: 0.961 at |I_q| and 0.546 at
+  N = 25, against RRF5's 0.910 and 0.439.
+  - RRF5 gives three of its five votes to the sources led by the first stage: A1 on both graphs, and the lists.
+  - On metaqa's name-only nodes, the lists hold names that share the question's words, not its answers. R0 holds
+    every gold for 0.261 of questions at |I_q|.
+- **ROUTE's K branch is right on metaqa and wrong on musique.** On s1sel, ALL at N = 25, split by the branch:
+
+  | questions | share | K(st) | RRF5 | A1st |
+  | --- | ---: | ---: | ---: | ---: |
+  | metaqa, where the K branch changed the order (1,418) | 0.947 | 0.559 | 0.445 | 0.228 |
+  | metaqa, the others (79) | 0.053 | 0.316 | 0.291 | 0.241 |
+  | musique, where the K branch changed the order (346) | 0.226 | 0.118 | 0.425 | 0.277 |
+
+  On musique's K-branch questions, K(st) holds every gold for 0.405 at N = 2,000, against RRF5's 0.890.
+- **Why K fails on musique.** We looked at route questions of musique's s1sel. The walk from a linked passage keeps
+  the anchor first and then floods its neighbours.
+  - The neighbours that lead are passages sharing one title: seven 'Paris', six 'Canada', seven 'Education' and
+    seven 'World War II'. musique splits an article into paragraphs, and a title mention links a passage to every
+    paragraph with that title, which also link to each other.
+  - The second gold is found by its words, two or more hops away behind a hub. Its positions in K(st) were 132 to
+    2,612 ('Nicolae Ceaușescu', 'Public Health Agency of Canada', 'Sri Lanka Matha'), or it was absent.
+  - A walk cannot rank such a gold above the anchor's own neighbours, so on these questions the lists must lead.
+- **hotpotqa:** RRF5 leads A1st at N = 25 (0.885 against 0.830 on s1eval) and trails it from N = 50 to 100.
+- **webqsp's head:** A1st has the best head (0.376 at N = 25 on s1eval). The other sources are weak there (Kst 0.180,
+  Kall 0.062 and R0 0.085), and RRF5 gives them three of five votes.
+
+### What follows
+
+By section 6:
+- **RRF5 is the parameter-free pool for now.** The claim that our pools are at or above the SOTA pools on all six is
+  not made. It falls short on metaqa (against LINKED), hotpotqa (N = 50 to 100, against A1) and webqsp's head
+  (against A1).
+- **The next pool change, with nothing fit, is declared in its own file (P1e).** Its target is the split above:
+  - the walk from linked entities leads on metaqa;
+  - the lists lead where a linked passage's walk floods;
+  - A1's head stays whole on hotpotqa and webqsp.
+- The learned gates stay beside and are never the pool. P1c stays held, and the models are retrained once the pool
+  is final.
