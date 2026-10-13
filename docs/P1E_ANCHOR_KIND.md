@@ -249,3 +249,134 @@ read no gold.
 - **ETA:** about twice P1d's walks. 2wiki is the longest, at about 45 minutes on 8 CPUs, so the call should land
   about an hour after the items start.
 - The encoder stays frozen. No model trains or reads, nothing is fit, and test splits are never read.
+
+## 8. Results (filed 13 October 2026)
+
+The six host items ran from 14:02 to 14:35. The verdict ran locally at 14:36 and wrote `outputs/p1e/verdict.json` and
+`verdict.md`, with each dataset's curves, shares and gold positions beside them in `outputs/p1e/`. The position files
+are larger than section 7 said: metaqa's s1eval file is 3.9 MB, and the folder holds 9.2 MB.
+
+**The checks held on all eleven carves.** P1d's ten orders, recomputed here, put every gold at the position P1d
+filed, question for question. The development runs had checked the steered walk against step 4e's (section 7).
+
+### The choice (s1sel): KIND_T
+
+| rule | points below the bar | largest gap | mean ALL at \|I_q\| | metaqa | squad | musique | hotpotqa | 2wiki |
+| --- | ---: | ---: | ---: | --- | --- | --- | --- | --- |
+| RRF5 | 38 | -0.112 | 0.938 | BELOW (29) | BELOW (2) | AT_OR_ABOVE | BELOW (7) | AT_OR_ABOVE |
+| KINDcut | 27 | -0.045 | 0.942 | BELOW (18) | BELOW (2) | AT_OR_ABOVE | BELOW (7) | AT_OR_ABOVE |
+| **KIND_T** | **14** | -0.017 | **0.946** | BELOW (7) | BELOW (2) | AT_OR_ABOVE | BELOW (5) | AT_OR_ABOVE |
+| KINDcut_T | 25 | -0.045 | 0.941 | BELOW (18) | BELOW (2) | AT_OR_ABOVE | BELOW (5) | AT_OR_ABOVE |
+| KINDcut_7T | 28 | -0.045 | 0.938 | BELOW (18) | BELOW (8) | AT_OR_ABOVE | BELOW (2) | AT_OR_ABOVE |
+
+### The call (s1eval): NOT_ALL_SIX
+
+KIND_T is AT_OR_ABOVE on squad, musique, 2wiki and webqsp, and BELOW on two datasets:
+- **metaqa:** 4 points, all against LINKED: ALL at N = 25 (-0.004), 150 (-0.002), 200 (-0.004) and 300 (-0.005).
+  They are ROUTEst's four points in P1d; KIND_T's entity branch is ROUTEst.
+- **hotpotqa:** 3 points against A1 on the structural family: ALL at N = 50 (-0.005) and N = 100 (-0.007), and gold
+  recall at N = 100 (-0.003).
+
+Against P1d's RRF5, metaqa goes from 29 points (-0.114) to 4 (-0.005), and webqsp from 3 points (-0.058) to none.
+hotpotqa goes from 4 points (-0.008) to 3 (-0.007).
+
+Every rule against the bar on s1eval (points below and the largest gap), deciding nothing:
+
+| rule | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| RRF5 | BELOW (29, -0.114) | AT_OR_ABOVE | AT_OR_ABOVE | BELOW (4, -0.008) | AT_OR_ABOVE | BELOW (3, -0.058) |
+| KINDcut | BELOW (19, -0.048) | AT_OR_ABOVE | AT_OR_ABOVE | BELOW (4, -0.008) | AT_OR_ABOVE | AT_OR_ABOVE |
+| **KIND_T** | BELOW (4, -0.004) | AT_OR_ABOVE | AT_OR_ABOVE | BELOW (3, -0.007) | AT_OR_ABOVE | AT_OR_ABOVE |
+| KINDcut_T | BELOW (19, -0.048) | AT_OR_ABOVE | AT_OR_ABOVE | BELOW (3, -0.007) | AT_OR_ABOVE | AT_OR_ABOVE |
+| KINDcut_7T | BELOW (19, -0.048) | BELOW (8, -0.004) | AT_OR_ABOVE | BELOW (1, -0.004) | AT_OR_ABOVE | AT_OR_ABOVE |
+
+The cut costs metaqa's tail: every rule with ROUTEcut on the entity side stops at 0.944 at N = 7,000, against
+KIND_T's 0.995 and LINKED's 0.992.
+
+### At the models' sizes (ALL, s1eval)
+
+At each question's size of today's pools, |I_q|:
+
+| dataset (mean rows) | today's pools | RRF5 | KIND_T | the best SOTA order | MX (learned) | RC (learned) | MXU (learned) |
+| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: |
+| metaqa (2,018) | 0.895 | 0.910 | **0.962** | LINKED 0.961 | 0.923 | 0.963 | 0.920 |
+| squad (50) | 0.980 | 0.979 | 0.979 | A1 0.981 | 0.981 | 0.981 | 0.978 |
+| musique (2,092) | 0.803 | 0.899 | **0.900** | A2 0.883 | 0.892 | 0.844 | 0.887 |
+| hotpotqa (94) | 0.968 | 0.963 | 0.965 | A1 0.973 | 0.969 | 0.971 | 0.969 |
+| 2wiki (106) | 0.906 | 0.961 | **0.960** | A1 0.911 | 0.914 | 0.913 | 0.917 |
+| webqsp (2,120) | 0.688 | 0.876 | **0.832** | A1 0.790 | 0.806 | 0.782 | 0.857 |
+
+At step 4e's pool sizes, |P4e|:
+
+| dataset (mean rows) | today's pools | RRF5 | KIND_T | the best SOTA order | MX (learned) | RC (learned) | MXU (learned) |
+| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: |
+| metaqa (7,082) | 0.953 | 0.971 | 0.995 | LINKED 0.992 | 0.979 | 0.994 | 0.976 |
+| squad (150) | 0.992 | 0.991 | 0.991 | A1 0.992 | 0.992 | 0.992 | 0.991 |
+| musique (6,899) | 0.937 | 0.944 | 0.941 | A2 0.939 | 0.947 | 0.905 | 0.945 |
+| hotpotqa (188) | 0.979 | 0.981 | 0.982 | A1 0.982 | 0.981 | 0.980 | 0.980 |
+| 2wiki (221) | 0.945 | 0.970 | 0.970 | A1 0.926 | 0.928 | 0.927 | 0.932 |
+| webqsp (7,213) | 0.909 | 0.925 | 0.882 | A1 0.862 | 0.890 | 0.864 | 0.927 |
+
+- **Against today's pools at |I_q|,** KIND_T gains on four datasets: metaqa +0.067, musique +0.097, 2wiki +0.054
+  and webqsp +0.144. It is level on squad (-0.001) and hotpotqa (-0.003).
+- **Against RRF5,** it gains on metaqa (+0.052 at |I_q|, +0.024 at |P4e|) and loses webqsp's tail (-0.044 at
+  |I_q|, -0.043 at |P4e|). At |P4e| on webqsp it is below today's pools too (0.882 against 0.909). On the other
+  four it is within 0.003 of RRF5.
+- **Against the learned gates,** KIND_T, with nothing fit, is above all three on musique and 2wiki at |I_q|. It is
+  level with RC on metaqa (0.962 against 0.963) and above MX and MXU there. On webqsp it is above MX and RC and below
+  MXU (0.857). On hotpotqa it is below all three, by 0.004 to 0.006.
+
+**Golds per node:** the smallest N at which an order reaches today's pools' ALL at |I_q|.
+
+| dataset | today's rows | RRF5 | KIND_T | the bar |
+| --- | ---: | ---: | ---: | ---: |
+| metaqa | 2,018 | 2,000 | **750** | 750 |
+| squad | 50 | 50 | 50 | 50 |
+| musique | 2,092 | 500 | **500** | 750 |
+| hotpotqa | 94 | 150 | 150 | 100 |
+| 2wiki | 106 | 50 | **50** | 100 |
+| webqsp | 2,120 | 500 | **500** | 1,000 |
+
+So KIND_T holds today's golds in about 37% of the nodes on metaqa, a quarter on musique and webqsp, and half on
+2wiki. On hotpotqa it needs 150 rows where today's pools use 94.
+
+**The kind and the branch** (s1eval). The name-only test read every node record. All of metaqa's 43,234 nodes are
+name-only, as are 1,004,809 of webqsp's 2,592,894, 114,190 of hotpotqa's 5,233,329 and 88,614 of 2wiki's 5,989,847.
+squad and musique have none.
+- metaqa: every question is an entity question, and 0.949 take the K branch.
+- webqsp: 0.967 are entity questions, and 0.293 take the K branch.
+- squad, musique, hotpotqa and 2wiki: every question is a passage question, so none takes the K branch.
+
+**Against the like-for-like bar** (beside), KIND_T is BELOW on metaqa and hotpotqa as above. It is also BELOW on
+webqsp, at all 30 points: A1 on the structural family leads there, and the largest gap is -0.051 (gold recall at
+N = 25).
+
+### Where KIND_T falls short (diagnostics, deciding nothing)
+
+- **metaqa: the questions off the route.** 499 questions (0.051) have no corroborated link, so KIND_T follows A1(st)
+  on them. LINKED, the walk from all their linked entities, holds every gold more often there: 0.371 against 0.283
+  at N = 25, and 0.709 against 0.633 at N = 300. These questions make the four points.
+- **webqsp: the K branch.** On 484 questions (0.322), KIND_T's gold positions differ from A1(st)'s. Most are the K
+  branch (0.293); the rest are passage questions (0.033). On them, A1(st) holds every gold for 0.355 at N = 25,
+  against KIND_T's 0.227, and for 0.909 at N = 7,000, against 0.829. On the other 1,019 questions the two orders
+  agree. So the walk from the corroborated links is right on metaqa and behind the first stage's walk on webqsp. That
+  is the like-for-like gap and the shortfall at |P4e|.
+- **The two KBs pull the entity branch in opposite directions.** metaqa wants the walk from its links on every
+  question; webqsp wants the first stage's walk on a third of them.
+- **hotpotqa: A1's middle.** KIND_T leads A1(st) at N = 25 (0.885 against 0.830) and trails it at N = 50 (0.935
+  against 0.940) and N = 100 (0.966 against 0.973). KINDcut_7T, with the two steered A1 walks, is one point short on
+  hotpotqa. It loses squad (8 points) and 2wiki's head (0.839 against KIND_T's 0.880 at N = 25).
+
+### What follows
+
+By section 6, NOT_ALL_SIX:
+- **KIND_T is the parameter-free pool.** The claim that our pools are at or above the SOTA pools on all six is not
+  made. Two datasets fall short: metaqa (4 points, at most -0.005, against LINKED) and hotpotqa (3 points, at most
+  -0.007, against A1). Like-for-like, webqsp falls short too.
+- **P2c part 2 is read under KIND_T,** in its own file: our LLM-free triples as a fourth link family.
+- **Any further pool change, with nothing fit, is declared in its own file.** The records point at three places:
+  - metaqa's questions off the route;
+  - webqsp's K branch;
+  - hotpotqa from N = 50 to 100.
+- The learned gates stay beside and are never the pool. P1c stays held, and the models are retrained once the pool
+  is final.
