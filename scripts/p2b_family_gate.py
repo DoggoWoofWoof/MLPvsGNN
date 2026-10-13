@@ -350,9 +350,19 @@ def apply_stage(name, threads, limit=0):
 # ── the verdict (section 4 of the declared file) ─────────────────────────────
 
 
-def check_against_p1b(ent, p1b_ent, name):
+# Bug fix, 13 Oct, before the verdict (docs/P2B_FAMILY_GATE.md, section 4): P1b's apply listed S and L twice
+# (DIAG = ("MX", "S", "L", "A1MIX") + SOURCES, and SOURCES holds S and L), so each question's positions went into
+# pos["S"] and pos["L"] twice. P1b's curves are means over those lists and are unaffected. Its at-size values are not
+# the walks' values: at_sizes zips the doubled list with the nq sizes and divides by its length, about half. Rebuilt
+# from P1b's own walks on metaqa's s1sel, the doubled reading equals P1b's filed values exactly and the single reading
+# equals P2b's. P1b's consistency check established its S and L as P1a's A0 and LINKED at every N, and P1a filed those
+# walks' values at the same two sizes once per question, so the at-size points of S and L are checked against them.
+AT_SIZE_FROM_P1A = {"S": "A0", "L": "LINKED"}
+
+
+def check_against_p1b(ent, p1b_ent, name, p1a_ent):
     """MX and the zero-step sources against P1b's filed records at every point; on the graph datasets, the regime's
-    column of walks against P1b's S, L and R."""
+    column of walks against P1b's S, L and R (S and L at the two sizes against P1a's A0 and LINKED, see above)."""
     pairs = [("MX", "MX"), ("S0", "S0"), ("L0", "L0"), ("R0", "R0")]
     if name != "squad":
         col = "st" if ent["regime"] == "S" else "all"
@@ -365,10 +375,18 @@ def check_against_p1b(ent, p1b_ent, name):
                 if a["curve"][str(n)][m] != b["curve"][str(n)][m]:
                     bad.append({"order": ours, "p1b": theirs, "N": n, "measure": m, "p2b": a["curve"][str(n)][m],
                                 "p1b_value": b["curve"][str(n)][m]})
+        src, ref = ("p1a", p1a_ent["orders"][AT_SIZE_FROM_P1A[theirs]]) if theirs in AT_SIZE_FROM_P1A else ("p1b", b)
         for s in ("at_I_q", "at_P4e"):
-            if a[s] != b[s]:
-                bad.append({"order": ours, "p1b": theirs, "size": s, "p2b": a[s], "p1b_value": b[s]})
+            if a[s] != ref[s]:
+                bad.append({"order": ours, src: AT_SIZE_FROM_P1A.get(theirs, theirs), "size": s, "p2b": a[s],
+                            f"{src}_value": ref[s]})
     return bad
+
+
+def p1b_doubled(p1b_ent, p1a_ent):
+    """P1b's filed S and L at-size values beside P1a's A0 and LINKED (the same walks, read once per question)."""
+    return {o: {s: {"p1b_filed": p1b_ent["orders"][o][s], "p1a": p1a_ent["orders"][r][s]} for s in ("at_I_q", "at_P4e")}
+            for o, r in AT_SIZE_FROM_P1A.items() if o in p1b_ent["orders"] and r in p1a_ent["orders"]}
 
 
 def compare(ent, a="MXU", b="MX"):
@@ -422,7 +440,7 @@ def verdict_stage():
         raise SystemExit("P1b's gate is not the one the parts read")
     if any(r.get("limit") for r in parts.values()):
         raise SystemExit("a part ran with --limit")
-    checks = {}
+    checks, doubled = {}, {}
     for name in SIX:
         want = {f"{name}__s1eval"} | ({f"{name}__s1sel"} if name in TRAIN5 else set())
         if set(parts[name]["carves"]) != want:
@@ -433,13 +451,19 @@ def verdict_stage():
                 raise SystemExit(f"P1b has no {c}")
             if ent["questions"] != pb["questions"] or ent["carve_sha256"] != pb["carve_sha256"]:
                 raise SystemExit(f"{c}: not P1b's questions")
-            bad = check_against_p1b(ent, pb, name)
+            pa = p1a[name]["carves"].get(c)
+            if pa is None or pa["questions"] != ent["questions"]:
+                raise SystemExit(f"P1a has no {c} on these questions")
+            bad = check_against_p1b(ent, pb, name, pa)
             if bad:
                 write_json(OUT / "check_failed.json", {"carve": c, "points": bad})
                 raise SystemExit(f"{c}: MXU's records differ from P1b's at {len(bad)} points (outputs/p2b/"
                                  f"check_failed.json), first {bad[0]}")
             checks[c] = "MX, S0, L0 and R0 equal P1b's at every point" + (
-                "" if name == "squad" else "; the regime's walks equal P1b's S, L and R")
+                "" if name == "squad" else "; the regime's walks equal P1b's S, L and R at every N, R at both sizes, "
+                                           "and S and L at both sizes equal P1a's A0 and LINKED")
+            if name != "squad":
+                doubled[c] = p1b_doubled(pb, pa)
     res = the_call(parts)
     sota = {}
     for name in SIX:
@@ -447,6 +471,7 @@ def verdict_stage():
         sota[name] = B.call({"orders": {"MX": ent["orders"]["MXU"]}, "sets": ent["sets"]},
                             p1a[name]["carves"][f"{name}__s1eval"], name)
     rec = {"declared_in": "docs/P2B_FAMILY_GATE.md", **res, "beside_vs_sota": sota, "checks": checks,
+           "p1b_doubled_at_size": doubled, "verdict_script_sha256": script_sha256(),
            "fit_mean_weights": gate["fit_mean_weights"], "script_sha256": script, "gate_sha256": gate_sha,
            "p1b_gate_sha256": p1b_gate_sha, "freeze_RECORD_SHA256": freeze,
            "parts": {n: sha_file(part_path(n)) for n in SIX}, "p1b_parts": {n: sha_file(B.part_path(n)) for n in SIX},
@@ -524,7 +549,7 @@ def verdict_selftest():
                           "fit_mean_weights": {n: {s: round(1 / 9, 4) for s in SOURCES} for n in TRAIN5}})
         regimes = {"metaqa": "S", "squad": "none", "musique": "SNK", "hotpotqa": "S", "2wiki": "S", "webqsp": "SNK"}
 
-        def write_all(mxu_on=None, mxu_d=0.0, mx_off=None):
+        def write_all(mxu_on=None, mxu_d=0.0, mx_off=None, a0_off=None):
             for n in SIX:
                 carves = [f"{n}__s1eval"] + ([f"{n}__s1sel"] if n in TRAIN5 else [])
                 ours = {"script_sha256": "s", "gate_sha256": sha_file(GATE), "p1b_gate_sha256": sha_file(B.GATE),
@@ -544,8 +569,17 @@ def verdict_selftest():
                           "orders": {o: _fake_order(0.5) for o in ("MX", "S0", "L0", "R0", "S", "L", "R")}}
                     if n == mx_off and c.endswith("s1eval"):
                         tb["orders"]["MX"]["curve"]["100"]["ALL"] = 0.51
+                    for o in ("S", "L"):      # P1b's doubled lists: its filed at-size values are about half
+                        for s in ("at_I_q", "at_P4e"):
+                            tb["orders"][o][s] = {"ALL": 0.25, "recall": 0.25, "size": 100.0}
                     theirs["carves"][c] = tb
-                    pa["carves"][c] = {"orders": {o: _fake_order(0.49) for o in ("A3", "ORACLE") + P.SOTA}}
+                    po = {o: _fake_order(0.49) for o in ("A3", "A0", "ORACLE") + P.SOTA}
+                    for o in ("A0", "LINKED"):    # the same walks as P1b's S and L, filed once per question
+                        for s in ("at_I_q", "at_P4e"):
+                            po[o][s] = {"ALL": 0.5, "recall": 0.5, "size": 100.0}
+                    if n == a0_off and c.endswith("s1sel"):
+                        po["A0"]["at_P4e"]["recall"] = 0.51
+                    pa["carves"][c] = {"questions": 10, "orders": po}
                 write_json(part_path(n), ours)
                 write_json(B.part_path(n), theirs)
                 write_json(P.part_path(n), pa)
@@ -556,6 +590,9 @@ def verdict_selftest():
         assert v["call"] == "ONE_RULE" and v["s1eval"]["webqsp"]["label"] == "ABOVE", v["call"]
         assert all(v["s1eval"][n]["label"] == "TIE" for n in SIX if n != "webqsp")
         assert v["beside_vs_sota"]["webqsp"]["call"] == "AT_OR_ABOVE"
+        assert v["p1b_doubled_at_size"]["metaqa__s1sel"]["S"]["at_I_q"] == {
+            "p1b_filed": {"ALL": 0.25, "recall": 0.25, "size": 100.0}, "p1a": {"ALL": 0.5, "recall": 0.5, "size": 100.0}}
+        assert "squad__s1eval" not in v["p1b_doubled_at_size"] and len(v["p1b_doubled_at_size"]) == 9
         assert VERDICT_MD.read_text(encoding="utf-8").startswith("# P2b: the families' walks weighted per question")
         write_all("squad", -0.01)
         verdict_stage()
@@ -570,6 +607,12 @@ def verdict_selftest():
             raise AssertionError("a recomputed MX that differs from P1b's was not refused")
         except SystemExit as e:
             assert "differ from P1b's" in str(e), e
+        write_all("webqsp", 0.01, a0_off="hotpotqa")
+        try:
+            verdict_stage()
+            raise AssertionError("a walk whose at-size values differ from P1a's A0 was not refused")
+        except SystemExit as e:
+            assert "hotpotqa__s1sel" in str(e) and "'p1a': 'A0'" in str(e), e
     finally:
         (globals()["OUT"], globals()["GATE"], globals()["VERDICT"], globals()["VERDICT_MD"], B.OUT, B.GATE, P.OUT,
          P.VERDICT) = saved

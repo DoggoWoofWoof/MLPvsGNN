@@ -129,6 +129,22 @@ are already built by graph hops from the seeds.
 Records: `outputs/p1b/` (gate.json, gather_*, mx_*, verdict.json and verdict.md). The check passed on every carve: S and
 L equal P1a's A0 and LINKED at every point (on squad, L). EM stopped after 195 iterations.
 
+**Correction, 13 October, about 08:45 (found by P2b's check, [P2B_FAMILY_GATE.md](P2B_FAMILY_GATE.md) section 4).**
+- **What is wrong.** In `mx_<dataset>.json`, the at-size values of S and L (`at_I_q` and `at_P4e`, ALL and recall) are
+  not the walks' values.
+- **Why.** The apply stage's list of orders names S and L twice (`DIAG = ("MX", "S", "L", "A1MIX") + SOURCES`), so each
+  question's positions were appended twice. The at-size reading then pairs the first half of the questions with
+  shifted sizes and divides by twice the count, which comes out at about half the true value (metaqa's s1sel: S
+  0.498 filed, 0.8965 true).
+- **Shown exactly.** On metaqa's s1sel, P1b's walks were rebuilt with this script's own functions:
+  - read with the doubled list, they give the filed values;
+  - read with each question once, they give P1a's A0 and LINKED at the same sizes.
+- **What to read instead.** The true values are P1a's A0 and LINKED at the same sizes, in
+  `outputs/p1a/scoreboard_<dataset>.json`.
+- **What is unaffected.** The curves (means over the list) were checked above against P1a's at every N. MX, the other
+  orders and the call are unaffected too, and so is every number in this file. P1b2 never read those values. The
+  records and the script stay as filed.
+
 **The call on s1eval: BELOW on five datasets, AT_OR_ABOVE on squad.**
 
 | dataset | call | where MX is below the best SOTA order | where it is above |

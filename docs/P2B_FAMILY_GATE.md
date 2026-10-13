@@ -90,6 +90,28 @@ and drops the per-dataset regime from the pools.
 
 If any check fails, the stage stops: the comparison with MX would be unsound.
 
+**Bug fix to the check, 13 October, about 08:45, before the verdict's numbers.** The first verdict run stopped at
+metaqa's s1sel, on four points: S and L at |I_q| and at |P4e|. P2b's values there were about twice P1b's filed ones
+(S at |I_q|: 0.8965 against 0.498). Every curve point agreed, and so did MX, the zero-step sources and R at every point.
+- **The cause is in P1b's records, not in the walks.**
+  - P1b's apply lists S and L twice: `DIAG = ("MX", "S", "L", "A1MIX") + SOURCES`, where SOURCES holds S and L. So each
+    question's gold positions were appended twice to those two lists.
+  - A curve is a mean over the list, and doubling every entry leaves it unchanged.
+  - The at-size reading zips the list with the questions' sizes and divides by the list's length. So it reads the first
+    half of the questions against shifted sizes and comes out at about half.
+- **Shown exactly.** P1b's own walks were rebuilt on the laptop with P1b's own functions, on metaqa's s1sel:
+  - read with each question once, they give P2b's four values;
+  - read with the doubled list, they give P1b's filed four.
+- **No P1b decision is touched.** P1b's call, its MX, its curves and every number in its file are unaffected, and P1b2
+  never read those values. [P1B_RESTART_MIXTURE.md](P1B_RESTART_MIXTURE.md) section 7 carries the correction.
+- **The fix.** The at-size points of P1b's S and L are now checked against P1a's A0 and LINKED.
+  - These are the same walks: P1b's own check found them equal at every N.
+  - P1a filed their values at the same two sizes, each question once.
+  - P1b's filed values are kept in the verdict record beside them (`p1b_doubled_at_size`).
+  - Every other comparison is unchanged, and a walk that differs from P1a's at either size still stops the stage (the
+    self-test covers both).
+  - The parts, the gate and the gathers were not rerun: the fix is in the verdict's check only.
+
 **Per dataset, on s1eval,** MXU is compared with MX on the same questions:
 - At every N of P1a's grid (25 to 7,000) and on both measures (ALL and gold recall):
   - **ABOVE** if MXU is more than 0.002 above MX somewhere and never more than 0.002 below;

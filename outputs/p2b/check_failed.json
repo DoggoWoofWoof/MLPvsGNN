@@ -1,0 +1,65 @@
+{
+ "carve": "metaqa__s1sel",
+ "points": [
+  {
+   "order": "S_st",
+   "p1b": "S",
+   "size": "at_I_q",
+   "p2b": {
+    "ALL": 0.8965,
+    "recall": 0.9454,
+    "size": 2021.7
+   },
+   "p1b_value": {
+    "ALL": 0.498,
+    "recall": 0.4983,
+    "size": 2021.7
+   }
+  },
+  {
+   "order": "S_st",
+   "p1b": "S",
+   "size": "at_P4e",
+   "p2b": {
+    "ALL": 0.9519,
+    "recall": 0.9855,
+    "size": 7093.4
+   },
+   "p1b_value": {
+    "ALL": 0.4987,
+    "recall": 0.499,
+    "size": 7093.4
+   }
+  },
+  {
+   "order": "L_st",
+   "p1b": "L",
+   "size": "at_I_q",
+   "p2b": {
+    "ALL": 0.9532,
+    "recall": 0.9835,
+    "size": 2021.7
+   },
+   "p1b_value": {
+    "ALL": 0.4967,
+    "recall": 0.4968,
+    "size": 2021.7
+   }
+  },
+  {
+   "order": "L_st",
+   "p1b": "L",
+   "size": "at_P4e",
+   "p2b": {
+    "ALL": 0.988,
+    "recall": 0.9916,
+    "size": 7093.4
+   },
+   "p1b_value": {
+    "ALL": 0.4967,
+    "recall": 0.4971,
+    "size": 7093.4
+   }
+  }
+ ]
+}
