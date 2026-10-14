@@ -192,7 +192,7 @@ Reported beside, deciding nothing:
 
 ## 7. Results
 
-Filed 14 October 2026, about 17:30. **ADOPT_FOR_FULL_RUN.**
+Filed 14 October 2026 at 17:22. **ADOPT_FOR_FULL_RUN.**
 - **zrck:** 6 GAINs and no LOSS in its 12 reads after the re-call (PROMISING).
 - **zspk:** 6 GAINs and no LOSS (PROMISING).
 

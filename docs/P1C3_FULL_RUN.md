@@ -105,7 +105,7 @@ All commands are `outputs/mp_unified/zp1c3f.py` (new; frozen once run). It impor
   every walk the KT input reads, on P4b's faster exact walks.
 - The universal pair (twin0, gnn0) is not changed by this run.
 
-**Corrected 14 October, about 17:35, in wording only.** This section first had the two families' names swapped. It
+**Corrected 14 October at 17:27, in wording only.** This section first had the two families' names swapped. It
 called zrck and zspk the universal pair, twin0 and gnn0 the lean pair, and gave as the reason for one verdict that both
 models of the universal pair read the same inputs. zrc and zsp are the lean pair, and twin0 and gnn0 the universal pair
 ([C9_UNIVERSAL_PAIR.md](C9_UNIVERSAL_PAIR.md), [F1_ONE_INPUT_SET.md](F1_ONE_INPUT_SET.md)). The reason is the family's
