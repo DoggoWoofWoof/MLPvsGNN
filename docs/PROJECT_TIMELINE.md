@@ -329,8 +329,8 @@ learned relation match along typed chains, the largest lever on KB zero-shot.
   golds, so its gap is ranking.
 - **Hyperlinks matter.** Without them zsp falls to 77.3 (2wiki) and 90.0 (hotpotqa). Our title rule wins back 95.9
   and 95.0: 94% of the hyperlinks' gain on 2wiki, 61% on hotpotqa. Retraining on the universal link graphs was
-  NOT_ADOPTED twice (U1c, U1f): dropping the hyperlinks costs hotpotqa 0.035 to 0.065 R@5 (as a fraction, on our
-  corpora). Both models keep them.
+  NOT_ADOPTED twice (U1c, U1f): using them in place of the hyperlinks costs R@5 0.035 to 0.065 on hotpotqa and 0.010
+  to 0.020 on 2wiki (as fractions, on our corpora). Both models keep the hyperlinks.
 - **Speed (C12, cold, model stages):** gnn0/twin0 1.46 to 1.89; zsp/zrc 0.96 to 1.18; gnn0/zrc 2.38 to 3.99 on five
   datasets, 1.30 on webqsp. F1: both models use every input family, so no input can be cut.
 - Later rounds (deeper message passing, longer training, feature selection) did not beat their bases.

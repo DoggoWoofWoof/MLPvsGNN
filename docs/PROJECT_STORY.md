@@ -588,11 +588,19 @@ hyperlinks with precision 0.76 and recall 0.81 on 2wiki (0.66 and 0.79 on hotpot
 on 2wiki and 61% on hotpotqa.
 
 **What went wrong first:** common words that are also titles. A passage titled "From" or "County" got linked from
-almost everything: precision 0.10 to 0.14, and 330 million edges on webqsp. **Fix:** match titles case-sensitively
-with a capitalisation test, then drop mention links into any node that receives more than 1,024 of them.
+almost everything. Against the real hyperlinks the rule's precision fell to 0.10 to 0.14 on the full corpora, and on
+webqsp it built 330 million edges, 40 times the KB (U1b). **Fix (U1d, then U1e):**
+- match titles case-sensitively;
+- never link a title that the corpus writes in lowercase more often than capitalised, away from sentence starts (so
+  "From" never links: the corpus mostly writes "from");
+- drop every mention link into a node that receives more than 1,024 of them (one cap for all six datasets).
 
-**The decision:** retraining our models on the title-rule graph was NOT_ADOPTED twice (U1c, U1f). Dropping the
-hyperlinks costs hotpotqa 0.035 to 0.065 R@5 on our corpora. So the hyperlinks stay, and every SOTA claim names them.
+On a 30,000-passage sample of hotpotqa, read against its hyperlinks only (a design look, no question read), the first
+two steps doubled precision (0.138 to 0.285) at almost the same recall (0.676 to 0.669).
+
+**The decision:** retraining our models on the title-rule graph was NOT_ADOPTED twice (U1c, U1f). Using it in place
+of the hyperlinks costs R@5 on our corpora: 0.035 to 0.065 on hotpotqa and 0.010 to 0.020 on 2wiki. So the
+hyperlinks stay, and every SOTA claim names them.
 The fair headline: without any LLM, **a few precise edges** are what the models need. With no links the models fall
 well below HippoRAG 2. With the title rule, 2wiki stays 5.5 points above it.
 
@@ -608,9 +616,11 @@ three families.
 
 On musique, the gold a model misses is often a neighbour of a gold it found, among about 45 neighbours. Could the
 words near each link (a title mention, a shared entity, a KB relation name) pick the right one? **NO_SIGNAL:** ranked
-by those words, the missed gold lands in the top two 0.261 of the time, against 0.225 for the model (0.308 against
-0.291 in a second fit). The declared bar was +0.05. So musique's gap is reported as the first stage's: it does not
-find the far hops.
+by those words fused with the model's own order, the missed gold lands in the top two 0.261 of the time, against
+0.225 for the model alone (0.308 against 0.291 in a second fit). The bar, declared first, was at least +0.05 and at
+least 1.25 times as often, in both fits. The fused order reached +0.036 (1.16 times) and +0.018 (1.06 times). So
+musique's gap is reported as the first stage's: our list starts 13.3 points below NV-Embed-v2's on B1 (56.4 against
+69.7 R@5), and our models already add about twice HippoRAG 2's lift (+9.9 against +5.0).
 
 Details: [P2C_LLM_FREE_TRIPLES.md](P2C_LLM_FREE_TRIPLES.md),
 [U1A_B1_WITHOUT_HYPERLINKS.md](U1A_B1_WITHOUT_HYPERLINKS.md), [DIAG_LINK_WORDS.md](DIAG_LINK_WORDS.md).

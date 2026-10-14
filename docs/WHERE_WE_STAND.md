@@ -67,9 +67,10 @@ every adoption decision read (section 8; a re-call without them is proposed).
   - **The missed golds are next to found ones** (D1): 0.38 are direct neighbours of a found gold and 0.77 are within
     two hops, but among about 45 such neighbours the model ranks the missed gold 5th to 9th.
   - **The words around a link do not pick that neighbour** (D4, NO_SIGNAL). Ranking the neighbours by the question's
-    words near each link (title mentions, shared entities, KB relation names) puts the missed gold in the top two
-    0.261 of the time against zrc's 0.225, and 0.308 against 0.291 in the second fit. The declared bar was +0.05 and
-    1.25× in both. As declared, no ranking screen follows, and musique's gap is reported as the first stage's.
+    words near each link (title mentions, shared entities, KB relation names), fused with zrc's own order, puts the
+    missed gold in the top two 0.261 of the time against zrc's 0.225, and 0.308 against 0.291 in the second fit. The
+    declared bar was +0.05 and 1.25× in both. As declared, no ranking screen follows, and musique's gap is reported
+    as the first stage's.
 - **A training-free rule** (B1d: two of the five slots go to the neighbours of the top passages) is already ABOVE
   on 2wiki (92.8) and close on hotpotqa (95.2). It is not universal: it costs squad and comparison questions (G1a).
 
