@@ -78,13 +78,23 @@ A graph links the candidates (KB facts, hyperlinks, shared names). Then a model 
   squad). **ner links:** passages sharing a named entity. **kNN links:** nearest neighbours by embedding.
 - **Walk:** personalised PageRank, a random walk that keeps jumping back to its start nodes. HippoRAG 2 starts it from
   the seeds plus the first stage's top 1,000 (called A1 here).
+- **KIND_T:** the final pool rule (13 October). One fixed recipe for all six datasets decides which candidates enter
+  the pool, with nothing learned (Era 8).
+- **KT input:** eight numbers per candidate taken from KIND_T: six positions (where its order and its walks placed the
+  candidate) and two yes/no flags (whether the walk's fill added it; whether it is an entity). Both lean models read
+  them since 14 October (Era 9).
 
 **Models**
 - **Universal pair:** twin0 (MLP) and gnn0 (GNN). Same 197 input columns; the GNN adds three relation-aware
   message-passing steps plus an evidence-flow step.
-- **Lean pair:** zrc (MLP) and zsp (GNN). Both grow from zrm (zret's normalisation plus the learned relation match):
-  zrc is zrm keeping each row's 64 best chain entries; zsp is zrm plus one propagation step over the pool's links
-  (385 weights).
+- **Lean pair:** zrckp (MLP) and zspk (GNN) since 14 October; before that zrc and zsp, which they build on. zrc and
+  zsp both grow from zrm (zret's normalisation plus the learned relation match): zrc is zrm keeping each row's 64 best
+  chain entries; zsp is zrm plus one propagation step over the pool's links (385 weights). zrckp adds a small head
+  that reads the KT input of the candidate's own row only (161 weights). zspk's head also reads the candidate's score
+  measured against the other candidates' scores (177 weights), which only the GNN may do.
+- **The MLP rule (8 October):** an MLP input never comes from another candidate's score, not even through the average
+  or spread of the question's scores. Otherwise one row's score would depend on the others, which is a form of message
+  passing.
 - **Twin:** an MLP trained on exactly the GNN's inputs, rows and loss. GNN minus twin is what message passing adds.
 - **MLP share:** (MLP − first stage) / (GNN − first stage). 0.9 means the MLP keeps 90% of the GNN's gain.
 
@@ -457,8 +467,8 @@ questions); ranking is the larger gap.
 | model | family | what it is | status |
 | --- | --- | --- | --- |
 | twin0 / gnn0 | universal | 197 shared columns; the GNN adds three relation-aware message-passing steps plus an evidence-flow step | gnn0 trained 28 Sep, twin0 1 Oct; named a pair 12 Oct (C9) |
-| zrc | lean MLP | zret's normalisation + the learned relation match + 64 chain entries per typed row | 9 Oct |
-| zsp | lean GNN | zrm's inputs + one propagation step over the pool's links (385 weights) | 9 Oct |
+| zrc | lean MLP | zret's normalisation + the learned relation match + 64 chain entries per typed row | the lean MLP 9 to 14 Oct; now the base zrckp builds on |
+| zsp | lean GNN | zrm's inputs + one propagation step over the pool's links (385 weights) | the lean GNN 9 to 14 Oct; now the base zspk builds on |
 | zrck / zspk | lean, with KT | + KIND_T's eight walk-position columns through a small head | full run ADOPT 14 Oct; zrck serves no claim (its head reads other rows' scores); zspk is the lean GNN since then |
 | zrckp | lean MLP | zrc + a pointwise KT head (the row's own 8 columns only, 161 parameters) | full run ADOPT 14 Oct; the lean MLP since then, paired with zspk |
 
@@ -469,22 +479,27 @@ spaces and offsets.
 
 ### Generalization: zero-shot reads
 
-R@5 of zrc on today's pools (outputs/zbase2/base-zrc-*.md), trained on the dataset (J5) against held out (L-x):
+R@5 trained on the dataset (J5) against held out (L-x). The lean MLP since 14 October is zrckp on KIND_T's pools
+(outputs/full_zrckp/compare-*.md, outputs/screen/scr-p1c3p-zrckp{,-hp}.md). Beside it is zrc on today's pools, the
+base those comparisons decide against (the same values as outputs/zbase2/base-zrc-*.md):
 
-| dataset | trained on it | held out | first stage alone |
-| --- | ---: | ---: | ---: |
-| metaqa | 0.780 | 0.142 | 0.005 |
-| squad | 0.911 | 0.891 | 0.905 |
-| musique | 0.567 | 0.524 | 0.473 |
-| hotpotqa | 0.905 | 0.845 | 0.685 |
-| 2wiki | 0.870 | 0.794 | 0.608 |
-| webqsp | never trains | 0.100 to 0.338 | 0.054 |
+| dataset | zrckp trained on it | zrckp held out | zrc trained on it | zrc held out | first stage alone |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| metaqa | 0.7989 | 0.2494 | 0.7796 | 0.1417 | 0.0047 |
+| squad | 0.9112 | 0.8910 | 0.9107 | 0.8912 | 0.9054 |
+| musique | 0.5728 | 0.5121 | 0.5669 | 0.5235 | 0.4734 |
+| hotpotqa | 0.9065 | 0.8513 | 0.9049 | 0.8451 | 0.6846 |
+| 2wiki | 0.9304 | 0.8541 | 0.8697 | 0.7937 | 0.6079 |
+| webqsp | never trains | 0.1139 to 0.3686 | never trains | 0.0997 to 0.3384 | 0.0535 |
 
-- The three Wikipedia-style corpora keep most of their lead held out.
-- **metaqa held out collapses** (0.780 → 0.142): with no KB in training, no relation match is learned. webqsp shows
-  the same: 0.29 to 0.34 on five fits, but 0.100 on L-metaqa's, which has no KB in training.
-- **squad held out lands just below the first stage** (0.891 against 0.905).
-- **webqsp** stays below the universal pair, which trains on it.
+- The three Wikipedia-style corpora keep most of their lead held out: zrckp holds hotpotqa at 0.851 and 2wiki at
+  0.854, against the first stage's 0.685 and 0.608.
+- **metaqa held out still collapses, but less** (0.799 trained on it, 0.249 held out; zrc fell to 0.142). With no
+  KB in training, no relation match is learned; KIND_T's walk positions carry part of the way. webqsp shows the
+  same: 0.35 to 0.37 on five fits, but 0.114 on L-metaqa's, which has no KB in training.
+- **squad held out lands just below the first stage** (0.891 against 0.905), with or without the KT input.
+- **musique held out** is 0.011 lower with the KT input (0.512 against 0.524), inside its seed-null floor (0.072).
+- **webqsp** stays below the universal pair, which trains on it (twin0 0.602, gnn0 0.629 on today's pools, P3a).
 - Unbounded message passing over-fits its training graph (Era 4).
 
 ### Speed: cold, pinned, one thread, both families at their fastest exact form
@@ -546,7 +561,8 @@ to closed six-name lists and the carve rules; and a TYPED entry if it is a typed
 models run unchanged.
 
 **Measured zero-shot quality** is in section 4: strong on the Wikipedia-style corpora, weak on KB data held out
-(metaqa 0.142), just below the first stage on squad, and on webqsp below the universal pair, which trains on it.
+(metaqa 0.249 for zrckp, 0.142 for zrc), just below the first stage on squad, and on webqsp below the universal
+pair, which trains on it.
 **The universal pair has never been tested on a held-out dataset.**
 
 ### Are we copying anything?
