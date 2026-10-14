@@ -1,0 +1,75 @@
+{
+ "stage": "P1c3 full run",
+ "declared_in": "docs/P1C3_FULL_RUN.md",
+ "rule": "ADOPT when neither arm's re-grade under the seed null has a LOSS on any of its 36 reads and the two arms together have at least one primary GAIN; NOT_ADOPTED otherwise; INCOMPLETE when a re-grade is missing or not the declared one (docs/P1C3_FULL_RUN.md, section 4)",
+ "verdict": "ADOPT",
+ "arms": {
+  "zrck": {
+   "regrade": "outputs/full_zrck/grade-nullx.json",
+   "regrade_sha256": "35e18272333cec35b0da19eb10c5ec2739b25b0b378a85fa32f8cc62a9b534e1",
+   "verdict": "ADOPT",
+   "primary_gains": [
+    "J5 metaqa",
+    "J5 2wiki",
+    "J5 webqsp",
+    "L-metaqa metaqa",
+    "L-2wiki 2wiki"
+   ],
+   "gains": [
+    "J5 metaqa",
+    "J5 2wiki",
+    "J5 webqsp",
+    "L-metaqa metaqa",
+    "L-metaqa 2wiki",
+    "L-metaqa webqsp",
+    "L-squad metaqa",
+    "L-squad 2wiki",
+    "L-squad webqsp",
+    "L-musique metaqa",
+    "L-musique 2wiki",
+    "L-musique webqsp",
+    "L-hotpotqa metaqa",
+    "L-hotpotqa 2wiki",
+    "L-hotpotqa webqsp",
+    "L-2wiki metaqa",
+    "L-2wiki 2wiki",
+    "L-2wiki webqsp"
+   ],
+   "losses": []
+  },
+  "zspk": {
+   "regrade": "outputs/full_zspk/grade-nullx.json",
+   "regrade_sha256": "ebf9c8daca84eff41d24387f63adb4a4e946ff011249ff895cb58198fb9a6165",
+   "verdict": "ADOPT",
+   "primary_gains": [
+    "J5 metaqa",
+    "J5 2wiki",
+    "J5 webqsp",
+    "L-metaqa metaqa",
+    "L-2wiki 2wiki"
+   ],
+   "gains": [
+    "J5 metaqa",
+    "J5 2wiki",
+    "J5 webqsp",
+    "L-metaqa metaqa",
+    "L-metaqa 2wiki",
+    "L-squad metaqa",
+    "L-squad 2wiki",
+    "L-squad webqsp",
+    "L-musique metaqa",
+    "L-musique 2wiki",
+    "L-hotpotqa metaqa",
+    "L-hotpotqa musique",
+    "L-hotpotqa 2wiki",
+    "L-hotpotqa webqsp",
+    "L-2wiki metaqa",
+    "L-2wiki 2wiki"
+   ],
+   "losses": []
+  }
+ },
+ "problems": [],
+ "zp1c3f_sha256": "1e3e45f5bd84765b7105d31677a2a77ade62b6302f1dd5cc1e37e9d6a80b7c1b",
+ "utc": "2026-10-14T13:53:54Z"
+}

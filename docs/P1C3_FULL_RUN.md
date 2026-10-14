@@ -168,4 +168,73 @@ shared pools. No rule, base, split, command or file changes.
 
 ## Results
 
-To be filed.
+Filed 14 October 2026 at 19:41. The verdict was written on the host at 19:23. Records:
+- `outputs/p1c3/full-verdict.{json,md}`;
+- `outputs/full_zrck/` and `outputs/full_zspk/`: each arm's grade, its re-grade under the null, and its four
+  comparisons.
+
+**Verdict: ADOPT.** Neither arm has a LOSS on any of its 36 reads under the seed null. Each arm has five primary
+GAINs, on the same five reads: J5 metaqa, J5 2wiki, J5 webqsp, L-metaqa metaqa and L-2wiki 2wiki.
+
+| arm | primary GAIN | GAIN in all | LOSS | filed grade (floor 0.0075) -> re-grade |
+| --- | --- | --- | --- | --- |
+| zrck (MLP) | 5 of 11 | 18 of 36 | 0 | NOT_ADOPTED -> ADOPT |
+| zspk (GNN) | 5 of 11 | 16 of 36 | 0 | NOT_ADOPTED -> ADOPT |
+
+**Why the filed grades said NOT_ADOPTED.** At the flat floor 0.0075, each arm's L-musique fit had one LOSS, on its
+held-out musique read: zrck -0.0176 and zspk -0.0100. Under the null that read's floor is 0.0720, the widest of the
+36, so both calls are WITHIN. Section 4 fixed the re-grade as the decider before any number.
+
+**R@5, each arm minus its family's card fit on today's pools.** Bold: primary reads. zs: zero-shot. A changed call
+shows filed -> re-call.
+
+zrck (outputs/full_zrck/grade-nullx.md):
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| J5 | **+0.0196 GAIN** | **+0.0001** | **+0.0019** | **-0.0012** | **+0.0573 GAIN** | **+0.0529 GAIN zs** |
+| L-metaqa | **+0.0619 GAIN zs** | +0.0003 | +0.0042 | +0.0063 | +0.0662 GAIN | +0.0212 GAIN zs |
+| L-squad | +0.0216 GAIN | **-0.0028 zs** | +0.0061 | +0.0034 | +0.0623 GAIN | +0.0721 GAIN zs |
+| L-musique | +0.0225 GAIN | +0.0013 | **-0.0176 LOSS -> WITHIN zs** | +0.0022 | +0.0632 GAIN | +0.0372 GAIN zs |
+| L-hotpotqa | +0.0259 GAIN | +0.0009 | +0.0050 | **+0.0113 GAIN -> WITHIN zs** | +0.0397 GAIN | +0.0820 GAIN zs |
+| L-2wiki | +0.0215 GAIN | -0.0019 | +0.0039 | +0.0045 | **+0.0639 GAIN zs** | +0.0548 GAIN zs |
+
+zspk (outputs/full_zspk/grade-nullx.md):
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| J5 | **+0.0211 GAIN** | **-0.0009** | **+0.0110 GAIN -> WITHIN** | **-0.0011** | **+0.0586 GAIN** | **+0.0331 GAIN zs** |
+| L-metaqa | **+0.0422 GAIN zs** | -0.0029 | +0.0073 | +0.0010 | +0.0563 GAIN | +0.0021 zs |
+| L-squad | +0.0255 GAIN | **+0.0015 zs** | +0.0075 | +0.0028 | +0.0533 GAIN | +0.0263 GAIN zs |
+| L-musique | +0.0215 GAIN | -0.0011 | **-0.0100 LOSS -> WITHIN zs** | +0.0015 | +0.0659 GAIN | -0.0017 zs |
+| L-hotpotqa | +0.0233 GAIN | +0.0026 | +0.0107 GAIN | **+0.0064 zs** | +0.0589 GAIN | +0.0418 GAIN zs |
+| L-2wiki | +0.0247 GAIN | +0.0004 | +0.0070 | +0.0032 | **+0.0663 GAIN zs** | +0.0351 GAIN -> WITHIN zs |
+
+Unmarked cells are WITHIN.
+
+**Where the KT input moves R@5:**
+- 2wiki: up on every split for both models, +0.040 to +0.066, including its own held-out read. FC@5 rises up to
+  +0.13.
+- metaqa: up on every split, zrck +0.020 to +0.062 and zspk +0.021 to +0.042. The largest gain is the held-out read
+  (L-metaqa).
+- webqsp, always zero-shot: zrck up on all six splits (+0.021 to +0.082); zspk on four (+0.026 to +0.042), with
+  L-metaqa and L-musique level.
+- squad and hotpotqa: within +-0.007 everywhere except zrck's held-out hotpotqa read (+0.0113, WITHIN under its floor
+  0.0200).
+- musique: down on its held-out read (zrck -0.018, zspk -0.010; both WITHIN), up +0.002 to +0.011 on the other
+  splits.
+
+**Beside, deciding nothing (from each arm's grade.json):**
+- hit@1 falls on hotpotqa's held-out read for both models (zrck -0.042, zspk -0.043), as it did on the screen. zspk's
+  J5 hotpotqa hit@1 also falls (-0.016).
+- hit@1 rises on musique on all six splits for both models (zrck +0.012 to +0.055, zspk +0.019 to +0.044). That
+  includes the held-out read (zrck +0.053, zspk +0.031), where R@5 falls.
+
+**What follows:**
+- zrck serves no claim. Its head reads the row's score z-scored over its question's rows, which breaks the MLP's
+  8 October rule (docs/P1C3P_POINTWISE_HEAD.md). So the lean pair does not move on this verdict alone, as section 4's
+  one verdict for the family requires.
+- zrckp, the pointwise head, decides the lean MLP: its screen (P1c3p) and its full run
+  ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md), declared 19:40). ADOPT there makes the lean pair (zrckp, zspk). Anything
+  else keeps (zrc, zsp) on today's pools, and zspk's part of this ADOPT moves nothing alone.
+- Before any claim uses a KT model, its serving cost is timed cold (docs/P4C_KT_SERVING.md).
