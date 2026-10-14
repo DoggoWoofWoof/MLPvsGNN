@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (21:00)
+# Where we stand, 14 October 2026 (21:30)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -15,7 +15,7 @@ models and the gap ledger, speed, and one model with its own representation.
 
 | claim | what it says | where it stands |
 | --- | --- | --- |
-| 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). The lean pair since 14 October, (zrckp, zspk): on the J5 reads zrckp keeps 0.93-1.29 of zspk's R@5 gain over RRF and 0.98-1.35 of its FC@5 gain on all six (point estimates; musique lowest at 0.932). On the full corpora (P3a, beside), the earlier pair: the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all six; the universal MLP keeps at least 0.9 on metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique. Where the MLP loses to its GNN, it is mostly golds one link from a found gold on hotpotqa and 2wiki, and ranking elsewhere (P3b). The six-dataset test is the confirmation run's. |
+| 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). The lean pair since 14 October, (zrckp, zspk), with 95% question-bootstrap intervals (P3c, section 2): **CLAIM1_NOT_ALL**. In-domain it holds on metaqa, hotpotqa and 2wiki (lower bounds 0.996, 0.999, 0.981); on squad (1.302 [0.859, 2.824], a GNN gain of only +0.0045) and musique (0.933 [0.881, 0.983]) the share is above 0.9 but not shown. Zero-shot it holds on all six. On the full corpora (P3a, beside), the earlier pair: the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all six; the universal MLP keeps at least 0.9 on metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique. Where the MLP loses to its GNN, it is mostly golds one link from a found gold on hotpotqa and 2wiki, and ranking elsewhere (P3b). The six-dataset test is the confirmation run's. |
 | 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. On the full corpora both GNNs are at or above the best LLM-free SOTA ranking on all six datasets, on R@5, FC@5 and hit@1 (P3a), and still at or above on metaqa and webqsp with the seeds removed, on a thin read (P3b). The final pool, P1e's parameter-free KIND_T, is at or above the best LLM-free SOTA pool order on four datasets, and within 0.005 and 0.007 of it on metaqa and hotpotqa (section 5). |
 | 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.46-1.89×; zrc 2.38-3.99×, webqsp 1.30×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there: zrc is 0.96-1.18× faster, and twin0 is faster than zsp only on webqsp. With every input kept, each MLP stays below 2× zsp on five datasets even if every shared stage cost nothing (section 3). The final pool's build is shared by every model (P4a): on hotpotqa and 2wiki it is 99% of every model's cold end to end, and every ratio there is 1.00-1.02 end to end. P4b's exact walks build the same pools 1.14-3.75× faster (hotpotqa 171 → 48 ms, 2wiki 188 → 50 ms); the build is still about 20 times zrc's end to end there, and every ratio there is 1.00-1.08. The KT input the lean pair now reads (P4c) adds 4-7 ms per question on musique, hotpotqa and 2wiki, 22 ms on squad, 32 ms on webqsp and 39 ms on metaqa, mostly walks. zspk / zrck is 0.98-1.08, and zrck is slower than gnn0 on four datasets. |
 
@@ -113,18 +113,27 @@ webqsp is zero-shot for the lean pair and trained on for the universal pair.
 ## 2. The MLP against the GNN (Claim 1)
 
 - **On B1, the MLP keeps 0.97-0.99 of the GNN's gain** and is within 0.8 points of it in every in-domain row.
-- **The lean pair since 14 October, (zrckp, zspk).** These are point estimates from the J5 reads, P3a's quantity (the
-  MLP's share of its GNN's gain over RRF), with no interval yet:
+- **The lean pair since 14 October, (zrckp, zspk), with intervals** (P3c,
+  [P3C_CLAIM1_INTERVALS.md](P3C_CLAIM1_INTERVALS.md)): the MLP's share of its GNN's gain over RRF on the J5 reads,
+  with 95% intervals from 2,000 question resamples. **Call: CLAIM1_NOT_ALL.**
 
   | measure | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zs) |
-  | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-  | R@5 | 0.997 | 1.289 | 0.932 | 1.010 | 0.986 | 1.294 |
-  | FC@5 | 0.998 | 1.289 | 0.990 | 1.011 | 0.984 | 1.351 |
-  | hit@1 | 0.986 | 1.571 | 0.937 | 0.844 | 0.915 | 0.744 |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | R@5 | 0.997 [0.996, 0.998] | 1.302 [0.859, 2.824] | 0.933 [0.881, 0.983] | 1.010 [0.999, 1.020] | 0.986 [0.981, 0.991] | 1.294 [1.211, 1.385] |
+  | FC@5 | 0.998 [0.996, 1.001] | 1.302 [0.859, 2.824] | 0.990 [0.918, 1.065] | 1.011 [1.001, 1.021] | 0.984 [0.977, 0.990] | 1.351 [1.243, 1.472] |
+  | hit@1 | 0.986 [0.983, 0.990] | 1.577 [1.262, 2.126] | 0.936 [0.822, 1.054] | 0.844 [0.480, 1.227] | 0.915 [0.893, 0.936] | 0.744 [0.600, 0.894] |
+  | in-domain clause (R@5) | HOLDS | NOT_SHOWN | NOT_SHOWN | HOLDS | HOLDS | (never trains) |
+  | zero-shot clause (R@5) | HOLDS | HOLDS | HOLDS | HOLDS | HOLDS | HOLDS |
 
-  - At least 0.9 on R@5 and FC@5 on all six. squad's gain over RRF is small (zspk +0.0045), so its share says little.
-  - musique is the lowest: zspk gains more there than zrckp (0.580 against 0.573).
+  - squad's gain over RRF is small (zspk +0.0045 [+0.0012, +0.0077]), so its share is a ratio of two small numbers.
+    zrckp's mean is above zspk's there (0.9112 against 0.9099).
+  - musique is the one the models can move: zspk gains more there than zrckp (0.580 against 0.573), and the share's
+    lower bound needs to rise by 0.019.
+  - Zero-shot (each dataset's leave-out fit; webqsp on J5), the MLP is never below the GNN by more than its in-domain
+    gap. It is above it on metaqa held out (by 0.037) and on webqsp (by 0.070).
   - hit@1 is below 0.9 on hotpotqa and on webqsp zero-shot, as for the earlier pair.
+  - The point estimates filed earlier (squad 1.289, musique 0.932) came from four-decimal means; these use the exact
+    means.
 - **On the full corpora (P3a, P3b),** the earlier pair: the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all
   six datasets (hit@1 0.73-0.84 on hotpotqa, 2wiki and webqsp). The universal MLP keeps at least 0.9 of gnn0's gain on
   metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique.
@@ -595,13 +604,14 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   one link from the seeds, where H2's cosine orders them best and g's rank is noise.
 - **The learned offsets close,** and P5c does not start.
 
-## 7. Running now (14 October, 21:00)
+## 7. Running now (14 October, 21:30)
 
 - **Nothing of ours is running.** The next stage is declared in its own file before it runs (What is next).
 - **Done since the last update:**
   - P1c3p's full run filed (section 5): ADOPT. The lean pair is (zrckp, zspk).
   - P4c filed (section 3): TIMED, after a re-time with the session idle.
-  - Claim 1's quantity for the new pair, from the J5 reads (section 2).
+  - P3c filed (section 2): Claim 1 for the new pair with intervals, CLAIM1_NOT_ALL (squad and musique NOT_SHOWN
+    in-domain; zero-shot HOLDS on all six).
 
 ## 8. Open gaps
 
@@ -692,7 +702,8 @@ file, committed before its numbers.
    ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)) is **ADOPT**, but zrck's head breaks the MLP rule. P1c3p's pointwise head
    (zrckp) is **ADOPT** ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md)), so the lean pair is (zrckp, zspk). P4c timed its
    serving cost: **TIMED**. **Next here, each in its own file:**
-   - Claim 1's share for (zrckp, zspk) with question-bootstrap intervals on all six datasets (no training);
+   - done: Claim 1's share for (zrckp, zspk) with question-bootstrap intervals (P3c): **CLAIM1_NOT_ALL**, squad and
+     musique NOT_SHOWN in-domain, zero-shot HOLDS on all six (section 2);
    - P3's ledger on the new pair: hotpotqa's hit@1 (a fresh hit@1-term screen), RRF5's position as a ninth KT
      column, and zck stacked on a frozen base.
 3. **Rerankers on the final pools:** the learned offset g(question, seed, graph features), fit by EM over the latent

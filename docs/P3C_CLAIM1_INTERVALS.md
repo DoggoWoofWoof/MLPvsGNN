@@ -90,4 +90,42 @@ wrong arm, different questions).
 
 ## Results
 
-Not yet read.
+Read 14 October, 21:22 (one job, 41 s; record stamped 15:52:38 UTC; script sha256 9898a91e…). Every check held:
+72 reads (36 per model), every fit's stamp, and every read reproduces its filed comparison.
+
+**Call: CLAIM1_NOT_ALL.** The zero-shot clause HOLDS on all six datasets. The in-domain clause HOLDS on three of the
+five trained datasets (metaqa, hotpotqa, 2wiki) and is **NOT_SHOWN** on two (squad, musique): their shares are above
+0.90, but their intervals reach below it. No dataset MISSES.
+
+| dataset | questions | GNN's gain over RRF [95%] | MLP's share [95%] | in-domain | zero-shot excess [95%] | zero-shot |
+| --- | ---: | --- | --- | --- | --- | --- |
+| metaqa | 9,785 | +0.7964 [+0.7896, +0.8027] | 0.997 [0.996, 0.998] | HOLDS | −0.0389 [−0.0447, −0.0332] | HOLDS |
+| squad | 11,873 | +0.0045 [+0.0012, +0.0077] | 1.302 [0.859, 2.824] | NOT_SHOWN | +0.0019 [−0.0006, +0.0043] | HOLDS |
+| musique | 2,417 | +0.1065 [+0.0965, +0.1160] | 0.933 [0.881, 0.983] | NOT_SHOWN | −0.0181 [−0.0266, −0.0097] | HOLDS |
+| hotpotqa | 7,405 | +0.2198 [+0.2137, +0.2259] | 1.010 [0.999, 1.020] | HOLDS | −0.0014 [−0.0045, +0.0016] | HOLDS |
+| 2wiki | 12,576 | +0.3272 [+0.3226, +0.3319] | 0.986 [0.981, 0.991] | HOLDS | +0.0012 [−0.0015, +0.0039] | HOLDS |
+| webqsp | 1,503 | (never trains) | | | −0.0698 [−0.0870, −0.0523] | HOLDS |
+
+The zero-shot excess is the GNN's lead over the MLP on the held-out read minus its lead in-domain (floored at 0); a
+negative excess means the MLP did better zero-shot than its in-domain gap allows. The full tables are in
+`outputs/p3c/claim1.md`.
+
+**What it says:**
+- **squad:** the first stage already reaches 0.9054 and the GNN adds 0.0045. A share of a gain that small is a ratio of
+  two small numbers, so its interval runs from 0.86 to 2.8. The MLP's mean is above the GNN's there (0.9112 against
+  0.9099); what fails is the interval, not the point. The clause's rule does not change after the read: squad is
+  reported as NOT_SHOWN.
+- **musique:** the MLP keeps 93% of the GNN's gain on these 2,417 questions, but as little as 88% on resamples. It is
+  where the MLP sits furthest below its GNN in-domain (0.5728 against 0.5800). On the four leave-out fits that train
+  on musique, its share is 0.943 to 1.052, and on FC@5 its J5 share is 0.990 [0.918, 1.065].
+- **Zero-shot:** the MLP is never below the GNN by more than its in-domain gap allows. It is above the GNN on metaqa
+  held out (by 0.037) and on webqsp (by 0.070). The largest excess, squad's +0.0019, is under the 0.002 margin and its
+  interval reaches below 0. On the five leave-out fits, webqsp's would-be calls all HOLD as well.
+
+**Beside, deciding nothing:** hit@1 is the MLP's weak measure on hotpotqa: its share is 0.844 [0.480, 1.227] on J5 and
+0.46 to 0.64 on three leave-out fits (L-musique, L-squad, L-metaqa). This is the hit@1 gap already on the ledger
+(docs/PROJECT_TIMELINE.md section 6). On 2wiki the hit@1 share is 0.915 [0.893, 0.936].
+
+**What it changes:** nothing. No model, pool or input changes. Claim 1 is reported as written: in-domain it holds on
+three of five datasets with intervals, and is not shown on squad and musique; zero-shot it holds on all six. These are
+development reads. The confirmation run reads both clauses again on its own questions.

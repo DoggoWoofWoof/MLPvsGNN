@@ -1,0 +1,3720 @@
+{
+ "stage": "P3c",
+ "doc": "docs/P3C_CLAIM1_INTERVALS.md",
+ "family": {
+  "mlp": "zrckp",
+  "gnn": "zspk"
+ },
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "boot": 2000,
+ "bar": 0.9,
+ "margin": 0.002,
+ "fits": [
+  {
+   "fit": "outputs/full_zrckp/fits/J5",
+   "arm": "zrckp",
+   "split": "J5",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/full_zrckp/fits/L-metaqa",
+   "arm": "zrckp",
+   "split": "L-metaqa",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/full_zrckp/fits/L-squad",
+   "arm": "zrckp",
+   "split": "L-squad",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/screen/fits/scr-p1c3p-zrckp",
+   "arm": "zrckp",
+   "split": "L-musique",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/screen/fits/scr-p1c3p-zrckp-hp",
+   "arm": "zrckp",
+   "split": "L-hotpotqa",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/full_zrckp/fits/L-2wiki",
+   "arm": "zrckp",
+   "split": "L-2wiki",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/full_zspk/fits/J5",
+   "arm": "zspk",
+   "split": "J5",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/full_zspk/fits/L-metaqa",
+   "arm": "zspk",
+   "split": "L-metaqa",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/full_zspk/fits/L-squad",
+   "arm": "zspk",
+   "split": "L-squad",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/screen/fits/scr-p1c3-zspk",
+   "arm": "zspk",
+   "split": "L-musique",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/screen/fits/scr-p1c3-zspk-hp",
+   "arm": "zspk",
+   "split": "L-hotpotqa",
+   "seed": 0
+  },
+  {
+   "fit": "outputs/full_zspk/fits/L-2wiki",
+   "arm": "zspk",
+   "split": "L-2wiki",
+   "seed": 0
+  }
+ ],
+ "call": "CLAIM1_NOT_ALL",
+ "in_domain": {
+  "metaqa": "HOLDS",
+  "squad": "NOT_SHOWN",
+  "musique": "NOT_SHOWN",
+  "hotpotqa": "HOLDS",
+  "2wiki": "HOLDS"
+ },
+ "zero_shot": {
+  "metaqa": "HOLDS",
+  "squad": "HOLDS",
+  "musique": "HOLDS",
+  "hotpotqa": "HOLDS",
+  "2wiki": "HOLDS",
+  "webqsp": "HOLDS"
+ },
+ "zero_shot_reads": {
+  "metaqa": {
+   "split": "L-metaqa",
+   "zs_gap": -0.0366,
+   "in_gap": 0.0023,
+   "allowed": 0.0023,
+   "excess": [
+    -0.0389,
+    -0.0447,
+    -0.0332
+   ],
+   "call": "HOLDS"
+  },
+  "squad": {
+   "split": "L-squad",
+   "zs_gap": 0.0019,
+   "in_gap": -0.0013,
+   "allowed": 0.0,
+   "excess": [
+    0.0019,
+    -0.0006,
+    0.0043
+   ],
+   "call": "HOLDS"
+  },
+  "musique": {
+   "split": "L-musique",
+   "zs_gap": -0.011,
+   "in_gap": 0.0072,
+   "allowed": 0.0072,
+   "excess": [
+    -0.0181,
+    -0.0266,
+    -0.0097
+   ],
+   "call": "HOLDS"
+  },
+  "hotpotqa": {
+   "split": "L-hotpotqa",
+   "zs_gap": -0.0014,
+   "in_gap": -0.0021,
+   "allowed": 0.0,
+   "excess": [
+    -0.0014,
+    -0.0045,
+    0.0016
+   ],
+   "call": "HOLDS"
+  },
+  "2wiki": {
+   "split": "L-2wiki",
+   "zs_gap": 0.0059,
+   "in_gap": 0.0047,
+   "allowed": 0.0047,
+   "excess": [
+    0.0012,
+    -0.0015,
+    0.0039
+   ],
+   "call": "HOLDS"
+  },
+  "webqsp": {
+   "split": "J5",
+   "zs_gap": -0.0698,
+   "in_gap": null,
+   "allowed": 0.0,
+   "excess": [
+    -0.0698,
+    -0.087,
+    -0.0523
+   ],
+   "call": "HOLDS"
+  }
+ },
+ "beside_webqsp": {
+  "L-metaqa": {
+   "zs_gap": 0.0023,
+   "excess": [
+    0.0023,
+    -0.006,
+    0.0105
+   ],
+   "call_beside": "HOLDS"
+  },
+  "L-squad": {
+   "zs_gap": -0.0533,
+   "excess": [
+    -0.0533,
+    -0.0707,
+    -0.0355
+   ],
+   "call_beside": "HOLDS"
+  },
+  "L-musique": {
+   "zs_gap": -0.0399,
+   "excess": [
+    -0.0399,
+    -0.0566,
+    -0.0231
+   ],
+   "call_beside": "HOLDS"
+  },
+  "L-hotpotqa": {
+   "zs_gap": -0.0795,
+   "excess": [
+    -0.0795,
+    -0.0973,
+    -0.0611
+   ],
+   "call_beside": "HOLDS"
+  },
+  "L-2wiki": {
+   "zs_gap": -0.0703,
+   "excess": [
+    -0.0703,
+    -0.0873,
+    -0.0529
+   ],
+   "call_beside": "HOLDS"
+  }
+ },
+ "reads": [
+  {
+   "split": "J5",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "questions": 9785,
+   "mlp": [
+    0.7989,
+    0.6832,
+    0.9032
+   ],
+   "gnn": [
+    0.8012,
+    0.6844,
+    0.9158
+   ],
+   "rrf": [
+    0.0047,
+    0.0026,
+    0.0008
+   ],
+   "gnn_gain": {
+    "point": [
+     0.7964,
+     0.6819,
+     0.915
+    ],
+    "lo": [
+     0.7896,
+     0.6725,
+     0.9094
+    ],
+    "hi": [
+     0.8027,
+     0.6909,
+     0.9204
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.7941,
+     0.6806,
+     0.9024
+    ],
+    "lo": [
+     0.7873,
+     0.6711,
+     0.8963
+    ],
+    "hi": [
+     0.8003,
+     0.6897,
+     0.9083
+    ]
+   },
+   "share": {
+    "point": [
+     0.9971,
+     0.9982,
+     0.9863
+    ],
+    "lo": [
+     0.9957,
+     0.9955,
+     0.9826
+    ],
+    "hi": [
+     0.9984,
+     1.0006,
+     0.9901
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0023,
+     0.0012,
+     0.0126
+    ],
+    "lo": [
+     0.0013,
+     -0.0004,
+     0.009
+    ],
+    "hi": [
+     0.0034,
+     0.0031,
+     0.0159
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/J5/reads/metaqa__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/J5/reads/metaqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "9a6e17e77d89c6e4784f09c82597fb8215d163137abe8f82b8c250e33eac7101",
+    "zspk": "25270c87b8dd94abaabac8ffbdba24b170faddda4da9cb0fbdb1f8513b833854"
+   }
+  },
+  {
+   "split": "J5",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "mlp": [
+    0.9112,
+    0.9112,
+    0.7533
+   ],
+   "gnn": [
+    0.9099,
+    0.9099,
+    0.7461
+   ],
+   "rrf": [
+    0.9054,
+    0.9054,
+    0.7335
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0045,
+     0.0045,
+     0.0125
+    ],
+    "lo": [
+     0.0012,
+     0.0012,
+     0.0083
+    ],
+    "hi": [
+     0.0077,
+     0.0077,
+     0.0174
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0058,
+     0.0058,
+     0.0198
+    ],
+    "lo": [
+     0.0028,
+     0.0028,
+     0.0154
+    ],
+    "hi": [
+     0.0089,
+     0.0089,
+     0.0244
+    ]
+   },
+   "share": {
+    "point": [
+     1.3019,
+     1.3019,
+     1.5772
+    ],
+    "lo": [
+     0.8594,
+     0.8594,
+     1.2616
+    ],
+    "hi": [
+     2.8235,
+     2.8235,
+     2.1262
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0013,
+     -0.0013,
+     -0.0072
+    ],
+    "lo": [
+     -0.0033,
+     -0.0033,
+     -0.0104
+    ],
+    "hi": [
+     0.0006,
+     0.0006,
+     -0.004
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/J5/reads/squad__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/J5/reads/squad__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "63560d01e9f500635c9eac072d45b2ac1f5f7a1dd34277087f7764ef2f29806d",
+    "zspk": "4befe4f0a6f343977fc346dc4aa1740219c95d688dd84a3fab0488a63a1a2b73"
+   }
+  },
+  {
+   "split": "J5",
+   "dataset": "musique",
+   "read": "in-domain",
+   "questions": 2417,
+   "mlp": [
+    0.5728,
+    0.2553,
+    0.7245
+   ],
+   "gnn": [
+    0.58,
+    0.2565,
+    0.7307
+   ],
+   "rrf": [
+    0.4734,
+    0.1353,
+    0.633
+   ],
+   "gnn_gain": {
+    "point": [
+     0.1065,
+     0.1212,
+     0.0976
+    ],
+    "lo": [
+     0.0965,
+     0.1055,
+     0.0819
+    ],
+    "hi": [
+     0.116,
+     0.1369,
+     0.1134
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0994,
+     0.12,
+     0.0914
+    ],
+    "lo": [
+     0.0899,
+     0.1055,
+     0.0745
+    ],
+    "hi": [
+     0.1085,
+     0.1353,
+     0.1092
+    ]
+   },
+   "share": {
+    "point": [
+     0.9327,
+     0.9898,
+     0.9364
+    ],
+    "lo": [
+     0.8814,
+     0.9184,
+     0.8216
+    ],
+    "hi": [
+     0.9828,
+     1.0647,
+     1.0537
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0072,
+     0.0012,
+     0.0062
+    ],
+    "lo": [
+     0.0018,
+     -0.0074,
+     -0.005
+    ],
+    "hi": [
+     0.0128,
+     0.0103,
+     0.0178
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/J5/reads/musique__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/J5/reads/musique__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "2cd62496796ef7adb26c023bb416d5aa62d7bcedbbff014cf0d7b69d90b54613",
+    "zspk": "fa9b429ec176a6dc8f4bdc07e03a9fc15ceb04b7fd2b13eac38d1b4d4bc6aaa8"
+   }
+  },
+  {
+   "split": "J5",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "questions": 7405,
+   "mlp": [
+    0.9065,
+    0.8479,
+    0.8401
+   ],
+   "gnn": [
+    0.9044,
+    0.8432,
+    0.8424
+   ],
+   "rrf": [
+    0.6846,
+    0.424,
+    0.8277
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2198,
+     0.4192,
+     0.0147
+    ],
+    "lo": [
+     0.2137,
+     0.4078,
+     0.007
+    ],
+    "hi": [
+     0.2259,
+     0.4307,
+     0.0223
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.2219,
+     0.4239,
+     0.0124
+    ],
+    "lo": [
+     0.2159,
+     0.4126,
+     0.0046
+    ],
+    "hi": [
+     0.228,
+     0.4352,
+     0.0207
+    ]
+   },
+   "share": {
+    "point": [
+     1.0095,
+     1.0113,
+     0.844
+    ],
+    "lo": [
+     0.9985,
+     1.001,
+     0.4803
+    ],
+    "hi": [
+     1.0203,
+     1.0213,
+     1.2267
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0021,
+     -0.0047,
+     0.0023
+    ],
+    "lo": [
+     -0.0045,
+     -0.0089,
+     -0.0026
+    ],
+    "hi": [
+     0.0003,
+     -0.0004,
+     0.007
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/J5/reads/hotpotqa__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/J5/reads/hotpotqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "1c166114d06b840a45804d075adf7b905098f1a4126b9c3cc154b893682b08d5",
+    "zspk": "83475e7d3f9c0b37997739184254d7a2f85534cdbaf38113483b7238a2d61961"
+   }
+  },
+  {
+   "split": "J5",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "mlp": [
+    0.9304,
+    0.83,
+    0.9705
+   ],
+   "gnn": [
+    0.9351,
+    0.8395,
+    0.9794
+   ],
+   "rrf": [
+    0.6079,
+    0.2536,
+    0.8747
+   ],
+   "gnn_gain": {
+    "point": [
+     0.3272,
+     0.586,
+     0.1047
+    ],
+    "lo": [
+     0.3226,
+     0.5772,
+     0.099
+    ],
+    "hi": [
+     0.3319,
+     0.5948,
+     0.1101
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3225,
+     0.5764,
+     0.0958
+    ],
+    "lo": [
+     0.3179,
+     0.5676,
+     0.0902
+    ],
+    "hi": [
+     0.3272,
+     0.5855,
+     0.1013
+    ]
+   },
+   "share": {
+    "point": [
+     0.9855,
+     0.9837,
+     0.915
+    ],
+    "lo": [
+     0.9807,
+     0.9772,
+     0.8928
+    ],
+    "hi": [
+     0.9907,
+     0.9904,
+     0.9356
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0047,
+     0.0095,
+     0.0089
+    ],
+    "lo": [
+     0.003,
+     0.0056,
+     0.0067
+    ],
+    "hi": [
+     0.0063,
+     0.0134,
+     0.0112
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/J5/reads/2wiki__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/J5/reads/2wiki__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "35cb9ee27299d1d8a090fb779050cf760793f020d6628d336f5d331cee7b784e",
+    "zspk": "f8d8b9485cef27e83ac7edcfdd7e9922b56a6c4532227138fa06b5969bb0c06a"
+   }
+  },
+  {
+   "split": "J5",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "questions": 1503,
+   "mlp": [
+    0.3611,
+    0.2888,
+    0.1404
+   ],
+   "gnn": [
+    0.2913,
+    0.2236,
+    0.173
+   ],
+   "rrf": [
+    0.0535,
+    0.0379,
+    0.0459
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2377,
+     0.1856,
+     0.1271
+    ],
+    "lo": [
+     0.2138,
+     0.163,
+     0.1038
+    ],
+    "hi": [
+     0.2612,
+     0.2089,
+     0.149
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3076,
+     0.2508,
+     0.0945
+    ],
+    "lo": [
+     0.283,
+     0.2262,
+     0.0719
+    ],
+    "hi": [
+     0.3324,
+     0.2761,
+     0.1158
+    ]
+   },
+   "share": {
+    "point": [
+     1.2936,
+     1.3513,
+     0.7435
+    ],
+    "lo": [
+     1.2106,
+     1.2432,
+     0.6
+    ],
+    "hi": [
+     1.3846,
+     1.4724,
+     0.8942
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0698,
+     -0.0652,
+     0.0326
+    ],
+    "lo": [
+     -0.087,
+     -0.0825,
+     0.012
+    ],
+    "hi": [
+     -0.0523,
+     -0.0479,
+     0.0539
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/J5/reads/webqsp__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/J5/reads/webqsp__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "5478911273f2881b12e119c0cba426ddeb931c02ca90ee4f3ea1c8ed432b78de",
+    "zspk": "ea751850668aec5a0b7aa8a30e3789c0dd7e88de28a06d9ed1e026ec57336358"
+   }
+  },
+  {
+   "split": "L-metaqa",
+   "dataset": "metaqa",
+   "read": "zero-shot",
+   "questions": 9785,
+   "mlp": [
+    0.2494,
+    0.2007,
+    0.0069
+   ],
+   "gnn": [
+    0.2128,
+    0.1686,
+    0.0088
+   ],
+   "rrf": [
+    0.0047,
+    0.0026,
+    0.0008
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2081,
+     0.1661,
+     0.008
+    ],
+    "lo": [
+     0.2004,
+     0.1583,
+     0.0061
+    ],
+    "hi": [
+     0.2159,
+     0.1735,
+     0.0099
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.2447,
+     0.1982,
+     0.0061
+    ],
+    "lo": [
+     0.237,
+     0.1903,
+     0.0045
+    ],
+    "hi": [
+     0.2526,
+     0.206,
+     0.0077
+    ]
+   },
+   "share": {
+    "point": [
+     1.1757,
+     1.1932,
+     0.7692
+    ],
+    "lo": [
+     1.1462,
+     1.1554,
+     0.549
+    ],
+    "hi": [
+     1.2051,
+     1.2322,
+     1.0423
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0366,
+     -0.0321,
+     0.0018
+    ],
+    "lo": [
+     -0.0422,
+     -0.0379,
+     -0.0003
+    ],
+    "hi": [
+     -0.031,
+     -0.0262,
+     0.0042
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-metaqa/reads/metaqa__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-metaqa/reads/metaqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "4aa1fc4a6b35b7897ba4630587faa87d752f6d59596679fc6889fcd63a3f2c5f",
+    "zspk": "6303ced0e9d69df83aadb1954a332b02511fd31e1040cbd0dc3dd452fe02ec93"
+   }
+  },
+  {
+   "split": "L-metaqa",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "mlp": [
+    0.911,
+    0.911,
+    0.7539
+   ],
+   "gnn": [
+    0.9088,
+    0.9088,
+    0.7462
+   ],
+   "rrf": [
+    0.9054,
+    0.9054,
+    0.7335
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0034,
+     0.0034,
+     0.0127
+    ],
+    "lo": [
+     0.0,
+     0.0,
+     0.0085
+    ],
+    "hi": [
+     0.0065,
+     0.0065,
+     0.0172
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0056,
+     0.0056,
+     0.0204
+    ],
+    "lo": [
+     0.0023,
+     0.0023,
+     0.016
+    ],
+    "hi": [
+     0.0088,
+     0.0088,
+     0.0248
+    ]
+   },
+   "share": {
+    "point": [
+     1.65,
+     1.65,
+     1.6026
+    ],
+    "lo": [
+     -Infinity,
+     -Infinity,
+     1.2765
+    ],
+    "hi": [
+     8.2,
+     8.2,
+     2.1066
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0022,
+     -0.0022,
+     -0.0077
+    ],
+    "lo": [
+     -0.0045,
+     -0.0045,
+     -0.011
+    ],
+    "hi": [
+     0.0001,
+     0.0001,
+     -0.0042
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-metaqa/reads/squad__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-metaqa/reads/squad__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "9466ca2fb1ac5b25a71a4059020c42e7ca8e332ae6a8d101696bd6336f1fac3e",
+    "zspk": "3956e6d22eb7504dc346bbc36f072449cccee46503080ffef0c5eee35d2d83a9"
+   }
+  },
+  {
+   "split": "L-metaqa",
+   "dataset": "musique",
+   "read": "in-domain",
+   "questions": 2417,
+   "mlp": [
+    0.5798,
+    0.2598,
+    0.7257
+   ],
+   "gnn": [
+    0.5745,
+    0.2586,
+    0.7203
+   ],
+   "rrf": [
+    0.4734,
+    0.1353,
+    0.633
+   ],
+   "gnn_gain": {
+    "point": [
+     0.1011,
+     0.1233,
+     0.0873
+    ],
+    "lo": [
+     0.0916,
+     0.1072,
+     0.0703
+    ],
+    "hi": [
+     0.1101,
+     0.1382,
+     0.1047
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.1064,
+     0.1245,
+     0.0927
+    ],
+    "lo": [
+     0.097,
+     0.1096,
+     0.0761
+    ],
+    "hi": [
+     0.1156,
+     0.1398,
+     0.1092
+    ]
+   },
+   "share": {
+    "point": [
+     1.0522,
+     1.0101,
+     1.0616
+    ],
+    "lo": [
+     0.9906,
+     0.9319,
+     0.9362
+    ],
+    "hi": [
+     1.1133,
+     1.0935,
+     1.209
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0053,
+     -0.0012,
+     -0.0054
+    ],
+    "lo": [
+     -0.0111,
+     -0.0108,
+     -0.017
+    ],
+    "hi": [
+     0.001,
+     0.0087,
+     0.0058
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-metaqa/reads/musique__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-metaqa/reads/musique__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "d2c4690980a4ff1d1dab0a8b4ad8cfdb93c456237259d040a4dfec84029e6fec",
+    "zspk": "42bf3672c5d9ada6be53c860b7401107c30244254702e39c5104f9e6365aa3d9"
+   }
+  },
+  {
+   "split": "L-metaqa",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "questions": 7405,
+   "mlp": [
+    0.9086,
+    0.8532,
+    0.8506
+   ],
+   "gnn": [
+    0.909,
+    0.8542,
+    0.8636
+   ],
+   "rrf": [
+    0.6846,
+    0.424,
+    0.8277
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2244,
+     0.4301,
+     0.0359
+    ],
+    "lo": [
+     0.2183,
+     0.4188,
+     0.0289
+    ],
+    "hi": [
+     0.2304,
+     0.4413,
+     0.0429
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.224,
+     0.4292,
+     0.023
+    ],
+    "lo": [
+     0.218,
+     0.4177,
+     0.0151
+    ],
+    "hi": [
+     0.23,
+     0.4404,
+     0.0304
+    ]
+   },
+   "share": {
+    "point": [
+     0.9985,
+     0.9978,
+     0.6391
+    ],
+    "lo": [
+     0.9871,
+     0.987,
+     0.4825
+    ],
+    "hi": [
+     1.0098,
+     1.0082,
+     0.7727
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0003,
+     0.0009,
+     0.013
+    ],
+    "lo": [
+     -0.0022,
+     -0.0035,
+     0.0078
+    ],
+    "hi": [
+     0.0029,
+     0.0055,
+     0.0184
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-metaqa/reads/hotpotqa__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-metaqa/reads/hotpotqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "08235d6e668cf8063b2a69bbb5fe59e500577e327e2ef90f5a6515df1721843f",
+    "zspk": "a350c4e352cae7d1483d385f19c220ffbcb4ca80505fb1eddd9620d9366969f1"
+   }
+  },
+  {
+   "split": "L-metaqa",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "mlp": [
+    0.9337,
+    0.8385,
+    0.9629
+   ],
+   "gnn": [
+    0.934,
+    0.8373,
+    0.9637
+   ],
+   "rrf": [
+    0.6079,
+    0.2536,
+    0.8747
+   ],
+   "gnn_gain": {
+    "point": [
+     0.3261,
+     0.5837,
+     0.089
+    ],
+    "lo": [
+     0.3216,
+     0.5751,
+     0.0833
+    ],
+    "hi": [
+     0.3308,
+     0.5923,
+     0.0947
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3258,
+     0.5849,
+     0.0883
+    ],
+    "lo": [
+     0.3212,
+     0.5763,
+     0.0825
+    ],
+    "hi": [
+     0.3304,
+     0.5936,
+     0.0937
+    ]
+   },
+   "share": {
+    "point": [
+     0.999,
+     1.002,
+     0.992
+    ],
+    "lo": [
+     0.9939,
+     0.9954,
+     0.9592
+    ],
+    "hi": [
+     1.0042,
+     1.0088,
+     1.0248
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0003,
+     -0.0012,
+     0.0007
+    ],
+    "lo": [
+     -0.0014,
+     -0.0052,
+     -0.0022
+    ],
+    "hi": [
+     0.002,
+     0.0027,
+     0.0037
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-metaqa/reads/2wiki__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-metaqa/reads/2wiki__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "23406712e9936ac163a6d38cc03d9cbd36d78325b4e5ee89948c1226e0cbc2a1",
+    "zspk": "95956e5786d4ea7400a6922d61e3836f7ebbc583b23f4b57d03d389f7d6dad2c"
+   }
+  },
+  {
+   "split": "L-metaqa",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "questions": 1503,
+   "mlp": [
+    0.1139,
+    0.0912,
+    0.0645
+   ],
+   "gnn": [
+    0.1162,
+    0.0925,
+    0.0719
+   ],
+   "rrf": [
+    0.0535,
+    0.0379,
+    0.0459
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0627,
+     0.0546,
+     0.0259
+    ],
+    "lo": [
+     0.0513,
+     0.0432,
+     0.018
+    ],
+    "hi": [
+     0.0755,
+     0.0665,
+     0.0353
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0604,
+     0.0532,
+     0.0186
+    ],
+    "lo": [
+     0.0485,
+     0.0413,
+     0.0086
+    ],
+    "hi": [
+     0.0732,
+     0.0652,
+     0.0286
+    ]
+   },
+   "share": {
+    "point": [
+     0.963,
+     0.9756,
+     0.7179
+    ],
+    "lo": [
+     0.838,
+     0.8312,
+     0.383
+    ],
+    "hi": [
+     1.1022,
+     1.1429,
+     1.0455
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0023,
+     0.0013,
+     0.0073
+    ],
+    "lo": [
+     -0.006,
+     -0.0073,
+     -0.0007
+    ],
+    "hi": [
+     0.0105,
+     0.01,
+     0.016
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-metaqa/reads/webqsp__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-metaqa/reads/webqsp__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "3c6d5edb337d26696bac3a65b1736e156ea6a70c883b493c36c33a1c553db013",
+    "zspk": "8f1e09c9b69d6ea7768d55732194ab63349b7d69e7b428c74575b8ad13c93f1f"
+   }
+  },
+  {
+   "split": "L-squad",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "questions": 9785,
+   "mlp": [
+    0.8018,
+    0.6848,
+    0.9173
+   ],
+   "gnn": [
+    0.8039,
+    0.6873,
+    0.9272
+   ],
+   "rrf": [
+    0.0047,
+    0.0026,
+    0.0008
+   ],
+   "gnn_gain": {
+    "point": [
+     0.7991,
+     0.6847,
+     0.9264
+    ],
+    "lo": [
+     0.7924,
+     0.6753,
+     0.9212
+    ],
+    "hi": [
+     0.8053,
+     0.6935,
+     0.9313
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.7971,
+     0.6823,
+     0.9165
+    ],
+    "lo": [
+     0.7902,
+     0.6728,
+     0.911
+    ],
+    "hi": [
+     0.8033,
+     0.6911,
+     0.9218
+    ]
+   },
+   "share": {
+    "point": [
+     0.9974,
+     0.9964,
+     0.9893
+    ],
+    "lo": [
+     0.9961,
+     0.9937,
+     0.9856
+    ],
+    "hi": [
+     0.9988,
+     0.9993,
+     0.9931
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0021,
+     0.0025,
+     0.0099
+    ],
+    "lo": [
+     0.001,
+     0.0005,
+     0.0063
+    ],
+    "hi": [
+     0.0031,
+     0.0043,
+     0.0134
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-squad/reads/metaqa__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-squad/reads/metaqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "ee26b6fdd5f36e32c6612c26143abcda0031b22bdd9db4f0fe64c3f5ff1a42a2",
+    "zspk": "bee47c732e9acaca9b6e049222f5caff8f0133eeee97430c9bf76187ef45aad4"
+   }
+  },
+  {
+   "split": "L-squad",
+   "dataset": "squad",
+   "read": "zero-shot",
+   "questions": 11873,
+   "mlp": [
+    0.891,
+    0.891,
+    0.7341
+   ],
+   "gnn": [
+    0.893,
+    0.893,
+    0.7324
+   ],
+   "rrf": [
+    0.9054,
+    0.9054,
+    0.7335
+   ],
+   "gnn_gain": {
+    "point": [
+     -0.0125,
+     -0.0125,
+     -0.0011
+    ],
+    "lo": [
+     -0.0164,
+     -0.0164,
+     -0.0059
+    ],
+    "hi": [
+     -0.0087,
+     -0.0087,
+     0.0038
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     -0.0144,
+     -0.0144,
+     0.0006
+    ],
+    "lo": [
+     -0.0184,
+     -0.0184,
+     -0.004
+    ],
+    "hi": [
+     -0.0107,
+     -0.0107,
+     0.0051
+    ]
+   },
+   "share": {
+    "point": [
+     -Infinity,
+     -Infinity,
+     -Infinity
+    ],
+    "lo": [
+     -Infinity,
+     -Infinity,
+     -Infinity
+    ],
+    "hi": [
+     -Infinity,
+     -Infinity,
+     7.0
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0019,
+     0.0019,
+     -0.0017
+    ],
+    "lo": [
+     -0.0006,
+     -0.0006,
+     -0.0056
+    ],
+    "hi": [
+     0.0043,
+     0.0043,
+     0.0021
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-squad/reads/squad__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-squad/reads/squad__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "1cd009d68241df6edbfe9dc48ec483fc212f978fcbc10ce204ca52715b108dec",
+    "zspk": "de0616452759a608070eb0a0c1165b91c5b95e58aa1544c7ea21bf61ae991a30"
+   }
+  },
+  {
+   "split": "L-squad",
+   "dataset": "musique",
+   "read": "in-domain",
+   "questions": 2417,
+   "mlp": [
+    0.5776,
+    0.2619,
+    0.7228
+   ],
+   "gnn": [
+    0.584,
+    0.2644,
+    0.7356
+   ],
+   "rrf": [
+    0.4734,
+    0.1353,
+    0.633
+   ],
+   "gnn_gain": {
+    "point": [
+     0.1105,
+     0.1291,
+     0.1026
+    ],
+    "lo": [
+     0.1014,
+     0.1142,
+     0.0869
+    ],
+    "hi": [
+     0.1195,
+     0.144,
+     0.1183
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.1042,
+     0.1266,
+     0.0898
+    ],
+    "lo": [
+     0.0947,
+     0.1113,
+     0.0724
+    ],
+    "hi": [
+     0.1136,
+     0.1419,
+     0.1072
+    ]
+   },
+   "share": {
+    "point": [
+     0.9426,
+     0.9808,
+     0.875
+    ],
+    "lo": [
+     0.8906,
+     0.9105,
+     0.7747
+    ],
+    "hi": [
+     0.9959,
+     1.0559,
+     0.976
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0063,
+     0.0025,
+     0.0128
+    ],
+    "lo": [
+     0.0004,
+     -0.007,
+     0.0025
+    ],
+    "hi": [
+     0.0124,
+     0.012,
+     0.0228
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-squad/reads/musique__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-squad/reads/musique__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "06ed0ad78eae96cd0b898ced035da75c42403c80082c13a23833a11193f77e09",
+    "zspk": "090541d5c0c99b535c51c8eadbfa4981342807c0167bafe47f83dc1dec9cfc26"
+   }
+  },
+  {
+   "split": "L-squad",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "questions": 7405,
+   "mlp": [
+    0.9086,
+    0.854,
+    0.8454
+   ],
+   "gnn": [
+    0.9082,
+    0.8519,
+    0.8586
+   ],
+   "rrf": [
+    0.6846,
+    0.424,
+    0.8277
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2236,
+     0.4278,
+     0.0309
+    ],
+    "lo": [
+     0.2174,
+     0.4162,
+     0.0236
+    ],
+    "hi": [
+     0.2296,
+     0.4394,
+     0.0386
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.224,
+     0.43,
+     0.0177
+    ],
+    "lo": [
+     0.2177,
+     0.4186,
+     0.0104
+    ],
+    "hi": [
+     0.2302,
+     0.4419,
+     0.0248
+    ]
+   },
+   "share": {
+    "point": [
+     1.0018,
+     1.0051,
+     0.5721
+    ],
+    "lo": [
+     0.9919,
+     0.9955,
+     0.3915
+    ],
+    "hi": [
+     1.012,
+     1.0146,
+     0.7129
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0004,
+     -0.0022,
+     0.0132
+    ],
+    "lo": [
+     -0.0027,
+     -0.0062,
+     0.0089
+    ],
+    "hi": [
+     0.0018,
+     0.0019,
+     0.018
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-squad/reads/hotpotqa__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-squad/reads/hotpotqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "2545cdd1858f0a6539b3de9c8ac2cee09dfc268c89b944372d6ed690f91a46bc",
+    "zspk": "13bae2375ded21af6ace09d5e46cfbc75882cba4fdc58e015360c9a8634cabb6"
+   }
+  },
+  {
+   "split": "L-squad",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "mlp": [
+    0.933,
+    0.8372,
+    0.9618
+   ],
+   "gnn": [
+    0.9266,
+    0.8131,
+    0.9728
+   ],
+   "rrf": [
+    0.6079,
+    0.2536,
+    0.8747
+   ],
+   "gnn_gain": {
+    "point": [
+     0.3187,
+     0.5595,
+     0.0981
+    ],
+    "lo": [
+     0.3141,
+     0.551,
+     0.0926
+    ],
+    "hi": [
+     0.3233,
+     0.5681,
+     0.1036
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3251,
+     0.5837,
+     0.0872
+    ],
+    "lo": [
+     0.3203,
+     0.5747,
+     0.0815
+    ],
+    "hi": [
+     0.3299,
+     0.5925,
+     0.0926
+    ]
+   },
+   "share": {
+    "point": [
+     1.0201,
+     1.0432,
+     0.8882
+    ],
+    "lo": [
+     1.0147,
+     1.0351,
+     0.8617
+    ],
+    "hi": [
+     1.0254,
+     1.051,
+     0.9137
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0064,
+     -0.0242,
+     0.011
+    ],
+    "lo": [
+     -0.0081,
+     -0.0284,
+     0.0083
+    ],
+    "hi": [
+     -0.0047,
+     -0.0197,
+     0.0136
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-squad/reads/2wiki__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-squad/reads/2wiki__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "a349b296f59d4ab82f3cc8bdbb812f6faabb814d7174d896a4e4aa9568bf2209",
+    "zspk": "9b121200c209a7b5659217d0aa289620441e361d4b996d99be499af7d006db75"
+   }
+  },
+  {
+   "split": "L-squad",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "questions": 1503,
+   "mlp": [
+    0.3567,
+    0.2888,
+    0.1411
+   ],
+   "gnn": [
+    0.3034,
+    0.2369,
+    0.1697
+   ],
+   "rrf": [
+    0.0535,
+    0.0379,
+    0.0459
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2498,
+     0.1989,
+     0.1238
+    ],
+    "lo": [
+     0.2255,
+     0.1763,
+     0.1011
+    ],
+    "hi": [
+     0.2733,
+     0.2229,
+     0.1464
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3031,
+     0.2508,
+     0.0951
+    ],
+    "lo": [
+     0.2782,
+     0.2255,
+     0.0739
+    ],
+    "hi": [
+     0.3273,
+     0.2748,
+     0.1158
+    ]
+   },
+   "share": {
+    "point": [
+     1.2133,
+     1.2609,
+     0.7688
+    ],
+    "lo": [
+     1.1375,
+     1.1601,
+     0.6298
+    ],
+    "hi": [
+     1.2972,
+     1.3686,
+     0.9348
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0533,
+     -0.0519,
+     0.0286
+    ],
+    "lo": [
+     -0.0707,
+     -0.0699,
+     0.0073
+    ],
+    "hi": [
+     -0.0355,
+     -0.0339,
+     0.0492
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-squad/reads/webqsp__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-squad/reads/webqsp__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "a0b102be479473dfa2aa71f1cb0929ba936481eeea7c41090871e12a6a324080",
+    "zspk": "a500bd2130b0bdae8184b20d86e697bb28349f059ccfc00c6ba2ceb3286ce124"
+   }
+  },
+  {
+   "split": "L-musique",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "questions": 9785,
+   "mlp": [
+    0.8019,
+    0.6849,
+    0.9182
+   ],
+   "gnn": [
+    0.8009,
+    0.6848,
+    0.912
+   ],
+   "rrf": [
+    0.0047,
+    0.0026,
+    0.0008
+   ],
+   "gnn_gain": {
+    "point": [
+     0.7961,
+     0.6823,
+     0.9112
+    ],
+    "lo": [
+     0.7895,
+     0.6728,
+     0.9054
+    ],
+    "hi": [
+     0.8023,
+     0.6916,
+     0.9167
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.7972,
+     0.6824,
+     0.9174
+    ],
+    "lo": [
+     0.7905,
+     0.673,
+     0.9117
+    ],
+    "hi": [
+     0.8034,
+     0.6913,
+     0.9229
+    ]
+   },
+   "share": {
+    "point": [
+     1.0013,
+     1.0001,
+     1.0068
+    ],
+    "lo": [
+     0.9998,
+     0.9975,
+     1.0027
+    ],
+    "hi": [
+     1.0028,
+     1.0028,
+     1.0111
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.001,
+     -0.0001,
+     -0.0062
+    ],
+    "lo": [
+     -0.0022,
+     -0.0019,
+     -0.0101
+    ],
+    "hi": [
+     0.0001,
+     0.0017,
+     -0.0025
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp/reads/metaqa__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk/reads/metaqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "383949c63c0855944cd01ea849cc2e0dc86453fd9eafeb5b626cd372f62f35dc",
+    "zspk": "9a2a5d8007446c28b9127018a8a50e24b964c3932d9f2795f1ba9d29e372aabc"
+   }
+  },
+  {
+   "split": "L-musique",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "mlp": [
+    0.9116,
+    0.9116,
+    0.7503
+   ],
+   "gnn": [
+    0.9114,
+    0.9114,
+    0.7499
+   ],
+   "rrf": [
+    0.9054,
+    0.9054,
+    0.7335
+   ],
+   "gnn_gain": {
+    "point": [
+     0.006,
+     0.006,
+     0.0163
+    ],
+    "lo": [
+     0.0029,
+     0.0029,
+     0.0121
+    ],
+    "hi": [
+     0.0093,
+     0.0093,
+     0.0207
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0062,
+     0.0062,
+     0.0168
+    ],
+    "lo": [
+     0.0031,
+     0.0031,
+     0.0125
+    ],
+    "hi": [
+     0.0094,
+     0.0094,
+     0.0212
+    ]
+   },
+   "share": {
+    "point": [
+     1.0423,
+     1.0423,
+     1.0258
+    ],
+    "lo": [
+     0.6901,
+     0.6901,
+     0.8451
+    ],
+    "hi": [
+     1.5417,
+     1.5417,
+     1.2515
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0003,
+     -0.0003,
+     -0.0004
+    ],
+    "lo": [
+     -0.0023,
+     -0.0023,
+     -0.0037
+    ],
+    "hi": [
+     0.0018,
+     0.0018,
+     0.0028
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp/reads/squad__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk/reads/squad__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "2ea418e74bdca99ff43d886a1ddaf83e54a0973df7262268d26ff6cdabfcde71",
+    "zspk": "e7d60b07da35b452de14eda8dc8207e9472292612744b7c3286fdc4f123fe243"
+   }
+  },
+  {
+   "split": "L-musique",
+   "dataset": "musique",
+   "read": "zero-shot",
+   "questions": 2417,
+   "mlp": [
+    0.5121,
+    0.1862,
+    0.6963
+   ],
+   "gnn": [
+    0.5012,
+    0.1816,
+    0.6698
+   ],
+   "rrf": [
+    0.4734,
+    0.1353,
+    0.633
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0278,
+     0.0463,
+     0.0368
+    ],
+    "lo": [
+     0.0172,
+     0.0294,
+     0.0186
+    ],
+    "hi": [
+     0.0379,
+     0.0625,
+     0.0559
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0387,
+     0.0509,
+     0.0633
+    ],
+    "lo": [
+     0.0287,
+     0.0352,
+     0.0455
+    ],
+    "hi": [
+     0.0487,
+     0.0662,
+     0.0819
+    ]
+   },
+   "share": {
+    "point": [
+     1.395,
+     1.0982,
+     1.7191
+    ],
+    "lo": [
+     1.13,
+     0.8921,
+     1.2642
+    ],
+    "hi": [
+     1.8843,
+     1.4,
+     2.8542
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.011,
+     -0.0046,
+     -0.0265
+    ],
+    "lo": [
+     -0.0177,
+     -0.0145,
+     -0.0418
+    ],
+    "hi": [
+     -0.0043,
+     0.0054,
+     -0.0124
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp/reads/musique__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk/reads/musique__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "4ee1a44edcb30cad902b29cc3daf5412bf3a1b3d91f0613d265d0f141dcb2ba5",
+    "zspk": "4c70adc126a5237318896d7cfe77a003a8fee7e1e1d49b1162a72cdbc596def1"
+   }
+  },
+  {
+   "split": "L-musique",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "questions": 7405,
+   "mlp": [
+    0.9065,
+    0.8471,
+    0.8384
+   ],
+   "gnn": [
+    0.908,
+    0.8528,
+    0.8508
+   ],
+   "rrf": [
+    0.6846,
+    0.424,
+    0.8277
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2234,
+     0.4288,
+     0.0231
+    ],
+    "lo": [
+     0.2174,
+     0.4176,
+     0.0151
+    ],
+    "hi": [
+     0.2296,
+     0.4401,
+     0.0308
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.2219,
+     0.4231,
+     0.0107
+    ],
+    "lo": [
+     0.2158,
+     0.4117,
+     0.0028
+    ],
+    "hi": [
+     0.228,
+     0.4346,
+     0.0185
+    ]
+   },
+   "share": {
+    "point": [
+     0.9934,
+     0.9868,
+     0.462
+    ],
+    "lo": [
+     0.9845,
+     0.9786,
+     0.1679
+    ],
+    "hi": [
+     1.0033,
+     0.9957,
+     0.6802
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0015,
+     0.0057,
+     0.0124
+    ],
+    "lo": [
+     -0.0007,
+     0.0018,
+     0.0073
+    ],
+    "hi": [
+     0.0035,
+     0.0092,
+     0.0174
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp/reads/hotpotqa__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk/reads/hotpotqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "3f074d5de9f56f00fede181af4a59eb6f894fc762cc2ed25f3705037179991aa",
+    "zspk": "e47b25be910e5b8e814e53e86ee5020418e8c88386b7af7dbd7b163a3dca2dd6"
+   }
+  },
+  {
+   "split": "L-musique",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "mlp": [
+    0.9347,
+    0.841,
+    0.9719
+   ],
+   "gnn": [
+    0.9383,
+    0.8502,
+    0.9715
+   ],
+   "rrf": [
+    0.6079,
+    0.2536,
+    0.8747
+   ],
+   "gnn_gain": {
+    "point": [
+     0.3304,
+     0.5966,
+     0.0968
+    ],
+    "lo": [
+     0.3257,
+     0.5876,
+     0.0911
+    ],
+    "hi": [
+     0.3351,
+     0.6054,
+     0.1023
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3268,
+     0.5875,
+     0.0972
+    ],
+    "lo": [
+     0.3221,
+     0.5786,
+     0.0917
+    ],
+    "hi": [
+     0.3316,
+     0.5965,
+     0.1027
+    ]
+   },
+   "share": {
+    "point": [
+     0.9892,
+     0.9847,
+     1.0041
+    ],
+    "lo": [
+     0.9847,
+     0.9787,
+     0.9807
+    ],
+    "hi": [
+     0.9936,
+     0.9904,
+     1.0276
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0036,
+     0.0091,
+     -0.0004
+    ],
+    "lo": [
+     0.0021,
+     0.0057,
+     -0.0026
+    ],
+    "hi": [
+     0.005,
+     0.0126,
+     0.0019
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp/reads/2wiki__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk/reads/2wiki__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "f8920363ce02e961bb0bb1c37ca11a575ac34de96ebd86473353afc7b38f9f22",
+    "zspk": "10a750fdffd088e57da6ed3aec5bf516b0c017b082b6c25b845fedebc85b02a0"
+   }
+  },
+  {
+   "split": "L-musique",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "questions": 1503,
+   "mlp": [
+    0.3627,
+    0.2974,
+    0.1417
+   ],
+   "gnn": [
+    0.3229,
+    0.2495,
+    0.1969
+   ],
+   "rrf": [
+    0.0535,
+    0.0379,
+    0.0459
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2693,
+     0.2116,
+     0.151
+    ],
+    "lo": [
+     0.2442,
+     0.1863,
+     0.1271
+    ],
+    "hi": [
+     0.2935,
+     0.2362,
+     0.1756
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3092,
+     0.2595,
+     0.0958
+    ],
+    "lo": [
+     0.2835,
+     0.2342,
+     0.0739
+    ],
+    "hi": [
+     0.3341,
+     0.2848,
+     0.1164
+    ]
+   },
+   "share": {
+    "point": [
+     1.1481,
+     1.2264,
+     0.6344
+    ],
+    "lo": [
+     1.0827,
+     1.1403,
+     0.513
+    ],
+    "hi": [
+     1.219,
+     1.3205,
+     0.75
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0399,
+     -0.0479,
+     0.0552
+    ],
+    "lo": [
+     -0.0566,
+     -0.0645,
+     0.0339
+    ],
+    "hi": [
+     -0.0231,
+     -0.0313,
+     0.0765
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp/reads/webqsp__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk/reads/webqsp__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "6f4693408b49b7f494bc01eb23f9fb86b6fdf4d81291639c28af5756b4d24181",
+    "zspk": "6b7b01e3a761a5733493054dabb5dfd71b8d7fe6fc18c628b8728365186373c9"
+   }
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "questions": 9785,
+   "mlp": [
+    0.8044,
+    0.6879,
+    0.9264
+   ],
+   "gnn": [
+    0.804,
+    0.6878,
+    0.9278
+   ],
+   "rrf": [
+    0.0047,
+    0.0026,
+    0.0008
+   ],
+   "gnn_gain": {
+    "point": [
+     0.7992,
+     0.6852,
+     0.927
+    ],
+    "lo": [
+     0.7927,
+     0.6758,
+     0.9217
+    ],
+    "hi": [
+     0.8055,
+     0.6942,
+     0.9319
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.7997,
+     0.6853,
+     0.9256
+    ],
+    "lo": [
+     0.793,
+     0.6761,
+     0.9203
+    ],
+    "hi": [
+     0.8059,
+     0.6944,
+     0.9307
+    ]
+   },
+   "share": {
+    "point": [
+     1.0005,
+     1.0001,
+     0.9985
+    ],
+    "lo": [
+     0.9994,
+     0.9978,
+     0.9953
+    ],
+    "hi": [
+     1.0017,
+     1.0024,
+     1.0014
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0004,
+     -0.0001,
+     0.0014
+    ],
+    "lo": [
+     -0.0013,
+     -0.0016,
+     -0.0014
+    ],
+    "hi": [
+     0.0005,
+     0.0015,
+     0.0044
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp-hp/reads/metaqa__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk-hp/reads/metaqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "dc9d16d2287ee89e2aaea75499adb7908b6c558ff4b46c77353c4eaddb47cfb1",
+    "zspk": "06df40cd6fe9442724408f68637bf980f54c92fe11cf3df649e113fe10975f6a"
+   }
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "mlp": [
+    0.9127,
+    0.9127,
+    0.7518
+   ],
+   "gnn": [
+    0.9135,
+    0.9135,
+    0.7517
+   ],
+   "rrf": [
+    0.9054,
+    0.9054,
+    0.7335
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0081,
+     0.0081,
+     0.0182
+    ],
+    "lo": [
+     0.005,
+     0.005,
+     0.0138
+    ],
+    "hi": [
+     0.0114,
+     0.0114,
+     0.0227
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0073,
+     0.0073,
+     0.0183
+    ],
+    "lo": [
+     0.0042,
+     0.0042,
+     0.014
+    ],
+    "hi": [
+     0.0106,
+     0.0106,
+     0.0229
+    ]
+   },
+   "share": {
+    "point": [
+     0.9062,
+     0.9062,
+     1.0046
+    ],
+    "lo": [
+     0.6538,
+     0.6538,
+     0.8539
+    ],
+    "hi": [
+     1.1485,
+     1.1485,
+     1.1918
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0008,
+     0.0008,
+     -0.0001
+    ],
+    "lo": [
+     -0.0011,
+     -0.0011,
+     -0.003
+    ],
+    "hi": [
+     0.0028,
+     0.0028,
+     0.0029
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp-hp/reads/squad__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk-hp/reads/squad__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "101bf0935eac8a53188f03f119304f5b94b3a13e0a7a9ad36716ac18d532ef3c",
+    "zspk": "558a11f3708f5259870c4e7c7a61740361a815ed5ed4077e0196cf2595e83906"
+   }
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "musique",
+   "read": "in-domain",
+   "questions": 2417,
+   "mlp": [
+    0.5745,
+    0.252,
+    0.7278
+   ],
+   "gnn": [
+    0.5754,
+    0.2578,
+    0.7447
+   ],
+   "rrf": [
+    0.4734,
+    0.1353,
+    0.633
+   ],
+   "gnn_gain": {
+    "point": [
+     0.102,
+     0.1225,
+     0.1117
+    ],
+    "lo": [
+     0.0923,
+     0.1067,
+     0.0952
+    ],
+    "hi": [
+     0.1113,
+     0.1378,
+     0.1283
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.1011,
+     0.1167,
+     0.0947
+    ],
+    "lo": [
+     0.0915,
+     0.1014,
+     0.0778
+    ],
+    "hi": [
+     0.1098,
+     0.132,
+     0.1117
+    ]
+   },
+   "share": {
+    "point": [
+     0.9909,
+     0.9527,
+     0.8481
+    ],
+    "lo": [
+     0.9383,
+     0.8835,
+     0.7544
+    ],
+    "hi": [
+     1.0434,
+     1.0241,
+     0.9405
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0009,
+     0.0058,
+     0.017
+    ],
+    "lo": [
+     -0.0044,
+     -0.0029,
+     0.0066
+    ],
+    "hi": [
+     0.0064,
+     0.0145,
+     0.0277
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp-hp/reads/musique__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk-hp/reads/musique__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "3d4131ed4f99079b62ea2b8ce3262125274dc1f5f2bb0aa1163a1380d9f442aa",
+    "zspk": "5d2135ca7eeaa319d28f735247dd42a342db75478c17035b8e80fcdce2ee47c2"
+   }
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "hotpotqa",
+   "read": "zero-shot",
+   "questions": 7405,
+   "mlp": [
+    0.8513,
+    0.7422,
+    0.807
+   ],
+   "gnn": [
+    0.8499,
+    0.7402,
+    0.8019
+   ],
+   "rrf": [
+    0.6846,
+    0.424,
+    0.8277
+   ],
+   "gnn_gain": {
+    "point": [
+     0.1653,
+     0.3161,
+     -0.0258
+    ],
+    "lo": [
+     0.159,
+     0.3044,
+     -0.0344
+    ],
+    "hi": [
+     0.1715,
+     0.3272,
+     -0.0177
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.1667,
+     0.3182,
+     -0.0207
+    ],
+    "lo": [
+     0.1606,
+     0.3071,
+     -0.0288
+    ],
+    "hi": [
+     0.1727,
+     0.3294,
+     -0.0128
+    ]
+   },
+   "share": {
+    "point": [
+     1.0086,
+     1.0064,
+     -Infinity
+    ],
+    "lo": [
+     0.9898,
+     0.9881,
+     -Infinity
+    ],
+    "hi": [
+     1.0273,
+     1.0249,
+     -Infinity
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0014,
+     -0.002,
+     -0.0051
+    ],
+    "lo": [
+     -0.0045,
+     -0.0078,
+     -0.01
+    ],
+    "hi": [
+     0.0017,
+     0.0038,
+     0.0001
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp-hp/reads/hotpotqa__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk-hp/reads/hotpotqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "c34e7dba978b4de4c403b6d24ec8051d0580c043742e21715a321f5ba1e95e20",
+    "zspk": "cfb6ddf7452e776be351533c87892526e9ffe6af6627b2569a96076a63fbb760"
+   }
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "mlp": [
+    0.935,
+    0.84,
+    0.9706
+   ],
+   "gnn": [
+    0.9333,
+    0.8332,
+    0.9796
+   ],
+   "rrf": [
+    0.6079,
+    0.2536,
+    0.8747
+   ],
+   "gnn_gain": {
+    "point": [
+     0.3254,
+     0.5796,
+     0.1049
+    ],
+    "lo": [
+     0.3208,
+     0.5709,
+     0.0991
+    ],
+    "hi": [
+     0.33,
+     0.5887,
+     0.1105
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3271,
+     0.5864,
+     0.0959
+    ],
+    "lo": [
+     0.3225,
+     0.5778,
+     0.09
+    ],
+    "hi": [
+     0.3317,
+     0.5952,
+     0.1015
+    ]
+   },
+   "share": {
+    "point": [
+     1.0054,
+     1.0118,
+     0.9143
+    ],
+    "lo": [
+     1.0002,
+     1.0048,
+     0.8924
+    ],
+    "hi": [
+     1.0103,
+     1.0188,
+     0.935
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0017,
+     -0.0068,
+     0.009
+    ],
+    "lo": [
+     -0.0033,
+     -0.0109,
+     0.0068
+    ],
+    "hi": [
+     -0.0001,
+     -0.0029,
+     0.0114
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp-hp/reads/2wiki__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk-hp/reads/2wiki__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "ff2df4679572cf2a1f71d5845c6a8a7538a6e0580674c170efca1b1c00e5de04",
+    "zspk": "7a15435dd76ce15802326f0563f1f0b4d96d94ef724a59b8dbe16fa914c10079"
+   }
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "questions": 1503,
+   "mlp": [
+    0.3475,
+    0.2814,
+    0.1277
+   ],
+   "gnn": [
+    0.268,
+    0.2069,
+    0.1504
+   ],
+   "rrf": [
+    0.0535,
+    0.0379,
+    0.0459
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2144,
+     0.169,
+     0.1045
+    ],
+    "lo": [
+     0.191,
+     0.1464,
+     0.0818
+    ],
+    "hi": [
+     0.238,
+     0.1916,
+     0.1264
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.2939,
+     0.2435,
+     0.0818
+    ],
+    "lo": [
+     0.2688,
+     0.2196,
+     0.0605
+    ],
+    "hi": [
+     0.3174,
+     0.2668,
+     0.1018
+    ]
+   },
+   "share": {
+    "point": [
+     1.3707,
+     1.4409,
+     0.7834
+    ],
+    "lo": [
+     1.2743,
+     1.3156,
+     0.6158
+    ],
+    "hi": [
+     1.4824,
+     1.5837,
+     0.9803
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0795,
+     -0.0745,
+     0.0226
+    ],
+    "lo": [
+     -0.0973,
+     -0.0918,
+     0.002
+    ],
+    "hi": [
+     -0.0611,
+     -0.0559,
+     0.0426
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/screen/fits/scr-p1c3p-zrckp-hp/reads/webqsp__s1eval.npz",
+    "zspk": "outputs/screen/fits/scr-p1c3-zspk-hp/reads/webqsp__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "5b01232872b58c49316aaf53d7c5ce7036c617a37a7520f5ebd437aba41f8f63",
+    "zspk": "f0a0b5dbb225893cc402ad1b26fba98ea744097e19b20a29d55c75c3a15055f1"
+   }
+  },
+  {
+   "split": "L-2wiki",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "questions": 9785,
+   "mlp": [
+    0.8025,
+    0.6861,
+    0.9208
+   ],
+   "gnn": [
+    0.8045,
+    0.6886,
+    0.9271
+   ],
+   "rrf": [
+    0.0047,
+    0.0026,
+    0.0008
+   ],
+   "gnn_gain": {
+    "point": [
+     0.7998,
+     0.6861,
+     0.9263
+    ],
+    "lo": [
+     0.7933,
+     0.6768,
+     0.9208
+    ],
+    "hi": [
+     0.806,
+     0.695,
+     0.9314
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.7978,
+     0.6835,
+     0.92
+    ],
+    "lo": [
+     0.7912,
+     0.6742,
+     0.9145
+    ],
+    "hi": [
+     0.8041,
+     0.6925,
+     0.9251
+    ]
+   },
+   "share": {
+    "point": [
+     0.9975,
+     0.9963,
+     0.9932
+    ],
+    "lo": [
+     0.9962,
+     0.994,
+     0.9899
+    ],
+    "hi": [
+     0.9988,
+     0.9985,
+     0.9965
+    ]
+   },
+   "gap": {
+    "point": [
+     0.002,
+     0.0026,
+     0.0063
+    ],
+    "lo": [
+     0.001,
+     0.001,
+     0.0033
+    ],
+    "hi": [
+     0.003,
+     0.0041,
+     0.0093
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-2wiki/reads/metaqa__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-2wiki/reads/metaqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "07362e355e07cba938282df16c1e9378b0677871ffe3a4fef9cf9f8a1d04d3d8",
+    "zspk": "3a6a432caddcf904ac7be850075b78f56a646bbef37f4aac49cdbcca48423181"
+   }
+  },
+  {
+   "split": "L-2wiki",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "mlp": [
+    0.9114,
+    0.9114,
+    0.7535
+   ],
+   "gnn": [
+    0.9107,
+    0.9107,
+    0.7472
+   ],
+   "rrf": [
+    0.9054,
+    0.9054,
+    0.7335
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0053,
+     0.0053,
+     0.0137
+    ],
+    "lo": [
+     0.002,
+     0.002,
+     0.0094
+    ],
+    "hi": [
+     0.0085,
+     0.0085,
+     0.0181
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.006,
+     0.006,
+     0.02
+    ],
+    "lo": [
+     0.0028,
+     0.0028,
+     0.0153
+    ],
+    "hi": [
+     0.0091,
+     0.0091,
+     0.0246
+    ]
+   },
+   "share": {
+    "point": [
+     1.127,
+     1.127,
+     1.454
+    ],
+    "lo": [
+     0.7917,
+     0.7917,
+     1.2063
+    ],
+    "hi": [
+     1.8125,
+     1.8125,
+     1.8374
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0007,
+     -0.0007,
+     -0.0062
+    ],
+    "lo": [
+     -0.0025,
+     -0.0025,
+     -0.0091
+    ],
+    "hi": [
+     0.0011,
+     0.0011,
+     -0.0032
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-2wiki/reads/squad__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-2wiki/reads/squad__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "8f124cf7ac0853142e08f2ae93f7755001373fe7988ef908b57faee77ca1ec3c",
+    "zspk": "64f85fc1feaf068ec749951eeef2d80cf673109315fd0137ab2ebc971ac1ea47"
+   }
+  },
+  {
+   "split": "L-2wiki",
+   "dataset": "musique",
+   "read": "in-domain",
+   "questions": 2417,
+   "mlp": [
+    0.5727,
+    0.2569,
+    0.7207
+   ],
+   "gnn": [
+    0.5755,
+    0.2561,
+    0.7331
+   ],
+   "rrf": [
+    0.4734,
+    0.1353,
+    0.633
+   ],
+   "gnn_gain": {
+    "point": [
+     0.1021,
+     0.1208,
+     0.1001
+    ],
+    "lo": [
+     0.0925,
+     0.1059,
+     0.0848
+    ],
+    "hi": [
+     0.1111,
+     0.1361,
+     0.1163
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0993,
+     0.1216,
+     0.0877
+    ],
+    "lo": [
+     0.09,
+     0.1063,
+     0.072
+    ],
+    "hi": [
+     0.1083,
+     0.1365,
+     0.1047
+    ]
+   },
+   "share": {
+    "point": [
+     0.9733,
+     1.0068,
+     0.876
+    ],
+    "lo": [
+     0.9219,
+     0.9404,
+     0.7864
+    ],
+    "hi": [
+     1.0231,
+     1.081,
+     0.9712
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0027,
+     -0.0008,
+     0.0124
+    ],
+    "lo": [
+     -0.0023,
+     -0.0095,
+     0.0025
+    ],
+    "hi": [
+     0.0081,
+     0.0074,
+     0.0219
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-2wiki/reads/musique__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-2wiki/reads/musique__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "4efbf4ad1363fbd984b15e46c1c15e5eb756f15440d1f43ace60b4baa4a842b8",
+    "zspk": "1d77858415fab39521301629a892b4ba6e31554b6c8d52391f825b9749a21d38"
+   }
+  },
+  {
+   "split": "L-2wiki",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "questions": 7405,
+   "mlp": [
+    0.9059,
+    0.845,
+    0.8596
+   ],
+   "gnn": [
+    0.9049,
+    0.8439,
+    0.8601
+   ],
+   "rrf": [
+    0.6846,
+    0.424,
+    0.8277
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2203,
+     0.4199,
+     0.0324
+    ],
+    "lo": [
+     0.2142,
+     0.4088,
+     0.0246
+    ],
+    "hi": [
+     0.2262,
+     0.4311,
+     0.0398
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.2213,
+     0.4209,
+     0.0319
+    ],
+    "lo": [
+     0.2155,
+     0.4097,
+     0.0244
+    ],
+    "hi": [
+     0.2273,
+     0.4324,
+     0.0393
+    ]
+   },
+   "share": {
+    "point": [
+     1.0049,
+     1.0026,
+     0.9833
+    ],
+    "lo": [
+     0.9942,
+     0.992,
+     0.8404
+    ],
+    "hi": [
+     1.0149,
+     1.0124,
+     1.1399
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0011,
+     -0.0011,
+     0.0005
+    ],
+    "lo": [
+     -0.0033,
+     -0.0053,
+     -0.0042
+    ],
+    "hi": [
+     0.0013,
+     0.0034,
+     0.0055
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-2wiki/reads/hotpotqa__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-2wiki/reads/hotpotqa__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "47218641e9e0781e4af63ce8860ad28525a88664774d4ab2a569aaa141c040d2",
+    "zspk": "d6f38b57e531896692bb051cdc93d80fce563dcf3f32c0da2da0cfd7b7382f5f"
+   }
+  },
+  {
+   "split": "L-2wiki",
+   "dataset": "2wiki",
+   "read": "zero-shot",
+   "questions": 12576,
+   "mlp": [
+    0.8541,
+    0.6512,
+    0.9637
+   ],
+   "gnn": [
+    0.8601,
+    0.6609,
+    0.9663
+   ],
+   "rrf": [
+    0.6079,
+    0.2536,
+    0.8747
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2521,
+     0.4073,
+     0.0916
+    ],
+    "lo": [
+     0.2477,
+     0.3985,
+     0.086
+    ],
+    "hi": [
+     0.2565,
+     0.416,
+     0.0971
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.2462,
+     0.3977,
+     0.089
+    ],
+    "lo": [
+     0.2418,
+     0.389,
+     0.0834
+    ],
+    "hi": [
+     0.2506,
+     0.4062,
+     0.094
+    ]
+   },
+   "share": {
+    "point": [
+     0.9765,
+     0.9764,
+     0.9714
+    ],
+    "lo": [
+     0.9679,
+     0.966,
+     0.9426
+    ],
+    "hi": [
+     0.9848,
+     0.9867,
+     1.0009
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0059,
+     0.0096,
+     0.0026
+    ],
+    "lo": [
+     0.0038,
+     0.0053,
+     -0.0002
+    ],
+    "hi": [
+     0.0081,
+     0.0138,
+     0.0053
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-2wiki/reads/2wiki__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-2wiki/reads/2wiki__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "92cb7f69e901ff1896efd57acce9bf35aa288879ff4cd76ac120e4d7fb1cc5f4",
+    "zspk": "31ed58da2e5ec2d5e6b10a2b1e7feb178a2f090b5268208f1da18dad1339f89b"
+   }
+  },
+  {
+   "split": "L-2wiki",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "questions": 1503,
+   "mlp": [
+    0.3686,
+    0.2994,
+    0.1417
+   ],
+   "gnn": [
+    0.2983,
+    0.2342,
+    0.169
+   ],
+   "rrf": [
+    0.0535,
+    0.0379,
+    0.0459
+   ],
+   "gnn_gain": {
+    "point": [
+     0.2448,
+     0.1963,
+     0.1231
+    ],
+    "lo": [
+     0.2207,
+     0.1723,
+     0.1005
+    ],
+    "hi": [
+     0.2678,
+     0.2202,
+     0.1457
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3151,
+     0.2615,
+     0.0958
+    ],
+    "lo": [
+     0.2905,
+     0.2369,
+     0.0739
+    ],
+    "hi": [
+     0.3402,
+     0.2861,
+     0.1171
+    ]
+   },
+   "share": {
+    "point": [
+     1.2872,
+     1.3322,
+     0.7784
+    ],
+    "lo": [
+     1.2066,
+     1.2323,
+     0.6364
+    ],
+    "hi": [
+     1.3766,
+     1.444,
+     0.9367
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0703,
+     -0.0652,
+     0.0273
+    ],
+    "lo": [
+     -0.0873,
+     -0.0825,
+     0.0067
+    ],
+    "hi": [
+     -0.0529,
+     -0.0479,
+     0.0479
+    ]
+   },
+   "files": {
+    "zrckp": "outputs/full_zrckp/fits/L-2wiki/reads/webqsp__s1eval.npz",
+    "zspk": "outputs/full_zspk/fits/L-2wiki/reads/webqsp__s1eval.npz"
+   },
+   "sha256": {
+    "zrckp": "e6928d3c217a3504f70d466068375354b989c3bc114e8e92b5f44613ad3dcbcf",
+    "zspk": "3ff1d47074f984bc3f6f4029abce8691ab45283e1303900aa47fdd9ca8ece9a4"
+   }
+  }
+ ],
+ "script_sha256": "9898a91e2b1a7f93ddc844bd44a50b3736f6d74fd0d8997906301e578fcf58f4",
+ "utc": "2026-10-14T15:52:38Z"
+}

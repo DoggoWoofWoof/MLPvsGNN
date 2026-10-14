@@ -35,13 +35,16 @@ A graph links the candidates (KB facts, hyperlinks, shared names). Then a model 
 3. The MLP is faster, measured cold (each question from scratch, nothing cached).
 
 **Where they stand on 14 October:**
-- **Claim 1 holds in development for the lean pair** (P3a). On our full corpora the lean MLP keeps at least 0.968 of
-  the lean GNN's gain on R@5 and FC@5 on all six datasets; on hit@1 it keeps 0.73 to 0.84 on hotpotqa, 2wiki and
-  webqsp. On the two leave-out fits read for this (zero-shot reads included), the two are within 0.015 R@5 on every
-  read but one, and there the MLP is higher (webqsp zero-shot, 0.287 against 0.226; docs/ZN_LEAN_NO_MP.md). On
-  HippoRAG 2's own benchmark the MLP keeps 0.97 to 0.99 of the GNN's gain. The new lean pair (zrckp, zspk, adopted
-  the evening of 14 October) keeps 0.93 to 1.29 on R@5 and 0.98 to 1.35 on FC@5 on the J5 reads: point estimates,
-  with intervals still to come. musique is the lowest.
+- **Claim 1 held in development for the earlier lean pair, zrc and zsp** (P3a, point estimates). On our full
+  corpora the lean MLP keeps at least 0.968 of the lean GNN's gain on R@5 and FC@5 on all six datasets; on hit@1 it
+  keeps 0.73 to 0.84 on hotpotqa, 2wiki and webqsp. On the two leave-out fits read for this (zero-shot reads
+  included), the two are within 0.015 R@5 on every read but one, and there the MLP is higher (webqsp zero-shot, 0.287
+  against 0.226; docs/ZN_LEAN_NO_MP.md). On HippoRAG 2's own benchmark the MLP keeps 0.97 to 0.99 of the GNN's gain.
+- **The new lean pair (zrckp, zspk, adopted the evening of 14 October), read with 95% intervals** (P3c,
+  docs/P3C_CLAIM1_INTERVALS.md): CLAIM1_NOT_ALL. The in-domain clause holds on metaqa, hotpotqa and 2wiki (the share's
+  lower bound is 0.981 or more). On squad and musique the shares are above 0.9 (1.30 and 0.93), but their intervals
+  reach 0.86 and 0.88, so the clause is not shown there. squad's GNN gain is only +0.0045, which makes its share a
+  ratio of two small numbers. The zero-shot clause holds on all six datasets.
 - **The universal pair falls short of claim 1** on two datasets: twin0 keeps at least 0.9 of gnn0's R@5 gain on
   metaqa, hotpotqa and webqsp, but 0.852 on 2wiki and 0.596 on musique (on squad gnn0 has no gain to share). On FC@5
   it is also just short on metaqa (0.893) and hotpotqa (0.899).
@@ -401,6 +404,8 @@ them, and treating entity and passage questions differently by a data test, not 
   (docs/P4A_POOL_COLD.md, docs/P4B_FAST_WALKS.md, docs/P4C_KT_SERVING.md).
 - **P1c3p:** a pointwise version of the MLP's head (docs/P1C3P_POINTWISE_HEAD.md), then its full run
   (docs/P1C3P_FULL_RUN.md).
+- **P3c:** Claim 1 for the new pair with 95% question-bootstrap intervals, on the full runs' filed reads; nothing
+  trains (docs/P3C_CLAIM1_INTERVALS.md).
 
 **Problems and fixes.**
 - P1c2 was NOT_ADOPTED on one LOSS (zsp, webqsp zero-shot −0.0167), although the pools gave real gains (metaqa +0.020
@@ -434,6 +439,11 @@ them, and treating entity and passage questions differently by a data test, not 
   22 to 39 ms where it does not (squad, webqsp, metaqa). Both lean models pay it, so their ratio stays 0.98 to 1.08.
   The first timing ran while this session was busy, so all six were re-timed idle, by a rule committed first; the two
   agree within 3.3%.
+- **P3c: CLAIM1_NOT_ALL.** In-domain, zrckp keeps 0.997 [0.996, 0.998] of zspk's R@5 gain on metaqa, 1.010 [0.999,
+  1.020] on hotpotqa and 0.986 [0.981, 0.991] on 2wiki: HOLDS. On squad (1.302 [0.859, 2.824]) and musique (0.933
+  [0.881, 0.983]) the interval reaches below 0.9: NOT_SHOWN. Zero-shot, the MLP is never below the GNN by more than its
+  in-domain gap: HOLDS on all six (above the GNN by 0.037 on metaqa held out and by 0.070 on webqsp). Beside:
+  hotpotqa's hit@1 share is 0.844 [0.480, 1.227].
 
 ## 4. By topic
 
@@ -591,7 +601,9 @@ their numbers.
 3. **Derive "typed KB" from the data** everywhere, as the feature compile already does.
 4. **A zero-shot stage for the universal pair** (leave one dataset out), as the lean pair has.
 5. **The MLP's input rule (done):** zrck serves no claim. zrckp's full run is ADOPT, so the lean pair is
-   (zrckp, zspk), with its serving cost timed (P4c). Still open: Claim 1's share for the new pair with intervals.
+   (zrckp, zspk), with its serving cost timed (P4c). Its Claim 1 read with intervals (P3c) is CLAIM1_NOT_ALL: on
+   squad and musique the in-domain share is above 0.9 but not shown with a 95% interval. musique's is the one the
+   models can move (0.933, lower bound 0.881); squad's GNN gain (+0.0045) is too small to pin a share on.
 6. **P1c3's side cost:** hotpotqa hit@1 falls with the KT input. A small term scoring each gold against non-golds is
    the lever we have: zsep raised hit@1 by 0.012 to 0.022 in an earlier round, but its re-call was NO_GAIN with a
    musique LOSS (−0.0101), so it needs a fresh screen.
@@ -611,11 +623,11 @@ their numbers.
   question-link switch; three link families; hyperlinks kept.
 - **Models:** the lean pair is (zrckp, zspk) on KIND_T's pools with the KT input, since zrckp's full run adopted
   (14 October, 20:56). The universal pair is twin0/gnn0 on today's pools.
-- **Claims:** 1 holds in development for the lean pair, on R@5 and FC@5 (the new pair's J5 point estimates are 0.93
-  to 1.35; the universal pair falls short on musique and 2wiki); 2 holds on our corpora and on B1's 2wiki and
-  hotpotqa, not on B1's musique; 3 is not met as set.
-- **Filed tonight:** P1c3's full run (ADOPT), P1c3p's screen (ADOPT_FOR_FULL_RUN) and full run (ADOPT), and P4c
-  (TIMED, re-timed with the session idle).
-- **Next:** Claim 1's share for the new pair with intervals, then the ledger's screens on it (hotpotqa's hit@1,
-  RRF5's position as a ninth column, zck on a frozen base). Their results go into their own docs and into
+- **Claims:** 1, for the new lean pair with 95% intervals (P3c): holds in-domain on metaqa, hotpotqa and 2wiki, not
+  shown on squad and musique, and holds zero-shot on all six (the universal pair falls short on musique and 2wiki);
+  2 holds on our corpora and on B1's 2wiki and hotpotqa, not on B1's musique; 3 is not met as set.
+- **Filed tonight:** P1c3's full run (ADOPT), P1c3p's screen (ADOPT_FOR_FULL_RUN) and full run (ADOPT), P4c
+  (TIMED, re-timed with the session idle), and P3c (CLAIM1_NOT_ALL).
+- **Next:** the ledger's screens on the new pair (hotpotqa's hit@1, RRF5's position as a ninth column, zck on a frozen
+  base); musique's in-domain share is the one Claim 1 needs lifted. Their results go into their own docs and into
   docs/WHERE_WE_STAND.md.
