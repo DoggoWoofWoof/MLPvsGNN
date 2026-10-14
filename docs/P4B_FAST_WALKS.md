@@ -237,6 +237,95 @@ question), so its two forms run the same code. It is timed and checked, and it c
 metaqa ran an entity question on the route without the shortcut (ROUTEst's backfill). That branch did not come up in
 P4a's development check.
 
-## Results
+## Results (filed 14 October, 16:53)
 
-To be filed.
+**The call: FASTER** on metaqa, musique, webqsp, hotpotqa and 2wiki, the five datasets that walk. No dataset is
+slower. **Next:** P4's table uses P4b's form for KIND_T's build.
+
+- **Every check held.** 200 of 200 questions were kept in both sets of all six datasets, all 22 checks each.
+  - Both forms gave P1c2's fills and pools, bit for bit.
+  - The two forms' walks were compared one by one: 5,322 walks, every one with the same order and the same counts.
+- **The protocol held.**
+  - Every run was pinned.
+  - The session was idle from 16:24:06, when the runs started, to 16:51:11, after the report. That covers every
+    timed pass.
+  - The CPU load before the timed passes was 3.8-10.7%. The free memory was 1.33-5.86 GB.
+  - The laptop was on mains power (read at 16:51; P4a's records do not hold the power state).
+
+**KIND_T's build, the fresh set (questions 201-400, deciding), cold, batch 1, one thread, p50 ms:**
+
+| dataset | P4a's form | P4b's form | build ratio (95% CI) | walks, P4a's form | walks, P4b's form | walks ratio (95% CI) |
+| --- | ---: | ---: | --- | ---: | ---: | --- |
+| squad | 0.12 | 0.12 | 0.97 (0.85-1.07), no walk | - | - | - |
+| metaqa | 7.24 | 6.36 | 1.14 (1.13-1.18) | 6.36 | 5.40 | 1.18 (1.15-1.20) |
+| musique | 48.93 | 34.40 | 1.42 (1.40-1.46) | 44.46 | 29.84 | 1.49 (1.46-1.53) |
+| webqsp | 34.58 | 13.20 | 2.62 (2.55-2.74) | 33.00 | 11.63 | 2.84 (2.74-2.96) |
+| hotpotqa | 171.05 | 47.72 | 3.58 (3.47-3.64) | 165.63 | 42.91 | 3.86 (3.74-3.93) |
+| 2wiki | 188.47 | 50.30 | 3.75 (3.68-3.81) | 183.16 | 45.46 | 4.03 (3.95-4.11) |
+
+- **The gain grows with the graph.** It is 1.18x on metaqa's walks (43,234 nodes), 2.84x on webqsp's (2.59 million)
+  and about 4x on hotpotqa's and 2wiki's (5.2 and 6.0 million). On a small graph the walk's state likely fits in the
+  cache already.
+- **The tuning set agrees with the fresh set.** On C12's 200 questions the build ratios are 1.17, 1.46, 2.87, 3.54
+  and 3.70. Each is within 0.05 of the fresh set's, except webqsp's (2.87 against 2.62). Tuning the form on those
+  questions did not inflate its gain.
+- **The position did not matter.** On the walking datasets, each form's build p50 when it ran first and when it ran
+  second differ by at most 5% (6 ms), far below the ratios. squad's walk-free build is 0.04 ms faster in second
+  place, where its question's arrays are already in the cache. The alternation gives that to both forms equally.
+- **Each walk, P4a's form -> P4b's form, fresh set:**
+  - hotpotqa: A1st 64.91 -> 15.32 ms, A1all 60.84 -> 14.92, KTst 18.66 -> 6.33, KTall 21.43 -> 6.58;
+  - 2wiki: A1st 66.86 -> 15.09, A1all 66.04 -> 15.88, KTst 23.83 -> 7.04, KTall 25.47 -> 7.06.
+- **The form's index cost:**
+  - the numbering takes 0.6-3.0 s and the records and lists 0.2-6.4 s;
+  - it holds 0.01-1.41 GB (1.00 GB on hotpotqa, 1.41 GB on 2wiki), beside P4a's walk buffers of up to 0.20 GB.
+
+**End to end on C12's set** (C12's model stages, cold p50 ms; KIND_T's build in place of today's pool stage, P4a's
+caveat; the tuning set). Each cell reads: today's pool / P4a's form / P4b's form.
+
+| dataset | twin0 | gnn0 | zrc | zsp |
+| --- | --- | --- | --- | --- |
+| squad | 2.67 / 2.71 / 2.71 | 4.24 / 4.28 / 4.30 | 1.65 / 1.67 / 1.69 | 1.73 / 1.77 / 1.79 |
+| metaqa | 49.47 / 56.34 / 55.44 | 77.45 / 84.16 / 83.13 | 26.42 / 33.20 / 32.26 | 28.07 / 34.86 / 34.01 |
+| musique | 75.66 / 125.18 / 109.29 | 143.26 / 192.40 / 176.81 | 35.87 / 85.52 / 70.33 | 42.19 / 91.97 / 76.39 |
+| webqsp | 69.87 / 105.93 / 83.24 | 107.26 / 145.38 / 120.46 | 82.65 / 121.74 / 96.97 | 79.62 / 118.73 / 93.41 |
+| hotpotqa | 3.91 / 170.92 / 51.12 | 5.88 / 173.13 / 53.40 | 2.36 / 169.19 / 49.38 | 2.48 / 169.12 / 49.37 |
+| 2wiki | 4.11 / 191.99 / 54.71 | 6.00 / 194.50 / 56.60 | 2.52 / 190.48 / 53.32 | 2.61 / 190.41 / 53.55 |
+
+**Ratios with P4b's build** (C12's set; 95% CIs in the report). The fastest GNN is zsp on every dataset.
+
+| dataset | universal (gnn0 / twin0) | lean (zsp / zrc) | gnn0 / zrc |
+| --- | --- | --- | --- |
+| squad | 1.59 | 1.06 | 2.55 |
+| metaqa | 1.50 | 1.05 | 2.58 |
+| musique | 1.62 | 1.09 | 2.51 |
+| webqsp | 1.45 | 0.96 | 1.24 |
+| hotpotqa | 1.04 | 1.00 | 1.08 |
+| 2wiki | 1.03 | 1.00 | 1.06 |
+
+**A session difference, reported beside the call.**
+- P4a's form, re-timed here on C12's set, runs at 0.58-0.95 of P4a's filed build p50:
+  - squad 0.12 against 0.19 ms (no walk);
+  - metaqa 7.37 against 10.44;
+  - musique 51.13 against 75.98;
+  - webqsp 37.94 against 61.32;
+  - hotpotqa 167.13 against 286.24;
+  - 2wiki 188.11 against 198.91.
+- The laptop ran faster in this session than in P4a's. The gap is largest on hotpotqa, whose filed build was slower
+  than 2wiki's although its walks do less work. Here it is faster, as the work says.
+- **The call does not depend on this.** Both forms ran on every question, back to back, under the same conditions.
+- **The end-to-end tables do.** They combine C12's model stages, from C12's session, with builds timed here. The
+  confirmation run times the models and the build in one session.
+
+**What this means**
+- **KIND_T's build is 2.6-3.8 times faster on the large graphs, with the same pools.** It is 13.20 ms on webqsp,
+  47.72 ms on hotpotqa and 50.30 ms on 2wiki (fresh set). Nothing was removed and nothing approximated.
+- **The build still dominates on hotpotqa and 2wiki.** There it is about 20 times zrc's whole end to end on today's
+  pool (2.36 and 2.52 ms). The universal, lean and gnn0/zrc ratios there are 1.00-1.08 end to end, as P4a expected.
+- **Elsewhere the faster build raises the cross-family ratio:**
+  - musique's gnn0/zrc rises from 2.25 with P4a's form to 2.51;
+  - metaqa's from 2.54 to 2.58;
+  - webqsp's from 1.19 to 1.24.
+- **No exact form left cuts the push walk's own work.** A question's walks are independent of each other, so they
+  could run on separate threads exactly. That changes C12's one-thread protocol, and the build is shared by both
+  models.
+- Claim 3's wording stays the user's call: the model stages with the build reported beside them, or end to end.
