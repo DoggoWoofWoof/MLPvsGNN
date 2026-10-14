@@ -201,3 +201,91 @@ runs, and both models read the same pool, so the MLP's own scoring stays free of
   - looks and caches: about 2 hours on the CPU share, after clean-up 15;
   - the four fits and reads: about 3 hours on the card, two at a time.
 - The encoder stays frozen. webqsp never trains. Test splits are never read.
+
+## 7. Results
+
+Filed 14 October 2026, about 15:05. **NOT_ADOPTED.**
+- **zrc:** 5 GAINs and no LOSS in its 12 reads after the re-call (PROMISING).
+- **zsp:** 5 GAINs and one LOSS (MIXED). The LOSS is webqsp zero-shot on L-musique's fit: −0.0167 [−0.0333, −0.0003],
+  against a floor of 0.0102.
+
+The rule needs no LOSS on either arm, so the pools are not adopted.
+
+**The gate passed at 12:56** (`outputs/p1c2/gate.json`):
+- squad's caches equal step 1's, with score2's largest difference 0;
+- every carve's rows are its frozen pool sizes;
+- all eleven carves' looks filed KIND_T's pools record.
+
+**Files:**
+- `outputs/screen/scr-p1c2-{zrc,zsp}{,-hp}.{md,json}`;
+- `outputs/screen/scr-p1c2-{zrc,zsp}-pair{,-recall}.{md,json}`, with host paths cut from the re-call records;
+- `outputs/p1c2/gate.json`.
+
+**delta R@5 against each arm's base on today's pools, with the re-call** (W = WITHIN; zs = zero-shot):
+
+| arm | fit | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zs) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| zrc | L-musique | +0.0211 GAIN | +0.0019 W | −0.0447 W (zs) | −0.0004 W | +0.0394 GAIN | +0.0082 W |
+| zrc | L-hotpotqa | +0.0209 GAIN | +0.0022 W | +0.0006 W | −0.0088 W (zs) | +0.0394 GAIN | +0.0276 GAIN |
+| zsp | L-musique | +0.0214 GAIN | −0.0006 W | −0.0320 W (zs) | −0.0003 W | +0.0450 GAIN | **−0.0167 LOSS** |
+| zsp | L-hotpotqa | +0.0201 GAIN | +0.0002 W | +0.0060 W | +0.0040 W (zs) | +0.0426 GAIN | +0.0341 GAIN |
+
+The re-call changed three calls, each from LOSS to WITHIN:
+- L-musique's musique zero-shot read, on both arms (floor 0.072);
+- zrc's hotpotqa zero-shot read on L-hotpotqa's fit (−0.0088, floor 0.0200).
+
+Reported beside, deciding nothing:
+- **FC@5** follows R@5. It rises most on 2wiki (+0.074 to +0.086) and falls most on musique zero-shot (−0.046 and
+  −0.053).
+- **hit@1** on musique zero-shot falls by 0.134 for zsp and by 0.019 for zrc. On 2wiki it rises by 0.023 to 0.043.
+
+**The pools on s1eval** (from each dataset's `pools.json`; "today's" is step 1's frozen pools):
+
+| dataset | questions | changed | short | pool (mean) | B_q (mean) | entity | route | ALL, today's | ALL, P1c2 | recall, today's | recall, P1c2 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| metaqa | 9,785 | 9,785 | 0 | 2,017.6 | 1,967.6 | 1.000 | 0.949 | 0.8949 | **0.9606** | 0.9565 | **0.9889** |
+| squad | 11,873 | 0 | 0 | 50.0 | 0.0 | 0 | 0 | 0.9798 | 0.9798 | 0.9798 | 0.9798 |
+| musique | 2,417 | 2,417 | 0 | 2,092.4 | 1,892.4 | 0 | 0.266 | 0.8026 | **0.8999** | 0.9207 | **0.9628** |
+| hotpotqa | 7,405 | 7,398 | 0 | 93.7 | 43.7 | 0.000 | 0.019 | 0.9684 | 0.9594 | 0.9800 | 0.9761 |
+| 2wiki | 12,576 | 12,571 | 0 | 105.7 | 55.6 | 0 | 0.004 | 0.9059 | **0.9587** | 0.9637 | **0.9839** |
+| webqsp | 1,503 | 1,503 | 0 | 2,119.9 | 1,919.4 | 0.967 | 0.293 | 0.6880 | **0.8410** | 0.8110 | **0.9190** |
+
+The fit carves move the same way: ALL 0.901 → 0.962 (metaqa), 0.819 → 0.921 (musique's s1fit), 0.968 → 0.963
+(hotpotqa), 0.903 → 0.950 (2wiki), and squad's pools are today's.
+
+**Did the pools' extra golds reach the top five?** delta R@5 beside the pools' change in gold recall at \|I_q\| on
+s1eval. In brackets: the share of that change that reached the top five.
+
+| dataset | pools' recall change | zrc, L-musique | zrc, L-hotpotqa | zsp, L-musique | zsp, L-hotpotqa |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| metaqa | +0.0324 | +0.0211 (0.65) | +0.0209 (0.65) | +0.0214 (0.66) | +0.0201 (0.62) |
+| squad | 0 | +0.0019 | +0.0022 | −0.0006 | +0.0002 |
+| musique | +0.0421 | −0.0447 (zs) | +0.0006 (0.01) | −0.0320 (zs) | +0.0060 (0.14) |
+| hotpotqa | −0.0039 | −0.0004 | −0.0088 (zs) | −0.0003 | +0.0040 (zs) |
+| 2wiki | +0.0202 | +0.0394 (1.95) | +0.0394 (1.95) | +0.0450 (2.23) | +0.0426 (2.11) |
+| webqsp | +0.1080 | +0.0082 (0.08) | +0.0276 (0.26) | −0.0167 | +0.0341 (0.32) |
+
+What this says:
+- **metaqa and 2wiki gain on both arms and both fits.**
+  - On metaqa about two thirds of the extra golds reach the top five.
+  - On 2wiki R@5 rises about twice as much as the pools' gold recall. The models rank better on KIND_T's pools beyond
+    the golds the pools add.
+- **musique: the extra golds do not reach the top five.** The pools add 0.042 of gold recall.
+  - In-domain (L-hotpotqa's fit), R@5 moves by +0.001 and +0.006.
+  - Zero-shot (L-musique's fit), R@5 falls by 0.032 and 0.045. Both are WITHIN only because musique's seed null is
+    wide.
+- **webqsp, never trained: little reaches the top five.** The pools add 0.108 of gold recall.
+  - Three reads keep 0.08 to 0.32 of it.
+  - zsp on L-musique's fit loses 0.017. That is the LOSS.
+- **hotpotqa** loses 0.004 of gold recall in the pools, and R@5 moves between −0.009 and +0.004.
+- **squad** is the identity: its pools are today's, and R@5 moves by at most 0.0022.
+- **On musique and webqsp, the gap KIND_T opens is a RANKED gap.** The golds are in the pool, and the models do not
+  put them in the top five.
+
+What follows, by the rule (section 5):
+- **No full run.** Today's models on today's pools stay the claims' models until a model on the final pool beats
+  them.
+- **KIND_T stays the final pool.** The pool stage is not re-opened.
+- **P3's ledger** starts from this record: the RANKED gaps on musique and webqsp, read by read.
+- **P5's rerankers** already ran on the final pool and stopped (P5a, P5b, P5b2, P5b3).
+- **P4b continues.** It is the faster exact walks of KIND_T's build, which any model on the final pool pays.

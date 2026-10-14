@@ -1,0 +1,117 @@
+{
+ "files": {
+  "musique__s1fit": {
+   "file": "musique__s1fit.npz",
+   "sha256": "ef168e1e221e6910af957c030e7d8f97f147e6d3a35abf2fbc6247dd5aaa7cf7",
+   "dataset": "musique",
+   "carve": "s1fit",
+   "questions": 4601,
+   "carve_ids_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+   "construction": "KIND_T",
+   "walk_families": [
+    "structural",
+    "ner",
+    "knn"
+   ],
+   "changed": 4601,
+   "short": 0,
+   "B_q": {
+    "mean": 1891.5,
+    "max": 1989
+   },
+   "pool_mean": 2091.5,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.2915,
+    "entity_route": 0.0
+   },
+   "ALL": {
+    "I": 0.8185,
+    "P1c2": 0.9213
+   },
+   "recall": {
+    "I": 0.922,
+    "P1c2": 0.9686
+   },
+   "order_at_I_q": {
+    "ALL": 0.9213,
+    "recall": 0.9686,
+    "size": 2091.5
+   },
+   "checks": {},
+   "step1_cache_rows": {
+    "parts": 6,
+    "questions": 4601,
+    "rows": 9623206,
+    "equal": true
+   },
+   "seconds": 455.7,
+   "utc": "2026-10-13T09:49:59Z"
+  },
+  "musique__s1eval": {
+   "file": "musique__s1eval.npz",
+   "sha256": "5e175990557684892e144e1cf0890b5de44e6132a4def0466424a6098a500715",
+   "dataset": "musique",
+   "carve": "s1eval",
+   "questions": 2417,
+   "carve_ids_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+   "construction": "KIND_T",
+   "walk_families": [
+    "structural",
+    "ner",
+    "knn"
+   ],
+   "changed": 2417,
+   "short": 0,
+   "B_q": {
+    "mean": 1892.4,
+    "max": 1987
+   },
+   "pool_mean": 2092.4,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.2656,
+    "entity_route": 0.0
+   },
+   "ALL": {
+    "I": 0.8026,
+    "P1c2": 0.8999
+   },
+   "recall": {
+    "I": 0.9207,
+    "P1c2": 0.9628
+   },
+   "order_at_I_q": {
+    "ALL": 0.8999,
+    "recall": 0.9628,
+    "size": 2092.4
+   },
+   "checks": {
+    "positions_equal_p1e": true,
+    "at_I_q_equals_p1e": true
+   },
+   "step1_cache_rows": {
+    "parts": 3,
+    "questions": 2417,
+    "rows": 5057436,
+    "equal": true
+   },
+   "seconds": 313.8,
+   "utc": "2026-10-13T09:55:16Z"
+  }
+ },
+ "declared_in": "docs/P1C2_POOLS_KIND_T.md",
+ "dataset": "musique",
+ "construction": "KIND_T",
+ "p1e_verdict_sha256": "cae64b5ac551b2a033ac6652257762483ae8a7460c7f0c493f700b97cb6a1c52",
+ "p1e_part_sha256": "e4527a7d63c2b346c0ace81dd52f980601db64d29b9dab17bcbcc1505a43aff5",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "p1c_script_sha256": "a5f3ac3215320db4aa423720c94ba000e5e2cd82ab78a5e3bf7a17f977900a42",
+ "step4c_script_sha256": "ee5398f4d2f60892f5098068347517e622681c9a5eebebca4a1f8f872f019949",
+ "script_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "name_only_nodes": 0,
+ "nodes": 117534,
+ "utc": "2026-10-13T09:55:16Z"
+}

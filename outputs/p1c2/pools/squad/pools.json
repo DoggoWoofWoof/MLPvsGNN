@@ -1,0 +1,109 @@
+{
+ "files": {
+  "squad__fit": {
+   "file": "squad__fit.npz",
+   "sha256": "7d05d893fdf7a8558d6a6e852345ce260b2b9d461841fda11fe9c949040a2b77",
+   "dataset": "squad",
+   "carve": "fit",
+   "questions": 5856,
+   "carve_ids_sha256": "39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515",
+   "construction": "KIND_T",
+   "walk_families": [],
+   "changed": 0,
+   "short": 0,
+   "B_q": {
+    "mean": 0.0,
+    "max": 0
+   },
+   "pool_mean": 50.0,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0,
+    "entity_route": 0.0
+   },
+   "ALL": {
+    "I": 0.9833,
+    "P1c2": 0.9833
+   },
+   "recall": {
+    "I": 0.9833,
+    "P1c2": 0.9833
+   },
+   "order_at_I_q": {
+    "ALL": 0.9828,
+    "recall": 0.9828,
+    "size": 50.0
+   },
+   "checks": {},
+   "step1_cache_rows": {
+    "parts": 1,
+    "questions": 5856,
+    "rows": 292994,
+    "equal": true
+   },
+   "seconds": 252.0,
+   "utc": "2026-10-13T09:46:13Z"
+  },
+  "squad__s1eval": {
+   "file": "squad__s1eval.npz",
+   "sha256": "3870e664673aa60871807c67706f25850ce1bbc6b3729807f2bba69173ea7be6",
+   "dataset": "squad",
+   "carve": "s1eval",
+   "questions": 11873,
+   "carve_ids_sha256": "e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8",
+   "construction": "KIND_T",
+   "walk_families": [],
+   "changed": 0,
+   "short": 0,
+   "B_q": {
+    "mean": 0.0,
+    "max": 0
+   },
+   "pool_mean": 50.0,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0,
+    "entity_route": 0.0
+   },
+   "ALL": {
+    "I": 0.9798,
+    "P1c2": 0.9798
+   },
+   "recall": {
+    "I": 0.9798,
+    "P1c2": 0.9798
+   },
+   "order_at_I_q": {
+    "ALL": 0.979,
+    "recall": 0.979,
+    "size": 50.0
+   },
+   "checks": {
+    "positions_equal_p1e": true,
+    "at_I_q_equals_p1e": true
+   },
+   "step1_cache_rows": {
+    "parts": 1,
+    "questions": 11873,
+    "rows": 594063,
+    "equal": true
+   },
+   "seconds": 725.8,
+   "utc": "2026-10-13T09:58:21Z"
+  }
+ },
+ "declared_in": "docs/P1C2_POOLS_KIND_T.md",
+ "dataset": "squad",
+ "construction": "KIND_T",
+ "p1e_verdict_sha256": "cae64b5ac551b2a033ac6652257762483ae8a7460c7f0c493f700b97cb6a1c52",
+ "p1e_part_sha256": "0ac0100dc1eea05278e9c13cc1b699a21a0f9e3b7dc8167e78c97a2d5a98346a",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "p1c_script_sha256": "a5f3ac3215320db4aa423720c94ba000e5e2cd82ab78a5e3bf7a17f977900a42",
+ "step4c_script_sha256": "ee5398f4d2f60892f5098068347517e622681c9a5eebebca4a1f8f872f019949",
+ "script_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "name_only_nodes": 0,
+ "nodes": 20233,
+ "utc": "2026-10-13T09:58:21Z"
+}
