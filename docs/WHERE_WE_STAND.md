@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (17:27)
+# Where we stand, 14 October 2026 (20:05)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -27,6 +27,8 @@ models and the gap ledger, speed, and one model with its own representation.
 | `zsp` | lean | The GNN base: zrc's inputs plus one propagation step over each row's neighbours' scores. | yes, one step |
 | `u_mlp_v2_mix` (twin0) | universal | The universal MLP: the v2 compile's 197 columns and the 1,536-wide embeddings. | no |
 | `u_gnn_v2_ef` (gnn0) | universal | The universal GNN: the twin's inputs plus three relation-aware steps and the evidence flow. | yes, three steps |
+| `zrckp` | lean, candidate | zrc plus a pointwise head over the row's own eight KT columns (161 parameters, no score input). Its full run decides the lean pair (section 5). | no |
+| `zspk` | lean, candidate | zsp plus P1c3's KT head (eight KT columns and the row's score z-scored over its question's rows). | yes, one step |
 | `zn` | diagnostic | The lean MLP with every edge-derived input removed. A speed ceiling, not a model. | no |
 | `rrf` | baseline | Reciprocal-rank fusion of the dense encoder and SPLADE. No training. | no |
 
@@ -378,8 +380,10 @@ on today's pools.
 
 **P1c3's screen, filed 14 October 17:22: ADOPT_FOR_FULL_RUN** ([P1C3_KT_INPUT.md](P1C3_KT_INPUT.md) section 7). Both
 lean models get one more input on KIND_T's pools: where KIND_T's construction put each pool row. That is eight columns
-computed when the pool is built, from no gold, read through a 177-parameter head. The MLP's head reads only its own
-row, so it stays free of message passing.
+computed when the pool is built, from no gold, read through a 177-parameter head. **Correction (18:40):** the head's
+ninth input is the row's score z-scored over its question's rows, so zrck's head reads the other rows' scores. That
+breaks the MLP's 8 October input rule, so zrck serves no claim; P1c3p's pointwise head (zrckp) is the fix (below).
+zspk is the GNN and keeps it.
 - zrck (the MLP) and zspk (the GNN) each have 6 GAINs and no LOSS in 12 reads after the re-call.
 - metaqa (+0.021 to +0.026) and 2wiki (+0.040 to +0.066) gain on both arms and both fits. webqsp zero-shot: zrck
   +0.037 and +0.082, zspk −0.002 and +0.042.
@@ -388,8 +392,28 @@ row, so it stays free of message passing.
   golds (P1c2: 0.08 and 0.26).
 - Beside, deciding nothing: hotpotqa's hit@1 falls on all four fits (−0.008 to −0.043, each interval below 0) while its
   R@5 rises a little, and musique zero-shot's FC@5 falls (−0.033 and −0.021).
-- **The full run** ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)) is running: four more fits per arm, 36 reads each, and one
-  verdict for the lean pair at about 19:40.
+
+**P1c3's full run, filed 14 October 19:41: ADOPT** ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md), Results). Four more fits per
+arm, 36 reads each, re-graded under the seed null over every split.
+- Neither arm has a LOSS. Each has 5 of 11 primary GAINs (J5 metaqa, 2wiki and webqsp; L-metaqa's metaqa; L-2wiki's
+  2wiki): zrck 18 GAINs in all, zspk 16.
+- 2wiki rises +0.040 to +0.066 on every split, and metaqa on every split. webqsp zero-shot rises on six splits for zrck
+  and four for zspk.
+- The filed grades' one LOSS each (L-musique's held-out musique read, −0.0176 and −0.0100) is WITHIN under its null
+  floor of 0.0720.
+- Beside: hotpotqa's held-out hit@1 falls about 0.04 for both; musique's hit@1 rises on all six splits.
+- zrck serves no claim, so the lean pair waits on zrckp.
+
+**P1c3p's screen, filed 14 October 19:55: ADOPT_FOR_FULL_RUN**
+([P1C3P_POINTWISE_HEAD.md](P1C3P_POINTWISE_HEAD.md) section 7). zrckp is zrc plus a head that reads only the row's own
+eight KT columns.
+- 7 GAINs and no LOSS in 12 reads after the re-call: metaqa +0.024 and +0.025, 2wiki +0.061 and +0.062, webqsp
+  zero-shot +0.024 and +0.061, musique in-domain +0.010.
+- Beside, against zrck: level on ten of twelve reads, +0.022 on 2wiki in L-hotpotqa's fit, and below on webqsp
+  zero-shot (it keeps 0.65 and 0.74 of zrck's gain there). hotpotqa's hit@1 still falls (−0.034 zero-shot).
+- **Its full run** ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md)) is running: four more fits, 36 reads, verdict at about
+  21:30. ADOPT makes the lean pair (zrckp, zspk), timed cold first (P4c); anything else keeps (zrc, zsp) on today's
+  pools.
 
 **The user's rule, 13 October, about 10:40: the pools first, with nothing learned**
 ([PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)).
@@ -536,13 +560,17 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   one link from the seeds, where H2's cosine orders them best and g's rank is noise.
 - **The learned offsets close,** and P5c does not start.
 
-## 7. Running now (14 October, 17:27)
+## 7. Running now (14 October, 20:05)
 
-- **P1c3's full run** on the host ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)): eight fits (J5, L-2wiki, L-squad and
-  L-metaqa for each arm), three at a time on the card. The reads, grades and the pair's verdict follow, at about 19:40.
+- **zrckp's full run** on the host ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md)): four fits (J5, L-2wiki, L-squad and
+  L-metaqa), three at a time on the card; its gate opened at 19:46. The reads, grade, re-grade and verdict follow, at
+  about 21:30.
+- **P4c's timed runs** on the laptop ([P4C_KT_SERVING.md](P4C_KT_SERVING.md)): the KT input's cold serving cost beside
+  KIND_T's build, on mains power and pinned, in P4a's order (squad first).
 - **Done since the last update:**
-  - P4b filed (section 3): FASTER. KIND_T's build is 1.14-3.75× faster, with the same pools bit for bit.
-  - P1c3's screen filed (section 5): ADOPT_FOR_FULL_RUN.
+  - P1c3's full run filed (section 5): ADOPT.
+  - P1c3p declared and screened (section 5): ADOPT_FOR_FULL_RUN.
+  - The project timeline: [PROJECT_TIMELINE.md](PROJECT_TIMELINE.md).
 
 ## 8. Open gaps
 
@@ -551,7 +579,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
 | Pools against SOTA (full corpora) | P1e's KIND_T, parameter-free, the final pool: at or above the best SOTA order on squad, musique, 2wiki and webqsp; below on metaqa (up to −0.005) and hotpotqa (up to −0.007). Like-for-like, webqsp is below A1 on the structural family (up to −0.051). | Closed. metaqa and webqsp pull the entity branch in opposite directions, so no further fixed rule is declared. The learned gates stay beside. |
 | SOTA rankers (full corpora) | Both GNNs at or above the best LLM-free SOTA ranking on all six (P3a). Where the bar wins, the gold was in our pool and ranked out (P3b). | P5's representation. A seeds-removed read on more than 17 and 12 questions needs P3a's walk rows kept past ten nodes. |
 | What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5b and P5b2 STOP: the learned offset g(question, seed, graph features) finds more of these golds on 2wiki, metaqa and hotpotqa, golds no fit question had among them, but fewer on musique (near chance, with or without a held-out stop) and mixed on webqsp zero-shot (section 6). P5a's fixed map STOPS. P5b3's per-question back-off between H2 and g STOPS too: more on four datasets, still fewer on musique (0.005 to 0.011). The learned offsets close. |
-| Golds the final pool adds | P1c2: about two thirds reach the top five on metaqa, and 2wiki's R@5 rises twice the pools' recall gain; on musique and webqsp little or none does (zsp −0.017 on webqsp zero-shot) | P1c3's walk positions as an input (screen ADOPT_FOR_FULL_RUN): musique zero-shot wins back 0.61-0.69 of the pools' cost, and webqsp keeps up to 0.76 of the extra golds. Its full run decides. If it is NOT_ADOPTED, P3's ledger continues from P1c2's and P1c3's records. |
+| Golds the final pool adds | P1c2: about two thirds reach the top five on metaqa, and 2wiki's R@5 rises twice the pools' recall gain; on musique and webqsp little or none does (zsp −0.017 on webqsp zero-shot) | P1c3's walk positions as an input (full run ADOPT): musique zero-shot wins back 0.61-0.69 of the pools' cost in the screen, and webqsp keeps up to 0.76 of the extra golds. zrck breaks the MLP rule, so zrckp's full run decides the lean pair. If it is NOT_ADOPTED, P3's ledger continues from P1c2's, P1c3's and P1c3p's records. |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions. On the full corpus (P3b): ranked out 0.23-0.28 of R@5, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop). | D4 (link words): NO_SIGNAL. P2c part 1: on B1 musique our LLM-free graph adds more than the LLM-built graphs, so the LLM graph is not what our walks lack. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
@@ -614,6 +642,10 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
 - **14 October: faster walks, and the walk positions as an input.** P4b made KIND_T's walks 1.14-3.75× faster,
   exactly. P1c3 gave both lean models KIND_T's walk positions as one more input. Its screen passes with 6 GAINs and no
   LOSS on each, and its full run decides.
+- **14 October, evening: the walk positions adopted, and the MLP rule kept.** P1c3's full run is ADOPT: no LOSS in 36
+  reads on either arm. The user caught that zrck's head reads other rows' scores through a per-question z-score, so
+  zrck serves no claim. P1c3p's pointwise head (zrckp) passed its screen with 7 GAINs and no LOSS, and its full run
+  decides the lean pair.
 
 ## What is next
 
@@ -624,9 +656,11 @@ file, committed before its numbers.
 2. **The models on the final pools.** P1c2 ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)) retrained both bases on
    KIND_T's pools at today's sizes: **NOT_ADOPTED**, with no full run. Today's models stay the claims' models. Its
    record starts P3's ledger: on musique and webqsp the pools' extra golds are ranked out. P1c3
-   ([P1C3_KT_INPUT.md](P1C3_KT_INPUT.md)) adds KIND_T's walk positions as one input to both lean models. Its screen is
-   **ADOPT_FOR_FULL_RUN**, and its full run ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)) decides at about 19:40. On ADOPT,
-   the input's serving cost (every walk it reads) is timed cold before any claim uses the KT models.
+   ([P1C3_KT_INPUT.md](P1C3_KT_INPUT.md)) adds KIND_T's walk positions as one input to both lean models. Its full run
+   ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)) is **ADOPT**, but zrck's head breaks the MLP rule. P1c3p's pointwise head
+   (zrckp) is **ADOPT_FOR_FULL_RUN**, and its full run ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md)) decides at about
+   21:30. On ADOPT, the input's serving cost (every walk it reads) is timed cold (P4c) before any claim uses the KT
+   models.
 3. **Rerankers on the final pools:** the learned offset g(question, seed, graph features), fit by EM over the latent
    seed and offset, aimed at the BRIDGE part of GNN>MLP and at the RANKED misses. P5b and P5b2 STOP: g finds more on
    2wiki and metaqa, golds no fit question had among them, but adds nothing on musique, and a fixed fusion cannot back
