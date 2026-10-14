@@ -156,7 +156,7 @@ Reported beside, deciding nothing:
 
   The call should land about 15 minutes after the items start, if the card is free.
 
-## 7. Results (filed 14 October 2026, about 07:10): STOPS
+## 7. Results (filed 14 October 2026, about 06:55): STOPS
 
 `python scripts/p5b2_stop.py verdict` on the fetched records (`outputs/p5b2/verdict.json` and `verdict.md`). Every
 check held:

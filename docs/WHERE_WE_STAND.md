@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (07:15)
+# Where we stand, 14 October 2026 (07:00)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -440,7 +440,7 @@ filed db5ce0a). KIND_T is chosen, and the call is NOT_ALL_SIX. **It is the final
   below H2 (0.012 against 0.026).
 - **Why (beside the call): the fit memorized its questions.** Its own loss on musique's fit questions fell to 0.88
   nats per gold, with 200,465 weights, 30 epochs and no held-out check. On squad's 104 fit questions it fell to 0.004.
-**P5b2, declared 16:45 (f8e9e41), filed 14 October 07:10: STOPS** ([P5B2_HELD_OUT_STOP.md](P5B2_HELD_OUT_STOP.md),
+**P5b2, declared 16:45 (f8e9e41), filed 14 October 06:55: STOPS** ([P5B2_HELD_OUT_STOP.md](P5B2_HELD_OUT_STOP.md),
 section 7). The same g, with its fit stopped at the epoch that best predicts held-out golds no training question had,
 and every number split into golds the fit questions had (seen) and new ones.
 - **The stop worked:** both fits kept an early epoch (4 and 3 of 30), where the loss on the fit's own questions equals
@@ -455,7 +455,7 @@ and every number split into golds the fit questions had (seen) and new ones.
   cosine order them best, and a fixed fusion cannot back off where g knows nothing.
 - **The learned offsets close in this form,** and P5c does not start. Any further reranker form gets its own file.
 
-## 7. Running now (14 October, 07:15)
+## 7. Running now (14 October, 07:00)
 
 - **Nothing of ours is running on the host.** The host was off the network from about 16:42 on 13 October until
   00:06, and its link kept dropping after that. P5b2 ran between 01:15 and 05:30 on a slow host and is filed
