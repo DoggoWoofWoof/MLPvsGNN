@@ -241,7 +241,7 @@ P4c times what serving them costs. How Claim 3 is worded stays the user's call.
 check on the first 10 questions of each set, now with kt_filed. On every dataset, every serve row's eight columns equal
 P1c3's filed float16 columns, and all 17 checks pass with 0 failing. It logs no number.
 
-## Re-timing (declared 14 October, 20:30, before any number was read)
+## Re-timing (declared 14 October, 20:28, before any number was read)
 
 The first runs went from 20:02 to 20:26, in P4a's order. Every dataset kept 200 of 200 questions in both sets, passed
 all 17 checks on every question, and ran pinned on mains power. But this session was still running commands until
