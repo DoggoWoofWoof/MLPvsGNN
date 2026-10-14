@@ -236,6 +236,10 @@ P4c times what serving them costs. How Claim 3 is worded stays the user's call.
 | hotpotqa | 10 | passage without L*; passage with L* | 0 |
 | 2wiki | 10 | passage with L* | 0 |
 
+**With the host's slices, after the declaration** (14 October, 18:23-18:38; the slices filed in 0974bf9): the same
+check on the first 10 questions of each set, now with kt_filed. On every dataset, every serve row's eight columns equal
+P1c3's filed float16 columns, and all 17 checks pass with 0 failing. It logs no number.
+
 ## Results
 
 To be filed.
