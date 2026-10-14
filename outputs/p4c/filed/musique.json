@@ -1,0 +1,15 @@
+{
+ "declared_in": "docs/P4C_KT_SERVING.md",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "questions": 401,
+ "rows": 845410,
+ "npz_sha256": "d96dbc05d05dd89cb6ee342b3dcd3a0b8c57c39d5670cbd72c50848d47785e7e",
+ "kt_record_sha256": "5606b5f12adfcd88c22dca4425f395cdf88699b35fc48252530dc18ec78131b4",
+ "kt_sha256": "39377cdda7157d8720efdd477b0d1c1e75901c0c656e17b5e55f18681477145c",
+ "pools_manifest_sha256": "6ad837d24999a624cfd56ee9c53f47d35e2d9c9364a0a4cbbf2be630a4b33872",
+ "script_sha256": "92fadcc89632d40f83b2c15c1aefe7ce0587d2d3e32a5c955856f38c254fc256",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "seconds": 1.3,
+ "utc": "2026-10-14T12:52:37Z"
+}

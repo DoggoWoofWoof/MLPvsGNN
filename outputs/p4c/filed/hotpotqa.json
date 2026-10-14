@@ -1,0 +1,15 @@
+{
+ "declared_in": "docs/P4C_KT_SERVING.md",
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "questions": 401,
+ "rows": 37639,
+ "npz_sha256": "cf9dfd0617cd48395e0c3e7c8544313e30e84bcbc630205de32035411e70290b",
+ "kt_record_sha256": "4376110a5f63e7ac38123745f4ac388ab2a074a4727fa1c57a64f32f772c9a84",
+ "kt_sha256": "577348157bca9227f71f03be73b289a777d79b8af11fa623c7b743a90e378d8c",
+ "pools_manifest_sha256": "cbfa92be53499b5fedb143edadcf93211a927ce99c4c62f949d44f36861e8e3f",
+ "script_sha256": "92fadcc89632d40f83b2c15c1aefe7ce0587d2d3e32a5c955856f38c254fc256",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "seconds": 0.1,
+ "utc": "2026-10-14T12:52:36Z"
+}

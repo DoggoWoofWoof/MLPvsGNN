@@ -1,0 +1,15 @@
+{
+ "declared_in": "docs/P4C_KT_SERVING.md",
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "questions": 401,
+ "rows": 42477,
+ "npz_sha256": "be11b0c938e000ec8f3d01ddd6b27cefe9cfa54213fb6bcb97b2b0f55a7c61da",
+ "kt_record_sha256": "494e432e0879b8fae0883a742bca0eeb4b2a01a179e9b9af46fbc056e9778a8a",
+ "kt_sha256": "22bdcd0005674948be40d30d7ff79959a43d206a94c47e46db53ecd24d1e5e9f",
+ "pools_manifest_sha256": "905c949f814c6c9b76810e9b4dfd3613efce67cf89479dd6c4196b3ab962a592",
+ "script_sha256": "92fadcc89632d40f83b2c15c1aefe7ce0587d2d3e32a5c955856f38c254fc256",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "seconds": 0.1,
+ "utc": "2026-10-14T12:52:37Z"
+}
