@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (15:05)
+# Where we stand, 14 October 2026 (17:35)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -17,7 +17,7 @@ models and the gap ledger, speed, and one model with its own representation.
 | --- | --- | --- |
 | 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). On the full corpora (P3a, beside): the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all six; the universal MLP keeps at least 0.9 on metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique. Where the MLP loses to its GNN, it is mostly golds one link from a found gold on hotpotqa and 2wiki, and ranking elsewhere (P3b). The six-dataset test is the confirmation run's. |
 | 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. On the full corpora both GNNs are at or above the best LLM-free SOTA ranking on all six datasets, on R@5, FC@5 and hit@1 (P3a), and still at or above on metaqa and webqsp with the seeds removed, on a thin read (P3b). The final pool, P1e's parameter-free KIND_T, is at or above the best LLM-free SOTA pool order on four datasets, and within 0.005 and 0.007 of it on metaqa and hotpotqa (section 5). |
-| 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.46-1.89×; zrc 2.38-3.99×, webqsp 1.30×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there: zrc is 0.96-1.18× faster, and twin0 is faster than zsp only on webqsp. With every input kept, each MLP stays below 2× zsp on five datasets even if every shared stage cost nothing (section 3). The final pool's build is shared by every model (P4a): on hotpotqa and 2wiki it is 99% of every model's cold end to end, and every ratio there is 1.00-1.02 end to end. |
+| 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.46-1.89×; zrc 2.38-3.99×, webqsp 1.30×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there: zrc is 0.96-1.18× faster, and twin0 is faster than zsp only on webqsp. With every input kept, each MLP stays below 2× zsp on five datasets even if every shared stage cost nothing (section 3). The final pool's build is shared by every model (P4a): on hotpotqa and 2wiki it is 99% of every model's cold end to end, and every ratio there is 1.00-1.02 end to end. P4b's exact walks build the same pools 1.14-3.75× faster (hotpotqa 171 → 48 ms, 2wiki 188 → 50 ms); the build is still about 20 times zrc's end to end there, and every ratio there is 1.00-1.08. |
 
 ## The models
 
@@ -205,6 +205,20 @@ FastPool builds in 0.07-0.33 ms. KIND_T's pool walks the graph first.
   walks would still leave the build far above the models' 1.7-6 ms on hotpotqa and 2wiki. Whether Claim 3 is stated on
   the model stages, with the build beside them, or end to end, is the user's call.
 
+**Faster exact walks (P4b, [P4B_FAST_WALKS.md](P4B_FAST_WALKS.md), filed 14 October 16:53): FASTER.** The same walks,
+step for step, with their state laid out for the memory: one record per node for what each visit reads, the neighbour
+lists merged, no reset pass, the nodes numbered breadth-first, and reads issued ahead.
+- **Exact.** Both forms built every pool on 200 fresh questions per dataset, back to back. 5,322 walks were compared
+  one by one, with the same order and counts every time, and both forms gave P1c2's pools bit for bit.
+- **KIND_T's build, cold p50, P4a's form → P4b's:** metaqa 7.2 → 6.4 ms (1.14×), musique 48.9 → 34.4 (1.42×),
+  webqsp 34.6 → 13.2 (2.62×), hotpotqa 171 → 48 (3.58×), 2wiki 188 → 50 (3.75×). The gain grows with the graph.
+- **End to end, with C12's model stages:** on hotpotqa and 2wiki the build is still about 20 times zrc's whole end to
+  end, and every ratio there is 1.00-1.08. gnn0 / zrc is 2.51 on musique, 2.58 on metaqa and 1.24 on webqsp.
+- **A session difference:** P4a's form ran at 0.58-0.95 of its filed p50 in P4b's session. The ratio does not depend
+  on that, because both forms ran side by side.
+- **No exact form left cuts the walks' own work.** A question's walks are independent, so they could run on separate
+  threads exactly. That changes C12's one-thread protocol, so it is the user's call, as is Claim 3's wording.
+
 ## 4. Links and edges (U1, G1a)
 
 The aim is one LLM-free link rule for all six datasets, so the headline does not need the 2wiki and hotpotqa
@@ -362,6 +376,21 @@ on today's pools.
 - So those two are RANKED gaps: the golds are in the pool and ranked out. Today's models on today's pools stay the
   claims' models until a model on the final pool beats them.
 
+**P1c3's screen, filed 14 October 17:22: ADOPT_FOR_FULL_RUN** ([P1C3_KT_INPUT.md](P1C3_KT_INPUT.md) section 7). Both
+lean models get one more input on KIND_T's pools: where KIND_T's construction put each pool row. That is eight columns
+computed when the pool is built, from no gold, read through a 177-parameter head. The MLP's head reads only its own
+row, so it stays free of message passing.
+- zrck (the MLP) and zspk (the GNN) each have 6 GAINs and no LOSS in 12 reads after the re-call.
+- metaqa (+0.021 to +0.026) and 2wiki (+0.040 to +0.066) gain on both arms and both fits. webqsp zero-shot: zrck
+  +0.037 and +0.082, zspk −0.002 and +0.042.
+- Against P1c2's fits, the input wins back 0.61 and 0.69 of what the pools cost on musique zero-shot. zrck now reads
+  above KIND_T's own order there (0.5059 against 0.5025). On webqsp zrck keeps 0.34 and 0.76 of the pools' extra
+  golds (P1c2: 0.08 and 0.26).
+- Beside, deciding nothing: hotpotqa's hit@1 falls on all four fits (−0.008 to −0.043, each interval below 0) while its
+  R@5 rises a little, and musique zero-shot's FC@5 falls (−0.033 and −0.021).
+- **The full run** ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)) is running: four more fits per arm, 36 reads each, and one
+  verdict for the lean pair at about 19:40.
+
 **The user's rule, 13 October, about 10:40: the pools first, with nothing learned**
 ([PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)).
 - The links and the final pool are one rule for all six datasets: nothing fit to golds, nothing set per dataset, and
@@ -507,17 +536,13 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   one link from the seeds, where H2's cosine orders them best and g's rank is noise.
 - **The learned offsets close,** and P5c does not start.
 
-## 7. Running now (14 October, 15:05)
+## 7. Running now (14 October, 17:35)
 
-- **P4b**, faster exact walks for the final pool, is being built on the laptop. Its declaration comes before any timed
-  number.
-  - In development replays of P4a's recorded walks, every walk's order and counts equal P4a's.
-  - The levers are exact: smaller node records, a breadth-first renumbering of the nodes, software prefetch, and a
-    cheaper top.
+- **P1c3's full run** on the host ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)): eight fits (J5, L-2wiki, L-squad and
+  L-metaqa for each arm), three at a time on the card. The reads, grades and the pair's verdict follow, at about 19:40.
 - **Done since the last update:**
-  - P1c2 filed (section 5): NOT_ADOPTED. zsp loses webqsp zero-shot on L-musique's fit, and on musique and webqsp
-    the pools' extra golds do not reach the top five.
-  - P4a filed (section 3): KIND_T's build costs 0.19-286 ms cold, and the call is WALKS_DOMINATE.
+  - P4b filed (section 3): FASTER. KIND_T's build is 1.14-3.75× faster, with the same pools bit for bit.
+  - P1c3's screen filed (section 5): ADOPT_FOR_FULL_RUN.
 
 ## 8. Open gaps
 
@@ -526,15 +551,15 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
 | Pools against SOTA (full corpora) | P1e's KIND_T, parameter-free, the final pool: at or above the best SOTA order on squad, musique, 2wiki and webqsp; below on metaqa (up to −0.005) and hotpotqa (up to −0.007). Like-for-like, webqsp is below A1 on the structural family (up to −0.051). | Closed. metaqa and webqsp pull the entity branch in opposite directions, so no further fixed rule is declared. The learned gates stay beside. |
 | SOTA rankers (full corpora) | Both GNNs at or above the best LLM-free SOTA ranking on all six (P3a). Where the bar wins, the gold was in our pool and ranked out (P3b). | P5's representation. A seeds-removed read on more than 17 and 12 questions needs P3a's walk rows kept past ten nodes. |
 | What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5b and P5b2 STOP: the learned offset g(question, seed, graph features) finds more of these golds on 2wiki, metaqa and hotpotqa, golds no fit question had among them, but fewer on musique (near chance, with or without a held-out stop) and mixed on webqsp zero-shot (section 6). P5a's fixed map STOPS. P5b3's per-question back-off between H2 and g STOPS too: more on four datasets, still fewer on musique (0.005 to 0.011). The learned offsets close. |
-| Golds the final pool adds | P1c2: about two thirds reach the top five on metaqa, and 2wiki's R@5 rises twice the pools' recall gain; on musique and webqsp little or none does (zsp −0.017 on webqsp zero-shot) | P3's ledger, read by read, from P1c2's record. Today's models stay the claims' models until a model on the final pool beats them. |
+| Golds the final pool adds | P1c2: about two thirds reach the top five on metaqa, and 2wiki's R@5 rises twice the pools' recall gain; on musique and webqsp little or none does (zsp −0.017 on webqsp zero-shot) | P1c3's walk positions as an input (screen ADOPT_FOR_FULL_RUN): musique zero-shot wins back 0.61-0.69 of the pools' cost, and webqsp keeps up to 0.76 of the extra golds. Its full run decides. If it is NOT_ADOPTED, P3's ledger continues from P1c2's and P1c3's records. |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions. On the full corpus (P3b): ranked out 0.23-0.28 of R@5, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop). | D4 (link words): NO_SIGNAL. P2c part 1: on B1 musique our LLM-free graph adds more than the LLM-built graphs, so the LLM graph is not what our walks lack. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
 | Pool misses | One hop on the KBs and musique; first stage on hotpotqa and squad | Step 4h covers the one-hop misses; the first-stage misses are open. |
 | Zero-shot to webqsp | zsp 26.8 zero-shot; a model trained on webqsp reached about 60 (S6) | Longer training lifts the MLP's transfer, but under seed noise (round 33). |
 | Training data | At equal steps, half the data loses 1 read of 12 (round 33's step control) | Not the lever: no second fit carve, by D3's rule. |
-| MLP vs the fastest GNN | zsp is the fastest GNN on all six; zrc is 0.96-1.18× faster, twin0 slower except on webqsp (1.14× faster) | Not met. With every input kept, the forwards keep each MLP below 2× on five datasets (section 3). With the final pool's build, every ratio on hotpotqa and 2wiki is 1.00-1.02 end to end (P4a). How Claim 3 is worded is open. |
-| Universal speed | gnn0 / twin0 1.46-1.89× (C12) | P4a: the final pool's build (0.19-286 ms) is shared and pulls every ratio toward 1. P4b: faster exact walks. C13 (exact per-family prototypes and depth basis) is parked: it reaches 2× on musique only; squad, metaqa and webqsp need the compile 3.0-3.7× faster. |
+| MLP vs the fastest GNN | zsp is the fastest GNN on all six; zrc is 0.96-1.18× faster, twin0 slower except on webqsp (1.14× faster) | Not met. With every input kept, the forwards keep each MLP below 2× on five datasets (section 3). With the final pool's build, every ratio on hotpotqa and 2wiki is 1.00-1.02 end to end (P4a), and 1.00-1.08 with P4b's faster walks. How Claim 3 is worded is open. |
+| Universal speed | gnn0 / twin0 1.46-1.89× (C12) | P4a: the final pool's build (0.19-286 ms) is shared and pulls every ratio toward 1. P4b FASTER: the build 1.14-3.75× faster, the same pools. C13 (exact per-family prototypes and depth basis) is parked: it reaches 2× on musique only; squad, metaqa and webqsp need the compile 3.0-3.7× faster. |
 | Lean speed | zsp / zrc 0.96-1.18× (C12) | Bounded by the lean design: 1.16-1.34 even with free shared stages, 2.12 on musique. |
 
 ## How we got here
@@ -586,6 +611,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   hotpotqa and 2wiki the build is 99% of every model's end to end. Next is P4b: the same walks, exact, and faster.
 - **14 October: the models on the final pool.** P1c2 retrained zrc and zsp on KIND_T's pools: NOT_ADOPTED. Both gain on
   metaqa and 2wiki, but zsp loses webqsp zero-shot, and on musique and webqsp the extra golds are ranked out.
+- **14 October: faster walks, and the walk positions as an input.** P4b made KIND_T's walks 1.14-3.75× faster,
+  exactly. P1c3 gave both lean models KIND_T's walk positions as one more input. Its screen passes with 6 GAINs and no
+  LOSS on each, and its full run decides.
 
 ## What is next
 
@@ -595,7 +623,10 @@ file, committed before its numbers.
    −0.007). The links stay the three families: P2c part 2's fourth family is NO_GAIN.
 2. **The models on the final pools.** P1c2 ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)) retrained both bases on
    KIND_T's pools at today's sizes: **NOT_ADOPTED**, with no full run. Today's models stay the claims' models. Its
-   record starts P3's ledger: on musique and webqsp the pools' extra golds are ranked out.
+   record starts P3's ledger: on musique and webqsp the pools' extra golds are ranked out. P1c3
+   ([P1C3_KT_INPUT.md](P1C3_KT_INPUT.md)) adds KIND_T's walk positions as one input to both lean models. Its screen is
+   **ADOPT_FOR_FULL_RUN**, and its full run ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)) decides at about 19:40. On ADOPT,
+   the input's serving cost (every walk it reads) is timed cold before any claim uses the KT models.
 3. **Rerankers on the final pools:** the learned offset g(question, seed, graph features), fit by EM over the latent
    seed and offset, aimed at the BRIDGE part of GNN>MLP and at the RANKED misses. P5b and P5b2 STOP: g finds more on
    2wiki and metaqa, golds no fit question had among them, but adds nothing on musique, and a fixed fusion cannot back
@@ -603,6 +634,8 @@ file, committed before its numbers.
    g, STOPS too: it finds more on four datasets, but still fewer on musique. **Closed:** the learned offsets close,
    and P5c does not start.
 4. **P4: speed.** 2-3× in every family with every win kept. P4a ([P4A_POOL_COLD.md](P4A_POOL_COLD.md)) timed the
-   final pool's build: WALKS_DOMINATE. P4b makes the walks faster, exactly.
+   final pool's build: WALKS_DOMINATE. P4b ([P4B_FAST_WALKS.md](P4B_FAST_WALKS.md)) made the walks 1.14-3.75×
+   faster, exactly: FASTER. Running a question's walks on separate threads would change C12's one-thread protocol,
+   so it is the user's call.
 5. **Claim 3's wording and the confirmation run** of the chosen MLP and GNN on held-out questions. B1 is read beside
    it and never used to choose.

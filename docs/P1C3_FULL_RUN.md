@@ -92,18 +92,24 @@ All commands are `outputs/mp_unified/zp1c3f.py` (new; frozen once run). It impor
   nothing.
 
 **Why one verdict for the pair:**
-- KIND_T's pools and the KT input are inputs. The user's rule is that both models of the universal pair read the same
-  inputs.
+- zrc and zsp are the lean pair: the universal-lean family of [C9_UNIVERSAL_PAIR.md](C9_UNIVERSAL_PAIR.md). Within a
+  family both models read the same pools, carves and seeds, so KIND_T's pools move both models or neither.
 - Moving one model alone would compare the MLP and the GNN on different pools and inputs.
 - Moving both, when one gains and neither loses, leaves each model at least where it was.
 - This is P1c3's screen rule (two arms together, no LOSS, a GAIN), carried to the full run. Here the GAIN must be a
   primary read, as in every full run.
 
 **What ADOPT means:**
-- zrck and zspk, on KIND_T's pools with the KT input, become the universal pair: the claims' models.
+- zrck and zspk, on KIND_T's pools with the KT input, become the lean pair: the claims' lean models.
 - Before any claim uses them, their serving cost is timed cold in its own declared file. That is P1c3's section 5:
   every walk the KT input reads, on P4b's faster exact walks.
-- The lean pair (twin0, gnn0) is not changed by this run.
+- The universal pair (twin0, gnn0) is not changed by this run.
+
+**Corrected 14 October, about 17:35, in wording only.** This section first had the two families' names swapped. It
+called zrck and zspk the universal pair, twin0 and gnn0 the lean pair, and gave as the reason for one verdict that both
+models of the universal pair read the same inputs. zrc and zsp are the lean pair, and twin0 and gnn0 the universal pair
+([C9_UNIVERSAL_PAIR.md](C9_UNIVERSAL_PAIR.md), [F1_ONE_INPUT_SET.md](F1_ONE_INPUT_SET.md)). The reason is the family's
+shared pools. No rule, base, split, command or file changes.
 
 **What NOT_ADOPTED means:**
 - Today's pair stays.
