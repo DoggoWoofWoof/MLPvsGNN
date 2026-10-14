@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (07:50)
+# Where we stand, 14 October 2026 (07:45)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -455,7 +455,7 @@ and every number split into golds the fit questions had (seen) and new ones.
   cosine order them best, and a fixed fusion cannot back off where g knows nothing.
 - **The learned offsets close in this form,** and P5c does not start. Any further reranker form gets its own file.
 
-**P5b3, declared 14 October 07:50: a learned back-off gate** ([P5B3_BACKOFF_GATE.md](P5B3_BACKOFF_GATE.md)). It
+**P5b3, declared 14 October 07:45: a learned back-off gate** ([P5B3_BACKOFF_GATE.md](P5B3_BACKOFF_GATE.md)). It
 answers P5b2's diagnosis that a fixed fusion cannot back off.
 - **The gate:** for each question, a weight λ between H2 and P5b2's g, with λ = sigmoid(b + w · z). Its inputs z are
   ten numbers known before any gold:
@@ -470,7 +470,7 @@ answers P5b2's diagnosis that a fixed fusion cannot back off.
 - **The call is P5b's,** for the gated order against H2 on s1eval: GOES_FURTHER if it finds more of the low golds on
   some dataset and fewer on none.
 
-## 7. Running now (14 October, 07:50)
+## 7. Running now (14 October, 07:45)
 
 - **P5b3's six reads are queued for the host** (section 6). The host's link has been dropping since about 07:05 and
   has been down since about 07:30, so they wait in the feeder. The gate and the verdict run on the laptop once the reads are fetched, about 20 minutes

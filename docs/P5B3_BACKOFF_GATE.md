@@ -1,6 +1,6 @@
 # P5b3: a learned back-off gate between H2 and P5b2's g (a diagnostic)
 
-Declared 14 October 2026, about 07:50, before any number of the stage. P5b2's filed result says that any further
+Declared 14 October 2026, about 07:45, before any number of the stage. P5b2's filed result says that any further
 reranker form gets its own file ([P5B2_HELD_OUT_STOP.md](P5B2_HELD_OUT_STOP.md), section 7), and this is that file.
 It builds on P5b2's filed files (004c31c).
 
