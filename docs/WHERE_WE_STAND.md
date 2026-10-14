@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (21:10)
+# Where we stand, 14 October 2026 (21:00)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -595,7 +595,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   one link from the seeds, where H2's cosine orders them best and g's rank is noise.
 - **The learned offsets close,** and P5c does not start.
 
-## 7. Running now (14 October, 21:10)
+## 7. Running now (14 October, 21:00)
 
 - **Nothing of ours is running.** The next stage is declared in its own file before it runs (What is next).
 - **Done since the last update:**
