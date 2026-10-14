@@ -265,7 +265,7 @@ wall time in the run log. No timing number from the first runs has been read.
 
 ## Results
 
-**Filed 14 October, 20:58: TIMED.** The record is `outputs/p4c/report.{json,md}`, from the re-timed runs (20:28-20:52).
+**Filed 14 October, 20:56: TIMED.** The record is `outputs/p4c/report.{json,md}`, from the re-timed runs (20:28-20:52).
 - Every dataset kept 200 of 200 questions in both sets, and every check held on every question.
 - All twelve timed passes ran pinned, on mains power, with the session idle.
 - The 2 s CPU load before each timed pass was 3.4-13.3%.

@@ -151,7 +151,7 @@ column, graph, edge or input.
 
 ## Results
 
-**Filed 14 October, 21:00: ADOPT.** The record is `outputs/p1c3p/full-verdict.{json,md}`, written 20:46. zrckp is
+**Filed 14 October, 20:56: ADOPT.** The record is `outputs/p1c3p/full-verdict.{json,md}`, written 20:46. zrckp is
 compared with zrc on today's pools, under the re-grade with the seed null (`outputs/full_zrckp/grade-nullx`):
 - 5 of 11 primary GAINs: J5 metaqa, 2wiki and webqsp; L-metaqa metaqa; L-2wiki 2wiki.
 - 20 GAINs in all, and no LOSS in 36 reads.

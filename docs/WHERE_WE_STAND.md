@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (20:05)
+# Where we stand, 14 October 2026 (21:10)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -15,20 +15,20 @@ models and the gap ledger, speed, and one model with its own representation.
 
 | claim | what it says | where it stands |
 | --- | --- | --- |
-| 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). On the full corpora (P3a, beside): the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all six; the universal MLP keeps at least 0.9 on metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique. Where the MLP loses to its GNN, it is mostly golds one link from a found gold on hotpotqa and 2wiki, and ranking elsewhere (P3b). The six-dataset test is the confirmation run's. |
+| 1 | The MLP keeps at least 90% of the GNN's R@5 gain over the first stage, with no message passing. | Holds on B1's three settings (0.97-0.99). The lean pair since 14 October, (zrckp, zspk): on the J5 reads zrckp keeps 0.93-1.29 of zspk's R@5 gain over RRF and 0.98-1.35 of its FC@5 gain on all six (point estimates; musique lowest at 0.932). On the full corpora (P3a, beside), the earlier pair: the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all six; the universal MLP keeps at least 0.9 on metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique. Where the MLP loses to its GNN, it is mostly golds one link from a found gold on hotpotqa and 2wiki, and ranking elsewhere (P3b). The six-dataset test is the confirmation run's. |
 | 2 | A GNN built without any LLM is at the state of the art (above HippoRAG 2 on B1). | Above on 2wiki and hotpotqa; below on musique. Without the corpus hyperlinks, 2wiki stays above. On the full corpora both GNNs are at or above the best LLM-free SOTA ranking on all six datasets, on R@5, FC@5 and hit@1 (P3a), and still at or above on metaqa and webqsp with the seeds removed, on a thin read (P3b). The final pool, P1e's parameter-free KIND_T, is at or above the best LLM-free SOTA pool order on four datasets, and within 0.005 and 0.007 of it on metaqa and hotpotqa (section 5). |
-| 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.46-1.89×; zrc 2.38-3.99×, webqsp 1.30×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there: zrc is 0.96-1.18× faster, and twin0 is faster than zsp only on webqsp. With every input kept, each MLP stays below 2× zsp on five datasets even if every shared stage cost nothing (section 3). The final pool's build is shared by every model (P4a): on hotpotqa and 2wiki it is 99% of every model's cold end to end, and every ratio there is 1.00-1.02 end to end. P4b's exact walks build the same pools 1.14-3.75× faster (hotpotqa 171 → 48 ms, 2wiki 188 → 50 ms); the build is still about 20 times zrc's end to end there, and every ratio there is 1.00-1.08. |
+| 3 | The MLP is faster, cold first. | Both MLPs are faster than the universal GNN on all six datasets (twin0 1.46-1.89×; zrc 2.38-3.99×, webqsp 1.30×). The target is at least 2× faster than the fastest GNN, which is zsp on all six, and no MLP is there: zrc is 0.96-1.18× faster, and twin0 is faster than zsp only on webqsp. With every input kept, each MLP stays below 2× zsp on five datasets even if every shared stage cost nothing (section 3). The final pool's build is shared by every model (P4a): on hotpotqa and 2wiki it is 99% of every model's cold end to end, and every ratio there is 1.00-1.02 end to end. P4b's exact walks build the same pools 1.14-3.75× faster (hotpotqa 171 → 48 ms, 2wiki 188 → 50 ms); the build is still about 20 times zrc's end to end there, and every ratio there is 1.00-1.08. The KT input the lean pair now reads (P4c) adds 4-7 ms per question on musique, hotpotqa and 2wiki, 22 ms on squad, 32 ms on webqsp and 39 ms on metaqa, mostly walks. zspk / zrck is 0.98-1.08, and zrck is slower than gnn0 on four datasets. |
 
 ## The models
 
 | name | family | what it is | message passing |
 | --- | --- | --- | --- |
-| `zrc` | lean | The MLP base: zrm's model over zrc's chain entries. | no |
-| `zsp` | lean | The GNN base: zrc's inputs plus one propagation step over each row's neighbours' scores. | yes, one step |
+| `zrckp` | lean, the MLP since 14 October | zrc plus a pointwise head over the row's own eight KT columns (161 parameters, no score input), on KIND_T's pools. Adopted by P1c3p's full run (section 5). | no |
+| `zspk` | lean, the GNN since 14 October | zsp plus P1c3's KT head (the eight KT columns and the row's score z-scored over its question's rows), on KIND_T's pools. Adopted by P1c3's full run, paired with zrckp. | yes, one step |
+| `zrc` | lean, base | The MLP base: zrm's model over zrc's chain entries, on today's pools. | no |
+| `zsp` | lean, base | The GNN base: zrc's inputs plus one propagation step over each row's neighbours' scores. | yes, one step |
 | `u_mlp_v2_mix` (twin0) | universal | The universal MLP: the v2 compile's 197 columns and the 1,536-wide embeddings. | no |
 | `u_gnn_v2_ef` (gnn0) | universal | The universal GNN: the twin's inputs plus three relation-aware steps and the evidence flow. | yes, three steps |
-| `zrckp` | lean, candidate | zrc plus a pointwise head over the row's own eight KT columns (161 parameters, no score input). Its full run decides the lean pair (section 5). | no |
-| `zspk` | lean, candidate | zsp plus P1c3's KT head (eight KT columns and the row's score z-scored over its question's rows). | yes, one step |
 | `zn` | diagnostic | The lean MLP with every edge-derived input removed. A speed ceiling, not a model. | no |
 | `rrf` | baseline | Reciprocal-rank fusion of the dense encoder and SPLADE. No training. | no |
 
@@ -113,7 +113,19 @@ webqsp is zero-shot for the lean pair and trained on for the universal pair.
 ## 2. The MLP against the GNN (Claim 1)
 
 - **On B1, the MLP keeps 0.97-0.99 of the GNN's gain** and is within 0.8 points of it in every in-domain row.
-- **On the full corpora (P3a, P3b),** the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all
+- **The lean pair since 14 October, (zrckp, zspk).** These are point estimates from the J5 reads, P3a's quantity (the
+  MLP's share of its GNN's gain over RRF), with no interval yet:
+
+  | measure | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zs) |
+  | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+  | R@5 | 0.997 | 1.289 | 0.932 | 1.010 | 0.986 | 1.294 |
+  | FC@5 | 0.998 | 1.289 | 0.990 | 1.011 | 0.984 | 1.351 |
+  | hit@1 | 0.986 | 1.571 | 0.937 | 0.844 | 0.915 | 0.744 |
+
+  - At least 0.9 on R@5 and FC@5 on all six. squad's gain over RRF is small (zspk +0.0045), so its share says little.
+  - musique is the lowest: zspk gains more there than zrckp (0.580 against 0.573).
+  - hit@1 is below 0.9 on hotpotqa and on webqsp zero-shot, as for the earlier pair.
+- **On the full corpora (P3a, P3b),** the earlier pair: the lean MLP keeps at least 0.968 of zsp's gain over RRF on R@5 and FC@5 on all
   six datasets (hit@1 0.73-0.84 on hotpotqa, 2wiki and webqsp). The universal MLP keeps at least 0.9 of gnn0's gain on
   metaqa, hotpotqa and webqsp, 0.852 on 2wiki and 0.596 on musique.
 - **What message passing buys over the MLP** (P3b's GNN>MLP ledger):
@@ -220,6 +232,21 @@ lists merged, no reset pass, the nodes numbered breadth-first, and reads issued 
   on that, because both forms ran side by side.
 - **No exact form left cuts the walks' own work.** A question's walks are independent, so they could run on separate
   threads exactly. That changes C12's one-thread protocol, so it is the user's call, as is Claim 3's wording.
+
+**The KT input's serving cost (P4c, [P4C_KT_SERVING.md](P4C_KT_SERVING.md), filed 14 October 20:56): TIMED.** The
+lean pair now reads KIND_T's walk positions. Serving them means the walks the build skipped, the eight columns and the
+head, timed cold beside the build on 200 fresh questions per dataset. Every check held on every question.
+- **The cost, p50 per question:**
+  - musique, hotpotqa and 2wiki: +4-7 ms (the build already runs four of the five walks, so only Kst is extra);
+  - webqsp +32 ms and metaqa +39 ms (three to five extra walks);
+  - squad +22 ms (no links, so the build walks nothing, but the columns need two walks).
+  The columns and the head together are under 1.4 ms.
+- **End to end with C12's model stages,** the MLP with the KT input takes 16× zrc's time on squad, 2.1× on metaqa,
+  1.34× on webqsp and 1.06-1.16× on the other three.
+- **The ratios:** zspk / zrck is 0.98-1.08, because both pay the same serve path. zrck is slower than gnn0 on squad,
+  webqsp, hotpotqa and 2wiki. zrck's head is an upper bound for zrckp's.
+- **A re-time:** the first runs were made while this session was still running commands. They were timed again with
+  the session idle, by a rule committed before any number was read (8f7856f). The two agree within 3.3%.
 
 ## 4. Links and edges (U1, G1a)
 
@@ -411,9 +438,17 @@ eight KT columns.
   zero-shot +0.024 and +0.061, musique in-domain +0.010.
 - Beside, against zrck: level on ten of twelve reads, +0.022 on 2wiki in L-hotpotqa's fit, and below on webqsp
   zero-shot (it keeps 0.65 and 0.74 of zrck's gain there). hotpotqa's hit@1 still falls (−0.034 zero-shot).
-- **Its full run** ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md)) is running: four more fits, 36 reads, verdict at about
-  21:30. ADOPT makes the lean pair (zrckp, zspk), timed cold first (P4c); anything else keeps (zrc, zsp) on today's
-  pools.
+
+**P1c3p's full run, filed 14 October 20:56: ADOPT** ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md), Results). Four more fits,
+36 reads against zrc, re-graded under the seed null over every split.
+- 5 of 11 primary GAINs (J5 metaqa, 2wiki and webqsp; L-metaqa's metaqa; L-2wiki's 2wiki), 20 GAINs in all, no LOSS.
+- 2wiki rises +0.060 to +0.064 on every split. metaqa rises on every split, +0.108 held out (0.142 to 0.249). webqsp
+  zero-shot rises on all six splits (+0.014 to +0.066). musique rises +0.006 to +0.010 in-domain and is −0.011 held out
+  (WITHIN). hotpotqa and squad are within 0.008.
+- Beside: hotpotqa's hit@1 falls on all six splits (−0.002 to −0.034), and musique's held-out FC@5 falls 0.026. Against
+  zrck, zrckp is level on 31 of 36 reads.
+- **So the lean pair is (zrckp, zspk),** both on KIND_T's pools with the KT input. Its serving cost is P4c's (section
+  3). The universal pair (twin0, gnn0) is unchanged.
 
 **The user's rule, 13 October, about 10:40: the pools first, with nothing learned**
 ([PROGRAM_2026_10_13.md](PROGRAM_2026_10_13.md)).
@@ -560,17 +595,13 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   one link from the seeds, where H2's cosine orders them best and g's rank is noise.
 - **The learned offsets close,** and P5c does not start.
 
-## 7. Running now (14 October, 20:05)
+## 7. Running now (14 October, 21:10)
 
-- **zrckp's full run** on the host ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md)): four fits (J5, L-2wiki, L-squad and
-  L-metaqa), three at a time on the card; its gate opened at 19:46. The reads, grade, re-grade and verdict follow, at
-  about 21:30.
-- **P4c's timed runs** on the laptop ([P4C_KT_SERVING.md](P4C_KT_SERVING.md)): the KT input's cold serving cost beside
-  KIND_T's build, on mains power and pinned, in P4a's order (squad first).
+- **Nothing of ours is running.** The next stage is declared in its own file before it runs (What is next).
 - **Done since the last update:**
-  - P1c3's full run filed (section 5): ADOPT.
-  - P1c3p declared and screened (section 5): ADOPT_FOR_FULL_RUN.
-  - The project timeline: [PROJECT_TIMELINE.md](PROJECT_TIMELINE.md).
+  - P1c3p's full run filed (section 5): ADOPT. The lean pair is (zrckp, zspk).
+  - P4c filed (section 3): TIMED, after a re-time with the session idle.
+  - Claim 1's quantity for the new pair, from the J5 reads (section 2).
 
 ## 8. Open gaps
 
@@ -579,7 +610,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
 | Pools against SOTA (full corpora) | P1e's KIND_T, parameter-free, the final pool: at or above the best SOTA order on squad, musique, 2wiki and webqsp; below on metaqa (up to −0.005) and hotpotqa (up to −0.007). Like-for-like, webqsp is below A1 on the structural family (up to −0.051). | Closed. metaqa and webqsp pull the entity branch in opposite directions, so no further fixed rule is declared. The learned gates stay beside. |
 | SOTA rankers (full corpora) | Both GNNs at or above the best LLM-free SOTA ranking on all six (P3a). Where the bar wins, the gold was in our pool and ranked out (P3b). | P5's representation. A seeds-removed read on more than 17 and 12 questions needs P3a's walk rows kept past ten nodes. |
 | What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5b and P5b2 STOP: the learned offset g(question, seed, graph features) finds more of these golds on 2wiki, metaqa and hotpotqa, golds no fit question had among them, but fewer on musique (near chance, with or without a held-out stop) and mixed on webqsp zero-shot (section 6). P5a's fixed map STOPS. P5b3's per-question back-off between H2 and g STOPS too: more on four datasets, still fewer on musique (0.005 to 0.011). The learned offsets close. |
-| Golds the final pool adds | P1c2: about two thirds reach the top five on metaqa, and 2wiki's R@5 rises twice the pools' recall gain; on musique and webqsp little or none does (zsp −0.017 on webqsp zero-shot) | P1c3's walk positions as an input (full run ADOPT): musique zero-shot wins back 0.61-0.69 of the pools' cost in the screen, and webqsp keeps up to 0.76 of the extra golds. zrck breaks the MLP rule, so zrckp's full run decides the lean pair. If it is NOT_ADOPTED, P3's ledger continues from P1c2's, P1c3's and P1c3p's records. |
+| Golds the final pool adds | P1c2: about two thirds reach the top five on metaqa, and 2wiki's R@5 rises twice the pools' recall gain; on musique and webqsp little or none does (zsp −0.017 on webqsp zero-shot) | P1c3's walk positions as an input, adopted for the lean pair (zrckp, zspk): webqsp zero-shot rises on all six splits (+0.014 to +0.066 for zrckp), metaqa +0.108 held out, 2wiki +0.060 to +0.064 everywhere. Still open: musique's held-out read (−0.011, WITHIN; FC@5 −0.026) and hotpotqa's hit@1 (−0.002 to −0.034 on all six splits). |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions. On the full corpus (P3b): ranked out 0.23-0.28 of R@5, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop). | D4 (link words): NO_SIGNAL. P2c part 1: on B1 musique our LLM-free graph adds more than the LLM-built graphs, so the LLM graph is not what our walks lack. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
@@ -588,7 +619,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
 | Training data | At equal steps, half the data loses 1 read of 12 (round 33's step control) | Not the lever: no second fit carve, by D3's rule. |
 | MLP vs the fastest GNN | zsp is the fastest GNN on all six; zrc is 0.96-1.18× faster, twin0 slower except on webqsp (1.14× faster) | Not met. With every input kept, the forwards keep each MLP below 2× on five datasets (section 3). With the final pool's build, every ratio on hotpotqa and 2wiki is 1.00-1.02 end to end (P4a), and 1.00-1.08 with P4b's faster walks. How Claim 3 is worded is open. |
 | Universal speed | gnn0 / twin0 1.46-1.89× (C12) | P4a: the final pool's build (0.19-286 ms) is shared and pulls every ratio toward 1. P4b FASTER: the build 1.14-3.75× faster, the same pools. C13 (exact per-family prototypes and depth basis) is parked: it reaches 2× on musique only; squad, metaqa and webqsp need the compile 3.0-3.7× faster. |
-| Lean speed | zsp / zrc 0.96-1.18× (C12) | Bounded by the lean design: 1.16-1.34 even with free shared stages, 2.12 on musique. |
+| Lean speed | zsp / zrc 0.96-1.18× (C12); zspk / zrck 0.98-1.08× with the KT input (P4c) | Bounded by the lean design: 1.16-1.34 even with free shared stages, 2.12 on musique. The KT input's extra walks (4-39 ms) are shared by both models. |
 
 ## How we got here
 
@@ -644,8 +675,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   LOSS on each, and its full run decides.
 - **14 October, evening: the walk positions adopted, and the MLP rule kept.** P1c3's full run is ADOPT: no LOSS in 36
   reads on either arm. The user caught that zrck's head reads other rows' scores through a per-question z-score, so
-  zrck serves no claim. P1c3p's pointwise head (zrckp) passed its screen with 7 GAINs and no LOSS, and its full run
-  decides the lean pair.
+  zrck serves no claim. P1c3p's pointwise head (zrckp) passed its screen with 7 GAINs and no LOSS. Its full run is
+  ADOPT (no LOSS in 36 reads), so the lean pair is (zrckp, zspk). P4c timed the input's serving cost: 4-7 ms per
+  question where KIND_T already walks, 22-39 ms where it does not.
 
 ## What is next
 
@@ -658,9 +690,11 @@ file, committed before its numbers.
    record starts P3's ledger: on musique and webqsp the pools' extra golds are ranked out. P1c3
    ([P1C3_KT_INPUT.md](P1C3_KT_INPUT.md)) adds KIND_T's walk positions as one input to both lean models. Its full run
    ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)) is **ADOPT**, but zrck's head breaks the MLP rule. P1c3p's pointwise head
-   (zrckp) is **ADOPT_FOR_FULL_RUN**, and its full run ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md)) decides at about
-   21:30. On ADOPT, the input's serving cost (every walk it reads) is timed cold (P4c) before any claim uses the KT
-   models.
+   (zrckp) is **ADOPT** ([P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md)), so the lean pair is (zrckp, zspk). P4c timed its
+   serving cost: **TIMED**. **Next here, each in its own file:**
+   - Claim 1's share for (zrckp, zspk) with question-bootstrap intervals on all six datasets (no training);
+   - P3's ledger on the new pair: hotpotqa's hit@1 (a fresh hit@1-term screen), RRF5's position as a ninth KT
+     column, and zck stacked on a frozen base.
 3. **Rerankers on the final pools:** the learned offset g(question, seed, graph features), fit by EM over the latent
    seed and offset, aimed at the BRIDGE part of GNN>MLP and at the RANKED misses. P5b and P5b2 STOP: g finds more on
    2wiki and metaqa, golds no fit question had among them, but adds nothing on musique, and a fixed fusion cannot back
@@ -669,7 +703,8 @@ file, committed before its numbers.
    and P5c does not start.
 4. **P4: speed.** 2-3× in every family with every win kept. P4a ([P4A_POOL_COLD.md](P4A_POOL_COLD.md)) timed the
    final pool's build: WALKS_DOMINATE. P4b ([P4B_FAST_WALKS.md](P4B_FAST_WALKS.md)) made the walks 1.14-3.75×
-   faster, exactly: FASTER. Running a question's walks on separate threads would change C12's one-thread protocol,
-   so it is the user's call.
+   faster, exactly: FASTER. P4c ([P4C_KT_SERVING.md](P4C_KT_SERVING.md)) timed the KT input's serving cost: TIMED
+   (4-39 ms per question, mostly walks). Running a question's walks on separate threads would change C12's
+   one-thread protocol, so it is the user's call.
 5. **Claim 3's wording and the confirmation run** of the chosen MLP and GNN on held-out questions. B1 is read beside
    it and never used to choose.

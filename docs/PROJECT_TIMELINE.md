@@ -39,7 +39,9 @@ A graph links the candidates (KB facts, hyperlinks, shared names). Then a model 
   the lean GNN's gain on R@5 and FC@5 on all six datasets; on hit@1 it keeps 0.73 to 0.84 on hotpotqa, 2wiki and
   webqsp. On the two leave-out fits read for this (zero-shot reads included), the two are within 0.015 R@5 on every
   read but one, and there the MLP is higher (webqsp zero-shot, 0.287 against 0.226; docs/ZN_LEAN_NO_MP.md). On
-  HippoRAG 2's own benchmark the MLP keeps 0.97 to 0.99 of the GNN's gain.
+  HippoRAG 2's own benchmark the MLP keeps 0.97 to 0.99 of the GNN's gain. The new lean pair (zrckp, zspk, adopted
+  the evening of 14 October) keeps 0.93 to 1.29 on R@5 and 0.98 to 1.35 on FC@5 on the J5 reads: point estimates,
+  with intervals still to come. musique is the lowest.
 - **The universal pair falls short of claim 1** on two datasets: twin0 keeps at least 0.9 of gnn0's R@5 gain on
   metaqa, hotpotqa and webqsp, but 0.852 on 2wiki and 0.596 on musique (on squad gnn0 has no gain to share). On FC@5
   it is also just short on metaqa (0.893) and hotpotqa (0.899).
@@ -57,8 +59,9 @@ A graph links the candidates (KB facts, hyperlinks, shared names). Then a model 
   hotpotqa, so its filed verdict is NOT_ALL_SIX; against the like-for-like bar, webqsp is below too.
 - **The models on the final pool (14 October).** Reading where KIND_T's walks put each candidate lifts both lean
   models: P1c3's full run is ADOPT, with no LOSS in 36 reads for either. The MLP's version broke the
-  no-message-passing rule, so a pointwise fix (zrckp) was screened (passed) and its full run, due about 21:30,
-  decides the lean pair.
+  no-message-passing rule, so a pointwise fix (zrckp) replaced it. Its screen passed and its full run is ADOPT (no
+  LOSS in 36 reads), so the lean pair is now (zrckp, zspk). Serving the new input costs 4 to 39 ms per question,
+  mostly walks (P4c).
 
 ## 2. Words used throughout
 
@@ -411,9 +414,16 @@ them, and treating entity and passage questions differently by a data test, not 
   musique's hit@1 rises on all six splits.
 - **P1c3p's screen: ADOPT_FOR_FULL_RUN** (7 GAINs, no LOSS). zrckp is level with zrck on ten of twelve reads, above
   it on 2wiki in one fit (+0.022), and keeps 0.65 and 0.74 of zrck's webqsp zero-shot gain.
+- **P1c3p's full run: ADOPT.** zrckp against zrc: no LOSS in 36 reads, 5 of 11 primary GAINs, 20 GAINs in all.
+  2wiki +0.060 to +0.064 on every split, metaqa +0.108 when held out (0.142 to 0.249), webqsp zero-shot up on all six
+  splits (+0.014 to +0.066). Beside: hotpotqa's hit@1 falls on all six splits (−0.002 to −0.034). The lean pair is now
+  (zrckp, zspk). On the J5 reads zrckp keeps 0.93 to 1.29 of zspk's R@5 gain over RRF (point estimates).
 - **P4b:** hotpotqa's build 171 → 48 ms, 2wiki's 188 → 50 ms (the old form re-timed in P4b's session; P4a filed 286
   and 199 ms). Still about 20x zrc's whole time on those two datasets.
-- Pending tonight: zrckp's full run (verdict about 21:30) and P4c's timing.
+- **P4c: TIMED.** The KT input adds 4 to 7 ms per question where KIND_T already walks (musique, hotpotqa, 2wiki), and
+  22 to 39 ms where it does not (squad, webqsp, metaqa). Both lean models pay it, so their ratio stays 0.98 to 1.08.
+  The first timing ran while this session was busy, so all six were re-timed idle, by a rule committed first; the two
+  agree within 3.3%.
 
 ## 4. By topic
 
@@ -449,8 +459,8 @@ questions); ranking is the larger gap.
 | twin0 / gnn0 | universal | 197 shared columns; the GNN adds three relation-aware message-passing steps plus an evidence-flow step | gnn0 trained 28 Sep, twin0 1 Oct; named a pair 12 Oct (C9) |
 | zrc | lean MLP | zret's normalisation + the learned relation match + 64 chain entries per typed row | 9 Oct |
 | zsp | lean GNN | zrm's inputs + one propagation step over the pool's links (385 weights) | 9 Oct |
-| zrck / zspk | lean, with KT | + KIND_T's eight walk-position columns through a small head | full run ADOPT 14 Oct; zrck serves no claim (its head reads other rows' scores) |
-| zrckp | lean MLP | zrc + a pointwise KT head (the row's own 8 columns only, 161 parameters) | screen ADOPT_FOR_FULL_RUN 14 Oct; full run due about 21:30 |
+| zrck / zspk | lean, with KT | + KIND_T's eight walk-position columns through a small head | full run ADOPT 14 Oct; zrck serves no claim (its head reads other rows' scores); zspk is the lean GNN since then |
+| zrckp | lean MLP | zrc + a pointwise KT head (the row's own 8 columns only, 161 parameters) | full run ADOPT 14 Oct; the lean MLP since then, paired with zspk |
 
 What paid: fair inputs, structure computed before scoring (without edge-derived inputs the MLP keeps only 13 to 73%
 of the gain, ZN), the learned relation match, normalising against retrieved rows, one small dose of message passing,
@@ -499,7 +509,9 @@ end to end with KIND_T's build (P4b; the end-to-end column mixes two timing sess
 - **KIND_T's build dominates hotpotqa and 2wiki** (about 50 ms against 2 to 6 ms for the models).
 - Cutting inputs was rejected (it loses the wins). C12's compile kernels helped a little (1.02 to 1.10x) and are
   inside the timed forms.
-- The KT input adds walks the build skips; its cost (P4c) is not yet timed, so no speed claim uses the KT models yet.
+- The KT input adds walks the build skips (P4c): 4 to 7 ms per question on musique, hotpotqa and 2wiki, 22 to 39 ms on
+  squad, webqsp and metaqa. Both lean models pay it, so their ratio stays 0.98 to 1.08, and the KT MLP is slower than
+  gnn0 on four datasets.
 
 ## 5. Honest audit
 
@@ -562,9 +574,8 @@ their numbers.
 2. **Replace squad's name switch with a data test**, for example link a title only when it names exactly one node.
 3. **Derive "typed KB" from the data** everywhere, as the feature compile already does.
 4. **A zero-shot stage for the universal pair** (leave one dataset out), as the lean pair has.
-5. **The MLP's input rule:** zrck serves no claim. zrckp passed its screen (7 GAINs, no LOSS), and P1c3's full run
-   adopted, so zrckp's full run is running. ADOPT makes the lean pair (zrckp, zspk), timed cold first; anything else
-   keeps (zrc, zsp) on today's pools.
+5. **The MLP's input rule (done):** zrck serves no claim. zrckp's full run is ADOPT, so the lean pair is
+   (zrckp, zspk), with its serving cost timed (P4c). Still open: Claim 1's share for the new pair with intervals.
 6. **P1c3's side cost:** hotpotqa hit@1 falls with the KT input. A small term scoring each gold against non-golds is
    the lever we have: zsep raised hit@1 by 0.012 to 0.022 in an earlier round, but its re-call was NO_GAIN with a
    musique LOSS (−0.0101), so it needs a fresh screen.
@@ -582,10 +593,13 @@ their numbers.
 
 - **Pools and links: done.** KIND_T is final, parameter-free, and the same rule on all six datasets except squad's
   question-link switch; three link families; hyperlinks kept.
-- **Models:** the claims rest on zrc/zsp and twin0/gnn0 on today's pools until zrckp's full run adopts. Then the lean
-  pair becomes (zrckp, zspk) on KIND_T's pools, once its serving cost is timed (P4c).
-- **Claims:** 1 holds in development for the lean pair (the universal pair falls short on musique and 2wiki); 2 holds
-  on our corpora and on B1's 2wiki and hotpotqa, not on B1's musique; 3 is not met as set.
-- **Filed tonight:** P1c3's full run (ADOPT) and P1c3p's screen (ADOPT_FOR_FULL_RUN).
-- **Running tonight:** zrckp's full run (verdict about 21:30). P4c's timing waits for an idle laptop on mains power,
-  pinned. Their results go into their own docs and into docs/WHERE_WE_STAND.md.
+- **Models:** the lean pair is (zrckp, zspk) on KIND_T's pools with the KT input, since zrckp's full run adopted
+  (14 October, 20:56). The universal pair is twin0/gnn0 on today's pools.
+- **Claims:** 1 holds in development for the lean pair, on R@5 and FC@5 (the new pair's J5 point estimates are 0.93
+  to 1.35; the universal pair falls short on musique and 2wiki); 2 holds on our corpora and on B1's 2wiki and
+  hotpotqa, not on B1's musique; 3 is not met as set.
+- **Filed tonight:** P1c3's full run (ADOPT), P1c3p's screen (ADOPT_FOR_FULL_RUN) and full run (ADOPT), and P4c
+  (TIMED, re-timed with the session idle).
+- **Next:** Claim 1's share for the new pair with intervals, then the ledger's screens on it (hotpotqa's hit@1,
+  RRF5's position as a ninth column, zck on a frozen base). Their results go into their own docs and into
+  docs/WHERE_WE_STAND.md.
