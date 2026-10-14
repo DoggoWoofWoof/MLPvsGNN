@@ -115,4 +115,50 @@ beside. One input and one rule for all six datasets; nothing is chosen per datas
 
 ## 7. Results
 
-To be filed.
+Filed 14 October 2026 at 19:55. **ADOPT_FOR_FULL_RUN** (`outputs/p1c3p/screen-verdict.{json,md}`, written at
+19:45:07).
+- **zrckp:** 7 GAINs and no LOSS in its 12 reads after the re-call (PROMISING).
+- Before the re-call it was MIXED, with one LOSS: L-musique's held-out musique read, −0.0114. Under its floor of 0.0720
+  that read is WITHIN, as it was for zrck and zspk in P1c3's screen.
+
+The record names zp1c3p.py by its sha256 with line ends normalized, 87931391…, which is 1bc0498's file.
+
+**delta R@5 against zrc on today's pools, with the re-call** (W = WITHIN; zs = zero-shot):
+
+| fit | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zs) |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.0237 GAIN | +0.0012 W | −0.0114 W (zs) | +0.0025 W | +0.0614 GAIN | +0.0243 GAIN |
+| L-hotpotqa | +0.0251 GAIN | +0.0015 W | +0.0100 GAIN | +0.0062 W (zs) | +0.0619 GAIN | +0.0609 GAIN |
+
+**Section 3's question: does the pointwise head keep zrck's screen gains?** Mostly. Here is zrckp minus zrck, called at
+the floor 0.0075 with no re-call. It decides nothing:
+
+| fit | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zs) |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | +0.0012 W | −0.0001 W | +0.0062 W (zs) | +0.0003 W | −0.0018 W | −0.0129 LOSS |
+| L-hotpotqa | −0.0008 W | +0.0006 W | +0.0050 W | −0.0051 W (zs) | +0.0222 GAIN | −0.0211 LOSS |
+
+- zrckp is level with zrck on ten of the twelve reads.
+- It is above zrck on 2wiki in L-hotpotqa's fit (+0.022). There zrck rose +0.040 over zrc and zrckp +0.062, the same
+  rise both had in L-musique's fit.
+- It is below zrck on webqsp zero-shot in both fits. It keeps 0.65 and 0.74 of zrck's webqsp gain over zrc (+0.024 of
+  +0.037, and +0.061 of +0.082).
+- It has one GAIN zrck did not: musique in L-hotpotqa's fit (+0.0100; zrck +0.0050).
+
+**hit@1 against zrc, beside** (deciding nothing):
+- hotpotqa still falls: −0.034 zero-shot in L-hotpotqa's fit (zrck −0.042), and −0.018 in-domain in L-musique's.
+- musique rises: +0.039 zero-shot (L-musique) and +0.033 in-domain (L-hotpotqa).
+- 2wiki rises +0.065 and +0.073, metaqa +0.031 and +0.033, webqsp +0.020 and +0.021.
+
+**What follows** (section 5). P1c3's full run adopted (19:23), so zrckp's full run goes ahead:
+[P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md).
+- Its gate (`zp1c3pf.py gate`) opened at 19:46:11. `outputs/p1c3p/full-gate.{json,md}` names both records by their
+  sha256, and both match the files filed here.
+- Its fits started at 19:40 (J5) and 19:41 (L-2wiki, L-squad). L-metaqa starts when a card slot frees.
+- The verdict is due about 21:30.
+
+**Files:**
+- `outputs/screen/scr-p1c3p-zrckp{,-hp}.{md,json}`;
+- `outputs/screen/scr-p1c3p-zrckp-pair{,-recall}.{md,json}`. Host paths were cut from the re-call record, so its bytes
+  differ from the sha256 the verdict recorded. The host's copy is unchanged.
+- `outputs/p1c3p/screen-verdict.{json,md}` and `outputs/p1c3p/full-gate.{json,md}`.

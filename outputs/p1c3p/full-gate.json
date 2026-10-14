@@ -1,0 +1,20 @@
+{
+ "stage": "P1c3p full run",
+ "declared_in": "docs/P1C3P_FULL_RUN.md",
+ "gate": "OPEN",
+ "problems": [],
+ "records": {
+  "screen": {
+   "record": "outputs/p1c3p/screen-verdict.json",
+   "sha256": "3ee5c23a7d847c4d69f416dd17a63b8f6886b03727ca9cd20d33c96a02f5b052",
+   "verdict": "ADOPT_FOR_FULL_RUN"
+  },
+  "p1c3_full": {
+   "record": "outputs/p1c3/full-verdict.json",
+   "sha256": "03a337c0510b99482f9911aa15184184b9bcf38721782daf45289dbf48ec6236",
+   "verdict": "ADOPT"
+  }
+ },
+ "zp1c3pf_sha256": "815c4e7b8cdc8a224ff151307e68ed2528dbf0b2f73d3370fab636834ad3bac1",
+ "utc": "2026-10-14T14:16:11Z"
+}
