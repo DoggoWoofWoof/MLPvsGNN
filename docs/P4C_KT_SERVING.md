@@ -193,6 +193,7 @@ P4c times what serving them costs. How Claim 3 is worded stays the user's call.
     outputs/p4c/filed/<dataset>.json       the host's slice's record (the npz beside it is never committed)
     outputs/p4c/<dataset>.json             one dataset's run, both sets
     outputs/p4c/report.{json,md}           the six datasets and the call
+    outputs/p4c/first_pass/                the first runs and their report, kept beside (see Re-timing)
 
     python scripts/p4c_kt_serving.py --selftest
     python outputs/host_ops/pylib_run.py scripts/p4c_kt_serving.py slice --dataset D     (on the host)
@@ -239,6 +240,28 @@ P4c times what serving them costs. How Claim 3 is worded stays the user's call.
 **With the host's slices, after the declaration** (14 October, 18:23-18:38; the slices filed in 0974bf9): the same
 check on the first 10 questions of each set, now with kt_filed. On every dataset, every serve row's eight columns equal
 P1c3's filed float16 columns, and all 17 checks pass with 0 failing. It logs no number.
+
+## Re-timing (declared 14 October, 20:30, before any number was read)
+
+The first runs went from 20:02 to 20:26, in P4a's order. Every dataset kept 200 of 200 questions in both sets, passed
+all 17 checks on every question, and ran pinned on mains power. But this session was still running commands until
+about 20:10, while squad, metaqa and musique were being timed. That breaks "the session idle".
+
+The 2 s CPU loads before the timed passes (fresh set / C12's set, %):
+
+| squad | metaqa | musique | webqsp | hotpotqa | 2wiki |
+| --- | --- | --- | --- | --- | --- |
+| 27.9 / 20.2 | 10.6 / 19.7 | 23.4 / 18.3 | 7.0 / 14.4 | 6.7 / 11.5 | 9.0 / 4.7 |
+
+P4b's runs had 3.8-10.7.
+
+**The rule.**
+- All six are timed again, once, in one session, in P4a's order. The session stays idle, and its waiter is stopped.
+- The second records are the filed ones, whatever their numbers. There is no third run.
+- The first records and the first report are kept beside in `outputs/p4c/first_pass/`.
+
+So far only these have been read: the loads above, the power state, the pin, the check counts, and each timed pass's
+wall time in the run log. No timing number from the first runs has been read.
 
 ## Results
 
