@@ -1,0 +1,81 @@
+{
+ "declared_in": "docs/P5B2_HELD_OUT_STOP.md",
+ "stage": "read",
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "carve_questions": 1503,
+ "questions": 1503,
+ "carve_sha256": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e",
+ "sample_sha256": "d0cd6dfff7aaece7e1c93cec581153fe7c3840de11af16f32404a79c04a5075b",
+ "checks": {
+  "pools_and_seeds_equal_read1": 1503,
+  "final_pools": "every check of P5b's section 5 held"
+ },
+ "pools": {
+  "file": "webqsp__s1eval.npz",
+  "sha256": "13a31fa12d3847a2863946c1493cb91618e3a23d4d61e73ec8ca78fa63d54c70",
+  "manifest_sha256": "1e997a1d434c2e94f07e6d01c66e33e5d87f2fd315bc1a1cf7bd5f4211242758",
+  "construction": "KIND_T",
+  "questions": 1503
+ },
+ "tables": {
+  "frame": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+  "V": "ea8d16e4e3c3150a01a3388620da78ee23ff0c51ce33d1189a27acac14f384ed",
+  "V0": "efb770dd335221b4ce6e0b783b991a489c6c07917fbf0e3c027b99083989b761",
+  "space_record": "91935a4a9290f93e81539da2d213015a01097efa4d25053ec11b7b260495b4e4"
+ },
+ "tables_made": "filed",
+ "kappa": {
+  "V": 0.8459115983422537,
+  "V0": 1.3552840400321273
+ },
+ "g_sha256": "559323e5572cd8b2d62a26ae93a165247cd9401995c0822072d1802d25fa8d85",
+ "train_record_sha256": "a9eb05a7f36098b1405d338f723c2d87c8759018918957ff92ffaf1433f45e07",
+ "gb": "P5b's filed G",
+ "gb_g_sha256": "5c850a0b1203d7c8317629350f30746627fa3c3a648d25f693b8e1036fad3134",
+ "p5b_train_record": "6e8cb10cab96f80ef39be78c9c81dbfbe65126fd2e4317a8c9684dab5c004bcb",
+ "seen": {
+  "from": "never fits: every gold is new",
+  "golds": 0,
+  "p5b_base_record": null
+ },
+ "read1_records": {
+  "webqsp_0of2.json": "c19dd16ce8fca18bf6165c680929d8437dbab18bab69f8668b0ddcb6941d4c53",
+  "webqsp_1of2.json": "8c40994af9d3c20d6640c15d3b5e623ca04e52f83407794da88ba7ec0fd73586"
+ },
+ "orders": [
+  "F",
+  "H2",
+  "G",
+  "G0",
+  "F0",
+  "NEAR",
+  "FN",
+  "COS",
+  "GB",
+  "FB"
+ ],
+ "reads": [
+  "low",
+  "pool"
+ ],
+ "grid": [
+  5,
+  10,
+  25,
+  50,
+  100
+ ],
+ "index_time": "m_s (each seed's mean neighbour displacement over the three families' union) and the per-family degrees depend on the node and the graph alone: rows of an index-time table, flagged as index-time graph aggregations; nothing comes from the question's scored rows",
+ "npz_sha256": "9a8ebadf6dfa81e628b0a93b1f93dce7e23057bcd2437e7cd9b64be54cb7b76d",
+ "script_sha256": "abbf05c4f54901c674a571bd8ce2a3b3f50294d156c647b37c242dc4c5ba53d8",
+ "p5b_script_sha256": "d1fe54765dbe31c8950f1b0f6a253a440c00eb1e66adf55fc1ee708a0cdeb134",
+ "p5a_script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 515160576,
+ "peak_rss_bytes": 23193034752,
+ "read_s": 2576.1,
+ "seconds": 3006.4,
+ "utc": "2026-10-13T22:28:21Z"
+}

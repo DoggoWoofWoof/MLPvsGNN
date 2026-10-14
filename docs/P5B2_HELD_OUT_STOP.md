@@ -155,3 +155,98 @@ Reported beside, deciding nothing:
   - the reads take 35 seconds to 5 minutes each, side by side.
 
   The call should land about 15 minutes after the items start, if the card is free.
+
+## 7. Results (filed 14 October 2026, about 07:10): STOPS
+
+`python scripts/p5b2_stop.py verdict` on the fetched records (`outputs/p5b2/verdict.json` and `verdict.md`). Every
+check held:
+- P5b's script, its five base records and its train record are the filed ones, and kappa is P5b's;
+- every dataset's held-out questions have new golds: 1,257 on metaqa, 21 on squad, 159 on musique, 186 on hotpotqa
+  and 274 on 2wiki;
+- on all 2,000 sampled questions (all 1,503 on webqsp), today's pool and seeds equal read1's, and each final pool is
+  P1c2's KIND_T file's;
+- every read ran on one script, one g and one GB (sha256s recorded), and every fit's loss is finite;
+- **GB and FB reproduce P5b's G and F on every question of all six datasets,** on both reads (0 differ), and H2 is
+  P5b's.
+
+The host ran the stage between about 01:15 and 05:30, while it was slow: the two fits took 86 minutes (P5b's took 2)
+and the reads 7 minutes to 2.4 hours (P5b's 35 seconds to 4.5 minutes).
+
+**The fits stopped early.** G kept epoch 4 and G0 epoch 3, of 30.
+
+| G: held-out loss on new golds (nats per gold) | start (epoch 0) | kept (epoch 4) | epoch 30 |
+| --- | ---: | ---: | ---: |
+| mean over the five datasets (the stop) | 5.58 | 5.19 | 10.16 |
+| metaqa | 7.58 | 6.69 | 8.93 |
+| squad | 3.75 | 3.91 | 8.65 |
+| musique | 7.52 | 7.40 | 14.79 |
+| hotpotqa | 4.45 | 4.03 | 10.27 |
+| 2wiki | 4.59 | 3.94 | 8.14 |
+
+- At the kept epoch g had not yet memorized: its loss on its own questions is its held-out loss (metaqa 5.26 and 5.26,
+  musique 7.34 and 7.28, 2wiki 3.60 and 3.75). After it, the train loss kept falling, to 0.89 at epoch 30, and the
+  held-out loss rose to about twice its start.
+- musique's held-out loss hardly moved at any epoch: 7.52 at the start, 7.34 at its lowest (epoch 6).
+
+**The call: STOPS.** F finds more of the low golds on metaqa, hotpotqa and 2wiki, ties on squad, finds fewer on
+musique and is mixed on webqsp (zero-shot).
+
+| low read, against H2 | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- | --- |
+| **F (the call)** | **MORE** | TIE | **FEWER** | **MORE** | **MORE** | **MIXED** |
+| FB (P5b's F) | MORE | TIE | FEWER | TIE | MORE | MIXED |
+| G | MORE | FEWER | FEWER | FEWER | MORE | FEWER |
+| GB (P5b's G) | MORE | FEWER | FEWER | FEWER | MORE | FEWER |
+| F0 | MORE | FEWER | FEWER | MORE | MORE | MIXED |
+| FN | FEWER | TIE | FEWER | FEWER | FEWER | FEWER |
+| where it fell short (the record) | - | what g reaches | what g reaches | - | - | what g reaches |
+
+F against H2, Delta at N = 5, 10, 25, 50 and 100 (n.c.: not counted):
+- metaqa: +0.027, +0.040, +0.081, +0.148, +0.223;
+- 2wiki: +0.128, +0.212, +0.179, +0.104, +0.020;
+- hotpotqa: +0.063 (n.c.), +0.071, +0.055 (n.c.), +0.021 (n.c.), 0.000. Its MORE rests on one point, N = 10 (interval
+  +0.004 to +0.143, on 238 golds);
+- musique: -0.037, -0.066, -0.077, -0.092, -0.079;
+- webqsp: +0.013, +0.018, +0.011, -0.015 (n.c.), -0.051.
+
+**Seen and new golds (beside).** s1eval's low golds are all new on musique, squad and webqsp. On hotpotqa all but 4 of
+238 are new, on 2wiki 424 of 509 and on metaqa 3,618 of 9,267.
+
+| low read, new golds only: found(10) | F | H2 | G | GB | F against H2 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| metaqa (3,618 golds) | 0.017 | 0.007 | 0.028 | 0.027 | MORE |
+| squad (79) | 0.392 | 0.443 | 0.241 | 0.278 | TIE |
+| musique (1,959) | 0.093 | 0.159 | 0.011 | 0.007 | FEWER |
+| hotpotqa (234) | 0.359 | 0.295 | 0.274 | 0.162 | TIE |
+| 2wiki (424) | 0.316 | 0.156 | 0.290 | 0.283 | MORE |
+| webqsp (6,436) | 0.044 | 0.026 | 0.014 | 0.012 | MIXED |
+
+**What the reads say.**
+- **Where g works, it is not memory.** On 2wiki and metaqa, F finds more of the golds that no fit question had: at
+  N = 10 about twice H2's share (2wiki 0.316 against 0.156, metaqa 0.017 against 0.007). On 2wiki's 85 seen golds g
+  finds far more (G 0.741 against H2's 0.035 at N = 10), so part of the gain there is memory of fit golds, but the new
+  golds carry the call on their own. They are golds two or more links from the seeds, which the rings cannot order: at
+  N = 25, G finds 0.475 of 2wiki's ring-2 low golds (H2 0.034) and 0.404 of those beyond (H2 none).
+- **The fit was not what held g back.** Stopped before it memorized, g reads s1eval's new golds about as P5b's
+  30-epoch g did (2wiki 0.290 against 0.283 at N = 10, metaqa 0.028 against 0.027, musique 0.011 against 0.007). The
+  stop helped on hotpotqa (0.274 against 0.162), which moved the call there from TIE to a one-point MORE.
+- **musique: g adds nothing, and the fusion costs H2.** Most of its low golds are one link from a seed (1,155 of
+  1,959), where H2 finds 0.460 of them at N = 25 and G 0.032. Even g at its start, fused with H2 (FN), is FEWER. Four
+  epochs took G's top 10 from 0.077 (NEAR) to 0.011, while its held-out loss on musique fell by 0.12 nats. G finds
+  0.010 of the low golds at N = 10 that H2 does not.
+- **webqsp (zero-shot):** F finds more in the top 25 (+0.011 to +0.018) and fewer at 100 (-0.051). G alone is below
+  H2 at every N.
+- **g's targets still sit outside the cloud of nodes:** RMS |Delta| 4.0 to 5.8 (P5b's 5.5 to 9.6), against a median
+  distance of about 1 between two nodes.
+
+**What follows (section 5, STOPS).** The learned offsets close in this form, and P5c does not start. The record says
+where they fell short: "what g reaches in this space" on squad, musique and webqsp. G kept epoch 4, so "g at its start"
+does not apply.
+
+P5b and P5b2 together: from the question, the seed and the seed's index-time graph features, a learned target reaches
+golds two or more links away on 2wiki and metaqa that the rings cannot order, including golds no fit question had. On
+musique it adds nothing: there the golds sit one link from the seeds, and H2's rings and cosine order them best. A
+fixed fusion cannot back off where g knows nothing.
+
+The order's next stage is P1c2, the models on the final pools ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)), which
+waits for clean-up 15. Any further reranker form gets its own file. Nothing here is adopted.

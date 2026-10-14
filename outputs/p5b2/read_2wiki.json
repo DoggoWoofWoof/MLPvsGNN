@@ -1,0 +1,89 @@
+{
+ "declared_in": "docs/P5B2_HELD_OUT_STOP.md",
+ "stage": "read",
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "carve_questions": 12576,
+ "questions": 2000,
+ "carve_sha256": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+ "sample_sha256": "497750ec4b497b04b2d7d8b543eee9b884b38cc38cca902758c9d81b2c826d82",
+ "checks": {
+  "pools_and_seeds_equal_read1": 2000,
+  "final_pools": "every check of P5b's section 5 held"
+ },
+ "pools": {
+  "file": "2wiki__s1eval.npz",
+  "sha256": "ce7b0ac46190ba179e4928029707fc6bc6ce3bde190f6e7dbf8e44ec597fa71a",
+  "manifest_sha256": "905c949f814c6c9b76810e9b4dfd3613efce67cf89479dd6c4196b3ab962a592",
+  "construction": "KIND_T",
+  "questions": 12576
+ },
+ "tables": {
+  "frame": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+  "V": "554696c148580c1212b59af04db9063b678ad86523c150a6a4f68a1ff01ddfa5",
+  "V0": "f1a5bf0be1e7ddd8f7d9615780378da99b3ddd999ec58696bbc30ad2806d53a1",
+  "space_record": "c27154198dc846992466e82f1dca0e7c9acf5f4a1be834800b9d77ac53b4d17e"
+ },
+ "tables_made": "filed",
+ "kappa": {
+  "V": 0.9900907102059091,
+  "V0": 1.4782312141588745
+ },
+ "g_sha256": "559323e5572cd8b2d62a26ae93a165247cd9401995c0822072d1802d25fa8d85",
+ "train_record_sha256": "a9eb05a7f36098b1405d338f723c2d87c8759018918957ff92ffaf1433f45e07",
+ "gb": "P5b's filed G",
+ "gb_g_sha256": "5c850a0b1203d7c8317629350f30746627fa3c3a648d25f693b8e1036fad3134",
+ "p5b_train_record": "6e8cb10cab96f80ef39be78c9c81dbfbe65126fd2e4317a8c9684dab5c004bcb",
+ "seen": {
+  "from": "P5b's filed base",
+  "golds": 1458,
+  "p5b_base_record": "6572e767e23570fb8ef5a5f7139cf195877f948ac3f6720d0ddc387a7cbf154a"
+ },
+ "read1_records": {
+  "2wiki_0of10.json": "de5e6ed48b0f71fee26a3aba9531ab60268da4bdc88e81e6bf18c4076768aa84",
+  "2wiki_1of10.json": "ab04a39f48e7d232d90f2193c71bc494d2a693d627c2877b5a9afa794838262b",
+  "2wiki_2of10.json": "2727dd5eff8a698120d34d823629e0559fdd469e3a94d3b5a61624ae86ff5b57",
+  "2wiki_3of10.json": "81b394fdeb08c9728ca9759133f4087377327410f13032f95b3cab21fb1f0cf4",
+  "2wiki_4of10.json": "b01128f582a3ff05672db1a05a72c903e826ba61a7d363ba2a6e4dd55be631a2",
+  "2wiki_5of10.json": "cfba616ce65f61adac683f31ee5286e9bdb20d9241d98e68c90f21e1870b71e2",
+  "2wiki_6of10.json": "ae8f0046ac707b8673eafa42150e95969b5b0fa991445e468a3fbabc5d39025f",
+  "2wiki_7of10.json": "d27d71e988a83c21b2616171fe85eb3722cb25240221790e78233d11b217520a",
+  "2wiki_8of10.json": "72b09adcb30a0c5c53b243053f0f40258b79ead9faccaa59c082b0e46245a301",
+  "2wiki_9of10.json": "9012ffb8b27aca50bed3b9f4c79def0db926742f2a9590a46e93e306dfc4e65f"
+ },
+ "orders": [
+  "F",
+  "H2",
+  "G",
+  "G0",
+  "F0",
+  "NEAR",
+  "FN",
+  "COS",
+  "GB",
+  "FB"
+ ],
+ "reads": [
+  "low",
+  "pool"
+ ],
+ "grid": [
+  5,
+  10,
+  25,
+  50,
+  100
+ ],
+ "index_time": "m_s (each seed's mean neighbour displacement over the three families' union) and the per-family degrees depend on the node and the graph alone: rows of an index-time table, flagged as index-time graph aggregations; nothing comes from the question's scored rows",
+ "npz_sha256": "24637bacd99f3f68d700bc1cb76a48fa703e495207a7fa8bdd096fdd3871769d",
+ "script_sha256": "abbf05c4f54901c674a571bd8ce2a3b3f50294d156c647b37c242dc4c5ba53d8",
+ "p5b_script_sha256": "d1fe54765dbe31c8950f1b0f6a253a440c00eb1e66adf55fc1ee708a0cdeb134",
+ "p5a_script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 591787008,
+ "peak_rss_bytes": 7101321216,
+ "read_s": 6563.7,
+ "seconds": 8684.9,
+ "utc": "2026-10-14T00:02:59Z"
+}
