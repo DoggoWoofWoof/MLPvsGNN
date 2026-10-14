@@ -19,13 +19,13 @@ Take a library of about six million Wikipedia-style passages and this question *
 
 No single passage answers it. It takes two:
 1. the film's passage, which names its director, say Ana Ruiz;
-2. Ana Ruiz's passage, which names her mother.
+2. Ana Ruiz's passage, which names the director's mother.
 
 A search engine compares the question with every passage. It finds the film's passage easily, because the title is
-in the question. It rarely finds Ana Ruiz's passage, because nothing in the question mentions her. But the film's
-passage **links** to hers. So if we start from what the search finds and follow the links, we can reach the second
-passage. The passages a question needs are its **golds**, and a system is scored on how many golds it puts in its top
-five.
+in the question. It rarely finds Ana Ruiz's passage, because nothing in the question mentions that name. But the
+film's passage **links** to it. So if we start from what the search finds and follow the links, we can reach the
+second passage. The passages a question needs are its **golds**, and a system is scored on how many golds it puts in
+its top five.
 
 So the project has three steps, and every part of this document is about one of them:
 
@@ -140,7 +140,7 @@ a high score. This is **personalised PageRank (PPR)**; "personalised" means the 
 not to random nodes.
 
 *Worked example (illustration).* The seed is the film's passage F. F links to Ana Ruiz's passage A and to a passage
-about the film's studio S. A links to her mother's passage M.
+about the film's studio S. A links to the mother's passage M.
 
 ```
    F (seed) ---> A (director) ---> M (mother)
