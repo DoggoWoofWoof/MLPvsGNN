@@ -197,3 +197,76 @@ timed path untimed, P1c2's own path and the re-run, then every check above. It l
 hotpotqa was not checked here; its timed run checks all 200 questions like the others. An entity question on the
 route without the shortcut (ROUTEst's backfill) did not come up on the real data, only in the selftest. Any of the
 200 questions that takes it is checked in the timed run's check pass.
+
+## Results (filed 14 October, 11:56)
+
+**The call: WALKS_DOMINATE** on metaqa, musique, webqsp, hotpotqa and 2wiki. **Next:** P4b, faster exact forms of the
+walks, declared in its own file.
+
+- **Every check held.** 200 of 200 questions were kept on all six datasets. The checks were today's pool, the seeds,
+  base and seeds, B_q, the kind, ROUTE's condition, the fill (P1c2's filed one and P1c2's own path's), the pool's
+  size and the re-run. KIND_T's pools as timed here are P1c2's, bit for bit.
+- **The protocol held.**
+  - Every run was pinned.
+  - The session was idle during all six timed passes. 2wiki's ended at 11:49:23; the next command of this session
+    came at 11:49:49, during 2wiki's untimed check pass.
+  - The CPU load before the timed passes was 8.8-18.1%, from the laptop's own background processes. The free memory
+    was 2.8-5.6 GB.
+- **The expectation held.** The build took 0.20 s on 2wiki and 0.29 s on hotpotqa, against "likely 0.1-0.3 s".
+
+**KIND_T's build, cold, batch 1, one thread (ms):**
+
+| dataset | KIND_T p50 | p95 | p99 | walks' share | walks run (Kst, A1st, A1all, KTst, KTall) | CPU load before | free GB before |
+| --- | ---: | ---: | ---: | ---: | --- | ---: | ---: |
+| squad | 0.19 | 0.35 | 0.45 | 0.00 | 0, 0, 0, 0, 0 | 8.8 | 5.6 |
+| metaqa | 10.44 | 26.02 | 30.20 | 0.88 | 159, 42, 0, 0, 0 | 14.6 | 5.48 |
+| musique | 75.98 | 110.94 | 116.45 | 0.92 | 0, 200, 200, 154, 154 | 11.5 | 5.22 |
+| webqsp | 61.32 | 102.60 | 145.58 | 0.96 | 55, 146, 12, 0, 0 | 9.6 | 4.4 |
+| hotpotqa | 286.24 | 378.71 | 404.12 | 0.97 | 0, 200, 200, 178, 178 | 9.0 | 3.78 |
+| 2wiki | 198.91 | 254.81 | 267.44 | 0.97 | 0, 200, 200, 200, 200 | 18.1 | 2.82 |
+
+- **The walks are 88-97% of the build** wherever a walk runs.
+- **squad runs no walk** (B_q = 0 on all 200). Its build is today's pool and the base: 0.19 ms.
+- **The walks are bound by memory latency, not arithmetic.** On hotpotqa and 2wiki an A1 walk touches 267,000-327,000
+  nodes (p50) and reads 0.8-1.0 million union entries, at 67-142 ns per entry (p50). That is the time of random reads
+  of each neighbour's residual, flag and degree, and of the reset of every touched node after the walk. These figures
+  come from the per-question walk counts in `outputs/p4a/<dataset>.json`.
+
+**End to end, cold p50 ms, today's pool -> KIND_T's build** (C12's model stages, with the caveat as declared):
+
+| dataset | twin0 | gnn0 | zrc | zsp | build / zrc's end to end |
+| --- | --- | --- | --- | --- | ---: |
+| squad | 2.67 -> 2.81 | 4.24 -> 4.38 | 1.65 -> 1.77 | 1.73 -> 1.87 | 0.11 |
+| metaqa | 49.47 -> 59.15 | 77.45 -> 86.86 | 26.42 -> 36.19 | 28.07 -> 37.92 | 0.29 |
+| musique | 75.66 -> 150.79 | 143.26 -> 218.77 | 35.87 -> 111.02 | 42.19 -> 116.42 | 0.68 |
+| webqsp | 69.87 -> 130.32 | 107.26 -> 169.67 | 82.65 -> 149.11 | 79.62 -> 146.04 | 0.41 |
+| hotpotqa | 3.91 -> 290.01 | 5.88 -> 291.62 | 2.36 -> 288.57 | 2.48 -> 288.62 | 0.99 |
+| 2wiki | 4.11 -> 203.59 | 6.00 -> 205.12 | 2.52 -> 201.56 | 2.61 -> 201.67 | 0.99 |
+
+**Ratios, today's pool -> KIND_T's build** (2,000-resample bootstrap 95% CIs; the fastest GNN is zsp on every
+dataset, on both pools):
+
+| dataset | universal (gnn0 / twin0) | lean (zsp / zrc) | fastest GNN / zrc | gnn0 / zrc |
+| --- | --- | --- | --- | --- |
+| squad | 1.59 [1.55, 1.69] -> 1.56 [1.52, 1.65] | 1.05 [1.03, 1.09] -> 1.05 [1.03, 1.09] | 1.05 [1.03, 1.09] -> 1.05 [1.03, 1.09] | 2.57 [2.50, 2.72] -> 2.47 [2.38, 2.61] |
+| metaqa | 1.57 [1.55, 1.57] -> 1.47 [1.45, 1.48] | 1.06 [1.06, 1.07] -> 1.05 [1.04, 1.06] | 1.06 [1.06, 1.07] -> 1.05 [1.04, 1.06] | 2.93 [2.91, 2.95] -> 2.40 [2.36, 2.44] |
+| musique | 1.89 [1.87, 1.91] -> 1.45 [1.43, 1.47] | 1.18 [1.16, 1.19] -> 1.05 [1.05, 1.06] | 1.18 [1.16, 1.19] -> 1.05 [1.05, 1.06] | 3.99 [3.94, 4.03] -> 1.97 [1.93, 2.00] |
+| webqsp | 1.54 [1.51, 1.55] -> 1.30 [1.27, 1.32] | 0.96 [0.93, 0.99] -> 0.98 [0.95, 0.99] | 0.96 [0.93, 0.99] -> 0.98 [0.95, 0.99] | 1.30 [1.24, 1.34] -> 1.14 [1.11, 1.18] |
+| hotpotqa | 1.50 [1.44, 1.56] -> 1.01 [1.00, 1.01] | 1.05 [1.01, 1.09] -> 1.00 [1.00, 1.00] | 1.05 [1.01, 1.09] -> 1.00 [1.00, 1.00] | 2.49 [2.38, 2.57] -> 1.01 [1.01, 1.01] |
+| 2wiki | 1.46 [1.43, 1.50] -> 1.01 [1.01, 1.01] | 1.04 [1.01, 1.07] -> 1.00 [1.00, 1.00] | 1.04 [1.01, 1.07] -> 1.00 [1.00, 1.00] | 2.38 [2.33, 2.45] -> 1.02 [1.01, 1.02] |
+
+
+**What this means**
+- **The build is shared by every model.** On hotpotqa and 2wiki it is 99% of every model's cold end to end. There
+  every MLP/GNN ratio is 1.00-1.02 end to end, whatever the models do.
+- **On the other datasets the build is a smaller share.** It is 0.35-0.68 of the end to end on musique, where gnn0/zrc
+  falls from 3.99 to 1.97. On metaqa that ratio falls from 2.93 to 2.40, and on webqsp from 1.30 to 1.14. squad is
+  unchanged: it runs no walk.
+- **Claim 3 on the model stages is unchanged.** Those are C12's numbers, with the pool given. Whether Claim 3 is stated
+  on the model stages with the build reported beside them, or end to end, stays the user's call.
+- **P4b cannot close the end-to-end gap alone.** It makes the walks faster and keeps them exact. Even several-fold
+  faster walks would leave the build far above the models' 1.7-6 ms on hotpotqa and 2wiki. The end-to-end ratios
+  there stay near 1 unless the build falls by about two orders of magnitude.
+
+Files: `outputs/p4a/<dataset>.json` (per question: each stage's time, the kind, the route, the shortcut, each walk's
+counts, and the checks) and `outputs/p4a/report.{json,md}`.
