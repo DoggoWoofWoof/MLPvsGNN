@@ -151,4 +151,59 @@ column, graph, edge or input.
 
 ## Results
 
-To be filed.
+**Filed 14 October, 21:00: ADOPT.** The record is `outputs/p1c3p/full-verdict.{json,md}`, written 20:46. zrckp is
+compared with zrc on today's pools, under the re-grade with the seed null (`outputs/full_zrckp/grade-nullx`):
+- 5 of 11 primary GAINs: J5 metaqa, 2wiki and webqsp; L-metaqa metaqa; L-2wiki 2wiki.
+- 20 GAINs in all, and no LOSS in 36 reads.
+- relz's filed grade (`grade.md`) said NOT_ADOPTED for one reason only: L-musique's held-out musique read (-0.0114).
+  That read is WITHIN under its floor of 0.0720.
+
+Delta R@5 against zrc, under the re-graded calls (W = WITHIN, zs = zero-shot, bold = primary):
+
+| split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| J5 | **+0.0193 GAIN** | **+0.0005 W** | **+0.0059 W** | **+0.0016 W** | **+0.0607 GAIN** | **+0.0540 GAIN zs** |
+| L-metaqa | **+0.1077 GAIN zs** | +0.0004 W | +0.0097 GAIN | +0.0073 W | +0.0632 GAIN | +0.0142 GAIN zs |
+| L-squad | +0.0219 GAIN | **-0.0002 W zs** | +0.0067 W | +0.0045 W | +0.0643 GAIN | +0.0655 GAIN zs |
+| L-musique | +0.0237 GAIN | +0.0012 W | **-0.0114 W zs** | +0.0025 W | +0.0614 GAIN | +0.0243 GAIN zs |
+| L-hotpotqa | +0.0251 GAIN | +0.0015 W | +0.0100 GAIN | **+0.0062 W zs** | +0.0619 GAIN | +0.0609 GAIN zs |
+| L-2wiki | +0.0232 GAIN | -0.0007 W | +0.0058 W | +0.0059 W | **+0.0604 GAIN zs** | +0.0644 GAIN zs |
+
+**In plain words:**
+- **2wiki** rises +0.060 to +0.064 on every split, held out (L-2wiki) included.
+- **metaqa** rises on every split, most when it is held out: +0.108 in L-metaqa's fit (0.142 to 0.249).
+- **webqsp,** which is never trained on, rises on all six splits (+0.014 to +0.066).
+- **musique** moves +0.006 to +0.010 in-domain, a GAIN in L-metaqa's and L-hotpotqa's fits. Held out it is -0.011,
+  WITHIN.
+- **hotpotqa and squad** are within 0.008 everywhere.
+
+**Beside, deciding nothing:**
+- **hit@1 against zrc:**
+  - 2wiki +0.062 to +0.077 on every split;
+  - musique +0.007 to +0.039;
+  - metaqa +0.003 to +0.033;
+  - webqsp +0.013 to +0.035;
+  - squad within 0.004;
+  - hotpotqa falls on all six splits, by -0.002 to -0.034 (-0.034 held out).
+- **FC@5 against zrc:**
+  - 2wiki +0.076 to +0.131;
+  - metaqa +0.016 to +0.087;
+  - webqsp +0.011 to +0.059;
+  - hotpotqa -0.001 to +0.012;
+  - musique -0.004 to +0.003 in-domain, and -0.026 held out.
+- **zrckp minus zrck** (zrck is P1c3's head with the z-scored score, which the MLP rule forbids):
+  - WITHIN on 31 of 36 reads;
+  - above on three: metaqa held out +0.046, 2wiki in L-hotpotqa's fit +0.022, webqsp in L-2wiki's fit +0.010;
+  - below on two: webqsp zero-shot in L-musique's and L-hotpotqa's fits, -0.013 and -0.021.
+  So dropping the score input costs little overall, and the held-out metaqa read gains.
+
+**What follows (section 4):**
+- **The lean pair becomes (zrckp, zspk),** both on KIND_T's pools with the KT input. The universal pair (twin0, gnn0)
+  is unchanged.
+- **The serving cost is timed:** P4c, TIMED (docs/P4C_KT_SERVING.md).
+  - The KT input costs 4-7 ms p50 per question on musique, hotpotqa and 2wiki, 22 ms on squad, 32 ms on webqsp and
+    39 ms on metaqa, mostly in the extra walks.
+  - Both models read the same serve path, so zspk / zrck stays 0.98-1.08.
+- **Claim 1's share for the new pair** (zrckp's R@5 gain over the first stage, as a share of zspk's) is not computed
+  here. It needs its own record.
+- **On P3's ledger:** hotpotqa's hit@1 and musique's held-out FC@5.

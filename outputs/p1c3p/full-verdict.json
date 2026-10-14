@@ -1,0 +1,816 @@
+{
+ "stage": "P1c3p full run",
+ "declared_in": "docs/P1C3P_FULL_RUN.md",
+ "rule": "ADOPT when zrckp's re-grade under the seed null has no LOSS on any of its 36 reads and at least one primary GAIN; NOT_ADOPTED otherwise; INCOMPLETE when the re-grade is missing or not the declared one (docs/P1C3P_FULL_RUN.md, section 4)",
+ "verdict": "ADOPT",
+ "arm": "zrckp",
+ "base_arm": "zrc",
+ "regrade": "outputs/full_zrckp/grade-nullx.json",
+ "regrade_sha256": "16702c752a562b3becf46617363ba2cbcbf3df02a674e9cbfe4c76ea0c624be7",
+ "regrade_verdict": "ADOPT",
+ "problems": [],
+ "primary_gains": [
+  "J5 metaqa",
+  "J5 2wiki",
+  "J5 webqsp",
+  "L-metaqa metaqa",
+  "L-2wiki 2wiki"
+ ],
+ "gains": [
+  "J5 metaqa",
+  "J5 2wiki",
+  "J5 webqsp",
+  "L-metaqa metaqa",
+  "L-metaqa musique",
+  "L-metaqa 2wiki",
+  "L-metaqa webqsp",
+  "L-squad metaqa",
+  "L-squad 2wiki",
+  "L-squad webqsp",
+  "L-musique metaqa",
+  "L-musique 2wiki",
+  "L-musique webqsp",
+  "L-hotpotqa metaqa",
+  "L-hotpotqa musique",
+  "L-hotpotqa 2wiki",
+  "L-hotpotqa webqsp",
+  "L-2wiki metaqa",
+  "L-2wiki 2wiki",
+  "L-2wiki webqsp"
+ ],
+ "losses": [],
+ "calls": {
+  "J5 metaqa": "GAIN",
+  "J5 squad": "WITHIN",
+  "J5 musique": "WITHIN",
+  "J5 hotpotqa": "WITHIN",
+  "J5 2wiki": "GAIN",
+  "J5 webqsp": "GAIN",
+  "L-metaqa metaqa": "GAIN",
+  "L-metaqa squad": "WITHIN",
+  "L-metaqa musique": "GAIN",
+  "L-metaqa hotpotqa": "WITHIN",
+  "L-metaqa 2wiki": "GAIN",
+  "L-metaqa webqsp": "GAIN",
+  "L-squad metaqa": "GAIN",
+  "L-squad squad": "WITHIN",
+  "L-squad musique": "WITHIN",
+  "L-squad hotpotqa": "WITHIN",
+  "L-squad 2wiki": "GAIN",
+  "L-squad webqsp": "GAIN",
+  "L-musique metaqa": "GAIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "WITHIN",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "GAIN",
+  "L-musique webqsp": "GAIN",
+  "L-hotpotqa metaqa": "GAIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "GAIN",
+  "L-hotpotqa hotpotqa": "WITHIN",
+  "L-hotpotqa 2wiki": "GAIN",
+  "L-hotpotqa webqsp": "GAIN",
+  "L-2wiki metaqa": "GAIN",
+  "L-2wiki squad": "WITHIN",
+  "L-2wiki musique": "WITHIN",
+  "L-2wiki hotpotqa": "WITHIN",
+  "L-2wiki 2wiki": "GAIN",
+  "L-2wiki webqsp": "GAIN"
+ },
+ "beside_zrckp_minus_zrck": {
+  "J5": [
+   {
+    "dataset": "metaqa",
+    "read": "in-domain",
+    "delta": [
+     -0.0003,
+     0.0002,
+     -0.0001
+    ],
+    "lo": [
+     -0.0012,
+     -0.0014,
+     -0.0038
+    ],
+    "hi": [
+     0.0006,
+     0.0019,
+     0.0033
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "squad",
+    "read": "in-domain",
+    "delta": [
+     0.0004,
+     0.0004,
+     0.003
+    ],
+    "lo": [
+     -0.0017,
+     -0.0017,
+     -0.0003
+    ],
+    "hi": [
+     0.0024,
+     0.0024,
+     0.0064
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "musique",
+    "read": "in-domain",
+    "delta": [
+     0.004,
+     0.0029,
+     -0.019
+    ],
+    "lo": [
+     -0.0016,
+     -0.0054,
+     -0.031
+    ],
+    "hi": [
+     0.0096,
+     0.0116,
+     -0.0083
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "hotpotqa",
+    "read": "in-domain",
+    "delta": [
+     0.0028,
+     0.0045,
+     -0.0109
+    ],
+    "lo": [
+     0.0004,
+     0.0001,
+     -0.0159
+    ],
+    "hi": [
+     0.0051,
+     0.0086,
+     -0.0059
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "2wiki",
+    "read": "in-domain",
+    "delta": [
+     0.0035,
+     0.015,
+     -0.0054
+    ],
+    "lo": [
+     0.0017,
+     0.0108,
+     -0.008
+    ],
+    "hi": [
+     0.0053,
+     0.0193,
+     -0.003
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "webqsp",
+    "read": "zero-shot",
+    "delta": [
+     0.0011,
+     -0.0027,
+     0.0007
+    ],
+    "lo": [
+     -0.0084,
+     -0.0126,
+     -0.008
+    ],
+    "hi": [
+     0.011,
+     0.008,
+     0.01
+    ],
+    "call": "WITHIN"
+   }
+  ],
+  "L-metaqa": [
+   {
+    "dataset": "metaqa",
+    "read": "zero-shot",
+    "delta": [
+     0.0459,
+     0.0407,
+     -0.0048
+    ],
+    "lo": [
+     0.0407,
+     0.0355,
+     -0.0067
+    ],
+    "hi": [
+     0.0507,
+     0.0458,
+     -0.0029
+    ],
+    "call": "GAIN"
+   },
+   {
+    "dataset": "squad",
+    "read": "in-domain",
+    "delta": [
+     0.0002,
+     0.0002,
+     0.0025
+    ],
+    "lo": [
+     -0.0016,
+     -0.0016,
+     -0.0002
+    ],
+    "hi": [
+     0.002,
+     0.002,
+     0.0052
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "musique",
+    "read": "in-domain",
+    "delta": [
+     0.0054,
+     0.007,
+     0.0008
+    ],
+    "lo": [
+     0.0006,
+     -0.0012,
+     -0.0087
+    ],
+    "hi": [
+     0.0106,
+     0.0157,
+     0.0103
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "hotpotqa",
+    "read": "in-domain",
+    "delta": [
+     0.001,
+     0.0026,
+     -0.0038
+    ],
+    "lo": [
+     -0.001,
+     -0.0012,
+     -0.0082
+    ],
+    "hi": [
+     0.0032,
+     0.0065,
+     0.0008
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "2wiki",
+    "read": "in-domain",
+    "delta": [
+     -0.003,
+     -0.0056,
+     -0.009
+    ],
+    "lo": [
+     -0.0045,
+     -0.0088,
+     -0.0115
+    ],
+    "hi": [
+     -0.0015,
+     -0.0023,
+     -0.0065
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "webqsp",
+    "read": "zero-shot",
+    "delta": [
+     -0.0069,
+     -0.0067,
+     -0.006
+    ],
+    "lo": [
+     -0.0131,
+     -0.0126,
+     -0.014
+    ],
+    "hi": [
+     -0.0006,
+     -0.0013,
+     0.002
+    ],
+    "call": "WITHIN"
+   }
+  ],
+  "L-squad": [
+   {
+    "dataset": "metaqa",
+    "read": "in-domain",
+    "delta": [
+     0.0003,
+     -0.0003,
+     0.0034
+    ],
+    "lo": [
+     -0.0009,
+     -0.0021,
+     -0.0004
+    ],
+    "hi": [
+     0.0014,
+     0.0016,
+     0.0072
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "squad",
+    "read": "zero-shot",
+    "delta": [
+     0.0026,
+     0.0026,
+     0.0006
+    ],
+    "lo": [
+     0.0002,
+     0.0002,
+     -0.0031
+    ],
+    "hi": [
+     0.0048,
+     0.0048,
+     0.0043
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "musique",
+    "read": "in-domain",
+    "delta": [
+     0.0006,
+     -0.0017,
+     -0.0128
+    ],
+    "lo": [
+     -0.0054,
+     -0.0112,
+     -0.0224
+    ],
+    "hi": [
+     0.0064,
+     0.0079,
+     -0.0029
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "hotpotqa",
+    "read": "in-domain",
+    "delta": [
+     0.001,
+     0.0024,
+     -0.0157
+    ],
+    "lo": [
+     -0.0011,
+     -0.0014,
+     -0.0201
+    ],
+    "hi": [
+     0.0031,
+     0.0062,
+     -0.0111
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "2wiki",
+    "read": "in-domain",
+    "delta": [
+     0.0019,
+     0.0085,
+     -0.006
+    ],
+    "lo": [
+     0.0004,
+     0.0045,
+     -0.0084
+    ],
+    "hi": [
+     0.0036,
+     0.0123,
+     -0.0037
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "webqsp",
+    "read": "zero-shot",
+    "delta": [
+     -0.0066,
+     -0.0033,
+     0.0033
+    ],
+    "lo": [
+     -0.0175,
+     -0.0153,
+     -0.0073
+    ],
+    "hi": [
+     0.0038,
+     0.008,
+     0.0146
+    ],
+    "call": "WITHIN"
+   }
+  ],
+  "L-musique": [
+   {
+    "dataset": "metaqa",
+    "read": "in-domain",
+    "delta": [
+     0.0012,
+     -0.0006,
+     0.004
+    ],
+    "lo": [
+     0.0002,
+     -0.0022,
+     0.0002
+    ],
+    "hi": [
+     0.0021,
+     0.001,
+     0.0078
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "squad",
+    "read": "in-domain",
+    "delta": [
+     -0.0001,
+     -0.0001,
+     0.0027
+    ],
+    "lo": [
+     -0.0019,
+     -0.0019,
+     -0.0004
+    ],
+    "hi": [
+     0.0017,
+     0.0017,
+     0.0059
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "musique",
+    "read": "zero-shot",
+    "delta": [
+     0.0062,
+     0.007,
+     -0.0149
+    ],
+    "lo": [
+     -0.0001,
+     -0.0017,
+     -0.0277
+    ],
+    "hi": [
+     0.0123,
+     0.0161,
+     -0.0017
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "hotpotqa",
+    "read": "in-domain",
+    "delta": [
+     0.0003,
+     -0.0008,
+     0.0005
+    ],
+    "lo": [
+     -0.0017,
+     -0.0042,
+     -0.0039
+    ],
+    "hi": [
+     0.0022,
+     0.0028,
+     0.0053
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "2wiki",
+    "read": "in-domain",
+    "delta": [
+     -0.0018,
+     -0.0041,
+     0.0024
+    ],
+    "lo": [
+     -0.0033,
+     -0.0076,
+     0.0001
+    ],
+    "hi": [
+     -0.0004,
+     -0.0008,
+     0.0047
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "webqsp",
+    "read": "zero-shot",
+    "delta": [
+     -0.0129,
+     -0.002,
+     -0.0047
+    ],
+    "lo": [
+     -0.023,
+     -0.0126,
+     -0.016
+    ],
+    "hi": [
+     -0.0028,
+     0.008,
+     0.0067
+    ],
+    "call": "LOSS"
+   }
+  ],
+  "L-hotpotqa": [
+   {
+    "dataset": "metaqa",
+    "read": "in-domain",
+    "delta": [
+     -0.0008,
+     -0.0013,
+     -0.005
+    ],
+    "lo": [
+     -0.0016,
+     -0.0026,
+     -0.0081
+    ],
+    "hi": [
+     0.0,
+     0.0,
+     -0.0022
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "squad",
+    "read": "in-domain",
+    "delta": [
+     0.0006,
+     0.0006,
+     0.0016
+    ],
+    "lo": [
+     -0.0014,
+     -0.0014,
+     -0.0011
+    ],
+    "hi": [
+     0.0024,
+     0.0024,
+     0.0043
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "musique",
+    "read": "in-domain",
+    "delta": [
+     0.005,
+     0.0017,
+     -0.0219
+    ],
+    "lo": [
+     -0.0012,
+     -0.0079,
+     -0.0335
+    ],
+    "hi": [
+     0.011,
+     0.0103,
+     -0.0112
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "hotpotqa",
+    "read": "zero-shot",
+    "delta": [
+     -0.0051,
+     -0.0113,
+     0.008
+    ],
+    "lo": [
+     -0.0087,
+     -0.0181,
+     0.0026
+    ],
+    "hi": [
+     -0.0016,
+     -0.0047,
+     0.0132
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "2wiki",
+    "read": "in-domain",
+    "delta": [
+     0.0222,
+     0.0647,
+     -0.0031
+    ],
+    "lo": [
+     0.02,
+     0.0589,
+     -0.0057
+    ],
+    "hi": [
+     0.0243,
+     0.0704,
+     -0.0005
+    ],
+    "call": "GAIN"
+   },
+   {
+    "dataset": "webqsp",
+    "read": "zero-shot",
+    "delta": [
+     -0.0211,
+     -0.018,
+     -0.0053
+    ],
+    "lo": [
+     -0.0319,
+     -0.0293,
+     -0.016
+    ],
+    "hi": [
+     -0.0105,
+     -0.0073,
+     0.0047
+    ],
+    "call": "LOSS"
+   }
+  ],
+  "L-2wiki": [
+   {
+    "dataset": "metaqa",
+    "read": "in-domain",
+    "delta": [
+     0.0018,
+     0.002,
+     0.0046
+    ],
+    "lo": [
+     0.0008,
+     0.0003,
+     0.0013
+    ],
+    "hi": [
+     0.0027,
+     0.0038,
+     0.0081
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "squad",
+    "read": "in-domain",
+    "delta": [
+     0.0012,
+     0.0012,
+     0.0032
+    ],
+    "lo": [
+     -0.0006,
+     -0.0006,
+     0.0
+    ],
+    "hi": [
+     0.0029,
+     0.0029,
+     0.0063
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "musique",
+    "read": "in-domain",
+    "delta": [
+     0.002,
+     0.0037,
+     -0.005
+    ],
+    "lo": [
+     -0.0028,
+     -0.0041,
+     -0.0137
+    ],
+    "hi": [
+     0.0067,
+     0.0116,
+     0.0037
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "hotpotqa",
+    "read": "in-domain",
+    "delta": [
+     0.0014,
+     0.0036,
+     -0.0009
+    ],
+    "lo": [
+     -0.0009,
+     -0.0007,
+     -0.0051
+    ],
+    "hi": [
+     0.0038,
+     0.008,
+     0.0032
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "2wiki",
+    "read": "zero-shot",
+    "delta": [
+     -0.0034,
+     -0.0055,
+     -0.0047
+    ],
+    "lo": [
+     -0.0056,
+     -0.0095,
+     -0.0071
+    ],
+    "hi": [
+     -0.0014,
+     -0.0015,
+     -0.0022
+    ],
+    "call": "WITHIN"
+   },
+   {
+    "dataset": "webqsp",
+    "read": "zero-shot",
+    "delta": [
+     0.0096,
+     0.01,
+     0.0106
+    ],
+    "lo": [
+     0.0009,
+     0.0013,
+     0.0013
+    ],
+    "hi": [
+     0.0183,
+     0.0186,
+     0.02
+    ],
+    "call": "GAIN"
+   }
+  ]
+ },
+ "zp1c3pf_sha256": "815c4e7b8cdc8a224ff151307e68ed2528dbf0b2f73d3370fab636834ad3bac1",
+ "utc": "2026-10-14T15:16:35Z"
+}
