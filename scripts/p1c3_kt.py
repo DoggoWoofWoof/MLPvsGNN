@@ -341,6 +341,9 @@ def main(argv=None):
     if a.selftest:
         return selftest()
     if a.cmd == "feats" and a.dataset:
+        if a.host:                          # P1e's host mode: the frozen package on the mirror (as P1c2's pools)
+            import p1e_anchor_kind as K
+            K.G.on_the_mirror()
         return feats_stage(a.dataset, a.threads, a.limit, a.carve)
     ap.error("feats DATASET, or --selftest")
 
