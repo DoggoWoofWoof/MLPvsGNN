@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (07:00)
+# Where we stand, 14 October 2026 (07:50)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one.
@@ -455,11 +455,28 @@ and every number split into golds the fit questions had (seen) and new ones.
   cosine order them best, and a fixed fusion cannot back off where g knows nothing.
 - **The learned offsets close in this form,** and P5c does not start. Any further reranker form gets its own file.
 
-## 7. Running now (14 October, 07:00)
+**P5b3, declared 14 October 07:50: a learned back-off gate** ([P5B3_BACKOFF_GATE.md](P5B3_BACKOFF_GATE.md)). It
+answers P5b2's diagnosis that a fixed fusion cannot back off.
+- **The gate:** for each question, a weight λ between H2 and P5b2's g, with λ = sigmoid(b + w · z). Its inputs z are
+  ten numbers known before any gold:
+  - the pool's size and its ring shares;
+  - g's entropy, and its probability mass by ring;
+  - g's largest weight and its offset size;
+  - how far g's top 25 and H2's top 25 agree.
 
-- **Nothing of ours is running on the host.** The host was off the network from about 16:42 on 13 October until
-  00:06, and its link kept dropping after that. P5b2 ran between 01:15 and 05:30 on a slow host and is filed
-  (section 6).
+  That makes 11 weights; g itself is unchanged.
+- **The fit:** on P5b2's held-out fit questions (which g never trained on), and only on golds that no training question
+  had. It maximizes the mean log of the gated rank score.
+- **The call is P5b's,** for the gated order against H2 on s1eval: GOES_FURTHER if it finds more of the low golds on
+  some dataset and fewer on none.
+
+## 7. Running now (14 October, 07:50)
+
+- **P5b3's six reads are queued for the host** (section 6). The host's link has been dropping since about 07:05 and
+  has been down since about 07:30, so they wait in the feeder. The gate and the verdict run on the laptop once the reads are fetched, about 20 minutes
+  after the reads start.
+- The host was also off the network from about 16:42 on 13 October until 00:06. P5b2 ran between 01:15 and 05:30 on a
+  slow host and is filed (section 6).
 - **P1c2** ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)) retrains the two lean bases, zrc and zsp, on the final pools,
   with one screen fit per family on L-musique and L-hotpotqa. P1c's rule decides: a full run follows only if neither
   arm loses a read and one gains.
@@ -467,7 +484,7 @@ and every number split into golds the fit questions had (seen) and new ones.
   - **Waiting for clean-up 15:** its looks, caches and fits need about 45 GB. The host's drive has about 22 GB free.
 - **Clean-up 15** (U1c's and U1f's arrays, about 143 GB freed) is the user's command. Until it runs, the feeder sends
   only light items.
-- **Done since the last update:** P5b2 filed: STOPS.
+- **Done since the last update:** P5b2 filed: STOPS. P5b3 declared.
 
 ## 8. Open gaps
 
@@ -475,7 +492,7 @@ and every number split into golds the fit questions had (seen) and new ones.
 | --- | --- | --- |
 | Pools against SOTA (full corpora) | P1e's KIND_T, parameter-free, the final pool: at or above the best SOTA order on squad, musique, 2wiki and webqsp; below on metaqa (up to −0.005) and hotpotqa (up to −0.007). Like-for-like, webqsp is below A1 on the structural family (up to −0.051). | Closed. metaqa and webqsp pull the entity branch in opposite directions, so no further fixed rule is declared. The learned gates stay beside. |
 | SOTA rankers (full corpora) | Both GNNs at or above the best LLM-free SOTA ranking on all six (P3a). Where the bar wins, the gold was in our pool and ranked out (P3b). | P5's representation. A seeds-removed read on more than 17 and 12 questions needs P3a's walk rows kept past ten nodes. |
-| What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5b and P5b2 STOP: the learned offset g(question, seed, graph features) finds more of these golds on 2wiki, metaqa and hotpotqa, golds no fit question had among them, but fewer on musique (near chance, with or without a held-out stop) and mixed on webqsp zero-shot (section 6). P5a's fixed map STOPS. |
+| What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5b and P5b2 STOP: the learned offset g(question, seed, graph features) finds more of these golds on 2wiki, metaqa and hotpotqa, golds no fit question had among them, but fewer on musique (near chance, with or without a held-out stop) and mixed on webqsp zero-shot (section 6). P5a's fixed map STOPS. P5b3, a learned per-question back-off between H2 and g, is declared. |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions. On the full corpus (P3b): ranked out 0.23-0.28 of R@5, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop). | D4 (link words): NO_SIGNAL. P2c part 1: on B1 musique our LLM-free graph adds more than the LLM-built graphs, so the LLM graph is not what our walks lack. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
@@ -528,6 +545,8 @@ and every number split into golds the fit questions had (seen) and new ones.
     its fit memorized its questions, and it STOPS.
   - P5b2 stopped g's fit on held-out golds no fit question had. g's gains on 2wiki and metaqa hold on those new golds,
     musique stays near chance, and it STOPS: the learned offsets close in this form.
+- **14 October: one more reranker form.** P5b3 lets a learned gate set, per question, how much the fusion trusts g
+  and how much H2.
 
 ## What is next
 
@@ -541,7 +560,9 @@ file, committed before its numbers.
 3. **Rerankers on the final pools:** the learned offset g(question, seed, graph features), fit by EM over the latent
    seed and offset, aimed at the BRIDGE part of GNN>MLP and at the RANKED misses. P5b and P5b2 STOP: g finds more on
    2wiki and metaqa, golds no fit question had among them, but adds nothing on musique, and a fixed fusion cannot back
-   off there. The offsets close in this form, and P5c does not start. Any further reranker form gets its own file.
+   off there. P5b3 ([P5B3_BACKOFF_GATE.md](P5B3_BACKOFF_GATE.md)) tries one more form: a learned per-question
+   back-off between H2 and g. Its reads wait for the host. If it STOPS, the learned offsets close and P5c does not
+   start. If it GOES_FURTHER, P5c gives the models the gated scores, in its own file.
 4. **P4: speed.** 2-3× in every family with every win kept.
 5. **Claim 3's wording and the confirmation run** of the chosen MLP and GNN on held-out questions. B1 is read beside
    it and never used to choose.
