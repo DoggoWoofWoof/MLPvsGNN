@@ -265,4 +265,73 @@ wall time in the run log. No timing number from the first runs has been read.
 
 ## Results
 
-To be filed.
+**Filed 14 October, 20:58: TIMED.** The record is `outputs/p4c/report.{json,md}`, from the re-timed runs (20:28-20:52).
+- Every dataset kept 200 of 200 questions in both sets, and every check held on every question.
+- All twelve timed passes ran pinned, on mains power, with the session idle.
+- The 2 s CPU load before each timed pass was 3.4-13.3%.
+
+**The fresh set** (questions 201-400). p50 ms per question, cold, batch 1, one thread:
+
+| dataset | KIND_T's build | serve path | head | (serve + head) / build [95% CI] | serve minus build |
+| --- | ---: | ---: | ---: | --- | ---: |
+| squad | 0.15 | 21.72 | 0.53 | 152.96 [147.87, 189.51] | 21.61 |
+| metaqa | 6.49 | 45.38 | 0.67 | 7.10 [6.97, 7.28] | 39.13 |
+| musique | 35.45 | 39.33 | 0.74 | 1.13 [1.10, 1.18] | 3.98 |
+| webqsp | 13.02 | 42.81 | 0.73 | 3.36 [3.16, 3.58] | 31.52 |
+| hotpotqa | 47.40 | 55.59 | 0.57 | 1.19 [1.15, 1.20] | 7.35 |
+| 2wiki | 50.88 | 58.04 | 0.58 | 1.15 [1.14, 1.17] | 7.44 |
+
+C12's set gives the same picture: serve over build 1.12-1.15 on musique, hotpotqa and 2wiki, 3.19 on webqsp, 6.86 on
+metaqa and 172 on squad.
+
+**Where the time goes: the walks.**
+- **musique, hotpotqa, 2wiki:** the build already runs four of the five walks the columns need. The serve path adds
+  only Kst, 4-7 ms.
+- **metaqa, webqsp:** the build runs one or two of them. The serve path adds three to five walks, 31-39 ms.
+- **squad:** the build has no links on any question (B_q <= 0), so it runs no walk. The columns still need A1st and
+  A1all, which take 19 of the serve path's 22 ms.
+- **The rest is small:** the columns cost 0.26-0.64 ms and the head 0.53-0.74 ms.
+
+**End to end on C12's set**, cold p50 ms. Each model is C12's model stages (C12's session, today's pools), plus the
+build or the serve path and head timed here. zrck's head is an upper bound for zrckp's (161 parameters and no
+z-score).
+
+| dataset | twin0 | gnn0 | zrc | zsp | zrck (>= zrckp) | zspk |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| squad | 2.73 | 4.33 | 1.72 | 1.82 | 27.92 | 28.05 |
+| metaqa | 55.29 | 83.17 | 32.29 | 33.95 | 69.42 | 71.19 |
+| musique | 110.64 | 177.56 | 71.21 | 77.44 | 75.78 | 81.70 |
+| webqsp | 83.00 | 120.14 | 96.29 | 92.57 | 128.99 | 125.80 |
+| hotpotqa | 50.84 | 52.86 | 48.95 | 49.36 | 56.45 | 56.75 |
+| 2wiki | 55.40 | 56.92 | 53.75 | 53.87 | 62.26 | 62.13 |
+
+**Ratios on C12's set** (paired bootstrap 95% CIs in the report):
+
+| ratio | squad | metaqa | musique | webqsp | hotpotqa | 2wiki |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| zsp / zrc on KIND_T's build | 1.06 | 1.05 | 1.09 | 0.96 | 1.01 | 1.00 |
+| zspk / zrck | 1.00 | 1.03 | 1.08 | 0.98 | 1.01 | 1.00 |
+| gnn0 / twin0 | 1.59 | 1.50 | 1.60 | 1.45 | 1.04 | 1.03 |
+| fastest GNN / zrck | 0.16 | 1.03 | 1.08 | 0.93 | 0.94 | 0.91 |
+
+**In plain words:**
+- **Where KIND_T already walks,** the KT input is cheap: +13-19% on the build and +6-16% end to end on musique,
+  hotpotqa and 2wiki.
+- **Where it does not, it is dear:** end to end, the MLP with the KT input takes 16x zrc's time on squad, 2.1x on
+  metaqa and 1.34x on webqsp.
+- **Within the lean family the ratio does not move.** Both models pay the same serve path, so zspk / zrck is 0.98-1.08.
+- **zrck is slower than gnn0** on squad, webqsp, hotpotqa and 2wiki. No MLP is 2x faster than the fastest GNN with
+  this input, and none was before it either (C12).
+
+**Beside:** the first runs (`outputs/p4c/first_pass/`, under load) agree with the filed ones: every build and serve
+p50 is within 3.3%.
+
+**What follows:** P1c3p's full run ADOPTs (docs/P1C3P_FULL_RUN.md), so the lean pair is (zrckp, zspk), with this end
+to end and its caveats. The confirmation run times the compiled KT models and the build in one session.
+
+**Open, for the user or a declared stage:**
+- **Threads for the walks** (P4b's question). A question's walks are independent, so they could run on separate
+  threads with the same results.
+- **squad.** The serve path walks on every question, yet zrckp moves squad's R@5 by at most 0.0015 on any split. Whether the columns carry
+  anything when a question has no links (B_q <= 0) is a question for every dataset alike. It is not a per-dataset
+  skip.
