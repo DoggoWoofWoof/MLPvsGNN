@@ -1,0 +1,56 @@
+{
+ "declared_in": "docs/P1C3_KT_INPUT.md",
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "questions": 1503,
+ "rows": 3186165,
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "479f73d829556f4327ab60884ed5b0e0cfc8ac050b3baa7a984ee10e60f9bdfb",
+   "shape": [
+    3186165,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "55c8434a5c0c109fe03bef5c54e77228e1c8469e5c6d6914e1e74af30f14064a",
+   "shape": [
+    1503
+   ]
+  }
+ },
+ "ids_sha256": "410bd08bec92a470f2d12c4f4b21f2c407e24bb05611e29a92d86c23c2dd2f3a",
+ "cache_root": "outputs/p1c2/cache",
+ "cache_parts": {
+  "part_0of2": "6d1e551792b1d7fb6fd7a9c63731e56acd3826b536ff28d2e4531a4aecc10e53",
+  "part_1of2": "820119ebcfd96e1ddbb0843a861289ef6f3a76a815399b9310deea296548ffd6"
+ },
+ "pools_manifest_sha256": "1e997a1d434c2e94f07e6d01c66e33e5d87f2fd315bc1a1cf7bd5f4211242758",
+ "pools_file_sha256": "13a31fa12d3847a2863946c1493cb91618e3a23d4d61e73ec8ca78fa63d54c70",
+ "checks": {
+  "fill_filed": 1503,
+  "bs_filed": 1503,
+  "rows_are_pool": 1503
+ },
+ "script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1c2_script_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "p1e_verdict_sha256": "cae64b5ac551b2a033ac6652257762483ae8a7460c7f0c493f700b97cb6a1c52",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 3,
+ "seconds": 135.5,
+ "utc": "2026-10-14T10:28:30Z"
+}

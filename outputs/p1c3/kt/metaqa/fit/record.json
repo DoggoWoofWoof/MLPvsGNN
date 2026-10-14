@@ -1,0 +1,62 @@
+{
+ "declared_in": "docs/P1C3_KT_INPUT.md",
+ "dataset": "metaqa",
+ "carve": "fit",
+ "questions": 5960,
+ "rows": 12021002,
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "afd5cecb3fc5720dae027d49c5fd3366d0e5e64e7b7b432866f912dcaf268260",
+   "shape": [
+    12021002,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "0c0cb9bfd9d13db94ec7985c1faf7372eb1e3e060766ab390bf0f6b2c738be36",
+   "shape": [
+    5960
+   ]
+  }
+ },
+ "ids_sha256": "b3df6ace9d469a3a1dc1940db5085696f8decabda2184acb991cc43cc06b3442",
+ "cache_root": "outputs/p1c2/cache",
+ "cache_parts": {
+  "part_0of8": "db559c8dcc43c7d2487310522df3876b9b8820aa60c61e19975bf4aea4f291fc",
+  "part_1of8": "7b470dbcc707d08813e8a70459501d2ee54e6bd041112ab7105fc28e7f9883f2",
+  "part_2of8": "f4dbf06079b6ddcf2e7d4d5242791f409a0a887a16545dc8e78b2e1e4784ceee",
+  "part_3of8": "b11fe9aa7b3bc8d616a667a89de9d2b586f8ae583fd28f18b3e14a13a8fc5072",
+  "part_4of8": "99eb97494855e8c2ed01e1a6d5e2ff6c0b139b9093dd3ef4cd0c2df39b1675da",
+  "part_5of8": "be4bd7050cf255fcc35e293ef617dbeaaa4680e7a05cf462846deb41eaa36db1",
+  "part_6of8": "9028d397cfac68be06fae8105ecf52b527f8397637cd39d7c467d9cb4ea8460a",
+  "part_7of8": "8bc243c95fd6a3999b150e63a3f6da752bfb5eb1b55d27b06fbc01a081ef9760"
+ },
+ "pools_manifest_sha256": "cb96d2f85decea000996f60bbaaa4175a0780a2b8a6f1169e40ab1626738d2e5",
+ "pools_file_sha256": "972dfc79a27f62d607816ae8281be4036ba9fad2d294dd9d5ec68afefd2ec00d",
+ "checks": {
+  "fill_filed": 5960,
+  "bs_filed": 5960,
+  "rows_are_pool": 5960
+ },
+ "script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1c2_script_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "p1e_verdict_sha256": "cae64b5ac551b2a033ac6652257762483ae8a7460c7f0c493f700b97cb6a1c52",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 3,
+ "seconds": 353.4,
+ "utc": "2026-10-14T10:32:01Z"
+}

@@ -1,0 +1,60 @@
+{
+ "declared_in": "docs/P1C3_KT_INPUT.md",
+ "dataset": "musique",
+ "carve": "s1fit",
+ "questions": 4601,
+ "rows": 9623206,
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "a8c0509d7794995865181a7e9e70cb7368a2bb4696a8d27ba5fc4ac2692a6e82",
+   "shape": [
+    9623206,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "8ff85e429989a41ffc1a28832a80b96e879734878542fc35a91de5fc148c6cc1",
+   "shape": [
+    4601
+   ]
+  }
+ },
+ "ids_sha256": "52219fce752e513312e3757b1da37492988724ecca081350eeb1486862438565",
+ "cache_root": "outputs/p1c2/cache",
+ "cache_parts": {
+  "part_0of6": "59af4fde2fb64bf5f815da0ddfabbe29b63b89e6d940d19e37749babd593684e",
+  "part_1of6": "dd5058572febc1e430e8fe5a56f197e5427161a12da48bdbe7c987a430606bf0",
+  "part_2of6": "79aa47eefe0ebb1afcf71c4c5dc0fedd7f9159fac4811a475f1abbbb04bebe15",
+  "part_3of6": "4a0d5bd0e74a77fb6b5e8dfa275d054f761cb25740cc604b0a9498d7fa5ad842",
+  "part_4of6": "35af4f9b058a23fd0b007be575a70dfa95b406394b62d598509335337d988149",
+  "part_5of6": "58768ae0d299a28907eaf631e75f028b47703abbe244ee636a3a96a74a1043c8"
+ },
+ "pools_manifest_sha256": "6ad837d24999a624cfd56ee9c53f47d35e2d9c9364a0a4cbbf2be630a4b33872",
+ "pools_file_sha256": "ef168e1e221e6910af957c030e7d8f97f147e6d3a35abf2fbc6247dd5aaa7cf7",
+ "checks": {
+  "fill_filed": 4601,
+  "bs_filed": 4601,
+  "rows_are_pool": 4601
+ },
+ "script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1c2_script_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "p1e_verdict_sha256": "cae64b5ac551b2a033ac6652257762483ae8a7460c7f0c493f700b97cb6a1c52",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "seconds": 423.9,
+ "utc": "2026-10-14T10:33:03Z"
+}

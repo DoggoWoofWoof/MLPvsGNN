@@ -1,0 +1,67 @@
+{
+ "declared_in": "docs/P1C3_KT_INPUT.md",
+ "dataset": "metaqa",
+ "carve": "s1eval",
+ "questions": 9785,
+ "rows": 19742463,
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "4bd7d40e4f4eb4e5dd1f1b999be91519fb06a4360fafa1f9defa268948e80cdf",
+   "shape": [
+    19742463,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "e8288263d2211d853d359c49aaea93c12dec16e708c7c748ed7daec46de9b328",
+   "shape": [
+    9785
+   ]
+  }
+ },
+ "ids_sha256": "b927bd0f7abe0ae613e03bc564dc8e86f2ff6d88661f6a3333bac2af842bfad3",
+ "cache_root": "outputs/p1c2/cache",
+ "cache_parts": {
+  "part_0of13": "6b177d4499687683953e90e43b70afb9563fad05cd7d8467b39b5ef4f8111a55",
+  "part_1of13": "f8bca961188f62d7757dc15200b45aad0b55e4c51f49a78ecac4221fb676ff3e",
+  "part_2of13": "fde566c19a53433e7075069d0bbce9d1ba2c6e48f7b98e66759dc1124bb994e3",
+  "part_3of13": "590334de271308345fc2920d77ee93b492784431cc9afeed26cd610d929fd0f0",
+  "part_4of13": "dc43e15e90b85daa0069230fe46ca35ca94007db00205317ca5482abcb77e157",
+  "part_5of13": "0224d3d1a155ad3228a1eb559f78f2f45a3311c697404babc7d37d23180efb9c",
+  "part_6of13": "697aa3ea5e0b1a122971d050227f227c59ce4319568990303f023ed2cb1b9ca7",
+  "part_7of13": "e62c6476b44b072368bc86f012616f3200e133d8523def23b4cc1ea24acf53aa",
+  "part_8of13": "cfaddb81b772eae72b644240e060c97534aca4a3c300fe4067044c7b542b0dab",
+  "part_9of13": "3588bb15b959d492113d7468552e87549809046759e7cc6176b73915234746c9",
+  "part_10of13": "23d3738ecd67bc1d6ee9466e4d4080fbdc356befc04ebad95bd1032ed457745a",
+  "part_11of13": "4da69a5bdbeb9f166673286af553b1e7e186beafe917d4c00ada3fe7d522841b",
+  "part_12of13": "e1e14ebd89f5a01da73d59dc597b3fba0e640c112b376c509d218fd7237ca4a4"
+ },
+ "pools_manifest_sha256": "cb96d2f85decea000996f60bbaaa4175a0780a2b8a6f1169e40ab1626738d2e5",
+ "pools_file_sha256": "6bb9350161a3efe6ab68566bef75201dfa00932d6f343c268e8c5b7671119485",
+ "checks": {
+  "fill_filed": 9785,
+  "bs_filed": 9785,
+  "rows_are_pool": 9785
+ },
+ "script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1c2_script_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "p1e_verdict_sha256": "cae64b5ac551b2a033ac6652257762483ae8a7460c7f0c493f700b97cb6a1c52",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 3,
+ "seconds": 664.8,
+ "utc": "2026-10-14T10:40:53Z"
+}

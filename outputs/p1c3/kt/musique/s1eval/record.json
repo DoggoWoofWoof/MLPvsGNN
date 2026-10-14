@@ -1,0 +1,57 @@
+{
+ "declared_in": "docs/P1C3_KT_INPUT.md",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "questions": 2417,
+ "rows": 5057436,
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "39377cdda7157d8720efdd477b0d1c1e75901c0c656e17b5e55f18681477145c",
+   "shape": [
+    5057436,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "f1858be4136a7a1fdf6c2e3590d6082ae04e604e6aa22a43f555aa5278efacd3",
+   "shape": [
+    2417
+   ]
+  }
+ },
+ "ids_sha256": "380b7f03af583c623467d50c1d15eb4dfce5472b217bd93f160a903a75f46571",
+ "cache_root": "outputs/p1c2/cache",
+ "cache_parts": {
+  "part_0of3": "d56388919973944344133aa151713cd42e7b407b354fa087b8059b336c1476f1",
+  "part_1of3": "7fb95fd25ea5f0214274697748bcf9700ee8856097d13624f860009d88c17ea4",
+  "part_2of3": "b3c7e47c8bc48e890e8c9a21cbbdd081b4dce1e599c0af6d89392e01889ed391"
+ },
+ "pools_manifest_sha256": "6ad837d24999a624cfd56ee9c53f47d35e2d9c9364a0a4cbbf2be630a4b33872",
+ "pools_file_sha256": "5e175990557684892e144e1cf0890b5de44e6132a4def0466424a6098a500715",
+ "checks": {
+  "fill_filed": 2417,
+  "bs_filed": 2417,
+  "rows_are_pool": 2417
+ },
+ "script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1c2_script_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "p1e_verdict_sha256": "cae64b5ac551b2a033ac6652257762483ae8a7460c7f0c493f700b97cb6a1c52",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "seconds": 308.0,
+ "utc": "2026-10-14T10:35:31Z"
+}

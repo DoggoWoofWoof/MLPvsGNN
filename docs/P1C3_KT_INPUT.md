@@ -192,4 +192,95 @@ Reported beside, deciding nothing:
 
 ## 7. Results
 
-To be filed.
+Filed 14 October 2026, about 17:30. **ADOPT_FOR_FULL_RUN.**
+- **zrck:** 6 GAINs and no LOSS in its 12 reads after the re-call (PROMISING).
+- **zspk:** 6 GAINs and no LOSS (PROMISING).
+
+Neither arm has a LOSS, and together they have twelve GAINs, so section 4's rule gives ADOPT_FOR_FULL_RUN. The full run
+is [P1C3_FULL_RUN.md](P1C3_FULL_RUN.md).
+
+**The gate** (`zp1c3f.py gate`) applied the rule to the two re-calls at 17:13:59 and wrote
+`outputs/p1c3/screen-verdict.{json,md}`. Its record names zp1c3f.py by its sha256 with line ends normalized,
+1e3e45f5…, which is 64d640f's file.
+
+**How the items ran.** The first eleven KT items stopped at the package import, before any question was read. de806f3
+made `--host` load the frozen package from the mirror, as P1c2's pools stage does, and the items ran again as
+`p1c3-2-*`. Nothing else changed.
+
+**Files:**
+- `outputs/screen/scr-p1c3-{zrck,zspk}{,-hp}.{md,json}`;
+- `outputs/screen/scr-p1c3-{zrck,zspk}-pair{,-recall}.{md,json}`. Host paths were cut from the two re-call records, so
+  their bytes differ from the sha256 the gate recorded. The host's copies are unchanged.
+- `outputs/p1c3/screen-verdict.{json,md}`;
+- the eleven `outputs/p1c3/kt/<D>/<carve>/record.json`.
+
+**delta R@5 against each arm's base on today's pools, with the re-call** (W = WITHIN; zs = zero-shot):
+
+| arm | fit | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zs) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| zrck | L-musique | +0.0225 GAIN | +0.0013 W | −0.0176 W (zs) | +0.0022 W | +0.0632 GAIN | +0.0372 GAIN |
+| zrck | L-hotpotqa | +0.0259 GAIN | +0.0009 W | +0.0050 W | +0.0113 W (zs) | +0.0397 GAIN | +0.0820 GAIN |
+| zspk | L-musique | +0.0215 GAIN | −0.0011 W | −0.0100 W (zs) | +0.0015 W | +0.0659 GAIN | −0.0017 W |
+| zspk | L-hotpotqa | +0.0233 GAIN | +0.0026 W | +0.0107 GAIN | +0.0064 W (zs) | +0.0589 GAIN | +0.0418 GAIN |
+
+The re-call changed three calls:
+- L-musique's musique zero-shot read, on both arms: LOSS to WITHIN (floor 0.072);
+- zrck's hotpotqa zero-shot read on L-hotpotqa's fit: GAIN to WITHIN (+0.0113, floor 0.0200).
+
+**Against P1c2's fit of the same arm and split**, which is the KT input's own step on KIND_T's pools. These are called
+at the floor 0.0075, with no re-call, and decide nothing:
+
+| arm | fit | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zs) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| zrck | L-musique | +0.0014 W | −0.0006 W | +0.0271 GAIN (zs) | +0.0026 W | +0.0238 GAIN | +0.0290 GAIN |
+| zrck | L-hotpotqa | +0.0050 W | −0.0013 W | +0.0044 W | +0.0201 GAIN (zs) | +0.0003 W | +0.0544 GAIN |
+| zspk | L-musique | +0.0001 W | −0.0005 W | +0.0220 GAIN (zs) | +0.0018 W | +0.0209 GAIN | +0.0150 GAIN |
+| zspk | L-hotpotqa | +0.0032 W | +0.0024 W | +0.0047 W | +0.0024 W (zs) | +0.0162 GAIN | +0.0077 W |
+
+**Did the pools' extra golds reach the top five?** This is P1c2's table ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md),
+section 7) with P1c3 beside it. Each cell is delta R@5 against today's base, P1c2's arm → P1c3's arm. In brackets:
+P1c3's share of the pools' change in gold recall.
+
+| dataset | pools' recall change | zrc → zrck, L-musique | zrc → zrck, L-hotpotqa | zsp → zspk, L-musique | zsp → zspk, L-hotpotqa |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| metaqa | +0.0324 | +0.0211 → +0.0225 (0.69) | +0.0209 → +0.0259 (0.80) | +0.0214 → +0.0215 (0.66) | +0.0201 → +0.0233 (0.72) |
+| musique | +0.0421 | −0.0447 → −0.0176 (zs) | +0.0006 → +0.0050 (0.12) | −0.0320 → −0.0100 (zs) | +0.0060 → +0.0107 (0.25) |
+| 2wiki | +0.0202 | +0.0394 → +0.0632 (3.13) | +0.0394 → +0.0397 (1.97) | +0.0450 → +0.0659 (3.26) | +0.0426 → +0.0589 (2.92) |
+| webqsp | +0.1080 | +0.0082 → +0.0372 (0.34) | +0.0276 → +0.0820 (0.76) | −0.0167 → −0.0017 | +0.0341 → +0.0418 (0.39) |
+
+squad's pools are today's, and hotpotqa's pools lose 0.004 of gold recall. Their rows are in the first table.
+
+What this says:
+- **metaqa and 2wiki gain on both arms and both fits, as with P1c2.**
+  - metaqa's gain is the pools': the KT input adds +0.0001 to +0.0050 to P1c2's fits.
+  - On 2wiki the KT input adds +0.0003 to +0.0238 to the pools' +0.039 to +0.045.
+- **musique zero-shot: the KT input wins back about 0.6 to 0.7 of what KIND_T's pools cost.**
+  - P1c2's fits lost 0.045 (zrc) and 0.032 (zsp) there. P1c3's lose 0.018 and 0.010, both WITHIN under the seed null.
+  - KIND_T's own order reads 0.5025 there (section 1). zrck is now above it (0.5059) and zspk just below it (0.5012).
+    With P1c2's pools both were below it (0.4789 and 0.4792).
+  - In-domain (L-hotpotqa's fit), musique moves +0.0050 (W, zrck) and +0.0107 (GAIN, zspk).
+- **webqsp, never trained: more of the pools' golds reach the top five.**
+  - zrck keeps 0.34 and 0.76 of the pools' +0.108 (P1c2's zrc: 0.08 and 0.26).
+  - zspk keeps 0.39 on L-hotpotqa's fit (P1c2's zsp: 0.32). On L-musique's fit, P1c2's LOSS (−0.0167) is now
+    −0.0017, WITHIN.
+- **hotpotqa's R@5 moves +0.0015 to +0.0113 (WITHIN on all four), but its hit@1 falls on all four fits**, each
+  interval below 0:
+  - zrck: −0.0186 [−0.0253, −0.0120] in-domain, −0.0424 [−0.0502, −0.0346] zero-shot;
+  - zspk: −0.0081 [−0.0144, −0.0019] in-domain, −0.0433 [−0.0513, −0.0355] zero-shot.
+
+  So on hotpotqa a gold is ranked first less often. hit@1 decides nothing here, and the full run reports it on all six
+  splits.
+- **musique zero-shot's FC@5 falls**: zrck −0.0331 [−0.0451, −0.0207] and zspk −0.0207 [−0.0314, −0.0103]. Its hit@1
+  rises (+0.0534 and +0.0314). Fewer questions have all their golds in the top five, and more have a gold first.
+- **2wiki's FC@5 rises the most**, by +0.059 to +0.133, and its hit@1 by +0.06 to +0.08.
+- **squad** is the identity again: its pools are today's, and R@5 moves by at most 0.0026.
+
+What follows, by the rule (section 5):
+- **The full run goes ahead** ([P1C3_FULL_RUN.md](P1C3_FULL_RUN.md)).
+  - It was declared at 17:09 (64d640f), before this verdict, and its eight fits started at 17:10 on the card's free
+    slots.
+  - Their reads waited on this gate and now follow each fit.
+  - Its verdict, one for the pair over 36 reads per arm, is due about 19:40.
+- **The KT models are not the claims' models yet.** That needs the full run's ADOPT, and then the KT input's serving
+  cost timed cold (section 5) on P4b's faster exact walks. Until then, today's models on today's pools stay the
+  claims' models.

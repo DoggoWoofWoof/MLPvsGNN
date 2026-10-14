@@ -1,0 +1,55 @@
+{
+ "declared_in": "docs/P1C3_KT_INPUT.md",
+ "dataset": "squad",
+ "carve": "fit",
+ "questions": 5856,
+ "rows": 292994,
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "78b72e9641a795fbdef03db5aeba85c3ca7c68888575647d6fc0e0b6464c0f4d",
+   "shape": [
+    292994,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "7edb888632d4579c068664c62bc87c51954daabd5c896693cf9d6da1915091c1",
+   "shape": [
+    5856
+   ]
+  }
+ },
+ "ids_sha256": "8c918fe797e76ed16b361caec787188d512a7be76cd0a5866a2c2ca2505d43ac",
+ "cache_root": "outputs/p1c2/cache",
+ "cache_parts": {
+  "part_0of1": "c33df3341648429b291ff7f7f4ed1ea7cf23295af7f166c931e3f5032bdfeba0"
+ },
+ "pools_manifest_sha256": "0675ec415e1afbdafd31394fd5d1e8903d4e762c5fdd443fd3972d3590a27bc2",
+ "pools_file_sha256": "7d05d893fdf7a8558d6a6e852345ce260b2b9d461841fda11fe9c949040a2b77",
+ "checks": {
+  "fill_filed": 5856,
+  "bs_filed": 5856,
+  "rows_are_pool": 5856
+ },
+ "script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1c2_script_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "p1e_verdict_sha256": "cae64b5ac551b2a033ac6652257762483ae8a7460c7f0c493f700b97cb6a1c52",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "seconds": 194.3,
+ "utc": "2026-10-14T10:29:04Z"
+}
