@@ -1,0 +1,107 @@
+{
+ "declared_in": "docs/P5B3_BACKOFF_GATE.md",
+ "stage": "read",
+ "dataset": "metaqa",
+ "g": "P5b2's filed G",
+ "g_sha256": "559323e5572cd8b2d62a26ae93a165247cd9401995c0822072d1802d25fa8d85",
+ "p5b2_train_record": "a9eb05a7f36098b1405d338f723c2d87c8759018918957ff92ffaf1433f45e07",
+ "p5b2_read_record": "5bcc0b0e4f117d61078cf6eee742b970bbb4c46cc0f26f11950020f93b1526fe",
+ "kappa_V": 1.2901308773237263,
+ "tables": {
+  "frame": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+  "V": "75f61c4abb0229f190422b744e8e00cc079f8d8a42fa723cd81feb3c5421284f",
+  "V0": "5b88f49e3461a59667e14b7da5f63b95042ae7f0a0a1ea0f6222f012a3a0050c",
+  "space_record": "edd54f6375cae5e42fdfa66bb749329c2bacd79a915a6a50ea4248c2291ad143"
+ },
+ "tables_made": "filed",
+ "base": "P5b's filed base",
+ "p5b_base_record": "5f82fa3244e0b5cd37afbe771f242d05d49c43e6a3d9df0b58bac4be38be26b4",
+ "seen": {
+  "golds": 7301,
+  "from": "P5b's filed base"
+ },
+ "fit_side": {
+  "carve": "fit",
+  "carve_questions": 5960,
+  "carve_sha256": "161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188",
+  "split": {
+   "train": 1579,
+   "held_out": 395,
+   "held_out_golds": 3099,
+   "held_out_new_golds": 1257,
+   "held_out_with_a_new_gold": 195
+  },
+  "held_out_loss": {
+   "all": 5.256838498387156,
+   "new": 6.6874275060800406
+  },
+  "held_out_loss_p5b2": {
+   "all": 5.256838498387156,
+   "new": 6.6874275060800406
+  },
+  "frame_vector_max_abs_diff": 0.0,
+  "pools": {
+   "file": "metaqa__fit.npz",
+   "sha256": "972dfc79a27f62d607816ae8281be4036ba9fad2d294dd9d5ec68afefd2ec00d",
+   "manifest_sha256": "cb96d2f85decea000996f60bbaaa4175a0780a2b8a6f1169e40ab1626738d2e5",
+   "construction": "KIND_T",
+   "questions": 5960
+  },
+  "seconds": 1.8,
+  "npz_sha256": "f710582a17fda27b6b6808c2c95f4800e7f018f96e81e6c209386abc57a52dfb"
+ },
+ "eval_side": {
+  "carve": "s1eval",
+  "carve_questions": 9785,
+  "questions": 2000,
+  "carve_sha256": "baf65d95e7b449f80ddd53541c4a43dff6ac1c584faab5b98977595b95f523fe",
+  "sample_sha256": "4b31f10a9482e3acf11906b26d5fcf2650d597137b965630239c6175ef7e9bb1",
+  "checks": {
+   "pools_and_seeds_equal_read1": 2000
+  },
+  "pools": {
+   "file": "metaqa__s1eval.npz",
+   "sha256": "6bb9350161a3efe6ab68566bef75201dfa00932d6f343c268e8c5b7671119485",
+   "manifest_sha256": "cb96d2f85decea000996f60bbaaa4175a0780a2b8a6f1169e40ab1626738d2e5",
+   "construction": "KIND_T",
+   "questions": 9785
+  },
+  "read1_records": {
+   "metaqa_0of8.json": "7cff280d2893fc9b43866c21de1ea04a41816c6a49b9916a85c287c6265e0161",
+   "metaqa_1of8.json": "f3dad2b05e3ac846c69fa81fa9b5740b686269cd003f8125f7a45cee2c69fbc9",
+   "metaqa_2of8.json": "534ad2375776bf8e0df3087ee811e4c0f58e2a7ca6175c1eca40ae123b06614c",
+   "metaqa_3of8.json": "e21a48595b96c971a97bf228909594879ef1726d89fe5e1bdb29eaa19f2d02d1",
+   "metaqa_4of8.json": "58ba60c5b4af3dc1b7cec7b55edbc3cc4cc576fb1181713b349b13d8eb6af44b",
+   "metaqa_5of8.json": "6a21f8f981c4edb0665c91bcb3aa5901ceade1de8ef7fbd27764d6f8ada8a4d5",
+   "metaqa_6of8.json": "a64fedc47708ad99d7f00e3d06443da4e934c13a2c6211ad9d56787b5677c2da",
+   "metaqa_7of8.json": "381b34f55317b042d45e5bafad4b6b680314ad8b3caf0abcb1ec41eba695f0c4"
+  },
+  "seconds": 6.7,
+  "npz_sha256": "be52c3a32c75d9768eb6348a40b5e72335fc2d3cf1dbe4649cbbc7aa210a11dd"
+ },
+ "features": [
+  "log_n",
+  "ring1",
+  "ring2",
+  "log_seeds",
+  "g_entropy",
+  "g_ring1",
+  "g_ring2",
+  "pi_max",
+  "delta_rms",
+  "overlap25"
+ ],
+ "rank_c": 60,
+ "top": 25,
+ "index_time": "m_s (each seed's mean neighbour displacement over the three families' union) and the per-family degrees depend on the node and the graph alone: rows of an index-time table, flagged as index-time graph aggregations; nothing comes from the question's scored rows",
+ "script_sha256": "934bce58e46c788bab2a82f622b6112b3294d6cec6cb534fbd0cce4dee2592ea",
+ "p5b2_script_sha256": "abbf05c4f54901c674a571bd8ce2a3b3f50294d156c647b37c242dc4c5ba53d8",
+ "p5b_script_sha256": "d1fe54765dbe31c8950f1b0f6a253a440c00eb1e66adf55fc1ee708a0cdeb134",
+ "p5a_script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 663512576,
+ "peak_rss_bytes": 12218388480,
+ "seconds": 70.3,
+ "utc": "2026-10-14T04:08:42Z"
+}

@@ -193,3 +193,93 @@ The labels are P5a's: MORE, FEWER, MIXED and TIE.
 
   The call should land about 20 minutes after the items start. The host's link has been dropping since about 07:05
   and has been down since about 07:30, so the items wait in the feeder until it returns.
+
+## 8. Results (filed 14 October 2026, about 09:50): STOPS
+
+`python scripts/p5b3_gate.py gate`, then `verdict`, on the fetched records (`outputs/p5b3/gate.json`, `verdict.json`
+and `verdict.md`). Every check held:
+- P5b2's script, train record, g and six read records, and P5b's script and five base records, are the filed ones.
+  kappa is P5b2's;
+- **the fit side:**
+  - each split's counts are P5b2's;
+  - g's held-out loss equals P5b2's at its kept epoch exactly, over all golds and over new golds;
+  - every held-out question's seeds and candidates are the base's, and so is its frame vector (difference 0);
+  - each fit carve's pools file is the one P5b's base ran on;
+- **the s1eval side:** on all 2,000 sampled questions (all 1,503 on webqsp), today's pool and seeds equal read1's, and
+  each final pool is P1c2's KIND_T file's;
+- **at λ = ½, 1 and 0, the gated order gives P5b2's F, H2 and G on every question of all six datasets,** on both reads
+  (0 differ). pi_max and delta_rms equal P5b2's (difference 0).
+
+The host ran the six reads between 09:37 and 09:42, 16 seconds to 4.4 minutes each (peak memory 2.5 to 33.4 GB).
+
+**The gate.** The fit converged in 20 iterations on 761 questions (metaqa 195, squad 21, musique 140, hotpotqa 181,
+2wiki 224).
+
+| J on the fit questions (higher is better) | all | metaqa | squad | musique | hotpotqa | 2wiki |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| the gate | **−4.751** | −5.259 | −4.310 | −5.496 | −4.319 | −4.368 |
+| one weight for every question (0.739 on H2) | −4.799 | −5.386 | −4.325 | −5.552 | −4.330 | −4.404 |
+| F (½) | −4.816 | −5.352 | −4.346 | −5.653 | −4.343 | −4.388 |
+| H2 (1) | −4.838 | −5.608 | −4.306 | −5.526 | −4.321 | −4.427 |
+| G (0) | −5.003 | −5.622 | −4.403 | −6.235 | −4.388 | −4.370 |
+
+- **Its weights** (inputs scaled on the fit questions): the bias is +1.40.
+  - Toward H2: g's mass on ring 2 (+1.44), g's entropy (+1.15) and the top-25 overlap (+0.68).
+  - Toward g: the pool's ring-2 share (−0.89) and g's offset size (−0.83).
+  - The other five are within ±0.17.
+- **Its mean weight on H2:**
+  - on s1eval: metaqa 0.32, squad 0.85, musique 0.90, hotpotqa 0.76, 2wiki 0.60, webqsp 0.72 (zero-shot);
+  - on the fit questions: 0.47, 0.92, 0.89, 0.76 and 0.46 for the five training datasets.
+
+**The call: STOPS.** FG finds more of the low golds than H2 on metaqa, hotpotqa, 2wiki and webqsp. It ties on squad
+and finds fewer on musique.
+
+| low read, against H2 | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (zero-shot) |
+| --- | --- | --- | --- | --- | --- | --- |
+| **FG (the call)** | **MORE** | TIE | **FEWER** | **MORE** | **MORE** | **MORE** |
+| F (P5b2's call) | MORE | TIE | FEWER | MORE | MORE | MIXED |
+| FC (one weight) | MORE | FEWER | TIE | MORE | MORE | MORE |
+| G | MORE | FEWER | FEWER | FEWER | MORE | FEWER |
+| FG against F | MORE | TIE | MORE | TIE | TIE | MIXED |
+| mean weight on H2 | 0.32 | 0.85 | 0.90 | 0.76 | 0.60 | 0.72 |
+
+FG against H2, Delta at N = 5, 10, 25, 50 and 100 (n.c.: not counted):
+- metaqa: +0.031, +0.067, +0.142, +0.210, +0.285;
+- 2wiki: +0.128, +0.202, +0.169, +0.092, +0.016 (n.c.);
+- hotpotqa: +0.046, +0.025 (n.c.), +0.034 (n.c.), +0.029 (n.c.), +0.004 (n.c.). Its MORE rests on N = 5;
+- webqsp: +0.004, +0.005 (n.c.), +0.001 (n.c.), +0.003 (n.c.), +0.000 (n.c.). Its MORE rests on N = 5;
+- musique: −0.005 (n.c.), −0.006, −0.005 (n.c.), −0.011, −0.009;
+- squad: no point counted (79 golds).
+
+The pool read gives the same six labels.
+
+**What the reads say.**
+- **The gate backs off where g knows nothing, and leans on g where it reaches.**
+  - On metaqa it puts 0.32 on H2. FG then finds about as much as G alone: 0.076 of the low golds at N = 10, against G's
+    0.080 and H2's 0.009.
+  - On musique (0.90) and squad (0.85) it stays close to H2.
+  - On webqsp, zero-shot, it turns P5b2's MIXED into a small MORE (one point, +0.004 at N = 5).
+- **musique: the back-off recovers most of F's loss, but not all of it.**
+  - F lost 0.037 to 0.092 against H2. FG loses 0.005 to 0.011, counted at N = 10, 50 and 100.
+  - The losses are golds one link from a seed (1,155 of 1,959). At N = 25, FG finds 0.450 of them and H2 finds 0.460.
+  - Below a weight of 1, g's rank still moves nodes in H2's order: at 0.95 on H2, it can move a node three or four
+    places near rank 10. On musique, g's rank is noise: G alone finds 0.011 of the low golds at N = 10.
+- **One weight for every question (FC, beside):** it ties on musique and finds more on the other four datasets, but it
+  finds fewer on squad (−0.076 at N = 5, on 79 golds). It decides nothing, and no stage is built on it after this read.
+- **New golds** (golds that no fit question had):
+  - metaqa: FG finds 0.024 of the new low golds at N = 10 (H2 0.007, G 0.028);
+  - 2wiki: FG finds 0.293 (H2 0.156, G 0.290);
+  - hotpotqa: FG ties H2 on the new golds alone (0.312 against 0.295).
+
+**What follows (section 6, STOPS).** The learned offsets close, and P5c does not start. The record says where FG fell
+short: musique, FEWER at a mean weight on H2 of 0.90. There G alone is FEWER, and one weight for every question ties.
+
+**P5b, P5b2 and P5b3 together:**
+- A learned target g(question, seed, graph features) reaches golds two or more links away on 2wiki and metaqa,
+  including golds no fit question had.
+- A per-question gate keeps those gains and keeps most of H2's order on musique, but not all of it.
+- The reason: a rank fusion moves H2's near ranks at any weight below 1. musique's low golds sit one link from the
+  seeds, where H2's cosine orders them best.
+
+The order's next stage is P1c2 ([P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md)), which waits for clean-up 15, and then
+P4. Nothing here is adopted.

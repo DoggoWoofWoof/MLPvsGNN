@@ -1,0 +1,105 @@
+{
+ "declared_in": "docs/P5B3_BACKOFF_GATE.md",
+ "stage": "read",
+ "dataset": "hotpotqa",
+ "g": "P5b2's filed G",
+ "g_sha256": "559323e5572cd8b2d62a26ae93a165247cd9401995c0822072d1802d25fa8d85",
+ "p5b2_train_record": "a9eb05a7f36098b1405d338f723c2d87c8759018918957ff92ffaf1433f45e07",
+ "p5b2_read_record": "90ae6b54cbebda6e17d5355e2ea652655f586fc38d245de2438af6417b5e9b89",
+ "kappa_V": 0.9996411022744055,
+ "tables": {
+  "frame": "7a8b6fde48263d9d993514d5d0ecc74516ad02ab00256839848c8d160ff447df",
+  "V": "153fea1719a2aca5dcf25cc1ad975771413839c0f47a5b1bcf05de66376ccbd2",
+  "V0": "8a2861c35a673c089e605aff3729258ff50d019dfa006c93794c92ca714ccdd9",
+  "space_record": "aa87c0ee38af5c7f61b013209d197485ebff80636588030adb41c23a357bf18d"
+ },
+ "tables_made": "filed",
+ "base": "P5b's filed base",
+ "p5b_base_record": "5a09c7dd3afbcee025537ee1c6a7c30160e39e3680c80cbfcd55d1aefefe3000",
+ "seen": {
+  "golds": 951,
+  "from": "P5b's filed base"
+ },
+ "fit_side": {
+  "carve": "fit",
+  "carve_questions": 5930,
+  "carve_sha256": "2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c",
+  "split": {
+   "train": 745,
+   "held_out": 186,
+   "held_out_golds": 191,
+   "held_out_new_golds": 186,
+   "held_out_with_a_new_gold": 181
+  },
+  "held_out_loss": {
+   "all": 4.003006756946605,
+   "new": 4.02822466186397
+  },
+  "held_out_loss_p5b2": {
+   "all": 4.003006756946605,
+   "new": 4.02822466186397
+  },
+  "frame_vector_max_abs_diff": 0.0,
+  "pools": {
+   "file": "hotpotqa__fit.npz",
+   "sha256": "1d17da102bb52023b173c21b76f75fa42abf91e4869e44a40ffd3e0ad9fef7fc",
+   "manifest_sha256": "cbfa92be53499b5fedb143edadcf93211a927ce99c4c62f949d44f36861e8e3f",
+   "construction": "KIND_T",
+   "questions": 5930
+  },
+  "seconds": 23.6,
+  "npz_sha256": "bb84872dfc20e67b423d447c04a5953615434940d87b8307b0822666454be0ad"
+ },
+ "eval_side": {
+  "carve": "s1eval",
+  "carve_questions": 7405,
+  "questions": 2000,
+  "carve_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+  "sample_sha256": "1b4360dc52b57e5830f75cce6beb8adb1ce7ffe8da83650ecddad2730082a3a4",
+  "checks": {
+   "pools_and_seeds_equal_read1": 2000
+  },
+  "pools": {
+   "file": "hotpotqa__s1eval.npz",
+   "sha256": "97025ca82cf58bc480460a653cd066c3dddd56d7da5cec44eb051150c2b6d4a1",
+   "manifest_sha256": "cbfa92be53499b5fedb143edadcf93211a927ce99c4c62f949d44f36861e8e3f",
+   "construction": "KIND_T",
+   "questions": 7405
+  },
+  "read1_records": {
+   "hotpotqa_0of6.json": "f14c2e74c3ede5b00f588c4489750222b1d291c825a39e784feb9a33a0deea8c",
+   "hotpotqa_1of6.json": "a63ee78ef81765d9a427f481ba2b3009fab9f3d7c950bd15bf1a29fd9c78d7dd",
+   "hotpotqa_2of6.json": "fc81519cae807f7c5cdc04791b4d6b88ffef6e110580113c8e3a280fc229cc0f",
+   "hotpotqa_3of6.json": "a1464afadbb1877254400fb4ef21d96fdf5508d226160f48861d7b3d0850b281",
+   "hotpotqa_4of6.json": "7ec8143773ca74cb94cc665c47c44a6afe9ad4c0d0a5a41c552e264a709920bc",
+   "hotpotqa_5of6.json": "9e3dd60e6a0797b290af816ab6c0b250e33f32bb790c2bfc3a6d8336c27dd124"
+  },
+  "seconds": 84.1,
+  "npz_sha256": "0b8679ff740520e16c791e0f9259e11b3f6de3a98fdadbe1e4513a131cee5a09"
+ },
+ "features": [
+  "log_n",
+  "ring1",
+  "ring2",
+  "log_seeds",
+  "g_entropy",
+  "g_ring1",
+  "g_ring2",
+  "pi_max",
+  "delta_rms",
+  "overlap25"
+ ],
+ "rank_c": 60,
+ "top": 25,
+ "index_time": "m_s (each seed's mean neighbour displacement over the three families' union) and the per-family degrees depend on the node and the graph alone: rows of an index-time table, flagged as index-time graph aggregations; nothing comes from the question's scored rows",
+ "script_sha256": "934bce58e46c788bab2a82f622b6112b3294d6cec6cb534fbd0cce4dee2592ea",
+ "p5b2_script_sha256": "abbf05c4f54901c674a571bd8ce2a3b3f50294d156c647b37c242dc4c5ba53d8",
+ "p5b_script_sha256": "d1fe54765dbe31c8950f1b0f6a253a440c00eb1e66adf55fc1ee708a0cdeb134",
+ "p5a_script_sha256": "02746b5952e0d2dc6b9a769ef5e5efbf5d68aec133038c98c20ac42ddcffc305",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "device": "cuda",
+ "gpu_peak_bytes": 588280832,
+ "peak_rss_bytes": 4881309696,
+ "seconds": 215.7,
+ "utc": "2026-10-14T04:11:08Z"
+}
