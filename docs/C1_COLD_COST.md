@@ -159,3 +159,8 @@ No question was excluded.
   3. a fused batch-1 forward without torch's per-call overhead.
 
   Each is checked bit for bit against these records' scores, and each is declared in its own file.
+
+**Correction (14 October 2026).** The six GNN (u_gnn_v2_ef, gnn0) applies its one relation-aware
+message-passing cell three times (STEPS = 3 in scripts/universal_v2_run.py; configs/universal_v2.yaml, innovation
+4), with the evidence-flow state beside it. "Two message-passing layers" above is wrong. The timings stand:
+gnn_fast serves the fitted model's own step count.

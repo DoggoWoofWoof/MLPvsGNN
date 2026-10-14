@@ -1,7 +1,9 @@
 # Where we stand, 14 October 2026 (21:30)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
-Each stage's own document stays the record, and every number here is copied from one.
+Each stage's own document stays the record, and every number here is copied from one. To learn the project from
+scratch, with worked examples, read [PROJECT_STORY.md](PROJECT_STORY.md); the dated record of what was tried and why
+is [PROJECT_TIMELINE.md](PROJECT_TIMELINE.md).
 
 Every number here is a development number: chosen on development carves, often after many arms. The paper's numbers
 come from one declared confirmation run of the chosen MLP and GNN on questions never used for selection.
@@ -27,7 +29,7 @@ models and the gap ledger, speed, and one model with its own representation.
 | `zspk` | lean, the GNN since 14 October | zsp plus P1c3's KT head (the eight KT columns and the row's score z-scored over its question's rows), on KIND_T's pools. Adopted by P1c3's full run, paired with zrckp. | yes, one step |
 | `zrc` | lean, base | The MLP base: zrm's model over zrc's chain entries, on today's pools. | no |
 | `zsp` | lean, base | The GNN base: zrc's inputs plus one propagation step over each row's neighbours' scores. | yes, one step |
-| `u_mlp_v2_mix` (twin0) | universal | The universal MLP: the v2 compile's 197 columns and the 1,536-wide embeddings. | no |
+| `u_mlp_v2_mix` (twin0) | universal | The universal MLP: 129 columns of the v2 compile's 197 (the frozen contract) and the 1,536-wide embeddings. Trains on all six datasets, webqsp included. | no |
 | `u_gnn_v2_ef` (gnn0) | universal | The universal GNN: the twin's inputs plus three relation-aware steps and the evidence flow. | yes, three steps |
 | `zn` | diagnostic | The lean MLP with every edge-derived input removed. A speed ceiling, not a model. | no |
 | `rrf` | baseline | Reciprocal-rank fusion of the dense encoder and SPLADE. No training. | no |
@@ -40,7 +42,8 @@ is the same set: every input family is used by both models.
 
 R@5 ×100 on HippoRAG 2's three settings, 1,000 questions each, with 95% intervals
 ([B1B_MODELS_ON_HIPPORAG2.md](B1B_MODELS_ON_HIPPORAG2.md), [U1A_B1_WITHOUT_HYPERLINKS.md](U1A_B1_WITHOUT_HYPERLINKS.md)).
-J5 is the fit trained on five datasets. Nothing was chosen on B1.
+J5 is the fit trained on five datasets. Nothing was chosen on B1's runs, but B1's questions are rows of s1eval, which
+every adoption decision read (section 8; a re-call without them is proposed).
 
 | setting | HippoRAG 2 | our RRF | zsp J5 (GNN) | zrc J5 (MLP) | MLP share of the GNN's gain | zsp J5, U1a's link rule in place of the hyperlinks |
 | --- | ---: | ---: | --- | --- | ---: | --- |
@@ -622,6 +625,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
 | What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5b and P5b2 STOP: the learned offset g(question, seed, graph features) finds more of these golds on 2wiki, metaqa and hotpotqa, golds no fit question had among them, but fewer on musique (near chance, with or without a held-out stop) and mixed on webqsp zero-shot (section 6). P5a's fixed map STOPS. P5b3's per-question back-off between H2 and g STOPS too: more on four datasets, still fewer on musique (0.005 to 0.011). The learned offsets close. |
 | Golds the final pool adds | P1c2: about two thirds reach the top five on metaqa, and 2wiki's R@5 rises twice the pools' recall gain; on musique and webqsp little or none does (zsp −0.017 on webqsp zero-shot) | P1c3's walk positions as an input, adopted for the lean pair (zrckp, zspk): webqsp zero-shot rises on all six splits (+0.014 to +0.066 for zrckp), metaqa +0.108 held out, 2wiki +0.060 to +0.064 everywhere. Still open: musique's held-out read (−0.011, WITHIN; FC@5 −0.026) and hotpotqa's hit@1 (−0.002 to −0.034 on all six splits). |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions. On the full corpus (P3b): ranked out 0.23-0.28 of R@5, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop). | D4 (link words): NO_SIGNAL. P2c part 1: on B1 musique our LLM-free graph adds more than the LLM-built graphs, so the LLM graph is not what our walks lack. |
+| B1's questions inside s1eval | 1,000 each of musique's 2,417, hotpotqa's 7,405 and 2wiki's 12,576 s1eval questions are B1's (found 14 October). No fit trained on them, but every screen and full run read them when it decided, as did earlier gates on the whole dev splits; the claims doc's even/odd split was never applied. | Proposed: re-call every adoption decision behind the reported models without B1's ids, and leave them out of the confirmation run's held-out questions. Until then the B1 numbers carry this caveat. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
 | Pool misses | One hop on the KBs and musique; first stage on hotpotqa and squad | Step 4h covers the one-hop misses; the first-stage misses are open. |
@@ -718,4 +722,5 @@ file, committed before its numbers.
    (4-39 ms per question, mostly walks). Running a question's walks on separate threads would change C12's
    one-thread protocol, so it is the user's call.
 5. **Claim 3's wording and the confirmation run** of the chosen MLP and GNN on held-out questions. B1 is read beside
-   it and never used to choose.
+   it and never used to choose. B1's questions sit inside s1eval (section 8), so the held-out questions should leave
+   them out, and the adoption decisions should first be re-called without them.

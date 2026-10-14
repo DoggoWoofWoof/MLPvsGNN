@@ -148,3 +148,8 @@ never trains).
   - No family is used by one model only.
 - So no column is computed for nothing, and neither model's cold cost comes down by computing less. It comes down only
   through faster exact forms of the same stages. With amendment 3, C8 is C9's lean pair.
+
+**Correction (14 October 2026).** The six GNN (u_gnn_v2_ef, gnn0) applies its one relation-aware
+message-passing cell three times (STEPS = 3 in scripts/universal_v2_run.py; configs/universal_v2.yaml, innovation
+4), with the evidence-flow state beside it, and its first layer reads the 129 columns of the frozen contract out of
+the compile's 197. "Two message-passing layers" above is wrong. Nothing timed or measured here changes.

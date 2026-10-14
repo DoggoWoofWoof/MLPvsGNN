@@ -2,7 +2,8 @@
 
 Written 14 October 2026 from the stage docs, their filed records and git history (876 commits, 236 docs). Every
 number is a development number; the paper's numbers come from one confirmation run later. Each point names the doc it
-comes from, so any number can be checked.
+comes from, so any number can be checked. For a from-scratch explanation with worked examples (what each idea is, why
+we tried it and what it gave), read docs/PROJECT_STORY.md first.
 
 **How to read it.** Section 1 is the whole project on one page. Section 2 explains the words. Section 3 is the timeline,
 era by era: what we tried, why, the problem we hit, how we fixed it, the result, and what made the difference.
@@ -88,8 +89,9 @@ A graph links the candidates (KB facts, hyperlinks, shared names). Then a model 
   them since 14 October (Era 9).
 
 **Models**
-- **Universal pair:** twin0 (MLP) and gnn0 (GNN). Same 197 input columns; the GNN adds three relation-aware
-  message-passing steps plus an evidence-flow step.
+- **Universal pair:** twin0 (MLP) and gnn0 (GNN). Same 129 input columns (screened in September from the 197 the
+  feature compile builds); the GNN adds one relation-aware message-passing cell applied three times, plus an
+  evidence-flow state on typed KB links. Both train on all six datasets, webqsp included.
 - **Lean pair:** zrckp (MLP) and zspk (GNN) since 14 October; before that zrc and zsp, which they build on. zrc and
   zsp both grow from zrm (zret's normalisation plus the learned relation match): zrc is zrm keeping each row's 64 best
   chain entries; zsp is zrm plus one propagation step over the pool's links (385 weights). zrckp adds a small head
@@ -131,7 +133,8 @@ A graph links the candidates (KB facts, hyperlinks, shared names). Then a model 
   dataset-batch cells (1.13 to 1.39x at one question at a time): its whole build prefix (candidates, seeds, topology
   and its structure summaries) cost 2.2 to 3.0 ms against the GNN's 0.8 to 1.6 (docs/EXPERIMENT_EXECUTION_STATUS.md).
   Warm, its operator was 4 to 8x cheaper.
-- Package B's sealed graph had duplicated edges. A de-duplicated control changed little (docs/EDGE_PROVENANCE_RESULTS.md).
+- Package B's sealed graph had duplicated edges. A de-duplicated control changed little
+  (docs/EDGE_PROVENANCE_RESULTS.md).
 
 **Results.**
 - Offsets sharpen rank 1 (2wiki R@1 +12.5) but lose coverage when a question has several answers (R@20 −10.1).
@@ -212,7 +215,8 @@ A graph links the candidates (KB facts, hyperlinks, shared names). Then a model 
   driver would have overwritten seed 0. All fixed before numbers.
 - Bit-exact fast compiles must reproduce OpenBLAS's float32 summation order (numpy calls it), which changes with the
   BLAS thread count. Fix: build the references at the host's count (8 threads).
-- A message-passing residual trained on one graph harmed unseen graphs (docs/DIAG_ZGF_HARM.md). Fix: bound it
+- A message-passing residual trained on one graph harmed unseen graphs (the QD track's design looks, 4 October,
+  outputs/mp_unified/qd_gnn*.py). Fix: bound it
   (0.2·tanh) and drop edge families in training. That was the first one-graph message-passing arm with no unseen graph
   below the twin on R@5 (docs/STATUS_2026_10_05.md).
 - Unpinned timings swung widely on the laptop's hybrid CPU. Fix: the timing process pins itself to one fast core (its
@@ -459,8 +463,9 @@ them, and treating entity and passage questions differently by a data test, not 
 What made the difference: structural links for reach; walks instead of fixed hops; two ideas from the papers
 (HippoRAG 2's restart, PullNet-style name linking); and a fixed fusion fit to nothing. Against the learned gates
 (P1e, at today's sizes) it is ahead of every one only on musique and 2wiki; it is level with RC on metaqa, within
-0.002 of them on squad, below MXU on webqsp (0.832 against 0.857) and below all of them on hotpotqa. On today's pools, golds outside the pool cost 0.02 to 0.13 of R@5 (0.198 on musique's 4-hop
-questions); ranking is the larger gap.
+0.002 of them on squad, below MXU on webqsp (0.832 against 0.857) and below all of them on hotpotqa. On today's
+pools, golds outside the pool cost 0.02 to 0.13 of R@5 (0.198 on musique's 4-hop questions); ranking is the larger
+gap.
 
 ### Links: keep the structural family, and the hyperlinks
 
@@ -583,11 +588,16 @@ docs; any paper must cite them. numba, llvmlite and spaCy are runtime libraries,
 Third-party data (HippoRAG 2's benchmark files, HippoRAG's OpenIE output, SiReRAG's graphs) is used only to compare,
 and never committed. No LLM-built graph is in the system.
 
-**Leakage:** the pool contract was chosen on the evaluation population's golds (MEDIUM, item 1 above). Step 4e's
+**Leakage:** the pool contract was chosen on the evaluation population's golds (HIGH, item 1 above). Step 4e's
 choice included webqsp's eval carve, and KIND_T's selection carve was matched to the eval mix by aggregate counts
-(both LOW). **Test splits:** the current compile (m3b_compile) reads only the evaluation splits, and the older tracks
-refuse a test split explicitly. One older headroom tool (m3a_headroom's lane rows) loads every legacy split, so it must
-never feed a test read.
+(both LOW). **B1's questions are inside s1eval (MEDIUM, found 14 October):** HippoRAG 2's benchmark questions are
+rows of the dev splits s1eval holds whole (1,000 of musique's 2,417, of hotpotqa's 7,405 and of 2wiki's 12,576). No
+fit trained on them and nothing was chosen on the B1 runs, but every screen and full run since 7 October read them,
+on our corpora, when it decided, and so did earlier gates read on the whole dev splits (the universal pilot's 2wiki
+cells, for one). The claims doc's even/odd split of B1's questions was never applied. The proposed check is in
+section 6 (item 12). **Test splits:** the current compile (m3b_compile) reads only the evaluation splits, and the
+older tracks refuse a test split explicitly. One older headroom tool (m3a_headroom's lane rows) loads every legacy
+split, so it must never feed a test read.
 
 ## 6. Open issues and the fixes we propose
 
@@ -616,6 +626,10 @@ their numbers.
     shared compile for the universal pair; KIND_T's build dominates two datasets. Multi-threaded walks and the claim's
     wording are the user's calls.
 11. **One confirmation run** of the final models, pools and timings in one session.
+12. **B1's questions inside s1eval (section 5, Leakage).** Proposed: re-call every adoption decision behind the
+    reported models without B1's 3,000 question ids. If every call stands, the choices did not depend on them. The
+    confirmation run's held-out questions should leave them out too.
+13. **zspk against the SOTA bar.** P3a read zsp and gnn0; the new lean GNN has not been read against the bar yet.
 
 ## 7. Where we stand, 14 October
 
@@ -625,9 +639,10 @@ their numbers.
   (14 October, 20:56). The universal pair is twin0/gnn0 on today's pools.
 - **Claims:** 1, for the new lean pair with 95% intervals (P3c): holds in-domain on metaqa, hotpotqa and 2wiki, not
   shown on squad and musique, and holds zero-shot on all six (the universal pair falls short on musique and 2wiki);
-  2 holds on our corpora and on B1's 2wiki and hotpotqa, not on B1's musique; 3 is not met as set.
+  2 holds on our corpora and on B1's 2wiki and hotpotqa, not on B1's musique (B1's questions sit inside s1eval, so
+  the adoption decisions read them: a re-call without them is proposed); 3 is not met as set.
 - **Filed tonight:** P1c3's full run (ADOPT), P1c3p's screen (ADOPT_FOR_FULL_RUN) and full run (ADOPT), P4c
   (TIMED, re-timed with the session idle), and P3c (CLAIM1_NOT_ALL).
-- **Next:** the ledger's screens on the new pair (hotpotqa's hit@1, RRF5's position as a ninth column, zck on a frozen
-  base); musique's in-domain share is the one Claim 1 needs lifted. Their results go into their own docs and into
-  docs/WHERE_WE_STAND.md.
+- **Next:** the B1 re-call (section 6, item 12), then the ledger's screens on the new pair (hotpotqa's hit@1, RRF5's
+  position as a ninth column, zck on a frozen base); musique's in-domain share is the one Claim 1 needs lifted.
+  Their results go into their own docs and into docs/WHERE_WE_STAND.md.

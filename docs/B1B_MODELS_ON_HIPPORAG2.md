@@ -34,6 +34,13 @@ Claim 2's critical path. This stage reads them there, with no training and nothi
 - No B1 question has entered any fit, any selection or any screen.
 - B1a found the package's golds equal to the setting's on every question of all three settings (`gold_agrees_with_package`
   1.0), so the package's golds are the benchmark's.
+- **Correction (14 October 2026).** The third point holds for fits and for the select carve, not for screens. B1's
+  questions are rows of the dev splits that s1eval holds whole: 1,000 of musique's 2,417, 1,000 of hotpotqa's 7,405
+  and 1,000 of 2wiki's 12,576. No B1 question entered a fit or a checkpoint pick, and nothing was chosen on this
+  file's runs. But every screen and full run behind zrc and zsp was decided on s1eval, so those adoption decisions
+  read B1's questions (on our corpora, not B1's). The even/odd split of B1's questions in
+  PAPER_CLAIMS_2026_10_09.md was not applied. A re-call of the adoption decisions without B1's question ids is
+  proposed (docs/PROJECT_STORY.md, section 4.8).
 
 ## What runs
 
