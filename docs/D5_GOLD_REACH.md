@@ -148,3 +148,8 @@ rows. D5b says which family is worth declaring.
 
 **Before this file.** Development runs of the beams on the first 150 s1sel musique questions ran while the code was
 written. Nothing is chosen from them.
+
+**Launch fix (15 October, about 19:50).** The first six host items stopped in two seconds, at the package import:
+the script had no `--host` switch to P1e's mirror mode (the one P1f's stats and P1c3's features use). The switch
+was added (`run DATASET --host` calls `p1e_anchor_kind.G.on_the_mirror()` first) and the items re-queued as
+`d5b-*-r2`. Nothing measured changed; the selftest passes.

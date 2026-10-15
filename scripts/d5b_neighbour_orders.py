@@ -1,7 +1,8 @@
 """D5b: three more orders of B's one-link neighbours, from the question's own similarity to each (docs/D5_GOLD_REACH.md
 section 6). A diagnostic beside D5: it reads golds and decides nothing; no model trains or reads.
 
-    python scripts/d5b_neighbour_orders.py run DATASET [--limit Q]   D5's carves (s1sel; webqsp s1eval beside), on the host
+    python outputs/host_ops/pylib_run.py scripts/d5b_neighbour_orders.py run DATASET --host [--limit Q]
+                                                                      D5's carves (s1sel; webqsp s1eval beside), on the host
     python scripts/d5b_neighbour_orders.py check DATASET             after the fetch: D5b's hops etc. equal D5's files
     python scripts/d5b_neighbour_orders.py --selftest
 
@@ -398,11 +399,15 @@ def main(argv=None):
     ap.add_argument("cmd", nargs="?", choices=("run", "check"))
     ap.add_argument("dataset", nargs="?")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--host", action="store_true")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
     if a.cmd == "run":
+        if a.host:                          # P1e's host mode: the frozen package on the mirror (as P1f's stats)
+            import p1e_anchor_kind as K
+            K.G.on_the_mirror()
         return run(a.dataset, a.limit)
     if a.cmd == "check":
         return check(a.dataset)
