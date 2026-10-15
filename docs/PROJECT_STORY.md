@@ -223,13 +223,92 @@ else that differs between them would muddy the comparison.
 **Training, in one paragraph.** A model learns its weights from training questions whose golds are known. The loss
 rewards scoring golds above non-golds in the same pool. A lean model is trained on five datasets together (webqsp never
 trains); the universal pair trains on all six. Either way one model must find rules that work everywhere, not tricks
-for one dataset.
+for one dataset. Section 2.8 walks through the loop step by step.
 
 *Worked example (illustration), the loss.* The loss turns a pool's scores into probabilities with a softmax (e to the
 score, divided by the sum of e to the score over the whole pool) and charges −log of each gold's probability. Scores
 2, 1 and 0 give probabilities 0.665, 0.245 and 0.090. If the gold is the first row, the loss is −ln 0.665 = 0.41; if it
 is the last, −ln 0.090 = 2.41. To lower it, training must raise the gold above the rest of *its own pool*, which is why
 it is called **listwise**. With several golds, the loss is their average.
+
+### 2.8 Training, step by step
+
+This is the loop every lean fit runs (`outputs/mp_unified/lean_gpu.py`, `fit_variant`): every screen and every full
+run since 7 October, with only the model swapped. The numbers are J5's fits of the lean pair (`train.json` of
+`full_zrckp` and `full_zspk`, 14 October).
+
+**What it learns from.** Each training dataset gives one carve of questions (section 4.1), each with its pool rows
+and a flag on every gold row. J5 trains on five:
+
+| dataset | carve | questions |
+| --- | --- | ---: |
+| metaqa | fit | 5,960 |
+| squad | fit | 5,856 |
+| musique | s1fit (step 1's fit carve) | 4,601 |
+| hotpotqa | fit | 5,930 |
+| 2wiki | fit | 5,928 |
+| **all** | | **28,275** |
+
+An L-x fit is the same table without x. webqsp is never in it.
+
+**The forward pass: from a pool's rows to its scores.** The model scores all of a question's rows at once.
+1. **Each input block becomes three pieces per row:** the raw values; the same values z-scored within the question's
+   pool (minus the pool's mean, over its spread, so "high for this question" means the same on every dataset); and a
+   1 that says the block is present. *Example (illustration):* a dense cosine of 0.62 in a pool whose cosines average
+   0.50 with a spread of 0.06 becomes the pair (0.62, +2.0). These z-scores are of **inputs**, fixed before any row is
+   scored, so they do not break the MLP rule of section 2.7, which is about another row's **score**.
+2. **SEMB is learned:** the question's 1,536-wide embedding times a learned matrix U, and the row's 128-wide
+   projection times a learned V, multiplied entry by entry into 64 numbers.
+3. **The network:** all the pieces side by side, then a layer of 128 with GELU, dropout 0.1, a second layer of 128,
+   GELU, dropout, and one output number.
+4. **The score** = base_w × (the row's RRF, z-scored in its pool) + that output. **The output layer starts at zero.**
+   So before any training, the model ranks exactly as RRF does, and training learns only the corrections to it.
+5. **zrm's chain match** (metaqa and webqsp, the graphs with typed relations): a learned match of the question to each
+   relation on the paths from the seeds to the row, added to the score. Its gates also start at zero.
+6. **The lean pair's own heads:**
+   - zrckp (the MLP) adds the KT head: the row's own 8 KT columns (section 7.4) → 16 → 1, 161 weights, last layer zero.
+   - zspk (the GNN) adds the propagation head (section 2.7): per link family, the mean and the soft maximum of the
+     neighbours' z-scored scores and the row's degree, plus its own z-scored score: 10 numbers → 32 → 1, 385 weights.
+     Its KT head reads the 8 KT columns and the row's own z-scored score (9 → 16 → 1).
+
+**The loop.**
+1. **Seeds.** torch and numpy both start from seed 0 (seeds 1 and 2 are the null's, section 4.5).
+2. **Optimizer.** Adam, learning rate 0.002, weight decay 0.0001.
+3. **Each epoch:** shuffle the 28,275 (dataset, question) units with the seeded generator; cut the order into chunks of
+   32; split each chunk by dataset, in the fixed order metaqa, squad, musique, hotpotqa, 2wiki. Each piece is one
+   step, so **a step holds one dataset's questions**: a pool's rows never mix with another graph's in one step.
+4. **Each step:** the forward pass; the listwise loss of section 2.7 (each question's −log softmax of its golds,
+   averaged over its golds, then over the step's questions that have golds); backward; one Adam update. A step whose
+   loss or gradient is not finite is skipped and logged (none was, on these two fits).
+5. **Eight epochs.** Every epoch's weights are saved.
+6. **The weights we read: SWA.** The average of epochs 2 to 7's weights (six states, summed in float64), called
+   **p@swa**. Since step 1 (section 4.1) no fit picks an epoch on a select carve: the average is read, always.
+7. **Same seed, same weights.** Deterministic algorithms on, TF32 off: a fit run again on the card gives the same
+   weights.
+
+*Worked example (illustration), one chunk.* The shuffle puts 32 units in a chunk: 7 metaqa, 6 squad, 5 musique, 8
+hotpotqa and 6 2wiki questions. That chunk makes five steps, in that order: one on the 7 metaqa pools, one on the 6
+squad pools, and so on. *In the real fits:* 28,275 units make 884 chunks, and a chunk of 32 drawn from five datasets
+almost always holds all five, so an epoch takes 4,412 to 4,419 steps of about six questions each.
+
+**What the loss did (real, J5).** The loss is each gold's −log probability within its pool, averaged:
+
+| epoch | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| zrckp (MLP) | 2.061 | 1.789 | 1.735 | 1.693 | 1.680 | 1.668 | 1.653 | 1.640 |
+| zspk (GNN) | 2.031 | 1.783 | 1.744 | 1.707 | 1.690 | 1.666 | 1.658 | 1.653 |
+
+A loss of 1.64 means a gold gets, on a geometric average, e^−1.64 ≈ 0.19 of its pool's probability; at the first
+epoch's 2.06 it was 0.13. The GNN's training loss is no lower than the MLP's: on the training questions, its one
+propagation step does not fit the golds any better. That is the case for G2
+([G2_HIDDEN_STATE_GNN.md](G2_HIDDEN_STATE_GNN.md)).
+
+**Cost.** zrckp's J5 fit took 51 minutes on the host's card and zspk's 61, each with a peak of 5.8 GB.
+
+**The read.** The p@swa weights score every row of every s1eval question on all six datasets. The top five rows (ties
+broken by pool position) give R@5, FC@5 and hit@1 per question. A fit's reads are saved once (`reads/{ds}__s1eval.npz`)
+and every comparison, re-call and bootstrap afterwards works from those files, which is how the B1 re-call (section
+4.8) could replay every decision without running a model.
 
 ## 3. What we set out to show: three claims
 
