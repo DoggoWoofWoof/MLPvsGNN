@@ -1,7 +1,7 @@
 # M1: where the lean pair loses golds, by hop and by link distance
 
 Declared 15 October 2026, before any M1 number exists. Stage 2 of docs/PROGRAM_2026_10_15.md. Code:
-`scripts/m1_musique_hops.py`. Status: declared; results in section 6.
+`scripts/m1_musique_hops.py`. Status: RUN 15 October 2026; results in section 6.
 
 ## 1. Question
 
@@ -80,4 +80,63 @@ The same reading is made on every dataset, so a fix chosen from it is universal.
 
 ## 6. Results
 
-Not run yet.
+Run 15 October 2026 on the host CPU (`m1-*` items; tables `outputs/m1/m1.md`, numbers `outputs/m1/m1.json`). The check
+held on every read: the CPU scores reproduce the filed top-5 gold counts on every question (agreement 1.0). Every
+musique s1eval id resolved in train or dev, and every gold resolved to its sub-question (0 unresolved).
+
+**Where the missed golds sit (J5, in-domain; shares of the missed golds, zspk; zrckp within 0.03):**
+
+| dataset | golds missed | d1 | d2 | far | no_anchor | out |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| musique | 0.453 | 0.26 | 0.30 | 0.18 | 0.16 | 0.10 |
+| hotpotqa | 0.096 | 0.50 | 0.00 | 0.02 | 0.23 | 0.25 |
+| 2wiki | 0.072 | 0.62 | 0.07 | 0.05 | 0.01 | 0.25 |
+| squad | 0.090 | 0 | 0 | 0 | 0.78 | 0.22 |
+| webqsp (zero-shot) | 0.914 | 0.03 | 0.25 | 0.03 | 0.35 | 0.33 |
+
+metaqa is left out of that reading. Its questions hold 7.4 golds on average, and the top five can hold at most five,
+so most of its "misses" are golds the top five has no room for (R@5 0.80, ceiling 0.83).
+
+**What it points to (section 4's readings, stated before the numbers):**
+- **Message passing is where the in-domain misses are on every multi-hop passage dataset.**
+  - Missed golds one or two links from a found gold: 0.56 of musique's misses, 0.50 of hotpotqa's, 0.69 of 2wiki's.
+  - Today's GNN does not take them: zspk lifts about as many golds as the MLP as it drops.
+    - 2wiki: zspk finds 473 golds zrckp misses (417 of them d1 for zrckp) and misses 362 that zrckp finds (318 d1),
+      a net 111 of 30,654 golds.
+    - hotpotqa: a net −31 of 14,810.
+    - musique: a net +46 of 6,404.
+  - Its one propagation step does not use the link that is there. That is G2's question (hidden states passed over
+    three layers) and then E1's.
+- **The pool is the second limit.**
+  - 0.25 of the misses on hotpotqa and 2wiki are golds outside the pool (pools hold every gold for 0.959 of
+    questions).
+  - musique's 4-hop questions: only 0.637 of pools hold every gold, and 0.22 of the last sub-question's golds are out.
+  - That is P1f's and P1f-b's job.
+- **The first stage limits squad and the KB zero-shot reads.**
+  - squad: no_anchor is 0.78 of its misses. Its one gold is simply not ranked, and its pools have no links.
+  - webqsp zero-shot: 0.35 no_anchor and 0.33 out.
+  - metaqa zero-shot from L-metaqa: no_anchor is 0.70 of the golds (0.74 of the misses). The models put no answer of the
+    topic entity in the top five, the first relation-typed step the passage-trained models never saw.
+- **The missed golds are near misses on hotpotqa and 2wiki, and deep on musique.**
+  - hotpotqa and 2wiki: 54% and 71% of the missed in-pool golds sit at ranks 6–10.
+  - musique: 40% sit beyond rank 50 of its ~2,090-node pools.
+
+**musique by hop (J5, zspk; top-five share of each sub-question's golds):**
+
+| hop count (questions) | sub-question 1 | 2 | 3 | 4 | the next miss is mostly |
+| --- | ---: | ---: | ---: | ---: | --- |
+| 2-hop (1,252) | 0.840 | 0.516 | | | d1 (0.238 of sub-question 2's golds) |
+| 3-hop (760) | 0.811 | 0.392 | 0.404 | | d1 and d2 (0.207, 0.237), then far (0.197) |
+| 4-hop (405) | 0.696 | 0.235 | 0.284 | 0.225 | d1/d2, then out (0.217 on sub-question 4) |
+
+The first sub-question's paragraph is found (0.70–0.84). The chain breaks at the bridge: the second paragraph is
+usually one link from the found first one and is not ranked. A message-passing step should lift exactly that one.
+The 4-hop chains also run out of pool.
+
+**Zero-shot musique (L-musique) leans the other way.** Trained on the other four datasets (all two-hop or single-hop),
+both models lift the 2-hop bridge (sub-question 2: rrf 0.328, zrckp 0.415, zspk 0.416). They push the answer
+paragraph of longer chains below rrf: 3-hop sub-question 3 falls from 0.363 to 0.270 and 0.267, and 4-hop
+sub-question 4 from 0.212 to 0.161 and 0.151. musique's own training carve is also two-hop-heavy (s1fit 72% 2-hop,
+22% 3-hop, 6% 4-hop, against s1eval's 52%, 31% and 17%). Step 2 (eval-mix weights) re-weighted the fit questions to
+the eval mix and found no gain, so the mix alone is not the fix. The models learn "find the bridge" and not "follow
+the chain".

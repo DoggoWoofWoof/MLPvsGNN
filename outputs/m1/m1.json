@@ -1,0 +1,2650 @@
+{
+ "declared_in": "docs/M1_MUSIQUE_HOPS.md",
+ "reads": {
+  "J5/metaqa": {
+   "questions": 9785,
+   "golds": 72697,
+   "edges": 136029198,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 9785,
+     "golds": 72697,
+     "all_gold_in_pool": 0.9606,
+     "ceiling5": 0.8273,
+     "models": {
+      "rrf": {
+       "R@5": 0.0047,
+       "FC@5": 0.0026,
+       "hit@1": 0.0008,
+       "classes": {
+        "top5": 156,
+        "d1": 28,
+        "d2": 935,
+        "far": 412,
+        "no_anchor": 66983,
+        "out": 4183
+       },
+       "class_shares": {
+        "top5": 0.0021,
+        "d1": 0.0004,
+        "d2": 0.0129,
+        "far": 0.0057,
+        "no_anchor": 0.9214,
+        "out": 0.0575
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 0,
+        "f1 named-entity": 4,
+        "f2 kNN (KB relations)": 26
+       },
+       "missed_in_pool_rank": {
+        "6-10": 140,
+        "11-20": 235,
+        "21-50": 530,
+        "51-end": 67453
+       }
+      },
+      "zrckp": {
+       "R@5": 0.7989,
+       "FC@5": 0.6832,
+       "hit@1": 0.9032,
+       "classes": {
+        "top5": 24968,
+        "d1": 2972,
+        "d2": 19828,
+        "far": 19098,
+        "no_anchor": 1648,
+        "out": 4183
+       },
+       "class_shares": {
+        "top5": 0.3435,
+        "d1": 0.0409,
+        "d2": 0.2727,
+        "far": 0.2627,
+        "no_anchor": 0.0227,
+        "out": 0.0575
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 239,
+        "f1 named-entity": 16,
+        "f2 kNN (KB relations)": 2742
+       },
+       "missed_in_pool_rank": {
+        "6-10": 10859,
+        "11-20": 12811,
+        "21-50": 14523,
+        "51-end": 5353
+       }
+      },
+      "zspk": {
+       "R@5": 0.8012,
+       "FC@5": 0.6844,
+       "hit@1": 0.9158,
+       "classes": {
+        "top5": 25219,
+        "d1": 2845,
+        "d2": 19486,
+        "far": 19256,
+        "no_anchor": 1708,
+        "out": 4183
+       },
+       "class_shares": {
+        "top5": 0.3469,
+        "d1": 0.0391,
+        "d2": 0.268,
+        "far": 0.2649,
+        "no_anchor": 0.0235,
+        "out": 0.0575
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 270,
+        "f1 named-entity": 9,
+        "f2 kNN (KB relations)": 2594
+       },
+       "missed_in_pool_rank": {
+        "6-10": 10912,
+        "11-20": 12729,
+        "21-50": 14380,
+        "51-end": 5274
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 2869,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 190,
+       "d2": 1796,
+       "far": 837,
+       "no_anchor": 46,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 2618,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 309,
+       "d2": 1668,
+       "far": 608,
+       "no_anchor": 33,
+       "out": 0
+      }
+     }
+    }
+   },
+   "split": "J5",
+   "in_domain": true
+  },
+  "J5/squad": {
+   "questions": 11873,
+   "golds": 11873,
+   "edges": 4536174,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 11873,
+     "golds": 11873,
+     "all_gold_in_pool": 0.9798,
+     "ceiling5": 0.9798,
+     "models": {
+      "rrf": {
+       "R@5": 0.9054,
+       "FC@5": 0.9054,
+       "hit@1": 0.7335,
+       "classes": {
+        "top5": 10750,
+        "d1": 0,
+        "d2": 0,
+        "far": 0,
+        "no_anchor": 883,
+        "out": 240
+       },
+       "class_shares": {
+        "top5": 0.9054,
+        "d1": 0.0,
+        "d2": 0.0,
+        "far": 0.0,
+        "no_anchor": 0.0744,
+        "out": 0.0202
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 0,
+        "f1 named-entity": 0,
+        "f2 kNN (KB relations)": 0
+       },
+       "missed_in_pool_rank": {
+        "6-10": 405,
+        "11-20": 291,
+        "21-50": 187,
+        "51-end": 0
+       }
+      },
+      "zrckp": {
+       "R@5": 0.9112,
+       "FC@5": 0.9112,
+       "hit@1": 0.7533,
+       "classes": {
+        "top5": 10819,
+        "d1": 0,
+        "d2": 0,
+        "far": 0,
+        "no_anchor": 814,
+        "out": 240
+       },
+       "class_shares": {
+        "top5": 0.9112,
+        "d1": 0.0,
+        "d2": 0.0,
+        "far": 0.0,
+        "no_anchor": 0.0686,
+        "out": 0.0202
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 0,
+        "f1 named-entity": 0,
+        "f2 kNN (KB relations)": 0
+       },
+       "missed_in_pool_rank": {
+        "6-10": 372,
+        "11-20": 260,
+        "21-50": 181,
+        "51-end": 1
+       }
+      },
+      "zspk": {
+       "R@5": 0.9099,
+       "FC@5": 0.9099,
+       "hit@1": 0.7461,
+       "classes": {
+        "top5": 10803,
+        "d1": 0,
+        "d2": 0,
+        "far": 0,
+        "no_anchor": 830,
+        "out": 240
+       },
+       "class_shares": {
+        "top5": 0.9099,
+        "d1": 0.0,
+        "d2": 0.0,
+        "far": 0.0,
+        "no_anchor": 0.0699,
+        "out": 0.0202
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 0,
+        "f1 named-entity": 0,
+        "f2 kNN (KB relations)": 0
+       },
+       "missed_in_pool_rank": {
+        "6-10": 378,
+        "11-20": 266,
+        "21-50": 185,
+        "51-end": 1
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 64,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 0,
+       "d2": 0,
+       "far": 0,
+       "no_anchor": 64,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 80,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 0,
+       "d2": 0,
+       "far": 0,
+       "no_anchor": 80,
+       "out": 0
+      }
+     }
+    }
+   },
+   "split": "J5",
+   "in_domain": true
+  },
+  "J5/musique": {
+   "questions": 2417,
+   "golds": 6404,
+   "edges": 155366174,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 2417,
+     "golds": 6404,
+     "all_gold_in_pool": 0.8999,
+     "ceiling5": 0.9628,
+     "models": {
+      "rrf": {
+       "R@5": 0.4734,
+       "FC@5": 0.1353,
+       "hit@1": 0.633,
+       "classes": {
+        "top5": 2838,
+        "d1": 991,
+        "d2": 869,
+        "far": 571,
+        "no_anchor": 833,
+        "out": 302
+       },
+       "class_shares": {
+        "top5": 0.4432,
+        "d1": 0.1547,
+        "d2": 0.1357,
+        "far": 0.0892,
+        "no_anchor": 0.1301,
+        "out": 0.0472
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 536,
+        "f1 named-entity": 715,
+        "f2 kNN (KB relations)": 244
+       },
+       "missed_in_pool_rank": {
+        "6-10": 487,
+        "11-20": 456,
+        "21-50": 485,
+        "51-end": 1836
+       }
+      },
+      "zrckp": {
+       "R@5": 0.5728,
+       "FC@5": 0.2553,
+       "hit@1": 0.7245,
+       "classes": {
+        "top5": 3456,
+        "d1": 749,
+        "d2": 850,
+        "far": 542,
+        "no_anchor": 505,
+        "out": 302
+       },
+       "class_shares": {
+        "top5": 0.5397,
+        "d1": 0.117,
+        "d2": 0.1327,
+        "far": 0.0846,
+        "no_anchor": 0.0789,
+        "out": 0.0472
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 316,
+        "f1 named-entity": 521,
+        "f2 kNN (KB relations)": 153
+       },
+       "missed_in_pool_rank": {
+        "6-10": 593,
+        "11-20": 455,
+        "21-50": 549,
+        "51-end": 1049
+       }
+      },
+      "zspk": {
+       "R@5": 0.58,
+       "FC@5": 0.2565,
+       "hit@1": 0.7307,
+       "classes": {
+        "top5": 3502,
+        "d1": 753,
+        "d2": 870,
+        "far": 516,
+        "no_anchor": 461,
+        "out": 302
+       },
+       "class_shares": {
+        "top5": 0.5468,
+        "d1": 0.1176,
+        "d2": 0.1359,
+        "far": 0.0806,
+        "no_anchor": 0.072,
+        "out": 0.0472
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 326,
+        "f1 named-entity": 516,
+        "f2 kNN (KB relations)": 149
+       },
+       "missed_in_pool_rank": {
+        "6-10": 568,
+        "11-20": 472,
+        "21-50": 527,
+        "51-end": 1033
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 177,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 60,
+       "d2": 37,
+       "far": 39,
+       "no_anchor": 41,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 131,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 55,
+       "d2": 33,
+       "far": 21,
+       "no_anchor": 22,
+       "out": 0
+      }
+     }
+    },
+    "2-hop": {
+     "questions": 1252,
+     "golds": 2504,
+     "all_gold_in_pool": 0.9736,
+     "ceiling5": 0.9864,
+     "models": {
+      "rrf": {
+       "R@5": 0.5619,
+       "FC@5": 0.2404,
+       "hit@1": 0.6605,
+       "classes": {
+        "top5": 1407,
+        "d1": 551,
+        "d2": 176,
+        "far": 61,
+        "no_anchor": 275,
+        "out": 34
+       },
+       "class_shares": {
+        "top5": 0.5619,
+        "d1": 0.22,
+        "d2": 0.0703,
+        "far": 0.0244,
+        "no_anchor": 0.1098,
+        "out": 0.0136
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 285,
+        "f1 named-entity": 462,
+        "f2 kNN (KB relations)": 128
+       },
+       "missed_in_pool_rank": {
+        "6-10": 172,
+        "11-20": 161,
+        "21-50": 162,
+        "51-end": 568
+       }
+      },
+      "zrckp": {
+       "R@5": 0.6705,
+       "FC@5": 0.4321,
+       "hit@1": 0.6933,
+       "classes": {
+        "top5": 1679,
+        "d1": 343,
+        "d2": 166,
+        "far": 69,
+        "no_anchor": 213,
+        "out": 34
+       },
+       "class_shares": {
+        "top5": 0.6705,
+        "d1": 0.137,
+        "d2": 0.0663,
+        "far": 0.0276,
+        "no_anchor": 0.0851,
+        "out": 0.0136
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 118,
+        "f1 named-entity": 287,
+        "f2 kNN (KB relations)": 65
+       },
+       "missed_in_pool_rank": {
+        "6-10": 242,
+        "11-20": 159,
+        "21-50": 151,
+        "51-end": 239
+       }
+      },
+      "zspk": {
+       "R@5": 0.6781,
+       "FC@5": 0.4409,
+       "hit@1": 0.7077,
+       "classes": {
+        "top5": 1698,
+        "d1": 337,
+        "d2": 169,
+        "far": 69,
+        "no_anchor": 197,
+        "out": 34
+       },
+       "class_shares": {
+        "top5": 0.6781,
+        "d1": 0.1346,
+        "d2": 0.0675,
+        "far": 0.0276,
+        "no_anchor": 0.0787,
+        "out": 0.0136
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 116,
+        "f1 named-entity": 282,
+        "f2 kNN (KB relations)": 57
+       },
+       "missed_in_pool_rank": {
+        "6-10": 235,
+        "11-20": 156,
+        "21-50": 145,
+        "51-end": 236
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 72,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 38,
+       "d2": 7,
+       "far": 5,
+       "no_anchor": 22,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 53,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 27,
+       "d2": 10,
+       "far": 2,
+       "no_anchor": 14,
+       "out": 0
+      }
+     }
+    },
+    "3-hop": {
+     "questions": 760,
+     "golds": 2280,
+     "all_gold_in_pool": 0.9184,
+     "ceiling5": 0.9689,
+     "models": {
+      "rrf": {
+       "R@5": 0.4368,
+       "FC@5": 0.0342,
+       "hit@1": 0.6224,
+       "classes": {
+        "top5": 996,
+        "d1": 284,
+        "d2": 382,
+        "far": 268,
+        "no_anchor": 279,
+        "out": 71
+       },
+       "class_shares": {
+        "top5": 0.4368,
+        "d1": 0.1246,
+        "d2": 0.1675,
+        "far": 0.1175,
+        "no_anchor": 0.1224,
+        "out": 0.0311
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 153,
+        "f1 named-entity": 155,
+        "f2 kNN (KB relations)": 82
+       },
+       "missed_in_pool_rank": {
+        "6-10": 218,
+        "11-20": 173,
+        "21-50": 192,
+        "51-end": 630
+       }
+      },
+      "zrckp": {
+       "R@5": 0.5298,
+       "FC@5": 0.0974,
+       "hit@1": 0.7697,
+       "classes": {
+        "top5": 1208,
+        "d1": 259,
+        "d2": 377,
+        "far": 225,
+        "no_anchor": 140,
+        "out": 71
+       },
+       "class_shares": {
+        "top5": 0.5298,
+        "d1": 0.1136,
+        "d2": 0.1654,
+        "far": 0.0987,
+        "no_anchor": 0.0614,
+        "out": 0.0311
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 119,
+        "f1 named-entity": 148,
+        "f2 kNN (KB relations)": 61
+       },
+       "missed_in_pool_rank": {
+        "6-10": 225,
+        "11-20": 160,
+        "21-50": 221,
+        "51-end": 395
+       }
+      },
+      "zspk": {
+       "R@5": 0.5355,
+       "FC@5": 0.0882,
+       "hit@1": 0.775,
+       "classes": {
+        "top5": 1221,
+        "d1": 261,
+        "d2": 371,
+        "far": 223,
+        "no_anchor": 133,
+        "out": 71
+       },
+       "class_shares": {
+        "top5": 0.5355,
+        "d1": 0.1145,
+        "d2": 0.1627,
+        "far": 0.0978,
+        "no_anchor": 0.0583,
+        "out": 0.0311
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 124,
+        "f1 named-entity": 145,
+        "f2 kNN (KB relations)": 60
+       },
+       "missed_in_pool_rank": {
+        "6-10": 208,
+        "11-20": 179,
+        "21-50": 208,
+        "51-end": 393
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 63,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 18,
+       "d2": 21,
+       "far": 11,
+       "no_anchor": 13,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 50,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 18,
+       "d2": 13,
+       "far": 11,
+       "no_anchor": 8,
+       "out": 0
+      }
+     }
+    },
+    "4-hop": {
+     "questions": 405,
+     "golds": 1620,
+     "all_gold_in_pool": 0.637,
+     "ceiling5": 0.8784,
+     "models": {
+      "rrf": {
+       "R@5": 0.2685,
+       "FC@5": 0.0,
+       "hit@1": 0.5679,
+       "classes": {
+        "top5": 435,
+        "d1": 156,
+        "d2": 311,
+        "far": 242,
+        "no_anchor": 279,
+        "out": 197
+       },
+       "class_shares": {
+        "top5": 0.2685,
+        "d1": 0.0963,
+        "d2": 0.192,
+        "far": 0.1494,
+        "no_anchor": 0.1722,
+        "out": 0.1216
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 98,
+        "f1 named-entity": 98,
+        "f2 kNN (KB relations)": 34
+       },
+       "missed_in_pool_rank": {
+        "6-10": 97,
+        "11-20": 122,
+        "21-50": 131,
+        "51-end": 638
+       }
+      },
+      "zrckp": {
+       "R@5": 0.3512,
+       "FC@5": 0.0049,
+       "hit@1": 0.7358,
+       "classes": {
+        "top5": 569,
+        "d1": 147,
+        "d2": 307,
+        "far": 248,
+        "no_anchor": 152,
+        "out": 197
+       },
+       "class_shares": {
+        "top5": 0.3512,
+        "d1": 0.0907,
+        "d2": 0.1895,
+        "far": 0.1531,
+        "no_anchor": 0.0938,
+        "out": 0.1216
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 79,
+        "f1 named-entity": 86,
+        "f2 kNN (KB relations)": 27
+       },
+       "missed_in_pool_rank": {
+        "6-10": 126,
+        "11-20": 136,
+        "21-50": 177,
+        "51-end": 415
+       }
+      },
+      "zspk": {
+       "R@5": 0.3599,
+       "FC@5": 0.0025,
+       "hit@1": 0.7185,
+       "classes": {
+        "top5": 583,
+        "d1": 155,
+        "d2": 330,
+        "far": 224,
+        "no_anchor": 131,
+        "out": 197
+       },
+       "class_shares": {
+        "top5": 0.3599,
+        "d1": 0.0957,
+        "d2": 0.2037,
+        "far": 0.1383,
+        "no_anchor": 0.0809,
+        "out": 0.1216
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 86,
+        "f1 named-entity": 89,
+        "f2 kNN (KB relations)": 32
+       },
+       "missed_in_pool_rank": {
+        "6-10": 125,
+        "11-20": 137,
+        "21-50": 174,
+        "51-end": 404
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 42,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 4,
+       "d2": 9,
+       "far": 23,
+       "no_anchor": 6,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 28,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 10,
+       "d2": 10,
+       "far": 8,
+       "no_anchor": 0,
+       "out": 0
+      }
+     }
+    }
+   },
+   "by_gold_hop": {
+    "2-hop/sub-question 1": {
+     "rrf": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.7955,
+       "d1": 0.0375,
+       "d2": 0.0343,
+       "far": 0.0136,
+       "no_anchor": 0.111,
+       "out": 0.008
+      }
+     },
+     "zrckp": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.8315,
+       "d1": 0.0319,
+       "d2": 0.0304,
+       "far": 0.012,
+       "no_anchor": 0.0863,
+       "out": 0.008
+      }
+     },
+     "zspk": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.8403,
+       "d1": 0.0312,
+       "d2": 0.0288,
+       "far": 0.012,
+       "no_anchor": 0.0799,
+       "out": 0.008
+      }
+     }
+    },
+    "2-hop/sub-question 2": {
+     "rrf": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.3283,
+       "d1": 0.4026,
+       "d2": 0.1062,
+       "far": 0.0351,
+       "no_anchor": 0.1086,
+       "out": 0.0192
+      }
+     },
+     "zrckp": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.5096,
+       "d1": 0.242,
+       "d2": 0.1022,
+       "far": 0.0431,
+       "no_anchor": 0.0839,
+       "out": 0.0192
+      }
+     },
+     "zspk": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.516,
+       "d1": 0.238,
+       "d2": 0.1062,
+       "far": 0.0431,
+       "no_anchor": 0.0775,
+       "out": 0.0192
+      }
+     }
+    },
+    "3-hop/sub-question 1": {
+     "rrf": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.65,
+       "d1": 0.0132,
+       "d2": 0.0987,
+       "far": 0.1026,
+       "no_anchor": 0.1224,
+       "out": 0.0132
+      }
+     },
+     "zrckp": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.8079,
+       "d1": 0.0197,
+       "d2": 0.0618,
+       "far": 0.0355,
+       "no_anchor": 0.0618,
+       "out": 0.0132
+      }
+     },
+     "zspk": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.8105,
+       "d1": 0.0197,
+       "d2": 0.0645,
+       "far": 0.0355,
+       "no_anchor": 0.0566,
+       "out": 0.0132
+      }
+     }
+    },
+    "3-hop/sub-question 2": {
+     "rrf": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.2974,
+       "d1": 0.2276,
+       "d2": 0.2395,
+       "far": 0.0684,
+       "no_anchor": 0.1211,
+       "out": 0.0461
+      }
+     },
+     "zrckp": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.3789,
+       "d1": 0.2013,
+       "d2": 0.2474,
+       "far": 0.0645,
+       "no_anchor": 0.0618,
+       "out": 0.0461
+      }
+     },
+     "zspk": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.3921,
+       "d1": 0.2066,
+       "d2": 0.2368,
+       "far": 0.0605,
+       "no_anchor": 0.0579,
+       "out": 0.0461
+      }
+     }
+    },
+    "3-hop/sub-question 3": {
+     "rrf": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.3632,
+       "d1": 0.1329,
+       "d2": 0.1645,
+       "far": 0.1816,
+       "no_anchor": 0.1237,
+       "out": 0.0342
+      }
+     },
+     "zrckp": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.4026,
+       "d1": 0.1197,
+       "d2": 0.1868,
+       "far": 0.1961,
+       "no_anchor": 0.0605,
+       "out": 0.0342
+      }
+     },
+     "zspk": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.4039,
+       "d1": 0.1171,
+       "d2": 0.1868,
+       "far": 0.1974,
+       "no_anchor": 0.0605,
+       "out": 0.0342
+      }
+     }
+    },
+    "4-hop/sub-question 1": {
+     "rrf": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.5481,
+       "d1": 0.0247,
+       "d2": 0.0519,
+       "far": 0.1704,
+       "no_anchor": 0.1901,
+       "out": 0.0148
+      }
+     },
+     "zrckp": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.6864,
+       "d1": 0.0148,
+       "d2": 0.0568,
+       "far": 0.1284,
+       "no_anchor": 0.0988,
+       "out": 0.0148
+      }
+     },
+     "zspk": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.6963,
+       "d1": 0.0148,
+       "d2": 0.0543,
+       "far": 0.1358,
+       "no_anchor": 0.084,
+       "out": 0.0148
+      }
+     }
+    },
+    "4-hop/sub-question 2": {
+     "rrf": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.0988,
+       "d1": 0.2395,
+       "d2": 0.2321,
+       "far": 0.1605,
+       "no_anchor": 0.1802,
+       "out": 0.0889
+      }
+     },
+     "zrckp": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2444,
+       "d1": 0.2148,
+       "d2": 0.2099,
+       "far": 0.1407,
+       "no_anchor": 0.1012,
+       "out": 0.0889
+      }
+     },
+     "zspk": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2346,
+       "d1": 0.2272,
+       "d2": 0.2444,
+       "far": 0.1185,
+       "no_anchor": 0.0864,
+       "out": 0.0889
+      }
+     }
+    },
+    "4-hop/sub-question 3": {
+     "rrf": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2148,
+       "d1": 0.0568,
+       "d2": 0.316,
+       "far": 0.079,
+       "no_anchor": 0.1679,
+       "out": 0.1654
+      }
+     },
+     "zrckp": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2519,
+       "d1": 0.0864,
+       "d2": 0.2864,
+       "far": 0.116,
+       "no_anchor": 0.0938,
+       "out": 0.1654
+      }
+     },
+     "zspk": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.284,
+       "d1": 0.0889,
+       "d2": 0.2963,
+       "far": 0.084,
+       "no_anchor": 0.0815,
+       "out": 0.1654
+      }
+     }
+    },
+    "4-hop/sub-question 4": {
+     "rrf": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2123,
+       "d1": 0.0642,
+       "d2": 0.1679,
+       "far": 0.1877,
+       "no_anchor": 0.1506,
+       "out": 0.2173
+      }
+     },
+     "zrckp": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2222,
+       "d1": 0.0469,
+       "d2": 0.2049,
+       "far": 0.2272,
+       "no_anchor": 0.0815,
+       "out": 0.2173
+      }
+     },
+     "zspk": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2247,
+       "d1": 0.0519,
+       "d2": 0.2198,
+       "far": 0.2148,
+       "no_anchor": 0.0716,
+       "out": 0.2173
+      }
+     }
+    },
+    "unresolved_sub_questions": 0
+   },
+   "split": "J5",
+   "in_domain": true,
+   "package_check": {
+    "records": 2417,
+    "gold_nodes": 2629,
+    "positions": 2629
+   },
+   "s1eval_hop_mix": {
+    "2-hop": 0.518,
+    "3-hop": 0.3144,
+    "4-hop": 0.1676
+   }
+  },
+  "J5/hotpotqa": {
+   "questions": 7405,
+   "golds": 14810,
+   "edges": 3434050,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 7405,
+     "golds": 14810,
+     "all_gold_in_pool": 0.9594,
+     "ceiling5": 0.9761,
+     "models": {
+      "rrf": {
+       "R@5": 0.6846,
+       "FC@5": 0.424,
+       "hit@1": 0.8277,
+       "classes": {
+        "top5": 10139,
+        "d1": 3425,
+        "d2": 26,
+        "far": 250,
+        "no_anchor": 616,
+        "out": 354
+       },
+       "class_shares": {
+        "top5": 0.6846,
+        "d1": 0.2313,
+        "d2": 0.0018,
+        "far": 0.0169,
+        "no_anchor": 0.0416,
+        "out": 0.0239
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 3424,
+        "f1 named-entity": 816,
+        "f2 kNN (KB relations)": 563
+       },
+       "missed_in_pool_rank": {
+        "6-10": 801,
+        "11-20": 699,
+        "21-50": 713,
+        "51-end": 2104
+       }
+      },
+      "zrckp": {
+       "R@5": 0.9065,
+       "FC@5": 0.8479,
+       "hit@1": 0.8401,
+       "classes": {
+        "top5": 13425,
+        "d1": 661,
+        "d2": 6,
+        "far": 27,
+        "no_anchor": 337,
+        "out": 354
+       },
+       "class_shares": {
+        "top5": 0.9065,
+        "d1": 0.0446,
+        "d2": 0.0004,
+        "far": 0.0018,
+        "no_anchor": 0.0228,
+        "out": 0.0239
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 661,
+        "f1 named-entity": 195,
+        "f2 kNN (KB relations)": 131
+       },
+       "missed_in_pool_rank": {
+        "6-10": 560,
+        "11-20": 252,
+        "21-50": 167,
+        "51-end": 52
+       }
+      },
+      "zspk": {
+       "R@5": 0.9044,
+       "FC@5": 0.8432,
+       "hit@1": 0.8424,
+       "classes": {
+        "top5": 13394,
+        "d1": 709,
+        "d2": 4,
+        "far": 24,
+        "no_anchor": 325,
+        "out": 354
+       },
+       "class_shares": {
+        "top5": 0.9044,
+        "d1": 0.0479,
+        "d2": 0.0003,
+        "far": 0.0016,
+        "no_anchor": 0.0219,
+        "out": 0.0239
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 709,
+        "f1 named-entity": 185,
+        "f2 kNN (KB relations)": 138
+       },
+       "missed_in_pool_rank": {
+        "6-10": 573,
+        "11-20": 251,
+        "21-50": 180,
+        "51-end": 58
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 152,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 108,
+       "d2": 2,
+       "far": 10,
+       "no_anchor": 32,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 183,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 147,
+       "d2": 0,
+       "far": 7,
+       "no_anchor": 29,
+       "out": 0
+      }
+     }
+    }
+   },
+   "split": "J5",
+   "in_domain": true
+  },
+  "J5/2wiki": {
+   "questions": 12576,
+   "golds": 30654,
+   "edges": 6029314,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 12576,
+     "golds": 30654,
+     "all_gold_in_pool": 0.9587,
+     "ceiling5": 0.9839,
+     "models": {
+      "rrf": {
+       "R@5": 0.6079,
+       "FC@5": 0.2536,
+       "hit@1": 0.8747,
+       "classes": {
+        "top5": 17739,
+        "d1": 9578,
+        "d2": 267,
+        "far": 2108,
+        "no_anchor": 412,
+        "out": 550
+       },
+       "class_shares": {
+        "top5": 0.5787,
+        "d1": 0.3125,
+        "d2": 0.0087,
+        "far": 0.0688,
+        "no_anchor": 0.0134,
+        "out": 0.0179
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 9257,
+        "f1 named-entity": 4100,
+        "f2 kNN (KB relations)": 1790
+       },
+       "missed_in_pool_rank": {
+        "6-10": 1477,
+        "11-20": 1128,
+        "21-50": 980,
+        "51-end": 8780
+       }
+      },
+      "zrckp": {
+       "R@5": 0.9304,
+       "FC@5": 0.83,
+       "hit@1": 0.9705,
+       "classes": {
+        "top5": 28330,
+        "d1": 1481,
+        "d2": 151,
+        "far": 93,
+        "no_anchor": 49,
+        "out": 550
+       },
+       "class_shares": {
+        "top5": 0.9242,
+        "d1": 0.0483,
+        "d2": 0.0049,
+        "far": 0.003,
+        "no_anchor": 0.0016,
+        "out": 0.0179
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 1210,
+        "f1 named-entity": 680,
+        "f2 kNN (KB relations)": 312
+       },
+       "missed_in_pool_rank": {
+        "6-10": 1172,
+        "11-20": 380,
+        "21-50": 175,
+        "51-end": 47
+       }
+      },
+      "zspk": {
+       "R@5": 0.9351,
+       "FC@5": 0.8395,
+       "hit@1": 0.9794,
+       "classes": {
+        "top5": 28441,
+        "d1": 1380,
+        "d2": 146,
+        "far": 114,
+        "no_anchor": 23,
+        "out": 550
+       },
+       "class_shares": {
+        "top5": 0.9278,
+        "d1": 0.045,
+        "d2": 0.0048,
+        "far": 0.0037,
+        "no_anchor": 0.0008,
+        "out": 0.0179
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 1123,
+        "f1 named-entity": 567,
+        "f2 kNN (KB relations)": 265
+       },
+       "missed_in_pool_rank": {
+        "6-10": 1180,
+        "11-20": 309,
+        "21-50": 143,
+        "51-end": 31
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 473,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 417,
+       "d2": 17,
+       "far": 19,
+       "no_anchor": 20,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 362,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 318,
+       "d2": 11,
+       "far": 29,
+       "no_anchor": 4,
+       "out": 0
+      }
+     }
+    }
+   },
+   "split": "J5",
+   "in_domain": true
+  },
+  "J5/webqsp": {
+   "questions": 1503,
+   "golds": 10583,
+   "edges": 18968076,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 1503,
+     "golds": 10583,
+     "all_gold_in_pool": 0.841,
+     "ceiling5": 0.8342,
+     "models": {
+      "rrf": {
+       "R@5": 0.0535,
+       "FC@5": 0.0379,
+       "hit@1": 0.0459,
+       "classes": {
+        "top5": 186,
+        "d1": 115,
+        "d2": 883,
+        "far": 5,
+        "no_anchor": 6211,
+        "out": 3183
+       },
+       "class_shares": {
+        "top5": 0.0176,
+        "d1": 0.0109,
+        "d2": 0.0834,
+        "far": 0.0005,
+        "no_anchor": 0.5869,
+        "out": 0.3008
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 72,
+        "f1 named-entity": 0,
+        "f2 kNN (KB relations)": 45
+       },
+       "missed_in_pool_rank": {
+        "6-10": 80,
+        "11-20": 144,
+        "21-50": 343,
+        "51-end": 6647
+       }
+      },
+      "zrckp": {
+       "R@5": 0.3611,
+       "FC@5": 0.2888,
+       "hit@1": 0.1404,
+       "classes": {
+        "top5": 1023,
+        "d1": 488,
+        "d2": 2432,
+        "far": 374,
+        "no_anchor": 3083,
+        "out": 3183
+       },
+       "class_shares": {
+        "top5": 0.0967,
+        "d1": 0.0461,
+        "d2": 0.2298,
+        "far": 0.0353,
+        "no_anchor": 0.2913,
+        "out": 0.3008
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 385,
+        "f1 named-entity": 18,
+        "f2 kNN (KB relations)": 162
+       },
+       "missed_in_pool_rank": {
+        "6-10": 553,
+        "11-20": 700,
+        "21-50": 1170,
+        "51-end": 3954
+       }
+      },
+      "zspk": {
+       "R@5": 0.2913,
+       "FC@5": 0.2236,
+       "hit@1": 0.173,
+       "classes": {
+        "top5": 911,
+        "d1": 335,
+        "d2": 2436,
+        "far": 308,
+        "no_anchor": 3410,
+        "out": 3183
+       },
+       "class_shares": {
+        "top5": 0.0861,
+        "d1": 0.0317,
+        "d2": 0.2302,
+        "far": 0.0291,
+        "no_anchor": 0.3222,
+        "out": 0.3008
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 226,
+        "f1 named-entity": 19,
+        "f2 kNN (KB relations)": 154
+       },
+       "missed_in_pool_rank": {
+        "6-10": 482,
+        "11-20": 667,
+        "21-50": 1224,
+        "51-end": 4116
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 279,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 29,
+       "d2": 92,
+       "far": 4,
+       "no_anchor": 154,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 391,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 37,
+       "d2": 93,
+       "far": 4,
+       "no_anchor": 257,
+       "out": 0
+      }
+     }
+    }
+   },
+   "split": "J5",
+   "in_domain": false
+  },
+  "L-musique/musique": {
+   "questions": 2417,
+   "golds": 6404,
+   "edges": 155366174,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 2417,
+     "golds": 6404,
+     "all_gold_in_pool": 0.8999,
+     "ceiling5": 0.9628,
+     "models": {
+      "rrf": {
+       "R@5": 0.4734,
+       "FC@5": 0.1353,
+       "hit@1": 0.633,
+       "classes": {
+        "top5": 2838,
+        "d1": 991,
+        "d2": 869,
+        "far": 571,
+        "no_anchor": 833,
+        "out": 302
+       },
+       "class_shares": {
+        "top5": 0.4432,
+        "d1": 0.1547,
+        "d2": 0.1357,
+        "far": 0.0892,
+        "no_anchor": 0.1301,
+        "out": 0.0472
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 536,
+        "f1 named-entity": 715,
+        "f2 kNN (KB relations)": 244
+       },
+       "missed_in_pool_rank": {
+        "6-10": 487,
+        "11-20": 456,
+        "21-50": 485,
+        "51-end": 1836
+       }
+      },
+      "zrckp": {
+       "R@5": 0.5121,
+       "FC@5": 0.1862,
+       "hit@1": 0.6963,
+       "classes": {
+        "top5": 3076,
+        "d1": 843,
+        "d2": 899,
+        "far": 660,
+        "no_anchor": 624,
+        "out": 302
+       },
+       "class_shares": {
+        "top5": 0.4803,
+        "d1": 0.1316,
+        "d2": 0.1404,
+        "far": 0.1031,
+        "no_anchor": 0.0974,
+        "out": 0.0472
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 316,
+        "f1 named-entity": 630,
+        "f2 kNN (KB relations)": 179
+       },
+       "missed_in_pool_rank": {
+        "6-10": 519,
+        "11-20": 520,
+        "21-50": 531,
+        "51-end": 1456
+       }
+      },
+      "zspk": {
+       "R@5": 0.5012,
+       "FC@5": 0.1816,
+       "hit@1": 0.6698,
+       "classes": {
+        "top5": 3002,
+        "d1": 839,
+        "d2": 903,
+        "far": 616,
+        "no_anchor": 742,
+        "out": 302
+       },
+       "class_shares": {
+        "top5": 0.4688,
+        "d1": 0.131,
+        "d2": 0.141,
+        "far": 0.0962,
+        "no_anchor": 0.1159,
+        "out": 0.0472
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 291,
+        "f1 named-entity": 618,
+        "f2 kNN (KB relations)": 191
+       },
+       "missed_in_pool_rank": {
+        "6-10": 481,
+        "11-20": 473,
+        "21-50": 547,
+        "51-end": 1599
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 182,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 64,
+       "d2": 37,
+       "far": 42,
+       "no_anchor": 39,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 256,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 84,
+       "d2": 48,
+       "far": 42,
+       "no_anchor": 82,
+       "out": 0
+      }
+     }
+    },
+    "2-hop": {
+     "questions": 1252,
+     "golds": 2504,
+     "all_gold_in_pool": 0.9736,
+     "ceiling5": 0.9864,
+     "models": {
+      "rrf": {
+       "R@5": 0.5619,
+       "FC@5": 0.2404,
+       "hit@1": 0.6605,
+       "classes": {
+        "top5": 1407,
+        "d1": 551,
+        "d2": 176,
+        "far": 61,
+        "no_anchor": 275,
+        "out": 34
+       },
+       "class_shares": {
+        "top5": 0.5619,
+        "d1": 0.22,
+        "d2": 0.0703,
+        "far": 0.0244,
+        "no_anchor": 0.1098,
+        "out": 0.0136
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 285,
+        "f1 named-entity": 462,
+        "f2 kNN (KB relations)": 128
+       },
+       "missed_in_pool_rank": {
+        "6-10": 172,
+        "11-20": 161,
+        "21-50": 162,
+        "51-end": 568
+       }
+      },
+      "zrckp": {
+       "R@5": 0.6118,
+       "FC@5": 0.3323,
+       "hit@1": 0.6693,
+       "classes": {
+        "top5": 1532,
+        "d1": 424,
+        "d2": 189,
+        "far": 71,
+        "no_anchor": 254,
+        "out": 34
+       },
+       "class_shares": {
+        "top5": 0.6118,
+        "d1": 0.1693,
+        "d2": 0.0755,
+        "far": 0.0284,
+        "no_anchor": 0.1014,
+        "out": 0.0136
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 127,
+        "f1 named-entity": 365,
+        "f2 kNN (KB relations)": 84
+       },
+       "missed_in_pool_rank": {
+        "6-10": 207,
+        "11-20": 162,
+        "21-50": 188,
+        "51-end": 381
+       }
+      },
+      "zspk": {
+       "R@5": 0.6002,
+       "FC@5": 0.3275,
+       "hit@1": 0.6478,
+       "classes": {
+        "top5": 1503,
+        "d1": 407,
+        "d2": 183,
+        "far": 75,
+        "no_anchor": 302,
+        "out": 34
+       },
+       "class_shares": {
+        "top5": 0.6002,
+        "d1": 0.1625,
+        "d2": 0.0731,
+        "far": 0.03,
+        "no_anchor": 0.1206,
+        "out": 0.0136
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 98,
+        "f1 named-entity": 356,
+        "f2 kNN (KB relations)": 93
+       },
+       "missed_in_pool_rank": {
+        "6-10": 169,
+        "11-20": 162,
+        "21-50": 196,
+        "51-end": 440
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 80,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 46,
+       "d2": 14,
+       "far": 4,
+       "no_anchor": 16,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 109,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 48,
+       "d2": 15,
+       "far": 6,
+       "no_anchor": 40,
+       "out": 0
+      }
+     }
+    },
+    "3-hop": {
+     "questions": 760,
+     "golds": 2280,
+     "all_gold_in_pool": 0.9184,
+     "ceiling5": 0.9689,
+     "models": {
+      "rrf": {
+       "R@5": 0.4368,
+       "FC@5": 0.0342,
+       "hit@1": 0.6224,
+       "classes": {
+        "top5": 996,
+        "d1": 284,
+        "d2": 382,
+        "far": 268,
+        "no_anchor": 279,
+        "out": 71
+       },
+       "class_shares": {
+        "top5": 0.4368,
+        "d1": 0.1246,
+        "d2": 0.1675,
+        "far": 0.1175,
+        "no_anchor": 0.1224,
+        "out": 0.0311
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 153,
+        "f1 named-entity": 155,
+        "f2 kNN (KB relations)": 82
+       },
+       "missed_in_pool_rank": {
+        "6-10": 218,
+        "11-20": 173,
+        "21-50": 192,
+        "51-end": 630
+       }
+      },
+      "zrckp": {
+       "R@5": 0.4518,
+       "FC@5": 0.0434,
+       "hit@1": 0.7421,
+       "classes": {
+        "top5": 1030,
+        "d1": 272,
+        "d2": 403,
+        "far": 328,
+        "no_anchor": 176,
+        "out": 71
+       },
+       "class_shares": {
+        "top5": 0.4518,
+        "d1": 0.1193,
+        "d2": 0.1768,
+        "far": 0.1439,
+        "no_anchor": 0.0772,
+        "out": 0.0311
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 116,
+        "f1 named-entity": 167,
+        "f2 kNN (KB relations)": 58
+       },
+       "missed_in_pool_rank": {
+        "6-10": 219,
+        "11-20": 218,
+        "21-50": 206,
+        "51-end": 536
+       }
+      },
+      "zspk": {
+       "R@5": 0.4478,
+       "FC@5": 0.0368,
+       "hit@1": 0.7237,
+       "classes": {
+        "top5": 1021,
+        "d1": 278,
+        "d2": 405,
+        "far": 299,
+        "no_anchor": 206,
+        "out": 71
+       },
+       "class_shares": {
+        "top5": 0.4478,
+        "d1": 0.1219,
+        "d2": 0.1776,
+        "far": 0.1311,
+        "no_anchor": 0.0904,
+        "out": 0.0311
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 120,
+        "f1 named-entity": 163,
+        "f2 kNN (KB relations)": 65
+       },
+       "missed_in_pool_rank": {
+        "6-10": 199,
+        "11-20": 195,
+        "21-50": 213,
+        "51-end": 581
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 78,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 13,
+       "d2": 20,
+       "far": 33,
+       "no_anchor": 12,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 87,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 25,
+       "d2": 22,
+       "far": 16,
+       "no_anchor": 24,
+       "out": 0
+      }
+     }
+    },
+    "4-hop": {
+     "questions": 405,
+     "golds": 1620,
+     "all_gold_in_pool": 0.637,
+     "ceiling5": 0.8784,
+     "models": {
+      "rrf": {
+       "R@5": 0.2685,
+       "FC@5": 0.0,
+       "hit@1": 0.5679,
+       "classes": {
+        "top5": 435,
+        "d1": 156,
+        "d2": 311,
+        "far": 242,
+        "no_anchor": 279,
+        "out": 197
+       },
+       "class_shares": {
+        "top5": 0.2685,
+        "d1": 0.0963,
+        "d2": 0.192,
+        "far": 0.1494,
+        "no_anchor": 0.1722,
+        "out": 0.1216
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 98,
+        "f1 named-entity": 98,
+        "f2 kNN (KB relations)": 34
+       },
+       "missed_in_pool_rank": {
+        "6-10": 97,
+        "11-20": 122,
+        "21-50": 131,
+        "51-end": 638
+       }
+      },
+      "zrckp": {
+       "R@5": 0.3173,
+       "FC@5": 0.0025,
+       "hit@1": 0.6938,
+       "classes": {
+        "top5": 514,
+        "d1": 147,
+        "d2": 307,
+        "far": 261,
+        "no_anchor": 194,
+        "out": 197
+       },
+       "class_shares": {
+        "top5": 0.3173,
+        "d1": 0.0907,
+        "d2": 0.1895,
+        "far": 0.1611,
+        "no_anchor": 0.1198,
+        "out": 0.1216
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 73,
+        "f1 named-entity": 98,
+        "f2 kNN (KB relations)": 37
+       },
+       "missed_in_pool_rank": {
+        "6-10": 93,
+        "11-20": 140,
+        "21-50": 137,
+        "51-end": 539
+       }
+      },
+      "zspk": {
+       "R@5": 0.2951,
+       "FC@5": 0.0025,
+       "hit@1": 0.637,
+       "classes": {
+        "top5": 478,
+        "d1": 154,
+        "d2": 315,
+        "far": 242,
+        "no_anchor": 234,
+        "out": 197
+       },
+       "class_shares": {
+        "top5": 0.2951,
+        "d1": 0.0951,
+        "d2": 0.1944,
+        "far": 0.1494,
+        "no_anchor": 0.1444,
+        "out": 0.1216
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 73,
+        "f1 named-entity": 99,
+        "f2 kNN (KB relations)": 33
+       },
+       "missed_in_pool_rank": {
+        "6-10": 113,
+        "11-20": 116,
+        "21-50": 138,
+        "51-end": 578
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 24,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 5,
+       "d2": 3,
+       "far": 5,
+       "no_anchor": 11,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 60,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 11,
+       "d2": 11,
+       "far": 20,
+       "no_anchor": 18,
+       "out": 0
+      }
+     }
+    }
+   },
+   "by_gold_hop": {
+    "2-hop/sub-question 1": {
+     "rrf": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.7955,
+       "d1": 0.0375,
+       "d2": 0.0343,
+       "far": 0.0136,
+       "no_anchor": 0.111,
+       "out": 0.008
+      }
+     },
+     "zrckp": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.8091,
+       "d1": 0.0375,
+       "d2": 0.0319,
+       "far": 0.0112,
+       "no_anchor": 0.1022,
+       "out": 0.008
+      }
+     },
+     "zspk": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.7843,
+       "d1": 0.0423,
+       "d2": 0.0319,
+       "far": 0.0128,
+       "no_anchor": 0.1206,
+       "out": 0.008
+      }
+     }
+    },
+    "2-hop/sub-question 2": {
+     "rrf": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.3283,
+       "d1": 0.4026,
+       "d2": 0.1062,
+       "far": 0.0351,
+       "no_anchor": 0.1086,
+       "out": 0.0192
+      }
+     },
+     "zrckp": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.4145,
+       "d1": 0.3011,
+       "d2": 0.119,
+       "far": 0.0455,
+       "no_anchor": 0.1006,
+       "out": 0.0192
+      }
+     },
+     "zspk": {
+      "golds": 1252,
+      "shares": {
+       "top5": 0.4161,
+       "d1": 0.2827,
+       "d2": 0.1142,
+       "far": 0.0471,
+       "no_anchor": 0.1206,
+       "out": 0.0192
+      }
+     }
+    },
+    "3-hop/sub-question 1": {
+     "rrf": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.65,
+       "d1": 0.0132,
+       "d2": 0.0987,
+       "far": 0.1026,
+       "no_anchor": 0.1224,
+       "out": 0.0132
+      }
+     },
+     "zrckp": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.7579,
+       "d1": 0.0276,
+       "d2": 0.0684,
+       "far": 0.0553,
+       "no_anchor": 0.0776,
+       "out": 0.0132
+      }
+     },
+     "zspk": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.7382,
+       "d1": 0.0237,
+       "d2": 0.0776,
+       "far": 0.0566,
+       "no_anchor": 0.0908,
+       "out": 0.0132
+      }
+     }
+    },
+    "3-hop/sub-question 2": {
+     "rrf": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.2974,
+       "d1": 0.2276,
+       "d2": 0.2395,
+       "far": 0.0684,
+       "no_anchor": 0.1211,
+       "out": 0.0461
+      }
+     },
+     "zrckp": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.3276,
+       "d1": 0.2,
+       "d2": 0.2526,
+       "far": 0.0961,
+       "no_anchor": 0.0776,
+       "out": 0.0461
+      }
+     },
+     "zspk": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.3382,
+       "d1": 0.1974,
+       "d2": 0.2461,
+       "far": 0.0816,
+       "no_anchor": 0.0908,
+       "out": 0.0461
+      }
+     }
+    },
+    "3-hop/sub-question 3": {
+     "rrf": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.3632,
+       "d1": 0.1329,
+       "d2": 0.1645,
+       "far": 0.1816,
+       "no_anchor": 0.1237,
+       "out": 0.0342
+      }
+     },
+     "zrckp": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.2697,
+       "d1": 0.1303,
+       "d2": 0.2092,
+       "far": 0.2803,
+       "no_anchor": 0.0763,
+       "out": 0.0342
+      }
+     },
+     "zspk": {
+      "golds": 760,
+      "shares": {
+       "top5": 0.2671,
+       "d1": 0.1447,
+       "d2": 0.2092,
+       "far": 0.2553,
+       "no_anchor": 0.0895,
+       "out": 0.0342
+      }
+     }
+    },
+    "4-hop/sub-question 1": {
+     "rrf": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.5481,
+       "d1": 0.0247,
+       "d2": 0.0519,
+       "far": 0.1704,
+       "no_anchor": 0.1901,
+       "out": 0.0148
+      }
+     },
+     "zrckp": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.6519,
+       "d1": 0.0123,
+       "d2": 0.0593,
+       "far": 0.1358,
+       "no_anchor": 0.1259,
+       "out": 0.0148
+      }
+     },
+     "zspk": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.6247,
+       "d1": 0.0222,
+       "d2": 0.0716,
+       "far": 0.1185,
+       "no_anchor": 0.1481,
+       "out": 0.0148
+      }
+     }
+    },
+    "4-hop/sub-question 2": {
+     "rrf": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.0988,
+       "d1": 0.2395,
+       "d2": 0.2321,
+       "far": 0.1605,
+       "no_anchor": 0.1802,
+       "out": 0.0889
+      }
+     },
+     "zrckp": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2272,
+       "d1": 0.2025,
+       "d2": 0.2025,
+       "far": 0.1531,
+       "no_anchor": 0.1259,
+       "out": 0.0889
+      }
+     },
+     "zspk": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2049,
+       "d1": 0.2198,
+       "d2": 0.2,
+       "far": 0.1383,
+       "no_anchor": 0.1481,
+       "out": 0.0889
+      }
+     }
+    },
+    "4-hop/sub-question 3": {
+     "rrf": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2148,
+       "d1": 0.0568,
+       "d2": 0.316,
+       "far": 0.079,
+       "no_anchor": 0.1679,
+       "out": 0.1654
+      }
+     },
+     "zrckp": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2296,
+       "d1": 0.0938,
+       "d2": 0.2667,
+       "far": 0.121,
+       "no_anchor": 0.1235,
+       "out": 0.1654
+      }
+     },
+     "zspk": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2,
+       "d1": 0.0963,
+       "d2": 0.2765,
+       "far": 0.116,
+       "no_anchor": 0.1457,
+       "out": 0.1654
+      }
+     }
+    },
+    "4-hop/sub-question 4": {
+     "rrf": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.2123,
+       "d1": 0.0642,
+       "d2": 0.1679,
+       "far": 0.1877,
+       "no_anchor": 0.1506,
+       "out": 0.2173
+      }
+     },
+     "zrckp": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.1605,
+       "d1": 0.0543,
+       "d2": 0.2296,
+       "far": 0.2346,
+       "no_anchor": 0.1037,
+       "out": 0.2173
+      }
+     },
+     "zspk": {
+      "golds": 405,
+      "shares": {
+       "top5": 0.1506,
+       "d1": 0.042,
+       "d2": 0.2296,
+       "far": 0.2247,
+       "no_anchor": 0.1358,
+       "out": 0.2173
+      }
+     }
+    },
+    "unresolved_sub_questions": 0
+   },
+   "split": "L-musique",
+   "in_domain": false,
+   "package_check": {
+    "records": 2417,
+    "gold_nodes": 2629,
+    "positions": 2629
+   },
+   "s1eval_hop_mix": {
+    "2-hop": 0.518,
+    "3-hop": 0.3144,
+    "4-hop": 0.1676
+   }
+  },
+  "L-metaqa/metaqa": {
+   "questions": 9785,
+   "golds": 72697,
+   "edges": 136029198,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 9785,
+     "golds": 72697,
+     "all_gold_in_pool": 0.9606,
+     "ceiling5": 0.8273,
+     "models": {
+      "rrf": {
+       "R@5": 0.0047,
+       "FC@5": 0.0026,
+       "hit@1": 0.0008,
+       "classes": {
+        "top5": 156,
+        "d1": 28,
+        "d2": 935,
+        "far": 412,
+        "no_anchor": 66983,
+        "out": 4183
+       },
+       "class_shares": {
+        "top5": 0.0021,
+        "d1": 0.0004,
+        "d2": 0.0129,
+        "far": 0.0057,
+        "no_anchor": 0.9214,
+        "out": 0.0575
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 0,
+        "f1 named-entity": 4,
+        "f2 kNN (KB relations)": 26
+       },
+       "missed_in_pool_rank": {
+        "6-10": 140,
+        "11-20": 235,
+        "21-50": 530,
+        "51-end": 67453
+       }
+      },
+      "zrckp": {
+       "R@5": 0.2494,
+       "FC@5": 0.2007,
+       "hit@1": 0.0069,
+       "classes": {
+        "top5": 4329,
+        "d1": 155,
+        "d2": 7244,
+        "far": 6316,
+        "no_anchor": 50470,
+        "out": 4183
+       },
+       "class_shares": {
+        "top5": 0.0595,
+        "d1": 0.0021,
+        "d2": 0.0996,
+        "far": 0.0869,
+        "no_anchor": 0.6943,
+        "out": 0.0575
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 5,
+        "f1 named-entity": 4,
+        "f2 kNN (KB relations)": 148
+       },
+       "missed_in_pool_rank": {
+        "6-10": 3298,
+        "11-20": 4084,
+        "21-50": 7910,
+        "51-end": 48893
+       }
+      },
+      "zspk": {
+       "R@5": 0.2128,
+       "FC@5": 0.1686,
+       "hit@1": 0.0088,
+       "classes": {
+        "top5": 3965,
+        "d1": 134,
+        "d2": 7045,
+        "far": 6694,
+        "no_anchor": 50676,
+        "out": 4183
+       },
+       "class_shares": {
+        "top5": 0.0545,
+        "d1": 0.0018,
+        "d2": 0.0969,
+        "far": 0.0921,
+        "no_anchor": 0.6971,
+        "out": 0.0575
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 1,
+        "f1 named-entity": 7,
+        "f2 kNN (KB relations)": 132
+       },
+       "missed_in_pool_rank": {
+        "6-10": 2380,
+        "11-20": 3189,
+        "21-50": 6753,
+        "51-end": 52227
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 829,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 13,
+       "d2": 337,
+       "far": 34,
+       "no_anchor": 445,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 1193,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 18,
+       "d2": 256,
+       "far": 55,
+       "no_anchor": 864,
+       "out": 0
+      }
+     }
+    }
+   },
+   "split": "L-metaqa",
+   "in_domain": false
+  },
+  "L-metaqa/webqsp": {
+   "questions": 1503,
+   "golds": 10583,
+   "edges": 18968076,
+   "models": {},
+   "buckets": {
+    "all": {
+     "questions": 1503,
+     "golds": 10583,
+     "all_gold_in_pool": 0.841,
+     "ceiling5": 0.8342,
+     "models": {
+      "rrf": {
+       "R@5": 0.0535,
+       "FC@5": 0.0379,
+       "hit@1": 0.0459,
+       "classes": {
+        "top5": 186,
+        "d1": 115,
+        "d2": 883,
+        "far": 5,
+        "no_anchor": 6211,
+        "out": 3183
+       },
+       "class_shares": {
+        "top5": 0.0176,
+        "d1": 0.0109,
+        "d2": 0.0834,
+        "far": 0.0005,
+        "no_anchor": 0.5869,
+        "out": 0.3008
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 72,
+        "f1 named-entity": 0,
+        "f2 kNN (KB relations)": 45
+       },
+       "missed_in_pool_rank": {
+        "6-10": 80,
+        "11-20": 144,
+        "21-50": 343,
+        "51-end": 6647
+       }
+      },
+      "zrckp": {
+       "R@5": 0.1139,
+       "FC@5": 0.0912,
+       "hit@1": 0.0645,
+       "classes": {
+        "top5": 312,
+        "d1": 198,
+        "d2": 1089,
+        "far": 2,
+        "no_anchor": 5799,
+        "out": 3183
+       },
+       "class_shares": {
+        "top5": 0.0295,
+        "d1": 0.0187,
+        "d2": 0.1029,
+        "far": 0.0002,
+        "no_anchor": 0.548,
+        "out": 0.3008
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 139,
+        "f1 named-entity": 0,
+        "f2 kNN (KB relations)": 65
+       },
+       "missed_in_pool_rank": {
+        "6-10": 209,
+        "11-20": 352,
+        "21-50": 800,
+        "51-end": 5727
+       }
+      },
+      "zspk": {
+       "R@5": 0.1162,
+       "FC@5": 0.0925,
+       "hit@1": 0.0719,
+       "classes": {
+        "top5": 319,
+        "d1": 118,
+        "d2": 1136,
+        "far": 3,
+        "no_anchor": 5824,
+        "out": 3183
+       },
+       "class_shares": {
+        "top5": 0.0301,
+        "d1": 0.0111,
+        "d2": 0.1073,
+        "far": 0.0003,
+        "no_anchor": 0.5503,
+        "out": 0.3008
+       },
+       "d1_by_family": {
+        "f0 structural (KB relations)": 63,
+        "f1 named-entity": 0,
+        "f2 kNN (KB relations)": 59
+       },
+       "missed_in_pool_rank": {
+        "6-10": 188,
+        "11-20": 328,
+        "21-50": 699,
+        "51-end": 5866
+       }
+      }
+     },
+     "found_by_zspk_not_zrckp": {
+      "golds": 51,
+      "zrckp_class": {
+       "top5": 0,
+       "d1": 10,
+       "d2": 7,
+       "far": 0,
+       "no_anchor": 34,
+       "out": 0
+      }
+     },
+     "found_by_zrckp_not_zspk": {
+      "golds": 44,
+      "zspk_class": {
+       "top5": 0,
+       "d1": 7,
+       "d2": 6,
+       "far": 0,
+       "no_anchor": 31,
+       "out": 0
+      }
+     }
+    }
+   },
+   "split": "L-metaqa",
+   "in_domain": false
+  }
+ },
+ "script_sha256": "7c5927b337a8d5e9a6c7064e91dd6a1f2c3cc3fb36b742123df9cb1cd943de08",
+ "musique_fit_hop_mix": {
+  "2-hop": 0.7211,
+  "3-hop": 0.22,
+  "4-hop": 0.0589,
+  "questions": 4601
+ },
+ "seconds": 194.8,
+ "utc": "2026-10-15T09:32:41Z"
+}

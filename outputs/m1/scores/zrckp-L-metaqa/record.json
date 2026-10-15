@@ -1,0 +1,56 @@
+{
+ "declared_in": "docs/M1_MUSIQUE_HOPS.md",
+ "arm": "zrckp",
+ "split": "L-metaqa",
+ "fit": "outputs/full_zrckp/fits/L-metaqa",
+ "candidate": "p@swa",
+ "models_sha256": "e9725c78f2fc19daf9a1cfd2a22f28ba57456b3ce15de550707ac672dec4cc78",
+ "flags": {
+  "deterministic_algorithms": true,
+  "tf32": false,
+  "matmul_precision": "highest",
+  "device": "cpu",
+  "cuda_device": null,
+  "torch": "2.8.0+cpu",
+  "numpy": "2.3.2",
+  "cublas_workspace": ":4096:8",
+  "torch_threads": 4
+ },
+ "placement": {
+  "where": "host",
+  "node": "host",
+  "mirror_root": "<host mirror>/CRAG",
+  "amendment": "amendment_2_2026_09_30_host_placement"
+ },
+ "threads": 4,
+ "datasets": {
+  "metaqa": {
+   "questions": 9785,
+   "rows": 19742463,
+   "check": {
+    "agree": 1.0,
+    "r5_cpu": 0.24942,
+    "r5_filed": 0.24942
+   },
+   "file_sha256": "fccb3d8739afc625e4da28c6873ca301f326aa25ad80e0efcade6be0230cd3f3",
+   "edges": null,
+   "seconds": 192.8
+  },
+  "webqsp": {
+   "questions": 1503,
+   "rows": 3186165,
+   "check": {
+    "agree": 1.0,
+    "r5_cpu": 0.1139,
+    "r5_filed": 0.1139
+   },
+   "file_sha256": "5ee153b286c91cdcbe09459d78822a4fdd85b3bb10527db1053892c99d00cd84",
+   "edges": null,
+   "seconds": 46.4
+  }
+ },
+ "limit": 0,
+ "seconds": 243.5,
+ "script_sha256": "7c5927b337a8d5e9a6c7064e91dd6a1f2c3cc3fb36b742123df9cb1cd943de08",
+ "utc": "2026-10-15T09:25:54Z"
+}
