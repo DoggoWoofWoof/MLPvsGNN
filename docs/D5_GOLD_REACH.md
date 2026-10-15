@@ -153,3 +153,42 @@ written. Nothing is chosen from them.
 the script had no `--host` switch to P1e's mirror mode (the one P1f's stats and P1c3's features use). The switch
 was added (`run DATASET --host` calls `p1e_anchor_kind.G.on_the_mirror()` first) and the items re-queued as
 `d5b-*-r2`. Nothing measured changed; the selftest passes.
+
+### D5b results
+
+Filed 15 October about 21:10 (`outputs/d5/orders_*.json`). It ran on the host, one item per dataset (6 to 76
+minutes). On every dataset, `check` found D5b's hops, today flags, N1 sizes and both ranks equal to D5's filed arrays.
+
+**Today ∪ N1's first k** under each order (ALL; s1sel, webqsp's s1eval beside):
+
+| carve | today | weight, k = 50 / 1,000 / 7,000 | cos, k = 50 / 1,000 / 7,000 | res, k = 50 / 1,000 / 7,000 |
+| --- | ---: | --- | --- | --- |
+| metaqa | 0.952 | 0.953 / 0.954 / 0.954 | 0.952 / 0.954 / 0.954 | 0.953 / 0.954 / 0.954 |
+| squad | 0.979 | 0.982 / 0.989 / 0.992 | 0.989 / 0.992 / 0.992 | 0.983 / 0.991 / 0.992 |
+| musique | 0.885 | 0.885 / 0.894 / 0.940 | 0.885 / 0.913 / 0.945 | 0.885 / 0.913 / 0.943 |
+| hotpotqa | 0.956 | 0.968 / 0.990 / 0.991 | 0.960 / 0.991 / 0.991 | 0.967 / 0.989 / 0.991 |
+| 2wiki | 0.953 | 0.956 / 0.968 / 0.969 | 0.953 / 0.965 / 0.969 | 0.954 / 0.963 / 0.969 |
+| webqsp (beside) | 0.841 | 0.865 / 0.903 / 0.928 | 0.841 / 0.868 / 0.928 | 0.854 / 0.901 / 0.928 |
+
+**The best beam** (today ∪ the beam; the beam alone with B, ALL / rows, in brackets):
+
+| carve | best beam | today ∪ beam | B ∪ beam |
+| --- | --- | ---: | --- |
+| metaqa | res, P 50, m 5, two steps | 0.957 | 0.548 / 1,155 |
+| squad | res, P 50, m 5, two steps | 0.993 | 0.993 / 409 |
+| musique | res, P 200, m 10, one step | 0.906 | 0.748 / 1,260 |
+| hotpotqa | res, P 50, m 5, two steps | 0.981 | 0.931 / 855 |
+| 2wiki | cos, P 50, m 10, one step | 0.962 | 0.774 / 453 |
+| webqsp (beside) | res, P 50, m 5, two steps | 0.883 | 0.664 / 742 |
+
+**What it says:**
+- **The question's own words do not find musique's missed golds early.** cos and res beat weight at 1,000 (0.913
+  against 0.894), but all three need thousands of rows to pass 0.94. No beam lifts today's 0.885 above 0.906. The
+  golds today misses are rarely in either first-stage list (dense 3.7% and splade 5.7% within the top 1,000).
+- **On squad, cos is the better order** (0.989 at 50 more rows against weight's 0.982). Its missed golds are in the
+  dense list (87%).
+- **hotpotqa and 2wiki are already over 0.95.** Weight stays the cheapest order there. 2wiki's one-link ceiling is
+  0.969, so its other misses are two or more links out.
+- **metaqa's misses are three links out.** No N1 order moves it (0.954 at most), and two-step beams add 0.005.
+- **For P1g:** musique decides. Only KIND_T's longer fill (its 7,000 ceiling is 0.950) or the largest N1 cuts can
+  reach 0.95 there, and either is applied to every dataset.
