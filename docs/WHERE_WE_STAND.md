@@ -1,4 +1,4 @@
-# Where we stand, 14 October 2026 (21:30)
+# Where we stand, 15 October 2026 (20:30)
 
 This page is the place to start. It says what the project claims, what the numbers say today, and what is running.
 Each stage's own document stays the record, and every number here is copied from one. To learn the project from
@@ -608,9 +608,30 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   one link from the seeds, where H2's cosine orders them best and g's rank is noise.
 - **The learned offsets close,** and P5c does not start.
 
-## 7. Running now (14 October, 21:30)
+## 7. Running now (15 October, 20:30)
 
-- **Nothing of ours is running.** The next stage is declared in its own file before it runs (What is next).
+- **The user's target (15 October): pools with ALL ≥ 0.95 on every dataset, coverage first, then the fewest rows.**
+  Today's s1sel pools (ALL / mean rows): metaqa 0.952 / 2,022, squad 0.979 / 50, musique **0.885** / 2,094, hotpotqa
+  0.956 / 94, 2wiki 0.953 / 105; webqsp's s1eval (beside, its golds never design a rule) **0.841** / 2,120.
+- **D5b** ([D5_GOLD_REACH.md](D5_GOLD_REACH.md) section 6) on the host: three more orders of the base's one-link
+  neighbours (the question's cosine, its RRF with the first-stage weight, the best parent's residual) and per-parent
+  beams. metaqa, squad and musique are fetched and equal D5's arrays; hotpotqa, 2wiki and webqsp are running. On
+  musique the beams lift today's 0.885 to at most 0.906, today plus N1's first 7,000 by cosine gives 0.945, and
+  KIND_T's own 7,000 nodes give 0.950.
+- **P1g** ([P1G_POOL_BEAM.md](P1G_POOL_BEAM.md)) on the host: one universal rule chosen on s1sel. A pool is today's,
+  with its KIND_T fill cut to 0.25 to 4 times today's length, plus nothing, a per-parent beam or a cut of the base's
+  one-link neighbours (805 candidates). The cheapest candidate meeting min(0.95, ceiling − 0.005) on all five training
+  datasets wins. ETA: about an hour (webqsp's carve the longest).
+- **Filed on 15 October:**
+  - **G2 NOT_ADOPTED** ([G2_HIDDEN_STATE_GNN.md](G2_HIDDEN_STATE_GNN.md)): three gated hidden-state message-passing
+    layers on zspk add nothing once training luck is counted (0 GAIN, 0 LOSS of 12).
+  - **M1 RUN** (059d090): musique's missed golds sit one link from found ones, and zspk lifts them no more than the MLP.
+  - **P1f NONE_MEETS** ([P1F_POOL_SIZE_RULE.md](P1F_POOL_SIZE_RULE.md)): no size rule over KIND_T keeps today's rows
+    and every dataset's floor; metaqa and musique bind.
+  - **The B1 re-call STANDS** (b19edb5): all 60 adoption decisions reproduce exactly without B1's 3,000 questions.
+  - **D5 RUN** ([D5_GOLD_REACH.md](D5_GOLD_REACH.md)): musique's missed golds are close but buried (99.5% of
+    questions have every gold within two links, but a missed one-link gold ranks about 2,350th of 6,456 neighbours by
+    first-stage weight); metaqa's are its 3-hop answers.
 - **Done since the last update:**
   - P1c3p's full run filed (section 5): ADOPT. The lean pair is (zrckp, zspk).
   - P4c filed (section 3): TIMED, after a re-time with the session idle.
@@ -626,7 +647,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
 | What message passing buys | GNN>MLP is golds one link from a found gold on hotpotqa and 2wiki (P3b): lean 0.009-0.016 of R@5, universal 0.034-0.051 | P5b and P5b2 STOP: the learned offset g(question, seed, graph features) finds more of these golds on 2wiki, metaqa and hotpotqa, golds no fit question had among them, but fewer on musique (near chance, with or without a held-out stop) and mixed on webqsp zero-shot (section 6). P5a's fixed map STOPS. P5b3's per-question back-off between H2 and g STOPS too: more on four datasets, still fewer on musique (0.005 to 0.011). The learned offsets close. |
 | Golds the final pool adds | P1c2: about two thirds reach the top five on metaqa, and 2wiki's R@5 rises twice the pools' recall gain; on musique and webqsp little or none does (zsp −0.017 on webqsp zero-shot) | P1c3's walk positions as an input, adopted for the lean pair (zrckp, zspk): webqsp zero-shot rises on all six splits (+0.014 to +0.066 for zrckp), metaqa +0.108 held out, 2wiki +0.060 to +0.064 everywhere. Still open: musique's held-out read (−0.011, WITHIN; FC@5 −0.026) and hotpotqa's hit@1 (−0.002 to −0.034 on all six splits). |
 | musique ranking | 66.3 vs HippoRAG 2's 74.7; the pools hold 98.2% of golds; 752 of 990 misses are on three- and four-hop questions. On the full corpus (P3b): ranked out 0.23-0.28 of R@5, one link from a found gold 0.11-0.13, outside the pool 0.079 (0.198 on 4-hop). | D4 (link words): NO_SIGNAL. P2c part 1: on B1 musique our LLM-free graph adds more than the LLM-built graphs, so the LLM graph is not what our walks lack. |
-| B1's questions inside s1eval | 1,000 each of musique's 2,417, hotpotqa's 7,405 and 2wiki's 12,576 s1eval questions are B1's (found 14 October). No fit trained on them, but every screen and full run read them when it decided, as did earlier gates on the whole dev splits; the claims doc's even/odd split was never applied. | Proposed: re-call every adoption decision behind the reported models without B1's ids, and leave them out of the confirmation run's held-out questions. Until then the B1 numbers carry this caveat. |
+| B1's questions inside s1eval | 1,000 each of musique's 2,417, hotpotqa's 7,405 and 2wiki's 12,576 s1eval questions are B1's (found 14 October). No fit trained on them, but every screen and full run read them when it decided, as did earlier gates on the whole dev splits; the claims doc's even/odd split was never applied. | **Re-called 15 October (b19edb5): STANDS.** All 60 adoption decisions reproduce exactly without B1's 3,000 questions, and none of the 17 lineage verdicts changes. B1's ids stay out of the confirmation run's held-out questions. |
 | Hyperlink-free hotpotqa | 95.0 vs 96.3 | U1c and U1f NOT_ADOPTED: retraining on the universal graph costs hotpotqa 0.035-0.065 R@5. Open. |
 | Link precision | Hyperlink F1 0.40 (2wiki), 0.47 (hotpotqa) | A universal rule; one file per change. |
 | Pool misses | One hop on the KBs and musique; first stage on hotpotqa and squad | Step 4h covers the one-hop misses; the first-stage misses are open. |
@@ -693,6 +714,12 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   zrck serves no claim. P1c3p's pointwise head (zrckp) passed its screen with 7 GAINs and no LOSS. Its full run is
   ADOPT (no LOSS in 36 reads), so the lean pair is (zrckp, zspk). P4c timed the input's serving cost: 4-7 ms per
   question where KIND_T already walks, 22-39 ms where it does not.
+
+- **15 October: deeper message passing, and where the pools lose golds.** G2 gave zspk three gated layers that
+  pass hidden states: NOT_ADOPTED, no read moves beyond training luck. M1 and D5 found why the models' misses resist:
+  on musique the missing golds are one or two links from the base but buried among thousands of neighbours, and in
+  neither first-stage list. P1f found no size rule that keeps today's rows. The B1 re-call stands. D5b measures
+  neighbour orders that read the parent passage, for one rule that lifts every dataset's ALL to 0.95 (P1g).
 
 ## What is next
 
