@@ -156,9 +156,12 @@ def describe(d, q, recs, texts, pools, rule):
     node = d["node"][sl].astype(np.int64)
     gold = np.flatnonzero(d["gold"][sl])
     pi = pools["index"][qid]
-    pnodes = pools["nodes"][pools["ptr"][pi]:pools["ptr"][pi + 1]]
+    fill = pools["nodes"][pools["ptr"][pi]:pools["ptr"][pi + 1]]          # KIND_T's first B_q nodes outside bs
+    bsn = pools["bs_nodes"][pools["bs_ptr"][pi]:pools["bs_ptr"][pi + 1]]  # base and seeds, kept apart in the file
     bs = int(pools["bs_size"][pi])
-    where = {int(x): k for k, x in enumerate(pnodes)}
+    if bsn.size != bs or bsn.size + fill.size != n:
+        raise SystemExit(f"story: question {qid}'s pool file holds {bsn.size} + {fill.size} nodes, the read {n} rows")
+    where = {**{int(x): f"KIND_T fill {k + 1}" for k, x in enumerate(fill)}, **{int(x): "base or seed" for x in bsn}}
     show = sorted(set(np.argsort(d["rank"]["zrckp"][sl])[:SHOW].tolist()) | set(np.argsort(d["rank"]["zspk"][sl])[:SHOW]
                                                                                  .tolist()) | set(gold.tolist()))
     title = dict(zip(rec["context_node_ids"], rec["context_titles"]))
@@ -166,9 +169,11 @@ def describe(d, q, recs, texts, pools, rule):
     def row_of(r):
         nid, txt = texts[int(node[r])]
         k = where.get(int(node[r]))
+        if k is None:
+            raise SystemExit(f"story: row {r} of question {qid} is in neither part of the pool file")
         return {"row": int(r), "node": nid, "title": title.get(nid), "text": short(txt),
                 "gold": bool(d["gold"][off + r]),
-                "pool": None if k is None else ("base or seed" if k < bs else f"KIND_T fill {k - bs + 1}"),
+                "pool": k,
                 "rrf_z": round(float(d["rrf"][off + r]), 4),
                 **{m: {"score": round(float(d["s"][m][off + r]), 4), "rank": int(d["rank"][m][off + r])}
                    for m in ("zrckp", "zspk")}}
@@ -198,7 +203,7 @@ def load(host):
     d["s"] = {m: z[m]["s"] for m in z}
     d["rank"] = {m: ranks(d["s"][m], d["n"]) for m in z}
     p = np.load(POOLS)
-    pools = {k: p[k] for k in ("ids", "ptr", "nodes", "bs_size", "inc_size", "entity", "route")}
+    pools = {k: p[k] for k in ("ids", "ptr", "nodes", "bs_ptr", "bs_nodes", "bs_size", "inc_size", "entity", "route")}
     pools["index"] = {str(x): i for i, x in enumerate(pools["ids"])}
     return d, pools
 
@@ -293,6 +298,24 @@ def selftest():
     d["v"] = np.array([2, 9])                                  # the golds of q0 no longer linked
     assert pick(d, "A") == (None, 0)
     assert short("a b c", 2) == "a b ..." and short("a b", 2) == "a b"
+    # the pools file keeps base and seeds apart (bs_nodes) from KIND_T's fill (nodes); a row is labelled from both
+    d = {"n": np.array([4]), "ids": np.array(["q"]), "node": np.array([30, 10, 20, 11]), "gold": np.array([0, 1, 0, 0]),
+         "rrf": np.zeros(4), "u": np.array([0]), "v": np.array([1]), "f": np.array([2]),
+         "s": {"zrckp": np.arange(4.0), "zspk": np.arange(4.0)}}
+    d["rank"] = {m: ranks(d["s"][m], d["n"]) for m in d["s"]}
+    pools = {"index": {"q": 0}, "ptr": np.array([0, 2]), "nodes": np.array([20, 30]), "bs_ptr": np.array([0, 2]),
+             "bs_nodes": np.array([10, 11]), "bs_size": np.array([2]), "inc_size": np.array([4]),
+             "entity": np.array([False]), "route": np.array([False])}
+    recs = {"q": {"question": "?", "context_node_ids": [], "context_titles": []}}
+    texts = {x: (f"n{x}", "t") for x in (10, 11, 20, 30)}
+    got = {r["row"]: r["pool"] for r in describe(d, 0, recs, texts, pools, "A")["rows"]}
+    assert got == {0: "KIND_T fill 2", 1: "base or seed", 2: "KIND_T fill 1", 3: "base or seed"}, got
+    pools["bs_nodes"] = np.array([10, 12])                     # a row in neither part stops the script
+    try:
+        describe(d, 0, recs, texts, pools, "A")
+        raise AssertionError("a row outside the pool file passed")
+    except SystemExit:
+        pass
     print("story_example selftest: ok", flush=True)
     return 0
 
