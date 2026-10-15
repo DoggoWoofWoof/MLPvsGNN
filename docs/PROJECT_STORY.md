@@ -8,7 +8,7 @@ detail. All numbers are development numbers: the paper's come from one confirmat
 The same work, date by date, is in [PROJECT_TIMELINE.md](PROJECT_TIMELINE.md). The latest numbers are in
 [WHERE_WE_STAND.md](WHERE_WE_STAND.md).
 
-**Parts:** 1 the problem · 2 the building blocks · 3 what we set out to show · 4 how we decide · 5 pools · 6 links ·
+**Parts:** 1 the problem · 2 the building blocks (2.9 runs them on one real question) · 3 what we set out to show · 4 how we decide · 5 pools · 6 links ·
 7 models · 8 generalization · 9 speed · 10 where we stand · 11 glossary.
 
 ## 1. The problem, in one example
@@ -309,6 +309,132 @@ propagation step does not fit the golds any better. That is the case for G2
 broken by pool position) give R@5, FC@5 and hit@1 per question. A fit's reads are saved once (`reads/{ds}__s1eval.npz`)
 and every comparison, re-call and bootstrap afterwards works from those files, which is how the B1 re-call (section
 4.8) could replay every decision without running a model.
+
+### 2.9 One question, end to end
+
+This section runs sections 2.2 to 2.8 on one real question from 2wiki's evaluation questions (s1eval), with the lean
+pair's J5 fits. Everything below is **real**, from `outputs/story/example_2wiki.md` (made by
+`scripts/story_example.py`, which reads the saved pools, features and reads; it decides nothing).
+
+**How the questions were picked.** By a fixed rule, not by hand: the first s1eval question (in s1eval's order) where
+- **A:** zspk's top five holds both golds and zrckp's holds one, with the two golds linked;
+- **B:** the reverse;
+- **C:** both models hold both golds.
+
+On 2wiki's s1eval, A happens on 198 questions, B on 94 and C on 8,564.
+
+#### The question (A)
+
+*"What is the date of death of Conan II, Duke of Brittany's mother?"* Answer: 1080. Two golds: the passage on
+**Conan II** (it names his mother) and the passage on **Bertha of Blois** (it gives her date of death). This is a
+two-hop question: the words point at Conan II, and the answer sits one step further on.
+
+#### Step 1: the first stage (2.2)
+
+| passage | dense rank | SPLADE rank | RRF |
+| --- | ---: | ---: | ---: |
+| Conan II, Duke of Brittany (gold) | 1 | 1 | 2/61 = 0.0328 |
+| Hawise of Rennes | 8 | 8 | 2/68 = 0.0294 |
+| Bertha of Blois (gold) | about 256 | about 118 | 0.0088 |
+
+The search finds Conan II at once. It barely finds his mother: she is about 256th by meaning and 118th by words,
+because the question never says her name. On RRF alone she would sit far below the top five.
+
+#### Step 2: the pool (2.6, 5.4)
+
+- **Base and seeds:** 50 rows here: RRF's top 50, with the seeds (the dense and SPLADE top fives) among them. Bertha
+  is not one of them.
+- **KIND_T's fill** adds 23 nodes, bringing the pool to this question's size, 73 rows. **Bertha is the fill's first
+  node.** She is 19th in KIND_T's whole order (place 18), and the first 18 places are all base or seeds.
+- **Where she sits:** one structural link (on 2wiki, a Wikipedia hyperlink) from Conan II, the top seed, and one from
+  Hawise, the second row. A walk from the seeds reaches such a node early.
+
+The pool holds 748 links among its 73 rows. Bertha has 10 of them.
+
+So the pool has done its job: both golds are in it. ALL = 1 for this question. Everything left is the rerankers'.
+
+#### Step 3: each row's features (2.7, 2.8)
+
+Every row gets the same blocks. Three rows side by side:
+
+| block | what it says | Conan II (gold, seed) | Hawise (base) | Bertha (gold, fill) |
+| --- | --- | ---: | ---: | ---: |
+| rank | the two lists' ranks as 1/rank, RRF, whether both lists have it, is it a seed | 1, 1, 0.0328, 1, seed | 1/8, 1/8, 0.0294, 1, no | 1/256, 1/118, 0.0088, 1, no |
+| dense_cos | how close its meaning is to the question's | 0.746 | 0.624 | 0.486 |
+| SEED | how close its stored projection is to the seeds': the mean and the best | 0.610, 0.731 | 0.573, 0.656 | 0.519, 0.608 |
+| KT: KIND_T place | where KIND_T's order puts it (scaled; 7.4) | 0 (place 0) | 0.124 (place 2) | 0.333 (place 18) |
+| KT: steered walk, structural links | where P1e's steered walk puts it | 0 | 0.124 (place 2) | 0.202 (place 5) |
+| KT: fill flag | 1 if the fill added it | 0 | 0 | 1 |
+| rrf z | its RRF, z-scored in this pool | +1.815 | +1.370 | −1.359 |
+
+The other blocks are numbers the models read but that are hard to show one at a time:
+- **topo_STRUCT** (11 numbers): the shape of the pool's structural graph around the row.
+- **depth_STRUCT** (18): how the seeds reach it over several hops.
+- **WALK** and **WALKF** (16 and 18): two sets of walk counts from the seeds.
+- **DISTS** (14): its distances from the seeds.
+- **SEMB** (64, learned, section 2.8): the question's embedding and the row's projection, each through a learned
+  matrix, multiplied entry by entry.
+
+*How much each block matters (real, F1, section 9.5):* shuffle one block across rows and see how far R@5 falls. For zrc,
+the largest falls are dense_cos 0.273, SEMB 0.114, SEED 0.067, WALK 0.065, DISTS 0.035, WALKF 0.029, topo_STRUCT 0.016
+and depth_STRUCT 0.007. The first-stage ranks matter most of all (0.538). Every block is used by both models.
+
+Read Bertha's row the way a model must. Her meaning is far from the question's (0.486, against Conan II's 0.746), and
+her RRF is well below the pool's average (z −1.36). Only the graph columns speak for her: the fill added her first, and
+the steered walk puts her 6th.
+
+#### Step 4: the two scores (2.7)
+
+Both models start from RRF (score = a learned weight × rrf z + the network's correction) and learn only the
+correction.
+
+| row | gold | rrf z | zrckp (MLP) score, rank | zspk (GNN) score, rank |
+| --- | --- | ---: | ---: | ---: |
+| Conan II, Duke of Brittany | yes | +1.815 | +1.301, **1** | +0.963, **1** |
+| Hawise of Rennes | | +1.370 | +0.277, 2 | +0.326, 2 |
+| Breton–Norman War | | +1.129 | −0.589, 3 | −0.711, 4 |
+| Conan IV | | +1.746 | −0.723, 4 | −2.160, 7 |
+| Alan III of Rennes (fill 3) | | −1.682 | −0.759, 5 | −0.535, 3 |
+| Bertha of Blois (fill 1) | yes | −1.359 | −1.331, 6 | −1.047, **5** |
+| Conan III | | +1.613 | −1.423, 7 | −1.845, 6 |
+
+- **zspk** (GNN): top five = Conan II, Hawise, Alan III, the war, Bertha. Both golds: R@5 1, FC@5 1, hit@1 1.
+- **zrckp** (MLP): Bertha is 6th, one place out. R@5 0.5, FC@5 0, hit@1 1.
+
+Both models did most of the work. Bertha came in at RRF z −1.36, below about half the pool's rows, and both lifted her
+to 5th or 6th. The GNN's extra step put her inside the five. Its propagation head reads, per link family, the mean
+and soft maximum of the linked rows' scores, and Bertha's structural neighbours include the pool's two top rows: the
+likely reason she rose further. The MLP saw only what was fixed before scoring: the fill added her first, and the
+walks like her. Here that was one place short.
+
+#### The reverse (B), and why it can go either way
+
+*"Who is the mother of Olaf (II) Haraldsen?"* Answer: Ragnild Magnusdotter. Golds: Olaf (II) Haraldsen and
+**Harald Kesja**. Harald Kesja is again the fill's first node (pool 119 rows).
+
+| row | gold | rrf z | zrckp rank | zspk rank |
+| --- | --- | ---: | ---: | ---: |
+| Olaf (II) Haraldsen | yes | +1.988 | 1 | 1 |
+| Olaf II Haakonsson (another Olaf, a 14th-century king) | | +1.897 | 2 | 2 |
+| Margaret I (fill 23) | | −1.261 | 10 | **5** |
+| Haakon VI of Norway (fill 2) | | −0.863 | 6 | **6** |
+| Harald Kesja (fill 1) | yes | −0.697 | **5** | 7 |
+
+This time message passing hurt. Margaret I and Haakon VI are both structurally linked to the *other* Olaf, who
+scores high because his name matches the question. The GNN let them borrow his strength, and they pushed Harald Kesja
+out of the five. A strong neighbour lifts the right row in A and the wrong rows in B.
+
+On 2wiki's 12,576 s1eval questions, A happens 198 times and B 94 times: the GNN comes out ahead by 104 questions on
+this pattern. That is what the R@5 gap between the two models is made of, question by question: small, and in both
+directions. On 2wiki, Claim 1 holds (P3c): the MLP keeps 0.986 of the GNN's R@5 gain over RRF, 95% interval
+[0.981, 0.991].
+
+**C**, the common case (8,564 questions), looks like this: *"Who is the mother of the director of film
+Polish-Russian War?"* Both golds (the film and its director, Xawery Żuławski) are base or seed rows. Both models put
+them first and second.
+
+**To run it again:** `python scripts/story_example.py run --host` (script sha 456b174f). It reads the saved pools,
+features and J5 reads, and checks every row it prints against the cache.
 
 ## 3. What we set out to show: three claims
 

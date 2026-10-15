@@ -1,7 +1,7 @@
 # G2: the lean GNN passes hidden states, not scores
 
 Declared 15 October 2026, before any G2 number exists. Stage 1 of docs/PROGRAM_2026_10_15.md. Code:
-`outputs/mp_unified/zg2.py`. Status: declared; results in section 7.
+`outputs/mp_unified/zg2.py`. Status: **NOT_ADOPTED** (filed 15 October, section 7).
 
 ## 1. Why
 
@@ -107,4 +107,48 @@ screened there and then run in full (36 reads).
 
 ## 7. Results
 
-Not run yet.
+**Filed 15 October 2026, 19:19 IST: NOT_ADOPTED.** Records: `outputs/g2/screen-verdict.{json,md}`,
+`outputs/screen/scr-g2-zg2-pair-recall.{json,md}`, `outputs/screen/scr-g2-zg2{,-hp}.{json,md}`.
+
+**zg2 against zspk, after the seed-null re-call: 0 GAIN, 0 LOSS of twelve reads.** R@5, p@swa:
+
+| split | dataset | read | zspk | zg2 | delta [95% CI] | floor | re-call |
+| --- | --- | --- | ---: | ---: | --- | ---: | --- |
+| L-musique | metaqa | in-domain | 0.8009 | 0.8027 | +0.0018 [+0.0009, +0.0028] | 0.0075 | WITHIN |
+| L-musique | squad | in-domain | 0.9114 | 0.9106 | −0.0008 [−0.0028, +0.0009] | 0.0075 | WITHIN |
+| L-musique | musique | zero-shot | 0.5012 | 0.5110 | +0.0099 [+0.0046, +0.0153] | 0.0720 | WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9080 | 0.9099 | +0.0018 [−0.0003, +0.0039] | 0.0075 | WITHIN |
+| L-musique | 2wiki | in-domain | 0.9383 | 0.9348 | −0.0035 [−0.0048, −0.0021] | 0.0075 | WITHIN |
+| L-musique | webqsp | zero-shot | 0.3229 | 0.3188 | −0.0040 [−0.0128, +0.0046] | 0.0102 | WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | 0.8033 | −0.0007 [−0.0016, +0.0002] | 0.0149 | WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9135 | 0.9141 | +0.0006 [−0.0013, +0.0024] | 0.0075 | WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5754 | 0.5792 | +0.0038 [−0.0010, +0.0088] | 0.0075 | WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8499 | 0.8499 | +0.0000 [−0.0027, +0.0027] | 0.0200 | WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9333 | 0.9313 | −0.0020 [−0.0035, −0.0005] | 0.0075 | WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2680 | 0.2890 | +0.0210 [+0.0110, +0.0309] | 0.0233 | WITHIN (filed GAIN) |
+
+The two filed GAINs (musique zero-shot, webqsp zero-shot from hotpotqa) fall under the seed null's floors: on those
+reads, retraining zspk with another seed moves R@5 as much.
+
+**Beside, deciding nothing** (`outputs/g2/screen-verdict.md`):
+- **The twin (zg2t, the same stack with no edges) against zspk:** 0 GAIN, 1 LOSS (L-musique, webqsp zero-shot).
+- **zg2 minus zg2t (what the stack's message passing adds):** one GAIN (L-musique webqsp zero-shot, +0.0131
+  [+0.0048, +0.0214]), two LOSSes (L-musique musique zero-shot −0.0141, L-hotpotqa 2wiki −0.0078), nine WITHIN. These
+  are against the 0.0075 floor without the null.
+
+**What it means** (section 5's third case). Three layers of state-passing message passing (121,418 more weights,
+gated per family, the boundary at every layer, bounded and with family dropout) add nothing over zspk's one
+propagation step on any read once training luck is counted. The stack's message passing against its own edge-free twin
+is mixed: it helps webqsp zero-shot from musique and hurts musique zero-shot and 2wiki in-domain. On today's pools and
+features, the GNN's ceiling is not the shape of its message passing. M1 (059d090) and D5 (ad09d33) point the same way:
+the golds the models miss either sit outside the pool or one link from a found gold, and neither GNN lifts those more
+than the MLP. So the next lever is the pool (P1g), not a deeper GNN. G2r and E1, which were to build on G2's gates,
+wait for P1g's pools.
+
+**Deviation, disclosed.** zg2's two reads ran out of card memory three times each at the default batch (262,144 rows).
+They were run again with `--rows-cap 65536`: the same p@swa weights scoring whole questions in smaller batches (a
+question is never split; the cap is recorded in each read's `read.json`). The twin's reads ran at the default. The
+fits are unchanged.
+
+The re-call record's two host paths are cut to relative ones (nothing else changes). The verdict's `recall_sha256`
+(6de994c8…) is of the host's file.
