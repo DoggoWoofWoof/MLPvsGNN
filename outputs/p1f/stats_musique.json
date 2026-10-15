@@ -1,0 +1,63 @@
+{
+ "declared_in": "docs/P1F_POOL_SIZE_RULE.md",
+ "dataset": "musique",
+ "construction": "KIND_T",
+ "signals": [
+  "A1st",
+  "A1all",
+  "Kst",
+  "Kall",
+  "R0",
+  "max4"
+ ],
+ "taus": [
+  0.5,
+  0.8,
+  0.9,
+  0.95,
+  0.99
+ ],
+ "script_sha256": "fd409345fb482f42d1948281fb59b55376581059249c99d5dc3f47e732f6c780",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1e_part_sha256": "e4527a7d63c2b346c0ace81dd52f980601db64d29b9dab17bcbcc1505a43aff5",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "carves": {
+  "musique__s1sel": {
+   "questions": 1534,
+   "carve_sha256": "58c6bd197a6cac8052f3b8b36b64a1f934a26ea082a6cc0217a75c9933b52d90",
+   "file_sha256": "d7a1c61007e1009a528d5b685085576a3855f0281307ec449029c7f891a86a26",
+   "checks": {
+    "bs_unique": true,
+    "positions_equal_p1e": true
+   },
+   "today": {
+    "ALL": 0.8846,
+    "recall": 0.9576,
+    "rows": 2093.53,
+    "exhausted": 0.0
+   },
+   "seconds": 155.7,
+   "utc": "2026-10-15T09:43:12Z"
+  },
+  "musique__s1eval": {
+   "questions": 2417,
+   "carve_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+   "file_sha256": "37f88b0af1409a3dee9ec00f3e8d5b05fc3218d06e40813f46dc430f9cc38151",
+   "checks": {
+    "bs_unique": true,
+    "positions_equal_p1e": true,
+    "today_equals_p1c2": true
+   },
+   "today": {
+    "ALL": 0.8999,
+    "recall": 0.9628,
+    "rows": 2092.4435,
+    "exhausted": 0.0
+   },
+   "seconds": 242.6,
+   "utc": "2026-10-15T09:47:17Z"
+  }
+ },
+ "utc": "2026-10-15T09:47:17Z"
+}

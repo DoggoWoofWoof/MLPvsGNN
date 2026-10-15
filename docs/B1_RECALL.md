@@ -1,7 +1,7 @@
 # B1 re-call: every model decision, called again without B1's questions
 
 Declared 15 October 2026, before any re-called number exists. Stage 9 of docs/PROGRAM_2026_10_15.md. Code:
-`scripts/b1_recall.py`. Status: declared; results in section 6.
+`scripts/b1_recall.py`. Status: **STANDS** (section 6).
 
 ## 1. Why
 
@@ -87,4 +87,20 @@ pool choices made on s1eval are listed as open in section 6.
 
 ## 6. Results
 
-Not run yet.
+**`STANDS`** (`outputs/b1r/b1r.{json,md}`, filed 15 October about 15:47; host item `b1r-recall`, 15 minutes).
+
+- **Every decision reproduced.** All 60 filed decisions (17 lineage, 43 beside) give their filed record exactly when
+  replayed with every question: 1,176 reads, every difference, interval, floor, call and verdict. None was
+  NOT_REPRODUCED or NOT_REPLAYABLE, and no pair needed the fallback by name.
+- **No lineage verdict changes without B1.** All 17 keep their filed verdict, so the models we report (zrckp, zspk and
+  the bases under them) were not chosen because of B1's questions.
+- **Six lineage reads change their call, all on musique, all GAIN to WITHIN.** These are in scr-p1c3-zspk,
+  scr-p1c3p-zrckp, full_zrckp (two), full_zret and full_zspk. For example, full_zrckp's L-hotpotqa read of musique goes
+  from +0.0100 to +0.0080. B1 holds 1,000 of musique's 2,417 s1eval questions, so without them the intervals widen and
+  these small gains no longer clear zero. Each of those decisions keeps another GAIN, so no verdict moves.
+- **Beside, two screen verdicts change** (they cannot change this file's verdict): scr-zgs PROMISING to MIXED (its
+  L-hotpotqa musique read goes from WITHIN to LOSS, −0.0065 to −0.0096) and scr-zlk PROMISING to NO_GAIN (musique GAIN
+  to WITHIN). Neither is behind a reported model.
+
+**Still open:** the two pool choices made reading s1eval's pool coverage (step 4b's own-graph walk, step 4e's A3
+links) are outside this file. B1's questions should also stay out of the confirmation run's held-out questions.

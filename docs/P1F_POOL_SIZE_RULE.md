@@ -1,7 +1,7 @@
 # P1f: one pool-size rule for every dataset
 
 Declared 15 October 2026, before any P1f number exists. Stage 3 of docs/PROGRAM_2026_10_15.md ("a common rule for
-the dataset pools"). Code: `scripts/p1f_pool_size.py`. Status: declared; results in section 7.
+the dataset pools"). Code: `scripts/p1f_pool_size.py`. Status: **NONE_MEETS** (section 7).
 
 ## 1. Why
 
@@ -89,4 +89,57 @@ The verdicts:
 
 ## 7. Results
 
-Not run yet.
+**`NONE_MEETS`** (`outputs/p1f/verdict.{json,md}`, filed 15 October about 15:43). Of the 374 rules, none passes both
+the budget and the floor. Today's sizes stay, and the HIGH item stays open.
+
+**The checks passed on every carve:**
+- KIND_T's gold positions equal P1e's filed ones;
+- on s1eval, today's sizes reproduce P1c2's pool coverage.
+
+**The frontier on s1sel** (each family's best mean ALL within today's cost of 699.7 rows; cells are ALL, then the mean
+rows):
+
+| rule | metaqa | squad | musique | hotpotqa | 2wiki | mean ALL | cost |
+| --- | --- | --- | --- | --- | --- | ---: | ---: |
+| today | 0.9519 (2022) | 0.9793 (50) | 0.8846 (2094) | 0.9556 (94) | 0.9525 (105) | 0.9448 | 699.7 |
+| FIX(500) | 0.8497 (500) | 0.9953 (500) | 0.7679 (500) | 0.9894 (500) | 0.9773 (500) | 0.9159 | 500.0 |
+| KIND(1000,500) | 0.9125 (1000) | 0.9953 (500) | 0.7679 (500) | 0.9894 (500) | 0.9773 (500) | 0.9285 | 608.8 |
+| NUC(R0,0.9,0.5) | 0.8864 (686) | 0.9953 (537) | 0.7855 (593) | 0.9927 (624) | 0.9813 (661) | 0.9283 | 622.7 |
+| PPL(max4,1) | 0.8958 (756) | 0.9960 (640) | 0.7934 (622) | 0.9920 (573) | 0.9799 (604) | 0.9314 | 641.7 |
+
+**What binds: metaqa and musique.**
+- Today these two take about 2,000 rows a question, and squad, hotpotqa and 2wiki take 50 to 105.
+- Every family's best within the budget gains on squad, hotpotqa and 2wiki (+0.016 to +0.037 ALL), but loses on
+  metaqa (−0.039 to −0.102) and musique (−0.078 to −0.117).
+- The smallest worst-case shortfall within the budget is PPL(max4,1)'s: musique −0.091.
+- The signals do not tell a musique question that needs 2,000 rows from a hotpotqa or 2wiki question that needs 100.
+  All three are passage questions, and their walks' nucleus and perplexity overlap.
+
+**Beside, past the budget (not a choice).** 70 rules meet the floor at a higher cost. The cheapest is the simplest:
+**FIX(2000)**, one size for every question, at 2,000 rows (2.86 times today's cost). Against today it gives:
+
+| metaqa | squad | musique | hotpotqa | 2wiki |
+| ---: | ---: | ---: | ---: | ---: |
+| −0.0013 | +0.0187 | −0.0046 | +0.0398 | +0.0334 |
+
+FIX(1500) misses the floor on musique (−0.018) and metaqa (−0.013). On hotpotqa and 2wiki, FIX(2000) is about 20
+times today's rows.
+
+**s1eval, beside (never read by the choice):**
+
+| rule | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- |
+| today | 0.9606 (2018) | 0.9798 (50) | 0.8999 (2092) | 0.9594 (94) | 0.9587 (106) | 0.8410 (2120) |
+| FIX(500) | 0.8566 (500) | 0.9965 (500) | 0.8060 (500) | 0.9891 (500) | 0.9792 (500) | 0.7166 (500) |
+| KIND(1000,500) | 0.9187 (1000) | 0.9965 (500) | 0.8060 (500) | 0.9891 (500) | 0.9792 (500) | 0.7944 (983) |
+| NUC(R0,0.9,0.5) | 0.8898 (686) | 0.9965 (542) | 0.8188 (576) | 0.9896 (628) | 0.9816 (656) | 0.7332 (582) |
+| PPL(max4,1) | 0.8986 (756) | 0.9980 (642) | 0.8271 (610) | 0.9900 (568) | 0.9808 (596) | 0.7006 (446) |
+
+**What it means:**
+- **The order is one rule, but the size is not.** Today's per-dataset sizes stay, and so does the HIGH item: they
+  come from step 1's recipes, which were chosen on s1eval golds. Every claim that reads these pools says so.
+- **A common size exists only at about three times the rows.** FIX(2000) meets the floor everywhere. That costs
+  about 20 times the rows on hotpotqa and 2wiki, which touches Claim 3's latency there and gives the models 20 times
+  more wrong rows to rank. Whether to pay that is a separate stage (P1g), declared in its own file if taken, and
+  decided on the models, not on coverage.
+- **The pools stay final for the model stages:** G2, the ledger and T1 run on today's pools.

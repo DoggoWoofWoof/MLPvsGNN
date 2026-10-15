@@ -1,0 +1,63 @@
+{
+ "declared_in": "docs/P1F_POOL_SIZE_RULE.md",
+ "dataset": "2wiki",
+ "construction": "KIND_T",
+ "signals": [
+  "A1st",
+  "A1all",
+  "Kst",
+  "Kall",
+  "R0",
+  "max4"
+ ],
+ "taus": [
+  0.5,
+  0.8,
+  0.9,
+  0.95,
+  0.99
+ ],
+ "script_sha256": "fd409345fb482f42d1948281fb59b55376581059249c99d5dc3f47e732f6c780",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1e_part_sha256": "d803ef50cb122c09bd7bb2f0849cb9cb70ebf287bd052a7790b5db8654a00c32",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "carves": {
+  "2wiki__s1sel": {
+   "questions": 1496,
+   "carve_sha256": "4be833a5a3effc4e4046205a6ab2325297369fb489722f174fca8b5409ec4051",
+   "file_sha256": "fbab19a633ccfb861890b6d567c4bee6f7724974816be5968d89e931d3b51fc9",
+   "checks": {
+    "bs_unique": true,
+    "positions_equal_p1e": true
+   },
+   "today": {
+    "ALL": 0.9525,
+    "recall": 0.9798,
+    "rows": 105.113,
+    "exhausted": 0.0
+   },
+   "seconds": 227.5,
+   "utc": "2026-10-15T09:49:31Z"
+  },
+  "2wiki__s1eval": {
+   "questions": 12576,
+   "carve_sha256": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+   "file_sha256": "3e1974e24bec53e155b1eecbba8d3df5f8ebb874df7b8619b95e089093efbed5",
+   "checks": {
+    "bs_unique": true,
+    "positions_equal_p1e": true,
+    "today_equals_p1c2": true
+   },
+   "today": {
+    "ALL": 0.9587,
+    "recall": 0.9839,
+    "rows": 105.6548,
+    "exhausted": 0.0
+   },
+   "seconds": 1393.1,
+   "utc": "2026-10-15T10:12:47Z"
+  }
+ },
+ "utc": "2026-10-15T10:12:47Z"
+}

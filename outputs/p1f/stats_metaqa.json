@@ -1,0 +1,63 @@
+{
+ "declared_in": "docs/P1F_POOL_SIZE_RULE.md",
+ "dataset": "metaqa",
+ "construction": "KIND_T",
+ "signals": [
+  "A1st",
+  "A1all",
+  "Kst",
+  "Kall",
+  "R0",
+  "max4"
+ ],
+ "taus": [
+  0.5,
+  0.8,
+  0.9,
+  0.95,
+  0.99
+ ],
+ "script_sha256": "fd409345fb482f42d1948281fb59b55376581059249c99d5dc3f47e732f6c780",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1e_part_sha256": "0b6f47c866b59f25e0ac1971db1751160912e6dcf80e090f2526f048798fd294",
+ "p1d_script_sha256": "db0aff3bca081d7dc3d01c03c47299b16c9154013decb0112a2bf37861631281",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "carves": {
+  "metaqa__s1sel": {
+   "questions": 1497,
+   "carve_sha256": "dabbb4f9e8770db0fd373b7ffddbb63d481cba23971b386e684696167df0d780",
+   "file_sha256": "14cb1e369fb61312d3da4401afda77132aaab95451d64370caae2d84008c24cf",
+   "checks": {
+    "bs_unique": true,
+    "positions_equal_p1e": true
+   },
+   "today": {
+    "ALL": 0.9519,
+    "recall": 0.9844,
+    "rows": 2021.7014,
+    "exhausted": 0.0
+   },
+   "seconds": 119.5,
+   "utc": "2026-10-15T09:43:02Z"
+  },
+  "metaqa__s1eval": {
+   "questions": 9785,
+   "carve_sha256": "baf65d95e7b449f80ddd53541c4a43dff6ac1c584faab5b98977595b95f523fe",
+   "file_sha256": "a4d67fa1f66059e18cbfb995a7aeee4ed28f78079d7648db05b164493c6feeb1",
+   "checks": {
+    "bs_unique": true,
+    "positions_equal_p1e": true,
+    "today_equals_p1c2": true
+   },
+   "today": {
+    "ALL": 0.9606,
+    "recall": 0.9889,
+    "rows": 2017.6252,
+    "exhausted": 0.0
+   },
+   "seconds": 736.1,
+   "utc": "2026-10-15T09:55:24Z"
+  }
+ },
+ "utc": "2026-10-15T09:55:24Z"
+}
