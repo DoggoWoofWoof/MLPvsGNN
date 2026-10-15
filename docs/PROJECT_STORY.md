@@ -565,9 +565,13 @@ Details: [P1E_ANCHOR_KIND.md](P1E_ANCHOR_KIND.md), [P1C2_POOLS_KIND_T.md](P1C2_P
   candidates but rarely leads to a new gold.
 - **Named-entity links** join passages about the same person or place, which structural links can miss.
 - **No one set of families suits all six** (P2a). Each family helps somewhere (on musique all three do), but adding the
-  named-entity and kNN links to the structural ones hurts on metaqa, squad and hotpotqa. Three times (step 4, G1a,
-  P2a) a walk over all families at once diluted the structural hop. So all three families stay, each is walked on its
-  own, and the results are combined by a fixed rule (RRF5T).
+  named-entity and kNN links to the structural ones hurts on metaqa, squad and hotpotqa, and is mixed on 2wiki (its
+  head is hurt). Three times, mixing all families at once diluted the structural hop: step 4's walk, G1a's bridge
+  rule and P2a's pools. So all three families stay, and KIND_T walks twice: on the structural links alone and on all
+  families together. A fixed rule (RRF5T) fuses the two walks with the first stage's order.
+- **Masking measures reliance, not value.** Hiding a family from a trained model shows how much the model leans on
+  it: masking the structural family costs 0.17 to 0.77 R@5 on the linked datasets, and the GNN leans on kNN links on
+  all six (the MLP on three). A family can be leaned on and still add no gold to the pool.
 
 ### 6.2 The hyperlink question: is our lead just Wikipedia's links?
 
@@ -598,9 +602,11 @@ webqsp it built 330 million edges, 40 times the KB (U1b). **Fix (U1d, then U1e):
 On a 30,000-passage sample of hotpotqa, read against its hyperlinks only (a design look, no question read), the first
 two steps doubled precision (0.138 to 0.285) at almost the same recall (0.676 to 0.669).
 
-**The decision:** retraining our models on the title-rule graph was NOT_ADOPTED twice (U1c, U1f). Using it in place
-of the hyperlinks costs R@5 on our corpora: 0.035 to 0.065 on hotpotqa and 0.010 to 0.020 on 2wiki. So the
-hyperlinks stay, and every SOTA claim names them.
+**The decision:** retraining our models on the title-rule graph was NOT_ADOPTED twice (U1c, U1f). The verdict comes
+from the four datasets the rule protects: no GAIN in 24 reads, and a LOSS on webqsp zero-shot for zsp (−0.056 in
+U1c, −0.043 in U1f; U1f also has a zrc LOSS on musique, −0.010). The cost on the hyperlinked datasets is reported
+beside it as the **hyperlink price**: using the rule in place of the hyperlinks costs R@5 0.035 to 0.065 on
+hotpotqa and 0.010 to 0.020 on 2wiki. So the hyperlinks stay, and every SOTA claim names them.
 The fair headline: without any LLM, **a few precise edges** are what the models need. With no links the models fall
 well below HippoRAG 2. With the title rule, 2wiki stays 5.5 points above it.
 
