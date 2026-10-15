@@ -1,0 +1,4544 @@
+{
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "fits": {
+  "zrckp": "outputs/full_zrckp/fits/J5",
+  "zspk": "outputs/full_zspk/fits/J5"
+ },
+ "counts": {
+  "A": 198,
+  "B": 94,
+  "C": 8564
+ },
+ "questions": {
+  "A": {
+   "rule": "A",
+   "index": 191,
+   "id": "61d1f6900bde11eba7f7acde48001122",
+   "question": "What is the date of death of Conan Ii, Duke Of Brittany's mother?",
+   "answer": "1080",
+   "evidences": [
+    [
+     "Conan II, Duke of Brittany",
+     "mother",
+     "Bertha of Blois"
+    ],
+    [
+     "Bertha of Blois",
+     "date of death",
+     "1080"
+    ]
+   ],
+   "gold_titles": [
+    "Conan II, Duke of Brittany",
+    "Bertha of Blois"
+   ],
+   "pool": {
+    "rows": 73,
+    "base_and_seeds": 50,
+    "today_size": 73,
+    "entity_question": false,
+    "route": false,
+    "links_in_pool": 748
+   },
+   "rows": [
+    {
+     "row": 4,
+     "node": "2wiki:c15553562",
+     "title": null,
+     "text": "Hawise of Rennes (1037 \u2013 19 August 1072) was sovereign Duchess of Brittany from ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.37,
+     "zrckp": {
+      "score": 0.2769,
+      "rank": 2
+     },
+     "zspk": {
+      "score": 0.3256,
+      "rank": 2
+     },
+     "links": 48,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        0.125
+       ],
+       [
+        "splade_rr",
+        0.125
+       ],
+       [
+        "rrf",
+        0.0294
+       ],
+       [
+        "agreement",
+        1.0
+       ],
+       [
+        "is_seed",
+        0.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.624
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.3333
+       ],
+       [
+        "topo_STRUCT[5]",
+        2.1973
+       ],
+       [
+        "topo_STRUCT[6]",
+        2.3984
+       ],
+       [
+        "topo_STRUCT[7]",
+        1.6094
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.2031
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.5435
+       ],
+       [
+        "depth_STRUCT[1]",
+        0.6934
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.1243
+       ],
+       [
+        "depth_STRUCT[3]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.5142
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.6748
+       ],
+       [
+        "depth_STRUCT[6]",
+        2.5645
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.5713
+       ],
+       [
+        "depth_STRUCT[8]",
+        1.0986
+       ],
+       [
+        "depth_STRUCT[9]",
+        1.8828
+       ],
+       [
+        "depth_STRUCT[10]",
+        3.2578
+       ],
+       [
+        "depth_STRUCT[11]",
+        2.1973
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.1107
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.5522
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.7134
+       ],
+       [
+        "depth_STRUCT[16]",
+        3.1777
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.7041
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.5728
+       ],
+       [
+        "max_cos_seed",
+        0.6562
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.6562
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.6934
+       ],
+       [
+        "WALK[1]",
+        1.6094
+       ],
+       [
+        "WALK[2]",
+        3.2578
+       ],
+       [
+        "WALK[3]",
+        0.6934
+       ],
+       [
+        "WALK[4]",
+        0.6934
+       ],
+       [
+        "WALK[5]",
+        1.6094
+       ],
+       [
+        "WALK[6]",
+        0.6934
+       ],
+       [
+        "WALK[7]",
+        0.0
+       ],
+       [
+        "WALK[8]",
+        1.6094
+       ],
+       [
+        "WALK[9]",
+        0.6934
+       ],
+       [
+        "WALK[10]",
+        1.3867
+       ],
+       [
+        "WALK[11]",
+        2.1973
+       ],
+       [
+        "WALK[12]",
+        1.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        0.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.6934
+       ],
+       [
+        "DISTS[1]",
+        1.0
+       ],
+       [
+        "DISTS[2]",
+        0.7676
+       ],
+       [
+        "DISTS[3]",
+        0.6934
+       ],
+       [
+        "DISTS[4]",
+        0.9536
+       ],
+       [
+        "DISTS[5]",
+        0.5913
+       ],
+       [
+        "DISTS[6]",
+        1.0986
+       ],
+       [
+        "DISTS[7]",
+        1.8828
+       ],
+       [
+        "DISTS[8]",
+        0.7012
+       ],
+       [
+        "DISTS[9]",
+        0.125
+       ],
+       [
+        "DISTS[10]",
+        0.1243
+       ],
+       [
+        "DISTS[11]",
+        0.1107
+       ],
+       [
+        "DISTS[12]",
+        1.6094
+       ],
+       [
+        "DISTS[13]",
+        2.1973
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        1.3867
+       ],
+       [
+        "WALKF[1]",
+        4.0938
+       ],
+       [
+        "WALKF[2]",
+        6.8984
+       ],
+       [
+        "WALKF[3]",
+        1.3867
+       ],
+       [
+        "WALKF[4]",
+        3.8926
+       ],
+       [
+        "WALKF[5]",
+        6.5508
+       ],
+       [
+        "WALKF[6]",
+        1.3867
+       ],
+       [
+        "WALKF[7]",
+        3.9121
+       ],
+       [
+        "WALKF[8]",
+        6.6289
+       ],
+       [
+        "WALKF[9]",
+        1.3867
+       ],
+       [
+        "WALKF[10]",
+        3.1777
+       ],
+       [
+        "WALKF[11]",
+        3.2188
+       ],
+       [
+        "WALKF[12]",
+        1.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        0.0
+       ],
+       [
+        "WALKF[16]",
+        0.6934
+       ],
+       [
+        "WALKF[17]",
+        0.6934
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.1241
+       ],
+       [
+        "_kt[1]",
+        0.2898
+       ],
+       [
+        "_kt[2]",
+        0.2808
+       ],
+       [
+        "_kt[3]",
+        0.1241
+       ],
+       [
+        "_kt[4]",
+        0.1241
+       ],
+       [
+        "_kt[5]",
+        0.0783
+       ],
+       [
+        "_kt[6]",
+        0.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": 1.37
+     }
+    },
+    {
+     "row": 17,
+     "node": "2wiki:c2457287",
+     "title": null,
+     "text": "Conan I (d. 27 June 992) nicknamed \"Le Tort\" (The Crooked) was the Duke ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.6775,
+     "zrckp": {
+      "score": -2.1618,
+      "rank": 8
+     },
+     "zspk": {
+      "score": -3.6075,
+      "rank": 14
+     },
+     "links": 16
+    },
+    {
+     "row": 25,
+     "node": "2wiki:c32014531",
+     "title": null,
+     "text": "The Breton\u2013Norman War of 1064\u201366 was fought between the Duchy of Brittany and the ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.1293,
+     "zrckp": {
+      "score": -0.5888,
+      "rank": 3
+     },
+     "zspk": {
+      "score": -0.7109,
+      "rank": 4
+     },
+     "links": 30
+    },
+    {
+     "row": 32,
+     "node": "2wiki:c34185900",
+     "title": "Bertha of Blois",
+     "text": "Bertha of Blois (French: \"Berthe de Blois\"; c. 1005 \u2014 c. 1080), was a ...",
+     "gold": true,
+     "pool": "KIND_T fill 1",
+     "rrf_z": -1.3586,
+     "zrckp": {
+      "score": -1.3306,
+      "rank": 6
+     },
+     "zspk": {
+      "score": -1.047,
+      "rank": 5
+     },
+     "links": 10,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        0.0039
+       ],
+       [
+        "splade_rr",
+        0.0085
+       ],
+       [
+        "rrf",
+        0.0088
+       ],
+       [
+        "agreement",
+        1.0
+       ],
+       [
+        "is_seed",
+        0.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.4863
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.3333
+       ],
+       [
+        "topo_STRUCT[5]",
+        1.3867
+       ],
+       [
+        "topo_STRUCT[6]",
+        1.9463
+       ],
+       [
+        "topo_STRUCT[7]",
+        1.0986
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.2031
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.5815
+       ],
+       [
+        "depth_STRUCT[1]",
+        0.6934
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.0667
+       ],
+       [
+        "depth_STRUCT[3]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.5225
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.6577
+       ],
+       [
+        "depth_STRUCT[6]",
+        2.9453
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.6636
+       ],
+       [
+        "depth_STRUCT[8]",
+        1.3867
+       ],
+       [
+        "depth_STRUCT[9]",
+        2.7969
+       ],
+       [
+        "depth_STRUCT[10]",
+        2.9453
+       ],
+       [
+        "depth_STRUCT[11]",
+        1.3867
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.1666
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.5576
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.7134
+       ],
+       [
+        "depth_STRUCT[16]",
+        3.332
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.6865
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.5186
+       ],
+       [
+        "max_cos_seed",
+        0.6084
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.5396
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.6934
+       ],
+       [
+        "WALK[1]",
+        1.0986
+       ],
+       [
+        "WALK[2]",
+        2.9453
+       ],
+       [
+        "WALK[3]",
+        0.6934
+       ],
+       [
+        "WALK[4]",
+        0.6934
+       ],
+       [
+        "WALK[5]",
+        1.0986
+       ],
+       [
+        "WALK[6]",
+        0.0
+       ],
+       [
+        "WALK[7]",
+        0.0
+       ],
+       [
+        "WALK[8]",
+        0.6934
+       ],
+       [
+        "WALK[9]",
+        0.6934
+       ],
+       [
+        "WALK[10]",
+        0.6934
+       ],
+       [
+        "WALK[11]",
+        1.3867
+       ],
+       [
+        "WALK[12]",
+        1.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        0.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.6934
+       ],
+       [
+        "DISTS[1]",
+        1.0
+       ],
+       [
+        "DISTS[2]",
+        0.6313
+       ],
+       [
+        "DISTS[3]",
+        0.6934
+       ],
+       [
+        "DISTS[4]",
+        0.8989
+       ],
+       [
+        "DISTS[5]",
+        0.6562
+       ],
+       [
+        "DISTS[6]",
+        1.3867
+       ],
+       [
+        "DISTS[7]",
+        2.7988
+       ],
+       [
+        "DISTS[8]",
+        0.6675
+       ],
+       [
+        "DISTS[9]",
+        0.3333
+       ],
+       [
+        "DISTS[10]",
+        0.0667
+       ],
+       [
+        "DISTS[11]",
+        0.1666
+       ],
+       [
+        "DISTS[12]",
+        1.0986
+       ],
+       [
+        "DISTS[13]",
+        1.3867
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        1.3867
+       ],
+       [
+        "WALKF[1]",
+        2.709
+       ],
+       [
+        "WALKF[2]",
+        5.5352
+       ],
+       [
+        "WALKF[3]",
+        1.3867
+       ],
+       [
+        "WALKF[4]",
+        2.3027
+       ],
+       [
+        "WALKF[5]",
+        5.1484
+       ],
+       [
+        "WALKF[6]",
+        1.0986
+       ],
+       [
+        "WALKF[7]",
+        1.9463
+       ],
+       [
+        "WALKF[8]",
+        4.3047
+       ],
+       [
+        "WALKF[9]",
+        0.6934
+       ],
+       [
+        "WALKF[10]",
+        1.3867
+       ],
+       [
+        "WALKF[11]",
+        1.792
+       ],
+       [
+        "WALKF[12]",
+        1.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        0.0
+       ],
+       [
+        "WALKF[16]",
+        0.6934
+       ],
+       [
+        "WALKF[17]",
+        0.6934
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.3325
+       ],
+       [
+        "_kt[1]",
+        0.3723
+       ],
+       [
+        "_kt[2]",
+        0.3201
+       ],
+       [
+        "_kt[3]",
+        0.1566
+       ],
+       [
+        "_kt[4]",
+        0.2024
+       ],
+       [
+        "_kt[5]",
+        0.3264
+       ],
+       [
+        "_kt[6]",
+        1.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": -1.3586
+     }
+    },
+    {
+     "row": 49,
+     "node": "2wiki:c633141",
+     "title": null,
+     "text": "Alan III of Rennes (997\u20131 October 1040) (French: Alain III de Bretagne) was Count ...",
+     "gold": false,
+     "pool": "KIND_T fill 3",
+     "rrf_z": -1.6822,
+     "zrckp": {
+      "score": -0.759,
+      "rank": 5
+     },
+     "zspk": {
+      "score": -0.5353,
+      "rank": 3
+     },
+     "links": 18
+    },
+    {
+     "row": 50,
+     "node": "2wiki:c633145",
+     "title": "Conan II, Duke of Brittany",
+     "text": "Conan II of Rennes (c. 1033 \u2013 11 December 1066) was Duke of Brittany, ...",
+     "gold": true,
+     "pool": "base or seed",
+     "rrf_z": 1.815,
+     "zrckp": {
+      "score": 1.3013,
+      "rank": 1
+     },
+     "zspk": {
+      "score": 0.9625,
+      "rank": 1
+     },
+     "links": 68,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        1.0
+       ],
+       [
+        "splade_rr",
+        1.0
+       ],
+       [
+        "rrf",
+        0.0328
+       ],
+       [
+        "agreement",
+        1.0
+       ],
+       [
+        "is_seed",
+        1.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.7461
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.1666
+       ],
+       [
+        "topo_STRUCT[5]",
+        2.0801
+       ],
+       [
+        "topo_STRUCT[6]",
+        2.0801
+       ],
+       [
+        "topo_STRUCT[7]",
+        2.0801
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.2031
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.5039
+       ],
+       [
+        "depth_STRUCT[1]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.281
+       ],
+       [
+        "depth_STRUCT[3]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.5059
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.5596
+       ],
+       [
+        "depth_STRUCT[6]",
+        2.3984
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[8]",
+        1.3867
+       ],
+       [
+        "depth_STRUCT[9]",
+        2.8359
+       ],
+       [
+        "depth_STRUCT[10]",
+        2.709
+       ],
+       [
+        "depth_STRUCT[11]",
+        1.9463
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.0634
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.5586
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.7134
+       ],
+       [
+        "depth_STRUCT[16]",
+        3.2188
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.8184
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.6099
+       ],
+       [
+        "max_cos_seed",
+        0.731
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.731
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.0
+       ],
+       [
+        "WALK[1]",
+        2.0801
+       ],
+       [
+        "WALK[2]",
+        2.709
+       ],
+       [
+        "WALK[3]",
+        0.0
+       ],
+       [
+        "WALK[4]",
+        0.6934
+       ],
+       [
+        "WALK[5]",
+        0.6934
+       ],
+       [
+        "WALK[6]",
+        0.0
+       ],
+       [
+        "WALK[7]",
+        0.6934
+       ],
+       [
+        "WALK[8]",
+        0.0
+       ],
+       [
+        "WALK[9]",
+        0.0
+       ],
+       [
+        "WALK[10]",
+        2.0801
+       ],
+       [
+        "WALK[11]",
+        2.0801
+       ],
+       [
+        "WALK[12]",
+        0.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        1.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.0
+       ],
+       [
+        "DISTS[1]",
+        0.0
+       ],
+       [
+        "DISTS[2]",
+        0.0
+       ],
+       [
+        "DISTS[3]",
+        0.0
+       ],
+       [
+        "DISTS[4]",
+        0.0
+       ],
+       [
+        "DISTS[5]",
+        0.0
+       ],
+       [
+        "DISTS[6]",
+        1.3867
+       ],
+       [
+        "DISTS[7]",
+        2.8359
+       ],
+       [
+        "DISTS[8]",
+        0.7437
+       ],
+       [
+        "DISTS[9]",
+        0.0
+       ],
+       [
+        "DISTS[10]",
+        0.281
+       ],
+       [
+        "DISTS[11]",
+        0.0634
+       ],
+       [
+        "DISTS[12]",
+        2.0801
+       ],
+       [
+        "DISTS[13]",
+        1.9463
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        1.6094
+       ],
+       [
+        "WALKF[1]",
+        4.543
+       ],
+       [
+        "WALKF[2]",
+        7.1875
+       ],
+       [
+        "WALKF[3]",
+        1.6094
+       ],
+       [
+        "WALKF[4]",
+        4.3555
+       ],
+       [
+        "WALKF[5]",
+        6.9219
+       ],
+       [
+        "WALKF[6]",
+        1.6094
+       ],
+       [
+        "WALKF[7]",
+        4.3828
+       ],
+       [
+        "WALKF[8]",
+        6.9297
+       ],
+       [
+        "WALKF[9]",
+        0.0
+       ],
+       [
+        "WALKF[10]",
+        4.0078
+       ],
+       [
+        "WALKF[11]",
+        3.5547
+       ],
+       [
+        "WALKF[12]",
+        0.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        1.0
+       ],
+       [
+        "WALKF[16]",
+        0.6934
+       ],
+       [
+        "WALKF[17]",
+        1.3867
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.0
+       ],
+       [
+        "_kt[1]",
+        0.2024
+       ],
+       [
+        "_kt[2]",
+        0.0783
+       ],
+       [
+        "_kt[3]",
+        0.0
+       ],
+       [
+        "_kt[4]",
+        0.0
+       ],
+       [
+        "_kt[5]",
+        0.0
+       ],
+       [
+        "_kt[6]",
+        0.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": 1.815
+     }
+    },
+    {
+     "row": 52,
+     "node": "2wiki:c633152",
+     "title": null,
+     "text": "Alan IV (born circa 1063; died 13 October 1119) was Duke of Brittany from ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 0.3243,
+     "zrckp": {
+      "score": -3.17,
+      "rank": 15
+     },
+     "zspk": {
+      "score": -2.6596,
+      "rank": 8
+     },
+     "links": 52
+    },
+    {
+     "row": 53,
+     "node": "2wiki:c633153",
+     "title": null,
+     "text": "Conan III, also known as Conan of Cornouaille and Conan the Fat (c. 1093\u20131096 ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.6127,
+     "zrckp": {
+      "score": -1.4228,
+      "rank": 7
+     },
+     "zspk": {
+      "score": -1.8452,
+      "rank": 6
+     },
+     "links": 24
+    },
+    {
+     "row": 56,
+     "node": "2wiki:c636901",
+     "title": null,
+     "text": "Conan IV (1138 \u2013 February 20, 1171), called the Young, was the Duke of ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.7462,
+     "zrckp": {
+      "score": -0.7229,
+      "rank": 4
+     },
+     "zspk": {
+      "score": -2.16,
+      "rank": 7
+     },
+     "links": 54
+    }
+   ],
+   "links": [
+    {
+     "a": 4,
+     "b": 25,
+     "family": "named-entity"
+    },
+    {
+     "a": 4,
+     "b": 25,
+     "family": "structural"
+    },
+    {
+     "a": 4,
+     "b": 32,
+     "family": "structural"
+    },
+    {
+     "a": 4,
+     "b": 49,
+     "family": "structural"
+    },
+    {
+     "a": 4,
+     "b": 50,
+     "family": "kNN"
+    },
+    {
+     "a": 4,
+     "b": 50,
+     "family": "named-entity"
+    },
+    {
+     "a": 4,
+     "b": 50,
+     "family": "structural"
+    },
+    {
+     "a": 4,
+     "b": 52,
+     "family": "kNN"
+    },
+    {
+     "a": 4,
+     "b": 52,
+     "family": "named-entity"
+    },
+    {
+     "a": 4,
+     "b": 52,
+     "family": "structural"
+    },
+    {
+     "a": 17,
+     "b": 50,
+     "family": "kNN"
+    },
+    {
+     "a": 17,
+     "b": 53,
+     "family": "kNN"
+    },
+    {
+     "a": 17,
+     "b": 56,
+     "family": "kNN"
+    },
+    {
+     "a": 25,
+     "b": 50,
+     "family": "named-entity"
+    },
+    {
+     "a": 25,
+     "b": 50,
+     "family": "structural"
+    },
+    {
+     "a": 32,
+     "b": 50,
+     "family": "structural"
+    },
+    {
+     "a": 49,
+     "b": 50,
+     "family": "kNN"
+    },
+    {
+     "a": 49,
+     "b": 50,
+     "family": "structural"
+    },
+    {
+     "a": 49,
+     "b": 52,
+     "family": "kNN"
+    },
+    {
+     "a": 50,
+     "b": 52,
+     "family": "named-entity"
+    },
+    {
+     "a": 50,
+     "b": 53,
+     "family": "kNN"
+    },
+    {
+     "a": 50,
+     "b": 56,
+     "family": "kNN"
+    },
+    {
+     "a": 50,
+     "b": 56,
+     "family": "named-entity"
+    },
+    {
+     "a": 52,
+     "b": 53,
+     "family": "structural"
+    },
+    {
+     "a": 52,
+     "b": 56,
+     "family": "kNN"
+    },
+    {
+     "a": 52,
+     "b": 56,
+     "family": "named-entity"
+    },
+    {
+     "a": 53,
+     "b": 56,
+     "family": "kNN"
+    }
+   ],
+   "blocks": [
+    "rank",
+    "dense_cos",
+    "topo_STRUCT",
+    "depth_STRUCT",
+    "SEMB",
+    "SEED",
+    "WALK",
+    "DISTS",
+    "WALKF"
+   ],
+   "other_inputs": [
+    "_kt"
+   ]
+  },
+  "B": {
+   "rule": "B",
+   "index": 429,
+   "id": "ad6e5c1c0baf11ebab90acde48001122",
+   "question": "Who is the mother of Olaf (Ii) Haraldsen?",
+   "answer": "Ragnild Magnusdotter",
+   "evidences": [
+    [
+     " Olaf",
+     "father",
+     "Harald Kesja"
+    ],
+    [
+     "Harald Kesja",
+     "spouse",
+     "Ragnild Magnusdotter"
+    ]
+   ],
+   "gold_titles": [
+    "Olaf (II) Haraldsen",
+    "Harald Kesja"
+   ],
+   "pool": {
+    "rows": 119,
+    "base_and_seeds": 50,
+    "today_size": 119,
+    "entity_question": false,
+    "route": false,
+    "links_in_pool": 1140
+   },
+   "rows": [
+    {
+     "row": 8,
+     "node": "2wiki:c150695",
+     "title": null,
+     "text": "Olaf II Haraldsson (c. 995 \u2013 29 July 1030), later known as St. Olaf ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.4478,
+     "zrckp": {
+      "score": -0.9297,
+      "rank": 3
+     },
+     "zspk": {
+      "score": -1.7875,
+      "rank": 3
+     },
+     "links": 72
+    },
+    {
+     "row": 18,
+     "node": "2wiki:c1757617",
+     "title": null,
+     "text": "Olaf Haraldss\u00f8n Geirstadalf Digerbein (Agder, ca. 877 - T\u00f8nsberg, ca. 934), was a reputed ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.9378,
+     "zrckp": {
+      "score": -2.7856,
+      "rank": 7
+     },
+     "zspk": {
+      "score": -4.3157,
+      "rank": 21
+     },
+     "links": 24
+    },
+    {
+     "row": 19,
+     "node": "2wiki:c1758725",
+     "title": null,
+     "text": "Sigurd Syr (Old Norse: \"Sigur\u00f0r S\u00fdr\") (died c. 1018) was a Norwegian petty king ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.4385,
+     "zrckp": {
+      "score": -2.8553,
+      "rank": 8
+     },
+     "zspk": {
+      "score": -3.8238,
+      "rank": 13
+     },
+     "links": 30
+    },
+    {
+     "row": 30,
+     "node": "2wiki:c203048",
+     "title": null,
+     "text": "Haakon VI of Norway (, ; 1340\u20131380), also known as \"H\u00e5kan Magnusson\", was King ...",
+     "gold": false,
+     "pool": "KIND_T fill 2",
+     "rrf_z": -0.863,
+     "zrckp": {
+      "score": -2.5774,
+      "rank": 6
+     },
+     "zspk": {
+      "score": -2.309,
+      "rank": 6
+     },
+     "links": 22
+    },
+    {
+     "row": 50,
+     "node": "2wiki:c2634701",
+     "title": "Harald Kesja",
+     "text": "Harald Kesja, \"Harald the Spear\", (1080\u20131135) was the son of Eric I of Denmark ...",
+     "gold": true,
+     "pool": "KIND_T fill 1",
+     "rrf_z": -0.6968,
+     "zrckp": {
+      "score": -2.304,
+      "rank": 5
+     },
+     "zspk": {
+      "score": -2.3491,
+      "rank": 7
+     },
+     "links": 26,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        0.0056
+       ],
+       [
+        "splade_rr",
+        0.0015
+       ],
+       [
+        "rrf",
+        0.0055
+       ],
+       [
+        "agreement",
+        1.0
+       ],
+       [
+        "is_seed",
+        0.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.5474
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.2222
+       ],
+       [
+        "topo_STRUCT[5]",
+        1.9463
+       ],
+       [
+        "topo_STRUCT[6]",
+        2.4844
+       ],
+       [
+        "topo_STRUCT[7]",
+        1.3867
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.6133
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.4836
+       ],
+       [
+        "depth_STRUCT[1]",
+        0.6934
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.1246
+       ],
+       [
+        "depth_STRUCT[3]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.4048
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.7065
+       ],
+       [
+        "depth_STRUCT[6]",
+        2.709
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.5093
+       ],
+       [
+        "depth_STRUCT[8]",
+        0.6934
+       ],
+       [
+        "depth_STRUCT[9]",
+        0.9043
+       ],
+       [
+        "depth_STRUCT[10]",
+        3.2578
+       ],
+       [
+        "depth_STRUCT[11]",
+        1.9463
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.151
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.4985
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.6582
+       ],
+       [
+        "depth_STRUCT[16]",
+        3.4336
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.5518
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.4773
+       ],
+       [
+        "max_cos_seed",
+        0.5708
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.4802
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.6934
+       ],
+       [
+        "WALK[1]",
+        1.3867
+       ],
+       [
+        "WALK[2]",
+        3.2578
+       ],
+       [
+        "WALK[3]",
+        0.6934
+       ],
+       [
+        "WALK[4]",
+        0.0
+       ],
+       [
+        "WALK[5]",
+        0.6934
+       ],
+       [
+        "WALK[6]",
+        0.0
+       ],
+       [
+        "WALK[7]",
+        0.0
+       ],
+       [
+        "WALK[8]",
+        0.0
+       ],
+       [
+        "WALK[9]",
+        0.0
+       ],
+       [
+        "WALK[10]",
+        0.6934
+       ],
+       [
+        "WALK[11]",
+        1.9463
+       ],
+       [
+        "WALK[12]",
+        1.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        0.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.6934
+       ],
+       [
+        "DISTS[1]",
+        1.0
+       ],
+       [
+        "DISTS[2]",
+        0.6538
+       ],
+       [
+        "DISTS[3]",
+        0.6934
+       ],
+       [
+        "DISTS[4]",
+        0.9722
+       ],
+       [
+        "DISTS[5]",
+        0.5303
+       ],
+       [
+        "DISTS[6]",
+        0.6934
+       ],
+       [
+        "DISTS[7]",
+        0.9038
+       ],
+       [
+        "DISTS[8]",
+        0.5601
+       ],
+       [
+        "DISTS[9]",
+        0.1666
+       ],
+       [
+        "DISTS[10]",
+        0.1246
+       ],
+       [
+        "DISTS[11]",
+        0.1509
+       ],
+       [
+        "DISTS[12]",
+        1.3867
+       ],
+       [
+        "DISTS[13]",
+        1.9463
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        1.3867
+       ],
+       [
+        "WALKF[1]",
+        2.6387
+       ],
+       [
+        "WALKF[2]",
+        5.4492
+       ],
+       [
+        "WALKF[3]",
+        1.3867
+       ],
+       [
+        "WALKF[4]",
+        2.0801
+       ],
+       [
+        "WALKF[5]",
+        4.7773
+       ],
+       [
+        "WALKF[6]",
+        1.0986
+       ],
+       [
+        "WALKF[7]",
+        2.3027
+       ],
+       [
+        "WALKF[8]",
+        4.6992
+       ],
+       [
+        "WALKF[9]",
+        0.0
+       ],
+       [
+        "WALKF[10]",
+        1.6094
+       ],
+       [
+        "WALKF[11]",
+        2.6387
+       ],
+       [
+        "WALKF[12]",
+        1.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        0.0
+       ],
+       [
+        "WALKF[16]",
+        0.6934
+       ],
+       [
+        "WALKF[17]",
+        0.6934
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.2024
+       ],
+       [
+        "_kt[1]",
+        0.4221
+       ],
+       [
+        "_kt[2]",
+        0.3542
+       ],
+       [
+        "_kt[3]",
+        0.2024
+       ],
+       [
+        "_kt[4]",
+        0.1241
+       ],
+       [
+        "_kt[5]",
+        0.1566
+       ],
+       [
+        "_kt[6]",
+        1.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": -0.6968
+     }
+    },
+    {
+     "row": 57,
+     "node": "2wiki:c2904648",
+     "title": "Olaf (II) Haraldsen",
+     "text": "Olaf Haraldsen (died) was a Danish anti-king who ruled Scania for a few years ...",
+     "gold": true,
+     "pool": "base or seed",
+     "rrf_z": 1.9877,
+     "zrckp": {
+      "score": 0.8313,
+      "rank": 1
+     },
+     "zspk": {
+      "score": 0.4409,
+      "rank": 1
+     },
+     "links": 52,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        0.25
+       ],
+       [
+        "splade_rr",
+        0.5
+       ],
+       [
+        "rrf",
+        0.0318
+       ],
+       [
+        "agreement",
+        1.0
+       ],
+       [
+        "is_seed",
+        1.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.6689
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.2222
+       ],
+       [
+        "topo_STRUCT[5]",
+        2.5645
+       ],
+       [
+        "topo_STRUCT[6]",
+        2.5645
+       ],
+       [
+        "topo_STRUCT[7]",
+        2.5645
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.6133
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.3547
+       ],
+       [
+        "depth_STRUCT[1]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.4036
+       ],
+       [
+        "depth_STRUCT[3]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.4773
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.6309
+       ],
+       [
+        "depth_STRUCT[6]",
+        3.3672
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[8]",
+        1.3867
+       ],
+       [
+        "depth_STRUCT[9]",
+        2.7207
+       ],
+       [
+        "depth_STRUCT[10]",
+        3.8711
+       ],
+       [
+        "depth_STRUCT[11]",
+        2.5645
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.1436
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.5723
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.6899
+       ],
+       [
+        "depth_STRUCT[16]",
+        3.6113
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.7041
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.5156
+       ],
+       [
+        "max_cos_seed",
+        0.7622
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.5303
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.6934
+       ],
+       [
+        "WALK[1]",
+        2.5645
+       ],
+       [
+        "WALK[2]",
+        3.8711
+       ],
+       [
+        "WALK[3]",
+        0.0
+       ],
+       [
+        "WALK[4]",
+        0.0
+       ],
+       [
+        "WALK[5]",
+        0.0
+       ],
+       [
+        "WALK[6]",
+        0.6934
+       ],
+       [
+        "WALK[7]",
+        0.0
+       ],
+       [
+        "WALK[8]",
+        1.6094
+       ],
+       [
+        "WALK[9]",
+        0.6934
+       ],
+       [
+        "WALK[10]",
+        0.0
+       ],
+       [
+        "WALK[11]",
+        2.5645
+       ],
+       [
+        "WALK[12]",
+        0.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        1.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.6934
+       ],
+       [
+        "DISTS[1]",
+        0.9722
+       ],
+       [
+        "DISTS[2]",
+        0.6094
+       ],
+       [
+        "DISTS[3]",
+        0.0
+       ],
+       [
+        "DISTS[4]",
+        0.0
+       ],
+       [
+        "DISTS[5]",
+        0.0
+       ],
+       [
+        "DISTS[6]",
+        1.3867
+       ],
+       [
+        "DISTS[7]",
+        2.7188
+       ],
+       [
+        "DISTS[8]",
+        0.6646
+       ],
+       [
+        "DISTS[9]",
+        0.081
+       ],
+       [
+        "DISTS[10]",
+        0.4036
+       ],
+       [
+        "DISTS[11]",
+        0.1436
+       ],
+       [
+        "DISTS[12]",
+        2.5645
+       ],
+       [
+        "DISTS[13]",
+        2.5645
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        1.0986
+       ],
+       [
+        "WALKF[1]",
+        3.6641
+       ],
+       [
+        "WALKF[2]",
+        5.8281
+       ],
+       [
+        "WALKF[3]",
+        0.6934
+       ],
+       [
+        "WALKF[4]",
+        3.0449
+       ],
+       [
+        "WALKF[5]",
+        4.7617
+       ],
+       [
+        "WALKF[6]",
+        1.0986
+       ],
+       [
+        "WALKF[7]",
+        3.1348
+       ],
+       [
+        "WALKF[8]",
+        5.1836
+       ],
+       [
+        "WALKF[9]",
+        0.6934
+       ],
+       [
+        "WALKF[10]",
+        0.6934
+       ],
+       [
+        "WALKF[11]",
+        3.2949
+       ],
+       [
+        "WALKF[12]",
+        0.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        1.0
+       ],
+       [
+        "WALKF[16]",
+        0.0
+       ],
+       [
+        "WALKF[17]",
+        0.6934
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.0
+       ],
+       [
+        "_kt[1]",
+        0.1818
+       ],
+       [
+        "_kt[2]",
+        0.1566
+       ],
+       [
+        "_kt[3]",
+        0.0
+       ],
+       [
+        "_kt[4]",
+        0.0
+       ],
+       [
+        "_kt[5]",
+        0.0
+       ],
+       [
+        "_kt[6]",
+        0.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": 1.9877
+     }
+    },
+    {
+     "row": 94,
+     "node": "2wiki:c5679642",
+     "title": null,
+     "text": "\u00c5sta Gudbrandsdatter (c. 975/980 \u2013 c. 1020/1030) was the mother of two Norwegian kings, ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.9409,
+     "zrckp": {
+      "score": -1.1724,
+      "rank": 4
+     },
+     "zspk": {
+      "score": -1.9258,
+      "rank": 4
+     },
+     "links": 28
+    },
+    {
+     "row": 96,
+     "node": "2wiki:c58726",
+     "title": null,
+     "text": "Margaret I (15 March 1353 \u2013 28 October 1412) was queen consort of Norway ...",
+     "gold": false,
+     "pool": "KIND_T fill 23",
+     "rrf_z": -1.2608,
+     "zrckp": {
+      "score": -3.0702,
+      "rank": 10
+     },
+     "zspk": {
+      "score": -2.2116,
+      "rank": 5
+     },
+     "links": 20
+    },
+    {
+     "row": 102,
+     "node": "2wiki:c66273",
+     "title": null,
+     "text": "Olaf II Haakonsson (December 1370 \u2013 3 August 1387) was King of Denmark as ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 1.8972,
+     "zrckp": {
+      "score": 0.4261,
+      "rank": 2
+     },
+     "zspk": {
+      "score": 0.1911,
+      "rank": 2
+     },
+     "links": 56,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        1.0
+       ],
+       [
+        "splade_rr",
+        0.1111
+       ],
+       [
+        "rrf",
+        0.0309
+       ],
+       [
+        "agreement",
+        1.0
+       ],
+       [
+        "is_seed",
+        1.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.7065
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.2222
+       ],
+       [
+        "topo_STRUCT[5]",
+        2.6387
+       ],
+       [
+        "topo_STRUCT[6]",
+        2.709
+       ],
+       [
+        "topo_STRUCT[7]",
+        2.6387
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.6133
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.446
+       ],
+       [
+        "depth_STRUCT[1]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.2124
+       ],
+       [
+        "depth_STRUCT[3]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.385
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.5913
+       ],
+       [
+        "depth_STRUCT[6]",
+        2.9453
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[8]",
+        1.792
+       ],
+       [
+        "depth_STRUCT[9]",
+        4.418
+       ],
+       [
+        "depth_STRUCT[10]",
+        4.3047
+       ],
+       [
+        "depth_STRUCT[11]",
+        2.6387
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.1472
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.5659
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.6899
+       ],
+       [
+        "depth_STRUCT[16]",
+        3.6113
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.7041
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.5454
+       ],
+       [
+        "max_cos_seed",
+        0.7563
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.7563
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.6934
+       ],
+       [
+        "WALK[1]",
+        2.6387
+       ],
+       [
+        "WALK[2]",
+        4.3047
+       ],
+       [
+        "WALK[3]",
+        0.6934
+       ],
+       [
+        "WALK[4]",
+        1.0986
+       ],
+       [
+        "WALK[5]",
+        1.792
+       ],
+       [
+        "WALK[6]",
+        0.0
+       ],
+       [
+        "WALK[7]",
+        1.0986
+       ],
+       [
+        "WALK[8]",
+        0.6934
+       ],
+       [
+        "WALK[9]",
+        0.0
+       ],
+       [
+        "WALK[10]",
+        2.6387
+       ],
+       [
+        "WALK[11]",
+        2.6387
+       ],
+       [
+        "WALK[12]",
+        0.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        1.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.6934
+       ],
+       [
+        "DISTS[1]",
+        1.0
+       ],
+       [
+        "DISTS[2]",
+        0.6074
+       ],
+       [
+        "DISTS[3]",
+        0.0
+       ],
+       [
+        "DISTS[4]",
+        0.0
+       ],
+       [
+        "DISTS[5]",
+        0.0
+       ],
+       [
+        "DISTS[6]",
+        1.792
+       ],
+       [
+        "DISTS[7]",
+        4.4141
+       ],
+       [
+        "DISTS[8]",
+        0.6733
+       ],
+       [
+        "DISTS[9]",
+        0.0769
+       ],
+       [
+        "DISTS[10]",
+        0.2123
+       ],
+       [
+        "DISTS[11]",
+        0.1471
+       ],
+       [
+        "DISTS[12]",
+        2.6387
+       ],
+       [
+        "DISTS[13]",
+        2.6387
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        0.6934
+       ],
+       [
+        "WALKF[1]",
+        3.8711
+       ],
+       [
+        "WALKF[2]",
+        6.1406
+       ],
+       [
+        "WALKF[3]",
+        0.6934
+       ],
+       [
+        "WALKF[4]",
+        3.4961
+       ],
+       [
+        "WALKF[5]",
+        5.5
+       ],
+       [
+        "WALKF[6]",
+        0.0
+       ],
+       [
+        "WALKF[7]",
+        3.332
+       ],
+       [
+        "WALKF[8]",
+        5.0742
+       ],
+       [
+        "WALKF[9]",
+        0.0
+       ],
+       [
+        "WALKF[10]",
+        3.5547
+       ],
+       [
+        "WALKF[11]",
+        3.3672
+       ],
+       [
+        "WALKF[12]",
+        0.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        1.0
+       ],
+       [
+        "WALKF[16]",
+        0.0
+       ],
+       [
+        "WALKF[17]",
+        0.0
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.0783
+       ],
+       [
+        "_kt[1]",
+        0.1566
+       ],
+       [
+        "_kt[2]",
+        0.2024
+       ],
+       [
+        "_kt[3]",
+        0.2898
+       ],
+       [
+        "_kt[4]",
+        0.0783
+       ],
+       [
+        "_kt[5]",
+        0.1241
+       ],
+       [
+        "_kt[6]",
+        0.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": 1.8972
+     }
+    },
+    {
+     "row": 113,
+     "node": "2wiki:c779428",
+     "title": null,
+     "text": "Eric II the Memorable( \u2013 18 September 1137) was king of Denmark between 1134 ...",
+     "gold": false,
+     "pool": "KIND_T fill 3",
+     "rrf_z": -1.2608,
+     "zrckp": {
+      "score": -3.3111,
+      "rank": 13
+     },
+     "zspk": {
+      "score": -2.669,
+      "rank": 8
+     },
+     "links": 24
+    }
+   ],
+   "links": [
+    {
+     "a": 8,
+     "b": 19,
+     "family": "structural"
+    },
+    {
+     "a": 8,
+     "b": 94,
+     "family": "structural"
+    },
+    {
+     "a": 19,
+     "b": 94,
+     "family": "kNN"
+    },
+    {
+     "a": 19,
+     "b": 94,
+     "family": "named-entity"
+    },
+    {
+     "a": 19,
+     "b": 94,
+     "family": "structural"
+    },
+    {
+     "a": 30,
+     "b": 96,
+     "family": "structural"
+    },
+    {
+     "a": 30,
+     "b": 102,
+     "family": "kNN"
+    },
+    {
+     "a": 30,
+     "b": 102,
+     "family": "structural"
+    },
+    {
+     "a": 50,
+     "b": 57,
+     "family": "kNN"
+    },
+    {
+     "a": 50,
+     "b": 57,
+     "family": "named-entity"
+    },
+    {
+     "a": 50,
+     "b": 57,
+     "family": "structural"
+    },
+    {
+     "a": 50,
+     "b": 113,
+     "family": "structural"
+    },
+    {
+     "a": 57,
+     "b": 102,
+     "family": "structural"
+    },
+    {
+     "a": 57,
+     "b": 113,
+     "family": "named-entity"
+    },
+    {
+     "a": 57,
+     "b": 113,
+     "family": "structural"
+    },
+    {
+     "a": 96,
+     "b": 102,
+     "family": "structural"
+    }
+   ],
+   "blocks": [
+    "rank",
+    "dense_cos",
+    "topo_STRUCT",
+    "depth_STRUCT",
+    "SEMB",
+    "SEED",
+    "WALK",
+    "DISTS",
+    "WALKF"
+   ],
+   "other_inputs": [
+    "_kt"
+   ]
+  },
+  "C": {
+   "rule": "C",
+   "index": 0,
+   "id": "8813f87c0bdd11eba7f7acde48001122",
+   "question": "Who is the mother of the director of film Polish-Russian War (Film)?",
+   "answer": "Ma\u0142gorzata Braunek",
+   "evidences": [
+    [
+     "Polish-Russian War",
+     "director",
+     "Xawery \u017bu\u0142awski"
+    ],
+    [
+     "Xawery \u017bu\u0142awski",
+     "mother",
+     "Ma\u0142gorzata Braunek"
+    ]
+   ],
+   "gold_titles": [
+    "Polish-Russian War (film)",
+    "Xawery \u017bu\u0142awski"
+   ],
+   "pool": {
+    "rows": 110,
+    "base_and_seeds": 50,
+    "today_size": 110,
+    "entity_question": false,
+    "route": false,
+    "links_in_pool": 496
+   },
+   "rows": [
+    {
+     "row": 7,
+     "node": "2wiki:c14123875",
+     "title": null,
+     "text": "Janusz Zaorski (born 19 September 1947) is a Polish film director, scenarist and actor, ...",
+     "gold": false,
+     "pool": "KIND_T fill 12",
+     "rrf_z": -0.9348,
+     "zrckp": {
+      "score": -3.7327,
+      "rank": 12
+     },
+     "zspk": {
+      "score": -3.6888,
+      "rank": 7
+     },
+     "links": 14
+    },
+    {
+     "row": 29,
+     "node": "2wiki:c2281587",
+     "title": null,
+     "text": "Dorota Mas\u0142owska (; born 3 July 1983) is a Polish writer, playwright, columnist and ...",
+     "gold": false,
+     "pool": "KIND_T fill 2",
+     "rrf_z": -1.3164,
+     "zrckp": {
+      "score": -0.8519,
+      "rank": 3
+     },
+     "zspk": {
+      "score": -1.742,
+      "rank": 3
+     },
+     "links": 10,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        0.0
+       ],
+       [
+        "splade_rr",
+        0.0
+       ],
+       [
+        "rrf",
+        0.0
+       ],
+       [
+        "agreement",
+        0.0
+       ],
+       [
+        "is_seed",
+        0.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.3604
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.1111
+       ],
+       [
+        "topo_STRUCT[5]",
+        1.6094
+       ],
+       [
+        "topo_STRUCT[6]",
+        1.6094
+       ],
+       [
+        "topo_STRUCT[7]",
+        0.6934
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.4531
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.4841
+       ],
+       [
+        "depth_STRUCT[1]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.0278
+       ],
+       [
+        "depth_STRUCT[3]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.3513
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.4895
+       ],
+       [
+        "depth_STRUCT[6]",
+        2.1973
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.0
+       ],
+       [
+        "depth_STRUCT[8]",
+        1.0986
+       ],
+       [
+        "depth_STRUCT[9]",
+        1.2246
+       ],
+       [
+        "depth_STRUCT[10]",
+        2.709
+       ],
+       [
+        "depth_STRUCT[11]",
+        1.6094
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.1377
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.4907
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.5957
+       ],
+       [
+        "depth_STRUCT[16]",
+        3.6641
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.3398
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.3118
+       ],
+       [
+        "max_cos_seed",
+        0.3904
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.3633
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.6934
+       ],
+       [
+        "WALK[1]",
+        0.6934
+       ],
+       [
+        "WALK[2]",
+        2.709
+       ],
+       [
+        "WALK[3]",
+        0.6934
+       ],
+       [
+        "WALK[4]",
+        0.6934
+       ],
+       [
+        "WALK[5]",
+        0.0
+       ],
+       [
+        "WALK[6]",
+        0.0
+       ],
+       [
+        "WALK[7]",
+        0.0
+       ],
+       [
+        "WALK[8]",
+        0.0
+       ],
+       [
+        "WALK[9]",
+        0.6934
+       ],
+       [
+        "WALK[10]",
+        0.6934
+       ],
+       [
+        "WALK[11]",
+        1.6094
+       ],
+       [
+        "WALK[12]",
+        1.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        0.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.6934
+       ],
+       [
+        "DISTS[1]",
+        1.0
+       ],
+       [
+        "DISTS[2]",
+        0.4001
+       ],
+       [
+        "DISTS[3]",
+        0.0
+       ],
+       [
+        "DISTS[4]",
+        0.0
+       ],
+       [
+        "DISTS[5]",
+        0.0
+       ],
+       [
+        "DISTS[6]",
+        1.0986
+       ],
+       [
+        "DISTS[7]",
+        1.2246
+       ],
+       [
+        "DISTS[8]",
+        0.3716
+       ],
+       [
+        "DISTS[9]",
+        0.25
+       ],
+       [
+        "DISTS[10]",
+        0.0278
+       ],
+       [
+        "DISTS[11]",
+        0.1377
+       ],
+       [
+        "DISTS[12]",
+        0.6934
+       ],
+       [
+        "DISTS[13]",
+        1.6094
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        0.6934
+       ],
+       [
+        "WALKF[1]",
+        1.3867
+       ],
+       [
+        "WALKF[2]",
+        3.4648
+       ],
+       [
+        "WALKF[3]",
+        0.6934
+       ],
+       [
+        "WALKF[4]",
+        1.3867
+       ],
+       [
+        "WALKF[5]",
+        2.5645
+       ],
+       [
+        "WALKF[6]",
+        0.0
+       ],
+       [
+        "WALKF[7]",
+        0.0
+       ],
+       [
+        "WALKF[8]",
+        0.0
+       ],
+       [
+        "WALKF[9]",
+        0.6934
+       ],
+       [
+        "WALKF[10]",
+        1.3867
+       ],
+       [
+        "WALKF[11]",
+        1.792
+       ],
+       [
+        "WALKF[12]",
+        1.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        0.0
+       ],
+       [
+        "WALKF[16]",
+        0.0
+       ],
+       [
+        "WALKF[17]",
+        0.0
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.2024
+       ],
+       [
+        "_kt[1]",
+        0.3132
+       ],
+       [
+        "_kt[2]",
+        0.3635
+       ],
+       [
+        "_kt[3]",
+        0.1818
+       ],
+       [
+        "_kt[4]",
+        0.2197
+       ],
+       [
+        "_kt[5]",
+        0.3325
+       ],
+       [
+        "_kt[6]",
+        1.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": -1.3164
+     }
+    },
+    {
+     "row": 64,
+     "node": "2wiki:c35766399",
+     "title": null,
+     "text": "The Mother (Matka in Czech) is an anti-war drama written by Czech novelist and ...",
+     "gold": false,
+     "pool": "KIND_T fill 6",
+     "rrf_z": -0.5581,
+     "zrckp": {
+      "score": -2.8359,
+      "rank": 5
+     },
+     "zspk": {
+      "score": -4.7318,
+      "rank": 17
+     },
+     "links": 14
+    },
+    {
+     "row": 79,
+     "node": "2wiki:c44232",
+     "title": null,
+     "text": "Andrzej \u017bu\u0142awski (22 November 1940 \u2013 17 February 2016) was a Polish film director ...",
+     "gold": false,
+     "pool": "KIND_T fill 8",
+     "rrf_z": -0.8799,
+     "zrckp": {
+      "score": -4.0041,
+      "rank": 13
+     },
+     "zspk": {
+      "score": -2.9661,
+      "rank": 6
+     },
+     "links": 28
+    },
+    {
+     "row": 81,
+     "node": "2wiki:c44392",
+     "title": null,
+     "text": "Andrzej Witold Wajda ( 6 March 1926 \u2013 9 October 2016) was a Polish ...",
+     "gold": false,
+     "pool": "KIND_T fill 4",
+     "rrf_z": -0.3451,
+     "zrckp": {
+      "score": -1.9511,
+      "rank": 4
+     },
+     "zspk": {
+      "score": -2.4946,
+      "rank": 5
+     },
+     "links": 18
+    },
+    {
+     "row": 84,
+     "node": "2wiki:c4470831",
+     "title": null,
+     "text": "Mother (\"Mat\") is a 1926 Soviet drama film directed by Vsevolod Pudovkin depicting one ...",
+     "gold": false,
+     "pool": "base or seed",
+     "rrf_z": 2.3017,
+     "zrckp": {
+      "score": -2.9741,
+      "rank": 6
+     },
+     "zspk": {
+      "score": -3.8846,
+      "rank": 8
+     },
+     "links": 26
+    },
+    {
+     "row": 88,
+     "node": "2wiki:c46961177",
+     "title": "Polish-Russian War (film)",
+     "text": "Polish-Russian War (Wojna polsko-ruska) is a 2009 Polish film directed by Xawery \u017bu\u0142awski based ...",
+     "gold": true,
+     "pool": "base or seed",
+     "rrf_z": 2.5367,
+     "zrckp": {
+      "score": 1.3883,
+      "rank": 2
+     },
+     "zspk": {
+      "score": 1.1627,
+      "rank": 1
+     },
+     "links": 18,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        1.0
+       ],
+       [
+        "splade_rr",
+        1.0
+       ],
+       [
+        "rrf",
+        0.0328
+       ],
+       [
+        "agreement",
+        1.0
+       ],
+       [
+        "is_seed",
+        1.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.6675
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.3333
+       ],
+       [
+        "topo_STRUCT[5]",
+        1.3867
+       ],
+       [
+        "topo_STRUCT[6]",
+        1.3867
+       ],
+       [
+        "topo_STRUCT[7]",
+        1.792
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.4531
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.4104
+       ],
+       [
+        "depth_STRUCT[1]",
+        1.0986
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.15
+       ],
+       [
+        "depth_STRUCT[3]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.4575
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.5957
+       ],
+       [
+        "depth_STRUCT[6]",
+        3.332
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.5254
+       ],
+       [
+        "depth_STRUCT[8]",
+        1.3867
+       ],
+       [
+        "depth_STRUCT[9]",
+        1.8633
+       ],
+       [
+        "depth_STRUCT[10]",
+        2.6387
+       ],
+       [
+        "depth_STRUCT[11]",
+        1.3867
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.0345
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.4839
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.5679
+       ],
+       [
+        "depth_STRUCT[16]",
+        3.3672
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.4604
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.4458
+       ],
+       [
+        "max_cos_seed",
+        0.8237
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.8237
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.0
+       ],
+       [
+        "WALK[1]",
+        1.792
+       ],
+       [
+        "WALK[2]",
+        2.6387
+       ],
+       [
+        "WALK[3]",
+        0.0
+       ],
+       [
+        "WALK[4]",
+        0.0
+       ],
+       [
+        "WALK[5]",
+        0.0
+       ],
+       [
+        "WALK[6]",
+        0.0
+       ],
+       [
+        "WALK[7]",
+        0.0
+       ],
+       [
+        "WALK[8]",
+        0.0
+       ],
+       [
+        "WALK[9]",
+        0.0
+       ],
+       [
+        "WALK[10]",
+        1.3867
+       ],
+       [
+        "WALK[11]",
+        1.3867
+       ],
+       [
+        "WALK[12]",
+        0.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        1.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.0
+       ],
+       [
+        "DISTS[1]",
+        0.0
+       ],
+       [
+        "DISTS[2]",
+        0.0
+       ],
+       [
+        "DISTS[3]",
+        1.0986
+       ],
+       [
+        "DISTS[4]",
+        1.2246
+       ],
+       [
+        "DISTS[5]",
+        0.5483
+       ],
+       [
+        "DISTS[6]",
+        1.3867
+       ],
+       [
+        "DISTS[7]",
+        1.8633
+       ],
+       [
+        "DISTS[8]",
+        0.4917
+       ],
+       [
+        "DISTS[9]",
+        0.0
+       ],
+       [
+        "DISTS[10]",
+        0.15
+       ],
+       [
+        "DISTS[11]",
+        0.0345
+       ],
+       [
+        "DISTS[12]",
+        1.3867
+       ],
+       [
+        "DISTS[13]",
+        1.3867
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        0.0
+       ],
+       [
+        "WALKF[1]",
+        2.6387
+       ],
+       [
+        "WALKF[2]",
+        3.8496
+       ],
+       [
+        "WALKF[3]",
+        0.0
+       ],
+       [
+        "WALKF[4]",
+        2.0801
+       ],
+       [
+        "WALKF[5]",
+        1.6094
+       ],
+       [
+        "WALKF[6]",
+        0.0
+       ],
+       [
+        "WALKF[7]",
+        2.0801
+       ],
+       [
+        "WALKF[8]",
+        1.6094
+       ],
+       [
+        "WALKF[9]",
+        0.0
+       ],
+       [
+        "WALKF[10]",
+        2.4844
+       ],
+       [
+        "WALKF[11]",
+        2.3027
+       ],
+       [
+        "WALKF[12]",
+        0.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        1.0
+       ],
+       [
+        "WALKF[16]",
+        0.0
+       ],
+       [
+        "WALKF[17]",
+        0.0
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.0
+       ],
+       [
+        "_kt[1]",
+        0.0
+       ],
+       [
+        "_kt[2]",
+        0.1566
+       ],
+       [
+        "_kt[3]",
+        0.0
+       ],
+       [
+        "_kt[4]",
+        0.0
+       ],
+       [
+        "_kt[5]",
+        0.0
+       ],
+       [
+        "_kt[6]",
+        0.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": 2.5367
+     }
+    },
+    {
+     "row": 101,
+     "node": "2wiki:c6931375",
+     "title": null,
+     "text": "Mark Semyonovich Donskoy (\u2013 21 March 1981) was a Soviet film director and screenwriter. ...",
+     "gold": false,
+     "pool": "KIND_T fill 23",
+     "rrf_z": -1.3164,
+     "zrckp": {
+      "score": -3.0947,
+      "rank": 8
+     },
+     "zspk": {
+      "score": -4.2968,
+      "rank": 11
+     },
+     "links": 12
+    },
+    {
+     "row": 106,
+     "node": "2wiki:c9871302",
+     "title": null,
+     "text": "Miros\u0142aw \u017bu\u0142awski (January 16, 1913 \u2013 February 17, 1995) was a Polish writer, prosaist, ...",
+     "gold": false,
+     "pool": "KIND_T fill 3",
+     "rrf_z": 0.2675,
+     "zrckp": {
+      "score": -3.0696,
+      "rank": 7
+     },
+     "zspk": {
+      "score": -2.0991,
+      "rank": 4
+     },
+     "links": 16
+    },
+    {
+     "row": 107,
+     "node": "2wiki:c9881324",
+     "title": "Xawery \u017bu\u0142awski",
+     "text": "Xawery \u017bu\u0142awski (born 22 December 1971 in Warsaw) is a Polish film director. In ...",
+     "gold": true,
+     "pool": "base or seed",
+     "rrf_z": 1.0048,
+     "zrckp": {
+      "score": 1.4189,
+      "rank": 1
+     },
+     "zspk": {
+      "score": 0.781,
+      "rank": 2
+     },
+     "links": 44,
+     "features": {
+      "rank": [
+       [
+        "dense_rr",
+        0.0667
+       ],
+       [
+        "splade_rr",
+        0.0104
+       ],
+       [
+        "rrf",
+        0.0197
+       ],
+       [
+        "agreement",
+        1.0
+       ],
+       [
+        "is_seed",
+        0.0
+       ]
+      ],
+      "dense_cos": [
+       [
+        "dense_cos",
+        0.5659
+       ]
+      ],
+      "topo_STRUCT": [
+       [
+        "topo_STRUCT[0]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[1]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[2]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[3]",
+        0.0
+       ],
+       [
+        "topo_STRUCT[4]",
+        0.3333
+       ],
+       [
+        "topo_STRUCT[5]",
+        2.3027
+       ],
+       [
+        "topo_STRUCT[6]",
+        2.3027
+       ],
+       [
+        "topo_STRUCT[7]",
+        1.6094
+       ],
+       [
+        "topo_STRUCT[8]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[9]",
+        1.0
+       ],
+       [
+        "topo_STRUCT[10]",
+        4.4531
+       ]
+      ],
+      "depth_STRUCT": [
+       [
+        "depth_STRUCT[0]",
+        0.3921
+       ],
+       [
+        "depth_STRUCT[1]",
+        1.0986
+       ],
+       [
+        "depth_STRUCT[2]",
+        0.0377
+       ],
+       [
+        "depth_STRUCT[3]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[4]",
+        0.4871
+       ],
+       [
+        "depth_STRUCT[5]",
+        0.5957
+       ],
+       [
+        "depth_STRUCT[6]",
+        3.7129
+       ],
+       [
+        "depth_STRUCT[7]",
+        0.6001
+       ],
+       [
+        "depth_STRUCT[8]",
+        1.792
+       ],
+       [
+        "depth_STRUCT[9]",
+        3.4629
+       ],
+       [
+        "depth_STRUCT[10]",
+        3.7129
+       ],
+       [
+        "depth_STRUCT[11]",
+        2.3027
+       ],
+       [
+        "depth_STRUCT[12]",
+        0.0683
+       ],
+       [
+        "depth_STRUCT[13]",
+        1.0
+       ],
+       [
+        "depth_STRUCT[14]",
+        0.4897
+       ],
+       [
+        "depth_STRUCT[15]",
+        0.5894
+       ],
+       [
+        "depth_STRUCT[16]",
+        2.7734
+       ],
+       [
+        "depth_STRUCT[17]",
+        0.5322
+       ]
+      ],
+      "SEMB": "learned product of the question's embedding and the node's projection (257)",
+      "SEED": [
+       [
+        "cos_seed_mean",
+        0.458
+       ],
+       [
+        "max_cos_seed",
+        0.5503
+       ],
+       [
+        "max_cos_rank1_seed",
+        0.5317
+       ]
+      ],
+      "WALK": [
+       [
+        "WALK[0]",
+        0.6934
+       ],
+       [
+        "WALK[1]",
+        1.6094
+       ],
+       [
+        "WALK[2]",
+        3.7129
+       ],
+       [
+        "WALK[3]",
+        0.6934
+       ],
+       [
+        "WALK[4]",
+        0.0
+       ],
+       [
+        "WALK[5]",
+        0.0
+       ],
+       [
+        "WALK[6]",
+        0.0
+       ],
+       [
+        "WALK[7]",
+        0.0
+       ],
+       [
+        "WALK[8]",
+        0.0
+       ],
+       [
+        "WALK[9]",
+        0.6934
+       ],
+       [
+        "WALK[10]",
+        1.0986
+       ],
+       [
+        "WALK[11]",
+        2.3027
+       ],
+       [
+        "WALK[12]",
+        1.0
+       ],
+       [
+        "WALK[13]",
+        0.0
+       ],
+       [
+        "WALK[14]",
+        0.0
+       ],
+       [
+        "WALK[15]",
+        0.0
+       ]
+      ],
+      "DISTS": [
+       [
+        "DISTS[0]",
+        0.6934
+       ],
+       [
+        "DISTS[1]",
+        1.0
+       ],
+       [
+        "DISTS[2]",
+        0.5859
+       ],
+       [
+        "DISTS[3]",
+        1.0986
+       ],
+       [
+        "DISTS[4]",
+        1.2246
+       ],
+       [
+        "DISTS[5]",
+        0.6343
+       ],
+       [
+        "DISTS[6]",
+        1.792
+       ],
+       [
+        "DISTS[7]",
+        3.4648
+       ],
+       [
+        "DISTS[8]",
+        0.5674
+       ],
+       [
+        "DISTS[9]",
+        0.1111
+       ],
+       [
+        "DISTS[10]",
+        0.0377
+       ],
+       [
+        "DISTS[11]",
+        0.0684
+       ],
+       [
+        "DISTS[12]",
+        1.0986
+       ],
+       [
+        "DISTS[13]",
+        2.3027
+       ]
+      ],
+      "WALKF": [
+       [
+        "WALKF[0]",
+        1.0986
+       ],
+       [
+        "WALKF[1]",
+        1.792
+       ],
+       [
+        "WALKF[2]",
+        5.1055
+       ],
+       [
+        "WALKF[3]",
+        1.0986
+       ],
+       [
+        "WALKF[4]",
+        0.6934
+       ],
+       [
+        "WALKF[5]",
+        4.1445
+       ],
+       [
+        "WALKF[6]",
+        0.6934
+       ],
+       [
+        "WALKF[7]",
+        0.6934
+       ],
+       [
+        "WALKF[8]",
+        3.3672
+       ],
+       [
+        "WALKF[9]",
+        1.0986
+       ],
+       [
+        "WALKF[10]",
+        1.3867
+       ],
+       [
+        "WALKF[11]",
+        3.1348
+       ],
+       [
+        "WALKF[12]",
+        1.0
+       ],
+       [
+        "WALKF[13]",
+        0.0
+       ],
+       [
+        "WALKF[14]",
+        0.0
+       ],
+       [
+        "WALKF[15]",
+        0.0
+       ],
+       [
+        "WALKF[16]",
+        0.6934
+       ],
+       [
+        "WALKF[17]",
+        0.0
+       ]
+      ],
+      "_kt": [
+       [
+        "_kt[0]",
+        0.0783
+       ],
+       [
+        "_kt[1]",
+        0.2981
+       ],
+       [
+        "_kt[2]",
+        0.26
+       ],
+       [
+        "_kt[3]",
+        0.1241
+       ],
+       [
+        "_kt[4]",
+        0.1241
+       ],
+       [
+        "_kt[5]",
+        0.1241
+       ],
+       [
+        "_kt[6]",
+        0.0
+       ],
+       [
+        "_kt[7]",
+        0.0
+       ]
+      ],
+      "rrf_z": 1.0048
+     }
+    }
+   ],
+   "links": [
+    {
+     "a": 29,
+     "b": 88,
+     "family": "structural"
+    },
+    {
+     "a": 29,
+     "b": 107,
+     "family": "structural"
+    },
+    {
+     "a": 79,
+     "b": 106,
+     "family": "kNN"
+    },
+    {
+     "a": 79,
+     "b": 106,
+     "family": "named-entity"
+    },
+    {
+     "a": 79,
+     "b": 106,
+     "family": "structural"
+    },
+    {
+     "a": 79,
+     "b": 107,
+     "family": "kNN"
+    },
+    {
+     "a": 79,
+     "b": 107,
+     "family": "named-entity"
+    },
+    {
+     "a": 79,
+     "b": 107,
+     "family": "structural"
+    },
+    {
+     "a": 88,
+     "b": 107,
+     "family": "named-entity"
+    },
+    {
+     "a": 88,
+     "b": 107,
+     "family": "structural"
+    },
+    {
+     "a": 106,
+     "b": 107,
+     "family": "kNN"
+    },
+    {
+     "a": 106,
+     "b": 107,
+     "family": "named-entity"
+    }
+   ],
+   "blocks": [
+    "rank",
+    "dense_cos",
+    "topo_STRUCT",
+    "depth_STRUCT",
+    "SEMB",
+    "SEED",
+    "WALK",
+    "DISTS",
+    "WALKF"
+   ],
+   "other_inputs": [
+    "_kt"
+   ]
+  }
+ },
+ "seconds": 12.9,
+ "script_sha256": "456b174f0b8ae1feda2f851a00164410efb251fed24209e9b155a9756921f1b4",
+ "utc": "2026-10-15T10:21:39Z"
+}
