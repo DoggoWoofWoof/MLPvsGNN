@@ -1,0 +1,101 @@
+{
+ "stage": "L3",
+ "declared_in": "docs/L3_KIND_OFFSETS_FROZEN.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not L3's, or not twelve reads (docs/L3_KIND_OFFSETS_FROZEN.md, section 3)",
+ "arms": {
+  "zrckpo": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [
+    "L-musique webqsp"
+   ],
+   "problems": [],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "LOSS",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0043,
+    "L-musique squad": 0.0,
+    "L-musique musique": 0.0,
+    "L-musique hotpotqa": 0.0,
+    "L-musique 2wiki": 0.0,
+    "L-musique webqsp": -0.0108,
+    "L-hotpotqa metaqa": 0.0013,
+    "L-hotpotqa squad": 0.0,
+    "L-hotpotqa musique": 0.0,
+    "L-hotpotqa hotpotqa": 0.0,
+    "L-hotpotqa 2wiki": 0.0,
+    "L-hotpotqa webqsp": 0.0011
+   },
+   "untyped_deltas": {
+    "L-musique squad": 0.0,
+    "L-musique musique": 0.0,
+    "L-musique hotpotqa": 0.0,
+    "L-musique 2wiki": 0.0,
+    "L-hotpotqa squad": 0.0,
+    "L-hotpotqa musique": 0.0,
+    "L-hotpotqa hotpotqa": 0.0,
+    "L-hotpotqa 2wiki": 0.0
+   },
+   "recall_sha256": "c2a3fda11d14480aa39608040e0716384cef813b28d6eba58405ffe63beecae8"
+  },
+  "zspko": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.003,
+    "L-musique squad": 0.0,
+    "L-musique musique": 0.0,
+    "L-musique hotpotqa": 0.0,
+    "L-musique 2wiki": 0.0,
+    "L-musique webqsp": 0.0079,
+    "L-hotpotqa metaqa": 0.0016,
+    "L-hotpotqa squad": 0.0,
+    "L-hotpotqa musique": 0.0,
+    "L-hotpotqa hotpotqa": 0.0,
+    "L-hotpotqa 2wiki": 0.0,
+    "L-hotpotqa webqsp": 0.0044
+   },
+   "untyped_deltas": {
+    "L-musique squad": 0.0,
+    "L-musique musique": 0.0,
+    "L-musique hotpotqa": 0.0,
+    "L-musique 2wiki": 0.0,
+    "L-hotpotqa squad": 0.0,
+    "L-hotpotqa musique": 0.0,
+    "L-hotpotqa hotpotqa": 0.0,
+    "L-hotpotqa 2wiki": 0.0
+   },
+   "recall_sha256": "34203fac733aba6587e693c975de4641937843e8887b346af5f03cee8022ce5d"
+  }
+ },
+ "zl3ck_sha256": "97e70fb87e47dfb27d200f79f1235c6a8d9b6977fd41c7587a36fe57f3cbd82d",
+ "utc": "2026-10-15T17:01:55Z"
+}

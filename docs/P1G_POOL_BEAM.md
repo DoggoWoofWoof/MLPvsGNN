@@ -143,4 +143,30 @@ Coverage comes first: no candidate below a target can win on rows.
 
 ## 9. Results
 
-Not run yet.
+Filed 17 October 2026, 03:05 (`outputs/p1g/verdict.json`), from the six `stats` runs that finished on the host on
+15 October. **TARGET_MET.**
+
+Chosen on s1sel: `f3+beam1_res_P200_m10` (three times today's fill along KIND_T's order, plus beam1 by the residual
+score from B's first 200 nodes, 10 neighbours each). Its cost is 2,263.4 rows against today's 699.7.
+
+| dataset | target | today ALL / rows | chosen ALL / rows |
+| --- | ---: | --- | --- |
+| metaqa | 0.9500 | 0.9519 / 2,022 | 0.9886 / 6,184 |
+| squad | 0.9500 | 0.9793 / 50 | 0.9880 / 298 |
+| musique | 0.9500 | 0.8846 / 2,094 | 0.9537 / 6,280 |
+| hotpotqa | 0.9500 | 0.9556 / 94 | 0.9861 / 478 |
+| 2wiki | 0.9500 | 0.9525 / 105 | 0.9693 / 573 |
+| webqsp (s1eval, beside) | | 0.8410 / 2,120 | 0.9215 / 6,314 |
+
+**Beside: the cheapest rule per dataset** (an upper bound on what one rule could save, never a pick):
+- metaqa `f1+none`, 2,022 rows (today's pool);
+- squad `f0.25+none`, 50 rows;
+- musique `f2+cut_rrf_3000`, 5,612 rows;
+- hotpotqa `f0.5+beam2_res_P10_m1`, 86 rows;
+- 2wiki `f1+none`, 105 rows (today's pool).
+
+musique sets the price. Only it needs thousands of extra rows to reach 0.95, and one rule for all six then gives
+hotpotqa and 2wiki five to fourteen times the rows they need.
+
+P1g-b builds P1g2's choice, not this one: P1g2 chose over these 805 rules and their gated forms together
+([P1G2_GATED_EXTRA.md](P1G2_GATED_EXTRA.md), section 6).

@@ -84,4 +84,10 @@ base in the lean pair.
 
 ## 5. Results
 
-Not run yet.
+Filed 15 October 2026, 22:17 on the host (`outputs/l1/screen-verdict.json`; fetched 17 October after the host's
+outage). **zrckps NOT_ADOPTED, zspks NOT_ADOPTED.**
+- **zrckps** against zrckp's card fits (`scr-p1c3p-zrckp`), after the seed-null re-call: 0 GAIN, 0 LOSS in its twelve
+  reads.
+- **zspks** against zspk's card fits (`scr-p1c3-zspk`): 0 GAIN, 0 LOSS.
+
+zsep's separation term trained on the lean pair moves no read beyond the seed null. It is not taken further.

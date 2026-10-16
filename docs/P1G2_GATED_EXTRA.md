@@ -80,4 +80,28 @@ arrays equal to the filed one.
 
 ## 6. Results
 
-Not run yet.
+Filed 17 October 2026, 03:05 (`outputs/p1g2/verdict.json`). **TARGET_MET.**
+
+Chosen on s1sel, over the 1,603 rules: `g:f1.5+cut_cos_5000`, gated. That is 1.5 times today's fill along KIND_T's
+order, plus the first 5,000 of B's one-link neighbours by the question's cosine, the extra set only where KIND_T
+expands. Its cost is 1,975.5 rows against today's 699.7 and P1g's own pick's 2,263.4, so it holds the target with 13%
+fewer rows than P1g's pick.
+
+| dataset | target | today ALL / rows | chosen ALL / rows |
+| --- | ---: | --- | --- |
+| metaqa | 0.9500 | 0.9519 / 2,022 | 0.9646 / 3,406 |
+| squad | 0.9500 | 0.9793 / 50 | 0.9793 / 50 |
+| musique | 0.9500 | 0.8846 / 2,094 | 0.9505 / 6,600 |
+| hotpotqa | 0.9500 | 0.9556 / 94 | 0.9914 / 1,091 |
+| 2wiki | 0.9500 | 0.9525 / 105 | 0.9693 / 1,486 |
+| webqsp (s1eval, beside) | | 0.8410 / 2,120 | 0.9328 / 4,740 |
+
+- **The gate acts only on squad.** All 1,498 of its s1sel questions have fill 0, so squad keeps today's 50 rows at
+  0.979. On the other datasets every question has a fill above 0, so the extra set applies to all of them.
+- **musique still sets the price** (6,600 rows for 0.9505), as in P1g. A label-free gate that expanded only the
+  questions that need it would be the next way to cut rows on hotpotqa and 2wiki. The gate here (today's fill above 0)
+  is open on every question outside squad, so it cannot do that.
+- **s1eval, beside:** the five `p1g2-eval-<D>` runs are queued with P1g-b. P1g-b's pools check their own s1eval
+  counts against them.
+
+P1g-b ([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)) builds these pools and refits the lean pair on them.

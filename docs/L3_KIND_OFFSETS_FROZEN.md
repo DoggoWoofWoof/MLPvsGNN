@@ -94,4 +94,11 @@ differences (expected 0, or within the card's float noise).
 
 ## 5. Results
 
-Not run yet.
+Filed 15 October 2026, 22:31 on the host (`outputs/l3/screen-verdict.json`; fetched 17 October after the host's
+outage). **zrckpo NOT_ADOPTED, zspko NOT_ADOPTED.**
+- **zrckpo** against the frozen zrckp fits: 0 GAIN, 1 LOSS (webqsp zero-shot on L-musique's fit).
+- **zspko** against the frozen zspk fits: 0 GAIN, 0 LOSS.
+- The untyped reads' R@5 differences are 0.0 on all eight, for both arms: the frozen forward is unchanged there, as
+  declared.
+
+zck's per-kind offsets on a frozen base gain nothing and cost webqsp zero-shot once. They are not taken further.
