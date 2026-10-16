@@ -994,6 +994,47 @@ walking):
 Details: [P1C3_KT_INPUT.md](P1C3_KT_INPUT.md), [P1C3P_FULL_RUN.md](P1C3P_FULL_RUN.md), [SCREENS.md](SCREENS.md),
 [ZN_LEAN_NO_MP.md](ZN_LEAN_NO_MP.md), [P3C_CLAIM1_INTERVALS.md](P3C_CLAIM1_INTERVALS.md).
 
+### 7.6 What is being tried now (16 October): better training, not bigger models
+
+G2 (a three-layer GNN that passes hidden states) added nothing over zspk's one propagation step once training luck was
+counted (7.5's lesson again). So the next screens change **how the lean pair learns**, not its size. Each one is a
+declared screen: one card fit per arm on L-musique and L-hotpotqa, judged against the same arm's own card fit. None is
+adopted on today's pools. An arm that passes is fitted again on the final pools before its full run.
+
+| screen | what changes in training | why |
+| --- | --- | --- |
+| **L1** zsep's loss | each gold is scored against the non-gold rows only | lean_gpu's loss puts the other golds in each gold's denominator, so once one gold leads the others get little push. Multi-gold questions are the ones the pair misses |
+| **L3** offsets on a frozen fit | only zkind's 130 offset weights train; the fit is frozen | zck gained on chain questions but lost on 2wiki through weights it shared. Frozen, the passage graphs keep the fit's own scores |
+| **T1** granularity transforms | metaqa's training questions see their relations merged three at a time, or half of them reified through mediator nodes | webqsp, read zero-shot, has many more relations than metaqa's 9, and most of its facts pass through mediators. S6 showed the transforms lift webqsp in a standalone scorer (+6.43); they were never tried in the models |
+| **E1** EM over chains | the chain head is also trained to say which relation chain leads to the golds | today the chain head learns only through the ranking loss, behind gates that start at zero |
+
+**E1 by hand** *(illustration)*. Take a metaqa question like "Who directed the films that X acted in?". Its pool has two typed chains
+from X:
+- c1 = (starred_actors reversed, directed_by);
+- c2 = (starred_actors reversed, written_by).
+
+The chain head gives each chain a log weight: lw(c1) = −1.0 and lw(c2) = −0.5. So, as a choice between the two:
+
+    P(c1) = e^−1.0 / (e^−1.0 + e^−0.5) = 0.378        P(c2) = 0.622
+
+The head prefers the wrong chain. The walk along c1 puts 0.6 of its mass on gold rows (the directors), and c2's puts
+0.1 there (some writers also direct). The chance that a chain drawn from the head's weights lands on a gold is
+
+    p(gold) = 0.378 × 0.6 + 0.622 × 0.1 = 0.289        L_path = −ln 0.289 = 1.24
+
+Knowing the golds, the posterior says which chain explains them: P(c1 | gold) = 0.378 × 0.6 / 0.289 = 0.784. EM moves
+the head's weights from the prior (0.378) toward that posterior (0.784). The gradient of L_path in lw(c1) is exactly
+−(0.784 − 0.378), so one gradient step on L_path is one step of EM. After training, the head should weigh
+directed_by-type chains up for "who directed" questions. Because each step's match is made from the relation's
+*name* (its embedding), the same learning can carry to webqsp's relations, which were never trained on.
+
+E1 changes only the training loss (E1_LATENT_CHAIN_EM.md). The forward is unchanged bit for bit, so serving and latency
+are unchanged, and the MLP still sees no other row's score.
+
+Details: [L1_SEP_LEAN_PAIR.md](L1_SEP_LEAN_PAIR.md), [L3_KIND_OFFSETS_FROZEN.md](L3_KIND_OFFSETS_FROZEN.md),
+[T1_GRANULARITY_TRANSFORMS.md](T1_GRANULARITY_TRANSFORMS.md), [E1_LATENT_CHAIN_EM.md](E1_LATENT_CHAIN_EM.md),
+[G2_HIDDEN_STATE_GNN.md](G2_HIDDEN_STATE_GNN.md).
+
 ## 8. Generalization: does it work on data it never saw?
 
 ### 8.1 How we test it
