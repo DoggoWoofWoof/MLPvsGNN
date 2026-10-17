@@ -610,7 +610,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   17 October ([VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md)) reopens the idea. Its next form is P5c:
   g's scores as a fixed input to both models, where a trained head can learn to ignore them on musique.
 
-## 7. Running now (17 October, 11:00)
+## 7. Running now (17 October, 14:10)
 
 - **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
   KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
@@ -621,9 +621,14 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   failed at 04:27 on a Windows file lock (WinError 32 on its last rename). The feeder dropped its 128 dependent items,
   and they were re-queued at 09:09 with the build under retries. Its full run
   ([P1GB_FULL_RUN.md](P1GB_FULL_RUN.md), 9bc6e41) is queued behind its screen and gated on it.
-- **R1** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)) on the card: G3's bridge residual as a fixed input to both
-  models.
+- **On the card:** A2 ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)), pool ranks and top-50 z-scores beside zret's
+  z-scores in both models. P5c's builds ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
+  - **R1: zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)): the bridge
+    residual as nine fixed columns. The MLP gains webqsp zero-shot (+0.0135, L-musique) with no LOSS. The GNN moves
+    nothing past the floor. musique in domain: MLP +0.0034, GNN +0.0011, both within the floor. Next forms:
+    zrckpr's refit and full run on P1g-b's pools, with the columns beside zspx's inputs too; the audit's item 13
+    (G1b's bridge columns on zspk).
   - **G5 ADOPT_FOR_FULL_RUN** ([G5_COMBINED_GNN.md](G5_COMBINED_GNN.md)): zspx (zspk with its step end to end, G3's
     residual message and G4's second step) has 2 GAIN and no LOSS. musique in-domain rises +0.0147 (L-hotpotqa),
     more than any single change. webqsp zero-shot rises +0.0235 (L-hotpotqa), where no single change was a GAIN.

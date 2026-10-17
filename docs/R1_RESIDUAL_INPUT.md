@@ -3,6 +3,8 @@
 Declared 17 October 2026, before any number. Code: `outputs/mp_unified/zr1res.py`. Two arms, one per model. Both read
 the same nine columns, computed before either model runs.
 
+Status: RUN 17 October 2026. zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED (section 6).
+
 ## 1. Why this, now
 
 - **Claim 1 is not shown on musique.** The MLP keeps 0.933 of the GNN's R@5 gain there, with a 95% interval of
@@ -129,4 +131,41 @@ edge) and three sums per row. Both models share it, and it is timed cold beside 
 
 ## 6. Results
 
-Not run yet.
+Run 17 October 2026 on the host: the 39 builds, four fits, four reads, compares, pairs, re-calls and the verdict (`outputs/r1/screen-verdict.json` and `.md`, `outputs/screen/scr-r1-*`).
+
+**Verdict: zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED.**
+
+R@5 of each arm minus its base's card fit of the same split (95% question bootstrap). The call is the re-call under the seed null; a call the null changed is marked with its filed call.
+
+| split | dataset | read | zrckpr − zrckp | call | zspkr − zspk | call |
+| --- | --- | --- | ---: | --- | ---: | --- |
+| L-musique | metaqa | in-domain | -0.0007 [-0.0016, +0.0002] | WITHIN | +0.0017 [+0.0008, +0.0026] | WITHIN |
+| L-musique | squad | in-domain | +0.0011 [-0.0006, +0.0028] | WITHIN | +0.0021 [+0.0000, +0.0041] | WITHIN |
+| L-musique | musique | zero-shot | +0.0076 [+0.0028, +0.0125] | WITHIN (filed GAIN) | -0.0079 [-0.0141, -0.0017] | WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | +0.0018 [-0.0003, +0.0038] | WITHIN | -0.0005 [-0.0026, +0.0017] | WITHIN |
+| L-musique | 2wiki | in-domain | +0.0014 [-0.0000, +0.0028] | WITHIN | -0.0041 [-0.0055, -0.0027] | WITHIN |
+| L-musique | webqsp | zero-shot | +0.0135 [+0.0032, +0.0239] | GAIN | -0.0005 [-0.0089, +0.0077] | WITHIN |
+| L-hotpotqa | metaqa | in-domain | -0.0004 [-0.0012, +0.0005] | WITHIN | -0.0016 [-0.0024, -0.0006] | WITHIN |
+| L-hotpotqa | squad | in-domain | -0.0013 [-0.0033, +0.0006] | WITHIN | -0.0003 [-0.0021, +0.0017] | WITHIN |
+| L-hotpotqa | musique | in-domain | +0.0034 [-0.0015, +0.0086] | WITHIN | +0.0011 [-0.0042, +0.0064] | WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | +0.0045 [+0.0016, +0.0074] | WITHIN | -0.0032 [-0.0061, -0.0003] | WITHIN |
+| L-hotpotqa | 2wiki | in-domain | -0.0019 [-0.0034, -0.0003] | WITHIN | -0.0009 [-0.0025, +0.0007] | WITHIN |
+| L-hotpotqa | webqsp | zero-shot | -0.0064 [-0.0156, +0.0028] | WITHIN | +0.0078 [-0.0012, +0.0169] | WITHIN |
+
+- **zrckpr:** 1 GAIN (L-musique webqsp), 0 LOSS (none) of twelve after the re-call.
+- **zspkr:** 0 GAIN (none), 0 LOSS (none) of twelve after the re-call.
+
+**Reported beside, deciding nothing.**
+- musique in domain (L-hotpotqa), Claim 1's read: the MLP +0.0034, the GNN +0.0011, both WITHIN. R1 moves the MLP's musique at least as much as the GNN's, but neither change is above the floor, so Claim 1's musique share is not recomputed from this screen.
+- webqsp zero-shot (L-musique), the MLP's GAIN: R@5 +0.0135, FC@5 +0.0073, hit@1 +0.0106. The GNN's read there: -0.0005.
+- metaqa in domain: zrckpr −0.0007 and −0.0004, zspkr +0.0017 and −0.0016, all WITHIN.
+- The null turned one filed call each: zrckpr's L-musique musique GAIN (+0.0076) and zspkr's L-musique musique LOSS (−0.0079) are both WITHIN its floor of 0.0720.
+
+**This verdict closes only this form** (docs/SCREENS.md section 3b): R1's nine columns through a pointwise head, on P1c2's pools, for zrckp and zspk.
+
+**What follows**, each in its own file, declared before its numbers:
+- **zrckpr (ADOPT_FOR_FULL_RUN):** refit on P1g-b's pools, which needs G3's and R1's builds on P1g-b's parts, then its full run (section 4's "What follows"). Only the MLP passed, so that file also decides whether F1's one-input-set rule keeps the input: R1's columns go beside zspx's inputs in the same full run, so both models read them and the GNN can learn to leave them at zero.
+- **zspkr (NOT_ADOPTED, no GAIN and no LOSS):** on zspk the pointwise copy moved nothing past the floor. zspx, the
+  GNN going on to P1g-b's pools, already reads the residual as G3's message, and R1's columns reach it in zrckpr's
+  full run (above). The audit's conditional item now runs: G1b's bridge columns (zbr's) on zspk,
+  docs/A13_BRIDGE_COLUMNS_GNN.md (docs/VERDICT_AUDIT_2026_10_17.md, section 2).

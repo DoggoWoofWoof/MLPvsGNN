@@ -60,6 +60,9 @@ in its own file before its full run, as G5's and R1's winners are.
 MLP as inputs (round 29, zbr: NO_GAIN). R1's residual carries the bridge signal to both models now. If R1 is
 NOT_ADOPTED, zbr's columns on zspk are its next form (docs/A13_BRIDGE_COLUMNS_GNN.md).
 
+**17 October, R1 filed:** zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED (docs/R1_RESIDUAL_INPUT.md, section 6). The
+GNN's arm failed, so this item runs, as the thirteenth reopening.
+
 ## 3. Era 6, the screens: rounds 1 to 33 (7 to 12 October)
 
 | verdict | the form tested | read | status |
