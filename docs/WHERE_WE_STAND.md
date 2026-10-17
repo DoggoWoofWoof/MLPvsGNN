@@ -606,9 +606,11 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   (0.076 at 10, against H2's 0.009). On musique, where g knows nothing, it puts 0.90 on H2.
 - **Why musique still loses:** below a weight of 1, g's rank still moves nodes in H2's order. musique's low golds sit
   one link from the seeds, where H2's cosine orders them best and g's rank is noise.
-- **The learned offsets close,** and P5c does not start.
+- **This closed only the forms tested:** a fixed fusion and a gate, read without a ranking model. The audit of
+  17 October ([VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md)) reopens the idea. Its next form is P5c:
+  g's scores as a fixed input to both models, where a trained head can learn to ignore them on musique.
 
-## 7. Running now (17 October, 10:00)
+## 7. Running now (17 October, 11:00)
 
 - **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
   KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
@@ -619,9 +621,13 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   failed at 04:27 on a Windows file lock (WinError 32 on its last rename). The feeder dropped its 128 dependent items,
   and they were re-queued at 09:09 with the build under retries. Its full run
   ([P1GB_FULL_RUN.md](P1GB_FULL_RUN.md), 9bc6e41) is queued behind its screen and gated on it.
-- **G5** ([G5_COMBINED_GNN.md](G5_COMBINED_GNN.md)) on the card: the three GNN changes that passed, in one model.
-  Verdict due about 10:45.
+- **R1** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)) on the card: G3's bridge residual as a fixed input to both
+  models.
 - **Filed on 17 October:**
+  - **G5 ADOPT_FOR_FULL_RUN** ([G5_COMBINED_GNN.md](G5_COMBINED_GNN.md)): zspx (zspk with its step end to end, G3's
+    residual message and G4's second step) has 2 GAIN and no LOSS. musique in-domain rises +0.0147 (L-hotpotqa),
+    more than any single change. webqsp zero-shot rises +0.0235 (L-hotpotqa), where no single change was a GAIN.
+    zspx is the GNN that goes on to P1g-b's pools, in its own declared full run.
   - **G3 ADOPT_FOR_FULL_RUN** ([G3_BRIDGE_RESIDUAL.md](G3_BRIDGE_RESIDUAL.md)): the bridge-residual message lifts
     musique in-domain +0.0096 (L-hotpotqa) and zero-shot +0.0114 (L-musique, within its wide floor), with no LOSS.
   - **G4: both arms ADOPT_FOR_FULL_RUN** ([G4_DEEPER_PROPAGATION.md](G4_DEEPER_PROPAGATION.md)): a second

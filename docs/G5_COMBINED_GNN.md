@@ -87,4 +87,39 @@ own. Either way the refit is its own file, declared before its numbers.
 
 ## 5. Results
 
-Not run yet.
+Filed 17 October 2026 from the host's records (`outputs/g5/screen-verdict.json`, written 2026-10-17T05:27:11Z; the re-call `outputs/screen/scr-g5-zspx-pair-recall.json`). **zspx ADOPT_FOR_FULL_RUN.**
+
+- **zspx: 2 GAIN, 0 LOSS.**
+  - musique in-domain rises 0.0147 on L-hotpotqa ([+0.0095, +0.0198]). That is more than any single change on that
+    read: zspr +0.0096, zspk2 +0.0115, zspkg +0.0093. So the three changes add up in part, not in full.
+  - webqsp zero-shot rises 0.0235 on L-hotpotqa ([+0.0133, +0.0327], floor 0.0233). No single change was a GAIN
+    there; zspkg's +0.0152 was the largest.
+- On L-musique, zero-shot musique rises 0.0061 (WITHIN under that read's floor of 0.072). zspr's +0.0114 there was
+  larger.
+- **Beside:** metaqa in-domain is +0.0021 and −0.0000, and webqsp zero-shot on L-musique is −0.0025 (all WITHIN).
+  2wiki in-domain falls a little on both splits (−0.0032 and −0.0020), within its floor.
+
+**What follows** (section 3's rule):
+- zspx is the GNN that goes on to P1g-b's pools. Its full run there is its own file, declared before its numbers,
+  and queued behind P1g-b's screen.
+- The single changes do not go on separately.
+- Claim 1 gets harder on musique: the GNN's musique gain grows by about 0.015, and the MLP has no message to match
+  it. R1 (docs/R1_RESIDUAL_INPUT.md) gives both models the residual's bridge as a fixed input. Its musique read,
+  filed beside R1's verdict, is the next form for the MLP's side.
+
+zspx's twelve reads after the seed-null re-call (delta = zspx's R@5 minus zspk's; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | base R@5 | zspx: delta [95% CI], call |
+| --- | --- | --- | ---: | --- |
+| L-musique | metaqa | in-domain | 0.8009 | +0.0021 [+0.0011, +0.0031], WITHIN |
+| L-musique | squad | in-domain | 0.9114 | -0.0022 [-0.0043, -0.0001], WITHIN |
+| L-musique | musique | zero-shot | 0.5012 | +0.0061 [+0.0006, +0.0119], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9080 | -0.0007 [-0.0028, +0.0017], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9383 | -0.0032 [-0.0045, -0.0019], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3229 | -0.0025 [-0.0112, +0.0066], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | -0.0000 [-0.0009, +0.0009], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9135 | -0.0006 [-0.0025, +0.0013], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5754 | +0.0147 [+0.0095, +0.0198], **GAIN** |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8499 | +0.0048 [+0.0020, +0.0076], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9333 | -0.0020 [-0.0035, -0.0005], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2680 | +0.0235 [+0.0133, +0.0327], **GAIN** |
