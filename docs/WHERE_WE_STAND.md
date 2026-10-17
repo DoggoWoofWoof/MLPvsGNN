@@ -648,7 +648,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   ([A6E_LINK_WORDS_EDGES.md](A6E_LINK_WORDS_EDGES.md)): each pool edge's link score as a weighted message in zspk's
   step, and eight split columns to the top ten rows on zrckp; then A2's next form, A2h
   ([A2H_HALVES_APART.md](A2H_HALVES_APART.md)): the rank columns alone and the top-50 z-scores alone, each beside the
-  z-scores, on both models.
+  z-scores, on both models; then A3's next form, A3t ([A3T_VSHARE_THIN.md](A3T_VSHARE_THIN.md)): the share
+  augmentation at vshare's thin range, t in [0.08, 0.20], on both models.
 - **Filed on 18 October:**
   - **P1g-b NOT_ADOPTED** ([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)): the lean pair refit unchanged on P1g2's chosen
     pools (ALL >= 0.95 everywhere). zrckp 1 GAIN (webqsp zero-shot +0.0141, L-musique), 0 LOSS; zspk 1 LOSS (musique
