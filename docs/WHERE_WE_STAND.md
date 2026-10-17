@@ -666,6 +666,11 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
     columns; no GAIN, and the losses all on webqsp zero-shot (MLP -0.019 and -0.026, GNN -0.011), where the words are
     relation names. Next form: A6e (the link score as an edge weight in zsp's step; anchors widened for the MLP), with
     the structural columns split by graph kind.
+  - **A7 ADOPT_FOR_FULL_RUN, both arms** ([A7_S6_SCORER_INPUT.md](A7_S6_SCORER_INPUT.md)): S6's chain scorer
+    (fg-gr, refit per split and fold) as four fixed columns through a pointwise head. Each arm has one GAIN and no LOSS,
+    both on webqsp zero-shot: the MLP +0.022 (L-musique), the GNN +0.034 (L-hotpotqa). The gain depends on the split
+    (the MLP's L-hotpotqa read is -0.022, WITHIN its 0.023 floor). Next: both arms refit on P1g-b's pools with the
+    scorer and columns rebuilt there, then the full run (its own file).
 - **Filed on 17 October:**
   - **A2 NOT_ADOPTED, both arms** ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)): pool ranks and top-50
     statistics beside the z-scores. musique zero-shot rises on both models (+0.010, +0.025) within its 0.072 floor,

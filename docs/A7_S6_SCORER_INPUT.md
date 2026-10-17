@@ -2,7 +2,7 @@
 
 Declared 17 October 2026, before any number. The seventh reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2,
 row 7), under docs/SCREENS.md section 3b. Code: `scripts/a7_s6_cols.py` (the scorer and its columns) and
-`outputs/mp_unified/za7s6.py` (the arms, the screen and the call). Not run yet.
+`outputs/mp_unified/za7s6.py` (the arms, the screen and the call). Filed 18 October: both arms ADOPT_FOR_FULL_RUN (section 7).
 
 ## 1. Why this, now
 
@@ -195,3 +195,44 @@ The whole chain is a few CPU-hours; musique's s1fit build and webqsp's s1eval bu
 - the 17 screen items, the trains gated on their split's fit-carve columns and the reads on the six s1eval carves'.
   GPU sizing as A3's to A6's, from the base arms' measured peaks: L-musique trains `--frac 0.20` (share 0.22), -hp
   trains and the reads `--frac 0.27` (0.29); memory: trains 4.5 GB (zspks-hp 7 GB), reads 6 GB.
+
+## 7. Results
+
+Filed 18 October 2026 from the host's records (`outputs/a7/screen-verdict.json`, written 2026-10-17T20:42:00Z; the
+re-calls `outputs/screen/scr-a7-zrckps-pair-recall.json` and `-zspks-`, host paths made relative). **Both arms
+ADOPT_FOR_FULL_RUN:** each has one GAIN and no LOSS after the seed-null re-call.
+
+- **zrckps: 1 GAIN, 0 LOSS.** webqsp zero-shot +0.0221 [+0.0111, +0.0331] on L-musique. On L-hotpotqa the same read
+  falls 0.0219 [−0.0337, −0.0097]. It was filed LOSS and re-called WITHIN against that read's seed floor (0.0233),
+  within 0.0014 of it. Every other read is within 0.005.
+- **zspks: 1 GAIN, 0 LOSS.** webqsp zero-shot +0.0336 [+0.0238, +0.0440] on L-hotpotqa, and −0.0020 on L-musique.
+  musique zero-shot +0.0133 (filed GAIN, re-called WITHIN against its 0.072 floor); musique in domain (L-hotpotqa,
+  Claim 1's read) +0.0072, WITHIN; hotpotqa zero-shot +0.0049; 2wiki in domain −0.0049 on L-musique, WITHIN.
+- **The webqsp gain depends on the split, on both models:** the MLP gains on L-musique's fit and loses about as much on
+  L-hotpotqa's; the GNN gains on L-hotpotqa's and holds on L-musique's. The scorer is refit per split and fold, so each
+  fit reads a different scorer. The full run's six splits are where this is read.
+- **The scorer fits** (four, one per split and fold): kept epochs 12 and 9 (L-musique), 12 and 10 (L-hotpotqa); γ 0.91
+  and 0.92 (L-musique), 0.86 and 0.85 (L-hotpotqa); ε about 0.0011 to 0.0012. The held-out objective is 2.79 and 2.78
+  (L-musique), 3.74 and 3.76 (L-hotpotqa), where musique is the hardest training dataset (5.66 and 5.93).
+
+This adopts the form for its full run only. The next form, fixed in section 5, is each arm fitted again on P1g-b's
+pools, with the scorer and its columns built again on P1g-b's looks, then its full run. Both arms passed, so the
+columns join both lean models, and F1's rule (one input set for both) holds. That file is declared before its numbers.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; base R@5 shown as zrckp's /
+zspk's):
+
+| split | dataset | read | base R@5 | zrckps: delta [95% CI], call | zspks: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | +0.0024 [+0.0013, +0.0034], WITHIN | +0.0007 [-0.0003, +0.0017], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | -0.0006 [-0.0025, +0.0013], WITHIN | -0.0006 [-0.0026, +0.0013], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0012 [-0.0044, +0.0069], WITHIN | +0.0133 [+0.0069, +0.0197], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0014 [-0.0034, +0.0007], WITHIN | -0.0009 [-0.0031, +0.0014], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0015 [-0.0000, +0.0031], WITHIN | -0.0049 [-0.0064, -0.0035], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | +0.0221 [+0.0111, +0.0331], GAIN | -0.0020 [-0.0125, +0.0076], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0002 [-0.0011, +0.0007], WITHIN | +0.0003 [-0.0006, +0.0012], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | +0.0003 [-0.0016, +0.0023], WITHIN | -0.0024 [-0.0045, -0.0004], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | -0.0008 [-0.0056, +0.0041], WITHIN | +0.0072 [+0.0015, +0.0125], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0038 [+0.0007, +0.0069], WITHIN | +0.0049 [+0.0021, +0.0079], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0050 [-0.0066, -0.0032], WITHIN | -0.0010 [-0.0026, +0.0007], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0219 [-0.0337, -0.0097], WITHIN (filed LOSS) | +0.0336 [+0.0238, +0.0440], GAIN |
