@@ -760,6 +760,44 @@ From the timeline's honest audit (section 5 there):
 Details: [P1E_ANCHOR_KIND.md](P1E_ANCHOR_KIND.md), [P1C2_POOLS_KIND_T.md](P1C2_POOLS_KIND_T.md),
 [P4A_POOL_COLD.md](P4A_POOL_COLD.md), and the timeline's eras 2, 3, 6 and 8.
 
+### 5.7 17 October: one rule for all six meets the target (P1g, P1g2)
+
+The user's target (15 October): **every dataset's pools hold all its golds on at least 95% of questions (ALL ≥ 0.95),
+coverage first, then the fewest rows.** Today's pools missed it on musique (0.885) and only just held it on metaqa,
+hotpotqa and 2wiki. This also answers 5.6's first problem: the sizes are now set by one rule, chosen on training
+questions (s1sel), the same on every dataset.
+
+- **P1g** priced 805 rules of one form: today's pool, f times KIND_T's fill, and one extra set (a per-parent beam, or a
+  cut of the base's one-link neighbours by an order). Nothing is fit; each rule is a count of golds and rows.
+- **P1g2** added a gated form of each: the extra set only where KIND_T itself expands. It chose, over the 1,603 rules,
+  `g:f1.5+cut_cos_5000`: 1.5 times today's fill along KIND_T's order, plus the first 5,000 of the base's one-link
+  neighbours by the question's cosine. **TARGET_MET.**
+
+| dataset | today ALL / rows | chosen ALL / rows |
+| --- | --- | --- |
+| metaqa | 0.952 / 2,022 | 0.965 / 3,406 |
+| squad | 0.979 / 50 | 0.979 / 50 |
+| musique | 0.885 / 2,094 | 0.951 / 6,600 |
+| hotpotqa | 0.956 / 94 | 0.991 / 1,091 |
+| 2wiki | 0.953 / 105 | 0.969 / 1,486 |
+| webqsp (s1eval, beside) | 0.841 / 2,120 | 0.933 / 4,740 |
+
+*How one question's pool grows (illustration).* A musique question's base holds 40 passages. KIND_T's fill adds 300
+along its walks; at f = 1.5 it adds 450. The base's passages have 9,000 one-link neighbours between them; the
+question's cosine orders them and the first 5,000 join. The pool is the union, with repeats counted once. On squad,
+KIND_T's fill is 0 for every question, so the gate stays shut and squad keeps its 50 rows.
+
+**musique sets the price.** It needs 6,600 rows for 0.951, and one rule for all six then gives hotpotqa and 2wiki about
+13 and 14 times the rows they need (their cheapest rules beside: 86 and 105 rows). A label-free gate that expands
+only the questions that need it is the next way to cut rows; P1g2's gate is open on every question outside squad.
+
+**What follows.** P1g-b builds these pools on all six datasets and refits the lean pair on them
+([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)); its full run is gated on that screen
+([P1GB_FULL_RUN.md](P1GB_FULL_RUN.md)). The pools are about 2.8 times today's rows, so both models' costs rise, and
+the latency tables are timed again on them.
+
+Details: [P1G_POOL_BEAM.md](P1G_POOL_BEAM.md), [P1G2_GATED_EXTRA.md](P1G2_GATED_EXTRA.md).
+
 ## 6. Links: which edges, and the hyperlink question
 
 ### 6.1 Three families, and why all three stay
@@ -1034,6 +1072,55 @@ are unchanged, and the MLP still sees no other row's score.
 Details: [L1_SEP_LEAN_PAIR.md](L1_SEP_LEAN_PAIR.md), [L3_KIND_OFFSETS_FROZEN.md](L3_KIND_OFFSETS_FROZEN.md),
 [T1_GRANULARITY_TRANSFORMS.md](T1_GRANULARITY_TRANSFORMS.md), [E1_LATENT_CHAIN_EM.md](E1_LATENT_CHAIN_EM.md),
 [G2_HIDDEN_STATE_GNN.md](G2_HIDDEN_STATE_GNN.md).
+
+### 7.7 17 October: what the screens found, and message passing that pays
+
+**The four training changes of 7.6 failed** (each against its own model's card fits, after the seed-null re-call):
+
+| screen | MLP arm | GNN arm | what it means |
+| --- | --- | --- | --- |
+| L1 zsep's loss | 0 GAIN, 0 LOSS | 0 GAIN, 0 LOSS | the other golds in the denominator were not what held multi-gold questions back |
+| L3 frozen offsets | 0 GAIN, 1 LOSS (webqsp zero-shot) | 0 GAIN, 0 LOSS | per-kind offsets add nothing once the fit is frozen |
+| T1 transforms | 0 GAIN, 2 LOSS (webqsp zero-shot, −0.015 and −0.034) | 0 GAIN, 0 LOSS | S6's webqsp gain does not carry from a standalone scorer to the models |
+| E1 EM over chains | 0 GAIN, 0 LOSS | 0 GAIN, 1 LOSS (2wiki, −0.019) | the chain head's EM, trained on metaqa only, does not carry |
+
+All four were NOT_ADOPTED and none goes further.
+
+**Three GNN messages passed.** Each was screened as zspk plus one change, against zspk's card fits. Each had exactly
+one GAIN, on the same read (musique in-domain, L-hotpotqa), and no LOSS:
+
+| screen | the change | musique in-domain, R@5 change [95% CI] |
+| --- | --- | --- |
+| G3 zspr | a second message: the bridge residual, what a neighbour adds beyond its parent | +0.0096 [+0.0043, +0.0148] |
+| G4 zspk2 | a second propagation step, so a gold two links from a found node is reached | +0.0115 [+0.0061, +0.0167] |
+| G4 zspkg | the step trained end to end (the gradient flows through the propagated score) | +0.0093 [+0.0042, +0.0141] |
+
+*The residual by hand (illustration).* "Who is the spouse of the director of *Film X*?" The film's page u is in the
+pool with cosine c_u = 0.60 to the question. Two of its neighbours have the same cosine to the question, c_v = 0.35:
+- v₁, about the film's music, is close to u (s_uv = 0.50);
+- v₂, the director's page, is far from it (s_uv = 0.10).
+
+The residual asks what each adds beyond u: r = (c_v − c_u s_uv) / √(1 − c_u²). That is 0.06 for v₁ and 0.36 for v₂.
+A model that reads only c_v sees two equal rows. The residual points at the director, who is the next hop.
+
+**Why this matters for the claims.** This is the first time message passing itself, rather than the inputs, lifts
+the GNN on musique: M1 had found that zspk's one score message lifted musique's misses no more than the MLP did. It
+is the direction the user asked for on 15 October: a GNN that exploits message passing.
+- **G5** puts all three in one GNN, zspx, to see whether they add up. It is screened the same way.
+- But each gain widens the gap the MLP must close on musique, where Claim 1 is already not shown (0.933 of the GNN's
+  gain, [0.881, 0.983]).
+- **R1** therefore gives both models the residual as a fixed input: per row, the residual over its pool neighbours,
+  each parent weighted by its own cosine to the question (exp(10 c_u)), never by a score. Nine columns, computed
+  before either model runs, read by the same 177-parameter head in each. The MLP stays free of message passing: no
+  row's score reaches another row. Each arm is decided against its own model, never against the other.
+
+**What follows.** No model change is adopted on today's pools. Whatever passes (G5's zspx, or each change alone, and
+R1's input if it passes) is fitted again on P1g-b's pools in its own declared file, before its full run.
+
+Details: [L1_SEP_LEAN_PAIR.md](L1_SEP_LEAN_PAIR.md), [L3_KIND_OFFSETS_FROZEN.md](L3_KIND_OFFSETS_FROZEN.md),
+[T1_GRANULARITY_TRANSFORMS.md](T1_GRANULARITY_TRANSFORMS.md), [E1_LATENT_CHAIN_EM.md](E1_LATENT_CHAIN_EM.md),
+[G3_BRIDGE_RESIDUAL.md](G3_BRIDGE_RESIDUAL.md), [G4_DEEPER_PROPAGATION.md](G4_DEEPER_PROPAGATION.md),
+[G5_COMBINED_GNN.md](G5_COMBINED_GNN.md), [R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md).
 
 ## 8. Generalization: does it work on data it never saw?
 
