@@ -637,7 +637,10 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   fourth link family in zspk's step (GNN only); then A12 ([A12_GSURG_GNN.md](A12_GSURG_GNN.md)), zspk trained with
   gradient surgery (GNN only); then A13 ([A13_BRIDGE_COLUMNS_GNN.md](A13_BRIDGE_COLUMNS_GNN.md)), zbr's bridge
   columns as a head on zspk's score before its step (GNN only; R1's GNN arm was NOT_ADOPTED). P5c's builds
-  ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
+  ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU. P1g-c
+  ([P1GC_ADOPTED_ON_P1GB.md](P1GC_ADOPTED_ON_P1GB.md)) takes P1g-b's pools to the adopted models (G5's zspx, R1's
+  zrckpr, and zspxr, zspx with R1's columns): P1g-b's builds are rebuilt on the CPU behind a gate on their arrays,
+  and its six fits go on the card right after P1g-b's own, ahead of A5 to A13's screens.
 - **Filed on 17 October:**
   - **A2 NOT_ADOPTED, both arms** ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)): pool ranks and top-50
     statistics beside the z-scores. musique zero-shot rises on both models (+0.010, +0.025) within its 0.072 floor,
