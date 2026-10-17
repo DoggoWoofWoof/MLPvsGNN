@@ -643,7 +643,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   and its six fits go on the card right after P1g-b's own, ahead of A5 to A13's screens. After P5c come A4's two
   next forms, each on both models: A4h ([A4H_BLOCK_DROPOUT_HALF.md](A4H_BLOCK_DROPOUT_HALF.md)), the block dropout
   at 0.1, and A4f ([A4F_FAMILY_DROPOUT.md](A4F_FAMILY_DROPOUT.md)), the KT term and the chain term dropped as two
-  more cells at 0.2.
+  more cells at 0.2; then A5's next form, A5c ([A5C_KIND_COUPLED.md](A5C_KIND_COUPLED.md)), zck's kind offsets
+  coupled to the shared weights, on both models.
 - **Filed on 18 October:**
   - **P1g-b NOT_ADOPTED** ([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)): the lean pair refit unchanged on P1g2's chosen
     pools (ALL >= 0.95 everywhere). zrckp 1 GAIN (webqsp zero-shot +0.0141, L-musique), 0 LOSS; zspk 1 LOSS (musique
