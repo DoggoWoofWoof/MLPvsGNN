@@ -633,7 +633,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   its own per split and cross-fitted, as six fixed columns in both models; then A9
   ([A9_EDGE_FAMILY_DROPOUT.md](A9_EDGE_FAMILY_DROPOUT.md)), the MP-unified track's edge-family dropout on zspx alone
   (GNN only); then A10 ([A10_G2_ON_ZSPX.md](A10_G2_ON_ZSPX.md)), G2's hidden-state layers over zspx's score
-  (GNN only). P5c's builds
+  (GNN only); then A11 ([A11_FOURTH_FAMILY_LINKS.md](A11_FOURTH_FAMILY_LINKS.md)), our LLM-free phrase links as a
+  fourth link family in zspk's step (GNN only). P5c's builds
   ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
   - **R1: zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)): the bridge
