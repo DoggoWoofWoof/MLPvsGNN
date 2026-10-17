@@ -1,0 +1,10 @@
+# A3's screen verdict: zrckpv **NOT_ADOPTED**, zspkv **NOT_ADOPTED**
+
+Rule: per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A3's re-call of the arm, or not twelve reads (docs/A3_VSHARE_LEAN.md, section 4).
+
+- **zrckpv** (zrckp trained with A3's share augmentation of zret's reference) against zrckp's card fit of each split (scr-p1c3p-zrckp, scr-p1c3p-zrckp-hp), after the seed-null re-call: 0 GAIN (none), 0 LOSS (none). Beside: L-musique metaqa WITHIN (-0.0006), L-musique squad WITHIN (-0.0008), L-musique musique WITHIN (+0.0095), L-musique webqsp WITHIN (+0.0030), L-hotpotqa metaqa WITHIN (-0.0009), L-hotpotqa squad WITHIN (-0.0009), L-hotpotqa musique WITHIN (+0.0013), L-hotpotqa webqsp WITHIN (-0.0128). Next: A3t, vshare's literal range: t in [0.08, 0.20] (the reference mostly the pool's other rows, as step 1's statistics were on the big pools), on both models, its own declared file.
+- **zspkv** (zspk trained with A3's share augmentation of zret's reference, before its propagation) against zspk's card fit of each split (scr-p1c3-zspk, scr-p1c3-zspk-hp), after the seed-null re-call: 0 GAIN (none), 1 LOSS (L-musique webqsp). Beside: L-musique metaqa WITHIN (+0.0007), L-musique squad WITHIN (-0.0013), L-musique musique WITHIN (+0.0186), L-musique webqsp LOSS (-0.0103), L-hotpotqa metaqa WITHIN (-0.0018), L-hotpotqa squad WITHIN (-0.0014), L-hotpotqa musique WITHIN (+0.0072), L-hotpotqa webqsp WITHIN (-0.0086). Next: A3t, vshare's literal range: t in [0.08, 0.20] (the reference mostly the pool's other rows, as step 1's statistics were on the big pools), on both models, its own declared file.
+
+Beside, deciding nothing: musique in-domain (L-hotpotqa musique): zrckpv WITHIN (+0.0013), zspkv WITHIN (+0.0072).
+
+This verdict closes only this form (the share augmentation of zret's reference, t in [0.55, 0.95], probability 0.5, in training); docs/SCREENS.md, 3b.

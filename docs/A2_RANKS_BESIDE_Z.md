@@ -1,7 +1,7 @@
 # A2: pool ranks and top-50 statistics beside the z-scores, in both models
 
 Declared 17 October 2026, before any number. The second reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2,
-row 2), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za2rank.py`. Not run yet.
+row 2), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za2rank.py`. Filed 17 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -164,4 +164,37 @@ Per arm, the next form, each in its own file declared before its numbers:
 
 ## 7. Results
 
-Not run yet.
+Filed 17 October 2026 from the host's records (`outputs/a2/screen-verdict.json`, written 2026-10-17T14:05:36Z; the
+re-calls `outputs/screen/scr-a2-zrckpa-pair-recall.json` and `-zspka-`, host paths made relative). **Both arms
+NOT_ADOPTED, with no GAIN.**
+
+- **zrckpa: 0 GAIN, 1 LOSS.** hotpotqa in domain falls 0.0083 on L-musique.
+- **zspka: 0 GAIN, 2 LOSS.** 2wiki in domain falls 0.0098 and webqsp zero-shot 0.0112, both on L-musique.
+- **musique zero-shot rises on both** (+0.0104 and +0.0249, L-musique), filed GAIN, but re-called WITHIN that read's
+  floor (0.072). That is the read ztop50 and prank gained on (+0.139, +0.202 on step 1's model; section 1). Beside
+  the z-scores, metaqa no longer pays (−0.0046 at most, within its floor on every read), but most of musique's gain is gone,
+  and the in-domain passage graphs pay a little on both models.
+- **Beside:** musique in domain (L-hotpotqa) −0.0050 (MLP) and +0.0016 (GNN), both WITHIN; webqsp zero-shot falls on
+  three of four reads (within the floor on all but zspka's L-musique read).
+
+This closes only this form, the two halves together. The next form, fixed in section 5 for no GAIN, is **the halves
+apart**: the rank columns alone beside, and the top-50 columns alone beside, each on both models, in their own declared
+file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; base R@5 shown as zrckp's /
+zspk's):
+
+| split | dataset | read | base R@5 | zrckpa: delta [95% CI], call | zspka: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0039 [-0.0048, -0.0030], WITHIN | -0.0002 [-0.0013, +0.0008], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | -0.0008 [-0.0028, +0.0012], WITHIN | +0.0011 [-0.0008, +0.0029], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0104 [+0.0048, +0.0159], WITHIN (filed GAIN) | +0.0249 [+0.0191, +0.0312], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0083 [-0.0109, -0.0058], **LOSS** | -0.0050 [-0.0073, -0.0026], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | -0.0054 [-0.0070, -0.0038], WITHIN | -0.0098 [-0.0113, -0.0082], **LOSS** |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | -0.0097 [-0.0197, -0.0004], WITHIN (filed LOSS) | -0.0112 [-0.0231, -0.0004], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0042 [-0.0052, -0.0032], WITHIN | -0.0046 [-0.0057, -0.0036], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0008 [-0.0027, +0.0010], WITHIN | -0.0009 [-0.0028, +0.0009], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | -0.0050 [-0.0103, +0.0001], WITHIN | +0.0016 [-0.0036, +0.0066], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0055 [+0.0023, +0.0089], WITHIN | -0.0001 [-0.0031, +0.0030], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0060 [-0.0077, -0.0043], WITHIN | -0.0047 [-0.0064, -0.0031], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0129 [-0.0239, -0.0018], WITHIN (filed LOSS) | +0.0012 [-0.0088, +0.0113], WITHIN |

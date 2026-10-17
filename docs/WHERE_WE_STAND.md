@@ -638,6 +638,16 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   gradient surgery (GNN only). P5c's builds
   ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
+  - **A2 NOT_ADOPTED, both arms** ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)): pool ranks and top-50
+    statistics beside the z-scores. musique zero-shot rises on both models (+0.010, +0.025) within its 0.072 floor,
+    and the in-domain passage graphs pay: hotpotqa −0.008 (MLP), 2wiki −0.010 and webqsp zero-shot −0.011 (GNN). Next
+    form: the rank and top-50 halves apart, each on both models.
+  - **A3 NOT_ADOPTED, both arms** ([A3_VSHARE_LEAN.md](A3_VSHARE_LEAN.md)): vshare's share augmentation in zret's
+    reference. 0 GAIN; one GNN LOSS at the floor's edge (webqsp zero-shot −0.0103 against 0.0102). musique moves up
+    within its floors on both models. Next form: A3t, vshare's literal range (t in [0.08, 0.20]).
+  - **A11's builds** ([A11_FOURTH_FAMILY_LINKS.md](A11_FOURTH_FAMILY_LINKS.md)) are done: our phrase links reach 83%
+    to 85% of musique's pool rows (6.4 to 7.6 links per row), 81% of squad's, and 45% to 51% of hotpotqa's and
+    2wiki's (2.2 to 2.7 per row).
   - **R1: zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)): the bridge
     residual as nine fixed columns. The MLP gains webqsp zero-shot (+0.0135, L-musique) with no LOSS. The GNN moves
     nothing past the floor. musique in domain: MLP +0.0034, GNN +0.0011, both within the floor. Next forms:

@@ -1,7 +1,7 @@
 # A3: the share augmentation of zret's reference, in both models' training
 
 Declared 17 October 2026, before any number. The third reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2,
-row 3), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za3vshare.py`. Not run yet.
+row 3), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za3vshare.py`. Filed 17 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -169,3 +169,39 @@ Memory requests are A2's measured-to-date sizes:
 - reads 6 GB;
 - compares 4 GB;
 - pairs, re-calls and the verdict 2 GB.
+
+## 7. Results
+
+Filed 17 October 2026 from the host's records (`outputs/a3/screen-verdict.json`, written 2026-10-17T14:47:02Z; the
+re-calls `outputs/screen/scr-a3-zrckpv-pair-recall.json` and `-zspkv-`, host paths made relative). **Both arms
+NOT_ADOPTED, with no GAIN.**
+
+- **zrckpv: 0 GAIN, 0 LOSS.** The augmentation moves no read past its floor.
+- **zspkv: 0 GAIN, 1 LOSS.** webqsp zero-shot falls 0.0103 on L-musique, against a floor of 0.0102 (within 0.00015
+  of it; the call stands).
+- **musique moves up on both:** zero-shot +0.0095 (MLP) and +0.0186 (GNN) on L-musique, filed GAIN but re-called
+  WITHIN that read's floor (0.072); in domain (L-hotpotqa) +0.0013 and +0.0072, both WITHIN (floor 0.0075).
+- **Beside:** metaqa in domain moves under 0.002 on every read; webqsp zero-shot on L-hotpotqa falls 0.0128 (MLP,
+  filed LOSS, re-called WITHIN) and 0.0086 (GNN).
+
+This closes only this form (t in [0.55, 0.95]). The next form, fixed in section 5 for no GAIN on both arms, is **A3t**:
+vshare's literal range, t in [0.08, 0.20], a reference made mostly of the pool's other rows, on both models, in its own
+declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; base R@5 shown as zrckp's /
+zspk's):
+
+| split | dataset | read | base R@5 | zrckpv: delta [95% CI], call | zspkv: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0006 [-0.0015, +0.0002], WITHIN | +0.0007 [-0.0002, +0.0016], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | -0.0008 [-0.0024, +0.0010], WITHIN | -0.0013 [-0.0031, +0.0007], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0095 [+0.0047, +0.0141], WITHIN (filed GAIN) | +0.0186 [+0.0131, +0.0243], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0007 [-0.0028, +0.0014], WITHIN | -0.0003 [-0.0024, +0.0018], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0014 [+0.0000, +0.0028], WITHIN | -0.0038 [-0.0052, -0.0024], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | +0.0030 [-0.0063, +0.0129], WITHIN | -0.0103 [-0.0198, -0.0012], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0009 [-0.0017, -0.0001], WITHIN | -0.0018 [-0.0028, -0.0008], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0009 [-0.0028, +0.0008], WITHIN | -0.0014 [-0.0033, +0.0005], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | +0.0013 [-0.0037, +0.0062], WITHIN | +0.0072 [+0.0021, +0.0125], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | -0.0035 [-0.0065, -0.0005], WITHIN | -0.0009 [-0.0039, +0.0020], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0000 [-0.0015, +0.0016], WITHIN | -0.0014 [-0.0031, +0.0003], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0128 [-0.0229, -0.0026], WITHIN (filed LOSS) | -0.0086 [-0.0191, +0.0015], WITHIN |

@@ -1,0 +1,148 @@
+{
+ "stage": "A2",
+ "declared_in": "docs/A2_RANKS_BESIDE_Z.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A2's re-call of the arm, or not twelve reads (docs/A2_RANKS_BESIDE_Z.md, section 4)",
+ "arms": {
+  "zrckpa": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [
+    "L-musique hotpotqa"
+   ],
+   "problems": [],
+   "next_form": "the halves apart: the rank columns alone beside, and the top-50 columns alone beside, each on both models, their own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "LOSS",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0039,
+    "L-musique squad": -0.0008,
+    "L-musique musique": 0.0104,
+    "L-musique hotpotqa": -0.0083,
+    "L-musique 2wiki": -0.0054,
+    "L-musique webqsp": -0.0097,
+    "L-hotpotqa metaqa": -0.0042,
+    "L-hotpotqa squad": -0.0008,
+    "L-hotpotqa musique": -0.005,
+    "L-hotpotqa hotpotqa": 0.0055,
+    "L-hotpotqa 2wiki": -0.006,
+    "L-hotpotqa webqsp": -0.0129
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0039
+    },
+    "L-musique musique": {
+     "call": "WITHIN",
+     "delta": 0.0104
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0097
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0042
+    },
+    "L-hotpotqa musique": {
+     "call": "WITHIN",
+     "delta": -0.005
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0129
+    }
+   },
+   "recall_sha256": "8e280daa7c5d17db8785027d57f6c1c6718c03d7d12783bb258a56df68d9cc7b"
+  },
+  "zspka": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [
+    "L-musique 2wiki",
+    "L-musique webqsp"
+   ],
+   "problems": [],
+   "next_form": "the halves apart: the rank columns alone beside, and the top-50 columns alone beside, each on both models, their own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "LOSS",
+    "L-musique webqsp": "LOSS",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0002,
+    "L-musique squad": 0.0011,
+    "L-musique musique": 0.0249,
+    "L-musique hotpotqa": -0.005,
+    "L-musique 2wiki": -0.0098,
+    "L-musique webqsp": -0.0112,
+    "L-hotpotqa metaqa": -0.0046,
+    "L-hotpotqa squad": -0.0009,
+    "L-hotpotqa musique": 0.0016,
+    "L-hotpotqa hotpotqa": -0.0001,
+    "L-hotpotqa 2wiki": -0.0047,
+    "L-hotpotqa webqsp": 0.0012
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0002
+    },
+    "L-musique musique": {
+     "call": "WITHIN",
+     "delta": 0.0249
+    },
+    "L-musique webqsp": {
+     "call": "LOSS",
+     "delta": -0.0112
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0046
+    },
+    "L-hotpotqa musique": {
+     "call": "WITHIN",
+     "delta": 0.0016
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0012
+    }
+   },
+   "recall_sha256": "3072c0cea4cfcc4e4ba83d1f06319b0e9570e9d51f98631ffdbcbdd17e05cee4"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckpa": {
+   "call": "WITHIN",
+   "delta": -0.005
+  },
+  "zspka": {
+   "call": "WITHIN",
+   "delta": 0.0016
+  }
+ },
+ "za2rank_sha256": "71d4e25d3d9f5723c59d93ffc40716921e97a38c7b20c424e04c0c6237b48ba5",
+ "utc": "2026-10-17T14:05:36Z"
+}
