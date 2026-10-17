@@ -608,20 +608,33 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   one link from the seeds, where H2's cosine orders them best and g's rank is noise.
 - **The learned offsets close,** and P5c does not start.
 
-## 7. Running now (15 October, 20:30)
+## 7. Running now (17 October, 10:00)
 
-- **The user's target (15 October): pools with ALL ≥ 0.95 on every dataset, coverage first, then the fewest rows.**
-  Today's s1sel pools (ALL / mean rows): metaqa 0.952 / 2,022, squad 0.979 / 50, musique **0.885** / 2,094, hotpotqa
-  0.956 / 94, 2wiki 0.953 / 105; webqsp's s1eval (beside, its golds never design a rule) **0.841** / 2,120.
-- **D5b** ([D5_GOLD_REACH.md](D5_GOLD_REACH.md) section 6) on the host: three more orders of the base's one-link
-  neighbours (the question's cosine, its RRF with the first-stage weight, the best parent's residual) and per-parent
-  beams. metaqa, squad and musique are fetched and equal D5's arrays; hotpotqa, 2wiki and webqsp are running. On
-  musique the beams lift today's 0.885 to at most 0.906, today plus N1's first 7,000 by cosine gives 0.945, and
-  KIND_T's own 7,000 nodes give 0.950.
-- **P1g** ([P1G_POOL_BEAM.md](P1G_POOL_BEAM.md)) on the host: one universal rule chosen on s1sel. A pool is today's,
-  with its KIND_T fill cut to 0.25 to 4 times today's length, plus nothing, a per-parent beam or a cut of the base's
-  one-link neighbours (805 candidates). The cheapest candidate meeting min(0.95, ceiling − 0.005) on all five training
-  datasets wins. ETA: about an hour (webqsp's carve the longest).
+- **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
+  KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
+  0.95 on every training dataset on s1sel at 1,976 rows on average (musique 0.885 → 0.951). webqsp's s1eval, beside,
+  goes from 0.841 to 0.933.
+- **P1g-b** ([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)) on the host: those pools built with their looks, caches,
+  chains, links and KT input, then the lean pair refit on them. Five datasets' pools are built. metaqa's pool build
+  failed at 04:27 on a Windows file lock (WinError 32 on its last rename). The feeder dropped its 128 dependent items,
+  and they were re-queued at 09:09 with the build under retries. Its full run
+  ([P1GB_FULL_RUN.md](P1GB_FULL_RUN.md), 9bc6e41) is queued behind its screen and gated on it.
+- **G5** ([G5_COMBINED_GNN.md](G5_COMBINED_GNN.md)) on the card: the three GNN changes that passed, in one model.
+  Verdict due about 10:45.
+- **Filed on 17 October:**
+  - **G3 ADOPT_FOR_FULL_RUN** ([G3_BRIDGE_RESIDUAL.md](G3_BRIDGE_RESIDUAL.md)): the bridge-residual message lifts
+    musique in-domain +0.0096 (L-hotpotqa) and zero-shot +0.0114 (L-musique, within its wide floor), with no LOSS.
+  - **G4: both arms ADOPT_FOR_FULL_RUN** ([G4_DEEPER_PROPAGATION.md](G4_DEEPER_PROPAGATION.md)): a second
+    propagation step (+0.0115) and the step trained end to end (+0.0093), both on musique in-domain, with no LOSS.
+  - **E1 NOT_ADOPTED** ([E1_LATENT_CHAIN_EM.md](E1_LATENT_CHAIN_EM.md)): EM over the chain head's latent chains moves
+    nothing on the MLP and costs the GNN 2wiki (−0.019).
+  - **T1 NOT_ADOPTED** ([T1_GRANULARITY_TRANSFORMS.md](T1_GRANULARITY_TRANSFORMS.md)): S6's transforms on metaqa's
+    fit carve lower the MLP's webqsp zero-shot (−0.015, −0.034), the read they were meant to lift.
+  - **L1 and L3 NOT_ADOPTED** (4eb23ff): zsep's loss on the lean pair moves nothing; zck's offsets on a frozen base
+    cost webqsp zero-shot once.
+- **What the GNN results say:** musique's ranking moves when the GNN's messages carry more than one hop's scores or
+  what a neighbour adds to the question, not when it has more layers of the same message (G2). The MLP has no
+  messages, so musique's Claim 1 share will fall unless the MLP's inputs catch up.
 - **Filed on 15 October:**
   - **G2 NOT_ADOPTED** ([G2_HIDDEN_STATE_GNN.md](G2_HIDDEN_STATE_GNN.md)): three gated hidden-state message-passing
     layers on zspk add nothing once training luck is counted (0 GAIN, 0 LOSS of 12).

@@ -130,4 +130,33 @@ on P1g-b's pools before its full run (six splits under grade-nullx, its own file
 
 ## 5. Results
 
-Not run yet.
+Filed 17 October 2026 from the host's records (`outputs/g3/screen-verdict.json`, written 2026-10-17T02:33:59Z; the re-calls `outputs/screen/scr-g3-zspr-pair-recall.json`). **zspr ADOPT_FOR_FULL_RUN.**
+
+- **zspr: 1 GAIN, 0 LOSS.** musique in-domain rises 0.0096 on L-hotpotqa ([+0.0043, +0.0148]).
+- On L-musique, zero-shot musique rises 0.0114 ([+0.0056, +0.0174]). That is filed a GAIN but re-called WITHIN under
+  that read's floor (0.072). Both musique reads move up, which is the dataset the residual was built for (section 1).
+- **Beside:**
+  - webqsp zero-shot is −0.004 on L-musique and +0.013 on L-hotpotqa (both WITHIN);
+  - metaqa in-domain is +0.001 and +0.000;
+  - hotpotqa zero-shot is −0.003 (WITHIN).
+
+The residual message lifts musique's ranking where zspk's score message did not (M1). zspr goes on, per section 3:
+with G4's two arms, which also passed, it is combined in G5 (docs/G5_COMBINED_GNN.md, declared after these verdicts).
+The GNN that goes to P1g-b's pools is G5's if G5 passes, otherwise each passing change on its own.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | base R@5 | zspr: delta [95% CI], call |
+| --- | --- | --- | ---: | --- |
+| L-musique | metaqa | in-domain | 0.8009 | +0.0012 [+0.0003, +0.0020], WITHIN |
+| L-musique | squad | in-domain | 0.9114 | -0.0004 [-0.0024, +0.0015], WITHIN |
+| L-musique | musique | zero-shot | 0.5012 | +0.0114 [+0.0056, +0.0174], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9080 | +0.0003 [-0.0017, +0.0024], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9383 | -0.0018 [-0.0031, -0.0005], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3229 | -0.0038 [-0.0128, +0.0046], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | +0.0003 [-0.0006, +0.0012], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9135 | -0.0003 [-0.0023, +0.0015], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5754 | +0.0096 [+0.0043, +0.0148], **GAIN** |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8499 | -0.0029 [-0.0057, +0.0000], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9333 | +0.0025 [+0.0010, +0.0039], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2680 | +0.0132 [+0.0025, +0.0235], WITHIN (filed GAIN) |

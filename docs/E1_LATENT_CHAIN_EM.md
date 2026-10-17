@@ -120,4 +120,29 @@ file).
 
 ## 5. Results
 
-Not run yet.
+Filed 17 October 2026 from the host's records (`outputs/e1/screen-verdict.json`, written 2026-10-17T00:26:27Z; the re-calls `outputs/screen/scr-e1-zrckpe-pair-recall.json`, `scr-e1-zspke-pair-recall.json`). **zrckpe NOT_ADOPTED, zspke NOT_ADOPTED.**
+
+- **zrckpe** (the MLP): 0 GAIN, 0 LOSS. The EM term moves no read beyond the seed null.
+- **zspke** (the GNN): 0 GAIN, 1 LOSS. 2wiki in-domain falls 0.019 on L-hotpotqa ([−0.021, −0.017], floor 0.0075).
+  On L-musique, zero-shot musique falls 0.017, within that read's wide floor (0.072).
+- webqsp, the zero-shot KB read E1 was meant to help, moves within the null on both arms (−0.015 to +0.014).
+
+EM over the chain head's latent relation chains, trained only on metaqa's fit carve, does not carry to the other
+datasets, and on the GNN it costs 2wiki. E1 is not taken further, and nothing of it goes to P1g-b's pools.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | base R@5 | zrckpe: delta [95% CI], call | zspke: delta [95% CI], call |
+| --- | --- | --- | ---: | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 | +0.0032 [+0.0019, +0.0045], WITHIN | +0.0021 [+0.0006, +0.0035], WITHIN |
+| L-musique | squad | in-domain | 0.9116 | -0.0007 [-0.0026, +0.0013], WITHIN | -0.0003 [-0.0024, +0.0015], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 | +0.0060 [+0.0010, +0.0110], WITHIN | -0.0166 [-0.0233, -0.0103], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9065 | -0.0011 [-0.0034, +0.0011], WITHIN | +0.0016 [-0.0003, +0.0036], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 | +0.0012 [-0.0002, +0.0026], WITHIN | -0.0022 [-0.0036, -0.0009], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 | -0.0089 [-0.0224, +0.0045], WITHIN | -0.0146 [-0.0292, +0.0005], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 | +0.0021 [+0.0008, +0.0034], WITHIN | -0.0004 [-0.0018, +0.0012], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 | +0.0003 [-0.0015, +0.0024], WITHIN | -0.0020 [-0.0040, -0.0001], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 | +0.0038 [-0.0010, +0.0086], WITHIN | +0.0043 [-0.0009, +0.0094], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 | -0.0058 [-0.0088, -0.0030], WITHIN | +0.0023 [-0.0007, +0.0053], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 | +0.0009 [-0.0006, +0.0025], WITHIN | -0.0192 [-0.0210, -0.0173], **LOSS** |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 | +0.0015 [-0.0138, +0.0166], WITHIN | +0.0136 [-0.0028, +0.0309], WITHIN |

@@ -112,4 +112,32 @@ passes is fitted again on P1g's final pools before its full run (six splits unde
 
 ## 5. Results
 
-Not run yet.
+Filed 17 October 2026 from the host's records (`outputs/t1/screen-verdict.json`, written 2026-10-17T00:14:39Z; the re-calls `outputs/screen/scr-t1-zrckpt-pair-recall.json`, `scr-t1-zspkt-pair-recall.json`). **zrckpt NOT_ADOPTED, zspkt NOT_ADOPTED.**
+
+- **zrckpt** (the MLP): 0 GAIN, 2 LOSS, both on webqsp zero-shot, the read T1 was meant to lift: −0.015 on
+  L-musique and −0.034 on L-hotpotqa.
+- **zspkt** (the GNN): 0 GAIN, 0 LOSS. Its L-musique zero-shot musique read falls 0.056 ([−0.065, −0.049]). That is
+  filed a LOSS but re-called WITHIN under that read's floor (0.072, twice step 1's seed spread there).
+- metaqa in-domain falls a little on all four fits (−0.002 to −0.007), so the transforms also cost the dataset they
+  were applied to.
+
+S6's granularity transforms (mg3's merged relations, rf's reification), as a training augmentation of metaqa's fit
+carve, do not carry the zero-shot gain S6 found to the lean pair's webqsp read: the MLP's falls. T1 is not taken
+further.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | base R@5 | zrckpt: delta [95% CI], call | zspkt: delta [95% CI], call |
+| --- | --- | --- | ---: | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 | -0.0050 [-0.0066, -0.0035], WITHIN | -0.0020 [-0.0037, -0.0003], WITHIN |
+| L-musique | squad | in-domain | 0.9116 | -0.0008 [-0.0025, +0.0011], WITHIN | -0.0018 [-0.0037, +0.0001], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 | -0.0217 [-0.0277, -0.0153], WITHIN (filed LOSS) | -0.0564 [-0.0646, -0.0485], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9065 | -0.0012 [-0.0033, +0.0008], WITHIN | -0.0017 [-0.0037, +0.0004], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 | +0.0021 [+0.0007, +0.0036], WITHIN | -0.0012 [-0.0024, +0.0003], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 | -0.0153 [-0.0280, -0.0029], **LOSS** | -0.0003 [-0.0143, +0.0138], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 | -0.0065 [-0.0081, -0.0048], WITHIN | -0.0072 [-0.0088, -0.0055], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 | -0.0008 [-0.0027, +0.0011], WITHIN | +0.0001 [-0.0019, +0.0020], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 | +0.0002 [-0.0048, +0.0053], WITHIN | +0.0044 [-0.0010, +0.0100], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 | +0.0069 [+0.0040, +0.0100], WITHIN | -0.0026 [-0.0056, +0.0006], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 | +0.0015 [-0.0001, +0.0031], WITHIN | +0.0034 [+0.0019, +0.0050], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 | -0.0342 [-0.0476, -0.0203], **LOSS** | +0.0062 [-0.0077, +0.0209], WITHIN |

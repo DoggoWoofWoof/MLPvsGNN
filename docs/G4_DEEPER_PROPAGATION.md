@@ -101,4 +101,32 @@ that refit's file (a second step, both steps end to end), declared there before 
 
 ## 5. Results
 
-Not run yet.
+Filed 17 October 2026 from the host's records (`outputs/g4/screen-verdict.json`, written 2026-10-17T03:31:56Z; the re-calls `outputs/screen/scr-g4-zspk2-pair-recall.json`, `scr-g4-zspkg-pair-recall.json`). **zspk2 ADOPT_FOR_FULL_RUN, zspkg ADOPT_FOR_FULL_RUN.**
+
+- **zspk2** (a second step): **1 GAIN, 0 LOSS.** musique in-domain rises 0.0115 on L-hotpotqa
+  ([+0.0061, +0.0167]). 2wiki (+0.0054) and hotpotqa zero-shot (+0.0036) move up too, within their floors.
+- **zspkg** (the step end to end): **1 GAIN, 0 LOSS.** musique in-domain rises 0.0093 on L-hotpotqa
+  ([+0.0042, +0.0141]). webqsp zero-shot rises 0.015 on L-hotpotqa, within its floor (0.023).
+- On L-musique (zero-shot musique) neither arm moves: −0.002 and −0.001.
+- **Beside:** webqsp zero-shot on L-musique is −0.008 and −0.007 (WITHIN), and metaqa in-domain is +0.000 to +0.001.
+
+Both ways of letting the score message do more lift musique in-domain by about as much as G3's residual message. All
+three gain on the same read, so they are combined in one model (G5, docs/G5_COMBINED_GNN.md) to find whether they add
+up. A pass of G5 sends the combined GNN to P1g-b's pools; otherwise each passing change goes on its own.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | base R@5 | zspk2: delta [95% CI], call | zspkg: delta [95% CI], call |
+| --- | --- | --- | ---: | --- | --- |
+| L-musique | metaqa | in-domain | 0.8009 | +0.0012 [+0.0003, +0.0021], WITHIN | +0.0006 [-0.0004, +0.0015], WITHIN |
+| L-musique | squad | in-domain | 0.9114 | +0.0018 [-0.0001, +0.0037], WITHIN | -0.0003 [-0.0023, +0.0016], WITHIN |
+| L-musique | musique | zero-shot | 0.5012 | -0.0022 [-0.0068, +0.0027], WITHIN | -0.0012 [-0.0066, +0.0043], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9080 | +0.0004 [-0.0015, +0.0025], WITHIN | +0.0003 [-0.0017, +0.0024], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9383 | -0.0003 [-0.0016, +0.0009], WITHIN | -0.0028 [-0.0042, -0.0015], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3229 | -0.0081 [-0.0166, +0.0003], WITHIN | -0.0067 [-0.0152, +0.0019], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | +0.0000 [-0.0008, +0.0009], WITHIN | +0.0004 [-0.0005, +0.0012], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9135 | -0.0003 [-0.0023, +0.0016], WITHIN | -0.0003 [-0.0021, +0.0015], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5754 | +0.0115 [+0.0061, +0.0167], **GAIN** | +0.0093 [+0.0042, +0.0141], **GAIN** |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8499 | +0.0036 [+0.0007, +0.0065], WITHIN | +0.0024 [-0.0003, +0.0051], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9333 | +0.0054 [+0.0039, +0.0069], WITHIN | -0.0010 [-0.0023, +0.0004], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2680 | +0.0030 [-0.0066, +0.0123], WITHIN | +0.0152 [+0.0054, +0.0246], WITHIN (filed GAIN) |
