@@ -158,6 +158,27 @@ A screen is not a result and not a grade. It gives development numbers on one sp
 anything. An adopted change's numbers come from its full run. The paper's numbers come from one declared confirmation
 run.
 
+## 3b. What a verdict closes (the user's rule of 17 October)
+
+The user, 17 October, after the learned offsets were closed on a diagnostic: "make sure we dont reach a premature
+verdict like this ever". From that day, for every stage:
+
+- **A verdict closes only the form it tested.** NOT_ADOPTED, STOPS, NO_GAIN or NO_SIGNAL says "this form, on these
+  reads". It never says that an idea closes. Each verdict record names the next form of the idea, or says why none
+  is left.
+- **An idea closes only when its signal has reached both models as an input.** That means a fixed input, the same for
+  the MLP and the GNN, screened by this file's rule (no LOSS of twelve, at least one GAIN), with each model free to
+  learn how much to use it on each dataset. A fixed fusion, a standalone reranker or a training augmentation that
+  fails is one form, not the idea.
+- **A diagnostic never closes an idea.** A stage in which no ranking model trains can route an idea to its next form
+  or rank it among others, but it cannot stop it.
+- **Gains on some datasets and a loss on others call for a form that can back off,** per question or per dataset (an
+  input, a gate), never a stop.
+- **Declared rules say what a fail leads to.** "What follows" names the next form, and "STOPS" is not a valid
+  outcome on its own.
+- **Closed verdicts are audited for this pattern** (docs/VERDICT_AUDIT_2026_10_17.md). Each one found is reopened in
+  its own declared file, before any of its numbers.
+
 ## 4. The first screens
 
 Each arm is one idea, aimed at all six datasets at once. The zero-shot gaps of step 1 (docs/STEP1_MATCHED_SELECTION.md)
