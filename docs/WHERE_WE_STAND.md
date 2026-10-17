@@ -653,6 +653,10 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   - **A5 NOT_ADOPTED, both arms** ([A5_KIND_HEAD_BACKOFF.md](A5_KIND_HEAD_BACKOFF.md)): the kind head with its gradient
     off the shared weights moves nothing on the passage graphs and nothing past the null on the KBs (webqsp zero-shot
     +0.018 and +0.014 WITHIN). Next form: A5c, zck's coupled form.
+  - **A6 NOT_ADOPTED, both arms** ([A6_LINK_WORDS_INPUT.md](A6_LINK_WORDS_INPUT.md)): D4's link words as six
+    columns; no GAIN, and the losses all on webqsp zero-shot (MLP -0.019 and -0.026, GNN -0.011), where the words are
+    relation names. Next form: A6e (the link score as an edge weight in zsp's step; anchors widened for the MLP), with
+    the structural columns split by graph kind.
 - **Filed on 17 October:**
   - **A2 NOT_ADOPTED, both arms** ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)): pool ranks and top-50
     statistics beside the z-scores. musique zero-shot rises on both models (+0.010, +0.025) within its 0.072 floor,

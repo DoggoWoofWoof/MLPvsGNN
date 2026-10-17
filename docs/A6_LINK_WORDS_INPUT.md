@@ -1,7 +1,7 @@
 # A6: the words around a link, as a fixed input to both models
 
 Declared 17 October 2026, before any number. The sixth reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2,
-row 6), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za6lw.py`. Not run yet.
+row 6), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za6lw.py`. Filed 18 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -143,3 +143,41 @@ file (made on the laptop with the same settings) bit for bit: 188,101 mentions, 
 - the 17 screen items, the trains gated on their split's fit-carve builds and the reads on the six s1eval carves'
   builds. GPU sizing as A3's to A5's, from the base arms' measured peaks: L-musique trains `--frac 0.20` (share
   0.22), -hp trains and the reads `--frac 0.27` (0.29); memory: trains 4.5 GB (zspkw-hp 7 GB), reads 6 GB.
+
+## 7. Results
+
+Filed 18 October 2026 from the host's records (`outputs/a6/screen-verdict.json`, written 2026-10-17T19:33:02Z; the
+re-calls `outputs/screen/scr-a6-zrckpw-pair-recall.json` and `-zspkw-`, host paths made relative). **Both arms
+NOT_ADOPTED, with no GAIN.**
+
+- **zrckpw: 0 GAIN, 2 LOSS,** both on webqsp zero-shot: -0.0188 (L-musique) and -0.0264 (L-hotpotqa).
+- **zspkw: 0 GAIN, 1 LOSS,** webqsp zero-shot -0.0107 on L-musique (floor 0.0102); -0.0021 on L-hotpotqa.
+- **On the passage graphs** every read is WITHIN, most of them up a little: hotpotqa in domain +0.0025 and +0.0031
+  (L-musique), hotpotqa zero-shot +0.0024 and +0.0046 (L-hotpotqa). musique moves under 0.004 either way.
+
+So the link words help no read past its floor, and the only losses are on webqsp, whose structural words are the
+names of the relations in an edge's slots: the words D4 found lead away from the gold on the typed graphs. This closes
+only this form (D4's link score to the first stage's top five rows, six columns through R1's pointwise head). The
+next form, fixed in section 5 for no GAIN, is **A6e**: on zspk, each pool edge's own link score as a weight in zsp's
+propagation; on zrckp, the anchors widened to the first stage's top ten rows. Because the losses sit where A6k's split
+was written for, A6e's file also splits the structural columns by their reading (relation names on the typed graphs,
+title windows on the others), so the KB words cannot move the passage graphs' weights. That choice is made here,
+before A6e's numbers, and A6e is declared in its own file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; base R@5 shown as zrckp's /
+zspk's):
+
+| split | dataset | read | base R@5 | zrckpw: delta [95% CI], call | zspkw: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | +0.0001 [-0.0007, +0.0008], WITHIN | +0.0017 [+0.0009, +0.0026], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | +0.0002 [-0.0018, +0.0021], WITHIN | +0.0012 [-0.0009, +0.0032], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | -0.0011 [-0.0062, +0.0037], WITHIN | -0.0031 [-0.0088, +0.0025], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | +0.0025 [+0.0002, +0.0047], WITHIN | +0.0031 [+0.0010, +0.0051], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0011 [-0.0005, +0.0026], WITHIN | -0.0020 [-0.0034, -0.0007], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | -0.0188 [-0.0298, -0.0078], LOSS | -0.0107 [-0.0189, -0.0024], LOSS |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0022 [-0.0031, -0.0015], WITHIN | +0.0003 [-0.0004, +0.0012], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | +0.0007 [-0.0013, +0.0026], WITHIN | -0.0008 [-0.0028, +0.0010], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | +0.0006 [-0.0042, +0.0054], WITHIN | -0.0006 [-0.0052, +0.0043], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0024 [-0.0006, +0.0053], WITHIN | +0.0046 [+0.0016, +0.0076], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | +0.0018 [+0.0004, +0.0033], WITHIN | -0.0058 [-0.0074, -0.0043], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0264 [-0.0379, -0.0151], LOSS | -0.0021 [-0.0113, +0.0064], WITHIN |
