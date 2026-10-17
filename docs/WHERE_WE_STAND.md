@@ -635,7 +635,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   (GNN only); then A10 ([A10_G2_ON_ZSPX.md](A10_G2_ON_ZSPX.md)), G2's hidden-state layers over zspx's score
   (GNN only); then A11 ([A11_FOURTH_FAMILY_LINKS.md](A11_FOURTH_FAMILY_LINKS.md)), our LLM-free phrase links as a
   fourth link family in zspk's step (GNN only); then A12 ([A12_GSURG_GNN.md](A12_GSURG_GNN.md)), zspk trained with
-  gradient surgery (GNN only). P5c's builds
+  gradient surgery (GNN only); then A13 ([A13_BRIDGE_COLUMNS_GNN.md](A13_BRIDGE_COLUMNS_GNN.md)), zbr's bridge
+  columns as a head on zspk's score before its step (GNN only; R1's GNN arm was NOT_ADOPTED). P5c's builds
   ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
   - **A2 NOT_ADOPTED, both arms** ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)): pool ranks and top-50
