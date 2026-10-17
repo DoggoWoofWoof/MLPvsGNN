@@ -83,4 +83,5 @@ latency claim.
 
 ## 5. Results
 
-Not run yet.
+Not run: the gate is SHUT (`outputs/p1gb/full-gate.json`). P1g-b's screen is NOT_ADOPTED
+(docs/P1GB_POOLS_REFIT.md, section 7), so no train, read, compare or grade of this file ran.

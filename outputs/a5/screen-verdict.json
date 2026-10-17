@@ -1,0 +1,145 @@
+{
+ "stage": "A5",
+ "declared_in": "docs/A5_KIND_HEAD_BACKOFF.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A5's re-call of the arm, or not twelve reads (docs/A5_KIND_HEAD_BACKOFF.md, section 4)",
+ "arms": {
+  "zrckpk": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "next_form": "A5c, zck's coupled form on the lean pair: the offsets inside the output layer and base weight with the shared weights trained jointly (zck as filed), 2wiki in domain beside as its known risk, its own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0019,
+    "L-musique squad": 0.0,
+    "L-musique musique": 0.0,
+    "L-musique hotpotqa": 0.0,
+    "L-musique 2wiki": 0.0,
+    "L-musique webqsp": -0.0005,
+    "L-hotpotqa metaqa": -0.0005,
+    "L-hotpotqa squad": 0.0,
+    "L-hotpotqa musique": 0.0,
+    "L-hotpotqa hotpotqa": 0.0,
+    "L-hotpotqa 2wiki": 0.0,
+    "L-hotpotqa webqsp": 0.0176
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0019
+    },
+    "L-musique 2wiki": {
+     "call": "WITHIN",
+     "delta": 0.0
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0005
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0005
+    },
+    "L-hotpotqa 2wiki": {
+     "call": "WITHIN",
+     "delta": 0.0
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0176
+    }
+   },
+   "untyped_max_abs_delta": 0.0,
+   "recall_sha256": "585cd22d2ffdbc214a865020d1bf74683bf8f615626ff7b6a42be11c83f5a6f7"
+  },
+  "zspkk": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "next_form": "A5c, zck's coupled form on the lean pair: the offsets inside the output layer and base weight with the shared weights trained jointly (zck as filed), 2wiki in domain beside as its known risk, its own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0008,
+    "L-musique squad": 0.0,
+    "L-musique musique": 0.0,
+    "L-musique hotpotqa": 0.0,
+    "L-musique 2wiki": 0.0,
+    "L-musique webqsp": 0.0066,
+    "L-hotpotqa metaqa": -0.0003,
+    "L-hotpotqa squad": 0.0,
+    "L-hotpotqa musique": 0.0,
+    "L-hotpotqa hotpotqa": 0.0,
+    "L-hotpotqa 2wiki": 0.0,
+    "L-hotpotqa webqsp": 0.0136
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0008
+    },
+    "L-musique 2wiki": {
+     "call": "WITHIN",
+     "delta": 0.0
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0066
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0003
+    },
+    "L-hotpotqa 2wiki": {
+     "call": "WITHIN",
+     "delta": 0.0
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0136
+    }
+   },
+   "untyped_max_abs_delta": 0.0,
+   "recall_sha256": "ce0e28ee3447ced0bb008739b8be0b7b86de4d903da2da5f0d50cb319d342d4e"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckpk": {
+   "call": "WITHIN",
+   "delta": 0.0
+  },
+  "zspkk": {
+   "call": "WITHIN",
+   "delta": 0.0
+  }
+ },
+ "za5kind_sha256": "4ef2994af570c69dfeb44ef09779a45912ab1b71535c3db117283388028e131c",
+ "utc": "2026-10-17T18:38:49Z"
+}

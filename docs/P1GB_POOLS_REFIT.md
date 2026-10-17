@@ -2,7 +2,7 @@
 
 Declared 17 October 2026, after P1g2's verdict ([P1G2_GATED_EXTRA.md](P1G2_GATED_EXTRA.md), section 6; P1g's own is
 [P1G_POOL_BEAM.md](P1G_POOL_BEAM.md), section 9) and before any number of this stage. Code: `scripts/p1gb_pools.py`, `outputs/mp_unified/look_p1gb.py`, `outputs/mp_unified/zp1gb.py`.
-Numbers here are development numbers. Status: declared.
+Numbers here are development numbers. Status: filed 18 October, NOT_ADOPTED (section 7).
 
 ## 1. The question
 
@@ -145,4 +145,39 @@ model runs and both models read the same pool, so the MLP's own scoring stays fr
 
 ## 7. Results
 
-Not run yet.
+Filed 18 October 2026 from the host's records (`outputs/p1gb/screen-verdict.json`, written 2026-10-17T17:41:13Z; the
+re-calls `outputs/screen/scr-p1gb-zrckp-pair-recall.json` and `-zspk-`, host paths made relative). **NOT_ADOPTED.**
+
+- **zrckp: 1 GAIN, 0 LOSS.** webqsp zero-shot rises 0.0141 on L-musique [+0.0015, +0.0257]. musique zero-shot
+  falls 0.0108 (filed LOSS, re-called WITHIN its 0.072 floor).
+- **zspk: 0 GAIN, 1 LOSS.** musique in domain (L-hotpotqa, Claim 1's read) falls 0.0092 [-0.0145, -0.0039]. musique
+  zero-shot rises 0.0157 (filed GAIN, re-called WITHIN), and webqsp zero-shot rises 0.0125 and 0.0129 on the two
+  splits, both WITHIN.
+- **Where the extra golds went (section 5's record):** they reach the top five on webqsp zero-shot for both models
+  (+0.011 to +0.014 on three of four reads), and on musique zero-shot for the GNN only. In domain they do not:
+  metaqa falls 0.0005 to 0.0048 on every read, and musique in domain falls on both models (-0.0050, -0.0092). More
+  rows in the pool are more rows to rank, and the lean pair's ranking does not yet sort the new golds above them.
+
+This closes only this form: the lean pair, refit unchanged on P1g2's chosen pools (SCREENS.md 3b). There is no full
+run (docs/P1GB_FULL_RUN.md, gate SHUT). The pools stay a pool result (ALL >= 0.95 on every dataset) and the lean pair
+stays on P1c2's pools. **The next form is P1g-c** ([P1GC_ADOPTED_ON_P1GB.md](P1GC_ADOPTED_ON_P1GB.md), declared
+8ff5716): the models adopted since (G5's zspx, R1's zrckpr) on these pools, against the same arms on P1c2's. If that
+is NOT_ADOPTED too, its file fixes P1g-b3: each row's place in the pool as an input to both models.
+
+Each arm's twelve reads after the seed-null re-call (delta = R@5 on P1g-b's pools minus the same arm's card fit on
+P1c2's; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckp: delta [95% CI], call | zspk: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0027 [-0.0044, -0.0011], WITHIN | -0.0005 [-0.0024, +0.0013], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | +0.0010 [-0.0009, +0.0030], WITHIN | +0.0015 [-0.0004, +0.0035], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | -0.0108 [-0.0171, -0.0048], WITHIN (filed LOSS) | +0.0157 [+0.0098, +0.0221], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0030 [-0.0057, -0.0005], WITHIN | +0.0006 [-0.0020, +0.0033], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0030 [+0.0014, +0.0046], WITHIN | -0.0038 [-0.0053, -0.0024], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | +0.0141 [+0.0015, +0.0257], GAIN | +0.0125 [-0.0010, +0.0253], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0048 [-0.0065, -0.0032], WITHIN | -0.0029 [-0.0045, -0.0013], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0005 [-0.0024, +0.0013], WITHIN | -0.0008 [-0.0029, +0.0013], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | -0.0050 [-0.0103, +0.0002], WITHIN | -0.0092 [-0.0145, -0.0039], LOSS |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0033 [-0.0001, +0.0068], WITHIN | -0.0016 [-0.0047, +0.0016], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0010 [-0.0028, +0.0008], WITHIN | -0.0007 [-0.0023, +0.0010], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0111 [-0.0245, +0.0025], WITHIN | +0.0129 [-0.0003, +0.0274], WITHIN |

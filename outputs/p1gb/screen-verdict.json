@@ -1,0 +1,81 @@
+{
+ "stage": "P1gb",
+ "declared_in": "docs/P1GB_POOLS_REFIT.md",
+ "rule": "ADOPT_FOR_FULL_RUN when neither arm's re-call under the seed null has a LOSS on any of its twelve reads and the two arms together have at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when a re-call is missing, not P1g-b's, or not twelve reads (docs/P1GB_POOLS_REFIT.md, P1c2's rule)",
+ "verdict": "NOT_ADOPTED",
+ "arms": {
+  "zrckp": {
+   "gains": [
+    "L-musique webqsp"
+   ],
+   "losses": [],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "GAIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0027,
+    "L-musique squad": 0.001,
+    "L-musique musique": -0.0108,
+    "L-musique hotpotqa": -0.003,
+    "L-musique 2wiki": 0.003,
+    "L-musique webqsp": 0.0141,
+    "L-hotpotqa metaqa": -0.0048,
+    "L-hotpotqa squad": -0.0005,
+    "L-hotpotqa musique": -0.005,
+    "L-hotpotqa hotpotqa": 0.0033,
+    "L-hotpotqa 2wiki": -0.001,
+    "L-hotpotqa webqsp": -0.0111
+   },
+   "recall_sha256": "224594aec03cc29ecb9aa62537f9165fe914198bd3b1ffb11adbfed07e571998"
+  },
+  "zspk": {
+   "gains": [],
+   "losses": [
+    "L-hotpotqa musique"
+   ],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "LOSS",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0005,
+    "L-musique squad": 0.0015,
+    "L-musique musique": 0.0157,
+    "L-musique hotpotqa": 0.0006,
+    "L-musique 2wiki": -0.0038,
+    "L-musique webqsp": 0.0125,
+    "L-hotpotqa metaqa": -0.0029,
+    "L-hotpotqa squad": -0.0008,
+    "L-hotpotqa musique": -0.0092,
+    "L-hotpotqa hotpotqa": -0.0016,
+    "L-hotpotqa 2wiki": -0.0007,
+    "L-hotpotqa webqsp": 0.0129
+   },
+   "recall_sha256": "96f44c4e5081c2c117ec26545c003350b1dda8b0c93b97a4b15d7cfa3788d51d"
+  }
+ },
+ "problems": [],
+ "zp1gb_sha256": "e585cc840e7c6ef4c8b498e5c336482db6476ca9bab66f3744a8179409a65d3e",
+ "utc": "2026-10-17T17:41:13Z"
+}

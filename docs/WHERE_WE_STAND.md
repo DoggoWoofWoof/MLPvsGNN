@@ -641,6 +641,18 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   ([P1GC_ADOPTED_ON_P1GB.md](P1GC_ADOPTED_ON_P1GB.md)) takes P1g-b's pools to the adopted models (G5's zspx, R1's
   zrckpr, and zspxr, zspx with R1's columns): P1g-b's builds are rebuilt on the CPU behind a gate on their arrays,
   and its six fits go on the card right after P1g-b's own, ahead of A5 to A13's screens.
+- **Filed on 18 October:**
+  - **P1g-b NOT_ADOPTED** ([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)): the lean pair refit unchanged on P1g2's chosen
+    pools (ALL >= 0.95 everywhere). zrckp 1 GAIN (webqsp zero-shot +0.0141, L-musique), 0 LOSS; zspk 1 LOSS (musique
+    in domain -0.0092, L-hotpotqa), with musique zero-shot +0.0157 and webqsp zero-shot +0.013 beside (WITHIN). The
+    extra golds reach the top five on webqsp zero-shot, not in domain. No full run (its gate SHUT). Next form: P1g-c,
+    the adopted models on these pools (declared 8ff5716, running).
+  - **A4 NOT_ADOPTED, both arms** ([A4_BLOCK_DROPOUT_LEAN.md](A4_BLOCK_DROPOUT_LEAN.md)): block dropout at 0.2 costs
+    musique zero-shot -0.12 (MLP) and -0.14 (GNN); the GNN gains webqsp zero-shot (+0.0134). Next forms: A4h (half
+    the rate) and A4f (the family form), each on both models.
+  - **A5 NOT_ADOPTED, both arms** ([A5_KIND_HEAD_BACKOFF.md](A5_KIND_HEAD_BACKOFF.md)): the kind head with its gradient
+    off the shared weights moves nothing on the passage graphs and nothing past the null on the KBs (webqsp zero-shot
+    +0.018 and +0.014 WITHIN). Next form: A5c, zck's coupled form.
 - **Filed on 17 October:**
   - **A2 NOT_ADOPTED, both arms** ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)): pool ranks and top-50
     statistics beside the z-scores. musique zero-shot rises on both models (+0.010, +0.025) within its 0.072 floor,

@@ -1,0 +1,15 @@
+{
+ "stage": "P1gb full run",
+ "declared_in": "docs/P1GB_FULL_RUN.md",
+ "gate": "SHUT",
+ "problems": [
+  "P1g-b's screen is NOT_ADOPTED, not ADOPT_FOR_FULL_RUN"
+ ],
+ "screen": {
+  "record": "outputs/p1gb/screen-verdict.json",
+  "sha256": "d7537455274942645edbce7827fdce38a2dfdfb5517d3a1d763808294c40a307",
+  "verdict": "NOT_ADOPTED"
+ },
+ "zp1gbf_sha256": "274aa185e65f557ad1535844aebbecdf1afcc0dbf5c55c6e902f56517173fd0a",
+ "utc": "2026-10-17T17:42:18Z"
+}

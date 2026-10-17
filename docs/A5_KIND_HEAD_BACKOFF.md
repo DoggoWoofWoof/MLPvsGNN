@@ -1,7 +1,7 @@
 # A5: zck's kind head on both models, its gradient kept off the shared weights
 
 Declared 17 October 2026, before any number. The fifth reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2,
-row 5), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za5kind.py`. Not run yet.
+row 5), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za5kind.py`. Filed 18 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -131,3 +131,37 @@ of the base arms (the head adds 130 parameters):
 - L-musique trains: `--frac 0.20`, GPU share 0.22;
 - -hp trains and the reads: `--frac 0.27`, GPU share 0.29;
 - memory: trains 4.5 GB (zspkk-hp 7 GB), reads 6 GB, compares 4 GB, pairs, re-calls and the verdict 2 GB.
+
+## 7. Results
+
+Filed 18 October 2026 from the host's records (`outputs/a5/screen-verdict.json`, written 2026-10-17T18:38:49Z; the
+re-calls `outputs/screen/scr-a5-zrckpk-pair-recall.json` and `-zspkk-`, host paths made relative). **Both arms
+NOT_ADOPTED, with no GAIN and no LOSS.**
+
+- **On the four passage graphs nothing moves** (+0.0000 on every read, both arms), as the form requires: the kind
+  head reads only typed relations and its gradient is kept off the shared weights.
+- **On the KBs:** metaqa in domain falls 0.0003 to 0.0019; webqsp zero-shot rises on L-hotpotqa (+0.0176 MLP,
+  +0.0136 GNN), filed GAIN and re-called WITHIN its 0.023 floor, and moves -0.0005 and +0.0066 on L-musique.
+
+So a kind head that cannot change the shared weights reaches the KBs but does not clear the seed null. This closes
+only this form. The next form, fixed in section 5 for no GAIN: **A5c**, zck's coupled form on the lean pair (the
+offsets inside the output layer and base weight, trained with the shared weights), 2wiki in domain beside as its
+known risk, in its own declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; base R@5 shown as zrckp's /
+zspk's):
+
+| split | dataset | read | base R@5 | zrckpk: delta [95% CI], call | zspkk: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0019 [-0.0025, -0.0014], WITHIN | -0.0008 [-0.0012, -0.0004], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | +0.0000 [+0.0000, +0.0000], WITHIN | +0.0000 [+0.0000, +0.0000], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0000 [+0.0000, +0.0000], WITHIN | +0.0000 [+0.0000, +0.0000], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | +0.0000 [+0.0000, +0.0000], WITHIN | +0.0000 [+0.0000, +0.0000], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0000 [+0.0000, +0.0000], WITHIN | +0.0000 [+0.0000, +0.0000], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | -0.0005 [-0.0055, +0.0042], WITHIN | +0.0066 [+0.0024, +0.0112], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0005 [-0.0009, -0.0002], WITHIN | -0.0003 [-0.0006, +0.0000], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | +0.0000 [+0.0000, +0.0000], WITHIN | +0.0000 [+0.0000, +0.0000], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | +0.0000 [+0.0000, +0.0000], WITHIN | +0.0000 [+0.0000, +0.0000], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0000 [+0.0000, +0.0000], WITHIN | +0.0000 [+0.0000, +0.0000], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | +0.0000 [+0.0000, +0.0000], WITHIN | +0.0000 [+0.0000, +0.0000], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | +0.0176 [+0.0099, +0.0252], WITHIN (filed GAIN) | +0.0136 [+0.0089, +0.0191], WITHIN (filed GAIN) |
