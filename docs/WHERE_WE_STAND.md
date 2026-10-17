@@ -640,7 +640,10 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU. P1g-c
   ([P1GC_ADOPTED_ON_P1GB.md](P1GC_ADOPTED_ON_P1GB.md)) takes P1g-b's pools to the adopted models (G5's zspx, R1's
   zrckpr, and zspxr, zspx with R1's columns): P1g-b's builds are rebuilt on the CPU behind a gate on their arrays,
-  and its six fits go on the card right after P1g-b's own, ahead of A5 to A13's screens.
+  and its six fits go on the card right after P1g-b's own, ahead of A5 to A13's screens. After P5c come A4's two
+  next forms, each on both models: A4h ([A4H_BLOCK_DROPOUT_HALF.md](A4H_BLOCK_DROPOUT_HALF.md)), the block dropout
+  at 0.1, and A4f ([A4F_FAMILY_DROPOUT.md](A4F_FAMILY_DROPOUT.md)), the KT term and the chain term dropped as two
+  more cells at 0.2.
 - **Filed on 18 October:**
   - **P1g-b NOT_ADOPTED** ([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)): the lean pair refit unchanged on P1g2's chosen
     pools (ALL >= 0.95 everywhere). zrckp 1 GAIN (webqsp zero-shot +0.0141, L-musique), 0 LOSS; zspk 1 LOSS (musique
