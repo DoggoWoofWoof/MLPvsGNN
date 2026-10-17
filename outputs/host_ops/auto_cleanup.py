@@ -10,13 +10,16 @@ Every file is classed as
               feeder and host ops, the archive and clean-up records, job logs): never removed
   hub         the HF archive holds it byte for byte: a VERIFIED tag's plan lists it at this size and mtime
               (outputs/host_ops/hub_index.json, made on the laptop by `hub-index`); restore: scripts/host_restore.py
-  regen       a build or cache that committed code rebuilds from the mirror (host_sync.py's REGEN pattern)
+  regen       a build or cache that committed code rebuilds from the mirror (host_sync.py's REGEN pattern), and since
+              17 October a stage's builds (STAGE_BUILD: its cache, look, chains, links, cols, units, space, res, kt or
+              csr folder, and U1's graphs); a stage's fits, pools, screens and records are never builds
   smoke       a smoke test's output (a folder whose name starts with 'smoke')
   unarchived  anything else (results and models the archive does not hold yet): never removed
 and as referenced when a queued or running mpr job names it or a folder above it (the feeder's unsent and running items
 in hostfeed_items.txt / hostfeed_state.json, and the specs of mpr's active jobs in rx's active/ folder), or when it sits
 under a folder that a queued or running job's script family reads without naming it (PINS: the look caches, anchors,
-carves and six-base for the qd/lean families, the S6 builds and caches for chainscore), and as warm when it was read or
+carves and six-base for the qd/lean families, the S6 builds and caches for chainscore), or under a folder written in
+the source of a script such a job runs or imports, its imports followed (source_pins, 17 October), and as warm when it was read or
 written within the age limit (NTFS last access, which this drive keeps, and mtime) or cold.
 
 A file is removed only if it is hub, regen or smoke, unreferenced, and cold for the limit that the drive's free space
@@ -56,8 +59,23 @@ REGEN = re.compile(r"^outputs/mp_unified/(lean/cs\d+e?-[a-z0-9]+(-[a-z0-9]+)*\.n
                    r"look/[^/]+/[^/]+/chunks/|cache/)|/__pycache__/|"
                    # 9 Oct: step 4e's look chunks (look_step4e.py rebuilds them bit for bit; its caches are read instead)
                    r"^outputs/step4e/look/[^/]+/[^/]+/chunks/")
+# 17 Oct (the user: "setup auto delete script for host items, dont wait for me"): a stage's builds, which its
+# committed code makes again from the mirror and the stage's own inputs: caches, looks, chains, links, columns, units,
+# spaces, residual arrays, KT columns, CSR graphs and U1's graphs. Fits, pools, screens and records are never builds.
+STAGE_BUILD = re.compile(r"^outputs/[a-z0-9_]+/(?:cache|look|chains|links|space|res|cols|units|scores|kt|csr)/|"
+                         r"^outputs/u1[a-z]/(?:webqsp|metaqa|musique|hotpotqa|2wiki|squad)/")
 SMOKE = re.compile(r"(^|/)smoke[^/]*/")
 PATHTOK = re.compile(r"(?:outputs|logs)/[A-Za-z0-9_./@=+-]+")
+# A folder named in the source of a script that a queued or running job runs or imports (followed through its
+# imports) is pinned, whether or not the command names it: "outputs/x/y", "outputs" / "x" / "y" and
+# os.path.join("outputs", "x", "y") each pin outputs/x/y/ (outputs/x/ when only one part is written).
+SCRIPT = re.compile(r"[A-Za-z0-9_./\\-]+\.py\b")
+LIT_PATH = re.compile(r"[\"'](?:\./)?((?:outputs|logs)/[A-Za-z0-9_.@=+-]+(?:/[A-Za-z0-9_.@=+-]+)?)")
+LIT_PARTS = re.compile(r"[\"'](outputs|logs)[\"']\s*[/,]\s*[\"']([A-Za-z0-9_.@=+-]+)[\"']"
+                       r"(?:\s*[/,]\s*[\"']([A-Za-z0-9_.@=+-]+)[\"'])?")
+IMPORT = re.compile(r"^\s*(?:from\s+([A-Za-z_][\w.]*)\s+import|import\s+([A-Za-z_][\w.]*(?:\s*,\s*[A-Za-z_][\w.]*)*))",
+                    re.M)
+MOD_DIRS = ("outputs/mp_unified", "scripts", "outputs/host_ops", "tools")
 # Folders a script family reads without naming them on its command line: pinned while such a job is queued or running.
 _ANCHORS = ("outputs/mp_approx_hotpot_anchor/host/", "outputs/mp_approx_kb_anchor/host/",
             "outputs/mp_approx_2wiki_anchor/host/", "outputs/mp_approx_musique_anchor/host/")
@@ -127,8 +145,10 @@ def hub_index(arch: Path, out: Path) -> int:
 # ── host: references ────────────────────────────────────────────────────────
 
 
-def feeder_refs(ws: Path) -> tuple[set[str], list[str], list[str]]:
-    """Path tokens, names and commands of the feeder's unsent and running items."""
+def feeder_refs(ws: Path, active: set[str] | None = None) -> tuple[set[str], list[str], list[str]]:
+    """Path tokens, names and commands of the feeder's unsent and running items. A sent item counts while rx holds its
+    job as active (active: the ids of mpr's active jobs), or for 6 h after its launch; 17 Oct: 739 of 753 'pending'
+    items were jobs that had ended without an end record in the feeder's state, and they pinned every folder."""
     items = ws / "outputs/host_ops/hostfeed_items.txt"
     state = ws / "outputs/host_ops/hostfeed_state.json"
     if not items.is_file():
@@ -147,10 +167,21 @@ def feeder_refs(ws: Path) -> tuple[set[str], list[str], list[str]]:
             continue
         if name in sent and sent[name] in term:
             continue
+        if name in sent and active is not None and sent[name] not in active and not launched_within(sent[name], 6.0):
+            continue
         names.append(name)
         refs.update(PATHTOK.findall(f[6].replace(";", " ") + " " + f[7]))
         cmds.append(f[6].replace(";", " ") + " " + f[7])   # inputs too: wrappers list the scripts they import there
     return refs, names, cmds
+
+
+def launched_within(jid: str, hours: float) -> bool:
+    """rx's job ids start with the launch's local time, YYMMDD-HHMMSS."""
+    try:
+        t0 = time.mktime(time.strptime(jid[:13], "%y%m%d-%H%M%S"))
+    except (ValueError, OverflowError):
+        return True
+    return now_s() - t0 < hours * 3600
 
 
 def active_refs(rx_root: Path) -> tuple[set[str], list[str], list[str]]:
@@ -169,6 +200,36 @@ def active_refs(rx_root: Path) -> tuple[set[str], list[str], list[str]]:
         refs.update(PATHTOK.findall(txt))
         cmds.append(txt)
     return refs, ids, cmds
+
+
+def source_pins(ws: Path, cmds: list[str]) -> tuple[list[str], int]:
+    """Folders written in the source of every script the commands run or list as inputs, and of the modules those
+    import (found beside the script or in MOD_DIRS), transitively. Returns (folder prefixes, scripts read)."""
+    todo = {s.replace("\\", "/") for c in cmds for s in SCRIPT.findall(c)}
+    seen, pins = set(), set()
+    while todo:
+        rel = todo.pop()
+        if rel in seen:
+            continue
+        seen.add(rel)
+        p = ws / rel
+        try:
+            src = p.read_text(encoding="utf-8", errors="replace")
+            here = p.resolve().parent.relative_to(ws).as_posix()
+        except (OSError, ValueError):
+            continue
+        for m in LIT_PATH.findall(src):
+            pins.add(m.rstrip("/.") + "/")
+        for top, a, b in LIT_PARTS.findall(src):
+            pins.add(f"{top}/{a}/{b}/" if b else f"{top}/{a}/")
+        for m1, m2 in IMPORT.findall(src):
+            for name in (m1 or m2).split(","):
+                parts = name.strip().split(".")
+                for d in (here,) + MOD_DIRS:
+                    for cand in (f"{d}/{'/'.join(parts)}.py", f"{d}/{parts[-1]}.py"):
+                        if cand not in seen and (ws / cand).is_file():
+                            todo.add(cand)
+    return sorted(pins), len(seen)
 
 
 def referenced(rel: str, refs: set[str], prefixes: list[str]) -> bool:
@@ -213,7 +274,7 @@ def classify(rel: str, st, hub: dict) -> tuple[str, str | None]:
         return "hub", h[2]
     if SMOKE.search(rel):
         return "smoke", None
-    if REGEN.search(rel):
+    if REGEN.search(rel) or STAGE_BUILD.search(rel):
         return "regen", None
     return "unarchived", None
 
@@ -239,10 +300,12 @@ def cycle(a, ws: Path) -> dict:
     if hub_p.is_file():
         for rel, b, m, tag in json.loads(hub_p.read_text(encoding="utf-8"))["files"]:
             hub[rel] = (b, m, tag)
-    r1, pending, c1 = feeder_refs(ws)
     r2, active, c2 = active_refs(Path(a.rx_root))
+    r1, pending, c1 = feeder_refs(ws, set(active))
     refs = {x.rstrip("/.") for x in r1 | r2}
     pins = sorted({d for rx_, ds in PINS if any(rx_.search(c) for c in c1 + c2) for d in ds})
+    src_pins, n_src = source_pins(ws, c1 + c2)
+    pins = sorted(set(pins) | set(src_pins))
     prefixes = [x + "/" for x in refs] + pins
     if free_gb < a.emergency_gb:   # 9 Oct: the drive filled within one 3 h cycle; below this, no age limit
         tier, limit_d = "emergency", 0.0
@@ -312,7 +375,7 @@ def cycle(a, ws: Path) -> dict:
            "removed": len(removed), "removed_gb": round(sum(x[1] for x in removed) / GB, 3),
            "by_class_gb": {c: round(sum(x[1] for x in removed if x[3] == c) / GB, 3) for c in ("hub", "regen", "smoke")},
            "failed": failed, "left_for_space": skipped_full, "pending_items": len(pending), "active_jobs": active,
-           "pinned": pins, "files": removed}
+           "pinned": pins, "scripts_read_for_pins": n_src, "files": removed}
     if a.delete and removed:
         atomic_write(ws / "outputs/host_cleanup" / f"deleted_auto_{stamp}.json", json.dumps(rec, indent=1))
     elif not a.delete:
