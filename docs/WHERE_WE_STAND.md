@@ -632,6 +632,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   fixed columns in both models; then A8 ([A8_QDEPTH_INPUT.md](A8_QDEPTH_INPUT.md)), round 11's depth prior fitted on
   its own per split and cross-fitted, as six fixed columns in both models; then A9
   ([A9_EDGE_FAMILY_DROPOUT.md](A9_EDGE_FAMILY_DROPOUT.md)), the MP-unified track's edge-family dropout on zspx alone
+  (GNN only); then A10 ([A10_G2_ON_ZSPX.md](A10_G2_ON_ZSPX.md)), G2's hidden-state layers over zspx's score
   (GNN only). P5c's builds
   ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
