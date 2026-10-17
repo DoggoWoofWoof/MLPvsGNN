@@ -629,7 +629,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   shared weights; then A6 ([A6_LINK_WORDS_INPUT.md](A6_LINK_WORDS_INPUT.md)), D4's link words as six fixed columns
   in both models, after spaCy's mentions are built on all six corpora on the CPU; then A7
   ([A7_S6_SCORER_INPUT.md](A7_S6_SCORER_INPUT.md)), S6's chain scorer refit per split and cross-fitted, as four
-  fixed columns in both models. P5c's builds ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
+  fixed columns in both models; then A8 ([A8_QDEPTH_INPUT.md](A8_QDEPTH_INPUT.md)), round 11's depth prior fitted on
+  its own per split and cross-fitted, as six fixed columns in both models. P5c's builds
+  ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
   - **R1: zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)): the bridge
     residual as nine fixed columns. The MLP gains webqsp zero-shot (+0.0135, L-musique) with no LOSS. The GNN moves
