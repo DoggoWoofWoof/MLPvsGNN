@@ -622,7 +622,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   and they were re-queued at 09:09 with the build under retries. Its full run
   ([P1GB_FULL_RUN.md](P1GB_FULL_RUN.md), 9bc6e41) is queued behind its screen and gated on it.
 - **On the card:** A2 ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)), pool ranks and top-50 z-scores beside zret's
-  z-scores in both models. P5c's builds ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
+  z-scores in both models. Queued behind it, A3 ([A3_VSHARE_LEAN.md](A3_VSHARE_LEAN.md)): vshare's share
+  augmentation of the pool statistics, moved into zret's reference, in both models' training. P5c's builds
+  ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
   - **R1: zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)): the bridge
     residual as nine fixed columns. The MLP gains webqsp zero-shot (+0.0135, L-musique) with no LOSS. The GNN moves
