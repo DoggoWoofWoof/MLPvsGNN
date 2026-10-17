@@ -624,7 +624,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
 - **On the card:** A2 ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)), pool ranks and top-50 z-scores beside zret's
   z-scores in both models. Queued behind it, A3 ([A3_VSHARE_LEAN.md](A3_VSHARE_LEAN.md)): vshare's share
   augmentation of the pool statistics, moved into zret's reference, in both models' training; then A4
-  ([A4_BLOCK_DROPOUT_LEAN.md](A4_BLOCK_DROPOUT_LEAN.md)), bdrop20's block dropout at the top of both models. P5c's builds
+  ([A4_BLOCK_DROPOUT_LEAN.md](A4_BLOCK_DROPOUT_LEAN.md)), bdrop20's block dropout at the top of both models; then A5
+  ([A5_KIND_HEAD_BACKOFF.md](A5_KIND_HEAD_BACKOFF.md)), zck's kind head on typed graphs with its gradient kept off the
+  shared weights. P5c's builds
   ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
   - **R1: zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)): the bridge
