@@ -626,7 +626,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   augmentation of the pool statistics, moved into zret's reference, in both models' training; then A4
   ([A4_BLOCK_DROPOUT_LEAN.md](A4_BLOCK_DROPOUT_LEAN.md)), bdrop20's block dropout at the top of both models; then A5
   ([A5_KIND_HEAD_BACKOFF.md](A5_KIND_HEAD_BACKOFF.md)), zck's kind head on typed graphs with its gradient kept off the
-  shared weights. P5c's builds
+  shared weights; then A6 ([A6_LINK_WORDS_INPUT.md](A6_LINK_WORDS_INPUT.md)), D4's link words as six fixed columns
+  in both models, after spaCy's mentions are built on all six corpora on the CPU. P5c's builds
   ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU.
 - **Filed on 17 October:**
   - **R1: zrckpr ADOPT_FOR_FULL_RUN, zspkr NOT_ADOPTED** ([R1_RESIDUAL_INPUT.md](R1_RESIDUAL_INPUT.md)): the bridge
