@@ -636,11 +636,15 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   adopted arms (R1's zrckpr and G5's zspx); A2xi ([A2XI_PRANK_REPLACE.md](A2XI_PRANK_REPLACE.md)), prank's ranks in the
   z-scores' place on both lean models; A6ex ([A6EX_LINK_WORDS_ADOPTED.md](A6EX_LINK_WORDS_ADOPTED.md)), A6e's link
   words on the adopted arms; P5c5 ([P5C5_FIVE_FOLDS.md](P5C5_FIVE_FOLDS.md)), P5c's offsets cross-fitted over five
-  folds, with P5b's log p as a fifth column on the GNN alone.
+  folds, with P5b's log p as a fifth column on the GNN alone. After P1g-c's fits, behind its gate: A5cp
+  ([A5CP_P1GB_POOLS.md](A5CP_P1GB_POOLS.md)), A5c's coupled offsets fitted again on P1g-b's pools, against P1g-b's own
+  fits of the lean pair.
   - **Rebuilt after the clean-up.** G3's residual parts and R1's columns, which the zspx and zrckpr screens read, are
     rebuilt: all 78 parts' arrays match their records bit for bit. A11x has rebuilt A11's links.
   - **Being made again.** P5a's node tables, which P5c5's builds read, were a trained fit that no archive held. P5a's
-    own code makes them again (`scripts/p5a_restore.py`), and each goes back only if it matches its record.
+    own code makes them again (`scripts/p5a_restore.py`), and each goes back only if it matches its record. Four of
+    the six are back, each matching its record bit for bit, with the same fit history: squad, metaqa, musique and
+    webqsp. hotpotqa and 2wiki are being fitted.
 - **Filed on 19 October:**
   - **A2h NOT_ADOPTED, all four arms** ([A2H_HALVES_APART.md](A2H_HALVES_APART.md)): A2's rank half and top-50 half
     apart. Each half alone moves musique zero-shot as far as A2's whole form or further (MLP +0.0128 and +0.0198, GNN
