@@ -28,6 +28,9 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    while younger than --plateau-min minutes, less its live use). After --calm-polls polls in a row with available
    memory at or above --avail-mid and page-ins under --pagein-lo, the margin shrinks by --margin-down (to at least
    --margin-min): requests close in on measured use and more jobs fit under the same caps.
+   The same room must also fit under the commit headroom (19 Oct 21:40): with WSL's VM holding 35.6 GB of commit
+   outside rx, commit ran out while 20 GB stood available; sends went on until the pressure stop, the pagefile
+   grew to 16.9 GB on the drive, and paging slowed a GPU fit's epochs from 394 s to 1522 s.
 4. GPU first. A GPU item that waits because mpr's own GPU job holds the GPU holds only the GPU items behind it: when
    that job ends, its memory comes back with the GPU, and GPU items are tried first. Whatever memory the item needs
    beyond that job's request is set aside from the items behind it, so it can start the moment the GPU frees. When no
@@ -1173,7 +1176,8 @@ def main(argv=None):
                 cov = min(mq, min(run_gm), hand_left)
                 hand, hand_left = hand + cov, hand_left - cov
         grow = growth(ov, M) - hand
-        budget = (avail - grow - a.avail_floor) if avail is not None else float("inf")
+        room = avail if commit is None or avail is None else min(avail, commit)   # commit: see the docstring's 3.
+        budget = (room - grow - a.avail_floor) if room is not None else float("inf")
         S_sig = shared_pages(by, M)
         act_sigs = set()
         for x in ov["mine"]:
