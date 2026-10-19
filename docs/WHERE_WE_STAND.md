@@ -610,7 +610,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   17 October ([VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md)) reopens the idea. Its next form is P5c:
   g's scores as a fixed input to both models, where a trained head can learn to ignore them on musique.
 
-## 7. Running now (20 October, 00:30)
+## 7. Running now (20 October, 00:50)
 
 - **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
   KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
@@ -641,7 +641,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   gate: A5cp
   ([A5CP_P1GB_POOLS.md](A5CP_P1GB_POOLS.md)), A5c's coupled offsets fitted again on P1g-b's pools, against P1g-b's own
   fits of the lean pair; then A3vp ([A3VP_P1GB_POOLS.md](A3VP_P1GB_POOLS.md)), A3v's two-sided rule on the MLP fitted
-  again on P1g-b's pools, against P1g-b's own fit of zrckp.
+  again on P1g-b's pools, against P1g-b's own fit of zrckp; then A7p ([A7P_P1GB_POOLS.md](A7P_P1GB_POOLS.md)), A7's
+  scorer input built and fitted again on P1g-b's looks (its CPU builds go as soon as P1g-c's aliases are made, and
+  P1g-b's look releases wait for them).
   - **Rebuilt after the clean-up.** G3's residual parts and R1's columns, which the zspx and zrckpr screens read, are
     rebuilt: all 78 parts' arrays match their records bit for bit. A11x has rebuilt A11's links.
   - **Made again.** P5a's node tables, which P5c5's builds read, were a trained fit that no archive held. P5a's own
