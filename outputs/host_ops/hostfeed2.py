@@ -222,6 +222,18 @@ class _ITEM(ctypes.Structure):
     _fields_ = [("szName", ctypes.c_wchar_p), ("FmtValue", _FMT)]
 
 
+def per_instance(items):
+    """{instance name: value} of PDH (name, status, value) items with valid data, summing the items that share a
+    name. 19 Oct 22:20: the WSL VM's worker (vmwp) held 10.85 GiB of the card as two pairs of same-named instances;
+    a dict kept the last of each, so the feeder read 9.5 GiB of process memory on a card holding 22.9, saw no other
+    job over its share, and started a third GPU run into a full card (each then ran 4-15x slower)."""
+    d = {}
+    for name, status, v in items:
+        if status in (0, 1):
+            d[name] = d.get(name, 0.0) + v
+    return d
+
+
 class Counters:
     """Windows PDH counters by English name, each summed over its instances; a rate is the mean since the last read."""
     FMT_DOUBLE = 0x00000200
@@ -264,8 +276,8 @@ class Counters:
                     continue
                 arr = ctypes.cast(buf, ctypes.POINTER(_ITEM))
                 if k in self.PER_INSTANCE:
-                    out[k] = {arr[i].szName: arr[i].FmtValue.doubleValue for i in range(count.value)
-                              if arr[i].FmtValue.CStatus in (0, 1)}
+                    out[k] = per_instance((arr[i].szName, arr[i].FmtValue.CStatus, arr[i].FmtValue.doubleValue)
+                                          for i in range(count.value))
                     continue
                 vals = [arr[i].FmtValue.doubleValue for i in range(count.value) if arr[i].FmtValue.CStatus in (0, 1)]
                 if vals:
