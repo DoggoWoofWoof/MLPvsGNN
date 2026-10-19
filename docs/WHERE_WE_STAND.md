@@ -630,8 +630,12 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   Then four on zspx, the adopted GNN: A9t ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)), edge-family dropout with
   the increments bounded; A10e ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
   ([A13X_BRIDGE_HEAD_ZSPX.md](A13X_BRIDGE_HEAD_ZSPX.md)), zbr's bridge head before zspx's first step; A12x
-  ([A12X_GSURG_ZSPX.md](A12X_GSURG_ZSPX.md)), gradient surgery. The zspx screens wait for G3's residual parts, which the
-  clean-up removed; they are being rebuilt on the CPU, with R1's columns for the zrckpr screens.
+  ([A12X_GSURG_ZSPX.md](A12X_GSURG_ZSPX.md)), gradient surgery. Three more, declared after the filings below: A11x
+  ([A11X_FOURTH_FAMILY_ZSPX.md](A11X_FOURTH_FAMILY_ZSPX.md)), our phrase links as a fourth family in all three of
+  zspx's steps; A4fx ([A4FX_FAMILY_DROPOUT_ADOPTED.md](A4FX_FAMILY_DROPOUT_ADOPTED.md)), A4f's family dropout on the
+  adopted arms (R1's zrckpr and G5's zspx); A2xi ([A2XI_PRANK_REPLACE.md](A2XI_PRANK_REPLACE.md)), prank's ranks in the
+  z-scores' place on both lean models. The zspx and zrckpr screens wait for G3's residual parts and R1's columns, which
+  the clean-up removed; they are being rebuilt on the CPU (A11x also rebuilds A11's links).
 - **Filed on 19 October:**
   - **A2h NOT_ADOPTED, all four arms** ([A2H_HALVES_APART.md](A2H_HALVES_APART.md)): A2's rank half and top-50 half
     apart. Each half alone moves musique zero-shot as far as A2's whole form or further (MLP +0.0128 and +0.0198, GNN
