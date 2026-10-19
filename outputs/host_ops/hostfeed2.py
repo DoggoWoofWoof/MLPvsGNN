@@ -130,6 +130,13 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    --shed-polls polls in a row while mpr runs more than one GPU job, mpr's newest GPU run is shed as on a spill:
    cancelled, recorded as shed, its item back unsent. The same largest recent reading counts as held beyond the
    shares when the feeder sends, so it does not start a run into a card that the next reading finds full.
+9. The release path (20 Oct, 00:40). Below --disk-floor-gb only items that write little (--light-re) go out. A
+   release (an item whose name holds '-release') gives up pins on space that the clean-up then frees, so the
+   writers it waits on, directly or through unsent items' deps, must not wait for that space: P1g-c's link and
+   chain builds (~26 GB) stood between a drive at 55 GB and the releases of P1g-b's 54 GB of looks. Below the
+   floor such a writer still goes, one at a time: none goes while another writer on a release's path is queued
+   or running, so the drive falls at most one writer's output below the reading it was sent on. Below
+   --disk-hard-gb nothing goes but a release, which writes nothing and frees space.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -160,6 +167,7 @@ except ImportError:      # our processes' GPU memory is then unread
 
 REF = re.compile(r"@([A-Za-z0-9_.-]+)\*([0-9.]+)\+([0-9.]+)")
 SEED = re.compile(r"-s\d{1,2}(?=-|$)")
+RELEASE = re.compile(r"-release(?=-|$)")
 BAD = ("failed", "cancelled", "lost", "error")
 RUNNING = ("running", "finishing")
 
@@ -862,6 +870,24 @@ def expected_runtime(it, M):
     return statistics.median(v) if v else None
 
 
+def release_path(items, by):
+    """(todo, sent): names of the items an unsent release waits on, directly or through unsent items' deps,
+    split into unsent and sent (the docstring's 9). A sent item's deps had ended when it went: the walk stops there."""
+    todo, sent = set(), set()
+    stack = [d for i in items if RELEASE.search(i["name"]) and i["name"] not in st["sent"]
+             and i["name"] not in st["dropped"] for d in i["deps"]]
+    while stack:
+        d = stack.pop()
+        if d in todo or d in sent or d not in by:
+            continue
+        if d in st["sent"]:
+            sent.add(d)
+            continue
+        todo.add(d)
+        stack.extend(by[d]["deps"])
+    return todo, sent
+
+
 def longest_first(left, items, M):
     """Within runs of consecutive non-GPU items feeding the same grade item(s): longest expected runtime first."""
     feeds = {}
@@ -985,9 +1011,10 @@ def main(argv=None):
                          "the 100 GB hold had idled the host for two days)")
     ap.add_argument("--disk-floor-gb", type=float, default=30.0,
                     help="near-full: below this free on the workspace's drive, send only items that write little "
-                         "(--light-re), so the shared drive never fills (9 Oct 22:26 it reached 0)")
+                         "(--light-re), so the shared drive never fills (9 Oct 22:26 it reached 0); the writers a "
+                         "pending release waits on still go, one at a time (the docstring's 9)")
     ap.add_argument("--disk-hard-gb", type=float, default=15.0,
-                    help="send nothing at all below this free")
+                    help="send nothing but releases below this free (the docstring's 9)")
     ap.add_argument("--light-re", default=r"-(train|read|compare|pair|recall|grade|gate|base|pools|adopt|copy|lav|la|release|res)\d*(-|$)",
                     help="items whose names match write only MBs (fits, reads, records, pool lists, hard links, the "
                          "bases' copies; 19 Oct: look verifications, aliases, releases, and G3 residual builds at ~40 MB a part): they go on below the floor")
@@ -1341,17 +1368,18 @@ def main(argv=None):
         light_only = disk_gb < a.disk_floor_gb
         hold_disk = disk_gb < a.disk_hard_gb
         if hold_disk:
-            say_once("_disk", f"drive free {disk_gb:.1f} GB < {a.disk_hard_gb:g} GB: sending nothing until the clean-up "
-                              f"frees it")
+            say_once("_disk", f"drive free {disk_gb:.1f} GB < {a.disk_hard_gb:g} GB: sending only releases (they "
+                              f"free space) until the clean-up frees it")
         elif light_only:
             say_once("_disk", f"drive free {disk_gb:.0f} GB < {a.disk_floor_gb:g} GB: sending only items that write "
-                              f"little ({a.light_re}) until the clean-up frees it")
+                              f"little ({a.light_re}), and one at a time the writers a pending release waits "
+                              f"on, until the clean-up frees it")
         elif disk_gb < a.disk_target_gb:
             say_once("_disk", f"drive free under the {a.disk_target_gb:g} GB target: a clean-up survey is due; "
                               f"nothing is held")
         else:
             st["said"].pop("_disk", None)
-        if why or hold_q or hold_disk:
+        if why or hold_q:
             if not a.dry:
                 save()
             write_util(rec)
@@ -1384,9 +1412,17 @@ def main(argv=None):
                 f"| queued GPU jobs take over {hand:g} GB | mpr {mpr_c:g}c/{mpr_m:.1f}G/{mpr_g:g}g, rx free "
                 f"{free_c:.1f}c/{free_m:.1f}G/{free_g:g}g, budget {budget:.1f} GB")
         light = re.compile(a.light_re)
+        path_todo, path_busy = set(), False
+        if light_only and not hold_disk:   # the docstring's 9: a writer a release waits on goes, one at a time
+            path_todo, path_sent = release_path(items, by)
+            path_busy = any(not light.search(d) and job_state(d, by, ov)[0] not in BAD + ("done", "unknown")
+                            for d in path_sent)
         for it in longest_first(left, items, M):
             n = it["name"]
-            if light_only and not light.search(n):
+            if hold_disk and not RELEASE.search(n):
+                continue           # below the hard floor only a release goes: it frees space
+            under_floor = light_only and not light.search(n)
+            if under_floor and (path_busy or n not in path_todo):
                 continue           # writes much: waits for the clean-up (its deps are checked when it may go)
             try:
                 sts = {d: job_state(d, by, ov) for d in it["deps"]}
@@ -1454,9 +1490,12 @@ def main(argv=None):
             tag = f"{n}({c:g}c/{m:g}G{'' if basis == 'written' else f' {basis}, written {decl:g}'}"
             if cr is not None:
                 tag += f", shares the card: torch peak {round(cr, 2):g} GB, --frac {a.corun_frac:g}"
+            if under_floor:
+                tag += f", below the disk floor at {disk_gb:.0f} GB: a release waits on it"
             if not fits and g > 0 and fits_cm and n_q < a.queue_gpu and mpr_g + g <= a.cap_gpus + 1e-9 and not hold_gq:
                 jid = submit(it, m)       # waits in rx's queue; mpr's priority sets its share aside
                 if jid or a.dry:
+                    path_busy = path_busy or under_floor
                     n_q += 1
                     own_gpu.append(m)
                     own_gs.append(g)
@@ -1481,6 +1520,7 @@ def main(argv=None):
                                     and c <= free_c + 1e-9 and mq <= free_m + 1e-9 and mq + new_sh <= budget + 1e-9):
                                 jid = submit(it, m)
                                 if jid or a.dry:
+                                    path_busy = path_busy or under_floor
                                     n_q += 1
                                     own_gpu.append(m)
                                     own_gs.append(g)
@@ -1520,6 +1560,7 @@ def main(argv=None):
                 continue
             jid = submit(it, m)
             if jid or a.dry:
+                path_busy = path_busy or under_floor
                 mpr_c, mpr_m, mpr_g = mpr_c + c, mpr_m + m, mpr_g + g
                 free_c, free_m, free_g = free_c - c, free_m - m, free_g - g
                 budget -= m + new_sh
