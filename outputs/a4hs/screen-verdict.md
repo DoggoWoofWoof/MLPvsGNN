@@ -1,0 +1,10 @@
+# A4hs's screen verdict: zrckphs **NOT_ADOPTED**, zspkhs **NOT_ADOPTED**
+
+Rule: per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A4hs's re-call of the arm, or not twelve reads (docs/A4HS_FIXED_BLOCK_DROPOUT.md, section 4).
+
+- **zrckphs** (zrckp trained with A4hs's block dropout (0.1 per question and fixed block, SEMB kept)) against zrckp's card fit of each split (scr-p1c3p-zrckp, scr-p1c3p-zrckp-hp), after the seed-null re-call: 0 GAIN (none), 0 LOSS (none). Beside: L-musique metaqa WITHIN (-0.0010), L-musique musique WITHIN (+0.0049), L-musique webqsp WITHIN (-0.0016), L-hotpotqa metaqa WITHIN (-0.0010), L-hotpotqa musique WITHIN (-0.0008), L-hotpotqa webqsp WITHIN (+0.0021). Next: A4he, the complement: block dropout at 0.1 on SEMB alone, and with it rmatch's chain term, the eight fixed blocks always kept, on both models, its own declared file (A4h's GAIN may have come with SEMB's drop).
+- **zspkhs** (zspk trained with A4hs's block dropout (0.1 per question and fixed block, SEMB kept), before its propagation) against zspk's card fit of each split (scr-p1c3-zspk, scr-p1c3-zspk-hp), after the seed-null re-call: 0 GAIN (none), 1 LOSS (L-musique webqsp). Beside: L-musique metaqa WITHIN (+0.0016), L-musique musique WITHIN (+0.0253), L-musique webqsp LOSS (-0.0109), L-hotpotqa metaqa WITHIN (-0.0013), L-hotpotqa musique WITHIN (+0.0006), L-hotpotqa webqsp WITHIN (+0.0092). Next: A4he, the complement: block dropout at 0.1 on SEMB alone, and with it rmatch's chain term, the eight fixed blocks always kept, on both models, its own declared file (A4h's GAIN may have come with SEMB's drop).
+
+Beside, deciding nothing: musique in-domain (L-hotpotqa musique): zrckphs WITHIN (-0.0008), zspkhs WITHIN (+0.0006).
+
+This verdict closes only this form (block dropout 0.1 per question and fixed block over the models' eight fixed blocks, SEMB and rmatch's chain term always kept, at the top of the forward, in training); docs/SCREENS.md, 3b.

@@ -610,7 +610,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   17 October ([VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md)) reopens the idea. Its next form is P5c:
   g's scores as a fixed input to both models, where a trained head can learn to ignore them on musique.
 
-## 7. Running now (19 October, 19:30)
+## 7. Running now (19 October, 20:15)
 
 - **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
   KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
@@ -622,9 +622,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   301905a). The redo ([P1GC_LOOK_ALIAS.md](P1GC_LOOK_ALIAS.md), section 6) rebuilds the 177 look shards on the CPU,
   verifies and aliases them, then the links, chains, KT columns and G3's residuals; the six fits run behind a gate on
   those arrays.
-- **On the card:** the eight next forms declared in 2fff761, before any number; A2xm and A3v are filed below. On the
-  GPU now, on both lean models: A4hs ([A4HS_FIXED_BLOCK_DROPOUT.md](A4HS_FIXED_BLOCK_DROPOUT.md)), block dropout on the
-  eight fixed blocks only; A8e ([A8E_QDEPTH_PRIOR.md](A8E_QDEPTH_PRIOR.md)), the depth prior added to each row's score.
+- **On the card:** the eight next forms declared in 2fff761, before any number; A2xm, A3v and A4hs are filed below.
+  On the GPU now, on both lean models: A8e ([A8E_QDEPTH_PRIOR.md](A8E_QDEPTH_PRIOR.md)), the depth prior added to each
+  row's score.
   Then four on zspx, the adopted GNN: A9t ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)), edge-family dropout with
   the increments bounded; A10e ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
   ([A13X_BRIDGE_HEAD_ZSPX.md](A13X_BRIDGE_HEAD_ZSPX.md)), zbr's bridge head before zspx's first step; A12x
@@ -666,6 +666,12 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
     MLP's musique zero-shot loss more than halves (-0.0530 against A4's -0.1195, now WITHIN); the GNN keeps its LOSS
     there (-0.1143), and its webqsp zero-shot GAIN moves to L-hotpotqa (+0.0248). Next form: A4hs, the dropout on the
     eight fixed blocks only, SEMB and the chain term always kept, on both models.
+  - **A4hs NOT_ADOPTED, both arms** ([A4HS_FIXED_BLOCK_DROPOUT.md](A4HS_FIXED_BLOCK_DROPOUT.md)): block dropout at 0.1
+    on the eight fixed blocks only, SEMB always kept. No GAIN on either model. The GNN loses webqsp zero-shot on
+    L-musique (-0.0109, just past its 0.0102 floor); its musique zero-shot is +0.0253, within its 0.072 floor. With
+    SEMB kept, both of A4h's effects are gone: the GNN's musique loss (-0.1143 at A4h) and most of its webqsp gain
+    (+0.0248 at A4h, +0.0092 now). Next form: A4he, the complement, dropout at 0.1 on SEMB alone with the chain term,
+    the eight fixed blocks always kept, on both models.
   - **A4f NOT_ADOPTED, both arms** ([A4F_FAMILY_DROPOUT.md](A4F_FAMILY_DROPOUT.md)): the KT term and the chain term as
     two more cells at 0.2. musique zero-shot falls as far as at A4 or further (MLP -0.1147, GNN -0.2264), and webqsp
     zero-shot loses on both. Next form: A4fx, the family form on the adopted arms (zspx, zrckpr).

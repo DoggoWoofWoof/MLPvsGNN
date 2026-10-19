@@ -1,8 +1,9 @@
 # A4hs: block dropout on the eight fixed blocks only, SEMB always kept, in both models' training
 
 Declared 19 October 2026, before any number. The back-off form A4h's verdict named for zspkh
-(docs/A4H_BLOCK_DROPOUT_HALF.md, section 5), under docs/SCREENS.md section 3b and
-docs/VERDICT_AUDIT_2026_10_17.md. Code: `outputs/mp_unified/za4hs.py`.
+(docs/A4H_BLOCK_DROPOUT_HALF.md, section 5), under docs/SCREENS.md section 3b and docs/VERDICT_AUDIT_2026_10_17.md.
+Code: `outputs/mp_unified/za4hs.py`. Filed 19 October: both arms NOT_ADOPTED with no GAIN (zspkhs with one LOSS, webqsp
+zero-shot on L-musique); the next form is A4he (section 7).
 
 ## 1. Why this, now
 
@@ -174,4 +175,61 @@ nothing; each re-call waits for L1's base screens, as A4h's did.
 
 ## 7. Results
 
-Not run yet.
+Filed 19 October 2026 from the host's records (`outputs/a4hs/screen-verdict.json`, written 2026-10-19T14:37:40Z; the
+re-calls `outputs/screen/scr-a4hs-zrckphs-pair-recall.json` and `-zspkhs-`, host paths made relative). **Both arms
+NOT_ADOPTED, with no GAIN:** with SEMB always kept, block dropout on the eight fixed blocks gains nothing on either
+model that the seed null cannot explain, and the GNN loses webqsp zero-shot on L-musique.
+
+- **zrckphs: 0 GAIN, 0 LOSS.** Every read stays within its floor. The largest move is hotpotqa zero-shot on L-hotpotqa,
+  -0.0117 [-0.0149, -0.0084], WITHIN (filed LOSS) against its 0.02 floor, with FC@5 -0.0227. musique zero-shot on
+  L-musique moves +0.0049 [+0.0004, +0.0097].
+- **zspkhs: 0 GAIN, 1 LOSS.** webqsp zero-shot on L-musique falls 0.0109 [-0.0216, -0.0005], past its 0.0102 floor.
+  musique zero-shot on L-musique rises +0.0253 [+0.0190, +0.0316], WITHIN (filed GAIN) against its 0.072 floor. webqsp
+  zero-shot on L-hotpotqa moves +0.0092 [-0.0001, +0.0179], within its 0.0233 floor.
+- **Beside: A4h's gain and its loss both went with SEMB's drop.** A4h dropped SEMB along with the fixed blocks. Its GNN
+  arm lost musique zero-shot on L-musique (-0.1143) and gained webqsp zero-shot on L-hotpotqa (+0.0248). With SEMB
+  always kept, the loss is gone (+0.0253 now), and the gain shrinks to +0.0092, within its floor. The MLP moves the same
+  way within its floors: A4h's -0.0530 and +0.0127 become +0.0049 and +0.0021.
+
+Neither arm is adopted. This closes only this form, block dropout on the eight fixed blocks with SEMB kept
+(docs/SCREENS.md section 3b). The next form, fixed in section 5 and recorded in the verdict, is A4he, the complement:
+dropout at 0.1 on SEMB alone, and with it rmatch's chain term, the eight fixed blocks always kept, on both models, in
+its own declared file. One reading of the two screens is that SEMB's drop carried both of A4h's effects; A4he tests that
+drop alone.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckphs: delta [95% CI], call | zspkhs: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0010 [-0.0018, -0.0001], WITHIN | +0.0016 [+0.0006, +0.0026], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | +0.0005 [-0.0014, +0.0024], WITHIN | +0.0005 [-0.0014, +0.0024], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0049 [+0.0004, +0.0097], WITHIN | +0.0253 [+0.0190, +0.0316], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0007 [-0.0030, +0.0016], WITHIN | -0.0043 [-0.0065, -0.0020], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0015 [+0.0001, +0.0031], WITHIN | -0.0026 [-0.0041, -0.0012], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | -0.0016 [-0.0103, +0.0066], WITHIN | -0.0109 [-0.0216, -0.0005], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0010 [-0.0019, -0.0001], WITHIN | -0.0013 [-0.0021, -0.0005], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0003 [-0.0021, +0.0017], WITHIN | -0.0006 [-0.0025, +0.0013], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | -0.0008 [-0.0064, +0.0049], WITHIN | +0.0006 [-0.0047, +0.0056], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | -0.0117 [-0.0149, -0.0084], WITHIN (filed LOSS) | -0.0064 [-0.0095, -0.0034], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0016 [-0.0032, +0.0001], WITHIN | +0.0036 [+0.0019, +0.0052], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | +0.0021 [-0.0078, +0.0123], WITHIN | +0.0092 [-0.0001, +0.0179], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a4hs-zrckphs.json` and the others, `-hp` for L-hotpotqa); and A4h's R@5 deltas with SEMB in the
+drop (zrckph and zspkh, their own re-calls), on the same read:
+
+| split | dataset | zrckphs FC@5 | zrckphs hit@1 | zspkhs FC@5 | zspkhs hit@1 | zrckph R@5 (A4h) | zspkh R@5 (A4h) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0004 | -0.0015 | +0.0022 | +0.0083 | +0.0006 | +0.0023 |
+| L-musique | squad | +0.0005 | -0.0040 | +0.0005 | -0.0008 | -0.0012 | -0.0009 |
+| L-musique | musique | +0.0074 | -0.0041 | +0.0199 | +0.0132 | -0.0530 | -0.1143 LOSS |
+| L-musique | hotpotqa | -0.0011 | -0.0024 | -0.0090 | +0.0014 | -0.0016 | -0.0020 |
+| L-musique | 2wiki | +0.0038 | +0.0011 | -0.0056 | +0.0011 | +0.0004 | -0.0019 |
+| L-musique | webqsp | -0.0080 | +0.0000 | -0.0100 | -0.0086 | -0.0004 | -0.0030 |
+| L-hotpotqa | metaqa | -0.0012 | -0.0037 | -0.0014 | -0.0038 | -0.0036 | -0.0017 |
+| L-hotpotqa | squad | -0.0003 | -0.0026 | -0.0006 | -0.0015 | -0.0012 | -0.0016 |
+| L-hotpotqa | musique | +0.0074 | -0.0128 | -0.0037 | -0.0058 | -0.0064 | -0.0017 |
+| L-hotpotqa | hotpotqa | -0.0227 | +0.0078 | -0.0113 | -0.0057 | +0.0048 | +0.0037 |
+| L-hotpotqa | 2wiki | -0.0054 | +0.0006 | +0.0114 | -0.0007 | -0.0034 | +0.0022 |
+| L-hotpotqa | webqsp | -0.0013 | +0.0007 | +0.0060 | -0.0007 | +0.0127 | +0.0248 GAIN |
