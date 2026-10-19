@@ -636,7 +636,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   words on the adopted arms; P5c5 ([P5C5_FIVE_FOLDS.md](P5C5_FIVE_FOLDS.md)), P5c's offsets cross-fitted over five
   folds, with P5b's log p as a fifth column on the GNN alone. Then A2xmx
   ([A2XMX_ZTOP50_ADOPTED.md](A2XMX_ZTOP50_ADOPTED.md)), declared after A2xm's filing: ztop50's top-50 reference on the
-  adopted arms (R1's zrckpr and G5's zspx). After P1g-c's fits, behind its gate: A5cp
+  adopted arms (R1's zrckpr and G5's zspx). Then A4he ([A4HE_SEMB_DROPOUT.md](A4HE_SEMB_DROPOUT.md)), declared
+  after A4hs's filing: block dropout at 0.1 on SEMB alone, the chain term going with it, the eight fixed blocks kept,
+  on the lean pair. After P1g-c's fits, behind its gate: A5cp
   ([A5CP_P1GB_POOLS.md](A5CP_P1GB_POOLS.md)), A5c's coupled offsets fitted again on P1g-b's pools, against P1g-b's own
   fits of the lean pair; then A3vp ([A3VP_P1GB_POOLS.md](A3VP_P1GB_POOLS.md)), A3v's two-sided rule on the MLP fitted
   again on P1g-b's pools, against P1g-b's own fit of zrckp.
@@ -672,8 +674,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
     on the eight fixed blocks only, SEMB always kept. No GAIN on either model. The GNN loses webqsp zero-shot on
     L-musique (-0.0109, just past its 0.0102 floor); its musique zero-shot is +0.0253, within its 0.072 floor. With
     SEMB kept, both of A4h's effects are gone: the GNN's musique loss (-0.1143 at A4h) and most of its webqsp gain
-    (+0.0248 at A4h, +0.0092 now). Next form: A4he, the complement, dropout at 0.1 on SEMB alone with the chain term,
-    the eight fixed blocks always kept, on both models.
+    (+0.0248 at A4h, +0.0092 now). Next form: A4he (declared and queued), the complement, dropout at 0.1 on SEMB
+    alone with the chain term, the eight fixed blocks always kept, on both models.
   - **A4f NOT_ADOPTED, both arms** ([A4F_FAMILY_DROPOUT.md](A4F_FAMILY_DROPOUT.md)): the KT term and the chain term as
     two more cells at 0.2. musique zero-shot falls as far as at A4 or further (MLP -0.1147, GNN -0.2264), and webqsp
     zero-shot loses on both. Next form: A4fx, the family form on the adopted arms (zspx, zrckpr).
