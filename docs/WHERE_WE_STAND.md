@@ -636,7 +636,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   words on the adopted arms; P5c5 ([P5C5_FIVE_FOLDS.md](P5C5_FIVE_FOLDS.md)), P5c's offsets cross-fitted over five
   folds, with P5b's log p as a fifth column on the GNN alone. After P1g-c's fits, behind its gate: A5cp
   ([A5CP_P1GB_POOLS.md](A5CP_P1GB_POOLS.md)), A5c's coupled offsets fitted again on P1g-b's pools, against P1g-b's own
-  fits of the lean pair.
+  fits of the lean pair; then A3vp ([A3VP_P1GB_POOLS.md](A3VP_P1GB_POOLS.md)), A3v's two-sided rule on the MLP fitted
+  again on P1g-b's pools, against P1g-b's own fit of zrckp.
   - **Rebuilt after the clean-up.** G3's residual parts and R1's columns, which the zspx and zrckpr screens read, are
     rebuilt: all 78 parts' arrays match their records bit for bit. A11x has rebuilt A11's links.
   - **Made again.** P5a's node tables, which P5c5's builds read, were a trained fit that no archive held. P5a's own
@@ -659,8 +660,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   - **A3v: zrckpy ADOPT_FOR_FULL_RUN, zspky NOT_ADOPTED** ([A3V_VSHARE_TWO_SIDED.md](A3V_VSHARE_TWO_SIDED.md)):
     vshare's two-sided rule, A3's rich range in pools under a 0.375 retrieved share and A3t's thin one elsewhere. The
     MLP gains webqsp zero-shot on L-musique (+0.0112, just past its 0.0102 floor), with no LOSS; the GNN's musique
-    zero-shot +0.0243 stays within its floor. Next: zrckpy refitted on P1g-b's pools, then its full run; for the GNN,
-    A3z (the whole-pool z-scores as zero-started inputs, on both models).
+    zero-shot +0.0243 stays within its floor. Next: zrckpy refitted on P1g-b's pools (A3vp, declared and queued), then
+    its full run; for the GNN, A3z (the whole-pool z-scores as zero-started inputs, on both models).
   - **A4h NOT_ADOPTED, both arms** ([A4H_BLOCK_DROPOUT_HALF.md](A4H_BLOCK_DROPOUT_HALF.md)): block dropout at 0.1. The
     MLP's musique zero-shot loss more than halves (-0.0530 against A4's -0.1195, now WITHIN); the GNN keeps its LOSS
     there (-0.1143), and its webqsp zero-shot GAIN moves to L-hotpotqa (+0.0248). Next form: A4hs, the dropout on the
