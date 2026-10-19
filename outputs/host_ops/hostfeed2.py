@@ -137,6 +137,12 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    floor such a writer still goes, one at a time: none goes while another writer on a release's path is queued
    or running, so the drive falls at most one writer's output below the reading it was sent on. Below
    --disk-hard-gb nothing goes but a release, which writes nothing and frees space.
+10. Retries (20 Oct, 03:00). The user: "keep the queue filled for atleast 24hrs of downtime even in case of errors
+   too". A failed item dropped every item behind it, so one bad build emptied a chain while nobody watched. An item
+   whose job ends badly (failed, error, lost past --lost-grace, or done with rc != 0; never one cancelled or shed)
+   now goes back unsent, up to --retries times, --retry-after-min after the feeder sees the end; the items behind
+   it wait for its new run and drop only when its retries are spent. A REF item that ends badly with its retries
+   spent lends its own declared memory, when that is a number, in place of a measurement.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -509,6 +515,34 @@ def job_state(name, items_by, ov, exact=False):
 
 def is_bad(s):
     return s[0] in BAD or (s[0] == "done" and s[1] != 0)
+
+
+def retry_back(d, s, by, now):
+    """The docstring's 10: True when the feeder item d, whose job ended badly (s), is (or now goes) back unsent for
+    another run, so the items behind it wait instead of dropping; False when its retries are spent (or it is no
+    item of the feeder's, or it was cancelled), and then they drop as before."""
+    if d not in by or d in st["dropped"] or s[0] == "cancelled":
+        return False
+    jid = st["sent"].get(d)
+    if jid is None:
+        return True                          # back already: waiting for its next run
+    if jid in st["shed"]:
+        return False
+    r = st["retried"].setdefault(d, {"n": 0, "ids": [], "why": []})
+    if jid in r["ids"]:
+        return True
+    if r["n"] >= a.retries:
+        return False
+    r["n"] += 1
+    r["ids"].append(jid)
+    r["why"].append([s[0], s[1]])
+    r["not_before"] = now + a.retry_after_min * 60
+    del st["sent"][d]
+    if not a.dry:
+        save()
+    log("RETRY", d, f"{jid} ended {s[:2]}; back unsent ({r['n']} of {a.retries}), not before "
+        f"{time.strftime('%H:%M', time.localtime(r['not_before']))}")
+    return True
 
 
 def overfull(ov, M, jv, own_run):
@@ -1055,6 +1089,10 @@ def main(argv=None):
                     help="GB: the card's shared GPU memory when nothing spills (the spill base until a lower reading)")
     ap.add_argument("--lost-grace", type=float, default=1800.0,
                     help="s: a job rx calls lost with a heartbeat this young still runs and holds its request")
+    ap.add_argument("--retries", type=int, default=1,
+                    help="times an item whose job ended badly goes back unsent before the items behind it drop (rule 10)")
+    ap.add_argument("--retry-after-min", type=float, default=10.0,
+                    help="minutes after the feeder sees a bad end before the item may go again (rule 10)")
     ap.add_argument("--shed-polls", type=int, default=5,
                     help="polls of spill (or of an overfull card) in a row, with mpr's running GPU shares above the card "
                          "or more than one mpr GPU run, before the feeder cancels mpr's newest GPU run and puts its "
@@ -1125,7 +1163,7 @@ def main(argv=None):
         time.sleep(30)
 
     st = json.loads(state_p.read_text(encoding="utf-8")) if state_p.exists() else {}
-    for k in ("sent", "dropped", "measured", "terminal", "said", "shed"):
+    for k in ("sent", "dropped", "measured", "terminal", "said", "shed", "retried"):
         st.setdefault(k, {})
     dyn = st.setdefault("dyn", {})
     dyn.setdefault("margin", a.margin)
@@ -1419,6 +1457,8 @@ def main(argv=None):
                             for d in path_sent)
         for it in longest_first(left, items, M):
             n = it["name"]
+            if (st["retried"].get(n) or {}).get("not_before", 0) > ov["now"]:
+                continue           # the docstring's 10: a retry waits --retry-after-min
             if hold_disk and not RELEASE.search(n):
                 continue           # below the hard floor only a release goes: it frees space
             under_floor = light_only and not light.search(n)
@@ -1429,7 +1469,10 @@ def main(argv=None):
             except Exception as e:
                 log(f"dep check for {n} failed: {e!r}"[:300])
                 continue
-            if any(is_bad(s) for s in sts.values()):
+            bad = [d for d, s in sts.items() if is_bad(s)]
+            if bad and all([retry_back(d, sts[d], by, ov["now"]) for d in bad]):
+                continue           # the docstring's 10: its failed deps run again first
+            if bad:
                 st["dropped"][n] = f"dep ended badly: {[(d, s[:2]) for d, s in sts.items() if is_bad(s)]}"
                 if not a.dry:
                     save()
@@ -1451,7 +1494,15 @@ def main(argv=None):
                     s = job_state(r, by, ov)
                     if s[0] == "running" and s[3] >= a.min_run:
                         s = job_state(r, by, ov, exact=True)
-                    if is_bad(s):
+                    if is_bad(s) and retry_back(r, s, by, ov["now"]):
+                        continue   # the docstring's 10: the REF runs again and is measured then
+                    if is_bad(s) and r in by and re.fullmatch(r"[0-9.]+", by[r]["mem"]):
+                        st["measured"][r] = float(by[r]["mem"])
+                        if not a.dry:
+                            save()
+                        log(f"REF {r} ended badly {s[:2]} with its retries spent: its declared "
+                            f"{by[r]['mem']} GB stands in")
+                    elif is_bad(s):
                         st["dropped"][n] = f"REF {r} ended badly {s[:2]}"
                         if not a.dry:
                             save()
