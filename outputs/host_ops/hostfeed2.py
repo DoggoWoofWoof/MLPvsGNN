@@ -30,7 +30,10 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    --margin-min): requests close in on measured use and more jobs fit under the same caps.
    The same room must also fit under the commit headroom (19 Oct 21:40): with WSL's VM holding 35.6 GB of commit
    outside rx, commit ran out while 20 GB stood available; sends went on until the pressure stop, the pagefile
-   grew to 16.9 GB on the drive, and paging slowed a GPU fit's epochs from 394 s to 1522 s.
+   grew to 16.9 GB on the drive, and paging slowed a GPU fit's epochs from 394 s to 1522 s. On that side what mpr's
+   jobs have yet to take is commit: a running job's arm's (else class's) peak commit less its own peak commit so
+   far (a job commits early: a look2 shard held 9 GB of commit with a 5 GB working set); a job without both counts
+   its working-set growth.
 4. GPU first. A GPU item that waits because mpr's own GPU job holds the GPU holds only the GPU items behind it: when
    that job ends, its memory comes back with the GPU, and GPU items are tried first. Whatever memory the item needs
    beyond that job's request is set aside from the items behind it, so it can start the moment the GPU frees. When no
@@ -838,6 +841,27 @@ def growth(ov, M):
     return g
 
 
+def commit_growth(ov, M):
+    """GB of commit that mpr's active and queued jobs have yet to take (the docstring's 3.): a running job's arm's
+    (else class's) peak commit less its own peak commit so far; without both, its working-set growth (growth())."""
+    g = ov["q_m"]
+    for x in ov["mine"]:
+        j = ov["by_id"].get(x.get("id")) or {}
+        n = j.get("name") or ""
+        est = M["commit"].get(arm(n)) or M["cls_commit"].get(klass(n))
+        lc = float(j.get("live_peak_commit_gb") or 0.0)
+        if est and lc > 0:
+            g += max(0.0, est - lc)
+            continue
+        live = float(j.get("live_mem_gb") or 0.0)
+        west = M["peak"].get(arm(n)) or M["cls_peak"].get(klass(n))
+        if west is None:
+            ran = ov["now"] - float(j.get("started") or ov["now"])
+            west = float(x["req"]["mem_gb"]) if ran < a.plateau_min * 60 else live
+        g += max(0.0, west - live)
+    return g
+
+
 def pressure(avail, commit, pin):
     why = []
     if avail is not None and avail < a.avail_low:
@@ -1176,8 +1200,10 @@ def main(argv=None):
                 cov = min(mq, min(run_gm), hand_left)
                 hand, hand_left = hand + cov, hand_left - cov
         grow = growth(ov, M) - hand
-        room = avail if commit is None or avail is None else min(avail, commit)   # commit: see the docstring's 3.
-        budget = (room - grow - a.avail_floor) if room is not None else float("inf")
+        room = avail - grow if avail is not None else None      # the commit side: see the docstring's 3.
+        if room is not None and commit is not None:
+            room = min(room, commit - (commit_growth(ov, M) - hand))
+        budget = (room - a.avail_floor) if room is not None else float("inf")
         S_sig = shared_pages(by, M)
         act_sigs = set()
         for x in ov["mine"]:
