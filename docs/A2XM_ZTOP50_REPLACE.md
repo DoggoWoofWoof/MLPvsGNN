@@ -2,7 +2,8 @@
 
 Declared 19 October 2026, before any number. The next form A2h's verdict named for its top-50 half (zrckpm and zspkm,
 NOT_ADOPTED with no GAIN; docs/A2H_HALVES_APART.md, section 5, and `outputs/a2h/screen-verdict.json`), under
-docs/SCREENS.md section 3b and docs/VERDICT_AUDIT_2026_10_17.md. Code: `outputs/mp_unified/za2xm.py`.
+docs/SCREENS.md section 3b and docs/VERDICT_AUDIT_2026_10_17.md. Code: `outputs/mp_unified/za2xm.py`. Filed 19 October:
+both arms NOT_ADOPTED with no GAIN; the next form is A2xmx (section 7).
 
 ## 1. Why this, now
 
@@ -193,4 +194,63 @@ for L-hotpotqa (`--split L-hotpotqa`, names `-hp`, base scr-p1c3p-zrckp-hp and s
 
 ## 7. Results
 
-Not run yet.
+Filed 19 October 2026 from the host's records (`outputs/a2xm/screen-verdict.json`, written 2026-10-19T11:56:53Z; the
+re-calls `outputs/screen/scr-a2xm-zrckpxm-pair-recall.json` and `-zspkxm-`, host paths made relative). **Both arms
+NOT_ADOPTED, with no GAIN:** in place of zret's reference, the top-50 one gains nothing on either model that the seed
+null cannot explain, and the MLP loses webqsp zero-shot on L-hotpotqa.
+
+- **zrckpxm: 0 GAIN, 1 LOSS.** webqsp zero-shot on L-hotpotqa falls 0.0351 [-0.0494, -0.0208], past its 0.0233 floor,
+  and its FC@5 moves -0.0273. musique zero-shot on L-musique rises +0.0113 [+0.0053, +0.0173], WITHIN (filed GAIN)
+  against its 0.072 floor. Every in-domain read stays within its floor.
+- **zspkxm: 0 GAIN, 0 LOSS.** musique zero-shot on L-musique rises +0.0096 [+0.0028, +0.0164], WITHIN (filed GAIN).
+  webqsp zero-shot on L-hotpotqa falls 0.0141 [-0.0261, -0.0029], WITHIN (filed LOSS) against its 0.0233 floor. metaqa
+  in domain on L-hotpotqa moves -0.0047 [-0.0059, -0.0036] (floor 0.0149), and its hit@1 moves -0.0244.
+- **Beside:** the musique zero-shot rise shrinks as the model it joins gets better. ztop50 lifted step 1's model there
+  by +0.1387 from 0.2696, a GAIN. On the lean pair, A2h's top-50 half, beside the z-scores, moved it +0.0198 (MLP) and
+  +0.0275 (GNN), both WITHIN. In their place it moves +0.0113 and +0.0096. The lean pair's bases start there at 0.5121
+  and 0.5012. metaqa's loss does not come back: -0.0017 and -0.0012 on the MLP, -0.0002 and -0.0047 on the GNN, against
+  ztop50's -0.0176 and -0.0252 on step 1's model. The largest fall on both models is webqsp zero-shot on L-hotpotqa
+  (-0.0351 and -0.0141), where A2h's top-50 half had moved it -0.0144 and -0.0125.
+
+Neither arm is adopted, and this closes only the replacing form on zrckp and zspk (docs/SCREENS.md section 3b). The next
+form, fixed in section 5 and recorded in the verdict, is A2xmx: the same replacing form on the adopted arms, R1's zrckpr
+on the MLP and G5's zspx on the GNN, each against its own base, in its own declared file. The top-50 idea closes as a
+model input only if A2xmx finds no GAIN either.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckpxm: delta [95% CI], call | zspkxm: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0017 [-0.0027, -0.0007], WITHIN | -0.0002 [-0.0013, +0.0009], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | +0.0006 [-0.0013, +0.0025], WITHIN | -0.0002 [-0.0022, +0.0019], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0113 [+0.0053, +0.0173], WITHIN (filed GAIN) | +0.0096 [+0.0028, +0.0164], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0026 [-0.0051, -0.0003], WITHIN | -0.0005 [-0.0028, +0.0018], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0020 [+0.0005, +0.0036], WITHIN | -0.0023 [-0.0038, -0.0008], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | +0.0034 [-0.0082, +0.0151], WITHIN | +0.0049 [-0.0055, +0.0153], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0012 [-0.0021, -0.0002], WITHIN | -0.0047 [-0.0059, -0.0036], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0009 [-0.0029, +0.0011], WITHIN | +0.0001 [-0.0020, +0.0021], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | +0.0016 [-0.0042, +0.0072], WITHIN | +0.0031 [-0.0024, +0.0085], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0007 [-0.0026, +0.0039], WITHIN | +0.0011 [-0.0020, +0.0045], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | +0.0011 [-0.0005, +0.0027], WITHIN | +0.0014 [-0.0003, +0.0031], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0351 [-0.0494, -0.0208], **LOSS** | -0.0141 [-0.0261, -0.0029], WITHIN (filed LOSS) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a2xm-zrckpxm.json` and the others, `-hp` for L-hotpotqa); and the top-50 half's R@5 deltas beside
+the z-scores (A2h's zrckpm and zspkm, their own re-calls) and ztop50's on step 1's model (its own re-call, against step
+1's fit), on the same read:
+
+| split | dataset | zrckpxm FC@5 | zrckpxm hit@1 | zspkxm FC@5 | zspkxm hit@1 | zrckpm R@5 (A2h) | zspkm R@5 (A2h) | ztop50 R@5 (step 1's model) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0002 | -0.0061 | +0.0009 | -0.0001 | -0.0053 | -0.0000 | -0.0176 LOSS |
+| L-musique | squad | +0.0006 | -0.0001 | -0.0002 | -0.0006 | -0.0008 | +0.0007 | +0.0013 |
+| L-musique | musique | +0.0240 | +0.0120 | +0.0182 | +0.0137 | +0.0198 | +0.0275 | +0.1387 GAIN |
+| L-musique | hotpotqa | -0.0041 | +0.0047 | -0.0030 | +0.0057 | -0.0061 | -0.0041 | +0.0004 |
+| L-musique | 2wiki | +0.0046 | +0.0047 | -0.0052 | +0.0006 | -0.0031 | -0.0083 LOSS | -0.0041 |
+| L-musique | webqsp | -0.0013 | +0.0086 | +0.0053 | +0.0033 | +0.0046 | -0.0093 | +0.0175 GAIN |
+| L-hotpotqa | metaqa | -0.0011 | -0.0035 | -0.0031 | -0.0244 | -0.0039 | -0.0035 | -0.0252 LOSS |
+| L-hotpotqa | squad | -0.0009 | +0.0005 | +0.0001 | +0.0009 | -0.0002 | +0.0008 | -0.0003 |
+| L-hotpotqa | musique | +0.0041 | -0.0041 | -0.0004 | -0.0095 | -0.0036 | +0.0014 | +0.0115 GAIN |
+| L-hotpotqa | hotpotqa | +0.0016 | -0.0074 | +0.0022 | -0.0053 | +0.0013 | -0.0005 | -0.0082 |
+| L-hotpotqa | 2wiki | +0.0014 | +0.0037 | +0.0045 | +0.0030 | -0.0050 | +0.0003 | -0.0025 |
+| L-hotpotqa | webqsp | -0.0273 | -0.0027 | -0.0146 | -0.0047 | -0.0144 | -0.0125 | -0.0172 |

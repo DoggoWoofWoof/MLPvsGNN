@@ -1,0 +1,146 @@
+{
+ "stage": "A2xm",
+ "declared_in": "docs/A2XM_ZTOP50_REPLACE.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A2xm's re-call of the arm, or not twelve reads (docs/A2XM_ZTOP50_REPLACE.md, section 4)",
+ "reference": "the pool's top 50 retrieved rows by rrf (ztop50's, lean_screen4.top_ref), replacing all of its retrieved rows (zret's, lean_screen3.retrieved)",
+ "arms": {
+  "zrckpxm": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [
+    "L-hotpotqa webqsp"
+   ],
+   "problems": [],
+   "next_form": "A2xmx, ztop50's replacing form on the adopted arms (G5's zspx and R1's zrckpr), on both models, its own declared file; the top-50 idea closes as a model input only if A2xmx finds no GAIN either",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "LOSS"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0017,
+    "L-musique squad": 0.0006,
+    "L-musique musique": 0.0113,
+    "L-musique hotpotqa": -0.0026,
+    "L-musique 2wiki": 0.002,
+    "L-musique webqsp": 0.0034,
+    "L-hotpotqa metaqa": -0.0012,
+    "L-hotpotqa squad": -0.0009,
+    "L-hotpotqa musique": 0.0016,
+    "L-hotpotqa hotpotqa": 0.0007,
+    "L-hotpotqa 2wiki": 0.0011,
+    "L-hotpotqa webqsp": -0.0351
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0017
+    },
+    "L-musique musique": {
+     "call": "WITHIN",
+     "delta": 0.0113
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0034
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0012
+    },
+    "L-hotpotqa musique": {
+     "call": "WITHIN",
+     "delta": 0.0016
+    },
+    "L-hotpotqa webqsp": {
+     "call": "LOSS",
+     "delta": -0.0351
+    }
+   },
+   "recall_sha256": "80a7d344f4aeb219f5bc15f2918ea2771de7483cdeacfb3bbb8c46c5ce3d27fe"
+  },
+  "zspkxm": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "next_form": "A2xmx, ztop50's replacing form on the adopted arms (G5's zspx and R1's zrckpr), on both models, its own declared file; the top-50 idea closes as a model input only if A2xmx finds no GAIN either",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0002,
+    "L-musique squad": -0.0002,
+    "L-musique musique": 0.0096,
+    "L-musique hotpotqa": -0.0005,
+    "L-musique 2wiki": -0.0023,
+    "L-musique webqsp": 0.0049,
+    "L-hotpotqa metaqa": -0.0047,
+    "L-hotpotqa squad": 0.0001,
+    "L-hotpotqa musique": 0.0031,
+    "L-hotpotqa hotpotqa": 0.0011,
+    "L-hotpotqa 2wiki": 0.0014,
+    "L-hotpotqa webqsp": -0.0141
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0002
+    },
+    "L-musique musique": {
+     "call": "WITHIN",
+     "delta": 0.0096
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0049
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0047
+    },
+    "L-hotpotqa musique": {
+     "call": "WITHIN",
+     "delta": 0.0031
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0141
+    }
+   },
+   "recall_sha256": "7a1216929034fb651509094e6fb1ca8a9722e81dd03aeaaa67b4b7006a4c7b4f"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckpxm": {
+   "call": "WITHIN",
+   "delta": 0.0016
+  },
+  "zspkxm": {
+   "call": "WITHIN",
+   "delta": 0.0031
+  }
+ },
+ "za2xm_sha256": "9d42c8cbe6258abaf77c885acad34dc696a32a266759d2b3fa0d0f12242df231",
+ "utc": "2026-10-19T11:56:53Z"
+}

@@ -610,7 +610,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   17 October ([VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md)) reopens the idea. Its next form is P5c:
   g's scores as a fixed input to both models, where a trained head can learn to ignore them on musique.
 
-## 7. Running now (19 October, 14:50)
+## 7. Running now (19 October, 19:30)
 
 - **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
   KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
@@ -622,10 +622,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   301905a). The redo ([P1GC_LOOK_ALIAS.md](P1GC_LOOK_ALIAS.md), section 6) rebuilds the 177 look shards on the CPU,
   verifies and aliases them, then the links, chains, KT columns and G3's residuals; the six fits run behind a gate on
   those arrays.
-- **On the card:** the eight next forms declared in 2fff761, before any number. On the GPU now, A2xm
-  ([A2XM_ZTOP50_REPLACE.md](A2XM_ZTOP50_REPLACE.md)): ztop50's form, zret's reference cut to the pool's top 50 rows,
-  on both lean models. Queued behind it, on both lean models: A3v ([A3V_VSHARE_TWO_SIDED.md](A3V_VSHARE_TWO_SIDED.md)),
-  vshare's two-sided rule; A4hs ([A4HS_FIXED_BLOCK_DROPOUT.md](A4HS_FIXED_BLOCK_DROPOUT.md)), block dropout on the
+- **On the card:** the eight next forms declared in 2fff761, before any number; A2xm and A3v are filed below. On the
+  GPU now, on both lean models: A4hs ([A4HS_FIXED_BLOCK_DROPOUT.md](A4HS_FIXED_BLOCK_DROPOUT.md)), block dropout on the
   eight fixed blocks only; A8e ([A8E_QDEPTH_PRIOR.md](A8E_QDEPTH_PRIOR.md)), the depth prior added to each row's score.
   Then four on zspx, the adopted GNN: A9t ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)), edge-family dropout with
   the increments bounded; A10e ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
@@ -641,19 +639,28 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   fits of the lean pair.
   - **Rebuilt after the clean-up.** G3's residual parts and R1's columns, which the zspx and zrckpr screens read, are
     rebuilt: all 78 parts' arrays match their records bit for bit. A11x has rebuilt A11's links.
-  - **Being made again.** P5a's node tables, which P5c5's builds read, were a trained fit that no archive held. P5a's
-    own code makes them again (`scripts/p5a_restore.py`), and each goes back only if it matches its record. Four of
-    the six are back, each matching its record bit for bit, with the same fit history: squad, metaqa, musique and
-    webqsp. hotpotqa and 2wiki are being fitted.
+  - **Made again.** P5a's node tables, which P5c5's builds read, were a trained fit that no archive held. P5a's own
+    code made them again (`scripts/p5a_restore.py`), and each went back only on a match with its record. All six are
+    back, each matching its record bit for bit: squad, metaqa, musique and webqsp first, then hotpotqa and 2wiki.
 - **Filed on 19 October:**
   - **A2h NOT_ADOPTED, all four arms** ([A2H_HALVES_APART.md](A2H_HALVES_APART.md)): A2's rank half and top-50 half
     apart. Each half alone moves musique zero-shot as far as A2's whole form or further (MLP +0.0128 and +0.0198, GNN
     +0.0283 and +0.0275), within its 0.072 floor. The rank half costs webqsp zero-shot on L-musique on both models
     (-0.0142, -0.0137), the GNN's top-50 half 2wiki in domain (-0.0083). Next forms: A2xi (prank's form, the rank pair
     replacing the z-score) and A2xm (ztop50's form), each on both models.
+  - **A2xm NOT_ADOPTED, both arms** ([A2XM_ZTOP50_REPLACE.md](A2XM_ZTOP50_REPLACE.md)): ztop50's top-50 reference in
+    place of zret's. No GAIN on either model: musique zero-shot +0.0113 (MLP) and +0.0096 (GNN), within its 0.072
+    floor, where ztop50 had lifted step 1's model +0.1387. The MLP loses webqsp zero-shot on L-hotpotqa (-0.0351);
+    metaqa's old loss does not come back. Next form: A2xmx, the same form on the adopted arms (R1's zrckpr, G5's zspx);
+    the top-50 idea closes as an input only if A2xmx finds no GAIN either.
   - **A3t NOT_ADOPTED, both arms** ([A3T_VSHARE_THIN.md](A3T_VSHARE_THIN.md)): vshare's thin range, t in [0.08, 0.20],
     on 0.37 to 0.38 of the question visits; no read past the seed null on either model. Next form: A3v, vshare's
     two-sided rule; if it finds no GAIN either, A3z (each block's whole-pool z-score as an input).
+  - **A3v: zrckpy ADOPT_FOR_FULL_RUN, zspky NOT_ADOPTED** ([A3V_VSHARE_TWO_SIDED.md](A3V_VSHARE_TWO_SIDED.md)):
+    vshare's two-sided rule, A3's rich range in pools under a 0.375 retrieved share and A3t's thin one elsewhere. The
+    MLP gains webqsp zero-shot on L-musique (+0.0112, just past its 0.0102 floor), with no LOSS; the GNN's musique
+    zero-shot +0.0243 stays within its floor. Next: zrckpy refitted on P1g-b's pools, then its full run; for the GNN,
+    A3z (the whole-pool z-scores as zero-started inputs, on both models).
   - **A4h NOT_ADOPTED, both arms** ([A4H_BLOCK_DROPOUT_HALF.md](A4H_BLOCK_DROPOUT_HALF.md)): block dropout at 0.1. The
     MLP's musique zero-shot loss more than halves (-0.0530 against A4's -0.1195, now WITHIN); the GNN keeps its LOSS
     there (-0.1143), and its webqsp zero-shot GAIN moves to L-hotpotqa (+0.0248). Next form: A4hs, the dropout on the

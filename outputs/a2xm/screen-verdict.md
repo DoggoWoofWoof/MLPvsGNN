@@ -1,0 +1,10 @@
+# A2xm's screen verdict: zrckpxm **NOT_ADOPTED**, zspkxm **NOT_ADOPTED**
+
+Rule: per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A2xm's re-call of the arm, or not twelve reads (docs/A2XM_ZTOP50_REPLACE.md, section 4).
+
+- **zrckpxm** (zrckp with zret's reference cut to the pool's top 50 retrieved rows by rrf (ztop50's form)) against zrckp's card fit of each split (scr-p1c3p-zrckp, scr-p1c3p-zrckp-hp), after the seed-null re-call: 0 GAIN (none), 1 LOSS (L-hotpotqa webqsp). Beside: L-musique metaqa WITHIN (-0.0017), L-musique musique WITHIN (+0.0113), L-musique webqsp WITHIN (+0.0034), L-hotpotqa metaqa WITHIN (-0.0012), L-hotpotqa musique WITHIN (+0.0016), L-hotpotqa webqsp LOSS (-0.0351). Next: A2xmx, ztop50's replacing form on the adopted arms (G5's zspx and R1's zrckpr), on both models, its own declared file; the top-50 idea closes as a model input only if A2xmx finds no GAIN either.
+- **zspkxm** (zspk with zret's reference cut to the pool's top 50 retrieved rows by rrf (ztop50's form), before its propagation) against zspk's card fit of each split (scr-p1c3-zspk, scr-p1c3-zspk-hp), after the seed-null re-call: 0 GAIN (none), 0 LOSS (none). Beside: L-musique metaqa WITHIN (-0.0002), L-musique musique WITHIN (+0.0096), L-musique webqsp WITHIN (+0.0049), L-hotpotqa metaqa WITHIN (-0.0047), L-hotpotqa musique WITHIN (+0.0031), L-hotpotqa webqsp WITHIN (-0.0141). Next: A2xmx, ztop50's replacing form on the adopted arms (G5's zspx and R1's zrckpr), on both models, its own declared file; the top-50 idea closes as a model input only if A2xmx finds no GAIN either.
+
+Beside, deciding nothing: musique in-domain (L-hotpotqa musique): zrckpxm WITHIN (+0.0016), zspkxm WITHIN (+0.0031).
+
+This verdict closes only this form (zret's reference cut to the pool's top 50 retrieved rows, in place of all of them, on the lean pair); docs/SCREENS.md, 3b.

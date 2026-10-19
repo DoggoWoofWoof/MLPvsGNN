@@ -2,7 +2,8 @@
 
 Declared 19 October 2026, before any number. The next form A3t's verdict named for both arms (no GAIN;
 docs/A3T_VSHARE_THIN.md, section 5; outputs/a3t/screen-verdict.json), under docs/SCREENS.md section 3b and
-docs/VERDICT_AUDIT_2026_10_17.md. Code: `outputs/mp_unified/za3v.py`.
+docs/VERDICT_AUDIT_2026_10_17.md. Code: `outputs/mp_unified/za3v.py`. Filed 19 October: zrckpy ADOPT_FOR_FULL_RUN, zspky
+NOT_ADOPTED; next forms: zrckpy refitted on P1g-b's pools, and A3z (section 7).
 
 ## 1. Why this, now
 
@@ -228,4 +229,73 @@ On the host, trains and reads run under `retry_cmd.py --cuda` and `cuda_alloc.py
 
 ## 7. Results
 
-Not run yet.
+Filed 19 October 2026 from the host's records (`outputs/a3v/screen-verdict.json`, written 2026-10-19T13:44:28Z; the
+re-calls `outputs/screen/scr-a3v-zrckpy-pair-recall.json` and `-zspky-`, host paths made relative). **zrckpy
+ADOPT_FOR_FULL_RUN, zspky NOT_ADOPTED:** the MLP gains webqsp zero-shot on L-musique with no LOSS; the GNN gains nothing
+past the seed null.
+
+- **zrckpy: 1 GAIN, 0 LOSS.** webqsp zero-shot on L-musique rises +0.0112 [+0.0008, +0.0211], just past its 0.0102
+  floor. musique zero-shot on L-musique falls 0.0111 [-0.0167, -0.0054], WITHIN (filed LOSS) against its 0.072 floor,
+  while its FC@5 moves +0.0054. hotpotqa zero-shot on L-hotpotqa rises +0.0038 [+0.0007, +0.0069], within its 0.02
+  floor.
+- **zspky: 0 GAIN, 0 LOSS.** musique zero-shot on L-musique rises +0.0243 [+0.0183, +0.0306], WITHIN (filed GAIN), with
+  FC@5 +0.0310 and hit@1 +0.0240. webqsp zero-shot on L-hotpotqa rises +0.0087 [-0.0006, +0.0177], within its 0.0233
+  floor; 2wiki in domain on L-musique moves -0.0041 [-0.0055, -0.0026].
+- **Beside:** metaqa, vshare's one LOSS, stays within its floor on every read: +0.0003 and -0.0019 on the MLP, +0.0003
+  and +0.0003 on the GNN. On the GNN, musique zero-shot rises further than under A3's rich range (+0.0186) or A3t's thin
+  one (+0.0083); on the MLP it falls, where A3 (+0.0095) and A3t (+0.0017) had it rising. The MLP's GAIN read, webqsp
+  zero-shot on L-musique, moved +0.0030 under A3 and -0.0084 under A3t. Claim 1's read, musique in domain on L-hotpotqa,
+  moves +0.0004 (MLP) and -0.0029 (GNN).
+- **The fits:** A3v reweights from A3's draws, as A3t did, and its counts are A3t's: 71,020 and 65,875 question visits
+  (0.375 and 0.369 of them). Of those, 22,776 and 22,711 sit in pools whose retrieved share is under 0.375 and take A3's
+  rich range (mean t 0.749 and 0.751); the others take A3t's thin one (mean t 0.140 and 0.140). Table below.
+
+zrckpy adopts the form for its full run only. Its next form, fixed in section 5 and recorded in the verdict, is the arm
+fitted again on P1g-b's pools, then its full run, each in its own declared file. zspky's next form is A3z: the share
+idea as an input before it closes, each block's and rrf's whole-pool z-score beside zret's, through zero-started
+columns, on both models, in its own declared file. The share idea closes on the GNN only after A3z.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckpy: delta [95% CI], call | zspky: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | +0.0003 [-0.0006, +0.0011], WITHIN | +0.0003 [-0.0006, +0.0012], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | +0.0015 [-0.0004, +0.0034], WITHIN | +0.0008 [-0.0012, +0.0026], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | -0.0111 [-0.0167, -0.0054], WITHIN (filed LOSS) | +0.0243 [+0.0183, +0.0306], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0022 [-0.0043, -0.0002], WITHIN | -0.0034 [-0.0058, -0.0010], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0014 [-0.0001, +0.0029], WITHIN | -0.0041 [-0.0055, -0.0026], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | +0.0112 [+0.0008, +0.0211], **GAIN** | -0.0014 [-0.0100, +0.0072], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0019 [-0.0028, -0.0011], WITHIN | +0.0003 [-0.0005, +0.0013], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | +0.0003 [-0.0016, +0.0022], WITHIN | -0.0004 [-0.0024, +0.0015], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | +0.0004 [-0.0050, +0.0058], WITHIN | -0.0029 [-0.0081, +0.0027], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0038 [+0.0007, +0.0069], WITHIN | +0.0003 [-0.0024, +0.0030], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0013 [-0.0028, +0.0003], WITHIN | +0.0024 [+0.0009, +0.0039], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | +0.0036 [-0.0067, +0.0139], WITHIN | +0.0087 [-0.0006, +0.0177], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a3v-zrckpy.json` and the others, `-hp` for L-hotpotqa); and A3's (zrckpv, zspkv) and A3t's (zrckpu,
+zspku) R@5 deltas, their own re-calls, on the same read:
+
+| split | dataset | zrckpy FC@5 | zrckpy hit@1 | zspky FC@5 | zspky hit@1 | zrckpv R@5 (A3) | zspkv R@5 (A3) | zrckpu R@5 (A3t) | zspku R@5 (A3t) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0020 | -0.0016 | +0.0004 | +0.0004 | -0.0006 | +0.0007 | +0.0001 | +0.0020 |
+| L-musique | squad | +0.0015 | -0.0008 | +0.0008 | +0.0013 | -0.0008 | -0.0013 | -0.0005 | +0.0018 |
+| L-musique | musique | +0.0054 | -0.0004 | +0.0310 | +0.0240 | +0.0095 | +0.0186 | +0.0017 | +0.0083 |
+| L-musique | hotpotqa | -0.0028 | -0.0132 | -0.0073 | -0.0097 | -0.0007 | -0.0003 | -0.0014 | -0.0017 |
+| L-musique | 2wiki | +0.0045 | -0.0026 | -0.0114 | -0.0025 | +0.0014 | -0.0038 | +0.0026 | -0.0019 |
+| L-musique | webqsp | +0.0013 | +0.0160 | -0.0013 | +0.0000 | +0.0030 | -0.0103 LOSS | -0.0084 | -0.0027 |
+| L-hotpotqa | metaqa | -0.0019 | -0.0047 | +0.0006 | -0.0006 | -0.0009 | -0.0018 | -0.0004 | +0.0002 |
+| L-hotpotqa | squad | +0.0003 | +0.0004 | -0.0004 | -0.0029 | -0.0009 | -0.0014 | -0.0003 | -0.0015 |
+| L-hotpotqa | musique | -0.0025 | -0.0079 | -0.0054 | -0.0116 | +0.0013 | +0.0072 | -0.0024 | -0.0007 |
+| L-hotpotqa | hotpotqa | +0.0078 | -0.0117 | +0.0019 | +0.0035 | -0.0035 | -0.0009 | +0.0046 | +0.0048 |
+| L-hotpotqa | 2wiki | -0.0018 | -0.0035 | +0.0090 | -0.0041 | -0.0000 | -0.0014 | -0.0052 | +0.0029 |
+| L-hotpotqa | webqsp | +0.0027 | +0.0086 | +0.0086 | -0.0007 | -0.0128 | -0.0086 | -0.0142 | +0.0088 |
+
+The fits (stamped in each fit's screen.json; the two arms drew the same questions and t's, A3's generator; a pool is
+under 0.375 when its own retrieved share r / (r + u) is):
+
+| fit | question visits (8 epochs) | eligible: under 0.375 / other | reweighted: rich / thin | share reweighted | mean t: rich / thin |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| L-musique | 189,392 | 45,632 / 96,424 | 22,776 / 48,244 | 0.375 | 0.7491 / 0.1404 |
+| L-hotpotqa | 178,760 | 45,632 / 86,264 | 22,711 / 43,164 | 0.369 | 0.7512 / 0.1402 |
