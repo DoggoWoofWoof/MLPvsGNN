@@ -115,6 +115,11 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    before that hold, a GPU job the feeder queued goes back unsent: cancelled while still queued and recorded as
    shed, so its item is not counted as failed. The same poll decides it afresh: it starts if it fits, or is
    queued ahead again with rx's clock reset. Only mpr has rx priority 10, so this reorders mpr's own jobs alone.
+   Unfit (19 Oct 22:40): while the feeder would queue no GPU job ahead (a spill, a job over its share, lost
+   reservations, other projects' jobs over theirs) for --withdraw-unfit polls in a row, a GPU job it queued that
+   the card's real free room cannot take goes back the same way: rx would start it on shares alone the moment one
+   of mpr's runs ends. WSL's VM held 12-15 GiB of the card outside rx; with mpr's three runs the card paged (the
+   System process's copy engine at 85%), the runs went 4-7x slower, and a queued read was due to start into it.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -498,25 +503,45 @@ def withdraw_late(ov):
             and time.time() - float(q.get("enq") or time.time()) > ov["hold_s"] - a.withdraw_polls * a.poll]
     k = 0
     for q in late:
-        n, waited = by_jid[q["id"]], (time.time() - float(q["enq"])) / 60
-        try:
-            r = agent({"op": "status", "project": PROJECT, "ids": [q["id"]]}, timeout=120)["jobs"]
-            s = (r[0] if r else {}).get("state")
-            if s != "queued":         # it started (or ended) since the overview: it stays
-                log(f"WITHDRAW skipped for {q['id']} ({n}): {s}")
-                continue
-            c = agent({"op": "cancel", "project": PROJECT, "id": q["id"]}, timeout=120)
-            st["shed"][q["id"]] = n
-            st["sent"].pop(n, None)
-            st["terminal"].pop(q["id"], None)
-            save()
-            k += 1
-            log(f"WITHDRAW {q['id']} ({n}): queued {waited:.0f} min for {float(q['req'].get('gpus') or 0):g} of the "
-                f"card, rx's hold at {ov['hold_s'] / 60:.0f} min; its item goes back unsent "
-                f"(now {((c or {}).get('job') or {}).get('state')})")
-        except Exception as e:  # noqa: BLE001
-            log("withdraw failed:", repr(e)[:200])
+        waited = (time.time() - float(q["enq"])) / 60
+        k += go_back(q, by_jid[q["id"]], f"queued {waited:.0f} min for {float(q['req'].get('gpus') or 0):g} of the "
+                                         f"card, rx's hold at {ov['hold_s'] / 60:.0f} min")
     return k
+
+
+def withdraw_unfit(ov, free_g):
+    """WITHDRAW, unfit (19 Oct 22:40; the docstring's 'Withdrawn'): called while no GPU job would be queued ahead;
+    each GPU job the feeder sent that still waits in rx's queue for more of the card than is really free (free_g:
+    rx's free shares less what running jobs hold beyond theirs) goes back unsent. Returns how many went back."""
+    by_jid = {i: n for n, i in st["sent"].items()}
+    k = 0
+    for q in ov["queue_mpr"]:
+        g = float((q.get("req") or {}).get("gpus") or 0)
+        if q.get("id") in by_jid and g > 0 and g > free_g + 1e-9:
+            k += go_back(q, by_jid[q["id"]], f"queued for {g:g} of the card with {max(0.0, free_g):.2f} of it "
+                                             f"really free and none to be queued ahead")
+    return k
+
+
+def go_back(q, n, why):
+    """Cancels the feeder's job q (item n) if it still waits in rx's queue; its item goes back unsent (recorded as
+    shed, so it is not a failed item). A job that started since the overview stays. Returns whether it went back."""
+    try:
+        r = agent({"op": "status", "project": PROJECT, "ids": [q["id"]]}, timeout=120)["jobs"]
+        s = (r[0] if r else {}).get("state")
+        if s != "queued":         # it started (or ended) since the overview: it stays
+            log(f"WITHDRAW skipped for {q['id']} ({n}): {s}")
+            return False
+        c = agent({"op": "cancel", "project": PROJECT, "id": q["id"]}, timeout=120)
+        st["shed"][q["id"]] = n
+        st["sent"].pop(n, None)
+        st["terminal"].pop(q["id"], None)
+        save()
+        log(f"WITHDRAW {q['id']} ({n}): {why}; its item goes back unsent (now {((c or {}).get('job') or {}).get('state')})")
+        return True
+    except Exception as e:  # noqa: BLE001
+        log("withdraw failed:", repr(e)[:200])
+        return False
 
 
 def sha(p):
@@ -982,6 +1007,10 @@ def main(argv=None):
     ap.add_argument("--withdraw-polls", type=int, default=3,
                     help="polls before rx's hold (hold_after_s) at which a GPU job the feeder queued, still queued, "
                          "goes back unsent, so that rx never holds every later mpr job behind it (0: never)")
+    ap.add_argument("--withdraw-unfit", type=int, default=2,
+                    help="polls in a row in which no GPU job would be queued ahead (a spill, a job over its share, lost "
+                         "reservations) after which a GPU job the feeder queued, still queued, that the card's real "
+                         "free room cannot take goes back unsent (0: never)")
     ap.add_argument("--spill-gb", type=float, default=1.0,
                     help="GPU shared memory this far above its lowest reading is a spill (GiB; 2.0 before 7 Oct 08:40)")
     ap.add_argument("--vram-slack", type=float, default=0.0,
@@ -1193,6 +1222,16 @@ def main(argv=None):
                     f"job(s), shares {own_g:g} of {ov['gpus_total']}; its item goes back unsent")
             except Exception as e:  # noqa: BLE001
                 log("shed failed:", repr(e)[:200])
+        hold_gq = spill or mine_over_g > 0     # rx starts a queued job on shares alone: none is queued ahead then
+        hold_gq = hold_gq or ov["unres_g"] > 0  # nor while rx has lost the reservations of GPU jobs still running
+        # nor while other projects' jobs hold more of the card than their shares (8 Oct 18:10: with others ~13 GiB over,
+        # two reads queued with 0.185 of the card free started on shares and the card spilled again within a minute)
+        hold_gq = hold_gq or over_g - mine_over_g > 0.05
+        # WITHDRAW, unfit (19 Oct 22:40): what was queued ahead before such a hold goes back once it has lasted
+        # --withdraw-unfit polls, unless the card's real free room takes it (see the docstring's 'Withdrawn')
+        dyn["gq_hold"] = int(dyn.get("gq_hold", 0)) + 1 if hold_gq else 0
+        if a.withdraw_unfit > 0 and dyn["gq_hold"] >= a.withdraw_unfit and not a.dry:
+            withdraw_unfit(ov, min(ov["free_g"] - over_g, 0.0) if spill else ov["free_g"] - over_g)
         M = measure(ov["jobs"], by)
         M["gpu_spill"] = spill
         if a.corun and M["cls_gpu_arms"]:
@@ -1280,11 +1319,6 @@ def main(argv=None):
         free_c, free_m, free_g = ov["free_c"], ov["free_m"], ov["free_g"] - over_g   # measured: see the readings
         if spill:
             free_g = min(free_g, 0.0)          # no GPU item starts while the card spills
-        hold_gq = spill or mine_over_g > 0     # rx starts a queued job on shares alone: none is queued ahead then
-        hold_gq = hold_gq or ov["unres_g"] > 0  # nor while rx has lost the reservations of GPU jobs still running
-        # nor while other projects' jobs hold more of the card than their shares (8 Oct 18:10: with others ~13 GiB over,
-        # two reads queued with 0.185 of the card free started on shares and the card spilled again within a minute)
-        hold_gq = hold_gq or over_g - mine_over_g > 0.05
         mpr_c, mpr_m, mpr_g = ov["mpr_c"] + ov["q_c"], ov["mpr_m"] + ov["q_m"] - hand, ov["mpr_g"] + ov["q_g"]
         n_q = len(ov["queued_mpr_gpu"])
         if n_q:   # their CPUs and memory are set aside for them ahead of anything sent now (less what they take over)
