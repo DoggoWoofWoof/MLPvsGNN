@@ -11,8 +11,9 @@ Every file is classed as
   hub         the HF archive holds it byte for byte: a VERIFIED tag's plan lists it at this size and mtime
               (outputs/host_ops/hub_index.json, made on the laptop by `hub-index`); restore: scripts/host_restore.py
   regen       a build or cache that committed code rebuilds from the mirror (host_sync.py's REGEN pattern), and since
-              17 October a stage's builds (STAGE_BUILD: its cache, look, chains, links, cols, units, space, res, kt or
-              csr folder, and U1's graphs); a stage's fits, pools, screens and records are never builds
+              17 October a stage's builds (STAGE_BUILD: its cache, look, chains, links, cols, units, res, scores, kt
+              or csr folder, and U1's graphs); a stage's fits, pools, screens and records are never builds, and since
+              19 October a build folder whose records show a training run is a fit (fit_under), never a build
   smoke       a smoke test's output (a folder whose name starts with 'smoke')
   unarchived  anything else (results and models the archive does not hold yet): never removed
 and as referenced when a queued or running mpr job names it or a folder above it (the feeder's unsent and running items
@@ -71,9 +72,15 @@ REGEN = re.compile(r"^outputs/mp_unified/(lean/cs\d+e?-[a-z0-9]+(-[a-z0-9]+)*\.n
                    r"^outputs/step4e/look/[^/]+/[^/]+/chunks/")
 # 17 Oct (the user: "setup auto delete script for host items, dont wait for me"): a stage's builds, which its
 # committed code makes again from the mirror and the stage's own inputs: caches, looks, chains, links, columns, units,
-# spaces, residual arrays, KT columns, CSR graphs and U1's graphs. Fits, pools, screens and records are never builds.
-STAGE_BUILD = re.compile(r"^outputs/[a-z0-9_]+/(?:cache|look|chains|links|space|res|cols|units|scores|kt|csr)/|"
+# residual arrays, scores, KT columns, CSR graphs and U1's graphs. Fits, pools, screens and records are never builds.
+# 19 Oct: "space" is out. P5a's space (u and u0 of the six corpora, 3.6 GB, a GPU fit of up to 70 minutes each that
+# no archive held) matched it and went as a build at 00:08 on 19 October.
+STAGE_BUILD = re.compile(r"^outputs/[a-z0-9_]+/(?:cache|look|chains|links|res|cols|units|scores|kt|csr)/|"
                          r"^outputs/u1[a-z]/(?:webqsp|metaqa|musique|hotpotqa|2wiki|squad)/")
+# 19 Oct: and a build folder whose records show a training run holds a fit: a JSON in the file's folder, or in one
+# above it up to the build folder, with a loss history or "stage": "train" in its first 256 KB (64 JSONs a folder).
+FIT_MARK = re.compile(rb'"loss_hist"\s*:|"stage"\s*:\s*"train"')
+_FIT_DIRS: dict[str, bool] = {}     # a folder -> fit records in it; cleared at each cycle's start
 SMOKE = re.compile(r"(^|/)smoke[^/]*/")
 PATHTOK = re.compile(r"(?:outputs|logs)/[A-Za-z0-9_./@=+-]+")
 # A folder named in the source of a script that a queued or running job runs or imports (followed through its
@@ -369,7 +376,40 @@ def walk(ws: Path):
                     yield rel, st
 
 
-def classify(rel: str, st, hub: dict) -> tuple[str, str | None]:
+def fit_folder(d: Path) -> bool:
+    k = str(d)
+    if k not in _FIT_DIRS:
+        try:
+            js = sorted(p for p in d.iterdir() if p.suffix.lower() == ".json" and p.is_file())[:64]
+        except OSError:
+            js = []
+        hit = False
+        for p in js:
+            try:
+                with open(p, "rb") as fh:
+                    b = fh.read(1 << 18)
+            except OSError:
+                continue
+            if FIT_MARK.search(b):
+                hit = True
+                break
+        _FIT_DIRS[k] = hit
+    return _FIT_DIRS[k]
+
+
+def fit_under(ws: Path, rel: str, root: str) -> bool:
+    """A fit's record in the file's folder or in one above it, up to the build folder root (STAGE_BUILD's match)."""
+    top = ws / root.rstrip("/")
+    d = (ws / rel).parent
+    while True:
+        if fit_folder(d):
+            return True
+        if d == top or top not in d.parents:
+            return False
+        d = d.parent
+
+
+def classify(rel: str, st, hub: dict, ws: Path | None = None) -> tuple[str, str | None]:
     ext = os.path.splitext(rel)[1].lower()
     if rel.startswith(KEEP_DIRS) or ext in TEXT_EXT or st.st_size < MIN_BYTES:
         return "keep", None
@@ -378,8 +418,11 @@ def classify(rel: str, st, hub: dict) -> tuple[str, str | None]:
         return "hub", h[2]
     if SMOKE.search(rel):
         return "smoke", None
-    if REGEN.search(rel) or STAGE_BUILD.search(rel):
+    if REGEN.search(rel):
         return "regen", None
+    m = STAGE_BUILD.search(rel)
+    if m:
+        return ("unarchived", None) if ws is not None and fit_under(ws, rel, m.group(0)) else ("regen", None)
     return "unarchived", None
 
 
@@ -397,6 +440,7 @@ def why_for(d: str) -> str:
 
 def cycle(a, ws: Path) -> dict:
     t0 = now_s()
+    _FIT_DIRS.clear()
     du0 = shutil.disk_usage(str(ws))
     free_gb = du0.free / GB
     hub_p = ws / "outputs/host_ops/hub_index.json"
@@ -424,7 +468,7 @@ def cycle(a, ws: Path) -> dict:
     rows = defaultdict(lambda: defaultdict(int))
     cands = []
     for rel, st in walk(ws):
-        cls, tag = classify(rel, st, hub)
+        cls, tag = classify(rel, st, hub, ws)
         idle_d = (now - max(st.st_atime, st.st_mtime)) / 86400
         rls = bool(rules) and released(rel, born_ns(st), cls, rules)
         ref = referenced(rel, refs, named) or (not rls and any(rel.startswith(p) for p in pins))
@@ -582,6 +626,46 @@ def selftest() -> int:
         assert not ended_badly(["done", 0]) and not ended_badly(None) and not ended_badly(["done"])
     finally:
         shutil.rmtree(ws, ignore_errors=True)
+    # 19 Oct: a build folder whose records show a training run holds a fit (P5a's space went as a build at 00:08)
+    ws = Path(tempfile.mkdtemp(prefix="auto_cleanup_fit_"))
+    try:
+        blob = b"\0" * (MIN_BYTES + 1)
+        want = {"outputs/p5x/space/u_toy.npy": "unarchived",     # "space" is no build folder
+                "outputs/p5x/cols/a/b/c.npy": "regen",           # a build's record
+                "outputs/p5x/kt/a/k.npy": "unarchived",          # a fit's record above it, in the build folder
+                "outputs/p5x/units/u.npy": "regen",              # a units record
+                "outputs/p5x/res/r.npy": "unarchived",           # a compact training record beside it
+                "outputs/p5x/chains/q.npy": "regen"}             # a fit's record above the build folder only
+        recs = {"outputs/p5x/space/space_toy.json": {"stage": "train", "loss_hist": [[0, 1.2]]},
+                "outputs/p5x/cols/a/b/record.json": {"stage": "A6e", "arrays": {}},
+                "outputs/p5x/kt/record.json": {"stage": "KT", "fit": {"loss_hist": [[0, 1.0]]}},
+                "outputs/p5x/units/fit.json": {"stage": "units"},
+                "outputs/p5x/chains_fit.json": {"loss_hist": [[0, 1.0]]},
+                "outputs/p5x/fit.json": {"stage": "train"}}
+        for f in want:
+            (ws / f).parent.mkdir(parents=True, exist_ok=True)
+            (ws / f).write_bytes(blob)
+        for f, r in recs.items():
+            (ws / f).write_text(json.dumps(r), encoding="utf-8")
+        (ws / "outputs/p5x/res/record.json").write_text(json.dumps({"stage": "train"}, separators=(",", ":")),
+                                                         encoding="utf-8")
+        got = {f: classify(f, (ws / f).stat(), {}, ws)[0] for f in want}
+        assert got == want, got
+        # without the workspace (before 19 Oct) every STAGE_BUILD file is a build
+        assert classify("outputs/p5x/kt/a/k.npy", (ws / "outputs/p5x/kt/a/k.npy").stat(), {})[0] == "regen"
+        # through cycle's dry run with nothing queued, at any age: the builds go and the fits stay
+        rx0 = Path(tempfile.mkdtemp(prefix="auto_cleanup_rx_"))
+        try:
+            (ws / "outputs/host_ops").mkdir(parents=True, exist_ok=True)
+            rec = cycle(argparse.Namespace(delete=False, emergency_gb=1e12, floor_gb=1e12, ideal_gb=1e12,
+                                           urgent_days=1.0, cold_days=3.0, idle_days=14.0, smoke_h=24.0,
+                                           rx_root=str(rx0), grace_h=GRACE_H), ws)
+        finally:
+            shutil.rmtree(rx0, ignore_errors=True)
+        assert sorted(x[0] for x in rec["files"]) == sorted(f for f, c in want.items() if c == "regen"), rec["files"]
+    finally:
+        shutil.rmtree(ws, ignore_errors=True)
+        _FIT_DIRS.clear()
     # releases (19 Oct), through cycle's dry run on a toy workspace; the tiers are forced by the thresholds
     ws = Path(tempfile.mkdtemp(prefix="auto_cleanup_rel_"))
     rx = Path(tempfile.mkdtemp(prefix="auto_cleanup_rx_"))
@@ -650,7 +734,8 @@ def selftest() -> int:
           f"failures and items dropped behind them do not; grace 0 is the rule before 19 Oct; a cycle of drops ends; "
           f"a release gives up the family and source pins on its folders' files from before it (its classes only), a "
           f"named file stays, below the floor a released file goes at any age and above it waits for the idle limit, a "
-          f"file born after the release stays, and release refuses kept, wide or outside folders "
+          f"file born after the release stays, and release refuses kept, wide or outside folders; a build folder "
+          f"whose records (in it or above it, up to the build folder) show a training run is a fit and stays "
           f"({now_s() - t0:.2f}s)", flush=True)
     return 0
 
