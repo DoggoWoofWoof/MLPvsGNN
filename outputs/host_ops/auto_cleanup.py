@@ -54,6 +54,7 @@ TEXT_EXT = {".py", ".json", ".jsonl", ".md", ".txt", ".log", ".yaml", ".yml", ".
 KEEP_DIRS = ("outputs/host_ops/", "outputs/host_cleanup/", "outputs/host_archive/", "outputs/host_job_logs/",
              "outputs/host_checks/")
 MIN_BYTES = 1 << 20
+GRACE_H = 48.0     # 19 Oct: a failed item and the items dropped behind it keep their folders this long (feeder_refs)
 # host_sync.py's REGEN: builds and caches that committed code rebuilds from the mirror
 REGEN = re.compile(r"^outputs/mp_unified/(lean/cs\d+e?-[a-z0-9]+(-[a-z0-9]+)*\.npz|lean/cs\d+[a-z]*tmp_[^/]+/|"
                    r"look/[^/]+/[^/]+/chunks/|cache/)|/__pycache__/|"
@@ -145,28 +146,63 @@ def hub_index(arch: Path, out: Path) -> int:
 # ── host: references ────────────────────────────────────────────────────────
 
 
-def feeder_refs(ws: Path, active: set[str] | None = None) -> tuple[set[str], list[str], list[str]]:
+def ended_badly(t) -> bool:
+    """A terminal record ([status, rc, ...]) of a job that did not end done with rc 0."""
+    return bool(t) and not (t[0] == "done" and (len(t) < 2 or t[1] in (0, None)))
+
+
+def feeder_refs(ws: Path, active: set[str] | None = None,
+                grace_h: float = GRACE_H) -> tuple[set[str], list[str], list[str]]:
     """Path tokens, names and commands of the feeder's unsent and running items. A sent item counts while rx holds its
     job as active (active: the ids of mpr's active jobs), or for 6 h after its launch; 17 Oct: 739 of 753 'pending'
-    items were jobs that had ended without an end record in the feeder's state, and they pinned every folder."""
+    items were jobs that had ended without an end record in the feeder's state, and they pinned every folder.
+    19 Oct: a failed item, and every item the feeder dropped behind it, count for grace_h after the failed job's
+    launch. P1g-c's 14 link and rmatch builds failed at once (18 Oct 15:36), the feeder dropped the ~300 items behind
+    them, nothing left named outputs/p1gb/, and the emergency tier took P1g-b's rebuilt looks and KT columns at 22:28;
+    the grace keeps a failed stage's inputs until it is fixed and sent again."""
     items = ws / "outputs/host_ops/hostfeed_items.txt"
     state = ws / "outputs/host_ops/hostfeed_state.json"
     if not items.is_file():
         return set(), ["no hostfeed_items.txt"], []
     st = json.loads(state.read_text(encoding="utf-8")) if state.is_file() else {}
     sent, term, dropped = st.get("sent", {}), st.get("terminal", {}), st.get("dropped", {})
-    refs, names, cmds = set(), [], []
+    lines = []
+    deps_of = {}
     for line in items.read_text(encoding="utf-8").split("\n"):
         if not line.startswith("line|"):
             continue
         f = line.split("|")
         if len(f) < 8:
             continue
+        lines.append(f)
+        deps_of[f[3]] = [d for d in f[2].split(",") if d]
+    memo: dict[str, bool] = {}
+
+    def recent_failure(name: str, depth: int = 0) -> bool:
+        """A failed job launched within grace_h is this dropped item's dep, or a dep of a dropped dep, ..."""
+        if name in memo:
+            return memo[name]
+        memo[name] = False                           # a cycle in the deps finds nothing
+        hit = False
+        for d in deps_of.get(name, []):
+            if d in sent and ended_badly(term.get(sent[d])) and launched_within(sent[d], grace_h):
+                hit = True
+            elif d in dropped and d not in sent and depth < 64 and recent_failure(d, depth + 1):
+                hit = True
+            if hit:
+                break
+        memo[name] = hit
+        return hit
+
+    refs, names, cmds = set(), [], []
+    for f in lines:
         name = f[3]
-        if name in dropped:
-            continue
-        if name in sent and sent[name] in term:
-            continue
+        if name in dropped and name not in sent:
+            if not recent_failure(name):
+                continue
+        elif name in sent and sent[name] in term:
+            if not (ended_badly(term[sent[name]]) and launched_within(sent[name], grace_h)):
+                continue
         if name in sent and active is not None and sent[name] not in active and not launched_within(sent[name], 6.0):
             continue
         names.append(name)
@@ -301,7 +337,7 @@ def cycle(a, ws: Path) -> dict:
         for rel, b, m, tag in json.loads(hub_p.read_text(encoding="utf-8"))["files"]:
             hub[rel] = (b, m, tag)
     r2, active, c2 = active_refs(Path(a.rx_root))
-    r1, pending, c1 = feeder_refs(ws, set(active))
+    r1, pending, c1 = feeder_refs(ws, set(active), getattr(a, "grace_h", GRACE_H))
     refs = {x.rstrip("/.") for x in r1 | r2}
     pins = sorted({d for rx_, ds in PINS if any(rx_.search(c) for c in c1 + c2) for d in ds})
     src_pins, n_src = source_pins(ws, c1 + c2)
@@ -417,6 +453,64 @@ def cycle(a, ws: Path) -> dict:
     return rec
 
 
+def selftest() -> int:
+    """feeder_refs on a toy feeder: which items keep their folders (19 Oct's grace for failed and dropped items)."""
+    import tempfile
+    t0 = now_s()
+    ws = Path(tempfile.mkdtemp(prefix="auto_cleanup_"))
+    try:
+        (ws / "outputs/host_ops").mkdir(parents=True)
+        new = time.strftime("%y%m%d-%H%M%S", time.localtime(t0 - 3600))
+        old = time.strftime("%y%m%d-%H%M%S", time.localtime(t0 - 72 * 3600))
+        items = {   # name: (deps, sent job id or None, terminal record or None)
+            "a-pend": ("", None, None),
+            "a-done": ("", f"{new}-a-done-0001", ["done", 0, 0.1, 5.0]),
+            "a-fail-new": ("", f"{new}-a-fail-new-0002", ["failed", 1, 0.0, 3.0]),
+            "a-fail-old": ("", f"{old}-a-fail-old-0003", ["failed", 1, 0.0, 3.0]),
+            "b-drop1": ("a-fail-new", None, None),
+            "b-drop2": ("b-drop1,a-done", None, None),
+            "b-drop-old": ("a-fail-old", None, None),
+            "b-drop-old2": ("b-drop-old", None, None),
+            "c-run-old": ("", f"{old}-c-run-old-0004", None),
+            "c-run-new": ("", f"{new}-c-run-new-0005", None),
+            "c-run-active": ("", f"{old}-c-run-active-0006", None),
+        }
+        dropped = ("b-drop1", "b-drop2", "b-drop-old", "b-drop-old2")
+        lines = [f"line|x|{deps}|{n}|1|1|scripts/{n}.py|python scripts/{n}.py --out outputs/{n}/look/x"
+                 for n, (deps, _, _) in items.items()]
+        (ws / "outputs/host_ops/hostfeed_items.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+        st = {"sent": {n: j for n, (_, j, _) in items.items() if j},
+              "terminal": {j: t for _, (_, j, t) in items.items() if j and t},
+              "dropped": {n: "dep ended badly" for n in dropped}}
+        (ws / "outputs/host_ops/hostfeed_state.json").write_text(json.dumps(st), encoding="utf-8")
+        active = {items["c-run-active"][1]}
+        refs, names, cmds = feeder_refs(ws, active)
+        want = ["a-pend", "a-fail-new", "b-drop1", "b-drop2", "c-run-new", "c-run-active"]
+        assert sorted(names) == sorted(want), sorted(names)
+        assert "outputs/b-drop2/look/x" in refs and "outputs/b-drop-old/look/x" not in refs, sorted(refs)
+        assert len(cmds) == len(want)
+        # without the grace, as before 19 Oct: failed and dropped items keep nothing
+        _, names0, _ = feeder_refs(ws, active, grace_h=0.0)
+        assert sorted(names0) == sorted(["a-pend", "c-run-new", "c-run-active"]), sorted(names0)
+        # a cycle in the deps of dropped items ends
+        lines.append("line|x|b-loop2|b-loop1|1|1|scripts/l.py|python scripts/l.py")
+        lines.append("line|x|b-loop1|b-loop2|1|1|scripts/l.py|python scripts/l.py")
+        (ws / "outputs/host_ops/hostfeed_items.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+        st["dropped"].update({"b-loop1": "x", "b-loop2": "x"})
+        (ws / "outputs/host_ops/hostfeed_state.json").write_text(json.dumps(st), encoding="utf-8")
+        _, names1, _ = feeder_refs(ws, active)
+        assert sorted(names1) == sorted(want), sorted(names1)
+        assert ended_badly(["failed", 1]) and ended_badly(["done", 2]) and ended_badly(["cancelled", 1])
+        assert not ended_badly(["done", 0]) and not ended_badly(None) and not ended_badly(["done"])
+    finally:
+        shutil.rmtree(ws, ignore_errors=True)
+    print(f"auto_cleanup selftest: pending, running (active or launched within 6 h), failed within the grace and "
+          f"dropped behind a failure within the grace (through a chain of drops) keep their folders; done items, old "
+          f"failures and items dropped behind them do not; grace 0 is the rule before 19 Oct; a cycle of drops ends "
+          f"({now_s() - t0:.2f}s)", flush=True)
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -435,8 +529,13 @@ def main(argv=None) -> int:
     r.add_argument("--emergency-gb", type=float, default=50.0,
                    help="below this free space, unreferenced hub/regen files go whatever their age")
     r.add_argument("--smoke-h", type=float, default=24.0)
-    r.add_argument("--rx-root", default="C:/Users/Student2/rx")
+    r.add_argument("--rx-root", default=str(Path.home() / "rx"))
+    r.add_argument("--grace-h", type=float, default=GRACE_H,
+                   help="a failed item and the items dropped behind it keep their folders this long after its launch")
+    sub.add_parser("selftest")
     a = ap.parse_args(argv)
+    if a.cmd == "selftest":
+        return selftest()
     if a.cmd == "hub-index":
         n = hub_index(Path(a.archive), Path(a.out))
         print(f"{n} archived files -> {a.out}")
