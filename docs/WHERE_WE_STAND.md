@@ -610,46 +610,73 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   17 October ([VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md)) reopens the idea. Its next form is P5c:
   g's scores as a fixed input to both models, where a trained head can learn to ignore them on musique.
 
-## 7. Running now (17 October, 14:10)
+## 7. Running now (19 October, 14:50)
 
 - **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
   KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
   0.95 on every training dataset on s1sel at 1,976 rows on average (musique 0.885 → 0.951). webqsp's s1eval, beside,
   goes from 0.841 to 0.933.
-- **P1g-b** ([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)) on the host: those pools built with their looks, caches,
-  chains, links and KT input, then the lean pair refit on them. Five datasets' pools are built. metaqa's pool build
-  failed at 04:27 on a Windows file lock (WinError 32 on its last rename). The feeder dropped its 128 dependent items,
-  and they were re-queued at 09:09 with the build under retries. Its full run
-  ([P1GB_FULL_RUN.md](P1GB_FULL_RUN.md), 9bc6e41) is queued behind its screen and gated on it.
-- **On the card:** A2 ([A2_RANKS_BESIDE_Z.md](A2_RANKS_BESIDE_Z.md)), pool ranks and top-50 z-scores beside zret's
-  z-scores in both models. Queued behind it, A3 ([A3_VSHARE_LEAN.md](A3_VSHARE_LEAN.md)): vshare's share
-  augmentation of the pool statistics, moved into zret's reference, in both models' training; then A4
-  ([A4_BLOCK_DROPOUT_LEAN.md](A4_BLOCK_DROPOUT_LEAN.md)), bdrop20's block dropout at the top of both models; then A5
-  ([A5_KIND_HEAD_BACKOFF.md](A5_KIND_HEAD_BACKOFF.md)), zck's kind head on typed graphs with its gradient kept off the
-  shared weights; then A6 ([A6_LINK_WORDS_INPUT.md](A6_LINK_WORDS_INPUT.md)), D4's link words as six fixed columns
-  in both models, after spaCy's mentions are built on all six corpora on the CPU; then A7
-  ([A7_S6_SCORER_INPUT.md](A7_S6_SCORER_INPUT.md)), S6's chain scorer refit per split and cross-fitted, as four
-  fixed columns in both models; then A8 ([A8_QDEPTH_INPUT.md](A8_QDEPTH_INPUT.md)), round 11's depth prior fitted on
-  its own per split and cross-fitted, as six fixed columns in both models; then A9
-  ([A9_EDGE_FAMILY_DROPOUT.md](A9_EDGE_FAMILY_DROPOUT.md)), the MP-unified track's edge-family dropout on zspx alone
-  (GNN only); then A10 ([A10_G2_ON_ZSPX.md](A10_G2_ON_ZSPX.md)), G2's hidden-state layers over zspx's score
-  (GNN only); then A11 ([A11_FOURTH_FAMILY_LINKS.md](A11_FOURTH_FAMILY_LINKS.md)), our LLM-free phrase links as a
-  fourth link family in zspk's step (GNN only); then A12 ([A12_GSURG_GNN.md](A12_GSURG_GNN.md)), zspk trained with
-  gradient surgery (GNN only); then A13 ([A13_BRIDGE_COLUMNS_GNN.md](A13_BRIDGE_COLUMNS_GNN.md)), zbr's bridge
-  columns as a head on zspk's score before its step (GNN only; R1's GNN arm was NOT_ADOPTED). P5c's builds
-  ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)) are on the CPU. P1g-c
-  ([P1GC_ADOPTED_ON_P1GB.md](P1GC_ADOPTED_ON_P1GB.md)) takes P1g-b's pools to the adopted models (G5's zspx, R1's
-  zrckpr, and zspxr, zspx with R1's columns): P1g-b's builds are rebuilt on the CPU behind a gate on their arrays,
-  and its six fits go on the card right after P1g-b's own, ahead of A5 to A13's screens. After P5c come A4's two
-  next forms, each on both models: A4h ([A4H_BLOCK_DROPOUT_HALF.md](A4H_BLOCK_DROPOUT_HALF.md)), the block dropout
-  at 0.1, and A4f ([A4F_FAMILY_DROPOUT.md](A4F_FAMILY_DROPOUT.md)), the KT term and the chain term dropped as two
-  more cells at 0.2; then A5's next form, A5c ([A5C_KIND_COUPLED.md](A5C_KIND_COUPLED.md)), zck's kind offsets
-  coupled to the shared weights, on both models; then A6's next form, A6e
-  ([A6E_LINK_WORDS_EDGES.md](A6E_LINK_WORDS_EDGES.md)): each pool edge's link score as a weighted message in zspk's
-  step, and eight split columns to the top ten rows on zrckp; then A2's next form, A2h
-  ([A2H_HALVES_APART.md](A2H_HALVES_APART.md)): the rank columns alone and the top-50 z-scores alone, each beside the
-  z-scores, on both models; then A3's next form, A3t ([A3T_VSHARE_THIN.md](A3T_VSHARE_THIN.md)): the share
-  augmentation at vshare's thin range, t in [0.08, 0.20], on both models.
+- **P1g-c** ([P1GC_ADOPTED_ON_P1GB.md](P1GC_ADOPTED_ON_P1GB.md)) takes P1g-b's pools to the adopted models (G5's zspx,
+  R1's zrckpr, and zspxr, zspx with R1's columns). At 22:28 on 18 October the host's clean-up removed P1g-b's rebuilt
+  looks (54 GB) and P1g-c's rebuilt KT columns, after the failed link builds' dependents had been dropped (fixed in
+  301905a). The redo ([P1GC_LOOK_ALIAS.md](P1GC_LOOK_ALIAS.md), section 6) rebuilds the 177 look shards on the CPU,
+  verifies and aliases them, then the links, chains, KT columns and G3's residuals; the six fits run behind a gate on
+  those arrays.
+- **On the card:** the eight next forms declared in 2fff761, before any number. On the GPU now, A2xm
+  ([A2XM_ZTOP50_REPLACE.md](A2XM_ZTOP50_REPLACE.md)): ztop50's form, zret's reference cut to the pool's top 50 rows,
+  on both lean models. Queued behind it, on both lean models: A3v ([A3V_VSHARE_TWO_SIDED.md](A3V_VSHARE_TWO_SIDED.md)),
+  vshare's two-sided rule; A4hs ([A4HS_FIXED_BLOCK_DROPOUT.md](A4HS_FIXED_BLOCK_DROPOUT.md)), block dropout on the
+  eight fixed blocks only; A8e ([A8E_QDEPTH_PRIOR.md](A8E_QDEPTH_PRIOR.md)), the depth prior added to each row's score.
+  Then four on zspx, the adopted GNN: A9t ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)), edge-family dropout with
+  the increments bounded; A10e ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
+  ([A13X_BRIDGE_HEAD_ZSPX.md](A13X_BRIDGE_HEAD_ZSPX.md)), zbr's bridge head before zspx's first step; A12x
+  ([A12X_GSURG_ZSPX.md](A12X_GSURG_ZSPX.md)), gradient surgery. The zspx screens wait for G3's residual parts, which the
+  clean-up removed; they are being rebuilt on the CPU, with R1's columns for the zrckpr screens.
+- **Filed on 19 October:**
+  - **A2h NOT_ADOPTED, all four arms** ([A2H_HALVES_APART.md](A2H_HALVES_APART.md)): A2's rank half and top-50 half
+    apart. Each half alone moves musique zero-shot as far as A2's whole form or further (MLP +0.0128 and +0.0198, GNN
+    +0.0283 and +0.0275), within its 0.072 floor. The rank half costs webqsp zero-shot on L-musique on both models
+    (-0.0142, -0.0137), the GNN's top-50 half 2wiki in domain (-0.0083). Next forms: A2xi (prank's form, the rank pair
+    replacing the z-score) and A2xm (ztop50's form), each on both models.
+  - **A3t NOT_ADOPTED, both arms** ([A3T_VSHARE_THIN.md](A3T_VSHARE_THIN.md)): vshare's thin range, t in [0.08, 0.20],
+    on 0.37 to 0.38 of the question visits; no read past the seed null on either model. Next form: A3v, vshare's
+    two-sided rule; if it finds no GAIN either, A3z (each block's whole-pool z-score as an input).
+  - **A4h NOT_ADOPTED, both arms** ([A4H_BLOCK_DROPOUT_HALF.md](A4H_BLOCK_DROPOUT_HALF.md)): block dropout at 0.1. The
+    MLP's musique zero-shot loss more than halves (-0.0530 against A4's -0.1195, now WITHIN); the GNN keeps its LOSS
+    there (-0.1143), and its webqsp zero-shot GAIN moves to L-hotpotqa (+0.0248). Next form: A4hs, the dropout on the
+    eight fixed blocks only, SEMB and the chain term always kept, on both models.
+  - **A4f NOT_ADOPTED, both arms** ([A4F_FAMILY_DROPOUT.md](A4F_FAMILY_DROPOUT.md)): the KT term and the chain term as
+    two more cells at 0.2. musique zero-shot falls as far as at A4 or further (MLP -0.1147, GNN -0.2264), and webqsp
+    zero-shot loses on both. Next form: A4fx, the family form on the adopted arms (zspx, zrckpr).
+  - **A5c ADOPT_FOR_FULL_RUN, both arms** ([A5C_KIND_COUPLED.md](A5C_KIND_COUPLED.md)): zck's kind offsets coupled to
+    the shared weights. Two GAINs each, no LOSS: the MLP's webqsp zero-shot +0.0189 (L-musique) and +0.0239
+    (L-hotpotqa); the GNN's webqsp zero-shot +0.0520 and musique in domain (Claim 1's read) +0.0083, both on
+    L-hotpotqa. Next: both arms refit on P1g-b's pools, then the full run (its own file).
+  - **A6e NOT_ADOPTED, both arms** ([A6E_LINK_WORDS_EDGES.md](A6E_LINK_WORDS_EDGES.md)): the link score as an edge
+    weight in zspk's step, eight split columns to the top ten rows on zrckp. No GAIN, no LOSS: hotpotqa zero-shot
+    +0.0086 (MLP) and +0.0077 (GNN), within its 0.02 floor; A6's webqsp losses are gone. Next form: A6ex, the link
+    words on zspx and zrckpr.
+  - **P5c NOT_ADOPTED, both arms** ([P5C_OFFSET_INPUT.md](P5C_OFFSET_INPUT.md)): P5b's learned offsets, cross-fitted
+    on two folds, as four fixed columns. No GAIN; the GNN loses 2wiki in domain on L-hotpotqa (-0.0111). Next form:
+    five folds, and for the GNN alone P5b's normalised log p as a fifth column.
+  - **A8 NOT_ADOPTED, both arms** ([A8_QDEPTH_INPUT.md](A8_QDEPTH_INPUT.md)): round 11's depth prior as six fixed
+    columns. The prior is informative on its own (held-out loss below the class bias on every fit and dataset), but no
+    read moves past the seed null. Next form: A8e, the prior added to each row's score, trained by each model's
+    listwise loss.
+  - **A9 NOT_ADOPTED** ([A9_EDGE_FAMILY_DROPOUT.md](A9_EDGE_FAMILY_DROPOUT.md)): edge-family dropout on zspx. No GAIN,
+    no LOSS; Claim 1's musique read -0.0059, WITHIN. Next form: A9t, the dropout with zspx's increments bounded.
+  - **A10 NOT_ADOPTED** ([A10_G2_ON_ZSPX.md](A10_G2_ON_ZSPX.md)): G2's hidden-state layers over zspx's detached
+    z-score; every read within 0.007. Next form: A10e, the stack end to end, with the gradient kept through the
+    z-score.
+  - **A11 NOT_ADOPTED** ([A11_FOURTH_FAMILY_LINKS.md](A11_FOURTH_FAMILY_LINKS.md)): our phrase links as a fourth
+    family in zspk's one step. One LOSS, webqsp zero-shot on L-musique (-0.0137), where zspk4 is zspk by rule, so it
+    comes through the shared weights. Next form: A11x, the fourth family in all three of zspx's steps.
+  - **A12 NOT_ADOPTED** ([A12_GSURG_GNN.md](A12_GSURG_GNN.md)): zspk trained with gradient surgery, which acts on
+    about half the dataset pairs at every step. No GAIN; webqsp zero-shot on L-musique loses (-0.0137). Next form:
+    A12x, gsurg's loop on zspx.
+  - **A13 NOT_ADOPTED** ([A13_BRIDGE_COLUMNS_GNN.md](A13_BRIDGE_COLUMNS_GNN.md)): zbr's bridge head on zspk's score.
+    Both multi-hop zero-shot reads rise within their floors (musique +0.0138, hotpotqa +0.0080). Next form: A13x, the
+    bridge head on zspx before its first step.
 - **Filed on 18 October:**
   - **P1g-b NOT_ADOPTED** ([P1GB_POOLS_REFIT.md](P1GB_POOLS_REFIT.md)): the lean pair refit unchanged on P1g2's chosen
     pools (ALL >= 0.95 everywhere). zrckp 1 GAIN (webqsp zero-shot +0.0141, L-musique), 0 LOSS; zspk 1 LOSS (musique

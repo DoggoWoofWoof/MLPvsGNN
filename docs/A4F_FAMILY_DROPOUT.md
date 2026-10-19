@@ -3,6 +3,7 @@
 Declared 18 October 2026, before any number. The next form A4's verdict named for zrckpd
 (docs/A4_BLOCK_DROPOUT_LEAN.md, sections 5 and 7), under docs/SCREENS.md section 3b and
 docs/VERDICT_AUDIT_2026_10_17.md. Code: `outputs/mp_unified/za4f.py`.
+Filed 19 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -105,3 +106,71 @@ carry the KT input and rmatch's chains, it checks:
 **Host items** (17, `a4f-*`) go right after A4h's, sized by A4's measured peaks (A4f adds no parameter and no memory):
 trains and reads at A4's `--frac` and GPU share (L-musique trains 0.20/0.22, the rest 0.27/0.29); memory from A4's
 measured peaks, item by item.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a4f/screen-verdict.json`, written 2026-10-18T14:11:19Z; the
+re-calls `outputs/screen/scr-a4f-zrckpf-pair-recall.json` and `-zspkf-`, host paths made relative). **Both arms
+NOT_ADOPTED:** no GAIN, and two LOSSes on each.
+
+- **zrckpf: 0 GAIN, 2 LOSS.** musique zero-shot falls 0.1147 on L-musique [-0.1246, -0.1048], and webqsp zero-shot falls
+  0.0236 on L-hotpotqa [-0.0358, -0.0115].
+- **zspkf: 0 GAIN, 2 LOSS.** musique zero-shot falls 0.2264 on L-musique [-0.2372, -0.2158], and webqsp zero-shot 0.0125
+  there [-0.0243, -0.0010]; on L-hotpotqa webqsp zero-shot falls 0.0128 (filed LOSS, re-called WITHIN against its 0.0233
+  floor).
+- **Section 1's reading does not hold.** Dropping the KT term and rmatch's chain term as two more cells was to let
+  musique zero-shot recover against A4. It did not: the MLP falls about as far as at A4 (-0.1147 against -0.1195), and
+  the GNN falls further (-0.2264 against -0.1394).
+- **Beside:** musique in domain (L-hotpotqa, Claim 1's read) -0.0035 (MLP) and +0.0021 (GNN), WITHIN; metaqa in domain
+  -0.0057 on the MLP's L-hotpotqa fit, WITHIN.
+- **The fits:** 0.200 of the cells dropped on both splits; the KT term and the chain term each dropped on 0.20 of the
+  question visits, as declared; no question lost every cell (table below).
+
+This closes only this form (the family form at 0.2 on the lean pair). The next form, fixed in section 5 for no GAIN and
+recorded in the verdict, is **A4fx**: the family form on the adopted arms (G5's zspx and R1's zrckpr, R1's columns one
+more cell), in its own declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckpf: delta [95% CI], call | zspkf: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0038 [-0.0052, -0.0025], WITHIN | -0.0039 [-0.0055, -0.0025], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | -0.0008 [-0.0027, +0.0010], WITHIN | -0.0009 [-0.0032, +0.0013], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | -0.1147 [-0.1246, -0.1048], **LOSS** | -0.2264 [-0.2372, -0.2158], **LOSS** |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0022 [-0.0046, +0.0003], WITHIN | -0.0023 [-0.0046, +0.0000], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | -0.0024 [-0.0041, -0.0007], WITHIN | -0.0054 [-0.0070, -0.0039], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | +0.0026 [-0.0093, +0.0145], WITHIN | -0.0125 [-0.0243, -0.0010], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0057 [-0.0070, -0.0043], WITHIN | -0.0017 [-0.0029, -0.0003], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | +0.0003 [-0.0018, +0.0024], WITHIN | -0.0022 [-0.0043, +0.0000], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | -0.0035 [-0.0089, +0.0018], WITHIN | +0.0021 [-0.0034, +0.0076], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | -0.0024 [-0.0055, +0.0007], WITHIN | +0.0039 [+0.0007, +0.0074], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0051 [-0.0069, -0.0034], WITHIN | +0.0030 [+0.0013, +0.0047], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0236 [-0.0358, -0.0115], **LOSS** | -0.0128 [-0.0248, -0.0010], WITHIN (filed LOSS) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a4f-zrckpf.json` and the others, `-hp` for L-hotpotqa); and zrckpd's R@5 delta (A4, its own
+re-call) and zspkd's R@5 delta (A4, its own re-call), on the same read:
+
+| split | dataset | zrckpf FC@5 | zrckpf hit@1 | zspkf FC@5 | zspkf hit@1 | zrckpd R@5 (A4) | zspkd R@5 (A4) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0048 | -0.0157 | -0.0059 | -0.0130 | -0.0026 | +0.0006 |
+| L-musique | squad | -0.0008 | -0.0051 | -0.0009 | -0.0019 | -0.0013 | -0.0011 |
+| L-musique | musique | -0.0691 | -0.2631 | -0.1171 | -0.3695 | -0.1195 LOSS | -0.1394 LOSS |
+| L-musique | hotpotqa | -0.0008 | -0.0134 | -0.0043 | -0.0073 | -0.0050 | -0.0047 |
+| L-musique | 2wiki | -0.0060 | -0.0112 | -0.0154 | -0.0035 | -0.0033 | -0.0032 |
+| L-musique | webqsp | -0.0053 | -0.0073 | -0.0120 | -0.0286 | +0.0019 | +0.0134 GAIN |
+| L-hotpotqa | metaqa | -0.0074 | -0.0244 | -0.0034 | -0.0072 | -0.0024 | -0.0018 |
+| L-hotpotqa | squad | +0.0003 | +0.0006 | -0.0022 | -0.0048 | -0.0001 | -0.0043 |
+| L-hotpotqa | musique | -0.0021 | -0.0054 | -0.0008 | -0.0058 | -0.0053 | -0.0032 |
+| L-hotpotqa | hotpotqa | -0.0016 | +0.0068 | +0.0107 | -0.0112 | +0.0016 | +0.0009 |
+| L-hotpotqa | 2wiki | -0.0122 | -0.0099 | +0.0077 | -0.0034 | -0.0010 | -0.0043 |
+| L-hotpotqa | webqsp | -0.0253 | -0.0146 | -0.0113 | -0.0166 | -0.0030 | +0.0192 |
+
+The fits (stamped in each fit's screen.json; both arms drew the same cells; the KT and chain terms' shares are of the
+question visits):
+
+| fit | cells | dropped | share dropped | KT term dropped | chain term dropped | questions with every cell dropped |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | 2,083,312 | 416,916 | 0.2001 | 37,833 (0.200) | 38,176 (0.202) | 0 |
+| L-hotpotqa | 1,966,360 | 393,318 | 0.2000 | 35,706 (0.200) | 35,998 (0.201) | 0 |

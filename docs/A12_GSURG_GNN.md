@@ -2,7 +2,7 @@
 
 Declared 17 October 2026, before any number. The twelfth reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2,
 row 12), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za12gs.py` (the arm, the screen and the call).
-Not run yet.
+Filed 19 October: zspkgs NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -120,3 +120,67 @@ No model change is adopted on today's pools (the user's rule of 13 October).
 - 2 compares, the pair, the re-call and the verdict.
 
 No build: zspkgs reads zspk's carves, already on the host.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a12/screen-verdict.json`, written 2026-10-18T10:57:43Z; the
+re-calls `outputs/screen/scr-a12-zspkgs-pair-recall.json`, host paths made relative). **zspkgs NOT_ADOPTED:** no GAIN,
+and one LOSS.
+
+- **zspkgs: 0 GAIN, 1 LOSS.** webqsp zero-shot falls 0.0137 on L-musique [-0.0220, -0.0057]; musique zero-shot falls
+  0.0190 there (filed LOSS, re-called WITHIN against its 0.072 floor); squad in domain falls 0.0034 on L-hotpotqa,
+  WITHIN.
+- **Beside:** webqsp zero-shot on L-hotpotqa +0.0040; metaqa in domain +0.0016 and -0.0003; musique in domain
+  (L-hotpotqa, Claim 1's read) +0.0007; all WITHIN.
+- **The surgery acts at every step:** in every epoch of both fits, 0.454 to 0.485 of the dataset pairs conflict (their
+  gradients' dot product is negative), and every pair conflicts on close to half of its steps; the four least
+  conflicting pairs all involve 2wiki, the most conflicting involve squad or metaqa (table below).
+
+The surgery, acting on about half the dataset pairs at every step, moves no read up past the seed null; webqsp zero-shot
+pays for it on L-musique. This closes only this form (gsurg's loop on zspk). The next form, fixed in section 5 and
+recorded in the verdict, is **A12x**, gsurg's loop on zspx (the adopted GNN, three steps, where depth paid); one
+declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zspk's):
+
+| split | dataset | read | base R@5 | zspkgs: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8009 | +0.0016 [+0.0006, +0.0026], WITHIN |
+| L-musique | squad | in-domain | 0.9114 | +0.0006 [-0.0015, +0.0024], WITHIN |
+| L-musique | musique | zero-shot | 0.5012 | -0.0190 [-0.0255, -0.0129], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9080 | +0.0010 [-0.0010, +0.0031], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9383 | -0.0014 [-0.0028, +0.0000], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3229 | -0.0137 [-0.0220, -0.0057], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | -0.0003 [-0.0012, +0.0006], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9135 | -0.0034 [-0.0055, -0.0013], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5754 | +0.0007 [-0.0043, +0.0056], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8499 | +0.0019 [-0.0011, +0.0051], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9333 | +0.0023 [+0.0006, +0.0039], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2680 | +0.0040 [-0.0060, +0.0144], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a12-zspkgs.json` and the others, `-hp` for L-hotpotqa):
+
+| split | dataset | zspkgs FC@5 | zspkgs hit@1 |
+| --- | --- | ---: | ---: |
+| L-musique | metaqa | +0.0018 | +0.0035 |
+| L-musique | squad | +0.0006 | -0.0019 |
+| L-musique | musique | -0.0079 | -0.0629 |
+| L-musique | hotpotqa | +0.0009 | -0.0007 |
+| L-musique | 2wiki | -0.0025 | -0.0069 |
+| L-musique | webqsp | -0.0126 | -0.0200 |
+| L-hotpotqa | metaqa | -0.0004 | -0.0018 |
+| L-hotpotqa | squad | -0.0034 | -0.0009 |
+| L-hotpotqa | musique | -0.0017 | -0.0004 |
+| L-hotpotqa | hotpotqa | +0.0043 | +0.0108 |
+| L-hotpotqa | 2wiki | +0.0070 | -0.0083 |
+| L-hotpotqa | webqsp | +0.0013 | -0.0047 |
+
+The surgery per fit (`variants.p.curve[].gsurg` in each fit's train.json; a pair 'a on b' is dataset a's gradient
+against b's, summed over the epochs):
+
+| fit | conflicting share per epoch | least conflicting pairs | most conflicting pairs |
+| --- | --- | --- | --- |
+| L-musique | 0.469, 0.474, 0.460, 0.454, 0.461, 0.468, 0.459, 0.472 | hotpotqa on 2wiki 0.435, 2wiki on hotpotqa 0.439 | hotpotqa on metaqa 0.493, metaqa on squad 0.490 |
+| L-hotpotqa | 0.465, 0.480, 0.478, 0.473, 0.462, 0.473, 0.485, 0.465 | 2wiki on musique 0.449, metaqa on 2wiki 0.451 | metaqa on squad 0.498, musique on squad 0.489 |

@@ -2,7 +2,8 @@
 
 Declared 17 October 2026, before any number. The thirteenth reopening of docs/VERDICT_AUDIT_2026_10_17.md: its
 conditional item (section 2), run because R1's GNN arm (zspkr) was NOT_ADOPTED. Under docs/SCREENS.md section 3b.
-Code: `outputs/mp_unified/za13br.py` (the arm, the screen and the call). Not run yet.
+Code: `outputs/mp_unified/za13br.py` (the arm, the screen and the call).
+Filed 19 October: zspkb NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -144,3 +145,55 @@ No model change is adopted on today's pools (the user's rule of 13 October).
 - 2 compares, the pair, the re-call and the verdict.
 
 No build: zspkb reads zspk's carves, already on the host, and computes its inputs in the batch.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a13/screen-verdict.json`, written 2026-10-18T11:37:07Z; the
+re-calls `outputs/screen/scr-a13-zspkb-pair-recall.json`, host paths made relative). **zspkb NOT_ADOPTED:** no GAIN and
+no LOSS after the seed-null re-call.
+
+- **zspkb: 0 GAIN, 0 LOSS.** musique zero-shot rises +0.0138 [+0.0084, +0.0191] on L-musique, filed GAIN and re-called
+  WITHIN against its 0.072 floor; hotpotqa zero-shot rises +0.0080 [+0.0050, +0.0110] on L-hotpotqa (filed GAIN,
+  re-called WITHIN).
+- **Beside:** squad in domain, where G1a's rule was BELOW, -0.0004 and -0.0005; webqsp zero-shot -0.0066 and -0.0056;
+  metaqa in domain +0.0003 and +0.0013; musique in domain (L-hotpotqa, Claim 1's read) -0.0018; all WITHIN.
+
+The bridge head moves both multi-hop zero-shot reads up, within their floors. This closes only this form (zbr's head on
+zspk's score before its one step). The next form, fixed in section 5 and recorded in the verdict, is **A13x**, zbr's
+bridge head on zspx (the adopted GNN, three steps, where depth paid), before its first step; one declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zspk's):
+
+| split | dataset | read | base R@5 | zspkb: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8009 | +0.0003 [-0.0006, +0.0013], WITHIN |
+| L-musique | squad | in-domain | 0.9114 | -0.0004 [-0.0022, +0.0013], WITHIN |
+| L-musique | musique | zero-shot | 0.5012 | +0.0138 [+0.0084, +0.0191], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9080 | -0.0001 [-0.0022, +0.0019], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9383 | -0.0011 [-0.0024, +0.0003], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3229 | -0.0066 [-0.0144, +0.0011], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | +0.0013 [+0.0005, +0.0022], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9135 | -0.0005 [-0.0024, +0.0013], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5754 | -0.0018 [-0.0062, +0.0029], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8499 | +0.0080 [+0.0050, +0.0110], WITHIN (filed GAIN) |
+| L-hotpotqa | 2wiki | in-domain | 0.9333 | -0.0043 [-0.0058, -0.0028], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2680 | -0.0056 [-0.0141, +0.0023], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a13-zspkb.json` and the others, `-hp` for L-hotpotqa):
+
+| split | dataset | zspkb FC@5 | zspkb hit@1 |
+| --- | --- | ---: | ---: |
+| L-musique | metaqa | +0.0008 | +0.0034 |
+| L-musique | squad | -0.0004 | -0.0009 |
+| L-musique | musique | +0.0174 | +0.0186 |
+| L-musique | hotpotqa | -0.0030 | +0.0000 |
+| L-musique | 2wiki | -0.0032 | -0.0026 |
+| L-musique | webqsp | -0.0033 | -0.0086 |
+| L-hotpotqa | metaqa | +0.0024 | +0.0030 |
+| L-hotpotqa | squad | -0.0005 | -0.0023 |
+| L-hotpotqa | musique | -0.0021 | -0.0021 |
+| L-hotpotqa | hotpotqa | +0.0155 | +0.0101 |
+| L-hotpotqa | 2wiki | -0.0144 | -0.0049 |
+| L-hotpotqa | webqsp | -0.0060 | -0.0067 |

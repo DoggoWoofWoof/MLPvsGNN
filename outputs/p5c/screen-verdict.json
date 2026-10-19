@@ -1,0 +1,129 @@
+{
+ "stage": "P5c",
+ "declared_in": "docs/P5C_OFFSET_INPUT.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not P5c's re-call of the arm, or not twelve reads (docs/P5C_OFFSET_INPUT.md, section 4)",
+ "arms": {
+  "zrckpo": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "next_form": "section 5's next form (the arm's reads decide which), its own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0007,
+    "L-musique squad": 0.0003,
+    "L-musique musique": 0.0017,
+    "L-musique hotpotqa": -0.0001,
+    "L-musique 2wiki": 0.0006,
+    "L-musique webqsp": -0.0084,
+    "L-hotpotqa metaqa": -0.0009,
+    "L-hotpotqa squad": -0.0005,
+    "L-hotpotqa musique": 0.0062,
+    "L-hotpotqa hotpotqa": 0.0027,
+    "L-hotpotqa 2wiki": -0.0023,
+    "L-hotpotqa webqsp": -0.0121
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0007
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0084
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0009
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0121
+    }
+   },
+   "recall_sha256": "7bc2c092fce8cf39bdcb81831277d5e4d3d5ae5c5c7c1181d690b2ea12c9aeec"
+  },
+  "zspko": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [
+    "L-hotpotqa 2wiki"
+   ],
+   "problems": [],
+   "next_form": "section 5's next form (the arm's reads decide which), its own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "LOSS",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0014,
+    "L-musique squad": 0.0015,
+    "L-musique musique": -0.0013,
+    "L-musique hotpotqa": -0.0011,
+    "L-musique 2wiki": -0.0037,
+    "L-musique webqsp": -0.0066,
+    "L-hotpotqa metaqa": 0.0004,
+    "L-hotpotqa squad": 0.0001,
+    "L-hotpotqa musique": 0.0008,
+    "L-hotpotqa hotpotqa": 0.002,
+    "L-hotpotqa 2wiki": -0.0111,
+    "L-hotpotqa webqsp": 0.004
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0014
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0066
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0004
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.004
+    }
+   },
+   "recall_sha256": "270ed2ce3976549cf153c9e14139c7bc0ea61b4dc2fc06cb4e5fed2a97da1115"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckpo": {
+   "call": "WITHIN",
+   "delta": 0.0062
+  },
+  "zspko": {
+   "call": "WITHIN",
+   "delta": 0.0008
+  }
+ },
+ "zp5c_sha256": "26f1a25e24fe9a47c8d1bb4cb2fa1966dd461a07d1388fb35c2b6e2a0114b138",
+ "utc": "2026-10-18T12:34:32Z"
+}

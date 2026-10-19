@@ -1,0 +1,149 @@
+{
+ "stage": "A5c",
+ "declared_in": "docs/A5C_KIND_COUPLED.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A5c's re-call of the arm, or not twelve reads (docs/A5C_KIND_COUPLED.md, section 4)",
+ "arms": {
+  "zrckpc": {
+   "verdict": "ADOPT_FOR_FULL_RUN",
+   "gains": [
+    "L-musique webqsp",
+    "L-hotpotqa webqsp"
+   ],
+   "losses": [],
+   "problems": [],
+   "next_form": "the arm fitted again on P1g-b's pools, then its full run, its own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "GAIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "GAIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0025,
+    "L-musique squad": -0.0018,
+    "L-musique musique": 0.0084,
+    "L-musique hotpotqa": -0.0001,
+    "L-musique 2wiki": 0.0001,
+    "L-musique webqsp": 0.0189,
+    "L-hotpotqa metaqa": -0.0005,
+    "L-hotpotqa squad": -0.0006,
+    "L-hotpotqa musique": -0.0018,
+    "L-hotpotqa hotpotqa": -0.0036,
+    "L-hotpotqa 2wiki": -0.0018,
+    "L-hotpotqa webqsp": 0.0239
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0025
+    },
+    "L-musique 2wiki": {
+     "call": "WITHIN",
+     "delta": 0.0001
+    },
+    "L-musique webqsp": {
+     "call": "GAIN",
+     "delta": 0.0189
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0005
+    },
+    "L-hotpotqa 2wiki": {
+     "call": "WITHIN",
+     "delta": -0.0018
+    },
+    "L-hotpotqa webqsp": {
+     "call": "GAIN",
+     "delta": 0.0239
+    }
+   },
+   "recall_sha256": "0d3d9c86b433477787590d917c138bd28e7e90301df11d51c308d3a849dd1e8d"
+  },
+  "zspkc": {
+   "verdict": "ADOPT_FOR_FULL_RUN",
+   "gains": [
+    "L-hotpotqa musique",
+    "L-hotpotqa webqsp"
+   ],
+   "losses": [],
+   "problems": [],
+   "next_form": "the arm fitted again on P1g-b's pools, then its full run, its own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "GAIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "GAIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0021,
+    "L-musique squad": -0.0012,
+    "L-musique musique": 0.0224,
+    "L-musique hotpotqa": -0.0016,
+    "L-musique 2wiki": -0.0014,
+    "L-musique webqsp": -0.0052,
+    "L-hotpotqa metaqa": 0.0006,
+    "L-hotpotqa squad": -0.0014,
+    "L-hotpotqa musique": 0.0083,
+    "L-hotpotqa hotpotqa": -0.0031,
+    "L-hotpotqa 2wiki": 0.0041,
+    "L-hotpotqa webqsp": 0.052
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0021
+    },
+    "L-musique 2wiki": {
+     "call": "WITHIN",
+     "delta": -0.0014
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0052
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0006
+    },
+    "L-hotpotqa 2wiki": {
+     "call": "WITHIN",
+     "delta": 0.0041
+    },
+    "L-hotpotqa webqsp": {
+     "call": "GAIN",
+     "delta": 0.052
+    }
+   },
+   "recall_sha256": "3275e792cfd82699fe0ab5560f14119a87a2945c3ddae483da7a1faa4f300796"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckpc": {
+   "call": "WITHIN",
+   "delta": -0.0018
+  },
+  "zspkc": {
+   "call": "GAIN",
+   "delta": 0.0083
+  }
+ },
+ "za5c_sha256": "5ea8f1f08fac27156f5803adaed620fc4bf13a11dcea32e2ca0277d471411fe0",
+ "utc": "2026-10-18T14:59:12Z"
+}

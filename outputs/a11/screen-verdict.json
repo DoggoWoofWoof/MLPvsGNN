@@ -1,0 +1,62 @@
+{
+ "stage": "A11",
+ "declared_in": "docs/A11_FOURTH_FAMILY_LINKS.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zspk4's re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A11's, or not twelve reads (docs/A11_FOURTH_FAMILY_LINKS.md, section 4)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zspk4",
+ "gains": [],
+ "losses": [
+  "L-musique webqsp"
+ ],
+ "problems": [],
+ "next_form": "A11x, the fourth family in all three of zspx's steps (the adopted GNN, where depth paid), its own declared file",
+ "calls": {
+  "L-musique metaqa": "WITHIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "WITHIN",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "WITHIN",
+  "L-musique webqsp": "LOSS",
+  "L-hotpotqa metaqa": "WITHIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "WITHIN",
+  "L-hotpotqa hotpotqa": "WITHIN",
+  "L-hotpotqa 2wiki": "WITHIN",
+  "L-hotpotqa webqsp": "WITHIN"
+ },
+ "delta_r5": {
+  "L-musique metaqa": 0.0014,
+  "L-musique squad": 0.0009,
+  "L-musique musique": 0.0033,
+  "L-musique hotpotqa": -0.0016,
+  "L-musique 2wiki": -0.0012,
+  "L-musique webqsp": -0.0137,
+  "L-hotpotqa metaqa": -0.0003,
+  "L-hotpotqa squad": -0.0014,
+  "L-hotpotqa musique": 0.0047,
+  "L-hotpotqa hotpotqa": 0.0045,
+  "L-hotpotqa 2wiki": 0.0024,
+  "L-hotpotqa webqsp": 0.0058
+ },
+ "beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0014
+  },
+  "L-musique webqsp": {
+   "call": "LOSS",
+   "delta": -0.0137
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0003
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": 0.0058
+  }
+ },
+ "recall_sha256": "08dfe7f3d2be5f780df371bdc857fd21386d880f2cd0a76ea8ebee1e142fa2b8",
+ "za11p4_sha256": "94eba70d3209c02bfba308340df1a0dfe410bdb15845c1d6c1cbe94abb5bdfa5",
+ "utc": "2026-10-18T07:33:42Z"
+}

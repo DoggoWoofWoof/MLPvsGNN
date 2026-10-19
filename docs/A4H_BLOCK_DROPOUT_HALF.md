@@ -3,6 +3,7 @@
 Declared 18 October 2026, before any number. The back-off form A4's verdict named for zspkd
 (docs/A4_BLOCK_DROPOUT_LEAN.md, sections 5 and 7), under docs/SCREENS.md section 3b and
 docs/VERDICT_AUDIT_2026_10_17.md. Code: `outputs/mp_unified/za4h.py`.
+Filed 19 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -99,3 +100,72 @@ rate:
 **Host items** (17, `a4h-*`) go after the queued A13 verdict and P5c, sized by A4's measured peaks (A4h adds no
 parameter and no memory): trains and reads at A4's `--frac` and GPU share (L-musique trains 0.20/0.22, the rest
 0.27/0.29); memory from A4's measured peaks, item by item.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a4h/screen-verdict.json`, written 2026-10-18T13:24:30Z; the
+re-calls `outputs/screen/scr-a4h-zrckph-pair-recall.json` and `-zspkh-`, host paths made relative). **Both arms
+NOT_ADOPTED:** the MLP's arm has no GAIN and no LOSS; the GNN's has one GAIN and one LOSS.
+
+- **zrckph: 0 GAIN, 0 LOSS.** musique zero-shot falls 0.0530 on L-musique [-0.0601, -0.0454]: filed LOSS, re-called
+  WITHIN against that read's 0.072 floor. At A4's rate (0.2) it had fallen 0.1195. webqsp zero-shot rises +0.0127 on
+  L-hotpotqa (filed GAIN, re-called WITHIN), and metaqa in domain falls 0.0036 there, WITHIN.
+- **zspkh: 1 GAIN, 1 LOSS.** webqsp zero-shot rises +0.0248 [+0.0131, +0.0354] on L-hotpotqa; musique zero-shot falls
+  0.1143 on L-musique [-0.1243, -0.1040]. At A4's rate the two reads were +0.0192 and -0.1394.
+- **Half the rate more than halves the MLP's musique loss, not the GNN's:** zrckph falls 0.0530 where zrckpd fell
+  0.1195, while zspkh falls 0.1143 where zspkd fell 0.1394. The GNN's webqsp gain grows at the lower rate on L-hotpotqa
+  (+0.0248 against +0.0192) but is gone on L-musique (-0.0030 against zspkd's +0.0134, a GAIN there).
+- **Beside:** musique in domain (L-hotpotqa, Claim 1's read) -0.0064 (MLP) and -0.0017 (GNN), both WITHIN; metaqa in
+  domain within 0.004 on all four fits.
+- **The fits:** 0.100 of the eligible cells dropped on both splits, and no question lost every block (table below).
+
+This closes only this form (each fixed block dropped at 0.1, at the top of the forward). The next forms, fixed in
+section 5 and recorded in the verdict:
+- **zrckph (no GAIN):** the rate closes on the MLP; the idea goes on in A4f, declared beside it (filed with it today:
+  NOT_ADOPTED, docs/A4F_FAMILY_DROPOUT.md, section 7).
+- **zspkh (a GAIN and a LOSS): A4hs**, the back-off over blocks: block dropout at 0.1 on the eight fixed blocks only,
+  with SEMB, and with it rmatch's chain term, always kept, on both models, in its own declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckph: delta [95% CI], call | zspkh: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | +0.0006 [-0.0003, +0.0015], WITHIN | +0.0023 [+0.0014, +0.0034], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | -0.0012 [-0.0029, +0.0005], WITHIN | -0.0009 [-0.0029, +0.0011], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | -0.0530 [-0.0601, -0.0454], WITHIN (filed LOSS) | -0.1143 [-0.1243, -0.1040], **LOSS** |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0016 [-0.0038, +0.0007], WITHIN | -0.0020 [-0.0041, +0.0001], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0004 [-0.0012, +0.0020], WITHIN | -0.0019 [-0.0033, -0.0004], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | -0.0004 [-0.0108, +0.0096], WITHIN | -0.0030 [-0.0119, +0.0056], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0036 [-0.0045, -0.0027], WITHIN | -0.0017 [-0.0027, -0.0008], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0012 [-0.0031, +0.0008], WITHIN | -0.0016 [-0.0035, +0.0003], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | -0.0064 [-0.0116, -0.0013], WITHIN | -0.0017 [-0.0071, +0.0036], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0048 [+0.0017, +0.0079], WITHIN | +0.0037 [+0.0007, +0.0067], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0034 [-0.0050, -0.0018], WITHIN | +0.0022 [+0.0008, +0.0036], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | +0.0127 [+0.0021, +0.0238], WITHIN (filed GAIN) | +0.0248 [+0.0131, +0.0354], **GAIN** |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a4h-zrckph.json` and the others, `-hp` for L-hotpotqa); and zrckpd's R@5 delta (A4, its own
+re-call) and zspkd's R@5 delta (A4, its own re-call), on the same read:
+
+| split | dataset | zrckph FC@5 | zrckph hit@1 | zspkh FC@5 | zspkh hit@1 | zrckpd R@5 (A4) | zspkd R@5 (A4) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0002 | +0.0027 | +0.0025 | +0.0139 | -0.0026 | +0.0006 |
+| L-musique | squad | -0.0012 | -0.0067 | -0.0009 | -0.0044 | -0.0013 | -0.0011 |
+| L-musique | musique | -0.0285 | -0.1332 | -0.0687 | -0.2693 | -0.1195 LOSS | -0.1394 LOSS |
+| L-musique | hotpotqa | -0.0015 | -0.0035 | -0.0045 | +0.0011 | -0.0050 | -0.0047 |
+| L-musique | 2wiki | +0.0001 | -0.0023 | -0.0052 | -0.0015 | -0.0033 | -0.0032 |
+| L-musique | webqsp | -0.0047 | -0.0160 | -0.0047 | -0.0093 | +0.0019 | +0.0134 GAIN |
+| L-hotpotqa | metaqa | -0.0044 | -0.0128 | -0.0026 | -0.0066 | -0.0024 | -0.0018 |
+| L-hotpotqa | squad | -0.0012 | -0.0040 | -0.0016 | -0.0048 | -0.0001 | -0.0043 |
+| L-hotpotqa | musique | -0.0074 | -0.0083 | -0.0091 | -0.0037 | -0.0053 | -0.0032 |
+| L-hotpotqa | hotpotqa | +0.0097 | -0.0061 | +0.0080 | -0.0117 | +0.0016 | +0.0009 |
+| L-hotpotqa | 2wiki | -0.0112 | -0.0062 | +0.0056 | +0.0002 | -0.0010 | -0.0043 |
+| L-hotpotqa | webqsp | +0.0067 | +0.0047 | +0.0173 | +0.0140 | -0.0030 | +0.0192 |
+
+The fits (stamped in each fit's screen.json; both arms drew the same cells):
+
+| fit | cells | dropped | share dropped | questions with every cell dropped |
+| --- | ---: | ---: | ---: | ---: |
+| L-musique | 1,704,528 | 170,502 | 0.1000 | 0 |
+| L-hotpotqa | 1,608,840 | 160,886 | 0.1000 | 0 |

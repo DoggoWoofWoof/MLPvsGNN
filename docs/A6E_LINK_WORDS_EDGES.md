@@ -2,7 +2,7 @@
 
 Declared 18 October 2026, before any number. The next form A6's verdict named for both arms
 (docs/A6_LINK_WORDS_INPUT.md, sections 5 and 7), under docs/SCREENS.md section 3b and docs/VERDICT_AUDIT_2026_10_17.md.
-Code: `outputs/mp_unified/za6e.py`.
+Code: `outputs/mp_unified/za6e.py`. Filed 19 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -169,3 +169,83 @@ checks:
 - **The screen:** 17 items. Trains and reads use A6's `--frac` (L-musique 0.20, L-hotpotqa and reads 0.27); zspkl gets
   0.03 more for its per-edge tensors. Memory: zrckpn as A6's MLP arm; zspkl trains 5.5 GB and 8.5 GB (L-hotpotqa) and
   reads 7.5 GB, for the host-side weights.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a6e/screen-verdict.json`, written 2026-10-18T21:16:55Z; the
+re-calls `outputs/screen/scr-a6e-zrckpn-pair-recall.json` and `-zspkl-`, host paths made relative). **Both arms
+NOT_ADOPTED:** no GAIN and no LOSS after the seed-null re-call.
+
+- **zrckpn: 0 GAIN, 0 LOSS.** hotpotqa zero-shot rises +0.0086 [+0.0055, +0.0116] on L-hotpotqa: filed GAIN, re-called
+  WITHIN against its 0.02 floor. hotpotqa in domain on L-musique (+0.0054) and musique in domain on L-hotpotqa (+0.0057)
+  rise too, WITHIN.
+- **zspkl: 0 GAIN, 0 LOSS.** hotpotqa zero-shot rises +0.0077 [+0.0046, +0.0109] (filed GAIN, re-called WITHIN); musique
+  zero-shot falls 0.0094 on L-musique (filed LOSS, re-called WITHIN against its 0.072 floor); musique and 2wiki in
+  domain on L-hotpotqa rise +0.0071 and +0.0070, WITHIN.
+- **Beside:** webqsp zero-shot, where all of A6's losses were, moves -0.0026 and -0.0067 (MLP), -0.0079 and +0.0078
+  (GNN), all WITHIN; A6 had -0.0188 and -0.0264 (MLP), -0.0107 and -0.0021 (GNN). A6's webqsp losses are gone in this
+  form, where the KB's relation words have weights of their own. musique in domain (L-hotpotqa, Claim 1's read): +0.0057
+  (MLP) and +0.0071 (GNN).
+- **The builds:** on squad, hotpotqa and 2wiki 0.41 to 0.53 of the linked pairs carry a word (musique 0.28), and about a
+  fifth to a quarter of the rows have a structural window (a tenth on musique); on the KBs fewer pairs carry a word
+  (metaqa 0.15 of the linked pairs, webqsp 0.025) and a relation word sits on 0.003 of the rows (table below).
+
+The link words lift hotpotqa a little on both models (up on all four fits), within the floors. This closes only this
+form (the link score as an edge weight in zspk's step; eight split columns to the top ten rows on zrckp). The next form,
+fixed in section 5 and recorded in the verdict, is **A6ex**: the link words on the adopted arms (G5's zspx with the edge
+weights, R1's zrckpr with the eight columns), on both models, in its own declared file. The link-word idea closes as a
+model input only if A6ex finds no GAIN either.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckpn: delta [95% CI], call | zspkl: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0006 [-0.0015, +0.0003], WITHIN | +0.0011 [+0.0002, +0.0020], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | +0.0028 [+0.0009, +0.0045], WITHIN | -0.0003 [-0.0025, +0.0019], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | -0.0034 [-0.0085, +0.0018], WITHIN | -0.0094 [-0.0149, -0.0042], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | +0.0054 [+0.0033, +0.0076], WITHIN | +0.0013 [-0.0009, +0.0036], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0026 [+0.0011, +0.0042], WITHIN | -0.0052 [-0.0067, -0.0035], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | -0.0026 [-0.0117, +0.0069], WITHIN | -0.0079 [-0.0167, +0.0012], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0011 [-0.0019, -0.0003], WITHIN | +0.0011 [+0.0001, +0.0022], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | +0.0013 [-0.0007, +0.0031], WITHIN | +0.0001 [-0.0019, +0.0020], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | +0.0057 [+0.0009, +0.0108], WITHIN | +0.0071 [+0.0014, +0.0123], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0086 [+0.0055, +0.0116], WITHIN (filed GAIN) | +0.0077 [+0.0046, +0.0109], WITHIN (filed GAIN) |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | +0.0020 [+0.0006, +0.0035], WITHIN | +0.0070 [+0.0054, +0.0086], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0067 [-0.0158, +0.0028], WITHIN | +0.0078 [-0.0028, +0.0186], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a6e-zrckpn.json` and the others, `-hp` for L-hotpotqa); and zrckpw's R@5 delta (A6, its own
+re-call) and zspkw's R@5 delta (A6, its own re-call), on the same read:
+
+| split | dataset | zrckpn FC@5 | zrckpn hit@1 | zspkl FC@5 | zspkl hit@1 | zrckpw R@5 (A6) | zspkw R@5 (A6) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0003 | -0.0054 | +0.0004 | +0.0114 | +0.0001 | +0.0017 |
+| L-musique | squad | +0.0028 | +0.0029 | -0.0003 | +0.0011 | +0.0002 | +0.0012 |
+| L-musique | musique | -0.0037 | +0.0008 | +0.0004 | -0.0360 | -0.0011 | -0.0031 |
+| L-musique | hotpotqa | +0.0104 | -0.0023 | +0.0007 | +0.0101 | +0.0025 | +0.0031 |
+| L-musique | 2wiki | +0.0077 | -0.0118 | -0.0150 | -0.0119 | +0.0011 | -0.0020 |
+| L-musique | webqsp | -0.0086 | +0.0007 | -0.0053 | -0.0033 | -0.0188 LOSS | -0.0107 LOSS |
+| L-hotpotqa | metaqa | -0.0008 | -0.0039 | +0.0009 | +0.0046 | -0.0022 | +0.0003 |
+| L-hotpotqa | squad | +0.0013 | +0.0024 | +0.0001 | -0.0001 | +0.0007 | -0.0008 |
+| L-hotpotqa | musique | +0.0083 | -0.0037 | +0.0074 | -0.0091 | +0.0006 | -0.0006 |
+| L-hotpotqa | hotpotqa | +0.0161 | +0.0046 | +0.0162 | +0.0003 | +0.0024 | +0.0046 |
+| L-hotpotqa | 2wiki | +0.0070 | -0.0107 | +0.0211 | -0.0010 | +0.0018 | -0.0058 |
+| L-hotpotqa | webqsp | -0.0093 | -0.0053 | +0.0040 | -0.0007 | -0.0264 LOSS | -0.0021 |
+
+The builds (each carve's parts summed; a linked pair is two rows joined by a raw edge of a worded family, 'with an
+anchor' those with one of the first stage's top ten rows at an end; the row shares weighted by rows):
+
+| dataset | carve | rows | linked pairs | with an anchor | share with a word | rows with a structural window | rows with an NER window | rows with a title word | rows with a relation word | rows with an NER word |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| metaqa | fit | 12,021,002 | 37,416,754 | 189,953 | 0.145 | 0.013 | 0.001 | 0.000 | 0.003 | 0.000 |
+| metaqa | s1eval | 19,742,463 | 61,137,136 | 310,439 | 0.150 | 0.013 | 0.001 | 0.000 | 0.003 | 0.000 |
+| squad | fit | 292,994 | 1,207,549 | 544,233 | 0.410 | 0.261 | 0.278 | 0.196 | 0.000 | 0.180 |
+| squad | s1eval | 594,063 | 2,167,829 | 986,360 | 0.424 | 0.253 | 0.254 | 0.179 | 0.000 | 0.175 |
+| musique | s1eval | 5,057,436 | 77,090,387 | 1,230,424 | 0.275 | 0.100 | 0.047 | 0.044 | 0.000 | 0.027 |
+| musique | s1fit | 9,623,206 | 149,845,441 | 2,313,487 | 0.279 | 0.106 | 0.042 | 0.044 | 0.000 | 0.023 |
+| hotpotqa | fit | 557,195 | 1,364,550 | 435,255 | 0.529 | 0.275 | 0.190 | 0.153 | 0.000 | 0.146 |
+| hotpotqa | s1eval | 693,828 | 1,653,299 | 521,946 | 0.496 | 0.270 | 0.183 | 0.143 | 0.000 | 0.136 |
+| 2wiki | fit | 628,354 | 1,351,430 | 328,753 | 0.488 | 0.190 | 0.181 | 0.096 | 0.000 | 0.117 |
+| 2wiki | s1eval | 1,328,715 | 3,123,312 | 828,310 | 0.434 | 0.206 | 0.209 | 0.092 | 0.000 | 0.130 |
+| webqsp | s1eval | 3,186,165 | 7,445,358 | 382,505 | 0.025 | 0.104 | 0.006 | 0.000 | 0.003 | 0.000 |

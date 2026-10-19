@@ -1,0 +1,147 @@
+{
+ "stage": "A4h",
+ "declared_in": "docs/A4H_BLOCK_DROPOUT_HALF.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A4h's re-call of the arm, or not twelve reads (docs/A4H_BLOCK_DROPOUT_HALF.md, section 4)",
+ "arms": {
+  "zrckph": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "next_form": "the rate closes; the idea goes on in A4f (the KT columns and rmatch's chain term dropped as blocks too), declared beside, on both models",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0006,
+    "L-musique squad": -0.0012,
+    "L-musique musique": -0.053,
+    "L-musique hotpotqa": -0.0016,
+    "L-musique 2wiki": 0.0004,
+    "L-musique webqsp": -0.0004,
+    "L-hotpotqa metaqa": -0.0036,
+    "L-hotpotqa squad": -0.0012,
+    "L-hotpotqa musique": -0.0064,
+    "L-hotpotqa hotpotqa": 0.0048,
+    "L-hotpotqa 2wiki": -0.0034,
+    "L-hotpotqa webqsp": 0.0127
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0006
+    },
+    "L-musique musique": {
+     "call": "WITHIN",
+     "delta": -0.053
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0004
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0036
+    },
+    "L-hotpotqa musique": {
+     "call": "WITHIN",
+     "delta": -0.0064
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0127
+    }
+   },
+   "recall_sha256": "73a1667245d1e4639a546891b7afb635e277e56e422c3281ef88acbaf8f85670"
+  },
+  "zspkh": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [
+    "L-hotpotqa webqsp"
+   ],
+   "losses": [
+    "L-musique musique"
+   ],
+   "problems": [],
+   "next_form": "A4hs, the back-off over blocks: block dropout at 0.1 on the eight fixed blocks only, SEMB and with it rmatch's chain term always kept, on both models, its own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "LOSS",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "GAIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0023,
+    "L-musique squad": -0.0009,
+    "L-musique musique": -0.1143,
+    "L-musique hotpotqa": -0.002,
+    "L-musique 2wiki": -0.0019,
+    "L-musique webqsp": -0.003,
+    "L-hotpotqa metaqa": -0.0017,
+    "L-hotpotqa squad": -0.0016,
+    "L-hotpotqa musique": -0.0017,
+    "L-hotpotqa hotpotqa": 0.0037,
+    "L-hotpotqa 2wiki": 0.0022,
+    "L-hotpotqa webqsp": 0.0248
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0023
+    },
+    "L-musique musique": {
+     "call": "LOSS",
+     "delta": -0.1143
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.003
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0017
+    },
+    "L-hotpotqa musique": {
+     "call": "WITHIN",
+     "delta": -0.0017
+    },
+    "L-hotpotqa webqsp": {
+     "call": "GAIN",
+     "delta": 0.0248
+    }
+   },
+   "recall_sha256": "e7cbbe1ffd7af55058f54e71f732c4d0b7ffa2d87f6de6f52fcf8412d7ff809e"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckph": {
+   "call": "WITHIN",
+   "delta": -0.0064
+  },
+  "zspkh": {
+   "call": "WITHIN",
+   "delta": -0.0017
+  }
+ },
+ "za4h_sha256": "73c08456a65d388a8b5996471ee315ac8ab07d07958c70c328f0ec3bb92cfa8b",
+ "utc": "2026-10-18T13:24:30Z"
+}

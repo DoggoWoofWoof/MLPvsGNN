@@ -1,0 +1,60 @@
+{
+ "stage": "A10",
+ "declared_in": "docs/A10_G2_ON_ZSPX.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zg2x's re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A10's, or not twelve reads (docs/A10_G2_ON_ZSPX.md, section 4)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zg2x",
+ "gains": [],
+ "losses": [],
+ "problems": [],
+ "next_form": "A10e, the stack end to end: its z-score of zspx's score with the gradient kept (G4's zspkg, which found that depth pays when the step acts on the score), everything else G2's; one declared file",
+ "calls": {
+  "L-musique metaqa": "WITHIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "WITHIN",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "WITHIN",
+  "L-musique webqsp": "WITHIN",
+  "L-hotpotqa metaqa": "WITHIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "WITHIN",
+  "L-hotpotqa hotpotqa": "WITHIN",
+  "L-hotpotqa 2wiki": "WITHIN",
+  "L-hotpotqa webqsp": "WITHIN"
+ },
+ "delta_r5": {
+  "L-musique metaqa": 0.0012,
+  "L-musique squad": 0.0019,
+  "L-musique musique": 0.0011,
+  "L-musique hotpotqa": -0.0018,
+  "L-musique 2wiki": -0.0056,
+  "L-musique webqsp": 0.005,
+  "L-hotpotqa metaqa": 0.0001,
+  "L-hotpotqa squad": 0.0013,
+  "L-hotpotqa musique": -0.0033,
+  "L-hotpotqa hotpotqa": -0.0014,
+  "L-hotpotqa 2wiki": 0.0054,
+  "L-hotpotqa webqsp": -0.0062
+ },
+ "beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0012
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": 0.005
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0001
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0062
+  }
+ },
+ "recall_sha256": "b70e2f0f7d7b790b027834de970c2a208e037566efd064d96b85068c3590cab4",
+ "za10g2x_sha256": "88ba630566f829bdbea02cf8f3a9e3e13e2af39f8420b23db11b4dbe9ab44782",
+ "utc": "2026-10-18T07:57:02Z"
+}

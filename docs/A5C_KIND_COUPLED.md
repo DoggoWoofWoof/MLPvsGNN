@@ -2,7 +2,7 @@
 
 Declared 18 October 2026, before any number. The next form A5's verdict named for both arms
 (docs/A5_KIND_HEAD_BACKOFF.md, section 7), under docs/SCREENS.md section 3b and docs/VERDICT_AUDIT_2026_10_17.md.
-Code: `outputs/mp_unified/za5c.py`.
+Code: `outputs/mp_unified/za5c.py`. Filed 19 October: both arms ADOPT_FOR_FULL_RUN (section 7).
 
 ## 1. Why this, now
 
@@ -101,3 +101,72 @@ KT input and rmatch's chains (typed) and their copy without chains (untyped, zki
 
 **Host items** (17, `a5c-*`) go right after A4f's, sized as A5's (three parameters more than the base): trains and
 reads at A5's `--frac` and GPU share, memory as A5's items.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a5c/screen-verdict.json`, written 2026-10-18T14:59:12Z; the
+re-calls `outputs/screen/scr-a5c-zrckpc-pair-recall.json` and `-zspkc-`, host paths made relative). **Both arms
+ADOPT_FOR_FULL_RUN:** each has two GAINs and no LOSS after the seed-null re-call.
+
+- **zrckpc: 2 GAIN, 0 LOSS.** webqsp zero-shot rises on both splits: +0.0189 [+0.0089, +0.0294] on L-musique and +0.0239
+  [+0.0122, +0.0359] on L-hotpotqa. musique zero-shot rises +0.0084 (filed GAIN, re-called WITHIN against its 0.072
+  floor); metaqa in domain -0.0025 on L-musique, WITHIN.
+- **zspkc: 2 GAIN, 0 LOSS.** webqsp zero-shot rises +0.0520 [+0.0392, +0.0648] on L-hotpotqa, the largest rise of the
+  thirteen screens filed today, and musique in domain (L-hotpotqa, Claim 1's read) rises +0.0083 [+0.0036, +0.0131].
+  musique zero-shot rises +0.0224 (filed GAIN, re-called WITHIN); 2wiki in domain +0.0041 on L-hotpotqa and webqsp
+  zero-shot -0.0052 on L-musique, both WITHIN.
+- **Beside:** metaqa in domain, the typed graph the offsets train on, moves -0.0025 and -0.0005 (MLP), +0.0021 and
+  +0.0006 (GNN); 2wiki in domain +0.0001 / -0.0018 (MLP) and -0.0014 / +0.0041 (GNN); musique in domain -0.0018 on the
+  MLP. A5, the kind head with its gradient kept off the shared weights, had moved webqsp zero-shot +0.0176 and +0.0136
+  on L-hotpotqa (WITHIN); with the offsets coupled to the shared weights the rise passes the seed null (the MLP on both
+  splits, the GNN on L-hotpotqa).
+- **The fits:** a quarter of the training forwards are typed (table below).
+
+This adopts the form for its full run only. The next form, fixed in section 5 and recorded in the verdict, is each arm
+fitted again on P1g-b's pools, then its full run, in its own declared file. Both arms passed, so if the refits and full
+runs hold, the coupled kind offsets join both lean models, and F1's rule (one input set for both) holds.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckpc: delta [95% CI], call | zspkc: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0025 [-0.0036, -0.0016], WITHIN | +0.0021 [+0.0011, +0.0031], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | -0.0018 [-0.0035, +0.0000], WITHIN | -0.0012 [-0.0031, +0.0007], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0084 [+0.0034, +0.0135], WITHIN (filed GAIN) | +0.0224 [+0.0162, +0.0290], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0001 [-0.0020, +0.0020], WITHIN | -0.0016 [-0.0035, +0.0005], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0001 [-0.0014, +0.0016], WITHIN | -0.0014 [-0.0027, -0.0001], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | +0.0189 [+0.0089, +0.0294], **GAIN** | -0.0052 [-0.0174, +0.0061], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0005 [-0.0014, +0.0005], WITHIN | +0.0006 [-0.0004, +0.0016], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0006 [-0.0024, +0.0013], WITHIN | -0.0014 [-0.0032, +0.0003], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | -0.0018 [-0.0066, +0.0030], WITHIN | +0.0083 [+0.0036, +0.0131], **GAIN** |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | -0.0036 [-0.0064, -0.0008], WITHIN | -0.0031 [-0.0061, -0.0003], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0018 [-0.0032, -0.0002], WITHIN | +0.0041 [+0.0026, +0.0056], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | +0.0239 [+0.0122, +0.0359], **GAIN** | +0.0520 [+0.0392, +0.0648], **GAIN** |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a5c-zrckpc.json` and the others, `-hp` for L-hotpotqa); and zrckpk's R@5 delta (A5, its own
+re-call) and zspkk's R@5 delta (A5, its own re-call), on the same read:
+
+| split | dataset | zrckpc FC@5 | zrckpc hit@1 | zspkc FC@5 | zspkc hit@1 | zrckpk R@5 (A5) | zspkk R@5 (A5) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0022 | -0.0141 | +0.0025 | +0.0089 | -0.0019 | -0.0008 |
+| L-musique | squad | -0.0018 | -0.0003 | -0.0012 | -0.0001 | +0.0000 | +0.0000 |
+| L-musique | musique | +0.0116 | -0.0348 | +0.0302 | -0.0410 | +0.0000 | +0.0000 |
+| L-musique | hotpotqa | +0.0011 | -0.0076 | -0.0035 | +0.0019 | +0.0000 | +0.0000 |
+| L-musique | 2wiki | +0.0023 | -0.0022 | -0.0013 | -0.0070 | +0.0000 | +0.0000 |
+| L-musique | webqsp | +0.0120 | +0.0080 | -0.0053 | +0.0047 | -0.0005 | +0.0066 |
+| L-hotpotqa | metaqa | -0.0003 | -0.0021 | +0.0015 | -0.0020 | -0.0005 | -0.0003 |
+| L-hotpotqa | squad | -0.0006 | -0.0014 | -0.0014 | +0.0011 | +0.0000 | +0.0000 |
+| L-hotpotqa | musique | -0.0012 | -0.0033 | +0.0037 | -0.0095 | +0.0000 | +0.0000 |
+| L-hotpotqa | hotpotqa | -0.0076 | -0.0115 | -0.0038 | +0.0024 | +0.0000 | +0.0000 |
+| L-hotpotqa | 2wiki | -0.0052 | +0.0004 | +0.0116 | -0.0016 | +0.0000 | +0.0000 |
+| L-hotpotqa | webqsp | +0.0160 | +0.0200 | +0.0426 | +0.0306 | +0.0176 | +0.0136 |
+
+The fits (stamped in each fit's screen.json; a typed forward is a batch of metaqa's questions, where the kind offsets
+act):
+
+| fit | typed forwards (metaqa's) | untyped forwards | typed share |
+| --- | ---: | ---: | ---: |
+| L-musique | 5,918 | 17,759 | 0.250 |
+| L-hotpotqa | 5,591 | 16,771 | 0.250 |

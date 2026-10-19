@@ -1,8 +1,8 @@
 # A9: edge-family dropout on the adopted GNN
 
 Declared 17 October 2026, before any number. The ninth reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2,
-row 9), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za9fd.py` (the arm, the screen and the call). Not
-run yet.
+row 9), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za9fd.py` (the arm, the screen and the call).
+Filed 19 October: zspxd NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -114,3 +114,55 @@ carve with G3's residuals:
 - 2 trains and 2 reads, GPU sized as G5's from zspx's runs: `--frac 0.40` (share 0.42); memory: trains 6 GB
   (-hp 15 GB), reads 6 GB;
 - 2 compares, the pair, the re-call (after the base compares) and the verdict.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a9/screen-verdict.json`, written 2026-10-18T00:01:12Z; the
+re-calls `outputs/screen/scr-a9-zspxd-pair-recall.json`, host paths made relative). **zspxd NOT_ADOPTED:** no GAIN and
+no LOSS after the seed-null re-call.
+
+- **zspxd: 0 GAIN, 0 LOSS.** On L-hotpotqa, hotpotqa zero-shot falls 0.0075 [-0.0102, -0.0046] and musique in domain
+  (Claim 1's read) 0.0059 [-0.0108, -0.0012], both WITHIN; every other read is within 0.004.
+- **Beside, the KB graphs:** webqsp zero-shot -0.0034 (L-musique) and -0.0037 (L-hotpotqa); metaqa in domain -0.0019 and
+  +0.0007, all WITHIN.
+
+Dropping whole edge families in training moves no read past the seed null on zspx, and costs Claim 1's musique read a
+little. This closes only this form (the dropout alone, the increments unbounded). The next form, fixed in section 5 and
+recorded in the verdict, is **A9t**, the MP-unified track's whole form: the dropout with zspx's three increments bounded
+together, s0 + 0.5 tanh((s3 - s0) / 0.5) (qd_gnn13's tb5, G2's bound); one declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zspx's):
+
+| split | dataset | read | base R@5 | zspxd: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8030 | -0.0019 [-0.0029, -0.0011], WITHIN |
+| L-musique | squad | in-domain | 0.9092 | +0.0026 [+0.0008, +0.0045], WITHIN |
+| L-musique | musique | zero-shot | 0.5073 | +0.0024 [-0.0036, +0.0079], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9074 | -0.0015 [-0.0036, +0.0006], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9351 | -0.0005 [-0.0018, +0.0009], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3204 | -0.0034 [-0.0102, +0.0037], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8039 | +0.0007 [-0.0002, +0.0015], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9129 | -0.0008 [-0.0024, +0.0010], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5901 | -0.0059 [-0.0108, -0.0012], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8547 | -0.0075 [-0.0102, -0.0046], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9312 | +0.0026 [+0.0012, +0.0041], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2914 | -0.0037 [-0.0121, +0.0043], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a9-zspxd.json` and the others, `-hp` for L-hotpotqa):
+
+| split | dataset | zspxd FC@5 | zspxd hit@1 |
+| --- | --- | ---: | ---: |
+| L-musique | metaqa | -0.0016 | -0.0097 |
+| L-musique | squad | +0.0026 | -0.0002 |
+| L-musique | musique | -0.0046 | +0.0223 |
+| L-musique | hotpotqa | -0.0018 | -0.0035 |
+| L-musique | 2wiki | -0.0012 | +0.0046 |
+| L-musique | webqsp | -0.0020 | -0.0027 |
+| L-hotpotqa | metaqa | +0.0004 | -0.0020 |
+| L-hotpotqa | squad | -0.0008 | -0.0003 |
+| L-hotpotqa | musique | -0.0153 | -0.0041 |
+| L-hotpotqa | hotpotqa | -0.0149 | +0.0000 |
+| L-hotpotqa | 2wiki | +0.0064 | +0.0001 |
+| L-hotpotqa | webqsp | +0.0013 | +0.0013 |

@@ -1,0 +1,127 @@
+{
+ "stage": "A8",
+ "declared_in": "docs/A8_QDEPTH_INPUT.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A8's re-call of the arm, or not twelve reads (docs/A8_QDEPTH_INPUT.md, section 4)",
+ "arms": {
+  "zrckpq": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "next_form": "A8e, round 11's own form on both lean models: the prior l_q[depth(v)] added to each row's score (qdepth.QDepth's U, W, b at zero), trained by each model's listwise loss, on zrckp and on zspk before zsp's propagation reads the score; one declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0003,
+    "L-musique squad": -0.0017,
+    "L-musique musique": -0.0052,
+    "L-musique hotpotqa": -0.0026,
+    "L-musique 2wiki": -0.0062,
+    "L-musique webqsp": -0.0066,
+    "L-hotpotqa metaqa": 0.0001,
+    "L-hotpotqa squad": -0.0003,
+    "L-hotpotqa musique": -0.0007,
+    "L-hotpotqa hotpotqa": -0.0002,
+    "L-hotpotqa 2wiki": 0.0006,
+    "L-hotpotqa webqsp": -0.0012
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0003
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0066
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0001
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0012
+    }
+   },
+   "recall_sha256": "283dbf235c3d9e48ef00e18ef386ab1d9ab51aee702bd0133c3d152f567d5d46"
+  },
+  "zspkq": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "next_form": "A8e, round 11's own form on both lean models: the prior l_q[depth(v)] added to each row's score (qdepth.QDepth's U, W, b at zero), trained by each model's listwise loss, on zrckp and on zspk before zsp's propagation reads the score; one declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0006,
+    "L-musique squad": 0.0009,
+    "L-musique musique": 0.0048,
+    "L-musique hotpotqa": 0.0018,
+    "L-musique 2wiki": -0.007,
+    "L-musique webqsp": -0.0022,
+    "L-hotpotqa metaqa": 0.0009,
+    "L-hotpotqa squad": -0.0008,
+    "L-hotpotqa musique": 0.0011,
+    "L-hotpotqa hotpotqa": -0.0057,
+    "L-hotpotqa 2wiki": 0.0051,
+    "L-hotpotqa webqsp": 0.0101
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0006
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0022
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0009
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0101
+    }
+   },
+   "recall_sha256": "238a93d6b0158ed31c3cec18f58eaefac05a1b207947da86cf84ed293091c26f"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckpq": {
+   "call": "WITHIN",
+   "delta": -0.0007
+  },
+  "zspkq": {
+   "call": "WITHIN",
+   "delta": 0.0011
+  }
+ },
+ "za8qd_sha256": "d95322c62bc970d773f00c5a87cea5abc9e0932b7d254a5ffb5fcc7e3c8a4d29",
+ "utc": "2026-10-17T22:15:09Z"
+}

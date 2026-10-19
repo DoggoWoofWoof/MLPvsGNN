@@ -3,6 +3,7 @@
 Declared 17 October 2026, before any number. Code: `scripts/p5c_offset_cols.py` builds the columns, and
 `outputs/mp_unified/zp5c.py` trains and reads the arms. Two arms, one per model. Both read the same four columns,
 computed before either model runs. This is reopening #1 of [VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md).
+Filed 19 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -225,4 +226,92 @@ Per arm, the next form, each in its own file declared before its numbers:
 
 ## 7. Results
 
-Not run yet.
+Filed 19 October 2026 from the host's records (`outputs/p5c/screen-verdict.json`, written 2026-10-18T12:34:32Z; the
+re-calls `outputs/screen/scr-p5c-zrckpo-pair-recall.json` and `-zspko-`, host paths made relative). **Both arms
+NOT_ADOPTED:** neither has a GAIN; the GNN's arm has one LOSS.
+
+- **zrckpo: 0 GAIN, 0 LOSS.** musique in domain (L-hotpotqa, Claim 1's read) rises +0.0062 [+0.0016, +0.0112], WITHIN;
+  webqsp zero-shot on L-hotpotqa falls 0.0121 [-0.0219, -0.0016], filed LOSS and re-called WITHIN against its 0.0233
+  floor.
+- **zspko: 0 GAIN, 1 LOSS.** 2wiki in domain falls 0.0111 on L-hotpotqa [-0.0126, -0.0094].
+- **Beside:** webqsp zero-shot -0.0084 and -0.0121 (MLP), -0.0066 and +0.0040 (GNN); metaqa in domain within 0.0015 on
+  all four fits; musique in domain side by side: the MLP +0.0062, the GNN +0.0008.
+- **The offsets:** the g fits kept epochs 2 to 4; on 2wiki the pt column sits at its clip on 0.18 to 0.19 of the fit
+  carve's rows (0.09 to 0.10 of s1eval's) and mx on 0.14 to 0.16 (0.07); on every other carve pt clips on at most 0.11
+  of the rows (metaqa) and mx on at most 0.085; pt0 and mx0 never clip (tables below).
+
+The learned offsets, read as four fixed columns, gain nothing past the seed null on either model, and cost the GNN 2wiki
+in domain on L-hotpotqa. This closes only this form (two folds; the four columns through a pointwise head). The next
+form, fixed in section 5 for no GAIN: **five folds instead of two**, so each g fits on four fifths of the questions (the
+cross-fit's halved data is the first suspect), on both models; for zspko alone, **P5b's normalised log p as a fifth
+column** (the GNN may read a value normalised over the question's rows; the MLP may not). One declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckpo: delta [95% CI], call | zspko: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | +0.0007 [-0.0002, +0.0015], WITHIN | +0.0014 [+0.0006, +0.0023], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | +0.0003 [-0.0015, +0.0021], WITHIN | +0.0015 [-0.0005, +0.0034], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0017 [-0.0027, +0.0062], WITHIN | -0.0013 [-0.0069, +0.0047], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0001 [-0.0021, +0.0018], WITHIN | -0.0011 [-0.0034, +0.0009], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0006 [-0.0009, +0.0021], WITHIN | -0.0037 [-0.0050, -0.0022], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | -0.0084 [-0.0183, +0.0008], WITHIN | -0.0066 [-0.0156, +0.0021], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0009 [-0.0017, -0.0002], WITHIN | +0.0004 [-0.0005, +0.0014], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0005 [-0.0023, +0.0013], WITHIN | +0.0001 [-0.0019, +0.0021], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | +0.0062 [+0.0016, +0.0112], WITHIN | +0.0008 [-0.0039, +0.0057], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0027 [+0.0001, +0.0056], WITHIN | +0.0020 [-0.0009, +0.0047], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0023 [-0.0039, -0.0007], WITHIN | -0.0111 [-0.0126, -0.0094], **LOSS** |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0121 [-0.0219, -0.0016], WITHIN (filed LOSS) | +0.0040 [-0.0039, +0.0121], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-p5c-zrckpo.json` and the others, `-hp` for L-hotpotqa):
+
+| split | dataset | zrckpo FC@5 | zrckpo hit@1 | zspko FC@5 | zspko hit@1 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0004 | +0.0056 | -0.0002 | +0.0095 |
+| L-musique | squad | +0.0003 | -0.0019 | +0.0015 | -0.0021 |
+| L-musique | musique | +0.0037 | +0.0095 | +0.0054 | -0.0240 |
+| L-musique | hotpotqa | +0.0020 | -0.0054 | -0.0035 | +0.0061 |
+| L-musique | 2wiki | +0.0018 | -0.0027 | -0.0088 | -0.0037 |
+| L-musique | webqsp | -0.0153 | +0.0013 | -0.0073 | -0.0093 |
+| L-hotpotqa | metaqa | -0.0007 | -0.0012 | +0.0003 | -0.0006 |
+| L-hotpotqa | squad | -0.0005 | +0.0002 | +0.0001 | +0.0001 |
+| L-hotpotqa | musique | +0.0074 | -0.0041 | -0.0070 | +0.0029 |
+| L-hotpotqa | hotpotqa | +0.0057 | -0.0105 | +0.0045 | +0.0128 |
+| L-hotpotqa | 2wiki | -0.0064 | -0.0018 | -0.0351 | -0.0035 |
+| L-hotpotqa | webqsp | -0.0120 | +0.0000 | +0.0033 | -0.0073 |
+
+Each g fit (`outputs/p5c/g/<split>_f<fold>.json`):
+
+| split | fold | held out | kept epoch | beta |
+| --- | ---: | --- | ---: | ---: |
+| L-musique | 0 | musique | 2 | 0.0237 |
+| L-musique | 1 | musique | 3 | 0.0811 |
+| L-hotpotqa | 0 | hotpotqa | 4 | 0.1876 |
+| L-hotpotqa | 1 | hotpotqa | 2 | 0.0917 |
+
+Each carve's columns (`outputs/p5c/cols/...`; clipped shares weighted by rows; pt and mx clip at -4 after the scale):
+
+| split | dataset | carve | parts | rows | pt clipped | mx clipped | pt0, mx0 clipped | pt median (parts) |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| L-musique | metaqa | fit | 8 | 12,021,002 | 0.0470 | 0.0287 | 0.0000 | -1.41 to -1.00 |
+| L-musique | metaqa | s1eval | 13 | 19,742,463 | 0.0469 | 0.0277 | 0.0000 | -1.58 to -0.84 |
+| L-musique | squad | fit | 1 | 292,994 | 0.0080 | 0.0064 | 0.0000 | -0.90 |
+| L-musique | squad | s1eval | 1 | 594,063 | 0.0098 | 0.0072 | 0.0000 | -0.87 |
+| L-musique | musique | s1eval | 3 | 5,057,436 | 0.0105 | 0.0056 | 0.0000 | -1.27 to -0.94 |
+| L-musique | hotpotqa | fit | 1 | 557,195 | 0.0043 | 0.0032 | 0.0000 | -1.09 |
+| L-musique | hotpotqa | s1eval | 1 | 693,828 | 0.0057 | 0.0034 | 0.0000 | -1.08 |
+| L-musique | 2wiki | fit | 1 | 628,354 | 0.1765 | 0.1362 | 0.0000 | -1.91 |
+| L-musique | 2wiki | s1eval | 2 | 1,328,715 | 0.0900 | 0.0659 | 0.0000 | -1.61 to -1.61 |
+| L-musique | webqsp | s1eval | 2 | 3,186,165 | 0.0107 | 0.0077 | 0.0000 | -0.83 to -0.80 |
+| L-hotpotqa | metaqa | fit | 8 | 12,021,002 | 0.1071 | 0.0848 | 0.0000 | -1.87 to -1.26 |
+| L-hotpotqa | metaqa | s1eval | 13 | 19,742,463 | 0.1062 | 0.0780 | 0.0000 | -2.54 to -1.10 |
+| L-hotpotqa | squad | fit | 1 | 292,994 | 0.0131 | 0.0088 | 0.0000 | -1.12 |
+| L-hotpotqa | squad | s1eval | 1 | 594,063 | 0.0204 | 0.0149 | 0.0000 | -1.13 |
+| L-hotpotqa | musique | s1eval | 3 | 5,057,436 | 0.0016 | 0.0005 | 0.0000 | -1.22 to -1.10 |
+| L-hotpotqa | musique | s1fit | 6 | 9,623,206 | 0.0038 | 0.0025 | 0.0000 | -1.25 to -1.02 |
+| L-hotpotqa | hotpotqa | s1eval | 1 | 693,828 | 0.0112 | 0.0067 | 0.0000 | -1.08 |
+| L-hotpotqa | 2wiki | fit | 1 | 628,354 | 0.1891 | 0.1560 | 0.0000 | -1.85 |
+| L-hotpotqa | 2wiki | s1eval | 2 | 1,328,715 | 0.0950 | 0.0737 | 0.0000 | -1.53 to -1.50 |
+| L-hotpotqa | webqsp | s1eval | 2 | 3,186,165 | 0.0171 | 0.0119 | 0.0000 | -1.02 to -0.97 |

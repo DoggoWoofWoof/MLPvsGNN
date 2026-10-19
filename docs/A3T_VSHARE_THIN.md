@@ -2,7 +2,7 @@
 
 Declared 18 October 2026, before any number. The next form A3's verdict named for both arms (no GAIN;
 docs/A3_VSHARE_LEAN.md, sections 5 and 7), under docs/SCREENS.md section 3b and docs/VERDICT_AUDIT_2026_10_17.md.
-Code: `outputs/mp_unified/za3t.py`.
+Code: `outputs/mp_unified/za3t.py`. Filed 19 October: both arms NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -152,3 +152,71 @@ before its full run.
 - **memory:** A3's items (trains 4.5 GB, zspku-hp 7 GB; reads 6 GB; compares 4 GB; the rest 2 GB).
 
 **Disk:** about 0.3 GB of fits and reads.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a3t/screen-verdict.json`, written 2026-10-19T04:11:14Z; the
+re-calls `outputs/screen/scr-a3t-zrckpu-pair-recall.json` and `-zspku-`, host paths made relative). **Both arms
+NOT_ADOPTED:** no GAIN and no LOSS after the seed-null re-call.
+
+- **zrckpu: 0 GAIN, 0 LOSS.** On L-hotpotqa, hotpotqa zero-shot rises +0.0046 [+0.0014, +0.0078] and 2wiki in domain
+  falls 0.0052, both WITHIN; webqsp zero-shot falls 0.0142 there [-0.0252, -0.0034], filed LOSS and re-called WITHIN
+  against its 0.0233 floor.
+- **zspku: 0 GAIN, 0 LOSS.** musique zero-shot rises +0.0083 [+0.0027, +0.0142] on L-musique, filed GAIN and re-called
+  WITHIN against its 0.072 floor; webqsp zero-shot rises +0.0088 on L-hotpotqa, WITHIN.
+- **Beside:** metaqa in domain (vshare's one LOSS) moves +0.0001 and -0.0004 (MLP), +0.0020 and +0.0002 (GNN); musique
+  in domain (L-hotpotqa, Claim 1's read) -0.0024 and -0.0007; squad within 0.002 on all four fits. A3, at t in [0.55,
+  0.95], had moved musique zero-shot +0.0095 and +0.0186.
+- **The fits:** on both splits about three quarters of the question visits were eligible and half of those were
+  reweighted, so 0.37 to 0.38 of all visits were; the mean t is 0.140, the middle of [0.08, 0.20] (table below).
+
+The thin range moves no read past the seed null on either model; A3's range had gained nowhere either. This closes only
+this form (A3's draws at t in [0.08, 0.20]). The next form, fixed in section 5 and recorded in the verdict, is **A3v**,
+vshare's two-sided rule in zret's reference: a drawn pool whose own retrieved share is under 0.375 takes t in [0.55,
+0.95], any other pool t in [0.08, 0.20], on both models, in its own declared file. If A3v finds no GAIN either, the
+share idea goes on as an input before it closes: **A3z**, each block's and rrf's whole-pool z-score beside zret's,
+through zero-started columns, on both models.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckpu: delta [95% CI], call | zspku: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | +0.0001 [-0.0007, +0.0009], WITHIN | +0.0020 [+0.0012, +0.0030], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | -0.0005 [-0.0024, +0.0014], WITHIN | +0.0018 [-0.0003, +0.0037], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0017 [-0.0036, +0.0072], WITHIN | +0.0083 [+0.0027, +0.0142], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0014 [-0.0034, +0.0007], WITHIN | -0.0017 [-0.0038, +0.0005], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | +0.0026 [+0.0012, +0.0040], WITHIN | -0.0019 [-0.0033, -0.0005], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | -0.0084 [-0.0188, +0.0021], WITHIN | -0.0027 [-0.0127, +0.0077], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | -0.0004 [-0.0013, +0.0004], WITHIN | +0.0002 [-0.0007, +0.0012], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0003 [-0.0024, +0.0017], WITHIN | -0.0015 [-0.0035, +0.0004], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | -0.0024 [-0.0073, +0.0025], WITHIN | -0.0007 [-0.0063, +0.0049], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0046 [+0.0014, +0.0078], WITHIN | +0.0048 [+0.0018, +0.0078], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0052 [-0.0069, -0.0034], WITHIN | +0.0029 [+0.0014, +0.0044], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | -0.0142 [-0.0252, -0.0034], WITHIN (filed LOSS) | +0.0088 [-0.0012, +0.0184], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a3t-zrckpu.json` and the others, `-hp` for L-hotpotqa); and zrckpv's R@5 delta (A3, its own
+re-call) and zspkv's R@5 delta (A3, its own re-call), on the same read:
+
+| split | dataset | zrckpu FC@5 | zrckpu hit@1 | zspku FC@5 | zspku hit@1 | zrckpv R@5 (A3) | zspkv R@5 (A3) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0002 | -0.0001 | +0.0029 | +0.0092 | -0.0006 | +0.0007 |
+| L-musique | squad | -0.0005 | -0.0024 | +0.0018 | -0.0019 | -0.0008 | -0.0013 |
+| L-musique | musique | +0.0145 | +0.0165 | +0.0165 | +0.0352 | +0.0095 | +0.0186 |
+| L-musique | hotpotqa | -0.0003 | -0.0117 | -0.0049 | -0.0004 | -0.0007 | -0.0003 |
+| L-musique | 2wiki | +0.0078 | -0.0036 | -0.0051 | +0.0004 | +0.0014 | -0.0038 |
+| L-musique | webqsp | -0.0153 | +0.0113 | -0.0020 | -0.0033 | +0.0030 | -0.0103 LOSS |
+| L-hotpotqa | metaqa | -0.0003 | +0.0013 | +0.0004 | -0.0007 | -0.0009 | -0.0018 |
+| L-hotpotqa | squad | -0.0003 | +0.0001 | -0.0015 | -0.0023 | -0.0009 | -0.0014 |
+| L-hotpotqa | musique | +0.0000 | -0.0033 | -0.0054 | -0.0116 | +0.0013 | +0.0072 |
+| L-hotpotqa | hotpotqa | +0.0092 | -0.0042 | +0.0103 | -0.0012 | -0.0035 | -0.0009 |
+| L-hotpotqa | 2wiki | -0.0149 | -0.0049 | +0.0087 | -0.0040 | -0.0000 | -0.0014 |
+| L-hotpotqa | webqsp | -0.0120 | +0.0113 | +0.0086 | -0.0053 | -0.0128 | -0.0086 |
+
+The fits (stamped in each fit's screen.json; the two arms drew the same questions and t's, A3's generator):
+
+| fit | question visits (8 epochs) | eligible | reweighted | share reweighted | mean t |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| L-musique | 189,392 | 142,056 | 71,020 | 0.375 | 0.1402 |
+| L-hotpotqa | 178,760 | 131,896 | 65,875 | 0.369 | 0.1403 |

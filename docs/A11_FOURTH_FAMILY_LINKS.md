@@ -2,7 +2,7 @@
 
 Declared 17 October 2026, before any number. The eleventh reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2,
 row 11), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za11p4.py` (the build, the arm, the screen and
-the call). Not run yet.
+the call). Filed 19 October: zspk4 NOT_ADOPTED (section 7).
 
 ## 1. Why this, now
 
@@ -138,3 +138,71 @@ No model change is adopted on today's pools (the user's rule of 13 October).
     memory: trains 4 GB (-hp 12 GB), reads 5.5 GB;
   - the trains wait on their split's fit-carve builds, the reads on the s1eval builds;
   - 2 compares, the pair, the re-call and the verdict.
+
+## 7. Results
+
+Filed 19 October 2026 from the host's records (`outputs/a11/screen-verdict.json`, written 2026-10-18T07:33:42Z; the
+re-calls `outputs/screen/scr-a11-zspk4-pair-recall.json`, host paths made relative). **zspk4 NOT_ADOPTED:** no GAIN, and
+one LOSS.
+
+- **zspk4: 0 GAIN, 1 LOSS.** webqsp zero-shot falls 0.0137 on L-musique [-0.0217, -0.0054]. On a KB zspk4 is zspk by
+  rule (no passage, so no fourth-family edge): this loss comes from what the fit's passage datasets taught the shared
+  weights through the new family. On L-hotpotqa the same read rises +0.0058, WITHIN.
+- **Beside:** metaqa in domain (also zspk by rule) +0.0014 and -0.0003; musique in domain (L-hotpotqa, Claim 1's read)
+  +0.0047; hotpotqa zero-shot +0.0045; all WITHIN.
+- **The builds:** the phrase links give each passage row 2.2 to 2.7 edges on hotpotqa and 2wiki, 5 on squad and 7 on
+  musique; about half the rows on hotpotqa and 2wiki have a fourth-family neighbour, and over four fifths on squad and
+  musique (table below).
+
+This closes only this form (the fourth family in zspk's one step). The next form, fixed in section 5 and recorded in the
+verdict, is **A11x**, the fourth family in all three of zspx's steps (the adopted GNN, where depth paid), in its own
+declared file.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zspk's):
+
+| split | dataset | read | base R@5 | zspk4: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8009 | +0.0014 [+0.0007, +0.0022], WITHIN |
+| L-musique | squad | in-domain | 0.9114 | +0.0009 [-0.0012, +0.0029], WITHIN |
+| L-musique | musique | zero-shot | 0.5012 | +0.0033 [-0.0023, +0.0090], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9080 | -0.0016 [-0.0034, +0.0005], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9383 | -0.0012 [-0.0024, +0.0000], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3229 | -0.0137 [-0.0217, -0.0054], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | -0.0003 [-0.0012, +0.0006], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9135 | -0.0014 [-0.0034, +0.0005], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5754 | +0.0047 [-0.0006, +0.0099], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8499 | +0.0045 [+0.0014, +0.0073], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9333 | +0.0024 [+0.0008, +0.0040], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2680 | +0.0058 [-0.0043, +0.0154], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a11-zspk4.json` and the others, `-hp` for L-hotpotqa):
+
+| split | dataset | zspk4 FC@5 | zspk4 hit@1 |
+| --- | --- | ---: | ---: |
+| L-musique | metaqa | +0.0018 | +0.0074 |
+| L-musique | squad | +0.0009 | -0.0019 |
+| L-musique | musique | +0.0058 | +0.0041 |
+| L-musique | hotpotqa | -0.0047 | -0.0038 |
+| L-musique | 2wiki | -0.0017 | -0.0058 |
+| L-musique | webqsp | -0.0086 | -0.0160 |
+| L-hotpotqa | metaqa | +0.0002 | -0.0025 |
+| L-hotpotqa | squad | -0.0014 | -0.0008 |
+| L-hotpotqa | musique | +0.0004 | -0.0012 |
+| L-hotpotqa | hotpotqa | +0.0088 | +0.0011 |
+| L-hotpotqa | 2wiki | +0.0059 | -0.0052 |
+| L-hotpotqa | webqsp | +0.0053 | -0.0060 |
+
+The builds (`outputs/a11/links/...`; each carve's parts summed; metaqa and webqsp hold no passages, so no build):
+
+| dataset | carve | rows | edges | edges per row | rows with a fourth-family neighbour | edges per question 5% / 50% / 95% (first part) |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| squad | fit | 292,994 | 1,490,086 | 5.09 | 0.812 | 60 / 211 / 594.5 |
+| squad | s1eval | 594,063 | 3,153,150 | 5.31 | 0.807 | 60 / 224 / 602.8 |
+| musique | s1eval | 5,057,436 | 37,569,082 | 7.43 | 0.847 | 8227.2 / 14008 / 24564.8 |
+| musique | s1fit | 9,623,206 | 66,319,330 | 6.89 | 0.839 | 7883 / 12742 / 20206.8 |
+| hotpotqa | fit | 557,195 | 1,488,542 | 2.67 | 0.513 | 38 / 190 / 666 |
+| hotpotqa | s1eval | 693,828 | 1,786,436 | 2.57 | 0.507 | 36 / 180 / 652 |
+| 2wiki | fit | 628,354 | 1,371,712 | 2.18 | 0.446 | 42 / 180 / 584 |
+| 2wiki | s1eval | 1,328,715 | 3,494,692 | 2.63 | 0.493 | 52 / 218 / 702 |
