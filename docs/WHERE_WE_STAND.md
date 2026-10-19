@@ -638,7 +638,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   ([A2XMX_ZTOP50_ADOPTED.md](A2XMX_ZTOP50_ADOPTED.md)), declared after A2xm's filing: ztop50's top-50 reference on the
   adopted arms (R1's zrckpr and G5's zspx). Then A4he ([A4HE_SEMB_DROPOUT.md](A4HE_SEMB_DROPOUT.md)), declared
   after A4hs's filing: block dropout at 0.1 on SEMB alone, the chain term going with it, the eight fixed blocks kept,
-  on the lean pair. After P1g-c's fits, behind its gate: A5cp
+  on the lean pair. Then A3z ([A3Z_WHOLE_POOL_Z.md](A3Z_WHOLE_POOL_Z.md)), declared after A3v's filing: step 1's
+  whole-pool z-scores beside zret's, through zero-started columns, on the lean pair. After P1g-c's fits, behind its
+  gate: A5cp
   ([A5CP_P1GB_POOLS.md](A5CP_P1GB_POOLS.md)), A5c's coupled offsets fitted again on P1g-b's pools, against P1g-b's own
   fits of the lean pair; then A3vp ([A3VP_P1GB_POOLS.md](A3VP_P1GB_POOLS.md)), A3v's two-sided rule on the MLP fitted
   again on P1g-b's pools, against P1g-b's own fit of zrckp.
@@ -665,7 +667,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
     vshare's two-sided rule, A3's rich range in pools under a 0.375 retrieved share and A3t's thin one elsewhere. The
     MLP gains webqsp zero-shot on L-musique (+0.0112, just past its 0.0102 floor), with no LOSS; the GNN's musique
     zero-shot +0.0243 stays within its floor. Next: zrckpy refitted on P1g-b's pools (A3vp, declared and queued), then
-    its full run; for the GNN, A3z (the whole-pool z-scores as zero-started inputs, on both models).
+    its full run; for the GNN, A3z (declared and queued; the whole-pool z-scores as zero-started inputs, on both
+    models).
   - **A4h NOT_ADOPTED, both arms** ([A4H_BLOCK_DROPOUT_HALF.md](A4H_BLOCK_DROPOUT_HALF.md)): block dropout at 0.1. The
     MLP's musique zero-shot loss more than halves (-0.0530 against A4's -0.1195, now WITHIN); the GNN keeps its LOSS
     there (-0.1143), and its webqsp zero-shot GAIN moves to L-hotpotqa (+0.0248). Next form: A4hs, the dropout on the
