@@ -860,9 +860,9 @@ def main(argv=None):
                          "(--light-re), so the shared drive never fills (9 Oct 22:26 it reached 0)")
     ap.add_argument("--disk-hard-gb", type=float, default=15.0,
                     help="send nothing at all below this free")
-    ap.add_argument("--light-re", default=r"-(train|read|compare|pair|recall|grade|gate|base|pools|adopt|copy)\d*(-|$)",
+    ap.add_argument("--light-re", default=r"-(train|read|compare|pair|recall|grade|gate|base|pools|adopt|copy|lav|la|release)\d*(-|$)",
                     help="items whose names match write only MBs (fits, reads, records, pool lists, hard links, the "
-                         "bases' copies): they go on below the floor")
+                         "bases' copies; 19 Oct: look verifications, aliases, releases): they go on below the floor")
     ap.add_argument("--adopt-h", type=float, default=48.0)
     ap.add_argument("--queue-gpu", type=int, default=0)
     ap.add_argument("--dry", action="store_true")

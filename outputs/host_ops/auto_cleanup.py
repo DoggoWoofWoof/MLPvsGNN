@@ -22,6 +22,13 @@ carves and six-base for the qd/lean families, the S6 builds and caches for chain
 the source of a script such a job runs or imports, its imports followed (source_pins, 17 October), and as warm when it was read or
 written within the age limit (NTFS last access, which this drive keeps, and mtime) or cold.
 
+A release (outputs/host_ops/release/<name>.json, written by `release`; 19 October) gives up the family and source pins
+on the files of its folders that existed when it was written (created and modified before it), optionally only on some
+classes ('hub': only what HF holds byte for byte). A queued or running job that names a released file, or a folder above
+it, in its command or inputs still protects it. Below --floor-gb a released file goes whatever its age. A stage's last
+item releases the builds that only it read (P1g-c's rebuilt looks, once their link, chain and residual builds ended),
+so a redo that needs more than the drive's free space fits.
+
 A file is removed only if it is hub, regen or smoke, unreferenced, and cold for the limit that the drive's free space
 sets: free >= --ideal-gb (200): smoke older than --smoke-h and other files untouched for --idle-days (14); free below
 --ideal-gb: untouched for --cold-days (3); free below --floor-gb (100): untouched for --urgent-days (1); free below
@@ -55,6 +62,8 @@ KEEP_DIRS = ("outputs/host_ops/", "outputs/host_cleanup/", "outputs/host_archive
              "outputs/host_checks/")
 MIN_BYTES = 1 << 20
 GRACE_H = 48.0     # 19 Oct: a failed item and the items dropped behind it keep their folders this long (feeder_refs)
+RELEASE_DIR = "outputs/host_ops/release"   # 19 Oct: the release records (releases, release)
+FOLDER = re.compile(r"(?:outputs|logs)/(?:[A-Za-z0-9_.@=+-]+/)+")
 # host_sync.py's REGEN: builds and caches that committed code rebuilds from the mirror
 REGEN = re.compile(r"^outputs/mp_unified/(lean/cs\d+e?-[a-z0-9]+(-[a-z0-9]+)*\.npz|lean/cs\d+[a-z]*tmp_[^/]+/|"
                    r"look/[^/]+/[^/]+/chunks/|cache/)|/__pycache__/|"
@@ -274,6 +283,65 @@ def referenced(rel: str, refs: set[str], prefixes: list[str]) -> bool:
     return any(rel.startswith(p) for p in prefixes)
 
 
+# ── releases: folders whose family and source pins are given up ─────────────
+
+
+def valid_folder(f) -> bool:
+    """A folder under outputs/ or logs/ ('/' at the end), with no '.' or '..' part, not a kept folder nor above one."""
+    return (isinstance(f, str) and bool(FOLDER.fullmatch(f)) and not {".", ".."} & set(f.split("/"))
+            and not f.startswith(KEEP_DIRS) and not any(k.startswith(f) for k in KEEP_DIRS))
+
+
+def releases(ws: Path) -> list[tuple[str, tuple[str, ...], frozenset | None, int]]:
+    """The release records as (name, folders, classes or None for every class, before_ns). A malformed record, or a
+    folder in one that `release` would refuse, releases nothing."""
+    out = []
+    d = ws / RELEASE_DIR
+    for p in sorted(d.glob("*.json")) if d.is_dir() else []:
+        try:
+            r = json.loads(p.read_text(encoding="utf-8"))
+            fs = tuple(f for f in r["folders"] if valid_folder(f))
+            cl = r.get("classes")
+            out.append((p.stem, fs, frozenset(cl) if cl else None, int(r["before_ns"])))
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+    return out
+
+
+def born_ns(st) -> int:
+    """The later of a file's creation (st_birthtime on Windows; the inode change elsewhere) and its modification: a file
+    restored with its old mtime, or rebuilt, after a release is not released."""
+    b = getattr(st, "st_birthtime_ns", None)
+    return max(st.st_mtime_ns, b if b is not None else st.st_ctime_ns)
+
+
+def released(rel: str, born: int, cls: str, rules) -> bool:
+    return any(fs and born <= b and (c is None or cls in c) and rel.startswith(fs) for _, fs, c, b in rules)
+
+
+def release(ws: Path, name: str, folders: list[str], classes: list[str] | None, why: str) -> Path:
+    """Write outputs/host_ops/release/<name>.json (the module's doc says what a release does)."""
+    if not re.fullmatch(r"[a-z0-9][a-z0-9_.-]{0,79}", name or ""):
+        raise SystemExit(f"--name {name!r}: lower-case letters, digits, '_', '.' and '-'")
+    fs = [f.replace("\\", "/").strip().rstrip("/") + "/" for f in folders]
+    bad = [f for f in fs if not valid_folder(f)]
+    if not fs or bad:
+        raise SystemExit(f"--folder {bad or folders}: folders under outputs/ or logs/, none of them kept or above a kept "
+                         f"folder")
+    cl = sorted(set(classes or ()))
+    if set(cl) - {"hub", "regen", "smoke"}:
+        raise SystemExit(f"--classes {cl}: hub, regen or smoke (keep and unarchived files are never removed)")
+    if not (why or "").strip():
+        raise SystemExit("--why: say why nothing queued reads these folders")
+    p = ws / RELEASE_DIR / f"{name}.json"
+    rec = {"name": name, "folders": fs, "classes": cl or None, "why": why.strip(),
+           "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "before_ns": time.time_ns()}
+    atomic_write(p, json.dumps(rec, indent=1) + "\n")
+    print(f"released {', '.join(fs)}{' (' + ', '.join(cl) + ' only)' if cl else ''} -> {p.relative_to(ws).as_posix()}",
+          flush=True)
+    return p
+
+
 # ── host: the walk ──────────────────────────────────────────────────────────
 
 
@@ -342,7 +410,8 @@ def cycle(a, ws: Path) -> dict:
     pins = sorted({d for rx_, ds in PINS if any(rx_.search(c) for c in c1 + c2) for d in ds})
     src_pins, n_src = source_pins(ws, c1 + c2)
     pins = sorted(set(pins) | set(src_pins))
-    prefixes = [x + "/" for x in refs] + pins
+    named = [x + "/" for x in refs]
+    rules = releases(ws)
     if free_gb < a.emergency_gb:   # 9 Oct: the drive filled within one 3 h cycle; below this, no age limit
         tier, limit_d = "emergency", 0.0
     elif free_gb < a.floor_gb:
@@ -357,7 +426,8 @@ def cycle(a, ws: Path) -> dict:
     for rel, st in walk(ws):
         cls, tag = classify(rel, st, hub)
         idle_d = (now - max(st.st_atime, st.st_mtime)) / 86400
-        ref = referenced(rel, refs, prefixes)
+        rls = bool(rules) and released(rel, born_ns(st), cls, rules)
+        ref = referenced(rel, refs, named) or (not rls and any(rel.startswith(p) for p in pins))
         d = folder(rel)
         r = rows[d]
         r["files"] += 1
@@ -365,11 +435,14 @@ def cycle(a, ws: Path) -> dict:
         r[cls] += st.st_size
         if ref:
             r["referenced"] += st.st_size
+        if rls:
+            r["released"] += st.st_size
         if idle_d >= a.cold_days:
             r["cold"] += st.st_size
         if cls == "keep" or cls == "unarchived" or ref:
             continue
-        ok = (idle_d * 24 >= a.smoke_h) if cls == "smoke" else (idle_d >= limit_d)
+        lim = 0.0 if rls and tier in ("urgent", "emergency") else limit_d
+        ok = (idle_d * 24 >= a.smoke_h) if cls == "smoke" else (idle_d >= lim)
         if ok:
             r["removable"] += st.st_size
             cands.append((st.st_size, rel, st.st_mtime_ns, cls, tag, round(idle_d, 2)))
@@ -411,7 +484,9 @@ def cycle(a, ws: Path) -> dict:
            "removed": len(removed), "removed_gb": round(sum(x[1] for x in removed) / GB, 3),
            "by_class_gb": {c: round(sum(x[1] for x in removed if x[3] == c) / GB, 3) for c in ("hub", "regen", "smoke")},
            "failed": failed, "left_for_space": skipped_full, "pending_items": len(pending), "active_jobs": active,
-           "pinned": pins, "scripts_read_for_pins": n_src, "files": removed}
+           "pinned": pins, "scripts_read_for_pins": n_src,
+           "released": {n: {"folders": list(fs), "classes": sorted(c) if c else None} for n, fs, c, _ in rules},
+           "files": removed}
     if a.delete and removed:
         atomic_write(ws / "outputs/host_cleanup" / f"deleted_auto_{stamp}.json", json.dumps(rec, indent=1))
     elif not a.delete:
@@ -420,13 +495,13 @@ def cycle(a, ws: Path) -> dict:
     for d, r in sorted(rows.items(), key=lambda kv: -kv[1]["bytes"]):
         cat.append({"folder": d, "files": r["files"], "gb": round(r["bytes"] / GB, 3),
                     **{k: round(r[k] / GB, 3) for k in ("hub", "regen", "smoke", "unarchived", "keep", "cold",
-                                                        "referenced", "removable")},
+                                                        "referenced", "released", "removable")},
                     "why": why_for(d)})
     tot = {k: round(sum(r[k] for r in rows.values()) / GB, 2) for k in
            ("bytes", "hub", "regen", "smoke", "unarchived", "keep", "cold", "referenced", "removable")}
     doc = {"utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "ws": str(ws), "drive_free_gb": rec["free_gb_after"],
            "tier": tier, "age_limit_days": limit_d, "total_gb": tot, "pending_items": len(pending),
-           "active_jobs": active, "pinned": pins, "folders": cat}
+           "active_jobs": active, "pinned": pins, "released": rec["released"], "folders": cat}
     atomic_write(ws / "outputs/host_ops/host_catalogue.json", json.dumps(doc, indent=1))
     md = [f"# mpr host catalogue ({doc['utc']})", "",
           f"Drive free {rec['free_gb_before']} GB before this cycle, {rec['free_gb_after']} GB after "
@@ -435,6 +510,9 @@ def cycle(a, ws: Path) -> dict:
           f"rebuildable {tot['regen']}, smoke {tot['smoke']}, not yet archived {tot['unarchived']}, kept text/small "
           f"{tot['keep']}; cold {tot['cold']}, named by or pinned for queued or running jobs {tot['referenced']}.", "",
           f"Pinned while their job families are queued or running: {', '.join(pins) or 'none'}.", "",
+          f"Released (pins given up; below the floor they go at any age): "
+          f"{'; '.join(n + ': ' + ', '.join(fs) + (' (' + ', '.join(sorted(c)) + ')' if c else '') for n, fs, c, _ in rules) or 'none'}.",
+          "",
           "| folder | GB | on HF | rebuildable | not archived | cold | in use | removable | why it is here |",
           "|---|---:|---:|---:|---:|---:|---:|---:|---|"]
     for c in cat:
@@ -504,9 +582,75 @@ def selftest() -> int:
         assert not ended_badly(["done", 0]) and not ended_badly(None) and not ended_badly(["done"])
     finally:
         shutil.rmtree(ws, ignore_errors=True)
+    # releases (19 Oct), through cycle's dry run on a toy workspace; the tiers are forced by the thresholds
+    ws = Path(tempfile.mkdtemp(prefix="auto_cleanup_rel_"))
+    rx = Path(tempfile.mkdtemp(prefix="auto_cleanup_rx_"))
+    try:
+        (ws / "outputs/mp_unified").mkdir(parents=True)
+        (ws / "outputs/mp_unified/look_toy.py").write_text('LOOK = "outputs/p1gb/look"\n', encoding="utf-8")
+        items = ws / "outputs/host_ops/hostfeed_items.txt"
+        lines = ["line|x||p-look|1|1|outputs/mp_unified/look_toy.py|python outputs/mp_unified/look_toy.py --x",
+                 "line|x||p-named|1|1|scripts/n.py|python scripts/n.py --in outputs/p1gb/look/a/named.npz"]
+        atomic_write(items, "\n".join(lines) + "\n")
+        fresh, h_l12 = "outputs/p1gb/look/a/c0.npz", "outputs/mp_approx_l12/carves/h.npz"
+        old_files = ("outputs/p1gb/look/a/named.npz", "outputs/p1gb/look/b/c0.npz", h_l12,
+                     "outputs/mp_approx_l12/cache/r.npz")
+        blob = b"\0" * (MIN_BYTES + 1)
+        two_days = time.time_ns() - 2 * 86400 * 10**9
+        for f in (fresh,) + old_files:
+            (ws / f).parent.mkdir(parents=True, exist_ok=True)
+            (ws / f).write_bytes(blob)
+            if f != fresh:
+                os.utime(ws / f, ns=(two_days, two_days))
+        hst = (ws / h_l12).stat()
+        atomic_write(ws / "outputs/host_ops/hub_index.json",
+                     json.dumps({"files": [[h_l12, hst.st_size, hst.st_mtime_ns, "o-toy"]]}))
+        base = dict(delete=False, emergency_gb=0.0, floor_gb=1e12, ideal_gb=1e12, urgent_days=1.0, cold_days=3.0,
+                    idle_days=14.0, smoke_h=24.0, rx_root=str(rx), grace_h=GRACE_H)
+
+        def gone(**kw):
+            rec = cycle(argparse.Namespace(**{**base, **kw}), ws)
+            return sorted(x[0] for x in rec["files"])
+        assert gone() == [], gone()                  # urgent: each file is pinned (family or source) or named
+        release(ws, "toy-look-a", ["outputs/p1gb/look/a"], None, "toy: the look's readers ended")
+        release(ws, "toy-l12", ["outputs/mp_approx_l12/"], ["hub"], "toy: a closed track's archived copy")
+        time.sleep(0.1)                              # past the coarse clock that stamps a file's creation
+        late = ws / "outputs/p1gb/look/a/late.npz"   # rebuilt, or restored with an old mtime, after the release
+        late.write_bytes(blob)
+        os.utime(late, ns=(10**9, 10**9))
+        assert gone() == sorted([fresh, h_l12]), gone()   # a released file goes at any age below the floor
+        assert gone(ideal_gb=0.0, floor_gb=0.0) == [], gone(ideal_gb=0.0, floor_gb=0.0)   # above it, the idle limit
+        assert gone(floor_gb=1e12, emergency_gb=1e12) == sorted([fresh, h_l12])
+        atomic_write(items, "")                      # nothing queued: the old and the released go, not the fresh
+        assert gone() == sorted(set(old_files) | {fresh, late.relative_to(ws).as_posix()}), gone()
+        cat = json.loads((ws / "outputs/host_ops/host_catalogue.json").read_text(encoding="utf-8"))
+        assert set(cat["released"]) == {"toy-look-a", "toy-l12"} and cat["released"]["toy-l12"]["classes"] == ["hub"]
+        for bad in (["outputs/"], ["outputs"], ["outputs/host_ops/x"], ["outputs/../x"], ["outputs/./x"], ["c:/x"],
+                    ["x/outputs/y"], []):
+            try:
+                release(ws, "bad", bad, None, "x")
+            except SystemExit:
+                continue
+            raise AssertionError(f"release took {bad}")
+        for kw in ({"name": "Bad Name"}, {"classes": ["unarchived"]}, {"classes": ["keep"]}, {"why": " "}):
+            try:
+                release(ws, **{"name": "ok", "folders": ["outputs/x"], "classes": None, "why": "x", **kw})
+            except SystemExit:
+                continue
+            raise AssertionError(f"release took {kw}")
+        (ws / RELEASE_DIR / "broken.json").write_text("{", encoding="utf-8")
+        (ws / RELEASE_DIR / "wide.json").write_text(json.dumps({"folders": ["outputs/"], "before_ns": time.time_ns()}),
+                                                     encoding="utf-8")
+        assert {n for n, fs, _, _ in releases(ws) if fs} == {"toy-look-a", "toy-l12"}, releases(ws)
+    finally:
+        shutil.rmtree(ws, ignore_errors=True)
+        shutil.rmtree(rx, ignore_errors=True)
     print(f"auto_cleanup selftest: pending, running (active or launched within 6 h), failed within the grace and "
           f"dropped behind a failure within the grace (through a chain of drops) keep their folders; done items, old "
-          f"failures and items dropped behind them do not; grace 0 is the rule before 19 Oct; a cycle of drops ends "
+          f"failures and items dropped behind them do not; grace 0 is the rule before 19 Oct; a cycle of drops ends; "
+          f"a release gives up the family and source pins on its folders' files from before it (its classes only), a "
+          f"named file stays, below the floor a released file goes at any age and above it waits for the idle limit, a "
+          f"file born after the release stays, and release refuses kept, wide or outside folders "
           f"({now_s() - t0:.2f}s)", flush=True)
     return 0
 
@@ -533,6 +677,11 @@ def main(argv=None) -> int:
     r.add_argument("--grace-h", type=float, default=GRACE_H,
                    help="a failed item and the items dropped behind it keep their folders this long after its launch")
     sub.add_parser("selftest")
+    rl = sub.add_parser("release", help="give up the family and source pins on folders that nothing queued reads")
+    rl.add_argument("--name", required=True, help="the record's name: outputs/host_ops/release/<name>.json")
+    rl.add_argument("--folder", action="append", required=True, help="a folder under outputs/ or logs/ (repeat)")
+    rl.add_argument("--classes", default="", help="comma list of hub, regen, smoke (default: every class)")
+    rl.add_argument("--why", required=True)
     a = ap.parse_args(argv)
     if a.cmd == "selftest":
         return selftest()
@@ -543,6 +692,9 @@ def main(argv=None) -> int:
     ws = Path.cwd().resolve()
     if not (ws / "outputs").is_dir() or not str(ws).replace("\\", "/").lower().endswith("projects/mpr/ws"):
         raise SystemExit(f"{ws} is not mpr's rx workspace")
+    if a.cmd == "release":
+        release(ws, a.name, a.folder, [c for c in a.classes.split(",") if c], a.why)
+        return 0
     while True:
         try:
             cycle(a, ws)
