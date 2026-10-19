@@ -610,7 +610,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   17 October ([VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md)) reopens the idea. Its next form is P5c:
   g's scores as a fixed input to both models, where a trained head can learn to ignore them on musique.
 
-## 7. Running now (19 October, 20:15)
+## 7. Running now (20 October, 00:30)
 
 - **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
   KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
@@ -622,10 +622,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   301905a). The redo ([P1GC_LOOK_ALIAS.md](P1GC_LOOK_ALIAS.md), section 6) rebuilds the 177 look shards on the CPU,
   verifies and aliases them, then the links, chains, KT columns and G3's residuals; the six fits run behind a gate on
   those arrays.
-- **On the card:** the eight next forms declared in 2fff761, before any number; A2xm, A3v and A4hs are filed below.
-  On the GPU now, on both lean models: A8e ([A8E_QDEPTH_PRIOR.md](A8E_QDEPTH_PRIOR.md)), the depth prior added to each
-  row's score.
-  Then four on zspx, the adopted GNN: A9t ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)), edge-family dropout with
+- **On the card:** the eight next forms declared in 2fff761, before any number; A2xm, A3v, A4hs and A8e are filed
+  below. On the GPU now, and next, four on zspx, the adopted GNN: A9t ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)), edge-family dropout with
   the increments bounded; A10e ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
   ([A13X_BRIDGE_HEAD_ZSPX.md](A13X_BRIDGE_HEAD_ZSPX.md)), zbr's bridge head before zspx's first step; A12x
   ([A12X_GSURG_ZSPX.md](A12X_GSURG_ZSPX.md)), gradient surgery. Five more, declared after the filings below: A11x
@@ -649,6 +647,17 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   - **Made again.** P5a's node tables, which P5c5's builds read, were a trained fit that no archive held. P5a's own
     code made them again (`scripts/p5a_restore.py`), and each went back only on a match with its record. All six are
     back, each matching its record bit for bit: squad, metaqa, musique and webqsp first, then hotpotqa and 2wiki.
+  - **The card was shared.** From the evening of 19 October another workload on the host held 10 to 16 GB of the
+    card, and two of our runs beside it went 7 to 60 times slower. The feeder now sends a GPU run back unsent when
+    the card cannot hold it at its measured peak (aa3cf83), and CPU work no longer waits for a GPU run the card has
+    no room for (d8b3325). The card had room again from 00:00 on 20 October.
+- **Filed on 20 October:**
+  - **A8e NOT_ADOPTED, both arms** ([A8E_QDEPTH_PRIOR.md](A8E_QDEPTH_PRIOR.md)): round 11's depth prior learned
+    with each model and added to every row's score. No GAIN and no LOSS on either model under the seed null. The
+    GNN's two interval gains sit within their floors: musique zero-shot on L-musique +0.0084 (floor 0.072) and
+    webqsp zero-shot on L-hotpotqa +0.0133 (floor 0.0233), both larger than at A8 (+0.0048, +0.0101). Next form:
+    A8ex, the same prior on the adopted arms (G5's zspx, R1's zrckpr), on both models; the depth prior closes as
+    a model term only if A8ex finds no GAIN either.
 - **Filed on 19 October:**
   - **A2h NOT_ADOPTED, all four arms** ([A2H_HALVES_APART.md](A2H_HALVES_APART.md)): A2's rank half and top-50 half
     apart. Each half alone moves musique zero-shot as far as A2's whole form or further (MLP +0.0128 and +0.0198, GNN

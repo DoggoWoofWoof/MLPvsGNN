@@ -1,8 +1,9 @@
 # A8e: round 11's depth prior, inside both models
 
-Declared 19 October 2026, before any number. The next form A8's verdict named for both arms
-(docs/A8_QDEPTH_INPUT.md, section 5), under docs/SCREENS.md section 3b and docs/VERDICT_AUDIT_2026_10_17.md (section 2,
-row 8). Code: `outputs/mp_unified/za8e.py`. Not run yet.
+Declared 19 October 2026, before any number. The next form A8's verdict named for both arms (docs/A8_QDEPTH_INPUT.md,
+section 5), under docs/SCREENS.md section 3b and docs/VERDICT_AUDIT_2026_10_17.md (section 2, row 8). Code:
+`outputs/mp_unified/za8e.py`. Filed 20 October: both arms NOT_ADOPTED with no GAIN and no LOSS (zspkqe's two filed
+GAINs, musique and webqsp zero-shot, fall within their seed-null floors); the next form is A8ex (section 5).
 
 ## 1. Why this, now
 
@@ -186,4 +187,65 @@ hop, rows with two first hops) and P1c3's toy KT input. It checks:
 
 ## 7. Results
 
-Not run yet.
+Filed 20 October 2026 from the host's records (`outputs/a8e/screen-verdict.json`, written 2026-10-19T18:43:35Z; the
+re-calls `outputs/screen/scr-a8e-zrckpqe-pair-recall.json` and `-zspkqe-`, host paths made relative). **Both arms
+NOT_ADOPTED, with no GAIN:** learned with each model and added to every row's score, round 11's depth prior moves no
+read past the seed null on either model; the GNN's two interval gains, musique and webqsp zero-shot, sit within their
+floors.
+
+- **zrckpqe: 0 GAIN, 0 LOSS.** Every read stays within its floor. Three intervals exclude 0, all falls in domain and all
+  below their floors: hotpotqa on L-musique -0.0068 [-0.0091, -0.0045] (floor 0.0075), and 2wiki on L-musique -0.0058
+  [-0.0075, -0.0041] and on L-hotpotqa -0.0040 [-0.0055, -0.0023]. musique zero-shot on L-musique moves +0.0031
+  [-0.0020, +0.0083]; webqsp zero-shot moves +0.0024 and +0.0030.
+- **zspkqe: 0 GAIN, 0 LOSS.** Two reads were GAINs by their pairs' intervals and are WITHIN under the seed null: musique
+  zero-shot on L-musique, +0.0084 [+0.0023, +0.0147] against its 0.072 floor, and webqsp zero-shot on L-hotpotqa,
+  +0.0133 [+0.0030, +0.0232] against 0.0233, with FC@5 +0.0120. hotpotqa zero-shot on L-hotpotqa rises +0.0053 [+0.0023,
+  +0.0083] (floor 0.02). The largest fall is musique in domain on L-hotpotqa, -0.0072 [-0.0127, -0.0014], just inside
+  its 0.0075 floor.
+- **Beside: the GNN's zero-shot moves grew from A8's.** With the prior as a fixed input (A8), zspkq moved webqsp
+  zero-shot on L-hotpotqa +0.0101 and musique zero-shot on L-musique +0.0048; learned with the model, the moves are
+  +0.0133 and +0.0084. hotpotqa zero-shot on L-hotpotqa turns from -0.0057 to +0.0053. The MLP's 2wiki fall on L-musique
+  stays (-0.0062 at A8, -0.0058 now).
+
+Neither arm is adopted. This closes only this form: round 11's depth prior learned inside zrckp and zspk and added to
+each row's score (docs/SCREENS.md section 3b). The next form, fixed in section 5 and recorded in the verdict, is A8ex:
+the same prior on the adopted arms, G5's zspx (added before its propagation reads the score) and R1's zrckpr (added to
+its final score), on both models, in its own declared file. The depth prior closes as a model term only if A8ex finds no
+GAIN either.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zrckp's / zspk's):
+
+| split | dataset | read | base R@5 | zrckpqe: delta [95% CI], call | zspkqe: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 / 0.8009 | -0.0000 [-0.0011, +0.0010], WITHIN | +0.0008 [-0.0002, +0.0018], WITHIN |
+| L-musique | squad | in-domain | 0.9116 / 0.9114 | -0.0008 [-0.0026, +0.0011], WITHIN | +0.0003 [-0.0017, +0.0023], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 / 0.5012 | +0.0031 [-0.0020, +0.0083], WITHIN | +0.0084 [+0.0023, +0.0147], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 / 0.9080 | -0.0068 [-0.0091, -0.0045], WITHIN | -0.0010 [-0.0031, +0.0011], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 / 0.9383 | -0.0058 [-0.0075, -0.0041], WITHIN | -0.0042 [-0.0057, -0.0027], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3627 / 0.3229 | +0.0024 [-0.0087, +0.0135], WITHIN | -0.0007 [-0.0100, +0.0080], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8044 / 0.8040 | +0.0002 [-0.0007, +0.0011], WITHIN | -0.0008 [-0.0018, +0.0002], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 / 0.9135 | -0.0005 [-0.0022, +0.0014], WITHIN | -0.0024 [-0.0045, -0.0004], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 / 0.5754 | +0.0002 [-0.0046, +0.0049], WITHIN | -0.0072 [-0.0127, -0.0014], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 / 0.8499 | +0.0003 [-0.0026, +0.0033], WITHIN | +0.0053 [+0.0023, +0.0083], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 / 0.9333 | -0.0040 [-0.0055, -0.0023], WITHIN | +0.0037 [+0.0021, +0.0053], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 / 0.2680 | +0.0030 [-0.0080, +0.0136], WITHIN | +0.0133 [+0.0030, +0.0232], WITHIN (filed GAIN) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a8e-zrckpqe.json` and the others, `-hp` for L-hotpotqa); and A8's R@5 deltas with the prior as a
+fixed input (zrckpq and zspkq, their own re-calls), on the same read:
+
+| split | dataset | zrckpqe FC@5 | zrckpqe hit@1 | zspkqe FC@5 | zspkqe hit@1 | zrckpq R@5 (A8) | zspkq R@5 (A8) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0002 | +0.0014 | +0.0009 | +0.0062 | -0.0003 | -0.0006 |
+| L-musique | squad | -0.0008 | -0.0014 | +0.0003 | +0.0019 | -0.0017 | +0.0009 |
+| L-musique | musique | +0.0037 | +0.0112 | +0.0108 | +0.0095 | -0.0052 | +0.0048 |
+| L-musique | hotpotqa | -0.0117 | +0.0046 | -0.0035 | -0.0020 | -0.0026 | +0.0018 |
+| L-musique | 2wiki | -0.0147 | -0.0049 | -0.0092 | -0.0118 | -0.0062 | -0.0070 |
+| L-musique | webqsp | -0.0040 | -0.0027 | -0.0027 | +0.0000 | -0.0066 | -0.0022 |
+| L-hotpotqa | metaqa | +0.0004 | +0.0035 | -0.0011 | -0.0076 | +0.0001 | +0.0009 |
+| L-hotpotqa | squad | -0.0005 | +0.0017 | -0.0024 | +0.0012 | -0.0003 | -0.0008 |
+| L-hotpotqa | musique | +0.0021 | -0.0091 | -0.0149 | -0.0165 | -0.0007 | +0.0011 |
+| L-hotpotqa | hotpotqa | +0.0005 | -0.0066 | +0.0105 | -0.0107 | -0.0002 | -0.0057 |
+| L-hotpotqa | 2wiki | -0.0104 | -0.0078 | +0.0098 | -0.0041 | +0.0006 | +0.0051 |
+| L-hotpotqa | webqsp | +0.0020 | -0.0047 | +0.0120 | +0.0033 | -0.0012 | +0.0101 |
