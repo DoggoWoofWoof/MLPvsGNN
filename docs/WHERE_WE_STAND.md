@@ -610,7 +610,7 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   17 October ([VERDICT_AUDIT_2026_10_17.md](VERDICT_AUDIT_2026_10_17.md)) reopens the idea. Its next form is P5c:
   g's scores as a fixed input to both models, where a trained head can learn to ignore them on musique.
 
-## 7. Running now (20 October, 00:50)
+## 7. Running now (20 October, 01:19)
 
 - **The pools: the user's target is met.** P1g and P1g2 are TARGET_MET (4eb23ff). P1g2's rule (1.5 times today's
   KIND_T fill plus the first 5,000 one-link neighbours by cosine, gated to the questions KIND_T expands) gives ALL ≥
@@ -622,9 +622,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   301905a). The redo ([P1GC_LOOK_ALIAS.md](P1GC_LOOK_ALIAS.md), section 6) rebuilds the 177 look shards on the CPU,
   verifies and aliases them, then the links, chains, KT columns and G3's residuals; the six fits run behind a gate on
   those arrays.
-- **On the card:** the eight next forms declared in 2fff761, before any number; A2xm, A3v, A4hs and A8e are filed
-  below. On the GPU now, and next, four on zspx, the adopted GNN: A9t ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)), edge-family dropout with
-  the increments bounded; A10e ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
+- **On the card:** the eight next forms declared in 2fff761, before any number; A2xm, A3v, A4hs, A8e and A9t are
+  filed below. On the GPU now, and next, three on zspx, the adopted GNN: A10e
+  ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
   ([A13X_BRIDGE_HEAD_ZSPX.md](A13X_BRIDGE_HEAD_ZSPX.md)), zbr's bridge head before zspx's first step; A12x
   ([A12X_GSURG_ZSPX.md](A12X_GSURG_ZSPX.md)), gradient surgery. Five more, declared after the filings below: A11x
   ([A11X_FOURTH_FAMILY_ZSPX.md](A11X_FOURTH_FAMILY_ZSPX.md)), our phrase links as a fourth family in all three of
@@ -654,6 +654,12 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
     the card cannot hold it at its measured peak (aa3cf83), and CPU work no longer waits for a GPU run the card has
     no room for (d8b3325). The card had room again from 00:00 on 20 October.
 - **Filed on 20 October:**
+  - **A9t NOT_ADOPTED** ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)): A9's edge-family dropout on zspx
+    with its three increments bounded together, in training and at read. No GAIN under the seed null and one
+    LOSS: musique in domain on L-hotpotqa -0.0125 (floor 0.0075). webqsp zero-shot there falls -0.0208, within
+    its 0.0233 floor. With the dropout alone (A9) the same two reads moved -0.0059 and -0.0037. Next form: A9b,
+    the bound alone with no dropout; if A9b finds no GAIN either, the MP-unified track's form closes on the GNN,
+    and the MLP takes no message.
   - **A8e NOT_ADOPTED, both arms** ([A8E_QDEPTH_PRIOR.md](A8E_QDEPTH_PRIOR.md)): round 11's depth prior learned
     with each model and added to every row's score. No GAIN and no LOSS on either model under the seed null. The
     GNN's two interval gains sit within their floors: musique zero-shot on L-musique +0.0084 (floor 0.072) and

@@ -2,7 +2,8 @@
 
 Declared 19 October 2026, before any number. The next form A9's verdict named for no GAIN
 (docs/A9_EDGE_FAMILY_DROPOUT.md, section 5; outputs/a9/screen-verdict.json), under docs/SCREENS.md section 3b. Code:
-`outputs/mp_unified/za9t.py` (the arm, the screen and the call). Not run yet.
+`outputs/mp_unified/za9t.py` (the arm, the screen and the call). Filed 20 October: NOT_ADOPTED with no GAIN and one LOSS
+(musique in domain on L-hotpotqa); the next form is A9b (section 5).
 
 ## 1. Why this, now
 
@@ -170,4 +171,60 @@ record exists.
 
 ## 7. Results
 
-Not run yet.
+Filed 20 October 2026 from the host's records (`outputs/a9t/screen-verdict.json`, written 2026-10-19T19:44:27Z; the
+re-calls `outputs/screen/scr-a9t-zspxdt-pair-recall.json`, host paths made relative). **NOT_ADOPTED, with no GAIN and
+one LOSS:** with zspx's three increments bounded together, A9's edge-family dropout moves no read up past the seed null,
+and musique in domain on L-hotpotqa falls past its floor.
+
+- **zspxdt: 0 GAIN, 1 LOSS.** The LOSS is musique in domain on L-hotpotqa: -0.0125 [-0.0177, -0.0074] against its 0.0075
+  floor, with FC@5 -0.0219. webqsp zero-shot on L-hotpotqa falls -0.0208 [-0.0287, -0.0131], a LOSS by its pair's
+  interval that is WITHIN under its 0.0233 floor. Five more intervals exclude 0, all inside their floors: on L-musique,
+  metaqa -0.0019 [-0.0030, -0.0009] and squad +0.0035 [+0.0015, +0.0054]; on L-hotpotqa, metaqa -0.0023 [-0.0032,
+  -0.0014], hotpotqa zero-shot -0.0035 [-0.0064, -0.0006] and 2wiki -0.0047 [-0.0062, -0.0032].
+- **Beside: with the bound added, A9's falls on L-hotpotqa grew.** With the dropout alone (A9), zspxd moved musique on
+  L-hotpotqa -0.0059 and webqsp zero-shot there -0.0037; with the increments bounded too, the moves are -0.0125 and
+  -0.0208. musique zero-shot on L-musique turns from +0.0024 to -0.0012.
+
+Not adopted. This closes only this form: A9's edge-family dropout with zspx's three increments bounded together, in
+training and at read (docs/SCREENS.md section 3b). The next form, fixed in section 5 and recorded in the verdict, is
+A9b: the bound alone, zspx's three increments bounded together at 0.5 with no dropout, the one part of the MP-unified
+track's form not yet on zspx, in its own declared file. If A9b finds no GAIN either, the track's form closes on the GNN:
+its dropout (A9), its bound (A9b) and both together (A9t) will all have reached the adopted GNN, and the MLP takes no
+message.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's; a call is shown with its
+filed call where the re-call changed it; base R@5 shown as zspx's):
+
+| split | dataset | read | base R@5 | zspxdt: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8030 | -0.0019 [-0.0030, -0.0009], WITHIN |
+| L-musique | squad | in-domain | 0.9092 | +0.0035 [+0.0015, +0.0054], WITHIN |
+| L-musique | musique | zero-shot | 0.5073 | -0.0012 [-0.0077, +0.0049], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9074 | -0.0002 [-0.0026, +0.0020], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9351 | -0.0010 [-0.0025, +0.0004], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3204 | -0.0012 [-0.0095, +0.0065], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8039 | -0.0023 [-0.0032, -0.0014], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9129 | +0.0007 [-0.0012, +0.0025], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5901 | -0.0125 [-0.0177, -0.0074], **LOSS** |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8547 | -0.0035 [-0.0064, -0.0006], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9312 | -0.0047 [-0.0062, -0.0032], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2914 | -0.0208 [-0.0287, -0.0131], WITHIN (filed LOSS) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a9t-zspxdt.json` and the others, `-hp` for L-hotpotqa); and A9's R@5 deltas with the dropout alone
+(zspxd, its own re-call), on the same read:
+
+| split | dataset | zspxdt FC@5 | zspxdt hit@1 | zspxd R@5 (A9) |
+| --- | --- | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0014 | -0.0072 | -0.0019 |
+| L-musique | squad | +0.0035 | +0.0045 | +0.0026 |
+| L-musique | musique | -0.0124 | -0.0074 | +0.0024 |
+| L-musique | hotpotqa | +0.0005 | -0.0080 | -0.0015 |
+| L-musique | 2wiki | -0.0015 | +0.0056 | -0.0005 |
+| L-musique | webqsp | +0.0007 | -0.0047 | -0.0034 |
+| L-hotpotqa | metaqa | -0.0036 | -0.0132 | +0.0007 |
+| L-hotpotqa | squad | +0.0007 | +0.0017 | -0.0008 |
+| L-hotpotqa | musique | -0.0219 | -0.0116 | -0.0059 |
+| L-hotpotqa | hotpotqa | -0.0063 | -0.0084 | -0.0075 |
+| L-hotpotqa | 2wiki | -0.0177 | -0.0024 | +0.0026 |
+| L-hotpotqa | webqsp | -0.0133 | -0.0120 | -0.0037 |
