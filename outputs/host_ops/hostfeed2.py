@@ -120,6 +120,16 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    the card's real free room cannot take goes back the same way: rx would start it on shares alone the moment one
    of mpr's runs ends. WSL's VM held 12-15 GiB of the card outside rx; with mpr's three runs the card paged (the
    System process's copy engine at 85%), the runs went 4-7x slower, and a queued read was due to start into it.
+   Overfull (19 Oct 23:40): the spill shed (the card's shared memory above its base) missed a card that cannot hold
+   its jobs. With WSL's VM at 15-16 GiB, A9t's fit (4.4 GiB) ran 7x slower beside an MLP read that held 2.4 GiB of
+   its 5.3 GiB peak and ran 60x slower (webqsp: 45 min, not 45 s), stalled on the card at 58 W with no CPU time,
+   while the shared counter stayed at its base. When what is outside mpr's jobs (processes in no job, at their
+   largest of the last --full-polls readings, since a VM's memory dips while the driver moves it: 10 and 16 GiB a
+   minute apart; other projects' jobs at their live use) plus each running GPU job of mpr's, at the larger of its
+   live use and its arm's (else class's) measured torch peak + --job-slack, exceeds --card-gb - --full-slack for
+   --shed-polls polls in a row while mpr runs more than one GPU job, mpr's newest GPU run is shed as on a spill:
+   cancelled, recorded as shed, its item back unsent. The same largest recent reading counts as held beyond the
+   shares when the feeder sends, so it does not start a run into a card that the next reading finds full.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -491,6 +501,23 @@ def job_state(name, items_by, ov, exact=False):
 
 def is_bad(s):
     return s[0] in BAD or (s[0] == "done" and s[1] != 0)
+
+
+def overfull(ov, M, jv, own_run):
+    """(outside, ours) in GiB when the card cannot hold what is outside mpr's jobs (processes in no job, as jv gives
+    them, and other projects' jobs at their live use) plus each running GPU job of mpr's at the larger of its live use
+    and its arm's (else class's) measured torch peak + --job-slack; else None (the docstring's 'Overfull')."""
+    if jv is None or not own_run:
+        return None
+    per_job, rest = jv
+    ids = {x.get("id") for x in ov["mine"]}
+    outside = rest + sum(v for i, v in per_job.items() if i not in ids)
+    ours = 0.0
+    for x in own_run:
+        n = (ov["by_id"].get(x["id"]) or {}).get("name") or ""
+        p = M["gpu_peak"].get(arm(n)) or M["cls_gpu_peak"].get(klass(n))
+        ours += max(per_job.get(x["id"], 0.0), p + a.job_slack if p else 0.0)
+    return (outside, ours) if outside + ours > a.card_gb - a.full_slack else None
 
 
 def withdraw_late(ov):
@@ -1002,8 +1029,14 @@ def main(argv=None):
     ap.add_argument("--lost-grace", type=float, default=1800.0,
                     help="s: a job rx calls lost with a heartbeat this young still runs and holds its request")
     ap.add_argument("--shed-polls", type=int, default=5,
-                    help="polls of spill in a row, with mpr's running GPU shares above the card or more than one mpr GPU "
-                         "run, before the feeder cancels mpr's newest GPU run and puts its item back (0: never)")
+                    help="polls of spill (or of an overfull card) in a row, with mpr's running GPU shares above the card "
+                         "or more than one mpr GPU run, before the feeder cancels mpr's newest GPU run and puts its "
+                         "item back (0: never)")
+    ap.add_argument("--full-polls", type=int, default=3,
+                    help="GPU memory held by processes in no rx job is read as its largest of the last this many "
+                         "polls, when the feeder sends and for the overfull shed (the docstring's 'Overfull')")
+    ap.add_argument("--full-slack", type=float, default=0.5,
+                    help="GiB of the card kept free in the overfull shed's test")
     ap.add_argument("--withdraw-polls", type=int, default=3,
                     help="polls before rx's hold (hold_after_s) at which a GPU job the feeder queued, still queued, "
                          "goes back unsent, so that rx never holds every later mpr job behind it (0: never)")
@@ -1158,6 +1191,11 @@ def main(argv=None):
             jv = job_vram(ov["act"], pc.get("gproc"), pc.get("gproc_sh"))
             if jv is not None:
                 per_job, rest = jv
+                # a VM's memory dips while the driver moves it (WSL's: 10 and 16 GiB a minute apart, 19 Oct): its
+                # largest of the last --full-polls readings stands for it (the docstring's 'Overfull')
+                dyn["rest_gpu"] = (list(dyn.get("rest_gpu") or []) + [round(rest, 3)])[-max(1, a.full_polls):]
+                rest = max(dyn["rest_gpu"])
+                jv = (per_job, rest)
                 over = max(0.0, rest - a.vram_slack)
                 for e in ov["act"]:
                     if e.get("id") in per_job:
@@ -1193,6 +1231,7 @@ def main(argv=None):
                 dyn["margin"] = round(max(a.margin_min, margin - a.margin_down), 3)
                 dyn["calm"] = 0
         margin = float(dyn["margin"])
+        M = measure(ov["jobs"], by)
         spill = gshared is not None and gshared_base is not None and gshared - gshared_base > a.spill_gb
         if spill:
             say_once("_gspill", f"GPU memory spills to system memory: shared {gshared:.1f} GB (base {gshared_base:.1f}); "
@@ -1203,9 +1242,17 @@ def main(argv=None):
         own_run = [x for x in ov["mine"] if float(x["req"].get("gpus") or 0) > 0]
         own_g = sum(float(x["req"].get("gpus") or 0) for x in own_run)
         # 8 Oct 18:10: others' jobs held ~13 GiB beyond their shares while mpr's three runs (0.92) spilled 7.5 GB for
-        # 2.5 h (a read's first carve took 5381 s, not 7): with more than one run of ours, the spill sheds one too
-        if (a.shed_polls > 0 and dyn["spill_polls"] >= a.shed_polls
-                and (own_g > ov["gpus_total"] + 1e-9 or len(own_run) > 1) and not a.dry):
+        # 2.5 h (a read's first carve took 5381 s, not 7): with more than one run of ours, the spill sheds one too.
+        # So does a card that cannot hold its jobs at their measured peaks (19 Oct 23:40; the docstring's 'Overfull')
+        full = overfull(ov, M, jv, own_run)
+        dyn["full_polls"] = int(dyn.get("full_polls", 0)) + 1 if full and len(own_run) > 1 else 0
+        why_shed = None
+        if dyn["spill_polls"] >= a.shed_polls and (own_g > ov["gpus_total"] + 1e-9 or len(own_run) > 1):
+            why_shed = f"the card spills and mpr runs {len(own_run)} GPU job(s), shares {own_g:g} of {ov['gpus_total']}"
+        elif dyn["full_polls"] >= a.shed_polls:
+            why_shed = (f"the card cannot hold the {full[0]:.1f} GiB outside mpr's jobs and mpr's {len(own_run)} GPU "
+                        f"runs at their measured peaks ({full[1]:.1f} GiB)")
+        if a.shed_polls > 0 and why_shed and not a.dry:
             def started(x):
                 return float((ov["by_id"].get(x["id"]) or {}).get("started") or 0)
             vic = max(own_run, key=started)
@@ -1216,10 +1263,9 @@ def main(argv=None):
                 for n in names:
                     st["sent"].pop(n, None)
                 st["terminal"].pop(vic["id"], None)
-                dyn["spill_polls"] = 0
+                dyn["spill_polls"] = dyn["full_polls"] = 0
                 save()
-                log(f"SHED {vic['id']} ({', '.join(names) or 'no item'}): the card spills and mpr runs {len(own_run)} GPU "
-                    f"job(s), shares {own_g:g} of {ov['gpus_total']}; its item goes back unsent")
+                log(f"SHED {vic['id']} ({', '.join(names) or 'no item'}): {why_shed}; its item goes back unsent")
             except Exception as e:  # noqa: BLE001
                 log("shed failed:", repr(e)[:200])
         hold_gq = spill or mine_over_g > 0     # rx starts a queued job on shares alone: none is queued ahead then
@@ -1232,7 +1278,6 @@ def main(argv=None):
         dyn["gq_hold"] = int(dyn.get("gq_hold", 0)) + 1 if hold_gq else 0
         if a.withdraw_unfit > 0 and dyn["gq_hold"] >= a.withdraw_unfit and not a.dry:
             withdraw_unfit(ov, min(ov["free_g"] - over_g, 0.0) if spill else ov["free_g"] - over_g)
-        M = measure(ov["jobs"], by)
         M["gpu_spill"] = spill
         if a.corun and M["cls_gpu_arms"]:
             lim = a.corun_frac * a.card_gb - a.corun_slack
