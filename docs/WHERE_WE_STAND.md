@@ -634,7 +634,9 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   adopted arms (R1's zrckpr and G5's zspx); A2xi ([A2XI_PRANK_REPLACE.md](A2XI_PRANK_REPLACE.md)), prank's ranks in the
   z-scores' place on both lean models; A6ex ([A6EX_LINK_WORDS_ADOPTED.md](A6EX_LINK_WORDS_ADOPTED.md)), A6e's link
   words on the adopted arms; P5c5 ([P5C5_FIVE_FOLDS.md](P5C5_FIVE_FOLDS.md)), P5c's offsets cross-fitted over five
-  folds, with P5b's log p as a fifth column on the GNN alone. After P1g-c's fits, behind its gate: A5cp
+  folds, with P5b's log p as a fifth column on the GNN alone. Then A2xmx
+  ([A2XMX_ZTOP50_ADOPTED.md](A2XMX_ZTOP50_ADOPTED.md)), declared after A2xm's filing: ztop50's top-50 reference on the
+  adopted arms (R1's zrckpr and G5's zspx). After P1g-c's fits, behind its gate: A5cp
   ([A5CP_P1GB_POOLS.md](A5CP_P1GB_POOLS.md)), A5c's coupled offsets fitted again on P1g-b's pools, against P1g-b's own
   fits of the lean pair; then A3vp ([A3VP_P1GB_POOLS.md](A3VP_P1GB_POOLS.md)), A3v's two-sided rule on the MLP fitted
   again on P1g-b's pools, against P1g-b's own fit of zrckp.
@@ -652,8 +654,8 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   - **A2xm NOT_ADOPTED, both arms** ([A2XM_ZTOP50_REPLACE.md](A2XM_ZTOP50_REPLACE.md)): ztop50's top-50 reference in
     place of zret's. No GAIN on either model: musique zero-shot +0.0113 (MLP) and +0.0096 (GNN), within its 0.072
     floor, where ztop50 had lifted step 1's model +0.1387. The MLP loses webqsp zero-shot on L-hotpotqa (-0.0351);
-    metaqa's old loss does not come back. Next form: A2xmx, the same form on the adopted arms (R1's zrckpr, G5's zspx);
-    the top-50 idea closes as an input only if A2xmx finds no GAIN either.
+    metaqa's old loss does not come back. Next form: A2xmx (declared and queued), the same form on the adopted arms
+    (R1's zrckpr, G5's zspx); the top-50 idea closes as an input only if A2xmx finds no GAIN either.
   - **A3t NOT_ADOPTED, both arms** ([A3T_VSHARE_THIN.md](A3T_VSHARE_THIN.md)): vshare's thin range, t in [0.08, 0.20],
     on 0.37 to 0.38 of the question visits; no read past the seed null on either model. Next form: A3v, vshare's
     two-sided rule; if it finds no GAIN either, A3z (each block's whole-pool z-score as an input).
