@@ -104,6 +104,11 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    without other projects' jobs) takes that job's memory over, so that memory is counted once: in the cap, in rx's
    free memory and in the host budget (21:45). The head waiting to be queued ahead needs only the memory beyond it;
    at 21:38 it held every CPU item for want of 11 GB that the GPU run it waited for would hand it.
+   Withdrawn (19 Oct 21:05): rx lets nothing overtake a job queued longer than its hold, CPU jobs included, and
+   A9t's fit then waited 27 min for 0.42 of the card (0.13 free) while 18 CPUs stood free. --withdraw-polls polls
+   before that hold, a GPU job the feeder queued goes back unsent: cancelled while still queued and recorded as
+   shed, so its item is not counted as failed. The same poll decides it afresh: it starts if it fits, or is
+   queued ahead again with rx's clock reset. Only mpr has rx priority 10, so this reorders mpr's own jobs alone.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -412,6 +417,7 @@ def overview():
             "free_g": gpus_total - sum(float(x["req"].get("gpus") or 0) for x in act),
             "mpr_c": sum(float(x["req"]["cpus"]) for x in mine), "mpr_m": sum(float(x["req"]["mem_gb"]) for x in mine),
             "mpr_g": sum(float(x["req"].get("gpus") or 0) for x in mine), "mine": mine, "act": act,
+            "queue_mpr": qm,
             "queued_mpr": [q["id"] for q in qm],
             "queued_mpr_gpu": [q["id"] for q in qm if float((q.get("req") or {}).get("gpus") or 0) > 0],
             "q_c": sum(float((q.get("req") or {}).get("cpus") or 0) for q in qm),
@@ -462,6 +468,37 @@ def job_state(name, items_by, ov, exact=False):
 
 def is_bad(s):
     return s[0] in BAD or (s[0] == "done" and s[1] != 0)
+
+
+def withdraw_late(ov):
+    """WITHDRAW (19 Oct 21:05; the docstring's 'Withdrawn'): each GPU job the feeder sent that still waits in rx's queue
+    --withdraw-polls polls before rx's hold is cancelled and its item goes back unsent (recorded as shed, so it is not
+    a failed item). A job that started since the overview stays. Returns how many went back."""
+    by_jid = {i: n for n, i in st["sent"].items()}
+    late = [q for q in ov["queue_mpr"] if q.get("id") in by_jid
+            and float((q.get("req") or {}).get("gpus") or 0) > 0
+            and time.time() - float(q.get("enq") or time.time()) > ov["hold_s"] - a.withdraw_polls * a.poll]
+    k = 0
+    for q in late:
+        n, waited = by_jid[q["id"]], (time.time() - float(q["enq"])) / 60
+        try:
+            r = agent({"op": "status", "project": PROJECT, "ids": [q["id"]]}, timeout=120)["jobs"]
+            s = (r[0] if r else {}).get("state")
+            if s != "queued":         # it started (or ended) since the overview: it stays
+                log(f"WITHDRAW skipped for {q['id']} ({n}): {s}")
+                continue
+            c = agent({"op": "cancel", "project": PROJECT, "id": q["id"]}, timeout=120)
+            st["shed"][q["id"]] = n
+            st["sent"].pop(n, None)
+            st["terminal"].pop(q["id"], None)
+            save()
+            k += 1
+            log(f"WITHDRAW {q['id']} ({n}): queued {waited:.0f} min for {float(q['req'].get('gpus') or 0):g} of the "
+                f"card, rx's hold at {ov['hold_s'] / 60:.0f} min; its item goes back unsent "
+                f"(now {((c or {}).get('job') or {}).get('state')})")
+        except Exception as e:  # noqa: BLE001
+            log("withdraw failed:", repr(e)[:200])
+    return k
 
 
 def sha(p):
@@ -903,6 +940,9 @@ def main(argv=None):
     ap.add_argument("--shed-polls", type=int, default=5,
                     help="polls of spill in a row, with mpr's running GPU shares above the card or more than one mpr GPU "
                          "run, before the feeder cancels mpr's newest GPU run and puts its item back (0: never)")
+    ap.add_argument("--withdraw-polls", type=int, default=3,
+                    help="polls before rx's hold (hold_after_s) at which a GPU job the feeder queued, still queued, "
+                         "goes back unsent, so that rx never holds every later mpr job behind it (0: never)")
     ap.add_argument("--spill-gb", type=float, default=1.0,
                     help="GPU shared memory this far above its lowest reading is a spill (GiB; 2.0 before 7 Oct 08:40)")
     ap.add_argument("--vram-slack", type=float, default=0.0,
@@ -1020,6 +1060,16 @@ def main(argv=None):
                     if not a.dry:
                         save()
                     log(f"ADOPT {n} -> {j['id']} ({j.get('state')})")
+
+        # WITHDRAW (19 Oct 21:05): a GPU job of ours queued past rx's hold stops every later mpr job, CPU items too;
+        # --withdraw-polls polls before that it goes back unsent, and this poll decides it afresh (see the docstring)
+        if a.withdraw_polls > 0 and not a.dry and withdraw_late(ov):
+            try:
+                ov = overview()
+            except Exception as e:  # a transient agent failure: try again next poll
+                log("overview failed:", repr(e)[:300])
+                time.sleep(a.poll)
+                continue
 
         # readings
         avail, commit = host_mem()
