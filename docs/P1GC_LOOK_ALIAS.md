@@ -178,3 +178,49 @@ name and a passage name, two shard records each) and their cache parts.
 - another root, a record changed after its alias, and a REFUSED alias are each read as they are;
 - the import hook patches lean_cache in a fresh process that loaded no numpy before it;
 - `run` takes only zp1gb.py, zp1gc.py and a7_s6_cols.py.
+
+## 6. The rebuilt looks deleted, and the redo (19 October, before any verification)
+
+**What happened.** At 22:28 IST on 18 October the host's clean-up (`outputs/host_ops/auto_cleanup.py`, emergency
+tier at 34.8 GB free) removed the chunks of all 177 rebuilt look shards (54 GB) and P1g-c's rebuilt KT columns. The
+records, which are text, stayed. The 14 builds of section 1 had failed and the feeder had dropped the ~300 items behind
+them, so no pending item named `outputs/p1gb/` any more, and nothing pinned it. On 19 October a first verification
+stopped at once ("13 of 13 chunks are not listed or not on disk"). No part was verified and no alias was made, so
+nothing in sections 2 to 4 changes.
+
+The clean-up now keeps a failed item's folders, and those of the items dropped behind it, for 48 h after its launch
+(301905a).
+
+**The redo.** Every item keeps its section 3 role. Nothing in any builder, fit, call or rule changes.
+
+| items | count | after | what |
+| --- | ---: | --- | --- |
+| `p1gc-look2-<dataset>-<carve>-<shard>` | 177 | as P1g-c's look items | the look shards again, with P1g-c's own look commands and sizes. A shard rebuilds the chunks that are missing and rewrites its record |
+| `p1gc-kt2-<dataset>-<carve>` | 11 | as P1g-c's KT items | P1g-b's KT columns again, with P1g-c's own KT commands (they read no look) |
+| `p1gc-lav-...`, `p1gc-la-...` | 140, 11 | `lav` after every `look2` shard of its carve | section 3's verifications and aliases |
+| `p1gc-lkb2-...`, `p1gc-rmb2-...` | 11, 3 | their carve's alias | section 3 |
+| zrc builds, gate, G3 builds | 3, 1, 140 | section 3, with `lkb2`, `rmb2` and `kt2` in place of the failed or deleted items | section 3 |
+| `p1gc-release-look-<dataset>` | 6 | every verification, alias, link, chain, zrc and G3 build of its dataset | `auto_cleanup.py release` (a4e0cd2) gives up the clean-up's family and source pins on `outputs/p1gb/look/<dataset>` |
+
+A7p's builds read P1g-b's looks. Once declared, they are added to the release items' dependencies.
+
+**The disk.** The redo needs about 88 GB at once, until the G3 builds end:
+
+| part | GB |
+| --- | ---: |
+| looks | 54 |
+| KT | 3 |
+| links | 15 |
+| chains | 11 |
+| residuals | 5.5 |
+
+The drive had 98.6 GB free. Two releases came before the redo: L12's carves and units with L16's design looks, and
+the closed tracks' carves of `outputs/mp_unified/look` (fit, select, x1, x1f, fitf). These files are archived on HF
+byte for byte, have been idle 7 to 15 days, and are read by no look build with `--full`; together they free 25.5 GB.
+Step 1's looks (s1fit, s1sel, s1eval) and M3B's CSR stores, which the look builds read, stay.
+
+Verifications, aliases and releases write only records, and a G3 build writes about 40 MB a part. The feeder sends
+all of them below its disk floor (30 GB), so a release never waits behind the space it frees.
+
+**The saved originals are unaffected.** The 129 originals in `outputs/p1gc/p1gb_look_records`, and the list naming
+the 48 lost ones, are untouched. The alias compares them with the records the redo writes.
