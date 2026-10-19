@@ -1,0 +1,180 @@
+# P1g-c's look alias: P1g-b's rebuilt looks checked against its caches
+
+Written 18 October 2026 and committed 19 October, before any verification ran. It amends how P1g-c's builds read P1g-b's rebuilt looks
+(docs/P1GC_ADOPTED_ON_P1GB.md, section 3); nothing in P1g-c's fits, calls or rules changes. Code:
+`outputs/mp_unified/zp1gcla.py`.
+
+## 1. What was found
+
+P1g-c rebuilds P1g-b's looks with P1g-b's own commands (177 shards), then its links, chains and G3's residuals from
+them. Each look shard writes a record, and the record holds its run's `seconds`, `utc` and `peak_rss_bytes`. So a
+rebuilt record's sha256 is not the one P1g-b's cache parts stamped (`look.records` in every part's record).
+
+Five builders read a look beside a cache, and each stops when the two sha256s differ ("built from another look"):
+
+| builder | stops at |
+| --- | --- |
+| zlink | `zlink.build` |
+| rmatch | `rmatch.build` |
+| zrc | `zrc.build` |
+| zg3res | `zg3res.build` |
+| A7's scorer builds | `scripts/a7_s6_cols.py`, `sbuild` and `cols` |
+
+Every one of P1g-c's link, chain and residual builds would therefore have stopped. P1g-c's gate would have stayed shut,
+and none of its fits would have run.
+
+**They did stop.** Between this file's writing and its commit, the host finished all 177 look shards. It then sent
+P1g-c's 11 link builds and 3 rmatch builds (18 October, 15:36 to 16:01 IST). Each stopped within 8 s (rc 1) at the
+first cache part:
+
+    outputs/p1gb/cache/2wiki/fit/part_0of15: built from another look than outputs/p1gb/look/2wiki/fit
+
+Nothing was written. P1g-c's 3 zrc builds, its gate and its 140 G3 builds had not been sent: they wait on those 14.
+
+**A probe of the host at 02:33 IST** compared each look record on disk with the cache's stamp:
+
+| carve | rebuilt so far | still the stamped record |
+| --- | ---: | ---: |
+| 2wiki fit | 15 of 15 | 0 |
+| 2wiki s1eval | 23 of 29 | 6 |
+| hotpotqa fit | 7 of 12 | 5 |
+| metaqa fit | 1 of 14 | 13 |
+| the other seven carves | 0 | all |
+
+**At 02:36 a one-off host job copied every record still equal to its stamp** to `outputs/p1gc/p1gb_look_records`,
+with a list `saved.json`:
+- 129 records saved, each checked against its stamped sha256 as it was copied;
+- 48 records were already overwritten (the list names them as lost): 2wiki fit 15, 2wiki s1eval 25, hotpotqa fit 7,
+  metaqa fit 1;
+- no other copy exists: neither the archive index nor the laptop holds P1g-b's look records.
+
+**Which fields differ.** For hotpotqa fit, a saved original against a rebuilt record of the same carve: every field is
+equal except `seconds`, `utc` and `peak_rss_bytes`. The records hold no per-chunk sha256, so the record alone cannot
+show that the rebuilt chunks are P1g-b's.
+
+**What the saved originals agree on.** All 129 hold the same value of every carve-independent field:
+- the look's name, pair and its model keys, functions and metrics;
+- `--full` and the projection (dim 128, seed 20261001);
+- the threads (torch 4, BLAS 2), no limit;
+- the source copied, its sha256 and look_x_six's sha256;
+- the placement.
+
+Within each carve they agree on every carve field. Every record on disk, rebuilt or not, holds those same global values.
+
+## 2. The check: the cache built again from the rebuilt look
+
+**The evidence the stamp stood for.** A cache part is built from its look's chunks. So the right test is whether the
+rebuilt look gives P1g-b's cache: each part built again from the rebuilt look must equal P1g-b's stored part, array
+for array.
+
+**`verify`, one item per P1g-b cache part (140):**
+- **the build:** `lean_cache.build_part`, unchanged, on the rebuilt look, with:
+  - the part's own BLAS threads (its record's `blas_threads`, set before numpy loads);
+  - numba off, as P1g-b's parts were (it refuses otherwise);
+  - the same two bases, each checked against the part's record;
+  - no Carve3 check (the comparison below is stronger);
+- **no array is written:** `save_npy` hashes each array in memory, the bytes `np.save` would write;
+- **compared with P1g-b's stored part record:**
+  - every array's sha256, dtype and shape (17 arrays a part);
+  - the part's ids, question and row ranges, chunks, counts, column spans, bases and odd code rows;
+  - the look head's carve fields and record names;
+- **verdict:** IDENTICAL when all of these are the same, DIFFERENT otherwise;
+- **the record:** `outputs/p1gc/look_alias/parts/<dataset>/<carve>/<part>.json`, holding the look records on disk at
+  the time.
+
+**`alias`, one item per carve (11).** ALIAS when all of these hold, REFUSED otherwise:
+- every part of the carve was verified IDENTICAL, against the look records on disk now, and no stored part record
+  changed since;
+- **each saved original:**
+  - its copy's sha256 is the stamped one, and the list names it;
+  - its rebuild equals it in every field but `seconds`, `utc` and `peak_rss_bytes`;
+- **each lost original:**
+  - its rebuild holds the saved originals' common value of every carve-independent field;
+  - it holds its carve's single value of every carve field;
+- the saved originals agree among themselves on every carve-independent field.
+
+The record (`outputs/p1gc/look_alias/<dataset>/<carve>.json`) maps each look record's name to its rebuilt and its
+stamped sha256, and says whether its original was saved or lost.
+
+**What reading under the alias means.** Inside `zp1gcla.py run`, `lean_cache.look_chunks` on P1g-b's look root returns
+the stamped sha256s in place of the rebuilt ones. It does so only when:
+- the carve's alias is ALIAS;
+- the alias's rebuilt sha256s are the records on disk at that moment.
+
+Any other root, a record changed after its alias, a missing alias or a REFUSED one: the head is the look's own, and
+the builder stops as before. Nothing else in any builder changes. The builders' outputs say where they came from:
+- each `run` logs the alias it read;
+- the alias records name both sha256s;
+- P1g-c's gate still compares every rebuilt link and chain record's arrays with P1g-b's (its section 3), which checks
+  the look's edges and relations as well.
+
+**The hook.** `run` imports nothing heavy before the builder. lean_cache is patched by an import hook as the builder
+imports it, so the builder's own thread settings stand: zp1gc's one thread on its builds, and pylib_run's numba
+loaded first for G3's.
+
+## 3. The items
+
+**New, after the carve's last look shard:**
+
+| items | count | sizes |
+| --- | ---: | --- |
+| `p1gc-lav-<dataset>-<carve>-<part>` | 140 | each after every look shard of its carve; 1.5 CPUs; memory the part's own measured peak + 1.5 GB (at most 9.4) |
+| `p1gc-la-<dataset>-<carve>` | 11 | each after its carve's verifications; 1 CPU, 1 GB |
+
+**Sent again under new names.** The feeder does not resend a failed item, so the 14 builds that stopped (section 1)
+run again as:
+- `p1gc-lkb2-<dataset>-<carve>` (11);
+- `p1gc-rmb2-<dataset>-<carve>` (3).
+
+**Changed (not yet sent):**
+- **P1g-c's 3 zrc builds:** each runs through `zp1gcla.py run --`, waits for its carve's alias and for `p1gc-rmb2`
+  in place of the failed `p1gc-rmb`;
+- **P1g-c's gate:** waits for the `lkb2` and `rmb2` items in place of the failed ones;
+- **P1g-c's 140 G3 builds:** run through `zp1gcla.py run --` behind pylib_run, and wait for their carve's alias;
+- their commands are otherwise P1g-b's.
+- **R1's column builds** read no look and are unchanged.
+
+**The sizes:**
+- each `lkb2` and `rmb2` item has its failed item's sizes and its carve's alias as a dependency;
+- every item that reads a look under the alias lists `zp1gcla.py` among its inputs.
+
+**Cost.** The verifications repeat P1g-b's cache builds: 28,047 s in all, at most 1,341 s a part (musique). They write
+no array; the records are text.
+
+## 4. What each outcome leads to (fixed now)
+
+| alias | what follows |
+| --- | --- |
+| ALIAS on all 11 carves | P1g-c runs as declared: the builds read the rebuilt looks under the stamped sha256s, then its gate decides as before |
+| REFUSED on a carve | that carve's builds stop, and P1g-c's gate stays shut. The next form is **P1g-b2**: P1g-b's caches built again from the rebuilt looks into `outputs/p1gb2/cache`, P1g-b's lean fits refitted on them, and P1g-c's calls made on those roots, its own declared file. An alias refused for a record field alone, with every part IDENTICAL, is reported as such in that file |
+
+**A7p** (A7's next form) reads P1g-b's looks beside its caches. It builds under the same alias, in the same carves.
+
+## 5. Self-test
+
+`python outputs/mp_unified/zp1gcla.py --selftest` passes before this commit (17.8 s). It runs on A7's toy looks (a KB
+name and a passage name, two shard records each) and their cache parts.
+
+**The rebuild's effect:** after a rebuild (new seconds, time and memory), A7's check stops.
+
+**verify:**
+- with the build stood in for, so the hashing is the one tested: the in-memory sha256 of an array equals the stored
+  file's;
+- no array is written, and its temporary folder is removed;
+- a changed array is DIFFERENT (`arrays.n`);
+- it refuses other BLAS threads, numba, another basis, or a part out of range.
+
+**alias:**
+- REFUSED with a DIFFERENT part;
+- ALIAS when every part is IDENTICAL (two saved originals, or one saved and one lost);
+- REFUSED when:
+  - a saved original differs outside the run keys;
+  - a lost one holds another global value, or another carve value;
+  - a part was verified against older records, or a part is not verified;
+  - a saved copy is not the stamped record.
+
+**The alias in a process:**
+- under it, A7's check passes; after it, the function is restored;
+- another root, a record changed after its alias, and a REFUSED alias are each read as they are;
+- the import hook patches lean_cache in a fresh process that loaded no numpy before it;
+- `run` takes only zp1gb.py, zp1gc.py and a7_s6_cols.py.
