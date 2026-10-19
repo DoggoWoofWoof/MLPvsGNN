@@ -639,7 +639,10 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   on the lean pair. Then A3z ([A3Z_WHOLE_POOL_Z.md](A3Z_WHOLE_POOL_Z.md)), declared after A3v's filing: step 1's
   whole-pool z-scores beside zret's, through zero-started columns, on the lean pair. Then A8ex
   ([A8EX_QDEPTH_PRIOR_ADOPTED.md](A8EX_QDEPTH_PRIOR_ADOPTED.md)), declared after A8e's filing: round 11's depth prior
-  learned inside the adopted arms (R1's zrckpr and G5's zspx). After P1g-c's fits, behind its gate: A5cp
+  learned inside the adopted arms (R1's zrckpr and G5's zspx). Then A9b
+  ([A9B_BOUND_ALONE.md](A9B_BOUND_ALONE.md)), declared after A9t's filing: the MP-unified track's bound alone on
+  zspx, its three increments bounded together at 0.5 with no dropout; if it finds no GAIN, the track's form closes
+  on the GNN. After P1g-c's fits, behind its gate: A5cp
   ([A5CP_P1GB_POOLS.md](A5CP_P1GB_POOLS.md)), A5c's coupled offsets fitted again on P1g-b's pools, against P1g-b's own
   fits of the lean pair; then A3vp ([A3VP_P1GB_POOLS.md](A3VP_P1GB_POOLS.md)), A3v's two-sided rule on the MLP fitted
   again on P1g-b's pools, against P1g-b's own fit of zrckp; then A7p ([A7P_P1GB_POOLS.md](A7P_P1GB_POOLS.md)), A7's
