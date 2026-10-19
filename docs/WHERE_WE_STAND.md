@@ -630,13 +630,17 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   Then four on zspx, the adopted GNN: A9t ([A9T_BOUNDED_DROPOUT.md](A9T_BOUNDED_DROPOUT.md)), edge-family dropout with
   the increments bounded; A10e ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
   ([A13X_BRIDGE_HEAD_ZSPX.md](A13X_BRIDGE_HEAD_ZSPX.md)), zbr's bridge head before zspx's first step; A12x
-  ([A12X_GSURG_ZSPX.md](A12X_GSURG_ZSPX.md)), gradient surgery. Four more, declared after the filings below: A11x
+  ([A12X_GSURG_ZSPX.md](A12X_GSURG_ZSPX.md)), gradient surgery. Five more, declared after the filings below: A11x
   ([A11X_FOURTH_FAMILY_ZSPX.md](A11X_FOURTH_FAMILY_ZSPX.md)), our phrase links as a fourth family in all three of
   zspx's steps; A4fx ([A4FX_FAMILY_DROPOUT_ADOPTED.md](A4FX_FAMILY_DROPOUT_ADOPTED.md)), A4f's family dropout on the
   adopted arms (R1's zrckpr and G5's zspx); A2xi ([A2XI_PRANK_REPLACE.md](A2XI_PRANK_REPLACE.md)), prank's ranks in the
   z-scores' place on both lean models; A6ex ([A6EX_LINK_WORDS_ADOPTED.md](A6EX_LINK_WORDS_ADOPTED.md)), A6e's link
-  words on the adopted arms. The zspx and zrckpr screens wait for G3's residual parts and R1's columns, which
-  the clean-up removed; they are being rebuilt on the CPU (A11x also rebuilds A11's links).
+  words on the adopted arms; P5c5 ([P5C5_FIVE_FOLDS.md](P5C5_FIVE_FOLDS.md)), P5c's offsets cross-fitted over five
+  folds, with P5b's log p as a fifth column on the GNN alone.
+  - **Rebuilt after the clean-up.** G3's residual parts and R1's columns, which the zspx and zrckpr screens read, are
+    rebuilt: all 78 parts' arrays match their records bit for bit. A11x has rebuilt A11's links.
+  - **Being made again.** P5a's node tables, which P5c5's builds read, were a trained fit that no archive held. P5a's
+    own code makes them again (`scripts/p5a_restore.py`), and each goes back only if it matches its record.
 - **Filed on 19 October:**
   - **A2h NOT_ADOPTED, all four arms** ([A2H_HALVES_APART.md](A2H_HALVES_APART.md)): A2's rank half and top-50 half
     apart. Each half alone moves musique zero-shot as far as A2's whole form or further (MLP +0.0128 and +0.0198, GNN
