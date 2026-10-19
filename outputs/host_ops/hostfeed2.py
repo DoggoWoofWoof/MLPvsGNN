@@ -1506,6 +1506,12 @@ def main(argv=None):
                     if fits_cm:
                         gpu_head = n          # another project's share holds the card and --queue-gpu is used up
                         continue
+                    if g > free_g + 1e-9 and (hold_gq or n_q >= a.queue_gpu):
+                        # the card has no room for it and it cannot wait in rx's queue: memory and CPUs collected
+                        # for it would only idle (19 Oct 23:47: an MLP read held every later item for the card
+                        # that WSL's VM and A9t's fit filled); they collect once the card has its room
+                        gpu_head = n
+                        continue
                     blocked_head = n          # GPU first: memory and CPUs collect for it now, so it can start (the
                     break                     # card is free) or wait in rx's queue (another project's job yields)
                 if time.time() - ready_since[n] > a.hol_min * 60:
