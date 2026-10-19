@@ -141,8 +141,11 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
    too". A failed item dropped every item behind it, so one bad build emptied a chain while nobody watched. An item
    whose job ends badly (failed, error, lost past --lost-grace, or done with rc != 0; never one cancelled or shed)
    now goes back unsent, up to --retries times, --retry-after-min after the feeder sees the end; the items behind
-   it wait for its new run and drop only when its retries are spent. A REF item that ends badly with its retries
-   spent lends its own declared memory, when that is a number, in place of a measurement.
+   it wait for its new run and drop only when its retries are spent. Every poll looks at the end of each item sent,
+   so an item that nothing waits on (a verdict) runs again too. Only ends after rule 10 first ran (the state's
+   retry_since) count, so older failures, whose chains were queued again under new names, stay as they are. A REF
+   item that ends badly with its retries spent lends its own declared memory, when that is a number, in place of a
+   measurement.
 
 --wait-gone JOBID: while that mpr job (the feeder this one replaces) is active, this one only waits: it neither sends
 nor touches STATE. It then reads STATE afresh and drops any 'sent' record younger than 6 hours whose job does not exist
@@ -517,10 +520,11 @@ def is_bad(s):
     return s[0] in BAD or (s[0] == "done" and s[1] != 0)
 
 
-def retry_back(d, s, by, now):
+def retry_back(d, s, by, ov):
     """The docstring's 10: True when the feeder item d, whose job ended badly (s), is (or now goes) back unsent for
     another run, so the items behind it wait instead of dropping; False when its retries are spent (or it is no
-    item of the feeder's, or it was cancelled), and then they drop as before."""
+    item of the feeder's, or it was cancelled or shed, or it ended before rule 10 began), and then they drop as
+    before."""
     if d not in by or d in st["dropped"] or s[0] == "cancelled":
         return False
     jid = st["sent"].get(d)
@@ -528,11 +532,19 @@ def retry_back(d, s, by, now):
         return True                          # back already: waiting for its next run
     if jid in st["shed"]:
         return False
-    r = st["retried"].setdefault(d, {"n": 0, "ids": [], "why": []})
+    r = st["retried"].get(d) or {"n": 0, "ids": [], "why": []}
     if jid in r["ids"]:
         return True
     if r["n"] >= a.retries:
         return False
+    j = ov["by_id"].get(jid)
+    if not j:
+        return False                         # older than the overview: an old end
+    end = float(j.get("ended") or j.get("heartbeat") or 0)
+    if end < float(st.get("retry_since") or 0):
+        return False
+    now = ov["now"]
+    st["retried"][d] = r
     r["n"] += 1
     r["ids"].append(jid)
     r["why"].append([s[0], s[1]])
@@ -1165,6 +1177,7 @@ def main(argv=None):
     st = json.loads(state_p.read_text(encoding="utf-8")) if state_p.exists() else {}
     for k in ("sent", "dropped", "measured", "terminal", "said", "shed", "retried"):
         st.setdefault(k, {})
+    st.setdefault("retry_since", time.time())          # the docstring's 10: only ends from here on are retried
     dyn = st.setdefault("dyn", {})
     dyn.setdefault("margin", a.margin)
     dyn.setdefault("calm", 0)
@@ -1385,6 +1398,15 @@ def main(argv=None):
                "job_vram": None if jv is None else {k: round(v, 2) for k, v in jv[0].items() if v > 0.05},
                "over_g": round(over_g, 3), "mine_over_g": round(mine_over_g, 3), "spill": spill}
 
+        for n, jid in list(st["sent"].items()):     # the docstring's 10: every bad end, an item nothing waits on too
+            j = ov["by_id"].get(jid)
+            if n not in by or not j or jid in st["shed"] or (j.get("state") == "lost" and alive(j, ov["now"])):
+                continue
+            if j.get("state") in BAD or (j.get("state") == "done" and j.get("rc") not in (0, None)):
+                try:
+                    retry_back(n, (j.get("state"), j.get("rc")), by, ov)
+                except Exception as e:
+                    log(f"retry check for {n} failed: {e!r}"[:300])
         left = [i for i in items if i["name"] not in st["sent"] and i["name"] not in st["dropped"]]
         if not left:
             done_since = done_since or time.time()
@@ -1470,7 +1492,7 @@ def main(argv=None):
                 log(f"dep check for {n} failed: {e!r}"[:300])
                 continue
             bad = [d for d, s in sts.items() if is_bad(s)]
-            if bad and all([retry_back(d, sts[d], by, ov["now"]) for d in bad]):
+            if bad and all([retry_back(d, sts[d], by, ov) for d in bad]):
                 continue           # the docstring's 10: its failed deps run again first
             if bad:
                 st["dropped"][n] = f"dep ended badly: {[(d, s[:2]) for d, s in sts.items() if is_bad(s)]}"
@@ -1494,7 +1516,7 @@ def main(argv=None):
                     s = job_state(r, by, ov)
                     if s[0] == "running" and s[3] >= a.min_run:
                         s = job_state(r, by, ov, exact=True)
-                    if is_bad(s) and retry_back(r, s, by, ov["now"]):
+                    if is_bad(s) and retry_back(r, s, by, ov):
                         continue   # the docstring's 10: the REF runs again and is measured then
                     if is_bad(s) and r in by and re.fullmatch(r"[0-9.]+", by[r]["mem"]):
                         st["measured"][r] = float(by[r]["mem"])
