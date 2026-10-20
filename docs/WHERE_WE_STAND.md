@@ -635,6 +635,11 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   (zrm's encoder with its own weights, three hidden-state layers over the pool's edges, an unbounded readout, no MLP
   score anywhere), is screened against zspk's card fits under N2's fresh zspk seed null, with its edge-free twin
   beside. Its fits go at the head of the card's queue.
+- **Bridge transforms trained by EM (R2, declared 20 October;** [R2_BRIDGE_EM.md](R2_BRIDGE_EM.md)**).** Each
+  question's first five first-stage rows act as bridges: a learned 32-wide translation of the frozen vectors points
+  from each bridge to the rows the question needs next, trained inside each model's own fit with an EM term over
+  which bridge leads to each gold. It is screened on both models (zrckpb on zrckp's card fits, zg6m on G6's), under
+  N2's fresh floors, after G6's fits.
 - **On the card:** the eight next forms declared in 2fff761, before any number; A2xm, A3v, A4hs, A8e and A9t are
   filed below. On the GPU now, and next, three on zspx, the adopted GNN: A10e
   ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
