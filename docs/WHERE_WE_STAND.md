@@ -626,6 +626,11 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   pools are cut by one label-free prefix rule (rank mass 1/(60 + rank) over each pool's build order, one τ chosen on
   s1sel); if ALL stays ≥ 0.95 on all five training datasets on s1eval with at least 10% fewer rows, the cut pools
   go to the next refits (G6 and the lean pair, each through its own screen). CPU only, beside the card.
+- **Fresh screen floors (N2, declared 20 October;** [N2_FRESH_SEED_NULL.md](N2_FRESH_SEED_NULL.md)**).** The screens'
+  floors still come from step 1's model of 7 October, about half as good as today's cards on the read where the floor
+  is largest. zrckp's and zspk's card fits are trained again with seeds 1 and 2 to measure the floors on the models
+  the screens are decided against; the arms filed since 15 October are called again beside their filed calls, and the
+  three refits on P1g-b's pools (A5cp, A3vp, A7p) run only if their adopted arms still pass. At the head of the card.
 - **The free GNN (G6, declared 20 October;** [G6_FREE_GNN.md](G6_FREE_GNN.md)**).** zg6, a GNN that is its own model
   (zrm's encoder with its own weights, three hidden-state layers over the pool's edges, an unbounded readout, no MLP
   score anywhere), is screened against zspk's card fits under N2's fresh zspk seed null, with its edge-free twin
