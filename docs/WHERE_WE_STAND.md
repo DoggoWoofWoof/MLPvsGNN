@@ -622,6 +622,10 @@ section 8). A learned back-off gate, for P5b2's diagnosis that a fixed fusion ca
   301905a). The redo ([P1GC_LOOK_ALIAS.md](P1GC_LOOK_ALIAS.md), section 6) rebuilds the 177 look shards on the CPU,
   verifies and aliases them, then the links, chains, KT columns and G3's residuals; the six fits run behind a gate on
   those arrays.
+- **Fewer rows at the same coverage (P1h, declared 20 October;** [P1H_FEWER_ROWS.md](P1H_FEWER_ROWS.md)**).** P1g-b's
+  pools are cut by one label-free prefix rule (rank mass 1/(60 + rank) over each pool's build order, one τ chosen on
+  s1sel); if ALL stays ≥ 0.95 on all five training datasets on s1eval with at least 10% fewer rows, the cut pools
+  go to the next refits (G6 and the lean pair, each through its own screen). CPU only, beside the card.
 - **On the card:** the eight next forms declared in 2fff761, before any number; A2xm, A3v, A4hs, A8e and A9t are
   filed below. On the GPU now, and next, three on zspx, the adopted GNN: A10e
   ([A10E_G2_END_TO_END.md](A10E_G2_END_TO_END.md)), G2's stack end to end; A13x
