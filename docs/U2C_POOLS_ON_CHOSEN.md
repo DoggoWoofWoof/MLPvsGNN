@@ -137,6 +137,37 @@ Outputs:
 
 The arrays stay uncommitted.
 
+**Follow-up (22 October, outputs unchanged).** The user asked for Modal on 22 October ("use modal"), so the stats
+stage runs there in question shards instead of 10 to 14 hours on the laptop.
+- `zu2c.py stats D --graph G --shard I/K` runs every check on the I-th of K contiguous question ranges and writes a
+  part under `outputs/u2c/stats/<graph>/parts/`.
+- `zu2c.py merge D --graph G --parts K` checks each part (script, file sha256, checks, its range) and joins the parts
+  into the file one run over every question writes.
+
+Each question's sources, walks, orders and sets are its own: a batch only spreads questions over threads. So a shard's
+questions get the values one run gives them. On the laptop, musique's shard 1 of 3 (questions 10 to 19 of a 30-question
+development run) reproduced P1g's filed arrays exactly. The self-test now covers the ranges and the merge.
+
+`outputs/mp_unified/zu2c_modal.py` runs the shards and the merges:
+
+    modal run --detach outputs/mp_unified/zu2c_modal.py --stage stats --datasets D1,D2,... --graph today|chosen --shards K
+
+Each container builds the package mirror from symlinks into two volumes. Every file is the laptop's, byte for byte:
+- mpr-u2-links, U2b's volume, is only read;
+- mpr-u2c is new, for this stage.
+
+The freeze check still runs, on the mirror's `CANONICAL_FREEZE.json` (58958f33...). The container pins:
+- the laptop's package versions;
+- P1g's 2 threads;
+- OpenBLAS's Haswell kernels;
+- numpy's AVX-512 paths off;
+- numba compiling for Haswell.
+
+So every container CPU takes the laptop's paths. The C library's maths functions are Linux's, not Windows'. The today
+runs check the platform as well as the code: every question must reproduce P1g's filed arrays. A failed check stops
+that dataset's merge and is not retried. The outputs are written on the volume under a directory named by zu2c.py's
+sha256, and fetched to the paths above.
+
 ## 8. What follows (fixed now)
 
 | outcome | the next form |

@@ -1,9 +1,16 @@
 """U2c: today's pool rules on U2b's chosen graph, each also cut to fewer rows, with the upstream-failure ledger
 (docs/U2C_POOLS_ON_CHOSEN.md). Pools only: nothing trains, nothing is fit, and no cut reads a gold.
 
-    python outputs/mp_unified/zu2c.py stats DATASET --graph today|chosen [--threads 2] [--limit Q]
+    python outputs/mp_unified/zu2c.py stats DATASET --graph today|chosen [--threads 2] [--limit Q] [--shard I/K]
+    python outputs/mp_unified/zu2c.py merge DATASET --graph today|chosen --parts K
     python outputs/mp_unified/zu2c.py verdict
     python outputs/mp_unified/zu2c.py --selftest
+
+--shard I/K runs the I-th of K contiguous question ranges (every check, on those questions) into
+outputs/u2c/stats/<graph>/parts/; merge joins the K parts into the file one run over every question writes
+(outputs/mp_unified/zu2c_modal.py runs the shards on Modal). Each question's sources, walks, orders and sets are its
+own (a batch only spreads questions over threads), so a shard's questions get the values one run gives them; the
+today runs check this exactly against P1g's filed arrays, which were made in batches of 1,000.
 
 stats    One dataset's selection carve (s1sel; webqsp's s1eval, beside), on one graph:
            today   the four passage datasets' structural graph read back from outputs/u2b/<D>/pkg_structural.npz and
@@ -208,10 +215,41 @@ def place_question(B, full, base, golds, sets, ranks, cands, fams):
     return rows, held, pos
 
 
-# ── stats (the laptop, or the host) ──────────────────────────────────────────
+# ── stats (the laptop, the host, or Modal in shards) ─────────────────────────
+
+ARRAYS = ("rows", "pos", "ptr", "bs", "fill", "inc", "listed", "one_link", "kt_pos", "in_I")
+PER_QUESTION = ("rows", "bs", "fill", "inc")
+PER_GOLD = ("pos", "listed", "one_link", "kt_pos", "in_I")
 
 
-def stats_stage(name, graph, threads=2, limit=0):
+def shard_range(nq, i, k):
+    """[q0, q1) of shard i of k: contiguous question ranges, as even as nq allows, in order."""
+    if not (0 <= i < k <= max(1, nq)):
+        raise SystemExit(f"shard {i}/{k} of {nq} questions")
+    return i * nq // k, (i + 1) * nq // k
+
+
+def merge_arrays(parts):
+    """The arrays of one run over every question, from its shards' arrays in order (each part's ptr is the global
+    one over its questions, so it starts where the previous part's ends)."""
+    out = {}
+    for k in PER_QUESTION + PER_GOLD:
+        out[k] = np.concatenate([p[k] for p in parts])
+    ptr = [np.asarray([0], np.int64)]
+    for a, p in enumerate(parts):
+        q = np.asarray(p["ptr"], np.int64)
+        if q.size != p["rows"].shape[0] + 1 or int(q[0]) != int(ptr[-1][-1]):
+            raise SystemExit(f"part {a}: its ptr does not continue the previous part's")
+        ptr.append(q[1:])
+    out["ptr"] = np.concatenate(ptr)
+    return {k: out[k] for k in ARRAYS}
+
+
+def parts_dir(graph):
+    return OUT / "stats" / graph / "parts"
+
+
+def stats_stage(name, graph, threads=2, limit=0, shard=None):
     import p1e_anchor_kind as K           # P1e's walks, kinds and orders; through it P1d's sources (imports numba)
     import numba
     import step4b_pool_reach as S4B
@@ -297,10 +335,11 @@ def stats_stage(name, graph, threads=2, limit=0):
             raise SystemExit(f"{name}: P1g's arrays are not P1g's 805 candidates in order")
         ref = a
     ti = [c[0] for c in cands].index(PG.TODAY)
+    q0, q1 = shard_range(nq, *shard) if shard else (0, nq)
     rows, pos, fills, ledger = [], [], np.zeros(nq, np.int64), {k: [] for k in ("listed", "one_link", "kt_pos", "in_I")}
     t = time.time()
-    for lo in range(0, nq, S4.BATCH):
-        js = list(range(lo, min(nq, lo + S4.BATCH)))
+    for lo in range(q0, q1, S4.BATCH):
+        js = list(range(lo, min(q1, lo + S4.BATCH)))
         srcs = D.sources_batch(prep, js, linked, unions, constant, threads)
         steered = K.steered_batch(prep, js, linked, unions, srcs, constant, threads)
         for i, j in enumerate(js):
@@ -339,35 +378,92 @@ def stats_stage(name, graph, threads=2, limit=0):
             log(f"{name}/{carve} {graph}: {js[-1] + 1}/{nq} ({time.time() - t:.0f}s)")
     arr = {"rows": np.stack(rows).astype(np.int32) if rows else np.zeros((0, len(cands)), np.int32),
            "pos": np.concatenate(pos) if pos else np.zeros((0, len(cands)), np.int32),
-           "ptr": ptr, "bs": st["bs"][:nq].astype(np.int64), "fill": fills,
-           "inc": np.asarray([x.size for x in inc[:nq]], np.int64)}
+           "ptr": ptr[q0:q1 + 1], "bs": st["bs"][q0:q1].astype(np.int64), "fill": fills[q0:q1],
+           "inc": np.asarray([x.size for x in inc[q0:q1]], np.int64)}
     for k, v in ledger.items():
         arr[k] = np.concatenate(v) if v else np.zeros(0, np.int64 if k == "kt_pos" else bool)
-    held = arr["pos"] >= 0
-    s = PG.summarize({"rows": arr["rows"], "held": held, "ptr": ptr}, cands)
+    head = {"declared_in": DECLARED, "stage": "U2c", "dataset": name, "carve": carve, "graph": graph,
+            "graph_detail": desc, "script_sha256": script_sha256(), "p1g_script_sha256": PG.script_sha256(),
+            "p1g2_script_sha256": PG2.script_sha256(), "zp1h_sha256": P1H.script_sha256(),
+            "p1e_script_sha256": K.script_sha256(), "freeze_RECORD_SHA256": op.freeze["RECORD_SHA256"],
+            "threads": threads}
+    checks = {"base_seeds_step4d": True, "seeds_equal_g0": True, "b_equal_p1f": True,
+              **({"i_equal_g0_and_p1f": True, "rows_held_fill_equal_p1g": True, "today_equal_p1f": True}
+                 if graph == "today" else {})}
     if limit:
-        log(f"{name}/{carve} {graph}: development run on {nq} questions ({time.time() - t:.0f}s): every check "
-            "passed; nothing written")
+        log(f"{name}/{carve} {graph}: development run on questions {q0}-{q1 - 1} of {nq} ({time.time() - t:.0f}s): "
+            "every check passed; nothing written")
         return 0
+    if shard:
+        od = parts_dir(graph)
+        od.mkdir(parents=True, exist_ok=True)
+        stem = f"{name}__{carve}__{shard[0]}of{shard[1]}"
+        p = od / f"{stem}.npz"
+        tmp = od / f"{stem}.tmp.npz"
+        np.savez_compressed(tmp, **arr)
+        os.replace(tmp, p)
+        write_json(od / f"{stem}.json", {**head, "part": shard[0], "parts": shard[1], "q0": q0, "q1": q1,
+                                         "questions_all": nq, "file_sha256": sha_file(p), "checks": checks,
+                                         "seconds": round(time.time() - t0, 1), "utc": utc()})
+        log(f"{name}/{carve} {graph} part {shard[0]}/{shard[1]} (questions {q0}-{q1 - 1}, {time.time() - t0:.0f}s): "
+            "written")
+        return 0
+    return write_stats(name, carve, graph, arr, head, checks, cands, round(time.time() - t0, 1))
+
+
+def write_stats(name, carve, graph, arr, head, checks, cands, seconds, extra=None):
+    """The record of one run over every question (or of its merged shards): the arrays and their summary."""
+    s = PG.summarize({"rows": arr["rows"], "held": arr["pos"] >= 0, "ptr": arr["ptr"]}, cands)
     od = OUT / "stats" / graph
     od.mkdir(parents=True, exist_ok=True)
     p = od / f"{name}__{carve}.npz"
     tmp = od / f"{name}__{carve}.tmp.npz"
     np.savez_compressed(tmp, **arr)
     os.replace(tmp, p)
-    rec = {"declared_in": DECLARED, "stage": "U2c", "dataset": name, "carve": carve, "graph": graph,
-           "graph_detail": desc, "script_sha256": script_sha256(), "p1g_script_sha256": PG.script_sha256(),
-           "p1g2_script_sha256": PG2.script_sha256(), "zp1h_sha256": P1H.script_sha256(),
-           "p1e_script_sha256": K.script_sha256(), "freeze_RECORD_SHA256": op.freeze["RECORD_SHA256"],
-           "threads": threads, "questions": nq, "golds": int(ptr[-1]), "candidates": [c[0] for c in cands],
-           "file_sha256": sha_file(p), "summary": s,
-           "checks": {"base_seeds_step4d": True, "seeds_equal_g0": True, "b_equal_p1f": True,
-                      **({"i_equal_g0_and_p1f": True, "rows_held_fill_equal_p1g": True, "today_equal_p1f": True}
-                         if graph == "today" else {})},
-           "seconds": round(time.time() - t0, 1), "utc": utc()}
+    nq = int(arr["rows"].shape[0])
+    rec = {**head, "questions": nq, "golds": int(arr["ptr"][-1]), "candidates": [c[0] for c in cands],
+           "file_sha256": sha_file(p), "summary": s, "checks": checks, "seconds": seconds, **(extra or {}),
+           "utc": utc()}
     write_json(od / f"{name}__{carve}.json", rec)
-    log(f"{name}/{carve} {graph} ({nq} q, {time.time() - t0:.0f}s): written")
+    log(f"{name}/{carve} {graph} ({nq} q, {seconds:.0f}s): written")
     return 0
+
+
+def merge_stage(name, graph, k):
+    """Join a run's k shards into the file one run over every question writes; every part must be this script's,
+    on the same freeze, graph and threads, with every check passed, covering the questions in order."""
+    carve = carve_of(name)
+    od = parts_dir(graph)
+    recs, parts = [], []
+    for i in range(k):
+        stem = f"{name}__{carve}__{i}of{k}"
+        rp = od / f"{stem}.json"
+        if not rp.exists():
+            raise SystemExit(f"{rp}: missing")
+        r = json.loads(rp.read_text(encoding="utf-8"))
+        p = od / f"{stem}.npz"
+        if r.get("script_sha256") != script_sha256() or sha_file(p) != r["file_sha256"] or not all(r["checks"].values()):
+            raise SystemExit(f"{rp}: not this script's, not its file, or a check failed")
+        with np.load(p) as z:
+            parts.append({a: z[a] for a in z.files})
+        recs.append(r)
+    keys = ("declared_in", "stage", "dataset", "carve", "graph", "graph_detail", "script_sha256", "p1g_script_sha256",
+            "p1g2_script_sha256", "zp1h_sha256", "p1e_script_sha256", "freeze_RECORD_SHA256", "threads")
+    head = {a: recs[0][a] for a in keys}
+    nq = recs[0]["questions_all"]
+    for i, r in enumerate(recs):
+        if {a: r[a] for a in keys} != head or r["checks"] != recs[0]["checks"] or r["questions_all"] != nq:
+            raise SystemExit(f"part {i}: another script, freeze, graph, thread count, check set or carve")
+        if (r["part"], r["parts"]) != (i, k) or (r["q0"], r["q1"]) != shard_range(nq, i, k):
+            raise SystemExit(f"part {i}: not the {i}-th of {k} question ranges")
+    arr = merge_arrays(parts)
+    st = F.load_stats(name, carve)
+    if arr["rows"].shape[0] != nq or not np.array_equal(st["ptr"][:nq + 1], arr["ptr"]):
+        raise SystemExit(f"{name}/{carve}: the merged parts do not cover P1f's questions and golds")
+    return write_stats(name, carve, graph, arr, head, recs[0]["checks"], PG.candidates(),
+                       round(sum(r["seconds"] for r in recs), 1),
+                       {"shards": k, "part_sha256": [r["file_sha256"] for r in recs],
+                        "seconds_longest_part": max(r["seconds"] for r in recs)})
 
 
 # ── the verdict ──────────────────────────────────────────────────────────────
@@ -673,16 +769,50 @@ def _selftest():
     led = ledger_of({**a, "listed": np.ones(ng, bool), "one_link": np.zeros(ng, bool), "kt_pos": np.full(ng, -1),
                      "in_I": np.zeros(ng, bool)}, None, "f1+none", False, 0.5)
     assert sum(led["by_cause"].values()) == led["missed"]
+    # 6. the shards: contiguous, non-empty, in order, covering every question; merged, any split gives the whole back
+    for nq_ in (1, 2, 7, 30, 1000, 1001):
+        for k in range(1, min(nq_, 12) + 1):
+            rs = [shard_range(nq_, i, k) for i in range(k)]
+            assert rs[0][0] == 0 and rs[-1][1] == nq_ and all(r[1] > r[0] for r in rs)
+            assert all(rs[i][1] == rs[i + 1][0] for i in range(k - 1))
+    for bad in ((5, 5, 5), (5, -1, 2), (3, 0, 4)):
+        try:
+            shard_range(*bad)
+        except SystemExit:
+            continue
+        raise AssertionError(bad)
+    whole = {"rows": a["rows"], "pos": a["pos"], "ptr": ptr, "bs": a["bs"], "fill": a["fill"],
+             "inc": rng.integers(0, 90, nq), "listed": rng.random(ng) < 0.5, "one_link": rng.random(ng) < 0.3,
+             "kt_pos": rng.integers(-1, 40, ng), "in_I": rng.random(ng) < 0.6}
+    for k in (1, 2, 3, 7, nq):
+        parts = []
+        for i in range(k):
+            q0, q1 = shard_range(nq, i, k)
+            g0, g1 = int(ptr[q0]), int(ptr[q1])
+            parts.append({**{x: whole[x][q0:q1] for x in PER_QUESTION}, **{x: whole[x][g0:g1] for x in PER_GOLD},
+                          "ptr": ptr[q0:q1 + 1]})
+        m = merge_arrays(parts)
+        assert list(m) == list(ARRAYS) and all(np.array_equal(m[x], whole[x]) for x in ARRAYS), k
+    if nq > 1:
+        swapped = [parts[1], parts[0]] + parts[2:]
+        try:
+            merge_arrays(swapped)
+        except SystemExit:
+            pass
+        else:
+            raise AssertionError("parts out of order merged")
     print("zu2c selftest: OK")
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("stage", nargs="?", choices=("stats", "verdict"))
+    ap.add_argument("stage", nargs="?", choices=("stats", "merge", "verdict"))
     ap.add_argument("dataset", nargs="?")
     ap.add_argument("--graph", choices=GRAPHS)
     ap.add_argument("--threads", type=int, default=2)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--shard", help="I/K: the I-th (from 0) of K contiguous question ranges")
+    ap.add_argument("--parts", type=int, default=0)
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
     if a.selftest:
@@ -691,7 +821,15 @@ def main(argv=None):
     if a.stage == "stats":
         if not a.dataset or not a.graph:
             raise SystemExit("stats needs DATASET and --graph")
-        return stats_stage(a.dataset, a.graph, a.threads, a.limit)
+        shard = None
+        if a.shard:
+            i, k = (int(x) for x in a.shard.split("/"))
+            shard = (i, k)
+        return stats_stage(a.dataset, a.graph, a.threads, a.limit, shard)
+    if a.stage == "merge":
+        if not a.dataset or not a.graph or a.parts < 1:
+            raise SystemExit("merge needs DATASET, --graph and --parts K")
+        return merge_stage(a.dataset, a.graph, a.parts)
     if a.stage == "verdict":
         return verdict_stage()
     ap.print_help()
