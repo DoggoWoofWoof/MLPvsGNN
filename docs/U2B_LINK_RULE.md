@@ -148,6 +148,10 @@ every stage returns its finished record first. The two orchestrators are non-pre
 once read. hotpotqa's and 2wiki's link stage runs in 128 shards (stat stays at its own count; the merged statistic does
 not depend on it). The build records name the link shard count.
 
+The build stage makes every graph of a rule in one container, and a preempted build starts again from the first graph.
+2wiki's was preempted four times, so from 22 October (about 05:10) the build stage is non-preemptible. The graphs and
+records are unchanged.
+
 ## 6. Gates
 
 1. **Gate 1** (laptop, before this commit): with every switch off and u1d's variants, zu2b's surfaces, capitalization

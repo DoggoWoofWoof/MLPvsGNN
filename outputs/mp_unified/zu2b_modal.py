@@ -393,7 +393,10 @@ def link(d, rule_name, i, k):
     return rec
 
 
-@app.function(image=image, volumes={"/v": vol}, memory=(32768, 131072), cpu=2.0, timeout=10800, **STAGE)
+# The build makes every graph of a rule in one container, and a preempted one starts again from the first graph
+# (2wiki's was preempted four times): it is non-preemptible.
+@app.function(image=image, volumes={"/v": vol}, memory=(32768, 131072), cpu=2.0, timeout=10800, nonpreemptible=True,
+              **STAGE)
 def build(d, rule_name, k):
     """Each variant's graphs as undirected CSR: the mention links (M), damped (D); with the descriptive switch also with
     the sibling links (S) and both (DS)."""
