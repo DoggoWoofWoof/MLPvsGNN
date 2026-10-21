@@ -1,0 +1,19 @@
+{
+ "dataset": "squad",
+ "rule": "u1d",
+ "n_nodes": 20233,
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "n_surfaces": 503,
+ "n_low": 503,
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "shards": 1,
+ "common_forms": 87,
+ "forms_seen": 198,
+ "descriptive_nodes": 20233,
+ "stat_secs_max": 2.4,
+ "stat_peak_gb_max": 0,
+ "npz": "capstat.npz",
+ "npz_sha256": "a7ebef5ec26952991025537dc65f3fdd23c1eb9df869058cd6db9752e46ec39a"
+}

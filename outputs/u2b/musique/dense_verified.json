@@ -1,0 +1,29 @@
+{
+ "dataset": "musique",
+ "manifest_sha256": "9fa5b3951c7a849a6aed62ebd29420402a1cbafbde672feceacaa57c8dec2d36",
+ "n_rows": 117534,
+ "shards": [
+  {
+   "shard": 0,
+   "ok": true,
+   "sha256": "f431bd123b4892f7bbaa669c79229498ce427190056182d58e81a30ced028e2e",
+   "bytes": 122880128,
+   "wrote": false
+  },
+  {
+   "shard": 1,
+   "ok": true,
+   "sha256": "0dea979fa43edea37fc77624d119935a1c639c2d5db94222702614ec288d9baf",
+   "bytes": 122880128,
+   "wrote": false
+  },
+  {
+   "shard": 2,
+   "ok": true,
+   "sha256": "3dfbf16e025feae13403b17b15c7cce5aec7359c14e6d585bef1c429dbcc4c16",
+   "bytes": 115304576,
+   "wrote": false
+  }
+ ],
+ "status": "PASS"
+}

@@ -1,0 +1,22 @@
+{
+ "dataset": "metaqa",
+ "manifest_sha256": "6ed812224adc5b43035c44eb9dc8f6fa27c3ef2d0d7cc540ea1b00f0937c43e1",
+ "n_rows": 43234,
+ "shards": [
+  {
+   "shard": 0,
+   "ok": true,
+   "sha256": "113b7b2678072c56abebfb994fcaebc95e15df8c5f4c39e8525be5f2e75e99fa",
+   "bytes": 122880128,
+   "wrote": false
+  },
+  {
+   "shard": 1,
+   "ok": true,
+   "sha256": "2d16ba324dd89ac2b91199e11c8fd3c80bd721e9625880e909b54a1f54c77d8e",
+   "bytes": 9934976,
+   "wrote": false
+  }
+ ],
+ "status": "PASS"
+}

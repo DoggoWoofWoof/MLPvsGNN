@@ -1,0 +1,378 @@
+{
+ "dataset": "squad",
+ "rule": "new",
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "capstat_sha256": "652fd04d52168a7eb0f9cd19c26753bb271bdd7d2daadb9e636fe7280cfdcbdd",
+ "link_npz_sha256": [
+  "78b10df03cb1b75b8161208d228a77e3db1272cad4eecc53b0d1a8b59ba987ef"
+ ],
+ "link_secs_max": 20.9,
+ "link_peak_gb_max": 0,
+ "link_stats": {
+  "W2": {
+   "surface_links": 12422,
+   "ambiguous": 0
+  },
+  "W5e": {
+   "surface_links": 14633,
+   "ambiguous": 0
+  },
+  "W6e": {
+   "surface_links": 33163,
+   "ambiguous": 4649
+  },
+  "W3e": {
+   "surface_links": 42530,
+   "ambiguous": 8911
+  },
+  "W7e": {
+   "surface_links": 55453,
+   "ambiguous": 15488
+  },
+  "W7": {
+   "surface_links": 55453,
+   "ambiguous": 17639
+  },
+  "W3eg": {
+   "surface_links": 47995,
+   "ambiguous": 10681
+  },
+  "W7eg": {
+   "surface_links": 63860,
+   "ambiguous": 18627
+  }
+ },
+ "siblings": {
+  "pairs": 1046756,
+  "groups_with_siblings": 477,
+  "largest_group": 149
+ },
+ "descriptive_nodes": 20233,
+ "graphs": {
+  "W2_M": {
+   "graph": "W2_M",
+   "directed_edges": 685845,
+   "undirected_neighbours": 1128878,
+   "mean_degree": 55.79,
+   "isolated_share": 0.3211,
+   "max_degree": 968,
+   "file": "W2_M.npz",
+   "npz_sha256": "b040bf628331ac27005f12f6639a7d8dfeb489593c47c0a6830c683e722c1313"
+  },
+  "W2_D": {
+   "graph": "W2_D",
+   "directed_edges": 685845,
+   "undirected_neighbours": 1128878,
+   "mean_degree": 55.79,
+   "isolated_share": 0.3211,
+   "max_degree": 968,
+   "file": "W2_D.npz",
+   "npz_sha256": "b040bf628331ac27005f12f6639a7d8dfeb489593c47c0a6830c683e722c1313"
+  },
+  "W2_S": {
+   "graph": "W2_S",
+   "directed_edges": 1732601,
+   "undirected_neighbours": 1756400,
+   "mean_degree": 86.81,
+   "isolated_share": 0.0,
+   "max_degree": 968,
+   "file": "W2_S.npz",
+   "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5"
+  },
+  "W2_DS": {
+   "graph": "W2_DS",
+   "directed_edges": 1732601,
+   "undirected_neighbours": 1756400,
+   "mean_degree": 86.81,
+   "isolated_share": 0.0,
+   "max_degree": 968,
+   "file": "W2_DS.npz",
+   "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5"
+  },
+  "W5e_M": {
+   "graph": "W5e_M",
+   "directed_edges": 810472,
+   "undirected_neighbours": 1339434,
+   "mean_degree": 66.2,
+   "isolated_share": 0.2876,
+   "max_degree": 968,
+   "file": "W5e_M.npz",
+   "npz_sha256": "f820ad4efce31b22550431d94fc3a44dce58e4cca55b776eccc1edaea5770074"
+  },
+  "W5e_D": {
+   "graph": "W5e_D",
+   "directed_edges": 810472,
+   "undirected_neighbours": 1339434,
+   "mean_degree": 66.2,
+   "isolated_share": 0.2876,
+   "max_degree": 968,
+   "file": "W5e_D.npz",
+   "npz_sha256": "f820ad4efce31b22550431d94fc3a44dce58e4cca55b776eccc1edaea5770074"
+  },
+  "W5e_S": {
+   "graph": "W5e_S",
+   "directed_edges": 1857228,
+   "undirected_neighbours": 1919090,
+   "mean_degree": 94.85,
+   "isolated_share": 0.0,
+   "max_degree": 968,
+   "file": "W5e_S.npz",
+   "npz_sha256": "48fb367084d8f94e487c72ac4bbfeea56150f1efaa9f1ac50d1c699e7bc7311e"
+  },
+  "W5e_DS": {
+   "graph": "W5e_DS",
+   "directed_edges": 1857228,
+   "undirected_neighbours": 1919090,
+   "mean_degree": 94.85,
+   "isolated_share": 0.0,
+   "max_degree": 968,
+   "file": "W5e_DS.npz",
+   "npz_sha256": "48fb367084d8f94e487c72ac4bbfeea56150f1efaa9f1ac50d1c699e7bc7311e"
+  },
+  "W6e_M": {
+   "graph": "W6e_M",
+   "directed_edges": 1592335,
+   "undirected_neighbours": 2779764,
+   "mean_degree": 137.39,
+   "isolated_share": 0.1992,
+   "max_degree": 1432,
+   "file": "W6e_M.npz",
+   "npz_sha256": "3af90a3189b58a997bb75b8eede8c8633ab0c3ed63f780ebdedad33cc83f08a5"
+  },
+  "W6e_D": {
+   "graph": "W6e_D",
+   "directed_edges": 1447059,
+   "undirected_neighbours": 2497138,
+   "mean_degree": 123.42,
+   "isolated_share": 0.2093,
+   "max_degree": 1416,
+   "file": "W6e_D.npz",
+   "npz_sha256": "f96e1ad90e7838f57adac2b3bf1d7e60246683c8d3d0d1fa2b6fc99f236e5c1e"
+  },
+  "W6e_S": {
+   "graph": "W6e_S",
+   "directed_edges": 2639091,
+   "undirected_neighbours": 3234446,
+   "mean_degree": 159.86,
+   "isolated_share": 0.0,
+   "max_degree": 1432,
+   "file": "W6e_S.npz",
+   "npz_sha256": "db215caede35fb370f0d190af7e5ebfb787fd5380684b8b45c498511327c6ac4"
+  },
+  "W6e_DS": {
+   "graph": "W6e_DS",
+   "directed_edges": 2493815,
+   "undirected_neighbours": 2959202,
+   "mean_degree": 146.26,
+   "isolated_share": 0.0,
+   "max_degree": 1416,
+   "file": "W6e_DS.npz",
+   "npz_sha256": "643b5ab1e9dc5469cc94d591e21a5d4bcd26156ab64d4380afa4b4c531b3eec0"
+  },
+  "W3e_M": {
+   "graph": "W3e_M",
+   "directed_edges": 1893517,
+   "undirected_neighbours": 3416990,
+   "mean_degree": 168.88,
+   "isolated_share": 0.1859,
+   "max_degree": 2536,
+   "file": "W3e_M.npz",
+   "npz_sha256": "a54ddf9ade611c3319a5141a72e50df7501b529971f7e9227e6e11c790aac630"
+  },
+  "W3e_D": {
+   "graph": "W3e_D",
+   "directed_edges": 1566385,
+   "undirected_neighbours": 2770688,
+   "mean_degree": 136.94,
+   "isolated_share": 0.2053,
+   "max_degree": 1358,
+   "file": "W3e_D.npz",
+   "npz_sha256": "f4125700e63c62ea86c621795c1b009273f31a04060ae9cbf56470d6dc9d0ece"
+  },
+  "W3e_S": {
+   "graph": "W3e_S",
+   "directed_edges": 2940273,
+   "undirected_neighbours": 3906636,
+   "mean_degree": 193.08,
+   "isolated_share": 0.0,
+   "max_degree": 2536,
+   "file": "W3e_S.npz",
+   "npz_sha256": "66ca548620864bbe60ba57b226bcb0c91613594f02c5bd1b7bb617880873b890"
+  },
+  "W3e_DS": {
+   "graph": "W3e_DS",
+   "directed_edges": 2613141,
+   "undirected_neighbours": 3275352,
+   "mean_degree": 161.88,
+   "isolated_share": 0.0,
+   "max_degree": 1368,
+   "file": "W3e_DS.npz",
+   "npz_sha256": "05f225be6f64d0240834992e10c6579ea18c94537027d7a82515c607de8aa043"
+  },
+  "W7e_M": {
+   "graph": "W7e_M",
+   "directed_edges": 2392547,
+   "undirected_neighbours": 4285906,
+   "mean_degree": 211.83,
+   "isolated_share": 0.1624,
+   "max_degree": 1829,
+   "file": "W7e_M.npz",
+   "npz_sha256": "b4f15d8e64c5cffde0755a9a7736375ad388a98063207d4e3138b71dd56d0482"
+  },
+  "W7e_D": {
+   "graph": "W7e_D",
+   "directed_edges": 2272545,
+   "undirected_neighbours": 4051230,
+   "mean_degree": 200.23,
+   "isolated_share": 0.1657,
+   "max_degree": 1772,
+   "file": "W7e_D.npz",
+   "npz_sha256": "1100696b7fd244603a713e33e90912edd94ae03877a3ea3b3a6cb8b819754ef9"
+  },
+  "W7e_S": {
+   "graph": "W7e_S",
+   "directed_edges": 3439303,
+   "undirected_neighbours": 4672340,
+   "mean_degree": 230.93,
+   "isolated_share": 0.0,
+   "max_degree": 1835,
+   "file": "W7e_S.npz",
+   "npz_sha256": "5f773077e3c2c37edfb28676029e5b2f7c72eb4f22dddd688587edd279cfb417"
+  },
+  "W7e_DS": {
+   "graph": "W7e_DS",
+   "directed_edges": 3319301,
+   "undirected_neighbours": 4441880,
+   "mean_degree": 219.54,
+   "isolated_share": 0.0,
+   "max_degree": 1778,
+   "file": "W7e_DS.npz",
+   "npz_sha256": "cceba58ef47af16a9b295f5864c7b9724e41b88563950a1aada5f31982526f87"
+  },
+  "W7_M": {
+   "graph": "W7_M",
+   "directed_edges": 2382763,
+   "undirected_neighbours": 4264326,
+   "mean_degree": 210.76,
+   "isolated_share": 0.1624,
+   "max_degree": 1829,
+   "file": "W7_M.npz",
+   "npz_sha256": "42880237b18ee25d107fc2472b545768fda7f989150bf210b599d6973723ca9f"
+  },
+  "W7_D": {
+   "graph": "W7_D",
+   "directed_edges": 2262761,
+   "undirected_neighbours": 4029678,
+   "mean_degree": 199.16,
+   "isolated_share": 0.1657,
+   "max_degree": 1772,
+   "file": "W7_D.npz",
+   "npz_sha256": "3acbd07b0ff9ba9ef7488563b8db1980f38a0508a8378e0493032b27ebbaa4e8"
+  },
+  "W7_S": {
+   "graph": "W7_S",
+   "directed_edges": 3429519,
+   "undirected_neighbours": 4648398,
+   "mean_degree": 229.74,
+   "isolated_share": 0.0,
+   "max_degree": 1835,
+   "file": "W7_S.npz",
+   "npz_sha256": "3e4ba8cf16aba0c3d3f43886c9e676cf2d2121ec3069f19f084d8dfbe2dbe35b"
+  },
+  "W7_DS": {
+   "graph": "W7_DS",
+   "directed_edges": 3309517,
+   "undirected_neighbours": 4417966,
+   "mean_degree": 218.35,
+   "isolated_share": 0.0,
+   "max_degree": 1778,
+   "file": "W7_DS.npz",
+   "npz_sha256": "766c9305a82a40b1d0f00f6e13bf0b158c5574763e9f680ba7e14b2f7c66ba8b"
+  },
+  "W3eg_M": {
+   "graph": "W3eg_M",
+   "directed_edges": 2069282,
+   "undirected_neighbours": 3762166,
+   "mean_degree": 185.94,
+   "isolated_share": 0.0509,
+   "max_degree": 2562,
+   "file": "W3eg_M.npz",
+   "npz_sha256": "49e4f99a1f44dcba95192e4595f77710449b320b41d18c761eba741cf832074d"
+  },
+  "W3eg_D": {
+   "graph": "W3eg_D",
+   "directed_edges": 1742150,
+   "undirected_neighbours": 3116322,
+   "mean_degree": 154.02,
+   "isolated_share": 0.0591,
+   "max_degree": 1358,
+   "file": "W3eg_D.npz",
+   "npz_sha256": "48aa7ad7079de850a3e452f6a9e1cafa7eb2010ac70fd1523fc795c13193c787"
+  },
+  "W3eg_S": {
+   "graph": "W3eg_S",
+   "directed_edges": 3116038,
+   "undirected_neighbours": 4222702,
+   "mean_degree": 208.7,
+   "isolated_share": 0.0,
+   "max_degree": 2562,
+   "file": "W3eg_S.npz",
+   "npz_sha256": "5a8d524cb76664e9ae58f8a7a3e14f9bc8d62d6ca600e32df28daa87ec0a3897"
+  },
+  "W3eg_DS": {
+   "graph": "W3eg_DS",
+   "directed_edges": 2788906,
+   "undirected_neighbours": 3591876,
+   "mean_degree": 177.53,
+   "isolated_share": 0.0,
+   "max_degree": 1368,
+   "file": "W3eg_DS.npz",
+   "npz_sha256": "bed7a5d6cc92f2e2c7267f69a10db503407730099d4b6f27a1306f24159a73d1"
+  },
+  "W7eg_M": {
+   "graph": "W7eg_M",
+   "directed_edges": 2666720,
+   "undirected_neighbours": 4820066,
+   "mean_degree": 238.23,
+   "isolated_share": 0.0439,
+   "max_degree": 1876,
+   "file": "W7eg_M.npz",
+   "npz_sha256": "c378aedaa2db90b54188be7d5c4e77e52f136be67b615f70c98fb1f5177071c7"
+  },
+  "W7eg_D": {
+   "graph": "W7eg_D",
+   "directed_edges": 2545822,
+   "undirected_neighbours": 4584144,
+   "mean_degree": 226.57,
+   "isolated_share": 0.0453,
+   "max_degree": 1819,
+   "file": "W7eg_D.npz",
+   "npz_sha256": "7ea0bfd13fe87b9c4f81e4bd361e000d9287db52496ab54e877e747f8ac31f23"
+  },
+  "W7eg_S": {
+   "graph": "W7eg_S",
+   "directed_edges": 3713476,
+   "undirected_neighbours": 5175782,
+   "mean_degree": 255.81,
+   "isolated_share": 0.0,
+   "max_degree": 1882,
+   "file": "W7eg_S.npz",
+   "npz_sha256": "c2a643957924a3f4ec5a4953ee992b2a15f1c25467a264d325caeb9ccbb86a5a"
+  },
+  "W7eg_DS": {
+   "graph": "W7eg_DS",
+   "directed_edges": 3592578,
+   "undirected_neighbours": 4944076,
+   "mean_degree": 244.36,
+   "isolated_share": 0.0,
+   "max_degree": 1825,
+   "file": "W7eg_DS.npz",
+   "npz_sha256": "570e90ae4f4931b0b85052364cebb83f19bc785895c49b7a0b4a289738f7d4ac"
+  }
+ },
+ "secs": 53.4,
+ "peak_gb": null
+}

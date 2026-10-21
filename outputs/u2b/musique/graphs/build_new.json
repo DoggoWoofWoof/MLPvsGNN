@@ -1,0 +1,378 @@
+{
+ "dataset": "musique",
+ "rule": "new",
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "capstat_sha256": "f4f06d28bdeb3784a6b0bbbbe2ab9da18eca81afcef875b79d2c85707b459aa9",
+ "link_npz_sha256": [
+  "7e1de4fab743317d9e4a3eea7496700dd6afb62f3f4eeb9447d106477cbe33f7"
+ ],
+ "link_secs_max": 912.8,
+ "link_peak_gb_max": 0,
+ "link_stats": {
+  "W2": {
+   "surface_links": 256776,
+   "ambiguous": 0
+  },
+  "W5e": {
+   "surface_links": 520581,
+   "ambiguous": 84346
+  },
+  "W6e": {
+   "surface_links": 952540,
+   "ambiguous": 532367
+  },
+  "W3e": {
+   "surface_links": 1058846,
+   "ambiguous": 625893
+  },
+  "W7e": {
+   "surface_links": 1050974,
+   "ambiguous": 630623
+  },
+  "W7": {
+   "surface_links": 985094,
+   "ambiguous": 754315
+  },
+  "W3eg": {
+   "surface_links": 1268277,
+   "ambiguous": 785339
+  },
+  "W7eg": {
+   "surface_links": 1251192,
+   "ambiguous": 792759
+  }
+ },
+ "siblings": {
+  "pairs": 498208,
+  "groups_with_siblings": 5657,
+  "largest_group": 132
+ },
+ "descriptive_nodes": 117534,
+ "graphs": {
+  "W2_M": {
+   "graph": "W2_M",
+   "directed_edges": 2304416,
+   "undirected_neighbours": 4441986,
+   "mean_degree": 37.79,
+   "isolated_share": 0.1536,
+   "max_degree": 14281,
+   "file": "W2_M.npz",
+   "npz_sha256": "2ac6da283ac8783282b9f73b547cddf1c7e8835f0a6615e45211f7c1b2117af1"
+  },
+  "W2_D": {
+   "graph": "W2_D",
+   "directed_edges": 1358174,
+   "undirected_neighbours": 2568450,
+   "mean_degree": 21.85,
+   "isolated_share": 0.2704,
+   "max_degree": 1113,
+   "file": "W2_D.npz",
+   "npz_sha256": "7a95f0552b7dd9c8fb58c2df7a27ee623b765062f300e7adfc2056278ed5df8c"
+  },
+  "W2_S": {
+   "graph": "W2_S",
+   "directed_edges": 2802624,
+   "undirected_neighbours": 4687840,
+   "mean_degree": 39.88,
+   "isolated_share": 0.1372,
+   "max_degree": 14281,
+   "file": "W2_S.npz",
+   "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b"
+  },
+  "W2_DS": {
+   "graph": "W2_DS",
+   "directed_edges": 1856382,
+   "undirected_neighbours": 2839590,
+   "mean_degree": 24.16,
+   "isolated_share": 0.2466,
+   "max_degree": 1113,
+   "file": "W2_DS.npz",
+   "npz_sha256": "afe847d64fedaeb1c78bbdd3711a2ede045a552e16eeae710be7baa94ee59b6a"
+  },
+  "W5e_M": {
+   "graph": "W5e_M",
+   "directed_edges": 2899756,
+   "undirected_neighbours": 5604590,
+   "mean_degree": 47.68,
+   "isolated_share": 0.0443,
+   "max_degree": 14287,
+   "file": "W5e_M.npz",
+   "npz_sha256": "28eeeb067600638a104cad1672dec9285b13d4f2a0056b08a3b11c960342f985"
+  },
+  "W5e_D": {
+   "graph": "W5e_D",
+   "directed_edges": 1616925,
+   "undirected_neighbours": 3063780,
+   "mean_degree": 26.07,
+   "isolated_share": 0.1047,
+   "max_degree": 1115,
+   "file": "W5e_D.npz",
+   "npz_sha256": "a0eaa7103e022135a71eb59aaeb6df25931549b85495199a8bdce43e0bdefeb5"
+  },
+  "W5e_S": {
+   "graph": "W5e_S",
+   "directed_edges": 3397964,
+   "undirected_neighbours": 5824120,
+   "mean_degree": 49.55,
+   "isolated_share": 0.0375,
+   "max_degree": 14287,
+   "file": "W5e_S.npz",
+   "npz_sha256": "b3d1cbbc6af8c19777de60b039c817007bc8bfa3f5937dfc8733f95ce003dc20"
+  },
+  "W5e_DS": {
+   "graph": "W5e_DS",
+   "directed_edges": 2115133,
+   "undirected_neighbours": 3313324,
+   "mean_degree": 28.19,
+   "isolated_share": 0.0924,
+   "max_degree": 1115,
+   "file": "W5e_DS.npz",
+   "npz_sha256": "07c949189c8439ef4e1914faf03b8a1d4a886a4b47c0b7f13be15c68899bcc2e"
+  },
+  "W6e_M": {
+   "graph": "W6e_M",
+   "directed_edges": 3537907,
+   "undirected_neighbours": 6804210,
+   "mean_degree": 57.89,
+   "isolated_share": 0.0078,
+   "max_degree": 14337,
+   "file": "W6e_M.npz",
+   "npz_sha256": "ade92ccd860e37ecefa5fc3436c83f1dce3adcc007fcd0434a5cd418b2241e2d"
+  },
+  "W6e_D": {
+   "graph": "W6e_D",
+   "directed_edges": 2370718,
+   "undirected_neighbours": 4494760,
+   "mean_degree": 38.24,
+   "isolated_share": 0.0166,
+   "max_degree": 1117,
+   "file": "W6e_D.npz",
+   "npz_sha256": "cb648c25d2089f2eb4cad781031f56abf55d725872b20fb2e0ca2e79c88c8221"
+  },
+  "W6e_S": {
+   "graph": "W6e_S",
+   "directed_edges": 4036115,
+   "undirected_neighbours": 6970642,
+   "mean_degree": 59.31,
+   "isolated_share": 0.0054,
+   "max_degree": 14337,
+   "file": "W6e_S.npz",
+   "npz_sha256": "7766ad870b9da7c7078f013def5465e1231cb4d17d4c34bbc4f5a05c8843f504"
+  },
+  "W6e_DS": {
+   "graph": "W6e_DS",
+   "directed_edges": 2868926,
+   "undirected_neighbours": 4689456,
+   "mean_degree": 39.9,
+   "isolated_share": 0.0129,
+   "max_degree": 1117,
+   "file": "W6e_DS.npz",
+   "npz_sha256": "ac5c36a4c3c6ca93ffafab76bccf688860c02706a221344364262af0e7ccb366"
+  },
+  "W3e_M": {
+   "graph": "W3e_M",
+   "directed_edges": 3880295,
+   "undirected_neighbours": 7501568,
+   "mean_degree": 63.82,
+   "isolated_share": 0.007,
+   "max_degree": 14293,
+   "file": "W3e_M.npz",
+   "npz_sha256": "03413ad57015d500cb2b58df49a76de68f5873395f6cddf51efdaddbe6073be5"
+  },
+  "W3e_D": {
+   "graph": "W3e_D",
+   "directed_edges": 2622458,
+   "undirected_neighbours": 5013018,
+   "mean_degree": 42.65,
+   "isolated_share": 0.0109,
+   "max_degree": 1121,
+   "file": "W3e_D.npz",
+   "npz_sha256": "cc78c48f0896493090173308311123d6c2b25ccb4c9f905ff3f7018a2021fde2"
+  },
+  "W3e_S": {
+   "graph": "W3e_S",
+   "directed_edges": 4378503,
+   "undirected_neighbours": 7688986,
+   "mean_degree": 65.42,
+   "isolated_share": 0.0044,
+   "max_degree": 14293,
+   "file": "W3e_S.npz",
+   "npz_sha256": "33945ed2d7847a17e9a2c2c974c3ef063751212ba149e44068723655716ade27"
+  },
+  "W3e_DS": {
+   "graph": "W3e_DS",
+   "directed_edges": 3120666,
+   "undirected_neighbours": 5230548,
+   "mean_degree": 44.5,
+   "isolated_share": 0.0074,
+   "max_degree": 1121,
+   "file": "W3e_DS.npz",
+   "npz_sha256": "afcb99dede940b2350ffdde705d588935032a74418ca76a3c12b35ee00339dde"
+  },
+  "W7e_M": {
+   "graph": "W7e_M",
+   "directed_edges": 3772095,
+   "undirected_neighbours": 7222586,
+   "mean_degree": 61.45,
+   "isolated_share": 0.0059,
+   "max_degree": 14289,
+   "file": "W7e_M.npz",
+   "npz_sha256": "934fbc5effc16addaa453d90f1abf4c8af5cccdd9d5a6f4c17c4f5579c28e5f8"
+  },
+  "W7e_D": {
+   "graph": "W7e_D",
+   "directed_edges": 2661477,
+   "undirected_neighbours": 5027976,
+   "mean_degree": 42.78,
+   "isolated_share": 0.0089,
+   "max_degree": 1119,
+   "file": "W7e_D.npz",
+   "npz_sha256": "22837505a37b16e81788a21a29d79dca7c7bae8bfbeba1948836d457b04960f1"
+  },
+  "W7e_S": {
+   "graph": "W7e_S",
+   "directed_edges": 4270303,
+   "undirected_neighbours": 7371666,
+   "mean_degree": 62.72,
+   "isolated_share": 0.0036,
+   "max_degree": 14289,
+   "file": "W7e_S.npz",
+   "npz_sha256": "a33351013b6957ccc498d09c5704600a98af9bd144459168b7712c91f0547c18"
+  },
+  "W7e_DS": {
+   "graph": "W7e_DS",
+   "directed_edges": 3159685,
+   "undirected_neighbours": 5206432,
+   "mean_degree": 44.3,
+   "isolated_share": 0.0061,
+   "max_degree": 1119,
+   "file": "W7e_DS.npz",
+   "npz_sha256": "e828d961495089569f00816cbd22956bf45c3640d4cbfc0b3c0a618097ddbf10"
+  },
+  "W7_M": {
+   "graph": "W7_M",
+   "directed_edges": 2874313,
+   "undirected_neighbours": 5431240,
+   "mean_degree": 46.21,
+   "isolated_share": 0.0075,
+   "max_degree": 3295,
+   "file": "W7_M.npz",
+   "npz_sha256": "e8c2e1bc4e6241708dc8d4c35c688e7fcb7aa4d092f4ebe62678c646d758b0a1"
+  },
+  "W7_D": {
+   "graph": "W7_D",
+   "directed_edges": 2540829,
+   "undirected_neighbours": 4776484,
+   "mean_degree": 40.64,
+   "isolated_share": 0.0082,
+   "max_degree": 1122,
+   "file": "W7_D.npz",
+   "npz_sha256": "2da9d16710e9c9ff8b04b37103448188eaa935cd3032d8e967c9b6f4750f8df1"
+  },
+  "W7_S": {
+   "graph": "W7_S",
+   "directed_edges": 3372521,
+   "undirected_neighbours": 5582010,
+   "mean_degree": 47.49,
+   "isolated_share": 0.0049,
+   "max_degree": 3297,
+   "file": "W7_S.npz",
+   "npz_sha256": "f2e637b21a6f13742d81f3762bf602b2fb688d8bf7321f615f4bc5d1c777b863"
+  },
+  "W7_DS": {
+   "graph": "W7_DS",
+   "directed_edges": 3039037,
+   "undirected_neighbours": 4945610,
+   "mean_degree": 42.08,
+   "isolated_share": 0.0055,
+   "max_degree": 1122,
+   "file": "W7_DS.npz",
+   "npz_sha256": "beb1b497565093528dfcd432d9d6d2eae1152e04528c9b51fc571c55e317bf9d"
+  },
+  "W3eg_M": {
+   "graph": "W3eg_M",
+   "directed_edges": 4236623,
+   "undirected_neighbours": 8207932,
+   "mean_degree": 69.83,
+   "isolated_share": 0.0029,
+   "max_degree": 14293,
+   "file": "W3eg_M.npz",
+   "npz_sha256": "9e42e5e2fd9d7f953621c99b7bac00d5db97f19c30b857b9045537b763c555f5"
+  },
+  "W3eg_D": {
+   "graph": "W3eg_D",
+   "directed_edges": 2975426,
+   "undirected_neighbours": 5713230,
+   "mean_degree": 48.61,
+   "isolated_share": 0.0049,
+   "max_degree": 1128,
+   "file": "W3eg_D.npz",
+   "npz_sha256": "e12562ec843a63c5f91e795062f636d919adf19f7465fccedfb50e7ef5f1d1fc"
+  },
+  "W3eg_S": {
+   "graph": "W3eg_S",
+   "directed_edges": 4734831,
+   "undirected_neighbours": 8385616,
+   "mean_degree": 71.35,
+   "isolated_share": 0.0021,
+   "max_degree": 14293,
+   "file": "W3eg_S.npz",
+   "npz_sha256": "3721c82738dfb89c471e4e4073172d11039b30a587743562cc516e552fffda2f"
+  },
+  "W3eg_DS": {
+   "graph": "W3eg_DS",
+   "directed_edges": 3473634,
+   "undirected_neighbours": 5921026,
+   "mean_degree": 50.38,
+   "isolated_share": 0.0037,
+   "max_degree": 1128,
+   "file": "W3eg_DS.npz",
+   "npz_sha256": "41b4c10525269e6e8b4da5b1a782525fb925f5680206de5996a8b1e008ca6a86"
+  },
+  "W7eg_M": {
+   "graph": "W7eg_M",
+   "directed_edges": 4120444,
+   "undirected_neighbours": 7907288,
+   "mean_degree": 67.28,
+   "isolated_share": 0.0026,
+   "max_degree": 14289,
+   "file": "W7eg_M.npz",
+   "npz_sha256": "d2e5d1d03298a06ec4bfd5b28d05d769f63664a1c21221727ca79c6fed050024"
+  },
+  "W7eg_D": {
+   "graph": "W7eg_D",
+   "directed_edges": 3007464,
+   "undirected_neighbours": 5708332,
+   "mean_degree": 48.57,
+   "isolated_share": 0.0039,
+   "max_degree": 1125,
+   "file": "W7eg_D.npz",
+   "npz_sha256": "aa9f39a133f6d8cf4eef6fd0d1b351b04a8a082bdddedcde928ebda9c822acdb"
+  },
+  "W7eg_S": {
+   "graph": "W7eg_S",
+   "directed_edges": 4618652,
+   "undirected_neighbours": 8045974,
+   "mean_degree": 68.46,
+   "isolated_share": 0.0018,
+   "max_degree": 14289,
+   "file": "W7eg_S.npz",
+   "npz_sha256": "9ce091d44bcf6b6789f8cd604300e00e93c2ea815eba60d85aed3619b23bb3f5"
+  },
+  "W7eg_DS": {
+   "graph": "W7eg_DS",
+   "directed_edges": 3505672,
+   "undirected_neighbours": 5876394,
+   "mean_degree": 50.0,
+   "isolated_share": 0.0029,
+   "max_degree": 1125,
+   "file": "W7eg_DS.npz",
+   "npz_sha256": "39794e2b73903e4fd871fa8af838095d6a7c68485fc8fa9f7ac7201f08fb4519"
+  }
+ },
+ "secs": 128.3,
+ "peak_gb": null
+}

@@ -1,0 +1,33 @@
+{
+ "declared_in": "docs/U2B_LINK_RULE.md",
+ "dataset": "hotpotqa",
+ "construction": {
+  "base_pool": "equal_rrf_budget_50",
+  "regime": "STRUCT",
+  "setting": {
+   "name": "h1_c25",
+   "hops": 1,
+   "per_seed_cap": 25
+  }
+ },
+ "families": [
+  "structural"
+ ],
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "carves": {
+  "s1sel": {
+   "questions": 1508,
+   "golds": 3016,
+   "npz_sha256": "b9f4c3f98a278872eb254d99c474548149df70dfa9f01cf64be6cf396b89453e",
+   "ids_sha256": "022a43b9c5adec17951c334e26657658678aea0c4cfdafcdd3606ba68ee49f67"
+  },
+  "s1eval": {
+   "questions": 7405,
+   "golds": 14810,
+   "npz_sha256": "5c2dc4675720a981e3a53071613c47f41df3b6404bd63dfc404b3b5e2b11892e",
+   "ids_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e"
+  }
+ },
+ "pkg_structural_npz_sha256": "3241b335066b45ce40cc3df85c3610b2f98545c2c92271d61930148367c030c5"
+}

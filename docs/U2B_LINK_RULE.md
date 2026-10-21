@@ -136,6 +136,18 @@ through the package's own pointer index, with a patch of exactly those rows take
 shard is kept only if its np.save bytes have the package manifest's sha256 and length. musique's and squad's shards are
 uploaded and hashed. All four pass on every shard (131/131, 150/150, 3/3, 1/1).
 
+**Follow-up (22 October, outputs unchanged).** The link stage runs `zu2b_fast.link_pass`, which gives exactly
+`zu2b.link_pass`'s edges and statistics, faster. It reads each variant's kinds through a mask and scores each passage
+and title group once across the variants. Every link container first runs its selftest against `zu2b.link_pass` on toy
+passages. On musique's first 3,000 passages it is equal under both rules: new rule 77.6 s to 36.0 s, u1d's 35.6 s to
+15.2 s (`outputs/u2b/check_fast_musique.json`, status PASS). `zu2b.py` itself is unchanged.
+
+A preempted orchestrator cancelled its link inputs, and a warm container could not reload the volume while a cancelled
+input held a file open. So every stage now runs one input per container and is retried; a retry redoes nothing, because
+every stage returns its finished record first. The two orchestrators are non-preemptible, and volume files are closed
+once read. hotpotqa's and 2wiki's link stage runs in 128 shards (stat stays at its own count; the merged statistic does
+not depend on it). The build records name the link shard count.
+
 ## 6. Gates
 
 1. **Gate 1** (laptop, before this commit): with every switch off and u1d's variants, zu2b's surfaces, capitalization

@@ -1,0 +1,42 @@
+{
+ "check": "zu2b_fast.link_pass vs zu2b.link_pass on musique's first 3,000 passages, under both rules",
+ "command": "python outputs/mp_unified/zu2b_fast.py check musique 3000",
+ "dataset": "musique",
+ "n_passages": 3000,
+ "status": "PASS",
+ "result": {
+  "new": {
+   "equal": true,
+   "secs_zu2b": 77.6,
+   "secs_fast": 36.0,
+   "edges": {
+    "W2": 58130,
+    "W5e": 73149,
+    "W6e": 89146,
+    "W3e": 98977,
+    "W7e": 97114,
+    "W7": 75346,
+    "W3eg": 108577,
+    "W7eg": 106213
+   }
+  },
+  "u1d": {
+   "equal": true,
+   "secs_zu2b": 35.6,
+   "secs_fast": 15.2,
+   "edges": {
+    "V2": 58092,
+    "V5e": 73115,
+    "V5": 71069,
+    "V6e": 89010,
+    "V6": 76025
+   }
+  }
+ },
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2b_fast_sha256": "09b9b96bc494da19fa115b0cf28c220dc8801a0bc24e0addf58e4a938df361b9",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "where": "laptop",
+ "utc": "2026-10-21T21:09:57Z"
+}

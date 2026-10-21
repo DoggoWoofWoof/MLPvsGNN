@@ -1,0 +1,19 @@
+{
+ "dataset": "hotpotqa",
+ "rule": "u1d",
+ "n_nodes": 5233329,
+ "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+ "n_surfaces": 5997206,
+ "n_low": 5983474,
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "shards": 32,
+ "common_forms": 226751,
+ "forms_seen": 2316459,
+ "descriptive_nodes": 5119139,
+ "stat_secs_max": 299.7,
+ "stat_peak_gb_max": 0,
+ "npz": "capstat.npz",
+ "npz_sha256": "3c4cbba0baf2bf36b744a47cec031715ed4489fea5eb2a59b99be3475479d870"
+}

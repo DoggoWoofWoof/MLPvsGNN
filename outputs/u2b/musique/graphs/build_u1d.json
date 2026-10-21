@@ -1,0 +1,46 @@
+{
+ "dataset": "musique",
+ "rule": "u1d",
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "capstat_sha256": "b77bce13942a7d3e0cf75770ad33c649dbfa28576a1fa4f580fec4fce1096207",
+ "link_npz_sha256": [
+  "afcc718a8d56ed3dfdf201a41a0b59106e5fe90d2771f0893cb86f62f054ce96"
+ ],
+ "link_secs_max": 84.0,
+ "link_peak_gb_max": 0,
+ "link_stats": {
+  "V2": {
+   "surface_links": 255883,
+   "ambiguous": 0
+  }
+ },
+ "siblings": null,
+ "descriptive_nodes": 117534,
+ "graphs": {
+  "V2_M": {
+   "graph": "V2_M",
+   "directed_edges": 2302233,
+   "undirected_neighbours": 4437858,
+   "mean_degree": 37.76,
+   "isolated_share": 0.1546,
+   "max_degree": 14280,
+   "file": "V2_M.npz",
+   "npz_sha256": "ea2e75de5023dd9658360058512386183c0689f294559bec1cae91e415b6577c"
+  },
+  "V2_D": {
+   "graph": "V2_D",
+   "directed_edges": 1355991,
+   "undirected_neighbours": 2564310,
+   "mean_degree": 21.82,
+   "isolated_share": 0.2723,
+   "max_degree": 1113,
+   "file": "V2_D.npz",
+   "npz_sha256": "f8d072eec32b40841ec7bf91354d8acc6c9c925238ea4348622049fbd4fb3382"
+  }
+ },
+ "secs": 9.2,
+ "peak_gb": null
+}

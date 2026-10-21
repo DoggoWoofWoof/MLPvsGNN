@@ -1,0 +1,15 @@
+{
+ "dataset": "squad",
+ "manifest_sha256": "204bc1a3c65f41fe78c17b43096070a063a3b74165be1159e85e22bce552c647",
+ "n_rows": 20233,
+ "shards": [
+  {
+   "shard": 0,
+   "ok": true,
+   "sha256": "d0cdaf954405442f4a00e6d6b74382e9b55c84fd8d2e7b0ef01bfec51d9e9b4b",
+   "bytes": 62155904,
+   "wrote": false
+  }
+ ],
+ "status": "PASS"
+}

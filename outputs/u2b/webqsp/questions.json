@@ -1,0 +1,31 @@
+{
+ "declared_in": "docs/U2B_LINK_RULE.md",
+ "dataset": "webqsp",
+ "construction": {
+  "base_pool": "dense_top200",
+  "regime": "FULL",
+  "setting": {
+   "name": "h3_c25_v2000",
+   "hops": 3,
+   "per_seed_cap": 25,
+   "per_frontier_cap": 25,
+   "visited_cap": 2000
+  }
+ },
+ "families": [
+  "structural",
+  "ner",
+  "knn"
+ ],
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "carves": {
+  "s1eval": {
+   "questions": 1503,
+   "golds": 10583,
+   "npz_sha256": "c1d468b74dc8c2309ee09ebf0bec7d65e750a6164179bf9f90f3b668d87c5937",
+   "ids_sha256": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e"
+  }
+ },
+ "pkg_structural_npz_sha256": "1a65e8deafd54013a295f96b47c7a510df33e4cfa922de283fb041726b2ebfce"
+}
