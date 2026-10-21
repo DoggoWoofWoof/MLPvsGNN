@@ -1,0 +1,28 @@
+{
+ "declared_in": "docs/U2A_LINK_GOLD_DIAGNOSTIC.md",
+ "dataset": "musique",
+ "check1": {
+  "nodes_examined": 3227,
+  "out_differ": 0,
+  "in_differ": 0,
+  "indegree_differ": 0,
+  "forms_compared": 7185,
+  "capstat_differ": 0,
+  "kept_lowercase_forms": 7185,
+  "surfaces": 7205
+ },
+ "check3": {
+  "surf": true,
+  "ptr": true,
+  "nodes": true,
+  "kinds": true,
+  "lowid": true,
+  "groups": true
+ },
+ "status": "PASS",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "zu2a_sha256": "bb69e5ed7ba79685dd3484fc01cb852bf1eb0eeb6a236ec38bd8b952a8423387",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "link_record_u1d_sha256": "836a25e0d22dd833c858d617fdf29a141b6b14a202d19a0af0d3a99a5ce3c5c0",
+ "seconds": 250.1
+}
