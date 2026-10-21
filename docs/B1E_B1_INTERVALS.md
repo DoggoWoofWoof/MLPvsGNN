@@ -82,4 +82,37 @@ These are P3c's rules, imported unchanged (`in_domain_call`, `zero_shot_call`):
 
 ## Results
 
-Not yet run.
+Run 21 October 2026, 14:36 IST, on the laptop. Records: `outputs/b1e/intervals.json` and `intervals.md`.
+- All 24 reads hold B1a's questions.
+- The 12 reads that B1b filed reproduce its means to four decimals.
+
+**Call: B1E_CLAIM1_NOT_ALL.** The in-domain clause HOLDS on 2wiki and hotpotqa and is NOT_SHOWN on musique. The
+zero-shot clause HOLDS on all three.
+
+R@5, J5 fits; the last column is each setting's held-out fit:
+
+| setting | RRF | GNN (zsp) | MLP (zrc) | MLP's share of the GNN's gain [95%] | GNN − MLP [95%] | in-domain | zero-shot |
+| --- | ---: | ---: | ---: | --- | --- | --- | --- |
+| musique | 0.5643 | 0.6628 | 0.6612 | 0.983 [0.890, 1.079] | +0.0017 [−0.0074, +0.0114] | NOT_SHOWN | HOLDS |
+| 2wiki | 0.7123 | 0.9715 | 0.9637 | 0.970 [0.953, 0.987] | +0.0078 [+0.0035, +0.0122] | HOLDS | HOLDS |
+| hotpotqa | 0.8505 | 0.9825 | 0.9815 | 0.992 [0.967, 1.020] | +0.0010 [−0.0025, +0.0045] | HOLDS | HOLDS |
+
+**What this says:**
+- **2wiki and hotpotqa.** Even at the low end of its interval, the MLP keeps at least 0.95 of the GNN's gain. On
+  2wiki the GNN is ahead by a small but clear 0.8 points of R@5 (+0.0035 to +0.0122). On hotpotqa the two cannot be
+  told apart.
+- **musique.** The point share is 0.983. The GNN's gain is smaller there (+0.099), so the interval is wide, and its
+  low end (0.890) falls just under the 0.90 bar. The gap's interval covers 0.
+- **Held out.** On each setting's leave-out fit the MLP is no further behind than on J5:
+  - musique: the MLP is ahead (gap −0.0107);
+  - hotpotqa: the MLP is ahead (−0.0070);
+  - 2wiki: even (+0.0010).
+- **FC@5 shares:**
+  - musique 0.935 [0.847, 1.036];
+  - 2wiki 0.949 [0.924, 0.974];
+  - hotpotqa 0.988 [0.964, 1.014].
+- **hit@1.** It moves little from RRF for either model, so its shares are noise. The table in `intervals.md` gives
+  them anyway.
+
+**Next form.** Musique's clause depends on how wide the interval is, not on the model. It is the same estimator on
+more musique questions: the confirmation run's held-out questions, which need the host. No B1b call changes.
