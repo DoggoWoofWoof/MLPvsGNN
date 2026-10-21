@@ -3,6 +3,7 @@
     modal run outputs/mp_unified/zu2b_modal.py --dataset D --stage dense
     modal run outputs/mp_unified/zu2b_modal.py --dataset D --stage reread
     modal run --detach outputs/mp_unified/zu2b_modal.py --dataset D --stage corpus --rule new|u1d --shards K
+    modal run --detach outputs/mp_unified/zu2b_modal.py --dataset D --stage build --rule new|u1d --link-shards K
     modal run --detach outputs/mp_unified/zu2b_modal.py --dataset D --stage grade --carve s1sel --graphs g1,g2,...
 
 "corpus" runs stat -> merge -> link -> build from one driver container; "grade" grades each group of graphs (groups
@@ -393,21 +394,11 @@ def link(d, rule_name, i, k):
     return rec
 
 
-# The build makes every graph of a rule in one container, and a preempted one starts again from the first graph
-# (2wiki's was preempted four times): it is non-preemptible.
-@app.function(image=image, volumes={"/v": vol}, memory=(32768, 131072), cpu=2.0, timeout=10800, nonpreemptible=True,
-              **STAGE)
-def build(d, rule_name, k):
-    """Each variant's graphs as undirected CSR: the mention links (M), damped (D); with the descriptive switch also with
-    the sibling links (S) and both (DS)."""
+def _build_inputs(zu2b, u1b, d, rule_name, k):
+    """What every build container reads, checked: the link shards, the node count, the title groups and the descriptive
+    flags."""
     import numpy as np
-    zu2b, u1b, u1d, _ = _mods()
-    _reload()
-    if (done := _done(U2B / d / "graphs" / f"build_{rule_name}.json")) is not None:
-        return done
-    t0 = time.time()
     rule = _rule(zu2b, rule_name)
-    variants = _variants(zu2b, rule_name)
     od = U2B / d / rule_name / "link"
     recs = _check_shards(od, k, "link")
     n = recs[0]["n_nodes"]
@@ -420,6 +411,25 @@ def build(d, rule_name, k):
     g = {}
     group = np.asarray([g.setdefault(zu2b.norm_title(t, rule).strip(), len(g)) for t in titles], np.int64)
     del titles, g
+    return rule, od, recs, n, nodes_sha, cs, desc, group
+
+
+# One variant's graphs per container, all variants at once: a build in one container took about 2.5 minutes a graph
+# on 2wiki, 32 graphs in turn. Non-preemptible, since a preempted part starts again from its first graph (2wiki's
+# whole build was preempted four times). Each graph is made by the same code as before, and its record names its file.
+@app.function(image=image, volumes={"/v": vol}, memory=(32768, 131072), cpu=2.0, timeout=10800, nonpreemptible=True,
+              **STAGE)
+def build_part(d, rule_name, k, v):
+    """One variant's graphs as undirected CSR: the mention links (M), damped (D); with the descriptive switch also with
+    the sibling links (S) and both (DS)."""
+    import numpy as np
+    zu2b, u1b, u1d, _ = _mods()
+    _reload()
+    pj = U2B / d / "graphs" / f"part_{rule_name}_{v}.json"
+    if (done := _done(pj)) is not None:
+        return done
+    t0 = time.time()
+    rule, od, recs, n, nodes_sha, cs, desc, group = _build_inputs(zu2b, u1b, d, rule_name, k)
     if rule.descriptive:
         sib_s, sib_d = zu2b.sibling_pairs(group, desc)
         gs = np.bincount(group[desc])
@@ -427,59 +437,71 @@ def build(d, rule_name, k):
     else:
         sib = None
     out = {}
-    for v in variants:
-        zs = [np.load(od / r["npz"]) for r in recs]
-        s_ = np.concatenate([z_[f"{v}_src"] for z_ in zs]).astype(np.int64)
-        t_ = np.concatenate([z_[f"{v}_dst"] for z_ in zs]).astype(np.int64)
-        del zs
-        key = s_ * n + t_
-        if np.unique(key).size != key.size or (s_ == t_).any():
-            raise SystemExit(f"{d} {v}: a pair repeats or loops")
-        del key
-        ds_, dt_ = zu2b.damp(s_, t_, n)
-        forms = {"M": (s_, t_), "D": (ds_, dt_)}
-        if rule.descriptive:
-            forms["S"] = (np.concatenate([s_, sib_s]), np.concatenate([t_, sib_d]))
-            forms["DS"] = (np.concatenate([ds_, sib_s]), np.concatenate([dt_, sib_d]))
-        for f, (a_, b_) in forms.items():
-            ip, col = zu2b.undirected_csr(n, a_, b_)
-            deg = np.diff(ip)
-            name = f"{v}_{f}"
-            rec = {"graph": name, "directed_edges": int(a_.size), "undirected_neighbours": int(col.size),
-                   "mean_degree": round(float(deg.mean()), 2), "isolated_share": round(float((deg == 0).mean()), 4),
-                   "max_degree": int(deg.max()) if deg.size else 0}
-            rec["file"], rec["npz_sha256"] = _save_npz(U2B / d / "graphs" / f"{name}.npz", indptr=ip, col=col)
+    zs = [np.load(od / r["npz"]) for r in recs]
+    s_ = np.concatenate([z_[f"{v}_src"] for z_ in zs]).astype(np.int64)
+    t_ = np.concatenate([z_[f"{v}_dst"] for z_ in zs]).astype(np.int64)
+    del zs
+    key = s_ * n + t_
+    if np.unique(key).size != key.size or (s_ == t_).any():
+        raise SystemExit(f"{d} {v}: a pair repeats or loops")
+    del key
+    ds_, dt_ = zu2b.damp(s_, t_, n)
+    forms = {"M": (s_, t_), "D": (ds_, dt_)}
+    if rule.descriptive:
+        forms["S"] = (np.concatenate([s_, sib_s]), np.concatenate([t_, sib_d]))
+        forms["DS"] = (np.concatenate([ds_, sib_s]), np.concatenate([dt_, sib_d]))
+    for f, (a_, b_) in forms.items():
+        ip, col = zu2b.undirected_csr(n, a_, b_)
+        deg = np.diff(ip)
+        name = f"{v}_{f}"
+        rec = {"graph": name, "directed_edges": int(a_.size), "undirected_neighbours": int(col.size),
+               "mean_degree": round(float(deg.mean()), 2), "isolated_share": round(float((deg == 0).mean()), 4),
+               "max_degree": int(deg.max()) if deg.size else 0}
+        rec["file"], rec["npz_sha256"] = _save_npz(U2B / d / "graphs" / f"{name}.npz", indptr=ip, col=col)
+        out[name] = rec
+        del ip, col, deg
+    part = {"dataset": d, "rule": rule_name, "variant": v, "nodes_sha256": nodes_sha, "capstat_sha256": cs["npz_sha256"],
+            **_codes(zu2b, u1b, u1d), "siblings": sib, "graphs": out, "secs": round(time.time() - t0, 1),
+            "peak_gb": _peak_gb()}
+    _write_json(pj, part)
+    vol.commit()
+    return part
+
+
+@app.function(image=image, volumes={"/v": vol}, memory=(8192, 65536), cpu=1.0, timeout=14400, nonpreemptible=True,
+              **STAGE)
+def build(d, rule_name, k):
+    """Every variant's graphs (build_part, one container each), then the build record, in the variants' order."""
+    zu2b, u1b, u1d, _ = _mods()
+    _reload()
+    if (done := _done(U2B / d / "graphs" / f"build_{rule_name}.json")) is not None:
+        return done
+    t0 = time.time()
+    rule, od, recs, n, nodes_sha, cs, desc, group = _build_inputs(zu2b, u1b, d, rule_name, k)
+    del group
+    variants = _variants(zu2b, rule_name)
+    parts = list(build_part.starmap([(d, rule_name, k, v) for v in variants]))
+    _reload()
+    if [p_["variant"] for p_ in parts] != list(variants) or \
+            any(p_["nodes_sha256"] != nodes_sha or p_["capstat_sha256"] != cs["npz_sha256"] for p_ in parts):
+        raise SystemExit(f"{d}: the build parts are not this build's")
+    out = {}
+    for p_ in parts:
+        for name, rec in p_["graphs"].items():
+            if _sha(U2B / d / "graphs" / rec["file"]) != rec["npz_sha256"]:
+                raise SystemExit(f"{d} {name}: its file is not the one its part names")
             out[name] = rec
-            del ip, col, deg
-        del forms, s_, t_, ds_, dt_
     summary = {"dataset": d, "rule": rule_name, "nodes_sha256": nodes_sha, **_codes(zu2b, u1b, u1d),
                "capstat_sha256": cs["npz_sha256"], "link_npz_sha256": [r["npz_sha256"] for r in recs],
                "link_secs_max": max(r["secs"] for r in recs), "link_peak_gb_max": max(r["peak_gb"] or 0 for r in recs),
                "link_stats": {v: {x: sum(r["stats"][v][x] for r in recs) for x in ("surface_links", "ambiguous")}
                               for v in variants},
-               "siblings": sib, "descriptive_nodes": int(desc.sum()), "graphs": out, "secs": round(time.time() - t0, 1),
-               "peak_gb": _peak_gb()}
+               "siblings": parts[0]["siblings"], "descriptive_nodes": int(desc.sum()), "graphs": out,
+               "secs": round(time.time() - t0, 1), "peak_gb": max(p_["peak_gb"] or 0 for p_ in parts),
+               "parts": {p_["variant"]: {"secs": p_["secs"], "peak_gb": p_["peak_gb"]} for p_ in parts}}
     _write_json(U2B / d / "graphs" / f"build_{rule_name}.json", summary)
     vol.commit()
     return summary
-
-
-@app.function(image=image, volumes={"/v": vol}, memory=2048, cpu=0.25, timeout=86400, **ORCH)
-def corpus(d, rule_name, k, k_link=0):
-    """stat -> merge -> link -> build, each stage after the last one's records are on the volume. The link stage has
-    its own shard count (k_link, default k); the merged statistic does not depend on k."""
-    t0 = time.time()
-    kl = k_link or k
-    st = list(stat.starmap([(d, rule_name, i, k) for i in range(k)]))
-    mg = merge.remote(d, rule_name, k)
-    lk = list(link.starmap([(d, rule_name, i, kl) for i in range(kl)]))
-    bd = build.remote(d, rule_name, kl)
-    return {"dataset": d, "rule": rule_name, "shards": k, "link_shards": kl, "common_forms": mg["common_forms"],
-            "stat_secs_max": max(r["secs"] for r in st), "link_secs_max": max(r["secs"] for r in lk),
-            "peak_gb": {"stat": max(r["peak_gb"] or 0 for r in st), "link": max(r["peak_gb"] or 0 for r in lk),
-                        "build": bd["peak_gb"]},
-            "graphs": {g: {x: e[x] for x in ("directed_edges", "mean_degree", "max_degree")}
-                       for g, e in bd["graphs"].items()}, "secs": round(time.time() - t0, 1)}
 
 
 # ── grading ─────────────────────────────────────────────────────────────────
@@ -582,6 +604,11 @@ def main(dataset: str, stage: str, rule: str = "new", shards: int = 1, carve: st
         print(json.dumps(dense_reread_all.remote(dataset, per)))
     elif stage == "corpus":
         print(json.dumps(corpus.remote(dataset, rule, shards, link_shards)))
+    elif stage == "build":                          # the build alone, once corpus's link shards are on the volume
+        r = build.remote(dataset, rule, link_shards or shards)
+        print(json.dumps({"dataset": dataset, "rule": rule, "secs": r["secs"], "peak_gb": r["peak_gb"],
+                          "graphs": {g: {x: e[x] for x in ("directed_edges", "mean_degree", "max_degree")}
+                                     for g, e in r["graphs"].items()}}))
     elif stage == "grade":
         groups = [[g for g in grp.split(",") if g] for grp in graphs.split(";") if grp]
         for r in grade.starmap([(dataset, carve, grp) for grp in groups]):
