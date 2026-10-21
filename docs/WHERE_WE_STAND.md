@@ -5,6 +5,11 @@ Each stage's own document stays the record, and every number here is copied from
 scratch, with worked examples, read [PROJECT_STORY.md](PROJECT_STORY.md); the dated record of what was tried and why
 is [PROJECT_TIMELINE.md](PROJECT_TIMELINE.md).
 
+**21 October: start with [PROGRAM_2026_10_21.md](PROGRAM_2026_10_21.md).** It says what is final below the models
+(encoder, pools, links until one bounded rebuild), why the LLM-free links were not adopted (the pools lost the bridge
+golds; the models ranked better on the links), the one per-dataset choice left (the pools' base), and where the
+points are (ranking: musique, zero-shot, bridges).
+
 Every number here is a development number: chosen on development carves, often after many arms. The paper's numbers
 come from one declared confirmation run of the chosen MLP and GNN on questions never used for selection.
 
