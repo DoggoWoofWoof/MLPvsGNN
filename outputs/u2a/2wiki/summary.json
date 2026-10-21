@@ -1,0 +1,361 @@
+{
+ "declared_in": "docs/U2A_LINK_GOLD_DIAGNOSTIC.md",
+ "dataset": "2wiki",
+ "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "zu2a_sha256": "bb69e5ed7ba79685dd3484fc01cb852bf1eb0eeb6a236ec38bd8b952a8423387",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "kept_lowercase_forms": 390337,
+ "surfaces": 398241,
+ "seeds": 86390,
+ "golds": 26141,
+ "check2": {
+  "s1sel": {
+   "G0": {
+    "filed": {
+     "ALL": 0.8964,
+     "recall": 0.9579,
+     "pool": 105.1
+    },
+    "rebuilt": {
+     "ALL": 0.8964,
+     "recall": 0.9579,
+     "pool": 105.1
+    }
+   },
+   "GU": {
+    "filed": {
+     "ALL": 0.8369,
+     "recall": 0.9347,
+     "pool": 162.3
+    },
+    "rebuilt": {
+     "ALL": 0.8369,
+     "recall": 0.9347,
+     "pool": 162.3
+    }
+   },
+   "GU_1024": {
+    "filed": {
+     "ALL": 0.8596,
+     "recall": 0.9437,
+     "pool": 119.7
+    },
+    "rebuilt": {
+     "ALL": 0.8596,
+     "recall": 0.9437,
+     "pool": 119.7
+    }
+   }
+  },
+  "s1eval": {
+   "G0": {
+    "filed": {
+     "ALL": 0.9059,
+     "recall": 0.9637,
+     "pool": 105.7
+    },
+    "rebuilt": {
+     "ALL": 0.9059,
+     "recall": 0.9637,
+     "pool": 105.7
+    }
+   },
+   "GU": {
+    "filed": {
+     "ALL": 0.8507,
+     "recall": 0.9416,
+     "pool": 163.5
+    },
+    "rebuilt": {
+     "ALL": 0.8507,
+     "recall": 0.9416,
+     "pool": 163.5
+    }
+   },
+   "GU_1024": {
+    "filed": {
+     "ALL": 0.8728,
+     "recall": 0.9508,
+     "pool": 120.4
+    },
+    "rebuilt": {
+     "ALL": 0.8728,
+     "recall": 0.9508,
+     "pool": 120.4
+    }
+   }
+  }
+ },
+ "status": "RUN",
+ "pools": {
+  "s1sel": {
+   "G0": {
+    "I": {
+     "ALL": 0.8964,
+     "recall": 0.9579,
+     "pool": 105.1
+    },
+    "I_nocap": {
+     "ALL": 0.8971,
+     "recall": 0.9582,
+     "pool": 125.9
+    },
+    "I_out": {
+     "ALL": 0.8971,
+     "recall": 0.9582,
+     "pool": 105.0
+    }
+   },
+   "GU": {
+    "I": {
+     "ALL": 0.8369,
+     "recall": 0.9347,
+     "pool": 162.3
+    },
+    "I_nocap": {
+     "ALL": 0.869,
+     "recall": 0.9484,
+     "pool": 211.5
+    },
+    "I_out": {
+     "ALL": 0.8416,
+     "recall": 0.9367,
+     "pool": 161.8
+    }
+   },
+   "GU_1024": {
+    "I": {
+     "ALL": 0.8596,
+     "recall": 0.9437,
+     "pool": 119.7
+    },
+    "I_nocap": {
+     "ALL": 0.8643,
+     "recall": 0.946,
+     "pool": 138.5
+    },
+    "I_out": {
+     "ALL": 0.8636,
+     "recall": 0.9457,
+     "pool": 119.6
+    }
+   }
+  },
+  "s1eval": {
+   "G0": {
+    "I": {
+     "ALL": 0.9059,
+     "recall": 0.9637,
+     "pool": 105.7
+    },
+    "I_nocap": {
+     "ALL": 0.9082,
+     "recall": 0.9647,
+     "pool": 118.3
+    },
+    "I_out": {
+     "ALL": 0.9078,
+     "recall": 0.9646,
+     "pool": 105.6
+    }
+   },
+   "GU": {
+    "I": {
+     "ALL": 0.8507,
+     "recall": 0.9416,
+     "pool": 163.5
+    },
+    "I_nocap": {
+     "ALL": 0.8796,
+     "recall": 0.9538,
+     "pool": 234.4
+    },
+    "I_out": {
+     "ALL": 0.8554,
+     "recall": 0.9436,
+     "pool": 163.1
+    }
+   },
+   "GU_1024": {
+    "I": {
+     "ALL": 0.8728,
+     "recall": 0.9508,
+     "pool": 120.4
+    },
+    "I_nocap": {
+     "ALL": 0.8777,
+     "recall": 0.9528,
+     "pool": 135.3
+    },
+    "I_out": {
+     "ALL": 0.8758,
+     "recall": 0.952,
+     "pool": 120.3
+    }
+   }
+  }
+ },
+ "causes": {
+  "s1sel": {
+   "golds": 3646,
+   "GU": {
+    "lost": 138,
+    "lost_share_of_golds": 0.0378,
+    "causes": {
+     "ABSENT": {
+      "n": 6,
+      "share_of_lost": 0.0435,
+      "share_of_golds": 0.0016
+     },
+     "ALIAS": {
+      "n": 87,
+      "share_of_lost": 0.6304,
+      "share_of_golds": 0.0239
+     },
+     "CAP_CUT": {
+      "n": 45,
+      "share_of_lost": 0.3261,
+      "share_of_golds": 0.0123
+     }
+    },
+    "ner_any": 0.2536,
+    "ner_25": 0.2101,
+    "knn_any": 0.1232,
+    "knn_25": 0.1232,
+    "residual_corpus_top25": 0.0,
+    "question_corpus_top25": 0.0072,
+    "residual_corpus_top100": 0.0,
+    "question_corpus_top100": 0.0145,
+    "residual_corpus_top1000": 0.0,
+    "question_corpus_top1000": 0.1522,
+    "cap_cut_within_25_by_residual": 0.7556,
+    "cap_cut_within_25_by_question": 0.9333
+   },
+   "GU_1024": {
+    "lost": 106,
+    "lost_share_of_golds": 0.0291,
+    "causes": {
+     "ABSENT": {
+      "n": 6,
+      "share_of_lost": 0.0566,
+      "share_of_golds": 0.0016
+     },
+     "ALIAS": {
+      "n": 87,
+      "share_of_lost": 0.8208,
+      "share_of_golds": 0.0239
+     },
+     "CAP_CUT": {
+      "n": 6,
+      "share_of_lost": 0.0566,
+      "share_of_golds": 0.0016
+     },
+     "DAMPED": {
+      "n": 7,
+      "share_of_lost": 0.066,
+      "share_of_golds": 0.0019
+     }
+    },
+    "ner_any": 0.2453,
+    "ner_25": 0.1981,
+    "knn_any": 0.1321,
+    "knn_25": 0.1321,
+    "residual_corpus_top25": 0.0,
+    "question_corpus_top25": 0.0094,
+    "residual_corpus_top100": 0.0,
+    "question_corpus_top100": 0.0189,
+    "residual_corpus_top1000": 0.0,
+    "question_corpus_top1000": 0.1698,
+    "cap_cut_within_25_by_residual": 0.5,
+    "cap_cut_within_25_by_question": 0.5
+   }
+  },
+  "s1eval": {
+   "golds": 30654,
+   "GU": {
+    "lost": 1083,
+    "lost_share_of_golds": 0.0353,
+    "causes": {
+     "ABSENT": {
+      "n": 46,
+      "share_of_lost": 0.0425,
+      "share_of_golds": 0.0015
+     },
+     "ALIAS": {
+      "n": 695,
+      "share_of_lost": 0.6417,
+      "share_of_golds": 0.0227
+     },
+     "CAP_CUT": {
+      "n": 341,
+      "share_of_lost": 0.3149,
+      "share_of_golds": 0.0111
+     },
+     "CASE": {
+      "n": 1,
+      "share_of_lost": 0.0009,
+      "share_of_golds": 0.0
+     }
+    },
+    "ner_any": 0.3324,
+    "ner_25": 0.253,
+    "knn_any": 0.1053,
+    "knn_25": 0.1053,
+    "residual_corpus_top25": 0.0,
+    "question_corpus_top25": 0.0018,
+    "residual_corpus_top100": 0.0,
+    "question_corpus_top100": 0.0295,
+    "residual_corpus_top1000": 0.0028,
+    "question_corpus_top1000": 0.1634,
+    "cap_cut_within_25_by_residual": 0.6774,
+    "cap_cut_within_25_by_question": 0.9472
+   },
+   "GU_1024": {
+    "lost": 805,
+    "lost_share_of_golds": 0.0263,
+    "causes": {
+     "ABSENT": {
+      "n": 46,
+      "share_of_lost": 0.0571,
+      "share_of_golds": 0.0015
+     },
+     "ALIAS": {
+      "n": 695,
+      "share_of_lost": 0.8634,
+      "share_of_golds": 0.0227
+     },
+     "CAP_CUT": {
+      "n": 40,
+      "share_of_lost": 0.0497,
+      "share_of_golds": 0.0013
+     },
+     "CASE": {
+      "n": 1,
+      "share_of_lost": 0.0012,
+      "share_of_golds": 0.0
+     },
+     "DAMPED": {
+      "n": 23,
+      "share_of_lost": 0.0286,
+      "share_of_golds": 0.0008
+     }
+    },
+    "ner_any": 0.2981,
+    "ner_25": 0.246,
+    "knn_any": 0.0857,
+    "knn_25": 0.0857,
+    "residual_corpus_top25": 0.0,
+    "question_corpus_top25": 0.0012,
+    "residual_corpus_top100": 0.0,
+    "question_corpus_top100": 0.0211,
+    "residual_corpus_top1000": 0.0012,
+    "question_corpus_top1000": 0.1379,
+    "cap_cut_within_25_by_residual": 0.4,
+    "cap_cut_within_25_by_question": 0.65
+   }
+  }
+ },
+ "seconds": 12600.0
+}

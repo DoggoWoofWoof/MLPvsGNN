@@ -133,3 +133,64 @@ follows:
 | ABSENT | no title rule can reach these golds; they are left to the question-guided or graph-free hop if section 4's ranks support it |
 
 U2c rebuilds on the result. Everything is new files beside today's.
+
+## 8. Results (22 October)
+
+Section 6 asked for the results as a section 7; section 7 already holds what follows, so they are filed here. Both
+datasets are **RUN**. The full tables are in `outputs/u2a/report.md`, made by `zu2a.py report`.
+
+**Checks.**
+- Checks 1 and 3 pass on musique. Over 3,227 nodes, no out-link, in-link or in-degree differs. Over 7,185 forms, no
+  capitalization count differs. The restricted surface table equals `u1d.Surfaces` field for field.
+- Check 2 passes on both datasets. The filed I of G0, GU and GU_1024 is rebuilt to four decimals on both carves.
+
+**Pool reach** (ALL / recall / mean rows, s1sel):
+
+| dataset | graph | I | I_nocap | I_out |
+| --- | --- | --- | --- | --- |
+| hotpotqa | G0 (hyperlinks) | 0.9682 / 0.9791 / 94.1 | 0.9748 / 0.9828 / 156.0 | 0.9695 / 0.9798 / 93.7 |
+| hotpotqa | GU | 0.8959 / 0.9426 / 119.5 | 0.9052 / 0.9476 / 189.4 | 0.8959 / 0.9426 / 118.6 |
+| hotpotqa | GU_1024 | 0.8879 / 0.9387 / 93.1 | 0.8959 / 0.9430 / 124.2 | 0.8893 / 0.9393 / 92.9 |
+| 2wiki | G0 (hyperlinks) | 0.8964 / 0.9579 / 105.1 | 0.8971 / 0.9582 / 125.9 | 0.8971 / 0.9582 / 105.0 |
+| 2wiki | GU | 0.8369 / 0.9347 / 162.3 | 0.8690 / 0.9484 / 211.5 | 0.8416 / 0.9367 / 161.8 |
+| 2wiki | GU_1024 | 0.8596 / 0.9437 / 119.7 | 0.8643 / 0.9460 / 138.5 | 0.8636 / 0.9457 / 119.6 |
+
+s1eval agrees with s1sel to within 0.014 on every row.
+
+**Why the LLM-free links lose golds.** These are the golds the hyperlinks' I holds and GU's I does not. The cause shares
+are shares of those lost golds.
+
+| dataset | carve | lost golds | ALIAS | ABSENT | CAP_CUT | COMMON | CASE | SHORT |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| hotpotqa | s1sel | 110 of 3,016 (0.037) | 0.58 | 0.27 | 0.05 | 0.08 | 0 | 0.02 |
+| hotpotqa | s1eval | 624 of 14,810 (0.042) | 0.56 | 0.33 | 0.04 | 0.06 | 0.01 | 0.01 |
+| 2wiki | s1sel | 138 of 3,646 (0.038) | 0.63 | 0.04 | 0.33 | 0 | 0 | 0 |
+| 2wiki | s1eval | 1,083 of 30,654 (0.035) | 0.64 | 0.04 | 0.31 | 0 | 0.00 | 0 |
+
+- **ALIAS is the largest cause on both datasets**, at 0.56 to 0.64. The passage names the gold by a shorter form of
+  its title, and the gate or the context choice does not link it.
+- **ABSENT is hotpotqa's second cause** (0.27 to 0.33). The anchor text cannot be derived from the title, so no title
+  rule reaches these golds.
+- **CAP_CUT is 2wiki's second cause** (0.31 to 0.33). The link exists, but the gold falls outside the seed's first 25
+  neighbours in node-id order. Section 4's beside-measures show the order is the lever:
+  - the question cosine puts 0.93 of these golds (s1sel; 0.95 on s1eval) within the seed's first 25;
+  - the question-guided residual puts 0.76 (0.68) there.
+- **GU_1024** (U1e's damping cap) moves 2wiki's CAP_CUT golds back in: 45 become 6 on s1sel and 341 become 40 on
+  s1eval, at 0.74 of GU's rows. On hotpotqa it removes 14 golds the damping cuts (DAMPED, 0.11 of the lost), and its
+  ALL falls.
+- **The graph-free hops do not recover the rest.** Few lost golds rank within the corpus top 25 or top 100 under the
+  residual hop: 0.00 on 2wiki and 0.02 to 0.06 on hotpotqa. Under the plain question cosine, 0.01 to 0.03 on 2wiki and
+  0.11 to 0.14 on hotpotqa rank within the top 100.
+- **ner and knn neighbours.** One of a seed's ner neighbours is the gold for 0.14 to 0.17 of hotpotqa's lost golds, and
+  for 0.25 to 0.33 of 2wiki's. For knn the share is 0.09 to 0.16.
+
+**What this sets for U2b.** Section 7's material causes, each at least 0.10 of the lost golds on one dataset:
+- ALIAS (both datasets);
+- ABSENT (hotpotqa);
+- CAP_CUT (2wiki);
+- DAMPED (GU_1024 on hotpotqa).
+
+U2b (docs/U2B_LINK_RULE.md, declared 6043564) carries the alias kinds (with the new prefix kind), the capmid gate for
+COMMON and the damped forms. The neighbour
+order is a pool rule, which U2c's candidates carry. No title rule reaches the ABSENT golds; U2c's ledger counts them
+under UNREACHED.
