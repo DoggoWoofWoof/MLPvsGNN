@@ -1,0 +1,27 @@
+{
+ "declared_in": "docs/U2B_LINK_RULE.md",
+ "dataset": "squad",
+ "construction": {
+  "base_pool": "equal_rrf_budget_50",
+  "regime": "RETRIEVAL",
+  "setting": null
+ },
+ "families": [],
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "zu2b_sha256": "e355fe1d303d1723780bd0b9dce52d9a5f943dae9da000d5410f989c828828ab",
+ "carves": {
+  "s1sel": {
+   "questions": 1498,
+   "golds": 1498,
+   "npz_sha256": "248cffbd842ba2909f16ee7ef9055c72b90a016834d952858befa397053af1ae",
+   "ids_sha256": "60e0b78420adb1cd1b9f239bb80831ba7916bb09c5c21009b4350fb01942cf06"
+  },
+  "s1eval": {
+   "questions": 11873,
+   "golds": 11873,
+   "npz_sha256": "d859795e2b409d42d2e147677c9a64bcbcf57600d5e30d49334821850e9bdd3e",
+   "ids_sha256": "e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8"
+  }
+ },
+ "pkg_structural_npz_sha256": "f093de00b2f7f19bb5bb6319ce77d6e1ccb59bd2f542472eb06e3bcb16069c42"
+}
