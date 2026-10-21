@@ -1,0 +1,401 @@
+{
+ "declared_in": "docs/U2A_LINK_GOLD_DIAGNOSTIC.md",
+ "dataset": "hotpotqa",
+ "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "zu2a_sha256": "bb69e5ed7ba79685dd3484fc01cb852bf1eb0eeb6a236ec38bd8b952a8423387",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "kept_lowercase_forms": 238236,
+ "surfaces": 243412,
+ "seeds": 66404,
+ "golds": 16379,
+ "check2": {
+  "s1sel": {
+   "G0": {
+    "filed": {
+     "ALL": 0.9682,
+     "recall": 0.9791,
+     "pool": 94.1
+    },
+    "rebuilt": {
+     "ALL": 0.9682,
+     "recall": 0.9791,
+     "pool": 94.1
+    }
+   },
+   "GU": {
+    "filed": {
+     "ALL": 0.8959,
+     "recall": 0.9426,
+     "pool": 119.5
+    },
+    "rebuilt": {
+     "ALL": 0.8959,
+     "recall": 0.9426,
+     "pool": 119.5
+    }
+   },
+   "GU_1024": {
+    "filed": {
+     "ALL": 0.8879,
+     "recall": 0.9387,
+     "pool": 93.1
+    },
+    "rebuilt": {
+     "ALL": 0.8879,
+     "recall": 0.9387,
+     "pool": 93.1
+    }
+   }
+  },
+  "s1eval": {
+   "G0": {
+    "filed": {
+     "ALL": 0.9684,
+     "recall": 0.98,
+     "pool": 93.7
+    },
+    "rebuilt": {
+     "ALL": 0.9684,
+     "recall": 0.98,
+     "pool": 93.7
+    }
+   },
+   "GU": {
+    "filed": {
+     "ALL": 0.8858,
+     "recall": 0.9386,
+     "pool": 118.7
+    },
+    "rebuilt": {
+     "ALL": 0.8858,
+     "recall": 0.9386,
+     "pool": 118.7
+    }
+   },
+   "GU_1024": {
+    "filed": {
+     "ALL": 0.8774,
+     "recall": 0.9342,
+     "pool": 92.6
+    },
+    "rebuilt": {
+     "ALL": 0.8774,
+     "recall": 0.9342,
+     "pool": 92.6
+    }
+   }
+  }
+ },
+ "status": "RUN",
+ "pools": {
+  "s1sel": {
+   "G0": {
+    "I": {
+     "ALL": 0.9682,
+     "recall": 0.9791,
+     "pool": 94.1
+    },
+    "I_nocap": {
+     "ALL": 0.9748,
+     "recall": 0.9828,
+     "pool": 156.0
+    },
+    "I_out": {
+     "ALL": 0.9695,
+     "recall": 0.9798,
+     "pool": 93.7
+    }
+   },
+   "GU": {
+    "I": {
+     "ALL": 0.8959,
+     "recall": 0.9426,
+     "pool": 119.5
+    },
+    "I_nocap": {
+     "ALL": 0.9052,
+     "recall": 0.9476,
+     "pool": 189.4
+    },
+    "I_out": {
+     "ALL": 0.8959,
+     "recall": 0.9426,
+     "pool": 118.6
+    }
+   },
+   "GU_1024": {
+    "I": {
+     "ALL": 0.8879,
+     "recall": 0.9387,
+     "pool": 93.1
+    },
+    "I_nocap": {
+     "ALL": 0.8959,
+     "recall": 0.943,
+     "pool": 124.2
+    },
+    "I_out": {
+     "ALL": 0.8893,
+     "recall": 0.9393,
+     "pool": 92.9
+    }
+   }
+  },
+  "s1eval": {
+   "G0": {
+    "I": {
+     "ALL": 0.9684,
+     "recall": 0.98,
+     "pool": 93.7
+    },
+    "I_nocap": {
+     "ALL": 0.9756,
+     "recall": 0.9839,
+     "pool": 152.5
+    },
+    "I_out": {
+     "ALL": 0.9708,
+     "recall": 0.9812,
+     "pool": 93.3
+    }
+   },
+   "GU": {
+    "I": {
+     "ALL": 0.8858,
+     "recall": 0.9386,
+     "pool": 118.7
+    },
+    "I_nocap": {
+     "ALL": 0.8933,
+     "recall": 0.9427,
+     "pool": 195.4
+    },
+    "I_out": {
+     "ALL": 0.8862,
+     "recall": 0.9388,
+     "pool": 117.8
+    }
+   },
+   "GU_1024": {
+    "I": {
+     "ALL": 0.8774,
+     "recall": 0.9342,
+     "pool": 92.6
+    },
+    "I_nocap": {
+     "ALL": 0.8832,
+     "recall": 0.9375,
+     "pool": 124.8
+    },
+    "I_out": {
+     "ALL": 0.8786,
+     "recall": 0.9348,
+     "pool": 92.4
+    }
+   }
+  }
+ },
+ "causes": {
+  "s1sel": {
+   "golds": 3016,
+   "GU": {
+    "lost": 110,
+    "lost_share_of_golds": 0.0365,
+    "causes": {
+     "ABSENT": {
+      "n": 30,
+      "share_of_lost": 0.2727,
+      "share_of_golds": 0.0099
+     },
+     "ALIAS": {
+      "n": 64,
+      "share_of_lost": 0.5818,
+      "share_of_golds": 0.0212
+     },
+     "CAP_CUT": {
+      "n": 5,
+      "share_of_lost": 0.0455,
+      "share_of_golds": 0.0017
+     },
+     "COMMON": {
+      "n": 9,
+      "share_of_lost": 0.0818,
+      "share_of_golds": 0.003
+     },
+     "SHORT": {
+      "n": 2,
+      "share_of_lost": 0.0182,
+      "share_of_golds": 0.0007
+     }
+    },
+    "ner_any": 0.1545,
+    "ner_25": 0.1364,
+    "knn_any": 0.1636,
+    "knn_25": 0.1636,
+    "residual_corpus_top25": 0.0182,
+    "question_corpus_top25": 0.0091,
+    "residual_corpus_top100": 0.0182,
+    "question_corpus_top100": 0.1091,
+    "residual_corpus_top1000": 0.0545,
+    "question_corpus_top1000": 0.3545,
+    "cap_cut_within_25_by_residual": 0.6,
+    "cap_cut_within_25_by_question": 0.6
+   },
+   "GU_1024": {
+    "lost": 122,
+    "lost_share_of_golds": 0.0405,
+    "causes": {
+     "ABSENT": {
+      "n": 30,
+      "share_of_lost": 0.2459,
+      "share_of_golds": 0.0099
+     },
+     "ALIAS": {
+      "n": 64,
+      "share_of_lost": 0.5246,
+      "share_of_golds": 0.0212
+     },
+     "CAP_CUT": {
+      "n": 3,
+      "share_of_lost": 0.0246,
+      "share_of_golds": 0.001
+     },
+     "COMMON": {
+      "n": 9,
+      "share_of_lost": 0.0738,
+      "share_of_golds": 0.003
+     },
+     "DAMPED": {
+      "n": 14,
+      "share_of_lost": 0.1148,
+      "share_of_golds": 0.0046
+     },
+     "SHORT": {
+      "n": 2,
+      "share_of_lost": 0.0164,
+      "share_of_golds": 0.0007
+     }
+    },
+    "ner_any": 0.1393,
+    "ner_25": 0.123,
+    "knn_any": 0.1475,
+    "knn_25": 0.1475,
+    "residual_corpus_top25": 0.0246,
+    "question_corpus_top25": 0.0082,
+    "residual_corpus_top100": 0.0246,
+    "question_corpus_top100": 0.1066,
+    "residual_corpus_top1000": 0.0902,
+    "question_corpus_top1000": 0.3607,
+    "cap_cut_within_25_by_residual": 0.6667,
+    "cap_cut_within_25_by_question": 0.6667
+   }
+  },
+  "s1eval": {
+   "golds": 14810,
+   "GU": {
+    "lost": 624,
+    "lost_share_of_golds": 0.0421,
+    "causes": {
+     "ABSENT": {
+      "n": 203,
+      "share_of_lost": 0.3253,
+      "share_of_golds": 0.0137
+     },
+     "ALIAS": {
+      "n": 347,
+      "share_of_lost": 0.5561,
+      "share_of_golds": 0.0234
+     },
+     "CAP_CUT": {
+      "n": 23,
+      "share_of_lost": 0.0369,
+      "share_of_golds": 0.0016
+     },
+     "CASE": {
+      "n": 6,
+      "share_of_lost": 0.0096,
+      "share_of_golds": 0.0004
+     },
+     "COMMON": {
+      "n": 38,
+      "share_of_lost": 0.0609,
+      "share_of_golds": 0.0026
+     },
+     "SHORT": {
+      "n": 7,
+      "share_of_lost": 0.0112,
+      "share_of_golds": 0.0005
+     }
+    },
+    "ner_any": 0.1699,
+    "ner_25": 0.1538,
+    "knn_any": 0.1378,
+    "knn_25": 0.1378,
+    "residual_corpus_top25": 0.0256,
+    "question_corpus_top25": 0.0176,
+    "residual_corpus_top100": 0.0433,
+    "question_corpus_top100": 0.1394,
+    "residual_corpus_top1000": 0.1234,
+    "question_corpus_top1000": 0.5064,
+    "cap_cut_within_25_by_residual": 0.4348,
+    "cap_cut_within_25_by_question": 0.4783
+   },
+   "GU_1024": {
+    "lost": 688,
+    "lost_share_of_golds": 0.0465,
+    "causes": {
+     "ABSENT": {
+      "n": 203,
+      "share_of_lost": 0.2951,
+      "share_of_golds": 0.0137
+     },
+     "ALIAS": {
+      "n": 347,
+      "share_of_lost": 0.5044,
+      "share_of_golds": 0.0234
+     },
+     "CAP_CUT": {
+      "n": 14,
+      "share_of_lost": 0.0203,
+      "share_of_golds": 0.0009
+     },
+     "CASE": {
+      "n": 6,
+      "share_of_lost": 0.0087,
+      "share_of_golds": 0.0004
+     },
+     "COMMON": {
+      "n": 38,
+      "share_of_lost": 0.0552,
+      "share_of_golds": 0.0026
+     },
+     "DAMPED": {
+      "n": 73,
+      "share_of_lost": 0.1061,
+      "share_of_golds": 0.0049
+     },
+     "SHORT": {
+      "n": 7,
+      "share_of_lost": 0.0102,
+      "share_of_golds": 0.0005
+     }
+    },
+    "ner_any": 0.1526,
+    "ner_25": 0.1395,
+    "knn_any": 0.1265,
+    "knn_25": 0.1265,
+    "residual_corpus_top25": 0.0291,
+    "question_corpus_top25": 0.016,
+    "residual_corpus_top100": 0.0552,
+    "question_corpus_top100": 0.1395,
+    "residual_corpus_top1000": 0.1424,
+    "question_corpus_top1000": 0.4927,
+    "cap_cut_within_25_by_residual": 0.2143,
+    "cap_cut_within_25_by_question": 0.2857
+   }
+  }
+ },
+ "seconds": 4918.1
+}
