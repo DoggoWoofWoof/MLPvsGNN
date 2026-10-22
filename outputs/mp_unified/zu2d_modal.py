@@ -13,6 +13,14 @@
     modal run outputs/mp_unified/zu2d_modal.py --stage fetch-fits [--build B] [--fits N,N]
     modal run --detach outputs/mp_unified/zu2d_modal.py --stage h1 [--build B] [--fits N,N]
     modal run outputs/mp_unified/zu2d_modal.py --stage fetch-h1 [--build B] [--fits N,N]
+U2g's cell Y (docs/U2G_GRAPH_AND_RULE.md, section 9), with no --build:
+    modal run outputs/mp_unified/zu2d_modal.py --stage y-probe           # zu2g's self-test, the new manifests, base
+    modal run outputs/mp_unified/zu2d_modal.py --stage y-dev --what pools|look --datasets D --carve C [--limit Q]
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage y-pools [--datasets D]
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage y-features [--datasets D] [--carve C]
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage y-fits [--fits N,N] [--rows-cap R]
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-y
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-y-fits [--fits N,N]
 
 The code. The tracked files of HEAD, byte for byte as the working tree holds them (a tracked file that differs from
 HEAD refuses the upload), go to /code/<commit, first 12>.tar on the volume, and every container unpacks them at
@@ -45,6 +53,15 @@ The hit@1 diagnostic (docs/U2D_H1_DIAGNOSTIC.md). Each of U2d's sixteen seed-0 f
 metaqa's and webqsp's s1eval carves in one container on the same GPU image (zu2d_h1.py run in the container's process).
 It reads the fit's files only and writes /out/h1/<name> on mpr-u2d (outputs/u2d/h1/<name> in the container);
 --stage fetch-h1 brings those files to the laptop, where zu2d_h1.py summary runs.
+
+U2g's cell Y (docs/U2G_GRAPH_AND_RULE.md). zu2g.py runs U2d's code on a third build, y, registered in memory: Y's pools,
+looks, caches, links, KT and gate go to /out/y on mpr-u2d (outputs/u2g/y in the container), its six fits to
+/out/fits/scr-u2g-y-*. Y builds squad, musique, hotpotqa and 2wiki; its fits read metaqa and webqsp from U2d's base
+build on the same volume. The volume holds no copy of U2d's new build, so U2d's new manifests of Y's four datasets
+(committed) travel in the code archive (TAR_ONLY, never unpacked over the volume's outputs), and same_as_new reads them
+from there, by their sha256. Y's shards and parts are U2d base's: Y's rows per question (|I_q| on W2_S) are 1.0 to 1.5
+times base's, and U2d's items ran looks and cache parts of that size and larger in under 20 minutes. --stage fetch-y
+and fetch-y-fits bring Y's records and reads to the laptop, where zu2g.py compare-all and decide run.
 
 The workspaces. A workspace that reaches its spend limit is followed by another: the volumes' files U2d reads or wrote
 are copied byte for byte through the laptop and each copy is checked by sha256 against the source's; the probe and
@@ -130,7 +147,8 @@ INPUTS_RECORD = "outputs/u2d/inputs.json"
 PINS_RECORD = "outputs/u2d/inputs_pins.json"       # the second list: what the six pair's pin check also hashes
 INPUT_RECORDS = (INPUTS_RECORD, PINS_RECORD)
 U2D_FILES = ("docs/U2D_REFIT_ON_U2E.md", "outputs/mp_unified/zu2d_pools.py", "outputs/mp_unified/look_u2d.py",
-             "outputs/mp_unified/zu2d.py", "outputs/mp_unified/zu2d_modal.py", INPUTS_RECORD, PINS_RECORD)
+             "outputs/mp_unified/zu2d.py", "outputs/mp_unified/zu2d_modal.py", INPUTS_RECORD, PINS_RECORD,
+             "docs/U2G_GRAPH_AND_RULE.md", "outputs/mp_unified/zu2g.py")
 # Shards and parts, each item about 15 to 25 minutes (section 10): the new build's pools from U2e's seconds per
 # question on Modal, the base build's at half as many; the looks and caches from P1c2's host times scaled by rows.
 _POOLS_NEW = {("metaqa", "fit"): 5, ("metaqa", "s1eval"): 7, ("squad", "fit"): 3, ("squad", "s1eval"): 5,
@@ -152,6 +170,14 @@ CACHE_PARTS = {"base": {("metaqa", "fit"): 8, ("metaqa", "s1eval"): 13, ("squad"
                        ("musique", "s1fit"): 16, ("musique", "s1eval"): 8, ("hotpotqa", "fit"): 6,
                        ("hotpotqa", "s1eval"): 6, ("2wiki", "fit"): 8, ("2wiki", "s1eval"): 16,
                        ("webqsp", "s1eval"): 5}}
+# U2g's cell Y: its four datasets, their carves, and U2d base's shards and parts (section 9 of U2g's declaration)
+Y_OWN = ("squad", "musique", "hotpotqa", "2wiki")
+Y_CARVES = tuple((d, c) for d in Y_OWN for c in CARVES[d])
+for _t in (POOLS, LOOKS, CACHE_PARTS):
+    _t["y"] = {k: v for k, v in _t["base"].items() if k[0] in Y_OWN}
+Y_OUT = Path("/u2d/out/y")
+TAR_ONLY = tuple(f"outputs/u2d/new/pools/{d}/pools.json" for d in Y_OWN)   # in the archive, never unpacked
+Y_STAGES = ("y-probe", "y-dev", "y-pools", "y-features", "y-fits", "fetch-y", "fetch-y-fits")
 STAGE = {"single_use_containers": True,
          "retries": modal.Retries(max_retries=3, initial_delay=10.0, backoff_coefficient=2.0)}
 ORCH = {"nonpreemptible": True, "retries": modal.Retries(max_retries=2, initial_delay=30.0, backoff_coefficient=2.0)}
@@ -178,9 +204,10 @@ def _sha12(f):
 
 
 def _skip(name):
-    """U2d's outputs are the volume's; the archive's copies (fetched records) are not unpacked over them."""
+    """U2d's and U2g's outputs are the volume's; the archive's copies (fetched records) are not unpacked over them."""
     return (name.startswith("outputs/u2d/base/") or name.startswith("outputs/u2d/new/")
-            or name.startswith("outputs/u2d/h1/") or name.startswith("outputs/screen/fits/scr-u2d-"))
+            or name.startswith("outputs/u2d/h1/") or name.startswith("outputs/screen/fits/scr-u2d-")
+            or name.startswith("outputs/u2g/y/") or name.startswith("outputs/screen/fits/scr-u2g-"))
 
 
 def _link(dst, src):
@@ -292,6 +319,8 @@ def _setup(code, strict=False, report=False):
         tgt = Path("/u2d/out") / b
         tgt.mkdir(parents=True, exist_ok=True)
         _link(REPO / "outputs" / "u2d" / b, tgt)
+    Y_OUT.mkdir(parents=True, exist_ok=True)
+    _link(REPO / "outputs" / "u2g" / "y", Y_OUT)
     conflicts, linked = [], {}
     linked["u2c_repo"] = _overlay("/u2c/repo", REPO, conflicts)
     linked["inputs"] = _overlay("/u2d/inputs", REPO, conflicts)
@@ -881,11 +910,11 @@ def _stamped(p, name, Z):
     return rec if u.get("declared_in") == Z.DECLARED and u.get("fit") == name else None
 
 
-def _fit_brief(fd):
+def _fit_brief(fd, stamp="u2d"):
     t = json.loads((fd / "train.json").read_text(encoding="utf-8")) if (fd / "train.json").exists() else {}
     r = json.loads((fd / "read.json").read_text(encoding="utf-8")) if (fd / "read.json").exists() else {}
     return {"data_gb": t.get("data_gb"), "peak_gpu_gb": t.get("peak_gpu_gb"), "read_peak_gpu_gb": r.get("peak_gpu_gb"),
-            "rows_cap": r.get("rows_cap"), "device": (r.get("u2d") or {}).get("device")}
+            "rows_cap": r.get("rows_cap"), "device": (r.get(stamp) or {}).get("device")}
 
 
 @app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=21600, **STAGE)
@@ -1022,6 +1051,399 @@ def gpu_probe(code):
     return out
 
 
+# ── U2g's cell Y (docs/U2G_GRAPH_AND_RULE.md, section 9) ─────────────────────
+
+
+def _new_manifest(code, d, root="/u2d/code", out_dir=None):
+    """U2d's new manifest of d as committed, read from the code archive (the volume holds no copy of the new build) to
+    a file of this container, for zu2g.py's same_as_new, which checks it by its sha256."""
+    import tarfile
+    import tempfile
+    base = code.split("-")[1] if code.startswith("dev-") else code
+    name = f"outputs/u2d/new/pools/{d}/pools.json"
+    if name not in TAR_ONLY:
+        raise SystemExit(f"{name}: not one of the manifests the archive carries for Y")
+    with tarfile.open(Path(root) / f"{base}.tar") as t:
+        try:
+            f = t.extractfile(name)
+        except KeyError:
+            f = None
+        if f is None:
+            raise SystemExit(f"{name}: not in the code archive {base} (an archive from before Y's stages)")
+        data = f.read()
+    p = Path(out_dir or tempfile.gettempdir()) / f"u2g_new_{d}_pools.json"
+    if p.exists():
+        p.unlink()
+    p.write_bytes(data)
+    return p
+
+
+def _stamped_y(p, name, ZG):
+    """The record at p when zu2g stamped it as this fit's under U2g's declaration."""
+    try:
+        rec = json.loads(Path(p).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    u = rec.get("u2g") or {}
+    return rec if u.get("declared_in") == ZG.DECLARED and u.get("fit") == name else None
+
+
+@app.function(image=image, volumes=VOLS, memory=(4096, 16384), cpu=2.0, timeout=3600, **STAGE)
+def y_probe(code):
+    """Before Y's stages: zu2g.py's self-test in this image, U2d's new manifests in the code archive against zu2g's
+    pins, what /out/y holds, and the base build Y's fits read for metaqa and webqsp (its gate and its bases)."""
+    info = _setup(code, report=True)
+    out = {"code": code, "setup_seconds": info["setup_seconds"], "conflicts": info["conflicts"][:10],
+           "mirror_missing_n": info["mirror_missing_n"]}
+    import zu2g
+    rc, msg = _run_any(zu2g.main, ["--selftest"])
+    out["selftest"] = "PASS" if rc == 0 else msg
+    pinned = {}
+    for d in Y_OWN:
+        try:
+            pinned[d] = zu2g.sha_src(_new_manifest(code, d)) == zu2g.NEW_MANIFESTS[d]
+        except SystemExit as e:
+            pinned[d] = str(e)
+    out["new_manifests_pinned"] = pinned
+    out["y_out"] = sorted(p.name for p in Y_OUT.iterdir())
+    g = Path("/u2d/out/base/gate.json")
+    out["base"] = {"gate": json.loads(g.read_text(encoding="utf-8")).get("verdict") if g.exists() else None,
+                   "bases_copied": Path("/u2d/out/base/cache/bases_copied.json").exists()}
+    out["peak_gb"] = _peak_gb()
+    return out
+
+
+@app.function(image=image, volumes=VOLS, memory=(8192, 49152), cpu=2.0, timeout=21600, **STAGE)
+def y_pools_item(code, d, carve, i, k, limit=0):
+    """One shard of Y's pools (zu2g.py pools: zu2d_pools' pools stage on Y, W2_S at P1c2's rule)."""
+    dev = limit > 0
+    if dev:
+        _trace()
+    info = _setup(code, strict=not dev)
+    env = _env()
+    _on_the_mirror()
+    import zu2g
+    stem = f"{d}__{carve}__{i}of{k}"
+    pd = zu2g.roots_y("y")["parts"]
+    head = {"what": "y-pools", "dataset": d, "carve": carve, "part": i, "parts": k, "code": code}
+    if not dev:
+        if (rec := _part_done(pd, stem, zu2g.ZP)) is not None:
+            return {**head, **_brief(rec, _PART_KEYS), "reused": True}
+        _clear(pd, f"{stem}.*")
+    argv = ["pools", d, "--carve", carve] + (["--shard", f"{i}/{k}"] if k > 1 else []) + \
+           (["--limit", str(limit)] if dev else [])
+    t0 = time.time()
+    rc, msg = _run(zu2g.main, argv)
+    out = {**head, "seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**out, "error": msg, **({"trace": _trace_report(), "env": env} if dev else {})}
+    if dev:
+        return {**out, "dev": limit, "trace": _trace_report(), "env": env}
+    u2d.commit()
+    rec = json.loads((pd / f"{stem}.json").read_text(encoding="utf-8"))
+    return {**out, **_brief(rec, _PART_KEYS), "env_cpu": env["cpu"]}
+
+
+@app.function(image=image, volumes=VOLS, memory=(8192, 65536), cpu=1.0, timeout=7200, **STAGE)
+def y_merge_item(code, d):
+    """Y's merge of d (when its manifest is not written), then same_as_new against U2d's new manifest read from the code
+    archive (when not filed). The check's record is committed whatever its verdict, and never written again."""
+    _setup(code, strict=True)
+    import zu2g
+    dd = zu2g.roots_y("y")["pools"] / d
+    mp, sp = dd / "pools.json", dd / "same_as_new.json"
+    head = {"what": "y-merge", "dataset": d, "code": code}
+    if not sp.exists():
+        try:
+            nm = str(_new_manifest(code, d))
+        except SystemExit as e:
+            return {**head, "error": str(e)}
+        if not mp.exists():
+            _clear(dd, "*.npz")
+        _clear(dd, "*.tmp*")
+        rc, msg = _run_any(zu2g.main, ["merge", d, "--new-manifest", nm])
+        u2d.commit()
+        if not sp.exists():
+            return {**head, "error": msg or "no same_as_new record was written", "peak_gb": _peak_gb()}
+    m = json.loads(mp.read_text(encoding="utf-8"))
+    s = json.loads(sp.read_text(encoding="utf-8"))
+    return {**head, "peak_gb": _peak_gb(), "files": {k: _summary(e) for k, e in m["files"].items()},
+            "same_as_new": s.get("verdict"), "problems": s.get("problems", [])[:20],
+            "fill": {cv: c.get("fill") for cv, c in (s.get("carves") or {}).items()}}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_y_pools(code, datasets):
+    """Every shard of Y's pools at once, then each dataset's merge and same_as_new once all its shards are written."""
+    t0 = time.time()
+    calls = [((d, c), y_pools_item.spawn(code, d, c, i, k))
+             for d in datasets for c in CARVES[d] for k in [POOLS["y"][(d, c)]] for i in range(k)]
+    failed, longest = {}, {}
+    for (d, c), fc in calls:
+        r = _get(fc)
+        if "error" in r:
+            failed.setdefault(d, []).append({k: r.get(k) for k in ("carve", "part", "error")})
+            print(json.dumps({"failed": [d, c], "part": r.get("part"), "error": str(r.get("error"))[:600]}),
+                  flush=True)
+            continue
+        longest[f"{d}/{c}"] = max(longest.get(f"{d}/{c}", 0), r.get("seconds") or 0)
+        print(json.dumps({"done": [d, c], "part": r.get("part"), "seconds": r.get("seconds"),
+                          "reused": r.get("reused", False), "peak_gb": r.get("peak_gb")}), flush=True)
+    merged = [y_merge_item.spawn(code, d) for d in datasets if d not in failed]
+    return {"build": "y", "code": code, "failed": failed, "longest_seconds": longest,
+            "merged": [_get(x) for x in merged], "secs": round(time.time() - t0, 1)}
+
+
+@app.function(image=image, volumes=VOLS, memory=(10240, 98304), cpu=4.0, timeout=21600, **STAGE)
+def y_look_item(code, d, carve, i, n, dev=0):
+    """One shard of the look of one of Y's carves (zu2g.py look: look_u2d on Y, once same_as_new PASSed)."""
+    if dev:
+        _trace()
+    info = _setup(code, strict=not dev)
+    import look_u2d  # noqa: F401  (first, as U2d's looks import it: look_x_six sets the threads before numpy loads)
+    import zu2g
+    head = {"what": "y-look", "dataset": d, "carve": carve, "shard": i, "shards": n, "code": code}
+    out = zu2g.roots_y("y")["look"] / d / carve
+    tag = f"_{i}of{n}" if n > 1 else ""
+    argv = ["look", "--dataset", d, "--carve", carve, "--full", "--modal"]
+    if dev:
+        argv += ["--dev", str(dev)]
+    else:
+        if (out / f"record{tag}.json").exists() and (out / f"pools{tag}.json").exists():
+            rec = json.loads((out / f"pools{tag}.json").read_text(encoding="utf-8"))
+            return {**head, "reused": True, **_brief(rec, ("questions", "changed", "short"))}
+        for f in [f"record{tag}.json", f"pools{tag}.json"] + (["ids.json", "info.json"] if i == 0 else []):
+            _clear(out, f)
+        for p in sorted((out / "chunks").glob("c*.tmp.npz")) if (out / "chunks").is_dir() else []:
+            if int(p.name[1:6]) % n == i:
+                p.unlink()
+        if n > 1:
+            argv += ["--shard", f"{i}/{n}"]
+    t0 = time.time()
+    rc, msg = _run(zu2g.main, argv)
+    res = {**head, "seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg, **({"trace": _trace_report()} if dev else {})}
+    if dev:
+        return {**res, "dev": dev, "trace": _trace_report()}
+    u2d.commit()
+    rec = json.loads((out / f"record{tag}.json").read_text(encoding="utf-8"))
+    return {**res, **_brief(rec, ("queries", "n_chunks", "chunk_queries", "seconds"))}
+
+
+@app.function(image=image, volumes=VOLS, memory=(2048, 8192), cpu=1.0, timeout=3600, **STAGE)
+def y_copy_bases_item(code):
+    _setup(code, strict=True)
+    import zu2g
+    cache = zu2g.roots_y("y")["cache"]
+    if not (cache / "bases_copied.json").exists():
+        _clear(cache, "basis_*")
+        _clear(cache, "bases_copied.json.tmp")
+        rc, msg = _run(zu2g.main, ["copy-bases"])
+        if rc:
+            return {"what": "y-copy-bases", "error": msg}
+        u2d.commit()
+    return {"what": "y-copy-bases", **json.loads((cache / "bases_copied.json").read_text(encoding="utf-8"))}
+
+
+@app.function(image=image, volumes=VOLS, memory=(8192, 98304), cpu=2.0, timeout=21600, **STAGE)
+def y_cache_item(code, d, carve, i, m):
+    info = _setup(code, strict=True)
+    import look_x_six as LX
+    import look_u2d
+    LX.S6.host_mode = lambda decl, log=print: look_u2d.modal_mode(log)   # lean_cache --host: the Modal mirror
+    import lean_cache
+    import zu2g
+    R = zu2g.roots_y("y")
+    pdir = R["cache"] / d / carve / f"part_{i}of{m}"
+    head = {"what": "y-cache", "dataset": d, "carve": carve, "part": i, "parts": m, "code": code}
+    if (pdir / "record.json").exists():
+        return {**head, "reused": True}
+    _clear(pdir, "*")
+    t0 = time.time()
+    rc, msg = _run(lean_cache.main, ["--dataset", d, "--carve", carve, "--part", f"{i}/{m}", "--host",
+                                     "--look-root", str(R["look"]), "--out-root", str(R["cache"])])
+    res = {**head, "seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg}
+    u2d.commit()
+    rec = json.loads((pdir / "record.json").read_text(encoding="utf-8"))
+    return {**res, "queries": rec.get("queries"), "rows": rec.get("rows"),
+            "check": (rec.get("check") or {}).get("verdict")}
+
+
+@app.function(image=image, volumes=VOLS, memory=(4096, 98304), cpu=2.0, timeout=14400, **STAGE)
+def y_links_item(code, d, carve):
+    """zlink's build of one of Y's carves (zu2g.py links: zu2d's call, on Y's roots)."""
+    info = _setup(code, strict=True)
+    import zu2g
+    Z = zu2g.Zm()
+    R = Z.roots("y")
+    out = R["links"] / d / carve
+    parts = [p.name for p in Z.ZP.C4S.parts_of(R["cache"], d, carve)[0]]
+    head = {"what": "y-links", "dataset": d, "carve": carve, "parts": len(parts), "code": code}
+    if all((out / p / "record.json").exists() for p in parts):
+        return {**head, "reused": True}
+    for p in parts:
+        _clear(out / p, "*")
+    t0 = time.time()
+    rc, msg = _run(zu2g.main, ["links", d, "--carve", carve, "--modal"])
+    res = {**head, "seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg}
+    u2d.commit()
+    return res
+
+
+@app.function(image=image, volumes=VOLS, memory=(8192, 49152), cpu=2.0, timeout=14400, **STAGE)
+def y_kt_item(code, d, carve):
+    info = _setup(code, strict=True)
+    import zu2g
+    kd = zu2g.roots_y("y")["kt"] / d / carve
+    head = {"what": "y-kt", "dataset": d, "carve": carve, "code": code}
+    if not (kd / "record.json").exists():
+        _clear(kd, "*")
+        t0 = time.time()
+        rc, msg = _run(zu2g.main, ["kt", d, "--carve", carve])
+        head.update({"seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]})
+        if rc:
+            return {**head, "error": msg}
+        u2d.commit()
+    rec = json.loads((kd / "record.json").read_text(encoding="utf-8"))
+    return {**head, **_brief(rec, ("rows", "questions", "beside_p1c3", "seconds"))}
+
+
+@app.function(image=image, volumes=VOLS, memory=(8192, 49152), cpu=2.0, timeout=14400, **STAGE)
+def y_gate_item(code):
+    """Y's gate over its eight carves (zu2g.py gate, refused until same_as_new PASSed on all four datasets)."""
+    _setup(code, strict=True)
+    import zu2g
+    g = zu2g.roots_y("y")["gate"]
+    if g.exists():
+        rec = json.loads(g.read_text(encoding="utf-8"))
+        if rec.get("verdict") == "PASS":
+            return {"what": "y-gate", "verdict": "PASS", "reused": True}
+        g.rename(g.with_name(f"gate.fail.{time.strftime('%Y%m%dT%H%M%S', time.gmtime())}.json"))
+    _clear(g.parent, "gate.json.tmp")
+    rc, msg = _run(zu2g.main, ["gate"])
+    u2d.commit()
+    rec = json.loads(g.read_text(encoding="utf-8")) if g.exists() else {}
+    return {"what": "y-gate", "verdict": rec.get("verdict"), "failures": rec.get("failures", [])[:30],
+            **({"error": msg} if rc and not rec else {})}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def y_carve_pipeline(code, d, carve):
+    """One of Y's carves: its looks, then its cache parts, then its links and KT input (Y's datasets have no chains)."""
+    t0 = time.time()
+    res = {"build": "y", "dataset": d, "carve": carve}
+    n = LOOKS["y"][(d, carve)]
+    looks = [_get(x) for x in [y_look_item.spawn(code, d, carve, i, n) for i in range(n)]]
+    res["looks"] = {"shards": n, "longest": max((x.get("seconds") or 0) for x in looks),
+                    "errors": [x for x in looks if "error" in x]}
+    if res["looks"]["errors"]:
+        return res
+    m = CACHE_PARTS["y"][(d, carve)]
+    caches = [_get(x) for x in [y_cache_item.spawn(code, d, carve, i, m) for i in range(m)]]
+    res["caches"] = {"parts": m, "longest": max((x.get("seconds") or 0) for x in caches),
+                     "checks": sorted({str(x.get("check")) for x in caches}), "errors": [x for x in caches if "error" in x]}
+    if res["caches"]["errors"]:
+        return res
+    links, kt = y_links_item.spawn(code, d, carve), y_kt_item.spawn(code, d, carve)
+    res["builds"] = [_get(links)]
+    res["kt"] = _get(kt)
+    res["secs"] = round(time.time() - t0, 1)
+    return res
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_y_features(code, carves):
+    """Y's bases copied, every carve's pipeline at once, then the gate once all eight carves are through. Nothing starts
+    unless same_as_new is filed PASS for every dataset of the carves (zu2g.py's looks and gate check it again)."""
+    t0 = time.time()
+    u2d.reload()
+    bad = {}
+    for d in sorted({d for d, _c in carves}):
+        p = Y_OUT / "pools" / d / "same_as_new.json"
+        v = json.loads(p.read_text(encoding="utf-8")).get("verdict") if p.exists() else "missing"
+        if v != "PASS":
+            bad[d] = v
+    if bad:
+        return {"build": "y", "code": code, "error": f"same_as_new is not PASS: {bad}"}
+    bases = y_copy_bases_item.remote(code)
+    if "error" in bases:
+        return {"build": "y", "bases": bases}
+    pipes = [_get(x) for x in [y_carve_pipeline.spawn(code, d, c) for d, c in carves]]
+    ok = all("error" not in p and not p.get("looks", {}).get("errors") and not p.get("caches", {}).get("errors")
+             and "caches" in p and all("error" not in b for b in p.get("builds", [])) and "error" not in p.get("kt", {})
+             for p in pipes)
+    gate = y_gate_item.remote(code) if ok and sorted(carves) == sorted(Y_CARVES) else None
+    return {"build": "y", "code": code, "pipelines": pipes, "gate": gate, "secs": round(time.time() - t0, 1)}
+
+
+@app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=21600, **STAGE)
+def y_fit_item(code, name, rows_cap=0):
+    """One of U2g's six fits and its read (zu2g.py train and read in this process) on an L40S from the GPU image, as
+    fit_item runs U2d's: a fit whose read zu2g stamped is returned as it is; a fit trained and stamped but not read is
+    only read; otherwise the fit's files are unlinked and it trains and reads."""
+    info = _setup(code, strict=True)
+    import zu2g
+    Z = zu2g.Zm()
+    head = {"fit": name, "code": code}
+    if Z.IMAGE_TAG != IMAGE_TAG or os.environ.get("U2D_IMAGE") != IMAGE_TAG:
+        return {**head, "error": f"image tags: the container's {os.environ.get('U2D_IMAGE')}, zu2d's {Z.IMAGE_TAG}, "
+                                 f"this runner's {IMAGE_TAG}"}
+    if name not in zu2g.FITS:
+        return {**head, "error": "not one of U2g's fits"}
+    arm, split = zu2g.FITS[name]
+    head.update({"build": "y", "arm": arm, "seed": 0, "split": split})
+    fd = FITS_OUT / name
+    fd.mkdir(parents=True, exist_ok=True)
+    _link(REPO / "outputs" / "screen" / "fits" / name, fd)
+    if _stamped_y(fd / "read.json", name, zu2g):
+        return {**head, "reused": True, **_fit_brief(fd, "u2g")}
+    cache = "outputs/u2g/y/cache"
+    t0 = time.time()
+    trained = bool(_stamped_y(fd / "screen.json", name, zu2g) and (fd / "train.json").exists()
+                   and (fd / "models.pt").exists())
+    if not trained:
+        gone = _clear(fd, "*") + _clear(fd / "reads", "*")
+        rc, msg = _run_any(zu2g.main, ["train", "--split", split, "--name", name, "--arm", arm, "--device", "cuda",
+                                       "--cache-root", cache, "--modal"])
+        if rc:
+            return {**head, "error": msg, "cleared": len(gone), "seconds": round(time.time() - t0, 1),
+                    "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+        u2d.commit()
+    t1 = time.time()
+    _clear(fd / "reads", "*")
+    _clear(fd, "read.json")
+    rc, msg = _run_any(zu2g.main, ["read", "--name", name, "--device", "cuda", "--cache-root", cache, "--modal"]
+                       + (["--rows-cap", str(int(rows_cap))] if rows_cap else []))
+    res = {**head, "trained_here": not trained, "train_seconds": round(t1 - t0, 1),
+           "read_seconds": round(time.time() - t1, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg}
+    u2d.commit()
+    return {**res, **_fit_brief(fd, "u2g")}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_y_fits(code, names, rows_cap=0):
+    """U2g's named fits at once, each in its own container."""
+    t0 = time.time()
+    calls = [(n, y_fit_item.spawn(code, n, rows_cap)) for n in names]
+    out = []
+    for n, fc in calls:
+        r = _get(fc)
+        r.setdefault("fit", n)
+        print(json.dumps({k: r.get(k) for k in ("fit", "reused", "trained_here", "train_seconds", "read_seconds",
+                                                "data_gb", "peak_gpu_gb", "peak_gb")}
+                         | ({"error": str(r["error"])[:600]} if "error" in r else {})), flush=True)
+        out.append(r)
+    return {"code": code, "fits": out, "errors": [r["fit"] for r in out if "error" in r],
+            "secs": round(time.time() - t0, 1)}
+
+
 # ── the laptop: code, inputs, extras, fetch ──────────────────────────────────
 
 
@@ -1061,7 +1483,7 @@ def _upload_code(overlay):
         tp = tmp / f"mpr-u2d-code-{cid}.tar"
         with tarfile.open(tp, "w") as t:
             for f in _git("ls-files", "-z").split("\0"):
-                if f and not _skip(f) and Path(f).is_file():
+                if f and (not _skip(f) or f in TAR_ONLY) and Path(f).is_file():
                     t.add(f, arcname=f, recursive=False)
         with u2d.batch_upload() as b:
             b.put_file(str(tp), f"/code/{cid}.tar")
@@ -1215,14 +1637,15 @@ def _upload_extras():
                 b.put_file(str(p), f"/pkg/{rel}")
 
 
-def _fetch(build):
-    """U2d's records (every json under /out/<build>) to outputs/u2d/<build>/ on the laptop; arrays stay on the volume."""
+def _fetch(build, dst_root="outputs/u2d"):
+    """A build's records (every json under /out/<build>) to <dst_root>/<build>/ on the laptop (U2d's under outputs/u2d,
+    Y's under outputs/u2g); arrays stay on the volume."""
     n = 0
     for e in u2d.listdir(f"/out/{build}", recursive=True):
         path = e.path.lstrip("/")
         if not path.endswith(".json") or "/chunks/" in path:
             continue
-        dst = Path("outputs/u2d") / path[len("out/"):]
+        dst = Path(dst_root) / path[len("out/"):]
         dst.parent.mkdir(parents=True, exist_ok=True)
         with open(dst, "wb") as f:
             u2d.read_file_into_fileobj(path, f)
@@ -1242,6 +1665,22 @@ def _fit_names(build, names):
         raise SystemExit(f"not U2d's fits: {bad}")
     if Z.IMAGE_TAG != IMAGE_TAG:
         raise SystemExit(f"zu2d.py's image tag {Z.IMAGE_TAG} is not this runner's {IMAGE_TAG}")
+    return want
+
+
+def _y_names(names):
+    """The named fits, or all six of U2g's (zu2g.py's FITS, read on the laptop)."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import zu2g
+    want = [n for n in names.split(",") if n] or list(zu2g.FITS)
+    bad = [n for n in want if n not in zu2g.FITS]
+    if bad:
+        raise SystemExit(f"not U2g's fits: {bad}")
+    tag = zu2g.Zm().IMAGE_TAG
+    if tag != IMAGE_TAG:
+        raise SystemExit(f"zu2d.py's image tag {tag} is not this runner's {IMAGE_TAG}")
     return want
 
 
@@ -1323,9 +1762,13 @@ def _fetch_h1(names):
 @app.local_entrypoint()
 def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what: str = "", limit: int = 3,
          overlay: bool = False, fits: str = "", rows_cap: int = 0):
+    y = stage in Y_STAGES
     fit_list = _fit_names(build, fits) if stage in ("fits", "fetch-fits") else []
     h1_list = _h1_names(build, fits) if stage in ("h1", "fetch-h1") else []
-    names = [d for d in datasets.split(",") if d] or list(SIX)
+    y_list = _y_names(fits) if stage in ("y-fits", "fetch-y-fits") else []
+    names = [d for d in datasets.split(",") if d] or list(Y_OWN if y else SIX)
+    if y and (build or any(d not in Y_OWN for d in names)):
+        raise SystemExit(f"Y's stages take no --build (Y is U2g's build); datasets among {Y_OWN}")
     if any(d not in SIX for d in names) or (build and build not in BUILDS):
         raise SystemExit(f"datasets among {SIX}; build among {BUILDS}")
     if stage == "upload":
@@ -1339,6 +1782,10 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         return _fetch_fits(fit_list)
     if stage == "fetch-h1":
         return _fetch_h1(h1_list)
+    if stage == "fetch-y":
+        return _fetch("y", "outputs/u2g")
+    if stage == "fetch-y-fits":
+        return _fetch_fits(y_list)
     code = _upload_code(overlay)
     if stage == "probe":
         print(json.dumps(probe.remote(code), indent=1))
@@ -1368,9 +1815,28 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         print(json.dumps(run_fits.remote(code, fit_list, rows_cap), indent=1))
     elif stage == "h1":
         print(json.dumps(run_h1.remote(code, h1_list), indent=1))
+    elif stage == "y-probe":
+        print(json.dumps(y_probe.remote(code), indent=1))
+    elif stage == "y-dev":
+        carves = [(d, c) for d in names for c in CARVES[d] if not carve or c == carve]
+        if what == "pools":
+            jobs = [y_pools_item.spawn(code, d, c, 0, 1, limit) for d, c in carves]
+        elif what == "look":
+            jobs = [y_look_item.spawn(code, d, c, 0, 1, limit) for d, c in carves]
+        else:
+            raise SystemExit("y-dev: --what pools or look")
+        for fc in jobs:
+            print(json.dumps(_get(fc), indent=1))
+    elif stage == "y-pools":
+        print(json.dumps(run_y_pools.remote(code, names), indent=1))
+    elif stage == "y-features":
+        carves = [(d, c) for d in names for c in CARVES[d] if not carve or c == carve]
+        print(json.dumps(run_y_features.remote(code, carves), indent=1))
+    elif stage == "y-fits":
+        print(json.dumps(run_y_fits.remote(code, y_list, rows_cap), indent=1))
     else:
-        raise SystemExit("stage: upload, probe, mirror, dev, pools, features, fetch, gpu-probe, fits, fetch-fits, h1 or "
-                         "fetch-h1")
+        raise SystemExit("stage: upload, probe, mirror, dev, pools, features, fetch, gpu-probe, fits, fetch-fits, h1, "
+                         "fetch-h1, y-probe, y-dev, y-pools, y-features, y-fits, fetch-y or fetch-y-fits")
 
 
 if __name__ == "__main__":
