@@ -252,7 +252,8 @@ Each verdict closes only the form it tests (docs/SCREENS.md, 3b). The next forms
 - **B NOT_ADOPTED:** via in the block encoder's own input layer, in place of the heads. Then the link-level form: the
   parent's own first-stage weight and cosine per link.
 - **G NOT_ADOPTED:** zg6 with the via columns (zg6v) on the new build.
-- In every case: the hit@1 diagnostic on metaqa and webqsp (where the gold sits in the order when hit@1 misses).
+- In every case: the hit@1 diagnostic on metaqa and webqsp (where the gold sits in the order when hit@1 misses),
+  declared on its own in docs/U2D_H1_DIAGNOSTIC.md.
 
 ## 10. How it runs
 

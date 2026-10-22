@@ -11,6 +11,8 @@
     modal run outputs/mp_unified/zu2d_modal.py --stage gpu-probe         # the GPU image: the device, zu2d's self-tests
     modal run --detach outputs/mp_unified/zu2d_modal.py --stage fits [--build B] [--fits N,N] [--rows-cap R]
     modal run outputs/mp_unified/zu2d_modal.py --stage fetch-fits [--build B] [--fits N,N]
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage h1 [--build B] [--fits N,N]
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-h1 [--build B] [--fits N,N]
 
 The code. The tracked files of HEAD, byte for byte as the working tree holds them (a tracked file that differs from
 HEAD refuses the upload), go to /code/<commit, first 12>.tar on the volume, and every container unpacks them at
@@ -38,6 +40,11 @@ The fits. Each of U2d's 24 fits (zu2d.py's FITS) trains and reads in one contain
 the container's process, into /out/fits/<name> on mpr-u2d (outputs/screen/fits/<name> in the container, as every
 screen's fit). --stage fetch-fits brings each read fit's records and reads (never its weights) to the laptop, where the
 compares, the null, the pairs, the re-calls and the verdict run.
+
+The hit@1 diagnostic (docs/U2D_H1_DIAGNOSTIC.md). Each of U2d's sixteen seed-0 fits, once read, is scored again on
+metaqa's and webqsp's s1eval carves in one container on the same GPU image (zu2d_h1.py run in the container's process).
+It reads the fit's files only and writes /out/h1/<name> on mpr-u2d (outputs/u2d/h1/<name> in the container);
+--stage fetch-h1 brings those files to the laptop, where zu2d_h1.py summary runs.
 
 The workspaces. A workspace that reaches its spend limit is followed by another: the volumes' files U2d reads or wrote
 are copied byte for byte through the laptop and each copy is checked by sha256 against the source's; the probe and
@@ -173,7 +180,7 @@ def _sha12(f):
 def _skip(name):
     """U2d's outputs are the volume's; the archive's copies (fetched records) are not unpacked over them."""
     return (name.startswith("outputs/u2d/base/") or name.startswith("outputs/u2d/new/")
-            or name.startswith("outputs/screen/fits/scr-u2d-"))
+            or name.startswith("outputs/u2d/h1/") or name.startswith("outputs/screen/fits/scr-u2d-"))
 
 
 def _link(dst, src):
@@ -851,6 +858,7 @@ def run_features(code, build, carves):
 # ── the fits and reads (section 5) ───────────────────────────────────────────
 
 FITS_OUT = Path("/u2d/out/fits")
+H1_OUT = Path("/u2d/out/h1")
 
 
 def _run_any(fn, argv):
@@ -942,6 +950,57 @@ def run_fits(code, names, rows_cap=0):
             "secs": round(time.time() - t0, 1)}
 
 
+@app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=7200, **STAGE)
+def h1_item(code, name):
+    """The hit@1 diagnostic of one read fit (docs/U2D_H1_DIAGNOSTIC.md; zu2d_h1.py run in this process) on an L40S from
+    the GPU image. The fit's files are read only; a filed diagnostic is returned as it is; an interrupted attempt's
+    files are unlinked before it runs again."""
+    info = _setup(code, strict=True)
+    import zu2d_h1 as H
+    head = {"h1": name, "code": code}
+    if H.Z.IMAGE_TAG != IMAGE_TAG or os.environ.get("U2D_IMAGE") != IMAGE_TAG:
+        return {**head, "error": f"image tags: the container's {os.environ.get('U2D_IMAGE')}, zu2d's {H.Z.IMAGE_TAG}, "
+                                 f"this runner's {IMAGE_TAG}"}
+    if name not in H.FITS:
+        return {**head, "error": "not one of the diagnostic's fits"}
+    fd = FITS_OUT / name
+    if not (fd / "read.json").exists():
+        return {**head, "error": "the fit has no read on this volume"}
+    _link(REPO / "outputs" / "screen" / "fits" / name, fd)
+    od = H1_OUT / name
+    od.mkdir(parents=True, exist_ok=True)
+    _link(REPO / "outputs" / "u2d" / "h1" / name, od)
+    if (od / "h1.json").exists():
+        return {**head, "reused": True}
+    gone = _clear(od, "*")
+    t0 = time.time()
+    rc, msg = _run_any(H.main, ["run", "--name", name, "--device", "cuda", "--modal"])
+    res = {**head, "cleared": len(gone), "seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(),
+           "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg}
+    u2d.commit()
+    rec = json.loads((od / "h1.json").read_text(encoding="utf-8"))
+    return {**res, "carves": {k: v.get("status") for k, v in rec["carves"].items()},
+            "pass_seconds": rec.get("pass_seconds"), "peak_gpu_gb": rec.get("peak_gpu_gb")}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_h1(code, names):
+    """The named fits' diagnostics at once, each in its own container."""
+    t0 = time.time()
+    calls = [(n, h1_item.spawn(code, n)) for n in names]
+    out = []
+    for n, fc in calls:
+        r = _get(fc)
+        r.setdefault("h1", n)
+        print(json.dumps({k: r.get(k) for k in ("h1", "reused", "seconds", "pass_seconds", "peak_gpu_gb", "carves")}
+                         | ({"error": str(r["error"])[:600]} if "error" in r else {})), flush=True)
+        out.append(r)
+    return {"code": code, "h1": out, "errors": [r["h1"] for r in out if "error" in r],
+            "secs": round(time.time() - t0, 1)}
+
+
 @app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(8192, 32768), cpu=2.0, timeout=3600, **STAGE)
 def gpu_probe(code):
     """The GPU image before the fits: the device zu2d records, whether zu2d accepts it, the card's memory, lean_gpu's
@@ -997,7 +1056,7 @@ def _upload_code(overlay):
     if dirty and not overlay:
         raise SystemExit(f"{len(dirty)} tracked files differ from HEAD ({dirty[:5]}): commit them, or --overlay")
     have = _have(u2d, "/code")
-    tmp = Path(tempfile.gettempdir())
+    tmp = Path(tempfile.mkdtemp(prefix="mpr-u2d-code-"))     # this launch's own: launches into two workspaces at once
     if f"code/{cid}.tar" not in have:
         tp = tmp / f"mpr-u2d-code-{cid}.tar"
         with tarfile.open(tp, "w") as t:
@@ -1009,6 +1068,7 @@ def _upload_code(overlay):
         print(json.dumps({"code": cid, "bytes": tp.stat().st_size, "sha256": _local_sha(tp)}), flush=True)
         tp.unlink()
     if not overlay:
+        tmp.rmdir()
         return cid
     files = sorted({f for f in dirty + list(U2D_FILES) if Path(f).is_file()})
     tp = tmp / f"mpr-u2d-overlay-{cid}.tar"
@@ -1020,6 +1080,7 @@ def _upload_code(overlay):
         with u2d.batch_upload() as b:
             b.put_file(str(tp), f"/code/{did}.tar")
     tp.unlink()
+    tmp.rmdir()
     print(json.dumps({"code": did, "overlay": files}), flush=True)
     return did
 
@@ -1222,10 +1283,48 @@ def _fetch_fits(names, threads=4):
                       "seconds": round(time.time() - t0, 1), "not_read": unread}), flush=True)
 
 
+def _h1_names(build, names):
+    """The named fits, or the build's (or all) of the diagnostic's sixteen (zu2d_h1.py's FITS, read on the laptop)."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import zu2d_h1 as H
+    want = [n for n in names.split(",") if n] or [n for n in H.FITS if not build or H.Z.FITS[n][0] == build]
+    bad = [n for n in want if n not in H.FITS]
+    if bad:
+        raise SystemExit(f"not the hit@1 diagnostic's fits: {bad}")
+    return want
+
+
+def _fetch_h1(names):
+    """Each filed diagnostic's files (h1.json and its npz) to outputs/u2d/h1/<name>/ on the laptop; a fit whose h1.json
+    is not on the volume is skipped and named."""
+    files = {e.path.lstrip("/"): e.size for e in u2d.listdir("/out/h1", recursive=True)
+             if e.type == modal.volume.FileEntryType.FILE}
+    n, missing = 0, []
+    for name in names:
+        mine = {q: s for q, s in files.items() if q.startswith(f"out/h1/{name}/") and not q.endswith(".tmp.npz")}
+        if f"out/h1/{name}/h1.json" not in mine:
+            missing.append(name)
+            continue
+        for q, s in sorted(mine.items()):
+            dst = Path("outputs/u2d/h1") / q[len("out/h1/"):]
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            part = dst.with_name(dst.name + ".part")
+            with open(part, "wb") as f:
+                u2d.read_file_into_fileobj(q, f)
+            if part.stat().st_size != s:
+                raise SystemExit(f"{q}: {part.stat().st_size} bytes fetched, {s} on the volume")
+            os.replace(part, dst)
+            n += 1
+    print(json.dumps({"fits": len(names) - len(missing), "files": n, "not_filed": missing}), flush=True)
+
+
 @app.local_entrypoint()
 def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what: str = "", limit: int = 3,
          overlay: bool = False, fits: str = "", rows_cap: int = 0):
     fit_list = _fit_names(build, fits) if stage in ("fits", "fetch-fits") else []
+    h1_list = _h1_names(build, fits) if stage in ("h1", "fetch-h1") else []
     names = [d for d in datasets.split(",") if d] or list(SIX)
     if any(d not in SIX for d in names) or (build and build not in BUILDS):
         raise SystemExit(f"datasets among {SIX}; build among {BUILDS}")
@@ -1238,6 +1337,8 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         return _fetch(build)
     if stage == "fetch-fits":
         return _fetch_fits(fit_list)
+    if stage == "fetch-h1":
+        return _fetch_h1(h1_list)
     code = _upload_code(overlay)
     if stage == "probe":
         print(json.dumps(probe.remote(code), indent=1))
@@ -1265,8 +1366,11 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         print(json.dumps(gpu_probe.remote(code), indent=1))
     elif stage == "fits":
         print(json.dumps(run_fits.remote(code, fit_list, rows_cap), indent=1))
+    elif stage == "h1":
+        print(json.dumps(run_h1.remote(code, h1_list), indent=1))
     else:
-        raise SystemExit("stage: upload, probe, mirror, dev, pools, features, fetch, gpu-probe, fits or fetch-fits")
+        raise SystemExit("stage: upload, probe, mirror, dev, pools, features, fetch, gpu-probe, fits, fetch-fits, h1 or "
+                         "fetch-h1")
 
 
 if __name__ == "__main__":
