@@ -183,3 +183,66 @@ hyperlinks are reported beside only. If it does not, the hyperlinks stay named a
 it fails. The link work then stays open (section 5 of the same file), with U2B section 7's next forms.
 
 A verdict closes only the form tested (docs/SCREENS.md, section 3b). P1h stays declared as it is, on P1g-b's pools.
+
+## 9. Results (22 October)
+
+**TARGET_MET on W2_S**, U2b's chosen graph (docs/U2B_LINK_RULE.md, section 8). The records are
+`outputs/u2c/verdict.json` and `verdict.md`, written by the committed `zu2c.py verdict` (sha256 `ac7e8d03b942…`). The
+stats records are under `outputs/u2c/stats/<graph>/`.
+
+- **Checks.** Every run's checks hold: base and seeds equal step 4d's, the seeds equal G0's, and B equals P1f's. On
+  today's graph the stats reproduce P1g's filed arrays exactly (section 7). The W2_S runs used 24 question shards per
+  dataset on Modal.
+- **The choice on W2_S** is `g:f3+cut_cos_7000@0.9`: three times today's fill along KIND_T's order, then the extra set
+  cut by the question's cosine at 7,000, gated as in P1g2, then P1h's cut at τ = 0.9. Its cost is 1,953.5 rows (P1f's
+  question-weighted mean).
+- **The choice on today's graph**, beside, is `g:f2+cut_rrf_5000@0.95`, cost 1,817.4. P1g2's filed choice there,
+  without a cut, costs 1,975.5, so the τ cut saves 8% of the rows.
+- **Ceilings on W2_S.** metaqa 0.992, squad 0.993, musique 0.971, hotpotqa 0.960 and 2wiki 0.966. Every ceiling is
+  above 0.955, so every target is 0.95.
+
+ALL and mean rows on s1sel (webqsp's s1eval beside). "Today's pool" is P1g's f = 1 with no extra set, on the same
+graph:
+
+| dataset | W2_S: ALL | rows | rows p90 | today's pool on W2_S: ALL | rows | the hyperlinks' graph, its own choice: ALL | rows |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| metaqa | 0.972 | 3,929 | 4,017 | 0.952 | 2,022 | 0.968 | 3,511 |
+| squad | 0.979 | 50 | 50 | 0.979 | 50 | 0.979 | 50 |
+| musique | 0.951 | 5,651 | 6,584 | 0.888 | 2,067 | 0.951 | 5,617 |
+| hotpotqa | 0.954 | 964 | 1,384 | 0.914 | 120 | 0.991 | 936 |
+| 2wiki | 0.961 | 1,407 | 1,772 | 0.932 | 162 | 0.970 | 1,264 |
+| webqsp (s1eval, beside) | 0.878 | 4,555 | 6,056 | 0.841 | 2,120 | 0.908 | 4,388 |
+
+metaqa and webqsp keep their KB under both graphs; their numbers differ only because the two choices differ.
+
+**The headline graph** (section 8's rule). W2_S's chosen pool keeps ALL ≥ 0.95 on hotpotqa (0.954) and 2wiki (0.961),
+so the rule holds. The LLM-free graph is the headline graph on all four passage datasets, and the hyperlinks are
+reported beside only. At about the same size, the hyperlinks still hold more golds on hotpotqa: 0.991 at 936 rows,
+against 0.954 at 964.
+
+**The ledger:** the chosen pool's misses on W2_S (s1sel; webqsp s1eval). The last four columns split the unreached
+golds.
+
+| dataset | golds | missed | TAU_CUT | BUDGET | UNREACHED | questions missing a gold | unreached in the first stage's lists | KIND_T holds | in the frozen I | the hyperlinks reach |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| metaqa | 11,367 | 284 | 187 | 19 | 78 | 42 | 4 | 0 | 33 | 0 |
+| squad | 1,498 | 31 | 0 | 21 | 10 | 31 | 9 | 9 | 0 | 4 |
+| musique | 4,064 | 82 | 29 | 7 | 46 | 75 | 0 | 0 | 8 | 2 |
+| hotpotqa | 3,016 | 72 | 1 | 22 | 49 | 69 | 12 | 28 | 0 | 42 |
+| 2wiki | 3,646 | 58 | 0 | 8 | 50 | 58 | 12 | 43 | 0 | 30 |
+| webqsp | 10,583 | 2,376 | 813 | 114 | 1,449 | 184 | 7 | 0 | 31 | 0 |
+
+No unreached gold is one link from B in any family, except 21 on webqsp.
+
+- **The pools are done on the training datasets.** All of a question's golds are in its pool for at least 0.95 of the
+  questions on every training dataset, on a graph built without an LLM and without the datasets' hyperlinks.
+- **What is left upstream is small.** The passage datasets have 10 to 50 unreached golds each. On hotpotqa, 42 of the
+  49 are golds only the hyperlinks reach; on 2wiki, 30 of 50.
+- **metaqa's misses are mostly the τ cut** (187 of 284).
+- **webqsp stays the open dataset.** It is never trained and is graded beside: 0.878 on the chosen rule. Of its 1,449
+  unreached golds, 1,442 are outside the first stage's lists.
+
+**What follows** (section 8, TARGET_MET). U2d is declared on its own. It builds `g:f3+cut_cos_7000@0.9` on W2_S for the
+fit and s1eval carves of all six datasets, then the KT input on those pools. It then refits the lean pair (zrckp,
+zspk) and the free GNN (G6). Each model adopts the pools only through its own declared screen. U2B section 7's next
+forms stay named for hotpotqa and 2wiki.
