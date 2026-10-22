@@ -181,3 +181,57 @@ one-link reach, by cause. That is the list of golds no pool built on one link ca
 If the chosen graph does not reach the hyperlinks' pools on hotpotqa or 2wiki, the next forms are a second link from
 the question's best X rows, and the question-guided hop of U2A section 7. They come in that order, each declared before
 its numbers.
+
+## 8. Results (22 October)
+
+**CHOSEN W2_S.** The records are `outputs/u2b/choice.json` and `outputs/u2b/report.md`, written by the committed
+`zu2b.py choose` and `report`. The grade records are under `outputs/u2b/<D>/grade/`.
+
+- **Gate 2 holds** on musique, hotpotqa and 2wiki, on both carves. Over PKG the frozen I equals step 4h's filed G0 I,
+  and over V2_M the filed GU I, to four decimals.
+- **The pick.** Every candidate was graded on all four datasets. The best score is W3e_S's, 0.8477. W2_S scores 0.8461,
+  within 0.002 of it, and W2 comes first in the declared order, so W2_S is chosen. It is the plainest variant: the look
+  boundary alone, with the sibling links.
+- **Against the references.** W2_S scores 0.8461. u1d's V2 scores 0.8439 undamped (V2_M) and 0.8407 damped (V2_D). The
+  package's own links (PKG) score 0.8686.
+
+Choice score by dataset (s1sel; the mean ALL of B ∪ X(k) over k from 100 to 2000):
+
+| dataset | W2_S | V2_M | V2_D | PKG | best candidate on the dataset (an upper bound only) |
+| --- | --- | --- | --- | --- | --- |
+| musique | 0.668 | 0.666 | 0.659 | 0.668 | W3e_S 0.683 |
+| squad | 0.988 | 0.985 | 0.985 | 0.986 | W3eg_M 0.992 |
+| hotpotqa | 0.909 | 0.906 | 0.899 | 0.972 | W7eg_S 0.925 |
+| 2wiki | 0.819 | 0.819 | 0.820 | 0.848 | W2_DS 0.820 |
+
+What one link serves (ALL, with mean rows in brackets):
+
+| dataset | carve | W2_S, k = 1000 | W2_S, all of X | PKG, k = 1000 | PKG, all of X |
+| --- | --- | --- | --- | --- | --- |
+| musique | s1sel | 0.705 (1,198) | 0.754 (5,588) | 0.706 (1,199) | 0.756 (5,866) |
+| musique | s1eval | 0.741 (1,196) | 0.767 (4,876) | 0.735 (1,198) | 0.759 (5,138) |
+| squad | s1sel | 0.989 (968) | 0.989 (1,674) | 0.987 (952) | 0.987 (1,429) |
+| squad | s1eval | 0.990 (965) | 0.990 (1,678) | 0.985 (990) | 0.985 (1,566) |
+| hotpotqa | s1sel | 0.920 (523) | 0.921 (792) | 0.988 (382) | 0.989 (590) |
+| hotpotqa | s1eval | 0.911 (524) | 0.912 (789) | 0.987 (387) | 0.988 (545) |
+| 2wiki | s1sel | 0.900 (817) | 0.901 (942) | 0.929 (448) | 0.930 (510) |
+| 2wiki | s1eval | 0.911 (829) | 0.913 (1,054) | 0.943 (442) | 0.944 (481) |
+
+- **musique and squad.** The LLM-free rule reaches the package's links. On squad it is above them at every k from 50
+  on, on both carves (0.990 against 0.985 on s1eval). On musique it is within 0.004 of them at every k on s1sel, and up
+  to 0.009 above on s1eval.
+- **hotpotqa and 2wiki.** It does not reach the hyperlinks. One link from B, W2_S holds ALL 0.921 on hotpotqa against
+  0.989, and 0.901 on 2wiki against 0.930 (s1sel). No candidate closes the gap: hotpotqa's best, W7eg_S, scores 0.925
+  against PKG's 0.972.
+- **Beside.** u1d's V2_M scores below W2_S on every dataset, and is never more than 0.004 above it at any k. V2_D is
+  above W2_S on 2wiki only (0.820 against 0.819). metaqa and webqsp keep their KB: metaqa's frozen I holds 0.894
+  (s1sel), and webqsp's 0.688 (s1eval).
+- **The build.** From f8e1097, 2wiki's build ran one variant per container: 2,287 s in all, with a peak of 19.1 GB. Its
+  graphs are made by the same code as the other datasets'.
+
+**What follows.** U2c ran on W2_S and filed **TARGET_MET** (docs/U2C_POOLS_ON_CHOSEN.md, section 9): every training
+dataset reaches ALL ≥ 0.95, hotpotqa and 2wiki included. The pools no longer need the hyperlinks.
+
+At one link, W2_S is still below the hyperlinks on hotpotqa and 2wiki. Section 7's next forms stay named for those two
+datasets, in order: a second link from the question's best X rows, then the question-guided hop. They are aimed at the
+U2c golds that no candidate on W2_S reaches but the hyperlinks do: 42 of hotpotqa's 49, and 30 of 2wiki's 50.

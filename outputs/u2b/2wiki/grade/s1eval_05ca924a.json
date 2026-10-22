@@ -1,0 +1,78 @@
+{
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "questions": 12576,
+ "dense_manifest_sha256": "83f9da7acd0327744ffef30faff8c363b0f13ebc375f7af825a5142f702ad1b9",
+ "questions_npz_sha256": "d6d41aee0d5d109e84e81a6cc043c772554e87189cca3f0ed07e2e7f1e1a2adc",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "graphs": {
+  "W2_S": {
+   "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+   "I": {
+    "ALL": 0.8519,
+    "recall": 0.9422,
+    "pool": 163.5
+   },
+   "questions": 12576,
+   "golds": 30654,
+   "B": {
+    "ALL": 0.4338,
+    "recall": 0.7256,
+    "rows": 50.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.534,
+     "recall": 0.7809,
+     "rows": 75.0
+    },
+    "50": {
+     "ALL": 0.5992,
+     "recall": 0.8192,
+     "rows": 100.0
+    },
+    "100": {
+     "ALL": 0.6831,
+     "recall": 0.8676,
+     "rows": 150.0
+    },
+    "250": {
+     "ALL": 0.8336,
+     "recall": 0.9361,
+     "rows": 299.9
+    },
+    "500": {
+     "ALL": 0.8969,
+     "recall": 0.9594,
+     "rows": 543.9
+    },
+    "1000": {
+     "ALL": 0.9114,
+     "recall": 0.9645,
+     "rows": 828.9
+    },
+    "2000": {
+     "ALL": 0.9122,
+     "recall": 0.9648,
+     "rows": 869.2
+    },
+    "5000": {
+     "ALL": 0.9128,
+     "recall": 0.965,
+     "rows": 895.2
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.9128,
+    "recall": 0.9651,
+    "rows": 1053.8
+   }
+  }
+ },
+ "secs_load": 15.5,
+ "secs_I": 2.4,
+ "secs_reach": 35.5,
+ "peak_gb": 18.51
+}

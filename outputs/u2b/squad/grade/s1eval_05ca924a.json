@@ -1,0 +1,74 @@
+{
+ "dataset": "squad",
+ "carve": "s1eval",
+ "questions": 11873,
+ "dense_manifest_sha256": "204bc1a3c65f41fe78c17b43096070a063a3b74165be1159e85e22bce552c647",
+ "questions_npz_sha256": "d859795e2b409d42d2e147677c9a64bcbcf57600d5e30d49334821850e9bdd3e",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "graphs": {
+  "W2_S": {
+   "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+   "I": null,
+   "questions": 11873,
+   "golds": 11873,
+   "B": {
+    "ALL": 0.9798,
+    "recall": 0.9798,
+    "rows": 50.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.9837,
+     "recall": 0.9837,
+     "rows": 75.0
+    },
+    "50": {
+     "ALL": 0.9849,
+     "recall": 0.9849,
+     "rows": 100.0
+    },
+    "100": {
+     "ALL": 0.9867,
+     "recall": 0.9867,
+     "rows": 150.0
+    },
+    "250": {
+     "ALL": 0.9882,
+     "recall": 0.9882,
+     "rows": 299.0
+    },
+    "500": {
+     "ALL": 0.9895,
+     "recall": 0.9895,
+     "rows": 539.3
+    },
+    "1000": {
+     "ALL": 0.9897,
+     "recall": 0.9897,
+     "rows": 965.2
+    },
+    "2000": {
+     "ALL": 0.9898,
+     "recall": 0.9898,
+     "rows": 1509.7
+    },
+    "5000": {
+     "ALL": 0.9898,
+     "recall": 0.9898,
+     "rows": 1678.5
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.9898,
+    "recall": 0.9898,
+    "rows": 1678.5
+   }
+  }
+ },
+ "secs_load": 2.0,
+ "secs_I": 0.1,
+ "secs_reach": 9.0,
+ "peak_gb": 0.31
+}

@@ -1,0 +1,78 @@
+{
+ "dataset": "musique",
+ "carve": "s1eval",
+ "questions": 2417,
+ "dense_manifest_sha256": "9fa5b3951c7a849a6aed62ebd29420402a1cbafbde672feceacaa57c8dec2d36",
+ "questions_npz_sha256": "48579db05059b7b0faa92fa7ac1a949e6669b4b91776da3cffbf690a5f48fdde",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "graphs": {
+  "W2_S": {
+   "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+   "I": {
+    "ALL": 0.8089,
+    "recall": 0.923,
+    "pool": 2060.7
+   },
+   "questions": 2417,
+   "golds": 6404,
+   "B": {
+    "ALL": 0.5263,
+    "recall": 0.7809,
+    "rows": 200.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.5656,
+     "recall": 0.8018,
+     "rows": 225.0
+    },
+    "50": {
+     "ALL": 0.5929,
+     "recall": 0.8152,
+     "rows": 250.0
+    },
+    "100": {
+     "ALL": 0.6272,
+     "recall": 0.8326,
+     "rows": 300.0
+    },
+    "250": {
+     "ALL": 0.6856,
+     "recall": 0.8604,
+     "rows": 450.0
+    },
+    "500": {
+     "ALL": 0.7174,
+     "recall": 0.8757,
+     "rows": 699.7
+    },
+    "1000": {
+     "ALL": 0.741,
+     "recall": 0.8858,
+     "rows": 1196.0
+    },
+    "2000": {
+     "ALL": 0.7547,
+     "recall": 0.8922,
+     "rows": 2071.5
+    },
+    "5000": {
+     "ALL": 0.7654,
+     "recall": 0.8973,
+     "rows": 3627.7
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.7675,
+    "recall": 0.8984,
+    "rows": 4876.5
+   }
+  }
+ },
+ "secs_load": 2.9,
+ "secs_I": 6.6,
+ "secs_reach": 23.3,
+ "peak_gb": 0.8
+}

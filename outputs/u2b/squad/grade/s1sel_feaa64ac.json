@@ -1,0 +1,248 @@
+{
+ "dataset": "squad",
+ "carve": "s1sel",
+ "questions": 1498,
+ "dense_manifest_sha256": "204bc1a3c65f41fe78c17b43096070a063a3b74165be1159e85e22bce552c647",
+ "questions_npz_sha256": "248cffbd842ba2909f16ee7ef9055c72b90a016834d952858befa397053af1ae",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "graphs": {
+  "W7eg_M": {
+   "npz_sha256": "c378aedaa2db90b54188be7d5c4e77e52f136be67b615f70c98fb1f5177071c7",
+   "I": null,
+   "questions": 1498,
+   "golds": 1498,
+   "B": {
+    "ALL": 0.9793,
+    "recall": 0.9793,
+    "rows": 50.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.986,
+     "recall": 0.986,
+     "rows": 75.0
+    },
+    "50": {
+     "ALL": 0.9887,
+     "recall": 0.9887,
+     "rows": 100.0
+    },
+    "100": {
+     "ALL": 0.9887,
+     "recall": 0.9887,
+     "rows": 150.0
+    },
+    "250": {
+     "ALL": 0.9907,
+     "recall": 0.9907,
+     "rows": 299.8
+    },
+    "500": {
+     "ALL": 0.9927,
+     "recall": 0.9927,
+     "rows": 548.1
+    },
+    "1000": {
+     "ALL": 0.9927,
+     "recall": 0.9927,
+     "rows": 1035.6
+    },
+    "2000": {
+     "ALL": 0.9927,
+     "recall": 0.9927,
+     "rows": 1957.0
+    },
+    "5000": {
+     "ALL": 0.9927,
+     "recall": 0.9927,
+     "rows": 3920.3
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.9927,
+    "recall": 0.9927,
+    "rows": 4283.4
+   }
+  },
+  "W7eg_D": {
+   "npz_sha256": "7ea0bfd13fe87b9c4f81e4bd361e000d9287db52496ab54e877e747f8ac31f23",
+   "I": null,
+   "questions": 1498,
+   "golds": 1498,
+   "B": {
+    "ALL": 0.9793,
+    "recall": 0.9793,
+    "rows": 50.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.9853,
+     "recall": 0.9853,
+     "rows": 75.0
+    },
+    "50": {
+     "ALL": 0.988,
+     "recall": 0.988,
+     "rows": 100.0
+    },
+    "100": {
+     "ALL": 0.988,
+     "recall": 0.988,
+     "rows": 150.0
+    },
+    "250": {
+     "ALL": 0.9907,
+     "recall": 0.9907,
+     "rows": 299.8
+    },
+    "500": {
+     "ALL": 0.992,
+     "recall": 0.992,
+     "rows": 548.0
+    },
+    "1000": {
+     "ALL": 0.992,
+     "recall": 0.992,
+     "rows": 1034.6
+    },
+    "2000": {
+     "ALL": 0.992,
+     "recall": 0.992,
+     "rows": 1952.2
+    },
+    "5000": {
+     "ALL": 0.992,
+     "recall": 0.992,
+     "rows": 3850.4
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.992,
+    "recall": 0.992,
+    "rows": 4137.4
+   }
+  },
+  "W7eg_S": {
+   "npz_sha256": "c2a643957924a3f4ec5a4953ee992b2a15f1c25467a264d325caeb9ccbb86a5a",
+   "I": null,
+   "questions": 1498,
+   "golds": 1498,
+   "B": {
+    "ALL": 0.9793,
+    "recall": 0.9793,
+    "rows": 50.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.9853,
+     "recall": 0.9853,
+     "rows": 75.0
+    },
+    "50": {
+     "ALL": 0.988,
+     "recall": 0.988,
+     "rows": 100.0
+    },
+    "100": {
+     "ALL": 0.9887,
+     "recall": 0.9887,
+     "rows": 150.0
+    },
+    "250": {
+     "ALL": 0.9907,
+     "recall": 0.9907,
+     "rows": 300.0
+    },
+    "500": {
+     "ALL": 0.992,
+     "recall": 0.992,
+     "rows": 549.6
+    },
+    "1000": {
+     "ALL": 0.9927,
+     "recall": 0.9927,
+     "rows": 1044.6
+    },
+    "2000": {
+     "ALL": 0.9927,
+     "recall": 0.9927,
+     "rows": 1987.4
+    },
+    "5000": {
+     "ALL": 0.9927,
+     "recall": 0.9927,
+     "rows": 4049.1
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.9927,
+    "recall": 0.9927,
+    "rows": 4478.6
+   }
+  },
+  "W7eg_DS": {
+   "npz_sha256": "570e90ae4f4931b0b85052364cebb83f19bc785895c49b7a0b4a289738f7d4ac",
+   "I": null,
+   "questions": 1498,
+   "golds": 1498,
+   "B": {
+    "ALL": 0.9793,
+    "recall": 0.9793,
+    "rows": 50.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.9846,
+     "recall": 0.9846,
+     "rows": 75.0
+    },
+    "50": {
+     "ALL": 0.988,
+     "recall": 0.988,
+     "rows": 100.0
+    },
+    "100": {
+     "ALL": 0.988,
+     "recall": 0.988,
+     "rows": 150.0
+    },
+    "250": {
+     "ALL": 0.99,
+     "recall": 0.99,
+     "rows": 300.0
+    },
+    "500": {
+     "ALL": 0.9913,
+     "recall": 0.9913,
+     "rows": 549.6
+    },
+    "1000": {
+     "ALL": 0.992,
+     "recall": 0.992,
+     "rows": 1044.2
+    },
+    "2000": {
+     "ALL": 0.992,
+     "recall": 0.992,
+     "rows": 1984.2
+    },
+    "5000": {
+     "ALL": 0.992,
+     "recall": 0.992,
+     "rows": 3986.5
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.992,
+    "recall": 0.992,
+    "rows": 4337.2
+   }
+  }
+ },
+ "secs_load": 0.1,
+ "secs_I": 8.9,
+ "secs_reach": 7.1,
+ "peak_gb": null
+}

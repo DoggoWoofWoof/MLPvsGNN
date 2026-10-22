@@ -1,0 +1,59 @@
+{
+ "dataset": "2wiki",
+ "rule": "new",
+ "variant": "W7eg",
+ "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+ "capstat_sha256": "6fba3847d4a992772aa06f0f42253418cb7236b304f70c86e5bc6c9f3f49fb41",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+ "siblings": {
+  "pairs": 4,
+  "groups_with_siblings": 2,
+  "largest_group": 2
+ },
+ "graphs": {
+  "W7eg_M": {
+   "graph": "W7eg_M",
+   "directed_edges": 98182005,
+   "undirected_neighbours": 193809844,
+   "mean_degree": 32.36,
+   "isolated_share": 0.0251,
+   "max_degree": 621403,
+   "file": "W7eg_M.npz",
+   "npz_sha256": "c5b4ba5e8de9558f0fb28b7fb6e481cdbe111080a770be7e08977269c4be9bdb"
+  },
+  "W7eg_D": {
+   "graph": "W7eg_D",
+   "directed_edges": 40159047,
+   "undirected_neighbours": 77811762,
+   "mean_degree": 12.99,
+   "isolated_share": 0.0506,
+   "max_degree": 1078,
+   "file": "W7eg_D.npz",
+   "npz_sha256": "f4364bdadf12924c7498ebfcb75ec5074981e3498d46b5bc3cd77fa7b11701f3"
+  },
+  "W7eg_S": {
+   "graph": "W7eg_S",
+   "directed_edges": 98182009,
+   "undirected_neighbours": 193809848,
+   "mean_degree": 32.36,
+   "isolated_share": 0.0251,
+   "max_degree": 621403,
+   "file": "W7eg_S.npz",
+   "npz_sha256": "432fe3788eccf474c065cf46e1edb223e1462f2dbf1ad621b18b3dd8ae56beef"
+  },
+  "W7eg_DS": {
+   "graph": "W7eg_DS",
+   "directed_edges": 40159051,
+   "undirected_neighbours": 77811766,
+   "mean_degree": 12.99,
+   "isolated_share": 0.0506,
+   "max_degree": 1078,
+   "file": "W7eg_DS.npz",
+   "npz_sha256": "7bc0318902ce7eb09cac305d16ec147e9b863e28571dd20d56826ce789a94838"
+  }
+ },
+ "secs": 2038.4,
+ "peak_gb": 18.95
+}
