@@ -1,0 +1,256 @@
+{
+ "files": {
+  "squad__fit": {
+   "file": "squad__fit.npz",
+   "sha256": "d04c83c0e1b24e581ce09b4d8c1a7d801ff3250f9210be962910e2f9be8f4ad1",
+   "dataset": "squad",
+   "carve": "fit",
+   "construction": "U2G:y:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "W2_S",
+    "npz": "outputs/u2b/squad/graphs/W2_S.npz",
+    "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+    "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+    "build": {
+     "directed_edges": 1732601,
+     "undirected_neighbours": 1756400,
+     "mean_degree": 86.81,
+     "max_degree": 968
+    }
+   },
+   "carve_ids_sha256": "39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515",
+   "questions": 5856,
+   "changed": 0,
+   "short": 0,
+   "B_q": {
+    "mean": 0.0,
+    "max": 0
+   },
+   "pool_mean": 50.0,
+   "rows": {
+    "mean": 50.0,
+    "p90": 50.0,
+    "max": 54
+   },
+   "budget_mean": 0.0,
+   "fill_want_mean": 0.0,
+   "today_inc_mean": 50.0,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.9833,
+    "recall": 0.9833
+   },
+   "pool": {
+    "ALL": 0.9833,
+    "recall": 0.9833
+   },
+   "caps": {
+    "I": {
+     "r5": 0.9833,
+     "hit1": 0.9833
+    },
+    "pool": {
+     "r5": 0.9833,
+     "hit1": 0.9833
+    }
+   },
+   "parts": [
+    {
+     "stem": "squad__fit__0of2",
+     "q0": 0,
+     "q1": 2928,
+     "rows": 146493,
+     "npz": "42cf30382a97b4bbc9f6b3fae41fd8a98e51c622a23d076a49a46f8236e47776",
+     "kt": "9ae5e94dea36b82cdbcad99533d9e77f3fced8846f8ab444aa8e99c6a2c9676b"
+    },
+    {
+     "stem": "squad__fit__1of2",
+     "q0": 2928,
+     "q1": 5856,
+     "rows": 146501,
+     "npz": "f016fc2bc01362bfb1468eab0ee52b01a4cb6409de716c4a4e58318200baa9c3",
+     "kt": "085bad4b72327df9c0f78c821705af829a01ae07c67b563535354da96c3a12e1"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+    "stage": "U2d",
+    "build": "y",
+    "dataset": "squad",
+    "carve": "fit",
+    "construction": "U2G:y:KIND_T",
+    "graph_detail": {
+     "graph": "W2_S",
+     "npz": "outputs/u2b/squad/graphs/W2_S.npz",
+     "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+     "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+     "build": {
+      "directed_edges": 1732601,
+      "undirected_neighbours": 1756400,
+      "mean_degree": 86.81,
+      "max_degree": 968
+     }
+    },
+    "carve_ids_sha256": "39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515",
+    "questions_all": 5856,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true
+   },
+   "seconds_parts": 245.7,
+   "utc": "2026-10-22T21:38:40Z"
+  },
+  "squad__s1eval": {
+   "file": "squad__s1eval.npz",
+   "sha256": "1c93345e6c5769faa347208f63c43633f49d5734cf5bc7cb6f3e6da861a79f10",
+   "dataset": "squad",
+   "carve": "s1eval",
+   "construction": "U2G:y:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "W2_S",
+    "npz": "outputs/u2b/squad/graphs/W2_S.npz",
+    "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+    "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+    "build": {
+     "directed_edges": 1732601,
+     "undirected_neighbours": 1756400,
+     "mean_degree": 86.81,
+     "max_degree": 968
+    }
+   },
+   "carve_ids_sha256": "e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8",
+   "questions": 11873,
+   "changed": 0,
+   "short": 0,
+   "B_q": {
+    "mean": 0.0,
+    "max": 0
+   },
+   "pool_mean": 50.0,
+   "rows": {
+    "mean": 50.0,
+    "p90": 50.0,
+    "max": 54
+   },
+   "budget_mean": 0.0,
+   "fill_want_mean": 0.0,
+   "today_inc_mean": 50.0,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.9798,
+    "recall": 0.9798
+   },
+   "pool": {
+    "ALL": 0.9798,
+    "recall": 0.9798
+   },
+   "caps": {
+    "I": {
+     "r5": 0.9798,
+     "hit1": 0.9798
+    },
+    "pool": {
+     "r5": 0.9798,
+     "hit1": 0.9798
+    }
+   },
+   "parts": [
+    {
+     "stem": "squad__s1eval__0of3",
+     "q0": 0,
+     "q1": 3957,
+     "rows": 197979,
+     "npz": "a369ecbf862e23d89835af5641506de912de4969f6746dbdfe4f9b830cf0e824",
+     "kt": "8268b797ce1e734e6a8d8fe2a8173e161ccc72781f164f40c2063844736e6e93"
+    },
+    {
+     "stem": "squad__s1eval__1of3",
+     "q0": 3957,
+     "q1": 7915,
+     "rows": 198043,
+     "npz": "33433ecc203ac041a86edcda11b954533d6a98bd1ce63395b27581132435950a",
+     "kt": "89b73a319099094b4f15b07a9fd061413025d9eace2112f6700a34198e804bba"
+    },
+    {
+     "stem": "squad__s1eval__2of3",
+     "q0": 7915,
+     "q1": 11873,
+     "rows": 198041,
+     "npz": "a8b74ff48f298cb6cc10ff22ad767bfb0e71eb0484e003bff7a5761acae35196",
+     "kt": "e0ed1e443ceff6c64f09ce26ee57b4e8b908f103fe0c1073c37e72ac5761b69a"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+    "stage": "U2d",
+    "build": "y",
+    "dataset": "squad",
+    "carve": "s1eval",
+    "construction": "U2G:y:KIND_T",
+    "graph_detail": {
+     "graph": "W2_S",
+     "npz": "outputs/u2b/squad/graphs/W2_S.npz",
+     "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+     "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+     "build": {
+      "directed_edges": 1732601,
+      "undirected_neighbours": 1756400,
+      "mean_degree": 86.81,
+      "max_degree": 968
+     }
+    },
+    "carve_ids_sha256": "e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8",
+    "questions_all": 11873,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true
+   },
+   "seconds_parts": 435.3,
+   "utc": "2026-10-22T21:38:45Z"
+  }
+ },
+ "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+ "stage": "U2d",
+ "build": "y",
+ "dataset": "squad",
+ "construction": "U2G:y:KIND_T",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "seconds": 7.5,
+ "utc": "2026-10-22T21:38:45Z"
+}

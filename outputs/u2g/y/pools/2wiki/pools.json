@@ -1,0 +1,464 @@
+{
+ "files": {
+  "2wiki__fit": {
+   "file": "2wiki__fit.npz",
+   "sha256": "23a7e0a2303c9d3b8a350bd5875889066d4681a6a23a2ad17032d77eb833a0c1",
+   "dataset": "2wiki",
+   "carve": "fit",
+   "construction": "U2G:y:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "W2_S",
+    "npz": "outputs/u2b/2wiki/graphs/W2_S.d.npz",
+    "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+    "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+    "build": {
+     "directed_edges": 71913828,
+     "undirected_neighbours": 142967492,
+     "mean_degree": 23.87,
+     "max_degree": 621403
+    }
+   },
+   "carve_ids_sha256": "fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3",
+   "questions": 5928,
+   "changed": 5928,
+   "short": 0,
+   "B_q": {
+    "mean": 112.0,
+    "max": 198
+   },
+   "pool_mean": 162.0,
+   "rows": {
+    "mean": 162.0,
+    "p90": 202.0,
+    "max": 248
+   },
+   "budget_mean": 112.0,
+   "fill_want_mean": 112.0,
+   "today_inc_mean": 106.0,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0008,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.8463,
+    "recall": 0.937
+   },
+   "pool": {
+    "ALL": 0.9276,
+    "recall": 0.971
+   },
+   "caps": {
+    "I": {
+     "r5": 0.937,
+     "hit1": 0.999
+    },
+    "pool": {
+     "r5": 0.971,
+     "hit1": 0.9997
+    }
+   },
+   "parts": [
+    {
+     "stem": "2wiki__fit__0of10",
+     "q0": 0,
+     "q1": 592,
+     "rows": 96449,
+     "npz": "a550b04fa0759fde3575ac6b934b701c4976506a86448d5089b4460a57689f83",
+     "kt": "5cb126cce00670d91d08f8859e7aadad281fc148a290d5780ce34cb6fd6bc14d"
+    },
+    {
+     "stem": "2wiki__fit__1of10",
+     "q0": 592,
+     "q1": 1185,
+     "rows": 96690,
+     "npz": "24e9bfccfaf7e75a9a23b8ac89833b2074c9d705b5696b82c325855c335abc06",
+     "kt": "d598de1e58957b994514e57ee38596c687baba4e0a3e9baf79baa4b1ddcf5e17"
+    },
+    {
+     "stem": "2wiki__fit__2of10",
+     "q0": 1185,
+     "q1": 1778,
+     "rows": 97184,
+     "npz": "453e16b39117f9d2e39449d1b7f9973cf2fe518d36da835618868ef037946fbe",
+     "kt": "05b1f9d36494d3861bd8350d8159ce719e519afcdbcca73822886e2f41782dbe"
+    },
+    {
+     "stem": "2wiki__fit__3of10",
+     "q0": 1778,
+     "q1": 2371,
+     "rows": 96563,
+     "npz": "2f484b74a58cfb7146529b616de2c4ed4e215741a8f3dedb7e3f2c13d0fd1907",
+     "kt": "2ecf7186e1183ab88362a85effa70e8f7aad4420738925bad9198dfc22f46fb5"
+    },
+    {
+     "stem": "2wiki__fit__4of10",
+     "q0": 2371,
+     "q1": 2964,
+     "rows": 96106,
+     "npz": "ea03fea4288e5721dbd80a02a4bcde2f62e6b073a30e19b4c93f4470b990a8df",
+     "kt": "4608029e9149b64e878a3a67e43c5cceede926fe9657b33478866e740994f59e"
+    },
+    {
+     "stem": "2wiki__fit__5of10",
+     "q0": 2964,
+     "q1": 3556,
+     "rows": 96675,
+     "npz": "e957f83259c9e9f75f7aab2f7ead0e6c697df13868407e3ee669baccb6e8d199",
+     "kt": "1782b9af9082eca94dfe3b0335b17da19adb7cef55eae07a45bf30d945ebb064"
+    },
+    {
+     "stem": "2wiki__fit__6of10",
+     "q0": 3556,
+     "q1": 4149,
+     "rows": 94353,
+     "npz": "16ddc96d8eb14b53fa58ba9dc07111598423284a6caf68838146609ce31b7679",
+     "kt": "46e8048b5e177a78461305fe050b522ed2607f174faf8193dbb199fee4b4c8fe"
+    },
+    {
+     "stem": "2wiki__fit__7of10",
+     "q0": 4149,
+     "q1": 4742,
+     "rows": 95034,
+     "npz": "df3a3b6d7aee3faa01f3035ca5c06d0983abb17eac7997a266d66c545cdb3d29",
+     "kt": "bdd62ff5f757c3b4bf6dab526705c3ae664c73ec5d84452a369564846b07d730"
+    },
+    {
+     "stem": "2wiki__fit__8of10",
+     "q0": 4742,
+     "q1": 5335,
+     "rows": 95663,
+     "npz": "6bcb1310291c3a486d6d57f4c1bdcb081d61a504e12e92490d0f193f888995b6",
+     "kt": "045a06e7a297729c328fbd2ea1c4e789d0552944e481a6a3d83fdfdecd70dd46"
+    },
+    {
+     "stem": "2wiki__fit__9of10",
+     "q0": 5335,
+     "q1": 5928,
+     "rows": 95425,
+     "npz": "afc591f53afd882600e63ecefa8867bfcc2f0e5d91b38aa9fbe5fdc44a81494f",
+     "kt": "562884a841e0ee5291f6adaebe571c88b970fb658ccd263a516e0e8ea7b284d0"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+    "stage": "U2d",
+    "build": "y",
+    "dataset": "2wiki",
+    "carve": "fit",
+    "construction": "U2G:y:KIND_T",
+    "graph_detail": {
+     "graph": "W2_S",
+     "npz": "outputs/u2b/2wiki/graphs/W2_S.d.npz",
+     "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+     "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+     "build": {
+      "directed_edges": 71913828,
+      "undirected_neighbours": 142967492,
+      "mean_degree": 23.87,
+      "max_degree": 621403
+     }
+    },
+    "carve_ids_sha256": "fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3",
+    "questions_all": 5928,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true
+   },
+   "seconds_parts": 4461.5,
+   "utc": "2026-10-22T21:38:50Z"
+  },
+  "2wiki__s1eval": {
+   "file": "2wiki__s1eval.npz",
+   "sha256": "c6074f1103e950980e7936444f7443a5d12db6082ed4d7b08f4b8f25e43a990e",
+   "dataset": "2wiki",
+   "carve": "s1eval",
+   "construction": "U2G:y:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "W2_S",
+    "npz": "outputs/u2b/2wiki/graphs/W2_S.d.npz",
+    "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+    "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+    "build": {
+     "directed_edges": 71913828,
+     "undirected_neighbours": 142967492,
+     "mean_degree": 23.87,
+     "max_degree": 621403
+    }
+   },
+   "carve_ids_sha256": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+   "questions": 12576,
+   "changed": 12576,
+   "short": 0,
+   "B_q": {
+    "mean": 113.4,
+    "max": 213
+   },
+   "pool_mean": 163.5,
+   "rows": {
+    "mean": 163.5,
+    "p90": 201.0,
+    "max": 263
+   },
+   "budget_mean": 113.4,
+   "fill_want_mean": 113.4,
+   "today_inc_mean": 105.7,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0042,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.8519,
+    "recall": 0.9422
+   },
+   "pool": {
+    "ALL": 0.9412,
+    "recall": 0.9786
+   },
+   "caps": {
+    "I": {
+     "r5": 0.9422,
+     "hit1": 0.9998
+    },
+    "pool": {
+     "r5": 0.9786,
+     "hit1": 1.0
+    }
+   },
+   "parts": [
+    {
+     "stem": "2wiki__s1eval__0of21",
+     "q0": 0,
+     "q1": 598,
+     "rows": 97305,
+     "npz": "e3b16bb1047bb366f688c3226bb911e7a32d8788fa32681e0e3f032ed3c57ca4",
+     "kt": "09fec01c983032c9bc3486d1f866a4aaaa4a74579001f42d24882bfb8f2980b9"
+    },
+    {
+     "stem": "2wiki__s1eval__1of21",
+     "q0": 598,
+     "q1": 1197,
+     "rows": 98366,
+     "npz": "027845a6e673a03fc8a0dff9bfecf6fcaca2cbc7dc6a0b2454d6dd036a3ae8ba",
+     "kt": "f02c77b163360617ce07e3bb37ead9ece687bb1d018cadf849e352942a847446"
+    },
+    {
+     "stem": "2wiki__s1eval__2of21",
+     "q0": 1197,
+     "q1": 1796,
+     "rows": 97737,
+     "npz": "be1760905b5c881ba7c2839a75c0c2765d4bb2c03e5e6ba31bec7c6d81266bff",
+     "kt": "86ee0bee5ea5f521d449e146c13ee4bde423dc1ec90e6907a699d3da8f74e1f7"
+    },
+    {
+     "stem": "2wiki__s1eval__3of21",
+     "q0": 1796,
+     "q1": 2395,
+     "rows": 97091,
+     "npz": "dee40bb3a9cca0c6d40e22957b5e6c7d476afe6b3306a12d6297cb5e8f6e4273",
+     "kt": "dd04cf51b011dca4757030c18b86ae5545de27efcea97cc4298567c756c6d2be"
+    },
+    {
+     "stem": "2wiki__s1eval__4of21",
+     "q0": 2395,
+     "q1": 2994,
+     "rows": 97609,
+     "npz": "7b0abc7f9636be64cae4858c5128b12bed7bb6f183f9009b68fe327c88467cd3",
+     "kt": "f5c34b5b9c6d993f6a5166d1d593e24ad9437633ba694bdab4bc692df6c2fc66"
+    },
+    {
+     "stem": "2wiki__s1eval__5of21",
+     "q0": 2994,
+     "q1": 3593,
+     "rows": 98541,
+     "npz": "a2ee0cc1339264e6125794146978287f6434eefc610a25adebb86bd82ea1f3c3",
+     "kt": "2f424b08739e5bd31d65674c4514d19c4d137ed5384eccddfecd2080ee5647bc"
+    },
+    {
+     "stem": "2wiki__s1eval__6of21",
+     "q0": 3593,
+     "q1": 4192,
+     "rows": 97996,
+     "npz": "13ff3b1368a6b532fedbba30f4e600f47edcde4bb36458401a72062637502132",
+     "kt": "5570c6d733269e7cf63872cace7ffed5c948af4b84e699b39019db1c373bd723"
+    },
+    {
+     "stem": "2wiki__s1eval__7of21",
+     "q0": 4192,
+     "q1": 4790,
+     "rows": 98029,
+     "npz": "c53becf276a8bf7ffb8b6cc03dcfbb8e99ae37fb77c7ea84f2792c3fe485db81",
+     "kt": "ff4238d24c9f1c03c0a545bbec114b4f77c1a09ce6d29cb29e9b58970c238415"
+    },
+    {
+     "stem": "2wiki__s1eval__8of21",
+     "q0": 4790,
+     "q1": 5389,
+     "rows": 97262,
+     "npz": "f6fce7fbbe23cef6954fe8ec8da55a47eba6d46c99998ec307e79281e0ce847c",
+     "kt": "6c2e446494b181f7532bb933ffe4016aed15e27989ffb4409af892ae303ac3e2"
+    },
+    {
+     "stem": "2wiki__s1eval__9of21",
+     "q0": 5389,
+     "q1": 5988,
+     "rows": 97316,
+     "npz": "541afa270ddc24a5e38676185bbbc739ac6b813705c776b73190afba9986a357",
+     "kt": "d886d5dd62a7b010dc8795b6b081c7f2783737eeed15c8a939635c8e73d651ad"
+    },
+    {
+     "stem": "2wiki__s1eval__10of21",
+     "q0": 5988,
+     "q1": 6587,
+     "rows": 98640,
+     "npz": "f0398c8caa6a683b3e94d7863f208a0b258e4a262edb1ae02803794b72001845",
+     "kt": "a06505cc6248c44d1f581f0ca79bb987ed48029548c305acfaadc38379b50505"
+    },
+    {
+     "stem": "2wiki__s1eval__11of21",
+     "q0": 6587,
+     "q1": 7186,
+     "rows": 97953,
+     "npz": "a95f6f2e85f7dd6c3bb2c62d9ed95de1f126c0755facd2776556c755c7c9a89b",
+     "kt": "488c38ce4422d970bc67d8c7282eff75924680a3d94451861f79452e53f942a5"
+    },
+    {
+     "stem": "2wiki__s1eval__12of21",
+     "q0": 7186,
+     "q1": 7785,
+     "rows": 97475,
+     "npz": "3375d0813a425698897075c57df575639a45edf84e7bd8378dc5cd6cec0cc689",
+     "kt": "f7ead2f61fdaa6aa22d12b4f6d18381fec9e951cc69c8b887e843bf1bcba4342"
+    },
+    {
+     "stem": "2wiki__s1eval__13of21",
+     "q0": 7785,
+     "q1": 8384,
+     "rows": 98150,
+     "npz": "f72b367f0c20dbc628c5cc1212b7553c9cc5d75d44d39a1227910330f605ecf4",
+     "kt": "fa7fd7333c8db197c6296c02fc067c3745aec04bc573a471d0311e8734c9f4ad"
+    },
+    {
+     "stem": "2wiki__s1eval__14of21",
+     "q0": 8384,
+     "q1": 8982,
+     "rows": 97918,
+     "npz": "37856a6abdd2af4df62c515d3ed6f23948f4e55cb73e9c154aaf30906076e92a",
+     "kt": "3c9de7d99a74e0ec2c6873f0e67f22e5c8c6506e34626a1ee92ea9b6b7e4ea89"
+    },
+    {
+     "stem": "2wiki__s1eval__15of21",
+     "q0": 8982,
+     "q1": 9581,
+     "rows": 98882,
+     "npz": "116b956f2076c10c35bd23c4c621f4690e53fd90a886a891b2fb8a65a2557973",
+     "kt": "91fd380153b0193a895e3d13a5753a77536c35167e578a79a9aa593feba902f3"
+    },
+    {
+     "stem": "2wiki__s1eval__16of21",
+     "q0": 9581,
+     "q1": 10180,
+     "rows": 98673,
+     "npz": "6ae48cd5e411eb0e119eb9c1e52971f1eb4988b72c46ae30bf682d4073204d60",
+     "kt": "fb02f1c96ae80ef35a8d1ebd8138e7b5c8eb2b05c461aa7e72095c323c478d77"
+    },
+    {
+     "stem": "2wiki__s1eval__17of21",
+     "q0": 10180,
+     "q1": 10779,
+     "rows": 96208,
+     "npz": "4b707f5d12269532f7504a96fea6f4224de814331cf332899a8a43f8628750cb",
+     "kt": "08bba09ee397d276fbc045e08eb5c395e8e71a38e54a80ccb3e1ede28b470644"
+    },
+    {
+     "stem": "2wiki__s1eval__18of21",
+     "q0": 10779,
+     "q1": 11378,
+     "rows": 98374,
+     "npz": "9dc7fb1143d7c669bb77f061a8a800e41a79721e94354044ef441a2eda5b86f9",
+     "kt": "e68674df8754fa1d1976a3d5664b58cc6bb40d717253f0c3d03b59bb983bf785"
+    },
+    {
+     "stem": "2wiki__s1eval__19of21",
+     "q0": 11378,
+     "q1": 11977,
+     "rows": 98130,
+     "npz": "4ecdd5de33470621695b70cb646eb431f89460e9037666274cdb4c8195956b5a",
+     "kt": "7411136c8b5a4baad0167c5c098b3db06fa513e5572bf98a4c5686544b0ef672"
+    },
+    {
+     "stem": "2wiki__s1eval__20of21",
+     "q0": 11977,
+     "q1": 12576,
+     "rows": 97895,
+     "npz": "bf99e1d37401344fd2a5b357cbe3bb35e4aee119c789ccf3b812e063eeec37d6",
+     "kt": "79596958c769bee7dd33acb614967e2745796db3db8f5a23c71ae59426e724f3"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+    "stage": "U2d",
+    "build": "y",
+    "dataset": "2wiki",
+    "carve": "s1eval",
+    "construction": "U2G:y:KIND_T",
+    "graph_detail": {
+     "graph": "W2_S",
+     "npz": "outputs/u2b/2wiki/graphs/W2_S.d.npz",
+     "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+     "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+     "build": {
+      "directed_edges": 71913828,
+      "undirected_neighbours": 142967492,
+      "mean_degree": 23.87,
+      "max_degree": 621403
+     }
+    },
+    "carve_ids_sha256": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+    "questions_all": 12576,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true
+   },
+   "seconds_parts": 8533.4,
+   "utc": "2026-10-22T21:39:18Z"
+  }
+ },
+ "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+ "stage": "U2d",
+ "build": "y",
+ "dataset": "2wiki",
+ "construction": "U2G:y:KIND_T",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "seconds": 41.6,
+ "utc": "2026-10-22T21:39:18Z"
+}

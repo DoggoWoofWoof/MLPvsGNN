@@ -1,0 +1,75 @@
+{
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "part": "part_1of2",
+ "step1_record_sha256": "a479fba7c994f8986ead0fc193d33903f959ff53e83d1f0dfdd06c07797de264",
+ "chunks": [
+  43,
+  87
+ ],
+ "queries": 6298,
+ "rows": 1030968,
+ "edges": 8023546,
+ "edges_per_row": 7.783,
+ "families": [
+  4769698,
+  2345554,
+  908294
+ ],
+ "look_edges": {
+  "raw": 7926520,
+  "self_loops": 0,
+  "kept": 8023546
+ },
+ "look": {
+  "record_0of2.json": "841769f9edb23471a6c6257a5be7b89bebb97999f97d1fa5016fcb8ba148ea33",
+  "record_1of2.json": "c0c8c8494a638c3ee41da059ec41b48f3acf7caa46590ce5c80e16b6449e9aef"
+ },
+ "carve_ids_sha256": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    6298
+   ],
+   "sha256": "152803c97f1c51e1f8ce7442e1e6b92af458ee0f5857b47695fb793f5fd27de7"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    8023546
+   ],
+   "sha256": "32be415f0f327071b847ad097877893ddfe6aad53a1f574f926104967305d5af"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    8023546
+   ],
+   "sha256": "9c8717dde2038f7fae9f50a5ea061fa790fbefaaaa4b7f08a6ab530eadff0b82"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    8023546
+   ],
+   "sha256": "22197752ec947b765f27b785d45f53434cc6485d2cb94f7f3b1378ebbe7edc80"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 5.9,
+ "utc": "2026-10-22T21:51:54Z"
+}

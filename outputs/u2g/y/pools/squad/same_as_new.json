@@ -1,0 +1,79 @@
+{
+ "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+ "stage": "U2g",
+ "check": "Y's pools against U2d's new pools on W2_S (section 3)",
+ "dataset": "squad",
+ "y_manifest_sha256": "0ac461244cc1509210088a7e75f8aed1c6e131a13da0e09e32d02543926a5848",
+ "new_manifest": "outputs/u2d/new/pools/squad/pools.json",
+ "new_manifest_sha256": "19cc1eda865a3e6deef13706b7aa7a12ecd8849ec7d22a99467e221c419571dd",
+ "carves": {
+  "fit": {
+   "equal": [
+    "questions",
+    "carve_ids_sha256",
+    "B_q",
+    "pool_mean",
+    "today_inc_mean",
+    "shares",
+    "I",
+    "graph_detail",
+    "caps.I"
+   ],
+   "differ": [],
+   "fill": {
+    "y_12x_mean_fill_k": 0.0,
+    "new_fill_want_mean": 0.0
+   },
+   "rows_mean": {
+    "y": 50.0,
+    "new": 50.0
+   },
+   "pool": {
+    "y": {
+     "ALL": 0.9833,
+     "recall": 0.9833
+    },
+    "new": {
+     "ALL": 0.9833,
+     "recall": 0.9833
+    }
+   }
+  },
+  "s1eval": {
+   "equal": [
+    "questions",
+    "carve_ids_sha256",
+    "B_q",
+    "pool_mean",
+    "today_inc_mean",
+    "shares",
+    "I",
+    "graph_detail",
+    "caps.I"
+   ],
+   "differ": [],
+   "fill": {
+    "y_12x_mean_fill_k": 0.0,
+    "new_fill_want_mean": 0.0
+   },
+   "rows_mean": {
+    "y": 50.0,
+    "new": 50.0
+   },
+   "pool": {
+    "y": {
+     "ALL": 0.9798,
+     "recall": 0.9798
+    },
+    "new": {
+     "ALL": 0.9798,
+     "recall": 0.9798
+    }
+   }
+  }
+ },
+ "problems": [],
+ "verdict": "PASS",
+ "zu2g_sha256": "7cb74ea96a006702dea4be140f4960381ddbb545a2b9416538b677c9ecbb8440",
+ "utc": "2026-10-22T21:38:45Z"
+}

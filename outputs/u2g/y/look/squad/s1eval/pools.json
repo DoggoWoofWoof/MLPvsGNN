@@ -1,0 +1,52 @@
+{
+ "look": "look_u2d",
+ "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+ "build": "y",
+ "dataset": "squad",
+ "carve": "s1eval",
+ "shard": null,
+ "pools_file": "squad__s1eval.npz",
+ "pools_sha256": "1c93345e6c5769faa347208f63c43633f49d5734cf5bc7cb6f3e6da861a79f10",
+ "manifest_sha256": "0ac461244cc1509210088a7e75f8aed1c6e131a13da0e09e32d02543926a5848",
+ "construction": "U2G:y:KIND_T",
+ "graph": {
+  "detail": {
+   "graph": "W2_S",
+   "npz": "outputs/u2b/squad/graphs/W2_S.npz",
+   "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+   "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+   "build": {
+    "directed_edges": 1732601,
+    "undirected_neighbours": 1756400,
+    "mean_degree": 86.81,
+    "max_degree": 968
+   }
+  },
+  "swapped": true
+ },
+ "questions": 11873,
+ "changed": 0,
+ "short": 0,
+ "seconds": 3.1,
+ "largest_pool": 54,
+ "placement": {
+  "where": "modal",
+  "node": "modal",
+  "mirror_root": "/root/mirror",
+  "freeze_sha256": "039dcf327aa71e39994cdeedc731033279d81d854d74efc29c86f197546f3dc8"
+ },
+ "script_sha256": {
+  "look_u2d": "494a1000e510e8f7f603fa5833dcb397e2de27a98c30a733420cdca171222862",
+  "look_step1": "f9e190665cc7f430415c4a8a25071fd588e4183be13bcfd2943c27a93f1559f6",
+  "look_x_six": "5cf89ad997c6d703876faaed706d11bf68f1f1ae88e31f9eb1b570e975ae0b13",
+  "p1gb_pools": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+  "zu2d_pools": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+  "zu2c": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756"
+ },
+ "threads": {
+  "OPENBLAS_NUM_THREADS": "2",
+  "OMP_NUM_THREADS": "2",
+  "MKL_NUM_THREADS": "2"
+ },
+ "utc": "2026-10-22T21:46:47Z"
+}

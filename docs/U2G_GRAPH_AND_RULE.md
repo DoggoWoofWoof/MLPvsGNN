@@ -210,4 +210,113 @@ That is about $7 to $10 in all, against about $11 left in workspace 3.
 
 ## 10. Results
 
-Filed after the run.
+Filed 23 October 2026. Development numbers. The files:
+- the verdict: `outputs/u2g/screen-verdict.json` and `.md`;
+- the 14 compares, the three pairs and their re-calls: `outputs/screen/scr-u2g-*`;
+- Y's build records: `outputs/u2g/y`.
+
+The fits' own records and reads (`outputs/screen/fits/scr-u2g-y-*`) stay off the repository, as U2d's do.
+
+**The run.** All of Y ran on Modal in workspace 3, from 02:57 to 04:27 IST on 23 October, for about $7 (section 9
+estimated $7 to $10).
+- **The pools:** 59 shards in 715 s. same_as_new passed on all four datasets: Y's manifests equal U2d's new ones, and
+  twelve times Y's mean fill_k equals new's fill_want_mean to the record's rounding (within 0.046).
+- **The features:** 1,415 s. The gate passed.
+- **The fits:** all six trained and read in one L40S container each, from U2d's image. So every compare's two fits
+  share the device.
+
+**The verdicts.**
+
+| decision | what it asks | GAIN | LOSS | verdict |
+| --- | --- | --- | --- | --- |
+| Y | W2_S in place of today's graph, at P1c2's rule, for the lean pair | 2 | 8 | NOT_ADOPTED |
+| YG | the same, for zg6 | 1 | 4 | NOT_ADOPTED |
+
+So there is no full run (section 7). The lean pair and zg6 stay on today's graph.
+
+**Y: the graph.** Delta R@5, Y against the base, with the re-called calls:
+
+| arm | split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| zrckp | L-musique | 0.000 | +0.001 | +0.016 GAIN | −0.054 LOSS | −0.017 LOSS | −0.004 |
+| zrckp | L-hotpotqa | +0.001 | +0.002 | +0.007 | −0.048 LOSS | −0.009 LOSS | 0.000 |
+| zspk | L-musique | 0.000 | −0.001 | +0.014 GAIN | −0.069 LOSS | −0.027 LOSS | −0.015 LOSS |
+| zspk | L-hotpotqa | +0.001 | +0.003 | +0.001 | −0.055 LOSS | −0.008 | −0.010 |
+
+- **hotpotqa loses on every arm and split,** by 0.048 to 0.069.
+- **2wiki loses on three of four,** by 0.009 to 0.027. The fourth, zspk on L-hotpotqa (−0.008), is within its floor
+  (0.0139) after the re-call.
+- **webqsp:** zspk loses on L-musique (−0.015, floor 0.0105). On L-hotpotqa its −0.010 is within the floor (0.0405).
+- **musique gains on L-musique** for both arms (+0.016 and +0.014). On L-hotpotqa, +0.007 and +0.001 are within.
+- **metaqa and squad** stay within.
+
+**Where hotpotqa's loss sits.** At P1c2's rule, W2_S's pools hold fewer golds in more rows. On s1eval:
+
+| carve | rows, base / Y | I's ALL, base / Y | pool ALL, base / Y | R@5 cap, base / Y |
+| --- | --- | --- | --- | --- |
+| hotpotqa | 93.7 / 118.8 | 0.968 / 0.888 | 0.959 / 0.911 | 0.976 / 0.952 |
+| 2wiki | 105.7 / 163.5 | 0.906 / 0.852 | 0.959 / 0.941 | 0.984 / 0.979 |
+| musique | 2,092.4 / 2,060.7 | 0.803 / 0.809 | 0.900 / 0.901 | 0.963 / 0.964 |
+
+squad's pools are the same 50 rows on both builds.
+- **Reach explains under half of it.** hotpotqa's R@5 cap falls by 0.024, so the lost golds explain at most 0.024 of
+  zrckp's 0.054 on L-musique. The rest, at least 0.030, is ranking: zrckp reaches 0.928 of its cap on the base build
+  and 0.894 on Y.
+- **The second gold is what goes.** On hotpotqa, FC@5 falls by 0.094 to 0.137 while hit@1 moves by −0.013 to +0.007.
+  The first gold still comes first about as often, and the second drops out of the top five. That is the bridge,
+  which W2_S's links reach less often than the dataset's hyperlinks do (I's ALL, above).
+- **musique's gain is ranking.** Its pools and caps are the same on both graphs.
+
+**U2d's A, split along Y.** For every read, (Y − base) + (new − Y) equals U2d's new − base to 0.0001. new − Y crosses
+workspaces, so it is a reading. For the lean pair:
+
+| dataset | the graph: Y − base | the rule: new − Y |
+| --- | --- | --- |
+| hotpotqa | −0.069 to −0.048 | −0.003 to +0.009 |
+| 2wiki | −0.027 to −0.008 | −0.019 to +0.012 |
+| musique | +0.001 to +0.016 | −0.013 to −0.003 |
+| webqsp | −0.015 to 0.000 | +0.021 to +0.050 |
+| metaqa | 0.000 to +0.001 | −0.005 to −0.001 |
+| squad | −0.001 to +0.003 | −0.002 to +0.003 |
+
+- **The graph** carries all of hotpotqa's loss in A, and musique's gain.
+- **The rule,** U2e's larger pools on W2_S, carries A's webqsp gain. On 2wiki it helps on L-musique (+0.003, +0.012)
+  and costs on L-hotpotqa (−0.019, −0.012). So 2wiki's loss in A is the graph's on L-musique and mostly the rule's on
+  L-hotpotqa. The rule also gives back most of zrckp's musique gain on L-musique (−0.013 of +0.016).
+- Read under U2d's null, the rule has five GAINs (webqsp three times, and zspk's hotpotqa and 2wiki on L-musique) and
+  one LOSS (zrckp's 2wiki on L-hotpotqa).
+
+**YG: zg6.** zg6 follows the lean pair:
+- it gains musique on L-musique (+0.021);
+- it loses hotpotqa (−0.055 and −0.046), and on L-musique 2wiki (−0.015) and webqsp (−0.041);
+- on L-hotpotqa its 2wiki (−0.012) is within its floor (0.0139) after the re-call, and webqsp holds (0.000).
+
+The rule, new − Y, costs zg6 webqsp on both splits (−0.040, −0.041), a LOSS on each read.
+
+**Beside, deciding nothing.**
+- **The full table** of R@5, FC@5 and hit@1 per fit and build is in `screen-verdict.md`.
+- **zg6 against zspk on Y:**
+  - above on musique (+0.013, +0.018), and on L-musique on metaqa (+0.009), hotpotqa (+0.018) and 2wiki (+0.020);
+  - below on webqsp (−0.105, −0.048) and on hotpotqa on L-hotpotqa (−0.012).
+
+  That is the pattern U2d filed on its new build, the other build on W2_S.
+- **The MLP's share** of the GNN's gain over RRF on Y:
+  - against zspk, 0.96 to 1.08, except squad on L-musique (1.39, where zspk's gain over RRF is 0.006) and webqsp (1.21,
+    1.32);
+  - against zg6, 0.83 to 1.24, except webqsp (2.10, 1.71), where zg6 is below the MLP. musique is the low end (0.85,
+    0.83).
+- **hit@1, the headline on metaqa and webqsp** (Y reads the base build's carves on both):
+  - metaqa: 0.915 to 0.954, against a cap of 0.998;
+  - webqsp: 0.133 to 0.179, against a cap of 0.967.
+- **U2d's new build, beside Y:** at U2e's rule, W2_S's pools cover about as many golds as today's graph on hotpotqa,
+  and more on 2wiki, at 5.9 and 8.0 times the rows. On s1eval: hotpotqa 555.7 rows (ALL 0.953, cap 0.976), 2wiki
+  848.3 (0.967, 0.989), musique 5,217.2 (0.945, 0.982).
+
+**What follows** (section 7, fixed before any number):
+- **The links:** a link rule chosen by the lean pair's R@5 on this screen, not by coverage alone. Then X (section 8),
+  when credit or the host allows.
+- **zg6** stays on today's graph. G's declared next form, zg6v, stands.
+
+Y gains musique and loses hotpotqa and 2wiki. docs/SCREENS.md (3b) calls for a form that can back off, per question or
+per dataset. That form is declared in its own file, docs/U2H_W2S_BESIDE.md: W2_S's KT columns beside today's graph, as
+an input to both lean models.

@@ -1,0 +1,269 @@
+{
+ "new": "outputs\\screen\\fits\\scr-u2d-new-zrckp",
+ "bases": [
+  "outputs\\screen\\fits\\scr-u2g-y-zrckp"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "squad"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-u2g-y-zrckp": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "in-domain",
+     "questions": 9785,
+     "base": [
+      0.8009,
+      0.6842,
+      0.9152
+     ],
+     "new": [
+      0.7999,
+      0.6841,
+      0.9098
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      -0.001,
+      -0.0001,
+      -0.0054
+     ],
+     "lo": [
+      -0.0025,
+      -0.0025,
+      -0.0095
+     ],
+     "hi": [
+      0.0005,
+      0.0022,
+      -0.0015
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9132,
+      0.9132,
+      0.7507
+     ],
+     "new": [
+      0.9129,
+      0.9129,
+      0.751
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      -0.0003,
+      -0.0003,
+      0.0003
+     ],
+     "lo": [
+      -0.0019,
+      -0.0019,
+      -0.0023
+     ],
+     "hi": [
+      0.0013,
+      0.0013,
+      0.0029
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "zero-shot",
+     "questions": 2417,
+     "base": [
+      0.5315,
+      0.2085,
+      0.6992
+     ],
+     "new": [
+      0.5189,
+      0.2048,
+      0.7025
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      -0.0127,
+      -0.0037,
+      0.0033
+     ],
+     "lo": [
+      -0.0191,
+      -0.0132,
+      -0.0087
+     ],
+     "hi": [
+      -0.0065,
+      0.0066,
+      0.0153
+     ],
+     "call": "LOSS"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "in-domain",
+     "questions": 7405,
+     "base": [
+      0.8512,
+      0.7371,
+      0.8375
+     ],
+     "new": [
+      0.8484,
+      0.7341,
+      0.828
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      -0.0028,
+      -0.003,
+      -0.0096
+     ],
+     "lo": [
+      -0.0056,
+      -0.008,
+      -0.0144
+     ],
+     "hi": [
+      -0.0002,
+      0.0018,
+      -0.0049
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9171,
+      0.7957,
+      0.9763
+     ],
+     "new": [
+      0.9204,
+      0.804,
+      0.9757
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.0033,
+      0.0083,
+      -0.0006
+     ],
+     "lo": [
+      0.0017,
+      0.0045,
+      -0.0027
+     ],
+     "hi": [
+      0.0051,
+      0.0125,
+      0.0014
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "zero-shot",
+     "questions": 1503,
+     "base": [
+      0.3523,
+      0.2808,
+      0.1404
+     ],
+     "new": [
+      0.3951,
+      0.3194,
+      0.175
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      0.0428,
+      0.0386,
+      0.0346
+     ],
+     "lo": [
+      0.0294,
+      0.0246,
+      0.0206
+     ],
+     "hi": [
+      0.0568,
+      0.0532,
+      0.0486
+     ],
+     "call": "GAIN"
+    }
+   ],
+   "verdict": "MIXED",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-22T22:21:52Z",
+ "verdict": "MIXED",
+ "u2g": {
+  "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+  "compare": "scr-u2g-rule-zrckp",
+  "new": "scr-u2d-new-zrckp",
+  "bases": [
+   "scr-u2g-y-zrckp"
+  ],
+  "devices": {
+   "scr-u2d-new-zrckp": {
+    "gpu": "NVIDIA L40S",
+    "image": "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002
+   },
+   "scr-u2g-y-zrckp": {
+    "gpu": "NVIDIA L40S",
+    "image": "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002
+   }
+  },
+  "one_device": true,
+  "zu2g_sha256": "7cb74ea96a006702dea4be140f4960381ddbb545a2b9416538b677c9ecbb8440"
+ }
+}

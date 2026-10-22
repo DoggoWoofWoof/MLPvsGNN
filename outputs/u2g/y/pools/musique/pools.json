@@ -1,0 +1,240 @@
+{
+ "files": {
+  "musique__s1fit": {
+   "file": "musique__s1fit.npz",
+   "sha256": "b567c8e8e0435214f9e5874ce8e5a94b83c10bd28307d4986102e7371fd99b98",
+   "dataset": "musique",
+   "carve": "s1fit",
+   "construction": "U2G:y:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "W2_S",
+    "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+    "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+    "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+    "build": {
+     "directed_edges": 2802624,
+     "undirected_neighbours": 4687840,
+     "mean_degree": 39.88,
+     "max_degree": 14281
+    }
+   },
+   "carve_ids_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+   "questions": 4601,
+   "changed": 4601,
+   "short": 0,
+   "B_q": {
+    "mean": 1866.7,
+    "max": 1988
+   },
+   "pool_mean": 2066.7,
+   "rows": {
+    "mean": 2066.7,
+    "p90": 2165.0,
+    "max": 2188
+   },
+   "budget_mean": 1866.7,
+   "fill_want_mean": 1866.7,
+   "today_inc_mean": 2091.5,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.2915,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.8246,
+    "recall": 0.9243
+   },
+   "pool": {
+    "ALL": 0.9222,
+    "recall": 0.969
+   },
+   "caps": {
+    "I": {
+     "r5": 0.9243,
+     "hit1": 0.9961
+    },
+    "pool": {
+     "r5": 0.969,
+     "hit1": 0.9987
+    }
+   },
+   "parts": [
+    {
+     "stem": "musique__s1fit__0of2",
+     "q0": 0,
+     "q1": 2300,
+     "rows": 4732512,
+     "npz": "9f100711908ab7bfc902dba3452d294e75766d70e04882f31e3e3d8242a3fc77",
+     "kt": "6b6f02eac310464f2f6223751d645c01c35e0ceb97977b4033dc86ebadff7132"
+    },
+    {
+     "stem": "musique__s1fit__1of2",
+     "q0": 2300,
+     "q1": 4601,
+     "rows": 4776328,
+     "npz": "3640a43c8f685e09ebb4a74f088657e400a3d4002f025334e0f7d6ce15d3196c",
+     "kt": "e36dc37e8adc2dd39e619d2adce028839f41f3fbd5d215c0fb82b5adebbf545a"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+    "stage": "U2d",
+    "build": "y",
+    "dataset": "musique",
+    "carve": "s1fit",
+    "construction": "U2G:y:KIND_T",
+    "graph_detail": {
+     "graph": "W2_S",
+     "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+     "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+     "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+     "build": {
+      "directed_edges": 2802624,
+      "undirected_neighbours": 4687840,
+      "mean_degree": 39.88,
+      "max_degree": 14281
+     }
+    },
+    "carve_ids_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+    "questions_all": 4601,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true
+   },
+   "seconds_parts": 448.9,
+   "utc": "2026-10-22T21:38:49Z"
+  },
+  "musique__s1eval": {
+   "file": "musique__s1eval.npz",
+   "sha256": "a0d399bbae33d747751e7be0f27b7ebfcaa69815bb1fa331e5985857b7c66ffc",
+   "dataset": "musique",
+   "carve": "s1eval",
+   "construction": "U2G:y:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "W2_S",
+    "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+    "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+    "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+    "build": {
+     "directed_edges": 2802624,
+     "undirected_neighbours": 4687840,
+     "mean_degree": 39.88,
+     "max_degree": 14281
+    }
+   },
+   "carve_ids_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+   "questions": 2417,
+   "changed": 2417,
+   "short": 0,
+   "B_q": {
+    "mean": 1860.7,
+    "max": 1986
+   },
+   "pool_mean": 2060.7,
+   "rows": {
+    "mean": 2060.7,
+    "p90": 2165.0,
+    "max": 2186
+   },
+   "budget_mean": 1860.7,
+   "fill_want_mean": 1860.7,
+   "today_inc_mean": 2092.4,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.2656,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.8089,
+    "recall": 0.923
+   },
+   "pool": {
+    "ALL": 0.9011,
+    "recall": 0.9641
+   },
+   "caps": {
+    "I": {
+     "r5": 0.923,
+     "hit1": 0.9946
+    },
+    "pool": {
+     "r5": 0.9641,
+     "hit1": 0.9992
+    }
+   },
+   "parts": [
+    {
+     "stem": "musique__s1eval__0of1",
+     "q0": 0,
+     "q1": 2417,
+     "rows": 4980690,
+     "npz": "e6259a68641425d7879a213136f37ba4099558b002197f5331462f896acea480",
+     "kt": "84ca6260db95f8fcccc10ecf5c9caad4ae18cdd17815fc75bd8719893f634bc1"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+    "stage": "U2d",
+    "build": "y",
+    "dataset": "musique",
+    "carve": "s1eval",
+    "construction": "U2G:y:KIND_T",
+    "graph_detail": {
+     "graph": "W2_S",
+     "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+     "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+     "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+     "build": {
+      "directed_edges": 2802624,
+      "undirected_neighbours": 4687840,
+      "mean_degree": 39.88,
+      "max_degree": 14281
+     }
+    },
+    "carve_ids_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+    "questions_all": 2417,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true
+   },
+   "seconds_parts": 197.1,
+   "utc": "2026-10-22T21:38:55Z"
+  }
+ },
+ "declared_in": "docs/U2G_GRAPH_AND_RULE.md",
+ "stage": "U2d",
+ "build": "y",
+ "dataset": "musique",
+ "construction": "U2G:y:KIND_T",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "seconds": 19.1,
+ "utc": "2026-10-22T21:38:55Z"
+}
