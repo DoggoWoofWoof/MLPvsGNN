@@ -1,0 +1,168 @@
+{
+ "declared_in": "docs/U2E_POOLS_TO_THE_CEILING.md",
+ "stage": "U2e",
+ "dataset": "squad",
+ "carve": "s1sel",
+ "graph_detail": {
+  "graph": "W2_S",
+  "npz": "outputs/u2b/squad/graphs/W2_S.npz",
+  "npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+  "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+  "build": {
+   "directed_edges": 1732601,
+   "undirected_neighbours": 1756400,
+   "mean_degree": 86.81,
+   "max_degree": 968
+  }
+ },
+ "script_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+ "u2c_stats_sha256": "750b0902fbccc16d141fb94eb09faf37ddc4a1dfadd8f154de651269e7408780",
+ "p1g_script_sha256": "ddb2900f382f14c130eca100efd2472c29837ae633a975483f06a1afa9336817",
+ "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "columns": [
+  "kt",
+  "kt_n1",
+  "cos",
+  "cos+n2_10",
+  "cos+n2_30",
+  "cos+n2_100",
+  "kt_cos",
+  "kt_cos+n2_10",
+  "kt_cos+n2_30",
+  "kt_cos+n2_100",
+  "kt_cos_r0",
+  "kt_cos_r0+n2_10",
+  "kt_cos_r0+n2_30",
+  "kt_cos_r0+n2_100"
+ ],
+ "m_grid": [
+  10,
+  30,
+  100
+ ],
+ "nmax": 7000,
+ "chunk": 65536,
+ "questions": 1498,
+ "golds": 1498,
+ "file_sha256": "cf0ad65d0cadbbca2ffb8271bf358cb409665ef07f500a9a7b6a08883b6a50ec",
+ "summary": {
+  "orders": {
+   "kt": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 6933.2
+   },
+   "kt_n1": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7102.4
+   },
+   "cos": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7102.4
+   },
+   "cos+n2_10": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7133.1
+   },
+   "cos+n2_30": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7208.6
+   },
+   "cos+n2_100": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7545.3
+   },
+   "kt_cos": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7102.4
+   },
+   "kt_cos+n2_10": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7133.1
+   },
+   "kt_cos+n2_30": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7208.6
+   },
+   "kt_cos+n2_100": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7545.3
+   },
+   "kt_cos_r0": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7102.4
+   },
+   "kt_cos_r0+n2_10": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7133.1
+   },
+   "kt_cos_r0+n2_30": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7208.6
+   },
+   "kt_cos_r0+n2_100": {
+    "ALL": 0.9993,
+    "recall": 0.9993,
+    "length": 7545.3
+   }
+  },
+  "sizes": {
+   "B": 50.0,
+   "fill": 0.0,
+   "N1": 1928.1,
+   "R0": 1527.5,
+   "I": 0.0,
+   "N2_10": 199.5,
+   "N2_30": 570.8,
+   "N2_100": 1693.5,
+   "U_0": 7102.4,
+   "U_10": 7133.1,
+   "U_30": 7208.6,
+   "U_100": 7545.3,
+   "parents_taken": 99.98,
+   "hubs": 0.0,
+   "questions_with_a_hub": 0
+  }
+ },
+ "checks": {
+  "graph_equal_u2c": true,
+  "seeds_equal_g0": true,
+  "b_fill_i_gold_flags_equal_u2c": true,
+  "u2c_rows_places_reproduced": true,
+  "orders_exact": true
+ },
+ "seconds": 529.8,
+ "shards": 12,
+ "part_sha256": [
+  "2bf97628011c20aba7edcbfe459366b6ed3ef917f1593af05163dde4b04639e9",
+  "cf985b0d99a7be68942f05bfd50ec3d1d81413ff1feba0041d600b013d5fb6bc",
+  "21c6795eeec716b2f5b65db2083e8064b2ca95a802c4f3571624255037b4caee",
+  "02f45359fd883b4bf4a3b06b5d651da0893bbeff62deb93ae31f68deadc9085f",
+  "9c0f4d8a863fb11977050356449e04b05521136b54b4dfbcaae486cff630a395",
+  "2da3456f4f415e3955d700d5aebd6ad0b00c6ab87c56ccc9bfa663f9209216db",
+  "35f2e2352dfca79307a43174b5834f0e249c9651c427af85ed96d6c049555540",
+  "30086cca3ca0a3e2e58658c346a8ee268c2aff6fe8e32fb3f2bd477c81b700bc",
+  "f16fceb1f0e0f98987c6a23b3874ff43e69fe583578f11c5d77ca21d44884b1d",
+  "d121b35e8981853f854a336158de37f174111090c1028bf51d8c852b834ab657",
+  "c6a2424213d04a38661182c28808e8556cc7a2168d74e743907370e94c93f0cd",
+  "bf6fcfdab127dd8c959a2ad27439949ac92e1ff9a6c794c4fddf0a3c04b4b5ee"
+ ],
+ "seconds_longest_part": 53.1,
+ "utc": "2026-10-22T08:35:17Z"
+}

@@ -1,0 +1,159 @@
+{
+ "declared_in": "docs/U2E_POOLS_TO_THE_CEILING.md",
+ "stage": "U2e",
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "graph_detail": {
+  "graph": "cached (the KB)"
+ },
+ "script_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+ "u2c_stats_sha256": "8e0c2b6971e42a3f74301e88e08791f179748762cc3bdb9c9e7cb086a33e7244",
+ "p1g_script_sha256": "ddb2900f382f14c130eca100efd2472c29837ae633a975483f06a1afa9336817",
+ "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "columns": [
+  "kt",
+  "kt_n1",
+  "cos",
+  "cos+n2_10",
+  "cos+n2_30",
+  "cos+n2_100",
+  "kt_cos",
+  "kt_cos+n2_10",
+  "kt_cos+n2_30",
+  "kt_cos+n2_100",
+  "kt_cos_r0",
+  "kt_cos_r0+n2_10",
+  "kt_cos_r0+n2_30",
+  "kt_cos_r0+n2_100"
+ ],
+ "m_grid": [
+  10,
+  30,
+  100
+ ],
+ "nmax": 7000,
+ "chunk": 65536,
+ "questions": 1503,
+ "golds": 10583,
+ "file_sha256": "48410aa493d19aed6603d556e706c7d7055806d1bf0d92b8fc87d6f1d01496f7",
+ "summary": {
+  "orders": {
+   "kt": {
+    "ALL": 0.8889,
+    "recall": 0.9475,
+    "length": 6834.6
+   },
+   "kt_n1": {
+    "ALL": 0.9521,
+    "recall": 0.9825,
+    "length": 9678.3
+   },
+   "cos": {
+    "ALL": 0.9568,
+    "recall": 0.9853,
+    "length": 11221.3
+   },
+   "cos+n2_10": {
+    "ALL": 0.9568,
+    "recall": 0.9853,
+    "length": 11281.5
+   },
+   "cos+n2_30": {
+    "ALL": 0.9587,
+    "recall": 0.9858,
+    "length": 11391.9
+   },
+   "cos+n2_100": {
+    "ALL": 0.9614,
+    "recall": 0.9861,
+    "length": 11835.5
+   },
+   "kt_cos": {
+    "ALL": 0.9568,
+    "recall": 0.9853,
+    "length": 11221.3
+   },
+   "kt_cos+n2_10": {
+    "ALL": 0.9568,
+    "recall": 0.9853,
+    "length": 11281.5
+   },
+   "kt_cos+n2_30": {
+    "ALL": 0.9587,
+    "recall": 0.9858,
+    "length": 11391.9
+   },
+   "kt_cos+n2_100": {
+    "ALL": 0.9614,
+    "recall": 0.9861,
+    "length": 11835.5
+   },
+   "kt_cos_r0": {
+    "ALL": 0.9568,
+    "recall": 0.9853,
+    "length": 11221.3
+   },
+   "kt_cos_r0+n2_10": {
+    "ALL": 0.9568,
+    "recall": 0.9853,
+    "length": 11281.5
+   },
+   "kt_cos_r0+n2_30": {
+    "ALL": 0.9587,
+    "recall": 0.9858,
+    "length": 11391.9
+   },
+   "kt_cos_r0+n2_100": {
+    "ALL": 0.9614,
+    "recall": 0.9861,
+    "length": 11835.5
+   }
+  },
+  "sizes": {
+   "B": 200.5,
+   "fill": 1919.4,
+   "N1": 4264.1,
+   "R0": 1473.2,
+   "I": 1919.4,
+   "N2_10": 111.0,
+   "N2_30": 296.1,
+   "N2_100": 982.4,
+   "U_0": 11221.3,
+   "U_10": 11281.5,
+   "U_30": 11391.9,
+   "U_100": 11835.5,
+   "parents_taken": 99.89,
+   "hubs": 0.014,
+   "questions_with_a_hub": 21
+  }
+ },
+ "checks": {
+  "graph_equal_u2c": true,
+  "seeds_equal_g0": true,
+  "b_fill_i_gold_flags_equal_u2c": true,
+  "u2c_rows_places_reproduced": true,
+  "orders_exact": true
+ },
+ "seconds": 1298.2,
+ "shards": 12,
+ "part_sha256": [
+  "d894053d25928b5487033e9dbae8a4eb6efb22e89a2e80c07dcb4d29f88c0152",
+  "1eab8d26acd9c824da9711eb84dc3e5c1f302b1655674d74a469d3e24b04ffbe",
+  "e88c8a6ae177f6e5271134168aad74e8574e1c700caee1096205253e2b052b98",
+  "9545c398c570deba5b6e7881a82b6956f849704815ccc10be3e6c4a9bf2104a9",
+  "756d17190f229a82142615a4fbd47a06662c3d3894fcda160ee88aecb4006207",
+  "0ea87b04165bc0f6c991056d35cfc828367ab5e1c3a7c73097c1f10e573c3706",
+  "58deeafe1a97b8f2ae06f9748501a7971d9b3573c2ff2a3150a8e714071f4de6",
+  "b5fea85eb9612df865888824e1fac275e7f5d23582ab2fe90c4f08b5c62f0ce8",
+  "916a585b40af208db7a5355b27c0141ee2569c6c814bff6b4fc67423e977a7b3",
+  "382f97dc08e5eeff26a5ccb15823f733c471ead5044c58cfcec6bf6df1ad57ae",
+  "67b2ec5181961ba0d1d84f925d78612d7513de8dd12a736cf2d9f44f704d6797",
+  "378f45c046d0c0c7d5c12ecbef68b72a7636c0ea8e19fc2af0fe17bd7768c7c6"
+ ],
+ "seconds_longest_part": 130.9,
+ "utc": "2026-10-22T08:35:19Z"
+}
