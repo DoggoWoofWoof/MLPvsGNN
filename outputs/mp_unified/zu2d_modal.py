@@ -389,7 +389,8 @@ def _env():
                 for x in threadpool_info()]
     except Exception as e:  # noqa: BLE001
         blas = repr(e)
-    return {"cpu": cpu, "numpy": np.__version__, "numba": numba.__version__, "llvm_host_cpu": binding.get_host_cpu_name(),
+    return {"cpu": cpu, "python": sys.version.split()[0], "numpy": np.__version__, "numba": numba.__version__,
+            "llvm_host_cpu": binding.get_host_cpu_name(),
             "npy_disable": os.environ.get("NPY_DISABLE_CPU_FEATURES", ""),
             "avx512_on": sorted(k for k, v in feats.items() if v and k.startswith("AVX512")), "blas": blas}
 
@@ -545,7 +546,9 @@ def pools_item(code, build, d, carve, i, k, limit=0):
         if (rec := _part_done(pd, stem, ZPm)) is not None:
             return {**head, **_brief(rec, _PART_KEYS), "reused": True}
         _clear(pd, f"{stem}.*")
-    argv = ["pools", "--build", build, d, "--carve", carve] + (["--shard", f"{i}/{k}"] if k > 1 else []) + \
+    # the dataset right after the command: zu2d_pools has two optional positionals, and the argparse of Python 3.13.0
+    # (the image some workspaces build) leaves the second one out when an option sits between them
+    argv = ["pools", d, "--build", build, "--carve", carve] + (["--shard", f"{i}/{k}"] if k > 1 else []) + \
            (["--limit", str(limit)] if dev else [])
     t0 = time.time()
     rc, msg = _run(ZPm.main, argv)
@@ -601,7 +604,7 @@ def merge_item(code, build, d):
     if not mp.exists():
         _clear(dd, "*.npz")
         _clear(dd, "*.tmp*")
-        rc, msg = _run(ZPm.main, ["merge", "--build", build, d])
+        rc, msg = _run(ZPm.main, ["merge", d, "--build", build])
         if rc:
             return {"what": "merge", "build": build, "dataset": d, "error": msg}
         u2d.commit()
@@ -767,7 +770,7 @@ def kt_item(code, build, d, carve):
     if not (kd / "record.json").exists():
         _clear(kd, "*")
         t0 = time.time()
-        rc, msg = _run(ZPm.main, ["kt", "--build", build, d, "--carve", carve])
+        rc, msg = _run(ZPm.main, ["kt", d, "--build", build, "--carve", carve])
         head.update({"seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]})
         if rc:
             return {**head, "error": msg}
@@ -940,7 +943,7 @@ def gpu_probe(code):
     import zu2d as Z
     env = Z.device_env()
     out = {"code": code, "setup_seconds": info["setup_seconds"], "conflicts": info["conflicts"][:10],
-           "mirror_missing_n": info["mirror_missing_n"], "device": Z.device_of(env),
+           "mirror_missing_n": info["mirror_missing_n"], "python": sys.version.split()[0], "device": Z.device_of(env),
            "accepted": Z.ok_where("modal", env), "tags_agree": Z.IMAGE_TAG == IMAGE_TAG == os.environ.get("U2D_IMAGE"),
            "where": env.get("where"), "image_id_set": bool(env.get("modal_image_id")),
            "card_gb": (round(torch.cuda.get_device_properties(0).total_memory / 2 ** 30, 1)
