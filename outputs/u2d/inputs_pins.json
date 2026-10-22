@@ -1,0 +1,62 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "what": "the files the frozen six pair's pin check hashes (scripts/mp_approx_six_base.py pin_problems) that neither git nor inputs.json holds, uploaded byte for byte to the volume's /inputs/<path> (zu2d_modal.py)",
+ "files": {
+  "outputs/universal_v2/cache/2wiki/fit/meta.json": {
+   "sha256": "fe288e6ddea941aa961b99e6d1218f0c6f3636f4b341478895804cf1b3d03ec3",
+   "bytes": 3119
+  },
+  "outputs/universal_v2/cache/2wiki/select/meta.json": {
+   "sha256": "4e78a1be3bf036fbfd38c226a0a2acc80e7abb47305dc69dff4de2fdcd3817b7",
+   "bytes": 3121
+  },
+  "outputs/universal_v2/cache/hotpotqa/fit/meta.json": {
+   "sha256": "9e44cb0821c6dd96762bc01555fc348a9a0bc6d44d4c5e41748bccbe59d6fb41",
+   "bytes": 3170
+  },
+  "outputs/universal_v2/cache/hotpotqa/select/meta.json": {
+   "sha256": "699a43bfdfc742ebbc2bd31feb8129feb79aa4627b9e5dc488acd4d3bc8c1e02",
+   "bytes": 3166
+  },
+  "outputs/universal_v2/cache/metaqa/fit/meta.json": {
+   "sha256": "86df15b12245051e27841b6e078b79790691a80bd945a6a370722049d6b601cc",
+   "bytes": 7419
+  },
+  "outputs/universal_v2/cache/metaqa/select/meta.json": {
+   "sha256": "9235d8fbdc7426b93f711e8071f35251a95760395561ede395fc76e3e842a9d7",
+   "bytes": 7390
+  },
+  "outputs/universal_v2/cache/musique/fit/meta.json": {
+   "sha256": "db46c8e396bc9dbc371fb177015688705ddce9ee60b04443a8fd7fdce44c7bf7",
+   "bytes": 3216
+  },
+  "outputs/universal_v2/cache/musique/select/meta.json": {
+   "sha256": "9e16f118da2f5252acad8f3a68b46948a7731d46a3ac1e293ace43e8b398d3a8",
+   "bytes": 3222
+  },
+  "outputs/universal_v2/cache/squad/fit/meta.json": {
+   "sha256": "49128b083b63436e9ae3ff16795aaaf31e8f10a1dcd55e159f815e92035d7344",
+   "bytes": 3047
+  },
+  "outputs/universal_v2/cache/squad/select/meta.json": {
+   "sha256": "2db328bdcc4ce64935d095683e72591ff00f7bac7d9043ba652bfebb5596288c",
+   "bytes": 3047
+  },
+  "outputs/universal_v2/cache/webqsp/fit/meta.json": {
+   "sha256": "19598124b2baada8db6913b424e921a411065c1e581d43c6fc5448ccf737c4d4",
+   "bytes": 3837
+  },
+  "outputs/universal_v2/cache/webqsp/select/meta.json": {
+   "sha256": "c50c45185f0f58023958160023d6fa24e6896839c238bcaf0d5d2870c081c6b4",
+   "bytes": 3798
+  },
+  "outputs/universal_v2/feature_contract.json": {
+   "sha256": "21d30260c7ef71c7cc217c2b32054625780db7e6b40c79d3c03fded658109e91",
+   "bytes": 50181
+  },
+  "outputs/universal_v2/selection.json": {
+   "sha256": "3ed48ae3d04334ba367cb81b8b363d32db0e2bf746e4f692d7af0936bea4e3b6",
+   "bytes": 1727
+  }
+ }
+}

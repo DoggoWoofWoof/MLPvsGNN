@@ -273,7 +273,11 @@ Each verdict closes only the form it tests (docs/SCREENS.md, 3b). The next forms
   - P1c2's seven pools files on the laptop, and step 4d's pools of the eleven carves;
   - the host mirror's manifest (`outputs/host_mirror_six/manifest.json`).
 
-  The probe hashes every input on the volume against the list and files the result. U2c's volume adds what U2c and
+  The six base pair's pin check also hashes 14 files of `outputs/universal_v2` that this list left out: the caches'
+  meta records of the six datasets' fit and select kinds, the feature contract and the selection. They are listed the
+  same way in a second record, `outputs/u2d/inputs_pins.json` (14 files, 0.1 MB), since a filed list is never
+  rewritten. The looks open no cache (the pair is opened with no carve kinds), so these files are only hashed. The
+  probe hashes every input on the volume against both lists and files one result per list. U2c's volume adds what U2c and
   U2e uploaded or wrote (the configs, step 1's carves, step 4d's s1sel pools, P1f's and P1g's stats, the m3b link
   stores, U2b's question files, U2c's and U2e's filed arrays), and U2b's volume the graphs. Each such file is linked in
   one by one; one the code also holds must be the same bytes (up to line ends for text), or the container stops.

@@ -23,8 +23,10 @@ and U2d's outputs under /out/<build> (outputs/u2d/<build> in the container). mpr
 only: U2c's repository files, package files, filed arrays (outputs/u2c) and U2e's (outputs/u2e), and U2b's graphs.
 
 The inputs. Files not in git are uploaded once, byte for byte, to /inputs/<their repository path>, and listed with their
-sha256 in outputs/u2d/inputs.json (tracked). The probe hashes them on the volume and files the result; a stage that
-writes refuses until the inputs and the mirror are verified.
+sha256 in outputs/u2d/inputs.json (tracked); the ones the frozen six pair's pin check also hashes (the universal_v2
+caches' meta records, its feature contract and its selection) in outputs/u2d/inputs_pins.json, a second list, since a
+filed list is never rewritten. The probe hashes both on the volume and files one result per list; a stage that writes
+refuses until both lists and the mirror are verified.
 
 The mirror. /root/mirror/data/final_canonical holds every file of the host mirror's manifest
 (outputs/host_mirror_six/manifest.json, configs/host_mirror_six.yaml's selection), linked from mpr-u2d's extras, then
@@ -118,8 +120,10 @@ SCREEN = tuple((d, c) for d in SIX for c in CARVES[d])
 TYPED = ("metaqa", "webqsp")
 MANIFEST = "outputs/host_mirror_six/manifest.json"
 INPUTS_RECORD = "outputs/u2d/inputs.json"
+PINS_RECORD = "outputs/u2d/inputs_pins.json"       # the second list: what the six pair's pin check also hashes
+INPUT_RECORDS = (INPUTS_RECORD, PINS_RECORD)
 U2D_FILES = ("docs/U2D_REFIT_ON_U2E.md", "outputs/mp_unified/zu2d_pools.py", "outputs/mp_unified/look_u2d.py",
-             "outputs/mp_unified/zu2d.py", "outputs/mp_unified/zu2d_modal.py", INPUTS_RECORD)
+             "outputs/mp_unified/zu2d.py", "outputs/mp_unified/zu2d_modal.py", INPUTS_RECORD, PINS_RECORD)
 # Shards and parts, each item about 15 to 25 minutes (section 10): the new build's pools from U2e's seconds per
 # question on Modal, the base build's at half as many; the looks and caches from P1c2's host times scaled by rows.
 _POOLS_NEW = {("metaqa", "fit"): 5, ("metaqa", "s1eval"): 7, ("squad", "fit"): 3, ("squad", "s1eval"): 5,
@@ -251,12 +255,13 @@ def _mirror():
 
 
 def _verified():
-    """The inputs' and the mirror's verify records, for the inputs list and the manifest the archive holds."""
+    """The inputs' and the mirror's verify records, for the inputs lists and the manifest the archive holds."""
     bad = []
-    isha = _sha_file(REPO / INPUTS_RECORD)
-    p = Path("/u2d/checks") / f"inputs_{isha[:12]}.json"
-    if not p.exists() or json.loads(p.read_text(encoding="utf-8")).get("status") != "VERIFIED":
-        bad.append(f"{p.name}: the inputs are not verified (--stage probe)")
+    for rp in INPUT_RECORDS:
+        isha = _sha_file(REPO / rp)
+        p = Path("/u2d/checks") / f"inputs_{isha[:12]}.json"
+        if not p.exists() or json.loads(p.read_text(encoding="utf-8")).get("status") != "VERIFIED":
+            bad.append(f"{p.name}: the inputs of {rp} are not verified (--stage probe)")
     _man, msha = _manifest()
     for g in GROUPS:
         q = Path("/u2d/mirror") / f"verify_{g}.json"
@@ -441,8 +446,9 @@ def _brief(rec, keys):
 
 @app.function(image=image, volumes=VOLS, memory=(4096, 16384), cpu=2.0, timeout=3600, **STAGE)
 def probe(code):
-    """The container's environment, both self-tests, the inputs hashed against outputs/u2d/inputs.json (filed when
-    they all match), and the package opened at the mirror through look_u2d's placement."""
+    """The container's environment, both self-tests, the inputs hashed against each list (outputs/u2d/inputs.json and
+    inputs_pins.json; each filed when all its files match), and the package opened at the mirror through look_u2d's
+    placement."""
     _trace()
     info = _setup(code, report=True)
     out = {**info, **_env()}
@@ -454,23 +460,25 @@ def probe(code):
     out["selftests"] = tests
     PC2 = importlib.import_module("zu2d_pools").PC2
     out["carves_are_p1c2s"] = all(tuple(PC2.carves_for(d)) == CARVES[d] for d in SIX)
-    rec = json.loads((REPO / INPUTS_RECORD).read_text(encoding="utf-8"))
-    bad, t0 = [], time.time()
-    for path, e in rec["files"].items():
-        p = Path("/u2d/inputs") / path
-        if not p.is_file() or p.stat().st_size != e["bytes"] or _sha_file(p) != e["sha256"]:
-            bad.append(path)
-    isha = _sha_file(REPO / INPUTS_RECORD)
-    chk = {"inputs_record_sha256": isha, "files": len(rec["files"]), "bad": bad,
-           "status": "VERIFIED" if not bad else "FAILED", "code": code, "seconds": round(time.time() - t0, 1),
-           "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
-    out["inputs"] = {k: chk[k] for k in ("files", "status", "seconds")} | {"bad": bad[:20]}
-    if not code.startswith("dev-") and not bad:
-        cp = Path("/u2d/checks") / f"inputs_{isha[:12]}.json"
-        cp.parent.mkdir(parents=True, exist_ok=True)
-        if not cp.exists():
-            cp.write_text(json.dumps(chk, indent=1), encoding="utf-8")
-            u2d.commit()
+    out["inputs"] = {}
+    for rp in INPUT_RECORDS:
+        rec = json.loads((REPO / rp).read_text(encoding="utf-8"))
+        bad, t0 = [], time.time()
+        for path, e in rec["files"].items():
+            p = Path("/u2d/inputs") / path
+            if not p.is_file() or p.stat().st_size != e["bytes"] or _sha_file(p) != e["sha256"]:
+                bad.append(path)
+        isha = _sha_file(REPO / rp)
+        chk = {"record": rp, "inputs_record_sha256": isha, "files": len(rec["files"]), "bad": bad,
+               "status": "VERIFIED" if not bad else "FAILED", "code": code, "seconds": round(time.time() - t0, 1),
+               "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+        out["inputs"][rp] = {k: chk[k] for k in ("files", "status", "seconds")} | {"bad": bad[:20]}
+        if not code.startswith("dev-") and not bad:
+            cp = Path("/u2d/checks") / f"inputs_{isha[:12]}.json"
+            cp.parent.mkdir(parents=True, exist_ok=True)
+            if not cp.exists():
+                cp.write_text(json.dumps(chk, indent=1), encoding="utf-8")
+                u2d.commit()
     try:
         import look_u2d
         look_u2d.modal_mode()
@@ -1046,9 +1054,34 @@ def _inputs_list():
     return {k: v for k, v in sorted(out.items()) if k not in tracked}
 
 
-def _inputs_record(lst):
-    rec = {"declared_in": DECLARED, "what": "U2d's inputs not in git, uploaded byte for byte to the volume's "
-           "/inputs/<path> (zu2d_modal.py); source names a local copy at another path", "files": {}}
+def _pins_list():
+    """{repository path: local source} for the files the frozen six pair's pin check hashes
+    (scripts/mp_approx_six_base.py pin_problems) that neither git nor inputs.json holds: the universal_v2 caches' meta
+    records of the six datasets' fit and select kinds, the feature contract and the selection. The looks open no cache
+    (pair_open opens the pair with no carve kinds), so these are only hashed."""
+    tracked = set(_git("ls-files", "-z", "outputs").split("\0"))
+    first = set(json.loads(Path(INPUTS_RECORD).read_text(encoding="utf-8"))["files"])
+    want = [f"outputs/universal_v2/cache/{d}/{k}/meta.json" for d in SIX for k in ("fit", "select")] + \
+        ["outputs/universal_v2/feature_contract.json", "outputs/universal_v2/selection.json"]
+    lost = [w for w in want if not Path(w).is_file()]
+    if lost:
+        raise SystemExit(f"the pinned files {lost[:5]} are not on the laptop")
+    return {w: Path(w) for w in sorted(want) if w not in tracked and w not in first}
+
+
+WHAT = {INPUTS_RECORD: "U2d's inputs not in git, uploaded byte for byte to the volume's /inputs/<path> (zu2d_modal.py); "
+        "source names a local copy at another path",
+        PINS_RECORD: "the files the frozen six pair's pin check hashes (scripts/mp_approx_six_base.py pin_problems) "
+        "that neither git nor inputs.json holds, uploaded byte for byte to the volume's /inputs/<path> (zu2d_modal.py)"}
+
+
+def _lists():
+    """Each inputs list's record path and its {repository path: local source}, the first list first."""
+    return [(INPUTS_RECORD, _inputs_list()), (PINS_RECORD, _pins_list())]
+
+
+def _inputs_record(lst, rp=INPUTS_RECORD):
+    rec = {"declared_in": DECLARED, "what": WHAT[rp], "files": {}}
     for path, src in lst.items():
         e = {"sha256": _local_sha(src), "bytes": src.stat().st_size}
         if src.as_posix() != path:
@@ -1058,40 +1091,42 @@ def _inputs_record(lst):
 
 
 def write_inputs():
-    """outputs/u2d/inputs.json from the laptop's files (python outputs/mp_unified/zu2d_modal.py --inputs); an existing
-    list is never rewritten: a different one stops."""
-    rec = _inputs_record(_inputs_list())
-    rp = Path(INPUTS_RECORD)
-    if rp.exists():
-        old = json.loads(rp.read_text(encoding="utf-8"))
-        if old.get("files") != rec["files"]:
-            diff = sorted(set(old.get("files", {})) ^ set(rec["files"]) |
-                          {k for k in rec["files"] if old.get("files", {}).get(k) not in (None, rec["files"][k])})
-            raise SystemExit(f"{rp}: the inputs differ from the filed list ({diff[:10]}); a new list is a new record")
-        print(f"{rp}: unchanged ({len(rec['files'])} files)")
-        return rec
-    rp.parent.mkdir(parents=True, exist_ok=True)
-    rp.write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
-    print(f"{rp}: {len(rec['files'])} files, {sum(e['bytes'] for e in rec['files'].values()) / 1e6:.1f} MB")
-    return rec
+    """outputs/u2d/inputs.json and inputs_pins.json from the laptop's files (python outputs/mp_unified/zu2d_modal.py
+    --inputs); an existing list is never rewritten: a different one stops."""
+    for rps, lst in _lists():
+        rec = _inputs_record(lst, rps)
+        rp = Path(rps)
+        if rp.exists():
+            old = json.loads(rp.read_text(encoding="utf-8"))
+            if old.get("files") != rec["files"]:
+                diff = sorted(set(old.get("files", {})) ^ set(rec["files"]) |
+                              {k for k in rec["files"] if old.get("files", {}).get(k) not in (None, rec["files"][k])})
+                raise SystemExit(f"{rp}: the inputs differ from the filed list ({diff[:10]}); a new list is a new "
+                                 f"record")
+            print(f"{rp}: unchanged ({len(rec['files'])} files)")
+            continue
+        rp.parent.mkdir(parents=True, exist_ok=True)
+        rp.write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
+        print(f"{rp}: {len(rec['files'])} files, {sum(e['bytes'] for e in rec['files'].values()) / 1e6:.1f} MB")
 
 
 def _upload_inputs():
-    lst = _inputs_list()
-    rec = _inputs_record(lst)
-    rp = Path(INPUTS_RECORD)
-    if not rp.exists() or json.loads(rp.read_text(encoding="utf-8")).get("files") != rec["files"]:
-        raise SystemExit(f"{rp}: missing or not the laptop's inputs (python outputs/mp_unified/zu2d_modal.py --inputs)")
-    if not _git("ls-files", INPUTS_RECORD).strip():
-        raise SystemExit(f"{rp}: not committed; the containers read it from the code")
     have = _have(u2d, "/inputs")
-    todo = [(p, s) for p, s in lst.items() if have.get(f"inputs/{p}") != rec["files"][p]["bytes"]]
-    if todo:
-        with u2d.batch_upload(force=True) as b:
-            for p, s in todo:
-                b.put_file(str(s), f"/inputs/{p}")
-    print(json.dumps({"inputs": len(lst), "bytes": sum(e["bytes"] for e in rec["files"].values()),
-                      "uploaded": len(todo)}), flush=True)
+    for rps, lst in _lists():
+        rec = _inputs_record(lst, rps)
+        rp = Path(rps)
+        if not rp.exists() or json.loads(rp.read_text(encoding="utf-8")).get("files") != rec["files"]:
+            raise SystemExit(f"{rp}: missing or not the laptop's inputs (python outputs/mp_unified/zu2d_modal.py "
+                             f"--inputs)")
+        if not _git("ls-files", rps).strip():
+            raise SystemExit(f"{rp}: not committed; the containers read it from the code")
+        todo = [(p, s) for p, s in lst.items() if have.get(f"inputs/{p}") != rec["files"][p]["bytes"]]
+        if todo:
+            with u2d.batch_upload(force=True) as b:
+                for p, s in todo:
+                    b.put_file(str(s), f"/inputs/{p}")
+        print(json.dumps({"record": rps, "inputs": len(lst), "bytes": sum(e["bytes"] for e in rec["files"].values()),
+                          "uploaded": len(todo)}), flush=True)
 
 
 def _upload_extras():
