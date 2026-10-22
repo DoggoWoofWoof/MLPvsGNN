@@ -210,4 +210,94 @@ The encoder stays frozen. webqsp never trains. Test splits are never read. No LL
 
 ## 9. Results
 
-Not run yet.
+Filed 22 October 2026: `outputs/u2f/verdict.json` and `verdict.md`, and the stats records `outputs/u2f/stats/*.json`
+(code 5f49ca2, outputs under `/out/1418879a1d22`). Development numbers.
+
+**The run.** All six datasets ran in 12 question shards each, and all 72 parts merged with no failure. The longest part
+took 449 seconds (2wiki). Every check in section 6 passed on every question:
+- U2e's per-question and per-gold values were reproduced exactly;
+- the copied kernel's orders equal P1e's KTst and KTall;
+- every source's masses are distributions;
+- the orders are exact;
+- SET at k0 with τ = 0 and no band keeps |B| + min(k0, |kt_cos|) rows;
+- each gold's r, e and c are its node's.
+
+No cosine was non-finite.
+
+**Verdict: NO_CHANGE.** No rule meets 0.955 within 1,812.6 rows, so U2e's pick stays the pools.
+- **The pick.** The cheapest rule at 0.955 is `depth:kt_cos:x1:k0:t0.7:b0.9d0.2`. It keeps B, then as many of kt_cos's
+  nodes as SET(k0 = 0, τ = 0.7, band b0.9d0.2) keeps outside B. It costs 2,739.1 rows, 1.51 times U2e's pick.
+- **No level fits within 1,812.6.** The cheapest point on the frontier, at 0.950, costs 2,381.3.
+
+| dataset | the pick: ALL | rows | U2e's pick: ALL | rows |
+| --- | --- | --- | --- | --- |
+| metaqa | 0.956 | 3,436 | 0.962 | 4,384 |
+| squad | 0.999 | 1,416 | 0.979 | 50 |
+| musique | 0.956 | 4,677 | 0.964 | 5,437 |
+| hotpotqa | 0.978 | 2,446 | 0.956 | 561 |
+| 2wiki | 0.987 | 2,890 | 0.967 | 840 |
+| webqsp (s1eval, beside) | 0.842 | 2,499 | 0.893 | 4,755 |
+
+**Where the rows go.** This is each dataset's share of the cost (the question-weighted mean):
+
+| | metaqa | squad | musique | hotpotqa | 2wiki | cost |
+| --- | --- | --- | --- | --- | --- | --- |
+| the pick | 748 | 347 | 454 | 451 | 739 | 2,739.1 |
+| U2e's pick | 954 | 12 | 528 | 104 | 215 | 1,812.6 |
+
+- The pick saves 280.2 rows on metaqa and musique together, and spends 1,206.5 more on squad, hotpotqa and 2wiki.
+- U2e's budget is 12 × |fill|, where |fill| is the size of the pool that today's rule prepares on W2_S, less B. On squad
+  |fill| is 0, so U2e's pick keeps B there.
+- Section 4 bars U2f's rules from reading today's fill. With the node values alone, no single rule stops early on
+  squad, hotpotqa and 2wiki and also late on metaqa and musique.
+- Each dataset's own best rule (an upper bound only) reaches 0.955 at 2,089 rows on metaqa, 50 on squad, 4,153 on
+  musique, 371 on hotpotqa and 379 on 2wiki. Together those cost 1,035.4. Per-dataset rules are not allowed, so this
+  only shows how far apart the datasets' best stops are.
+
+**The families** (the cheapest rule of each at 0.955):
+
+| family | cost |
+| --- | --- |
+| DEPTH on kt_cos, x = 1 | 2,739.1 |
+| DEPTH on kt_cos, x = 0.5 | 2,797.0 |
+| DEPTH on kt_cos, x = 2 | 2,938.7 |
+| SET with k0 > 0 | 4,757.0 |
+| SET with k0 = 0 | 5,015.1 |
+| SET, the band alone | 6,920.6 |
+| SET, the nuclei alone | 8,526.3 |
+
+- A count spent down kt_cos beats any set of nodes kept by their own values.
+- DEPTH on kt reaches 0.950 at best (4,036.0 at x = 1) and never 0.955: KIND_T's whole order holds every gold for only
+  0.954 of musique's questions (U2e, section 10).
+
+**The room** (reads golds). A perfect stop in kt_cos costs 166.2 rows at 0.955:
+
+| metaqa | squad | musique | hotpotqa | 2wiki |
+| --- | --- | --- | --- | --- |
+| 321 | 50 | 505 | 69 | 88 |
+
+That is 9% of U2e's pick. So kt_cos puts the golds early, and the stop is what costs rows. The pick captures −0.56 of
+the room, because it costs more than U2e's pick. In kt, musique cannot reach 0.955, so kt's perfect stop has no cost.
+
+**The stats** (s1sel; webqsp's s1eval):
+
+| dataset | B | V | kt_cos | kt | entity questions | route questions | ALL B | ALL kt_cos | ALL listed |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| metaqa | 50.0 | 11,678.1 | 9,377.9 | 6,981.0 | 1,497 | 1,421 | 0.019 | 0.996 | 0.995 |
+| squad | 50.0 | 8,472.5 | 7,102.4 | 6,933.2 | 0 | 0 | 0.979 | 0.999 | 0.999 |
+| musique | 200.0 | 17,473.3 | 12,245.5 | 6,800.0 | 0 | 0 | 0.502 | 0.976 | 0.972 |
+| hotpotqa | 50.0 | 17,328.0 | 7,575.3 | 6,950.0 | 0 | 0 | 0.663 | 0.985 | 0.990 |
+| 2wiki | 50.0 | 19,135.8 | 8,035.3 | 6,950.0 | 0 | 0 | 0.348 | 0.995 | 0.997 |
+| webqsp | 200.5 | 12,210.9 | 11,221.3 | 6,834.6 | 1,453 | 440 | 0.279 | 0.957 | 0.914 |
+
+The targets use U2e's ceilings, which count candidates with the second link. On musique, kt_cos alone ends at 0.976,
+below U2e's 0.980, so musique's target from 0.975 up is 0.975.
+
+**What follows (section 8, fixed before any number).** U2e's pick stays the pools, and U2d's refit is the refit on them.
+U2d filed NOT_ADOPTED on all four of its decisions (docs/U2D_REFIT_ON_U2E.md, section 11). On these pools and W2_S, the
+lean pair loses R@5 on hotpotqa and 2wiki against P1c2's pools on today's graph, at about the same coverage. So U2d's
+next form comes first: the 2 × 2, which says whether the graph or the pool rule costs that R@5. The room is then the
+rerankers' to take, as a learned cut in its own stage. Section 8's U2g, the final refit on a new pick, is not declared.
+
+This closes only the forms tested: gold-free stops from the node values r, e and c, and set sizes spent down kt_cos or
+kt. The next form is the learned cut: a stop learned from the same node values together with |fill|.

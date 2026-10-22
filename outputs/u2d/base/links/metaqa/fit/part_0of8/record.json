@@ -1,0 +1,87 @@
+{
+ "dataset": "metaqa",
+ "carve": "fit",
+ "part": "part_0of8",
+ "step1_record_sha256": "ec2c2d6fa5fd71b8a643622466ecae14b67bf14e174a58c978c97c1ab6f557fb",
+ "chunks": [
+  0,
+  67
+ ],
+ "queries": 737,
+ "rows": 1495546,
+ "edges": 10630480,
+ "edges_per_row": 7.108,
+ "families": [
+  9309330,
+  157134,
+  1164016
+ ],
+ "look_edges": {
+  "raw": 9530260,
+  "self_loops": 1180,
+  "kept": 10630480
+ },
+ "look": {
+  "record_0of14.json": "b550bba6de4e62c5ee03b0cafacb79b3c2e0a7ee01f236456f905fe33d489f78",
+  "record_10of14.json": "7cdc65b57576d51b71161b63615745fd3e81a389c598a693ecf4dfd98c325fb3",
+  "record_11of14.json": "f6e2c36a5a282c74c8f793f5a8d34bc860a305b9b582ffb1b3cc72e4408b37bd",
+  "record_12of14.json": "e9851ad0eb49e855cb941465b070182293e5f39703d11c4d2412d9ae9cc2413f",
+  "record_13of14.json": "bafbe9e6c10eaa0cd63811282e68831ed37bf729deba318059c4287c373c8305",
+  "record_1of14.json": "a0f72f79d909b87608f7784e7f4b0a28caa546b7c14fbe8a5817fd931d98dad2",
+  "record_2of14.json": "250b1154e10907f249b9e52d36d2a293a34bac37c3e448acfc90b5eac941403e",
+  "record_3of14.json": "b9ff119e76d5e19cf6388df5a6d21c10b8c10a1e5c55bde50fa684d373977349",
+  "record_4of14.json": "12804ab87b14abd09be68864476717298f6ce9cf05c58be5bc4376e7a5779130",
+  "record_5of14.json": "82d778f14c68891da77c4c9a66abd54f48f6a8fbbdd565ced40d199c554c486a",
+  "record_6of14.json": "b9ce00531877e8a187d5c3f4cf9556a26e21a8dc31b68d55c2219256df7de72c",
+  "record_7of14.json": "0facfc213f7bb68c374120ed16d423b2519a62ea5c108f9c75cc8800ef547ae8",
+  "record_8of14.json": "e1ef249ddbaed5221872396323cc6ace8d92b455c92cfa8414c79029a75703ca",
+  "record_9of14.json": "7170a0b97f13d4ef7b7acd723e3a5ea31bd41b8bd58f9012b1651e7c9332233f"
+ },
+ "carve_ids_sha256": "161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    737
+   ],
+   "sha256": "48b7b8e174b8fc27230d88e61dcf9e6cbfe68057271c720306ccbe3c7f9bec89"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    10630480
+   ],
+   "sha256": "7dea25de4a53d0485461667847edd7f276d547e379d266b63bf49b70addd54c3"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    10630480
+   ],
+   "sha256": "d01691e46ee65cda07ab514b1cb55a88dc04c953a04b63eb3d266ac4baf3b027"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    10630480
+   ],
+   "sha256": "a3bb247306168602321e84fef934e958ce871d120e3f5a51d218ebc9856bc08f"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 7.6,
+ "utc": "2026-10-22T14:25:44Z"
+}

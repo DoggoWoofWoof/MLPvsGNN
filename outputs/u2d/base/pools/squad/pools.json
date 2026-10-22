@@ -1,0 +1,223 @@
+{
+ "files": {
+  "squad__fit": {
+   "file": "squad__fit.npz",
+   "sha256": "c0bf2c68853c185049c75fea223fb3176472c68970324d254a3ef3ae23d2f870",
+   "dataset": "squad",
+   "carve": "fit",
+   "construction": "U2D:base:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "today's (the cached stores)"
+   },
+   "carve_ids_sha256": "39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515",
+   "questions": 5856,
+   "changed": 0,
+   "short": 0,
+   "B_q": {
+    "mean": 0.0,
+    "max": 0
+   },
+   "pool_mean": 50.0,
+   "rows": {
+    "mean": 50.0,
+    "p90": 50.0,
+    "max": 54
+   },
+   "budget_mean": 0.0,
+   "fill_want_mean": 0.0,
+   "today_inc_mean": 50.0,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.9833,
+    "recall": 0.9833
+   },
+   "pool": {
+    "ALL": 0.9833,
+    "recall": 0.9833
+   },
+   "caps": {
+    "I": {
+     "r5": 0.9833,
+     "hit1": 0.9833
+    },
+    "pool": {
+     "r5": 0.9833,
+     "hit1": 0.9833
+    }
+   },
+   "parts": [
+    {
+     "stem": "squad__fit__0of2",
+     "q0": 0,
+     "q1": 2928,
+     "rows": 146493,
+     "npz": "055ee1e414c38325a32001026fda8256955caf5764605a74afcd9d52da5068d7",
+     "kt": "6d0f1da41b7074a6e228bb71393a960eff40f875f42305334b158d0f852d3e32"
+    },
+    {
+     "stem": "squad__fit__1of2",
+     "q0": 2928,
+     "q1": 5856,
+     "rows": 146501,
+     "npz": "d7eced8ed4eb9d79f7198e036c7fc9ccdb77b14161075dabf6fef7bfbb4a9b16",
+     "kt": "e3066d68b02cb222c7c928ea9084089a335fbaab476c4d235d3e341074a1945c"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+    "stage": "U2d",
+    "build": "base",
+    "dataset": "squad",
+    "carve": "fit",
+    "construction": "U2D:base:KIND_T",
+    "graph_detail": {
+     "graph": "today's (the cached stores)"
+    },
+    "carve_ids_sha256": "39189e5d42ab75f7d5076fa8f2581be67b5e4885a458b670fac0a3fb4eebf515",
+    "questions_all": 5856,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true,
+    "counts_equal_p1c2_manifest": true
+   },
+   "seconds_parts": 303.2,
+   "utc": "2026-10-22T13:45:37Z"
+  },
+  "squad__s1eval": {
+   "file": "squad__s1eval.npz",
+   "sha256": "b9dc0708fe265b809093af60aad3135cd589bfbb492fddbf3cefcdc7158562d1",
+   "dataset": "squad",
+   "carve": "s1eval",
+   "construction": "U2D:base:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "today's (the cached stores)"
+   },
+   "carve_ids_sha256": "e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8",
+   "questions": 11873,
+   "changed": 0,
+   "short": 0,
+   "B_q": {
+    "mean": 0.0,
+    "max": 0
+   },
+   "pool_mean": 50.0,
+   "rows": {
+    "mean": 50.0,
+    "p90": 50.0,
+    "max": 54
+   },
+   "budget_mean": 0.0,
+   "fill_want_mean": 0.0,
+   "today_inc_mean": 50.0,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.9798,
+    "recall": 0.9798
+   },
+   "pool": {
+    "ALL": 0.9798,
+    "recall": 0.9798
+   },
+   "caps": {
+    "I": {
+     "r5": 0.9798,
+     "hit1": 0.9798
+    },
+    "pool": {
+     "r5": 0.9798,
+     "hit1": 0.9798
+    }
+   },
+   "parts": [
+    {
+     "stem": "squad__s1eval__0of3",
+     "q0": 0,
+     "q1": 3957,
+     "rows": 197979,
+     "npz": "a3d13df7229588c37ec02159650ccaa19e866de489b86114030a733091f59810",
+     "kt": "2e06d78fb5abc5bd390d599d5dd84829045b563525818273888992d09a8fbe31"
+    },
+    {
+     "stem": "squad__s1eval__1of3",
+     "q0": 3957,
+     "q1": 7915,
+     "rows": 198043,
+     "npz": "d638c69c8b22ec5fe045d4a29ef3bc749db5bef4e94a8ed19f2243f5f2139953",
+     "kt": "88ac582ea19690d51ddc00f9882ced59e0e351c6cc2c7d7f10f2b95c8302dca4"
+    },
+    {
+     "stem": "squad__s1eval__2of3",
+     "q0": 7915,
+     "q1": 11873,
+     "rows": 198041,
+     "npz": "7a2c82d67e1e639fa6db1a6ee982f50e87688264fb0599f6a372920be8ca5af6",
+     "kt": "68c57380ca2fab16daa952aee8a352d59f0e6e0a11e304320629b16d43b5f753"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+    "stage": "U2d",
+    "build": "base",
+    "dataset": "squad",
+    "carve": "s1eval",
+    "construction": "U2D:base:KIND_T",
+    "graph_detail": {
+     "graph": "today's (the cached stores)"
+    },
+    "carve_ids_sha256": "e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8",
+    "questions_all": 11873,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": "3870e664673aa60871807c67706f25850ce1bbc6b3729807f2bba69173ea7be6",
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true,
+    "equal_p1c2_file": true,
+    "counts_equal_p1c2_manifest": true
+   },
+   "seconds_parts": 548.1,
+   "utc": "2026-10-22T13:45:38Z"
+  }
+ },
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "stage": "U2d",
+ "build": "base",
+ "dataset": "squad",
+ "construction": "U2D:base:KIND_T",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "seconds": 1.1,
+ "utc": "2026-10-22T13:45:38Z"
+}

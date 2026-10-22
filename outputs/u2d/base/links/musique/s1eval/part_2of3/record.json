@@ -1,0 +1,80 @@
+{
+ "dataset": "musique",
+ "carve": "s1eval",
+ "part": "part_2of3",
+ "step1_record_sha256": "b46627df922ed9034c75eecfcd32d65c109b1a69c50f2170beb2c1abe5070e59",
+ "chunks": [
+  146,
+  220
+ ],
+ "queries": 811,
+ "rows": 1717010,
+ "edges": 60862976,
+ "edges_per_row": 35.447,
+ "families": [
+  49279508,
+  8228208,
+  3355260
+ ],
+ "look_edges": {
+  "raw": 48244006,
+  "self_loops": 0,
+  "kept": 60862976
+ },
+ "look": {
+  "record_0of7.json": "db81537f779517741a9c8fc7067094cea356752c4a125573f34f2215f2613cc4",
+  "record_1of7.json": "593ccd2271784c2f4bdb880addccabffa0442dd45c80d9b5e30c36e323651acb",
+  "record_2of7.json": "3a8f53051c06534f523eddbff57732b1cc66d64e88c76a8f5523a1953c4e5d76",
+  "record_3of7.json": "031e058ecdd6e1af94d83cf3e7d8884aee24a3d9b82a0e57ed02b550f6b27e59",
+  "record_4of7.json": "785402e193e8b46821836ed48fd92a0939be393713d63d93ebb6dcda2b6da7aa",
+  "record_5of7.json": "c2b1e1ee6cec90fd0cdc04532a8741d874fa6bda4503c5e548b9e6b55e89d0fa",
+  "record_6of7.json": "d7ccc3162250ce7294eb0f33135c8c25e585443308351ddfbae555ba64682357"
+ },
+ "carve_ids_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    811
+   ],
+   "sha256": "b1de92a3ed55a00e534c5516fe0c6903a3335cab2df76c062b65d9231a5b3268"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    60862976
+   ],
+   "sha256": "55d8764e33d393af1354b4d58d577b986417002b3b20636e84b6720e45375796"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    60862976
+   ],
+   "sha256": "adb2a4e69b1bdc646d5df204a336973fad6b1a3ad7ec4885b6dead996bf4860a"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    60862976
+   ],
+   "sha256": "13b97fa0079cb501fcea5677a34ac624e2db7164e6716f40cc33825a5ded2c9d"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 33.3,
+ "utc": "2026-10-22T14:28:57Z"
+}

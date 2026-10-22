@@ -1,0 +1,114 @@
+{
+ "dataset": "musique",
+ "carve": "s1fit",
+ "part": "part_10of16",
+ "step1_record_sha256": "23e40faed5b51914915c21709edc98d48c0914969e1073f6df8f868d63184a56",
+ "chunks": [
+  719,
+  791
+ ],
+ "queries": 288,
+ "rows": 1484731,
+ "edges": 54238542,
+ "edges_per_row": 36.531,
+ "families": [
+  41204756,
+  9457194,
+  3576592
+ ],
+ "look_edges": {
+  "raw": 41931213,
+  "self_loops": 0,
+  "kept": 54238542
+ },
+ "look": {
+  "record_0of41.json": "f8f663f85e36dfecf559269b167e40501bfbe68a3aaaf663951e8bdb9eddf84b",
+  "record_10of41.json": "6a9ed0ddce8cfd00400aa103581a4b2208f80b09b8d0478dbab3c85822462c01",
+  "record_11of41.json": "90befa1f2d1236de8ee09f774a4625bd9b9cc09d8e1804d13e83b9d3385442a8",
+  "record_12of41.json": "f9807d65ab180c5a2c0704b4819d7f0ad4f38a8d1f033b9c96804b26d34679ba",
+  "record_13of41.json": "a106217629b1f0fbf9b29366a7e4acec4a79f8da5e7b721bbfebbe3294921093",
+  "record_14of41.json": "c07393008d7c80444be2197834fc6a341b0121dab923a6e4c07f9601b031c951",
+  "record_15of41.json": "90939a55261a9c860ad35f7b043fbac4481d2ecd71514a99448953305be35937",
+  "record_16of41.json": "f9aa929abda77f6e01d4482f51577d0048bd6a9d3e4bf9f6ab2adbeb8e32c361",
+  "record_17of41.json": "8453a865fa4d47927780fd56774303198a4b75fb24d5f6ee5fc11b7b0c63f8e4",
+  "record_18of41.json": "fce4a5d4d72870566de2a6562eea37e840a71fa391c0763ce06bff684e73eb50",
+  "record_19of41.json": "552929b17480f7b3bfea308851ee9ad192b1fe3288078cb9fd44948f2fb445db",
+  "record_1of41.json": "9a805552f9e2867cfe8b5f69b026036b684c9a46cdcc5bc702e70b03edf24e0f",
+  "record_20of41.json": "114c2026867adef08413cd201347cad1733cc32eb135262bcaac5201bed67a0c",
+  "record_21of41.json": "fe05487bb50b2d43d1e907c3f7eb779e3f7cc32206a1cba9c88808d56bb4ea0e",
+  "record_22of41.json": "2aec09bcefed4e18c007781f74ccadbabeb581f30316a7a5fd556488ca2611aa",
+  "record_23of41.json": "7ec3d124210264ada28a587a97107b257866b3d7cabfa371ac102ac1ee6c10a0",
+  "record_24of41.json": "b45cb8eefed377333b64fc3843471a9f6261034e364b0e80a5cbbf24a8df87e4",
+  "record_25of41.json": "fe70318a4c93abd247939a9d21c4053922807db5acd218791311861ca4415d05",
+  "record_26of41.json": "01131a007f522ee94647ad76805eaf8d209dca4790f3a0ca29cfceed2a2ac92c",
+  "record_27of41.json": "13bef5eb6786cec487cdc77e39aed7036d7f0536bf2c23b24f8705b83babdc97",
+  "record_28of41.json": "955e7aa6d96df5f6e57dccc3f0959859abffeabe865e050d0498b55429dcbebb",
+  "record_29of41.json": "c34db6d89ced0b91150a5597936ec4ed6e6ce7c131ca95ce228bef668319a930",
+  "record_2of41.json": "88598cb6e1d4963e27c485acf3dde831e509b1cce3f2563f03f1313f689aa592",
+  "record_30of41.json": "535de0f357fa7bb44ca4f2bc7908fa3f8ccc04b230c4db52f62ce5576d015c7e",
+  "record_31of41.json": "59aa3043b84e8814d13f91d9518c0db5467ec773222bf1a2ce49b9224df62017",
+  "record_32of41.json": "dd38704028ebcfbda9505fb821be0cac85afb2ca87d57014a683777046db45cb",
+  "record_33of41.json": "99fc860879ed530fce158f5cf6315ddb48eb9fca8c73d34c4b248b8e4f722db2",
+  "record_34of41.json": "9ace46b775d7caf27a5b27a4ad8cb19f82bd0aaeef442343702d0df380fee93d",
+  "record_35of41.json": "e135a61562c6b2ca1ce572796361118fda572b4354f0137a0ffde00fa8bc16da",
+  "record_36of41.json": "fc94436dde43772b0ee440f38670dd443f3e26032b2e90a0d917957af1a30960",
+  "record_37of41.json": "aab99748ad8d774a7800644e4dca33be7322bbcf494772dbbf71a57303c9d158",
+  "record_38of41.json": "ffb7fc6903cd47fa8eb3acb399601322387ff5843b3984b0bd97777242821bca",
+  "record_39of41.json": "9b1554f6e86fda02d886e0de58e5e22f31cd839a9a3068834b29b1d99983acae",
+  "record_3of41.json": "6ad62098231132874f6866235879a8e6c23c49a7f9484d9787a636ca2c9a455a",
+  "record_40of41.json": "5cccff6f9192da7b45b789c06ccffc3c2dd5a1e03da6d92115569819fee3bb6e",
+  "record_4of41.json": "d0315bbcb041720fb2924d18883552295a6482d4491ff90eeedfd67b4a12fd39",
+  "record_5of41.json": "954da363e1e82cc264a19f43d1fb446ae5e116e97208d301ad24aa623e004af0",
+  "record_6of41.json": "5516a112181270d669d0866444bbdb854581aa9da7b106dcebd46885b3143ea2",
+  "record_7of41.json": "6e9db40701fc5eb229f136c664f9323b43d18f2323fe4e6f9def264e72651d80",
+  "record_8of41.json": "4c57511a36987f7978f6f46d95c55ede84a7192737b118487ea4f734c4b6ae82",
+  "record_9of41.json": "12b60a190b8d3f4e6f12801cbda6fae2f1f7d762656a0557830f4bdf1c34d1f9"
+ },
+ "carve_ids_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    288
+   ],
+   "sha256": "b90b31c39fbd69fcb7d2522cd4ec976367e445444a39734a1b8ca3e73ef49cbe"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    54238542
+   ],
+   "sha256": "07e5dbda5ff29d6316e330f5a0fbbeb721533320a4f98d6d570e0b70ae2232f4"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    54238542
+   ],
+   "sha256": "447e1b04e5e17e59a651608874cadd42a9a0131014339f919e29037952bb2864"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    54238542
+   ],
+   "sha256": "421f46f1e6429257873ea357f6466973d03082577a2460f4eb7323909c07b13b"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 40.8,
+ "utc": "2026-10-22T15:40:12Z"
+}

@@ -1,0 +1,54 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "577348157bca9227f71f03be73b289a777d79b8af11fa623c7b743a90e378d8c",
+   "shape": [
+    693828,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "5b2cd8ca8d5f588c99c926104a0e3ef67e6300d415934b9a39b3693c5f28d8c0",
+   "shape": [
+    7405
+   ]
+  }
+ },
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "questions": 7405,
+ "rows": 693828,
+ "ids_sha256": "08c10b131e7047de0f549310facc132661ef4f45eb605f3993e6bea329c37992",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of1": "ae63ef1ca1190f28e38d54d30963fe1e6d863bbe7b54a82986a3b1081ba691b4"
+ },
+ "pools_manifest_sha256": "5a967c172ebf423c636b209e9f4a6b306e58c304063ab98f31a7767322cbce6f",
+ "pools_file_sha256": "3f2b24974f9e8f6d47aa4b3cc58e8566b1905a9d09d91fe1ba627436d5149044",
+ "construction": "U2D:base:KIND_T",
+ "build": "base",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true
+ },
+ "beside_p1c3": "REPRODUCED",
+ "seconds": 2.8,
+ "utc": "2026-10-22T14:20:04Z"
+}

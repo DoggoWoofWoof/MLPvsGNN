@@ -1,0 +1,40 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "stage": "U2d",
+ "build": "base",
+ "dataset": "2wiki",
+ "carve": "fit",
+ "construction": "U2D:base:KIND_T",
+ "graph_detail": {
+  "graph": "today's (the cached stores)"
+ },
+ "carve_ids_sha256": "fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3",
+ "questions_all": 5928,
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+ "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+ "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+ "u2e_verdict_sha256": null,
+ "p1c2_file_sha256": null,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "part": 0,
+ "parts": 10,
+ "q0": 0,
+ "q1": 592,
+ "rows": 63620,
+ "files": {
+  "npz": "48b9ee5810f1488324d2ee784d1789a70cb501c84cd992a8da76258ee0dd4008",
+  "kt": "a2abe7ec3839386947b845088262070364bc2be6c155128a09f862bd1c6aa94f"
+ },
+ "checks": {
+  "bs_step4d": true,
+  "seeds_same_both_graphs": true
+ },
+ "seconds": 433.0,
+ "utc": "2026-10-22T13:41:33Z"
+}

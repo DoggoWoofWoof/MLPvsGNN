@@ -1,0 +1,139 @@
+{
+ "dataset": "metaqa",
+ "carve": "s1eval",
+ "part": "part_6of13",
+ "step1_record_sha256": "882ea92e9590846eeb8c45a5c7ec9d36b9bfd512828bc54cae5e1bc2c476dc01",
+ "chunks": [
+  410,
+  479
+ ],
+ "queries": 759,
+ "rows": 1524194,
+ "entries": 4421597,
+ "rel_entries": 6745,
+ "look": {
+  "record_0of18.json": "6cebba67a501075d35a7d78914bf3270422d48c9dc54dd820c6a8f7530e243c2",
+  "record_10of18.json": "81361e49ce932e91172126652b1f3a0fd41d12ecc5ff6db66ade63bf4af178b9",
+  "record_11of18.json": "29b0457559642b92798d8cc1576705f2bdb6555dab8ac88f44f1a1375316dfe1",
+  "record_12of18.json": "4a164ec325b788dde157bc135c30b943bb5de6ea3278456f58d6c8d7e60d7ded",
+  "record_13of18.json": "72ec6343bf3f26a2aa3df86b7ea859aca22628a02497db0c44510c46b5a10f25",
+  "record_14of18.json": "d4a6ef2516548e6520ff61ef127eec0a21945b64495120f1acf343c3135313f1",
+  "record_15of18.json": "f0d75ed8cd1d3f5773352ffdbb487b88e625afd98118c01ea188cd08e37218a6",
+  "record_16of18.json": "21d189ee9d4daf894bafa41ce1dff2012a018e6563eb8bd41952ebe84a94c4ac",
+  "record_17of18.json": "3266284528ba61fb41ba12ae8adaf8f05c30c303c0d0058e96f3cf5a8c252143",
+  "record_1of18.json": "927f117751d916a7d3fc33465e8d40dfa09520a8e3e1fe9b9475caa10e4ddc0c",
+  "record_2of18.json": "d220d122dfb3af84573c3fc31fd1c683435a351ba142412e360ca773b356378c",
+  "record_3of18.json": "9533dff66a62e06634a26d4ea78082eab2cabab40059036fe573404753a74224",
+  "record_4of18.json": "e8e695aa3d76cef7e0f5cfac0223109c9c75622e2c8d4b46526b643831eb1a12",
+  "record_5of18.json": "024197585179ca6426910c517c2599968a47fb0b235b3f447e04f7deed22032a",
+  "record_6of18.json": "db0afdec247dba8a4ee01d9811606a1b5895e0e27ed60ffcca046ce54c5647d1",
+  "record_7of18.json": "8468d674347e4c36bc5cff4605543ba881edf4fc1b3b66b8796012c4ad79e90e",
+  "record_8of18.json": "030a66f488ca82c4e698b37440fa6ab85e19701b71ebaceb07ee04d4ba56d61b",
+  "record_9of18.json": "5b8ca889e2f23cb00e8a8537daa4b74971a7f9ecb2c9043c84d21b8eb0362836"
+ },
+ "carve_ids_sha256": "baf65d95e7b449f80ddd53541c4a43dff6ac1c584faab5b98977595b95f523fe",
+ "relations": {
+  "n_relations": 9,
+  "kz": 18,
+  "offset": 0,
+  "k_rel": 4,
+  "embeddings": "metaqa_rel_embeddings.npy",
+  "embeddings_sha256": "752964ecfae44c7e4ebf10468d7d0241cca53b0fdb2488af04ec30deed38b4af"
+ },
+ "walk": {
+  "hops": 3,
+  "max_chains": 20000,
+  "k_row": 64,
+  "buckets": 2
+ },
+ "buckets": [
+  {
+   "questions_with_seeds": 759,
+   "capped": 0,
+   "no_chain": 1,
+   "chains": 26669,
+   "before_cap": 1672106,
+   "entries": 1672106,
+   "mass": 26669.0,
+   "dropped_mass": 0.0,
+   "dropped_mass_share": 0.0
+  },
+  {
+   "questions_with_seeds": 759,
+   "capped": 0,
+   "no_chain": 2,
+   "chains": 56452,
+   "before_cap": 2749491,
+   "entries": 2749491,
+   "mass": 56452.0,
+   "dropped_mass": 0.0,
+   "dropped_mass_share": 0.0
+  }
+ ],
+ "entries_per_question": {
+  "mean": 5825.6,
+  "p50": 5361,
+  "p90": 9854,
+  "max": 27923
+ },
+ "n_against_step1": "IDENTICAL",
+ "arrays": {
+  "q_ent": {
+   "dtype": "<i8",
+   "shape": [
+    759
+   ],
+   "sha256": "121781540d2190595b8abc26ad1a6f38c59e21b9eaf8d0aa8a67d64e245da9f7"
+  },
+  "q_nrel": {
+   "dtype": "<i8",
+   "shape": [
+    759
+   ],
+   "sha256": "8b94312715567f43a5dbdf5ad62e9b726a6e11b7876e202befd12ecf4a1afde8"
+  },
+  "ent_row": {
+   "dtype": "<i2",
+   "shape": [
+    4421597
+   ],
+   "sha256": "a131c94ed0b8e3b4485c6513eac650f650d6cc541843a9306c3123656be438c9"
+  },
+  "ent_z": {
+   "dtype": "<i2",
+   "shape": [
+    4421597,
+    3
+   ],
+   "sha256": "15d083bd496777e44cb1b08f54ac21b9176a28ee54f9d72bd857585e36c6ae08"
+  },
+  "ent_b": {
+   "dtype": "|i1",
+   "shape": [
+    4421597
+   ],
+   "sha256": "883fb6fffeece8b665fb8f2bd4bdf9466a20401bd9e51841203d4f2551c219f1"
+  },
+  "ent_m": {
+   "dtype": "<f2",
+   "shape": [
+    4421597
+   ],
+   "sha256": "e1f7aaad3c62fcd51bd71e05af847964e254537742d6ab2f027b8afbf77e80ab"
+  },
+  "q_rel": {
+   "dtype": "<i2",
+   "shape": [
+    6745
+   ],
+   "sha256": "65fb4198b8e3a998229a5ad10d6e05568d9a516a6e68a51f0ad3c062d6d43139"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "db335f85b69a04bc0583e8c381f239a6c480ddc675d2426065126320fd158001",
+ "seconds": 8.4,
+ "utc": "2026-10-22T14:33:28Z"
+}

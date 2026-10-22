@@ -1,0 +1,343 @@
+{
+ "files": {
+  "hotpotqa__fit": {
+   "file": "hotpotqa__fit.npz",
+   "sha256": "f556538faf63f253bc29aa86947e440ad65f3bc177102b8d8916a8f8e343a7dc",
+   "dataset": "hotpotqa",
+   "carve": "fit",
+   "construction": "U2D:base:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "today's (the cached stores)"
+   },
+   "carve_ids_sha256": "2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c",
+   "questions": 5930,
+   "changed": 5925,
+   "short": 0,
+   "B_q": {
+    "mean": 43.9,
+    "max": 203
+   },
+   "pool_mean": 94.0,
+   "rows": {
+    "mean": 94.0,
+    "p90": 125.0,
+    "max": 253
+   },
+   "budget_mean": 43.9,
+   "fill_want_mean": 43.9,
+   "today_inc_mean": 94.0,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.0206,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.9681,
+    "recall": 0.9805
+   },
+   "pool": {
+    "ALL": 0.9627,
+    "recall": 0.9788
+   },
+   "caps": {
+    "I": {
+     "r5": 0.9805,
+     "hit1": 0.9929
+    },
+    "pool": {
+     "r5": 0.9788,
+     "hit1": 0.9949
+    }
+   },
+   "parts": [
+    {
+     "stem": "hotpotqa__fit__0of9",
+     "q0": 0,
+     "q1": 658,
+     "rows": 61922,
+     "npz": "17dbb176176134f83a3b5351deb7d22481ba7ac60d626adf66ba0051cd5288d8",
+     "kt": "44d91051d186aedbabde7963d2cb9ba8bb25942cb83501bbcd1f648dcdce3dcf"
+    },
+    {
+     "stem": "hotpotqa__fit__1of9",
+     "q0": 658,
+     "q1": 1317,
+     "rows": 62359,
+     "npz": "66f645d0ebcde32faeac1c7ea29fa22601b16acab21f14a1438ce31da15c57d7",
+     "kt": "7f15ae64cbeddb1875a6f06a496f1b11027d010f7c7ad53de09df6962b7ce26d"
+    },
+    {
+     "stem": "hotpotqa__fit__2of9",
+     "q0": 1317,
+     "q1": 1976,
+     "rows": 62374,
+     "npz": "acbc0311cb38acf12a74d00e3e70400d9835d9db236e4f0138b1e0ab60d11771",
+     "kt": "d4e949960500a667df593c61a1eea288a150cf98c67f8a3fb0eb939a250fd05a"
+    },
+    {
+     "stem": "hotpotqa__fit__3of9",
+     "q0": 1976,
+     "q1": 2635,
+     "rows": 62422,
+     "npz": "45fa6445ff8521b3cad070784d104c5af1879227c55308cc5b74ca7af9833f5a",
+     "kt": "b138ba71c4f1b3355c972cb85ba659ee2c611702a81d6ea4add51832010f8c1d"
+    },
+    {
+     "stem": "hotpotqa__fit__4of9",
+     "q0": 2635,
+     "q1": 3294,
+     "rows": 61395,
+     "npz": "e244c6edd890eae1403cc6583de806f1783efd69d054efac1fdfd14839bdd0cb",
+     "kt": "d312b063c2f59424dfd5ad8e857c9c6a24f7ef2e7ac2c3b102d43522c364dd82"
+    },
+    {
+     "stem": "hotpotqa__fit__5of9",
+     "q0": 3294,
+     "q1": 3953,
+     "rows": 61573,
+     "npz": "d88b9e867f4a1aedf998b5423a19dcf2d7ef1fff89e980d47decd49a6459278f",
+     "kt": "4326e95b7a1d133b738ecf91cf6b1cc31a752bcd140624964ca311ff3f56fb01"
+    },
+    {
+     "stem": "hotpotqa__fit__6of9",
+     "q0": 3953,
+     "q1": 4612,
+     "rows": 62853,
+     "npz": "47f0613b944c0f82c1ee9a8c0de67031b656f2c1db67c7af3d8933288c1c8415",
+     "kt": "48c277e9ffc482378b3a98d2c7c681de892a7cfdcc28e7a197396758d02c67f7"
+    },
+    {
+     "stem": "hotpotqa__fit__7of9",
+     "q0": 4612,
+     "q1": 5271,
+     "rows": 61254,
+     "npz": "0f83a20d2fb97afe39ee261376c1f9c8ae375dd6429d870fc477a6ecac32b7bf",
+     "kt": "20bd10bc4bd9d96e0b8bf810414df6e48f0697703350294419a5f13ab3be714f"
+    },
+    {
+     "stem": "hotpotqa__fit__8of9",
+     "q0": 5271,
+     "q1": 5930,
+     "rows": 61043,
+     "npz": "fcb1a3aa1f3561f831fe719f9883f11b864b2164fefb511da28c84271c77d247",
+     "kt": "6c3e4fea0d975e16684826ee21c635dfd291e4bc35b37c9f71295dc8bf83a6ca"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+    "stage": "U2d",
+    "build": "base",
+    "dataset": "hotpotqa",
+    "carve": "fit",
+    "construction": "U2D:base:KIND_T",
+    "graph_detail": {
+     "graph": "today's (the cached stores)"
+    },
+    "carve_ids_sha256": "2b94ca1c438d6c58bc2436b409a44328bc56a911138dece6116a9e423b31223c",
+    "questions_all": 5930,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true,
+    "counts_equal_p1c2_manifest": true
+   },
+   "seconds_parts": 3233.7,
+   "utc": "2026-10-22T13:45:43Z"
+  },
+  "hotpotqa__s1eval": {
+   "file": "hotpotqa__s1eval.npz",
+   "sha256": "3f2b24974f9e8f6d47aa4b3cc58e8566b1905a9d09d91fe1ba627436d5149044",
+   "dataset": "hotpotqa",
+   "carve": "s1eval",
+   "construction": "U2D:base:KIND_T",
+   "rule": "KIND_T",
+   "graph_detail": {
+    "graph": "today's (the cached stores)"
+   },
+   "carve_ids_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+   "questions": 7405,
+   "changed": 7398,
+   "short": 0,
+   "B_q": {
+    "mean": 43.7,
+    "max": 186
+   },
+   "pool_mean": 93.7,
+   "rows": {
+    "mean": 93.7,
+    "p90": 125.0,
+    "max": 236
+   },
+   "budget_mean": 43.7,
+   "fill_want_mean": 43.7,
+   "today_inc_mean": 93.7,
+   "shares": {
+    "entity": 0.0001,
+    "route": 0.0186,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.9684,
+    "recall": 0.98
+   },
+   "pool": {
+    "ALL": 0.9594,
+    "recall": 0.9761
+   },
+   "caps": {
+    "I": {
+     "r5": 0.98,
+     "hit1": 0.9916
+    },
+    "pool": {
+     "r5": 0.9761,
+     "hit1": 0.9928
+    }
+   },
+   "parts": [
+    {
+     "stem": "hotpotqa__s1eval__0of11",
+     "q0": 0,
+     "q1": 673,
+     "rows": 62785,
+     "npz": "4653ec6d8a23e7ffa7714ce9d2009135c3c2a4e868f14a5ab206764559d194bf",
+     "kt": "02026bddbcb2d1527f8d2196a2c45855fe674a9b10e56fe34d5e86ed8c360aec"
+    },
+    {
+     "stem": "hotpotqa__s1eval__1of11",
+     "q0": 673,
+     "q1": 1346,
+     "rows": 62948,
+     "npz": "0705483a451b1b55a22c3b3acb7156dca4b02a3be005cfb57ca0b4e38b498e0a",
+     "kt": "0db0f9bf803ba239bf17449dba4c98b4401315b59e88b6d95bd64a142a87c768"
+    },
+    {
+     "stem": "hotpotqa__s1eval__2of11",
+     "q0": 1346,
+     "q1": 2019,
+     "rows": 63316,
+     "npz": "5558d1023f5968240e1a9c080b763591130f473a80b2612881a9fe946f42a149",
+     "kt": "5ac27fffcadaeb48590c808c08338e2740a6c165e64e67ee907499d401c35a80"
+    },
+    {
+     "stem": "hotpotqa__s1eval__3of11",
+     "q0": 2019,
+     "q1": 2692,
+     "rows": 62775,
+     "npz": "b5cddea55733dbd3581dd274a719ba90a409092155f325a09f1b4cc91f919ec9",
+     "kt": "c1ef3495c67cb417a110fd6083de7831eb9b17eb1ab48213802e9259fa1555c6"
+    },
+    {
+     "stem": "hotpotqa__s1eval__4of11",
+     "q0": 2692,
+     "q1": 3365,
+     "rows": 62906,
+     "npz": "65e95f2e02b78f1619a7b6921bdfb7f7ff8311986bba2bafb1c65373b83dd6d5",
+     "kt": "15e4a47cd6bc32f3e996847837d7661a82b6d8ed247e709e0af3b7d1448a5928"
+    },
+    {
+     "stem": "hotpotqa__s1eval__5of11",
+     "q0": 3365,
+     "q1": 4039,
+     "rows": 62397,
+     "npz": "1b7db0e2cda0b8608dcb0e470218b9e86b1fec342a0cdee8858507eb8540d5f7",
+     "kt": "1ed1adcb88e39d1cbcb00187d4f46177122b9963c3ccc8fa626b517e97cddba3"
+    },
+    {
+     "stem": "hotpotqa__s1eval__6of11",
+     "q0": 4039,
+     "q1": 4712,
+     "rows": 63266,
+     "npz": "1c6f931397cfe9cbb800af78e4e3d040fd431984032671fbc2cac65b9a57862a",
+     "kt": "2d51bdab8258106a12c3f47c294c961408a64e1b6ad58b72bdaa65988e84b83c"
+    },
+    {
+     "stem": "hotpotqa__s1eval__7of11",
+     "q0": 4712,
+     "q1": 5385,
+     "rows": 63854,
+     "npz": "c4dc06cd01742edf739c1a2158723fce0b3c0df4d57cfd675b18a08b8d63c238",
+     "kt": "bf997573c4194c99c2ef0e393a153a7b6d9c191d902ca2a2b0bfce9cc88ecbaa"
+    },
+    {
+     "stem": "hotpotqa__s1eval__8of11",
+     "q0": 5385,
+     "q1": 6058,
+     "rows": 62562,
+     "npz": "6b82d700e615630b01a2e69d52585ef0603c3741457f6474e18014c3c1b4ae4a",
+     "kt": "a407e5a7c9b16786f20e7eb736b2a383df33e5f40355d67608b5973bc1890f78"
+    },
+    {
+     "stem": "hotpotqa__s1eval__9of11",
+     "q0": 6058,
+     "q1": 6731,
+     "rows": 63746,
+     "npz": "b958a51090f14194504fc62e0d8e7b62235f3a3fac716b0be7f475d42711dc02",
+     "kt": "79cdb710bbf1976b40804c19dc511993e81f4ec1e25a6588d69819bba0b8221a"
+    },
+    {
+     "stem": "hotpotqa__s1eval__10of11",
+     "q0": 6731,
+     "q1": 7405,
+     "rows": 63273,
+     "npz": "81eef269f7280fed2f33ae293335d1fe79e8d913e20da5d4f9f158139e227c02",
+     "kt": "90cc1b4431a28854bc64772e430c70198a34fee9fd43f368982960736d548173"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+    "stage": "U2d",
+    "build": "base",
+    "dataset": "hotpotqa",
+    "carve": "s1eval",
+    "construction": "U2D:base:KIND_T",
+    "graph_detail": {
+     "graph": "today's (the cached stores)"
+    },
+    "carve_ids_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+    "questions_all": 7405,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": null,
+    "p1c2_file_sha256": "97025ca82cf58bc480460a653cd066c3dddd56d7da5cec44eb051150c2b6d4a1",
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true,
+    "equal_p1c2_file": true,
+    "counts_equal_p1c2_manifest": true
+   },
+   "seconds_parts": 4125.9,
+   "utc": "2026-10-22T13:45:52Z"
+  }
+ },
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "stage": "U2d",
+ "build": "base",
+ "dataset": "hotpotqa",
+ "construction": "U2D:base:KIND_T",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "seconds": 15.0,
+ "utc": "2026-10-22T13:45:52Z"
+}

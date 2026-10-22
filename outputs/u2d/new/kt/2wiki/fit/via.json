@@ -1,0 +1,61 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "columns": [
+  "ktcos",
+  "cos",
+  "n1",
+  "n1cnt",
+  "n1w",
+  "r0",
+  "inI"
+ ],
+ "dtype": "float16",
+ "arrays": {
+  "via": {
+   "sha256": "4843f3e870f2b8a3fc04de7d364410626142d1924b5c4134b6eb115b668badda",
+   "shape": [
+    4969732,
+    7
+   ]
+  },
+  "n": {
+   "sha256": "893492d6db4dd87316a11bf8ac075e995cd501af2357e969b39cf89f2c4b7067",
+   "shape": [
+    5928
+   ]
+  }
+ },
+ "scales": {
+  "pmax": 1048576,
+  "cnt": 64.0,
+  "w": 30.5
+ },
+ "dataset": "2wiki",
+ "carve": "fit",
+ "questions": 5928,
+ "rows": 4969732,
+ "ids_sha256": "2371edd866675eaaf38328bc19542f20d774eb2884de18cdcf6d3fd3eba87862",
+ "cache_root": "outputs/u2d/new/cache",
+ "cache_parts": {
+  "part_0of8": "b9a4759442923e6832ef7ef0c816a9bdae7618cba4eb47759ec01c457c1a64a3",
+  "part_1of8": "5009e4488891a611f49f395094a49fc7b9fb93f25a8df21543a3f391171d5f23",
+  "part_2of8": "737a8f5f034e7e028b077955b6208d6e2283dbbb984464d35a9c114a3f6eec03",
+  "part_3of8": "cc0cba7bf9d6f31d41a20e0478f0b7106c9afc4ea599b091077817cd35cc1748",
+  "part_4of8": "acc64c03401487cffea189124c37dc2d4d667da6a3e4dd06e05f60b3c7b2c920",
+  "part_5of8": "80021845777d2fe0d2931bfe13c3cc67ddaf449e373f24b5141e95e886e13317",
+  "part_6of8": "7aeeb59f0fbce6bcfff8dc52187508acb383e7d5faff4c2932f370fdba370384",
+  "part_7of8": "5fd3cf06e974ce77616cf54306c79e03d35d41c8590323023321ede776d92f7a"
+ },
+ "pools_manifest_sha256": "ea87a8e775a8fc4be1bfb6f305b03ae6b7eba3b6ed5030cf3744bd84b94a19e8",
+ "pools_file_sha256": "08193ecfe3e00be1ba63cffc885b6cb4bb058e1a827e6300e8b2d23d63e969da",
+ "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+ "build": "new",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true
+ },
+ "utc": "2026-10-22T15:07:04Z"
+}

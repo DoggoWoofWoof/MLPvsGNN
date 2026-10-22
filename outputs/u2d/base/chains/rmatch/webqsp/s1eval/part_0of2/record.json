@@ -1,0 +1,124 @@
+{
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "part": "part_0of2",
+ "step1_record_sha256": "a077ea8f3ab70b3ad25ce5234db43a198be7e6b5847a42492cddf465dfd41ab7",
+ "chunks": [
+  0,
+  68
+ ],
+ "queries": 748,
+ "rows": 1585320,
+ "entries": 66169901,
+ "rel_entries": 260454,
+ "look": {
+  "record_0of3.json": "06df318738614f600d4dd8e8797f3becf6e6067db5680b4e610e1ff490e03a36",
+  "record_1of3.json": "385ab5563d97fc1b579fb33de4d2881aa9d51e8449aea614dd817c3cae9f59dc",
+  "record_2of3.json": "06f85a3cbc96c67110c1dccc9e5f1487b0668985f7e4677c70e45c3842fcb51a"
+ },
+ "carve_ids_sha256": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e",
+ "relations": {
+  "n_relations": 7058,
+  "kz": 14116,
+  "offset": 9,
+  "k_rel": 4,
+  "embeddings": "webqsp_rel_embeddings.npy",
+  "embeddings_sha256": "58df589aa77c9fa670e51af9fd2cac3ac61033667b4e149ef64c255514a14bd9"
+ },
+ "walk": {
+  "hops": 3,
+  "max_chains": 20000,
+  "k_row": 64,
+  "buckets": 2
+ },
+ "buckets": [
+  {
+   "questions_with_seeds": 748,
+   "capped": 266,
+   "no_chain": 10,
+   "chains": 19788992,
+   "before_cap": 109604940,
+   "entries": 26122884,
+   "mass": 19788992.0,
+   "dropped_mass": 14434227.058,
+   "dropped_mass_share": 0.729407
+  },
+  {
+   "questions_with_seeds": 748,
+   "capped": 492,
+   "no_chain": 1,
+   "chains": 43742870,
+   "before_cap": 269661848,
+   "entries": 40047017,
+   "mass": 43742870.0,
+   "dropped_mass": 35251309.312,
+   "dropped_mass_share": 0.805876
+  }
+ ],
+ "entries_per_question": {
+  "mean": 88462.4,
+  "p50": 83590,
+  "p90": 145533,
+  "max": 237251
+ },
+ "n_against_step1": "IDENTICAL",
+ "arrays": {
+  "q_ent": {
+   "dtype": "<i8",
+   "shape": [
+    748
+   ],
+   "sha256": "406a41236f1842ba7cff0f674f4a40521a75b76946b03b525e7c84b9e1875e22"
+  },
+  "q_nrel": {
+   "dtype": "<i8",
+   "shape": [
+    748
+   ],
+   "sha256": "5500a73d4d309e926dc1371bb779e3fcccde8ef794b1260c844a8dc4eec95887"
+  },
+  "ent_row": {
+   "dtype": "<i2",
+   "shape": [
+    66169901
+   ],
+   "sha256": "a020078e84a62cda4cd5d981804223928f8955af8f27c5df6dcc231a9df06cfd"
+  },
+  "ent_z": {
+   "dtype": "<i2",
+   "shape": [
+    66169901,
+    3
+   ],
+   "sha256": "2c30fb0484db2beda5094a7a7f5c915e8c7e0936a09ec6a1bd75c0bf5759bd6a"
+  },
+  "ent_b": {
+   "dtype": "|i1",
+   "shape": [
+    66169901
+   ],
+   "sha256": "7e38a0f46bd65359ce6bedc954494c2a8849870d268d6168734a682a216843d5"
+  },
+  "ent_m": {
+   "dtype": "<f2",
+   "shape": [
+    66169901
+   ],
+   "sha256": "153b9579671e8cad765ce8c86159cd076b73f333daf5bf9e1e382b8fedddc92f"
+  },
+  "q_rel": {
+   "dtype": "<i2",
+   "shape": [
+    260454
+   ],
+   "sha256": "c23d4b167982c533fa1aa9c7105b343648c3a3e3e9eed389579650899aca937d"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "db335f85b69a04bc0583e8c381f239a6c480ddc675d2426065126320fd158001",
+ "seconds": 106.6,
+ "utc": "2026-10-22T14:22:26Z"
+}

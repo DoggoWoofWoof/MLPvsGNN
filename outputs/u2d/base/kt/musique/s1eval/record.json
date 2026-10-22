@@ -1,0 +1,56 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "39377cdda7157d8720efdd477b0d1c1e75901c0c656e17b5e55f18681477145c",
+   "shape": [
+    5057436,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "f1858be4136a7a1fdf6c2e3590d6082ae04e604e6aa22a43f555aa5278efacd3",
+   "shape": [
+    2417
+   ]
+  }
+ },
+ "dataset": "musique",
+ "carve": "s1eval",
+ "questions": 2417,
+ "rows": 5057436,
+ "ids_sha256": "43399dd0c77011fe9afca9aaa5069603d16219e58e801b3c022884e3f6bf5b02",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of3": "6031cc811b37a6a41a50aa78aa4eeeb73c9984456d14ffca620ad70f41952d75",
+  "part_1of3": "81b04d745fdacca49d2a4887217f6be5a72cb61b8fef99c7def71812f86da1f4",
+  "part_2of3": "b46627df922ed9034c75eecfcd32d65c109b1a69c50f2170beb2c1abe5070e59"
+ },
+ "pools_manifest_sha256": "fe1359ee7b37c163be0398b893389a2f4a1287ed024d18cf91d3f4bc101bc826",
+ "pools_file_sha256": "c26e6cda48d878f4606db1aa51c272bb0b4cbdb120c414d1b5e6f82d9d66ad82",
+ "construction": "U2D:base:KIND_T",
+ "build": "base",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true
+ },
+ "beside_p1c3": "REPRODUCED",
+ "seconds": 7.5,
+ "utc": "2026-10-22T14:27:29Z"
+}

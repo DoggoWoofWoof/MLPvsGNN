@@ -362,4 +362,114 @@ The encoder stays frozen. webqsp never trains. Test splits are never read.
 
 ## 11. Results
 
-Not run yet.
+Filed 22 October 2026. Development numbers. The files:
+- the verdict: `outputs/u2d/screen-verdict.json` and `.md`;
+- the 26 compares, pairs and re-calls: `outputs/screen/scr-u2d-*`;
+- the fits' records and reads: `outputs/screen/fits/scr-u2d-*`;
+- the builds' records: `outputs/u2d/base` and `outputs/u2d/new`.
+
+**The run.** Both builds and all 24 fits ran on Modal. The base build and its 14 fits ran in one workspace. One
+workspace could not hold the new build's features and its ten fits within its spend limit, so the new build was built
+twice, in two more workspaces, with five of its fits in each.
+- Every check in sections 2 and 10 passed: the pools, the check-merges and the gates.
+- Every fit and read ran on an L40S from the pinned image, so every compare's two fits share the device.
+- The base build's KT arrays equal P1c3's on all eleven carves (REPRODUCED). So the base is the filed state.
+
+**The two copies of the new build.** Their pools are identical: every record's sha256 values match. Every feature array
+also matches, except two:
+- **score2**, the base pair's two float32 scores per row. It differs in every cache part except hotpotqa's fit carve
+  and squad's. Part 0 of four carves was measured. On webqsp's, metaqa's and 2wiki's s1eval, 18 to 35% of the values
+  differ, by at most 2.3 × 10⁻⁵ (webqsp's values run from −65 to 10). hotpotqa's fit part is identical. That is float32
+  rounding, most likely from the CPU each container drew.
+- **zrc's chain arrays** on 2 of webqsp s1eval's 5 parts. In each part one run of entries holds the rows in another
+  order or selection: 3,832 of part 3's 53.8 million ent_row entries, and 135 of part 4's 56.6 million. ent_m and
+  ent_z differ in the same runs, and ent_b is identical.
+
+These differences reach only the pairs whose two fits come from different copies:
+- B's L-hotpotqa read of zrckpv;
+- both of zspkv's B pairs;
+- zg6 against zspk on the new build (beside).
+
+No verdict depends on them, since B has no GAIN on any read.
+
+**The verdicts.**
+
+| decision | what it asks | GAIN | LOSS | verdict |
+| --- | --- | --- | --- | --- |
+| A | the pools, for the lean pair | 3 | 8 | NOT_ADOPTED |
+| B | via, on the new pools | 0 | 2 | NOT_ADOPTED |
+| C | the pools and via together | 1 | 8 | NOT_ADOPTED |
+| G | the pools, for zg6 | 1 | 5 | NOT_ADOPTED |
+
+So there is no full run (section 7). The lean pair stays on P1c2's pools, and so does zg6.
+
+**A: the pools.** Delta R@5, the new build against the base, with the re-called calls:
+
+| arm | split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| zrckp | L-musique | −0.001 | +0.001 | +0.004 | −0.057 LOSS | −0.014 LOSS | +0.039 GAIN |
+| zrckp | L-hotpotqa | −0.002 | +0.001 | +0.004 | −0.047 LOSS | −0.027 LOSS | +0.050 GAIN |
+| zspk | L-musique | −0.003 | +0.002 | +0.011 GAIN | −0.061 LOSS | −0.016 LOSS | +0.006 |
+| zspk | L-hotpotqa | −0.004 | +0.004 | −0.003 | −0.049 LOSS | −0.020 LOSS | +0.017 |
+
+- **hotpotqa and 2wiki lose on every arm and split:** hotpotqa by 0.047 to 0.061, 2wiki by 0.014 to 0.027.
+- **The pools hold about as many golds.** On s1eval:
+  - hotpotqa: ALL 0.959 on the base and 0.953 on the new build, with an R@5 cap of 0.976 on both;
+  - 2wiki: ALL 0.959 and 0.967, with caps of 0.984 and 0.989.
+
+  So the loss is in the ranking, not the pool.
+- **Two things changed together:**
+  - **The pools are larger:** from 94 to 556 rows on hotpotqa (5.9 times), and from 106 to 848 on 2wiki (8.0 times).
+  - **The graph has no hyperlinks.** The first stage's own pool, I, holds every gold for fewer questions on W2_S:
+    hotpotqa 0.968 → 0.888, 2wiki 0.906 → 0.852.
+- **The size of the loss** matches the hyperlink price that U1c and U1f filed on 12 and 13 October: hotpotqa −0.035 to
+  −0.065, 2wiki −0.010 to −0.020.
+- **The gains:**
+  - webqsp for zrckp (+0.039 and +0.050, zero-shot);
+  - musique for zspk on L-musique (+0.011).
+- **metaqa and squad** stay within.
+
+**B: via.** There is no GAIN on any read. zrckpv loses webqsp on both splits (−0.022 and −0.035), and the other reads
+move by at most 0.0075. Knowing how each row came into the pool, in the heads' form, helps neither model.
+
+**C: the pools and via together.** C follows A:
+- hotpotqa and 2wiki lose on every arm and split (−0.043 to −0.063, and −0.018 to −0.024);
+- zspkv gains musique on L-musique (+0.012).
+
+**G: zg6 on the new pools.**
+- It gains musique on L-musique (+0.022).
+- It loses hotpotqa (−0.051 and −0.050), 2wiki on L-musique (−0.011) and webqsp (−0.081 and −0.041).
+
+**The null.** U2d's floors:
+
+| null | most reads | musique | webqsp | hotpotqa, L-hotpotqa | 2wiki, L-hotpotqa |
+| --- | --- | --- | --- | --- | --- |
+| zrckp | 0.0075 | 0.0136, 0.0120 | 0.0182, 0.0322 | 0.0083 | 0.0075 |
+| zspk | 0.0075 | 0.0089, 0.0107 | 0.0105, 0.0405 | 0.0145 | 0.0139 |
+
+The musique and webqsp pairs are L-musique, then L-hotpotqa. The LOSSes in A, C and G are 1.0 to 8.3 times their
+floors. The 7 October null's floors are filed beside, in the json.
+
+**Beside, deciding nothing.**
+- **The full table** of R@5, FC@5 and hit@1 per fit is in `screen-verdict.md`.
+- **zg6 against zspk.** On both builds zg6 is above zspk on metaqa (+0.007 to +0.014), musique (+0.006 to +0.022) and
+  2wiki (+0.007 to +0.017). It is below on webqsp (−0.058 to −0.166) and on hotpotqa on L-hotpotqa (−0.020 and
+  −0.021). On the new build it is also above on hotpotqa on L-musique (+0.012).
+- **The MLP's share** of the GNN's gain over RRF (zrckp against zspk) is 0.90 to 1.27 on the base build and 0.73 to
+  1.39 on the new. The 0.73 is squad on L-hotpotqa, where zspk's gain over RRF is 0.010.
+- **hit@1, the headline on metaqa and webqsp:**
+  - metaqa: 0.904 to 0.959, against a cap of 0.998 to 0.999;
+  - webqsp: 0.093 to 0.196, against a cap of 0.967 to 0.985.
+
+  docs/U2D_H1_DIAGNOSTIC.md, section 6, says where the gold sits when hit@1 misses.
+- **The sizes.**
+  - The new build's fits train on 8.5 GB (L-musique) and 12.5 GB (L-hotpotqa) of data, against 3.0 and 4.9 GB on
+    the base.
+  - zrckp's peak GPU memory is 9.4 to 13.5 GB, against 3.7 to 5.6 GB.
+  - zg6's reads reach 18.7 GB.
+
+**What follows (section 9, fixed before any number).** Each verdict closes only the form it tests.
+- **A:** the 2 × 2. U2e's rule on today's graph separates the graph from the pool rule. Then via on P1c2's pools.
+- **B:** via in the block encoder's own input layer, in place of the heads. Then the link-level form.
+- **G:** zg6 with the via columns (zg6v) on the new build.
+- **The hit@1 diagnostic:** filed (docs/U2D_H1_DIAGNOSTIC.md).

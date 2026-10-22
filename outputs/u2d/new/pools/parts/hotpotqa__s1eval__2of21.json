@@ -1,0 +1,52 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "stage": "U2d",
+ "build": "new",
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+ "graph_detail": {
+  "graph": "W2_S",
+  "npz": "outputs/u2b/hotpotqa/graphs/W2_S.npz",
+  "npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+  "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+  "build": {
+   "directed_edges": 32334355,
+   "undirected_neighbours": 64318458,
+   "mean_degree": 12.29,
+   "max_degree": 371977
+  }
+ },
+ "carve_ids_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+ "questions_all": 7405,
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+ "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+ "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+ "u2e_verdict_sha256": "ea9a18ef4bcce1b2fdb129d2df2333acd262620e1d8e663a7edc53fc77a5a0de",
+ "p1c2_file_sha256": null,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "part": 2,
+ "parts": 21,
+ "q0": 705,
+ "q1": 1057,
+ "rows": 193289,
+ "files": {
+  "npz": "50668ad8e0a44988da873185b8c0066c548ad784b02f7b128c3e4b1c32bc3854",
+  "kt": "968812af80486cfad0482668309a16b0f6aed16ca0db3684dae10a423bae1f86",
+  "via": "5553cb4c49c0cc01b2ae42710379a3241a66e10e159bfaea0cfad4b370c8c4f5"
+ },
+ "checks": {
+  "bs_step4d": true,
+  "seeds_same_both_graphs": true,
+  "graph_u2e": true,
+  "orders_exact": true
+ },
+ "seconds": 377.4,
+ "utc": "2026-10-22T14:29:35Z"
+}

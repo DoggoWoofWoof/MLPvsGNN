@@ -1,0 +1,148 @@
+{
+ "dataset": "metaqa",
+ "carve": "fit",
+ "part": "part_2of8",
+ "step1_record_sha256": "0a61f7656fa08b7ac4e95189153610fcfa5ac98f5b7b8d1b8c4d1af97b254b4b",
+ "chunks": [
+  135,
+  203
+ ],
+ "queries": 748,
+ "rows": 1484202,
+ "entries": 4235878,
+ "rel_entries": 6646,
+ "look": {
+  "record_0of14.json": "b550bba6de4e62c5ee03b0cafacb79b3c2e0a7ee01f236456f905fe33d489f78",
+  "record_10of14.json": "7cdc65b57576d51b71161b63615745fd3e81a389c598a693ecf4dfd98c325fb3",
+  "record_11of14.json": "f6e2c36a5a282c74c8f793f5a8d34bc860a305b9b582ffb1b3cc72e4408b37bd",
+  "record_12of14.json": "e9851ad0eb49e855cb941465b070182293e5f39703d11c4d2412d9ae9cc2413f",
+  "record_13of14.json": "bafbe9e6c10eaa0cd63811282e68831ed37bf729deba318059c4287c373c8305",
+  "record_1of14.json": "a0f72f79d909b87608f7784e7f4b0a28caa546b7c14fbe8a5817fd931d98dad2",
+  "record_2of14.json": "250b1154e10907f249b9e52d36d2a293a34bac37c3e448acfc90b5eac941403e",
+  "record_3of14.json": "b9ff119e76d5e19cf6388df5a6d21c10b8c10a1e5c55bde50fa684d373977349",
+  "record_4of14.json": "12804ab87b14abd09be68864476717298f6ce9cf05c58be5bc4376e7a5779130",
+  "record_5of14.json": "82d778f14c68891da77c4c9a66abd54f48f6a8fbbdd565ced40d199c554c486a",
+  "record_6of14.json": "b9ce00531877e8a187d5c3f4cf9556a26e21a8dc31b68d55c2219256df7de72c",
+  "record_7of14.json": "0facfc213f7bb68c374120ed16d423b2519a62ea5c108f9c75cc8800ef547ae8",
+  "record_8of14.json": "e1ef249ddbaed5221872396323cc6ace8d92b455c92cfa8414c79029a75703ca",
+  "record_9of14.json": "7170a0b97f13d4ef7b7acd723e3a5ea31bd41b8bd58f9012b1651e7c9332233f"
+ },
+ "carve_ids_sha256": "161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188",
+ "relations": {
+  "n_relations": 9,
+  "kz": 18,
+  "offset": 0,
+  "k_rel": 4,
+  "embeddings": "metaqa_rel_embeddings.npy",
+  "embeddings_sha256": "752964ecfae44c7e4ebf10468d7d0241cca53b0fdb2488af04ec30deed38b4af"
+ },
+ "walk": {
+  "hops": 3,
+  "max_chains": 20000,
+  "k_row": 64,
+  "buckets": 2
+ },
+ "rule": "per row and seed bucket the k_row entries with the largest w0(c) m_c(v), ties to the earlier chain",
+ "prior": "w0(c) = (1/3) prod_k sigmoid(zcos_q(r_k)): rmatch.ChainMatch at its start, zcos in float64 from the look's q_emb (chaincov.zcos_of)",
+ "buckets": [
+  {
+   "questions_with_seeds": 748,
+   "capped": 0,
+   "no_chain": 1,
+   "chains": 26540,
+   "before_cap": 1612298,
+   "entries": 1612298,
+   "mass": 26540.0,
+   "dropped_mass": 0.0,
+   "dropped_mass_share": 0.0
+  },
+  {
+   "questions_with_seeds": 748,
+   "capped": 0,
+   "no_chain": 6,
+   "chains": 53424,
+   "before_cap": 2623582,
+   "entries": 2623580,
+   "mass": 53424.0,
+   "dropped_mass": 0.006,
+   "dropped_mass_share": 0.0
+  }
+ ],
+ "entries_per_question": {
+  "mean": 5662.9,
+  "p50": 5232,
+  "p90": 9662,
+  "max": 16759
+ },
+ "n_against_step1": "IDENTICAL",
+ "against_rmatch": {
+  "q_ent": "IDENTICAL",
+  "q_nrel": "IDENTICAL",
+  "ent_row": "DIFFERENT",
+  "ent_z": "DIFFERENT",
+  "ent_b": "IDENTICAL",
+  "ent_m": "DIFFERENT",
+  "q_rel": "IDENTICAL"
+ },
+ "arrays": {
+  "q_ent": {
+   "dtype": "<i8",
+   "shape": [
+    748
+   ],
+   "sha256": "fb520ebbe6900c95854fd3d165a6c916e54554780a1e74aa6997fcb0a0f29a24"
+  },
+  "q_nrel": {
+   "dtype": "<i8",
+   "shape": [
+    748
+   ],
+   "sha256": "ef3d8c3b12e056ec1a7fb579ee90249fc6dad62e6375e4f8f0121d16cf0f3bff"
+  },
+  "ent_row": {
+   "dtype": "<i2",
+   "shape": [
+    4235878
+   ],
+   "sha256": "4b300f846d69074aea1330dd2102daa881ed5fd93b9774bdeb0fefb860db8275"
+  },
+  "ent_z": {
+   "dtype": "<i2",
+   "shape": [
+    4235878,
+    3
+   ],
+   "sha256": "f7f24d0cd849c1d6f1f7e93cb4c85d13a4cc60bc2d1f04492ae72d76c053e6ac"
+  },
+  "ent_b": {
+   "dtype": "|i1",
+   "shape": [
+    4235878
+   ],
+   "sha256": "f3e57d8285c4732398427203b79d247588122513639b67b61707676279eabccb"
+  },
+  "ent_m": {
+   "dtype": "<f2",
+   "shape": [
+    4235878
+   ],
+   "sha256": "01e38ec351fc76cfaec495db1ac27af62da1bb6a7755eb807371bd29a9060b12"
+  },
+  "q_rel": {
+   "dtype": "<i2",
+   "shape": [
+    6646
+   ],
+   "sha256": "042dd2bdc887d75705a0ff82e62b04b900a1793ede6bdc0c4f248e9f086eb5e4"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "bf2bebf38f463fd1222eb39a808f38d25e109615d13779e2242a43d9a51b81e3",
+ "rmatch_sha256": "db335f85b69a04bc0583e8c381f239a6c480ddc675d2426065126320fd158001",
+ "chaincov_sha256": "9008b769c441d29893c62b7766d42cb8f9f68cdc648ae00612273b3103a0f173",
+ "seconds": 17.1,
+ "utc": "2026-10-22T14:28:00Z"
+}

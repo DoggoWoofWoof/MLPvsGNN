@@ -1,0 +1,78 @@
+{
+ "dataset": "2wiki",
+ "carve": "fit",
+ "part": "part_4of8",
+ "step1_record_sha256": "acc64c03401487cffea189124c37dc2d4d667da6a3e4dd06e05f60b3c7b2c920",
+ "chunks": [
+  106,
+  132
+ ],
+ "queries": 728,
+ "rows": 614198,
+ "edges": 4022610,
+ "edges_per_row": 6.549,
+ "families": [
+  2417644,
+  1037716,
+  567250
+ ],
+ "look_edges": {
+  "raw": 3686560,
+  "self_loops": 0,
+  "kept": 4022610
+ },
+ "look": {
+  "record_0of5.json": "70ec0bffdf38152815a7168c77d0c204876aa8786a920f5d9689965984b8b465",
+  "record_1of5.json": "6e4a27863d66725a342fb287a30c78ccae9c84b4cbc496509b95837b3f05efe2",
+  "record_2of5.json": "d156f2b15aa967ceb587e5b9d8b53523760a3030016da91ff2fe4748124c7fa8",
+  "record_3of5.json": "e758a7a81bdb2e319da7dd741de0baf7596e63b68695d1ac7e7efef7d66181c0",
+  "record_4of5.json": "e26455f3b16462182e99a7388dbaf8aac3c3cc5d952f6c818d8fb72b9825686a"
+ },
+ "carve_ids_sha256": "fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    728
+   ],
+   "sha256": "328bf9bf1a28ea29c043568c6068ed730bc8a110d8c31f90cb4a076d871535a0"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    4022610
+   ],
+   "sha256": "e8b0818674ac82292491f75a21bbb2cdb4b50673fc0394d3199d06ebfbab0be4"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    4022610
+   ],
+   "sha256": "7807a4a6e29ed671bd93454edbdc7c85f508e09891c1a59db12c2d6c2eaf6ad6"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    4022610
+   ],
+   "sha256": "6929104c82b382314cfc2180b31d4f7a02287f23cb50f6496a30be4df87c75e9"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 15.3,
+ "utc": "2026-10-22T15:07:07Z"
+}

@@ -1,0 +1,89 @@
+{
+ "dataset": "musique",
+ "carve": "s1fit",
+ "part": "part_1of6",
+ "step1_record_sha256": "988be2a7d376ce2b20f7c2eb79f15e12bb003fd97709fc61abad053c6725f8ec",
+ "chunks": [
+  69,
+  139
+ ],
+ "queries": 770,
+ "rows": 1607761,
+ "edges": 52107526,
+ "edges_per_row": 32.41,
+ "families": [
+  42199064,
+  6788126,
+  3120336
+ ],
+ "look_edges": {
+  "raw": 41132354,
+  "self_loops": 0,
+  "kept": 52107526
+ },
+ "look": {
+  "record_0of16.json": "bafeacc58ac82576379d98044b541af546127da6defc0f2df158fd050151fbdb",
+  "record_10of16.json": "22e63ff90ba171ff33e0c4637208feb456bd81ec694c836a260dbecb14e627c0",
+  "record_11of16.json": "0f28591f0fbe81f31853e87a60d2e6557984090e84d2b2861c8c0d3628352c73",
+  "record_12of16.json": "6582b5f8e4a290cd5b7529cb6219b3a2fbe249d16b48c65bd6f5475cef9b666f",
+  "record_13of16.json": "dd4de214e44a53db6e2819441404a67966ad8e15b570e18477baa615e2a6112e",
+  "record_14of16.json": "08592abc167e342118b97a216d9cb9a3e2f5266e43a8de0180e114f844093b7f",
+  "record_15of16.json": "3678b1a72808c29d7f04a3625dc3400dd0c0d968f2b5075c741304c0430ba5d0",
+  "record_1of16.json": "ab257ddb1ad269dfbb5a13a5fa896049874cf5a959c006c7ba3cc6fd131ace97",
+  "record_2of16.json": "3ac6f16c7912e5a4fad48318a470f6d007fff495243e88f7be9b8f048382ad6c",
+  "record_3of16.json": "a438961a5e273c3111379450454270694a0d9654993cf7107981bd9a9463a70c",
+  "record_4of16.json": "58a49535f5794e7b9dde958d2db1585cbcd46efedda8707ef7bc8c403df54245",
+  "record_5of16.json": "c620db36557044e15a4972148e94f3f6ca67cc2917876db4e8151d301209358a",
+  "record_6of16.json": "598551116df3d857c3f78fe0dab65a47bf73b45c4d2bc1f6412f889f7e4ba06a",
+  "record_7of16.json": "ad941a2a04c77ff1c1fe29b152fdd9b1bb91ac003d8e15982ec2d08ee89ee083",
+  "record_8of16.json": "c9680d029801cecc98f8dd58af10661c394af5de42f770f85e61ca93da28c1da",
+  "record_9of16.json": "e40eec3892d87a2d5313fdf2634597ab2cf54444c055458149c02b4aaddb6125"
+ },
+ "carve_ids_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    770
+   ],
+   "sha256": "f31eb3ec149148999ea7998401c843d34828aebc1516e9f4fc9263a79833c013"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    52107526
+   ],
+   "sha256": "4d19853e1b131d7614bdd890bc7574538d0bf80d68d0447b5c84aad183d16dcf"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    52107526
+   ],
+   "sha256": "05f86062935169b5f42b59f50bc3ac730f1cdd6f308fdf754ceef24e9e3a02f9"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    52107526
+   ],
+   "sha256": "845ef90c48c4ef08cedd0b83112c4e41b097641fe5f573bee7ee1327c93b2167"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 18.0,
+ "utc": "2026-10-22T14:32:12Z"
+}

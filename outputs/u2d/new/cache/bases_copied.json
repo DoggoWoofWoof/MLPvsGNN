@@ -1,0 +1,11 @@
+{
+ "source": "outputs/step1/cache",
+ "files": {
+  "basis_2wiki.npz": "0ca4797b2c3cce4244781542b3000f0eac56dbcf1949e26d3fac875dd0963c82",
+  "basis_2wiki.json": "6cc8c05373bca2f2d5337d1be5472043d5936706e129b03eb3ab11e5cce9b41b",
+  "basis_hotpotqa.npz": "935b82111f10738ea76f2860caf0132dba955f1944e2e5ae594aa080e4b9f31d",
+  "basis_hotpotqa.json": "6fdd4c6fb0e15e988b4bf562c843756cb018f4c007e93a0f7a34bbdaca7a9851"
+ },
+ "script_sha256": "ee5398f4d2f60892f5098068347517e622681c9a5eebebca4a1f8f872f019949",
+ "utc": "2026-10-22T14:52:58Z"
+}

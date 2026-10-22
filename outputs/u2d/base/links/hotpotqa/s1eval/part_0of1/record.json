@@ -1,0 +1,74 @@
+{
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "part": "part_0of1",
+ "step1_record_sha256": "ae63ef1ca1190f28e38d54d30963fe1e6d863bbe7b54a82986a3b1081ba691b4",
+ "chunks": [
+  0,
+  29
+ ],
+ "queries": 7405,
+ "rows": 693828,
+ "edges": 4199174,
+ "edges_per_row": 6.052,
+ "families": [
+  1922542,
+  1384056,
+  892576
+ ],
+ "look_edges": {
+  "raw": 4187124,
+  "self_loops": 0,
+  "kept": 4199174
+ },
+ "look": {
+  "record.json": "e972001430b4374887ce5877db911ecffdccfefb644167a40a19cb98989fc1d7"
+ },
+ "carve_ids_sha256": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    7405
+   ],
+   "sha256": "2e6152b60c3ff78a7423ac377d1baf6e468c456fe549e9f686ffd4b2c97834f7"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    4199174
+   ],
+   "sha256": "aa5e353255cc7fddfc6b34868291101c0b876a4ec18a82ecb795cc4f647e0e55"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    4199174
+   ],
+   "sha256": "2d7f77f738f27657d7a2c2df76918beef7ea0557b6f8d5097361ede02f348afd"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    4199174
+   ],
+   "sha256": "c64bcbcafad78d3888e900ba97575ead1a7c172e104cb3355d07abc03376526a"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 5.8,
+ "utc": "2026-10-22T14:20:06Z"
+}

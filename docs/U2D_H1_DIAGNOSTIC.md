@@ -94,4 +94,39 @@ The encoder stays frozen. webqsp never trains. Test splits are never read.
 
 ## 6. Results
 
-Not run yet.
+Filed 22 October 2026: `outputs/u2d/h1/summary.json` and `.md`, from each fit's `h1.json` and npz files. Development
+numbers. It decides nothing.
+
+**The checks.** All 16 fits and 32 carves are REPRODUCED. Every read matched its fit's read file, and every rank agreed
+with `top_hit`. The summary found no problem.
+
+**metaqa** (in domain):
+- hit@1 is 0.904 to 0.959, against a cap of 0.998 to 0.999.
+- The rank misses are 6.9 to 9.5% of the questions for the lean pair (zrckp, zspk and their via arms), and 4% for zg6.
+- They sit near the top:
+  - for the lean pair, 51 to 56% have the first gold at rank 2 and 24 to 30% at ranks 3 to 5, with a median of 2;
+  - for zg6, 41 to 46% at rank 2 and 27 to 30% at ranks 3 to 5, with a median of 3.
+- RRF puts those golds deep. RRF's rank of the model's first gold has a median of 348.5 to 1,802, and RRF's own hit@1
+  is 0.001.
+
+**webqsp** (zero-shot for every U2d fit):
+- hit@1 is 0.093 to 0.196, against a cap of 0.967 to 0.985.
+- 78 to 89% of the questions are rank misses, and their first gold sits deep:
+
+| arm | hit@1 | the first gold: median rank | beyond rank 50 |
+| --- | --- | --- | --- |
+| zrckp | 0.124 to 0.175 | 6 to 7 | 14 to 15% |
+| zrckpv | 0.126 to 0.157 | 7 | 14 to 16% |
+| zspk | 0.148 to 0.196 | 9 to 12 | 19 to 22% |
+| zspkv | 0.166 to 0.187 | 10 to 12 | 21 to 23% |
+| zg6 | 0.093 to 0.141 | 15 to 35 | 24 to 43% |
+
+- On the new build's pools, zrckp's hit@1 rises: 0.145 → 0.175 on L-musique and 0.124 → 0.159 on L-hotpotqa. zg6's
+  falls: 0.130 → 0.093 and 0.141 → 0.109.
+- RRF's hit@1 is 0.046. The read's references, twin0 and gnn0, reach 0.55 to 0.64, but they train on webqsp
+  (docs/WHERE_WE_STAND.md). So they are not a zero-shot comparison.
+
+**Where the next forms should aim** (section 4):
+- **metaqa:** the order near the top. Most misses are at ranks 2 to 5, and zg6 already has about half the lean pair's.
+- **webqsp:** the zero-shot order deep in the pool. The limit is neither the pool (cap 0.97 to 0.99) nor only the top
+  few ranks.

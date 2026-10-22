@@ -1,0 +1,259 @@
+{
+ "new": "outputs\\screen\\fits\\scr-u2d-new-zrckpv-hp",
+ "bases": [
+  "outputs\\screen\\fits\\scr-u2d-new-zrckp-hp"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "metaqa",
+  "musique",
+  "squad"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-u2d-new-zrckp-hp": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "in-domain",
+     "questions": 9785,
+     "base": [
+      0.8009,
+      0.6838,
+      0.915
+     ],
+     "new": [
+      0.8002,
+      0.6833,
+      0.9185
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      -0.0007,
+      -0.0005,
+      0.0036
+     ],
+     "lo": [
+      -0.0018,
+      -0.0024,
+      0.0
+     ],
+     "hi": [
+      0.0003,
+      0.0013,
+      0.0068
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9131,
+      0.9131,
+      0.75
+     ],
+     "new": [
+      0.9128,
+      0.9128,
+      0.7483
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      -0.0003,
+      -0.0003,
+      -0.0017
+     ],
+     "lo": [
+      -0.0019,
+      -0.0019,
+      -0.0046
+     ],
+     "hi": [
+      0.0015,
+      0.0015,
+      0.0012
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5741,
+      0.2586,
+      0.7228
+     ],
+     "new": [
+      0.5737,
+      0.252,
+      0.7261
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      -0.0003,
+      -0.0066,
+      0.0033
+     ],
+     "lo": [
+      -0.0059,
+      -0.0149,
+      -0.007
+     ],
+     "hi": [
+      0.0049,
+      0.0017,
+      0.0137
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "zero-shot",
+     "questions": 7405,
+     "base": [
+      0.8064,
+      0.6536,
+      0.8244
+     ],
+     "new": [
+      0.8087,
+      0.6579,
+      0.8262
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      0.0023,
+      0.0043,
+      0.0018
+     ],
+     "lo": [
+      -0.0009,
+      -0.0016,
+      -0.003
+     ],
+     "hi": [
+      0.0055,
+      0.0101,
+      0.0066
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9029,
+      0.7564,
+      0.977
+     ],
+     "new": [
+      0.906,
+      0.7657,
+      0.9757
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.003,
+      0.0093,
+      -0.0013
+     ],
+     "lo": [
+      0.001,
+      0.0046,
+      -0.0033
+     ],
+     "hi": [
+      0.0052,
+      0.0142,
+      0.0007
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "zero-shot",
+     "questions": 1503,
+     "base": [
+      0.387,
+      0.312,
+      0.159
+     ],
+     "new": [
+      0.352,
+      0.2821,
+      0.1264
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      -0.035,
+      -0.0299,
+      -0.0326
+     ],
+     "lo": [
+      -0.0478,
+      -0.0432,
+      -0.0459
+     ],
+     "hi": [
+      -0.0217,
+      -0.0166,
+      -0.02
+     ],
+     "call": "LOSS"
+    }
+   ],
+   "verdict": "NO_GAIN",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-22T18:15:17Z",
+ "verdict": "NO_GAIN",
+ "u2d": {
+  "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+  "compare": "scr-u2d-b-zrckpv-hp",
+  "new": "scr-u2d-new-zrckpv-hp",
+  "bases": [
+   "scr-u2d-new-zrckp-hp"
+  ],
+  "device": {
+   "gpu": "NVIDIA L40S",
+   "image": "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2",
+   "torch": "2.8.0+cu128",
+   "cuda": "12.8",
+   "cudnn": 91002
+  },
+  "zu2d_sha256": "008b9ad197f98a7ff8f630e0001ac660c8e43496f1c018074f842a280cf3db75"
+ }
+}

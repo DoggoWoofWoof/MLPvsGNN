@@ -1,0 +1,52 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "stage": "U2d",
+ "build": "new",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+ "graph_detail": {
+  "graph": "W2_S",
+  "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+  "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+  "build": {
+   "directed_edges": 2802624,
+   "undirected_neighbours": 4687840,
+   "mean_degree": 39.88,
+   "max_degree": 14281
+  }
+ },
+ "carve_ids_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+ "questions_all": 2417,
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+ "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+ "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+ "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+ "u2e_verdict_sha256": "ea9a18ef4bcce1b2fdb129d2df2333acd262620e1d8e663a7edc53fc77a5a0de",
+ "p1c2_file_sha256": null,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "part": 0,
+ "parts": 2,
+ "q0": 0,
+ "q1": 1208,
+ "rows": 6113197,
+ "files": {
+  "npz": "4bbc711a4d66a56f1ccc087500612cfcb89c22019e4bfd96a663257cd6fef752",
+  "kt": "7879fe14833a00c5a3b9d60c35254419e3ee980a19c5ba58aed6a95ea75051e0",
+  "via": "b37121665e3432714207a2c83cca02514e6a271e6aed7465b02aabb67fcf6175"
+ },
+ "checks": {
+  "bs_step4d": true,
+  "seeds_same_both_graphs": true,
+  "graph_u2e": true,
+  "orders_exact": true
+ },
+ "seconds": 288.9,
+ "utc": "2026-10-22T14:27:44Z"
+}

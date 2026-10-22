@@ -1,0 +1,54 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "f0d278adfc4548b289b97b3de3f849c6b8d2a429c8f38ea832bfa577d5b755dc",
+   "shape": [
+    628354,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "9f1603a9fd4a5ae88182a8997f10f25361a9eaaeec592442fe56cd390dc27fac",
+   "shape": [
+    5928
+   ]
+  }
+ },
+ "dataset": "2wiki",
+ "carve": "fit",
+ "questions": 5928,
+ "rows": 628354,
+ "ids_sha256": "2371edd866675eaaf38328bc19542f20d774eb2884de18cdcf6d3fd3eba87862",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of1": "9b8e5d7157492f317ad77b6e2134059c08532499b86860f92043e38707999431"
+ },
+ "pools_manifest_sha256": "0c09ab5cdeec12ee8b012e9caa9ba6a13be1eb8a573150ebc13c13294707250e",
+ "pools_file_sha256": "e670d6cee1d29db34a16edf6ba4f4e7713b8f619dd5ca900573d49bdd0ba2afd",
+ "construction": "U2D:base:KIND_T",
+ "build": "base",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true
+ },
+ "beside_p1c3": "REPRODUCED",
+ "seconds": 1.7,
+ "utc": "2026-10-22T14:17:39Z"
+}

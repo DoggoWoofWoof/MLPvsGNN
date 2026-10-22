@@ -1,0 +1,79 @@
+{
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "part": "part_3of5",
+ "step1_record_sha256": "fe6e84f50fd9be76694e0991d95bcf29355ffbc7e6b72172d837515dd474221f",
+ "chunks": [
+  180,
+  240
+ ],
+ "queries": 300,
+ "rows": 1451769,
+ "edges": 10248960,
+ "edges_per_row": 7.06,
+ "families": [
+  6241872,
+  1376498,
+  2630590
+ ],
+ "look_edges": {
+  "raw": 9193625,
+  "self_loops": 121246,
+  "kept": 10248960
+ },
+ "look": {
+  "record_0of6.json": "b3a73f91ec9b7f651c671fffa2b0c8ae3bf20e7dd619f03c933929d08d1c29d4",
+  "record_1of6.json": "ea420263211484383e6e8caa7b6987ca2f99dde43a3f5850ec6faa8efcf483c0",
+  "record_2of6.json": "af876f7e54bf92ba288f2f99b591640fd71ad053f8af2a12af1acd8d0a7fa1f5",
+  "record_3of6.json": "0e6ddf739b41ae8a6a830316336a65c935d3c5fadb96d3feaf7b10d34032645c",
+  "record_4of6.json": "6c19b6e3db1f5d3ed01e2de1cc15a8ca2a2daab80154b58b0cf641625b78a3e3",
+  "record_5of6.json": "f8944c013d43174493f15baf8bc2f71da234e79bd89a0dddf5c0dfffd8b15004"
+ },
+ "carve_ids_sha256": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    300
+   ],
+   "sha256": "5595fdfadb2fa3ddf3b54190cd32f122262d48ab64f66c40d967efda7f1c14c4"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    10248960
+   ],
+   "sha256": "2834a8458af7193098fd6b09b9f21e0de3af55631e649edae415aaa8cd159d3e"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    10248960
+   ],
+   "sha256": "935e6d16c4294befbe8e58774e6e3a0e1a597d667374c4590e87f8307a485d2d"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    10248960
+   ],
+   "sha256": "a7cb49aacedfde9a8c5c1a451f2b4a05c64424825cd59784d8b1c5b5ee630d86"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 20.8,
+ "utc": "2026-10-22T15:19:04Z"
+}

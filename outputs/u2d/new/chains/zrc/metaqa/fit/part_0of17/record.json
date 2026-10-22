@@ -1,0 +1,164 @@
+{
+ "dataset": "metaqa",
+ "carve": "fit",
+ "part": "part_0of17",
+ "step1_record_sha256": "3cb8074fcd54c5986161333110dbd5339cad74eeda27d181f468b7ef781365c6",
+ "chunks": [
+  0,
+  70
+ ],
+ "queries": 350,
+ "rows": 1528945,
+ "entries": 3788214,
+ "rel_entries": 3129,
+ "look": {
+  "record_0of30.json": "9d81093ab245c13896cd1fc62088cc584e37ee175754ab17d317ba0cb3f35d33",
+  "record_10of30.json": "7237aeced5d2e45f761d6b470e5403638ebfe7cc9a08ec038263c0f389636340",
+  "record_11of30.json": "05a5eeccb73a73645143521e5a2e15552038eebd1475030b8e449a338fd2e75f",
+  "record_12of30.json": "44cc1f193a6d6d637f084797ed395c9ee90cd49ed26268dd6d7b06dd9606d5c8",
+  "record_13of30.json": "fa61a46faf075234f0c7adb9ae570fb46eed59b32c15ca1873af9257f92389f2",
+  "record_14of30.json": "ef4b589f1a3f9336a28996c26d491737e1fd7e8f5e4437877784a1d0ad58ad3e",
+  "record_15of30.json": "8528d57cbd2eb17a72d9aa126daffc40d3308e29b72b02c5044015a18f0d532f",
+  "record_16of30.json": "64aaf910e65f0a862a6bce1488d7b7f372222a43f0ec901e1d7c66c57c88e5fe",
+  "record_17of30.json": "a2c7302a414f717e361d7ea24739e7bc57c2882df9d46e3ef77651fc9d5a00c1",
+  "record_18of30.json": "b1c3d0e45b0599a56f39ba4131db0288433d1fea804557f3591901651307c158",
+  "record_19of30.json": "a8d851adaa3dcf1fb1650007437e37fdd5fb3548b33c36c8d944b37a87979b27",
+  "record_1of30.json": "bb5d05624e7145a160584c83f0648f03092f23e766969d3a3b0660e2e56511ba",
+  "record_20of30.json": "b694f072506b69916077dd2cf68b385b110c09c2ca971e1e1d86577c77ba0deb",
+  "record_21of30.json": "cfbe373461f18daada0ad2291c3b8b15eeb9d145f636ac2896008eec36b0930e",
+  "record_22of30.json": "5a292536efc7d0ae8b33b2a9e8dda6f51a871e062f7c13db16b3ebb7a5b74977",
+  "record_23of30.json": "09f46aeec44cf5e4b23d2fe8d50410e36ff2289af8560ea9b5096d2afeea186c",
+  "record_24of30.json": "7973074c17c8e5a8a1bba384098b08cda3c4199ce8bc9663447d7fb72d426391",
+  "record_25of30.json": "30905a485281c33040b509ae32e2eda7c356877631c266679021b506d9b77bea",
+  "record_26of30.json": "ad1c5de656e3254ac742982afd10c550ed708cf5f254711e947cf7cb795b7a07",
+  "record_27of30.json": "3b3d4c3c9849cf578390d2a62c02949395b307bd33c19f3b690a62684a84449f",
+  "record_28of30.json": "2c662b9e21fb51cb8f3a65b191da2cc9b387814b7014e5931444f708ab1c7477",
+  "record_29of30.json": "2160def3aa31a8623e4b19cfce1a99a17a618cc04d8e9b06728288208a0e264c",
+  "record_2of30.json": "6551bebb18466077e07919b9e83e9b79597f6618c65bba9a5839c405416bc2b9",
+  "record_3of30.json": "68cabdecb078f6446c03ef2fc91de67f35a70d1a6ab76b1a06f56f9c44557f09",
+  "record_4of30.json": "cc5d6dda7d5301865b88072e28864821419ffe61e53f99f34c44038a4ab4fca0",
+  "record_5of30.json": "f2838b2f7ed17e1d74a5514528a0bb255153539168dbc705f59c415fd97c0292",
+  "record_6of30.json": "67c158cda13b31daa55a42f31e30a108596f31f7bfa38c9fe9c5a336bea0a620",
+  "record_7of30.json": "2c9d5e1678c84e25453d19a649d5bb9b083b5cc59b096b4ff67390300201367f",
+  "record_8of30.json": "e290ec1a5a2d6eec7f7b7640caafd32ecc85a1d827de1ef9d9364848514a3905",
+  "record_9of30.json": "02d463f80784b723ac8628687eda61376349cf29d55211f6e84a636c834a4497"
+ },
+ "carve_ids_sha256": "161a00b2fe086d6d40d2caa8da4a8ba9f1fabe59da6996203d54c82cea366188",
+ "relations": {
+  "n_relations": 9,
+  "kz": 18,
+  "offset": 0,
+  "k_rel": 4,
+  "embeddings": "metaqa_rel_embeddings.npy",
+  "embeddings_sha256": "752964ecfae44c7e4ebf10468d7d0241cca53b0fdb2488af04ec30deed38b4af"
+ },
+ "walk": {
+  "hops": 3,
+  "max_chains": 20000,
+  "k_row": 64,
+  "buckets": 2
+ },
+ "rule": "per row and seed bucket the k_row entries with the largest w0(c) m_c(v), ties to the earlier chain",
+ "prior": "w0(c) = (1/3) prod_k sigmoid(zcos_q(r_k)): rmatch.ChainMatch at its start, zcos in float64 from the look's q_emb (chaincov.zcos_of)",
+ "buckets": [
+  {
+   "questions_with_seeds": 350,
+   "capped": 0,
+   "no_chain": 0,
+   "chains": 22549,
+   "before_cap": 1452273,
+   "entries": 1452273,
+   "mass": 22549.0,
+   "dropped_mass": 0.0,
+   "dropped_mass_share": 0.0
+  },
+  {
+   "questions_with_seeds": 350,
+   "capped": 0,
+   "no_chain": 0,
+   "chains": 33289,
+   "before_cap": 2335941,
+   "entries": 2335941,
+   "mass": 33289.0,
+   "dropped_mass": 0.0,
+   "dropped_mass_share": 0.0
+  }
+ ],
+ "entries_per_question": {
+  "mean": 10823.5,
+  "p50": 10516,
+  "p90": 15197,
+  "max": 25538
+ },
+ "n_against_step1": "IDENTICAL",
+ "against_rmatch": {
+  "q_ent": "IDENTICAL",
+  "q_nrel": "IDENTICAL",
+  "ent_row": "IDENTICAL",
+  "ent_z": "IDENTICAL",
+  "ent_b": "IDENTICAL",
+  "ent_m": "IDENTICAL",
+  "q_rel": "IDENTICAL"
+ },
+ "arrays": {
+  "q_ent": {
+   "dtype": "<i8",
+   "shape": [
+    350
+   ],
+   "sha256": "174e3a18d7cd8ac9dc246081a699f77d847b2b4376ca6e87803ec7ac36a7bb06"
+  },
+  "q_nrel": {
+   "dtype": "<i8",
+   "shape": [
+    350
+   ],
+   "sha256": "bfb071d91e4091b019e5e6d69e8828c93704f3a5a6ea6897db24a88143c0167a"
+  },
+  "ent_row": {
+   "dtype": "<i2",
+   "shape": [
+    3788214
+   ],
+   "sha256": "f44c33f002de49ddfafb7dc3b9ea9499daa84bec0501076ea30b4be81a053299"
+  },
+  "ent_z": {
+   "dtype": "<i2",
+   "shape": [
+    3788214,
+    3
+   ],
+   "sha256": "82ed06d005ca5e95586029d779ee62b70f275046680e4ef86fddb3dc90bf8fa5"
+  },
+  "ent_b": {
+   "dtype": "|i1",
+   "shape": [
+    3788214
+   ],
+   "sha256": "b4c482931a664e88cf241bb0238d0d018fd6f1abb38e80385634a8a6b4db73ea"
+  },
+  "ent_m": {
+   "dtype": "<f2",
+   "shape": [
+    3788214
+   ],
+   "sha256": "9f14067b82d21a697fa15984339606b897b14f700f1c08b4d767e9bf6440dff7"
+  },
+  "q_rel": {
+   "dtype": "<i2",
+   "shape": [
+    3129
+   ],
+   "sha256": "cccc4ce777da7822d7b7eaf9ad877508d762d0425d36de001fa9c97a71db87d0"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "bf2bebf38f463fd1222eb39a808f38d25e109615d13779e2242a43d9a51b81e3",
+ "rmatch_sha256": "db335f85b69a04bc0583e8c381f239a6c480ddc675d2426065126320fd158001",
+ "chaincov_sha256": "9008b769c441d29893c62b7766d42cb8f9f68cdc648ae00612273b3103a0f173",
+ "seconds": 7.4,
+ "utc": "2026-10-22T15:38:11Z"
+}

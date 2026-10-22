@@ -1,0 +1,82 @@
+{
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "part": "part_13of16",
+ "step1_record_sha256": "0458a600bbe2a4259d1e7ed362e3b2b9a6d6eda5ba1226581b040137483eaa82",
+ "chunks": [
+  365,
+  393
+ ],
+ "queries": 784,
+ "rows": 653576,
+ "edges": 4777220,
+ "edges_per_row": 7.309,
+ "families": [
+  2891322,
+  1255746,
+  630152
+ ],
+ "look_edges": {
+  "raw": 4361688,
+  "self_loops": 0,
+  "kept": 4777220
+ },
+ "look": {
+  "record_0of9.json": "49d1fda27d3a8b9198e252a75b2a26e1b4486515cdb6ca2b2f3008d2c1dd6d0d",
+  "record_1of9.json": "db5e48e79cbcec24589c39e6d1491637dac0a3bc302c13a869ac5f7e33a4ac51",
+  "record_2of9.json": "67561e87ec3e01877ad4ae042a416b679ff08bc8e2e13470e59c583814561945",
+  "record_3of9.json": "75ee0563cc6e627d38cc7779c2cdd700e9a70e477c3f266a06d590b2770a7d44",
+  "record_4of9.json": "e4fb073cfdfdfb28356c3bf67e0fd07e52aba2cf0ba5e44e949068d442db5b90",
+  "record_5of9.json": "fce7f9433891b4348de0f11fd590777fce5fe5d42e4b14b28768daf4e5bf11a3",
+  "record_6of9.json": "7045dfbacb07b52ce3e245d533386acf4889e37d423d095040eb2e1f913e03fb",
+  "record_7of9.json": "4a6ccd4e3812e71e4a1f0b9fb137d709489205c6868db1a2d0c84b733e126435",
+  "record_8of9.json": "c0048731035a2e44b50277f64c84d259665cb127055bb2eab9561e61e74350f6"
+ },
+ "carve_ids_sha256": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    784
+   ],
+   "sha256": "5d0a8d2f149e39bd74c62dc33a4ce2aa9f0254de7a271eb029a1990ea30de384"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    4777220
+   ],
+   "sha256": "95c54b04c5c1067e4fcc4b920f8ccd4e037d833df5c9cd24a7c0a0d54fc64e19"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    4777220
+   ],
+   "sha256": "48bf17a4b324d714582dcf3e0c30c850314efd2e8c31a2332f52f4475b58ffb1"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    4777220
+   ],
+   "sha256": "1927e6408ea64bfbc11dda1bcad418574aeceeddba7804848c6bfd253d58939c"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 30.2,
+ "utc": "2026-10-22T15:24:21Z"
+}

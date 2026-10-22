@@ -1,0 +1,265 @@
+{
+ "files": {
+  "musique__s1fit": {
+   "file": "musique__s1fit.npz",
+   "sha256": "ab85f6ec992608a163911eb49efdf97e52f6e0a290779d43cbcceb9f8f610c36",
+   "dataset": "musique",
+   "carve": "s1fit",
+   "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+   "rule": "kt_cos:ada_f12_k0@0.85",
+   "graph_detail": {
+    "graph": "W2_S",
+    "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+    "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+    "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+    "build": {
+     "directed_edges": 2802624,
+     "undirected_neighbours": 4687840,
+     "mean_degree": 39.88,
+     "max_degree": 14281
+    }
+   },
+   "carve_ids_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+   "questions": 4601,
+   "changed": 4601,
+   "short": 4601,
+   "B_q": {
+    "mean": 1866.7,
+    "max": 1988
+   },
+   "pool_mean": 2066.7,
+   "rows": {
+    "mean": 5390.3,
+    "p90": 6931.0,
+    "max": 9709
+   },
+   "budget_mean": 11863.8,
+   "fill_want_mean": 22400.3,
+   "today_inc_mean": 2091.5,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.2915,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.8246,
+    "recall": 0.9243
+   },
+   "pool": {
+    "ALL": 0.9611,
+    "recall": 0.9847
+   },
+   "caps": {
+    "I": {
+     "r5": 0.9243,
+     "hit1": 0.9961
+    },
+    "pool": {
+     "r5": 0.9847,
+     "hit1": 0.9998
+    }
+   },
+   "parts": [
+    {
+     "stem": "musique__s1fit__0of3",
+     "q0": 0,
+     "q1": 1533,
+     "rows": 8180705,
+     "npz": "69a81dc1640f79f8723317f3b8a3153ec35b00f8a59018738dc8c611c68b4b94",
+     "kt": "2ab3312c4febcfe5377808a232a640e53b63d2ba1a86a58ef7e69feff5aaa5a1",
+     "via": "73b06bcc2d4c85efd8f59f60517177f41f4c9b78a4f3db42413a5a84b987d061"
+    },
+    {
+     "stem": "musique__s1fit__1of3",
+     "q0": 1533,
+     "q1": 3067,
+     "rows": 7945255,
+     "npz": "37a77670995435a8886bad98be5b59a88e34b89f8cb612c659297d8fccae903c",
+     "kt": "5afa777afa14b64e32b06cd5cf3767075156a0aa22abdb00ec29f99a857f2e1e",
+     "via": "ff1e10900510d386f5269f972f4e8649b6b36e47b6a64c3136cc71dbbb1fd6b1"
+    },
+    {
+     "stem": "musique__s1fit__2of3",
+     "q0": 3067,
+     "q1": 4601,
+     "rows": 8674878,
+     "npz": "57643a9c2933a3ef32b8e6348d857298526ca1025a694fa7bc9f039e1385f68f",
+     "kt": "c9572afd330f9e3f150e1b3cba3624d72536837b6f221cf7d345ad188f16ca2f",
+     "via": "6859317f62b8c9ff6003e0a6f6903852048e6ffc01118a0a654c5009d3c26d46"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+    "stage": "U2d",
+    "build": "new",
+    "dataset": "musique",
+    "carve": "s1fit",
+    "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+    "graph_detail": {
+     "graph": "W2_S",
+     "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+     "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+     "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+     "build": {
+      "directed_edges": 2802624,
+      "undirected_neighbours": 4687840,
+      "mean_degree": 39.88,
+      "max_degree": 14281
+     }
+    },
+    "carve_ids_sha256": "d90ef42d266ef54c7a518361ad81b24370bc86c2f1a3ace90dcb54d56a4f0164",
+    "questions_all": 4601,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": "ea9a18ef4bcce1b2fdb129d2df2333acd262620e1d8e663a7edc53fc77a5a0de",
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true,
+    "graph_u2e": true,
+    "orders_exact": true
+   },
+   "seconds_parts": 1013.8,
+   "utc": "2026-10-22T14:51:13Z"
+  },
+  "musique__s1eval": {
+   "file": "musique__s1eval.npz",
+   "sha256": "6efe37ecaf12f02ac9be3869ad0b6a78f5b16933b269b5fd17333888cc50239c",
+   "dataset": "musique",
+   "carve": "s1eval",
+   "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+   "rule": "kt_cos:ada_f12_k0@0.85",
+   "graph_detail": {
+    "graph": "W2_S",
+    "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+    "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+    "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+    "build": {
+     "directed_edges": 2802624,
+     "undirected_neighbours": 4687840,
+     "mean_degree": 39.88,
+     "max_degree": 14281
+    }
+   },
+   "carve_ids_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+   "questions": 2417,
+   "changed": 2417,
+   "short": 2417,
+   "B_q": {
+    "mean": 1860.7,
+    "max": 1986
+   },
+   "pool_mean": 2060.7,
+   "rows": {
+    "mean": 5217.2,
+    "p90": 6462.0,
+    "max": 9667
+   },
+   "budget_mean": 11396.9,
+   "fill_want_mean": 22328.3,
+   "today_inc_mean": 2092.4,
+   "shares": {
+    "entity": 0.0,
+    "route": 0.2656,
+    "entity_route": 0.0
+   },
+   "I": {
+    "ALL": 0.8089,
+    "recall": 0.923
+   },
+   "pool": {
+    "ALL": 0.945,
+    "recall": 0.9815
+   },
+   "caps": {
+    "I": {
+     "r5": 0.923,
+     "hit1": 0.9946
+    },
+    "pool": {
+     "r5": 0.9815,
+     "hit1": 1.0
+    }
+   },
+   "parts": [
+    {
+     "stem": "musique__s1eval__0of2",
+     "q0": 0,
+     "q1": 1208,
+     "rows": 6113197,
+     "npz": "4bbc711a4d66a56f1ccc087500612cfcb89c22019e4bfd96a663257cd6fef752",
+     "kt": "7879fe14833a00c5a3b9d60c35254419e3ee980a19c5ba58aed6a95ea75051e0",
+     "via": "b37121665e3432714207a2c83cca02514e6a271e6aed7465b02aabb67fcf6175"
+    },
+    {
+     "stem": "musique__s1eval__1of2",
+     "q0": 1208,
+     "q1": 2417,
+     "rows": 6496880,
+     "npz": "3cf207b476ce26d7d5bff6d2c978357798a5f4a5698f4b8c2e36f9c73b0cc26b",
+     "kt": "39064e3eda79cf8a535f42bae802d430b5ee7735fc5b45c16fd7481028738439",
+     "via": "cf6d5458a4bf2b3a2825336f861c0fe9caa1611062166f3a28543aa6b4762b1c"
+    }
+   ],
+   "head": {
+    "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+    "stage": "U2d",
+    "build": "new",
+    "dataset": "musique",
+    "carve": "s1eval",
+    "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+    "graph_detail": {
+     "graph": "W2_S",
+     "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+     "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+     "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+     "build": {
+      "directed_edges": 2802624,
+      "undirected_neighbours": 4687840,
+      "mean_degree": 39.88,
+      "max_degree": 14281
+     }
+    },
+    "carve_ids_sha256": "de5df88ea2696cce427efedfbcd55b43e46980db1dcd07de27880e5d3508eb08",
+    "questions_all": 2417,
+    "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+    "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+    "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+    "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+    "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+    "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+    "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+    "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+    "u2e_verdict_sha256": "ea9a18ef4bcce1b2fdb129d2df2333acd262620e1d8e663a7edc53fc77a5a0de",
+    "p1c2_file_sha256": null,
+    "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+    "threads": 2
+   },
+   "checks": {
+    "bs_step4d": true,
+    "seeds_same_both_graphs": true,
+    "graph_u2e": true,
+    "orders_exact": true
+   },
+   "seconds_parts": 626.2,
+   "utc": "2026-10-22T14:51:27Z"
+  }
+ },
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "stage": "U2d",
+ "build": "new",
+ "dataset": "musique",
+ "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "seconds": 51.2,
+ "utc": "2026-10-22T14:51:27Z"
+}

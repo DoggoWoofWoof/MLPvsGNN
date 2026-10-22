@@ -1,0 +1,259 @@
+{
+ "new": "outputs\\screen\\fits\\scr-u2d-base-zg6",
+ "bases": [
+  "outputs\\screen\\fits\\scr-u2d-base-zspk"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "squad"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-u2d-base-zspk": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "in-domain",
+     "questions": 9785,
+     "base": [
+      0.8021,
+      0.6862,
+      0.9197
+     ],
+     "new": [
+      0.8123,
+      0.6979,
+      0.9551
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      0.0102,
+      0.0118,
+      0.0355
+     ],
+     "lo": [
+      0.0085,
+      0.0092,
+      0.0311
+     ],
+     "hi": [
+      0.0118,
+      0.0141,
+      0.04
+     ],
+     "call": "GAIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9118,
+      0.9118,
+      0.7461
+     ],
+     "new": [
+      0.9106,
+      0.9106,
+      0.7523
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      -0.0012,
+      -0.0012,
+      0.0061
+     ],
+     "lo": [
+      -0.0033,
+      -0.0033,
+      0.0029
+     ],
+     "hi": [
+      0.001,
+      0.001,
+      0.0093
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "zero-shot",
+     "questions": 2417,
+     "base": [
+      0.5143,
+      0.1982,
+      0.6731
+     ],
+     "new": [
+      0.5207,
+      0.2102,
+      0.6847
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      0.0063,
+      0.012,
+      0.0116
+     ],
+     "lo": [
+      -0.001,
+      0.0021,
+      -0.0046
+     ],
+     "hi": [
+      0.0131,
+      0.0223,
+      0.0273
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "in-domain",
+     "questions": 7405,
+     "base": [
+      0.9088,
+      0.8521,
+      0.8573
+     ],
+     "new": [
+      0.9118,
+      0.8597,
+      0.8632
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      0.003,
+      0.0076,
+      0.0059
+     ],
+     "lo": [
+      0.0005,
+      0.0034,
+      0.0008
+     ],
+     "hi": [
+      0.0053,
+      0.0116,
+      0.0111
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9346,
+      0.8424,
+      0.9703
+     ],
+     "new": [
+      0.9416,
+      0.8616,
+      0.9726
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.007,
+      0.0192,
+      0.0024
+     ],
+     "lo": [
+      0.0055,
+      0.0155,
+      -0.0005
+     ],
+     "hi": [
+      0.0087,
+      0.0231,
+      0.0052
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "zero-shot",
+     "questions": 1503,
+     "base": [
+      0.3162,
+      0.2448,
+      0.1823
+     ],
+     "new": [
+      0.2368,
+      0.185,
+      0.1304
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      -0.0795,
+      -0.0599,
+      -0.0519
+     ],
+     "lo": [
+      -0.1003,
+      -0.0798,
+      -0.0758
+     ],
+     "hi": [
+      -0.0596,
+      -0.0399,
+      -0.0293
+     ],
+     "call": "LOSS"
+    }
+   ],
+   "verdict": "MIXED",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-22T18:14:48Z",
+ "verdict": "MIXED",
+ "u2d": {
+  "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+  "compare": "scr-u2d-base-zg6-vs-zspk",
+  "new": "scr-u2d-base-zg6",
+  "bases": [
+   "scr-u2d-base-zspk"
+  ],
+  "device": {
+   "gpu": "NVIDIA L40S",
+   "image": "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2",
+   "torch": "2.8.0+cu128",
+   "cuda": "12.8",
+   "cudnn": 91002
+  },
+  "zu2d_sha256": "008b9ad197f98a7ff8f630e0001ac660c8e43496f1c018074f842a280cf3db75"
+ }
+}

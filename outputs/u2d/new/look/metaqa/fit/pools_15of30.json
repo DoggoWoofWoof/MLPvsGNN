@@ -1,0 +1,46 @@
+{
+ "look": "look_u2d",
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "build": "new",
+ "dataset": "metaqa",
+ "carve": "fit",
+ "shard": [
+  15,
+  30
+ ],
+ "pools_file": "metaqa__fit.npz",
+ "pools_sha256": "1a36cc34046f1062d7aaf480cde181aefbcb535b02c8f3cce1bdf81be83690fe",
+ "manifest_sha256": "a54ea36da7ea064b7b398e3601ef3346b3acbe081ce1e7fdad96315dbc7b552e",
+ "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+ "graph": {
+  "detail": {
+   "graph": "cached (the KB)"
+  },
+  "swapped": false
+ },
+ "questions": 5960,
+ "changed": 5960,
+ "short": 5960,
+ "seconds": 13.7,
+ "largest_pool": 4900,
+ "placement": {
+  "where": "modal",
+  "node": "modal",
+  "mirror_root": "/root/mirror",
+  "freeze_sha256": "039dcf327aa71e39994cdeedc731033279d81d854d74efc29c86f197546f3dc8"
+ },
+ "script_sha256": {
+  "look_u2d": "494a1000e510e8f7f603fa5833dcb397e2de27a98c30a733420cdca171222862",
+  "look_step1": "f9e190665cc7f430415c4a8a25071fd588e4183be13bcfd2943c27a93f1559f6",
+  "look_x_six": "5cf89ad997c6d703876faaed706d11bf68f1f1ae88e31f9eb1b570e975ae0b13",
+  "p1gb_pools": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+  "zu2d_pools": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+  "zu2c": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756"
+ },
+ "threads": {
+  "OPENBLAS_NUM_THREADS": "2",
+  "OMP_NUM_THREADS": "2",
+  "MKL_NUM_THREADS": "2"
+ },
+ "utc": "2026-10-22T15:01:10Z"
+}

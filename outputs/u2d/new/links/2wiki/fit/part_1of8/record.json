@@ -1,0 +1,78 @@
+{
+ "dataset": "2wiki",
+ "carve": "fit",
+ "part": "part_1of8",
+ "step1_record_sha256": "5009e4488891a611f49f395094a49fc7b9fb93f25a8df21543a3f391171d5f23",
+ "chunks": [
+  26,
+  53
+ ],
+ "queries": 756,
+ "rows": 644305,
+ "edges": 4064322,
+ "edges_per_row": 6.308,
+ "families": [
+  2447844,
+  1052550,
+  563928
+ ],
+ "look_edges": {
+  "raw": 3736361,
+  "self_loops": 0,
+  "kept": 4064322
+ },
+ "look": {
+  "record_0of5.json": "70ec0bffdf38152815a7168c77d0c204876aa8786a920f5d9689965984b8b465",
+  "record_1of5.json": "6e4a27863d66725a342fb287a30c78ccae9c84b4cbc496509b95837b3f05efe2",
+  "record_2of5.json": "d156f2b15aa967ceb587e5b9d8b53523760a3030016da91ff2fe4748124c7fa8",
+  "record_3of5.json": "e758a7a81bdb2e319da7dd741de0baf7596e63b68695d1ac7e7efef7d66181c0",
+  "record_4of5.json": "e26455f3b16462182e99a7388dbaf8aac3c3cc5d952f6c818d8fb72b9825686a"
+ },
+ "carve_ids_sha256": "fd6ae7c1baaed8519db1f9f3019b6ab7e2984b503cac4381ec260517653b93f3",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    756
+   ],
+   "sha256": "fde092507d2165cbfe55a8431b9b1c1ee63f9c23d69fba99b496c9b9eafbf078"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    4064322
+   ],
+   "sha256": "485c6f66ae453fb945f397e7c72f9810ca864b87f488a8eb3be1404cda3622a5"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    4064322
+   ],
+   "sha256": "7069bcc4090e84e4f75ff17db896ef652c7f843fd6b4b9ccddd2d328b0ada29e"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    4064322
+   ],
+   "sha256": "3e0f2e927dbf8c000c7288f8c0a931a2d35d3376bdb44f04d45bfb7221e8cbed"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 3.6,
+ "utc": "2026-10-22T15:06:45Z"
+}

@@ -1,0 +1,148 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "build": "base",
+ "manifests": {
+  "metaqa": "f71893c578746f1d6508d4b3cc7ed05aa923eea4ecd02fe1a73d9d1f0ae8fff4",
+  "squad": "4ff3f2f76e16efff3fe2bb9570155e47c6ef612323505e62ff7f646bac21b30c",
+  "musique": "fe1359ee7b37c163be0398b893389a2f4a1287ed024d18cf91d3f4bc101bc826",
+  "hotpotqa": "5a967c172ebf423c636b209e9f4a6b306e58c304063ab98f31a7767322cbce6f",
+  "2wiki": "0c09ab5cdeec12ee8b012e9caa9ba6a13be1eb8a573150ebc13c13294707250e",
+  "webqsp": "4ed7f1bc1079569ce66c746fe63332c6e5f78ec3087b49d31e0dcefcb281662f"
+ },
+ "rows": {
+  "metaqa=fit": {
+   "questions": 5960,
+   "short": 0,
+   "changed": 5960,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "squad=fit": {
+   "questions": 5856,
+   "short": 0,
+   "changed": 0,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "musique=s1fit": {
+   "questions": 4601,
+   "short": 0,
+   "changed": 4601,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "hotpotqa=fit": {
+   "questions": 5930,
+   "short": 0,
+   "changed": 5925,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "2wiki=fit": {
+   "questions": 5928,
+   "short": 0,
+   "changed": 5926,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "metaqa=s1eval": {
+   "questions": 9785,
+   "short": 0,
+   "changed": 9785,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "squad=s1eval": {
+   "questions": 11873,
+   "short": 0,
+   "changed": 0,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "musique=s1eval": {
+   "questions": 2417,
+   "short": 0,
+   "changed": 2417,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "hotpotqa=s1eval": {
+   "questions": 7405,
+   "short": 0,
+   "changed": 7398,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "2wiki=s1eval": {
+   "questions": 12576,
+   "short": 0,
+   "changed": 12571,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  },
+  "webqsp=s1eval": {
+   "questions": 1503,
+   "short": 0,
+   "changed": 1503,
+   "step1_rows_are_today_inc_size": true,
+   "questions_are_step1s_and_the_files": true,
+   "rows_are_pool_sizes": true,
+   "verdict": "PASS"
+  }
+ },
+ "looks": {
+  "metaqa=fit": "PASS",
+  "squad=fit": "PASS",
+  "musique=s1fit": "PASS",
+  "hotpotqa=fit": "PASS",
+  "2wiki=fit": "PASS",
+  "metaqa=s1eval": "PASS",
+  "squad=s1eval": "PASS",
+  "musique=s1eval": "PASS",
+  "hotpotqa=s1eval": "PASS",
+  "2wiki=s1eval": "PASS",
+  "webqsp=s1eval": "PASS"
+ },
+ "kt": {
+  "metaqa=fit:record": "PASS",
+  "squad=fit:record": "PASS",
+  "musique=s1fit:record": "PASS",
+  "hotpotqa=fit:record": "PASS",
+  "2wiki=fit:record": "PASS",
+  "metaqa=s1eval:record": "PASS",
+  "squad=s1eval:record": "PASS",
+  "musique=s1eval:record": "PASS",
+  "hotpotqa=s1eval:record": "PASS",
+  "2wiki=s1eval:record": "PASS",
+  "webqsp=s1eval:record": "PASS"
+ },
+ "checks": {},
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "construction": [
+  "U2D:base:KIND_T"
+ ],
+ "failures": [],
+ "verdict": "PASS",
+ "seconds": 27.1,
+ "utc": "2026-10-22T14:48:17Z"
+}

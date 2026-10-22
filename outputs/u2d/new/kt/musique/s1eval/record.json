@@ -1,0 +1,61 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "kt": {
+   "sha256": "32ffa4538caf718ffed0d3bfd1b85a0698f0a230ba7cdbf6935caed2f81dca2b",
+   "shape": [
+    12610077,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "29895f012129249daae997029bad716e2d159878aa36300bf08374e764be9b08",
+   "shape": [
+    2417
+   ]
+  }
+ },
+ "dataset": "musique",
+ "carve": "s1eval",
+ "questions": 2417,
+ "rows": 12610077,
+ "ids_sha256": "43399dd0c77011fe9afca9aaa5069603d16219e58e801b3c022884e3f6bf5b02",
+ "cache_root": "outputs/u2d/new/cache",
+ "cache_parts": {
+  "part_0of8": "f002c6737e8d8cf51c0d7f93547ca6f914d7d01e439db6e06124a3084af9cb41",
+  "part_1of8": "78365e24be00de9b6639e9063d65095fb2d5f6228e9dbd3d1e9ca7cbb9fc76be",
+  "part_2of8": "80792cfb10302f945e19e7390601fa745661897a13ef65187f334dd26e3e4f0d",
+  "part_3of8": "9aec8d1c2011a63764e5508e09dfcc25c0b60a3af4187e677aa2a366478fc7f4",
+  "part_4of8": "3d1f84cfd010024eafc255d76c7abbe1322217fcd74e9b6c233d729766a0ee8d",
+  "part_5of8": "33c6b2c692f64fd26418f6713df5ab843bfa2c7f2172332ea074c47e9dda48c7",
+  "part_6of8": "cb4ef074578f6dfc496bc93996babb01adf11cc0e0f4d0d397db97d05503ea53",
+  "part_7of8": "b4104bada26628fca9ac40f871b270086239e8ae14754aadd97504f61bd6d6c6"
+ },
+ "pools_manifest_sha256": "3eb0a01e50a8df4cb75f0e125063a045bf552f7f15a8966123091558c151da28",
+ "pools_file_sha256": "6efe37ecaf12f02ac9be3869ad0b6a78f5b16933b269b5fd17333888cc50239c",
+ "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+ "build": "new",
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true
+ },
+ "beside_p1c3": null,
+ "seconds": 16.5,
+ "utc": "2026-10-22T15:32:39Z"
+}

@@ -1,0 +1,259 @@
+{
+ "new": "outputs\\screen\\fits\\scr-u2d-base-zrckp-s1-hp",
+ "bases": [
+  "outputs\\screen\\fits\\scr-u2d-base-zrckp-hp"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "metaqa",
+  "musique",
+  "squad"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-u2d-base-zrckp-hp": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "in-domain",
+     "questions": 9785,
+     "base": [
+      0.8033,
+      0.6863,
+      0.9239
+     ],
+     "new": [
+      0.8024,
+      0.6861,
+      0.9225
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      -0.0008,
+      -0.0002,
+      -0.0013
+     ],
+     "lo": [
+      -0.0019,
+      -0.0019,
+      -0.0046
+     ],
+     "hi": [
+      0.0002,
+      0.0015,
+      0.0018
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9124,
+      0.9124,
+      0.75
+     ],
+     "new": [
+      0.9123,
+      0.9123,
+      0.7541
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      -0.0001,
+      -0.0001,
+      0.004
+     ],
+     "lo": [
+      -0.002,
+      -0.002,
+      0.0008
+     ],
+     "hi": [
+      0.0019,
+      0.0019,
+      0.0072
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5697,
+      0.2511,
+      0.7195
+     ],
+     "new": [
+      0.5781,
+      0.2557,
+      0.7336
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      0.0084,
+      0.0046,
+      0.0141
+     ],
+     "lo": [
+      0.0027,
+      -0.0046,
+      0.0041
+     ],
+     "hi": [
+      0.0141,
+      0.0137,
+      0.0236
+     ],
+     "call": "GAIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "zero-shot",
+     "questions": 7405,
+     "base": [
+      0.8538,
+      0.7463,
+      0.8047
+     ],
+     "new": [
+      0.8502,
+      0.7398,
+      0.8085
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      -0.0036,
+      -0.0065,
+      0.0038
+     ],
+     "lo": [
+      -0.0068,
+      -0.0124,
+      -0.0011
+     ],
+     "hi": [
+      -0.0006,
+      -0.0009,
+      0.0086
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9303,
+      0.8244,
+      0.9699
+     ],
+     "new": [
+      0.9338,
+      0.8365,
+      0.9697
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.0036,
+      0.0121,
+      -0.0002
+     ],
+     "lo": [
+      0.0017,
+      0.0076,
+      -0.0026
+     ],
+     "hi": [
+      0.0053,
+      0.0166,
+      0.0019
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "zero-shot",
+     "questions": 1503,
+     "base": [
+      0.337,
+      0.2748,
+      0.1238
+     ],
+     "new": [
+      0.3212,
+      0.2582,
+      0.1184
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      -0.0158,
+      -0.0166,
+      -0.0053
+     ],
+     "lo": [
+      -0.0262,
+      -0.0279,
+      -0.0153
+     ],
+     "hi": [
+      -0.0047,
+      -0.0053,
+      0.0047
+     ],
+     "call": "LOSS"
+    }
+   ],
+   "verdict": "MIXED",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-22T18:14:55Z",
+ "verdict": "MIXED",
+ "u2d": {
+  "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+  "compare": "scr-u2d-null-zrckp-s1-hp",
+  "new": "scr-u2d-base-zrckp-s1-hp",
+  "bases": [
+   "scr-u2d-base-zrckp-hp"
+  ],
+  "device": {
+   "gpu": "NVIDIA L40S",
+   "image": "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2",
+   "torch": "2.8.0+cu128",
+   "cuda": "12.8",
+   "cudnn": 91002
+  },
+  "zu2d_sha256": "008b9ad197f98a7ff8f630e0001ac660c8e43496f1c018074f842a280cf3db75"
+ }
+}

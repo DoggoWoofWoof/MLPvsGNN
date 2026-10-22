@@ -1,0 +1,111 @@
+{
+ "dataset": "metaqa",
+ "carve": "s1eval",
+ "part": "part_18of28",
+ "step1_record_sha256": "6afeb95b36b08654bdaf24493ecdf50bdb061a0a5de0d7c401136582c1136ba3",
+ "chunks": [
+  1258,
+  1327
+ ],
+ "queries": 345,
+ "rows": 1499971,
+ "edges": 11471834,
+ "edges_per_row": 7.648,
+ "families": [
+  9075476,
+  216756,
+  2179602
+ ],
+ "look_edges": {
+  "raw": 10526790,
+  "self_loops": 905,
+  "kept": 11471834
+ },
+ "look": {
+  "record_0of38.json": "2e2f4479b03260bd1ffb57338ab6db39c4de0c5bce140b4aebf9a3b607425a67",
+  "record_10of38.json": "852a61286ff29e3c24e04b711380c988ba120fcdf8e6bbab64de888c66c40c52",
+  "record_11of38.json": "5aba616d7e5bc81e3bba9a8346f551646d12101eff84242ef2c69196053b5f56",
+  "record_12of38.json": "d3904703d88084e77afc8657c2de181bdc873331626846b16cf16546e9781b30",
+  "record_13of38.json": "a2900f7afef55cfe9c212b2219b73c869c4b664a5155dcda97317343798feedf",
+  "record_14of38.json": "2ebab5733e3ca9d0adfa08f738ed1d4b24951c299cf98011f4f13031a7427be2",
+  "record_15of38.json": "b0f9b95dc2e34612c04f4501a4503e3dd7ea52dd5b374b3e8dbe2232a37461b2",
+  "record_16of38.json": "5433ddbff982b78b31c30a9a9444201d296cf3addaa5770536733dfc5e92d5b2",
+  "record_17of38.json": "218729b28585d64e36e4e90d1408b6d5a6904a9788c2e704b2673db8c0310453",
+  "record_18of38.json": "f59717b97d5706605a8a0225887792d95f2ba1652c57089ca944a1738b15fbd7",
+  "record_19of38.json": "caf98b6569154d4a1bb914ee144bb93740f0e3b45628c398ef61f703f7c703f4",
+  "record_1of38.json": "eee8ebc5837a88ee498e1039eb58996d59ee94d92a2c058b99593518ff5d0eb8",
+  "record_20of38.json": "78ac79bf30a8ae15c7dbc92db4504a47c85dab053a8d926b548d69f50c65c50d",
+  "record_21of38.json": "7835c0618d3ecd39b32a0ab5f7e13ae3912d37d3a9216d474817e3551e199d35",
+  "record_22of38.json": "fd5fc789a863ee2d229f6615902e0ac089f8bfe314ec3b781de804fdb8fda02c",
+  "record_23of38.json": "5ff8584cf0652eca08ea5a02df85011561928ed078bc7b9267c5a326787c72be",
+  "record_24of38.json": "405c386925bd49e98d4190edd7de148dc6e2bb11b40a6ca3d7a3fd2e1d96f1fa",
+  "record_25of38.json": "e9dfbf1bd8ddf6a18f98b5f14fcd79799b6c387b149c22d38a373e3da5e65aaa",
+  "record_26of38.json": "0f044f193af85f30546bd936b3e4291db1e70a0e51a1398f6086dda59e896d73",
+  "record_27of38.json": "c04a7fd3ccc5e89e0c0ddb0d5e45f606f9c7ad46f8e5a388497a0a46cee17c2c",
+  "record_28of38.json": "6b548320c704e0979414f49952355dd3fd6dd2995c1b92d688451d6c9a2512a7",
+  "record_29of38.json": "9803d9dd55c65a4e60d1fc31b68769e96d9b7198aa61224e5f3308b547b0f1f6",
+  "record_2of38.json": "ffcef27918f733651663d2dd2f068561e946deb98688e2f7bb2469115509245d",
+  "record_30of38.json": "27f8774dc58e0ee5af70e80295baf7b8b8014db18309f8e85a983d4d8ca1bea1",
+  "record_31of38.json": "30a88d516af2f60194088d737215467efce401b7330d263b99fd3f3656c1285d",
+  "record_32of38.json": "20cb53375e1a4b256108900836be5ff7d7cdf6aa5e5c72e911462bf6d6a30fed",
+  "record_33of38.json": "6e53146fd72330310e80216d8a6ed5b2462f3305533e97d521f6099c2fd1ca65",
+  "record_34of38.json": "8fbb216bc4a1c8676f7bc7e66e0b96d7c21bdd8177e3072a0261a1a30578eac3",
+  "record_35of38.json": "e84d10b416ad36fe0dc5c203d4a3470bbfd08503cdf3d0729d5c5dec51770ed8",
+  "record_36of38.json": "0d88f0fd15664ff517861e1511310be34058ee96ef17dc27482f7be3931f75b3",
+  "record_37of38.json": "8a3e6a1b68cee220e1e3630bb58ec1de47d156c6fa9b14a15aad348b3b32c649",
+  "record_3of38.json": "91e95efd3630bef7588255057dca0e394eb870d4f45c1f89fba9c33da045c199",
+  "record_4of38.json": "927344a099c3fc0094f28a1f74e5b46caf68cae969885a0640e3840a1b29b8c4",
+  "record_5of38.json": "f3ecaeac4e528379bc71d6337dd5cc3231982ff26e10c7ddf32a704ed0be9be4",
+  "record_6of38.json": "e806014c2902ed6f307f9a497f2f0328623e1161afb8d3adb87e48f9ddaf4806",
+  "record_7of38.json": "aa3955eb42c68e00d6344ea4d213ef177b19cd07e9c9aaf19fc01f373d0ea8f7",
+  "record_8of38.json": "652351575b1cb9c694571bcf99830be1dddc285d4f4b698bad900be84b0d15b7",
+  "record_9of38.json": "fae024b2457a6df971e6a34a1721e09ede6387ad0a44698414b5badbd3403459"
+ },
+ "carve_ids_sha256": "baf65d95e7b449f80ddd53541c4a43dff6ac1c584faab5b98977595b95f523fe",
+ "n_against_step1": "IDENTICAL",
+ "settings": {
+  "families": 3,
+  "top": 5,
+  "inputs": 9,
+  "hidden": 32,
+  "seed_offset": 2201,
+  "edges": "the look's pool edges, undirected (both directions), once per family, no self-loops"
+ },
+ "arrays": {
+  "q_ne": {
+   "dtype": "<i8",
+   "shape": [
+    345
+   ],
+   "sha256": "660a13fbba54ddebf93244aeeb8201b62dda5eb231e9ef4eda4ef3778c3acb79"
+  },
+  "e_u": {
+   "dtype": "<i2",
+   "shape": [
+    11471834
+   ],
+   "sha256": "ce09fc4e9b855630aeaa7f6dd96aec8f987082c85c3f12d80e0a97f6b62c7c80"
+  },
+  "e_v": {
+   "dtype": "<i2",
+   "shape": [
+    11471834
+   ],
+   "sha256": "5665a457cfdd692fc33c8da1d6f49b8cea3e9826fda6fcb97a783c709b872f88"
+  },
+  "e_fam": {
+   "dtype": "|i1",
+   "shape": [
+    11471834
+   ],
+   "sha256": "59ae1790733d997710f6f9fe8e7e7b475391549c8ab922a1d0ec81171e97117b"
+  }
+ },
+ "placement": {
+  "where": "modal",
+  "node": "modal"
+ },
+ "script_sha256": "8f447cfe7fdfe7af7060c1adff0fe47adc78c4714a250b534fd8af0e0dd0504f",
+ "seconds": 8.9,
+ "utc": "2026-10-22T15:50:30Z"
+}

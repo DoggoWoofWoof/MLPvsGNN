@@ -1,0 +1,65 @@
+{
+ "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+ "stage": "U2d",
+ "check": "the new build's rule on s1sel against U2e",
+ "dataset": "2wiki",
+ "carve": "s1sel",
+ "pick": "kt_cos:ada_f12_k0@0.85",
+ "verdict": "PASS",
+ "got": {
+  "ALL": 0.9666,
+  "recall": 0.9881,
+  "rows": 839.9,
+  "rows_p90": 1090.0
+ },
+ "filed": {
+  "ALL": 0.9666,
+  "recall": 0.9881,
+  "rows": 839.9,
+  "rows_p90": 1090.0
+ },
+ "u2e_verdict_sha256": "ea9a18ef4bcce1b2fdb129d2df2333acd262620e1d8e663a7edc53fc77a5a0de",
+ "parts": [
+  "0da60df3a0e06f8353e69fc2c23aa02f581fa705fbc89ee15a23b8bb92fae868",
+  "0078783da08b1958a81d74674871ae47bd097d4872e05ad56c2fe2dad70cad8f",
+  "b21665290e54ea8418024119b83ceb7dc69f81af0a3e3e95fc8cc77a999f295b",
+  "133cffb15de6816bf05cb5e740cb4edce223b86fae69a636678405dfc23317de",
+  "9d5a2ba434316f21c8054ed73b8b81cd7b7da1bd2e038de8d10531c25cb973be"
+ ],
+ "head": {
+  "declared_in": "docs/U2D_REFIT_ON_U2E.md",
+  "stage": "U2d",
+  "build": "new",
+  "dataset": "2wiki",
+  "carve": "s1sel",
+  "construction": "U2D:new:kt_cos:ada_f12_k0@0.85",
+  "graph_detail": {
+   "graph": "W2_S",
+   "npz": "outputs/u2b/2wiki/graphs/W2_S.d.npz",
+   "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+   "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+   "build": {
+    "directed_edges": 71913828,
+    "undirected_neighbours": 142967492,
+    "mean_degree": 23.87,
+    "max_degree": 621403
+   }
+  },
+  "carve_ids_sha256": "4be833a5a3effc4e4046205a6ab2325297369fb489722f174fca8b5409ec4051",
+  "questions_all": 1496,
+  "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+  "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+  "zu2c_sha256": "ac7e8d03b94278a03ee6c041f353d8c685a2f6510aaabefdeb498af127bbf756",
+  "p1gb_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+  "p1c2_sha256": "6b1166eb60bf725c2b79002a37506b8f12db699325ac334f2bafc1d8087bf33e",
+  "p1c3_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+  "p1e_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+  "zp1h_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+  "u2e_verdict_sha256": "ea9a18ef4bcce1b2fdb129d2df2333acd262620e1d8e663a7edc53fc77a5a0de",
+  "p1c2_file_sha256": null,
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "threads": 2
+ },
+ "script_sha256": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+ "utc": "2026-10-22T14:50:50Z"
+}
