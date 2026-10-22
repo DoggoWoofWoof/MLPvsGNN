@@ -174,7 +174,10 @@ That is 24 fits and 24 reads. They are named `scr-u2d-<build>-<arm>[-s<seed>][-h
 
 **One device.** Every fit and read runs on an NVIDIA L40S on Modal, from one pinned image (torch 2.8.0 with CUDA), with
 the filed deterministic flags (`lean_gpu.set_flags`, CUBLAS_WORKSPACE_CONFIG `:4096:8`). Each fit records the GPU's
-name and the image. A comparison between two fits from different devices or images stops. A read too large for the
+name and the image. A comparison between two fits from different devices or images stops. The device is five fields:
+the GPU's name, the image's tag (`u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2`, which the GPU image sets and zu2d.py
+requires), torch, CUDA and cuDNN. Modal's own image id differs between workspaces (each builds the same image itself),
+so it is recorded beside and not compared. A read too large for the
 card may be re-run with `--rows-cap` (whole questions per batch; the scores do not change), recorded in its read.json
 as before.
 
@@ -281,7 +284,14 @@ Each verdict closes only the form it tests (docs/SCREENS.md, 3b). The next forms
   each dataset). Every stage that writes refuses until the inputs and all seven groups are VERIFIED for this manifest.
   `look_u2d.py --modal` and lean_cache read the mirror through look_u2d's `modal_mode` (the package root replaced in
   memory, as host_mode does); open_package's freeze check (58958f33…) still runs.
-- **Mounts.** U2b's and U2c's volumes are mounted read only; U2d writes only under mpr-u2d's `/out/<build>`.
+- **Mounts.** U2b's and U2c's volumes are mounted read only; U2d writes only under mpr-u2d's `/out/<build>` and
+  `/out/fits`.
+- **Workspaces.** A workspace can reach its spend limit before the stages end. The work then continues in another
+  workspace: the files U2d reads or wrote there (the package's files, U2c's, U2e's and U2b's files that U2d links, the
+  code, the inputs and every finished item under `/out`) are copied byte for byte through the laptop, under the same
+  volume names and paths, and each copy is checked by sha256 against the source's. The probe and `--stage mirror` then
+  verify the inputs and the mirror again in the new workspace, and a finished item is reused there by its record, as
+  within one workspace. Records name no workspace, and the device (section 5) is the same in every workspace.
 - **The images.** The CPU image is zu2e's, with the same pins. The GPU image adds torch 2.8.0 with CUDA.
 - **The stages, in order:** upload, probe, mirror, pools (with the check on the new build), then per carve looks,
   caches, chains and links, kt, then copy-bases before them and the gate after, then fits and reads. Each item runs in
@@ -293,8 +303,14 @@ Each verdict closes only the form it tests (docs/SCREENS.md, 3b). The next forms
   check, nothing written) and the looks (`look_u2d.py --dev Q`: look_x_six's `--limit Q` into a temporary directory,
   every check, then removed). They record every file the process opens (an audit hook), the mirror files read, any
   missing path, the seconds and the peak memory.
-- **The outputs.** They go to the volume under `/out/<build>/`. Records and reads are fetched to `outputs/u2d/` on the
-  laptop. Records are committed; arrays, caches and weights are not.
+- **The outputs.** They go to the volume under `/out/<build>/`, and each fit under `/out/fits/<name>/`. The builds'
+  records are fetched to `outputs/u2d/` on the laptop, and each fit's records and reads (never its weights) to
+  `outputs/screen/fits/<name>/`, where every screen's fits live (`--out-root` is refused). Records are committed;
+  arrays, caches and weights are not.
+- **The GPU stages.** `--stage gpu-probe` runs once in each workspace before its fits: the device zu2d.py records,
+  whether zu2d.py accepts it, the card's memory, the flags and zu2d.py's self-tests in the GPU image. `--stage fits`
+  then runs each fit and its read in one container (zu2d.py train and read in the container's process); a fit whose
+  read is stamped is reused, a fit trained but not read is only read, and anything else is unlinked and run again.
 - **The calls** (compares, pairs, re-calls and the verdict) run on the laptop, from the fetched reads.
 
 **Size.** The base build's rows equal P1c2's: 53.7 million over the eleven carves. The new build's are about 2.6 times
@@ -327,11 +343,14 @@ decisions follow in the same file, with their self-test, in a commit before the 
   - the gate's refusals (missing, FAIL, another build, another declaration);
   - the placements.
 
-Before the first fit, the second part's self-test adds:
+Passed before the first fit, in the commit of the second part, its self-test adds:
 - the arms (zrckp, zspk and zg6 as filed; zrckpv and zspkv: their widths, their starts bit for bit, their generator);
+- the heads and zspkv's propagation by hand, and toy fits through lean_gpu's loop (the head moves; a repeat is the
+  same);
 - the via carves and their refusals;
-- train's and read's refusals (arm, build, fit name, seed, cache root, device, gate);
-- the null from seed fits, and its re-basing;
+- train's and read's refusals (arm, build, fit name, seed, card flags, place, GPU, image, cache root, device, gate);
+- one device across the fits of a compare;
+- the null from seed fits, and its re-basing; a pair and its re-call under it;
 - the four decisions and the outcome table on toy re-calls.
 
 The encoder stays frozen. webqsp never trains. Test splits are never read.

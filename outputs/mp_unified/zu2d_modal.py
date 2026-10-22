@@ -8,6 +8,9 @@
     modal run --detach outputs/mp_unified/zu2d_modal.py --stage pools --build base|new
     modal run --detach outputs/mp_unified/zu2d_modal.py --stage features --build base|new
     modal run outputs/mp_unified/zu2d_modal.py --stage fetch --build base|new
+    modal run outputs/mp_unified/zu2d_modal.py --stage gpu-probe         # the GPU image: the device, zu2d's self-tests
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage fits [--build B] [--fits N,N] [--rows-cap R]
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-fits [--build B] [--fits N,N]
 
 The code. The tracked files of HEAD, byte for byte as the working tree holds them (a tracked file that differs from
 HEAD refuses the upload), go to /code/<commit, first 12>.tar on the volume, and every container unpacks them at
@@ -27,6 +30,18 @@ The mirror. /root/mirror/data/final_canonical holds every file of the host mirro
 (outputs/host_mirror_six/manifest.json, configs/host_mirror_six.yaml's selection), linked from mpr-u2d's extras, then
 U2b's, then U2c's package files. --stage mirror hashes each against the manifest and files one verify record per group
 (the package's four files and each dataset). look_u2d.py --modal reads it; open_package's freeze check still runs.
+
+The fits. Each of U2d's 24 fits (zu2d.py's FITS) trains and reads in one container on an L40S from the GPU image
+(tag u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2, which the image sets as U2D_IMAGE), through zu2d.py train and read in
+the container's process, into /out/fits/<name> on mpr-u2d (outputs/screen/fits/<name> in the container, as every
+screen's fit). --stage fetch-fits brings each read fit's records and reads (never its weights) to the laptop, where the
+compares, the null, the pairs, the re-calls and the verdict run.
+
+The workspaces. A workspace that reaches its spend limit is followed by another: the volumes' files U2d reads or wrote
+are copied byte for byte through the laptop and each copy is checked by sha256 against the source's; the probe and
+--stage mirror then verify the inputs and the mirror again in the new workspace, and finished items are reused by
+their records there as here. Records name no workspace. The device (zu2d.py's DEVICE_KEYS: the GPU's name, the image
+tag, torch, CUDA and cuDNN) is the same in every workspace; Modal's image id is each workspace's own and is kept beside.
 
 Each item runs in its own container (single use, three retries on an exception) under nonpreemptible orchestrators.
 A failed check returns its message and is not retried, since it would fail again. An item whose record exists is
@@ -66,15 +81,25 @@ _cpu_env()
 import modal  # noqa: E402
 
 app = modal.App("mpr-u2d")
+PINS = ("numpy==2.3.2", "scipy==1.16.1", "numba==0.67.0", "llvmlite==0.49.0", "pandas==2.3.1", "scikit-learn==1.7.1",
+        "joblib==1.5.1", "pyarrow==23.0.1", "tqdm==4.67.1", "dill==0.4.1", "psutil==7.2.2", "pyyaml==6.0.2",
+        "python-dateutil==2.9.0.post0", "pytz==2025.2", "cffi==2.0.0", "charset-normalizer==3.4.3",
+        "threadpoolctl==3.6.0")
+ENV = {"OPENBLAS_NUM_THREADS": "2", "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2", "OPENBLAS_CORETYPE": "Haswell",
+       "NUMBA_CPU_NAME": "haswell", "NUMBA_CPU_FEATURES": "", "NUMBA_CACHE_DIR": "/tmp/numba_cache",
+       "PYTHONIOENCODING": "utf-8"}
 image = (modal.Image.debian_slim(python_version="3.13")
-         .pip_install("numpy==2.3.2", "scipy==1.16.1", "numba==0.67.0", "llvmlite==0.49.0", "pandas==2.3.1",
-                      "scikit-learn==1.7.1", "joblib==1.5.1", "pyarrow==23.0.1", "tqdm==4.67.1", "dill==0.4.1",
-                      "psutil==7.2.2", "pyyaml==6.0.2", "python-dateutil==2.9.0.post0", "pytz==2025.2", "cffi==2.0.0",
-                      "charset-normalizer==3.4.3", "threadpoolctl==3.6.0")
+         .pip_install(*PINS)
          .pip_install("torch==2.8.0", index_url="https://download.pytorch.org/whl/cpu")
-         .env({"OPENBLAS_NUM_THREADS": "2", "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2",
-               "OPENBLAS_CORETYPE": "Haswell", "NUMBA_CPU_NAME": "haswell", "NUMBA_CPU_FEATURES": "",
-               "NUMBA_CACHE_DIR": "/tmp/numba_cache", "PYTHONIOENCODING": "utf-8"}))
+         .env(ENV))
+# The fits' image (section 5): the same pins with torch 2.8.0 for CUDA 12.8, the filed CUBLAS workspace, and its tag,
+# which zu2d.py requires of every fit and read (zu2d.IMAGE_TAG) and records as the device's image.
+IMAGE_TAG = "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2"
+gpu_image = (modal.Image.debian_slim(python_version="3.13")
+             .pip_install(*PINS)
+             .pip_install("torch==2.8.0", index_url="https://download.pytorch.org/whl/cu128")
+             .env({**ENV, "CUBLAS_WORKSPACE_CONFIG": ":4096:8", "U2D_IMAGE": IMAGE_TAG}))
+GPU = "L40S"
 u2d = modal.Volume.from_name("mpr-u2d", create_if_missing=True)
 u2c = modal.Volume.from_name("mpr-u2c").read_only()
 u2l = modal.Volume.from_name("mpr-u2-links").read_only()
@@ -143,7 +168,8 @@ def _sha12(f):
 
 def _skip(name):
     """U2d's outputs are the volume's; the archive's copies (fetched records) are not unpacked over them."""
-    return name.startswith("outputs/u2d/base/") or name.startswith("outputs/u2d/new/")
+    return (name.startswith("outputs/u2d/base/") or name.startswith("outputs/u2d/new/")
+            or name.startswith("outputs/screen/fits/scr-u2d-"))
 
 
 def _link(dst, src):
@@ -369,13 +395,18 @@ def _env():
 
 
 def _peak_gb():
+    """The process's peak resident memory in GB: VmHWM, or getrusage's maxrss where the sandbox has no VmHWM."""
     try:
         for line in open("/proc/self/status"):
             if line.startswith("VmHWM"):
                 return round(int(line.split()[1]) / 1048576, 2)
     except OSError:
         pass
-    return None
+    try:
+        import resource
+        return round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1048576, 2)
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def _clear(d, pattern):
@@ -806,6 +837,121 @@ def run_features(code, build, carves):
     return {"build": build, "code": code, "pipelines": pipes, "gate": gate, "secs": round(time.time() - t0, 1)}
 
 
+# ── the fits and reads (section 5) ───────────────────────────────────────────
+
+FITS_OUT = Path("/u2d/out/fits")
+
+
+def _run_any(fn, argv):
+    """_run, with an exception inside the stage returned as its message: a failed fit (the card's memory, a refusal) is
+    reported, not retried; a container lost to preemption is still retried by Modal."""
+    try:
+        return _run(fn, argv)
+    except Exception as e:  # noqa: BLE001
+        import traceback
+        return 1, (repr(e) + " | " + traceback.format_exc()[-1500:])[:3000]
+
+
+def _stamped(p, name, Z):
+    """The record at p when zu2d stamped it as this fit's under U2d's declaration."""
+    try:
+        rec = json.loads(Path(p).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    u = rec.get("u2d") or {}
+    return rec if u.get("declared_in") == Z.DECLARED and u.get("fit") == name else None
+
+
+def _fit_brief(fd):
+    t = json.loads((fd / "train.json").read_text(encoding="utf-8")) if (fd / "train.json").exists() else {}
+    r = json.loads((fd / "read.json").read_text(encoding="utf-8")) if (fd / "read.json").exists() else {}
+    return {"data_gb": t.get("data_gb"), "peak_gpu_gb": t.get("peak_gpu_gb"), "read_peak_gpu_gb": r.get("peak_gpu_gb"),
+            "rows_cap": r.get("rows_cap"), "device": (r.get("u2d") or {}).get("device")}
+
+
+@app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=21600, **STAGE)
+def fit_item(code, name, rows_cap=0):
+    """One of U2d's fits and its read (zu2d.py train and read in this process) on an L40S from the GPU image. A fit
+    whose read zu2d stamped is returned as it is; a fit trained and stamped but not read is only read; otherwise the
+    fit's files are unlinked and it trains and reads."""
+    info = _setup(code, strict=True)
+    import zu2d as Z
+    head = {"fit": name, "code": code}
+    if Z.IMAGE_TAG != IMAGE_TAG or os.environ.get("U2D_IMAGE") != IMAGE_TAG:
+        return {**head, "error": f"image tags: the container's {os.environ.get('U2D_IMAGE')}, zu2d's {Z.IMAGE_TAG}, "
+                                 f"this runner's {IMAGE_TAG}"}
+    if name not in Z.FITS:
+        return {**head, "error": "not one of U2d's fits"}
+    b, arm, seed, split = Z.FITS[name]
+    head.update({"build": b, "arm": arm, "seed": seed, "split": split})
+    fd = FITS_OUT / name
+    fd.mkdir(parents=True, exist_ok=True)
+    _link(REPO / "outputs" / "screen" / "fits" / name, fd)
+    if _stamped(fd / "read.json", name, Z):
+        return {**head, "reused": True, **_fit_brief(fd)}
+    cache = f"outputs/u2d/{b}/cache"
+    t0 = time.time()
+    trained = bool(_stamped(fd / "screen.json", name, Z) and (fd / "train.json").exists()
+                   and (fd / "models.pt").exists())
+    if not trained:
+        gone = _clear(fd, "*") + _clear(fd / "reads", "*")
+        rc, msg = _run_any(Z.main, ["train", "--split", split, "--name", name, "--arm", arm, "--device", "cuda",
+                                    "--cache-root", cache, "--modal"])
+        if rc:
+            return {**head, "error": msg, "cleared": len(gone), "seconds": round(time.time() - t0, 1),
+                    "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+        u2d.commit()
+    t1 = time.time()
+    _clear(fd / "reads", "*")
+    _clear(fd, "read.json")
+    rc, msg = _run_any(Z.main, ["read", "--name", name, "--device", "cuda", "--cache-root", cache, "--modal"]
+                       + (["--rows-cap", str(int(rows_cap))] if rows_cap else []))
+    res = {**head, "trained_here": not trained, "train_seconds": round(t1 - t0, 1),
+           "read_seconds": round(time.time() - t1, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg}
+    u2d.commit()
+    return {**res, **_fit_brief(fd)}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_fits(code, names, rows_cap=0):
+    """The named fits at once, each in its own container."""
+    t0 = time.time()
+    calls = [(n, fit_item.spawn(code, n, rows_cap)) for n in names]
+    out = []
+    for n, fc in calls:
+        r = _get(fc)
+        r.setdefault("fit", n)
+        print(json.dumps({k: r.get(k) for k in ("fit", "reused", "trained_here", "train_seconds", "read_seconds",
+                                                "data_gb", "peak_gpu_gb", "peak_gb")}
+                         | ({"error": str(r["error"])[:600]} if "error" in r else {})), flush=True)
+        out.append(r)
+    return {"code": code, "fits": out, "errors": [r["fit"] for r in out if "error" in r],
+            "secs": round(time.time() - t0, 1)}
+
+
+@app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(8192, 32768), cpu=2.0, timeout=3600, **STAGE)
+def gpu_probe(code):
+    """The GPU image before the fits: the device zu2d records, whether zu2d accepts it, the card's memory, lean_gpu's
+    flags, and zu2d's self-tests in this image."""
+    info = _setup(code, report=True)
+    import torch
+    import zu2d as Z
+    env = Z.device_env()
+    out = {"code": code, "setup_seconds": info["setup_seconds"], "conflicts": info["conflicts"][:10],
+           "mirror_missing_n": info["mirror_missing_n"], "device": Z.device_of(env),
+           "accepted": Z.ok_where("modal", env), "tags_agree": Z.IMAGE_TAG == IMAGE_TAG == os.environ.get("U2D_IMAGE"),
+           "where": env.get("where"), "image_id_set": bool(env.get("modal_image_id")),
+           "card_gb": (round(torch.cuda.get_device_properties(0).total_memory / 2 ** 30, 1)
+                       if torch.cuda.is_available() else None)}
+    out["flags"] = Z.LG.set_flags("cuda") if torch.cuda.is_available() else None
+    rc, msg = _run(Z.main, ["--selftest"])
+    out["selftest"] = "PASS" if rc == 0 else msg
+    out["peak_gb"] = _peak_gb()
+    return out
+
+
 # ── the laptop: code, inputs, extras, fetch ──────────────────────────────────
 
 
@@ -985,9 +1131,63 @@ def _fetch(build):
     print(json.dumps({"fetched": n, "build": build}), flush=True)
 
 
+def _fit_names(build, names):
+    """The named fits, or every fit of the build, or all 24 (zu2d.py's FITS, read on the laptop)."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import zu2d as Z
+    want = [n for n in names.split(",") if n] or [n for n, f in Z.FITS.items() if not build or f[0] == build]
+    bad = [n for n in want if n not in Z.FITS]
+    if bad:
+        raise SystemExit(f"not U2d's fits: {bad}")
+    if Z.IMAGE_TAG != IMAGE_TAG:
+        raise SystemExit(f"zu2d.py's image tag {Z.IMAGE_TAG} is not this runner's {IMAGE_TAG}")
+    return want
+
+
+def _fetch_fits(names, threads=4):
+    """Each read fit's records and reads to outputs/screen/fits/<name>/ on the laptop (never models.pt); a fit whose
+    read.json is not on the volume is skipped and named."""
+    from concurrent.futures import ThreadPoolExecutor
+    files = {e.path.lstrip("/"): e.size for e in u2d.listdir("/out/fits", recursive=True)
+             if e.type == modal.volume.FileEntryType.FILE}
+    todo, unread = [], []
+    for n in names:
+        mine = {p: s for p, s in files.items() if p.startswith(f"out/fits/{n}/")}
+        if f"out/fits/{n}/read.json" not in mine:
+            unread.append(n)
+            continue
+        for p, s in sorted(mine.items()):
+            if p.endswith("/models.pt") or p.endswith(".tmp"):
+                continue
+            dst = Path("outputs/screen/fits") / p[len("out/fits/"):]
+            if p.endswith(".npz") and dst.is_file() and dst.stat().st_size == s:
+                continue
+            todo.append((p, dst, s))
+    t0 = time.time()
+
+    def get(item):
+        p, dst, s = item
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dst.with_name(dst.name + ".part")
+        with open(tmp, "wb") as f:
+            u2d.read_file_into_fileobj(p, f)
+        if tmp.stat().st_size != s:
+            raise SystemExit(f"{p}: {tmp.stat().st_size} bytes fetched, {s} on the volume")
+        os.replace(tmp, dst)
+        return s
+
+    with ThreadPoolExecutor(threads) as ex:
+        got = sum(ex.map(get, todo))
+    print(json.dumps({"fits": len(names) - len(unread), "files": len(todo), "gb": round(got / 1e9, 3),
+                      "seconds": round(time.time() - t0, 1), "not_read": unread}), flush=True)
+
+
 @app.local_entrypoint()
 def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what: str = "", limit: int = 3,
-         overlay: bool = False):
+         overlay: bool = False, fits: str = "", rows_cap: int = 0):
+    fit_list = _fit_names(build, fits) if stage in ("fits", "fetch-fits") else []
     names = [d for d in datasets.split(",") if d] or list(SIX)
     if any(d not in SIX for d in names) or (build and build not in BUILDS):
         raise SystemExit(f"datasets among {SIX}; build among {BUILDS}")
@@ -998,6 +1198,8 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         return
     if stage == "fetch":
         return _fetch(build)
+    if stage == "fetch-fits":
+        return _fetch_fits(fit_list)
     code = _upload_code(overlay)
     if stage == "probe":
         print(json.dumps(probe.remote(code), indent=1))
@@ -1021,8 +1223,12 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
     elif stage == "features":
         carves = [(d, c) for d in names for c in CARVES[d] if not carve or c == carve]
         print(json.dumps(run_features.remote(code, build, carves), indent=1))
+    elif stage == "gpu-probe":
+        print(json.dumps(gpu_probe.remote(code), indent=1))
+    elif stage == "fits":
+        print(json.dumps(run_fits.remote(code, fit_list, rows_cap), indent=1))
     else:
-        raise SystemExit("stage: upload, probe, mirror, dev, pools, features or fetch")
+        raise SystemExit("stage: upload, probe, mirror, dev, pools, features, fetch, gpu-probe, fits or fetch-fits")
 
 
 if __name__ == "__main__":
