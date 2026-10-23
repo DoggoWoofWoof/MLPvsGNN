@@ -462,8 +462,75 @@ def w2_links(S, hits, common):
     return key // S.group.size, key % S.group.size
 
 
+NEED_BLOCK = 100_000       # the context choice's items per block, by source: the sources' vectors are read per block
+GCACHE_ROWS = 200_000      # the groups' vectors kept between items (oldest out first): about 1.2 GB
+
+
 def alias_links(S, hits, common, cues, dense_get):
-    """One candidate's alias links: owners by the given cues, the AMBIG guard and the context choice (U2b's rule)."""
+    """One candidate's alias links: owners by the given cues, the AMBIG guard and the context choice (U2b's rule).
+    The items and links are typed arrays, the items needing the choice go by source in blocks, and the group cache is
+    bounded; each item's choice is computed as before from the same vectors, so the links equal
+    _alias_links_unblocked's (the selftest checks it)."""
+    from collections import OrderedDict
+    k = hits["k"]
+    m = ~S.is_title[k] & ~common[S.lowid[k]]
+    idx = np.flatnonzero(m)
+    surf = S.surf
+    ps, pg = array("q"), array("q")
+    ni, nn, ng = array("q"), array("q"), array("q")
+    for j in idx.tolist():
+        i, kk = int(hits["src"][j]), int(k[j])
+        o = S.alias_owners[surf[kk]]
+        gs = sorted({g for c in cues for g in o.get(c, ())})
+        gs = [g for g in gs if not (S.g_ptr[g + 1] - S.g_ptr[g] == 1 and S.g_nodes[S.g_ptr[g]] == i)]
+        if not gs or len(gs) > AMBIG:
+            continue
+        if len(gs) == 1:
+            ps.append(i)
+            pg.append(gs[0])
+        else:
+            ni.append(i)
+            nn.append(len(gs))
+            ng.extend(gs)
+    amb = len(ni)
+    if amb:
+        ni_, nn_, ng_ = (np.frombuffer(x, np.int64).copy() for x in (ni, nn, ng))
+        del ni, nn, ng
+        start = np.cumsum(nn_) - nn_
+        order = np.argsort(ni_, kind="stable")
+        gcache, rows = OrderedDict(), 0
+        for a in range(0, amb, NEED_BLOCK):
+            blk = order[a:a + NEED_BLOCK].tolist()
+            srcs = np.unique(ni_[blk])
+            sv = dict(zip(srcs.tolist(), dense_get(srcs)))
+            for x in blk:
+                i = int(ni_[x])
+                best, bg = -9.0, -1
+                for g in ng_[start[x]:start[x] + nn_[x]].tolist():
+                    v = gcache.get(g)
+                    if v is None:
+                        v = gcache[g] = dense_get(S.group_nodes(g))
+                        rows += v.shape[0]
+                        while rows > GCACHE_ROWS and len(gcache) > 1:
+                            _g, old = gcache.popitem(last=False)
+                            rows -= old.shape[0]
+                    s_ = float((v @ sv[i]).max())
+                    if s_ > best:
+                        best, bg = s_, g
+                ps.append(i)
+                pg.append(bg)
+            del sv
+        del gcache
+    if not ps:
+        return np.zeros(0, np.int64), np.zeros(0, np.int64), amb
+    s, t = expand(S, np.frombuffer(ps, np.int64), np.frombuffer(pg, np.int64))
+    key = np.unique(s * S.group.size + t)
+    return key // S.group.size, key % S.group.size, amb
+
+
+def _alias_links_unblocked(S, hits, common, cues, dense_get):
+    """alias_links as committed in c52da61 (all sources' vectors at once, an unbounded cache): the selftest's
+    reference."""
     k = hits["k"]
     m = ~S.is_title[k] & ~common[S.lowid[k]]
     idx = np.flatnonzero(m)
@@ -775,6 +842,43 @@ def cmd_report(_a):
 # ── selftest ────────────────────────────────────────────────────────────────
 
 
+def _check_blocked_choice():
+    """A random table with many ambiguous aliases: alias_links equals _alias_links_unblocked at block and cache sizes
+    1, 7 and the defaults."""
+    from types import SimpleNamespace
+    global NEED_BLOCK, GCACHE_ROWS
+    rng = np.random.RandomState(3)
+    n, ng_, na = 400, 150, 60
+    group = np.sort(rng.randint(0, ng_, n))
+    group[:ng_] = np.arange(ng_)
+    group = np.sort(group)
+    order = np.argsort(group, kind="stable")
+    g_ptr = np.searchsorted(group[order], np.arange(ng_ + 1))
+    surf = [f"T{g}" for g in range(ng_)] + [f"A{j}" for j in range(na)]
+    owners = {f"A{j}": {c: sorted(rng.choice(ng_, rng.randint(1, AMBIG + 2), replace=False).tolist())
+                        for c in CUES if rng.rand() < 0.7} for j in range(na)}
+    S = SimpleNamespace(surf=surf, alias_owners=owners, is_title=np.r_[np.ones(ng_, bool), np.zeros(na, bool)],
+                        lowid=np.arange(ng_ + na), g_ptr=g_ptr, g_nodes=order, group=group)
+    S.group_nodes = lambda g: S.g_nodes[S.g_ptr[g]:S.g_ptr[g + 1]]
+    vec = rng.randn(n, 1536).astype(np.float32)
+
+    def get(rows):
+        return vec[np.asarray(rows, np.int64)].copy()
+    hits = {"src": rng.randint(0, n, 3000), "k": rng.randint(0, ng_ + na, 3000)}
+    common = rng.rand(ng_ + na) < 0.1
+    saved = NEED_BLOCK, GCACHE_ROWS
+    try:
+        for cues in (("a", "b", "c"), ("b",)):
+            want = _alias_links_unblocked(S, hits, common, cues, get)
+            assert want[2] > 50, want[2]
+            for nb, gc in ((1, 1), (7, 7), saved):
+                NEED_BLOCK, GCACHE_ROWS = nb, gc
+                got = alias_links(S, hits, common, cues, get)
+                assert all(np.array_equal(x, y) for x, y in zip(got[:2], want[:2])) and got[2] == want[2], (nb, gc)
+    finally:
+        NEED_BLOCK, GCACHE_ROWS = saved
+
+
 def _selftest(_a=None):
     # the cues
     assert first_sentence("Leeds United F.C. is a club. It plays.") == "Leeds United F.C. is a club"
@@ -843,6 +947,8 @@ def _selftest(_a=None):
     assert (3, 3) not in al
     s_, t_, _amb = alias_links(S, ch, common, ("c",), get)
     assert set(zip(s_.tolist(), t_.tolist())) == {(4, 3)}, set(zip(s_.tolist(), t_.tolist()))
+    # the blocked context choice equals the unblocked one, at any block and cache size
+    _check_blocked_choice()
     # the choice
     def gr(cs, ia):
         return {"graphs": {gname: {"choice_score": cs.get(gname, 0.5), "I": {"ALL": ia.get(gname, 0.5)},
