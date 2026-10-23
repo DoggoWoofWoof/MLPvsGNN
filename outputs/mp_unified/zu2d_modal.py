@@ -21,6 +21,13 @@ U2g's cell Y (docs/U2G_GRAPH_AND_RULE.md, section 9), with no --build:
     modal run --detach outputs/mp_unified/zu2d_modal.py --stage y-fits [--fits N,N] [--rows-cap R]
     modal run outputs/mp_unified/zu2d_modal.py --stage fetch-y
     modal run outputs/mp_unified/zu2d_modal.py --stage fetch-y-fits [--fits N,N]
+U2h (docs/U2H_W2S_BESIDE.md, section 8), with no --build:
+    modal run outputs/mp_unified/zu2d_modal.py --stage h-probe           # zu2h's self-test, Y's parts, the base build
+    modal run outputs/mp_unified/zu2d_modal.py --stage h-dev --datasets D --carve C [--limit Q]
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage h-ktw [--datasets D]
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage h-fits [--fits N,N] [--rows-cap R]
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-h
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-h-fits [--fits N,N]
 
 The code. The tracked files of HEAD, byte for byte as the working tree holds them (a tracked file that differs from
 HEAD refuses the upload), go to /code/<commit, first 12>.tar on the volume, and every container unpacks them at
@@ -62,6 +69,13 @@ build on the same volume. The volume holds no copy of U2d's new build, so U2d's 
 from there, by their sha256. Y's shards and parts are U2d base's: Y's rows per question (|I_q| on W2_S) are 1.0 to 1.5
 times base's, and U2d's items ran looks and cache parts of that size and larger in under 20 minutes. --stage fetch-y
 and fetch-y-fits bring Y's records and reads to the laptop, where zu2g.py compare-all and decide run.
+
+U2h (docs/U2H_W2S_BESIDE.md). zu2h.py's KT_W goes to /out/h on mpr-u2d (outputs/u2h in the container). One item per
+shard of Y's pools, the same 59 shards, since KT_W walks what Y's pools walked (Y's carve opener on W2_S); each is
+checked against Y's filed part on the volume. Each carve's merge into the base caches' row order runs once all its
+parts are written, and metaqa's and webqsp's KT_W is base's KT, copied byte for byte. U2h's four fits go to
+/out/fits/scr-u2h-*, every carve on U2d's base build. --stage fetch-h and fetch-h-fits bring U2h's records and reads
+to the laptop, where zu2h.py compare-all and decide run.
 
 The workspaces. A workspace that reaches its spend limit is followed by another: the volumes' files U2d reads or wrote
 are copied byte for byte through the laptop and each copy is checked by sha256 against the source's; the probe and
@@ -148,7 +162,8 @@ PINS_RECORD = "outputs/u2d/inputs_pins.json"       # the second list: what the s
 INPUT_RECORDS = (INPUTS_RECORD, PINS_RECORD)
 U2D_FILES = ("docs/U2D_REFIT_ON_U2E.md", "outputs/mp_unified/zu2d_pools.py", "outputs/mp_unified/look_u2d.py",
              "outputs/mp_unified/zu2d.py", "outputs/mp_unified/zu2d_modal.py", INPUTS_RECORD, PINS_RECORD,
-             "docs/U2G_GRAPH_AND_RULE.md", "outputs/mp_unified/zu2g.py")
+             "docs/U2G_GRAPH_AND_RULE.md", "outputs/mp_unified/zu2g.py", "docs/U2H_W2S_BESIDE.md",
+             "outputs/mp_unified/zu2h.py")
 # Shards and parts, each item about 15 to 25 minutes (section 10): the new build's pools from U2e's seconds per
 # question on Modal, the base build's at half as many; the looks and caches from P1c2's host times scaled by rows.
 _POOLS_NEW = {("metaqa", "fit"): 5, ("metaqa", "s1eval"): 7, ("squad", "fit"): 3, ("squad", "s1eval"): 5,
@@ -178,6 +193,9 @@ for _t in (POOLS, LOOKS, CACHE_PARTS):
 Y_OUT = Path("/u2d/out/y")
 TAR_ONLY = tuple(f"outputs/u2d/new/pools/{d}/pools.json" for d in Y_OWN)   # in the archive, never unpacked
 Y_STAGES = ("y-probe", "y-dev", "y-pools", "y-features", "y-fits", "fetch-y", "fetch-y-fits")
+# U2h: KT_W on Y's shards, its fits on U2d's base build (section 8 of U2h's declaration)
+H_OUT = Path("/u2d/out/h")
+H_STAGES = ("h-probe", "h-dev", "h-ktw", "h-fits", "fetch-h", "fetch-h-fits")
 STAGE = {"single_use_containers": True,
          "retries": modal.Retries(max_retries=3, initial_delay=10.0, backoff_coefficient=2.0)}
 ORCH = {"nonpreemptible": True, "retries": modal.Retries(max_retries=2, initial_delay=30.0, backoff_coefficient=2.0)}
@@ -204,10 +222,12 @@ def _sha12(f):
 
 
 def _skip(name):
-    """U2d's and U2g's outputs are the volume's; the archive's copies (fetched records) are not unpacked over them."""
+    """U2d's, U2g's and U2h's outputs are the volume's; the archive's copies (fetched records) are not unpacked over
+    them."""
     return (name.startswith("outputs/u2d/base/") or name.startswith("outputs/u2d/new/")
             or name.startswith("outputs/u2d/h1/") or name.startswith("outputs/screen/fits/scr-u2d-")
-            or name.startswith("outputs/u2g/y/") or name.startswith("outputs/screen/fits/scr-u2g-"))
+            or name.startswith("outputs/u2g/y/") or name.startswith("outputs/screen/fits/scr-u2g-")
+            or name.startswith("outputs/u2h/") or name.startswith("outputs/screen/fits/scr-u2h-"))
 
 
 def _link(dst, src):
@@ -321,6 +341,8 @@ def _setup(code, strict=False, report=False):
         _link(REPO / "outputs" / "u2d" / b, tgt)
     Y_OUT.mkdir(parents=True, exist_ok=True)
     _link(REPO / "outputs" / "u2g" / "y", Y_OUT)
+    H_OUT.mkdir(parents=True, exist_ok=True)
+    _link(REPO / "outputs" / "u2h", H_OUT)
     conflicts, linked = [], {}
     linked["u2c_repo"] = _overlay("/u2c/repo", REPO, conflicts)
     linked["inputs"] = _overlay("/u2d/inputs", REPO, conflicts)
@@ -1444,6 +1466,235 @@ def run_y_fits(code, names, rows_cap=0):
             "secs": round(time.time() - t0, 1)}
 
 
+# ── U2h: W2_S beside today's graph (docs/U2H_W2S_BESIDE.md, section 8) ───────
+
+
+def _stamped_h(p, name, ZH):
+    """The record at p when zu2h stamped it as this fit's under U2h's declaration."""
+    try:
+        rec = json.loads(Path(p).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    u = rec.get("u2h") or {}
+    return rec if u.get("declared_in") == ZH.DECLARED and u.get("fit") == name else None
+
+
+@app.function(image=image, volumes=VOLS, memory=(8192, 32768), cpu=2.0, timeout=3600, **STAGE)
+def h_probe(code):
+    """Before U2h's stages: zu2h.py's self-test in this image; Y's pools in this workspace (each carve's whole set of
+    part records, its first part's files against its record and manifest, same_as_new); the base build's (each carve's
+    pools file, KT record by its sha256 on its cache parts and pools, the gate); and what /out/h holds."""
+    info = _setup(code, report=True)
+    out = {"code": code, "setup_seconds": info["setup_seconds"], "conflicts": info["conflicts"][:10],
+           "mirror_missing_n": info["mirror_missing_n"]}
+    _on_the_mirror()
+    import zu2h
+    rc, msg = _run_any(zu2h.main, ["--selftest"])
+    out["selftest"] = "PASS" if rc == 0 else msg
+    ZPm, ZG = zu2h.ZP, zu2h.ZG
+    y, base = {}, {}
+    for d, c in Y_CARVES:
+        k = POOLS["y"][(d, c)]
+        try:
+            recs = ZPm.find_parts(ZG.roots_y("y")["parts"], d, c)
+            ZG.same_as_new_ok(d)
+            zu2h.y_part(d, c, (0, k))
+            y[f"{d}/{c}"] = "ok" if len(recs) == k else f"{len(recs)} parts, not {k}"
+        except SystemExit as e:
+            y[f"{d}/{c}"] = str(e)[:300]
+    for d, c in zu2h.CARVES_W + zu2h.LINKED_CARVES:
+        try:
+            _f, ent, msha = ZPm.load_filed("base", d, c)
+            krec, _kd, _ks = zu2h.base_kt(d, c)
+            parts = zu2h.KT3.cache_rows(ZPm.roots("base")["cache"], d, c)[3]
+            ok = (parts == krec.get("cache_parts") and (krec.get("pools_manifest_sha256"),
+                                                        krec.get("pools_file_sha256")) == (msha, ent["sha256"]))
+            base[f"{d}/{c}"] = "ok" if ok else "the KT record sits on other cache parts or pools"
+        except SystemExit as e:
+            base[f"{d}/{c}"] = str(e)[:300]
+    g = Path("/u2d/out/base/gate.json")
+    out.update({"y": y, "base": base,
+                "gate": json.loads(g.read_text(encoding="utf-8")).get("verdict") if g.exists() else None,
+                "h_out": sorted(p.name for p in H_OUT.iterdir()), "peak_gb": _peak_gb()})
+    return out
+
+
+def _ktw_done(pd, stem, ZH):
+    p = Path(pd) / f"{stem}.json"
+    if not p.exists():
+        return None
+    rec = json.loads(p.read_text(encoding="utf-8"))
+    if rec.get("script_sha256") != ZH.sha_src(ZH.__file__):
+        raise SystemExit(f"{p}: another zu2h.py's part; this runner never overwrites it")
+    if _sha_file(Path(pd) / f"{stem}.ktw.npy") != rec["files"]["ktw"]:
+        raise SystemExit(f"{stem}.ktw.npy: not the file its record names")
+    return rec
+
+
+_KTW_KEYS = ("dataset", "carve", "part", "parts", "q0", "q1", "rows", "seconds", "checks", "counts")
+
+
+@app.function(image=image, volumes=VOLS, memory=(8192, 49152), cpu=2.0, timeout=21600, **STAGE)
+def h_ktw_item(code, d, carve, i, k, limit=0):
+    """One shard of KT_W (zu2h.py ktw: Y's shard, Y's carve opener on W2_S, the columns over the base build's pools)."""
+    dev = limit > 0
+    if dev:
+        _trace()
+    info = _setup(code, strict=not dev)
+    env = _env()
+    _on_the_mirror()
+    import zu2h
+    stem = f"{d}__{carve}__{i}of{k}"
+    pd = zu2h.PARTS
+    head = {"what": "h-ktw", "dataset": d, "carve": carve, "part": i, "parts": k, "code": code}
+    if not dev:
+        if (rec := _ktw_done(pd, stem, zu2h)) is not None:
+            return {**head, **_brief(rec, _KTW_KEYS), "reused": True}
+        _clear(pd, f"{stem}.*")
+    argv = ["ktw", d, "--carve", carve] + (["--shard", f"{i}/{k}"] if k > 1 else []) + \
+           (["--limit", str(limit)] if dev else [])
+    t0 = time.time()
+    rc, msg = _run(zu2h.main, argv)
+    out = {**head, "seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**out, "error": msg, **({"trace": _trace_report(), "env": env} if dev else {})}
+    if dev:
+        return {**out, "dev": limit, "trace": _trace_report(), "env": env}
+    u2d.commit()
+    rec = json.loads((pd / f"{stem}.json").read_text(encoding="utf-8"))
+    return {**out, **_brief(rec, _KTW_KEYS), "env_cpu": env["cpu"]}
+
+
+@app.function(image=image, volumes=VOLS, memory=(8192, 65536), cpu=1.0, timeout=7200, **STAGE)
+def h_merge_item(code, d, carve):
+    """A carve's KT_W in the base caches' row order (zu2h.py ktw-merge), when its ktw.json is not written; an
+    interrupted attempt's files are unlinked first."""
+    _setup(code, strict=True)
+    import zu2h
+    dd = zu2h.KTW / d / carve
+    head = {"what": "h-merge", "dataset": d, "carve": carve, "code": code}
+    t0 = time.time()
+    if not (dd / "ktw.json").exists():
+        gone = _clear(dd, "*")
+        rc, msg = _run_any(zu2h.main, ["ktw-merge", d, "--carve", carve])
+        if rc:
+            return {**head, "error": msg, "cleared": len(gone), "peak_gb": _peak_gb()}
+        u2d.commit()
+    rec = json.loads((dd / "ktw.json").read_text(encoding="utf-8"))
+    bs = rec.get("beside") or {}
+    return {**head, "seconds": round(time.time() - t0, 1), "peak_gb": _peak_gb(),
+            **_brief(rec, ("questions", "rows", "counts")),
+            "beside": {k: bs.get(k) for k in ("share_in_kind_t", "share_place_differs", "share_fill")}}
+
+
+@app.function(image=image, volumes=VOLS, memory=(4096, 32768), cpu=1.0, timeout=7200, **STAGE)
+def h_linked_item(code):
+    """metaqa's and webqsp's KT_W (zu2h.py ktw-linked: base's KT, byte for byte); a carve whose ktw.json is not written
+    has an interrupted copy's files unlinked first."""
+    _setup(code, strict=True)
+    import zu2h
+    head = {"what": "h-linked", "code": code}
+    gone = []
+    for d, c in zu2h.LINKED_CARVES:
+        dd = zu2h.KTW / d / c
+        if not (dd / "ktw.json").exists():
+            gone += _clear(dd, "*")
+    rc, msg = _run_any(zu2h.main, ["ktw-linked"])
+    if rc:
+        return {**head, "error": msg, "cleared": len(gone)}
+    u2d.commit()
+    return {**head, "filed": {f"{d}/{c}": (zu2h.KTW / d / c / "ktw.json").exists() for d, c in zu2h.LINKED_CARVES},
+            "peak_gb": _peak_gb()}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_h_ktw(code, datasets):
+    """Every KT_W shard at once (Y's shards of the datasets) and metaqa's and webqsp's copy, then each carve's merge
+    once all its shards are written."""
+    t0 = time.time()
+    linked = h_linked_item.spawn(code)
+    calls = [((d, c), h_ktw_item.spawn(code, d, c, i, k))
+             for d in datasets for c in CARVES[d] for k in [POOLS["y"][(d, c)]] for i in range(k)]
+    failed, longest = {}, {}
+    for (d, c), fc in calls:
+        r = _get(fc)
+        key = f"{d}/{c}"
+        if "error" in r:
+            failed.setdefault(key, []).append({k: r.get(k) for k in ("part", "error")})
+            print(json.dumps({"failed": [d, c], "part": r.get("part"), "error": str(r.get("error"))[:600]}),
+                  flush=True)
+            continue
+        longest[key] = max(longest.get(key, 0), r.get("seconds") or 0)
+        print(json.dumps({"done": [d, c], "part": r.get("part"), "seconds": r.get("seconds"),
+                          "reused": r.get("reused", False), "peak_gb": r.get("peak_gb")}), flush=True)
+    merged = [h_merge_item.spawn(code, d, c) for d in datasets for c in CARVES[d] if f"{d}/{c}" not in failed]
+    return {"code": code, "failed": failed, "longest_seconds": longest, "linked": _get(linked),
+            "merged": [_get(x) for x in merged], "secs": round(time.time() - t0, 1)}
+
+
+@app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=21600, **STAGE)
+def h_fit_item(code, name, rows_cap=0):
+    """One of U2h's four fits and its read (zu2h.py train and read in this process) on an L40S from the GPU image, as
+    fit_item runs U2d's: a fit whose read zu2h stamped is returned as it is; a fit trained and stamped but not read is
+    only read; otherwise the fit's files are unlinked and it trains and reads."""
+    info = _setup(code, strict=True)
+    import zu2h
+    Z = zu2h.Z
+    head = {"fit": name, "code": code}
+    if Z.IMAGE_TAG != IMAGE_TAG or os.environ.get("U2D_IMAGE") != IMAGE_TAG:
+        return {**head, "error": f"image tags: the container's {os.environ.get('U2D_IMAGE')}, zu2d's {Z.IMAGE_TAG}, "
+                                 f"this runner's {IMAGE_TAG}"}
+    if name not in zu2h.FITS:
+        return {**head, "error": "not one of U2h's fits"}
+    arm, split = zu2h.FITS[name]
+    head.update({"build": "base", "arm": arm, "seed": 0, "split": split})
+    fd = FITS_OUT / name
+    fd.mkdir(parents=True, exist_ok=True)
+    _link(REPO / "outputs" / "screen" / "fits" / name, fd)
+    if _stamped_h(fd / "read.json", name, zu2h):
+        return {**head, "reused": True, **_fit_brief(fd, "u2h")}
+    cache = "outputs/u2d/base/cache"
+    t0 = time.time()
+    trained = bool(_stamped_h(fd / "screen.json", name, zu2h) and (fd / "train.json").exists()
+                   and (fd / "models.pt").exists())
+    if not trained:
+        gone = _clear(fd, "*") + _clear(fd / "reads", "*")
+        rc, msg = _run_any(zu2h.main, ["train", "--split", split, "--name", name, "--arm", arm, "--device", "cuda",
+                                       "--cache-root", cache, "--modal"])
+        if rc:
+            return {**head, "error": msg, "cleared": len(gone), "seconds": round(time.time() - t0, 1),
+                    "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+        u2d.commit()
+    t1 = time.time()
+    _clear(fd / "reads", "*")
+    _clear(fd, "read.json")
+    rc, msg = _run_any(zu2h.main, ["read", "--name", name, "--device", "cuda", "--cache-root", cache, "--modal"]
+                       + (["--rows-cap", str(int(rows_cap))] if rows_cap else []))
+    res = {**head, "trained_here": not trained, "train_seconds": round(t1 - t0, 1),
+           "read_seconds": round(time.time() - t1, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg}
+    u2d.commit()
+    return {**res, **_fit_brief(fd, "u2h")}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_h_fits(code, names, rows_cap=0):
+    """U2h's named fits at once, each in its own container."""
+    t0 = time.time()
+    calls = [(n, h_fit_item.spawn(code, n, rows_cap)) for n in names]
+    out = []
+    for n, fc in calls:
+        r = _get(fc)
+        r.setdefault("fit", n)
+        print(json.dumps({k: r.get(k) for k in ("fit", "reused", "trained_here", "train_seconds", "read_seconds",
+                                                "data_gb", "peak_gpu_gb", "peak_gb")}
+                         | ({"error": str(r["error"])[:600]} if "error" in r else {})), flush=True)
+        out.append(r)
+    return {"code": code, "fits": out, "errors": [r["fit"] for r in out if "error" in r],
+            "secs": round(time.time() - t0, 1)}
+
+
 # ── the laptop: code, inputs, extras, fetch ──────────────────────────────────
 
 
@@ -1637,15 +1888,16 @@ def _upload_extras():
                 b.put_file(str(p), f"/pkg/{rel}")
 
 
-def _fetch(build, dst_root="outputs/u2d"):
+def _fetch(build, dst_root="outputs/u2d", keep=True):
     """A build's records (every json under /out/<build>) to <dst_root>/<build>/ on the laptop (U2d's under outputs/u2d,
-    Y's under outputs/u2g); arrays stay on the volume."""
+    Y's under outputs/u2g), or to <dst_root>/ when not keep (U2h's /out/h under outputs/u2h); arrays stay on the
+    volume."""
     n = 0
     for e in u2d.listdir(f"/out/{build}", recursive=True):
         path = e.path.lstrip("/")
         if not path.endswith(".json") or "/chunks/" in path:
             continue
-        dst = Path(dst_root) / path[len("out/"):]
+        dst = Path(dst_root) / path[len("out/" if keep else f"out/{build}/"):]
         dst.parent.mkdir(parents=True, exist_ok=True)
         with open(dst, "wb") as f:
             u2d.read_file_into_fileobj(path, f)
@@ -1681,6 +1933,21 @@ def _y_names(names):
     tag = zu2g.Zm().IMAGE_TAG
     if tag != IMAGE_TAG:
         raise SystemExit(f"zu2d.py's image tag {tag} is not this runner's {IMAGE_TAG}")
+    return want
+
+
+def _h_names(names):
+    """The named fits, or all four of U2h's (zu2h.py's FITS, read on the laptop)."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import zu2h
+    want = [n for n in names.split(",") if n] or list(zu2h.FITS)
+    bad = [n for n in want if n not in zu2h.FITS]
+    if bad:
+        raise SystemExit(f"not U2h's fits: {bad}")
+    if zu2h.Z.IMAGE_TAG != IMAGE_TAG:
+        raise SystemExit(f"zu2d.py's image tag {zu2h.Z.IMAGE_TAG} is not this runner's {IMAGE_TAG}")
     return want
 
 
@@ -1763,12 +2030,16 @@ def _fetch_h1(names):
 def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what: str = "", limit: int = 3,
          overlay: bool = False, fits: str = "", rows_cap: int = 0):
     y = stage in Y_STAGES
+    h = stage in H_STAGES
     fit_list = _fit_names(build, fits) if stage in ("fits", "fetch-fits") else []
     h1_list = _h1_names(build, fits) if stage in ("h1", "fetch-h1") else []
     y_list = _y_names(fits) if stage in ("y-fits", "fetch-y-fits") else []
-    names = [d for d in datasets.split(",") if d] or list(Y_OWN if y else SIX)
+    h_list = _h_names(fits) if stage in ("h-fits", "fetch-h-fits") else []
+    names = [d for d in datasets.split(",") if d] or list(Y_OWN if y or h else SIX)
     if y and (build or any(d not in Y_OWN for d in names)):
         raise SystemExit(f"Y's stages take no --build (Y is U2g's build); datasets among {Y_OWN}")
+    if h and (build or any(d not in Y_OWN for d in names)):
+        raise SystemExit(f"U2h's stages take no --build (U2h runs on U2d's base build); datasets among {Y_OWN}")
     if any(d not in SIX for d in names) or (build and build not in BUILDS):
         raise SystemExit(f"datasets among {SIX}; build among {BUILDS}")
     if stage == "upload":
@@ -1786,6 +2057,10 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         return _fetch("y", "outputs/u2g")
     if stage == "fetch-y-fits":
         return _fetch_fits(y_list)
+    if stage == "fetch-h":
+        return _fetch("h", "outputs/u2h", keep=False)
+    if stage == "fetch-h-fits":
+        return _fetch_fits(h_list)
     code = _upload_code(overlay)
     if stage == "probe":
         print(json.dumps(probe.remote(code), indent=1))
@@ -1834,9 +2109,21 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         print(json.dumps(run_y_features.remote(code, carves), indent=1))
     elif stage == "y-fits":
         print(json.dumps(run_y_fits.remote(code, y_list, rows_cap), indent=1))
+    elif stage == "h-probe":
+        print(json.dumps(h_probe.remote(code), indent=1))
+    elif stage == "h-dev":
+        carves = [(d, c) for d in names for c in CARVES[d] if not carve or c == carve]
+        jobs = [h_ktw_item.spawn(code, d, c, 0, POOLS["y"][(d, c)], limit) for d, c in carves]
+        for fc in jobs:
+            print(json.dumps(_get(fc), indent=1))
+    elif stage == "h-ktw":
+        print(json.dumps(run_h_ktw.remote(code, names), indent=1))
+    elif stage == "h-fits":
+        print(json.dumps(run_h_fits.remote(code, h_list, rows_cap), indent=1))
     else:
         raise SystemExit("stage: upload, probe, mirror, dev, pools, features, fetch, gpu-probe, fits, fetch-fits, h1, "
-                         "fetch-h1, y-probe, y-dev, y-pools, y-features, y-fits, fetch-y or fetch-y-fits")
+                         "fetch-h1, y-probe, y-dev, y-pools, y-features, y-fits, fetch-y, fetch-y-fits, h-probe, "
+                         "h-dev, h-ktw, h-fits, fetch-h or fetch-h-fits")
 
 
 if __name__ == "__main__":
