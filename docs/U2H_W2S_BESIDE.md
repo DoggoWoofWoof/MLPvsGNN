@@ -129,4 +129,66 @@ Workspace 4 has about $10 left.
 
 ## 9. Results
 
-Filed after the run.
+Filed 23 October 2026. The run used committed code only: zu2h.py at 4742cd2, U2h's stages at ee197e4, workspace 4. The
+verdict is in `outputs/u2h/screen-verdict.md`, with its record in `.json`. The compares are `outputs/screen/scr-u2h-*`.
+
+### H: ADOPT_FOR_FULL_RUN
+
+No read is a LOSS, over both arms, both splits and all six datasets (24 reads), after the re-call under U2d's seed null.
+One GAIN survives the re-call: zrckpw on L-hotpotqa, 2wiki, +0.0078 [+0.0062, +0.0096] against a floor of 0.0075.
+zspkw's 2wiki GAIN on the same split (+0.0083) is under zspk's floor (0.0139) and reads WITHIN.
+
+Delta R@5 against the base arm, both fits seed 0 on the base build. Before the re-call, every read but the two 2wiki
+GAINs is WITHIN.
+
+| arm | split | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| zrckpw | L-musique | -0.0001 | -0.0015 | -0.0021 | -0.0002 | +0.0039 | -0.0003 |
+| zspkw | L-musique | +0.0011 | +0.0004 | +0.0059 | -0.0015 | +0.0023 | +0.0030 |
+| zrckpw | L-hotpotqa | +0.0011 | -0.0019 | +0.0039 | -0.0069 | **+0.0078** | -0.0057 |
+| zspkw | L-hotpotqa | +0.0009 | +0.0008 | -0.0018 | -0.0059 | +0.0083 | -0.0030 |
+
+### What the readings say (deciding nothing)
+
+- **The hyperlink price is gone.** As an input beside today's graph, W2_S no longer costs hotpotqa or 2wiki
+  in-domain. On L-musique, Y (W2_S in place of the graph) lost hotpotqa by 0.054 (zrckp) and 0.069 (zspk), and 2wiki
+  by 0.017 and 0.027. U2h reads -0.0002 and -0.0015 on hotpotqa, and +0.0039 and +0.0023 on 2wiki. 2wiki is up on
+  all four reads, from +0.0023 to +0.0083.
+- **Y's musique gain mostly does not carry.** On L-musique (musique zero-shot), Y gained +0.016 (zrckp) and +0.014
+  (zspk) over base. zrckpw reads -0.0021 and zspkw +0.0059. Against Y directly, zrckpw's musique is -0.0184, which
+  reads as a LOSS. So the KT columns alone do not hold what W2_S gave musique.
+- **hotpotqa zero-shot** (L-hotpotqa) is -0.0069 and -0.0059. Both intervals are below 0, and both deltas are under
+  the margin.
+- **The MLP's share of the GNN's gain** is unchanged where that gain is large: about 1.00 on metaqa, hotpotqa and
+  2wiki. It falls on squad, from 1.05 and 1.11 to 0.76 and 0.71, but squad's GNN gain over RRF is 0.006 to 0.007, so
+  the share is unstable there. On L-musique it falls on musique, from 1.02 to 0.85, because zspkw gained musique and
+  zrckpw did not.
+- **KT_W per carve.** Base rows that are in KIND_T's order on W2_S: 0.941 to 0.974, and 1.0 on squad. Base rows whose
+  place differs between the graphs: 0.83 to 0.95. Base rows in the fill: 0.35 to 0.81 on W2_S, against 0.47 to 0.90
+  today (squad has none on either graph).
+
+### The copy, and what it got wrong
+
+Section 4 said each file's sha256 is taken at the download and checked again in workspace 4. That check compared
+workspace 4 with the downloaded bytes, not with the files' records.
+- Five of the 1,310 relayed binaries had the right length but not their records' bytes: metaqa fit's walk and walkf,
+  two of metaqa s1eval's tab_hotpotqa, and webqsp s1eval's walkf. Workspace 3's own copies match their records, so
+  the downloads had read them wrongly, without an error.
+- The first `--stage h-fits` stopped at the load on the first of these, because the loader checks every array against
+  its record. Nothing trained.
+- The five were downloaded again, matched their records, replaced in workspace 4, and hashed there. Every other relayed
+  binary has its sha256 named by a record: 1,305 of the base build's, and all 126 of Y's.
+- KT_W read none of the five.
+- The fits that were filed read the base fits' data.
+
+### Time and cost
+
+- KT_W: 59 shards in 671 s.
+- The four fits ran at once in 915 s wall. Each took 669 to 805 s on an L40S, at a peak of 5.9 GB of GPU memory.
+- Workspace 4's spend this month went from $19.91 after KT_W to $23.44 after the fits.
+
+### Next (section 7)
+
+The lean pair's full run with KT_W runs on six splits per arm, under grade-nullx, with zg6w beside it. It is declared
+in its own file. The full run reads musique on every split, which is where KT_W kept least of what W2_S gave. U2g's
+section 7 stands.

@@ -1,0 +1,56 @@
+{
+ "declared_in": "docs/U2H_W2S_BESIDE.md",
+ "stage": "U2h",
+ "build": "base",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "ktw": {
+   "sha256": "afd5cecb3fc5720dae027d49c5fd3366d0e5e64e7b7b432866f912dcaf268260",
+   "shape": [
+    12021002,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "0c0cb9bfd9d13db94ec7985c1faf7372eb1e3e060766ab390bf0f6b2c738be36",
+   "shape": [
+    5960
+   ]
+  }
+ },
+ "dataset": "metaqa",
+ "carve": "fit",
+ "questions": 5960,
+ "rows": 12021002,
+ "ids_sha256": "2e063498aa4236c9a599ab9cb5c568511397cd42e9c0569b013e71493b58c844",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of8": "ec2c2d6fa5fd71b8a643622466ecae14b67bf14e174a58c978c97c1ab6f557fb",
+  "part_1of8": "f44653a49c0e84089da500ef9453e11e817209961f63ea5d53fc419f624d6f96",
+  "part_2of8": "0a61f7656fa08b7ac4e95189153610fcfa5ac98f5b7b8d1b8c4d1af97b254b4b",
+  "part_3of8": "7357f2167d4951517c4cde41e3f73ad36a8a08102396d0f19706c5ab16232f9e",
+  "part_4of8": "daf16f91d24b2141ba889066b5f4cebaa207c7d66e829907084452adb3f1df72",
+  "part_5of8": "57198f73a7e1083180e0de5b24d041d47ad1c1f3ff84ed6f87904b8ffdf307f2",
+  "part_6of8": "d0879bc4f479db08da024dde2b74dd603a50e568d91c62602afe66e886108f4a",
+  "part_7of8": "8ffcadb77dadc637e0f5d1437c07849f4d59c7c42cf188a5ec2ef916a7238072"
+ },
+ "pools_manifest_sha256": "f71893c578746f1d6508d4b3cc7ed05aa923eea4ecd02fe1a73d9d1f0ae8fff4",
+ "pools_file_sha256": "a0df40812f0c62a7f9cbe5b30910482e55eecb6f693d26451b652b33afc69eeb",
+ "construction": "U2D:base:KIND_T",
+ "base_kt_record_sha256": "78a57dd1c6622306335813fd3b3e4519d3684950606a66bd24d69b5d079a4c38",
+ "source": "base's KT, byte for byte: metaqa and webqsp run on the KB in both builds",
+ "script_sha256": "c555e58fa709575f45a83cce15bcc18df2057f4880547ad8609d155627ac7ad0",
+ "utc": "2026-10-23T09:52:06Z"
+}

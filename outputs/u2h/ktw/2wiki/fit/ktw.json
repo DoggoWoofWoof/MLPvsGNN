@@ -1,0 +1,169 @@
+{
+ "declared_in": "docs/U2H_W2S_BESIDE.md",
+ "stage": "U2h",
+ "build": "base",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "ktw": {
+   "sha256": "ac291f302a9c5b49eb1f68c2bbee6d602695b4987b0841c89837f0b3d2569d9d",
+   "shape": [
+    628354,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "9f1603a9fd4a5ae88182a8997f10f25361a9eaaeec592442fe56cd390dc27fac",
+   "shape": [
+    5928
+   ]
+  }
+ },
+ "dataset": "2wiki",
+ "carve": "fit",
+ "questions": 5928,
+ "rows": 628354,
+ "ids_sha256": "2371edd866675eaaf38328bc19542f20d774eb2884de18cdcf6d3fd3eba87862",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of1": "9b8e5d7157492f317ad77b6e2134059c08532499b86860f92043e38707999431"
+ },
+ "pools_manifest_sha256": "0c09ab5cdeec12ee8b012e9caa9ba6a13be1eb8a573150ebc13c13294707250e",
+ "pools_file_sha256": "e670d6cee1d29db34a16edf6ba4f4e7713b8f619dd5ca900573d49bdd0ba2afd",
+ "construction": "U2D:base:KIND_T",
+ "base_kt_record_sha256": "0535758c49f20f36d0ba1492b6e24e103d6e796521ef93dacafaafdad5800968",
+ "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+ "y_manifest_sha256": "ba01b86f4110d02c3b9973dfe95a876252f18c0296683a010bdbc0fb3068fcbd",
+ "y_construction": "U2G:y:KIND_T",
+ "parts": [
+  {
+   "stem": "2wiki__fit__0of10",
+   "q0": 0,
+   "q1": 592,
+   "rows": 63620,
+   "ktw": "2832157ae99d0d825383903bdaa5c0ce2e8de15aca6c51133e7283f4e7290334"
+  },
+  {
+   "stem": "2wiki__fit__1of10",
+   "q0": 592,
+   "q1": 1185,
+   "rows": 62458,
+   "ktw": "652013264b0d7b556b90aad1e0740baa25f3e72f3a48311361c4b839f08658a7"
+  },
+  {
+   "stem": "2wiki__fit__2of10",
+   "q0": 1185,
+   "q1": 1778,
+   "rows": 63533,
+   "ktw": "85e1a874cdb688e2aa034f811cf089c984708659ad5466cfcb7bb450a7a6d5e4"
+  },
+  {
+   "stem": "2wiki__fit__3of10",
+   "q0": 1778,
+   "q1": 2371,
+   "rows": 63568,
+   "ktw": "f3d1fb20f9ea887f6d6a76804495d8da52b9700838bdebdd366edd39f3bd8969"
+  },
+  {
+   "stem": "2wiki__fit__4of10",
+   "q0": 2371,
+   "q1": 2964,
+   "rows": 62889,
+   "ktw": "872504a1ad73c11198d63106d58d9212d6a7c566feb1ce8487c8f56a8f35c326"
+  },
+  {
+   "stem": "2wiki__fit__5of10",
+   "q0": 2964,
+   "q1": 3556,
+   "rows": 63219,
+   "ktw": "a3f5fd988c543bc9bb0d7f7dea6ff7feb02ccdcde558a94b78e2de127ac2870b"
+  },
+  {
+   "stem": "2wiki__fit__6of10",
+   "q0": 3556,
+   "q1": 4149,
+   "rows": 62070,
+   "ktw": "265598a2f04d6bd74ade3b34929edb94e0dccf58b03ad1d4ad596582a6205d6f"
+  },
+  {
+   "stem": "2wiki__fit__7of10",
+   "q0": 4149,
+   "q1": 4742,
+   "rows": 62479,
+   "ktw": "f628620f1699ac7847b208154060695a924ca852f426b6bfdf54ca92c172d0c2"
+  },
+  {
+   "stem": "2wiki__fit__8of10",
+   "q0": 4742,
+   "q1": 5335,
+   "rows": 62777,
+   "ktw": "499edada0eaa77d63b45b659d114ce769197f61e8704d06e956477e6ecba5654"
+  },
+  {
+   "stem": "2wiki__fit__9of10",
+   "q0": 5335,
+   "q1": 5928,
+   "rows": 61741,
+   "ktw": "74aec7535470f31f9aafcd69288cb5bb971ee0f443c27425411c24ba71a593f9"
+  }
+ ],
+ "counts": {
+  "rows": 628354,
+  "y_rows": 960142,
+  "in_y_pool": 534766,
+  "in_kind_t_w2s": 591002,
+  "fill_w2s": 238310,
+  "questions": 5928,
+  "entity_differs_base": 0,
+  "route_differs_base": 0
+ },
+ "beside": {
+  "rows": 628354,
+  "in_kind_t": {
+   "today": 628354,
+   "w2s": 590995,
+   "both": 590995
+  },
+  "share_in_kind_t": {
+   "today": 1.0,
+   "w2s": 0.9405,
+   "both": 0.9405
+  },
+  "share_place_differs": {
+   "KIND_T": 0.9497,
+   "A1st": 0.9469,
+   "A1all": 0.9145,
+   "Kst": 0.5087,
+   "KTst": 0.6218,
+   "KTall": 0.5684
+  },
+  "share_kind_t_place_differs_where_in_both": 0.9466,
+  "share_fill": {
+   "today": 0.5282,
+   "w2s": 0.3793,
+   "both": 0.3793
+  },
+  "rows_kind_differs": 0,
+  "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+ },
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true,
+  "n_and_ids_are_base_kts": true
+ },
+ "script_sha256": "c555e58fa709575f45a83cce15bcc18df2057f4880547ad8609d155627ac7ad0",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "seconds": 7.5,
+ "utc": "2026-10-23T10:02:55Z"
+}

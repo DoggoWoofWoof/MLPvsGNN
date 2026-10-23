@@ -1,0 +1,61 @@
+{
+ "declared_in": "docs/U2H_W2S_BESIDE.md",
+ "stage": "U2h",
+ "build": "base",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "ktw": {
+   "sha256": "4bd7d40e4f4eb4e5dd1f1b999be91519fb06a4360fafa1f9defa268948e80cdf",
+   "shape": [
+    19742463,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "e8288263d2211d853d359c49aaea93c12dec16e708c7c748ed7daec46de9b328",
+   "shape": [
+    9785
+   ]
+  }
+ },
+ "dataset": "metaqa",
+ "carve": "s1eval",
+ "questions": 9785,
+ "rows": 19742463,
+ "ids_sha256": "982d5e37797c27fdeb989ac2e6fb21b803cb570e55593c5de00be50c062d89fb",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of13": "90b6928b97d0c831ae81e0d61c611cdad667fce26be381a02f9e98355c9f5242",
+  "part_1of13": "31cf3502ebc7b511ad1ef88d058f8c48698179b04c1c810b43361aa9ca28e018",
+  "part_2of13": "207dc51009c46e75386f88a0d629728def02f183757301e388603fec5b634d64",
+  "part_3of13": "8197d081a25ca13c78e45f0c80b7f12ce5413cb6f6ac6eef29a8b7a9777d5f66",
+  "part_4of13": "1666b8a083908e25c3c17e3b1fafd48e9af51b65fd0919507e750a289ec234f9",
+  "part_5of13": "629425da694c2cd8f7aa1a757bb71ae7f8409aa0c24b43f33825eecacbceb89e",
+  "part_6of13": "882ea92e9590846eeb8c45a5c7ec9d36b9bfd512828bc54cae5e1bc2c476dc01",
+  "part_7of13": "15d81d4c51024107efc114325c455084b4cbc5ad92de0ffd0df701ba8ad8d3b8",
+  "part_8of13": "f34f188a6f203e58c7a008befb3962a0039d083fb55b00785b8a41031d08b3f2",
+  "part_9of13": "2a9685299fceee9aa96bc88a2d20005b5cc3165d0235aefe4f3fda4586359135",
+  "part_10of13": "8993a38cc774fa090094fbe2c94277ed021a56ef430bb0739e599f65ab2f6fe6",
+  "part_11of13": "6cc7851d0b25f35164cb408547c631c8eb7a52a2e753f42c852d751866abffc0",
+  "part_12of13": "e39062e7f030c033846bdb7cc0f864b44d0224d7db3d928110c5981c7370df42"
+ },
+ "pools_manifest_sha256": "f71893c578746f1d6508d4b3cc7ed05aa923eea4ecd02fe1a73d9d1f0ae8fff4",
+ "pools_file_sha256": "a624d2d959dabcd981e458f43c79195812b4f90fc8d4c0c69970389253b7e6ff",
+ "construction": "U2D:base:KIND_T",
+ "base_kt_record_sha256": "23ac5dbc86dcffca4f1acd26672dea67eec94a765205d47c68322630087ae295",
+ "source": "base's KT, byte for byte: metaqa and webqsp run on the KB in both builds",
+ "script_sha256": "c555e58fa709575f45a83cce15bcc18df2057f4880547ad8609d155627ac7ad0",
+ "utc": "2026-10-23T09:52:07Z"
+}

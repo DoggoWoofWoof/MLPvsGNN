@@ -1,0 +1,162 @@
+{
+ "declared_in": "docs/U2H_W2S_BESIDE.md",
+ "stage": "U2h",
+ "build": "base",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "ktw": {
+   "sha256": "9878a834d6f44f2753a8b6b1fcefdddf98f0670a4a00091b2d5c1c047f82e520",
+   "shape": [
+    557195,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "94c7e90dda2069c5097717fbe250a98deda71db0a0db8be825f9fd21fccfe767",
+   "shape": [
+    5930
+   ]
+  }
+ },
+ "dataset": "hotpotqa",
+ "carve": "fit",
+ "questions": 5930,
+ "rows": 557195,
+ "ids_sha256": "1f98a9779f1acefad6d69f34899850d6ec3b02939e8a6a3a605ba893f203bf1a",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of1": "fc9016ecfeae3b5bd3e7db9cf8d86fc22f3a6ce712d243dc76e6f135452c3a4a"
+ },
+ "pools_manifest_sha256": "5a967c172ebf423c636b209e9f4a6b306e58c304063ab98f31a7767322cbce6f",
+ "pools_file_sha256": "f556538faf63f253bc29aa86947e440ad65f3bc177102b8d8916a8f8e343a7dc",
+ "construction": "U2D:base:KIND_T",
+ "base_kt_record_sha256": "c5080c6416bfecb77643f0e53f28bc25b4ae88349e17e1bfee0bb40eec624818",
+ "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+ "y_manifest_sha256": "b301450f41d53c0cff0c86bd39c3f2668418e82b383dd24073d14ac7af9f5cb7",
+ "y_construction": "U2G:y:KIND_T",
+ "parts": [
+  {
+   "stem": "hotpotqa__fit__0of9",
+   "q0": 0,
+   "q1": 658,
+   "rows": 61922,
+   "ktw": "50f828fd5e1903e29addc4008f6b10dadb046cf367e648bfb8b1c92c24d6320b"
+  },
+  {
+   "stem": "hotpotqa__fit__1of9",
+   "q0": 658,
+   "q1": 1317,
+   "rows": 62359,
+   "ktw": "7865e58ec1f4fa19a138e4f56c30fe9b550ad0432aa61eb27fa27b392414aca5"
+  },
+  {
+   "stem": "hotpotqa__fit__2of9",
+   "q0": 1317,
+   "q1": 1976,
+   "rows": 62374,
+   "ktw": "dfc99a9766fed7e970d3c2a7f89cdbd4f7aea564ab76fc88a3469d29d8a62174"
+  },
+  {
+   "stem": "hotpotqa__fit__3of9",
+   "q0": 1976,
+   "q1": 2635,
+   "rows": 62422,
+   "ktw": "8f3269aa6ae3cac6fc7a3a60f2be9eb243cfa839fd28ab2a226e7229f2620cc1"
+  },
+  {
+   "stem": "hotpotqa__fit__4of9",
+   "q0": 2635,
+   "q1": 3294,
+   "rows": 61395,
+   "ktw": "03436f8a6b3abf4138af59e1c566052986acb8f98a7da233bf2a92b118f4d379"
+  },
+  {
+   "stem": "hotpotqa__fit__5of9",
+   "q0": 3294,
+   "q1": 3953,
+   "rows": 61573,
+   "ktw": "b06b354a361dc35af36bcb5a46360a8ee532fa0a30bf2488f66664203427c171"
+  },
+  {
+   "stem": "hotpotqa__fit__6of9",
+   "q0": 3953,
+   "q1": 4612,
+   "rows": 62853,
+   "ktw": "c523c9a7b0912c7624b3ab4bf7d9ac93124424c0010482ccc3584d9c3a062da2"
+  },
+  {
+   "stem": "hotpotqa__fit__7of9",
+   "q0": 4612,
+   "q1": 5271,
+   "rows": 61254,
+   "ktw": "48a9eea54811598d5f59c5d47f4375a09bbda2199f3e32d5ce54d6bd44c8cffc"
+  },
+  {
+   "stem": "hotpotqa__fit__8of9",
+   "q0": 5271,
+   "q1": 5930,
+   "rows": 61043,
+   "ktw": "9ed7d480b01ea91ed8e65eb0c1b9a0deadde0caf69cc97f9cbb47b9b2dd42769"
+  }
+ ],
+ "counts": {
+  "rows": 557195,
+  "y_rows": 703446,
+  "in_y_pool": 494174,
+  "in_kind_t_w2s": 542762,
+  "fill_w2s": 197530,
+  "questions": 5930,
+  "entity_differs_base": 0,
+  "route_differs_base": 0
+ },
+ "beside": {
+  "rows": 557195,
+  "in_kind_t": {
+   "today": 557195,
+   "w2s": 542759,
+   "both": 542759
+  },
+  "share_in_kind_t": {
+   "today": 1.0,
+   "w2s": 0.9741,
+   "both": 0.9741
+  },
+  "share_place_differs": {
+   "KIND_T": 0.9129,
+   "A1st": 0.9411,
+   "A1all": 0.892,
+   "Kst": 0.5769,
+   "KTst": 0.6411,
+   "KTall": 0.6119
+  },
+  "share_kind_t_place_differs_where_in_both": 0.9106,
+  "share_fill": {
+   "today": 0.4676,
+   "w2s": 0.3545,
+   "both": 0.3545
+  },
+  "rows_kind_differs": 0,
+  "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+ },
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true,
+  "n_and_ids_are_base_kts": true
+ },
+ "script_sha256": "c555e58fa709575f45a83cce15bcc18df2057f4880547ad8609d155627ac7ad0",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "seconds": 10.7,
+ "utc": "2026-10-23T10:02:57Z"
+}

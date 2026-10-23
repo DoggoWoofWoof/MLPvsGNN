@@ -1,0 +1,108 @@
+{
+ "declared_in": "docs/U2H_W2S_BESIDE.md",
+ "stage": "U2h",
+ "build": "base",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "ktw": {
+   "sha256": "01f6e80b98e7df8c9d68bffbd7936f53f9e918ea476653b387547d6eb577d7b1",
+   "shape": [
+    5057436,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "f1858be4136a7a1fdf6c2e3590d6082ae04e604e6aa22a43f555aa5278efacd3",
+   "shape": [
+    2417
+   ]
+  }
+ },
+ "dataset": "musique",
+ "carve": "s1eval",
+ "questions": 2417,
+ "rows": 5057436,
+ "ids_sha256": "43399dd0c77011fe9afca9aaa5069603d16219e58e801b3c022884e3f6bf5b02",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of3": "6031cc811b37a6a41a50aa78aa4eeeb73c9984456d14ffca620ad70f41952d75",
+  "part_1of3": "81b04d745fdacca49d2a4887217f6be5a72cb61b8fef99c7def71812f86da1f4",
+  "part_2of3": "b46627df922ed9034c75eecfcd32d65c109b1a69c50f2170beb2c1abe5070e59"
+ },
+ "pools_manifest_sha256": "fe1359ee7b37c163be0398b893389a2f4a1287ed024d18cf91d3f4bc101bc826",
+ "pools_file_sha256": "c26e6cda48d878f4606db1aa51c272bb0b4cbdb120c414d1b5e6f82d9d66ad82",
+ "construction": "U2D:base:KIND_T",
+ "base_kt_record_sha256": "325f823f9ed89de97d73254872d73fd71a24d32cbf758384ee16b845e8992a26",
+ "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+ "y_manifest_sha256": "78fb5d711c8fd8c78094de8f05db1e1d0cb12dff9dd250fe6be587ed48138068",
+ "y_construction": "U2G:y:KIND_T",
+ "parts": [
+  {
+   "stem": "musique__s1eval__0of1",
+   "q0": 0,
+   "q1": 2417,
+   "rows": 5057436,
+   "ktw": "01f6e80b98e7df8c9d68bffbd7936f53f9e918ea476653b387547d6eb577d7b1"
+  }
+ ],
+ "counts": {
+  "rows": 5057436,
+  "y_rows": 4980690,
+  "in_y_pool": 4563991,
+  "in_kind_t_w2s": 4777826,
+  "fill_w2s": 4080591,
+  "questions": 2417,
+  "entity_differs_base": 0,
+  "route_differs_base": 0
+ },
+ "beside": {
+  "rows": 5057436,
+  "in_kind_t": {
+   "today": 5057436,
+   "w2s": 4777705,
+   "both": 4777705
+  },
+  "share_in_kind_t": {
+   "today": 1.0,
+   "w2s": 0.9447,
+   "both": 0.9447
+  },
+  "share_place_differs": {
+   "KIND_T": 0.9522,
+   "A1st": 0.8598,
+   "A1all": 0.8367,
+   "Kst": 0.3455,
+   "KTst": 0.3574,
+   "KTall": 0.4176
+  },
+  "share_kind_t_place_differs_where_in_both": 0.9494,
+  "share_fill": {
+   "today": 0.9044,
+   "w2s": 0.8068,
+   "both": 0.8068
+  },
+  "rows_kind_differs": 0,
+  "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+ },
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true,
+  "n_and_ids_are_base_kts": true
+ },
+ "script_sha256": "c555e58fa709575f45a83cce15bcc18df2057f4880547ad8609d155627ac7ad0",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "seconds": 4.5,
+ "utc": "2026-10-23T10:02:50Z"
+}

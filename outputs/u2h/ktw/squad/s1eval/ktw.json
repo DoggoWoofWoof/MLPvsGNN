@@ -1,0 +1,120 @@
+{
+ "declared_in": "docs/U2H_W2S_BESIDE.md",
+ "stage": "U2h",
+ "build": "base",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "ktw": {
+   "sha256": "fb82f2a01506bde3d3c4f87e0f01f75ffae26e60c7e2b690b161ca9fb7e588da",
+   "shape": [
+    594063,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "fccca43851716f3222713362c56e1c66e059a3830a54291f95628f57a3eafb72",
+   "shape": [
+    11873
+   ]
+  }
+ },
+ "dataset": "squad",
+ "carve": "s1eval",
+ "questions": 11873,
+ "rows": 594063,
+ "ids_sha256": "7349fbc9253b9e0aebbfe68e62205c201c2a592015b03b8c6ee65a505a5775ec",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of1": "b2035387594f9f705faa27e207f98286748b514214c3bb2ee62c4525ad40d958"
+ },
+ "pools_manifest_sha256": "4ff3f2f76e16efff3fe2bb9570155e47c6ef612323505e62ff7f646bac21b30c",
+ "pools_file_sha256": "b9dc0708fe265b809093af60aad3135cd589bfbb492fddbf3cefcdc7158562d1",
+ "construction": "U2D:base:KIND_T",
+ "base_kt_record_sha256": "d7c1d1fa4a5c659019ab5bbdabf589f69a97c6395528082700d1ea855c9e87eb",
+ "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+ "y_manifest_sha256": "0ac461244cc1509210088a7e75f8aed1c6e131a13da0e09e32d02543926a5848",
+ "y_construction": "U2G:y:KIND_T",
+ "parts": [
+  {
+   "stem": "squad__s1eval__0of3",
+   "q0": 0,
+   "q1": 3957,
+   "rows": 197979,
+   "ktw": "8268b797ce1e734e6a8d8fe2a8173e161ccc72781f164f40c2063844736e6e93"
+  },
+  {
+   "stem": "squad__s1eval__1of3",
+   "q0": 3957,
+   "q1": 7915,
+   "rows": 198043,
+   "ktw": "89b73a319099094b4f15b07a9fd061413025d9eace2112f6700a34198e804bba"
+  },
+  {
+   "stem": "squad__s1eval__2of3",
+   "q0": 7915,
+   "q1": 11873,
+   "rows": 198041,
+   "ktw": "e0ed1e443ceff6c64f09ce26ee57b4e8b908f103fe0c1073c37e72ac5761b69a"
+  }
+ ],
+ "counts": {
+  "rows": 594063,
+  "y_rows": 594063,
+  "in_y_pool": 594063,
+  "in_kind_t_w2s": 594063,
+  "fill_w2s": 0,
+  "questions": 11873,
+  "entity_differs_base": 0,
+  "route_differs_base": 0
+ },
+ "beside": {
+  "rows": 594063,
+  "in_kind_t": {
+   "today": 594063,
+   "w2s": 594063,
+   "both": 594063
+  },
+  "share_in_kind_t": {
+   "today": 1.0,
+   "w2s": 1.0,
+   "both": 1.0
+  },
+  "share_place_differs": {
+   "KIND_T": 0.8461,
+   "A1st": 0.9108,
+   "A1all": 0.8078,
+   "Kst": 0.0,
+   "KTst": 0.0,
+   "KTall": 0.0
+  },
+  "share_kind_t_place_differs_where_in_both": 0.8461,
+  "share_fill": {
+   "today": 0.0,
+   "w2s": 0.0,
+   "both": 0.0
+  },
+  "rows_kind_differs": 0,
+  "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+ },
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true,
+  "n_and_ids_are_base_kts": true
+ },
+ "script_sha256": "c555e58fa709575f45a83cce15bcc18df2057f4880547ad8609d155627ac7ad0",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "seconds": 1.4,
+ "utc": "2026-10-23T10:02:43Z"
+}

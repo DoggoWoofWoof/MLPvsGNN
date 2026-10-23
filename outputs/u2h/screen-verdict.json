@@ -1,0 +1,1193 @@
+{
+ "stage": "U2h",
+ "declared_in": "docs/U2H_W2S_BESIDE.md",
+ "rule": "ADOPT_FOR_FULL_RUN when no arm's re-call under U2d's seed null has a LOSS on any of its twelve reads and the arms together have at least one GAIN; NO_LOSS when no read is a LOSS and none a GAIN; NOT_ADOPTED when any read is a LOSS; INCOMPLETE when a re-call is missing, is not U2h's, does not hold twelve reads, or its fits ran on different devices (docs/U2H_W2S_BESIDE.md, section 5)",
+ "verdicts": {
+  "H": "ADOPT_FOR_FULL_RUN"
+ },
+ "full_run": "the lean pair's full run with KT_W (six splits per arm, under grade-nullx), declared in its own file, with zg6 on the same input (zg6w) beside it",
+ "next_forms": [
+  "the lean pair's full run with KT_W (six splits per arm, under grade-nullx), declared in its own file, with zg6 on the same input (zg6w) beside it",
+  "U2g's section 7 stands: the links chosen by the lean pair's R@5, then X, when credit or the host allows"
+ ],
+ "decisions": {
+  "H": {
+   "decision": "H",
+   "asks": "W2_S's KT columns beside today's graph, as an input to the lean pair",
+   "verdict": "ADOPT_FOR_FULL_RUN",
+   "gains": [
+    "zrckpw L-hotpotqa 2wiki"
+   ],
+   "losses": [],
+   "problems": [],
+   "arms": {
+    "zrckpw": "zrckpw (KT_W beside KT, on U2d's base build) against zrckp on U2d's base build (today's graph, P1c2's rule)",
+    "zspkw": "zspkw (KT_W beside KT, on U2d's base build) against zspk on U2d's base build (today's graph, P1c2's rule)"
+   },
+   "calls": {
+    "zrckpw L-musique metaqa": "WITHIN",
+    "zrckpw L-musique squad": "WITHIN",
+    "zrckpw L-musique musique": "WITHIN",
+    "zrckpw L-musique hotpotqa": "WITHIN",
+    "zrckpw L-musique 2wiki": "WITHIN",
+    "zrckpw L-musique webqsp": "WITHIN",
+    "zrckpw L-hotpotqa metaqa": "WITHIN",
+    "zrckpw L-hotpotqa squad": "WITHIN",
+    "zrckpw L-hotpotqa musique": "WITHIN",
+    "zrckpw L-hotpotqa hotpotqa": "WITHIN",
+    "zrckpw L-hotpotqa 2wiki": "GAIN",
+    "zrckpw L-hotpotqa webqsp": "WITHIN",
+    "zspkw L-musique metaqa": "WITHIN",
+    "zspkw L-musique squad": "WITHIN",
+    "zspkw L-musique musique": "WITHIN",
+    "zspkw L-musique hotpotqa": "WITHIN",
+    "zspkw L-musique 2wiki": "WITHIN",
+    "zspkw L-musique webqsp": "WITHIN",
+    "zspkw L-hotpotqa metaqa": "WITHIN",
+    "zspkw L-hotpotqa squad": "WITHIN",
+    "zspkw L-hotpotqa musique": "WITHIN",
+    "zspkw L-hotpotqa hotpotqa": "WITHIN",
+    "zspkw L-hotpotqa 2wiki": "WITHIN",
+    "zspkw L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "zrckpw L-musique metaqa": -0.0001,
+    "zrckpw L-musique squad": -0.0015,
+    "zrckpw L-musique musique": -0.0021,
+    "zrckpw L-musique hotpotqa": -0.0002,
+    "zrckpw L-musique 2wiki": 0.0039,
+    "zrckpw L-musique webqsp": -0.0003,
+    "zrckpw L-hotpotqa metaqa": 0.0011,
+    "zrckpw L-hotpotqa squad": -0.0019,
+    "zrckpw L-hotpotqa musique": 0.0039,
+    "zrckpw L-hotpotqa hotpotqa": -0.0069,
+    "zrckpw L-hotpotqa 2wiki": 0.0078,
+    "zrckpw L-hotpotqa webqsp": -0.0057,
+    "zspkw L-musique metaqa": 0.0011,
+    "zspkw L-musique squad": 0.0004,
+    "zspkw L-musique musique": 0.0059,
+    "zspkw L-musique hotpotqa": -0.0015,
+    "zspkw L-musique 2wiki": 0.0023,
+    "zspkw L-musique webqsp": 0.003,
+    "zspkw L-hotpotqa metaqa": 0.0009,
+    "zspkw L-hotpotqa squad": 0.0008,
+    "zspkw L-hotpotqa musique": -0.0018,
+    "zspkw L-hotpotqa hotpotqa": -0.0059,
+    "zspkw L-hotpotqa 2wiki": 0.0083,
+    "zspkw L-hotpotqa webqsp": -0.003
+   }
+  }
+ },
+ "recalled": [
+  "H zrckpw",
+  "H zspkw"
+ ],
+ "beside": {
+  "metrics": {
+   "scr-u2h-zrckpw": {
+    "metaqa": [
+     0.8007,
+     0.6841,
+     0.9164
+    ],
+    "squad": [
+     0.9106,
+     0.9106,
+     0.7509
+    ],
+    "musique": [
+     0.5131,
+     0.1887,
+     0.7071
+    ],
+    "hotpotqa": [
+     0.9053,
+     0.8454,
+     0.8425
+    ],
+    "2wiki": [
+     0.9384,
+     0.8511,
+     0.9698
+    ],
+    "webqsp": [
+     0.3558,
+     0.2861,
+     0.1397
+    ]
+   },
+   "scr-u2d-base-zrckp": {
+    "metaqa": [
+     0.8008,
+     0.6842,
+     0.9139
+    ],
+    "squad": [
+     0.9121,
+     0.9121,
+     0.7483
+    ],
+    "musique": [
+     0.5153,
+     0.1953,
+     0.6947
+    ],
+    "hotpotqa": [
+     0.9055,
+     0.8454,
+     0.8344
+    ],
+    "2wiki": [
+     0.9345,
+     0.8402,
+     0.9712
+    ],
+    "webqsp": [
+     0.3561,
+     0.2841,
+     0.145
+    ]
+   },
+   "scr-u2g-y-zrckp": {
+    "metaqa": [
+     0.8009,
+     0.6842,
+     0.9152
+    ],
+    "squad": [
+     0.9132,
+     0.9132,
+     0.7507
+    ],
+    "musique": [
+     0.5315,
+     0.2085,
+     0.6992
+    ],
+    "hotpotqa": [
+     0.8512,
+     0.7371,
+     0.8375
+    ],
+    "2wiki": [
+     0.9171,
+     0.7957,
+     0.9763
+    ],
+    "webqsp": [
+     0.3523,
+     0.2808,
+     0.1404
+    ]
+   },
+   "scr-u2h-zspkw": {
+    "metaqa": [
+     0.8033,
+     0.6873,
+     0.9216
+    ],
+    "squad": [
+     0.9122,
+     0.9122,
+     0.748
+    ],
+    "musique": [
+     0.5202,
+     0.2056,
+     0.6661
+    ],
+    "hotpotqa": [
+     0.9074,
+     0.8497,
+     0.8463
+    ],
+    "2wiki": [
+     0.9369,
+     0.846,
+     0.9707
+    ],
+    "webqsp": [
+     0.3192,
+     0.2475,
+     0.1896
+    ]
+   },
+   "scr-u2d-base-zspk": {
+    "metaqa": [
+     0.8021,
+     0.6862,
+     0.9197
+    ],
+    "squad": [
+     0.9118,
+     0.9118,
+     0.7461
+    ],
+    "musique": [
+     0.5143,
+     0.1982,
+     0.6731
+    ],
+    "hotpotqa": [
+     0.9088,
+     0.8521,
+     0.8573
+    ],
+    "2wiki": [
+     0.9346,
+     0.8424,
+     0.9703
+    ],
+    "webqsp": [
+     0.3162,
+     0.2448,
+     0.1823
+    ]
+   },
+   "scr-u2g-y-zspk": {
+    "metaqa": [
+     0.8023,
+     0.6862,
+     0.9216
+    ],
+    "squad": [
+     0.911,
+     0.911,
+     0.7523
+    ],
+    "musique": [
+     0.5286,
+     0.2019,
+     0.6905
+    ],
+    "hotpotqa": [
+     0.8394,
+     0.7153,
+     0.8439
+    ],
+    "2wiki": [
+     0.9072,
+     0.7688,
+     0.9774
+    ],
+    "webqsp": [
+     0.3009,
+     0.2342,
+     0.179
+    ]
+   },
+   "scr-u2h-zrckpw-hp": {
+    "metaqa": [
+     0.8043,
+     0.6875,
+     0.9268
+    ],
+    "squad": [
+     0.9105,
+     0.9105,
+     0.7499
+    ],
+    "musique": [
+     0.5736,
+     0.2569,
+     0.712
+    ],
+    "hotpotqa": [
+     0.8469,
+     0.7337,
+     0.8081
+    ],
+    "2wiki": [
+     0.9381,
+     0.8462,
+     0.9699
+    ],
+    "webqsp": [
+     0.3312,
+     0.2661,
+     0.1178
+    ]
+   },
+   "scr-u2d-base-zrckp-hp": {
+    "metaqa": [
+     0.8033,
+     0.6863,
+     0.9239
+    ],
+    "squad": [
+     0.9124,
+     0.9124,
+     0.75
+    ],
+    "musique": [
+     0.5697,
+     0.2511,
+     0.7195
+    ],
+    "hotpotqa": [
+     0.8538,
+     0.7463,
+     0.8047
+    ],
+    "2wiki": [
+     0.9303,
+     0.8244,
+     0.9699
+    ],
+    "webqsp": [
+     0.337,
+     0.2748,
+     0.1238
+    ]
+   },
+   "scr-u2g-y-zrckp-hp": {
+    "metaqa": [
+     0.8046,
+     0.6884,
+     0.9274
+    ],
+    "squad": [
+     0.9146,
+     0.9146,
+     0.7535
+    ],
+    "musique": [
+     0.5766,
+     0.2524,
+     0.729
+    ],
+    "hotpotqa": [
+     0.8055,
+     0.652,
+     0.812
+    ],
+    "2wiki": [
+     0.9218,
+     0.8049,
+     0.9816
+    ],
+    "webqsp": [
+     0.3369,
+     0.2675,
+     0.1331
+    ]
+   },
+   "scr-u2h-zspkw-hp": {
+    "metaqa": [
+     0.8053,
+     0.6888,
+     0.9298
+    ],
+    "squad": [
+     0.9126,
+     0.9126,
+     0.7508
+    ],
+    "musique": [
+     0.5782,
+     0.2524,
+     0.7431
+    ],
+    "hotpotqa": [
+     0.8454,
+     0.7305,
+     0.8057
+    ],
+    "2wiki": [
+     0.9373,
+     0.8432,
+     0.98
+    ],
+    "webqsp": [
+     0.2743,
+     0.2089,
+     0.1477
+    ]
+   },
+   "scr-u2d-base-zspk-hp": {
+    "metaqa": [
+     0.8043,
+     0.688,
+     0.929
+    ],
+    "squad": [
+     0.9117,
+     0.9117,
+     0.7492
+    ],
+    "musique": [
+     0.58,
+     0.259,
+     0.7286
+    ],
+    "hotpotqa": [
+     0.8512,
+     0.7429,
+     0.8099
+    ],
+    "2wiki": [
+     0.929,
+     0.8232,
+     0.9738
+    ],
+    "webqsp": [
+     0.2773,
+     0.2122,
+     0.1477
+    ]
+   },
+   "scr-u2g-y-zspk-hp": {
+    "metaqa": [
+     0.805,
+     0.689,
+     0.9303
+    ],
+    "squad": [
+     0.9145,
+     0.9145,
+     0.7498
+    ],
+    "musique": [
+     0.5807,
+     0.2586,
+     0.7435
+    ],
+    "hotpotqa": [
+     0.7966,
+     0.6394,
+     0.8031
+    ],
+    "2wiki": [
+     0.9212,
+     0.8044,
+     0.9822
+    ],
+    "webqsp": [
+     0.2674,
+     0.2049,
+     0.145
+    ]
+   }
+  },
+  "rrf": {
+   "L-musique": {
+    "metaqa": [
+     0.0047,
+     0.0026,
+     0.0008
+    ],
+    "squad": [
+     0.9054,
+     0.9054,
+     0.7335
+    ],
+    "musique": [
+     0.4734,
+     0.1353,
+     0.633
+    ],
+    "hotpotqa": [
+     0.6846,
+     0.424,
+     0.8277
+    ],
+    "2wiki": [
+     0.6079,
+     0.2536,
+     0.8747
+    ],
+    "webqsp": [
+     0.0535,
+     0.0379,
+     0.0459
+    ]
+   },
+   "L-hotpotqa": {
+    "metaqa": [
+     0.0047,
+     0.0026,
+     0.0008
+    ],
+    "squad": [
+     0.9054,
+     0.9054,
+     0.7335
+    ],
+    "musique": [
+     0.4734,
+     0.1353,
+     0.633
+    ],
+    "hotpotqa": [
+     0.6846,
+     0.424,
+     0.8277
+    ],
+    "2wiki": [
+     0.6079,
+     0.2536,
+     0.8747
+    ],
+    "webqsp": [
+     0.0535,
+     0.0379,
+     0.0459
+    ]
+   }
+  },
+  "mlp_share": {
+   "u2h L-musique metaqa": 0.9967,
+   "base L-musique metaqa": 0.9984,
+   "u2h L-musique squad": 0.7647,
+   "base L-musique squad": 1.0469,
+   "u2h L-musique musique": 0.8483,
+   "base L-musique musique": 1.0244,
+   "u2h L-musique hotpotqa": 0.9906,
+   "base L-musique hotpotqa": 0.9853,
+   "u2h L-musique 2wiki": 1.0046,
+   "base L-musique 2wiki": 0.9997,
+   "u2h L-musique webqsp": 1.1377,
+   "base L-musique webqsp": 1.1519,
+   "u2h L-hotpotqa metaqa": 0.9988,
+   "base L-hotpotqa metaqa": 0.9987,
+   "u2h L-hotpotqa squad": 0.7083,
+   "base L-hotpotqa squad": 1.1111,
+   "u2h L-hotpotqa musique": 0.9561,
+   "base L-hotpotqa musique": 0.9034,
+   "u2h L-hotpotqa hotpotqa": 1.0093,
+   "base L-hotpotqa hotpotqa": 1.0156,
+   "u2h L-hotpotqa 2wiki": 1.0024,
+   "base L-hotpotqa 2wiki": 1.004,
+   "u2h L-hotpotqa webqsp": 1.2577,
+   "base L-hotpotqa webqsp": 1.2668
+  },
+  "share_min": 0.002,
+  "headline_hit1": {
+   "metaqa": {
+    "hit1_cap": 0.9976,
+    "r5_cap": 0.8273,
+    "scr-u2h-zrckpw": {
+     "r5": 0.8007,
+     "hit1": 0.9164
+    },
+    "scr-u2d-base-zrckp": {
+     "r5": 0.8008,
+     "hit1": 0.9139
+    },
+    "scr-u2h-zspkw": {
+     "r5": 0.8033,
+     "hit1": 0.9216
+    },
+    "scr-u2d-base-zspk": {
+     "r5": 0.8021,
+     "hit1": 0.9197
+    },
+    "scr-u2h-zrckpw-hp": {
+     "r5": 0.8043,
+     "hit1": 0.9268
+    },
+    "scr-u2d-base-zrckp-hp": {
+     "r5": 0.8033,
+     "hit1": 0.9239
+    },
+    "scr-u2h-zspkw-hp": {
+     "r5": 0.8053,
+     "hit1": 0.9298
+    },
+    "scr-u2d-base-zspk-hp": {
+     "r5": 0.8043,
+     "hit1": 0.929
+    }
+   },
+   "webqsp": {
+    "hit1_cap": 0.9667,
+    "r5_cap": 0.8342,
+    "scr-u2h-zrckpw": {
+     "r5": 0.3558,
+     "hit1": 0.1397
+    },
+    "scr-u2d-base-zrckp": {
+     "r5": 0.3561,
+     "hit1": 0.145
+    },
+    "scr-u2h-zspkw": {
+     "r5": 0.3192,
+     "hit1": 0.1896
+    },
+    "scr-u2d-base-zspk": {
+     "r5": 0.3162,
+     "hit1": 0.1823
+    },
+    "scr-u2h-zrckpw-hp": {
+     "r5": 0.3312,
+     "hit1": 0.1178
+    },
+    "scr-u2d-base-zrckp-hp": {
+     "r5": 0.337,
+     "hit1": 0.1238
+    },
+    "scr-u2h-zspkw-hp": {
+     "r5": 0.2743,
+     "hit1": 0.1477
+    },
+    "scr-u2d-base-zspk-hp": {
+     "r5": 0.2773,
+     "hit1": 0.1477
+    }
+   }
+  },
+  "vy_readings": {
+   "zrckpw L-musique metaqa": {
+    "delta": -0.0002,
+    "lo": -0.0011,
+    "hi": 0.0007,
+    "call": "WITHIN",
+    "floor": 0.0075,
+    "reading": "WITHIN"
+   },
+   "zrckpw L-musique squad": {
+    "delta": -0.0026,
+    "lo": -0.0048,
+    "hi": -0.0005,
+    "call": "WITHIN",
+    "floor": 0.0075,
+    "reading": "WITHIN"
+   },
+   "zrckpw L-musique musique": {
+    "delta": -0.0184,
+    "lo": -0.0249,
+    "hi": -0.0123,
+    "call": "LOSS",
+    "floor": 0.0136,
+    "reading": "LOSS"
+   },
+   "zrckpw L-musique hotpotqa": {
+    "delta": 0.054,
+    "lo": 0.0494,
+    "hi": 0.0585,
+    "call": "GAIN",
+    "floor": 0.0075,
+    "reading": "GAIN"
+   },
+   "zrckpw L-musique 2wiki": {
+    "delta": 0.0213,
+    "lo": 0.0185,
+    "hi": 0.0241,
+    "call": "GAIN",
+    "floor": 0.0075,
+    "reading": "GAIN"
+   },
+   "zrckpw L-musique webqsp": {
+    "delta": 0.0035,
+    "lo": -0.007,
+    "hi": 0.0145,
+    "call": "WITHIN",
+    "floor": 0.0182,
+    "reading": "WITHIN"
+   },
+   "zrckpw L-hotpotqa metaqa": {
+    "delta": -0.0003,
+    "lo": -0.0012,
+    "hi": 0.0006,
+    "call": "WITHIN",
+    "floor": 0.0075,
+    "reading": "WITHIN"
+   },
+   "zrckpw L-hotpotqa squad": {
+    "delta": -0.0041,
+    "lo": -0.0061,
+    "hi": -0.0021,
+    "call": "WITHIN",
+    "floor": 0.0075,
+    "reading": "WITHIN"
+   },
+   "zrckpw L-hotpotqa musique": {
+    "delta": -0.003,
+    "lo": -0.0091,
+    "hi": 0.0026,
+    "call": "WITHIN",
+    "floor": 0.012,
+    "reading": "WITHIN"
+   },
+   "zrckpw L-hotpotqa hotpotqa": {
+    "delta": 0.0415,
+    "lo": 0.0373,
+    "hi": 0.0459,
+    "call": "GAIN",
+    "floor": 0.0083,
+    "reading": "GAIN"
+   },
+   "zrckpw L-hotpotqa 2wiki": {
+    "delta": 0.0163,
+    "lo": 0.0138,
+    "hi": 0.0191,
+    "call": "GAIN",
+    "floor": 0.0075,
+    "reading": "GAIN"
+   },
+   "zrckpw L-hotpotqa webqsp": {
+    "delta": -0.0057,
+    "lo": -0.0172,
+    "hi": 0.0064,
+    "call": "WITHIN",
+    "floor": 0.0322,
+    "reading": "WITHIN"
+   },
+   "zspkw L-musique metaqa": {
+    "delta": 0.0009,
+    "lo": -0.0001,
+    "hi": 0.002,
+    "call": "WITHIN",
+    "floor": 0.0075,
+    "reading": "WITHIN"
+   },
+   "zspkw L-musique squad": {
+    "delta": 0.0013,
+    "lo": -0.001,
+    "hi": 0.0035,
+    "call": "WITHIN",
+    "floor": 0.0075,
+    "reading": "WITHIN"
+   },
+   "zspkw L-musique musique": {
+    "delta": -0.0083,
+    "lo": -0.0153,
+    "hi": -0.0014,
+    "call": "LOSS",
+    "floor": 0.0089,
+    "reading": "WITHIN"
+   },
+   "zspkw L-musique hotpotqa": {
+    "delta": 0.0679,
+    "lo": 0.0631,
+    "hi": 0.0727,
+    "call": "GAIN",
+    "floor": 0.0075,
+    "reading": "GAIN"
+   },
+   "zspkw L-musique 2wiki": {
+    "delta": 0.0297,
+    "lo": 0.0268,
+    "hi": 0.0326,
+    "call": "GAIN",
+    "floor": 0.0075,
+    "reading": "GAIN"
+   },
+   "zspkw L-musique webqsp": {
+    "delta": 0.0183,
+    "lo": 0.0084,
+    "hi": 0.0287,
+    "call": "GAIN",
+    "floor": 0.0105,
+    "reading": "GAIN"
+   },
+   "zspkw L-hotpotqa metaqa": {
+    "delta": 0.0002,
+    "lo": -0.0006,
+    "hi": 0.0011,
+    "call": "WITHIN",
+    "floor": 0.0075,
+    "reading": "WITHIN"
+   },
+   "zspkw L-hotpotqa squad": {
+    "delta": -0.0019,
+    "lo": -0.0041,
+    "hi": 0.0002,
+    "call": "WITHIN",
+    "floor": 0.0075,
+    "reading": "WITHIN"
+   },
+   "zspkw L-hotpotqa musique": {
+    "delta": -0.0025,
+    "lo": -0.0078,
+    "hi": 0.0027,
+    "call": "WITHIN",
+    "floor": 0.0107,
+    "reading": "WITHIN"
+   },
+   "zspkw L-hotpotqa hotpotqa": {
+    "delta": 0.0488,
+    "lo": 0.0446,
+    "hi": 0.0529,
+    "call": "GAIN",
+    "floor": 0.0145,
+    "reading": "GAIN"
+   },
+   "zspkw L-hotpotqa 2wiki": {
+    "delta": 0.0162,
+    "lo": 0.0136,
+    "hi": 0.0188,
+    "call": "GAIN",
+    "floor": 0.0139,
+    "reading": "GAIN"
+   },
+   "zspkw L-hotpotqa webqsp": {
+    "delta": 0.0069,
+    "lo": -0.0027,
+    "hi": 0.0166,
+    "call": "WITHIN",
+    "floor": 0.0405,
+    "reading": "WITHIN"
+   }
+  },
+  "vy_floors": {
+   "zrckp": "U2d's null",
+   "zspk": "U2d's null"
+  },
+  "ktw": {
+   "2wiki/fit": {
+    "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+    "counts": {
+     "rows": 628354,
+     "y_rows": 960142,
+     "in_y_pool": 534766,
+     "in_kind_t_w2s": 591002,
+     "fill_w2s": 238310,
+     "questions": 5928,
+     "entity_differs_base": 0,
+     "route_differs_base": 0
+    },
+    "beside": {
+     "rows": 628354,
+     "in_kind_t": {
+      "today": 628354,
+      "w2s": 590995,
+      "both": 590995
+     },
+     "share_in_kind_t": {
+      "today": 1.0,
+      "w2s": 0.9405,
+      "both": 0.9405
+     },
+     "share_place_differs": {
+      "KIND_T": 0.9497,
+      "A1st": 0.9469,
+      "A1all": 0.9145,
+      "Kst": 0.5087,
+      "KTst": 0.6218,
+      "KTall": 0.5684
+     },
+     "share_kind_t_place_differs_where_in_both": 0.9466,
+     "share_fill": {
+      "today": 0.5282,
+      "w2s": 0.3793,
+      "both": 0.3793
+     },
+     "rows_kind_differs": 0,
+     "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+    }
+   },
+   "2wiki/s1eval": {
+    "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+    "counts": {
+     "rows": 1328715,
+     "y_rows": 2055550,
+     "in_y_pool": 1134791,
+     "in_kind_t_w2s": 1254493,
+     "fill_w2s": 505849,
+     "questions": 12576,
+     "entity_differs_base": 0,
+     "route_differs_base": 0
+    },
+    "beside": {
+     "rows": 1328715,
+     "in_kind_t": {
+      "today": 1328715,
+      "w2s": 1254475,
+      "both": 1254475
+     },
+     "share_in_kind_t": {
+      "today": 1.0,
+      "w2s": 0.9441,
+      "both": 0.9441
+     },
+     "share_place_differs": {
+      "KIND_T": 0.9478,
+      "A1st": 0.9467,
+      "A1all": 0.9142,
+      "Kst": 0.5553,
+      "KTst": 0.6589,
+      "KTall": 0.5953
+     },
+     "share_kind_t_place_differs_where_in_both": 0.9447,
+     "share_fill": {
+      "today": 0.5267,
+      "w2s": 0.3807,
+      "both": 0.3807
+     },
+     "rows_kind_differs": 0,
+     "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+    }
+   },
+   "hotpotqa/fit": {
+    "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+    "counts": {
+     "rows": 557195,
+     "y_rows": 703446,
+     "in_y_pool": 494174,
+     "in_kind_t_w2s": 542762,
+     "fill_w2s": 197530,
+     "questions": 5930,
+     "entity_differs_base": 0,
+     "route_differs_base": 0
+    },
+    "beside": {
+     "rows": 557195,
+     "in_kind_t": {
+      "today": 557195,
+      "w2s": 542759,
+      "both": 542759
+     },
+     "share_in_kind_t": {
+      "today": 1.0,
+      "w2s": 0.9741,
+      "both": 0.9741
+     },
+     "share_place_differs": {
+      "KIND_T": 0.9129,
+      "A1st": 0.9411,
+      "A1all": 0.892,
+      "Kst": 0.5769,
+      "KTst": 0.6411,
+      "KTall": 0.6119
+     },
+     "share_kind_t_place_differs_where_in_both": 0.9106,
+     "share_fill": {
+      "today": 0.4676,
+      "w2s": 0.3545,
+      "both": 0.3545
+     },
+     "rows_kind_differs": 0,
+     "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+    }
+   },
+   "hotpotqa/s1eval": {
+    "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+    "counts": {
+     "rows": 693828,
+     "y_rows": 879718,
+     "in_y_pool": 614641,
+     "in_kind_t_w2s": 675879,
+     "fill_w2s": 244230,
+     "questions": 7405,
+     "entity_differs_base": 0,
+     "route_differs_base": 0
+    },
+    "beside": {
+     "rows": 693828,
+     "in_kind_t": {
+      "today": 693828,
+      "w2s": 675871,
+      "both": 675871
+     },
+     "share_in_kind_t": {
+      "today": 1.0,
+      "w2s": 0.9741,
+      "both": 0.9741
+     },
+     "share_place_differs": {
+      "KIND_T": 0.9155,
+      "A1st": 0.9415,
+      "A1all": 0.8931,
+      "Kst": 0.5678,
+      "KTst": 0.6364,
+      "KTall": 0.6068
+     },
+     "share_kind_t_place_differs_where_in_both": 0.9132,
+     "share_fill": {
+      "today": 0.4661,
+      "w2s": 0.352,
+      "both": 0.352
+     },
+     "rows_kind_differs": 0,
+     "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+    }
+   },
+   "metaqa/fit": {
+    "source": "base's KT, byte for byte: metaqa and webqsp run on the KB in both builds",
+    "counts": null,
+    "beside": null
+   },
+   "metaqa/s1eval": {
+    "source": "base's KT, byte for byte: metaqa and webqsp run on the KB in both builds",
+    "counts": null,
+    "beside": null
+   },
+   "musique/s1eval": {
+    "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+    "counts": {
+     "rows": 5057436,
+     "y_rows": 4980690,
+     "in_y_pool": 4563991,
+     "in_kind_t_w2s": 4777826,
+     "fill_w2s": 4080591,
+     "questions": 2417,
+     "entity_differs_base": 0,
+     "route_differs_base": 0
+    },
+    "beside": {
+     "rows": 5057436,
+     "in_kind_t": {
+      "today": 5057436,
+      "w2s": 4777705,
+      "both": 4777705
+     },
+     "share_in_kind_t": {
+      "today": 1.0,
+      "w2s": 0.9447,
+      "both": 0.9447
+     },
+     "share_place_differs": {
+      "KIND_T": 0.9522,
+      "A1st": 0.8598,
+      "A1all": 0.8367,
+      "Kst": 0.3455,
+      "KTst": 0.3574,
+      "KTall": 0.4176
+     },
+     "share_kind_t_place_differs_where_in_both": 0.9494,
+     "share_fill": {
+      "today": 0.9044,
+      "w2s": 0.8068,
+      "both": 0.8068
+     },
+     "rows_kind_differs": 0,
+     "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+    }
+   },
+   "musique/s1fit": {
+    "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+    "counts": {
+     "rows": 9623206,
+     "y_rows": 9508840,
+     "in_y_pool": 8715986,
+     "in_kind_t_w2s": 9111304,
+     "fill_w2s": 7795786,
+     "questions": 4601,
+     "entity_differs_base": 0,
+     "route_differs_base": 0
+    },
+    "beside": {
+     "rows": 9623206,
+     "in_kind_t": {
+      "today": 9623206,
+      "w2s": 9111089,
+      "both": 9111089
+     },
+     "share_in_kind_t": {
+      "today": 1.0,
+      "w2s": 0.9468,
+      "both": 0.9468
+     },
+     "share_place_differs": {
+      "KIND_T": 0.9494,
+      "A1st": 0.8561,
+      "A1all": 0.8314,
+      "Kst": 0.3541,
+      "KTst": 0.3682,
+      "KTall": 0.4214
+     },
+     "share_kind_t_place_differs_where_in_both": 0.9465,
+     "share_fill": {
+      "today": 0.9044,
+      "w2s": 0.8101,
+      "both": 0.8101
+     },
+     "rows_kind_differs": 0,
+     "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+    }
+   },
+   "squad/fit": {
+    "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+    "counts": {
+     "rows": 292994,
+     "y_rows": 292994,
+     "in_y_pool": 292994,
+     "in_kind_t_w2s": 292994,
+     "fill_w2s": 0,
+     "questions": 5856,
+     "entity_differs_base": 0,
+     "route_differs_base": 0
+    },
+    "beside": {
+     "rows": 292994,
+     "in_kind_t": {
+      "today": 292994,
+      "w2s": 292994,
+      "both": 292994
+     },
+     "share_in_kind_t": {
+      "today": 1.0,
+      "w2s": 1.0,
+      "both": 1.0
+     },
+     "share_place_differs": {
+      "KIND_T": 0.8319,
+      "A1st": 0.9065,
+      "A1all": 0.7952,
+      "Kst": 0.0,
+      "KTst": 0.0,
+      "KTall": 0.0
+     },
+     "share_kind_t_place_differs_where_in_both": 0.8319,
+     "share_fill": {
+      "today": 0.0,
+      "w2s": 0.0,
+      "both": 0.0
+     },
+     "rows_kind_differs": 0,
+     "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+    }
+   },
+   "squad/s1eval": {
+    "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+    "counts": {
+     "rows": 594063,
+     "y_rows": 594063,
+     "in_y_pool": 594063,
+     "in_kind_t_w2s": 594063,
+     "fill_w2s": 0,
+     "questions": 11873,
+     "entity_differs_base": 0,
+     "route_differs_base": 0
+    },
+    "beside": {
+     "rows": 594063,
+     "in_kind_t": {
+      "today": 594063,
+      "w2s": 594063,
+      "both": 594063
+     },
+     "share_in_kind_t": {
+      "today": 1.0,
+      "w2s": 1.0,
+      "both": 1.0
+     },
+     "share_place_differs": {
+      "KIND_T": 0.8461,
+      "A1st": 0.9108,
+      "A1all": 0.8078,
+      "Kst": 0.0,
+      "KTst": 0.0,
+      "KTall": 0.0
+     },
+     "share_kind_t_place_differs_where_in_both": 0.8461,
+     "share_fill": {
+      "today": 0.0,
+      "w2s": 0.0,
+      "both": 0.0
+     },
+     "rows_kind_differs": 0,
+     "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+    }
+   },
+   "webqsp/s1eval": {
+    "source": "base's KT, byte for byte: metaqa and webqsp run on the KB in both builds",
+    "counts": null,
+    "beside": null
+   }
+  }
+ },
+ "zu2h_sha256": "c555e58fa709575f45a83cce15bcc18df2057f4880547ad8609d155627ac7ad0",
+ "utc": "2026-10-23T10:32:28Z"
+}

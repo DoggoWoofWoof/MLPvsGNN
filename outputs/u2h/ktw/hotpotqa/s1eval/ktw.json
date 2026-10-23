@@ -1,0 +1,176 @@
+{
+ "declared_in": "docs/U2H_W2S_BESIDE.md",
+ "stage": "U2h",
+ "build": "base",
+ "columns_declared_in": "docs/P1C3_KT_INPUT.md",
+ "columns": [
+  "KIND_T",
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall",
+  "fill",
+  "entity"
+ ],
+ "nmax": 7000,
+ "dtype": "float16",
+ "arrays": {
+  "ktw": {
+   "sha256": "65af99f49395a71ada64e8aef2cb91a48ba7353c821f184e279c26f36179e8bd",
+   "shape": [
+    693828,
+    8
+   ]
+  },
+  "n": {
+   "sha256": "5b2cd8ca8d5f588c99c926104a0e3ef67e6300d415934b9a39b3693c5f28d8c0",
+   "shape": [
+    7405
+   ]
+  }
+ },
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "questions": 7405,
+ "rows": 693828,
+ "ids_sha256": "08c10b131e7047de0f549310facc132661ef4f45eb605f3993e6bea329c37992",
+ "cache_root": "outputs/u2d/base/cache",
+ "cache_parts": {
+  "part_0of1": "ae63ef1ca1190f28e38d54d30963fe1e6d863bbe7b54a82986a3b1081ba691b4"
+ },
+ "pools_manifest_sha256": "5a967c172ebf423c636b209e9f4a6b306e58c304063ab98f31a7767322cbce6f",
+ "pools_file_sha256": "3f2b24974f9e8f6d47aa4b3cc58e8566b1905a9d09d91fe1ba627436d5149044",
+ "construction": "U2D:base:KIND_T",
+ "base_kt_record_sha256": "7707ee83981d69b968a0e195a92284ecb19ac07c6996e7077319d59524a8420a",
+ "source": "Y's orders on W2_S (P1c2's rule) over the base build's rows",
+ "y_manifest_sha256": "b301450f41d53c0cff0c86bd39c3f2668418e82b383dd24073d14ac7af9f5cb7",
+ "y_construction": "U2G:y:KIND_T",
+ "parts": [
+  {
+   "stem": "hotpotqa__s1eval__0of11",
+   "q0": 0,
+   "q1": 673,
+   "rows": 62785,
+   "ktw": "3a7928f88726b67f70a40bac2614a37f0b40e07d82505c4328ae3cdda9bd4570"
+  },
+  {
+   "stem": "hotpotqa__s1eval__1of11",
+   "q0": 673,
+   "q1": 1346,
+   "rows": 62948,
+   "ktw": "059f4134b150bdbc5c3fdfe4b9740eadbd40b9db9676b932efe3f4c535957d78"
+  },
+  {
+   "stem": "hotpotqa__s1eval__2of11",
+   "q0": 1346,
+   "q1": 2019,
+   "rows": 63316,
+   "ktw": "9fbb0ebd15ba9a9b5c35d70defba7e48ee4c83d60b0f3c2494959ddc42d2ec86"
+  },
+  {
+   "stem": "hotpotqa__s1eval__3of11",
+   "q0": 2019,
+   "q1": 2692,
+   "rows": 62775,
+   "ktw": "31e510313bbe83dee7637ab9e9d377bde6ef988e9c1904e15bf5a8dec28bf105"
+  },
+  {
+   "stem": "hotpotqa__s1eval__4of11",
+   "q0": 2692,
+   "q1": 3365,
+   "rows": 62906,
+   "ktw": "e9294a6fc51f67adce17bc53b74cf6f9ebbf5b182044a5acd42fcec5c60e84ce"
+  },
+  {
+   "stem": "hotpotqa__s1eval__5of11",
+   "q0": 3365,
+   "q1": 4039,
+   "rows": 62397,
+   "ktw": "1d55c30096fcf67a32ae26c4e573bdb08fed59114751ec84a78905e4010f76fe"
+  },
+  {
+   "stem": "hotpotqa__s1eval__6of11",
+   "q0": 4039,
+   "q1": 4712,
+   "rows": 63266,
+   "ktw": "86babb4cdb776b82e1ac01261be427dcee8bebfa059dd065da62561ceaa77c3a"
+  },
+  {
+   "stem": "hotpotqa__s1eval__7of11",
+   "q0": 4712,
+   "q1": 5385,
+   "rows": 63854,
+   "ktw": "03af5a34de97a3680ac0fc1a18c63cebf764b51c880a9dd1903a01990c8b82cf"
+  },
+  {
+   "stem": "hotpotqa__s1eval__8of11",
+   "q0": 5385,
+   "q1": 6058,
+   "rows": 62562,
+   "ktw": "2df7ecd2e07886aba5c8bbf516bc5b1da9f94a4c7cc397e9ca0b6319c7c1c337"
+  },
+  {
+   "stem": "hotpotqa__s1eval__9of11",
+   "q0": 6058,
+   "q1": 6731,
+   "rows": 63746,
+   "ktw": "4ff82b258681c16692d4b31a9c163134bcc091fca53f108c5d1122bdd963009f"
+  },
+  {
+   "stem": "hotpotqa__s1eval__10of11",
+   "q0": 6731,
+   "q1": 7405,
+   "rows": 63273,
+   "ktw": "db27b20b723d9d41d49a71a5249ac3f22ad4ac7db69bbd8079871f9eaa901f23"
+  }
+ ],
+ "counts": {
+  "rows": 693828,
+  "y_rows": 879718,
+  "in_y_pool": 614641,
+  "in_kind_t_w2s": 675879,
+  "fill_w2s": 244230,
+  "questions": 7405,
+  "entity_differs_base": 0,
+  "route_differs_base": 0
+ },
+ "beside": {
+  "rows": 693828,
+  "in_kind_t": {
+   "today": 693828,
+   "w2s": 675871,
+   "both": 675871
+  },
+  "share_in_kind_t": {
+   "today": 1.0,
+   "w2s": 0.9741,
+   "both": 0.9741
+  },
+  "share_place_differs": {
+   "KIND_T": 0.9155,
+   "A1st": 0.9415,
+   "A1all": 0.8931,
+   "Kst": 0.5678,
+   "KTst": 0.6364,
+   "KTall": 0.6068
+  },
+  "share_kind_t_place_differs_where_in_both": 0.9132,
+  "share_fill": {
+   "today": 0.4661,
+   "w2s": 0.352,
+   "both": 0.352
+  },
+  "rows_kind_differs": 0,
+  "caveat": "float16 places deeper than about 6,985 of P1d's 7,000 read as 1, as a node outside the order does; the in-order shares below count a row as in KIND_T's order when its column is below 1"
+ },
+ "checks": {
+  "rows_are_pool": true,
+  "parts_sha256": true,
+  "n_and_ids_are_base_kts": true
+ },
+ "script_sha256": "c555e58fa709575f45a83cce15bcc18df2057f4880547ad8609d155627ac7ad0",
+ "p1c3_script_sha256": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+ "seconds": 8.2,
+ "utc": "2026-10-23T10:02:52Z"
+}
