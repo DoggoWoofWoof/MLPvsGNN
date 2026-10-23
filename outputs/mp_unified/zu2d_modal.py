@@ -28,6 +28,12 @@ U2h (docs/U2H_W2S_BESIDE.md, section 8), with no --build:
     modal run --detach outputs/mp_unified/zu2d_modal.py --stage h-fits [--fits N,N] [--rows-cap R]
     modal run outputs/mp_unified/zu2d_modal.py --stage fetch-h
     modal run outputs/mp_unified/zu2d_modal.py --stage fetch-h-fits [--fits N,N]
+U2h's full run (docs/U2H_FULL_RUN.md, section 7), with --fits always (zu2hf.py plan lists the groups):
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage hf-fits --fits N,N [--rows-cap R]
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-hf-fits --fits N,N
+Each fit runs on the GPU zu2hf places it on: a probe on its own (L4 or T4), every other fit on D from
+outputs/u2hf/device.json, through one runner per GPU type (hf_fit_l4, hf_fit_t4, hf_fit_l40s) with U2h's container
+settings. timing.json beside each fit holds the container's seconds, which the device rule reads.
 
 The code. The tracked files of HEAD, byte for byte as the working tree holds them (a tracked file that differs from
 HEAD refuses the upload), go to /code/<commit, first 12>.tar on the volume, and every container unpacks them at
@@ -1695,6 +1701,117 @@ def run_h_fits(code, names, rows_cap=0):
             "secs": round(time.time() - t0, 1)}
 
 
+# ── U2h's full run (docs/U2H_FULL_RUN.md, section 7) ─────────────────────────
+
+HF_STAGES = ("hf-fits", "fetch-hf-fits")
+
+
+def _stamped_hf(p, name, ZF):
+    """The record at p when zu2hf stamped it as this fit's under the full run's declaration."""
+    try:
+        rec = json.loads(Path(p).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    u = rec.get("u2hf") or {}
+    return rec if u.get("declared_in") == ZF.DECLARED and u.get("fit") == name else None
+
+
+def _hf_fit(code, name, gpu, rows_cap=0):
+    """One of the full run's fits and its read (zu2hf.py train and read in this process) on the GPU this runner was
+    declared with, as h_fit_item runs U2h's; the fit must be one zu2hf places on that GPU (a probe's own, every other
+    fit's D). timing.json beside the fit: the container's setup, train, read and total seconds (section 3's measure)."""
+    t_start = time.time()
+    info = _setup(code, strict=True)
+    import torch
+    import zu2hf
+    Z = zu2hf.Z
+    head = {"fit": name, "code": code, "gpu": gpu}
+    if Z.IMAGE_TAG != IMAGE_TAG or os.environ.get("U2D_IMAGE") != IMAGE_TAG:
+        return {**head, "error": f"image tags: the container's {os.environ.get('U2D_IMAGE')}, zu2d's {Z.IMAGE_TAG}, "
+                                 f"this runner's {IMAGE_TAG}"}
+    if name not in zu2hf.FITS:
+        return {**head, "error": "not one of the full run's fits"}
+    try:
+        want = zu2hf.gpu_for(name)
+    except SystemExit as e:
+        return {**head, "error": str(e)}
+    if want != gpu or not zu2hf.gpu_is(torch.cuda.get_device_name(0), gpu):
+        return {**head, "error": f"this fit runs on {want}; this container has {torch.cuda.get_device_name(0)}"}
+    kind, arm, seed, split = zu2hf.FITS[name]
+    head.update({"build": "base", "kind": kind, "arm": arm, "seed": seed, "split": split})
+    fd = FITS_OUT / name
+    fd.mkdir(parents=True, exist_ok=True)
+    _link(REPO / "outputs" / "screen" / "fits" / name, fd)
+    if _stamped_hf(fd / "read.json", name, zu2hf):
+        return {**head, "reused": True, **_fit_brief(fd, "u2hf")}
+    cache = "outputs/u2d/base/cache"
+    t0 = time.time()
+    trained = bool(_stamped_hf(fd / "screen.json", name, zu2hf) and (fd / "train.json").exists()
+                   and (fd / "models.pt").exists())
+    if not trained:
+        gone = _clear(fd, "*") + _clear(fd / "reads", "*")
+        rc, msg = _run_any(zu2hf.main, ["train", "--split", split, "--name", name, "--arm", arm, "--device", "cuda",
+                                        "--cache-root", cache, "--modal"])
+        if rc:
+            return {**head, "error": msg, "cleared": len(gone), "seconds": round(time.time() - t0, 1),
+                    "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+        u2d.commit()
+    t1 = time.time()
+    _clear(fd / "reads", "*")
+    _clear(fd, "read.json")
+    _clear(fd, "timing.json")
+    rc, msg = _run_any(zu2hf.main, ["read", "--name", name, "--device", "cuda", "--cache-root", cache, "--modal"]
+                       + (["--rows-cap", str(int(rows_cap))] if rows_cap else []))
+    t2 = time.time()
+    res = {**head, "trained_here": not trained, "train_seconds": round(t1 - t0, 1), "read_seconds": round(t2 - t1, 1),
+           "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg}
+    timing = {"fit": name, "gpu": gpu, "gpu_name": torch.cuda.get_device_name(0), "trained_here": not trained,
+              "setup_seconds": info["setup_seconds"], "train_seconds": round(t1 - t0, 1),
+              "read_seconds": round(t2 - t1, 1), "total_seconds": round(t2 - t_start, 1), "code": code}
+    (fd / "timing.json").write_text(json.dumps(timing, indent=1), encoding="utf-8")
+    u2d.commit()
+    return {**res, **_fit_brief(fd, "u2hf"), "total_seconds": timing["total_seconds"]}
+
+
+# One runner per GPU type (a function's GPU is fixed when it is declared); the container settings are U2h's.
+@app.function(image=gpu_image, gpu="L4", volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=21600, **STAGE)
+def hf_fit_l4(code, name, rows_cap=0):
+    return _hf_fit(code, name, "L4", rows_cap)
+
+
+@app.function(image=gpu_image, gpu="T4", volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=21600, **STAGE)
+def hf_fit_t4(code, name, rows_cap=0):
+    return _hf_fit(code, name, "T4", rows_cap)
+
+
+@app.function(image=gpu_image, gpu="L40S", volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=21600, **STAGE)
+def hf_fit_l40s(code, name, rows_cap=0):
+    return _hf_fit(code, name, "L40S", rows_cap)
+
+
+HF_FIT = {"L4": hf_fit_l4, "T4": hf_fit_t4, "L40S": hf_fit_l40s}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_hf_fits(code, pairs, rows_cap=0):
+    """The named full-run fits at once, each in its own container on its GPU ((name, gpu) pairs from zu2hf.gpu_for)."""
+    t0 = time.time()
+    calls = [(n, g, HF_FIT[g].spawn(code, n, rows_cap)) for n, g in pairs]
+    out = []
+    for n, g, fc in calls:
+        r = _get(fc)
+        r.setdefault("fit", n)
+        r.setdefault("gpu", g)
+        print(json.dumps({k: r.get(k) for k in ("fit", "gpu", "reused", "trained_here", "train_seconds", "read_seconds",
+                                                "total_seconds", "data_gb", "peak_gpu_gb", "peak_gb")}
+                         | ({"error": str(r["error"])[:600]} if "error" in r else {})), flush=True)
+        out.append(r)
+    return {"code": code, "fits": out, "errors": [r["fit"] for r in out if "error" in r],
+            "secs": round(time.time() - t0, 1)}
+
+
 # ── the laptop: code, inputs, extras, fetch ──────────────────────────────────
 
 
@@ -1951,6 +2068,24 @@ def _h_names(names):
     return want
 
 
+def _hf_names(names, pairs=False):
+    """The named full-run fits (zu2hf.py's FITS, read on the laptop; --fits is required, zu2hf.py plan lists the
+    groups), with each fit's GPU when pairs."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import zu2hf
+    want = [n for n in names.split(",") if n]
+    if not want:
+        raise SystemExit("the hf stages need --fits (python outputs/mp_unified/zu2hf.py plan lists the groups)")
+    bad = [n for n in want if n not in zu2hf.FITS]
+    if bad:
+        raise SystemExit(f"not the full run's fits: {bad}")
+    if zu2hf.Z.IMAGE_TAG != IMAGE_TAG:
+        raise SystemExit(f"zu2d.py's image tag {zu2hf.Z.IMAGE_TAG} is not this runner's {IMAGE_TAG}")
+    return [(n, zu2hf.gpu_for(n)) for n in want] if pairs else want
+
+
 def _fetch_fits(names, threads=4):
     """Each read fit's records and reads to outputs/screen/fits/<name>/ on the laptop (never models.pt); a fit whose
     read.json is not on the volume is skipped and named."""
@@ -2035,6 +2170,10 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
     h1_list = _h1_names(build, fits) if stage in ("h1", "fetch-h1") else []
     y_list = _y_names(fits) if stage in ("y-fits", "fetch-y-fits") else []
     h_list = _h_names(fits) if stage in ("h-fits", "fetch-h-fits") else []
+    hf_pairs = _hf_names(fits, pairs=True) if stage == "hf-fits" else []
+    hf_list = _hf_names(fits) if stage == "fetch-hf-fits" else []
+    if stage in HF_STAGES and (build or datasets or carve):
+        raise SystemExit("the full run's stages take only --fits (and --rows-cap): every fit is on U2d's base build")
     names = [d for d in datasets.split(",") if d] or list(Y_OWN if y or h else SIX)
     if y and (build or any(d not in Y_OWN for d in names)):
         raise SystemExit(f"Y's stages take no --build (Y is U2g's build); datasets among {Y_OWN}")
@@ -2061,6 +2200,8 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         return _fetch("h", "outputs/u2h", keep=False)
     if stage == "fetch-h-fits":
         return _fetch_fits(h_list)
+    if stage == "fetch-hf-fits":
+        return _fetch_fits(hf_list)
     code = _upload_code(overlay)
     if stage == "probe":
         print(json.dumps(probe.remote(code), indent=1))
@@ -2120,10 +2261,12 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         print(json.dumps(run_h_ktw.remote(code, names), indent=1))
     elif stage == "h-fits":
         print(json.dumps(run_h_fits.remote(code, h_list, rows_cap), indent=1))
+    elif stage == "hf-fits":
+        print(json.dumps(run_hf_fits.remote(code, hf_pairs, rows_cap), indent=1))
     else:
         raise SystemExit("stage: upload, probe, mirror, dev, pools, features, fetch, gpu-probe, fits, fetch-fits, h1, "
                          "fetch-h1, y-probe, y-dev, y-pools, y-features, y-fits, fetch-y, fetch-y-fits, h-probe, "
-                         "h-dev, h-ktw, h-fits, fetch-h or fetch-h-fits")
+                         "h-dev, h-ktw, h-fits, fetch-h, fetch-h-fits, hf-fits or fetch-hf-fits")
 
 
 if __name__ == "__main__":
