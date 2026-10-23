@@ -573,15 +573,17 @@ def cmd_pass(a):
     o_ptr, o_col = zu2b.ragged([sorted({gg for gs in S.alias_owners[x].values() for gg in gs}) for x in al])
     asha = zu2b.save_npz(OUT / d / "aliases.npz", alias=np.asarray(al), cues=cue_of, owner_ptr=o_ptr,
                          owner_col=o_col)
-    esha = zu2b.save_npz(OUT / d / "evidence.npz", **hits, surf_is_title=S.is_title, surf_lowid=S.lowid,
+    # the hits stay in the chunk files (named by sha256 in the record), not copied: the laptop's disk is short
+    esha = zu2b.save_npz(OUT / d / "evidence.npz", surf_is_title=S.is_title, surf_lowid=S.lowid,
                          surf_tgroup=S.tgroup, low_cap=cap, low_low=low, group=group, desc=desc, text_len=tlen)
+    chunks = {p.name: sha_file(p) for p in sorted(work.glob("chunk_*.npz"))}
     by_cue = {c: sum(1 for x in al if c in S.alias_owners[x]) for c in CUES}
     rec = {"dataset": d, "declared_in": DECLARED, "freeze_RECORD_SHA256": freeze, "nodes": n,
            "descriptive_nodes": int(desc.sum()), "surfaces": len(S.surf), "titles": int(S.is_title.sum()),
            "aliases": len(al), "aliases_by_cue": by_cue, "table_sha256": S.sha, "hits": int(hits["k"].size),
            "common_forms": int(common.sum()), "w2_links": int(ws.size), "sibling_links": int(sib_s.size),
            "candidates": stats, "gate1": gate["status"], "links_npz_sha256": lsha, "aliases_npz_sha256": asha,
-           "evidence_npz_sha256": esha, "secs": {"stream1": round(t1 - t0), "table": round(t2 - t1),
+           "evidence_npz_sha256": esha, "hit_chunks": chunks, "secs": {"stream1": round(t1 - t0), "table": round(t2 - t1),
                                                   "scan": round(t3 - t2), "links": round(time.time() - t3)},
            **codes()}
     write_json(OUT / d / "pass.json", rec)
