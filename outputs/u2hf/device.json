@@ -1,0 +1,30 @@
+{
+ "declared_in": "docs/U2H_FULL_RUN.md",
+ "stage": "U2hf device",
+ "D": "T4",
+ "seconds": {
+  "L4": 1785.8,
+  "T4": 1667.0
+ },
+ "cost_per_fit": {
+  "L4": 0.5536,
+  "T4": 0.4195
+ },
+ "not_used": {},
+ "prices": {
+  "L4": 0.8,
+  "T4": 0.59,
+  "L40S": 1.95
+ },
+ "container": {
+  "cpus": 4,
+  "cpu_hour": 0.047,
+  "memory_gib": 16,
+  "gib_hour": 0.008
+ },
+ "tie": 0.01,
+ "rule": "the probe GPU with the lower cost per fit among the probes that trained and read; within 1%: L4; neither: L40S (docs/U2H_FULL_RUN.md, section 3)",
+ "base_fit_zrckp_j5": "scr-u2hf-probe-t4",
+ "zu2hf_sha256": "d1819a4ffd68e1c32ad9ed8bd23de55573a70826dac0e316a34792766b2d0315",
+ "utc": "2026-10-23T14:20:22Z"
+}
