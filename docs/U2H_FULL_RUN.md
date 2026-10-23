@@ -181,3 +181,44 @@ returns.
 ## 8. Results
 
 Filed after the run: outputs/u2hf (device.json, grade-zrckpw, grade-zspkw, verdict) and outputs/screen/scr-u2hf-*.
+
+**Verdict (24 October, 01:44 IST): NOT_ADOPTED.** The lean pair stays (zrckp, zspk).
+
+| arm | primary GAINs | LOSSes | GAINs in all (of 36) | its own verdict |
+|---|---|---|---|---|
+| zrckpw (MLP) | none | none | 2: L-metaqa webqsp (zs) +0.0087, L-hotpotqa 2wiki +0.0078 | NOT_ADOPTED |
+| zspkw (GNN side) | L-metaqa metaqa (zs) +0.0175 | L-squad musique −0.0120, L-squad 2wiki −0.0088 | 1 | NOT_ADOPTED |
+
+- **What it says.** KT_W beside KT does not carry from U2h's two splits to all six. The MLP is flat everywhere: every
+  read except two lies within its seed floor, and none falls below it. The GNN side gains metaqa zero-shot and loses
+  musique and 2wiki on L-squad.
+- **U2h's one GAIN is the same read.** L-hotpotqa is reused as filed, so zrckpw's L-hotpotqa 2wiki +0.0078 is U2h's
+  own. On the four new splits, zrckpw's only GAIN is L-metaqa webqsp (zero-shot).
+- **Device noise** (zrckp J5 seed 0, L4 minus T4): metaqa −0.0013, squad +0.0002, musique +0.0046, hotpotqa +0.0008,
+  2wiki −0.0006, webqsp −0.0140. The webqsp difference is a LOSS-sized read between two devices running the same fit,
+  so webqsp zero-shot reads near 0.014 are device noise at this size.
+
+**Fits.** 33 fits ran and were read: the 2 probes, 8 arms, 7 base fits and 16 null fits. Every fit priced by the
+credit rule's first two priorities ran.
+
+**Cut or lost (section 7's credit rule), named:**
+- **Cut before launch:** scr-u2hf-zg6w-lmusique and scr-u2hf-zg6w-lhotpotqa, and scr-u2hf-base-zg6 on all six
+  splits.
+- **Lost:** scr-u2hf-zg6w-j5, -lmetaqa, -lsquad and -l2wiki ran in workspace 4. That workspace reached its spend limit
+  before any of them wrote a record, so all four left empty folders.
+- **Why they were lost.** The launch check priced a zg6 fit at 1.4 times a lean fit, from U2d's L40S timings. On the
+  T4, the four fits used about $3.70 without finishing, so a zg6w fit costs more than $0.93 there (more than 2.2 times
+  a lean fit). A GNN fit's cost on a slower GPU has to be measured on that GPU before a launch is priced.
+- **Without these fits:** there is no zg6w-against-zg6 read and no MLP share of zg6w's gain. Both wait for credit.
+
+**What each fit cost** (from `modal billing report`):
+- workspace 5's 16 fits: $5.52, about $0.35 each;
+- workspace 3's one fit: about $0.36.
+
+Workspace 4 is out of October's credit. Workspaces 3 and 5 have about $1.0 and $2.9 left.
+
+**Next, each in its own file:**
+- a per-question gate on the KT_W head, its weight per question from inputs computed before any row is scored (SCREENS
+  3b's back-off form);
+- zg6w against zg6, once a zg6 fit has been timed on the device it will run on;
+- the hyperlink-gap plan (U2i aliases, U2j link precision, U2k a learned link scorer), beside this run.

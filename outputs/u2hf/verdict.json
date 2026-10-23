@@ -1,0 +1,40 @@
+{
+ "declared_in": "docs/U2H_FULL_RUN.md",
+ "stage": "U2hf",
+ "D": "T4",
+ "verdict": "NOT_ADOPTED",
+ "primary_gains": [
+  "zspkw L-metaqa metaqa"
+ ],
+ "losses": [
+  "zspkw L-squad musique",
+  "zspkw L-squad 2wiki"
+ ],
+ "problems": [],
+ "arms": {
+  "zrckpw": "NOT_ADOPTED",
+  "zspkw": "NOT_ADOPTED"
+ },
+ "next": [
+  "a per-question gate on the KT_W head, its weight per question from inputs computed before any row is scored, in its own file (SCREENS 3b's back-off form)",
+  "the hyperlink-gap plan (link precision; a hyperlink scorer learned on 2wiki and applied unchanged elsewhere; corpus aliases), each step in its own declared file, beside this run"
+ ],
+ "beside": {
+  "zg6w_vs_zg6": {},
+  "mlp_share": [],
+  "device_noise": {
+   "other": "L4",
+   "D": "T4",
+   "delta_r5": {
+    "metaqa": -0.0013,
+    "squad": 0.0002,
+    "musique": 0.0046,
+    "hotpotqa": 0.0008,
+    "2wiki": -0.0006,
+    "webqsp": -0.014
+   }
+  }
+ },
+ "zu2hf_sha256": "d1819a4ffd68e1c32ad9ed8bd23de55573a70826dac0e316a34792766b2d0315",
+ "utc": "2026-10-23T20:14:53Z"
+}

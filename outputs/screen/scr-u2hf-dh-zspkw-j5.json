@@ -1,0 +1,270 @@
+{
+ "new": "outputs\\screen\\fits\\scr-u2hf-zspkw-j5",
+ "bases": [
+  "outputs\\screen\\fits\\scr-u2hf-base-zspk-j5"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "musique",
+  "squad"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-u2hf-base-zspk-j5": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "in-domain",
+     "questions": 9785,
+     "base": [
+      0.8007,
+      0.685,
+      0.9133
+     ],
+     "new": [
+      0.8015,
+      0.6852,
+      0.917
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      0.0007,
+      0.0002,
+      0.0037
+     ],
+     "lo": [
+      -0.0,
+      -0.0013,
+      0.0006
+     ],
+     "hi": [
+      0.0016,
+      0.0016,
+      0.0069
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9113,
+      0.9113,
+      0.7507
+     ],
+     "new": [
+      0.9106,
+      0.9106,
+      0.7513
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      -0.0008,
+      -0.0008,
+      0.0006
+     ],
+     "lo": [
+      -0.0026,
+      -0.0026,
+      -0.0025
+     ],
+     "hi": [
+      0.0011,
+      0.0011,
+      0.0038
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5772,
+      0.2561,
+      0.7336
+     ],
+     "new": [
+      0.5831,
+      0.264,
+      0.7336
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      0.0059,
+      0.0079,
+      0.0
+     ],
+     "lo": [
+      0.0007,
+      0.0,
+      -0.0095
+     ],
+     "hi": [
+      0.0111,
+      0.0157,
+      0.0091
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "in-domain",
+     "questions": 7405,
+     "base": [
+      0.9045,
+      0.8444,
+      0.8469
+     ],
+     "new": [
+      0.9067,
+      0.8477,
+      0.8504
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      0.0022,
+      0.0032,
+      0.0035
+     ],
+     "lo": [
+      -0.0001,
+      -0.0007,
+      -0.0005
+     ],
+     "hi": [
+      0.0043,
+      0.0072,
+      0.0077
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9358,
+      0.841,
+      0.9788
+     ],
+     "new": [
+      0.9378,
+      0.848,
+      0.9736
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.002,
+      0.007,
+      -0.0052
+     ],
+     "lo": [
+      0.0006,
+      0.0036,
+      -0.0074
+     ],
+     "hi": [
+      0.0034,
+      0.0103,
+      -0.0031
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "zero-shot",
+     "questions": 1503,
+     "base": [
+      0.2894,
+      0.2229,
+      0.167
+     ],
+     "new": [
+      0.2797,
+      0.2122,
+      0.1597
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      -0.0096,
+      -0.0106,
+      -0.0073
+     ],
+     "lo": [
+      -0.0178,
+      -0.0186,
+      -0.018
+     ],
+     "hi": [
+      -0.0015,
+      -0.0027,
+      0.0033
+     ],
+     "call": "LOSS"
+    }
+   ],
+   "verdict": "NO_GAIN",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-23T20:11:56Z",
+ "verdict": "NO_GAIN",
+ "u2hf": {
+  "declared_in": "docs/U2H_FULL_RUN.md",
+  "compare": "scr-u2hf-dh-zspkw-j5",
+  "new": "scr-u2hf-zspkw-j5",
+  "bases": [
+   "scr-u2hf-base-zspk-j5"
+  ],
+  "devices": {
+   "scr-u2hf-zspkw-j5": {
+    "gpu": "Tesla T4",
+    "image": "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002
+   },
+   "scr-u2hf-base-zspk-j5": {
+    "gpu": "Tesla T4",
+    "image": "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002
+   }
+  },
+  "one_device": true,
+  "zu2hf_sha256": "d1819a4ffd68e1c32ad9ed8bd23de55573a70826dac0e316a34792766b2d0315"
+ }
+}
