@@ -230,13 +230,23 @@ def _env():
 
 
 def _peak_gb():
+    """The process's peak memory in GB: /proc's VmHWM, else the container's cgroup peak, else getrusage's maxrss."""
     try:
         for line in open("/proc/self/status"):
             if line.startswith("VmHWM"):
                 return round(int(line.split()[1]) / 1048576, 2)
     except OSError:
         pass
-    return None
+    for f in ("/sys/fs/cgroup/memory.peak", "/sys/fs/cgroup/memory/memory.max_usage_in_bytes"):
+        try:
+            return round(int(open(f).read().split()[0]) / 2 ** 30, 2)
+        except (OSError, ValueError, IndexError):
+            pass
+    try:
+        import resource
+        return round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1048576, 2)
+    except (ImportError, OSError, ValueError):
+        return None
 
 
 def _carve(d):
