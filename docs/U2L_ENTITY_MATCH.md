@@ -30,8 +30,9 @@ name is its title, so a group is the nodes of one name.
 unchanged: the look boundary, the case gate, the capitalization statistic over the whole corpus, the AMBIG guard (50)
 and the context choice (the frozen dense vectors). The surfaces are:
 - the title (kind 0, W2's);
-- U2i's aliases (kind 4), for exactly the cue set U2i's filed choice names: none if U2i chooses W2_S, else the
-  candidate it chooses (`outputs/u2i/choice.json`). U2l reads that file and refuses to build before it exists.
+- U2i's aliases (kind 4), for exactly the cue set U2i's filed choice names (`outputs/u2i/choice.json`): the `best`
+  candidate's cues if its outcome is `ADOPT_FOR_POOLS`, and none if it is `NO_GAIN`. U2l refuses to build a passage
+  dataset before that file exists, or if its outcome is `REFUSED`.
 
 **The texts.** On a passage dataset, the descriptive passages are read, as U2b and U2i read them. On a KB, each node's
 name is read as its text: U2b's descriptive switch is off for EL, and only for EL. The scan matches every run of a
@@ -59,7 +60,9 @@ dataset alike, and a spaCy key is not merged with a title group anywhere (mergin
   CO_t is computed from the same directed IS links, grouped by the target's group (`evidence.npz`, `group`).
 - On a KB, IS and CO_t come from the scan of section 2: zu2b's `stat_pass` and `link_pass`, unchanged, with variant
   W2 under `Rule("look", True, True, False)`. That is U2b's `NEW_RULE` with the descriptive switch off, the form
-  zu2b's own selftest runs. CVT mediators are left out of the texts and of the owners before the passes.
+  zu2b's own selftest runs. CVT mediators are left out of the texts and of the owners before the passes. The passes
+  drop only a node's link to itself, so the links between nodes of one name are then dropped (section 2: a node's
+  match to its own group links nothing).
 - The package's NER edge counts: musique 800,278; squad 156,130; hotpotqa 20,369,074; 2wiki 34,067,241; metaqa 5,949;
   webqsp 2,994,802.
 
@@ -96,8 +99,14 @@ k in 25, 50, 100, 250, 500, 1000, 2000 and 5000, U2l records ALL, recall and row
 alone. Scores are computed once per question over the union of the graphs' X's (`zu2b.reach_curves`), so every graph
 ranks by the same numbers.
 
-**The frozen I, beside.** The frozen I over a candidate is `m3b_pools.expand_hops` with the dataset's setting, the
-candidate's EL ∪ R in place of the structural family, and the package's NER and kNN families unchanged. The program
+**How X is built.** A union's X is the union of its families' X's: B's neighbours in a union of graphs are the union
+of B's neighbours in each. So only the families are held in memory (IS, CO_t, CO_s, R, kNN, PKG, W2_S), never the 16
+union graphs; hotpotqa's and 2wiki's would not fit on the laptop. Gate 3 (section 7) checks this against
+`zu2b.reach_curves` on musique.
+
+**The frozen I, beside.** The frozen I of a form is `m3b_pools.expand_hops` with the dataset's setting, the form's
+EL ∪ R in place of the structural family, and the frozen construction's other families unchanged (as zu2i's grade
+takes them from U2b's question file). It is filed for E1 to E4 and for the references PKG and W2_S. The program
 named "frozen I's ALL" as the deciding read. U2b's amendment of U2A (docs/U2B_LINK_RULE.md, section 3) applies here as
 well: I's first hop takes each seed's first 25 neighbours in node-id order, so on a denser graph an order unrelated to
 the question cuts its reach. U2l therefore decides by U2b's score and files I's ALL beside, on every candidate.
@@ -119,7 +128,7 @@ and |Q(q)|. A pool that seeds from Q(q) is U2m's to declare.
 - **Universal:** the same form on all six datasets. A per-dataset best is reported beside, as an upper bound only.
   webqsp's s1eval is reported beside and never moves the pick.
 - **Outcome:**
-  - `CHOSEN <form>` when gates 1 to 3 hold and every candidate is graded on all five datasets;
+  - `CHOSEN <form>` when the selftest and gates 1 to 3 hold and every candidate is graded on all five datasets;
   - otherwise `REFUSED`, naming what is missing.
 - **Beside:** the alone and with-R unions of every form, the references, and the frozen I.
 
@@ -137,6 +146,9 @@ A pick closes only the forms graded here (docs/SCREENS.md, section 3b).
 3. **Gate 2.** CO_s is the package's `ner.npz`, its sha256 checked against `GRAPH_MANIFEST.json`. Over PKG, the frozen
    I equals U2b's filed I for PKG on every dataset and carve graded (U2b's gate 2). A dataset that fails a gate is
    REFUSED, and none of its numbers is read.
+4. **Gate 3 (musique, before any other grade).** U2l's grader, which builds each union's X from its families, gives
+   exactly `zu2b.reach_curves`'s records over the 16 union graphs built in full, graded together. If it does not,
+   nothing is graded.
 
 ## 8. What follows (fixed now)
 
@@ -150,9 +162,12 @@ A pick closes only the forms graded here (docs/SCREENS.md, section 3b).
 
 ## 9. How it runs (laptop)
 
-- `zu2l_el.py build --dataset D`: EL's kinds and the candidate graphs, with a record per graph.
-- `zu2l_el.py grade --dataset D --carve C`: section 5.
-- `zu2l_el.py choose`, then `zu2l_el.py report`.
+- `zu2l_el.py build --dataset D`: EL's kinds (IS, CO_t and, on a passage dataset, R) and gate 1, with their record.
+  The candidate graphs are not built: they are read from their families (section 5).
+- `zu2l_el.py gate3`: gate 3 on musique; its run is musique's s1sel grade.
+- `zu2l_el.py grade --dataset D --carve C`: section 5, with gate 2.
+- `zu2l_el.py choose`, then `zu2l_el.py report`; the question's links (section 5, beside) after the choice, on the
+  chosen form only.
 - Order: metaqa, squad and musique first, then webqsp, hotpotqa and 2wiki (2wiki after U2i's 2wiki pass). It runs on
   the laptop after U2m's laptop runs, or beside them when memory allows.
 - Outputs: `outputs/u2l/el/<D>/build.json`, `grade_<carve>.json`, `choice.json` and `report.md`. Arrays (npz) stay
