@@ -7,7 +7,9 @@ overlap.
 It reads the golds of every question in which the pick misses a gold. The question's held golds are read beside, as
 the contrast. For each gold:
 - reach: whether it is one link from B in each family, and its hop distance from B in the union of the families
-  (1, 2, 3, beyond);
+  (1, 2, 3, beyond). The families are all three (structural, ner, knn) on every dataset, as KIND_T's walks and U2e's
+  N1 read them, not the 13 Sep construction's regime (which opens structural alone on metaqa, hotpotqa and 2wiki, and
+  none on squad); W2_S stands in for structural on the passage datasets;
 - on a typed KB:
   - the (B node, relation, direction) groups that hold it, with each group's fan-out;
   - the rank of the group's relation among the B node's relations, by cos(q, e_r);
@@ -313,6 +315,10 @@ def cmd_diag(args):
     if op.freeze["RECORD_SHA256"] != srec["freeze_RECORD_SHA256"]:
         raise SystemExit("the served freeze is not the one U2e's stats read")
     ds, _construction, families, stores, _union = E.open_dataset(op, d)
+    for f in S4.FAMILIES:            # every family on every dataset: the 13 Sep regime opens only a subset on four of six
+        if f not in stores:
+            stores[f] = S4.m3b_pools.load_or_build_store(ds, f, op.m3b_compile.CSR_CACHE)
+    families = list(S4.FAMILIES)
     n = int(ds.n_nodes)
     carve = U2C.carve_of(d)
     (_c, pop), = [(c, p) for c, p in C4.populations(op, S4, ds, d) if c == carve]

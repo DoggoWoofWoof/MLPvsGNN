@@ -13,14 +13,16 @@ Questions: `{"questions_missing_a_gold": 57, "by_causes": {"TAU_CUT": 51, "TAU_C
  "golds": 2428,
  "distance": {
   "0": 40,
-  "1": 142,
-  "2": 566,
-  "3": 1680,
+  "1": 203,
+  "2": 726,
+  "3": 1459,
   "4": 0,
   "-1": 0
  },
  "one_link_by_family": {
-  "structural": 151
+  "structural": 151,
+  "ner": 7,
+  "knn": 91
  },
  "name_in_question": 0,
  "name_match_B": 15,
@@ -94,13 +96,15 @@ Questions: `{"questions_missing_a_gold": 57, "by_causes": {"TAU_CUT": 51, "TAU_C
  "distance": {
   "0": 0,
   "1": 7,
-  "2": 39,
-  "3": 241,
+  "2": 57,
+  "3": 223,
   "4": 0,
   "-1": 0
  },
  "one_link_by_family": {
-  "structural": 7
+  "structural": 7,
+  "ner": 0,
+  "knn": 0
  },
  "name_in_question": 0,
  "name_match_B": 0,
@@ -175,12 +179,14 @@ Questions: `{"questions_missing_a_gold": 57, "by_causes": {"TAU_CUT": 51, "TAU_C
   "0": 0,
   "1": 0,
   "2": 4,
-  "3": 34,
-  "4": 4,
+  "3": 37,
+  "4": 1,
   "-1": 0
  },
  "one_link_by_family": {
-  "structural": 0
+  "structural": 0,
+  "ner": 0,
+  "knn": 0
  },
  "name_in_question": 0,
  "name_match_B": 0,
