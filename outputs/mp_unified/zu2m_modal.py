@@ -18,6 +18,10 @@ The volumes:
   /out/<the first 12 hex of zu2c.py's sha256>, which is outputs/u2c/ in the container; U2e's filed arrays under
   /u2e/<the first 12 hex of zu2e.py's sha256>, which is outputs/u2e/ in the container. Both are only read. U2m's
   outputs go under /u2m/<the first 12 hex of zu2m.py's sha256>, which is outputs/u2m/ in the container.
+- mpr-u2d (U2d's, only read here): its /pkg is the package. Where a workspace's mpr-u2c and mpr-u2-links hold no
+  /pkg (the copies made for workspaces 3 to 5 do not), each package file is linked from mpr-u2d's /pkg instead; the
+  probe returns which copy served each file. The reproduction of U2e's filed arrays (the declared file, section 8)
+  checks the inputs question for question.
 
 A part or merged record that exists (its json is written last) is returned as it is. An interrupted attempt's array
 is unlinked before its shard runs again, and nothing else is ever overwritten. A failed check is returned as an error
@@ -80,7 +84,10 @@ for _f in CODE:
     image = image.add_local_file(_f, f"/root/code/{_f}")
 u2c = modal.Volume.from_name("mpr-u2c")
 u2l = modal.Volume.from_name("mpr-u2-links")
-VOLS = {"/u2c": u2c, "/u2l": u2l}
+u2d = modal.Volume.from_name("mpr-u2d")
+VOLS = {"/u2c": u2c, "/u2l": u2l, "/u2d": u2d}
+PKG_ROOTS = {"links": Path("/u2l/pkg"), "u2c": Path("/u2c/pkg"), "u2d": Path("/u2d/pkg")}
+SERVED_FROM = {}                                  # package file -> the copy that served it
 REPO = Path("/root/repo")
 MIRROR = Path("/root/mirror")
 OUT = {}                                          # "dir": /u2c/u2m/<zu2m.py's sha256, first 12>, set by _setup
@@ -102,6 +109,16 @@ def _link(dst, src):
         raise SystemExit(f"{dst} exists")
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.symlink_to(src)
+
+
+def _pkg(rel, *prefer):
+    """The package file rel from the first copy that holds it: U2e's order (prefer), then mpr-u2d's."""
+    for k in prefer + ("u2d",):
+        p = PKG_ROOTS[k] / rel
+        if p.exists():
+            SERVED_FROM[rel] = k
+            return p
+    raise SystemExit(f"{rel}: in no package copy on the volumes")
 
 
 def _sha12(f):
@@ -133,19 +150,18 @@ def _setup(names=()):
     OUT["dir"].mkdir(parents=True, exist_ok=True)
     _link(REPO / "outputs" / "u2m", OUT["dir"])
     served = MIRROR / "data" / "final_canonical"
-    _link(served / "CANONICAL_FREEZE.json", "/u2c/pkg/CANONICAL_FREEZE.json")
-    _link(served / "canonical.py", "/u2c/pkg/canonical.py")
+    _link(served / "CANONICAL_FREEZE.json", _pkg("CANONICAL_FREEZE.json", "u2c"))
+    _link(served / "canonical.py", _pkg("canonical.py", "u2c"))
     for d in SIX:
         g = Path("/u2l/u2b") / d / "graphs"
         if g.exists():
             _link(REPO / "outputs" / "u2b" / d / "graphs", g)
     for d in names:
-        nodes = Path("/u2l/pkg") / d / "nodes.jsonl"
-        _link(served / d / "nodes.jsonl", nodes if nodes.exists() else Path("/u2c/pkg") / d / "nodes.jsonl")
+        _link(served / d / "nodes.jsonl", _pkg(f"{d}/nodes.jsonl", "links", "u2c"))
         for sub in ("DATASET.json", "embeddings/dense/docs"):
-            _link(served / d / sub, Path("/u2l/pkg") / d / sub)
+            _link(served / d / sub, _pkg(f"{d}/{sub}", "links"))
         for sub in ("queries", "embeddings/dense/queries", "retrieval_cache"):
-            _link(served / d / sub, Path("/u2c/pkg") / d / sub)
+            _link(served / d / sub, _pkg(f"{d}/{sub}", "u2c"))
     for p in (REPO / "outputs" / "mp_unified", REPO / "scripts", REPO / "src"):
         if str(p) not in sys.path:
             sys.path.insert(0, str(p))
@@ -272,7 +288,7 @@ def probe(i):
     op = S4.Opened()
     return {"i": i, **env, "freeze": op.freeze["RECORD_SHA256"], "out": str(OUT["dir"]),
             "u2c_filed": os.readlink(REPO / "outputs" / "u2c"), "u2e_filed": os.readlink(REPO / "outputs" / "u2e"),
-            "u2e_records": filed_e, "mirror_files": sorted(
+            "u2e_records": filed_e, "served_from": dict(SERVED_FROM), "mirror_files": sorted(
                 str(p.relative_to(served)) for p in served.iterdir())}
 
 
