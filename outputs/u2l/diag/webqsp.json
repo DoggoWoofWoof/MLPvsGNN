@@ -1,0 +1,367 @@
+{
+ "stage": "U2l diagnostic (decides nothing)",
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "pick": "kt_cos:ada_f12_k0@0.85",
+ "graph_detail": {
+  "graph": "cached (the KB)"
+ },
+ "script_sha256": "61ffbdd60e531e8f70b87b2e9ff63ae08631e53f9ac0a061d20eafeadfbed9f3",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "ledger": {
+  "golds": 10583,
+  "missed": 2077,
+  "questions": 1503,
+  "questions_missing_a_gold": 161,
+  "by_cause": {
+   "TAU_CUT": 664,
+   "BUDGET": 219,
+   "UNREACHED": 1194
+  },
+  "questions_by_cause": {
+   "TAU_CUT": 119,
+   "BUDGET": 19,
+   "UNREACHED": 58
+  }
+ },
+ "node_kinds": {
+  "READABLE_ENTITY": 925761,
+  "VALUE_LITERAL": 14515,
+  "MID_NAMED_ENTITY": 62375,
+  "CVT_MEDIATOR": 1588085,
+  "UNRESOLVED_OTHER": 2158
+ },
+ "golds_per_question": {
+  "n": 1503,
+  "median": 1.0,
+  "p90": 13.0,
+  "max": 742.0
+ },
+ "by_cause": {
+  "HELD": {
+   "golds": 3167,
+   "distance": {
+    "0": 449,
+    "1": 2392,
+    "2": 324,
+    "3": 2,
+    "4": 0,
+    "-1": 0
+   },
+   "one_link_by_family": {
+    "structural": 2748,
+    "ner": 210,
+    "knn": 703
+   },
+   "name_in_question": 8,
+   "name_match_B": 578,
+   "kinds": {
+    "READABLE_ENTITY": 3085,
+    "VALUE_LITERAL": 82
+   },
+   "typed_hop1": {
+    "golds": 2748,
+    "split_list": 2047,
+    "relation_rank": {
+     "n": 2748,
+     "median": 1.0,
+     "p90": 10.0,
+     "max": 234.0
+    },
+    "rank_at_most": {
+     "1": 0.5928,
+     "3": 0.7031,
+     "10": 0.905
+    },
+    "fan_out": {
+     "n": 2748,
+     "median": 21.0,
+     "p90": 101.0,
+     "max": 55396.0
+    }
+   },
+   "typed_hop2": {
+    "golds": 411,
+    "mid_cvt": 153,
+    "any_mid_cvt": 176,
+    "split_list": 401,
+    "rank1": {
+     "n": 411,
+     "median": 1.0,
+     "p90": 7.0,
+     "max": 66.0
+    },
+    "rank2": {
+     "n": 411,
+     "median": 3.0,
+     "p90": 9.0,
+     "max": 71.0
+    },
+    "rank_both_at_most": {
+     "1": 0.1168,
+     "3": 0.4234,
+     "10": 0.9173
+    },
+    "fan1": {
+     "n": 411,
+     "median": 11.0,
+     "p90": 259.0,
+     "max": 1554.0
+    },
+    "fan2": {
+     "n": 411,
+     "median": 5.0,
+     "p90": 624.0,
+     "max": 113895.0
+    }
+   }
+  },
+  "TAU_CUT": {
+   "golds": 664,
+   "distance": {
+    "0": 0,
+    "1": 455,
+    "2": 205,
+    "3": 4,
+    "4": 0,
+    "-1": 0
+   },
+   "one_link_by_family": {
+    "structural": 455,
+    "ner": 7,
+    "knn": 1
+   },
+   "name_in_question": 0,
+   "name_match_B": 26,
+   "kinds": {
+    "READABLE_ENTITY": 631,
+    "VALUE_LITERAL": 33
+   },
+   "typed_hop1": {
+    "golds": 455,
+    "split_list": 377,
+    "relation_rank": {
+     "n": 455,
+     "median": 1.0,
+     "p90": 14.0,
+     "max": 72.0
+    },
+    "rank_at_most": {
+     "1": 0.5121,
+     "3": 0.6286,
+     "10": 0.8242
+    },
+    "fan_out": {
+     "n": 455,
+     "median": 85.0,
+     "p90": 356.0,
+     "max": 32105.0
+    }
+   },
+   "typed_hop2": {
+    "golds": 202,
+    "mid_cvt": 123,
+    "any_mid_cvt": 125,
+    "split_list": 187,
+    "rank1": {
+     "n": 202,
+     "median": 7.0,
+     "p90": 8.0,
+     "max": 98.0
+    },
+    "rank2": {
+     "n": 202,
+     "median": 5.0,
+     "p90": 8.0,
+     "max": 71.0
+    },
+    "rank_both_at_most": {
+     "1": 0.0446,
+     "3": 0.1733,
+     "10": 0.8614
+    },
+    "fan1": {
+     "n": 202,
+     "median": 249.0,
+     "p90": 259.0,
+     "max": 356.0
+    },
+    "fan2": {
+     "n": 202,
+     "median": 1.0,
+     "p90": 4961.0,
+     "max": 113895.0
+    }
+   }
+  },
+  "BUDGET": {
+   "golds": 219,
+   "distance": {
+    "0": 0,
+    "1": 8,
+    "2": 211,
+    "3": 0,
+    "4": 0,
+    "-1": 0
+   },
+   "one_link_by_family": {
+    "structural": 8,
+    "ner": 0,
+    "knn": 0
+   },
+   "name_in_question": 0,
+   "name_match_B": 0,
+   "kinds": {
+    "READABLE_ENTITY": 219
+   },
+   "typed_hop1": {
+    "golds": 8,
+    "split_list": 8,
+    "relation_rank": {
+     "n": 8,
+     "median": 2.0,
+     "p90": 3.0,
+     "max": 3.0
+    },
+    "rank_at_most": {
+     "1": 0.5,
+     "3": 1.0,
+     "10": 1.0
+    },
+    "fan_out": {
+     "n": 8,
+     "median": 551.0,
+     "p90": 1589.5999999999997,
+     "max": 2963.0
+    }
+   },
+   "typed_hop2": {
+    "golds": 199,
+    "mid_cvt": 6,
+    "any_mid_cvt": 12,
+    "split_list": 199,
+    "rank1": {
+     "n": 199,
+     "median": 8.0,
+     "p90": 8.0,
+     "max": 10.0
+    },
+    "rank2": {
+     "n": 199,
+     "median": 71.0,
+     "p90": 71.0,
+     "max": 71.0
+    },
+    "rank_both_at_most": {
+     "1": 0.0151,
+     "3": 0.0854,
+     "10": 0.2412
+    },
+    "fan1": {
+     "n": 199,
+     "median": 1.0,
+     "p90": 1.0,
+     "max": 180.0
+    },
+    "fan2": {
+     "n": 199,
+     "median": 55396.0,
+     "p90": 55396.0,
+     "max": 113895.0
+    }
+   }
+  },
+  "UNREACHED": {
+   "golds": 1194,
+   "distance": {
+    "0": 0,
+    "1": 0,
+    "2": 997,
+    "3": 194,
+    "4": 3,
+    "-1": 0
+   },
+   "one_link_by_family": {
+    "structural": 0,
+    "ner": 0,
+    "knn": 0
+   },
+   "name_in_question": 0,
+   "name_match_B": 12,
+   "kinds": {
+    "READABLE_ENTITY": 1181,
+    "VALUE_LITERAL": 12,
+    "MID_NAMED_ENTITY": 1
+   },
+   "typed_hop1": {
+    "golds": 0,
+    "split_list": 0,
+    "relation_rank": null,
+    "rank_at_most": {
+     "1": null,
+     "3": null,
+     "10": null
+    },
+    "fan_out": null
+   },
+   "typed_hop2": {
+    "golds": 977,
+    "mid_cvt": 5,
+    "any_mid_cvt": 21,
+    "split_list": 944,
+    "rank1": {
+     "n": 977,
+     "median": 5.0,
+     "p90": 15.0,
+     "max": 195.0
+    },
+    "rank2": {
+     "n": 977,
+     "median": 9.0,
+     "p90": 71.0,
+     "max": 269.0
+    },
+    "rank_both_at_most": {
+     "1": 0.0839,
+     "3": 0.1822,
+     "10": 0.4923
+    },
+    "fan1": {
+     "n": 977,
+     "median": 1.0,
+     "p90": 3.0,
+     "max": 1079.0
+    },
+    "fan2": {
+     "n": 977,
+     "median": 32105.0,
+     "p90": 55396.0,
+     "max": 113895.0
+    }
+   }
+  }
+ },
+ "questions": {
+  "questions_missing_a_gold": 161,
+  "by_causes": {
+   "BUDGET": 2,
+   "BUDGET+TAU_CUT": 6,
+   "BUDGET+TAU_CUT+UNREACHED": 8,
+   "BUDGET+UNREACHED": 3,
+   "TAU_CUT": 95,
+   "TAU_CUT+UNREACHED": 10,
+   "UNREACHED": 37
+  },
+  "every_missed_gold_in_a_split_list": 83,
+  "ALL_now": 0.8929,
+  "ALL_if_the_split_lists_were_whole": 0.9481
+ },
+ "caps": {
+  "hops": 2000000,
+  "mids": 5000,
+  "name_min": 4
+ },
+ "seconds": 48.1,
+ "utc": "2026-10-24T16:31:34Z"
+}
