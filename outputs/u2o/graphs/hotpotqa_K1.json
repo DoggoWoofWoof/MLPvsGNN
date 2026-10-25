@@ -1,0 +1,32 @@
+{
+ "declared_in": "docs/U2O_K1_I_ORDER.md",
+ "stage": "U2o graph",
+ "dataset": "hotpotqa",
+ "source": {
+  "graph": "W2_S",
+  "npz": "outputs/u2b/hotpotqa/graphs/W2_S.npz",
+  "npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+  "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+  "build": {
+   "directed_edges": 32334355,
+   "undirected_neighbours": 64318458,
+   "mean_degree": 12.29,
+   "max_degree": 371977
+  }
+ },
+ "scorer": "A",
+ "scorer_fit_on": "2wiki",
+ "scorer_sha256": "7fdfc8ab64c2cbc33ac2b4d9d6522eb94582fb074e6933fa87d05e8189ed9a0d",
+ "standardization_equal_u2k": true,
+ "rows": 5233329,
+ "entries": 64318458,
+ "rows_reordered": 5233329,
+ "rows_changed": 4364114,
+ "npz": "outputs/u2o/graphs/hotpotqa_K1.npz",
+ "npz_sha256": "f04a6aff0ccbeaab6a813ed49931b6cdf9a8460d05d202e4fb04f293f458fa72",
+ "script_sha256": "c4f859f28e3c3cb5cc711f6828232efde21f2cfd3b7797d92c038d18d4faa82c",
+ "zu2k_sha256": "ff622cc17d9e2f918b70f4cbbf7d53e675e306cb08fe8d87760f85edc50beaa1",
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "seconds": 574.2,
+ "utc": "2026-10-25T06:14:30Z"
+}

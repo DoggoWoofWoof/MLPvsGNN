@@ -114,3 +114,52 @@ The four passage corpora are all Wikipedia, so this measures transfer between Wi
 A verdict closes only the form tested (docs/SCREENS.md, section 3b): here K1's order as the I's row order, with U2e's
 grid. K1 as the walks' row order is a different form, and so is a prune that reads its cut from each graph. Neither
 is closed.
+
+## 7. Results
+
+**Filed 25 October 2026: NO_GAIN.** U2e's pick stays: `own/kind_t/kt_cos:ada_f12_k0@0.85` at level 0.955 and 1,812.6
+rows (outputs/u2o/verdict.json and .md). Under K1 the rule picks the same candidate at the same level, for 1,816.9
+rows. These are development numbers: s1sel, with webqsp's s1eval beside.
+
+- **Checks.** Section 4's checks held on musique, hotpotqa and 2wiki.
+  - Every K1 row holds the same entries as its W2_S row. The reorder changed the order of 76,191 of 117,534 rows on
+    musique, 4,364,114 of 5,233,329 on hotpotqa and 5,438,731 of 5,989,847 on 2wiki. The scorer was A (fitted on
+    2wiki) on the first two and H (fitted on hotpotqa) on 2wiki.
+  - On W2_S's order, the I equals `prepare`'s pools, and the own cell's `kind_t` columns equal U2m's filed ones,
+    question for question.
+  - On K1's order, `kt` and `kt_n1` are unchanged.
+  - On W2_S's order, the table equals U2e's for all 13,860 candidates, and the rule returns U2e's pick.
+- **Where it ran.** Everything ran on the laptop. hotpotqa's and 2wiki's graph and stats ran beside U2m's last (a)
+  and (d) laptop runs, not after them as section 6 says. That changes no number: on W2_S's order every question
+  reproduced U2m's filed columns.
+
+**The I, beside.** On K1's order the I holds more golds, equal to U2k's filed values:
+
+| dataset | ALL, W2_S's order | mean size | ALL, K1's order | mean size |
+| --- | ---: | ---: | ---: | ---: |
+| musique | 0.7751 | 2,067.2 | 0.7816 | 2,070.9 |
+| hotpotqa | 0.8985 | 119.6 | 0.9012 | 120.1 |
+| 2wiki | 0.8369 | 162.2 | 0.8670 | 164.7 |
+
+**Why there is no gain.**
+- **The pool already holds the I's new golds.** At U2e's point, ALL is unchanged on every dataset (musique 0.9635,
+  hotpotqa 0.9556, 2wiki 0.9666). The misses by cause have the same counts on both orders: hotpotqa 13 TAU_CUT, 38
+  BUDGET and 18 UNREACHED; 2wiki 13, 31 and 6; musique 22, 9 and 31. KIND_T's walks reach those golds without the I.
+- **K1 moves only the rows.** The I grows by 0.5 to 3.7 rows per question. Through the fill, the rows at U2e's point
+  go from 561.2 to 564.0 on hotpotqa and from 839.9 to 856.0 on 2wiki; on musique they fall from 5,437.4 to
+  5,434.4. So the cost goes from 1,812.6 to 1,816.9.
+- **No level rises along the frontier.**
+  - Within the cap, both orders pick the same candidates: at 0.95 for 1,501.3 against 1,497.8, and at 0.955 for
+    1,816.9 against 1,812.6.
+  - Past the cap, K1's 0.975 point costs more: 5,833.9 against 4,542.4.
+- **What the misses say.** BUDGET is the largest cause on hotpotqa (38 of 69) and 2wiki (31 of 50). Those are golds
+  the walks reach but rank below the budget. A row order that only the I's capped first hop reads cannot move them.
+
+**What follows.**
+- The pools stay as they are.
+- s(u, v) remains an input for both models (U2k, section 8).
+- This verdict closes only K1's order as the I's row order, with U2e's grid. Two forms are left open:
+  - **s(u, v) as the walks' edge weight.** It would be a question-free, gold-free weight in (a)'s relational kernel
+    (U2m, section 14) in place of ω, so it can move the ranks of the BUDGET misses. It reads (a)'s kernel and the
+    pick (a) carries, so it is declared in its own file after (a)'s verdict and before any code.
+  - **A prune whose cut each graph reads.**

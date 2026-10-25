@@ -1,0 +1,32 @@
+{
+ "declared_in": "docs/U2O_K1_I_ORDER.md",
+ "stage": "U2o graph",
+ "dataset": "2wiki",
+ "source": {
+  "graph": "W2_S",
+  "npz": "outputs/u2b/2wiki/graphs/W2_S.d.npz",
+  "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+  "build": {
+   "directed_edges": 71913828,
+   "undirected_neighbours": 142967492,
+   "mean_degree": 23.87,
+   "max_degree": 621403
+  }
+ },
+ "scorer": "H",
+ "scorer_fit_on": "hotpotqa",
+ "scorer_sha256": "c7441681cf1e7746fc0cb250dfa9d36842f6cd9efeb99ec20cf080bd980c0a57",
+ "standardization_equal_u2k": true,
+ "rows": 5989847,
+ "entries": 142967492,
+ "rows_reordered": 5989847,
+ "rows_changed": 5438731,
+ "npz": "outputs/u2o/graphs/2wiki_K1.npz",
+ "npz_sha256": "5293aaa8a2497ffa9131de521b15eeaf840cdc1fbeea09b9a5e6a6513b534e40",
+ "script_sha256": "c4f859f28e3c3cb5cc711f6828232efde21f2cfd3b7797d92c038d18d4faa82c",
+ "zu2k_sha256": "ff622cc17d9e2f918b70f4cbbf7d53e675e306cb08fe8d87760f85edc50beaa1",
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "seconds": 1369.8,
+ "utc": "2026-10-25T07:36:06Z"
+}
