@@ -1,0 +1,84 @@
+{
+ "dataset": "2wiki",
+ "carve": "s1sel",
+ "declared_in": "docs/U2L_ENTITY_MATCH.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "graph": "E1+R_kNN",
+ "question_field": "question",
+ "questions": 1496,
+ "el_npz_sha256": "659a721540d589ae28cd4a4b24d396c7ae85dd37db1257f475dff7b0a3fd431d",
+ "pkg_structural_npz_sha256": "1b10485258e93b1d22316cd153f4864f875f2772da298fb0fbf307f2f5312393",
+ "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+ "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+ "Q": {
+  "mean": 2.65,
+  "median": 2.0,
+  "nonempty": 0.9084,
+  "max": 15
+ },
+ "reach_B_union_Q": {
+  "questions": 1496,
+  "golds": 3646,
+  "B": {
+   "ALL": 0.3623,
+   "recall": 0.6895,
+   "rows": 51.7
+  },
+  "curve": {
+   "25": {
+    "ALL": 0.3991,
+    "recall": 0.7097,
+    "rows": 76.7
+   },
+   "50": {
+    "ALL": 0.4225,
+    "recall": 0.7233,
+    "rows": 101.7
+   },
+   "100": {
+    "ALL": 0.4672,
+    "recall": 0.7492,
+    "rows": 151.7
+   },
+   "250": {
+    "ALL": 0.5742,
+    "recall": 0.8098,
+    "rows": 301.7
+   },
+   "500": {
+    "ALL": 0.6999,
+    "recall": 0.8707,
+    "rows": 551.2
+   },
+   "1000": {
+    "ALL": 0.7741,
+    "recall": 0.9054,
+    "rows": 1020.2
+   },
+   "2000": {
+    "ALL": 0.8168,
+    "recall": 0.925,
+    "rows": 1654.3
+   },
+   "5000": {
+    "ALL": 0.8663,
+    "recall": 0.9459,
+    "rows": 3135.8
+   }
+  },
+  "all_neighbours": {
+   "ALL": 0.9285,
+   "recall": 0.9711,
+   "rows": 30813.2
+  },
+  "choice_score": 0.6664
+ },
+ "secs": {
+  "Q": 206.6,
+  "reach": 3635.6
+ },
+ "decides": "nothing (section 5, beside)",
+ "script_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3"
+}

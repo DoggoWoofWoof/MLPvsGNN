@@ -222,4 +222,30 @@ and gate 3 passed on musique.
 - U2n's models read EL's kinds (IS, CO_t, CO_s) as edge types.
 - The question's links (section 5, beside) are run on E1's three-family graph and filed beside this section.
 
+**The question's links, beside (filed 25 October 2026, deciding nothing).** Section 5's read on E1 ∪ R ∪ kNN
+(outputs/u2l/el/<D>/qlinks_<carve>.json): Q(q) is the nodes of the groups the question mentions; the pool is
+(B ∪ Q(q)) ∪ X'[:k], X' the one-link neighbours of B ∪ Q(q) in the same cosine order. Against the graded E1+R_kNN
+(B ∪ X[:k]):
+
+| dataset | mean \|Q\| | questions with a Q | ALL of B → B ∪ Q | ALL of all X → X' | rows of all X → X' | score → with Q | difference |
+| --- | ---: | ---: | --- | --- | --- | --- | ---: |
+| metaqa | 2.12 | 0.9967 | 0.0194 → 0.0194 | 0.4028 → 0.4028 | 596.3 → 621.4 | 0.2912 → 0.2860 | −0.0052 |
+| squad | 6.98 | 0.1288 | 0.9793 → 0.9793 | 0.9913 → 0.9913 | 1,693.8 → 1,717.2 | 0.9908 → 0.9908 | +0.0000 |
+| musique | 4.11 | 0.6943 | 0.5020 → 0.5098 | 0.8031 → 0.8110 | 6,027.6 → 6,290.4 | 0.6811 → 0.6842 | +0.0031 |
+| hotpotqa | 2.67 | 0.9284 | 0.6625 → 0.6678 | 0.9350 → 0.9549 | 943.0 → 55,243.6 | 0.9025 → 0.8711 | −0.0314 |
+| 2wiki | 2.65 | 0.9084 | 0.3483 → 0.3623 | 0.9124 → 0.9285 | 1,105.3 → 30,813.2 | 0.7671 → 0.6664 | −0.1007 |
+| webqsp (s1eval, beside) | 2.07 | 0.9474 | 0.2788 → 0.2788 | 0.9095 → 0.9142 | 4,616.8 → 7,043.1 | 0.5168 → 0.4707 | −0.0461 |
+
+- The mean over the five s1sel datasets goes from 0.7265 to 0.6997.
+- **The mentions themselves add few golds.** B ∪ Q gains 0.0140 on 2wiki, 0.0078 on musique and 0.0053 on hotpotqa,
+  for about 2 rows. On the KBs and squad it gains nothing: there the seeds are already the question's entities, or
+  the question names few groups (squad: 0.1288 of questions).
+- **Their neighbours hold golds, but they are hubs.** All of X' reaches 0.9549 on hotpotqa (0.9350 without Q) and
+  0.9285 on 2wiki (0.9124), but X' grows from 943 to 55,244 rows on hotpotqa and from 1,105 to 30,813 on 2wiki.
+  Those neighbours take the top of the shared cosine order from B's linked golds, so the score falls on 2wiki,
+  webqsp, hotpotqa and metaqa. Only musique gains.
+- **What follows.** A pool that seeds from Q(q) is U2m's to declare (section 5). This read says it must bound Q's
+  fan-out: Q's own nodes cost about 2 rows, and their neighbours need their own order or budget, not a share of X's
+  cosine order. Q(q)'s membership is also an input U2n's models can read. This read closes nothing.
+
 A pick closes only the forms graded here (docs/SCREENS.md, section 3b).

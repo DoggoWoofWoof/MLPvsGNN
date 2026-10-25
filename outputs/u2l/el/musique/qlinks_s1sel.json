@@ -1,0 +1,84 @@
+{
+ "dataset": "musique",
+ "carve": "s1sel",
+ "declared_in": "docs/U2L_ENTITY_MATCH.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "graph": "E1+R_kNN",
+ "question_field": "question",
+ "questions": 1534,
+ "el_npz_sha256": "281d69b66bbccbcef5082eb3be264bb83a0ec55b8724444fc0f2824d5ca82e37",
+ "pkg_structural_npz_sha256": "3b09ce9639e45f22f4e4d51fb628df61ff6570a7f9e3cca290b07dabc7b964d8",
+ "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+ "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+ "Q": {
+  "mean": 4.11,
+  "median": 1.0,
+  "nonempty": 0.6943,
+  "max": 133
+ },
+ "reach_B_union_Q": {
+  "questions": 1534,
+  "golds": 4064,
+  "B": {
+   "ALL": 0.5098,
+   "recall": 0.7935,
+   "rows": 202.2
+  },
+  "curve": {
+   "25": {
+    "ALL": 0.5319,
+    "recall": 0.8035,
+    "rows": 227.2
+   },
+   "50": {
+    "ALL": 0.5522,
+    "recall": 0.814,
+    "rows": 252.2
+   },
+   "100": {
+    "ALL": 0.5802,
+    "recall": 0.8273,
+    "rows": 302.2
+   },
+   "250": {
+    "ALL": 0.6336,
+    "recall": 0.8515,
+    "rows": 452.2
+   },
+   "500": {
+    "ALL": 0.691,
+    "recall": 0.8754,
+    "rows": 702.2
+   },
+   "1000": {
+    "ALL": 0.7405,
+    "recall": 0.8974,
+    "rows": 1202.1
+   },
+   "2000": {
+    "ALL": 0.7757,
+    "recall": 0.9116,
+    "rows": 2183.3
+   },
+   "5000": {
+    "ALL": 0.8031,
+    "recall": 0.9213,
+    "rows": 4230.7
+   }
+  },
+  "all_neighbours": {
+   "ALL": 0.811,
+   "recall": 0.9239,
+   "rows": 6290.4
+  },
+  "choice_score": 0.6842
+ },
+ "secs": {
+  "Q": 3.6,
+  "reach": 63.8
+ },
+ "decides": "nothing (section 5, beside)",
+ "script_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3"
+}
