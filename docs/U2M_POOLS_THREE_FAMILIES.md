@@ -600,3 +600,12 @@ webqsp is s1eval, beside):
   is declared in its own dated section before any code.
 - Restored-list membership is also an input U2n can learn from: (d)'s split already carries the structural and
   (relation, direction) parts.
+
+## 16. (d) on hotpotqa and 2wiki: where it runs, 25 October 2026 (logistics only, before any of their numbers)
+
+Section 13 sends (d)'s hotpotqa and 2wiki to Modal if the credit covers them, and holds them otherwise.
+- W5 has about $1.30 left after (a)'s Modal run, which is too little, and the lab host is unreachable.
+- So the laptop also runs them, once U2m's (a) and (d) laptop runs and U2o's laptop runs have finished.
+- A machine cannot change a number here. Section 13's checks hold every question's walk order, masses and rows to the
+  filed ones, or the run stops.
+- (a)'s filing follows as section 17.
