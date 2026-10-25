@@ -549,3 +549,54 @@ in place of W2_S and NER) changes the families. It is declared in its own dated 
 run, and the relational weight applies to whatever the structural family is there.
 
 A verdict closes only the form tested (docs/SCREENS.md, section 3b): here RWr and RWe at K = 64 with these β.
+
+## 15. (b): filed 25 October 2026
+
+**NO_GAIN.** The pick stays U2e's, `own/kind_t/kt_cos:ada_f12_k0@0.85` at G = 0: level 0.955, 1,812.6 rows, with a
+cap of 1,953.5 (outputs/u2m/b/verdict_b.json and .md). There were 56 candidates: the 8 points of the own `kind_t`
+frontier × the 7 values of G. Section 11's checks held:
+- at G = 0, every point's ALL and rows equal (c) and (e)'s filed values on all six datasets;
+- the frontier over the G = 0 candidates returns the carried frontier's pick at every level.
+
+**At the carried point, by G** (ALL / mean rows; squad holds 0.9793 / 50 at every G, because it restores nothing;
+webqsp is s1eval, beside):
+
+| G | cost | metaqa | musique | hotpotqa | 2wiki | webqsp |
+| ---: | ---: | --- | --- | --- | --- | --- |
+| 0 | 1,812.6 | 0.9619 / 4,384.4 | 0.9635 / 5,437.4 | 0.9556 / 561.2 | 0.9666 / 839.9 | 0.8929 / 4,754.6 |
+| 10 | 2,220.5 | 0.9840 / 5,695.7 | 0.9648 / 6,569.7 | 0.9562 / 588.3 | 0.9672 / 869.7 | 0.9295 / 5,443.2 |
+| 50 | 2,446.5 | 0.9840 / 6,042.1 | 0.9681 / 8,081.1 | 0.9562 / 594.7 | 0.9679 / 880.8 | 0.9428 / 5,923.1 |
+| 500 | 2,617.2 | 0.9840 / 6,302.6 | 0.9726 / 9,249.9 | 0.9562 / 595.0 | 0.9679 / 882.8 | 0.9474 / 6,267.6 |
+
+**Why there is no gain.**
+- **The restore works where the cut drops part of a small list.** On the KB, the restored lists are (relation,
+  direction) groups.
+  - metaqa: at G = 10 it recovers 174 of its 287 TAU_CUT misses, and ALL goes from 0.9619 to 0.9840.
+  - webqsp: 257 golds at G = 10 and 437 at G = 500, of its 664 TAU_CUT misses.
+- **The level is set by the weakest dataset.** That is hotpotqa, and it gains one gold (0.9556 → 0.9562). 38 of its
+  69 misses are BUDGET, and only 13 are TAU_CUT. 2wiki gains 2 of 50, and squad has no TAU_CUT misses.
+- **The rows cost.** At G = 10, metaqa restores 1,311.4 rows and musique 1,132.3, so the cost rises from 1,812.6 to
+  2,220.5, which is 1.14× the cap.
+- **On the frontier.** G > 0 first appears at level 0.990 (`kt_cos+n2_30:fix_15000@0.95` at G = 10, 7,288.5 rows),
+  far past the cap.
+
+**The carried pick's misses recovered** (golds; G = 0 misses by cause, then recovered at G):
+
+| dataset | missed | TAU_CUT / BUDGET / UNREACHED | G = 10 | G = 50 | G = 500 |
+| --- | ---: | --- | ---: | ---: | ---: |
+| metaqa | 329 | 287 / 8 / 34 | 174 | 175 | 175 |
+| squad | 31 | 0 / 30 / 1 | 0 | 0 | 0 |
+| musique | 62 | 22 / 9 / 31 | 2 | 8 | 16 |
+| hotpotqa | 69 | 13 / 38 / 18 | 1 | 1 | 1 |
+| 2wiki | 50 | 13 / 31 / 6 | 1 | 2 | 2 |
+| webqsp (s1eval) | 2,077 | 664 / 369 / 1,044 | 257 | 334 | 437 |
+
+**What follows.**
+- (d) and (a) read the carried pick at G = 0, as sections 13 and 14 say for NO_GAIN.
+- The verdict closes only this restore with these G (docs/SCREENS.md, section 3b). The restore has signal where lists
+  are typed, but its rows grow with the lists.
+- The next form is a restore with a row budget. Lists are taken in the order of their best member's place until the
+  restored rows reach a fixed share of keep. A question with many small lists then gets few rows, on any dataset. It
+  is declared in its own dated section before any code.
+- Restored-list membership is also an input U2n can learn from: (d)'s split already carries the structural and
+  (relation, direction) parts.
