@@ -379,9 +379,12 @@ def carried_pick(pick=None, g=None, dev=False):
         rec = json.loads(p.read_text(encoding="utf-8"))
         if rec.get("script_sha256") != MB.script_sha256() or rec.get("zu2m_sha256") != M.script_sha256():
             raise SystemExit("outputs/u2m/b/verdict_b.json is not the committed zu2m_b.py's verdict")
-        if pick is not None and (pick != rec["pick"] or int(g) != int(rec["G"])):
+        nm, gs = rec["pick"].rsplit("|G", 1)          # (b)'s pick is "<point>|G<g>"; the point is the name
+        if int(gs) != int(rec["G"]):
+            raise SystemExit("outputs/u2m/b/verdict_b.json: its pick's G is not its G")
+        if pick is not None and (pick != nm or int(g) != int(rec["G"])):
             raise SystemExit("--pick/--g are not the pick (b)'s verdict carries")
-        return rec["pick"], int(rec["G"]), rec
+        return nm, int(rec["G"]), rec
     if not dev or pick is None or g is None:
         raise SystemExit("(b)'s verdict is not filed (outputs/u2m/b/verdict_b.json); a development run may name "
                          "--pick and --g")
