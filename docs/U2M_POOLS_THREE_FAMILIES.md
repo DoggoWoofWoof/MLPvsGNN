@@ -439,3 +439,113 @@ webqsp's s1eval is shown beside, as everywhere.
 U2n computes the same arrays on its fit and evaluation carves with these kernels, since the kernels are the form.
 
 **What follows.** (a)'s grid (temperature and type forms) and its checks go into section 14 before (a)'s code.
+
+## 14. (a) the relational walk: its reading, fixed 25 October 2026
+
+Written before (b)'s verdict and before any (a) code or number. Code: `outputs/mp_unified/zu2m_a.py`, which imports
+zu2m.py, zu2m_b.py, U2e, P1d and P1e unchanged. Pools only: nothing trains, and no weight, type or fit reads a
+question's gold or label. The choice reads golds on s1sel, as every pool stage's choice does.
+
+**The weight.** The five walks the carried recipe reads (section 13: A1st, A1all, Kst, KTst and KTall) keep their
+restarts, their α, ε and NMAX, and their equal split over a node's non-empty families. Within the structural family,
+node u's pushed mass goes to its neighbour v in proportion to
+
+    ω_q(t(u→v)) × s(v)
+
+- s(v) is the walk's own weight: 1 on A1 and K's walks, and P1e's steer, the first stage's RRF weight, on KT's.
+- t(u→v) is the arrival's type, from the form below.
+- ω_q(t) = exp(β × z_q(t)), where z_q(t) is c_q(t) = cos(q, r_t) standardized over the graph's type inventory:
+  minus the mean over the types, divided by their standard deviation, unweighted. q is the question's frozen dense
+  vector, the one U2e's `cos` reads (`prep.qemb`). r_t is the type's vector.
+- The ner and knn families keep their split (ω = 1). Their edges carry no type in either form.
+- β = 0 gives ω = 1 on every edge, so the walk is the carried one. β = 0 runs the carried kernels.
+
+**The types.** Two forms, each one rule on all six:
+- **RWr.** On the KB's structural family (metaqa, webqsp), t is the fact's relation. r_t is its filed text vector
+  (`outputs/m3b/relations/<D>_rel_embeddings.npy`, the frozen encoder, 13 September), with both shas checked against
+  that directory's RECORD.json. The relation vector has no direction, so both directions of a fact share it. When
+  u and v share several facts, the arrival's ω is the mean of their ω. On the passage graphs, RWr is RWe.
+- **RWe.** Latent types, fit by EM on the graph alone, with no question and no gold, on every dataset (the KB's
+  relation labels are not read).
+  - An arrival u→v of the structural family has the feature f = (x_v − x_u)/‖x_v − x_u‖, from the frozen node
+    vectors x (`DenseNodes`, as U2e reads them). Its reverse has −f.
+  - The EM is spherical k-means (hard EM for a mixture of von Mises–Fisher components with one shared
+    concentration), K = 64.
+  - The fit sample is 200,000 stored pairs (all of them if fewer), uniform without replacement (numpy
+    RandomState(0)), each in both directions. The start is 64 of the sample's features drawn by the same generator. The fit runs 25 steps, or
+    stops when no assignment changes. An empty component keeps its centre.
+  - Each arrival takes the component of highest μ_k · f. On every edge that is the argmax over k of
+    S[v, k] − S[u, k], with S = X μᵀ, because ‖x_v − x_u‖ does not depend on k. An arrival with x_v = x_u takes a
+    reserved null type with z = 0.
+  - r_t is the unit centre μ_t. So ω weighs an arrival by how far its type's mean direction moves toward the
+    question.
+
+**Why not (i) and (ii) here.**
+- Form (i) (the family, the link kind and the direction) has no vector. So a gold-free ω could not depend on the
+  question. It goes to U2n as an edge-type input, where the models learn the weight.
+- Form (ii)'s first vector, the entity's own node vector, makes ω a function of the target's own cosine, which the
+  steer already reads on the KT walks.
+- Its second vector, the mean of the passages that mention the entity, needs each link's entity label. U2n's EL
+  inputs carry that label.
+
+Both go to U2n, and neither is closed by this file.
+
+**The grid.** The form is RWr or RWe, and β is 0.5, 1 or 2. That gives six universal points, plus β = 0, the
+carried walk. On the passage graphs RWr and RWe coincide, so each passage dataset walks three configurations and each
+KB dataset six. K = 64 is fixed. Another K, or EM over the ner and knn families, is a later form.
+
+**The candidates.**
+- The carried frontier family is the one (b)'s verdict carries: its points at the G of (b)'s pick, or at G = 0 when
+  (b) is NO_GAIN.
+- Each point is crossed with the six grid points. At G > 0 the restore is (b)'s, recomputed on the new order.
+- At β = 0 the family is the carried frontier itself. The order is β = 0 first, then the forms in the order above,
+  then β ascending, then the points' order. So ties go to the carried walk, and then to the weaker weight.
+- Each candidate's order is the carried order rebuilt on the relational walks:
+  - KIND_T's switch, RRF5T's R0, N1, the cosine order of U_0, U2e's budgets and P1h's cut are unchanged;
+  - U_0 changes only through KIND_T's order.
+
+**The choice** is section 7's rule, with (b)'s cost, levels, cap and targets.
+
+| verdict (a) | when |
+| --- | --- |
+| RELATIONAL_RAISED | the pick's level is above the carried pick's |
+| RELATIONAL_CHEAPER | the same level, β > 0, and a lower cost than the carried pick |
+| NO_GAIN | otherwise: the pick is the carried one at β = 0 |
+
+**Carried forward** to U2n: the (a) pick with its form and β when RAISED or CHEAPER, otherwise (b)'s carried pick.
+When (a) is RAISED or CHEAPER, section 13's arrays are computed again on its walks for U2n.
+
+**Checks.** Any failure stops the dataset, and nothing is written.
+- **β = 0.** For every question, the β = 0 candidates' rows and held golds equal (b)'s filed table at the carried G.
+- **The relational kernel.** It weighs each edge by w = ω × s(v) in the carried spread's statements: the total, the
+  base m / (nf × total) and each amount base × w. With every ω equal to 1, w is s(v) exactly. So its p and its
+  top-NMAX order equal the carried kernel's, bit for bit (self-test on toy graphs, typed and untyped, steered and
+  unsteered). On toys with ω ≠ 1, its p equals a
+  plain Python push within 1e-12 relative.
+- **The types.** The relation vectors' and vocabularies' shas equal RECORD.json's. The EM fit is a function of the
+  graph and the node vectors alone. It is fit twice in the self-test with the same result. Its centres' sha256 is
+  filed.
+- **No gold before the choice.** The walk, ω and EM code paths take no gold argument.
+- **Development runs** (`--limit`) write nothing and log no number.
+
+**Beside, deciding nothing.**
+- Per graph: the EM components' sizes and their mean cosine to their centre.
+- On the KB: the normalized mutual information between the EM type and the fact's relation, over the structural
+  edges. This shows whether EM recovers the relations without their labels.
+- Per dataset, form and β: ALL and rows at the carried pick's point.
+- The (a) pick's misses by section 7's causes, against the carried pick's.
+- The mean share of a question's ω mass on its top type.
+- webqsp's s1eval for every candidate, as everywhere.
+
+**Where it runs.** As section 13 says:
+- the laptop runs squad, metaqa, musique and webqsp, after (d);
+- hotpotqa and 2wiki run on Modal if the remaining credit covers them, or on the lab host once it is reachable.
+  Otherwise they are held, and with them the verdict.
+- The EM fit runs where the dataset's walks run.
+- The arrays go to `outputs/u2m/a/stats/<D>__<carve>.npz` and `.json`, and stay uncommitted.
+
+**The families.** (a) runs on the families the carried recipe walks today: structural, ner and knn. U2l's choice (E1
+in place of W2_S and NER) changes the families. It is declared in its own dated section of this file, with its own
+run, and the relational weight applies to whatever the structural family is there.
+
+A verdict closes only the form tested (docs/SCREENS.md, section 3b): here RWr and RWe at K = 64 with these β.
