@@ -250,3 +250,78 @@ No form calls the encoder on new text (the user's ruling of 24 October). A7's ps
 type forms) and its checks are fixed in a dated section of this file before its code runs.
 
 A verdict closes only the form tested (docs/SCREENS.md, section 3b).
+
+## 11. (b) the list-whole cut: its reading, fixed 25 October 2026
+
+Written before (c) and (e)'s verdict and before any (b) code or number. Code: `outputs/mp_unified/zu2m_b.py`, which
+imports zu2m.py, U2e and P1h unchanged (zu2m.py is not edited). Pools only: nothing trains, and no list, restore or
+size reads a gold.
+
+**One candidate.** A candidate is (c) and (e)'s `<construction>/<recipe>/<order>:<budget>@<τ>`. Per question:
+- the order is the column's order outside B, rebuilt by section 5's path;
+- kk = min(its length, the budget), keep = P1h's `keep_counts(|B|, kk, τ)`;
+- the build-held set H = B ∪ order[:kk], and the kept pool P = B ∪ order[:keep];
+- a node's place is 0 in B, p for the order's p-th node, and none outside H.
+
+**The lists.** For each u in P, B included:
+- on an untyped family (W2_S, ner, knn on the passage graphs; any untyped family on a KB), one list: u's neighbours
+  in that family's symmetrised store, as FULL reads it;
+- on a typed KB's structural family, one list per (relation, direction) in u's typed row, its members once each;
+- u itself is never a member of its own list.
+
+**The restore at G.** A list L is restored when all four hold:
+- |L| ≤ G;
+- H holds every member (the budgeted build order holds it);
+- some member is in P (the cut kept part of it);
+- some member is in order[keep:kk] (the cut dropped part of it).
+
+The restored rows are the union, over the restored lists, of their members in order[keep:kk]. It is one pass: a
+restored node's own lists are not read. The candidate at G has rows |B| + keep + |restored|, and a gold is held
+when its place is 0, or between 1 and keep, or it is restored. At G = 0 nothing is restored, so the candidate is
+(c) and (e)'s, unchanged.
+
+**The candidates.** The carried frontier is the one (c) and (e) carried: frontier E or C, or U2e's own `kind_t`
+frontier if U2e's pick stays.
+- Every point of that frontier, at every level from 0.950 to 1.000, past the cap too, crossed with G in {0, 10, 25,
+  50, 100, 200, 500}. Those are at most 77 candidates.
+- Their order is G ascending, then the points' order in (c) and (e)'s candidate index. So ties go to the smaller G,
+  and G = 0 comes first.
+
+**The choice** is section 7's rule over these candidates. It uses the same cost, levels and cap, and the targets
+min(t, C_d − 0.005) with (c) and (e)'s filed ceilings C_d. So a level means what it meant in (c) and (e)'s verdict.
+
+| verdict (b) | when |
+| --- | --- |
+| LIST_WHOLE_RAISED | the pick's level is above the carried pick's |
+| LIST_WHOLE_CHEAPER | the same level, G > 0, and a lower cost than the carried pick |
+| NO_GAIN | otherwise: the pick is the carried one at G = 0 |
+
+**Carried forward** to (d), (a) and U2n: the (b) pick with its G when RAISED or CHEAPER, otherwise (c) and (e)'s
+carried pick.
+
+**Filed beside:**
+- each candidate's ALL and rows per dataset, and webqsp's s1eval;
+- the mean restored rows;
+- the carried pick's misses that each G recovers, by section 7's causes.
+
+webqsp never moves the choice.
+
+**Checks.** Any failure stops the dataset, and nothing is written.
+- Every question: each rebuilt column's length and every gold's place equal U2m's filed arrays (`lens`, `pos`) for
+  that column.
+- In the code: the restored rows lie in order[keep:kk], so rows ≤ |B| + kk; what is held at G holds at every
+  larger G.
+- In the verdict, at G = 0:
+  - every point's ALL and rows per dataset equal (c) and (e)'s filed values;
+  - the frontier over the G = 0 candidates returns the carried frontier's picks at every level.
+- Self-test (`--selftest`), before the commit that adds the code: the vectorized restore against a per-list loop,
+  and the typed grouping against a per-edge loop, both on toy orders and graphs.
+- Development runs (`--limit`) write nothing and log no number.
+
+**Where it runs.** As section 9 says:
+- the laptop runs squad, metaqa, musique and webqsp;
+- Modal runs hotpotqa and 2wiki (`outputs/mp_unified/zu2m_b_modal.py`, U2m's image and volumes, a new output
+  directory named by zu2m_b.py's sha256).
+
+The stats go to `outputs/u2m/b/stats/<D>__<carve>.npz` and `.json`, and the verdict to `outputs/u2m/b/verdict_b.json`
+and `.md`. The arrays stay uncommitted.
