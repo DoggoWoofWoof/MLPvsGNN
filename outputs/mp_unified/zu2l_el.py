@@ -5,6 +5,7 @@
     python outputs/mp_unified/zu2l_el.py grade --dataset D [--carve C]
     python outputs/mp_unified/zu2l_el.py choose
     python outputs/mp_unified/zu2l_el.py report
+    python outputs/mp_unified/zu2l_el.py qlinks --dataset D [--carve C]   # beside, after the choice
     python outputs/mp_unified/zu2l_el.py --selftest
 
 EL has two kinds. IS: a node mentions a title group's surface (U2b's scan, W2's gates); on a passage dataset these are
@@ -580,6 +581,118 @@ def cmd_report(_a):
     return 0
 
 
+# ── the question's links (section 5, beside; after the choice, on the chosen form only) ─────────────────────
+
+
+def question_texts(served, d, carve):
+    """The carve's questions in U2b's id order, from the train split only: the text the encoder embedded (CRAG's
+    bridge: metaqa's question_plain, without the topic entity's brackets; elsewhere question)."""
+    ids = json.loads((U2B / d / f"questions_{carve}.json").read_text(encoding="utf-8"))["ids"]
+    qrec = json.loads((U2B / d / "questions.json").read_text(encoding="utf-8"))
+    if hashlib.sha256(",".join(ids).encode("utf-8")).hexdigest() != qrec["carves"][carve]["ids_sha256"]:
+        raise SystemExit(f"{d}/{carve}: the ids are not their record's")
+    field = "question_plain" if d == "metaqa" else "question"
+    want, got = set(ids), {}
+    with open(served / d / "queries" / "train.jsonl", encoding="utf-8") as f:
+        for line in f:
+            r = json.loads(line)
+            if r["query_id"] in want:
+                got[r["query_id"]] = r[field]
+    miss = [i for i in ids if i not in got]
+    if miss:
+        raise SystemExit(f"{d}/{carve}: {len(miss)} questions are not in train.jsonl")
+    return [got[i] for i in ids], field
+
+
+def passage_q(served, d, texts):
+    """Q(q) on a passage dataset: U2i's surfaces (its table, sha checked) under W2's gates, with the corpus's
+    capitalization statistic (U2i's chunk counts)."""
+    cue, _outcome = u2i_cue()
+    if cue is not None:
+        raise SystemExit("U2i adopted an alias cue: reading its per-cue owners for the question is not coded")
+    pas = json.loads((U2I / d / "pass.json").read_text(encoding="utf-8"))
+    with np.load(U2I / d / "aliases.npz") as z:
+        al = [str(x) for x in z["alias"]]
+    titles, _none, n, _sha = u1b.read_nodes(served, d, 0, 0)
+    S = zu2i.Table(titles, {a: {} for a in al})
+    del titles, al
+    if S.sha != pas["table_sha256"]:
+        raise SystemExit(f"{d}: the rebuilt table is not U2i's")
+    cap, low = np.zeros(S.n_low, np.int64), np.zeros(S.n_low, np.int64)
+    files = sorted((U2I / d / "work").glob("chunk_*.npz"))
+    if len(files) != -(-n // zu2i.CHUNK):
+        raise SystemExit(f"{d}: {len(files)} of U2i's chunks, {-(-n // zu2i.CHUNK)} wanted")
+    for p in files:
+        with np.load(p) as z:
+            if str(z["table_sha"]) != S.sha:
+                raise SystemExit(f"{p} was scanned with another table")
+            np.add.at(cap, z["lid"], z["cap"])
+            np.add.at(low, z["lid"], z["low"])
+    common = low > cap
+    Q = []
+    for t in texts:
+        hits, _st, _cm = zu2i.scan_ev(S, t)
+        gs = sorted({int(S.tgroup[k]) for k, ok, _p, _n in hits if ok and S.is_title[k] and not common[S.lowid[k]]})
+        Q.append(np.unique(np.concatenate([S.group_nodes(g) for g in gs])) if gs else np.zeros(0, np.int64))
+    return Q
+
+
+def kb_q(served, d, texts, qemb, dense_get):
+    """Q(q) on a KB: section 2's surfaces (names, CVTs blanked) under W2's gates, the names' capitalization statistic,
+    and the context choice by the question's vector."""
+    titles, names, _n, _sha, _cvt = kb_texts(served, d)
+    S = zu2b.Surfaces(titles, KB_RULE)
+    cap, low = zu2b.stat_pass(S, names, titles, KB_RULE)
+    del names
+    common = low > cap
+    Q = []
+    for j, t in enumerate(texts):
+        hits, _st, cm = zu2b.scan(S, t, KB_RULE)
+        need = []
+        gs = list(zu2b.choose_targets(S, -1, hits, common, need, W2, cm)["W2"])
+        q = np.asarray(qemb[j], np.float32)
+        for _i, _v, cand in need:
+            best, bg = -9.0, -1
+            for g in cand:
+                s_ = float((dense_get(S.group_nodes(g)) @ q).max())
+                if s_ > best:
+                    best, bg = s_, g
+            gs.append(bg)
+        Q.append(np.unique(np.concatenate([S.group_nodes(g) for g in gs])) if gs else np.zeros(0, np.int64))
+    return Q
+
+
+def cmd_qlinks(a):
+    d = a.dataset
+    carve = a.carve or CARVE[d]
+    ch = json.loads((OUT / "choice.json").read_text(encoding="utf-8"))
+    if not ch["outcome"].startswith("CHOSEN"):
+        raise SystemExit(f"U2l's choice is {ch['outcome']}: no form to read the question's links on")
+    g = ch["graph"]
+    t0 = time.time()
+    served, freeze = u1b.package_root(False)
+    qrec, q, base, seeds, golds, B = questions(d, carve)
+    texts, field = question_texts(served, d, carve)
+    n = int(json.loads((OUT / d / "build.json").read_text(encoding="utf-8"))["nodes"])
+    D = u1d.Dense(served, d, n)
+    Q = kb_q(served, d, texts, q["qemb"], D.get) if d in KB else passage_q(served, d, texts)
+    t1 = time.time()
+    F, shas = families(served, d, n)
+    BQ = [np.union1d(b, x) for b, x in zip(B, Q)]
+    res = reach_unions(F, {g: GRAPHS[g]}, BQ, golds, q["qemb"], D.get)[g]
+    res["choice_score"] = round(zu2b.choice_score(res["curve"]), 4)
+    sizes = np.asarray([x.size for x in Q])
+    out = {"dataset": d, "carve": carve, "declared_in": DECLARED, "freeze_RECORD_SHA256": freeze, "graph": g,
+           "question_field": field, "questions": len(golds), **shas,
+           "Q": {"mean": round(float(sizes.mean()), 2), "median": float(np.median(sizes)),
+                 "nonempty": round(float((sizes > 0).mean()), 4), "max": int(sizes.max())},
+           "reach_B_union_Q": res, "secs": {"Q": round(t1 - t0, 1), "reach": round(time.time() - t1, 1)},
+           "decides": "nothing (section 5, beside)", **codes()}
+    write_json(OUT / d / f"qlinks_{carve}.json", out)
+    log(f"{d}/{carve}: the question's links on {g} ({time.time() - t0:.0f} s)")
+    return 0
+
+
 # ── the selftest (gate: section 7, item 1) ──────────────────────────────────
 
 
@@ -652,10 +765,10 @@ def main(argv=None):
     if a.selftest:
         return _selftest(a)
     fn = {"build": cmd_build, "gate3": cmd_gate3, "grade": cmd_grade, "choose": cmd_choose,
-          "report": cmd_report}.get(a.cmd)
+          "report": cmd_report, "qlinks": cmd_qlinks}.get(a.cmd)
     if fn is None:
-        raise SystemExit("build | gate3 | grade | choose | report | --selftest")
-    if a.cmd in ("build", "grade") and a.dataset not in SIX:
+        raise SystemExit("build | gate3 | grade | choose | report | qlinks | --selftest")
+    if a.cmd in ("build", "grade", "qlinks") and a.dataset not in SIX:
         raise SystemExit(f"--dataset must be one of {SIX}")
     return fn(a)
 
