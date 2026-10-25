@@ -1,0 +1,1050 @@
+{
+ "declared_in": "docs/U2M_POOLS_THREE_FAMILIES.md, section 13",
+ "stage": "U2m (d), beside",
+ "script_sha256": "738e52e2ecdbd36938a1d38dfebbcd957cfe4158df46d89611a19e178e62c7cc",
+ "decides": "nothing (an input for U2n's models)",
+ "datasets": {
+  "metaqa": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+   "G": 0,
+   "questions": 1497,
+   "rows": 6563380,
+   "file_sha256": "2054b2abb6ffc60bb7b648d7cf338af905989a56cfc07d3b2d89e9d85722d7f3",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 11038,
+      "with_mass": 11038,
+      "share": {
+       "restart": 0.1267,
+       "structural": 0.8733,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 6552342,
+      "with_mass": 6551733,
+      "share": {
+       "restart": 0.2528,
+       "structural": 0.7472,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 1,
+       "direction": 2,
+       "share": 0.3317,
+       "name": "has_genre"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.145,
+       "name": "release_year"
+      },
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.095,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.0751,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 4,
+       "direction": 1,
+       "share": 0.0628,
+       "name": "has_tags"
+      }
+     ]
+    },
+    "A1all": {
+     "gold": {
+      "rows": 11038,
+      "with_mass": 11017,
+      "share": {
+       "restart": 0.1356,
+       "structural": 0.6532,
+       "ner": 0.0186,
+       "knn": 0.1926
+      }
+     },
+     "other": {
+      "rows": 6552342,
+      "with_mass": 6505864,
+      "share": {
+       "restart": 0.2294,
+       "structural": 0.447,
+       "ner": 0.0333,
+       "knn": 0.2903
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 1,
+       "direction": 2,
+       "share": 0.3468,
+       "name": "has_genre"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.1523,
+       "name": "release_year"
+      },
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.0948,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.0657,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 8,
+       "direction": 1,
+       "share": 0.0629,
+       "name": "written_by"
+      }
+     ]
+    },
+    "Kst": {
+     "gold": {
+      "rows": 11038,
+      "with_mass": 11020,
+      "share": {
+       "restart": 0.0002,
+       "structural": 0.9998,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 6552342,
+      "with_mass": 5843859,
+      "share": {
+       "restart": 0.0004,
+       "structural": 0.9996,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.2088,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.1248,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 8,
+       "direction": 1,
+       "share": 0.1068,
+       "name": "written_by"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.0984,
+       "name": "release_year"
+      },
+      {
+       "relation": 1,
+       "direction": 2,
+       "share": 0.0884,
+       "name": "has_genre"
+      }
+     ]
+    },
+    "KTst": {
+     "gold": {
+      "rows": 11038,
+      "with_mass": 11013,
+      "share": {
+       "restart": 0.0001,
+       "structural": 0.9999,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 6552342,
+      "with_mass": 5424680,
+      "share": {
+       "restart": 0.0004,
+       "structural": 0.9996,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.2128,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.1196,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 8,
+       "direction": 1,
+       "share": 0.1067,
+       "name": "written_by"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.0838,
+       "name": "release_year"
+      },
+      {
+       "relation": 1,
+       "direction": 2,
+       "share": 0.0797,
+       "name": "has_genre"
+      }
+     ]
+    },
+    "KTall": {
+     "gold": {
+      "rows": 11038,
+      "with_mass": 10657,
+      "share": {
+       "restart": 0.0001,
+       "structural": 0.8739,
+       "ner": 0.0142,
+       "knn": 0.1118
+      }
+     },
+     "other": {
+      "rows": 6552342,
+      "with_mass": 4069552,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.7435,
+       "ner": 0.0236,
+       "knn": 0.2324
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.2088,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.1151,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 8,
+       "direction": 1,
+       "share": 0.1076,
+       "name": "written_by"
+      },
+      {
+       "relation": 1,
+       "direction": 2,
+       "share": 0.0891,
+       "name": "has_genre"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.0841,
+       "name": "release_year"
+      }
+     ]
+    }
+   }
+  },
+  "squad": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+   "G": 0,
+   "questions": 1498,
+   "rows": 74958,
+   "file_sha256": "f33be4a4b4826b4c52be5b3f230df0eb14b5442ba314c4b5028bf3a37f5d9de2",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 1467,
+      "with_mass": 1467,
+      "share": {
+       "restart": 0.921,
+       "structural": 0.079,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 73491,
+      "with_mass": 73491,
+      "share": {
+       "restart": 0.6666,
+       "structural": 0.3334,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "A1all": {
+     "gold": {
+      "rows": 1467,
+      "with_mass": 1467,
+      "share": {
+       "restart": 0.8738,
+       "structural": 0.0256,
+       "ner": 0.021,
+       "knn": 0.0796
+      }
+     },
+     "other": {
+      "rows": 73491,
+      "with_mass": 73491,
+      "share": {
+       "restart": 0.6165,
+       "structural": 0.1302,
+       "ner": 0.0726,
+       "knn": 0.1807
+      }
+     }
+    },
+    "Kst": {
+     "gold": {
+      "rows": 1467,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     },
+     "other": {
+      "rows": 73491,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     }
+    },
+    "KTst": {
+     "gold": {
+      "rows": 1467,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     },
+     "other": {
+      "rows": 73491,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     }
+    },
+    "KTall": {
+     "gold": {
+      "rows": 1467,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     },
+     "other": {
+      "rows": 73491,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     }
+    }
+   }
+  },
+  "musique": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+   "G": 0,
+   "questions": 1534,
+   "rows": 8341012,
+   "file_sha256": "d8150c49f97c899683fb05bfc970999de5619cd4cccf23072e809868d6e6bf97",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 4002,
+      "with_mass": 3936,
+      "share": {
+       "restart": 0.8041,
+       "structural": 0.1959,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 8337010,
+      "with_mass": 6977397,
+      "share": {
+       "restart": 0.3342,
+       "structural": 0.6658,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "A1all": {
+     "gold": {
+      "rows": 4002,
+      "with_mass": 3961,
+      "share": {
+       "restart": 0.7163,
+       "structural": 0.0754,
+       "ner": 0.0995,
+       "knn": 0.1088
+      }
+     },
+     "other": {
+      "rows": 8337010,
+      "with_mass": 6991155,
+      "share": {
+       "restart": 0.2977,
+       "structural": 0.2277,
+       "ner": 0.2225,
+       "knn": 0.2521
+      }
+     }
+    },
+    "Kst": {
+     "gold": {
+      "rows": 4002,
+      "with_mass": 2377,
+      "share": {
+       "restart": 0.5005,
+       "structural": 0.4995,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 8337010,
+      "with_mass": 2405010,
+      "share": {
+       "restart": 0.0007,
+       "structural": 0.9993,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTst": {
+     "gold": {
+      "rows": 4002,
+      "with_mass": 2506,
+      "share": {
+       "restart": 0.455,
+       "structural": 0.545,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 8337010,
+      "with_mass": 2330051,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.9994,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTall": {
+     "gold": {
+      "rows": 4002,
+      "with_mass": 2782,
+      "share": {
+       "restart": 0.4032,
+       "structural": 0.2708,
+       "ner": 0.163,
+       "knn": 0.1631
+      }
+     },
+     "other": {
+      "rows": 8337010,
+      "with_mass": 2716721,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.403,
+       "ner": 0.2959,
+       "knn": 0.3006
+      }
+     }
+    }
+   }
+  },
+  "hotpotqa": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+   "G": 0,
+   "questions": 1508,
+   "rows": 846305,
+   "file_sha256": "42811d8de868c89e9083b3ed9f2fd409bf1c441fffeb891907402e24b1fc52e5",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 2947,
+      "with_mass": 2944,
+      "share": {
+       "restart": 0.7826,
+       "structural": 0.2174,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 843358,
+      "with_mass": 827112,
+      "share": {
+       "restart": 0.7817,
+       "structural": 0.2183,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "A1all": {
+     "gold": {
+      "rows": 2947,
+      "with_mass": 2945,
+      "share": {
+       "restart": 0.7544,
+       "structural": 0.1287,
+       "ner": 0.0354,
+       "knn": 0.0816
+      }
+     },
+     "other": {
+      "rows": 843358,
+      "with_mass": 830395,
+      "share": {
+       "restart": 0.6912,
+       "structural": 0.1143,
+       "ner": 0.0708,
+       "knn": 0.1237
+      }
+     }
+    },
+    "Kst": {
+     "gold": {
+      "rows": 2947,
+      "with_mass": 2510,
+      "share": {
+       "restart": 0.5645,
+       "structural": 0.4355,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 843358,
+      "with_mass": 310365,
+      "share": {
+       "restart": 0.0062,
+       "structural": 0.9938,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTst": {
+     "gold": {
+      "rows": 2947,
+      "with_mass": 2556,
+      "share": {
+       "restart": 0.5042,
+       "structural": 0.4958,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 843358,
+      "with_mass": 347453,
+      "share": {
+       "restart": 0.0052,
+       "structural": 0.9948,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTall": {
+     "gold": {
+      "rows": 2947,
+      "with_mass": 2568,
+      "share": {
+       "restart": 0.509,
+       "structural": 0.2894,
+       "ner": 0.0795,
+       "knn": 0.1222
+      }
+     },
+     "other": {
+      "rows": 843358,
+      "with_mass": 333027,
+      "share": {
+       "restart": 0.0052,
+       "structural": 0.4629,
+       "ner": 0.216,
+       "knn": 0.3158
+      }
+     }
+    }
+   }
+  },
+  "2wiki": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+   "G": 0,
+   "questions": 1496,
+   "rows": 1256504,
+   "file_sha256": "c8a39e60a039b78fcf77b8d4c7487b6611011d9ab2cf3b0f3d87c9822158f2dc",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 3596,
+      "with_mass": 3594,
+      "share": {
+       "restart": 0.661,
+       "structural": 0.339,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1252908,
+      "with_mass": 1207635,
+      "share": {
+       "restart": 0.784,
+       "structural": 0.216,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "A1all": {
+     "gold": {
+      "rows": 3596,
+      "with_mass": 3593,
+      "share": {
+       "restart": 0.6366,
+       "structural": 0.2311,
+       "ner": 0.0587,
+       "knn": 0.0735
+      }
+     },
+     "other": {
+      "rows": 1252908,
+      "with_mass": 1215312,
+      "share": {
+       "restart": 0.7172,
+       "structural": 0.1058,
+       "ner": 0.0746,
+       "knn": 0.1024
+      }
+     }
+    },
+    "Kst": {
+     "gold": {
+      "rows": 3596,
+      "with_mass": 3560,
+      "share": {
+       "restart": 0.6015,
+       "structural": 0.3985,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1252908,
+      "with_mass": 365487,
+      "share": {
+       "restart": 0.0009,
+       "structural": 0.9991,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTst": {
+     "gold": {
+      "rows": 3596,
+      "with_mass": 3562,
+      "share": {
+       "restart": 0.5761,
+       "structural": 0.4239,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1252908,
+      "with_mass": 437568,
+      "share": {
+       "restart": 0.0007,
+       "structural": 0.9993,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTall": {
+     "gold": {
+      "rows": 3596,
+      "with_mass": 3561,
+      "share": {
+       "restart": 0.5703,
+       "structural": 0.2882,
+       "ner": 0.0734,
+       "knn": 0.0681
+      }
+     },
+     "other": {
+      "rows": 1252908,
+      "with_mass": 381315,
+      "share": {
+       "restart": 0.0008,
+       "structural": 0.4802,
+       "ner": 0.2661,
+       "knn": 0.253
+      }
+     }
+    }
+   }
+  },
+  "webqsp": {
+   "carve": "s1eval",
+   "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+   "G": 0,
+   "questions": 1503,
+   "rows": 7146196,
+   "file_sha256": "a8369ea245c3b99406ac395b7fb6bdc13e73b1311a96338550e667ed99b602f0",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 8506,
+      "with_mass": 8420,
+      "share": {
+       "restart": 0.1546,
+       "structural": 0.8454,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 7137690,
+      "with_mass": 6536199,
+      "share": {
+       "restart": 0.316,
+       "structural": 0.684,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 4308,
+       "direction": 1,
+       "share": 0.0671,
+       "name": "topic image"
+      },
+      {
+       "relation": 4307,
+       "direction": 1,
+       "share": 0.047,
+       "name": "topic article"
+      },
+      {
+       "relation": 6229,
+       "direction": 2,
+       "share": 0.0457,
+       "name": "place lived location"
+      },
+      {
+       "relation": 4309,
+       "direction": 1,
+       "share": 0.0394,
+       "name": "topic notable for"
+      },
+      {
+       "relation": 4845,
+       "direction": 1,
+       "share": 0.0324,
+       "name": "film starring"
+      }
+     ]
+    },
+    "A1all": {
+     "gold": {
+      "rows": 8506,
+      "with_mass": 8224,
+      "share": {
+       "restart": 0.1637,
+       "structural": 0.6751,
+       "ner": 0.0578,
+       "knn": 0.1035
+      }
+     },
+     "other": {
+      "rows": 7137690,
+      "with_mass": 6030268,
+      "share": {
+       "restart": 0.3108,
+       "structural": 0.4253,
+       "ner": 0.075,
+       "knn": 0.1889
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 4308,
+       "direction": 1,
+       "share": 0.0753,
+       "name": "topic image"
+      },
+      {
+       "relation": 4307,
+       "direction": 1,
+       "share": 0.0532,
+       "name": "topic article"
+      },
+      {
+       "relation": 6229,
+       "direction": 2,
+       "share": 0.0505,
+       "name": "place lived location"
+      },
+      {
+       "relation": 4309,
+       "direction": 1,
+       "share": 0.0427,
+       "name": "topic notable for"
+      },
+      {
+       "relation": 4845,
+       "direction": 1,
+       "share": 0.0327,
+       "name": "film starring"
+      }
+     ]
+    },
+    "Kst": {
+     "gold": {
+      "rows": 8506,
+      "with_mass": 6829,
+      "share": {
+       "restart": 0.0024,
+       "structural": 0.9976,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 7137690,
+      "with_mass": 3364698,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.9994,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 6224,
+       "direction": 2,
+       "share": 0.0631,
+       "name": "person profession"
+      },
+      {
+       "relation": 5431,
+       "direction": 2,
+       "share": 0.0532,
+       "name": "location containedby"
+      },
+      {
+       "relation": 5443,
+       "direction": 1,
+       "share": 0.0253,
+       "name": "location people born here"
+      },
+      {
+       "relation": 4908,
+       "direction": 2,
+       "share": 0.0241,
+       "name": "performance film"
+      },
+      {
+       "relation": 4845,
+       "direction": 1,
+       "share": 0.0234,
+       "name": "film starring"
+      }
+     ]
+    },
+    "KTst": {
+     "gold": {
+      "rows": 8506,
+      "with_mass": 6922,
+      "share": {
+       "restart": 0.0022,
+       "structural": 0.9978,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 7137690,
+      "with_mass": 3078232,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.9994,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 4310,
+       "direction": 1,
+       "share": 0.0443,
+       "name": "topic notable types"
+      },
+      {
+       "relation": 6193,
+       "direction": 2,
+       "share": 0.0389,
+       "name": "ethnicity languages spoken"
+      },
+      {
+       "relation": 5527,
+       "direction": 1,
+       "share": 0.0377,
+       "name": "statistical region population"
+      },
+      {
+       "relation": 5431,
+       "direction": 2,
+       "share": 0.0312,
+       "name": "location containedby"
+      },
+      {
+       "relation": 6831,
+       "direction": 1,
+       "share": 0.0262,
+       "name": "tourist attraction near travel destination"
+      }
+     ]
+    },
+    "KTall": {
+     "gold": {
+      "rows": 8506,
+      "with_mass": 7040,
+      "share": {
+       "restart": 0.0024,
+       "structural": 0.8561,
+       "ner": 0.0686,
+       "knn": 0.0729
+      }
+     },
+     "other": {
+      "rows": 7137690,
+      "with_mass": 2583566,
+      "share": {
+       "restart": 0.0008,
+       "structural": 0.651,
+       "ner": 0.0916,
+       "knn": 0.2566
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 4310,
+       "direction": 1,
+       "share": 0.0448,
+       "name": "topic notable types"
+      },
+      {
+       "relation": 6193,
+       "direction": 2,
+       "share": 0.0387,
+       "name": "ethnicity languages spoken"
+      },
+      {
+       "relation": 5431,
+       "direction": 2,
+       "share": 0.037,
+       "name": "location containedby"
+      },
+      {
+       "relation": 4308,
+       "direction": 1,
+       "share": 0.037,
+       "name": "topic image"
+      },
+      {
+       "relation": 6831,
+       "direction": 1,
+       "share": 0.0277,
+       "name": "tourist attraction near travel destination"
+      }
+     ]
+    }
+   }
+  }
+ },
+ "missing": [],
+ "utc": "2026-10-25T08:46:16Z"
+}

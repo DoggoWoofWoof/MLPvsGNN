@@ -608,4 +608,47 @@ Section 13 sends (d)'s hotpotqa and 2wiki to Modal if the credit covers them, an
 - So the laptop also runs them, once U2m's (a) and (d) laptop runs and U2o's laptop runs have finished.
 - A machine cannot change a number here. Section 13's checks hold every question's walk order, masses and rows to the
   filed ones, or the run stops.
-- (a)'s filing follows as section 17.
+- (a)'s filing follows as section 18; (d) finished first and is filed as section 17.
+
+## 17. (d): filed 25 October 2026 (beside; no verdict)
+
+(d) has no verdict (section 13). Its arrays are an input for U2n's models. They now exist on all six datasets at the
+carried pick, `own/kind_t/kt_cos:ada_f12_k0@0.85` at G = 0 (outputs/u2m/d/beside_d.json and .md; one record per
+dataset under outputs/u2m/d/stats/, with the arrays uncommitted).
+- **Checks.** Section 13's checks held on all six:
+  - every walk's order equals the original kernel's;
+  - the A1 and K masses equal walk_mass's, bit for bit;
+  - the parts sum to p within the bound;
+  - each question's rows and held golds equal the carried pick's.
+  - On metaqa and webqsp the (relation, direction) parts also sum to the structural part. That check does not apply
+    on the passage graphs, whose records read False for it.
+- **Where it ran.** All six ran on the laptop. The first attempt on squad, metaqa, musique and webqsp stopped while
+  parsing (b)'s pick (fixed in 17fc610) and wrote nothing; the files here are the reruns. hotpotqa and 2wiki ran as
+  section 16 says.
+
+**Beside: where a row's mass comes from.** Mean shares over the rows with mass, on KTall (the steered walk over all
+three families). squad's construction has no K walks, so its row reads A1all.
+
+| dataset | restart, gold / other | ner + knn, gold / other | structural share of the edge-borne mass, gold / other |
+| --- | --- | --- | --- |
+| metaqa | 0.0001 / 0.0006 | 0.126 / 0.256 | 0.874 / 0.744 |
+| squad (A1all) | 0.874 / 0.617 | 0.101 / 0.253 | 0.203 / 0.340 |
+| musique | 0.403 / 0.001 | 0.326 / 0.597 | 0.454 / 0.403 |
+| hotpotqa | 0.509 / 0.005 | 0.202 / 0.532 | 0.589 / 0.465 |
+| 2wiki | 0.570 / 0.001 | 0.142 / 0.519 | 0.671 / 0.481 |
+| webqsp (s1eval, beside) | 0.002 / 0.001 | 0.142 / 0.348 | 0.858 / 0.652 |
+
+- **Restart.** On the passage graphs' steered walks, 0.40 to 0.57 of a gold row's mass is restart, against under
+  0.006 on other rows. These are golds among the seeds, which the models already see.
+- **Structural.** Of the mass that arrives over an edge, gold rows draw a larger share from the structural family
+  than other rows on five of six datasets. squad is the exception; there a gold row's mass is mostly restart.
+- **ner and knn.** On every dataset, ner and knn arrivals make up a smaller share of a gold row's mass than of
+  another row's. That agrees with U2l's choice, which drops NER from the passage graphs' walks (U2l, section 10).
+- **Relations, on the KBs.**
+  - metaqa: on the KT walks, the gold rows' structural mass comes most from starred_actors and written_by (the row as
+    the stored source). On the A1 walks it comes most from has_genre and release_year (the row as the destination).
+  - webqsp: the mass spreads over many relations, with no pair above 0.075.
+
+**What follows.** U2n reads the parts as inputs, computed with these kernels on its fit and evaluation carves
+(section 13). If a later pool stage changes the carried pick (U2o, or E1 in its own section), the arrays are computed
+again on the new pick, in their own file. Nothing here closes or decides anything.
