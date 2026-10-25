@@ -105,3 +105,36 @@ the hyperlinked W2 links kept (recall).
 
 Filed after the run: `outputs/u2k/scorer_<D>.json`, `outputs/u2k/<D>/grade_s1sel.json`, `outputs/u2k/<D>/beside.json`,
 `outputs/u2k/choice.json`, `outputs/u2k/report.md`.
+
+**Filed 25 October 2026: ADOPT_FOR_POOLS, best K1** (the learned score orders W2_S's rows). The score (mean I's ALL
+over musique, hotpotqa and 2wiki, s1sel, each with its zero-shot scorer) goes from R0's 0.8368 to K1's 0.8499, and
+no dataset falls. K2 (0.8312) and K3 (0.8325) score below R0.
+
+| dataset (scorer) | R0 I's ALL | K1 I's ALL | PKG | gap share (I, bridge@25) | bridge@5 R0 → K1 (PKG) |
+| --- | --- | --- | --- | --- | --- |
+| musique (A) | 0.7751 | 0.7816 | 0.7679 | (PKG below R0) | 0.156 → 0.193 (0.145) |
+| hotpotqa (A) | 0.8985 | 0.9012 | 0.9682 | 0.039, 0.033 | 0.328 → 0.558 (0.712) |
+| 2wiki (H) | 0.8369 | 0.8670 | 0.8964 | 0.506, 0.569 | 0.318 → 0.700 (0.699) |
+| squad (A) | no I (RETRIEVAL) | | | | 0 for every form |
+
+- **The two scorers agree.** All nine weights have the same sign in A and H. tokens (+0.82, +0.78) and indeg (−0.78,
+  −0.78) are the largest in both.
+- **Transfer between the two hyperlinked corpora:** A on hotpotqa has AUC 0.825 against H's in-domain 0.829. H on
+  2wiki has 0.832 against A's in-domain 0.840.
+- **Pruning at τ (K2, K3)** cuts rows: hotpotqa 792 → 300, 2wiki 942 → 491, squad 1,674 → 1,082. On hotpotqa it
+  costs the I 0.033 and the reach 0.037 (gap share −0.475). On 2wiki it raises the choice score 0.8191 → 0.8297
+  (share 0.371). One τ does not fit both, and the fixed choice rule judges the I's mean, so the prune is not adopted.
+- **K1 against U2j's R4** (0.8510): K1 is 0.0011 lower, inside this file's own 0.002 band. By dataset, K1 is below R4
+  on musique (0.7816 vs 0.7849) and on 2wiki (0.8670 vs 0.8683), and above it on hotpotqa (0.9012 vs 0.8999). U2j's
+  section 7 fixed that an adopted learned score orders the rows in place of R4, so K1 is the order carried.
+
+**Next, as section 8 fixes:**
+- U2e's pool rule is rebuilt with K1 as the I's row order on W2_S, in its own declared file. It replaces U2j's R4
+  follow-up. R4 is shown beside it and decides nothing.
+- Then the model cell.
+- s(u, v) joins U2j's eight features as an input to both models, when GPU credit allows.
+- The caveat stands: this transfer is between Wikipedia corpora only. metaqa and webqsp are untouched.
+
+A verdict closes only the form tested (docs/SCREENS.md, section 3b). Here that is K2 and K3's one τ. A prune by a single rule
+that reads its cut from each graph, such as a fixed share of each node's links, is a different form, and it is not
+closed.

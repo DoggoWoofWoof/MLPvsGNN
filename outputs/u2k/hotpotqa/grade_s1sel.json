@@ -1,0 +1,182 @@
+{
+ "dataset": "hotpotqa",
+ "carve": "s1sel",
+ "declared_in": "docs/U2K_LEARNED_LINK_SCORER.md",
+ "scorer": "A",
+ "scorer_fit_on": "2wiki",
+ "tau": -0.6437394618988037,
+ "questions": 1508,
+ "questions_npz_sha256": "b9f4c3f98a278872eb254d99c474548149df70dfa9f01cf64be6cf396b89453e",
+ "construction": {
+  "base_pool": "equal_rrf_budget_50",
+  "regime": "STRUCT",
+  "setting": {
+   "name": "h1_c25",
+   "hops": 1,
+   "per_seed_cap": 25
+  }
+ },
+ "standardization": {
+  "lead": [
+   0.6126499508031009,
+   0.4871447306335757
+  ],
+  "pos": [
+   0.4414634829480809,
+   0.2981283167041459
+  ],
+  "count": [
+   0.7543507846354748,
+   0.17795419868494267
+  ],
+  "indeg": [
+   7.56398408983428,
+   3.3878211588645137
+  ],
+  "outdeg": [
+   2.2414728655312905,
+   0.5177774253060695
+  ],
+  "caps": [
+   0.8855437291739142,
+   0.19581355055392616
+  ],
+  "capmid": [
+   0.8444011021713592,
+   0.36247466231883435
+  ],
+  "tokens": [
+   1.5205305626167585,
+   0.8717010984599575
+  ],
+  "mutual": [
+   0.01083219380748433,
+   0.10351259529545874
+  ]
+ },
+ "kept_directed": 7561948,
+ "w2_directed": 32334355,
+ "rows_reordered": 12177,
+ "forms": {
+  "R0": {
+   "I": {
+    "ALL": 0.8985,
+    "recall": 0.944,
+    "pool": 119.6
+   },
+   "bridge": {
+    "pairs": 527,
+    "pairs_with_gold_in_B": 491,
+    "at5": 0.3283,
+    "at25": 0.6698
+   },
+   "undirected_neighbours": 64318458,
+   "reach": {
+    "allX_ALL": 0.9211,
+    "allX_rows": 792.0,
+    "choice": 0.9094
+   }
+  },
+  "K1": {
+   "I": {
+    "ALL": 0.9012,
+    "recall": 0.9453,
+    "pool": 120.1
+   },
+   "bridge": {
+    "pairs": 527,
+    "pairs_with_gold_in_B": 491,
+    "at5": 0.5579,
+    "at25": 0.6774
+   },
+   "undirected_neighbours": 64318458,
+   "reach": {
+    "allX_ALL": 0.9211,
+    "allX_rows": 792.0,
+    "choice": 0.9094
+   }
+  },
+  "K2": {
+   "I": {
+    "ALL": 0.8654,
+    "recall": 0.9274,
+    "pool": 79.2
+   },
+   "bridge": {
+    "pairs": 527,
+    "pairs_with_gold_in_B": 491,
+    "at5": 0.5104,
+    "at25": 0.5655
+   },
+   "undirected_neighbours": 14773644,
+   "reach": {
+    "allX_ALL": 0.8846,
+    "allX_rows": 299.8,
+    "choice": 0.8793
+   }
+  },
+  "K3": {
+   "I": {
+    "ALL": 0.868,
+    "recall": 0.9287,
+    "pool": 79.2
+   },
+   "bridge": {
+    "pairs": 527,
+    "pairs_with_gold_in_B": 491,
+    "at5": 0.5104,
+    "at25": 0.5712
+   },
+   "undirected_neighbours": 14773644,
+   "reach": {
+    "allX_ALL": 0.8846,
+    "allX_rows": 299.8,
+    "choice": 0.8793
+   }
+  },
+  "PKG": {
+   "I": {
+    "ALL": 0.9682,
+    "recall": 0.9791,
+    "pool": 94.1
+   },
+   "bridge": {
+    "pairs": 527,
+    "pairs_with_gold_in_B": 491,
+    "at5": 0.7116,
+    "at25": 0.9013
+   },
+   "undirected_neighbours": 30190574,
+   "reach": {
+    "allX_ALL": 0.9887,
+    "allX_rows": 589.6,
+    "choice": 0.9723
+   }
+  }
+ },
+ "gap_share": {
+  "K1": {
+   "I_ALL": 0.039,
+   "choice": 0.0,
+   "bridge25": 0.033
+  },
+  "K2": {
+   "I_ALL": -0.475,
+   "choice": -0.479,
+   "bridge25": -0.451
+  },
+  "K3": {
+   "I_ALL": -0.438,
+   "choice": -0.479,
+   "bridge25": -0.426
+  }
+ },
+ "duplicate_hits": 0,
+ "w2_links": 32334355,
+ "dense_manifest_sha256": "8ddcda493b3fb448ff2ba225e6e4d8edb934d7ecb5a4b5185d7d670f49468c3d",
+ "secs": 266.5,
+ "zu2k_sha256": "ff622cc17d9e2f918b70f4cbbf7d53e675e306cb08fe8d87760f85edc50beaa1",
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4"
+}

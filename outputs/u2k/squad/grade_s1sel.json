@@ -1,0 +1,158 @@
+{
+ "dataset": "squad",
+ "carve": "s1sel",
+ "declared_in": "docs/U2K_LEARNED_LINK_SCORER.md",
+ "scorer": "A",
+ "scorer_fit_on": "2wiki",
+ "tau": -0.6437394618988037,
+ "questions": 1498,
+ "questions_npz_sha256": "248cffbd842ba2909f16ee7ef9055c72b90a016834d952858befa397053af1ae",
+ "construction": {
+  "base_pool": "equal_rrf_budget_50",
+  "regime": "RETRIEVAL",
+  "setting": null
+ },
+ "standardization": {
+  "lead": [
+   0.5084312053014894,
+   0.49992890972333676
+  ],
+  "pos": [
+   0.3197809602406068,
+   0.300172187405309
+  ],
+  "count": [
+   0.9679419723331686,
+   0.3839787874772314
+  ],
+  "indeg": [
+   4.679190481997818,
+   1.015493186939981
+  ],
+  "outdeg": [
+   4.529846501577925,
+   0.5931879815715719
+  ],
+  "caps": [
+   0.9479552200709632,
+   0.13203863309720468
+  ],
+  "capmid": [
+   0.9112846197027025,
+   0.28433248424336494
+  ],
+  "tokens": [
+   1.3698707433895414,
+   0.6730263430967185
+  ],
+  "mutual": [
+   0.35403334572680417,
+   0.47821933863060095
+  ]
+ },
+ "kept_directed": 184374,
+ "w2_directed": 685845,
+ "rows_reordered": 8329,
+ "forms": {
+  "R0": {
+   "I": null,
+   "bridge": {
+    "pairs": 31,
+    "pairs_with_gold_in_B": 0,
+    "at5": 0.0,
+    "at25": 0.0
+   },
+   "undirected_neighbours": 1756400,
+   "reach": {
+    "allX_ALL": 0.9887,
+    "allX_rows": 1673.9,
+    "choice": 0.9883
+   }
+  },
+  "K1": {
+   "I": null,
+   "bridge": {
+    "pairs": 31,
+    "pairs_with_gold_in_B": 0,
+    "at5": 0.0,
+    "at25": 0.0
+   },
+   "undirected_neighbours": 1756400,
+   "reach": {
+    "allX_ALL": 0.9887,
+    "allX_rows": 1673.9,
+    "choice": 0.9883
+   }
+  },
+  "K2": {
+   "I": null,
+   "bridge": {
+    "pairs": 31,
+    "pairs_with_gold_in_B": 0,
+    "at5": 0.0,
+    "at25": 0.0
+   },
+   "undirected_neighbours": 1147914,
+   "reach": {
+    "allX_ALL": 0.9853,
+    "allX_rows": 1082.2,
+    "choice": 0.9853
+   }
+  },
+  "K3": {
+   "I": null,
+   "bridge": {
+    "pairs": 31,
+    "pairs_with_gold_in_B": 0,
+    "at5": 0.0,
+    "at25": 0.0
+   },
+   "undirected_neighbours": 1147914,
+   "reach": {
+    "allX_ALL": 0.9853,
+    "allX_rows": 1082.2,
+    "choice": 0.9853
+   }
+  },
+  "PKG": {
+   "I": null,
+   "bridge": {
+    "pairs": 31,
+    "pairs_with_gold_in_B": 0,
+    "at5": 0.0,
+    "at25": 0.0
+   },
+   "undirected_neighbours": 1489468,
+   "reach": {
+    "allX_ALL": 0.9866,
+    "allX_rows": 1429.1,
+    "choice": 0.9861
+   }
+  }
+ },
+ "gap_share": {
+  "K1": {
+   "I_ALL": null,
+   "choice": null,
+   "bridge25": null
+  },
+  "K2": {
+   "I_ALL": null,
+   "choice": null,
+   "bridge25": null
+  },
+  "K3": {
+   "I_ALL": null,
+   "choice": null,
+   "bridge25": null
+  }
+ },
+ "duplicate_hits": 0,
+ "w2_links": 685845,
+ "dense_manifest_sha256": "204bc1a3c65f41fe78c17b43096070a063a3b74165be1159e85e22bce552c647",
+ "secs": 13.5,
+ "zu2k_sha256": "ff622cc17d9e2f918b70f4cbbf7d53e675e306cb08fe8d87760f85edc50beaa1",
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4"
+}

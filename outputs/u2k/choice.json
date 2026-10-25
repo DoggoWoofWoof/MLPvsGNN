@@ -1,0 +1,17 @@
+{
+ "declared_in": "docs/U2K_LEARNED_LINK_SCORER.md",
+ "carve": "s1sel",
+ "outcome": "ADOPT_FOR_POOLS",
+ "best": "K1",
+ "score": {
+  "R0": 0.8368,
+  "K1": 0.8499,
+  "K2": 0.8312,
+  "K3": 0.8325
+ },
+ "falls": [],
+ "zu2k_sha256": "ff622cc17d9e2f918b70f4cbbf7d53e675e306cb08fe8d87760f85edc50beaa1",
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4"
+}

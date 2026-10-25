@@ -1,0 +1,32 @@
+{
+ "dataset": "2wiki",
+ "declared_in": "docs/U2K_LEARNED_LINK_SCORER.md",
+ "decides": "nothing (section 6)",
+ "w2_links": 71913824,
+ "hyperlinked_share": 0.2305,
+ "scorers": {
+  "A": {
+   "fit_on": "2wiki",
+   "in_domain": true,
+   "auc": 0.8397,
+   "ap": 0.6441,
+   "kept_share": 0.2305,
+   "precision": 0.6065,
+   "recall": 0.6065
+  },
+  "H": {
+   "fit_on": "hotpotqa",
+   "in_domain": false,
+   "auc": 0.8323,
+   "ap": 0.635,
+   "kept_share": 0.3203,
+   "precision": 0.5015,
+   "recall": 0.6968
+  }
+ },
+ "secs": 1097.9,
+ "zu2k_sha256": "ff622cc17d9e2f918b70f4cbbf7d53e675e306cb08fe8d87760f85edc50beaa1",
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4"
+}
