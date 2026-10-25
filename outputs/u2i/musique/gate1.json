@@ -1,0 +1,15 @@
+{
+ "dataset": "musique",
+ "declared_in": "docs/U2I_CORPUS_ALIASES.md",
+ "status": "PASS",
+ "file": "W2_S.npz",
+ "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+ "directed_w2": 2304416,
+ "filed_directed": 2802624,
+ "undirected": 4687840,
+ "filed_undirected": 4687840,
+ "zu2i_sha256": "61bf1d04b76c850d4ea7e35b7ed5e6abaa5a406a8bc271c2eb8a54fba7f7302c",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

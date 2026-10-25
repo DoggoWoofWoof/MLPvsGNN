@@ -1,0 +1,143 @@
+{
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "declared_in": "docs/U2I_CORPUS_ALIASES.md",
+ "questions": 12576,
+ "questions_npz_sha256": "d6d41aee0d5d109e84e81a6cc043c772554e87189cca3f0ed07e2e7f1e1a2adc",
+ "dense_manifest_sha256": "83f9da7acd0327744ffef30faff8c363b0f13ebc375f7af825a5142f702ad1b9",
+ "graphs": {
+  "W2_S": {
+   "I": {
+    "ALL": 0.8519,
+    "recall": 0.9422,
+    "pool": 163.5
+   },
+   "undirected_neighbours": 142967492,
+   "questions": 12576,
+   "golds": 30654,
+   "B": {
+    "ALL": 0.4338,
+    "recall": 0.7256,
+    "rows": 50.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.534,
+     "recall": 0.7809,
+     "rows": 75.0
+    },
+    "50": {
+     "ALL": 0.5992,
+     "recall": 0.8192,
+     "rows": 100.0
+    },
+    "100": {
+     "ALL": 0.6831,
+     "recall": 0.8676,
+     "rows": 150.0
+    },
+    "250": {
+     "ALL": 0.8336,
+     "recall": 0.9361,
+     "rows": 299.9
+    },
+    "500": {
+     "ALL": 0.8969,
+     "recall": 0.9594,
+     "rows": 543.9
+    },
+    "1000": {
+     "ALL": 0.9114,
+     "recall": 0.9645,
+     "rows": 828.9
+    },
+    "2000": {
+     "ALL": 0.9122,
+     "recall": 0.9648,
+     "rows": 869.2
+    },
+    "5000": {
+     "ALL": 0.9128,
+     "recall": 0.965,
+     "rows": 895.2
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.9128,
+    "recall": 0.9651,
+    "rows": 1053.8
+   },
+   "choice_score": 0.8474
+  },
+  "PKG": {
+   "I": {
+    "ALL": 0.9059,
+    "recall": 0.9637,
+    "pool": 105.7
+   },
+   "undirected_neighbours": 56417714,
+   "questions": 12576,
+   "golds": 30654,
+   "B": {
+    "ALL": 0.4338,
+    "recall": 0.7256,
+    "rows": 50.0
+   },
+   "curve": {
+    "25": {
+     "ALL": 0.5345,
+     "recall": 0.7809,
+     "rows": 75.0
+    },
+    "50": {
+     "ALL": 0.6,
+     "recall": 0.8196,
+     "rows": 100.0
+    },
+    "100": {
+     "ALL": 0.6953,
+     "recall": 0.8731,
+     "rows": 150.0
+    },
+    "250": {
+     "ALL": 0.8708,
+     "recall": 0.9502,
+     "rows": 295.0
+    },
+    "500": {
+     "ALL": 0.9347,
+     "recall": 0.9729,
+     "rows": 415.3
+    },
+    "1000": {
+     "ALL": 0.9431,
+     "recall": 0.9758,
+     "rows": 441.5
+    },
+    "2000": {
+     "ALL": 0.9435,
+     "recall": 0.9761,
+     "rows": 449.0
+    },
+    "5000": {
+     "ALL": 0.9436,
+     "recall": 0.9761,
+     "rows": 455.1
+    }
+   },
+   "all_neighbours": {
+    "ALL": 0.9439,
+    "recall": 0.9763,
+    "rows": 480.7
+   },
+   "choice_score": 0.8775
+  }
+ },
+ "secs_load": 5.4,
+ "secs_I": 5.5,
+ "secs_reach": 649.9,
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

@@ -1,0 +1,81 @@
+{
+ "dataset": "hotpotqa",
+ "declared_in": "docs/U2I_CORPUS_ALIASES.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 5233329,
+ "descriptive_nodes": 5119139,
+ "surfaces": 6108878,
+ "titles": 5228425,
+ "aliases": 880453,
+ "aliases_by_cue": {
+  "a": 679777,
+  "b": 181337,
+  "c": 26376
+ },
+ "table_sha256": "0732f0428c8dddc06c6a0347dd80bee0dc2e5f88d2cacfaceae2b7046a4021bc",
+ "hits": 107417434,
+ "common_forms": 207566,
+ "w2_links": 32334355,
+ "sibling_links": 0,
+ "candidates": {
+  "A_c": {
+   "alias_links": 320710,
+   "ambiguous_choices": 205955
+  },
+  "A_b": {
+   "alias_links": 9060273,
+   "ambiguous_choices": 5782831
+  },
+  "A_a": {
+   "alias_links": 10444309,
+   "ambiguous_choices": 5943334
+  },
+  "A_abc": {
+   "alias_links": 12761323,
+   "ambiguous_choices": 8570057
+  }
+ },
+ "gate1": "PASS",
+ "links_npz_sha256": "bfc2639865e0852af37dac50c3d1674f28c0291fa53fe2218bce276b99e53520",
+ "aliases_npz_sha256": "903beead18acef03dca8f77a634679551f8d63f0d55f342b7a29a0fe41c86272",
+ "evidence_npz_sha256": "feeb630766a28643f6ed89b9bcef37fd08f1ffa4fe137f10346b19fecd935b89",
+ "hit_chunks": {
+  "chunk_000000000.npz": "6d47ccff46d067cd77e22f33911587349c012dcd963e3ea9d866cad72f94912a",
+  "chunk_000200000.npz": "db23cc09010e186d1972d8bdad992364cd69d41e703a325f937a63ba4529ee06",
+  "chunk_000400000.npz": "6c14f8b27760adff2dc887524b1bda4529598f9435afc4d5002617a2b223706e",
+  "chunk_000600000.npz": "51f6f556ef18050cd5690774c1eb4225517373c5ff524bad8c7c0aa55a45c3a0",
+  "chunk_000800000.npz": "868bbb198cf31d8ffe4c22b50b2aa5bf690a9e23ed7105567edf94d541bc2d8d",
+  "chunk_001000000.npz": "fac56f11c8346a3a45c842da927f6f4f098ac19b8ef521d6c8be8e4f661379fe",
+  "chunk_001200000.npz": "fe2b8e41aadff41a53e51748e7e3693821b32eb7f47bececebebf76eb4381139",
+  "chunk_001400000.npz": "10251c32d3cb803da1791f9950ea3046ce9a4f17ad21cbd7e70f6c5990663592",
+  "chunk_001600000.npz": "bf93b98190227534e7bced088fe0d0f537b2fa71ff6ee154f60fa51533b6750f",
+  "chunk_001800000.npz": "0d283f9ab3d1f366f9203f82e23fde5399202ff61d528f27fd6f62eee8f9a8b1",
+  "chunk_002000000.npz": "fdf7a9ac8836ece93bdeee66b8c14dfdce886102bf047c1032908ce579a574a4",
+  "chunk_002200000.npz": "b831982b33f964650ee812254cbed864ea8be14ca7a0e19b581f107fbf602783",
+  "chunk_002400000.npz": "40b8564a8bdd33b42c7b30e04b4b52ab6539da9ae54d55e9b037c690595472c5",
+  "chunk_002600000.npz": "fdf16d3114d16418155ecc91bf1e13fea02942a89fcf094a6e35bd54902f3cb4",
+  "chunk_002800000.npz": "48c2f5845ab07b2b606e9097dbba464242a60f66b6a779fa26b5d89fd891686d",
+  "chunk_003000000.npz": "3ef0752369881f8bbedbaed2c2d3b35fe17ac296cbe8318697c5277c8ca9e7a4",
+  "chunk_003200000.npz": "c96f62dc9d11a9fccd477be1dd3a52e2276de66828ebe441856a429c98443c70",
+  "chunk_003400000.npz": "c1c20e81edbdd1f35e37384a27bbfe3087f387c66f3a60b5700ce9d4e79e6cea",
+  "chunk_003600000.npz": "b994b94f755ceb3a9a79d2e08f2b511c11d5d0920915b6180a180d6b76f9549d",
+  "chunk_003800000.npz": "cb431648f169735bfba86830fc42ba2a232f424d8ef21e7f777ef06140c0e601",
+  "chunk_004000000.npz": "89acdea5b134bd70e4ace60be936216f2e5c3ba297604c655993f367b0d3f529",
+  "chunk_004200000.npz": "c1381f79bf6c4060a2de57db81d43ca731b09843abe7e5fa0e76fe5d90372b27",
+  "chunk_004400000.npz": "66e44a6e93a295a8fc441e4e65670a0ef13b6fb00f0893cffc1feff90386369b",
+  "chunk_004600000.npz": "e3ff8c13d07582cd6a8e069d33a75e24c29fc4f1f3899376f92a0888478311c3",
+  "chunk_004800000.npz": "863307ba6ea6991c9434d0697f693be09f481aa3f748dacac25e1c8722095c75",
+  "chunk_005000000.npz": "902973bdb44c3e17de38bfd63fe626e3648a70bd6507464ef6d01c6ef3479326",
+  "chunk_005200000.npz": "cb5c5d3d802c4ab1e5f91c3609142fe904c29052c83a1582008a7a34d2ca5f03"
+ },
+ "secs": {
+  "stream1": 183,
+  "table": 71,
+  "scan": 37,
+  "links": 1988
+ },
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

@@ -1,0 +1,15 @@
+{
+ "dataset": "2wiki",
+ "declared_in": "docs/U2I_CORPUS_ALIASES.md",
+ "status": "PASS",
+ "file": "W2_S.d.npz",
+ "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+ "directed_w2": 71913824,
+ "filed_directed": 71913828,
+ "undirected": 142967492,
+ "filed_undirected": 142967492,
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

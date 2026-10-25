@@ -229,3 +229,38 @@ minutes for hotpotqa's pass and somewhat more for 2wiki's.
 
 Filed after the run: `outputs/u2i/<D>/pass.json`, `gate1.json`, `grade_<carve>.json`; `outputs/u2i/choice.json` and
 `outputs/u2i/report.md`.
+
+**Filed 25 October 2026: NO_GAIN, best A_c** (outputs/u2i/choice.json and report.md). Gate 1 passed on all four
+passage datasets. The score is the mean choice score over the four, on s1sel:
+
+| graph | score |
+| --- | ---: |
+| W2_S | 0.8461 |
+| A_c (K4c, bracket acronyms) | 0.8461 |
+| A_a (K4a, restatement) | 0.8449 |
+| A_b (K4b, cue phrases) | 0.8431 |
+| A_abc (all three) | 0.8427 |
+
+A_c ties W2_S, and no candidate reaches W2_S plus 0.002.
+
+- **The aliases reach golds but cost the ranking.** On every dataset the alias links raise what all of X holds, and
+  they lower the I and the choice score.
+  - musique (A_abc): all of X goes from 0.7542 to 0.7705, its rows from 5,588 to 8,088, and the I's ALL falls
+    from 0.7751 to 0.7575.
+  - 2wiki (A_a): the share of the hyperlink gap closed is +0.068 in all of X, but −0.143 in the choice score.
+  - hotpotqa (A_abc): +0.059 in all of X, −0.123 in the I.
+  The new neighbours sit in X's cosine ranking and the I's 25-per-seed cap beside the golds already reached, and
+  they push some of them out.
+- **A_c adds few links**: 24,721 on musique, 4,169 on squad, 320,710 on hotpotqa and 442,765 on 2wiki. It changes
+  nothing that is graded.
+- **s1eval, beside** (choice score, W2_S against PKG): musique 0.7052 against 0.7008; squad 0.9888 against 0.9850;
+  hotpotqa 0.9019 against 0.9740; 2wiki 0.8474 against 0.8775. The hyperlink gap holds on s1eval: 0.072 on hotpotqa
+  (0.063 on s1sel) and 0.030 on 2wiki (0.029).
+
+**Next, as section 8 fixes:**
+- The alias links stay out of the graph.
+- In their own file, they become their own edge family beside W2_S, an input to both models, when GPU credit allows.
+- Step 2's scorer (U2k, filed 2ee7446) did not read them as candidates; U2k left the alias feature out because it
+  is 0 on every W2 link. Reading the alias links as U2k candidates is that file's next form.
+
+A verdict closes only the form tested (docs/SCREENS.md, section 3b): here, the three cues as graph links.

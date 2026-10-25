@@ -1,0 +1,55 @@
+{
+ "dataset": "musique",
+ "declared_in": "docs/U2I_CORPUS_ALIASES.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 117534,
+ "descriptive_nodes": 117534,
+ "surfaces": 113642,
+ "titles": 96611,
+ "aliases": 17031,
+ "aliases_by_cue": {
+  "a": 11951,
+  "b": 4730,
+  "c": 470
+ },
+ "table_sha256": "1feb256860d496714ab22bd8b10cfe0236196dd2c79e1e26dab953107a678bbc",
+ "hits": 962822,
+ "common_forms": 2466,
+ "w2_links": 2304416,
+ "sibling_links": 498208,
+ "candidates": {
+  "A_c": {
+   "alias_links": 24721,
+   "ambiguous_choices": 4150
+  },
+  "A_b": {
+   "alias_links": 1042137,
+   "ambiguous_choices": 40513
+  },
+  "A_a": {
+   "alias_links": 1368994,
+   "ambiguous_choices": 68743
+  },
+  "A_abc": {
+   "alias_links": 1830679,
+   "ambiguous_choices": 113467
+  }
+ },
+ "gate1": "PASS",
+ "links_npz_sha256": "b53d5ecfa0803cb73d7e2a1e330c30c4bd881d8f6870a7d3c29b8738b96e8f89",
+ "aliases_npz_sha256": "63f223578a6489e92a2e44bd81d2068543bd7bcdbce3b183d3923be68e20ccf0",
+ "evidence_npz_sha256": "e181044e36ff658edfd87db814c05e217d9993923c43a7f92771a6f241a1d154",
+ "hit_chunks": {
+  "chunk_000000000.npz": "692d89239c147372ba62fcc5546748034d497b322d8ae323ece9a053983ad8da"
+ },
+ "secs": {
+  "stream1": 7,
+  "table": 2,
+  "scan": 3,
+  "links": 46
+ },
+ "zu2i_sha256": "61bf1d04b76c850d4ea7e35b7ed5e6abaa5a406a8bc271c2eb8a54fba7f7302c",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

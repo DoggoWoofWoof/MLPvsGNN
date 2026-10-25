@@ -1,0 +1,64 @@
+{
+ "declared_in": "docs/U2I_CORPUS_ALIASES.md",
+ "carve": "s1sel",
+ "outcome": "NO_GAIN",
+ "best": "A_c",
+ "score": {
+  "W2_S": 0.8461,
+  "A_c": 0.8461,
+  "A_b": 0.8431,
+  "A_a": 0.8449,
+  "A_abc": 0.8427
+ },
+ "falls": [],
+ "gap_share": {
+  "hotpotqa": {
+   "A_c": {
+    "I_ALL": 0.0,
+    "allX_ALL": 0.0,
+    "choice": 0.0
+   },
+   "A_b": {
+    "I_ALL": -0.056,
+    "allX_ALL": 0.01,
+    "choice": -0.032
+   },
+   "A_a": {
+    "I_ALL": -0.095,
+    "allX_ALL": 0.049,
+    "choice": -0.006
+   },
+   "A_abc": {
+    "I_ALL": -0.123,
+    "allX_ALL": 0.059,
+    "choice": -0.021
+   }
+  },
+  "2wiki": {
+   "A_c": {
+    "I_ALL": 0.0,
+    "allX_ALL": 0.0,
+    "choice": 0.0
+   },
+   "A_b": {
+    "I_ALL": -0.055,
+    "allX_ALL": 0.0,
+    "choice": -0.21
+   },
+   "A_a": {
+    "I_ALL": -0.034,
+    "allX_ALL": 0.068,
+    "choice": -0.143
+   },
+   "A_abc": {
+    "I_ALL": -0.079,
+    "allX_ALL": 0.068,
+    "choice": -0.322
+   }
+  }
+ },
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

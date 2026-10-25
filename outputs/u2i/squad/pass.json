@@ -1,0 +1,55 @@
+{
+ "dataset": "squad",
+ "declared_in": "docs/U2I_CORPUS_ALIASES.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 20233,
+ "descriptive_nodes": 20233,
+ "surfaces": 1228,
+ "titles": 470,
+ "aliases": 758,
+ "aliases_by_cue": {
+  "a": 405,
+  "b": 335,
+  "c": 25
+ },
+ "table_sha256": "d8374b47223750aa460c19a8d5c277906fb1809ea220f47609e829887fc4ee0f",
+ "hits": 37575,
+ "common_forms": 181,
+ "w2_links": 685845,
+ "sibling_links": 1046756,
+ "candidates": {
+  "A_c": {
+   "alias_links": 4169,
+   "ambiguous_choices": 0
+  },
+  "A_b": {
+   "alias_links": 260365,
+   "ambiguous_choices": 6
+  },
+  "A_a": {
+   "alias_links": 418265,
+   "ambiguous_choices": 5
+  },
+  "A_abc": {
+   "alias_links": 665091,
+   "ambiguous_choices": 11
+  }
+ },
+ "gate1": "PASS",
+ "links_npz_sha256": "b4b6cdc30258761c4b81275d45f364a647d3f9744397e099215786e3887656c2",
+ "aliases_npz_sha256": "d2a8f3b47ecb018a7c3d61c03d13a868d12ce12a41d2b3d89b2ba708849183dd",
+ "evidence_npz_sha256": "a127e4f056cdd345ea8662a664e1df5c138e4fc2bbaa8fc529d4f5d0161928d8",
+ "hit_chunks": {
+  "chunk_000000000.npz": "fcfcd640ba9786e1a6443a9da3f4cb6c991141d7780888cd6a31475157d1d4d6"
+ },
+ "secs": {
+  "stream1": 1,
+  "table": 0,
+  "scan": 0,
+  "links": 4
+ },
+ "zu2i_sha256": "61bf1d04b76c850d4ea7e35b7ed5e6abaa5a406a8bc271c2eb8a54fba7f7302c",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1d_sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}
