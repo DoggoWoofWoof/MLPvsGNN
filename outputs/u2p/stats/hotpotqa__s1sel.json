@@ -1,0 +1,74 @@
+{
+ "declared_in": "docs/U2P_LINK_SCORE_WALK.md",
+ "stage": "U2p",
+ "dataset": "hotpotqa",
+ "carve": "s1sel",
+ "graph_detail": {
+  "graph": "W2_S",
+  "npz": "outputs/u2b/hotpotqa/graphs/W2_S.npz",
+  "npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+  "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+  "build": {
+   "directed_edges": 32334355,
+   "undirected_neighbours": 64318458,
+   "mean_degree": 12.29,
+   "max_degree": 371977
+  }
+ },
+ "script_sha256": "b18f44be0a8fe58ef3543fdc6fde8af19ef743d1a2403c4c5b47cec12ae3e44f",
+ "zu2m_sha256": "6f90ac0e5acd7ccfd8005c03eef1f211bfe150a1c2acf60b9cdc5bed121966e8",
+ "zu2m_b_sha256": "82c2d5494b999136fbd8dc324e39c4568f57f024cb6dfc229bd5ebaed1801c9f",
+ "zu2m_a_sha256": "2327179621c88de1c66b9d8c7139a8f32682d92657999e469c05bad8a90e2bbe",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "zu2m_a_types_sha256": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+ "u2m_stats_sha256": "38692229ea16c91677e3f3066c483fa00e1f19e772b31988b69c8f7a3a51b263",
+ "a_stats_sha256": "d627d07f5cc89e736353c48dca3679c59f8a3ce21fec112d90f0cb1908a74029",
+ "types_sha256": "cd6e6b3730addc38bf89f34b37eaf685324261f10c20bacd3e67fbea8ecbf184",
+ "em_types_sha256": "8ee0f1ba6928986b4e1516f0f8af4938f51f1813f149fbf50e6c87360bbb4672",
+ "verdict_b_sha256": "99c4a2469af837a193653245697e0041b65979252ea24acf48207da506be3537",
+ "verdict_a_sha256": "5f4ec23ed6fa896daccf4320c35f8316b7b3902d0720e35f3017dac90ecdf94d",
+ "carried": "own/kind_t/kt_cos:ada_f12_k0@0.85|G0|RWe@0.5",
+ "points": [
+  "own/kind_t/kt_cos:fix_15000@0.975",
+  "own/kind_t/kt_cos:ada_f12_k0@0.85",
+  "own/kind_t/kt_cos:ada_f16_k300@0.85",
+  "own/kind_t/kt_cos:ada_f24_k0@0.95",
+  "own/kind_t/kt_cos:ada_f24_k1000@1",
+  "own/kind_t/kt_cos+n2_30:fix_15000@0.95",
+  "own/kind_t/kt_cos+n2_100:ada_f3_k1000@0.975",
+  "own/kind_t/kt_cos+n2_100:ada_f12_k0@0.8"
+ ],
+ "G": 0,
+ "configs": [
+  "beta0",
+  "LW@0.5",
+  "LW@1",
+  "LW@2"
+ ],
+ "threads": 2,
+ "alpha": 0.5,
+ "eps": 1e-07,
+ "nmax": 7000,
+ "questions": 1508,
+ "golds": 3016,
+ "file_sha256": "223626d39dbd78673dd04b1d1b158eb7fd8cca994009c1f169bf99ac66b158f1",
+ "summary": {
+  "rows_sum": 113470497,
+  "held_sum": 94921,
+  "changed_sum": 4524,
+  "questions": 1508
+ },
+ "checks": {
+  "graph_equal_u2m": true,
+  "types_of_this_graph": true,
+  "em_types_equal_a": true,
+  "seeds_equal_g0": true,
+  "kind_t_by_kind": true,
+  "orders_exact": true,
+  "beta0_equal_a": true,
+  "restored_inside_cut": true,
+  "rows_served_verified": false
+ },
+ "seconds": 6009.3,
+ "utc": "2026-10-25T13:32:34Z"
+}

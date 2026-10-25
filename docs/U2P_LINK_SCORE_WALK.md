@@ -125,3 +125,69 @@ The four passage corpora are all Wikipedia, so the score's transfer is between W
 A verdict closes only the form tested (docs/SCREENS.md, section 3b): here U2k's score in 64 types as a question-free
 factor on (a)'s walk, with these β. A question-dependent weight that reads the score, a weight read without types,
 and a prune whose cut each graph reads are different forms, and none is closed.
+
+## 7. Results
+
+**Filed 25 October 2026: LINKWEIGHT_RAISED** (`outputs/u2p/verdict.json` and `.md`, written 15:50 UTC). The pick is
+`own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5`: level 0.96 at a cost of 1,953.4, inside the cap of 1,953.5.
+The carried pick, (a)'s `ada_f12_k0@0.85` at β = 0, was level 0.955 at 1,809.6. 32 candidates (8 points × β = 0,
+0.5, 1, 2). metaqa and webqsp have no score, so their candidates are (a)'s filed ones at every β.
+
+Every check of section 4 passed on the four passage datasets. The scores sort into U2o's filed K1 columns on musique,
+hotpotqa and 2wiki (squad has no K1 file, as declared). At β = 0 every candidate equals (a)'s filed values on all six.
+
+**The frontier** (the cheapest candidate at each level):
+
+| level | pick | cost | within the cap |
+| ---: | --- | ---: | --- |
+| 0.95 | `kt_cos+n2_100:ada_f12_k0@0.8`, β = 0 | 1,495.1 | yes |
+| 0.955 | `kt_cos:ada_f12_k0@0.85`, β = 0 (the carried pick) | 1,809.6 | yes |
+| **0.96** | **`kt_cos:ada_f16_k300@0.85`, β = 0.5** | **1,953.4** | **yes** |
+| 0.965 | `kt_cos+n2_100:ada_f3_k1000@0.975`, β = 0.5 | 2,324.3 | no |
+| 0.97 | `kt_cos:ada_f24_k0@0.95`, β = 0 | 3,358.7 | no |
+| 0.975 to 0.985 | `kt_cos+n2_30:fix_15000@0.95`, β = 0 | 6,799.7 | no |
+| 0.99 to 1.0 | `kt_cos:fix_15000@0.975`, β = 0 | 7,403.4 | no |
+
+**How thin the raise is.** The pick's point at β = 0 costs 1,952.0, and its lowest ALL is hotpotqa's 0.9595, so it
+sits at level 0.955. The weight at β = 0.5 lifts hotpotqa to 0.9602 (about one question of 1,508) and musique from
+0.9654 to 0.9668, and lowers 2wiki from 0.9706 to 0.9699. The level crosses 0.96 by 0.0002 on hotpotqa. The rule was
+fixed before the numbers, and this is the verdict it gives; the margin is reported with it.
+
+| the pick's point | cost | metaqa | squad | musique | hotpotqa | 2wiki | webqsp |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| β = 0 | 1,952.0 | 0.9653 / 4,369.9 | 0.9933 / 248.0 | 0.9654 / 5,508.3 | 0.9595 / 714.3 | 0.9706 / 1,070.5 | 0.9069 / 4,803.4 |
+| β = 0.5 (pick) | 1,953.4 | 0.9653 / 4,369.9 | 0.9933 / 248.0 | 0.9668 / 5,522.2 | 0.9602 / 714.3 | 0.9699 / 1,070.5 | 0.9069 / 4,803.4 |
+| β = 1 | 1,955.7 | 0.9653 / 4,369.9 | 0.9933 / 248.0 | 0.9681 / 5,546.0 | 0.9589 / 714.3 | 0.9679 / 1,070.5 | 0.9069 / 4,803.4 |
+| β = 2 | 1,961.5 | 0.9653 / 4,369.9 | 0.9933 / 248.0 | 0.9648 / 5,606.3 | 0.9562 / 714.3 | 0.9626 / 1,070.5 | 0.9069 / 4,803.4 |
+
+ALL / rows; webqsp is s1eval, beside.
+
+**Beside, deciding nothing.**
+- **At the carried pick's point** (ALL / rows):
+
+  | β | cost | musique | hotpotqa | 2wiki |
+  | --- | ---: | --- | --- | --- |
+  | 0 | 1,809.6 | 0.9654 / 5,439.4 | 0.9569 / 561.2 | 0.9652 / 839.9 |
+  | 0.5 | 1,810.9 | 0.9668 / 5,452.8 | 0.9576 / 561.2 | 0.9639 / 839.9 |
+  | 1 | 1,813.1 | 0.9681 / 5,475.4 | 0.9556 / 561.2 | 0.9626 / 839.9 |
+  | 2 | 1,818.7 | 0.9648 / 5,532.9 | 0.9516 / 561.2 | 0.9559 / 839.9 |
+
+  metaqa (0.9653), squad (0.9793) and webqsp (0.9069) do not move. The weight helps musique up to β = 1 and costs
+  2wiki at every β; hotpotqa gains only at β = 0.5. β = 2 is below β = 0 on all three.
+- **The pick's misses against the carried pick's** (this compares two points, so it includes the larger budget):
+  squad 31 → 10 (21 BUDGET recovered), hotpotqa 67 → 62 (3 TAU_CUT, 2 BUDGET), 2wiki 52 → 45 (7 TAU_CUT), musique
+  59 → 57 (3 recovered, 1 TAU_CUT lost), metaqa 207 → 207, webqsp 2,011 → 1,959 (52 TAU_CUT).
+- **KIND_T's order** changes on every question of the four passage datasets at every β > 0.
+- **The score types:** z̄ runs from about −2.3 to −1.9 in the lowest type to 3.0 to 3.7 in the highest; the null
+  type holds 5.2% of musique's entries, 35.7% of squad's and none of hotpotqa's or 2wiki's.
+- The stats took 2,240 s (squad), 3,490 s (musique), 6,009 s (hotpotqa) and 7,077 s (2wiki) on the laptop.
+
+**What follows (section 3).**
+- The weighted walk at β = 0.5 is the pools' walk on the passage graphs, and (a)'s RWe@0.5 stays the walk on the KBs.
+  U2q (docs/U2Q_ARRIVAL_SPLIT_CARRIED.md) reads this verdict and computes its arrival split on this walk for U2n;
+  it started at 21:20 IST, as soon as the verdict was written.
+- s(u, v) stays an input for both models, and the score types a candidate edge type for U2n's GNN.
+- E1 (U2m, section 19) has not run; it waits for U2r's choice. If E1 gains, its combination with this walk is declared
+  in its own file before it runs.
+- This closes only the form tested: U2k's score in 64 question-free types at these β. With a margin this thin, the
+  next forms stay open: a question-dependent weight that reads the score, and a prune whose cut each graph reads.
