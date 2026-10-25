@@ -1,0 +1,133 @@
+{
+ "dataset": "2wiki",
+ "carve": "s1sel",
+ "declared_in": "docs/U2J_LINK_PRECISION.md",
+ "questions": 1496,
+ "questions_npz_sha256": "be025627b9ae6beac340023262849bcffb2364d793c28a171e88ff093f2f3824",
+ "construction": {
+  "base_pool": "equal_rrf_budget_50",
+  "regime": "STRUCT",
+  "setting": {
+   "name": "h1_c25",
+   "hops": 1,
+   "per_seed_cap": 25
+  }
+ },
+ "rows_reordered": 11973,
+ "entries_reordered": 282445,
+ "entry_classes": {
+  "mutual": 3388,
+  "out": 214874,
+  "in": 64181,
+  "sibling": 2
+ },
+ "lead_entries": 117130,
+ "duplicate_hits": 0,
+ "w2_links": 71913824,
+ "w2s_mean_degree": 23.87,
+ "w2s_max_degree": 621403,
+ "orders": {
+  "R0": {
+   "I": {
+    "ALL": 0.8369,
+    "recall": 0.9345,
+    "pool": 162.2
+   },
+   "bridge": {
+    "pairs": 1248,
+    "pairs_with_gold_in_B": 1244,
+    "at5": 0.3181,
+    "at25": 0.8133
+   }
+  },
+  "R1": {
+   "I": {
+    "ALL": 0.8409,
+    "recall": 0.9362,
+    "pool": 161.7
+   },
+   "bridge": {
+    "pairs": 1248,
+    "pairs_with_gold_in_B": 1244,
+    "at5": 0.3357,
+    "at25": 0.8213
+   }
+  },
+  "R2": {
+   "I": {
+    "ALL": 0.8523,
+    "recall": 0.9405,
+    "pool": 160.8
+   },
+   "bridge": {
+    "pairs": 1248,
+    "pairs_with_gold_in_B": 1244,
+    "at5": 0.4688,
+    "at25": 0.8397
+   }
+  },
+  "R3": {
+   "I": {
+    "ALL": 0.8643,
+    "recall": 0.9462,
+    "pool": 165.1
+   },
+   "bridge": {
+    "pairs": 1248,
+    "pairs_with_gold_in_B": 1244,
+    "at5": 0.6418,
+    "at25": 0.8486
+   }
+  },
+  "R4": {
+   "I": {
+    "ALL": 0.8683,
+    "recall": 0.9479,
+    "pool": 162.3
+   },
+   "bridge": {
+    "pairs": 1248,
+    "pairs_with_gold_in_B": 1244,
+    "at5": 0.7051,
+    "at25": 0.8598
+   }
+  }
+ },
+ "PKG": {
+  "I": {
+   "ALL": 0.8964,
+   "recall": 0.9579,
+   "pool": 105.1
+  },
+  "bridge": {
+   "pairs": 1248,
+   "pairs_with_gold_in_B": 1244,
+   "at5": 0.6987,
+   "at25": 0.8894
+  }
+ },
+ "gap_share": {
+  "R1": {
+   "I_ALL": 0.067,
+   "bridge25": 0.105
+  },
+  "R2": {
+   "I_ALL": 0.259,
+   "bridge25": 0.347
+  },
+  "R3": {
+   "I_ALL": 0.461,
+   "bridge25": 0.464
+  },
+  "R4": {
+   "I_ALL": 0.528,
+   "bridge25": 0.611
+  }
+ },
+ "secs_features": 59.8,
+ "secs_orders": 5.9,
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

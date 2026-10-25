@@ -1,0 +1,48 @@
+{
+ "dataset": "squad",
+ "declared_in": "docs/U2J_LINK_PRECISION.md",
+ "decides": "nothing (section 5)",
+ "duplicate_hits": 0,
+ "w2_links": 685845,
+ "hyperlinked_share": 0.726,
+ "features": {
+  "lead": {
+   "auc": 0.4931,
+   "hyperlinked_when_1": 0.7206,
+   "hyperlinked_when_0": 0.7316,
+   "share_1": 0.5084
+  },
+  "pos": {
+   "auc": 0.5036
+  },
+  "count": {
+   "auc": 0.6008
+  },
+  "rare": {
+   "auc": 0.2269
+  },
+  "caps": {
+   "auc": 0.7311
+  },
+  "capmid": {
+   "auc": 0.527,
+   "hyperlinked_when_1": 0.7378,
+   "hyperlinked_when_0": 0.6048,
+   "share_1": 0.9113
+  },
+  "tokens": {
+   "auc": 0.0016
+  },
+  "alias": {
+   "auc": null,
+   "hyperlinked_when_1": null,
+   "hyperlinked_when_0": 0.726,
+   "share_1": 0.0
+  }
+ },
+ "secs": 0.9,
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "zu2i_sha256": "61bf1d04b76c850d4ea7e35b7ed5e6abaa5a406a8bc271c2eb8a54fba7f7302c",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

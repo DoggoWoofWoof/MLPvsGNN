@@ -107,3 +107,27 @@ reported too. This is the measure step 2 (U2k) learns from; here it only describ
 
 Filed after the run: `outputs/u2j/<D>/grade_s1sel.json`, `outputs/u2j/<D>/beside.json`, `outputs/u2j/choice.json`,
 `outputs/u2j/report.md`.
+
+**Filed 25 October 2026: ADOPT_FOR_POOLS, best R4** (R1's class, then lead, then rare). The score (mean I's ALL over
+musique, hotpotqa and 2wiki, s1sel) goes from R0's 0.8368 to R4's 0.8510, and no dataset falls.
+
+| dataset | R0 I's ALL | R4 I's ALL | PKG | gap share (I, bridge@25) | bridge@5 R0 → R4 (PKG) |
+| --- | --- | --- | --- | --- | --- |
+| musique | 0.7751 | 0.7849 | 0.7679 | (PKG below R0) | 0.156 → 0.192 (0.145) |
+| hotpotqa | 0.8985 | 0.8999 | 0.9682 | 0.02, 0.016 | 0.328 → 0.463 (0.712) |
+| 2wiki | 0.8369 | 0.8683 | 0.8964 | 0.528, 0.611 | 0.318 → 0.705 (0.699) |
+| squad | no I (RETRIEVAL) | | | | 0 for every order |
+
+- **2wiki:** the order closes about half of the hyperlink gap in the I (0.528) and 61% at the bridge's 25. Its
+  bridge@5 reaches PKG's.
+- **hotpotqa:** the I barely moves (+0.0014). Its hyperlink gap is not row order: the bridge@25 stays 0.674 against
+  PKG's 0.901. What W2_S's rows hold, not their order, is short there.
+- **Beside** (AUC against the dataset's own hyperlinks): rare 0.77 and tokens 0.75 on 2wiki, and 0.74 and 0.72 on
+  hotpotqa. On musique, 99.9% of W2 links are hyperlinks, so its AUCs (rare 0.15) describe a different graph.
+
+**Next, as section 7 fixes:**
+- R4 becomes the I's row order inside the pools, in its own declared file. U2k's learned score replaces it if U2k
+  adopts one.
+- The eight features go into both models when GPU credit allows.
+
+A verdict closes only the form tested (docs/SCREENS.md, section 3b).

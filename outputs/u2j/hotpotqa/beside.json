@@ -1,0 +1,48 @@
+{
+ "dataset": "hotpotqa",
+ "declared_in": "docs/U2J_LINK_PRECISION.md",
+ "decides": "nothing (section 5)",
+ "duplicate_hits": 0,
+ "w2_links": 32334355,
+ "hyperlinked_share": 0.3236,
+ "features": {
+  "lead": {
+   "auc": 0.4828,
+   "hyperlinked_when_1": 0.3113,
+   "hyperlinked_when_0": 0.3431,
+   "share_1": 0.6126
+  },
+  "pos": {
+   "auc": 0.5863
+  },
+  "count": {
+   "auc": 0.4861
+  },
+  "rare": {
+   "auc": 0.7412
+  },
+  "caps": {
+   "auc": 0.5377
+  },
+  "capmid": {
+   "auc": 0.5682,
+   "hyperlinked_when_1": 0.359,
+   "hyperlinked_when_0": 0.1316,
+   "share_1": 0.8444
+  },
+  "tokens": {
+   "auc": 0.7197
+  },
+  "alias": {
+   "auc": null,
+   "hyperlinked_when_1": null,
+   "hyperlinked_when_0": 0.3236,
+   "share_1": 0.0
+  }
+ },
+ "secs": 94.0,
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}

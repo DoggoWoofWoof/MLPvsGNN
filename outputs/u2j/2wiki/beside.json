@@ -1,0 +1,48 @@
+{
+ "dataset": "2wiki",
+ "declared_in": "docs/U2J_LINK_PRECISION.md",
+ "decides": "nothing (section 5)",
+ "duplicate_hits": 0,
+ "w2_links": 71913824,
+ "hyperlinked_share": 0.2305,
+ "features": {
+  "lead": {
+   "auc": 0.4869,
+   "hyperlinked_when_1": 0.2199,
+   "hyperlinked_when_0": 0.2388,
+   "share_1": 0.4402
+  },
+  "pos": {
+   "auc": 0.5499
+  },
+  "count": {
+   "auc": 0.4825
+  },
+  "rare": {
+   "auc": 0.7715
+  },
+  "caps": {
+   "auc": 0.5121
+  },
+  "capmid": {
+   "auc": 0.5474,
+   "hyperlinked_when_1": 0.2507,
+   "hyperlinked_when_0": 0.1318,
+   "share_1": 0.8297
+  },
+  "tokens": {
+   "auc": 0.7479
+  },
+  "alias": {
+   "auc": null,
+   "hyperlinked_when_1": null,
+   "hyperlinked_when_0": 0.2305,
+   "share_1": 0.0
+  }
+ },
+ "secs": 307.8,
+ "zu2j_sha256": "6d178991cd0656b59c48d83b76345868ecf1648c9cc4e42fa3eb7ebc156ae698",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "u1b_sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+}
