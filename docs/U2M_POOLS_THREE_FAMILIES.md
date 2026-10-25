@@ -720,3 +720,83 @@ beside):
   - It reaches both of U2n's models as an input: each arrival's relation type and its ω_q, so the models can learn
     the weight.
   - EM over the ner and knn families, and another K, stay open.
+
+## 19. E1 as the entity family: its reading, fixed 25 October 2026 (before its code)
+
+U2l filed CHOSEN E1 (docs/U2L_ENTITY_MATCH.md, section 10) and fixed what follows: U2m reads E1 in place of W2_S and
+NER as its entity family, declared in a dated section here before its code. This is that section. Code:
+`outputs/mp_unified/zu2m_e1.py`, which imports zu2m.py and zu2o.py unchanged. Outputs go only under
+`outputs/u2m/e1/`. Pools only: nothing trains.
+
+**What changes: only the `ner` slot** of the three families (structural, ner, knn).
+- **On a passage graph** (musique, squad, hotpotqa, 2wiki) the slot is empty. E1 with the sibling links is already
+  the structural graph: U2l's gate 1 found E1 ∪ R equal to U2b's filed W2_S, array for array, and that file is the one
+  U2m swaps in. So the walks read W2_S and kNN, without the package's NER.
+- **On a KB** (metaqa, webqsp) the slot is U2l's IS (`outputs/u2l/el/<D>/el.npz`), undirected and collapsed by
+  `zu2b.undirected_csr` as U2l graded it: rows in node-id order, self-loops kept. Every entry has weight 1; no pool
+  rule reads a family's weight. The stored triples and kNN stay.
+
+**What that moves, per question:**
+- the walks on the `all` union (A1all, Kall, KTall, A1Tall), and through them KIND_T;
+- N1 and N2, which read all three families;
+- the I where the own construction reads ner: musique (FULL:h2_c25) and webqsp (FULL:h3_c25_v2000);
+- so the own cell's `kind_t` columns: the fill, the 14 orders' lengths and every gold's place.
+- The `st` walks (A1st, Kst, KTst, A1Tst), R0, B, the seeds and the question's kind do not change. Neither does the I
+  on metaqa, hotpotqa and 2wiki (STRUCT) or on squad (RETRIEVAL).
+
+**The candidates and the choice** are U2o's (docs/U2O_K1_I_ORDER.md, section 3), with E1's columns:
+- U2e's 13,860 candidates on the own construction with `kind_t`, on U2m's arrays with the own cell's `kind_t` columns
+  (`fill`, `lens`, `pos`) replaced by E1's on all six datasets;
+- section 7's rule, with P1f's weights, the cap of 1,953.5 and (c) and (e)'s filed ceilings.
+
+| verdict | when |
+| --- | --- |
+| E1_RAISED | the pick's level is above 0.955 |
+| E1_CHEAPER | the pick's level is 0.955 and its cost is below 1,812.6 |
+| NO_GAIN | otherwise: U2e's pick stays |
+
+The incumbent is U2e's pick on the walk zu2m_e1.py reads, the β = 0 one: `own/kind_t/kt_cos:ada_f12_k0@0.85` at
+level 0.955 for 1,812.6 rows, as (b) left it (section 15), and as U2o carried it. (a)'s pick, RWe at β = 0.5 for
+1,809.6 rows (section 18), is now the carried walk. E1 is still measured on the walk its code reads, so the rule
+compares E1 with the same walk without it. If E1 gains, E1 on (a)'s walk is declared in its own section before it
+runs.
+
+**Carried forward.**
+- RAISED or CHEAPER: E1 becomes the pools' entity family. U2m's (d) and (a) arrays, which read the carried pools, are
+  computed again on it for U2n, each in its own file.
+- NO_GAIN: the pools keep the package's NER.
+- Either way, EL's kinds (IS, CO_t, CO_s) enter U2n's models as edge types (U2l, section 8).
+- U2o's K1 order and U2p's link weight (docs/U2P_LINK_SCORE_WALK.md) are different forms, tested on the filed
+  families. If E1 and one of them both gain, their combination is declared in its own file before it runs.
+
+**Checks.** Any failure stops the dataset, and nothing is written.
+- Each question walks twice: on the filed families and on E1's.
+  - On the filed families, |B|, |I|, the fill, the 14 orders' lengths, every gold's place and which golds the I holds
+    equal U2m's filed own `kind_t` columns, question for question.
+  - Where the construction reads ner (musique, webqsp), the I is rebuilt on both families, and the one rebuilt on the
+    filed families equals `prepare`'s pools. Elsewhere both sides take `prepare`'s pools, which E1 cannot move.
+  - On E1's families, the `st` walks, R0 and the kind equal the filed ones.
+- E1's store: `el.npz` carries its build record's sha256; on a passage graph U2l's gate 1 is PASS on W2_S and U2b's
+  filed W2_S is the file U2m swaps in; U2l's choice is CHOSEN E1.
+- In the verdict, on the filed families: the table equals U2e's for all 13,860 candidates, the frontier equals the
+  filed own `kind_t` frontier, and the rule returns U2e's pick.
+- **Self-test** (`--selftest`), passed before the code's commit: `undirected_csr` against a brute force; E1 in the
+  slot changes the `all` union only; the package's NER in the slot gives the filed union back; the empty slot; the
+  summary; the verdicts.
+- **Development runs** (`--limit`) write nothing and log no number. With `--control`, the package's NER stands in
+  E1's slot, so every question's E1 side must equal its filed side. 30-question runs on metaqa and musique, with and
+  without `--control`, passed before the code's commit.
+
+**Beside, deciding nothing:**
+- per dataset, the I's ALL and size on both families, and the share of questions whose KT order E1 leaves unchanged;
+- U2e's point under E1, per dataset;
+- the misses by U2m's causes (TAU_CUT, BUDGET, UNREACHED);
+- webqsp's s1eval, as everywhere.
+
+**Where it runs.** The laptop, one job at a time for memory, after U2p's laptop runs: metaqa, squad, musique and
+webqsp first, then hotpotqa and 2wiki. The lab host takes them if it is reachable first. W5's credit (about $1.30) is
+too little for Modal. The filed-family reproduction is what ties a machine to U2m's filed run.
+
+A verdict closes only the form tested (docs/SCREENS.md, section 3b): E1 in the ner slot, with the `kind_t` recipe and
+U2e's grid. On a passage graph E3 ∪ R ∪ kNN is the filed families (U2l, section 10), so the forms left open are EL's
+kinds as typed edges: as walk types in (a)'s relational walk, and as edge types in U2n's models.
