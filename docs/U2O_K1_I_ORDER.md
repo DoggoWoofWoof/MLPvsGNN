@@ -104,6 +104,10 @@ Any failure stops the dataset, and nothing is written.
     the K1 array uploaded as a new file) if the remaining credit covers them, or on the lab host once it is
     reachable. Otherwise they are held, and with them the verdict.
 - **`verdict`** runs on the laptop and writes `outputs/u2o/verdict.json` and `.md`.
+- **Added 25 October, before any number (logistics only).** W5 has about $1.30 of credit left, which is too little for
+  hotpotqa and 2wiki, and the lab host is unreachable. So their `graph` and `stats` also run on the laptop, after
+  U2m's (a) and (d) laptop runs finish. A machine cannot change a number here: at W2_S's order every question must
+  reproduce U2m's filed columns, or the run stops.
 
 The four passage corpora are all Wikipedia, so this measures transfer between Wikipedia corpora only (U2k's caveat).
 
