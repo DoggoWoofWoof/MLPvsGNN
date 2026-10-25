@@ -1,0 +1,12 @@
+{
+ "dataset": "musique",
+ "carve": "s1sel",
+ "declared_in": "docs/U2L_ENTITY_MATCH.md",
+ "status": "PASS",
+ "reach_mismatch": [],
+ "I_mismatch": [],
+ "frozen_I_cap": 25,
+ "script_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3"
+}

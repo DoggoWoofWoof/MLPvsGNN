@@ -1,0 +1,53 @@
+{
+ "declared_in": "docs/U2L_ENTITY_MATCH.md",
+ "carve": "s1sel; webqsp s1eval beside",
+ "outcome": "CHOSEN E1",
+ "form": "E1",
+ "graph": "E1+R_kNN",
+ "score": {
+  "E1+alone": 0.6848,
+  "E1+R": 0.7438,
+  "E1+R_kNN": 0.7265,
+  "E2+alone": 0.6635,
+  "E2+R": 0.7187,
+  "E2+R_kNN": 0.708,
+  "E3+alone": 0.6696,
+  "E3+R": 0.7276,
+  "E3+R_kNN": 0.7125,
+  "E4+alone": 0.6644,
+  "E4+R": 0.7193,
+  "E4+R_kNN": 0.7056,
+  "PKG": 0.7623,
+  "W2_S": 0.7443,
+  "PKG_NER_kNN": 0.7219,
+  "W2_S_NER_kNN": 0.7125
+ },
+ "per_dataset_best_upper_bound": {
+  "musique": "E3+R_kNN",
+  "squad": "E3+R_kNN",
+  "hotpotqa": "E1+R_kNN",
+  "2wiki": "E1+R_kNN",
+  "metaqa": "E1+R_kNN"
+ },
+ "script_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "webqsp_s1eval_beside": {
+  "E1+alone": 0.3536,
+  "E1+R": 0.5697,
+  "E1+R_kNN": 0.5168,
+  "E2+alone": 0.3518,
+  "E2+R": 0.5563,
+  "E2+R_kNN": 0.5085,
+  "E3+alone": 0.391,
+  "E3+R": 0.554,
+  "E3+R_kNN": 0.5071,
+  "E4+alone": 0.389,
+  "E4+R": 0.5418,
+  "E4+R_kNN": 0.5001,
+  "PKG": 0.6093,
+  "W2_S": 0.6093,
+  "PKG_NER_kNN": 0.5223,
+  "W2_S_NER_kNN": 0.5223
+ }
+}

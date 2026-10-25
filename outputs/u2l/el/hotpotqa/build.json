@@ -1,0 +1,25 @@
+{
+ "dataset": "hotpotqa",
+ "declared_in": "docs/U2L_ENTITY_MATCH.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "u2i_choice": "NO_GAIN",
+ "u2i_cue": null,
+ "u2i_links_npz_sha256": "bfc2639865e0852af37dac50c3d1674f28c0291fa53fe2218bce276b99e53520",
+ "gate1": "PASS",
+ "nodes": 5233329,
+ "is_links": 32334355,
+ "is_sources": 4848016,
+ "mentioned_groups": 1364118,
+ "groups_df_2_25": 706092,
+ "co_t_pairs": 16682318,
+ "r_links": 0,
+ "kb_scan": {},
+ "el_npz_sha256": "b9b405d24e2f7257a5eef2643a24797aa79b8cf7f6cfe6967a0a86c012a85963",
+ "secs": {
+  "is": 119.3,
+  "co_t": 55.2
+ },
+ "script_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3"
+}

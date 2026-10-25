@@ -175,4 +175,51 @@ A pick closes only the forms graded here (docs/SCREENS.md, section 3b).
 
 ## 10. Results
 
-None yet.
+**Filed 25 October 2026: CHOSEN E1** (IS alone), read on its three-family union E1 ∪ R ∪ kNN
+(outputs/u2l/el/choice.json and report.md). These are development numbers: s1sel, with webqsp's s1eval beside. The
+selftest held, gate 1 passed on the four passage datasets (it does not apply on the KBs), gate 2 passed on all six,
+and gate 3 passed on musique.
+
+| form, three-family union | score (mean of five) |
+| --- | ---: |
+| E1+R_kNN | **0.7265** |
+| E3+R_kNN | 0.7125 |
+| E2+R_kNN | 0.7080 |
+| E4+R_kNN | 0.7056 |
+| W2_S ∪ NER ∪ kNN (U2e's walk families, reference) | 0.7125 |
+| PKG ∪ NER ∪ kNN (reference) | 0.7219 |
+
+- **What E1 is on the passage graphs.** By gate 1, E1 ∪ R is W2_S array for array, and E3 ∪ R ∪ kNN equals
+  W2_S ∪ NER ∪ kNN on all four (musique 0.694, squad 0.9915, hotpotqa 0.892, 2wiki 0.6948). So on a passage graph the
+  choice keeps W2_S and kNN and drops the package's NER co-occurrence edges (CO_s).
+- **What that is worth** (E1+R_kNN against W2_S ∪ NER ∪ kNN):
+
+  | dataset | difference |
+  | --- | ---: |
+  | 2wiki | +0.0723 |
+  | hotpotqa | +0.0105 |
+  | metaqa | +0.0009 |
+  | squad | −0.0007 |
+  | musique | −0.0129 |
+  | webqsp (s1eval, beside) | −0.0055 |
+
+  The co-occurrence kinds lower the score on hotpotqa and 2wiki (E2: −0.0096 and −0.0706). CO_s raises it on musique
+  (E3: +0.0129) and slightly on squad (+0.0007).
+- **kNN in the union lowers every graph's score**: E1 ∪ R scores 0.7438 and E1 ∪ R ∪ kNN 0.7265; W2_S scores 0.7443 and
+  W2_S ∪ NER ∪ kNN 0.7125. The kNN neighbours are near the question by construction, so they take the top of X's
+  cosine ranking from the linked golds (metaqa 0.3345 → 0.2912). The choice is read on the three-family union because
+  U2e's walk reads three families.
+- **On the KBs**, EL alone reaches little (metaqa 0.0448, webqsp 0.3536). With the stored triples it is close to PKG on metaqa
+  (0.3345 against 0.3372) and below it on webqsp (0.5697 against 0.6093).
+- **The frozen I, beside:** E1's I equals W2_S's on the passage datasets (musique 0.7751, hotpotqa 0.8985, 2wiki
+  0.8369) and is below PKG's on the KBs (metaqa 0.8778 against 0.8938, webqsp 0.6773 against 0.688).
+- **The per-dataset best**, an upper bound only: E3 on musique and squad, E1 on hotpotqa, 2wiki and metaqa.
+
+**Next, as section 8 fixes:**
+- U2m reads E1 in place of W2_S and NER as its entity family. On the passage graphs that means the walks read W2_S
+  and kNN without NER; on the KBs, the stored triples, IS and kNN. This use is declared in a dated section of
+  docs/U2M_POOLS_THREE_FAMILIES.md before its code.
+- U2n's models read EL's kinds (IS, CO_t, CO_s) as edge types.
+- The question's links (section 5, beside) are run on E1's three-family graph and filed beside this section.
+
+A pick closes only the forms graded here (docs/SCREENS.md, section 3b).
