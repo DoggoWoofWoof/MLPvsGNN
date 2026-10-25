@@ -325,3 +325,46 @@ webqsp never moves the choice.
 
 The stats go to `outputs/u2m/b/stats/<D>__<carve>.npz` and `.json`, and the verdict to `outputs/u2m/b/verdict_b.json`
 and `.md`. The arrays stay uncommitted.
+
+## 12. (c) and (e): filed 25 October 2026
+
+**NOT_UNIFIED, KIND_FREE_TOO_DEAR.** U2e's pick stays: `own/kind_t/kt_cos:ada_f12_k0@0.85`, at level 0.955 and
+1,812.6 rows (outputs/u2m/verdict_ce.json and .md). Section 8's check held: U2m's table on the own construction with
+`kind_t` equals U2e's table for all 13,860 of U2e's candidates.
+
+**No universal candidate meets 0.950 within the cap** (1,953.5 rows).
+
+| frontier | cheapest at 0.950 | cost | multiple of the cap |
+| --- | --- | ---: | ---: |
+| C (`kind_t`) | `dense200+FULL:h2_c25/kind_t/kt_cos+n2_30:ada_f8_k0@0.8` | 3,641.3 | 1.86 |
+| E (kind-free) | `rrf50+FULL:h3_c25_v2000/both/kt_cos+n2_10:ada_f2_k0@1` | 3,993.8 | 2.04 |
+| own construction, `kind_t` (beside) | U2e's order family | 1,497.8 | 0.77 |
+
+- **Where the rows go.** The universal 0.950 point holds squad at 0.9993 with 2,981 rows. The own construction holds
+  it at 0.9793 with 50 rows, because squad's expansion is `none` and its fill is 0. Under one construction with an
+  expansion, the budgets that scale with fill give squad thousands of rows. A FIX budget gives every dataset the same
+  rows. The fewest mean rows any universal candidate needs for 0.950, one dataset at a time (an upper bound): squad
+  50, hotpotqa 323.4, 2wiki 326.1, metaqa 1,817.5, musique 3,858.4.
+- **The switch.** On the own construction the kind-free recipes cost more at every level: at 0.950, `both` costs
+  1,723.0 (+15%) and `rrf5t` 2,466.6 (+65%), against `kind_t`'s 1,497.8. So KIND_T's switch is worth its keep where
+  the construction is per dataset.
+- **Union ceilings** (a gold is held if any order of any construction and recipe holds it): metaqa 0.9967, squad
+  0.9993, musique 0.9811, hotpotqa 0.9887, 2wiki 0.9960, webqsp 0.9647.
+- **The carried pick's misses** (golds), by section 7's causes:
+
+| dataset | missed | TAU_CUT | BUDGET | UNREACHED |
+| --- | ---: | ---: | ---: | ---: |
+| metaqa | 329 | 287 | 8 | 34 |
+| squad | 31 | 0 | 30 | 1 |
+| musique | 62 | 22 | 9 | 31 |
+| hotpotqa | 69 | 13 | 38 | 18 |
+| 2wiki | 50 | 13 | 31 | 6 |
+| webqsp (s1eval) | 2,077 | 664 | 369 | 1,044 |
+
+TAU_CUT is the cause (b) restores: 87% of metaqa's misses and 32% of webqsp's.
+
+**What follows.**
+- (b) runs on U2e's own `kind_t` frontier, as section 11 says for this case, then (d) and (a).
+- The verdict closes only these 12 constructions with U2e's budgets (docs/SCREENS.md, section 3b). The next form of
+  (c) is one construction whose budget is read from each question's own walk mass, not from today's fill, so a
+  question whose walk concentrates gets few rows on any dataset. It is declared in its own file.
