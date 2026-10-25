@@ -368,3 +368,74 @@ TAU_CUT is the cause (b) restores: 87% of metaqa's misses and 32% of webqsp's.
 - The verdict closes only these 12 constructions with U2e's budgets (docs/SCREENS.md, section 3b). The next form of
   (c) is one construction whose budget is read from each question's own walk mass, not from today's fill, so a
   question whose walk concentrates gets few rows on any dataset. It is declared in its own file.
+
+## 13. (d) the mass split by arrival type: its reading, fixed 25 October 2026
+
+Written before (b)'s verdict and before any (d) code or number. Code: `outputs/mp_unified/zu2m_d.py`, which imports
+zu2m.py, zu2m_b.py, U2e, P1d and P1e unchanged. Nothing trains and nothing is fit. Only the beside table reads golds.
+(d) has no verdict: it is an input for U2n's models, graded there (section 10), never a pool rule.
+
+**The walks.** These are the five walks the carried recipe, `kind_t`, reads:
+- ROUTEst reads Kst and A1st;
+- RRF5T reads A1st, A1all, KTst, KTall and the unwalked R0.
+
+So the five are A1st, A1all and Kst (P1d's sources, step 4e's kernel) and KTst and KTall (P1e's steered kernel).
+Every question gets all five, whatever its kind, so a model's columns do not depend on the switch.
+
+**The types.** A row v's mass is p(v) = α × the mass that reached v before its last push. Each arrival has a type:
+- **restart:** the walk's restart weight on v;
+- **the family of the edge it came over:** structural (the KB's own graph on metaqa and webqsp, W2_S on the passage
+  graphs), ner or knn;
+- **on metaqa and webqsp's structural family, also its (relation, direction):** the entry for the sending node u in v's
+  typed row. Direction 1 means v is the stored source of the fact, 2 that v is its destination. When v's typed row
+  holds several entries for u, the arrival is split equally among them.
+
+p_type(v) is α × the type's arrivals before v's last push. So:
+- p(v) is the sum of its four parts (restart, structural, ner, knn);
+- on the KB, p_structural(v) is the sum of its (relation, direction) parts.
+
+On the st walks only restart and structural can be nonzero.
+
+**The kernel.** The split kernels are step 4e's and P1e's push, with the same statements on p and r in the same order.
+Beside r, they keep each type's pending and settled amounts for the carried pool's rows only. An arrival at a pool
+row adds to its type's pending amount. A push of the row settles α × each pending amount and clears it. So p, and
+every order, is the original kernel's. Only the arrivals at pool rows are kept, so the memory is the pool's, not the
+graph's.
+
+**The rows.** These are the rows of the pick section 11 carries, on every question of the carve: B, order[:keep], and
+the restored rows when that pick has G > 0.
+
+**The arrays.** Per dataset and carve:
+- the rows (with a question pointer);
+- for each row and walk, the four parts and p, in float32;
+- the walk's total over its top NMAX nodes, so the masses can be scaled as P1b's walk_mass scales them;
+- on the KB, for each walk, sparse (row, relation, direction, mass) entries.
+
+The arrays go to `outputs/u2m/d/stats/<D>__<carve>.npz` and `.json`, and stay uncommitted.
+
+**Checks.** Any failure stops the dataset, and nothing is written.
+- **Orders and masses.** For every question and walk, the split kernel's top-NMAX order equals the original kernel's.
+  On A1st, A1all and Kst, its scaled masses also equal walk_mass's, bit for bit.
+- **Parts.** In float64, before storing, |Σ parts − p(v)| ≤ 1e-9 × p(v) + 1e-15 on every row and walk. On the KB, the
+  (relation, direction) parts meet the same bound against p_structural(v).
+- **Rows.** Each question's row count equals the carried pick's filed rows: (b)'s at its G, or (c) and (e)'s when
+  (b) is NO_GAIN. Its held golds equal the filed ones.
+- **Self-test** (`--selftest`), before the commit that adds the code. On toy graphs, typed and untyped, steered and
+  unsteered, the split kernel's p equals the original's bit for bit. Its parts also equal a per-arrival log, settled
+  push by push in plain Python.
+- **Development runs** (`--limit`) write nothing and log no number.
+
+**Beside, deciding nothing.** Per dataset and walk:
+- the mean share of each type in a row's mass, over gold rows and over the other rows;
+- on the KB, the five (relation, direction) pairs with the largest share of the structural mass on gold rows.
+
+webqsp's s1eval is shown beside, as everywhere.
+
+**Where it runs.** As section 9 says:
+- the laptop runs squad, metaqa, musique and webqsp;
+- Modal runs hotpotqa and 2wiki, after (b)'s runs, if the workspace's remaining credit covers them. If it does not,
+  those two are held, and the record says so.
+
+U2n computes the same arrays on its fit and evaluation carves with these kernels, since the kernels are the form.
+
+**What follows.** (a)'s grid (temperature and type forms) and its checks go into section 14 before (a)'s code.
