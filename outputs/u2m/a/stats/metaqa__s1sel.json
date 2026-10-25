@@ -1,0 +1,73 @@
+{
+ "declared_in": "docs/U2M_POOLS_THREE_FAMILIES.md, section 14",
+ "stage": "U2m (a)",
+ "dataset": "metaqa",
+ "carve": "s1sel",
+ "graph_detail": {
+  "graph": "cached (the KB)"
+ },
+ "script_sha256": "2327179621c88de1c66b9d8c7139a8f32682d92657999e469c05bad8a90e2bbe",
+ "zu2m_sha256": "6f90ac0e5acd7ccfd8005c03eef1f211bfe150a1c2acf60b9cdc5bed121966e8",
+ "zu2m_b_sha256": "82c2d5494b999136fbd8dc324e39c4568f57f024cb6dfc229bd5ebaed1801c9f",
+ "zu2m_a_types_sha256": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "u2m_stats_sha256": "acc8785279af4ab1ab7009de5c12f75149de75213446a01e368a10643c1e0bed",
+ "b_stats_sha256": "17fc1b63d261ae7eb5cb21c3c6385a15298717e20e740235d270b9cfdf2752a7",
+ "types_sha256": "ca3d237ec3fb4269ab65846223f9e724f8fd76eea03523b2a90a48a16dbc77eb",
+ "verdict_b_sha256": "99c4a2469af837a193653245697e0041b65979252ea24acf48207da506be3537",
+ "points": [
+  "own/kind_t/kt_cos:fix_15000@0.975",
+  "own/kind_t/kt_cos:ada_f12_k0@0.85",
+  "own/kind_t/kt_cos:ada_f16_k300@0.85",
+  "own/kind_t/kt_cos:ada_f24_k0@0.95",
+  "own/kind_t/kt_cos:ada_f24_k1000@1",
+  "own/kind_t/kt_cos+n2_30:fix_15000@0.95",
+  "own/kind_t/kt_cos+n2_100:ada_f3_k1000@0.975",
+  "own/kind_t/kt_cos+n2_100:ada_f12_k0@0.8"
+ ],
+ "G": 0,
+ "configs": [
+  "beta0",
+  "RWr@0.5",
+  "RWr@1",
+  "RWr@2",
+  "RWe@0.5",
+  "RWe@1",
+  "RWe@2"
+ ],
+ "walks_run": [
+  "RWr@0.5",
+  "RWr@1",
+  "RWr@2",
+  "RWe@0.5",
+  "RWe@1",
+  "RWe@2"
+ ],
+ "typed": true,
+ "threads": 2,
+ "alpha": 0.5,
+ "eps": 1e-07,
+ "nmax": 7000,
+ "questions": 1497,
+ "golds": 11367,
+ "file_sha256": "66a64acee85a358278308ba674792360dffc3b53bc83e85e562762d0f46b05d2",
+ "summary": {
+  "rows_sum": 520434818,
+  "held_sum": 625693,
+  "changed_sum": 8982,
+  "questions": 1497
+ },
+ "checks": {
+  "graph_equal_u2m": true,
+  "types_of_this_graph": true,
+  "seeds_equal_g0": true,
+  "kind_t_by_kind": true,
+  "orders_exact": true,
+  "fill_equal_u2m": true,
+  "beta0_equal_b": true,
+  "restored_inside_cut": true,
+  "rows_served_verified": false
+ },
+ "seconds": 3349.8,
+ "utc": "2026-10-25T06:37:01Z"
+}

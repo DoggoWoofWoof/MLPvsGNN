@@ -1,0 +1,79 @@
+{
+ "declared_in": "docs/U2M_POOLS_THREE_FAMILIES.md, section 14",
+ "stage": "U2m (a)",
+ "dataset": "musique",
+ "carve": "s1sel",
+ "graph_detail": {
+  "graph": "W2_S",
+  "npz": "outputs/u2b/musique/graphs/W2_S.npz",
+  "npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+  "build": {
+   "directed_edges": 2802624,
+   "undirected_neighbours": 4687840,
+   "mean_degree": 39.88,
+   "max_degree": 14281
+  }
+ },
+ "script_sha256": "2327179621c88de1c66b9d8c7139a8f32682d92657999e469c05bad8a90e2bbe",
+ "zu2m_sha256": "6f90ac0e5acd7ccfd8005c03eef1f211bfe150a1c2acf60b9cdc5bed121966e8",
+ "zu2m_b_sha256": "82c2d5494b999136fbd8dc324e39c4568f57f024cb6dfc229bd5ebaed1801c9f",
+ "zu2m_a_types_sha256": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "u2m_stats_sha256": "4761f095e9e1b8cded56221d7b65a4cade8cde5a99102c310d0750d9493580a2",
+ "b_stats_sha256": "6152885d29e5026dc3f3a06d041db32101886290d4591bfead90ed7bd4aee4be",
+ "types_sha256": "8156b4756da02ae3a29eda2ed4730f784491b4ebd34baeeba5fff971e3bcf5c9",
+ "verdict_b_sha256": "99c4a2469af837a193653245697e0041b65979252ea24acf48207da506be3537",
+ "points": [
+  "own/kind_t/kt_cos:fix_15000@0.975",
+  "own/kind_t/kt_cos:ada_f12_k0@0.85",
+  "own/kind_t/kt_cos:ada_f16_k300@0.85",
+  "own/kind_t/kt_cos:ada_f24_k0@0.95",
+  "own/kind_t/kt_cos:ada_f24_k1000@1",
+  "own/kind_t/kt_cos+n2_30:fix_15000@0.95",
+  "own/kind_t/kt_cos+n2_100:ada_f3_k1000@0.975",
+  "own/kind_t/kt_cos+n2_100:ada_f12_k0@0.8"
+ ],
+ "G": 0,
+ "configs": [
+  "beta0",
+  "RWr@0.5",
+  "RWr@1",
+  "RWr@2",
+  "RWe@0.5",
+  "RWe@1",
+  "RWe@2"
+ ],
+ "walks_run": [
+  "RWe@0.5",
+  "RWe@1",
+  "RWe@2"
+ ],
+ "typed": false,
+ "threads": 2,
+ "alpha": 0.5,
+ "eps": 1e-07,
+ "nmax": 7000,
+ "questions": 1534,
+ "golds": 4064,
+ "file_sha256": "166bdefa1c42229a2b2c1c29a622bb3c86657d96b49bf8c20d65659d81d6822e",
+ "summary": {
+  "rows_sum": 671371385,
+  "held_sum": 224794,
+  "changed_sum": 9204,
+  "questions": 1534
+ },
+ "checks": {
+  "graph_equal_u2m": true,
+  "types_of_this_graph": true,
+  "seeds_equal_g0": true,
+  "kind_t_by_kind": true,
+  "orders_exact": true,
+  "fill_equal_u2m": true,
+  "beta0_equal_b": true,
+  "restored_inside_cut": true,
+  "rows_served_verified": false
+ },
+ "seconds": 3399.2,
+ "utc": "2026-10-25T07:33:50Z"
+}

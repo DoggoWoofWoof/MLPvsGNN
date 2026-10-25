@@ -652,3 +652,71 @@ three families). squad's construction has no K walks, so its row reads A1all.
 **What follows.** U2n reads the parts as inputs, computed with these kernels on its fit and evaluation carves
 (section 13). If a later pool stage changes the carried pick (U2o, or E1 in its own section), the arrays are computed
 again on the new pick, in their own file. Nothing here closes or decides anything.
+
+## 18. (a): filed 25 October 2026
+
+**RELATIONAL_CHEAPER.** The pick is `own/kind_t/kt_cos:ada_f12_k0@0.85` at G = 0 with RWe at β = 0.5: level 0.955
+for 1,809.6 rows, against (b)'s 1,812.6 for the same point at β = 0, with a cap of 1,953.5
+(outputs/u2m/a/verdict_a.json and .md). There were 56 candidates: the 8 points of the carried frontier at G = 0 × the
+7 configurations. These are development numbers: s1sel, with webqsp's s1eval beside.
+- **Checks.** Section 14's checks held on all six.
+  - At β = 0, every question's rows and held golds equal (b)'s filed table at G = 0.
+  - In the verdict, the β = 0 candidates equal (b)'s filed values on all six datasets.
+  - The kernel's self-test (every ω 1 equals the carried kernels bit for bit; ω ≠ 1 equals a plain push within
+    1e-12) passed before the code's commit.
+- **Where it ran.**
+  - squad, metaqa, musique and webqsp ran on the laptop.
+  - hotpotqa and 2wiki ran on Modal, in 4 question shards each, joined by `merge`, with their EM types fit there.
+  - The verdict reads every dataset's types record. hotpotqa's and 2wiki's were pulled from the volume for it, and
+    each array's sha256 equals its record's and the stats' `types_sha256`.
+
+**At the carried pick's point** (ALL / mean rows; squad holds 0.9793 / 50.0 in every configuration; webqsp is s1eval,
+beside):
+
+| configuration | cost | metaqa | musique | hotpotqa | 2wiki | webqsp |
+| --- | ---: | --- | --- | --- | --- | --- |
+| β = 0 | 1,812.6 | 0.9619 / 4,384.4 | 0.9635 / 5,437.4 | 0.9556 / 561.2 | 0.9666 / 839.9 | 0.8929 / 4,754.6 |
+| RWr, β = 0.5 | 1,812.9 | 0.9880 / 4,384.9 | 0.9654 / 5,439.4 | 0.9569 / 561.2 | 0.9652 / 839.9 | 0.9208 / 4,759.3 |
+| RWr, β = 1 | 1,817.4 | 0.9900 / 4,396.8 | 0.9674 / 5,459.6 | 0.9556 / 561.2 | 0.9619 / 839.9 | 0.9308 / 4,794.4 |
+| RWr, β = 2 | 1,793.5 | 0.9733 / 4,255.5 | 0.9654 / 5,530.0 | 0.9463 / 561.2 | 0.9525 / 839.9 | 0.9215 / 4,848.2 |
+| RWe, β = 0.5 | 1,809.6 | 0.9653 / 4,369.9 | 0.9654 / 5,439.4 | 0.9569 / 561.2 | 0.9652 / 839.9 | 0.9069 / 4,747.0 |
+| RWe, β = 1 | 1,810.6 | 0.9439 / 4,365.4 | 0.9674 / 5,459.6 | 0.9556 / 561.2 | 0.9619 / 839.9 | 0.9082 / 4,768.3 |
+| RWe, β = 2 | 1,800.9 | 0.8584 / 4,289.7 | 0.9654 / 5,530.0 | 0.9463 / 561.2 | 0.9525 / 839.9 | 0.8809 / 4,841.4 |
+
+**What the verdict says.**
+- **The saving is small.** At the same level the pick costs 3.0 rows less. Against β = 0, its ALL rises on metaqa
+  (0.9619 → 0.9653), musique (0.9635 → 0.9654) and hotpotqa (0.9556 → 0.9569), and falls on 2wiki (0.9666 → 0.9652).
+  The frontier's 0.95 point moves from 1,497.8 to 1,495.1. No point reaches 0.96 within the cap.
+- **On the KBs, RWr is the larger signal.** The KB relations' text, weighted toward the question, takes metaqa from
+  0.9619 to 0.9880 at β = 0.5 and to 0.9900 at β = 1, and webqsp's s1eval from 0.8929 to 0.9208 and 0.9308.
+- **Why the rule takes RWe.** On the passage graphs RWr is RWe, so the two forms differ only on the KBs.
+  - The level is set by hotpotqa, which holds 0.9569 under both, below 0.96. So metaqa's gain does not move the
+    level.
+  - At 0.955 the rule takes the lower cost: RWe's KB walk keeps fewer metaqa rows (4,369.9 against 4,384.9), so it
+    costs 3.3 less.
+- **β = 2 is too sharp.** hotpotqa falls to 0.9463 and 2wiki to 0.9525 under both forms, and RWe takes metaqa to
+  0.8584.
+- **The pick's misses.**
+  - metaqa: 329 missed golds become 207 (141 TAU_CUT and 1 UNREACHED recovered, 20 TAU_CUT lost).
+  - webqsp (s1eval): 2,077 become 2,011 (132 TAU_CUT, 14 BUDGET and 4 UNREACHED recovered, 84 TAU_CUT lost).
+  - musique, hotpotqa and 2wiki: 62 → 59, 69 → 67 and 50 → 52.
+  - squad: unchanged at 31.
+- **The EM types (beside).**
+  - The fit ran its 25 steps on every graph without reaching a step with no change.
+  - The mean cosine to the centre is 0.29 (squad) to 0.52 (metaqa).
+  - The NMI between the EM type and the fact's relation is 0.355 on metaqa and 0.480 on webqsp. So EM recovers part
+    of the relations without their labels.
+
+**What follows.**
+- **The carried walk.** It is (a)'s pick: `own/kind_t/kt_cos:ada_f12_k0@0.85` at G = 0, RWe at β = 0.5, level 0.955,
+  1,809.6 rows.
+  - As section 14 says, section 13's arrays ((d)) are computed again on its walks for U2n, in their own file.
+  - U2p (docs/U2P_LINK_SCORE_WALK.md) puts U2k's link score into this walk.
+  - E1 (section 19) is measured on the walk its code reads, the β = 0 one, against U2e's pick on that walk.
+- **This verdict closes only RWr and RWe at K = 64 with these β under section 7's rule** (docs/SCREENS.md,
+  section 3b).
+  - Section 7's rule values coverage only up to the level, and the level is set by the passage graphs. So RWr's KB
+    gain is signal the rule does not carry.
+  - It reaches both of U2n's models as an input: each arrival's relation type and its ω_q, so the models can learn
+    the weight.
+  - EM over the ner and knn families, and another K, stay open.
