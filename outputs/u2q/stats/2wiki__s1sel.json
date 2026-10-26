@@ -1,0 +1,188 @@
+{
+ "declared_in": "docs/U2Q_ARRIVAL_SPLIT_CARRIED.md",
+ "stage": "U2q",
+ "dataset": "2wiki",
+ "carve": "s1sel",
+ "graph_detail": {
+  "graph": "W2_S",
+  "npz": "outputs/u2b/2wiki/graphs/W2_S.d.npz",
+  "npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "choice_sha256": "0b1ec87cc8e3bc3f4db7b65e0cf140c96ce7d74f0c4c6f5601e8ba368851573b",
+  "build": {
+   "directed_edges": 71913828,
+   "undirected_neighbours": 142967492,
+   "mean_degree": 23.87,
+   "max_degree": 621403
+  }
+ },
+ "script_sha256": "d2f59715deb9b1719f63c39d313af8ca6e0214f22e89843ba84014f34576bf9f",
+ "zu2m_sha256": "6f90ac0e5acd7ccfd8005c03eef1f211bfe150a1c2acf60b9cdc5bed121966e8",
+ "zu2m_b_sha256": "82c2d5494b999136fbd8dc324e39c4568f57f024cb6dfc229bd5ebaed1801c9f",
+ "zu2m_d_sha256": "738e52e2ecdbd36938a1d38dfebbcd957cfe4158df46d89611a19e178e62c7cc",
+ "zu2m_a_sha256": "2327179621c88de1c66b9d8c7139a8f32682d92657999e469c05bad8a90e2bbe",
+ "zu2m_a_types_sha256": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+ "zu2p_sha256": "b18f44be0a8fe58ef3543fdc6fde8af19ef743d1a2403c4c5b47cec12ae3e44f",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "u2m_stats_sha256": "25caa1f25c9d51239706cc48220b2a564d98147509c55ba003710f4b2e62b947",
+ "verdict_a_sha256": "5f4ec23ed6fa896daccf4320c35f8316b7b3902d0720e35f3017dac90ecdf94d",
+ "verdict_p_sha256": "991304a3bd88301e76d1cf6b295b7425fbb8254db0bf0c7bf757c6fbefc5372b",
+ "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+ "point": "own/kind_t/kt_cos:ada_f16_k300@0.85",
+ "G": 0,
+ "beta": 0.5,
+ "walk": "RWe@0.5 x LW@0.5",
+ "rows_from": "U2p",
+ "a_stats_sha256": "e3b6c337ebad1d4f748f7e545be939bc9191ce983dc5df00b04865d859e70e40",
+ "em_types_sha256": "cad82b513828aa1727863787d82bb4ddff7b0081955ab097691365ae91ad2fb6",
+ "score_types_sha256": "0e4a0135482113b1f31bbe452fd84ea99bb17b0493622cc7280c245f6a6c3d19",
+ "walks": [
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall"
+ ],
+ "types": [
+  "restart",
+  "structural",
+  "ner",
+  "knn"
+ ],
+ "typed": false,
+ "threads": 2,
+ "alpha": 0.5,
+ "eps": 1e-07,
+ "nmax": 7000,
+ "questions": 1496,
+ "rows": 1601488,
+ "golds": 3646,
+ "rel_entries": null,
+ "file_sha256": "4a3ceff18591b920a833fd974605d4fffb824c060219373bbca0287c8dd94a5e",
+ "beside": {
+  "A1st": {
+   "gold": {
+    "rows": 3601,
+    "with_mass": 3597,
+    "share": {
+     "restart": 0.6345,
+     "structural": 0.3655,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "other": {
+    "rows": 1597887,
+    "with_mass": 1538318,
+    "share": {
+     "restart": 0.7513,
+     "structural": 0.2487,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   }
+  },
+  "A1all": {
+   "gold": {
+    "rows": 3601,
+    "with_mass": 3600,
+    "share": {
+     "restart": 0.6225,
+     "structural": 0.2664,
+     "ner": 0.045,
+     "knn": 0.0662
+    }
+   },
+   "other": {
+    "rows": 1597887,
+    "with_mass": 1552188,
+    "share": {
+     "restart": 0.6996,
+     "structural": 0.1192,
+     "ner": 0.0762,
+     "knn": 0.105
+    }
+   }
+  },
+  "Kst": {
+   "gold": {
+    "rows": 3601,
+    "with_mass": 3561,
+    "share": {
+     "restart": 0.5963,
+     "structural": 0.4037,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "other": {
+    "rows": 1597887,
+    "with_mass": 469312,
+    "share": {
+     "restart": 0.0007,
+     "structural": 0.9993,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   }
+  },
+  "KTst": {
+   "gold": {
+    "rows": 3601,
+    "with_mass": 3563,
+    "share": {
+     "restart": 0.5579,
+     "structural": 0.4421,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "other": {
+    "rows": 1597887,
+    "with_mass": 509060,
+    "share": {
+     "restart": 0.0006,
+     "structural": 0.9994,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   }
+  },
+  "KTall": {
+   "gold": {
+    "rows": 3601,
+    "with_mass": 3565,
+    "share": {
+     "restart": 0.5648,
+     "structural": 0.3118,
+     "ner": 0.0602,
+     "knn": 0.0632
+    }
+   },
+   "other": {
+    "rows": 1597887,
+    "with_mass": 484018,
+    "share": {
+     "restart": 0.0006,
+     "structural": 0.4759,
+     "ner": 0.2636,
+     "knn": 0.2598
+    }
+   }
+  }
+ },
+ "checks": {
+  "graph_equal_u2m": true,
+  "seeds_equal_g0": true,
+  "em_types_equal_a": true,
+  "kind_t_by_kind": true,
+  "orders_exact": true,
+  "rows_equal_carried": true,
+  "held_equal_carried": true,
+  "orders_masses_equal_a_kernel": true,
+  "parts_sum_to_p": true,
+  "relation_parts_sum": false,
+  "rows_served_verified": false
+ },
+ "seconds": 5238.4,
+ "utc": "2026-10-25T21:19:53Z"
+}

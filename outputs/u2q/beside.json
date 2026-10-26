@@ -1,0 +1,1488 @@
+{
+ "declared_in": "docs/U2Q_ARRIVAL_SPLIT_CARRIED.md",
+ "stage": "U2q, beside",
+ "script_sha256": "d2f59715deb9b1719f63c39d313af8ca6e0214f22e89843ba84014f34576bf9f",
+ "decides": "nothing (an input for U2n's models)",
+ "datasets": {
+  "metaqa": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+   "walk": "RWe@0.5",
+   "beta": 0.5,
+   "questions": 1497,
+   "rows": 6541747,
+   "file_sha256": "a43e72799845e06f6ba50078860fc3c149199f2987489767f854b5772698c7bf",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 11160,
+      "with_mass": 11160,
+      "share": {
+       "restart": 0.1135,
+       "structural": 0.8865,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 6530587,
+      "with_mass": 6529016,
+      "share": {
+       "restart": 0.2442,
+       "structural": 0.7558,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 1,
+       "direction": 2,
+       "share": 0.283,
+       "name": "has_genre"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.1597,
+       "name": "release_year"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.0933,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.0928,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 8,
+       "direction": 2,
+       "share": 0.0645,
+       "name": "written_by"
+      }
+     ]
+    },
+    "A1all": {
+     "gold": {
+      "rows": 11160,
+      "with_mass": 11149,
+      "share": {
+       "restart": 0.1275,
+       "structural": 0.6677,
+       "ner": 0.0179,
+       "knn": 0.187
+      }
+     },
+     "other": {
+      "rows": 6530587,
+      "with_mass": 6481577,
+      "share": {
+       "restart": 0.2252,
+       "structural": 0.4462,
+       "ner": 0.0345,
+       "knn": 0.2942
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 1,
+       "direction": 2,
+       "share": 0.3053,
+       "name": "has_genre"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.1713,
+       "name": "release_year"
+      },
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.0895,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.0809,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 8,
+       "direction": 2,
+       "share": 0.0594,
+       "name": "written_by"
+      }
+     ]
+    },
+    "Kst": {
+     "gold": {
+      "rows": 11160,
+      "with_mass": 11141,
+      "share": {
+       "restart": 0.0002,
+       "structural": 0.9998,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 6530587,
+      "with_mass": 5794501,
+      "share": {
+       "restart": 0.0004,
+       "structural": 0.9996,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.1936,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.1451,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.1083,
+       "name": "release_year"
+      },
+      {
+       "relation": 8,
+       "direction": 1,
+       "share": 0.0973,
+       "name": "written_by"
+      },
+      {
+       "relation": 8,
+       "direction": 2,
+       "share": 0.0917,
+       "name": "written_by"
+      }
+     ]
+    },
+    "KTst": {
+     "gold": {
+      "rows": 11160,
+      "with_mass": 11128,
+      "share": {
+       "restart": 0.0001,
+       "structural": 0.9999,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 6530587,
+      "with_mass": 5181506,
+      "share": {
+       "restart": 0.0004,
+       "structural": 0.9996,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.1975,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.1356,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 0,
+       "direction": 2,
+       "share": 0.099,
+       "name": "directed_by"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.0986,
+       "name": "release_year"
+      },
+      {
+       "relation": 8,
+       "direction": 1,
+       "share": 0.0982,
+       "name": "written_by"
+      }
+     ]
+    },
+    "KTall": {
+     "gold": {
+      "rows": 11160,
+      "with_mass": 10757,
+      "share": {
+       "restart": 0.0001,
+       "structural": 0.8738,
+       "ner": 0.014,
+       "knn": 0.1121
+      }
+     },
+     "other": {
+      "rows": 6530587,
+      "with_mass": 3841467,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.7233,
+       "ner": 0.0267,
+       "knn": 0.2493
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 7,
+       "direction": 1,
+       "share": 0.1912,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 7,
+       "direction": 2,
+       "share": 0.1301,
+       "name": "starred_actors"
+      },
+      {
+       "relation": 6,
+       "direction": 2,
+       "share": 0.1003,
+       "name": "release_year"
+      },
+      {
+       "relation": 8,
+       "direction": 1,
+       "share": 0.0981,
+       "name": "written_by"
+      },
+      {
+       "relation": 0,
+       "direction": 2,
+       "share": 0.0978,
+       "name": "directed_by"
+      }
+     ]
+    }
+   },
+   "d_filed_shares": {
+    "A1st": {
+     "gold": {
+      "restart": 0.1267,
+      "structural": 0.8733,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.2528,
+      "structural": 0.7472,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "A1all": {
+     "gold": {
+      "restart": 0.1356,
+      "structural": 0.6532,
+      "ner": 0.0186,
+      "knn": 0.1926
+     },
+     "other": {
+      "restart": 0.2294,
+      "structural": 0.447,
+      "ner": 0.0333,
+      "knn": 0.2903
+     }
+    },
+    "Kst": {
+     "gold": {
+      "restart": 0.0002,
+      "structural": 0.9998,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0004,
+      "structural": 0.9996,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTst": {
+     "gold": {
+      "restart": 0.0001,
+      "structural": 0.9999,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0004,
+      "structural": 0.9996,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTall": {
+     "gold": {
+      "restart": 0.0001,
+      "structural": 0.8739,
+      "ner": 0.0142,
+      "knn": 0.1118
+     },
+     "other": {
+      "restart": 0.0006,
+      "structural": 0.7435,
+      "ner": 0.0236,
+      "knn": 0.2324
+     }
+    }
+   }
+  },
+  "squad": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+   "walk": "RWe@0.5 x LW@0.5",
+   "beta": 0.5,
+   "questions": 1498,
+   "rows": 371553,
+   "file_sha256": "26b22432455682408bc816cffe832441e17a69f92fc2bc9704f6caa3cd55f4ef",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 1488,
+      "with_mass": 1488,
+      "share": {
+       "restart": 0.8873,
+       "structural": 0.1127,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 370065,
+      "with_mass": 370063,
+      "share": {
+       "restart": 0.6208,
+       "structural": 0.3792,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "A1all": {
+     "gold": {
+      "rows": 1488,
+      "with_mass": 1488,
+      "share": {
+       "restart": 0.8594,
+       "structural": 0.0377,
+       "ner": 0.0219,
+       "knn": 0.0809
+      }
+     },
+     "other": {
+      "rows": 370065,
+      "with_mass": 370065,
+      "share": {
+       "restart": 0.5914,
+       "structural": 0.1619,
+       "ner": 0.0829,
+       "knn": 0.1638
+      }
+     }
+    },
+    "Kst": {
+     "gold": {
+      "rows": 1488,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     },
+     "other": {
+      "rows": 370065,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     }
+    },
+    "KTst": {
+     "gold": {
+      "rows": 1488,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     },
+     "other": {
+      "rows": 370065,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     }
+    },
+    "KTall": {
+     "gold": {
+      "rows": 1488,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     },
+     "other": {
+      "rows": 370065,
+      "with_mass": 0,
+      "share": {
+       "restart": null,
+       "structural": null,
+       "ner": null,
+       "knn": null
+      }
+     }
+    }
+   },
+   "d_filed_shares": {
+    "A1st": {
+     "gold": {
+      "restart": 0.921,
+      "structural": 0.079,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.6666,
+      "structural": 0.3334,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "A1all": {
+     "gold": {
+      "restart": 0.8738,
+      "structural": 0.0256,
+      "ner": 0.021,
+      "knn": 0.0796
+     },
+     "other": {
+      "restart": 0.6165,
+      "structural": 0.1302,
+      "ner": 0.0726,
+      "knn": 0.1807
+     }
+    },
+    "Kst": {
+     "gold": {
+      "restart": null,
+      "structural": null,
+      "ner": null,
+      "knn": null
+     },
+     "other": {
+      "restart": null,
+      "structural": null,
+      "ner": null,
+      "knn": null
+     }
+    },
+    "KTst": {
+     "gold": {
+      "restart": null,
+      "structural": null,
+      "ner": null,
+      "knn": null
+     },
+     "other": {
+      "restart": null,
+      "structural": null,
+      "ner": null,
+      "knn": null
+     }
+    },
+    "KTall": {
+     "gold": {
+      "restart": null,
+      "structural": null,
+      "ner": null,
+      "knn": null
+     },
+     "other": {
+      "restart": null,
+      "structural": null,
+      "ner": null,
+      "knn": null
+     }
+    }
+   }
+  },
+  "musique": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+   "walk": "RWe@0.5 x LW@0.5",
+   "beta": 0.5,
+   "questions": 1534,
+   "rows": 8471028,
+   "file_sha256": "9c9706c15ffa018c8fb71a26332a495070c2daee1fcbe714d8638eaffbcf244b",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 4007,
+      "with_mass": 3948,
+      "share": {
+       "restart": 0.7794,
+       "structural": 0.2206,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 8467021,
+      "with_mass": 7062725,
+      "share": {
+       "restart": 0.3234,
+       "structural": 0.6766,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "A1all": {
+     "gold": {
+      "rows": 4007,
+      "with_mass": 3969,
+      "share": {
+       "restart": 0.707,
+       "structural": 0.0883,
+       "ner": 0.0973,
+       "knn": 0.1074
+      }
+     },
+     "other": {
+      "rows": 8467021,
+      "with_mass": 7111847,
+      "share": {
+       "restart": 0.2901,
+       "structural": 0.2339,
+       "ner": 0.2228,
+       "knn": 0.2532
+      }
+     }
+    },
+    "Kst": {
+     "gold": {
+      "rows": 4007,
+      "with_mass": 2407,
+      "share": {
+       "restart": 0.4901,
+       "structural": 0.5099,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 8467021,
+      "with_mass": 2390538,
+      "share": {
+       "restart": 0.0007,
+       "structural": 0.9993,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTst": {
+     "gold": {
+      "rows": 4007,
+      "with_mass": 2513,
+      "share": {
+       "restart": 0.4469,
+       "structural": 0.5531,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 8467021,
+      "with_mass": 2225799,
+      "share": {
+       "restart": 0.0007,
+       "structural": 0.9993,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTall": {
+     "gold": {
+      "rows": 4007,
+      "with_mass": 2786,
+      "share": {
+       "restart": 0.4009,
+       "structural": 0.2781,
+       "ner": 0.1584,
+       "knn": 0.1625
+      }
+     },
+     "other": {
+      "rows": 8467021,
+      "with_mass": 2689799,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.3927,
+       "ner": 0.301,
+       "knn": 0.3057
+      }
+     }
+    }
+   },
+   "d_filed_shares": {
+    "A1st": {
+     "gold": {
+      "restart": 0.8041,
+      "structural": 0.1959,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.3342,
+      "structural": 0.6658,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "A1all": {
+     "gold": {
+      "restart": 0.7163,
+      "structural": 0.0754,
+      "ner": 0.0995,
+      "knn": 0.1088
+     },
+     "other": {
+      "restart": 0.2977,
+      "structural": 0.2277,
+      "ner": 0.2225,
+      "knn": 0.2521
+     }
+    },
+    "Kst": {
+     "gold": {
+      "restart": 0.5005,
+      "structural": 0.4995,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0007,
+      "structural": 0.9993,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTst": {
+     "gold": {
+      "restart": 0.455,
+      "structural": 0.545,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0006,
+      "structural": 0.9994,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTall": {
+     "gold": {
+      "restart": 0.4032,
+      "structural": 0.2708,
+      "ner": 0.163,
+      "knn": 0.1631
+     },
+     "other": {
+      "restart": 0.0006,
+      "structural": 0.403,
+      "ner": 0.2959,
+      "knn": 0.3006
+     }
+    }
+   }
+  },
+  "hotpotqa": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+   "walk": "RWe@0.5 x LW@0.5",
+   "beta": 0.5,
+   "questions": 1508,
+   "rows": 1077147,
+   "file_sha256": "bbb16a59c231419fb94be679d00da0e8ecd4d1a5d638ee2ecfad1b6ad727c7bc",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 2954,
+      "with_mass": 2951,
+      "share": {
+       "restart": 0.7322,
+       "structural": 0.2678,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1074193,
+      "with_mass": 1050509,
+      "share": {
+       "restart": 0.7463,
+       "structural": 0.2537,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "A1all": {
+     "gold": {
+      "rows": 2954,
+      "with_mass": 2951,
+      "share": {
+       "restart": 0.7303,
+       "structural": 0.1588,
+       "ner": 0.0331,
+       "knn": 0.0778
+      }
+     },
+     "other": {
+      "rows": 1074193,
+      "with_mass": 1058052,
+      "share": {
+       "restart": 0.6768,
+       "structural": 0.1217,
+       "ner": 0.0752,
+       "knn": 0.1262
+      }
+     }
+    },
+    "Kst": {
+     "gold": {
+      "rows": 2954,
+      "with_mass": 2520,
+      "share": {
+       "restart": 0.5492,
+       "structural": 0.4508,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1074193,
+      "with_mass": 389407,
+      "share": {
+       "restart": 0.0049,
+       "structural": 0.9951,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTst": {
+     "gold": {
+      "rows": 2954,
+      "with_mass": 2558,
+      "share": {
+       "restart": 0.4867,
+       "structural": 0.5133,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1074193,
+      "with_mass": 400001,
+      "share": {
+       "restart": 0.0045,
+       "structural": 0.9955,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTall": {
+     "gold": {
+      "rows": 2954,
+      "with_mass": 2572,
+      "share": {
+       "restart": 0.5032,
+       "structural": 0.2994,
+       "ner": 0.0771,
+       "knn": 0.1202
+      }
+     },
+     "other": {
+      "rows": 1074193,
+      "with_mass": 410162,
+      "share": {
+       "restart": 0.0042,
+       "structural": 0.4507,
+       "ner": 0.2261,
+       "knn": 0.3191
+      }
+     }
+    }
+   },
+   "d_filed_shares": {
+    "A1st": {
+     "gold": {
+      "restart": 0.7826,
+      "structural": 0.2174,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.7817,
+      "structural": 0.2183,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "A1all": {
+     "gold": {
+      "restart": 0.7544,
+      "structural": 0.1287,
+      "ner": 0.0354,
+      "knn": 0.0816
+     },
+     "other": {
+      "restart": 0.6912,
+      "structural": 0.1143,
+      "ner": 0.0708,
+      "knn": 0.1237
+     }
+    },
+    "Kst": {
+     "gold": {
+      "restart": 0.5645,
+      "structural": 0.4355,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0062,
+      "structural": 0.9938,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTst": {
+     "gold": {
+      "restart": 0.5042,
+      "structural": 0.4958,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0052,
+      "structural": 0.9948,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTall": {
+     "gold": {
+      "restart": 0.509,
+      "structural": 0.2894,
+      "ner": 0.0795,
+      "knn": 0.1222
+     },
+     "other": {
+      "restart": 0.0052,
+      "structural": 0.4629,
+      "ner": 0.216,
+      "knn": 0.3158
+     }
+    }
+   }
+  },
+  "2wiki": {
+   "carve": "s1sel",
+   "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+   "walk": "RWe@0.5 x LW@0.5",
+   "beta": 0.5,
+   "questions": 1496,
+   "rows": 1601488,
+   "file_sha256": "4a3ceff18591b920a833fd974605d4fffb824c060219373bbca0287c8dd94a5e",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 3601,
+      "with_mass": 3597,
+      "share": {
+       "restart": 0.6345,
+       "structural": 0.3655,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1597887,
+      "with_mass": 1538318,
+      "share": {
+       "restart": 0.7513,
+       "structural": 0.2487,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "A1all": {
+     "gold": {
+      "rows": 3601,
+      "with_mass": 3600,
+      "share": {
+       "restart": 0.6225,
+       "structural": 0.2664,
+       "ner": 0.045,
+       "knn": 0.0662
+      }
+     },
+     "other": {
+      "rows": 1597887,
+      "with_mass": 1552188,
+      "share": {
+       "restart": 0.6996,
+       "structural": 0.1192,
+       "ner": 0.0762,
+       "knn": 0.105
+      }
+     }
+    },
+    "Kst": {
+     "gold": {
+      "rows": 3601,
+      "with_mass": 3561,
+      "share": {
+       "restart": 0.5963,
+       "structural": 0.4037,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1597887,
+      "with_mass": 469312,
+      "share": {
+       "restart": 0.0007,
+       "structural": 0.9993,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTst": {
+     "gold": {
+      "rows": 3601,
+      "with_mass": 3563,
+      "share": {
+       "restart": 0.5579,
+       "structural": 0.4421,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 1597887,
+      "with_mass": 509060,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.9994,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     }
+    },
+    "KTall": {
+     "gold": {
+      "rows": 3601,
+      "with_mass": 3565,
+      "share": {
+       "restart": 0.5648,
+       "structural": 0.3118,
+       "ner": 0.0602,
+       "knn": 0.0632
+      }
+     },
+     "other": {
+      "rows": 1597887,
+      "with_mass": 484018,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.4759,
+       "ner": 0.2636,
+       "knn": 0.2598
+      }
+     }
+    }
+   },
+   "d_filed_shares": {
+    "A1st": {
+     "gold": {
+      "restart": 0.661,
+      "structural": 0.339,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.784,
+      "structural": 0.216,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "A1all": {
+     "gold": {
+      "restart": 0.6366,
+      "structural": 0.2311,
+      "ner": 0.0587,
+      "knn": 0.0735
+     },
+     "other": {
+      "restart": 0.7172,
+      "structural": 0.1058,
+      "ner": 0.0746,
+      "knn": 0.1024
+     }
+    },
+    "Kst": {
+     "gold": {
+      "restart": 0.6015,
+      "structural": 0.3985,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0009,
+      "structural": 0.9991,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTst": {
+     "gold": {
+      "restart": 0.5761,
+      "structural": 0.4239,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0007,
+      "structural": 0.9993,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTall": {
+     "gold": {
+      "restart": 0.5703,
+      "structural": 0.2882,
+      "ner": 0.0734,
+      "knn": 0.0681
+     },
+     "other": {
+      "restart": 0.0008,
+      "structural": 0.4802,
+      "ner": 0.2661,
+      "knn": 0.253
+     }
+    }
+   }
+  },
+  "webqsp": {
+   "carve": "s1eval",
+   "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+   "walk": "RWe@0.5",
+   "beta": 0.5,
+   "questions": 1503,
+   "rows": 7219527,
+   "file_sha256": "b2f80b51484a586bc05b65ed109c26289059af5b68c5157764aa18f537e12615",
+   "beside": {
+    "A1st": {
+     "gold": {
+      "rows": 8624,
+      "with_mass": 8506,
+      "share": {
+       "restart": 0.1456,
+       "structural": 0.8544,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 7210903,
+      "with_mass": 6594170,
+      "share": {
+       "restart": 0.3107,
+       "structural": 0.6893,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 4308,
+       "direction": 1,
+       "share": 0.0626,
+       "name": "topic image"
+      },
+      {
+       "relation": 4307,
+       "direction": 1,
+       "share": 0.0452,
+       "name": "topic article"
+      },
+      {
+       "relation": 6229,
+       "direction": 2,
+       "share": 0.0387,
+       "name": "place lived location"
+      },
+      {
+       "relation": 4309,
+       "direction": 1,
+       "share": 0.0381,
+       "name": "topic notable for"
+      },
+      {
+       "relation": 5431,
+       "direction": 2,
+       "share": 0.0273,
+       "name": "location containedby"
+      }
+     ]
+    },
+    "A1all": {
+     "gold": {
+      "rows": 8624,
+      "with_mass": 8299,
+      "share": {
+       "restart": 0.1573,
+       "structural": 0.6819,
+       "ner": 0.06,
+       "knn": 0.1008
+      }
+     },
+     "other": {
+      "rows": 7210903,
+      "with_mass": 6045295,
+      "share": {
+       "restart": 0.3088,
+       "structural": 0.4278,
+       "ner": 0.0748,
+       "knn": 0.1886
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 4308,
+       "direction": 1,
+       "share": 0.0708,
+       "name": "topic image"
+      },
+      {
+       "relation": 4307,
+       "direction": 1,
+       "share": 0.05,
+       "name": "topic article"
+      },
+      {
+       "relation": 6229,
+       "direction": 2,
+       "share": 0.0434,
+       "name": "place lived location"
+      },
+      {
+       "relation": 4309,
+       "direction": 1,
+       "share": 0.04,
+       "name": "topic notable for"
+      },
+      {
+       "relation": 4845,
+       "direction": 1,
+       "share": 0.0261,
+       "name": "film starring"
+      }
+     ]
+    },
+    "Kst": {
+     "gold": {
+      "rows": 8624,
+      "with_mass": 6921,
+      "share": {
+       "restart": 0.0024,
+       "structural": 0.9976,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 7210903,
+      "with_mass": 3433849,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.9994,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 5431,
+       "direction": 2,
+       "share": 0.0604,
+       "name": "location containedby"
+      },
+      {
+       "relation": 6224,
+       "direction": 2,
+       "share": 0.0507,
+       "name": "person profession"
+      },
+      {
+       "relation": 6193,
+       "direction": 2,
+       "share": 0.0277,
+       "name": "ethnicity languages spoken"
+      },
+      {
+       "relation": 4310,
+       "direction": 1,
+       "share": 0.0253,
+       "name": "topic notable types"
+      },
+      {
+       "relation": 6222,
+       "direction": 2,
+       "share": 0.0208,
+       "name": "person place of birth"
+      }
+     ]
+    },
+    "KTst": {
+     "gold": {
+      "rows": 8624,
+      "with_mass": 6935,
+      "share": {
+       "restart": 0.0022,
+       "structural": 0.9978,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "other": {
+      "rows": 7210903,
+      "with_mass": 3079014,
+      "share": {
+       "restart": 0.0006,
+       "structural": 0.9994,
+       "ner": 0.0,
+       "knn": 0.0
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 6193,
+       "direction": 2,
+       "share": 0.0674,
+       "name": "ethnicity languages spoken"
+      },
+      {
+       "relation": 4310,
+       "direction": 1,
+       "share": 0.0442,
+       "name": "topic notable types"
+      },
+      {
+       "relation": 5446,
+       "direction": 2,
+       "share": 0.0338,
+       "name": "location time zones"
+      },
+      {
+       "relation": 5431,
+       "direction": 2,
+       "share": 0.0304,
+       "name": "location containedby"
+      },
+      {
+       "relation": 5527,
+       "direction": 1,
+       "share": 0.0266,
+       "name": "statistical region population"
+      }
+     ]
+    },
+    "KTall": {
+     "gold": {
+      "rows": 8624,
+      "with_mass": 7120,
+      "share": {
+       "restart": 0.0023,
+       "structural": 0.8521,
+       "ner": 0.0713,
+       "knn": 0.0743
+      }
+     },
+     "other": {
+      "rows": 7210903,
+      "with_mass": 2568886,
+      "share": {
+       "restart": 0.0008,
+       "structural": 0.648,
+       "ner": 0.0916,
+       "knn": 0.2595
+      }
+     },
+     "top_relations_gold": [
+      {
+       "relation": 6193,
+       "direction": 2,
+       "share": 0.0738,
+       "name": "ethnicity languages spoken"
+      },
+      {
+       "relation": 4310,
+       "direction": 1,
+       "share": 0.0457,
+       "name": "topic notable types"
+      },
+      {
+       "relation": 5446,
+       "direction": 2,
+       "share": 0.0369,
+       "name": "location time zones"
+      },
+      {
+       "relation": 5431,
+       "direction": 2,
+       "share": 0.0349,
+       "name": "location containedby"
+      },
+      {
+       "relation": 4308,
+       "direction": 1,
+       "share": 0.0304,
+       "name": "topic image"
+      }
+     ]
+    }
+   },
+   "d_filed_shares": {
+    "A1st": {
+     "gold": {
+      "restart": 0.1546,
+      "structural": 0.8454,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.316,
+      "structural": 0.684,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "A1all": {
+     "gold": {
+      "restart": 0.1637,
+      "structural": 0.6751,
+      "ner": 0.0578,
+      "knn": 0.1035
+     },
+     "other": {
+      "restart": 0.3108,
+      "structural": 0.4253,
+      "ner": 0.075,
+      "knn": 0.1889
+     }
+    },
+    "Kst": {
+     "gold": {
+      "restart": 0.0024,
+      "structural": 0.9976,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0006,
+      "structural": 0.9994,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTst": {
+     "gold": {
+      "restart": 0.0022,
+      "structural": 0.9978,
+      "ner": 0.0,
+      "knn": 0.0
+     },
+     "other": {
+      "restart": 0.0006,
+      "structural": 0.9994,
+      "ner": 0.0,
+      "knn": 0.0
+     }
+    },
+    "KTall": {
+     "gold": {
+      "restart": 0.0024,
+      "structural": 0.8561,
+      "ner": 0.0686,
+      "knn": 0.0729
+     },
+     "other": {
+      "restart": 0.0008,
+      "structural": 0.651,
+      "ner": 0.0916,
+      "knn": 0.2566
+     }
+    }
+   }
+  }
+ },
+ "missing": [],
+ "utc": "2026-10-25T21:20:19Z"
+}

@@ -1,0 +1,314 @@
+{
+ "declared_in": "docs/U2Q_ARRIVAL_SPLIT_CARRIED.md",
+ "stage": "U2q",
+ "dataset": "metaqa",
+ "carve": "s1sel",
+ "graph_detail": {
+  "graph": "cached (the KB)"
+ },
+ "script_sha256": "d2f59715deb9b1719f63c39d313af8ca6e0214f22e89843ba84014f34576bf9f",
+ "zu2m_sha256": "6f90ac0e5acd7ccfd8005c03eef1f211bfe150a1c2acf60b9cdc5bed121966e8",
+ "zu2m_b_sha256": "82c2d5494b999136fbd8dc324e39c4568f57f024cb6dfc229bd5ebaed1801c9f",
+ "zu2m_d_sha256": "738e52e2ecdbd36938a1d38dfebbcd957cfe4158df46d89611a19e178e62c7cc",
+ "zu2m_a_sha256": "2327179621c88de1c66b9d8c7139a8f32682d92657999e469c05bad8a90e2bbe",
+ "zu2m_a_types_sha256": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+ "zu2p_sha256": "b18f44be0a8fe58ef3543fdc6fde8af19ef743d1a2403c4c5b47cec12ae3e44f",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "u2m_stats_sha256": "acc8785279af4ab1ab7009de5c12f75149de75213446a01e368a10643c1e0bed",
+ "verdict_a_sha256": "5f4ec23ed6fa896daccf4320c35f8316b7b3902d0720e35f3017dac90ecdf94d",
+ "verdict_p_sha256": "991304a3bd88301e76d1cf6b295b7425fbb8254db0bf0c7bf757c6fbefc5372b",
+ "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+ "point": "own/kind_t/kt_cos:ada_f16_k300@0.85",
+ "G": 0,
+ "beta": 0.5,
+ "walk": "RWe@0.5",
+ "rows_from": "U2m (a)",
+ "a_stats_sha256": "66a64acee85a358278308ba674792360dffc3b53bc83e85e562762d0f46b05d2",
+ "em_types_sha256": "ca3d237ec3fb4269ab65846223f9e724f8fd76eea03523b2a90a48a16dbc77eb",
+ "score_types_sha256": null,
+ "walks": [
+  "A1st",
+  "A1all",
+  "Kst",
+  "KTst",
+  "KTall"
+ ],
+ "types": [
+  "restart",
+  "structural",
+  "ner",
+  "knn"
+ ],
+ "typed": true,
+ "threads": 2,
+ "alpha": 0.5,
+ "eps": 1e-07,
+ "nmax": 7000,
+ "questions": 1497,
+ "rows": 6541747,
+ "golds": 11367,
+ "rel_entries": 88625333,
+ "file_sha256": "a43e72799845e06f6ba50078860fc3c149199f2987489767f854b5772698c7bf",
+ "beside": {
+  "A1st": {
+   "gold": {
+    "rows": 11160,
+    "with_mass": 11160,
+    "share": {
+     "restart": 0.1135,
+     "structural": 0.8865,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "other": {
+    "rows": 6530587,
+    "with_mass": 6529016,
+    "share": {
+     "restart": 0.2442,
+     "structural": 0.7558,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "top_relations_gold": [
+    {
+     "relation": 1,
+     "direction": 2,
+     "share": 0.283
+    },
+    {
+     "relation": 6,
+     "direction": 2,
+     "share": 0.1597
+    },
+    {
+     "relation": 7,
+     "direction": 2,
+     "share": 0.0933
+    },
+    {
+     "relation": 7,
+     "direction": 1,
+     "share": 0.0928
+    },
+    {
+     "relation": 8,
+     "direction": 2,
+     "share": 0.0645
+    }
+   ]
+  },
+  "A1all": {
+   "gold": {
+    "rows": 11160,
+    "with_mass": 11149,
+    "share": {
+     "restart": 0.1275,
+     "structural": 0.6677,
+     "ner": 0.0179,
+     "knn": 0.187
+    }
+   },
+   "other": {
+    "rows": 6530587,
+    "with_mass": 6481577,
+    "share": {
+     "restart": 0.2252,
+     "structural": 0.4462,
+     "ner": 0.0345,
+     "knn": 0.2942
+    }
+   },
+   "top_relations_gold": [
+    {
+     "relation": 1,
+     "direction": 2,
+     "share": 0.3053
+    },
+    {
+     "relation": 6,
+     "direction": 2,
+     "share": 0.1713
+    },
+    {
+     "relation": 7,
+     "direction": 1,
+     "share": 0.0895
+    },
+    {
+     "relation": 7,
+     "direction": 2,
+     "share": 0.0809
+    },
+    {
+     "relation": 8,
+     "direction": 2,
+     "share": 0.0594
+    }
+   ]
+  },
+  "Kst": {
+   "gold": {
+    "rows": 11160,
+    "with_mass": 11141,
+    "share": {
+     "restart": 0.0002,
+     "structural": 0.9998,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "other": {
+    "rows": 6530587,
+    "with_mass": 5794501,
+    "share": {
+     "restart": 0.0004,
+     "structural": 0.9996,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "top_relations_gold": [
+    {
+     "relation": 7,
+     "direction": 1,
+     "share": 0.1936
+    },
+    {
+     "relation": 7,
+     "direction": 2,
+     "share": 0.1451
+    },
+    {
+     "relation": 6,
+     "direction": 2,
+     "share": 0.1083
+    },
+    {
+     "relation": 8,
+     "direction": 1,
+     "share": 0.0973
+    },
+    {
+     "relation": 8,
+     "direction": 2,
+     "share": 0.0917
+    }
+   ]
+  },
+  "KTst": {
+   "gold": {
+    "rows": 11160,
+    "with_mass": 11128,
+    "share": {
+     "restart": 0.0001,
+     "structural": 0.9999,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "other": {
+    "rows": 6530587,
+    "with_mass": 5181506,
+    "share": {
+     "restart": 0.0004,
+     "structural": 0.9996,
+     "ner": 0.0,
+     "knn": 0.0
+    }
+   },
+   "top_relations_gold": [
+    {
+     "relation": 7,
+     "direction": 1,
+     "share": 0.1975
+    },
+    {
+     "relation": 7,
+     "direction": 2,
+     "share": 0.1356
+    },
+    {
+     "relation": 0,
+     "direction": 2,
+     "share": 0.099
+    },
+    {
+     "relation": 6,
+     "direction": 2,
+     "share": 0.0986
+    },
+    {
+     "relation": 8,
+     "direction": 1,
+     "share": 0.0982
+    }
+   ]
+  },
+  "KTall": {
+   "gold": {
+    "rows": 11160,
+    "with_mass": 10757,
+    "share": {
+     "restart": 0.0001,
+     "structural": 0.8738,
+     "ner": 0.014,
+     "knn": 0.1121
+    }
+   },
+   "other": {
+    "rows": 6530587,
+    "with_mass": 3841467,
+    "share": {
+     "restart": 0.0006,
+     "structural": 0.7233,
+     "ner": 0.0267,
+     "knn": 0.2493
+    }
+   },
+   "top_relations_gold": [
+    {
+     "relation": 7,
+     "direction": 1,
+     "share": 0.1912
+    },
+    {
+     "relation": 7,
+     "direction": 2,
+     "share": 0.1301
+    },
+    {
+     "relation": 6,
+     "direction": 2,
+     "share": 0.1003
+    },
+    {
+     "relation": 8,
+     "direction": 1,
+     "share": 0.0981
+    },
+    {
+     "relation": 0,
+     "direction": 2,
+     "share": 0.0978
+    }
+   ]
+  }
+ },
+ "checks": {
+  "graph_equal_u2m": true,
+  "seeds_equal_g0": true,
+  "em_types_equal_a": true,
+  "kind_t_by_kind": true,
+  "orders_exact": true,
+  "rows_equal_carried": true,
+  "held_equal_carried": true,
+  "orders_masses_equal_a_kernel": true,
+  "parts_sum_to_p": true,
+  "relation_parts_sum": true,
+  "rows_served_verified": false
+ },
+ "seconds": 2396.8,
+ "utc": "2026-10-25T18:55:56Z"
+}

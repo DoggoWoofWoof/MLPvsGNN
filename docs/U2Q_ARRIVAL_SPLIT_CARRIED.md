@@ -83,3 +83,43 @@ orders and once split, so about twice that). The lab host takes them if it is re
 
 U2n computes the same arrays on its fit and evaluation carves with this kernel, since the kernel is the form. If a
 later pool verdict changes the carried walk, the arrays are computed again on it, in that verdict's follow-up file.
+
+## 9. Results (filed 26 October 2026)
+
+**All six written, every check passed.** The carried walk is U2p's filed pick (LINKWEIGHT_RAISED, 1e2fd43):
+`own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5`, U2p's pair weight at β = 0.5 on the passage graphs and (a)'s
+RWe@0.5 on the KBs.
+
+| dataset | carve | questions | rows | seconds |
+| --- | --- | ---: | ---: | ---: |
+| squad | s1sel | 1,498 | 371,553 | 1,449 |
+| musique | s1sel | 1,534 | 8,471,028 | 2,388 |
+| hotpotqa | s1sel | 1,508 | 1,077,147 | 4,555 |
+| metaqa | s1sel | 1,497 | 6,541,747 | 2,397 |
+| webqsp | s1eval | 1,503 | 7,219,527 | 3,196 |
+| 2wiki | s1sel | 1,496 | 1,601,488 | 5,238 |
+
+On every dataset these were true: the graph, the G = 0 seeds and (a)'s EM types equal U2m's, KIND_T by kind, the exact
+orders, the rows and held golds equal to the carried pick's, the split orders and raw masses equal to (a)'s kernel bit
+for bit, and the parts summing to p. The relation parts sum to the structural part on metaqa and webqsp, the only
+datasets with relation parts. `rows_served_verified` belongs to development runs and is not read by stats (zu2q.py,
+`_ok_checks`). The arrays (`outputs/u2q/stats/*.npz`, about 1.6 GB) stay uncommitted.
+
+### Beside, deciding nothing
+
+The gold rows' structural share of their mass on A1st, with (d)'s share on U2e's walk at β = 0 in brackets (all
+walks: `outputs/u2q/beside.md`):
+
+| squad | musique | hotpotqa | 2wiki | metaqa | webqsp |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0.1127 (0.0790) | 0.2206 (0.1959) | 0.2678 (0.2174) | 0.3655 (0.3390) | 0.8865 (0.8733) | 0.8544 (0.8454) |
+
+The carried walk moves mass from restart to structural arrivals on every dataset, most on the passage graphs, where
+U2p's link score weighs the structural entries. The ner and knn shares move by at most 0.017 on any walk; the largest
+moves on gold rows are 2wiki's ner share (A1all 0.0587 → 0.0450, KTall 0.0734 → 0.0602). As in (d), squad has no K
+walks.
+
+### What follows
+
+The arrays are U2n's inputs, as declared. U2n needs a GPU (the lab host, Kaggle, or Modal credit) and reads these
+files, whose sha256 are in the stats records.
