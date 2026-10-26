@@ -1,0 +1,295 @@
+{
+ "verdict": "MIXED",
+ "verdict_filed": "MIXED",
+ "pair": "outputs\\screen\\scr-gl-g6-zg6-pair.json",
+ "null": {
+  "U2d zspk L-musique seed 1": "outputs\\screen\\scr-u2d-null-zspk-s1.json",
+  "U2d zspk L-musique seed 2": "outputs\\screen\\scr-u2d-null-zspk-s2.json",
+  "U2d zspk L-hotpotqa seed 1": "outputs\\screen\\scr-u2d-null-zspk-s1-hp.json",
+  "U2d zspk L-hotpotqa seed 2": "outputs\\screen\\scr-u2d-null-zspk-s2-hp.json"
+ },
+ "rule": "floor(r) = max(0.0075, 2 * sqrt((D_1(r)^2 + D_2(r)^2) / 2)), D_s(r) = seed s's R@5 minus seed 0's on read r (docs/SCREENS.md, section 2, the seed null)",
+ "floor_min": 0.0075,
+ "fits": [
+  {
+   "split": "L-musique",
+   "verdict": "MIXED",
+   "verdict_filed": "MIXED"
+  },
+  {
+   "split": "L-hotpotqa",
+   "verdict": "MIXED",
+   "verdict_filed": "MIXED"
+  }
+ ],
+ "rows": [
+  {
+   "split": "L-musique",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "base": 0.8021,
+   "new": 0.8123,
+   "rrf": 0.0047,
+   "delta": 0.0102,
+   "lo": 0.0085,
+   "hi": 0.0118,
+   "call": "GAIN",
+   "call_filed": "GAIN",
+   "covered": true,
+   "floor": 0.0075,
+   "null_d": [
+    -0.0003,
+    0.0018
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-musique",
+   "dataset": "squad",
+   "read": "in-domain",
+   "base": 0.9118,
+   "new": 0.9106,
+   "rrf": 0.9054,
+   "delta": -0.0012,
+   "lo": -0.0033,
+   "hi": 0.001,
+   "call": "WITHIN",
+   "call_filed": "WITHIN",
+   "covered": true,
+   "floor": 0.0075,
+   "null_d": [
+    0.0006,
+    -0.0008
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-musique",
+   "dataset": "musique",
+   "read": "zero-shot",
+   "base": 0.5143,
+   "new": 0.5207,
+   "rrf": 0.4734,
+   "delta": 0.0063,
+   "lo": -0.001,
+   "hi": 0.0131,
+   "call": "WITHIN",
+   "call_filed": "WITHIN",
+   "covered": true,
+   "floor": 0.008901,
+   "null_d": [
+    0.006,
+    -0.0019
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-musique",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "base": 0.9088,
+   "new": 0.9118,
+   "rrf": 0.6846,
+   "delta": 0.003,
+   "lo": 0.0005,
+   "hi": 0.0053,
+   "call": "WITHIN",
+   "call_filed": "WITHIN",
+   "covered": true,
+   "floor": 0.0075,
+   "null_d": [
+    -0.003,
+    -0.0003
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-musique",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "base": 0.9346,
+   "new": 0.9416,
+   "rrf": 0.6079,
+   "delta": 0.007,
+   "lo": 0.0055,
+   "hi": 0.0087,
+   "call": "WITHIN",
+   "call_filed": "WITHIN",
+   "covered": true,
+   "floor": 0.0075,
+   "null_d": [
+    -0.0003,
+    0.0012
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-musique",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "base": 0.3162,
+   "new": 0.2368,
+   "rrf": 0.0535,
+   "delta": -0.0795,
+   "lo": -0.1003,
+   "hi": -0.0596,
+   "call": "LOSS",
+   "call_filed": "LOSS",
+   "covered": true,
+   "floor": 0.010512,
+   "null_d": [
+    -0.0071,
+    -0.0022
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "base": 0.8043,
+   "new": 0.8112,
+   "rrf": 0.0047,
+   "delta": 0.0068,
+   "lo": 0.0054,
+   "hi": 0.0083,
+   "call": "WITHIN",
+   "call_filed": "WITHIN",
+   "covered": true,
+   "floor": 0.0075,
+   "null_d": [
+    -0.0038,
+    -0.0029
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "squad",
+   "read": "in-domain",
+   "base": 0.9117,
+   "new": 0.9118,
+   "rrf": 0.9054,
+   "delta": 0.0001,
+   "lo": -0.002,
+   "hi": 0.0023,
+   "call": "WITHIN",
+   "call_filed": "WITHIN",
+   "covered": true,
+   "floor": 0.0075,
+   "null_d": [
+    0.0005,
+    -0.0002
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "musique",
+   "read": "in-domain",
+   "base": 0.58,
+   "new": 0.5937,
+   "rrf": 0.4734,
+   "delta": 0.0138,
+   "lo": 0.007,
+   "hi": 0.0204,
+   "call": "GAIN",
+   "call_filed": "GAIN",
+   "covered": true,
+   "floor": 0.010692,
+   "null_d": [
+    0.006,
+    0.0046
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "hotpotqa",
+   "read": "zero-shot",
+   "base": 0.8512,
+   "new": 0.8309,
+   "rrf": 0.6846,
+   "delta": -0.0203,
+   "lo": -0.0248,
+   "hi": -0.0161,
+   "call": "LOSS",
+   "call_filed": "LOSS",
+   "covered": true,
+   "floor": 0.014509,
+   "null_d": [
+    -0.0018,
+    0.0101
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "base": 0.929,
+   "new": 0.9391,
+   "rrf": 0.6079,
+   "delta": 0.0101,
+   "lo": 0.008,
+   "hi": 0.0123,
+   "call": "WITHIN",
+   "call_filed": "GAIN",
+   "covered": true,
+   "floor": 0.013912,
+   "null_d": [
+    0.0094,
+    -0.0029
+   ],
+   "near_floor": false
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "base": 0.2773,
+   "new": 0.2189,
+   "rrf": 0.0535,
+   "delta": -0.0584,
+   "lo": -0.0783,
+   "hi": -0.0381,
+   "call": "LOSS",
+   "call_filed": "LOSS",
+   "covered": true,
+   "floor": 0.040464,
+   "null_d": [
+    -0.0275,
+    0.0079
+   ],
+   "near_floor": false
+  }
+ ],
+ "changed": [
+  "L-hotpotqa 2wiki GAIN -> WITHIN"
+ ],
+ "near_floor": [],
+ "script_sha256": "6c3823abe960883b123bad9923c7fe3c572df0c6bb9945e82db065a02362f3c0",
+ "utc": "2026-10-26T20:46:50Z",
+ "stage": "GL",
+ "declared_in": "docs/GL_GPU_LINE_ON_L40S.md",
+ "decides": "G6",
+ "g6_declared_in": "docs/G6_FREE_GNN.md",
+ "arm": "zg6",
+ "base_arm": "zspk",
+ "against": "zspk's seed-0 fit on U2d's base build (scr-u2d-base-zspk, scr-u2d-base-zspk-hp) on Modal's L40S: the same pools, KT input, card settings and device",
+ "device": {
+  "gpu": "NVIDIA L40S",
+  "image": "u2d-gpu:py3.13:torch2.8.0+cu128:numpy2.3.2",
+  "torch": "2.8.0+cu128",
+  "cuda": "12.8",
+  "cudnn": 91002
+ },
+ "compares": [
+  "scr-u2d-base-zg6-vs-zspk",
+  "scr-u2d-base-zg6-vs-zspk-hp"
+ ],
+ "zgl_sha256": "6fbcdefff531e573398ec69dcf7daf8f19d4e39eea60515876adca4e344dae17",
+ "null_kind": "U2d-zspk",
+ "null_is": "U2d's zspk null on the L40S: zspk's base-build fit trained again with seeds 1 and 2, each against its seed-0 fit (N2's design, on the device the arms ran on)",
+ "deciding": true
+}

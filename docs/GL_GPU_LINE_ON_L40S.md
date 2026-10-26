@@ -182,4 +182,48 @@ new graph.
 
 ## 7. Results
 
-Not run yet.
+### G6, 27 October 2026: NOT_ADOPTED
+
+Run with `python outputs/mp_unified/zgl.py g6` at 5872d26. Records: outputs/screen/scr-gl-g6-zg6-pair.json and .md,
+outputs/screen/scr-gl-g6-zg6-pair-recall.json and .md, and outputs/gl/g6-verdict.json and .md. All eight fits ran on
+one device: the NVIDIA L40S, on U2d's image (torch 2.8.0+cu128, CUDA 12.8, cuDNN 91002).
+
+zg6 against zspk, re-called under U2d's zspk null, by G6's rule:
+- **2 GAIN:** L-musique metaqa (+0.0102) and L-hotpotqa musique (+0.0138).
+- **3 LOSS:** L-musique webqsp (-0.0795), L-hotpotqa hotpotqa (-0.0203) and L-hotpotqa webqsp (-0.0584).
+- **One call changed** with the re-call: L-hotpotqa 2wiki (+0.0101) became WITHIN, since its floor is 0.0139. No read
+  is within rounding of its floor.
+
+**Next form**, as fixed in G6, section 5: **G6b**, a per-question back-off. zg6's score is mixed with its twin's
+through a learned gate on the question's edge-family shares, at equal weight at the start. G6b gets its own declared
+file. It needs zg6t's fits, which run on workspace 3 from 1 November (section 4).
+
+R@5 per read. Every column is on the L40S except the last. The MLP share is (zrckp - rrf) / (zg6 - rrf):
+
+| read | rrf | zspk | zg6 | zrckp (MLP) | MLP share | floor | call (filed -> re-call) | zspk, host card |
+|---|---:|---:|---:|---:|---:|---:|---|---:|
+| L-musique metaqa (in-domain) | 0.0047 | 0.8021 | 0.8123 | 0.8008 | 0.9858 | 0.0075 | GAIN | 0.8009 |
+| L-musique squad (in-domain) | 0.9054 | 0.9118 | 0.9106 | 0.9121 | 1.2885 | 0.0075 | WITHIN | 0.9114 |
+| L-musique musique (zero-shot) | 0.4734 | 0.5143 | 0.5207 | 0.5153 | 0.8858 | 0.0089 | WITHIN | 0.5012 |
+| L-musique hotpotqa (in-domain) | 0.6846 | 0.9088 | 0.9118 | 0.9055 | 0.9723 | 0.0075 | WITHIN | 0.9080 |
+| L-musique 2wiki (in-domain) | 0.6079 | 0.9346 | 0.9416 | 0.9345 | 0.9787 | 0.0075 | WITHIN | 0.9383 |
+| L-musique webqsp (zero-shot) | 0.0535 | 0.3162 | 0.2368 | 0.3561 | 1.6508 | 0.0105 | LOSS | 0.3229 |
+| L-hotpotqa metaqa (in-domain) | 0.0047 | 0.8043 | 0.8112 | 0.8033 | 0.9902 | 0.0075 | WITHIN | 0.8040 |
+| L-hotpotqa squad (in-domain) | 0.9054 | 0.9117 | 0.9118 | 0.9124 | 1.0937 | 0.0075 | WITHIN | 0.9135 |
+| L-hotpotqa musique (in-domain) | 0.4734 | 0.5800 | 0.5937 | 0.5697 | 0.8005 | 0.0107 | GAIN | 0.5754 |
+| L-hotpotqa hotpotqa (zero-shot) | 0.6846 | 0.8512 | 0.8309 | 0.8538 | 1.1565 | 0.0145 | LOSS | 0.8499 |
+| L-hotpotqa 2wiki (in-domain) | 0.6079 | 0.9290 | 0.9391 | 0.9303 | 0.9734 | 0.0139 | GAIN -> WITHIN | 0.9333 |
+| L-hotpotqa webqsp (zero-shot) | 0.0535 | 0.2773 | 0.2189 | 0.3370 | 1.7140 | 0.0405 | LOSS | 0.2680 |
+
+Beside, deciding nothing:
+- **Where zg6 wins and loses.** zg6 is above zspk on 7 of its 8 in-domain reads; squad, at -0.0012, is the
+  exception. It is below zspk on 3 of its 4 zero-shot reads; musique, at +0.0063, is the exception. So the free GNN
+  fits the training graphs better and transfers worse. That is the case G6b's back-off is for.
+- **The MLP share.**
+  - 0.97 to 0.99 on metaqa, hotpotqa and 2wiki in-domain.
+  - 0.80 on L-hotpotqa musique (in-domain) and 0.89 on L-musique musique (zero-shot).
+  - Above 1 on squad, both webqsp reads and zero-shot hotpotqa, where zrckp is above zg6.
+  - So, on the L40S, musique is where the MLP keeps less than 90% of the free GNN's gain.
+- **zspk on two devices.** zspk's L40S fits and its host card fits (the last column) differ by up to 0.0131 (L-musique
+  musique, zero-shot: 0.5143 against 0.5012). On webqsp they differ by -0.0067 and +0.0093. This is why GL compares
+  fits from one device only.

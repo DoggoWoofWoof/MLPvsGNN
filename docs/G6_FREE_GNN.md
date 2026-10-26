@@ -211,4 +211,14 @@ graph.
 
 ## 7. Results
 
-Not run yet.
+**27 October 2026: decided on the L40S by GL** (docs/GL_GPU_LINE_ON_L40S.md, sections 2 and 7). GL used U2d's base-build
+fits of zg6 and zspk and U2d's zspk null in place of the fits and null named here.
+
+The call by section 4's rule is **NOT_ADOPTED**:
+- 2 GAIN: L-musique metaqa and L-hotpotqa musique.
+- 3 LOSS: L-musique webqsp, L-hotpotqa hotpotqa and L-hotpotqa webqsp.
+
+The next form is G6b (section 5).
+
+This file's own fits (scr-g6-zg6, scr-g6-zg6t and their -hp fits) were not run. The twin runs on the L40S from 1
+November (GL, section 4). The 7 October re-call needs the host.
