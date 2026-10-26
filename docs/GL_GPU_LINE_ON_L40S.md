@@ -179,6 +179,76 @@ temporary folder:
   are checked.
 - Nothing is written under GL's or the screens' real folders.
 
+**Added 27 October, before any of the six fits runs: their code.** `outputs/mp_unified/zgl2.py` trains, reads,
+compares and calls R2's two arms and the twin. `zu2d_modal.py` runs the fits through three new stages. On workspace 3:
+
+    modal run outputs/mp_unified/zu2d_modal.py --stage upload
+    modal run outputs/mp_unified/zu2d_modal.py --stage gl-probe
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage gl-fits
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-gl-fits
+
+Then on the laptop:
+
+    python outputs/mp_unified/zgl2.py compare-all
+    python outputs/mp_unified/zgl2.py calls
+    python outputs/mp_unified/zgl2.py verdict
+
+- **The fits** run as U2h's did, on U2d's base build: one container per fit, which trains and then reads, and stamps
+  the fit with its device.
+  - A fit's name fixes its arm and split. The seed is 0. U2d's card settings cannot be changed from the command line.
+  - R2's arms train inside R2's EM term, through zr2br.py's own wrapper. As in zr2br.py, a fit where no training batch
+    carried the term stops without a stamp.
+  - The twin trains as zg6.py trains it.
+- **The reads' batch** comes from the arm, never from the caller:
+  - 65,536 rows for zg6m (R2's setting) and for zg6t (G6's);
+  - lean_gpu's default of 262,144 for zrckpb, as in R2's zrckpb reads and U2d's zrckp reads.
+
+  A batch holds whole questions, so the scores do not change.
+- **Two fits at a time**, set by the fit runner's container limit. Modal queues the rest in this order: zg6m-hp,
+  zg6m, zrckpb-hp, zrckpb, zg6t-hp, zg6t. So R2's four fits come first, the longest first.
+- **The run is spawned on the deployed app**, not held by a laptop client: a killed client cancels even a detached
+  run.
+- **Eight compares.** All the fits in each compare ran on one device.
+
+  | compare | new | base | role |
+  | --- | --- | --- | --- |
+  | `scr-gl-zrckpb`, `-hp` | zrckpb | `scr-u2d-base-zrckp`, `-hp` | R2: decides zrckpb |
+  | `scr-gl-zg6m`, `-hp` | zg6m | `scr-u2d-base-zg6`, `-hp` | R2: decides zg6m |
+  | `scr-gl-zg6t`, `-hp` | zg6t | `scr-u2d-base-zspk`, `-hp` | G6's beside row |
+  | `scr-gl-zg6-vs-zg6t`, `-hp` | zg6 | zg6t | what the edges add; beside |
+- **The calls, for each arm:**
+  - `outputs/screen/scr-gl-<arm>-pair`: screen_pair over GL's loader of the arm's two compares;
+  - `scr-gl-<arm>-pair-recall`: screen_recall under the arm's U2d null. zg6m's null is moved onto zg6 through
+    `scr-u2d-base-zg6-vs-zspk`, `-hp`.
+
+  R2's verdict goes to `outputs/gl/r2-verdict.json` and `.md`. The twin's rows go to `outputs/gl/zg6t-beside.json` and
+  `.md`; they decide nothing.
+- **Self-test, passed before this commit.** `python outputs/mp_unified/zgl2.py --selftest` runs on fake files in a
+  temporary folder:
+  - **Train and read refuse before any data is read** on:
+    - a name that is not GL's, or another arm or split;
+    - a fixed flag: the seed, hidden size, threads, output folder or config;
+    - the laptop, another GPU or another image;
+    - a read at another rows cap or on another device;
+    - a fit stamped with other R2 constants.
+  - **What a run uses.** R2's term wraps R2's arms only. Every root is the base build's while a fit runs, and is
+    restored after. The read gets the arm's rows cap. The command line reaches train and read.
+  - **The loader refuses** a compare that is not GL's; one of another split, base or device; one read on other carves
+    or with another candidate; and one missing a dataset.
+  - **The re-call** moves zg6m's null onto zg6 and keeps zspk's floors: a GAIN of +0.0101 below a raised floor of
+    0.0139 becomes WITHIN.
+  - **The verdicts:**
+    - ADOPT_FOR_FULL_RUN;
+    - NOT_ADOPTED, with R2g or R2e next;
+    - INCOMPLETE for a re-call that is not GL's, one without the twelve reads, a missing one, or a missing null file.
+  - **compare-all** keeps filed compares and names any it skips.
+  - **Nothing is written** under GL's or the screens' real folders.
+
+  A local check of the stages, with no Modal call, also passed. It covers:
+  - their fit names and order;
+  - their refusal of `--build`, `--datasets`, `--carve` and `--rows-cap`;
+  - the fit runner's limit of two containers.
+
 The text encoder stays frozen. webqsp never trains. Test splits are never read. There is no LLM or transformer, and no
 new graph.
 

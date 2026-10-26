@@ -34,6 +34,10 @@ U2h's full run (docs/U2H_FULL_RUN.md, section 7), with --fits always (zu2hf.py p
 Each fit runs on the GPU zu2hf places it on: a probe on its own (L4 or T4), every other fit on D from
 outputs/u2hf/device.json, through one runner per GPU type (hf_fit_l4, hf_fit_t4, hf_fit_l40s) with U2h's container
 settings. timing.json beside each fit holds the container's seconds, which the device rule reads.
+GL's part 2 (docs/GL_GPU_LINE_ON_L40S.md, sections 3, 4 and 6), with no --build and no --rows-cap:
+    modal run outputs/mp_unified/zu2d_modal.py --stage gl-probe          # zgl2's self-test on the GPU, the gate
+    modal run --detach outputs/mp_unified/zu2d_modal.py --stage gl-fits [--fits N,N]
+    modal run outputs/mp_unified/zu2d_modal.py --stage fetch-gl-fits [--fits N,N]
 
 The code. The tracked files of HEAD, byte for byte as the working tree holds them (a tracked file that differs from
 HEAD refuses the upload), go to /code/<commit, first 12>.tar on the volume, and every container unpacks them at
@@ -82,6 +86,12 @@ checked against Y's filed part on the volume. Each carve's merge into the base c
 parts are written, and metaqa's and webqsp's KT_W is base's KT, copied byte for byte. U2h's four fits go to
 /out/fits/scr-u2h-*, every carve on U2d's base build. --stage fetch-h and fetch-h-fits bring U2h's records and reads
 to the laptop, where zu2h.py compare-all and decide run.
+
+GL's part 2 (docs/GL_GPU_LINE_ON_L40S.md). zgl2.py's six fits (R2's arms zrckpb and zg6m, and G6's twin zg6t, on
+both splits) train and read as U2h's do, every carve on U2d's base build, into /out/fits/scr-gl-*. At most two run at
+once (gl_fit_item's max_containers; Modal queues the rest in GL_ORDER, R2's arms first, the longest first). Each read
+takes its arm's rows cap from zgl2.py, never --rows-cap. --stage fetch-gl-fits brings their records and reads to the
+laptop, where zgl2.py compare-all, calls and verdict run.
 
 The workspaces. A workspace that reaches its spend limit is followed by another: the volumes' files U2d reads or wrote
 are copied byte for byte through the laptop and each copy is checked by sha256 against the source's; the probe and
@@ -169,7 +179,7 @@ INPUT_RECORDS = (INPUTS_RECORD, PINS_RECORD)
 U2D_FILES = ("docs/U2D_REFIT_ON_U2E.md", "outputs/mp_unified/zu2d_pools.py", "outputs/mp_unified/look_u2d.py",
              "outputs/mp_unified/zu2d.py", "outputs/mp_unified/zu2d_modal.py", INPUTS_RECORD, PINS_RECORD,
              "docs/U2G_GRAPH_AND_RULE.md", "outputs/mp_unified/zu2g.py", "docs/U2H_W2S_BESIDE.md",
-             "outputs/mp_unified/zu2h.py")
+             "outputs/mp_unified/zu2h.py", "docs/GL_GPU_LINE_ON_L40S.md", "outputs/mp_unified/zgl2.py")
 # Shards and parts, each item about 15 to 25 minutes (section 10): the new build's pools from U2e's seconds per
 # question on Modal, the base build's at half as many; the looks and caches from P1c2's host times scaled by rows.
 _POOLS_NEW = {("metaqa", "fit"): 5, ("metaqa", "s1eval"): 7, ("squad", "fit"): 3, ("squad", "s1eval"): 5,
@@ -228,12 +238,13 @@ def _sha12(f):
 
 
 def _skip(name):
-    """U2d's, U2g's and U2h's outputs are the volume's; the archive's copies (fetched records) are not unpacked over
-    them."""
+    """U2d's, U2g's, U2h's and GL's outputs are the volume's; the archive's copies (fetched records) are not unpacked
+    over them."""
     return (name.startswith("outputs/u2d/base/") or name.startswith("outputs/u2d/new/")
             or name.startswith("outputs/u2d/h1/") or name.startswith("outputs/screen/fits/scr-u2d-")
             or name.startswith("outputs/u2g/y/") or name.startswith("outputs/screen/fits/scr-u2g-")
-            or name.startswith("outputs/u2h/") or name.startswith("outputs/screen/fits/scr-u2h-"))
+            or name.startswith("outputs/u2h/") or name.startswith("outputs/screen/fits/scr-u2h-")
+            or name.startswith("outputs/screen/fits/scr-gl-"))
 
 
 def _link(dst, src):
@@ -1812,6 +1823,123 @@ def run_hf_fits(code, pairs, rows_cap=0):
             "secs": round(time.time() - t0, 1)}
 
 
+# ── GL's part 2 (docs/GL_GPU_LINE_ON_L40S.md, sections 3, 4 and 6) ───────────
+
+GL_STAGES = ("gl-probe", "gl-fits", "fetch-gl-fits")
+# R2's arms first (they decide), the longest first: two at a time, the four R2 fits end in about an hour and the six
+# in about an hour and a half, from U2d's seconds on the L40S (section 6)
+GL_ORDER = ("scr-gl-zg6m-hp", "scr-gl-zg6m", "scr-gl-zrckpb-hp", "scr-gl-zrckpb", "scr-gl-zg6t-hp", "scr-gl-zg6t")
+
+
+def _stamped_gl(p, name, ZG2):
+    """The record at p when zgl2 stamped it as this fit's under GL's declaration."""
+    try:
+        rec = json.loads(Path(p).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    u = rec.get("gl") or {}
+    return rec if u.get("declared_in") == ZG2.DECLARED and u.get("fit") == name else None
+
+
+def _gl_term(fd, ZG2):
+    """R2's term from the fit's gl stamp: the share of training questions it reached and L_br's first and last epoch."""
+    t = (((_stamped_gl(fd / "screen.json", fd.name, ZG2) or {}).get("gl") or {}).get("r2") or {}).get("term")
+    if not t:
+        return None
+    ep = t.get("epochs") or [{}]
+    return {"share_with_term": t.get("share_with_term"), "br_nll_first": ep[0].get("br_nll_mean"),
+            "br_nll_last": ep[-1].get("br_nll_mean")}
+
+
+@app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(8192, 32768), cpu=2.0, timeout=3600, **STAGE)
+def gl_probe(code):
+    """Before GL's fits: the device zu2d records and whether GL accepts it, the card's memory, zgl2.py's self-test in
+    the GPU image, the base build's gate, and what /out/fits holds of GL's six fits."""
+    info = _setup(code, report=True)
+    import torch
+    import zgl2
+    Z = zgl2.Z
+    env = Z.device_env()
+    out = {"code": code, "setup_seconds": info["setup_seconds"], "conflicts": info["conflicts"][:10],
+           "mirror_missing_n": info["mirror_missing_n"], "python": sys.version.split()[0], "device": Z.device_of(env),
+           "accepted": Z.ok_where("modal", env), "tags_agree": Z.IMAGE_TAG == IMAGE_TAG == os.environ.get("U2D_IMAGE"),
+           "card_gb": (round(torch.cuda.get_device_properties(0).total_memory / 2 ** 30, 1)
+                       if torch.cuda.is_available() else None)}
+    rc, msg = _run_any(zgl2.main, ["--selftest"])
+    out["selftest"] = "PASS" if rc == 0 else msg
+    g = Path("/u2d/out/base/gate.json")
+    out["gate"] = json.loads(g.read_text(encoding="utf-8")).get("verdict") if g.exists() else None
+    out["gl_fits"] = {n: ("read" if _stamped_gl(FITS_OUT / n / "read.json", n, zgl2) else
+                          "trained" if _stamped_gl(FITS_OUT / n / "screen.json", n, zgl2) else "none")
+                      for n in zgl2.FITS}
+    out["peak_gb"] = _peak_gb()
+    return out
+
+
+@app.function(image=gpu_image, gpu=GPU, volumes=VOLS, memory=(16384, 131072), cpu=4.0, timeout=21600,
+              max_containers=2, **STAGE)
+def gl_fit_item(code, name):
+    """One of GL's six fits and its read (zgl2.py train and read in this process) on an L40S from the GPU image, as
+    h_fit_item runs U2h's: a fit whose read zgl2 stamped is returned as it is; a fit trained and stamped but not read is
+    only read; otherwise the fit's files are unlinked and it trains and reads. The read's rows cap is the arm's."""
+    info = _setup(code, strict=True)
+    import zgl2
+    Z = zgl2.Z
+    head = {"fit": name, "code": code}
+    if Z.IMAGE_TAG != IMAGE_TAG or os.environ.get("U2D_IMAGE") != IMAGE_TAG:
+        return {**head, "error": f"image tags: the container's {os.environ.get('U2D_IMAGE')}, zu2d's {Z.IMAGE_TAG}, "
+                                 f"this runner's {IMAGE_TAG}"}
+    if name not in zgl2.FITS:
+        return {**head, "error": "not one of GL's fits"}
+    arm, split = zgl2.FITS[name]
+    head.update({"build": zgl2.BUILD, "arm": arm, "seed": 0, "split": split})
+    fd = FITS_OUT / name
+    fd.mkdir(parents=True, exist_ok=True)
+    _link(REPO / "outputs" / "screen" / "fits" / name, fd)
+    if _stamped_gl(fd / "read.json", name, zgl2):
+        return {**head, "reused": True, **_fit_brief(fd, "gl"), "term": _gl_term(fd, zgl2)}
+    cache = "outputs/u2d/base/cache"
+    t0 = time.time()
+    trained = bool(_stamped_gl(fd / "screen.json", name, zgl2) and (fd / "train.json").exists()
+                   and (fd / "models.pt").exists())
+    if not trained:
+        gone = _clear(fd, "*") + _clear(fd / "reads", "*")
+        rc, msg = _run_any(zgl2.main, ["train", "--split", split, "--name", name, "--arm", arm, "--device", "cuda",
+                                       "--cache-root", cache, "--modal"])
+        if rc:
+            return {**head, "error": msg, "cleared": len(gone), "seconds": round(time.time() - t0, 1),
+                    "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+        u2d.commit()
+    t1 = time.time()
+    _clear(fd / "reads", "*")
+    _clear(fd, "read.json")
+    rc, msg = _run_any(zgl2.main, ["read", "--name", name, "--device", "cuda", "--cache-root", cache, "--modal"])
+    res = {**head, "trained_here": not trained, "train_seconds": round(t1 - t0, 1),
+           "read_seconds": round(time.time() - t1, 1), "peak_gb": _peak_gb(), "setup": info["setup_seconds"]}
+    if rc:
+        return {**res, "error": msg}
+    u2d.commit()
+    return {**res, **_fit_brief(fd, "gl"), "term": _gl_term(fd, zgl2)}
+
+
+@app.function(image=image, volumes=VOLS, memory=1024, cpu=0.25, timeout=86400, **ORCH)
+def run_gl_fits(code, names):
+    """GL's named fits, each in its own container, two at a time (gl_fit_item's max_containers)."""
+    t0 = time.time()
+    calls = [(n, gl_fit_item.spawn(code, n)) for n in names]
+    out = []
+    for n, fc in calls:
+        r = _get(fc)
+        r.setdefault("fit", n)
+        print(json.dumps({k: r.get(k) for k in ("fit", "reused", "trained_here", "train_seconds", "read_seconds",
+                                                "data_gb", "peak_gpu_gb", "read_peak_gpu_gb", "rows_cap", "peak_gb",
+                                                "term")}
+                         | ({"error": str(r["error"])[:600]} if "error" in r else {})), flush=True)
+        out.append(r)
+    return {"code": code, "fits": out, "errors": [r["fit"] for r in out if "error" in r],
+            "secs": round(time.time() - t0, 1)}
+
+
 # ── the laptop: code, inputs, extras, fetch ──────────────────────────────────
 
 
@@ -2086,6 +2214,23 @@ def _hf_names(names, pairs=False):
     return [(n, zu2hf.gpu_for(n)) for n in want] if pairs else want
 
 
+def _gl_names(names):
+    """The named fits in GL_ORDER, or all six of GL's (zgl2.py's FITS, read on the laptop)."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import zgl2
+    if set(GL_ORDER) != set(zgl2.FITS):
+        raise SystemExit(f"GL_ORDER {GL_ORDER} is not zgl2.py's fits {list(zgl2.FITS)}")
+    want = [n for n in names.split(",") if n] or list(GL_ORDER)
+    bad = [n for n in want if n not in zgl2.FITS]
+    if bad:
+        raise SystemExit(f"not GL's fits: {bad}")
+    if zgl2.Z.IMAGE_TAG != IMAGE_TAG:
+        raise SystemExit(f"zu2d.py's image tag {zgl2.Z.IMAGE_TAG} is not this runner's {IMAGE_TAG}")
+    return [n for n in GL_ORDER if n in want]
+
+
 def _fetch_fits(names, threads=4):
     """Each read fit's records and reads to outputs/screen/fits/<name>/ on the laptop (never models.pt); a fit whose
     read.json is not on the volume is skipped and named."""
@@ -2172,8 +2317,12 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
     h_list = _h_names(fits) if stage in ("h-fits", "fetch-h-fits") else []
     hf_pairs = _hf_names(fits, pairs=True) if stage == "hf-fits" else []
     hf_list = _hf_names(fits) if stage == "fetch-hf-fits" else []
+    gl_list = _gl_names(fits) if stage in ("gl-fits", "fetch-gl-fits") else []
     if stage in HF_STAGES and (build or datasets or carve):
         raise SystemExit("the full run's stages take only --fits (and --rows-cap): every fit is on U2d's base build")
+    if stage in GL_STAGES and (build or datasets or carve or rows_cap):
+        raise SystemExit("GL's stages take only --fits: every fit is on U2d's base build, read at its arm's rows cap "
+                         "(zgl2.py)")
     names = [d for d in datasets.split(",") if d] or list(Y_OWN if y or h else SIX)
     if y and (build or any(d not in Y_OWN for d in names)):
         raise SystemExit(f"Y's stages take no --build (Y is U2g's build); datasets among {Y_OWN}")
@@ -2202,6 +2351,8 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         return _fetch_fits(h_list)
     if stage == "fetch-hf-fits":
         return _fetch_fits(hf_list)
+    if stage == "fetch-gl-fits":
+        return _fetch_fits(gl_list)
     code = _upload_code(overlay)
     if stage == "probe":
         print(json.dumps(probe.remote(code), indent=1))
@@ -2263,10 +2414,15 @@ def main(stage: str, build: str = "", datasets: str = "", carve: str = "", what:
         print(json.dumps(run_h_fits.remote(code, h_list, rows_cap), indent=1))
     elif stage == "hf-fits":
         print(json.dumps(run_hf_fits.remote(code, hf_pairs, rows_cap), indent=1))
+    elif stage == "gl-probe":
+        print(json.dumps(gl_probe.remote(code), indent=1))
+    elif stage == "gl-fits":
+        print(json.dumps(run_gl_fits.remote(code, gl_list), indent=1))
     else:
         raise SystemExit("stage: upload, probe, mirror, dev, pools, features, fetch, gpu-probe, fits, fetch-fits, h1, "
                          "fetch-h1, y-probe, y-dev, y-pools, y-features, y-fits, fetch-y, fetch-y-fits, h-probe, "
-                         "h-dev, h-ktw, h-fits, fetch-h, fetch-h-fits, hf-fits or fetch-hf-fits")
+                         "h-dev, h-ktw, h-fits, fetch-h, fetch-h-fits, hf-fits, fetch-hf-fits, gl-probe, gl-fits or "
+                         "fetch-gl-fits")
 
 
 if __name__ == "__main__":
