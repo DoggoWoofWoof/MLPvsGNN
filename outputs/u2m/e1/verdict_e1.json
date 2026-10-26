@@ -1,0 +1,909 @@
+{
+ "declared_in": "docs/U2M_POOLS_THREE_FAMILIES.md, section 19",
+ "stage": "U2m E1",
+ "script_sha256": "c7d32574e819058a1c6a8e123474330c6a4daaa26cce09cac87e89043c89d455",
+ "zu2m_sha256": "6f90ac0e5acd7ccfd8005c03eef1f211bfe150a1c2acf60b9cdc5bed121966e8",
+ "zu2o_sha256": "c4f859f28e3c3cb5cc711f6828232efde21f2cfd3b7797d92c038d18d4faa82c",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "verdict_ce_sha256": "78e7797741de6ee17bfbb2fec3cc376df37c04c4b1ecee7bc3212e5a28057fa1",
+ "u2l_choice_sha256": "2115828b886b7a769bbce1920d7bd02c21d5ceaa57248a4c1d02ab4de3eec43e",
+ "verdict": "NO_GAIN",
+ "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+ "level": null,
+ "cost": null,
+ "frontier_pick": null,
+ "carried": {
+  "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+  "level": 0.955,
+  "cost": 1812.6
+ },
+ "cap": 1953.5,
+ "weights": {
+  "metaqa": 15745,
+  "squad": 17729,
+  "musique": 7018,
+  "hotpotqa": 13335,
+  "2wiki": 18504
+ },
+ "ceilings": {
+  "metaqa": 0.9947,
+  "squad": 0.9993,
+  "musique": 0.9804,
+  "hotpotqa": 0.9881,
+  "2wiki": 0.996
+ },
+ "candidates": 13860,
+ "e1": {
+  "metaqa": {
+   "ner": "IS",
+   "is_links": 20906,
+   "entries": 41150,
+   "self_loops": 0,
+   "el_npz_sha256": "94f8b0c623d1e31eefbf6b5007e601ba085bfb2f74a37edf60e9d0f46a7c888e"
+  },
+  "squad": {
+   "ner": "empty",
+   "e1_with_siblings_is_structural": true,
+   "is_links": 685845,
+   "el_npz_sha256": "bad4babfcc0e7d5545ad02a261c456637d23f5e4aa3d779fcd6132d2f3e00e38"
+  },
+  "musique": {
+   "ner": "empty",
+   "e1_with_siblings_is_structural": true,
+   "is_links": 2304416,
+   "el_npz_sha256": "281d69b66bbccbcef5082eb3be264bb83a0ec55b8724444fc0f2824d5ca82e37"
+  },
+  "hotpotqa": {
+   "ner": "empty",
+   "e1_with_siblings_is_structural": true,
+   "is_links": 32334355,
+   "el_npz_sha256": "b9b405d24e2f7257a5eef2643a24797aa79b8cf7f6cfe6967a0a86c012a85963"
+  },
+  "2wiki": {
+   "ner": "empty",
+   "e1_with_siblings_is_structural": true,
+   "is_links": 71913824,
+   "el_npz_sha256": "659a721540d589ae28cd4a4b24d396c7ae85dd37db1257f475dff7b0a3fd431d"
+  },
+  "webqsp": {
+   "ner": "IS",
+   "is_links": 1777297,
+   "entries": 3554188,
+   "self_loops": 0,
+   "el_npz_sha256": "c894553f2d791ebc364b9b3f398b8ba24a8af9438e490ce77ccc186c395a1007"
+  }
+ },
+ "frontier_E1": [
+  {
+   "level": 0.95,
+   "targets": {
+    "metaqa": 0.95,
+    "squad": 0.95,
+    "musique": 0.95,
+    "hotpotqa": 0.95,
+    "2wiki": 0.95
+   },
+   "pick": null
+  },
+  {
+   "level": 0.955,
+   "targets": {
+    "metaqa": 0.955,
+    "squad": 0.955,
+    "musique": 0.955,
+    "hotpotqa": 0.955,
+    "2wiki": 0.955
+   },
+   "pick": null
+  },
+  {
+   "level": 0.96,
+   "targets": {
+    "metaqa": 0.96,
+    "squad": 0.96,
+    "musique": 0.96,
+    "hotpotqa": 0.96,
+    "2wiki": 0.96
+   },
+   "pick": null
+  },
+  {
+   "level": 0.965,
+   "targets": {
+    "metaqa": 0.965,
+    "squad": 0.965,
+    "musique": 0.965,
+    "hotpotqa": 0.965,
+    "2wiki": 0.965
+   },
+   "pick": null
+  },
+  {
+   "level": 0.97,
+   "targets": {
+    "metaqa": 0.97,
+    "squad": 0.97,
+    "musique": 0.97,
+    "hotpotqa": 0.97,
+    "2wiki": 0.97
+   },
+   "pick": null
+  },
+  {
+   "level": 0.975,
+   "targets": {
+    "metaqa": 0.975,
+    "squad": 0.975,
+    "musique": 0.975,
+    "hotpotqa": 0.975,
+    "2wiki": 0.975
+   },
+   "pick": null
+  },
+  {
+   "level": 0.98,
+   "targets": {
+    "metaqa": 0.98,
+    "squad": 0.98,
+    "musique": 0.9754,
+    "hotpotqa": 0.98,
+    "2wiki": 0.98
+   },
+   "pick": null
+  },
+  {
+   "level": 0.985,
+   "targets": {
+    "metaqa": 0.985,
+    "squad": 0.985,
+    "musique": 0.9754,
+    "hotpotqa": 0.9831,
+    "2wiki": 0.985
+   },
+   "pick": null
+  },
+  {
+   "level": 0.99,
+   "targets": {
+    "metaqa": 0.9897,
+    "squad": 0.99,
+    "musique": 0.9754,
+    "hotpotqa": 0.9831,
+    "2wiki": 0.99
+   },
+   "pick": null
+  },
+  {
+   "level": 0.995,
+   "targets": {
+    "metaqa": 0.9897,
+    "squad": 0.9943,
+    "musique": 0.9754,
+    "hotpotqa": 0.9831,
+    "2wiki": 0.991
+   },
+   "pick": null
+  },
+  {
+   "level": 1.0,
+   "targets": {
+    "metaqa": 0.9897,
+    "squad": 0.9943,
+    "musique": 0.9754,
+    "hotpotqa": 0.9831,
+    "2wiki": 0.991
+   },
+   "pick": null
+  }
+ ],
+ "frontier_filed": [
+  {
+   "level": 0.95,
+   "targets": {
+    "metaqa": 0.95,
+    "squad": 0.95,
+    "musique": 0.95,
+    "hotpotqa": 0.95,
+    "2wiki": 0.95
+   },
+   "pick": "own/kind_t/kt_cos+n2_100:ada_f12_k0@0.8",
+   "cost": 1497.8,
+   "within_cap": true,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9532,
+     "rows": 3534.1
+    },
+    "squad": {
+     "ALL": 0.9793,
+     "rows": 50.0
+    },
+    "musique": {
+     "ALL": 0.9557,
+     "rows": 4606.8
+    },
+    "hotpotqa": {
+     "ALL": 0.9516,
+     "rows": 480.2
+    },
+    "2wiki": {
+     "ALL": 0.9652,
+     "rows": 706.6
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.8789,
+    "rows": 3818.0
+   }
+  },
+  {
+   "level": 0.955,
+   "targets": {
+    "metaqa": 0.955,
+    "squad": 0.955,
+    "musique": 0.955,
+    "hotpotqa": 0.955,
+    "2wiki": 0.955
+   },
+   "pick": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+   "cost": 1812.6,
+   "within_cap": true,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9619,
+     "rows": 4384.4
+    },
+    "squad": {
+     "ALL": 0.9793,
+     "rows": 50.0
+    },
+    "musique": {
+     "ALL": 0.9635,
+     "rows": 5437.4
+    },
+    "hotpotqa": {
+     "ALL": 0.9556,
+     "rows": 561.2
+    },
+    "2wiki": {
+     "ALL": 0.9666,
+     "rows": 839.9
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.8929,
+    "rows": 4754.6
+   }
+  },
+  {
+   "level": 0.96,
+   "targets": {
+    "metaqa": 0.96,
+    "squad": 0.96,
+    "musique": 0.96,
+    "hotpotqa": 0.96,
+    "2wiki": 0.96
+   },
+   "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85",
+   "cost": 1955.1,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9619,
+     "rows": 4384.4
+    },
+    "squad": {
+     "ALL": 0.9933,
+     "rows": 248.0
+    },
+    "musique": {
+     "ALL": 0.9635,
+     "rows": 5507.1
+    },
+    "hotpotqa": {
+     "ALL": 0.9602,
+     "rows": 714.3
+    },
+    "2wiki": {
+     "ALL": 0.9726,
+     "rows": 1070.5
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.8929,
+    "rows": 4811.7
+   }
+  },
+  {
+   "level": 0.965,
+   "targets": {
+    "metaqa": 0.965,
+    "squad": 0.965,
+    "musique": 0.965,
+    "hotpotqa": 0.965,
+    "2wiki": 0.965
+   },
+   "pick": "own/kind_t/kt_cos+n2_100:ada_f3_k1000@0.975",
+   "cost": 2324.3,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9706,
+     "rows": 5310.7
+    },
+    "squad": {
+     "ALL": 0.9967,
+     "rows": 973.0
+    },
+    "musique": {
+     "ALL": 0.9654,
+     "rows": 5168.5
+    },
+    "hotpotqa": {
+     "ALL": 0.9655,
+     "rows": 973.0
+    },
+    "2wiki": {
+     "ALL": 0.9713,
+     "rows": 973.0
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.8982,
+    "rows": 5305.2
+   }
+  },
+  {
+   "level": 0.97,
+   "targets": {
+    "metaqa": 0.97,
+    "squad": 0.97,
+    "musique": 0.97,
+    "hotpotqa": 0.97,
+    "2wiki": 0.97
+   },
+   "pick": "own/kind_t/kt_cos:ada_f24_k0@0.95",
+   "cost": 3364.3,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9893,
+     "rows": 7308.8
+    },
+    "squad": {
+     "ALL": 0.9793,
+     "rows": 50.0
+    },
+    "musique": {
+     "ALL": 0.9752,
+     "rows": 9485.9
+    },
+    "hotpotqa": {
+     "ALL": 0.9708,
+     "rows": 1439.1
+    },
+    "2wiki": {
+     "ALL": 0.9833,
+     "rows": 2249.2
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.9188,
+    "rows": 8293.6
+   }
+  },
+  {
+   "level": 0.975,
+   "targets": {
+    "metaqa": 0.975,
+    "squad": 0.975,
+    "musique": 0.975,
+    "hotpotqa": 0.975,
+    "2wiki": 0.975
+   },
+   "pick": "own/kind_t/kt_cos:ada_f24_k1000@1",
+   "cost": 4542.4,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.996,
+     "rows": 9428.0
+    },
+    "squad": {
+     "ALL": 0.9967,
+     "rows": 1050.0
+    },
+    "musique": {
+     "ALL": 0.9759,
+     "rows": 12427.5
+    },
+    "hotpotqa": {
+     "ALL": 0.9755,
+     "rows": 1763.3
+    },
+    "2wiki": {
+     "ALL": 0.9866,
+     "rows": 2743.4
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.9568,
+    "rows": 10807.3
+   }
+  },
+  {
+   "level": 0.98,
+   "targets": {
+    "metaqa": 0.98,
+    "squad": 0.98,
+    "musique": 0.9754,
+    "hotpotqa": 0.98,
+    "2wiki": 0.98
+   },
+   "pick": "own/kind_t/kt_cos+n2_30:fix_15000@0.95",
+   "cost": 6800.2,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9893,
+     "rows": 7399.2
+    },
+    "squad": {
+     "ALL": 0.9993,
+     "rows": 5698.4
+    },
+    "musique": {
+     "ALL": 0.9759,
+     "rows": 9286.0
+    },
+    "hotpotqa": {
+     "ALL": 0.9847,
+     "rows": 6168.7
+    },
+    "2wiki": {
+     "ALL": 0.9953,
+     "rows": 6858.5
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.9175,
+    "rows": 7853.7
+   }
+  },
+  {
+   "level": 0.985,
+   "targets": {
+    "metaqa": 0.985,
+    "squad": 0.985,
+    "musique": 0.9754,
+    "hotpotqa": 0.9831,
+    "2wiki": 0.985
+   },
+   "pick": "own/kind_t/kt_cos+n2_30:fix_15000@0.95",
+   "cost": 6800.2,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9893,
+     "rows": 7399.2
+    },
+    "squad": {
+     "ALL": 0.9993,
+     "rows": 5698.4
+    },
+    "musique": {
+     "ALL": 0.9759,
+     "rows": 9286.0
+    },
+    "hotpotqa": {
+     "ALL": 0.9847,
+     "rows": 6168.7
+    },
+    "2wiki": {
+     "ALL": 0.9953,
+     "rows": 6858.5
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.9175,
+    "rows": 7853.7
+   }
+  },
+  {
+   "level": 0.99,
+   "targets": {
+    "metaqa": 0.9897,
+    "squad": 0.99,
+    "musique": 0.9754,
+    "hotpotqa": 0.9831,
+    "2wiki": 0.99
+   },
+   "pick": "own/kind_t/kt_cos:fix_15000@0.975",
+   "cost": 7404.2,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9927,
+     "rows": 8301.7
+    },
+    "squad": {
+     "ALL": 0.9993,
+     "rows": 6340.2
+    },
+    "musique": {
+     "ALL": 0.9759,
+     "rows": 10250.4
+    },
+    "hotpotqa": {
+     "ALL": 0.9847,
+     "rows": 6658.0
+    },
+    "2wiki": {
+     "ALL": 0.9947,
+     "rows": 7118.1
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.9348,
+    "rows": 8818.9
+   }
+  },
+  {
+   "level": 0.995,
+   "targets": {
+    "metaqa": 0.9897,
+    "squad": 0.9943,
+    "musique": 0.9754,
+    "hotpotqa": 0.9831,
+    "2wiki": 0.991
+   },
+   "pick": "own/kind_t/kt_cos:fix_15000@0.975",
+   "cost": 7404.2,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9927,
+     "rows": 8301.7
+    },
+    "squad": {
+     "ALL": 0.9993,
+     "rows": 6340.2
+    },
+    "musique": {
+     "ALL": 0.9759,
+     "rows": 10250.4
+    },
+    "hotpotqa": {
+     "ALL": 0.9847,
+     "rows": 6658.0
+    },
+    "2wiki": {
+     "ALL": 0.9947,
+     "rows": 7118.1
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.9348,
+    "rows": 8818.9
+   }
+  },
+  {
+   "level": 1.0,
+   "targets": {
+    "metaqa": 0.9897,
+    "squad": 0.9943,
+    "musique": 0.9754,
+    "hotpotqa": 0.9831,
+    "2wiki": 0.991
+   },
+   "pick": "own/kind_t/kt_cos:fix_15000@0.975",
+   "cost": 7404.2,
+   "within_cap": false,
+   "s1sel": {
+    "metaqa": {
+     "ALL": 0.9927,
+     "rows": 8301.7
+    },
+    "squad": {
+     "ALL": 0.9993,
+     "rows": 6340.2
+    },
+    "musique": {
+     "ALL": 0.9759,
+     "rows": 10250.4
+    },
+    "hotpotqa": {
+     "ALL": 0.9847,
+     "rows": 6658.0
+    },
+    "2wiki": {
+     "ALL": 0.9947,
+     "rows": 7118.1
+    }
+   },
+   "webqsp_s1eval": {
+    "ALL": 0.9348,
+    "rows": 8818.9
+   }
+  }
+ ],
+ "the_I": {
+  "metaqa": {
+   "filed": {
+    "ALL": 0.8938,
+    "size": 2021.7
+   },
+   "E1": {
+    "ALL": 0.8938,
+    "size": 2021.7
+   },
+   "kt_same": 1.0
+  },
+  "squad": {
+   "filed": {
+    "ALL": 0.9793,
+    "size": 50.0
+   },
+   "E1": {
+    "ALL": 0.9793,
+    "size": 50.0
+   },
+   "kt_same": 0.0
+  },
+  "musique": {
+   "filed": {
+    "ALL": 0.7751,
+    "size": 2067.2
+   },
+   "E1": {
+    "ALL": 0.6838,
+    "size": 1199.7
+   },
+   "kt_same": 0.0
+  },
+  "hotpotqa": {
+   "filed": {
+    "ALL": 0.8985,
+    "size": 119.6
+   },
+   "E1": {
+    "ALL": 0.8985,
+    "size": 119.6
+   },
+   "kt_same": 0.0
+  },
+  "2wiki": {
+   "filed": {
+    "ALL": 0.8369,
+    "size": 162.2
+   },
+   "E1": {
+    "ALL": 0.8369,
+    "size": 162.2
+   },
+   "kt_same": 0.0
+  },
+  "webqsp": {
+   "filed": {
+    "ALL": 0.688,
+    "size": 2119.9
+   },
+   "E1": {
+    "ALL": 0.682,
+    "size": 2121.7
+   },
+   "kt_same": 0.9667
+  }
+ },
+ "u2e_point": {
+  "metaqa": {
+   "filed": {
+    "ALL": 0.9619,
+    "rows": 4384.4
+   },
+   "E1": {
+    "ALL": 0.9619,
+    "rows": 4385.5
+   }
+  },
+  "squad": {
+   "filed": {
+    "ALL": 0.9793,
+    "rows": 50.0
+   },
+   "E1": {
+    "ALL": 0.9793,
+    "rows": 50.0
+   }
+  },
+  "musique": {
+   "filed": {
+    "ALL": 0.9635,
+    "rows": 5437.4
+   },
+   "E1": {
+    "ALL": 0.9153,
+    "rows": 4401.9
+   }
+  },
+  "hotpotqa": {
+   "filed": {
+    "ALL": 0.9556,
+    "rows": 561.2
+   },
+   "E1": {
+    "ALL": 0.9529,
+    "rows": 561.2
+   }
+  },
+  "2wiki": {
+   "filed": {
+    "ALL": 0.9666,
+    "rows": 839.9
+   },
+   "E1": {
+    "ALL": 0.9659,
+    "rows": 839.9
+   }
+  },
+  "webqsp": {
+   "filed": {
+    "ALL": 0.8929,
+    "rows": 4754.6
+   },
+   "E1": {
+    "ALL": 0.8922,
+    "rows": 4805.7
+   }
+  }
+ },
+ "misses": {
+  "metaqa": {
+   "u2e_pick_filed": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 329,
+    "by_cause": {
+     "TAU_CUT": 287,
+     "BUDGET": 8,
+     "UNREACHED": 34
+    }
+   },
+   "u2e_pick_E1": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 329,
+    "by_cause": {
+     "TAU_CUT": 287,
+     "BUDGET": 8,
+     "UNREACHED": 34
+    }
+   }
+  },
+  "squad": {
+   "u2e_pick_filed": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 31,
+    "by_cause": {
+     "TAU_CUT": 0,
+     "BUDGET": 30,
+     "UNREACHED": 1
+    }
+   },
+   "u2e_pick_E1": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 31,
+    "by_cause": {
+     "TAU_CUT": 0,
+     "BUDGET": 30,
+     "UNREACHED": 1
+    }
+   }
+  },
+  "musique": {
+   "u2e_pick_filed": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 62,
+    "by_cause": {
+     "TAU_CUT": 22,
+     "BUDGET": 9,
+     "UNREACHED": 31
+    }
+   },
+   "u2e_pick_E1": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 141,
+    "by_cause": {
+     "TAU_CUT": 44,
+     "BUDGET": 67,
+     "UNREACHED": 30
+    }
+   }
+  },
+  "hotpotqa": {
+   "u2e_pick_filed": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 69,
+    "by_cause": {
+     "TAU_CUT": 13,
+     "BUDGET": 38,
+     "UNREACHED": 18
+    }
+   },
+   "u2e_pick_E1": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 73,
+    "by_cause": {
+     "TAU_CUT": 14,
+     "BUDGET": 44,
+     "UNREACHED": 15
+    }
+   }
+  },
+  "2wiki": {
+   "u2e_pick_filed": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 50,
+    "by_cause": {
+     "TAU_CUT": 13,
+     "BUDGET": 31,
+     "UNREACHED": 6
+    }
+   },
+   "u2e_pick_E1": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 51,
+    "by_cause": {
+     "TAU_CUT": 12,
+     "BUDGET": 33,
+     "UNREACHED": 6
+    }
+   }
+  },
+  "webqsp": {
+   "u2e_pick_filed": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 2077,
+    "by_cause": {
+     "TAU_CUT": 664,
+     "BUDGET": 369,
+     "UNREACHED": 1044
+    }
+   },
+   "u2e_pick_E1": {
+    "candidate": "own/kind_t/kt_cos:ada_f12_k0@0.85",
+    "missed": 2090,
+    "by_cause": {
+     "TAU_CUT": 672,
+     "BUDGET": 382,
+     "UNREACHED": 1036
+    }
+   }
+  }
+ },
+ "stats": {
+  "metaqa": {
+   "file_sha256": "46ab78d32eed74056702fbc40a40860a5e0e05cbeca42ab7c8a46c17cfd24e12",
+   "seconds": 744.2
+  },
+  "squad": {
+   "file_sha256": "ff93b047d1f860fd56c3b69c2b37a512e6b9750f8853975ab86cb9b479325061",
+   "seconds": 546.9
+  },
+  "musique": {
+   "file_sha256": "b37349cbd60d318046557e29e5438ad5ea727b48a56a4f18b9fa9f0be5276ffd",
+   "seconds": 1815.9
+  },
+  "hotpotqa": {
+   "file_sha256": "b1939f84cb735cad7a9600c798f04f3880108a04e94debdc427e2b17a108e775",
+   "seconds": 2675.8
+  },
+  "2wiki": {
+   "file_sha256": "8803f8ade43e19498f32b3b75617bd39ba1bfe0f944fabcaa56ee62174081934",
+   "seconds": 3464.3
+  },
+  "webqsp": {
+   "file_sha256": "44bea143ba2e3e708eba31ae99f98a32be9aef064854445f5751f9387b292c24",
+   "seconds": 1625.8
+  }
+ },
+ "utc": "2026-10-26T21:54:17Z"
+}

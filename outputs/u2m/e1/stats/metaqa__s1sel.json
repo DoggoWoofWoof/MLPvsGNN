@@ -1,0 +1,135 @@
+{
+ "declared_in": "docs/U2M_POOLS_THREE_FAMILIES.md, section 19",
+ "stage": "U2m E1",
+ "dataset": "metaqa",
+ "carve": "s1sel",
+ "graph_detail": {
+  "graph": "cached (the KB)"
+ },
+ "e1": {
+  "ner": "IS",
+  "is_links": 20906,
+  "entries": 41150,
+  "self_loops": 0,
+  "el_npz_sha256": "94f8b0c623d1e31eefbf6b5007e601ba085bfb2f74a37edf60e9d0f46a7c888e"
+ },
+ "script_sha256": "c7d32574e819058a1c6a8e123474330c6a4daaa26cce09cac87e89043c89d455",
+ "zu2m_sha256": "6f90ac0e5acd7ccfd8005c03eef1f211bfe150a1c2acf60b9cdc5bed121966e8",
+ "zu2o_sha256": "c4f859f28e3c3cb5cc711f6828232efde21f2cfd3b7797d92c038d18d4faa82c",
+ "zu2e_sha256": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+ "u2m_stats_sha256": "acc8785279af4ab1ab7009de5c12f75149de75213446a01e368a10643c1e0bed",
+ "verdict_ce_sha256": "78e7797741de6ee17bfbb2fec3cc376df37c04c4b1ecee7bc3212e5a28057fa1",
+ "u2l_choice_sha256": "2115828b886b7a769bbce1920d7bd02c21d5ceaa57248a4c1d02ab4de3eec43e",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 2,
+ "own_cell": 12,
+ "orders": [
+  "kt",
+  "kt_n1",
+  "cos",
+  "cos+n2_10",
+  "cos+n2_30",
+  "cos+n2_100",
+  "kt_cos",
+  "kt_cos+n2_10",
+  "kt_cos+n2_30",
+  "kt_cos+n2_100",
+  "kt_cos_r0",
+  "kt_cos_r0+n2_10",
+  "kt_cos_r0+n2_30",
+  "kt_cos_r0+n2_100"
+ ],
+ "regime_families": [
+  "structural"
+ ],
+ "I": "prepare's pools on both families (the construction reads no ner)",
+ "questions": 1497,
+ "golds": 11367,
+ "file_sha256": "46ab78d32eed74056702fbc40a40860a5e0e05cbeca42ab7c8a46c17cfd24e12",
+ "summary": {
+  "I": {
+   "filed": {
+    "ALL": 0.8938,
+    "size": 2021.7
+   },
+   "E1": {
+    "ALL": 0.8938,
+    "size": 2021.7
+   }
+  },
+  "fill": 1971.7,
+  "kt_same": 1.0,
+  "orders": {
+   "kt": {
+    "ALL": 0.99,
+    "length": 6981.0
+   },
+   "kt_n1": {
+    "ALL": 0.992,
+    "length": 7291.9
+   },
+   "cos": {
+    "ALL": 0.996,
+    "length": 9380.7
+   },
+   "cos+n2_10": {
+    "ALL": 0.996,
+    "length": 9420.0
+   },
+   "cos+n2_30": {
+    "ALL": 0.996,
+    "length": 9505.7
+   },
+   "cos+n2_100": {
+    "ALL": 0.996,
+    "length": 9884.5
+   },
+   "kt_cos": {
+    "ALL": 0.996,
+    "length": 9380.7
+   },
+   "kt_cos+n2_10": {
+    "ALL": 0.996,
+    "length": 9420.0
+   },
+   "kt_cos+n2_30": {
+    "ALL": 0.996,
+    "length": 9505.7
+   },
+   "kt_cos+n2_100": {
+    "ALL": 0.996,
+    "length": 9884.5
+   },
+   "kt_cos_r0": {
+    "ALL": 0.996,
+    "length": 9380.7
+   },
+   "kt_cos_r0+n2_10": {
+    "ALL": 0.996,
+    "length": 9420.0
+   },
+   "kt_cos_r0+n2_30": {
+    "ALL": 0.996,
+    "length": 9505.7
+   },
+   "kt_cos_r0+n2_100": {
+    "ALL": 0.996,
+    "length": 9884.5
+   }
+  }
+ },
+ "checks": {
+  "graph_equal_u2m": true,
+  "seeds_equal_g0": true,
+  "kind_t_by_kind": true,
+  "I_on_filed_equal_prepare": true,
+  "own_kind_t_on_filed_equal_u2m": true,
+  "orders_exact": true,
+  "st_walks_r0_kind_unchanged": true,
+  "e1_of_u2l": true,
+  "rows_served_verified": false
+ },
+ "seconds": 744.2,
+ "utc": "2026-10-26T07:28:47Z"
+}

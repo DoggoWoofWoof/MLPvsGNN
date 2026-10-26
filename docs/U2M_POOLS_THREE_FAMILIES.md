@@ -800,3 +800,53 @@ too little for Modal. The filed-family reproduction is what ties a machine to U2
 A verdict closes only the form tested (docs/SCREENS.md, section 3b): E1 in the ner slot, with the `kind_t` recipe and
 U2e's grid. On a passage graph E3 ∪ R ∪ kNN is the filed families (U2l, section 10), so the forms left open are EL's
 kinds as typed edges: as walk types in (a)'s relational walk, and as edge types in U2n's models.
+
+## 20. E1: filed 27 October 2026
+
+**NO_GAIN.** U2e's pick stays: `own/kind_t/kt_cos:ada_f12_k0@0.85` at level 0.955 for 1,812.6 rows. The pools keep
+the package's NER. Records: `outputs/u2m/e1/verdict_e1.json` and `.md`, and the six stats records beside them
+(`outputs/u2m/e1/stats/<dataset>__<carve>.json`), all from `zu2m_e1.py` as committed (fcd0f08). The arrays stay on
+the laptop.
+
+**The checks held.** Every question walked on both families and passed section 19's checks, on all six datasets. In
+the verdict, the filed families gave back U2e's table for all 13,860 candidates, the filed own `kind_t` frontier, and
+U2e's pick.
+
+**On E1's families, no candidate reaches 0.95 on the five training datasets at any cost.** E1's frontier is empty at
+every level from 0.95 to 1.0, so the rule has nothing to pick. The cause is musique. Emptying the ner slot on a
+passage graph changes:
+
+| musique | the filed families | E1's |
+| --- | ---: | ---: |
+| the I: ALL (rows) | 0.7751 (2,067.2) | 0.6838 (1,199.7) |
+| U2e's point: ALL (rows) | 0.9635 (5,437.4) | 0.9153 (4,401.9) |
+| questions missed at U2e's pick | 62 | 141 |
+| ... by BUDGET | 9 | 67 |
+
+Elsewhere E1 moves little (U2e's point, ALL):
+- hotpotqa: 0.9556 → 0.9529, at the same 561.2 rows;
+- 2wiki: 0.9666 → 0.9659, at the same 839.9 rows;
+- metaqa: 0.9619 both, at 4,384.4 → 4,385.5 rows;
+- squad: unchanged;
+- webqsp (beside): 0.8929 → 0.8922.
+
+On the KBs, IS in the slot leaves the KT order unchanged for 100% of metaqa's questions and 96.7% of webqsp's. On the
+passage graphs it changes every question's order, since the slot is emptied there.
+
+**What it says.** musique's I reads the ner family (FULL:h2_c25). The package's NER links carry bridge entities that
+E1 ∪ R, which is W2_S, does not reach. U2r saw the same from the name side: NER_MATCHED_NOT_ALL, with musique the
+dataset that missed (docs/U2R_NAME_RULE.md). On the other four passage and KB datasets, E1 and the package's NER are
+close to interchangeable for the pools.
+
+**Carried forward, as section 19 fixed it.**
+- The pools keep the package's NER. U2e's pick stays the incumbent on the β = 0 walk. (a)'s RWe at β = 0.5 stays the
+  carried walk.
+- EL's kinds (IS, CO_t, CO_s) still enter U2n's models as edge types (U2l, section 8).
+- U2o's K1 order and U2p's link weight are unchanged: E1 gained nothing, so no combination with them is declared.
+
+**Next forms.** This closes only E1 in the ner slot with the `kind_t` recipe and U2e's grid. Still open:
+- EL's kinds as typed walk types in (a)'s relational walk;
+- EL's kinds as edge types in U2n's models;
+- E1 beside the package's NER instead of in its place. On a passage graph E1's links are already inside W2_S, the
+  structural slot, so that is the filed families again and needs no run. On a KB it is the package's NER with IS
+  added to it, a form not run here.
