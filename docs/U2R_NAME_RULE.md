@@ -128,3 +128,60 @@ df cap, and names as entity nodes of their own are different forms, and none is 
   on the lab host if it is reachable first.
 - Outputs: `outputs/u2r/<D>/names.json`, `grade_<carve>.json`, `outputs/u2r/choice.json` and `report.md`. The arrays
   (`names.npz`) stay uncommitted.
+
+## 10. Results (filed 26 October 2026)
+
+**`CHOSEN E1`. The claim read: `NER_MATCHED_NOT_ALL` (below E3: musique).** U2l's choice stands. The pools' entity
+family is the title links alone, with no NER model, as before.
+
+**Gates.** The selftest and gate 3 passed before the code's commit (e645d79). Gate 2 passed on all six datasets: the
+eight U2l scores (E1 and E3 in the three unions, W2_S ∪ NER ∪ kNN, PKG ∪ NER ∪ kNN) equal U2l's filed grade record
+exactly, with nothing differing. Names are kept as strings.
+
+### The three-family scores (s1sel; webqsp is s1eval, beside)
+
+| form | musique | squad | hotpotqa | 2wiki | metaqa | mean of five | webqsp |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| E1 | 0.6811 | 0.9908 | **0.9025** | **0.7671** | **0.2912** | **0.7265** | **0.5168** |
+| N1 | **0.6960** | **0.9915** | 0.9004 | 0.7445 | 0.2903 | 0.7245 | 0.5148 |
+| N2 | 0.6953 | **0.9915** | 0.8954 | 0.6953 | 0.2874 | 0.7130 | 0.5108 |
+| E3 (reference) | 0.6940 | **0.9915** | 0.8920 | 0.6948 | 0.2900 | 0.7125 | 0.5071 |
+
+E1 has the best mean and comes first in the order, so it is the pick. N1 sits 0.0020 below it.
+
+### The claim read
+
+E1 against E3 per dataset: musique −0.0129, squad −0.0007 (within the 0.002), hotpotqa +0.0105, 2wiki +0.0723 and
+metaqa +0.0012; webqsp's s1eval +0.0097, beside. The chosen form is at or above spaCy's on four of the five datasets
+and below it on musique, where the names without a node matter (section 1).
+
+### Beside, deciding nothing
+
+- **The name rule against spaCy.** N1 (IS ∪ CN_u) is at or above E3 on all six: musique +0.0020, squad 0.0000,
+  hotpotqa +0.0084, 2wiki +0.0497, metaqa +0.0003, webqsp +0.0077. A rule with no model and no outside list matches
+  spaCy's co-mention edges wherever they help and costs less where they hurt.
+- **Why N1 is not the pick.** Against E1, N1 gains musique (+0.0149) and squad (+0.0007) but loses 2wiki (−0.0226),
+  hotpotqa (−0.0021) and metaqa (−0.0009); webqsp −0.0020. On 2wiki the name edges dilute X's order as the kNN family
+  does: E1 alone 0.8191 and N1 alone 0.7862, falling to 0.7671 and 0.7445 with R and kNN. 2wiki's CN_u holds
+  12,133,314 pairs.
+- **The names.**
+
+| dataset | names | mentions | titled | CN_u pairs | CN_all pairs |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| musique | 392,380 | 1,027,176 | 51,025 | 766,887 | 931,069 |
+| squad | 70,103 | 171,727 | 254 | 165,521 | 173,645 |
+| hotpotqa | 6,691,279 | 31,412,080 | 2,504,599 | 7,884,128 | 23,218,108 |
+| 2wiki | 9,529,415 | 49,225,075 | 2,883,336 | 12,133,314 | 38,242,751 |
+| metaqa | 37,914 | 41,894 | 33,194 | 3,287 | 12,605 |
+| webqsp | 675,583 | 1,133,354 | 494,714 | 286,248 | 995,434 |
+
+The names pass took 1,581 s on hotpotqa and 2,594 s on 2wiki (laptop), and grading took 508 s and 1,154 s.
+
+### What follows
+
+- Section 8's `CHOSEN E1` branch: U2l's choice stands, and U2m's section 19 (E1) runs as declared, with no amendment.
+- U2n's models may read CN_u and CN_all as edge kinds beside IS, CO_t and CO_s. N1's musique gain is signal, so it
+  reaches both models as an input before the idea closes (docs/SCREENS.md, section 3b).
+- This verdict closes only the forms tested: these runs, connectors, statistic and df cap [2, 25] in these unions.
+  Open, each in its own file: a tighter df cap on CN_u (2wiki's loss comes with its pair count), a name merged into a
+  title group by its prefix, and names as entity nodes of their own.

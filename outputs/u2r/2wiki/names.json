@@ -1,0 +1,26 @@
+{
+ "dataset": "2wiki",
+ "declared_in": "docs/U2R_NAME_RULE.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 5989847,
+ "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+ "cvt_mediators": 0,
+ "statistic_tokens": 3564721,
+ "names": 9529415,
+ "mentions": 49225075,
+ "names_df_2_25": 2556237,
+ "titled_names": 2883336,
+ "titled_mentions": 35975416,
+ "cn_all_pairs": 38242751,
+ "cn_u_pairs": 12133314,
+ "secs": {
+  "names": 2484.3,
+  "edges": 107.2
+ },
+ "script_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020",
+ "seconds": 2593.9
+}

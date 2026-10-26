@@ -1,0 +1,27 @@
+{
+ "dataset": "musique",
+ "declared_in": "docs/U2R_NAME_RULE.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 117534,
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "cvt_mediators": 0,
+ "statistic_tokens": 258520,
+ "names": 392380,
+ "mentions": 1027176,
+ "names_df_2_25": 81788,
+ "titled_names": 51025,
+ "titled_mentions": 262543,
+ "cn_all_pairs": 931069,
+ "cn_u_pairs": 766887,
+ "secs": {
+  "names": 26.2,
+  "edges": 2.0
+ },
+ "script_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "gate3": "PASS",
+ "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda",
+ "seconds": 28.3
+}

@@ -1,0 +1,26 @@
+{
+ "dataset": "hotpotqa",
+ "declared_in": "docs/U2R_NAME_RULE.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 5233329,
+ "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+ "cvt_mediators": 0,
+ "statistic_tokens": 2769871,
+ "names": 6691279,
+ "mentions": 31412080,
+ "names_df_2_25": 1619915,
+ "titled_names": 2504599,
+ "titled_mentions": 22355143,
+ "cn_all_pairs": 23218108,
+ "cn_u_pairs": 7884128,
+ "secs": {
+  "names": 1504.3,
+  "edges": 75.7
+ },
+ "script_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "zu2i_sha256": "14de2bd9bc4ae4d8aa741543f4184ee54136a16330a96c3d352375a2489fa5d3",
+ "names_npz_sha256": "8ae1d1cb11afcda4217ca8a33a6e8df743310489f8decb9a75baf07832da3f04",
+ "seconds": 1581.5
+}
