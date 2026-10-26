@@ -285,6 +285,7 @@ def fit(name, rows_cap=0):
 # ── the laptop: take, compares, null ─────────────────────────────────────────
 
 NEVER = ("models.pt",)
+OTHERS = ("scr-g6b-",)          # a stage that fits in KG's sessions takes its own fits (docs/G6B_GATED_BACKOFF.md)
 
 
 def fit_device(name, out_root=None):
@@ -309,12 +310,12 @@ def one_device(names, out_root=None):
 def take(src, out_root=None):
     """Each KG fit under src (a kernel's output: fits/<name>, or <name>) copied to outputs/screen/fits/<name>: its
     records and reads, never its weights. A fit must be stamped and read by KG; a file there already must be the
-    same bytes."""
+    same bytes. Fits of a stage that shares KG's sessions (OTHERS) are left to that stage's take."""
     src = Path(src)
     base = src / "fits" if (src / "fits").is_dir() else src
     dst_root = Path(out_root or S.OUT / "fits")
     took, kept = [], []
-    for d in sorted(p for p in base.iterdir() if p.is_dir()):
+    for d in sorted(p for p in base.iterdir() if p.is_dir() and not p.name.startswith(OTHERS)):
         if d.name not in FITS:
             raise SystemExit(f"zkg take: {d.name} is not one of KG's fits")
         fit_device(d.name, base)
@@ -733,11 +734,13 @@ def selftest():
         # 4. take: records and reads copied, never models.pt; an unread fit, a name not KG's, other bytes refused
         src = td / "out"
         fake_fit(src, "scr-kg-base-zg6")
+        (src / "fits" / "scr-g6b-zg6b").mkdir()
+        (src / "fits" / "scr-g6b-zg6b" / "read.json").write_text("{}", encoding="utf-8")
         dst = td / "repo_fits"
         took = take(src, dst)
         assert sorted(Path(t).name for t in took) == ["kg_timing.json", "metaqa__s1eval.npz", "read.json",
                                                       "screen.json", "train.json"], took
-        assert not (dst / "scr-kg-base-zg6" / "models.pt").exists()
+        assert not (dst / "scr-kg-base-zg6" / "models.pt").exists() and not (dst / "scr-g6b-zg6b").exists()
         assert take(src, dst) == []
         (dst / "scr-kg-base-zg6" / "train.json").write_text("{}", encoding="utf-8")
         stops(take, src, dst, has="other bytes")

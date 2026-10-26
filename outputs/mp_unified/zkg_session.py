@@ -8,9 +8,10 @@ It finds KG's nine private datasets under /kaggle/input by their manifest.json: 
 U2d's inputs. It checks every file's size and sha256 against its manifest, and the inputs' manifest against
 outputs/u2d/inputs.json and inputs_pins.json, which git holds. It links each file at its repository path
 (outputs/u2d/base/... and the inputs' own paths); a file git already holds must be the same bytes up to line ends. It
-links outputs/screen/fits to /kaggle/working/fits, so the fits are the kernel's output. It then runs `zkg.py fit` for
-each named fit, one queue per T4 (CUDA_VISIBLE_DEVICES 0 and 1), each fit in its own process, and starts no fit after
---start-before hours. session.json in /kaggle/working records the commit, the manifests' sha256, the versions, and each
+links outputs/screen/fits to /kaggle/working/fits, so the fits are the kernel's output. It then runs each named fit
+through its stage's script (`zkg.py fit` for KG's scr-kg- fits, `zg6b.py fit` for G6b's scr-g6b- fits; docs/
+G6B_GATED_BACKOFF.md, section 7), one queue per T4 (CUDA_VISIBLE_DEVICES 0 and 1), each fit in its own process, and
+starts no fit after --start-before hours. session.json in /kaggle/working records the commit, the manifests' sha256, the versions, and each
 fit's exit code and seconds. Each fit's log goes to /kaggle/working/logs/<name>.log.
 
 On the laptop, after the commit is pushed:
@@ -43,7 +44,25 @@ TEXT = (".py", ".json", ".yaml", ".yml", ".md", ".txt", ".csv", ".toml", ".jsonl
 INPUT = Path("/kaggle/input")
 WORK = Path("/kaggle/working")
 STUB = "kg_stub.py"
+SCRIPTS = {"scr-kg-": "outputs/mp_unified/zkg.py", "scr-g6b-": "outputs/mp_unified/zg6b.py"}  # the stages that fit here
 lock = threading.Lock()
+
+
+def script_of(name):
+    """The stage script that fits a name: KG's fits through zkg.py, G6b's through zg6b.py."""
+    hits = [s for p, s in SCRIPTS.items() if name.startswith(p)]
+    if len(hits) != 1:
+        raise SystemExit(f"zkg_session: no stage here fits {name} (names start {', '.join(SCRIPTS)})")
+    return hits[0]
+
+
+def check_names(gpu0, gpu1):
+    """Every queued name a stage's, each once."""
+    every = list(gpu0) + list(gpu1)
+    for n in every:
+        script_of(n)
+    if len(set(every)) != len(every):
+        raise SystemExit(f"zkg_session: a fit is queued twice: {sorted(n for n in set(every) if every.count(n) > 1)}")
 
 
 def log(msg):
@@ -239,7 +258,7 @@ def queue(gpu, names, state, work, repo, deadline, rows_cap):
         t0 = time.time()
         log(f"{name}: start on GPU {gpu}")
         with open(Path(work) / "logs" / f"{name}.log", "w", encoding="utf-8") as lf:
-            rc = subprocess.run([sys.executable, "outputs/mp_unified/zkg.py", "fit", "--name", name]
+            rc = subprocess.run([sys.executable, script_of(name), "fit", "--name", name]
                                 + (["--rows-cap", str(rows_cap)] if rows_cap else []), cwd=str(repo), env=env,
                                 stdout=lf, stderr=subprocess.STDOUT).returncode
         with lock:
@@ -250,6 +269,7 @@ def queue(gpu, names, state, work, repo, deadline, rows_cap):
 
 def run(gpu0, gpu1, start_before=8.0, rows_cap=0, repo=ROOT, work=WORK, inp=INPUT):
     t0 = time.time()
+    check_names(gpu0, gpu1)
     head, dirty = commit(repo)
     if dirty:
         raise SystemExit(f"zkg_session: the clone differs from {head}: {dirty[:5]}")
@@ -308,6 +328,7 @@ def git(*a, repo=ROOT):
 def stub(out, gpu0, gpu1, start_before=8.0, rows_cap=0, repo=ROOT):
     """For HEAD once origin holds it: out/kernel/kg_stub.py, the kernel's code file, and out/code/mpr-<sha12>.bundle,
     main's history as a git bundle, which the stub clones and checks out at the commit."""
+    check_names(gpu0, gpu1)
     sha = git("rev-parse", "HEAD", repo=repo)
     if git("status", "--porcelain", "--untracked-files=no", repo=repo):
         raise SystemExit("zkg_session: the working tree differs from HEAD; commit first")
@@ -453,6 +474,16 @@ def selftest():
     env = [ast.literal_eval(n.value) for n in tree.body if isinstance(n, ast.Assign)
            and [getattr(t, "id", None) for t in n.targets] == ["ENV"]]
     assert env == [FIT_ENV], env
+    # 5. each name to its stage's script, both scripts present; a name no stage here fits, or one queued twice, stops
+    assert script_of("scr-kg-base-zg6") == "outputs/mp_unified/zkg.py"
+    assert script_of("scr-g6b-zg6b-hp") == "outputs/mp_unified/zg6b.py"
+    assert all((ROOT / s).is_file() for s in SCRIPTS.values())
+    stops(script_of, "scr-u2d-base-zg6", has="no stage here fits")
+    stops(check_names, ["scr-kg-base-zspk"], ["scr-gl-zg6t"], has="no stage here fits")
+    stops(check_names, ["scr-g6b-zg6b"], ["scr-g6b-zg6b"], has="queued twice")
+    check_names(["scr-kg-base-zg6-hp", "scr-g6b-zg6b-hp"], ["scr-kg-base-zg6", "scr-g6b-zg6b"])
+    stops(run, ["scr-x"], [], has="no stage here fits")
+    stops(stub, Path(tempfile.gettempdir()) / "never", ["scr-kg-base-zg6"], ["scr-u2d-base-zg6"], has="no stage")
     print(f"zkg_session selftest PASS ({time.time() - t0:.1f}s)", flush=True)
     return 0
 

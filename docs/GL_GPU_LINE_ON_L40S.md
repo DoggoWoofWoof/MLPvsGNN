@@ -131,7 +131,9 @@ Beside, deciding nothing:
 - the twin against zspk, re-called under U2d's zspk null (G6's beside row);
 - zg6 minus zg6t on each read: what the edges add to the same model, with R@5's interval, FC@5 and hit@1.
 
-The twin is also G6b's other half: G6b mixes zg6's score with its twin's.
+The twin is also G6b's other half: G6b mixes zg6's score with its twin's. (Corrected 27 October: G6b's twin is its own
+no-edge pass, trained together with its edge pass, so G6b does not need these fits; docs/G6B_GATED_BACKOFF.md,
+section 1.)
 
 ## 5. What waits for the host
 
@@ -196,7 +198,9 @@ zg6 against zspk, re-called under U2d's zspk null, by G6's rule:
 
 **Next form**, as fixed in G6, section 5: **G6b**, a per-question back-off. zg6's score is mixed with its twin's
 through a learned gate on the question's edge-family shares, at equal weight at the start. G6b gets its own declared
-file. It needs zg6t's fits, which run on workspace 3 from 1 November (section 4).
+file. It needs zg6t's fits, which run on workspace 3 from 1 November (section 4). *Corrected 27 October:* it does not.
+Its twin is the same network's no-edge pass, trained together with the edge pass, and it runs on KG's T4
+(docs/G6B_GATED_BACKOFF.md, section 1).
 
 R@5 per read. Every column is on the L40S except the last. The MLP share is (zrckp - rrf) / (zg6 - rrf):
 

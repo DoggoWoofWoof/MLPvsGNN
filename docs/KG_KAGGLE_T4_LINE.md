@@ -114,6 +114,12 @@ short names, since the Kaggle client names a resume file after each upload's ful
 5. links outputs/screen/fits to /kaggle/working/fits, so the fits are the kernel's output;
 6. runs `zkg.py fit` for each named fit, one queue per T4, each fit in its own process, and starts no fit after 8 hours.
 
+**Amended 27 October, before any KG number, with G6b's declaration** (docs/G6B_GATED_BACKOFF.md, section 7):
+- step 6 runs each named fit through its stage's script: `zkg.py fit` for KG's scr-kg- fits, `zg6b.py fit` for G6b's
+  scr-g6b- fits;
+- the session stops on a name that no stage there fits, or on a fit queued twice, before reading any data;
+- `zkg.py take` leaves scr-g6b- folders to G6b's take.
+
 session.json records the commit, the manifests' sha256s, the versions, the environment, and each fit's exit code and
 seconds.
 
@@ -163,6 +169,9 @@ G6b comes first.
 
 If session 1's T4 times would put a session-2 queue above 8 hours, session 2 splits in two. The split decides nothing.
 
+G6b's two fits go first in session 1's queues, before the null's seeds (docs/G6B_GATED_BACKOFF.md, section 7). Where a
+fit runs decides nothing.
+
 **Time and cost.** U2d's fourteen fits took 14,780 s on the L40S (4.1 h). The T4 is slower. At three to five times
 slower, that is 12 to 20 T4-hours in two queues, so about 6 to 10 hours of sessions, inside one week's quota. It costs
 nothing.
@@ -189,7 +198,7 @@ the ten datasets attached, the GPU on and internet off.
 2. **Where:** train and read refuse anything but a Kaggle T4 on KG's image, before reading data.
 3. **Stamps and one device:** it refuses a fit that is not KG's, a read on another device, and fits from two devices.
 4. **Take:** records and reads are copied, and models.pt never is. It refuses an unread fit, a name that is not KG's,
-   and a file with other bytes.
+   and a file with other bytes. It leaves a scr-g6b- folder alone (added with G6b).
 5. **The null:** the floors are checked. It refuses a compare that is not KG's, one from another device, and seeds
    compared with different seed-0 R@5s.
 6. **The verdict:**
@@ -207,6 +216,8 @@ the ten datasets attached, the GPU on and internet off.
    - git's file with other bytes, and a link that points elsewhere.
 3. **The stub:** its code compiles, and a toy bundle clones and checks out at its commit.
 4. **The environment:** each fit's environment is zu2d_modal.py's ENV.
+5. **The stage scripts** (added with G6b): each name maps to its stage's script, and a name that no stage there fits,
+   or a fit queued twice, stops `run` and `stub` before anything else.
 
 The text encoder stays frozen. webqsp never trains. Test splits are never read. There is no LLM or transformer, and no
 new graph.
