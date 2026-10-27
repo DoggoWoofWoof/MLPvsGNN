@@ -1,0 +1,108 @@
+{
+ "declared_in": "docs/WQP_POOL_PICK_UNDER_WQ.md",
+ "stage": "WQP",
+ "stages": {
+  "check:s4d": {
+   "status": "OK",
+   "problems": [],
+   "carve": "s1eval",
+   "questions": 1503,
+   "record": "outputs/wqp/check/step4d/pools/pools.json",
+   "record_sha256": "8b1839905187fc62d19ed9057b130643da13de4c246e6c93a129b01ed9fa890b",
+   "file": "outputs/wqp/check/step4d/pools/webqsp__s1eval.npz",
+   "file_sha256": "cf44097f600310e0c04e6b067e009ada6208855f3e0d26cd28ffa64c0fbd7515",
+   "seconds": 136.6,
+   "threads": 6,
+   "blas": {
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2"
+   },
+   "placed": null,
+   "script_sha256": "f988d3b2e00444bb1d484a0f364c2f291efd30a8c996c96ee411f6d239f7ab7b",
+   "utc": "2026-10-27T22:58:48Z"
+  },
+  "check:s4e": {
+   "status": "OK",
+   "problems": [],
+   "carve": "s1eval",
+   "questions": 1503,
+   "record": "outputs/wqp/check/step4e/pools/pools.json",
+   "record_sha256": "ceb188d851f0e5faf0c905936a21c4d49dfc2af1226b75847613078eb760360c",
+   "file": "outputs/wqp/check/step4e/pools/webqsp__s1eval.npz",
+   "file_sha256": "d92c0a93df7b2ea2fa1d3d9b7fe11f72ec6605a453b9b830d03b106e85bf4f67",
+   "seconds": 246.5,
+   "threads": 6,
+   "blas": {
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2"
+   },
+   "placed": null,
+   "script_sha256": "f988d3b2e00444bb1d484a0f364c2f291efd30a8c996c96ee411f6d239f7ab7b",
+   "utc": "2026-10-27T23:03:15Z"
+  },
+  "check:p1d": {
+   "status": "OK",
+   "problems": [],
+   "carve": "s1eval",
+   "questions": 1503,
+   "record": "outputs/wqp/check/p1d/pools_webqsp.json",
+   "record_sha256": "7b7a6172f5b9426d258ba2e258750c0da0671189789e5d77ea0589e2a141fd1c",
+   "file": "outputs/wqp/check/p1d/pos_webqsp__s1eval.npz",
+   "file_sha256": "ac44a95334b0c2b5af859b6f843bd43831e0c14637e3197af43e500162c15a3a",
+   "seconds": 340.5,
+   "threads": 6,
+   "blas": {
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2"
+   },
+   "placed": null,
+   "script_sha256": "f988d3b2e00444bb1d484a0f364c2f291efd30a8c996c96ee411f6d239f7ab7b",
+   "utc": "2026-10-27T23:09:18Z"
+  },
+  "check:p1e": {
+   "status": "OK",
+   "problems": [],
+   "carve": "s1eval",
+   "questions": 1503,
+   "record": "outputs/wqp/check/p1e/pools_webqsp.json",
+   "record_sha256": "13c459c1ebf6a23ff1ebab9d494baf87a510411ec69d88cc30a76a261bb9ff7c",
+   "file": "outputs/wqp/check/p1e/pos_webqsp__s1eval.npz",
+   "file_sha256": "0afc1b32c6debd2e02786a4d527bc425821443c55caf23849f997029ee2e00a5",
+   "seconds": 524.1,
+   "threads": 6,
+   "blas": {
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2"
+   },
+   "placed": null,
+   "script_sha256": "f988d3b2e00444bb1d484a0f364c2f291efd30a8c996c96ee411f6d239f7ab7b",
+   "utc": "2026-10-27T23:18:22Z"
+  },
+  "check:p1f": {
+   "status": "OK",
+   "problems": [],
+   "carve": "s1eval",
+   "questions": 1503,
+   "record": "outputs/wqp/check/p1f/stats_webqsp.json",
+   "record_sha256": "553edb3d5c0eb6711c1de3bc1bb918d6b7ed2405c03b9f7fb8120d2efaab87f3",
+   "file": "outputs/wqp/check/p1f/stats_webqsp__s1eval.npz",
+   "file_sha256": "cc944eb535ce14473b348b966c559daf92b7a52de21cbbad04e9248c66a380b1",
+   "seconds": 485.4,
+   "threads": 6,
+   "blas": {
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2"
+   },
+   "placed": null,
+   "script_sha256": "f988d3b2e00444bb1d484a0f364c2f291efd30a8c996c96ee411f6d239f7ab7b",
+   "utc": "2026-10-27T23:26:51Z"
+  }
+ },
+ "earlier": [],
+ "utc": "2026-10-27T23:26:51Z"
+}
