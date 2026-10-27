@@ -238,3 +238,67 @@ then the one below.
 - P1h's cut taken over the walk's mass in place of rank mass.
 
 Each verdict closes only the form it tests (docs/SCREENS.md, section 3b).
+
+## 11. Results (filed 28 October 2026)
+
+**U2s: NOT_UNIFIED, KIND_FREE_TOO_DEAR, OWN_CHEAPER.** Carried forward (section 6, step 3): pick O,
+`own/kind_t/kt_cos:ada_f16_k0@0.85`, an ADA budget, at level 0.96 and 1,904.6 rows.
+
+The records are outputs/u2s/verdict.json and .md, and the six stats records outputs/u2s/stats/<D>__<carve>.json. Each
+names zu2s.py's sha256 as committed in 9ab7afe (0c4fb2ef63fe), and the verdict names each stats array by its sha256.
+The arrays stay uncommitted (section 8).
+
+**The three verdicts.**
+- **(c) NOT_UNIFIED.** No universal kind_t candidate meets any level within the cap. C's cheapest 0.950 point costs
+  3,311.4 rows, 1.7x the cap: `rrf50+none/kind_t/kt_cos+n2_100:mass_A1all_t0.9_f4_k0@0.8`, a MASS budget.
+- **(e) KIND_FREE_TOO_DEAR.** E has no point within the cap either. Its cheapest 0.950 point costs 3,569.6 rows, 1.8x
+  the cap.
+- **(o) OWN_CHEAPER, ADA.** Pick O is the incumbent with k0 = 0 in place of 300, with the same order, multiplier and
+  τ. It holds level 0.96 at 1,904.6 rows, 48.8 rows (2.5%) below the incumbent's 1,953.4. O's next level, 0.965, costs
+  2,071.7 rows, past the cap.
+
+**Pick O against the incumbent**, ALL and mean rows on s1sel:
+
+| dataset | pick O | rows | U2p's pick | rows |
+| --- | ---: | ---: | ---: | ---: |
+| metaqa | 0.9653 | 4,369.9 | 0.9653 | 4,369.9 |
+| squad | 0.9793 | 50.0 | 0.9933 | 248.0 |
+| musique | 0.9668 | 5,522.2 | 0.9668 | 5,522.2 |
+| hotpotqa | 0.9602 | 713.1 | 0.9602 | 714.3 |
+| 2wiki | 0.9699 | 1,070.5 | 0.9699 | 1,070.5 |
+| webqsp (s1eval, beside) | 0.9069 | 4,803.4 | 0.9069 | 4,803.4 |
+
+Almost all of the saving is squad's. Its questions keep 50 rows in place of 248, which is 48.5 of the 48.8 rows by
+P1f's weights, and its ALL falls from 0.9933 to 0.9793, still above the level. hotpotqa saves 1.2 rows a question. The
+other four datasets are unchanged.
+
+**The checks held** on all six datasets:
+- the walk-free arrays equal (c)'s, question for question;
+- the graph, the seeds, the EM and score types, KIND_T by kind, and every order (orders_exact);
+- m_q's bounds;
+- each of the carried frontier's 8 points gives back its filed rows and held golds.
+
+The verdict reproduced U2p's filed table at those 8 points on all six, and the incumbent at 0.96 and 1,953.4. Each
+record's rows_served_verified is false: section 7 has the development runs check the served rows against DenseNodes,
+not the full runs.
+
+**Beside, deciding nothing** (verdict.md has every table):
+- **The budget forms.** The cheapest universal point of each form at 0.950 costs MASS 3,311.4, FIX 3,358.2 and ADA
+  3,430.6 rows; at 0.960, ADA 3,894.2, MASS 4,078.6 and FIX 4,092.3. The walk's mass is the cheapest form at some
+  levels, but no form brings a universal construction near the cap.
+- **m_q against today's fill.** m_q's Spearman correlation with today's fill runs from −0.23 to 0.61 across the
+  datasets, walks and values of τ_w. On metaqa it is between −0.09 and 0.01, and on squad it is undefined, since
+  squad's fill is 0. A1all needs 2,576 to 3,460 nodes for 0.9 of its mass on every dataset (the medians); KTall needs
+  229 to 430, and none on squad.
+- **The union ceilings:** metaqa 0.9973, squad 0.9993, musique 0.9817, hotpotqa 0.9887, 2wiki 0.996 and webqsp 0.9634.
+- **Where it ran.** Every dataset's stats ran on the laptop, taking 9,043 to 12,889 s each, and finished on
+  27 October. After 04:05 IST that day they ran in parallel lanes, with hotpotqa and 2wiki in three shards each,
+  merged with every shard checked. Where and when they ran decides nothing.
+
+**What follows (section 10, step 3).** The own construction is kept, with pick O's budget.
+- U2n's next form (docs/U2N_TYPED_CHANNELS.md) refits zrckpt on these carried pools. It needs the model inputs of
+  pick O's pools on every carve, in its own declared file.
+- The unified form's next forms are a budget read from RRF5T's agreement across its five orders, and P1h's cut taken
+  over the walk's mass. NOT_UNIFIED closes only the walk-mass budget on the carried walk.
+- Under WQ (docs/WQ_WEBQSP_TRAINS.md, section 9, step 3), the pick is chosen again with metaqa out of the training sets
+  and webqsp's select carve as a selection carve, in its own declared file.
