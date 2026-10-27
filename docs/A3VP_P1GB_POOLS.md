@@ -214,4 +214,75 @@ and reads run under `retry_cmd.py --cuda` and `cuda_alloc.py --frac`, as in the 
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a3vp/screen-verdict.json`, written 2026-10-20T04:49:51Z; the
+re-call `outputs/screen/scr-a3vp-zrckpy-pair-recall.json`, host paths made relative). **On P1g-b's pools, NOT_ADOPTED,
+with no GAIN and one LOSS. Beside, deciding nothing:** P1g-c's pools call is NOT_ADOPTED (docs/P1GC_ADOPTED_ON_P1GB.md,
+section 8), so by section 5's pools rule A3v's own verdict on P1c2's pools decides (zrckpy ADOPT_FOR_FULL_RUN,
+`outputs/a3v/screen-verdict.json`).
+
+A3vp ran on 20 October, before N2's gate `n2-gate-a3v` (docs/N2_FRESH_SEED_NULL.md, sections 5 and 6, a feeder edit) was
+among its trains' dependencies. N2 decides only whether the refits run, not their calls; its own results are not filed
+yet.
+
+- **zrckpy: 0 GAIN, 1 LOSS.** The LOSS is webqsp zero-shot on L-musique: -0.0113 [-0.0206, -0.0014] against its 0.0102
+  floor, with FC@5 -0.0173. webqsp zero-shot on L-hotpotqa falls -0.0181 [-0.0295, -0.0069], a LOSS by its pair's
+  interval that is WITHIN under its 0.0233 floor (FC@5 -0.0180). Seven more intervals exclude 0, all inside their
+  floors: on L-musique, metaqa +0.0012 [+0.0001, +0.0022], musique zero-shot +0.0054 [+0.0010, +0.0098] and 2wiki
+  -0.0069 [-0.0084, -0.0054]; on L-hotpotqa, metaqa +0.0030 [+0.0021, +0.0039], musique -0.0058 [-0.0114, -0.0003],
+  hotpotqa zero-shot -0.0037 [-0.0067, -0.0007] and 2wiki -0.0054 [-0.0071, -0.0036].
+- **Beside: the rule's GAIN on P1c2's pools turns to a LOSS on P1g-b's.** On P1c2's pools (A3v), zrckpy gained webqsp
+  zero-shot on L-musique (+0.0112); on P1g-b's pools that read falls -0.0113.
+
+The next form, fixed in section 5 and recorded in the verdict for no GAIN, is that the share idea stays open on the MLP
+(it gained on P1c2's pools; docs/SCREENS.md, 3b): A3z's whole-pool z-scores beside zret's on P1g-b's pools, its own
+declared file. The verdict's F1 note: zrckpy not adopted: the full run's MLP trains as zrckp does. Both name P1g-b's
+pools, which P1g-c has since left out of the full run; on P1c2's pools, where it runs, A3v's verdict adopts zrckpy. A3z,
+the whole-pool z-scores on P1c2's pools against the lean pair, has no GAIN on either model (docs/A3Z_WHOLE_POOL_Z.md,
+section 7; its next form is A3zx).
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a3vp/screen-verdict.json` and `.md`; for the arm `zrckpy`, the
+compares `outputs/screen/scr-a3vp-zrckpy.json` and `-hp.json`, the pair `-pair.json` and its re-call
+`-pair-recall.json`, each with its `.md`; the re-calls' base screens `outputs/a3vp/base-zrckp-L-hotpotqa.json`,
+`outputs/a3vp/base-zrckp-L-musique.json`, each with its `.md`. The host paths were made relative in each re-call's two
+`rel` entries and nowhere else, so the `recall_sha256` each verdict holds is the host file's, from before that change.
+
+The twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, zrckp's card fit of the split on
+P1g-b's pools, P1g-b's `scr-p1gb-zrckp`; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zrckp R@5 | zrckpy: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.7993 | +0.0012 [+0.0001, +0.0022], WITHIN |
+| L-musique | squad | in-domain | 0.9127 | -0.0010 [-0.0028, +0.0008], WITHIN |
+| L-musique | musique | zero-shot | 0.5013 | +0.0054 [+0.0010, +0.0098], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9035 | +0.0007 [-0.0016, +0.0030], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9377 | -0.0069 [-0.0084, -0.0054], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3768 | -0.0113 [-0.0206, -0.0014], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.7997 | +0.0030 [+0.0021, +0.0039], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9122 | +0.0003 [-0.0016, +0.0022], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5695 | -0.0058 [-0.0114, -0.0003], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8546 | -0.0037 [-0.0067, -0.0007], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9340 | -0.0054 [-0.0071, -0.0036], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3364 | -0.0181 [-0.0295, -0.0069], WITHIN (filed LOSS) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a3vp-zrckpy.json` and `-hp.json`); and A3v's R@5 deltas with the same arm on P1c2's pools, against
+zrckp there (its own re-call, `outputs/screen/scr-a3v-zrckpy-pair-recall.json`), on the same read (a call is shown where
+it is not WITHIN):
+
+| split | dataset | zrckpy FC@5 | zrckpy hit@1 | zrckpy on P1c2's pools (A3v) R@5 |
+| --- | --- | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0015 | +0.0119 | +0.0003 |
+| L-musique | squad | -0.0010 | -0.0008 | +0.0015 |
+| L-musique | musique | +0.0054 | +0.0062 | -0.0111 |
+| L-musique | hotpotqa | -0.0007 | +0.0065 | -0.0022 |
+| L-musique | 2wiki | -0.0192 | +0.0051 | +0.0014 |
+| L-musique | webqsp | -0.0173 | -0.0140 | +0.0112 GAIN |
+| L-hotpotqa | metaqa | +0.0038 | +0.0106 | -0.0019 |
+| L-hotpotqa | squad | +0.0003 | +0.0013 | +0.0003 |
+| L-hotpotqa | musique | -0.0062 | -0.0128 | +0.0004 |
+| L-hotpotqa | hotpotqa | -0.0070 | -0.0127 | +0.0038 |
+| L-hotpotqa | 2wiki | -0.0118 | +0.0053 | -0.0013 |
+| L-hotpotqa | webqsp | -0.0180 | -0.0106 | +0.0036 |

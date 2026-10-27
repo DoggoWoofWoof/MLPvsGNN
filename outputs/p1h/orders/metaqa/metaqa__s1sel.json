@@ -1,0 +1,49 @@
+{
+ "declared_in": "docs/P1H_FEWER_ROWS.md",
+ "stage": "P1h orders",
+ "dataset": "metaqa",
+ "carve": "s1sel",
+ "questions": 1497,
+ "carve_ids_sha256": "dabbb4f9e8770db0fd373b7ffddbb63d481cba23971b386e684696167df0d780",
+ "chosen": "g:f1.5+cut_cos_5000",
+ "fill_fraction": 1.5,
+ "extra": "cut_cos_5000",
+ "gated": true,
+ "order": "base and seeds; then fill_f in KIND_T's order; then the extra set's nodes outside fill_f by their rank under the extra set's own order",
+ "rank_constant": 60,
+ "threads": 2,
+ "script_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+ "p1gb_script_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+ "p1g_script_sha256": "ddb2900f382f14c130eca100efd2472c29837ae633a975483f06a1afa9336817",
+ "p1g2_script_sha256": "756948d7326f6683539914b42b3585bbe9ab83a32595d949b60f044560d59a05",
+ "d5b_script_sha256": "dd7f897d459452da8b907257fbcd75361b35b08a45c027ac80e0fc62493bd78e",
+ "p1f_script_sha256": "fd409345fb482f42d1948281fb59b55376581059249c99d5dc3f47e732f6c780",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1g2_verdict_sha256": "1758677ef54847f51aaa1fec269cfaf2d3e4e38a05e2529719a3a1e94223b36a",
+ "reference": {
+  "p1g_stats_file_sha256": "c41ca934391c85a3c17804847c2cc90a49f962ef1e091a1f5b4949751e0754e8"
+ },
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "checks": {
+  "bs_inc_equal_p1f": true,
+  "today_fill_equal_p1g": true,
+  "rows_held_equal_p1g": true,
+  "carve_equals_p1g2": true
+ },
+ "summary_tau1": {
+  "questions": 1497,
+  "all_count": 1444,
+  "ALL": 0.9646,
+  "recall": 0.9909,
+  "rows": 3406.4,
+  "rows_p50": 3418.0,
+  "rows_p90": 3563.0,
+  "rows_mean": 3406.429525718103
+ },
+ "seconds": 158.2,
+ "utc": "2026-10-20T00:11:24Z",
+ "orders_file": "metaqa__s1sel.npz",
+ "orders_sha256": "2740ee9f586c189080906aa26572e615bb394493fbf8d99fc09db9002ae81188",
+ "golds_file": "metaqa__s1sel.golds.npz",
+ "golds_sha256": "a1b1d98b2359bb4e175ef7f5ee505a54ccab139a3bb26b11a4a7653209355005"
+}

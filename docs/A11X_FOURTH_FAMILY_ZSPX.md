@@ -2,7 +2,8 @@
 
 Declared 19 October 2026, before any number. The next form A11's verdict named for zspk4
 (docs/A11_FOURTH_FAMILY_LINKS.md, section 5), under docs/SCREENS.md section 3b. Code: `outputs/mp_unified/za11x.py`
-(the arm, the screen and the call; the build is A11's, `outputs/mp_unified/za11p4.py`, unchanged). Not run yet.
+(the arm, the screen and the call; the build is A11's, `outputs/mp_unified/za11p4.py`, unchanged).
+Filed 27 October: NOT_ADOPTED with no GAIN and no LOSS; the next form is A11m (section 5).
 
 ## 1. Why this, now
 
@@ -189,4 +190,71 @@ and `outputs/step1/fits/L-hotpotqa`.
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a11x/screen-verdict.json`, written 2026-10-20T10:49:26Z; the
+re-call `outputs/screen/scr-a11x-zspx4-pair-recall.json`, host paths made relative). **NOT_ADOPTED, with no GAIN and no
+LOSS:** with our LLM-free phrase links as a fourth family in all three of zspx's steps, no read moves past its floor,
+and the one filed LOSS, webqsp zero-shot on L-hotpotqa, is inside its floor under the re-call.
+
+- **zspx4: 0 GAIN, 0 LOSS.** webqsp zero-shot on L-hotpotqa falls -0.0145 [-0.0229, -0.0061], a LOSS by its pair's
+  interval that is WITHIN under its 0.0233 floor, with FC@5 -0.0093. Four more intervals exclude 0, all inside their
+  floors: on L-musique, metaqa -0.0012 [-0.0020, -0.0004] and squad +0.0025 [+0.0005, +0.0045]; on L-hotpotqa, metaqa
+  +0.0011 [+0.0001, +0.0019] and 2wiki +0.0015 [+0.0001, +0.0029].
+- **Beside: A11's LOSS is gone, and none takes its place past a floor.** In zspk's one step (A11's zspk4), the family
+  lost webqsp zero-shot on L-musique (-0.0137); in zspx's three steps that read moves -0.0028, and webqsp zero-shot on
+  L-hotpotqa moves from +0.0058 to -0.0145. On musique zero-shot on L-musique, R@5 moves -0.0020 while hit@1 rises
+  +0.0439.
+
+Not adopted. This closes only this form: the fourth family as a message in all three of zspx's steps (docs/SCREENS.md
+section 3b). The next form, fixed in section 5 and recorded in the verdict, is A11m in both models: the family's per-row
+degree (log1p; no score in it) as a fixed column through R1's pointwise head, in zrckp (as zrckpr reads R1's columns)
+and in zspx (as zspxr does), each free to learn how much to use it (one declared file). This closes zspx4's form only:
+as a message the family reached zspk's one step (A11) and all three of zspx's steps (A11x) with no GAIN, so it goes on
+as a fixed input.
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a11x/screen-verdict.json` and `.md`; for the arm `zspx4`, the
+compares `outputs/screen/scr-a11x-zspx4.json` and `-hp.json`, the pair `-pair.json` and its re-call `-pair-recall.json`,
+each with its `.md`. The host paths were made relative in each re-call's two `rel` entries and nowhere else, so the
+`recall_sha256` each verdict holds is the host file's, from before that change. The re-calls' nulls also read the base
+screens `outputs/a9/base-zspx-L-musique.json` and `outputs/a9/base-zspx-L-hotpotqa.json`, fetched from the host with
+this filing (A9's own filing had left them there).
+
+The twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, zspx's card fit of the split; a
+call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zspx R@5 | zspx4: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8030 | -0.0012 [-0.0020, -0.0004], WITHIN |
+| L-musique | squad | in-domain | 0.9092 | +0.0025 [+0.0005, +0.0045], WITHIN |
+| L-musique | musique | zero-shot | 0.5073 | -0.0020 [-0.0072, +0.0034], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9074 | +0.0011 [-0.0011, +0.0034], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9351 | -0.0012 [-0.0025, +0.0003], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3204 | -0.0028 [-0.0087, +0.0031], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8039 | +0.0011 [+0.0001, +0.0019], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9129 | +0.0002 [-0.0018, +0.0022], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5901 | -0.0020 [-0.0069, +0.0028], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8547 | -0.0017 [-0.0043, +0.0011], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9312 | +0.0015 [+0.0001, +0.0029], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2914 | -0.0145 [-0.0229, -0.0061], WITHIN (filed LOSS) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a11x-zspx4.json` and `-hp.json`); and A11's R@5 deltas with the family in zspk's one step (zspk4,
+its own re-call `outputs/screen/scr-a11-zspk4-pair-recall.json`, against zspk), on the same read (a call is shown where
+it is not WITHIN):
+
+| split | dataset | zspx4 FC@5 | zspx4 hit@1 | zspk4 (A11) R@5 |
+| --- | --- | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0008 | -0.0034 | +0.0014 |
+| L-musique | squad | +0.0025 | -0.0013 | +0.0009 |
+| L-musique | musique | -0.0046 | +0.0439 | +0.0033 |
+| L-musique | hotpotqa | +0.0026 | +0.0001 | -0.0016 |
+| L-musique | 2wiki | -0.0014 | +0.0064 | -0.0012 |
+| L-musique | webqsp | +0.0007 | +0.0060 | -0.0137 LOSS |
+| L-hotpotqa | metaqa | +0.0005 | +0.0044 | -0.0003 |
+| L-hotpotqa | squad | +0.0002 | -0.0012 | -0.0014 |
+| L-hotpotqa | musique | -0.0058 | -0.0050 | +0.0047 |
+| L-hotpotqa | hotpotqa | -0.0024 | -0.0014 | +0.0045 |
+| L-hotpotqa | 2wiki | +0.0025 | -0.0059 | +0.0024 |
+| L-hotpotqa | webqsp | -0.0093 | -0.0067 | +0.0058 |

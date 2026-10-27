@@ -240,4 +240,77 @@ the host the trains and reads run under `retry_cmd.py --cuda` and `cuda_alloc.py
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a6ex/screen-verdict.json`, written 2026-10-20T15:50:28Z; the
+re-calls `outputs/screen/scr-a6ex-zrckprn-pair-recall.json` and `scr-a6ex-zspxl-pair-recall.json`, host paths made
+relative). **Both arms NOT_ADOPTED, with no GAIN; the link-word idea closes as a model input** (the verdict's
+`link_word_idea`: CLOSED_AS_A_MODEL_INPUT). The MLP's arm loses webqsp zero-shot on L-musique; the GNN's arm moves no
+read past its floor.
+
+- **zrckprn: 0 GAIN, 1 LOSS.** The LOSS is webqsp zero-shot on L-musique: -0.0118 [-0.0202, -0.0033] against its 0.0102
+  floor, with FC@5 -0.0140. Two filed calls are WITHIN under the re-call: musique zero-shot on L-musique, -0.0098
+  [-0.0151, -0.0048], a LOSS by its pair's interval, against its 0.0720 floor; and webqsp zero-shot on L-hotpotqa,
+  +0.0115 [+0.0025, +0.0215], a GAIN by its pair's interval, against its 0.0233 floor. Four more intervals exclude 0,
+  all inside their floors: on L-musique, 2wiki -0.0053 [-0.0068, -0.0036]; on L-hotpotqa, metaqa -0.0009 [-0.0016,
+  -0.0001], hotpotqa zero-shot +0.0061 [+0.0032, +0.0089] and 2wiki +0.0026 [+0.0011, +0.0041].
+- **zspxl: 0 GAIN, 0 LOSS.** musique zero-shot on L-musique falls -0.0195 [-0.0262, -0.0131], a LOSS by its pair's
+  interval that is WITHIN under its 0.0720 floor (FC@5 -0.0132, hit@1 -0.0571). Five more intervals exclude 0, all
+  inside their floors: on L-musique, squad +0.0025 [+0.0005, +0.0046], hotpotqa +0.0035 [+0.0010, +0.0060] and 2wiki
+  -0.0055 [-0.0071, -0.0038]; on L-hotpotqa, squad +0.0021 [+0.0001, +0.0041] and 2wiki +0.0038 [+0.0023, +0.0053].
+- **Beside: on the lean pair (A6e) every read of both arms was WITHIN.** On the adopted arms the one read past a floor
+  is the MLP's webqsp zero-shot on L-musique, which A6e's zrckpn moved -0.0026; there zrckprn moves -0.0118.
+
+Not adopted. This closes only this form: the link words on the adopted arms, A6e's head over the eight columns beside
+zrckpr's and A6e's six inputs in each of zspx's three steps (docs/SCREENS.md section 3b). With no GAIN on either arm,
+the next form fixed in section 5 and recorded in the verdict for both arms is that the link-word idea closes as a model
+input: A6, A6e and A6ex gave it to both models as learned inputs that start at zero (columns on the MLP; columns, then
+edge weights, then edge weights in every step that reads edges on the GNN), on the old bases and on the adopted ones,
+and no re-call found a GAIN; D4 stays a diagnostic. This is the close A6e's section 5 fixed.
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a6ex/screen-verdict.json` and `.md`; for each arm (`zrckprn`,
+`zspxl`), the compares `outputs/screen/scr-a6ex-<arm>.json` and `-hp.json`, the pair `-pair.json` and its re-call
+`-pair-recall.json`, each with its `.md`; the re-calls' base screens `outputs/a6ex/base-zrckpr-L-hotpotqa.json`,
+`outputs/a6ex/base-zrckpr-L-musique.json`, each with its `.md`. The host paths were made relative in each re-call's two
+`rel` entries and nowhere else, so the `recall_sha256` each verdict holds is the host file's, from before that change.
+The re-calls' nulls also read the base screens `outputs/a9/base-zspx-L-musique.json` and
+`outputs/a9/base-zspx-L-hotpotqa.json`, fetched from the host with this filing (A9's own filing had left them there).
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, the base's card fit of the
+split; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zrckpr R@5 | zrckprn: delta [95% CI], call | zspx R@5 | zspxl: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8012 | +0.0003 [-0.0005, +0.0012], WITHIN | 0.8030 | +0.0007 [-0.0003, +0.0018], WITHIN |
+| L-musique | squad | in-domain | 0.9127 | -0.0003 [-0.0022, +0.0017], WITHIN | 0.9092 | +0.0025 [+0.0005, +0.0046], WITHIN |
+| L-musique | musique | zero-shot | 0.5197 | -0.0098 [-0.0151, -0.0048], WITHIN (filed LOSS) | 0.5073 | -0.0195 [-0.0262, -0.0131], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9083 | +0.0014 [-0.0008, +0.0036], WITHIN | 0.9074 | +0.0035 [+0.0010, +0.0060], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9361 | -0.0053 [-0.0068, -0.0036], WITHIN | 0.9351 | -0.0055 [-0.0071, -0.0038], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3762 | -0.0118 [-0.0202, -0.0033], **LOSS** | 0.3204 | -0.0064 [-0.0159, +0.0024], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | -0.0009 [-0.0016, -0.0001], WITHIN | 0.8039 | +0.0003 [-0.0007, +0.0013], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9114 | +0.0015 [-0.0005, +0.0036], WITHIN | 0.9129 | +0.0021 [+0.0001, +0.0041], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5779 | +0.0022 [-0.0027, +0.0074], WITHIN | 0.5901 | +0.0002 [-0.0052, +0.0052], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8558 | +0.0061 [+0.0032, +0.0089], WITHIN | 0.8547 | +0.0003 [-0.0026, +0.0034], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9331 | +0.0026 [+0.0011, +0.0041], WITHIN | 0.9312 | +0.0038 [+0.0023, +0.0053], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3411 | +0.0115 [+0.0025, +0.0215], WITHIN (filed GAIN) | 0.2914 | -0.0078 [-0.0178, +0.0013], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a6ex-<arm>.json` and `-hp.json`); and A6e's R@5 deltas with the link words on the lean pair (zrckpn
+against zrckp, zspkl against zspk; their own re-calls, `outputs/screen/scr-a6e-<arm>-pair-recall.json`), on the same
+read (a call is shown where it is not WITHIN):
+
+| split | dataset | zrckprn FC@5 | zrckprn hit@1 | zspxl FC@5 | zspxl hit@1 | zrckpn (A6e) R@5 | zspkl (A6e) R@5 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0001 | -0.0010 | +0.0009 | +0.0012 | -0.0006 | +0.0011 |
+| L-musique | squad | -0.0003 | +0.0008 | +0.0025 | +0.0008 | +0.0028 | -0.0003 |
+| L-musique | musique | -0.0070 | -0.0087 | -0.0132 | -0.0571 | -0.0034 | -0.0094 |
+| L-musique | hotpotqa | +0.0020 | -0.0022 | +0.0065 | +0.0080 | +0.0054 | +0.0013 |
+| L-musique | 2wiki | -0.0157 | -0.0104 | -0.0152 | +0.0048 | +0.0026 | -0.0052 |
+| L-musique | webqsp | -0.0140 | -0.0173 | -0.0047 | -0.0073 | -0.0026 | -0.0079 |
+| L-hotpotqa | metaqa | -0.0008 | -0.0014 | -0.0008 | +0.0014 | -0.0011 | +0.0011 |
+| L-hotpotqa | squad | +0.0015 | +0.0028 | +0.0021 | +0.0036 | +0.0013 | +0.0001 |
+| L-hotpotqa | musique | +0.0087 | -0.0021 | -0.0021 | -0.0132 | +0.0057 | +0.0071 |
+| L-hotpotqa | hotpotqa | +0.0107 | +0.0041 | -0.0012 | +0.0009 | +0.0086 | +0.0077 |
+| L-hotpotqa | 2wiki | +0.0088 | -0.0073 | +0.0114 | -0.0012 | +0.0020 | +0.0070 |
+| L-hotpotqa | webqsp | +0.0100 | +0.0040 | -0.0073 | -0.0013 | -0.0067 | +0.0078 |

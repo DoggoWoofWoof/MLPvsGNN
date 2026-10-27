@@ -3,7 +3,8 @@
 Declared 19 October 2026, before any number. The next form A12's verdict named (zspkgs NOT_ADOPTED with no GAIN;
 outputs/a12/screen-verdict.json, fixed in docs/A12_GSURG_GNN.md section 5), under docs/SCREENS.md section 3b and the
 twelfth reopening of docs/VERDICT_AUDIT_2026_10_17.md (section 2, row 12). Code: `outputs/mp_unified/za12x.py` (the
-arm, the screen and the call). Not run yet.
+arm, the screen and the call). Filed 27 October: NOT_ADOPTED with no GAIN and no LOSS; the next form is A12m
+(section 5).
 
 ## 1. Why this, now
 
@@ -224,4 +225,68 @@ The encoder stays frozen. webqsp never trains. Test splits are never read. No LL
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a12x/screen-verdict.json`, written 2026-10-20T10:18:22Z; the
+re-call `outputs/screen/scr-a12x-zspxgs-pair-recall.json`, host paths made relative). **NOT_ADOPTED, with no GAIN and no
+LOSS:** zspx trained with gsurg's loop moves no read past its floor, and the two filed LOSSes, musique zero-shot on
+L-musique and webqsp zero-shot on L-hotpotqa, are inside their floors under the re-call.
+
+- **zspxgs: 0 GAIN, 0 LOSS.** Two filed LOSSes are WITHIN under the re-call: musique zero-shot on L-musique, -0.0133
+  [-0.0196, -0.0074] against its 0.0720 floor (FC@5 -0.0116), and webqsp zero-shot on L-hotpotqa, -0.0094 [-0.0174,
+  -0.0012] against its 0.0233 floor (FC@5 -0.0073). Five more intervals exclude 0, all inside their floors: on
+  L-musique, metaqa +0.0012 [+0.0003, +0.0022] and hotpotqa +0.0027 [+0.0005, +0.0050]; on L-hotpotqa, metaqa -0.0014
+  [-0.0023, -0.0006], hotpotqa zero-shot -0.0033 [-0.0061, -0.0004] and 2wiki +0.0051 [+0.0037, +0.0066].
+- **Beside: A12's LOSS is gone on zspx.** On zspk (A12's zspkgs) the loop lost webqsp zero-shot on L-musique (-0.0137);
+  on zspx that read moves -0.0004. musique zero-shot on L-musique falls on both (-0.0190 on zspk, -0.0133 on zspx),
+  inside its floor each time.
+
+Not adopted. This closes only this form: gsurg's loop on the adopted GNN (docs/SCREENS.md section 3b). The next form,
+fixed in section 5 and recorded in the verdict, is A12m, gsurg's loop on zrckp, the MLP's lean model (one declared file,
+whose own section 5 names what follows it).
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a12x/screen-verdict.json` and `.md`; for the arm `zspxgs`, the
+compares `outputs/screen/scr-a12x-zspxgs.json` and `-hp.json`, the pair `-pair.json` and its re-call
+`-pair-recall.json`, each with its `.md`. The host paths were made relative in each re-call's two `rel` entries and
+nowhere else, so the `recall_sha256` each verdict holds is the host file's, from before that change. The re-calls' nulls
+also read the base screens `outputs/a9/base-zspx-L-musique.json` and `outputs/a9/base-zspx-L-hotpotqa.json`, fetched
+from the host with this filing (A9's own filing had left them there).
+
+The twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, zspx's card fit of the split; a
+call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zspx R@5 | zspxgs: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8030 | +0.0012 [+0.0003, +0.0022], WITHIN |
+| L-musique | squad | in-domain | 0.9092 | -0.0003 [-0.0023, +0.0019], WITHIN |
+| L-musique | musique | zero-shot | 0.5073 | -0.0133 [-0.0196, -0.0074], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9074 | +0.0027 [+0.0005, +0.0050], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9351 | -0.0010 [-0.0025, +0.0005], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3204 | -0.0004 [-0.0099, +0.0084], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8039 | -0.0014 [-0.0023, -0.0006], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9129 | -0.0001 [-0.0019, +0.0019], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5901 | -0.0050 [-0.0102, +0.0001], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8547 | -0.0033 [-0.0061, -0.0004], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9312 | +0.0051 [+0.0037, +0.0066], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2914 | -0.0094 [-0.0174, -0.0012], WITHIN (filed LOSS) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a12x-zspxgs.json` and `-hp.json`); and A12's R@5 deltas with the loop on zspk (zspkgs, its own
+re-call `outputs/screen/scr-a12-zspkgs-pair-recall.json`, against zspk), on the same read (a call is shown where it is
+not WITHIN):
+
+| split | dataset | zspxgs FC@5 | zspxgs hit@1 | zspkgs (A12) R@5 |
+| --- | --- | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0015 | +0.0011 | +0.0016 |
+| L-musique | squad | -0.0003 | -0.0023 | +0.0006 |
+| L-musique | musique | -0.0116 | -0.0095 | -0.0190 |
+| L-musique | hotpotqa | +0.0039 | +0.0007 | +0.0010 |
+| L-musique | 2wiki | -0.0014 | +0.0017 | -0.0014 |
+| L-musique | webqsp | +0.0040 | -0.0160 | -0.0137 LOSS |
+| L-hotpotqa | metaqa | -0.0015 | -0.0085 | -0.0003 |
+| L-hotpotqa | squad | -0.0001 | -0.0005 | -0.0034 |
+| L-hotpotqa | musique | -0.0095 | -0.0066 | +0.0007 |
+| L-hotpotqa | hotpotqa | -0.0069 | +0.0072 | +0.0019 |
+| L-hotpotqa | 2wiki | +0.0117 | -0.0010 | +0.0023 |
+| L-hotpotqa | webqsp | -0.0073 | +0.0027 | +0.0040 |

@@ -1,0 +1,10 @@
+# A4fx's screen verdict: zrckprf **NOT_ADOPTED**, zspxf **NOT_ADOPTED**
+
+Rule: per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A4fx's re-call of the arm, or not twelve reads (docs/A4FX_FAMILY_DROPOUT_ADOPTED.md, section 4).
+
+- **zrckprf** (zrckpr trained with A4f's family dropout and the R1 cell (0.2 per question on each block, the KT term, the chain term and R1's term)) against zrckpr's card fit of each split (scr-r1-zrckpr, scr-r1-zrckpr-hp), after the seed-null re-call: 0 GAIN (none), 3 LOSS (L-musique musique, L-musique webqsp, L-hotpotqa musique). Beside: L-musique metaqa WITHIN (-0.0018), L-musique musique LOSS (-0.1663), L-musique webqsp LOSS (-0.0220), L-hotpotqa metaqa WITHIN (-0.0073), L-hotpotqa musique LOSS (-0.0077), L-hotpotqa webqsp WITHIN (+0.0120). Next: A4fxt, the term cells alone on the adopted arms (the KT, chain and, on zrckpr, R1 terms dropped at 0.2 per question; zret's blocks never), its own declared file.
+- **zspxf** (zspx trained with A4f's family dropout (0.2 per question on each block, the KT term and the chain term), before its three increments) against zspx's card fit of each split (scr-g5-zspx, scr-g5-zspx-hp), after the seed-null re-call: 0 GAIN (none), 1 LOSS (L-musique musique). Beside: L-musique metaqa WITHIN (-0.0034), L-musique musique LOSS (-0.1938), L-musique webqsp WITHIN (-0.0057), L-hotpotqa metaqa WITHIN (-0.0025), L-hotpotqa musique WITHIN (-0.0049), L-hotpotqa webqsp WITHIN (+0.0087). Next: A4fxt, the term cells alone on the adopted arms (the KT, chain and, on zrckpr, R1 terms dropped at 0.2 per question; zret's blocks never), its own declared file.
+
+Beside, deciding nothing: musique in-domain (L-hotpotqa musique): zrckprf LOSS (-0.0077), zspxf WITHIN (-0.0049).
+
+This verdict closes only this form (family dropout 0.2 per question on each block, the KT term, the chain term and, on zrckpr, R1's term, at the top of the forward, in training, on the adopted arms); docs/SCREENS.md, 3b.

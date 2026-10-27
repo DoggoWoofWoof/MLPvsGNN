@@ -3,7 +3,8 @@
 Declared 20 October 2026, before any number. The next form A9t's verdict named for no GAIN
 (docs/A9T_BOUNDED_DROPOUT.md, section 5; outputs/a9t/screen-verdict.json), under docs/SCREENS.md section 3b. Code:
 `outputs/mp_unified/za9b.py` (the arm, the screen and the call; it imports A9t's bound from `za9t.py` and changes no
-frozen module). Not run yet.
+frozen module). Filed 27 October: NOT_ADOPTED with no GAIN and two LOSSes (musique in domain and webqsp
+zero-shot, both on L-hotpotqa); no form of this track follows: its form closes on the GNN (section 5).
 
 ## 1. Why this, now
 
@@ -231,4 +232,74 @@ The encoder stays frozen. webqsp never trains. Test splits are never read. No LL
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a9b/screen-verdict.json`, written 2026-10-20T21:31:14Z; the
+re-call `outputs/screen/scr-a9b-zspxt-pair-recall.json`, host paths made relative). **NOT_ADOPTED, with no GAIN and two
+LOSSes:** with zspx's three increments bounded together at 0.5 and no dropout, no read moves up past its floor, and two
+reads on L-hotpotqa fall past theirs: musique in domain and webqsp zero-shot.
+
+- **zspxt: 0 GAIN, 2 LOSS.** The LOSSes are on L-hotpotqa: musique in domain, -0.0116 [-0.0164, -0.0065] against its
+  0.0075 floor, with FC@5 -0.0161; and webqsp zero-shot, -0.0237 [-0.0322, -0.0155] against its 0.0233 floor, with FC@5
+  -0.0173. musique zero-shot on L-musique rises +0.0124 [+0.0065, +0.0179], a GAIN by its pair's interval that is WITHIN
+  under its 0.0720 floor (hit@1 +0.0600). Four more intervals exclude 0, all inside their floors: on L-musique, metaqa
+  -0.0012 [-0.0021, -0.0003], squad +0.0024 [+0.0005, +0.0043] and 2wiki -0.0023 [-0.0037, -0.0010]; on L-hotpotqa,
+  hotpotqa zero-shot -0.0034 [-0.0062, -0.0004].
+- **Beside: the bound alone repeats A9t's falls on L-hotpotqa.** With the dropout and the bound together (A9t's zspxdt),
+  musique in domain on L-hotpotqa fell -0.0125 (LOSS) and webqsp zero-shot there -0.0208 (WITHIN under its floor); with
+  the bound alone, -0.0116 and -0.0237, both LOSS. With the dropout alone (A9's zspxd), the two moved -0.0059 and
+  -0.0037.
+
+Not adopted. This closes only this form: zspx's three increments bounded together at 0.5, with every link edge read in
+training and at read (docs/SCREENS.md section 3b). The next form, fixed in section 5 and recorded in the verdict, is
+none of this track: the MP-unified track's form closes on the GNN. Its dropout (A9), its bound (A9b) and both together
+(A9t) have all reached the adopted GNN without a GAIN, and the MLP takes no message, so the idea has reached the one
+model that can take it (docs/SCREENS.md section 3b). This closing is the step recorded; no further form of this track is
+declared.
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a9b/screen-verdict.json` and `.md`; for the arm `zspxt`, the
+compares `outputs/screen/scr-a9b-zspxt.json` and `-hp.json`, the pair `-pair.json` and its re-call `-pair-recall.json`,
+each with its `.md`. The host paths were made relative in each re-call's two `rel` entries and nowhere else, so the
+`recall_sha256` each verdict holds is the host file's, from before that change. The re-calls' nulls also read the base
+screens `outputs/a9/base-zspx-L-musique.json` and `outputs/a9/base-zspx-L-hotpotqa.json`, fetched from the host with
+this filing (A9's own filing had left them there).
+
+The twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, zspx's card fit of the split; a
+call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zspx R@5 | zspxt: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8030 | -0.0012 [-0.0021, -0.0003], WITHIN |
+| L-musique | squad | in-domain | 0.9092 | +0.0024 [+0.0005, +0.0043], WITHIN |
+| L-musique | musique | zero-shot | 0.5073 | +0.0124 [+0.0065, +0.0179], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9074 | -0.0004 [-0.0027, +0.0018], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9351 | -0.0023 [-0.0037, -0.0010], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3204 | -0.0054 [-0.0130, +0.0024], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8039 | -0.0008 [-0.0016, +0.0001], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9129 | +0.0005 [-0.0013, +0.0025], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5901 | -0.0116 [-0.0164, -0.0065], **LOSS** |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8547 | -0.0034 [-0.0062, -0.0004], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9312 | -0.0004 [-0.0020, +0.0011], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2914 | -0.0237 [-0.0322, -0.0155], **LOSS** |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a9b-zspxt.json` and `-hp.json`); and the track's earlier forms' R@5 deltas against the same base,
+from their own re-calls: the dropout and the bound together (A9t's zspxdt,
+`outputs/screen/scr-a9t-zspxdt-pair-recall.json`) and the dropout alone (A9's zspxd,
+`outputs/screen/scr-a9-zspxd-pair-recall.json`), on the same read (a call is shown where it is not WITHIN):
+
+| split | dataset | zspxt FC@5 | zspxt hit@1 | zspxdt (A9t) R@5 | zspxd (A9) R@5 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0010 | -0.0056 | -0.0019 | -0.0019 |
+| L-musique | squad | +0.0024 | +0.0003 | +0.0035 | +0.0026 |
+| L-musique | musique | +0.0037 | +0.0600 | -0.0012 | +0.0024 |
+| L-musique | hotpotqa | +0.0003 | +0.0011 | -0.0002 | -0.0015 |
+| L-musique | 2wiki | -0.0068 | +0.0077 | -0.0010 | -0.0005 |
+| L-musique | webqsp | -0.0007 | -0.0140 | -0.0012 | -0.0034 |
+| L-hotpotqa | metaqa | -0.0021 | -0.0064 | -0.0023 | +0.0007 |
+| L-hotpotqa | squad | +0.0005 | -0.0019 | +0.0007 | -0.0008 |
+| L-hotpotqa | musique | -0.0161 | -0.0091 | -0.0125 LOSS | -0.0059 |
+| L-hotpotqa | hotpotqa | -0.0068 | -0.0194 | -0.0035 | -0.0075 |
+| L-hotpotqa | 2wiki | -0.0045 | -0.0021 | -0.0047 | +0.0026 |
+| L-hotpotqa | webqsp | -0.0173 | -0.0133 | -0.0208 | -0.0037 |

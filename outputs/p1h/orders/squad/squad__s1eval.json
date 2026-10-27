@@ -1,0 +1,50 @@
+{
+ "declared_in": "docs/P1H_FEWER_ROWS.md",
+ "stage": "P1h orders",
+ "dataset": "squad",
+ "carve": "s1eval",
+ "questions": 11873,
+ "carve_ids_sha256": "e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8",
+ "chosen": "g:f1.5+cut_cos_5000",
+ "fill_fraction": 1.5,
+ "extra": "cut_cos_5000",
+ "gated": true,
+ "order": "base and seeds; then fill_f in KIND_T's order; then the extra set's nodes outside fill_f by their rank under the extra set's own order",
+ "rank_constant": 60,
+ "threads": 2,
+ "script_sha256": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+ "p1gb_script_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+ "p1g_script_sha256": "ddb2900f382f14c130eca100efd2472c29837ae633a975483f06a1afa9336817",
+ "p1g2_script_sha256": "756948d7326f6683539914b42b3585bbe9ab83a32595d949b60f044560d59a05",
+ "d5b_script_sha256": "dd7f897d459452da8b907257fbcd75361b35b08a45c027ac80e0fc62493bd78e",
+ "p1f_script_sha256": "fd409345fb482f42d1948281fb59b55376581059249c99d5dc3f47e732f6c780",
+ "p1e_script_sha256": "2d1523742db7cdd69f7635fae2922e32334c993af45764b716d5ea6722ed5e98",
+ "p1g2_verdict_sha256": "1758677ef54847f51aaa1fec269cfaf2d3e4e38a05e2529719a3a1e94223b36a",
+ "reference": {
+  "p1gb_manifest_script_sha256": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769",
+  "p1gb_manifest_p1g2_verdict_sha256": "1758677ef54847f51aaa1fec269cfaf2d3e4e38a05e2529719a3a1e94223b36a",
+  "p1gb_pools_manifest_sha256": "a3904514b5e6c873cdda21ba0790796e6fddb3f9fb7a42b973c0e1a3076ceb55",
+  "p1gb_pools_file_sha256": "ee2f056fee5533ca387624d08a472412aa3313a2be3c23c34ab19eee300a84b9"
+ },
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "checks": {
+  "bs_inc_today_expansion_equal_p1gb": true,
+  "carve_equals_p1gb_record": true
+ },
+ "summary_tau1": {
+  "questions": 11873,
+  "all_count": 11633,
+  "ALL": 0.9798,
+  "recall": 0.9798,
+  "rows": 50.0,
+  "rows_p50": 50.0,
+  "rows_p90": 50.0,
+  "rows_mean": 50.03478480586204
+ },
+ "seconds": 652.3,
+ "utc": "2026-10-20T00:19:24Z",
+ "orders_file": "squad__s1eval.npz",
+ "orders_sha256": "192c1a407080eb29a7349af82ab9d2aedec5bd5d67bcc5eafea47cb599ef4625",
+ "golds_file": "squad__s1eval.golds.npz",
+ "golds_sha256": "2ef99f16e73faaf39df63394fdf48505f14b97dab3cb06a873652f59dde65c06"
+}

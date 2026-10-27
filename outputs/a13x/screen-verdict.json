@@ -1,0 +1,60 @@
+{
+ "stage": "A13x",
+ "declared_in": "docs/A13X_BRIDGE_HEAD_ZSPX.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zspxb's re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A13x's, or not twelve reads (docs/A13X_BRIDGE_HEAD_ZSPX.md, section 4)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zspxb",
+ "gains": [],
+ "losses": [],
+ "problems": [],
+ "next_form": "A13xs, the columns inside the step: zbr's 13 inputs read by zspx's first step head beside zprop's 10 (its first layer widened, the new weights zero at the start), so the step weighs a row's neighbours by the row's bridge quantities instead of adding a shift (P1g-c's zspxs form for R1's columns); one declared file",
+ "calls": {
+  "L-musique metaqa": "WITHIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "WITHIN",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "WITHIN",
+  "L-musique webqsp": "WITHIN",
+  "L-hotpotqa metaqa": "WITHIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "WITHIN",
+  "L-hotpotqa hotpotqa": "WITHIN",
+  "L-hotpotqa 2wiki": "WITHIN",
+  "L-hotpotqa webqsp": "WITHIN"
+ },
+ "delta_r5": {
+  "L-musique metaqa": 0.0002,
+  "L-musique squad": 0.0004,
+  "L-musique musique": -0.0119,
+  "L-musique hotpotqa": 0.0014,
+  "L-musique 2wiki": -0.0011,
+  "L-musique webqsp": 0.0065,
+  "L-hotpotqa metaqa": -0.0003,
+  "L-hotpotqa squad": 0.0023,
+  "L-hotpotqa musique": -0.0065,
+  "L-hotpotqa hotpotqa": 0.0013,
+  "L-hotpotqa 2wiki": -0.0015,
+  "L-hotpotqa webqsp": -0.0133
+ },
+ "beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0002
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": 0.0065
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0003
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0133
+  }
+ },
+ "recall_sha256": "3778a3083512fc003e1f3578007abc2ccd8799167adde438bf2021ef8440499a",
+ "za13x_sha256": "a09c7e6eee19d7885547b87d9f6d4c57c9965b3dadc58a15b30c488b940c7146",
+ "utc": "2026-10-20T09:34:29Z"
+}

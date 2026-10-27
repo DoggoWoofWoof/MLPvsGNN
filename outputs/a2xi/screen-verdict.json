@@ -1,0 +1,165 @@
+{
+ "stage": "A2xi",
+ "declared_in": "docs/A2XI_PRANK_REPLACE.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A2xi's re-call of the arm, or not twelve reads (docs/A2XI_PRANK_REPLACE.md, section 4)",
+ "arms": {
+  "zrckpxi": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [
+    "L-musique webqsp"
+   ],
+   "losses": [
+    "L-hotpotqa musique"
+   ],
+   "problems": [],
+   "next_form": "A2xig, the learned back-off between the ranks and the z-scores: zret's z-score columns of the fixed blocks back in l1 beside hi and lo (their weights zret's draws), times tanh(<w, c> + b), w and b zero so the scale starts at 0 (A2xi's form), c the pool's log size and retrieved share (input columns only), on both models, its own declared file",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "GAIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "LOSS",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0025,
+    "L-musique squad": -0.0014,
+    "L-musique musique": -0.0026,
+    "L-musique hotpotqa": -0.0049,
+    "L-musique 2wiki": 0.0034,
+    "L-musique webqsp": 0.0231,
+    "L-hotpotqa metaqa": 0.0017,
+    "L-hotpotqa squad": -0.0031,
+    "L-hotpotqa musique": -0.0181,
+    "L-hotpotqa hotpotqa": -0.0149,
+    "L-hotpotqa 2wiki": -0.0011,
+    "L-hotpotqa webqsp": 0.0032
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0025
+    },
+    "L-musique musique": {
+     "call": "WITHIN",
+     "delta": -0.0026
+    },
+    "L-musique hotpotqa": {
+     "call": "WITHIN",
+     "delta": -0.0049
+    },
+    "L-musique webqsp": {
+     "call": "GAIN",
+     "delta": 0.0231
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0017
+    },
+    "L-hotpotqa musique": {
+     "call": "LOSS",
+     "delta": -0.0181
+    },
+    "L-hotpotqa hotpotqa": {
+     "call": "WITHIN",
+     "delta": -0.0149
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0032
+    }
+   },
+   "recall_sha256": "9d01bb745252bc98d6e762c3c4362d61cd84dc11c1504da9e920a9e362571080"
+  },
+  "zspkxi": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [
+    "L-musique webqsp"
+   ],
+   "problems": [],
+   "next_form": "A2xix, prank's replacing form on the adopted arms (R1's zrckpr and G5's zspx), on both models, its own declared file; the rank idea closes as a model input only if A2xix finds no GAIN either",
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "LOSS",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0027,
+    "L-musique squad": -0.0005,
+    "L-musique musique": 0.011,
+    "L-musique hotpotqa": -0.0054,
+    "L-musique 2wiki": -0.0044,
+    "L-musique webqsp": -0.0236,
+    "L-hotpotqa metaqa": -0.0103,
+    "L-hotpotqa squad": -0.0029,
+    "L-hotpotqa musique": -0.0051,
+    "L-hotpotqa hotpotqa": -0.0132,
+    "L-hotpotqa 2wiki": 0.0015,
+    "L-hotpotqa webqsp": 0.0068
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0027
+    },
+    "L-musique musique": {
+     "call": "WITHIN",
+     "delta": 0.011
+    },
+    "L-musique hotpotqa": {
+     "call": "WITHIN",
+     "delta": -0.0054
+    },
+    "L-musique webqsp": {
+     "call": "LOSS",
+     "delta": -0.0236
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0103
+    },
+    "L-hotpotqa musique": {
+     "call": "WITHIN",
+     "delta": -0.0051
+    },
+    "L-hotpotqa hotpotqa": {
+     "call": "WITHIN",
+     "delta": -0.0132
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0068
+    }
+   },
+   "recall_sha256": "60a4c77edcb2f95773fe277a7904f6905a3689a860c3c37f4fd1e6c79763c7a7"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckpxi": {
+   "call": "LOSS",
+   "delta": -0.0181
+  },
+  "zspkxi": {
+   "call": "WITHIN",
+   "delta": -0.0051
+  }
+ },
+ "za2xi_sha256": "e3dfe344dabba0b20b22626def71718aff2d8349e7192a66f6864b6d53ec000e",
+ "utc": "2026-10-20T15:01:02Z"
+}

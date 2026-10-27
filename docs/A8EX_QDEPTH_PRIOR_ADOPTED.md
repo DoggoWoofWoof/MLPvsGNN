@@ -254,4 +254,79 @@ embedding, no new graph, and no GNN distillation.
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a8ex/screen-verdict.json`, written 2026-10-20T21:17:17Z; the
+re-calls `outputs/screen/scr-a8ex-zrckprqe-pair-recall.json` and `scr-a8ex-zspxqe-pair-recall.json`, host paths made
+relative). **zrckprqe ADOPT_FOR_FULL_RUN, zspxqe NOT_ADOPTED:** with round 11's depth prior added to zrckpr's final
+score, the MLP gains webqsp zero-shot on L-hotpotqa and loses nothing; in zspx's score before its step reads it, the
+prior moves no read past its floor.
+
+- **zrckprqe: 1 GAIN, 0 LOSS.** The GAIN is webqsp zero-shot on L-hotpotqa: +0.0315 [+0.0211, +0.0430] against its
+  0.0233 floor, with FC@5 +0.0273 and hit@1 +0.0160. Four more intervals exclude 0, all inside their floors: on
+  L-musique, metaqa -0.0014 [-0.0022, -0.0005] and 2wiki -0.0029 [-0.0043, -0.0016]; on L-hotpotqa, musique in domain
+  -0.0067 [-0.0117, -0.0010] and 2wiki -0.0026 [-0.0043, -0.0010]. No call changed under the re-call.
+- **zspxqe: 0 GAIN, 0 LOSS.** Five intervals exclude 0, all inside their floors: on L-musique, 2wiki -0.0057 [-0.0072,
+  -0.0042]; on L-hotpotqa, metaqa +0.0015 [+0.0006, +0.0024], musique in domain -0.0069 [-0.0120, -0.0016], hotpotqa
+  zero-shot -0.0074 [-0.0103, -0.0043] and 2wiki +0.0029 [+0.0014, +0.0043]. webqsp zero-shot on L-hotpotqa moves
+  -0.0089 [-0.0179, +0.0003]. No call changed under the re-call.
+- **Beside: on the lean pair (A8e) every read of both arms was WITHIN.** webqsp zero-shot on L-hotpotqa moved +0.0030 on
+  zrckpqe and +0.0133 on zspkqe; on the adopted arms it is the MLP's GAIN (+0.0315) and the GNN's -0.0089.
+
+The verdict is per arm. **zrckprqe** is adopted for a full run; its next form, fixed in section 5 and recorded in the
+verdict, is the arm fitted again on P1g-b's pools, then its full run, its own declared file. P1g-b's pools have since
+been left out of the adopted models (P1g-c, docs/P1GC_ADOPTED_ON_P1GB.md section 8: the full run takes P1c2's pools), so
+the pools of that refit are its own file's to fix. **zspxqe** is not adopted; this closes only its form, the prior in
+zspx's score before its step (docs/SCREENS.md section 3b). Its next form, for no GAIN with the other arm's GAIN, is
+A8exk on this model as well (section 5): the other arm's GAIN keeps the depth prior open on both models. A8exk is the
+back-off form on the adopted arms: the prior split by the graph's kind (one U, W and b for the KB graphs, metaqa and
+webqsp, and one for the passage graphs, each at zero), so one kind's depth weights cannot move the other kind's scores;
+on both models.
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a8ex/screen-verdict.json` and `.md`; for each arm (`zrckprqe`,
+`zspxqe`), the compares `outputs/screen/scr-a8ex-<arm>.json` and `-hp.json`, the pair `-pair.json` and its re-call
+`-pair-recall.json`, each with its `.md`. The host paths were made relative in each re-call's two `rel` entries and
+nowhere else, so the `recall_sha256` each verdict holds is the host file's, from before that change. The re-calls' nulls
+also read the base screens `outputs/a9/base-zspx-L-musique.json` and `outputs/a9/base-zspx-L-hotpotqa.json`, fetched
+from the host with this filing (A9's own filing had left them there); and
+`outputs/p1gc/base-pools-zrckpr-L-musique.json` and `outputs/p1gc/base-pools-zrckpr-L-hotpotqa.json`, filed with P1g-c's
+results.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, the base's card fit of the
+split; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zrckpr R@5 | zrckprqe: delta [95% CI], call | zspx R@5 | zspxqe: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8012 | -0.0014 [-0.0022, -0.0005], WITHIN | 0.8030 | +0.0003 [-0.0006, +0.0012], WITHIN |
+| L-musique | squad | in-domain | 0.9127 | -0.0017 [-0.0034, +0.0000], WITHIN | 0.9092 | +0.0017 [-0.0002, +0.0036], WITHIN |
+| L-musique | musique | zero-shot | 0.5197 | -0.0002 [-0.0047, +0.0046], WITHIN | 0.5073 | +0.0027 [-0.0033, +0.0084], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9083 | -0.0003 [-0.0022, +0.0016], WITHIN | 0.9074 | -0.0009 [-0.0032, +0.0011], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9361 | -0.0029 [-0.0043, -0.0016], WITHIN | 0.9351 | -0.0057 [-0.0072, -0.0042], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3762 | +0.0066 [-0.0030, +0.0160], WITHIN | 0.3204 | +0.0018 [-0.0049, +0.0084], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8040 | -0.0002 [-0.0010, +0.0006], WITHIN | 0.8039 | +0.0015 [+0.0006, +0.0024], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9114 | -0.0005 [-0.0025, +0.0015], WITHIN | 0.9129 | +0.0000 [-0.0021, +0.0022], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5779 | -0.0067 [-0.0117, -0.0010], WITHIN | 0.5901 | -0.0069 [-0.0120, -0.0016], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8558 | -0.0008 [-0.0039, +0.0020], WITHIN | 0.8547 | -0.0074 [-0.0103, -0.0043], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9331 | -0.0026 [-0.0043, -0.0010], WITHIN | 0.9312 | +0.0029 [+0.0014, +0.0043], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3411 | +0.0315 [+0.0211, +0.0430], **GAIN** | 0.2914 | -0.0089 [-0.0179, +0.0003], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a8ex-<arm>.json` and `-hp.json`); and A8e's R@5 deltas with the prior learned inside the lean pair
+(zrckpqe against zrckp, zspkqe against zspk; their own re-calls, `outputs/screen/scr-a8e-<arm>-pair-recall.json`), on
+the same read (a call is shown where it is not WITHIN):
+
+| split | dataset | zrckprqe FC@5 | zrckprqe hit@1 | zspxqe FC@5 | zspxqe hit@1 | zrckpqe (A8e) R@5 | zspkqe (A8e) R@5 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0012 | -0.0055 | +0.0014 | +0.0013 | -0.0000 | +0.0008 |
+| L-musique | squad | -0.0017 | +0.0035 | +0.0017 | -0.0015 | -0.0008 | +0.0003 |
+| L-musique | musique | +0.0070 | +0.0041 | +0.0000 | +0.0211 | +0.0031 | +0.0084 |
+| L-musique | hotpotqa | -0.0004 | +0.0046 | -0.0003 | -0.0093 | -0.0068 | -0.0010 |
+| L-musique | 2wiki | -0.0083 | -0.0044 | -0.0163 | +0.0037 | -0.0058 | -0.0042 |
+| L-musique | webqsp | +0.0033 | -0.0033 | +0.0060 | -0.0080 | +0.0024 | -0.0007 |
+| L-hotpotqa | metaqa | +0.0000 | +0.0007 | +0.0011 | +0.0030 | +0.0002 | -0.0008 |
+| L-hotpotqa | squad | -0.0005 | -0.0019 | +0.0000 | +0.0000 | -0.0005 | -0.0024 |
+| L-hotpotqa | musique | -0.0074 | -0.0029 | -0.0108 | -0.0095 | +0.0002 | -0.0072 |
+| L-hotpotqa | hotpotqa | -0.0027 | -0.0063 | -0.0123 | -0.0143 | +0.0003 | +0.0053 |
+| L-hotpotqa | 2wiki | -0.0050 | +0.0002 | +0.0077 | -0.0021 | -0.0040 | +0.0037 |
+| L-hotpotqa | webqsp | +0.0273 | +0.0160 | -0.0047 | +0.0047 | +0.0030 | +0.0133 |

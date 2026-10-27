@@ -1,6 +1,7 @@
 # P1h: the same coverage in fewer rows
 
-Declared 20 October 2026, before any number. The user's direction of 20 October (fewer pool rows at the same coverage). Code: `outputs/mp_unified/zp1h.py`. Not run yet.
+Declared 20 October 2026, before any number. The user's direction of 20 October (fewer pool rows at the same coverage).
+Code: `outputs/mp_unified/zp1h.py`. Filed 27 October: NO_CUT; the next form is a learned cascade (section 5).
 
 Pools only: nothing trains, nothing is fit, and the cut reads no gold. CPU only, on the host.
 
@@ -229,4 +230,107 @@ The encoder stays frozen. webqsp never trains. Test splits are never read. No LL
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/p1h/verdict.json`, written 2026-10-20T00:50:03Z, from
+`outputs/p1h/select.json` and `grade.json`, whose sha256s it holds; the files filed here match them). **NO_CUT. τ\* =
+0.99 was chosen on s1sel; at it musique's s1eval ALL is 0.9293, below 0.95, and P1f's cost falls 4.0%, short of the 10%
+the rule needs.** The verdict's `why` names the first ("at tau 0.99 s1eval's ALL falls below 0.95 on musique"); the
+second fails as well.
+
+- **s1sel: τ\* = 0.99, set by musique.** Of the grid, only 0.99 and 1 meet all five. musique holds every gold on 1,458
+  of its 1,534 questions at both (0.9505), the least count that meets (95% of 1,534 is 1,457.3), and on 1,455 (0.9485)
+  at 0.975. metaqa meets from 0.9 (1,430 of 1,497, 0.9552; 1,420 at 0.85); squad, hotpotqa and 2wiki meet at every grid
+  τ. On every training dataset the count of questions with every gold kept never falls as τ grows (the record's
+  `monotone`).
+- **s1eval at τ\*: musique misses; the other four meet.** musique holds every gold on 2,246 of 2,417 questions (0.9293),
+  where 0.95 needs 2,297. metaqa holds 0.9773, squad 0.9798, hotpotqa 0.9911 and 2wiki 0.9736. The cut shortens every
+  pool on metaqa, musique, hotpotqa and 2wiki and none on squad, and takes 3.1% to 4.6% of their mean rows. It loses 5
+  golds on metaqa, 1 on musique and none on the others; only musique's ALL moves (2,247 of 2,417 at τ = 1, 2,246 at
+  τ\*).
+- **The cost falls 4.0%.** P1f's cost is 1,886.4 at τ\* against 1,964.2 at τ = 1, P1g-b's pools whole (a fall of
+  0.0396). A fall of 10% needs τ ≤ 0.95 on this grid (18.4% at 0.95, 9.6% at 0.975), where musique holds 0.9446 on s1sel
+  and 0.9280 on s1eval.
+- **Beside: P1g-b's pools themselves are below 0.95 on musique's s1eval.** At τ = 1, which keeps every pool whole,
+  musique holds every gold on 2,247 of its 2,417 s1eval questions (0.9297), 50 questions short of 0.95's 2,297. P1g2
+  chose the rule on s1sel, where musique holds 0.9505 (docs/P1G2_GATED_EXTRA.md, section 6). A cut only drops nodes, so
+  no cut of these pools, by τ or per question, can bring musique's s1eval to 0.95. The other four training datasets hold
+  0.9736 to 0.9911 at τ = 1.
+- **Beside: webqsp.** At τ\* it holds 0.9222 (1,386 of 1,503) against 0.9328 (1,402) at τ = 1, with 48 golds lost and
+  4.3% of its mean rows cut. Neither the choice nor the rule reads it.
+
+No cut. This closes only this form: one global τ over P1g-b's build order, the same for every question (docs/SCREENS.md
+section 3b). The next form, fixed in section 5 and recorded in the verdict: "A learned cascade: a cheap scorer's
+per-question cut, its one setting chosen the same way on s1sel (the smallest grid value keeping ALL ≥ 0.95 on all five),
+in its own declared file." On P1g-b's pools, a cut graded by this file's rule cannot pass on musique's s1eval (above).
+P1g-b's pools are not the full run's either: P1g-c filed both its calls NOT_ADOPTED, so the full run takes P1c2's pools
+(docs/P1GC_ADOPTED_ON_P1GB.md, section 8).
+
+**The checks passed.** Each of the eleven orders records holds its checks, all true. On s1eval, B, |I_q|, today's fill
+and the expansion equal P1g-b's pools file question by question, and the carve's ALL, recall and rows equal P1g-b's
+record. On s1sel, |B| and |I_q| equal P1f's stats, today's fill and the held rows equal P1g's, and the carve's figures
+equal P1g2's verdict. So at τ = 1 the s1sel figures are P1g2's chosen ones on all five (musique 0.9505 / 6,600), and
+webqsp's s1eval is P1g2's beside figure (0.9328 / 4,740). The orders items took 83.0 s (squad s1sel) to 1,344.6 s (2wiki
+s1eval), 7,162.5 s in all.
+
+Records, filed with this section: the verdict `outputs/p1h/verdict.json`, the choice `outputs/p1h/select.json` and the
+grade `outputs/p1h/grade.json`, each with its `.md`; and the eleven orders records
+`outputs/p1h/orders/<dataset>/<dataset>__<carve>.json`, s1sel and s1eval for each training dataset and s1eval for
+webqsp. The build orders (`<dataset>__<carve>.npz`) and gold positions (`.golds.npz`) stay on the host; each orders
+record holds their sha256s, and select and grade hold them again.
+
+s1sel at every grid τ (`outputs/p1h/select.md`; cells: ALL / mean rows):
+
+| tau | metaqa | squad | musique | hotpotqa | 2wiki | all five meet |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0.5 | 0.8317 / 398 | 0.9793 / 50 | 0.7823 / 574 | 0.9735 / 197 | 0.9606 / 242 | no |
+| 0.6 | 0.8771 / 626 | 0.9793 / 50 | 0.8312 / 954 | 0.9781 / 286 | 0.9612 / 358 | no |
+| 0.7 | 0.9098 / 969 | 0.9793 / 50 | 0.8670 / 1,564 | 0.9821 / 405 | 0.9632 / 520 | no |
+| 0.8 | 0.9385 / 1,482 | 0.9793 / 50 | 0.8970 / 2,539 | 0.9874 / 568 | 0.9639 / 743 | no |
+| 0.85 | 0.9486 / 1,829 | 0.9793 / 50 | 0.9218 / 3,228 | 0.9887 / 670 | 0.9652 / 886 | no |
+| 0.9 | 0.9552 / 2,252 | 0.9793 / 50 | 0.9381 / 4,100 | 0.9914 / 789 | 0.9672 / 1,054 | no |
+| 0.95 | 0.9613 / 2,771 | 0.9793 / 50 | 0.9446 / 5,204 | 0.9914 / 929 | 0.9679 / 1,253 | no |
+| 0.975 | 0.9626 / 3,073 | 0.9793 / 50 | 0.9485 / 5,861 | 0.9914 / 1,007 | 0.9693 / 1,365 | no |
+| 0.99 | 0.9633 / 3,269 | 0.9793 / 50 | 0.9505 / 6,294 | 0.9914 / 1,057 | 0.9693 / 1,437 | yes |
+| 1 | 0.9646 / 3,406 | 0.9793 / 50 | 0.9505 / 6,600 | 0.9914 / 1,091 | 0.9693 / 1,486 | yes |
+
+s1eval at τ\* (`outputs/p1h/verdict.md`, with the counts, the questions cut and the golds lost from `verdict.json`):
+
+| dataset | ALL (questions with every gold kept) | recall | rows mean / p50 / p90 | P1g-b's rows | rows cut | questions cut | golds lost |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: |
+| metaqa | 0.9773 (9,563 of 9,785) | 0.9944 | 3,268.1 / 3,282.0 / 3,419.0 | 3,405.1 | 4.0% | 9,785 | 5 |
+| squad | 0.9798 (11,633 of 11,873) | 0.9798 | 50.0 / 50.0 / 50.0 | 50.0 | 0.0% | 0 | 0 |
+| musique | 0.9293 (2,246 of 2,417) | 0.9760 | 6,194.6 / 6,359.0 / 6,882.0 | 6,494.6 | 4.6% | 2,417 | 1 |
+| hotpotqa | 0.9911 (7,339 of 7,405) | 0.9935 | 1,051.8 / 912.0 / 1,610.6 | 1,085.7 | 3.1% | 7,405 | 0 |
+| 2wiki | 0.9736 (12,244 of 12,576) | 0.9897 | 1,437.6 / 1,430.0 / 1,873.0 | 1,487.0 | 3.3% | 12,576 | 0 |
+| webqsp (beside) | 0.9222 (1,386 of 1,503) | 0.9705 | 4,533.1 / 4,153.0 / 6,693.0 | 4,739.5 | 4.3% | 1,503 | 48 |
+
+s1eval at every grid τ (`outputs/p1h/grade.md`; cells: ALL / mean rows; cost: P1f's question-weighted mean rows over the
+five training datasets; cut: the cost's fall from τ = 1):
+
+| tau | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (beside) | cost | cut |
+| --- | --- | --- | --- | --- | --- | --- | ---: | ---: |
+| 0.5 | 0.8338 / 398 | 0.9798 / 50 | 0.8188 / 568 | 0.9750 / 197 | 0.9641 / 244 | 0.7086 / 475 | 252.6 | 87.1% |
+| 0.6 | 0.8791 / 626 | 0.9798 / 50 | 0.8535 / 944 | 0.9812 / 285 | 0.9664 / 360 | 0.7631 / 768 | 384.7 | 80.4% |
+| 0.7 | 0.9169 / 968 | 0.9798 / 50 | 0.8842 / 1,545 | 0.9841 / 404 | 0.9686 / 521 | 0.8130 / 1,224 | 580.8 | 70.4% |
+| 0.8 | 0.9434 / 1,482 | 0.9798 / 50 | 0.9094 / 2,505 | 0.9876 / 566 | 0.9702 / 745 | 0.8310 / 1,931 | 872.8 | 55.6% |
+| 0.85 | 0.9568 / 1,828 | 0.9798 / 50 | 0.9181 / 3,183 | 0.9892 / 667 | 0.9713 / 888 | 0.8510 / 2,421 | 1,069.1 | 45.6% |
+| 0.9 | 0.9674 / 2,252 | 0.9798 / 50 | 0.9239 / 4,040 | 0.9904 / 786 | 0.9721 / 1,056 | 0.8709 / 3,031 | 1,309.4 | 33.3% |
+| 0.95 | 0.9741 / 2,770 | 0.9798 / 50 | 0.9280 / 5,124 | 0.9907 / 924 | 0.9728 / 1,254 | 0.8896 / 3,791 | 1,603.7 | 18.4% |
+| 0.975 | 0.9766 / 3,072 | 0.9798 / 50 | 0.9288 / 5,770 | 0.9911 / 1,002 | 0.9734 / 1,366 | 0.9062 / 4,240 | 1,774.9 | 9.6% |
+| 0.99 (chosen) | 0.9773 / 3,268 | 0.9798 / 50 | 0.9293 / 6,195 | 0.9911 / 1,052 | 0.9736 / 1,438 | 0.9222 / 4,533 | 1,886.4 | 4.0% |
+| 1 | 0.9773 / 3,405 | 0.9798 / 50 | 0.9297 / 6,495 | 0.9911 / 1,086 | 0.9736 / 1,487 | 0.9328 / 4,740 | 1,964.2 | 0.0% |
+
+Golds lost on s1eval at every grid τ (from `outputs/p1h/grade.json`). Below τ = 1 the cut shortens every question's pool
+on every dataset but squad, where it shortens none; τ = 1 shortens none:
+
+| tau | metaqa | squad | musique | hotpotqa | 2wiki | webqsp (beside) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0.5 | 22,846 | 0 | 364 | 130 | 123 | 3,457 |
+| 0.6 | 16,087 | 0 | 254 | 81 | 94 | 2,449 |
+| 0.7 | 9,929 | 0 | 150 | 57 | 66 | 1,858 |
+| 0.8 | 5,000 | 0 | 71 | 29 | 44 | 1,525 |
+| 0.85 | 2,898 | 0 | 37 | 16 | 30 | 1,260 |
+| 0.9 | 1,411 | 0 | 21 | 6 | 20 | 969 |
+| 0.95 | 405 | 0 | 6 | 3 | 11 | 391 |
+| 0.975 | 33 | 0 | 2 | 0 | 4 | 137 |
+| 0.99 (chosen) | 5 | 0 | 1 | 0 | 0 | 48 |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 |

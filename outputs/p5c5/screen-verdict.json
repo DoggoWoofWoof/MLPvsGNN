@@ -1,0 +1,129 @@
+{
+ "stage": "P5c5",
+ "declared_in": "docs/P5C5_FIVE_FOLDS.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not P5c5's re-call of the arm, or not twelve reads (docs/P5C5_FIVE_FOLDS.md, section 4)",
+ "arms": {
+  "zrckpo5": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [],
+   "problems": [],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0006,
+    "L-musique squad": -0.0003,
+    "L-musique musique": 0.0011,
+    "L-musique hotpotqa": 0.0003,
+    "L-musique 2wiki": 0.0018,
+    "L-musique webqsp": -0.0076,
+    "L-hotpotqa metaqa": -0.0008,
+    "L-hotpotqa squad": -0.0007,
+    "L-hotpotqa musique": 0.003,
+    "L-hotpotqa hotpotqa": 0.0031,
+    "L-hotpotqa 2wiki": -0.0004,
+    "L-hotpotqa webqsp": -0.012
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0006
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0076
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0008
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": -0.012
+    }
+   },
+   "recall_sha256": "896e19fc1b4f274d9024ccf0e3f11d385db183f33a3a4cc39a47061a9d06c9e6",
+   "next_form": "none: the learned offsets close as a fixed input to the lean pair, this file named as the close (docs/VERDICT_AUDIT_2026_10_17.md, section 6): they reached both models at two folds and at five, the GNN also with P5b's normalised log p, with no GAIN on any read"
+  },
+  "zspko5": {
+   "verdict": "NOT_ADOPTED",
+   "gains": [],
+   "losses": [
+    "L-musique webqsp"
+   ],
+   "problems": [],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "LOSS",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0043,
+    "L-musique squad": -0.0008,
+    "L-musique musique": 0.0146,
+    "L-musique hotpotqa": 0.0007,
+    "L-musique 2wiki": -0.0014,
+    "L-musique webqsp": -0.0142,
+    "L-hotpotqa metaqa": 0.002,
+    "L-hotpotqa squad": 0.0008,
+    "L-hotpotqa musique": 0.0053,
+    "L-hotpotqa hotpotqa": 0.0009,
+    "L-hotpotqa 2wiki": 0.0003,
+    "L-hotpotqa webqsp": 0.0046
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0043
+    },
+    "L-musique webqsp": {
+     "call": "LOSS",
+     "delta": -0.0142
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": 0.002
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0046
+    }
+   },
+   "recall_sha256": "35db530e080e4ae2fc1d785782f9a7b5085d276dcfceaa886d7f5c94805c8726",
+   "next_form": "none: the learned offsets close as a fixed input to the lean pair, this file named as the close (docs/VERDICT_AUDIT_2026_10_17.md, section 6): they reached both models at two folds and at five, the GNN also with P5b's normalised log p, with no GAIN on any read"
+  }
+ },
+ "musique_in_domain_beside": {
+  "zrckpo5": {
+   "call": "WITHIN",
+   "delta": 0.003
+  },
+  "zspko5": {
+   "call": "WITHIN",
+   "delta": 0.0053
+  }
+ },
+ "zp5c5_sha256": "3a18f51c929839040b229bdd502d19616a785bae6a93ad99d6467a7731550462",
+ "utc": "2026-10-20T17:12:11Z"
+}

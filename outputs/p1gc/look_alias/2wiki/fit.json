@@ -1,0 +1,159 @@
+{
+ "stage": "P1gcLA",
+ "declared_in": "docs/P1GC_LOOK_ALIAS.md",
+ "what": "alias",
+ "dataset": "2wiki",
+ "carve": "fit",
+ "verdict": "ALIAS",
+ "problems": [],
+ "records": {
+  "record_0of15.json": {
+   "rebuilt": "3125e2d2bd1436c9c9d3c721711ee18799f299590a6d0b3f4ab6166d26ca7a29",
+   "stamped": "f9705f44d929cd65a30b25dff20aa7234e026402ae6dfab36a90f84b163b92bf",
+   "original": "lost",
+   "same": null
+  },
+  "record_10of15.json": {
+   "rebuilt": "9acf6e2601138bd7437f48a5e5e624b54ad5d23b47069313c8a3ded30e9d2e37",
+   "stamped": "0261a528422fd6ddbbc604df35a93d2dd7a26057605774602e17a13db0575109",
+   "original": "lost",
+   "same": null
+  },
+  "record_11of15.json": {
+   "rebuilt": "85fb5fb1ed235c68df489e5318932a4206ed56b57116f60f464f3fbb6794d5be",
+   "stamped": "0c691891b3780d3a13b95abe1ad67d5b385853f637234e46a39045cdad1531f8",
+   "original": "lost",
+   "same": null
+  },
+  "record_12of15.json": {
+   "rebuilt": "37051b95337d4cf7d78a53d307b6dc8b9be1d2dea12534f0b02caf0022c013b5",
+   "stamped": "b544041a43a1b5380105118e0df31ed3e52cab47f0616180719a1e022328d67d",
+   "original": "lost",
+   "same": null
+  },
+  "record_13of15.json": {
+   "rebuilt": "80771f618082c9befcb6907d0f177c76eb360eca6ea1c5e8d28dcf52769a2385",
+   "stamped": "da7b5f142d8f039a559484d6d40616fcbfe77554daff578d080475178fcee998",
+   "original": "lost",
+   "same": null
+  },
+  "record_14of15.json": {
+   "rebuilt": "804f181bf09d19b3ab3b33c869edbc701e0834441f760b879ec040a29688c793",
+   "stamped": "2560b47dfbc652fb4cb637af029a28f3e928d172e42c7603ed68572fe8eb3662",
+   "original": "lost",
+   "same": null
+  },
+  "record_1of15.json": {
+   "rebuilt": "2268a354e43587f7febac31a9563b3536a718d09dc5e0695dfac6c9dff683595",
+   "stamped": "ea5b7b492b2eaf15273c12f3f1db242d60689adf1349c21315210f1a4739e77d",
+   "original": "lost",
+   "same": null
+  },
+  "record_2of15.json": {
+   "rebuilt": "c82d3e3f15c357103493060c29685e5bb242efe2b267da44e66353356faf932e",
+   "stamped": "0307f7b8e95c0cd0cc8766b1a8a9f36f8c47642cdeb0f2ad5f76a3dab2b4d233",
+   "original": "lost",
+   "same": null
+  },
+  "record_3of15.json": {
+   "rebuilt": "5b67289aa315142b453491095c4e392e29ba228cd4bfa04d82be8d8660036d07",
+   "stamped": "64d33fc1e5a5fcb5387763cf951b346fcf90b6b827a660acccbe9e2d63045b78",
+   "original": "lost",
+   "same": null
+  },
+  "record_4of15.json": {
+   "rebuilt": "6e7bb51a273f1f648f144e4a74dc925a77e3f4d0a1021e25d2141b6dd915c4b9",
+   "stamped": "eed24857a92aedf387cf4914acd1eebe5c571ec5a134bcbbb9ffba9af7bccf73",
+   "original": "lost",
+   "same": null
+  },
+  "record_5of15.json": {
+   "rebuilt": "edf6f5b99a082cedde3586c37a3cd90b993b1491c8dfd106b89e0eb605c30195",
+   "stamped": "36e2af8782f7278c7a19d0848f46947b1f5bd68a78fe4b3806f78d59f013461e",
+   "original": "lost",
+   "same": null
+  },
+  "record_6of15.json": {
+   "rebuilt": "4c871abe95bd52f221d1c1fc1d8cbf1f8ec8cf83513a0ce71a0bee22d6fcf388",
+   "stamped": "a294d959f37705ed3102e73fa596e7e4d09ff79697402dffe48ee79b19fbfb89",
+   "original": "lost",
+   "same": null
+  },
+  "record_7of15.json": {
+   "rebuilt": "e5ad8de1378ddf2336ba4e2f643e2baab3cabc65aef4bd2ae80c7ee176ab8dd7",
+   "stamped": "f43f6bb4fd1d23118344e17ffde1f8ca374b7a33a91ad6b981848fd7f0a7fa43",
+   "original": "lost",
+   "same": null
+  },
+  "record_8of15.json": {
+   "rebuilt": "4749f841ef3145d3ca394625190f72e1e572ad5695fad12f994f5d21512c9cd1",
+   "stamped": "58f23b352015205c0433907b0b3a869ada94070364e49c3f915f19fb9be55d70",
+   "original": "lost",
+   "same": null
+  },
+  "record_9of15.json": {
+   "rebuilt": "4df32ea741cff27d2310fd6b541b89d836a3eb53480ad8cc0e8fa36428051fd7",
+   "stamped": "f0406831058f17d667bea20cbe4ce6af70b951a5b93b123d1254d38edd4e0adc",
+   "original": "lost",
+   "same": null
+  }
+ },
+ "parts": {
+  "part_0of15": "71c7733fd49df32fb1898b0ca6c7024c42ab42074af5d5926c0483194e061a66",
+  "part_1of15": "42f32967ef2a58b8eda093b220f457b6441647025655f84febc558708ff2a93a",
+  "part_2of15": "bdacf0128890f243a9cb904de89edc3c92a8703061f7a37422e07a7a8417af8c",
+  "part_3of15": "828ccbf133f0e36eb9e6f0756d9f8bf2d7ffc96ced3fc9678784aac83ba96ee5",
+  "part_4of15": "0cab20a4bb53f249b7d17b77fdd1a6c4a011069b8f1c371b1ce20ef0ef732265",
+  "part_5of15": "8921ff6b1e2e3eb09cc1097bd6290bdde5b3406cf753882dbd8de2f2599526ce",
+  "part_6of15": "dbeeef3947c76a1d47f3791530c815f6439d6695a7f21ce8eb95472fce6b69e2",
+  "part_7of15": "8b03030c2160dc258b1e516fd0cff4b037de329f9f4f53fe2e5a00846665c71c",
+  "part_8of15": "d1a9cbc4632f902c9a466f3b59fba571c0622b0c398a11483443e0a1c246b81c",
+  "part_9of15": "fe6d4580fb0dfd8ffadb098c9fbe38bd4ac8e491d058e31db31412306b45aa04",
+  "part_10of15": "4da0f5411c0a2fde52baa373e4cc86c1961bf5d1d31b1a521103ce3492c9b887",
+  "part_11of15": "4751542d4bc380982e5097cc2327f341d2d6113dc4f256f70a02470ec7c0a191",
+  "part_12of15": "067a741d6ba9a17e14851cab9b93f3e04846ba98676fe100079e7fdb277d27f2",
+  "part_13of15": "d2f3e0168f41cbe5fc7a0affaa37206f90d68a4dc72c84155a8a978bec6c0ec9",
+  "part_14of15": "20f0a168656613f52970f89f409cbacaac2cf167c00f0051093f586ee3e638e4"
+ },
+ "run_keys": [
+  "seconds",
+  "utc",
+  "peak_rss_bytes"
+ ],
+ "global_keys": [
+  "look",
+  "pair",
+  "pair_keys",
+  "functions",
+  "metric_names",
+  "full",
+  "proj",
+  "threads",
+  "limit",
+  "copied_from",
+  "copied_from_sha256",
+  "script_sha256",
+  "placement"
+ ],
+ "carve_keys": [
+  "dataset",
+  "carve",
+  "n_chunks",
+  "chunk_queries",
+  "carve_queries",
+  "carve_ids_sha256",
+  "columns",
+  "column_blocks",
+  "rule",
+  "relations"
+ ],
+ "originals": {
+  "saved": 0,
+  "lost": 15
+ },
+ "saved_list_sha256": "d27125f6fd5cbdb9240689032643a677ce079b8fe652269356c9aee27f97b1c1",
+ "look_root": "outputs/p1gb/look",
+ "cache_root": "outputs/p1gb/cache",
+ "zp1gcla_sha256": "f83b2b8fd93d38b5389d8e57ebd8e048cd6bda6c2674da7779bed3bd55aaa087",
+ "utc": "2026-10-19T20:07:54Z"
+}

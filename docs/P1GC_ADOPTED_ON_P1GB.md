@@ -1,7 +1,8 @@
 # P1g-c: P1g-b's pools under the adopted models
 
 Declared 18 October 2026, after P1g-b's verdict and before any number of this stage. Code:
-`outputs/mp_unified/zp1gc.py`. Numbers here are development numbers. Status: declared.
+`outputs/mp_unified/zp1gc.py`. Numbers here are development numbers. Status: filed 27 October (section 8):
+pools and input both NOT_ADOPTED; the full run takes P1c2's pools, with zrckpr and zspx.
 
 ## 1. Why this, now
 
@@ -235,3 +236,131 @@ P1g-b's were; the rest at the end of the file):
 - on the CPU: four base compares for the pools call (any time), two for the input call (after P1g-c's zspx reads),
   six compares for the calls and six against P1g-b's lean-pair fits beside, three pairs, three re-calls and the
   verdict: 524 items in all.
+
+## 8. Results
+
+Filed 27 October 2026 from the host's records (`outputs/p1gc/screen-verdict.json`, written 2026-10-20T01:47:49Z; the
+re-calls `outputs/screen/scr-p1gc-pools-zspx-pair-recall.json`, `scr-p1gc-pools-zrckpr-pair-recall.json` and
+`scr-p1gc-input-zspxr-pair-recall.json`, host paths made relative). **Pools NOT_ADOPTED and input NOT_ADOPTED, so the
+full run takes P1c2's pools, with zrckpr as the MLP and zspx as the GNN** (section 5's last row; the verdict's
+`full_run`: pools P1c2's, MLP zrckpr, GNN zspx, zspxr not carried). P1g-b's pools gain one read on the GNN and cost both
+models musique in domain on L-hotpotqa; R1's columns before zspx's first step lose webqsp zero-shot on both splits.
+
+**The gate opened** at 2026-10-19T20:51:42Z with no problems (`outputs/p1gc/gate.json` and `.md`): every snapshot record
+was on disk again with the same arrays and question and row counts, 140 link records, 41 of rmatch's, 41 of zrc's and 11
+KT records, and no record the snapshot lacks. The rebuilt looks they were built from had been checked first
+(docs/P1GC_LOOK_ALIAS.md, section 7).
+
+- **Pools, zspx on P1g-b's pools against its card fit on P1c2's (G5's `scr-g5-zspx`): 1 GAIN, 1 LOSS.** The GAIN is
+  webqsp zero-shot on L-musique: +0.0309 [+0.0170, +0.0444] against its 0.0102 floor, with FC@5 +0.0299. The LOSS is
+  musique in domain on L-hotpotqa: -0.0087 [-0.0141, -0.0034] against its 0.0075 floor, with FC@5 -0.0170. Two filed
+  GAINs are WITHIN under the re-call: musique zero-shot on L-musique, +0.0133 [+0.0067, +0.0197] against its 0.0720
+  floor, and webqsp zero-shot on L-hotpotqa, +0.0158 [+0.0025, +0.0293] against its 0.0233 floor. Six more intervals
+  exclude 0, all inside their floors: on L-musique, metaqa -0.0038 [-0.0055, -0.0021], squad +0.0039 [+0.0019, +0.0060],
+  hotpotqa +0.0031 [+0.0006, +0.0057] and 2wiki -0.0062 [-0.0078, -0.0046]; on L-hotpotqa, metaqa -0.0043 [-0.0060,
+  -0.0027] and 2wiki +0.0026 [+0.0008, +0.0044].
+- **Pools, zrckpr on P1g-b's pools against its card fit on P1c2's (R1's `scr-r1-zrckpr`): 0 GAIN, 1 LOSS.** The LOSS is
+  musique in domain on L-hotpotqa: -0.0090 [-0.0148, -0.0036] against its 0.0075 floor, with FC@5 -0.0087. musique
+  zero-shot on L-musique falls -0.0144 [-0.0199, -0.0085], a LOSS by its pair's interval that is WITHIN under its 0.0720
+  floor. Three more intervals exclude 0, all on L-hotpotqa and inside their floors: metaqa -0.0029 [-0.0045, -0.0013],
+  hotpotqa zero-shot -0.0039 [-0.0072, -0.0007] and 2wiki -0.0028 [-0.0046, -0.0011].
+- **Input, zspxr against P1g-c's own zspx fit on P1g-b's pools: 0 GAIN, 2 LOSS.** Both LOSSes are webqsp zero-shot:
+  -0.0175 [-0.0272, -0.0085] on L-musique against its 0.0102 floor (FC@5 -0.0166), and -0.0357 [-0.0453, -0.0259] on
+  L-hotpotqa against its 0.0233 floor (FC@5 -0.0279). musique zero-shot on L-musique falls -0.0079 [-0.0134, -0.0021], a
+  LOSS by its pair's interval that is WITHIN under its 0.0720 floor. Four more intervals exclude 0, all inside their
+  floors: on L-musique, metaqa +0.0035 [+0.0025, +0.0045], hotpotqa -0.0031 [-0.0055, -0.0009] and 2wiki +0.0018
+  [+0.0002, +0.0034]; on L-hotpotqa, hotpotqa zero-shot -0.0055 [-0.0084, -0.0028]. Two more on L-hotpotqa, metaqa
+  +0.0010 [+0.0000, +0.0020] and squad +0.0017 [+0.0000, +0.0033], have a lower end stored as 0.0, which does not say
+  whether it is above 0.
+- **Beside: the adopted changes still gain on P1g-b's pools; the pools cost musique in domain.** Against P1g-b's own
+  fits of the lean arms on the same pools (pair calls at the 0.0075 floor, not re-called), zspx gains webqsp zero-shot
+  on L-musique (+0.0159) and, on L-hotpotqa, musique in domain (+0.0152), hotpotqa zero-shot (+0.0091) and webqsp
+  zero-shot (+0.0264); zrckpr gains webqsp zero-shot on L-musique (+0.0105); zspxr gains musique in domain on L-hotpotqa
+  (+0.0177) and loses webqsp zero-shot there (-0.0093). musique in domain on L-hotpotqa, Claim 1's read, is the pools
+  call's one LOSS on each model (-0.0087 and -0.0090).
+
+Not adopted, on either call. This closes only these forms: P1g-b's pools under the adopted models, and R1's columns
+before zspx's first step (docs/SCREENS.md section 3b). The next forms, fixed in section 5 and recorded in the verdict:
+**for the pools,** the pools stay P1c2's for the adopted models; the full run of zrckpr and zspx on P1c2's pools (its
+own file), six splits per arm under grade-nullx; and the pools' next form P1g-b3, each row's place in P1g-b's pool
+(today's fill, the fill beyond it, the extra set) as an input to both models through R1's pointwise head, decided as
+P1g-b was (its own file), the last form owed before the bigger pools close. **For the input, with no GAIN:** zspxs: R1's
+nine columns read by zspx's first step head beside zprop's inputs, so the step weighs a row's neighbours by its residual
+(one declared file).
+
+The refits on P1g-b's pools that waited on this verdict, A5cp, A3vp and A7p, are therefore beside, deciding nothing
+(each file's section 5, "The pools"): on P1c2's pools their stages' own verdicts decide, A5c's and A7's for both arms
+and A3v's for zrckpy, all ADOPT_FOR_FULL_RUN.
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the gate `outputs/p1gc/gate.json` and the verdict `outputs/p1gc/screen-verdict.json`,
+each with its `.md`; for each call (`pools-zspx`, `pools-zrckpr` and `input-zspxr`), the compares
+`outputs/screen/scr-p1gc-<call>.json` and `-hp.json`, the pair `-pair.json` and its re-call `-pair-recall.json`, each
+with its `.md`; the compares beside against P1g-b's lean fits, `outputs/screen/scr-p1gc-lean-<arm>.json` and `-hp.json`
+for zspx, zrckpr and zspxr, each with its `.md`; the re-calls' base screens `outputs/p1gc/base-pools-<arm>-<split>.json`
+(zspx and zrckpr) and `outputs/p1gc/base-input-zspx-<split>.json`, each with its `.md`; and the eleven look-alias
+records `outputs/p1gc/look_alias/<dataset>/<carve>.json` (docs/P1GC_LOOK_ALIAS.md, section 7). The host paths were made
+relative in each re-call's two `rel` entries and nowhere else, so the `recall_sha256` each verdict holds is the host
+file's, from before that change. The snapshot (`outputs/p1gc/p1gb_records`), the residual arrays (`outputs/p1gc/res`),
+R1's columns (`outputs/p1gc/cols`) and the looks' per-part records stay on the host.
+
+The twelve reads of the pools call after the seed-null re-call (delta = the arm's R@5 on P1g-b's pools minus its card
+fit's on P1c2's, on the same questions and gold totals; a call is shown with its filed call where the re-call changed
+it):
+
+| split | dataset | read | zspx on P1c2's pools R@5 | zspx on P1g-b's pools: delta [95% CI], call | zrckpr on P1c2's pools R@5 | zrckpr on P1g-b's pools: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8030 | -0.0038 [-0.0055, -0.0021], WITHIN | 0.8012 | -0.0008 [-0.0024, +0.0008], WITHIN |
+| L-musique | squad | in-domain | 0.9092 | +0.0039 [+0.0019, +0.0060], WITHIN | 0.9127 | +0.0008 [-0.0010, +0.0026], WITHIN |
+| L-musique | musique | zero-shot | 0.5073 | +0.0133 [+0.0067, +0.0197], WITHIN (filed GAIN) | 0.5197 | -0.0144 [-0.0199, -0.0085], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9074 | +0.0031 [+0.0006, +0.0057], WITHIN | 0.9083 | -0.0024 [-0.0049, +0.0001], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9351 | -0.0062 [-0.0078, -0.0046], WITHIN | 0.9361 | +0.0004 [-0.0012, +0.0019], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3204 | +0.0309 [+0.0170, +0.0444], **GAIN** | 0.3762 | +0.0111 [-0.0002, +0.0218], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8039 | -0.0043 [-0.0060, -0.0027], WITHIN | 0.8040 | -0.0029 [-0.0045, -0.0013], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9129 | -0.0009 [-0.0028, +0.0008], WITHIN | 0.9114 | -0.0002 [-0.0021, +0.0019], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5901 | -0.0087 [-0.0141, -0.0034], **LOSS** | 0.5779 | -0.0090 [-0.0148, -0.0036], **LOSS** |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8547 | +0.0028 [-0.0003, +0.0059], WITHIN | 0.8558 | -0.0039 [-0.0072, -0.0007], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9312 | +0.0026 [+0.0008, +0.0044], WITHIN | 0.9331 | -0.0028 [-0.0046, -0.0011], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2914 | +0.0158 [+0.0025, +0.0293], WITHIN (filed GAIN) | 0.3411 | -0.0041 [-0.0172, +0.0093], WITHIN |
+
+The twelve reads of the input call after the seed-null re-call (delta = zspxr's R@5 minus P1g-c's zspx fit's of the
+split, both on P1g-b's pools):
+
+| split | dataset | read | zspx on P1g-b's pools R@5 | zspxr: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.7992 | +0.0035 [+0.0025, +0.0045], WITHIN |
+| L-musique | squad | in-domain | 0.9131 | -0.0012 [-0.0028, +0.0005], WITHIN |
+| L-musique | musique | zero-shot | 0.5206 | -0.0079 [-0.0134, -0.0021], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9105 | -0.0031 [-0.0055, -0.0009], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9289 | +0.0018 [+0.0002, +0.0034], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3513 | -0.0175 [-0.0272, -0.0085], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.7996 | +0.0010 [+0.0000, +0.0020], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9120 | +0.0017 [+0.0000, +0.0033], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5814 | +0.0025 [-0.0026, +0.0076], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8575 | -0.0055 [-0.0084, -0.0028], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9338 | +0.0007 [-0.0009, +0.0023], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3072 | -0.0357 [-0.0453, -0.0259], **LOSS** |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same bases, from the compare screens
+(`outputs/screen/scr-p1gc-<call>.json` and `-hp.json`); and each arm's R@5 delta against P1g-b's own fit of the lean arm
+on the same pools (zspx and zspxr against `scr-p1gb-zspk`, zrckpr against `scr-p1gb-zrckp`), from
+`outputs/screen/scr-p1gc-lean-<arm>.json` and `-hp.json`, with the pair's call at the 0.0075 floor where it is not
+WITHIN. The verdict's `against_p1gb_lean_r5` holds the same deltas taken between the rounded R@5s; they differ from the
+compares' by 0.0001 on 8 of the 36 reads.
+
+| split | dataset | zspx FC@5 | zspx hit@1 | zrckpr FC@5 | zrckpr hit@1 | zspxr FC@5 | zspxr hit@1 | zspx vs P1g-b's zspk R@5 | zrckpr vs P1g-b's zrckp R@5 | zspxr vs P1g-b's zspk R@5 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0026 | -0.0097 | +0.0011 | -0.0022 | +0.0038 | +0.0115 | -0.0012 | +0.0012 | +0.0023 |
+| L-musique | squad | +0.0039 | +0.0017 | +0.0008 | +0.0008 | -0.0012 | -0.0048 | +0.0002 | +0.0008 | -0.0010 |
+| L-musique | musique | +0.0058 | +0.0174 | -0.0074 | -0.0021 | -0.0012 | +0.0128 | +0.0038 | +0.0040 | -0.0041 |
+| L-musique | hotpotqa | +0.0045 | -0.0022 | -0.0047 | -0.0138 | -0.0023 | +0.0012 | +0.0018 | +0.0024 | -0.0013 |
+| L-musique | 2wiki | -0.0148 | +0.0026 | +0.0015 | -0.0017 | +0.0033 | -0.0037 | -0.0055 | -0.0012 | -0.0038 |
+| L-musique | webqsp | +0.0299 | -0.0080 | +0.0080 | +0.0200 | -0.0166 | -0.0106 | +0.0159 GAIN | +0.0105 GAIN | -0.0016 |
+| L-hotpotqa | metaqa | -0.0051 | -0.0111 | -0.0025 | -0.0029 | +0.0021 | +0.0059 | -0.0015 | +0.0015 | -0.0005 |
+| L-hotpotqa | squad | -0.0009 | -0.0039 | -0.0002 | -0.0014 | +0.0017 | +0.0024 | -0.0007 | -0.0010 | +0.0010 |
+| L-hotpotqa | musique | -0.0170 | -0.0132 | -0.0087 | -0.0066 | +0.0079 | +0.0021 | +0.0152 GAIN | -0.0006 | +0.0177 GAIN |
+| L-hotpotqa | hotpotqa | +0.0020 | +0.0103 | -0.0096 | +0.0005 | -0.0100 | +0.0042 | +0.0091 GAIN | -0.0027 | +0.0036 |
+| L-hotpotqa | 2wiki | +0.0076 | -0.0120 | -0.0104 | +0.0035 | -0.0010 | +0.0046 | +0.0013 | -0.0037 | +0.0020 |
+| L-hotpotqa | webqsp | +0.0120 | +0.0093 | -0.0053 | +0.0040 | -0.0279 | -0.0093 | +0.0264 GAIN | +0.0006 | -0.0093 LOSS |

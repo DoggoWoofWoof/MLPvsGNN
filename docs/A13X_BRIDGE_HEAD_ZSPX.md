@@ -2,7 +2,8 @@
 
 Declared 19 October 2026, before any number. The next form A13's verdict named (zspkb NOT_ADOPTED with no GAIN;
 outputs/a13/screen-verdict.json, fixed in docs/A13_BRIDGE_COLUMNS_GNN.md section 5). Under docs/SCREENS.md section 3b.
-Code: `outputs/mp_unified/za13x.py` (the arm, the screen and the call). Not run yet.
+Code: `outputs/mp_unified/za13x.py` (the arm, the screen and the call). Filed 27 October:
+NOT_ADOPTED with no GAIN and no LOSS; the next form is A13xs (section 5).
 
 ## 1. Why this, now
 
@@ -195,4 +196,68 @@ The encoder stays frozen. webqsp never trains. Test splits are never read. No LL
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a13x/screen-verdict.json`, written 2026-10-20T09:34:29Z; the
+re-call `outputs/screen/scr-a13x-zspxb-pair-recall.json`, host paths made relative). **NOT_ADOPTED, with no GAIN and no
+LOSS:** with zbr's bridge head before zspx's first step, no read moves past its floor, and the two filed LOSSes, musique
+zero-shot on L-musique and webqsp zero-shot on L-hotpotqa, are inside their floors under the re-call.
+
+- **zspxb: 0 GAIN, 0 LOSS.** Two filed LOSSes are WITHIN under the re-call: musique zero-shot on L-musique, -0.0119
+  [-0.0176, -0.0063] against its 0.0720 floor (FC@5 -0.0153), and webqsp zero-shot on L-hotpotqa, -0.0133 [-0.0216,
+  -0.0055] against its 0.0233 floor (FC@5 -0.0080). Three more intervals exclude 0, all on L-hotpotqa and inside their
+  floors: squad +0.0023 [+0.0006, +0.0040], musique in domain -0.0065 [-0.0111, -0.0017] and 2wiki -0.0015 [-0.0030,
+  -0.0000] (its upper end below 0 before rounding: the record holds -0.0).
+- **Beside: zbr's head moves musique zero-shot on L-musique the other way on zspx.** On zspk (A13's zspkb) it rose
+  +0.0138; on zspx it falls -0.0119. Every other read of A13's arm stayed within 0.0080 of its base.
+
+Not adopted. This closes only this form: zbr's bridge head added before zspx's first step (docs/SCREENS.md section 3b).
+The next form, fixed in section 5 and recorded in the verdict, is A13xs, the columns inside the step: zbr's 13 inputs
+read by zspx's first step head beside zprop's 10 (its first layer widened, the new weights zero at the start, so it
+starts as zspx). The step then weighs a row's neighbours by the row's bridge quantities, instead of adding a shift. It
+is P1g-c's zspxs form, for zbr's columns (one declared file).
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a13x/screen-verdict.json` and `.md`; for the arm `zspxb`, the
+compares `outputs/screen/scr-a13x-zspxb.json` and `-hp.json`, the pair `-pair.json` and its re-call `-pair-recall.json`,
+each with its `.md`. The host paths were made relative in each re-call's two `rel` entries and nowhere else, so the
+`recall_sha256` each verdict holds is the host file's, from before that change. The re-calls' nulls also read the base
+screens `outputs/a9/base-zspx-L-musique.json` and `outputs/a9/base-zspx-L-hotpotqa.json`, fetched from the host with
+this filing (A9's own filing had left them there).
+
+The twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, zspx's card fit of the split; a
+call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zspx R@5 | zspxb: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8030 | +0.0002 [-0.0005, +0.0011], WITHIN |
+| L-musique | squad | in-domain | 0.9092 | +0.0004 [-0.0015, +0.0023], WITHIN |
+| L-musique | musique | zero-shot | 0.5073 | -0.0119 [-0.0176, -0.0063], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9074 | +0.0014 [-0.0008, +0.0034], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9351 | -0.0011 [-0.0025, +0.0003], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3204 | +0.0065 [-0.0003, +0.0136], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8039 | -0.0003 [-0.0011, +0.0004], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9129 | +0.0023 [+0.0006, +0.0040], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5901 | -0.0065 [-0.0111, -0.0017], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8547 | +0.0013 [-0.0013, +0.0040], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9312 | -0.0015 [-0.0030, -0.0000], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2914 | -0.0133 [-0.0216, -0.0055], WITHIN (filed LOSS) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a13x-zspxb.json` and `-hp.json`); and A13's R@5 deltas with the head on zspk (zspkb, its own
+re-call `outputs/screen/scr-a13-zspkb-pair-recall.json`, against zspk), on the same read:
+
+| split | dataset | zspxb FC@5 | zspxb hit@1 | zspkb (A13) R@5 |
+| --- | --- | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0005 | -0.0003 | +0.0003 |
+| L-musique | squad | +0.0004 | +0.0001 | -0.0004 |
+| L-musique | musique | -0.0153 | +0.0025 | +0.0138 |
+| L-musique | hotpotqa | +0.0035 | -0.0068 | -0.0001 |
+| L-musique | 2wiki | -0.0040 | +0.0038 | -0.0011 |
+| L-musique | webqsp | +0.0067 | -0.0040 | -0.0066 |
+| L-hotpotqa | metaqa | -0.0010 | -0.0041 | +0.0013 |
+| L-hotpotqa | squad | +0.0023 | +0.0004 | -0.0005 |
+| L-hotpotqa | musique | -0.0128 | -0.0041 | -0.0018 |
+| L-hotpotqa | hotpotqa | +0.0011 | +0.0080 | +0.0080 |
+| L-hotpotqa | 2wiki | -0.0078 | -0.0060 | -0.0043 |
+| L-hotpotqa | webqsp | -0.0080 | +0.0060 | -0.0056 |

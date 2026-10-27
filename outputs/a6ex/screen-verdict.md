@@ -1,0 +1,12 @@
+# A6ex's screen verdict: zrckprn **NOT_ADOPTED**, zspxl **NOT_ADOPTED**
+
+Rule: per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A6ex's re-call of the arm, or not twelve reads (docs/A6EX_LINK_WORDS_ADOPTED.md, section 4).
+
+- **zrckprn** (zrckpr plus A6e's head over the eight link-word columns) against zrckpr's card fit of each split (scr-r1-zrckpr, scr-r1-zrckpr-hp), after the seed-null re-call: 0 GAIN (none), 1 LOSS (L-musique webqsp). Beside: L-musique musique WITHIN (-0.0098), L-musique hotpotqa WITHIN (+0.0014), L-musique webqsp LOSS (-0.0118), L-hotpotqa musique WITHIN (+0.0022), L-hotpotqa hotpotqa WITHIN (+0.0061), L-hotpotqa webqsp WITHIN (+0.0115). Next: the link-word idea closes as a model input: A6, A6e and A6ex gave it to both models as learned inputs that start at zero (columns on the MLP; columns, then edge weights, then edge weights in every step that reads edges on the GNN), on the old bases and on the adopted ones, and no re-call found a GAIN; D4 stays a diagnostic.
+- **zspxl** (zspx with A6e's link-weighted inputs in each of its three steps) against zspx's card fit of each split (scr-g5-zspx, scr-g5-zspx-hp), after the seed-null re-call: 0 GAIN (none), 0 LOSS (none). Beside: L-musique musique WITHIN (-0.0195), L-musique hotpotqa WITHIN (+0.0035), L-musique webqsp WITHIN (-0.0064), L-hotpotqa musique WITHIN (+0.0002), L-hotpotqa hotpotqa WITHIN (+0.0003), L-hotpotqa webqsp WITHIN (-0.0078). Next: the link-word idea closes as a model input: A6, A6e and A6ex gave it to both models as learned inputs that start at zero (columns on the MLP; columns, then edge weights, then edge weights in every step that reads edges on the GNN), on the old bases and on the adopted ones, and no re-call found a GAIN; D4 stays a diagnostic.
+
+Beside, deciding nothing: musique in-domain (L-hotpotqa musique): zrckprn WITHIN (+0.0022), zspxl WITHIN (+0.0002).
+
+The link-word idea as a model input: **CLOSED_AS_A_MODEL_INPUT** (no GAIN on either adopted arm, after none in A6 and A6e: the idea has reached both models as a learned input on both bases (section 5)).
+
+This verdict closes only this form (A6e's eight columns beside zrckpr's on the MLP; A6e's link-weighted inputs in each of zspx's three steps on the GNN); the idea closes only as section 5 fixes it; docs/SCREENS.md, 3b.

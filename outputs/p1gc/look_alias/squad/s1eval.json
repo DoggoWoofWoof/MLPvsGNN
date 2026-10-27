@@ -1,0 +1,62 @@
+{
+ "stage": "P1gcLA",
+ "declared_in": "docs/P1GC_LOOK_ALIAS.md",
+ "what": "alias",
+ "dataset": "squad",
+ "carve": "s1eval",
+ "verdict": "ALIAS",
+ "problems": [],
+ "records": {
+  "record.json": {
+   "rebuilt": "59a9adc00faa53d59087f232f7ed0daded53ab1878bfa8e8779408b214837c8c",
+   "stamped": "41346c1f1b430257c41fbc72912237ec7eb3c26ae92e8695eab7b762e85b7d2c",
+   "original": "saved",
+   "same": true,
+   "identical_bytes": false
+  }
+ },
+ "parts": {
+  "part_0of1": "1cc1bb7615370bcb15b31c2b78394543e72ed5899f445d55847969a2ced805c6"
+ },
+ "run_keys": [
+  "seconds",
+  "utc",
+  "peak_rss_bytes"
+ ],
+ "global_keys": [
+  "look",
+  "pair",
+  "pair_keys",
+  "functions",
+  "metric_names",
+  "full",
+  "proj",
+  "threads",
+  "limit",
+  "copied_from",
+  "copied_from_sha256",
+  "script_sha256",
+  "placement"
+ ],
+ "carve_keys": [
+  "dataset",
+  "carve",
+  "n_chunks",
+  "chunk_queries",
+  "carve_queries",
+  "carve_ids_sha256",
+  "columns",
+  "column_blocks",
+  "rule",
+  "relations"
+ ],
+ "originals": {
+  "saved": 1,
+  "lost": 0
+ },
+ "saved_list_sha256": "d27125f6fd5cbdb9240689032643a677ce079b8fe652269356c9aee27f97b1c1",
+ "look_root": "outputs/p1gb/look",
+ "cache_root": "outputs/p1gb/cache",
+ "zp1gcla_sha256": "f83b2b8fd93d38b5389d8e57ebd8e048cd6bda6c2674da7779bed3bd55aaa087",
+ "utc": "2026-10-19T20:10:15Z"
+}

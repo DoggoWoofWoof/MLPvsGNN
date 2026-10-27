@@ -1,0 +1,10 @@
+# A4he's screen verdict: zrckphe **ADOPT_FOR_FULL_RUN**, zspkhe **NOT_ADOPTED**
+
+Rule: per arm: ADOPT_FOR_FULL_RUN when its re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A4he's re-call of the arm, or not twelve reads (docs/A4HE_SEMB_DROPOUT.md, section 4).
+
+- **zrckphe** (zrckp trained with A4he's dropout (0.1 per question on SEMB and with it rmatch's chain term, the eight fixed blocks kept)) against zrckp's card fit of each split (scr-p1c3p-zrckp, scr-p1c3p-zrckp-hp), after the seed-null re-call: 1 GAIN (L-musique webqsp), 0 LOSS (none). Beside: L-musique metaqa WITHIN (-0.0002), L-musique musique WITHIN (-0.0706), L-musique webqsp GAIN (+0.0181), L-hotpotqa metaqa WITHIN (-0.0013), L-hotpotqa musique WITHIN (+0.0016), L-hotpotqa webqsp WITHIN (-0.0010). Next: the arm fitted again on P1g-b's pools, then its full run, its own declared file.
+- **zspkhe** (zspk trained with A4he's dropout (0.1 per question on SEMB and with it rmatch's chain term, the eight fixed blocks kept), before its propagation) against zspk's card fit of each split (scr-p1c3-zspk, scr-p1c3-zspk-hp), after the seed-null re-call: 1 GAIN (L-hotpotqa webqsp), 1 LOSS (L-musique musique). Beside: L-musique metaqa WITHIN (+0.0013), L-musique musique LOSS (-0.1036), L-musique webqsp WITHIN (-0.0039), L-hotpotqa metaqa WITHIN (-0.0001), L-hotpotqa musique WITHIN (+0.0006), L-hotpotqa webqsp GAIN (+0.0312). Next: A4hc, SEMB's drop split in two on both models: SEMB's columns dropped at 0.1 with rmatch's chain term kept, and the chain term dropped at 0.1 with SEMB's columns kept, the eight fixed blocks always kept, its own declared file.
+
+Beside, deciding nothing: musique in-domain (L-hotpotqa musique): zrckphe WITHIN (+0.0016), zspkhe WITHIN (+0.0006).
+
+This verdict closes only this form (dropout 0.1 per question on SEMB, and with it rmatch's chain term, the eight fixed blocks always kept, at the top of the forward, in training); docs/SCREENS.md, 3b.

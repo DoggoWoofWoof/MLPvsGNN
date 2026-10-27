@@ -2,7 +2,8 @@
 
 Declared 19 October 2026, before any number. The next form A10's verdict named (zg2x NOT_ADOPTED with no GAIN;
 outputs/a10/screen-verdict.json, fixed in docs/A10_G2_ON_ZSPX.md section 5). Under docs/SCREENS.md section 3b.
-Code: `outputs/mp_unified/za10e.py` (the arm, the screen and the call). Not run yet.
+Code: `outputs/mp_unified/za10e.py` (the arm, the screen and the call). Filed 27 October:
+NOT_ADOPTED with no GAIN and no LOSS; the next form is A10p (section 5).
 
 ## 1. Why this, now
 
@@ -187,4 +188,67 @@ The encoder stays frozen. webqsp never trains. Test splits are never read. No LL
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a10e/screen-verdict.json`, written 2026-10-20T07:17:32Z; the
+re-call `outputs/screen/scr-a10e-zg2xe-pair-recall.json`, host paths made relative). **NOT_ADOPTED, with no GAIN and no
+LOSS:** with G2's stack trained end to end (its z-score of the score keeping the gradient), zspx moves no read past its
+floor, and the one filed LOSS, musique zero-shot on L-musique, is inside its floor under the re-call.
+
+- **zg2xe: 0 GAIN, 0 LOSS.** musique zero-shot on L-musique falls -0.0169 [-0.0225, -0.0114], a LOSS by its pair's
+  interval that is WITHIN under its 0.0720 floor, with FC@5 -0.0186 and hit@1 -0.0410. Four more intervals exclude 0,
+  all inside their floors: on L-musique, squad +0.0024 [+0.0005, +0.0042] and 2wiki -0.0054 [-0.0068, -0.0039]; on
+  L-hotpotqa, metaqa -0.0012 [-0.0020, -0.0005] and 2wiki +0.0034 [+0.0020, +0.0049].
+- **Beside: the gradient through the z-score turned musique zero-shot on L-musique down.** With the z-score detached
+  (A10's zg2x), that read moved +0.0011; end to end it moves -0.0169. The 2wiki moves are A10's again: -0.0054 against
+  -0.0056 on L-musique, +0.0034 against +0.0054 on L-hotpotqa.
+
+Not adopted. This closes only this form: G2's stack after zspx's three steps, trained end to end (docs/SCREENS.md
+section 3b). The next form, fixed in section 5 and recorded in the verdict, is A10p, the stack before the steps: zg2xe's
+stack (its z-score with the gradient kept) reading zspx's pre-step score (zspk's scorer and KT head), its bounded
+readout added there, so zspx's three steps act on the stack's correction (one declared file).
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a10e/screen-verdict.json` and `.md`; for the arm `zg2xe`, the
+compares `outputs/screen/scr-a10e-zg2xe.json` and `-hp.json`, the pair `-pair.json` and its re-call `-pair-recall.json`,
+each with its `.md`. The host paths were made relative in each re-call's two `rel` entries and nowhere else, so the
+`recall_sha256` each verdict holds is the host file's, from before that change. The re-calls' nulls also read the base
+screens `outputs/a9/base-zspx-L-musique.json` and `outputs/a9/base-zspx-L-hotpotqa.json`, fetched from the host with
+this filing (A9's own filing had left them there).
+
+The twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, zspx's card fit of the split; a
+call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zspx R@5 | zg2xe: delta [95% CI], call |
+| --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8030 | +0.0001 [-0.0007, +0.0009], WITHIN |
+| L-musique | squad | in-domain | 0.9092 | +0.0024 [+0.0005, +0.0042], WITHIN |
+| L-musique | musique | zero-shot | 0.5073 | -0.0169 [-0.0225, -0.0114], WITHIN (filed LOSS) |
+| L-musique | hotpotqa | in-domain | 0.9074 | +0.0011 [-0.0010, +0.0031], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9351 | -0.0054 [-0.0068, -0.0039], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3204 | -0.0037 [-0.0116, +0.0040], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.8039 | -0.0012 [-0.0020, -0.0005], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9129 | +0.0008 [-0.0010, +0.0028], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5901 | -0.0041 [-0.0088, +0.0008], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8547 | -0.0010 [-0.0035, +0.0016], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9312 | +0.0034 [+0.0020, +0.0049], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.2914 | -0.0080 [-0.0158, +0.0002], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a10e-zg2xe.json` and `-hp.json`); and A10's R@5 deltas with the stack's z-score detached (zg2x, its
+own re-call `outputs/screen/scr-a10-zg2x-pair-recall.json`), on the same read (a call is shown where it is not WITHIN):
+
+| split | dataset | zg2xe FC@5 | zg2xe hit@1 | zg2x (A10) R@5 |
+| --- | --- | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0000 | +0.0009 | +0.0012 |
+| L-musique | squad | +0.0024 | +0.0009 | +0.0019 |
+| L-musique | musique | -0.0186 | -0.0410 | +0.0011 |
+| L-musique | hotpotqa | +0.0030 | -0.0062 | -0.0018 |
+| L-musique | 2wiki | -0.0147 | +0.0015 | -0.0056 |
+| L-musique | webqsp | -0.0013 | -0.0013 | +0.0050 |
+| L-hotpotqa | metaqa | -0.0024 | -0.0056 | +0.0001 |
+| L-hotpotqa | squad | +0.0008 | -0.0035 | +0.0013 |
+| L-hotpotqa | musique | -0.0091 | -0.0062 | -0.0033 |
+| L-hotpotqa | hotpotqa | -0.0030 | +0.0047 | -0.0014 |
+| L-hotpotqa | 2wiki | +0.0082 | -0.0013 | +0.0054 |
+| L-hotpotqa | webqsp | -0.0027 | -0.0033 | -0.0062 |

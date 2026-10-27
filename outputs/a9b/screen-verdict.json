@@ -1,0 +1,163 @@
+{
+ "stage": "A9b",
+ "declared_in": "docs/A9B_BOUND_ALONE.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zspxt's re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A9b's, or not twelve reads (docs/A9B_BOUND_ALONE.md, section 4)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zspxt",
+ "gains": [],
+ "losses": [
+  "L-hotpotqa musique",
+  "L-hotpotqa webqsp"
+ ],
+ "problems": [],
+ "next_form": "none of this track: the MP-unified track's form closes on the GNN. Its dropout (A9), its bound (A9b) and both together (A9t) have all reached the adopted GNN without a GAIN, and the MLP takes no message, so the idea has reached the one model that can take it (docs/SCREENS.md section 3b). This closing is the step recorded; no further form of this track is declared",
+ "calls": {
+  "L-musique metaqa": "WITHIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "WITHIN",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "WITHIN",
+  "L-musique webqsp": "WITHIN",
+  "L-hotpotqa metaqa": "WITHIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "LOSS",
+  "L-hotpotqa hotpotqa": "WITHIN",
+  "L-hotpotqa 2wiki": "WITHIN",
+  "L-hotpotqa webqsp": "LOSS"
+ },
+ "delta_r5": {
+  "L-musique metaqa": -0.0012,
+  "L-musique squad": 0.0024,
+  "L-musique musique": 0.0124,
+  "L-musique hotpotqa": -0.0004,
+  "L-musique 2wiki": -0.0023,
+  "L-musique webqsp": -0.0054,
+  "L-hotpotqa metaqa": -0.0008,
+  "L-hotpotqa squad": 0.0005,
+  "L-hotpotqa musique": -0.0116,
+  "L-hotpotqa hotpotqa": -0.0034,
+  "L-hotpotqa 2wiki": -0.0004,
+  "L-hotpotqa webqsp": -0.0237
+ },
+ "beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0012
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0054
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0008
+  },
+  "L-hotpotqa webqsp": {
+   "call": "LOSS",
+   "delta": -0.0237
+  }
+ },
+ "zspxdt_beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0019
+  },
+  "L-musique squad": {
+   "call": "WITHIN",
+   "delta": 0.0035
+  },
+  "L-musique musique": {
+   "call": "WITHIN",
+   "delta": -0.0012
+  },
+  "L-musique hotpotqa": {
+   "call": "WITHIN",
+   "delta": -0.0002
+  },
+  "L-musique 2wiki": {
+   "call": "WITHIN",
+   "delta": -0.001
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0012
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0023
+  },
+  "L-hotpotqa squad": {
+   "call": "WITHIN",
+   "delta": 0.0007
+  },
+  "L-hotpotqa musique": {
+   "call": "LOSS",
+   "delta": -0.0125
+  },
+  "L-hotpotqa hotpotqa": {
+   "call": "WITHIN",
+   "delta": -0.0035
+  },
+  "L-hotpotqa 2wiki": {
+   "call": "WITHIN",
+   "delta": -0.0047
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0208
+  }
+ },
+ "zspxd_beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0019
+  },
+  "L-musique squad": {
+   "call": "WITHIN",
+   "delta": 0.0026
+  },
+  "L-musique musique": {
+   "call": "WITHIN",
+   "delta": 0.0024
+  },
+  "L-musique hotpotqa": {
+   "call": "WITHIN",
+   "delta": -0.0015
+  },
+  "L-musique 2wiki": {
+   "call": "WITHIN",
+   "delta": -0.0005
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0034
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0007
+  },
+  "L-hotpotqa squad": {
+   "call": "WITHIN",
+   "delta": -0.0008
+  },
+  "L-hotpotqa musique": {
+   "call": "WITHIN",
+   "delta": -0.0059
+  },
+  "L-hotpotqa hotpotqa": {
+   "call": "WITHIN",
+   "delta": -0.0075
+  },
+  "L-hotpotqa 2wiki": {
+   "call": "WITHIN",
+   "delta": 0.0026
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0037
+  }
+ },
+ "recall_sha256": "7a4f2e5c0d16a0f8e13b1bcd19b1b12a44bb84353416bdb52fc4ba5847674e4d",
+ "za9b_sha256": "541009a6d58c3959e94a98b5805f2c02e1a12a87919336b3d4298130c65e3c43",
+ "utc": "2026-10-20T21:31:14Z"
+}

@@ -216,4 +216,74 @@ They go after A4he's items. **Disk:** about 0.3 GB (four fits and their reads).
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a3z/screen-verdict.json`, written 2026-10-20T20:07:32Z; the
+re-calls `outputs/screen/scr-a3z-zrckpz-pair-recall.json` and `scr-a3z-zspkz-pair-recall.json`, host paths made
+relative). **Both arms NOT_ADOPTED, with no GAIN:** with step 1's whole-pool z-scores beside zret's, both models lose
+webqsp zero-shot on L-musique, and the GNN's arm loses 2wiki in domain there as well.
+
+- **zrckpz: 0 GAIN, 1 LOSS.** The LOSS is webqsp zero-shot on L-musique: -0.0153 [-0.0252, -0.0058] against its 0.0102
+  floor, with FC@5 -0.0180. Three more intervals exclude 0, all inside their floors: on L-musique, metaqa -0.0018
+  [-0.0028, -0.0009] and 2wiki -0.0042 [-0.0059, -0.0026]; on L-hotpotqa, metaqa -0.0014 [-0.0023, -0.0006]. No call
+  changed under the re-call.
+- **zspkz: 0 GAIN, 2 LOSS.** Both LOSSes are on L-musique: 2wiki in domain, -0.0089 [-0.0105, -0.0073] against its
+  0.0075 floor, with FC@5 -0.0222; and webqsp zero-shot, -0.0122 [-0.0219, -0.0023] against its 0.0102 floor, with FC@5
+  -0.0073. Two filed GAINs are WITHIN under the re-call: musique zero-shot on L-musique, +0.0183 [+0.0129, +0.0237]
+  against its 0.0720 floor (FC@5 +0.0178), and webqsp zero-shot on L-hotpotqa, +0.0168 [+0.0068, +0.0268] against its
+  0.0233 floor (FC@5 +0.0113). Four more intervals exclude 0, all inside their floors: on L-musique, metaqa +0.0014
+  [+0.0004, +0.0024] and hotpotqa -0.0033 [-0.0055, -0.0009]; on L-hotpotqa, metaqa -0.0025 [-0.0035, -0.0015] and
+  hotpotqa zero-shot -0.0072 [-0.0103, -0.0040].
+- **Beside: A3v's GAIN does not carry over.** A3v's two-sided share on the MLP (zrckpy) gained webqsp zero-shot on
+  L-musique (+0.0112); the whole-pool z-scores lose that read on both models (-0.0153 and -0.0122).
+
+Not adopted. This closes only this form: step 1's whole-pool z-scores beside zret's in the lean pair (docs/SCREENS.md
+section 3b). With no GAIN on either arm, the next form fixed in section 5 and recorded in the verdict for both arms is
+A3zx, A3z's columns on the adopted arms, R1's zrckpr and G5's zspx, each against its own base, its own declared file;
+the share idea closes as an input only if A3zx finds no GAIN either.
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a3z/screen-verdict.json` and `.md`; for each arm (`zrckpz`,
+`zspkz`), the compares `outputs/screen/scr-a3z-<arm>.json` and `-hp.json`, the pair `-pair.json` and its re-call
+`-pair-recall.json`, each with its `.md`. The host paths were made relative in each re-call's two `rel` entries and
+nowhere else, so the `recall_sha256` each verdict holds is the host file's, from before that change. The re-calls' nulls
+also read the base screens `outputs/l1/base-zrckp-L-musique.json` and `outputs/l1/base-zrckp-L-hotpotqa.json` and
+`outputs/l1/base-zspk-L-musique.json` and `outputs/l1/base-zspk-L-hotpotqa.json`, already in the repository.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, the base's card fit of the
+split; a call is shown with its filed call where the re-call changed it):
+
+| split | dataset | read | zrckp R@5 | zrckpz: delta [95% CI], call | zspk R@5 | zspkz: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.8019 | -0.0018 [-0.0028, -0.0009], WITHIN | 0.8009 | +0.0014 [+0.0004, +0.0024], WITHIN |
+| L-musique | squad | in-domain | 0.9116 | -0.0006 [-0.0023, +0.0010], WITHIN | 0.9114 | +0.0000 [-0.0019, +0.0019], WITHIN |
+| L-musique | musique | zero-shot | 0.5121 | -0.0015 [-0.0063, +0.0037], WITHIN | 0.5012 | +0.0183 [+0.0129, +0.0237], WITHIN (filed GAIN) |
+| L-musique | hotpotqa | in-domain | 0.9065 | -0.0018 [-0.0038, +0.0005], WITHIN | 0.9080 | -0.0033 [-0.0055, -0.0009], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9347 | -0.0042 [-0.0059, -0.0026], WITHIN | 0.9383 | -0.0089 [-0.0105, -0.0073], **LOSS** |
+| L-musique | webqsp | zero-shot | 0.3627 | -0.0153 [-0.0252, -0.0058], **LOSS** | 0.3229 | -0.0122 [-0.0219, -0.0023], **LOSS** |
+| L-hotpotqa | metaqa | in-domain | 0.8044 | -0.0014 [-0.0023, -0.0006], WITHIN | 0.8040 | -0.0025 [-0.0035, -0.0015], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9127 | -0.0003 [-0.0020, +0.0017], WITHIN | 0.9135 | -0.0003 [-0.0024, +0.0018], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5745 | -0.0023 [-0.0077, +0.0029], WITHIN | 0.5754 | -0.0040 [-0.0091, +0.0009], WITHIN |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8513 | +0.0029 [-0.0002, +0.0060], WITHIN | 0.8499 | -0.0072 [-0.0103, -0.0040], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9350 | -0.0005 [-0.0021, +0.0012], WITHIN | 0.9333 | -0.0003 [-0.0019, +0.0014], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3475 | +0.0039 [-0.0067, +0.0144], WITHIN | 0.2680 | +0.0168 [+0.0068, +0.0268], WITHIN (filed GAIN) |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a3z-<arm>.json` and `-hp.json`); and A3v's R@5 deltas with its two-sided share (zrckpy against
+zrckp, zspky against zspk; their own re-calls, `outputs/screen/scr-a3v-<arm>-pair-recall.json`), on the same read (a
+call is shown where it is not WITHIN):
+
+| split | dataset | zrckpz FC@5 | zrckpz hit@1 | zspkz FC@5 | zspkz hit@1 | zrckpy (A3v) R@5 | zspky (A3v) R@5 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | -0.0012 | -0.0098 | +0.0025 | +0.0098 | +0.0003 | +0.0003 |
+| L-musique | squad | -0.0006 | -0.0013 | +0.0000 | +0.0003 | +0.0015 | +0.0008 |
+| L-musique | musique | -0.0004 | +0.0248 | +0.0178 | +0.0046 | -0.0111 | +0.0243 |
+| L-musique | hotpotqa | -0.0023 | -0.0024 | -0.0068 | -0.0003 | -0.0022 | -0.0034 |
+| L-musique | 2wiki | -0.0108 | +0.0033 | -0.0222 | +0.0014 | +0.0014 | -0.0041 |
+| L-musique | webqsp | -0.0180 | -0.0113 | -0.0073 | -0.0106 | +0.0112 GAIN | -0.0014 |
+| L-hotpotqa | metaqa | -0.0020 | +0.0005 | -0.0018 | -0.0106 | -0.0019 | +0.0003 |
+| L-hotpotqa | squad | -0.0003 | +0.0004 | -0.0003 | -0.0034 | +0.0003 | -0.0004 |
+| L-hotpotqa | musique | -0.0008 | -0.0033 | -0.0087 | -0.0025 | +0.0004 | -0.0029 |
+| L-hotpotqa | hotpotqa | +0.0057 | -0.0153 | -0.0077 | -0.0190 | +0.0038 | +0.0003 |
+| L-hotpotqa | 2wiki | -0.0015 | -0.0019 | +0.0031 | +0.0020 | -0.0013 | +0.0024 |
+| L-hotpotqa | webqsp | +0.0033 | +0.0033 | +0.0113 | +0.0007 | +0.0036 | +0.0087 |

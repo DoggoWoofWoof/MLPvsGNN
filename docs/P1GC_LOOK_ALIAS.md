@@ -224,3 +224,38 @@ all of them below its disk floor (30 GB), so a release never waits behind the sp
 
 **The saved originals are unaffected.** The 129 originals in `outputs/p1gc/p1gb_look_records`, and the list naming
 the 48 lost ones, are untouched. The alias compares them with the records the redo writes.
+
+## 7. Results
+
+Filed 27 October 2026 from the host's records: the eleven alias records
+`outputs/p1gc/look_alias/<dataset>/<carve>.json`, written 2026-10-19T20:07:54Z to 20:11:27Z. **ALIAS on all 11 carves,
+with no problem in any record.** Every one of P1g-b's 140 cache parts was built again from the rebuilt look and verified
+IDENTICAL; each alias record names its parts' verification records by sha256. Of the 177 look records, 129 originals
+were saved, and each rebuild equals its original in every field but `seconds`, `utc` and `peak_rss_bytes` (none byte for
+byte, as section 1 found). The 48 lost originals' rebuilds hold the saved originals' common value of every
+carve-independent field and their carve's single value of every carve field.
+
+| dataset | carve | parts verified | look records | originals saved | originals lost |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 2wiki | fit | 15 | 15 | 0 | 15 |
+| 2wiki | s1eval | 29 | 29 | 4 | 25 |
+| hotpotqa | fit | 12 | 12 | 5 | 7 |
+| hotpotqa | s1eval | 12 | 12 | 12 | 0 |
+| metaqa | fit | 14 | 14 | 13 | 1 |
+| metaqa | s1eval | 22 | 22 | 22 | 0 |
+| musique | s1eval | 10 | 23 | 23 | 0 |
+| musique | s1fit | 19 | 41 | 41 | 0 |
+| squad | fit | 1 | 1 | 1 | 0 |
+| squad | s1eval | 1 | 1 | 1 | 0 |
+| webqsp | s1eval | 5 | 7 | 7 | 0 |
+| all | | 140 | 177 | 129 | 48 |
+
+What follows, fixed in section 4: P1g-c runs as declared: the builds read the rebuilt looks under the stamped sha256s,
+then its gate decides as before. Its gate opened at 2026-10-19T20:51:42Z with no problems, and P1g-c is filed in
+docs/P1GC_ADOPTED_ON_P1GB.md, section 8: pools and input both NOT_ADOPTED. A7p, which reads the same looks (section 4),
+is filed in docs/A7P_P1GB_POOLS.md, section 7.
+
+Records, filed with this section: the eleven alias records. The 140 per-part verification records
+(`outputs/p1gc/look_alias/parts/<dataset>/<carve>/<part>.json`) and the 129 saved originals
+(`outputs/p1gc/p1gb_look_records`, with `saved.json`) stay on the host; each alias record holds the sha256 of every
+part's verification record and of the saved list.

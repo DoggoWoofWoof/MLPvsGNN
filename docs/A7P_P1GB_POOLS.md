@@ -366,4 +366,89 @@ L-hotpotqa (names ending `-hp`) follow the same pattern. On the host the builds,
 
 ## 7. Results
 
-Not run yet.
+Filed 27 October 2026 from the host's records (`outputs/a7p/screen-verdict.json`, written 2026-10-20T06:55:01Z; the
+re-calls `outputs/screen/scr-a7p-zrckps-pair-recall.json` and `scr-a7p-zspks-pair-recall.json`, host paths made
+relative). **On P1g-b's pools, both arms ADOPT_FOR_FULL_RUN, with no LOSS: zrckps with two GAINs, zspks with one.
+Beside, deciding nothing:** P1g-c's pools call is NOT_ADOPTED (docs/P1GC_ADOPTED_ON_P1GB.md, section 8), so by section
+5's pools rule A7's own verdict on P1c2's pools decides (both arms ADOPT_FOR_FULL_RUN, docs/A7_S6_SCORER_INPUT.md,
+section 7).
+
+A7p ran on 20 October, before N2's gate `n2-gate-a7` (docs/N2_FRESH_SEED_NULL.md, sections 5 and 6, a feeder edit) was
+among its trains' dependencies. N2 decides only whether the refits run, not their calls; its own results are not filed
+yet.
+
+- **zrckps: 2 GAIN, 0 LOSS.** The GAINs are webqsp zero-shot on both splits: +0.0194 [+0.0092, +0.0296] on L-musique
+  against its 0.0102 floor (FC@5 +0.0106), and +0.0273 [+0.0147, +0.0402] on L-hotpotqa against its 0.0233 floor (FC@5
+  +0.0180, hit@1 +0.0193). Two filed GAINs are WITHIN under the re-call: musique zero-shot on L-musique, +0.0114
+  [+0.0065, +0.0164] against its 0.0720 floor, and hotpotqa zero-shot on L-hotpotqa, +0.0076 [+0.0045, +0.0107] against
+  its 0.0200 floor. Three more intervals exclude 0, all inside their floors: on L-musique, metaqa +0.0022 [+0.0011,
+  +0.0033] and hotpotqa +0.0051 [+0.0030, +0.0074]; on L-hotpotqa, metaqa +0.0044 [+0.0033, +0.0056].
+- **zspks: 1 GAIN, 0 LOSS.** The GAIN is musique in domain on L-hotpotqa: +0.0084 [+0.0031, +0.0135] against its 0.0075
+  floor, with FC@5 +0.0058. Three more intervals exclude 0, all inside their floors: on L-musique, 2wiki +0.0044
+  [+0.0030, +0.0059]; on L-hotpotqa, hotpotqa zero-shot +0.0049 [+0.0022, +0.0076] and 2wiki +0.0030 [+0.0015, +0.0046].
+  No call changed under the re-call.
+- **Beside: both arms pass on both pools, on partly different reads.** On P1c2's pools (A7), zrckps gained webqsp
+  zero-shot on L-musique (+0.0221) and moved it on L-hotpotqa -0.0219; on P1g-b's it gains both. zspks gained webqsp
+  zero-shot on L-hotpotqa (+0.0336) on P1c2's pools; on P1g-b's that read moves +0.0042, and its GAIN is musique in
+  domain on L-hotpotqa, which moved +0.0072 on P1c2's.
+
+The next form, fixed in section 5 and recorded in the verdict for both arms, is that A7's columns join the full run's
+models when it runs on P1g-b's pools: one file, declared before its numbers, after P1g-c's, A5cp's, A7p's and A3vp's
+verdicts, with the composition P1g-c's section 5 sets; each of its splits needs its own scorer fits and columns, built
+as A7p's are (a split's scorer never trains on its held-out dataset). The verdict's F1 note: both arms adopted: A7's
+columns join both models, and F1's one input set holds. P1g-c has since left P1g-b's pools out of the full run; on
+P1c2's pools, where it runs, A7's verdict adopts both arms, so the columns join both models there too.
+
+The scorer fits and the disk, from the verdict: two scorer fits per split, each kept at its best held-out epoch (12 and
+12 on L-musique, 12 and 10 on L-hotpotqa), 176 to 285 s each at peaks of 7.1 to 11.1 GB. On disk the builds hold
+11,981,135,934 bytes (musique's s1fit build alone took 9,096.6 s at a 58.3 GB peak), the columns 2,100,369,058 and the
+scorer fits 259,104.
+
+The floors are the seed null of 7 October (docs/SCREENS.md section 2: `outputs/screen/scr-null-s1.json`,
+`scr-null-s2.json` and their `-hp` files), not N2's fresh floors (docs/N2_FRESH_SEED_NULL.md).
+
+Records, filed with this section: the verdict `outputs/a7p/screen-verdict.json` and `.md`; for each arm (`zrckps`,
+`zspks`), the compares `outputs/screen/scr-a7p-<arm>.json` and `-hp.json`, the pair `-pair.json` and its re-call
+`-pair-recall.json`, each with its `.md`. The host paths were made relative in each re-call's two `rel` entries and
+nowhere else, so the `recall_sha256` each verdict holds is the host file's, from before that change. The re-calls' nulls
+also read the base screens `outputs/a5cp/base-zrckp-L-musique.json` and `outputs/a5cp/base-zrckp-L-hotpotqa.json` and
+`outputs/a5cp/base-zspk-L-musique.json` and `outputs/a5cp/base-zspk-L-hotpotqa.json`, filed with A5cp's results.
+
+Each arm's twelve reads after the seed-null re-call (delta = the arm's R@5 minus its base's, the base's card fit of the
+split on P1g-b's pools, P1g-b's `scr-p1gb-zrckp` and `scr-p1gb-zspk`; a call is shown with its filed call where the
+re-call changed it):
+
+| split | dataset | read | zrckp R@5 | zrckps: delta [95% CI], call | zspk R@5 | zspks: delta [95% CI], call |
+| --- | --- | --- | --- | --- | --- | --- |
+| L-musique | metaqa | in-domain | 0.7993 | +0.0022 [+0.0011, +0.0033], WITHIN | 0.8004 | +0.0010 [-0.0001, +0.0022], WITHIN |
+| L-musique | squad | in-domain | 0.9127 | -0.0001 [-0.0019, +0.0016], WITHIN | 0.9129 | +0.0013 [-0.0004, +0.0029], WITHIN |
+| L-musique | musique | zero-shot | 0.5013 | +0.0114 [+0.0065, +0.0164], WITHIN (filed GAIN) | 0.5169 | +0.0012 [-0.0042, +0.0066], WITHIN |
+| L-musique | hotpotqa | in-domain | 0.9035 | +0.0051 [+0.0030, +0.0074], WITHIN | 0.9086 | +0.0017 [-0.0006, +0.0040], WITHIN |
+| L-musique | 2wiki | in-domain | 0.9377 | -0.0004 [-0.0017, +0.0011], WITHIN | 0.9344 | +0.0044 [+0.0030, +0.0059], WITHIN |
+| L-musique | webqsp | zero-shot | 0.3768 | +0.0194 [+0.0092, +0.0296], **GAIN** | 0.3354 | +0.0036 [-0.0060, +0.0132], WITHIN |
+| L-hotpotqa | metaqa | in-domain | 0.7997 | +0.0044 [+0.0033, +0.0056], WITHIN | 0.8011 | +0.0005 [-0.0006, +0.0016], WITHIN |
+| L-hotpotqa | squad | in-domain | 0.9122 | +0.0017 [-0.0003, +0.0035], WITHIN | 0.9127 | +0.0015 [-0.0003, +0.0033], WITHIN |
+| L-hotpotqa | musique | in-domain | 0.5695 | +0.0003 [-0.0050, +0.0060], WITHIN | 0.5662 | +0.0084 [+0.0031, +0.0135], **GAIN** |
+| L-hotpotqa | hotpotqa | zero-shot | 0.8546 | +0.0076 [+0.0045, +0.0107], WITHIN (filed GAIN) | 0.8483 | +0.0049 [+0.0022, +0.0076], WITHIN |
+| L-hotpotqa | 2wiki | in-domain | 0.9340 | -0.0007 [-0.0022, +0.0009], WITHIN | 0.9326 | +0.0030 [+0.0015, +0.0046], WITHIN |
+| L-hotpotqa | webqsp | zero-shot | 0.3364 | +0.0273 [+0.0147, +0.0402], **GAIN** | 0.2808 | +0.0042 [-0.0056, +0.0141], WITHIN |
+
+Beside, deciding nothing: each read's FC@5 and hit@1 deltas against the same base, from the compare screens
+(`outputs/screen/scr-a7p-<arm>.json` and `-hp.json`); and A7's R@5 deltas with the same arms on P1c2's pools, against
+their bases there (their own re-calls, `outputs/screen/scr-a7-<arm>-pair-recall.json`), on the same read (a call is
+shown where it is not WITHIN):
+
+| split | dataset | zrckps FC@5 | zrckps hit@1 | zspks FC@5 | zspks hit@1 | zrckps on P1c2's pools (A7) R@5 | zspks on P1c2's pools (A7) R@5 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| L-musique | metaqa | +0.0018 | +0.0115 | +0.0009 | -0.0020 | +0.0024 | +0.0007 |
+| L-musique | squad | -0.0001 | -0.0011 | +0.0013 | -0.0028 | -0.0006 | -0.0006 |
+| L-musique | musique | +0.0074 | -0.0037 | +0.0041 | -0.0232 | +0.0012 | +0.0133 |
+| L-musique | hotpotqa | +0.0084 | +0.0032 | +0.0031 | -0.0030 | -0.0014 | -0.0009 |
+| L-musique | 2wiki | -0.0024 | -0.0072 | +0.0134 | -0.0068 | +0.0015 | -0.0049 |
+| L-musique | webqsp | +0.0106 | +0.0120 | +0.0047 | +0.0033 | +0.0221 GAIN | -0.0020 |
+| L-hotpotqa | metaqa | +0.0039 | +0.0149 | +0.0000 | +0.0046 | -0.0002 | +0.0003 |
+| L-hotpotqa | squad | +0.0017 | +0.0012 | +0.0015 | -0.0004 | +0.0003 | -0.0024 |
+| L-hotpotqa | musique | -0.0025 | -0.0070 | +0.0058 | -0.0025 | -0.0008 | +0.0072 |
+| L-hotpotqa | hotpotqa | +0.0157 | -0.0032 | +0.0095 | -0.0016 | +0.0038 | +0.0049 |
+| L-hotpotqa | 2wiki | -0.0036 | -0.0061 | +0.0061 | -0.0077 | -0.0050 | -0.0010 |
+| L-hotpotqa | webqsp | +0.0180 | +0.0193 | +0.0053 | +0.0106 | -0.0219 | +0.0336 GAIN |

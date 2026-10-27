@@ -1,0 +1,110 @@
+{
+ "stage": "A10e",
+ "declared_in": "docs/A10E_G2_END_TO_END.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zg2xe's re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A10e's, or not twelve reads (docs/A10E_G2_END_TO_END.md, section 4)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zg2xe",
+ "gains": [],
+ "losses": [],
+ "problems": [],
+ "next_form": "A10p, the stack before the steps: zg2xe's stack (its z-score with the gradient kept) reading zspx's pre-step score (zspk's scorer and KT head), its bounded readout added there, so zspx's three steps act on the stack's correction (G4: depth pays when the step acts on the score); G2, A10 and A10e all put the stack after the steps; one declared file",
+ "calls": {
+  "L-musique metaqa": "WITHIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "WITHIN",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "WITHIN",
+  "L-musique webqsp": "WITHIN",
+  "L-hotpotqa metaqa": "WITHIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "WITHIN",
+  "L-hotpotqa hotpotqa": "WITHIN",
+  "L-hotpotqa 2wiki": "WITHIN",
+  "L-hotpotqa webqsp": "WITHIN"
+ },
+ "delta_r5": {
+  "L-musique metaqa": 0.0001,
+  "L-musique squad": 0.0024,
+  "L-musique musique": -0.0169,
+  "L-musique hotpotqa": 0.0011,
+  "L-musique 2wiki": -0.0054,
+  "L-musique webqsp": -0.0037,
+  "L-hotpotqa metaqa": -0.0012,
+  "L-hotpotqa squad": 0.0008,
+  "L-hotpotqa musique": -0.0041,
+  "L-hotpotqa hotpotqa": -0.001,
+  "L-hotpotqa 2wiki": 0.0034,
+  "L-hotpotqa webqsp": -0.008
+ },
+ "beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0001
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0037
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0012
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": -0.008
+  }
+ },
+ "parent_beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0012
+  },
+  "L-musique squad": {
+   "call": "WITHIN",
+   "delta": 0.0019
+  },
+  "L-musique musique": {
+   "call": "WITHIN",
+   "delta": 0.0011
+  },
+  "L-musique hotpotqa": {
+   "call": "WITHIN",
+   "delta": -0.0018
+  },
+  "L-musique 2wiki": {
+   "call": "WITHIN",
+   "delta": -0.0056
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": 0.005
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0001
+  },
+  "L-hotpotqa squad": {
+   "call": "WITHIN",
+   "delta": 0.0013
+  },
+  "L-hotpotqa musique": {
+   "call": "WITHIN",
+   "delta": -0.0033
+  },
+  "L-hotpotqa hotpotqa": {
+   "call": "WITHIN",
+   "delta": -0.0014
+  },
+  "L-hotpotqa 2wiki": {
+   "call": "WITHIN",
+   "delta": 0.0054
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0062
+  }
+ },
+ "recall_sha256": "3e92038077566e67285916259ee94f2ce89667eba68e073dc9747687bfa587c7",
+ "za10e_sha256": "1a46cd9e9ba385f8e5dbae330e4234e29836b6b7a26ef8c581b32b605b560b83",
+ "utc": "2026-10-20T07:17:32Z"
+}

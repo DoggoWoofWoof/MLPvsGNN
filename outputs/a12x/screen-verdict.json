@@ -1,0 +1,60 @@
+{
+ "stage": "A12x",
+ "declared_in": "docs/A12X_GSURG_ZSPX.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zspxgs's re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A12x's, or not twelve reads (docs/A12X_GSURG_ZSPX.md, section 4)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zspxgs",
+ "gains": [],
+ "losses": [],
+ "problems": [],
+ "next_form": "A12m, gsurg's loop on zrckp (the MLP's lean model): the loop's only GAINs came on the MLP's line (zrg on zrm: webqsp zero-shot +0.0273, musique +0.0087) and the MLP's model has changed since; one declared file, whose own section 5 names what follows it",
+ "calls": {
+  "L-musique metaqa": "WITHIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "WITHIN",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "WITHIN",
+  "L-musique webqsp": "WITHIN",
+  "L-hotpotqa metaqa": "WITHIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "WITHIN",
+  "L-hotpotqa hotpotqa": "WITHIN",
+  "L-hotpotqa 2wiki": "WITHIN",
+  "L-hotpotqa webqsp": "WITHIN"
+ },
+ "delta_r5": {
+  "L-musique metaqa": 0.0012,
+  "L-musique squad": -0.0003,
+  "L-musique musique": -0.0133,
+  "L-musique hotpotqa": 0.0027,
+  "L-musique 2wiki": -0.001,
+  "L-musique webqsp": -0.0004,
+  "L-hotpotqa metaqa": -0.0014,
+  "L-hotpotqa squad": -0.0001,
+  "L-hotpotqa musique": -0.005,
+  "L-hotpotqa hotpotqa": -0.0033,
+  "L-hotpotqa 2wiki": 0.0051,
+  "L-hotpotqa webqsp": -0.0094
+ },
+ "beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0012
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0004
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0014
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0094
+  }
+ },
+ "recall_sha256": "138f800e9ceae55f28470a31958e568ed17e3343c76745895d4e8023c8e1d184",
+ "za12x_sha256": "9ffd4c85b46f015b08987851f8975ee9f45c649f0a9a5cfbd4d1c53519a821c9",
+ "utc": "2026-10-20T10:18:22Z"
+}

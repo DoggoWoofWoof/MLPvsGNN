@@ -1,0 +1,143 @@
+{
+ "stage": "P1gcLA",
+ "declared_in": "docs/P1GC_LOOK_ALIAS.md",
+ "what": "alias",
+ "dataset": "hotpotqa",
+ "carve": "fit",
+ "verdict": "ALIAS",
+ "problems": [],
+ "records": {
+  "record_0of12.json": {
+   "rebuilt": "248650b4b0b4feae0bf3d2b3bcc06da6145d93e9bb803b62eb09e1c0b5bea127",
+   "stamped": "62f6b94230ae9f007d036fc32b72e863b12e1d026f4e19c3694ff14ebdd01c84",
+   "original": "lost",
+   "same": null
+  },
+  "record_10of12.json": {
+   "rebuilt": "6fb117360a4f12206f3f13ce2237f52e17721d3b60f96578a1a6581485d94802",
+   "stamped": "8b440f8b853e1cc1911dcf11519ce9f7646f48269d6a76e05a12dd41b17596a6",
+   "original": "saved",
+   "same": true,
+   "identical_bytes": false
+  },
+  "record_11of12.json": {
+   "rebuilt": "64a1da25fea3e7d324d8fe48938cad473730adbffc4dbf5d508b6d4d6edbfb5c",
+   "stamped": "3cc97e18746cce56a71cadfd5be90425de5032de39884dcd3709bf224b1ac15c",
+   "original": "saved",
+   "same": true,
+   "identical_bytes": false
+  },
+  "record_1of12.json": {
+   "rebuilt": "b8731747f68c9f211f275e00934bdf4da2ab28cadb17caf4fdd3d08c781ec10f",
+   "stamped": "7895ba2a6dc530d3f52fece5b69f1b61fd14ea2fe510b10952326b0d9bd36baf",
+   "original": "lost",
+   "same": null
+  },
+  "record_2of12.json": {
+   "rebuilt": "3600e8bcede1bbbad19a8ef3fc85e167c33f0a1725458478aff4265c5204249b",
+   "stamped": "51cc396dd95a3b6e14b9a30f21a8671d064abd4751560ee2ef04c61b6d768dc2",
+   "original": "lost",
+   "same": null
+  },
+  "record_3of12.json": {
+   "rebuilt": "250cbf96bf4b5943e09321caa677dc3845546b8a1ae62d245d557704d1e457bc",
+   "stamped": "baf1646d596ed1867f3e47136ff9690769bfe0177ea0dda60d23f583f49ffe02",
+   "original": "lost",
+   "same": null
+  },
+  "record_4of12.json": {
+   "rebuilt": "d3cc932b3ac7122044d0b63b55c6708fbdf6fbbf84dbb191969688a5bc4c58a9",
+   "stamped": "df521747236e597b6fa6d78aa0b83e9d3caf89c301f7ee11abb466f9ce308108",
+   "original": "lost",
+   "same": null
+  },
+  "record_5of12.json": {
+   "rebuilt": "6dc7fc32eb1c4bd48f4971f618e80e5db80abb92d2f071d568a72efb4632cc37",
+   "stamped": "6859fdaafc7e81d35dded4413486e0a4ea8d855c8933b5df02004fcbc0074585",
+   "original": "lost",
+   "same": null
+  },
+  "record_6of12.json": {
+   "rebuilt": "b621bb5a441c26966af2b6cf16b8338f61313eb366868cab4f00367336cfb9a5",
+   "stamped": "912eadfd2b9ed114ad8633411fd6fe13c619daf733ab0440ba3433da4460da81",
+   "original": "lost",
+   "same": null
+  },
+  "record_7of12.json": {
+   "rebuilt": "7bdb01d4b76e7895defb3e5bb4fdb2d490ca389dd058a318b78e08dab7089640",
+   "stamped": "2b87ba1da3b1daed37df7b9f691c7a5222e55dd6cd1b02d8a5ed221fa6ad124d",
+   "original": "saved",
+   "same": true,
+   "identical_bytes": false
+  },
+  "record_8of12.json": {
+   "rebuilt": "aaeee8eb0e0afb556ceac3ef9c8ef5ce1d544a3e5a6b30a9ed53ba1a068877a5",
+   "stamped": "dc4b43272d9b62a5ded5d4df8b90c17d98fc6b3bf7b424afb7a91616b98f8ad0",
+   "original": "saved",
+   "same": true,
+   "identical_bytes": false
+  },
+  "record_9of12.json": {
+   "rebuilt": "6a3dbb46cbcdc0b530394de26443d73dd03b95d679595369f6444fc25f1ed073",
+   "stamped": "71c9fe551bdaf31ddc2aae361fd7829c2eb0c6b0f28dcf989052eca9e13a607c",
+   "original": "saved",
+   "same": true,
+   "identical_bytes": false
+  }
+ },
+ "parts": {
+  "part_0of12": "ff1ea75d8188096a69517630b07a3a63ec210ed4e7815a258304c5df313f5911",
+  "part_1of12": "b5166c607ce848153035c76035a22cae25e96ae1fc7c805b37dc361c5fc5762d",
+  "part_2of12": "ece6d4e7901df24ee87a89e08152b8781869a15651b59a98f15eb0625016d8d3",
+  "part_3of12": "8c654b64fa24b03d95b0fb0785ccbe82e0cd9445932c1ef7b10606965c9cc4de",
+  "part_4of12": "b5619ea0143ea0d5569f0105e2477790be0df449516fc713ed30a868549b7340",
+  "part_5of12": "6b1fe10551d940e47f23d36c4a06e6e3c4c89e871eb3eb3e9c25357e2b8db71a",
+  "part_6of12": "fdd6ac87fb6cf824f671d9b5b7b6dd3db1815b47146acec0ce4b273c43a1e9dc",
+  "part_7of12": "29e0dd0d59fbe7e135ed4a1e6817620d1c9c85fb413e060b31fd240f47030a3d",
+  "part_8of12": "94deb224f6fbc5ed340237a13fac78ca9583de1d5a98ccd1e1c2e3ddd684f5bf",
+  "part_9of12": "bed08e667586f8abfc5904b91424fd17d376930cf4f173da23c4067248c3dfb3",
+  "part_10of12": "a3e7c42dd7f08de014d5cda6c74df4cdef80a0207b88dc1d9c006a2540a8a19e",
+  "part_11of12": "66cf70ddef40861573084e83ba672507b4ccf18d1b557bcea2a4457e9aa6b053"
+ },
+ "run_keys": [
+  "seconds",
+  "utc",
+  "peak_rss_bytes"
+ ],
+ "global_keys": [
+  "look",
+  "pair",
+  "pair_keys",
+  "functions",
+  "metric_names",
+  "full",
+  "proj",
+  "threads",
+  "limit",
+  "copied_from",
+  "copied_from_sha256",
+  "script_sha256",
+  "placement"
+ ],
+ "carve_keys": [
+  "dataset",
+  "carve",
+  "n_chunks",
+  "chunk_queries",
+  "carve_queries",
+  "carve_ids_sha256",
+  "columns",
+  "column_blocks",
+  "rule",
+  "relations"
+ ],
+ "originals": {
+  "saved": 5,
+  "lost": 7
+ },
+ "saved_list_sha256": "d27125f6fd5cbdb9240689032643a677ce079b8fe652269356c9aee27f97b1c1",
+ "look_root": "outputs/p1gb/look",
+ "cache_root": "outputs/p1gb/cache",
+ "zp1gcla_sha256": "f83b2b8fd93d38b5389d8e57ebd8e048cd6bda6c2674da7779bed3bd55aaa087",
+ "utc": "2026-10-19T20:07:54Z"
+}

@@ -1,0 +1,60 @@
+{
+ "stage": "A11x",
+ "declared_in": "docs/A11X_FOURTH_FAMILY_ZSPX.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zspx4's re-call under the seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not A11x's, or not twelve reads (docs/A11X_FOURTH_FAMILY_ZSPX.md, section 4)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zspx4",
+ "gains": [],
+ "losses": [],
+ "problems": [],
+ "next_form": "A11m in both models, the family's per-row degree (log1p; no score in it) as a fixed column through R1's pointwise head in zrckp (as zrckpr reads R1's columns) and in zspx (as zspxr does), each free to learn how much to use it; one declared file. This closes zspx4's form only: as a message the family reached zspk's one step (A11) and all three of zspx's steps (A11x) with no GAIN, so it goes on as a fixed input",
+ "calls": {
+  "L-musique metaqa": "WITHIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "WITHIN",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "WITHIN",
+  "L-musique webqsp": "WITHIN",
+  "L-hotpotqa metaqa": "WITHIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "WITHIN",
+  "L-hotpotqa hotpotqa": "WITHIN",
+  "L-hotpotqa 2wiki": "WITHIN",
+  "L-hotpotqa webqsp": "WITHIN"
+ },
+ "delta_r5": {
+  "L-musique metaqa": -0.0012,
+  "L-musique squad": 0.0025,
+  "L-musique musique": -0.002,
+  "L-musique hotpotqa": 0.0011,
+  "L-musique 2wiki": -0.0012,
+  "L-musique webqsp": -0.0028,
+  "L-hotpotqa metaqa": 0.0011,
+  "L-hotpotqa squad": 0.0002,
+  "L-hotpotqa musique": -0.002,
+  "L-hotpotqa hotpotqa": -0.0017,
+  "L-hotpotqa 2wiki": 0.0015,
+  "L-hotpotqa webqsp": -0.0145
+ },
+ "beside": {
+  "L-musique metaqa": {
+   "call": "WITHIN",
+   "delta": -0.0012
+  },
+  "L-musique webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0028
+  },
+  "L-hotpotqa metaqa": {
+   "call": "WITHIN",
+   "delta": 0.0011
+  },
+  "L-hotpotqa webqsp": {
+   "call": "WITHIN",
+   "delta": -0.0145
+  }
+ },
+ "recall_sha256": "5312f8d39aaa69dd0a57878040a9fdc50a8dbdd03641a39be1cea9e9f0783135",
+ "za11x_sha256": "0c3f9c91343cf7cf68795388526a86defeb7cdbd87ec56f02123759b32dbf6f6",
+ "utc": "2026-10-20T10:49:26Z"
+}

@@ -1,0 +1,260 @@
+{
+ "stage": "P1gc",
+ "declared_in": "docs/P1GC_ADOPTED_ON_P1GB.md",
+ "pools_rule": "pools: ADOPT_FOR_FULL_RUN when neither zspx's nor zrckpr's pools re-call under the seed null has a LOSS on any of its twelve reads and the two together have at least one GAIN (P1g-b's rule, with the adopted arms); NOT_ADOPTED otherwise; INCOMPLETE when a re-call is missing, not P1g-c's pools re-call of that arm, or not twelve reads (docs/P1GC_ADOPTED_ON_P1GB.md, section 4)",
+ "input_rule": "input: ADOPT_FOR_FULL_RUN when zspxr's re-call against zspx has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when its re-call is missing, not P1g-c's input re-call, or not twelve reads (docs/P1GC_ADOPTED_ON_P1GB.md, section 4)",
+ "pools": {
+  "verdict": "NOT_ADOPTED",
+  "next": "the pools stay P1c2's for the adopted models; the full run of zrckpr and zspx on P1c2's pools (its own file); and the pools' next form P1g-b3, each row's place in P1g-b's pool (today's fill, the fill beyond it, the extra set) as an input to both models through R1's pointwise head, decided as P1g-b was (its own file)"
+ },
+ "input": {
+  "verdict": "NOT_ADOPTED",
+  "outcome": "NO_GAIN",
+  "next": "zspxs: R1's nine columns read by zspx's first step head beside zprop's inputs, so the step weighs a row's neighbours by its residual (one declared file)"
+ },
+ "calls": {
+  "pools zspx": {
+   "gains": [
+    "L-musique webqsp"
+   ],
+   "losses": [
+    "L-hotpotqa musique"
+   ],
+   "problems": [],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "GAIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "LOSS",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0038,
+    "L-musique squad": 0.0039,
+    "L-musique musique": 0.0133,
+    "L-musique hotpotqa": 0.0031,
+    "L-musique 2wiki": -0.0062,
+    "L-musique webqsp": 0.0309,
+    "L-hotpotqa metaqa": -0.0043,
+    "L-hotpotqa squad": -0.0009,
+    "L-hotpotqa musique": -0.0087,
+    "L-hotpotqa hotpotqa": 0.0028,
+    "L-hotpotqa 2wiki": 0.0026,
+    "L-hotpotqa webqsp": 0.0158
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0038
+    },
+    "L-musique webqsp": {
+     "call": "GAIN",
+     "delta": 0.0309
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0043
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0158
+    }
+   },
+   "recall_sha256": "27bcd81b174652509b4a4aa848f65c7548305efa0757abeddb56edef4dca32c4"
+  },
+  "pools zrckpr": {
+   "gains": [],
+   "losses": [
+    "L-hotpotqa musique"
+   ],
+   "problems": [],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "LOSS",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0008,
+    "L-musique squad": 0.0008,
+    "L-musique musique": -0.0144,
+    "L-musique hotpotqa": -0.0024,
+    "L-musique 2wiki": 0.0004,
+    "L-musique webqsp": 0.0111,
+    "L-hotpotqa metaqa": -0.0029,
+    "L-hotpotqa squad": -0.0002,
+    "L-hotpotqa musique": -0.009,
+    "L-hotpotqa hotpotqa": -0.0039,
+    "L-hotpotqa 2wiki": -0.0028,
+    "L-hotpotqa webqsp": -0.0041
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0008
+    },
+    "L-musique webqsp": {
+     "call": "WITHIN",
+     "delta": 0.0111
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": -0.0029
+    },
+    "L-hotpotqa webqsp": {
+     "call": "WITHIN",
+     "delta": -0.0041
+    }
+   },
+   "recall_sha256": "36c8dfb6729198f9783fa12fa052c8147a68834be0b466ecabc4eb87def06db1"
+  },
+  "input zspxr": {
+   "gains": [],
+   "losses": [
+    "L-musique webqsp",
+    "L-hotpotqa webqsp"
+   ],
+   "problems": [],
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "LOSS",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "LOSS"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0035,
+    "L-musique squad": -0.0012,
+    "L-musique musique": -0.0079,
+    "L-musique hotpotqa": -0.0031,
+    "L-musique 2wiki": 0.0018,
+    "L-musique webqsp": -0.0175,
+    "L-hotpotqa metaqa": 0.001,
+    "L-hotpotqa squad": 0.0017,
+    "L-hotpotqa musique": 0.0025,
+    "L-hotpotqa hotpotqa": -0.0055,
+    "L-hotpotqa 2wiki": 0.0007,
+    "L-hotpotqa webqsp": -0.0357
+   },
+   "beside": {
+    "L-musique metaqa": {
+     "call": "WITHIN",
+     "delta": 0.0035
+    },
+    "L-musique webqsp": {
+     "call": "LOSS",
+     "delta": -0.0175
+    },
+    "L-hotpotqa metaqa": {
+     "call": "WITHIN",
+     "delta": 0.001
+    },
+    "L-hotpotqa webqsp": {
+     "call": "LOSS",
+     "delta": -0.0357
+    }
+   },
+   "recall_sha256": "0abf86aec4055842bafa2ce3c0671f79de6a3ba771c98a0196280e47816a2df8"
+  }
+ },
+ "full_run": {
+  "pools": "P1c2's",
+  "mlp": "zrckpr",
+  "gnn": "zspx",
+  "zspxr": "not carried"
+ },
+ "musique_in_domain_beside": {
+  "pools zspx": {
+   "call": "LOSS",
+   "delta": -0.0087
+  },
+  "pools zrckpr": {
+   "call": "LOSS",
+   "delta": -0.009
+  },
+  "input zspxr": {
+   "call": "WITHIN",
+   "delta": 0.0025
+  }
+ },
+ "against_p1gb_lean_r5": {
+  "zspx": {
+   "L-musique": {
+    "metaqa": -0.0012,
+    "squad": 0.0002,
+    "musique": 0.0037,
+    "hotpotqa": 0.0019,
+    "2wiki": -0.0055,
+    "webqsp": 0.0159
+   },
+   "L-hotpotqa": {
+    "metaqa": -0.0015,
+    "squad": -0.0007,
+    "musique": 0.0152,
+    "hotpotqa": 0.0092,
+    "2wiki": 0.0012,
+    "webqsp": 0.0264
+   }
+  },
+  "zspxr": {
+   "L-musique": {
+    "metaqa": 0.0023,
+    "squad": -0.001,
+    "musique": -0.0042,
+    "hotpotqa": -0.0012,
+    "2wiki": -0.0037,
+    "webqsp": -0.0016
+   },
+   "L-hotpotqa": {
+    "metaqa": -0.0005,
+    "squad": 0.001,
+    "musique": 0.0177,
+    "hotpotqa": 0.0036,
+    "2wiki": 0.002,
+    "webqsp": -0.0093
+   }
+  },
+  "zrckpr": {
+   "L-musique": {
+    "metaqa": 0.0011,
+    "squad": 0.0008,
+    "musique": 0.004,
+    "hotpotqa": 0.0024,
+    "2wiki": -0.0012,
+    "webqsp": 0.0105
+   },
+   "L-hotpotqa": {
+    "metaqa": 0.0015,
+    "squad": -0.001,
+    "musique": -0.0006,
+    "hotpotqa": -0.0027,
+    "2wiki": -0.0037,
+    "webqsp": 0.0006
+   }
+  }
+ },
+ "zp1gc_sha256": "d04490441cbe7dc5e46cf0c5138fb97847d460415d44c6d513eac232bbedf0d9",
+ "utc": "2026-10-20T01:47:49Z"
+}
