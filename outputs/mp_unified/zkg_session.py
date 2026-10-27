@@ -9,8 +9,9 @@ U2d's inputs. It checks every file's size and sha256 against its manifest, and t
 outputs/u2d/inputs.json and inputs_pins.json, which git holds. It links each file at its repository path
 (outputs/u2d/base/... and the inputs' own paths); a file git already holds must be the same bytes up to line ends. It
 links outputs/screen/fits to /kaggle/working/fits, so the fits are the kernel's output. It then runs each named fit
-through its stage's script (`zkg.py fit` for KG's scr-kg- fits, `zg6b.py fit` for G6b's scr-g6b- fits and
-`zg6b2.py fit` for G6b2's scr-g6b2- fits; docs/G6B_GATED_BACKOFF.md and G6B2_ROW_BACKOFF.md, section 7), one queue per
+through its stage's script (`zkg.py fit` for KG's scr-kg- fits, `zg6b.py fit` for G6b's scr-g6b- fits,
+`zg6b2.py fit` for G6b2's scr-g6b2- fits and `zr2t.py fit` for R2t's scr-r2t- fits; docs/G6B_GATED_BACKOFF.md,
+G6B2_ROW_BACKOFF.md and R2T_BRIDGE_EM_ON_T4.md, section 7), one queue per
 T4 (CUDA_VISIBLE_DEVICES 0 and 1), each fit in its own process, and
 starts no fit after --start-before hours. session.json in /kaggle/working records the commit, the manifests' sha256, the versions, and each
 fit's exit code and seconds. Each fit's log goes to /kaggle/working/logs/<name>.log.
@@ -46,12 +47,14 @@ INPUT = Path("/kaggle/input")
 WORK = Path("/kaggle/working")
 STUB = "kg_stub.py"
 SCRIPTS = {"scr-kg-": "outputs/mp_unified/zkg.py", "scr-g6b-": "outputs/mp_unified/zg6b.py",
-           "scr-g6b2-": "outputs/mp_unified/zg6b2.py"}                                       # the stages that fit here
+           "scr-g6b2-": "outputs/mp_unified/zg6b2.py",
+           "scr-r2t-": "outputs/mp_unified/zr2t.py"}                                         # the stages that fit here
 lock = threading.Lock()
 
 
 def script_of(name):
-    """The stage script that fits a name: KG's fits through zkg.py, G6b's through zg6b.py, G6b2's through zg6b2.py."""
+    """The stage script that fits a name: KG's fits through zkg.py, G6b's through zg6b.py, G6b2's through zg6b2.py,
+    R2t's through zr2t.py."""
     hits = [s for p, s in SCRIPTS.items() if name.startswith(p)]
     if len(hits) != 1:
         raise SystemExit(f"zkg_session: no stage here fits {name} (names start {', '.join(SCRIPTS)})")
@@ -483,6 +486,9 @@ def selftest():
     assert all((ROOT / s).is_file() for s in SCRIPTS.values())
     check_names(["scr-g6b2-zg6b2"], ["scr-g6b2-zg6b2-hp"])
     stops(check_names, ["scr-g6b2-zg6b2"], ["scr-g6b2-zg6b2"], has="queued twice")
+    assert script_of("scr-r2t-zg6m") == script_of("scr-r2t-zrckpb-hp") == "outputs/mp_unified/zr2t.py"
+    check_names(["scr-r2t-zg6m-hp"], ["scr-r2t-zg6m", "scr-r2t-zrckpb-hp", "scr-r2t-zrckpb"])
+    stops(check_names, ["scr-r2t-zg6m"], ["scr-r2t-zg6m"], has="queued twice")
     stops(script_of, "scr-u2d-base-zg6", has="no stage here fits")
     stops(check_names, ["scr-kg-base-zspk"], ["scr-gl-zg6t"], has="no stage here fits")
     stops(check_names, ["scr-g6b-zg6b"], ["scr-g6b-zg6b"], has="queued twice")

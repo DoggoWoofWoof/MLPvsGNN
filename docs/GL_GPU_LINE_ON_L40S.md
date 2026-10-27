@@ -122,6 +122,12 @@ and 5). Only the files change:
   ruling (R2, section 2). Until then every record calls it "zrckp + R2's bridge head".
 - **zg6m** is decided against zg6, whatever G6's verdict (R2, section 3).
 
+**Amended 27 October, before any R2 number, with R2t's declaration** (docs/R2T_BRIDGE_EM_ON_T4.md): R2 is decided on
+Kaggle's T4 by R2t, against KG's bases under KG's nulls, as KG's section 6 allows. It does not wait for 1 November.
+- GL's four R2 fits, if they run on workspace 3, are a second device's reading of R2 and decide nothing.
+- zgl2.py is not changed. Its R2 verdict files (`outputs/gl/r2-verdict`) are then read beside R2t's verdict.
+- G6's twin (section 4) is unchanged.
+
 ## 4. G6's twin, on the L40S from 1 November
 
 zg6t is fitted on U2d's base build as `scr-gl-zg6t` and `-hp`, with the same card settings and device. It is G6's arm,

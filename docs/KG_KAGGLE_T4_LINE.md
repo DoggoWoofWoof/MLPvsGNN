@@ -126,6 +126,12 @@ short names, since the Kaggle client names a resume file after each upload's ful
 - `zkg.py` is not changed, so `zkg.py take` stops on a scr-g6b2- folder. It is never run on a G6b2 session's output,
   whose fits `zg6b2.py take` takes.
 
+**Amended 27 October, after KG's verdict, with R2t's declaration** (docs/R2T_BRIDGE_EM_ON_T4.md, section 7):
+- step 6 also runs `zr2t.py fit` for R2t's scr-r2t- fits;
+- nothing else in the session changes, and no KG record is made again;
+- `zkg.py` is not changed, so `zkg.py take` stops on a scr-r2t- folder. It is never run on an R2t session's output,
+  whose fits `zr2t.py take` takes.
+
 session.json records the commit, the manifests' sha256s, the versions, the environment, and each fit's exit code and
 seconds.
 
