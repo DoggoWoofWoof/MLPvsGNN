@@ -224,4 +224,52 @@ new graph.
 
 ## 10. Results
 
-Not run yet.
+### 27 October 2026: BASE_READY
+
+Run in two sessions of one private Kaggle kernel, both at e0278d1. Each session first checked the nine datasets' 1,535
+files (25.3 GB) against their manifests and then linked them: 1,392 links, and 143 files that were git's own, byte for
+byte.
+- **Session 1** (3.1 h): G6b's two fits, then the null's eight. Every fit exited 0.
+- **Session 2** (2.0 h): the seed-0 fits and zg6. Every fit exited 0.
+
+Then, on the laptop at edcff68 (zkg.py as at e0278d1): `zkg.py take`, `compare-all` and `verdict`. Records:
+outputs/screen/scr-kg-*.json and .md (the ten compares), outputs/kg/base-verdict.json and .md, and the beside pair and
+re-call, outputs/kg/kg-g6-zg6-pair and outputs/kg/kg-g6-zg6-pair-recall (.json and .md).
+
+All fourteen fits and ten compares are KG's, on one device: a Tesla T4 on KG's image (torch 2.11.0+cu128, CUDA 12.8,
+cuDNN 91900). **BASE_READY.** KG's fits are now the bases, and KG's nulls the floors, of later stages on the T4: G6b
+(docs/G6B_GATED_BACKOFF.md, section 9) and U2n.
+
+Beside, deciding nothing:
+- **The same fit on two devices.** Over the 84 reads, a T4 fit and its L40S twin differ by a median of 0.0018 in R@5.
+  Off webqsp (70 reads) the median is 0.0016, and 58 of the 70 (82.9%) differ by 0.005 or less. That is the size of a
+  seed's change on one device: off webqsp, the null's seed-only differences have a median of 0.0016 on the T4 and
+  0.0018 on the L40S.
+  - The largest gaps are on webqsp: zg6-hp 0.2430 against 0.2189 (+0.0241), zrckp-s2 0.3448 against 0.3686 (-0.0238)
+    and zrckp-s1-hp 0.3415 against 0.3212 (+0.0203).
+  - Off webqsp, the largest are zspk-s1 on musique (0.5080 against 0.5203, -0.0123), zspk-s2-hp on 2wiki (0.9370
+    against 0.9261, +0.0109) and zspk-s1-hp on musique (0.5762 against 0.5860, -0.0098).
+- **The floors.** 11 of the 24 are 0.0075 on both devices. The largest differences are zspk's on L-hotpotqa: webqsp
+  0.0242 against 0.0405, hotpotqa 0.0075 against 0.0145 and 2wiki 0.0219 against 0.0139. Next come zspk's L-musique
+  musique floor (0.0138 against 0.0089) and zrckp's L-hotpotqa webqsp floor (0.0237 against 0.0322).
+- **G6's call, replicated.** zg6 against zspk on the T4, re-called under KG's zspk null by G6's rule, is NOT_ADOPTED.
+  That is the call filed on the L40S, and with a GAIN and a LOSS it has the same next form, G6b.
+  - **4 GAIN:** L-musique metaqa (+0.0114), L-musique 2wiki (+0.0084), L-hotpotqa metaqa (+0.0078) and L-hotpotqa
+    musique (+0.0199).
+  - **2 LOSS:** L-musique webqsp (-0.0753) and L-hotpotqa hotpotqa (-0.0159).
+  - The re-call changed two calls. L-hotpotqa 2wiki (+0.0198, floor 0.0219) went from GAIN to WITHIN, and L-hotpotqa
+    webqsp (-0.0210, floor 0.0242) from LOSS to WITHIN.
+  - Four reads have the same call as on the L40S (2 GAIN, 3 LOSS there). GAIN: L-musique metaqa and L-hotpotqa
+    musique. LOSS: L-musique webqsp and L-hotpotqa hotpotqa.
+  - The three that differ are near a floor or on webqsp. L-musique 2wiki (+0.0070 on the L40S) and L-hotpotqa metaqa
+    (+0.0069) are WITHIN there. They are GAIN here, by 0.0009 and 0.0003 over the 0.0075 floor. L-hotpotqa webqsp
+    (-0.0584 under a 0.0405 floor there) is WITHIN here.
+- **Time and memory.**
+  - Training takes 1.18 to 1.89 times as long on the T4 as on the L40S (median 1.48).
+  - The fourteen fits took 23,790 s of T4 time: 18,599 s training and 5,191 s reading, 6.6 T4-hours in all. U2d's
+    fourteen took 14,780 s on the L40S, so the T4 needed 1.6 times as long, not the three to five times section 8
+    allowed for.
+  - Reads took 279 to 340 s for zrckp and zspk, and 773 s and 687 s for zg6. The L40S's seed-1 and seed-2 reads took
+    75 to 93 s.
+  - Peak GPU memory, of the T4's 15 GB: 3.7 to 5.6 GB for zrckp and zspk, 4.7 GB training and 5.2 GB reading for zg6,
+    and 10.3 GB for zg6-hp. Peak RAM was 4.5 to 4.6 GB.
