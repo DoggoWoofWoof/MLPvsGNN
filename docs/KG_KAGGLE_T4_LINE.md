@@ -120,6 +120,12 @@ short names, since the Kaggle client names a resume file after each upload's ful
 - the session stops on a name that no stage there fits, or on a fit queued twice, before reading any data;
 - `zkg.py take` leaves scr-g6b- folders to G6b's take.
 
+**Amended 27 October, after KG's verdict, with G6b2's declaration** (docs/G6B2_ROW_BACKOFF.md, section 7):
+- step 6 also runs `zg6b2.py fit` for G6b2's scr-g6b2- fits;
+- nothing else in the session changes, and no KG record is made again;
+- `zkg.py` is not changed, so `zkg.py take` stops on a scr-g6b2- folder. It is never run on a G6b2 session's output,
+  whose fits `zg6b2.py take` takes.
+
 session.json records the commit, the manifests' sha256s, the versions, the environment, and each fit's exit code and
 seconds.
 
