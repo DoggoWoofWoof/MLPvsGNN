@@ -1,0 +1,66 @@
+{
+ "stage": "U2n",
+ "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+ "dataset": "webqsp",
+ "carve": "s1eval",
+ "part": "part_0of2",
+ "step1_record_sha256": "a077ea8f3ab70b3ad25ce5234db43a198be7e6b5847a42492cddf465dfd41ab7",
+ "link_record_sha256": "32c5a1a229ea2380378aefbdc707aa421cb84d192503f06fa167ce794fd1fe66",
+ "chain_record_sha256": "ce9d363ccdfd7eaa73020ac236991bc51731a124e9d835def74ea30879a6aa49",
+ "chunks": [
+  0,
+  68
+ ],
+ "queries": 748,
+ "edges": 10102032,
+ "family0": 6298756,
+ "typed": 6298756,
+ "empty_family0": 0,
+ "union_sizes": [
+  4136084,
+  1990638,
+  96104,
+  75930,
+  0,
+  0,
+  0,
+  0
+ ],
+ "links_against_record": "IDENTICAL",
+ "look": {
+  "record_0of3.json": "06df318738614f600d4dd8e8797f3becf6e6067db5680b4e610e1ff490e03a36",
+  "record_1of3.json": "385ab5563d97fc1b579fb33de4d2881aa9d51e8449aea614dd817c3cae9f59dc",
+  "record_2of3.json": "06f85a3cbc96c67110c1dccc9e5f1487b0668985f7e4677c70e45c3842fcb51a"
+ },
+ "carve_ids_sha256": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e",
+ "relations": {
+  "n_relations": 7058,
+  "kz": 14116,
+  "offset": 9,
+  "k_rel": 4,
+  "embeddings": "webqsp_rel_embeddings.npy",
+  "embeddings_sha256": "58df589aa77c9fa670e51af9fd2cac3ac61033667b4e149ef64c255514a14bd9"
+ },
+ "arrays": {
+  "t_set": {
+   "dtype": "<i2",
+   "shape": [
+    10102032
+   ],
+   "sha256": "7f18e0f933559a53f94cfc8a0ea2e3e89741562ff8bd9d7bb488a32d31c5be7a"
+  },
+  "t_dir": {
+   "dtype": "|i1",
+   "shape": [
+    10102032
+   ],
+   "sha256": "4f7e2761623324e2e9e913298218b148e76fe2d37aaf901ea8ba0c91ed485e34"
+  }
+ },
+ "placement": {
+  "where": "laptop"
+ },
+ "script_sha256": "26291debd1b2de8d7477daea938132f36d12be24804bcbadd7fa17bd87f44434",
+ "seconds": 18.0,
+ "utc": "2026-10-27T05:39:42Z"
+}

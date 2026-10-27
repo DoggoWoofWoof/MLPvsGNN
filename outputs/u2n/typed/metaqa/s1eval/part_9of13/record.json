@@ -1,0 +1,81 @@
+{
+ "stage": "U2n",
+ "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+ "dataset": "metaqa",
+ "carve": "s1eval",
+ "part": "part_9of13",
+ "step1_record_sha256": "2a9685299fceee9aa96bc88a2d20005b5cc3165d0235aefe4f3fda4586359135",
+ "link_record_sha256": "6e2312e3c16086abe52aee63fc7eff2a1c086ecb6579704a429440bf19caa4d3",
+ "chain_record_sha256": "8115bdd5cb7c4272568da7b30cc21a7bc472b625442b5765144edbf15334b94d",
+ "chunks": [
+  616,
+  684
+ ],
+ "queries": 748,
+ "edges": 10775058,
+ "family0": 9342016,
+ "typed": 9342016,
+ "empty_family0": 0,
+ "union_sizes": [
+  9110126,
+  213060,
+  18830,
+  0,
+  0,
+  0,
+  0,
+  0
+ ],
+ "links_against_record": "IDENTICAL",
+ "look": {
+  "record_0of18.json": "6cebba67a501075d35a7d78914bf3270422d48c9dc54dd820c6a8f7530e243c2",
+  "record_10of18.json": "81361e49ce932e91172126652b1f3a0fd41d12ecc5ff6db66ade63bf4af178b9",
+  "record_11of18.json": "29b0457559642b92798d8cc1576705f2bdb6555dab8ac88f44f1a1375316dfe1",
+  "record_12of18.json": "4a164ec325b788dde157bc135c30b943bb5de6ea3278456f58d6c8d7e60d7ded",
+  "record_13of18.json": "72ec6343bf3f26a2aa3df86b7ea859aca22628a02497db0c44510c46b5a10f25",
+  "record_14of18.json": "d4a6ef2516548e6520ff61ef127eec0a21945b64495120f1acf343c3135313f1",
+  "record_15of18.json": "f0d75ed8cd1d3f5773352ffdbb487b88e625afd98118c01ea188cd08e37218a6",
+  "record_16of18.json": "21d189ee9d4daf894bafa41ce1dff2012a018e6563eb8bd41952ebe84a94c4ac",
+  "record_17of18.json": "3266284528ba61fb41ba12ae8adaf8f05c30c303c0d0058e96f3cf5a8c252143",
+  "record_1of18.json": "927f117751d916a7d3fc33465e8d40dfa09520a8e3e1fe9b9475caa10e4ddc0c",
+  "record_2of18.json": "d220d122dfb3af84573c3fc31fd1c683435a351ba142412e360ca773b356378c",
+  "record_3of18.json": "9533dff66a62e06634a26d4ea78082eab2cabab40059036fe573404753a74224",
+  "record_4of18.json": "e8e695aa3d76cef7e0f5cfac0223109c9c75622e2c8d4b46526b643831eb1a12",
+  "record_5of18.json": "024197585179ca6426910c517c2599968a47fb0b235b3f447e04f7deed22032a",
+  "record_6of18.json": "db0afdec247dba8a4ee01d9811606a1b5895e0e27ed60ffcca046ce54c5647d1",
+  "record_7of18.json": "8468d674347e4c36bc5cff4605543ba881edf4fc1b3b66b8796012c4ad79e90e",
+  "record_8of18.json": "030a66f488ca82c4e698b37440fa6ab85e19701b71ebaceb07ee04d4ba56d61b",
+  "record_9of18.json": "5b8ca889e2f23cb00e8a8537daa4b74971a7f9ecb2c9043c84d21b8eb0362836"
+ },
+ "carve_ids_sha256": "baf65d95e7b449f80ddd53541c4a43dff6ac1c584faab5b98977595b95f523fe",
+ "relations": {
+  "n_relations": 9,
+  "kz": 18,
+  "offset": 0,
+  "k_rel": 4,
+  "embeddings": "metaqa_rel_embeddings.npy",
+  "embeddings_sha256": "752964ecfae44c7e4ebf10468d7d0241cca53b0fdb2488af04ec30deed38b4af"
+ },
+ "arrays": {
+  "t_set": {
+   "dtype": "<i2",
+   "shape": [
+    10775058
+   ],
+   "sha256": "b803d70185bb75aea448cbf5ed31af6481c5376450bb9f168a88cdbee1c348bb"
+  },
+  "t_dir": {
+   "dtype": "|i1",
+   "shape": [
+    10775058
+   ],
+   "sha256": "7f55c7d08491d6323f5eca63f4bb1b1ae3718a53bbf2051e836064e0f94dd544"
+  }
+ },
+ "placement": {
+  "where": "laptop"
+ },
+ "script_sha256": "26291debd1b2de8d7477daea938132f36d12be24804bcbadd7fa17bd87f44434",
+ "seconds": 22.7,
+ "utc": "2026-10-27T05:38:00Z"
+}

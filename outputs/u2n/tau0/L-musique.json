@@ -1,0 +1,79 @@
+{
+ "stage": "U2n",
+ "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+ "split": "L-musique",
+ "datasets": [
+  "metaqa",
+  "squad",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "k": 16,
+ "rows": 256,
+ "skipped": 0,
+ "inputs": {
+  "metaqa": {
+   "record_sha256": "be6d00b25dcc6ab48e297be52895e18867e27cc10097aa3f8d664e925450c19a",
+   "file_sha256": "ca3d237ec3fb4269ab65846223f9e724f8fd76eea03523b2a90a48a16dbc77eb",
+   "mu_sha256": "17d7fb7045d939ecc7b309ca3695898b99ac20235257e30255347fc7643078bd",
+   "rows": 64
+  },
+  "squad": {
+   "record_sha256": "0b20e5dc73b5d20558eb39ed8bc4cd1903c9388834cad01e767bebf928b85500",
+   "file_sha256": "c46da310f7b1f007aadba025552b6ba20e7c8c01085855d28ae876d2f15918b3",
+   "mu_sha256": "2432e44ed9d16ea8f01260efab34bb1ebd41646c02de39ba0b0d8d78cfe78504",
+   "rows": 64
+  },
+  "hotpotqa": {
+   "record_sha256": "f8f55f2cf7798e6d2675215ddd4ae5ebc2aedb7ff3be83bee230a60bc25d18a0",
+   "file_sha256": "8ee0f1ba6928986b4e1516f0f8af4938f51f1813f149fbf50e6c87360bbb4672",
+   "mu_sha256": "1cc6e2698995397f622a566850c06db03cdc272b4fbfd39c75fe2b5e4baf31d2",
+   "rows": 64
+  },
+  "2wiki": {
+   "record_sha256": "ef64186f85569c1d05abf4a09df18a428961f8012f048a88996941dddcf2d615",
+   "file_sha256": "cad82b513828aa1727863787d82bb4ddff7b0081955ab097691365ae91ad2fb6",
+   "mu_sha256": "767ab0a17b2a49ca1edaa192c2b1b503a92eed5be536a8247351e3217e6ea3a9",
+   "rows": 64
+  }
+ },
+ "seed": 0,
+ "rounds_max": 25,
+ "steps": 8,
+ "changes": [
+  256,
+  40,
+  20,
+  11,
+  4,
+  3,
+  1,
+  0
+ ],
+ "converged": true,
+ "sizes": [
+  21,
+  10,
+  18,
+  15,
+  11,
+  9,
+  12,
+  21,
+  15,
+  24,
+  8,
+  32,
+  10,
+  19,
+  15,
+  16
+ ],
+ "empty": 0,
+ "mean_cos": 0.635725,
+ "dtype": "float32",
+ "file_sha256": "00ba7ef2120b6bc0d0d38c6ba2d959fa7086bcb9276f3a0caec31288a407eec5",
+ "script_sha256": "26291debd1b2de8d7477daea938132f36d12be24804bcbadd7fa17bd87f44434",
+ "seconds": 0.3,
+ "utc": "2026-10-27T05:30:07Z"
+}
