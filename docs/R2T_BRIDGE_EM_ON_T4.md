@@ -240,4 +240,74 @@ new graph.
 
 ## 9. Results
 
-Not run yet.
+### 27 October 2026: zrckpb NOT_ADOPTED, zg6m NOT_ADOPTED
+
+**Where it ran.** Section 7's session ran as the second version of kernel mpr-kg-g6b2, at f7b89d4, after G6b2's
+output was downloaded.
+- Its image was the one KG's fits name: every fit's device stamp, the session's Python (3.13.15), platform, GPUs (two
+  T4s, 15,360 MiB) and driver equal KG's session 2.
+- It first checked the nine datasets' 1,535 files (25.3 GB) against their manifests (164 s).
+- GPU 0 ran scr-r2t-zg6m-hp (4,908 s). GPU 1 ran scr-r2t-zg6m (3,006 s), then -zrckpb-hp (1,485 s), then -zrckpb
+  (1,411 s). All four exited 0; the session took 6,066 s.
+- Where a fit runs decides nothing (section 7).
+
+On the laptop at 578d72e (zr2t.py, zr2br.py, zkg.py and zg6.py as at f7b89d4): `zr2t.py take` (40 files),
+`compare-all` and `verdict`. Records:
+- outputs/screen/scr-r2t-zrckpb-vs-zrckp.json and .md, scr-r2t-zg6m-vs-zg6.json and .md, and their -hp twins;
+- outputs/r2t: r2t-zrckpb-pair, r2t-zg6m-pair and r2t-zg6m-vs-zspk-pair, each with its -recall, and screen-verdict
+  (.json and .md; 2026-10-27T10:18:35Z).
+
+**zrckpb** ("zrckp + R2's bridge head") against KG's zrckp, re-called under KG's zrckp null:
+- **1 GAIN:** L-musique musique (zero-shot), +0.0091 [+0.0035, +0.0149], floor 0.0075.
+- **1 LOSS:** L-hotpotqa musique (in domain), -0.0133 [-0.0199, -0.0068], floor 0.0127.
+- **One call changed** with the re-call: L-musique webqsp (+0.0120 [+0.0014, +0.0227], floor 0.0184) went from GAIN
+  to WITHIN.
+
+**zg6m** (zg6 + R2's bridge head on its final score) against KG's zg6, re-called under KG's zspk null moved onto zg6
+through scr-kg-zg6-vs-zspk[-hp]:
+- **0 GAIN.**
+- **2 LOSS,** both webqsp (zero-shot): L-musique -0.0216 [-0.0393, -0.0047], floor 0.0075; L-hotpotqa -0.0605
+  [-0.0778, -0.0424], floor 0.0242.
+- **One call changed** with the re-call: L-musique musique (+0.0107 [+0.0053, +0.0163], floor 0.0138) went from GAIN
+  to WITHIN.
+
+**Next forms.** Section 6 fixed them before any number:
+- zrckpb, NOT_ADOPTED with a GAIN and a LOSS: **R2g**, a learned per-question back-off on R2's head (the head times
+  2 sigmoid(a . c_q + b), c_q the question's own embedding projection and its first-stage top-5 RRF margins, the gate
+  starting at 1). One declared file.
+- zg6m, NOT_ADOPTED with no GAIN: **R2e**, the edge form (bridge scores only for bridges linked to the row by zlink's
+  edges, as fixed per-row link flags for the MLP and inside zg6's messages for the GNN). One declared file.
+- Neither idea is closed (docs/SCREENS.md, section 3b).
+
+Beside, deciding nothing:
+- **zg6m against KG's zspk,** under zspk's null: 3 GAIN (L-musique metaqa +0.0110, L-hotpotqa metaqa +0.0076,
+  L-hotpotqa musique +0.0158) and 3 LOSS, all zero-shot (L-musique webqsp -0.0969, L-hotpotqa hotpotqa -0.0169,
+  L-hotpotqa webqsp -0.0815). L-musique musique (+0.0098, floor 0.0138) and L-hotpotqa 2wiki (+0.0168, floor 0.0219)
+  went from GAIN to WITHIN. zg6's own call against zspk on the T4 was 4 GAIN and 2 LOSS (KG, section 10): the head
+  moves zg6 little, and the read it moves most is webqsp's.
+- **The bridge term trained.** On both arms and both splits it reached 99.4 to 99.5% of the training questions, and
+  its loss fell every epoch: from 4.60 to 3.83 on L-musique and from 5.21 to 4.14 on L-hotpotqa. So the head learned
+  its EM target; what it added to the ranking is the small moves above.
+- **Where each arm moved.**
+  - zrckpb raised both of L-musique's zero-shot reads (musique +0.0091, webqsp +0.0120) and both webqsp reads.
+    It lowered L-hotpotqa's in-domain musique read (-0.0133) and its zero-shot hotpotqa read (-0.0050, WITHIN).
+  - zg6m lowered both webqsp reads, by more on L-hotpotqa. Every other read is within 0.0107 of zg6, and every
+    in-domain read within 0.0043.
+- **The MLP share**, (zrckpb - rrf) / (zg6m - rrf), on the T4:
+  - 0.97 to 0.99 on L-musique's metaqa, hotpotqa and 2wiki reads, and on L-hotpotqa's metaqa and 2wiki.
+  - 0.74 on L-hotpotqa's musique read, where zrckpb has its LOSS.
+  - 0.95 on L-musique's musique read (zero-shot), and 1.00 on its squad read, where the two are equal.
+  - Above 1 where zrckpb is above zg6m: both webqsp reads, L-hotpotqa hotpotqa, and L-hotpotqa squad (1.20, where
+    zg6m's gain over rrf is 0.0025).
+- **Seconds and memory,** against KG's base of the same split on the same T4:
+
+  | arm | split | train s (base) | read s (base) | peak GPU GB, train / read |
+  |---|---|---|---|---|
+  | zrckpb | L-musique | 1,107 (960), 1.15x | 298 (291) | 3.70 / 4.43, as zrckp's |
+  | zrckpb | L-hotpotqa | 1,165 (963), 1.21x | 315 (279) | 5.55 / 5.55, as zrckp's |
+  | zg6m | L-musique | 2,124 (1,942), 1.09x | 849 (773) | 4.66 / 5.24, as zg6's |
+  | zg6m | L-hotpotqa | 4,166 (3,998), 1.04x | 714 (687) | 10.29 / 10.29, as zg6's |
+
+  Peak RAM was 4.5 to 4.6 GB, as the bases'.
+- zrckpb keeps the name "zrckp + R2's bridge head" until the user rules whether reading the five bridges' vectors keeps
+  it inside the MLP track (section 2).

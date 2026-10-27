@@ -1,0 +1,188 @@
+{
+ "verdict": "MIXED",
+ "fits": [
+  {
+   "file": "outputs\\screen\\scr-r2t-zg6m-vs-zg6.json",
+   "split": "L-musique",
+   "verdict": "MIXED",
+   "gains": 2,
+   "losses": 1
+  },
+  {
+   "file": "outputs\\screen\\scr-r2t-zg6m-vs-zg6-hp.json",
+   "split": "L-hotpotqa",
+   "verdict": "MIXED",
+   "gains": 3,
+   "losses": 2
+  }
+ ],
+ "rows": [
+  {
+   "split": "L-musique",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "base": 0.8013,
+   "new": 0.8123,
+   "rrf": 0.0047,
+   "delta": 0.011,
+   "lo": 0.0092,
+   "hi": 0.0126,
+   "call": "GAIN"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "squad",
+   "read": "in-domain",
+   "base": 0.9102,
+   "new": 0.9106,
+   "rrf": 0.9054,
+   "delta": 0.0003,
+   "lo": -0.0021,
+   "hi": 0.0028,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "musique",
+   "read": "zero-shot",
+   "base": 0.5146,
+   "new": 0.5244,
+   "rrf": 0.4734,
+   "delta": 0.0098,
+   "lo": 0.0028,
+   "hi": 0.0168,
+   "call": "GAIN"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "base": 0.9086,
+   "new": 0.9143,
+   "rrf": 0.6846,
+   "delta": 0.0057,
+   "lo": 0.0035,
+   "hi": 0.0081,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "base": 0.9364,
+   "new": 0.9417,
+   "rrf": 0.6079,
+   "delta": 0.0053,
+   "lo": 0.0037,
+   "hi": 0.0069,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-musique",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "base": 0.3151,
+   "new": 0.2182,
+   "rrf": 0.0535,
+   "delta": -0.0969,
+   "lo": -0.1184,
+   "hi": -0.0747,
+   "call": "LOSS"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "metaqa",
+   "read": "in-domain",
+   "base": 0.8037,
+   "new": 0.8113,
+   "rrf": 0.0047,
+   "delta": 0.0076,
+   "lo": 0.0059,
+   "hi": 0.0093,
+   "call": "GAIN"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "squad",
+   "read": "in-domain",
+   "base": 0.9139,
+   "new": 0.9079,
+   "rrf": 0.9054,
+   "delta": -0.006,
+   "lo": -0.0084,
+   "hi": -0.0036,
+   "call": "WITHIN"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "musique",
+   "read": "in-domain",
+   "base": 0.5754,
+   "new": 0.5912,
+   "rrf": 0.4734,
+   "delta": 0.0158,
+   "lo": 0.0089,
+   "hi": 0.0224,
+   "call": "GAIN"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "hotpotqa",
+   "read": "zero-shot",
+   "base": 0.855,
+   "new": 0.838,
+   "rrf": 0.6846,
+   "delta": -0.0169,
+   "lo": -0.0209,
+   "hi": -0.0128,
+   "call": "LOSS"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "base": 0.9265,
+   "new": 0.9434,
+   "rrf": 0.6079,
+   "delta": 0.0168,
+   "lo": 0.0147,
+   "hi": 0.0189,
+   "call": "GAIN"
+  },
+  {
+   "split": "L-hotpotqa",
+   "dataset": "webqsp",
+   "read": "zero-shot",
+   "base": 0.264,
+   "new": 0.1825,
+   "rrf": 0.0535,
+   "delta": -0.0815,
+   "lo": -0.1026,
+   "hi": -0.0611,
+   "call": "LOSS"
+  }
+ ],
+ "floor": 0.0075,
+ "script_sha256": "0b662232ef3e38b7b695f3024591e42a22c53ba2cb5634e3e1f988641b665762",
+ "utc": "2026-10-27T10:18:35Z",
+ "stage": "R2t",
+ "declared_in": "docs/R2T_BRIDGE_EM_ON_T4.md",
+ "r2_declared_in": "docs/R2_BRIDGE_EM.md",
+ "call": "zg6m-vs-zspk",
+ "decides": null,
+ "arm": "zg6m",
+ "what": "zg6 + R2's bridge head on its final score",
+ "against": "zspk",
+ "device": {
+  "cuda": "12.8",
+  "cudnn": 91900,
+  "gpu": "Tesla T4",
+  "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+  "torch": "2.11.0+cu128"
+ },
+ "compares": [
+  "scr-r2t-zg6m-vs-zg6",
+  "scr-r2t-zg6m-vs-zg6-hp"
+ ],
+ "zr2t_sha256": "6ea4cedac3a9fcd52d1b393a50bcf9d511c7a022da90dd81be8fbfd966cd1e98"
+}
