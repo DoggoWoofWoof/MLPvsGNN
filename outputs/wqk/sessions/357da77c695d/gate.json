@@ -1,0 +1,29 @@
+{
+ "stage": "WQK",
+ "declared_in": "docs/WQK_WQ_ON_T4.md",
+ "step": "W10",
+ "verdict": "PASS",
+ "problems": [],
+ "records": {
+  "bases": "0376b0b1bc1f16dbd9b119b4506ae38afcff4e23c10ac95d28f0efe7508ad4a5",
+  "step4d_manifest": "87fa52f396b54bdfe2cd74ddeb329048e1fe86d97812391544e92661359427c0",
+  "p1c2_manifest": "be01eefd6e8ea86868f81ac1cb359e29df4fdd514f29dcd37f6449963ec82e30",
+  "kt_record": "d80ada02a6966ccdb5d7d048d0009dcedb739ee3a6bfd1d8c6ff3742c08ddf1f",
+  "overlay": "d0430ceff94620179a7565e091daffa790ea999653c263df7f37db7d5a69b6ef",
+  "check": "a67d495fc1afdf13e82e091ee8781e908f9dba0dfe8b317569a325589b898dfc"
+ },
+ "look_records": {
+  "w0": {
+   "record_0of3.json": "788fdbd2165de5efe87a38ad651c07cee81497e9caec856fbd29c77a54f5e04a",
+   "record_1of3.json": "1572dacf8ec4a37929ba697c10c9d725fda346c968d4d72aaa51ae61f9d93979",
+   "record_2of3.json": "5d5a0c073788d591723ff053b617aa37fa8004fd0000a352f6db5bf71e997696"
+  },
+  "w5": {
+   "record_0of3.json": "0d476b0ff04b66e449f364abc48ab6300adc7c53fbd07bb84113458fc35f4e4b",
+   "record_1of3.json": "8e4e658306e824c70eb4f8f5c9c579a9b956136cac909314949fb7583185acd7",
+   "record_2of3.json": "9b4992d12af96b42739dc8d24e42e968dd611860b39842991950a00b2748a8b1"
+  }
+ },
+ "zwq_sha256": "cac99ace45e39dfb954618768483375a309f140a9ca439793428559c15d814da",
+ "utc": "2026-10-27T21:44:57Z"
+}

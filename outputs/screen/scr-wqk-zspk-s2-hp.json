@@ -1,0 +1,259 @@
+{
+ "new": "outputs\\screen\\fits\\scr-wqk-zspk-s2-hp",
+ "bases": [
+  "outputs\\screen\\fits\\scr-wqk-zspk-s0-hp"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-wqk-zspk-s0-hp": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "zero-shot",
+     "questions": 9785,
+     "base": [
+      0.3384,
+      0.28,
+      0.2089
+     ],
+     "new": [
+      0.3417,
+      0.2773,
+      0.2182
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      0.0034,
+      -0.0028,
+      0.0093
+     ],
+     "lo": [
+      -0.0024,
+      -0.0086,
+      0.0019
+     ],
+     "hi": [
+      0.0092,
+      0.0035,
+      0.0159
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9114,
+      0.9114,
+      0.7509
+     ],
+     "new": [
+      0.9114,
+      0.9114,
+      0.7536
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      0.0,
+      0.0,
+      0.0027
+     ],
+     "lo": [
+      -0.0021,
+      -0.0021,
+      -0.0004
+     ],
+     "hi": [
+      0.0021,
+      0.0021,
+      0.0057
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5794,
+      0.2586,
+      0.7315
+     ],
+     "new": [
+      0.585,
+      0.2644,
+      0.7336
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      0.0057,
+      0.0058,
+      0.0021
+     ],
+     "lo": [
+      0.0006,
+      -0.0021,
+      -0.0087
+     ],
+     "hi": [
+      0.011,
+      0.0145,
+      0.0124
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "zero-shot",
+     "questions": 7405,
+     "base": [
+      0.8496,
+      0.7421,
+      0.8001
+     ],
+     "new": [
+      0.846,
+      0.7396,
+      0.7811
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      -0.0036,
+      -0.0024,
+      -0.019
+     ],
+     "lo": [
+      -0.007,
+      -0.0086,
+      -0.0243
+     ],
+     "hi": [
+      -0.0003,
+      0.0036,
+      -0.0139
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.933,
+      0.8344,
+      0.9791
+     ],
+     "new": [
+      0.9353,
+      0.841,
+      0.9753
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.0023,
+      0.0066,
+      -0.0037
+     ],
+     "lo": [
+      0.0007,
+      0.0027,
+      -0.006
+     ],
+     "hi": [
+      0.004,
+      0.0107,
+      -0.0017
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "in-domain",
+     "questions": 1503,
+     "base": [
+      0.6153,
+      0.4983,
+      0.5496
+     ],
+     "new": [
+      0.6213,
+      0.509,
+      0.5602
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      0.006,
+      0.0106,
+      0.0106
+     ],
+     "lo": [
+      -0.0046,
+      -0.002,
+      -0.0053
+     ],
+     "hi": [
+      0.017,
+      0.0233,
+      0.0279
+     ],
+     "call": "WITHIN"
+    }
+   ],
+   "verdict": "NO_GAIN",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-27T23:41:00Z",
+ "verdict": "NO_GAIN",
+ "wqk": {
+  "declared_in": "docs/WQK_WQ_ON_T4.md",
+  "compare": "scr-wqk-zspk-s2-hp",
+  "new": "scr-wqk-zspk-s2-hp",
+  "bases": [
+   "scr-wqk-zspk-s0-hp"
+  ],
+  "device": {
+   "gpu": "Tesla T4",
+   "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+   "torch": "2.11.0+cu128",
+   "cuda": "12.8",
+   "cudnn": 91900
+  },
+  "zwqk_sha256": "b3c96017559f26a4b7041c570c3cd7d5f60721e2824996c5ee30a76fe447baad"
+ }
+}

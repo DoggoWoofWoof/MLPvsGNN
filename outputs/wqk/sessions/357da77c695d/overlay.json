@@ -1,0 +1,500 @@
+{
+ "stage": "WQK",
+ "declared_in": "docs/WQK_WQ_ON_T4.md",
+ "step": "W9",
+ "status": "OK",
+ "carves": [
+  "squad/fit",
+  "musique/s1fit",
+  "hotpotqa/fit",
+  "2wiki/fit",
+  "metaqa/s1eval",
+  "squad/s1eval",
+  "musique/s1eval",
+  "hotpotqa/s1eval",
+  "2wiki/s1eval",
+  "webqsp/s1eval"
+ ],
+ "folders": {
+  "cache squad/fit": {
+   "source": "outputs/u2d/base/cache/squad/fit",
+   "at": "outputs/wqk/p1c2/cache/squad/fit",
+   "files": 18,
+   "placed": {
+    "symlinked": 18
+   },
+   "records": {
+    "part_0of1/record.json": "b5e5a4a881cb957b11c2b5827c5cf89302eb398171684dce282f84498a78ad83"
+   },
+   "whole": true
+  },
+  "links squad/fit": {
+   "source": "outputs/u2d/base/links/squad/fit",
+   "at": "outputs/wqk/p1c2/links/squad/fit",
+   "files": 5,
+   "placed": {
+    "symlinked": 5
+   },
+   "records": {
+    "part_0of1/record.json": "466a781e1c765ccce80a6ebe5e8ba469531d63136648b0c9bf35613b996aea04"
+   },
+   "whole": true
+  },
+  "kt squad/fit": {
+   "source": "outputs/u2d/base/kt/squad/fit",
+   "at": "outputs/wqk/p1c3/kt/squad/fit",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "fb3d90d56052309bc1aeb0ad2b67eebb4ce2d136d2c6cb063255367ea0efa4fc"
+   },
+   "whole": true
+  },
+  "cache musique/s1fit": {
+   "source": "outputs/u2d/base/cache/musique/s1fit",
+   "at": "outputs/wqk/p1c2/cache/musique/s1fit",
+   "files": 108,
+   "placed": {
+    "symlinked": 108
+   },
+   "records": {
+    "part_0of6/record.json": "158b97b2cd91036f2d633fc0fa480c57c4b45e6ef304b9feda45eef12be5e74d",
+    "part_1of6/record.json": "988be2a7d376ce2b20f7c2eb79f15e12bb003fd97709fc61abad053c6725f8ec",
+    "part_2of6/record.json": "83008bc79366f606b38656c10701c2fb049f3a395a78ee083b19193794ef2e3a",
+    "part_3of6/record.json": "482b605b9abee4e12dd3dc5192448873906a77df91c0d748574d3abad6bef238",
+    "part_4of6/record.json": "e5094e35dcf890d01ae79a52f3295d197285293d851ea8e83e5ded6e962a893f",
+    "part_5of6/record.json": "fbb724216f99fcdff0f8b5a940ff7fc1d89fd467b8cd329b46a862d72ce84998"
+   },
+   "whole": true
+  },
+  "links musique/s1fit": {
+   "source": "outputs/u2d/base/links/musique/s1fit",
+   "at": "outputs/wqk/p1c2/links/musique/s1fit",
+   "files": 30,
+   "placed": {
+    "symlinked": 30
+   },
+   "records": {
+    "part_0of6/record.json": "a395526621b45b5b92d415f1fd8b88833f96e676b285cce2495be8ac94a2bdfd",
+    "part_1of6/record.json": "f51ffea291f9e9ec4fc73c6ba3d7735f96a13b42f286317265ef6ce4732a52d3",
+    "part_2of6/record.json": "02895c5ffe5011b0916bfe9d26b79f9dc6b2351595fe59daec9ee35681c8c1b5",
+    "part_3of6/record.json": "8492a7ff5cc0e031fd78ed3d546d1e679e57d2983747ed73fb4ffb6e4bd4f32e",
+    "part_4of6/record.json": "06fc2c1dbd94ae8b434a487902171bf9557223dc82ea09d6e05bacfe00e6d56f",
+    "part_5of6/record.json": "f8c95cb5d2d82c2d7145e6c8264a279a60a52bd041c8bafd6b31b3c9474d3c2b"
+   },
+   "whole": true
+  },
+  "kt musique/s1fit": {
+   "source": "outputs/u2d/base/kt/musique/s1fit",
+   "at": "outputs/wqk/p1c3/kt/musique/s1fit",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "ca797763dd19e7d385f2cd0bf5659dea1ceebe117f03d9f5545d3ec190333ab5"
+   },
+   "whole": true
+  },
+  "cache hotpotqa/fit": {
+   "source": "outputs/u2d/base/cache/hotpotqa/fit",
+   "at": "outputs/wqk/p1c2/cache/hotpotqa/fit",
+   "files": 18,
+   "placed": {
+    "symlinked": 18
+   },
+   "records": {
+    "part_0of1/record.json": "fc9016ecfeae3b5bd3e7db9cf8d86fc22f3a6ce712d243dc76e6f135452c3a4a"
+   },
+   "whole": true
+  },
+  "links hotpotqa/fit": {
+   "source": "outputs/u2d/base/links/hotpotqa/fit",
+   "at": "outputs/wqk/p1c2/links/hotpotqa/fit",
+   "files": 5,
+   "placed": {
+    "symlinked": 5
+   },
+   "records": {
+    "part_0of1/record.json": "eaa306938974fff1b7ce3becfc37fcba2e91c24c22d2f5f1c862815dab37e97a"
+   },
+   "whole": true
+  },
+  "kt hotpotqa/fit": {
+   "source": "outputs/u2d/base/kt/hotpotqa/fit",
+   "at": "outputs/wqk/p1c3/kt/hotpotqa/fit",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "c5080c6416bfecb77643f0e53f28bc25b4ae88349e17e1bfee0bb40eec624818"
+   },
+   "whole": true
+  },
+  "cache 2wiki/fit": {
+   "source": "outputs/u2d/base/cache/2wiki/fit",
+   "at": "outputs/wqk/p1c2/cache/2wiki/fit",
+   "files": 18,
+   "placed": {
+    "symlinked": 18
+   },
+   "records": {
+    "part_0of1/record.json": "9b8e5d7157492f317ad77b6e2134059c08532499b86860f92043e38707999431"
+   },
+   "whole": true
+  },
+  "links 2wiki/fit": {
+   "source": "outputs/u2d/base/links/2wiki/fit",
+   "at": "outputs/wqk/p1c2/links/2wiki/fit",
+   "files": 5,
+   "placed": {
+    "symlinked": 5
+   },
+   "records": {
+    "part_0of1/record.json": "8357ac9f71850e4a9db7cfbd8d6426202c474dbc856ddb4487ab105427f22f23"
+   },
+   "whole": true
+  },
+  "kt 2wiki/fit": {
+   "source": "outputs/u2d/base/kt/2wiki/fit",
+   "at": "outputs/wqk/p1c3/kt/2wiki/fit",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "0535758c49f20f36d0ba1492b6e24e103d6e796521ef93dacafaafdad5800968"
+   },
+   "whole": true
+  },
+  "cache metaqa/s1eval": {
+   "source": "outputs/u2d/base/cache/metaqa/s1eval",
+   "at": "outputs/wqk/p1c2/cache/metaqa/s1eval",
+   "files": 234,
+   "placed": {
+    "symlinked": 234
+   },
+   "records": {
+    "part_0of13/record.json": "90b6928b97d0c831ae81e0d61c611cdad667fce26be381a02f9e98355c9f5242",
+    "part_10of13/record.json": "8993a38cc774fa090094fbe2c94277ed021a56ef430bb0739e599f65ab2f6fe6",
+    "part_11of13/record.json": "6cc7851d0b25f35164cb408547c631c8eb7a52a2e753f42c852d751866abffc0",
+    "part_12of13/record.json": "e39062e7f030c033846bdb7cc0f864b44d0224d7db3d928110c5981c7370df42",
+    "part_1of13/record.json": "31cf3502ebc7b511ad1ef88d058f8c48698179b04c1c810b43361aa9ca28e018",
+    "part_2of13/record.json": "207dc51009c46e75386f88a0d629728def02f183757301e388603fec5b634d64",
+    "part_3of13/record.json": "8197d081a25ca13c78e45f0c80b7f12ce5413cb6f6ac6eef29a8b7a9777d5f66",
+    "part_4of13/record.json": "1666b8a083908e25c3c17e3b1fafd48e9af51b65fd0919507e750a289ec234f9",
+    "part_5of13/record.json": "629425da694c2cd8f7aa1a757bb71ae7f8409aa0c24b43f33825eecacbceb89e",
+    "part_6of13/record.json": "882ea92e9590846eeb8c45a5c7ec9d36b9bfd512828bc54cae5e1bc2c476dc01",
+    "part_7of13/record.json": "15d81d4c51024107efc114325c455084b4cbc5ad92de0ffd0df701ba8ad8d3b8",
+    "part_8of13/record.json": "f34f188a6f203e58c7a008befb3962a0039d083fb55b00785b8a41031d08b3f2",
+    "part_9of13/record.json": "2a9685299fceee9aa96bc88a2d20005b5cc3165d0235aefe4f3fda4586359135"
+   },
+   "whole": true
+  },
+  "links metaqa/s1eval": {
+   "source": "outputs/u2d/base/links/metaqa/s1eval",
+   "at": "outputs/wqk/p1c2/links/metaqa/s1eval",
+   "files": 65,
+   "placed": {
+    "symlinked": 65
+   },
+   "records": {
+    "part_0of13/record.json": "5622bdb9f1acf39b653a1f5c1d5f3f542a53ccd251886e8bc8e779ed69aded38",
+    "part_10of13/record.json": "40566d0435888a41057107bd0770b8f1a71f225871c13f086eac8e03f51cd111",
+    "part_11of13/record.json": "3c57ce6f98a8943ed799fa8d70eb20118a719bad72720b14f7202885f1d3e43f",
+    "part_12of13/record.json": "6bfd023d42bfd06d3822cff0df1e3f16aa6eb0f8a3271d769043f497d72a3ac2",
+    "part_1of13/record.json": "df28b2e69b5f00fc72383c01950443dc1cac8284536a44183c6bd2bb9ec9f0c8",
+    "part_2of13/record.json": "4a1ac1a91f8f33c7ebfa3d461a1a67f741eebb0b28ae9de5bd27388267e536a1",
+    "part_3of13/record.json": "eb4ff960a3c5b0b709ab894c4d50fa8f565b31acba32d51766d86d75b9a594c2",
+    "part_4of13/record.json": "873bda4aad4e8a7f4903a6013db0ff295b8e79870a3871a83965d171997350de",
+    "part_5of13/record.json": "e5bb673644c0ad696686f2d78cdf58b318db9f1a06374ccbd447123f5006cfe6",
+    "part_6of13/record.json": "fe03d523c934f4f7c84e088970ad57cbc2e76cd09bcbdcdcc0b47aaf078b47ab",
+    "part_7of13/record.json": "14c4254ebb8ab1cb1b75114917b96007526b5bfe0fbeb7642240559c2fdb7a86",
+    "part_8of13/record.json": "b4f18ec5b865bb3d774d34b0db82f9ae7191576017f5a83aa38af7ef583a60d3",
+    "part_9of13/record.json": "6e2312e3c16086abe52aee63fc7eff2a1c086ecb6579704a429440bf19caa4d3"
+   },
+   "whole": true
+  },
+  "kt metaqa/s1eval": {
+   "source": "outputs/u2d/base/kt/metaqa/s1eval",
+   "at": "outputs/wqk/p1c3/kt/metaqa/s1eval",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "23ac5dbc86dcffca4f1acd26672dea67eec94a765205d47c68322630087ae295"
+   },
+   "whole": true
+  },
+  "rmatch metaqa/s1eval": {
+   "source": "outputs/u2d/base/chains/rmatch/metaqa/s1eval",
+   "at": "outputs/wqk/p1c2/chains/rmatch/metaqa/s1eval",
+   "files": 104,
+   "placed": {
+    "symlinked": 104
+   },
+   "records": {
+    "part_0of13/record.json": "3449f52a8b5fe408f97434678fe306b1a3d7a01599ab9e2f3456a548b4bc465f",
+    "part_10of13/record.json": "9e124224fd35895c9aa4c90f004fecae19e633c7100865825043ba61a0d2ecef",
+    "part_11of13/record.json": "1c58551535f5525ba15a1688cd3ef33c27820382304a9ed75b8844b9516c725d",
+    "part_12of13/record.json": "ea81538d8f5e09885626bfc4f482f80399bb20477ac858fa204d99a310ad3b78",
+    "part_1of13/record.json": "4f269ef0632e4c64e99dff2ae91d5edc2432260649f89253153a838e9747efca",
+    "part_2of13/record.json": "3e14fa84f32e8ee253142d661af4625bbbf62017c20d5bbefcd6f256b43c3858",
+    "part_3of13/record.json": "92c78954e686a3fa52e2df6f93bacbeedd1018819b3bfec527b63fe1618050d2",
+    "part_4of13/record.json": "2a80d37453e0ac0f22c99345401b414f3240dafdc2d57287a9c055404e8e5e76",
+    "part_5of13/record.json": "c64f6bb8ceffb36d7ed527a2baa077ca208b3b2c4806ed575f979dfec93b590e",
+    "part_6of13/record.json": "e3a7b6f00f710339c6cd33fc307bc725ddc350de38e57313edebfade8a043473",
+    "part_7of13/record.json": "d661b574315ecf08a8829c915c9bb625c94bdcd0288a06989ef61d9ec815cfcc",
+    "part_8of13/record.json": "714161f80449d1e4e77d79185921bffdc70765b6dc6b9c3a826d007817eee2ca",
+    "part_9of13/record.json": "8115bdd5cb7c4272568da7b30cc21a7bc472b625442b5765144edbf15334b94d"
+   },
+   "whole": true
+  },
+  "zrc metaqa/s1eval": {
+   "source": "outputs/u2d/base/chains/zrc/metaqa/s1eval",
+   "at": "outputs/wqk/p1c2/chains/zrc/metaqa/s1eval",
+   "files": 104,
+   "placed": {
+    "symlinked": 104
+   },
+   "records": {
+    "part_0of13/record.json": "33f01fa8165070954e9f60b3c8ec4eb7882929fb8824322ff85b3e2f4bcce788",
+    "part_10of13/record.json": "915451c31c1501378826e2ca451ccc3867412bd1f676dd120f50d1f69dc89c05",
+    "part_11of13/record.json": "3355488ec7694b75ec3103c1d63f849fec56533a5180620dbab41a82e7335a5d",
+    "part_12of13/record.json": "9e6c97b24bf99c3c766b09f3d5b51aed8642b5bcdacf5254fb23cdaeb3cfd7dd",
+    "part_1of13/record.json": "f9582809d896e7b016506ea093251d58909a23be67a70f4276cf834cd817d3e3",
+    "part_2of13/record.json": "199f709cefb705d7da7ecf4724775683ec3375b7391a454acaab0590ff70a874",
+    "part_3of13/record.json": "c0d400afaf71443fbb47e77c9a43d714bac4f70873472571f58c84401c1e5636",
+    "part_4of13/record.json": "ce5e298824ab4f329b5b24ee78efb21a0320ce76dc33fa65929115c3716262ed",
+    "part_5of13/record.json": "b084cc58b08010dbb0cc3b3bb50ba7b8f365e794b30f7dd049542e6af4691b10",
+    "part_6of13/record.json": "1058e19b0298ff01351832322cbaa850ae024e8d5f0bbf80e78dcc9da3748449",
+    "part_7of13/record.json": "96aaa704e4b654642b30f8483cd56ca5685aca1b89f521552c20115f6184158f",
+    "part_8of13/record.json": "8b74b031c91ab3ce2239589d4d03205a97a85d45992894a7495f547c04964f26",
+    "part_9of13/record.json": "1102bbb9309b7644d8ea2147a3df3c429cd7cc63f26ec6d6f0e91d6951e8a1a2"
+   },
+   "whole": true
+  },
+  "cache squad/s1eval": {
+   "source": "outputs/u2d/base/cache/squad/s1eval",
+   "at": "outputs/wqk/p1c2/cache/squad/s1eval",
+   "files": 18,
+   "placed": {
+    "symlinked": 18
+   },
+   "records": {
+    "part_0of1/record.json": "b2035387594f9f705faa27e207f98286748b514214c3bb2ee62c4525ad40d958"
+   },
+   "whole": true
+  },
+  "links squad/s1eval": {
+   "source": "outputs/u2d/base/links/squad/s1eval",
+   "at": "outputs/wqk/p1c2/links/squad/s1eval",
+   "files": 5,
+   "placed": {
+    "symlinked": 5
+   },
+   "records": {
+    "part_0of1/record.json": "98ba1a7619d96c43b5bcc989faa6aa243cf8608e691cb87472f688efad84cc7f"
+   },
+   "whole": true
+  },
+  "kt squad/s1eval": {
+   "source": "outputs/u2d/base/kt/squad/s1eval",
+   "at": "outputs/wqk/p1c3/kt/squad/s1eval",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "d7c1d1fa4a5c659019ab5bbdabf589f69a97c6395528082700d1ea855c9e87eb"
+   },
+   "whole": true
+  },
+  "cache musique/s1eval": {
+   "source": "outputs/u2d/base/cache/musique/s1eval",
+   "at": "outputs/wqk/p1c2/cache/musique/s1eval",
+   "files": 54,
+   "placed": {
+    "symlinked": 54
+   },
+   "records": {
+    "part_0of3/record.json": "6031cc811b37a6a41a50aa78aa4eeeb73c9984456d14ffca620ad70f41952d75",
+    "part_1of3/record.json": "81b04d745fdacca49d2a4887217f6be5a72cb61b8fef99c7def71812f86da1f4",
+    "part_2of3/record.json": "b46627df922ed9034c75eecfcd32d65c109b1a69c50f2170beb2c1abe5070e59"
+   },
+   "whole": true
+  },
+  "links musique/s1eval": {
+   "source": "outputs/u2d/base/links/musique/s1eval",
+   "at": "outputs/wqk/p1c2/links/musique/s1eval",
+   "files": 15,
+   "placed": {
+    "symlinked": 15
+   },
+   "records": {
+    "part_0of3/record.json": "73333af0ae381924bc9ac3800de5c0926d4bbcc3747c39262a7bddae32b9061f",
+    "part_1of3/record.json": "9a18d7c9d3afa1c65aaff88770eae5298bd6dec506ca25e1c528038d3fc419a5",
+    "part_2of3/record.json": "c4624602ff6f8770f24f8b0328c43b3ad55e7edac001832b924bec98a0beb1ce"
+   },
+   "whole": true
+  },
+  "kt musique/s1eval": {
+   "source": "outputs/u2d/base/kt/musique/s1eval",
+   "at": "outputs/wqk/p1c3/kt/musique/s1eval",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "325f823f9ed89de97d73254872d73fd71a24d32cbf758384ee16b845e8992a26"
+   },
+   "whole": true
+  },
+  "cache hotpotqa/s1eval": {
+   "source": "outputs/u2d/base/cache/hotpotqa/s1eval",
+   "at": "outputs/wqk/p1c2/cache/hotpotqa/s1eval",
+   "files": 18,
+   "placed": {
+    "symlinked": 18
+   },
+   "records": {
+    "part_0of1/record.json": "ae63ef1ca1190f28e38d54d30963fe1e6d863bbe7b54a82986a3b1081ba691b4"
+   },
+   "whole": true
+  },
+  "links hotpotqa/s1eval": {
+   "source": "outputs/u2d/base/links/hotpotqa/s1eval",
+   "at": "outputs/wqk/p1c2/links/hotpotqa/s1eval",
+   "files": 5,
+   "placed": {
+    "symlinked": 5
+   },
+   "records": {
+    "part_0of1/record.json": "28fa36aa239d2eb5ca979cc89607730a6a6bf4ad12d86931f0635e7d6ca4aab5"
+   },
+   "whole": true
+  },
+  "kt hotpotqa/s1eval": {
+   "source": "outputs/u2d/base/kt/hotpotqa/s1eval",
+   "at": "outputs/wqk/p1c3/kt/hotpotqa/s1eval",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "7707ee83981d69b968a0e195a92284ecb19ac07c6996e7077319d59524a8420a"
+   },
+   "whole": true
+  },
+  "cache 2wiki/s1eval": {
+   "source": "outputs/u2d/base/cache/2wiki/s1eval",
+   "at": "outputs/wqk/p1c2/cache/2wiki/s1eval",
+   "files": 36,
+   "placed": {
+    "symlinked": 36
+   },
+   "records": {
+    "part_0of2/record.json": "56027f21ef5e917fddab9b0d69b577b9420e9a0838d145ab7ceed2d0b02f93c9",
+    "part_1of2/record.json": "22deccdda49391c9edd613d6e39e784f19762d527f0ec51c1486c24e3c5f0175"
+   },
+   "whole": true
+  },
+  "links 2wiki/s1eval": {
+   "source": "outputs/u2d/base/links/2wiki/s1eval",
+   "at": "outputs/wqk/p1c2/links/2wiki/s1eval",
+   "files": 10,
+   "placed": {
+    "symlinked": 10
+   },
+   "records": {
+    "part_0of2/record.json": "a8c61fa1df755f4d1f7d46a6557b00e26beaa4c242816ea88d59daa624d4ea2f",
+    "part_1of2/record.json": "153ac148c91f9cc53aff6b9473a7e7711ef73e5b845f17fffdfbeecf7cba1446"
+   },
+   "whole": true
+  },
+  "kt 2wiki/s1eval": {
+   "source": "outputs/u2d/base/kt/2wiki/s1eval",
+   "at": "outputs/wqk/p1c3/kt/2wiki/s1eval",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "eb7f7eb9f628ce2c80c46deb4c16ddab469e6e879582c34c35d1a777fef19dd1"
+   },
+   "whole": true
+  },
+  "cache webqsp/s1eval": {
+   "source": "outputs/u2d/base/cache/webqsp/s1eval",
+   "at": "outputs/wqk/p1c2/cache/webqsp/s1eval",
+   "files": 36,
+   "placed": {
+    "symlinked": 36
+   },
+   "records": {
+    "part_0of2/record.json": "a077ea8f3ab70b3ad25ce5234db43a198be7e6b5847a42492cddf465dfd41ab7",
+    "part_1of2/record.json": "54702f59fc465a5769c8d23216a91e023080f16cc2f5fde8241a1c3ddfa38e74"
+   },
+   "whole": true
+  },
+  "links webqsp/s1eval": {
+   "source": "outputs/u2d/base/links/webqsp/s1eval",
+   "at": "outputs/wqk/p1c2/links/webqsp/s1eval",
+   "files": 10,
+   "placed": {
+    "symlinked": 10
+   },
+   "records": {
+    "part_0of2/record.json": "32c5a1a229ea2380378aefbdc707aa421cb84d192503f06fa167ce794fd1fe66",
+    "part_1of2/record.json": "3f9f147517ccba1fb624a2972ce0789a25225e4488a98c29a8b3b7cc19ea06e6"
+   },
+   "whole": true
+  },
+  "kt webqsp/s1eval": {
+   "source": "outputs/u2d/base/kt/webqsp/s1eval",
+   "at": "outputs/wqk/p1c3/kt/webqsp/s1eval",
+   "files": 4,
+   "placed": {
+    "symlinked": 4
+   },
+   "records": {
+    "record.json": "c66ce7c0ecdaad46cfea511c53752eb457bcbcdc0bbe7e38cdc525b093b83ae3"
+   },
+   "whole": true
+  },
+  "rmatch webqsp/s1eval": {
+   "source": "outputs/u2d/base/chains/rmatch/webqsp/s1eval",
+   "at": "outputs/wqk/p1c2/chains/rmatch/webqsp/s1eval",
+   "files": 16,
+   "placed": {
+    "symlinked": 16
+   },
+   "records": {
+    "part_0of2/record.json": "ce9d363ccdfd7eaa73020ac236991bc51731a124e9d835def74ea30879a6aa49",
+    "part_1of2/record.json": "5c1d6ead0bfb201d702d3cf641951aeb71861e4db7199d685a8ca6ff94d116a5"
+   },
+   "whole": true
+  },
+  "zrc webqsp/s1eval": {
+   "source": "outputs/u2d/base/chains/zrc/webqsp/s1eval",
+   "at": "outputs/wqk/p1c2/chains/zrc/webqsp/s1eval",
+   "files": 16,
+   "placed": {
+    "symlinked": 16
+   },
+   "records": {
+    "part_0of2/record.json": "cdd9aba170c3ed31efd28f71e014e4cb741fa8a14b166d9fada23a8f6db1332e",
+    "part_1of2/record.json": "0bb3d679ba2c883c871dc289fc23df7ae6594b4623c21d5d52d800a4d54cbb95"
+   },
+   "whole": true
+  }
+ },
+ "problems": [],
+ "zwqk_sha256": "b3c96017559f26a4b7041c570c3cd7d5f60721e2824996c5ee30a76fe447baad",
+ "zwq_sha256": "cac99ace45e39dfb954618768483375a309f140a9ca439793428559c15d814da",
+ "utc": "2026-10-27T21:43:35Z"
+}
