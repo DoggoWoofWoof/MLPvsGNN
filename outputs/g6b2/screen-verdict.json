@@ -1,0 +1,713 @@
+{
+ "stage": "G6b2",
+ "declared_in": "docs/G6B2_ROW_BACKOFF.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zg6b2's re-call against KG's zspk under KG's zspk seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when KG's base verdict is not BASE_READY, G6b's verdict is not NOT_ADOPTED with G6b2 next, a fit or compare is missing or not G6b2's, the fits are not on KG's device, or a re-call does not hold the twelve reads (G6's rule, docs/G6_FREE_GNN.md section 4, on the T4)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zg6b2",
+ "base_arm": "zspk",
+ "null_kind": "KG's zspk seed null",
+ "device": {
+  "cuda": "12.8",
+  "cudnn": 91900,
+  "gpu": "Tesla T4",
+  "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+  "torch": "2.11.0+cu128"
+ },
+ "next_form": "G6r, relation-aware messages from text: the relation embeddings (outputs/m3b/relations/metaqa_rel_embeddings.npy, webqsp_rel_embeddings.npy) through one shared low-rank map in place of the per-family maps on the KB datasets, the encoder started from zspk's trained encoder, still unbounded with its own readout; one declared file. No verdict here closes the free GNN",
+ "gains": [
+  "L-musique metaqa",
+  "L-hotpotqa metaqa",
+  "L-hotpotqa musique"
+ ],
+ "losses": [
+  "L-musique musique",
+  "L-musique webqsp",
+  "L-hotpotqa hotpotqa"
+ ],
+ "problems": [],
+ "calls": {
+  "L-musique metaqa": "GAIN",
+  "L-musique squad": "WITHIN",
+  "L-musique musique": "LOSS",
+  "L-musique hotpotqa": "WITHIN",
+  "L-musique 2wiki": "WITHIN",
+  "L-musique webqsp": "LOSS",
+  "L-hotpotqa metaqa": "GAIN",
+  "L-hotpotqa squad": "WITHIN",
+  "L-hotpotqa musique": "GAIN",
+  "L-hotpotqa hotpotqa": "LOSS",
+  "L-hotpotqa 2wiki": "WITHIN",
+  "L-hotpotqa webqsp": "WITHIN"
+ },
+ "delta_r5": {
+  "L-musique metaqa": 0.0099,
+  "L-musique squad": 0.0017,
+  "L-musique musique": -0.0366,
+  "L-musique hotpotqa": 0.0027,
+  "L-musique 2wiki": 0.0067,
+  "L-musique webqsp": -0.0929,
+  "L-hotpotqa metaqa": 0.0079,
+  "L-hotpotqa squad": -0.0012,
+  "L-hotpotqa musique": 0.0248,
+  "L-hotpotqa hotpotqa": -0.0182,
+  "L-hotpotqa 2wiki": 0.0154,
+  "L-hotpotqa webqsp": -0.0139
+ },
+ "zg6b2_sha256": "e7892193c997f7c75561579061768823153f4ac89527acf04b9388377c93c0b1",
+ "utc": "2026-10-27T08:30:41Z",
+ "beside": {
+  "vs_zg6": {
+   "gains": [],
+   "losses": [
+    "L-musique musique",
+    "L-musique webqsp"
+   ]
+  },
+  "vs_zg6b": {
+   "gains": [],
+   "losses": [
+    "L-musique musique",
+    "L-musique webqsp"
+   ]
+  },
+  "r5": {
+   "L-musique metaqa": {
+    "read": "in-domain",
+    "rrf": 0.0047,
+    "zspk": 0.8013,
+    "zg6": 0.8127,
+    "zg6b": 0.8126,
+    "zg6b2": 0.8112,
+    "zrckp": 0.7995,
+    "floor": 0.0075,
+    "call": "GAIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-musique squad": {
+    "read": "in-domain",
+    "rrf": 0.9054,
+    "zspk": 0.9102,
+    "zg6": 0.912,
+    "zg6b": 0.9113,
+    "zg6b2": 0.9119,
+    "zrckp": 0.9116,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-musique musique": {
+    "read": "zero-shot",
+    "rrf": 0.4734,
+    "zspk": 0.5146,
+    "zg6": 0.5138,
+    "zg6b": 0.5052,
+    "zg6b2": 0.478,
+    "zrckp": 0.5129,
+    "floor": 0.013813,
+    "call": "LOSS",
+    "call_vs_zg6": "LOSS",
+    "call_vs_zg6b": "LOSS"
+   },
+   "L-musique hotpotqa": {
+    "read": "in-domain",
+    "rrf": 0.6846,
+    "zspk": 0.9086,
+    "zg6": 0.9127,
+    "zg6b": 0.9128,
+    "zg6b2": 0.9113,
+    "zrckp": 0.9041,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-musique 2wiki": {
+    "read": "in-domain",
+    "rrf": 0.6079,
+    "zspk": 0.9364,
+    "zg6": 0.9448,
+    "zg6b": 0.9424,
+    "zg6b2": 0.9431,
+    "zrckp": 0.9319,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-musique webqsp": {
+    "read": "zero-shot",
+    "rrf": 0.0535,
+    "zspk": 0.3151,
+    "zg6": 0.2398,
+    "zg6b": 0.2784,
+    "zg6b2": 0.2222,
+    "zrckp": 0.357,
+    "floor": 0.0075,
+    "call": "LOSS",
+    "call_vs_zg6": "LOSS",
+    "call_vs_zg6b": "LOSS"
+   },
+   "L-hotpotqa metaqa": {
+    "read": "in-domain",
+    "rrf": 0.0047,
+    "zspk": 0.8037,
+    "zg6": 0.8115,
+    "zg6b": 0.8115,
+    "zg6b2": 0.8115,
+    "zrckp": 0.8038,
+    "floor": 0.0075,
+    "call": "GAIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-hotpotqa squad": {
+    "read": "in-domain",
+    "rrf": 0.9054,
+    "zspk": 0.9139,
+    "zg6": 0.9122,
+    "zg6b": 0.913,
+    "zg6b2": 0.9127,
+    "zrckp": 0.9117,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-hotpotqa musique": {
+    "read": "in-domain",
+    "rrf": 0.4734,
+    "zspk": 0.5754,
+    "zg6": 0.5953,
+    "zg6b": 0.5934,
+    "zg6b2": 0.6002,
+    "zrckp": 0.5743,
+    "floor": 0.010526,
+    "call": "GAIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-hotpotqa hotpotqa": {
+    "read": "zero-shot",
+    "rrf": 0.6846,
+    "zspk": 0.855,
+    "zg6": 0.8391,
+    "zg6b": 0.8388,
+    "zg6b2": 0.8367,
+    "zrckp": 0.8504,
+    "floor": 0.0075,
+    "call": "LOSS",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-hotpotqa 2wiki": {
+    "read": "in-domain",
+    "rrf": 0.6079,
+    "zspk": 0.9265,
+    "zg6": 0.9463,
+    "zg6b": 0.9443,
+    "zg6b2": 0.942,
+    "zrckp": 0.9354,
+    "floor": 0.021918,
+    "call": "WITHIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   },
+   "L-hotpotqa webqsp": {
+    "read": "zero-shot",
+    "rrf": 0.0535,
+    "zspk": 0.264,
+    "zg6": 0.243,
+    "zg6b": 0.2397,
+    "zg6b2": 0.2501,
+    "zrckp": 0.3289,
+    "floor": 0.024181,
+    "call": "WITHIN",
+    "call_vs_zg6": "WITHIN",
+    "call_vs_zg6b": "WITHIN"
+   }
+  },
+  "mlp_share": {
+   "L-musique metaqa": 0.9855,
+   "L-musique squad": 0.9538,
+   "L-musique musique": 8.587,
+   "L-musique hotpotqa": 0.9682,
+   "L-musique 2wiki": 0.9666,
+   "L-musique webqsp": 1.7991,
+   "L-hotpotqa metaqa": 0.9905,
+   "L-hotpotqa squad": 0.863,
+   "L-hotpotqa musique": 0.7957,
+   "L-hotpotqa hotpotqa": 1.0901,
+   "L-hotpotqa 2wiki": 0.9802,
+   "L-hotpotqa webqsp": 1.4008
+  },
+  "gate": {
+   "L-musique": {
+    "stage": "G6b2",
+    "declared_in": "docs/G6B2_ROW_BACKOFF.md",
+    "fit": "scr-g6b2-zg6b2",
+    "candidate": "p@swa",
+    "a": [
+     -0.17955,
+     -0.421954,
+     -0.655105
+    ],
+    "b": -0.496769,
+    "c": [
+     0.299489,
+     0.102914,
+     0.153157
+    ],
+    "no_edges": 0.3783,
+    "pure_family": [
+     0.3371,
+     0.2852,
+     0.2401
+    ],
+    "pure_family_by_degree": {
+     "1": [
+      0.3849,
+      0.3,
+      0.26
+     ],
+     "3": [
+      0.4351,
+      0.3152,
+      0.281
+     ],
+     "10": [
+      0.5105,
+      0.3381,
+      0.3133
+     ],
+     "30": [
+      0.5871,
+      0.3623,
+      0.3484
+     ],
+     "100": [
+      0.6695,
+      0.3908,
+      0.3905
+     ]
+    },
+    "carve": "s1eval",
+    "by_dataset": {
+     "metaqa": {
+      "questions": 9785,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.3241,
+       "q10": 0.3211,
+       "q50": 0.3254,
+       "q90": 0.3266
+      },
+      "rows": 19742463,
+      "reached": 19660167,
+      "reached_share": 0.9958,
+      "row_gate": {
+       "mean": 0.4557,
+       "q10": 0.3942,
+       "q50": 0.4497,
+       "q90": 0.5253
+      },
+      "log1p_in_degree": [
+       1.6099,
+       0.0685,
+       0.4361
+      ]
+     },
+     "squad": {
+      "questions": 11873,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.289,
+       "q10": 0.2612,
+       "q50": 0.2846,
+       "q90": 0.3229
+      },
+      "rows": 594063,
+      "reached": 484977,
+      "reached_share": 0.8164,
+      "row_gate": {
+       "mean": 0.4126,
+       "q10": 0.2995,
+       "q50": 0.3692,
+       "q90": 0.618
+      },
+      "log1p_in_degree": [
+       1.015,
+       0.7979,
+       0.9518
+      ]
+     },
+     "musique": {
+      "questions": 2417,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.322,
+       "q10": 0.3153,
+       "q50": 0.3229,
+       "q90": 0.3274
+      },
+      "rows": 5057436,
+      "reached": 4934653,
+      "reached_share": 0.9757,
+      "row_gate": {
+       "mean": 0.5528,
+       "q10": 0.395,
+       "q50": 0.5542,
+       "q90": 0.7048
+      },
+      "log1p_in_degree": [
+       2.3772,
+       1.1416,
+       0.9132
+      ]
+     },
+     "hotpotqa": {
+      "questions": 7405,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.2972,
+       "q10": 0.2873,
+       "q50": 0.2968,
+       "q90": 0.3083
+      },
+      "rows": 693828,
+      "reached": 592010,
+      "reached_share": 0.8533,
+      "row_gate": {
+       "mean": 0.4183,
+       "q10": 0.3354,
+       "q50": 0.409,
+       "q90": 0.5136
+      },
+      "log1p_in_degree": [
+       1.1355,
+       0.6886,
+       0.7235
+      ]
+     },
+     "2wiki": {
+      "questions": 12576,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.2989,
+       "q10": 0.2913,
+       "q50": 0.2987,
+       "q90": 0.3071
+      },
+      "rows": 1328715,
+      "reached": 1072290,
+      "reached_share": 0.807,
+      "row_gate": {
+       "mean": 0.4172,
+       "q10": 0.3368,
+       "q50": 0.4058,
+       "q90": 0.5157
+      },
+      "log1p_in_degree": [
+       1.1208,
+       0.8035,
+       0.6073
+      ]
+     },
+     "webqsp": {
+      "questions": 1503,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.3027,
+       "q10": 0.2929,
+       "q50": 0.3009,
+       "q90": 0.3164
+      },
+      "rows": 3186165,
+      "reached": 3074439,
+      "reached_share": 0.9649,
+      "row_gate": {
+       "mean": 0.4151,
+       "q10": 0.3463,
+       "q50": 0.4054,
+       "q90": 0.4918
+      },
+      "log1p_in_degree": [
+       1.1627,
+       0.2351,
+       0.7511
+      ]
+     }
+    }
+   },
+   "L-hotpotqa": {
+    "stage": "G6b2",
+    "declared_in": "docs/G6B2_ROW_BACKOFF.md",
+    "fit": "scr-g6b2-zg6b2-hp",
+    "candidate": "p@swa",
+    "a": [
+     -0.118062,
+     -0.473619,
+     -0.871081
+    ],
+    "b": -0.532776,
+    "c": [
+     0.160765,
+     0.103266,
+     0.123875
+    ],
+    "no_edges": 0.3699,
+    "pure_family": [
+     0.3428,
+     0.2677,
+     0.1972
+    ],
+    "pure_family_by_degree": {
+     "1": [
+      0.3683,
+      0.2819,
+      0.2112
+     ],
+     "3": [
+      0.3946,
+      0.2967,
+      0.2258
+     ],
+     "10": [
+      0.4341,
+      0.3189,
+      0.2485
+     ],
+     "30": [
+      0.4753,
+      0.3426,
+      0.2732
+     ],
+     "100": [
+      0.5228,
+      0.3706,
+      0.3032
+     ]
+    },
+    "carve": "s1eval",
+    "by_dataset": {
+     "metaqa": {
+      "questions": 9785,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.3224,
+       "q10": 0.3177,
+       "q50": 0.3243,
+       "q90": 0.3262
+      },
+      "rows": 19742463,
+      "reached": 19660167,
+      "reached_share": 0.9958,
+      "row_gate": {
+       "mean": 0.3963,
+       "q10": 0.3548,
+       "q50": 0.3922,
+       "q90": 0.4395
+      },
+      "log1p_in_degree": [
+       1.6099,
+       0.0685,
+       0.4361
+      ]
+     },
+     "squad": {
+      "questions": 11873,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.2701,
+       "q10": 0.2283,
+       "q50": 0.2635,
+       "q90": 0.3207
+      },
+      "rows": 594063,
+      "reached": 484977,
+      "reached_share": 0.8164,
+      "row_gate": {
+       "mean": 0.352,
+       "q10": 0.2615,
+       "q50": 0.3302,
+       "q90": 0.4937
+      },
+      "log1p_in_degree": [
+       1.015,
+       0.7979,
+       0.9518
+      ]
+     },
+     "musique": {
+      "questions": 2417,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.3198,
+       "q10": 0.3098,
+       "q50": 0.3211,
+       "q90": 0.3279
+      },
+      "rows": 5057436,
+      "reached": 4934653,
+      "reached_share": 0.9757,
+      "row_gate": {
+       "mean": 0.4654,
+       "q10": 0.3686,
+       "q50": 0.4624,
+       "q90": 0.5643
+      },
+      "log1p_in_degree": [
+       2.3772,
+       1.1416,
+       0.9132
+      ]
+     },
+     "hotpotqa": {
+      "questions": 7405,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.2821,
+       "q10": 0.2671,
+       "q50": 0.2816,
+       "q90": 0.2986
+      },
+      "rows": 693828,
+      "reached": 592010,
+      "reached_share": 0.8533,
+      "row_gate": {
+       "mean": 0.3591,
+       "q10": 0.3025,
+       "q50": 0.3525,
+       "q90": 0.4251
+      },
+      "log1p_in_degree": [
+       1.1355,
+       0.6886,
+       0.7235
+      ]
+     },
+     "2wiki": {
+      "questions": 12576,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.2851,
+       "q10": 0.2739,
+       "q50": 0.2849,
+       "q90": 0.297
+      },
+      "rows": 1328715,
+      "reached": 1072290,
+      "reached_share": 0.807,
+      "row_gate": {
+       "mean": 0.3604,
+       "q10": 0.3066,
+       "q50": 0.3522,
+       "q90": 0.427
+      },
+      "log1p_in_degree": [
+       1.1208,
+       0.8035,
+       0.6073
+      ]
+     },
+     "webqsp": {
+      "questions": 1503,
+      "no_edges": 0,
+      "no_edges_share": 0.0,
+      "question_gate": {
+       "mean": 0.2895,
+       "q10": 0.2746,
+       "q50": 0.2866,
+       "q90": 0.3105
+      },
+      "rows": 3186165,
+      "reached": 3074439,
+      "reached_share": 0.9649,
+      "row_gate": {
+       "mean": 0.3567,
+       "q10": 0.3114,
+       "q50": 0.3508,
+       "q90": 0.4083
+      },
+      "log1p_in_degree": [
+       1.1627,
+       0.2351,
+       0.7511
+      ]
+     }
+    }
+   }
+  },
+  "timing": {
+   "L-musique": {
+    "zg6b2": {
+     "train_seconds": 2236.280542612076,
+     "read_seconds": 818.0175189971924,
+     "train_peak_gpu_gb": 4.891949568,
+     "read_peak_gpu_gb": 5.235354624,
+     "data_gb": 3.014236093,
+     "peak_gb": 6.04,
+     "gate_seconds": 38.7
+    },
+    "zg6b": {
+     "train_seconds": 2238.9869468212128,
+     "read_seconds": 875.3805668354034,
+     "train_peak_gpu_gb": 4.89194752,
+     "read_peak_gpu_gb": 5.235350016,
+     "data_gb": 3.014236093,
+     "peak_gb": 4.58
+    },
+    "zg6": {
+     "train_seconds": 1942.4798634052277,
+     "read_seconds": 773.2938129901886,
+     "train_peak_gpu_gb": 4.655176704,
+     "read_peak_gpu_gb": 5.236961792,
+     "data_gb": 3.014236093,
+     "peak_gb": 4.57
+    }
+   },
+   "L-hotpotqa": {
+    "zg6b2": {
+     "train_seconds": 4320.973615884781,
+     "read_seconds": 799.7361688613892,
+     "train_peak_gpu_gb": 10.288827904,
+     "read_peak_gpu_gb": 10.288827904,
+     "data_gb": 4.86925146,
+     "peak_gb": 6.11,
+     "gate_seconds": 35.3
+    },
+    "zg6b": {
+     "train_seconds": 4346.6407861709595,
+     "read_seconds": 786.297322511673,
+     "train_peak_gpu_gb": 10.288825344,
+     "read_peak_gpu_gb": 10.288825344,
+     "data_gb": 4.86925146,
+     "peak_gb": 4.55
+    },
+    "zg6": {
+     "train_seconds": 3997.6557128429413,
+     "read_seconds": 687.4150559902191,
+     "train_peak_gpu_gb": 10.288256512,
+     "read_peak_gpu_gb": 10.288256512,
+     "data_gb": 4.86925146,
+     "peak_gb": 4.58
+    }
+   }
+  },
+  "pair": "outputs/g6b2/g6b2-zg6b2-pair.json",
+  "recall": "outputs/g6b2/g6b2-zg6b2-pair-recall.json",
+  "recall_sha256": "d78c1deec188e811a3ce691714e1fbb726180e7535acfe6346cb53e9107632c1"
+ }
+}

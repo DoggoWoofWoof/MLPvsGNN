@@ -244,4 +244,79 @@ new graph.
 
 ## 9. Results
 
-Not run yet.
+### 27 October 2026: NOT_ADOPTED
+
+**Where it ran.** Section 7 planned one session of kernel mpr-kg after U2n's session 3. It ran instead as the first
+session of its own kernel, mpr-kg-g6b2, at b18b85a, beside U2n's session 3, so that the two sessions shared the
+account's two GPU sessions.
+- Its image was the one KG's fits name: every fit's device stamp, the session's Python, platform, GPUs and driver
+  equal KG's session 2.
+- It first checked the nine datasets' 1,535 files (25.3 GB) against their manifests (60 s).
+- scr-g6b2-zg6b2 ran on GPU 0 (3,108 s) and -hp on GPU 1 (5,169 s). Both exited 0; the session took 5,230 s.
+- Where a fit runs decides nothing (section 7).
+
+On the laptop at f7b89d4 (zg6b2.py, zg6b.py, zkg.py and zg6.py as at b18b85a): `zg6b2.py take`, `compare-all` and
+`verdict`. Records:
+- outputs/screen/scr-g6b2-zg6b2-vs-zspk.json and .md, and its -hp twin;
+- outputs/g6b2: g6b2-zg6b2-pair, g6b2-zg6b2-vs-zg6-pair, g6b2-zg6b2-vs-zg6b-pair, each with its -recall, and
+  screen-verdict (.json and .md; 2026-10-27T08:30:41Z).
+
+zg6b2 against KG's zspk, re-called under KG's zspk null, by G6's rule:
+- **3 GAIN:**
+  - L-musique metaqa: +0.0099 [+0.0083, +0.0115].
+  - L-hotpotqa metaqa: +0.0079 [+0.0063, +0.0094].
+  - L-hotpotqa musique: +0.0248 [+0.0189, +0.0305], floor 0.0105.
+- **3 LOSS:**
+  - L-musique musique (zero-shot): -0.0366 [-0.0446, -0.0289], floor 0.0138.
+  - L-musique webqsp (zero-shot): -0.0929 [-0.1134, -0.0726].
+  - L-hotpotqa hotpotqa (zero-shot): -0.0182 [-0.0223, -0.0142].
+- **One call changed** with the re-call: L-hotpotqa 2wiki (+0.0154 [+0.0134, +0.0175], floor 0.0219) went from GAIN to
+  WITHIN.
+
+**Next form.** Section 6 fixed it for NOT_ADOPTED, with or without a GAIN: **G6r**, relation-aware messages from text.
+The relation embeddings go through one shared low-rank map in place of the per-family maps on the KB datasets; the
+encoder starts from zspk's trained encoder; the readout stays unbounded and its own. G6r gets its own declared file.
+The back-off has now had both of its forms, per question and per row, and both trade zero-shot reads for in-domain
+ones, so the next change is to the messages (section 6).
+
+Beside, deciding nothing:
+- **Against zg6 and zg6b.** Under zspk's floors, zg6b2 has no GAIN against either. It has 2 LOSS against each, both on
+  L-musique's zero-shot reads:
+
+  | read | zg6 | zg6b | zg6b2 | zg6b2 - zg6 | zg6b2 - zg6b |
+  |---|---:|---:|---:|---|---|
+  | L-musique musique | 0.5138 | 0.5052 | 0.4780 | -0.0357 [-0.0416, -0.0302] | -0.0272 [-0.0327, -0.0220] |
+  | L-musique webqsp | 0.2398 | 0.2784 | 0.2222 | -0.0176 [-0.0346, -0.0015] | -0.0562 [-0.0706, -0.0420] |
+
+  - The row gate gives back what zg6b's question gate recovered on L-musique's webqsp read, and falls below zg6 there.
+    Its musique zero-shot read (0.4780) is within 0.005 of rrf's (0.4734).
+  - On every in-domain read zg6b2 is within 0.0049 of zg6 and 0.0068 of zg6b, so its in-domain GAINs are zg6's.
+  - On L-hotpotqa's zero-shot reads it is within 0.0024 of both on hotpotqa, and above both on webqsp (+0.0071 and
+    +0.0104), WITHIN.
+- **The gate.** g_r = sigmoid(a . sh_q + c . log1p(deg_r) + b), over the structural, NER and kNN families:
+
+  | split | a | c | b | no edges | structural alone, unreached / 10 edges / 100 edges |
+  |---|---|---|---:|---:|---|
+  | L-musique | [-0.180, -0.422, -0.655] | [0.299, 0.103, 0.153] | -0.497 | 0.3783 | 0.3371 / 0.5105 / 0.6695 |
+  | L-hotpotqa | [-0.118, -0.474, -0.871] | [0.161, 0.103, 0.124] | -0.533 | 0.3699 | 0.3428 / 0.4341 / 0.5228 |
+
+  - As in G6b, every question leans more on the twin than on the edges, more so the larger its NER and kNN shares.
+  - c is positive for every family: the more edges reach a row, the more its score is the edge pass's.
+  - The row gate is highest where rows have the most edges. On L-musique, musique's reached rows have the largest
+    mean log1p structural in-degree of the six (2.38; 1.02 to 1.61 elsewhere) and the largest mean row gate (0.553;
+    0.413 to 0.456 elsewhere). musique is that split's zero-shot dataset, where the edge pass loses most. So the
+    per-row input moved weight toward the edges exactly where the edges hurt.
+  - Every s1eval question has edges; the edges reach 0.81 to 0.996 of each carve's rows.
+- **The MLP share**, (zrckp - rrf) / (zg6b2 - rrf), on the T4:
+  - 0.95 to 0.99 on L-musique's four in-domain reads, and on L-hotpotqa's metaqa and 2wiki.
+  - Below 0.90 on two in-domain reads of L-hotpotqa: musique at 0.80, and squad at 0.86, where zg6b2's gain over rrf
+    is 0.0073.
+  - Above 1 where zrckp is above zg6b2: every zero-shot read.
+- **Seconds and memory**, against KG's zg6 of the same split on the same T4:
+
+  | split | train s (zg6) | read s (zg6) | peak GPU GB, train / read (zg6) |
+  |---|---|---|---|
+  | L-musique | 2,236 (1,942), 1.15x | 818 (773) | 4.89 / 5.24 (4.66 / 5.24) |
+  | L-hotpotqa | 4,321 (3,998), 1.08x | 800 (687) | 10.29 / 10.29 (10.29 / 10.29) |
+
+  Peak RAM was 6.0 to 6.1 GB, against zg6b's 4.6.
