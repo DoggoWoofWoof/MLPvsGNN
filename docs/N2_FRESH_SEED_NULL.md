@@ -269,6 +269,91 @@ run under `retry_cmd.py --cuda` and `cuda_alloc.py --frac`, as in the items.
     python outputs/mp_unified/zn2.py summary
     python outputs/mp_unified/zn2.py gate --stage a5c
 
+### 6.1 The restore (27 October)
+
+The eight trains failed within seconds on their first run, on a missing `outputs/p1c2/cache/metaqa/fit/part_0of8/xc.npy`.
+By 27 October the host's auto clean-up (`outputs/host_ops/auto_cleanup.py`, its stage-build class) had removed idle
+build files, keeping every record. Its deletion records list what N2 reads:
+- **P1c2's cache:** 247 of its 663 arrays, in all 39 parts, and `basis_hotpotqa.npz`.
+- **P1c2's chains:** `ent_row`, `ent_z` and `ent_m` of both parts of webqsp's s1eval, in rmatch's and in zrc's (12
+  files).
+- **P1c2's links:** `e_u` and `e_v` of musique's s1eval parts 1 and 2 (of 3) and s1fit parts 1, 4 and 5 (of 6), 10 files.
+- **P1c3's KT:** `kt.npy` of metaqa's fit and s1eval and of musique's s1fit.
+- **Step 1's cache:** both bases, with the rest of that cache.
+
+M3B's graph stores, P1c2's look and pools and P1e's part files were not touched. The clean-up now runs with an ideal of
+90 GB free, a floor of 60 GB, an emergency level of 30 GB and 30 idle days.
+
+**The rule.**
+- Each kind is built again by its committed builder, unchanged, into a root of its own: `outputs/p1c2rb/cache`,
+  `.../chains/rmatch`, `.../chains/zrc`, `.../links` and `.../kt`.
+  - The cache parts run P1c2's command with `--out-root outputs/p1c2rb/cache`.
+  - The chains and links make `zp1c2.build`'s call with the rebuild root as its out root.
+  - KT runs `p1c3_kt.feats_stage` with its KT root set to the rebuild root.
+  - `scripts/p1c2_cache_restore.py build` and `kt` make those calls.
+- A file goes back only where it is missing and the rebuilt file's sha256 is the one its record lists. It goes back as a
+  hard link, or else a copy.
+- No file is written over and no record changes. So every reader's checks hold as before: each array's sha256 against
+  its record, and the cache records' sha256s that the chains, links and KT records name.
+- A rebuilt record must equal the original on every key except two kinds:
+  - the run's own (seconds, utc, placement, peak memory, row-gather time);
+  - the arrays' sha256s.
+  
+  A code sha that differs is reported. `plan` reports, before anything runs, whether each record's code is today's.
+- **The bases.**
+  - `basis_hotpotqa` is made again into the rebuild root by `lean_cache.py --make-basis hotpotqa --host` (BLAS 2).
+  - It must be P1c2's file byte for byte, and its record P1c2's on every key except the run's own and the code's.
+  - If it is not, `prep` exits 2 before anything goes back, and the restore stops here for a note in this section.
+  - `basis_2wiki` is linked from P1c2's root.
+  - A basis missing from P1c2's or step 1's root goes back from a file with its record's sha256.
+- The rebuilds and their checks change nothing in N2: its arms, seeds, pools, floors and calls stay as declared.
+
+**Host items** (`p1c2rb-*`, CPU only):
+1. `p1c2rb-basis`, then `p1c2rb-prep`.
+2. The 39 cache parts, `p1c2rb-lc-<dataset>-<carve>-<i>`, each with its original item's CPUs, memory and inputs. Then
+   `p1c2rb-install-cache`.
+3. After that, three chains of items:
+   - webqsp's s1eval chains: `p1c2rb-rmb-webqsp-s1eval`, `p1c2rb-install-rmatch`, `p1c2rb-zcb-webqsp-s1eval`, then
+     `p1c2rb-install-zrc`;
+   - musique's two link carves, then `p1c2rb-install-links`;
+   - the three KT carves under `pylib_run.py`, each with its original threads and CPUs, then `p1c2rb-install-kt`.
+4. `p1c2rb-verify`. It hashes every file of the five kinds and P1c2's two bases against their records, and writes WHOLE
+   or NOT_WHOLE (`outputs/p1c2/restore/verify.json`, exit 1 unless WHOLE).
+
+Each step writes its record under `outputs/p1c2/restore`. The cache parts took 50 to 482 s each when first built, at
+peaks of 1 to 7 GB.
+
+**N2 again.** N2's 31 unfinished items run again as `n2b-*`:
+- the same commands, resources, inputs and fit names;
+- their `n2-` dependencies renamed `n2b-`, and `p1c2rb-verify` added to the eight trains.
+
+`n2-recall-repro` had finished, and it stays the summary's dependency. No fit folder was made, since a train makes its
+folder only after training, so the names are free.
+
+**Self-test.** `python scripts/p1c2_cache_restore.py --selftest` passes on the laptop (about 1 s). On toy roots, it
+checks that:
+- a file is never written over, and a missing or wrong source is refused;
+- the basis gate stops a basis that is not P1c2's before anything goes back;
+- the installs refuse a differing file, a differing record and a missing rebuild, put back the rest, and change nothing
+  on a second run;
+- build and kt refuse a carve whose cache is not whole, call the builders with the rebuild root, and leave P1c3's own
+  carve untouched;
+- verify catches a missing part, a changed byte and a missing basis;
+- no record names the temporary folder.
+
+The rest of what the clean-up removed is not N2's: step 1's cache, P1g-b's look, cache, links, chains and KT, A7p's
+cache, P1g-c's columns, and others. Those builds run again by the same rule when a later stage needs them.
+
+    python outputs/mp_unified/lean_cache.py --make-basis hotpotqa --host --out-root outputs/p1c2rb/cache
+    python scripts/p1c2_cache_restore.py plan
+    python scripts/p1c2_cache_restore.py prep
+    python outputs/mp_unified/lean_cache.py --dataset metaqa --carve fit --part 0/8 --host \
+        --look-root outputs/p1c2/look --out-root outputs/p1c2rb/cache
+    python scripts/p1c2_cache_restore.py install --what cache
+    python scripts/p1c2_cache_restore.py build --what rmatch --dataset webqsp --carve s1eval --host
+    python outputs/host_ops/pylib_run.py scripts/p1c2_cache_restore.py kt metaqa --carve fit --threads 3 --host
+    python scripts/p1c2_cache_restore.py verify
+
 ## 7. Results
 
 Not run yet.
