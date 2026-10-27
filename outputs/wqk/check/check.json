@@ -1,0 +1,40 @@
+{
+ "stage": "WQK",
+ "declared_in": "docs/WQK_WQ_ON_T4.md",
+ "step": "check",
+ "carve": "webqsp/s1eval",
+ "status": "REPRODUCED",
+ "pairs": {
+  "step4d": {
+   "new": "outputs/wqk/check/step4d/pools/webqsp__s1eval.npz",
+   "filed": "outputs/step4d/pools/webqsp__s1eval.npz",
+   "new_sha256": "cf44097f600310e0c04e6b067e009ada6208855f3e0d26cd28ffa64c0fbd7515",
+   "filed_sha256": "cf44097f600310e0c04e6b067e009ada6208855f3e0d26cd28ffa64c0fbd7515",
+   "arrays": {
+    "keys": 12,
+    "only_new": [],
+    "only_filed": [],
+    "differ": [],
+    "equal": true
+   },
+   "entry_differs_in": []
+  },
+  "p1c2": {
+   "new": "outputs/wqk/check/p1c2/pools/webqsp/webqsp__s1eval.npz",
+   "filed": "outputs/p1c2/pools/webqsp/webqsp__s1eval.npz",
+   "new_sha256": "13a31fa12d3847a2863946c1493cb91618e3a23d4d61e73ec8ca78fa63d54c70",
+   "filed_sha256": "13a31fa12d3847a2863946c1493cb91618e3a23d4d61e73ec8ca78fa63d54c70",
+   "arrays": {
+    "keys": 13,
+    "only_new": [],
+    "only_filed": [],
+    "differ": [],
+    "equal": true
+   },
+   "entry_differs_in": []
+  }
+ },
+ "rule": "every key, dtype, shape and byte of both filed arrays; file sha256s are reported, not compared",
+ "zwq_sha256": "cac99ace45e39dfb954618768483375a309f140a9ca439793428559c15d814da",
+ "utc": "2026-10-27T19:26:04Z"
+}
