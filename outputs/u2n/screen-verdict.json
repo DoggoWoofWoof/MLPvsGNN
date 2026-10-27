@@ -1,0 +1,6967 @@
+{
+ "stage": "U2n",
+ "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+ "rule": "per arm: ADOPT_FOR_FULL_RUN when the arm's re-call against its KG base (zg6e: zspk; zrckpt: zrckp) under KG's seed null of that base has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when KG's base verdict is not BASE_READY, a fit or compare of the arm is missing or not U2n's, the arm's fits are not on KG's device, or the re-call does not hold the twelve reads (section 6)",
+ "verdicts": {
+  "zg6e": "NOT_ADOPTED",
+  "zrckpt": "ADOPT_FOR_FULL_RUN"
+ },
+ "arms": {
+  "zg6e": {
+   "verdict": "NOT_ADOPTED",
+   "next_form": "zg6e under G6b's gate (its edge pass and its no-edge pass mixed per question by the question's edge-family shares); one declared file",
+   "gains": [
+    "L-musique metaqa",
+    "L-hotpotqa metaqa",
+    "L-hotpotqa musique"
+   ],
+   "losses": [
+    "L-musique webqsp",
+    "L-hotpotqa hotpotqa",
+    "L-hotpotqa webqsp"
+   ],
+   "problems": [],
+   "device": {
+    "cuda": "12.8",
+    "cudnn": 91900,
+    "gpu": "Tesla T4",
+    "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+    "torch": "2.11.0+cu128"
+   },
+   "calls": {
+    "L-musique metaqa": "GAIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "WITHIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "LOSS",
+    "L-hotpotqa metaqa": "GAIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "GAIN",
+    "L-hotpotqa hotpotqa": "LOSS",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "LOSS"
+   },
+   "delta_r5": {
+    "L-musique metaqa": 0.0117,
+    "L-musique squad": 0.0031,
+    "L-musique musique": -0.0017,
+    "L-musique hotpotqa": 0.0034,
+    "L-musique 2wiki": 0.0074,
+    "L-musique webqsp": -0.0988,
+    "L-hotpotqa metaqa": 0.0076,
+    "L-hotpotqa squad": -0.0033,
+    "L-hotpotqa musique": 0.0231,
+    "L-hotpotqa hotpotqa": -0.0311,
+    "L-hotpotqa 2wiki": 0.0172,
+    "L-hotpotqa webqsp": -0.0386
+   }
+  },
+  "zrckpt": {
+   "verdict": "ADOPT_FOR_FULL_RUN",
+   "next_form": "zrckpt fitted again on U2s's carried pools, then its full run on all six splits beside zrckp's, then Claim 1 and Claim 3 measured again; each its own declared file",
+   "gains": [
+    "L-musique musique"
+   ],
+   "losses": [],
+   "problems": [],
+   "device": {
+    "cuda": "12.8",
+    "cudnn": 91900,
+    "gpu": "Tesla T4",
+    "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+    "torch": "2.11.0+cu128"
+   },
+   "calls": {
+    "L-musique metaqa": "WITHIN",
+    "L-musique squad": "WITHIN",
+    "L-musique musique": "GAIN",
+    "L-musique hotpotqa": "WITHIN",
+    "L-musique 2wiki": "WITHIN",
+    "L-musique webqsp": "WITHIN",
+    "L-hotpotqa metaqa": "WITHIN",
+    "L-hotpotqa squad": "WITHIN",
+    "L-hotpotqa musique": "WITHIN",
+    "L-hotpotqa hotpotqa": "WITHIN",
+    "L-hotpotqa 2wiki": "WITHIN",
+    "L-hotpotqa webqsp": "WITHIN"
+   },
+   "delta_r5": {
+    "L-musique metaqa": -0.0002,
+    "L-musique squad": 0.0,
+    "L-musique musique": 0.0098,
+    "L-musique hotpotqa": 0.0026,
+    "L-musique 2wiki": 0.0042,
+    "L-musique webqsp": -0.0053,
+    "L-hotpotqa metaqa": 0.0001,
+    "L-hotpotqa squad": 0.0011,
+    "L-hotpotqa musique": 0.0019,
+    "L-hotpotqa hotpotqa": 0.008,
+    "L-hotpotqa 2wiki": -0.0005,
+    "L-hotpotqa webqsp": -0.0108
+   }
+  }
+ },
+ "device": {
+  "cuda": "12.8",
+  "cudnn": 91900,
+  "gpu": "Tesla T4",
+  "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+  "torch": "2.11.0+cu128"
+ },
+ "zu2n_sha256": "26291debd1b2de8d7477daea938132f36d12be24804bcbadd7fa17bd87f44434",
+ "utc": "2026-10-27T08:42:34Z",
+ "beside": {
+  "r5": {
+   "L-musique metaqa": {
+    "read": "in-domain",
+    "rrf": 0.0047,
+    "zspk": 0.8013,
+    "zg6": 0.8127,
+    "zrckp": 0.7995,
+    "zg6e": 0.813,
+    "zrckpt": 0.7993,
+    "floor_zg6e": 0.0075,
+    "call_zg6e": "GAIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.008402,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-musique squad": {
+    "read": "in-domain",
+    "rrf": 0.9054,
+    "zspk": 0.9102,
+    "zg6": 0.912,
+    "zrckp": 0.9116,
+    "zg6e": 0.9133,
+    "zrckpt": 0.9116,
+    "floor_zg6e": 0.0075,
+    "call_zg6e": "WITHIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.0075,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-musique musique": {
+    "read": "zero-shot",
+    "rrf": 0.4734,
+    "zspk": 0.5146,
+    "zg6": 0.5138,
+    "zrckp": 0.5129,
+    "zg6e": 0.5129,
+    "zrckpt": 0.5228,
+    "floor_zg6e": 0.013813,
+    "call_zg6e": "WITHIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.0075,
+    "call_zrckpt": "GAIN"
+   },
+   "L-musique hotpotqa": {
+    "read": "in-domain",
+    "rrf": 0.6846,
+    "zspk": 0.9086,
+    "zg6": 0.9127,
+    "zrckp": 0.9041,
+    "zg6e": 0.912,
+    "zrckpt": 0.9066,
+    "floor_zg6e": 0.0075,
+    "call_zg6e": "WITHIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.0075,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-musique 2wiki": {
+    "read": "in-domain",
+    "rrf": 0.6079,
+    "zspk": 0.9364,
+    "zg6": 0.9448,
+    "zrckp": 0.9319,
+    "zg6e": 0.9438,
+    "zrckpt": 0.9361,
+    "floor_zg6e": 0.0075,
+    "call_zg6e": "WITHIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.011721,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-musique webqsp": {
+    "read": "zero-shot",
+    "rrf": 0.0535,
+    "zspk": 0.3151,
+    "zg6": 0.2398,
+    "zrckp": 0.357,
+    "zg6e": 0.2163,
+    "zrckpt": 0.3517,
+    "floor_zg6e": 0.0075,
+    "call_zg6e": "LOSS",
+    "call_zg6e_vs_zg6": "LOSS",
+    "floor_zrckpt": 0.018358,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-hotpotqa metaqa": {
+    "read": "in-domain",
+    "rrf": 0.0047,
+    "zspk": 0.8037,
+    "zg6": 0.8115,
+    "zrckp": 0.8038,
+    "zg6e": 0.8113,
+    "zrckpt": 0.8039,
+    "floor_zg6e": 0.0075,
+    "call_zg6e": "GAIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.0075,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-hotpotqa squad": {
+    "read": "in-domain",
+    "rrf": 0.9054,
+    "zspk": 0.9139,
+    "zg6": 0.9122,
+    "zrckp": 0.9117,
+    "zg6e": 0.9106,
+    "zrckpt": 0.9128,
+    "floor_zg6e": 0.0075,
+    "call_zg6e": "WITHIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.0075,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-hotpotqa musique": {
+    "read": "in-domain",
+    "rrf": 0.4734,
+    "zspk": 0.5754,
+    "zg6": 0.5953,
+    "zrckp": 0.5743,
+    "zg6e": 0.5985,
+    "zrckpt": 0.5762,
+    "floor_zg6e": 0.010526,
+    "call_zg6e": "GAIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.012748,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-hotpotqa hotpotqa": {
+    "read": "zero-shot",
+    "rrf": 0.6846,
+    "zspk": 0.855,
+    "zg6": 0.8391,
+    "zrckp": 0.8504,
+    "zg6e": 0.8238,
+    "zrckpt": 0.8583,
+    "floor_zg6e": 0.0075,
+    "call_zg6e": "LOSS",
+    "call_zg6e_vs_zg6": "LOSS",
+    "floor_zrckpt": 0.008376,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-hotpotqa 2wiki": {
+    "read": "in-domain",
+    "rrf": 0.6079,
+    "zspk": 0.9265,
+    "zg6": 0.9463,
+    "zrckp": 0.9354,
+    "zg6e": 0.9437,
+    "zrckpt": 0.9349,
+    "floor_zg6e": 0.021918,
+    "call_zg6e": "WITHIN",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.0075,
+    "call_zrckpt": "WITHIN"
+   },
+   "L-hotpotqa webqsp": {
+    "read": "zero-shot",
+    "rrf": 0.0535,
+    "zspk": 0.264,
+    "zg6": 0.243,
+    "zrckp": 0.3289,
+    "zg6e": 0.2254,
+    "zrckpt": 0.3181,
+    "floor_zg6e": 0.024181,
+    "call_zg6e": "LOSS",
+    "call_zg6e_vs_zg6": "WITHIN",
+    "floor_zrckpt": 0.023654,
+    "call_zrckpt": "WITHIN"
+   }
+  },
+  "mlp_share": {
+   "L-musique metaqa": {
+    "zrckp_of_zg6": 0.9837,
+    "zrckpt_of_zg6e": 0.9831
+   },
+   "L-musique squad": {
+    "zrckp_of_zg6": 0.9394,
+    "zrckpt_of_zg6e": 0.7848
+   },
+   "L-musique musique": {
+    "zrckp_of_zg6": 0.9777,
+    "zrckpt_of_zg6e": 1.2506
+   },
+   "L-musique hotpotqa": {
+    "zrckp_of_zg6": 0.9623,
+    "zrckpt_of_zg6e": 0.9763
+   },
+   "L-musique 2wiki": {
+    "zrckp_of_zg6": 0.9617,
+    "zrckpt_of_zg6e": 0.9771
+   },
+   "L-musique webqsp": {
+    "zrckp_of_zg6": 1.6291,
+    "zrckpt_of_zg6e": 1.8317
+   },
+   "L-hotpotqa metaqa": {
+    "zrckp_of_zg6": 0.9905,
+    "zrckpt_of_zg6e": 0.9908
+   },
+   "L-hotpotqa squad": {
+    "zrckp_of_zg6": 0.9265,
+    "zrckpt_of_zg6e": 1.4231
+   },
+   "L-hotpotqa musique": {
+    "zrckp_of_zg6": 0.8277,
+    "zrckpt_of_zg6e": 0.8217
+   },
+   "L-hotpotqa hotpotqa": {
+    "zrckp_of_zg6": 1.0731,
+    "zrckpt_of_zg6e": 1.2478
+   },
+   "L-hotpotqa 2wiki": {
+    "zrckp_of_zg6": 0.9678,
+    "zrckpt_of_zg6e": 0.9738
+   },
+   "L-hotpotqa webqsp": {
+    "zrckp_of_zg6": 1.4533,
+    "zrckpt_of_zg6e": 1.5393
+   }
+  },
+  "types": {
+   "scr-u2n-zg6e": {
+    "stage": "U2n",
+    "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+    "fit": "scr-u2n-zg6e",
+    "arm": "zg6e",
+    "split": "L-musique",
+    "candidate": "p@swa",
+    "tau0": {
+     "split": "L-musique",
+     "record_sha256": "5de56a378f9ff4a16d519fd7164ec27199d45c2df1c274ec05c208319eea3575",
+     "file_sha256": "00ba7ef2120b6bc0d0d38c6ba2d959fa7086bcb9276f3a0caec31288a407eec5"
+    },
+    "kappa_d": 11.0032,
+    "kappa_r": 11.062,
+    "cos_to_tau0": [
+     0.2023,
+     -0.0243,
+     -0.0615,
+     0.0114,
+     -0.0863,
+     0.0365,
+     0.2139,
+     -0.1635,
+     -0.1003,
+     -0.0986,
+     -0.0377,
+     0.1001,
+     -0.0259,
+     0.0621,
+     -0.0178,
+     0.1908
+    ],
+    "by_dataset": {
+     "metaqa": {
+      "relations": 9,
+      "shown": 18,
+      "types": [
+       [
+        [
+         "+has imdb votes",
+         0.304
+        ],
+        [
+         "-has genre",
+         0.2658
+        ],
+        [
+         "-release year",
+         0.1182
+        ],
+        [
+         "+has imdb rating",
+         0.0822
+        ],
+        [
+         "+written by",
+         0.065
+        ],
+        [
+         "-has tags",
+         0.0559
+        ],
+        [
+         "+directed by",
+         0.0443
+        ],
+        [
+         "-starred actors",
+         0.0267
+        ],
+        [
+         "-in language",
+         0.0189
+        ],
+        [
+         "+in language",
+         0.0058
+        ],
+        [
+         "+starred actors",
+         0.0041
+        ],
+        [
+         "-directed by",
+         0.0025
+        ],
+        [
+         "+has tags",
+         0.002
+        ],
+        [
+         "-written by",
+         0.0017
+        ],
+        [
+         "-has imdb rating",
+         0.0013
+        ],
+        [
+         "+release year",
+         0.0009
+        ],
+        [
+         "+has genre",
+         0.0004
+        ],
+        [
+         "-has imdb votes",
+         0.0004
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1438
+        ],
+        [
+         "+release year",
+         0.0776
+        ],
+        [
+         "+in language",
+         0.0755
+        ],
+        [
+         "+has tags",
+         0.0658
+        ],
+        [
+         "-starred actors",
+         0.0619
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "+written by",
+         0.0557
+        ],
+        [
+         "-has genre",
+         0.0546
+        ],
+        [
+         "-has imdb rating",
+         0.0534
+        ],
+        [
+         "+has imdb rating",
+         0.0485
+        ],
+        [
+         "+has genre",
+         0.0474
+        ],
+        [
+         "-written by",
+         0.0464
+        ],
+        [
+         "-has imdb votes",
+         0.0438
+        ],
+        [
+         "+starred actors",
+         0.0418
+        ],
+        [
+         "-has tags",
+         0.0393
+        ],
+        [
+         "-in language",
+         0.0343
+        ],
+        [
+         "-release year",
+         0.0333
+        ],
+        [
+         "+directed by",
+         0.018
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1406
+        ],
+        [
+         "+in language",
+         0.0758
+        ],
+        [
+         "+has tags",
+         0.0682
+        ],
+        [
+         "+release year",
+         0.0674
+        ],
+        [
+         "+has imdb votes",
+         0.0617
+        ],
+        [
+         "-has genre",
+         0.0584
+        ],
+        [
+         "-starred actors",
+         0.057
+        ],
+        [
+         "+written by",
+         0.0567
+        ],
+        [
+         "-has imdb rating",
+         0.0533
+        ],
+        [
+         "+has imdb rating",
+         0.0494
+        ],
+        [
+         "-written by",
+         0.0465
+        ],
+        [
+         "+starred actors",
+         0.0462
+        ],
+        [
+         "+has genre",
+         0.045
+        ],
+        [
+         "-has imdb votes",
+         0.0427
+        ],
+        [
+         "-release year",
+         0.0391
+        ],
+        [
+         "-has tags",
+         0.0386
+        ],
+        [
+         "-in language",
+         0.0347
+        ],
+        [
+         "+directed by",
+         0.0187
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1441
+        ],
+        [
+         "+release year",
+         0.0776
+        ],
+        [
+         "+in language",
+         0.0749
+        ],
+        [
+         "+has tags",
+         0.0665
+        ],
+        [
+         "-starred actors",
+         0.0618
+        ],
+        [
+         "+has imdb votes",
+         0.059
+        ],
+        [
+         "+written by",
+         0.0548
+        ],
+        [
+         "-has imdb rating",
+         0.0537
+        ],
+        [
+         "-has genre",
+         0.0532
+        ],
+        [
+         "+has genre",
+         0.0486
+        ],
+        [
+         "+has imdb rating",
+         0.0482
+        ],
+        [
+         "-written by",
+         0.0472
+        ],
+        [
+         "-has imdb votes",
+         0.0438
+        ],
+        [
+         "+starred actors",
+         0.0418
+        ],
+        [
+         "-has tags",
+         0.0389
+        ],
+        [
+         "-in language",
+         0.0345
+        ],
+        [
+         "-release year",
+         0.0333
+        ],
+        [
+         "+directed by",
+         0.0179
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.145
+        ],
+        [
+         "+release year",
+         0.0829
+        ],
+        [
+         "+in language",
+         0.0747
+        ],
+        [
+         "+has tags",
+         0.0658
+        ],
+        [
+         "-starred actors",
+         0.0617
+        ],
+        [
+         "+has imdb votes",
+         0.0573
+        ],
+        [
+         "-has imdb rating",
+         0.0538
+        ],
+        [
+         "+written by",
+         0.0531
+        ],
+        [
+         "-has genre",
+         0.0527
+        ],
+        [
+         "+has genre",
+         0.0487
+        ],
+        [
+         "-written by",
+         0.0483
+        ],
+        [
+         "+has imdb rating",
+         0.0477
+        ],
+        [
+         "-has imdb votes",
+         0.0448
+        ],
+        [
+         "+starred actors",
+         0.0416
+        ],
+        [
+         "-has tags",
+         0.039
+        ],
+        [
+         "-in language",
+         0.0343
+        ],
+        [
+         "-release year",
+         0.0309
+        ],
+        [
+         "+directed by",
+         0.0177
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1441
+        ],
+        [
+         "+release year",
+         0.0801
+        ],
+        [
+         "+in language",
+         0.0749
+        ],
+        [
+         "+has tags",
+         0.0658
+        ],
+        [
+         "-starred actors",
+         0.0615
+        ],
+        [
+         "+has imdb votes",
+         0.0584
+        ],
+        [
+         "+written by",
+         0.054
+        ],
+        [
+         "-has imdb rating",
+         0.0536
+        ],
+        [
+         "-has genre",
+         0.0535
+        ],
+        [
+         "+has genre",
+         0.0482
+        ],
+        [
+         "+has imdb rating",
+         0.0482
+        ],
+        [
+         "-written by",
+         0.0478
+        ],
+        [
+         "-has imdb votes",
+         0.0442
+        ],
+        [
+         "+starred actors",
+         0.0419
+        ],
+        [
+         "-has tags",
+         0.0392
+        ],
+        [
+         "-in language",
+         0.0345
+        ],
+        [
+         "-release year",
+         0.0322
+        ],
+        [
+         "+directed by",
+         0.0179
+        ]
+       ],
+       [
+        [
+         "-has imdb votes",
+         0.1894
+        ],
+        [
+         "-directed by",
+         0.1848
+        ],
+        [
+         "-has imdb rating",
+         0.1463
+        ],
+        [
+         "+release year",
+         0.1084
+        ],
+        [
+         "+has tags",
+         0.0935
+        ],
+        [
+         "+has genre",
+         0.0872
+        ],
+        [
+         "+starred actors",
+         0.0748
+        ],
+        [
+         "-written by",
+         0.0545
+        ],
+        [
+         "+in language",
+         0.0449
+        ],
+        [
+         "-in language",
+         0.0035
+        ],
+        [
+         "+written by",
+         0.0029
+        ],
+        [
+         "-starred actors",
+         0.0021
+        ],
+        [
+         "-has genre",
+         0.0018
+        ],
+        [
+         "-has tags",
+         0.0017
+        ],
+        [
+         "-release year",
+         0.0015
+        ],
+        [
+         "+has imdb rating",
+         0.0011
+        ],
+        [
+         "+directed by",
+         0.0009
+        ],
+        [
+         "+has imdb votes",
+         0.0008
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.142
+        ],
+        [
+         "+in language",
+         0.0766
+        ],
+        [
+         "+release year",
+         0.0733
+        ],
+        [
+         "+has tags",
+         0.0655
+        ],
+        [
+         "+has imdb votes",
+         0.0606
+        ],
+        [
+         "-has genre",
+         0.0595
+        ],
+        [
+         "-starred actors",
+         0.0589
+        ],
+        [
+         "+written by",
+         0.0583
+        ],
+        [
+         "-has imdb rating",
+         0.054
+        ],
+        [
+         "+has imdb rating",
+         0.0482
+        ],
+        [
+         "-written by",
+         0.0447
+        ],
+        [
+         "+starred actors",
+         0.0442
+        ],
+        [
+         "+has genre",
+         0.0438
+        ],
+        [
+         "-has imdb votes",
+         0.043
+        ],
+        [
+         "-has tags",
+         0.0397
+        ],
+        [
+         "-release year",
+         0.0355
+        ],
+        [
+         "-in language",
+         0.034
+        ],
+        [
+         "+directed by",
+         0.0183
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.7486
+        ],
+        [
+         "+has genre",
+         0.0865
+        ],
+        [
+         "+release year",
+         0.0681
+        ],
+        [
+         "-has imdb votes",
+         0.0294
+        ],
+        [
+         "+has tags",
+         0.0203
+        ],
+        [
+         "+in language",
+         0.0119
+        ],
+        [
+         "-has imdb rating",
+         0.0102
+        ],
+        [
+         "-starred actors",
+         0.0064
+        ],
+        [
+         "+written by",
+         0.0059
+        ],
+        [
+         "-written by",
+         0.0035
+        ],
+        [
+         "+starred actors",
+         0.0032
+        ],
+        [
+         "+has imdb rating",
+         0.002
+        ],
+        [
+         "-in language",
+         0.0017
+        ],
+        [
+         "-has tags",
+         0.001
+        ],
+        [
+         "+has imdb votes",
+         0.0007
+        ],
+        [
+         "-release year",
+         0.0003
+        ],
+        [
+         "-has genre",
+         0.0002
+        ],
+        [
+         "+directed by",
+         0.0
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1436
+        ],
+        [
+         "+release year",
+         0.0786
+        ],
+        [
+         "+in language",
+         0.0751
+        ],
+        [
+         "+has tags",
+         0.0658
+        ],
+        [
+         "-starred actors",
+         0.063
+        ],
+        [
+         "+has imdb votes",
+         0.0586
+        ],
+        [
+         "+written by",
+         0.0555
+        ],
+        [
+         "-has imdb rating",
+         0.0539
+        ],
+        [
+         "-has genre",
+         0.0526
+        ],
+        [
+         "+has genre",
+         0.0491
+        ],
+        [
+         "+has imdb rating",
+         0.048
+        ],
+        [
+         "-written by",
+         0.0466
+        ],
+        [
+         "-has imdb votes",
+         0.0441
+        ],
+        [
+         "+starred actors",
+         0.041
+        ],
+        [
+         "-has tags",
+         0.0393
+        ],
+        [
+         "-in language",
+         0.0344
+        ],
+        [
+         "-release year",
+         0.0329
+        ],
+        [
+         "+directed by",
+         0.018
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1447
+        ],
+        [
+         "+release year",
+         0.0853
+        ],
+        [
+         "+in language",
+         0.0748
+        ],
+        [
+         "-starred actors",
+         0.0637
+        ],
+        [
+         "+has tags",
+         0.0619
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "+written by",
+         0.0561
+        ],
+        [
+         "-has genre",
+         0.0554
+        ],
+        [
+         "-has imdb rating",
+         0.0529
+        ],
+        [
+         "+has imdb rating",
+         0.0483
+        ],
+        [
+         "+has genre",
+         0.0461
+        ],
+        [
+         "-written by",
+         0.0455
+        ],
+        [
+         "-has imdb votes",
+         0.0432
+        ],
+        [
+         "-has tags",
+         0.0412
+        ],
+        [
+         "+starred actors",
+         0.0401
+        ],
+        [
+         "-in language",
+         0.0342
+        ],
+        [
+         "-release year",
+         0.0299
+        ],
+        [
+         "+directed by",
+         0.0176
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1389
+        ],
+        [
+         "+in language",
+         0.0747
+        ],
+        [
+         "+release year",
+         0.072
+        ],
+        [
+         "+has tags",
+         0.0687
+        ],
+        [
+         "-starred actors",
+         0.0635
+        ],
+        [
+         "+written by",
+         0.0598
+        ],
+        [
+         "+has imdb votes",
+         0.0583
+        ],
+        [
+         "-has imdb rating",
+         0.0554
+        ],
+        [
+         "-has genre",
+         0.0533
+        ],
+        [
+         "+has genre",
+         0.0492
+        ],
+        [
+         "+has imdb rating",
+         0.0473
+        ],
+        [
+         "-has imdb votes",
+         0.045
+        ],
+        [
+         "-written by",
+         0.0438
+        ],
+        [
+         "+starred actors",
+         0.0413
+        ],
+        [
+         "-has tags",
+         0.0382
+        ],
+        [
+         "-release year",
+         0.0364
+        ],
+        [
+         "-in language",
+         0.0351
+        ],
+        [
+         "+directed by",
+         0.0189
+        ]
+       ],
+       [
+        [
+         "+written by",
+         0.118
+        ],
+        [
+         "-has imdb rating",
+         0.0803
+        ],
+        [
+         "-directed by",
+         0.0791
+        ],
+        [
+         "-has genre",
+         0.0729
+        ],
+        [
+         "+has tags",
+         0.0696
+        ],
+        [
+         "-has imdb votes",
+         0.0653
+        ],
+        [
+         "+release year",
+         0.06
+        ],
+        [
+         "+starred actors",
+         0.0548
+        ],
+        [
+         "+in language",
+         0.0531
+        ],
+        [
+         "-in language",
+         0.0499
+        ],
+        [
+         "-starred actors",
+         0.0485
+        ],
+        [
+         "-release year",
+         0.0442
+        ],
+        [
+         "+has imdb votes",
+         0.0406
+        ],
+        [
+         "-has tags",
+         0.0381
+        ],
+        [
+         "+has genre",
+         0.0364
+        ],
+        [
+         "+directed by",
+         0.0336
+        ],
+        [
+         "+has imdb rating",
+         0.033
+        ],
+        [
+         "-written by",
+         0.0225
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1394
+        ],
+        [
+         "+release year",
+         0.076
+        ],
+        [
+         "+in language",
+         0.0731
+        ],
+        [
+         "+has tags",
+         0.0671
+        ],
+        [
+         "-starred actors",
+         0.0618
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "+written by",
+         0.057
+        ],
+        [
+         "-has imdb rating",
+         0.0546
+        ],
+        [
+         "-has genre",
+         0.0538
+        ],
+        [
+         "+has genre",
+         0.0488
+        ],
+        [
+         "+has imdb rating",
+         0.0481
+        ],
+        [
+         "-written by",
+         0.046
+        ],
+        [
+         "-has imdb votes",
+         0.0444
+        ],
+        [
+         "+starred actors",
+         0.0424
+        ],
+        [
+         "-has tags",
+         0.0391
+        ],
+        [
+         "-in language",
+         0.0359
+        ],
+        [
+         "-release year",
+         0.0345
+        ],
+        [
+         "+directed by",
+         0.0188
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1416
+        ],
+        [
+         "+in language",
+         0.0751
+        ],
+        [
+         "+release year",
+         0.0748
+        ],
+        [
+         "+has tags",
+         0.0672
+        ],
+        [
+         "+has imdb votes",
+         0.0598
+        ],
+        [
+         "-starred actors",
+         0.0597
+        ],
+        [
+         "-has genre",
+         0.0568
+        ],
+        [
+         "+written by",
+         0.0559
+        ],
+        [
+         "-has imdb rating",
+         0.0538
+        ],
+        [
+         "+has imdb rating",
+         0.0485
+        ],
+        [
+         "-written by",
+         0.0467
+        ],
+        [
+         "+has genre",
+         0.0459
+        ],
+        [
+         "+starred actors",
+         0.0437
+        ],
+        [
+         "-has imdb votes",
+         0.0436
+        ],
+        [
+         "-has tags",
+         0.0389
+        ],
+        [
+         "-release year",
+         0.0349
+        ],
+        [
+         "-in language",
+         0.0347
+        ],
+        [
+         "+directed by",
+         0.0184
+        ]
+       ],
+       [
+        [
+         "-directed by",
+         0.1495
+        ],
+        [
+         "+release year",
+         0.0783
+        ],
+        [
+         "+in language",
+         0.0751
+        ],
+        [
+         "+has tags",
+         0.0676
+        ],
+        [
+         "-starred actors",
+         0.0599
+        ],
+        [
+         "+has imdb votes",
+         0.0582
+        ],
+        [
+         "-has imdb rating",
+         0.0531
+        ],
+        [
+         "+written by",
+         0.0517
+        ],
+        [
+         "-has genre",
+         0.0515
+        ],
+        [
+         "+has genre",
+         0.0496
+        ],
+        [
+         "-written by",
+         0.0494
+        ],
+        [
+         "+has imdb rating",
+         0.0481
+        ],
+        [
+         "-has imdb votes",
+         0.0439
+        ],
+        [
+         "+starred actors",
+         0.0426
+        ],
+        [
+         "-has tags",
+         0.0378
+        ],
+        [
+         "-in language",
+         0.034
+        ],
+        [
+         "-release year",
+         0.0326
+        ],
+        [
+         "+directed by",
+         0.0171
+        ]
+       ]
+      ]
+     },
+     "webqsp": {
+      "relations": 7058,
+      "shown": 5,
+      "types": [
+       [
+        [
+         "-game genre",
+         0.0007
+        ],
+        [
+         "-content genre",
+         0.0007
+        ],
+        [
+         "-genre content",
+         0.0007
+        ],
+        [
+         "-film genre",
+         0.0006
+        ],
+        [
+         "-comedy group genre",
+         0.0006
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-film directed by",
+         0.0009
+        ],
+        [
+         "+capital category capitals of administrative divisions",
+         0.0007
+        ],
+        [
+         "-music video directed by",
+         0.0006
+        ],
+        [
+         "+context name regional variants",
+         0.0006
+        ],
+        [
+         "-tv director episodes directed",
+         0.0006
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-film directed by",
+         0.0022
+        ],
+        [
+         "-opera director operas directed",
+         0.0018
+        ],
+        [
+         "-tv director episodes directed",
+         0.0013
+        ],
+        [
+         "-internet video director videos directed",
+         0.0012
+        ],
+        [
+         "-anime director anime directing credits",
+         0.0012
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0004
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0004
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-condition prevention factors conditions this may prevent",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "+human language writing system",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0004
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-condition prevention factors conditions this may prevent",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0003
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ],
+       [
+        [
+         "-possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "-flag referent flag",
+         0.0004
+        ],
+        [
+         "-possibly correlated thing possible correlations",
+         0.0003
+        ],
+        [
+         "+isotope isotope of",
+         0.0002
+        ],
+        [
+         "-opera director operas directed",
+         0.0002
+        ]
+       ]
+      ]
+     }
+    }
+   },
+   "scr-u2n-zg6e-hp": {
+    "stage": "U2n",
+    "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+    "fit": "scr-u2n-zg6e-hp",
+    "arm": "zg6e",
+    "split": "L-hotpotqa",
+    "candidate": "p@swa",
+    "tau0": {
+     "split": "L-hotpotqa",
+     "record_sha256": "c58d7ce9d67a436c6ee4768d292d6c31b4950db22c36beb85428412bccfd7549",
+     "file_sha256": "be846d2d46613d50a25462c095637352c218355270b9bc4473265c3ca8f83409"
+    },
+    "kappa_d": 21.9734,
+    "kappa_r": 15.1214,
+    "cos_to_tau0": [
+     0.0487,
+     -0.0469,
+     -0.0212,
+     0.0694,
+     -0.0479,
+     0.0127,
+     0.0164,
+     0.2886,
+     0.0376,
+     -0.0493,
+     0.2166,
+     0.0497,
+     -0.0265,
+     0.0951,
+     -0.0076,
+     -0.3234
+    ],
+    "by_dataset": {
+     "metaqa": {
+      "relations": 9,
+      "shown": 18,
+      "types": [
+       [
+        [
+         "-release year",
+         0.0912
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.062
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0463
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0902
+        ],
+        [
+         "+has genre",
+         0.0865
+        ],
+        [
+         "-written by",
+         0.0695
+        ],
+        [
+         "+has imdb rating",
+         0.0625
+        ],
+        [
+         "+directed by",
+         0.0615
+        ],
+        [
+         "+has tags",
+         0.0598
+        ],
+        [
+         "-starred actors",
+         0.0588
+        ],
+        [
+         "+has imdb votes",
+         0.0587
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0534
+        ],
+        [
+         "-has imdb votes",
+         0.049
+        ],
+        [
+         "+starred actors",
+         0.0489
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0468
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0414
+        ],
+        [
+         "-has genre",
+         0.0332
+        ],
+        [
+         "+release year",
+         0.0319
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0913
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.062
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0463
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "+has genre",
+         0.2266
+        ],
+        [
+         "+has tags",
+         0.146
+        ],
+        [
+         "-release year",
+         0.1349
+        ],
+        [
+         "-written by",
+         0.0686
+        ],
+        [
+         "-starred actors",
+         0.0658
+        ],
+        [
+         "+in language",
+         0.0645
+        ],
+        [
+         "-directed by",
+         0.0582
+        ],
+        [
+         "-has imdb votes",
+         0.0495
+        ],
+        [
+         "-has imdb rating",
+         0.0366
+        ],
+        [
+         "+has imdb rating",
+         0.0317
+        ],
+        [
+         "+has imdb votes",
+         0.0235
+        ],
+        [
+         "+directed by",
+         0.0199
+        ],
+        [
+         "-in language",
+         0.018
+        ],
+        [
+         "+starred actors",
+         0.0176
+        ],
+        [
+         "+written by",
+         0.0169
+        ],
+        [
+         "+release year",
+         0.0086
+        ],
+        [
+         "-has tags",
+         0.0079
+        ],
+        [
+         "-has genre",
+         0.0051
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0912
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.062
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0463
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0912
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.062
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0463
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0913
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.062
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0463
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0913
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.062
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0463
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "-has tags",
+         0.6033
+        ],
+        [
+         "+release year",
+         0.1669
+        ],
+        [
+         "-has genre",
+         0.1371
+        ],
+        [
+         "+directed by",
+         0.042
+        ],
+        [
+         "+written by",
+         0.0214
+        ],
+        [
+         "+starred actors",
+         0.0175
+        ],
+        [
+         "-in language",
+         0.0064
+        ],
+        [
+         "-has imdb rating",
+         0.0036
+        ],
+        [
+         "-has imdb votes",
+         0.0016
+        ],
+        [
+         "+has imdb votes",
+         0.0001
+        ],
+        [
+         "+has imdb rating",
+         0.0
+        ],
+        [
+         "+in language",
+         0.0
+        ],
+        [
+         "-starred actors",
+         0.0
+        ],
+        [
+         "-written by",
+         0.0
+        ],
+        [
+         "-directed by",
+         0.0
+        ],
+        [
+         "+has genre",
+         0.0
+        ],
+        [
+         "-release year",
+         0.0
+        ],
+        [
+         "+has tags",
+         0.0
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0912
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.062
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0463
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "+has tags",
+         0.5349
+        ],
+        [
+         "+has genre",
+         0.2181
+        ],
+        [
+         "-release year",
+         0.1509
+        ],
+        [
+         "-written by",
+         0.0325
+        ],
+        [
+         "-directed by",
+         0.0268
+        ],
+        [
+         "-starred actors",
+         0.0242
+        ],
+        [
+         "+in language",
+         0.0069
+        ],
+        [
+         "+has imdb rating",
+         0.004
+        ],
+        [
+         "+has imdb votes",
+         0.0016
+        ],
+        [
+         "-has imdb votes",
+         0.0001
+        ],
+        [
+         "-has imdb rating",
+         0.0
+        ],
+        [
+         "-in language",
+         0.0
+        ],
+        [
+         "+starred actors",
+         0.0
+        ],
+        [
+         "+directed by",
+         0.0
+        ],
+        [
+         "+written by",
+         0.0
+        ],
+        [
+         "+release year",
+         0.0
+        ],
+        [
+         "-has genre",
+         0.0
+        ],
+        [
+         "-has tags",
+         0.0
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0912
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.0619
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0464
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0911
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.0619
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0464
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ],
+       [
+        [
+         "-has genre",
+         0.1576
+        ],
+        [
+         "+directed by",
+         0.1459
+        ],
+        [
+         "+starred actors",
+         0.1399
+        ],
+        [
+         "-has tags",
+         0.121
+        ],
+        [
+         "+written by",
+         0.0949
+        ],
+        [
+         "-in language",
+         0.0842
+        ],
+        [
+         "-release year",
+         0.0612
+        ],
+        [
+         "+has imdb votes",
+         0.0478
+        ],
+        [
+         "-has imdb rating",
+         0.038
+        ],
+        [
+         "+has imdb rating",
+         0.0252
+        ],
+        [
+         "-has imdb votes",
+         0.02
+        ],
+        [
+         "+release year",
+         0.0156
+        ],
+        [
+         "+in language",
+         0.0113
+        ],
+        [
+         "-written by",
+         0.0101
+        ],
+        [
+         "+has tags",
+         0.0079
+        ],
+        [
+         "-starred actors",
+         0.0068
+        ],
+        [
+         "-directed by",
+         0.0065
+        ],
+        [
+         "+has genre",
+         0.0061
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0899
+        ],
+        [
+         "+has genre",
+         0.0867
+        ],
+        [
+         "-written by",
+         0.0697
+        ],
+        [
+         "+has imdb rating",
+         0.0626
+        ],
+        [
+         "+directed by",
+         0.0613
+        ],
+        [
+         "+has tags",
+         0.0599
+        ],
+        [
+         "-starred actors",
+         0.0588
+        ],
+        [
+         "+has imdb votes",
+         0.0585
+        ],
+        [
+         "-in language",
+         0.0538
+        ],
+        [
+         "+in language",
+         0.0535
+        ],
+        [
+         "-has imdb votes",
+         0.0491
+        ],
+        [
+         "+starred actors",
+         0.0489
+        ],
+        [
+         "-has tags",
+         0.048
+        ],
+        [
+         "-directed by",
+         0.0469
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0413
+        ],
+        [
+         "-has genre",
+         0.0332
+        ],
+        [
+         "+release year",
+         0.032
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.0913
+        ],
+        [
+         "+has genre",
+         0.0863
+        ],
+        [
+         "-written by",
+         0.0691
+        ],
+        [
+         "+has imdb rating",
+         0.0624
+        ],
+        [
+         "+directed by",
+         0.062
+        ],
+        [
+         "+has tags",
+         0.0597
+        ],
+        [
+         "+has imdb votes",
+         0.0591
+        ],
+        [
+         "-starred actors",
+         0.059
+        ],
+        [
+         "-in language",
+         0.0539
+        ],
+        [
+         "+in language",
+         0.0533
+        ],
+        [
+         "+starred actors",
+         0.0487
+        ],
+        [
+         "-has imdb votes",
+         0.0486
+        ],
+        [
+         "-has tags",
+         0.0481
+        ],
+        [
+         "-directed by",
+         0.0463
+        ],
+        [
+         "-has imdb rating",
+         0.046
+        ],
+        [
+         "+written by",
+         0.0416
+        ],
+        [
+         "-has genre",
+         0.0333
+        ],
+        [
+         "+release year",
+         0.0315
+        ]
+       ]
+      ]
+     },
+     "webqsp": {
+      "relations": 7058,
+      "shown": 5,
+      "types": [
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0008
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0005
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0005
+        ],
+        [
+         "-film starring",
+         0.0004
+        ],
+        [
+         "-personal film appearance film",
+         0.0004
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "-kwtopic has sentences",
+         0.004
+        ],
+        [
+         "+film directed by",
+         0.0017
+        ],
+        [
+         "+film starring",
+         0.0015
+        ],
+        [
+         "+oscar winner who refused award year",
+         0.0012
+        ],
+        [
+         "-topic subjects",
+         0.001
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+kwtopic has sentences",
+         0.0024
+        ],
+        [
+         "-film starring",
+         0.0013
+        ],
+        [
+         "+type of thing includes",
+         0.001
+        ],
+        [
+         "-film directed by",
+         0.001
+        ],
+        [
+         "+type of thing things of this type",
+         0.0009
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "-annotation category child categories",
+         0.0005
+        ],
+        [
+         "-symptom parent symptom",
+         0.0005
+        ],
+        [
+         "+tv show writers",
+         0.0005
+        ],
+        [
+         "-person sibling s",
+         0.0004
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ],
+       [
+        [
+         "+flag referent flag",
+         0.0006
+        ],
+        [
+         "+possibly correlated thing possible correlations",
+         0.0006
+        ],
+        [
+         "+possible cabinet member cabinet position",
+         0.0004
+        ],
+        [
+         "+force strength in fiction unit if known",
+         0.0004
+        ],
+        [
+         "-domain profile featured topic",
+         0.0003
+        ]
+       ]
+      ]
+     }
+    }
+   },
+   "scr-u2n-zrckpt": {
+    "stage": "U2n",
+    "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+    "fit": "scr-u2n-zrckpt",
+    "arm": "zrckpt",
+    "split": "L-musique",
+    "candidate": "p@swa",
+    "tau0": {
+     "split": "L-musique",
+     "record_sha256": "5de56a378f9ff4a16d519fd7164ec27199d45c2df1c274ec05c208319eea3575",
+     "file_sha256": "00ba7ef2120b6bc0d0d38c6ba2d959fa7086bcb9276f3a0caec31288a407eec5"
+    },
+    "kappa_d": 10.0,
+    "kappa_r": 10.0,
+    "cos_to_tau0": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "by_dataset": {
+     "metaqa": {
+      "relations": 9,
+      "shown": 18,
+      "types": [
+       [
+        [
+         "+written by",
+         0.2371
+        ],
+        [
+         "+directed by",
+         0.1437
+        ],
+        [
+         "-has tags",
+         0.1436
+        ],
+        [
+         "+starred actors",
+         0.1071
+        ],
+        [
+         "-in language",
+         0.0931
+        ],
+        [
+         "-release year",
+         0.0746
+        ],
+        [
+         "-has genre",
+         0.0516
+        ],
+        [
+         "-has imdb rating",
+         0.0367
+        ],
+        [
+         "-has imdb votes",
+         0.034
+        ],
+        [
+         "+has imdb votes",
+         0.0181
+        ],
+        [
+         "+has imdb rating",
+         0.0168
+        ],
+        [
+         "+has genre",
+         0.0119
+        ],
+        [
+         "+release year",
+         0.0082
+        ],
+        [
+         "+in language",
+         0.0066
+        ],
+        [
+         "-starred actors",
+         0.0057
+        ],
+        [
+         "+has tags",
+         0.0043
+        ],
+        [
+         "-directed by",
+         0.0043
+        ],
+        [
+         "-written by",
+         0.0026
+        ]
+       ],
+       [
+        [
+         "-has genre",
+         0.1817
+        ],
+        [
+         "+release year",
+         0.1136
+        ],
+        [
+         "+directed by",
+         0.1088
+        ],
+        [
+         "+written by",
+         0.0796
+        ],
+        [
+         "-has tags",
+         0.0794
+        ],
+        [
+         "-has imdb votes",
+         0.0676
+        ],
+        [
+         "+in language",
+         0.0608
+        ],
+        [
+         "-has imdb rating",
+         0.0605
+        ],
+        [
+         "-starred actors",
+         0.0563
+        ],
+        [
+         "+starred actors",
+         0.0298
+        ],
+        [
+         "+has imdb rating",
+         0.0277
+        ],
+        [
+         "-in language",
+         0.0276
+        ],
+        [
+         "+has imdb votes",
+         0.0248
+        ],
+        [
+         "+has tags",
+         0.0211
+        ],
+        [
+         "-written by",
+         0.0211
+        ],
+        [
+         "-directed by",
+         0.0154
+        ],
+        [
+         "-release year",
+         0.0148
+        ],
+        [
+         "+has genre",
+         0.0092
+        ]
+       ],
+       [
+        [
+         "-in language",
+         0.1896
+        ],
+        [
+         "+written by",
+         0.1061
+        ],
+        [
+         "+release year",
+         0.0905
+        ],
+        [
+         "-has tags",
+         0.0892
+        ],
+        [
+         "-has genre",
+         0.0812
+        ],
+        [
+         "+starred actors",
+         0.075
+        ],
+        [
+         "+directed by",
+         0.0622
+        ],
+        [
+         "+has imdb votes",
+         0.0497
+        ],
+        [
+         "+has imdb rating",
+         0.0472
+        ],
+        [
+         "-has imdb rating",
+         0.037
+        ],
+        [
+         "-has imdb votes",
+         0.0351
+        ],
+        [
+         "-directed by",
+         0.0281
+        ],
+        [
+         "-starred actors",
+         0.0233
+        ],
+        [
+         "+has genre",
+         0.0215
+        ],
+        [
+         "+has tags",
+         0.0196
+        ],
+        [
+         "-release year",
+         0.0193
+        ],
+        [
+         "-written by",
+         0.0165
+        ],
+        [
+         "+in language",
+         0.0092
+        ]
+       ],
+       [
+        [
+         "-has imdb votes",
+         0.2059
+        ],
+        [
+         "+in language",
+         0.1217
+        ],
+        [
+         "+has genre",
+         0.1162
+        ],
+        [
+         "-has tags",
+         0.0837
+        ],
+        [
+         "+release year",
+         0.0787
+        ],
+        [
+         "-starred actors",
+         0.0571
+        ],
+        [
+         "-directed by",
+         0.0481
+        ],
+        [
+         "+has imdb rating",
+         0.0413
+        ],
+        [
+         "-written by",
+         0.0398
+        ],
+        [
+         "+written by",
+         0.0389
+        ],
+        [
+         "-has imdb rating",
+         0.0375
+        ],
+        [
+         "+directed by",
+         0.0321
+        ],
+        [
+         "+starred actors",
+         0.0271
+        ],
+        [
+         "-release year",
+         0.0197
+        ],
+        [
+         "+has tags",
+         0.0185
+        ],
+        [
+         "-has genre",
+         0.0133
+        ],
+        [
+         "-in language",
+         0.0127
+        ],
+        [
+         "+has imdb votes",
+         0.0075
+        ]
+       ],
+       [
+        [
+         "+written by",
+         0.1632
+        ],
+        [
+         "-in language",
+         0.125
+        ],
+        [
+         "+starred actors",
+         0.1148
+        ],
+        [
+         "-has tags",
+         0.0846
+        ],
+        [
+         "-has genre",
+         0.0756
+        ],
+        [
+         "+directed by",
+         0.0727
+        ],
+        [
+         "-release year",
+         0.0592
+        ],
+        [
+         "-has imdb votes",
+         0.0498
+        ],
+        [
+         "-has imdb rating",
+         0.044
+        ],
+        [
+         "+has imdb rating",
+         0.0395
+        ],
+        [
+         "+has imdb votes",
+         0.0349
+        ],
+        [
+         "+release year",
+         0.0294
+        ],
+        [
+         "-directed by",
+         0.0239
+        ],
+        [
+         "+has genre",
+         0.023
+        ],
+        [
+         "+has tags",
+         0.0205
+        ],
+        [
+         "-starred actors",
+         0.0151
+        ],
+        [
+         "+in language",
+         0.0139
+        ],
+        [
+         "-written by",
+         0.0107
+        ]
+       ],
+       [
+        [
+         "+release year",
+         0.5518
+        ],
+        [
+         "-starred actors",
+         0.0918
+        ],
+        [
+         "-has genre",
+         0.0566
+        ],
+        [
+         "-has tags",
+         0.0536
+        ],
+        [
+         "-directed by",
+         0.0256
+        ],
+        [
+         "+written by",
+         0.0253
+        ],
+        [
+         "+has imdb rating",
+         0.0248
+        ],
+        [
+         "-has imdb votes",
+         0.0237
+        ],
+        [
+         "-in language",
+         0.0231
+        ],
+        [
+         "+in language",
+         0.0211
+        ],
+        [
+         "+has imdb votes",
+         0.0205
+        ],
+        [
+         "-has imdb rating",
+         0.0197
+        ],
+        [
+         "-written by",
+         0.0193
+        ],
+        [
+         "+directed by",
+         0.0191
+        ],
+        [
+         "+has tags",
+         0.0091
+        ],
+        [
+         "+has genre",
+         0.0086
+        ],
+        [
+         "+starred actors",
+         0.0053
+        ],
+        [
+         "-release year",
+         0.0009
+        ]
+       ],
+       [
+        [
+         "-written by",
+         0.2988
+        ],
+        [
+         "-directed by",
+         0.1654
+        ],
+        [
+         "+has genre",
+         0.1048
+        ],
+        [
+         "+has imdb votes",
+         0.1026
+        ],
+        [
+         "+has imdb rating",
+         0.075
+        ],
+        [
+         "+in language",
+         0.0438
+        ],
+        [
+         "+has tags",
+         0.0434
+        ],
+        [
+         "-release year",
+         0.0373
+        ],
+        [
+         "+starred actors",
+         0.027
+        ],
+        [
+         "-starred actors",
+         0.0249
+        ],
+        [
+         "+release year",
+         0.018
+        ],
+        [
+         "-has tags",
+         0.0155
+        ],
+        [
+         "-in language",
+         0.0154
+        ],
+        [
+         "-has imdb rating",
+         0.009
+        ],
+        [
+         "-has imdb votes",
+         0.0065
+        ],
+        [
+         "-has genre",
+         0.0064
+        ],
+        [
+         "+directed by",
+         0.0041
+        ],
+        [
+         "+written by",
+         0.0022
+        ]
+       ],
+       [
+        [
+         "+in language",
+         0.2757
+        ],
+        [
+         "+has tags",
+         0.0969
+        ],
+        [
+         "-has imdb votes",
+         0.0952
+        ],
+        [
+         "-starred actors",
+         0.082
+        ],
+        [
+         "+has genre",
+         0.0753
+        ],
+        [
+         "-directed by",
+         0.0652
+        ],
+        [
+         "-release year",
+         0.062
+        ],
+        [
+         "-has imdb rating",
+         0.0607
+        ],
+        [
+         "-written by",
+         0.0479
+        ],
+        [
+         "+written by",
+         0.0245
+        ],
+        [
+         "+has imdb rating",
+         0.0193
+        ],
+        [
+         "+release year",
+         0.0189
+        ],
+        [
+         "+directed by",
+         0.018
+        ],
+        [
+         "-has genre",
+         0.0156
+        ],
+        [
+         "+starred actors",
+         0.0143
+        ],
+        [
+         "+has imdb votes",
+         0.0123
+        ],
+        [
+         "-has tags",
+         0.0121
+        ],
+        [
+         "-in language",
+         0.0043
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.3234
+        ],
+        [
+         "+has imdb votes",
+         0.1149
+        ],
+        [
+         "+has tags",
+         0.0892
+        ],
+        [
+         "+starred actors",
+         0.0801
+        ],
+        [
+         "-in language",
+         0.0665
+        ],
+        [
+         "-has genre",
+         0.0469
+        ],
+        [
+         "+directed by",
+         0.0453
+        ],
+        [
+         "-has imdb rating",
+         0.0388
+        ],
+        [
+         "+written by",
+         0.036
+        ],
+        [
+         "-written by",
+         0.0299
+        ],
+        [
+         "+has imdb rating",
+         0.0278
+        ],
+        [
+         "-directed by",
+         0.0238
+        ],
+        [
+         "+has genre",
+         0.023
+        ],
+        [
+         "+in language",
+         0.0162
+        ],
+        [
+         "-starred actors",
+         0.0135
+        ],
+        [
+         "-has tags",
+         0.0121
+        ],
+        [
+         "-has imdb votes",
+         0.0094
+        ],
+        [
+         "+release year",
+         0.0033
+        ]
+       ],
+       [
+        [
+         "+written by",
+         0.2363
+        ],
+        [
+         "+directed by",
+         0.1074
+        ],
+        [
+         "-in language",
+         0.1051
+        ],
+        [
+         "-has tags",
+         0.1046
+        ],
+        [
+         "+starred actors",
+         0.0713
+        ],
+        [
+         "-has genre",
+         0.0669
+        ],
+        [
+         "-has imdb rating",
+         0.0619
+        ],
+        [
+         "-has imdb votes",
+         0.049
+        ],
+        [
+         "-release year",
+         0.0405
+        ],
+        [
+         "+release year",
+         0.0316
+        ],
+        [
+         "+has imdb votes",
+         0.0261
+        ],
+        [
+         "+has imdb rating",
+         0.0207
+        ],
+        [
+         "+has genre",
+         0.0191
+        ],
+        [
+         "-starred actors",
+         0.0179
+        ],
+        [
+         "+has tags",
+         0.0122
+        ],
+        [
+         "+in language",
+         0.0122
+        ],
+        [
+         "-directed by",
+         0.0119
+        ],
+        [
+         "-written by",
+         0.0054
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.2418
+        ],
+        [
+         "+written by",
+         0.2048
+        ],
+        [
+         "+directed by",
+         0.1434
+        ],
+        [
+         "+starred actors",
+         0.0726
+        ],
+        [
+         "-in language",
+         0.0638
+        ],
+        [
+         "-has genre",
+         0.0477
+        ],
+        [
+         "-has imdb votes",
+         0.0411
+        ],
+        [
+         "-has tags",
+         0.0408
+        ],
+        [
+         "-has imdb rating",
+         0.0386
+        ],
+        [
+         "+has imdb rating",
+         0.0193
+        ],
+        [
+         "+has tags",
+         0.0183
+        ],
+        [
+         "+has imdb votes",
+         0.0182
+        ],
+        [
+         "+has genre",
+         0.0157
+        ],
+        [
+         "+in language",
+         0.0117
+        ],
+        [
+         "-starred actors",
+         0.0103
+        ],
+        [
+         "-directed by",
+         0.0052
+        ],
+        [
+         "-written by",
+         0.0036
+        ],
+        [
+         "+release year",
+         0.0031
+        ]
+       ],
+       [
+        [
+         "-written by",
+         0.2551
+        ],
+        [
+         "-directed by",
+         0.1306
+        ],
+        [
+         "+in language",
+         0.0964
+        ],
+        [
+         "-starred actors",
+         0.0881
+        ],
+        [
+         "+has tags",
+         0.0841
+        ],
+        [
+         "+release year",
+         0.0715
+        ],
+        [
+         "+has genre",
+         0.0603
+        ],
+        [
+         "+has imdb rating",
+         0.0576
+        ],
+        [
+         "+has imdb votes",
+         0.048
+        ],
+        [
+         "-has imdb votes",
+         0.0198
+        ],
+        [
+         "-has imdb rating",
+         0.0165
+        ],
+        [
+         "-has genre",
+         0.0158
+        ],
+        [
+         "-release year",
+         0.0133
+        ],
+        [
+         "-has tags",
+         0.0113
+        ],
+        [
+         "+starred actors",
+         0.0108
+        ],
+        [
+         "-in language",
+         0.0099
+        ],
+        [
+         "+directed by",
+         0.0073
+        ],
+        [
+         "+written by",
+         0.0037
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.2849
+        ],
+        [
+         "+directed by",
+         0.12
+        ],
+        [
+         "+written by",
+         0.0993
+        ],
+        [
+         "-has imdb votes",
+         0.0594
+        ],
+        [
+         "-has imdb rating",
+         0.0562
+        ],
+        [
+         "+starred actors",
+         0.0513
+        ],
+        [
+         "+has genre",
+         0.0484
+        ],
+        [
+         "+has tags",
+         0.041
+        ],
+        [
+         "+in language",
+         0.0385
+        ],
+        [
+         "-in language",
+         0.0355
+        ],
+        [
+         "-has tags",
+         0.0333
+        ],
+        [
+         "-has genre",
+         0.0283
+        ],
+        [
+         "-starred actors",
+         0.0267
+        ],
+        [
+         "+has imdb rating",
+         0.0243
+        ],
+        [
+         "+has imdb votes",
+         0.023
+        ],
+        [
+         "-written by",
+         0.0138
+        ],
+        [
+         "-directed by",
+         0.0114
+        ],
+        [
+         "+release year",
+         0.0048
+        ]
+       ],
+       [
+        [
+         "+in language",
+         0.1753
+        ],
+        [
+         "+has genre",
+         0.133
+        ],
+        [
+         "-written by",
+         0.1102
+        ],
+        [
+         "+has tags",
+         0.0955
+        ],
+        [
+         "-directed by",
+         0.0921
+        ],
+        [
+         "-starred actors",
+         0.0739
+        ],
+        [
+         "-release year",
+         0.0584
+        ],
+        [
+         "-has imdb rating",
+         0.0529
+        ],
+        [
+         "-has imdb votes",
+         0.0491
+        ],
+        [
+         "+has imdb votes",
+         0.0286
+        ],
+        [
+         "+has imdb rating",
+         0.0266
+        ],
+        [
+         "+release year",
+         0.024
+        ],
+        [
+         "+starred actors",
+         0.019
+        ],
+        [
+         "+directed by",
+         0.0153
+        ],
+        [
+         "-has tags",
+         0.0147
+        ],
+        [
+         "+written by",
+         0.0127
+        ],
+        [
+         "-has genre",
+         0.0106
+        ],
+        [
+         "-in language",
+         0.008
+        ]
+       ],
+       [
+        [
+         "-written by",
+         0.2664
+        ],
+        [
+         "-directed by",
+         0.1593
+        ],
+        [
+         "+has tags",
+         0.1272
+        ],
+        [
+         "+release year",
+         0.0961
+        ],
+        [
+         "+in language",
+         0.0931
+        ],
+        [
+         "-starred actors",
+         0.0797
+        ],
+        [
+         "+has genre",
+         0.0437
+        ],
+        [
+         "+has imdb rating",
+         0.0312
+        ],
+        [
+         "+has imdb votes",
+         0.0291
+        ],
+        [
+         "-has imdb votes",
+         0.0181
+        ],
+        [
+         "-has imdb rating",
+         0.0169
+        ],
+        [
+         "-has genre",
+         0.0121
+        ],
+        [
+         "+starred actors",
+         0.0066
+        ],
+        [
+         "-in language",
+         0.0057
+        ],
+        [
+         "-release year",
+         0.0055
+        ],
+        [
+         "-has tags",
+         0.0041
+        ],
+        [
+         "+directed by",
+         0.0033
+        ],
+        [
+         "+written by",
+         0.002
+        ]
+       ],
+       [
+        [
+         "-in language",
+         0.2859
+        ],
+        [
+         "+has imdb votes",
+         0.1023
+        ],
+        [
+         "-has genre",
+         0.0994
+        ],
+        [
+         "-has tags",
+         0.0804
+        ],
+        [
+         "+directed by",
+         0.0726
+        ],
+        [
+         "+starred actors",
+         0.0682
+        ],
+        [
+         "+has imdb rating",
+         0.0638
+        ],
+        [
+         "+release year",
+         0.0571
+        ],
+        [
+         "+written by",
+         0.0468
+        ],
+        [
+         "-written by",
+         0.0222
+        ],
+        [
+         "-release year",
+         0.0182
+        ],
+        [
+         "-has imdb rating",
+         0.0163
+        ],
+        [
+         "-starred actors",
+         0.0153
+        ],
+        [
+         "-directed by",
+         0.0143
+        ],
+        [
+         "+has tags",
+         0.0129
+        ],
+        [
+         "+has genre",
+         0.0105
+        ],
+        [
+         "-has imdb votes",
+         0.0102
+        ],
+        [
+         "+in language",
+         0.0036
+        ]
+       ]
+      ]
+     },
+     "webqsp": {
+      "relations": 7058,
+      "shown": 5,
+      "types": [
+       [
+        [
+         "+quotation author",
+         0.0017
+        ],
+        [
+         "+character played by",
+         0.0015
+        ],
+        [
+         "+genre artist",
+         0.0013
+        ],
+        [
+         "+written work author",
+         0.0011
+        ],
+        [
+         "+character portrayer appeared as",
+         0.001
+        ]
+       ],
+       [
+        [
+         "+pest attacked by",
+         0.0016
+        ],
+        [
+         "+battle result of conflict",
+         0.0014
+        ],
+        [
+         "+ceasefire w",
+         0.0012
+        ],
+        [
+         "+battle result battle",
+         0.0012
+        ],
+        [
+         "+structure destroyed by",
+         0.001
+        ]
+       ],
+       [
+        [
+         "-capital category capitals of administrative divisions",
+         0.0022
+        ],
+        [
+         "-form of government countries",
+         0.0022
+        ],
+        [
+         "-country form of government",
+         0.002
+        ],
+        [
+         "-religion collective term for adherents",
+         0.002
+        ],
+        [
+         "-governmental jurisdiction government bodies",
+         0.0013
+        ]
+       ],
+       [
+        [
+         "+content genre",
+         0.0021
+        ],
+        [
+         "+genre content",
+         0.0019
+        ],
+        [
+         "+language dialect language",
+         0.0018
+        ],
+        [
+         "+content language",
+         0.0018
+        ],
+        [
+         "+language family languages",
+         0.0014
+        ]
+       ],
+       [
+        [
+         "-continents countries within",
+         0.0011
+        ],
+        [
+         "-continents planet",
+         0.0011
+        ],
+        [
+         "-religion collective term for adherents",
+         0.001
+        ],
+        [
+         "-form of government countries",
+         0.0009
+        ],
+        [
+         "-place in the world planet",
+         0.0009
+        ]
+       ],
+       [
+        [
+         "+periodical first issue date",
+         0.0012
+        ],
+        [
+         "+magazine issue publication date",
+         0.001
+        ],
+        [
+         "+camera lens years manufactured",
+         0.0009
+        ],
+        [
+         "+organization place founded",
+         0.0009
+        ],
+        [
+         "+government agency predecessor agency",
+         0.0008
+        ]
+       ],
+       [
+        [
+         "+ethnicity population",
+         0.0019
+        ],
+        [
+         "+religion percentage religion",
+         0.0013
+        ],
+        [
+         "+statistical region internet users percent population",
+         0.0012
+        ],
+        [
+         "+population size location",
+         0.0011
+        ],
+        [
+         "+statistical region extra religions",
+         0.0011
+        ]
+       ],
+       [
+        [
+         "+context name plural",
+         0.0024
+        ],
+        [
+         "+names descriptive name",
+         0.0022
+        ],
+        [
+         "+personal name element people with this name",
+         0.0017
+        ],
+        [
+         "+named person individual names",
+         0.0016
+        ],
+        [
+         "+gender or age specific animal name used for",
+         0.0015
+        ]
+       ],
+       [
+        [
+         "+the wire character the beat",
+         0.001
+        ],
+        [
+         "+base aubreymaturin book characters",
+         0.001
+        ],
+        [
+         "-content genre",
+         0.001
+        ],
+        [
+         "-language dialect language",
+         0.001
+        ],
+        [
+         "-genre content",
+         0.0009
+        ]
+       ],
+       [
+        [
+         "-countries states provinces within",
+         0.0037
+        ],
+        [
+         "-continents states provinces within",
+         0.0036
+        ],
+        [
+         "-countries cities within",
+         0.0032
+        ],
+        [
+         "-continents countries within",
+         0.0031
+        ],
+        [
+         "-states and provences continent",
+         0.003
+        ]
+       ],
+       [
+        [
+         "-monthly climate month",
+         0.0107
+        ],
+        [
+         "-holiday day of year",
+         0.0092
+        ],
+        [
+         "-calendar months",
+         0.0071
+        ],
+        [
+         "-day of year holidays",
+         0.0068
+        ],
+        [
+         "-day of year calendar system",
+         0.0054
+        ]
+       ],
+       [
+        [
+         "+continents states provinces within",
+         0.003
+        ],
+        [
+         "+states and provences continent",
+         0.003
+        ],
+        [
+         "+continents countries within",
+         0.003
+        ],
+        [
+         "+countries planet",
+         0.0021
+        ],
+        [
+         "+countries states provinces within",
+         0.0021
+        ]
+       ],
+       [
+        [
+         "-statistical region net migration",
+         0.0014
+        ],
+        [
+         "-statistical region population growth rate",
+         0.0013
+        ],
+        [
+         "-statistical region population",
+         0.0012
+        ],
+        [
+         "-statistical region life expectancy",
+         0.0008
+        ],
+        [
+         "-statistical region rent50 0",
+         0.0008
+        ]
+       ],
+       [
+        [
+         "+religion collective term for adherents",
+         0.0025
+        ],
+        [
+         "+capital category capitals of administrative divisions",
+         0.0019
+        ],
+        [
+         "+form of government countries",
+         0.0014
+        ],
+        [
+         "+religious concept used by religions",
+         0.0013
+        ],
+        [
+         "+profession part of professional field",
+         0.0012
+        ]
+       ],
+       [
+        [
+         "-quotation author",
+         0.0016
+        ],
+        [
+         "-written work author",
+         0.0013
+        ],
+        [
+         "-genre artist",
+         0.0012
+        ],
+        [
+         "-writer film",
+         0.0012
+        ],
+        [
+         "-character played by",
+         0.001
+        ]
+       ],
+       [
+        [
+         "-context name plural",
+         0.0026
+        ],
+        [
+         "-names descriptive name",
+         0.0024
+        ],
+        [
+         "-given name language",
+         0.002
+        ],
+        [
+         "-personal name element people with this name",
+         0.002
+        ],
+        [
+         "-gender or age specific animal name used for",
+         0.0019
+        ]
+       ]
+      ]
+     }
+    }
+   },
+   "scr-u2n-zrckpt-hp": {
+    "stage": "U2n",
+    "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+    "fit": "scr-u2n-zrckpt-hp",
+    "arm": "zrckpt",
+    "split": "L-hotpotqa",
+    "candidate": "p@swa",
+    "tau0": {
+     "split": "L-hotpotqa",
+     "record_sha256": "c58d7ce9d67a436c6ee4768d292d6c31b4950db22c36beb85428412bccfd7549",
+     "file_sha256": "be846d2d46613d50a25462c095637352c218355270b9bc4473265c3ca8f83409"
+    },
+    "kappa_d": 10.0,
+    "kappa_r": 10.0,
+    "cos_to_tau0": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "by_dataset": {
+     "metaqa": {
+      "relations": 9,
+      "shown": 18,
+      "types": [
+       [
+        [
+         "-written by",
+         0.2495
+        ],
+        [
+         "+has genre",
+         0.1372
+        ],
+        [
+         "-directed by",
+         0.1052
+        ],
+        [
+         "+has tags",
+         0.0944
+        ],
+        [
+         "+has imdb rating",
+         0.0856
+        ],
+        [
+         "+has imdb votes",
+         0.0622
+        ],
+        [
+         "-release year",
+         0.0519
+        ],
+        [
+         "-in language",
+         0.0425
+        ],
+        [
+         "+starred actors",
+         0.0387
+        ],
+        [
+         "-starred actors",
+         0.0268
+        ],
+        [
+         "+in language",
+         0.0245
+        ],
+        [
+         "+release year",
+         0.02
+        ],
+        [
+         "-has imdb votes",
+         0.0167
+        ],
+        [
+         "-has imdb rating",
+         0.0121
+        ],
+        [
+         "-has tags",
+         0.011
+        ],
+        [
+         "+directed by",
+         0.0099
+        ],
+        [
+         "-has genre",
+         0.0076
+        ],
+        [
+         "+written by",
+         0.0042
+        ]
+       ],
+       [
+        [
+         "-has genre",
+         0.2963
+        ],
+        [
+         "+release year",
+         0.1046
+        ],
+        [
+         "+has imdb rating",
+         0.0719
+        ],
+        [
+         "+directed by",
+         0.0633
+        ],
+        [
+         "+has imdb votes",
+         0.058
+        ],
+        [
+         "-starred actors",
+         0.0543
+        ],
+        [
+         "-written by",
+         0.0502
+        ],
+        [
+         "-has tags",
+         0.0419
+        ],
+        [
+         "-in language",
+         0.0388
+        ],
+        [
+         "+in language",
+         0.0385
+        ],
+        [
+         "+has tags",
+         0.0356
+        ],
+        [
+         "+written by",
+         0.0297
+        ],
+        [
+         "+starred actors",
+         0.0275
+        ],
+        [
+         "-has imdb votes",
+         0.0257
+        ],
+        [
+         "-directed by",
+         0.0236
+        ],
+        [
+         "-has imdb rating",
+         0.0208
+        ],
+        [
+         "-release year",
+         0.0143
+        ],
+        [
+         "+has genre",
+         0.005
+        ]
+       ],
+       [
+        [
+         "+release year",
+         0.1697
+        ],
+        [
+         "+written by",
+         0.1358
+        ],
+        [
+         "-has tags",
+         0.0979
+        ],
+        [
+         "-has imdb rating",
+         0.09
+        ],
+        [
+         "-has imdb votes",
+         0.0851
+        ],
+        [
+         "-has genre",
+         0.0605
+        ],
+        [
+         "-starred actors",
+         0.0575
+        ],
+        [
+         "+in language",
+         0.052
+        ],
+        [
+         "+directed by",
+         0.0446
+        ],
+        [
+         "-directed by",
+         0.0381
+        ],
+        [
+         "-in language",
+         0.0326
+        ],
+        [
+         "+starred actors",
+         0.0295
+        ],
+        [
+         "+has genre",
+         0.0281
+        ],
+        [
+         "+has imdb votes",
+         0.0199
+        ],
+        [
+         "+has imdb rating",
+         0.0189
+        ],
+        [
+         "+has tags",
+         0.0173
+        ],
+        [
+         "-written by",
+         0.0125
+        ],
+        [
+         "-release year",
+         0.01
+        ]
+       ],
+       [
+        [
+         "-has imdb votes",
+         0.212
+        ],
+        [
+         "+has genre",
+         0.1285
+        ],
+        [
+         "+in language",
+         0.0981
+        ],
+        [
+         "-starred actors",
+         0.0775
+        ],
+        [
+         "-has tags",
+         0.0704
+        ],
+        [
+         "+release year",
+         0.0657
+        ],
+        [
+         "+directed by",
+         0.0492
+        ],
+        [
+         "+written by",
+         0.0487
+        ],
+        [
+         "-has imdb rating",
+         0.0419
+        ],
+        [
+         "+has imdb rating",
+         0.0382
+        ],
+        [
+         "-written by",
+         0.0329
+        ],
+        [
+         "-directed by",
+         0.0326
+        ],
+        [
+         "-release year",
+         0.0244
+        ],
+        [
+         "+has tags",
+         0.0228
+        ],
+        [
+         "+starred actors",
+         0.0207
+        ],
+        [
+         "-in language",
+         0.0163
+        ],
+        [
+         "-has genre",
+         0.0125
+        ],
+        [
+         "+has imdb votes",
+         0.0076
+        ]
+       ],
+       [
+        [
+         "+written by",
+         0.1936
+        ],
+        [
+         "-in language",
+         0.1308
+        ],
+        [
+         "-has tags",
+         0.1075
+        ],
+        [
+         "+directed by",
+         0.0962
+        ],
+        [
+         "+starred actors",
+         0.0951
+        ],
+        [
+         "-has genre",
+         0.0773
+        ],
+        [
+         "-has imdb rating",
+         0.0468
+        ],
+        [
+         "-has imdb votes",
+         0.0441
+        ],
+        [
+         "-release year",
+         0.0418
+        ],
+        [
+         "+release year",
+         0.0322
+        ],
+        [
+         "+has imdb votes",
+         0.0305
+        ],
+        [
+         "+has imdb rating",
+         0.0287
+        ],
+        [
+         "+has genre",
+         0.0174
+        ],
+        [
+         "-starred actors",
+         0.0142
+        ],
+        [
+         "-directed by",
+         0.014
+        ],
+        [
+         "+has tags",
+         0.0125
+        ],
+        [
+         "+in language",
+         0.0103
+        ],
+        [
+         "-written by",
+         0.0069
+        ]
+       ],
+       [
+        [
+         "+release year",
+         0.3577
+        ],
+        [
+         "-has tags",
+         0.1212
+        ],
+        [
+         "-has genre",
+         0.0982
+        ],
+        [
+         "+written by",
+         0.0766
+        ],
+        [
+         "-starred actors",
+         0.0673
+        ],
+        [
+         "-has imdb rating",
+         0.0442
+        ],
+        [
+         "+directed by",
+         0.0397
+        ],
+        [
+         "-in language",
+         0.032
+        ],
+        [
+         "+has imdb votes",
+         0.0302
+        ],
+        [
+         "-has imdb votes",
+         0.0273
+        ],
+        [
+         "+in language",
+         0.0258
+        ],
+        [
+         "-directed by",
+         0.0208
+        ],
+        [
+         "+has imdb rating",
+         0.0186
+        ],
+        [
+         "+starred actors",
+         0.0122
+        ],
+        [
+         "-written by",
+         0.0108
+        ],
+        [
+         "+has genre",
+         0.0084
+        ],
+        [
+         "+has tags",
+         0.0068
+        ],
+        [
+         "-release year",
+         0.0023
+        ]
+       ],
+       [
+        [
+         "+in language",
+         0.351
+        ],
+        [
+         "-directed by",
+         0.1259
+        ],
+        [
+         "-written by",
+         0.1134
+        ],
+        [
+         "+has genre",
+         0.0691
+        ],
+        [
+         "-starred actors",
+         0.0499
+        ],
+        [
+         "-release year",
+         0.0403
+        ],
+        [
+         "+has imdb rating",
+         0.0384
+        ],
+        [
+         "-has tags",
+         0.0335
+        ],
+        [
+         "-has imdb votes",
+         0.0299
+        ],
+        [
+         "+has imdb votes",
+         0.0295
+        ],
+        [
+         "+has tags",
+         0.0264
+        ],
+        [
+         "-has imdb rating",
+         0.023
+        ],
+        [
+         "+release year",
+         0.0219
+        ],
+        [
+         "+starred actors",
+         0.0177
+        ],
+        [
+         "-has genre",
+         0.0128
+        ],
+        [
+         "+written by",
+         0.0078
+        ],
+        [
+         "+directed by",
+         0.007
+        ],
+        [
+         "-in language",
+         0.0025
+        ]
+       ],
+       [
+        [
+         "+in language",
+         0.2756
+        ],
+        [
+         "+has tags",
+         0.0961
+        ],
+        [
+         "-has imdb votes",
+         0.0898
+        ],
+        [
+         "+has genre",
+         0.0829
+        ],
+        [
+         "-starred actors",
+         0.0787
+        ],
+        [
+         "-directed by",
+         0.0694
+        ],
+        [
+         "-release year",
+         0.0609
+        ],
+        [
+         "-has imdb rating",
+         0.0599
+        ],
+        [
+         "-written by",
+         0.0535
+        ],
+        [
+         "+written by",
+         0.0215
+        ],
+        [
+         "+has imdb rating",
+         0.0191
+        ],
+        [
+         "+release year",
+         0.0188
+        ],
+        [
+         "+directed by",
+         0.0165
+        ],
+        [
+         "+starred actors",
+         0.0146
+        ],
+        [
+         "-has genre",
+         0.0138
+        ],
+        [
+         "+has imdb votes",
+         0.0128
+        ],
+        [
+         "-has tags",
+         0.0119
+        ],
+        [
+         "-in language",
+         0.0042
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.4082
+        ],
+        [
+         "+has imdb votes",
+         0.0852
+        ],
+        [
+         "+has tags",
+         0.0834
+        ],
+        [
+         "+starred actors",
+         0.0825
+        ],
+        [
+         "-in language",
+         0.0523
+        ],
+        [
+         "+directed by",
+         0.0461
+        ],
+        [
+         "-has imdb rating",
+         0.0393
+        ],
+        [
+         "-has genre",
+         0.0378
+        ],
+        [
+         "+written by",
+         0.034
+        ],
+        [
+         "-written by",
+         0.0241
+        ],
+        [
+         "+has genre",
+         0.0217
+        ],
+        [
+         "+has imdb rating",
+         0.0208
+        ],
+        [
+         "-directed by",
+         0.0177
+        ],
+        [
+         "+in language",
+         0.0156
+        ],
+        [
+         "-starred actors",
+         0.0099
+        ],
+        [
+         "-has tags",
+         0.0098
+        ],
+        [
+         "-has imdb votes",
+         0.0096
+        ],
+        [
+         "+release year",
+         0.002
+        ]
+       ],
+       [
+        [
+         "+written by",
+         0.1532
+        ],
+        [
+         "+starred actors",
+         0.1342
+        ],
+        [
+         "-in language",
+         0.1173
+        ],
+        [
+         "+directed by",
+         0.1083
+        ],
+        [
+         "-has tags",
+         0.0886
+        ],
+        [
+         "-release year",
+         0.0784
+        ],
+        [
+         "-has genre",
+         0.061
+        ],
+        [
+         "-has imdb votes",
+         0.0509
+        ],
+        [
+         "-has imdb rating",
+         0.0504
+        ],
+        [
+         "+has imdb rating",
+         0.0281
+        ],
+        [
+         "+has imdb votes",
+         0.0278
+        ],
+        [
+         "+has genre",
+         0.0232
+        ],
+        [
+         "+release year",
+         0.018
+        ],
+        [
+         "+has tags",
+         0.016
+        ],
+        [
+         "-directed by",
+         0.013
+        ],
+        [
+         "+in language",
+         0.012
+        ],
+        [
+         "-starred actors",
+         0.0105
+        ],
+        [
+         "-written by",
+         0.0092
+        ]
+       ],
+       [
+        [
+         "-release year",
+         0.1578
+        ],
+        [
+         "-written by",
+         0.1479
+        ],
+        [
+         "+has tags",
+         0.1093
+        ],
+        [
+         "+has imdb votes",
+         0.0858
+        ],
+        [
+         "+in language",
+         0.0748
+        ],
+        [
+         "+has genre",
+         0.0562
+        ],
+        [
+         "+has imdb rating",
+         0.0556
+        ],
+        [
+         "-directed by",
+         0.0527
+        ],
+        [
+         "+starred actors",
+         0.0422
+        ],
+        [
+         "-starred actors",
+         0.041
+        ],
+        [
+         "+directed by",
+         0.0329
+        ],
+        [
+         "-has imdb rating",
+         0.0312
+        ],
+        [
+         "-has genre",
+         0.0308
+        ],
+        [
+         "-in language",
+         0.0232
+        ],
+        [
+         "-has imdb votes",
+         0.0202
+        ],
+        [
+         "-has tags",
+         0.0159
+        ],
+        [
+         "+written by",
+         0.0117
+        ],
+        [
+         "+release year",
+         0.011
+        ]
+       ],
+       [
+        [
+         "-written by",
+         0.2482
+        ],
+        [
+         "-directed by",
+         0.1598
+        ],
+        [
+         "+has tags",
+         0.1008
+        ],
+        [
+         "-starred actors",
+         0.0974
+        ],
+        [
+         "+in language",
+         0.0772
+        ],
+        [
+         "+has imdb rating",
+         0.064
+        ],
+        [
+         "+release year",
+         0.0637
+        ],
+        [
+         "+has genre",
+         0.054
+        ],
+        [
+         "+has imdb votes",
+         0.0532
+        ],
+        [
+         "-has imdb votes",
+         0.0137
+        ],
+        [
+         "-has genre",
+         0.0135
+        ],
+        [
+         "-release year",
+         0.0114
+        ],
+        [
+         "-has imdb rating",
+         0.0114
+        ],
+        [
+         "-in language",
+         0.0094
+        ],
+        [
+         "+starred actors",
+         0.0075
+        ],
+        [
+         "-has tags",
+         0.0072
+        ],
+        [
+         "+directed by",
+         0.0046
+        ],
+        [
+         "+written by",
+         0.0029
+        ]
+       ],
+       [
+        [
+         "+written by",
+         0.237
+        ],
+        [
+         "+directed by",
+         0.1753
+        ],
+        [
+         "-has imdb votes",
+         0.109
+        ],
+        [
+         "-has imdb rating",
+         0.0925
+        ],
+        [
+         "-has tags",
+         0.0679
+        ],
+        [
+         "+starred actors",
+         0.0656
+        ],
+        [
+         "-in language",
+         0.0566
+        ],
+        [
+         "-release year",
+         0.0535
+        ],
+        [
+         "-has genre",
+         0.0383
+        ],
+        [
+         "+has genre",
+         0.0223
+        ],
+        [
+         "+release year",
+         0.0159
+        ],
+        [
+         "+in language",
+         0.0151
+        ],
+        [
+         "-starred actors",
+         0.013
+        ],
+        [
+         "+has tags",
+         0.0126
+        ],
+        [
+         "+has imdb rating",
+         0.0092
+        ],
+        [
+         "+has imdb votes",
+         0.0078
+        ],
+        [
+         "-directed by",
+         0.0049
+        ],
+        [
+         "-written by",
+         0.0036
+        ]
+       ],
+       [
+        [
+         "+written by",
+         0.2419
+        ],
+        [
+         "-has tags",
+         0.1408
+        ],
+        [
+         "+directed by",
+         0.1299
+        ],
+        [
+         "+starred actors",
+         0.1063
+        ],
+        [
+         "-in language",
+         0.0928
+        ],
+        [
+         "-release year",
+         0.0848
+        ],
+        [
+         "-has genre",
+         0.0442
+        ],
+        [
+         "-has imdb rating",
+         0.0378
+        ],
+        [
+         "-has imdb votes",
+         0.0353
+        ],
+        [
+         "+has imdb votes",
+         0.019
+        ],
+        [
+         "+has imdb rating",
+         0.0178
+        ],
+        [
+         "+has genre",
+         0.0152
+        ],
+        [
+         "+release year",
+         0.0079
+        ],
+        [
+         "+in language",
+         0.0072
+        ],
+        [
+         "-starred actors",
+         0.0063
+        ],
+        [
+         "-directed by",
+         0.0052
+        ],
+        [
+         "+has tags",
+         0.0048
+        ],
+        [
+         "-written by",
+         0.0028
+        ]
+       ],
+       [
+        [
+         "-written by",
+         0.2584
+        ],
+        [
+         "-directed by",
+         0.1683
+        ],
+        [
+         "+has tags",
+         0.1441
+        ],
+        [
+         "+in language",
+         0.0935
+        ],
+        [
+         "-starred actors",
+         0.076
+        ],
+        [
+         "+release year",
+         0.0753
+        ],
+        [
+         "+has genre",
+         0.0451
+        ],
+        [
+         "+has imdb votes",
+         0.032
+        ],
+        [
+         "+has imdb rating",
+         0.0317
+        ],
+        [
+         "-has imdb rating",
+         0.0172
+        ],
+        [
+         "-has imdb votes",
+         0.017
+        ],
+        [
+         "-has genre",
+         0.0121
+        ],
+        [
+         "-release year",
+         0.0072
+        ],
+        [
+         "+starred actors",
+         0.0072
+        ],
+        [
+         "-in language",
+         0.0058
+        ],
+        [
+         "-has tags",
+         0.0038
+        ],
+        [
+         "+directed by",
+         0.0032
+        ],
+        [
+         "+written by",
+         0.0021
+        ]
+       ],
+       [
+        [
+         "-in language",
+         0.3137
+        ],
+        [
+         "-has tags",
+         0.0878
+        ],
+        [
+         "-has genre",
+         0.0846
+        ],
+        [
+         "+has imdb votes",
+         0.0838
+        ],
+        [
+         "+directed by",
+         0.0762
+        ],
+        [
+         "+starred actors",
+         0.0611
+        ],
+        [
+         "+release year",
+         0.0605
+        ],
+        [
+         "+has imdb rating",
+         0.0587
+        ],
+        [
+         "+written by",
+         0.0587
+        ],
+        [
+         "-written by",
+         0.0165
+        ],
+        [
+         "-has imdb rating",
+         0.0165
+        ],
+        [
+         "-release year",
+         0.016
+        ],
+        [
+         "-starred actors",
+         0.0159
+        ],
+        [
+         "-directed by",
+         0.0127
+        ],
+        [
+         "-has imdb votes",
+         0.0116
+        ],
+        [
+         "+has genre",
+         0.0115
+        ],
+        [
+         "+has tags",
+         0.0111
+        ],
+        [
+         "+in language",
+         0.0031
+        ]
+       ]
+      ]
+     },
+     "webqsp": {
+      "relations": 7058,
+      "shown": 5,
+      "types": [
+       [
+        [
+         "-pest attacked by",
+         0.0017
+        ],
+        [
+         "-execution person executed",
+         0.0014
+        ],
+        [
+         "-executed person execution",
+         0.0012
+        ],
+        [
+         "-death causing event person killed",
+         0.001
+        ],
+        [
+         "-fictional murder victim killed by",
+         0.001
+        ]
+       ],
+       [
+        [
+         "+ceasefire w",
+         0.0017
+        ],
+        [
+         "+pest attacked by",
+         0.0015
+        ],
+        [
+         "+conflict result battles with this result",
+         0.0015
+        ],
+        [
+         "+structure destroyed by",
+         0.0014
+        ],
+        [
+         "+battle result of conflict",
+         0.0014
+        ]
+       ],
+       [
+        [
+         "+settlement founded by",
+         0.0056
+        ],
+        [
+         "+religion branched from",
+         0.0018
+        ],
+        [
+         "+dated location succession succeeded by",
+         0.0016
+        ],
+        [
+         "+dated location succession preceded by",
+         0.0015
+        ],
+        [
+         "+dynasty part of historical period",
+         0.0013
+        ]
+       ],
+       [
+        [
+         "+content genre",
+         0.0016
+        ],
+        [
+         "+genre content",
+         0.0014
+        ],
+        [
+         "+content language",
+         0.0012
+        ],
+        [
+         "+genre subgenre",
+         0.0012
+        ],
+        [
+         "+language dialect language",
+         0.0011
+        ]
+       ],
+       [
+        [
+         "-form of government countries",
+         0.0042
+        ],
+        [
+         "-country form of government",
+         0.0022
+        ],
+        [
+         "-continents states provinces within",
+         0.0021
+        ],
+        [
+         "-states and provences continent",
+         0.0017
+        ],
+        [
+         "-constitution country",
+         0.0016
+        ]
+       ],
+       [
+        [
+         "-botanical garden location",
+         0.0015
+        ],
+        [
+         "-cities and towns places within",
+         0.0011
+        ],
+        [
+         "-place with neighborhoods neighborhoods",
+         0.0011
+        ],
+        [
+         "-site nearby peaks",
+         0.0011
+        ],
+        [
+         "+periodical first issue date",
+         0.001
+        ]
+       ],
+       [
+        [
+         "+ethnicity population",
+         0.0093
+        ],
+        [
+         "+ethnicity languages spoken",
+         0.0093
+        ],
+        [
+         "+country languages spoken",
+         0.0051
+        ],
+        [
+         "+ethnicity geographic distribution",
+         0.004
+        ],
+        [
+         "+ethnicity people",
+         0.0036
+        ]
+       ],
+       [
+        [
+         "+context name plural",
+         0.0023
+        ],
+        [
+         "+names descriptive name",
+         0.0017
+        ],
+        [
+         "+gender or age specific animal name used for",
+         0.0013
+        ],
+        [
+         "+species mention species",
+         0.0013
+        ],
+        [
+         "+word definition",
+         0.0013
+        ]
+       ],
+       [
+        [
+         "+the wire character the beat",
+         0.0011
+        ],
+        [
+         "+base aubreymaturin book characters",
+         0.001
+        ],
+        [
+         "-language dialect language",
+         0.0009
+        ],
+        [
+         "-language family languages",
+         0.0009
+        ],
+        [
+         "-content genre",
+         0.0008
+        ]
+       ],
+       [
+        [
+         "-monthly climate month",
+         0.0074
+        ],
+        [
+         "-monthly climate region with this climate",
+         0.003
+        ],
+        [
+         "-travel destination monthly climate month",
+         0.0029
+        ],
+        [
+         "-travel destination monthly climate travel destination",
+         0.002
+        ],
+        [
+         "-produce availability seasonal months",
+         0.0019
+        ]
+       ],
+       [
+        [
+         "+governmental body members",
+         0.0015
+        ],
+        [
+         "+governmental jurisdiction governing officials",
+         0.0015
+        ],
+        [
+         "+governmental jurisdiction government positions",
+         0.0014
+        ],
+        [
+         "+governmental jurisdiction government bodies",
+         0.0014
+        ],
+        [
+         "+governmental body component bodies",
+         0.0013
+        ]
+       ],
+       [
+        [
+         "+continents countries within",
+         0.0028
+        ],
+        [
+         "+states and provences continent",
+         0.0026
+        ],
+        [
+         "+continents states provinces within",
+         0.0026
+        ],
+        [
+         "+location contains major portion of",
+         0.0022
+        ],
+        [
+         "+continents planet",
+         0.0022
+        ]
+       ],
+       [
+        [
+         "-population size location",
+         0.0037
+        ],
+        [
+         "-statistical region population",
+         0.0033
+        ],
+        [
+         "-statistical region internet users percent population",
+         0.0027
+        ],
+        [
+         "-statistical region automobiles per capita",
+         0.0027
+        ],
+        [
+         "-location contains major portion of",
+         0.0023
+        ]
+       ],
+       [
+        [
+         "+quotation author",
+         0.0018
+        ],
+        [
+         "+character played by",
+         0.0014
+        ],
+        [
+         "+genre artist",
+         0.0013
+        ],
+        [
+         "+written work author",
+         0.0013
+        ],
+        [
+         "+writer film",
+         0.0012
+        ]
+       ],
+       [
+        [
+         "-quotation author",
+         0.0017
+        ],
+        [
+         "-written work author",
+         0.0013
+        ],
+        [
+         "-genre artist",
+         0.0012
+        ],
+        [
+         "-writer film",
+         0.0011
+        ],
+        [
+         "-character played by",
+         0.001
+        ]
+       ],
+       [
+        [
+         "-context name plural",
+         0.0024
+        ],
+        [
+         "-names descriptive name",
+         0.0015
+        ],
+        [
+         "-species mention species",
+         0.0015
+        ],
+        [
+         "-gender or age specific animal name used for",
+         0.0014
+        ],
+        [
+         "-type of thing things of this type",
+         0.0014
+        ]
+       ]
+      ]
+     }
+    }
+   }
+  },
+  "em": {
+   "scr-u2n-zg6e": {
+    "lam": 1.0,
+    "batches": 23677,
+    "batches_with_term": 23677,
+    "questions": 189392,
+    "questions_with_term": 189392,
+    "epochs": [
+     {
+      "batches": 2959,
+      "batches_with_term": 2959,
+      "questions": 23674,
+      "questions_with_term": 23674,
+      "listwise_mean": 1.5717152198081021,
+      "em_ce_mean": 2.107173558781857,
+      "share_with_term": 1.0,
+      "kappa_d": 12.329519271850586,
+      "kappa_r": 10.707894325256348
+     },
+     {
+      "batches": 2960,
+      "batches_with_term": 2960,
+      "questions": 23674,
+      "questions_with_term": 23674,
+      "listwise_mean": 1.3160503397274108,
+      "em_ce_mean": 2.633986475832853,
+      "share_with_term": 1.0,
+      "kappa_d": 11.32480525970459,
+      "kappa_r": 10.632908821105957
+     },
+     {
+      "batches": 2960,
+      "batches_with_term": 2960,
+      "questions": 23674,
+      "questions_with_term": 23674,
+      "listwise_mean": 1.2679459519769267,
+      "em_ce_mean": 2.6699492662976376,
+      "share_with_term": 1.0,
+      "kappa_d": 9.732946395874023,
+      "kappa_r": 10.442174911499023
+     },
+     {
+      "batches": 2959,
+      "batches_with_term": 2959,
+      "questions": 23674,
+      "questions_with_term": 23674,
+      "listwise_mean": 1.2502135029393109,
+      "em_ce_mean": 2.677024177051914,
+      "share_with_term": 1.0,
+      "kappa_d": 9.036967277526855,
+      "kappa_r": 10.2008638381958
+     },
+     {
+      "batches": 2959,
+      "batches_with_term": 2959,
+      "questions": 23674,
+      "questions_with_term": 23674,
+      "listwise_mean": 1.2253856848473381,
+      "em_ce_mean": 2.610142305139614,
+      "share_with_term": 1.0,
+      "kappa_d": 8.80086612701416,
+      "kappa_r": 10.290311813354492
+     },
+     {
+      "batches": 2960,
+      "batches_with_term": 2960,
+      "questions": 23674,
+      "questions_with_term": 23674,
+      "listwise_mean": 1.2122003459673676,
+      "em_ce_mean": 2.465548765591857,
+      "share_with_term": 1.0,
+      "kappa_d": 10.609701156616211,
+      "kappa_r": 10.961612701416016
+     },
+     {
+      "batches": 2960,
+      "batches_with_term": 2960,
+      "questions": 23674,
+      "questions_with_term": 23674,
+      "listwise_mean": 1.2018862020022179,
+      "em_ce_mean": 2.079711963349504,
+      "share_with_term": 1.0,
+      "kappa_d": 13.610748291015625,
+      "kappa_r": 12.235471725463867
+     },
+     {
+      "batches": 2960,
+      "batches_with_term": 2960,
+      "questions": 23674,
+      "questions_with_term": 23674,
+      "listwise_mean": 1.1919661572483067,
+      "em_ce_mean": 2.189666733519596,
+      "share_with_term": 1.0,
+      "kappa_d": 14.2277250289917,
+      "kappa_r": 12.241802215576172
+     }
+    ],
+    "listwise_mean": 1.2796616278651294,
+    "em_ce_mean": 2.429150405695604,
+    "share_with_term": 1.0
+   },
+   "scr-u2n-zg6e-hp": {
+    "lam": 1.0,
+    "batches": 22362,
+    "batches_with_term": 22362,
+    "questions": 178760,
+    "questions_with_term": 178760,
+    "epochs": [
+     {
+      "batches": 2796,
+      "batches_with_term": 2796,
+      "questions": 22345,
+      "questions_with_term": 22345,
+      "listwise_mean": 1.9805155398699859,
+      "em_ce_mean": 1.738238734419006,
+      "share_with_term": 1.0,
+      "kappa_d": 14.499100685119629,
+      "kappa_r": 11.265692710876465
+     },
+     {
+      "batches": 2796,
+      "batches_with_term": 2796,
+      "questions": 22345,
+      "questions_with_term": 22345,
+      "listwise_mean": 1.730193614461246,
+      "em_ce_mean": 1.551969043414687,
+      "share_with_term": 1.0,
+      "kappa_d": 18.688419342041016,
+      "kappa_r": 12.411179542541504
+     },
+     {
+      "batches": 2792,
+      "batches_with_term": 2792,
+      "questions": 22345,
+      "questions_with_term": 22345,
+      "listwise_mean": 1.682421635935099,
+      "em_ce_mean": 1.6639188580930193,
+      "share_with_term": 1.0,
+      "kappa_d": 20.025634765625,
+      "kappa_r": 13.254404067993164
+     },
+     {
+      "batches": 2796,
+      "batches_with_term": 2796,
+      "questions": 22345,
+      "questions_with_term": 22345,
+      "listwise_mean": 1.6462065684066176,
+      "em_ce_mean": 1.6511843191961175,
+      "share_with_term": 1.0,
+      "kappa_d": 21.42897605895996,
+      "kappa_r": 13.859554290771484
+     },
+     {
+      "batches": 2795,
+      "batches_with_term": 2795,
+      "questions": 22345,
+      "questions_with_term": 22345,
+      "listwise_mean": 1.6149864273219101,
+      "em_ce_mean": 1.6123857992958186,
+      "share_with_term": 1.0,
+      "kappa_d": 22.348907470703125,
+      "kappa_r": 14.629067420959473
+     },
+     {
+      "batches": 2795,
+      "batches_with_term": 2795,
+      "questions": 22345,
+      "questions_with_term": 22345,
+      "listwise_mean": 1.5989991661649336,
+      "em_ce_mean": 1.7296649408996652,
+      "share_with_term": 1.0,
+      "kappa_d": 21.755266189575195,
+      "kappa_r": 15.475225448608398
+     },
+     {
+      "batches": 2796,
+      "batches_with_term": 2796,
+      "questions": 22345,
+      "questions_with_term": 22345,
+      "listwise_mean": 1.5833777540650829,
+      "em_ce_mean": 1.5604955584897802,
+      "share_with_term": 1.0,
+      "kappa_d": 23.980703353881836,
+      "kappa_r": 16.373544692993164
+     },
+     {
+      "batches": 2796,
+      "batches_with_term": 2796,
+      "questions": 22345,
+      "questions_with_term": 22345,
+      "listwise_mean": 1.582229135284375,
+      "em_ce_mean": 1.7870943538266078,
+      "share_with_term": 1.0,
+      "kappa_d": 22.300683975219727,
+      "kappa_r": 17.136362075805664
+     }
+    ],
+    "listwise_mean": 1.6773716199232016,
+    "em_ce_mean": 1.6618689509543376,
+    "share_with_term": 1.0
+   }
+  },
+  "timing": {
+   "scr-u2n-zg6e": {
+    "u2n": {
+     "train_seconds": 2872.2441227436066,
+     "read_seconds": 1179.750230550766,
+     "train_peak_gpu_gb": 4.108593664,
+     "read_peak_gpu_gb": 4.666896384,
+     "data_gb": 3.020976061,
+     "peak_gb": 4.64
+    },
+    "kg_base": {
+     "train_seconds": 1085.7967615127563,
+     "read_seconds": 337.28254652023315,
+     "train_peak_gpu_gb": 3.697806848,
+     "read_peak_gpu_gb": 4.443358208,
+     "data_gb": 3.014236093,
+     "peak_gb": 4.53
+    }
+   },
+   "scr-u2n-zg6e-hp": {
+    "u2n": {
+     "train_seconds": 6055.324531078339,
+     "read_seconds": 1066.59352684021,
+     "train_peak_gpu_gb": 8.206799872,
+     "read_peak_gpu_gb": 8.206799872,
+     "data_gb": 4.875991428,
+     "peak_gb": 4.62
+    },
+    "kg_base": {
+     "train_seconds": 1202.4443957805634,
+     "read_seconds": 339.8372812271118,
+     "train_peak_gpu_gb": 5.551119872,
+     "read_peak_gpu_gb": 5.551119872,
+     "data_gb": 4.86925146,
+     "peak_gb": 4.51
+    }
+   },
+   "scr-u2n-zrckpt": {
+    "u2n": {
+     "train_seconds": 1060.440684080124,
+     "read_seconds": 322.7100954055786,
+     "train_peak_gpu_gb": 3.705363456,
+     "read_peak_gpu_gb": 4.771597824,
+     "data_gb": 3.020976061,
+     "peak_gb": 4.55
+    },
+    "kg_base": {
+     "train_seconds": 960.374317407608,
+     "read_seconds": 291.0014715194702,
+     "train_peak_gpu_gb": 3.697806848,
+     "read_peak_gpu_gb": 4.432261632,
+     "data_gb": 3.014236093,
+     "peak_gb": 4.6
+    }
+   },
+   "scr-u2n-zrckpt-hp": {
+    "u2n": {
+     "train_seconds": 1279.9229519367218,
+     "read_seconds": 352.5527997016907,
+     "train_peak_gpu_gb": 5.5590528,
+     "read_peak_gpu_gb": 5.5590528,
+     "data_gb": 4.875991428,
+     "peak_gb": 4.54
+    },
+    "kg_base": {
+     "train_seconds": 963.1455507278442,
+     "read_seconds": 279.44667506217957,
+     "train_peak_gpu_gb": 5.551119872,
+     "read_peak_gpu_gb": 5.551119872,
+     "data_gb": 4.86925146,
+     "peak_gb": 4.59
+    }
+   }
+  },
+  "vs_zg6": {
+   "gains": [],
+   "losses": [
+    "L-musique webqsp",
+    "L-hotpotqa hotpotqa"
+   ]
+  },
+  "recalls": {
+   "zg6e 0": {
+    "file": "outputs/u2n/u2n-zg6e-pair-recall.json",
+    "sha256": "61dfee57e841b7656b1ac7db8427c6c7a36beef58b51c8b1d00a669e45d1f0a1"
+   },
+   "zg6e 1": {
+    "file": "outputs/u2n/u2n-zg6e-vs-zg6-pair-recall.json",
+    "sha256": "b13eed18ed56d2567b60f5d26c7093be6b44c0ca2f10200bebce83d2908a068f"
+   },
+   "zrckpt 0": {
+    "file": "outputs/u2n/u2n-zrckpt-pair-recall.json",
+    "sha256": "49bcb42daa9e97421444522d144cbd4eb1925c78e2944ab37cca58e655cd7c01"
+   }
+  }
+ }
+}

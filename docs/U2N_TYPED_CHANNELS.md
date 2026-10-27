@@ -310,4 +310,90 @@ graph, and no gold in any type, prior or column.
 
 ## 10. Results
 
-Not run yet.
+### 27 October 2026: zg6e NOT_ADOPTED, zrckpt ADOPT_FOR_FULL_RUN
+
+**Where it ran.** Kernel mpr-kg, version 3 (section 7), at edcff68 (zu2n.py and zu2n_session.py as at 3a5da10).
+- The session's Python, platform, GPUs, driver and fit environment equal KG's session 2, and every fit's device stamp
+  is KG's device.
+- It first checked 1,586 files (26.1 GB) against their manifests (119 s): KG's nine datasets and mpr-u2n. It linked
+  1,443 at their repository paths; 143 were the same in git.
+- GPU 0 ran scr-u2n-zg6e-hp (7,135 s), then scr-u2n-zrckpt (1,390 s). GPU 1 ran scr-u2n-zg6e (4,067 s), then
+  scr-u2n-zrckpt-hp (1,640 s). All four exited 0; the session took 8,646 s.
+
+On the laptop at 8c1b477 (zu2n.py as at 3a5da10): `zu2n.py take`, `compare-all` and `verdict`. Records:
+- outputs/screen: scr-u2n-zg6e-vs-zspk and scr-u2n-zrckpt-vs-zrckp, each with its -hp twin (.json and .md);
+- outputs/u2n: u2n-zg6e-pair, u2n-zg6e-vs-zg6-pair and u2n-zrckpt-pair, each with its -recall, and screen-verdict
+  (.json and .md; 2026-10-27T08:42:34Z).
+
+**zg6e against KG's zspk**, re-called under KG's zspk null: **NOT_ADOPTED**.
+- **3 GAIN, all in domain:**
+  - L-musique metaqa: +0.0117 [+0.0100, +0.0135].
+  - L-hotpotqa metaqa: +0.0076 [+0.0060, +0.0091].
+  - L-hotpotqa musique: +0.0231 [+0.0169, +0.0291], floor 0.0105.
+- **3 LOSS, all zero-shot:**
+  - L-musique webqsp: -0.0988 [-0.1198, -0.0773].
+  - L-hotpotqa hotpotqa: -0.0311 [-0.0352, -0.0267].
+  - L-hotpotqa webqsp: -0.0386 [-0.0603, -0.0170], floor 0.0242.
+- **One call changed** with the re-call: L-hotpotqa 2wiki (+0.0172 [+0.0150, +0.0193], floor 0.0219) went from GAIN
+  to WITHIN.
+- **Next form**, fixed in section 6 for a GAIN and a LOSS: **zg6e under G6b's gate**, its edge pass and its no-edge
+  pass mixed per question by the question's edge-family shares, in one declared file. It goes on the T4 after G6r,
+  which G6b2 fixed first (docs/G6B2_ROW_BACKOFF.md, section 9).
+
+**zrckpt against KG's zrckp**, re-called under KG's zrckp null: **ADOPT_FOR_FULL_RUN**.
+- **1 GAIN:** L-musique musique (zero-shot): +0.0098 [+0.0055, +0.0144], floor 0.0075.
+- **0 LOSS.**
+- **Two calls changed** with the re-call:
+  - L-hotpotqa hotpotqa (zero-shot): +0.0080 [+0.0051, +0.0108], floor 0.0084, went from GAIN to WITHIN.
+  - L-hotpotqa webqsp (zero-shot): -0.0108 [-0.0221, -0.0006], floor 0.0237, went from LOSS to WITHIN.
+- **Next form**, fixed in section 6: zrckpt fitted again on U2s's carried pools, then its full run on all six splits
+  beside zrckp's, then Claims 1 and 3 measured again, each in its own declared file. The refit needs U2s's verdict and
+  the model inputs of its carried pools.
+- Section 8 also fixed **EL's kinds (IS, CO) as edge types** aligned to zlink's edges as the next typed input, whatever
+  this verdict. It gets its own declared file.
+
+Beside, deciding nothing:
+- **zrckpt, read by read.** The one GAIN clears its floor by 0.0023.
+  - Both passage zero-shot reads went up: musique +0.0098 on L-musique and hotpotqa +0.0080 on L-hotpotqa.
+  - Both webqsp reads went down, within their floors: -0.0053 on L-musique and -0.0108 on L-hotpotqa.
+  - Every in-domain read is within 0.0042 of zrckp.
+
+  The full run will show whether the webqsp reads stay within their floors.
+- **zg6e against KG's zg6**, under zspk's floors: 0 GAIN and 2 LOSS, both zero-shot:
+  - L-musique webqsp: -0.0235 [-0.0372, -0.0108].
+  - L-hotpotqa hotpotqa: -0.0153 [-0.0184, -0.0120].
+
+  L-hotpotqa webqsp (-0.0176 [-0.0324, -0.0044], floor 0.0242) went from LOSS to WITHIN. Every in-domain read is within
+  0.0032 of zg6, so zg6e's in-domain GAINs are zg6's. The typed channels added nothing in domain and lost on two
+  zero-shot reads: the transfer risk section 1 named, without the better fit it expected.
+- **The MLP share** of KG's zg6's gain over rrf, (MLP - rrf) / (zg6 - rrf), on the T4:
+
+  | read | zrckp | zrckpt |
+  |---|---:|---:|
+  | L-musique metaqa, squad, hotpotqa, 2wiki (in domain) | 0.9837, 0.9394, 0.9623, 0.9617 | 0.9834, 0.9394, 0.9733, 0.9742 |
+  | L-musique musique, webqsp (zero-shot) | 0.9777, 1.6291 | 1.2228, 1.6006 |
+  | L-hotpotqa metaqa, squad, musique, 2wiki (in domain) | 0.9905, 0.9265, 0.8277, 0.9678 | 0.9906, 1.0882, 0.8433, 0.9663 |
+  | L-hotpotqa hotpotqa, webqsp (zero-shot) | 1.0731, 1.4533 | 1.1243, 1.3963 |
+
+  The one in-domain share below 0.90 is still L-hotpotqa musique's (0.8433). The verdict's table gives the shares
+  against zg6e as well.
+- **The types.** zrckpt's columns use tau0 with both kappas at 10, as section 4 fixed: cosine 1 to tau0.
+  - zg6e's learned directions moved far from tau0: median cosine -0.021 (L-musique) and +0.015 (L-hotpotqa), with
+    kappa_d 11.0 and 22.0 at p@swa.
+  - On metaqa each direction weighs a few of the nine relations, for example +has imdb votes 0.30 and -has genre 0.27
+    on L-musique's first.
+  - On webqsp, no relation reaches 0.02 in the first four directions of any fit (the verdict prints those four).
+- **zg6e's EM term** was on every question in every epoch. Its mean cross entropy was 2.08 to 2.68 on L-musique and
+  1.55 to 1.79 on L-hotpotqa.
+- **Seconds and memory**, against KG's fits of the same split on the same T4:
+
+  | fit | train s | read s | peak GPU GB, train / read |
+  |---|---|---|---|
+  | scr-u2n-zg6e | 2,872, 1.48x zg6's 1,942 | 1,180 (773) | 4.11 / 4.67 (zg6 4.66 / 5.24) |
+  | scr-u2n-zg6e-hp | 6,055, 1.51x zg6's 3,998 | 1,067 (687) | 8.21 / 8.21 (zg6 10.29 / 10.29) |
+  | scr-u2n-zrckpt | 1,060, 1.10x zrckp's 960 | 323 (291) | 3.71 / 4.77 (zrckp 3.70 / 4.43) |
+  | scr-u2n-zrckpt-hp | 1,280, 1.33x zrckp's 963 | 353 (279) | 5.56 / 5.56 (zrckp 5.55 / 5.55) |
+
+  - zg6e's layers were checkpointed in training (section 3), so its peak is below zg6's.
+  - Peak RAM was 4.5 to 4.6 GB for every fit.
+  - zrckpt's cold cost, the typed links and the prior per edge, is measured in its Claim 3 step, not here.
