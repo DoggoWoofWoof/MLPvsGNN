@@ -237,4 +237,45 @@ picks, levels, costs and ceilings, and U2c's chosen pool costs 1,953.5 under U2s
 
 ## 9. Results
 
-None yet.
+Filed 28 October 2026. One chain on the laptop, `zwqp.py chain --threads 6`, exit 0; the ledger holds seventeen
+entries, each OK with no problems, and no earlier entry (nothing was retried).
+
+**The check (section 2): REPRODUCED.** On webqsp's s1eval carve (1,503 questions) the five stages' arrays equal the
+filed ones in every key, dtype, shape and byte (12, 12, 11, 14 and 11 keys for step 4d, step 4e, P1d, P1e and P1f), and
+each file's sha256 equals the filed file's; no manifest entry differs. Seconds: 136.6, 246.5, 340.5, 524.1 and 485.4,
+at 6 threads. Record: `outputs/wqp/check.json`.
+
+**Select's stages.** The twelve stages on webqsp's select carve (305 questions), each OK: s4d 33.4 s, s4e 67.7, P1d
+81.9, P1e 123.5, P1f 115.7, P1g 998.4, U2c 1,003.3, U2e 195.0, U2m 1,611.9, U2m (b) 877.6, U2m (a) 687.1 and U2s
+1,538.9 (7,334.4 s in all). The verdict took 2,193.3 s: tables of 1,103,760 universal and 91,980 own candidates over
+219 budgets on seven carves.
+
+**The verdict: NOT_UNIFIED, KIND_FREE_TOO_DEAR, NO_GAIN. U2s's pick stays** (section 3's fourth case).
+`outputs/wqp/verdict.json` and `.md`.
+- S is squad, musique, hotpotqa and 2wiki on s1sel and webqsp on select, weighted 17,729, 7,018, 13,335, 18,504 and
+  2,705.
+- The cap is 1,545.3 rows, U2c's chosen pool `g:f3+cut_cos_7000@0.9` on S (1,953.5 on U2s's set).
+- The incumbent, `own/kind_t/kt_cos:ada_f16_k0@0.85`, costs 1,382.4 on S, within the cap, and meets no level:
+  webqsp's select carve reads ALL 0.9082 at 4,806.7 rows. Its level is taken as 0.94 (section 3).
+- No pick of C, E or O is within the cap at any level from 0.95 to 1.0. At 0.95 the cheapest are C
+  `rrf50+none/kind_t/kt_n1:fix_10000@0.95` at 5,974.3 rows, E `rrf50+FULL:h3_c25_v2000/both/kt_n1:ada_f6_k0@0.99` at
+  7,262.3, and O `own/kind_t/kt_n1:ada_f6_k0@0.99` at 1,853.3. Each reaches 0.95 on webqsp's select carve only at about
+  5,800 to 7,800 rows there (0.9508 in all three).
+
+**Beside (section 4), deciding nothing:**
+- **U2s's verdict, reproduced** from the same tables: NOT_UNIFIED, KIND_FREE_TOO_DEAR, OWN_CHEAPER, carrying
+  `own/kind_t/kt_cos:ada_f16_k0@0.85`.
+- **Leave one out.** WQ-musique's training sets (musique left out): cap 994.1, NOT_UNIFIED, KIND_FREE_TOO_DEAR,
+  OWN_RAISED; pick O `own/kind_t/kt_n1:ada_f6_k0@0.99` meets 0.95 at 786.9 rows and would be carried. WQ-hotpotqa's
+  (hotpotqa left out): cap 1,714.0, NOT_UNIFIED, KIND_FREE_TOO_DEAR, NO_GAIN, U2s's pick. So musique, WQ-musique's
+  zero-shot set, is what keeps that pick O above the cap on S: it needs 9,796.1 rows on musique.
+- **The price** is nothing, since the carried pick is the incumbent. Its reads (ALL, rows): metaqa 0.9653, 4,369.9;
+  squad 0.9793, 50.0; musique 0.9668, 5,522.2; hotpotqa 0.9602, 713.1; 2wiki 0.9699, 1,070.5; webqsp's s1eval
+  0.9069, 4,803.4; webqsp's select 0.9082, 4,806.7.
+- **Ceilings:** metaqa 0.9947, squad 0.9993, musique 0.9811, hotpotqa 0.9881, 2wiki 0.996, and webqsp 0.9607 on both
+  its carves. Webqsp is the one carve the carried pick leaves below 0.95. Its fewest rows at 0.95 are 5,661.8 on s1eval
+  and 5,680.6 on select.
+
+**What follows (section 7, U2s's pick stays).** The upstream choices stand. Each of the next forms is declared in its
+own file before its numbers: U2n's zrckpt refit on U2s's pick under WQ; then, under WQ, U2s section 10's other next
+forms, RRF5T's agreement as the budget and P1h's cut over the walk's mass.
