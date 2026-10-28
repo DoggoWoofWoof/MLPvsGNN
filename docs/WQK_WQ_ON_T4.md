@@ -323,4 +323,52 @@ webqsp trains under WQ's ruling only.
 
 ## 11. Results
 
-None yet.
+**BASE_READY, with no problems** (filed 9059de7; `outputs/wqk/base-verdict.json` and `.md`).
+
+- **The sessions.** Two sessions of KG's kernels, both at cb9bf5a, on 2x Tesla T4 from KG's image
+  (kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3, CUDA 12.8). In both, the overlay and the gate exited 0 before any
+  fit. Each session's gate and overlay records are filed under `outputs/wqk/sessions/<gate sha256[:12]>/`.
+
+  | session | gate | fits | exits | gate s | session s |
+  |---|---|---|---|---:|---:|
+  | 1 (the null seeds) | a38d40778e82 | zrckp and zspk, seeds 1 and 2, both splits (8) | all 0 | 86.1 | 5,950.6 |
+  | 2 (seed 0 and zg6) | 357da77c695d | zrckp, zspk and zg6, seed 0, both splits (6) | all 0 | 81.7 | 6,681.3 |
+
+- **The fourteen fits** were taken by `zwqk.py take`, compared by `zwqk.py compare-all` (the ten compares,
+  `outputs/screen/scr-wqk-*`), floored by `zwqk.py floors` and called by `zwqk.py verdict`. Every fit and read names a
+  filed PASS gate; all fourteen are on one device.
+
+**Beside, deciding nothing (section 7).**
+- **The switch on the T4.** Against KG's fit of the same arm and seed on the old split with the same wiki side:
+  - webqsp, which now trains, rises on every fit: zrckp seed 0 0.6433 (0.3570) and 0.6382 (0.3289), zspk 0.6334
+    (0.3151) and 0.6153 (0.2640), zg6 0.6423 (0.2398) and 0.6421 (0.2430);
+  - metaqa, now zero-shot, falls on every fit: from 0.80–0.81 to 0.34–0.44;
+  - squad, hotpotqa and 2wiki move by at most 0.021 on every fit (largest: WQ-hotpotqa zg6 on hotpotqa, 0.8183 against
+    0.8391);
+  - WQ-musique's musique read, zero-shot under both splits, falls for zspk (seed 0 0.4590 against 0.5146) and less for
+    zrckp (0.4972 against 0.5129).
+- **The floors.** Zero-shot metaqa's seed spread is wide under WQ: its floors are 0.0308–0.0621, against KG's
+  0.0075–0.0084. WQ-musique's zero-shot musique read has floors of 0.0566 (zrckp) and 0.0545 (zspk). zrckp's webqsp
+  floors fall to 0.0075 (KG's 0.0184 and 0.0237). Every other WQK floor is within 0.0075–0.0174.
+- **G6's call under WQ on the T4** (zg6 against zspk under WQK's zspk null, G6's rule): it would read NOT_ADOPTED. It
+  has 4 GAIN, all on WQ-hotpotqa:
+  - metaqa (zero-shot) +0.0783 against a floor of 0.0308;
+  - musique +0.0167 (0.0090);
+  - 2wiki +0.0084 (0.0075);
+  - webqsp +0.0268 (0.0089).
+
+  Its 1 LOSS is WQ-hotpotqa's zero-shot hotpotqa read, -0.0313 (0.0075). WQ-musique's two filed GAINs, metaqa +0.0409
+  and musique +0.0428, are WITHIN their raised floors (0.0439, 0.0545). G6 stays as filed.
+- **Seconds and memory.** Each WQK fit trained in 0.70 to 0.95 times its KG twin's seconds on the same T4 (zg6 1,364 s
+  against 1,942 s; zg6-hp 3,356 s against 3,998 s). Reads took 0.91 to 1.09 times their KG twins' seconds. Peak GPU memory
+  was 1.87–3.99 GB training and 4.43–4.44 GB reading, except zg6: 2.28 / 5.24 GB on WQ-musique and 9.13 GB on
+  WQ-hotpotqa. Each fit held 1.45 GB (WQ-musique) or 3.31 GB (WQ-hotpotqa) of data in memory, with RAM peaks of
+  4.48–4.62 GB.
+- **The host twins** (section 2's table) are not filed: WQ's host fits are not filed, and the host is offline. They stay
+  beside, for when WQ's host fits are filed.
+
+**What followed**, each with its own declared file first, on WQK's bases and floors:
+- PSMK, PSMH, PSMS and PSMU: every pool-softmax input on zrckp was NOT_ADOPTED, and the family closed for the MLP's
+  input (3e50651).
+- WQP: U2s's pool pick stays under WQ (5352b17).
+- G6RW, G6r under WQ (section 9, item 1): declared e727dc8.
