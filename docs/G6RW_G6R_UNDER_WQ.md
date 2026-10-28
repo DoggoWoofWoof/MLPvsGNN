@@ -349,4 +349,76 @@ new graph. webqsp trains under WQ's ruling only.
 
 ## 10. Results
 
-Not run yet.
+**zg6r: ADOPT_FOR_FULL_RUN** (outputs/g6rw/screen-verdict.json and .md). Against WQK's seed-0 zspk, re-called under
+WQK's zspk seed null: 5 GAIN and 0 LOSS on the twelve reads.
+
+**The session.**
+- Version 9 of mpr-kg at e727dc8 on 2x Tesla T4: 5,475.7 s.
+- Overlay exit 0; gate exit 0 (fd5c2834b389).
+- scr-g6rw-zg6r: GPU 1, exit 0, 2,941.8 s. scr-g6rw-zg6r-hp: GPU 0, exit 0, 4,946.8 s.
+- Taken by `zg6rw.py take` (2 fits, 24 files), compared by `compare-all` and called by `verdict` (exit 0).
+
+**The twelve reads.** R@5 on the T4. The call column is under WQK's zspk floors. The MLP share is
+(zrckp − rrf) / (zg6r − rrf), from WQK's seed-0 zrckp.
+
+| read | rrf | zspk | zg6 | zg6r | zg6r − zspk | floor | call | vs zg6 | MLP share |
+|---|---:|---:|---:|---:|---:|---:|---|---|---:|
+| WQ-musique metaqa (zero-shot) | 0.0047 | 0.3984 | 0.4393 | 0.4105 | +0.0121 | 0.0439 | WITHIN | WITHIN | 1.0710 |
+| WQ-musique squad | 0.9054 | 0.9110 | 0.9097 | 0.9105 | −0.0005 | 0.0075 | WITHIN | WITHIN | 1.0196 |
+| WQ-musique musique (zero-shot) | 0.4734 | 0.4590 | 0.5018 | 0.4106 | −0.0484 | 0.0545 | WITHIN | LOSS | n/a |
+| WQ-musique hotpotqa | 0.6846 | 0.9058 | 0.9109 | 0.9134 | +0.0076 | 0.0075 | **GAIN** | WITHIN | 0.9637 |
+| WQ-musique 2wiki | 0.6079 | 0.9345 | 0.9390 | 0.9369 | +0.0024 | 0.0075 | WITHIN | WITHIN | 0.9836 |
+| WQ-musique webqsp | 0.0535 | 0.6334 | 0.6423 | 0.6501 | +0.0167 | 0.0174 | WITHIN | WITHIN | 0.9886 |
+| WQ-hotpotqa metaqa (zero-shot) | 0.0047 | 0.3384 | 0.4167 | 0.3834 | +0.0450 | 0.0308 | **GAIN** | LOSS | 1.0246 |
+| WQ-hotpotqa squad | 0.9054 | 0.9114 | 0.9114 | 0.9111 | −0.0003 | 0.0075 | WITHIN | WITHIN | 1.1053 |
+| WQ-hotpotqa musique | 0.4734 | 0.5794 | 0.5961 | 0.5941 | +0.0147 | 0.0090 | **GAIN** | WITHIN | 0.8360 |
+| WQ-hotpotqa hotpotqa (zero-shot) | 0.6846 | 0.8496 | 0.8183 | 0.8529 | +0.0033 | 0.0075 | WITHIN | GAIN | 0.9976 |
+| WQ-hotpotqa 2wiki | 0.6079 | 0.9330 | 0.9414 | 0.9420 | +0.0090 | 0.0075 | **GAIN** | WITHIN | 0.9638 |
+| WQ-hotpotqa webqsp | 0.0535 | 0.6153 | 0.6421 | 0.6536 | +0.0383 | 0.0089 | **GAIN** | WITHIN | 0.9743 |
+
+**What changed G6's call.** G6 under WQ would be NOT_ADOPTED (WQK, section 11). Its one LOSS was WQ-hotpotqa's
+zero-shot hotpotqa read: −0.0313. zg6r reads it at 0.8529, +0.0033 over zspk, WITHIN. zg6r keeps zg6's four GAINs:
+WQ-hotpotqa's metaqa, musique, 2wiki and webqsp. It adds WQ-musique hotpotqa, at +0.0076 against a floor of 0.0075.
+
+**Beside, deciding nothing: zg6r against WQK's seed-0 zg6 under zspk's floors.** 1 GAIN and 2 LOSS.
+- GAIN: WQ-hotpotqa hotpotqa (zero-shot), +0.0346.
+- LOSS: WQ-musique musique (zero-shot), −0.0912.
+- LOSS: WQ-hotpotqa metaqa (zero-shot), −0.0333.
+
+All three moves are on held-out reads. On the eight in-domain reads zg6r is WITHIN zg6.
+
+**What the risks of section 7 showed.**
+- **WQ-musique's zero-shot musique read is the weak one.**
+  - zg6r reads 0.4106. That is −0.0484 against zspk, 0.0061 inside its floor of 0.0545.
+  - It is also −0.0628 below rrf (0.4734). zspk is below rrf too, at 0.4590.
+  - The adoption is by the rule. The full run's intervals decide this read.
+- **The encoder's start.** The three passage-graph GAINs (WQ-musique hotpotqa, WQ-hotpotqa musique and 2wiki) are on
+  graphs where no edge is typed. zg6 reads each within 0.0025 of zg6r (0.9109, 0.5961, 0.9414). So they come from
+  message passing and the start, not from the relation messages. Only the NO_GAIN arm (zg6-z) would separate the start
+  from zg6's own fit, and it does not run on this verdict.
+- **Not at equal training.** zg6r's encoder trained twice on each split's questions. The full run's declared file
+  states how its base is matched.
+- **metaqa's relations are unseen.**
+  - The share of P's norm in metaqa's centred relation span: 0.2252 and 0.2165 (P_f, P_b) on WQ-musique; 0.2239 and
+    0.3096 on WQ-hotpotqa.
+  - webqsp's 7,058 relations sit 0.0427 inside that span on average.
+  - metaqa's nine relations still get distinct codes, |P r| 0.52 to 2.18.
+  - zg6r's zero-shot metaqa reads are +0.0121 and +0.0450 over zspk, and −0.0288 and −0.0333 under zg6.
+- **Memory.** Peak GPU memory was below zg6's on both splits. The 15 GB T4 was not the limit.
+  - WQ-musique: train 2.05 GB, read 4.59 GB (zg6 2.28 / 5.24).
+  - WQ-hotpotqa: 6.01 / 6.01 GB (zg6 9.13 / 9.13).
+  - Peak RAM was 4.56 and 4.67 GB.
+- **Seconds.** zg6r took 1.33x and 1.18x zg6's training seconds (1,819 s and 3,958 s against 1,364 s and 3,356 s). Its
+  reads took 1.54x and 1.35x (1,088 s and 962 s against 706 s and 715 s): they read 32,768 rows a batch.
+- **First run on Kaggle.** Both fits exited 0.
+
+**The MLP share, beside.** These are seed-0 points, not P3c's intervals, so they claim nothing.
+- WQK's zrckp keeps 0.96 to 1.11 of zg6r's R@5 gain over rrf on ten of the eleven reads where the gain exceeds 0.002.
+  On squad that gain is 0.005 to 0.006, so its shares (1.0196, 1.1053) say little.
+- The exception is WQ-hotpotqa's in-domain musique read: 0.8360.
+- On WQ-musique's zero-shot musique read zg6r is below rrf, so there is no share.
+
+**Next** (section 7, fixed before any number). zg6r under WQ is fitted again on the pools WQP carried (U2s's pick). Then
+comes its full run under WQ beside zspk's. Then Claim 1 (P3c's intervals) and Claim 3 (cold latency, the C stages'
+timing) are measured again. Each is its own declared file. The refit needs U2s's pick built under WQ on WQK's carves,
+which is its own declared stage. No model change is adopted on today's pools (the user's rule of 13 October).
