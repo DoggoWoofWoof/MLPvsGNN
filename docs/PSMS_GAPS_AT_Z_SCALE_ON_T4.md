@@ -166,4 +166,60 @@ webqsp trains under WQ's ruling only.
 
 ## 8. Results
 
-None yet.
+**The sessions.** Two sessions at b6f3fec on 28 October (UTC), one arm each, both started at about 01:57:
+- zrckpg1 ran on version 7 of mpr-kg, until about 02:32. WQK's overlay and gate exited 0 (117 s and 80 s). Both fits
+  exited 0 on Tesla T4s: `scr-psms-zrckpg1-hp` on GPU 0 in 1,732 s, and `scr-psms-zrckpg1` on GPU 1 in 1,684 s. The
+  session took 2,057 s. Its gate and overlay are filed under `outputs/psms/sessions/db8dfc7bac65` (not committed).
+- zrckph1 ran on version 4 of mpr-kg-g6b2, until about 02:31. WQK's overlay and gate exited 0 (105 s and 85 s). Both
+  fits exited 0 on Tesla T4s: `scr-psms-zrckph1-hp` on GPU 0 in 1,676 s, and `scr-psms-zrckph1` on GPU 1 in 1,666 s.
+  The session took 1,969 s. Its gate and overlay are filed under `outputs/psms/sessions/8cf5d1b2cdc8` (not committed).
+
+| fit | train s | read s | peak RAM GB | gap columns | gap weights |
+|---|---:|---:|---:|---:|---:|
+| scr-psms-zrckpg1 | 1,199.4 | 471.4 | 4.50 | 86 | 11,008 |
+| scr-psms-zrckpg1-hp | 1,246.7 | 474.2 | 4.60 | 86 | 11,008 |
+| scr-psms-zrckph1 | 1,214.0 | 431.5 | 4.48 | 86 | 11,008 |
+| scr-psms-zrckph1-hp | 1,238.3 | 421.9 | 4.55 | 86 | 11,008 |
+
+**zrckpg1's verdict: NOT_ADOPTED** (`outputs/psms/zrckpg1-verdict.json` and `.md`), with 0 GAIN and 2 LOSS under
+WQK's floors on zrckp.
+- **LOSS:** WQ-hotpotqa hotpotqa (zero-shot), -0.0116 against a floor of 0.0089, and WQ-hotpotqa webqsp, -0.0105
+  against a floor of 0.0075.
+- **Filed calls, called WITHIN.** lean_screen filed three other reads as GAIN or LOSS; under WQK's floors all three are
+  WITHIN:
+  - WQ-musique metaqa: filed GAIN, +0.0224, against a floor of 0.0621;
+  - WQ-musique musique: filed LOSS, -0.0359, against a floor of 0.0566;
+  - WQ-hotpotqa metaqa: filed GAIN, +0.0183, against a floor of 0.0489.
+
+**zrckph1's verdict: NOT_ADOPTED** (`outputs/psms/zrckph1-verdict.json` and `.md`), with 0 GAIN and 0 LOSS under WQK's
+floors on zrckp.
+- **Filed calls, called WITHIN.** lean_screen filed two reads as GAIN or LOSS; under WQK's floors both are WITHIN:
+  - WQ-musique metaqa: filed LOSS, -0.0144, against a floor of 0.0621;
+  - WQ-hotpotqa metaqa: filed GAIN, +0.0177, against a floor of 0.0489.
+
+**Beside: the four gap forms.** These are R@5 differences from WQK's seed-0 zrckp fit of each split, read by read. A
+call is shown only where it is not WITHIN under WQK's floors.
+
+| split | dataset | read | soft (PSMK) | soft / 10 (zrckpg1) | hard (PSMH) | hard / 10 (zrckph1) |
+|---|---|---|---:|---:|---:|---:|
+| WQ-musique | metaqa | zero-shot | +0.0293 | +0.0224 | -0.0380 | -0.0144 |
+| WQ-musique | squad | in-domain | -0.0027 | -0.0015 | -0.0012 | +0.0008 |
+| WQ-musique | musique | zero-shot | +0.0076 | -0.0359 | +0.0077 | +0.0025 |
+| WQ-musique | hotpotqa | in-domain | -0.0254 **LOSS** | -0.0044 | -0.0063 | -0.0030 |
+| WQ-musique | 2wiki | in-domain | -0.0115 **LOSS** | -0.0028 | -0.0072 | -0.0009 |
+| WQ-musique | webqsp | in-domain | -0.0133 **LOSS** | -0.0080 | -0.0182 **LOSS** | -0.0023 |
+| WQ-hotpotqa | metaqa | zero-shot | +0.0026 | +0.0183 | +0.0355 | +0.0177 |
+| WQ-hotpotqa | squad | in-domain | -0.0049 | -0.0003 | +0.0011 | -0.0006 |
+| WQ-hotpotqa | musique | in-domain | -0.0175 **LOSS** | -0.0008 | +0.0017 | -0.0010 |
+| WQ-hotpotqa | hotpotqa | zero-shot | -0.0145 **LOSS** | -0.0116 **LOSS** | -0.0056 | -0.0005 |
+| WQ-hotpotqa | 2wiki | in-domain | -0.0201 **LOSS** | -0.0018 | -0.0036 | +0.0004 |
+| WQ-hotpotqa | webqsp | in-domain | -0.0142 **LOSS** | -0.0105 **LOSS** | -0.0139 **LOSS** | -0.0053 |
+| | | sum | -0.0846 | -0.0369 | -0.0480 | -0.0066 |
+
+Dividing a gap by 10 removes most of its losses: the soft gap goes from 7 LOSS to 2, and the hard gap from 2 to 0. Each
+gap's sum moves toward 0. So the scale caused most of PSMK's and PSMH's losses. No form gains on any read under WQK's
+floors, though, so neither gap, at either scale, adds R@5 that the floors can see.
+
+**Next.** Neither arm is adopted, so section 5 names **zrckpu1**: PSM's section 6 form for a GAIN and a LOSS, the row's
+lift above a uniform pool, log(N_q p_i) floored at 0, divided by 10. It gets its own declared file before its fit, and
+may declare the T4 again with WQK's bases and floors.
