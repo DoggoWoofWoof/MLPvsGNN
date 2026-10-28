@@ -183,4 +183,69 @@ webqsp trains under WQ's ruling only.
 
 ## 8. Results
 
-None yet.
+**The sessions.** Two sessions at 7009588 on 28 October (UTC), one arm each, both launched at about 03:03; both had
+ended by 03:44:
+- zrckpu ran on version 8 of mpr-kg. WQK's overlay and gate exited 0 (144 s and 81 s). Both fits exited 0 on Tesla
+  T4s: `scr-psmu-zrckpu-hp` on GPU 0 in 1,783 s, and `scr-psmu-zrckpu` on GPU 1 in 1,756 s. The session took 2,115 s.
+  Its gate and overlay are filed under `outputs/psmu/sessions/a291b2033245` (not committed).
+- zrckpu1 ran on version 5 of mpr-kg-g6b2. WQK's overlay and gate exited 0 (120 s and 82 s). Both fits exited 0 on
+  Tesla T4s: `scr-psmu-zrckpu1-hp` on GPU 0 in 1,837 s, and `scr-psmu-zrckpu1` on GPU 1 in 1,840 s. The session took
+  2,127 s. Its gate and overlay are filed under `outputs/psmu/sessions/ce46ca364f54` (not committed).
+
+| fit | train s | read s | peak RAM GB | lift columns | lift weights |
+|---|---:|---:|---:|---:|---:|
+| scr-psmu-zrckpu | 1,258.4 | 484.5 | 4.48 | 86 | 11,008 |
+| scr-psmu-zrckpu-hp | 1,294.6 | 477.2 | 4.58 | 86 | 11,008 |
+| scr-psmu-zrckpu1 | 1,341.0 | 487.5 | 4.49 | 86 | 11,008 |
+| scr-psmu-zrckpu1-hp | 1,338.3 | 485.6 | 4.61 | 86 | 11,008 |
+
+**zrckpu's verdict: NOT_ADOPTED** (`outputs/psmu/zrckpu-verdict.json` and `.md`), with 0 GAIN and 1 LOSS under WQK's
+floors on zrckp.
+- **LOSS:** WQ-hotpotqa webqsp, -0.0101 against a floor of 0.0075.
+- **Filed calls, called WITHIN.** lean_screen filed three other reads as GAIN or LOSS; under WQK's floors all three are
+  WITHIN:
+  - WQ-musique metaqa: filed LOSS, -0.0221, against a floor of 0.0621;
+  - WQ-musique musique: filed LOSS, -0.0143, against a floor of 0.0566;
+  - WQ-hotpotqa metaqa: filed GAIN, +0.0111, against a floor of 0.0489.
+
+**zrckpu1's verdict: NOT_ADOPTED** (`outputs/psmu/zrckpu1-verdict.json` and `.md`), with 0 GAIN and 0 LOSS under
+WQK's floors on zrckp.
+- **Filed calls, called WITHIN.** lean_screen filed one read as a GAIN; under WQK's floors it is WITHIN:
+  - WQ-hotpotqa metaqa: filed GAIN, +0.0415 (interval +0.0363 to +0.0467), against a floor of 0.0489.
+
+**Beside: the six forms.** These are R@5 differences from WQK's seed-0 zrckp fit of each split, read by read. A call is
+shown only where it is not WITHIN under WQK's floors.
+
+| split | dataset | read | soft (PSMK) | soft / 10 (zrckpg1) | hard (PSMH) | hard / 10 (zrckph1) | lift (zrckpu) | lift / 10 (zrckpu1) |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| WQ-musique | metaqa | zero-shot | +0.0293 | +0.0224 | -0.0380 | -0.0144 | -0.0221 | -0.0032 |
+| WQ-musique | squad | in-domain | -0.0027 | -0.0015 | -0.0012 | +0.0008 | -0.0005 | -0.0008 |
+| WQ-musique | musique | zero-shot | +0.0076 | -0.0359 | +0.0077 | +0.0025 | -0.0143 | -0.0036 |
+| WQ-musique | hotpotqa | in-domain | -0.0254 **LOSS** | -0.0044 | -0.0063 | -0.0030 | -0.0022 | -0.0019 |
+| WQ-musique | 2wiki | in-domain | -0.0115 **LOSS** | -0.0028 | -0.0072 | -0.0009 | -0.0028 | -0.0001 |
+| WQ-musique | webqsp | in-domain | -0.0133 **LOSS** | -0.0080 | -0.0182 **LOSS** | -0.0023 | -0.0042 | -0.0046 |
+| WQ-hotpotqa | metaqa | zero-shot | +0.0026 | +0.0183 | +0.0355 | +0.0177 | +0.0111 | +0.0415 |
+| WQ-hotpotqa | squad | in-domain | -0.0049 | -0.0003 | +0.0011 | -0.0006 | +0.0014 | +0.0010 |
+| WQ-hotpotqa | musique | in-domain | -0.0175 **LOSS** | -0.0008 | +0.0017 | -0.0010 | -0.0001 | -0.0012 |
+| WQ-hotpotqa | hotpotqa | zero-shot | -0.0145 **LOSS** | -0.0116 **LOSS** | -0.0056 | -0.0005 | +0.0035 | +0.0043 |
+| WQ-hotpotqa | 2wiki | in-domain | -0.0201 **LOSS** | -0.0018 | -0.0036 | +0.0004 | -0.0021 | -0.0003 |
+| WQ-hotpotqa | webqsp | in-domain | -0.0142 **LOSS** | -0.0105 **LOSS** | -0.0139 **LOSS** | -0.0053 | -0.0101 **LOSS** | -0.0067 |
+| | | sum | -0.0846 | -0.0369 | -0.0480 | -0.0066 | -0.0424 | +0.0244 |
+| | | sum without metaqa | -0.1165 | -0.0776 | -0.0455 | -0.0099 | -0.0314 | -0.0139 |
+
+Dividing the lift by 10 removes its one loss, as dividing each gap removed most of its losses. The lift / 10 is the
+only form whose twelve differences sum above 0 (+0.0244), but that sum rests on one read: WQ-hotpotqa's zero-shot
+metaqa, +0.0415, which is under its floor of 0.0489. Without the two metaqa reads, every form's other ten differences
+sum below 0 (-0.0139 for the lift / 10). WQ-hotpotqa's metaqa read rose under all six forms (+0.0026 to +0.0415), each
+time under its floor; WQ-musique's metaqa read rose under three forms and fell under three. Across the six forms no read
+is a GAIN under WQK's floors, and 12 are LOSS (7, 2, 2, 0, 1 and 0).
+
+**The family closes for the MLP's input.** Neither arm is adopted, so section 5 applies. The soft gap, the hard gap and
+the lift, each undivided and divided by 10, are all NOT_ADOPTED under WQK's floors, and zrckp's input stays. This closes
+these six forms. Pool attention is a different form and is still item 3 below.
+
+**Next.** Per section 5, the next forms under WQ go on, each in its own declared file before its fit:
+1. G6r under WQ on the T4 (WQK's section 9, item 1);
+2. U2n's zrckpt refit on U2s's pick under WQ (WQP's section 7);
+3. R2g and pool attention under WQ (WQ's section 9, through WQK);
+4. RRF5T's agreement as the pools' budget, and P1h's cut over the walk's mass (WQP's section 7).
