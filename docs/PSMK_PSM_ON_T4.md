@@ -145,4 +145,29 @@ webqsp trains under WQ's ruling only.
 
 ## 6. Results
 
-None yet.
+**The session.**
+- Version 5 of mpr-kg, at 9059de7, from 23:46 on 27 October to 00:21 on 28 October (UTC).
+- WQK's overlay and gate exited 0 (106 s and 83 s).
+- Both fits exited 0 on Tesla T4s: `scr-psmk-zrckpg-hp` on GPU 0 in 1,761 s, and `scr-psmk-zrckpg` on GPU 1 in
+  1,819 s. The session took 2,087 s.
+- Its gate and overlay are filed under `outputs/psmk/sessions/baed26a5bf32` (not committed).
+
+| fit | train s | read s | peak RAM GB | gap columns | gap weights |
+|---|---:|---:|---:|---:|---:|
+| scr-psmk-zrckpg | 1,329.1 | 477.4 | 4.49 | 86 | 11,008 |
+| scr-psmk-zrckpg-hp | 1,276.6 | 468.8 | 4.61 | 86 | 11,008 |
+
+**The verdict: NOT_ADOPTED** (`outputs/psmk/screen-verdict.json` and `.md`), with 0 GAIN and 7 LOSS under WQK's floors
+on zrckp.
+- **LOSS:**
+  - WQ-musique: hotpotqa (-0.0254), 2wiki (-0.0115), webqsp (-0.0133);
+  - WQ-hotpotqa: musique (-0.0175), hotpotqa (-0.0145), 2wiki (-0.0201), webqsp (-0.0142).
+- **Filed GAIN, called WITHIN.** lean_screen filed two reads as GAIN; under WQK's floors both are WITHIN:
+  - WQ-musique metaqa: +0.0293, against a floor of 0.0621;
+  - WQ-musique musique: +0.0076, against a floor of 0.0566.
+
+The soft gap lowers R@5 on most in-domain reads in both splits. FC@5 falls with it on the seven LOSS reads, by 0.015
+to 0.046.
+
+**Next.** PSM's section 6 for NOT_ADOPTED with no GAIN is **zrckph**: the hard gap, z_i minus the pool's largest z,
+floored at -10. It gets its own declared file before its fit, and may declare the T4 again with WQK's bases and floors.
