@@ -1,0 +1,264 @@
+{
+ "new": "outputs\\screen\\fits\\scr-psmh-zrckph-hp",
+ "bases": [
+  "outputs\\screen\\fits\\scr-wqk-zrckp-s0-hp"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-wqk-zrckp-s0-hp": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "zero-shot",
+     "questions": 9785,
+     "base": [
+      0.3927,
+      0.3307,
+      0.2665
+     ],
+     "new": [
+      0.4282,
+      0.3596,
+      0.2683
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      0.0355,
+      0.0289,
+      0.0017
+     ],
+     "lo": [
+      0.0296,
+      0.023,
+      -0.005
+     ],
+     "hi": [
+      0.0411,
+      0.035,
+      0.0085
+     ],
+     "call": "GAIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9117,
+      0.9117,
+      0.7536
+     ],
+     "new": [
+      0.9128,
+      0.9128,
+      0.7536
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      0.0011,
+      0.0011,
+      -0.0001
+     ],
+     "lo": [
+      -0.001,
+      -0.001,
+      -0.0027
+     ],
+     "hi": [
+      0.0033,
+      0.0033,
+      0.0027
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5743,
+      0.2565,
+      0.7207
+     ],
+     "new": [
+      0.576,
+      0.2598,
+      0.722
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      0.0017,
+      0.0033,
+      0.0012
+     ],
+     "lo": [
+      -0.003,
+      -0.0046,
+      -0.0087
+     ],
+     "hi": [
+      0.0065,
+      0.0108,
+      0.0112
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "zero-shot",
+     "questions": 7405,
+     "base": [
+      0.8525,
+      0.7453,
+      0.8057
+     ],
+     "new": [
+      0.8469,
+      0.7383,
+      0.7865
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      -0.0056,
+      -0.007,
+      -0.0192
+     ],
+     "lo": [
+      -0.009,
+      -0.0132,
+      -0.025
+     ],
+     "hi": [
+      -0.0022,
+      -0.0008,
+      -0.0136
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9299,
+      0.8268,
+      0.975
+     ],
+     "new": [
+      0.9264,
+      0.818,
+      0.9733
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      -0.0036,
+      -0.0088,
+      -0.0017
+     ],
+     "lo": [
+      -0.0052,
+      -0.0128,
+      -0.004
+     ],
+     "hi": [
+      -0.0018,
+      -0.0048,
+      0.0003
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "in-domain",
+     "questions": 1503,
+     "base": [
+      0.6382,
+      0.5356,
+      0.5449
+     ],
+     "new": [
+      0.6243,
+      0.5163,
+      0.5323
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      -0.0139,
+      -0.0193,
+      -0.0126
+     ],
+     "lo": [
+      -0.0225,
+      -0.0286,
+      -0.0273
+     ],
+     "hi": [
+      -0.0054,
+      -0.0093,
+      0.0013
+     ],
+     "call": "LOSS"
+    }
+   ],
+   "verdict": "MIXED",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-28T01:36:44Z",
+ "verdict": "MIXED",
+ "stage": "PSMH",
+ "declared_in": "docs/PSMH_HARD_GAP_ON_T4.md",
+ "decided_against": "scr-wqk-zrckp-s0-hp",
+ "split": "WQ-hotpotqa",
+ "zpsm_sha256": "045953a4a2510730360ca868e746c23fe75a6ef4514963997b4fb506ee6296b8",
+ "psmh": {
+  "declared_in": "docs/PSMH_HARD_GAP_ON_T4.md",
+  "compare": "scr-psmh-zrckph-hp",
+  "new": "scr-psmh-zrckph-hp",
+  "bases": [
+   "scr-wqk-zrckp-s0-hp"
+  ],
+  "device": {
+   "gpu": "Tesla T4",
+   "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+   "torch": "2.11.0+cu128",
+   "cuda": "12.8",
+   "cudnn": 91900
+  },
+  "zpsmk_sha256": "4bcc692a49c089c5363443dda749c963c587b71264933d4d99cc187370973bd1"
+ }
+}
