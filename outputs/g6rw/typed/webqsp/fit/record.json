@@ -1,0 +1,61 @@
+{
+ "stage": "U2n",
+ "declared_in": "docs/U2N_TYPED_CHANNELS.md",
+ "dataset": "webqsp",
+ "carve": "fit",
+ "slots": 8,
+ "n_sets": 9827,
+ "sets": {
+  "dtype": "<i2",
+  "shape": [
+   9827,
+   8
+  ],
+  "sha256": "a7c93fdd17f5785830507c4707270b17a621f54ae38111ca2421c13c8d53b10a"
+ },
+ "parts": {
+  "part_0of2": "767d646f1386d697c6470667c2fd8d15aa10c88e10d7fa4e8a7b5e6e8712e85b",
+  "part_1of2": "84496c979dc2ff30664e1cd3f4e19b630a4bd0ecffc25cfb4866815661df44fc"
+ },
+ "relations": {
+  "n_relations": 7058,
+  "kz": 14116,
+  "offset": 9,
+  "k_rel": 4,
+  "embeddings": "webqsp_rel_embeddings.npy",
+  "embeddings_sha256": "58df589aa77c9fa670e51af9fd2cac3ac61033667b4e149ef64c255514a14bd9"
+ },
+ "look_relations": {
+  "typed": true,
+  "offset": 9,
+  "n_relations": 7058,
+  "k_rel": 4
+ },
+ "slot_range": [
+  -1,
+  7056
+ ],
+ "edges": 16329970,
+ "family0": 10201918,
+ "typed": 10201918,
+ "empty_family0": 0,
+ "union_sizes": [
+  6761002,
+  3153804,
+  158118,
+  128994,
+  0,
+  0,
+  0,
+  0
+ ],
+ "look": {
+  "record_0of3.json": "0d476b0ff04b66e449f364abc48ab6300adc7c53fbd07bb84113458fc35f4e4b",
+  "record_1of3.json": "8e4e658306e824c70eb4f8f5c9c579a9b956136cac909314949fb7583185acd7",
+  "record_2of3.json": "9b4992d12af96b42739dc8d24e42e968dd611860b39842991950a00b2748a8b1"
+ },
+ "carve_ids_sha256": "fecf94bbfdff25925abd771421d4ad7276889d81b8449891783506bd087bdb90",
+ "script_sha256": "26291debd1b2de8d7477daea938132f36d12be24804bcbadd7fa17bd87f44434",
+ "seconds": 37.7,
+ "utc": "2026-10-28T04:28:55Z"
+}

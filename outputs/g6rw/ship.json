@@ -1,0 +1,38 @@
+{
+ "stage": "G6RW",
+ "declared_in": "docs/G6RW_G6R_UNDER_WQ.md",
+ "files": {
+  "outputs/g6rw/enc/WQ-musique.pt": {
+   "size": 8182795,
+   "sha256": "30cc29613f948f01a4de0aec4e58d6e31126ab028fb8cef18d7f7e69d62fcf09"
+  },
+  "outputs/g6rw/enc/WQ-hotpotqa.pt": {
+   "size": 8182795,
+   "sha256": "25e940c2fc47e049ac740b3b5cdd2e27798c188496eeb17447084e91fc4b720e"
+  },
+  "outputs/g6rw/typed/webqsp/fit/sets.npy": {
+   "size": 157360,
+   "sha256": "a7c93fdd17f5785830507c4707270b17a621f54ae38111ca2421c13c8d53b10a"
+  },
+  "outputs/g6rw/typed/webqsp/fit/part_0of2/t_set.npy": {
+   "size": 16366668,
+   "sha256": "30faf691826ef1bc9fccb439a668184db7529ecef354c90da34037dcf9a09386"
+  },
+  "outputs/g6rw/typed/webqsp/fit/part_0of2/t_dir.npy": {
+   "size": 8183398,
+   "sha256": "c6e6c221bfeee650ffebdf65a65b6734865c73245fbb0f57935aa061ddb72a6d"
+  },
+  "outputs/g6rw/typed/webqsp/fit/part_1of2/t_set.npy": {
+   "size": 16293528,
+   "sha256": "55e09240cf5003a0e7ac398ec3aa6bdf4e4952dcf9ba582f285bfdb2a6725b9f"
+  },
+  "outputs/g6rw/typed/webqsp/fit/part_1of2/t_dir.npy": {
+   "size": 8146828,
+   "sha256": "369e218b3cce734c52a3743b46f19147501c12ebc7a83ac2bf5ef3b9041bbb8d"
+  }
+ },
+ "total_bytes": 65513372,
+ "typed": "acb8321ba5c476af22e71c7432823d66ea5863c4f20e78d5d91d39c75d3f5af0",
+ "zg6rw_sha256": "55af676d0750c0ffd376fc029f9b9c0f89594a82d3219895bdcaa12223264c07",
+ "utc": "2026-10-28T04:29:25Z"
+}
