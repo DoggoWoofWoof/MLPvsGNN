@@ -1,0 +1,517 @@
+{
+ "stage": "R2GW",
+ "declared_in": "docs/R2GW_R2G_UNDER_WQ.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zrckpbg's re-call against WQK's seed-0 zrckp under WQK's zrckp seed null has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when WQK's base verdict is not BASE_READY, a fit or compare is missing or not R2GW's, R2GW's fits and WQK's seed-0 zrckp fits are not on one device, a fit or read names a gate that is not a filed PASS gate of an R2GW session, a fit's R2 constants or EM term are not as declared, zrckpbg's gate is not as declared or its read holds no gate per question, WQK's floors are not their compares', or a re-call does not hold the twelve reads (docs/R2GW_R2G_UNDER_WQ.md section 5)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zrckpbg",
+ "base_arm": "zrckp",
+ "fits": {
+  "zrckpbg": {
+   "WQ-musique": "scr-r2gw-zrckpbg",
+   "WQ-hotpotqa": "scr-r2gw-zrckpbg-hp"
+  },
+  "zrckpb": {
+   "WQ-musique": "scr-r2gw-zrckpb",
+   "WQ-hotpotqa": "scr-r2gw-zrckpb-hp"
+  }
+ },
+ "against": {
+  "WQ-musique": "scr-wqk-zrckp-s0",
+  "WQ-hotpotqa": "scr-wqk-zrckp-s0-hp"
+ },
+ "floors": "outputs/wqk/floors-zrckp.json",
+ "null_kind": "WQK's zrckp seed null",
+ "device": {
+  "cuda": "12.8",
+  "cudnn": 91900,
+  "gpu": "Tesla T4",
+  "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+  "torch": "2.11.0+cu128"
+ },
+ "gates": [
+  "4b6f360be563a2343b2fce42c36610e3d93754d44d4093bb49dbd2deacefac5a",
+  "7576c1848176eeb1c31912bb05614d5fa0fdeb0aaba20f807c8fcf92f6419033"
+ ],
+ "next_form": "R2e under WQ on the T4, its own declared file (R2's next form after R2g: R2e, the edge form: bridge scores only for bridges linked to the row by zlink's edges (B1d: the edge is the bridge), as fixed per-row link flags for the MLP and inside zg6's messages for the GNN; one declared file)",
+ "gains": [
+  "WQ-hotpotqa webqsp"
+ ],
+ "losses": [
+  "WQ-hotpotqa musique"
+ ],
+ "problems": [],
+ "calls": {
+  "WQ-musique metaqa": "WITHIN",
+  "WQ-musique squad": "WITHIN",
+  "WQ-musique musique": "WITHIN",
+  "WQ-musique hotpotqa": "WITHIN",
+  "WQ-musique 2wiki": "WITHIN",
+  "WQ-musique webqsp": "WITHIN",
+  "WQ-hotpotqa metaqa": "WITHIN",
+  "WQ-hotpotqa squad": "WITHIN",
+  "WQ-hotpotqa musique": "LOSS",
+  "WQ-hotpotqa hotpotqa": "WITHIN",
+  "WQ-hotpotqa 2wiki": "WITHIN",
+  "WQ-hotpotqa webqsp": "GAIN"
+ },
+ "delta_r5": {
+  "WQ-musique metaqa": 0.0303,
+  "WQ-musique squad": -0.0035,
+  "WQ-musique musique": 0.0018,
+  "WQ-musique hotpotqa": -0.0049,
+  "WQ-musique 2wiki": -0.0007,
+  "WQ-musique webqsp": 0.0112,
+  "WQ-hotpotqa metaqa": 0.0204,
+  "WQ-hotpotqa squad": -0.0048,
+  "WQ-hotpotqa musique": -0.013,
+  "WQ-hotpotqa hotpotqa": -0.0068,
+  "WQ-hotpotqa 2wiki": -0.001,
+  "WQ-hotpotqa webqsp": 0.011
+ },
+ "naming": "zrckpb is called \"zrckp + R2's bridge head\" until the user rules whether reading the five bridges' vectors keeps it inside the MLP track (R2, section 2); zrckpbg likewise, and no claim sets either against the GNN as the MLP",
+ "wqk_verdict": "2708ff6ce25f7f126696d5c6e66ca3cce5172d84097562c0e4844deb44ab9390",
+ "zwqk_sha256": "b3c96017559f26a4b7041c570c3cd7d5f60721e2824996c5ee30a76fe447baad",
+ "zr2gw_sha256": "1fb69ce9eb5d3e8731e3f8e1ca4384ca96025e070aefe248271ec1a5e03c6a0f",
+ "utc": "2026-10-29T14:16:09Z",
+ "beside": {
+  "calls": {
+   "zrckpb": {
+    "gains": [
+     "WQ-musique webqsp",
+     "WQ-hotpotqa metaqa",
+     "WQ-hotpotqa webqsp"
+    ],
+    "losses": []
+   },
+   "zrckpbg-vs-zrckpb": {
+    "gains": [],
+    "losses": [
+     "WQ-hotpotqa musique"
+    ]
+   }
+  },
+  "r5": {
+   "WQ-musique metaqa": {
+    "read": "zero-shot",
+    "rrf": 0.0047,
+    "zspk": 0.3984,
+    "zrckp": 0.4393,
+    "zrckpb": 0.4578,
+    "zrckpbg": 0.4697,
+    "floor": 0.062119,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 9785,
+     "mean": 0.714047,
+     "std": 0.214288,
+     "min": 0.157975,
+     "max": 1.558003,
+     "share_below_1": 0.895759,
+     "q05": 0.400207,
+     "q25": 0.555173,
+     "q50": 0.693982,
+     "q75": 0.851455,
+     "q95": 1.099151,
+     "questions_in_carve": 9785,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-musique squad": {
+    "read": "in-domain",
+    "rrf": 0.9054,
+    "zspk": 0.911,
+    "zrckp": 0.9106,
+    "zrckpb": 0.908,
+    "zrckpbg": 0.9071,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 11873,
+     "mean": 1.039377,
+     "std": 0.238899,
+     "min": 0.25074,
+     "max": 1.752565,
+     "share_below_1": 0.443864,
+     "q05": 0.647987,
+     "q25": 0.870676,
+     "q50": 1.036868,
+     "q75": 1.207746,
+     "q95": 1.436599,
+     "questions_in_carve": 11873,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-musique musique": {
+    "read": "zero-shot",
+    "rrf": 0.4734,
+    "zspk": 0.459,
+    "zrckp": 0.4972,
+    "zrckpb": 0.4999,
+    "zrckpbg": 0.499,
+    "floor": 0.056601,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 2417,
+     "mean": 1.079987,
+     "std": 0.26734,
+     "min": 0.363382,
+     "max": 1.760605,
+     "share_below_1": 0.383533,
+     "q05": 0.640246,
+     "q25": 0.87532,
+     "q50": 1.085593,
+     "q75": 1.286928,
+     "q95": 1.520128,
+     "questions_in_carve": 2417,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-musique hotpotqa": {
+    "read": "in-domain",
+    "rrf": 0.6846,
+    "zspk": 0.9058,
+    "zrckp": 0.9051,
+    "zrckpb": 0.8994,
+    "zrckpbg": 0.9002,
+    "floor": 0.008683,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 7405,
+     "mean": 0.938578,
+     "std": 0.286342,
+     "min": 0.190725,
+     "max": 1.804003,
+     "share_below_1": 0.592843,
+     "q05": 0.491532,
+     "q25": 0.724911,
+     "q50": 0.924606,
+     "q75": 1.140945,
+     "q95": 1.435389,
+     "questions_in_carve": 7405,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-musique 2wiki": {
+    "read": "in-domain",
+    "rrf": 0.6079,
+    "zspk": 0.9345,
+    "zrckp": 0.9315,
+    "zrckpb": 0.9274,
+    "zrckpbg": 0.9308,
+    "floor": 0.009339,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 12576,
+     "mean": 0.859821,
+     "std": 0.300837,
+     "min": 0.203808,
+     "max": 1.732999,
+     "share_below_1": 0.661896,
+     "q05": 0.415494,
+     "q25": 0.615511,
+     "q50": 0.826367,
+     "q75": 1.101325,
+     "q95": 1.367424,
+     "questions_in_carve": 12576,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-musique webqsp": {
+    "read": "in-domain",
+    "rrf": 0.0535,
+    "zspk": 0.6334,
+    "zrckp": 0.6433,
+    "zrckpb": 0.6577,
+    "zrckpbg": 0.6545,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "GAIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 1503,
+     "mean": 1.303281,
+     "std": 0.247305,
+     "min": 0.399063,
+     "max": 1.866745,
+     "share_below_1": 0.122422,
+     "q05": 0.854167,
+     "q25": 1.153687,
+     "q50": 1.321274,
+     "q75": 1.485273,
+     "q95": 1.668011,
+     "questions_in_carve": 1503,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-hotpotqa metaqa": {
+    "read": "zero-shot",
+    "rrf": 0.0047,
+    "zspk": 0.3384,
+    "zrckp": 0.3927,
+    "zrckpb": 0.4459,
+    "zrckpbg": 0.4131,
+    "floor": 0.048926,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "GAIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 9785,
+     "mean": 0.71229,
+     "std": 0.235673,
+     "min": 0.197456,
+     "max": 1.586615,
+     "share_below_1": 0.874604,
+     "q05": 0.377221,
+     "q25": 0.534517,
+     "q50": 0.684068,
+     "q75": 0.860529,
+     "q95": 1.152366,
+     "questions_in_carve": 9785,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-hotpotqa squad": {
+    "read": "in-domain",
+    "rrf": 0.9054,
+    "zspk": 0.9114,
+    "zrckp": 0.9117,
+    "zrckpb": 0.909,
+    "zrckpbg": 0.9069,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 11873,
+     "mean": 1.222587,
+     "std": 0.214471,
+     "min": 0.489435,
+     "max": 1.795692,
+     "share_below_1": 0.155563,
+     "q05": 0.858342,
+     "q25": 1.077327,
+     "q50": 1.229439,
+     "q75": 1.377598,
+     "q95": 1.564814,
+     "questions_in_carve": 11873,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-hotpotqa musique": {
+    "read": "in-domain",
+    "rrf": 0.4734,
+    "zspk": 0.5794,
+    "zrckp": 0.5743,
+    "zrckpb": 0.5689,
+    "zrckpbg": 0.5613,
+    "floor": 0.0075,
+    "call": "LOSS",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "LOSS",
+    "gate": {
+     "questions": 2417,
+     "mean": 1.29541,
+     "std": 0.234417,
+     "min": 0.380601,
+     "max": 1.836088,
+     "share_below_1": 0.112122,
+     "q05": 0.881096,
+     "q25": 1.137204,
+     "q50": 1.310124,
+     "q75": 1.469409,
+     "q95": 1.652378,
+     "questions_in_carve": 2417,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-hotpotqa hotpotqa": {
+    "read": "zero-shot",
+    "rrf": 0.6846,
+    "zspk": 0.8496,
+    "zrckp": 0.8525,
+    "zrckpb": 0.8498,
+    "zrckpbg": 0.8456,
+    "floor": 0.008905,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 7405,
+     "mean": 1.154357,
+     "std": 0.288378,
+     "min": 0.266263,
+     "max": 1.853545,
+     "share_below_1": 0.294126,
+     "q05": 0.645657,
+     "q25": 0.950675,
+     "q50": 1.172361,
+     "q75": 1.376004,
+     "q95": 1.595711,
+     "questions_in_carve": 7405,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-hotpotqa 2wiki": {
+    "read": "in-domain",
+    "rrf": 0.6079,
+    "zspk": 0.933,
+    "zrckp": 0.9299,
+    "zrckpb": 0.9304,
+    "zrckpbg": 0.929,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zrckpb_vs_zrckp": "WITHIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 12576,
+     "mean": 0.935461,
+     "std": 0.338701,
+     "min": 0.215206,
+     "max": 1.741021,
+     "share_below_1": 0.571883,
+     "q05": 0.441745,
+     "q25": 0.642244,
+     "q50": 0.899433,
+     "q75": 1.239869,
+     "q95": 1.466465,
+     "questions_in_carve": 12576,
+     "share_margins_nonzero": 1.0
+    }
+   },
+   "WQ-hotpotqa webqsp": {
+    "read": "in-domain",
+    "rrf": 0.0535,
+    "zspk": 0.6153,
+    "zrckp": 0.6382,
+    "zrckpb": 0.6488,
+    "zrckpbg": 0.6492,
+    "floor": 0.0075,
+    "call": "GAIN",
+    "zrckpb_vs_zrckp": "GAIN",
+    "zrckpbg_vs_zrckpb": "WITHIN",
+    "gate": {
+     "questions": 1503,
+     "mean": 1.356148,
+     "std": 0.253767,
+     "min": 0.35829,
+     "max": 1.859458,
+     "share_below_1": 0.102462,
+     "q05": 0.86792,
+     "q25": 1.208644,
+     "q50": 1.392793,
+     "q75": 1.545374,
+     "q95": 1.706473,
+     "questions_in_carve": 1503,
+     "share_margins_nonzero": 1.0
+    }
+   }
+  },
+  "terms": {
+   "scr-r2gw-zrckpbg": {
+    "questions": 151328,
+    "questions_with_term": 150024,
+    "share_with_term": 0.9913829562275323,
+    "br_nll_first": 4.390358683739142,
+    "br_nll_last": 3.7146005258079353
+   },
+   "scr-r2gw-zrckpbg-hp": {
+    "questions": 140696,
+    "questions_with_term": 139584,
+    "share_with_term": 0.9920964348666629,
+    "br_nll_first": 5.157017204574028,
+    "br_nll_last": 4.233971413253973
+   },
+   "scr-r2gw-zrckpb": {
+    "questions": 151328,
+    "questions_with_term": 150024,
+    "share_with_term": 0.9913829562275323,
+    "br_nll_first": 4.389529141681528,
+    "br_nll_last": 3.7111873496394345
+   },
+   "scr-r2gw-zrckpb-hp": {
+    "questions": 140696,
+    "questions_with_term": 139584,
+    "share_with_term": 0.9920964348666629,
+    "br_nll_first": 5.157605129943589,
+    "br_nll_last": 4.232496481807283
+   }
+  },
+  "timing": {
+   "WQ-musique": {
+    "zrckpbg": {
+     "train_seconds": 1019.5751070976257,
+     "read_seconds": 303.08723306655884,
+     "train_peak_gpu_gb": 1.870438912,
+     "read_peak_gpu_gb": 4.43324928,
+     "data_gb": 1.454245311,
+     "peak_gb": 4.5
+    },
+    "zrckpb": {
+     "train_seconds": 990.7427434921265,
+     "read_seconds": 299.8413043022156,
+     "train_peak_gpu_gb": 1.870438912,
+     "read_peak_gpu_gb": 4.433239552,
+     "data_gb": 1.453942655,
+     "peak_gb": 4.5
+    },
+    "zrckp": {
+     "train_seconds": 831.0224442481995,
+     "read_seconds": 296.74298095703125,
+     "train_peak_gpu_gb": 1.870438912,
+     "read_peak_gpu_gb": 4.431072256,
+     "data_gb": 1.453186015,
+     "peak_gb": 4.48
+    }
+   },
+   "WQ-hotpotqa": {
+    "zrckpbg": {
+     "train_seconds": 1025.9084239006042,
+     "read_seconds": 301.7157073020935,
+     "train_peak_gpu_gb": 3.99103488,
+     "read_peak_gpu_gb": 4.432794624,
+     "data_gb": 3.309186254,
+     "peak_gb": 4.58
+    },
+    "zrckpb": {
+     "train_seconds": 985.1042983531952,
+     "read_seconds": 299.47641921043396,
+     "train_peak_gpu_gb": 3.99103488,
+     "read_peak_gpu_gb": 4.432784896,
+     "data_gb": 3.308904862,
+     "peak_gb": 4.55
+    },
+    "zrckp": {
+     "train_seconds": 836.6138417720795,
+     "read_seconds": 282.9463093280792,
+     "train_peak_gpu_gb": 3.99103488,
+     "read_peak_gpu_gb": 4.4306176,
+     "data_gb": 3.308201382,
+     "peak_gb": 4.62
+    }
+   }
+  },
+  "pair": "outputs/r2gw/r2gw-zrckpbg-pair.json",
+  "recall": "outputs/r2gw/r2gw-zrckpbg-pair-recall.json",
+  "recall_sha256": "9895658c2ea4b2c7f9d849dde2c097c0375a7893483a60554bf494f66ca3ef1d",
+  "pairs": {
+   "zrckpbg": "outputs/r2gw/r2gw-zrckpbg-pair.json",
+   "zrckpb": "outputs/r2gw/r2gw-zrckpb-pair.json",
+   "zrckpbg-vs-zrckpb": "outputs/r2gw/r2gw-zrckpbg-vs-zrckpb-pair.json"
+  },
+  "recalls": {
+   "zrckpbg": "outputs/r2gw/r2gw-zrckpbg-pair-recall.json",
+   "zrckpb": "outputs/r2gw/r2gw-zrckpb-pair-recall.json",
+   "zrckpbg-vs-zrckpb": "outputs/r2gw/r2gw-zrckpbg-vs-zrckpb-pair-recall.json"
+  }
+ }
+}

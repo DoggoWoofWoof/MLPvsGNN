@@ -205,4 +205,34 @@ another read cap), the stub's refusals and its files, and the tracked paths.
 
 ## 10. Results
 
-Not run yet.
+**Verdict: zrckpbg is NOT_ADOPTED** (1 GAIN, 1 LOSS), called by `zr2gw.py verdict` and filed in
+`outputs/r2gw/screen-verdict.json` and `.md`, with the pairs, the re-calls and `outputs/screen/scr-r2gw-*-vs-zrckp[-hp]`.
+
+Session: mpr-kg-g6b2 version 6 (the zrckpbg pair, gate 4b6f360be563, 1,653.7 s) and mpr-kg version 10 (the zrckpb pair,
+gate 7576c1848176, 1,544.3 s), both on 2x Tesla T4, image kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3. All four
+fits exited 0. The sessions came back in about 13 minutes of wall time after the start check; the fits' own seconds are
+1,304 to 1,339 each.
+
+Deciding, zrckpbg against WQK's seed-0 zrckp under WQK's zrckp floors:
+
+- GAIN: WQ-hotpotqa webqsp (0.6382 -> 0.6492, +0.0110, floor 0.0075).
+- LOSS: WQ-hotpotqa musique (0.5743 -> 0.5613, -0.0130, floor 0.0075).
+- The two metaqa zero-shot reads, +0.0304 (WQ-musique) and +0.0204 (WQ-hotpotqa), are GAIN on the pair's own intervals and
+  WITHIN under the zrckp floors (0.0621 and 0.0489). The other eight reads are WITHIN.
+- The gate backed off where the first-stage signal is weak: mean gate 0.71 on metaqa (0.87 to 0.90 of questions below 1)
+  and 1.30 to 1.36 on webqsp. It did not help: zrckpbg gains less than zrckpb on WQ-hotpotqa metaqa (0.4131 against 0.4459).
+
+Beside, deciding nothing:
+
+- zrckpb (R2's head, no gate) against WQK's seed-0 zrckp under the same floors: 3 GAIN (WQ-musique webqsp +0.0144,
+  WQ-hotpotqa metaqa +0.0532, WQ-hotpotqa webqsp +0.0106) and 0 LOSS. This is one seed and it was read here, not in a
+  file that declared it; it is not adopted on that.
+- zrckpbg against zrckpb: 0 GAIN, 1 LOSS (WQ-hotpotqa musique).
+- Seconds on the T4: train 1,020 / 1,026 for zrckpbg, 991 / 985 for zrckpb, 831 / 837 for WQK's zrckp; peak GPU 1.87 and
+  3.99 GB train, 4.43 GB read, equal for the three; peak RAM 4.5 to 4.6 GB.
+- R2's EM term reached 0.991 to 0.992 of training questions on all four fits.
+
+Next (section 7, fixed before any number): R2e under WQ on the T4, its own declared file. Written and pushed as R2EW
+(2d487a2, `docs/R2EW_R2E_UNDER_WQ.md`), launched on mpr-kg-g6b2 version 7. Because the ungated zrckpb read 3 GAIN and 0 LOSS
+beside, a confirmation at the unseen null seeds (zrckpb at seeds 1 and 2 against zrckp's same seeds) is being declared as
+its own file before it runs.

@@ -1,0 +1,259 @@
+{
+ "new": "outputs\\screen\\fits\\scr-r2gw-zrckpb-hp",
+ "bases": [
+  "outputs\\screen\\fits\\scr-wqk-zrckp-s0-hp"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-wqk-zrckp-s0-hp": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "zero-shot",
+     "questions": 9785,
+     "base": [
+      0.3927,
+      0.3307,
+      0.2665
+     ],
+     "new": [
+      0.4459,
+      0.3699,
+      0.3089
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      0.0533,
+      0.0391,
+      0.0424
+     ],
+     "lo": [
+      0.0475,
+      0.0328,
+      0.0343
+     ],
+     "hi": [
+      0.059,
+      0.0453,
+      0.0507
+     ],
+     "call": "GAIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9117,
+      0.9117,
+      0.7536
+     ],
+     "new": [
+      0.909,
+      0.909,
+      0.7487
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      -0.0028,
+      -0.0028,
+      -0.005
+     ],
+     "lo": [
+      -0.0049,
+      -0.0049,
+      -0.0083
+     ],
+     "hi": [
+      -0.0008,
+      -0.0008,
+      -0.0018
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5743,
+      0.2565,
+      0.7207
+     ],
+     "new": [
+      0.5689,
+      0.2544,
+      0.698
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      -0.0055,
+      -0.0021,
+      -0.0228
+     ],
+     "lo": [
+      -0.0119,
+      -0.012,
+      -0.0364
+     ],
+     "hi": [
+      0.0011,
+      0.0079,
+      -0.0095
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "zero-shot",
+     "questions": 7405,
+     "base": [
+      0.8525,
+      0.7453,
+      0.8057
+     ],
+     "new": [
+      0.8498,
+      0.7409,
+      0.7818
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      -0.0026,
+      -0.0045,
+      -0.0239
+     ],
+     "lo": [
+      -0.0059,
+      -0.0104,
+      -0.0298
+     ],
+     "hi": [
+      0.0008,
+      0.0018,
+      -0.0181
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9299,
+      0.8268,
+      0.975
+     ],
+     "new": [
+      0.9304,
+      0.8283,
+      0.9623
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.0005,
+      0.0015,
+      -0.0127
+     ],
+     "lo": [
+      -0.0011,
+      -0.0023,
+      -0.0157
+     ],
+     "hi": [
+      0.0022,
+      0.0056,
+      -0.0098
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "in-domain",
+     "questions": 1503,
+     "base": [
+      0.6382,
+      0.5356,
+      0.5449
+     ],
+     "new": [
+      0.6488,
+      0.5409,
+      0.5356
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      0.0106,
+      0.0053,
+      -0.0093
+     ],
+     "lo": [
+      0.0002,
+      -0.0067,
+      -0.0293
+     ],
+     "hi": [
+      0.0218,
+      0.018,
+      0.0093
+     ],
+     "call": "GAIN"
+    }
+   ],
+   "verdict": "PROMISING",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-29T14:15:59Z",
+ "verdict": "PROMISING",
+ "r2gw": {
+  "declared_in": "docs/R2GW_R2G_UNDER_WQ.md",
+  "compare": "scr-r2gw-zrckpb-vs-zrckp-hp",
+  "new": "scr-r2gw-zrckpb-hp",
+  "bases": [
+   "scr-wqk-zrckp-s0-hp"
+  ],
+  "device": {
+   "gpu": "Tesla T4",
+   "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+   "torch": "2.11.0+cu128",
+   "cuda": "12.8",
+   "cudnn": 91900
+  },
+  "zr2gw_sha256": "1fb69ce9eb5d3e8731e3f8e1ca4384ca96025e070aefe248271ec1a5e03c6a0f"
+ }
+}
