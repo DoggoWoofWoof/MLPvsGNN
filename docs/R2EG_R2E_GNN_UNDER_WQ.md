@@ -251,4 +251,28 @@ Both run on toys in temporary folders and write nothing under the real folders. 
 
 ## 10. Results
 
-None yet. The fits are not queued. Nothing here is a result.
+**Verdict: zg6e is NOT_ADOPTED** (1 GAIN, 2 LOSS), called by `zr2eg.py verdict` and filed in
+`outputs/r2eg/screen-verdict.json` and `.md`, with the pairs, the re-calls and `outputs/screen/scr-r2eg-zg6-vs-zg6[-hp]`.
+R2's GNN line closes (zg6m and zg6e are both NOT_ADOPTED).
+
+Session: mpr-kg-g6b2 version 8 (gate f143a359e6a5, overlay 183.8 s, gate 80.6 s, 4,827.4 s in all) on 2x Tesla T4, image
+kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3. Both fits exited 0 (scr-r2eg-zg6 2,291.8 s, scr-r2eg-zg6-hp 4,317.7 s).
+
+Against WQK's seed-0 zg6, re-called under WQK's zspk seed null with zg6's seed-0 R@5 (the stated fallback; WQK has no zg6
+floors yet, and WQG is declared to supply them):
+
+- GAIN: WQ-hotpotqa hotpotqa (0.8183 -> 0.8280, +0.0097, floor 0.0075).
+- LOSS: WQ-musique metaqa (0.4393 -> 0.3949, -0.0444, floor 0.0439) and WQ-hotpotqa metaqa (0.4167 -> 0.3847, -0.0320,
+  floor 0.0308). Both are zero-shot reads on metaqa, and both losses are close to their floors.
+- The other nine reads are WITHIN.
+- Beside, deciding nothing: against WQK's seed-0 zspk (G6's call), 4 GAIN (WQ-musique hotpotqa, WQ-hotpotqa metaqa,
+  musique and webqsp) and 1 LOSS (WQ-hotpotqa hotpotqa).
+- Links: 0.0127 of metaqa's rows have a linked bridge (0.0152 flags per row) against 0.43 on squad and 0.39 on the
+  hotpotqa reads. The bridge term is nearly absent exactly on the reads where zg6e loses.
+- R2's EM term reached 0.839 and 0.792 of training questions.
+- Seconds on the T4: train 1,515 and 3,564 (zg6 1,364 and 3,356), read 763 and 742 (706 and 715); peak GPU 2.30 and 9.16 GB
+  (zg6 2.28 and 9.13); peak RAM 4.52 and 4.56 GB. 59,648 numbers over zg6.
+
+Next (section 7): R2's GNN line closes; a verdict closes only its form. The next declared forms are those waiting on PKO's
+pools (U2n's zrckpt on U2s's pick, G6RW's zg6r on PKO's pools) and the typed channels of docs/PROGRAM_2026_10_24.md section 4.3
+item 5. WQG (the zg6 and zg6r seed nulls under WQ) is being declared to give the GNN fits a real floor.

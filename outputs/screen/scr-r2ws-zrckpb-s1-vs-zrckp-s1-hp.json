@@ -1,0 +1,260 @@
+{
+ "new": "outputs\\screen\\fits\\scr-r2ws-zrckpb-s1-hp",
+ "bases": [
+  "outputs\\screen\\fits\\scr-wqk-zrckp-s1-hp"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-wqk-zrckp-s1-hp": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "zero-shot",
+     "questions": 9785,
+     "base": [
+      0.4193,
+      0.3528,
+      0.2614
+     ],
+     "new": [
+      0.4281,
+      0.358,
+      0.3026
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      0.0087,
+      0.0052,
+      0.0412
+     ],
+     "lo": [
+      0.0024,
+      -0.0014,
+      0.033
+     ],
+     "hi": [
+      0.0149,
+      0.0117,
+      0.0486
+     ],
+     "call": "GAIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9115,
+      0.9115,
+      0.7532
+     ],
+     "new": [
+      0.9089,
+      0.9089,
+      0.7498
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      -0.0026,
+      -0.0026,
+      -0.0035
+     ],
+     "lo": [
+      -0.0048,
+      -0.0048,
+      -0.0067
+     ],
+     "hi": [
+      -0.0004,
+      -0.0004,
+      -0.0003
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5768,
+      0.259,
+      0.7336
+     ],
+     "new": [
+      0.5593,
+      0.2478,
+      0.6851
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      -0.0175,
+      -0.0112,
+      -0.0484
+     ],
+     "lo": [
+      -0.0237,
+      -0.0207,
+      -0.0608
+     ],
+     "hi": [
+      -0.0114,
+      -0.0017,
+      -0.0356
+     ],
+     "call": "LOSS"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "zero-shot",
+     "questions": 7405,
+     "base": [
+      0.8547,
+      0.7512,
+      0.7845
+     ],
+     "new": [
+      0.8422,
+      0.7279,
+      0.7745
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      -0.0125,
+      -0.0234,
+      -0.01
+     ],
+     "lo": [
+      -0.016,
+      -0.0298,
+      -0.0161
+     ],
+     "hi": [
+      -0.009,
+      -0.0172,
+      -0.004
+     ],
+     "call": "LOSS"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9284,
+      0.8218,
+      0.9744
+     ],
+     "new": [
+      0.9306,
+      0.829,
+      0.9641
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      0.0022,
+      0.0072,
+      -0.0103
+     ],
+     "lo": [
+      0.0004,
+      0.003,
+      -0.0134
+     ],
+     "hi": [
+      0.0039,
+      0.0115,
+      -0.0074
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "in-domain",
+     "questions": 1503,
+     "base": [
+      0.6417,
+      0.5356,
+      0.5542
+     ],
+     "new": [
+      0.6442,
+      0.5343,
+      0.5429
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      0.0024,
+      -0.0013,
+      -0.0113
+     ],
+     "lo": [
+      -0.0094,
+      -0.0146,
+      -0.0326
+     ],
+     "hi": [
+      0.0134,
+      0.0113,
+      0.0106
+     ],
+     "call": "WITHIN"
+    }
+   ],
+   "verdict": "MIXED",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-29T20:34:34Z",
+ "verdict": "MIXED",
+ "r2ws": {
+  "declared_in": "docs/R2WS_R2_SEEDS_UNDER_WQ.md",
+  "compare": "scr-r2ws-zrckpb-s1-vs-zrckp-s1-hp",
+  "new": "scr-r2ws-zrckpb-s1-hp",
+  "bases": [
+   "scr-wqk-zrckp-s1-hp"
+  ],
+  "device": {
+   "gpu": "Tesla T4",
+   "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+   "torch": "2.11.0+cu128",
+   "cuda": "12.8",
+   "cudnn": 91900
+  },
+  "seed": 1,
+  "zr2ws_sha256": "5deb2ef8962757995269631475b29757a8781aa7b169f3285fa29ac956ee4c55"
+ }
+}

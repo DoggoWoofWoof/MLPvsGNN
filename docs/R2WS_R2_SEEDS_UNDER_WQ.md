@@ -177,4 +177,23 @@ Both run on toys in temporary folders and write nothing under the real folders. 
 
 ## 9. Results
 
-Not run yet.
+**Verdict: zrckpb is NOT_ADOPTED**, called by `zr2ws.py verdict` and filed in `outputs/r2ws/screen-verdict.json` and
+`.md`, with the pairs, the re-calls and `outputs/screen/scr-r2ws-zrckpb-s<k>-vs-zrckp-s<k>[-hp]`. No read is a GAIN at both
+seeds, so the seed-0 GAINs of R2GW are called noise.
+
+Session: mpr-kg version 11 (gate 8e0f3db91ebe, overlay 187.8 s, gate 84.5 s, 3,288.0 s in all) on 2x Tesla T4, image
+kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3. All four fits exited 0 (1,357 to 1,408 s each).
+
+Against WQK's zrckp of the same seed under WQK's zrckp floors:
+
+- GAIN: seed 1: WQ-musique webqsp (+0.0134). Seed 2: WQ-musique metaqa (+0.0690) and WQ-hotpotqa webqsp (+0.0122).
+- LOSS, at both seeds: WQ-hotpotqa musique (seed 1 -0.0175, seed 2 -0.0215) and WQ-hotpotqa hotpotqa (-0.0125, -0.0115).
+  At seed 0 (R2GW) both of those reads were WITHIN; the head's cost on the WQ-hotpotqa split's musique and hotpotqa reads
+  repeats at the two new seeds.
+- Gains on different reads at different seeds (the weaker form, which does not adopt): seeds with at least one GAIN are
+  1 and 2, the reads are WQ-musique webqsp, WQ-musique metaqa and WQ-hotpotqa webqsp, each at one seed only.
+- Seconds on the T4: train 1,047 to 1,087 against 873 to 928 for WQK's zrckp; read 301 to 306 against 287 to 298; peak
+  GPU 1.87 and 3.99 GB train, 4.43 GB read; peak RAM 4.57 to 4.66 GB. R2's EM term reached 0.991 and 0.992.
+
+Next (section 6): zrckpb is not taken further and the R2 line goes on with R2e only. R2e's MLP half (R2EW, 2ac2fe0) was
+filed NOT_ADOPTED before these fits were read.

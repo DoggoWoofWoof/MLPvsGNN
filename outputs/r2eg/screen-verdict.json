@@ -1,0 +1,451 @@
+{
+ "stage": "R2EG",
+ "declared_in": "docs/R2EG_R2E_GNN_UNDER_WQ.md",
+ "rule": "ADOPT_FOR_FULL_RUN when zg6e's re-call against WQK's seed-0 zg6 under WQK's zspk seed null, its seed-0 R@5 replaced by zg6's, has no LOSS on any of its twelve reads and at least one GAIN; NOT_ADOPTED otherwise; INCOMPLETE when WQK's base verdict is not BASE_READY, a fit or compare is missing or not R2EG's, R2EG's fits and WQK's seed-0 zg6 and zspk fits are not on one device, a fit or read names a gate that is not a filed PASS gate of an R2EG session, a fit's R2 constants, parameters or EM term are not as declared, zg6e's message is not as declared or its read holds no link statistics on the six carves, WQK's floors are not their compares', or a re-call does not hold the twelve reads (docs/R2EG_R2E_GNN_UNDER_WQ.md section 5)",
+ "verdict": "NOT_ADOPTED",
+ "arm": "zg6e",
+ "base_arm": "zg6",
+ "fits": {
+  "zg6e": {
+   "WQ-musique": "scr-r2eg-zg6",
+   "WQ-hotpotqa": "scr-r2eg-zg6-hp"
+  }
+ },
+ "against": {
+  "WQ-musique": "scr-wqk-zg6-s0",
+  "WQ-hotpotqa": "scr-wqk-zg6-s0-hp"
+ },
+ "beside_fits": {
+  "WQ-musique": "scr-wqk-zspk-s0",
+  "WQ-hotpotqa": "scr-wqk-zspk-s0-hp"
+ },
+ "floors": "outputs/wqk/floors-zspk.json",
+ "null_kind": "WQK's zspk seed null, its seed-0 R@5 replaced by WQK's zg6 read (G6's form: no zg6 seed null is filed)",
+ "device": {
+  "cuda": "12.8",
+  "cudnn": 91900,
+  "gpu": "Tesla T4",
+  "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+  "torch": "2.11.0+cu128"
+ },
+ "gates": [
+  "f143a359e6a5e205c56914c557085d366e1a83eacf93d3e71a0da2a9ed638558"
+ ],
+ "next_form": "R2's GNN line closes: zg6m and zg6e are NOT_ADOPTED, and a verdict closes only its form (R2WS's confirmation of zrckpb at the null seeds is the MLP line's, in its own file). The next declared forms are those waiting on PKO's pools (U2n's zrckpt on U2s's pick, G6RW's zg6r on PKO's pools) and the typed channels of docs/PROGRAM_2026_10_24.md section 4.3 item 5 (G6 with EM-typed messages over EL, R and kNN), each its own declared file",
+ "gains": [
+  "WQ-hotpotqa hotpotqa"
+ ],
+ "losses": [
+  "WQ-musique metaqa",
+  "WQ-hotpotqa metaqa"
+ ],
+ "problems": [],
+ "calls": {
+  "WQ-musique metaqa": "LOSS",
+  "WQ-musique squad": "WITHIN",
+  "WQ-musique musique": "WITHIN",
+  "WQ-musique hotpotqa": "WITHIN",
+  "WQ-musique 2wiki": "WITHIN",
+  "WQ-musique webqsp": "WITHIN",
+  "WQ-hotpotqa metaqa": "LOSS",
+  "WQ-hotpotqa squad": "WITHIN",
+  "WQ-hotpotqa musique": "WITHIN",
+  "WQ-hotpotqa hotpotqa": "GAIN",
+  "WQ-hotpotqa 2wiki": "WITHIN",
+  "WQ-hotpotqa webqsp": "WITHIN"
+ },
+ "delta_r5": {
+  "WQ-musique metaqa": -0.0443,
+  "WQ-musique squad": 0.0004,
+  "WQ-musique musique": -0.018,
+  "WQ-musique hotpotqa": 0.0036,
+  "WQ-musique 2wiki": -0.001,
+  "WQ-musique webqsp": 0.0015,
+  "WQ-hotpotqa metaqa": -0.032,
+  "WQ-hotpotqa squad": -0.0006,
+  "WQ-hotpotqa musique": -0.0033,
+  "WQ-hotpotqa hotpotqa": 0.0097,
+  "WQ-hotpotqa 2wiki": -0.0015,
+  "WQ-hotpotqa webqsp": -0.0078
+ },
+ "params_added": 59648,
+ "naming": "zg6e is a GNN arm, called \"zg6 + R2's linked-bridge scores in its hidden update\"; the user's open ruling on zrckpb (docs/R2_BRIDGE_EM.md section 2: whether reading the five bridges' vectors keeps an arm inside the MLP track) is about the MLP track and does not apply to it",
+ "wqk_verdict": "2708ff6ce25f7f126696d5c6e66ca3cce5172d84097562c0e4844deb44ab9390",
+ "zwqk_sha256": "b3c96017559f26a4b7041c570c3cd7d5f60721e2824996c5ee30a76fe447baad",
+ "zr2eg_sha256": "f276369817d48be6712eafed83d80e4e57a856851b5bb500bdecd0a4d2c5599c",
+ "utc": "2026-10-29T20:35:29Z",
+ "beside": {
+  "calls": {
+   "zg6e-vs-zspk": {
+    "gains": [
+     "WQ-musique hotpotqa",
+     "WQ-hotpotqa metaqa",
+     "WQ-hotpotqa musique",
+     "WQ-hotpotqa webqsp"
+    ],
+    "losses": [
+     "WQ-hotpotqa hotpotqa"
+    ]
+   }
+  },
+  "r5": {
+   "WQ-musique metaqa": {
+    "read": "zero-shot",
+    "rrf": 0.0047,
+    "zspk": 0.3984,
+    "zg6": 0.4393,
+    "zg6e": 0.3949,
+    "floor": 0.043917,
+    "call": "LOSS",
+    "zg6e_vs_zspk": "WITHIN",
+    "links": {
+     "rows": 19742463,
+     "rows_linked": 251130,
+     "flags": 300305,
+     "questions": 9785,
+     "questions_linked": 9785,
+     "passes": 1.0,
+     "rows_in_carve": 19742463,
+     "questions_in_carve": 9785,
+     "share_rows_linked": 0.01272,
+     "flags_per_row": 0.015211,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-musique squad": {
+    "read": "in-domain",
+    "rrf": 0.9054,
+    "zspk": 0.911,
+    "zg6": 0.9097,
+    "zg6e": 0.9101,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "WITHIN",
+    "links": {
+     "rows": 594063,
+     "rows_linked": 252520,
+     "flags": 639158,
+     "questions": 11873,
+     "questions_linked": 11865,
+     "passes": 1.0,
+     "rows_in_carve": 594063,
+     "questions_in_carve": 11873,
+     "share_rows_linked": 0.425073,
+     "flags_per_row": 1.075909,
+     "share_questions_linked": 0.999326
+    }
+   },
+   "WQ-musique musique": {
+    "read": "zero-shot",
+    "rrf": 0.4734,
+    "zspk": 0.459,
+    "zg6": 0.5018,
+    "zg6e": 0.4838,
+    "floor": 0.0545,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "WITHIN",
+    "links": {
+     "rows": 5057436,
+     "rows_linked": 483800,
+     "flags": 698854,
+     "questions": 2417,
+     "questions_linked": 2417,
+     "passes": 1.0,
+     "rows_in_carve": 5057436,
+     "questions_in_carve": 2417,
+     "share_rows_linked": 0.095661,
+     "flags_per_row": 0.138183,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-musique hotpotqa": {
+    "read": "in-domain",
+    "rrf": 0.6846,
+    "zspk": 0.9058,
+    "zg6": 0.9109,
+    "zg6e": 0.9145,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "GAIN",
+    "links": {
+     "rows": 693828,
+     "rows_linked": 267988,
+     "flags": 386733,
+     "questions": 7405,
+     "questions_linked": 7405,
+     "passes": 1.0,
+     "rows_in_carve": 693828,
+     "questions_in_carve": 7405,
+     "share_rows_linked": 0.386246,
+     "flags_per_row": 0.55739,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-musique 2wiki": {
+    "read": "in-domain",
+    "rrf": 0.6079,
+    "zspk": 0.9345,
+    "zg6": 0.939,
+    "zg6e": 0.938,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "WITHIN",
+    "links": {
+     "rows": 1328715,
+     "rows_linked": 469816,
+     "flags": 608279,
+     "questions": 12576,
+     "questions_linked": 12576,
+     "passes": 1.0,
+     "rows_in_carve": 1328715,
+     "questions_in_carve": 12576,
+     "share_rows_linked": 0.353587,
+     "flags_per_row": 0.457795,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-musique webqsp": {
+    "read": "in-domain",
+    "rrf": 0.0535,
+    "zspk": 0.6334,
+    "zg6": 0.6423,
+    "zg6e": 0.6439,
+    "floor": 0.017423,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "WITHIN",
+    "links": {
+     "rows": 3186165,
+     "rows_linked": 254855,
+     "flags": 284581,
+     "questions": 1503,
+     "questions_linked": 1503,
+     "passes": 1.0,
+     "rows_in_carve": 3186165,
+     "questions_in_carve": 1503,
+     "share_rows_linked": 0.079988,
+     "flags_per_row": 0.089318,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-hotpotqa metaqa": {
+    "read": "zero-shot",
+    "rrf": 0.0047,
+    "zspk": 0.3384,
+    "zg6": 0.4167,
+    "zg6e": 0.3847,
+    "floor": 0.030783,
+    "call": "LOSS",
+    "zg6e_vs_zspk": "GAIN",
+    "links": {
+     "rows": 19742463,
+     "rows_linked": 251130,
+     "flags": 300305,
+     "questions": 9785,
+     "questions_linked": 9785,
+     "passes": 1.0,
+     "rows_in_carve": 19742463,
+     "questions_in_carve": 9785,
+     "share_rows_linked": 0.01272,
+     "flags_per_row": 0.015211,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-hotpotqa squad": {
+    "read": "in-domain",
+    "rrf": 0.9054,
+    "zspk": 0.9114,
+    "zg6": 0.9114,
+    "zg6e": 0.9108,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "WITHIN",
+    "links": {
+     "rows": 594063,
+     "rows_linked": 252520,
+     "flags": 639158,
+     "questions": 11873,
+     "questions_linked": 11865,
+     "passes": 1.0,
+     "rows_in_carve": 594063,
+     "questions_in_carve": 11873,
+     "share_rows_linked": 0.425073,
+     "flags_per_row": 1.075909,
+     "share_questions_linked": 0.999326
+    }
+   },
+   "WQ-hotpotqa musique": {
+    "read": "in-domain",
+    "rrf": 0.4734,
+    "zspk": 0.5794,
+    "zg6": 0.5961,
+    "zg6e": 0.5927,
+    "floor": 0.008981,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "GAIN",
+    "links": {
+     "rows": 5057436,
+     "rows_linked": 483800,
+     "flags": 698854,
+     "questions": 2417,
+     "questions_linked": 2417,
+     "passes": 1.0,
+     "rows_in_carve": 5057436,
+     "questions_in_carve": 2417,
+     "share_rows_linked": 0.095661,
+     "flags_per_row": 0.138183,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-hotpotqa hotpotqa": {
+    "read": "zero-shot",
+    "rrf": 0.6846,
+    "zspk": 0.8496,
+    "zg6": 0.8183,
+    "zg6e": 0.828,
+    "floor": 0.0075,
+    "call": "GAIN",
+    "zg6e_vs_zspk": "LOSS",
+    "links": {
+     "rows": 693828,
+     "rows_linked": 267988,
+     "flags": 386733,
+     "questions": 7405,
+     "questions_linked": 7405,
+     "passes": 1.0,
+     "rows_in_carve": 693828,
+     "questions_in_carve": 7405,
+     "share_rows_linked": 0.386246,
+     "flags_per_row": 0.55739,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-hotpotqa 2wiki": {
+    "read": "in-domain",
+    "rrf": 0.6079,
+    "zspk": 0.933,
+    "zg6": 0.9414,
+    "zg6e": 0.9399,
+    "floor": 0.0075,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "WITHIN",
+    "links": {
+     "rows": 1328715,
+     "rows_linked": 469816,
+     "flags": 608279,
+     "questions": 12576,
+     "questions_linked": 12576,
+     "passes": 1.0,
+     "rows_in_carve": 1328715,
+     "questions_in_carve": 12576,
+     "share_rows_linked": 0.353587,
+     "flags_per_row": 0.457795,
+     "share_questions_linked": 1.0
+    }
+   },
+   "WQ-hotpotqa webqsp": {
+    "read": "in-domain",
+    "rrf": 0.0535,
+    "zspk": 0.6153,
+    "zg6": 0.6421,
+    "zg6e": 0.6343,
+    "floor": 0.008944,
+    "call": "WITHIN",
+    "zg6e_vs_zspk": "GAIN",
+    "links": {
+     "rows": 3186165,
+     "rows_linked": 254855,
+     "flags": 284581,
+     "questions": 1503,
+     "questions_linked": 1503,
+     "passes": 1.0,
+     "rows_in_carve": 3186165,
+     "questions_in_carve": 1503,
+     "share_rows_linked": 0.079988,
+     "flags_per_row": 0.089318,
+     "share_questions_linked": 1.0
+    }
+   }
+  },
+  "terms": {
+   "scr-r2eg-zg6": {
+    "questions": 151328,
+    "questions_with_term": 127032,
+    "share_with_term": 0.8394480862761683,
+    "br_nll_first": 2.162252010614425,
+    "br_nll_last": 1.443435295098038
+   },
+   "scr-r2eg-zg6-hp": {
+    "questions": 140696,
+    "questions_with_term": 111368,
+    "share_with_term": 0.7915505771308353,
+    "br_nll_first": 2.475141627463696,
+    "br_nll_last": 1.52626916675769
+   }
+  },
+  "timing": {
+   "WQ-musique": {
+    "zg6e": {
+     "train_seconds": 1514.8199861049652,
+     "read_seconds": 763.4918611049652,
+     "train_peak_gpu_gb": 2.298434048,
+     "read_peak_gpu_gb": 5.238317056,
+     "data_gb": 1.453942655,
+     "peak_gb": 4.52
+    },
+    "zg6": {
+     "train_seconds": 1364.4681341648102,
+     "read_seconds": 706.3022038936615,
+     "train_peak_gpu_gb": 2.280622592,
+     "read_peak_gpu_gb": 5.236647936,
+     "data_gb": 1.453186015,
+     "peak_gb": 4.54
+    },
+    "zspk": {
+     "train_seconds": 932.6309478282928,
+     "read_seconds": 358.49218583106995,
+     "train_peak_gpu_gb": 1.870438912,
+     "read_peak_gpu_gb": 4.443615744,
+     "data_gb": 1.453186015,
+     "peak_gb": 4.51
+    }
+   },
+   "WQ-hotpotqa": {
+    "zg6e": {
+     "train_seconds": 3564.1402654647827,
+     "read_seconds": 741.9692633152008,
+     "train_peak_gpu_gb": 9.157065216,
+     "read_peak_gpu_gb": 9.157065216,
+     "data_gb": 3.308904862,
+     "peak_gb": 4.56
+    },
+    "zg6": {
+     "train_seconds": 3355.5602304935455,
+     "read_seconds": 715.0130801200867,
+     "train_peak_gpu_gb": 9.127958016,
+     "read_peak_gpu_gb": 9.127958016,
+     "data_gb": 3.308201382,
+     "peak_gb": 4.56
+    },
+    "zspk": {
+     "train_seconds": 1055.68727850914,
+     "read_seconds": 348.3005955219269,
+     "train_peak_gpu_gb": 3.99103488,
+     "read_peak_gpu_gb": 4.444938752,
+     "data_gb": 3.308201382,
+     "peak_gb": 4.54
+    }
+   }
+  },
+  "pair": "outputs/r2eg/r2eg-zg6e-pair.json",
+  "recall": "outputs/r2eg/r2eg-zg6e-pair-recall.json",
+  "recall_sha256": "e7ae507d763566ccc3c1b44c08c7b73dcf6ed15ed4b66c5dde30b42a097c15a3",
+  "pairs": {
+   "zg6e": "outputs/r2eg/r2eg-zg6e-pair.json",
+   "zg6e-vs-zspk": "outputs/r2eg/r2eg-zg6e-vs-zspk-pair.json"
+  },
+  "recalls": {
+   "zg6e": "outputs/r2eg/r2eg-zg6e-pair-recall.json",
+   "zg6e-vs-zspk": "outputs/r2eg/r2eg-zg6e-vs-zspk-pair-recall.json"
+  }
+ }
+}
