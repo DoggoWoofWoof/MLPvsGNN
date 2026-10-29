@@ -77,6 +77,7 @@ TRAINER["zg6r"] = TRAINER["zg6"] + ("zg6r", "zu2n", "zg6b2", "zg6b", "zkg", "zu2
 CARD = ("arm", "split", "train", "basis", "variants", "config", "hidden", "cache_root")    # screen.json fields equal
 OWN_SHAS = ("zwq_sha256", "zwqk_sha256", "zwqg_sha256", "zg6rw_sha256")     # the stage files' shas: amended on their own
 SAME_TRAIN = ("train", "basis", "basis_sha256", "config", "hidden", "variants")             # train.json's
+OWN_OUTPUT = ("curve", "seconds")      # a variant's loss curve and wall time in train.json: the fit's own outputs (A1)
 SAME_RECORDS = {"zg6": ("kt_records", "rmatch_records", "zrc_records", "zlink_records"),
                 "zg6r": ("kt_records", "typed_records", "rmatch_records", "zrc_records", "zlink_records", "typed",
                          "encoder", "head")}
@@ -550,6 +551,18 @@ def screen_diff(s, s0):
     return [f for f in keys if s.get(f) != s0.get(f)]
 
 
+def train_card(t):
+    """train.json's SAME_TRAIN fields, with each variant's own outputs (OWN_OUTPUT) left out of `variants`: its loss curve
+    (steps per epoch included) and its seconds differ from one seed to the next, its set, ctx, blocks, widths, ctx_stats
+    and swa_epochs do not."""
+    out = {f: t.get(f) for f in SAME_TRAIN}
+    v = out["variants"]
+    if isinstance(v, dict):
+        out["variants"] = {n: ({k: x for k, x in b.items() if k not in OWN_OUTPUT} if isinstance(b, dict) else b)
+                           for n, b in v.items()}
+    return out
+
+
 def fit_problems(arm, base, gates):
     """Why a WQG fit of the arm is not section 3's: its train exit, its seed in screen.json, train.json, the wq block and
     every stamp, its six reads, the gates its train, wq block and read name, its overlay, and that it differs from the
@@ -585,7 +598,8 @@ def fit_problems(arm, base, gates):
             continue
         s0, t0, t = WQ.read_json(s0p), WQ.read_json(t0p), WQ.read_json(fr / n / "train.json")
         off = screen_diff(s, s0)
-        off += [f"train.json {f}" for f in SAME_TRAIN if t.get(f) != t0.get(f)]
+        c, c0 = train_card(t), train_card(t0)
+        off += [f"train.json {f}" for f in SAME_TRAIN if c[f] != c0[f]]
         if arm == "zg6":
             g, g0 = s.get("g6") or {}, s0.get("g6") or {}
             off += [f"g6 {f}" for f in G6_SAME if g.get(f) != g0.get(f)]
@@ -903,7 +917,10 @@ FAKE_CARD = {"train": "webqsp=fit,squad=fit,hotpotqa=fit,2wiki=fit", "basis": "2
 FAKE_G6 = {"declared_in": "docs/G6_FREE_GNN.md", "arm": "zg6", "model": {"toy": 1}, "twin": False,
            "mlp_score_read": False, "readout": "unbounded"}
 FAKE_TRAIN = {"train": FAKE_CARD["train"], "basis": "2wiki", "basis_sha256": "bsha", "config": FAKE_CARD["config"],
-              "hidden": 128, "variants": "p", "seconds": 100.0, "peak_gpu_gb": 3.0, "data_gb": 2.0}
+              "hidden": 128, "seconds": 100.0, "peak_gpu_gb": 3.0, "data_gb": 2.0,
+              "variants": {"p": {"set": "pick", "ctx": "none", "blocks": ["rank", "dense_cos"],      # the real shape (A1)
+                                 "widths": {"rank": 5, "dense_cos": 1}, "curve": [], "ctx_stats": None,
+                                 "swa_epochs": [2, 3], "seconds": 100.0}}}
 
 
 def fake_code(arm):
@@ -942,7 +959,8 @@ def fake_fit(fits_root, name, gate_sha, overlay_sha, dev=None, read_=True, stamp
         s[GW.KEY] = {"declared_in": GW.DECLARED, "fit": name, "arm": arm, "seed": sd, "split": sp, **FAKE_RECORDS,
                      **FAKE_R_EXTRA, "code": fake_code(arm)}
     WQ.write_json(d / "screen.json", {**s, **({KEY: k} if stamp else {})})
-    WQ.write_json(d / "train.json", {**FAKE_TRAIN, "seed": sd})
+    own = {"curve": [{"epoch": 0, "loss": 1.0 + sd, "steps": 100 - sd}], "seconds": 100.0 + sd}     # differs per seed
+    WQ.write_json(d / "train.json", {**FAKE_TRAIN, "seed": sd, "variants": {"p": {**FAKE_TRAIN["variants"]["p"], **own}}})
     WQ.write_json(d / TIMING_FILE, {"peak_gb": 8.0})
     (d / "models.pt").write_bytes(b"weights")
     (d / "reads" / "metaqa__s1eval.npz").write_bytes(b"read")
@@ -1478,6 +1496,12 @@ def selftest():
         u()
         u = edit_json(tj(nm), lambda r_: r_.update(basis_sha256="other"))
         broken("train.json basis_sha256", lambda: None, u)
+        u = edit_json(tj(nm), lambda r_: r_["variants"]["p"].update(curve=[{"epoch": 9, "loss": 0.1}], seconds=1.0))
+        assert verdict(B, arm="zg6")["verdict"] == "FLOORS_READY"       # a variant's curve and seconds are its own (A1)
+        u()
+        for f_, val in (("widths", {"rank": 6}), ("swa_epochs", [2]), ("blocks", ["rank"]), ("set", "other")):
+            u = edit_json(tj(nm), lambda r_, f_=f_, val=val: r_["variants"]["p"].update({f_: val}))
+            broken("train.json variants", lambda: None, u)
         u = edit_json(sj(nm), lambda r_: r_["g6"].update(twin=True))
         broken("g6 twin", lambda: None, u)
         u = edit_json(sj(nm), lambda r_: r_[KEY].update(kt_records={"kt": "other"}))

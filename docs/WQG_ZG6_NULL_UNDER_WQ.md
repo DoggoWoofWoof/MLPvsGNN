@@ -196,3 +196,35 @@ anything runs, the stub's refusals and its two files.
 ## 10. Results
 
 None yet. Nothing here is a result.
+
+## 11. Amendment A1 (30 October): the seed guard compared a fit's own outputs
+
+**What happened.** Both arms ran, were taken and had their compares and floors built (zg6 at 04:15, zg6r at 04:57). The
+first call of `zwqg.py verdict` on each arm, at 04:57, returned INCOMPLETE with four problems per arm, one per fit, each
+the same: `not the seed-0 fit <name> with the seed changed: train.json variants`. No other guard named anything.
+
+**Cause.** Section 3 requires a WQG fit to differ from its seed-0 fit in the seed alone, and `SAME_TRAIN` (the fields of
+`train.json` the two fits must share) listed `variants`. In a real `train.json`, `variants` is a dict, `{"p": {set, ctx,
+blocks, widths, curve, ctx_stats, swa_epochs, seconds}}`, and two of those entries are the fit's own outputs: `curve` (the
+loss per epoch, with the step count, which a different shuffle changes) and `seconds`. They differ from one seed to the
+next by construction, so the guard refused every seed-k fit. The self-test's fixture wrote `"variants": "p"` (a string), the
+shape of `screen.json`'s card and not of `train.json`, so it could not see this. The defect is in the guard, not in a fit:
+for all eight fits the guard named no field but `variants`, and a field-by-field diff of two of them (zg6 seed 1 and zg6
+seed 2 on the held-out-hotpotqa split) against their seed-0 fits showed only the seed, the weights' sha, the peak
+figures, the seconds, the time stamp and the curve (with `variants.p.seconds`) differing.
+
+**Amendment.** `zwqg.py` gains `OWN_OUTPUT = ("curve", "seconds")` and `train_card(t)`, and the guard compares `train_card`
+of the two fits instead of `train.json`'s fields as they stand. `train_card` leaves `curve` and `seconds` out of each
+variant of `variants` and nothing else; every other field, and every other guard (screen.json's card and code shas, the
+`g6` and zg6rw blocks, the records, the trainer code, the seeds, the gate, the device, the read cap), is unchanged.
+
+**What this does not touch.** No fit, take, compare or floor changes: the floors read the compares' R@5 and not
+`train.json`, and `floors-zg6` and `floors-zg6r` were built before this amendment and are recomputed by the verdict as
+section 5 says. The verdict still has no model number in it (FLOORS_READY or INCOMPLETE). The amendment is committed before
+the verdict is called again, and the 04:57 INCOMPLETE calls are the first of two, named in section 10 when it is filled.
+
+**Self-test.** The fixture writes the real shape (a `variants` dict with a curve and seconds that differ per seed, the
+seed-0 fit's and each seed-k fit's). Added: a seed-k fit whose curve and seconds are changed again stays FLOORS_READY; a
+changed `widths`, `swa_epochs`, `blocks` or `set` is INCOMPLETE and names `train.json variants`. With the old comparison
+swapped in, the amended self-test fails with the message the real data gave. `zwqg.py --selftest` and `zwqg_session.py
+--selftest` pass.
