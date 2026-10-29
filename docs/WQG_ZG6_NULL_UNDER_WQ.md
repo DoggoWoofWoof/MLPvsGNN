@@ -195,7 +195,71 @@ anything runs, the stub's refusals and its two files.
 
 ## 10. Results
 
-None yet. Nothing here is a result.
+**WQG: FLOORS_READY for both arms** (`outputs/wqg/null-verdict-zg6.*` and `null-verdict-zg6r.*`; exit 0). Called at 05:02
+on 30 October by the amended guard (section 11, 3e84689). The first calls, at 04:57, were INCOMPLETE on `train.json
+variants` for all eight fits (section 11); they are the first of two and nothing but the guard changed between them. The
+verdict is a null and adopts or rejects no model.
+
+**The sessions.** Both on 2x Tesla T4, one device record (image kaggle-gpu:py3.13.15, torch 2.11.0+cu128, numpy 2.1.3),
+every fit exit 0.
+- Arm A (zg6, rows cap 65,536): mpr-kg v12, gate a13c1aa6ff6b, session 6,223.2 s (overlay 94.7 s, gate 79.2 s). Fits
+  scr-wqg-zg6-s1 2,027.9 s, -s1-hp 3,928.3 s, -s2 2,005.8 s, -s2-hp 3,941.3 s.
+- Arm B (zg6r, rows cap 32,768): mpr-kg-g6b2 v10, gate 7121d49c8e4d, session 8,565.4 s (overlay 368.2 s, gate 80.9 s).
+  Fits scr-wqg-zg6r-s1 2,786.1 s, -s1-hp 5,157.1 s, -s2 2,559.2 s, -s2-hp 4,656.7 s. Version 9 of mpr-kg-g6b2 had stopped
+  within 30 s ("the group u2n is not attached"): the stub did not attach G6RW's dataset, as `kg_push.py g6rw` does. It was
+  fixed in the launcher (outside the repo's stage files) and no fit ran in v9.
+- Eight compares (`compare-all`, 0 run, 8 filed): `outputs/screen/scr-wqg-<arm>-s<k>[-hp]`.
+
+**The floors.** D1 and D2 are the seed-1 and seed-2 R@5 minus the seed-0 fit's; floor = max(0.0075, 2 x the root mean
+square of D1 and D2). Six of twelve floors are above 0.0075 for each arm; four of each arm's are wider than zspk's.
+
+| split | dataset | zg6 seed 0 | D1 | D2 | zg6 floor | zg6r seed 0 | D1 | D2 | zg6r floor | zspk floor (WQK) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| WQ-musique | metaqa | 0.4393 | -0.0154 | -0.0428 | 0.0643 | 0.4105 | +0.0139 | -0.0020 | 0.0199 | 0.0439 |
+| WQ-musique | squad | 0.9097 | +0.0016 | +0.0027 | 0.0075 | 0.9105 | +0.0003 | +0.0023 | 0.0075 | 0.0075 |
+| WQ-musique | musique | 0.5018 | +0.0150 | +0.0093 | 0.0250 | 0.4106 | +0.0502 | +0.0512 | 0.1014 | 0.0545 |
+| WQ-musique | hotpotqa | 0.9109 | +0.0015 | +0.0016 | 0.0075 | 0.9134 | -0.0024 | -0.0016 | 0.0075 | 0.0075 |
+| WQ-musique | 2wiki | 0.9390 | +0.0012 | +0.0024 | 0.0075 | 0.9369 | +0.0038 | +0.0014 | 0.0075 | 0.0075 |
+| WQ-musique | webqsp | 0.6423 | -0.0012 | -0.0093 | 0.0133 | 0.6501 | -0.0074 | -0.0026 | 0.0111 | 0.0174 |
+| WQ-hotpotqa | metaqa | 0.4167 | -0.0037 | +0.0025 | 0.0075 | 0.3834 | +0.0521 | +0.0322 | 0.0866 | 0.0308 |
+| WQ-hotpotqa | squad | 0.9114 | -0.0004 | +0.0003 | 0.0075 | 0.9111 | +0.0019 | +0.0013 | 0.0075 | 0.0075 |
+| WQ-hotpotqa | musique | 0.5961 | -0.0065 | -0.0017 | 0.0095 | 0.5941 | -0.0021 | +0.0037 | 0.0075 | 0.0090 |
+| WQ-hotpotqa | hotpotqa | 0.8183 | +0.0078 | +0.0012 | 0.0112 | 0.8529 | -0.0041 | -0.0044 | 0.0085 | 0.0075 |
+| WQ-hotpotqa | 2wiki | 0.9414 | -0.0017 | +0.0007 | 0.0075 | 0.9420 | -0.0002 | +0.0012 | 0.0075 | 0.0075 |
+| WQ-hotpotqa | webqsp | 0.6421 | -0.0081 | -0.0110 | 0.0193 | 0.6536 | -0.0053 | -0.0135 | 0.0205 | 0.0089 |
+
+What the table shows, read off it and not further:
+- **zg6r's spread is large on two zero-shot reads and small on the rest.** WQ-musique musique: seeds 1 and 2 read 0.4608
+  and 0.4618 against 0.4106 at seed 0 (floor 0.1014, zspk's 0.0545); WQ-hotpotqa metaqa: 0.4355 and 0.4156 against 0.3834
+  (floor 0.0866, zspk's 0.0308). Seed 0 is the lowest of the three seeds on both. zg6's floors on those two reads are
+  0.0250 and 0.0075.
+- Every in-domain floor of both arms is 0.0075 to 0.0205.
+
+**Beside, deciding nothing: the three re-calls under the real floors** (`outputs/wqg/wqg-*-pair-recall.*`). The floor of a
+comparison of two arms with seeds is max(0.0075, 2 x the root mean square of their spreads); zg6e has seed 0 only, so a
+comparison with it takes zg6's floor.
+
+| pair | filed call (stand-in floors) | re-call (real floors) | the reads that moved |
+|---|---|---|---|
+| zg6e against zg6 (R2EG, 1b38abc) | NOT_ADOPTED: 1 GAIN, 2 LOSS | 0 GAIN, 1 LOSS | WQ-musique metaqa LOSS (-0.0443) -> WITHIN (floor 0.0643); WQ-hotpotqa hotpotqa GAIN (+0.0097) -> WITHIN (0.0112). WQ-hotpotqa metaqa stays LOSS (-0.0320, floor 0.0075) |
+| zg6r against zspk (G6RW, e0e2c51) | ADOPT_FOR_FULL_RUN: 5 GAIN, 0 LOSS | 5 GAIN, 0 LOSS | WQ-hotpotqa metaqa GAIN (+0.0450) -> WITHIN (floor 0.0650); WQ-musique webqsp WITHIN -> GAIN (+0.0167, floor 0.0146). WQ-musique musique stays WITHIN (-0.0484, floor 0.0814) |
+| zg6r against zg6 (G6RW's beside) | 1 GAIN, 2 LOSS | 1 GAIN, 1 LOSS | WQ-hotpotqa metaqa LOSS (-0.0333) -> WITHIN (floor 0.0614). WQ-musique musique stays LOSS (-0.0912, floor 0.0738); WQ-hotpotqa hotpotqa stays GAIN (+0.0346, floor 0.0099) |
+
+No reading flips: R2EG stays NOT_ADOPTED (no GAIN and one LOSS under the real floors) and G6RW stays
+ADOPT_FOR_FULL_RUN (no LOSS and five GAINs, with one read in the set swapped for another). Section 7's rule, that a flip
+names a declared amendment, is not triggered. The "filed" column in the re-call tables (`outputs/wqg/*-recall.md`) is the
+call the compare file itself carries (lean_screen's own, per `screen_recall.py`), not G6RW's or R2EG's adoption call: it
+reads GAIN for WQ-musique metaqa of zg6r against zspk (+0.0121), which G6RW's table calls WITHIN against zspk's floor of
+0.0439. The adoption calls are the ones in G6RW's and R2EG's own files, and the table above sets them beside the re-calls.
+
+**What this fixes for what comes next.** From here a declaration cites `outputs/wqg/floors-zg6` or `floors-zg6r` in place
+of zspk's stand-in. G6RW's weak read (WQ-musique zero-shot musique, 0.4106) was at the bottom of zg6r's spread. The full
+run of zg6r and every comparison of zg6r with another arm on a zero-shot read are then called against a floor of 0.0866
+to 0.1014 on those two reads, which a single seed cannot resolve: the full run's declaration has to state how many seeds
+it fits for zg6r. That is for the declared file; nothing here chooses it.
+
+Files: `outputs/wqg/floors-zg6.*`, `floors-zg6r.*`, `null-verdict-zg6.*`, `null-verdict-zg6r.*`, `wqg-*-pair.*`,
+`wqg-*-pair-recall.*`, `outputs/screen/scr-wqg-*`. Not committed: `outputs/wqg/sessions`, `outputs/screen/fits`.
 
 ## 11. Amendment A1 (30 October): the seed guard compared a fit's own outputs
 

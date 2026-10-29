@@ -1,0 +1,261 @@
+{
+ "new": "outputs\\screen\\fits\\scr-wqg-zg6-s1-hp",
+ "bases": [
+  "outputs\\screen\\fits\\scr-wqk-zg6-s0-hp"
+ ],
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "floor": 0.0075,
+ "boot": 2000,
+ "trained_on": [
+  "2wiki",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "by_base": {
+  "outputs\\screen\\fits\\scr-wqk-zg6-s0-hp": {
+   "rows": [
+    {
+     "dataset": "metaqa",
+     "read": "zero-shot",
+     "questions": 9785,
+     "base": [
+      0.4167,
+      0.353,
+      0.1582
+     ],
+     "new": [
+      0.4129,
+      0.3442,
+      0.2009
+     ],
+     "rrf": [
+      0.0047,
+      0.0026,
+      0.0008
+     ],
+     "delta": [
+      -0.0037,
+      -0.0088,
+      0.0427
+     ],
+     "lo": [
+      -0.0086,
+      -0.0138,
+      0.0367
+     ],
+     "hi": [
+      0.0012,
+      -0.0038,
+      0.0489
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "squad",
+     "read": "in-domain",
+     "questions": 11873,
+     "base": [
+      0.9114,
+      0.9114,
+      0.7536
+     ],
+     "new": [
+      0.911,
+      0.911,
+      0.7543
+     ],
+     "rrf": [
+      0.9054,
+      0.9054,
+      0.7335
+     ],
+     "delta": [
+      -0.0004,
+      -0.0004,
+      0.0007
+     ],
+     "lo": [
+      -0.0024,
+      -0.0024,
+      -0.002
+     ],
+     "hi": [
+      0.0016,
+      0.0016,
+      0.0035
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "musique",
+     "read": "in-domain",
+     "questions": 2417,
+     "base": [
+      0.5961,
+      0.2834,
+      0.7691
+     ],
+     "new": [
+      0.5896,
+      0.2772,
+      0.765
+     ],
+     "rrf": [
+      0.4734,
+      0.1353,
+      0.633
+     ],
+     "delta": [
+      -0.0065,
+      -0.0062,
+      -0.0041
+     ],
+     "lo": [
+      -0.0114,
+      -0.0145,
+      -0.0112
+     ],
+     "hi": [
+      -0.0015,
+      0.0021,
+      0.0033
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "hotpotqa",
+     "read": "zero-shot",
+     "questions": 7405,
+     "base": [
+      0.8183,
+      0.6983,
+      0.7774
+     ],
+     "new": [
+      0.8261,
+      0.7103,
+      0.7564
+     ],
+     "rrf": [
+      0.6846,
+      0.424,
+      0.8277
+     ],
+     "delta": [
+      0.0078,
+      0.012,
+      -0.0211
+     ],
+     "lo": [
+      0.0046,
+      0.0062,
+      -0.0263
+     ],
+     "hi": [
+      0.0113,
+      0.0178,
+      -0.0158
+     ],
+     "call": "GAIN"
+    },
+    {
+     "dataset": "2wiki",
+     "read": "in-domain",
+     "questions": 12576,
+     "base": [
+      0.9414,
+      0.8601,
+      0.9806
+     ],
+     "new": [
+      0.9397,
+      0.8579,
+      0.9753
+     ],
+     "rrf": [
+      0.6079,
+      0.2536,
+      0.8747
+     ],
+     "delta": [
+      -0.0017,
+      -0.0021,
+      -0.0052
+     ],
+     "lo": [
+      -0.0031,
+      -0.0056,
+      -0.0076
+     ],
+     "hi": [
+      -0.0003,
+      0.0012,
+      -0.0029
+     ],
+     "call": "WITHIN"
+    },
+    {
+     "dataset": "webqsp",
+     "read": "in-domain",
+     "questions": 1503,
+     "base": [
+      0.6421,
+      0.5283,
+      0.5576
+     ],
+     "new": [
+      0.634,
+      0.5203,
+      0.5556
+     ],
+     "rrf": [
+      0.0535,
+      0.0379,
+      0.0459
+     ],
+     "delta": [
+      -0.0081,
+      -0.008,
+      -0.002
+     ],
+     "lo": [
+      -0.0197,
+      -0.0206,
+      -0.02
+     ],
+     "hi": [
+      0.0034,
+      0.004,
+      0.0166
+     ],
+     "call": "WITHIN"
+    }
+   ],
+   "verdict": "PROMISING",
+   "decides": true
+  }
+ },
+ "script_sha256": "fe6977f3849bfb5fbfe10019671e7859167640cebd2ed96f7b142f95eb669d81",
+ "utc": "2026-10-29T22:45:57Z",
+ "verdict": "PROMISING",
+ "wqg": {
+  "declared_in": "docs/WQG_ZG6_NULL_UNDER_WQ.md",
+  "compare": "scr-wqg-zg6-s1-hp",
+  "new": "scr-wqg-zg6-s1-hp",
+  "bases": [
+   "scr-wqk-zg6-s0-hp"
+  ],
+  "device": {
+   "gpu": "Tesla T4",
+   "image": "kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3",
+   "torch": "2.11.0+cu128",
+   "cuda": "12.8",
+   "cudnn": 91900
+  },
+  "arm": "zg6",
+  "seed": 1,
+  "zwqg_sha256": "3ca720133dae1d9834b1a45aea8eb75873e08b65d7dc4f51022e5c53722ec238"
+ }
+}
