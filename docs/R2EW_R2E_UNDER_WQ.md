@@ -230,4 +230,28 @@ Both run on toys in temporary folders and write nothing under the real folders. 
 
 ## 10. Results
 
-Not run yet.
+**Verdict: zrckpbe is NOT_ADOPTED** (0 GAIN, 1 LOSS), called by `zr2ew.py verdict` and filed in
+`outputs/r2ew/screen-verdict.json` and `.md`, with the pairs, the re-calls and `outputs/screen/scr-r2ew-*-vs-zrckp[-hp]`.
+The MLP half of R2e closes with it.
+
+Session: mpr-kg-g6b2 version 7 (gate 7196c841e9c8, overlay 187.1 s, gate 83.8 s, 2,082.0 s in all) on 2x Tesla T4, image
+kaggle-gpu:py3.13.15:torch2.11.0+cu128:numpy2.1.3, the device R2GW's zrckpb fits and WQK's zrckp fits ran on. Both fits
+exited 0 (scr-r2ew-zrckpbe 1,472.5 s, scr-r2ew-zrckpbe-hp 1,605.3 s).
+
+Deciding, zrckpbe against WQK's seed-0 zrckp under WQK's zrckp floors:
+
+- LOSS: WQ-hotpotqa musique (0.5743 -> 0.5639, -0.0105, floor 0.0075).
+- No GAIN. The two metaqa zero-shot reads rise (0.4393 -> 0.4488, +0.0095, and 0.3927 -> 0.4403, +0.0476) and are GAIN on
+  the pair's own intervals; under the zrckp floors (0.0621 and 0.0489) they are WITHIN. The other ten reads are WITHIN.
+- Beside, deciding nothing: zrckpbe against R2GW's zrckpb, 0 GAIN and 0 LOSS. The link flags give back most of what the
+  ungated head read at seed 0 on webqsp (WQ-musique webqsp 0.6577 -> 0.6506, WQ-hotpotqa webqsp 0.6488 -> 0.6425) and
+  keep most of its metaqa rise (0.4578 -> 0.4488; 0.4459 -> 0.4403).
+- R2's EM term reached 0.839 and 0.792 of the training questions on the two fits (zrckpb's: 0.991 and 0.992), so the
+  flags removed the term from about a sixth to a fifth of the questions.
+- Seconds on the T4: train 1,111 and 1,267 (zrckpb 991 and 985, WQK's zrckp 831 and 837), read 341 and 322 (300 and
+  299, 297 and 283); peak GPU 1.87 and 3.99 GB train, 4.43 GB read, as the others; peak RAM 4.51 and 4.61 GB.
+- The link statistics per read are in the verdict file (rows linked, flags per row, questions linked).
+
+Next (section 7, fixed before any number): R2e's GNN half under WQ on the T4, its own declared file (bridge scores only for
+linked bridges inside zg6's messages). It is being written, with a confirmation of the ungated zrckpb at the null seeds
+(R2WS) before it. Nothing here adopts R2.
