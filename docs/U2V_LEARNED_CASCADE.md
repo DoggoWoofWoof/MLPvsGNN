@@ -98,3 +98,25 @@ in K for every order and bounded by the reach, no need exceeds the pool, and the
 - That a trained selector would do better than the model's ranking order: this reads a ranker's order, not a selector's.
 - Any gain in R@5 or latency. This is a measure of where the golds sit.
 - Anything on the three in-domain datasets as a zero-shot claim.
+
+## 7. Amendment 1 (30 October, before any U2v number): metaqa and webqsp cannot be read on this laptop
+
+The first run (`L-musique`, carve order metaqa first) stopped before it scored a single row, on
+`outputs/step1/cache/metaqa/s1eval/part_1of13/xc.npy: No such file`. The feature cache on this laptop is complete for
+squad, musique, hotpotqa and 2wiki (every part has its arrays); it is not for metaqa (12 of 13 parts have no `xc.npy`)
+or webqsp (1 of 2). Those arrays are on the lab host, which is unreachable. No number had been written. The rule of
+section 3 changes in exactly these ways, and in no other:
+
+- The datasets read are **squad, musique, hotpotqa and 2wiki**. The weighted mean uses U2s's weights restricted to
+  them (squad 17,729, musique 7,018, hotpotqa 13,335, 2wiki 18,504); K\* is the smallest K at which the model's
+  `ALL >= reach - 0.005` on each of the four.
+- **metaqa and webqsp are not read.** The verdict is therefore a verdict on four passage datasets, and it is
+  provisional: metaqa is the second-deepest dataset (its own cheapest cell is 1,520 rows at 0.95) and a knowledge-base
+  graph. A stage that rests on this verdict reads them first, from the host's parts or a rebuilt cache.
+- `L-metaqa` reads the same four carves, all in-domain (its fit trained on squad, musique, hotpotqa and 2wiki); it adds
+  a second model, not a zero-shot read. `L-musique` reads musique zero-shot; squad, hotpotqa and 2wiki are in-domain for
+  both. The stage verdict is still the worse of the two fits' verdicts.
+- Everything else in sections 2 to 6 stands, including the grids, the three verdict rows and each outcome's next form.
+
+Run: `zu2v.py run --fit L-musique --carves squad=s1eval,musique=s1eval,hotpotqa=s1eval,2wiki=s1eval` and the same for
+`L-metaqa`.
