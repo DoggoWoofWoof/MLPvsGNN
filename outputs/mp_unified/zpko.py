@@ -133,7 +133,8 @@ PART_ROWS_BY = {"webqsp": 500_000, "metaqa": 1_200_000, "musique": 950_000, "hot
 RESERVE = 15 * 2 ** 30                                       # section 6: the disk kept free
 ZPKO_KEY = "outputs/mp_unified/zpko.py"                      # A1: how the records name this file among the scripts
 ZPKO_SAME = ("8629c86949b4d1fd01f0dc980c58af0419b63617426a6c521899f409beffd16b",   # its sha before A1 (A0): the same pools pass
-             "5306512eaa3b8d0fd1b08551528e9216082e4978030ad202359236f83113d185")   # A1's; A2 changes only check (b)
+             "5306512eaa3b8d0fd1b08551528e9216082e4978030ad202359236f83113d185",   # A1's; A2 changes only check (b)
+             "6af776bee99756fd3aadb528eb8e56017b89f14ba020ac507daf99977c0943a1")   # A2's (893ea05); A3 changes only look_shard
 RULE_B = "A2"                                                # check (b)'s rule (docs/PKO_A2_AMENDMENT.md); a record carries it
 GIB = 2 ** 30
 MARGIN_GIB = 1.0                                             # A1: kept free above a step's measured peak
@@ -945,8 +946,15 @@ def zp_roots(R):
                  links=R.links, rmatch=R.rmatch, zrc=R.zrc, typed=R.typed, records=R.records)
 
 
+def accept_one_shard(parse):
+    """A3 (docs/PKO_A3_AMENDMENT.md): the committed look scripts' shard parser refuses n = 1 and a carve of LOOK_ROWS rows or
+    fewer has one look shard. Exactly '0/1' is accepted as (0, 1), every chunk, tag _0of1; any other text goes to `parse`."""
+    return lambda text: (0, 1) if text == "0/1" else parse(text)
+
+
 def look_shard(name, carve, shard, R=None):
-    """look_u2d on PKO's pools: zu2d_pools.load_filed and roots, and look_u2d.DECLARED, patched in process."""
+    """look_u2d on PKO's pools: zu2d_pools.load_filed and roots, and look_u2d.DECLARED, patched in process (A3: and the
+    shard parser, for a carve with one look shard)."""
     R = roots() if R is None else R
     need_checks(R)
     import look_u2d as LU
@@ -965,7 +973,9 @@ def look_shard(name, carve, shard, R=None):
     pl = {"DECLARED": DECLARED}
     pl.update({k: v for k, v in (("load_filed", lf), ("roots", rt)) if hasattr(LU, k)})
     argv = ["--build", "new", "--dataset", name, "--carve", carve, "--full", "--shard", f"{shard[0]}/{shard[1]}"]
-    with fit_ctx(name, carve), WQ.patch(ZP, load_filed=lf, roots=rt), WQ.patch(LU, **pl):
+    L8 = LU.LX.L8
+    with fit_ctx(name, carve), WQ.patch(ZP, load_filed=lf, roots=rt), WQ.patch(LU, **pl), \
+            WQ.patch(L8, parse_shard=accept_one_shard(L8.parse_shard)):
         LU.main(argv)
     outs = look_outs(R, name, carve, shard)
     if not all(p.exists() for p in outs):
@@ -1775,6 +1785,22 @@ def same_arrays(a, b):
         and np.asarray(a[k]).tobytes() == np.asarray(b[k]).tobytes() for k in a)
 
 
+def selftest_a3(tmp):
+    """PKO A3 (docs/PKO_A3_AMENDMENT.md): the real look modules' shard parser, not a toy. The committed parser refuses
+    0/1; PKO's wrapper accepts exactly that text and passes everything else on; look_x_six reads the same module object;
+    and the files a one-shard look writes are the names look_outs expects."""
+    import look_u2d as LU
+    L8, LXS = LU.LX.L8, sys.modules["look_x_six"]
+    assert LXS.L8 is L8 and _raises(L8.parse_shard, "0/1")                  # a later change of the committed parser is seen
+    ps = accept_one_shard(L8.parse_shard)
+    assert ps("0/1") == (0, 1) and ps("0/2") == (0, 2) and ps("1/2") == (1, 2)
+    assert all(_raises(ps, t) for t in ("1/1", "2/2", "0/0", "1/0", "0/3x", "a/b"))
+    R = Roots(base=tmp, out=tmp, pools=tmp, parts=tmp, look=tmp / "look", cache=tmp, kt=tmp, links=tmp, rmatch=tmp,
+              zrc=tmp, typed=tmp, records=tmp)
+    assert [p.name for p in look_outs(R, "squad", "fit", (0, 1))] == ["record_0of1.json", "pools_0of1.json"]
+    return 1
+
+
 def selftest_a1(tmp, plan, facts, op, rule):
     """PKO A1 (docs/PKO_A1_AMENDMENT.md): rows-based chunking and part sizes, the peak record, the RAM preflight, the
     carve order, the counts guard, and that nothing A0 filed or keyed changes. Toy folders only."""
@@ -2210,6 +2236,7 @@ def selftest():
         assert not any(s_.key.startswith(("rmatch", "zrc", "typed")) for s_ in sq)
         n += 1
         n += selftest_a1(tmp, plan, facts, op, rule)
+        n += selftest_a3(tmp)
     log(f"zpko selftest: {n} checks pass")
 
 
