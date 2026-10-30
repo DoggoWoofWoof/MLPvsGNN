@@ -375,6 +375,16 @@ def selftest():
     ok(gate_passes({"code": "abc", "verdict": "PASS_A2"}, "abc") and gate_passes({"code": "abc", "verdict": "PASS"}, "abc")
        and not gate_passes({"code": "abc", "verdict": "FAIL"}, "abc") and not gate_passes({"code": "abd", "verdict": "PASS"}, "abc")
        and not gate_passes({}, "abc"), "the gate: PASS or PASS_A2, for this commit only")
+    # A5, on the record verify_shard wrote in the 30 Oct run (webqsp/s1eval 0/2 on Modal: the file sha alone differs)
+    ref5 = {"modal_first_build_file_sha256": "2d1c2c56f0d5c2f615dc590b93e81fae15a53d94e49a63db6b551fcf68a49009"}
+    v5 = {"verdict": "FAIL", "problems": ["file_sha256: 2d1c2c56f0d5c2f615dc590b93e81fae15a53d94e49a63db6b551fcf68a49009 is not "
+                                           "7f25a31f63153b61c9838a40b8ab2eab4ab96455e6b5a33d2af17c6af60d560c"],
+          "got": {"file_sha256": "2d1c2c56f0d5c2f615dc590b93e81fae15a53d94e49a63db6b551fcf68a49009"}}
+    ok(a5_accepts(v5, ref5), "A5 accepts the run's record: the file sha alone, and the first Modal build's bytes")
+    ok(not a5_accepts(dict(v5, got={"file_sha256": "0" * 64}), ref5), "A5: another file does not pass")
+    ok(not a5_accepts(dict(v5, problems=v5["problems"] + ["rows: 3 is not 3591601"]), ref5), "A5: a second problem does not pass")
+    ok(not a5_accepts(dict(v5, problems=["rows: 3 is not 3591601"]), ref5) and not a5_accepts(dict(v5, verdict="PASS"), ref5)
+       and not a5_accepts({}, ref5), "A5: another problem, a PASS (nothing to accept) and an empty record do not pass")
     # A4, on the item lines zpkoh really writes (not a toy list): hotpotqa's own shards and merge go, its check shards stay
     r = subprocess.run([sys.executable, "outputs/mp_unified/zpkoh.py", "items", "pools", "--carves", "hotpotqa/fit"],
                        capture_output=True, text=True, encoding="utf-8", errors="replace")
@@ -520,10 +530,34 @@ def _filed_failures(argv):
         return []
 
 
+def a5_accepts(v, ref):
+    """A5: `zpkoh.run_unit` compares the webqsp/s1eval 0/2 shard it built with the laptop's, bit for bit (verify_shard). On Modal
+    that comparison's only problem is the file sha, and the file is the first Modal build's bytes, the ones check (c) read at
+    the level of the arrays (A2). True for exactly that record, never for any other problem or any other file."""
+    pr = v.get("problems") or []
+    own = (v.get("got") or {}).get("file_sha256")
+    return (v.get("verdict") == "FAIL" and len(pr) == 1 and pr[0].startswith("file_sha256:")
+            and own is not None and own == ref.get("modal_first_build_file_sha256"))
+
+
 def _unit_body(cid, cmd, label):
     info = _setup(cid)
     argv = argv_of(cmd)
     res = _run_py(argv, label.replace("/", "_").replace(":", "_"))
+    if res["rc"] != 0 and argv[1:5] == ["unit", "pools", "webqsp/s1eval", "0/2"]:       # A5
+        try:
+            import zpkoh
+            v = zpkoh.verify_shard(REPO / "outputs" / "pko")
+            ref = json.loads((REPO / "outputs" / "pkoh" / "check_c_ref.json").read_text(encoding="utf-8"))
+            res["a5"] = {"accepted": a5_accepts(v, ref), "problems": v.get("problems"), "got": v.get("got")}
+            if res["a5"]["accepted"]:
+                res["rc"] = 0
+                Path("/pko/check").mkdir(parents=True, exist_ok=True)
+                (Path("/pko/check") / f"a5-webqsp_s1eval_0of2-{cid}.json").write_text(json.dumps(
+                    {"code": cid, "rule": "A5", "verdict": "PASS_A5", **res["a5"], "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
+                    indent=1), encoding="utf-8")
+        except Exception as e:  # noqa: BLE001 -- an error of the comparison itself is not a pass
+            res["a5"] = {"accepted": False, "error": repr(e)[:300]}
     if res["rc"] != 0 and len(argv) > 3 and argv[1] == "unit":
         res["failed_rcs"] = _filed_failures(argv)
     pko.commit()
@@ -908,7 +942,7 @@ def _fetch():
 
 @app.local_entrypoint()
 def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True, retry: bool = False,
-         checks_only: bool = False, item: str = ""):
+         checks_only: bool = False, item: str = "", code: str = ""):
     if stage in ("selftest", "selftest-local"):
         selftest()
         return
@@ -928,7 +962,7 @@ def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True, retr
     if stage == "fetch":
         _fetch()
         return
-    cid = _git("rev-parse", "HEAD").strip()[:12]
+    cid = (code or _git("rev-parse", "HEAD").strip())[:12]       # A5: --code runs a commit already uploaded and gated (a docs-only commit after it needs no new gate)
     cv = [c for c in carves.split(",") if c]
     if stage in ("probe", "selftests"):                  # selftests = probe without the inventory's sha256
         print(json.dumps(probe.remote(cid, stage == "selftests"), indent=1)[:6000])

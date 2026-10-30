@@ -266,3 +266,40 @@ is stopped by me if the month to date reaches 29.9 USD. Each stop and each cost 
 record, then the document), as with checks (c) and (b), and is amended in the open if the cause is in the check. A squad/s1eval
 FAIL under rule A2 is final for that rule (docs/PKO_A2_AMENDMENT.md), so it would need a further PKO amendment, declared after
 reading the arrays.
+
+## 13. Amendment A5: the laptop-shard comparison inside webqsp's unit, and `--code` (declared 30 Oct 2026, after the A4 run)
+
+**What the A4 run did (spawned 16:03, ended 16:19, commit 1f63817, gate PASS_A2 for it, 0.25 h; month to date 29.165 to 29.403
+USD, so 0.24 USD against the 0.2 USD estimated).** Squad/s1eval: the four pools shards (668 to 792 s each), the merge (14 s) and
+check 5 (b) **PASS under rule A2**, with `n_sha256`, `node_sha256` and `k_q_zero` true and no manifest field differing: PKO A2
+(docs/PKO_A2_AMENDMENT.md) holds on the second real squad carve, not only on the one it was read from. Webqsp/s1eval: both pools
+shards built and are filed OK (441 s and 477 s; the shard's own `--check` against U2s is in the head), but **the unit
+`pkoh-wqe-p0` exited 1**, and with it the merge `pkoh-wqe-m` (so check 5 (a) on webqsp is not filed) was dropped.
+
+**Why.** After a webqsp/s1eval 0/2 shard is built, `zpkoh.run_unit` calls `verify_shard` on it, the laptop's filed shard rebuilt:
+file sha, KT sha and shape, rows, questions, nq, range, walk, threads and the shard's check verdict, all bit for bit. The log
+line is `the laptop's webqsp/s1eval shard 0/2: FAIL ['file_sha256: 2d1c2c56... is not 7f25a31f...']`: the one problem is the file
+sha, the same difference check (c) found on 30 Oct and amendment A2 (section 8) accepted at the level of the arrays. **That was
+my omission: A2 relaxed the gate and not the second place the same comparison runs.** Had the full run started on 1 Nov, this
+unit would have failed in the same way, dropped webqsp/s1eval's merge, and with it every carve's look (all four section-5
+merges gate them). It was found because the three checks were run early.
+
+**A5.** In `_unit_body` (`zpkom_modal.py`), for the unit `pools webqsp/s1eval 0/2` only, when it exits non-zero the container
+calls `zpkoh.verify_shard` on the base itself; the unit counts as done (rc 0, filed `a5-webqsp_s1eval_0of2-<commit>.json` on
+the volume with the problems and the shas) if and only if the record has **exactly one problem, a `file_sha256` one, and the
+shard's file sha is `modal_first_build_file_sha256` of `outputs/pkoh/check_c_ref.json`** (2d1c2c56...), the bytes check (c)
+read at the level of the arrays: every array but `nodes` equal to the laptop's, `nodes` with the same per-question sets and at
+most 10% of the lists reordered, and the file reproduced by four builds in fresh containers. Any other problem, any other file
+sha, or an error of the comparison itself leaves the unit failed. `zpkoh.py` and `zpko.py` are untouched (their shas in
+`outputs/pkoh/inputs.json` stand). PASS_A5 means what PASS_A2 means: equal up to the order inside the expansion lists and
+reproducible on Modal, not bit-identical to the laptop. Self-test 45 checks, four of them on the record the run wrote.
+
+**`--code COMMIT`.** Every stage computed its commit from HEAD, and the gate is keyed to the commit, so a docs-only commit after a
+gated one needed a new upload and gate (about 0.04 USD). `--code` names a commit already uploaded and gated; the stage then runs
+that archive. The code that runs is the archive of that commit; nothing else about a unit changes.
+
+**Next, in this order.** (1) Commit this, `--stage upload`, `--stage check` (a new gate for the new commit). (2) `run --carves
+webqsp/s1eval --checks-only --retry`: the shards are filed OK and skipped, the unit's comparison is read under A5, then the merge
+and check-merge run. (3) `--stage unit --carves hotpotqa/fit --item pkoh-hpchk-0`, then `pkoh-hpchk-m` when it is done (with
+`--code` of the gated commit if HEAD has moved), under section 12's cost rules (billing read before, about every 30 minutes
+during, stop at 29.9 USD). Nothing here is a result.
