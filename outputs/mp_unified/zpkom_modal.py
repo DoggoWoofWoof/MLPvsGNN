@@ -6,8 +6,10 @@
     modal run outputs/mp_unified/zpkom_modal.py --stage probe            # env, self-tests, the mirror applied, the 360 inputs by size and sha256
     modal run outputs/mp_unified/zpkom_modal.py --stage check            # PKOH's check (c); the gate of everything below
     modal run --detach outputs/mp_unified/zpkom_modal.py --stage run [--carves squad/fit,...] [--lanes 16]
+    modal run --detach outputs/mp_unified/zpkom_modal.py --stage run --carves squad/s1eval,webqsp/s1eval --checks-only --retry   # A4: section 5's checks only
+    modal run --detach outputs/mp_unified/zpkom_modal.py --stage unit --carves hotpotqa/fit --item pkoh-hpchk-0   # A4: one item, no orchestrator
     modal run outputs/mp_unified/zpkom_modal.py --stage status
-    modal run outputs/mp_unified/zpkom_modal.py --stage fold             # the per-unit ledger files into the volume's ledger.json
+    modal run outputs/mp_unified/zpkom_modal.py --stage fold           # the per-unit ledger files into the volume's ledger.json
     modal run outputs/mp_unified/zpkom_modal.py --stage fetch            # small json records, never an array
 
 Every unit is a PKOH unit, `zpkoh.py unit KIND CARVE [PART] --host`, run unchanged in its own container: the item lines
@@ -129,6 +131,12 @@ def argv_of(cmd):
     if not t or not t[0].endswith(".py"):
         raise SystemExit(f"not a python command: {cmd[:120]}")
     return t
+
+
+def hotpot_own(name, keys):
+    """A4: a hotpotqa carve's own pools shards and merge (`pkoh-<key>-p<i>`, `pkoh-<key>-m`), not its check shards."""
+    import re
+    return any(re.fullmatch(rf"pkoh-{re.escape(k)}-(p\d+|m)", name) for k in keys)
 
 
 def with_retry(cmd):
@@ -367,6 +375,19 @@ def selftest():
     ok(gate_passes({"code": "abc", "verdict": "PASS_A2"}, "abc") and gate_passes({"code": "abc", "verdict": "PASS"}, "abc")
        and not gate_passes({"code": "abc", "verdict": "FAIL"}, "abc") and not gate_passes({"code": "abd", "verdict": "PASS"}, "abc")
        and not gate_passes({}, "abc"), "the gate: PASS or PASS_A2, for this commit only")
+    # A4, on the item lines zpkoh really writes (not a toy list): hotpotqa's own shards and merge go, its check shards stay
+    r = subprocess.run([sys.executable, "outputs/mp_unified/zpkoh.py", "items", "pools", "--carves", "hotpotqa/fit"],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    real = parse_items(r.stdout)
+    sys.path.insert(0, "outputs/mp_unified")
+    import zpkoh
+    keys = [zpkoh.nm(d, c) for d, c in zpkoh.CARVES if d == "hotpotqa"]
+    kept = sorted(n for n in real if not hotpot_own(n, keys))
+    ok(r.returncode == 0 and any(n.startswith("pkoh-hpf-p") for n in real) and "pkoh-hpf-m" in real, "hotpotqa/fit's real items have shards and a merge")
+    ok(kept and all(n.startswith("pkoh-hpchk-") or n == "pkoh-bases" for n in kept) and "pkoh-hpchk-m" in kept,
+       f"checks only: what stays of hotpotqa's real items is its check shards, its check merge and the copy-bases ({kept})")
+    ok(not hotpot_own("pkoh-hpchk-0", keys) and not hotpot_own("pkoh-sqe-p0", keys) and hotpot_own("pkoh-hpe-p3", keys),
+       "only hotpotqa's own shards and merge are dropped")
     print(f"zpkom selftest: {n[0]} checks pass")
 
 
@@ -626,12 +647,14 @@ def _items(phase, carves, extra=()):
 
 
 @app.function(image=image, volumes=VOLS, memory=(2048, 8192), cpu=0.5, timeout=86400, **ORCH)   # nonpreemptible = 3x the list rate: kept small
-def run(cid, carves, lanes, prune=True, retry=False):
+def run(cid, carves, lanes, prune=True, retry=False, checks_only=False):
     """PKOH's open smokes and pools items, then each carve's build items once its merge is done, then the gate: one
     single-use container per item, at most `lanes` at a time. A unit killed for memory runs again one class up with
     --retry, an error of the call runs again as it was, at most three attempts; any other failure is final, and what
     depends on it is dropped and named. The prunes run one at a time (each folds the shared ledger first). `retry` (A3)
-    runs every unit with --retry: an entry filed OK is skipped by the unit, a FAILED one runs again."""
+    runs every unit with --retry: an entry filed OK is skipped by the unit, a FAILED one runs again. `checks_only` (A4) runs
+    section 5's checks and nothing built from them: the named carves' pools shards and merges (the squad merge carries
+    check (b), webqsp's check (a) rides its shards) and hotpotqa's check shards, with no build items and no gate."""
     from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
     _setup(cid)
     gate = Path("/pko/check") / f"gate-{cid}.json"
@@ -642,6 +665,9 @@ def run(cid, carves, lanes, prune=True, retry=False):
     merge_of = {f"pkoh-{zpkoh.nm(d, c)}-m": f"{d}/{c}" for d, c in zpkoh.CARVES}
     pending = {n: it for n, it in _items("check", cv).items() if n.startswith("pkoh-open-")}   # inventory, env and (c) are the other stages
     pending.update(_items("pools", cv))
+    if checks_only:                                       # A4: a hotpotqa carve brings its check shards, not its own pools items
+        hp = [zpkoh.nm(d, c) for d, c in zpkoh.CARVES if d == "hotpotqa"]
+        pending = {n: it for n, it in pending.items() if not hotpot_own(n, hp)}
     known = set(pending)
     done, failed, dropped, cls, tries, retry_next, built, results = set(), {}, set(), {}, {}, set(), set(), {}
     t0, all_retry = time.time(), retry
@@ -692,7 +718,7 @@ def run(cid, carves, lanes, prune=True, retry=False):
                     done.add(n)
                     print(json.dumps({"done": n, "seconds": r.get("seconds"), "peak_gb": r.get("peak_gb"), "class": cls[n],
                                       "tries": tries[n]}), flush=True)
-                    if n in merge_of and n not in built:
+                    if n in merge_of and n not in built and not checks_only:
                         built.add(n)
                         try:
                             add_build(merge_of[n])
@@ -710,7 +736,7 @@ def run(cid, carves, lanes, prune=True, retry=False):
                                  "tail": str(r.get("tail"))[-800:]}
                     print(json.dumps({"failed": n, "rc": r.get("rc"), "tail": str(r.get("tail"))[-400:]}), flush=True)
     gate_run = {}
-    for gname, g in _items("gate", cv).items():           # the gate waits on every carve's tail: it runs only if they all did
+    for gname, g in ({} if checks_only else _items("gate", cv)).items():           # the gate waits on every carve's tail: it runs only if they all did
         if all(d in done for d in g["deps"]):
             r = UNITS[class_for(g["mem"])].spawn(cid, g["cmd"], gname).get()
             gate_run[gname] = {k: r.get(k) for k in ("rc", "seconds", "peak_gb")}
@@ -723,6 +749,26 @@ def run(cid, carves, lanes, prune=True, retry=False):
                "hours": round((time.time() - t0) / 3600, 2)}
     pko.commit()
     return summary
+
+
+@app.function(image=image, volumes=VOLS, memory=(2048, 4096), cpu=0.5, timeout=900, **STAGE)
+def spawn_item(cid, carves, item, retry=False):
+    """A4: one named item of `zpkoh.py items pools|check|build` spawned on its own memory class, without an orchestrator
+    (a nonpreemptible one waits at 3x the list rate; a single check shard runs for hours). The gate must have passed for this
+    commit; the item's dependencies are the caller's to have seen done. Returns the call id and the class."""
+    _setup(cid)
+    gate = Path("/pko/check") / f"gate-{cid}.json"
+    if not gate.exists() or not gate_passes(json.loads(gate.read_text(encoding="utf-8")), cid):
+        raise SystemExit(f"{gate.name}: check (c) has not passed for this commit (--stage check); nothing is built")
+    its = {}
+    for phase in ("check", "pools"):
+        its.update(_items(phase, [c for c in carves if c]))
+    if item not in its:
+        raise SystemExit(f"{item}: not an item of {carves} (known: {sorted(its)[:12]})")
+    c = class_for(its[item]["mem"])
+    cmd = with_retry(its[item]["cmd"]) if retry else its[item]["cmd"]
+    fc = UNITS[c].spawn(cid, cmd, item)
+    return {"item": item, "class": c, "mem": its[item]["mem"], "call": fc.object_id}
 
 
 @app.function(image=image, volumes=VOLS, memory=(4096, 8192), cpu=2.0, timeout=21600, **STAGE)
@@ -861,7 +907,8 @@ def _fetch():
 
 
 @app.local_entrypoint()
-def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True, retry: bool = False):
+def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True, retry: bool = False,
+         checks_only: bool = False, item: str = ""):
     if stage in ("selftest", "selftest-local"):
         selftest()
         return
@@ -892,8 +939,11 @@ def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True, retr
     elif stage == "fold":
         print(json.dumps(fold_all.remote(cid), indent=1)[:3000])
     elif stage == "run":
-        fc = run.spawn(cid, cv, lanes, prune, retry)
-        print(json.dumps({"spawned": "run", "code": cid, "carves": cv or "all", "lanes": lanes, "retry": retry, "call": fc.object_id}), flush=True)
+        fc = run.spawn(cid, cv, lanes, prune, retry, checks_only)
+        print(json.dumps({"spawned": "run", "code": cid, "carves": cv or "all", "lanes": lanes, "retry": retry,
+                          "checks_only": checks_only, "call": fc.object_id}), flush=True)
+    elif stage == "unit":                                # A4: one item, no orchestrator; --carves names the carve(s) it belongs to
+        print(json.dumps(spawn_item.remote(cid, cv, item, retry)), flush=True)
     else:
         raise SystemExit(f"stage {stage}?")
 

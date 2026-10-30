@@ -232,3 +232,37 @@ renewal: it was not spent, and the question was put to the user.
    existing file), and a declared filing step for the ledger and records. A carve is built by one substrate only.
 6. Check (a) on hotpotqa/s1sel (`pkoh-hpchk-*`) is the first thing that has never met real data; if it FAILs, read its
    `check/hotpotqa.json` and the part heads before anything else, as with check (c) and check (b).
+
+## 12. Amendment A4: the three missing section-5 checks, run before the renewal (declared 30 Oct 2026, before they run)
+
+**The instruction.** On 30 Oct the user said to run the three checks now, and on Kaggle if Kaggle has the input. Kaggle does
+not: its 15 private datasets hold about 10.7 GB (U2d's bases and caches, the typed links, WQK, G6RW, the code bundle), and
+the checks read the dataset package (577 files, 64.5 GiB) that only mpr-u2d holds. So they run on Modal workspace 3, where
+the package is mounted read only. This sets aside section 6's "`run` waits for the renewal", on the user's word, for these
+three checks only.
+
+**The three.** (1) Check 5 (b) on squad/s1eval: its four pools shards and merge (the merge carries check (b); U2d new's entry
+for it has the same shape as squad/fit's: B_q 0, pool mean 50.0, rows max 54, 11,873 questions, 594,063 rows). (2) Check 5
+(a) on webqsp: its two pools shards and the merge with check-merge (`check/webqsp.json`). (3) Check 5 (a) on hotpotqa/s1sel:
+`pkoh-hpchk-0` and `pkoh-hpchk-m` (one shard; U2s's run took 9,197 s on one lane; this check has never met real data).
+After them `need_checks` is satisfied if all four are PASS, and the look, cache, tail and prune steps can run for the first
+time (squad/fit's look is FAILED in the ledger and needs `--retry`).
+
+**What A4 adds to `zpkom_modal.py`, and nothing else.** `run --checks-only`: the named carves' pools shards and merges, a
+hotpotqa carve's check shards without its own pools items (`hotpot_own`), no build items, no gate. `--stage unit --carves C
+--item NAME [--retry]`: one item of `zpkoh.py items`, spawned on its own memory class by a 0.5-core function that returns in
+seconds, with no orchestrator (the nonpreemptible orchestrator waits at 3x the list rate, and a single check shard runs for
+hours). Both need the gate for the commit (PASS or PASS_A2). The self-test (41 checks) filters the real item lines of
+hotpotqa/fit, not a toy list.
+
+**Cost and stop rules.** Workspace 3: month to date 29.18 USD of an assumed 30. At the declared memory classes: squad/s1eval
+about 0.03 USD per shard (4) and the merge, webqsp about 0.02 per shard (2), the orchestrator of this small run about 0.04
+USD, and `pkoh-hpchk-0` at most about 0.45 USD if it takes U2s's 9,197 s (less if the walks are faster). That is about 0.7 USD
+in the worst case against about 0.8 left. Order: the small run first; `modal billing report` after it; `pkoh-hpchk-0` only if
+the month to date plus 0.5 USD stays under 30. While it runs, the billing report is read about every 30 minutes and the unit
+is stopped by me if the month to date reaches 29.9 USD. Each stop and each cost is written down. Nothing here is a result.
+
+**What these checks can say.** PASS on all four lets the looks run; a FAIL is read before anything else (the part heads, the
+record, then the document), as with checks (c) and (b), and is amended in the open if the cause is in the check. A squad/s1eval
+FAIL under rule A2 is final for that rule (docs/PKO_A2_AMENDMENT.md), so it would need a further PKO amendment, declared after
+reading the arrays.
