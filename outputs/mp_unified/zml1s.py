@@ -597,11 +597,16 @@ def item_inputs():
 
 
 def items(gate_dep="pkoh-gate"):
-    """The stage's feeder lines: format line|x|deps|name|cpus|mem|inputs|command[|gpu share]. Seed 0 of every arm before seeds 1
-    and 2; zg6r waits for its split's seed-0 zspk (its encoder is that fit's) and every zrckpt is listed after zrckp."""
-    lines = ["# ML1 (docs/ML1_REFITS_ON_PKO.md section 10) on the host's GPU, behind PKO's gate"]
+    """The stage's feeder lines: format line|x|deps|name|cpus|mem|inputs|command[|gpu share]. A self-test of this file on the host
+    (no gate behind it: it checks the host's imports now); then the 24 fits and the repeat behind PKO's gate, seed 0 of every arm
+    before seeds 1 and 2, zg6r behind its split's seed-0 zspk (its encoder is that fit's); then the three CPU steps that need the
+    host's fits: the twelve compares, the verdict and the repeat's record."""
+    lines = ["# ML1 (docs/ML1_REFITS_ON_PKO.md sections 10 and 11) on the host's GPU, behind PKO's gate"]
     names = {}
     inp = item_inputs()
+    cpu = lambda deps, n, cmd, c="1", m="4", i=inp: "|".join(["line", "x", ",".join(deps), n, c, m, i, cmd, ""])  # noqa: E731
+    lines.append(cpu([], "ml1-selftest", "python outputs/mp_unified/zml1s.py --selftest"))
+    types_of = lambda sp: ";".join(f"outputs/u2m/a/types/{d}.{x}" for d in WQ.SPLITS[sp] for x in ("json", "npz"))  # noqa: E731
     order = [(sd, a, sp) for sd in SEEDS for a in WIRED for sp in SPLITS]
     for sd, a, sp in order:
         n = fit_name(a, sd, sp)
@@ -611,11 +616,15 @@ def items(gate_dep="pkoh-gate"):
             z = names[fit_name("zspk", 0, sp)]
             deps += [z] if z not in deps else []
         names[n] = f"ml1-{a}-s{sd}{WQ.SUF[sp]}"
-        lines.append("|".join(["line", "x", ",".join(deps), names[n], c, m, inp, f"{WRAP} fit --name {n}", g]))
+        i = inp + (";" + types_of(sp) if a == "zrckpt" else "")
+        lines.append("|".join(["line", "x", ",".join(deps), names[n], c, m, i, f"{WRAP} fit --name {n}", g]))
     rn = "ml1-zrckp-s0-rep"
     c, m, g = SHARE["train"]
     lines.append("|".join(["line", "x", f"{gate_dep},{names[fit_name('zrckp', 0, 'WQ-musique')]}", rn, c, m, inp,
                            f"{WRAP} fit --name {REPEAT}", g]))
+    lines.append(cpu(list(names.values()), "ml1-compare", "python outputs/mp_unified/zml1s.py compare-all", "1", "6"))
+    lines.append(cpu(["ml1-compare"], "ml1-verdict", "python outputs/mp_unified/zml1s.py verdict"))
+    lines.append(cpu(["ml1-compare", rn], "ml1-repeat", "python outputs/mp_unified/zml1s.py repeat"))
     return lines
 
 
@@ -766,7 +775,8 @@ def selftest():
     # the items: order, dependencies, the repeat, nothing listed twice
     ls = [x for x in items() if x.startswith("line|")]
     nm = [x.split("|")[3] for x in ls]
-    assert len(nm) == len(set(nm)) == 25 and nm[0] == "ml1-zspk-s0" and nm[-1] == "ml1-zrckp-s0-rep"
+    assert len(nm) == len(set(nm)) == 29 and nm[0] == "ml1-selftest" and nm[1] == "ml1-zspk-s0" and nm[-4] == "ml1-zrckp-s0-rep"
+    assert nm[-3:] == ["ml1-compare", "ml1-verdict", "ml1-repeat"]
     dep = {x.split("|")[3]: x.split("|")[2].split(",") for x in ls}
     assert dep["ml1-zspk-s1"] == ["pkoh-gate", "ml1-zspk-s0"] and dep["ml1-zrckp-s2-hp"] == ["pkoh-gate", "ml1-zrckp-s0-hp"]
     assert dep["ml1-zg6r-s0"] == ["pkoh-gate", "ml1-zspk-s0"] and dep["ml1-zg6r-s0-hp"] == ["pkoh-gate", "ml1-zspk-s0-hp"]
@@ -777,8 +787,16 @@ def selftest():
     assert {f"outputs/mp_unified/{m}.py" for m in ("zml1s", "zwq", "zg6r", "zg6rw", "zu2n", "zkg", "zu2d", "zrm", "lean_host")} <= ins
     assert {"outputs/host_ops/retry_cmd.py", "outputs/host_ops/cuda_alloc.py"} <= ins
     wiring_selftest()
-    assert all(x.split("|")[8].startswith("gpu:") and len(x.split("|")) == 9 for x in ls)
-    assert all(d in nm or d == "pkoh-gate" for v in dep.values() for d in v)
+    assert all(len(x.split("|")) == 9 for x in ls)
+    fitl = [x for x in ls if x.split("|")[3].startswith(("ml1-zspk", "ml1-zg6r", "ml1-zrckp"))]
+    assert len(fitl) == 25 and all(x.split("|")[8].startswith("gpu:") and "zml1s.py fit --name" in x for x in fitl)
+    assert dep["ml1-selftest"] == [""] and dep["ml1-verdict"] == ["ml1-compare"] and dep["ml1-repeat"] == ["ml1-compare", "ml1-zrckp-s0-rep"]
+    assert len(dep["ml1-compare"]) == 24 and set(dep["ml1-compare"]) == {x.split("|")[3] for x in fitl} - {"ml1-zrckp-s0-rep"}
+    assert all(x.split("|")[8] == "" and float(x.split("|")[4]) > 0 and float(x.split("|")[5]) > 0 for x in ls if x not in fitl)
+    zk = {x.split("|")[3]: x.split("|")[6] for x in ls}
+    assert "outputs/u2m/a/types/musique.npz" in zk["ml1-zrckpt-s0-hp"] and "outputs/u2m/a/types/hotpotqa.npz" in zk["ml1-zrckpt-s0"]
+    assert "outputs/u2m/a/types/musique.npz" not in zk["ml1-zrckpt-s0"] and "u2m/a/types" not in zk["ml1-zg6r-s0"]
+    assert all(d in nm or d in ("pkoh-gate", "") for v in dep.values() for d in v)
     # the verdict reads compares of the real shape: a template of a filed WQK compare, renamed to ML1's fits
     tpl = ROOT / "outputs" / "screen" / "scr-wqk-zspk-s1.json"
     if tpl.is_file():
