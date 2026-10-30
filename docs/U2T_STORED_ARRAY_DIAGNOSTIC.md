@@ -114,3 +114,68 @@ The universal rule pays 3,311 against that 111. The headroom is in the per-quest
 The data are s1sel (about 1,500 questions per dataset) and the kind_t recipe on U2s's 12 constructions. A level read
 from 1,500 questions carries a sampling error; the differences above are large against it, but the table is a map, not a
 verdict.
+
+## 7. Signals from the first stage (added 30 October, after the numbers; still no stage declared)
+
+Section 6 named a signal from the first stage and the question alone, with no walk, as the cheap form to try first.
+`outputs/u2t/diag/fs_probe.py` reads it: the dense and SPLADE lists' top score, the gap from the first to the 10th and
+50th, the spread over the top 100 (std, and std over the mean), the two lists' agreement at 10, 50 and 200, and the
+dense top score over the top-100 mean. Each is read from the lists the first stage already returns, before any gold, with
+no fit and no parameter. The depth it is compared with is the one section 4 used (the largest walk position among a
+question's golds, order `kt`, rrf50 with no expansion), read from U2s's stored arrays; the script stops if the carve's
+golds are not the stored arrays' (`ptr`). The data are the same s1sel questions as before (webqsp on s1eval).
+
+**What a signal does.** A more confident first stage means a shallower need: the sign agrees on all six datasets for
+dense top score (rho -0.07 to -0.37, six of six negative) and for SPLADE's spread and gap (six of six, or five of six
+negative with one near zero), the usual direction for query-performance measures. The size is modest, and uneven:
+
+| signal | squad | hotpotqa | 2wiki | metaqa | musique | webqsp |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| dense top score | -0.163 | -0.070 | -0.146 | -0.369 | -0.232 | -0.211 |
+| dense gap, 1st to 50th | -0.167 | -0.151 | 0.000 | -0.335 | -0.236 | -0.154 |
+| dense std, top 100 | -0.145 | -0.270 | -0.042 | -0.368 | -0.284 | -0.099 |
+| SPLADE spread / mean, top 100 | -0.162 | -0.261 | -0.179 | -0.119 | -0.128 | -0.115 |
+| dense/SPLADE agreement at 10 | -0.092 | -0.219 | -0.001 | -0.062 | -0.077 | -0.037 |
+
+The area under the curve for telling the questions that need 1,000 or more rows from the rest, averaged over the six
+datasets, is 0.34 to 0.36 for the dense measures (0.64 to 0.66 with the sign read the right way round) and 0.43 for
+agreement at 10 (0.57). Agreement, which section 6 named, is near zero on 2wiki, metaqa and webqsp (-0.001, -0.062,
+-0.037).
+
+**What a signal costs less.** Whether a signal cuts rows was read with a two-level router on the same stored arrays,
+graded the way U2s grades (`column_table`, kind_t, rrf50 with its four expansions and four orders, weighted over the
+five datasets, targets min(level, C_d - 0.005)): a question whose signal is below a pooled quantile of the five
+datasets gets the large budget K_hi (U2s's fixed budgets), the others a small one (0, 50 or 300). The grid is narrower
+than U2s's (fixed budgets only, no MASS or ADA), so the router's rows are read beside the same table's own best, not
+only beside section 2's:
+
+| signal | 0.90 | 0.92 | 0.95 | section 2 (shared, MASS and ADA allowed) |
+| --- | ---: | ---: | ---: | --- |
+| dense top score | 1,632.9 | 1,993.1 | 3,144.2 | 1,871.2 / 2,354.4 / 3,311.4 |
+| dense std, top 100 | 1,805.0 | 2,347.4 | 3,260.0 | |
+| dense gap, 1st to 50th | 1,816.4 | 2,373.2 | 3,490.7 | |
+| agreement at 10 | 2,416.6 | 3,121.2 | 5,819.1 | |
+
+Only the dense top score moves the cost, by 13% at 0.90, 15% at 0.92 and 5% at 0.95. The cap of 1,953.5 is met at
+level about 0.92 and not at 0.95. These are the best of 9 x 15 x 3 router settings per signal, chosen on the five
+datasets they are read on. Chosen on four and read on the fifth, the dense top score's rule reaches or comes within
+0.004 of the level on every held-out dataset but musique. With musique held out it gives ALL 0.818, 0.844 and 0.884
+at levels 0.90, 0.92 and 0.95 (745, 1,066 and 1,909 rows); the other three signals give 0.77 to 0.89. Musique's tail is
+not something the other four datasets' first-stage signals teach: the rule that is cheap on four datasets does not
+carry the fifth.
+
+**What this settles, and what it does not.**
+- The first-stage signals have the right sign on every dataset, and are the only per-question measures found so far
+  that do (section 4's stored measures had none). They are weak, and they do not turn the shared 3,311 rows at 0.95
+  into about 2,000.
+- A per-question budget that knows each question's depth costs 111 rows at 0.95 (section 5). The first stage's
+  confidence recovers a small part of that headroom, not most of it.
+- Not shown: any other signal (the walk's own mass, RRF5T's agreement across orders, which need a walk pass);
+  anything that is not a rule on the first stage's lists; any zero-shot read beyond the leave-one-out above; whether
+  ranking uses the rows from 0.92 up to 0.95 (the curve of R@5 against pool depth waits for PKO's pools and the
+  models). Choosing the level is the open ruling: about 2,000 rows at about 0.92 with one rule, or about 3,300 rows at
+  0.95. Each dataset's own cheapest cell, chosen by one procedure on that dataset's labelled selection carve (s1sel), reaches 0.96
+  at 1,904.6 rows (U2s, pick O).
+
+Files: `outputs/u2t/diag/fs_probe.py`, `grade_router.py`, `fs/` (the six probes' json and logs; the per-question signal
+arrays stay out of the repository).

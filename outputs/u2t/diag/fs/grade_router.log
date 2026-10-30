@@ -1,0 +1,29 @@
+   315s dense_top1
+   L 0.9: router   1632.9 rows (baseline shared   1871.2) | tau q0.8 K_hi 15000 k_lo 300 | cell 0 kt_cos+n2_100 cut 0.7 | ALL meta 0.910 squa 0.999 musi 0.901 hotp 0.958 2wik 0.974
+        leave-one-out held-out ALL/rows: metaqa 0.910/1689, squad 0.999/1533, musique 0.818/745, hotpotqa 0.958/1107, 2wiki 0.974/1883
+   L 0.92: router   1993.1 rows (baseline shared   2354.4) | tau q0.7 K_hi 3000 k_lo 300 | cell 0 kt_cos+n2_30 cut 0.975 | ALL meta 0.926 squa 0.999 musi 0.922 hotp 0.964 2wik 0.974
+        leave-one-out held-out ALL/rows: metaqa 0.926/2104, squad 0.999/2193, musique 0.844/1066, hotpotqa 0.964/1254, 2wiki 0.974/2019
+   L 0.95: router   3144.2 rows (baseline shared   3311.4) | tau q0.8 K_hi 4000 k_lo 300 | cell 0 kt_cos+n2_30 cut 0.99 | ALL meta 0.953 squa 0.999 musi 0.951 hotp 0.970 2wik 0.983
+        leave-one-out held-out ALL/rows: metaqa 0.946/3052, squad 0.999/3404, musique 0.884/1909, hotpotqa 0.970/2166, 2wiki 0.983/3202
+   719s dense_std100
+   L 0.9: router   1805.0 rows (baseline shared   1871.2) | tau q0.9 K_hi 15000 k_lo 0 | cell 0 kt_cos+n2_100 cut 0.7 | ALL meta 0.905 squa 0.997 musi 0.901 hotp 0.968 2wik 0.981
+        leave-one-out held-out ALL/rows: metaqa 0.905/1916, squad 0.997/1109, musique 0.799/648, hotpotqa 0.968/1858, 2wiki 0.981/2234
+   L 0.92: router   2347.4 rows (baseline shared   2354.4) | tau q0.9 K_hi 4000 k_lo 50 | cell 0 kt_cos+n2_30 cut 0.9 | ALL meta 0.936 squa 0.999 musi 0.920 hotp 0.976 2wik 0.984
+        leave-one-out held-out ALL/rows: metaqa 0.936/2585, squad 0.999/1674, musique 0.827/967, hotpotqa 0.976/2514, 2wiki 0.985/3088
+   L 0.95: router   3260.0 rows (baseline shared   3311.4) | tau q0.9 K_hi 15000 k_lo 300 | cell 3 kt_cos+n2_100 cut 0.8 | ALL meta 0.951 squa 0.999 musi 0.951 hotp 0.982 2wik 0.990
+        leave-one-out held-out ALL/rows: metaqa 0.948/3203, squad 0.999/1955, musique 0.874/1772, hotpotqa 0.982/3390, 2wiki 0.990/4081
+  1024s dense_gap_1_50
+   L 0.9: router   1816.4 rows (baseline shared   1871.2) | tau q0.9 K_hi 15000 k_lo 300 | cell 0 kt_cos+n2_100 cut 0.7 | ALL meta 0.912 squa 0.999 musi 0.903 hotp 0.973 2wik 0.983
+        leave-one-out held-out ALL/rows: metaqa 0.869/1734, squad 0.999/1362, musique 0.816/735, hotpotqa 0.973/1762, 2wiki 0.983/2232
+   L 0.92: router   2373.2 rows (baseline shared   2354.4) | tau q0.8 K_hi 3000 k_lo 300 | cell 0 kt_cos+n2_30 cut 0.99 | ALL meta 0.924 squa 0.999 musi 0.924 hotp 0.976 2wik 0.985
+        leave-one-out held-out ALL/rows: metaqa 0.930/2362, squad 0.999/2062, musique 0.840/1003, hotpotqa 0.976/2388, 2wiki 0.985/2824
+   L 0.95: router   3490.7 rows (baseline shared   3311.4) | tau q0.9 K_hi 4000 k_lo 300 | cell 0 kt_cos+n2_30 cut 0.99 | ALL meta 0.955 squa 0.999 musi 0.951 hotp 0.981 2wik 0.991
+        leave-one-out held-out ALL/rows: metaqa 0.940/3019, squad 0.999/3019, musique 0.885/1939, hotpotqa 0.981/3508, 2wiki 0.991/4068
+  1392s agree_at_10
+   L 0.9: router   2416.6 rows (baseline shared   1871.2) | tau q0.9 K_hi 3000 k_lo 300 | cell 0 kt_cos+n2_30 cut 0.975 | ALL meta 0.941 squa 0.999 musi 0.907 hotp 0.976 2wik 0.982
+        leave-one-out held-out ALL/rows: metaqa 0.941/2702, squad 0.999/1962, musique 0.773/566, hotpotqa 0.976/2458, 2wiki 0.982/2580
+   L 0.92: router   3121.2 rows (baseline shared   2354.4) | tau q0.9 K_hi 15000 k_lo 300 | cell 2 kt_cos+n2_100 cut 0.8 | ALL meta 0.948 squa 0.999 musi 0.920 hotp 0.979 2wik 0.986
+        leave-one-out held-out ALL/rows: metaqa 0.953/3562, squad 0.999/2553, musique 0.772/826, hotpotqa 0.979/3135, 2wiki 0.986/3855
+   L 0.95: router   5819.1 rows (baseline shared   3311.4) | tau q0.9 K_hi 7000 k_lo 300 | cell 0 kt_cos+n2_100 cut 0.99 | ALL meta 0.982 squa 0.999 musi 0.949 hotp 0.981 2wik 0.991
+        leave-one-out held-out ALL/rows: metaqa 0.982/6571, squad 0.999/4620, musique 0.845/1641, hotpotqa 0.981/5929, 2wiki 0.991/6251
+done in 1392 s

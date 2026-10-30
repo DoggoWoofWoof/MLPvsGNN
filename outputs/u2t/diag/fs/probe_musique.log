@@ -1,0 +1,22 @@
+   note: a byte-code cache exists under the package root, not created by this process: canonical.cpython-313.pyc (37614 B, mtime 2026-09-13T15:58:07)
+   18s dataset open; carve s1sel: 1534 questions
+   21s prepared: dense (1534, 1000) splade (1534, 1000)
+
+== musique (s1sel): 1478 reachable of 1534; need>0 0.618; need>=1000 0.124
+   signal                     rho(need)  AUC(need>=1000)  AUC(need>0)
+   dense_top1                  -0.232           0.416        0.348
+   dense_gap_1_50              -0.236           0.428        0.348
+   dense_gap_1_10              -0.178           0.437        0.394
+   dense_nqc100                -0.277           0.440        0.296
+   dense_std100                -0.284           0.430        0.292
+   splade_top1                 -0.067           0.472        0.473
+   splade_gap_1_50             -0.122           0.450        0.448
+   splade_gap_1_10             -0.091           0.450        0.473
+   splade_nqc100               -0.128           0.499        0.411
+   splade_std100               -0.116           0.497        0.414
+   agree@10                    -0.077           0.473        0.429
+   agree@50                    -0.109           0.455        0.405
+   agree@200                   -0.074           0.463        0.422
+   dense_top1_over_mean100     -0.217           0.435        0.362
+
+done in 22 s

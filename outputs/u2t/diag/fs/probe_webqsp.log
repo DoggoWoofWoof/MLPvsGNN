@@ -1,0 +1,22 @@
+   note: a byte-code cache exists under the package root, not created by this process: canonical.cpython-313.pyc (37614 B, mtime 2026-09-13T15:58:07)
+   25s dataset open; carve s1eval: 1503 questions
+   26s prepared: dense (1503, 1000) splade (1503, 1000)
+
+== webqsp (s1eval): 1354 reachable of 1503; need>0 0.845; need>=1000 0.103
+   signal                     rho(need)  AUC(need>=1000)  AUC(need>0)
+   dense_top1                  -0.211           0.401        0.454
+   dense_gap_1_50              -0.154           0.406        0.554
+   dense_gap_1_10              -0.201           0.415        0.492
+   dense_nqc100                -0.075           0.415        0.572
+   dense_std100                -0.099           0.409        0.546
+   splade_top1                 -0.003           0.590        0.512
+   splade_gap_1_50             -0.061           0.496        0.584
+   splade_gap_1_10             -0.051           0.537        0.555
+   splade_nqc100               -0.115           0.396        0.611
+   splade_std100               -0.070           0.444        0.600
+   agree@10                    -0.037           0.489        0.586
+   agree@50                    -0.001           0.501        0.512
+   agree@200                   +0.078           0.552        0.474
+   dense_top1_over_mean100     -0.142           0.409        0.562
+
+done in 27 s
