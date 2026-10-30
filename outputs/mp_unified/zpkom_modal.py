@@ -1,6 +1,7 @@
 """PKOM: PKO on Modal workspace 3 (docs/PKOM_PKO_ON_MODAL.md). From the repository root on the laptop:
 
     modal run outputs/mp_unified/zpkom_modal.py --stage selftest         # no Modal connection: the pure parts
+    modal run outputs/mp_unified/zpkom_modal.py --stage plan             # what upload would send (read only)
     modal run outputs/mp_unified/zpkom_modal.py --stage upload           # HEAD's tracked files and the inputs no mounted volume holds
     modal run outputs/mp_unified/zpkom_modal.py --stage probe            # env, self-tests, the mirror applied, the 360 inputs by size and sha256
     modal run outputs/mp_unified/zpkom_modal.py --stage check            # PKOH's check (c); the gate of everything below
@@ -452,6 +453,12 @@ def probe(cid):
     out["zpkom_selftest"] = _run_py(["outputs/mp_unified/zpkom_modal.py", "--stage", "selftest-local"])["tail"].strip().splitlines()[-1:]
     m = _run_py(["outputs/mp_unified/zpkoh.py", "step", "--host", "--", "--help"])
     out["mirror_applied"] = {"rc": m["rc"], "tail": [x for x in m["tail"].splitlines() if "modal" in x.lower() or "mirror" in x.lower()][-4:]}
+    try:                                                  # what `run` will read: PKOH says 14 check, 49 pools, 1 gate items
+        its = {ph: _items(ph, []) for ph in ("check", "pools", "gate")}
+        out["items"] = {ph: len(v) for ph, v in its.items()}
+        out["item_classes"] = {str(c): sum(1 for it in its["pools"].values() if class_for(it["mem"]) == c) for c in MEM_CLASSES}
+    except SystemExit as e:
+        out["items"] = str(e)[:600]
     Path("/pko/probe").mkdir(parents=True, exist_ok=True)
     r = _run_py(["outputs/mp_unified/zpkoh.py", "inventory", "--map", INPUTS_MAP, "--sha", "--out", f"/pko/probe/inventory-{cid}.json"])
     out["inventory_rc"] = r["rc"]
@@ -491,7 +498,7 @@ def _items(phase, carves, extra=()):
     return parse_items(r.stdout)
 
 
-@app.function(image=image, volumes=VOLS, memory=(4096, 16384), cpu=1.0, timeout=86400, **ORCH)
+@app.function(image=image, volumes=VOLS, memory=(2048, 8192), cpu=0.5, timeout=86400, **ORCH)   # nonpreemptible = 3x the list rate: kept small
 def run(cid, carves, lanes, prune=True):
     """PKOH's open smokes and pools items, then each carve's build items once its merge is done, then the gate: one
     single-use container per item, at most `lanes` at a time. A unit killed for memory runs again one class up with
@@ -631,6 +638,7 @@ def _git(*args):
 def _have(vol, root, optional=False):
     """{volume-relative key: size} of the files under root. A listing that fails is an error, except on the new volume's
     own roots (`optional`), which may not exist yet: a mounted volume that cannot be listed must not read as 'empty'."""
+    vol.hydrate()                                        # a volume made by from_name has no metadata until it is loaded
     try:
         return {volume_key(root, e.path): e.size for e in vol.listdir(root, recursive=True)
                 if getattr(e.type, "name", "") == "FILE"}
@@ -662,10 +670,25 @@ def _upload():
         tmp.rmdir()
     else:
         print(json.dumps({"code": cid, "already_on_the_volume": True}), flush=True)
+    m, todo = _plan_inputs()
+    if todo:
+        with pko.batch_upload() as b:                    # new files only: an existing path is an error, not an overwrite
+            for p in todo:
+                b.put_file(p, f"/inputs/{p}")
+    print(json.dumps({"inputs_in_map": len(m), "uploaded": len(todo), "bytes": sum(m[p]["bytes"] for p in todo)}), flush=True)
+    return cid
+
+
+def _plan_inputs():
+    """(the map's files, the untracked ones no mounted volume holds at the mapped size). Read only: a file a volume holds at
+    another size, or a laptop file that is not the one the map describes, stops the plan."""
     m = json.loads(Path(INPUTS_MAP).read_text(encoding="utf-8"))["files"]
     where = {}
-    for src, vol, root, opt in (("u2d", u2d, "/inputs", False), ("u2c-repo", u2c, "/repo", False), ("u2c-out", u2c, "/out", False),
-                                ("u2c-u2e", u2c, "/u2e", False), ("u2l", u2l, "/u2b", False), ("pko", pko, "/inputs", True)):
+    # plain handles to list through: a read_only() handle does not list in modal 1.3.3 (it mounts); nothing is written to them
+    lv = {n: modal.Volume.from_name(n) for n in ("mpr-u2d", "mpr-u2c", "mpr-u2-links")}
+    for src, vol, root, opt in (("u2d", lv["mpr-u2d"], "/inputs", False), ("u2c-repo", lv["mpr-u2c"], "/repo", False),
+                                ("u2c-out", lv["mpr-u2c"], "/out", False), ("u2c-u2e", lv["mpr-u2c"], "/u2e", False),
+                                ("u2l", lv["mpr-u2-links"], "/u2b", False), ("pko", pko, "/inputs", True)):
         for k, sz in _have(vol, root, opt).items():
             p = repo_path(src, k)
             if p and p not in where:
@@ -682,12 +705,7 @@ def _upload():
         if not Path(p).is_file() or Path(p).stat().st_size != e["bytes"]:
             raise SystemExit(f"{p}: the laptop's file is not the one the map describes; regenerate it (zpkoh.py inputs)")
         todo.append(p)
-    if todo:
-        with pko.batch_upload() as b:                    # new files only: an existing path is an error, not an overwrite
-            for p in todo:
-                b.put_file(p, f"/inputs/{p}")
-    print(json.dumps({"inputs_in_map": len(m), "uploaded": len(todo), "bytes": sum(m[p]["bytes"] for p in todo)}), flush=True)
-    return cid
+    return m, todo
 
 
 def _fetch():
@@ -721,6 +739,16 @@ def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True):
         return
     if stage == "upload":
         _upload()
+        return
+    if stage == "plan":                                  # what upload would send, without sending it
+        m, todo = _plan_inputs()
+        groups = {}
+        for p in todo:
+            g = groups.setdefault(m[p]["group"], [0, 0])
+            g[0] += 1
+            g[1] += m[p]["bytes"]
+        print(json.dumps({"inputs_in_map": len(m), "to_upload": len(todo), "bytes": sum(m[p]["bytes"] for p in todo),
+                          "by_group": groups}), flush=True)
         return
     if stage == "fetch":
         _fetch()

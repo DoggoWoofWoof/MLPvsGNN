@@ -91,7 +91,10 @@ has started and PKOM takes the others. A part built on the other substrate is ac
 ## 6. Cost and stops
 
 At list prices from memory (not checked against the workspace's price list): about 85 lane-hours at 2 vCPU and 8 GiB,
-roughly 14 USD of a 30 USD monthly credit. `probe` and `check` come to cents. The driver does not read billing: I read
+roughly 14 USD of a 30 USD monthly credit, plus the orchestrator: Modal bills a nonpreemptible function at 3 times the list
+rate, so `run` is kept at 0.5 CPU and 2 GiB (about 1 USD for 10 hours). Workspace 3 had spent 28.99 USD of this month's credit
+by 23 Oct (the billing report's last interval), so only `plan`, `upload` and `probe` run before the renewal. `probe` and `check`
+come to cents. The driver does not read billing: I read
 `modal billing report` (read-only) before `run`, and between phases while it runs, and stop the run (my own app) if the
 report shows the credit nearly spent. The credit is the user's. It renews on 1 Nov, so `upload` and `probe` may run before and
 `check` and `run` after. A run restarted after a stop starts a container per item to find the filed ones done, about two
