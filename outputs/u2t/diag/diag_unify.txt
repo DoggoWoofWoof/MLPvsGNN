@@ -1,0 +1,40 @@
+   397s loaded and tabled metaqa: 1497 questions
+   557s loaded and tabled squad: 1498 questions
+   813s loaded and tabled musique: 1534 questions
+  1009s loaded and tabled hotpotqa: 1508 questions
+  1193s loaded and tabled 2wiki: 1496 questions
+ceilings C_d (best ALL any universal kind_t candidate reaches): {'metaqa': 0.9947, 'squad': 0.9993, 'musique': 0.9804, 'hotpotqa': 0.9881, '2wiki': 0.996}
+
+level 0.95: shared best = 3311.4 rows  rrf50+none/kind_t/kt_cos+n2_100:mass_A1all_t0.9_f4_k0@0.8
+   its rows per dataset: {'metaqa': 3266.2, 'squad': 2864.9, 'musique': 3541.3, 'hotpotqa': 3221.6, '2wiki': 3755.3} | ALL: {'metaqa': 0.9506, 'squad': 0.9993, 'musique': 0.9511, 'hotpotqa': 0.9834, '2wiki': 0.99}
+   own best on metaqa   :   1519.5  rrf200+none/kind_t/kt:mass_KTall_t0.9_f4_k0@0.975
+   own best on squad    :     50.0  rrf50+none/kind_t/kt:fix_25@0.7
+   own best on musique  :   3470.1  rrf50+FULL:h2_c25/kind_t/kt_cos+n2_10:ada_f2_k0@0.975
+   own best on hotpotqa :    314.7  rrf50+FULL:h1_c25/kind_t/kt:ada_f3_k300@0.8
+   own best on 2wiki    :    327.2  rrf50+none/kind_t/kt:mass_KTall_t0.9_f1_k300@0.85
+   weighted mean of the per-dataset bests: 821.4 rows  (shared scale costs +2490.0)
+
+level 0.96: shared best = 3894.2 rows  rrf50+FULL:h2_c25/kind_t/kt_cos+n2_30:ada_f6_k0@0.85
+   its rows per dataset: {'metaqa': 3234.8, 'squad': 3437.6, 'musique': 4347.9, 'hotpotqa': 4114.7, '2wiki': 4561.9} | ALL: {'metaqa': 0.9606, 'squad': 0.9993, 'musique': 0.9609, 'hotpotqa': 0.9834, '2wiki': 0.9913}
+   own best on metaqa   :   1893.9  rrf50+none/kind_t/kt:mass_KTall_t0.9_f8_k0@0.95
+   own best on squad    :     50.0  rrf50+none/kind_t/kt:fix_25@0.7
+   own best on musique  :   4122.4  rrf50+none/kind_t/kt_cos+n2_10:mass_A1all_t0.95_f1_k0@1
+   own best on hotpotqa :    500.3  rrf200+FULL:h1_c25/kind_t/kt:ada_f3_k300@0.9
+   own best on 2wiki    :    441.3  rrf50+none/kind_t/kt:mass_KTall_t0.9_f1_k50@1
+   weighted mean of the per-dataset bests: 1029.6 rows  (shared scale costs +2864.6)
+
+the oracle (a per-question budget that knows each question's needed rows), kind_t, tau cut off:
+ level 0.95: oracle rows per dataset {'metaqa': 171.5, 'squad': 50.0, 'musique': 372.6, 'hotpotqa': 57.0, '2wiki': 57.4} | weighted mean 110.9
+      metaqa        171.5  rrf50+none/kt
+      squad          50.0  rrf50+none/kt
+      musique       372.6  rrf50+none/kt_cos+n2_10
+      hotpotqa       57.0  rrf50+none/kt
+      2wiki          57.4  rrf50+none/kt
+ level 0.96: oracle rows per dataset {'metaqa': 191.2, 'squad': 50.0, 'musique': 410.9, 'hotpotqa': 61.1, '2wiki': 61.0} | weighted mean 120.6
+      metaqa        191.2  rrf50+none/kt
+      squad          50.0  rrf50+none/kt
+      musique       410.9  rrf50+FULL:h3_c25_v2000/kt_cos+n2_10
+      hotpotqa       61.1  rrf50+none/kt
+      2wiki          61.0  rrf50+none/kt
+
+done in 1194 s

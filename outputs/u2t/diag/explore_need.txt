@@ -1,0 +1,97 @@
+orders: ['kt', 'kt_n1', 'cos', 'cos+n2_10', 'cos+n2_30', 'cos+n2_100', 'kt_cos', 'kt_cos+n2_10', 'kt_cos+n2_30', 'kt_cos+n2_100', 'kt_cos_r0', 'kt_cos_r0+n2_10', 'kt_cos_r0+n2_30', 'kt_cos_r0+n2_100']
+
+== metaqa (s1sel): 1497 questions, 11367 golds
+   B (bs) mean 50.0 | all golds in B: 0.019 | unreachable by kt: 0.011
+   needing walk nodes: 0.969 of questions; their need pcts 50/75/90/95/99: 14 130 610 1385 4384
+   len(kt list) pcts 50/90: 6982 6990
+   mq shape (1497, 30) | mean of each mq column (first 10): [ 512. 2093. 3433. 4761. 6416.    8.   73.  282.  852. 3444.]
+   n_i    shape (1497, 13) mean(col0) 0.0
+   fill   shape (1497, 39) mean(col0) 0.0
+   n_u    shape (1497, 156) mean(col0) 8409.7
+   n_n1   shape (1497, 3) mean(col0) 540.3
+   n_r0   shape (1497, 3) mean(col0) 1844.9
+   n_n2   shape (1497, 9) mean(col0) 101.4
+   taken  shape (1497, 3) mean(col0) 100.0
+   hubs   shape (1497, 3) mean(col0) 0.0
+   nw     shape (1497, 6) mean(col0) 6950.0
+   inc    shape (1497, 13) mean(col0) 50.0
+
+== squad (s1sel): 1498 questions, 1498 golds
+   B (bs) mean 50.0 | all golds in B: 0.979 | unreachable by kt: 0.001
+   needing walk nodes: 0.020 of questions; their need pcts 50/75/90/95/99: 88 410 1695 2507 3921
+   len(kt list) pcts 50/90: 6950 6950
+   mq shape (1498, 30) | mean of each mq column (first 10): [ 423. 1557. 2656. 3895. 5916.    0.    0.    0.    0.    0.]
+   n_i    shape (1498, 12) mean(col0) 0.0
+   fill   shape (1498, 36) mean(col0) 0.0
+   n_u    shape (1498, 144) mean(col0) 7140.7
+   n_n1   shape (1498, 3) mean(col0) 1928.1
+   n_r0   shape (1498, 3) mean(col0) 1527.5
+   n_n2   shape (1498, 9) mean(col0) 199.5
+   taken  shape (1498, 3) mean(col0) 100.0
+   hubs   shape (1498, 3) mean(col0) 0.0
+   nw     shape (1498, 6) mean(col0) 6853.9
+   inc    shape (1498, 12) mean(col0) 50.0
+
+== musique (s1sel): 1534 questions, 4064 golds
+   B (bs) mean 50.0 | all golds in B: 0.368 | unreachable by kt: 0.037
+   needing walk nodes: 0.595 of questions; their need pcts 50/75/90/95/99: 146 675 2379 4049 6310
+   len(kt list) pcts 50/90: 6950 6950
+   mq shape (1534, 30) | mean of each mq column (first 10): [ 439. 1671. 2772. 4072. 6133.   10.   78.  251.  594. 1776.]
+   n_i    shape (1534, 12) mean(col0) 0.0
+   fill   shape (1534, 36) mean(col0) 0.0
+   n_u    shape (1534, 144) mean(col0) 8221.2
+   n_n1   shape (1534, 3) mean(col0) 2609.6
+   n_r0   shape (1534, 3) mean(col0) 1648.2
+   n_n2   shape (1534, 9) mean(col0) 393.9
+   taken  shape (1534, 3) mean(col0) 98.5
+   hubs   shape (1534, 3) mean(col0) 0.0
+   nw     shape (1534, 6) mean(col0) 6950.0
+   inc    shape (1534, 12) mean(col0) 50.0
+
+== hotpotqa (s1sel): 1508 questions, 3016 golds
+   B (bs) mean 50.0 | all golds in B: 0.662 | unreachable by kt: 0.015
+   needing walk nodes: 0.322 of questions; their need pcts 50/75/90/95/99: 5 48 364 858 5649
+   len(kt list) pcts 50/90: 6950 6950
+   mq shape (1508, 30) | mean of each mq column (first 10): [ 424. 1672. 2775. 4106. 6166.   13.   92.  279.  663. 2220.]
+   n_i    shape (1508, 13) mean(col0) 0.0
+   fill   shape (1508, 39) mean(col0) 0.0
+   n_u    shape (1508, 156) mean(col0) 7588.0
+   n_n1   shape (1508, 3) mean(col0) 1366.3
+   n_r0   shape (1508, 3) mean(col0) 1714.6
+   n_n2   shape (1508, 9) mean(col0) 216.9
+   taken  shape (1508, 3) mean(col0) 99.5
+   hubs   shape (1508, 3) mean(col0) 0.1
+   nw     shape (1508, 6) mean(col0) 6950.0
+   inc    shape (1508, 13) mean(col0) 50.0
+
+== 2wiki (s1sel): 1496 questions, 3646 golds
+   B (bs) mean 50.0 | all golds in B: 0.348 | unreachable by kt: 0.004
+   needing walk nodes: 0.648 of questions; their need pcts 50/75/90/95/99: 4 11 80 506 3802
+   len(kt list) pcts 50/90: 6950 6950
+   mq shape (1496, 30) | mean of each mq column (first 10): [ 476. 1786. 2910. 4285. 6260.   21.  121.  391.  893. 2575.]
+   n_i    shape (1496, 13) mean(col0) 0.0
+   fill   shape (1496, 39) mean(col0) 0.0
+   n_u    shape (1496, 156) mean(col0) 8048.0
+   n_n1   shape (1496, 3) mean(col0) 1861.7
+   n_r0   shape (1496, 3) mean(col0) 1792.1
+   n_n2   shape (1496, 9) mean(col0) 323.4
+   taken  shape (1496, 3) mean(col0) 98.7
+   hubs   shape (1496, 3) mean(col0) 0.1
+   nw     shape (1496, 6) mean(col0) 6950.0
+   inc    shape (1496, 13) mean(col0) 50.0
+
+== webqsp (s1eval): 1503 questions, 10583 golds
+   B (bs) mean 50.2 | all golds in B: 0.140 | unreachable by kt: 0.099
+   needing walk nodes: 0.761 of questions; their need pcts 50/75/90/95/99: 49 342 1229 2389 5397
+   len(kt list) pcts 50/90: 6950 6976
+   mq shape (1503, 30) | mean of each mq column (first 10): [ 335. 1409. 2346. 3521. 5845.   34.  244.  572. 1078. 2763.]
+   n_i    shape (1503, 12) mean(col0) 0.0
+   fill   shape (1503, 36) mean(col0) 0.0
+   n_u    shape (1503, 144) mean(col0) 8694.0
+   n_n1   shape (1503, 3) mean(col0) 2234.1
+   n_r0   shape (1503, 3) mean(col0) 1623.5
+   n_n2   shape (1503, 9) mean(col0) 148.7
+   taken  shape (1503, 3) mean(col0) 98.3
+   hubs   shape (1503, 3) mean(col0) 0.1
+   nw     shape (1503, 6) mean(col0) 6949.8
+   inc    shape (1503, 12) mean(col0) 50.2

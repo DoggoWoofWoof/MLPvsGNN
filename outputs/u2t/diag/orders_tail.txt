@@ -1,0 +1,95 @@
+
+== metaqa (s1sel): rows needed (beyond B) to hold every gold of a share of the questions
+   order                 cover0.90  cover0.95  cover0.97
+   kt                         673       1704       2816
+   kt_n1                     1128       1994       2919
+   cos                       7952       8266       8384
+   cos+n2_10                 7995       8306       8433
+   cos+n2_30                 8092       8418       8561
+   cos+n2_100                8456       8792       8973
+   kt_cos                    1313       3140       4458
+   kt_cos+n2_10              1313       3142       4460
+   kt_cos+n2_30              1310       3145       4464
+   kt_cos+n2_100             1310       3145       4458
+   kt_cos_r0                 1768       3634       5017
+   kt_cos_r0+n2_10           1768       3628       5018
+   kt_cos_r0+n2_30           1767       3626       5032
+   kt_cos_r0+n2_100          1761       3622       5075
+   ORACLE best order/q        660       1520       2417
+   share of questions where the best order beats kt by >=10x (kt need >=100): 0.005
+
+== musique (s1sel): rows needed (beyond B) to hold every gold of a share of the questions
+   order                 cover0.90  cover0.95  cover0.97
+   kt                        2265       5518        inf
+   kt_n1                     2320       5515        inf
+   cos                       3679       5523        inf
+   cos+n2_10                 3685       5526       8248
+   cos+n2_30                 3766       5675       7789
+   cos+n2_100                4018       6638       8500
+   kt_cos                    2030       3648        inf
+   kt_cos+n2_10              2030       3546       6552
+   kt_cos+n2_30              2030       3511       5847
+   kt_cos+n2_100             2036       3578       5835
+   kt_cos_r0                 2255       3696        inf
+   kt_cos_r0+n2_10           2278       3572       6552
+   kt_cos_r0+n2_30           2263       3591       5847
+   kt_cos_r0+n2_100          2238       3655       5835
+   ORACLE best order/q       1155       2392       3471
+   share of questions where the best order beats kt by >=10x (kt need >=100): 0.016
+
+== hotpotqa (s1sel): rows needed (beyond B) to hold every gold of a share of the questions
+   order                 cover0.90  cover0.95  cover0.97
+   kt                          42        322       1046
+   kt_n1                       51        347       1142
+   cos                       1746       2843       3861
+   cos+n2_10                 1762       2913       3878
+   cos+n2_30                 1779       3017       3981
+   cos+n2_100                1878       3506       4437
+   kt_cos                      76        298       1184
+   kt_cos+n2_10                76        298       1184
+   kt_cos+n2_30                76        298       1184
+   kt_cos+n2_100               76        296       1184
+   kt_cos_r0                  128        403       1426
+   kt_cos_r0+n2_10            128        403       1426
+   kt_cos_r0+n2_30            128        403       1427
+   kt_cos_r0+n2_100           128        403       1429
+   ORACLE best order/q         29        165        618
+   share of questions where the best order beats kt by >=10x (kt need >=100): 0.002
+
+== 2wiki (s1sel): rows needed (beyond B) to hold every gold of a share of the questions
+   order                 cover0.90  cover0.95  cover0.97
+   kt                          26        294        690
+   kt_n1                       53        508       1327
+   cos                       4576       5498       6094
+   cos+n2_10                 4689       5689       6312
+   cos+n2_30                 5025       6109       6812
+   cos+n2_100                6192       7619       8587
+   kt_cos                      77        413       1053
+   kt_cos+n2_10                77        413       1058
+   kt_cos+n2_30                77        419       1062
+   kt_cos+n2_100               78        420       1087
+   kt_cos_r0                  155        568       1594
+   kt_cos_r0+n2_10            155        569       1595
+   kt_cos_r0+n2_30            155        570       1596
+   kt_cos_r0+n2_100           156        576       1585
+   ORACLE best order/q         24        247        629
+   share of questions where the best order beats kt by >=10x (kt need >=100): 0.000
+
+== webqsp (s1eval): rows needed (beyond B) to hold every gold of a share of the questions
+   order                 cover0.90  cover0.95  cover0.97
+   kt                        6883        inf        inf
+   kt_n1                     1977        inf        inf
+   cos                       6499      11028        inf
+   cos+n2_10                 6516      11657        inf
+   cos+n2_30                 6604      12724        inf
+   cos+n2_100                7072      10981        inf
+   kt_cos                    4160      13195        inf
+   kt_cos+n2_10              4208      13208        inf
+   kt_cos+n2_30              4213      13467        inf
+   kt_cos+n2_100             4359      10516        inf
+   kt_cos_r0                 3901      13205        inf
+   kt_cos_r0+n2_10           3901      13218        inf
+   kt_cos_r0+n2_30           3906      13477        inf
+   kt_cos_r0+n2_100          3925      10572        inf
+   ORACLE best order/q       1510       6808        inf
+   share of questions where the best order beats kt by >=10x (kt need >=100): 0.064

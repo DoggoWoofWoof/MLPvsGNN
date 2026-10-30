@@ -1,0 +1,11 @@
+level | shared rows (weighted) | per-dataset own rows (metaqa squad musique hotpotqa 2wiki) | own weighted | oracle-free gap
+0.80 |    585.7 |   264.1    50.0   610.0    53.0    60.0 |   154.1 | shared/own  3.8x | webqsp beside ALL 0.709 rows 401
+0.85 |   1035.2 |   402.7    50.0  1045.9    60.0    63.9 |   228.8 | shared/own  4.5x | webqsp beside ALL 0.747 rows 569
+0.88 |   1461.3 |   530.4    50.0  1423.5    72.0    68.0 |   296.5 | shared/own  4.9x | webqsp beside ALL 0.794 rows 920
+0.90 |   1871.2 |   661.9    50.0  1832.5    88.3    77.0 |   370.1 | shared/own  5.1x | webqsp beside ALL 0.834 rows 1218
+0.92 |   2354.4 |   838.5    50.0  2455.4   124.9    93.0 |   479.8 | shared/own  4.9x | webqsp beside ALL 0.849 rows 2039
+0.93 |   2881.6 |   988.3    50.0  2788.2   148.0   124.4 |   557.0 | shared/own  5.2x | webqsp beside ALL 0.870 rows 2615
+0.94 |   2933.2 |  1209.3    50.0  3113.0   217.7   197.0 |   668.1 | shared/own  4.4x | webqsp beside ALL 0.860 rows 2302
+0.95 |   3311.4 |  1519.5    50.0  3470.1   314.7   327.2 |   821.4 | shared/own  4.0x | webqsp beside ALL 0.880 rows 2998
+0.96 |   3894.2 |  1893.9    50.0  4122.4   500.3   441.3 |  1029.6 | shared/own  3.8x | webqsp beside ALL 0.878 rows 2929
+0.97 |   5136.1 |  2238.5    50.0  5343.0  1013.6   668.0 |  1375.7 | shared/own  3.7x | webqsp beside ALL 0.904 rows 4409

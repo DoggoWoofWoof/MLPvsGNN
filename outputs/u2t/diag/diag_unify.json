@@ -1,0 +1,136 @@
+{
+ "ceilings": {
+  "metaqa": 0.9947,
+  "squad": 0.9993,
+  "musique": 0.9804,
+  "hotpotqa": 0.9881,
+  "2wiki": 0.996
+ },
+ "weights": {
+  "metaqa": 15745,
+  "squad": 17729,
+  "musique": 7018,
+  "hotpotqa": 13335,
+  "2wiki": 18504
+ },
+ "shared_0.95": {
+  "cost": 3311.4305304779414,
+  "name": "rrf50+none/kind_t/kt_cos+n2_100:mass_A1all_t0.9_f4_k0@0.8",
+  "rows": {
+   "metaqa": 3266.2,
+   "squad": 2864.9,
+   "musique": 3541.3,
+   "hotpotqa": 3221.6,
+   "2wiki": 3755.3
+  }
+ },
+ "own_best_0.95": {
+  "metaqa": [
+   1519.5,
+   "rrf200+none/kind_t/kt:mass_KTall_t0.9_f4_k0@0.975"
+  ],
+  "squad": [
+   50.0,
+   "rrf50+none/kind_t/kt:fix_25@0.7"
+  ],
+  "musique": [
+   3470.1,
+   "rrf50+FULL:h2_c25/kind_t/kt_cos+n2_10:ada_f2_k0@0.975"
+  ],
+  "hotpotqa": [
+   314.7,
+   "rrf50+FULL:h1_c25/kind_t/kt:ada_f3_k300@0.8"
+  ],
+  "2wiki": [
+   327.2,
+   "rrf50+none/kind_t/kt:mass_KTall_t0.9_f1_k300@0.85"
+  ]
+ },
+ "own_mean_0.95": 821.4344140133552,
+ "shared_0.96": {
+  "cost": 3894.2309756535924,
+  "name": "rrf50+FULL:h2_c25/kind_t/kt_cos+n2_30:ada_f6_k0@0.85",
+  "rows": {
+   "metaqa": 3234.8,
+   "squad": 3437.6,
+   "musique": 4347.9,
+   "hotpotqa": 4114.7,
+   "2wiki": 4561.9
+  }
+ },
+ "own_best_0.96": {
+  "metaqa": [
+   1893.9,
+   "rrf50+none/kind_t/kt:mass_KTall_t0.9_f8_k0@0.95"
+  ],
+  "squad": [
+   50.0,
+   "rrf50+none/kind_t/kt:fix_25@0.7"
+  ],
+  "musique": [
+   4122.4,
+   "rrf50+none/kind_t/kt_cos+n2_10:mass_A1all_t0.95_f1_k0@1"
+  ],
+  "hotpotqa": [
+   500.3,
+   "rrf200+FULL:h1_c25/kind_t/kt:ada_f3_k300@0.9"
+  ],
+  "2wiki": [
+   441.3,
+   "rrf50+none/kind_t/kt:mass_KTall_t0.9_f1_k50@1"
+  ]
+ },
+ "own_mean_0.96": 1029.630786246561,
+ "oracle": {
+  "0.95": {
+   "rows": {
+    "metaqa": [
+     171.50300601202406,
+     "rrf50+none/kt"
+    ],
+    "squad": [
+     50.03871829105474,
+     "rrf50+none/kt"
+    ],
+    "musique": [
+     372.5912646675359,
+     "rrf50+none/kt_cos+n2_10"
+    ],
+    "hotpotqa": [
+     56.98275862068966,
+     "rrf50+none/kt"
+    ],
+    "2wiki": [
+     57.42513368983957,
+     "rrf50+none/kt"
+    ]
+   },
+   "mean": 110.94491326930199
+  },
+  "0.96": {
+   "rows": {
+    "metaqa": [
+     191.22845691382764,
+     "rrf50+none/kt"
+    ],
+    "squad": [
+     50.03871829105474,
+     "rrf50+none/kt"
+    ],
+    "musique": [
+     410.85723598435465,
+     "rrf50+FULL:h3_c25_v2000/kt_cos+n2_10"
+    ],
+    "hotpotqa": [
+     61.0948275862069,
+     "rrf50+none/kt"
+    ],
+    "2wiki": [
+     61.04010695187166,
+     "rrf50+none/kt"
+    ]
+   },
+   "mean": 120.6344477157516
+  }
+ }
+}

@@ -1,0 +1,50 @@
+
+== metaqa: 1480 reachable questions, need>=1000: 0.066; need>0: 0.980
+   mq15         rho +0.425  AUC(tail) 0.737
+   mq16         rho +0.422  AUC(tail) 0.775
+   n_n1_2       rho +0.393  AUC(tail) 0.691
+   n_n1_1       rho +0.366  AUC(tail) 0.686
+   n_n2_1       rho +0.363  AUC(tail) 0.667
+   mq5          rho +0.362  AUC(tail) 0.728
+
+== squad: 1497 reachable questions, need>=1000: 0.003; need>0: 0.020
+   n_n1_0       rho +0.137  AUC(tail) 0.742
+   n_u0         rho +0.116  AUC(tail) 0.810
+   n_u20        rho +0.114  AUC(tail) 0.785
+   n_n1_1       rho +0.111  AUC(tail) 0.773
+   n_n1_2       rho +0.110  AUC(tail) 0.728
+   mq0          rho +0.092  AUC(tail) 0.781
+
+== musique: 1478 reachable questions, need>=1000: 0.124; need>0: 0.618
+   mq14         rho +0.175  AUC(tail) 0.592
+   mq13         rho +0.170  AUC(tail) 0.592
+   mq4          rho +0.165  AUC(tail) 0.577
+   mq3          rho +0.159  AUC(tail) 0.573
+   n_u120       rho +0.159  AUC(tail) 0.566
+   mq12         rho +0.158  AUC(tail) 0.589
+
+== hotpotqa: 1485 reachable questions, need>=1000: 0.015; need>0: 0.327
+   mq16         rho -0.214  AUC(tail) 0.359
+   mq15         rho -0.196  AUC(tail) 0.359
+   mq17         rho -0.183  AUC(tail) 0.375
+   mq6          rho -0.179  AUC(tail) 0.379
+   mq26         rho -0.178  AUC(tail) 0.380
+   mq25         rho -0.160  AUC(tail) 0.374
+
+== 2wiki: 1490 reachable questions, need>=1000: 0.019; need>0: 0.650
+   mq24         rho +0.412  AUC(tail) 0.621
+   mq14         rho +0.411  AUC(tail) 0.621
+   mq4          rho +0.403  AUC(tail) 0.617
+   mq13         rho +0.386  AUC(tail) 0.608
+   mq23         rho +0.386  AUC(tail) 0.610
+   mq3          rho +0.374  AUC(tail) 0.605
+
+== webqsp: 1354 reachable questions, need>=1000: 0.103; need>0: 0.845
+   n_n2_2       rho -0.230  AUC(tail) 0.416
+   n_n2_1       rho -0.160  AUC(tail) 0.453
+   n_n1_0       rho +0.145  AUC(tail) 0.699
+   mq6          rho +0.136  AUC(tail) 0.667
+   taken0       rho +0.128  AUC(tail) 0.505
+   mq7          rho +0.124  AUC(tail) 0.687
+
+features with the same sign of rho and |rho| >= 0.15 on at least four datasets:
