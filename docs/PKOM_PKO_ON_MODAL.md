@@ -53,8 +53,10 @@ brings the small JSON records to `outputs/pkom/fetch/`, which leaves the laptop'
 
 ```
 modal run outputs/mp_unified/zpkom_modal.py --stage selftest   # no Modal connection: memory classes, item parsing, the scheduler and retry rules
+modal run outputs/mp_unified/zpkom_modal.py --stage plan       # what upload would send (read only)
 modal run outputs/mp_unified/zpkom_modal.py --stage upload     # the code archive and the files no mounted volume holds, to mpr-pko (new files only)
 modal run outputs/mp_unified/zpkom_modal.py --stage probe      # env, the three self-tests, the mirror applied to the real records, PKOH's inventory with sha256
+modal run outputs/mp_unified/zpkom_modal.py --stage selftests  # probe without the inventory: env, the self-tests (zpko three times), the disk
 modal run outputs/mp_unified/zpkom_modal.py --stage check      # PKOH's check (c), in one container: webqsp/s1eval shard 0/2 rebuilt
 modal run --detach outputs/mp_unified/zpkom_modal.py --stage run [--carves LIST] [--lanes N]
 modal run outputs/mp_unified/zpkom_modal.py --stage status
@@ -109,6 +111,29 @@ lane-hours.
   that still fails on a missing input stops with its name.
 - Quotas. The workspace's concurrent-container limit is not known; `--lanes` is lowered if spawns are refused.
 - The credit. A run that stops for credit is restarted from the ledger; no unit repeats a filed step.
+
+## 7a. What the probes found (30 Oct, workspace 3; 2 CPUs, 4 GiB request; billing not read after them; records in outputs/pkom, not committed)
+
+Passed: no overlay conflict between the code archive and the volumes (203 `mpr-u2d` inputs, 41 `mpr-u2c` repo files, 68
+`mpr-pko` inputs, 394 and 150 files for `outputs/u2c` and `outputs/u2e`); `modal_mirror` applied to the real records (7 verify
+records VERIFIED); `zpkoh.py items check|pools|gate` yield 14, 49 and 1, the pools items by memory class 5 at 2 GiB, 24 at 6, 20
+at 10 and none above; PKOH's inventory with sha256 reads all 360 inputs and the package's 577 files with 0 missing and 0
+different, all 11 carves READY (4 minutes).
+
+Three things to know, none of which stops a run:
+
+- zpkoh's self-test line "the disk guard" fails in a container. The container's filesystem reports 8,589,934,591.8 GiB free at
+  `/root/repo` and `/tmp` (and 381.5 GiB at `/pko`), and the line asks for 10**9 GiB free and expects exit 3. The guard a unit
+  runs (12 GiB free at the repository root) returns 0 there, run directly. zpkoh.py is not changed for this: its sha is in the
+  input map and on the host.
+- zpko's self-test passed in 4 of 4 laptop runs and 3 of 3 runs in one container, and failed once with a bare `AssertionError`
+  in an earlier container (the probe kept one line of output, so the traceback was lost; `probe` now keeps 1,400 characters of
+  a failing self-test). The only wall-clock assertion in it is `0.25 <= elapsed < 3` on a 0.3 s wait in the RAM guard's check
+  (zpko.py, section (c) of the A1 self-test), which a stalled container could exceed; that is a likely reading, not a proven
+  one. No build item runs a self-test (only the manual command and `probe` do), so it cannot fail a unit; the pools
+  numerics are decided by check (c).
+- The setup links 0 U2b graph files for metaqa and webqsp (1 each for squad, musique, hotpotqa and 2wiki). The inventory
+  reads every file of the map present, so whatever those two carves read is in the map; check (c) is webqsp's first real read.
 
 ## 8. Rules kept
 
