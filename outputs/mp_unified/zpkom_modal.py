@@ -442,19 +442,28 @@ UNITS = {2: unit2, 6: unit6, 10: unit10, 16: unit16, 32: unit32}
 
 
 @app.function(image=image, volumes=VOLS, memory=(4096, 16384), cpu=2.0, timeout=7200, **STAGE)
-def probe(cid):
+def probe(cid, quick=False):
     """The environment, the three self-tests, the mirror applied to the real verify records (zpko's --help behind
-    `step --host`, which runs apply_mirror first), and PKOH's inventory of the 360 inputs with their sha256."""
+    `step --host`, which runs apply_mirror first), and PKOH's inventory of the 360 inputs with their sha256.
+    quick: the environment, the self-tests (zpko three times) and the disk only."""
     info = _setup(cid, report=True)
     out = {"setup": info}
     out["env"] = _run_py(["outputs/mp_unified/zpkoh.py", "env"])["tail"][-700:]
-    out["zpko_selftest"] = _run_py(["outputs/mp_unified/zpko.py", "--selftest"])["tail"].strip().splitlines()[-1:]
-    out["zpkoh_selftest"] = _run_py(["outputs/mp_unified/zpkoh.py", "--selftest"])["tail"].strip().splitlines()[-1:]
-    out["zpkom_selftest"] = _run_py(["outputs/mp_unified/zpkom_modal.py", "--stage", "selftest-local"])["tail"].strip().splitlines()[-1:]
-    import shutil                                         # what a unit's disk guard (12 GiB at the repo root) will see here
+    reps = 3 if quick else 1                              # a self-test that passed once and failed once is looked at, not averaged
+    for name, argv in (("zpko", ["outputs/mp_unified/zpko.py", "--selftest"]), ("zpkoh", ["outputs/mp_unified/zpkoh.py", "--selftest"]),
+                       ("zpkom", ["outputs/mp_unified/zpkom_modal.py", "--stage", "selftest-local"])):
+        rs = [_run_py(argv) for _ in range(reps if name == "zpko" else 1)]
+        out[f"{name}_selftest"] = [(r["tail"].strip().splitlines() or [""])[-1] for r in rs]
+        bad = next((r for r in rs if r["rc"] != 0), None)
+        if bad is not None:
+            out[f"{name}_selftest_failure"] = bad["tail"][-1400:]
+    import shutil                                        # what a unit's disk guard (12 GiB at the repo root) will see here
     out["disk_free_gib"] = {p: round(shutil.disk_usage(p).free / 2 ** 30, 1) for p in ("/root/repo", "/tmp", "/pko")}
     out["disk_guard_12_gib"] = _run_py(["-c", "import sys; sys.path.insert(0, 'outputs/mp_unified'); import zpkoh; "
                                               "print('guard rc', zpkoh.guard_disk(12.0))"])["tail"].strip().splitlines()[-1:]
+    if quick:                                             # the self-tests and the disk, without the 4 minutes of sha256
+        pko.commit()
+        return out
     m = _run_py(["outputs/mp_unified/zpkoh.py", "step", "--host", "--", "--help"])
     out["mirror_applied"] = {"rc": m["rc"], "tail": [x for x in m["tail"].splitlines() if "modal" in x.lower() or "mirror" in x.lower()][-4:]}
     try:                                                  # what `run` will read: PKOH says 14 check, 49 pools, 1 gate items
@@ -759,8 +768,8 @@ def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True):
         return
     cid = _git("rev-parse", "HEAD").strip()[:12]
     cv = [c for c in carves.split(",") if c]
-    if stage == "probe":
-        print(json.dumps(probe.remote(cid), indent=1)[:6000])
+    if stage in ("probe", "selftests"):                  # selftests = probe without the inventory's sha256
+        print(json.dumps(probe.remote(cid, stage == "selftests"), indent=1)[:6000])
     elif stage == "check":
         print(json.dumps(check_c.remote(cid), indent=1)[:4000])
     elif stage == "status":
