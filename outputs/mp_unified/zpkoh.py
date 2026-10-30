@@ -271,6 +271,8 @@ def carve_need(m, d, c):
 # ── the host inventory (read only) ───────────────────────────────────────────
 
 def mirror_root(root=ROOT):
+    if os.environ.get("PKOH_MIRROR_ROOT"):                  # PKOM (amendment A1): the container's mirror, not the host's path
+        return os.environ["PKOH_MIRROR_ROOT"]
     if not (Path(root) / "configs/host_mirror_six.yaml").exists():
         return None
     try:
@@ -523,13 +525,58 @@ def patch_s4(S4, root):
     return S4
 
 
+def modal_mirror(S6, SB, root, vdir, say=log):
+    """PKOM's variant of S6.host_mode (docs/PKOM_PKO_ON_MODAL.md, amendment A1 of PKOH): the mirror is `root` (a container
+    path) and the records are the ones U2d's mirror stage filed for that mirror, `verify_<dataset>.json` for the six and
+    `verify_package.json` under `vdir`. Each must be VERIFIED at the declared freeze with nothing missing and no hash
+    mismatch, or the process stops before it opens anything. load_configs is then wrapped in memory exactly as host_mode
+    wraps it. Only the place of the records and the root differ."""
+    import platform
+    block = (SB.load_declaration().get(S6.HOST_BLOCK) or {}).get("mirror")
+    if not block:
+        raise SystemExit(f"PKOM mirror: {S6.HOST_BLOCK} is not filed in the declaration")
+    freeze, bad = block["freeze_RECORD_SHA256"], []
+    for name in list(S6.DATASETS) + ["package"]:
+        p = Path(vdir) / f"verify_{name}.json"
+        if not p.is_file():
+            bad.append(f"{p.name} is not there")
+            continue
+        rec = read_json(p)
+        if (rec.get("status") != "VERIFIED" or rec.get("freeze_RECORD_SHA256") != freeze or rec.get("group") != name
+                or rec.get("missing") or rec.get("hash_mismatch")):
+            bad.append(f"{p.name} is not VERIFIED at the declared freeze")
+    if bad:
+        raise SystemExit("PKOM mirror: " + "; ".join(bad))
+    original = S6.V2.load_configs
+
+    def load_configs_on_the_mirror(*args, **kwargs):
+        cfg, cfg_m3b, cfg_h = original(*args, **kwargs)
+        cfg_m3b["substrate"]["package_root"] = str(root)   # in memory only
+        return cfg, cfg_m3b, cfg_h
+
+    S6.V2.load_configs = load_configs_on_the_mirror
+    S6.PLACEMENT.clear()
+    S6.PLACEMENT.update({"where": "modal", "node": platform.node(), "mirror_root": str(root), "amendment": S6.HOST_BLOCK})
+    say(f"modal: the mirror at {root} in place of the package, in memory; {len(S6.DATASETS) + 1} verify records VERIFIED")
+    return S6.PLACEMENT
+
+
 def apply_mirror(say=log):
-    """S6.host_mode (checks the declared root and the pinned VERIFIED records, wraps load_configs) plus patch_s4."""
+    """S6.host_mode (checks the declared root and the pinned VERIFIED records, wraps load_configs) plus patch_s4. With
+    PKOH_MIRROR_ROOT set (PKOM, on Modal) the root and the records are the container's: modal_mirror."""
     add_paths()
     import importlib
     import mp_approx_six_base as SB
     import mp_approx_six_base_score as S6
-    root = Path(S6.host_mode(SB.load_declaration(), say)["mirror_root"])
+    env_root = os.environ.get("PKOH_MIRROR_ROOT")
+    if env_root:
+        vdir = os.environ.get("PKOH_VERIFY_DIR")
+        if not vdir:
+            raise SystemExit("PKOH_MIRROR_ROOT is set without PKOH_VERIFY_DIR")
+        root = Path(env_root)
+        modal_mirror(S6, SB, root, vdir, say)
+    else:
+        root = Path(S6.host_mode(SB.load_declaration(), say)["mirror_root"])
     patch_s4(importlib.import_module("step4_pool_reach"), root)
     return str(root)
 
@@ -1264,6 +1311,39 @@ def selftest():
         (d / f"{C_PART}.json").write_text(json.dumps(dict(head, rows=5)), encoding="utf-8")
         ok(verify_shard(base, None, exp)["verdict"] == "FAIL", "another row count fails")
         ok(verify_shard(Path(td) / "none")["verdict"] == "FAIL", "no shard fails")
+        # PKOM's variant of host_mode (amendment A1): the records of the container's mirror, on fake S6 and SB
+        import types
+        vd = Path(td) / "verify"
+        vd.mkdir()
+        fz = "f" * 64
+
+        def put_rec(name, **kw):
+            rec = dict(group=name, status="VERIFIED", freeze_RECORD_SHA256=fz, missing=[], hash_mismatch=[])
+            rec.update(kw)
+            (vd / f"verify_{name}.json").write_text(json.dumps(rec), encoding="utf-8")
+
+        dsx = ("a", "b")
+        for nmx in dsx + ("package",):
+            put_rec(nmx)
+        seen_cfg = []
+        v2 = types.SimpleNamespace(load_configs=lambda *a, **k: ({}, {"substrate": {"package_root": "host"}}, {}))
+        s6x = types.SimpleNamespace(HOST_BLOCK="blk", DATASETS=dsx, V2=v2, PLACEMENT={"old": 1})
+        sbx = types.SimpleNamespace(load_declaration=lambda: {"blk": {"mirror": {"freeze_RECORD_SHA256": fz}}})
+        pl = modal_mirror(s6x, sbx, Path("/root/mirror"), vd, say=lambda *_: None)
+        ok(pl["where"] == "modal" and pl["mirror_root"].replace("\\", "/") == "/root/mirror" and "old" not in pl,
+           "the Modal mirror is placed")
+        ok(v2.load_configs()[1]["substrate"]["package_root"].replace("\\", "/") == "/root/mirror",
+           "and load_configs names it, in memory")
+        for label, mut in (("a wrong freeze", dict(freeze_RECORD_SHA256="e" * 64)), ("a missing file", dict(missing=["x"])),
+                           ("a hash mismatch", dict(hash_mismatch=["x"])), ("another status", dict(status="FAILED")),
+                           ("another group", dict(group="zzz"))):
+            put_rec("b", **mut)
+            ok(raises(modal_mirror, s6x, sbx, Path("/root/mirror"), vd, lambda *_: None), f"{label} refuses the Modal mirror")
+            put_rec("b")
+        (vd / "verify_package.json").unlink()
+        ok(raises(modal_mirror, s6x, sbx, Path("/root/mirror"), vd, lambda *_: None), "a missing package record refuses it")
+        ok(raises(modal_mirror, s6x, types.SimpleNamespace(load_declaration=lambda: {}), Path("/root/mirror"), vd),
+           "an unfiled declaration refuses it")
         # the mirror patch on a fake S4
         class Pkg:
             def __init__(self):
