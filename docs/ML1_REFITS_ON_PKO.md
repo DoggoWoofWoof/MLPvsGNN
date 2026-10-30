@@ -139,3 +139,44 @@ alone. This stage never closes a family: a verdict closes only the form it teste
 
 No adoption, and no claim 1, 2 or 3 number. Nothing about latency, about the SEMB z-score ruling (still the user's), or about
 any pool other than PKO's pick O. A NOT_ADOPTED here closes the two forms as tested, on one build, at three seeds.
+
+## 10. Amendment A1 (31 October 2026, before any ML1 fit): the placement is the host's GPU
+
+Sections 1 to 6, 8 and 9 stand as written. This amendment replaces the "Where" and "Time" lines of section 7 and nothing else.
+
+**Why.** PKO is built on the lab host (docs/PKOH_PKO_ON_THE_HOST.md), so its arrays, about 88 GiB, are on the host when they are
+done. Pulling them to the laptop takes about 35 hours at the link's rate and the upload to Kaggle comes after that. The host's
+GPU is the placement WQ used for all twelve fits of the base set (docs/WQ_WEBQSP_TRAINS.md section 5): the same card and the same
+trainers. Its task-level qualification (docs/GPU_TASK_QUALIFICATION.md, 29 September 2026): evaluation
+TASK_EQUIVALENT, training TRAINING_REPRODUCIBLE.
+
+**The placement, quoted from configs/gpu_task_qualification.yaml (candidate host_gpu_det).** DESKTOP-SLQMEQH, rx env
+mpr-cu128@62fc45e9e1ba (torch 2.8.0+cu128, CUDA 12.8), NVIDIA RTX 4500 Ada Generation, driver 596.71; float32 only;
+torch.backends.cuda.matmul.allow_tf32 = False, torch.backends.cudnn.allow_tf32 = False, float32 matmul precision "highest",
+cudnn.benchmark = False; torch.use_deterministic_algorithms(True, warn_only=True) with CUBLAS_WORKSPACE_CONFIG=:4096:8 set before
+CUDA starts; every determinism warning recorded.
+
+**What this changes.**
+
+- **Where.** All 24 fits, their reads and their compares run on this one placement, as feeder items on the host. Kaggle's T4 is
+  not used by this stage. Every fit of every arm, the bases zspk and zrckp included, is fitted on it, so no number crosses
+  placements (the host-native protocol's same_placement_for_every_comparator).
+- **Inputs.** PKO's arrays are built on the host, by the code at `--code c53fff2e6055`, whose check (c) rebuilt webqsp's s1eval
+  shard 0/2 there and found every field equal to the laptop's filed unit, npz and KT sha256 included (31 October, no
+  tolerance). PKO's gate must be PASS before any ML1 item reads them. Every ML1 record names its git commit.
+- **One repeat.** `scr-ml1-zrckp-s0-rep`: zrckp, seed 0, WQ-musique, fitted a second time in a fresh process. Whether it is
+  bit-identical to `scr-ml1-zrckp-s0` (the final state_dict sha256 and the reads) is filed beside the verdict. It decides nothing:
+  the protocol asks for the repeat to be filed, and ADOPT / NOT_ADOPTED read the 24 fits only.
+- **Read caps** stay as section 2 fixes them (zg6r 32,768, zrckpt 65,536 rows a batch, whole questions). The card is larger than
+  the T4; the caps are not raised, so the batches, and the scores, are the declared ones.
+- **Time.** The 13 T4-hours of section 7 do not carry over. The first fit re-times the stage on the host and the estimate is
+  replaced by that measurement. Fits share the card as the feeder's GPU shares allow.
+- **Section 5's last row** (zg6r against zspk with the floors of today's pools, WQG's) compares calls, not scores. WQG's floors
+  were made on the T4; the row names both placements and is read as a comparison of calls only.
+- **If the host is lost** the stage stops with INCOMPLETE. It does not move to another device in the middle: the T4 would be a
+  new amendment with all 24 fits fitted again there.
+
+**Start.** Unchanged: when PKO's eleven carves are folded, their shas match the ledger and the gate is PASS. The stage module
+(fit, read, compare, floors, verdict through zml1.py) is written once PKO's records exist and their shapes can be checked, as
+section 7 says, and is self-tested on real record shapes before the first fit. Nothing in this amendment is a result, and
+nothing is adopted.
