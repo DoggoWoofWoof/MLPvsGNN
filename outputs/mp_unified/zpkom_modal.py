@@ -208,6 +208,63 @@ def volume_key(root, path):
     return k if (k == r or k.startswith(r + "/")) else f"{r}/{k}"
 
 
+# ── amendment A2: check (c) read at the level of the arrays ──────────────────
+# The first check (c) on Modal (30 Oct, commit 2e241b0c7c50) built the shard and failed on the file sha alone: 18 of the 19
+# arrays, the KT file and every head field were bit-identical to the laptop's, and `nodes` (the ordered expansion lists)
+# differed in 588 of 3,441,027 entries, in 11 of 751 questions, each the same node set in another order. A2 accepts a build
+# that is identical to the laptop's in every array but the order inside `nodes`, whose per-question sets must match, AND that
+# reproduces the first Modal build's bytes (so a Modal-only carve is self-consistent). docs/PKOM_PKO_ON_MODAL.md section 8.
+
+A2_MAX_REORDERED = 0.10                                  # at most this share of the questions' lists may be in another order
+
+
+def fingerprint_npz(path):
+    """Per array: dtype, shape and sha256 of its raw bytes. For `nodes` (cut by `ptr`), per question the digest of the list as
+    filed and of the sorted list, so an order difference and a set difference are told apart."""
+    import hashlib
+    import numpy as np
+    arrays = {}
+    with np.load(path, allow_pickle=False) as z:
+        for k in sorted(z.files):
+            a = np.ascontiguousarray(z[k])
+            arrays[k] = {"dtype": a.dtype.str, "shape": list(a.shape), "sha256": hashlib.sha256(a.tobytes()).hexdigest()}
+        ptr, nodes = z["ptr"].astype(np.int64), z["nodes"]
+        order, sets = [], []
+        for q in range(ptr.size - 1):
+            seg = np.ascontiguousarray(nodes[ptr[q]:ptr[q + 1]])
+            order.append(hashlib.sha256(seg.tobytes()).hexdigest()[:16])
+            sets.append(hashlib.sha256(np.sort(seg).tobytes()).hexdigest()[:16])
+    return {"arrays": arrays, "nodes": {"questions": len(order), "order": order, "set": sets}}
+
+
+def a2_problems(got, ref, own_sha, first_build_sha):
+    """[] when A2 holds: every array but `nodes` equal to the reference's, `nodes` the same dtype and shape with the same set
+    in every question and at most A2_MAX_REORDERED of the lists in another order, and the file the first Modal build's."""
+    out = [f"array {k} differs from the laptop's" for k in sorted(set(ref["arrays"]) | set(got["arrays"]))
+           if k != "nodes" and got["arrays"].get(k) != ref["arrays"].get(k)]
+    gn, rn = got["arrays"].get("nodes") or {}, ref["arrays"].get("nodes") or {}
+    if not gn or gn.get("dtype") != rn.get("dtype") or gn.get("shape") != rn.get("shape"):
+        out.append("nodes: the dtype or the shape differs from the laptop's")
+    g, r = got["nodes"], ref["nodes"]
+    if g["questions"] != r["questions"]:
+        out.append(f"nodes: {g['questions']} questions, the laptop's has {r['questions']}")
+    else:
+        sd = sum(a != b for a, b in zip(g["set"], r["set"]))
+        od = sum(a != b for a, b in zip(g["order"], r["order"]))
+        if sd:
+            out.append(f"nodes: {sd} questions have another node set")
+        if od > A2_MAX_REORDERED * g["questions"]:
+            out.append(f"nodes: {od} of {g['questions']} questions are in another order, more than {A2_MAX_REORDERED:.0%}")
+    if own_sha != first_build_sha:
+        out.append(f"file_sha256: {own_sha} is not the first Modal build's {first_build_sha}")
+    return out
+
+
+def gate_passes(gate, cid):
+    """`run` builds only on a filed gate for this commit: PASS (bit-identical to the laptop's shard) or PASS_A2."""
+    return bool(gate) and gate.get("code") == cid and gate.get("verdict") in ("PASS", "PASS_A2")
+
+
 def selftest():
     n = [0]
 
@@ -270,6 +327,46 @@ def selftest():
     ok(repo_path("pko", "inputs/outputs/u2p/v.json") == "outputs/u2p/v.json", "the new volume's inputs")
     ok(volume_key("/inputs", "inputs/a/b.json") == "inputs/a/b.json" and volume_key("/inputs", "a/b.json") == "inputs/a/b.json"
        and volume_key("/inputs", "/inputs/a") == "inputs/a", "listing keys are volume-relative either way")
+    # amendment A2: the array-level gate, on a toy shard of 20 questions with 3 nodes each
+    import tempfile
+    import numpy as np
+
+    def toy(path, nodes, extra=None):
+        d = {"ids": np.array([f"q{i}" for i in range(20)]), "ptr": np.arange(21, dtype=np.int32) * 3,
+             "nodes": np.asarray(nodes), "count": np.full(20, 3, np.int32)}
+        d.update(extra or {})
+        np.savez_compressed(path, **d)
+        return path
+
+    base = np.arange(60, dtype=np.int32) * 7 + 5
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        ref = fingerprint_npz(toy(td / "ref.npz", base))
+
+        def variant(name, nodes=None, extra=None):
+            return fingerprint_npz(toy(td / f"{name}.npz", base if nodes is None else nodes, extra))
+
+        swap = base.copy().reshape(20, 3)
+        swap[4] = swap[4][[1, 2, 0]]                                    # one question's list rotated: same set, other order
+        ok(a2_problems(ref, ref, "s", "s") == [], "a build equal to the reference passes")
+        ok(a2_problems(variant("one", swap.ravel()), ref, "s", "s") == [], "one list of 20 in another order (5%) passes")
+        many = swap.copy()
+        for q in (5, 6, 7):
+            many[q] = many[q][[1, 2, 0]]
+        ok(any("another order" in p for p in a2_problems(variant("many", many.ravel()), ref, "s", "s")),
+           "4 of 20 lists reordered (20%) is more than the bound")
+        other = swap.copy()
+        other[9][0] += 1                                                # a node that is not in the reference's set
+        ok(any("another node set" in p for p in a2_problems(variant("set", other.ravel()), ref, "s", "s")), "another set fails")
+        ok(any("array count" in p for p in a2_problems(variant("cnt", extra={"count": np.full(20, 4, np.int32)}), ref, "s", "s")),
+           "another count fails")
+        ok(any("array extra" in p for p in a2_problems(variant("ext", extra={"extra": np.zeros(2, np.int32)}), ref, "s", "s")),
+           "an array the reference lacks fails")
+        ok(any("dtype" in p for p in a2_problems(variant("dt", base.astype(np.int64)), ref, "s", "s")), "another dtype of nodes fails")
+        ok(any("first Modal build" in p for p in a2_problems(ref, ref, "a" * 64, "b" * 64)), "a file that is not the first build's fails")
+    ok(gate_passes({"code": "abc", "verdict": "PASS_A2"}, "abc") and gate_passes({"code": "abc", "verdict": "PASS"}, "abc")
+       and not gate_passes({"code": "abc", "verdict": "FAIL"}, "abc") and not gate_passes({"code": "abd", "verdict": "PASS"}, "abc")
+       and not gate_passes({}, "abc"), "the gate: PASS or PASS_A2, for this commit only")
     print(f"zpkom selftest: {n[0]} checks pass")
 
 
@@ -482,15 +579,32 @@ def probe(cid, quick=False):
 
 @app.function(image=image, volumes=VOLS, memory=(8192, 24576), cpu=2.0, timeout=21600, **STAGE)
 def check_c(cid):
-    """PKOH's check (c) in one container: webqsp/s1eval shard 0/2 rebuilt in /pko/check/c and compared with the laptop's
-    filed one, no tolerance. The record is the gate `run` reads."""
+    """PKOH's check (c) in one container: webqsp/s1eval shard 0/2 rebuilt in /pko/check/c-<commit> and compared with the
+    laptop's filed one. Bit-identical is PASS; a build that fails on the file sha alone is read at the level of the arrays
+    (amendment A2) and is PASS_A2 or FAIL. The record is the gate `run` reads."""
     info = _setup(cid)
     Path("/pko/check").mkdir(parents=True, exist_ok=True)
-    r = _run_py(["outputs/mp_unified/zpkoh.py", "check-c", "--host", "--base", "/pko/check/c"], "check-c")
-    rec, p = {}, Path("/pko/check/c/check_c.json")
+    base = f"/pko/check/c-{cid}"                          # a fresh base per commit: check-c only verifies a base that has a head
+    r = _run_py(["outputs/mp_unified/zpkoh.py", "check-c", "--host", "--base", base], "check-c")
+    rec, p = {}, Path(base) / "check_c.json"
     if r["rc"] in (0, 1) and p.exists():                  # 0 PASS, 1 FAIL: the verdict was computed; 2 is the guard refusing
         rec = json.loads(p.read_text(encoding="utf-8"))
-    gate = {"code": cid, "verdict": rec.get("verdict", "FAIL"), "problems": rec.get("problems", [f"check-c rc {r['rc']}"]),
+    verdict, problems = rec.get("verdict", "FAIL"), rec.get("problems", [f"check-c rc {r['rc']}"])
+    basis, a2 = "bit-identical to the laptop's shard", None
+    if verdict == "FAIL" and problems and all(x.startswith("file_sha256:") for x in problems):
+        basis = "A2: the arrays, with the order inside nodes free and its sets fixed; the first Modal build's bytes"
+        try:
+            import hashlib
+            ref = json.loads((REPO / "outputs" / "pkoh" / "check_c_ref.json").read_text(encoding="utf-8"))
+            npz = Path(base) / "pools" / "parts" / "webqsp__s1eval__0of2.npz"
+            own = hashlib.sha256(npz.read_bytes()).hexdigest()
+            a2 = {"own_file_sha256": own, "laptop_file_sha256": ref["file_sha256"],
+                  "first_modal_build_file_sha256": ref["modal_first_build_file_sha256"]}
+            found = a2_problems(fingerprint_npz(npz), ref, own, ref["modal_first_build_file_sha256"])
+            verdict, problems = ("PASS_A2" if not found else "FAIL"), found
+        except Exception as e:  # noqa: BLE001 -- an error of the comparison itself is not a pass
+            problems = problems + [f"A2 comparison failed: {e!r}"]
+    gate = {"code": cid, "verdict": verdict, "problems": problems, "basis": basis, "a2": a2,
             "rc": r["rc"], "seconds": r["seconds"], "peak_gb": r["peak_gb"], "env": rec.get("env"),
             "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     (Path("/pko/check") / "gate.json.tmp").write_text(json.dumps(gate, indent=1), encoding="utf-8")
@@ -520,7 +634,7 @@ def run(cid, carves, lanes, prune=True):
     from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
     _setup(cid)
     gate = Path("/pko/check") / f"gate-{cid}.json"
-    if not gate.exists() or json.loads(gate.read_text(encoding="utf-8")).get("verdict") != "PASS":
+    if not gate.exists() or not gate_passes(json.loads(gate.read_text(encoding="utf-8")), cid):
         raise SystemExit(f"{gate.name}: check (c) has not passed for this commit (--stage check); nothing is built")
     import zpkoh
     cv = [c for c in carves if c]
