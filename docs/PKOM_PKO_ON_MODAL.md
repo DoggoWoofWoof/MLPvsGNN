@@ -303,3 +303,38 @@ webqsp/s1eval --checks-only --retry`: the shards are filed OK and skipped, the u
 and check-merge run. (3) `--stage unit --carves hotpotqa/fit --item pkoh-hpchk-0`, then `pkoh-hpchk-m` when it is done (with
 `--code` of the gated commit if HEAD has moved), under section 12's cost rules (billing read before, about every 30 minutes
 during, stop at 29.9 USD). Nothing here is a result.
+
+## 14. Section 5's four checks, filed on Modal on 30 Oct 2026 (a record of what ran; no rule changes)
+
+| check | where it ran | verdict | notes |
+|---|---|---|---|
+| 5 (b) squad/fit | rehearsal, 12:12 to 12:16 (893ea05) | PASS, rule A2 | the A1-era FAIL is kept as `squad__fit.a1-fail.json` |
+| 5 (b) squad/s1eval | A4 run, 16:03 to 16:19 (1f63817) | PASS, rule A2 | four shards 668 to 792 s, merge 14 s; `manifest_differs` empty |
+| 5 (a) webqsp | A4 run, then the rerun 16:34 to 16:37 (fc694f9) | PASS, `mismatches` {} | shards 441 s and 477 s; the unit of shard 0/2 passed under A5 (`a5-webqsp_s1eval_0of2-fc694f9cea0e.json`, PASS_A5) |
+| 5 (a) hotpotqa/s1sel | `--stage unit`, 16:35 to 17:04 (fc694f9) | PASS, `mismatches` {} | one shard in 1,515.8 s, check-merge 4.8 s |
+
+All four were filed in `/pko/pko/check/` on the volume and fetched (`outputs/pkom/fetch/pko/check/`, uncommitted). The gate for each of the three
+commits that ran anything was PASS_A2 with the same file sha (2d1c2c56...): five builds in fresh containers, one file.
+
+**Three things the runs showed, none of which changes a rule.**
+
+1. **Speed.** Hotpotqa's check (a) took 1,516 s against U2s's 9,197 s on one lane (about 6x), the pools shards of squad and webqsp
+   took 441 to 792 s, and the whole of the early spend was 0.35 USD (month to date 29.165 to 29.519, of an assumed 30, with the two
+   gate builds): below section 12's 0.7 USD worst case.
+2. **Memory.** The hotpotqa check shard peaked at **18.75 GiB** (the child at 18.54 GiB) against the 7.0 GiB PKOH declares for the
+   item (`mem_of`). It ran in the 10 GiB class, whose limit is 20 GiB, so it fitted with 1.25 GiB to spare; the same item on
+   the host would have been scheduled on 7 GiB. The declared figure is wrong for that item; it is not changed here (`zpkoh.py` is
+   frozen); a host run of it needs the measured peak reserved. Nothing else in these runs came near its class limit.
+3. **A unit's two verdicts.** A unit can exit 1 after its step is filed OK (webqsp 0/2: the step OK, the comparison with the
+   laptop's shard failing). `failed_rcs` was empty in the summary for that unit, so the only sign was the tail; A5 reads the
+   record itself, not the tail.
+
+**What these checks do and do not say.** They say the section-5 conditions of docs/PKO_PICK_O_POOLS_UNDER_WQ.md hold on Modal
+for the four they name: webqsp and hotpotqa pools agree with U2s's numbers (a), and the two squad carves with U2d's, up to the
+rules A2 and A5 declare (b). They are conditions, not results; no pool, look or cache has been built from them, and **the look,
+cache, tail and prune steps have still run nowhere**. The ledger holds `look:squad/fit:0/1` as FAILED, so the next run of that
+chain needs `--retry`.
+
+**Consequences for the 1 Nov order (section 11).** (a) The run no longer waits on these four: the units skip their OK entries
+under `--retry`. (b) A docs-only commit after a gated one needs no new gate: `--code` names the gated commit. (c) The first thing
+on 1 Nov that has never run is a look: squad/fit's is the smallest, and the full run starts it as soon as the merges allow.
