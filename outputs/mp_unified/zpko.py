@@ -4,7 +4,7 @@ arrays on the chained carves and the KT input. Pools only: nothing trains, nothi
 recall, R@5 or ceiling of the new pools is computed or printed. Committed modules are imported unchanged; what differs
 is patched in process.
 
-    python outputs/mp_unified/zpko.py plan [--carves D/C,...] [--sq S]
+    python outputs/mp_unified/zpko.py plan [--carves D/C,...] [--sq S] [--look-rows N] [--part-rows N]
     python outputs/mp_unified/zpko.py check DATASET [--threads 2] [--limit Q] [--shard I/K]
     python outputs/mp_unified/zpko.py check-merge DATASET --parts K
     python outputs/mp_unified/zpko.py pools DATASET --carve C [--check] [--threads 2] [--limit Q] [--shard I/K]
@@ -20,6 +20,8 @@ is patched in process.
     python outputs/mp_unified/zpko.py prune --carve D/C
     python outputs/mp_unified/zpko.py gate
     python outputs/mp_unified/zpko.py chain [--carves D/C,...] [--lanes N] [--prune] [--retry] [--threads 2]
+                                            [--look-rows N] [--part-rows N] [--ram-wait S] [--no-preflight]
+                                            [--as-given] [--checks-filed] [--disk-reserve-gib G]
     python outputs/mp_unified/zpko.py --selftest
 
 plan         Per carve: questions, rows per question (U2s's filed cost at pick O on the dataset's U2s carve, read without
@@ -62,6 +64,11 @@ from pathlib import Path  # noqa: E402
 from types import SimpleNamespace  # noqa: E402
 
 import numpy as np  # noqa: E402
+
+try:
+    import psutil  # noqa: E402  (A1: the peak record and the RAM preflight; nothing else uses it)
+except ImportError:
+    psutil = None
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -118,10 +125,23 @@ SAME = ("declared_in", "stage", "dataset", "carve", "pick", "construction", "gra
         "types", "scripts")
 SHARD_Q = {"webqsp": 1000, "metaqa": 1000}   # questions per pools shard: a KB carve opens in ~2 min
 SHARD_Q_PASSAGE = 3000                       # a passage carve opens in > 9 min (hotpotqa, timed)
-CHUNK_Q = 479                                                # questions per look chunk (look_u2d's)
+CHUNK_NODES = 24000                                          # nodes per look chunk (mp_approx_l0's; look_x_six.py:260)
 LOOK_ROWS = 1_000_000                                        # rows per look shard (WQK's peak 6.04 GiB at ~0.85M)
-PART_ROWS = 1_250_000                                        # rows per cache part (WQK's peak 6.5 GiB at ~1.27M)
+PART_ROWS = 1_250_000                                        # rows per cache part, A0's one value (WQK's peak 6.5 GiB at ~1.27M)
+PART_ROWS_BY = {"webqsp": 500_000, "metaqa": 1_200_000, "musique": 950_000, "hotpotqa": 400_000, "2wiki": 450_000,
+                "squad": PART_ROWS}                          # A1: rows per cache part by dataset, for a peak of ~3 GiB
 RESERVE = 15 * 2 ** 30                                       # section 6: the disk kept free
+ZPKO_KEY = "outputs/mp_unified/zpko.py"                      # A1: how the records name this file among the scripts
+ZPKO_SAME = ("8629c86949b4d1fd01f0dc980c58af0419b63617426a6c521899f409beffd16b",)   # its sha before A1 (A0): the same pools pass
+GIB = 2 ** 30
+MARGIN_GIB = 1.0                                             # A1: kept free above a step's measured peak
+LANE_GIB = {"squad": 5.0, "metaqa": 5.0, "webqsp": 7.0, "2wiki": 7.0, "hotpotqa": 7.0, "musique": 9.5}   # pools, check, look
+CACHE_FLOOR_GIB = 1.6                                        # a cache part: floor + GiB per million rows (laptop fits)
+CACHE_GIB_MROW = {"2wiki": 4.5, "hotpotqa": 5.8, "webqsp": 2.9, "metaqa": 1.1, "musique": 1.5, "squad": 1.5}
+STEP_GIB = {"rmatch": 4.0, "zrc": 4.0, "links": 3.0, "typed": 3.0, "kt": 4.0, "record": 3.0, "check-merge": 1.0,
+            "check-squad": 2.0, "copy-bases": 0.5, "gate": 1.0, "prune": 0.5}   # whole figures, margin in; GUESS until A1's ledger holds a peak
+MERGE_BPR, MERGE_FLOOR_GIB = 114, 0.3                        # merge: every shard's arrays and KT loaded, then joined
+RAM_WAIT_S = 7200.0                                          # A1: how long a step waits for its RAM before the chain stops
 ROWS_Q = 2000.0                                              # rows per question when U2s's filed cost is not read
 POOLS_BPR = 40                                               # bytes per row, pools parts and the merged file
 BPR = {  # bytes per pool row per root, from WQK's and U2d's built carves (conservative)
@@ -190,6 +210,16 @@ def scripts():
     paths = {Path(m.__file__).resolve() for m in mods}
     paths |= {HERE / f for f in ("zpko.py", "look_u2d.py", "lean_cache.py", "zp1c2.py", "zu2n.py", "zwqk.py")}
     return {relr(p): src_sha(p) for p in sorted(paths) if p.exists()}
+
+
+def head_key(h):
+    """A shard's head as the merge compares it: this file's sha counts as one value when it is the current file's or a
+    declared earlier one (A1: the pools pass is the same code; docs/PKO_A1_AMENDMENT.md section 5). Any other script's
+    sha, or any other zpko.py, still makes two shards differ."""
+    s = dict(h["scripts"])
+    if s.get(ZPKO_KEY) in ZPKO_SAME + (src_sha(Path(__file__)),):
+        s[ZPKO_KEY] = "zpko.py"
+    return dict(h, scripts=s)
 
 
 def u2s_carve(name):
@@ -684,7 +714,7 @@ def merge_carve(name, carve, k, R=None):
         secs += float(part["seconds"]["pass"])
     if at != nq:
         raise SystemExit(f"{name}/{carve}: the shards cover {at} of {nq} questions")
-    if any(h != heads[0] for h in heads):
+    if any(head_key(h) != head_key(heads[0]) for h in heads):
         raise SystemExit(f"{name}/{carve}: the shards were not built by one script on one input")
     filed = merge_arrays(arrays)
     kt = np.concatenate(kts)
@@ -1138,16 +1168,154 @@ def entry_ok(R, e):
     return all((R.base / f).exists() and sha_file(R.base / f) == sha for f, sha in e.get("files", {}).items())
 
 
-def file_entry(R, key, status, files, seconds, rc=0):
+def file_entry(R, key, status, files, seconds, rc=0, peak=None, need=None):
+    """One ledger entry. A1 adds peak_rss_bytes (the step's process tree) and need_bytes (the RAM it declared) when
+    known; an entry without them (A0's) is read exactly as before."""
     with LEDGER_LOCK:
         led = read_ledger(R)
         led["entries"][key] = {"status": status, "files": {relb(R, p): sha_file(p) for p in files},
                                "seconds": round(float(seconds), 1), "rc": int(rc), "utc": utc()}
+        for k_, v_ in (("peak_rss_bytes", peak), ("need_bytes", need)):
+            if v_ is not None:
+                led["entries"][key][k_] = int(v_)
         write_json(R.ledger, led)
 
 
+# ── A1: peak working set of a step, and the RAM preflight ────────────────────
+
+class RamRefused(Exception):
+    """A step waited RAM_WAIT_S (or --ram-wait) for the RAM it declares and did not get it; nothing is filed."""
+
+
+def _tree(pid):
+    p = psutil.Process(pid)
+    return [p] + p.children(recursive=True)
+
+
+def tree_rss(pid):
+    """Resident bytes of a process and its children now (0 when psutil is missing or the process has gone)."""
+    if psutil is None or not pid:
+        return 0
+    try:
+        return sum(q.memory_info().rss for q in _tree(pid))
+    except psutil.Error:
+        return 0
+
+
+class PeakWatch:
+    """Samples a process tree every `every` seconds; peak is the larger of the best sampled tree sum and the largest
+    single-process peak the OS keeps (peak_wset on Windows, VmHWM on Linux), so a spike between two samples counts."""
+
+    def __init__(self, pid, every=0.5):
+        self.pid, self.every, self.peak = pid, float(every), 0
+        self.stop_ev, self.t = threading.Event(), None
+        if psutil is not None:
+            self.sample()
+            self.t = threading.Thread(target=self.run, daemon=True)
+            self.t.start()
+
+    def sample(self):
+        try:
+            tot, best = 0, 0
+            for q in _tree(self.pid):
+                try:
+                    mi = q.memory_info()
+                except psutil.Error:
+                    continue
+                tot += mi.rss
+                best = max(best, int(getattr(mi, "peak_wset", 0) or 0), _hwm(q.pid))
+            self.peak = max(self.peak, tot, best)
+        except psutil.Error:
+            pass
+
+    def run(self):
+        while not self.stop_ev.wait(self.every):
+            self.sample()
+
+    def stop(self):
+        """The peak in bytes, or None when psutil is missing."""
+        if self.t is None:
+            return None
+        self.stop_ev.set()
+        self.t.join(5)
+        return int(self.peak)
+
+
+def _hwm(pid):
+    """VmHWM of a process in bytes on Linux (0 elsewhere or when it cannot be read)."""
+    try:
+        with open(f"/proc/{pid}/status", "rb") as fh:
+            for line in fh:
+                if line.startswith(b"VmHWM:"):
+                    return int(line.split()[1]) * 1024
+    except (OSError, ValueError, IndexError):
+        pass
+    return 0
+
+
+def _kind(key):
+    return key.split(":")[0]
+
+
+def need_bytes(kind, name, rows=None, part_rows=None):
+    """A step's declared RAM in bytes: its measured (or guessed) peak plus MARGIN_GIB (docs/PKO_A1_AMENDMENT.md
+    section 4). pools, check and look hold a carve's graph and names: a lane's figure by dataset; a cache part grows
+    with its rows; a merge loads every shard; the rest are small."""
+    if kind in ("pools", "check", "look"):
+        gib = LANE_GIB[name]
+    elif kind == "cache":
+        gib = CACHE_FLOOR_GIB + CACHE_GIB_MROW[name] * float(part_rows or PART_ROWS_BY.get(name, PART_ROWS)) / 1e6 \
+            + MARGIN_GIB
+    elif kind == "merge":
+        gib = MERGE_FLOOR_GIB + MERGE_BPR * float(rows or 0) / GIB + MARGIN_GIB
+    else:
+        gib = STEP_GIB[kind]
+    return int(gib * GIB)
+
+
+class RamGuard:
+    """A1's preflight: a step starts only when the RAM it declares is available now, less what the steps already running
+    have yet to grow into. It waits up to `wait` seconds (polling every `poll`), then raises RamRefused: the chain
+    stops and nothing is filed FAILED, so the same command resumes. Without psutil it cannot measure and admits."""
+
+    def __init__(self, wait=RAM_WAIT_S, avail=None, rss=None, poll=30.0):
+        self.wait, self.poll = float(wait), float(poll)
+        self.avail = avail or ((lambda: psutil.virtual_memory().available) if psutil is not None else (lambda: None))
+        self.rss = rss or (lambda st: tree_rss(getattr(st, "pid", None)))
+        self.cv, self.running, self.refused = threading.Condition(), {}, None
+
+    def pending(self):
+        return sum(max(0, int(getattr(st, "need", 0)) - self.rss(st)) for st in self.running.values())
+
+    def admit(self, st):
+        need, t0, said = int(getattr(st, "need", 0) or 0), time.time(), False
+        with self.cv:
+            while True:
+                have = self.avail()
+                if have is None or need <= have - self.pending():
+                    self.running[st.key] = st
+                    return
+                left = self.wait - (time.time() - t0)
+                if left <= 0:
+                    self.refused = (st.key, need, int(have))
+                    log(f"ram: {st.key} needs {need / GIB:.1f} GiB, {have / GIB:.1f} GiB is available (less what "
+                        f"the running steps still take); the chain stops, nothing is filed FAILED")
+                    raise RamRefused(st.key)
+                if not said:
+                    log(f"ram: {st.key} waits for {need / GIB:.1f} GiB ({have / GIB:.1f} GiB available now, up to "
+                        f"{self.wait:.0f} s)")
+                    said = True
+                self.cv.wait(timeout=min(self.poll, left))
+
+    def done(self, st):
+        with self.cv:
+            self.running.pop(st.key, None)
+            self.cv.notify_all()
+
+
 def run_step(R, st, threads):
-    """One step as its own process (numba and BLAS at 2), its output appended to logs/<key>.log."""
+    """One step as its own process (numba and BLAS at 2), its output appended to logs/<key>.log. A1: its pid and peak
+    working set are left on st (st.pid while it runs, st.peak_rss_bytes after)."""
     R.logs.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, PYTHONIOENCODING="utf-8", NUMBA_NUM_THREADS=str(threads), OPENBLAS_NUM_THREADS="2",
                OMP_NUM_THREADS="2", MKL_NUM_THREADS="2")
@@ -1155,12 +1323,19 @@ def run_step(R, st, threads):
     with open(R.logs / (re.sub(r"[^A-Za-z0-9_.-]+", "_", st.key) + ".log"), "ab") as fh:
         fh.write(f"\n== {utc()} {st.key}\n".encode())
         fh.flush()
-        return subprocess.run([sys.executable, str(Path(__file__).resolve())] + base + list(st.argv), cwd=str(ROOT),
-                              env=env, stdout=fh, stderr=subprocess.STDOUT).returncode
+        proc = subprocess.Popen([sys.executable, str(Path(__file__).resolve())] + base + list(st.argv), cwd=str(ROOT),
+                                env=env, stdout=fh, stderr=subprocess.STDOUT)
+        st.pid = proc.pid
+        watch = PeakWatch(proc.pid)
+        rc = proc.wait()
+        st.peak_rss_bytes = watch.stop()
+        st.pid = None
+        return rc
 
 
-def do_step(R, st, retry, runner):
-    """Skip a step filed OK whose files still match; refuse a FAILED one without --retry; else run and file it."""
+def do_step(R, st, retry, runner, ram=None):
+    """Skip a step filed OK whose files still match; refuse a FAILED one without --retry; else (A1: once its declared
+    RAM is available) run and file it, with its peak working set when the runner measured one."""
     with LEDGER_LOCK:
         e = read_ledger(R)["entries"].get(st.key)
     if entry_ok(R, e):
@@ -1168,12 +1343,20 @@ def do_step(R, st, retry, runner):
     if e is not None and e.get("status") == "FAILED" and not retry:
         log(f"{st.key}: FAILED in the ledger (--retry runs it again)")
         return False
+    if ram is not None:
+        ram.admit(st)
     t = time.time()
-    rc = runner(st)
+    try:
+        rc = runner(st)
+    finally:
+        if ram is not None:
+            ram.done(st)
     have = [Path(p) for p in st.outs if Path(p).exists()]
     ok = rc == 0 and len(have) == len(st.outs)
-    file_entry(R, st.key, "OK" if ok else "FAILED", have, time.time() - t, rc)
-    log(f"{st.key}: {'OK' if ok else 'FAILED'} ({time.time() - t:.1f} s)")
+    peak = getattr(st, "peak_rss_bytes", None)
+    file_entry(R, st.key, "OK" if ok else "FAILED", have, time.time() - t, rc, peak, getattr(st, "need", None) or None)
+    log(f"{st.key}: {'OK' if ok else 'FAILED'} ({time.time() - t:.1f} s"
+        f"{'' if peak is None else f', peak {peak / GIB:.2f} GiB'})")
     return ok
 
 
@@ -1233,9 +1416,11 @@ class Disk:
             self.cv.notify_all()
 
 
-def run_lanes(R, jobs, lanes, retry, runner, disk, stop):
-    """Jobs (one carve each) on N lanes, each lane running its carve's steps in order. A FAILED step or the disk guard
-    stops the chain: the lanes finish the step they are in and start nothing new."""
+def run_lanes(R, jobs, lanes, retry, runner, disk, stop, ram=None):
+    """Jobs (one carve each) on N lanes, each lane running its carve's steps in order. A FAILED step, the disk guard or
+    (A1) the RAM preflight stops the chain: the lanes finish the step they are in and start nothing new. A1: an error
+    in a job's steps (a refused count change, a missing manifest) stops the chain too, where it used to end its lane
+    silently."""
     queue, qlock = list(jobs), threading.Lock()
 
     def lane():
@@ -1249,9 +1434,16 @@ def run_lanes(R, jobs, lanes, retry, runner, disk, stop):
                 return
             try:
                 for st in job.steps():
-                    if stop.is_set() or not do_step(R, st, retry, runner):
+                    if stop.is_set() or not do_step(R, st, retry, runner, ram):
                         stop.set()
                         return
+            except RamRefused:
+                stop.set()
+                return
+            except (SystemExit, Exception) as e:       # noqa: BLE001
+                log(f"{job.key}: stopped: {e}")
+                stop.set()
+                return
             finally:
                 disk.done(job)
 
@@ -1263,8 +1455,9 @@ def run_lanes(R, jobs, lanes, retry, runner, disk, stop):
     return not stop.is_set()
 
 
-def step(key, argv, outs):
-    return SimpleNamespace(key=key, argv=[str(x) for x in argv], outs=[Path(p) for p in outs])
+def step(key, argv, outs, need=0):
+    return SimpleNamespace(key=key, argv=[str(x) for x in argv], outs=[Path(p) for p in outs], need=int(need),
+                           pid=None, peak_rss_bytes=None)
 
 
 def shard_q(name):
@@ -1273,6 +1466,39 @@ def shard_q(name):
 
 def shards(n, per):
     return max(1, int(math.ceil(int(n) / float(per))))
+
+
+def chunk_count(nq, rows):
+    """The look's chunks for a carve of nq questions and `rows` pool rows, as look_x_six cuts them (line 260):
+    max(1, CHUNK_NODES // mean pool) questions to a chunk. A0 used squad's 479 for every carve (docs/PKO_A1_AMENDMENT.md
+    section 2)."""
+    per = max(1, int(CHUNK_NODES // max(float(rows) / max(1, int(nq)), 1.0)))
+    return shards(nq, per)
+
+
+def look_parts(name, nq, rows, look_rows=None, part_rows=None):
+    """(look shards, cache parts) of a carve: rows / the target, never more than the carve's chunks. A1's targets are
+    LOOK_ROWS and PART_ROWS_BY[name] unless the flags give one."""
+    n_chunks = chunk_count(nq, rows)
+    return (min(n_chunks, shards(rows, look_rows or LOOK_ROWS)),
+            min(n_chunks, shards(rows, part_rows or PART_ROWS_BY.get(name, PART_ROWS))))
+
+
+def other_counts(R, name, carve, nl, nc):
+    """Look records and cache, rmatch, zrc and links parts of this carve filed under another shard or part count: the
+    look and lean_cache read all of a carve's files, so a carve's counts are fixed by its first file."""
+    bad = []
+    for pat in ("record_*of*.json", "pools_*of*.json"):
+        for p in (Path(R.look) / name / carve).glob(pat):
+            m = re.search(r"of(\d+)\.json$", p.name)
+            if m and int(m.group(1)) != nl:
+                bad.append(p)
+    for root in ("cache", "rmatch", "zrc", "links"):
+        for p in (Path(R[root]) / name / carve).glob("part_*of*"):
+            m = re.search(r"of(\d+)$", p.name)
+            if m and int(m.group(1)) != nc:
+                bad.append(p)
+    return bad
 
 
 def chained_roots(name, carve):
@@ -1296,8 +1522,9 @@ def carve_rows(R, name, carve, rq):
     return int(math.ceil(QUESTIONS[(name, carve)] * rq.get(name, ROWS_Q))), False
 
 
-def pre_steps(R, name, carve, threads):
-    """The pools shards, the merge and the carve's section 5 check."""
+def pre_steps(R, name, carve, threads, rows=None):
+    """The pools shards, the merge and the carve's section 5 check. `rows` (the carve's rows, estimated before the
+    merge) sizes the merge's declared RAM only; no key, argument or output depends on it."""
     k = shards(QUESTIONS[(name, carve)], shard_q(name))
     chk = carve == u2s_carve(name)
     out = []
@@ -1306,45 +1533,60 @@ def pre_steps(R, name, carve, threads):
         out.append(step(f"pools:{name}/{carve}:{i}/{k}",
                         ["pools", name, "--carve", carve, "--shard", f"{i}/{k}", "--threads", threads]
                         + (["--check"] if chk else []),
-                        [R.parts / f"{st}.json"] + ([R.check_parts / f"{st}.json"] if chk else [])))
+                        [R.parts / f"{st}.json"] + ([R.check_parts / f"{st}.json"] if chk else []),
+                        need_bytes("pools", name)))
     out.append(step(f"merge:{name}/{carve}", ["merge", name, "--carve", carve, "--parts", k],
-                    [R.pools / f"{stem(name, carve)}.json"]))
+                    [R.pools / f"{stem(name, carve)}.json"], need_bytes("merge", name, rows)))
     if chk:
-        out.append(step(f"check-merge:{name}", ["check-merge", name, "--parts", k], [R.check / f"{name}.json"]))
+        out.append(step(f"check-merge:{name}", ["check-merge", name, "--parts", k], [R.check / f"{name}.json"],
+                        need_bytes("check-merge", name)))
     if name == "squad":
-        out.append(step(f"check-squad:{carve}", ["check-squad", "--carve", carve], [R.check / f"squad__{carve}.json"]))
+        out.append(step(f"check-squad:{carve}", ["check-squad", "--carve", carve], [R.check / f"squad__{carve}.json"],
+                        need_bytes("check-squad", name)))
     return out
 
 
-def post_steps(R, name, carve, rows, nq, prune_looks):
-    """Section 4's build after the pools: look shards, cache parts, rmatch and zrc, links, typed, KT, record, prune."""
-    n_chunks = shards(nq, CHUNK_Q)
-    nl, nc = min(n_chunks, shards(rows, LOOK_ROWS)), min(n_chunks, shards(rows, PART_ROWS))
+def post_steps(R, name, carve, rows, nq, prune_looks, look_rows=None, part_rows=None):
+    """Section 4's build after the pools: look shards, cache parts, rmatch and zrc, links, typed, KT, record, prune.
+    A1: the shard and part counts come from the carve's rows and its real chunk count (look_parts), not from squad's
+    479 questions to a chunk; each step carries the RAM it declares."""
+    nl, nc = look_parts(name, nq, rows, look_rows, part_rows)
     c, d = f"{name}/{carve}", (lambda root: Path(root) / name / carve)
     chained = (name, carve) in CHAINED
     out = [step(f"look:{c}:{i}/{nl}", ["look", name, "--carve", carve, "--shard", f"{i}/{nl}"],
-                look_outs(R, name, carve, (i, nl))) for i in range(nl)]
+                look_outs(R, name, carve, (i, nl)), need_bytes("look", name)) for i in range(nl)]
     out += [step(f"cache:{c}:{i}/{nc}", ["cache", name, "--carve", carve, "--part", f"{i}/{nc}"],
-                 [d(R.cache) / f"part_{i}of{nc}" / "record.json"]) for i in range(nc)]
+                 [d(R.cache) / f"part_{i}of{nc}" / "record.json"], need_bytes("cache", name, None, rows / nc))
+            for i in range(nc)]
     for what in (("rmatch", "zrc") if chained else ()) + ("links",):
         out.append(step(f"{what}:{c}", ["build", what, name, "--carve", carve],
-                        [d(R[what]) / f"part_{i}of{nc}" / "record.json" for i in range(nc)]))
+                        [d(R[what]) / f"part_{i}of{nc}" / "record.json" for i in range(nc)], need_bytes(what, name)))
     if chained:
-        out.append(step(f"typed:{c}", ["typed", name, "--carve", carve], [d(R.typed) / "record.json"]))
-    out.append(step(f"kt:{c}", ["kt", name, "--carve", carve], [d(R.kt) / "record.json"]))
-    out.append(step(f"record:{c}", ["record", name, "--carve", carve], [R.records / f"{stem(name, carve)}.json"]))
+        out.append(step(f"typed:{c}", ["typed", name, "--carve", carve], [d(R.typed) / "record.json"],
+                        need_bytes("typed", name)))
+    out.append(step(f"kt:{c}", ["kt", name, "--carve", carve], [d(R.kt) / "record.json"], need_bytes("kt", name)))
+    out.append(step(f"record:{c}", ["record", name, "--carve", carve], [R.records / f"{stem(name, carve)}.json"],
+                    need_bytes("record", name)))
     if prune_looks:
-        out.append(step(f"prune:{c}", ["prune", "--carve", c], [d(R.look) / "pruned.json"]))
+        out.append(step(f"prune:{c}", ["prune", "--carve", c], [d(R.look) / "pruned.json"], need_bytes("prune", name)))
     return out
 
 
-def carve_job(R, name, carve, rq, prune_looks, threads, pools_only=False):
+def carve_job(R, name, carve, rq, prune_looks, threads, pools_only=False, look_rows=None, part_rows=None):
     def steps():
-        yield from pre_steps(R, name, carve, threads)
+        yield from pre_steps(R, name, carve, threads, carve_rows(R, name, carve, rq)[0])
         if pools_only:
             return
         ent = read_json(R.pools / f"{stem(name, carve)}.json")
-        yield from post_steps(R, name, carve, int(ent["rows"]), int(ent["questions"]), prune_looks)
+        nq, rows = int(ent["questions"]), int(ent["rows"])
+        nl, nc = look_parts(name, nq, rows, look_rows, part_rows)
+        bad = other_counts(R, name, carve, nl, nc)
+        if bad:
+            raise SystemExit(f"{name}/{carve} needs {nl} look shards and {nc} cache parts, but {[relr(p) for p in bad]} "
+                             f"are filed under other counts: the look and lean_cache read all of a carve's files. "
+                             f"Give --look-rows and --part-rows the values they had, or clear the carve's look and "
+                             f"cache after reading the logs")
+        yield from post_steps(R, name, carve, rows, nq, prune_looks, look_rows, part_rows)
 
     def est():
         rows, _exact = carve_rows(R, name, carve, rq)
@@ -1358,13 +1600,25 @@ def check_job(R, name, threads):
     carve = u2s_carve(name)
     k = shards(int(u2s_record(name)[0]["questions"]), shard_q(name))
     sts = [step(f"check:{name}:{i}/{k}", ["check", name, "--shard", f"{i}/{k}", "--threads", threads],
-                [R.check_parts / f"{stem(name, carve, (i, k))}.json"]) for i in range(k)]
-    sts.append(step(f"check-merge:{name}", ["check-merge", name, "--parts", k], [R.check / f"{name}.json"]))
+                [R.check_parts / f"{stem(name, carve, (i, k))}.json"], need_bytes("check", name)) for i in range(k)]
+    sts.append(step(f"check-merge:{name}", ["check-merge", name, "--parts", k], [R.check / f"{name}.json"],
+                    need_bytes("check-merge", name)))
     return SimpleNamespace(key=f"{name}/{carve}", name=name, carve=carve, steps=lambda: iter(sts), est=lambda: 0)
 
 
-def chain(carves=None, lanes=1, retry=False, prune_looks=False, threads=2, R=None, runner=None, disk=None):
-    """Section 6: copy-bases; section 5's checks on N lanes; each carve's steps on N lanes; the gate."""
+def small_first(R, carves, rq):
+    """The carves in the order of their rows (exact once merged, else the plan's estimate), the smallest first; ties
+    keep the order given."""
+    return sorted(carves, key=lambda c: carve_rows(R, *c, rq)[0])
+
+
+def chain(carves=None, lanes=1, retry=False, prune_looks=False, threads=2, R=None, runner=None, disk=None,
+          look_rows=None, part_rows=None, ram=None, as_given=False, checks_filed=False):
+    """Section 6: copy-bases; section 5's checks on N lanes; each carve's steps on N lanes; the gate. A1: carves run
+    smallest first unless as_given; a step starts only when its declared RAM is free (ram=None builds the RAM guard,
+    ram=False runs without one); look_rows and part_rows override the shard and part targets; checks_filed skips the
+    section 5 jobs when check/ already holds their PASS (a run on a base the checks were filed in, e.g. per carve on
+    Modal). Returns 0 done, 1 stopped by a failure or a guard, 2 stopped for RAM (nothing filed FAILED)."""
     R = roots() if R is None else R
     carves = tuple(carves or CARVES)
     bad = [c for c in carves if c not in CARVES]
@@ -1372,45 +1626,57 @@ def chain(carves=None, lanes=1, retry=False, prune_looks=False, threads=2, R=Non
         raise SystemExit(f"not WQ carves: {bad}")
     runner = runner or (lambda st: run_step(R, st, threads))
     disk = disk or Disk(R)
+    ram = RamGuard() if ram is None else (ram or None)
     rq = filed_rows_q()
+    if not as_given:
+        carves = tuple(small_first(R, carves, rq))
     stop = threading.Event()
     bases = step("copy-bases", ["copy-bases"], [R.cache / f"basis_{b}.{x}" for b in ("2wiki", "hotpotqa")
-                                                for x in ("npz", "json")])
+                                                for x in ("npz", "json")], need_bytes("copy-bases", "squad"))
     if not do_step(R, bases, retry, runner):
         return 1
-    first = []
-    for name in CHECKS:
-        c = (name, u2s_carve(name))
-        first.append(carve_job(R, *c, rq, prune_looks, threads, pools_only=True) if c in CARVES
-                     else check_job(R, name, threads))
-    first += [carve_job(R, *c, rq, prune_looks, threads, pools_only=True) for c in SQUAD]
-    if not run_lanes(R, first, lanes, retry, runner, disk, stop):
-        return 1
+    if not checks_filed:
+        first = []
+        for name in CHECKS:
+            c = (name, u2s_carve(name))
+            first.append(carve_job(R, *c, rq, prune_looks, threads, pools_only=True) if c in CARVES
+                         else check_job(R, name, threads))
+        first += [carve_job(R, *c, rq, prune_looks, threads, pools_only=True) for c in SQUAD]
+        if not run_lanes(R, first, lanes, retry, runner, disk, stop, ram):
+            return 2 if ram is not None and ram.refused else 1
     if any(v != "PASS" for v in checks_state(R).values()):
         log(f"section 5's checks: {checks_state(R)}; nothing is built")
         return 1
-    if not run_lanes(R, [carve_job(R, *c, rq, prune_looks, threads) for c in carves], lanes, retry, runner, disk,
-                     stop):
-        return 1
-    if set(carves) == set(CARVES) and not do_step(R, step("gate", ["gate"], [R.gate]), retry, runner):
+    jobs = [carve_job(R, *c, rq, prune_looks, threads, look_rows=look_rows, part_rows=part_rows) for c in carves]
+    if not run_lanes(R, jobs, lanes, retry, runner, disk, stop, ram):
+        return 2 if ram is not None and ram.refused else 1
+    if set(carves) == set(CARVES) and not do_step(R, step("gate", ["gate"], [R.gate], need_bytes("gate", "squad")),
+                                                  retry, runner):
         return 1
     log("chain: done")
     return 0
 
 
-def plan_table(carves=None, sq=None, R=None):
-    """Per carve: questions, rows per question, rows, bytes and hours (section 9's estimates)."""
+def plan_table(carves=None, sq=None, R=None, look_rows=None, part_rows=None):
+    """Per carve: questions, rows per question, rows, bytes and hours (section 9's estimates); A1: its look chunks,
+    look shards, cache parts and the order the chain runs it in."""
     R = roots() if R is None else R
     rq = filed_rows_q()
-    tot = {"q": 0, "rows": 0, "bytes": 0, "look": 0, "sec": 0.0}
-    log(f"{'carve':<16} {'questions':>9} {'rows/q':>8} {'rows':>11} {'GiB':>7} {'look GiB':>8} {'hours':>7}  rows")
-    for name, carve in carves or CARVES:
+    cs = tuple(carves or CARVES)
+    rank = {c: i + 1 for i, c in enumerate(small_first(R, cs, rq))}
+    tot, cache_need = {"q": 0, "rows": 0, "bytes": 0, "look": 0, "sec": 0.0}, {}
+    log(f"{'carve':<16} {'questions':>9} {'rows/q':>8} {'rows':>11} {'GiB':>7} {'look GiB':>8} {'hours':>7} {'run':>3} "
+        f"{'chunks':>6} {'look':>4} {'cache':>5} {'part rows':>9}  rows")
+    for name, carve in cs:
         nq = QUESTIONS[(name, carve)]
         rows, exact = carve_rows(R, name, carve, rq)
         b, sec = est_bytes(name, carve, rows), est_seconds(name, carve, rows, nq, sq)
         lk = rows * BPR[name]["look"]
+        nl, nc = look_parts(name, nq, rows, look_rows, part_rows)
+        cache_need[name] = max(cache_need.get(name, 0), need_bytes("cache", name, None, rows / nc))
         log(f"{name + '/' + carve:<16} {nq:>9} {rows / nq:>8.1f} {rows:>11} {b / 2 ** 30:>7.1f} {lk / 2 ** 30:>8.1f} "
-            f"{sec / 3600:>7.2f}  {'exact' if exact else 'U2s filed rate'}")
+            f"{sec / 3600:>7.2f} {rank[(name, carve)]:>3} {chunk_count(nq, rows):>6} {nl:>4} {nc:>5} {rows // nc:>9}  "
+            f"{'exact' if exact else 'U2s filed rate'}")
         for k_, v_ in (("q", nq), ("rows", rows), ("bytes", b), ("look", lk), ("sec", sec)):
             tot[k_] += v_
     log(f"{'all':<16} {tot['q']:>9} {tot['rows'] / tot['q']:>8.1f} {tot['rows']:>11} {tot['bytes'] / 2 ** 30:>7.1f} "
@@ -1418,6 +1684,9 @@ def plan_table(carves=None, sq=None, R=None):
         f"{'' if sq else ', without the pools pass'})")
     log("rows per question at pick O on U2s's carves (U2s's filed cost): "
         + ", ".join(f"{k}: {v:.1f}" for k, v in sorted(rq.items())))
+    log("declared RAM (GiB, peak plus 1): " + ", ".join(
+        f"{n}: pools/look {need_bytes('look', n) / GIB:.1f}, largest cache part {cache_need[n] / GIB:.1f}"
+        for n in sorted(cache_need)))
     return tot
 
 
@@ -1489,6 +1758,204 @@ def same_arrays(a, b):
     return set(a) == set(b) and all(
         np.asarray(a[k]).dtype == np.asarray(b[k]).dtype and np.asarray(a[k]).shape == np.asarray(b[k]).shape
         and np.asarray(a[k]).tobytes() == np.asarray(b[k]).tobytes() for k in a)
+
+
+def selftest_a1(tmp, plan, facts, op, rule):
+    """PKO A1 (docs/PKO_A1_AMENDMENT.md): rows-based chunking and part sizes, the peak record, the RAM preflight, the
+    carve order, the counts guard, and that nothing A0 filed or keyed changes. Toy folders only."""
+    n, GiB = 0, GIB
+    # (a) the chunk rule is look_x_six's: squad's 479 questions to a chunk stay 13 chunks; the KB carves have hundreds
+    assert chunk_count(5856, 292_994) == shards(5856, 479) == 13
+    assert chunk_count(1202, 5_773_701) == math.ceil(1202 / int(24000 // (5_773_701 / 1202))) == 301
+    assert chunk_count(1202, 5_773_701) > 100 > shards(1202, 479)             # A0 said 3
+    assert chunk_count(1, 10) == 1 and chunk_count(3, 3_000_000) == 3          # a pool above 24,000 nodes: one a chunk
+    rows = {("webqsp", "fit"): 5_773_701, ("squad", "fit"): 293_027, ("musique", "s1fit"): 25_407_562,
+            ("hotpotqa", "fit"): 4_228_755, ("2wiki", "fit"): 6_345_639, ("metaqa", "s1eval"): 42_759_516,
+            ("squad", "s1eval"): 594_110, ("musique", "s1eval"): 13_347_116, ("hotpotqa", "s1eval"): 5_280_595,
+            ("2wiki", "s1eval"): 13_462_003, ("webqsp", "s1eval"): 7_219_527}
+    assert set(rows) == set(CARVES)
+    for (nm, cv), r in rows.items():
+        nl, nc = look_parts(nm, QUESTIONS[(nm, cv)], r)
+        assert 1 <= nl <= chunk_count(QUESTIONS[(nm, cv)], r) and 1 <= nc <= chunk_count(QUESTIONS[(nm, cv)], r)
+        assert r / nl <= LOOK_ROWS and r / nc <= PART_ROWS_BY[nm]              # the intended size, per carve
+    assert look_parts("metaqa", 9785, 42_759_516) == (43, 36) and look_parts("webqsp", 1202, 5_773_701) == (6, 12)
+    assert look_parts("webqsp", 1202, 5_773_701, look_rows=2_000_000, part_rows=300_000) == (3, 20)   # the flags
+    assert look_parts("webqsp", 3, 3_000_000) == (3, 3)                        # never more than the carve's chunks
+    n += 1
+    # (d) A0's keys, arguments and outputs for the carve whose shard 0/2 is filed do not move; rows size only the RAM
+    R = roots(tmp / "pko")
+    pre = pre_steps(R, "webqsp", "s1eval", 2)
+    assert [s_.key for s_ in pre] == ["pools:webqsp/s1eval:0/2", "pools:webqsp/s1eval:1/2", "merge:webqsp/s1eval",
+                                      "check-merge:webqsp"]
+    assert pre[0].argv == ["pools", "webqsp", "--carve", "s1eval", "--shard", "0/2", "--threads", "2", "--check"]
+    assert pre[0].outs == [R.parts / "webqsp__s1eval__0of2.json", R.check_parts / "webqsp__s1eval__0of2.json"]
+    assert pre[2].argv == ["merge", "webqsp", "--carve", "s1eval", "--parts", "2"]
+    big = pre_steps(R, "webqsp", "s1eval", 2, rows=7_219_527)
+    assert [(s_.key, s_.argv, s_.outs) for s_ in big] == [(s_.key, s_.argv, s_.outs) for s_ in pre]
+    assert big[2].need > pre[2].need > 0
+    # an entry A0 filed (no peak, no need) is still OK and is skipped; one with them is read the same; a changed file is not
+    RA = roots(tmp / "a0ledger")
+    f0 = RA.base / "toy" / "x.txt"
+    f0.parent.mkdir(parents=True)
+    f0.write_text("x\n", encoding="utf-8")
+    write_json(RA.ledger, {"declared_in": DECLARED, "stage": STAGE, "entries": {"k": {
+        "status": "OK", "files": {relb(RA, f0): sha_file(f0)}, "seconds": 1315.3, "rc": 0, "utc": "2026-10-29T16:17:09Z"}}})
+    boom = lambda st: (_ for _ in ()).throw(AssertionError("an OK entry was run again"))        # noqa: E731
+    assert entry_ok(RA, read_ledger(RA)["entries"]["k"]) and do_step(RA, step("k", [], [f0], 5 * GiB), False, boom)
+    file_entry(RA, "k2", "OK", [f0], 2.0, 0, 123, 456)
+    e2 = read_ledger(RA)["entries"]["k2"]
+    assert e2["peak_rss_bytes"] == 123 and e2["need_bytes"] == 456 and entry_ok(RA, e2)
+    file_entry(RA, "k3", "OK", [f0], 2.0)
+    assert "peak_rss_bytes" not in read_ledger(RA)["entries"]["k3"]
+    f0.write_text("changed\n", encoding="utf-8")
+    assert not entry_ok(RA, read_ledger(RA)["entries"]["k"])
+    f0.write_text("x\n", encoding="utf-8")
+    n += 1
+    # (b) the peak: a real child holding ~160 MiB is seen; do_step files what the runner leaves on the step
+    if psutil is not None:
+        child = subprocess.Popen([sys.executable, "-I", "-c", "x = bytearray(160 << 20)\n"
+                                  "for i in range(0, len(x), 4096): x[i] = 1\nimport time; time.sleep(1.5)"])
+        w = PeakWatch(child.pid, every=0.1)
+        child.wait()
+        peak = w.stop()
+        assert 150 * 2 ** 20 <= peak < 2 * GiB
+        st = step("help", ["-h"], [])
+        assert run_step(RA, st, 2) == 0 and st.pid is None and st.peak_rss_bytes > 20 * 2 ** 20
+        assert (RA.logs / "help.log").exists()
+    seen = []
+
+    def runner_peak(st):
+        st.peak_rss_bytes = 7 * GiB
+        seen.append(st.key)
+        st.outs[0].write_text("y\n", encoding="utf-8")
+        return 0
+
+    st = step("peak", [], [RA.base / "toy" / "y.txt"], 3 * GiB)
+    assert do_step(RA, st, False, runner_peak) and seen == ["peak"]
+    ep = read_ledger(RA)["entries"]["peak"]
+    assert ep["peak_rss_bytes"] == 7 * GiB and ep["need_bytes"] == 3 * GiB and entry_ok(RA, ep)
+    n += 1
+    # (c) the preflight: declared RAM must be available less what running steps have yet to grow into
+    box = {"avail": 10 * GiB, "rss": 0}
+    g = RamGuard(wait=0.3, avail=lambda: box["avail"], rss=lambda st_: box["rss"], poll=0.05)
+    A, B = step("A", [], [], 6 * GiB), step("B", [], [], 6 * GiB)
+    g.admit(A)
+    t0 = time.time()
+    assert _raises_any(g.admit, B, exc=RamRefused) and 0.25 <= time.time() - t0 < 3
+    assert g.refused == ("B", 6 * GiB, 10 * GiB)
+    box["rss"] = 5 * GiB                                                  # A has grown into 5 of its 6 GiB
+    g.admit(B)
+    g.done(A)
+    g.done(B)
+    g2 = RamGuard(wait=5, avail=lambda: box["avail"], rss=lambda st_: 0, poll=0.05)
+    g2.admit(A)
+    got = []
+    th = threading.Thread(target=lambda: (g2.admit(B), got.append("in")))
+    th.start()
+    time.sleep(0.3)
+    assert not got
+    g2.done(A)                                                            # A's RAM is back: B starts
+    th.join(5)
+    assert got == ["in"]
+    RamGuard(wait=0, avail=lambda: None).admit(step("C", [], [], 99 * GiB))        # it cannot measure: it admits
+    # a lane: a step that does not fit stops the chain, runs nothing and files nothing; with room it runs
+    RR = roots(tmp / "ram")
+    calls = []
+
+    def runner_ok(st_):
+        calls.append(st_.key)
+        for p in st_.outs:
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(f"{st_.key}\n", encoding="utf-8")
+        return 0
+
+    def jobr(key, need):
+        return SimpleNamespace(key=key, name=key, carve="c", est=lambda: 0,
+                               steps=lambda: iter([step(key + "1", [], [RR.base / "toy" / f"{key}1.txt"], need)]))
+    roomy = Disk(RR, reserve=0, free=lambda: 10 ** 15, used=lambda j: 0, poll=0.01)
+    tight_ram = RamGuard(wait=0.1, avail=lambda: 2 * GiB, rss=lambda st_: 0, poll=0.02)
+    assert not run_lanes(RR, [jobr("big", 6 * GiB)], 1, False, runner_ok, roomy, threading.Event(), tight_ram)
+    assert not calls and tight_ram.refused[0] == "big1" and not read_ledger(RR)["entries"]
+    assert run_lanes(RR, [jobr("fit", GiB)], 1, False, runner_ok, roomy, threading.Event(), tight_ram)
+    assert calls == ["fit1"]
+    n += 1
+
+    # a job whose steps raise stops the chain (A0's lane ended silently and run_lanes said True)
+    def bad_steps():
+        yield step("ok1", [], [RR.base / "toy" / "ok1.txt"])
+        raise SystemExit("counts")
+    jb = SimpleNamespace(key="bad", name="bad", carve="c", est=lambda: 0, steps=bad_steps)
+    assert not run_lanes(RR, [jb, jobr("after", 0)], 1, False, runner_ok, roomy, threading.Event())
+    assert "after1" not in calls
+    n += 1
+    # the carve order: smallest rows first, a merged manifest's rows over the estimate
+    rq = {"webqsp": 4803.0, "squad": 50.0, "musique": 5522.0, "hotpotqa": 713.0, "2wiki": 1071.0, "metaqa": 4370.0}
+    order = small_first(R, CARVES, rq)
+    assert [f"{a}/{b}" for a, b in order] == [
+        "squad/fit", "squad/s1eval", "hotpotqa/fit", "hotpotqa/s1eval", "webqsp/fit", "2wiki/fit", "webqsp/s1eval",
+        "musique/s1eval", "2wiki/s1eval", "musique/s1fit", "metaqa/s1eval"]
+    write_json(R.pools / "squad__fit.json", {"rows": 10 ** 9})
+    assert small_first(R, CARVES, rq)[-1] == ("squad", "fit")
+    (R.pools / "squad__fit.json").unlink()
+    n += 1
+    # a carve's counts are fixed by its first file: a rerun with other counts is refused, the same counts are not
+    RC = roots(tmp / "counts")
+    write_json(RC.pools / "squad__fit.json", {"questions": 5856, "rows": 292_994})
+    for p in (RC.look / "squad" / "fit" / "record_0of2.json", RC.look / "squad" / "fit" / "pools_1of2.json"):
+        write_json(p, {"toy": 1})
+    (RC.cache / "squad" / "fit" / "part_0of3").mkdir(parents=True)
+    assert other_counts(RC, "squad", "fit", 2, 3) == [] and len(other_counts(RC, "squad", "fit", 1, 3)) == 2
+    assert [p.name for p in other_counts(RC, "squad", "fit", 2, 4)] == ["part_0of3"]
+    jc = carve_job(RC, "squad", "fit", {"squad": 50.0}, False, 2)
+    assert _raises(lambda: list(jc.steps()))                                 # nl = 1, nc = 1: both filed under other counts
+    jc2 = carve_job(RC, "squad", "fit", {"squad": 50.0}, False, 2, look_rows=150_000, part_rows=100_000)
+    got = [s_.key for s_ in jc2.steps()]
+    assert "look:squad/fit:1/2" in got and "cache:squad/fit:2/3" in got and "look:squad/fit:0/1" not in got
+    n += 1
+
+    # the merge: shards built by this file and by A0's (its declared sha) join; any other sha does not
+    def two_shards(name_):
+        RM = roots(tmp / name_)
+        for i in range(2):
+            pools_pass("toyds", "toyc", shard=(i, 2), R=RM, opener=op, rule=rule)
+        return RM
+
+    def set_script(RM, i, key, val):
+        pj = RM.parts / f"toyds__toyc__{i}of2.json"
+        d_ = read_json(pj)
+        d_["scripts"][key] = val
+        write_json(pj, d_)
+
+    RM = two_shards("mrg0")
+    assert ZPKO_KEY in read_json(RM.parts / "toyds__toyc__0of2.json")["scripts"]
+    set_script(RM, 0, ZPKO_KEY, ZPKO_SAME[0])
+    assert merge_carve("toyds", "toyc", 2, RM)["questions"] == len(facts)
+    RM = two_shards("mrg1")
+    set_script(RM, 0, ZPKO_KEY, "1" * 64)
+    assert _raises(merge_carve, "toyds", "toyc", 2, RM)
+    RM = two_shards("mrg2")
+    other = next(k_ for k_ in read_json(RM.parts / "toyds__toyc__0of2.json")["scripts"] if k_ != ZPKO_KEY)
+    set_script(RM, 0, other, "2" * 64)
+    assert _raises(merge_carve, "toyds", "toyc", 2, RM)
+    n += 1
+    # the declared RAM: lane figures by dataset, a cache part with its rows, a merge with its shards
+    assert need_bytes("look", "musique") == int(9.5 * GiB) and need_bytes("pools", "squad") == 5 * GiB
+    assert abs(need_bytes("cache", "webqsp", None, 500_000) - int((1.6 + 2.9 * 0.5 + 1.0) * GiB)) <= 2
+    assert abs(need_bytes("merge", "metaqa", 42_759_516) / GiB - (0.3 + 114 * 42_759_516 / GiB + 1.0)) < 1e-6
+    ps = post_steps(R, "metaqa", "s1eval", 42_759_516, 9785, True)
+    assert all(s_.need > 0 for s_ in ps) and {_kind(s_.key) for s_ in ps} == {
+        "look", "cache", "rmatch", "zrc", "links", "typed", "kt", "record", "prune"}
+    assert sum(_kind(s_.key) == "cache" for s_ in ps) == 36 and sum(_kind(s_.key) == "look" for s_ in ps) == 43
+    n += 1
+    return n
+
+
+def _raises_any(fn, *a, exc=Exception, **k):
+    try:
+        fn(*a, **k)
+    except exc:
+        return True
+    return False
 
 
 def selftest():
@@ -1699,10 +2166,12 @@ def selftest():
         keys = [s_.key for s_ in sts]
         assert keys[:2] == ["pools:webqsp/s1eval:0/2", "pools:webqsp/s1eval:1/2"] and "--check" in sts[0].argv
         assert "check-merge:webqsp" in keys and "typed:webqsp/s1eval" in keys and keys[-1] == "prune:webqsp/s1eval"
-        assert sum(k_.startswith("look:") for k_ in keys) == 3 and sum(k_.startswith("cache:") for k_ in keys) == 3
+        # A1: 3M rows is 3 look shards of 1M and 6 cache parts of 0.5M (webqsp's part target), far under its 126 chunks
+        assert sum(k_.startswith("look:") for k_ in keys) == 3 and sum(k_.startswith("cache:") for k_ in keys) == 6
         sq = post_steps(R, "squad", "fit", 292_994, 5856, False)
         assert not any(s_.key.startswith(("rmatch", "zrc", "typed")) for s_ in sq)
         n += 1
+        n += selftest_a1(tmp, plan, facts, op, rule)
     log(f"zpko selftest: {n} checks pass")
 
 
@@ -1727,6 +2196,8 @@ def main(argv=None):
     p = sub.add_parser("plan")
     p.add_argument("--carves", type=carves_arg, default=None)
     p.add_argument("--sq", type=float, default=None, help="pools-pass seconds per question, for the hours column")
+    p.add_argument("--look-rows", type=int, default=None, help="A1: rows per look shard (default LOOK_ROWS)")
+    p.add_argument("--part-rows", type=int, default=None, help="A1: rows per cache part (default PART_ROWS_BY)")
     for c in ("check", "pools"):
         p = sub.add_parser(c)
         p.add_argument("dataset")
@@ -1769,13 +2240,22 @@ def main(argv=None):
     p.add_argument("--prune", action="store_true")
     p.add_argument("--retry", action="store_true")
     p.add_argument("--threads", type=int, default=2)
+    p.add_argument("--look-rows", type=int, default=None, help="A1: rows per look shard (default LOOK_ROWS)")
+    p.add_argument("--part-rows", type=int, default=None, help="A1: rows per cache part (default PART_ROWS_BY)")
+    p.add_argument("--ram-wait", type=float, default=RAM_WAIT_S,
+                   help="A1: seconds a step waits for its declared RAM before the chain stops (0: stop at once)")
+    p.add_argument("--no-preflight", action="store_true", help="A1: start steps without the free-RAM check")
+    p.add_argument("--as-given", action="store_true", help="A1: run the carves in the order given, not smallest first")
+    p.add_argument("--checks-filed", action="store_true",
+                   help="A1: section 5's checks are already PASS in this base; queue only the carves")
+    p.add_argument("--disk-reserve-gib", type=float, default=RESERVE / GIB, help="free disk kept (default 15)")
     a = ap.parse_args(argv)
     if a.selftest:
         selftest()
         return 0
     R = roots(a.base)
     if a.cmd == "plan":
-        plan_table(a.carves, a.sq, R)
+        plan_table(a.carves, a.sq, R, a.look_rows, a.part_rows)
     elif a.cmd == "check":
         pools_pass(a.dataset, u2s_carve(a.dataset), a.threads, a.limit, a.shard, check=True, pools=False, R=R)
     elif a.cmd == "pools":
@@ -1807,7 +2287,10 @@ def main(argv=None):
     elif a.cmd == "gate":
         gate(R)
     elif a.cmd == "chain":
-        return chain(a.carves, a.lanes, a.retry, a.prune, a.threads, R)
+        return chain(a.carves, a.lanes, a.retry, a.prune, a.threads, R, disk=Disk(R, reserve=a.disk_reserve_gib * GIB),
+                     look_rows=a.look_rows, part_rows=a.part_rows,
+                     ram=False if a.no_preflight else RamGuard(wait=a.ram_wait), as_given=a.as_given,
+                     checks_filed=a.checks_filed)
     else:
         ap.print_help()
     return 0
