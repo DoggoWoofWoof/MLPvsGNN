@@ -1,0 +1,28 @@
+{
+ "declared_in": "docs/U2V_STAGE_0B_FITTED_DEPTH.md",
+ "verdict": "NO_DEPTH_SIGNAL",
+ "level": 0.92,
+ "feature_set": "S+F",
+ "fitted": {
+  "w_all": null,
+  "w_rows": null
+ },
+ "control": {
+  "w_all": 0.9635981819690037,
+  "w_rows": 2414.1837801219394
+ },
+ "beside": {
+  "S": {
+   "w_all": null,
+   "w_rows": null
+  },
+  "S+F_0.90": {
+   "w_all": null,
+   "w_rows": null
+  },
+  "S+F_0.95": {
+   "w_all": null,
+   "w_rows": null
+  }
+ }
+}

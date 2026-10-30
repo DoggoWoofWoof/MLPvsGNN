@@ -1,0 +1,39 @@
+S+F
+  L 0.80: fitted   572.5 rows ALL 0.9063 | control at these rows 0.9110 | gap -0.0047
+  L 0.81: fitted   671.9 rows ALL 0.9309 | control at these rows 0.9357 | gap -0.0048
+  L 0.82: fitted   746.4 rows ALL 0.9334 | control at these rows 0.9404 | gap -0.0070
+  L 0.83: fitted   801.4 rows ALL 0.9360 | control at these rows 0.9421 | gap -0.0061
+  L 0.84: fitted   910.4 rows ALL 0.9364 | control at these rows 0.9454 | gap -0.0089
+  L 0.85: fitted  1054.3 rows ALL 0.9319 | control at these rows 0.9416 | gap -0.0097
+  L 0.86: fitted  1224.5 rows ALL 0.9482 | control at these rows 0.9540 | gap -0.0058
+  L 0.87: fitted  1315.3 rows ALL 0.9446 | control at these rows 0.9550 | gap -0.0104
+  L 0.88: fitted  1436.5 rows ALL 0.9438 | control at these rows 0.9562 | gap -0.0124
+  L 0.89: fitted  1611.5 rows ALL 0.9479 | control at these rows 0.9569 | gap -0.0090
+  L 0.90: fitted  1709.9 rows ALL 0.9484 | control at these rows 0.9538 | gap -0.0053
+  L 0.91: fitted  1912.4 rows ALL 0.9514 | control at these rows 0.9575 | gap -0.0061
+  L 0.92: fitted  2226.0 rows ALL 0.9584 | control at these rows 0.9614 | gap -0.0030
+  L 0.93: fitted  2452.3 rows ALL 0.9620 | control at these rows 0.9640 | gap -0.0019
+  L 0.94: fitted  2645.8 rows ALL 0.9639 | control at these rows 0.9658 | gap -0.0019
+  L 0.95: fitted  2990.5 rows ALL 0.9661 | control at these rows 0.9703 | gap -0.0042
+  L 0.96: fitted  3582.6 rows ALL 0.9701 | control at these rows 0.9748 | gap -0.0047
+  L 0.97: fitted  4923.4 rows ALL 0.9785 | control at these rows 0.9811 | gap -0.0027
+S
+  L 0.80: fitted   575.6 rows ALL 0.9073 | control at these rows 0.9110 | gap -0.0037
+  L 0.81: fitted   665.0 rows ALL 0.9314 | control at these rows 0.9352 | gap -0.0038
+  L 0.82: fitted   719.8 rows ALL 0.9325 | control at these rows 0.9390 | gap -0.0065
+  L 0.83: fitted   823.9 rows ALL 0.9375 | control at these rows 0.9428 | gap -0.0053
+  L 0.84: fitted   894.7 rows ALL 0.9382 | control at these rows 0.9449 | gap -0.0067
+  L 0.85: fitted  1014.6 rows ALL 0.9304 | control at these rows 0.9432 | gap -0.0127
+  L 0.86: fitted  1170.3 rows ALL 0.9463 | control at these rows 0.9476 | gap -0.0014
+  L 0.87: fitted  1300.2 rows ALL 0.9497 | control at these rows 0.9548 | gap -0.0051
+  L 0.88: fitted  1482.1 rows ALL 0.9411 | control at these rows 0.9564 | gap -0.0153
+  L 0.89: fitted  1654.1 rows ALL 0.9475 | control at these rows 0.9559 | gap -0.0083
+  L 0.90: fitted  1719.9 rows ALL 0.9490 | control at these rows 0.9539 | gap -0.0049
+  L 0.91: fitted  1905.1 rows ALL 0.9534 | control at these rows 0.9574 | gap -0.0040
+  L 0.92: fitted  2275.9 rows ALL 0.9575 | control at these rows 0.9620 | gap -0.0045
+  L 0.93: fitted  2407.6 rows ALL 0.9607 | control at these rows 0.9635 | gap -0.0028
+  L 0.94: fitted  2649.3 rows ALL 0.9625 | control at these rows 0.9658 | gap -0.0034
+  L 0.95: fitted  2986.6 rows ALL 0.9674 | control at these rows 0.9703 | gap -0.0029
+  L 0.96: fitted  3587.4 rows ALL 0.9706 | control at these rows 0.9749 | gap -0.0042
+  L 0.97: fitted  4715.3 rows ALL 0.9782 | control at these rows 0.9802 | gap -0.0021
+done

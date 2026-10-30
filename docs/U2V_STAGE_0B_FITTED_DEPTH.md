@@ -89,3 +89,47 @@ shared figures at the three levels (1,871.2 / 2,354 / 3,311; the control is insi
 A model's scores as a signal; PKO's pools; the walk's mass after a pass (RRF5T agreement, a mass cut); a nonlinear predictor;
 a question-content signal; any change in R@5 or latency. A linear fit that fails does not show depth is unpredictable; it
 closes one form on the measures that are stored.
+
+## 9. Results (30 October, run after the declaration; `outputs/u2v/stage0b/`)
+
+**Stage 0b verdict: NO_DEPTH_SIGNAL** (`verdict.json`; S + F, level 0.92). With the declared offsets (-1.0 to 4.0) the fitted
+predictor has no choice that reaches the level on the fitting datasets in any of the five folds, at any of the three levels,
+so there is no fitted row to compare; section 5 reads that as NO_DEPTH_SIGNAL. The control (one K for every question), leave
+one dataset out, weighted: 1,902.9 rows at ALL 0.9574 (level 0.90), 2,414.2 at 0.9636 (0.92), 3,182.1 at 0.9725 (0.95).
+
+**Does it predict at all?** Held-out, per dataset, y_hat against y (Spearman's rho; AUC for "needs 1,000 or more rows"):
+
+| held out | S + F rho | S + F AUC | S rho | S AUC |
+| --- | ---: | ---: | ---: | ---: |
+| metaqa | 0.317 | 0.742 | 0.139 | 0.654 |
+| squad | 0.155 | 0.839 | 0.089 | 0.631 |
+| musique | 0.218 | 0.568 | 0.104 | 0.542 |
+| hotpotqa | 0.025 | 0.473 | -0.062 | 0.443 |
+| 2wiki | 0.106 | 0.627 | 0.187 | 0.569 |
+
+The sign is positive on all five for S + F, with hotpotqa near zero; the size is small, and the first-stage measures add
+most of what there is (S alone is near chance on musique and hotpotqa). These held-out figures are no larger than the best
+single measures' in-sample ones (|rho| 0.43 metaqa, 0.41 2wiki, 0.18 musique, 0.21 hotpotqa, U2T section 4), so the fit
+did not find a combination that predicts better than the best single measure. The ridge's largest weights fall on adjacent mass columns with opposite signs (mq26 and mq27), which is
+collinearity, and are not read.
+
+**Beside, written after the numbers, deciding nothing** (`extended_offsets.py`, `frontier_extended.py`; same code and folds,
+offsets extended to 9.0): the declared grid was too short for the fitted rule to reach the level. The offsets it needed
+were 6 to 8.5 (a budget hundreds to thousands of times exp(y_hat)) on every dataset but musique (4.5 to 5.5), which means the prediction
+does not separate the tail and the rule is covering it by giving everyone a large budget. With the offsets extended the
+fitted rule reaches every level and costs 6 to 10 percent fewer rows than the control (2,226 against 2,414 at 0.92, 2,991
+against 3,182 at 0.95), but its held-out ALL is lower, and compared at matched rows over 18 levels (0.80 to 0.97) the
+fitted rule is below the control's held-out ALL at every level, on both feature sets: the gap runs from -0.0014 to -0.0153
+(S + F at 0.92: 0.9584 against 0.9614 at 2,226 rows). The saving is a move along the fixed-K frontier, not a better one.
+The extended rule still fails section 5 at 0.92 (2,226 rows is above 0.90 x 2,414 and its ALL is 0.0052 under the control's).
+Held-out musique stays the weak fold (ALL 0.74 to 0.83 at the offsets chosen on the other four), as in 9114a11.
+
+**What it leads to** (section 6, NO_DEPTH_SIGNAL): the stored and first-stage measures do not predict a question's needed
+depth across datasets well enough to beat one K, fitted or not. This closes only a ridge fit on those measures. Program
+stage 5 (the recall-trained selector) must bring a new signal: the ranker's scores, the question's content, or the walk's
+mass after a pass. Stage 0 of U2v showed the ranker's scores are dataset-bound zero-shot, so that signal is the one stage 5
+has to prove. The level ruling goes back to the user as a construction choice; pick O's procedure remains the default and
+PKO proceeds on it.
+
+**Not shown.** A quantile (pinball) fit, which suits a cut better than a mean fit and is what stage 5 declares; a nonlinear
+predictor; the question's text; the ranker's scores; the walk's mass after a pass; PKO's pools; any change in R@5 or latency.
