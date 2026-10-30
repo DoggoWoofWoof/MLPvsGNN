@@ -108,6 +108,16 @@ alone. This stage never closes a family: a verdict closes only the form it teste
   on PKO's roots, whose rows per question differ from today's, and the estimate is replaced by the measurement.
 - **Self-tests** before the first fit: the rule on hand-built reads (a confirmed GAIN, an unconfirmed one, a LOSS with and
   without seed agreement, the INCOMPLETE cases), on the real shape of WQG's records, not a toy (the lesson of WQG's guard).
+- **The rule's code** is `outputs/mp_unified/zml1.py` (31 October, after this file). Its self-test passes: the hand-built
+  cases, and the spreads and floors of zg6r, zspk, zrckp and zg6 reproduced from the filed seed-0 R@5 and seed differences of
+  WQG's and WQK's floors records. It trains nothing; the fits and the reading of PKO's records are written when PKO's
+  arrays exist and their shapes can be checked.
+- **A dry run, disclosed.** `zml1.py dryrun-today` applies the rule to the seeds already filed on today's pools, zg6r
+  against zspk, at the pair floor of the two arms' filed spreads. It is not ML1's result: other pools, no refit, bases not
+  fitted again. It called 5 GAIN, 0 LOSS and 7 WITHIN, every GAIN confirmed by seeds 1 and 2 (WQ-musique hotpotqa and
+  webqsp; WQ-hotpotqa musique, 2wiki and webqsp), which on those pools is an ADOPT. Four of the five clear their floor by
+  0.0001 to 0.0071. It was run to test the code. It changes nothing in sections 1 to 6, and ML1's verdict reads only PKO's
+  pools.
 
 ## 8. Risks, stated before any number
 
