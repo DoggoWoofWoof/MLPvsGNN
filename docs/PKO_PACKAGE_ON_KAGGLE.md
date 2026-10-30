@@ -30,5 +30,30 @@ Kaggle dataset is the user's.
 **What it does not do.** It does not make Kaggle a PKO route (no kernel is declared); it does not replace PKOM, whose package is
 mpr-u2d's `/pkg`; it does not push anything to the lab host (that stays a separate declaration). Nothing here is a result.
 
-**Closing note.** To be filled in when the nine datasets are complete: the time, any chunk that had to be redone, and the
-final listing counts.
+**Closing note (31 October 2026, 01:23 IST).** All nine private datasets are complete and each was checked against the
+manifest by `pkg_data.py` ("ready and complete", failed: none). The package is 577 files and 69.30 GB (64.54 GiB):
+
+| dataset | files | bytes |
+| --- | ---: | ---: |
+| mpr-pkg-small | 62 | 3,329,675,940 |
+| mpr-pkg-metaqa | 38 | 6,728,153,686 |
+| mpr-pkg-webqsp | 121 | 9,168,830,059 |
+| mpr-pkg-hotpotqa-1 | 89 | 9,584,907,972 |
+| mpr-pkg-hotpotqa-2 | 65 | 7,326,353,706 |
+| mpr-pkg-hotpotqa-3 | 13 | 5,372,244,649 |
+| mpr-pkg-2wiki-1 | 89 | 9,570,106,934 |
+| mpr-pkg-2wiki-2 | 82 | 9,630,194,244 |
+| mpr-pkg-2wiki-3 | 18 | 8,587,407,479 |
+
+- **Time.** It began at 16:16 on 30 October and finished at 01:23 on 31 October, 9 hours 7 minutes on the clock, of which
+  about 3 hours 10 minutes was waiting after the second stop for the go-ahead to restart.
+- **Redone.** The shell that ran the upload was stopped twice by the tool's memory-pressure guard, at about 19:45 and about
+  21:35. mpr-pkg-2wiki-1 and mpr-pkg-2wiki-2 were uploaded again from the start after the first stop (they finished at
+  21:20, 4,546 s and 4,538 s), and mpr-pkg-2wiki-3 after the second (it had been 14 minutes in; the second try took
+  2,318 s). The six chunks done before the first stop were not touched; the script reported each as already complete.
+- **Space.** 69.30 GB here, plus the 10.7 GB of earlier private datasets noted above, is about 80 GB. Kaggle's own page is the
+  authority on what is left of the account's private quota.
+- **The CLI's message.** After each successful create the Kaggle CLI printed "got an unexpected keyword argument 'type'".
+  It is cosmetic; the check above is the script's own, against the manifest.
+- **Not done.** No kernel reads these datasets yet; a PKO or refit stage that does needs its own declaration. The lab
+  host's copy of the package stays absent, a separate declaration.
