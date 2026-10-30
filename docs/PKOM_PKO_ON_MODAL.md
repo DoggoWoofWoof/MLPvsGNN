@@ -338,3 +338,38 @@ chain needs `--retry`.
 **Consequences for the 1 Nov order (section 11).** (a) The run no longer waits on these four: the units skip their OK entries
 under `--retry`. (b) A docs-only commit after a gated one needs no new gate: `--code` names the gated commit. (c) The first thing
 on 1 Nov that has never run is a look: squad/fit's is the smallest, and the full run starts it as soon as the merges allow.
+
+## 15. The squad/fit rehearsal of the look, cache, tail and prune steps, 30 Oct 2026 (a record of what ran; no rule changes)
+
+Two runs of `run --carves squad/fit --lanes 4 --retry`, both on workspace 3, both started at the user's word ("run the squad/fit look
+rehearsal now", 17:35).
+
+| run | commit | what happened | cost |
+|---|---|---|---|
+| 17:39 to 17:45 | fc694f9 | `look:squad/fit:0/1` failed after 222 s with `--shard 0/1: needs 0 <= i < n and n >= 2`; cache, tail and prune dropped | 0.03 USD |
+| 18:04 to 18:14 | c53fff2 (PKO A3, gate PASS_A2, same file sha 2d1c2c56...) | 9 items done, none failed, none dropped | 0.04 USD |
+
+The first run found a fault in PKO, not in the Modal runner: the committed look scripts refuse a single shard, and two carves (squad/fit,
+squad/s1eval) have one. docs/PKO_A3_AMENDMENT.md declares the fix (committed before the second run).
+
+**What the second run filed for squad/fit** (ledger, `/pko/pko/ledger.json`):
+
+| step | status | seconds | peak RSS |
+|---|---|---:|---:|
+| look:squad/fit:0/1 | OK | 273.1 | 6.11 GiB |
+| cache:squad/fit:0/1 | OK | 37.8 | 1.45 GiB |
+| merge:squad/fit | OK | 8.1 | 0.77 GiB |
+| links:squad/fit | OK | 10.9 | 0.86 GiB |
+| kt:squad/fit | OK | 8.8 | 0.77 GiB |
+| record:squad/fit | OK | 4.6 | 0.76 GiB |
+
+The prune step ran (`/pko/pko/look/squad/fit/pruned.json` is on the volume; the step files no ledger entry). The look's peak is 6.11 GiB on a
+carve whose look is 0.1 GiB on disk (the smallest carve; the larger carves' peaks are not measured here and nothing here changes PKOH's
+declared classes). The final all-carves gate step ended `NOT_READY` after 5.3 s, and its ten problems are exactly the ten other carves'
+records (`records/<carve>.json is missing`) with the four section-5 checks all PASS: the answer the gate should give with one carve built.
+
+**What this shows and does not show.** It shows that the look, cache, merge, links, kt, record and prune steps run on Modal for a one-shard
+carve and file their ledger entries, and that the squad/fit record exists. It does not show: squad/s1eval's look (the same path, not run);
+the multi-shard looks of the other nine carves; the rmatch, zrc and typed steps of the chained carves (squad runs none of them); any
+carve large enough to meet a memory class or the disk guard; or the gate at READY. Month to date 29.607 USD of an assumed 30 after both runs;
+the first full run is after the 1 Nov renewal, with `--code c53fff2e6055` for any stage on this commit and `--retry`.
