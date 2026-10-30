@@ -1,6 +1,6 @@
 {
  "declared_in": "docs/PKOH_PKO_ON_THE_HOST.md",
- "utc": "2026-10-30T05:06:49Z",
+ "utc": "2026-10-30T06:29:34Z",
  "files": {
   "outputs/mp_unified/lean_cache.py": {
    "group": "code",
@@ -48,9 +48,9 @@
    "required": true,
    "note": "rides rx push; compared LF-folded",
    "tracked": true,
-   "bytes": 121870,
+   "bytes": 124981,
    "lf": true,
-   "sha256": "5306512eaa3b8d0fd1b08551528e9216082e4978030ad202359236f83113d185"
+   "sha256": "6af776bee99756fd3aadb528eb8e56017b89f14ba020ac507daf99977c0943a1"
   },
   "outputs/mp_unified/zpkoh.py": {
    "group": "code",

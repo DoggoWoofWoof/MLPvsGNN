@@ -132,7 +132,9 @@ PART_ROWS_BY = {"webqsp": 500_000, "metaqa": 1_200_000, "musique": 950_000, "hot
                 "squad": PART_ROWS}                          # A1: rows per cache part by dataset, for a peak of ~3 GiB
 RESERVE = 15 * 2 ** 30                                       # section 6: the disk kept free
 ZPKO_KEY = "outputs/mp_unified/zpko.py"                      # A1: how the records name this file among the scripts
-ZPKO_SAME = ("8629c86949b4d1fd01f0dc980c58af0419b63617426a6c521899f409beffd16b",)   # its sha before A1 (A0): the same pools pass
+ZPKO_SAME = ("8629c86949b4d1fd01f0dc980c58af0419b63617426a6c521899f409beffd16b",   # its sha before A1 (A0): the same pools pass
+             "5306512eaa3b8d0fd1b08551528e9216082e4978030ad202359236f83113d185")   # A1's; A2 changes only check (b)
+RULE_B = "A2"                                                # check (b)'s rule (docs/PKO_A2_AMENDMENT.md); a record carries it
 GIB = 2 ** 30
 MARGIN_GIB = 1.0                                             # A1: kept free above a step's measured peak
 LANE_GIB = {"squad": 5.0, "metaqa": 5.0, "webqsp": 7.0, "2wiki": 7.0, "hotpotqa": 7.0, "musique": 9.5}   # pools, check, look
@@ -825,6 +827,19 @@ def close(a, b):
     return a == b
 
 
+def squad_summary(filed, ent):
+    """What section 5 (b) compares with U2d new's manifest entry, written the way U2d writes its own
+    (zu2d_pools.carve_summary: means at one decimal; B_q = pool size - base-set size, the fill; PKO A2)."""
+    sz = pool_sizes(filed)
+    fill = np.asarray(filed["count"], np.int64)
+    r1 = lambda x: round(float(x), 1)                              # noqa: E731 -- U2d files its means at one decimal
+    return {"questions": int(len(filed["ids"])), "changed": ent["changed"], "short": ent["short"],
+            "budget_mean": r1(ent["beside"]["budget_mean"]), "fill_want_mean": r1(ent["beside"]["fill_want_mean"]),
+            "today_inc_mean": r1(ent["beside"]["today_inc_mean"]), "graph_detail": ent["graph_detail"],
+            "pool_mean": r1(sz.mean()), "B_q": {"max": int(fill.max()), "mean": r1(fill.mean())},
+            "rows": {"max": int(sz.max()), "mean": r1(sz.mean())}, "parts_rows": int(sz.sum())}
+
+
 def check_squad(carve, R=None, u2d=U2D_NEW, dry=False):
     """Section 5 (b): PKO's squad pools against U2d new's (k_q = 0, the pool is B)."""
     R = roots() if R is None else R
@@ -837,7 +852,12 @@ def check_squad(carve, R=None, u2d=U2D_NEW, dry=False):
         log(f"U2d new squad/{carve}: {len(recs)} part records, {len(ids)} ids, manifest keys {sorted(uman)}")
         return None
     if out.exists():
-        raise SystemExit(f"{relr(out)} exists")
+        aside = out.with_name(f"squad__{carve}.a1-fail.json")      # A2: a FAIL filed under A1's rule is kept, aside, and rerun
+        old = read_json(out)
+        if old.get("verdict") != "FAIL" or old.get("rule") == RULE_B or aside.exists():
+            raise SystemExit(f"{relr(out)} exists")
+        os.replace(out, aside)
+        log(f"{relr(out)}: a FAIL filed before A2 is kept as {relr(aside)}; the check runs again under A2")
     filed, ent, msha = load_filed("squad", carve, R)
     pos = {str(x): q for q, x in enumerate(filed["ids"])}
     if sorted(pos) != sorted(ids):
@@ -850,18 +870,13 @@ def check_squad(carve, R=None, u2d=U2D_NEW, dry=False):
         got_node.append(ZP.npy_sha(np.concatenate([pools[q] for q in qs]).astype(np.int32) if qs
                                    else np.zeros(0, np.int32)))
         at += len(qs)
-    sz, bsz = pool_sizes(filed), np.asarray(filed["bs_size"], np.int64)
-    mine = {"questions": int(len(filed["ids"])), "changed": ent["changed"], "short": ent["short"],
-            "budget_mean": ent["beside"]["budget_mean"], "fill_want_mean": ent["beside"]["fill_want_mean"],
-            "today_inc_mean": ent["beside"]["today_inc_mean"], "graph_detail": ent["graph_detail"],
-            "pool_mean": float(sz.mean()), "B_q": {"max": int(bsz.max()), "mean": float(bsz.mean())},
-            "rows": {"max": int(sz.max()), "mean": float(sz.mean())}, "parts_rows": int(sz.sum())}
+    mine = squad_summary(filed, ent)
     diffs = [k for k in uman if not close(mine.get(k), uman[k])]
     zero = bool((np.asarray(filed["fill_want"]) == 0).all() and (np.asarray(filed["count"]) == 0).all())
     same = got_n == want["n"] and got_node == want["node"] and not diffs and zero
     link = squad_link(carve, R, recs, rs, u2d) if same else None
     verdict = "PASS" if same else "FAIL"
-    write_json(out, {"declared_in": DECLARED, "stage": STAGE, "check": "5 (b)", "dataset": "squad", "carve": carve,
+    write_json(out, {"declared_in": DECLARED, "stage": STAGE, "check": "5 (b)", "rule": RULE_B, "dataset": "squad", "carve": carve,
                      "u2d_records": {relr(p): sha_file(p) for p in recs}, "pools_manifest_sha256": msha,
                      "n_sha256": got_n == want["n"], "node_sha256": got_node == want["node"], "k_q_zero": zero,
                      "manifest_differs": diffs, "link": link, "verdict": verdict, "utc": utc()})
@@ -2140,12 +2155,13 @@ def selftest():
                                                       "sha256": ZP.npy_sha(nodes)},
                                              "xc": {"dtype": "float16", "shape": [1], "sha256": "0" * 64}}})
         bsz = np.asarray([f["B"].size for f in sq], np.float64)
+        assert round(float(bsz.mean()), 1) != float(bsz.mean())               # A2: the toy mean needs the rounding to match
 
-        def u2d_manifest(**over):
-            e = {"questions": len(sq), "changed": 0, "short": 0, "budget_mean": 0.0, "fill_want_mean": 0.0,
-                 "today_inc_mean": float(bsz.mean()), "graph_detail": sent["graph_detail"],
-                 "pool_mean": float(bsz.mean()), "B_q": {"max": int(bsz.max()), "mean": float(bsz.mean()), "p90": 1},
-                 "rows": {"max": int(bsz.max()), "mean": float(bsz.mean()), "p90": 1}, "I": "never read",
+        def u2d_manifest(**over):                                             # written as U2d writes one (A2): means at one
+            e = {"questions": len(sq), "changed": 0, "short": 0, "budget_mean": 0.0, "fill_want_mean": 0.0,   # decimal,
+                 "today_inc_mean": round(float(bsz.mean()), 1), "graph_detail": sent["graph_detail"],         # B_q = the fill
+                 "pool_mean": round(float(bsz.mean()), 1), "B_q": {"max": 0, "mean": 0.0, "p90": 0},
+                 "rows": {"max": int(bsz.max()), "mean": round(float(bsz.mean()), 1), "p90": 1}, "I": "never read",
                  "caps": "never read", "parts": [{"rows": int(bsz.sum())}]}
             e.update(over)
             write_json(u2d / "pools" / "squad" / "pools.json", {"files": {"squad__fit": e}})
@@ -2160,6 +2176,28 @@ def selftest():
         u2d_manifest(changed=3)
         assert _raises(check_squad, "fit", RS2, u2d=u2d)
         assert read_json(RS2.check / "squad__fit.json")["manifest_differs"] == ["changed"]
+        assert read_json(RS2.check / "squad__fit.json")["rule"] == RULE_B and _raises(check_squad, "fit", RS2, u2d=u2d)   # final
+        u2d_manifest()                                                        # A2: a FAIL filed under A1's rule has no `rule`:
+        f_ = read_json(RS2.check / "squad__fit.json")                         # it is kept aside and the check runs again
+        f_.pop("rule")
+        write_json(RS2.check / "squad__fit.json", f_)
+        assert check_squad("fit", RS2, u2d=u2d) == "PASS"
+        assert read_json(RS2.check / "squad__fit.json")["rule"] == RULE_B
+        assert read_json(RS2.check / "squad__fit.a1-fail.json") == f_
+        write_json(RS2.check / "squad__fit.json", dict(f_, verdict="FAIL"))   # a second move over the aside file stops
+        assert _raises(check_squad, "fit", RS2, u2d=u2d)
+        # real shape: squad/fit's totals (5,856 questions, 292,994 rows, maximum 54, no fill) summarised against the numbers
+        # U2d filed for squad__fit (outputs/u2d/new/pools/squad/pools.json): exact means do not match them, A2's do
+        szr = np.full(5856, 50, np.int64)
+        szr[:48] = 54
+        szr[48] = 52
+        assert int(szr.sum()) == 292_994 and int(szr.max()) == 54
+        real = squad_summary({"ids": np.arange(5856), "bs_size": szr, "count": np.zeros(5856, np.int64)},
+                             {"changed": 0, "short": 0, "graph_detail": "g",
+                              "beside": {"budget_mean": 0.0, "fill_want_mean": 0.0, "today_inc_mean": 292_994 / 5856}})
+        u_real = {"today_inc_mean": 50.0, "pool_mean": 50.0, "B_q": {"max": 0, "mean": 0.0},
+                  "rows": {"max": 54, "mean": 50.0}, "parts_rows": 292_994}
+        assert all(close(real[k], v) for k, v in u_real.items()) and not close(292_994 / 5856, 50.0)
         n += 1
         # the chain's steps: shards, look shards and cache parts within the carve's chunks, prune last
         sts = pre_steps(R, "webqsp", "s1eval", 2) + post_steps(R, "webqsp", "s1eval", 3_000_000, 1503, True)

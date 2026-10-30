@@ -187,3 +187,22 @@ No token, key or credential is read, printed or passed. Workspaces are named by 
 volume only; no existing volume is overwritten or deleted. Deploy, then spawn; no long Modal run is held in a background
 shell. After a new commit `--stage upload` runs alone first. Cross-workspace reads are not used (everything is in workspace 3).
 Arrays are not committed or fetched; only records. Nothing is adopted or rejected by this file.
+
+## 10. Amendment A3: `run --retry`, and the squad/fit rehearsal (declared 30 Oct 2026, after the rehearsal's first run)
+
+**What happened.** The second `check` passed (PASS_A2, section 8). I then launched `--stage run --carves squad/fit --lanes 4`
+at 11:37 as a rehearsal of the orchestrator on the smallest carve, before the renewal; section 6 had said `run` waits. The
+reason is the cost of finding a bug in `run` on a 20-hour carve instead of on one that takes minutes; the cost was 0.09 USD
+(month to date 29.12 USD of an assumed 30). It ran the two pools shards (696 s for shard 0/2), the merge, and then **check 5 (b)
+FAILED** on squad/fit: PKO's own comparison with U2d's manifest was specified in a way that no real squad carve can satisfy
+(docs/PKO_A2_AMENDMENT.md). Nothing after the check ran, because `need_checks` stops every carve's look, cache and tail until
+every check passes. The rehearsal did what it was for. It found the fault in a check that had only ever run on a toy.
+
+**What A3 changes.** `run` takes `--retry`: every unit then runs with `--retry`. A unit filed OK is skipped by its own
+ledger check (files and shas); a FAILED one runs again; nothing else changes. Without it a FAILED entry such as
+`check-squad:fit` stops the unit with exit 1, as it should. `--retry` is the user's-side decision to run FAILED entries
+again, taken after the cause is understood and amended (here PKO A2), not a default.
+
+**Next.** PKO A2 is committed with this amendment. Then: `upload` (the new commit's archive), `check` (a third build of the
+webqsp shard, which must reproduce 2d1c2c56... for PASS_A2), and `run --carves squad/fit --lanes 4 --retry`, which continues from
+the ledger. The look, cache, tail and prune steps of a carve have not run yet anywhere; this is where they first do.

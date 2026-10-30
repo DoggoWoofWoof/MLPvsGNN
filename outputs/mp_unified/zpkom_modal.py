@@ -626,11 +626,12 @@ def _items(phase, carves, extra=()):
 
 
 @app.function(image=image, volumes=VOLS, memory=(2048, 8192), cpu=0.5, timeout=86400, **ORCH)   # nonpreemptible = 3x the list rate: kept small
-def run(cid, carves, lanes, prune=True):
+def run(cid, carves, lanes, prune=True, retry=False):
     """PKOH's open smokes and pools items, then each carve's build items once its merge is done, then the gate: one
     single-use container per item, at most `lanes` at a time. A unit killed for memory runs again one class up with
     --retry, an error of the call runs again as it was, at most three attempts; any other failure is final, and what
-    depends on it is dropped and named. The prunes run one at a time (each folds the shared ledger first)."""
+    depends on it is dropped and named. The prunes run one at a time (each folds the shared ledger first). `retry` (A3)
+    runs every unit with --retry: an entry filed OK is skipped by the unit, a FAILED one runs again."""
     from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
     _setup(cid)
     gate = Path("/pko/check") / f"gate-{cid}.json"
@@ -643,10 +644,10 @@ def run(cid, carves, lanes, prune=True):
     pending.update(_items("pools", cv))
     known = set(pending)
     done, failed, dropped, cls, tries, retry_next, built, results = set(), {}, set(), {}, {}, set(), set(), {}
-    t0 = time.time()
+    t0, all_retry = time.time(), retry
 
     def work(name, c, retry):
-        cmd = with_retry(pending[name]["cmd"]) if retry else pending[name]["cmd"]
+        cmd = with_retry(pending[name]["cmd"]) if (retry or all_retry) else pending[name]["cmd"]
         try:
             return UNITS[c].spawn(cid, cmd, name).get()
         except Exception as e:  # noqa: BLE001
@@ -860,7 +861,7 @@ def _fetch():
 
 
 @app.local_entrypoint()
-def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True):
+def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True, retry: bool = False):
     if stage in ("selftest", "selftest-local"):
         selftest()
         return
@@ -891,8 +892,8 @@ def main(stage: str, carves: str = "", lanes: int = 16, prune: bool = True):
     elif stage == "fold":
         print(json.dumps(fold_all.remote(cid), indent=1)[:3000])
     elif stage == "run":
-        fc = run.spawn(cid, cv, lanes, prune)
-        print(json.dumps({"spawned": "run", "code": cid, "carves": cv or "all", "lanes": lanes, "call": fc.object_id}), flush=True)
+        fc = run.spawn(cid, cv, lanes, prune, retry)
+        print(json.dumps({"spawned": "run", "code": cid, "carves": cv or "all", "lanes": lanes, "retry": retry, "call": fc.object_id}), flush=True)
     else:
         raise SystemExit(f"stage {stage}?")
 

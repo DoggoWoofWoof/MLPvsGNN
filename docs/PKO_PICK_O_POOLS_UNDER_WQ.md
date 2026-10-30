@@ -127,6 +127,7 @@ U2s's own cell on squad is rrf50+none (I = B), so the fill is 0, k_q is 0 and th
 
 The records hold 5,856 questions and 292,994 rows for fit, and 11,873 and 594,063 for s1eval.
 
+(Amended by A2, docs/PKO_A2_AMENDMENT.md: the manifest comparison is made at U2d's own definitions and rounding.)
 It also compares U2d new's manifest entry (outputs/u2d/new/pools/squad/pools.json, files.squad__<carve>): questions,
 changed, short, the budget, fill and today's-inc means, graph_detail, the pool mean, the maximum and mean of |B| and of
 the rows per question, and the sum of its parts' rows. The manifest's I, pool, caps and shares are never accessed.
