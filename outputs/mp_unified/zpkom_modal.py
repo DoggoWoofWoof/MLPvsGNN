@@ -451,6 +451,10 @@ def probe(cid):
     out["zpko_selftest"] = _run_py(["outputs/mp_unified/zpko.py", "--selftest"])["tail"].strip().splitlines()[-1:]
     out["zpkoh_selftest"] = _run_py(["outputs/mp_unified/zpkoh.py", "--selftest"])["tail"].strip().splitlines()[-1:]
     out["zpkom_selftest"] = _run_py(["outputs/mp_unified/zpkom_modal.py", "--stage", "selftest-local"])["tail"].strip().splitlines()[-1:]
+    import shutil                                         # what a unit's disk guard (12 GiB at the repo root) will see here
+    out["disk_free_gib"] = {p: round(shutil.disk_usage(p).free / 2 ** 30, 1) for p in ("/root/repo", "/tmp", "/pko")}
+    out["disk_guard_12_gib"] = _run_py(["-c", "import sys; sys.path.insert(0, 'outputs/mp_unified'); import zpkoh; "
+                                              "print('guard rc', zpkoh.guard_disk(12.0))"])["tail"].strip().splitlines()[-1:]
     m = _run_py(["outputs/mp_unified/zpkoh.py", "step", "--host", "--", "--help"])
     out["mirror_applied"] = {"rc": m["rc"], "tail": [x for x in m["tail"].splitlines() if "modal" in x.lower() or "mirror" in x.lower()][-4:]}
     try:                                                  # what `run` will read: PKOH says 14 check, 49 pools, 1 gate items
