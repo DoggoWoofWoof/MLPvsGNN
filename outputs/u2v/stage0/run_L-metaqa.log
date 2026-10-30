@@ -1,0 +1,8 @@
+[20:43:44]   squad/s1eval on 2wiki: 11873 questions, 594063 rows, table 19969 codes, 1 part(s) (1s)
+L-metaqa squad=s1eval: 11873 questions, pool 50.0 rows, reach 0.9798, model ALL@K 50:0.9798 100:0.9798 200:0.9798 300:0.9798 500:0.9798 1000:0.9798 2000:0.9798 (12.9 s)
+[20:44:02]   musique/s1eval on 2wiki: 2417 questions, 5057436 rows, table 310147 codes, 3 part(s) (6s)
+L-metaqa musique=s1eval: 2417 questions, pool 2092.4 rows, reach 0.8026, model ALL@K 50:0.5801 100:0.6562 200:0.7265 300:0.7592 500:0.7857 1000:0.796 2000:0.8022 (84.7 s)
+[20:45:22]   hotpotqa/s1eval on 2wiki: 7405 questions, 693828 rows, table 472802 codes, 1 part(s) (2s)
+L-metaqa hotpotqa=s1eval: 7405 questions, pool 93.7 rows, reach 0.9684, model ALL@K 50:0.9639 100:0.968 200:0.9684 300:0.9684 500:0.9684 1000:0.9684 2000:0.9684 (15.1 s)
+[20:45:39]   2wiki/s1eval on 2wiki: 12576 questions, 1328715 rows, table 651646 codes, 2 part(s) (3s)
+L-metaqa 2wiki=s1eval: 12576 questions, pool 105.7 rows, reach 0.9059, model ALL@K 50:0.9027 100:0.9058 200:0.9059 300:0.9059 500:0.9059 1000:0.9059 2000:0.9059 (28.6 s)

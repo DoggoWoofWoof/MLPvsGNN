@@ -1,0 +1,90 @@
+{
+ "L-musique": {
+  "verdict": "NO_CASCADE",
+  "k_star": {
+   "model": 2000,
+   "rrf": null,
+   "pool": null,
+   "gnn0": 1000,
+   "twin0": 2000
+  },
+  "rows_star_model": 317.0,
+  "pool_rows_weighted": 331.8,
+  "other_k_star_used": 4000,
+  "tau_star": null,
+  "mass_rows_weighted": null,
+  "k_alone_by_dataset": {
+   "squad": {
+    "model": 50,
+    "rrf": 50,
+    "pool": 50
+   },
+   "musique": {
+    "model": 2000,
+    "rrf": null,
+    "pool": null
+   },
+   "hotpotqa": {
+    "model": 50,
+    "rrf": 200,
+    "pool": 200
+   },
+   "2wiki": {
+    "model": 50,
+    "rrf": 200,
+    "pool": 200
+   }
+  },
+  "reach": {
+   "squad": 0.9798,
+   "musique": 0.8026,
+   "hotpotqa": 0.9684,
+   "2wiki": 0.9059
+  }
+ },
+ "L-metaqa": {
+  "verdict": "NO_CASCADE",
+  "k_star": {
+   "model": 2000,
+   "rrf": null,
+   "pool": null,
+   "gnn0": 1000,
+   "twin0": 2000
+  },
+  "rows_star_model": 317.0,
+  "pool_rows_weighted": 331.8,
+  "other_k_star_used": 4000,
+  "tau_star": 0.999,
+  "mass_rows_weighted": 193.8,
+  "k_alone_by_dataset": {
+   "squad": {
+    "model": 50,
+    "rrf": 50,
+    "pool": 50
+   },
+   "musique": {
+    "model": 2000,
+    "rrf": null,
+    "pool": null
+   },
+   "hotpotqa": {
+    "model": 50,
+    "rrf": 200,
+    "pool": 200
+   },
+   "2wiki": {
+    "model": 50,
+    "rrf": 200,
+    "pool": 200
+   }
+  },
+  "reach": {
+   "squad": 0.9798,
+   "musique": 0.8026,
+   "hotpotqa": 0.9684,
+   "2wiki": 0.9059
+  }
+ },
+ "stage_verdict": "NO_CASCADE",
+ "declared_in": "docs/U2V_LEARNED_CASCADE.md"
+}

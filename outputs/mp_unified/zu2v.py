@@ -210,6 +210,73 @@ def report_cmd(a):
     return 0
 
 
+WEIGHTS = {"squad": 17729, "musique": 7018, "hotpotqa": 13335, "2wiki": 18504}      # U2s's, less metaqa (amendment 1)
+READ = tuple(WEIGHTS)
+RANK = {"NO_CASCADE": 0, "CASCADE_PARTIAL": 1, "CASCADE_PROMISING": 2}
+
+
+def wmean(per, key):
+    return sum(WEIGHTS[d] * key(per[d]) for d in READ) / sum(WEIGHTS.values())
+
+
+def kstar(per, order):
+    """Smallest K on the grid at which ALL(order, K) >= reach - 0.005 on every dataset read; None when there is none."""
+    for k in KS:
+        if all(per[d]["orders"][order]["all_at_k"][str(k)] >= per[d]["reach"] - 0.005 - 1e-12 for d in READ):
+            return k
+    return None
+
+
+def verdict_of(per):
+    """Section 3 (as amended): the model's K*, rows*, the smaller of rrf's and the pool order's K*, and the verdict."""
+    ks = {o: kstar(per, o) for o in ORDERS}
+    pool = wmean(per, lambda s: s["pool_rows_mean"])
+    km = ks["model"]
+    other = min(4000 if ks["rrf"] is None else ks["rrf"], 4000 if ks["pool"] is None else ks["pool"])
+    rows = None if km is None else wmean(per, lambda s: s["orders"]["model"]["rows_at_k"][str(km)])
+    if km is not None and km <= 500 and rows <= 0.5 * pool and km < other:
+        v = "CASCADE_PROMISING"
+    elif km is not None and km <= 1000 and km < other:
+        v = "CASCADE_PARTIAL"
+    else:
+        v = "NO_CASCADE"
+    tau = next((t for t in TAUS if all(per[d]["mass"][str(t)]["all"] >= per[d]["reach"] - 0.005 - 1e-12 for d in READ)), None)
+    mass_rows = None if tau is None else wmean(per, lambda s: s["mass"][str(tau)]["rows"])
+    alone = {d: {o: next((k for k in KS if per[d]["orders"][o]["all_at_k"][str(k)] >= per[d]["reach"] - 0.005 - 1e-12), None)
+                 for o in ("model", "rrf", "pool")} for d in READ}
+    return {"verdict": v, "k_star": ks, "rows_star_model": None if rows is None else round(rows, 1),
+            "pool_rows_weighted": round(pool, 1), "other_k_star_used": other, "tau_star": tau,
+            "mass_rows_weighted": None if mass_rows is None else round(mass_rows, 1),
+            "k_alone_by_dataset": alone, "reach": {d: per[d]["reach"] for d in READ}}
+
+
+def verdict_cmd(a):
+    out = Path(a.out)
+    u2s = json.loads((ROOT / "outputs" / "u2s" / "verdict.json").read_text(encoding="utf-8"))["weights"]
+    for d in READ:
+        if int(u2s[d]) != WEIGHTS[d]:
+            raise SystemExit(f"{d}: weight {u2s[d]} is not the declared {WEIGHTS[d]}")
+    res, worst = {}, None
+    for fit in ("L-musique", "L-metaqa"):
+        per = {}
+        for d in READ:
+            p = out / f"{fit}__{d}__s1eval.json"
+            if not p.exists():
+                raise SystemExit(f"{p.name} is missing")
+            per[d] = json.loads(p.read_text(encoding="utf-8"))
+        res[fit] = verdict_of(per)
+        if worst is None or RANK[res[fit]["verdict"]] < RANK[worst]:
+            worst = res[fit]["verdict"]
+        print(f"{fit}: {res[fit]['verdict']}  K* {res[fit]['k_star']}  model rows* {res[fit]['rows_star_model']} "
+              f"of pool {res[fit]['pool_rows_weighted']}; mass tau* {res[fit]['tau_star']} rows {res[fit]['mass_rows_weighted']}")
+        print(f"   K alone: {res[fit]['k_alone_by_dataset']}")
+    res["stage_verdict"] = worst
+    res["declared_in"] = DECLARED
+    (out / "verdict.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+    print(f"stage 0 verdict: {worst}")
+    return 0
+
+
 # ── self-test ────────────────────────────────────────────────
 
 
@@ -293,8 +360,37 @@ def selftest_real(fit="L-musique", ds="squad", cv="s1eval"):
           f"reach {s['reach']}; golds {s['golds_vs_total']}")
 
 
+def selftest_verdict():
+    """The verdict rule on built records: each row of section 3, and the order of the worse-of-two."""
+    def rec(model_k, rrf_k, pool_k, pool_rows=1800.0, reach=0.96, tau_all=None):
+        def order(k_ok):
+            return {"all_at_k": {str(k): (reach if k_ok is not None and k >= k_ok else 0.5) for k in KS},
+                    "rows_at_k": {str(k): float(min(k, pool_rows)) for k in KS}, "need_p50_p90_p95": None}
+        return {"reach": reach, "pool_rows_mean": pool_rows,
+                "orders": {"model": order(model_k), "rrf": order(rrf_k), "pool": order(pool_k), "gnn0": order(None), "twin0": order(None)},
+                "mass": {str(t): {"all": reach if tau_all is not None and t >= tau_all else 0.5, "rows": 100.0 * t} for t in TAUS}}
+    cases = [((100, 2000, None), "CASCADE_PROMISING"),      # K* 100, rows 100 <= 900, below 2000
+             ((500, 1000, 2000), "CASCADE_PROMISING"),      # K* 500 is the boundary: rows 500 <= 900
+             ((1000, 2000, None), "CASCADE_PARTIAL"),       # K* 1000: rows 1000 > 900
+             ((300, 200, 2000), "NO_CASCADE"),              # rrf already needs only 200
+             ((2000, None, None), "NO_CASCADE"),
+             ((None, 100, 100), "NO_CASCADE")]
+    for (mk, rk, pk), want in cases:
+        per = {d: rec(mk, rk, pk, tau_all=0.99) for d in READ}
+        got = verdict_of(per)
+        assert got["verdict"] == want, ((mk, rk, pk), got["verdict"], want)
+        assert got["tau_star"] == 0.99 and abs(got["mass_rows_weighted"] - 99.0) < 1e-9
+    per = {d: rec(100, 2000, None) for d in READ}
+    per["musique"] = rec(1000, 2000, None)                  # one dataset needs 1000: the universal K* is 1000
+    assert kstar(per, "model") == 1000
+    assert RANK["NO_CASCADE"] < RANK["CASCADE_PARTIAL"] < RANK["CASCADE_PROMISING"]
+    print("verdict: the three rows of section 3 on built records (boundaries 500 and 1000, rrf or pool order already shallow, "
+          "no K on the grid), the universal K* is the deepest dataset's, tau* and its rows")
+
+
 def selftest_cmd(a):
     selftest_toy()
+    selftest_verdict()
     selftest_real()
     print("selftest passed")
     return 0
@@ -312,8 +408,10 @@ def main():
     r.add_argument("--rows-cap", type=int, default=131072)
     q = sub.add_parser("report")
     q.add_argument("--out", default=str(ROOT / "outputs" / "u2v" / "stage0"))
+    v = sub.add_parser("verdict")
+    v.add_argument("--out", default=str(ROOT / "outputs" / "u2v" / "stage0"))
     a = ap.parse_args()
-    return {"selftest": selftest_cmd, "run": run_cmd, "report": report_cmd}[a.cmd](a)
+    return {"selftest": selftest_cmd, "run": run_cmd, "report": report_cmd, "verdict": verdict_cmd}[a.cmd](a)
 
 
 if __name__ == "__main__":

@@ -120,3 +120,46 @@ section 3 changes in exactly these ways, and in no other:
 
 Run: `zu2v.py run --fit L-musique --carves squad=s1eval,musique=s1eval,hotpotqa=s1eval,2wiki=s1eval` and the same for
 `L-metaqa`.
+
+## 8. Results (30 October, run after the declaration and its amendment; `outputs/u2v/stage0/`)
+
+**Stage 0 verdict: NO_CASCADE**, for both fits (`zu2v.py verdict`, `outputs/u2v/stage0/verdict.json`). The universal K\* of
+the model's order is 2,000 for `L-musique` and for `L-metaqa`, both set by musique; rrf's and the pool order's K\* are
+`none`; weighted model rows\* 317.0 against a weighted pool of 331.8. The mass rule beside: `L-metaqa` tau\* 0.999 at
+193.8 weighted rows; `L-musique` none.
+
+**Where the weight sits.** The other three datasets' pools in this cache are small (squad 50 rows, hotpotqa 93.7, 2wiki
+105.7, the P1c2 pools) and the model holds every reached question's golds in its top 50 to 100 there; there is nothing for
+a cut to remove. The verdict is musique's (pool 2,092.4 rows, reach 0.8026). Share of musique's reached questions whose
+golds are all in the top K of each order:
+
+| order | K = 100 | 200 | 500 | 1,000 | read |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `L-musique` model | 0.465 | 0.626 | 0.834 | 0.949 | zero-shot |
+| rrf (first stage) | 0.564 | 0.670 | 0.859 | 0.885 | |
+| `L-metaqa` model | 0.818 | 0.905 | 0.979 | 0.992 | musique in-domain |
+| gnn0 | 0.784 | 0.879 | 0.970 | 0.994 | musique in-domain (fitted on the six fit carves) |
+| pool's stored order | 0.000 | 0.001 | 0.011 | 0.100 | |
+
+The stored order is not the walk's order (its median need is 1,678 of 2,092 rows); rrf is the first-stage comparator
+that matters.
+
+**What it says.**
+- A model that has seen the dataset holds a musique question's golds high: `L-metaqa` has all golds in its top 500 for 98%
+  of reached questions where rrf has 86%. A cut at about 500 rows would cut musique's pool four-fold at a 2% relative
+  loss of reach, and its softmax-mass cut keeps 388 rows on average at tau 0.99 (ALL 0.780, 97% of reach) and 1,160 at tau 0.999 (ALL 0.799).
+- A model that has not seen it does not: `L-musique` holds 83% in its top 500, below rrf's 86%, and is below rrf at
+  every K up to 500. At K = 50 it holds all golds for 27% of musique's questions, rrf for 38%. The gap is
+  in-domain against zero-shot, not model against first stage. This agrees with WQ's weak spot (zg6r on musique zero-shot,
+  R@5 0.4106 against rrf 0.4734).
+- The declared rule is strict by design and the miss is a tail: `L-metaqa` at K = 1,000 has ALL 0.796 against a
+  threshold of 0.7976 (reach 0.8026 less 0.005). The rule is not changed; the numbers above are what to read.
+
+**What it leads to** (section 4, NO_CASCADE): a cascade that cuts by a ranker's own order is closed as a way to cut the
+shared cost on a graph the model has not seen. It is not shown to be closed for a model trained on the graph, which is
+the per-dataset case pick O already covers. The level ruling goes back to the user. The next form is a selector trained
+for recall alone (the last gold, not the first), in its own file, on PKO's pools after 1 November; the question it must
+answer is whether recall-trained scores transfer to a held-out graph where a ranking-trained model does not.
+
+**Not shown.** metaqa and webqsp (their caches are incomplete here); the current zrckpt and zg6r; PKO's pools; a GNN
+zero-shot (gnn0 and twin0 are in-domain on musique); a selector trained for recall; any change in R@5 or latency.
