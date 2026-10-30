@@ -203,6 +203,32 @@ ledger check (files and shas); a FAILED one runs again; nothing else changes. Wi
 `check-squad:fit` stops the unit with exit 1, as it should. `--retry` is the user's-side decision to run FAILED entries
 again, taken after the cause is understood and amended (here PKO A2), not a default.
 
-**Next.** PKO A2 is committed with this amendment. Then: `upload` (the new commit's archive), `check` (a third build of the
-webqsp shard, which must reproduce 2d1c2c56... for PASS_A2), and `run --carves squad/fit --lanes 4 --retry`, which continues from
-the ledger. The look, cache, tail and prune steps of a carve have not run yet anywhere; this is where they first do.
+**What the second run showed (12:12 to 12:20, commit 893ea05).** The gate for that commit was PASS_A2 again (a third build of
+the webqsp shard, fresh container, file sha 2d1c2c56...). `run --carves squad/fit --lanes 4 --retry` then found the pools
+shards and the merge filed OK, moved the A1-era FAIL aside and ran check 5 (b) again: **PASS under rule A2** (`n_sha256`,
+`node_sha256` and `k_q_zero` true, no manifest field differing). `look:squad/fit:0/1` then FAILED in 5 to 7 s with
+`PKO: section 5's checks have not all passed ({'webqsp.json': None, 'hotpotqa.json': None, 'squad__fit.json': 'PASS',
+'squad__s1eval.json': None}); nothing is built before they do`. That is the declared gate and not a fault: zpkoh gates every
+look on the four section-5 merges (`section5_deps(CARVES)`), and `run` ignores a dependency outside the set of carves it was
+asked to run, so a squad/fit-only run let the look start. In a full run the four merges are in the set and the looks wait.
+
+**Two things follow.** (1) The ledger holds `look:squad/fit:0/1` as FAILED (two tries), so the **first full run uses
+`--retry`**; without it that unit stops with exit 1 and squad/fit's chain is dropped. (2) The look, cache, tail and prune steps
+have not run anywhere yet. Running them before the renewal would need squad/s1eval's shards and merge, webqsp's second shard
+and its check-merge, and hotpotqa's check (a) (U2s's 9,197 s on one lane; about 0.4 USD at the rate in section 6 plus overhead);
+workspace 3 had about 0.8 USD left (29.18 USD month to date), the credit is the user's, and `run` was to wait for the
+renewal: it was not spent, and the question was put to the user.
+
+## 11. Start on 1 Nov (the order, so that nothing is decided in a hurry)
+
+1. `modal billing report` (read only) to confirm the credit renewed; note the month to date.
+2. Commit nothing further, or commit and repeat 3 and 4: the gate is keyed to the commit.
+3. `--stage upload` alone, then `--stage check`; the verdict must be PASS or PASS_A2 for this commit (PASS_A2 needs the file sha
+   2d1c2c56..., as in all three builds so far).
+4. `--stage run --lanes 16 --retry` (all 11 carves; `--retry` for the FAILED squad/fit look), detached, then a watcher on the
+   app's task count; the billing report is read again after the first hour and the run is stopped by me if the cost per
+   finished item is above section 6's basis by more than a factor of 2.
+5. After it: `--stage fold`, `--stage fetch` (a changed record needs the older local copy moved aside: fetch keeps an
+   existing file), and a declared filing step for the ledger and records. A carve is built by one substrate only.
+6. Check (a) on hotpotqa/s1sel (`pkoh-hpchk-*`) is the first thing that has never met real data; if it FAILs, read its
+   `check/hotpotqa.json` and the part heads before anything else, as with check (c) and check (b).
