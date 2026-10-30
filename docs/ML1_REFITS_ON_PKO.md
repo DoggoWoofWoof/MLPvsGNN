@@ -180,3 +180,41 @@ CUDA starts; every determinism warning recorded.
 (fit, read, compare, floors, verdict through zml1.py) is written once PKO's records exist and their shapes can be checked, as
 section 7 says, and is self-tested on real record shapes before the first fit. Nothing in this amendment is a result, and
 nothing is adopted.
+
+## 11. Amendment A2 (31 October 2026, before any ML1 fit): how zg6r and zrckpt are wired onto the host and PKO's roots
+
+Sections 1 to 6 and 8 to 10 stand as written. This amendment states what section 2's table leaves open for the two arms under
+test, and corrects one word of A1. It changes no rule, no seed, no floor and no cap.
+
+**"PASS" means READY.** A1 says PKO's gate must be PASS. PKO's gate record (`outputs/pko/gate.json`, written by zpko.py under
+docs/PKO_PICK_O_POOLS_UNDER_WQ.md) has the verdicts READY and NOT_READY. The stage reads READY under that declaration and
+refuses anything else.
+
+**The trainers.** zg6rw.train and zu2n.train check for Kaggle's T4 and for WQK's or U2d's roots, so the stage does not call
+them. It enters the contexts they enter (zwq.on_wq's carves and splits, ML1's roots, names and gate) and calls zrm's train and
+read itself, with ML1's fit names, `--host`, PKO's cache root, `--seed k` and the declared read cap. The arm tables are zg6r's
+and U2n's own, and the stage checks that the modules the arm imported are the ones zwq.on_wq patched. The device check of A1
+runs before every train and read.
+
+**Typed links.** The KB carves' typed links (webqsp's fit and s1eval, metaqa's s1eval) are read from `outputs/pko/typed`, in U2n's
+record form, built by zpko.py with U2n's own code. webqsp's fit carve is added to U2n's typed carves for the length of the fit,
+as G6RW did. The passage datasets have none. A typed root other than U2n's own, asked of the loader, stops the fit.
+
+**zg6r's encoder.** Section 3 says the encoder is sha-pinned. It cannot be pinned before the file exists. The stage reads the
+p@swa state of ML1's own seed-0 zspk fit of the split (`models.pt`; the 15 tensors of 224,737 numbers G6RW names), only after
+that fit's read carries ML1's stamp, and checks the file's fit name and seed. Each zg6r fit files that file's sha256 and the
+number of zg6r built from it. At the verdict, a zg6r fit whose filed sha256 is not the present file's makes the call INCOMPLETE.
+Seeds 1 and 2 of zg6r start from the seed-0 zspk encoder too, as WQG's did.
+
+**zrckpt's tau0.** Section 1 says the KT input, typed links and tau0 are the ones PKO's records name. PKO has no tau0: U2n's
+tau0 is a function of the split's training datasets, not of the pools. The stage builds it by U2n's own rule, unchanged: 16
+spherical k-means centres (seed 0, at most 25 rounds) of U2m (a)'s 64 filed type centres of each of the split's four training
+datasets (`zu2n.tau_fit`). For WQ-musique those are webqsp, squad, hotpotqa and 2wiki; for WQ-hotpotqa, webqsp, squad, musique
+and 2wiki. One tau0 per split, written to `outputs/ml1/tau0` by the first zrckpt fit of the split and read back with its checks
+by every later one; the three seeds of a split share it, and the verdict is INCOMPLETE if they do not. This is a tau0 U2n never
+fitted (its splits had other training sets), so U2n's one GAIN carries nothing over to it.
+
+**Sizes.** The feeder items use WQ's measured share: 1.1 CPU, 7 GB, 0.29 of the GPU. U2n's and G6RW's T4 fits peaked at 2 to 6 GB
+of GPU and 4.7 GB of host memory; the first fit of each arm re-times on the host and the share is changed then if it is wrong.
+
+Nothing in this amendment is a result, and nothing is adopted.

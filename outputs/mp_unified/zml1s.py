@@ -13,8 +13,12 @@ readers of zp1c3 are handed it for the length of their own call and nowhere else
     python outputs/mp_unified/zml1s.py items [--out FILE]                   (the feeder items of the whole stage)
     python outputs/mp_unified/zml1s.py --selftest
 
-zspk and zrckp (the bases) are wired. zg6r and zrckpt are not yet: their trainers (zg6rw.train, zu2n.train) check for Kaggle's
-T4 and WQK's roots, and the move onto the host and PKO's roots is written next, before any fit of them is queued.
+All four arms are wired. zspk and zrckp (the bases) go through zwq's trainers. zg6r and zrckpt do not use zg6rw.train and
+zu2n.train, which check for Kaggle's T4 and WQK's or U2d's roots: this file enters the same contexts they do (zrm's train and
+read with zwq.on_wq's carves, U2n's typed links read from PKO's typed root, webqsp's fit carve added to U2n's typed carves) and
+calls zrm's train and read with ML1's names. zg6r starts from the p@swa encoder of ML1's own seed-0 zspk fit of the split (its
+models.pt, read when zg6r trains, its sha256 filed; fit_problems checks it is the present file). zrckpt runs under the split's
+tau0 (U2n's, built here from U2m (a)'s type centres of the split's four training datasets, outputs/ml1/tau0).
 """
 import argparse
 import contextlib
@@ -47,7 +51,12 @@ ROOTS = {**WQ.ROOTS, "pools": f"{BASE}/pools", "plook": f"{BASE}/look", "cache":
          "rmatch": f"{BASE}/chains/rmatch", "zrc": f"{BASE}/chains/zrc", "links": f"{BASE}/links", "kt": f"{BASE}/kt"}
 ARMS = ("zspk", "zg6r", "zrckp", "zrckpt")
 BASE_OF = {"zg6r": "zspk", "zrckpt": "zrckp"}
-WIRED = ("zspk", "zrckp")                       # the arms this file can fit today
+WIRED = ARMS                                    # the arms this file can fit
+TAU = f"{OUT}/tau0"                             # zrckpt's tau0 of each WQ split (zu2n.tau_fit on the split's training datasets)
+TYPED = f"{BASE}/typed"                         # PKO's typed links of the chained carves (webqsp fit, webqsp and metaqa s1eval)
+OWN_TYPED = (("webqsp", "fit"),)                # added to zu2n's typed carves, as G6RW and PKO do
+CODE_ARM = {"zg6r": ("zg6r", "zg6rw", "zu2n", "zg6b2", "zg6b", "zkg", "zu2d", "zrm"),
+            "zrckpt": ("zu2n", "zkg", "zu2d", "zrm")}
 SEEDS = RULE.SEEDS
 SPLITS = tuple(WQ.SPLITS)
 ROWS_CAP = {"zspk": 65536, "zrckp": 65536, "zg6r": 32768, "zrckpt": 65536}      # section 2 and A1: the declared caps
@@ -151,12 +160,12 @@ def on_ml1():
         yield WQ
 
 
-def code_shas():
-    return {f"{m}_sha256": WQ.sha_src(HERE / f"{m}.py") for m in CODE}
+def code_shas(arm=None):
+    return {f"{m}_sha256": WQ.sha_src(HERE / f"{m}.py") for m in CODE + CODE_ARM.get(arm, ())}
 
 
-def stamp(name, env, what):
-    """ML1's block in the fit's screen.json (what = "screen") or read.json ("read")."""
+def stamp(name, env, what, extra=None):
+    """ML1's block in the fit's screen.json (what = "screen") or read.json ("read"); extra: the records the fit read."""
     arm, seed, split = ALL_FITS[name]
     p = WQ.fit_dir(name) / f"{what}.json"
     if not p.is_file():
@@ -164,7 +173,7 @@ def stamp(name, env, what):
     rec = WQ.read_json(p)
     rec[KEY] = {"declared_in": DECLARED, "fit": name, "arm": arm, "seed": seed, "split": split, "device": device_of(env),
                 "env": env, "gate": WQ.sha_file(ROOT / GATE), "pko_declared_in": PKO_DECLARED,
-                "cache_root": ROOTS["cache"], "rows_cap": ROWS_CAP[arm], "code": code_shas()}
+                "cache_root": ROOTS["cache"], "rows_cap": ROWS_CAP[arm], "code": code_shas(arm), **(extra or {})}
     WQ.write_json(p, rec)
 
 
@@ -194,11 +203,138 @@ def clear(d, pattern):
             p.unlink()
 
 
+# ── zg6r and zrckpt: their modules on the host and PKO's roots ───────────────
+
+
+def import_arm(arm):
+    """(the arm's module, zu2n) imported outside zwq.on_wq: zg6r through zg6rw's import with its own checks (seed 0, the read
+    cap, the encoder's names), zrckpt's from zu2n, whose arm table lean_screen then holds."""
+    if arm == "zg6r":
+        import zg6rw as GW
+        G6R = GW.import_g6r()
+        return G6R, G6R.U2N
+    import zu2n as U2N
+    U2N.check_arm("zrckpt")
+    return U2N, U2N
+
+
+def same_modules(G, W):
+    """The arm's modules are zwq's inside zwq.on_wq (W), so the names on_wq patches are the ones the arm's carve and zrm read."""
+    pairs = [(getattr(G, n, None), b) for n, b in (("Z3", W.Z3), ("Z2", W.Z2), ("LG", W.LG), ("S", W.S), ("S2", W.S2),
+                                                   ("LC", W.LC), ("RM", W.Z3.RM), ("ZL", W.Z3.ZL))]
+    bad = [b.__name__ for a, b in pairs if a is not None and a is not b]
+    if bad or getattr(G, "RM", W.Z3.RM) is not W.Z3.RM:
+        raise SystemExit(f"zml1s: {G.__name__} does not train on zwq's {bad or ['RM']}")
+
+
+@contextlib.contextmanager
+def on_typed(U2N):
+    """U2n's typed links of every KB carve read from PKO's typed root (webqsp's fit carve added to U2n's carves)."""
+    root, u2n_root, orig = (ROOT / TYPED).resolve(), Path(U2N.TYPED_ROOT).resolve(), U2N.load_typed
+
+    def load_typed(c, r, cache_root, lk, verify=True):
+        if Path(r).resolve() != u2n_root:
+            raise SystemExit(f"zml1s: typed links asked from {r}, not U2n's root (the arm's carve)")
+        return orig(c, root, cache_root, lk, verify)
+
+    with U2N.extra_carves(*OWN_TYPED), WQ.patch(U2N, load_typed=load_typed):
+        yield U2N
+
+
+def typed_records(U2N, carves):
+    return U2N.typed_records([tuple(c) for c in carves], ROOT / TYPED)
+
+
+def load_encoder(split):
+    """(zrm's block encoder and chain match tensors of ML1's seed-0 zspk fit of the split (p@swa), their record): zg6r starts
+    from it, as G6RW (section 4) and WQG did from WQK's. The fit must be read by ML1 first."""
+    import torch
+    import zg6rw as GW
+    zname = fit_name("zspk", 0, split)
+    if not stamped(zname, "read"):
+        raise SystemExit(f"zml1s: {zname} is not fitted and read by ML1; zg6r starts from its encoder")
+    p = WQ.fit_dir(zname) / "models.pt"
+    blob = torch.load(p, map_location="cpu", weights_only=True)
+    if (blob.get("fit"), blob.get("seed")) != (zname, 0) or "p@swa" not in (blob.get("states") or {}):
+        raise SystemExit(f"zml1s: {p.name} is {blob.get('fit')} seed {blob.get('seed')}, not {zname} seed 0 with a p@swa")
+    st = blob["states"]["p@swa"]
+    lack = [n for n in GW.ENC_NAMES if n not in st]
+    if lack:
+        raise SystemExit(f"zml1s: {zname}'s p@swa lacks {lack}")
+    n = sum(int(st[k].numel()) for k in GW.ENC_NAMES)
+    if n != GW.ENC_ELEMENTS:
+        raise SystemExit(f"zml1s: {zname}'s encoder holds {n} numbers, not {GW.ENC_ELEMENTS}")
+    info = {"path": WQ.rel(p), "sha256": WQ.sha_file(p), "elements": n, "candidate": "p@swa", "fit": blob["fit"],
+            "seed": blob["seed"], "hidden": blob.get("hidden"), "basis": blob.get("basis"),
+            "basis_sha256": blob.get("basis_sha256")}
+    return {k: st[k].detach().clone() for k in GW.ENC_NAMES}, info
+
+
+def tau(split):
+    """tau0 of a WQ split, fitted once from U2m (a)'s type centres of the split's four training datasets (zu2n.tau_fit, its
+    own rules), then read back and checked. Run under zwq.on_wq, whose tables give the split's datasets."""
+    import zu2n as U2N
+    with on_ml1(), WQ.on_wq():
+        npy, js = U2N.tau_paths(split, ROOT / TAU)
+        if not (npy.is_file() and js.is_file()):
+            U2N.tau_fit(split, out_root=ROOT / TAU)
+        _t, info = U2N.load_tau(split, ROOT / TAU)
+    log(f"tau {split}: {info['file_sha256'][:12]}")
+    return info
+
+
+def run_arm(name, env, what):
+    """zg6r's or zrckpt's train or read through zrm on the host's GPU and PKO's roots; returns (rc, the records it used).
+    A train takes the fit's --seed; zg6r's starts from ML1's seed-0 zspk encoder, zrckpt's runs under its split's tau0."""
+    arm, seed, split = ALL_FITS[name]
+    G, U2N = import_arm(arm)
+    if arm == "zrckpt":
+        tau(split)                                   # built once from U2m (a)'s type centres, then read back and checked
+    argv = (["train", "--name", name, "--arm", arm, "--device", "cuda", "--host", "--cache-root", ROOTS["cache"]]
+            if what == "train" else
+            ["--name", name, "--device", "cuda", "--host", "--cache-root", ROOTS["cache"], "--rows-cap", str(ROWS_CAP[arm])])
+    _ACTIVE[0] = name
+    try:
+        with contextlib.ExitStack() as st:
+            st.enter_context(on_ml1())
+            W = st.enter_context(WQ.on_wq())
+            st.enter_context(on_typed(U2N))
+            extra = {}
+            if arm == "zg6r" and what == "train":
+                enc, info = load_encoder(split)
+                st.enter_context(G.using_encoder(enc, info))
+            if arm == "zrckpt":
+                extra["tau0"] = st.enter_context(U2N.on_tau(split, ROOT / TAU))
+            same_modules(G, W)
+            G.check_arm() if arm == "zg6r" else U2N.check_arm("zrckpt")
+            W.Z2.cache_root_of(argv)
+            argv = W.Z2.on_card(argv) + (["--seed", str(seed)] if what == "train" else [])
+            carves = W.Z3.train_carves(split) if what == "train" else W.Z3.eval_carves()
+            extra.update({"kt_records": W.Z3.kt_records(carves), "typed_records": typed_records(U2N, carves)})
+            with W.Z2.on_p1c2():
+                rc = (W.Z3.RM.train(argv, split) if what == "train" else W.Z3.RM.read(argv))
+                if what == "train":
+                    extra.update({"rmatch_records": W.Z3.RM.built_records(), "zrc_records": W.Z2._BUILT(W.Z2.CH_ZRC),
+                                  "zlink_records": W.Z3.ZL.built_records()})
+            if arm == "zg6r" and what == "train":
+                extra["encoder"] = {**info, "copies": G.ENC["copies"]}
+    finally:
+        _ACTIVE[0] = None
+    if rc == 0 and extra.get("encoder"):
+        G.encoder_used(name, extra["encoder"], WQ.fit_dir(name).parent)
+    return rc, extra
+
+
 def train(name, env):
     arm, seed, split = ALL_FITS[name]
     if arm not in WIRED:
-        raise SystemExit(f"zml1s: {arm} is not wired onto the host and PKO's roots yet")
+        raise SystemExit(f"zml1s: {arm} is not one of ML1's arms")
     where_ok(env, "train")
+    if arm in BASE_OF:
+        rc, extra = run_arm(name, env, "train")
+        if rc == 0:
+            stamp(name, env, "screen", extra)
+        return rc
     _ACTIVE[0] = name
     try:
         with on_ml1():
@@ -217,6 +353,11 @@ def read(name, env):
     _rec, k = fit_stamp(name)
     if device_of(env) != k.get("device"):
         raise SystemExit(f"zml1s: {name} was fitted on {k.get('device')}; this read runs on {device_of(env)}")
+    if arm in BASE_OF:
+        rc, extra = run_arm(name, env, "read")
+        if rc == 0:
+            stamp(name, env, "read", extra)
+        return rc
     argv = ["--name", name, "--device", "cuda", "--host", "--cache-root", ROOTS["cache"], "--rows-cap", str(ROWS_CAP[arm])]
     _ACTIVE[0] = name
     try:
@@ -334,6 +475,7 @@ def fit_problems(base=ROOT):
     except SystemExit as e:
         return [str(e)]
     g = WQ.sha_file(Path(base) / GATE)
+    tau_of = {}
     for name in FITS:
         try:
             d = device_of_fit(name, base)
@@ -345,6 +487,19 @@ def fit_problems(base=ROOT):
         devs.add(json.dumps(d, sort_keys=True))
         if ks.get("gate") != g or kr.get("gate") != g:
             out.append(f"{name} names a gate that is not PKO's present gate")
+        arm, _sd, split = FITS[name]
+        if arm == "zg6r":                            # started from this split's seed-0 zspk encoder, as that fit is now
+            z = fit_name("zspk", 0, split)
+            pz = screen_dir(base) / "fits" / z / "models.pt"
+            e = ks.get("encoder") or {}
+            if e.get("fit") != z or e.get("seed") != 0 or not pz.is_file() or e.get("sha256") != WQ.sha_file(pz) \
+                    or int(e.get("copies", 0)) < 1:
+                out.append(f"{name} did not start from {z}'s present encoder")
+        if arm == "zrckpt":                          # one tau0 per split across the three seeds
+            tau_of.setdefault(split, set()).add(json.dumps(ks.get("tau0"), sort_keys=True))
+    for split, v in tau_of.items():
+        if len(v) > 1:
+            out.append(f"zrckpt's fits of {split} ran under {len(v)} different tau0")
     if len(devs) > 1:
         out.append(f"the fits ran on {len(devs)} devices")
     return out
@@ -417,16 +572,33 @@ def repeat(base=ROOT):
 # ── the feeder items ─────────────────────────────────────────────────────────
 
 
+def module_closure(seeds=("zml1s", "zg6rw", "zu2n", "zg6r")):
+    """The repository's own modules the seeds import, at any depth and also inside functions (outputs/mp_unified/<m>.py)."""
+    import ast
+    seen, todo = set(), list(seeds)
+    while todo:
+        m = todo.pop()
+        p = HERE / f"{m}.py"
+        if m in seen or not p.is_file():
+            continue
+        seen.add(m)
+        for n in ast.walk(ast.parse(p.read_text(encoding="utf-8"))):
+            if isinstance(n, ast.Import):
+                todo += [a.name.split(".")[0] for a in n.names]
+            elif isinstance(n, ast.ImportFrom) and n.module and not n.level:
+                todo.append(n.module.split(".")[0])
+    return sorted(seen)
+
+
 def item_inputs():
-    return ";".join(f"outputs/mp_unified/{m}.py" for m in ("zml1s", "zml1", "zwq", "zp1c3", "zp1c3p", "zp1c2", "zprop", "zlink",
-                                                           "zrc", "chaincov", "zrm", "rmatch", "zgs", "relz", "relcols",
-                                                           "screen_pair", "screen_recall", "lean_screen", "lean_gpu",
-                                                           "lean_cache"))
+    mods = module_closure()
+    return ";".join([f"outputs/mp_unified/{m}.py" for m in mods] +
+                    ["outputs/host_ops/retry_cmd.py", "outputs/host_ops/cuda_alloc.py"])
 
 
 def items(gate_dep="pkoh-gate"):
     """The stage's feeder lines: format line|x|deps|name|cpus|mem|inputs|command[|gpu share]. Seed 0 of every arm before seeds 1
-    and 2; zspk before zg6r and zrckp before zrckpt (zg6r starts from zspk's seed-0 encoder). Only the wired arms are listed."""
+    and 2; zg6r waits for its split's seed-0 zspk (its encoder is that fit's) and every zrckpt is listed after zrckp."""
     lines = ["# ML1 (docs/ML1_REFITS_ON_PKO.md section 10) on the host's GPU, behind PKO's gate"]
     names = {}
     inp = item_inputs()
@@ -435,6 +607,9 @@ def items(gate_dep="pkoh-gate"):
         n = fit_name(a, sd, sp)
         c, m, g = SHARE["train"]
         deps = [gate_dep] + ([names[fit_name(a, 0, sp)]] if sd else [])
+        if a == "zg6r":
+            z = names[fit_name("zspk", 0, sp)]
+            deps += [z] if z not in deps else []
         names[n] = f"ml1-{a}-s{sd}{WQ.SUF[sp]}"
         lines.append("|".join(["line", "x", ",".join(deps), names[n], c, m, inp, f"{WRAP} fit --name {n}", g]))
     rn = "ml1-zrckp-s0-rep"
@@ -445,6 +620,120 @@ def items(gate_dep="pkoh-gate"):
 
 
 # ── self-test ────────────────────────────────────────────────────────────────
+
+
+def wiring_selftest():
+    """zg6r's and zrckpt's wiring on the laptop with the data reads and the trainers faked (zrm's train and read, the KT, typed
+    and chain records): the contexts and what the trainers are handed, the encoder's and tau0's checks, the guards."""
+    import tempfile
+    import types
+    import torch
+    import zg6rw as GW
+    import zp1c2 as Z2m
+    import zp1c3 as Z3m
+    G6R, U2 = import_arm("zg6r")
+    ZK, U2b = import_arm("zrckpt")
+    assert U2 is U2b and ZK is U2 and G6R.U2N is U2
+    me = sys.modules[__name__]
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        with WQ.patch(WQ, fit_dir=lambda name, base=ROOT: td / "fits" / name), WQ.patch(me, TAU=str(td / "tau0")):
+            # the typed links of every KB carve come from PKO's root, from nowhere else; webqsp's fit carve is a typed carve
+            seen = []
+            with WQ.patch(U2, load_typed=lambda c, r, cr, lk, verify=True: seen.append(Path(r).resolve()) or "ok"):
+                with on_typed(U2):
+                    c = types.SimpleNamespace(ds="webqsp", carve="fit")
+                    assert U2.load_typed(c, U2.TYPED_ROOT, "cache", None) == "ok" and seen[-1] == (ROOT / TYPED).resolve()
+                    assert ("webqsp", "fit") in U2.TYPED_CARVES
+                    try:
+                        U2.load_typed(c, td, "cache", None)
+                        raise AssertionError("a typed root that is not U2n's was taken")
+                    except SystemExit:
+                        pass
+                assert ("webqsp", "fit") not in U2.TYPED_CARVES
+            # tau0 of each split: built once from the split's four training datasets, read back, the two splits' differ
+            if (ROOT / "outputs" / "u2m" / "a" / "types" / "webqsp.npz").is_file():
+                t0, t1 = tau("WQ-musique"), tau("WQ-hotpotqa")
+                p = td / "tau0" / "WQ-musique.npy"
+                m0 = p.stat().st_mtime_ns
+                assert tau("WQ-musique") == t0 and p.stat().st_mtime_ns == m0 and t0["file_sha256"] != t1["file_sha256"]
+            else:
+                log("selftest: no U2m types on this machine; tau0 is not built")
+            # the encoder: ML1's own seed-0 zspk fit's p@swa, its fit name, seed, names and numbers
+            sp, zname = "WQ-musique", fit_name("zspk", 0, "WQ-musique")
+            st = {n: torch.zeros(1) for n in GW.ENC_NAMES}
+            st["U"] = torch.zeros(GW.ENC_ELEMENTS - len(GW.ENC_NAMES) + 1)
+            try:
+                load_encoder(sp)
+                raise AssertionError("an unread zspk fit gave an encoder")
+            except SystemExit:
+                pass
+            (td / "fits" / zname).mkdir(parents=True)
+            WQ.write_json(td / "fits" / zname / "read.json", {KEY: {"declared_in": DECLARED, "fit": zname, "arm": "zspk",
+                                                                   "seed": 0, "split": sp}})
+            blob = {"fit": zname, "seed": 0, "states": {"p@swa": st}, "hidden": 128, "basis": "b", "basis_sha256": "x"}
+            torch.save(blob, td / "fits" / zname / "models.pt")
+            enc, info = load_encoder(sp)
+            assert info["elements"] == GW.ENC_ELEMENTS and info["fit"] == zname and info["seed"] == 0 and len(info["sha256"]) == 64
+            assert list(enc) == list(GW.ENC_NAMES)
+            for bad in ({**blob, "seed": 1}, {**blob, "fit": "scr-ml1-zspk-s1"}, {**blob, "states": {"p@swa": {**st, "U": st["U"][1:]}}},
+                        {**blob, "states": {"p@swa": {k: v for k, v in st.items() if k != "V"}}}):
+                torch.save(bad, td / "fits" / zname / "models.pt")
+                try:
+                    load_encoder(sp)
+                    raise AssertionError("a wrong encoder was taken")
+                except SystemExit:
+                    pass
+            torch.save(blob, td / "fits" / zname / "models.pt")
+            # run_arm: the contexts entered, what zrm's train and read are handed, the encoder copy counted, the stamps' content
+            got, env = [], device_env()
+            for arm, seed, what in (("zg6r", 2, "train"), ("zrckpt", 1, "train"), ("zg6r", 2, "read"), ("zrckpt", 1, "read")):
+                n = fit_name(arm, seed, "WQ-musique")
+                (td / "fits" / n).mkdir(exist_ok=True)
+                torch.save({"basis_sha256": "x", "hidden": 128}, td / "fits" / n / "models.pt")
+
+                def fake_train(argv, split, arm=arm):
+                    got.append(("train", list(argv), split, Z2m.CACHE.relative_to(ROOT).as_posix(),
+                                Z3m.KTChainCarveZRC.KT_ROOT.relative_to(ROOT).as_posix(), WQ.fit_name("zspk", 1, "WQ-musique")))
+                    if arm == "zg6r":
+                        G6R.ENC["copies"] += 1
+                    return 0
+
+                def fake_read(argv):
+                    got.append(("read", list(argv)))
+                    return 0
+
+                with WQ.patch(Z3m.RM, train=fake_train, read=fake_read), \
+                        WQ.patch(Z3m, kt_records=lambda carves, root=None: {"kt": len(carves)}), \
+                        WQ.patch(U2, typed_records=lambda carves, root=None: {"typed": len(carves)}), \
+                        WQ.patch(Z2m, _BUILT=lambda root: {"built": 1}, _ZL_BUILT=lambda root: {"built": 2}):
+                    rc, extra = run_arm(n, env, what)
+                assert rc == 0 and set(extra) >= {"kt_records", "typed_records"}
+                if what == "train":
+                    assert ("rmatch_records" in extra) and (extra.get("encoder", {}).get("copies") == 1) == (arm == "zg6r")
+                    assert ("tau0" in extra) == (arm == "zrckpt")
+            tr = [g for g in got if g[0] == "train"]
+            assert len(tr) == 2 and all(g[1][:2] == ["train", "--name"] for g in tr)
+            for g, (arm, seed) in zip(tr, (("zg6r", 2), ("zrckpt", 1))):
+                a = g[1]
+                assert a[a.index("--arm") + 1] == arm and a[a.index("--seed") + 1] == str(seed) and "--host" in a
+                assert a[a.index("--device") + 1] == "cuda" and a[a.index("--cache-root") + 1] == ROOTS["cache"]
+                assert g[2] == "WQ-musique" and g[3] == "outputs/pko/cache" and g[4] == "outputs/pko/kt"
+                assert g[5] == "scr-ml1-zspk-s1"                           # zwq's names are ML1's inside the run
+            rd = [g[1] for g in got if g[0] == "read"]
+            assert [a[a.index("--rows-cap") + 1] for a in rd] == ["32768", "65536"] and all("--host" in a and "--seed" not in a for a in rd)
+            # a zg6r fit built from no encoder is refused after the train, not stamped
+            with WQ.patch(Z3m.RM, train=lambda argv, split: 0), WQ.patch(Z3m, kt_records=lambda carves, root=None: {}), \
+                    WQ.patch(U2, typed_records=lambda carves, root=None: {}), \
+                    WQ.patch(Z2m, _BUILT=lambda root: {}, _ZL_BUILT=lambda root: {}):
+                try:
+                    run_arm(fit_name("zg6r", 0, "WQ-musique"), env, "train")
+                    raise AssertionError("a zg6r fit with no encoder copy was accepted")
+                except SystemExit as e:
+                    assert "no zg6r was built" in str(e)
+            # the names are back
+            assert WQ.fit_name("zspk", 1, "WQ-musique") == "scr-wq-zspk-s1" and _ACTIVE[0] is None
+    log("selftest: the wiring of zg6r and zrckpt passed")
 
 
 def selftest():
@@ -477,9 +766,17 @@ def selftest():
     # the items: order, dependencies, the repeat, nothing listed twice
     ls = [x for x in items() if x.startswith("line|")]
     nm = [x.split("|")[3] for x in ls]
-    assert len(nm) == len(set(nm)) == 13 and nm[0] == "ml1-zspk-s0" and nm[-1] == "ml1-zrckp-s0-rep"
+    assert len(nm) == len(set(nm)) == 25 and nm[0] == "ml1-zspk-s0" and nm[-1] == "ml1-zrckp-s0-rep"
     dep = {x.split("|")[3]: x.split("|")[2].split(",") for x in ls}
     assert dep["ml1-zspk-s1"] == ["pkoh-gate", "ml1-zspk-s0"] and dep["ml1-zrckp-s2-hp"] == ["pkoh-gate", "ml1-zrckp-s0-hp"]
+    assert dep["ml1-zg6r-s0"] == ["pkoh-gate", "ml1-zspk-s0"] and dep["ml1-zg6r-s0-hp"] == ["pkoh-gate", "ml1-zspk-s0-hp"]
+    assert dep["ml1-zg6r-s2-hp"] == ["pkoh-gate", "ml1-zg6r-s0-hp", "ml1-zspk-s0-hp"]
+    assert dep["ml1-zrckpt-s0"] == ["pkoh-gate"] and dep["ml1-zrckpt-s1"] == ["pkoh-gate", "ml1-zrckpt-s0"]
+    assert nm.index("ml1-zspk-s0") < nm.index("ml1-zg6r-s0") and nm.index("ml1-zrckp-s0") < nm.index("ml1-zrckpt-s0")
+    ins = set(item_inputs().split(";"))
+    assert {f"outputs/mp_unified/{m}.py" for m in ("zml1s", "zwq", "zg6r", "zg6rw", "zu2n", "zkg", "zu2d", "zrm", "lean_host")} <= ins
+    assert {"outputs/host_ops/retry_cmd.py", "outputs/host_ops/cuda_alloc.py"} <= ins
+    wiring_selftest()
     assert all(x.split("|")[8].startswith("gpu:") and len(x.split("|")) == 9 for x in ls)
     assert all(d in nm or d == "pkoh-gate" for v in dep.values() for d in v)
     # the verdict reads compares of the real shape: a template of a filed WQK compare, renamed to ML1's fits
