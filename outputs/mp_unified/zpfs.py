@@ -41,6 +41,8 @@ FAMS = 3
 EDGE_NAMES = ["base_z", "dense_cos", "seed0", "seed1", "seed2", "cos_max", "log_senders", "soft_senders", "log_deg", "fam0", "fam1", "fam2"]
 NODE_ONLY = ["base_z", "dense_cos", "seed0", "seed1", "seed2"]
 SCALARS = ["base_z", "dense_cos", "seed0", "cos_max", "soft_senders", "neg_log_deg"]
+EDGE_ONLY = ["cos_max", "log_senders", "soft_senders", "log_deg", "fam0", "fam1", "fam2"]
+FULL_BLOCKS = ["rank", "dense_cos", "topo_STRUCT", "depth_STRUCT", "WALK", "WALKF", "SEED", "DISTS"]    # the lean pick's fixed blocks
 
 
 def log(m):
@@ -187,11 +189,11 @@ def columns_cmd(a):
     return 0
 
 
-def receivers(c, qs, K):
+def receivers(c, qs, K, full=False):
     """For questions qs: one row per receiver (a row outside the top K by rrf, one edge from a top-K row), its labels and scalars.
     Also the golds outside the top K, and how many of them have an edge from the top K, per family."""
     import zlink as ZL
-    feats, nq, base_z, gold = c.batch(qs, ["dense_cos", "SEED"])
+    feats, nq, base_z, gold = c.batch(qs, FULL_BLOCKS if full else ["dense_cos", "SEED"])
     lk = feats[ZL.LK_KEY]
     B, N = qs.size, nq.numel()
     cnt = c.n_np[qs]
@@ -235,12 +237,18 @@ def receivers(c, qs, K):
     cols = [base_z[rows], feats["dense_cos"][rows, 0], seed[rows, 0], seed[rows, 1], seed[rows, 2], cmax, torch.log1p(nsend), softs,
             torch.log1p(deg[rows]), fam_any[:, 0], fam_any[:, 1], fam_any[:, 2]]
     M = torch.stack([x.to(torch.float32) for x in cols], 1)
-    return {"X": M.numpy(), "y": gold[rows].numpy(), "q": qs[nq[rows].numpy()], "n_miss": nmiss.numpy(), "reach_any": reach_any.numpy(),
-            "reach_fam": np.stack([x.numpy() for x in fam_reach], 1)}
+    out = {"X": M.numpy(), "y": gold[rows].numpy(), "q": qs[nq[rows].numpy()], "n_miss": nmiss.numpy(), "reach_any": reach_any.numpy(),
+           "reach_fam": np.stack([x.numpy() for x in fam_reach], 1)}
+    if full:                                                  # the lean pick's columns, raw and as the model sees them (z-score over the whole pool)
+        import lean_gpu as LG
+        raw = torch.cat([feats[b] for b in FULL_BLOCKS], 1)
+        z = LG.seg_zscore8D(raw, nq, B)
+        out["XN"] = torch.cat([raw[rows], z[rows]], 1).numpy()
+    return out
 
 
-def edge_tables(c, nq, K, step=16):
-    parts = [receivers(c, np.arange(k, min(k + step, nq)), K) for k in range(0, nq, step)]
+def edge_tables(c, nq, K, step=16, full=False):
+    parts = [receivers(c, np.arange(k, min(k + step, nq)), K, full) for k in range(0, nq, step)]
     return {k: np.concatenate([p[k] for p in parts]) for k in parts[0]}
 
 
@@ -260,6 +268,14 @@ def edge_report(t, K):
     s_all, w_all = lr_crossfit(X, y, q)
     out["lr_node_only"] = {"auc": auc(s_node, y), **hit_at(s_node, y, q), "weights": dict(zip(NODE_ONLY, [round(float(w), 3) for w in w_node]))}
     out["lr_node_plus_edge"] = {"auc": auc(s_all, y), **hit_at(s_all, y, q), "weights": dict(zip(EDGE_NAMES, [round(float(w), 3) for w in w_all]))}
+    if "XN" in t:                                    # amendment A1: against every column of the lean pick, raw and z-scored
+        XN = t["XN"]
+        ed = [name[n] for n in EDGE_ONLY]
+        s_f, _w = lr_crossfit(XN, y, q)
+        s_fe, w_fe = lr_crossfit(np.concatenate([XN, X[:, ed]], 1), y, q)
+        out["lr_full"] = {"auc": auc(s_f, y), **hit_at(s_f, y, q), "columns": int(XN.shape[1])}
+        out["lr_full_plus_edge"] = {"auc": auc(s_fe, y), **hit_at(s_fe, y, q),
+                                    "edge_weights": dict(zip(EDGE_ONLY, [round(float(w), 3) for w in w_fe[-len(ed):]]))}
     return out
 
 
@@ -269,18 +285,18 @@ def edges_cmd(a):
     nq = min(a.nq or NQ[a.dataset], c.rows)
     ks = [int(x) for x in a.k.split(",")]
     out = {"declared_in": DECLARED, "dataset": a.dataset, "carve": c.carve, "questions": nq, "link_edges": int(c.links["e_u"].size),
-           "part_shas": c.part_shas, "by_k": {}}
+           "full": bool(a.full), "part_shas": c.part_shas, "by_k": {}}
     for K in ks:
-        t = edge_tables(c, nq, K)
+        t = edge_tables(c, nq, K, full=a.full)
         r = edge_report(t, K)
         out["by_k"][str(K)] = r
         log(f"edges {a.dataset} K={K}: missing golds {r['missing_golds']}, one-hop reach {r['one_hop_reach']:.3f} "
             f"(by family {[round(x, 3) for x in r['one_hop_reach_by_family']]}), receivers {r['receivers']}, gold receivers {r['gold_receivers']}")
-        for k in ("lr_node_only", "lr_node_plus_edge"):
+        for k in ("lr_node_only", "lr_node_plus_edge", "lr_full", "lr_full_plus_edge"):
             if k in r:
                 log(f"   {k}: auc {r[k]['auc']:.3f} hit@5 {r[k]['hit@5']:.3f} (chance {r[k]['chance@5']:.3f}) hit@20 {r[k]['hit@20']:.3f}")
     out["seconds"] = time.time() - t0
-    p = Path(OUT) / f"edges_{a.dataset}.json"
+    p = Path(OUT) / f"edges{'_full' if a.full else ''}_{a.dataset}.json"
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(out, indent=1), encoding="utf-8")
     log(f"edges {a.dataset}: {nq} questions ({out['seconds']:.0f}s) -> {p}")
@@ -329,7 +345,10 @@ class FakeCarve:
         bz = torch.zeros(N)
         for i, q in enumerate(qs):
             bz[i * 60:(i + 1) * 60] = -torch.arange(60, dtype=torch.float32)       # row 0 is the first stage's top, then 1, 2, ...
-        feats = {"dense_cos": torch.rand(N, 1), "SEED": torch.rand(N, 3)}
+        g = torch.Generator().manual_seed(5)
+        feats = {"dense_cos": torch.rand(N, 1, generator=g), "SEED": torch.rand(N, 3, generator=g), "rank": torch.rand(N, 5, generator=g),
+                 "topo_STRUCT": torch.rand(N, 4, generator=g), "depth_STRUCT": torch.rand(N, 2, generator=g), "WALK": torch.rand(N, 6, generator=g),
+                 "WALKF": torch.rand(N, 3, generator=g), "DISTS": torch.rand(N, 2, generator=g)}
         ne = self.links["q_ne"][qs]
         eix = np.concatenate([np.arange(self.links["e_off"][q], self.links["e_off"][q + 1]) for q in qs])
         eq = np.repeat(np.arange(qs.size), ne)
@@ -359,6 +378,10 @@ def selftest():
     j = EDGE_NAMES.index("cos_max")
     assert float(t["X"][t["y"], j].min()) > 0.7 > float(t["X"][~t["y"], j].max()), "the gold receiver's cosine to its sender"
     assert EDGE_NAMES.index("fam0") == 9 and t["X"][t["y"], 9].min() == 1.0 and t["X"][t["y"], 10].max() == 0.0
+    tf = edge_tables(c, 3, K=1, step=2, full=True)
+    assert tf["XN"].shape == (t["X"].shape[0], 2 * 26) and np.array_equal(tf["X"], t["X"]), tf["XN"].shape
+    rf = edge_report(tf, 1)
+    assert set(rf) >= {"lr_full", "lr_full_plus_edge"} and rf["lr_full"]["columns"] == 52 and "cos_max" in rf["lr_full_plus_edge"]["edge_weights"], rf.keys()
     r = edge_report(t, 1)
     assert r["one_hop_reach"] == 1.0 and r["scalars"]["cos_max"]["auc"] > 0.99 and r["scalars"]["cos_max"]["hit@5"] == 1.0, r
     log("selftest: auc, hit_at (with its chance), the logistic cross-fit, the receivers on a three-question carve (reach, families, "
@@ -377,6 +400,7 @@ def main(argv=None):
         p.add_argument("--threads", type=int, default=6)
         if nm == "edges":
             p.add_argument("--k", default="5,20")
+            p.add_argument("--full", action="store_true", help="amendment A1: also the lean pick's columns as the node baseline")
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()

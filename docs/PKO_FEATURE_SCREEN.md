@@ -98,3 +98,27 @@ Feeder items `pfs-cols-<dataset>` and `pfs-edges-<dataset>`, CPU only, after PKO
 ## 6. Results
 
 (to be filed after the reads)
+
+## 7. Amendment A1, 31 October 2026, after PFS-B's first numbers were seen and before any number of the reading it adds
+
+**What was seen.** PFS-B's reads ran in section 2's form (the node-only baseline of five scalars). Against it, the node-plus-edge fit adds to hit@5 at
+K = 5: hotpotqa +0.32, 2wiki +0.57, webqsp +0.35 (AUC +0.13, +0.21, +0.32); squad -0.06 (AUC -0.01); musique had not finished. By section 3's rule that
+is EDGE_ADDS on three of the four datasets with edges. It is a weak comparison: the five scalars leave out the lean pick's own seed-walk (WALK, WALKF),
+topology and distance columns, which already count a row's adjacency to the first stage, so the first reading overstates what edges add to a model
+that has them. The largest weights were the rank-weighted sender count, the receiver's degree and the structural family, the same quantities
+WALK holds.
+
+**What A1 adds** (`edges --full`, `edges_full_<dataset>.json`; the reads of section 2 stand as they ran): a second baseline of all 86 cached columns of the
+lean pick, raw and as the lean models see them (z-scored over the whole pool), 172 columns, fitted as before (logistic, cross-fitted on question parity);
+and the same fit plus the seven edge scalars (cosine, log sender count, rank-weighted sender count, log degree, three families).
+
+**Rule, fixed here.** Per dataset at K = 5, hit@5 and AUC of the receivers:
+- **EDGE_ADDS_OVER_LEAN**: the full-plus-edge fit exceeds the full fit by >= 0.03 in hit@5 and >= 0.01 in AUC.
+- **LEAN_HAS_IT**: both differences within 0.01. Otherwise MIXED, reported with the numbers.
+- **What follows.** Section 3's "what follows" for the edges now reads: U2u (stage 8) is declared, on the GNN of record, only on EDGE_ADDS_OVER_LEAN on at
+  least three of the four datasets with edges (2wiki, hotpotqa, musique, webqsp), naming the edge scalar with the largest standardised weight in the
+  full-plus-edge fit. The first reading (EDGE_ADDS against five scalars) is reported as it ran and declares nothing by itself. LEAN_HAS_IT on three: these
+  scalars are in the lean columns already, the U2u form on them is not declared, and the next form is an edge quantity the cache does not hold (the link
+  rule's own score, a build declared as its own file).
+- **Stated against it.** A logistic fit on 172 columns can miss what an MLP finds, so LEAN_HAS_IT is weak evidence of redundancy and EDGE_ADDS_OVER_LEAN is the
+  stronger statement. Neither is a model result.
