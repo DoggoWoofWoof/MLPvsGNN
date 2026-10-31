@@ -218,3 +218,30 @@ fitted (its splits had other training sets), so U2n's one GAIN carries nothing o
 of GPU and 4.7 GB of host memory; the first fit of each arm re-times on the host and the share is changed then if it is wrong.
 
 Nothing in this amendment is a result, and nothing is adopted.
+
+## 12. Amendment A3 (31 October 2026, after four failed fits, before any ML1 verdict): the GPU caps of the items
+
+**What happened.** The 29 items of section 7 carried the cap section 11 took from WQ: a pool cap of 0.27 of the card (`cuda_alloc.py
+--frac 0.27`) and a share of 0.29. WQ measured that on its own pools. On PKO's pools it is too small for part of the stage. The four
+fits `zspk-s0-hp`, `zrckp-s0-hp`, `zrckpt-s0-hp` (all three at the load of the training carves, with 7.2 to 8.7 GiB allocated) and
+`zrckpt-s0` (in its read, at U2n's `inv_norms`, 8.7 GiB allocated) ended with "CUDA out of memory" on all three tries, and the feeder
+dropped the 14 items behind them (the other hp fits, `zrckpt` seeds 1 and 2, `ml1-compare`, `ml1-verdict` and `ml1-repeat`). Nothing
+else failed: the musique-split fits of `zspk` and `zrckp` seed 0 ran to their reads (a measured 9.2 GiB each), and the repeated
+"cancelled" jobs of `ml1-zrckp-s1` and `ml1-zspk-s1` are the feeder's own rule that the card cannot hold three runs at their
+measured peaks (27.9 GiB of 24), which sends an item back unsent; they are not fits.
+
+**What changes.** Only the sizes in the feeder's items, none of the stage: the musique-split items still to be sent get cap 0.40 and
+share 0.42; the hotpotqa-split items `zspk`, `zrckp` and `zg6r` get 0.52 and 0.54; `zrckpt` gets 0.50 and 0.52 on the musique split
+and 0.56 and 0.58 on the hotpotqa split; host memory 12 GB for the re-sized ones. The 18 items that failed or were dropped are put in
+the file again as `<name>-b`, their dependencies renamed, and `ml1-compare-b`, `ml1-verdict-b` and `ml1-repeat-b` stand behind all 24
+fits and the repeat. The fits keep the names of section 2, `zml1s.py` is unchanged, and `fit` takes up where a fit was left: the
+trained and stamped `zrckpt-s0` is only read again. The rule of section 4, the arms, seeds, splits, the read caps, the device of A1 and
+the encoder and tau0 of A2 are as they were.
+
+**What a cap is.** A pool cap sets how much of the card a run may take, so that several runs can share it; it does not change the
+arithmetic of the run, and the declared determinism settings of A1 stand. It is not a measured claim: the repeat of A1 (`zrckp` seed
+0, WQ-musique, a fresh process) now runs at a cap other than the one its first fit had, and its comparison with that fit is the
+check that the cap moves no number. If a fit still runs out of memory it stops the stage INCOMPLETE as before; the feeder asks for
+what torch says was needed on a second try, and the cap is changed here, in this section, before a fit is run again.
+
+Nothing in this amendment is a result, and nothing is adopted.
