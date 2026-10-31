@@ -220,3 +220,23 @@ question's golds among its top m rows, averaged over questions with a gold), and
   read once, with no seed. rrf's top rows stand in for a ranker's. The columns use only the stored projection, not the frozen encoder's full vectors.
 
 Items: `pfs-smoke-prf` (hotpotqa, 40 questions) and `pfs-prf-<dataset>` for the five datasets, CPU only, after PKO's gate; they write only under `outputs/pfs/`.
+
+## 10. Results of Amendment A2 (filed 31 October 2026; the same questions as section 8, every pool row, no seed)
+
+| dataset | questions / rows | golds beyond rrf top 5 | beyond-top-5 AUC of prf5 / prf20 / maxcos5 (z-scored) | lean 172 columns: recall@5 / recall@20 / AUC | + the six: recall@5 / recall@20 / AUC | d recall@5 | d AUC | call |
+|---|---|---|---|---|---|---|---|---|
+| hotpotqa | 1000 / 711,780 | 576 | 0.541 / 0.537 / 0.634 | 0.8053 / 0.9229 / 0.9871 | 0.8083 / 0.9229 / 0.9873 | +0.0030 | +0.0002 | PRF_NOTHING |
+| 2wiki | 1000 / 1,073,464 | 980 | 0.426 / 0.379 / 0.566 | 0.8085 / 0.9314 / 0.9857 | 0.8083 / 0.9310 / 0.9857 | -0.0002 | -0.0000 | PRF_NOTHING |
+| webqsp | 600 / 2,922,458 | 2,977 | 0.499 / 0.472 / 0.512 | 0.2919 / 0.5575 / 0.9530 | 0.2958 / 0.5625 / 0.9548 | +0.0039 | +0.0018 | PRF_NOTHING |
+| musique | 400 / 2,221,400 | 306 | 0.767 / 0.789 / 0.798 | 0.6500 / 0.8163 / 0.9877 | 0.6500 / 0.8187 / 0.9876 | +0.0000 | -0.0001 | PRF_NOTHING |
+| squad | 1000 / 50,031 | 62 | 0.654 / 0.645 / 0.665 | 0.9518 / 0.9950 / 0.9871 | 0.9538 / 0.9940 / 0.9872 | +0.0020 | +0.0001 | PRF_NOTHING |
+
+**Reading (section 9's rule, applied as written).** PRF_ADDS on 0 of the five datasets, PRF_NOTHING on 5. PRF_NOTHING holds on 5 of the five datasets (at least three): first-stage-relative similarity is **closed** as an input for the probe and for models that have the lean columns, and the cached node side has no cheap derived input left to try.
+
+- The new columns carry where the first stage carries and not where the graph does. Beyond the top 5 their AUCs are 0.77 to 0.80 on musique and 0.65 to 0.67 on squad (the two datasets whose
+  first-stage columns carry, section 8), and 0.54 / 0.54 / 0.63 on hotpotqa, 0.43 / 0.38 / 0.57 on 2wiki and 0.50 / 0.47 / 0.51 on webqsp (prf5 / prf20 / maxcos5). Where they do carry they
+  restate what dense_cos and rrf already give: the probe's recall@5 on musique is 0.650 with and without them. On 2wiki, where the missed golds are bridge passages, similarity to the found rows points the
+  wrong way (prf20 below 0.5), as it should if the missing gold is reached by a link and is not a near neighbour of what was found.
+- **The baseline probe is itself strong.** A logistic fit on the 172 cached columns, cross-fitted by question parity, puts recall@5 at about 0.81 on hotpotqa and 2wiki, 0.65 on musique, 0.95 on squad and 0.29 on webqsp,
+  with AUC 0.95 to 0.99 over every pool row. These are the first questions of each fit carve, an out-of-fold probe, not the models' protocol, and are not compared with ML1's reads here.
+- **Stated against these results** (section 9 stands): a probe without interactions; the stored 128-wide projection, not the encoder's vectors; the first questions of each fit carve; no seed.
