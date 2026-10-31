@@ -32,6 +32,21 @@ U2B = ROOT / "outputs" / "u2b"
 GRAPH = {"hotpotqa": "W2_S.npz", "2wiki": "W2_S.d.npz", "musique": "W2_S.npz"}      # 2wiki's file is W2_S (142,967,492 neighbours)
 SETTINGS, FILES, STRUCT = u1a.SETTINGS, u1a.FILES, u1a.STRUCT
 CARVES = ("b1", "b1t", "b1u", "b1w")
+# the published rows (paper/www2027_v2/fact_sheet.md; R@5 x100 on HippoRAG 2's three subsets; None = not comparable or not reported)
+# first field: peer-reviewed. Caveats: BridgeRAG's musique set is another set, SAG2 does not say its questions are HippoRAG 2's.
+PUBLISHED = {"HippoRAG 2": (True, {"2wiki": 90.4, "hotpotqa": 96.3, "musique": 74.7}),
+             "G-reasoner": (True, {"2wiki": 98.2, "hotpotqa": None, "musique": 74.9}),
+             "PROPEX-RAG": (True, {"2wiki": 98.1, "hotpotqa": 97.1, "musique": None}),
+             "CoopRAG": (True, {"2wiki": 97.2, "hotpotqa": 96.6, "musique": 75.7}),
+             "PropRAG": (True, {"2wiki": 94.1, "hotpotqa": 97.4, "musique": 78.3}),
+             "HGRAG": (True, {"2wiki": 93.0, "hotpotqa": 95.5, "musique": 74.1}),
+             "EviReform": (False, {"2wiki": 98.45, "hotpotqa": 97.30, "musique": 78.93}),
+             "BridgeRAG": (False, {"2wiki": 95.27, "hotpotqa": 98.75, "musique": None}),
+             "SAG2": (False, {"2wiki": 97.35, "hotpotqa": 98.45, "musique": 80.68})}
+
+
+def best_published(ds, peer_only):
+    return max((v[ds], n) for n, (peer, v) in PUBLISHED.items() if v[ds] is not None and (peer or not peer_only))
 
 
 def log(m):
@@ -172,6 +187,12 @@ def report():
                     den = float((k[0] - k[1]).mean())
                     s["share_of_hyperlink_gain"][f"{arm}/{split}"] = {"b1u": round(float((k[2] - k[1]).mean()) / den, 3),
                                                                       "b1w": round(float((k[3] - k[1]).mean()) / den, 3)}
+        s["best_published"] = {}
+        for which, peer_only in (("any", False), ("peer_reviewed", True)):
+            v, name = best_published(ds, peer_only)
+            s["best_published"][which] = {"row": name, "R@5": v}
+        s["calls_vs_best_published"] = {f"{cv} {key}": {w: BB.call(c["R5_ci"], b["R@5"] / 100) for w, b in s["best_published"].items()}
+                                        for cv in CARVES for key, c in s["carves"][cv].items() if c["read"] == "in-domain"}
         rec["settings"][ds] = s
     rec["missing"] = missing
     rec["script_sha256"] = u1a.sha_src(__file__)
@@ -186,6 +207,16 @@ def report():
             pw = s["paired"].get(f"b1w-b1u {key}")
             L.append(f"| {ds} | {key} | " + " | ".join(cells) + f" | {100 * pw['R@5']:+.1f} ({100 * pw['ci'][0]:+.1f}, {100 * pw['ci'][1]:+.1f}) | "
                      f"{100 * BB.HIPPORAG2[ds]:.1f} |" if pw else f" | -- | {100 * BB.HIPPORAG2[ds]:.1f} |")
+    L += ["", "In-domain reads (J5) against the best published row of the setting, by the 95% interval of R@5 (ABOVE, AT or BELOW the row's value).", "",
+          "| setting | best row (any) | best peer-reviewed row | read | b1 | b1u | b1w | calls (any/peer) for b1, b1u, b1w |", "|---|---|---|---|---:|---:|---:|---|"]
+    for ds, s in rec["settings"].items():
+        ba = s["best_published"]
+        for key in sorted({k for c in s["carves"].values() for k, x in c.items() if x["read"] == "in-domain"}):
+            cells = [f"{100 * s['carves'][cv][key]['R@5']:.1f}" if key in s["carves"][cv] else "--" for cv in ("b1", "b1u", "b1w")]
+            calls = ", ".join("/".join(s["calls_vs_best_published"].get(f"{cv} {key}", {}).get(w, "--") for w in ("any", "peer_reviewed"))
+                              for cv in ("b1", "b1u", "b1w"))
+            L.append(f"| {ds} | {ba['any']['row']} {ba['any']['R@5']:.1f} | {ba['peer_reviewed']['row']} {ba['peer_reviewed']['R@5']:.1f} | {key} | "
+                     + " | ".join(cells) + f" | {calls} |")
     (OUT / "report.md").write_text("\n".join(L) + "\n", encoding="utf-8")
     log(f"report: {OUT / 'report.md'}; missing {len(missing)}")
     return 0
