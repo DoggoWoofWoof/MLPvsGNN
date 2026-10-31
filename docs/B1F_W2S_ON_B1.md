@@ -76,4 +76,47 @@ GAIN and neither 2wiki nor musique is a LOSS. Otherwise b1u stays the row and b1
 
 ## 7. Results
 
-(to be filed after the reads)
+Filed 31 October 2026, 17:05 IST, from `python -I outputs/mp_unified/b1f.py report` (`outputs/b1f/report.json`, `report.md`) on the
+24 reads fetched from the host: the 26 feeder items (fork, look, cache, link build, read) ran in 23 minutes, 0 failed, 0 missing.
+Nothing in sections 1 to 6 changed after the reads. R@5 x100, candidate p@swa, 95% bootstrap intervals (2,000 resamples, seed 0).
+
+**Verdict: W2_S_NOT_ADOPTED. The plain title rule (b1u) stays the paper's recreated-links row; b1w is reported beside it.**
+
+Section 4's rule, in-domain (J5), paired difference b1w - b1u on R@5:
+
+| setting | MLP (zrc) | GNN (zsp) | call |
+|---|---|---|---|
+| 2wiki | -1.1 (-1.6, -0.7) | -0.6 (-1.0, -0.3) | **LOSS** (both upper ends below 0) |
+| hotpotqa | +0.0 (-0.4, +0.5) | -0.6 (-1.1, -0.1) | **LOSS** (the GNN's upper end is below 0); not a GAIN either way |
+| musique | -0.8 (-1.5, 0.0) | -0.6 (-1.4, +0.2) | NO_CHANGE (the MLP's upper end prints 0.0 at four decimals, not below it) |
+
+The verdict needs hotpotqa to be a GAIN and neither 2wiki nor musique a LOSS; hotpotqa is not a GAIN and 2wiki is a LOSS.
+
+Reported, not decided (J5; MLP / GNN):
+
+| | 2wiki | hotpotqa | musique |
+|---|---|---|---|
+| b1 (hyperlinks; musique: title links) | 96.4 / 97.2 | 98.2 / 98.2 | 66.1 / 66.3 |
+| b1u (plain title rule) | 95.3 / 95.9 | 94.8 / 95.0 | 66.1 / 66.3 |
+| b1w (W2_S) | 94.2 / 95.2 | 94.8 / 94.3 | 65.3 / 65.7 |
+| b1t (no links) | 75.6 / 77.3 | 88.7 / 90.0 | 63.4 / 62.9 |
+| share of the hyperlinks' gain recovered, b1u | 0.95 / 0.93 | 0.65 / 0.60 | 1.00 (identity) |
+| share recovered, b1w | 0.89 / 0.90 | 0.65 / 0.53 | 0.72 / 0.82 |
+| b1 - b1w, the price left (CI) | +2.2 (+1.4, +3.1) / +1.9 (+1.1, +2.8) | +3.4 (+2.5, +4.2) / +3.9 (+3.0, +4.9) | +0.8 (-0.0, +1.5) / +0.6 (-0.2, +1.4) |
+
+- W2_S still gains a lot over no links (b1w - b1t: 2wiki +18.6 / +17.9, hotpotqa +6.1 / +4.4, musique +1.9 / +2.7, every interval above 0).
+  It does not gain over the plain rule.
+- Against the best published row of the setting, no b1w read changes a call from b1u's: all six are BELOW both the best row of any kind and the best
+  peer-reviewed row (2wiki: EviReform 98.5, G-reasoner 98.2; hotpotqa: BridgeRAG 98.8, PropRAG 97.4; musique: SAG2 80.7, PropRAG 78.3). The hyperlink
+  reads are AT BridgeRAG and ABOVE PropRAG on hotpotqa and BELOW every best row on 2wiki and musique.
+- Held-out reads (decide nothing), b1w - b1u: 2wiki -2.3 / -1.7, hotpotqa -1.9 / -1.8, musique +0.3 / +1.0 (the GNN's interval, +0.1 to +2.0, is above 0).
+
+**What this says.** On B1, an edge set that matches the hyperlinks better as a set (hotpotqa precision 0.82 against the plain rule's 0.65, recall 0.80
+against 0.82; 2wiki 0.83 against 0.76 and 0.84 against 0.84) is not read better by the fits that were trained on the hyperlinks. The remaining price of
+recreated links, 1.9 to 2.2 points on 2wiki and 3.4 to 3.9 on hotpotqa, is not the precision or recall of the edge set as a whole. **Untested** reasons,
+named so nobody reads them as findings: the fits were trained on the hyperlink graph and W2_S differs from it in degree, direction and in its sibling
+links (musique's hub reaches degree 1,467); the lost edges that matter are the few that join a question's bridge passages, not the average edge.
+
+**What this closes and what it does not.** It closes one form: U2b's chosen rule, cut to B1's nodes, read by hyperlink-trained fits. It does not close
+W2_S for the full corpora (U2b chose it on pool reach there), a fit trained on W2_S, or the higher-reach forms (W3e_S, W7eg_S: hotpotqa reach 0.925
+against 0.909 on s1sel), which are not stored on the laptop. The paper's row stays b1u.
