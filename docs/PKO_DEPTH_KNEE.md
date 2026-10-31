@@ -64,3 +64,12 @@ Per fit and carve, from `p@swa`, R@5 over questions with a gold; EPS = 0.01:
 ## 7. Results
 
 (to be filed after the reads)
+
+## 8. Amendment A1, 31 October 2026, before any cut was read
+
+The user, 31 October: improving the GNN is the priority and the GNN must be its own model, not built over the MLP. zspk is the MLP plus one
+propagation step (G6, docs/G6_FREE_GNN.md section 1); the GNN of record is zg6r. So the read of zspk (`knee-zspk-s0`) is withdrawn from the
+queue before it ran, and the report lists that fit NOT_RUN. Sections 3 and 5 read as "the fits read" (zrckp now). zg6r's reads go through zrm,
+not lean_gpu, so its depth read needs its own patched read; it is declared as A2 with that code, the same reading rule (section 5) and the same
+check against ML1's file, once the code is written and self-tested. The GPU order changed with it: ML1's zg6r items now run ahead of the lean
+pair's. No rule, depth or tolerance changes.
