@@ -194,3 +194,29 @@ model may use the same columns better than the probe does, which is why LEAN_HAS
 
 **What is next, named.** Two inputs are not in the cache and so were not tested: the link rule's own per-edge score (what a hyperlink's anchor text carries over a title match) and a first-stage-relative
 similarity (to the centroid of the top-K rows). Each is a build or a derived block, declared in its own file before its number.
+
+## 9. Amendment A2, 31 October 2026, after section 8 was filed and before any number of the reading it adds
+
+**Why.** Section 8 leaves two inputs the cache does not hold untested. One is the link rule's own per-edge score; its earlier forms on the lean pair ran with no signal (docs/DIAG_LINK_WORDS.md,
+docs/A6E_LINK_WORDS_EDGES.md) and it needs a build, so it is not read here. The other is a row's similarity to the first stage's found rows, which the lean pick does not carry as a column (SEED measures
+similarity to the question's seed entities, not to the top rows; the edge scalars of section 2 measure it only for a receiver of an edge). It is made from what the cache holds, before any row is scored, so
+a model may take it as an input without message passing.
+
+**The read** (`prf --dataset D`, `prf_<dataset>.json`; the same fit carves, the same first questions, every pool row): three columns made from each row's stored 128-wide projection, normalised:
+- `prf5`, `prf20`: the cosine to the centroid of the top 5 and of the top 20 rows by rrf (the centroid is normalised);
+- `maxcos5`: the largest cosine to another of the top 5 rows (a top row is not compared with itself).
+
+Each is read raw and as a within-question z-score (six columns). Per dataset: the AUC of each column's z-score for gold over all rows and beyond the first stage's top 5; then two logistic probes over all pool
+rows, cross-fitted on question parity as before: the 172 lean columns of section 7 (the baseline), and those plus the six. Metrics over every row of every question: AUC, recall@5 and recall@20 (the share of a
+question's golds among its top m rows, averaged over questions with a gold), and hit@5 with its exact chance.
+
+**Rule, fixed here.** Per dataset, the probe with the six columns against the baseline:
+- **PRF_ADDS**: recall@5 gain >= 0.02 and AUC gain >= 0.005.
+- **PRF_NOTHING**: the absolute recall@5 difference <= 0.01 and the absolute AUC difference <= 0.005. Otherwise MIXED, reported with the numbers.
+- **What follows.** PRF_ADDS on at least three of the five datasets: a derived block of these columns is declared as an add-one screen on the GNN of record (zg6r) first and the MLP second, as its own file with its
+  own base and null, since a new input is a model change under the 13 October rule. PRF_NOTHING on at least three: first-stage-relative similarity is closed as an input for the probe and for the models
+  that have the lean columns, and the cached node side has no cheap derived input left to try. Anything else: reported, and nothing is declared from it.
+- **Stated against it.** A logistic probe on all rows is far below the models (it has no interactions), so a gain here can be larger or smaller than a model's. The first questions of each fit carve are
+  read once, with no seed. rrf's top rows stand in for a ranker's. The columns use only the stored projection, not the frozen encoder's full vectors.
+
+Items: `pfs-smoke-prf` (hotpotqa, 40 questions) and `pfs-prf-<dataset>` for the five datasets, CPU only, after PKO's gate; they write only under `outputs/pfs/`.

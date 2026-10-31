@@ -15,6 +15,7 @@ their rank-weighted count, the receiver's degree and the families on the pair. T
 
     python outputs/mp_unified/zpfs.py columns --dataset hotpotqa
     python outputs/mp_unified/zpfs.py edges --dataset hotpotqa --k 5,20
+    python outputs/mp_unified/zpfs.py prf --dataset hotpotqa              (amendment A2)
     python outputs/mp_unified/zpfs.py --selftest
 """
 import argparse
@@ -279,6 +280,96 @@ def edge_report(t, K):
     return out
 
 
+# ── amendment A2: similarity to the first stage's top rows, over every pool row ───────────────────────────
+
+
+def recall_at(score, y, q, ms=(5, 20)):
+    """Per question with a gold: the share of its golds among its top m rows by score, averaged over those questions. Ties by position."""
+    score = np.asarray(score, np.float64)
+    y = np.asarray(y, bool)
+    q = np.asarray(q, np.int64)
+    o = np.lexsort((np.arange(q.size), -score, q))
+    qs, ys = q[o], y[o]
+    first = np.r_[True, qs[1:] != qs[:-1]]
+    grp = np.cumsum(first) - 1
+    start = np.flatnonzero(first)
+    pos = np.arange(qs.size) - start[grp]
+    g = np.bincount(grp, weights=ys.astype(np.float64), minlength=start.size)
+    has = g > 0
+    out = {"questions": int(has.sum())}
+    for m in ms:
+        got = np.bincount(grp, weights=(ys & (pos < m)).astype(np.float64), minlength=start.size)
+        out[f"recall@{m}"] = float((got[has] / g[has]).mean()) if has.any() else None
+    return out
+
+
+PRF_NAMES = ["prf5", "prf20", "maxcos5"]
+
+
+def prf_batch(c, qs):
+    """For questions qs, every pool row: the lean pick's columns (raw, then z-scored over the pool), the three first-stage-relative columns
+    (cosine of the row's stored 128-wide projection to the centroid of the top 5 and of the top 20 rows by rrf, and the largest cosine to
+    another of the top 5), raw then z-scored, the labels, and the rrf rank."""
+    import lean_gpu as LG
+    import zlink as ZL
+    feats, nq, base_z, gold = c.batch(qs, FULL_BLOCKS)
+    B, N = qs.size, nq.numel()
+    cnt = c.n_np[qs]
+    seg = np.cumsum(cnt) - cnt
+    idx = np.repeat(c.off_np[qs] - seg, cnt) + np.arange(N)
+    P = c.decode(c.row[torch.from_numpy(idx)])[:, :128]
+    P = P / P.norm(dim=1, keepdim=True).clamp_min(1e-9)
+    rank = ZL.pool_rank(base_z, nq, B)
+    sel = rank < 20
+    top = torch.full((B, 20), -1, dtype=torch.int64)
+    top[nq[sel], rank[sel]] = torch.nonzero(sel).squeeze(1)
+    assert bool((top >= 0).all()), "a pool has fewer than 20 rows, or rrf's rank has ties"
+    c5 = torch.nn.functional.normalize(P[top[:, :5]].mean(1), dim=1)
+    c20 = torch.nn.functional.normalize(P[top].mean(1), dim=1)
+    prf5, prf20 = (P * c5[nq]).sum(1), (P * c20[nq]).sum(1)
+    mx = torch.full((N,), -2.0)
+    for k in range(5):
+        s = (P * P[top[:, k]][nq]).sum(1)
+        s = torch.where(rank == k, torch.full_like(s, -2.0), s)          # a top row is not compared with itself
+        mx = torch.maximum(mx, s)
+    D = torch.stack([prf5, prf20, mx], 1)
+    raw = torch.cat([feats[b] for b in FULL_BLOCKS], 1)
+    XN = torch.cat([raw, LG.seg_zscore8D(raw, nq, B)], 1)
+    DN = torch.cat([D, LG.seg_zscore8D(D, nq, B)], 1)
+    return {"XN": XN.numpy(), "D": DN.numpy(), "y": gold.bool().numpy(), "q": qs[nq.numpy()], "rank": rank.numpy()}
+
+
+def prf_cmd(a):
+    t0 = time.time()
+    c = open_carve(a.dataset)
+    nq = min(a.nq or NQ[a.dataset], c.rows)
+    parts = [prf_batch(c, np.arange(k, min(k + 16, nq))) for k in range(0, nq, 16)]
+    t = {k: np.concatenate([p[k] for p in parts]) for k in parts[0]}
+    y, q, rank = t["y"], t["q"], t["rank"]
+    far = rank >= 5
+    out = {"declared_in": DECLARED, "amendment": "A2", "dataset": a.dataset, "carve": c.carve, "questions": nq, "rows": int(y.size),
+           "gold_rows": int(y.sum()), "golds_beyond_top5": int(y[far].sum()), "part_shas": c.part_shas, "columns": {}}
+    for j, nm in enumerate(PRF_NAMES):
+        v = t["D"][:, 3 + j]                                            # within-question z-score, as the columns' AUCs of section 2
+        out["columns"][nm] = {"auc_z": auc(v, y), "auc_z_beyond_top5": auc(v[far], y[far])}
+    s0, _w = lr_crossfit(t["XN"], y, q)
+    s1, w1 = lr_crossfit(np.concatenate([t["XN"], t["D"]], 1), y, q)
+    for nm, s in (("lr_lean", s0), ("lr_lean_plus_prf", s1)):
+        out[nm] = {"auc": auc(s, y), **hit_at(s, y, q), **{k: v for k, v in recall_at(s, y, q).items() if k != "questions"}}
+    out["prf_weights"] = dict(zip(PRF_NAMES + [n + "_z" for n in PRF_NAMES], [round(float(w), 3) for w in w1[-6:]]))
+    out["seconds"] = time.time() - t0
+    p = Path(OUT) / f"prf_{a.dataset}.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    log(f"prf {a.dataset}: {nq} questions, {y.size} rows, golds beyond top 5 {out['golds_beyond_top5']} ({out['seconds']:.0f}s) -> {p}")
+    for nm in PRF_NAMES:
+        log(f"   {nm}: auc {out['columns'][nm]['auc_z']:.3f} beyond top 5 {out['columns'][nm]['auc_z_beyond_top5']:.3f}")
+    for nm in ("lr_lean", "lr_lean_plus_prf"):
+        r = out[nm]
+        log(f"   {nm}: auc {r['auc']:.3f} recall@5 {r['recall@5']:.3f} recall@20 {r['recall@20']:.3f} hit@5 {r['hit@5']:.3f} (chance {r['chance@5']:.3f})")
+    return 0
+
+
 def edges_cmd(a):
     t0 = time.time()
     c = open_carve(a.dataset)
@@ -384,8 +475,16 @@ def selftest():
     assert set(rf) >= {"lr_full", "lr_full_plus_edge"} and rf["lr_full"]["columns"] == 52 and "cos_max" in rf["lr_full_plus_edge"]["edge_weights"], rf.keys()
     r = edge_report(t, 1)
     assert r["one_hop_reach"] == 1.0 and r["scalars"]["cos_max"]["auc"] > 0.99 and r["scalars"]["cos_max"]["hit@5"] == 1.0, r
-    log("selftest: auc, hit_at (with its chance), the logistic cross-fit, the receivers on a three-question carve (reach, families, "
-        "the sender cosine) and the edge report all pass")
+    ra = recall_at([0.9, 0.1, 0.5, 0.8, 0.2, 0.1], [1, 0, 0, 0, 0, 1], [0, 0, 0, 1, 1, 1], ms=(1, 2))
+    assert ra["questions"] == 2 and abs(ra["recall@1"] - 0.5) < 1e-12 and abs(ra["recall@2"] - 0.5) < 1e-12, ra
+    pb = prf_batch(c, np.array([0, 1, 2]))
+    assert pb["XN"].shape == (180, 2 * 26) and pb["D"].shape == (180, 6) and pb["y"].sum() == 6, (pb["XN"].shape, pb["D"].shape)
+    mxc = pb["D"][:, 2]
+    gold30 = np.flatnonzero(pb["y"] & (pb["rank"] >= 5))
+    assert gold30.size == 3 and mxc[gold30].min() > 0.7 > mxc[(~pb["y"]) & (pb["rank"] >= 5)].max(), (mxc[gold30], mxc[~pb["y"]].max())
+    assert (pb["D"][pb["rank"] == 0, 2] < 0.7).all(), "a top row is not compared with itself"
+    log("selftest: auc, hit_at and recall_at (with their chance), the logistic cross-fit, the receivers on a three-question carve (reach, "
+        "families, the sender cosine), the edge report and the first-stage-relative columns all pass")
     return 0
 
 
@@ -393,7 +492,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--selftest", action="store_true")
     sub = ap.add_subparsers(dest="cmd")
-    for nm in ("columns", "edges"):
+    for nm in ("columns", "edges", "prf"):
         p = sub.add_parser(nm)
         p.add_argument("--dataset", required=True, choices=sorted(CARVE))
         p.add_argument("--nq", type=int, default=0)
@@ -407,7 +506,7 @@ def main(argv=None):
     if not a.cmd:
         ap.error("a command or --selftest")
     torch.set_num_threads(a.threads)
-    return columns_cmd(a) if a.cmd == "columns" else edges_cmd(a)
+    return {"columns": columns_cmd, "edges": edges_cmd, "prf": prf_cmd}[a.cmd](a)
 
 
 if __name__ == "__main__":
