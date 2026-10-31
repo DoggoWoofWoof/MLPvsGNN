@@ -97,7 +97,7 @@ Feeder items `pfs-cols-<dataset>` and `pfs-edges-<dataset>`, CPU only, after PKO
 
 ## 6. Results
 
-(to be filed after the reads)
+Filed as section 8, below Amendment A1 (section 7), which came between the reads and this filing.
 
 ## 7. Amendment A1, 31 October 2026, after PFS-B's first numbers were seen and before any number of the reading it adds
 
@@ -122,3 +122,75 @@ and the same fit plus the seven edge scalars (cosine, log sender count, rank-wei
   rule's own score, a build declared as its own file).
 - **Stated against it.** A logistic fit on 172 columns can miss what an MLP finds, so LEAN_HAS_IT is weak evidence of redundancy and EDGE_ADDS_OVER_LEAN is the
   stronger statement. Neither is a model result.
+
+## 8. Results (filed 31 October 2026; the reads ran on the host's CPU, the first questions of each fit carve, no seed)
+
+**PFS-A, the columns.** Beyond-top-5 AUC is the within-question z-score of a column for gold over the rows the first stage ranks 5th or lower; CARRIES is >= 0.60.
+
+| dataset | questions / rows | golds beyond rrf top 5 | columns CARRYING (of 86) | NO_CARRIER | SPARSE (mode share >= 0.5) | SPARSE with gold rate at the mode below the rate elsewhere |
+|---|---|---|---|---|---|---|
+| hotpotqa | 1,000 / 711,780 | 576 | 70 | no | 48 | 38 |
+| 2wiki | 1,000 / 1,073,464 | 980 | 58 | no | 50 | 40 |
+| webqsp | 600 / 2,922,458 | 2,977 | 62 | no | 57 | 48 |
+| musique | 400 / 2,221,400 | 306 | 53 | no | 45 | 35 |
+| squad | 1,000 / 50,031 | 62 | 23 | no | 45 | 24 |
+
+- **Where the separation is differs by dataset.** On hotpotqa, 2wiki and webqsp the carriers are the graph columns (topo_STRUCT, depth_STRUCT, WALK, WALKF, DISTS; best beyond-top-5 AUC 0.89, 0.95, 0.91).
+  On 2wiki and webqsp the first stage's own columns do not carry there (dense_rr 0.38 and 0.55, splade_rr 0.56 and 0.41, rrf 0.42 and 0.51): the misses are separated by the graph and by nothing the first
+  stage knows. On musique and squad it is the other way: the first-stage columns carry (musique rrf 0.92, dense_cos 0.91, splade_rr 0.87; squad dense_cos 0.89) and the graph columns top out lower
+  (musique topo_STRUCT 0.72, WALK 0.72, depth_STRUCT 0.79, DISTS 0.79; squad no graph block above 0.65).
+- **Caveat on the graph carriers' size.** The pool was built by walking the same links, so a row with a nonzero walk value is in the pool because it was reached; part of the 0.9+ is reachability, not
+  ranking. The read cannot split the two.
+- **Coverage holes (SPARSE, with the gold rate at the mode below the rate elsewhere), common to all five datasets:** `is_seed`, WALK[3] to WALK[8] and WALK[15], WALKF[12], [15], [16], [17]. These
+  columns are zero for most rows and informative where they are not; they say nothing for the rows a walk did not reach.
+- NO_CARRIER holds on no dataset: the cached columns do separate the misses. Under section 3 the next screen on PFS-A is the block ablation (drop-one) on the carrying blocks; it is not declared here.
+
+**PFS-B, the edges**, in section 2's form (five node scalars against the same plus the edge scalars):
+
+| dataset | K | golds outside top K | one-hop reach (fam 0 / 1 / 2) | receivers | node-only hit@5 (chance) | + edge scalars | d hit@5 | d AUC | call |
+|---|---|---|---|---|---|---|---|---|---|
+| hotpotqa | 5 | 576 | 0.724 (0.64 / 0.24 / 0.20) | 82,381 | 0.346 (0.087) | 0.667 | +0.321 | +0.126 | EDGE_ADDS |
+| hotpotqa | 20 | 377 | 0.870 (0.80 / 0.28 / 0.23) | 152,670 | 0.178 (0.042) | 0.537 | +0.359 | +0.209 | EDGE_ADDS |
+| 2wiki | 5 | 980 | 0.730 (0.71 / 0.26 / 0.11) | 93,240 | 0.231 (0.070) | 0.796 | +0.565 | +0.207 | EDGE_ADDS |
+| 2wiki | 20 | 808 | 0.896 (0.87 / 0.33 / 0.13) | 178,009 | 0.196 (0.036) | 0.759 | +0.563 | +0.227 | EDGE_ADDS |
+| webqsp | 5 | 2,977 | 0.519 (0.51 / 0.03 / 0.03) | 155,917 | 0.241 (0.124) | 0.594 | +0.353 | +0.318 | EDGE_ADDS |
+| webqsp | 20 | 2,896 | 0.741 (0.73 / 0.05 / 0.03) | 312,803 | 0.144 (0.071) | 0.481 | +0.337 | +0.313 | EDGE_ADDS |
+| musique | 5 | 306 | 0.507 (0.33 / 0.16 / 0.21) | 92,734 | 0.457 (0.034) | 0.457 | +0.000 | +0.012 | MIXED |
+| musique | 20 | 175 | 0.623 (0.37 / 0.28 / 0.25) | 270,886 | 0.222 (0.011) | 0.185 | -0.037 | +0.020 | MIXED |
+| squad | 5 | 62 | 0.758 (0.68 / 0.29 / 0.44) | 26,647 | 0.681 (0.182) | 0.617 | -0.064 | -0.005 | MIXED |
+| squad | 20 | 13 | 0.846 (0.69 / 0.62 / 0.62) | 21,362 | 0.545 (0.189) | 0.545 | +0.000 | +0.005 | EDGE_ADDS_NOTHING |
+
+- ONE_HOP_REACHES at K = 5: hotpotqa, 2wiki and squad yes; webqsp (0.519) and musique (0.507) no. At K = 20 all five reach 0.60 or more. Structural links (family 0) carry most of the one-hop reach on every
+  dataset; on musique they reach only 0.33 to 0.37 of the missing golds, and the NER and kNN families 0.16 to 0.28.
+- Read alone, this is EDGE_ADDS on three of the four datasets with edges (hotpotqa, 2wiki, webqsp), which section 3 would have turned into U2u. That is why A1 added the stronger baseline first.
+
+**Amendment A1, the same receivers against all 86 lean columns (raw and pool-z-scored, 172 columns), with and without the seven edge scalars:**
+
+| dataset | K | lean columns hit@5 / AUC | + edge scalars hit@5 / AUC | d hit@5 | d AUC | A1 call |
+|---|---|---|---|---|---|---|
+| hotpotqa | 5 | 0.736 / 0.927 | 0.749 / 0.927 | +0.012 | +0.000 | MIXED |
+| hotpotqa | 20 | 0.656 / 0.926 | 0.666 / 0.928 | +0.009 | +0.002 | LEAN_HAS_IT |
+| 2wiki | 5 | 0.867 / 0.958 | 0.870 / 0.959 | +0.003 | +0.001 | LEAN_HAS_IT |
+| 2wiki | 20 | 0.857 / 0.962 | 0.865 / 0.964 | +0.008 | +0.002 | LEAN_HAS_IT |
+| musique | 5 | 0.556 / 0.958 | 0.563 / 0.959 | +0.007 | +0.001 | LEAN_HAS_IT |
+| musique | 20 | 0.380 / 0.959 | 0.380 / 0.961 | +0.000 | +0.002 | LEAN_HAS_IT |
+| webqsp | 5 | 0.702 / 0.882 | 0.712 / 0.887 | +0.010 | +0.005 | MIXED |
+| webqsp | 20 | 0.593 / 0.903 | 0.625 / 0.910 | +0.032 | +0.006 | MIXED |
+| squad | 5 | 0.745 / 0.873 | 0.766 / 0.865 | +0.021 | -0.008 | MIXED |
+| squad | 20 | 0.545 / 0.728 | 0.545 / 0.723 | +0.000 | -0.004 | LEAN_HAS_IT |
+
+**Reading (the fixed rules, applied as written).**
+- **EDGE_ADDS_OVER_LEAN holds on none of the four datasets with edges at K = 5.** U2u (stage 8) is therefore **not declared** on these scalars. The first reading's EDGE_ADDS on three datasets was the weak
+  baseline's: the lean pick already holds the quantities the edge scalars make (WALK, WALKF, topology and distance columns), and against it the seven add at most +0.012 hit@5 and +0.005 AUC at K = 5.
+- LEAN_HAS_IT holds on two of the four at K = 5 (2wiki, musique); the other two are MIXED by the thresholds (hotpotqa +0.012 hit@5 and +0.000 AUC; webqsp +0.010 and +0.005; both are outside the 0.01 band in hit@5 only,
+  by 0.0024 and by 0.00003). The rule's "three" for closing the scalars is not met either, so closure is not claimed: **these edge scalars are neither declared into the GNN nor closed**; the evidence is that they add very little
+  to a model that has the lean columns.
+- What the reads leave standing: the cached columns do separate the missed golds (PFS-A, 53 to 70 carriers on four datasets), and a logistic probe on the cached columns alone reaches receiver hit@5 of 0.74
+  (hotpotqa), 0.87 (2wiki), 0.56 (musique) and 0.70 (webqsp) at K = 5. In the sense these reads can test, nothing cached is missing.
+- Squad is the one dataset where the first stage is the signal and the graph is not (section 4's note stands).
+
+**Stated against these results** (section 4 stands): rrf's top K stands in for a ranker's first stage; the fits are logistic probes on the receivers, not a final R@5 and not the lean MLP or zg6r; a nonlinear
+model may use the same columns better than the probe does, which is why LEAN_HAS_IT is weak evidence; the graph carriers include reachability; the first questions of each fit carve were read, once, with no seed.
+
+**What is next, named.** Two inputs are not in the cache and so were not tested: the link rule's own per-edge score (what a hyperlink's anchor text carries over a title match) and a first-stage-relative
+similarity (to the centroid of the top-K rows). Each is a build or a derived block, declared in its own file before its number.
