@@ -245,3 +245,66 @@ check that the cap moves no number. If a fit still runs out of memory it stops t
 what torch says was needed on a second try, and the cap is changed here, in this section, before a fit is run again.
 
 Nothing in this amendment is a result, and nothing is adopted.
+
+## 13. Results (filed 2 November 2026)
+
+The verdict was computed on the host on 1 November (11:21 IST) by `zml1.py` over 12 reads per arm. No fit is missing, none is off
+its declaration, and every compare ran on the host's GPU (`fit_problems` is empty). Records: `outputs/ml1/verdict.json`,
+`verdict.md`, `repeat.json`, `repeat.md`.
+
+**zg6r against zspk: ADOPT.** GAIN 6, LOSS 0, UNCONFIRMED 0, WITHIN 6. Deltas are R@5, seeds 0, 1, 2.
+
+| split | dataset | d0 | d1 | d2 | floor | call |
+|---|---|---:|---:|---:|---:|---|
+| WQ-musique | metaqa | +0.0055 | -0.0008 | -0.0217 | 0.0250 | WITHIN |
+| WQ-musique | squad | +0.0004 | +0.0010 | +0.0020 | 0.0075 | WITHIN |
+| WQ-musique | musique | +0.0207 | +0.0118 | +0.0133 | 0.0145 | GAIN |
+| WQ-musique | hotpotqa | +0.0149 | +0.0172 | +0.0110 | 0.0075 | GAIN |
+| WQ-musique | 2wiki | +0.0138 | +0.0207 | +0.0122 | 0.0083 | GAIN |
+| WQ-musique | webqsp | +0.0229 | +0.0148 | +0.0224 | 0.0078 | GAIN |
+| WQ-hotpotqa | metaqa | +0.0347 | +0.0872 | +0.0256 | 0.0484 | WITHIN |
+| WQ-hotpotqa | squad | +0.0008 | +0.0005 | -0.0005 | 0.0075 | WITHIN |
+| WQ-hotpotqa | musique | +0.0082 | +0.0237 | +0.0157 | 0.0123 | WITHIN |
+| WQ-hotpotqa | hotpotqa | -0.0102 | -0.0110 | -0.0274 | 0.0183 | WITHIN |
+| WQ-hotpotqa | 2wiki | +0.0165 | +0.0143 | +0.0126 | 0.0075 | GAIN |
+| WQ-hotpotqa | webqsp | +0.0261 | +0.0223 | +0.0174 | 0.0231 | GAIN |
+
+Split as section 5 asks: the eight in-domain reads give 5 GAIN and 3 WITHIN (squad twice, and musique under WQ-hotpotqa). The
+four zero-shot reads give 1 GAIN (musique under WQ-musique) and 3 WITHIN. On hotpotqa read zero-shot, zg6r is below zspk on all
+three seeds (-0.010, -0.011, -0.027; floor 0.018). That is within the floor, so it is not a LOSS, but it is the one read where
+every seed points down.
+
+**zrckpt against zrckp: NOT_ADOPTED.** WITHIN 12; no GAIN, no LOSS.
+
+| split | dataset | d0 | d1 | d2 | floor | call |
+|---|---|---:|---:|---:|---:|---|
+| WQ-musique | metaqa | +0.0264 | -0.0128 | -0.0221 | 0.0603 | WITHIN |
+| WQ-musique | squad | -0.0005 | -0.0001 | +0.0006 | 0.0075 | WITHIN |
+| WQ-musique | musique | +0.0128 | +0.0047 | +0.0036 | 0.0308 | WITHIN |
+| WQ-musique | hotpotqa | -0.0023 | +0.0029 | -0.0030 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | -0.0004 | +0.0085 | +0.0066 | 0.0090 | WITHIN |
+| WQ-musique | webqsp | -0.0020 | +0.0211 | +0.0176 | 0.0228 | WITHIN |
+| WQ-hotpotqa | metaqa | -0.0270 | +0.0134 | +0.0300 | 0.0735 | WITHIN |
+| WQ-hotpotqa | squad | -0.0002 | +0.0001 | -0.0005 | 0.0075 | WITHIN |
+| WQ-hotpotqa | musique | -0.0020 | -0.0077 | +0.0028 | 0.0075 | WITHIN |
+| WQ-hotpotqa | hotpotqa | +0.0068 | +0.0050 | +0.0022 | 0.0078 | WITHIN |
+| WQ-hotpotqa | 2wiki | +0.0031 | +0.0032 | +0.0039 | 0.0075 | WITHIN |
+| WQ-hotpotqa | webqsp | +0.0045 | +0.0032 | +0.0043 | 0.0107 | WITHIN |
+
+**The repeat (A1).** `scr-ml1-zrckp-s0` and `scr-ml1-zrckp-s0-rep` have identical weights (sha256 `32081ce1...a57d6a`), but
+their reads are not identical. A1 fixed that this decides nothing. It means the read on the host's GPU does not repeat bit for bit
+even when the weights do.
+
+**Section 5, beside.** The verdict record holds the deltas and the calls only. The MLP's share of the GNN's gain, FC@5, hit@1 and
+the seconds per fit are not in it. The share goes into Claim 1's re-measure, which reads the same read files with P3c's
+intervals; the others are reported there too.
+
+**What follows (section 6).** zg6r ADOPT, so the GNN line's incumbent is now zg6r, the GNN that is its own model, on PKO's pools.
+zrckpt NOT_ADOPTED, so zrckp stays the MLP. Next comes the GNN's work, each in its own declared file:
+
+1. Claim 1 re-measured with P3c's intervals (zrckp against zg6r).
+2. The isolation arms (G6RW section 7, third row): relation messages on zg6's own encoder start, and zspk's encoder start alone.
+3. The depth form (MUSIQUE_DIAGNOSIS step 3), graded on the 3-hop and 4-hop slices.
+4. Claim 3 re-timed cold, with zg6r in the table.
+
+After those, the MLP's work: U2n section 6 under WQ. This verdict closes only the two forms it tested.

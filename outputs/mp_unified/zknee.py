@@ -124,7 +124,14 @@ def top_hit_k(s, gold, B, seg, cnt, keep, cnt_k):
 
 def knee_read_carve(LG, c, models, rows_cap, first_q, depths, pos, bsn):
     """lean_gpu.read_carve (same keys, same values) plus, for p@swa and the three references at each depth: d_top, d_hit
-    (depths x Q), d_ref_top, d_ref_hit (depths x 3 x Q), and per depth the rows kept and the golds among them (d_rows, d_gold)."""
+    (depths x Q), d_ref_top, d_ref_hit (depths x 3 x Q), and per depth the rows kept and the golds among them (d_rows, d_gold).
+    Runs under no_grad, as lean_gpu.read_carve does (without it a real fit's scores keep their graph and .numpy() fails)."""
+    import torch
+    with torch.no_grad():
+        return _knee_read(LG, c, models, rows_cap, first_q, depths, pos, bsn)
+
+
+def _knee_read(LG, c, models, rows_cap, first_q, depths, pos, bsn):
     import torch
     dev = c.device
     names = [m[0] for m in models]
@@ -469,7 +476,7 @@ def selftest():
 
     class Mod:
         def __init__(self, a):
-            self.a = a
+            self.a = torch.tensor(a, requires_grad=True)  # a real fit's weights require grad
 
         def __call__(self, feats, keep, nqr, B, base_z):
             return base_z * self.a + torch.sin(torch.arange(base_z.numel(), dtype=torch.float32) * self.a)

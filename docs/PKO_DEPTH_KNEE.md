@@ -73,3 +73,13 @@ queue before it ran, and the report lists that fit NOT_RUN. Sections 3 and 5 rea
 not lean_gpu, so its depth read needs its own patched read; it is declared as A2 with that code, the same reading rule (section 5) and the same
 check against ML1's file, once the code is written and self-tested. The GPU order changed with it: ML1's zg6r items now run ahead of the lean
 pair's. No rule, depth or tolerance changes.
+
+## 9. Amendment A2, 2 November 2026, before any cut was read: the read runs without gradients
+
+`knee-zrckp-s0` failed on 1 November, about a minute into its first carve. `zknee.knee_read_carve` replaces
+`lean_gpu.read_carve`, but it did not carry that function's `@torch.no_grad()`. So a real fit's scores kept their autograd graph,
+and `.numpy()` refused them. The self-test's fake model had no weights, so the self-test could not see this.
+
+The read now runs under `torch.no_grad()`, as `lean_gpu.read_carve` does. The self-test's fake model now holds a weight that
+requires grad, so the self-test covers this path. Nothing else changes: same fit, carves, depths, check against ML1's own read,
+and rule. The read and its report are queued again as `knee-zrckp-s0-b` and `knee-report-b`. No cut had been read.
