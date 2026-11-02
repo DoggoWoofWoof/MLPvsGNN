@@ -292,3 +292,16 @@ the laptop's CPU before this commit. The stage's self-test now checks that its f
 `on_read()`, that the code block names readswa, and that lean_gpu's own `load_models` is back after.
 
 **What does not change.** Sections 1 to 12: ISO's fits, its verdict, zg6-z's wiring and what follows.
+
+## 14. Amendment A4, 3 November 2026, before any zg6-z fit: the hotpotqa-split fit waits for the stack
+
+**What happened.** zg6-z decides nothing (section 7). Its hotpotqa-split fit, `iso-zg6z-s0-hp`, is the last GPU item in the
+queue and has the card alone (share 0.75) for about 4.5 hours. DEP's, LTG's, RTR's and IRA's full runs now wait for the stack
+(docs/STK_GNN_STACK.md, declared in the same commit). So once the screens end, the card would go to `iso-zg6z-s0-hp` ahead of
+the stack's fits, which STK's amendment queues later.
+
+**The change.** `iso-zg6z-s0-hp` also waits on `hold-isoz-hp-after-stack`, a name no job has. The amendment that queues the
+stack's fits points the item after the stack's last fit. `iso-zg6z-s0`, the musique-split fit (share 0.42), keeps its place,
+where it shares the card with another seed-0 fit.
+
+**What does not change.** Sections 1 to 13: ISO's fits, its verdict, zg6-z's wiring, its report and what follows.

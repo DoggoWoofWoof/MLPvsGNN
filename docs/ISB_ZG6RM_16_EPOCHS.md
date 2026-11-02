@@ -149,3 +149,18 @@ A laptop dry run of `calls` was also made, with ISO's filed compares relabelled 
 problem in the bases.
 
 Not claimed: anything about the encoder's start on other pools or regimes, or about schedules other than this one.
+
+## 9. Amendment A1, 3 November 2026, before any ISB fit: ISB waits until after the freeze
+
+**What happened.** On 3 November the user asked to finish faster. ISB's screen needs about 7.5 hours of the card, and its
+full run about 12 more. Five GNN forms are screened on zg6r before the 6-7 November freeze (docs/STK_GNN_STACK.md section 1).
+An ISB REPLACE would change the base under all five. Section 6 would then keep a form adopted on zg6r as the GNN of record
+until its own screen on zg6r-m16 carries it over, and those screens do not fit before the freeze.
+
+**The change.** ISB's fits wait until after the freeze. `isb-s0` and `isb-s0-hp` wait on `hold-isb-after-freeze`, a name no
+job has. The feeder keeps them waiting and does not drop them. ISB's full-run items wait behind `isb-gate`. GNX's screen
+(docs/GNX_NEXT_COLUMNS_IN_GNN.md) takes ISB's place on the card. The hold was put in the queue earlier on 3 November, before
+this amendment. No ISB fit has run.
+
+**What does not change.** Sections 1 to 8: the arm, the fits, the rule and what follows. After the freeze, an amendment that
+changes only these items' dependencies releases the hold.

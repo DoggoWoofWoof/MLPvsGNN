@@ -338,3 +338,28 @@ commit. It checks LTG's four deciding reads of the WQ-musique split. It also che
 not stop the fit.
 
 **What does not change.** Sections 1 to 10: the term, the fits, the base, the reads, both rules and what follows.
+
+## 12. Amendment A4, 3 November 2026, before LTG's screen verdict: the full run before the freeze is the stack's
+
+**What happened.** On 3 November the user asked to finish faster. LTG's full run is four fits, about 12 hours of the card,
+and four other GNN forms are screened beside LTG (docs/STK_GNN_STACK.md section 1). `ltg-s0stop` read `scr-ltg-nh-s0` at
+02:41 IST and gave GO: all four WQ-musique deciding reads are WITHIN (STK section 7). `ltg-nh-s0-hp` waits for the card, and
+no WQ-hotpotqa number has been seen.
+
+**The change.** Section 6's ADOPT_FOR_FULL_RUN row now says that LTG joins the stack of docs/STK_GNN_STACK.md, declared in
+the same commit. The stack is zg6r with every GNN form whose screen passes, and its full run is the GNN's one full run before
+the freeze.
+
+- If LTG is the stack's only member, the stack is LTG's own full run. Its items are released, and section 4's full-run rule
+  decides.
+- With two or more members, the stack is read under LTG's in-domain rule and the other members' rules (STK section 4).
+- On the stack's ADOPT, the stack is the GNN of record, and Claim 1 and Claim 3 are measured again on it. The stack takes the
+  place of section 6's DEP or RTR form "carried onto it in its own file".
+- Otherwise LTG's own full run follows after the freeze, unless STK section 6 picks it sooner.
+
+**The queue.** `ltg-nh-s1`, `ltg-nh-s2`, `ltg-nh-s1-hp` and `ltg-nh-s2-hp` now also wait on `hold-full-for-stack`, a name
+no job has. The feeder keeps them waiting and does not drop them. `ltg-compare-full` and `ltg-calls-full` wait on those fits.
+`ltg-gate` runs as before.
+
+**What does not change.** Sections 1 to 11, apart from that row: the term, the fits, the base, the reads, both rules, the
+seed-0 stop, and the NO_GAIN, NOT_ADOPTED and INCOMPLETE rows.

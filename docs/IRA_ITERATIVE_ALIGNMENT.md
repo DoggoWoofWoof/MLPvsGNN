@@ -275,6 +275,31 @@ IRA's fit names, OUT and declaration against zira.py, and the gate's three codes
 
 **What does not change.** Sections 1 to 11: the plan's model, the fits, the base, the reads, the rule and what follows.
 
+## 13. Amendment A4, 3 November 2026, before any IRA fit: the full run before the freeze is the stack's
+
+**What happened.** As for RTR (docs/RTR_GO_BACK_ROUNDS.md section 12): IRA's full run is four fits, about 12 hours of the
+card, and four other GNN forms are screened beside IRA (docs/STK_GNN_STACK.md section 1). No IRA fit has run: IRA opens only
+on DEP's NO_GAIN or NOT_ADOPTED.
+
+**The change.** Section 6's "screen ADOPT_FOR_FULL_RUN" and "full run ADOPT" rows now say that IRA joins the stack of
+docs/STK_GNN_STACK.md, declared in the same commit. The stack is zg6r with every GNN form whose screen passes, and its full
+run is the GNN's one full run before the freeze.
+
+- IRA's arm holds RTR's two rounds. When RTR's screen passes too, IRA is the member, and RTR is not a second one.
+- If IRA is the stack's only member, the stack is IRA's own full run. Its items are released, and the full-run rule decides:
+  DEP's, as RTR calls it (section 4).
+- With two or more members, the stack is read under DEP's sixteen-read rule and the other members' rules (STK section 4).
+- On the stack's ADOPT, the stack is the GNN of record, and Claim 1 and Claim 3 are measured again on it.
+- Otherwise IRA's own full run follows after the freeze, unless STK section 6 picks it sooner. The next form, three rounds
+  (IsoNet++'s default), follows after the freeze.
+
+**The queue.** `ira-k4-s1`, `ira-k4-s2`, `ira-k4-s1-hp` and `ira-k4-s2-hp` now also wait on `hold-full-for-stack`, a name
+no job has. The feeder keeps them waiting and does not drop them. `ira-compare-full` and `ira-calls-full` wait on those fits.
+`ira-gate` runs as before.
+
+**What does not change.** Sections 1 to 12, apart from those rows: the plan's model, the fits, the base, the reads, the
+rule, IRA's open, the seed-0 stop, and the NO_GAIN, NOT_ADOPTED and INCOMPLETE rows.
+
 ## Results
 
 None yet.

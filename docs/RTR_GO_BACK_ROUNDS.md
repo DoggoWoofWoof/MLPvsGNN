@@ -276,3 +276,29 @@ calls are zrtr.py's own. On GO the fit runs as before.
 RTR's fit names, OUT and declaration against zrtr.py, and the gate's three codes.
 
 **What does not change.** Sections 1 to 10: the rounds, the fits, the base, the reads, the rule and what follows.
+
+## 12. Amendment A4, 3 November 2026, before any RTR fit: the full run before the freeze is the stack's
+
+**What happened.** On 3 November the user asked to finish faster. RTR's full run is four fits, about 12 hours of the card,
+and four other GNN forms are screened beside RTR (docs/STK_GNN_STACK.md section 1). No RTR fit has run: RTR opens only on
+DEP's NO_GAIN or NOT_ADOPTED.
+
+**The change.** Section 6's ADOPT_FOR_FULL_RUN row now says that RTR joins the stack of docs/STK_GNN_STACK.md, declared in
+the same commit. The stack is zg6r with every GNN form whose screen passes, and its full run is the GNN's one full run before
+the freeze.
+
+- When IRA's screen passes too, IRA is the member, and RTR's two rounds come in it (STK section 2).
+- If RTR is the stack's only member, the stack is RTR's own full run. Its items are released, and section 4's full-run rule
+  decides.
+- With two or more members, the stack is read under DEP's sixteen-read rule, which RTR uses, and the other members' rules
+  (STK section 4).
+- On the stack's ADOPT, the stack is the GNN of record, and Claim 1 and Claim 3 are measured again on it.
+- Otherwise RTR's own full run follows after the freeze, unless STK section 6 picks it sooner. The next form, three rounds,
+  follows after the freeze.
+
+**The queue.** `rtr-r2-s1`, `rtr-r2-s2`, `rtr-r2-s1-hp` and `rtr-r2-s2-hp` now also wait on `hold-full-for-stack`, a name
+no job has. The feeder keeps them waiting and does not drop them. `rtr-compare-full` and `rtr-calls-full` wait on those fits.
+`rtr-gate` runs as before.
+
+**What does not change.** Sections 1 to 11, apart from that row: the rounds, the fits, the base, the reads, the rule, RTR's
+open, the seed-0 stop, and the NO_GAIN, NOT_ADOPTED and INCOMPLETE rows.

@@ -318,3 +318,29 @@ start: `dep-gate` wants ADOPT_FOR_FULL_RUN.
 
 **What does not change.** Sections 1 to 11: the depth, the fits, the base, the reads, both rules and what follows. A STOP
 closes only this form, and section 6's next form (docs/RTR_GO_BACK_ROUNDS.md) opens as before.
+
+## 13. Amendment A5, 3 November 2026, before DEP's screen verdict: the full run before the freeze is the stack's
+
+**What happened.** On 3 November the user asked to finish faster. DEP's full run is four fits, about 12 hours of the card,
+and four other GNN forms are screened beside DEP. docs/STK_GNN_STACK.md section 1 has the arithmetic. `dep-l4-s0-hp` is
+running. `dep-s0stop` read `scr-dep-l4-s0` at 02:40 IST and gave GO: all eight WQ-musique reads are WITHIN (STK section 7).
+The screen's verdict waits on `scr-dep-l4-s0-hp`, and no WQ-hotpotqa number has been seen.
+
+**The change.** Section 6's ADOPT_FOR_FULL_RUN row now says that DEP joins the stack of docs/STK_GNN_STACK.md, declared in
+the same commit. The stack is zg6r with every GNN form whose screen passes, and its full run is the GNN's one full run before
+the freeze.
+
+- If DEP is the stack's only member, the stack is DEP's own full run. Its items are released, and section 4's full-run rule
+  decides.
+- With two or more members, the stack is read under DEP's sixteen-read rule and the other members' rules (STK section 4).
+- On the stack's ADOPT, the stack is the GNN of record, and Claim 1 and Claim 3 are measured again on it.
+- Otherwise DEP's own full run follows after the freeze, unless STK section 6 picks it sooner. The next depth form, five
+  layers, follows after the freeze.
+
+**The queue.** `dep-l4-s1`, `dep-l4-s2`, `dep-l4-s1-hp` and `dep-l4-s2-hp` now also wait on `hold-full-for-stack`, a name
+no job has. The feeder keeps them waiting and does not drop them. `dep-compare-full` and `dep-calls-full` wait on those fits.
+`dep-gate` runs as before.
+
+**What does not change.** Sections 1 to 12, apart from that row: the depth, the fits, the base, the reads, both rules, the
+seed-0 stop, and the NO_GAIN, NOT_ADOPTED and INCOMPLETE rows. RTR and IRA still open on DEP's NO_GAIN or NOT_ADOPTED
+(section 12).

@@ -202,3 +202,21 @@ The self-test, `python outputs/mp_unified/zgnx.py --selftest`, passed on the lap
   back, also on a failure;
 - the stamp's refusals: a train without every training carve's columns, and a read without every s1eval carve's;
 - that the rule's keys are LTG's (its calls are tested in zltg's self-test).
+
+## 10. Amendment A1, 3 November 2026, before any GNX fit: the stack's file
+
+**What happened.** Section 7 sends GNX's input, on ADOPT_FOR_FULL_RUN, into a stack declared in its own file. That file is
+docs/STK_GNN_STACK.md, declared in the same commit. `gnx-selftest` and `gnx-check-cols` passed on the host at 02:51 IST. No
+GNX fit has run.
+
+**The change.** Section 7's ADOPT_FOR_FULL_RUN row reads with STK's sections 2 to 6:
+
+- If GNX is the stack's only member, the stack is GNX's own full run: seeds 1 and 2 on both splits, under section 4's
+  full-run rule. That replaces section 7's "No GNX-alone full run is queued before the 6-7 November freeze". GNX queued no
+  full run, so its four items come in STK's amendment (STK section 8).
+- With two or more members, the stack is read under LTG's in-domain rule, which GNX uses, and the other members' rules (STK
+  section 4).
+- On the stack's ADOPT, the stack is the GNN of record, and Claim 1 and Claim 3 are measured again on it.
+
+**What does not change.** Sections 1 to 9, apart from that row: the input, the term, the fits, the base, the reads, the rule,
+the seed-0 stop, and the NO_GAIN, NOT_ADOPTED and INCOMPLETE rows.
