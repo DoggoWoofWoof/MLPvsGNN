@@ -300,3 +300,41 @@ the laptop's CPU before this commit. The stage's self-test now checks that its f
 `on_read()` on REPLACE and on KEEP, that the code block names readswa, and that lean_gpu's own `load_models` is back after.
 
 **What does not change.** Sections 1 to 9: the term, the next-hop loss, the fits, the base, the reads, the rule and what follows.
+
+## 11. Amendment A3, 3 November 2026, before any LTG number is seen: the seed-0 stop
+
+**What happened.** `scr-ltg-nh-s0` (item `ltg-nh-s0-b`) ended at 02:18 IST. `ltg-nh-s0-hp` waits for the card, where it would
+run alone for about 4.5 hours (share 0.83). No LTG compare has run, and no LTG number has been seen: LTG's compares run only
+in `ltg-compare`, after `ltg-nh-s0-hp`.
+
+Section 4's screen rule gives NOT_ADOPTED on one LOSS among its ten deciding reads. Four of them are fixed once
+`scr-ltg-nh-s0` is read: the in-domain reads of the WQ-musique split (webqsp, squad, hotpotqa and 2wiki). The base's three
+seeds are filed, and LTG's one read of each comes from that fit. So when one of the four is a LOSS, no read of
+`scr-ltg-nh-s0-hp` can change the screen's verdict. The WQ-musique split's zero-shot reads and musique slices are beside the
+rule, so they do not stop the fit.
+
+**The change.** `outputs/mp_unified/s0stop.py` (new), with `--stage ltg`. docs/DEP_GNN_DEPTH.md section 12 describes its
+check, wrapper and gate. The check runs `zltg.py compare-all` and `zltg.py calls`, then decides on the four reads named by
+`zltg.deciding_keys()`:
+
+- GO when the calls record lists a problem, or when one of the four has no row;
+- STOP when one of the four is a LOSS;
+- GO otherwise.
+
+**Why no number changes.** The stop decides only what section 4's rule already decides. The floors, the rows and the calls are
+zltg.py's own. On GO the fit runs as before, and every later step is the same.
+
+**The records.** The check writes `outputs/ltg/s0stop.json`. On a STOP the wrapper writes `outputs/ltg/s0stop_skip.json`, and
+`ltg-calls` still runs. Its `screen.verdict` is INCOMPLETE, because the WQ-hotpotqa reads are missing. The screen's verdict is
+the NOT_ADOPTED in s0stop.json. The full run does not start: `ltg-gate` wants ADOPT_FOR_FULL_RUN.
+
+**The queue.**
+
+- `ltg-s0stop`: CPU 1, 8 GB, after `ltg-nh-s0-b`.
+- `ltg-nh-s0-hp` also waits on `ltg-s0stop`, and its command is wrapped in `s0stop.py run --stage ltg --`.
+
+**Self-test.** `python outputs/mp_unified/s0stop.py --selftest` (DEP's section 12) passed on the laptop's CPU before this
+commit. It checks LTG's four deciding reads of the WQ-musique split. It also checks that a LOSS on a read beside the rule does
+not stop the fit.
+
+**What does not change.** Sections 1 to 10: the term, the fits, the base, the reads, both rules and what follows.

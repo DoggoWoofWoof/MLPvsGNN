@@ -248,3 +248,31 @@ the laptop's CPU before this commit. The stage's self-test now checks that its f
 `on_read()` on REPLACE and on KEEP, that the code block names readswa, and that lean_gpu's own `load_models` is back after.
 
 **What does not change.** Sections 1 to 9: the rounds, the fits, the base, the reads, the rule and what follows.
+
+## 11. Amendment A3, 3 November 2026, before any RTR fit: the seed-0 stop, and RTR's open
+
+Both changes come from DEP's seed-0 stop (docs/DEP_GNN_DEPTH.md section 12, `outputs/mp_unified/s0stop.py`).
+
+**RTR's open.** RTR's fits wait on `rtr-open`, which passes when DEP's screen is NO_GAIN or NOT_ADOPTED. Under DEP's stop,
+DEP's NOT_ADOPTED can stand in `outputs/dep/s0stop.json` while `outputs/dep/calls.json` says INCOMPLETE. So `rtr-open` now
+runs `python outputs/mp_unified/s0stop.py gate --stage dep --want NO_GAIN,NOT_ADOPTED`, still after `dep-calls`. Without a
+STOP the gate reads calls.json's `screen.verdict`, as verdict_gate.py did.
+
+**RTR's own stop.** RTR's screen rule is DEP's sixteen-read rule: zrtr.py calls `zdep.decide_screen`. Eight of the sixteen
+reads are fixed once `scr-rtr-r2-s0` is read: the WQ-musique split's six datasets, and musique's 3-hop and 4-hop slices.
+When one of the eight is a LOSS, no read of `scr-rtr-r2-s0-hp` can change the screen's verdict, so that fit is not run.
+
+- `rtr-s0stop`: CPU 1, 8 GB, after `rtr-r2-s0`. It runs `s0stop.py check --stage rtr`, which runs `zrtr.py compare-all`
+  and `zrtr.py calls`. The decision is GO on any problem or missing read, STOP on a LOSS among the eight, and GO otherwise.
+- `rtr-r2-s0-hp` also waits on `rtr-s0stop`, and its command is wrapped in `s0stop.py run --stage rtr --`.
+- The records are `outputs/rtr/s0stop.json` and, on a STOP, `outputs/rtr/s0stop_skip.json`. On a STOP, `rtr-calls`'s
+  `screen.verdict` is INCOMPLETE, because the WQ-hotpotqa reads are missing. The screen's verdict is the NOT_ADOPTED in
+  s0stop.json. `rtr-gate` wants ADOPT_FOR_FULL_RUN, so the full run does not start.
+
+**Why no number changes.** The stop decides only what DEP's sixteen-read rule already decides. The floors, the rows and the
+calls are zrtr.py's own. On GO the fit runs as before.
+
+**Self-test.** `python outputs/mp_unified/s0stop.py --selftest` passed on the laptop's CPU before this commit. It checks
+RTR's fit names, OUT and declaration against zrtr.py, and the gate's three codes.
+
+**What does not change.** Sections 1 to 10: the rounds, the fits, the base, the reads, the rule and what follows.

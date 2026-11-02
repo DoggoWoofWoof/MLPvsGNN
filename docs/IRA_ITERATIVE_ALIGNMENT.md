@@ -247,6 +247,34 @@ the laptop's CPU before this commit. The stage's self-test now checks that its f
 
 **What does not change.** Sections 1 to 10: the plan's model, the fits, the base, the reads, the rule and what follows.
 
+## 12. Amendment A3, 3 November 2026, before any IRA fit: the seed-0 stop, and IRA's open
+
+Both changes come from DEP's seed-0 stop (docs/DEP_GNN_DEPTH.md section 12, `outputs/mp_unified/s0stop.py`).
+
+**IRA's open.** IRA's fits wait on `ira-open`, which passes when DEP's screen is NO_GAIN or NOT_ADOPTED. Under DEP's stop,
+DEP's NOT_ADOPTED can stand in `outputs/dep/s0stop.json` while `outputs/dep/calls.json` says INCOMPLETE. So `ira-open` now
+runs `python outputs/mp_unified/s0stop.py gate --stage dep --want NO_GAIN,NOT_ADOPTED`, still after `dep-calls`. Without a
+STOP the gate reads calls.json's `screen.verdict`, as verdict_gate.py did.
+
+**IRA's own stop.** IRA's screen rule is DEP's sixteen-read rule: zira.py calls `zdep.decide_screen`. Eight of the sixteen
+reads are fixed once `scr-ira-k4-s0` is read: the WQ-musique split's six datasets, and musique's 3-hop and 4-hop slices.
+When one of the eight is a LOSS, no read of `scr-ira-k4-s0-hp` can change the screen's verdict, so that fit is not run.
+
+- `ira-s0stop`: CPU 1, 8 GB, after `ira-k4-s0`. It runs `s0stop.py check --stage ira`, which runs `zira.py compare-all`
+  and `zira.py calls`. The decision is GO on any problem or missing read, STOP on a LOSS among the eight, and GO otherwise.
+- `ira-k4-s0-hp` also waits on `ira-s0stop`, and its command is wrapped in `s0stop.py run --stage ira --`.
+- The records are `outputs/ira/s0stop.json` and, on a STOP, `outputs/ira/s0stop_skip.json`. On a STOP, `ira-calls`'s
+  `screen.verdict` is INCOMPLETE, because the WQ-hotpotqa reads are missing. The screen's verdict is the NOT_ADOPTED in
+  s0stop.json. `ira-gate` wants ADOPT_FOR_FULL_RUN, so the full run does not start.
+
+**Why no number changes.** The stop decides only what DEP's sixteen-read rule already decides. The floors, the rows and the
+calls are zira.py's own. On GO the fit runs as before.
+
+**Self-test.** `python outputs/mp_unified/s0stop.py --selftest` passed on the laptop's CPU before this commit. It checks
+IRA's fit names, OUT and declaration against zira.py, and the gate's three codes.
+
+**What does not change.** Sections 1 to 11: the plan's model, the fits, the base, the reads, the rule and what follows.
+
 ## Results
 
 None yet.

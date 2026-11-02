@@ -255,3 +255,66 @@ the laptop's CPU before this commit. The stage's self-test now checks that its f
 `on_read()` on REPLACE and on KEEP, that the code block names readswa, and that lean_gpu's own `load_models` is back after.
 
 **What does not change.** Sections 1 to 10: the depth, the fits, the base, the reads, the rule and what follows.
+
+## 12. Amendment A4, 3 November 2026, before any DEP number is seen: the seed-0 stop
+
+**What happened.** The screen's two fits run one after the other. The WQ-hotpotqa fit has the card alone for about 4.5 hours
+(share 0.75). Section 4's screen rule gives NOT_ADOPTED on one LOSS among its sixteen reads. Eight of them are fixed once
+`scr-dep-l4-s0` is read: the WQ-musique split's six datasets, and musique's 3-hop and 4-hop slices. The base's three seeds are
+filed, and DEP's one read of each comes from that fit. So when one of the eight is a LOSS, no read of `scr-dep-l4-s0-hp` can
+change the screen's verdict.
+
+`dep-l4-s0` ended at 02:26 IST (rc 0), and the feeder started `dep-l4-s0-hp` at 02:28, before this amendment. No DEP compare
+has run, and no DEP number has been seen.
+
+**The change.** `outputs/mp_unified/s0stop.py` (new) has three verbs.
+
+- `check --stage dep` runs `zdep.py compare-all` and `zdep.py calls`, as the queue's items do, and reads the calls record they
+  wrote. It decides:
+  - GO when the record lists a problem, or when one of the eight reads has no row;
+  - STOP when one of the eight rows is a LOSS;
+  - GO otherwise.
+
+  It writes `outputs/dep/s0stop.json`: the decision, the verdict (NOT_ADOPTED on a STOP), the eight rows, the LOSS rows and the
+  problems. The record also holds the sha256 of the seed-0 fit's read.json and of the calls record. A failure inside the check
+  is a problem, so it gives GO. The check always exits 0.
+- `run --stage dep -- <command>` runs the WQ-hotpotqa fit's command and returns its exit code. There is one exception: when
+  s0stop.json says STOP and was made from the seed-0 fit's read.json as it is now, `run` writes `outputs/dep/s0stop_skip.json`
+  and exits 0 without running the fit.
+- `gate --stage dep --want <verdicts>` gives the screen's verdict: NOT_ADOPTED on a current STOP, else calls.json's
+  `screen.verdict`. It exits 0 when the verdict is one of `--want`, 1 when it is not, and 2 when calls.json is missing. These
+  are verdict_gate.py's codes.
+
+**Why no number changes.** The stop decides only what section 4's rule already decides. A LOSS among the eight WQ-musique
+reads gives NOT_ADOPTED whatever the WQ-hotpotqa reads are. The floors, the rows and the calls are zdep.py's own, from its own
+`calls`. On GO the fit runs as before, and every later step is the same.
+
+**The records.** On a STOP, `dep-calls` still runs. Its `screen.verdict` is INCOMPLETE, because the WQ-hotpotqa reads are
+missing. The screen's verdict is the NOT_ADOPTED in s0stop.json, and the gate reads it from there. The full run does not
+start: `dep-gate` wants ADOPT_FOR_FULL_RUN.
+
+**The queue.**
+
+- `dep-s0stop`: CPU 1, 8 GB, after `dep-l4-s0`.
+- `dep-l4-s0-hp` is already running, so the wrapper cannot hold it. On a STOP:
+  1. `dep-compare` is pointed at `dep-s0stop` in place of `dep-l4-s0-hp`, so the cancel drops nothing;
+  2. the running fit is then cancelled. Its folder is never read.
+
+  On GO it runs on. If the fit is ever queued again, it is wrapped in `s0stop.py run --stage dep --`.
+- `rtr-open` and `ira-open` run `s0stop.py gate --stage dep --want NO_GAIN,NOT_ADOPTED` in place of verdict_gate.py, still
+  after `dep-calls`. So RTR and IRA open on a STOP.
+- The same stop holds the seed-0 WQ-hotpotqa fits of LTG, RTR and IRA (their amendments of 3 November) and of GNX (its
+  declaration).
+
+**Self-test.** `python outputs/mp_unified/s0stop.py --selftest` passed on the laptop's CPU before this commit. It checks:
+
+- the deciding reads of both rules: eight under DEP's sixteen-read rule, four under LTG's in-domain rule;
+- each stage's fit names, OUT and declaration, taken from its own module;
+- the decision on toy records. A LOSS on WQ-musique stops the fit. A LOSS on WQ-hotpotqa or on a read beside the rule, a
+  problem, a missing read, or no LOSS runs it;
+- the check's record on a toy tree, including no read, a stage step that fails, and a calls record the check did not write;
+- the wrapper: a STOP skips the command, and a stale record or GO runs it with its exit code;
+- the gate's three codes.
+
+**What does not change.** Sections 1 to 11: the depth, the fits, the base, the reads, both rules and what follows. A STOP
+closes only this form, and section 6's next form (docs/RTR_GO_BACK_ROUNDS.md) opens as before.
