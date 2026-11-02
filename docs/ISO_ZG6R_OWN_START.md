@@ -247,3 +247,48 @@ A1, gives the cause). No zg6-z fit had started.
 
 **Self-test.** `python outputs/mp_unified/zisoz.py --selftest` passed on the laptop's CPU before this commit. It now checks that
 the fit context installs `ml1_load` and that the code block names ml1start.
+
+## 13. Amendment A3, 3 November 2026, before any zg6-z fit: a fit's read keeps p@swa only
+
+**What happened.** A GNN fit's read takes about as long as its train: ML1's zg6r at seed 0 trained in 4,320 s and read in
+4,618 s. lean_gpu's read scores every candidate a fit saved, that is each epoch's state and the SWA state (nine at 8 epochs).
+zg6-z's report reads p@swa alone, as do the compares, DEP's slices, C1R's intervals and the knee. Each finds p@swa by its name.
+
+**The change.**
+
+- `outputs/mp_unified/readswa.py` (new). `on_read()` wraps `lean_gpu.load_models` so that it cuts the fit's candidates to
+  p@swa before it builds the models. lean_gpu's read then writes read.json and each carve's npz from that list. The wrap is
+  undone after, also on a failure, and entered twice it wraps once. A fit without p@swa, or without its state, is refused.
+- `zisoz.py`'s fit context enters `on_read()` for the whole fit. The train never
+  calls `load_models`, so only the read changes.
+- Each fit's code block also names `readswa_sha256`. A fit's code is compared with its base's over the base's keys only, so
+  the new key is not compared, as for the stage modules' own.
+
+**Why no number changes.** `lean_gpu.read_carve` runs each candidate's model on the same batch, one forward per candidate, and
+no candidate's forward depends on another's. In eval zg6r draws nothing (its generator draws only while training). So p@swa's
+rows (the top five, the hits, the first questions' scores) are the rows a full read gives, up to the GPU's own read noise (ML1's
+amendment A1). readswa's self-test runs the real `read_carve` on a toy carve over several batches: p@swa's rows and the
+references are the same read alone and among nine.
+
+**The records.** read.json and each carve's npz list p@swa alone, so their `candidates` say which read a fit had. models.pt keeps
+every state, so a full read can still be made from it.
+
+**Which fits.** zg6-z's two fits (`iso-zg6z-s0`, `iso-zg6z-s0-hp`; none has started).
+A fit that started before the check passed runs the old code and reads all nine candidates; its read.json lists them.
+ISO's own fits are filed (section 11) and are not touched.
+
+**The queue.** A new CPU item, `readswa-check`, runs `python outputs/mp_unified/readswa.py --check-host` on the host:
+
+- readswa's self-test;
+- the self-tests of the five stages (zltg, zdep, zrtr, zira, zisoz), each in its own process;
+- ML1's seed-0 zg6r fits of both WQ splits, loaded as the read loads them, under `on_read()` and lean_screen's zg6r arm. Each
+  must give one ZG6R model, p@swa, holding p@swa's state, with lean_gpu's own `load_models` back after. The check also
+  confirms that `on_read()` patches the lean_gpu module that zg6r's read calls.
+
+It writes `outputs/readswa/check.json`. Every GNN fit of LTG, DEP, zg6-z, RTR and IRA not yet started waits on it.
+
+**Self-tests.** `python outputs/mp_unified/readswa.py --selftest` and `python outputs/mp_unified/zisoz.py --selftest` passed on
+the laptop's CPU before this commit. The stage's self-test now checks that its fit context installs
+`on_read()`, that the code block names readswa, and that lean_gpu's own `load_models` is back after.
+
+**What does not change.** Sections 1 to 12: ISO's fits, its verdict, zg6-z's wiring and what follows.

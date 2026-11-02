@@ -38,6 +38,7 @@ import ziso as ISO  # noqa: E402
 import zdep as DEP  # noqa: E402  (the base after ISO, the slices and both rules; DEP's fits are not touched)
 import zrtr as RTR  # noqa: E402  (the rounds IRA starts from and RTR's condition; RTR's fits are not touched)
 import ml1start as MS  # noqa: E402  (on ISO's KEEP, ML1's zspk start read under ML1's names: amendment A1)
+import readswa as RS  # noqa: E402  (a fit's read keeps p@swa only: amendment A2)
 
 DECLARED = "docs/IRA_ITERATIVE_ALIGNMENT.md"
 STAGE = "IRA"
@@ -233,7 +234,7 @@ def stamp_with_plan(orig, call, dep, rec):
 def on_names():
     """zml1s with IRA's names, stamp key, stage and declaration; restored after. Enough for the compares and the calls."""
     sha, rsha, dsha = M1.WQ.sha_src(__file__), M1.WQ.sha_src(RTR.__file__), M1.WQ.sha_src(DEP.__file__)
-    code, ms = M1.code_shas, MS.code()
+    code, ms = M1.code_shas, {**MS.code(), **RS.code()}
     with with_fits(), M1.WQ.patch(M1, DECLARED=DECLARED, STAGE=STAGE, KEY=KEY, pko_fit_name=ira_fit_name,
                                   code_shas=lambda arm=None: {**code(arm), "zira_sha256": sha, "zrtr_sha256": rsha,
                                                               "zdep_sha256": dsha, **ms}):
@@ -242,13 +243,13 @@ def on_names():
 
 @contextlib.contextmanager
 def on_fit(G, call, dep):
-    """An IRA fit's context: IRA's names and stamp, the plan's model, and the start: on REPLACE ISO's own (its load_encoder in
-    zml1s, its encoder_used in zg6r), on KEEP ML1's zspk start read under ML1's names (ml1start's ml1_load in zml1s);
-    restored after."""
+    """An IRA fit's context: IRA's names and stamp, the plan's model, the start (on REPLACE ISO's own: its load_encoder in
+    zml1s, its encoder_used in zg6r; on KEEP ML1's zspk start read under ML1's names: ml1start's ml1_load in zml1s) and a
+    read of p@swa alone (readswa's on_read in lean_gpu: amendment A2); restored after."""
     own = call == ISO.REPLACE
     with on_names(), M1.WQ.patch(M1, stamp=stamp_with_plan(M1.stamp, call, dep, ira_record(G)),
                                  load_encoder=ISO.own_load if own else MS.ml1_load), \
-            (M1.WQ.patch(G, encoder_used=ISO.own_used) if own else contextlib.nullcontext()), on_model(G):
+            (M1.WQ.patch(G, encoder_used=ISO.own_used) if own else contextlib.nullcontext()), on_model(G), RS.on_read():
         yield
 
 
@@ -691,6 +692,7 @@ def selftest():
             assert G.g6r_stack is not gsaved[1] and G.ZG6R.__init__ is not gsaved[2]
             cs = M1.code_shas(ARM)
             assert "zira_sha256" in cs and "zrtr_sha256" in cs and "zdep_sha256" in cs and "ml1start_sha256" in cs
+            assert "readswa_sha256" in cs and RS.installed()
             M1._ACTIVE[0] = fit_name(0, "WQ-hotpotqa")
             assert M1.pko_fit_name(ARM, 0, "WQ-hotpotqa") == "scr-ira-k4-s0-hp"
             assert M1.pko_fit_name(ARM, 1, "WQ-hotpotqa") == "scr-ml1-zg6r-s1-hp"
@@ -698,9 +700,9 @@ def selftest():
             M1.stamp(fit_name(0, "WQ-hotpotqa"), {}, "screen", {"x": 1})
         assert seen[-1] == ("scr-ira-k4-s0-hp", "screen", {"x": 1, **ira_record(G), "base": "scr-iso-zg6rm-s0-hp",
                                                             "iso_verdict": ISO.REPLACE, "dep_call": "screen NO_GAIN"}), seen
-        assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__) == gsaved and len(M1.ALL_FITS) == n0
+        assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__) == gsaved and len(M1.ALL_FITS) == n0 and not RS.installed()
         with on_fit(G, ISO.KEEP, "screen NOT_ADOPTED"):
-            assert M1.load_encoder is MS.ml1_load and G.encoder_used is gsaved[0] and M1.KEY == KEY
+            assert M1.load_encoder is MS.ml1_load and G.encoder_used is gsaved[0] and M1.KEY == KEY and RS.installed()
             assert G.g6r_stack is not gsaved[1]
         try:
             with on_fit(G, ISO.REPLACE, "screen NO_GAIN"):
@@ -711,7 +713,7 @@ def selftest():
         M1.stamp = orig_stamp
         M1._ACTIVE[0] = None
     assert (M1.DECLARED, M1.STAGE, M1.KEY, M1.pko_fit_name, M1.stamp, M1.code_shas, M1.load_encoder) == saved
-    assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__) == gsaved and len(M1.ALL_FITS) == n0
+    assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__) == gsaved and len(M1.ALL_FITS) == n0 and not RS.installed()
     # 4. the beside numbers and section 6's rule for the next form
     with tempfile.TemporaryDirectory() as td:
         nm = fit_name(0, "WQ-musique")

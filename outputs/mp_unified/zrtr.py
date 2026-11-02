@@ -36,6 +36,7 @@ import zml1s as M1  # noqa: E402
 import ziso as ISO  # noqa: E402
 import zdep as DEP  # noqa: E402  (the base after ISO, the slices and both rules; DEP's fits are not touched)
 import ml1start as MS  # noqa: E402  (on ISO's KEEP, ML1's zspk start read under ML1's names: amendment A1)
+import readswa as RS  # noqa: E402  (a fit's read keeps p@swa only: amendment A2)
 
 DECLARED = "docs/RTR_GO_BACK_ROUNDS.md"
 STAGE = "RTR"
@@ -189,7 +190,7 @@ def stamp_with_rounds(orig, call, dep, rec):
 @contextlib.contextmanager
 def on_names():
     """zml1s with RTR's names, stamp key, stage and declaration; restored after. Enough for the compares and the calls."""
-    sha, dsha, ms = M1.WQ.sha_src(__file__), M1.WQ.sha_src(DEP.__file__), MS.code()
+    sha, dsha, ms = M1.WQ.sha_src(__file__), M1.WQ.sha_src(DEP.__file__), {**MS.code(), **RS.code()}
     code = M1.code_shas
     with with_fits(), M1.WQ.patch(M1, DECLARED=DECLARED, STAGE=STAGE, KEY=KEY, pko_fit_name=rtr_fit_name,
                                   code_shas=lambda arm=None: {**code(arm), "zrtr_sha256": sha, "zdep_sha256": dsha, **ms}):
@@ -198,13 +199,13 @@ def on_names():
 
 @contextlib.contextmanager
 def on_rtr(G, call, dep):
-    """An RTR fit's context: RTR's names and stamp, the rounds, and the start: on REPLACE ISO's own (its load_encoder in zml1s,
-    its encoder_used in zg6r), on KEEP ML1's zspk start read under ML1's names (ml1start's ml1_load in zml1s); restored
-    after."""
+    """An RTR fit's context: RTR's names and stamp, the rounds, the start (on REPLACE ISO's own: its load_encoder in zml1s,
+    its encoder_used in zg6r; on KEEP ML1's zspk start read under ML1's names: ml1start's ml1_load in zml1s) and a read of
+    p@swa alone (readswa's on_read in lean_gpu: amendment A2); restored after."""
     own = call == ISO.REPLACE
     with on_names(), M1.WQ.patch(M1, stamp=stamp_with_rounds(M1.stamp, call, dep, rounds_record(G)),
                                  load_encoder=ISO.own_load if own else MS.ml1_load), \
-            (M1.WQ.patch(G, encoder_used=ISO.own_used) if own else contextlib.nullcontext()), on_rounds(G):
+            (M1.WQ.patch(G, encoder_used=ISO.own_used) if own else contextlib.nullcontext()), on_rounds(G), RS.on_read():
         yield
 
 
@@ -555,6 +556,7 @@ def selftest():
             assert G.g6r_stack is not gsaved[1] and G.ZG6R.__init__ is not gsaved[2]
             cs = M1.code_shas(ARM)
             assert "zrtr_sha256" in cs and "zdep_sha256" in cs and "ml1start_sha256" in cs
+            assert "readswa_sha256" in cs and RS.installed()
             M1._ACTIVE[0] = fit_name(0, "WQ-hotpotqa")
             assert M1.pko_fit_name(ARM, 0, "WQ-hotpotqa") == "scr-rtr-r2-s0-hp"
             assert M1.pko_fit_name(ARM, 1, "WQ-hotpotqa") == "scr-ml1-zg6r-s1-hp"
@@ -562,9 +564,9 @@ def selftest():
             M1.stamp(fit_name(0, "WQ-hotpotqa"), {}, "screen", {"x": 1})
         assert seen[-1] == ("scr-rtr-r2-s0-hp", "screen", {"x": 1, **rounds_record(G), "base": "scr-iso-zg6rm-s0-hp",
                                                             "iso_verdict": ISO.REPLACE, "dep_call": "screen NO_GAIN"}), seen
-        assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__) == gsaved and len(M1.ALL_FITS) == n0
+        assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__) == gsaved and len(M1.ALL_FITS) == n0 and not RS.installed()
         with on_rtr(G, ISO.KEEP, "screen NOT_ADOPTED"):
-            assert M1.load_encoder is MS.ml1_load and G.encoder_used is gsaved[0] and M1.KEY == KEY
+            assert M1.load_encoder is MS.ml1_load and G.encoder_used is gsaved[0] and M1.KEY == KEY and RS.installed()
             assert G.g6r_stack is not gsaved[1]
         try:
             with on_rtr(G, ISO.REPLACE, "screen NO_GAIN"):
@@ -575,7 +577,7 @@ def selftest():
         M1.stamp = orig_stamp
         M1._ACTIVE[0] = None
     assert (M1.DECLARED, M1.STAGE, M1.KEY, M1.pko_fit_name, M1.stamp, M1.code_shas, M1.load_encoder) == saved
-    assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__) == gsaved and len(M1.ALL_FITS) == n0
+    assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__) == gsaved and len(M1.ALL_FITS) == n0 and not RS.installed()
     # 4. DEP's rule, as RTR calls it: sixteen reads, the floors from the base's spread
     rk = DEP.read_keys()
     assert len(rk) == 16 and len(set(rk)) == 16

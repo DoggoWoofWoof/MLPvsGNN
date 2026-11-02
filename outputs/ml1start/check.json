@@ -1,0 +1,146 @@
+{
+ "stage": "ml1start",
+ "what": "host check",
+ "selftest": "passed",
+ "stage_selftests": [
+  {
+   "module": "zltg",
+   "exit": 0,
+   "seconds": 6.2
+  },
+  {
+   "module": "zdep",
+   "exit": 0,
+   "seconds": 5.5
+  },
+  {
+   "module": "zrtr",
+   "exit": 0,
+   "seconds": 5.4
+  },
+  {
+   "module": "zira",
+   "exit": 0,
+   "seconds": 5.4
+  },
+  {
+   "module": "zisoz",
+   "exit": 0,
+   "seconds": 4.9
+  }
+ ],
+ "starts": {
+  "WQ-musique": {
+   "fit": "scr-ml1-zspk-s0",
+   "seed": 0,
+   "path": "outputs/screen/fits/scr-ml1-zspk-s0/models.pt",
+   "sha256": "22c28f6fbde79451cc6d4d07f370a5cd921bfdbe3197c7db81faa6e321b78ed1",
+   "elements": 224737,
+   "candidate": "p@swa"
+  },
+  "WQ-hotpotqa": {
+   "fit": "scr-ml1-zspk-s0-hp",
+   "seed": 0,
+   "path": "outputs/screen/fits/scr-ml1-zspk-s0-hp/models.pt",
+   "sha256": "ca09ccc17d962c4c68f01b16239b5c3d5020be2e57a8dbcab262cff92878d505",
+   "elements": 224737,
+   "candidate": "p@swa"
+  }
+ },
+ "loads": [
+  {
+   "split": "WQ-musique",
+   "module": "zltg",
+   "key": "ltg",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-musique",
+   "module": "zdep",
+   "key": "dep",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-musique",
+   "module": "zrtr",
+   "key": "rtr",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-musique",
+   "module": "zira",
+   "key": "ira",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-musique",
+   "module": "zisoz",
+   "key": "isoz",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "module": "zltg",
+   "key": "ltg",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "module": "zdep",
+   "key": "dep",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "module": "zrtr",
+   "key": "rtr",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "module": "zira",
+   "key": "ira",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "module": "zisoz",
+   "key": "isoz",
+   "loader_alone": "refused",
+   "wrapper": "same as ML1's",
+   "stage_names_back": true
+  }
+ ],
+ "problems": [],
+ "passed": true,
+ "code": {
+  "ml1start_sha256": "b6034af98e5e8dc48536d42a99a1c09b0f21564c01af02c52d753c8d77e2b949"
+ },
+ "modules": {
+  "zml1s_sha256": "fd4197f501a878ae8309ad23b607d800c0bb0c7daa96027d1532d56dbc7b2139",
+  "zltg_sha256": "4b1657818d6f6641085821e6e7f4323d13ff240751dee6c9d0c4c63ed562e2d9",
+  "zdep_sha256": "12ded83d632868864e500ef281ceff1a87ecf736b27850bda061c9fcf5eaddf5",
+  "zrtr_sha256": "6f33ffc92e0201e392e642c7c50d172c123a45c327e8a29d4c88c19de1604e9d",
+  "zira_sha256": "961b93be0317c581c2f7a585da092d770e271155f95c75457d6a7ad0ad4cae99",
+  "zisoz_sha256": "5ed20e9622b7c5e1b2a192e449c8ed01534c080f6cec46768c3f1d3bbc1ab700"
+ },
+ "utc": "2026-11-02T18:16:06Z"
+}

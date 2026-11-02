@@ -33,6 +33,7 @@ import zml1 as RULE  # noqa: E402  (stdlib only)
 import zml1s as M1  # noqa: E402
 import ziso as ISO  # noqa: E402
 import ml1start as MS  # noqa: E402  (on ISO's KEEP, ML1's zspk start read under ML1's names: amendment A2)
+import readswa as RS  # noqa: E402  (a fit's read keeps p@swa only: amendment A3)
 
 DECLARED = "docs/DEP_GNN_DEPTH.md"
 STAGE = "DEP"
@@ -144,7 +145,7 @@ def stamp_with_depth(orig, call):
 @contextlib.contextmanager
 def on_names():
     """zml1s with DEP's names, stamp key, stage and declaration; restored after. Enough for the compares and the calls."""
-    sha, ms = M1.WQ.sha_src(__file__), MS.code()
+    sha, ms = M1.WQ.sha_src(__file__), {**MS.code(), **RS.code()}
     code = M1.code_shas
     with with_fits(), M1.WQ.patch(M1, DECLARED=DECLARED, STAGE=STAGE, KEY=KEY, pko_fit_name=dep_fit_name,
                                   code_shas=lambda arm=None: {**code(arm), "zdep_sha256": sha, **ms}):
@@ -153,12 +154,13 @@ def on_names():
 
 @contextlib.contextmanager
 def on_dep(G, call):
-    """A DEP fit's context: DEP's names and stamp, and the start: on REPLACE ISO's own (its load_encoder in zml1s, its
-    encoder_used in zg6r), on KEEP ML1's zspk start read under ML1's names (ml1start's ml1_load in zml1s); restored after."""
+    """A DEP fit's context: DEP's names and stamp, the start (on REPLACE ISO's own: its load_encoder in zml1s, its
+    encoder_used in zg6r; on KEEP ML1's zspk start read under ML1's names: ml1start's ml1_load in zml1s) and a read of p@swa
+    alone (readswa's on_read in lean_gpu: amendment A3); restored after."""
     own = call == ISO.REPLACE
     with on_names(), M1.WQ.patch(M1, stamp=stamp_with_depth(M1.stamp, call),
                                  load_encoder=ISO.own_load if own else MS.ml1_load), \
-            (M1.WQ.patch(G, encoder_used=ISO.own_used) if own else contextlib.nullcontext()):
+            (M1.WQ.patch(G, encoder_used=ISO.own_used) if own else contextlib.nullcontext()), RS.on_read():
         yield
 
 
@@ -548,7 +550,7 @@ def selftest():
         with on_dep(Gf, ISO.REPLACE):
             assert len(M1.ALL_FITS) == n0 + 6 and (M1.DECLARED, M1.STAGE, M1.KEY) == (DECLARED, STAGE, KEY)
             assert M1.load_encoder is ISO.own_load and Gf.encoder_used is ISO.own_used and "zdep_sha256" in M1.code_shas(ARM)
-            assert "ml1start_sha256" in M1.code_shas(ARM)
+            assert "ml1start_sha256" in M1.code_shas(ARM) and "readswa_sha256" in M1.code_shas(ARM) and RS.installed()
             M1._ACTIVE[0] = fit_name(0, "WQ-hotpotqa")
             assert M1.pko_fit_name(ARM, 0, "WQ-hotpotqa") == "scr-dep-l4-s0-hp"
             assert M1.pko_fit_name(ARM, 1, "WQ-hotpotqa") == "scr-ml1-zg6r-s1-hp"
@@ -557,9 +559,9 @@ def selftest():
             with M1.WQ.patch(sys.modules[__name__], depth_record=lambda: dr):
                 M1.stamp(fit_name(0, "WQ-hotpotqa"), {}, "screen", {"x": 1})
         assert seen[-1] == ("scr-dep-l4-s0-hp", "screen", {"x": 1, **dr, "base": "scr-iso-zg6rm-s0-hp", "iso_verdict": ISO.REPLACE})
-        assert Gf.encoder_used == "orig" and len(M1.ALL_FITS) == n0
+        assert Gf.encoder_used == "orig" and len(M1.ALL_FITS) == n0 and not RS.installed()
         with on_dep(Gf, ISO.KEEP):
-            assert M1.load_encoder is MS.ml1_load and Gf.encoder_used == "orig" and M1.KEY == KEY
+            assert M1.load_encoder is MS.ml1_load and Gf.encoder_used == "orig" and M1.KEY == KEY and RS.installed()
         try:
             with on_dep(Gf, ISO.REPLACE):
                 raise RuntimeError("inside")
@@ -568,7 +570,7 @@ def selftest():
     finally:
         M1.stamp = orig_stamp
     assert (M1.DECLARED, M1.STAGE, M1.KEY, M1.pko_fit_name, M1.stamp, M1.code_shas, M1.load_encoder) == saved
-    assert len(M1.ALL_FITS) == n0 and Gf.encoder_used == "orig"
+    assert len(M1.ALL_FITS) == n0 and Gf.encoder_used == "orig" and not RS.installed()
     # 4. the slices from a made-up read file: hop prefixes, questions without a gold left out, p@swa's row
     with tempfile.TemporaryDirectory() as td:
         d = Path(td) / "outputs" / "screen" / "fits" / "f" / "reads"
