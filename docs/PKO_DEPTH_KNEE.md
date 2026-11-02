@@ -61,9 +61,33 @@ Per fit and carve, from `p@swa`, R@5 over questions with a gold; EPS = 0.01:
     outputs/knee/fits/<fit>/                 the copied fit, reads/<ds>__<carve>.npz, knee_check.json
     outputs/knee/knee.json, knee.md          the report
 
-## 7. Results
+## 7. Results (filed 2 November 2026)
 
-(to be filed after the reads)
+One fit was read, `scr-ml1-zrckp-s0` (zrckp, WQ-musique, seed 0), by `knee-zrckp-s0-b` on the host's GPU. zspk's read was
+withdrawn (A1). With no cut, every carve reproduced ML1's own read. Report: `outputs/knee/knee.json` and `knee.md`.
+
+| carve | no cut | 500 | 1,000 | 2,000 | full pool | reach at 500, at full | knee 0.01 |
+| --- | ---: | ---: | ---: | ---: | ---: | --- | ---: |
+| 2wiki | 0.9045 | 0.9045 | 0.9045 | 0.9045 | 0.9045 (1,081 rows) | 0.984, 0.990 | 500 |
+| hotpotqa | 0.8423 | 0.8423 | 0.8423 | 0.8423 | 0.8423 (706 rows) | 0.974, 0.979 | 500 |
+| metaqa | 0.3992 | 0.4050 | 0.4020 | 0.4002 | 0.3994 (3,300 rows) | 0.900, 0.994 | 500 |
+| musique | 0.5051 | 0.5051 | 0.5051 | 0.5051 | 0.5051 (3,299 rows) | 0.922, 0.976 | 500 |
+| squad | 0.9139 | 0.9139 | 0.9139 | 0.9139 | 0.9139 (50 rows) | 0.980, 0.980 | 500 |
+| webqsp | 0.6562 | 0.6149 | 0.6388 | 0.6469 | 0.6529 (3,300 rows) | 0.806, 0.950 | 2,000 |
+
+- **DEPTH_FLAT** for zrckp: the common knee is 2,000 rows at 0.01 and 1,000 rows at 0.02.
+- **DEPTH_PAYS** on no carve. The largest loss at 2,000 rows is webqsp's, 0.0093.
+- **NOISE_AT_DEPTH** on no carve. The largest gain from a cut is metaqa's, +0.0058 at 500 rows.
+- **By section 5:**
+  - a pool of about 2,000 rows is enough for R@5 with this ranker;
+  - stage 5's selector has no recall to protect above it;
+  - the route from better pools to better ranking runs through the ranker.
+- **Beside, deciding nothing.** On musique, R@5 is 0.5051 at every depth from 500 rows to the full pool, while reach rises
+  from 0.922 to 0.976. zrckp never ranks the golds that the deeper pool adds into the top five. 2wiki's and hotpotqa's pools
+  stay under 1,100 rows and squad's are 50 rows, so cuts change nothing there.
+- **Next: A3, zg6r's own depth read.** zg6r is the GNN of record. Its read goes through zrm, so it needs its own patched read,
+  with the same depths, the same check against ML1's read and the same rule. The code is declared in the amendment before it
+  runs.
 
 ## 8. Amendment A1, 31 October 2026, before any cut was read
 

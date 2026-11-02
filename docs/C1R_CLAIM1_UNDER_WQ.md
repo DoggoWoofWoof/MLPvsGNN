@@ -76,10 +76,36 @@ python outputs/mp_unified/zc1r.py run --gnn zg6rm               (after ISO's fit
 
 It runs on the host, where the reads are, on one CPU, in minutes.
 
-The self-test passed before this commit. It builds a made-up root of fits, reads and filed compares and checks:
+The self-test passed before the declaring commit. It builds a made-up root of fits, reads and filed compares and checks:
 
 - the map (12 reads, 8 in-domain and 4 zero-shot clauses);
 - metaqa's allowed gap of 0;
 - a missing seed-1 or seed-2 compare is reported, not fatal;
 - a read that does not reproduce its compare is refused;
 - a wrong stamp is refused.
+
+## 5. Results, zg6r (filed 2 November 2026)
+
+`c1r-zg6r` ran on the host. All of section 1's checks passed: the stamps, every read against its filed compare, and the same
+questions between the paired reads. Records: `outputs/c1r/claim1_zg6r.json` and `.md`. zg6r-m's record follows ISO's
+compares. ISO's verdict decides which record speaks for Claim 1 (section 1).
+
+**CLAIM1_NOT_ALL.** All four zero-shot clauses HOLD. Four of the eight in-domain clauses HOLD: 2wiki and webqsp on both
+splits. The four that do not:
+
+| split | dataset | GNN gain over RRF | share [lo, hi], seed 0 | clause | share at seeds 1, 2 (beside) |
+| --- | --- | ---: | --- | --- | --- |
+| WQ-hotpotqa | musique | +0.1177 | 0.886 [0.832, 0.940] | MISSES | 0.858, 0.840 |
+| WQ-musique | hotpotqa | +0.1747 | 0.903 [0.885, 0.920] | NOT_SHOWN | 0.889, 0.925 |
+| WQ-musique | squad | +0.0088 | 0.971 [0.761, 1.239] | NOT_SHOWN | 0.868, 0.670 |
+| WQ-hotpotqa | squad | +0.0085 | 0.990 [0.735, 1.309] | NOT_SHOWN | 0.965, 1.206 |
+
+- **musique in-domain** misses at all three seeds. This is the MLP's real gap to the GNN, and the next MLP form has to work
+  there.
+- **hotpotqa in-domain** straddles the bar across the seeds.
+- **squad.** The GNN's gain over RRF is under 0.01, so the share's interval is too wide to show anything with these questions.
+- **The zero-shot reads.** The MLP is at or above the GNN on all four:
+  - metaqa's shares are 1.106 and 1.124;
+  - hotpotqa's is 1.091;
+  - musique's is 0.901, and its excess is below the allowed gap.
+- The call changes no model, pool or input (section 3).
