@@ -375,3 +375,16 @@ new graph.
 ## 7. Results
 
 Not run yet.
+
+## 8. The user's ruling on flag 3 (2 November 2026)
+
+Asked whether zrckpb stays inside the MLP track, the user ruled: "yeah zrckpb is fine, reading vectors isnt message passing
+it is more akin to beam search".
+
+**What the ruling covers.** The bridges are the first stage's top five rows by RRF, fixed at carve load, before any row is
+scored. A row reads their frozen vectors. It reads no score and no edge (SETTINGS: `score_input: False`, `edges_read:
+False`). A row that read another row's score, or a pass over neighbours at read time, would still be message passing.
+
+**What changes.** From R2P on (docs/R2P_R2_EM_IN_ZRCKP_CPU.md), zrckpb is an MLP arm. It is still called "zrckp + R2's
+bridge head", and a claim may now set it against the GNN as the MLP. Filed verdicts do not change: R2t, R2WS, R2GW and
+R2EW keep their calls, and so does every rule above.
