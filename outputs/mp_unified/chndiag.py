@@ -21,7 +21,8 @@ B (label-free), R@5 and FC@5 over every question with a gold, against rrf's own 
   H1_s     rrf's top three, then the two best neighbours of rrf's top-1 by s not yet chosen, then rrf's order
   H2_s     rrf's top three, the best neighbour of the top-1, then of the top-2, then rrf's order
   S_s_lam  rrf's z-score within the pool plus lam times the positive part of s's z-score over the rows next to rrf's top
-           two (s at a row: its best over the anchors it is next to); lam picked on s1fit (section 3 of the doc)
+           two (s at a row: its best over the anchors it is next to); lam picked on 2wiki's and hotpotqa's s1sel
+           (amendment A1, doc section 8)
 
     python outputs/mp_unified/chndiag.py run --dataset musique --carve s1eval --host [--limit N]
     python outputs/mp_unified/chndiag.py report
@@ -61,8 +62,10 @@ MAIN = "musique"
 SIGNAL_GAIN, SIGNAL_MIN, WEAK_GAIN = 0.10, 0.40, 0.05
 FREE_MIN, FREE_HARM = 0.01, 0.0075
 EVAL = (("musique", "s1eval"), ("2wiki", "s1eval"), ("hotpotqa", "s1eval"))
-FIT = (("musique", "s1fit"), ("2wiki", "s1fit"), ("hotpotqa", "s1fit"))
-B1 = (("musique", "b1"), ("2wiki", "b1"), ("hotpotqa", "b1"), ("2wiki", "b1u"), ("hotpotqa", "b1u"))
+# amendment A1 (doc section 8): musique's s1fit, s1sel, b1 and b1u looks have no chunks left on the host, so lam is
+# picked on 2wiki's and hotpotqa's s1sel and musique's B1 read is b1w (the W2_S graph)
+FIT = (("2wiki", "s1sel"), ("hotpotqa", "s1sel"))
+B1 = (("musique", "b1w"), ("2wiki", "b1"), ("hotpotqa", "b1"), ("2wiki", "b1u"), ("hotpotqa", "b1u"))
 FIT_LIMIT = 3000
 
 
@@ -366,7 +369,7 @@ def report(out=OUT):
     (out / "report.json").write_text(json.dumps(rec, indent=1), encoding="utf-8")
     L = [f"# CHN report: {verdict}", "",
          f"musique s1eval, A: T2 base (max of rrf, cos) {base:.3f}; complement (max of res, pair) {comp:.3f}. "
-         f"PARAM_FREE_PAYS: {free or 'none'}. λ from s1fit: {lam}.", "",
+         f"PARAM_FREE_PAYS: {free or 'none'}. λ (picked on 2wiki's and hotpotqa's s1sel): {lam}.", "",
          "## A: the next hop among the oracle anchor's neighbours (T2 = first or second)", "",
          "| read | ranked | nb median | rrf T2 | cos T2 | anc T2 | res T2 | pair T2 | res median | rrf median |",
          "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]

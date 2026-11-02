@@ -111,7 +111,7 @@ or pair, or S with the s1fit λ) is at least +0.01 R@5 over rrf on musique's s1e
 
 - Host CPU items:
   - `chn-selftest`;
-  - `chn-<dataset>-<carve>` for the 11 reads, 2 CPUs and 6 GB each;
+  - `chn-<dataset>-<carve>` for the reads (10 after amendment A1, section 8), 1 CPU and 5 GB each;
   - `chn-report`, which writes `outputs/chn/report.{json,md}` with the verdict.
 - Commit `outputs/chn/report.*` and the per-read summaries with `git add -f`. The per-question rows in
   `outputs/chn/work` are never committed.
@@ -119,3 +119,16 @@ or pair, or S with the s1fit λ) is at least +0.01 R@5 over rrf on musique's s1e
   ranks and B's picks on a toy question built so that the next hop has a low cosine and a high residual.
 - Disclosure: before this commit, a 20-question probe on musique's s1eval (`--limit 20`, into `outputs/chn/probe` on the
   host) checked the identity (PASS, max 0.00066) and the speed. Its numbers are not used.
+
+## 8. Amendment A1 (2 November, before any read but the probe)
+
+The host's looks were listed before queueing. musique's s1fit, s1sel, b1 and b1u looks have no chunks left on the host
+(cleaned). 2wiki's and hotpotqa's s1fit looks do not exist. These looks do have chunks: musique's s1eval and b1w;
+2wiki's and hotpotqa's s1eval, s1sel, b1, b1t, b1u and b1w. So:
+
+- **λ is picked on 2wiki's and hotpotqa's s1sel** (all their questions, 1,496 and 1,508). It is one λ per score, by the
+  mean R@5 gain over rrf across the two. musique plays no part in choosing it, so the λ is a universal rule rather than a
+  musique-tuned one. musique's S rows are reported at every λ beside, so nothing hidden turns on the choice.
+- **musique's B1 read is b1w** (the W2_S graph of B1f, read 65.3 / 65.7 by the J5 fits against the title rule's 66.1 /
+  66.3). The title rule's own B1 look for musique is gone. B1 stays a report, never a choice.
+- Sections 4 and 5 are unchanged.
