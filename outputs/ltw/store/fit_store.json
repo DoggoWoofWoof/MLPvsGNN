@@ -1,0 +1,481 @@
+{
+ "name": "store",
+ "datasets": [
+  "musique",
+  "2wiki",
+  "hotpotqa"
+ ],
+ "carves": {
+  "musique": {
+   "carve": "s1fit",
+   "questions": 4601,
+   "held_out_questions": 460,
+   "lists": 1253,
+   "train_lists": 1138,
+   "val_lists": 115,
+   "candidates_capped": 63960,
+   "candidates_uncapped": 81565
+  },
+  "2wiki": {
+   "carve": "fit",
+   "questions": 5928,
+   "held_out_questions": 593,
+   "lists": 3464,
+   "train_lists": 3128,
+   "val_lists": 336,
+   "candidates_capped": 144540,
+   "candidates_uncapped": 144540
+  },
+  "hotpotqa": {
+   "carve": "fit",
+   "questions": 5930,
+   "held_out_questions": 593,
+   "lists": 2222,
+   "train_lists": 2001,
+   "val_lists": 221,
+   "candidates_capped": 62608,
+   "candidates_uncapped": 62742
+  }
+ },
+ "decision_form": "bil",
+ "decision_rule": "the higher held-out musique T2 at each form's best epoch; ties to lin",
+ "held_out_T2_free": {
+  "rrf": {
+   "musique": 0.40869565217391307,
+   "2wiki": 0.1875,
+   "hotpotqa": 0.3755656108597285
+  },
+  "cos": {
+   "musique": 0.41739130434782606,
+   "2wiki": 0.17857142857142858,
+   "hotpotqa": 0.3076923076923077
+  },
+  "anc": {
+   "musique": 0.0782608695652174,
+   "2wiki": 0.08630952380952381,
+   "hotpotqa": 0.16289592760180996
+  },
+  "res": {
+   "musique": 0.43478260869565216,
+   "2wiki": 0.17559523809523808,
+   "hotpotqa": 0.3665158371040724
+  },
+  "pair": {
+   "musique": 0.4956521739130435,
+   "2wiki": 0.20833333333333334,
+   "hotpotqa": 0.3891402714932127
+  }
+ },
+ "forms": {
+  "lin": {
+   "best_epoch": 8,
+   "epochs_run": 15,
+   "best_val_T2_macro": 0.6345771697753796,
+   "best_val_T2": {
+    "musique": 0.5739130434782609,
+    "2wiki": 0.5922619047619048,
+    "hotpotqa": 0.7375565610859729
+   },
+   "history": [
+    {
+     "epoch": 0,
+     "train_loss": 2.3542581536428617,
+     "val_T2": {
+      "musique": 0.5304347826086957,
+      "2wiki": 0.6101190476190477,
+      "hotpotqa": 0.7375565610859729
+     },
+     "val_T2_macro": 0.626036797104572
+    },
+    {
+     "epoch": 1,
+     "train_loss": 1.8932781370515095,
+     "val_T2": {
+      "musique": 0.5391304347826087,
+      "2wiki": 0.6071428571428571,
+      "hotpotqa": 0.751131221719457
+     },
+     "val_T2_macro": 0.6324681712149743
+    },
+    {
+     "epoch": 2,
+     "train_loss": 1.8691446555560525,
+     "val_T2": {
+      "musique": 0.5478260869565217,
+      "2wiki": 0.6011904761904762,
+      "hotpotqa": 0.7194570135746606
+     },
+     "val_T2_macro": 0.6228245255738862
+    },
+    {
+     "epoch": 3,
+     "train_loss": 1.855965783041745,
+     "val_T2": {
+      "musique": 0.5478260869565217,
+      "2wiki": 0.5892857142857143,
+      "hotpotqa": 0.746606334841629
+     },
+     "val_T2_macro": 0.6279060453612884
+    },
+    {
+     "epoch": 4,
+     "train_loss": 1.8484630079879627,
+     "val_T2": {
+      "musique": 0.5565217391304348,
+      "2wiki": 0.6130952380952381,
+      "hotpotqa": 0.7330316742081447
+     },
+     "val_T2_macro": 0.6342162171446059
+    },
+    {
+     "epoch": 5,
+     "train_loss": 1.8390162780141457,
+     "val_T2": {
+      "musique": 0.5652173913043478,
+      "2wiki": 0.5982142857142857,
+      "hotpotqa": 0.7104072398190046
+     },
+     "val_T2_macro": 0.6246129722792126
+    },
+    {
+     "epoch": 6,
+     "train_loss": 1.8343831281143075,
+     "val_T2": {
+      "musique": 0.5391304347826087,
+      "2wiki": 0.6130952380952381,
+      "hotpotqa": 0.7013574660633484
+     },
+     "val_T2_macro": 0.6178610463137317
+    },
+    {
+     "epoch": 7,
+     "train_loss": 1.8304264264489467,
+     "val_T2": {
+      "musique": 0.5565217391304348,
+      "2wiki": 0.6071428571428571,
+      "hotpotqa": 0.7239819004524887
+     },
+     "val_T2_macro": 0.6292154989085935
+    },
+    {
+     "epoch": 8,
+     "train_loss": 1.8233652668591225,
+     "val_T2": {
+      "musique": 0.5739130434782609,
+      "2wiki": 0.5922619047619048,
+      "hotpotqa": 0.7375565610859729
+     },
+     "val_T2_macro": 0.6345771697753796
+    },
+    {
+     "epoch": 9,
+     "train_loss": 1.819425897315223,
+     "val_T2": {
+      "musique": 0.5739130434782609,
+      "2wiki": 0.5922619047619048,
+      "hotpotqa": 0.7285067873303167
+     },
+     "val_T2_macro": 0.6315605785234942
+    },
+    {
+     "epoch": 10,
+     "train_loss": 1.8203334152479766,
+     "val_T2": {
+      "musique": 0.5739130434782609,
+      "2wiki": 0.6041666666666666,
+      "hotpotqa": 0.7013574660633484
+     },
+     "val_T2_macro": 0.626479058736092
+    },
+    {
+     "epoch": 11,
+     "train_loss": 1.816994444479759,
+     "val_T2": {
+      "musique": 0.5652173913043478,
+      "2wiki": 0.5952380952380952,
+      "hotpotqa": 0.7375565610859729
+     },
+     "val_T2_macro": 0.6326706825428053
+    },
+    {
+     "epoch": 12,
+     "train_loss": 1.811642978414691,
+     "val_T2": {
+      "musique": 0.5391304347826087,
+      "2wiki": 0.5952380952380952,
+      "hotpotqa": 0.6923076923076923
+     },
+     "val_T2_macro": 0.6088920741094654
+    },
+    {
+     "epoch": 13,
+     "train_loss": 1.811638524605742,
+     "val_T2": {
+      "musique": 0.5565217391304348,
+      "2wiki": 0.5952380952380952,
+      "hotpotqa": 0.7285067873303167
+     },
+     "val_T2_macro": 0.6267555405662822
+    },
+    {
+     "epoch": 14,
+     "train_loss": 1.8090670597844285,
+     "val_T2": {
+      "musique": 0.5652173913043478,
+      "2wiki": 0.5833333333333334,
+      "hotpotqa": 0.7149321266968326
+     },
+     "val_T2_macro": 0.621160950444838
+    }
+   ],
+   "parameters": 1569
+  },
+  "bil": {
+   "best_epoch": 12,
+   "epochs_run": 19,
+   "best_val_T2_macro": 0.8330828875585908,
+   "best_val_T2": {
+    "musique": 0.8173913043478261,
+    "2wiki": 0.8809523809523809,
+    "hotpotqa": 0.8009049773755657
+   },
+   "history": [
+    {
+     "epoch": 0,
+     "train_loss": 1.839597920072655,
+     "val_T2": {
+      "musique": 0.6173913043478261,
+      "2wiki": 0.8541666666666666,
+      "hotpotqa": 0.7375565610859729
+     },
+     "val_T2_macro": 0.7363715107001552
+    },
+    {
+     "epoch": 1,
+     "train_loss": 1.2451630044025308,
+     "val_T2": {
+      "musique": 0.6782608695652174,
+      "2wiki": 0.8482142857142857,
+      "hotpotqa": 0.755656108597285
+     },
+     "val_T2_macro": 0.7607104212922627
+    },
+    {
+     "epoch": 2,
+     "train_loss": 1.0990381121388155,
+     "val_T2": {
+      "musique": 0.7130434782608696,
+      "2wiki": 0.8630952380952381,
+      "hotpotqa": 0.7601809954751131
+     },
+     "val_T2_macro": 0.7787732372770736
+    },
+    {
+     "epoch": 3,
+     "train_loss": 0.9921741221478744,
+     "val_T2": {
+      "musique": 0.7304347826086957,
+      "2wiki": 0.8571428571428571,
+      "hotpotqa": 0.7782805429864253
+     },
+     "val_T2_macro": 0.7886193942459926
+    },
+    {
+     "epoch": 4,
+     "train_loss": 0.9106075483416948,
+     "val_T2": {
+      "musique": 0.7391304347826086,
+      "2wiki": 0.8720238095238095,
+      "hotpotqa": 0.7828054298642534
+     },
+     "val_T2_macro": 0.7979865580568904
+    },
+    {
+     "epoch": 5,
+     "train_loss": 0.8416299262609097,
+     "val_T2": {
+      "musique": 0.7652173913043478,
+      "2wiki": 0.8720238095238095,
+      "hotpotqa": 0.7782805429864253
+     },
+     "val_T2_macro": 0.805173914604861
+    },
+    {
+     "epoch": 6,
+     "train_loss": 0.784424183241998,
+     "val_T2": {
+      "musique": 0.7739130434782608,
+      "2wiki": 0.875,
+      "hotpotqa": 0.7873303167420814
+     },
+     "val_T2_macro": 0.8120811200734473
+    },
+    {
+     "epoch": 7,
+     "train_loss": 0.7332277928829878,
+     "val_T2": {
+      "musique": 0.782608695652174,
+      "2wiki": 0.8720238095238095,
+      "hotpotqa": 0.7873303167420814
+     },
+     "val_T2_macro": 0.8139876073060216
+    },
+    {
+     "epoch": 8,
+     "train_loss": 0.6884626285090522,
+     "val_T2": {
+      "musique": 0.8,
+      "2wiki": 0.8690476190476191,
+      "hotpotqa": 0.7963800904977375
+     },
+     "val_T2_macro": 0.821809236515119
+    },
+    {
+     "epoch": 9,
+     "train_loss": 0.6485570586334486,
+     "val_T2": {
+      "musique": 0.8,
+      "2wiki": 0.8690476190476191,
+      "hotpotqa": 0.7873303167420814
+     },
+     "val_T2_macro": 0.8187926452632336
+    },
+    {
+     "epoch": 10,
+     "train_loss": 0.6129772915725258,
+     "val_T2": {
+      "musique": 0.808695652173913,
+      "2wiki": 0.8720238095238095,
+      "hotpotqa": 0.7963800904977375
+     },
+     "val_T2_macro": 0.82569985073182
+    },
+    {
+     "epoch": 11,
+     "train_loss": 0.5792032619954601,
+     "val_T2": {
+      "musique": 0.8,
+      "2wiki": 0.8690476190476191,
+      "hotpotqa": 0.7918552036199095
+     },
+     "val_T2_macro": 0.8203009408891763
+    },
+    {
+     "epoch": 12,
+     "train_loss": 0.5486899166752396,
+     "val_T2": {
+      "musique": 0.8173913043478261,
+      "2wiki": 0.8809523809523809,
+      "hotpotqa": 0.8009049773755657
+     },
+     "val_T2_macro": 0.8330828875585908
+    },
+    {
+     "epoch": 13,
+     "train_loss": 0.5204397929053339,
+     "val_T2": {
+      "musique": 0.8173913043478261,
+      "2wiki": 0.8809523809523809,
+      "hotpotqa": 0.7918552036199095
+     },
+     "val_T2_macro": 0.8300662963067055
+    },
+    {
+     "epoch": 14,
+     "train_loss": 0.4949114500325472,
+     "val_T2": {
+      "musique": 0.8173913043478261,
+      "2wiki": 0.8809523809523809,
+      "hotpotqa": 0.7963800904977375
+     },
+     "val_T2_macro": 0.8315745919326482
+    },
+    {
+     "epoch": 15,
+     "train_loss": 0.46989511390688776,
+     "val_T2": {
+      "musique": 0.8,
+      "2wiki": 0.8779761904761905,
+      "hotpotqa": 0.7873303167420814
+     },
+     "val_T2_macro": 0.8217688357394239
+    },
+    {
+     "epoch": 16,
+     "train_loss": 0.44794163705630413,
+     "val_T2": {
+      "musique": 0.808695652173913,
+      "2wiki": 0.8809523809523809,
+      "hotpotqa": 0.7873303167420814
+     },
+     "val_T2_macro": 0.8256594499561252
+    },
+    {
+     "epoch": 17,
+     "train_loss": 0.4271085361473218,
+     "val_T2": {
+      "musique": 0.808695652173913,
+      "2wiki": 0.8809523809523809,
+      "hotpotqa": 0.7828054298642534
+     },
+     "val_T2_macro": 0.8241511543301825
+    },
+    {
+     "epoch": 18,
+     "train_loss": 0.40867613660665303,
+     "val_T2": {
+      "musique": 0.808695652173913,
+      "2wiki": 0.8839285714285714,
+      "hotpotqa": 0.7873303167420814
+     },
+     "val_T2_macro": 0.8266515134481885
+    }
+   ],
+   "parameters": 50721
+  }
+ },
+ "features": [
+  "cos",
+  "anc",
+  "res",
+  "pair",
+  "anchor_cos",
+  "dense_rr",
+  "splade_rr",
+  "rrf",
+  "agreement",
+  "is_seed",
+  "log1p_rank",
+  "fam_struct",
+  "fam_ner",
+  "fam_knn"
+ ],
+ "identity": {
+  "checked": 278047,
+  "bad": 0,
+  "max_abs": 0.0008918642997741699,
+  "pass": true
+ },
+ "settings": {
+  "cap": 256,
+  "hold": 0.1,
+  "rank": 32,
+  "hidden": 32,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "batch": 32,
+  "epochs": 60,
+  "patience": 6,
+  "seed": 0
+ },
+ "package_record_sha256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "placement": {
+  "where": "host",
+  "node": "<host>",
+  "mirror_root": "<host-mirror>/CRAG",
+  "amendment": "amendment_2_2026_09_30_host_placement"
+ },
+ "script_sha256": "d53156eb46a1b6f4995c86d63a176cd02152cce1830e56c3ce0936192f8c9b2f",
+ "seconds": 69.83984708786011,
+ "utc": "2026-11-02T08:35:20Z"
+}

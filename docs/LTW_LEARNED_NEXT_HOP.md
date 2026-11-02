@@ -364,3 +364,65 @@ Everything else is section 4's and 5's:
 - B1's looks hold the same retrieval columns as PKO's caches (`look_x_six.RETRIEVAL`), but in the look's format.
 - LTW's case builder reads PKO's parts. The B1 read needs a case builder on looks, as CHN's has.
 - It is declared in its own amendment, before it runs, and chooses nothing.
+
+## 12. Amendment A1: result (filed 2 November 2026)
+
+**STORE_KEEPS.**
+- K = 1.004. On the store, the term's mean T2 gain over `joint.lin` is +0.122, the same as on the full rows.
+- musique's `store.bil` T2 is 0.548, above its `joint.lin`'s 0.495.
+- So the GNN screen's term reads the store's coordinates, which every batch already holds. It needs no new carve key.
+
+| read | joint.lin | joint.bil | store.lin | store.bil | rrf top 5 | H1 joint.bil | H1 store.bil |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| musique | 0.495 | 0.530 | 0.495 | 0.548 | 0.4734 | 0.5125 | 0.5141 |
+| 2wiki | 0.610 | 0.860 | 0.610 | 0.852 | 0.6079 | 0.7627 | 0.7610 |
+| hotpotqa | 0.723 | 0.804 | 0.723 | 0.795 | 0.6846 | 0.7930 | 0.7906 |
+
+The first five columns are A's T2. The last three are H1's R@5.
+
+**musique's slices** (A's T2, full rows → store):
+
+| slice | joint.bil | store.bil | pair |
+|---|---:|---:|---:|
+| structural links | 0.696 | 0.681 | 0.349 |
+| NER links | 0.338 | 0.401 | 0.381 |
+| kNN links | 0.200 | 0.200 | 0.240 |
+| 2-hop | 0.596 | 0.608 | 0.392 |
+| 3-hop | 0.449 | 0.482 | 0.306 |
+| 4-hop | 0.395 | 0.411 | 0.323 |
+
+- On NER-link next hops the store's term is above `pair`, where the full rows' term was below it.
+- H1's R@5 gain is still all on 2-hop questions: 0.6522 against rrf's top five's 0.5619. On 3-hop it reads 0.4246
+  against 0.4368, and on 4-hop 0.2556 against 0.2685.
+
+**The fits.**
+
+| form | parameters | best epoch | epochs run | held-out T2 (musique / 2wiki / hotpotqa) |
+|---|---:|---:|---:|---|
+| `store.lin` | 1,569 | 8 | 15 | 0.574 / 0.592 / 0.738 |
+| `store.bil` | 50,721 | 12 | 19 | 0.817 / 0.881 / 0.801 |
+
+- `store.lin` repeats `joint.lin` exactly; the largest T2 difference is 0.0000.
+- `store.bil` has a sixth of `joint.bil`'s 296,481 parameters, because it reads 256 axes, not 1,536.
+- It stopped later than `joint.bil` did (epoch 12 of 19, against 7 of 14).
+- Its musique margin over `joint.bil` (+0.018) is within what a different stopping epoch gives. It is not claimed as a
+  gain of the store.
+
+**The run.**
+- Host item `ltw-store`, 158 s, at 2026-11-02T08:36:48Z.
+- Identity: 205,977 rows checked, 0 bad; the largest difference is 0.00082.
+- Shas:
+  - script `b2216116`;
+  - ltwdiag `d53156eb`;
+  - package record `58958f33`;
+  - `basis_2wiki` npz `0ca4797b`. That basis has 60,000 nodes, and its 256 axes hold 0.750 of the variance.
+- The records are in `outputs/ltw/store/`, with host paths masked.
+
+**What follows.**
+- **The GNN screen** (LTG) is declared in its own file before any fit. Its term reads the store block of the GNN's
+  own features. It must say how it treats NER-link next hops and 3/4-hop questions.
+  - The 3/4-hop rows above show that one hop from rrf's top row is not enough. A message-passing model applies the
+    term at every layer, from every sender, so later layers can carry it past the first hop.
+- **The MLP screen** (LTM) computes its columns from the full rows outside the MLP, as section 11 fixed. It is
+  declared in its own file.
+- **The B1 read** keeps its own amendment.
