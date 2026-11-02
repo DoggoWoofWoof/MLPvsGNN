@@ -104,8 +104,11 @@ splits. The four that do not:
   there.
 - **hotpotqa in-domain** straddles the bar across the seeds.
 - **squad.** The GNN's gain over RRF is under 0.01, so the share's interval is too wide to show anything with these questions.
-- **The zero-shot reads.** The MLP is at or above the GNN on all four:
+- **The zero-shot reads.** All four hold. The MLP is above the GNN on three of them:
   - metaqa's shares are 1.106 and 1.124;
-  - hotpotqa's is 1.091;
-  - musique's is 0.901, and its excess is below the allowed gap.
+  - hotpotqa's is 1.091.
+
+  On musique the MLP is 0.0035 below the GNN (0.5051 against 0.5086; share 0.901), and its excess is below the allowed gap.
+  (Corrected on 2 November 2026: the first filing said the MLP was at or above the GNN on all four. The table's numbers are
+  unchanged.)
 - The call changes no model, pool or input (section 3).
