@@ -1,12 +1,13 @@
 """C1R (docs/C1R_CLAIM1_UNDER_WQ.md): Claim 1 measured again with P3c's intervals, under WQ on PKO's pools. The MLP of record
-(zrckp) is read against the GNN of record (zg6r, or zg6r-m if ISO replaces it), seed 0 of the stage fits, from their reads.
+(zrckp; zrckpn or zrckpc by amendment A1) is read against the GNN of record (zg6r, or zg6r-m if ISO replaces it), seed 0 of
+the stage fits, from their reads.
 
 scripts/p3c_claim1.py is imported and not edited; its bootstrap, shares, excess and calls are used as they are. What changes
 is the regime's map. There are two WQ splits instead of J5 and five leave-outs, so every in-domain read is its own clause, and
 the zero-shot clause pairs a dataset's zero-shot read with its in-domain read under the other split. metaqa, never trained,
 is allowed no gap, as P3c's webqsp.
 
-    python outputs/mp_unified/zc1r.py run [--gnn zg6r|zg6rm] [--limit 50]
+    python outputs/mp_unified/zc1r.py run [--gnn zg6r|zg6rm] [--mlp zrckp|zrckpn|zrckpc] [--limit 50]
     python outputs/mp_unified/zc1r.py --selftest
 """
 import argparse
@@ -37,7 +38,11 @@ FITS = "outputs/screen/fits"
 # per family: (fit name, its compare at seed k, the compare's side holding the fit, the stamp key, the stamp's arm)
 GNNS = {"zg6r": ("scr-ml1-zg6r-s{k}{suf}", "scr-ml1-zg6r-vs-zspk-s{k}{suf}", "new", "ml1", "zg6r"),
         "zg6rm": ("scr-iso-zg6rm-s{k}{suf}", "scr-iso-zg6rm-vs-zg6r-s{k}{suf}", "new", "iso", "zg6r")}
-MLP = ("scr-ml1-zrckp-s{k}{suf}", "scr-ml1-zrckpt-vs-zrckp-s{k}{suf}", "base", "ml1", "zrckp")
+# A1: LTM's zrckpn and LTC's zrckpc, each new in its compare against DOB's CPU zrckp of the same seed and split
+MLPS = {"zrckp": ("scr-ml1-zrckp-s{k}{suf}", "scr-ml1-zrckpt-vs-zrckp-s{k}{suf}", "base", "ml1", "zrckp"),
+        "zrckpn": ("scr-ltm-zrckpn-s{k}{suf}", "scr-ltm-zrckpn-vs-zrckp-s{k}{suf}", "new", "ltm", "zrckpn"),
+        "zrckpc": ("scr-ltc-zrckpc-s{k}{suf}", "scr-ltc-zrckpc-vs-zrckp-s{k}{suf}", "new", "ltc", "zrckpc")}
+MLP = MLPS["zrckp"]
 
 
 def log(msg):
@@ -48,8 +53,13 @@ def norm(p):
     return str(p or "").replace("\\", "/")
 
 
-def fam(gnn):
-    return {"mlp": MLP, "gnn": GNNS[gnn]}
+def fam(gnn, mlp="zrckp"):
+    return {"mlp": MLPS[mlp], "gnn": GNNS[gnn]}
+
+
+def rec_name(gnn, mlp="zrckp"):
+    """zrckp's record keeps its filed name (claim1_zg6r); another MLP's names both families."""
+    return f"claim1_{gnn}" if mlp == "zrckp" else f"claim1_{gnn}_{mlp}"
 
 
 def stamp_ok(root, fit, key, arm, split, seed=0):
@@ -60,6 +70,11 @@ def stamp_ok(root, fit, key, arm, split, seed=0):
                          f"{k.get('split')}; expected {arm}, seed {seed}, {split}")
     if key == "iso" and ((k.get("encoder") or {}).get("start"), (k.get("encoder") or {}).get("copies")) != ("own", 0):
         raise SystemExit(f"{fit}: not an own-start zg6r-m fit")
+    nxt = k.get("next") or {}
+    if key in ("ltm", "ltc") and not nxt.get("fit_sha256"):
+        raise SystemExit(f"{fit}: its {key} stamp holds no NEXT block (the scorer's sha256)")
+    if key == "ltc" and not (nxt.get("chain") or {}).get("carves"):
+        raise SystemExit(f"{fit}: its ltc stamp holds no CHAIN block")
     return {"fit": fit, "arm": arm, "split": split, "seed": seed, "stamp": key}
 
 
@@ -72,10 +87,10 @@ def filed_rows(root, cmp_name, side, fit):
     return {r["dataset"]: r for r in d["by_base"][d["bases"][0]]["rows"]}
 
 
-def run(gnn="zg6r", root=ROOT, limit=0, out=None):
+def run(gnn="zg6r", root=ROOT, limit=0, out=None, mlp="zrckp"):
     root = Path(root)
     t0 = time.time()
-    F = fam(gnn)
+    F = fam(gnn, mlp)
     stamps, reads = [], {}
     for role in ("mlp", "gnn"):
         fit_t, cmp_t, side, key, arm = F[role]
@@ -106,7 +121,6 @@ def run(gnn="zg6r", root=ROOT, limit=0, out=None):
             rows.append({"split": split, "dataset": ds, "read": kind, "questions": int(ok.sum()), "st": st,
                          "files": {x: reads[(x, split, ds)]["path"] for x in ("mlp", "gnn")},
                          "sha256": {x: reads[(x, split, ds)]["sha256"] for x in ("mlp", "gnn")}})
-    by = {(r["split"], r["dataset"]): r for r in rows}
     in_calls = {f"{r['split']} {r['dataset']}": P3.in_domain_call(r["st"]) for r in rows if r["read"] == "in-domain"}
     zs, zs_calls = {}, {}
     for ds, zsp, isp in ZS:
@@ -126,7 +140,7 @@ def run(gnn="zg6r", root=ROOT, limit=0, out=None):
     if limit:
         log(f"--limit {limit}: a development run; nothing is written and no number is logged")
         return None
-    rec = {"stage": "C1R", "doc": DECLARED, "family": {"mlp": "zrckp", "gnn": gnn}, "candidate": P3.CAND, "carve": P3.CARVE,
+    rec = {"stage": "C1R", "doc": DECLARED, "family": {"mlp": mlp, "gnn": gnn}, "candidate": P3.CAND, "carve": P3.CARVE,
            "boot": P3.BOOT, "bar": P3.BAR, "margin": P3.MARGIN, "fits": stamps, "call": call,
            "in_domain": in_calls, "zero_shot": zs_calls,
            "zero_shot_reads": {c: {"in_split": v["in_split"], "zs_gap": round(v["zs_gap"], 4),
@@ -138,19 +152,19 @@ def run(gnn="zg6r", root=ROOT, limit=0, out=None):
                       "gnn_gain": P3.triple(r["st"]["gnn_gain"]), "mlp_gain": P3.triple(r["st"]["mlp_gain"]),
                       "share": P3.triple(r["st"]["share"]), "gap": P3.triple(r["st"]["gap"]),
                       "files": r["files"], "sha256": r["sha256"]} for r in rows],
-           "seeds_beside": seeds_beside(gnn, root),
+           "seeds_beside": seeds_beside(gnn, root, mlp),
            "script_sha256": P3.sha_file(Path(__file__)), "p3c_sha256": P3.sha_file(Path(P3.__file__)),
            "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
-    out = Path(out) if out else OUT
-    P3.write_json(out / f"claim1_{gnn}.json", rec)
-    (out / f"claim1_{gnn}.md").write_text(report_md(rec), encoding="utf-8")
-    log(f"C1R ({gnn}): {call}; {out / f'claim1_{gnn}.md'}")
+    out, nm = (Path(out) if out else OUT), rec_name(gnn, mlp)
+    P3.write_json(out / f"{nm}.json", rec)
+    (out / f"{nm}.md").write_text(report_md(rec), encoding="utf-8")
+    log(f"C1R ({mlp} against {gnn}): {call}; {out / f'{nm}.md'}")
     return rec
 
 
-def seeds_beside(gnn, root=ROOT):
+def seeds_beside(gnn, root=ROOT, mlp="zrckp"):
     """Section 5: the R@5 share's point value at seeds 1 and 2 from the filed compares' means. Decides nothing."""
-    F, out = fam(gnn), []
+    F, out = fam(gnn, mlp), []
     for k in (1, 2):
         for split, suf in SUF.items():
             try:
@@ -167,7 +181,7 @@ def seeds_beside(gnn, root=ROOT):
 
 
 def report_md(rec):
-    L = [f"# C1R: Claim 1 under WQ on PKO's pools, zrckp against {rec['family']['gnn']}", "",
+    L = [f"# C1R: Claim 1 under WQ on PKO's pools, {rec['family']['mlp']} against {rec['family']['gnn']}", "",
          f"**{rec['call']}** (bar {rec['bar']}, {rec['boot']} resamples, seed-0 fits)", "",
          "| split | dataset | read | MLP | GNN | RRF | GNN gain [lo, hi] | share [lo, hi] | clause |",
          "|---|---|---|---:|---:|---:|---|---|---|"]
@@ -208,6 +222,10 @@ def selftest():
             st = {key: {"fit": fit, "arm": arm, "seed": seed_k, "split": split}}
             if key == "iso":
                 st[key]["encoder"] = {"start": "own", "copies": 0}
+            if key in ("ltm", "ltc"):
+                st[key]["next"] = {"fit_sha256": "f" * 64}
+            if key == "ltc":
+                st[key]["next"]["chain"] = {"carves": {"musique/s1eval": "c" * 64}}
             (fd / "screen.json").write_text(json.dumps(st), encoding="utf-8")
             means = {}
             for ds in EVAL:
@@ -222,19 +240,19 @@ def selftest():
                 means[ds] = (P3.r4(m.mean(0)), P3.r4(r.mean(0)))
             return means
 
-        F = fam("zg6r")
+        def file_cmp(cn, side, fit, means, suf):
+            fitp = f"{FITS}/{fit.format(k=0, suf=suf)}".replace("/", "\\")
+            other = "outputs\\screen\\fits\\other"
+            rec = {"new": fitp if side == "new" else other, "bases": [fitp if side == "base" else other],
+                   "candidate": "p@swa", "carve": "s1eval", "by_base": {}}
+            rec["by_base"][rec["bases"][0]] = {"rows": [{"dataset": ds, "questions": n, side: means[ds][0],
+                                                         "rrf": means[ds][1]} for ds in EVAL]}
+            p = root / "outputs" / "screen" / f"{cn.format(k=0, suf=suf)}.json"
+            p.write_text(json.dumps(rec), encoding="utf-8")
+
         for split, suf in SUF.items():
-            mm = write(F["mlp"][0].format(k=0, suf=suf), "ml1", "zrckp", split, "base")
-            gm = write(F["gnn"][0].format(k=0, suf=suf), "ml1", "zg6r", split, "new")
-            for (cn, side, fit, means) in ((F["mlp"][1], "base", F["mlp"][0], mm), (F["gnn"][1], "new", F["gnn"][0], gm)):
-                fitp = f"{FITS}/{fit.format(k=0, suf=suf)}".replace("/", "\\")
-                other = "outputs\\screen\\fits\\other"
-                rec = {"new": fitp if side == "new" else other, "bases": [fitp if side == "base" else other],
-                       "candidate": "p@swa", "carve": "s1eval", "by_base": {}}
-                rec["by_base"][rec["bases"][0]] = {"rows": [{"dataset": ds, "questions": n, side: means[ds][0],
-                                                             "rrf": means[ds][1]} for ds in EVAL]}
-                p = root / "outputs" / "screen" / f"{cn.format(k=0, suf=suf)}.json"
-                p.write_text(json.dumps(rec), encoding="utf-8")
+            for fit_t, cmp_t, side, key, arm in (GNNS["zg6r"], *MLPS.values()):
+                file_cmp(cmp_t, side, fit_t, write(fit_t.format(k=0, suf=suf), key, arm, split, side), suf)
         recd = run("zg6r", root=root, out=root / "out")
         assert recd["call"] in ("CLAIM1_HOLDS", "CLAIM1_NOT_ALL")
         assert len(recd["in_domain"]) == 8 and len(recd["zero_shot"]) == 4 and len(recd["reads"]) == 12
@@ -242,6 +260,27 @@ def selftest():
                                                     "WQ-hotpotqa metaqa"])
         assert recd["zero_shot_reads"]["WQ-musique metaqa"]["allowed"] == 0.0
         assert all(s.get("missing") for s in recd["seeds_beside"])           # no seed-1/2 compares in the fake root
+        assert recd["family"] == {"mlp": "zrckp", "gnn": "zg6r"} and (root / "out" / "claim1_zg6r.json").is_file()
+        # A1: zrckpn and zrckpc, each new in its compare, under its own stamp key and record name
+        for m in ("zrckpn", "zrckpc"):
+            r = run("zg6r", root=root, out=root / "out", mlp=m)
+            assert r["family"] == {"mlp": m, "gnn": "zg6r"} and len(r["reads"]) == 12 and len(r["in_domain"]) == 8
+            assert {f["stamp"] for f in r["fits"] if f["role"] == "mlp"} == {MLPS[m][3]}
+            assert all((root / "out" / f"claim1_zg6r_{m}{x}").is_file() for x in (".json", ".md"))
+            assert all(s.get("missing") for s in r["seeds_beside"])
+        # an LTM fit stamped without its NEXT block, or an LTC fit without its CHAIN block, is refused
+        for m, drop, msg in (("zrckpn", "next", "no NEXT block"), ("zrckpc", "chain", "no CHAIN block")):
+            stp = root / FITS / MLPS[m][0].format(k=0, suf="") / "screen.json"
+            keep = stp.read_text(encoding="utf-8")
+            st = json.loads(keep)
+            (st[MLPS[m][3]] if drop == "next" else st[MLPS[m][3]]["next"]).pop(drop)
+            stp.write_text(json.dumps(st), encoding="utf-8")
+            try:
+                run("zg6r", root=root, limit=20, mlp=m)
+                raise AssertionError(f"{m} without its {drop} block passed")
+            except SystemExit as e:
+                assert msg in str(e), e
+            stp.write_text(keep, encoding="utf-8")
         # a read that does not reproduce its filed compare is refused
         p = root / FITS / "scr-ml1-zrckp-s0" / "reads" / "squad__s1eval.npz"
         z = dict(np.load(p))
@@ -261,7 +300,8 @@ def selftest():
             raise AssertionError("a wrong stamp passed")
         except SystemExit as e:
             assert "expected zg6r" in str(e)
-    log("selftest: the map (8 in-domain, 4 zero-shot clauses), metaqa's allowed 0, the filed-compare and stamp refusals pass")
+    log("selftest: the map (8 in-domain, 4 zero-shot clauses), metaqa's allowed 0, the filed-compare and stamp refusals, "
+        "and A1's zrckpn and zrckpc (their compares, stamp keys, record names, NEXT and CHAIN refusals) pass")
     return 0
 
 
@@ -269,13 +309,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", nargs="?", choices=("run",))
     ap.add_argument("--gnn", choices=sorted(GNNS), default="zg6r")
+    ap.add_argument("--mlp", choices=sorted(MLPS), default="zrckp")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
     if a.cmd == "run":
-        run(a.gnn, limit=a.limit)
+        run(a.gnn, limit=a.limit, mlp=a.mlp)
         return 0
     ap.error("a command or --selftest")
 

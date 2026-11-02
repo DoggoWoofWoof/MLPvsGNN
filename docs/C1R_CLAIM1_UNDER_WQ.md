@@ -112,3 +112,37 @@ splits. The four that do not:
   (Corrected on 2 November 2026: the first filing said the MLP was at or above the GNN on all four. The table's numbers are
   unchanged.)
 - The call changes no model, pool or input (section 3).
+
+## 6. Amendment A1 (3 November 2026, before any number it reads): the MLP after LTM
+
+LTM's full run adopted zrckpn (docs/LTM_NEXT_HOP_MLP.md section 12, 7874e4d), and LTM's section 8 names this amendment. LTC's
+zrckpc is added at the same time, so its record needs no second amendment.
+
+**What changes.** `--mlp` picks the MLP's family. zrckp stays the default, and its record keeps its name.
+
+| `--mlp` | seed-0 fits | filed compare (zrckpn and zrckpc are new in it, against DOB's CPU zrckp) | stamp key | record |
+| --- | --- | --- | --- | --- |
+| zrckp | `scr-ml1-zrckp-s0{,-hp}` | `scr-ml1-zrckpt-vs-zrckp-s0{,-hp}` (zrckp is the base) | `ml1` | `claim1_<gnn>` |
+| zrckpn | `scr-ltm-zrckpn-s0{,-hp}` | `scr-ltm-zrckpn-vs-zrckp-s0{,-hp}` | `ltm` | `claim1_<gnn>_zrckpn` |
+| zrckpc | `scr-ltc-zrckpc-s0{,-hp}` | `scr-ltc-zrckpc-vs-zrckp-s0{,-hp}` | `ltc` | `claim1_<gnn>_zrckpc` |
+
+- Section 1's checks hold as written. Two are added:
+  - an LTM fit's stamp must hold its NEXT block (the scorer's sha256);
+  - an LTC fit's stamp must also hold its CHAIN block.
+- The shares at seeds 1 and 2, reported beside, come from the same family's compares at those seeds.
+- zrckpn and zrckpc were trained and read on DOB's CPU device, zg6r on the host's GPU. The rule does not need one device. The
+  checks hold the two reads to the same questions, in the same order, with the same RRF columns.
+- zrckpn reads NEXT and zg6r does not. The record compares the two models as they stand. A GNN that reads NEXT is read
+  through its own family once a stage adopts one.
+- **Which record speaks for Claim 1:** the one pairing the MLP of record with the GNN of record at the freeze. That is
+  zrckpn now, or zrckpc if LTC's head-to-head against zrckpn adopts it.
+- Section 2's rule and bar are unchanged.
+
+```
+python outputs/mp_unified/zc1r.py run --gnn zg6r --mlp zrckpn     (outputs/c1r/claim1_zg6r_zrckpn.json and .md)
+python outputs/mp_unified/zc1r.py run --gnn zg6r --mlp zrckpc     (after LTC's seed-0 compares)
+```
+
+The self-test passed before this commit. It runs section 4's checks for each MLP family on the made-up root, and confirms
+that each family uses its own stamp key and record name. It also refuses an LTM stamp without NEXT and an LTC stamp without
+CHAIN.
