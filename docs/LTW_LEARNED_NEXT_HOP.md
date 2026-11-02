@@ -318,3 +318,49 @@ A, T2 on each s1eval read (lists / targets: musique 915 / 923, 2wiki 7,619, hotp
   four hops.
 - **LEARNED_PAYS:** H1 with `joint.bil` is read once on B1, as a row beside the link rules. That read is declared in an
   amendment and chooses nothing.
+
+## 11. Amendment A1: the store read (2 November, after section 10, before any store number)
+
+**Why.** The models read each row through the store, not the full row. The store is lean_mlp3's int8 codes on the 256
+axes of `basis_2wiki`, which both WQ splits' fits read. LTW's term read the full 1536-d rows. The GNN screen (section
+7) gives each message the three-way term, and it can read the store's coordinates, which every batch already holds,
+or the full rows, which would need a new side key in the carve. One read decides which.
+
+**The form.** `store.bil` is bil with every vector on the store's axes:
+- a candidate's or the anchor's row x becomes s · codes(x) + c: lean_mlp3's int8 codes, decoded, the first 256
+  entries;
+- the question q becomes V'q;
+- the residual becomes unit(V'q − c_a x_a'), with c_a the anchor's full cosine and x_a' its store coordinates.
+
+Everything else is section 4's and 5's:
+- the 14 scalars, from the full rows;
+- the lists (LTW's case files, read only), the seeds, the settings and the joint fit's three fit carves.
+
+`store.lin` is fit too. It reads no vector, so it must repeat `joint.lin`.
+
+**The rule, fixed now.** On the three s1eval A reads:
+- K is the mean of (T2 store.bil − T2 joint.lin), divided by the mean of (T2 joint.bil − T2 joint.lin), with the
+  joint fit's T2s from section 10. The divisor is +0.122.
+- **STORE_KEEPS** when K ≥ 0.5 and musique's `store.bil` T2 is at least its `joint.lin` T2 (0.495).
+- **STORE_LOSES** otherwise.
+
+**What follows.**
+- **STORE_KEEPS:** the GNN screen's term reads the store's coordinates.
+- **STORE_LOSES:** the GNN screen's term reads the full rows, through a side key of the carve.
+- The MLP screen's columns are computed from the full rows either way, by the scorer outside the MLP.
+
+**How it runs.**
+- One host CPU item, `ltw-store` (2 CPUs, 10 GB): `python outputs/mp_unified/ltwstore.py run --host`. It goes
+  behind `ltw-report`, ahead of DOB's held fits.
+- Records: `outputs/ltw/store/report.{json,md}`, `fit_store.json` and the three `.read.json` files. Their host paths
+  are masked before commit. `outputs/ltw/store/work` is never committed.
+- The self-test (`--selftest`) passed on the laptop before this commit. It checks that:
+  - the store map equals `lean_mlp3.Store`'s codes, decode and query on a full-size random basis;
+  - the residual is as defined, and the scalars are untouched;
+  - LTW's functions are restored;
+  - a toy end-to-end run gives the records, with `store.lin` repeating `joint.lin`.
+
+**The B1 read** (section 7, LEARNED_PAYS) is not part of this amendment.
+- B1's looks hold the same retrieval columns as PKO's caches (`look_x_six.RETRIEVAL`), but in the look's format.
+- LTW's case builder reads PKO's parts. The B1 read needs a case builder on looks, as CHN's has.
+- It is declared in its own amendment, before it runs, and chooses nothing.
