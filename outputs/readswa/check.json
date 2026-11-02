@@ -1,0 +1,103 @@
+{
+ "stage": "readswa",
+ "what": "host check",
+ "selftest": "passed",
+ "stage_selftests": [
+  {
+   "module": "zltg",
+   "exit": 0,
+   "seconds": 4.7
+  },
+  {
+   "module": "zdep",
+   "exit": 0,
+   "seconds": 7.4
+  },
+  {
+   "module": "zrtr",
+   "exit": 0,
+   "seconds": 4.4
+  },
+  {
+   "module": "zira",
+   "exit": 0,
+   "seconds": 4.3
+  },
+  {
+   "module": "zisoz",
+   "exit": 0,
+   "seconds": 4.4
+  }
+ ],
+ "fits": [
+  {
+   "split": "WQ-musique",
+   "fit": "scr-ml1-zg6r-s0",
+   "models_sha256": "c3e398e71a77248e08ecc222c3989e219869eb88dd6b3cff65274fea9f2c6840",
+   "candidates_before": [
+    "p@ep0",
+    "p@ep1",
+    "p@ep2",
+    "p@ep3",
+    "p@ep4",
+    "p@ep5",
+    "p@ep6",
+    "p@ep7",
+    "p@swa"
+   ],
+   "candidates_after": [
+    "p@swa"
+   ],
+   "models": [
+    [
+     "p@swa",
+     "ZG6R"
+    ]
+   ],
+   "state_same": true,
+   "installed_inside": true,
+   "restored": true
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "fit": "scr-ml1-zg6r-s0-hp",
+   "models_sha256": "1da0d0dd1071c878f4791a5ad0982165dfc2f8ac5aae2ce08ce356885a1c121c",
+   "candidates_before": [
+    "p@ep0",
+    "p@ep1",
+    "p@ep2",
+    "p@ep3",
+    "p@ep4",
+    "p@ep5",
+    "p@ep6",
+    "p@ep7",
+    "p@swa"
+   ],
+   "candidates_after": [
+    "p@swa"
+   ],
+   "models": [
+    [
+     "p@swa",
+     "ZG6R"
+    ]
+   ],
+   "state_same": true,
+   "installed_inside": true,
+   "restored": true
+  }
+ ],
+ "problems": [],
+ "passed": true,
+ "code": {
+  "readswa_sha256": "f47b10af1305faaa3c940b795a3151131357ea6997011a8d3d06a80b70c27e9e"
+ },
+ "modules": {
+  "zltg_sha256": "a894b97c0c5d02360366a25fe88575619d89d765cf99f5c2e0d08883c93d0423",
+  "zdep_sha256": "d8166738000ec12084356b3934f7e27bcc8df87d9546a71674592b1ff3f33ee1",
+  "zrtr_sha256": "14a3b8148f68adc6b67469a6ddf3b6e8eb357b985193b96b0c4f62e18301b0b8",
+  "zira_sha256": "b5ac3c143e697b319eb40d573274d0140ab831b039c74794de9031e22ddeb360",
+  "zisoz_sha256": "530d6cbb60b6e1a16220b5109991709b5dc380ec1c93be7cedbe9bccb577f89a"
+ },
+ "utc": "2026-11-02T19:18:47Z"
+}
