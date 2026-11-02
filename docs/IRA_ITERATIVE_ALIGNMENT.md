@@ -182,6 +182,27 @@ The screen's items sit right after RTR's screen, ahead of RTR's full run. The fu
 - **The patches** and their restoring, also on a failure.
 - **DEP's rule** as IRA calls it.
 
+## 10. Amendment A1, 2 November 2026, before any IRA fit: ML1's start read under ML1's names
+
+ISO's verdict is KEEP (docs/ISO_ZG6R_OWN_START.md, section 11), so IRA's base is ML1's zg6r and IRA's fits start from
+ML1's seed-0 zspk encoder. That start could not be read under IRA's names: LTG's first fit stopped on it 2 s in, before any
+train, and docs/LTG_NEXT_HOP_GNN.md (amendment A1) gives the cause. No IRA fit had started.
+
+**The change.**
+
+- The fit context in `outputs/mp_unified/zira.py` installs `ml1start.ml1_load` in zml1s on KEEP, where it left ML1's loader. That is ML1's loader
+  with ML1's declaration, stage and key in force for the length of the load only. The tensors and the record are the loader's,
+  bit for bit, and a zspk fit without ML1's read stamp is still refused. REPLACE is unchanged (ISO's `own_load`).
+- Each fit's code block also names `ml1start_sha256`. DEP's CODE_SKIP, which IRA uses, skips it in the code comparison with the base.
+
+**What does not change.** Every earlier section: the arm, the fits, the base, the reads, the rule and what follows.
+
+**The queue.** IRA's fits also wait on `ml1start-check` (LTG's A1), which runs this stage's self-test on the host among
+others.
+
+**Self-test.** `python outputs/mp_unified/zira.py --selftest` passed on the laptop's CPU before this commit. It now checks that the KEEP context
+installs `ml1_load` and that the code block names ml1start.
+
 ## Results
 
 None yet.

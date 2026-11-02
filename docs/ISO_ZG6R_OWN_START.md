@@ -167,3 +167,83 @@ The self-test, `python outputs/mp_unified/zisoz.py --selftest`, passed before th
 - that zg6r's carve calls the loader that is patched, through zg6r's own zu2n;
 - the toy KB carve with its typed links and with them removed;
 - the report's rows: the part kept, the floor, a missing value, and a base that disagrees.
+
+## 11. Results (filed 2 November 2026): KEEP
+
+`ziso.py verdict` ran on the host at 17:48 UTC (ziso.py sha256 22eba3ff..., the file of A1). The records are
+`outputs/iso/verdict.json` and `.md`. All six fits and twelve compares are present and pass section 4's checks: no problems.
+
+**Counts:** GAIN 1, LOSS 1, UNCONFIRMED_GAIN 0, WITHIN 10; ISO LOSS 1. Under section 4, one ISO LOSS gives **KEEP**: zg6r stays
+the GNN of record.
+
+| split | dataset | d0 | d1 | d2 | mean | floor | ML1 call | ISO loss |
+|---|---|---:|---:|---:|---:|---:|---|---|
+| WQ-musique | metaqa | -0.0446 | +0.0057 | +0.0166 | -0.0074 | 0.0621 | WITHIN | no |
+| WQ-musique | squad | -0.0022 | +0.0002 | -0.0009 | -0.0010 | 0.0075 | WITHIN | no |
+| WQ-musique | musique | +0.0202 | +0.0249 | +0.0241 | +0.0231 | 0.0110 | GAIN | no |
+| WQ-musique | hotpotqa | -0.0081 | -0.0075 | -0.0005 | -0.0054 | 0.0075 | LOSS | yes |
+| WQ-musique | 2wiki | -0.0017 | -0.0027 | +0.0067 | +0.0008 | 0.0075 | WITHIN | no |
+| WQ-musique | webqsp | +0.0142 | +0.0074 | +0.0241 | +0.0152 | 0.0142 | WITHIN | no |
+| WQ-hotpotqa | metaqa | -0.0628 | -0.0786 | -0.0325 | -0.0580 | 0.0637 | WITHIN | no |
+| WQ-hotpotqa | squad | -0.0006 | -0.0007 | +0.0003 | -0.0003 | 0.0075 | WITHIN | no |
+| WQ-hotpotqa | musique | +0.0056 | -0.0089 | -0.0038 | -0.0024 | 0.0126 | WITHIN | no |
+| WQ-hotpotqa | hotpotqa | -0.0117 | -0.0127 | -0.0019 | -0.0088 | 0.0200 | WITHIN | no |
+| WQ-hotpotqa | 2wiki | -0.0031 | -0.0056 | +0.0002 | -0.0028 | 0.0075 | WITHIN | no |
+| WQ-hotpotqa | webqsp | +0.0214 | +0.0261 | +0.0539 | +0.0338 | 0.0292 | WITHIN | no |
+
+- **The ISO LOSS** is hotpotqa under WQ-musique. ML1's rule calls it a LOSS: seed 0 at -0.0081 and seed 1 at -0.0075 against a
+  floor of 0.0075. The mean is -0.0054.
+- **The GAIN** is musique under WQ-musique, the main target: +0.0202, +0.0249 and +0.0241 against a floor of 0.0110.
+- webqsp rises under both splits (means +0.0152 and +0.0338), within the floors. metaqa under WQ-hotpotqa falls (mean
+  -0.0580), within its floor of 0.0637.
+
+**Beside, deciding nothing** (seed means; kept = (zg6r-m - zspk) / (zg6r - zspk), where zg6r's gain exceeds 0.002):
+
+| split | dataset | zspk | zg6r | zg6r-m | kept |
+|---|---|---:|---:|---:|---:|
+| WQ-musique | metaqa | 0.3574 | 0.3518 | 0.3443 |  |
+| WQ-musique | squad | 0.9139 | 0.9150 | 0.9140 |  |
+| WQ-musique | musique | 0.4934 | 0.5086 | 0.5317 | 2.511 |
+| WQ-musique | hotpotqa | 0.8440 | 0.8584 | 0.8530 | 0.626 |
+| WQ-musique | 2wiki | 0.9105 | 0.9260 | 0.9268 | 1.049 |
+| WQ-musique | webqsp | 0.6403 | 0.6604 | 0.6756 | 1.76 |
+| WQ-hotpotqa | metaqa | 0.3199 | 0.3691 | 0.3111 | -0.179 |
+| WQ-hotpotqa | squad | 0.9133 | 0.9135 | 0.9132 |  |
+| WQ-hotpotqa | musique | 0.5788 | 0.5946 | 0.5923 | 0.851 |
+| WQ-hotpotqa | hotpotqa | 0.8091 | 0.7929 | 0.7841 |  |
+| WQ-hotpotqa | 2wiki | 0.9143 | 0.9287 | 0.9259 | 0.804 |
+| WQ-hotpotqa | webqsp | 0.6345 | 0.6564 | 0.6902 | 2.541 |
+
+On musique under WQ-musique, zg6r-m keeps 2.5 times zg6r's gain over zspk (0.5317 against 0.5086 and 0.4934). On hotpotqa there
+it keeps 0.63 of it, and on metaqa under WQ-hotpotqa none (-0.18).
+
+**What follows (section 6, KEEP row).**
+
+- zg6r stays the GNN of record. The stages built on the base after ISO take KEEP's branch: LTG, DEP, RTR and IRA run on ML1's
+  zg6r, and their fits start from ML1's zspk encoder. Their amendments of 2 November, and A2 below for zg6-z, read that start
+  under ML1's own names.
+- The start carries part of zg6r's gain on hotpotqa and metaqa, but not on musique, where the own start is above zg6r at all
+  three seeds.
+- The next form, in its own declared file, is zg6r-m trained for the epochs zspk's fit and zg6r's fit took together. Both ran
+  8 epochs (SWA from epoch 2), so zg6r-m trains for 16.
+
+## 12. Amendment A2, 2 November 2026, before any zg6-z fit: ML1's start read under ML1's names
+
+zg6-z starts from ML1's seed-0 zspk encoder (A1). Its fit context sets zml1s's declaration and key to zg6-z's (`isoz`). zml1s's
+loader then refuses ML1's own read stamp in the zspk fit, as it did for LTG's first fit (docs/LTG_NEXT_HOP_GNN.md, amendment
+A1, gives the cause). No zg6-z fit had started.
+
+**The change.**
+
+- `zisoz.py`'s fit context installs `ml1start.ml1_load` in zml1s. That is ML1's loader with ML1's declaration, stage and key in
+  force for the length of the load only. The tensors and the record are the loader's, bit for bit, and a zspk fit without
+  ML1's read stamp is still refused.
+- Each fit's code block also names `ml1start_sha256`. The report's code check compares the base's keys only, so it does not
+  change.
+
+**What does not change.** Sections 1 to 11, and A1's route, fits, compares and report.
+
+**The queue.** `iso-zg6z-s0` and `iso-zg6z-s0-hp` also wait on `ml1start-check` (LTG's A1).
+
+**Self-test.** `python outputs/mp_unified/zisoz.py --selftest` passed on the laptop's CPU before this commit. It now checks that
+the fit context installs `ml1_load` and that the code block names ml1start.

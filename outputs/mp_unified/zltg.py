@@ -41,6 +41,7 @@ import zml1 as RULE  # noqa: E402  (stdlib only)
 import zml1s as M1  # noqa: E402
 import ziso as ISO  # noqa: E402
 import zdep as DEP  # noqa: E402  (the base after ISO, the slices and DEP's rule; DEP's fits are not touched)
+import ml1start as MS  # noqa: E402  (on ISO's KEEP, ML1's zspk start read under ML1's names: amendment A1)
 
 DECLARED = "docs/LTG_NEXT_HOP_GNN.md"
 STAGE = "LTG"
@@ -470,20 +471,21 @@ def stamp_with_term(orig, call, rec):
 @contextlib.contextmanager
 def on_names():
     """zml1s with LTG's names, stamp key, stage and declaration; restored after. Enough for the compares and the calls."""
-    sha, dsha = M1.WQ.sha_src(__file__), M1.WQ.sha_src(DEP.__file__)
+    sha, dsha, ms = M1.WQ.sha_src(__file__), M1.WQ.sha_src(DEP.__file__), MS.code()
     code = M1.code_shas
     with with_fits(), M1.WQ.patch(M1, DECLARED=DECLARED, STAGE=STAGE, KEY=KEY, pko_fit_name=ltg_fit_name,
-                                  code_shas=lambda arm=None: {**code(arm), "zltg_sha256": sha, "zdep_sha256": dsha}):
+                                  code_shas=lambda arm=None: {**code(arm), "zltg_sha256": sha, "zdep_sha256": dsha, **ms}):
         yield
 
 
 @contextlib.contextmanager
 def on_ltg(G, call):
-    """An LTG fit's context: LTG's names and stamp, the term, the next-hop loss, and on REPLACE ISO's own start (its
-    load_encoder in zml1s, its encoder_used in zg6r); restored after."""
+    """An LTG fit's context: LTG's names and stamp, the term, the next-hop loss, and the start: on REPLACE ISO's own (its
+    load_encoder in zml1s, its encoder_used in zg6r), on KEEP ML1's zspk start read under ML1's names (ml1start's ml1_load in
+    zml1s); restored after."""
     own = call == ISO.REPLACE
     with on_names(), M1.WQ.patch(M1, stamp=stamp_with_term(M1.stamp, call, term_record(G)),
-                                 **({"load_encoder": ISO.own_load} if own else {})), \
+                                 load_encoder=ISO.own_load if own else MS.ml1_load), \
             (M1.WQ.patch(G, encoder_used=ISO.own_used) if own else contextlib.nullcontext()), on_term(G), on_aux(G):
         yield
 
@@ -1038,7 +1040,7 @@ def selftest():
             assert G.g6r_stack is not gsaved[1] and G.ZG6R.__init__ is not gsaved[2] and G.ZG6R.forward is not gsaved[3]
             assert G.LG.listwiseD is not gsaved[4]
             cs = M1.code_shas(ARM)
-            assert "zltg_sha256" in cs and "zdep_sha256" in cs
+            assert "zltg_sha256" in cs and "zdep_sha256" in cs and "ml1start_sha256" in cs
             M1._ACTIVE[0] = fit_name(0, "WQ-hotpotqa")
             assert M1.pko_fit_name(ARM, 0, "WQ-hotpotqa") == "scr-ltg-nh-s0-hp"
             assert M1.pko_fit_name(ARM, 1, "WQ-hotpotqa") == "scr-ml1-zg6r-s1-hp"
@@ -1051,7 +1053,7 @@ def selftest():
         assert (G.encoder_used, G.g6r_stack, G.ZG6R.__init__, G.ZG6R.forward, G.LG.listwiseD) == gsaved
         assert len(M1.ALL_FITS) == n0
         with on_ltg(G, ISO.KEEP):
-            assert M1.load_encoder is saved[6] and G.encoder_used is gsaved[0] and M1.KEY == KEY
+            assert M1.load_encoder is MS.ml1_load and G.encoder_used is gsaved[0] and M1.KEY == KEY
             assert G.g6r_stack is not gsaved[1]
         try:
             with on_ltg(G, ISO.REPLACE):

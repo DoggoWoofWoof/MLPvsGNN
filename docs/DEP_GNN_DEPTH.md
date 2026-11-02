@@ -189,3 +189,25 @@ one after the other. Each is a fourth longer than zg6r's (section 7).
 - a top-level key and a nested key;
 - a value that is not a string;
 - a missing key, a step into null, and a missing file.
+
+## 10. Amendment A2, 2 November 2026, before any DEP fit: ML1's start read under ML1's names
+
+ISO's verdict is KEEP (docs/ISO_ZG6R_OWN_START.md, section 11), so DEP's base is ML1's zg6r and DEP's fits start from
+ML1's seed-0 zspk encoder. That start could not be read under DEP's names: LTG's first fit stopped on it 2 s in, before any
+train, and docs/LTG_NEXT_HOP_GNN.md (amendment A1) gives the cause. No DEP fit had started.
+
+**The change.**
+
+- The fit context in `outputs/mp_unified/zdep.py` installs `ml1start.ml1_load` in zml1s on KEEP, where it left ML1's loader. That is ML1's loader
+  with ML1's declaration, stage and key in force for the length of the load only. The tensors and the record are the loader's,
+  bit for bit, and a zspk fit without ML1's read stamp is still refused. REPLACE is unchanged (ISO's `own_load`).
+- Each fit's code block also names `ml1start_sha256`. CODE_SKIP, which LTG, RTR and IRA use as well, now holds it beside zml1s's and ziso's, so the code
+  comparison with the base skips it: these are stage modules, not the trainer's code.
+
+**What does not change.** Every earlier section: the arm, the fits, the base, the reads, the rule and what follows.
+
+**The queue.** DEP's fits also wait on `ml1start-check` (LTG's A1), which runs this stage's self-test on the host among
+others.
+
+**Self-test.** `python outputs/mp_unified/zdep.py --selftest` passed on the laptop's CPU before this commit. It now checks that the KEEP context
+installs `ml1_load` and that the code block names ml1start.

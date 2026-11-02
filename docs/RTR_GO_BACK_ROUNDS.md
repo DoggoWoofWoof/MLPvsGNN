@@ -183,3 +183,24 @@ The self-test, `python outputs/mp_unified/zrtr.py --selftest`, passed on the lap
   - the state loads strictly under the patch, and a plain zg6r refuses it;
 - the patches (names, stamp, declaration, ISO's own start on REPLACE, the rounds), and that they are put back, also on a failure;
 - DEP's rule on sixteen made-up reads.
+
+## 9. Amendment A1, 2 November 2026, before any RTR fit: ML1's start read under ML1's names
+
+ISO's verdict is KEEP (docs/ISO_ZG6R_OWN_START.md, section 11), so RTR's base is ML1's zg6r and RTR's fits start from
+ML1's seed-0 zspk encoder. That start could not be read under RTR's names: LTG's first fit stopped on it 2 s in, before any
+train, and docs/LTG_NEXT_HOP_GNN.md (amendment A1) gives the cause. No RTR fit had started.
+
+**The change.**
+
+- The fit context in `outputs/mp_unified/zrtr.py` installs `ml1start.ml1_load` in zml1s on KEEP, where it left ML1's loader. That is ML1's loader
+  with ML1's declaration, stage and key in force for the length of the load only. The tensors and the record are the loader's,
+  bit for bit, and a zspk fit without ML1's read stamp is still refused. REPLACE is unchanged (ISO's `own_load`).
+- Each fit's code block also names `ml1start_sha256`. DEP's CODE_SKIP, which RTR uses, skips it in the code comparison with the base.
+
+**What does not change.** Every earlier section: the arm, the fits, the base, the reads, the rule and what follows.
+
+**The queue.** RTR's fits also wait on `ml1start-check` (LTG's A1), which runs this stage's self-test on the host among
+others.
+
+**Self-test.** `python outputs/mp_unified/zrtr.py --selftest` passed on the laptop's CPU before this commit. It now checks that the KEEP context
+installs `ml1_load` and that the code block names ml1start.

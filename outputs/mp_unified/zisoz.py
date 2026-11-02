@@ -28,6 +28,7 @@ if str(HERE) not in sys.path:
 
 import zml1 as RULE  # noqa: E402  (stdlib only)
 import zml1s as M1  # noqa: E402
+import ml1start as MS  # noqa: E402  (ML1's zspk start read under ML1's names: ISO's amendment A2)
 
 DECLARED = "docs/ISO_ZG6R_OWN_START.md"
 STAGE = "ISO"
@@ -92,17 +93,19 @@ def stamp_removed(orig):
 @contextlib.contextmanager
 def on_names():
     """zml1s with zg6-z's names, stamp key, stage and declaration; restored after. Enough for the compares and the report."""
-    sha = M1.WQ.sha_src(__file__)
+    sha, ms = M1.WQ.sha_src(__file__), MS.code()
     code = M1.code_shas
     with with_fits(), M1.WQ.patch(M1, DECLARED=DECLARED, STAGE=STAGE, KEY=KEY, pko_fit_name=z_fit_name,
-                                  code_shas=lambda arm=None: {**code(arm), "zisoz_sha256": sha}):
+                                  code_shas=lambda arm=None: {**code(arm), "zisoz_sha256": sha, **ms}):
         yield
 
 
 @contextlib.contextmanager
 def on_z(U2N):
-    """A zg6-z fit's context: zg6-z's names and stamp, and no typed link loaded; restored after."""
-    with on_names(), M1.WQ.patch(M1, stamp=stamp_removed(M1.stamp)), M1.WQ.patch(U2N, load_typed=no_typed):
+    """A zg6-z fit's context: zg6-z's names and stamp, ML1's zspk start read under ML1's names (ml1start's ml1_load in
+    zml1s), and no typed link loaded; restored after."""
+    with on_names(), M1.WQ.patch(M1, stamp=stamp_removed(M1.stamp), load_encoder=MS.ml1_load), \
+            M1.WQ.patch(U2N, load_typed=no_typed):
         yield
 
 
@@ -341,7 +344,8 @@ def selftest():
         M1.stamp = lambda name, env, what, extra=None: seen.append((name, what, extra))
         with on_z(U):
             assert len(M1.ALL_FITS) == n0 + 2 and (M1.DECLARED, M1.STAGE, M1.KEY) == (DECLARED, STAGE, KEY)
-            assert U.load_typed is no_typed and M1.load_encoder is saved[6] and "zisoz_sha256" in M1.code_shas(ARM)
+            assert U.load_typed is no_typed and M1.load_encoder is MS.ml1_load and "zisoz_sha256" in M1.code_shas(ARM)
+            assert "ml1start_sha256" in M1.code_shas(ARM)
             M1._ACTIVE[0] = fit_name(0, "WQ-musique")
             assert M1.pko_fit_name(ARM, 0, "WQ-musique") == "scr-iso-zg6z-s0"
             assert M1.pko_fit_name("zspk", 0, "WQ-musique") == "scr-ml1-zspk-s0"

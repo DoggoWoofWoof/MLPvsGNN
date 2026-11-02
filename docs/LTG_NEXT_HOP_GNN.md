@@ -210,3 +210,49 @@ The self-test, `python outputs/mp_unified/zltg.py --selftest`, passed on the lap
 - the patches (names, stamp with the term's record and curve, ISO's own start on REPLACE), and that they are put back,
   also on a failure;
 - section 4's rule and DEP's beside on made-up reads (zero-shot losses beside, a slice GAIN alone, UNCONFIRMED_GAIN).
+
+## 9. Amendment A1, 2 November 2026, before any LTG fit trained: ML1's start read under ML1's names
+
+**What happened.** ISO's verdict is KEEP (docs/ISO_ZG6R_OWN_START.md, section 11), so LTG's fits start from ML1's seed-0 zspk
+encoder (section 2). `ltg-nh-s0` stopped 2 s after it started on the host (2 November, 23:20), before any train, with "zml1s: scr-ml1-zspk-s0 is not fitted and read by ML1".
+
+**Why.** `zml1s.load_encoder` takes the start only after `zml1s.stamped` finds ML1's read stamp in the zspk fit: the block of
+its read.json under `zml1s.KEY`, declared in `zml1s.DECLARED`. LTG's `on_names` sets those two names to LTG's own for the whole
+fit. So the loader looked for an `ltg` block in ML1's fit and refused it. The self-test checked that KEEP leaves ML1's loader in
+place; it did not run the loader under LTG's names. DEP, RTR, IRA and zg6-z take the same route and would have stopped the same
+way.
+
+**The change.**
+
+- `outputs/mp_unified/ml1start.py` (new). `ml1_load(split)` runs ML1's own loader with ML1's declaration, stage and key in
+  force for the length of the load only, and LTG's are back after it, also on a refusal. The tensors and the record are the
+  loader's, bit for bit. A zspk fit without ML1's read stamp is still refused, and so is one stamped by LTG alone.
+- `zltg.py`'s fit context installs `ml1_load` in zml1s on KEEP, where it left ML1's loader. REPLACE is unchanged (ISO's
+  `own_load`).
+- Each fit's code block also names `ml1start_sha256`. DEP's CODE_SKIP, which LTG uses, skips it when a fit's code is compared
+  with its base's, as it skips zml1s's and ziso's: these are stage modules, not the trainer's code.
+
+**What does not change.** Sections 1 to 8: the term, the next-hop loss, the fits, the base, the reads, the rule and what
+follows. The check that a fit's start is its base's start is unchanged.
+
+**The queue.**
+
+- `ltg-nh-s0` is renamed `ltg-nh-s0-b`, and `ltg-compare` waits on it. The feeder's one retry of the old item would have
+  stopped the same way and dropped `ltg-compare` and everything behind it.
+- A new CPU item, `ml1start-check`, runs `python outputs/mp_unified/ml1start.py --check-host` on the host:
+  - ml1start's self-test;
+  - the self-tests of the five stages (zltg, zdep, zrtr, zira, zisoz), each in its own process;
+  - the real zspk starts of both WQ splits, loaded under each stage's names: the loader alone refuses them, and the wrapper
+    must give ML1's tensors and record.
+
+  It writes `outputs/ml1start/check.json`. Every GNN fit of LTG, DEP, zg6-z, RTR and IRA waits on it.
+
+**Self-tests.** `python outputs/mp_unified/ml1start.py --selftest` and `python outputs/mp_unified/zltg.py --selftest` passed on
+the laptop's CPU before this commit. ml1start's runs toy zspk fits of both splits, in ML1's form, under each of the five stages'
+`on_names`:
+
+- the loader alone refuses ML1's stamp, as `ltg-nh-s0` did, and takes a fit stamped by the stage alone;
+- the wrapper loads ML1's fit and refuses the stage's, a missing fit and a models.pt of another fit;
+- the stage's names are back after each.
+
+zltg's now checks that the KEEP context installs `ml1_load` and that the code block names ml1start.
