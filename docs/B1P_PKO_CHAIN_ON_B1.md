@@ -150,3 +150,70 @@ the settings arrays, pools, looks, caches, links, KT, forks or reads.
   - The laptop's 8-question look on the host's filed musique b1w pools held every `look_u2d` check. Its structural store
     held 82,834 entries, the cut's 41,417 pairs twice.
   - 2wiki's b1w look on the host ran on the fixed code (1,000 questions, 94 s), and its cache checked IDENTICAL against Carve3.
+
+## 12. Results (host, 2 November; filed 3 November 2026)
+
+`zb1p.py report` wrote `outputs/b1p/report.json` and `.md` on the host at 18:14 UTC on 2 November (zb1p.py sha256
+9bce0abf...). Nothing in sections 1 to 9 changed after the reads.
+
+- **Complete.** 72 reads: 12 fits per variant (two arms, three seeds, two splits), each read on the three settings. Missing: 0.
+- **No training overlap.** 0 of each setting's 1,000 questions are in the in-domain splits' training carves (PKO's KT ids), as
+  expected.
+- **Pools** (`outputs/b1p/steps/`), rows per question on b1w and b1t: musique 3,433.6 and 3,313.0, 2wiki 88.5 and 50.0, hotpotqa
+  65.3 and 50.0. No record step found a problem.
+
+**In-domain reads.** R@5 x100 of p@swa, seed means (2wiki: over both splits), 95% intervals over the questions. FC@5 and hit@1 are
+fit means.
+
+| setting | arm | b1t | b1w (CI) | w - t (CI) | b1w FC@5 | b1w hit@1 | calls (any / peer) |
+|---|---|---:|---:|---|---:|---:|---|
+| musique | GNN zg6r | 66.0 | 69.0 (67.2-70.7) | +3.0 (+1.8, +4.0) | 39.6 | 80.4 | BELOW / BELOW |
+| musique | MLP zrckp | 62.5 | 66.9 (65.2-68.6) | +4.4 (+3.3, +5.6) | 36.8 | 79.8 | BELOW / BELOW |
+| 2wiki | GNN zg6r | 78.1 | 94.9 (94.1-95.7) | +16.8 (+15.5, +18.2) | 87.2 | 99.3 | BELOW / BELOW |
+| 2wiki | MLP zrckp | 75.9 | 94.0 (93.1-94.8) | +18.1 (+16.8, +19.4) | 84.8 | 98.9 | BELOW / BELOW |
+| hotpotqa | GNN zg6r | 91.1 | 94.3 (93.3-95.3) | +3.1 (+2.4, +4.0) | 89.0 | 91.2 | BELOW / BELOW |
+| hotpotqa | MLP zrckp | 90.0 | 93.4 (92.4-94.5) | +3.4 (+2.5, +4.3) | 87.3 | 90.5 | BELOW / BELOW |
+
+The best published rows (section 5): musique SAG2 80.68 / PropRAG 78.3; 2wiki EviReform 98.45 / G-reasoner 98.2; hotpotqa
+BridgeRAG 98.75 / PropRAG 97.4.
+
+**Zero-shot reads, beside:**
+
+| setting (split) | arm | b1t | b1w (CI) | w - t (CI) |
+|---|---|---:|---:|---|
+| musique (WQ-musique) | GNN zg6r | 62.1 | 60.8 (59.1-62.5) | -1.3 (-2.6, +0.1) |
+| musique (WQ-musique) | MLP zrckp | 58.6 | 60.9 (59.2-62.6) | +2.3 (+0.9, +3.5) |
+| hotpotqa (WQ-hotpotqa) | GNN zg6r | 89.4 | 92.9 (91.9-94.0) | +3.5 (+2.6, +4.4) |
+| hotpotqa (WQ-hotpotqa) | MLP zrckp | 87.9 | 92.2 (91.2-93.3) | +4.3 (+3.4, +5.2) |
+
+**B1f's reads beside** (B1b's fits on split J5, trained on the package graphs with the hyperlinks; GNN zsp / MLP zrc):
+
+| variant | musique | 2wiki | hotpotqa |
+|---|---|---|---|
+| b1 (hyperlinks; musique: title links) | 66.3 / 66.1 | 97.2 / 96.4 | 98.2 / 98.2 |
+| b1u (plain title rule) | 66.3 / 66.1 | 95.9 / 95.3 | 95.0 / 94.8 |
+| b1w (W2_S) | 65.7 / 65.3 | 95.2 / 94.2 | 94.3 / 94.8 |
+| b1t (text links only) | 62.9 / 63.4 | 77.3 / 75.6 | 90.0 / 88.7 |
+
+**What the reads show (deciding nothing):**
+
+1. **The rule's links carry over in-domain.** b1w - b1t is above zero, with its interval, in all six in-domain reads. That is
+   +3.0 (GNN) and +4.4 (MLP) on musique, +16.8 and +18.1 on 2wiki, and +3.1 and +3.4 on hotpotqa. Zero-shot, three of four reads
+   are above zero. The GNN on musique under WQ-musique is -1.3 (-2.6, +0.1).
+2. **musique.** The GNN with no hyperlinks and no LLM reads 69.0 on musique's setting. B1b's J5 fits on b1 read 66.3 (GNN) and
+   66.1 (MLP); musique has no hyperlinks, so its b1 is the title links. The MLP reads 66.9. These rows come from different models
+   and splits (J5 against WQ-hotpotqa), and B1P compares them by no rule.
+3. **2wiki and hotpotqa.** The GNN reads 94.9 on 2wiki's b1w, against B1b's GNN at 97.2 on the hyperlinks. On hotpotqa it reads
+   94.3, against 98.2.
+4. **Table 1.** All six in-domain b1w reads are BELOW both best published rows:
+   - musique, against PropRAG's 78.3: by 9.3 (GNN) and 11.4 (MLP) points;
+   - 2wiki, against G-reasoner's 98.2: by 3.3 and 4.2;
+   - hotpotqa, against PropRAG's 97.4: by 3.1 and 4.0.
+5. **The MLP beside the GNN** on b1w in-domain: 66.9 against 69.0 (musique), 94.0 against 94.9 (2wiki), 93.4 against 94.3
+   (hotpotqa). The MLP gains more from the rule's links than the GNN on all three settings.
+
+**What follows.** B1P decides nothing (section 1).
+- Its in-domain b1w rows are the LLM-free, hyperlink-free Table 1 rows of ML1's models of record.
+- Its b1w - b1t rows measure the rule's carry-over on settings it was never fitted on.
+- A model that replaces zg6r or zrckp before the 6-7 November freeze is read on B1 with this chain (`zb1p.py`), in a stage of
+  its own.

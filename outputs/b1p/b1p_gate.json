@@ -1,0 +1,43 @@
+{
+ "declared_in": "docs/B1P_PKO_CHAIN_ON_B1.md",
+ "stage": "B1P",
+ "pko_gate": "outputs/b1p/gate.json",
+ "pko_gate_sha256": "f5bc70024edf4682e8095a9b9d9e8ed7c09768c269aebb3d735076118d605000",
+ "verdict": "READY",
+ "carves": [
+  [
+   "musique",
+   "b1w"
+  ],
+  [
+   "2wiki",
+   "b1w"
+  ],
+  [
+   "hotpotqa",
+   "b1w"
+  ],
+  [
+   "musique",
+   "b1t"
+  ],
+  [
+   "2wiki",
+   "b1t"
+  ],
+  [
+   "hotpotqa",
+   "b1t"
+  ]
+ ],
+ "settings": {
+  "w/musique": "7d791a14cb06d54b41230bad249499ebf42f536f2a10498211c69d97c8992324",
+  "w/2wiki": "ad8e40ea24a19ec278dc6f9f422d2ebadd693859e3398af7a9d9fb65e82d9980",
+  "w/hotpotqa": "c748ca8c71f70f4d6c5ca945cf5bed070901c6cfaa1a81af8e34590a15381e37",
+  "t/musique": "b6c3db07d14d12dfd262eccec34c53ba69406deeef14e123408feae875c6d7c7",
+  "t/2wiki": "354591713992a0c1dfc2afd8ba8b84ac1eff8c3d5e8b85f450339efefcff5bfb",
+  "t/hotpotqa": "2998c716b7ffe5de7d50a1494089ca723a8c2f9079558bad0dff25712bf4a3ad"
+ },
+ "zb1p_sha256": "9bce0abf8dc8a9b66064561bc3613abb5db5747bde500c612cbab5e8d7d53bae",
+ "utc": "2026-11-02T14:32:08Z"
+}
