@@ -107,3 +107,33 @@ and `.numpy()` refused them. The self-test's fake model had no weights, so the s
 The read now runs under `torch.no_grad()`, as `lean_gpu.read_carve` does. The self-test's fake model now holds a weight that
 requires grad, so the self-test covers this path. Nothing else changes: same fit, carves, depths, check against ML1's own read,
 and rule. The read and its report are queued again as `knee-zrckp-s0-b` and `knee-report-b`. No cut had been read.
+
+## 10. Amendment A3, 2 November 2026, before zg6r's cuts were read: zg6r's own depth read
+
+- **The fit.** `scr-ml1-zg6r-s0` is added to the knee's fits: zg6r, the GNN of record since ML1's ADOPT, WQ-musique, seed 0.
+  It is read by `knee-zg6r-s0` on the host's GPU, where ML1 read it.
+- **A correction to A1.** A1 said zg6r's reads go through zrm, not lean_gpu. They enter through zrm's read (`rmatch.read`)
+  but end in lean_gpu's read loop (`rmatch.read`, then `lean_screen2`, `lean_screen.read_cmd`, `lean_gpu.read_cmd`). That loop
+  calls `read_carve` by its module name, so the knee's patched read serves zg6r as it served zrckp. No new read function is
+  needed.
+- **What the code adds** (`zknee.zg6r_read`). zg6r's read runs under the contexts `zml1s.run_arm` sets for a read:
+  - U2n's typed links from PKO's typed root;
+  - the check that zg6r's modules are zwq's, and zg6r's arm check;
+  - zp1c2's card and contexts;
+  - the KT and typed records;
+  - then rmatch's read.
+
+  zg6r is imported before zwq's contexts, as run_arm imports it. The read writes only under
+  `outputs/knee/fits/scr-ml1-zg6r-s0/`, with ML1's read cap for zg6r (32,768 rows).
+- **What a cut means for zg6r.** As section 2 says, the scores come from one pass over the full pool. zg6r's messages also
+  run over the full pool, so a kept row's score carries what the cut rows passed to it. As section 4 says of the features,
+  this measures where in the pool's order zg6r's top five come from. It does not measure zg6r on a rebuilt smaller pool.
+- **What stays the same.** The depths, the check against ML1's own read (0.002), the reading (section 5) and the device.
+  zg6r's reading is filed beside zrckp's, per fit.
+- **The self-test.** It now also checks that the zg6r read runs run_arm's steps in run_arm's order, with the card's argv
+  reaching rmatch's read inside zp1c2's contexts, and that the real modules hold every name it calls. It passed before this
+  amendment's commit.
+- **Placement.** `knee-zg6r-s0` runs at the share of `knee-zrckp-s0-b` (0.54 of the GPU). It is placed after ISO's third
+  `zg6r-m` fit in the GPU queue, so the two run side by side. ML1's read of this fit took 77 minutes and peaked at 9.3 GB of
+  GPU memory. Then `knee-report-c` runs on the CPU. It writes the report with all three fits: zspk NOT_RUN, zrckp as filed,
+  and zg6r.

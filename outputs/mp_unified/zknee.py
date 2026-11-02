@@ -37,7 +37,7 @@ import numpy as np  # noqa: E402
 
 DECLARED = "docs/PKO_DEPTH_KNEE.md"
 DEPTHS = (500, 1000, 1500, 2000, 3300)         # rows in a pool; B is always whole (section 2)
-FITS = {"scr-ml1-zspk-s0": "zspk", "scr-ml1-zrckp-s0": "zrckp"}
+FITS = {"scr-ml1-zspk-s0": "zspk", "scr-ml1-zrckp-s0": "zrckp", "scr-ml1-zg6r-s0": "zg6r"}   # zg6r: A3
 SRC = "outputs/screen/fits"                    # ML1's sealed folders
 OUT = "outputs/knee"
 CAND = "p@swa"
@@ -290,6 +290,22 @@ def check_against_ml1(name, work, src):
     return res
 
 
+def zg6r_read(M1, W, st, argv, G, U2N):
+    """A3: zg6r's read as zml1s.run_arm reads it (U2n's typed links, zg6r's arm check, zp1c2's card and contexts, the KT and
+    typed records, rmatch's read), into the knee's own folder (argv's --out-root); G and U2N come from M1.import_arm, called
+    before zwq's contexts as run_arm calls it; lean_gpu.read_carve is patched by the caller."""
+    st.enter_context(M1.on_typed(U2N))
+    M1.same_modules(G, W)
+    G.check_arm()
+    W.Z2.cache_root_of(argv)
+    argv = W.Z2.on_card(argv)
+    carves = W.Z3.eval_carves()
+    W.Z3.kt_records(carves)
+    M1.typed_records(U2N, carves)
+    with W.Z2.on_p1c2():
+        return W.Z3.RM.read(argv)
+
+
 def run_cmd(a):
     import torch
     import zml1s as M1
@@ -333,13 +349,17 @@ def run_cmd(a):
     argv = ["--name", name, "--out-root", str(work.parent), "--device", "cuda", "--host", "--cache-root", M1.ROOTS["cache"],
             "--rows-cap", str(M1.ROWS_CAP[arm])] + (["--read", a.read] if a.read else [])
     t0 = time.time()
+    mods = M1.import_arm("zg6r") if arm == "zg6r" else None
     with contextlib.ExitStack() as st:
         st.enter_context(M1.on_ml1())
         M1.WQ.cache_root_ok(M1.ROOTS["cache"])
         M1.WQ.gate_passed()
         W = st.enter_context(M1.WQ.on_wq())
         st.enter_context(M1.WQ.patch(LG, read_carve=read_carve))
-        rc = (W.Z3P.read if arm == "zrckp" else W.Z3.read)(argv)
+        if arm == "zg6r":
+            rc = zg6r_read(M1, W, st, argv, *mods)
+        else:
+            rc = (W.Z3P.read if arm == "zrckp" else W.Z3.read)(argv)
     if rc:
         log(f"{name}: the read exited {rc}")
         return rc
@@ -500,7 +520,48 @@ def selftest():
     assert knee_of(t, CAND, 0.0) in (2, 5, 1000) and reading({"x=y": t})["common"]["0.01"] is not None
     m = metrics(r0["top"][1], r0["hit"][1], gt_np)
     assert np.allclose(m, LG.metrics_of(r0["top"][1], r0["hit"][1], gt_np))
-    log("selftest: positions, top_hit_k (40 random reads), the fake carve's keys, the table and the reading all pass")
+    # 5. A3: zg6r's read is zml1s.run_arm's (its order, the card's argv to rmatch's read, the read inside zp1c2's contexts,
+    # U2n's typed links held on the caller's stack), and the real modules hold every name it calls
+    import zml1s as M1r
+    import zp1c2 as Z2r
+    import zp1c3 as Z3r
+    for mod, names in ((M1r, ("import_arm", "on_typed", "same_modules", "typed_records", "ROWS_CAP")),
+                       (Z2r, ("cache_root_of", "on_card", "on_p1c2")), (Z3r, ("eval_carves", "kt_records", "RM"))):
+        miss = [n for n in names if not hasattr(mod, n)]
+        assert not miss, (mod.__name__, miss)
+    assert hasattr(Z3r.RM, "read") and M1r.ROWS_CAP["zg6r"] == 32768 and FITS["scr-ml1-zg6r-s0"] == "zg6r"
+    calls = []
+
+    @contextlib.contextmanager
+    def ctx(tag):
+        calls.append(f"enter {tag}")
+        try:
+            yield
+        finally:
+            calls.append(f"exit {tag}")
+
+    class NS:
+        def __init__(self, **kw):
+            self.__dict__.update(kw)
+
+    U2Nf, ev = object(), [("musique", "s1eval")]
+    Gf = NS(check_arm=lambda: calls.append("check_arm"))
+    Wf = NS(Z2=NS(cache_root_of=lambda v: calls.append(("cache_root_of", tuple(v))),
+                  on_card=lambda v: calls.append("on_card") or list(v) + ["--card"], on_p1c2=lambda: ctx("p1c2")),
+            Z3=NS(eval_carves=lambda: calls.append("eval_carves") or ev,
+                  kt_records=lambda c: calls.append(("kt_records", c is ev)),
+                  RM=NS(read=lambda v: calls.append(("read", tuple(v))) or 0)))
+    M1f = NS(on_typed=lambda u: calls.append(("on_typed", u is U2Nf)) or ctx("typed"),
+             same_modules=lambda g, w: calls.append(("same_modules", g is Gf and w is Wf)),
+             typed_records=lambda u, c: calls.append(("typed_records", u is U2Nf and c is ev)))
+    with contextlib.ExitStack() as stf:
+        assert zg6r_read(M1f, Wf, stf, ["--name", "x"], Gf, U2Nf) == 0
+        assert calls[-1] == "exit p1c2"
+    assert calls == [("on_typed", True), "enter typed", ("same_modules", True), "check_arm", ("cache_root_of", ("--name", "x")),
+                     "on_card", "eval_carves", ("kt_records", True), ("typed_records", True), "enter p1c2",
+                     ("read", ("--name", "x", "--card")), "exit p1c2", "exit typed"], calls
+    log("selftest: positions, top_hit_k (40 random reads), the fake carve's keys, the table and the reading all pass; "
+        "A3: zg6r's read path is run_arm's, in its order")
     return 0
 
 
