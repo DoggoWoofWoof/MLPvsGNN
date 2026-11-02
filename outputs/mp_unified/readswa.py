@@ -209,7 +209,10 @@ def real_fits():
         before = [str(c) for c in blob["candidates"]]
         orig, inside = LG.load_models, False
         try:
-            with on_read():
+            # lean_gpu.read_cmd binds its device ops (the stored projection's width among them) before load_models
+            with on_read(), WQ.patch(LG.LM, seg_zscore=LG.LM.seg_zscore), \
+                    WQ.patch(LG.L3.LeanMLP3, dim=LG.L3.LeanMLP3.dim):
+                LG.bind_device_ops()
                 inside = installed(LG)
                 with S.patched("zg6r"):
                     models = LG.load_models(blob, "cpu")
