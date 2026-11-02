@@ -416,9 +416,12 @@ def on_b1(M, name, v, stats, look=False):
             inside[st.urows] = True
 
             mp_mod = S4.m3b_pools
+            orig_store = mp_mod.load_or_build_store
 
             def load_store(ds_, family, cache_dir):
                 if ds_.name != name:
+                    if look:        # the six pair's look opens all six (m3b_run.open_contexts), as under look_b1 for B1f
+                        return orig_store(ds_, family, cache_dir)
                     raise SystemExit(f"B1P: {ds_.name}'s stores asked for; B1P opens {name} only")
                 return LB.setting_store(mp_mod, st, family, int(ds_.n_nodes))
 
