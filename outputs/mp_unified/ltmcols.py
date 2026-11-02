@@ -58,6 +58,8 @@ DS_K = {**LTW.DS_K, "webqsp": 3, "squad": 4, "metaqa": 5}
 EVAL_CARVE = "s1eval"
 HOLD = LTW.HOLD                                  # a fold fit's early stop: 0.10 of its training components
 CHUNK = LTW.CHUNK
+MIN_LISTS = 200                                  # a training carve's dataset enters its split's scorer with this many A lists
+                                                 # (set from the census's counts, before any fit: webqsp fit 26, squad fit 0)
 assert TOP == 5 and WIDTH == 7 and LTW.FORMS == ("lin", "bil")
 
 
@@ -321,9 +323,10 @@ def identity(chk):
     return {"checked": chk[0], "bad": chk[1], "max_abs": chk[2], "pass": chk[0] > 0 and chk[1] <= CH.CHECK_BAD * chk[0]}
 
 
-def fit(split, root=PKO, out=OUT, nodes=None, epochs=LTW.EPOCHS, host=False):
+def fit(split, root=PKO, out=OUT, nodes=None, epochs=LTW.EPOCHS, host=False, min_lists=MIN_LISTS):
     """The split's five fold fits of bil on its training carves' A lists (LTW's cap, settings and loop); fit j leaves
-    out fold j's questions and stops early on 0.10 of the remaining components."""
+    out fold j's questions and stops early on 0.10 of the remaining components. Only the datasets whose training carve
+    holds at least min_lists A lists enter (LTW's loss weighs each dataset equally, its stop is their macro)."""
     import torch
     import lean_cache as LC
     t0 = time.time()
@@ -348,7 +351,10 @@ def fit(split, root=PKO, out=OUT, nodes=None, epochs=LTW.EPOCHS, host=False):
         ident = identity(chk)
         if not ident["pass"]:
             raise SystemExit(f"ltm fit {split}: identity FAIL {ident}")
-        have = tuple(ds for ds in dsets if info[ds]["lists"])
+        have = tuple(ds for ds in dsets if info[ds]["lists"] >= min_lists)
+        if not have:
+            raise SystemExit(f"ltm fit {split}: no training carve holds {min_lists} A lists ({info})")
+        items = [it for it in items if it["name"] in have]
         folds, wd = [], fold_path(out, split, 0).parent
         wd.mkdir(parents=True, exist_ok=True)
         for j in range(K):
@@ -378,7 +384,7 @@ def fit(split, root=PKO, out=OUT, nodes=None, epochs=LTW.EPOCHS, host=False):
            "with_lists": list(have), "carves": info, "folds": folds, "identity": ident,
            "settings": {"k": K, "cap": LTW.CAP, "hold": HOLD, "rank": LTW.RANK, "hidden": LTW.HID, "lr": LTW.LR,
                         "weight_decay": LTW.WD, "batch": LTW.BATCH, "epochs": epochs, "patience": LTW.PATIENCE,
-                        "seed": SEED, "threads": threads()},
+                        "seed": SEED, "threads": threads(), "min_lists": min_lists},
            "package_record_sha256": rec_sha, "host": bool(host), "script_sha256": CH.sha_src(__file__),
            "ltwdiag_sha256": CH.sha_src(LTW.__file__), "seconds": time.time() - t0,
            "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
@@ -621,10 +627,12 @@ def selftest():
             assert np.array_equal(zw[f"A_{k}"], z[f"A_{k}"]), k
         assert np.array_equal(zw["qe"], z["qe"])
         # the fold fits: five, each without its fold
-        rec = fit("WQ-hotpotqa", root=tmp, out=out, nodes=nodes, epochs=2)
+        rec = fit("WQ-hotpotqa", root=tmp, out=out, nodes=nodes, epochs=2, min_lists=1)
         assert len(rec["folds"]) == K and rec["identity"]["pass"] and LTW.DS_K is saved_ds_k
-        assert all(f["left_out_lists"] == sum(rec["carves"][d]["fold_lists"][f["fold"]] for d in rec["carves"])
+        assert rec["with_lists"] == [d for d in rec["datasets"] if rec["carves"][d]["lists"]]
+        assert all(f["left_out_lists"] == sum(rec["carves"][d]["fold_lists"][f["fold"]] for d in rec["with_lists"])
                    for f in rec["folds"])
+        n_in = {d: rec["carves"][d]["lists"] for d in rec["with_lists"]}
         Ms, fsha, _ = load_folds(out, "WQ-hotpotqa")
         # the columns of a training carve (out of fold) and of an eval carve (drawn); per part, with records
         for ds, cv in (("musique", "s1fit"), ("musique", "s1eval"), ("webqsp", "s1eval")):
@@ -675,6 +683,18 @@ def selftest():
         rep = report(out)
         assert len(rep["cols"]) == 3 and "WQ-hotpotqa" in rep["fits"]
         assert torch.get_num_threads() >= 1
+        # the list floor: a dataset under it stays out of every fold fit; none over it is refused
+        lists("squad", "fit", root=tmp, out=out)
+        lo = min(n_in, key=n_in.get)
+        r2 = fit("WQ-hotpotqa", root=tmp, out=out, nodes=nodes, epochs=1, min_lists=n_in[lo] + 1)
+        assert lo not in r2["with_lists"] and r2["settings"]["min_lists"] == n_in[lo] + 1
+        assert all(f["train_lists"] + f["stop_lists"] + f["left_out_lists"] == sum(n_in[d] for d in r2["with_lists"])
+                   for f in r2["folds"])
+        try:
+            fit("WQ-hotpotqa", root=tmp, out=out, nodes=nodes, epochs=1, min_lists=max(n_in.values()) + 1)
+            raise AssertionError("a fit with no dataset over the floor passed")
+        except SystemExit:
+            pass
     finally:
         LTW.DS_K = saved_ds_k
         import shutil
