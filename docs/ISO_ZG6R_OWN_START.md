@@ -110,3 +110,60 @@ The self-test, `python outputs/mp_unified/ziso.py --selftest`, passed before thi
 - the rule on made-up reads: REPLACE when flat or up; KEEP on a seed-0 LOSS and on a mean-only LOSS; INCOMPLETE on a hole.
 
 Not claimed: anything about the encoder's start on other pools or regimes.
+
+## 10. Amendment A1, 2 November 2026, before any zg6-z fit: zg6-z's wiring
+
+**The route.** Section 7 said that zg6 under WQ runs through WQK's own route, whose train refuses `--seed`, and that its wiring
+onto PKO's roots would come here. zg6-z runs on zg6r's own route instead: zml1s's zg6r branch, with PKO's roots, ML1's encoder
+start (the split's zspk seed-0 encoder), the card, the seed and the read cap of 32,768. Only U2n's typed links are removed, where
+they are loaded: `zu2n.load_typed` answers None for every carve, as it does for a passage graph. The module is
+`outputs/mp_unified/zisoz.py`. It imports zml1s, zg6r and zu2n and edits none of them.
+
+**Why that is zg6.**
+
+- zg6r's self-test (zg6r.py, step 5) shows that with no typed edge, zg6r's score is zg6's bit for bit, in eval and in training
+  with the same draws. It also shows that zg6r's construction moves the global generator as zg6's does.
+- So the model trained and read is zg6. G6r's parameters are built and never used.
+- zisoz's self-test shows the same on zg6r's toy KB carve, whose typed links are real (106 typed edges in the batch). With the
+  links removed, zg6r's score equals zg6's bit for bit in eval and in training. With them, it differs.
+
+This is a change of route, disclosed here: zg6's own class is not run; zg6r's class with no typed link is.
+
+**What runs.**
+
+- **Fits.** `scr-iso-zg6z-s0` (WQ-musique) and `scr-iso-zg6z-s0-hp` (WQ-hotpotqa). Each trains and reads in one process with the
+  links removed. Each is stamped under the key `isoz`, which names the typed links as removed. Any later read of these fits must
+  remove the links too.
+- **Compares.** Each fit against ML1's zg6r seed 0 of its split (`scr-iso-zg6z-vs-zg6r-s0`, with `-hp`).
+- **The report** (`outputs/iso/zg6z.json` and `.md`). Per read:
+  - zspk, zg6r and zg6-z at seed 0;
+  - zg6-z's delta from zg6r, with zg6r's seed floor beside it for scale;
+  - the part of zg6r's gain over zspk that zg6-z keeps, (zg6-z - zspk) / (zg6r - zspk), where that gain exceeds 0.002.
+
+  It decides nothing, as section 7 says.
+
+**The report is incomplete when any of these holds:**
+
+- a fit or a compare is missing;
+- a fit does not name its typed links as removed;
+- its encoder start is not ML1's zg6r seed-0 start;
+- its device or its trainer's code differs from that fit's;
+- zg6r's seed 0 differs between the two stages.
+
+**Where its items go.** The GPU shares are zg6r's: 0.42 with cap 0.40 on WQ-musique, and 0.75 with cap 0.72 on WQ-hotpotqa. The
+items go behind zg6r-m's, as section 7 says.
+
+- The musique-split fit sits between DEP's two fits (docs/DEP_GNN_DEPTH.md), so it can share the card with DEP's musique-split
+  fit.
+- The hotpotqa-split fit goes after DEP's.
+- Then `iso-zg6z-compare` and `iso-zg6z-report` run on the CPU.
+
+**What stays the same.** Sections 1 to 9: ISO's arm, rule and verdict. zg6-z is not in the verdict.
+
+The self-test, `python outputs/mp_unified/zisoz.py --selftest`, passed before this commit. It covers:
+
+- the names and the pairs;
+- the patches, and that they are put back, also on a failure;
+- that zg6r's carve calls the loader that is patched, through zg6r's own zu2n;
+- the toy KB carve with its typed links and with them removed;
+- the report's rows: the part kept, the floor, a missing value, and a base that disagrees.
