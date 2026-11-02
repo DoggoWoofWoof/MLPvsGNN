@@ -45,7 +45,8 @@ BASE = "zrckp"                                  # the base's tag: the whole pick
 PICK = ("rank", "dense_cos", "topo_STRUCT", "depth_STRUCT", "SEMB", "SEED", "WALK", "DISTS", "WALKF")   # lean_mlp8.PICK
 DROPS = {"xrank": "rank", "xdcos": "dense_cos", "xtopo": "topo_STRUCT", "xdepth": "depth_STRUCT", "xseed": "SEED",
          "xwalk": "WALK", "xdists": "DISTS", "xwalkf": "WALKF"}            # SEMB stays: rmatch requires it in the pick
-DEVICE = {"gpu": f"cpu x{THREADS}", "torch": M1.TORCH, "cuda": None, "cudnn": None}
+CPU_TORCH = "2.8.0+cpu"                         # A1: the torch of the host's environment for CPU items
+DEVICE = {"gpu": f"cpu x{THREADS}", "torch": CPU_TORCH, "cuda": None, "cudnn": None}
 HURTS, CARRIES, MIXED, IDLE, INCOMPLETE = "HURTS", "CARRIES", "MIXED", "IDLE", "INCOMPLETE"
 
 
@@ -115,7 +116,7 @@ def cpu_env():
 
 
 def cpu_ok(env):
-    return (env.get("gpu") == DEVICE["gpu"] and env.get("torch") == M1.TORCH and env.get("threads") == THREADS
+    return (env.get("gpu") == DEVICE["gpu"] and env.get("torch") == CPU_TORCH and env.get("threads") == THREADS
             and not env.get("gpu_visible"))
 
 

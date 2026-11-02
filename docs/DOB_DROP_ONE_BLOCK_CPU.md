@@ -116,3 +116,11 @@ The self-test, `python outputs/mp_unified/zdob.py --selftest`, passed before thi
 - the patches, and that they are put back, also on a failure;
 - the guard against a changed pick;
 - the rule on made-up reads: IDLE, CARRIES, HURTS, MIXED, the 0.0075 floor, and INCOMPLETE on a hole.
+
+## 9. Amendment A1, 2 November 2026, before any fit trained: the CPU environment's torch
+
+The first three items (`dob-zrckp-s0`, `-s0-hp`, `-s1`) stopped at zml1s's device check, about a second in, before any
+training. The host runs CPU items in its environment for CPU work, whose torch is `2.8.0+cpu`. The module had pinned the
+GPU environment's build (`2.8.0+cu128`). The device record now pins `2.8.0+cpu`; the rest of the check is unchanged: the CPU,
+6 threads, and the GPU not visible. Every DOB fit runs in that one environment, so the base and the drops share it. Nothing
+else changes. The feeder sends each stopped item once more on its own.
