@@ -196,3 +196,38 @@ everything queued behind it.
   0.0075 floor, INCOMPLETE, and the full run's ADOPT, UNCONFIRMED_GAIN, LOSS and INCOMPLETE.
 
 The text encoder stays frozen. Test splits are never read. There is no LLM, and no new graph or pool.
+
+## 9. Results (filed 2 November 2026)
+
+The screen ran on the host's CPU (6 threads, torch 2.8.0+cpu): zrckpb at seed 0 on both splits, against DOB's CPU zrckp at
+seeds 0, 1 and 2. `zr2p.py compare-all` and `calls` ran at 18:40 and 18:41 IST. No fit is missing and `problems` is empty.
+Records: `outputs/r2p/calls.json`, `calls.md`.
+
+**Screen: NOT_ADOPTED.** GAIN 2, LOSS 2, WITHIN 8.
+
+| split | dataset | base s0, s1, s2 | zrckpb s0 | delta | floor | call |
+|---|---|---|---:|---:|---:|---|
+| WQ-musique | metaqa | 0.3406, 0.3670, 0.3860 | 0.4138 | +0.0732 | 0.0743 | WITHIN |
+| WQ-musique | squad | 0.9127, 0.9122, 0.9138 | 0.9107 | -0.0020 | 0.0075 | WITHIN |
+| WQ-musique | musique | 0.5152, 0.5086, 0.5134 | 0.5204 | +0.0052 | 0.0097 | WITHIN |
+| WQ-musique | hotpotqa (C1R) | 0.8411, 0.8424, 0.8388 | 0.8389 | -0.0022 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | 0.9070, 0.9079, 0.9049 | 0.9067 | -0.0003 | 0.0075 | WITHIN |
+| WQ-musique | webqsp | 0.6522, 0.6583, 0.6566 | 0.6725 | +0.0203 | 0.0106 | GAIN |
+| WQ-hotpotqa | metaqa | 0.3847, 0.4037, 0.3797 | 0.4038 | +0.0191 | 0.0278 | WITHIN |
+| WQ-hotpotqa | squad | 0.9138, 0.9129, 0.9133 | 0.9106 | -0.0032 | 0.0075 | WITHIN |
+| WQ-hotpotqa | musique (C1R) | 0.5749, 0.5718, 0.5752 | 0.5667 | -0.0082 | 0.0075 | LOSS |
+| WQ-hotpotqa | hotpotqa | 0.8103, 0.8099, 0.8101 | 0.8020 | -0.0083 | 0.0075 | LOSS |
+| WQ-hotpotqa | 2wiki | 0.8987, 0.9082, 0.9063 | 0.9054 | +0.0067 | 0.0172 | WITHIN |
+| WQ-hotpotqa | webqsp | 0.6446, 0.6524, 0.6514 | 0.6610 | +0.0164 | 0.0146 | GAIN |
+
+- Both GAINs are on webqsp (+0.0203, +0.0164), the knowledge-base set that trains under WQ.
+- The LOSSes are musique in-domain under WQ-hotpotqa (-0.0082 against a floor of 0.0075), one of Claim 1's reads, and
+  hotpotqa read zero-shot under WQ-hotpotqa (-0.0083).
+- Beside, deciding nothing: R2's term reached 99.3% of the training questions on both splits. Its bridge loss fell from 5.68
+  to 4.85 (WQ-musique) and from 6.15 to 5.07 (WQ-hotpotqa). Training took 3,210 s and 5,819 s; the reads 4,097 s and
+  3,556 s.
+
+**What follows (section 6).** zrckp stays the MLP of record, and R2's EM leaves the MLP's forms on PKO's pools. The full run
+(`r2p-zrckpb-s1`, `-s2` and their `-hp` twins) waits on `r2p-gate`, which stops on this verdict, so those items drop. The
+MLP's next form is the one DOB's calls name (docs/DOB_DROP_ONE_BLOCK_CPU.md section 6). LTM (docs/LTM_NEXT_HOP_MLP.md),
+which runs on the same CPU base, is read beside it.
