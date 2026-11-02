@@ -1,0 +1,59 @@
+{
+ "dataset": "2wiki",
+ "carve": "fit",
+ "limit": null,
+ "questions": 5928,
+ "with_gold": 5928,
+ "rrf_R@5": 0.5981359649122807,
+ "A": {
+  "partial_questions": 4354,
+  "missed_in_pool": 5661,
+  "missed_adj_to_anchor": 3464,
+  "lists": 3464,
+  "targets": 3464,
+  "candidates": {
+   "median": 36.0,
+   "p90": 78.0,
+   "max": 232
+  }
+ },
+ "H": null,
+ "cache_parts": {
+  "part_0of15": "36c991bb9f17f8bb4859c2cf57b4ede207fdece7c7a073e67afedccdbea2dda9",
+  "part_1of15": "60bad03a7cb075fc98566bda3288314e8036b7daa8a51915839837b1dfbc2628",
+  "part_2of15": "615f093cfc37b9d2aecaa5c0570cdf6fa4eb9810f347d117f18a38f589dd524a",
+  "part_3of15": "2251f6ca6362e20ae85c30f60f6ce5c54a94e29919ae68e7e3f398f20663a8ca",
+  "part_4of15": "c4d65da739f6e0dd0b40f9a0c48e58dca0a561b2d55c7a4023ac333157d28763",
+  "part_5of15": "9e7d3682c6433212351ef4bea3e484d8db3ef01af88eaafd3b979e105f53659e",
+  "part_6of15": "9ed56b2184eba39e0c319a42c0abdf43de9e29a08fe1fe3f953d4314e3757a6e",
+  "part_7of15": "6c6791cc6bf06daff9df27270fe8621208bfa9eabdf1ed7370a62fc87a9b1e10",
+  "part_8of15": "b50ab4d3a748906683b31da26345b8e6dec801031811fbc82982dab2951a6a6b",
+  "part_9of15": "6b6c75c1433f176b9f656241082784b0e797249ddffe2c1e002a487855896683",
+  "part_10of15": "681339aa0abf1f5579014a382201e5994efddf60a3fc7edbb1586813d599aa5a",
+  "part_11of15": "8aabd6d58074878c978a25f6128529a99a8c67ca50802d1ecee015596e6974b1",
+  "part_12of15": "ea619bf640ea649bb754dcc29fd0adadbf4e1e797537e2b3c5974274ab94cce5",
+  "part_13of15": "6b8e71e298f0b606bb98074dba38f498ae961e0843fff151d0315b573d2fa240",
+  "part_14of15": "422b15d7432bb163927d57c44309f0cdf3de336cade48d4fae0e2cbc5f560528"
+ },
+ "links_parts": {
+  "part_0of15": "dd7abb6191a8d24de7be270784f1fce190cb846259e428f74de217537aa1d53e",
+  "part_1of15": "e6d8165b283b973863b00ae311e681a300d676cf183895d993e8d1cbc1d577f6",
+  "part_2of15": "f804b14efc1fc1011d93a0b4b58b0a99714f3cdc6b1648bee059221667d54447",
+  "part_3of15": "084d0cc160b655984cb335d9f1000837e854aa3b85d5b1b570fbd26f872ebe19",
+  "part_4of15": "56c33aef6cd902e520c25051811cc0798d6fd7c31a603c3e268df682cd58556e",
+  "part_5of15": "64de5d5eb0b49c70a38c40e47df53a4f9d1e023ba3eb8c5fc184bc07bcb57e6b",
+  "part_6of15": "7ec86167e741f62dee432b99c6f6fb99a30ce620c2c8740dd166d2b226b67f4c",
+  "part_7of15": "2070f881c064f5b347ce656bbf5664b4388bcf0469c611d3905f6b6e1ac8926b",
+  "part_8of15": "0276e3c4aff12da08744ab6a964dde69b45fa7816cc1991bd20a2b84f2d2cedf",
+  "part_9of15": "aec8de029fde2db57f387ec2d70d052b193b93b276e1bdba0e0e113c4e539851",
+  "part_10of15": "9e8966f18521c37dfee8d6b90b97118c17b3e7153be02b30ad365e1ef3b6eb3a",
+  "part_11of15": "4e057a7ac3ce8ba0e03cc96653edf9d2fdf22d16c15a4227702c22aba9e73797",
+  "part_12of15": "1109cd5c538ebc2d2549bb0eba0cdc360149d56daecf4d85a4280b9c320ba89a",
+  "part_13of15": "38645f90ae11689eeb3c2a73681b275c730892eb69968dcf699db9ff1d5077bd",
+  "part_14of15": "3fffdacbcb64f952bb5147e490e5496339e1ff208265b72aa6d67033738e0279"
+ },
+ "cases_file": "2wiki__fit.npz",
+ "script_sha256": "d53156eb46a1b6f4995c86d63a176cd02152cce1830e56c3ce0936192f8c9b2f",
+ "seconds": 3.152745246887207,
+ "utc": "2026-11-02T08:08:47Z"
+}

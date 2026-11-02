@@ -1,0 +1,51 @@
+{
+ "dataset": "hotpotqa",
+ "carve": "fit",
+ "limit": null,
+ "questions": 5930,
+ "with_gold": 5930,
+ "rrf_R@5": 0.6951096121416526,
+ "A": {
+  "partial_questions": 2830,
+  "missed_in_pool": 2830,
+  "missed_adj_to_anchor": 2222,
+  "lists": 2222,
+  "targets": 2222,
+  "candidates": {
+   "median": 22.0,
+   "p90": 52.0,
+   "max": 368
+  }
+ },
+ "H": null,
+ "cache_parts": {
+  "part_0of11": "7c24573cdfd742c904f2bf9e24205b63b981b86ddece01b189386779842ab948",
+  "part_1of11": "2a8f22ff9c8ab3cd157237ccb10eab970809c7d8b911a8886565b981e02eac05",
+  "part_2of11": "93fead2522d67835f4c8d04a6be3063970578f593a3ea16d0e02ad65420b82ee",
+  "part_3of11": "1dcba5978f7f62045e26289d633d7a4939cf6552153c6747d9115b9cfb40aa18",
+  "part_4of11": "b64c5a614f1625fdc80144e9077b61eb87faa07814749726eefe78dc6944bac5",
+  "part_5of11": "51c5e2090a7849fc51a3bd72173bf24c32c0fca993a2123353f857ed191e8fb9",
+  "part_6of11": "f95d0acc6a2215449f6d15fa5ff89487a665f98c6aaf27bd0b8daf954986fc70",
+  "part_7of11": "b5a52e1a91fb5dec062e4c99acce01f0ea7c6c1f6ae2f02b68955b4e679cc638",
+  "part_8of11": "b6e2067fd333b0a3f39cb35d01770ab03ab044307f626514c16a698a6d55c666",
+  "part_9of11": "86d03ed4ed76e6175d3a2baa51ffeab6aabf38cdae4a43e74a709598728ca182",
+  "part_10of11": "e6b78b5460904b8f0a5f3befe4309ce197e778818d17dd5e03bd957d6232b784"
+ },
+ "links_parts": {
+  "part_0of11": "5aa054e051885205661bee9d140dad524c245da44f5dbee7bda222571083a0bd",
+  "part_1of11": "e4b4b5bcb317e754f25b2fcf8a3eff0915abe2844641fe1df5190de6c5e31e16",
+  "part_2of11": "5fc9c0c50f0878a9a82cf72a2f6ebe01e330f099f6fe1f04c0ddd7cc9602a9b5",
+  "part_3of11": "33d2f67ed2a60dfc49b0d296c8c83bafeb6fc95ddb259bb227d7405982579203",
+  "part_4of11": "988ff669ff250496a1f133d8ccba6faeec04444d10d06161a9fac14310cee324",
+  "part_5of11": "59d40da5c1e6f50edfb87946ea4e1cc687d09911ba17f266b299f1027e2f40b0",
+  "part_6of11": "befecc382220491204f760ca2468dd629e7603e674cefd364f992e69942efb58",
+  "part_7of11": "999650c8f7846b82b3fe97d9e3b4e8a3b431a1de1dd7a5c9fe8f11cf9a04a06d",
+  "part_8of11": "6983b9287284970093d9c584c40fba42b1894cc410b33e2fe4666378445d22bc",
+  "part_9of11": "e01ec3d7e6cd6c37ce52255d257e2459351542e066980bb45f7f69f548c3f671",
+  "part_10of11": "65cdf4d0ea03a59a593706656addab825a3643652863eb1722b385e9215c931a"
+ },
+ "cases_file": "hotpotqa__fit.npz",
+ "script_sha256": "d53156eb46a1b6f4995c86d63a176cd02152cce1830e56c3ce0936192f8c9b2f",
+ "seconds": 2.1777405738830566,
+ "utc": "2026-11-02T08:08:46Z"
+}

@@ -1,0 +1,431 @@
+{
+ "name": "joint",
+ "datasets": [
+  "musique",
+  "2wiki",
+  "hotpotqa"
+ ],
+ "carves": {
+  "musique": {
+   "carve": "s1fit",
+   "questions": 4601,
+   "held_out_questions": 460,
+   "lists": 1253,
+   "train_lists": 1138,
+   "val_lists": 115,
+   "candidates_capped": 63960,
+   "candidates_uncapped": 81565
+  },
+  "2wiki": {
+   "carve": "fit",
+   "questions": 5928,
+   "held_out_questions": 593,
+   "lists": 3464,
+   "train_lists": 3128,
+   "val_lists": 336,
+   "candidates_capped": 144540,
+   "candidates_uncapped": 144540
+  },
+  "hotpotqa": {
+   "carve": "fit",
+   "questions": 5930,
+   "held_out_questions": 593,
+   "lists": 2222,
+   "train_lists": 2001,
+   "val_lists": 221,
+   "candidates_capped": 62608,
+   "candidates_uncapped": 62742
+  }
+ },
+ "decision_form": "bil",
+ "decision_rule": "the higher held-out musique T2 at each form's best epoch; ties to lin",
+ "held_out_T2_free": {
+  "rrf": {
+   "musique": 0.40869565217391307,
+   "2wiki": 0.1875,
+   "hotpotqa": 0.3755656108597285
+  },
+  "cos": {
+   "musique": 0.41739130434782606,
+   "2wiki": 0.17857142857142858,
+   "hotpotqa": 0.3076923076923077
+  },
+  "anc": {
+   "musique": 0.0782608695652174,
+   "2wiki": 0.08630952380952381,
+   "hotpotqa": 0.16289592760180996
+  },
+  "res": {
+   "musique": 0.43478260869565216,
+   "2wiki": 0.17559523809523808,
+   "hotpotqa": 0.3665158371040724
+  },
+  "pair": {
+   "musique": 0.4956521739130435,
+   "2wiki": 0.20833333333333334,
+   "hotpotqa": 0.3891402714932127
+  }
+ },
+ "forms": {
+  "lin": {
+   "best_epoch": 8,
+   "epochs_run": 15,
+   "best_val_T2_macro": 0.6345771697753796,
+   "best_val_T2": {
+    "musique": 0.5739130434782609,
+    "2wiki": 0.5922619047619048,
+    "hotpotqa": 0.7375565610859729
+   },
+   "history": [
+    {
+     "epoch": 0,
+     "train_loss": 2.3542581536428617,
+     "val_T2": {
+      "musique": 0.5304347826086957,
+      "2wiki": 0.6101190476190477,
+      "hotpotqa": 0.7375565610859729
+     },
+     "val_T2_macro": 0.626036797104572
+    },
+    {
+     "epoch": 1,
+     "train_loss": 1.8932781370515095,
+     "val_T2": {
+      "musique": 0.5391304347826087,
+      "2wiki": 0.6071428571428571,
+      "hotpotqa": 0.751131221719457
+     },
+     "val_T2_macro": 0.6324681712149743
+    },
+    {
+     "epoch": 2,
+     "train_loss": 1.8691446555560525,
+     "val_T2": {
+      "musique": 0.5478260869565217,
+      "2wiki": 0.6011904761904762,
+      "hotpotqa": 0.7194570135746606
+     },
+     "val_T2_macro": 0.6228245255738862
+    },
+    {
+     "epoch": 3,
+     "train_loss": 1.855965783041745,
+     "val_T2": {
+      "musique": 0.5478260869565217,
+      "2wiki": 0.5892857142857143,
+      "hotpotqa": 0.746606334841629
+     },
+     "val_T2_macro": 0.6279060453612884
+    },
+    {
+     "epoch": 4,
+     "train_loss": 1.8484630079879627,
+     "val_T2": {
+      "musique": 0.5565217391304348,
+      "2wiki": 0.6130952380952381,
+      "hotpotqa": 0.7330316742081447
+     },
+     "val_T2_macro": 0.6342162171446059
+    },
+    {
+     "epoch": 5,
+     "train_loss": 1.8390162780141457,
+     "val_T2": {
+      "musique": 0.5652173913043478,
+      "2wiki": 0.5982142857142857,
+      "hotpotqa": 0.7104072398190046
+     },
+     "val_T2_macro": 0.6246129722792126
+    },
+    {
+     "epoch": 6,
+     "train_loss": 1.8343831281143075,
+     "val_T2": {
+      "musique": 0.5391304347826087,
+      "2wiki": 0.6130952380952381,
+      "hotpotqa": 0.7013574660633484
+     },
+     "val_T2_macro": 0.6178610463137317
+    },
+    {
+     "epoch": 7,
+     "train_loss": 1.8304264264489467,
+     "val_T2": {
+      "musique": 0.5565217391304348,
+      "2wiki": 0.6071428571428571,
+      "hotpotqa": 0.7239819004524887
+     },
+     "val_T2_macro": 0.6292154989085935
+    },
+    {
+     "epoch": 8,
+     "train_loss": 1.8233652668591225,
+     "val_T2": {
+      "musique": 0.5739130434782609,
+      "2wiki": 0.5922619047619048,
+      "hotpotqa": 0.7375565610859729
+     },
+     "val_T2_macro": 0.6345771697753796
+    },
+    {
+     "epoch": 9,
+     "train_loss": 1.819425897315223,
+     "val_T2": {
+      "musique": 0.5739130434782609,
+      "2wiki": 0.5922619047619048,
+      "hotpotqa": 0.7285067873303167
+     },
+     "val_T2_macro": 0.6315605785234942
+    },
+    {
+     "epoch": 10,
+     "train_loss": 1.8203334152479766,
+     "val_T2": {
+      "musique": 0.5739130434782609,
+      "2wiki": 0.6041666666666666,
+      "hotpotqa": 0.7013574660633484
+     },
+     "val_T2_macro": 0.626479058736092
+    },
+    {
+     "epoch": 11,
+     "train_loss": 1.816994444479759,
+     "val_T2": {
+      "musique": 0.5652173913043478,
+      "2wiki": 0.5952380952380952,
+      "hotpotqa": 0.7375565610859729
+     },
+     "val_T2_macro": 0.6326706825428053
+    },
+    {
+     "epoch": 12,
+     "train_loss": 1.811642978414691,
+     "val_T2": {
+      "musique": 0.5391304347826087,
+      "2wiki": 0.5952380952380952,
+      "hotpotqa": 0.6923076923076923
+     },
+     "val_T2_macro": 0.6088920741094654
+    },
+    {
+     "epoch": 13,
+     "train_loss": 1.811638524605742,
+     "val_T2": {
+      "musique": 0.5565217391304348,
+      "2wiki": 0.5952380952380952,
+      "hotpotqa": 0.7285067873303167
+     },
+     "val_T2_macro": 0.6267555405662822
+    },
+    {
+     "epoch": 14,
+     "train_loss": 1.8090670597844285,
+     "val_T2": {
+      "musique": 0.5652173913043478,
+      "2wiki": 0.5833333333333334,
+      "hotpotqa": 0.7149321266968326
+     },
+     "val_T2_macro": 0.621160950444838
+    }
+   ],
+   "parameters": 1569
+  },
+  "bil": {
+   "best_epoch": 7,
+   "epochs_run": 14,
+   "best_val_T2_macro": 0.842372411617936,
+   "best_val_T2": {
+    "musique": 0.8347826086956521,
+    "2wiki": 0.8869047619047619,
+    "hotpotqa": 0.8054298642533937
+   },
+   "history": [
+    {
+     "epoch": 0,
+     "train_loss": 1.6514774893808921,
+     "val_T2": {
+      "musique": 0.7652173913043478,
+      "2wiki": 0.8660714285714286,
+      "hotpotqa": 0.7647058823529411
+     },
+     "val_T2_macro": 0.798664900742906
+    },
+    {
+     "epoch": 1,
+     "train_loss": 0.9064232037267903,
+     "val_T2": {
+      "musique": 0.8,
+      "2wiki": 0.875,
+      "hotpotqa": 0.7918552036199095
+     },
+     "val_T2_macro": 0.8222850678733032
+    },
+    {
+     "epoch": 2,
+     "train_loss": 0.6884198640167799,
+     "val_T2": {
+      "musique": 0.8173913043478261,
+      "2wiki": 0.8839285714285714,
+      "hotpotqa": 0.7918552036199095
+     },
+     "val_T2_macro": 0.831058359798769
+    },
+    {
+     "epoch": 3,
+     "train_loss": 0.5537225211781331,
+     "val_T2": {
+      "musique": 0.8173913043478261,
+      "2wiki": 0.8839285714285714,
+      "hotpotqa": 0.8054298642533937
+     },
+     "val_T2_macro": 0.8355832466765971
+    },
+    {
+     "epoch": 4,
+     "train_loss": 0.4601302570573485,
+     "val_T2": {
+      "musique": 0.808695652173913,
+      "2wiki": 0.8898809523809523,
+      "hotpotqa": 0.8054298642533937
+     },
+     "val_T2_macro": 0.8346688229360865
+    },
+    {
+     "epoch": 5,
+     "train_loss": 0.39280691662530154,
+     "val_T2": {
+      "musique": 0.8173913043478261,
+      "2wiki": 0.8839285714285714,
+      "hotpotqa": 0.8009049773755657
+     },
+     "val_T2_macro": 0.8340749510506544
+    },
+    {
+     "epoch": 6,
+     "train_loss": 0.3426741161128827,
+     "val_T2": {
+      "musique": 0.8173913043478261,
+      "2wiki": 0.8988095238095238,
+      "hotpotqa": 0.7963800904977375
+     },
+     "val_T2_macro": 0.8375269728850291
+    },
+    {
+     "epoch": 7,
+     "train_loss": 0.3016513836655831,
+     "val_T2": {
+      "musique": 0.8347826086956521,
+      "2wiki": 0.8869047619047619,
+      "hotpotqa": 0.8054298642533937
+     },
+     "val_T2_macro": 0.842372411617936
+    },
+    {
+     "epoch": 8,
+     "train_loss": 0.26995156541079146,
+     "val_T2": {
+      "musique": 0.8,
+      "2wiki": 0.8988095238095238,
+      "hotpotqa": 0.8054298642533937
+     },
+     "val_T2_macro": 0.8347464626876393
+    },
+    {
+     "epoch": 9,
+     "train_loss": 0.2444562489014979,
+     "val_T2": {
+      "musique": 0.808695652173913,
+      "2wiki": 0.8928571428571429,
+      "hotpotqa": 0.8054298642533937
+     },
+     "val_T2_macro": 0.83566088642815
+    },
+    {
+     "epoch": 10,
+     "train_loss": 0.22352938047051904,
+     "val_T2": {
+      "musique": 0.808695652173913,
+      "2wiki": 0.9017857142857143,
+      "hotpotqa": 0.8144796380090498
+     },
+     "val_T2_macro": 0.8416536681562258
+    },
+    {
+     "epoch": 11,
+     "train_loss": 0.20476180563489274,
+     "val_T2": {
+      "musique": 0.8260869565217391,
+      "2wiki": 0.8928571428571429,
+      "hotpotqa": 0.8054298642533937
+     },
+     "val_T2_macro": 0.8414579878774253
+    },
+    {
+     "epoch": 12,
+     "train_loss": 0.19020129725258564,
+     "val_T2": {
+      "musique": 0.8260869565217391,
+      "2wiki": 0.9017857142857143,
+      "hotpotqa": 0.7918552036199095
+     },
+     "val_T2_macro": 0.8399092914757876
+    },
+    {
+     "epoch": 13,
+     "train_loss": 0.17763877400508124,
+     "val_T2": {
+      "musique": 0.8173913043478261,
+      "2wiki": 0.9077380952380952,
+      "hotpotqa": 0.7918552036199095
+     },
+     "val_T2_macro": 0.838994867735277
+    }
+   ],
+   "parameters": 296481
+  }
+ },
+ "features": [
+  "cos",
+  "anc",
+  "res",
+  "pair",
+  "anchor_cos",
+  "dense_rr",
+  "splade_rr",
+  "rrf",
+  "agreement",
+  "is_seed",
+  "log1p_rank",
+  "fam_struct",
+  "fam_ner",
+  "fam_knn"
+ ],
+ "identity": {
+  "checked": 278047,
+  "bad": 0,
+  "max_abs": 0.0008918642997741699,
+  "pass": true
+ },
+ "settings": {
+  "cap": 256,
+  "hold": 0.1,
+  "rank": 32,
+  "hidden": 32,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "batch": 32,
+  "epochs": 60,
+  "patience": 6,
+  "seed": 0
+ },
+ "package_record_sha256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "placement": {
+  "where": "host",
+  "node": "<host>",
+  "mirror_root": "<host-mirror>/CRAG",
+  "amendment": "amendment_2_2026_09_30_host_placement"
+ },
+ "script_sha256": "d53156eb46a1b6f4995c86d63a176cd02152cce1830e56c3ce0936192f8c9b2f",
+ "seconds": 141.2714421749115,
+ "utc": "2026-11-02T08:12:16Z"
+}

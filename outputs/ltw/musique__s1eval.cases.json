@@ -1,0 +1,65 @@
+{
+ "dataset": "musique",
+ "carve": "s1eval",
+ "limit": null,
+ "questions": 2417,
+ "with_gold": 2417,
+ "rrf_R@5": 0.47341745966073645,
+ "A": {
+  "partial_questions": 1748,
+  "missed_in_pool": 2547,
+  "missed_adj_to_anchor": 923,
+  "lists": 915,
+  "targets": 923,
+  "candidates": {
+   "median": 30.0,
+   "p90": 95.60000000000002,
+   "max": 1201
+  }
+ },
+ "H": {
+  "lists": 2417,
+  "candidates": {
+   "median": 36.0,
+   "p90": 125.0,
+   "max": 1513
+  },
+  "no_neighbour": 0
+ },
+ "cache_parts": {
+  "part_0of14": "7fae4d2a36fe353764b39c11ae0d5943d634df51dd81f1a95296362d85b0b6e3",
+  "part_1of14": "ef9e2ab8ec8a4f532d618e655b7a2607eabba944de4dcd7c7d3c68cb73f46cd4",
+  "part_2of14": "876576f4129dce894a9068c1a0539d64603c68f1f03c1d31ed772ea7c32335e5",
+  "part_3of14": "5f20ee2ad7234c00c2ef96e9e9c0c0d89d66656cc7dd03ab9c944983ea13d77d",
+  "part_4of14": "a296a545a3a8942809282938db71290673071a2a011e7da3fccb8c601089bb4a",
+  "part_5of14": "969f8502087c10a90a1cbb652a651712a6522e69303d08c4d61a372f6ba36557",
+  "part_6of14": "5a5b09ad75df946690d87dfd502ea309705c3b4e820e0e68342b4fda019104db",
+  "part_7of14": "486a86ab62e58fe977afddd866a71f8b05ac3af0467ddae35f787b55ded556ae",
+  "part_8of14": "cbbdc2cd7e7f8981f2cf26d4559ad2f0d0f865f1834493f5aaf2e9c3c1d57c30",
+  "part_9of14": "d8ef8b62b8c51725fb5b599cfcbb50c5f6cb795547f7538c0d46e7ddbcd1ad78",
+  "part_10of14": "c31351998805e748ae6e9c14243aa7b8b98494e302ecdf4d8e273116df701c96",
+  "part_11of14": "3df8b12c044e75c9c0dca3b5c7d327afc64d203b18773b23a7c0d08638f4c7c5",
+  "part_12of14": "b6493c80aa47394e4ed7f4a3b04540ed6a158bff48ea9b7024103222937c1986",
+  "part_13of14": "9e93110b521d4d7460dfdf2faf4be4580e976579df3457ec49e4f669a6e324a2"
+ },
+ "links_parts": {
+  "part_0of14": "83e40e02eb1de6fb2ea33b0e06f0b8d1ca4d023d84f54e3664510c150d1e87b2",
+  "part_1of14": "91512bdecc11088acdf16fd6fb838b8507d96772d43e711cfbadca0f6dd4d5c4",
+  "part_2of14": "c04504d62161d8982601f67f2be8a1253041a4235f6668cd219b040aeffb026d",
+  "part_3of14": "79bb42faa4a17d07b73c1da4a6a24ff53bd7a1fa4c33bef9e20b7c32c1f74616",
+  "part_4of14": "a4412f3dd380a8bd98e42240d9a6dbf7c8fc1c72ed02e577d8a0439f35b16c3b",
+  "part_5of14": "0a888f51c563ec7055ca5ef5990d682df1703e9106259f54eb15d524a542d640",
+  "part_6of14": "73ff53e61d76bfbff0c306757639d4581ef2c92f3b24c1e6c8635307c9c8fde3",
+  "part_7of14": "8f330a211ba15b378640419ffea1432092ce80706ea03601b01facbfa77e79b3",
+  "part_8of14": "9361d33be371934072f470d80d503587feb0dfe2c2dc1cbf370451e90cdbd926",
+  "part_9of14": "a27d3c0b948cdcdc5d514d64b1ae0782d353b43e84aeabfde0f93b425e8dfd02",
+  "part_10of14": "42a6b3b2377c3c396598d7a16f712f4fec4178b3dbb1b596be0550bde13b5037",
+  "part_11of14": "4dd44554046d275134596b699da9ccf659d7959c71a24ecac8eedf335c10a915",
+  "part_12of14": "87a4dff254b7c0701a1445733903c81166d3757eb6ae34c156d923fa300a47e5",
+  "part_13of14": "f949e2845fb8a44c6817fcdb1ba181b9da1364e26129e3aad084346c9979ff4b"
+ },
+ "cases_file": "musique__s1eval.npz",
+ "script_sha256": "d53156eb46a1b6f4995c86d63a176cd02152cce1830e56c3ce0936192f8c9b2f",
+ "seconds": 12.649310827255249,
+ "utc": "2026-11-02T08:08:58Z"
+}

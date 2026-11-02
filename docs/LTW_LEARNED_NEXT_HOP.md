@@ -223,3 +223,98 @@ Reported, choosing nothing:
   - an end-to-end run on toy PKO trees: cases, both fits and the report.
 - **Disclosure:** before this commit, only the PKO carves' sizes were listed on the host (parts, questions, rows, and
   the largest parts' file sizes). No list, score or fit was read.
+
+## 10. Result (filed 2 November 2026)
+
+`ltw-report` ran on the host at 13:45 IST, in 153 seconds, after the six cases and both fits. The identity check passed
+on all three reads: 0 bad of 205,977, 815,883 and 306,413 rows checked, with a largest difference of 0.00096 against the
+0.002 tolerance. Records: `outputs/ltw/report.{json,md}`, `fit_joint.json`, `fit_musique.json`, and the cases and reads
+of every carve. Their host paths are masked.
+
+**SIGNAL.** On musique's s1eval A lists, `joint.bil` puts the missed next hop first or second for 0.530 of 923 targets.
+The best fixed score, `pair`, does so for 0.360. The gain is +0.170, against bars of +0.10 and 0.40.
+
+**LEARNED_PAYS** holds. H1 with `joint.bil` against rrf's top five, in R@5:
+
+| read | questions | rrf top 5 | H1 pair | H1 joint.lin | H1 joint.bil | dR@5 (bil) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| musique | 2,417 | 0.4734 | 0.4849 | 0.5111 | 0.5125 | +0.0391 |
+| 2wiki | 12,576 | 0.6079 | 0.6094 | 0.7089 | 0.7627 | +0.1548 |
+| hotpotqa | 7,405 | 0.6846 | 0.7258 | 0.7770 | 0.7930 | +0.1084 |
+
+A, T2 on each s1eval read (lists / targets: musique 915 / 923, 2wiki 7,619, hotpotqa 2,799):
+
+| read | rrf | cos | anc | res | pair | joint.lin | joint.bil | musique.lin | musique.bil |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| musique | 0.298 | 0.326 | 0.181 | 0.314 | 0.360 | 0.495 | 0.530 | 0.481 | 0.484 |
+| 2wiki | 0.213 | 0.220 | 0.175 | 0.111 | 0.179 | 0.610 | 0.860 | 0.451 | 0.424 |
+| hotpotqa | 0.399 | 0.372 | 0.176 | 0.420 | 0.446 | 0.723 | 0.804 | 0.653 | 0.616 |
+
+**The fits.** Both stopped on patience, not at the epoch limit.
+
+| fit | form | best epoch | epochs run | held-out T2 (musique / 2wiki / hotpotqa) |
+| --- | --- | ---: | ---: | --- |
+| joint | lin | 8 | 15 | 0.574 / 0.592 / 0.738 |
+| joint | bil | 7 | 14 | 0.835 / 0.887 / 0.805 |
+| musique | lin | 3 | 10 | 0.617 |
+| musique | bil | 4 | 11 | 0.835 |
+
+**Disclosure.**
+- The musique-only fit's record (`fit_musique.json`) was fetched and read before `ltw-report` ran. Its held-out T2s
+  were seen: lin 0.617, bil 0.835.
+- A check of LTW's own case files followed, also before the read. It used a scratch script and no labels beyond the
+  cases':
+  - inside s1fit, 67.8% of the held-out lists' targets (115) are training targets of other questions, and 19.1% of
+    their (anchor, target) pairs;
+  - s1eval shares no target, no pair and no anchor with s1fit (0.0 each).
+- So the held-out T2s are inflated by targets the scorer has seen. The s1eval read is the honest test.
+  - On s1eval, `musique.bil` falls from 0.835 to 0.484.
+  - `joint.bil` reads 0.530: the 2wiki and hotpotqa lists carry over to musique's unseen next hops.
+
+**Where it works and where it does not** (reported, choosing nothing):
+- **By hop, H1 on musique** (R@5, rrf top 5 to H1 joint.bil):
+  - 2-hop: 0.5619 to 0.6502, +0.088;
+  - 3-hop: 0.4368 to 0.4219, -0.015;
+  - 4-hop: 0.2685 to 0.2568, -0.012.
+
+  One hop from rrf's first row reaches a 2-hop question's second paragraph. On 3- and 4-hop questions it gives up rrf's
+  fourth and fifth rows for a step that is not enough.
+- **By hop, A on musique** (T2, pair to joint.bil):
+  - 2-hop: 0.392 to 0.596;
+  - 3-hop: 0.306 to 0.449;
+  - 4-hop: 0.323 to 0.395.
+
+  The scorer still finds the next hop on longer questions, when the anchor is a found gold.
+- **By link family, A on musique** (T2, pair to joint.bil):
+
+  | family | share of targets | pair | joint.bil |
+  | --- | ---: | ---: | ---: |
+  | structural | 0.546 | 0.349 | 0.696 |
+  | NER | 0.427 | 0.381 | 0.338 |
+  | kNN | 0.027 | 0.240 | 0.200 |
+
+  On NER links the joint scorer is below `pair` (`musique.bil` reads 0.416 there). NER links carry 43% of musique's
+  targets but only 5% of 2wiki's and hotpotqa's, so the joint loss is set by structural links.
+- **The two forms.** Most of the gain on musique is lin's, a learned mix of the 14 scalars: 0.495 against `pair`'s 0.360.
+  bil adds +0.035 on musique, +0.250 on 2wiki and +0.080 on hotpotqa.
+- **Against the models of record.** C1R's in-domain reads of the same s1eval questions:
+
+  | dataset | GNN | MLP | H1 joint.bil (from rrf) |
+  | --- | ---: | ---: | ---: |
+  | musique | 0.5912 | 0.5777 | 0.5125 |
+  | hotpotqa | 0.8593 | 0.8423 | 0.7930 |
+  | 2wiki | 0.9269 | 0.9045 | 0.7627 |
+
+  H1 is not a model, and it reads below both models on every dataset. Whether the next-hop score adds to a model is
+  what section 7's screens ask.
+
+**What follows** (section 7):
+- **SIGNAL:** the two screens, each declared in its own file before any fit:
+  - the MLP (zrckp), with the learned next-hop score of each row against the first stage's top rows as input columns,
+    and the scorer refit on the MLP's own training carves;
+  - the GNN (zg6r), with its own three-way message term, trained end to end, and not built on the MLP.
+
+  Each declaration says how it treats the two weak spots found here: NER-link next hops, and questions of three and
+  four hops.
+- **LEARNED_PAYS:** H1 with `joint.bil` is read once on B1, as a row beside the link rules. That read is declared in an
+  amendment and chooses nothing.
