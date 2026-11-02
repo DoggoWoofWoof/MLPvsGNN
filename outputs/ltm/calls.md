@@ -3,7 +3,7 @@
 ## Screen: ADOPT_FOR_FULL_RUN
 
 counts: {"GAIN": 2, "LOSS": 0, "WITHIN": 8}
-DEP's sixteen-read rule beside: screen ADOPT_FOR_FULL_RUN, full run None
+DEP's sixteen-read rule beside: screen ADOPT_FOR_FULL_RUN, full run ADOPT
 
 | split | read | base s0, s1, s2 | zrckpn s0 | delta | floor | call |
 |---|---|---|---:|---:|---:|---|
@@ -23,6 +23,29 @@ DEP's sixteen-read rule beside: screen ADOPT_FOR_FULL_RUN, full run None
 | WQ-hotpotqa | metaqa | 0.3847, 0.4037, 0.3797 | 0.3668 | -0.0179 | 0.0278 | WITHIN (beside) |
 | WQ-musique | musique-3hop | 0.4434, 0.4434, 0.4390 | 0.4544 | +0.0110 | 0.0075 | GAIN (beside) |
 | WQ-musique | musique-4hop | 0.3142, 0.2969, 0.3154 | 0.3086 | -0.0056 | 0.0245 | WITHIN (beside) |
+
+## Full run: ADOPT
+
+counts: {"GAIN": 3, "LOSS": 0, "UNCONFIRMED_GAIN": 0, "WITHIN": 7}
+
+| split | read | d0 | d1 | d2 | floor | call |
+|---|---|---:|---:|---:|---:|---|
+| WQ-musique | squad | +0.0011 | +0.0003 | +0.0011 | 0.0075 | WITHIN |
+| WQ-musique | hotpotqa (C1R) | +0.0049 | +0.0045 | +0.0103 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | +0.0085 | +0.0080 | +0.0084 | 0.0075 | GAIN |
+| WQ-musique | webqsp | -0.0065 | -0.0085 | -0.0014 | 0.0128 | WITHIN |
+| WQ-hotpotqa | squad | -0.0006 | -0.0009 | -0.0001 | 0.0075 | WITHIN |
+| WQ-hotpotqa | musique (C1R) | +0.0057 | +0.0085 | +0.0025 | 0.0075 | WITHIN |
+| WQ-hotpotqa | 2wiki | +0.0148 | +0.0084 | +0.0072 | 0.0126 | GAIN |
+| WQ-hotpotqa | webqsp | +0.0023 | +0.0073 | -0.0002 | 0.0170 | WITHIN |
+| WQ-hotpotqa | musique-3hop | +0.0110 | +0.0096 | +0.0031 | 0.0090 | GAIN |
+| WQ-hotpotqa | musique-4hop | +0.0099 | +0.0006 | +0.0031 | 0.0099 | WITHIN |
+| WQ-musique | musique | +0.0038 | +0.0141 | +0.0247 | 0.0206 | WITHIN (beside) |
+| WQ-musique | metaqa | +0.0720 | +0.0586 | +0.0307 | 0.0543 | GAIN (beside) |
+| WQ-hotpotqa | hotpotqa | +0.0090 | +0.0083 | +0.0035 | 0.0075 | GAIN (beside) |
+| WQ-hotpotqa | metaqa | -0.0179 | +0.0224 | +0.0334 | 0.0778 | WITHIN (beside) |
+| WQ-musique | musique-3hop | +0.0110 | +0.0162 | +0.0311 | 0.0172 | WITHIN (beside) |
+| WQ-musique | musique-4hop | -0.0056 | +0.0179 | +0.0198 | 0.0323 | WITHIN (beside) |
 
 Beside, deciding nothing: the columns per carve (ltmcols' records):
 
@@ -53,3 +76,7 @@ Beside, deciding nothing: the columns per carve (ltmcols' records):
 |---|---:|---:|
 | scr-ltm-zrckpn-s0 | 2714.4 | 3517.7 |
 | scr-ltm-zrckpn-s0-hp | 5190.2 | 3745.2 |
+| scr-ltm-zrckpn-s1 | 3167.0 | 3332.5 |
+| scr-ltm-zrckpn-s1-hp | 4930.0 | 4015.4 |
+| scr-ltm-zrckpn-s2 | 3019.0 | 4047.8 |
+| scr-ltm-zrckpn-s2-hp | 5613.9 | 3216.9 |

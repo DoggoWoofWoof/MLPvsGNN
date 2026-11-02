@@ -352,3 +352,59 @@ The screen ran on the host's CPU (6 threads): zrckpn at seed 0 on both splits, a
 passed; `ltm-zrckpn-s1` started at 21:06. Section 6's full-run rule decides it. LTC (docs/LTC_CHAINED_BEAM_MLP.md) was
 declared on this scorer before this screen was read. It runs beside the full run and meets zrckpn head-to-head if both
 full runs adopt.
+
+## 12. Full-run results (filed 3 November 2026): ADOPT
+
+The four full-run fits (`scr-ltm-zrckpn-s1`, `-s2` and their `-hp` twins) ran on the host's CPU (6 threads). `zltm.py
+compare-all` and `calls` ran at 01:25 and 01:26 IST on 3 November. No fit is missing and `problems` is empty. Records:
+`outputs/ltm/calls.json`, `calls.md`; the screen's table in them is section 11's, unchanged.
+
+**Full run: ADOPT.** GAIN 3, LOSS 0, UNCONFIRMED_GAIN 0, WITHIN 7. The table gives zrckpn - zrckp per seed, against DOB's
+CPU zrckp at the same seed, with the pair floor.
+
+| split | read | d0 | d1 | d2 | mean | floor | call |
+|---|---|---:|---:|---:|---:|---:|---|
+| WQ-musique | squad | +0.0011 | +0.0003 | +0.0011 | +0.0008 | 0.0075 | WITHIN |
+| WQ-musique | hotpotqa (C1R) | +0.0049 | +0.0045 | +0.0103 | +0.0066 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | +0.0085 | +0.0080 | +0.0084 | +0.0083 | 0.0075 | GAIN |
+| WQ-musique | webqsp | -0.0065 | -0.0085 | -0.0014 | -0.0055 | 0.0128 | WITHIN |
+| WQ-hotpotqa | squad | -0.0006 | -0.0009 | -0.0001 | -0.0005 | 0.0075 | WITHIN |
+| WQ-hotpotqa | musique (C1R) | +0.0057 | +0.0085 | +0.0025 | +0.0056 | 0.0075 | WITHIN |
+| WQ-hotpotqa | 2wiki | +0.0148 | +0.0084 | +0.0072 | +0.0101 | 0.0126 | GAIN |
+| WQ-hotpotqa | webqsp | +0.0023 | +0.0073 | -0.0002 | +0.0031 | 0.0170 | WITHIN |
+| WQ-hotpotqa | musique-3hop | +0.0110 | +0.0096 | +0.0031 | +0.0079 | 0.0090 | GAIN |
+| WQ-hotpotqa | musique-4hop | +0.0099 | +0.0006 | +0.0031 | +0.0045 | 0.0099 | WITHIN |
+
+- **The GAINs:**
+  - 2wiki under both splits. Under WQ-musique the three seeds are +0.0085, +0.0080 and +0.0084. Under WQ-hotpotqa d0 is
+    +0.0148, at or above the floor of 0.0126, and d1 and d2 are above 0.
+  - musique's 3-hop slice under WQ-hotpotqa: +0.0110, +0.0096, +0.0031.
+- **Claim 1's two reads rise at every seed, within their floors.** hotpotqa under WQ-musique has a mean of +0.0066 and
+  musique under WQ-hotpotqa +0.0056.
+- **webqsp** under WQ-musique falls at all three seeds (mean -0.0055), within its floor of 0.0128.
+
+**Beside, deciding nothing:**
+
+| split | read | d0 | d1 | d2 | mean | floor | call |
+|---|---|---:|---:|---:|---:|---:|---|
+| WQ-musique | musique (zero-shot) | +0.0038 | +0.0141 | +0.0247 | +0.0142 | 0.0206 | WITHIN |
+| WQ-musique | metaqa | +0.0720 | +0.0586 | +0.0307 | +0.0538 | 0.0543 | GAIN |
+| WQ-hotpotqa | hotpotqa (zero-shot) | +0.0090 | +0.0083 | +0.0035 | +0.0069 | 0.0075 | GAIN |
+| WQ-hotpotqa | metaqa | -0.0179 | +0.0224 | +0.0334 | +0.0126 | 0.0778 | WITHIN |
+| WQ-musique | musique-3hop | +0.0110 | +0.0162 | +0.0311 | +0.0194 | 0.0172 | WITHIN |
+| WQ-musique | musique-4hop | -0.0056 | +0.0179 | +0.0198 | +0.0107 | 0.0323 | WITHIN |
+
+- DEP's sixteen-read rule gives ADOPT on the same numbers (`dep_rule_beside`).
+- **Seconds per fit:** training took 2,714-3,167 s under WQ-musique and 4,930-5,614 s under WQ-hotpotqa; the reads took
+  3,217-4,048 s.
+
+**What follows (section 8, ADOPT):**
+- **zrckpn is the MLP candidate.** LTC (docs/LTC_CHAINED_BEAM_MLP.md) meets it head-to-head if LTC's full run adopts
+  (`ltc-compare-h2h`, `ltc-calls-h2h`, queued). Until then zrckpn is the MLP that new MLP forms are reported beside.
+- **Claim 1** is measured again with zrckpn against the GNN of record: C1R's amendment A1, in its own commit.
+- **Claim 3's cold timing** counts the columns' cost: the scorer's forward over every anchor's candidates and the reading
+  of their vectors, measured, not assumed. It runs with the cold re-time after DEP.
+- **B1.** zrckpn has not been read on B1. It needs LTM's lists and columns on B1P's carves, in a stage of its own once the
+  MLP of record is settled (after LTC's screen, or its head-to-head).
+
+A verdict closes only the form it tested.
