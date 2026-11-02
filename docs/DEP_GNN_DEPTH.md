@@ -136,3 +136,56 @@ The self-test, `python outputs/mp_unified/zdep.py --selftest`, passed before thi
 - the patches (names, stamp, declaration, ISO's own start on REPLACE), and that they are put back, also on a failure;
 - the slices from a made-up read file;
 - the screen's and the full run's rules on made-up reads, including INCOMPLETE on a hole.
+
+## 9. Amendment A1, 2 November 2026, before any DEP fit: the full run queued behind the screen's verdict
+
+Section 6 adds the full run "in an amendment that adds items only" when the screen gives ADOPT_FOR_FULL_RUN. If that amendment
+waited for the screen's numbers, the GPU would sit idle between `dep-calls` and the amendment. So the items are added now, before
+any DEP fit has run, behind a gate that lets them start only on ADOPT_FOR_FULL_RUN.
+
+Sections 1 to 8 are unchanged. The fits, the bases, the reads and both rules are the ones zdep.py already holds:
+
+- its FITS has seeds 0, 1 and 2 on both splits;
+- `compare-all` compares the full run's fits once they exist;
+- `calls` applies section 4's full-run rule once all six fits are read.
+
+zdep.py is not changed.
+
+**The gate.** `dep-gate` comes after `dep-calls` and runs:
+
+```
+python outputs/mp_unified/verdict_gate.py --json outputs/dep/calls.json --key screen.verdict --want ADOPT_FOR_FULL_RUN
+```
+
+- It exits 0 only on ADOPT_FOR_FULL_RUN.
+- On NO_GAIN, NOT_ADOPTED or INCOMPLETE it exits 1. A missing record or key exits 2.
+- After a non-zero exit and its one retry, the feeder drops everything queued behind the gate.
+
+**The items**, after `iso-zg6z-report`, the last item queued so far:
+
+1. `dep-gate`: CPU 1, 1 GB, after `dep-calls`.
+2. `dep-l4-s1` and `dep-l4-s2`: the musique split, with `dep-l4-s0`'s line (share 0.42, cap 0.40, 7 GB) and deps
+   `pkoh-gate,dep-gate`. The two share the card.
+3. `dep-l4-s1-hp` and `dep-l4-s2-hp`: the hotpotqa split, with `dep-l4-s0-hp`'s line (share 0.75, cap 0.72, 12 GB) and the same
+   deps. They run one at a time.
+4. `dep-compare-full`, after the four fits: `zdep.py compare-all`. The two screen compares are kept and the four new ones run.
+5. `dep-calls-full`, after the compare: `zdep.py calls`. It rewrites `outputs/dep/calls.json` and `.md` with the screen block
+   and the full-run block. The screen block is recomputed from the same compares and must match the filed screen, which is
+   committed before the full run's fits end.
+
+**Bases.** The base's seeds 1 and 2 exist before the gate can open: ML1's zg6r s1 and s2 on KEEP, and ISO's zg6r-m s1 and s2 on
+REPLACE. ISO's verdict needs all six of its fits, and `dep-calls` needs ISO's verdict.
+
+**What does not change.** The screen decides only whether the full run starts. The full run alone decides adoption (section 4).
+If the screen's verdict is anything other than ADOPT_FOR_FULL_RUN, section 6's next form (read-time rounds) is declared in its
+own file.
+
+**Time.** This adds about 10 hours of GPU behind the screen: two musique-split fits side by side, then two hotpotqa-split fits
+one after the other. Each is a fourth longer than zg6r's (section 7).
+
+**Self-test.** `python outputs/mp_unified/verdict_gate.py --selftest` passed before this commit. It covers:
+
+- each of the four verdicts against ADOPT_FOR_FULL_RUN, and a list of wanted values;
+- a top-level key and a nested key;
+- a value that is not a string;
+- a missing key, a step into null, and a missing file.
