@@ -317,3 +317,38 @@ Both self-tests passed on the laptop before this commit.
 - the patches, and that they are put back, also on a failure;
 - the compares' and slices' reading on filed shapes;
 - section 6's rule and DEP's beside on made-up reads.
+
+## 11. Screen results (filed 2 November 2026)
+
+The screen ran on the host's CPU (6 threads): zrckpn at seed 0 on both splits, against DOB's CPU zrckp at seeds 0, 1 and
+2. `zltm.py compare-all` and `calls` ran at 21:03 and 21:04 IST. No fit is missing and `problems` is empty. Records:
+`outputs/ltm/calls.json`, `calls.md`.
+
+**Screen: ADOPT_FOR_FULL_RUN.** GAIN 2, LOSS 0, WITHIN 8.
+
+| split | read | base s0, s1, s2 | zrckpn s0 | delta | floor | call |
+|---|---|---|---:|---:|---:|---|
+| WQ-musique | squad | 0.9127, 0.9122, 0.9138 | 0.9138 | +0.0011 | 0.0075 | WITHIN |
+| WQ-musique | hotpotqa (C1R) | 0.8411, 0.8424, 0.8388 | 0.8460 | +0.0049 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | 0.9070, 0.9079, 0.9049 | 0.9155 | +0.0085 | 0.0075 | GAIN |
+| WQ-musique | webqsp | 0.6522, 0.6583, 0.6566 | 0.6457 | -0.0065 | 0.0106 | WITHIN |
+| WQ-hotpotqa | squad | 0.9138, 0.9129, 0.9133 | 0.9132 | -0.0006 | 0.0075 | WITHIN |
+| WQ-hotpotqa | musique (C1R) | 0.5749, 0.5718, 0.5752 | 0.5806 | +0.0057 | 0.0075 | WITHIN |
+| WQ-hotpotqa | 2wiki | 0.8987, 0.9082, 0.9063 | 0.9135 | +0.0148 | 0.0172 | WITHIN |
+| WQ-hotpotqa | webqsp | 0.6446, 0.6524, 0.6514 | 0.6469 | +0.0023 | 0.0146 | WITHIN |
+| WQ-hotpotqa | musique-3hop | 0.5241, 0.5237, 0.5232 | 0.5351 | +0.0110 | 0.0075 | GAIN |
+| WQ-hotpotqa | musique-4hop | 0.3475, 0.3556, 0.3531 | 0.3574 | +0.0099 | 0.0138 | WITHIN |
+
+- The GAINs are 2wiki under WQ-musique (+0.0085) and musique's 3-hop slice under WQ-hotpotqa (+0.0110).
+- Claim 1's two reads rise, within their floors: hotpotqa under WQ-musique +0.0049, musique under WQ-hotpotqa +0.0057.
+- Beside, deciding nothing:
+  - hotpotqa read zero-shot under WQ-hotpotqa: +0.0090 (above its floor of 0.0075);
+  - musique's 3-hop slice under WQ-musique: +0.0110 (above 0.0075); its 4-hop slice -0.0056 (floor 0.0245);
+  - musique read zero-shot under WQ-musique: +0.0038; metaqa: +0.0720 and -0.0179, inside floors of 0.0743 and 0.0278;
+  - DEP's sixteen-read rule also gives ADOPT_FOR_FULL_RUN;
+  - training took 2,714 s and 5,190 s; the reads 3,518 s and 3,745 s.
+
+**What follows (section 8).** The full run (`ltm-zrckpn-s1`, `-s2` and their `-hp` twins) is queued behind `ltm-gate`, which
+passed; `ltm-zrckpn-s1` started at 21:06. Section 6's full-run rule decides it. LTC (docs/LTC_CHAINED_BEAM_MLP.md) was
+declared on this scorer before this screen was read. It runs beside the full run and meets zrckpn head-to-head if both
+full runs adopt.
