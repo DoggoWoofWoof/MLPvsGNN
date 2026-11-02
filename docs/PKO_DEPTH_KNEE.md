@@ -137,3 +137,34 @@ and rule. The read and its report are queued again as `knee-zrckp-s0-b` and `kne
   `zg6r-m` fit in the GPU queue, so the two run side by side. ML1's read of this fit took 77 minutes and peaked at 9.3 GB of
   GPU memory. Then `knee-report-c` runs on the CPU. It writes the report with all three fits: zspk NOT_RUN, zrckp as filed,
   and zg6r.
+
+## 11. Results of A3 (filed 2 November 2026): zg6r is not depth-flat, but musique is flat
+
+`knee-zg6r-s0` read `scr-ml1-zg6r-s0` on the host's GPU; `knee-report-c` wrote the report with all three fits (zspk
+NOT_RUN, zrckp as filed in section 7, zg6r). With no cut, every carve reproduced ML1's own read question for question
+(0 questions differing on all six). Report: `outputs/knee/knee.json` and `knee.md`.
+
+| carve | no cut | 500 | 1,000 | 1,500 | 2,000 | 3,300 | knee 0.01 | flags |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| 2wiki | 0.9269 | 0.9260 | 0.9266 | 0.9269 | 0.9269 | 0.9269 | 500 | |
+| hotpotqa | 0.8593 | 0.8594 | 0.8593 | 0.8593 | 0.8593 | 0.8593 | 500 | |
+| metaqa | 0.3615 | 0.3786 | 0.3723 | 0.3692 | 0.3672 | 0.3638 | 500 | NOISE_AT_DEPTH |
+| musique | 0.5086 | 0.5091 | 0.5089 | 0.5087 | 0.5087 | 0.5086 | 500 | |
+| squad | 0.9142 | 0.9142 | 0.9142 | 0.9142 | 0.9142 | 0.9142 | 500 | |
+| webqsp | 0.6632 | 0.6148 | 0.6414 | 0.6474 | 0.6519 | 0.6570 | 3,300 | DEPTH_PAYS |
+
+Reach at each depth is the pools' and is the same as in section 7.
+
+- **Not DEPTH_FLAT for zg6r.** The common knee is 3,300 rows at 0.01 and 1,500 rows at 0.02. webqsp alone sets it.
+- **DEPTH_PAYS on webqsp,** which WQ-musique trains on: 0.6632 uncut against 0.6519 at 2,000 rows (−0.0113). By
+  section 5, a cut costs R@5 there, so a stage-5 selector would need a depth chosen per question.
+- **NOISE_AT_DEPTH on metaqa,** which is zero-shot here: 0.3786 at 500 rows against 0.3615 uncut (+0.0171). The rows
+  beyond 500 cost zg6r on metaqa. By section 5, a ranker trained on cut pools is the next form there, not a larger pool.
+- **musique is flat for both rankers.** zg6r reads 0.5086 to 0.5091 at every depth while reach rises from 0.922 to
+  0.976. zrckp's read is the same (section 7). Neither model ranks the golds that the deeper pool adds into the top five.
+  The gap on musique is in the ranking: the missed golds are in the pool, and neither model picks them out. CHN
+  (docs/CHN_CHAIN_COMPLEMENT.md, NO_SIGNAL) found that no parameter-free score of the frozen vectors singles out the
+  next hop either.
+- **What is closed.** Only the knee's question for these two fits. The named next forms:
+  - a ranker trained on cut pools (metaqa), named and not declared;
+  - for musique, the learned next-hop score (docs/LTW_LEARNED_NEXT_HOP.md), declared next.
