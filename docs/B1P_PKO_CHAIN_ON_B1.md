@@ -143,3 +143,10 @@ the settings arrays, pools, looks, caches, links, KT, forks or reads.
 - **Time:** at these rates a full carve's pass takes about 30 minutes on the laptop.
 - **Fix before queueing:** `clean_look` now also removes `look_x_six`'s temporaries (`c#####.tmp.npz`). Before, it would have
   stopped on their names. The self-test covers it.
+- **Fix after the first host look (fce3654, no number read):** the host's musique b1w look stopped at 18:16 on metaqa's
+  stores. The six pair's look opens all six datasets (`m3b_run.open_contexts` through `universal_v2_six.open_six`). Inside
+  `on_b1`'s look, the other five datasets' stores now come from the original loader, as under `look_b1` for B1f; only the
+  setting's dataset gets the setting's stores. The pools pass still refuses other datasets. Two checks followed:
+  - The laptop's 8-question look on the host's filed musique b1w pools held every `look_u2d` check. Its structural store
+    held 82,834 entries, the cut's 41,417 pairs twice.
+  - 2wiki's b1w look on the host ran on the fixed code (1,000 questions, 94 s), and its cache checked IDENTICAL against Carve3.
