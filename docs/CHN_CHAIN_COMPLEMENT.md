@@ -132,3 +132,57 @@ The host's looks were listed before queueing. musique's s1fit, s1sel, b1 and b1u
 - **musique's B1 read is b1w** (the W2_S graph of B1f, read 65.3 / 65.7 by the J5 fits against the title rule's 66.1 /
   66.3). The title rule's own B1 look for musique is gone. B1 stays a report, never a choice.
 - Sections 4 and 5 are unchanged.
+
+## 9. Result (2 November): NO_SIGNAL
+
+Records: `outputs/chn/report.{json,md}` and the ten per-read summaries `outputs/chn/<dataset>__<carve>.json` (script
+sha256 bb8a5719…, as committed in 522101b). Every read passed the identity check (0 bad rows of 5,000 to 62,880 checked;
+largest difference 0.00096).
+
+**The verdict (section 4, musique s1eval, A).** T2 base = cos 0.327 (rrf 0.293). Complement = pair 0.354 (res 0.310).
+The complement is +0.027 over the base: under +0.05 and under 0.40, so **NO_SIGNAL**.
+
+| read | ranked | neighbours (median) | rrf | cos | anc | res | pair |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| musique s1eval | 926 | 32 | 0.293 | 0.327 | 0.177 | 0.310 | 0.354 |
+| hotpotqa s1eval | 3,522 | 8 | 0.502 | 0.540 | 0.342 | 0.634 | 0.623 |
+| 2wiki s1eval | 7,556 | 8 | 0.394 | 0.483 | 0.467 | 0.391 | 0.447 |
+
+What the three reads say:
+- **hotpotqa:** the complement singles out the next hop (res +0.094 over cos).
+- **2wiki:** plain cosine beats both complement scores.
+- **musique:** no score does.
+  - The found gold has a median of 32 neighbours, against 8 on the other two.
+  - The best score puts the next hop first or second for 0.354 of them.
+  - Of musique's 2,223 missed in-pool golds (1,660 questions), only 926 (42%) are next to the anchor at all. Their
+    links are 54% title mentions, 44% NER and 3% kNN.
+
+**PARAM_FREE_PAYS: H1_pair** (beside the verdict, section 4). It is rrf's top three, then the top-1's two best neighbours
+by `pair`. Against rrf on s1eval it reads:
+- musique +0.0101;
+- 2wiki +0.0577;
+- hotpotqa +0.0996.
+
+On musique it helps only 2-hop questions:
+- 2-hop: 0.5619 → 0.6006;
+- 3-hop: 0.4368 → 0.4123;
+- 4-hop: 0.2685 → 0.2549.
+
+λ was picked on s1sel as 0.25 for every score (section 8). The S forms move R@5 by at most 0.014 anywhere.
+
+Its B1 read, as section 5 asks, is a training-free row beside the link rules and chooses nothing:
+- musique b1w: 0.5643 → 0.5928;
+- 2wiki: b1 0.7123 → 0.8050; b1u → 0.7993;
+- hotpotqa: b1 0.8505 → 0.8935; b1u → 0.8850.
+
+On 2wiki and hotpotqa this is below B1d's training-free link rule (92.8 / 95.2).
+
+**What follows (section 5, NO_SIGNAL):**
+- No complement-input screen is declared, for either model.
+- The paper states musique's gap as the first stage's. Our RRF starts 13.3 points of R@5 below NV-Embed-v2 on B1, and
+  the models recover 22.6% (GNN) / 22.2% (MLP) of its misses. HippoRAG 2 recovers 16.5% of NV-Embed-v2's.
+- The GPU stays on depth (DEP, then RTR).
+
+This verdict closes only the parameter-free complement of the frozen vectors as a next-hop signal. D4 (link words) and
+D1 (zrm's own score) are closed on their own forms. A learned three-way score of (question, found passage, row) is a
+different form. It is named here and not declared.
