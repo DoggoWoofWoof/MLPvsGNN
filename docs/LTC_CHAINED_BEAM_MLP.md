@@ -225,4 +225,51 @@ Only `outputs/ltc/calls.json`, `calls.md`, `report.json` and `report.md` are com
 
 ## 10. zltc.py
 
-Committed after this file, before any LTC fit. Its self-test is listed here when it is committed.
+Committed after this file, before any LTC fit.
+
+zltc.py runs zltm.py's train, read and fit under LTC's names (`as_ltc`):
+
+- zltm's arm, fits, pairs, nulls, declaration, stage, stamp key, naming, pick and code list become LTC's;
+- its arm registration, split, NEXT block and set check become zltc's;
+- every name is put back afterwards, also on a failure.
+
+zltm's output root stays LTM's: NEXT's columns and the split's scorer are LTM's, read only. A carve's CHAIN columns are
+read from `outputs/ltc`. They must come from the scorer and the LTM column record of the NEXT columns beside them.
+
+Its compares:
+
+- zrckpc against DOB's base at each seed (`scr-ltc-zrckpc-vs-zrckp-s<seed>[-hp]`);
+- the base's null under LTC's names (`scr-ltc-zrckp-s<seed>-vs-s0[-hp]`);
+- zrckpc against LTM's zrckpn (`scr-ltc-zrckpc-vs-zrckpn-s<seed>[-hp]`): beside, and section 7's head-to-head.
+
+Its calls (`outputs/ltc/calls.json` and `.md`):
+
+- section 5's screen and full run (LTM's rule under LTC's names), with section 5's INCOMPLETE checks;
+- DEP's sixteen-read rule and LTM's verdicts, beside;
+- zrckpc - zrckpn per read and seed, beside;
+- section 7's head-to-head and next form;
+- the chain records per carve, beside.
+
+`zltc.py --selftest` passed on the laptop's CPU before this commit. It covers:
+
+- names, pairs and the pick; LTC's fits are none of ML1's, DOB's, LTG's or LTM's;
+- `as_ltc` and its restoring, also on a failure;
+- the arm:
+  - zrckp's model on zp1c3's chain carve with NEXT and CHAIN, registered once;
+  - zwq's KT patch reaches it;
+  - zp1c3p's arm swap is restored;
+- NEXT and CHAIN beside a toy chain carve:
+  - each batch carries both for its own rows, in any question order, and every other block unchanged;
+  - widths, the dead-block check and the bytes;
+  - every refusal: outside a split; NEXT's split alone; another split; twelve edits of the carve or part record; a
+    changed file; float32 under matching shas; NEXT's record rewritten after the chain was built;
+- the model: 15 more first-layer inputs for NEXT and 29 for CHAIN; the output reads CHAIN;
+- a toy fit through lean_gpu's loop under zrckpc's arm;
+- the trainer's sets check: NEXT and CHAIN in every set, neither dead;
+- zltm's patches under LTC's names, on fakes, and their restoring, also on a failure;
+- on made-up compares: the reading under LTC's names, zrckpn's side beside it, and the calls with every table drawn;
+- the head-to-head:
+  - not run; not needed; decided either way;
+  - a slice-only gain, a LOSS and a zero-shot LOSS;
+  - a missing seed and problems;
+- the next form on either side of its margin, and the chain checks.
