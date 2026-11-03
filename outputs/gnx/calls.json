@@ -1,0 +1,269 @@
+{
+ "stage": "GNX",
+ "declared_in": "docs/GNX_NEXT_COLUMNS_IN_GNN.md",
+ "arm": "zg6r with LTM's NEXT input",
+ "iso_verdict": "KEEP",
+ "base": "zg6r (ML1)",
+ "screen": {
+  "verdict": "NO_GAIN",
+  "problems": [],
+  "reads": [
+   {
+    "split": "WQ-musique",
+    "read": "squad",
+    "base": [
+     0.9142,
+     0.9145,
+     0.9163
+    ],
+    "new": 0.9145,
+    "delta": 0.0003,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "hotpotqa",
+    "base": [
+     0.8593,
+     0.8596,
+     0.8562
+    ],
+    "new": 0.8597,
+    "delta": 0.0004,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "2wiki",
+    "base": [
+     0.9269,
+     0.9297,
+     0.9215
+    ],
+    "new": 0.9284,
+    "delta": 0.0015,
+    "floor": 0.0086,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "webqsp",
+    "base": [
+     0.6632,
+     0.6586,
+     0.6593
+    ],
+    "new": 0.6637,
+    "delta": 0.0005,
+    "floor": 0.0085,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "squad",
+    "base": [
+     0.9139,
+     0.914,
+     0.9127
+    ],
+    "new": 0.9148,
+    "delta": 0.0009,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique",
+    "base": [
+     0.5912,
+     0.5988,
+     0.5939
+    ],
+    "new": 0.5914,
+    "delta": 0.0002,
+    "floor": 0.0114,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "2wiki",
+    "base": [
+     0.9296,
+     0.929,
+     0.9276
+    ],
+    "new": 0.927,
+    "delta": -0.0026,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "webqsp",
+    "base": [
+     0.6658,
+     0.6512,
+     0.6523
+    ],
+    "new": 0.6636,
+    "delta": -0.0022,
+    "floor": 0.0281,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-3hop",
+    "base": [
+     0.5333,
+     0.5443,
+     0.543
+    ],
+    "new": 0.5368,
+    "delta": 0.0035,
+    "floor": 0.0207,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-4hop",
+    "base": [
+     0.3765,
+     0.3833,
+     0.3772
+    ],
+    "new": 0.3704,
+    "delta": -0.0062,
+    "floor": 0.0096,
+    "call": "WITHIN"
+   }
+  ],
+  "beside": [
+   {
+    "split": "WQ-musique",
+    "read": "musique",
+    "base": [
+     0.5086,
+     0.5039,
+     0.5134
+    ],
+    "new": 0.5233,
+    "delta": 0.0147,
+    "floor": 0.0095,
+    "call": "GAIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "metaqa",
+    "base": [
+     0.3615,
+     0.3477,
+     0.3461
+    ],
+    "new": 0.386,
+    "delta": 0.0245,
+    "floor": 0.0292,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "hotpotqa",
+    "base": [
+     0.8004,
+     0.7943,
+     0.784
+    ],
+    "new": 0.8008,
+    "delta": 0.0004,
+    "floor": 0.0247,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "metaqa",
+    "base": [
+     0.3519,
+     0.3903,
+     0.3651
+    ],
+    "new": 0.3629,
+    "delta": 0.011,
+    "floor": 0.0574,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-3hop",
+    "base": [
+     0.4329,
+     0.4272,
+     0.4404
+    ],
+    "new": 0.4456,
+    "delta": 0.0127,
+    "floor": 0.0133,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-4hop",
+    "base": [
+     0.313,
+     0.3167,
+     0.3179
+    ],
+    "new": 0.3302,
+    "delta": 0.0173,
+    "floor": 0.0087,
+    "call": "GAIN"
+   }
+  ],
+  "counts": {
+   "GAIN": 0,
+   "LOSS": 0,
+   "WITHIN": 10
+  }
+ },
+ "full_run": null,
+ "dep_rule_beside": {
+  "screen": "ADOPT_FOR_FULL_RUN",
+  "full_run": null
+ },
+ "problems": [],
+ "parameters": {
+  "scr-gnx-nx-s0": {
+   "term_parameters": 1920,
+   "parameters_h128": 182138,
+   "inputs": 15,
+   "columns": [
+    "next_1",
+    "next_2",
+    "next_3",
+    "next_4",
+    "next_5",
+    "next_max",
+    "next_n"
+   ],
+   "layers": 3
+  },
+  "scr-gnx-nx-s0-hp": {
+   "term_parameters": 1920,
+   "parameters_h128": 182138,
+   "inputs": 15,
+   "columns": [
+    "next_1",
+    "next_2",
+    "next_3",
+    "next_4",
+    "next_5",
+    "next_max",
+    "next_n"
+   ],
+   "layers": 3
+  }
+ },
+ "zgnx_sha256": "161112d9e9d36124912967e0e371cd1dc820a51aed3e7c43dfbbbda4d4280414",
+ "zltg_sha256": "a894b97c0c5d02360366a25fe88575619d89d765cf99f5c2e0d08883c93d0423",
+ "utc": "2026-11-03T07:49:26Z"
+}
