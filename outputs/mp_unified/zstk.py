@@ -25,8 +25,18 @@ passes, the slot's block is its NEXT columns (LTM's or LTA's, by A2) then the si
 with two or more forms; GNP's own full run is released by own-gate --stage gnp. zgnp, gnpcols and zpfp are imported on
 first use (a fit, the calls, the self-test; never the gates) and not edited.
 
+Amendment A4 (section 13): the members wait on GNW's and LTX's screens too (docs/GNW_PAIR_WEIGHTS_IN_GNN.md,
+docs/LTX_CROSSFIT_NEXT_HOP_GNN.md), each read as s0stop's gate reads a verdict under its own entry. A passing GNW or LTX
+is a form and a member of its own (MEMBERS: ORDER's, then gnw, ltx), read under LTG's in-domain rule. This code composes
+ORDER's members only (COMPOSED); how GNW and LTX compose is amendment A5's, committed before any stack fit. So with a
+member this code does not compose, stack-gate --wait looks every POLL seconds until the zstk.py on disk does (a fresh
+process: `composes`), and at MEMBERS_BY it decides the stack does not run (outputs/stk/stack_gate.json), which the own
+gates read as the stack's screen NOT_ADOPTED. GNW's and LTX's own full runs are released by own-gate --stage gnw / ltx.
+zgnw and zltx are imported in the self-test alone (their names checked), never by the gates or a fit of A4's.
+
     python outputs/mp_unified/zstk.py members --wait                 (fix the members: outputs/stk/members.json)
-    python outputs/mp_unified/zstk.py stack-gate                      (exit 0 with two or more forms)
+    python outputs/mp_unified/zstk.py stack-gate --wait               (exit 0 with two or more forms, A4: once composed)
+    python outputs/mp_unified/zstk.py composes                        (A4: exit 0 when this code composes the members)
     python outputs/mp_unified/zstk.py own-gate --stage dep --wait     (exit 0 when the stage's own full run is released)
     python outputs/mp_unified/zstk.py fit --name scr-stk-st-s0        (train when needed, then read; kept when read before)
     python outputs/mp_unified/zstk.py s0stop-check                    (s0stop's check, for the stack)
@@ -87,7 +97,13 @@ ADOPT_FOR_FULL_RUN, NO_GAIN, NOT_ADOPTED, ADOPT, INCOMPLETE = (
 VERDICTS = (ADOPT_FOR_FULL_RUN, NO_GAIN, NOT_ADOPTED)
 PAIR = "PAIR"                                   # A3: GNP's six pair columns
 COLUMNS = ("LTM", "LTA", PAIR, "LTM+PAIR", "LTA+PAIR")   # A2, A3: whose columns the gnx slot reads, in block order
-FORMS = ORDER + ("gnp",)                        # A3: the forms the stack holds (the pick's tie); GNP's is in the gnx slot
+LATE = ("gnw", "ltx")                           # A4: GNW's and LTX's forms, each a member of its own
+FORMS = ORDER + ("gnp",) + LATE                 # A3, A4: the forms the stack holds (the pick's tie); GNP's is in the gnx slot
+MEMBERS = ORDER + LATE                          # A4: the members, in their listing order
+LATE_NAMES = {"gnw": ("zgnw", "outputs/gnw", "mw", "docs/GNW_PAIR_WEIGHTS_IN_GNN.md"),       # A4: module, root, tag and
+              "ltx": ("zltx", "outputs/ltx", "xf", "docs/LTX_CROSSFIT_NEXT_HOP_GNN.md")}     # declaration, checked on import
+LATE_RULE = {"gnw": "ltg", "ltx": "ltg"}        # A4: each read under LTG's in-domain rule (its declaration's section 4)
+COMPOSED = ORDER                                # A4: the members this code stacks; A5 declares GNW's and LTX's
 GNP_KEY, GNP_OUT, GNP_TAG = "gnp", "outputs/gnp", "px"                # A3: zgnp's names, checked against it on import
 GNP_DECLARED = "docs/GNP_PAIR_COLUMNS_IN_GNN.md"
 PAIR_COLS = ("pair_max", "res_max", "pair_mean", "res_mean", "pair_1", "res_1")    # gnpcols' six, checked on import
@@ -97,6 +113,7 @@ LTM0 = {k: getattr(GNX.LTMC, k) for k in ("OUT", "STAGE", "DECLARED", "COLS", "W
 LOAD_NEXT0 = GNX.LTM.load_next                  # zltm's, as imported
 GNX0 = {k: getattr(GNX, k) for k in ("code_extra", "term_record", "next_block")}         # zgnx's own, as zgnp takes them
 assert len(PICK_READS) == 6 and set(MOD) == set(ORDER) == set(RULE_OF) == set(S0.STAGES) and GNP_KEY not in S0.STAGES
+assert set(LATE) == set(LATE_NAMES) == set(LATE_RULE) and not set(LATE) & (set(S0.STAGES) | {GNP_KEY, "gna"})
 
 
 def fit_name(seed, split):
@@ -128,8 +145,9 @@ def utc_now():
 
 
 def rules_of(mem):
-    """The rules the stack is read under: each member's (section 4), in the order dep, ltg."""
-    return [r for r in ("dep", "ltg") if any(RULE_OF[st] == r for st in mem)]
+    """The rules the stack is read under: each member's (section 4; A4: GNW's and LTX's LTG's), in the order dep, ltg."""
+    rule = {**RULE_OF, **LATE_RULE}
+    return [r for r in ("dep", "ltg") if any(rule[st] == r for st in mem)]
 
 
 def layers_of(mem):
@@ -176,6 +194,39 @@ def gnp():
     return _GNP[0]
 
 
+_LATE = {}
+
+
+def late_mods():
+    """A4: zgnw and zltx, for the self-test alone (never the gates, never a fit of A4's): imported after zgnp (zgnw imports
+    it), outside every patch, with the thread variables gnwcols sets at its import put back; their names, fits and stop
+    entries checked against A4's."""
+    if not _LATE:
+        gnp()
+        saved = {v: os.environ.get(v) for v in THREAD_VARS}
+        try:
+            import zgnw
+            import zltx
+        finally:
+            for v, x in saved.items():
+                if x is None:
+                    os.environ.pop(v, None)
+                else:
+                    os.environ[v] = x
+        for st, m in (("gnw", zgnw), ("ltx", zltx)):
+            mod, out, tag, decl = LATE_NAMES[st]
+            fits = {late_fit_name(st, sd, sp) for sd in RULE.SEEDS for sp in M1.SPLITS}
+            if (m.__name__, m.KEY, m.OUT, m.TAG, m.DECLARED, set(m.FITS)) != (mod, st, out, tag, decl, fits):
+                raise SystemExit(f"zstk: {mod}'s names or fits are not A4's")
+            if m.ORIG != {k: getattr(GNX, k) for k in m.ORIG} or m.GNX_FITS != dict(GNX.FITS):
+                raise SystemExit(f"zstk: {mod} was imported inside a patch of zgnx's")
+            with m.on_s0stop():
+                if S0.STAGES[st] != late_entry(st):
+                    raise SystemExit(f"zstk: {mod}'s seed-0 stop entry is {S0.STAGES[st]}, A4's {late_entry(st)}")
+        _LATE.update(gnw=zgnw, ltx=zltx)
+    return _LATE
+
+
 def gnp_fit_name(seed, split):
     """zgnp.fit_name, without importing zgnp."""
     return f"scr-gnp-{GNP_TAG}-s{seed}{M1.WQ.SUF[split]}"
@@ -204,8 +255,9 @@ def stage_verdict(st, base=ROOT):
 
 def six_deltas(st, base=ROOT, cols="LTM"):
     """{read: seed-0 delta} of the stage's screen on section 6's six WQ-hotpotqa reads (its calls.json's rows); the gnx
-    slot on LTA's columns reads GNA's (A2); the form gnp GNP's (A3)."""
-    out = GNP_OUT if st == "gnp" else GNA.OUT if st == "gnx" and next_part(cols) == "LTA" else MOD[st].OUT
+    slot on LTA's columns reads GNA's (A2); the form gnp GNP's (A3); the forms gnw and ltx their own (A4)."""
+    out = (GNP_OUT if st == "gnp" else LATE_NAMES[st][1] if st in LATE_NAMES
+           else GNA.OUT if st == "gnx" and next_part(cols) == "LTA" else MOD[st].OUT)
     p = Path(base) / out / "calls.json"
     c = M1.WQ.read_json(p) if p.is_file() else {}
     rows = {(r.get("split"), r.get("read")): r for r in (c.get("screen") or {}).get("reads") or []}
@@ -256,6 +308,33 @@ def gnp_verdict(base=ROOT):
     return (c.get("screen") or {}).get("verdict")
 
 
+def late_fit_name(st, seed, split):
+    """A4: zgnw.fit_name and zltx.fit_name, without importing them."""
+    return f"scr-{st}-{LATE_NAMES[st][2]}-s{seed}{M1.WQ.SUF[split]}"
+
+
+def late_entry(st):
+    """A4: s0stop's entry for GNW or LTX, as zgnw.on_s0stop and zltx.on_s0stop patch it in."""
+    mod, out, _tag, decl = LATE_NAMES[st]
+    return (mod, out, late_fit_name(st, 0, S0.S0_SPLIT), late_fit_name(st, 0, S0.HP_SPLIT), LATE_RULE[st], decl)
+
+
+def late_verdict(st, base=ROOT):
+    """A4: GNW's or LTX's screen verdict as s0stop's gate reads it (its entry patched in; its module not imported):
+    NOT_ADOPTED on a current STOP, else its calls.json's screen.verdict; None when that file is missing or not the
+    stage's."""
+    with M1.WQ.patch(S0, STAGES={**S0.STAGES, st: late_entry(st)}):
+        rec = S0.stop_record(st, base)
+    if rec is not None and rec.get("decision") == S0.STOP:
+        return NOT_ADOPTED
+    _m, out, _t, decl = LATE_NAMES[st]
+    p = Path(base) / out / "calls.json"
+    c = M1.WQ.read_json(p) if p.is_file() else {}
+    if c.get("declared_in") != decl:
+        return None
+    return (c.get("screen") or {}).get("verdict")
+
+
 def fix_members(base=ROOT, now=None):
     """(done, record) by section 2: each stage's verdict; RTR and IRA will not run when DEP's screen passes; the members
     are the passing forms in ORDER, IRA standing for RTR when both pass; a stage with no verdict at MEMBERS_BY is left out.
@@ -263,16 +342,18 @@ def fix_members(base=ROOT, now=None):
     LTA's when GNA's passes and GNX's does not, or GNA's mean delta over the six reads is the larger (a tie: LTM's).
     A3: GNP's verdict is waited on too; when GNP's screen passes, GNP is a form, and the gnx slot is a member reading its
     NEXT columns then the six pair columns (the slot passing) or the six alone (it not passing). The pick is over the
-    passing forms, a tie to the earlier in FORMS."""
+    passing forms, a tie to the earlier in FORMS. A4: GNW's and LTX's verdicts are waited on too; each passing one is a
+    form and a member of its own, after ORDER's."""
     now = time.time() if now is None else now
     late = now >= utc_s(MEMBERS_BY)
     v = {st: stage_verdict(st, base) for st in ORDER}
     vg, vp = gna_verdict(base), gnp_verdict(base)
+    vl = {st: late_verdict(st, base) for st in LATE}
     wont = [st for st in ROUNDS_OF[::-1] if v["dep"] == ADOPT_FOR_FULL_RUN]
     pending = ([st for st in ORDER if st not in wont and v[st] not in VERDICTS] + ([] if vg in VERDICTS else ["gna"])
-               + ([] if vp in VERDICTS else ["gnp"]))
+               + ([] if vp in VERDICTS else ["gnp"]) + [st for st in LATE if vl[st] not in VERDICTS])
     rec = {"stage": STAGE, "declared_in": DECLARED, "verdicts": v, "gna_verdict": vg, "gnp_verdict": vp,
-           "will_not_run": wont, "pending": pending, "members_by": MEMBERS_BY}
+           **{f"{st}_verdict": vl[st] for st in LATE}, "will_not_run": wont, "pending": pending, "members_by": MEMBERS_BY}
     if pending and not late:
         return False, rec
     gnx_ok, gna_ok, gnp_ok = v["gnx"] == ADOPT_FOR_FULL_RUN, vg == ADOPT_FOR_FULL_RUN, vp == ADOPT_FOR_FULL_RUN
@@ -281,8 +362,9 @@ def fix_members(base=ROOT, now=None):
     cols = (f"{nxt}+{PAIR}" if gnx_ok or gna_ok else PAIR) if gnp_ok else nxt
     passing = [st for st in ORDER if st not in wont and (v[st] == ADOPT_FOR_FULL_RUN or (st == "gnx" and gna_ok))]
     passing += ["gnp"] if gnp_ok else []
+    passing += [st for st in LATE if vl[st] == ADOPT_FOR_FULL_RUN]
     forms = [st for st in passing if not (st == "rtr" and "ira" in passing)]
-    mem = [st for st in ORDER if st in forms or (st == "gnx" and "gnp" in forms)]
+    mem = [st for st in MEMBERS if st in forms or (st == "gnx" and "gnp" in forms)]
     pick, means = pick_of(passing, base, nxt)
     rec.update(left_out=pending, passing=passing, forms=forms, members=mem, layers=layers_of(mem), rules=rules_of(mem),
                pick=pick, pick_means=means, pick_reads=[f"{a} {b}" for a, b in PICK_READS], gnx_columns=cols,
@@ -298,12 +380,13 @@ def forms_of(rec):
 
 def members_record(base=ROOT):
     """outputs/stk/members.json once written (fixed), else None; None too when its forms, members and gnx columns do not
-    agree (A3: GNP's form is the gnx slot with the pair columns; the slot's NEXT set is there when GNX's form is)."""
+    agree (A3: GNP's form is the gnx slot with the pair columns; the slot's NEXT set is there when GNX's form is; A4:
+    GNW's and LTX's forms are members of their own)."""
     p = Path(base) / OUT / "members.json"
     rec = M1.WQ.read_json(p) if p.is_file() else {}
     mem, forms, cols = rec.get("members"), rec.get("forms", rec.get("members")), rec.get("gnx_columns", "LTM")
     if (rec.get("declared_in") != DECLARED or not isinstance(mem, list) or not isinstance(forms, list)
-            or [s for s in mem if s not in ORDER] or [s for s in forms if s not in FORMS] or cols not in COLUMNS):
+            or [s for s in mem if s not in MEMBERS] or [s for s in forms if s not in FORMS] or cols not in COLUMNS):
         return None
     if (sorted({"gnx" if s == "gnp" else s for s in forms}) != sorted(mem) or ("gnp" in forms) != has_pair(cols)
             or ("gnp" in forms and ("gnx" in forms) != (next_part(cols) is not None))):
@@ -475,15 +558,86 @@ def members(wait=False, base=ROOT, now=None, sleep=time.sleep):
         sleep(POLL)
 
 
-def stack_gate(base=ROOT):
+def composed(mem):
+    """A4: every member is one this code stacks (COMPOSED)."""
+    return all(st in COMPOSED for st in mem)
+
+
+def composes_now(base=ROOT):
+    """A4's `composes`: 0 when this code composes every fixed member, 1 when it does not, 2 when they are not fixed."""
     rec = members_record(base)
     if rec is None:
-        log("stack-gate: the members are not fixed")
+        log("composes: the members are not fixed")
         return 2
-    ok = len(forms_of(rec)) >= 2
-    log(f"stack-gate: forms {forms_of(rec)}, members {rec['members']} (the gnx slot on {gnx_columns(rec)}'s columns); "
-        f"{'the stack runs' if ok else 'no stack (section 3)'}")
-    return 0 if ok else 1
+    miss = [st for st in rec["members"] if st not in COMPOSED]
+    log(f"composes: members {rec['members']}; {f'not composed: {miss}' if miss else 'each one composed'} "
+        f"(this code composes {list(COMPOSED)})")
+    return 1 if miss else 0
+
+
+def disk_composes_rc():
+    """A4: the exit code of the zstk.py on disk's `composes`, in a process of its own (a waiting gate runs the code it
+    started with)."""
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    pr = subprocess.run([sys.executable, str(Path(__file__).resolve()), "composes"], capture_output=True, text=True,
+                        timeout=1800, env=env, cwd=str(ROOT))
+    log(f"composes, on disk: exit {pr.returncode} {(pr.stdout or '').strip().splitlines()[-1:]}")
+    return pr.returncode
+
+
+def composed_on_disk():
+    """A4: whether the zstk.py on disk now composes the fixed members."""
+    return disk_composes_rc() == 0
+
+
+def gate_record(base=ROOT):
+    """A4: outputs/stk/stack_gate.json, written once the stack gate has decided on members this code did not compose;
+    None before."""
+    p = Path(base) / OUT / "stack_gate.json"
+    rec = M1.WQ.read_json(p) if p.is_file() else {}
+    return rec if rec.get("declared_in") == DECLARED and isinstance(rec.get("runs"), bool) else None
+
+
+def stack_gate(base=ROOT, wait=False, now=None, sleep=time.sleep, composes=None):
+    """0 with two or more forms (the stack runs), 1 with fewer (no stack, section 3), 2 when the members are not fixed.
+    A4: with a member this code does not compose, 0 once the code on disk composes it (a fresh `composes`), looked at
+    every POLL seconds with wait, 2 without; 1 when it still does not at MEMBERS_BY. That decision is written once
+    (outputs/stk/stack_gate.json), and the own gates read a stack that does not run as the stack's screen NOT_ADOPTED."""
+    composes = composed_on_disk if composes is None else composes
+    seen = False
+    while True:
+        rec = members_record(base)
+        if rec is None:
+            log("stack-gate: the members are not fixed")
+            return 2
+        ok = len(forms_of(rec)) >= 2
+        if not ok or composed(rec["members"]):
+            log(f"stack-gate: forms {forms_of(rec)}, members {rec['members']} (the gnx slot on {gnx_columns(rec)}'s "
+                f"columns); {'the stack runs' if ok else 'no stack (section 3)'}")
+            return 0 if ok else 1
+        g = gate_record(base)
+        if g is not None:
+            log(f"stack-gate: decided at {g.get('utc')}: {'the stack runs' if g['runs'] else 'no stack'} ({g.get('why')})")
+            return 0 if g["runs"] else 1
+        miss = [st for st in rec["members"] if st not in COMPOSED]
+        if composes():
+            runs, why = True, f"the code on disk composes {miss}"
+        elif (time.time() if now is None else now) >= utc_s(MEMBERS_BY):
+            runs, why = False, f"{miss} not composed by the code on disk at {MEMBERS_BY}"
+        else:
+            if not seen:
+                seen = True
+                log(f"stack-gate: forms {forms_of(rec)}, members {rec['members']}: waiting for code that composes {miss}")
+            if not wait:
+                return 2
+            sleep(POLL)
+            continue
+        o = Path(base) / OUT
+        o.mkdir(parents=True, exist_ok=True)
+        M1.WQ.write_json(o / "stack_gate.json", {"stage": STAGE, "declared_in": DECLARED, "members": rec["members"],
+                                                 "forms": forms_of(rec), "runs": runs, "why": why, "utc": utc_now()})
+        log(f"stack-gate: {'the stack runs' if runs else 'no stack'} ({why})")
+        return 0 if runs else 1
 
 
 @contextlib.contextmanager
@@ -523,7 +677,8 @@ def own_call(st, base=ROOT, now=None):
     """(done, exit code, why) for stage st's own full run, by sections 3 and 6: with one member, that member's; with two or
     more, the pick's when the stack's screen is NO_GAIN or NOT_ADOPTED or its full run NOT_ADOPTED; none when the stack's
     full run is ADOPT; none still undecided at FREEZE. A2: the gnx slot's own full run is GNX's on LTM's columns and GNA's
-    (st "gna") on LTA's. A3: by forms; GNP's own full run (st "gnp") is its form's."""
+    (st "gna") on LTA's. A3: by forms; GNP's own full run (st "gnp") is its form's. A4: GNW's and LTX's are their forms';
+    a stack the stack gate decided does not run (a member not composed at MEMBERS_BY) is read as its screen NOT_ADOPTED."""
     now = time.time() if now is None else now
     rec = members_record(base)
     if rec is None:
@@ -535,6 +690,9 @@ def own_call(st, base=ROOT, now=None):
         return True, 0 if ok else 1, (f"forms {forms} (the gnx slot on {gnx_columns(rec)}'s columns): "
                                       f"{'its own full run' if ok else 'not its own'}")
     sv, fv = stack_verdicts(base)
+    g = gate_record(base)
+    if sv is None and g is not None and not g["runs"]:
+        sv = NOT_ADOPTED                        # A4: the stack gate decided the stack does not run
     if sv in (NO_GAIN, NOT_ADOPTED) or fv == NOT_ADOPTED:
         return True, 0 if rec.get("pick") == slot and mine else 1, (
             f"the stack's screen {sv}, full run {fv}: the pick is {rec.get('pick')} (the gnx slot on "
@@ -820,6 +978,9 @@ def fit(name):
     if rec is None or len(forms_of(rec)) < 2:
         raise SystemExit(f"zstk: the stack runs with two or more forms (section 3, A3); forms {rec and forms_of(rec)}")
     mem, cols = rec["members"], gnx_columns(rec)
+    if not composed(mem):
+        raise SystemExit(f"zstk: this code composes {list(COMPOSED)}, not the members {mem} (A4: amendment A5 declares "
+                         f"how GNW and LTX compose)")
     _a, sd, sp = FITS[name]
     if "gnx" in mem and has_pair(cols):
         gnp()                                   # A3: before any patch (zgnp takes zgnx's own at its import)
@@ -1474,14 +1635,25 @@ def gates_check():
         def gnp_file(v, deltas=None, decl=None):
             side_file(GNP_OUT, GNP_DECLARED, v, deltas, decl)
 
+        def late_file(st, v, deltas=None, decl=None):
+            side_file(LATE_NAMES[st][1], LATE_NAMES[st][3], v, deltas, decl)
+
+        def late_none():
+            """A4: GNW and LTX not passing, so A1's to A3's cases read as they were written."""
+            for st in LATE:
+                late_file(st, NO_GAIN)
+
         def fixed(now=t0):
             return fix_members(base, now)
 
-        def reset():
+        def reset(late=True):
             for p in sorted(base.rglob("*"), reverse=True):
                 p.unlink() if p.is_file() else p.rmdir()
+            if late:
+                late_none()
 
-        assert fixed()[0] is False and fixed()[1]["pending"] == list(ORDER) + ["gna", "gnp"]
+        assert fixed()[0] is False and fixed()[1]["pending"] == list(ORDER) + ["gna", "gnp"] + list(LATE)
+        late_none()
         calls_file("dep", ADOPT_FOR_FULL_RUN, {"squad": 0.01})
         calls_file("ltg", ADOPT_FOR_FULL_RUN, {"squad": 0.02})
         calls_file("gnx", INCOMPLETE)
@@ -1706,6 +1878,102 @@ def gates_check():
         M1.WQ.write_json(base / OUT / "members.json", {"declared_in": DECLARED, "members": ["dep", "gnx"],
                                                        "gnx_columns": "LTA"})
         assert forms_of(members_record(base)) == ["dep", "gnx"]
+        # A4: GNW's and LTX's verdicts are waited on; a calls file declared by another file is not a verdict
+        reset(late=False)
+        assert fixed()[1]["pending"] == list(ORDER) + ["gna", "gnp", "gnw", "ltx"]
+        late_file("gnw", NO_GAIN, decl="docs/OTHER.md")
+        late_file("ltx", NO_GAIN)
+        rec = fixed()[1]
+        assert rec["gnw_verdict"] is None and rec["ltx_verdict"] == NO_GAIN and rec["pending"][-1] == "gnw", rec
+        # A4: DEP and LTX pass: two forms and two members, at four layers. This code does not compose LTX, so the stack
+        # gate waits (2 without wait, one look a call), decides once at MEMBERS_BY that the stack does not run, and the
+        # own gates read that as the stack's screen NOT_ADOPTED: the pick's own full run is released
+        reset()
+        calls_file("dep", ADOPT_FOR_FULL_RUN, {"squad": 0.006})
+        for st in ("ltg", "gnx"):
+            calls_file(st, NO_GAIN)
+        gna_file(NO_GAIN)
+        gnp_file(NOT_ADOPTED)
+        late_file("ltx", ADOPT_FOR_FULL_RUN, {"squad": 0.012})
+        done, rec = fixed()
+        assert done and rec["members"] == ["dep", "ltx"] == rec["forms"] and rec["pick"] == "ltx", rec
+        assert rec["layers"] == DEP.LAYERS and rec["rules"] == ["dep", "ltg"] and rec["gnx_columns"] == "LTM", rec
+        assert rec["pick_means"] == {"dep": 0.001, "ltx": 0.002} and rec["ltx_verdict"] == ADOPT_FOR_FULL_RUN, rec
+        assert members(False, base, t0) == 0 and not composed(members_record(base)["members"])
+        assert composes_now(base) == 1
+        looks, slept = [], []
+        assert stack_gate(base, False, t0, slept.append, lambda: looks.append(1) or False) == 2 and looks == [1]
+        assert gate_record(base) is None and own_call("ltx", base, t0)[:2] == (False, 1) and not slept
+        assert stack_gate(base, True, utc_s(MEMBERS_BY), slept.append, lambda: False) == 1 and not slept
+        g = gate_record(base)
+        assert g["runs"] is False and g["members"] == ["dep", "ltx"], g
+        assert stack_gate(base, True, t0, slept.append, lambda: True) == 1 and not slept        # decided once
+        own = {st: own_call(st, base, t0)[:2] for st in FORMS + ("gna",)}
+        assert own == {**{st: (True, 1) for st in FORMS + ("gna",)}, "ltx": (True, 0)}, own
+        # A4: the code on disk composes LTX before MEMBERS_BY (after one look that it does not): the stack runs, decided
+        # once; the own gates wait on the stack's verdicts
+        (base / OUT / "stack_gate.json").unlink()
+        seq = iter([False, True])
+        assert stack_gate(base, True, t0, slept.append, lambda: next(seq)) == 0 and slept == [POLL]
+        assert gate_record(base)["runs"] is True
+        assert stack_gate(base, True, utc_s(MEMBERS_BY), slept.append, lambda: False) == 0 and slept == [POLL]
+        assert own_call("ltx", base, t0)[:2] == own_call("dep", base, t0)[:2] == (False, 1)
+        # A4: GNX, GNW and LTX pass, DEP not: three forms, three members, three layers; a tie in the pick goes to GNX
+        reset()
+        calls_file("dep", NO_GAIN)
+        for st in ("ltg", "rtr", "ira"):
+            calls_file(st, NOT_ADOPTED)
+        calls_file("gnx", ADOPT_FOR_FULL_RUN, {"squad": 0.012})
+        gna_file(NO_GAIN)
+        gnp_file(NO_GAIN)
+        late_file("gnw", ADOPT_FOR_FULL_RUN, {"squad": 0.012})
+        late_file("ltx", ADOPT_FOR_FULL_RUN, {"squad": 0.006})
+        done, rec = fixed()
+        assert done and rec["members"] == ["gnx", "gnw", "ltx"] == rec["forms"] and rec["pick"] == "gnx", rec
+        assert rec["layers"] == DEP.BASE_LAYERS and rec["rules"] == ["ltg"] and rec["gnx_columns"] == "LTM", rec
+        assert members(False, base, t0) == 0 and members_record(base)["members"] == ["gnx", "gnw", "ltx"]
+        assert composes_now(base) == 1 and stk_keys("stk", base) == S0.deciding("ltg")
+        # A4: GNW alone passes: one form, no stack (composition never looked at), GNW's own full run
+        reset()
+        calls_file("dep", NO_GAIN)
+        for st in ("ltg", "rtr", "ira", "gnx"):
+            calls_file(st, NOT_ADOPTED)
+        gna_file(NOT_ADOPTED)
+        gnp_file(NOT_ADOPTED)
+        late_file("gnw", ADOPT_FOR_FULL_RUN)
+        assert members(False, base, t0) == 0 and members_record(base)["members"] == ["gnw"]
+        assert stack_gate(base, True, t0, slept.append, lambda: 1 / 0) == 1 and composes_now(base) == 1
+        own = {st: own_call(st, base, t0)[:2] for st in FORMS + ("gna",)}
+        assert own == {**{st: (True, 1) for st in FORMS + ("gna",)}, "gnw": (True, 0)}, own
+        # A4: a members record of ORDER's members composes; none fixed is 2
+        reset()
+        assert composes_now(base) == 2
+        calls_file("dep", ADOPT_FOR_FULL_RUN)
+        calls_file("ltg", ADOPT_FOR_FULL_RUN)
+        for st in ("gnx",):
+            calls_file(st, NO_GAIN)
+        gna_file(NO_GAIN)
+        gnp_file(NO_GAIN)
+        assert members(False, base, t0) == 0 and composes_now(base) == 0
+        assert stack_gate(base, True, t0, slept.append, lambda: 1 / 0) == 0 and gate_record(base) is None
+        # A4: GNW's and LTX's seed-0 STOPs are NOT_ADOPTED, under their modules' own entries; s0stop's table put back
+        for st, m in late_mods().items():
+            reset()
+            late_file(st, ADOPT_FOR_FULL_RUN)
+            st0 = dict(S0.STAGES)
+            with m.on_s0stop():
+                assert S0.STAGES[st] == late_entry(st)
+                stop_file(st)
+            assert S0.STAGES == st0 and late_verdict(st, base) == NOT_ADOPTED and m.stop_record(base)["decision"] == S0.STOP
+        # A4: members records with GNW's or LTX's forms are read when the forms make the members, refused otherwise
+        (base / OUT).mkdir(parents=True, exist_ok=True)
+        for forms, mem, cols, ok in ((["dep", "gnw"], ["dep", "gnw"], "LTM", True),
+                                     (["gnx", "gnp", "ltx"], ["gnx", "ltx"], "LTM+PAIR", True),
+                                     (["dep", "ltx"], ["dep"], "LTM", False), (["dep", "ltw"], ["dep", "ltw"], "LTM", False),
+                                     (["gnw"], ["gnx"], "LTM", False)):
+            M1.WQ.write_json(base / OUT / "members.json", {"declared_in": DECLARED, "forms": forms, "members": mem,
+                                                           "gnx_columns": cols})
+            assert (members_record(base) is not None) == ok, (forms, mem, cols)
     return True
 
 
@@ -1929,6 +2197,12 @@ def selftest():
         gnp_fit_name(sd, sp) for sd in RULE.SEEDS for sp in M1.SPLITS}
     assert gnp_entry()[2:4] == ("scr-gnp-px-s0", "scr-gnp-px-s0-hp") and GNP_KEY not in S0.STAGES
     assert set(code_extra()) >= {f"{k}_sha256" for k in GNP_CODE}
+    # 0b. A4: zgnw and zltx after zgnp, outside every patch: their names, fits and stop entries A4's; the threads kept;
+    # the code on disk's `composes` runs in a process of its own
+    L = late_mods()
+    assert late_mods() is L and set(L) == set(LATE) and {v: os.environ.get(v) for v in THREAD_VARS} == env0
+    assert late_entry("ltx")[2:4] == ("scr-ltx-xf-s0", "scr-ltx-xf-s0-hp") and not set(LATE) & set(S0.STAGES)
+    assert COMPOSED == ORDER and disk_composes_rc() in (0, 1, 2)
     # 1. the rules' combination and the stamp's parts; the gates on made files; A2's and A3's columns
     assert rules_check() and gates_check() and columns_check()
     # 2. zltg's names at three layers are its own
@@ -1965,7 +2239,10 @@ def selftest():
         f"mean and own run, on_columns and member_code on GNA's fits; A3: zgnp on first use (the threads kept), GNP's "
         f"verdict and STOP, the forms, the gnx slot's columns (two sets or the six alone), the pick over the forms, the "
         f"own runs by forms (GNP's own), the members records refused when they disagree, on_columns on GNP's six and on "
-        f"two sets, the joined load on made files, member_code on GNP's fits; zltg's names at three layers; on the toy "
+        f"two sets, the joined load on made files, member_code on GNP's fits; A4: zgnw's and zltx's names, fits and stop "
+        f"entries, GNW's and LTX's verdicts and STOPs, their forms and members, the waiting stack gate (one look a call, "
+        f"decided once, MEMBERS_BY), the own gates on a stack that does not run, composes on made files and on disk, the "
+        f"members records with their forms; zltg's names at three layers; on the toy "
         f"carve, {len(sets) + 3} stacks without DEP (two of them on the pair columns) and {len(lc['toy']['sets'])} with "
         f"DEP (a process of its own, four layers) each "
         f"start as the set without LTG and GNX bit for bit (eval and training forwards); every member's parameters get the "
@@ -1982,9 +2259,9 @@ def main(argv=None):
         argv, cmd = argv[:i], argv[i + 1:]
     ap = argparse.ArgumentParser()
     ap.add_argument("verb", nargs="?", choices=("members", "stack-gate", "own-gate", "fit", "s0stop-check", "s0stop-run",
-                                                "gate", "compare-all", "calls", "layers-check"))
+                                                "gate", "compare-all", "calls", "layers-check", "composes"))
     ap.add_argument("--name")
-    ap.add_argument("--stage", choices=ORDER + ("gna", "gnp"))
+    ap.add_argument("--stage", choices=ORDER + ("gna", "gnp") + LATE)
     ap.add_argument("--want")
     ap.add_argument("--wait", action="store_true")
     ap.add_argument("--selftest", action="store_true")
@@ -1994,7 +2271,9 @@ def main(argv=None):
     if a.verb == "members":
         return members(a.wait)
     if a.verb == "stack-gate":
-        return stack_gate()
+        return stack_gate(wait=a.wait)
+    if a.verb == "composes":
+        return composes_now()
     if a.verb == "own-gate":
         if not a.stage:
             ap.error("own-gate needs --stage")

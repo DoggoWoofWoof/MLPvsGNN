@@ -440,3 +440,114 @@ It also adds these cases outside the made files:
 - **`member_code` on GNP's fits** and their sha256.
 - **Two more stacks on zg6r's toy carve**, without DEP: one on `LTM+PAIR` and one on `PAIR`. Each passes section 10.5's
   checks.
+
+## 13. Amendment A4 (3 November): GNW and LTX as forms; how they compose is A5's
+
+Committed before any GNW or LTX fit and before any stack fit. The members are not fixed yet: `stk-members-a3` is still
+waiting on GNX, GNA and GNP.
+
+**What had been seen when it was written:**
+
+- LTG's screen was filed NOT_ADOPTED (538e467). Its amendment A5 (docs/LTG_NEXT_HOP_GNN.md section 13) reads the loss as
+  the next-hop scorer fitting its own training questions' golds. LTX (docs/LTX_CROSSFIT_NEXT_HOP_GNN.md, 6afca09) is the
+  same term with the scorer cross-fitted by gold components.
+- GNW (docs/GNW_PAIR_WEIGHTS_IN_GNN.md, 4c89736) puts the pair scores into zg6r's encoder as message weights.
+- On the host:
+  - GNW's and LTX's column items and their column checks were done by 12:58 IST, and no GNW or LTX fit had run.
+  - GNX's WQ-hotpotqa seed-0 fit was training. GNA's and GNP's seed-0 fits were queued behind it.
+  - No GNA, GNP or stack fit had run.
+
+**Why.** The stack is the only GNN full run before the freeze (sections 6 and 10.3). GNW and LTX are GNN screens aimed at
+musique's bridge hop, and each one's own file holds its full run for the stack. Without this amendment, a passing GNW or
+LTX would reach no full run before the freeze.
+
+On the card, the stack's fits come after GNW's and LTX's seed-0 fits in the feeder's order. So waiting on their verdicts
+costs the stack only their compares and calls.
+
+**The change.**
+
+- **The members wait on GNW's and LTX's verdicts too.** Each is read as s0stop's gate reads a verdict, under the stage's
+  own entry (its module, root, two seed-0 fits, LTG's rule and declaration, as `zgnw.on_s0stop` and `zltx.on_s0stop`
+  patch them in):
+  - NOT_ADOPTED on a current seed-0 STOP;
+  - otherwise the screen verdict in `outputs/gnw/calls.json` or `outputs/ltx/calls.json`, when that file is declared by
+    the stage's file.
+
+  A stage with no verdict at 12:00 IST on 5 November is left out, as any stage is. The members record names both verdicts
+  (`gnw_verdict`, `ltx_verdict`).
+- **The forms** are DEP, LTG, RTR, IRA, GNX, GNP, GNW and LTX, in that order. The order settles the pick's tie (section 6).
+  - A passing GNW or LTX is a form and a member of its own. The members are listed in section 2's order, then GNW, then LTX.
+  - LTG's screen is filed NOT_ADOPTED, so LTG and LTX are never both members.
+- **The rules (section 4).** GNW and LTX are each read under LTG's in-domain rule, as their own files read them. A stack
+  with either reads LTG's rule, and its seed-0 stop's deciding reads include LTG's four.
+- **The pick (section 6)** takes GNW's and LTX's mean seed-0 deltas over the six reads from their own calls.
+- **Each form's own full run (sections 3 and 6).** GNW's and LTX's are released by `own-gate --stage gnw` and
+  `own-gate --stage ltx` in the same cases as any form's:
+  - the stage is the one form;
+  - or it is the pick, and the stack's screen is NO_GAIN or NOT_ADOPTED, or its full run is NOT_ADOPTED.
+
+  Their full-run items are added here, held as every other form's are.
+- **How they compose.** That is amendment A5's.
+  - A5 is committed before any stack fit runs, and only for a form whose seed-0 stop gave GO.
+  - It changes how the members compose and nothing else: not the members, the rules, the pick or any gate.
+  - Until A5, the stage module composes section 2's five alone (`COMPOSED`), and a stack fit refuses members it does not
+    compose.
+- **The stack gate waits for that code.** Suppose the members hold a form the code does not compose.
+  - `stack-gate --wait` looks every 10 minutes whether the zstk.py on disk composes them. It checks in a process of its
+    own (`zstk.py composes`), because a waiting gate runs the code it started with. The stack runs once it does.
+  - If the code still does not compose them at 12:00 IST on 5 November, the stack does not run.
+  - The decision is written once (`outputs/stk/stack_gate.json`).
+  - The own gates read a stack that does not run as the stack's screen NOT_ADOPTED, so the pick's own full run goes
+    ahead.
+  - With members this code composes, the gate is as before. It decides at once, and writes no record.
+
+**What does not change.** Everything else in sections 1 to 12: section 2's five members and their composition, the
+rules, the deadlines, GNA's part, GNP's part, and the stack's fits and their sizes.
+
+**The items (host):**
+
+- **`stk-selftest-a4`** (1 CPU, 4 GB), then **`stk-members-a4`** (0.2 CPU, 1 GB, `members --wait`), right after
+  `stk-members-a3`.
+- **`stk-stack-gate`** waits on `stk-members-a4` and runs `stack-gate --wait`. It had not been sent.
+- **The `stk-own-*` items** wait on `stk-members-a4` in `stk-members-a3`'s place.
+- **`stk-own-gnw` and `stk-own-ltx`** (0.2 CPU, 1 GB each) run `own-gate --stage gnw --wait` and
+  `own-gate --stage ltx --wait`, after `stk-members-a4`.
+- **`stk-members-a3`** ran A3's code, which does not wait on GNW or LTX. It is cancelled once no item depends on it. It
+  had written no `members.json`.
+- **The stack's fits** also wait on `gnw-check-cols` and `ltx-check-cols`.
+- **GNW's and LTX's full runs** go after GNX's.
+  - `gnw-mw-s1`, `gnw-mw-s2`, `gnw-mw-s1-hp` and `gnw-mw-s2-hp`: each with its seed-0 fit's size and command, after
+    `gnw-gate` and `stk-own-gnw`.
+  - `gnw-compare-full` and `gnw-calls-full`: `zgnw.py compare-all` and `zgnw.py calls`.
+  - LTX's are the same, with `ltx-xf-*`, `ltx-gate` and `stk-own-ltx`.
+- **Inputs.** Every stk item lists zgnw.py, gnwcols.py, zltx.py, ltxcols.py and both files beside A3's.
+
+**The self-test** passed on the laptop's CPU before this commit.
+
+On made files, it adds these cases:
+
+- **GNW's and LTX's verdicts.**
+  - Both are waited on.
+  - A calls file declared by another file is not a verdict.
+  - Each one's seed-0 STOP, under its module's own entry, is read as NOT_ADOPTED. The module's own stop record agrees,
+    and s0stop's table is put back.
+- **DEP and LTX passing.**
+  - They make two forms and two members, at four layers, under both rules, and the pick is LTX on its larger mean.
+  - The gate returns 2 without wait, with one look a call.
+  - At MEMBERS_BY it decides once that the stack does not run, and that decision stands when the code composes later.
+  - The own gates then release LTX's own full run alone.
+  - Composed before MEMBERS_BY, after one look that it is not: the stack runs (one POLL slept), and the own gates wait on
+    the stack.
+- **GNX, GNW and LTX passing with DEP failing.** Three forms and three members at three layers, under LTG's rule. The
+  pick's tie goes to GNX.
+- **GNW alone.** One form, so there is no stack. Composition is never looked at, and only GNW's own full run is released.
+- **`composes`.**
+  - It returns 2 with no members fixed, 0 on section 2's members, and 1 on GNW's or LTX's.
+  - On disk it runs in a process of its own.
+- **Members records.** A record with GNW's or LTX's forms is read when its forms make its members, and refused otherwise.
+
+It also adds these cases outside the made files:
+
+- zgnw and zltx are imported after zgnp and outside every patch. Their names, fits and stop entries are A4's, and the
+  thread variables are kept.
+- Every earlier case runs as written, with GNW and LTX not passing.
