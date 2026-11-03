@@ -166,6 +166,18 @@ A verdict closes only the form it tested.
 
 Feeder items on the host's CPU. None touches the GPU. They sit after LTS's items, ahead of DOB's remaining x-fits.
 
+**Queue order, changed 3 November (07:00 to 07:05 IST), before any scorer fit ended or any column was built.** The
+change is to order only. No item, dependency, size or command changed, and neither does any rule here.
+
+- LTS's first fit waits for the host's commit headroom (45.8 GB at 06:59) until RWT's G fit ends. So the following moved
+  ahead of LTS's first fit, to use the idle CPUs:
+  - LTA's self-tests and lists (06:35);
+  - its two scorer fits and its ten WQ-hotpotqa column sets (07:01).
+- LTA's ten WQ-musique column sets and `lta-report` sit between LTS's two fits.
+- LTA's screen (its two fits, then `lta-compare`, `lta-calls` and `lta-gate`) sits after `lts-gate` and before LTS's
+  full-run fits, so both screens are read before either full run takes the host's memory.
+- LTA's full run stays after `lts-calls-full`.
+
 1. `lta-selftest-cols` (`ltacols.py --selftest`, 1 CPU, 3 GB) and `lta-selftest` (`zlta.py --selftest`, 1 CPU, 4 GB).
 2. The eleven list sets, `lta-lists-<dataset>-<carve>`, after `lta-selftest-cols` and LTM's lists of the carve (1 CPU,
    at the LTM lists item's measured peak plus 1 GB).
