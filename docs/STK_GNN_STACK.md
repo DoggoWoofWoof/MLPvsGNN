@@ -272,3 +272,68 @@ The stack's block goes right after `ira-k4-s0-hp`, so its fits take the card ahe
   - a one-epoch fit moves each zero-started parameter;
   - the stamp's record is checked, and LTG's term in the rounds is refused without the rounds;
   - every patch is put back, also on a failure.
+
+## 11. Amendment A2 (3 November): the gnx slot on LTA's columns (GNA)
+
+Committed with docs/GNA_ALL_ROWS_COLUMNS_IN_GNN.md, before any GNA fit or stack fit and before the members are fixed.
+
+**What had been seen when it was written:**
+
+- DEP's screen was filed ADOPT_FOR_FULL_RUN (d9c74d6).
+- GNX's WQ-musique seed-0 stop gave GO at 08:08 IST, with its four deciding reads WITHIN.
+- No WQ-hotpotqa read of GNX or LTG had been seen, and no GNA fit had run.
+
+**The change.**
+
+- **The members wait on GNA's verdict too.** It is read as s0stop's gate reads a verdict, under GNA's entry: NOT_ADOPTED on a
+  current seed-0 STOP, otherwise the screen verdict in `outputs/gna/calls.json`. A GNA with no verdict at 12:00 IST on 5
+  November is left out, as any stage is.
+- **The gnx slot passes when GNX's screen or GNA's passes.** Its columns are LTA's when GNA's screen passes and GNX's does
+  not, or when both pass and GNA's mean seed-0 delta over section 6's six reads is larger than GNX's. They are LTM's
+  otherwise, including on a tie. The members record names the columns (`gnx_columns`) and both means.
+- **The pick (section 6)** takes the gnx slot's mean from its columns' stage: GNA's calls when the columns are LTA's.
+- **A stack fit on LTA's columns** runs under `zlta.on_cols`, with zgnx's NEXT block and term record set to GNA's
+  (`zstk.on_columns`). The NEXT block in its stamp must name its columns' declaration, LTA's or LTM's. That is one more
+  INCOMPLETE condition (section 10.2).
+- **"As it was screened" (section 10.2).** For the gnx slot on LTA's columns, the member's own seed-0 fits are GNA's, and
+  the sha256 of zgna, zlta and ltacols count beside zgnx's. In every member's check, an own fit whose stamp names no sha for
+  a key now fails. Before, it passed when EARLIER had no entry for that fit.
+- **Each stage's own full run (sections 3 and 6).** The gnx slot's is GNX's on LTM's columns and GNA's on LTA's
+  (`own-gate --stage gna`). The other one is not released.
+- **The code.** zstk.py imports zgna, and through it zlta and ltacols, and edits none of them. Their sha256 join the stage's
+  code record.
+- **LTA.** STK's members now wait on GNA, and GNA's fits wait on LTA's column items. LTA's section 7 did not foresee this.
+  LTA's own items and rule are unchanged.
+
+**What does not change.** Everything else in sections 1 to 10: the five forms and their order, the rules, the deadlines,
+and the stack's fits and their sizes.
+
+**The items (host):**
+
+- **`stk-selftest-a2`** (1 CPU, 4 GB), then **`stk-members-a2`** (0.2 CPU, 1 GB, `members --wait`), right after
+  `stk-members`.
+- **`stk-stack-gate` and the `stk-own-*` items** wait on `stk-members-a2` in `stk-members`'s place.
+- **`stk-members`** ran A1's code, which does not wait on GNA. It is cancelled once no item depends on it. It had written no
+  `members.json`.
+- **`stk-own-gna`** (0.2 CPU, 1 GB): `own-gate --stage gna --wait`, after `stk-members-a2`. It holds GNA's full run.
+- **Inputs.** Every stk item lists zgna.py, zlta.py, ltacols.py and GNA's file.
+
+**The self-test** passed on the laptop's CPU before this commit. On made files, it adds these cases:
+
+- **GNA's verdict.**
+  - It is waited on.
+  - A calls file declared by another file is not a verdict.
+  - GNA's seed-0 STOP is read as NOT_ADOPTED.
+- **GNA passing alone.** The gnx slot passes on LTA's columns. GNA's mean is the slot's in the pick, and GNA's own run is
+  released, not GNX's.
+- **Both passing.** The columns are LTA's when GNA's mean is larger, and LTM's on a tie or a smaller one. Every own-gate
+  outcome is checked.
+- **An unknown column set** is not a members record.
+
+It also adds these cases outside the made files:
+
+- **`on_columns`.**
+  - On LTM's columns, nothing is patched.
+  - On LTA's, the patches are made and put back, also on a failure.
+  - An unknown set is refused.
+- **`member_code` on GNA's fits** and their four sha256: a mismatch, a missing sha and unread fits each fail.
