@@ -1,0 +1,373 @@
+{
+ "stage": "DOB",
+ "amendment": "A3",
+ "declared_in": "docs/DOB_DROP_ONE_BLOCK_CPU.md",
+ "rule": "docs/WWW_SCOPE_RULE.md section 2, screen",
+ "deciding_reads": [
+  "WQ-musique hotpotqa",
+  "WQ-musique 2wiki",
+  "WQ-hotpotqa musique",
+  "WQ-hotpotqa 2wiki",
+  "WQ-hotpotqa musique-3hop",
+  "WQ-hotpotqa musique-4hop"
+ ],
+ "problems": [],
+ "drops": {
+  "xdcos": {
+   "block": "dense_cos",
+   "own": "MIXED",
+   "www": "NOT_ADOPTED",
+   "missing": [],
+   "gain_reads": [],
+   "loss_reads": [
+    "WQ-musique hotpotqa",
+    "WQ-musique 2wiki"
+   ]
+  },
+  "xtopo": {
+   "block": "topo_STRUCT",
+   "own": "HURTS",
+   "www": "ADOPT_FOR_FULL_RUN",
+   "missing": [],
+   "gain_reads": [
+    "WQ-hotpotqa musique-3hop"
+   ],
+   "loss_reads": []
+  },
+  "xdepth": {
+   "block": "depth_STRUCT",
+   "own": "HURTS",
+   "www": "NO_GAIN",
+   "missing": [],
+   "gain_reads": [],
+   "loss_reads": []
+  },
+  "xseed": {
+   "block": "SEED",
+   "own": "HURTS",
+   "www": "NO_GAIN",
+   "missing": [],
+   "gain_reads": [],
+   "loss_reads": []
+  },
+  "xwalk": {
+   "block": "WALK",
+   "own": "HURTS",
+   "www": "NO_GAIN",
+   "missing": [],
+   "gain_reads": [],
+   "loss_reads": []
+  },
+  "xdists": {
+   "block": "DISTS",
+   "own": "IDLE",
+   "www": "NO_GAIN",
+   "missing": [],
+   "gain_reads": [],
+   "loss_reads": []
+  },
+  "xwalkf": {
+   "block": "WALKF",
+   "own": "HURTS",
+   "www": "NO_GAIN",
+   "missing": [],
+   "gain_reads": [],
+   "loss_reads": []
+  }
+ },
+ "reads": [
+  {
+   "split": "WQ-musique",
+   "dataset": "hotpotqa",
+   "base": [
+    0.8411,
+    0.8424,
+    0.8388
+   ],
+   "spread": 0.0019,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.8306,
+     "delta": -0.0105,
+     "call": "LOSS"
+    },
+    "xtopo": {
+     "r5": 0.8405,
+     "delta": -0.0006,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.8439,
+     "delta": 0.0028,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.8417,
+     "delta": 0.0006,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.8444,
+     "delta": 0.0033,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.8418,
+     "delta": 0.0007,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.8418,
+     "delta": 0.0007,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "2wiki",
+   "base": [
+    0.907,
+    0.9079,
+    0.9049
+   ],
+   "spread": 0.0016,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.899,
+     "delta": -0.008,
+     "call": "LOSS"
+    },
+    "xtopo": {
+     "r5": 0.9139,
+     "delta": 0.0069,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.9097,
+     "delta": 0.0027,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.9089,
+     "delta": 0.0019,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.9104,
+     "delta": 0.0034,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.9089,
+     "delta": 0.0019,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.9007,
+     "delta": -0.0063,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "musique",
+   "base": [
+    0.5749,
+    0.5718,
+    0.5752
+   ],
+   "spread": 0.0022,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.5686,
+     "delta": -0.0063,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.5784,
+     "delta": 0.0035,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.5749,
+     "delta": 0.0,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.5713,
+     "delta": -0.0036,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.5717,
+     "delta": -0.0032,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.5719,
+     "delta": -0.003,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.5704,
+     "delta": -0.0045,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "2wiki",
+   "base": [
+    0.8987,
+    0.9082,
+    0.9063
+   ],
+   "spread": 0.0086,
+   "floor": 0.0172,
+   "drops": {
+    "xdcos": {
+     "r5": 0.9052,
+     "delta": 0.0065,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.9114,
+     "delta": 0.0127,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.9062,
+     "delta": 0.0075,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.901,
+     "delta": 0.0023,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.9046,
+     "delta": 0.0059,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.9022,
+     "delta": 0.0035,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.9067,
+     "delta": 0.008,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "musique-3hop",
+   "base": [
+    0.5241,
+    0.5237,
+    0.5232
+   ],
+   "spread": 0.0007,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.5193,
+     "delta": -0.0048,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.5395,
+     "delta": 0.0154,
+     "call": "GAIN"
+    },
+    "xdepth": {
+     "r5": 0.5232,
+     "delta": -0.0009,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.5228,
+     "delta": -0.0013,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.5246,
+     "delta": 0.0004,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.518,
+     "delta": -0.0061,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.5254,
+     "delta": 0.0013,
+     "call": "WITHIN"
+    }
+   },
+   "from": "read files (zdep.slice_r5)"
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "musique-4hop",
+   "base": [
+    0.3475,
+    0.3556,
+    0.3531
+   ],
+   "spread": 0.0069,
+   "floor": 0.0138,
+   "drops": {
+    "xdcos": {
+     "r5": 0.3463,
+     "delta": -0.0012,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.3531,
+     "delta": 0.0056,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.3537,
+     "delta": 0.0062,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.3519,
+     "delta": 0.0043,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.3512,
+     "delta": 0.0037,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.3494,
+     "delta": 0.0019,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.3549,
+     "delta": 0.0074,
+     "call": "WITHIN"
+    }
+   },
+   "from": "read files (zdep.slice_r5)"
+  }
+ ],
+ "calls_sha256": "410bcf3b89637bcb184db99cd1c764b5eded76d0b02386e99dc4c10b776d1f8d",
+ "zdoba3_sha256": "f0119edb4b5cbb383be8842e490e7233674e6b15292629f17e8ac59c7010b9e8",
+ "utc": "2026-11-03T19:09:19Z"
+}

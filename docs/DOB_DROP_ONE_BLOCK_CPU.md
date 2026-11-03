@@ -144,3 +144,108 @@ else changes. The feeder sends each stopped item once more on its own.
 - **The queue.** `dob-xrank-s0` and `dob-xrank-s0-hp` leave it. `dob-compare` and `dob-calls` run
   `zdoba2.py compare-all` and `zdoba2.py calls`, after `dob-a2-selftest`.
 - **What has been read.** Nothing: DOB's compares and calls have not run.
+
+## 11. Results, 4 November 2026 (00:22 IST)
+
+`zdoba2.py compare-all` and `calls` ran on the host after A2's self-test, on 4 November at 00:21 and 00:22 IST. The
+records are `outputs/dob/calls.json` and `calls.md`. The verdict is CALLED, with no problems.
+
+**Under DOB's rule (section 4), on the twelve reads:**
+
+| drop | block | call | GAIN reads | LOSS reads | mean delta |
+| --- | --- | --- | --- | --- | ---: |
+| xdcos | dense_cos | MIXED | WQ-musique musique, WQ-hotpotqa metaqa | WQ-musique hotpotqa, WQ-musique 2wiki | +0.0082 |
+| xtopo | topo_STRUCT | HURTS | WQ-musique webqsp | | +0.0092 |
+| xdepth | depth_STRUCT | HURTS | WQ-hotpotqa metaqa | | +0.0111 |
+| xseed | SEED | HURTS | WQ-hotpotqa metaqa | | +0.0056 |
+| xwalk | WALK | HURTS | WQ-musique webqsp | | +0.0049 |
+| xdists | DISTS | IDLE | | | +0.0022 |
+| xwalkf | WALKF | HURTS | WQ-musique musique | | +0.0019 |
+
+- Each HURTS stands on one GAIN. Every one of those GAINs is on a read outside the WWW rule's six: metaqa, webqsp, or
+  musique where the WQ-musique split holds it out.
+- The largest deltas are on WQ-musique metaqa, where the CPU base's own seeds run from 0.341 to 0.386 (floor 0.0743).
+
+**Under the WWW rule** (docs/WWW_SCOPE_RULE.md section 2), which decides the queue until the freeze. Section 12 says how
+DOB's per-drop calls are read; the records are `outputs/dob/www_screen.json` and `.md`.
+
+| drop | WWW screen | the deciding reads |
+| --- | --- | --- |
+| xdcos | NOT_ADOPTED | LOSS on WQ-musique hotpotqa (−0.0105) and 2wiki (−0.0080), floor 0.0075 |
+| xtopo | ADOPT_FOR_FULL_RUN | GAIN on WQ-hotpotqa musique-3hop (+0.0154, floor 0.0075) |
+| xdepth, xseed, xwalk, xdists, xwalkf | NO_GAIN | all six WITHIN |
+
+**What the screen says.**
+- dense_cos carries the in-domain reads of the WQ-musique split, hotpotqa and 2wiki. It is the only block whose drop
+  costs a WWW read.
+- Dropping any other single block leaves all six WWW reads WITHIN, except xtopo's 3-hop slice. On PKO's pools no other
+  block is needed on its own. One drop at a time says nothing about pairs (section 7): WALK and WALKF read the same walk.
+
+**Beside, deciding nothing.**
+- The CPU base's seed means are within 0.004 of ML1's zrckp on the GPU on the four WWW dataset reads. The largest gap
+  over the twelve is WQ-musique metaqa, 0.3645 against 0.4008.
+- The 20 fits took 1.4 to 2.5 hours each on 6 threads, with measured peaks of 26.6 to 30.9 GB (the feeder's records).
+
+**What follows.**
+- xtopo's full run: section 12.
+- The other four HURTS drops (xdepth, xseed, xwalk, xwalkf) owe full runs under DOB's own rule. They are NO_GAIN under
+  the WWW rule, so their full runs wait until after the freeze, as DEP's do (docs/WWW_SCOPE_RULE.md section 3).
+- dense_cos stays in the pick. It is recorded as the block that carries the WQ-musique split's in-domain reads.
+
+## 12. Amendment A3, 4 November 2026 (about 00:50 IST), before any xtopo seed-1 or seed-2 fit
+
+**Why.** DOB's calls hold one verdict per drop. zwww reads one screen block per stage, so its record for DOB
+(`outputs/www/dob.json`) has no screen. The WWW rule decides the queue until the freeze, so each drop is read on its
+six reads here. Module: `outputs/mp_unified/zdoba3.py`. It imports zdob, zdoba2, zdep and zwww and edits none of them;
+A2's tables stay in force.
+
+**The WWW reading of the screen** (`zdoba3.py www-screen`):
+- The four dataset reads are DOB's calls rows, unchanged: the same base, floor, delta and call.
+- musique's 3-hop and 4-hop slices on the WQ-hotpotqa split come from the fits' musique read files, through
+  `zdep.slice_r5`, as DEP, LTM and MPP read them. Each file's all-question R@5 must equal DOB's compare within
+  `zdep.R5_TOL`. The floor and the call are section 4's, from the CPU base's three seeds on the slice.
+- Each drop's verdict is `zwww.screen_verdict` on the six rows.
+- The slices were computed after DOB's calls were read, by a method fixed before them (the WWW rule and zdep). Nothing
+  in the reading is chosen here.
+
+**xtopo's full run** (section 6, "HURTS on a block", and the WWW screen's ADOPT_FOR_FULL_RUN):
+- **The fits.** xtopo at seeds 1 and 2 on both splits: `scr-dob-xtopo-s1`, `-s2`, `-s1-hp` and `-s2-hp`. They run
+  through zdob's fit, on the host's CPU at 6 threads, with the four names added to A2's tables for the length of the
+  call.
+- **The compares.** Each fit against the base's fit at the same seed (`scr-dob-xtopo-vs-zrckp-s<k>`), through zdob's
+  compare-all. A2's 18 compares are kept.
+- **The calls** (`outputs/dob/full_xtopo.json` and `.md`):
+  - own: ML1's rule (`zml1.verdict`), xtopo's three seeds against the CPU base's three on the twelve reads;
+  - WWW: `zwww.full_verdict` on the six reads, each called by `zml1.call` at three seeds with `zml1.pair_floor`'s
+    floor. ADOPT needs no LOSS among the six and a GAIN on one of the four dataset reads, so the 3-hop slice alone
+    cannot adopt it;
+  - INCOMPLETE on any of section 4's problems (`zdob.fit_problems` over all 24 fits) or on a read file that does not
+    give its compare's R@5.
+
+**What follows (fixed now).**
+- WWW ADOPT: topo_STRUCT leaves the pick, in its own declared file: zg6r first, on the GPU (section 6), then zrckpn, the
+  MLP of record since LTM.
+- WWW NOT_ADOPTED: topo_STRUCT stays. With no drop adopted, the next CPU form is section 6's capacity form (hidden width
+  and epochs), on zrckpn, in its own file.
+- The own verdict is filed beside it. It decides after the freeze, together with the other four drops' full runs.
+
+**The queue.**
+- `dob-a3-selftest` runs first, then the four fits: 6 CPUs each, with memory from their measured peaks (28 GB, and
+  32 GB on WQ-hotpotqa). `dob-a3-compare` and `dob-a3-calls` follow.
+- The block sits after every pending GPU fit in the feeder's file, so a fit that waits for memory holds no GPU item.
+- U2w's stage B items, when declared, go ahead of it (the user's 4 November priority).
+
+**The self-test**, `python outputs/mp_unified/zdoba3.py --selftest`, passed on the laptop's CPU before this commit. It
+covers:
+- the tables (24 fits, 22 compares) and their restoring, also on a failure, and the refusal of every other fit;
+- the WWW screen per drop on made-up calls and read files: a dataset LOSS, a slice LOSS, a slice GAIN alone, and a read
+  file off its compare;
+- the full run's two rules: a slice GAIN alone, a slice LOSS, webqsp beside, and a slice missing;
+- A2's and zdob's own self-tests.
+
+```
+python outputs/mp_unified/zdoba3.py www-screen
+python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 -- python outputs/mp_unified/zdoba3.py fit --name scr-dob-xtopo-s1
+python outputs/mp_unified/zdoba3.py compare-all
+python outputs/mp_unified/zdoba3.py calls
+```

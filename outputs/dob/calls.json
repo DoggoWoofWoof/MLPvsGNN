@@ -1,0 +1,746 @@
+{
+ "stage": "DOB",
+ "declared_in": "docs/DOB_DROP_ONE_BLOCK_CPU.md",
+ "arm": "zrckp",
+ "device": {
+  "gpu": "cpu x6",
+  "torch": "2.8.0+cpu",
+  "cuda": null,
+  "cudnn": null
+ },
+ "threads": 6,
+ "verdict": "CALLED",
+ "problems": [],
+ "reads": [
+  {
+   "split": "WQ-musique",
+   "dataset": "metaqa",
+   "base": [
+    0.3406,
+    0.367,
+    0.386
+   ],
+   "spread": 0.0371,
+   "floor": 0.0743,
+   "drops": {
+    "xdcos": {
+     "r5": 0.4048,
+     "delta": 0.0642,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.4144,
+     "delta": 0.0738,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.4024,
+     "delta": 0.0618,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.3884,
+     "delta": 0.0478,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.3759,
+     "delta": 0.0353,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.3599,
+     "delta": 0.0193,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.323,
+     "delta": -0.0176,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "squad",
+   "base": [
+    0.9127,
+    0.9122,
+    0.9138
+   ],
+   "spread": 0.0009,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.9134,
+     "delta": 0.0007,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.9135,
+     "delta": 0.0008,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.9136,
+     "delta": 0.0009,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.9112,
+     "delta": -0.0015,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.9132,
+     "delta": 0.0005,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.913,
+     "delta": 0.0003,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.9124,
+     "delta": -0.0003,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "musique",
+   "base": [
+    0.5152,
+    0.5086,
+    0.5134
+   ],
+   "spread": 0.0048,
+   "floor": 0.0097,
+   "drops": {
+    "xdcos": {
+     "r5": 0.5284,
+     "delta": 0.0132,
+     "call": "GAIN"
+    },
+    "xtopo": {
+     "r5": 0.5161,
+     "delta": 0.0009,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.5207,
+     "delta": 0.0055,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.5079,
+     "delta": -0.0073,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.5153,
+     "delta": 0.0001,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.512,
+     "delta": -0.0032,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.5338,
+     "delta": 0.0186,
+     "call": "GAIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "hotpotqa",
+   "base": [
+    0.8411,
+    0.8424,
+    0.8388
+   ],
+   "spread": 0.0019,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.8306,
+     "delta": -0.0105,
+     "call": "LOSS"
+    },
+    "xtopo": {
+     "r5": 0.8405,
+     "delta": -0.0006,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.8439,
+     "delta": 0.0028,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.8417,
+     "delta": 0.0006,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.8444,
+     "delta": 0.0033,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.8418,
+     "delta": 0.0007,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.8418,
+     "delta": 0.0007,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "2wiki",
+   "base": [
+    0.907,
+    0.9079,
+    0.9049
+   ],
+   "spread": 0.0016,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.899,
+     "delta": -0.008,
+     "call": "LOSS"
+    },
+    "xtopo": {
+     "r5": 0.9139,
+     "delta": 0.0069,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.9097,
+     "delta": 0.0027,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.9089,
+     "delta": 0.0019,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.9104,
+     "delta": 0.0034,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.9089,
+     "delta": 0.0019,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.9007,
+     "delta": -0.0063,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "webqsp",
+   "base": [
+    0.6522,
+    0.6583,
+    0.6566
+   ],
+   "spread": 0.0053,
+   "floor": 0.0106,
+   "drops": {
+    "xdcos": {
+     "r5": 0.644,
+     "delta": -0.0082,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.6656,
+     "delta": 0.0134,
+     "call": "GAIN"
+    },
+    "xdepth": {
+     "r5": 0.6583,
+     "delta": 0.0061,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.6522,
+     "delta": 0.0,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.6704,
+     "delta": 0.0182,
+     "call": "GAIN"
+    },
+    "xdists": {
+     "r5": 0.6608,
+     "delta": 0.0086,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.66,
+     "delta": 0.0078,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "metaqa",
+   "base": [
+    0.3847,
+    0.4037,
+    0.3797
+   ],
+   "spread": 0.0139,
+   "floor": 0.0278,
+   "drops": {
+    "xdcos": {
+     "r5": 0.4355,
+     "delta": 0.0508,
+     "call": "GAIN"
+    },
+    "xtopo": {
+     "r5": 0.3746,
+     "delta": -0.0101,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.4181,
+     "delta": 0.0334,
+     "call": "GAIN"
+    },
+    "xseed": {
+     "r5": 0.4216,
+     "delta": 0.0369,
+     "call": "GAIN"
+    },
+    "xwalk": {
+     "r5": 0.3684,
+     "delta": -0.0163,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.3836,
+     "delta": -0.0011,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.3986,
+     "delta": 0.0139,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "squad",
+   "base": [
+    0.9138,
+    0.9129,
+    0.9133
+   ],
+   "spread": 0.0007,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.9132,
+     "delta": -0.0006,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.9129,
+     "delta": -0.0009,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.9143,
+     "delta": 0.0005,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.9115,
+     "delta": -0.0023,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.9131,
+     "delta": -0.0007,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.9125,
+     "delta": -0.0013,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.9143,
+     "delta": 0.0005,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "musique",
+   "base": [
+    0.5749,
+    0.5718,
+    0.5752
+   ],
+   "spread": 0.0022,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.5686,
+     "delta": -0.0063,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.5784,
+     "delta": 0.0035,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.5749,
+     "delta": 0.0,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.5713,
+     "delta": -0.0036,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.5717,
+     "delta": -0.0032,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.5719,
+     "delta": -0.003,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.5704,
+     "delta": -0.0045,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "hotpotqa",
+   "base": [
+    0.8103,
+    0.8099,
+    0.8101
+   ],
+   "spread": 0.0003,
+   "floor": 0.0075,
+   "drops": {
+    "xdcos": {
+     "r5": 0.8065,
+     "delta": -0.0038,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.8128,
+     "delta": 0.0025,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.8147,
+     "delta": 0.0044,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.8063,
+     "delta": -0.004,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.8138,
+     "delta": 0.0035,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.8093,
+     "delta": -0.001,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.804,
+     "delta": -0.0063,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "2wiki",
+   "base": [
+    0.8987,
+    0.9082,
+    0.9063
+   ],
+   "spread": 0.0086,
+   "floor": 0.0172,
+   "drops": {
+    "xdcos": {
+     "r5": 0.9052,
+     "delta": 0.0065,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.9114,
+     "delta": 0.0127,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.9062,
+     "delta": 0.0075,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.901,
+     "delta": 0.0023,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.9046,
+     "delta": 0.0059,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.9022,
+     "delta": 0.0035,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.9067,
+     "delta": 0.008,
+     "call": "WITHIN"
+    }
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "webqsp",
+   "base": [
+    0.6446,
+    0.6524,
+    0.6514
+   ],
+   "spread": 0.0073,
+   "floor": 0.0146,
+   "drops": {
+    "xdcos": {
+     "r5": 0.6447,
+     "delta": 0.0001,
+     "call": "WITHIN"
+    },
+    "xtopo": {
+     "r5": 0.652,
+     "delta": 0.0074,
+     "call": "WITHIN"
+    },
+    "xdepth": {
+     "r5": 0.6521,
+     "delta": 0.0075,
+     "call": "WITHIN"
+    },
+    "xseed": {
+     "r5": 0.6415,
+     "delta": -0.0031,
+     "call": "WITHIN"
+    },
+    "xwalk": {
+     "r5": 0.6535,
+     "delta": 0.0089,
+     "call": "WITHIN"
+    },
+    "xdists": {
+     "r5": 0.6469,
+     "delta": 0.0023,
+     "call": "WITHIN"
+    },
+    "xwalkf": {
+     "r5": 0.653,
+     "delta": 0.0084,
+     "call": "WITHIN"
+    }
+   }
+  }
+ ],
+ "arms": {
+  "xdcos": {
+   "block": "dense_cos",
+   "call": "MIXED",
+   "gain_reads": [
+    "WQ-musique musique",
+    "WQ-hotpotqa metaqa"
+   ],
+   "loss_reads": [
+    "WQ-musique hotpotqa",
+    "WQ-musique 2wiki"
+   ],
+   "mean_delta": 0.0082
+  },
+  "xtopo": {
+   "block": "topo_STRUCT",
+   "call": "HURTS",
+   "gain_reads": [
+    "WQ-musique webqsp"
+   ],
+   "loss_reads": [],
+   "mean_delta": 0.0092
+  },
+  "xdepth": {
+   "block": "depth_STRUCT",
+   "call": "HURTS",
+   "gain_reads": [
+    "WQ-hotpotqa metaqa"
+   ],
+   "loss_reads": [],
+   "mean_delta": 0.0111
+  },
+  "xseed": {
+   "block": "SEED",
+   "call": "HURTS",
+   "gain_reads": [
+    "WQ-hotpotqa metaqa"
+   ],
+   "loss_reads": [],
+   "mean_delta": 0.0056
+  },
+  "xwalk": {
+   "block": "WALK",
+   "call": "HURTS",
+   "gain_reads": [
+    "WQ-musique webqsp"
+   ],
+   "loss_reads": [],
+   "mean_delta": 0.0049
+  },
+  "xdists": {
+   "block": "DISTS",
+   "call": "IDLE",
+   "gain_reads": [],
+   "loss_reads": [],
+   "mean_delta": 0.0022
+  },
+  "xwalkf": {
+   "block": "WALKF",
+   "call": "HURTS",
+   "gain_reads": [
+    "WQ-musique musique"
+   ],
+   "loss_reads": [],
+   "mean_delta": 0.0019
+  }
+ },
+ "beside": [
+  {
+   "split": "WQ-musique",
+   "dataset": "metaqa",
+   "cpu_base": 0.3645,
+   "ml1_gpu_zrckp": 0.4008
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "squad",
+   "cpu_base": 0.9129,
+   "ml1_gpu_zrckp": 0.9133
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "musique",
+   "cpu_base": 0.5124,
+   "ml1_gpu_zrckp": 0.5178
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "hotpotqa",
+   "cpu_base": 0.8408,
+   "ml1_gpu_zrckp": 0.8419
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "2wiki",
+   "cpu_base": 0.9066,
+   "ml1_gpu_zrckp": 0.9031
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "webqsp",
+   "cpu_base": 0.6557,
+   "ml1_gpu_zrckp": 0.6476
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "metaqa",
+   "cpu_base": 0.3894,
+   "ml1_gpu_zrckp": 0.3931
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "squad",
+   "cpu_base": 0.9133,
+   "ml1_gpu_zrckp": 0.9139
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "musique",
+   "cpu_base": 0.574,
+   "ml1_gpu_zrckp": 0.5778
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "hotpotqa",
+   "cpu_base": 0.8101,
+   "ml1_gpu_zrckp": 0.81
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "2wiki",
+   "cpu_base": 0.9044,
+   "ml1_gpu_zrckp": 0.9037
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "webqsp",
+   "cpu_base": 0.6495,
+   "ml1_gpu_zrckp": 0.66
+  }
+ ],
+ "zdob_sha256": "def10f7f244ff36366fdb7aec0e4e1d37fafa864de86a2552f9eac1988d75100",
+ "utc": "2026-11-03T18:52:26Z",
+ "amended_in": {
+  "amendment": "A2",
+  "withdrawn": {
+   "xrank": "rank"
+  },
+  "kept_in_every_arm": [
+   "SEMB",
+   "rank"
+  ],
+  "zdoba2_sha256": "991f9a5fe0e9aad6cfa4d6bcbbc8001fc008f8b30ac6d35560b17234d5cd7d4b"
+ }
+}
