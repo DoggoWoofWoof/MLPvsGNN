@@ -18,8 +18,15 @@ block and term record) when GNA's passes and GNX's does not, or both pass and GN
 reads is larger; LTM's otherwise. The gnx slot's own full run is GNX's on LTM's columns and GNA's on LTA's
 (own-gate --stage gna). zgna, zlta and ltacols are imported and not edited.
 
+Amendment A3 (section 12): the members wait on GNP's screen too (docs/GNP_PAIR_COLUMNS_IN_GNN.md: GNX's arm on PFS A3's
+six pair columns). GNP is a form of its own (FORMS: ORDER's and gnp) that enters through the gnx slot: when GNP's screen
+passes, the slot's block is its NEXT columns (LTM's or LTA's, by A2) then the six pair columns, one block with one shared
+1 (IN = 27), or the six alone (IN = 13, as GNP was screened) when neither GNX's nor GNA's screen passes. The stack runs
+with two or more forms; GNP's own full run is released by own-gate --stage gnp. zgnp, gnpcols and zpfp are imported on
+first use (a fit, the calls, the self-test; never the gates) and not edited.
+
     python outputs/mp_unified/zstk.py members --wait                 (fix the members: outputs/stk/members.json)
-    python outputs/mp_unified/zstk.py stack-gate                      (exit 0 with two or more members)
+    python outputs/mp_unified/zstk.py stack-gate                      (exit 0 with two or more forms)
     python outputs/mp_unified/zstk.py own-gate --stage dep --wait     (exit 0 when the stage's own full run is released)
     python outputs/mp_unified/zstk.py fit --name scr-stk-st-s0        (train when needed, then read; kept when read before)
     python outputs/mp_unified/zstk.py s0stop-check                    (s0stop's check, for the stack)
@@ -78,8 +85,18 @@ R5_TOL = DEP.R5_TOL
 ADOPT_FOR_FULL_RUN, NO_GAIN, NOT_ADOPTED, ADOPT, INCOMPLETE = (
     DEP.ADOPT_FOR_FULL_RUN, DEP.NO_GAIN, DEP.NOT_ADOPTED, DEP.ADOPT, DEP.INCOMPLETE)
 VERDICTS = (ADOPT_FOR_FULL_RUN, NO_GAIN, NOT_ADOPTED)
-COLUMNS = ("LTM", "LTA")                        # A2: whose NEXT columns the gnx slot reads (LTM's unless GNA's screen takes it)
-assert len(PICK_READS) == 6 and set(MOD) == set(ORDER) == set(RULE_OF) == set(S0.STAGES)
+PAIR = "PAIR"                                   # A3: GNP's six pair columns
+COLUMNS = ("LTM", "LTA", PAIR, "LTM+PAIR", "LTA+PAIR")   # A2, A3: whose columns the gnx slot reads, in block order
+FORMS = ORDER + ("gnp",)                        # A3: the forms the stack holds (the pick's tie); GNP's is in the gnx slot
+GNP_KEY, GNP_OUT, GNP_TAG = "gnp", "outputs/gnp", "px"                # A3: zgnp's names, checked against it on import
+GNP_DECLARED = "docs/GNP_PAIR_COLUMNS_IN_GNN.md"
+PAIR_COLS = ("pair_max", "res_max", "pair_mean", "res_mean", "pair_1", "res_1")    # gnpcols' six, checked on import
+THREAD_VARS = ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS")     # gnpcols sets their defaults on import
+GNP_CODE = ("zgnp", "gnpcols", "zpfp")          # zgnp.OWN_CODE, checked on import
+LTM0 = {k: getattr(GNX.LTMC, k) for k in ("OUT", "STAGE", "DECLARED", "COLS", "WIDTH")}    # ltmcols' own, as imported
+LOAD_NEXT0 = GNX.LTM.load_next                  # zltm's, as imported
+GNX0 = {k: getattr(GNX, k) for k in ("code_extra", "term_record", "next_block")}         # zgnx's own, as zgnp takes them
+assert len(PICK_READS) == 6 and set(MOD) == set(ORDER) == set(RULE_OF) == set(S0.STAGES) and GNP_KEY not in S0.STAGES
 
 
 def fit_name(seed, split):
@@ -129,6 +146,46 @@ def ltg_terms(layers, axes=LTG.AXES):
 assert ltg_terms(LTG.LAYERS) == LTG.N_TERM == 68745 and LTG.LAYERS == 3
 
 
+# ── A3: GNP's names, and zgnp on first use ───────────────────────────────────
+
+_GNP = []
+
+
+def gnp():
+    """zgnp, imported on first use (a fit, the calls, the self-test; never the gates): torch before it, and the thread
+    variables gnpcols sets at its import put back after, so a stack process keeps the threads it had; its names, columns
+    and width checked against A3's."""
+    if not _GNP:
+        import torch  # noqa: F401  (before gnpcols' thread defaults)
+        saved = {v: os.environ.get(v) for v in THREAD_VARS}
+        try:
+            import zgnp
+        finally:
+            for v, x in saved.items():
+                if x is None:
+                    os.environ.pop(v, None)
+                else:
+                    os.environ[v] = x
+        if ((zgnp.KEY, zgnp.OUT, zgnp.DECLARED, zgnp.TAG, tuple(zgnp.GNPC.COLS), zgnp.IN, zgnp.fit_name(0, S0.HP_SPLIT),
+             tuple(zgnp.OWN_CODE)) != (GNP_KEY, GNP_OUT, GNP_DECLARED, GNP_TAG, PAIR_COLS, 2 * len(PAIR_COLS) + 1,
+                                       gnp_fit_name(0, S0.HP_SPLIT), GNP_CODE)):
+            raise SystemExit("zstk: zgnp's names, columns, width or code are not A3's")
+        if zgnp.ORIG != GNX0 or zgnp.GNX_FITS != dict(GNX.FITS):
+            raise SystemExit("zstk: zgnp was imported inside a patch of zgnx's (its ORIG or GNX_FITS are not zgnx's own)")
+        _GNP.append(zgnp)
+    return _GNP[0]
+
+
+def gnp_fit_name(seed, split):
+    """zgnp.fit_name, without importing zgnp."""
+    return f"scr-gnp-{GNP_TAG}-s{seed}{M1.WQ.SUF[split]}"
+
+
+def gnp_entry():
+    """s0stop's entry for GNP, as zgnp.on_s0stop patches it in."""
+    return ("zgnp", GNP_OUT, gnp_fit_name(0, S0.S0_SPLIT), gnp_fit_name(0, S0.HP_SPLIT), "ltg", GNP_DECLARED)
+
+
 # ── the members (section 2) ──────────────────────────────────────────────────
 
 
@@ -147,8 +204,8 @@ def stage_verdict(st, base=ROOT):
 
 def six_deltas(st, base=ROOT, cols="LTM"):
     """{read: seed-0 delta} of the stage's screen on section 6's six WQ-hotpotqa reads (its calls.json's rows); the gnx
-    slot on LTA's columns reads GNA's (A2)."""
-    out = GNA.OUT if st == "gnx" and cols == "LTA" else MOD[st].OUT
+    slot on LTA's columns reads GNA's (A2); the form gnp GNP's (A3)."""
+    out = GNP_OUT if st == "gnp" else GNA.OUT if st == "gnx" and next_part(cols) == "LTA" else MOD[st].OUT
     p = Path(base) / out / "calls.json"
     c = M1.WQ.read_json(p) if p.is_file() else {}
     rows = {(r.get("split"), r.get("read")): r for r in (c.get("screen") or {}).get("reads") or []}
@@ -163,9 +220,10 @@ def mean_delta(st, base=ROOT, cols="LTM"):
 
 def pick_of(passing, base=ROOT, cols="LTM"):
     """(the pick, each passing form's mean delta): the largest mean seed-0 delta over the six reads; a tie goes to the
-    earlier form in ORDER; a form missing one of the six is not picked. The gnx slot's is its columns' (A2)."""
+    earlier form in FORMS; a form missing one of the six is not picked. The gnx slot's is its NEXT columns' (A2); GNP's
+    its own (A3)."""
     means = {st: mean_delta(st, base, cols) for st in passing}
-    ok = [st for st in ORDER if means.get(st) is not None]
+    ok = [st for st in FORMS if means.get(st) is not None]
     best = max((means[st] for st in ok), default=None)
     return next((st for st in ok if means[st] == best), None), means
 
@@ -183,66 +241,214 @@ def gna_verdict(base=ROOT):
     return (c.get("screen") or {}).get("verdict")
 
 
+def gnp_verdict(base=ROOT):
+    """A3: GNP's screen verdict as s0stop's gate reads it (GNP's entry patched in, as zgnp.on_s0stop does; zgnp is not
+    imported): NOT_ADOPTED on a current STOP, else its calls.json's screen.verdict; None when that file is missing or not
+    GNP's."""
+    with M1.WQ.patch(S0, STAGES={**S0.STAGES, GNP_KEY: gnp_entry()}):
+        rec = S0.stop_record(GNP_KEY, base)
+    if rec is not None and rec.get("decision") == S0.STOP:
+        return NOT_ADOPTED
+    p = Path(base) / GNP_OUT / "calls.json"
+    c = M1.WQ.read_json(p) if p.is_file() else {}
+    if c.get("declared_in") != GNP_DECLARED:
+        return None
+    return (c.get("screen") or {}).get("verdict")
+
+
 def fix_members(base=ROOT, now=None):
     """(done, record) by section 2: each stage's verdict; RTR and IRA will not run when DEP's screen passes; the members
     are the passing forms in ORDER, IRA standing for RTR when both pass; a stage with no verdict at MEMBERS_BY is left out.
-    A2: GNA's verdict is waited on too; the gnx slot passes when GNX's or GNA's screen passes, and its columns are LTA's
-    when GNA's passes and GNX's does not, or GNA's mean delta over the six reads is the larger (a tie: LTM's)."""
+    A2: GNA's verdict is waited on too; the gnx slot passes when GNX's or GNA's screen passes, and its NEXT columns are
+    LTA's when GNA's passes and GNX's does not, or GNA's mean delta over the six reads is the larger (a tie: LTM's).
+    A3: GNP's verdict is waited on too; when GNP's screen passes, GNP is a form, and the gnx slot is a member reading its
+    NEXT columns then the six pair columns (the slot passing) or the six alone (it not passing). The pick is over the
+    passing forms, a tie to the earlier in FORMS."""
     now = time.time() if now is None else now
     late = now >= utc_s(MEMBERS_BY)
     v = {st: stage_verdict(st, base) for st in ORDER}
-    vg = gna_verdict(base)
+    vg, vp = gna_verdict(base), gnp_verdict(base)
     wont = [st for st in ROUNDS_OF[::-1] if v["dep"] == ADOPT_FOR_FULL_RUN]
-    pending = [st for st in ORDER if st not in wont and v[st] not in VERDICTS] + ([] if vg in VERDICTS else ["gna"])
-    rec = {"stage": STAGE, "declared_in": DECLARED, "verdicts": v, "gna_verdict": vg, "will_not_run": wont,
-           "pending": pending, "members_by": MEMBERS_BY}
+    pending = ([st for st in ORDER if st not in wont and v[st] not in VERDICTS] + ([] if vg in VERDICTS else ["gna"])
+               + ([] if vp in VERDICTS else ["gnp"]))
+    rec = {"stage": STAGE, "declared_in": DECLARED, "verdicts": v, "gna_verdict": vg, "gnp_verdict": vp,
+           "will_not_run": wont, "pending": pending, "members_by": MEMBERS_BY}
     if pending and not late:
         return False, rec
-    gnx_ok, gna_ok = v["gnx"] == ADOPT_FOR_FULL_RUN, vg == ADOPT_FOR_FULL_RUN
+    gnx_ok, gna_ok, gnp_ok = v["gnx"] == ADOPT_FOR_FULL_RUN, vg == ADOPT_FOR_FULL_RUN, vp == ADOPT_FOR_FULL_RUN
     m_ltm, m_lta = mean_delta("gnx", base, "LTM"), mean_delta("gnx", base, "LTA")
-    cols = "LTA" if gna_ok and (not gnx_ok or (m_lta is not None and (m_ltm is None or m_lta > m_ltm))) else "LTM"
+    nxt = "LTA" if gna_ok and (not gnx_ok or (m_lta is not None and (m_ltm is None or m_lta > m_ltm))) else "LTM"
+    cols = (f"{nxt}+{PAIR}" if gnx_ok or gna_ok else PAIR) if gnp_ok else nxt
     passing = [st for st in ORDER if st not in wont and (v[st] == ADOPT_FOR_FULL_RUN or (st == "gnx" and gna_ok))]
-    mem = [st for st in passing if not (st == "rtr" and "ira" in passing)]
-    pick, means = pick_of(passing, base, cols)
-    rec.update(left_out=pending, passing=passing, members=mem, layers=layers_of(mem), rules=rules_of(mem), pick=pick,
-               pick_means=means, pick_reads=[f"{a} {b}" for a, b in PICK_READS], gnx_columns=cols,
+    passing += ["gnp"] if gnp_ok else []
+    forms = [st for st in passing if not (st == "rtr" and "ira" in passing)]
+    mem = [st for st in ORDER if st in forms or (st == "gnx" and "gnp" in forms)]
+    pick, means = pick_of(passing, base, nxt)
+    rec.update(left_out=pending, passing=passing, forms=forms, members=mem, layers=layers_of(mem), rules=rules_of(mem),
+               pick=pick, pick_means=means, pick_reads=[f"{a} {b}" for a, b in PICK_READS], gnx_columns=cols,
                gnx_means={"LTM": m_ltm, "LTA": m_lta}, utc=utc_now())
     return True, rec
 
 
+def forms_of(rec):
+    """A3: the fixed forms (a record from before A3: its members)."""
+    rec = rec or {}
+    return list(rec.get("forms", rec.get("members")) or [])
+
+
 def members_record(base=ROOT):
-    """outputs/stk/members.json once written (fixed), else None."""
+    """outputs/stk/members.json once written (fixed), else None; None too when its forms, members and gnx columns do not
+    agree (A3: GNP's form is the gnx slot with the pair columns; the slot's NEXT set is there when GNX's form is)."""
     p = Path(base) / OUT / "members.json"
     rec = M1.WQ.read_json(p) if p.is_file() else {}
-    mem = rec.get("members")
-    if rec.get("declared_in") != DECLARED or not isinstance(mem, list) or [s for s in mem if s not in ORDER]:
+    mem, forms, cols = rec.get("members"), rec.get("forms", rec.get("members")), rec.get("gnx_columns", "LTM")
+    if (rec.get("declared_in") != DECLARED or not isinstance(mem, list) or not isinstance(forms, list)
+            or [s for s in mem if s not in ORDER] or [s for s in forms if s not in FORMS] or cols not in COLUMNS):
         return None
-    if rec.get("gnx_columns", "LTM") not in COLUMNS:
+    if (sorted({"gnx" if s == "gnp" else s for s in forms}) != sorted(mem) or ("gnp" in forms) != has_pair(cols)
+            or ("gnp" in forms and ("gnx" in forms) != (next_part(cols) is not None))):
         return None
     return rec
 
 
 def gnx_columns(rec):
-    """A2: whose NEXT columns the fixed members' gnx slot reads."""
+    """A2, A3: whose columns the fixed members' gnx slot reads."""
     return (rec or {}).get("gnx_columns", "LTM")
 
 
+def col_parts(cols):
+    """A3: the gnx slot's column sets, in block order."""
+    return cols.split("+")
+
+
+def next_part(cols):
+    """A3: the slot's NEXT set (LTM's or LTA's); None for the pair columns alone."""
+    p = col_parts(cols)[0]
+    return p if p in ("LTM", "LTA") else None
+
+
+def has_pair(cols):
+    return col_parts(cols)[-1] == PAIR
+
+
+def slot_columns(cols):
+    """A3: the slot's column names in block order (LTA's carry LTM's names: zlta.on_cols keeps them)."""
+    return [c for p in col_parts(cols) for c in (PAIR_COLS if p == PAIR else LTM0["COLS"])]
+
+
+def slot_in(cols):
+    """A3: the slot's input width, [raw, z] of each column and one shared 1."""
+    return 2 * len(slot_columns(cols)) + 1
+
+
 def next_declared(cols):
-    """A2: the declaration a gnx slot's NEXT block names: LTM's for LTM's columns, LTA's for LTA's."""
-    return GNA.LTAC.DECLARED if cols == "LTA" else GNX.LTM.DECLARED
+    """A2, A3: the declaration a gnx slot's NEXT block names: LTM's, LTA's or GNP's columns'; with two sets, both, in block
+    order."""
+    d = [{"LTM": GNX.LTM.DECLARED, "LTA": GNA.LTAC.DECLARED, PAIR: GNP_DECLARED}[p] for p in col_parts(cols)]
+    return d[0] if len(d) == 1 else d
+
+
+@contextlib.contextmanager
+def on_set(part):
+    """A3: ltmcols on one column set, so zltm.load_next reads it: LTM's as imported, LTA's (zlta.on_cols) or GNP's
+    (zgnp.on_cols: its root, stage, declaration, six names and width); restored after, also on a failure."""
+    with M1.WQ.patch(GNX.LTMC, **LTM0):
+        if part == PAIR:
+            with gnp().on_cols():
+                yield
+        elif part == "LTA":
+            with GNA.ZLA.on_cols():
+                yield
+        else:
+            yield
+
+
+def set_root(part):
+    with on_set(part):
+        return M1.WQ.rel(Path(GNX.LTMC.OUT))
+
+
+def both_loader(cols):
+    """A3: zltm.load_next for a slot of two sets: each set's columns of the carve (under on_set, out[part] when out is
+    given), checked by zltm's own load, joined in block order; one record naming both, the scorer the sets' joined."""
+    parts = col_parts(cols)
+
+    def load_next(ds, carve, split, part_shas, out=None, verify=True):
+        got = []
+        for part in parts:
+            with on_set(part):
+                got.append((part, *LOAD_NEXT0(ds, carve, split, part_shas, None if out is None else out[part], verify)))
+        rows = {int(x.shape[0]) for _p, x, _r, _s in got}
+        train = {bool(r["training_carve"]) for _p, _x, r, _s in got}
+        if len(rows) != 1 or len(train) != 1:
+            raise SystemExit(f"zstk: {ds}/{carve}'s {cols} columns hold {sorted(rows)} rows, training {sorted(train)}")
+        X = np.concatenate([x for _p, x, _r, _s in got], axis=1)
+        rec = {"stage": STAGE, "declared_in": next_declared(cols), "split": split, "dataset": ds, "carve": carve,
+               "columns": slot_columns(cols), "training_carve": train.pop(), "rows": rows.pop(),
+               "fit_sha256": "+".join(r["fit_sha256"] for _p, _x, r, _s in got),
+               "sets": {p: {"declared_in": r["declared_in"], "fit_sha256": r["fit_sha256"], "record_sha256": s}
+                        for p, _x, r, s in got}}
+        return X, rec, "+".join(s for _p, _x, _r, s in got)
+    return load_next
+
+
+def both_block(cols):
+    """A3: zgnx's NEXT block for a slot of two sets (inside on_split): both sets' declarations and roots."""
+    def next_block(split):
+        return {"declared_in": next_declared(cols), "split": split, "columns": slot_columns(cols),
+                "fit_sha256": GNX.CUR["fit_sha256"],
+                "carves": {f"{d['dataset']}/{d['carve']}": d["record_sha256"] for d in GNX.LOADED},
+                "training_carves": GNX.train_carves(split), "columns_root": [set_root(p) for p in col_parts(cols)]}
+    return next_block
+
+
+def both_term(cols):
+    """A3: zgnx's term record for a slot of two sets."""
+    n = slot_in(cols)
+
+    def term_record(G):
+        return {"term": f"{next_part(cols)}'s NEXT columns then GNP's six pair columns, one block, into zg6r's encoder "
+                        "([raw, z, 1] through gnx_w, zero-started, added to l1's output)",
+                "columns": slot_columns(cols), "inputs": n, "term_parameters": GNX.HIDDEN * n,
+                "parameters_h128": int(G.N_PARAMS + GNX.HIDDEN * n), "layers": int(G.LAYERS)}
+    return term_record
 
 
 @contextlib.contextmanager
 def on_columns(cols):
     """A2: the gnx slot on its columns. LTM's: zgnx as it is. LTA's: ltmcols' root, stage and declaration LTA's
-    (zlta.on_cols), and zgnx's NEXT block and term record GNA's. In this process; restored after, also on a failure."""
+    (zlta.on_cols), and zgnx's NEXT block and term record GNA's. A3: GNP's alone: ltmcols GNP's (zgnp.on_cols), and zgnx's
+    NEXT block, term record and width GNP's (as GNP was screened); two sets: ltmcols LTM's, zltm.load_next both sets'
+    joined, and zgnx's NEXT block, term record and width the slot's (IN = 27). In this process; restored after, also on a
+    failure."""
     if cols not in COLUMNS:
         raise SystemExit(f"zstk: the gnx slot's columns are {cols}, not one of {COLUMNS}")
     with contextlib.ExitStack() as es:
         if cols == "LTA":
             es.enter_context(GNA.ZLA.on_cols())
             es.enter_context(M1.WQ.patch(GNX, next_block=GNA.next_block, term_record=GNA.term_record))
+        elif cols == PAIR:
+            P = gnp()
+            es.enter_context(P.on_cols())
+            es.enter_context(M1.WQ.patch(GNX, next_block=P.next_block, term_record=P.term_record, IN=P.IN, WIDTH=P.WIDTH))
+        elif has_pair(cols):
+            gnp()
+            w = len(slot_columns(cols))
+            es.enter_context(M1.WQ.patch(GNX.LTMC, **LTM0))
+            es.enter_context(M1.WQ.patch(GNX.LTM, load_next=both_loader(cols)))
+            es.enter_context(M1.WQ.patch(GNX, next_block=both_block(cols), term_record=both_term(cols), IN=2 * w + 1,
+                                         WIDTH=w))
         yield
+
+
+def missing_columns(cols, split):
+    """A3: the training and s1eval carves of the split some set of the slot's has no columns of (its record.json)."""
+    miss = []
+    for part in col_parts(cols):
+        with on_set(part):
+            miss += [f"{part} {k}" for k in GNX.train_carves(split) + GNX.eval_carves()
+                     if not (GNX.LTMC.cols_dir(GNX.LTMC.OUT, split, *k.split("/")) / "record.json").is_file()]
+    return miss
 
 
 def members(wait=False, base=ROOT, now=None, sleep=time.sleep):
@@ -274,8 +480,9 @@ def stack_gate(base=ROOT):
     if rec is None:
         log("stack-gate: the members are not fixed")
         return 2
-    ok = len(rec["members"]) >= 2
-    log(f"stack-gate: members {rec['members']}; {'the stack runs' if ok else 'no stack (section 3)'}")
+    ok = len(forms_of(rec)) >= 2
+    log(f"stack-gate: forms {forms_of(rec)}, members {rec['members']} (the gnx slot on {gnx_columns(rec)}'s columns); "
+        f"{'the stack runs' if ok else 'no stack (section 3)'}")
     return 0 if ok else 1
 
 
@@ -316,16 +523,16 @@ def own_call(st, base=ROOT, now=None):
     """(done, exit code, why) for stage st's own full run, by sections 3 and 6: with one member, that member's; with two or
     more, the pick's when the stack's screen is NO_GAIN or NOT_ADOPTED or its full run NOT_ADOPTED; none when the stack's
     full run is ADOPT; none still undecided at FREEZE. A2: the gnx slot's own full run is GNX's on LTM's columns and GNA's
-    (st "gna") on LTA's."""
+    (st "gna") on LTA's. A3: by forms; GNP's own full run (st "gnp") is its form's."""
     now = time.time() if now is None else now
     rec = members_record(base)
     if rec is None:
         return now >= utc_s(FREEZE), 1, "the members are not fixed"
-    mem, slot = rec["members"], "gnx" if st == "gna" else st
-    mine = slot != "gnx" or (st == "gna") == (gnx_columns(rec) == "LTA")
-    if len(mem) < 2:
-        ok = mem == [slot] and mine
-        return True, 0 if ok else 1, (f"members {mem} (the gnx slot on {gnx_columns(rec)}'s columns): "
+    forms, slot = forms_of(rec), "gnx" if st == "gna" else st
+    mine = slot != "gnx" or (st == "gna") == (next_part(gnx_columns(rec)) == "LTA")
+    if len(forms) < 2:
+        ok = forms == [slot] and mine
+        return True, 0 if ok else 1, (f"forms {forms} (the gnx slot on {gnx_columns(rec)}'s columns): "
                                       f"{'its own full run' if ok else 'not its own'}")
     sv, fv = stack_verdicts(base)
     if sv in (NO_GAIN, NOT_ADOPTED) or fv == NOT_ADOPTED:
@@ -547,8 +754,8 @@ def read_with(orig, mem):
             return orig(name, env)
         sp = FITS[name][2]
         nk = M1.fit_stamp(name)[1].get("next") or {}
-        if ((nk.get("split"), nk.get("columns"), nk.get("declared_in")) != (sp, list(GNX.LTMC.COLS),
-                                                                           GNX.next_block(sp)["declared_in"])
+        nb = GNX.next_block(sp)                 # A3: the slot's columns and declaration (LTM's, LTA's, GNP's or two sets')
+        if ((nk.get("split"), nk.get("columns"), nk.get("declared_in")) != (sp, nb["columns"], nb["declared_in"])
                 or not nk.get("fit_sha256")):
             raise SystemExit(f"zstk: {name} was not trained on these NEXT columns of {sp} ({nk})")
         GNX.LOADED.clear()
@@ -564,7 +771,8 @@ def code_extra():
     """The stage's own code and every member's beside zml1s's, by fixed keys (a module run as a script is named __main__)."""
     mods = (("zdep", DEP), ("zltg", LTG), ("zrtr", RTR), ("zira", IRA), ("zgnx", GNX), ("zltm", GNX.LTM),
             ("ltmcols", GNX.LTMC), ("s0stop", S0), ("zgna", GNA), ("zlta", GNA.ZLA), ("ltacols", GNA.LTAC))
-    return {"zstk_sha256": M1.WQ.sha_src(__file__), **{f"{k}_sha256": M1.WQ.sha_src(m.__file__) for k, m in mods}}
+    return {"zstk_sha256": M1.WQ.sha_src(__file__), **{f"{k}_sha256": M1.WQ.sha_src(m.__file__) for k, m in mods},
+            **{f"{k}_sha256": M1.WQ.sha_src(HERE / f"{k}.py") for k in GNP_CODE}}     # A3: by path, zgnp not imported
 
 
 @contextlib.contextmanager
@@ -609,14 +817,15 @@ def fit(name):
     if name not in FITS:
         raise SystemExit(f"zstk: {name} is not one of STK's fits ({', '.join(FITS)})")
     rec = members_record()
-    if rec is None or len(rec["members"]) < 2:
-        raise SystemExit(f"zstk: the stack runs with two or more members (section 3); members {rec and rec['members']}")
+    if rec is None or len(forms_of(rec)) < 2:
+        raise SystemExit(f"zstk: the stack runs with two or more forms (section 3, A3); forms {rec and forms_of(rec)}")
     mem, cols = rec["members"], gnx_columns(rec)
     _a, sd, sp = FITS[name]
+    if "gnx" in mem and has_pair(cols):
+        gnp()                                   # A3: before any patch (zgnp takes zgnx's own at its import)
     with on_columns(cols):
         if "gnx" in mem:
-            miss = [k for k in GNX.train_carves(sp) + GNX.eval_carves()
-                    if not (GNX.LTMC.cols_dir(GNX.LTMC.OUT, sp, *k.split("/")) / "record.json").is_file()]
+            miss = missing_columns(cols, sp)
             if miss:
                 raise SystemExit(f"zstk: {name}: no {cols} columns of {miss} under {sp}")
         dep = RTR.dep_call() if any(st in mem for st in ROUNDS_OF) else None
@@ -767,9 +976,9 @@ def combine_full(blocks):
     return {"verdict": v, "rules": vs, "problems": [p for b in blocks for p in b.get("problems") or []]}
 
 
-def part_problems(name, what, k, mem):
+def part_problems(name, what, k, mem, cols="LTM"):
     """A stamp's members and parts against section 10: the members as fixed, the stack's layer count, each member's record
-    at it (LTG's term at the stack's layers, RTR's and IRA's rounds, GNX's input)."""
+    at it (LTG's term at the stack's layers, RTR's and IRA's rounds, GNX's input: A3, the slot's columns and width)."""
     L, out = layers_of(mem), []
     parts = k.get("parts") or {}
     if (k.get("members"), k.get("layers"), sorted(parts)) != (list(mem), L, sorted(mem)):
@@ -788,7 +997,8 @@ def part_problems(name, what, k, mem):
         want["ira"] = {"rounds": IRA.ROUNDS, "slots": IRA.SLOTS, "sinkhorn_iters": IRA.SINK_ITERS,
                        "ira_parameters": D + 2 * IRA.SLOTS * D + 3, "layers": L}
     if "gnx" in mem:
-        want["gnx"] = {"term_parameters": GNX.HIDDEN * GNX.IN, "inputs": GNX.IN, "columns": list(GNX.LTMC.COLS), "layers": L}
+        n = slot_in(cols)
+        want["gnx"] = {"term_parameters": GNX.HIDDEN * n, "inputs": n, "columns": slot_columns(cols), "layers": L}
     for st, w in want.items():
         got = {x: parts[st].get(x) for x in w}
         if got != w:
@@ -801,15 +1011,29 @@ def part_problems(name, what, k, mem):
 EARLIER = {("ltg", "WQ-musique"): "4b1657818d6f6641085821e6e7f4323d13ff240751dee6c9d0c4c63ed562e2d9"}
 
 
+def own_of(st, cols="LTM"):
+    """[(module, the code keys its own fits must share with the stack's train)] for the forms a member holds: its own
+    stage's; for the gnx slot, zgnx's on LTM's NEXT columns, zgna's (with zgna's, zlta's and ltacols') on LTA's (A2), and
+    zgnp's (with zgnp's, gnpcols' and zpfp's) for the pair columns (A3)."""
+    if st != "gnx":
+        return [(MOD[st], (f"z{st}_sha256",))]
+    out = []
+    if next_part(cols) == "LTA":
+        out.append((GNA, ("zgnx_sha256",) + tuple(f"{k}_sha256" for k in GNA.OWN_CODE)))
+    elif next_part(cols) == "LTM":
+        out.append((GNX, ("zgnx_sha256",)))
+    if has_pair(cols):
+        out.append((gnp(), ("zgnx_sha256",) + tuple(f"{k}_sha256" for k in GNP_CODE)))
+    return out
+
+
 def member_code(name, ks, mem, base=ROOT, cols="LTM"):
     """Section 2's 'as it was screened' (section 10): each member's module in the stack's train stamp is the one both its
     own seed-0 fits' train stamps name, but EARLIER's fit may name EARLIER's sha instead; both fits must be read. A2: the
     gnx slot on LTA's columns was screened as GNA, so its own fits are GNA's, and zgna's, zlta's and ltacols' shas count
-    beside zgnx's; an own fit that names no sha for a key fails."""
+    beside zgnx's; an own fit that names no sha for a key fails. A3: with the pair columns GNP's fits too (own_of)."""
     out, mine = [], ks.get("code") or {}
-    for st in mem:
-        m = GNA if st == "gnx" and cols == "LTA" else MOD[st]
-        keys = (f"z{st}_sha256",) + (tuple(f"{k}_sha256" for k in GNA.OWN_CODE) if m is GNA else ())
+    for st, m, keys in [(st, m, keys) for st in mem for m, keys in own_of(st, cols)]:
         for sp in M1.SPLITS:
             f = m.fit_name(0, sp)
             if not is_read(f, base):
@@ -844,7 +1068,7 @@ def fit_problems(call, mem, base=ROOT, cols="LTM"):
             out.append(str(e))
             continue
         for what, k, need in (("train", ks, GNX.train_carves(sp)), ("read", kr, GNX.eval_carves())):
-            out += part_problems(name, what, k, mem)
+            out += part_problems(name, what, k, mem, cols)
             if (k.get("base"), k.get("iso_verdict")) != (bse, call):
                 out.append(f"{name}: its {what} is on {k.get('base')} (ISO {k.get('iso_verdict')}), not {bse}")
             if any(st in mem for st in ROUNDS_OF) and not k.get("dep_call"):
@@ -853,7 +1077,7 @@ def fit_problems(call, mem, base=ROOT, cols="LTM"):
                 nk = k.get("next") or {}
                 miss = sorted(set(need) - set(nk.get("carves") or {}))
                 if ((nk.get("split"), nk.get("columns"), nk.get("declared_in"))
-                        != (sp, list(GNX.LTMC.COLS), next_declared(cols)) or miss):
+                        != (sp, slot_columns(cols), next_declared(cols)) or miss):
                     out.append(f"{name}: its {what}'s NEXT block is {nk.get('split')} {nk.get('columns')} of "
                                f"{nk.get('declared_in')}, not {cols}'s, missing {miss}")
         if "gnx" in mem and (ks.get("next") or {}).get("fit_sha256") != (kr.get("next") or {}).get("fit_sha256"):
@@ -882,9 +1106,9 @@ def fit_problems(call, mem, base=ROOT, cols="LTM"):
 def calls(base=ROOT):
     call = DEP.iso_call(base)
     mrec = members_record(base)
-    if mrec is None or len(mrec["members"]) < 2:
-        raise SystemExit(f"zstk: the stack's calls need two or more fixed members ({mrec and mrec['members']})")
-    mem, cols = mrec["members"], gnx_columns(mrec)
+    if mrec is None or len(forms_of(mrec)) < 2:
+        raise SystemExit(f"zstk: the stack's calls need two or more fixed forms ({mrec and forms_of(mrec)})")
+    mem, cols, forms = mrec["members"], gnx_columns(mrec), forms_of(mrec)
     rules = rules_of(mem)
     new_r5, b0 = r5_stk(call, base)
     base3 = DEP.base_seeds(call, base)
@@ -907,9 +1131,9 @@ def calls(base=ROOT):
             blk["verdict"] = INCOMPLETE
     beside = {r: {"screen": by[r]["screen"]["verdict"], "full_run": by[r]["full_run"] and by[r]["full_run"]["verdict"]}
               for r in ("dep", "ltg") if r not in rules}
-    own = {st: six_deltas(st, base, cols) for st in mem}
-    rec = {"stage": STAGE, "declared_in": DECLARED, "arm": f"{ARM} with {', '.join(mem)}", "members": mem, "rules": rules,
-           "gnx_columns": cols if "gnx" in mem else None,
+    own = {st: six_deltas(st, base, cols) for st in forms}
+    rec = {"stage": STAGE, "declared_in": DECLARED, "arm": f"{ARM} with {', '.join(forms)}", "members": mem,
+           "forms": forms, "rules": rules, "gnx_columns": cols if "gnx" in mem else None,
            "layers": layers_of(mem), "iso_verdict": call, "base": "zg6r-m (ISO)" if call == ISO.REPLACE else "zg6r (ML1)",
            "screen": screen, "full_run": full, "by_rule": {r: by[r] for r in rules}, "rules_beside": beside,
            "members_own_hp_deltas": own, "problems": bad,
@@ -920,7 +1144,7 @@ def calls(base=ROOT):
     out = Path(base) / OUT
     out.mkdir(parents=True, exist_ok=True)
     M1.WQ.write_json(out / "calls.json", rec)
-    md = [f"# STK: {ARM} with {', '.join(mem)} against {rec['base']}, on PKO's pools", "",
+    md = [f"# STK: {ARM} with {', '.join(forms)} against {rec['base']}, on PKO's pools", "",
           f"## Screen: {screen['verdict']} (rules {', '.join(f'{r} {v}' for r, v in zip(rules, screen['rules']))})", "",
           f"counts: {json.dumps(screen.get('counts', {}))}", f"rules beside: {json.dumps(beside)}", ""]
     rows = screen["reads"] + [dict(r, call=f"{r['call']} (beside)") for r in screen.get("beside", [])]
@@ -955,9 +1179,10 @@ def calls(base=ROOT):
 ZERO_START = {"ltg": "ltg_U", "rtr": "rtr_e", "ira": "ira_E", "gnx": "gnx_w"}     # each member's zero-started parameter
 
 
-def toy_stack(G, sets, big):
+def toy_stack(G, sets, big, cols="LTM"):
     """The stack on zg6r's own toy carve (zltg's toy: its rows, gold and links; zg6r's self-test steps 2 and 3) with
-    LTM-format toy columns and a toy store basis. For each member set: built under the set's patches with zg6r's and the
+    LTM-format toy columns and a toy store basis; A3: with cols naming the pair columns, GNP-format toy columns too (from a
+    draw of their own) and the gnx slot on cols throughout. For each member set: built under the set's patches with zg6r's and the
     rounds' parameters drawn at random (LTG's and GNX's at their starts), its eval and training forwards are those of the
     set without LTG and GNX bit for bit, and its state names are that set's plus LTG's and GNX's. For the set big, zg6r's
     and every member's parameters drawn at random: the listwise loss with the next-hop loss reaches every member's parameters; the strict load
@@ -973,6 +1198,7 @@ def toy_stack(G, sets, big):
     basis0 = dict(LTG.BASIS)
     saved = (G.g6r_stack, G.g6r_layers, G.ZG6R.__init__, G.ZG6R.forward, G.LG.listwiseD, LTG.LAYERS, LTG.TERM_LAYER,
              LTG.TERM_NAMES, LTG.N_TERM)
+    es_cols = contextlib.ExitStack()
     try:
         with tempfile.TemporaryDirectory(prefix="zstk_") as td:
             tmp = Path(td)
@@ -989,6 +1215,13 @@ def toy_stack(G, sets, big):
                     self.ids = [f"q{i}" for i in range(self.rows)]
 
             GNX.LTM.toy_cols(tmp / "ltm", sp, "metaqa", "toy", tmp / "cache", rng, "a" * 64)    # zgnx's order
+            roots = {"LTM": tmp / "ltm", PAIR: tmp / "gnp"}
+            if has_pair(cols):                      # A3: GNP's six, written under GNP's names, before the slot's patches
+                P = gnp()
+                with P.on_cols(tmp / "gnp"):
+                    P.toy_cols6(tmp / "gnp", sp, "metaqa", "toy", tmp / "cache", np.random.default_rng(37), "b" * 64)
+            es_cols.enter_context(on_columns(cols))
+            gnx_out = roots[cols] if len(col_parts(cols)) == 1 else {p: roots[p] for p in col_parts(cols)}
             blocks = ["rank", "SEMB"]
             with G.U2N.extra_carves(("metaqa", "toy")):
                 G.U2N.build_typed("metaqa", "toy", tmp / "look", tmp / "typed", **kw)
@@ -999,7 +1232,7 @@ def toy_stack(G, sets, big):
                 cs = (cls.__init__, cls.batch)
                 GNX.LOADED.clear()
                 with GNX.on_carve(G, cls):
-                    with GNX.on_split(sp, out=tmp / "ltm"):
+                    with GNX.on_split(sp, out=gnx_out):
                         ce = cls("metaqa", "toy", "2wiki", "cpu", tmp / "cache")
                     qs = np.r_[np.arange(ce.rows)[::-1][:7], np.arange(ce.rows)[:5]].astype(np.int64)
                     feats, nq, bz, _g = ce.batch(qs, blocks)
@@ -1054,6 +1287,8 @@ def toy_stack(G, sets, big):
                 # own toys: at random they saturate every attention logit at zg6r's clamp), the losses' gradients, the
                 # strict loads, a one-epoch fit
                 m = build(big)
+                out["gnx_shape"] = tuple(m.gnx_w.shape) if "gnx" in big else None
+                out["next_width"] = int(feats[GNX.NEXT].shape[1])
                 with on_members(G, big, cls):
                     names = {st: member_names(G, st) for st in big}
                 with torch.no_grad():
@@ -1096,7 +1331,9 @@ def toy_stack(G, sets, big):
                                LTG.TERM_LAYER, LTG.TERM_NAMES, LTG.N_TERM) == saved and (cls.__init__, cls.batch) == cs
             out["cur_clear"] = not LTG.CUR and GNX.CUR == {"split": None, "fit_sha256": None, "out": None}
             out["stamp"] = stamp_check(G, cls, big)
+            es_cols.close()
     finally:
+        es_cols.close()
         LTG.aux_reset()
         GNX.LOADED.clear()
         LTG.BASIS.clear()
@@ -1119,7 +1356,8 @@ def stamp_check(G, cls, mem):
                              and M1.load_encoder is MS.ml1_load and RS.installed())
             cs = M1.code_shas(ARM)
             out["code_keys"] = all(f"{k}_sha256" in cs for k in ("zstk", "zdep", "zltg", "zrtr", "zira", "zgnx", "zltm",
-                                                                 "ltmcols", "s0stop", "ml1start", "readswa"))
+                                                                 "ltmcols", "s0stop", "ml1start", "readswa", "zgna", "zlta",
+                                                                 "ltacols") + GNP_CODE)
             M1._ACTIVE[0] = hp
             out["names"] = (M1.pko_fit_name(ARM, 0, "WQ-hotpotqa"), M1.pko_fit_name(ARM, 1, "WQ-hotpotqa"))
             M1._ACTIVE[0] = None
@@ -1154,7 +1392,7 @@ def stamp_check(G, cls, mem):
     return out
 
 
-def check_toy(t, sets, big, layers):
+def check_toy(t, sets, big, layers, cols="LTM"):
     for mem in sets:
         r = t["sets"]["+".join(mem)]
         assert r["names_are_ref_plus_terms"] and r["eval_start_is_ref"] and r["train_start_is_ref"], (mem, r)
@@ -1178,6 +1416,11 @@ def check_toy(t, sets, big, layers):
     assert ("next" in ex) == ("gnx" in big) and ("aux" in ex) == ("ltg" in big) and ex["x"] == 1, sorted(ex)
     if "gnx" in big:
         assert s["no_columns"] == "refused" and ex["next"]["fit_sha256"] == "c" * 64, s
+        n, g = slot_in(cols), rec["parts"]["gnx"]                            # A3: the slot's columns and width
+        assert (g["inputs"], g["columns"], g["term_parameters"]) == (n, slot_columns(cols), GNX.HIDDEN * n), (cols, g)
+        assert (ex["next"]["declared_in"], ex["next"]["columns"]) == (next_declared(cols), slot_columns(cols)), ex["next"]
+        assert t["gnx_shape"] == (16, n) and t["next_width"] == len(slot_columns(cols)), (cols, t["gnx_shape"])
+        assert rec["stack_parameters"] >= GNX.HIDDEN * n, rec
 
 
 def layers_check():
@@ -1219,12 +1462,17 @@ def gates_check():
             (base / out / "s0stop.json").write_text(json.dumps({"s0_fit": s0, "hp_fit": hp, "s0_read_sha256": S0.sha_file(rp),
                                                                 "decision": S0.STOP}), encoding="utf-8")
 
-        def gna_file(v, deltas=None, decl=None):
-            o = base / GNA.OUT
+        def side_file(out, decl0, v, deltas=None, decl=None):
+            o = base / out
             o.mkdir(parents=True, exist_ok=True)
             rows = [{"split": a, "read": b, "delta": (deltas or {}).get(b, 0.0), "call": "WITHIN"} for a, b in PICK_READS]
-            M1.WQ.write_json(o / "calls.json", {"declared_in": decl or GNA.DECLARED, "screen": {"verdict": v,
-                                                                                                "reads": rows}})
+            M1.WQ.write_json(o / "calls.json", {"declared_in": decl or decl0, "screen": {"verdict": v, "reads": rows}})
+
+        def gna_file(v, deltas=None, decl=None):
+            side_file(GNA.OUT, GNA.DECLARED, v, deltas, decl)
+
+        def gnp_file(v, deltas=None, decl=None):
+            side_file(GNP_OUT, GNP_DECLARED, v, deltas, decl)
 
         def fixed(now=t0):
             return fix_members(base, now)
@@ -1233,21 +1481,25 @@ def gates_check():
             for p in sorted(base.rglob("*"), reverse=True):
                 p.unlink() if p.is_file() else p.rmdir()
 
-        assert fixed()[0] is False and fixed()[1]["pending"] == list(ORDER) + ["gna"]
+        assert fixed()[0] is False and fixed()[1]["pending"] == list(ORDER) + ["gna", "gnp"]
         calls_file("dep", ADOPT_FOR_FULL_RUN, {"squad": 0.01})
         calls_file("ltg", ADOPT_FOR_FULL_RUN, {"squad": 0.02})
         calls_file("gnx", INCOMPLETE)
         done, rec = fixed()
-        assert not done and rec["pending"] == ["gnx", "gna"] and rec["will_not_run"] == ["rtr", "ira"], rec
+        assert not done and rec["pending"] == ["gnx", "gna", "gnp"] and rec["will_not_run"] == ["rtr", "ira"], rec
         gna_file(NO_GAIN, decl="docs/OTHER.md")                     # not GNA's file: no verdict (A2)
-        assert fixed()[1]["pending"] == ["gnx", "gna"] and fixed()[1]["gna_verdict"] is None
+        assert fixed()[1]["pending"] == ["gnx", "gna", "gnp"] and fixed()[1]["gna_verdict"] is None
         gna_file(NO_GAIN)
-        assert fixed()[1]["pending"] == ["gnx"] and fixed()[1]["gna_verdict"] == NO_GAIN
+        assert fixed()[1]["pending"] == ["gnx", "gnp"] and fixed()[1]["gna_verdict"] == NO_GAIN
+        gnp_file(NO_GAIN, decl="docs/OTHER.md")                     # not GNP's file: no verdict (A3)
+        assert fixed()[1]["pending"] == ["gnx", "gnp"] and fixed()[1]["gnp_verdict"] is None
+        gnp_file(NO_GAIN)
+        assert fixed()[1]["pending"] == ["gnx"] and fixed()[1]["gnp_verdict"] == NO_GAIN
         stop_file("gnx")                                            # a STOP is NOT_ADOPTED
         done, rec = fixed()
         assert done and rec["members"] == ["dep", "ltg"] and rec["verdicts"]["gnx"] == NOT_ADOPTED, rec
         assert rec["pick"] == "ltg" and rec["layers"] == DEP.LAYERS and rec["rules"] == ["dep", "ltg"], rec
-        assert rec["gnx_columns"] == "LTM", rec
+        assert rec["gnx_columns"] == "LTM" and rec["forms"] == ["dep", "ltg"], rec
         assert members(False, base, t0) == 0 and members_record(base)["members"] == ["dep", "ltg"]
         calls_file("ltg", NOT_ADOPTED)
         assert members(False, base, t0) == 0 and members_record(base)["members"] == ["dep", "ltg"]   # fixed: not rewritten
@@ -1290,10 +1542,11 @@ def gates_check():
         calls_file("ira", ADOPT_FOR_FULL_RUN, {"squad": 0.003})
         calls_file("gnx", NOT_ADOPTED, decl="docs/OTHER.md")          # not GNX's file: no verdict
         done, rec = fixed()
-        assert not done and rec["pending"] == ["gnx", "gna"] and rec["will_not_run"] == [], rec
+        assert not done and rec["pending"] == ["gnx", "gna", "gnp"] and rec["will_not_run"] == [], rec
         done, rec = fixed(utc_s(MEMBERS_BY))
         assert done and rec["members"] == ["ltg", "ira"] and rec["passing"] == ["ltg", "rtr", "ira"], rec
-        assert rec["left_out"] == ["gnx", "gna"] and rec["layers"] == DEP.BASE_LAYERS and rec["rules"] == ["dep", "ltg"], rec
+        assert rec["left_out"] == ["gnx", "gna", "gnp"] and rec["layers"] == DEP.BASE_LAYERS, rec
+        assert rec["rules"] == ["dep", "ltg"] and rec["forms"] == ["ltg", "ira"], rec
         assert rec["pick"] == "ltg" and rec["pick_means"]["ltg"] == rec["pick_means"]["rtr"] == 0.002, rec
         # one member: its own full run, no stack
         reset()
@@ -1302,23 +1555,26 @@ def gates_check():
             calls_file(st, NO_GAIN)
         assert members(False, base, t0) == 2                         # A2: GNA's verdict is waited on
         gna_file(NO_GAIN)
+        assert members(False, base, t0) == 2                         # A3: and GNP's
+        gnp_file(NO_GAIN)
         assert members(False, base, t0) == 0 and members_record(base)["members"] == ["dep"]
         assert stack_gate(base) == 1 and own_call("dep", base, t0)[:2] == (True, 0) and own_call("ltg", base, t0)[:2] == (True, 1)
-        assert own_call("gnx", base, t0)[:2] == own_call("gna", base, t0)[:2] == (True, 1)
+        assert own_call("gnx", base, t0)[:2] == own_call("gna", base, t0)[:2] == own_call("gnp", base, t0)[:2] == (True, 1)
         # none
         reset()
         for st in ORDER:
             calls_file(st, NOT_ADOPTED)
         gna_file(NOT_ADOPTED)
+        gnp_file(NOT_ADOPTED)
         assert members(False, base, t0) == 0 and members_record(base)["members"] == []
-        assert stack_gate(base) == 1 and all(own_call(st, base, t0)[:2] == (True, 1) for st in ORDER + ("gna",))
+        assert stack_gate(base) == 1 and all(own_call(st, base, t0)[:2] == (True, 1) for st in ORDER + ("gna", "gnp"))
         reset()
         assert members(False, base, t0) == 2 and stack_gate(base) == 2 and own_call("dep", base, t0)[:2] == (False, 1)
         slept = []
         calls_file("dep", NOT_ADOPTED)
         assert members(True, base, utc_s(MEMBERS_BY), sleep=slept.append) == 0 and not slept   # late: no waiting
         assert members_record(base)["members"] == [] and members_record(base)["left_out"] == ["ltg", "rtr", "ira", "gnx",
-                                                                                               "gna"]
+                                                                                               "gna", "gnp"]
         # A2: GNA passes and GNX does not: the gnx slot passes on LTA's columns; its mean and own run are GNA's
         reset()
         calls_file("dep", NO_GAIN)
@@ -1327,6 +1583,7 @@ def gates_check():
             calls_file(st, NOT_ADOPTED)
         calls_file("gnx", NO_GAIN, {"squad": 0.06})
         gna_file(ADOPT_FOR_FULL_RUN, {"squad": 0.018})
+        gnp_file(NO_GAIN, {"squad": 0.6})
         done, rec = fixed()
         assert done and rec["members"] == ["ltg", "gnx"] and rec["gnx_columns"] == "LTA" and rec["pick"] == "gnx", rec
         assert rec["pick_means"] == {"ltg": 0.001, "gnx": 0.003} and rec["gnx_means"] == {"LTM": 0.01, "LTA": 0.003}, rec
@@ -1334,7 +1591,7 @@ def gates_check():
         o = base / OUT
         M1.WQ.write_json(o / "calls.json", {"declared_in": DECLARED, "screen": {"verdict": NO_GAIN}, "full_run": None})
         assert own_call("gna", base, t0)[:2] == (True, 0) and own_call("gnx", base, t0)[:2] == (True, 1)
-        assert own_call("ltg", base, t0)[:2] == (True, 1)
+        assert own_call("ltg", base, t0)[:2] == own_call("gnp", base, t0)[:2] == (True, 1)
         # A2: both pass: LTA's columns when GNA's mean is the larger; a tie or a smaller one keeps LTM's
         for d_gna, cols in ((0.024, "LTA"), (0.012, "LTM"), (0.006, "LTM")):
             reset()
@@ -1343,6 +1600,7 @@ def gates_check():
                 calls_file(st, NOT_ADOPTED)
             calls_file("gnx", ADOPT_FOR_FULL_RUN, {"squad": 0.012})
             gna_file(ADOPT_FOR_FULL_RUN, {"squad": d_gna})
+            gnp_file(NOT_ADOPTED)
             done, rec = fixed()
             assert done and rec["members"] == ["gnx"] and rec["gnx_columns"] == cols, (d_gna, rec)
             assert members(False, base, t0) == 0 and stack_gate(base) == 1
@@ -1358,33 +1616,197 @@ def gates_check():
         (base / OUT).mkdir(parents=True, exist_ok=True)
         M1.WQ.write_json(base / OUT / "members.json", {"declared_in": DECLARED, "members": ["gnx"], "gnx_columns": "X"})
         assert members_record(base) is None
+        # A3: GNP passes beside DEP: the gnx slot on the six pair columns alone holds GNP's form; the pick is over the forms
+        reset()
+        calls_file("dep", ADOPT_FOR_FULL_RUN, {"squad": 0.006})
+        for st in ("ltg", "gnx"):
+            calls_file(st, NO_GAIN, {"squad": 0.06})
+        gna_file(NOT_ADOPTED)
+        gnp_file(ADOPT_FOR_FULL_RUN, {"squad": 0.012})
+        done, rec = fixed()
+        assert done and rec["members"] == ["dep", "gnx"] and rec["forms"] == ["dep", "gnp"], rec
+        assert rec["passing"] == ["dep", "gnp"] and rec["gnx_columns"] == PAIR and rec["pick"] == "gnp", rec
+        assert rec["pick_means"] == {"dep": 0.001, "gnp": 0.002} and rec["gnp_verdict"] == ADOPT_FOR_FULL_RUN, rec
+        assert rec["layers"] == DEP.LAYERS and rec["rules"] == ["dep", "ltg"] and rec["will_not_run"] == ["rtr", "ira"], rec
+        assert members(False, base, t0) == 0 and stack_gate(base) == 0
+        assert own_call("dep", base, t0)[:2] == own_call("gnp", base, t0)[:2] == (False, 1)
+        M1.WQ.write_json(base / OUT / "calls.json", {"declared_in": DECLARED, "screen": {"verdict": ADOPT_FOR_FULL_RUN},
+                                                     "full_run": {"verdict": NOT_ADOPTED}})
+        own = {st: own_call(st, base, t0)[:2] for st in ORDER + ("gna", "gnp")}
+        assert own == {**{st: (True, 1) for st in ORDER + ("gna",)}, "gnp": (True, 0)}, own
+        # A3: GNX and GNP pass: LTM's columns then the pair columns, one member, two forms; a tie in the pick goes to GNX
+        for d_gnp, pick in ((0.012, "gnx"), (0.018, "gnp")):
+            reset()
+            calls_file("dep", NO_GAIN)
+            for st in ("ltg", "rtr", "ira"):
+                calls_file(st, NOT_ADOPTED)
+            calls_file("gnx", ADOPT_FOR_FULL_RUN, {"squad": 0.012})
+            gna_file(NO_GAIN)
+            gnp_file(ADOPT_FOR_FULL_RUN, {"squad": d_gnp})
+            done, rec = fixed()
+            assert done and rec["members"] == ["gnx"] and rec["forms"] == ["gnx", "gnp"], (d_gnp, rec)
+            assert rec["gnx_columns"] == "LTM+PAIR" and rec["pick"] == pick and rec["layers"] == DEP.BASE_LAYERS, rec
+            assert rec["rules"] == ["ltg"], rec
+            assert members(False, base, t0) == 0 and stack_gate(base) == 0
+            M1.WQ.write_json(base / OUT / "calls.json", {"declared_in": DECLARED, "screen": {"verdict": NO_GAIN},
+                                                         "full_run": None})
+            own = {st: own_call(st, base, t0)[:2] for st in ("gnx", "gna", "gnp")}
+            assert own == {"gnx": (True, 0 if pick == "gnx" else 1), "gna": (True, 1),
+                           "gnp": (True, 0 if pick == "gnp" else 1)}, (d_gnp, own)
+        # A3: GNA and GNP pass, GNX not: LTA's columns then the pair columns; the slot's own run is GNA's
+        reset()
+        calls_file("dep", NO_GAIN)
+        for st in ("ltg", "rtr", "ira"):
+            calls_file(st, NOT_ADOPTED)
+        calls_file("gnx", NO_GAIN)
+        gna_file(ADOPT_FOR_FULL_RUN, {"squad": 0.018})
+        gnp_file(ADOPT_FOR_FULL_RUN, {"squad": 0.006})
+        done, rec = fixed()
+        assert done and rec["members"] == ["gnx"] and rec["forms"] == ["gnx", "gnp"], rec
+        assert rec["gnx_columns"] == "LTA+PAIR" and rec["pick"] == "gnx" and rec["pick_means"] == {"gnx": 0.003,
+                                                                                                   "gnp": 0.001}, rec
+        assert members(False, base, t0) == 0 and stack_gate(base) == 0
+        M1.WQ.write_json(base / OUT / "calls.json", {"declared_in": DECLARED, "screen": {"verdict": ADOPT_FOR_FULL_RUN},
+                                                     "full_run": {"verdict": NOT_ADOPTED}})
+        own = {st: own_call(st, base, t0)[:2] for st in ("gnx", "gna", "gnp")}
+        assert own == {"gnx": (True, 1), "gna": (True, 0), "gnp": (True, 1)}, own
+        # A3: GNP alone passes: one form (the gnx slot on the pair columns alone), no stack, GNP's own full run
+        reset()
+        calls_file("dep", NO_GAIN)
+        for st in ("ltg", "rtr", "ira", "gnx"):
+            calls_file(st, NOT_ADOPTED)
+        gna_file(NOT_ADOPTED)
+        gnp_file(ADOPT_FOR_FULL_RUN)
+        assert members(False, base, t0) == 0
+        mr = members_record(base)
+        assert (mr["forms"], mr["members"], gnx_columns(mr)) == (["gnp"], ["gnx"], PAIR) and stack_gate(base) == 1, mr
+        own = {st: own_call(st, base, t0)[:2] for st in ORDER + ("gna", "gnp")}
+        assert own == {**{st: (True, 1) for st in ORDER + ("gna",)}, "gnp": (True, 0)}, own
+        # A3: GNP's seed-0 STOP is NOT_ADOPTED, under zgnp's own entry; s0stop's table put back
+        reset()
+        gnp_file(ADOPT_FOR_FULL_RUN)
+        st0 = dict(S0.STAGES)
+        with gnp().on_s0stop():
+            assert S0.STAGES[GNP_KEY] == gnp_entry()
+            stop_file(GNP_KEY)
+        assert S0.STAGES == st0 and gnp_verdict(base) == NOT_ADOPTED and gnp().stop_record(base)["decision"] == S0.STOP
+        # A3: a record whose forms, members and columns do not agree is not a members record; one before A3's (no forms)
+        # is read with its members as its forms
+        (base / OUT).mkdir(parents=True, exist_ok=True)
+        for forms, mem, cols in ((["dep", "gnp"], ["dep"], PAIR), (["dep", "gnp"], ["dep", "gnx"], "LTM"),
+                                 (["dep", "gnx"], ["dep", "gnx"], "LTM+PAIR"), (["gnx", "gnp"], ["gnx"], PAIR),
+                                 (["gnp"], ["gnx"], "LTM+PAIR"), (["dep", "gnq"], ["dep"], "LTM"),
+                                 (["gnx", "gnp"], ["gnx"], "PAIR+LTM")):
+            M1.WQ.write_json(base / OUT / "members.json", {"declared_in": DECLARED, "forms": forms, "members": mem,
+                                                           "gnx_columns": cols})
+            assert members_record(base) is None, (forms, mem, cols)
+        M1.WQ.write_json(base / OUT / "members.json", {"declared_in": DECLARED, "forms": ["gnx", "gnp"],
+                                                       "members": ["gnx"], "gnx_columns": "LTA+PAIR"})
+        assert forms_of(members_record(base)) == ["gnx", "gnp"]
+        M1.WQ.write_json(base / OUT / "members.json", {"declared_in": DECLARED, "members": ["dep", "gnx"],
+                                                       "gnx_columns": "LTA"})
+        assert forms_of(members_record(base)) == ["dep", "gnx"]
     return True
 
 
 def columns_check():
     """A2: on_columns on LTM's (nothing patched) and LTA's (ltmcols' root, stage and declaration, zgnx's NEXT block and term
-    record), restored after, also on a failure; an unknown set refused; member_code on GNA's fits and its four shas."""
-    before = (GNX.LTMC.OUT, GNX.LTMC.STAGE, GNX.LTMC.DECLARED, GNX.next_block, GNX.term_record)
+    record), restored after, also on a failure; an unknown set refused; member_code on GNA's fits and its four shas.
+    A3: on GNP's six alone (ltmcols GNP's, zgnx's block, term and width GNP's) and on two sets (ltmcols LTM's, the joined
+    load, the slot's block, term and width); the joined load on made files; member_code on GNP's fits."""
+    import shutil
+    import tempfile
+    import lean_cache as LC
+    P = gnp()
+
+    def state():
+        L = GNX.LTMC
+        return (L.OUT, L.STAGE, L.DECLARED, L.COLS, L.WIDTH, GNX.next_block, GNX.term_record, GNX.IN, GNX.WIDTH,
+                GNX.LTM.load_next)
+
+    before = state()
+    assert before[:5] == tuple(LTM0.values()) and before[7:] == (15, 7, LOAD_NEXT0)
     with on_columns("LTM"):
-        assert (GNX.LTMC.OUT, GNX.LTMC.STAGE, GNX.LTMC.DECLARED, GNX.next_block, GNX.term_record) == before
+        assert state() == before
         assert next_declared("LTM") == GNX.LTM.DECLARED == GNX.next_block("WQ-musique")["declared_in"]
     with on_columns("LTA"):
         assert Path(GNX.LTMC.OUT) == Path(GNA.LTAC.OUT) and GNX.LTMC.DECLARED == GNA.LTAC.DECLARED
         assert GNX.next_block is GNA.next_block and GNX.term_record is GNA.term_record
         assert next_declared("LTA") == GNA.LTAC.DECLARED == GNX.next_block("WQ-musique")["declared_in"]
         assert GNX.next_block("WQ-musique")["columns"] == list(GNX.LTMC.COLS)
-    assert (GNX.LTMC.OUT, GNX.LTMC.STAGE, GNX.LTMC.DECLARED, GNX.next_block, GNX.term_record) == before
+    assert state() == before
     try:
         with on_columns("LTA"):
             raise KeyError("x")
     except KeyError:
         pass
-    assert (GNX.LTMC.OUT, GNX.LTMC.STAGE, GNX.LTMC.DECLARED, GNX.next_block, GNX.term_record) == before
+    assert state() == before
+    for bad in ("PAIR+LTM", "LTM+LTA", "X"):
+        try:
+            with on_columns(bad):
+                raise AssertionError(f"an unknown column set {bad} passed")
+        except SystemExit:
+            pass
+    assert state() == before
+    with on_columns(PAIR):
+        assert (Path(GNX.LTMC.OUT), GNX.LTMC.STAGE, GNX.LTMC.DECLARED) == (ROOT / GNP_OUT, "GNP", GNP_DECLARED)
+        assert (tuple(GNX.LTMC.COLS), GNX.LTMC.WIDTH, GNX.IN, GNX.WIDTH) == (PAIR_COLS, 6, 13, 6)
+        assert GNX.next_block is P.next_block and GNX.term_record is P.term_record and GNX.LTM.load_next is LOAD_NEXT0
+        nb = GNX.next_block("WQ-musique")
+        assert (nb["declared_in"], nb["columns"], Path(nb["columns_root"]).name) == (GNP_DECLARED, list(PAIR_COLS), "gnp")
+        assert next_declared(PAIR) == GNP_DECLARED and slot_in(PAIR) == GNX.IN
+    assert state() == before
+    for cols, decl in (("LTM+PAIR", GNX.LTM.DECLARED), ("LTA+PAIR", GNA.LTAC.DECLARED)):
+        with on_columns(cols):
+            assert state()[:5] == before[:5] and (GNX.IN, GNX.WIDTH) == (27, 13) == (slot_in(cols), 13)
+            assert GNX.LTM.load_next is not LOAD_NEXT0 and GNX.next_block is not before[5]
+            nb = GNX.next_block("WQ-musique")
+            assert nb["declared_in"] == [decl, GNP_DECLARED] == next_declared(cols), nb
+            assert nb["columns"] == list(LTM0["COLS"]) + list(PAIR_COLS) == slot_columns(cols), nb
+            assert [Path(r).name for r in nb["columns_root"]] == [cols.split("+")[0].lower(), "gnp"], nb
+        assert state() == before
     try:
-        with on_columns("PAIR"):
-            raise AssertionError("an unknown column set passed")
-    except SystemExit:
+        with on_columns("LTA+PAIR"):
+            raise KeyError("x")
+    except KeyError:
         pass
+    assert state() == before
+    # A3: the joined load on made files: LTM's (or LTA's) seven then GNP's six of one carve, one float16 block in block
+    # order, the scorer the sets' joined; a set's columns under the other's root stop it
+    tmp = Path(tempfile.mkdtemp(prefix="zstk_c_"))
+    try:
+        rng = np.random.default_rng(41)
+        LTW = P.PP.LTW
+        LTW.toy_tree(tmp, "musique", "s1eval", LTW.unit(rng.normal(size=(200, 16))).astype(np.float32), rng, nq=6, n=20)
+        parts, _recs = LC.part_dirs("musique", "s1eval", tmp / "cache")
+        ps = {p.name: LC.sha_file(p / "record.json") for p in parts}
+        sp = "WQ-hotpotqa"
+        X = {"LTM": GNX.LTM.toy_cols(tmp / "ltm", sp, "musique", "s1eval", tmp / "cache", rng, "e" * 64)}
+        with GNA.ZLA.on_cols(tmp / "lta"):
+            X["LTA"] = GNX.LTM.toy_cols(tmp / "lta", sp, "musique", "s1eval", tmp / "cache", rng, "f" * 64)
+        with P.on_cols(tmp / "gnp"):
+            X[PAIR] = P.toy_cols6(tmp / "gnp", sp, "musique", "s1eval", tmp / "cache", rng, "b" * 64)
+        roots = {"LTM": tmp / "ltm", "LTA": tmp / "lta", PAIR: tmp / "gnp"}
+        assert state() == before
+        for cols, sha in (("LTM+PAIR", "e" * 64), ("LTA+PAIR", "f" * 64)):
+            nx = next_part(cols)
+            with on_columns(cols):
+                Y, rec, rsha = GNX.LTM.load_next("musique", "s1eval", sp, ps, {p: roots[p] for p in col_parts(cols)})
+                assert Y.dtype == np.float16 and Y.shape == (X[nx].shape[0], 13), (Y.dtype, Y.shape)
+                assert np.array_equal(Y[:, :7], X[nx], equal_nan=True) and np.array_equal(Y[:, 7:], X[PAIR], equal_nan=True)
+                assert rec["fit_sha256"] == f"{sha}+{'b' * 64}" and rec["columns"] == slot_columns(cols), rec
+                assert [rec["sets"][p]["declared_in"] for p in col_parts(cols)] == next_declared(cols), rec
+                assert rec["training_carve"] is False and rec["rows"] == Y.shape[0] and rsha.count("+") == 1, rec
+                P.must_stop(GNX.LTM.load_next, "musique", "s1eval", sp, ps, {nx: roots[PAIR], PAIR: roots[PAIR]})
+                P.must_stop(GNX.LTM.load_next, "musique", "s1eval", sp, ps, {nx: roots[nx], PAIR: roots[nx]})
+            assert state() == before
+        with on_columns(PAIR):
+            Z = GNX.LTM.load_next("musique", "s1eval", sp, ps, roots[PAIR])[0]
+            assert np.array_equal(Z, X[PAIR], equal_nan=True)
+            P.must_stop(GNX.LTM.load_next, "musique", "s1eval", sp, ps, roots["LTM"])
+        assert state() == before
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
     me, cur = sys.modules[__name__], "c" * 64
     keys = ("zgnx_sha256",) + tuple(f"{k}_sha256" for k in GNA.OWN_CODE)
 
@@ -1399,6 +1821,24 @@ def columns_check():
     assert len(code_of(dict(same, ltacols_sha256=None), same)) == 2
     with M1.WQ.patch(me, is_read=lambda f, base=ROOT: f in GNX.FITS):          # GNX's fits read, GNA's not
         assert len(member_code("s", {"code": same}, ["gnx"], ROOT, "LTA")) == 2
+    # A3: with the pair columns, GNP's two seed-0 fits, and zgnp's, gnpcols' and zpfp's shas beside zgnx's, count beside
+    # the NEXT set's own fits
+    pkeys = ("zgnx_sha256",) + tuple(f"{k}_sha256" for k in GNP_CODE)
+
+    def pcode_of(theirs, mine, cols):
+        with M1.WQ.patch(me, is_read=lambda f, base=ROOT: f in P.FITS or f in GNX.FITS), \
+                M1.WQ.patch(P, fit_block=lambda f, what, base=ROOT: {"code": dict(theirs)}), \
+                M1.WQ.patch(GNX, fit_block=lambda f, what, base=ROOT: {"code": dict(theirs)}):
+            return member_code("s", {"code": dict(mine)}, ["gnx"], ROOT, cols)
+
+    psame = {k: cur for k in pkeys}
+    assert pcode_of(psame, psame, PAIR) == [] and pcode_of(psame, psame, "LTM+PAIR") == []
+    assert len(pcode_of(psame, dict(psame, zpfp_sha256="d" * 64), PAIR)) == 2          # GNP's two fits name another
+    assert len(pcode_of(dict(psame, gnpcols_sha256=None), psame, "LTM+PAIR")) == 2
+    assert len(pcode_of(dict(psame, zgnx_sha256="d" * 64), psame, "LTM+PAIR")) == 4    # GNX's two and GNP's two
+    with M1.WQ.patch(me, is_read=lambda f, base=ROOT: f in GNX.FITS):                  # GNX's fits read, GNP's not
+        assert len(member_code("s", {"code": psame}, ["gnx"], ROOT, PAIR)) == 2
+    assert [m for m, _k in own_of("gnx", "LTA+PAIR")] == [GNA, P] and own_of("dep") == [(DEP, ("zdep_sha256",))]
     return True
 
 
@@ -1436,6 +1876,13 @@ def rules_check():
     assert len(part_problems("f", "train", bad, mem)) == 1
     assert len(part_problems("f", "train", dict(k, layers=3), mem)) == 1
     assert len(part_problems("f", "train", dict(k, members=["dep", "ltg"]), mem)) == 1
+    kp = json.loads(json.dumps(k))                                             # A3: the gnx part on two sets
+    kp["parts"]["gnx"] = {"term_parameters": 3456, "inputs": 27, "columns": list(LTM0["COLS"]) + list(PAIR_COLS),
+                          "layers": 4}
+    assert part_problems("f", "train", kp, mem, "LTM+PAIR") == [] and len(part_problems("f", "train", kp, mem)) == 1
+    assert len(part_problems("f", "train", k, mem, "LTM+PAIR")) == 1 and part_problems("f", "train", k, mem, "LTA") == []
+    assert (slot_in(PAIR), slot_in("LTA+PAIR"), slot_in("LTM"), slot_in("LTA")) == (13, 27, 15, 15)
+    assert GNX.HIDDEN * slot_in("LTM+PAIR") == 3456 and slot_columns("LTA") == list(GNX.LTMC.COLS)
     # zdep's and zltg's own screen calls on one made input: each read both rules call gets one row from both
     rng = np.random.default_rng(5)
     new_all, base_all = {}, {}
@@ -1475,7 +1922,14 @@ def selftest():
     assert [f"{a} {b}" for a, b in PICK_READS] == [f"WQ-hotpotqa {d}" for d in ("squad", "musique", "2wiki", "webqsp",
                                                                                 "musique-3hop", "musique-4hop")]
     assert utc_s(MEMBERS_BY) - utc_s("2026-11-05T00:00:00Z") == 6.5 * 3600 and utc_s(FREEZE) > utc_s(MEMBERS_BY)
-    # 1. the rules' combination and the stamp's parts; the gates on made files; A2's columns
+    # 0. A3: zgnp on first use, before any patch: its names, columns, width and code A3's; the thread variables kept
+    env0 = {v: os.environ.get(v) for v in THREAD_VARS}
+    P = gnp()
+    assert gnp() is P and {v: os.environ.get(v) for v in THREAD_VARS} == env0 and set(P.FITS) == {
+        gnp_fit_name(sd, sp) for sd in RULE.SEEDS for sp in M1.SPLITS}
+    assert gnp_entry()[2:4] == ("scr-gnp-px-s0", "scr-gnp-px-s0-hp") and GNP_KEY not in S0.STAGES
+    assert set(code_extra()) >= {f"{k}_sha256" for k in GNP_CODE}
+    # 1. the rules' combination and the stamp's parts; the gates on made files; A2's and A3's columns
     assert rules_check() and gates_check() and columns_check()
     # 2. zltg's names at three layers are its own
     G = M1.import_arm(ARM)[0]
@@ -1490,6 +1944,11 @@ def selftest():
     check_toy(t, sets, ("ltg", "ira", "gnx"), DEP.BASE_LAYERS)
     t2 = toy_stack(G, [("ltg", "rtr")], ("ltg", "rtr", "gnx"))
     check_toy(t2, [("ltg", "rtr")], ("ltg", "rtr", "gnx"), DEP.BASE_LAYERS)
+    # 3b. A3: the gnx slot on LTM's columns then GNP's six (IN 27), and on GNP's six alone (IN 13)
+    t3 = toy_stack(G, [("ltg", "gnx")], ("ltg", "gnx"), "LTM+PAIR")
+    check_toy(t3, [("ltg", "gnx")], ("ltg", "gnx"), DEP.BASE_LAYERS, "LTM+PAIR")
+    t4 = toy_stack(G, [], ("ltg", "gnx"), PAIR)
+    check_toy(t4, [], ("ltg", "gnx"), DEP.BASE_LAYERS, PAIR)
     # 4. the stacks with DEP, in a process of its own (zg6 is imported here with three layers)
     env = dict(os.environ, PYTHONIOENCODING="utf-8")
     pr = subprocess.run([sys.executable, str(Path(__file__)), "layers-check"], capture_output=True, text=True, timeout=1800,
@@ -1503,8 +1962,12 @@ def selftest():
     log(f"selftest: names, pairs and the pick's six reads; the rules' combination and the stamp's parts; the member-code "
         f"rule on made stamps (EARLIER's one fit); members, "
         f"stack-gate, own-gate and the stack's s0stop on made files; A2: GNA's verdict, the gnx slot's columns, its pick "
-        f"mean and own run, on_columns and member_code on GNA's fits; zltg's names at three layers; on the toy carve, "
-        f"{len(sets) + 1} stacks without DEP and {len(lc['toy']['sets'])} with DEP (a process of its own, four layers) each "
+        f"mean and own run, on_columns and member_code on GNA's fits; A3: zgnp on first use (the threads kept), GNP's "
+        f"verdict and STOP, the forms, the gnx slot's columns (two sets or the six alone), the pick over the forms, the "
+        f"own runs by forms (GNP's own), the members records refused when they disagree, on_columns on GNP's six and on "
+        f"two sets, the joined load on made files, member_code on GNP's fits; zltg's names at three layers; on the toy "
+        f"carve, {len(sets) + 3} stacks without DEP (two of them on the pair columns) and {len(lc['toy']['sets'])} with "
+        f"DEP (a process of its own, four layers) each "
         f"start as the set without LTG and GNX bit for bit (eval and training forwards); every member's parameters get the "
         f"listwise and next-hop losses' gradient; the strict loads; a one-epoch fit_variant moves each zero-started term; "
         f"the stamp's record and refusals; the patches restored (also on a failure)")
@@ -1521,7 +1984,7 @@ def main(argv=None):
     ap.add_argument("verb", nargs="?", choices=("members", "stack-gate", "own-gate", "fit", "s0stop-check", "s0stop-run",
                                                 "gate", "compare-all", "calls", "layers-check"))
     ap.add_argument("--name")
-    ap.add_argument("--stage", choices=ORDER + ("gna",))
+    ap.add_argument("--stage", choices=ORDER + ("gna", "gnp"))
     ap.add_argument("--want")
     ap.add_argument("--wait", action="store_true")
     ap.add_argument("--selftest", action="store_true")

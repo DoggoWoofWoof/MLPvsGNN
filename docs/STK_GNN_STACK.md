@@ -337,3 +337,106 @@ It also adds these cases outside the made files:
   - On LTA's, the patches are made and put back, also on a failure.
   - An unknown set is refused.
 - **`member_code` on GNA's fits** and their four sha256: a mismatch, a missing sha and unread fits each fail.
+
+## 12. Amendment A3 (3 November): GNP's pair columns in the gnx slot
+
+Committed after GNP's declaration (docs/GNP_PAIR_COLUMNS_IN_GNN.md, 2f6aaf7), before any GNP fit or stack fit and before
+the members are fixed.
+
+**What had been seen when it was written:**
+
+- PFS A3 was filed PAIR_ADDS on four of its five reads, and GNP was declared on its six pair columns (2f6aaf7).
+- On the host, GNP's eleven column items, its match against zpfp's batch and its column check were done by 09:30 IST. No
+  GNP fit had run.
+- No GNA fit had run, and no WQ-hotpotqa read of GNX or LTG had been seen.
+
+**The change.**
+
+- **GNP is a form of the stack.** The forms are section 2's five and GNP, in the order DEP, LTG, RTR, IRA, GNX, GNP.
+  - GNP's form enters through the gnx slot, so the members stay section 2's five.
+  - The gnx slot is a member when GNX's, GNA's or GNP's screen passes.
+  - The members record lists both the passing forms (`forms`) and the members they make (`members`).
+- **The members wait on GNP's verdict too.** It is read as s0stop's gate reads a verdict, under GNP's entry (zgnp's fit
+  names): NOT_ADOPTED on a current seed-0 STOP, otherwise the screen verdict in `outputs/gnp/calls.json` when that file is
+  declared by GNP's file. A GNP with no verdict at 12:00 IST on 5 November is left out, as any stage is.
+- **The gnx slot's columns.** The NEXT set is chosen as in section 11, LTM's or LTA's. When GNP's screen passes, the six pair
+  columns are added:
+  - with GNX's or GNA's screen passing too, the slot reads the NEXT set's seven columns, then the six pair columns, through
+    one shared constant: 27 inputs (`LTM+PAIR` or `LTA+PAIR`);
+  - with neither, it reads the six pair columns alone, as GNP's fits do: 13 inputs (`PAIR`).
+  - The members record names the set (`gnx_columns`). The gnx term has 128 parameters for each input.
+- **The pick (section 6)** is taken over the forms.
+  - GNP's mean seed-0 delta over the six reads comes from GNP's calls. The gnx slot's comes from its NEXT set's stage.
+  - A tie goes to the earlier form, so GNX's or GNA's goes before GNP's.
+- **The stack runs with two or more forms** (`stack-gate`). With one form, that form's own full run goes ahead and the
+  stack's items drop. GNX and GNP passing alone still make a stack: one member, the gnx slot on both column sets.
+- **Each form's own full run (sections 3 and 6).**
+  - GNP's is released by `own-gate --stage gnp` in two cases: GNP is the one form; or it is the pick, and the stack's screen
+    is NO_GAIN or NOT_ADOPTED or its full run is NOT_ADOPTED.
+  - The gnx slot's own run stays GNX's or GNA's, by its NEXT set (section 11).
+- **A stack fit on two column sets.**
+  - Each set loads under its own stage's names. They join row by row, the NEXT set first.
+  - Both sets must give the same rows and the same training flag.
+  - The NEXT block names both declarations (a list) and both column roots. Its fit sha256 is the two sets' joined by "+".
+  - zgnx's names for LTM's columns stay set while the sets load.
+  - A set in another order, two NEXT sets, or an unknown set is refused.
+  - A stack fit whose NEXT block names other columns or other declarations is INCOMPLETE (section 10.2), as in section 11.
+- **"As it was screened" (section 10.2).** For GNP's form, the member's own seed-0 fits are GNP's (`scr-gnp-px-s0` and
+  `scr-gnp-px-s0-hp`). The sha256 of zgnp, gnpcols and zpfp count beside zgnx's, and the stack's code record adds the three.
+- **The code.** zstk.py imports zgnp on first use, and through it gnpcols and zpfp. It edits none of them.
+  - zgnp keeps zgnx's own functions when it is imported. So zstk imports it outside every patch, and stops if what zgnp
+    kept is not zgnx's own.
+  - The import keeps the thread variables as they were.
+- **A members record that disagrees with itself is refused.** That covers three cases:
+  - forms that do not make the members;
+  - a pair set without GNP's form, or GNP's form without a pair set;
+  - GNP's form with a NEXT set but without the gnx slot's form, or the reverse.
+  A record written before this amendment, with no forms, reads its members as its forms.
+- **GNP.** Its own items and rule are unchanged. Its full run (`gnp-px-s1`, `-s2`, `-s1-hp`, `-s2-hp`) already waited on
+  `stk-own-gnp`, which this amendment adds.
+
+**What does not change.** Everything else in sections 1 to 11 stays: the five members and their order, the rules, the
+deadlines, GNA's part, and the stack's fits and their sizes.
+
+On the sizes: the NEXT columns are float16 on the CPU. GNX's WQ-musique seed-0 fit held its seven columns, for 16.6
+million training rows, in 0.23 GB. Six more columns add about 0.2 GB.
+
+**The items (host):**
+
+- **`stk-selftest-a3`** (1 CPU, 4 GB), then **`stk-members-a3`** (0.2 CPU, 1 GB, `members --wait`), right after
+  `stk-members-a2`.
+- **`stk-stack-gate` and the `stk-own-*` items** wait on `stk-members-a3` in `stk-members-a2`'s place.
+- **`stk-members-a2`** ran A2's code, which does not wait on GNP. It is cancelled once no item depends on it. It had written
+  no `members.json`.
+- **`stk-own-gnp`** (0.2 CPU, 1 GB): `own-gate --stage gnp --wait`, after `stk-members-a3`. It holds GNP's full run.
+- **Inputs.** Every stk item lists zgnp.py, gnpcols.py, zpfp.py, zpfs.py and GNP's file, along with PFS's file.
+
+**The self-test** passed on the laptop's CPU before this commit. On made files, it adds these cases:
+
+- **GNP's verdict.**
+  - It is waited on.
+  - GNP's seed-0 STOP, under GNP's entry, is read as NOT_ADOPTED, and zgnp's own stop record agrees.
+- **GNP beside DEP.**
+  - The members are DEP and the gnx slot, on the pair columns alone.
+  - The pick is GNP, on the larger mean.
+  - After the stack's full run is NOT_ADOPTED, only GNP's own run is released.
+- **GNX and GNP.** The columns are `LTM+PAIR`. The pick goes to GNX on a tie, and to GNP on a larger mean.
+- **GNA and GNP.** The columns are `LTA+PAIR`. Only GNA's own run is released.
+- **GNP alone.** It is one form, so the stack gate exits 1 and GNP's own run is released.
+- **Members records.** Seven that disagree are refused, and a valid `LTA+PAIR` record passes. An A2 record with no forms
+  reads its members as its forms.
+
+It also adds these cases outside the made files:
+
+- **zgnp's import** keeps the thread variables. zgnp's names, columns, code keys and fits are A3's.
+- **`on_columns`** on the pair columns alone and on both sets.
+  - The patches are made and put back, also on a failure.
+  - On both sets, LTM's names stay set.
+  - A set in another order, two NEXT sets and an unknown set are refused.
+- **The joined load** on made LTM, LTA and GNP columns.
+  - It gives 13 columns, each half equal to its own set's.
+  - It carries the joined fit sha256 and both declarations.
+  - Wrong roots are refused.
+- **`member_code` on GNP's fits** and their sha256.
+- **Two more stacks on zg6r's toy carve**, without DEP: one on `LTM+PAIR` and one on `PAIR`. Each passes section 10.5's
+  checks.
