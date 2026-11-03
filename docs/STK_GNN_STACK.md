@@ -704,3 +704,134 @@ It also adds these cases outside the made files:
   A5's, and the thread variables are kept.
 - Each one's seed-0 STOP, under its module's own entry, is read as NOT_ADOPTED.
 - Every earlier case runs as written, with GNR, GNT and GNS not passing.
+
+## 15. Amendment A6 (3 November): the WWW rule in the stack
+
+Committed before any stack fit, before the members are fixed and before 12:00 IST on 5 November. `stk-members-a5` and
+`stk-reopen` (A5's code) were still waiting, and neither had written its record.
+
+**What had been seen when it was written:**
+
+- The WWW rule was declared (docs/WWW_SCOPE_RULE.md, 6cb8f39; zwww's command line fixed in d5e09b6). Until the freeze it
+  decides each stage on the six in-domain reads of 2wiki, HotpotQA and MuSiQue: WQ-musique's hotpotqa and 2wiki, and
+  WQ-hotpotqa's musique, 2wiki and the two musique slices. Its section 4 names this amendment.
+- Three filed verdicts change under it (its section 3):
+  - DEP's screen is NO_GAIN. Its one GAIN was WQ-hotpotqa metaqa (+0.0594), beside the six, which are all WITHIN. Its
+    own verdict, ADOPT_FOR_FULL_RUN, stands for the journal, and `dep-www-gate` stopped its full run.
+  - GNW's and GNT's seed-0 stops are GO (their own were STOP, on webqsp), so their WQ-hotpotqa seed-0 fits are queued
+    under `zwww.py s0stop-run`.
+- GNS's seed-0 stop was GO under both rules (0cf8bc7).
+- On the host, GNA's WQ-hotpotqa seed-0 fit was training. GNP's, GNW's, LTX's, GNR's, GNT's and GNS's waited in the GPU
+  queue. No RTR, IRA or stack fit had run.
+
+**Why.**
+
+- A5's code reads every verdict under the stage's own rule. Under it, GNW and GNT stay NOT_ADOPTED (their stops). DEP's
+  own pass, on metaqa, keeps RTR and IRA shut (section 2). Under the WWW rule, DEP does not pass, so the rounds run.
+- The pick's and the attention forms' means were over reads that the WWW rule says decide nothing. Section 6's six hold
+  squad and webqsp, and LTG's ten add WQ-musique's squad and webqsp.
+- The WWW rule decides every stage until the freeze (its section 2), and the stack is one of them.
+
+**The change** (zstk.py, `RULE_NOW = "www"`).
+
+- **The members' verdicts.** Each one is read as `zwww.py gate` reads it: `zwww.call` on the stage's own records, with
+  nothing written (outputs/www is zwww's). This covers DEP, LTG, RTR, IRA, GNX, GNA, GNP, GNW, LTX, GNR, GNT and GNS.
+  - A current WWW seed-0 stop is NOT_ADOPTED.
+  - Otherwise the verdict is the WWW rule's on the stage's `calls.json` screen, when that file is declared by the
+    stage's file, and none otherwise.
+  - The rest of section 2 and of A2 to A5 reads these verdicts as before: who is pending, who passes, the gnx slot's
+    columns, GNP's form, the later forms and the rounds.
+- **The means are over the WWW rule's six reads**, taken from the screen's deciding and beside rows (zwww's `rows_of`).
+  This covers:
+  - the pick (section 6, A3) and the gnx slot's choice of LTM's or LTA's columns (A2);
+  - DEP or the rounds (A5);
+  - one attention form (A5), in place of LTG's ten reads.
+
+  The record names the six (`pick_reads`).
+- **RTR and IRA.** Section 2 runs them when DEP's screen does not pass.
+  - Under the rule, DEP's screen is NO_GAIN, so `reopen-gate` opens at once. It writes `reopen.json` with `open` true,
+    `rule` WWW and `dep_verdict`.
+  - RTR's and IRA's fits read that record through `zrtr.dep_call`, as A5 set up. DEP's own filed screen is
+    ADOPT_FOR_FULL_RUN with no full run, and the record is open. The answer still ends "reopened by STK A5", which is
+    zrtr's constant and is not edited.
+  - When DEP's screen passes under the rule, A5's call decides, on GNR's and GNS's verdicts.
+  - DEP and the rounds are still never both in the stack (A5). With DEP not passing, the rounds' form enters alone.
+- **The members record** names its rule (`rule`: WWW).
+  - Beside it, under `own`, is what A5's code fixes under the stages' own rules, with its own `done`. It decides nothing.
+  - A members record is read only under its rule. A5's records name no rule and are read only under the own rule.
+  - `members` never rewrites a `members.json` that another rule fixed: it exits 1.
+- **The stack's own verdicts**, as the own gates read them, are its seed-0 stop, screen and full run as
+  `zwww.py gate --stage stk` reads them.
+  - The full-run block now holds the rules' rows in one format (`full_rows`): zdep's twelve reads (keyed "dataset") and
+    its slices, and zltg's ten and its beside rows.
+  - Both rules call a read with zml1's call on the pair floor of both arms' spreads, so a read that both hold must
+    agree. A difference is a problem, and the stack's verdicts are then INCOMPLETE.
+  - The stack's WQ-hotpotqa fit runs through `zwww.py s0stop-run --stage stk`, and `stk-gate` becomes
+    `zwww.py gate --stage stk --want ADOPT_FOR_FULL_RUN`.
+- **How the later forms compose** moves to amendment A7. A5 had given that the name A6; this amendment is the WWW rule's.
+  - A7 is committed before any stack fit, and only for forms whose WWW seed-0 stop gave GO.
+  - Until then, `stack-gate --wait` waits for that code and decides at 12:00 IST on 5 November, as A4 says.
+- **`RULE_NOW` "own"** reads everything as A5's code did. The self-test runs A1 to A5's cases under it, and the members
+  record's `own` is made under it.
+
+**What does not change.**
+
+- The members' composition (section 10, A2, A3), and the stack's fits, sizes and commands.
+- The rows the stack's calls hold: those of every rule its members use (DEP's sixteen reads, LTG's ten), the screen's
+  per-read call and the floors.
+- The deadlines, the own gates' cases and the gates' exit codes.
+- The stages' own records. zstk reads zwww and writes nothing of its.
+- DEP's own full run. It is not released, since DEP is not a form under the rule, and it is held for the journal (the WWW
+  file's section 3).
+
+**The items (host):**
+
+- **`stk-selftest-a6`** (1 CPU, 4 GB), then **`stk-members-a6`** (0.2 CPU, 1 GB, `members --wait`) and
+  **`stk-reopen-a6`** (0.2 CPU, 1 GB, `reopen-gate --wait`) after it.
+- **`stk-stack-gate` and the `stk-own-*` items** wait on `stk-members-a6` in `stk-members-a5`'s place.
+- **`rtr-re-r2-s0`, `rtr-re-r2-s0-hp`, `ira-re-k4-s0` and `ira-re-k4-s0-hp`** wait on `stk-reopen-a6` in `stk-reopen`'s
+  place.
+- **`stk-st-s0-hp`** runs its fit through `zwww.py s0stop-run --stage stk --` in place of `zstk.py s0stop-run --`.
+  `stk-s0stop` (`zstk.py s0stop-check`) writes the stack's `s0stop.json` as before.
+- **`stk-gate`** becomes `zwww.py gate --stage stk --want ADOPT_FOR_FULL_RUN`.
+- **`stk-members-a5` and `stk-reopen`** ran A5's code. They are cancelled once no item depends on them.
+- **Inputs.** Each new item lists zwww.py and docs/WWW_SCOPE_RULE.md beside A5's inputs.
+
+**The self-test** passed on the laptop's CPU before this commit (`zstk.py --selftest`, exit 0). A1 to A5's cases run under
+the own rule.
+
+On made files, it adds these cases:
+
+- **DEP.** Its own screen passes on metaqa, beside the six. It is NO_GAIN under the WWW rule and ADOPT_FOR_FULL_RUN under
+  the own rule.
+- **The rounds.**
+  - With a WWW GAIN (WQ-hotpotqa 2wiki), DEP passes and `reopen-gate` waits on GNR and GNS.
+  - Back on metaqa alone, it opens at once: the waiting gate exits 0 with no look. Under the own rule it waits.
+  - The record has `open` true, `rule` WWW and `dep_verdict` NO_GAIN. `zrtr.dep_call` and `zira.dep_call` both answer
+    "screen ADOPT_FOR_FULL_RUN, reopened by STK A5".
+- **The members.** The made verdicts:
+  - LTG's own LOSS is on webqsp, and its GAIN on WQ-hotpotqa 2wiki;
+  - RTR's GAIN is on squad alone, and IRA's on WQ-hotpotqa musique;
+  - GNW's own seed-0 STOP is on webqsp alone (WWW: GO), with a GAIN on WQ-hotpotqa musique;
+  - LTX's calls miss WQ-hotpotqa musique.
+
+  What follows:
+  - Before 12:00 IST on 5 November, both rules wait on LTX.
+  - At that time, the members are LTG, IRA and GNW, with LTX left out, read under both rules with three layers.
+  - The pick is IRA on the six-read means: 0.003, against LTG's 0.002 and GNW's 0.001. LTG's squad delta does not count.
+  - The own record beside has DEP alone, RTR and IRA not running, and DEP as the pick over section 6's six.
+  - The WWW record is not read under the own rule, and A5's record (no rule) is not read under the WWW rule. `members`
+    rewrites neither.
+- **One attention form.**
+  - GNW (0.002 over the six) is kept over GNT (0.001, its squad +0.6 not counted). Under the own rule's ten, GNT is kept.
+  - GNT's WWW seed-0 stop (a LOSS on WQ-musique hotpotqa) is NOT_ADOPTED. GNW's own STOP (webqsp) is NOT_ADOPTED under
+    the own rule only.
+  - A calls file declared by another file is no verdict.
+- **The stack.**
+  - A screen whose only LOSS is webqsp is NO_GAIN (own: NOT_ADOPTED), so the pick's own full run (IRA's) is released,
+    and no other.
+  - `full_rows` joins zdep's rows and zltg's in one format, each read once. A differing call is one problem.
+  - A full run with a GAIN on WQ-hotpotqa 2wiki and a LOSS on squad alone is ADOPT (own: NOT_ADOPTED), so no own full
+    run is released.
+  - The stack's WWW seed-0 stop (a LOSS on WQ-musique hotpotqa, with its own stop GO) is its screen NOT_ADOPTED, which
+    releases the pick's.

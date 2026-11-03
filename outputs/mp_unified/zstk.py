@@ -28,8 +28,8 @@ first use (a fit, the calls, the self-test; never the gates) and not edited.
 Amendment A4 (section 13): the members wait on GNW's and LTX's screens too (docs/GNW_PAIR_WEIGHTS_IN_GNN.md,
 docs/LTX_CROSSFIT_NEXT_HOP_GNN.md), each read as s0stop's gate reads a verdict under its own entry. A passing GNW or LTX
 is a form and a member of its own (MEMBERS: ORDER's, then gnw, ltx), read under LTG's in-domain rule. This code composes
-ORDER's members only (COMPOSED); how the later forms compose is amendment A6's (A4 named it A5), committed before any
-stack fit. So with a member this code does not compose, stack-gate --wait looks every POLL seconds until the zstk.py on
+ORDER's members only (COMPOSED); how the later forms compose is amendment A7's (A4 named it A5, and A5 A6), committed
+before any stack fit. So with a member this code does not compose, stack-gate --wait looks every POLL seconds until the zstk.py on
 disk does (a fresh process: `composes`), and at MEMBERS_BY it decides the stack does not run (outputs/stk/stack_gate.json),
 which the own gates read as the stack's screen NOT_ADOPTED. GNW's and LTX's own full runs are released by own-gate
 --stage gnw / ltx. zgnw and zltx are imported in the self-test alone (their names checked), never by the gates or a fit.
@@ -43,6 +43,16 @@ when GNR's or GNS's screen is ADOPT_FOR_FULL_RUN (reopen-gate; docs/RTR_GO_BACK_
 docs/IRA_ITERATIVE_ALIGNMENT.md section 14), and when DEP's screen passes the members wait on that call; DEP or the
 rounds then, not both: the larger mean over section 6's six reads, a tie to DEP. zgnr, zgnt and zgns are imported in the
 self-test alone.
+
+Amendment A6 (section 15): the WWW rule (docs/WWW_SCOPE_RULE.md). Every verdict the stack reads is read as `zwww.py gate`
+reads it (zwww.call on the stage's own records, not written: outputs/www is zwww's): each member's screen (NOT_ADOPTED on
+a current WWW seed-0 stop), and the stack's own stop, screen and full run (its full-run block now holds the rules' rows:
+full_rows). The pick's and the attention forms' means are over the WWW rule's six reads (READS_WWW), from the deciding
+and beside rows. DEP's screen is NO_GAIN under the rule, so RTR and IRA run (section 2): reopen-gate opens at once. The
+members record names its rule (`rule`: WWW) and holds, beside, what A5's code fixes under the stages' own rules (`own`),
+which decides nothing; a members record without the WWW rule is not read, and `members` never rewrites one another rule
+fixed. RULE_NOW "own" reads everything as A5 did (the self-test's A1 to A5 cases, and the record beside). zwww is
+imported and not edited.
 
     python outputs/mp_unified/zstk.py members --wait                 (fix the members: outputs/stk/members.json)
     python outputs/mp_unified/zstk.py stack-gate --wait               (exit 0 with two or more forms, A4: once composed)
@@ -86,6 +96,7 @@ import zgna as GNA  # noqa: E402  (A2: GNA's verdict, its NEXT block and term re
 import s0stop as S0  # noqa: E402  (the seed-0 stop and the stages' verdicts)
 import ml1start as MS  # noqa: E402  (on ISO's KEEP, ML1's zspk start read under ML1's names)
 import readswa as RS  # noqa: E402  (a fit's read keeps p@swa only)
+import zwww as WWW  # noqa: E402  (A6: the WWW rule; stdlib only, the stages' records read and not written)
 
 DECLARED = "docs/STK_GNN_STACK.md"
 STAGE = "STK"
@@ -123,7 +134,9 @@ ATTN = ("gnw", "gnt", "gns")                    # A5: one form at most: the larg
 SECOND = ("gnr", "gns")                         # A5: either one's ADOPT_FOR_FULL_RUN opens RTR and IRA (their A5)
 NO_OWN = ("gnr", "gns")                         # A5: columns per seed: no own full run before the freeze, never the pick
 TEN_READS = tuple(LTG.deciding_keys())          # A5: LTG's ten deciding reads (the attention forms' choice)
-COMPOSED = ORDER                                # A4: the members this code stacks; A6 declares the later forms'
+COMPOSED = ORDER                                # A4: the members this code stacks; A7 declares the later forms'
+READS_WWW = WWW.READS                           # A6: the WWW rule's six reads: the pick's and the attention forms' means
+RULE_NOW = "www"                                # A6: the rule every verdict is read under; "own": A5's (the record beside)
 GNP_KEY, GNP_OUT, GNP_TAG = "gnp", "outputs/gnp", "px"                # A3: zgnp's names, checked against it on import
 GNP_DECLARED = "docs/GNP_PAIR_COLUMNS_IN_GNN.md"
 PAIR_COLS = ("pair_max", "res_max", "pair_mean", "res_mean", "pair_1", "res_1")    # gnpcols' six, checked on import
@@ -136,6 +149,9 @@ assert len(PICK_READS) == 6 and set(MOD) == set(ORDER) == set(RULE_OF) == set(S0
 assert set(LATE + A5) == set(LATE_NAMES) == set(LATE_RULE) and not set(LATE + A5) & (set(S0.STAGES) | {GNP_KEY, "gna"})
 assert len(TEN_READS) == len(set(TEN_READS)) == 10 and set(PICK_READS) < set(TEN_READS) and set(ATTN) < set(LATE + A5)
 assert Path(RTR.REOPEN) == Path(OUT) / "reopen.json" and RTR.STK_DECLARED == DECLARED      # A5: the record RTR reads
+assert len(READS_WWW) == 6 and set(READS_WWW) < set(TEN_READS) and Path(OUT) == Path(WWW.OUT).parent / "stk"   # A6
+assert all(Path(o) == Path("outputs") / s for s, o in [*((s, MOD[s].OUT) for s in ORDER), ("gna", GNA.OUT),
+                                                       (GNP_KEY, GNP_OUT), *((s, LATE_NAMES[s][1]) for s in LATE + A5)])
 
 
 def fit_name(seed, split):
@@ -294,9 +310,33 @@ def gnp_entry():
 # ── the members (section 2) ──────────────────────────────────────────────────
 
 
+@contextlib.contextmanager
+def read_under(rule):
+    """A6: every verdict read under `rule` ("www" or "own", A5's) in this block; RULE_NOW put back after."""
+    assert rule in ("www", "own"), rule
+    with M1.WQ.patch(sys.modules[__name__], RULE_NOW=rule):
+        yield
+
+
+def www_screen(st, decl, base=ROOT):
+    """A6: stage st's screen verdict under the WWW rule, as `zwww.py gate` reads it (zwww.call on the stage's records, not
+    written): NOT_ADOPTED on a current WWW seed-0 stop, else the WWW verdict of its calls.json's screen; None when that
+    file is missing or not the stage's (declared by decl)."""
+    rec = WWW.call(st, base, write=False)
+    if rec["stop"]["www"] == WWW.STOP:
+        return NOT_ADOPTED
+    p = Path(base) / "outputs" / st / "calls.json"
+    c = M1.WQ.read_json(p) if p.is_file() else {}
+    if c.get("declared_in") != decl:
+        return None
+    return (rec.get("screen") or {}).get("www")
+
+
 def stage_verdict(st, base=ROOT):
     """A stage's screen verdict as s0stop's gate reads it: NOT_ADOPTED on a current STOP, else its calls.json's
-    screen.verdict; None when that file is missing or not the stage's."""
+    screen.verdict; None when that file is missing or not the stage's. A6: under the WWW rule, www_screen."""
+    if RULE_NOW == "www":
+        return www_screen(st, MOD[st].DECLARED, base)
     rec = S0.stop_record(st, base)
     if rec is not None and rec.get("decision") == S0.STOP:
         return NOT_ADOPTED
@@ -307,31 +347,46 @@ def stage_verdict(st, base=ROOT):
     return (c.get("screen") or {}).get("verdict")
 
 
+def pick_reads():
+    """A6: the reads the pick's means are over: the WWW rule's six; section 6's six WQ-hotpotqa reads under the own rule."""
+    return READS_WWW if RULE_NOW == "www" else PICK_READS
+
+
+def screen_rows(c):
+    """{(split, read): row} of a calls record's screen: its deciding rows; A6: under the WWW rule its beside rows too (zwww's
+    rows_of), as the WWW rule reads them."""
+    blk = (c or {}).get("screen") or {}
+    if RULE_NOW == "www":
+        return WWW.rows_of(blk)
+    return {(r.get("split"), r.get("read")): r for r in blk.get("reads") or []}
+
+
 def six_deltas(st, base=ROOT, cols="LTM"):
     """{read: seed-0 delta} of the stage's screen on section 6's six WQ-hotpotqa reads (its calls.json's rows); the gnx
-    slot on LTA's columns reads GNA's (A2); the form gnp GNP's (A3); the forms gnw and ltx their own (A4)."""
+    slot on LTA's columns reads GNA's (A2); the form gnp GNP's (A3); the forms gnw and ltx their own (A4). A6: under the
+    WWW rule, on its six reads (pick_reads)."""
     out = (GNP_OUT if st == "gnp" else LATE_NAMES[st][1] if st in LATE_NAMES
            else GNA.OUT if st == "gnx" and next_part(cols) == "LTA" else MOD[st].OUT)
     p = Path(base) / out / "calls.json"
     c = M1.WQ.read_json(p) if p.is_file() else {}
-    rows = {(r.get("split"), r.get("read")): r for r in (c.get("screen") or {}).get("reads") or []}
-    return {f"{sp} {rd}": rows[(sp, rd)]["delta"] for sp, rd in PICK_READS if (sp, rd) in rows}
+    rows = screen_rows(c)
+    return {f"{sp} {rd}": rows[(sp, rd)]["delta"] for sp, rd in pick_reads() if (sp, rd) in rows}
 
 
 def mean_delta(st, base=ROOT, cols="LTM"):
     """The mean seed-0 delta over the six reads, None when one is missing."""
     d = six_deltas(st, base, cols)
-    return round(sum(d.values()) / len(d), 6) if len(d) == len(PICK_READS) else None
+    return round(sum(d.values()) / len(d), 6) if len(d) == len(pick_reads()) else None
 
 
 def ten_mean(st, base=ROOT):
     """A5: an attention form's (GNW's, GNT's or GNS's) mean seed-0 delta over LTG's ten deciding reads (its calls.json's
-    rows), None when one is missing."""
+    rows), None when one is missing. A6: under the WWW rule, over its six reads."""
     p = Path(base) / LATE_NAMES[st][1] / "calls.json"
     c = M1.WQ.read_json(p) if p.is_file() else {}
-    rows = {(r.get("split"), r.get("read")): r for r in (c.get("screen") or {}).get("reads") or []}
-    d = [rows[k]["delta"] for k in TEN_READS if k in rows]
-    return round(sum(d) / len(d), 6) if len(d) == len(TEN_READS) else None
+    rows, keys = screen_rows(c), (READS_WWW if RULE_NOW == "www" else TEN_READS)
+    d = [rows[k]["delta"] for k in keys if k in rows]
+    return round(sum(d) / len(d), 6) if len(d) == len(keys) else None
 
 
 def one_attention(forms, base=ROOT):
@@ -379,7 +434,9 @@ def pick_of(passing, base=ROOT, cols="LTM"):
 
 def gna_verdict(base=ROOT):
     """A2: GNA's screen verdict as s0stop's gate reads it (GNA's entry patched in): NOT_ADOPTED on a current STOP, else its
-    calls.json's screen.verdict; None when that file is missing or not GNA's."""
+    calls.json's screen.verdict; None when that file is missing or not GNA's. A6: under the WWW rule, www_screen."""
+    if RULE_NOW == "www":
+        return www_screen("gna", GNA.DECLARED, base)
     rec = GNA.stop_record(base)
     if rec is not None and rec.get("decision") == S0.STOP:
         return NOT_ADOPTED
@@ -393,7 +450,9 @@ def gna_verdict(base=ROOT):
 def gnp_verdict(base=ROOT):
     """A3: GNP's screen verdict as s0stop's gate reads it (GNP's entry patched in, as zgnp.on_s0stop does; zgnp is not
     imported): NOT_ADOPTED on a current STOP, else its calls.json's screen.verdict; None when that file is missing or not
-    GNP's."""
+    GNP's. A6: under the WWW rule, www_screen."""
+    if RULE_NOW == "www":
+        return www_screen(GNP_KEY, GNP_DECLARED, base)
     with M1.WQ.patch(S0, STAGES={**S0.STAGES, GNP_KEY: gnp_entry()}):
         rec = S0.stop_record(GNP_KEY, base)
     if rec is not None and rec.get("decision") == S0.STOP:
@@ -419,7 +478,9 @@ def late_entry(st):
 def late_verdict(st, base=ROOT):
     """A4: GNW's or LTX's screen verdict as s0stop's gate reads it (its entry patched in; its module not imported):
     NOT_ADOPTED on a current STOP, else its calls.json's screen.verdict; None when that file is missing or not the
-    stage's."""
+    stage's. A6: under the WWW rule, www_screen."""
+    if RULE_NOW == "www":
+        return www_screen(st, LATE_NAMES[st][3], base)
     with M1.WQ.patch(S0, STAGES={**S0.STAGES, st: late_entry(st)}):
         rec = S0.stop_record(st, base)
     if rec is not None and rec.get("decision") == S0.STOP:
@@ -433,6 +494,18 @@ def late_verdict(st, base=ROOT):
 
 
 def fix_members(base=ROOT, now=None):
+    """(done, record): A6: _fix_members under RULE_NOW (the record's `rule`); under the WWW rule the record holds, beside,
+    what _fix_members fixes under the stages' own rules (`own`, with its own `done`), which decides nothing."""
+    done, rec = _fix_members(base, now)
+    rec["rule"] = "WWW" if RULE_NOW == "www" else "own"
+    if RULE_NOW == "www":
+        with read_under("own"):
+            own_done, own = _fix_members(base, now)
+        rec["own"] = dict(own, rule="own", done=own_done)
+    return done, rec
+
+
+def _fix_members(base=ROOT, now=None):
     """(done, record) by section 2: each stage's verdict; RTR and IRA will not run when DEP's screen passes; the members
     are the passing forms in ORDER, IRA standing for RTR when both pass; a stage with no verdict at MEMBERS_BY is left out.
     A2: GNA's verdict is waited on too; the gnx slot passes when GNX's or GNA's screen passes, and its NEXT columns are
@@ -471,7 +544,7 @@ def fix_members(base=ROOT, now=None):
     mem = [st for st in MEMBERS if st in forms or (st == "gnx" and "gnp" in forms)]
     pick, means = pick_of([st for st in passing if st not in NO_OWN], base, nxt)
     rec.update(left_out=pending, passing=passing, forms=forms, members=mem, layers=layers_of(mem), rules=rules_of(mem),
-               pick=pick, pick_means=means, pick_reads=[f"{a} {b}" for a, b in PICK_READS], gnx_columns=cols,
+               pick=pick, pick_means=means, pick_reads=[f"{a} {b}" for a, b in pick_reads()], gnx_columns=cols,
                gnx_means={"LTM": m_ltm, "LTA": m_lta}, attention_means=att_means, dep_or_rounds_means=dep_means,
                utc=utc_now())
     return True, rec
@@ -487,10 +560,13 @@ def members_record(base=ROOT):
     """outputs/stk/members.json once written (fixed), else None; None too when its forms, members and gnx columns do not
     agree (A3: GNP's form is the gnx slot with the pair columns; the slot's NEXT set is there when GNX's form is; A4:
     GNW's and LTX's forms are members of their own; A5: so are GNR's, GNT's and GNS's, with one attention form at most,
-    and DEP never with the rounds)."""
+    and DEP never with the rounds). A6: and only a record fixed under RULE_NOW's rule (one with no `rule` is A5's, the own
+    rule's)."""
     p = Path(base) / OUT / "members.json"
     rec = M1.WQ.read_json(p) if p.is_file() else {}
     mem, forms, cols = rec.get("members"), rec.get("forms", rec.get("members")), rec.get("gnx_columns", "LTM")
+    if rec.get("rule", "own") != ("WWW" if RULE_NOW == "www" else "own"):
+        return None
     if (rec.get("declared_in") != DECLARED or not isinstance(mem, list) or not isinstance(forms, list)
             or [s for s in mem if s not in MEMBERS] or [s for s in forms if s not in FORMS] or cols not in COLUMNS):
         return None
@@ -642,14 +718,27 @@ def missing_columns(cols, split):
     return miss
 
 
+def other_rule_record(base=ROOT):
+    """A6: the rule of a members.json of the stack's that another rule fixed (A5's has none: "own"), else None."""
+    p = Path(base) / OUT / "members.json"
+    rec = M1.WQ.read_json(p) if p.is_file() else {}
+    mine = "WWW" if RULE_NOW == "www" else "own"
+    return rec.get("rule", "own") if rec.get("declared_in") == DECLARED and rec.get("rule", "own") != mine else None
+
+
 def members(wait=False, base=ROOT, now=None, sleep=time.sleep):
-    """Fix the members once (outputs/stk/members.json is never rewritten). With wait, look again every POLL seconds."""
+    """Fix the members once (outputs/stk/members.json is never rewritten). With wait, look again every POLL seconds.
+    A6: a members.json another rule fixed is not rewritten either: exit 1."""
     seen = None
     while True:
         rec = members_record(base)
         if rec is not None:
             log(f"members: {rec['members']} (fixed {rec.get('utc')}; {OUT}/members.json)")
             return 0
+        other = other_rule_record(base)
+        if other is not None:
+            log(f"members: {OUT}/members.json was fixed under the {other} rule; not rewritten under this one")
+            return 1
         done, rec = fix_members(base, now)
         if done:
             o = Path(base) / OUT
@@ -769,7 +858,17 @@ def stk_keys(_rule, base=ROOT):
 
 
 def stack_verdicts(base=ROOT):
-    """(the stack's screen verdict, its full run's): NOT_ADOPTED on a current STOP; None for what is not filed."""
+    """(the stack's screen verdict, its full run's): NOT_ADOPTED on a current STOP; None for what is not filed. A6: under
+    the WWW rule, as `zwww.py gate --stage stk` reads them (its WWW stop; its screen's rows; its full run's, full_rows)."""
+    if RULE_NOW == "www":
+        w = WWW.call("stk", base, write=False)
+        if w["stop"]["www"] == WWW.STOP:
+            return NOT_ADOPTED, None
+        p = Path(base) / OUT / "calls.json"
+        c = M1.WQ.read_json(p) if p.is_file() else {}
+        if c.get("declared_in") != DECLARED:
+            return None, None
+        return (w.get("screen") or {}).get("www"), (w.get("full_run") or {}).get("www")
     with on_s0stop():
         rec = S0.stop_record("stk", base)
     if rec is not None and rec.get("decision") == S0.STOP:
@@ -831,8 +930,14 @@ def own_gate(st, wait=False, base=ROOT, now=None, sleep=time.sleep):
 def reopen_call(base=ROOT, now=None):
     """A5: (done, exit code, why) for RTR's and IRA's opening (docs/RTR_GO_BACK_ROUNDS.md section 13,
     docs/IRA_ITERATIVE_ALIGNMENT.md section 14), from GNR's and GNS's verdicts as the members read them: 0 once either is
-    ADOPT_FOR_FULL_RUN; 1 once both are other verdicts, or at MEMBERS_BY (the rounds' screens could not be read by then)."""
+    ADOPT_FOR_FULL_RUN; 1 once both are other verdicts, or at MEMBERS_BY (the rounds' screens could not be read by then).
+    A6: under the WWW rule DEP's screen is read first: NO_GAIN or NOT_ADOPTED opens them at once (section 2: RTR and IRA
+    run when DEP's screen does not pass); otherwise A5's call."""
     now = time.time() if now is None else now
+    if RULE_NOW == "www":
+        vd = stage_verdict("dep", base)
+        if vd in (NO_GAIN, NOT_ADOPTED):
+            return True, 0, f"DEP's screen under the WWW rule is {vd}: RTR and IRA run (section 2)"
     vl = {st: late_verdict(st, base) for st in SECOND}
     is_open, final = reopened(vl)
     if final:
@@ -852,6 +957,8 @@ def reopen_gate(wait=False, base=ROOT, now=None, sleep=time.sleep):
             o = Path(base) / OUT
             o.mkdir(parents=True, exist_ok=True)
             M1.WQ.write_json(o / "reopen.json", {"stage": STAGE, "declared_in": DECLARED, "open": rc == 0, "why": why,
+                                                 "rule": "WWW" if RULE_NOW == "www" else "own",
+                                                 "dep_verdict": stage_verdict("dep", base),
                                                  "verdicts": {st: late_verdict(st, base) for st in SECOND},
                                                  "utc": utc_now()})
             log(f"reopen-gate: RTR and IRA {'open' if rc == 0 else 'stay closed'} ({why})")
@@ -1274,9 +1381,38 @@ def union_rows(blocks):
     return rows, side, bad
 
 
+def full_rows(blocks):
+    """A6: (the rules' full-run rows, each read once in the rules' order; their beside rows not among them; problems), as
+    one format, so `zwww.py` reads the stack's full run as it reads a stage's. zdep's rows are its twelve reads (keyed
+    "dataset") and its slices, zltg's its ten and its beside; both call a read with zml1.call on the pair floor of both
+    arms' spreads, so a read two rules hold must get one delta, floor and call from both."""
+    def one(r):
+        k = WWW.key_of(r)
+        return k, {"split": k[0], "read": k[1], "delta": r.get("delta"), "floor": r.get("floor"), "call": r.get("call")}
+
+    rows, seen, bad = [], {}, []
+    for b in blocks:
+        for r in ((b or {}).get("reads") or []) + ((b or {}).get("slices") or []):
+            k, x = one(r)
+            if k not in seen:
+                seen[k] = x
+                rows.append(x)
+            elif json.dumps(seen[k], sort_keys=True, default=str) != json.dumps(x, sort_keys=True, default=str):
+                bad.append(f"{k[0]} {k[1]}: the rules' full-run rows differ ({seen[k]} and {x})")
+    side, sk = [], set()
+    for b in blocks:
+        for r in (b or {}).get("beside") or []:
+            k, x = one(r)
+            if k not in seen and k not in sk:
+                sk.add(k)
+                side.append(x)
+    return rows, side, bad
+
+
 def combine_full(blocks):
     """Section 4: ADOPT when each rule's full-run call is ADOPT, NOT_ADOPTED otherwise; INCOMPLETE when a rule is. Each
-    rule's rows are kept under its name (zdep's and zltg's full-run rows are not one format)."""
+    rule's rows are kept under its name (zdep's and zltg's full-run rows are not one format); A6: the block holds them as
+    one too (full_rows, in calls)."""
     vs = [b["verdict"] for b in blocks]
     v = INCOMPLETE if INCOMPLETE in vs else ADOPT if all(x == ADOPT for x in vs) else NOT_ADOPTED
     return {"verdict": v, "rules": vs, "problems": [p for b in blocks for p in b.get("problems") or []]}
@@ -1431,6 +1567,10 @@ def calls(base=ROOT):
                   "full_run": LTG.decide_full(new_all, base_all) if full_ready else None}}
     screen = combine_screen([by[r]["screen"] for r in rules])
     full = combine_full([by[r]["full_run"] for r in rules]) if full_ready else None
+    if full is not None:                        # A6: the rules' rows as one, for the WWW rule's reading (zwww)
+        fr, fs, fb = full_rows([by[r]["full_run"] for r in rules])
+        full.update(reads=fr, beside=fs)
+        bad += fb
     bad += fit_problems(call, mem, base, cols)
     for blk in (screen, full):
         if blk is not None and bad and blk["verdict"] != INCOMPLETE:
@@ -1458,7 +1598,7 @@ def calls(base=ROOT):
         md += ["| split | read | base s0, s1, s2 | STK s0 | delta | floor | call |", "|---|---|---|---:|---:|---:|---|"]
         md += [f"| {r['split']} | {r['read']} | {', '.join(f'{x:.4f}' for x in r['base'])} | {r['new']:.4f} | "
                f"{r['delta']:+.4f} | {r['floor']:.4f} | {r['call']} |" for r in rows]
-    md += ["", "members' own seed-0 deltas on the six WQ-hotpotqa reads:"]
+    md += ["", f"members' own seed-0 deltas on the pick's six reads ({', '.join(f'{a} {b}' for a, b in pick_reads())}):"]
     md += [f"- {st}: {json.dumps(d)}" for st, d in own.items()]
     if full is not None:
         md += ["", f"## Full run: {full['verdict']} (rules {', '.join(f'{r} {v}' for r, v in zip(rules, full['rules']))})"]
@@ -2425,6 +2565,166 @@ def rules_check():
     return True
 
 
+def www_check():
+    """A6 on made files: the members' verdicts under the WWW rule (a read beside, a WWW stop, another's file), RTR's and
+    IRA's opening on DEP's WWW NO_GAIN (zrtr's answer on the record), the members and the pick over the six with the own
+    rule's record beside, the members records' rule, one attention form over the six, the stack's WWW stop, screen and
+    full run, and full_rows on zdep's and zltg's full-run rows."""
+    import tempfile
+    t0 = utc_s(MEMBERS_BY) - 3600
+    G, L, W = RULE.GAIN, RULE.LOSS, RULE.WITHIN
+    WEBQ, META, S0H = ("WQ-musique", "webqsp"), ("WQ-musique", "metaqa"), ("WQ-musique", "hotpotqa")
+    HPS, HPM, HP2 = ("WQ-hotpotqa", "squad"), ("WQ-hotpotqa", "musique"), ("WQ-hotpotqa", "2wiki")
+    assert RULE_NOW == "www" and {WEBQ, HPS} & set(READS_WWW) == set() and {S0H, HPM, HP2} < set(READS_WWW)
+    with tempfile.TemporaryDirectory(prefix="zstk_w_") as td:
+        base = Path(td)
+
+        def row(k, calls=None, deltas=None):
+            return {"split": k[0], "read": k[1], "delta": (deltas or {}).get(k, 0.0), "floor": 0.0075,
+                    "call": (calls or {}).get(k, W)}
+
+        def www_file(out, decl, v, calls=None, deltas=None, drop=()):
+            """A calls.json of its own verdict v: rows on LTG's ten deciding reads, a metaqa row beside."""
+            o = base / out
+            o.mkdir(parents=True, exist_ok=True)
+            M1.WQ.write_json(o / "calls.json", {"declared_in": decl, "screen": {
+                "verdict": v, "reads": [row(k, calls, deltas) for k in TEN_READS if k not in drop],
+                "beside": [row(k, calls, deltas) for k in (META,) if k not in drop]}})
+
+        def stage_file(st, v, calls=None, deltas=None, drop=()):
+            out, decl = (MOD[st].OUT, MOD[st].DECLARED) if st in MOD else (GNA.OUT, GNA.DECLARED) if st == "gna" else (
+                (GNP_OUT, GNP_DECLARED) if st == GNP_KEY else (LATE_NAMES[st][1], LATE_NAMES[st][3]))
+            www_file(out, decl, v, calls, deltas, drop)
+
+        def stop_file(out, s0, hp, decision, calls):
+            """An s0stop.json made from its seed-0 fit's read as it is now (current under both rules), its WQ-musique rows."""
+            rp = S0.read_path(s0, base)
+            rp.parent.mkdir(parents=True, exist_ok=True)
+            rp.write_text('{"read": 1}', encoding="utf-8")
+            (base / out).mkdir(parents=True, exist_ok=True)
+            M1.WQ.write_json(base / out / "s0stop.json", {
+                "s0_fit": s0, "hp_fit": hp, "s0_read_sha256": S0.sha_file(rp), "decision": decision,
+                "rows": [row(k, calls) for k in TEN_READS if k[0] == S0.S0_SPLIT]})
+
+        def late_stop(st, decision, calls):
+            stop_file(LATE_NAMES[st][1], late_fit_name(st, 0, S0.S0_SPLIT), late_fit_name(st, 0, S0.HP_SPLIT), decision,
+                      calls)
+
+        # 1. DEP's own screen passes on a read beside the six (metaqa): NO_GAIN under the WWW rule
+        stage_file("dep", ADOPT_FOR_FULL_RUN, {META: G})
+        assert stage_verdict("dep", base) == NO_GAIN
+        with read_under("own"):
+            assert RULE_NOW == "own" and stage_verdict("dep", base) == ADOPT_FOR_FULL_RUN
+        assert RULE_NOW == "www"
+        # 2. RTR and IRA open at once on DEP's WWW NO_GAIN; a WWW pass falls to A5's call; the own rule waits on GNR, GNS
+        stage_file("dep", ADOPT_FOR_FULL_RUN, {HP2: G})
+        assert stage_verdict("dep", base) == ADOPT_FOR_FULL_RUN and reopen_call(base, t0)[:2] == (False, 2)
+        stage_file("dep", ADOPT_FOR_FULL_RUN, {META: G})
+        assert reopen_call(base, t0)[:2] == (True, 0)
+        with read_under("own"):
+            assert reopen_call(base, t0)[:2] == (False, 2)
+        slept = []
+        assert reopen_gate(True, base, t0, slept.append) == 0 and not slept
+        rr = RTR.reopen_record(base)
+        assert rr is not None and (rr["open"], rr["rule"], rr["dep_verdict"]) == (True, "WWW", NO_GAIN), rr
+        assert RTR.dep_call(base) == f"screen {ADOPT_FOR_FULL_RUN}, {RTR.REOPENED}" == IRA.dep_call(base)
+        # 3. the members: LTG's own LOSS is on webqsp (beside), its GAIN on WQ-hotpotqa 2wiki; RTR's GAIN is on squad
+        # alone; GNW's own stop is a webqsp LOSS (WWW: GO); LTX misses a read of the six (INCOMPLETE: left out late)
+        stage_file("ltg", NOT_ADOPTED, {WEBQ: L, HP2: G}, {HP2: 0.012, HPS: 0.06})
+        stage_file("rtr", ADOPT_FOR_FULL_RUN, {HPS: G}, {HPS: 0.6})
+        stage_file("ira", ADOPT_FOR_FULL_RUN, {HPM: G}, {HPM: 0.018})
+        for st in ("gnx", "gna", GNP_KEY, *A5):
+            stage_file(st, NO_GAIN)
+        stage_file("gnw", NOT_ADOPTED, {WEBQ: L, HPM: G}, {HPM: 0.006})
+        late_stop("gnw", S0.STOP, {WEBQ: L})
+        stage_file("ltx", INCOMPLETE, drop=(HPM,))
+        done, rec = fix_members(base, t0)
+        assert not done and rec["pending"] == ["ltx"] and rec["rule"] == "WWW" and rec["will_not_run"] == [], rec
+        assert rec["own"]["pending"] == ["ltx"] and rec["own"]["will_not_run"] == ["rtr", "ira"], rec["own"]
+        assert rec["own"]["done"] is False and rec["verdicts"]["dep"] == NO_GAIN and rec["gnw_verdict"] == ADOPT_FOR_FULL_RUN
+        done, rec = fix_members(base, utc_s(MEMBERS_BY))
+        assert done and rec["passing"] == rec["forms"] == rec["members"] == ["ltg", "ira", "gnw"], rec
+        assert rec["left_out"] == ["ltx"] and rec["rules"] == ["dep", "ltg"] and rec["layers"] == DEP.BASE_LAYERS, rec
+        assert rec["pick"] == "ira" and rec["pick_means"] == {"ltg": 0.002, "ira": 0.003, "gnw": 0.001}, rec
+        assert rec["pick_reads"] == [f"{a} {b}" for a, b in READS_WWW] and rec["attention_means"] == {"gnw": 0.001}, rec
+        own = rec["own"]
+        assert own["done"] and own["rule"] == "own" and own["members"] == own["forms"] == ["dep"], own
+        assert own["will_not_run"] == ["rtr", "ira"] and own["pick"] == "dep" and own["gnw_verdict"] == NOT_ADOPTED, own
+        assert own["pick_reads"] == [f"{a} {b}" for a, b in PICK_READS] and "own" not in own, own
+        assert members(False, base, utc_s(MEMBERS_BY)) == 0
+        mr = members_record(base)
+        assert mr is not None and mr["members"] == ["ltg", "ira", "gnw"] and mr["rule"] == "WWW", mr
+        with read_under("own"):
+            assert members_record(base) is None and other_rule_record(base) == "WWW"
+            assert members(False, base, utc_s(MEMBERS_BY)) == 1           # not rewritten under another rule
+        a5 = {k: v for k, v in mr.items() if k not in ("rule", "own")}      # A5's record names no rule
+        M1.WQ.write_json(base / OUT / "members.json", a5)
+        assert members_record(base) is None and other_rule_record(base) == "own"
+        assert members(False, base, utc_s(MEMBERS_BY)) == 1
+        assert M1.WQ.read_json(base / OUT / "members.json") == a5
+        with read_under("own"):
+            assert members_record(base) is not None and other_rule_record(base) is None
+        M1.WQ.write_json(base / OUT / "members.json", mr)
+        assert members_record(base) == mr and other_rule_record(base) is None
+        # 4. one attention form by the mean over the six (GNT's squad delta is not counted; the own rule's ten count it);
+        # a WWW stop is NOT_ADOPTED; another's calls.json is no verdict
+        stage_file("gnw", ADOPT_FOR_FULL_RUN, {HPM: G}, {HPM: 0.012})
+        stage_file("gnt", ADOPT_FOR_FULL_RUN, {HPM: G}, {HPS: 0.6, HPM: 0.006})
+        assert one_attention(["ltg", "gnw", "gnt"], base) == (["ltg", "gnw"], {"gnw": 0.002, "gnt": 0.001})
+        with read_under("own"):
+            assert one_attention(["ltg", "gnw", "gnt"], base) == (["ltg", "gnt"], {"gnw": 0.0012, "gnt": 0.0606})
+        late_stop("gnt", S0.STOP, {S0H: L})
+        assert late_verdict("gnt", base) == NOT_ADOPTED and late_verdict("gnw", base) == ADOPT_FOR_FULL_RUN
+        with read_under("own"):
+            assert late_verdict("gnt", base) == late_verdict("gnw", base) == NOT_ADOPTED
+        www_file(LATE_NAMES["gnr"][1], "docs/OTHER.md", ADOPT_FOR_FULL_RUN, {HPM: G})
+        assert late_verdict("gnr", base) is None
+        # 5. the stack: a webqsp LOSS alone is NO_GAIN under the WWW rule, so the pick's own full run is released
+        o = base / OUT
+
+        def stk_calls(screen, full=None):
+            M1.WQ.write_json(o / "calls.json", {"declared_in": DECLARED, "screen": screen, "full_run": full})
+
+        stk_calls({"verdict": NOT_ADOPTED, "reads": [row(k, {WEBQ: L}) for k in TEN_READS], "beside": []})
+        assert stack_verdicts(base) == (NO_GAIN, None)
+        with read_under("own"):
+            assert stack_verdicts(base) == (NOT_ADOPTED, None)
+        own = {st: own_call(st, base, t0)[:2] for st in ("ltg", "ira", "gnw")}
+        assert own == {"ltg": (True, 1), "ira": (True, 0), "gnw": (True, 1)}, own
+        # 6. full_rows: zdep's rows (keyed "dataset", and its slices) and zltg's (keyed "read", and beside) as one
+        def frow(k, c, key="read"):
+            return {"split": k[0], key: k[1], "delta": {sd: 0.01 for sd in RULE.SEEDS}, "floor": 0.006, "call": c}
+
+        fc = {HP2: G, HPS: L}
+        dep_full = {"verdict": NOT_ADOPTED, "problems": [], "reads": [frow(k, fc.get(k, W), "dataset") for k in RULE.READS],
+                    "slices": [frow((sp, sl), W) for sp in M1.SPLITS for sl in DEP.SLICES]}
+        ltg_full = {"verdict": NOT_ADOPTED, "problems": [], "reads": [frow(k, fc.get(k, W)) for k in TEN_READS],
+                    "beside": [frow(k, W) for k in LTG.beside_keys()]}
+        fr, fs, fb = full_rows([dep_full, ltg_full])
+        assert [WWW.key_of(r) for r in fr] == DEP.read_keys() and not fs and not fb, (fr, fs, fb)
+        assert all(set(r) == {"split", "read", "delta", "floor", "call"} for r in fr), fr
+        r1, s1, b1 = full_rows([ltg_full])
+        assert [WWW.key_of(r) for r in r1] == list(TEN_READS) and [WWW.key_of(r) for r in s1] == LTG.beside_keys() and not b1
+        bad = dict(ltg_full, reads=[dict(r, call=W) if WWW.key_of(r) == HP2 else r for r in ltg_full["reads"]])
+        assert len(full_rows([dep_full, bad])[2]) == 1
+        # the stack's full run from those rows: no LOSS among the six (squad's is beside) and a GAIN on 2wiki: ADOPT
+        full = dict(combine_full([dep_full, ltg_full]), reads=fr, beside=fs)
+        stk_calls({"verdict": ADOPT_FOR_FULL_RUN, "reads": [row(k, {HP2: G}) for k in TEN_READS], "beside": []}, full)
+        assert stack_verdicts(base) == (ADOPT_FOR_FULL_RUN, ADOPT)
+        with read_under("own"):
+            assert stack_verdicts(base) == (ADOPT_FOR_FULL_RUN, NOT_ADOPTED)
+        assert all(own_call(st, base, t0)[:2] == (True, 1) for st in ("ltg", "ira", "gnw"))
+        # the stack's WWW seed-0 stop (a LOSS on WQ-musique hotpotqa; its own stop GO) is its screen NOT_ADOPTED
+        stop_file(OUT, fit_name(0, S0.S0_SPLIT), fit_name(0, S0.HP_SPLIT), S0.GO, {S0H: L})
+        assert stack_verdicts(base) == (NOT_ADOPTED, None)
+        with read_under("own"):
+            assert stack_verdicts(base) == (ADOPT_FOR_FULL_RUN, NOT_ADOPTED)
+        own = {st: own_call(st, base, t0)[:2] for st in ("ltg", "ira", "gnw")}
+        assert own == {"ltg": (True, 1), "ira": (True, 0), "gnw": (True, 1)}, own
+    assert RULE_NOW == "www"
+    return True
+
+
 def selftest():
     assert fit_name(0, "WQ-musique") == "scr-stk-st-s0" and fit_name(2, "WQ-hotpotqa") == "scr-stk-st-s2-hp"
     assert pair_name(1, "WQ-hotpotqa") == "scr-stk-st-vs-base-s1-hp"
@@ -2446,8 +2746,11 @@ def selftest():
     assert late_mods() is L and set(L) == set(LATE) and {v: os.environ.get(v) for v in THREAD_VARS} == env0
     assert late_entry("ltx")[2:4] == ("scr-ltx-xf-s0", "scr-ltx-xf-s0-hp") and not set(LATE) & set(S0.STAGES)
     assert COMPOSED == ORDER and disk_composes_rc() in (0, 1, 2)
-    # 1. the rules' combination and the stamp's parts; the gates on made files; A2's and A3's columns
-    assert rules_check() and gates_check() and columns_check()
+    # 1. the rules' combination and the stamp's parts; the gates on made files (A1 to A5's cases, under the stages' own
+    # rules); A2's and A3's columns; A6: the WWW rule on made files
+    with read_under("own"):
+        assert gates_check()
+    assert RULE_NOW == "www" and rules_check() and columns_check() and www_check()
     # 2. zltg's names at three layers are its own
     G = M1.import_arm(ARM)[0]
     own = (LTG.LAYERS, LTG.TERM_LAYER, LTG.TERM_NAMES, LTG.N_TERM)
@@ -2485,7 +2788,10 @@ def selftest():
         f"two sets, the joined load on made files, member_code on GNP's fits; A4: zgnw's and zltx's names, fits and stop "
         f"entries, GNW's and LTX's verdicts and STOPs, their forms and members, the waiting stack gate (one look a call, "
         f"decided once, MEMBERS_BY), the own gates on a stack that does not run, composes on made files and on disk, the "
-        f"members records with their forms; zltg's names at three layers; on the toy "
+        f"members records with their forms; A6: the members' verdicts under the WWW rule (a read beside, a WWW stop, "
+        f"another's file), RTR and IRA opened on DEP's WWW NO_GAIN (zrtr's answer), the members and the pick over the six "
+        f"with the own rule's record beside, the members records' rule (never rewritten under another), one attention "
+        f"form over the six, the stack's WWW stop, screen and full run, full_rows; zltg's names at three layers; on the toy "
         f"carve, {len(sets) + 3} stacks without DEP (two of them on the pair columns) and {len(lc['toy']['sets'])} with "
         f"DEP (a process of its own, four layers) each "
         f"start as the set without LTG and GNX bit for bit (eval and training forwards); every member's parameters get the "
