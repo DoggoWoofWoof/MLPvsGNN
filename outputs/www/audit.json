@@ -1,0 +1,211 @@
+{
+ "declared_in": "docs/WWW_SCOPE_RULE.md",
+ "deciding_reads": [
+  "WQ-musique hotpotqa",
+  "WQ-musique 2wiki",
+  "WQ-hotpotqa musique",
+  "WQ-hotpotqa 2wiki",
+  "WQ-hotpotqa musique-3hop",
+  "WQ-hotpotqa musique-4hop"
+ ],
+ "stages": [
+  {
+   "stage": "dep",
+   "own_stop": "GO",
+   "www_stop": "GO",
+   "own_screen": "ADOPT_FOR_FULL_RUN",
+   "www_screen": "NO_GAIN",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": true
+  },
+  {
+   "stage": "gna",
+   "own_stop": "GO",
+   "www_stop": "GO",
+   "own_screen": null,
+   "www_screen": null,
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "gnp",
+   "own_stop": "GO",
+   "www_stop": "GO",
+   "own_screen": null,
+   "www_screen": null,
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "gnr",
+   "own_stop": "GO",
+   "www_stop": "GO",
+   "own_screen": null,
+   "www_screen": null,
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "gnt",
+   "own_stop": "STOP",
+   "www_stop": "GO",
+   "own_screen": null,
+   "www_screen": null,
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": true
+  },
+  {
+   "stage": "gnw",
+   "own_stop": "STOP",
+   "www_stop": "GO",
+   "own_screen": null,
+   "www_screen": null,
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": true
+  },
+  {
+   "stage": "gnx",
+   "own_stop": "GO",
+   "www_stop": "GO",
+   "own_screen": "NO_GAIN",
+   "www_screen": "NO_GAIN",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "lta",
+   "own_stop": null,
+   "www_stop": null,
+   "own_screen": "NOT_ADOPTED",
+   "www_screen": "NOT_ADOPTED",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "ltc",
+   "own_stop": null,
+   "www_stop": null,
+   "own_screen": "NO_GAIN",
+   "www_screen": "NO_GAIN",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "ltg",
+   "own_stop": "GO",
+   "www_stop": "GO",
+   "own_screen": "NOT_ADOPTED",
+   "www_screen": "NOT_ADOPTED",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "ltm",
+   "own_stop": null,
+   "www_stop": null,
+   "own_screen": "ADOPT_FOR_FULL_RUN",
+   "www_screen": "ADOPT_FOR_FULL_RUN",
+   "own_full_run": "ADOPT",
+   "www_full_run": "ADOPT",
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "lts",
+   "own_stop": null,
+   "www_stop": null,
+   "own_screen": "NO_GAIN",
+   "www_screen": "NO_GAIN",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "ltx",
+   "own_stop": "GO",
+   "www_stop": "GO",
+   "own_screen": null,
+   "www_screen": null,
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "mpp",
+   "own_stop": null,
+   "www_stop": null,
+   "own_screen": "NO_GAIN",
+   "www_screen": "NO_GAIN",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [],
+   "changed": false
+  },
+  {
+   "stage": "r2p",
+   "own_stop": null,
+   "www_stop": null,
+   "own_screen": "NOT_ADOPTED",
+   "www_screen": "NOT_ADOPTED",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [
+    "WQ-hotpotqa musique-3hop",
+    "WQ-hotpotqa musique-4hop"
+   ],
+   "changed": false
+  },
+  {
+   "stage": "rwt.f",
+   "own_stop": null,
+   "www_stop": null,
+   "own_screen": "NOT_ADOPTED",
+   "www_screen": "NOT_ADOPTED",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [
+    "WQ-musique hotpotqa",
+    "WQ-musique 2wiki"
+   ],
+   "changed": false
+  },
+  {
+   "stage": "rwt.g",
+   "own_stop": null,
+   "www_stop": null,
+   "own_screen": "NOT_ADOPTED",
+   "www_screen": "NOT_ADOPTED",
+   "own_full_run": null,
+   "www_full_run": null,
+   "missing": [
+    "WQ-musique hotpotqa",
+    "WQ-musique 2wiki"
+   ],
+   "changed": false
+  }
+ ],
+ "zwww_sha256": "cd7ac18609d5d85c81284f2eae0fe56a0044756c24cd54c6f262bfb4c76a24de",
+ "utc": "2026-11-03T13:20:07Z"
+}
