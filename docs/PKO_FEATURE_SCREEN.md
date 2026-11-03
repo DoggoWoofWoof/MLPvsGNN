@@ -240,3 +240,40 @@ Items: `pfs-smoke-prf` (hotpotqa, 40 questions) and `pfs-prf-<dataset>` for the 
 - **The baseline probe is itself strong.** A logistic fit on the 172 cached columns, cross-fitted by question parity, puts recall@5 at about 0.81 on hotpotqa and 2wiki, 0.65 on musique, 0.95 on squad and 0.29 on webqsp,
   with AUC 0.95 to 0.99 over every pool row. These are the first questions of each fit carve, an out-of-fold probe, not the models' protocol, and are not compared with ML1's reads here.
 - **Stated against these results** (section 9 stands): a probe without interactions; the stored 128-wide projection, not the encoder's vectors; the first questions of each fit carve; no seed.
+
+## 11. Amendment A3, 3 November 2026, after LTA's first column records were seen and before any number of the reading it adds
+
+**Why.** Section 10 closed one kind of similarity to the found rows: question-free, from the stored 128-wide projection. It left two things open, the second named in its own "stated against". One is a
+similarity that depends on the question. The other is the frozen encoder's full vectors. LTA's first column records (`outputs/lta/cols`, hotpotqa, not filed) rank a gold that sits outside rrf's top five
+in the list of its first top-five gold. Where that gold is not linked to the anchor, the two question-conditional free scores of LTW (`ltwdiag.pair_feats`) put it in the top two of that list more often
+than rrf does, and more often than LTA's learned bil scorer. bil is link-dominated, and on unlinked targets it ranks below rrf, pair and res. Those records use an oracle anchor (a gold). The question is
+whether the same scores carry against rrf's own top five, with no gold in sight, over every pool row, and beyond the 172 lean columns. A model may take them as an input. They are made from the frozen
+vectors of the first stage's fixed top five before any row is scored. That is a fixed beam's read, not message passing (the 13 October rule; LTC section 2).
+
+**The read** (`pair --dataset D`, `pair_<dataset>.json`; section 9's fit carves and first questions, every pool row): for a row c and each of rrf's top five rows a_k (unit vectors of the frozen encoder;
+a top row is not paired with itself):
+- `res_k = c.q - (a_k.q)(a_k.c)`, the part of q along c once a_k's direction is taken out;
+- `pair_k = (a_k.q + c.q) / |a_k + c|`, q's cosine to the normalised sum of the pair.
+
+Six columns are made from these: `pair_max`, `res_max`, `pair_mean` and `res_mean` over the five anchors, and `pair_1`, `res_1` against rrf's first row (its second row for the first row itself). Each is
+read raw and as a within-question z-score, twelve columns in all. Each row's c.q must match the cache's dense_cos within chndiag's tolerance (0.002) on all but 1% of rows (the identity), or the read
+refuses. That check makes the rows, node vectors and question vectors the cache's own. Section 9's probe and metrics are used as written: the 172 lean columns as the baseline, then those plus the
+twelve. The baseline's recall@5 should reproduce section 10's within 0.002 (the same questions and columns). On musique, recall@5 is also reported by hop. Code: `outputs/mp_unified/zpfp.py`, which
+imports zpfs, ltwdiag, lean_gpu, lean_cache and lean_mlp3 and edits none of them (self-test passes). It loads only the cache parts that hold the first questions, without the pool's links, which the probe
+does not read.
+
+**Rule, fixed here.** Per dataset, d = recall@5 with the twelve columns minus the baseline's:
+- **PAIR_ADDS**: d >= +0.01.
+- **PAIR_HURTS**: d <= -0.01.
+- **PAIR_NOTHING**: |d| < 0.005. Anything else is MIXED, reported with the numbers. The AUC difference is reported and is not part of the call.
+- **What follows.**
+  - PAIR_ADDS on musique with PAIR_HURTS on none of the five, or PAIR_ADDS on at least three of the five: the six columns are declared as an input block on the GNN first. That block is GNP, an arm of the
+    GNN of record (zg6r) with its own base and null, read by LTG's in-domain rule. The MLP follows second, on the CPU. Each is its own file, since a new input is a model change under the 13 October rule.
+  - PAIR_NOTHING on at least three of the five: question-conditional similarity to rrf's top five is closed as an input for models that have the lean columns. The GNN's next form is then LTG's term over
+    every pool row, after LTG's verdict.
+  - Anything else: reported, and nothing is declared from it.
+- **Stated against it.** A logistic probe on all rows is far below the models (it has no interactions), so a gain here can be larger or smaller than a model's. The first questions of each fit carve are
+  read once, with no seed. rrf's top five stand in for a ranker's. The musique read is 400 questions.
+
+Items: `pfp-smoke` (hotpotqa, 32 questions), then `pfp-pair-<dataset>` for the five datasets, musique first, one at a time. They are CPU only and write only `outputs/pfs/pair_<dataset>.json`. They
+read PKO's cache and the served node vectors (on the host, the verified mirror), read only.
