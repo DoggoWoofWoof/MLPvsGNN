@@ -179,7 +179,9 @@ Beside (deciding nothing):
 | A1 walk on SNK (hyperlinks; musique: title mentions) | 0.6182 | 0.8070 | 0.4994 |
 | A1 walk on W2_S + NK | 0.6205 | 0.7890 | 0.5012 |
 
-- Our models with the links are 14.5 to 35.3 points above the walk with the links, in every cell of both families.
+- Our models with the links are above the walk with the links in every cell of both families: by 14.5 to 35.3
+  points in the 10 deciding cells, and by 10.3 to 35.3 over all 22 cells, held-out and zero-shot included. Every
+  interval is above 0; the lowest lower end is +8.4, musique's held-out GNN.
 - Even without any links (b1t), every J5 model is above the walk with the hyperlinks: by 13.8 to 15.5 points on
   2wiki, 8.0 to 9.3 on hotpotqa and 13.0 to 13.5 on musique, all with intervals above 0.
 
