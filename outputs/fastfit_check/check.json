@@ -1,0 +1,110 @@
+{
+ "train": "squad=fit,webqsp=fit",
+ "config": "2e-3:1e-4:0.1:2:1",
+ "name": "ffchk",
+ "frac": "0.15",
+ "runs": {
+  "plain": {
+   "exit": 0,
+   "wall_seconds": 90.2,
+   "patched_as_mode": true,
+   "train": {
+    "seconds": 86.8,
+    "variant_seconds": 79.8,
+    "peak_gpu_gb": 2.885758976,
+    "data_gb": 2.205,
+    "questions": 7058,
+    "rows": 6103425,
+    "models_sha256": "852855f695360b1c4f295159bf0f847d3bddd366567df8cc1dfd7d30cdd18b3b"
+   },
+   "log_tail": [
+    "host: the mirror at <host-mirror>/CRAG in place of the package, in memory; 5 verify records VERIFIED",
+    "[19:58:48] train ffchk: carves [('squad', 'fit'), ('webqsp', 'fit')], basis 2wiki, variants ['p'], config {'lr': 0.002, 'wd': 0.0001, 'dropout': 0.1, 'epochs': 2, 'swa_from': 1, 'cos': False, 'adamw': False, 'drop': False}, seed 0, device cuda",
+    "[19:58:48]   squad/fit on 2wiki: 5856 questions, 292994 rows, table 20235 codes, 1 part(s) (0s)",
+    "[19:58:54]   webqsp/fit on 2wiki: 1202 questions, 5810431 rows, table 4191904 codes, 12 part(s) (6s)",
+    "[19:58:54] loaded 7058 questions, 6103425 rows, 2.20 GB on cuda (7s)",
+    "[19:58:54] dead blocks [] (0s); sets {'pick': ['rank', 'dense_cos', 'topo_STRUCT', 'depth_STRUCT', 'SEMB', 'SEED', 'WALK', 'DISTS', 'WALKF']}",
+    "[19:59:36]   ffchk/p ep 0: loss 2.8548, 442 steps (40s)",
+    "[20:00:14]   ffchk/p ep 1: loss 2.1217, 440 steps (38s)",
+    "[20:00:14]   ffchk/p: 2 epochs in 80s",
+    "[20:00:14] peak 2.89 GB",
+    "[20:00:14] train ffchk: 3 candidates in 87s; outputs\\fastfit_check\\plain\\ffchk",
+    "[cuda_alloc] peak allocated 2.69 GB, peak reserved 3.21 GB"
+   ]
+  },
+  "host": {
+   "exit": 0,
+   "wall_seconds": 93.8,
+   "patched_as_mode": true,
+   "train": {
+    "seconds": 90.8,
+    "variant_seconds": 80.8,
+    "peak_gpu_gb": 1.796529152,
+    "data_gb": 2.205,
+    "questions": 7058,
+    "rows": 6103425,
+    "models_sha256": "852855f695360b1c4f295159bf0f847d3bddd366567df8cc1dfd7d30cdd18b3b"
+   },
+   "log_tail": [
+    "[fastfit] squad/fit: X in host memory (0.05 GB), the rest on cuda",
+    "[20:00:24]   webqsp/fit on 2wiki: 1202 questions, 5810431 rows, table 4191904 codes, 12 part(s) (6s)",
+    "[fastfit] webqsp/fit: X in host memory (1.00 GB), the rest on cuda",
+    "[20:00:24] loaded 7058 questions, 6103425 rows, 2.20 GB on cuda (7s)",
+    "[20:00:27] dead blocks [] (3s); sets {'pick': ['rank', 'dense_cos', 'topo_STRUCT', 'depth_STRUCT', 'SEMB', 'SEED', 'WALK', 'DISTS', 'WALKF']}",
+    "[20:01:09]   ffchk/p ep 0: loss 2.8548, 442 steps (40s)",
+    "[20:01:48]   ffchk/p ep 1: loss 2.1217, 440 steps (39s)",
+    "[20:01:48]   ffchk/p: 2 epochs in 81s",
+    "[20:01:48] peak 1.80 GB",
+    "[20:01:48] train ffchk: 3 candidates in 91s; outputs\\fastfit_check\\host\\ffchk",
+    "[cuda_alloc] peak allocated 1.67 GB, peak reserved 2.35 GB",
+    "[fastfit] 2 carve(s) with X in host memory (1.05 GB), 0 kept on the device; 0 fit(s), 0 steps prefetched, 0s waiting on a batch"
+   ]
+  },
+  "both": {
+   "exit": 0,
+   "wall_seconds": 91.6,
+   "patched_as_mode": true,
+   "train": {
+    "seconds": 88.6,
+    "variant_seconds": 79.6,
+    "peak_gpu_gb": 1.829131264,
+    "data_gb": 2.205,
+    "questions": 7058,
+    "rows": 6103425,
+    "models_sha256": "852855f695360b1c4f295159bf0f847d3bddd366567df8cc1dfd7d30cdd18b3b"
+   },
+   "log_tail": [
+    "[fastfit] squad/fit: X in host memory (0.05 GB), the rest on cuda",
+    "[20:01:57]   webqsp/fit on 2wiki: 1202 questions, 5810431 rows, table 4191904 codes, 12 part(s) (5s)",
+    "[fastfit] webqsp/fit: X in host memory (1.00 GB), the rest on cuda",
+    "[20:01:57] loaded 7058 questions, 6103425 rows, 2.20 GB on cuda (6s)",
+    "[20:02:00] dead blocks [] (3s); sets {'pick': ['rank', 'dense_cos', 'topo_STRUCT', 'depth_STRUCT', 'SEMB', 'SEED', 'WALK', 'DISTS', 'WALKF']}",
+    "[20:02:41]   ffchk/p ep 0: loss 2.8548, 442 steps (39s)",
+    "[20:03:19]   ffchk/p ep 1: loss 2.1217, 440 steps (39s)",
+    "[20:03:19]   ffchk/p: 2 epochs in 80s",
+    "[20:03:19] peak 1.83 GB",
+    "[20:03:19] train ffchk: 3 candidates in 89s; outputs\\fastfit_check\\both\\ffchk",
+    "[cuda_alloc] peak allocated 1.70 GB, peak reserved 2.35 GB",
+    "[fastfit] 2 carve(s) with X in host memory (1.05 GB), 0 kept on the device; 1 fit(s), 882 steps prefetched, 0s waiting on a batch"
+   ]
+  }
+ },
+ "compare": {
+  "host": {
+   "states_compared": 3,
+   "states_differing": {},
+   "meta_differing": [],
+   "curve_equal": true,
+   "identical": true
+  },
+  "both": {
+   "states_compared": 3,
+   "states_differing": {},
+   "meta_differing": [],
+   "curve_equal": true,
+   "identical": true
+  }
+ },
+ "verdict": "IDENTICAL",
+ "utc": "2026-11-03T14:33:23Z"
+}
