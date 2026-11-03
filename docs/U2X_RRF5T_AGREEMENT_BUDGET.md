@@ -171,3 +171,32 @@ python outputs/mp_unified/zu2x.py choose                             (laptop, af
 **ETA (estimate).**
 - About 1 to 1.5 hours per shard when the nine run side by side, then the merges.
 - Then the choice on the laptop: U2w's took 1,806 s, and U2x adds 27% more candidates.
+
+## 7. Amendment A1 (4 November 2026, about 02:10 IST): the host runner
+
+Filed before any U2x number. Nothing in sections 1 to 6, zu2x, zu2s or zpkoh changes.
+
+**What stopped.** The self-test passed on the host at 01:31 IST. The three dev runs (01:32 to 01:34 IST) then stopped
+in `zu2s.stats_stage` at `S4.Opened()`, on `import canonical`, because the host has no CRAG package. U2s's own pass ran
+on the laptop, which has the package (docs/U2S_WALK_MASS_BUDGET.md, section 8).
+
+**The runner.** Every host command now runs through `outputs/mp_unified/zu2xh.py`. It:
+1. runs `zpkoh.apply_mirror()`, PKOH's host mode, unchanged (docs/PKOH_PKO_ON_THE_HOST.md):
+   - `S6.host_mode` checks the declared mirror root and the five pinned VERIFIED records;
+   - `patch_s4` makes step4_pool_reach's `Opened` and m3b_compile's `open_package` read the mirror;
+2. checks that the patched module is the one `zu2s.stats_stage` reaches (`p1e_anchor_kind.S4`), and that m3b_compile's
+   `open_package` is on the mirror, and stops otherwise;
+3. calls `zu2x.main` on the same arguments.
+
+`zu2xh.py --check` (steps 1 and 2 alone) passed on the laptop and on the host before this amendment.
+
+**The items.** The 15 unsent items (dev, stats and merge) become the same commands through zu2xh.py, under new names
+(`u2x-hdev-D`, `u2x-hstats-D-I`, `u2x-hmerge-D`), so the feeder treats them as new. The old lines stay in the queue
+file as comments.
+
+**If the host does not reproduce the laptop's arrays.** U2s's filed arrays were computed on the laptop.
+- The dev runs run zu2s's own checks against (c)'s filed arrays, so a difference in the host's arithmetic stops them
+  before any full run.
+- The choice then requires the rerun's arrays to equal U2s's, array for array (section 4).
+- If either fails on the host, the pass runs on the laptop instead, one dataset at a time with 2 BLAS threads, as U2s's
+  did (9,043 to 12,889 s each). The commands are section 6's, unchanged.
