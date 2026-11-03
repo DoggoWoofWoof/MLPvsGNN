@@ -200,3 +200,46 @@ file as comments.
 - The choice then requires the rerun's arrays to equal U2s's, array for array (section 4).
 - If either fails on the host, the pass runs on the laptop instead, one dataset at a time with 2 BLAS threads, as U2s's
   did (9,043 to 12,889 s each). The commands are section 6's, unchanged.
+
+## 8. Results (filed 4 November 2026, about 05:05 IST)
+
+The stats pass ran on the host through amendment A1's runner: three dev runs, nine shards and three merges. The choice,
+`zu2x.py choose` on the laptop, took 1,959 s. Records: `outputs/u2x/choice.json` and `choice.md`.
+
+**Every check passed:**
+- the rerun's stats arrays are U2s's filed arrays (sha256 equal on all three datasets), so the patched pass is U2s's
+  pass;
+- RRF5T's rebuilt fused order equals P1e's, question by question;
+- a_q kept m_q's bounds;
+- pick O's filed point and U2w's 11 filed frontier C points were reproduced from the same tables;
+- P1f's weights are U2w's.
+
+**Verdicts: NOT_UNIFIED and KIND_FREE_TOO_DEAR. Nothing is carried.** ALL on s1sel, with mean rows in brackets:
+
+| pools | level | cost (rows) | musique | hotpotqa | 2wiki |
+| --- | ---: | ---: | --- | --- | --- |
+| pick O, the incumbent (per-dataset construction; U2w's record) | 0.96 | 1,751.9 | 0.9668 (5,522.2) | 0.9602 (713.1) | 0.9699 (1,070.5) |
+| C's and E's cheapest at 0.96: U2w's ADA point, `rrf50+FULL:h2_c25/<kind_t or rrf5t>/kt_cos+n2_10:ada_f6_k0@0.85` | 0.96 | 4,215.6 | 0.9602 (4,193.9) | 0.9834 (4,025.2) | 0.9913 (4,361.1) |
+| AGREE's cheapest at 0.96: `rrf50+FULL:h2_c25/kind_t/kt_cos+n2_10:agree_t0.99_f2_k0@0.85` | 0.96 | 4,245.5 | 0.9602 (4,250.1) | 0.9834 (4,074.6) | 0.9913 (4,366.9) |
+
+- No universal point is within the 1,953.5-row cap at any level, with or without the AGREE candidates. C's cheapest
+  0.950 point still costs 3,528.4 rows, and E's 3,522.1.
+- At 0.96, C's and E's cheapest points are U2w's, at 2.41 × the incumbent's cost, past the declared row price of 2 ×.
+  The 302,400 AGREE candidates moved three frontier points, all far past the cap: C at 0.97 (5,469.7 to 5,461.7
+  rows), C at 0.975 (6,720.0 to 6,602.5) and E at 0.97 (5,469.7 to 5,461.7). Every other point on both frontiers is
+  U2w's.
+
+**What AGREE did (beside, deciding nothing).**
+- The ceilings are the same with and without the AGREE candidates: musique 0.9811, hotpotqa 0.9881, 2wiki 0.996.
+- Over the AGREE candidates alone, frontier C costs 3,578.0 rows at 0.95 and 4,245.5 at 0.96, against the joint
+  frontier's 3,528.4 and 4,215.6.
+- **The question of section 1 is answered no.** AGREE's cheapest 0.96 point spends 4,074.6 rows on hotpotqa and
+  4,366.9 on 2wiki, as many as on musique (4,250.1). Pick O needs 713.1 and 1,070.5 there (U2w). A budget that tracked
+  a question's depth would spend fewer rows on the shallower datasets. RRF5T's agreement across its five orders does
+  not separate the questions that need depth from those that do not, any better than one walk's mass does.
+
+**What follows (section 5).** Pick O stays the pools of record. The next form of the universal construction is U2s's
+section 10's second: P1h's cut taken over the walk's mass in place of rank mass, in its own declared file. Stages B and
+C wait for a carried pick, so D1 does not arise.
+
+This verdict closes only the AGREE budget (docs/SCREENS.md, section 3b).
