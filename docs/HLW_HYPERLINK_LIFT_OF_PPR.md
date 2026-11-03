@@ -127,6 +127,46 @@ The self-test runs on made-up data:
 - a tie in walk mass goes to the better RRF rank;
 - the call table gives each of its three outcomes on inputs built for it.
 
-## 6. Results
+## 6. Results (filed 4 November 2026)
 
-(Filed here after the run; nothing above changes.)
+`hlwdiag.py selftest` passed, and `hlwdiag.py run` ran on the laptop from about 23:47 IST on 3 November to 00:02 on
+4 November. Every check in section 2 passed: R0 and the four arms equal B1C's filed arms to four decimals, and every
+question has a gold on its graph. Records: `outputs/hlw/report.json` and `report.md`. Nothing in sections 1 to 5 changed
+after the run.
+
+**PPR_HYPERLINK_LIFT, by hotpotqa.** On hotpotqa, A1's ADD is +0.0515 [+0.0410, +0.0630], so the call is LIFT. On
+2wiki, A1 is NO_LIFT.
+
+R@5 of restart A1 (it decides), and its paired differences [95% CI]:
+
+| setting | R0 | none | S | NK | SNK | ADD (SNK − NK) | ALONE (S − none) | SNK − R0 | call |
+| --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- | --- |
+| 2wiki | 0.7117 | 0.7177 | 0.6232 | 0.6198 | 0.6182 | −0.0015 [−0.0095, +0.0063] | −0.0945 [−0.1088, −0.0805] | −0.0935 [−0.1090, −0.0780] | NO_LIFT |
+| hotpotqa | 0.8500 | 0.8550 | 0.7750 | 0.7555 | 0.8070 | +0.0515 [+0.0410, +0.0630] | −0.0800 [−0.0955, −0.0640] | −0.0430 [−0.0585, −0.0290] | LIFT |
+| musique (beside) | 0.5643 | 0.5701 | 0.4667 | 0.4910 | 0.4994 | +0.0084 [−0.0012, +0.0176] | −0.1034 [−0.1186, −0.0885] | −0.0648 [−0.0795, −0.0495] | no call |
+
+- **Every A1 walk on a graph with edges is below the first stage, on all three settings.** With all links it is 9.4,
+  4.3 and 6.5 points below R0.
+- **The lift on hotpotqa is a repair, not a gain over the first stage.** The text links take the walk 9.5 points below
+  R0 (NK 0.7555). Adding the hyperlinks gives back 5.2 of those points (SNK 0.8070), still 4.3 below R0.
+- **ALONE is negative everywhere.** The walk on the hyperlinks alone is 8.0 to 10.3 points below the walk with no edges.
+- **Beside, under the same rule (deciding nothing):**
+  - A2 and RW are LIFT on both settings: ADD is +0.0115 and +0.0535 for A2, and +0.0437 and +0.0950 for RW. Every
+    A2 and RW walk with edges is still 5.4 to 23.8 points below R0.
+  - T5 stays within 0.7 points of R0: NO_LIFT on 2wiki, SMALL on hotpotqa.
+- **Part B, the full corpora (P3a's orders).** A1 on the hyperlinks is below RRF by 3.50 points on 2wiki and 0.79 on
+  hotpotqa. Adding ner and knn lowers it further (A1_all − A1: −1.40 and −1.96 points).
+- **Beside: the trained models' lift from the same links** (filed, deciding nothing):
+  - U1a b1 − b1t (the corpus hyperlinks, J5 fits): 2wiki +19.8 (GNN) and +20.8 (MLP); hotpotqa +8.3 and +9.5;
+    musique +3.3 and +2.7.
+  - B1P b1w − b1t (the recreated links, models of record): 2wiki +16.8 and +18.1; hotpotqa +3.2 and +3.4; musique +3.0
+    and +4.4.
+
+**What a written claim may say (section 4).** Not "no lift". It may say that HippoRAG 2's walk, run on our LLM-free
+graph from its own restart rule, ranks below its own first stage on HippoRAG 2's three settings with or without the
+hyperlinks. It may also give the measured change from adding the hyperlinks to the text links: −0.2 [−1.0, +0.6]
+points on 2wiki and +5.2 [+4.1, +6.3] on hotpotqa. The same hyperlinks add 19.8 and 8.3 points to our trained GNN. It
+is HippoRAG 2's walk on our graph, not HippoRAG 2 as released with its LLM-built graph.
+
+**Not shown here.** A paired test of the models' lift against the walk's lift. The models of record on the
+corpus-hyperlink carve (b1). The verdict closes only this measure; the next is that paired comparison, in its own file.
