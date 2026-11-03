@@ -1,0 +1,1300 @@
+{
+ "stage": "LT2",
+ "declared_in": "docs/LT2_TWO_LINK_NEXT_MLP.md",
+ "form": "zrckp2",
+ "arm": "zrckpn",
+ "what": "zrckp + LT2's next-hop columns (NEXT within two links: each anchor's learned next-hop term on the pool rows within two links of it outside the first stage's top five, with the two links' families, the middle rows' count and the best middle row's rrf rank as inputs, cross-fitted; uniform negatives)",
+ "base": "LTM's zrckpn at seeds 0, 1 and 2",
+ "device": {
+  "gpu": "cpu x6",
+  "torch": "2.8.0+cpu",
+  "cuda": null,
+  "cudnn": null
+ },
+ "threads": 6,
+ "pick": [
+  "rank",
+  "dense_cos",
+  "topo_STRUCT",
+  "depth_STRUCT",
+  "SEMB",
+  "SEED",
+  "WALK",
+  "DISTS",
+  "WALKF",
+  "NEXT"
+ ],
+ "screen": {
+  "verdict": "NO_GAIN",
+  "problems": [],
+  "reads": [
+   {
+    "split": "WQ-musique",
+    "read": "squad",
+    "base": [
+     0.9138,
+     0.9125,
+     0.9149
+    ],
+    "new": 0.914,
+    "delta": 0.0002,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "hotpotqa",
+    "base": [
+     0.846,
+     0.8469,
+     0.8491
+    ],
+    "new": 0.8466,
+    "delta": 0.0006,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "2wiki",
+    "base": [
+     0.9155,
+     0.9159,
+     0.9133
+    ],
+    "new": 0.9182,
+    "delta": 0.0027,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "webqsp",
+    "base": [
+     0.6457,
+     0.6498,
+     0.6552
+    ],
+    "new": 0.6523,
+    "delta": 0.0066,
+    "floor": 0.0146,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "squad",
+    "base": [
+     0.9132,
+     0.912,
+     0.9132
+    ],
+    "new": 0.9136,
+    "delta": 0.0004,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique",
+    "base": [
+     0.5806,
+     0.5803,
+     0.5777
+    ],
+    "new": 0.5806,
+    "delta": 0.0,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "2wiki",
+    "base": [
+     0.9135,
+     0.9166,
+     0.9135
+    ],
+    "new": 0.913,
+    "delta": -0.0005,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "webqsp",
+    "base": [
+     0.6469,
+     0.6597,
+     0.6512
+    ],
+    "new": 0.6609,
+    "delta": 0.014,
+    "floor": 0.0191,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-3hop",
+    "base": [
+     0.5351,
+     0.5333,
+     0.5263
+    ],
+    "new": 0.5307,
+    "delta": -0.0044,
+    "floor": 0.0127,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-4hop",
+    "base": [
+     0.3574,
+     0.3562,
+     0.3562
+    ],
+    "new": 0.358,
+    "delta": 0.0006,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   }
+  ],
+  "beside": [
+   {
+    "split": "WQ-musique",
+    "read": "musique",
+    "base": [
+     0.519,
+     0.5227,
+     0.5381
+    ],
+    "new": 0.5153,
+    "delta": -0.0037,
+    "floor": 0.0275,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "metaqa",
+    "base": [
+     0.4126,
+     0.4256,
+     0.4167
+    ],
+    "new": 0.4176,
+    "delta": 0.005,
+    "floor": 0.0193,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "hotpotqa",
+    "base": [
+     0.8193,
+     0.8182,
+     0.8136
+    ],
+    "new": 0.8147,
+    "delta": -0.0046,
+    "floor": 0.0082,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "metaqa",
+    "base": [
+     0.3668,
+     0.4261,
+     0.4131
+    ],
+    "new": 0.3954,
+    "delta": 0.0286,
+    "floor": 0.1064,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-3hop",
+    "base": [
+     0.4544,
+     0.4596,
+     0.4702
+    ],
+    "new": 0.4425,
+    "delta": -0.0118,
+    "floor": 0.0235,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-4hop",
+    "base": [
+     0.3086,
+     0.3148,
+     0.3352
+    ],
+    "new": 0.2994,
+    "delta": -0.0093,
+    "floor": 0.0385,
+    "call": "WITHIN"
+   }
+  ],
+  "counts": {
+   "GAIN": 0,
+   "LOSS": 0,
+   "WITHIN": 10
+  }
+ },
+ "full_run": null,
+ "next_form": "the two-link lists close; next form: the path's vectors as inputs (each two-link row's middle row nearest the question, with its cosines to the question, the anchor and the row, beside LT2's nine) (LT2's scorer does not rank the two-link targets above rrf on WQ-hotpotqa's musique/s1eval)",
+ "two_link_read": {
+  "bil": 0.08235294117647059,
+  "rrf": 0.0988235294117647,
+  "above": false
+ },
+ "problems": [],
+ "beside": {
+  "scr-lt2-zrckp2-s0": {
+   "train_seconds": 3314.1,
+   "read_seconds": 3740.3
+  },
+  "scr-lt2-zrckp2-s0-hp": {
+   "train_seconds": 5201.8,
+   "read_seconds": 4175.8
+  }
+ },
+ "columns": {
+  "WQ-musique": {
+   "webqsp/fit": {
+    "lt2": {
+     "A_T2_bil": 0.00904977375565611,
+     "T2_by_hop": null,
+     "A_ranked": 663,
+     "T2_linked": 0.045454545454545456,
+     "T2_two_links": 0.0036036036036036037,
+     "A_T2_rrf": 0.033182503770739065,
+     "T2_two_links_rrf": 0.01981981981981982,
+     "depth_share": {
+      "1": 0.13273001508295626,
+      "2": 0.8371040723981901,
+      "3": 0.030165912518853696
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.004524886877828055,
+     "T2_by_hop": null,
+     "A_ranked": 663,
+     "T2_linked": 0.03409090909090909,
+     "T2_unlinked": 0.0,
+     "A_T2_rrf": 0.03167420814479638,
+     "linked_share": 0.13273001508295626
+    },
+    "lta": {
+     "A_T2_bil": 0.00904977375565611,
+     "T2_by_hop": null,
+     "A_ranked": 663,
+     "T2_linked": 0.045454545454545456,
+     "T2_unlinked": 0.0034782608695652175,
+     "A_T2_rrf": 0.03167420814479638,
+     "linked_share": 0.13273001508295626
+    },
+    "ltm": {
+     "A_T2_bil": 0.022727272727272728,
+     "T2_by_hop": null,
+     "A_ranked": 88
+    }
+   },
+   "squad/fit": {
+    "lt2": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_two_links": null,
+     "A_T2_rrf": null,
+     "T2_two_links_rrf": null,
+     "depth_share": null
+    },
+    "lth": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_unlinked": null,
+     "A_T2_rrf": null,
+     "linked_share": null
+    },
+    "lta": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_unlinked": null,
+     "A_T2_rrf": null,
+     "linked_share": null
+    },
+    "ltm": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0
+    }
+   },
+   "hotpotqa/fit": {
+    "lt2": {
+     "A_T2_bil": 0.6431095406360424,
+     "T2_by_hop": null,
+     "A_ranked": 2830,
+     "T2_linked": 0.801980198019802,
+     "T2_two_links": 0.11078717201166181,
+     "A_T2_rrf": 0.12438162544169612,
+     "T2_two_links_rrf": 0.17201166180758018,
+     "depth_share": {
+      "1": 0.7851590106007067,
+      "2": 0.12120141342756184,
+      "3": 0.09363957597173145
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.5738515901060071,
+     "T2_by_hop": null,
+     "A_ranked": 2830,
+     "T2_linked": 0.6885688568856886,
+     "T2_unlinked": 0.15460526315789475,
+     "A_T2_rrf": 0.08833922261484099,
+     "linked_share": 0.7851590106007067
+    },
+    "lta": {
+     "A_T2_bil": 0.6392226148409894,
+     "T2_by_hop": null,
+     "A_ranked": 2830,
+     "T2_linked": 0.756975697569757,
+     "T2_unlinked": 0.20888157894736842,
+     "A_T2_rrf": 0.08833922261484099,
+     "linked_share": 0.7851590106007067
+    },
+    "ltm": {
+     "A_T2_bil": 0.7925292529252925,
+     "T2_by_hop": null,
+     "A_ranked": 2222
+    }
+   },
+   "2wiki/fit": {
+    "lt2": {
+     "A_T2_bil": 0.5658010952128599,
+     "T2_by_hop": null,
+     "A_ranked": 5661,
+     "T2_linked": 0.9038683602771362,
+     "T2_two_links": 0.1875,
+     "A_T2_rrf": 0.020491079314608727,
+     "T2_two_links_rrf": 0.09114583333333333,
+     "depth_share": {
+      "1": 0.6119060236707295,
+      "2": 0.06783253842077372,
+      "3": 0.3202614379084967
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.579226285108638,
+     "T2_by_hop": null,
+     "A_ranked": 5661,
+     "T2_linked": 0.8571016166281755,
+     "T2_unlinked": 0.14110150204824762,
+     "A_T2_rrf": 0.046104928457869634,
+     "linked_share": 0.6119060236707295
+    },
+    "lta": {
+     "A_T2_bil": 0.5991874227168345,
+     "T2_by_hop": null,
+     "A_ranked": 5661,
+     "T2_linked": 0.8571016166281755,
+     "T2_unlinked": 0.19253527537551207,
+     "A_T2_rrf": 0.046104928457869634,
+     "linked_share": 0.6119060236707295
+    },
+    "ltm": {
+     "A_T2_bil": 0.914838337182448,
+     "T2_by_hop": null,
+     "A_ranked": 3464
+    }
+   },
+   "metaqa/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.002006688963210702,
+     "T2_by_hop": null,
+     "A_ranked": 1495,
+     "T2_linked": 0.05263157894736842,
+     "T2_two_links": 0.0021344717182497333,
+     "A_T2_rrf": 0.01137123745819398,
+     "T2_two_links_rrf": 0.012806830309498399,
+     "depth_share": {
+      "1": 0.012709030100334449,
+      "2": 0.6267558528428093,
+      "3": 0.3605351170568562
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.0,
+     "T2_by_hop": null,
+     "A_ranked": 1495,
+     "T2_linked": 0.0,
+     "T2_unlinked": 0.0,
+     "A_T2_rrf": 0.006688963210702341,
+     "linked_share": 0.012709030100334449
+    },
+    "lta": {
+     "A_T2_bil": 0.0006688963210702341,
+     "T2_by_hop": null,
+     "A_ranked": 1495,
+     "T2_linked": 0.05263157894736842,
+     "T2_unlinked": 0.0,
+     "A_T2_rrf": 0.006688963210702341,
+     "linked_share": 0.012709030100334449
+    },
+    "ltm": {
+     "A_T2_bil": 0.10526315789473684,
+     "T2_by_hop": null,
+     "A_ranked": 19
+    }
+   },
+   "squad/s1eval": {
+    "lt2": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_two_links": null,
+     "A_T2_rrf": null,
+     "T2_two_links_rrf": null,
+     "depth_share": null
+    },
+    "lth": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_unlinked": null,
+     "A_T2_rrf": null,
+     "linked_share": null
+    },
+    "lta": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_unlinked": null,
+     "A_T2_rrf": null,
+     "linked_share": null
+    },
+    "ltm": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0
+    }
+   },
+   "musique/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.1684334511189635,
+     "T2_by_hop": {
+      "2hop": 0.34880803011292344,
+      "3hop": 0.11214953271028037,
+      "4hop": 0.054637865311308764
+     },
+     "A_ranked": 2547,
+     "T2_linked": 0.4485373781148429,
+     "T2_two_links": 0.01764705882352941,
+     "A_T2_rrf": 0.07381232822928936,
+     "T2_two_links_rrf": 0.0988235294117647,
+     "depth_share": {
+      "1": 0.3623871221044366,
+      "2": 0.3337259521005104,
+      "3": 0.303886925795053
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.13074204946996468,
+     "T2_by_hop": {
+      "2hop": 0.2584692597239649,
+      "3hop": 0.08826583592938733,
+      "4hop": 0.053367217280813214
+     },
+     "A_ranked": 2547,
+     "T2_linked": 0.28710725893824485,
+     "T2_unlinked": 0.04187192118226601,
+     "A_T2_rrf": 0.06713780918727916,
+     "linked_share": 0.3623871221044366
+    },
+    "lta": {
+     "A_T2_bil": 0.17196702002355713,
+     "T2_by_hop": {
+      "2hop": 0.3174404015056462,
+      "3hop": 0.1277258566978193,
+      "4hop": 0.07878017789072427
+     },
+     "A_ranked": 2547,
+     "T2_linked": 0.3564463705308776,
+     "T2_unlinked": 0.06711822660098522,
+     "A_T2_rrf": 0.06713780918727916,
+     "linked_share": 0.3623871221044366
+    },
+    "ltm": {
+     "A_T2_bil": 0.4539544962080173,
+     "T2_by_hop": {
+      "2hop": 0.5090252707581228,
+      "3hop": 0.37142857142857144,
+      "4hop": 0.3709677419354839
+     },
+     "A_ranked": 923
+    }
+   },
+   "hotpotqa/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.6305066079295154,
+     "T2_by_hop": null,
+     "A_ranked": 3632,
+     "T2_linked": 0.804215791354055,
+     "T2_two_links": 0.08423326133909287,
+     "A_T2_rrf": 0.1277533039647577,
+     "T2_two_links_rrf": 0.15550755939524838,
+     "depth_share": {
+      "1": 0.7706497797356828,
+      "2": 0.12747797356828194,
+      "3": 0.10187224669603524
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.5550660792951542,
+     "T2_by_hop": null,
+     "A_ranked": 3632,
+     "T2_linked": 0.6780993211861379,
+     "T2_unlinked": 0.14165666266506602,
+     "A_T2_rrf": 0.09581497797356828,
+     "linked_share": 0.7706497797356828
+    },
+    "lta": {
+     "A_T2_bil": 0.6205947136563876,
+     "T2_by_hop": null,
+     "A_ranked": 3632,
+     "T2_linked": 0.7484816005716327,
+     "T2_unlinked": 0.1908763505402161,
+     "A_T2_rrf": 0.09581497797356828,
+     "linked_share": 0.7706497797356828
+    },
+    "ltm": {
+     "A_T2_bil": 0.8088603072525902,
+     "T2_by_hop": null,
+     "A_ranked": 2799
+    }
+   },
+   "2wiki/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.5391865079365079,
+     "T2_by_hop": null,
+     "A_ranked": 12096,
+     "T2_linked": 0.8406615041344009,
+     "T2_two_links": 0.1381345926800472,
+     "A_T2_rrf": 0.03778108465608466,
+     "T2_two_links_rrf": 0.10979929161747344,
+     "depth_share": {
+      "1": 0.6298776455026455,
+      "2": 0.07002314814814815,
+      "3": 0.30009920634920634
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.5286044973544973,
+     "T2_by_hop": null,
+     "A_ranked": 12096,
+     "T2_linked": 0.7796298726867043,
+     "T2_unlinked": 0.10140719231628323,
+     "A_T2_rrf": 0.05704365079365079,
+     "linked_share": 0.6298776455026455
+    },
+    "lta": {
+     "A_T2_bil": 0.5567956349206349,
+     "T2_by_hop": null,
+     "A_ranked": 12096,
+     "T2_linked": 0.7947237170232314,
+     "T2_unlinked": 0.15188742461469734,
+     "A_T2_rrf": 0.05704365079365079,
+     "linked_share": 0.6298776455026455
+    },
+    "ltm": {
+     "A_T2_bil": 0.8650741567134794,
+     "T2_by_hop": null,
+     "A_ranked": 7619
+    }
+   },
+   "webqsp/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.0035938903863432167,
+     "T2_by_hop": null,
+     "A_ranked": 1113,
+     "T2_linked": 0.030303030303030304,
+     "T2_two_links": 0.0010235414534288639,
+     "A_T2_rrf": 0.017070979335130278,
+     "T2_two_links_rrf": 0.012282497441146366,
+     "depth_share": {
+      "1": 0.0889487870619946,
+      "2": 0.8778077268643306,
+      "3": 0.03324348607367475
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.0071877807726864335,
+     "T2_by_hop": null,
+     "A_ranked": 1113,
+     "T2_linked": 0.08080808080808081,
+     "T2_unlinked": 0.0,
+     "A_T2_rrf": 0.015274034141958671,
+     "linked_share": 0.0889487870619946
+    },
+    "lta": {
+     "A_T2_bil": 0.005390835579514825,
+     "T2_by_hop": null,
+     "A_ranked": 1113,
+     "T2_linked": 0.050505050505050504,
+     "T2_unlinked": 0.0009861932938856016,
+     "A_T2_rrf": 0.015274034141958671,
+     "linked_share": 0.0889487870619946
+    },
+    "ltm": {
+     "A_T2_bil": 0.06060606060606061,
+     "T2_by_hop": null,
+     "A_ranked": 99
+    }
+   }
+  },
+  "WQ-hotpotqa": {
+   "webqsp/fit": {
+    "lt2": {
+     "A_T2_bil": 0.0015082956259426848,
+     "T2_by_hop": null,
+     "A_ranked": 663,
+     "T2_linked": 0.011363636363636364,
+     "T2_two_links": 0.0,
+     "A_T2_rrf": 0.033182503770739065,
+     "T2_two_links_rrf": 0.01981981981981982,
+     "depth_share": {
+      "1": 0.13273001508295626,
+      "2": 0.8371040723981901,
+      "3": 0.030165912518853696
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.006033182503770739,
+     "T2_by_hop": null,
+     "A_ranked": 663,
+     "T2_linked": 0.045454545454545456,
+     "T2_unlinked": 0.0,
+     "A_T2_rrf": 0.03167420814479638,
+     "linked_share": 0.13273001508295626
+    },
+    "lta": {
+     "A_T2_bil": 0.004524886877828055,
+     "T2_by_hop": null,
+     "A_ranked": 663,
+     "T2_linked": 0.011363636363636364,
+     "T2_unlinked": 0.0034782608695652175,
+     "A_T2_rrf": 0.03167420814479638,
+     "linked_share": 0.13273001508295626
+    },
+    "ltm": {
+     "A_T2_bil": 0.022727272727272728,
+     "T2_by_hop": null,
+     "A_ranked": 88
+    }
+   },
+   "squad/fit": {
+    "lt2": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_two_links": null,
+     "A_T2_rrf": null,
+     "T2_two_links_rrf": null,
+     "depth_share": null
+    },
+    "lth": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_unlinked": null,
+     "A_T2_rrf": null,
+     "linked_share": null
+    },
+    "lta": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_unlinked": null,
+     "A_T2_rrf": null,
+     "linked_share": null
+    },
+    "ltm": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0
+    }
+   },
+   "musique/s1fit": {
+    "lt2": {
+     "A_T2_bil": 0.21748288572933122,
+     "T2_by_hop": {
+      "2hop": 0.30540406544372833,
+      "3hop": 0.13801079414032383,
+      "4hop": 0.0640495867768595
+     },
+     "A_ranked": 3798,
+     "T2_linked": 0.48811410459587956,
+     "T2_two_links": 0.14553014553014554,
+     "A_T2_rrf": 0.105318588730911,
+     "T2_two_links_rrf": 0.18364518364518365,
+     "depth_share": {
+      "1": 0.33228014744602424,
+      "2": 0.37993680884676145,
+      "3": 0.2877830437072143
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.12848867825171142,
+     "T2_by_hop": {
+      "2hop": 0.16608824987605356,
+      "3hop": 0.09868928296067848,
+      "4hop": 0.05165289256198347
+     },
+     "A_ranked": 3798,
+     "T2_linked": 0.2987321711568938,
+     "T2_unlinked": 0.043769716088328074,
+     "A_T2_rrf": 0.06635071090047394,
+     "linked_share": 0.33228014744602424
+    },
+    "lta": {
+     "A_T2_bil": 0.1743022643496577,
+     "T2_by_hop": {
+      "2hop": 0.22359940505701537,
+      "3hop": 0.12875867386276021,
+      "4hop": 0.09090909090909091
+     },
+     "A_ranked": 3798,
+     "T2_linked": 0.3312202852614897,
+     "T2_unlinked": 0.09621451104100946,
+     "A_T2_rrf": 0.06635071090047394,
+     "linked_share": 0.33228014744602424
+    },
+    "ltm": {
+     "A_T2_bil": 0.5419968304278923,
+     "T2_by_hop": {
+      "2hop": 0.596130592503023,
+      "3hop": 0.45689655172413796,
+      "4hop": 0.367816091954023
+     },
+     "A_ranked": 1262
+    }
+   },
+   "2wiki/fit": {
+    "lt2": {
+     "A_T2_bil": 0.5497261967850203,
+     "T2_by_hop": null,
+     "A_ranked": 5661,
+     "T2_linked": 0.8851039260969977,
+     "T2_two_links": 0.11979166666666667,
+     "A_T2_rrf": 0.020491079314608727,
+     "T2_two_links_rrf": 0.09114583333333333,
+     "depth_share": {
+      "1": 0.6119060236707295,
+      "2": 0.06783253842077372,
+      "3": 0.3202614379084967
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.5324147677088854,
+     "T2_by_hop": null,
+     "A_ranked": 5661,
+     "T2_linked": 0.8051385681293303,
+     "T2_unlinked": 0.1024123805188894,
+     "A_T2_rrf": 0.046104928457869634,
+     "linked_share": 0.6119060236707295
+    },
+    "lta": {
+     "A_T2_bil": 0.5802861685214626,
+     "T2_by_hop": null,
+     "A_ranked": 5661,
+     "T2_linked": 0.8273672055427251,
+     "T2_unlinked": 0.19071461083295402,
+     "A_T2_rrf": 0.046104928457869634,
+     "linked_share": 0.6119060236707295
+    },
+    "ltm": {
+     "A_T2_bil": 0.9145496535796767,
+     "T2_by_hop": null,
+     "A_ranked": 3464
+    }
+   },
+   "metaqa/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.0033444816053511705,
+     "T2_by_hop": null,
+     "A_ranked": 1495,
+     "T2_linked": 0.05263157894736842,
+     "T2_two_links": 0.004268943436499467,
+     "A_T2_rrf": 0.01137123745819398,
+     "T2_two_links_rrf": 0.012806830309498399,
+     "depth_share": {
+      "1": 0.012709030100334449,
+      "2": 0.6267558528428093,
+      "3": 0.3605351170568562
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.0006688963210702341,
+     "T2_by_hop": null,
+     "A_ranked": 1495,
+     "T2_linked": 0.0,
+     "T2_unlinked": 0.0006775067750677507,
+     "A_T2_rrf": 0.006688963210702341,
+     "linked_share": 0.012709030100334449
+    },
+    "lta": {
+     "A_T2_bil": 0.0013377926421404682,
+     "T2_by_hop": null,
+     "A_ranked": 1495,
+     "T2_linked": 0.05263157894736842,
+     "T2_unlinked": 0.0006775067750677507,
+     "A_T2_rrf": 0.006688963210702341,
+     "linked_share": 0.012709030100334449
+    },
+    "ltm": {
+     "A_T2_bil": 0.05263157894736842,
+     "T2_by_hop": null,
+     "A_ranked": 19
+    }
+   },
+   "squad/s1eval": {
+    "lt2": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_two_links": null,
+     "A_T2_rrf": null,
+     "T2_two_links_rrf": null,
+     "depth_share": null
+    },
+    "lth": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_unlinked": null,
+     "A_T2_rrf": null,
+     "linked_share": null
+    },
+    "lta": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0,
+     "T2_linked": null,
+     "T2_unlinked": null,
+     "A_T2_rrf": null,
+     "linked_share": null
+    },
+    "ltm": {
+     "A_T2_bil": null,
+     "T2_by_hop": null,
+     "A_ranked": 0
+    }
+   },
+   "musique/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.19395367098547311,
+     "T2_by_hop": {
+      "2hop": 0.39146800501882056,
+      "3hop": 0.13707165109034267,
+      "4hop": 0.06353240152477764
+     },
+     "A_ranked": 2547,
+     "T2_linked": 0.4593716143011918,
+     "T2_two_links": 0.08235294117647059,
+     "A_T2_rrf": 0.07381232822928936,
+     "T2_two_links_rrf": 0.0988235294117647,
+     "depth_share": {
+      "1": 0.3623871221044366,
+      "2": 0.3337259521005104,
+      "3": 0.303886925795053
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.15115822536317236,
+     "T2_by_hop": {
+      "2hop": 0.2948557089084065,
+      "3hop": 0.1059190031152648,
+      "4hop": 0.060991105463786534
+     },
+     "A_ranked": 2547,
+     "T2_linked": 0.3206933911159263,
+     "T2_unlinked": 0.05480295566502463,
+     "A_T2_rrf": 0.06713780918727916,
+     "linked_share": 0.3623871221044366
+    },
+    "lta": {
+     "A_T2_bil": 0.1790341578327444,
+     "T2_by_hop": {
+      "2hop": 0.3312421580928482,
+      "3hop": 0.13707165109034267,
+      "4hop": 0.07623888182973317
+     },
+     "A_ranked": 2547,
+     "T2_linked": 0.3456121343445287,
+     "T2_unlinked": 0.08435960591133004,
+     "A_T2_rrf": 0.06713780918727916,
+     "linked_share": 0.3623871221044366
+    },
+    "ltm": {
+     "A_T2_bil": 0.49295774647887325,
+     "T2_by_hop": {
+      "2hop": 0.5487364620938628,
+      "3hop": 0.4204081632653061,
+      "4hop": 0.3870967741935484
+     },
+     "A_ranked": 923
+    }
+   },
+   "hotpotqa/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.5044052863436124,
+     "T2_by_hop": null,
+     "A_ranked": 3632,
+     "T2_linked": 0.647374062165059,
+     "T2_two_links": 0.04319654427645788,
+     "A_T2_rrf": 0.1277533039647577,
+     "T2_two_links_rrf": 0.15550755939524838,
+     "depth_share": {
+      "1": 0.7706497797356828,
+      "2": 0.12747797356828194,
+      "3": 0.10187224669603524
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.37307268722466963,
+     "T2_by_hop": null,
+     "A_ranked": 3632,
+     "T2_linked": 0.4601643444087174,
+     "T2_unlinked": 0.08043217286914765,
+     "A_T2_rrf": 0.09581497797356828,
+     "linked_share": 0.7706497797356828
+    },
+    "lta": {
+     "A_T2_bil": 0.4727422907488987,
+     "T2_by_hop": null,
+     "A_ranked": 3632,
+     "T2_linked": 0.5787781350482315,
+     "T2_unlinked": 0.11644657863145258,
+     "A_T2_rrf": 0.09581497797356828,
+     "linked_share": 0.7706497797356828
+    },
+    "ltm": {
+     "A_T2_bil": 0.6788138620936048,
+     "T2_by_hop": null,
+     "A_ranked": 2799
+    }
+   },
+   "2wiki/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.5288525132275133,
+     "T2_by_hop": null,
+     "A_ranked": 12096,
+     "T2_linked": 0.8267489171807324,
+     "T2_two_links": 0.11570247933884298,
+     "A_T2_rrf": 0.03778108465608466,
+     "T2_two_links_rrf": 0.10979929161747344,
+     "depth_share": {
+      "1": 0.6298776455026455,
+      "2": 0.07002314814814815,
+      "3": 0.30009920634920634
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.4763558201058201,
+     "T2_by_hop": null,
+     "A_ranked": 12096,
+     "T2_linked": 0.7134794592466203,
+     "T2_unlinked": 0.07281661827116373,
+     "A_T2_rrf": 0.05704365079365079,
+     "linked_share": 0.6298776455026455
+    },
+    "lta": {
+     "A_T2_bil": 0.5329034391534392,
+     "T2_by_hop": null,
+     "A_ranked": 12096,
+     "T2_linked": 0.759679747998425,
+     "T2_unlinked": 0.14697341970069241,
+     "A_T2_rrf": 0.05704365079365079,
+     "linked_share": 0.6298776455026455
+    },
+    "ltm": {
+     "A_T2_bil": 0.8549678435490222,
+     "T2_by_hop": null,
+     "A_ranked": 7619
+    }
+   },
+   "webqsp/s1eval": {
+    "lt2": {
+     "A_T2_bil": 0.0017969451931716084,
+     "T2_by_hop": null,
+     "A_ranked": 1113,
+     "T2_linked": 0.010101010101010102,
+     "T2_two_links": 0.0010235414534288639,
+     "A_T2_rrf": 0.017070979335130278,
+     "T2_two_links_rrf": 0.012282497441146366,
+     "depth_share": {
+      "1": 0.0889487870619946,
+      "2": 0.8778077268643306,
+      "3": 0.03324348607367475
+     }
+    },
+    "lth": {
+     "A_T2_bil": 0.005390835579514825,
+     "T2_by_hop": null,
+     "A_ranked": 1113,
+     "T2_linked": 0.050505050505050504,
+     "T2_unlinked": 0.0009861932938856016,
+     "A_T2_rrf": 0.015274034141958671,
+     "linked_share": 0.0889487870619946
+    },
+    "lta": {
+     "A_T2_bil": 0.0017969451931716084,
+     "T2_by_hop": null,
+     "A_ranked": 1113,
+     "T2_linked": 0.010101010101010102,
+     "T2_unlinked": 0.0009861932938856016,
+     "A_T2_rrf": 0.015274034141958671,
+     "linked_share": 0.0889487870619946
+    },
+    "ltm": {
+     "A_T2_bil": 0.06060606060606061,
+     "T2_by_hop": null,
+     "A_ranked": 99
+    }
+   }
+  }
+ },
+ "lta": {
+  "screen": "NOT_ADOPTED",
+  "full_run": null,
+  "vs_zrckpn": [
+   {
+    "split": "WQ-musique",
+    "read": "squad",
+    "delta": -0.0001,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "hotpotqa",
+    "delta": -0.0012,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "2wiki",
+    "delta": -0.0036,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "webqsp",
+    "delta": 0.0013,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "squad",
+    "delta": 0.0006,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique",
+    "delta": -0.0045,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "2wiki",
+    "delta": -0.0013,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "webqsp",
+    "delta": 0.0029,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-3hop",
+    "delta": -0.0053,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-4hop",
+    "delta": -0.0111,
+    "call": "LOSS"
+   }
+  ]
+ },
+ "lth": {
+  "screen": "NOT_ADOPTED",
+  "full_run": null,
+  "vs_zrckpn": [
+   {
+    "split": "WQ-musique",
+    "read": "squad",
+    "delta": -0.0007,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "hotpotqa",
+    "delta": -0.0019,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "2wiki",
+    "delta": -0.0015,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "webqsp",
+    "delta": 0.0019,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "squad",
+    "delta": -0.0004,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique",
+    "delta": -0.0104,
+    "call": "LOSS"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "2wiki",
+    "delta": -0.0025,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "webqsp",
+    "delta": 0.0024,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-3hop",
+    "delta": -0.0123,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-4hop",
+    "delta": -0.016,
+    "call": "LOSS"
+   }
+  ]
+ },
+ "base_reads": {
+  "WQ-hotpotqa 2wiki": {
+   "0": 0.9135,
+   "1": 0.9166,
+   "2": 0.9135
+  },
+  "WQ-hotpotqa hotpotqa": {
+   "0": 0.8193,
+   "1": 0.8182,
+   "2": 0.8136
+  },
+  "WQ-hotpotqa metaqa": {
+   "0": 0.3668,
+   "1": 0.4261,
+   "2": 0.4131
+  },
+  "WQ-hotpotqa musique": {
+   "0": 0.5806,
+   "1": 0.5803,
+   "2": 0.5777
+  },
+  "WQ-hotpotqa musique-3hop": {
+   "0": 0.5350877192982456,
+   "1": 0.5333333333333334,
+   "2": 0.5263157894736842
+  },
+  "WQ-hotpotqa musique-4hop": {
+   "0": 0.3574074074074074,
+   "1": 0.35617283950617284,
+   "2": 0.35617283950617284
+  },
+  "WQ-hotpotqa squad": {
+   "0": 0.9132,
+   "1": 0.912,
+   "2": 0.9132
+  },
+  "WQ-hotpotqa webqsp": {
+   "0": 0.6469,
+   "1": 0.6597,
+   "2": 0.6512
+  },
+  "WQ-musique 2wiki": {
+   "0": 0.9155,
+   "1": 0.9159,
+   "2": 0.9133
+  },
+  "WQ-musique hotpotqa": {
+   "0": 0.846,
+   "1": 0.8469,
+   "2": 0.8491
+  },
+  "WQ-musique metaqa": {
+   "0": 0.4126,
+   "1": 0.4256,
+   "2": 0.4167
+  },
+  "WQ-musique musique": {
+   "0": 0.519,
+   "1": 0.5227,
+   "2": 0.5381
+  },
+  "WQ-musique musique-3hop": {
+   "0": 0.45438596491228067,
+   "1": 0.4596491228070176,
+   "2": 0.4701754385964913
+  },
+  "WQ-musique musique-4hop": {
+   "0": 0.30864197530864196,
+   "1": 0.3148148148148148,
+   "2": 0.3351851851851852
+  },
+  "WQ-musique squad": {
+   "0": 0.9138,
+   "1": 0.9125,
+   "2": 0.9149
+  },
+  "WQ-musique webqsp": {
+   "0": 0.6457,
+   "1": 0.6498,
+   "2": 0.6552
+  }
+ },
+ "zlt2_sha256": "4b40ee24118c17aacab5f3bf0e019afa51dc5235b7c8cd6ea93ee390ac06e2da",
+ "utc": "2026-11-03T17:31:23Z"
+}
