@@ -124,3 +124,57 @@ should take a few minutes on 1 CPU (estimate). Its paths are written relative to
 Nothing is decided here. If U2x carries a pick, U2w's stage B measures the same on the new pools with this module's
 functions, and this record is the comparison row. A record closes nothing; the next coverage question gets its own
 file.
+
+## 8. Filed (4 November 2026, about 02:35 IST)
+
+The run took 25.5 s on the host at 02:27 IST, and every check passed. P3a's RRF top 10 lay inside the pool on 100.00% of
+s1eval questions on all three datasets. No question lacked a gold, and no B1 question had two golds on one package row.
+Records: `outputs/cov/report.json` and `report.md`.
+
+**Pick O's pools.** ALL and gold recall in percent, with 95% intervals. HippoRAG 2's candidate set is every passage of
+the corpus column.
+
+| carve | dataset | ALL | gold recall | rows: mean / median / p90 | corpus | mean rows / corpus |
+|---|---|---|---|---|---:|---:|
+| s1eval | 2wiki | 96.9 [96.6, 97.2] | 98.7 [98.6, 98.8] | 1,081.2 / 1,090 / 1,383 | 5,989,847 | 0.018% |
+| s1eval | hotpotqa | 96.0 [95.5, 96.4] | 97.9 [97.7, 98.1] | 706.0 / 688 / 1,017 | 5,233,329 | 0.013% |
+| s1eval | musique | 94.8 [93.9, 95.6] | 97.8 [97.4, 98.1] | 5,263.6 / 4,980 / 6,490 | 117,534 | 4.48% |
+| B1 | 2wiki | 91.9 [90.1, 93.6] | 96.1 [95.2, 96.9] | 88.5 / 77 / 145 | 6,119 | 1.45% |
+| B1 | hotpotqa | 97.0 [95.9, 98.1] | 98.5 [98.0, 99.1] | 65.3 / 53 / 100 | 9,811 | 0.67% |
+| B1 | musique | 99.8 [99.5, 100.0] | 99.9 [99.8, 100.0] | 3,433.6 / 3,455 / 3,532 | 11,654 | 29.46% |
+
+**At each pool's own size, on s1eval.** Pool minus order in gold recall, in points, with 95% intervals and the call:
+
+| order | 2wiki | hotpotqa | musique |
+|---|---|---|---|
+| A1 (HippoRAG 2's walk on the corpus hyperlinks) | +0.6 [+0.5, +0.8] MORE | -1.6 [-1.8, -1.4] LESS | +0.9 [+0.6, +1.2] MORE |
+| A1_all (its rule on all three link families) | +0.6 [+0.4, +0.8] MORE | -1.5 [-1.7, -1.3] LESS | +0.9 [+0.6, +1.2] MORE |
+| RRF (our first stage) | +22.3 [+21.9, +22.7] MORE | +6.3 [+5.9, +6.7] MORE | +9.2 [+8.4, +10.0] MORE |
+| DENSE | +25.2 [+24.8, +25.6] MORE | +8.0 [+7.6, +8.4] MORE | +12.0 [+11.2, +12.9] MORE |
+| SPLADE | +24.1 [+23.7, +24.5] MORE | +9.7 [+9.2, +10.1] MORE | +18.4 [+17.5, +19.3] MORE |
+
+- The ALL calls go the same way everywhere. Against A1: 2wiki +1.5 [+1.1, +1.9], hotpotqa -3.3 [-3.7, -2.9],
+  musique +1.7 [+1.0, +2.4].
+- **Depth.**
+  - On musique, every pool is longer than RRF's list (about 2,000 nodes), so that row compares the pool with RRF's
+    whole list.
+  - DENSE's and SPLADE's lists are 1,000 deep, shorter than most pools: 8,139 of 12,576 questions on 2wiki, 839 on
+    hotpotqa, all on musique.
+  - A1 is shorter than the pool on 157 musique questions. On the other 2,260 the difference is +0.95 [+0.64, +1.29].
+  - RRF is shorter than the pool on 5 2wiki questions. Without them, the difference is +22.3 [+21.9, +22.8].
+
+**Reading** (deciding nothing).
+1. **Localization.** On the full corpora, pick O's pools keep 97.8% to 98.7% of golds in 706 to 5,264 rows per
+   question. That is 0.013% of hotpotqa's corpus and 0.018% of 2wiki's; musique's 4.48% is of a 117,534-passage corpus.
+   HippoRAG 2's walk scores every passage.
+2. **Against our first stage.** In the same number of rows, the pools hold many more golds: +22.3 points on 2wiki and
+   +6.3 on hotpotqa, where RRF's list is deep enough.
+3. **Against HippoRAG 2's walk read to the same depth.**
+   - The pools hold slightly more golds on 2wiki and musique, and fewer on hotpotqa.
+   - The walk uses the corpus hyperlinks; the pools use none.
+   - The walk covers well deep in its order (as P1a found). Its weak point is its head: at full scale its R@5 falls
+     below RRF's (HLW, part B).
+4. **On B1's small settings** the pools take a larger share: 0.67% to 1.45% of the setting on hotpotqa and 2wiki, and
+   29.46% on musique.
+
+**What follows.** Nothing is decided. If U2x carries a pick, its stage B's coverage is read against this record.
