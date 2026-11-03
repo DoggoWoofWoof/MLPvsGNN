@@ -367,3 +367,65 @@ Each costs fits: the MLP's two screen fits on the host's CPU, about 2.5 hours an
 - The probe is crossfit by question parity within these 513 questions only.
 
 **Item.** `pfq-anchors-musique-h34`, CPU only, after `pfq-anchors-musique` and before LTA's first screen fit. It writes only `outputs/pfs/anchors_musique_h34.json`.
+
+## 15. Results of amendments A4 and A5, filed 3 November 2026
+
+**Checks.**
+- Every read's machinery check is exact: rrf's top five give A3's twelve columns, max difference 0.0e+00.
+- The five A4 reads reproduce A3's lean and lean + P5 recall@5 to 0.0. A5's questions have no A3 read, as section 14 states.
+- Every identity passes. No question had fewer anchors than a form asks for.
+
+**Recall@5 by probe** (crossfit by question parity, section 9's probe):
+
+| read | rows | lean | lean+P5 | lean+P10 | lean+P5+R2 | lean+P5+R3 | lean+P5+P10 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| musique (first 400, all 2-hop) | 2,221,400 | 0.6500 | 0.6663 | 0.6625 | 0.6675 | 0.6650 | 0.6713 |
+| musique 3-hop and 4-hop (section 14: 242 + 271) | 3,135,760 | 0.3681 | 0.3790 | 0.3809 | 0.3868 | 0.3835 | 0.3869 |
+| hotpotqa (first 1,000) | 711,780 | 0.8053 | 0.8223 | 0.8178 | 0.8203 | 0.8208 | 0.8213 |
+| 2wiki (first 1,000) | 1,073,464 | 0.8085 | 0.8203 | 0.8185 | 0.8244 | 0.8242 | 0.8222 |
+| squad (first 1,000) | 50,031 | 0.9518 | 0.9558 | 0.9588 | 0.9568 | 0.9558 | 0.9588 |
+| webqsp (first 600) | 2,922,458 | 0.2919 | 0.3300 | 0.3309 | 0.3290 | 0.3278 | 0.3325 |
+
+**The calls** (section 11's d_pair; section 13's d10 and d2, against lean + P5):
+
+| read | d_pair | d10 | TOP10 call | d2 | R2 call | first round keeps of rrf's top five | d3, beside | d5_10, beside |
+| --- | ---: | ---: | --- | ---: | --- | ---: | ---: | ---: |
+| musique (first 400, all 2-hop) | +0.0162 | -0.0038 | TOP10_NOTHING | +0.0012 | R2_NOTHING | 0.706 | -0.0012 | +0.0050 |
+| musique 3-hop and 4-hop (section 14: 242 + 271) | +0.0109 | +0.0019 | TOP10_NOTHING | +0.0078 | MIXED | 0.684 | +0.0045 | +0.0080 |
+| hotpotqa (first 1,000) | +0.0170 | -0.0045 | TOP10_NOTHING | -0.0020 | R2_NOTHING | 0.595 | -0.0015 | -0.0010 |
+| 2wiki (first 1,000) | +0.0118 | -0.0018 | TOP10_NOTHING | +0.0041 | R2_NOTHING | 0.426 | +0.0038 | +0.0018 |
+| squad (first 1,000) | +0.0040 | +0.0030 | TOP10_NOTHING | +0.0010 | R2_NOTHING | 0.757 | +0.0000 | +0.0030 |
+| webqsp (first 600) | +0.0380 | +0.0009 | TOP10_NOTHING | -0.0009 | R2_NOTHING | 0.102 | -0.0022 | +0.0025 |
+
+**musique's 3-hop and 4-hop questions, by hop** (deciding nothing, section 14):
+
+| hop | questions | lean | lean + P5 | lean + P10 | lean + P5 + R2 | d_pair | d10 | d2 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 3-hop | 242 | 0.4373 | 0.4504 | 0.4539 | 0.4614 | +0.0131 | +0.0034 | +0.0110 |
+| 4-hop | 271 | 0.3063 | 0.3152 | 0.3158 | 0.3201 | +0.0089 | +0.0006 | +0.0049 |
+
+**musique under section 14's rule.**
+- TOP10: TOP10_NOTHING on the 2-hop read and TOP10_NOTHING on the 3/4-hop read, so **TOP10_NOTHING**.
+- R2: R2_NOTHING and MIXED, so **neither (MIXED)**. Neither ADDS nor NOTHING holds on both reads.
+- PAIR on the 3/4-hop read: **PAIR_ADDS** (d_pair +0.0109), reported beside GNP's and MPP's verdicts as section 14 states.
+
+**What follows, by section 13's rule.**
+- **d10.** TOP10_NOTHING or TOP10_HURTS on all five. MPP amendment A1 (ecc031b) withdrew MPP's top-ten next form before any MPP fit. That was filed once three reads (hotpotqa, squad and 2wiki) had fixed the count. The pair columns' line for the MLP ends at MPP.
+- **d2.**
+  - R2_NOTHING on four of the five. GNP amendment A1 (c82ca5b) withdrew GNP's two-pass next form before any GNP fit, also once three reads had fixed the count. After either verdict, GNP's next form is the message-weight form.
+  - musique is not R2_ADDS (under section 14's rule it is neither ADDS nor NOTHING), and R2_ADDS holds on none of the five. So **no R2 input block is declared on the GNN**, and no hybrid R2 form is offered to the MLP.
+- R3 and lean + P5 + P10 decide nothing. They are in the tables above.
+
+**Reading it.**
+- **More anchors add nothing.** The same six scores against rrf's top ten are within 0.005 of the top five on every read.
+- **Better anchors add nothing either**, on four of the five reads.
+  - The probe's own first round keeps between 0.10 and 0.76 of rrf's top five as anchors. Yet the columns read against the new anchors move recall@5 by at most 0.0041 on those reads.
+  - Re-anchoring once more (R3) adds nothing beside R2.
+  - The one read where it moves is musique's 3-hop questions: +0.0110. On the 4-hop questions it is +0.0049, and pooled it is +0.0078, MIXED.
+- **The pair signal is in rrf's top five, and it holds on the hard hops.** d_pair is +0.0109 on the 3/4-hop read, against +0.0162 on the 2-hop read.
+- **The 3/4-hop questions are where the columns run out.**
+  - The probe's recall@5 on them is 0.3681 with the lean columns and at most 0.3869 with any anchors.
+  - On the 2-hop read it is 0.6500 and 0.6713.
+  - No anchor set read here closes that.
+
+**Stated against it.** Sections 13's and 14's.
