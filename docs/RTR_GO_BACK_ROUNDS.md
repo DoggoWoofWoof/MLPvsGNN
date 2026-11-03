@@ -302,3 +302,50 @@ no job has. The feeder keeps them waiting and does not drop them. `rtr-compare-f
 
 **What does not change.** Sections 1 to 11, apart from that row: the rounds, the fits, the base, the reads, the rule, RTR's
 open, the seed-0 stop, and the NO_GAIN, NOT_ADOPTED and INCOMPLETE rows.
+
+## 13. Amendment A5, 3 November 2026, before any RTR fit: RTR also runs when a second pass helps
+
+**What happened.**
+
+- DEP's screen was filed ADOPT_FOR_FULL_RUN (d9c74d6). By section 11, RTR opens only on DEP's NO_GAIN or NOT_ADOPTED.
+  So `rtr-open` refused, the feeder dropped every RTR item after it, and no RTR fit has run.
+- GNR and GNS (docs/GNR_REANCHORED_NEXT_GNN.md, docs/GNS_SELF_ANCHORED_ATTENTION_GNN.md) each read the GNN's own top five
+  again after a first pass, as RTR's second round does inside one model. Neither has a screen verdict yet.
+
+**The change.** RTR also runs when GNR's or GNS's screen is ADOPT_FOR_FULL_RUN, by the stack's amendment A5
+(docs/STK_GNN_STACK.md section 14), declared in the same commit.
+
+- The stack's `reopen-gate` makes that call once and writes it to `outputs/stk/reopen.json`.
+- `dep_call` reads that record. Suppose DEP's screen is ADOPT_FOR_FULL_RUN, DEP has filed no full run, and the record is
+  open and declared by the stack's file. Then `dep_call` answers "screen ADOPT_FOR_FULL_RUN, reopened by STK A5", and RTR's
+  fits run.
+- The other cases are as before:
+  - DEP's screen NO_GAIN or NOT_ADOPTED, or its full run NOT_ADOPTED, opens RTR.
+  - Anything else stops an RTR fit, including a closed record or a record declared by another file.
+- A fit's check of its stamp accepts the new answer beside the two old ones.
+- DEP's call only stamps the fit. RTR's base stays ISO's call, ML1's zg6r fits, so no compare or read changes.
+- When DEP and the rounds both pass, the stack keeps one of them by the six-read mean (STK section 14). RTR's own rule,
+  its rows and its full run for the stack (section 12) are unchanged.
+
+**The queue.** A dropped name does not come back, so RTR's items are renamed:
+
+- `rtr-re-selftest`;
+- the screen: `rtr-re-r2-s0`, `rtr-re-s0stop`, `rtr-re-r2-s0-hp`, `rtr-re-compare`, `rtr-re-calls` and `rtr-re-gate`;
+- the full run: `rtr-re-r2-s1`, `rtr-re-r2-s2`, `rtr-re-r2-s1-hp`, `rtr-re-r2-s2-hp`, `rtr-re-compare-full` and
+  `rtr-re-calls-full`.
+
+Each has its old item's command, size and fit name, except the WQ-hotpotqa fits' GPU share: 0.83 with a cap of 0.80, in
+place of 0.75 and 0.72, since DEP's WQ-hotpotqa fit ran out of memory under 0.72. The screen fits wait on the stack's
+`stk-reopen` in `rtr-open`'s place.
+The full-run fits wait on `rtr-re-gate` and `stk-own-rtr`.
+
+**The self-test** adds these cases, which pass on the laptop's CPU:
+
+- An open record declared by the stack's file, with DEP's screen ADOPT_FOR_FULL_RUN and no full run, gives the reopened
+  answer.
+- With DEP's full run ADOPT, the fit stops.
+- DEP's screen NO_GAIN gives "screen NO_GAIN", and its full run NOT_ADOPTED gives "full run NOT_ADOPTED", record or not.
+- A closed record, or one declared by another file, stops the fit.
+
+**What does not change.** Sections 1 to 12: the rounds, the fits, the base, the reads, the rule, the seed-0 stop, section
+6's rows and A4's full run for the stack.

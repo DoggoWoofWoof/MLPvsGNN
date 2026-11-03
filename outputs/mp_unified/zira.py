@@ -378,7 +378,7 @@ def fit_problems(call, base=ROOT):
             if got != (ROUNDS, SLOTS, DEP.BASE_LAYERS, bse, call):
                 out.append(f"{name}: its {what} names {got[0]} rounds, {got[1]} slots, {got[2]} layers on {got[3]} "
                            f"(ISO {got[4]})")
-            if not str(k.get("dep_call") or "").endswith((NO_GAIN, NOT_ADOPTED)):
+            if not str(k.get("dep_call") or "").endswith((NO_GAIN, NOT_ADOPTED, RTR.REOPENED)):   # A5: or reopened
                 out.append(f"{name}: its {what} ran under DEP's {k.get('dep_call')}")
         enc, benc = ks.get("encoder") or {}, kb.get("encoder") or {}
         if call == ISO.REPLACE:                     # zg6r-m's own draw: no zspk tensor copied

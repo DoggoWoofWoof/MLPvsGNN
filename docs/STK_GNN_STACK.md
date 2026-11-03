@@ -551,3 +551,156 @@ It also adds these cases outside the made files:
 - zgnw and zltx are imported after zgnp and outside every patch. Their names, fits and stop entries are A4's, and the
   thread variables are kept.
 - Every earlier case runs as written, with GNW and LTX not passing.
+
+## 14. Amendment A5 (3 November): GNR, GNT and GNS as forms, one attention form, and RTR and IRA reopened by a second pass
+
+Committed before any GNR, GNT or GNS screen verdict, before any RTR or IRA fit and before any stack fit. The members are
+not fixed yet: `stk-members-a4` is still waiting on GNA, GNP and LTX.
+
+**What had been seen when it was written:**
+
+- DEP's screen was filed ADOPT_FOR_FULL_RUN (d9c74d6). By section 2, RTR and IRA then do not run. `rtr-open` and
+  `ira-open` refused, the feeder dropped every RTR and IRA fit item after them, and no RTR or IRA fit has run.
+- GNW's seed-0 stop was STOP, so its screen is NOT_ADOPTED (5f8da44). Under WQ-musique, webqsp fell 0.0124 against a
+  0.0085 floor. Beside, held-out musique rose 0.0165, its 3-hop slice 0.0197 and its 4-hop slice 0.0247, all GAIN.
+- Three GNN forms followed:
+  - **GNR** (docs/GNR_REANCHORED_NEXT_GNN.md, dbc8a43) re-anchors GNX's NEXT columns on the base GNN's own top five.
+    Its seed-0 stop gave GO (24a330c), and its WQ-hotpotqa seed-0 fit waits in the GPU queue.
+  - **GNT** (docs/GNT_LEARNED_ATTENTION_GNN.md, 213eed7) learns attention to the first stage's top five on GNW's
+    columns. This is the next form that GNW's file names.
+  - **GNS** (docs/GNS_SELF_ANCHORED_ATTENTION_GNN.md, ba6fca0) is GNT's attention on the GNN's own first-pass top five,
+    which is GNR's first pass.
+
+  GNT's and GNS's seed-0 WQ-musique fits were training. Each of the three files holds its own full run for the stack, which
+  takes it only by an amendment of this file.
+- On the host, GNA's, GNP's and LTX's WQ-hotpotqa seed-0 fits waited in the GPU queue, and no stack fit had run.
+
+**Why.**
+
+- GNR, GNT and GNS are GNN screens aimed at musique's bridge hop, as GNW and LTX are. Without this amendment, a passing one
+  would reach no full run before the freeze.
+- GNR and GNS each read the GNN's own top five again after a first pass. A pass by either is a second pass helping, and
+  that is what RTR's rounds do inside one model and IRA's rounds with their alignment slots.
+- Section 2 shuts RTR and IRA on DEP's passing screen to keep DEP and the rounds out of one stack. It says nothing against
+  the rounds. So a pass by GNR or GNS reopens them, and the stack then takes DEP or the rounds, not both.
+
+**The change.**
+
+- **The members wait on GNR's, GNT's and GNS's verdicts too.** Each is read as A4 reads GNW's and LTX's: s0stop's gate
+  under the stage's own entry, so NOT_ADOPTED on a current seed-0 STOP, otherwise the screen verdict in the stage's
+  `calls.json` when that file is declared by the stage's file.
+  - A stage with no verdict at 12:00 IST on 5 November is left out, as any stage is.
+  - The members record names the three verdicts (`gnr_verdict`, `gnt_verdict`, `gns_verdict`).
+- **The forms** are A4's, then GNR, GNT and GNS. Each passing one is a form and a member of its own, listed after LTX, and
+  each is read under LTG's in-domain rule, as its own file reads it.
+- **One attention form at most.** GNW, GNT and GNS are three versions of one input, weights or attention over a top five.
+  When two or more pass, the stack keeps one:
+  - the one with the largest mean seed-0 delta over LTG's ten deciding reads (its calls file's rows);
+  - on a tie, the earlier of GNW, GNT and GNS;
+  - a form missing one of the ten reads only when none has all ten, and then the earliest.
+
+  GNT's and GNS's files fixed this choice (their section 7 rows). The record names each passing one's mean
+  (`attention_means`).
+- **RTR and IRA reopen on a second pass.** With DEP's screen passing, RTR and IRA also run when GNR's or GNS's screen is
+  ADOPT_FOR_FULL_RUN:
+  - `reopen-gate --wait` reads GNR's and GNS's verdicts as the members do.
+    - It opens once either is ADOPT_FOR_FULL_RUN.
+    - It closes once both are other verdicts, or at 12:00 IST on 5 November, since RTR's and IRA's screens could not be
+      read by then.
+  - It writes its call once (`outputs/stk/reopen.json`, `open` true or false). It exits 0 when open and 1 when closed.
+  - RTR's and IRA's fits read that record through `zrtr.dep_call` (RTR A5, docs/RTR_GO_BACK_ROUNDS.md section 13; IRA A5,
+    docs/IRA_ITERATIVE_ALIGNMENT.md section 14). DEP's screen ADOPT_FOR_FULL_RUN with no full run, and an open record
+    declared by this file, let them run.
+  - While the call is open or not yet made, the members wait on RTR's and IRA's verdicts. Once it is closed, RTR and IRA
+    will not run, as before (`will_not_run`). The record says whether the rounds were reopened (`rounds_reopened`).
+- **DEP or the rounds, not both.** Section 2 keeps DEP out of any stack with RTR or IRA, and that stays.
+  - The rounds' form is IRA, or RTR when IRA does not pass.
+  - When DEP and the rounds' form both pass, the stack keeps the one with the larger mean seed-0 delta over section 6's six
+    reads. A tie, or a missing mean, goes to DEP.
+  - The record names both means (`dep_or_rounds_means`).
+- **The pick (section 6)** is over the passing forms, except GNR and GNS.
+  - Their columns are per seed. Seeds 1 and 2 need their own first passes and columns before any fit reads them (GNR's
+    file, section 6; GNS's file, section 7).
+  - So neither has an own full run before the freeze, even as the one form (`NO_OWN`).
+  - GNT's own full run is released by `own-gate --stage gnt` in the same cases as any form's. Its items are added here.
+- **How they compose.** As A4 says for its later forms. That is amendment A6, A4's "A5" under its new name:
+  - committed before any stack fit runs, and only for forms whose seed-0 stop gave GO;
+  - it also states how the stack's fits read DEP's call when the rounds were reopened.
+
+  Until A6, the stage module composes section 2's five alone, and `stack-gate --wait` waits for that code as A4 says.
+
+**What does not change.** Everything else in sections 1 to 13:
+
+- section 2's five members and their composition;
+- the rules, the deadlines and the gates;
+- GNA's, GNP's, GNW's and LTX's parts;
+- the stack's fits and their sizes;
+- DEP's own full run, held for the stack.
+
+**The items (host):**
+
+- **`stk-selftest-a5`** (1 CPU, 4 GB), then **`stk-members-a5`** (0.2 CPU, 1 GB, `members --wait`), next to
+  `stk-members-a4`.
+- **`stk-reopen`** (0.2 CPU, 1 GB, `reopen-gate --wait`), after `stk-selftest-a5`.
+- **`stk-stack-gate` and the `stk-own-*` items** wait on `stk-members-a5` in `stk-members-a4`'s place.
+- **`stk-own-gnt`** (0.2 CPU, 1 GB, `own-gate --stage gnt --wait`), after `stk-members-a5`. There is no `stk-own-gnr` or
+  `stk-own-gns`.
+- **GNT's full run**, after GNP's in the queue, each fit with its seed-0 fit's size and command:
+  - `gnt-at-s1` and `gnt-at-s2` (GPU 0.42, cap 0.40, 15 GB);
+  - `gnt-at-s1-hp` and `gnt-at-s2-hp` (GPU 0.83, cap 0.80, 18 GB);
+  - all four after `gnt-gate` and `stk-own-gnt`;
+  - then `gnt-compare-full` and `gnt-calls-full` (`zgnt.py compare-all` and `zgnt.py calls`).
+- **RTR's and IRA's items, under new names.** The feeder dropped the old names when `rtr-open` and `ira-open` refused, and
+  a dropped name does not come back. Each new item has its old item's command, size and fit name:
+  - `rtr-re-selftest` and `ira-re-selftest`;
+  - the screens: `rtr-re-r2-s0`, `rtr-re-s0stop`, `rtr-re-r2-s0-hp`, `rtr-re-compare`, `rtr-re-calls` and `rtr-re-gate`;
+  - the full runs: `rtr-re-r2-s1`, `rtr-re-r2-s2`, `rtr-re-r2-s1-hp`, `rtr-re-r2-s2-hp`, `rtr-re-compare-full` and
+    `rtr-re-calls-full`;
+  - IRA's the same, with `ira-re-` and `k4`.
+
+  The WQ-hotpotqa fits change in one way: they take GPU 0.83 with a cap of 0.80, as LTG's and GNX's do, in place of
+  0.75 and 0.72. DEP's WQ-hotpotqa fit ran out of memory under 0.72 (it asked for 0.743 of the card) and finished
+  under 0.77, and RTR and IRA run zg6r's layers twice.
+
+  The screen fits wait on `stk-reopen` in `rtr-open`'s and `ira-open`'s place. The full-run fits wait on
+  `stk-own-rtr` and `stk-own-ira`, as before. In the GPU order the screen fits come after GNS's WQ-hotpotqa seed-0 fit and
+  before the stack's.
+- **`stk-members-a4`** ran A4's code, which does not wait on GNR, GNT or GNS. It is cancelled once no item depends on it.
+  It had written no `members.json`.
+- **Inputs.** Each new stk item lists zgnr.py, gnrcols.py, zgnt.py, zgns.py and gnscols.py and their three files, beside
+  A4's inputs.
+
+**The self-test** passed on the laptop's CPU before this commit.
+
+On made files, it adds these cases:
+
+- **DEP's screen passing, GNR and GNS pending.**
+  - The members wait on RTR and IRA, and on GNR, GNT and GNS. `reopen-gate` without wait returns 2.
+  - With GNT passing and GNR at NO_GAIN, the call still waits on GNS. At 12:00 IST on 5 November it would close.
+  - GNS's NOT_ADOPTED closes it: the waiting gate exits 1 at once, and `reopen.json` has `open` false.
+  - The members are then DEP and GNT, RTR and IRA will not run, the pick is DEP, and RTR's reader finds no open record.
+- **The waiting gate.** With GNS's calls INCOMPLETE it looks again after one POLL, finds GNS at ADOPT_FOR_FULL_RUN and
+  exits 0. `zrtr.dep_call` and `zira.dep_call` then both answer "screen ADOPT_FOR_FULL_RUN, reopened by STK A5".
+- **Reopened beside DEP.**
+  - With GNS passing, the members wait on RTR and IRA, and nothing is marked as not running.
+  - RTR and IRA then pass. IRA stands for RTR, and IRA is kept over DEP on the larger six-read mean (0.002 against 0.001).
+    On a tie (0.001 each), DEP is kept.
+  - The members are the kept one and GNS. The pick is RTR on its larger mean, and GNS is not among the pick's means.
+- **One attention form**, with GNW, GNT and GNS all passing:
+  - means of 0.004, 0.006 and 0.005 keep GNT;
+  - a tie at 0.006 keeps GNW;
+  - with GNT's calls missing one of the ten reads, GNS is kept on the larger mean of the two with all ten (0.009
+    against GNW's 0.002);
+  - with every one missing a read, GNW is kept.
+
+  Each case releases the kept form's own full run, and none when it is GNS.
+- **GNR alone.** One form, so there is no stack and no own full run, and nothing is released.
+- **Members records.** Records with DEP and GNR, IRA and GNT, or GNR and GNS are read. Records with GNW and GNT, GNT and
+  GNS, DEP and IRA, or DEP, RTR and GNR are refused.
+
+It also adds these cases outside the made files:
+
+- zgnr, zgnt and zgns are imported after A4's modules and outside every patch. Their names, fits and stop entries are
+  A5's, and the thread variables are kept.
+- Each one's seed-0 STOP, under its module's own entry, is read as NOT_ADOPTED.
+- Every earlier case runs as written, with GNR, GNT and GNS not passing.

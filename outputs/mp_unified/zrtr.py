@@ -46,6 +46,9 @@ ARM = DEP.ARM                                   # zrm's arm: the model is zg6r's
 TAG = "r2"
 ROUNDS = 2
 DEP_CALLS = Path(DEP.OUT) / "calls.json"
+REOPEN = Path("outputs/stk") / "reopen.json"    # A5 (section 13): STK's reopen-gate record, read only
+STK_DECLARED = "docs/STK_GNN_STACK.md"
+REOPENED = "reopened by STK A5"                # A5: how dep_call's answer ends under STK's reopen record
 CODE_SKIP = DEP.CODE_SKIP                       # stage modules, not the trainer's code
 R5_TOL = DEP.R5_TOL
 ADOPT_FOR_FULL_RUN, NO_GAIN, NOT_ADOPTED, ADOPT, INCOMPLETE = (
@@ -71,9 +74,18 @@ def log(msg):
 # ── when RTR runs, and its base ──────────────────────────────────────────────
 
 
+def reopen_record(base=ROOT):
+    """A5 (section 13): STK's reopen record (zstk.py reopen-gate, written when GNR's or GNS's screen is
+    ADOPT_FOR_FULL_RUN), else None."""
+    p = Path(base) / REOPEN
+    rec = M1.WQ.read_json(p) if p.is_file() else {}
+    return rec if rec.get("declared_in") == STK_DECLARED and rec.get("open") is True else None
+
+
 def dep_call(base=ROOT):
     """DEP's filed calls keep three layers (DEP section 6): its screen NO_GAIN or NOT_ADOPTED, or its full run NOT_ADOPTED.
-    Returns which; anything else stops an RTR fit."""
+    A5 (section 13): or DEP's screen ADOPT_FOR_FULL_RUN with no full run filed, under STK's reopen record. Returns which;
+    anything else stops an RTR fit."""
     p = Path(base) / DEP_CALLS
     rec = M1.WQ.read_json(p) if p.is_file() else {}
     if rec.get("declared_in") != DEP.DECLARED:
@@ -84,6 +96,8 @@ def dep_call(base=ROOT):
         return f"screen {sc}"
     if sc == ADOPT_FOR_FULL_RUN and fr == NOT_ADOPTED:
         return f"full run {fr}"
+    if sc == ADOPT_FOR_FULL_RUN and fr is None and reopen_record(base) is not None:
+        return f"screen {sc}, {REOPENED}"
     raise SystemExit(f"zrtr: DEP's screen is {sc} and its full run {fr}; RTR runs when three layers stay (DEP section 6)")
 
 
@@ -332,7 +346,7 @@ def fit_problems(call, base=ROOT):
             if (k.get("rounds"), k.get("layers"), k.get("base"), k.get("iso_verdict")) != (ROUNDS, DEP.BASE_LAYERS, bse, call):
                 out.append(f"{name}: its {what} names {k.get('rounds')} rounds of {k.get('layers')} layers on {k.get('base')} "
                            f"(ISO {k.get('iso_verdict')})")
-            if not str(k.get("dep_call") or "").endswith((NO_GAIN, NOT_ADOPTED)):
+            if not str(k.get("dep_call") or "").endswith((NO_GAIN, NOT_ADOPTED, REOPENED)):       # A5: or reopened
                 out.append(f"{name}: its {what} ran under DEP's {k.get('dep_call')}")
         enc, benc = ks.get("encoder") or {}, kb.get("encoder") or {}
         if call == ISO.REPLACE:                     # zg6r-m's own draw: no zspk tensor copied
@@ -524,6 +538,24 @@ def selftest():
             except SystemExit:
                 got = None
             assert got == want, (sc, fr, got)
+        # A5: STK's reopen record opens RTR on DEP's passing screen with no full run filed, and nothing else
+        r = Path(td) / REOPEN
+        r.parent.mkdir(parents=True, exist_ok=True)
+        mine = {"declared_in": STK_DECLARED, "open": True}
+        for rec, sc, fr, want in ((mine, ADOPT_FOR_FULL_RUN, None, f"screen {ADOPT_FOR_FULL_RUN}, {REOPENED}"),
+                                  (mine, ADOPT_FOR_FULL_RUN, ADOPT, None), (mine, NO_GAIN, None, "screen NO_GAIN"),
+                                  (mine, ADOPT_FOR_FULL_RUN, NOT_ADOPTED, "full run NOT_ADOPTED"),
+                                  ({**mine, "open": False}, ADOPT_FOR_FULL_RUN, None, None),
+                                  ({**mine, "declared_in": "elsewhere"}, ADOPT_FOR_FULL_RUN, None, None)):
+            r.write_text(json.dumps(rec), encoding="utf-8")
+            p.write_text(json.dumps({"declared_in": DEP.DECLARED, "screen": {"verdict": sc},
+                                     "full_run": {"verdict": fr} if fr else None}), encoding="utf-8")
+            try:
+                got = dep_call(td)
+            except SystemExit:
+                got = None
+            assert got == want, (rec, sc, fr, got)
+        r.unlink()
         p.write_text(json.dumps({"declared_in": "elsewhere", "screen": {"verdict": NO_GAIN}}), encoding="utf-8")
         for path in (td, Path(td) / "none"):
             try:

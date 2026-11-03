@@ -300,6 +300,38 @@ no job has. The feeder keeps them waiting and does not drop them. `ira-compare-f
 **What does not change.** Sections 1 to 12, apart from those rows: the plan's model, the fits, the base, the reads, the
 rule, IRA's open, the seed-0 stop, and the NO_GAIN, NOT_ADOPTED and INCOMPLETE rows.
 
+## 14. Amendment A5, 3 November 2026, before any IRA fit: IRA also runs when a second pass helps
+
+**What happened.** As for RTR (docs/RTR_GO_BACK_ROUNDS.md section 13):
+
+- DEP's screen was filed ADOPT_FOR_FULL_RUN (d9c74d6), so `ira-open` refused, the feeder dropped every IRA item after it,
+  and no IRA fit has run.
+- GNR's and GNS's screens, each a second read of the GNN's own top five after a first pass, have no verdict yet.
+
+**The change.** IRA also runs when GNR's or GNS's screen is ADOPT_FOR_FULL_RUN, by the stack's amendment A5
+(docs/STK_GNN_STACK.md section 14), declared in the same commit.
+
+- IRA's `dep_call` is RTR's (RTR A5), so it reads the stack's `outputs/stk/reopen.json` the same way.
+- A fit's check of its stamp accepts the reopened answer beside the two old ones.
+- IRA's base stays ISO's call, ML1's zg6r fits.
+- When DEP and IRA both pass, the stack keeps one of them by the six-read mean (STK section 14). IRA's own rule, its rows
+  and its full run for the stack (section 13) are unchanged.
+
+**The queue.** A dropped name does not come back, so IRA's items are renamed:
+
+- `ira-re-selftest`;
+- the screen: `ira-re-k4-s0`, `ira-re-s0stop`, `ira-re-k4-s0-hp`, `ira-re-compare`, `ira-re-calls` and `ira-re-gate`;
+- the full run: `ira-re-k4-s1`, `ira-re-k4-s2`, `ira-re-k4-s1-hp`, `ira-re-k4-s2-hp`, `ira-re-compare-full` and
+  `ira-re-calls-full`.
+
+Each has its old item's command, size and fit name, except the WQ-hotpotqa fits' GPU share: 0.83 with a cap of 0.80, in
+place of 0.75 and 0.72, since DEP's WQ-hotpotqa fit ran out of memory under 0.72. The screen fits wait on the stack's
+`stk-reopen` in `ira-open`'s place.
+The full-run fits wait on `ira-re-gate` and `stk-own-ira`.
+
+**What does not change.** Sections 1 to 13: the plan's model, the fits, the base, the reads, the rule, the seed-0 stop,
+section 6's rows and A4's full run for the stack.
+
 ## Results
 
 None yet.
