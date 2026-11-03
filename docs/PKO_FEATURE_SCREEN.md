@@ -341,3 +341,29 @@ Each costs fits: the MLP's two screen fits on the host's CPU, about 2.5 hours an
 **Stated against it.** Section 11's, plus one. R2's anchors for a question come from a probe that did not see its labels. But the R2 probe that scores it was trained on questions whose anchors came from a probe that did see them. That is a second-order leak, through one logistic probe's weights.
 
 **Items.** `pfq-selftest`, `pfq-smoke` (hotpotqa, 32 questions), then `pfq-anchors-<dataset>` for the five datasets, musique first, one at a time, placed before LTA's first screen fit. They are CPU only and write only `outputs/pfs/anchors_<dataset>.json`. They read PKO's cache and the served node vectors (on the host, the verified mirror), read only.
+
+## 14. Amendment A5, 3 November 2026, after section 13 was committed and before any number of the reading it adds
+
+**Why.** Sections 11 and 13 read musique's fit carve on its first 400 questions, and all of them are 2-hop. musique's 3-hop and 4-hop questions are where its gap is widest. In RWT's base reads (zrckpn on WQ-hotpotqa), musique's recall@5 is about 0.58 overall, 0.53 on 3-hop and 0.36 on 4-hop. Section 13 (b) asks a chain question: a later hop needs the hop before it as its anchor. A 2-hop read can understate it.
+
+**The read** (`h34`, `anchors_musique_h34.json`). Code: `outputs/mp_unified/zpfr.py`, which imports zpfq, zpfp, zpfs, ltwdiag, lean_gpu, lean_cache and lean_mlp3 and edits none of them (self-test passes).
+- **The questions.** musique/s1fit's cache parts 20, 25 and 26, loaded alone: 242 3-hop and 271 4-hop questions, about 3.1M pool rows. The read refuses parts that hold other counts.
+  - The carve's 4,601 questions are ordered by hop.
+  - 2-hop: parts 0 to 18 and the first 82 of part 19.
+  - 3-hop: the rest of part 19 through the first 70 of part 25.
+  - 4-hop: the rest.
+- **How the parts load.** Inside the carve's load, lean_cache.part_dirs returns the three parts with their records' row ranges moved to start at 0. The arrays and their shas are unchanged, and it is put back after.
+- **The read itself** is zpfq's, unchanged: pass 1, P10, R2, R3, the same six probes, and d10 and d2 against lean + P5. Added: section 11's PAIR call on d_pair = recall@5(lean + P5) - recall@5(lean). Each is also given by hop.
+- **Checks.** Only zpfq's machinery check refuses. There is no A3 read of these questions to reproduce.
+
+**Rule, fixed here.** The pooled read (513 questions) gives a PAIR call, a TOP10 call and an R2 call, on section 11's and section 13's thresholds. They join section 13's musique read:
+- musique counts as R2_ADDS (or TOP10_ADDS) in section 13's "what follows" when either musique read gives that call and neither gives the HURTS call.
+- It counts as R2_NOTHING (or TOP10_NOTHING) only when both reads do.
+- The PAIR call is reported beside GNP's and MPP's verdicts. Their own screens read musique's 3-hop and 4-hop slices and decide.
+- The by-hop calls decide nothing (242 and 271 questions).
+
+**Stated against it.** Section 13's, plus two:
+- These parts are not a random sample of musique's 3-hop and 4-hop questions. They follow the carve's order, and the carve is a fixed subset of musique's train split.
+- The probe is crossfit by question parity within these 513 questions only.
+
+**Item.** `pfq-anchors-musique-h34`, CPU only, after `pfq-anchors-musique` and before LTA's first screen fit. It writes only `outputs/pfs/anchors_musique_h34.json`.
