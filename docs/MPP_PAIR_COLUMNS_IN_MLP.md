@@ -192,3 +192,21 @@ Its calls (`outputs/mpp/calls.json` and `.md`) hold:
 - **The INCOMPLETE checks on made stamps.** A wrong LTM scorer, a GNP rule other than the stamp's, a changed column
   record, and a missing stamped file each make a problem.
 - **The rule on made numbers** (NO_GAIN, ADOPT_FOR_FULL_RUN, NOT_ADOPTED, ADOPT), and the next form.
+
+## 11. Amendment A1, 3 November 2026, after PFS amendment A4's calls and before any MPP fit
+
+**Why.** PFS amendment A4 (docs/PKO_FEATURE_SCREEN.md section 13) tested the next form named in section 7: the same six pair scores against rrf's top ten rows instead of its top five. It used A3's logistic probe on the five fit carves. Its rule, fixed before any number: TOP10_NOTHING or TOP10_HURTS on at least three of the five withdraws that form by an MPP amendment before MPP's verdict, and the pair columns' line for the MLP ends at MPP. Three reads already give TOP10_NOTHING. The other two cannot change the count:
+
+| dataset | questions | recall@5, lean + P5 | lean + P10 | d10 | call |
+| --- | --- | --- | --- | --- | --- |
+| hotpotqa | 1,000 | 0.8223 | 0.8178 | -0.0045 | TOP10_NOTHING |
+| squad | 1,000 | 0.9558 | 0.9588 | +0.0030 | TOP10_NOTHING |
+| 2wiki | 1,000 | 0.8203 | 0.8185 | -0.0018 | TOP10_NOTHING |
+| musique (first 400, all 2-hop) | 400 | 0.6663 | 0.6625 | -0.0038 | TOP10_NOTHING; counted under section 14's rule once its 3-hop and 4-hop read is in |
+
+Every read's machinery check is exact (rrf's top five give A3's twelve columns, 0.0e+00). Each read reproduces A3's lean and lean + P5 recall@5 to 0.0. Section 13's full table, with musique's 3-hop and 4-hop read (section 14) and webqsp, is filed in its own section of that file.
+
+**What changes.**
+- **Section 7, the NO_GAIN or NOT_ADOPTED row.** Its next form, the same six scores against rrf's top ten rows, is withdrawn. On NO_GAIN or NOT_ADOPTED, the six pair columns close for the MLP and no further pair form follows. The MLP's next forms are the ones LTS's and LTA's declarations name.
+- **Section 7, the ADOPT_FOR_FULL_RUN row,** stands as written. Its next form joins the adopted columns to another adopted candidate and reads no new anchors.
+- **Nothing else changes:** not zmpp.py, not MPP's items, not its rule, not its reads.
