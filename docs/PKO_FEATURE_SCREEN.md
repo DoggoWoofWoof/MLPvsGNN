@@ -296,3 +296,48 @@ Every read passed the identity: no row was off, and the largest |c.q - dense_cos
 - **The single columns beyond rrf's top five** (z-scored AUC; the best two of the six, res_max and pair_mean): musique 0.894 and 0.903, hotpotqa 0.673 and 0.633, squad 0.823 and 0.856, webqsp 0.568
   and 0.551. On 2wiki every column is below 0.5 there (0.37 to 0.48), yet the probe gains: the columns help beside the lean ones, not alone.
 - **Stated against it.** Section 11's, unchanged. musique's AUC over all rows fell (0.9877 -> 0.9848) while its recall@5 rose. The reads' JSON stay under `outputs/pfs` (gitignored).
+
+## 13. Amendment A4, 3 November 2026, after section 12 was filed and before any number of the reading it adds
+
+**Why.** Section 12's columns are made against rrf's top five. Two forms already named on them turn on the anchors:
+- MPP's next form after NO_GAIN or NOT_ADOPTED (docs/MPP_PAIR_COLUMNS_IN_MLP.md section 7): the same six scores against rrf's top ten rows.
+- GNP's next form after ADOPT_FOR_FULL_RUN (docs/GNP_PAIR_COLUMNS_IN_GNN.md section 7): the same six columns against the GNN's own top five after a first pass (two-pass refinement).
+
+Each costs fits: the MLP's two screen fits on the host's CPU, about 2.5 hours and 40 GB each, and the GNN's two on the card. Before either runs, this asks the probe, with no fit and no seed, whether either anchor set carries more than rrf's top five:
+- (a) more anchors from the same first stage;
+- (b) better anchors: the top five of a first round that already reads the six columns.
+
+(b) is the iterative refinement raised on 2 November, in the probe's terms: rank, re-anchor on the ranking, rank again.
+
+**The read** (`anchors --dataset D`, `anchors_<dataset>.json`; section 9's fit carves and section 11's questions, every pool row). Code: `outputs/mp_unified/zpfq.py`, which imports zpfp, zpfs, ltwdiag, lean_gpu, lean_cache and lean_mlp3 and edits none of them (self-test passes).
+- **Pass 1** is section 11's read, unchanged (`zpfp.read`): the 172 lean columns raw and z-scored, A3's twelve columns (P5), the labels and rrf's rank.
+- **Three more anchor sets.** Each gives the same six columns, raw and z-scored within the question (twelve), from the same frozen vectors:
+  - **P10**: rrf's top ten rows. `pair_1` and `res_1` still read rrf's first row.
+  - **R2**: the top five rows by the probe on the lean columns and P5, scored crossfit by question parity (section 9's probe), ties by position. That probe's first row stands for rrf's first in `pair_1` and `res_1`.
+  - **R3**, beside, deciding nothing: the same over the top five by the R2 probe's scores.
+- **Probes**, section 9's: lean; lean + P5 (section 12's); lean + P10; lean + P5 + R2; lean + P5 + R3; and beside, lean + P5 + P10.
+- **Also reported:** the share of rrf's top five kept in each round's top five, and on musique, recall@5 by hop.
+- **Two checks refuse the read:**
+  - Given rrf's top five, the columns' code must give A3's twelve on the first batch (within 1e-6).
+  - lean and lean + P5 must reproduce section 12's recall@5 within 0.002 (A3's own JSON where it is on the machine).
+
+**Rule, fixed here.** Per dataset, against lean + P5's recall@5 in the same read:
+- **d10** = recall@5(lean + P10) - recall@5(lean + P5):
+  - **TOP10_ADDS**: d10 >= +0.01.
+  - **TOP10_HURTS**: d10 <= -0.01.
+  - **TOP10_NOTHING**: |d10| < 0.005.
+  - Anything else is MIXED.
+- **d2** = recall@5(lean + P5 + R2) - recall@5(lean + P5): **R2_ADDS**, **R2_HURTS**, **R2_NOTHING** and MIXED on the same thresholds.
+- **What follows from d10.**
+  - TOP10_NOTHING or TOP10_HURTS on at least three of the five: MPP's top-ten next form is withdrawn by an MPP amendment before MPP's verdict, and the pair columns' line for the MLP ends at MPP.
+  - Otherwise MPP's next form stands as written, with these numbers beside it.
+- **What follows from d2.**
+  - R2_ADDS on musique with R2_HURTS on none, or R2_ADDS on at least three of the five: R2's columns are declared as an input block on the GNN, in their own file, without waiting for GNP's verdict. Their first round is a fixed probe made on the CPU, as P5's columns are made.
+  - For the MLP, a learned first round's top five is a beam chosen by other rows' scores. Under the 2 November ruling only rrf's beam is inside the MLP track, so the MLP's form waits for the user's ruling and is labelled hybrid until then.
+  - R2_NOTHING on at least three of the five: re-anchoring on a first round is closed for the pair columns. GNP's two-pass next form is withdrawn by a GNP amendment before GNP's verdict. After ADOPT_FOR_FULL_RUN, GNP's next form is then its message-weight form (its NO_GAIN form).
+  - Anything else: reported, and nothing changes.
+- R3 and lean + P5 + P10 decide nothing.
+
+**Stated against it.** Section 11's, plus one. R2's anchors for a question come from a probe that did not see its labels. But the R2 probe that scores it was trained on questions whose anchors came from a probe that did see them. That is a second-order leak, through one logistic probe's weights.
+
+**Items.** `pfq-selftest`, `pfq-smoke` (hotpotqa, 32 questions), then `pfq-anchors-<dataset>` for the five datasets, musique first, one at a time, placed before LTA's first screen fit. They are CPU only and write only `outputs/pfs/anchors_<dataset>.json`. They read PKO's cache and the served node vectors (on the host, the verified mirror), read only.
