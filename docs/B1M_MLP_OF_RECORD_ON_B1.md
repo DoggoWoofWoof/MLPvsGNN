@@ -108,3 +108,18 @@ lists, columns, forks or reads.
   needs U2m (a)'s EM and U2p's score type on every structural entry, and no stage has computed them for hyperlink entries. That is a
   stage of its own if declared. Until then, the hyperlink rows stay B1b's and B1f's (J5 fits), and HLC's.
 - **Development fixes** made before any read number are listed here.
+  - *Lists' memory (4 Nov).* The six `b1m-lists-*` items reserve 2 GB on the host, not section 9's 6: LTM's own lists peaked at
+    1.3 GB.
+  - *B1P's removed files restored (4 Nov).* On 3 Nov at 19:31 the host's clean-up (an urgent pass at 59.7 GB free) removed 240 of
+    B1P's regenerable files: every look chunk of the six carves, and 28 cache arrays (musique b1w's `node` and hotpotqa-store
+    arrays in all four parts; the hotpotqa store's `dists` and `tab` in the other four carves). B1P's reads had ended and B1M was
+    not yet queued, so no queued job pinned them. `b1m-lists-musique-b1w` then failed on the missing `node` array, twice with the
+    feeder's retry, and its eight dependents dropped. B1P's chain skips any step whose record exists, so running it again rebuilds
+    nothing. `outputs/mp_unified/b1prepair.py` runs B1P's own steps (look, bases, cache; `--host`, the chain's 2-thread
+    environment) on a scratch root under `outputs/b1m/repair`. It copies back exactly the removed files, and only if all of these
+    hold: every rebuilt cache array of the six carves has the file sha256 that B1P's part record pins; every rebuilt look record
+    agrees with B1P's on every field but time, seconds and memory; every chunk B1P still holds is byte-identical to its rebuilt
+    twin; and nothing under `outputs/b1p` changed during the rebuild. These are B1M's only writes outside `outputs/b1m`. Each
+    restored file is checked after the copy, no existing file is overwritten and no record changes, so section 2's roots are again
+    what B1P's records say. B1M's six t-reads wait on the restore. The musique-b1w lists, two column sets and six w-reads run again
+    under new item names (`-r`), and `b1m-report-r` reads all twelve.
