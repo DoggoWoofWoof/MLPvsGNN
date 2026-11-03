@@ -146,3 +146,39 @@ python outputs/mp_unified/zc1r.py run --gnn zg6r --mlp zrckpc     (after LTC's s
 The self-test passed before this commit. It runs section 4's checks for each MLP family on the made-up root, and confirms
 that each family uses its own stamp key and record name. It also refuses an LTM stamp without NEXT and an LTC stamp without
 CHAIN.
+
+## 7. Results, zg6r against zrckpn (amendment A1; filed 4 November 2026)
+
+`zc1r.py run --gnn zg6r --mlp zrckpn` ran on the host at 23:53 IST on 3 November, A1's command as committed in be3acd0.
+Section 1's checks passed: the 24 reads' stamps hold, every read reproduces its filed compare, and each pair of reads
+shares its questions. Records: `outputs/c1r/claim1_zg6r_zrckpn.json` and `.md`. Under A1 this is the record that
+speaks for Claim 1 while zrckpn is the MLP of record and zg6r the GNN of record.
+
+**CLAIM1_NOT_ALL.** All four zero-shot clauses HOLD. Five of the eight in-domain clauses HOLD, against four in zrckp's
+record (section 5):
+- **hotpotqa in-domain (WQ-musique) now HOLDS:** 0.924 [0.907, 0.942]. zrckp's was 0.903 [0.885, 0.920], NOT_SHOWN.
+- **musique in-domain (WQ-hotpotqa) is NOT_SHOWN:** 0.911 [0.858, 0.966]. zrckp's was 0.886 [0.832, 0.940], MISSES.
+- **squad in-domain is NOT_SHOWN on both splits,** as before: the GNN's gain over RRF is under 0.01.
+
+**In points.** The record's `gap` is GNN − MLP R@5, paired by question, with a 95% interval over the questions (seed-0
+fits, s1eval):
+
+| split | dataset | read | questions | GNN | MLP | GNN − MLP [lo, hi] |
+| --- | --- | --- | ---: | ---: | ---: | --- |
+| WQ-musique | 2wiki | in-domain | 12,576 | 0.9269 | 0.9155 | +0.0114 [+0.0091, +0.0136] |
+| WQ-hotpotqa | 2wiki | in-domain | 12,576 | 0.9296 | 0.9135 | +0.0161 [+0.0139, +0.0183] |
+| WQ-musique | hotpotqa | in-domain | 7,405 | 0.8593 | 0.8460 | +0.0132 [+0.0101, +0.0163] |
+| WQ-hotpotqa | musique | in-domain | 2,417 | 0.5912 | 0.5806 | +0.0105 [+0.0040, +0.0171] |
+| WQ-musique | webqsp | in-domain | 1,503 | 0.6632 | 0.6457 | +0.0175 [+0.0035, +0.0309] |
+| WQ-hotpotqa | webqsp | in-domain | 1,503 | 0.6658 | 0.6469 | +0.0189 [+0.0039, +0.0336] |
+| WQ-musique | squad | in-domain | 11,873 | 0.9142 | 0.9138 | +0.0003 [−0.0018, +0.0024] |
+| WQ-hotpotqa | squad | in-domain | 11,873 | 0.9139 | 0.9132 | +0.0007 [−0.0015, +0.0029] |
+| WQ-musique | musique | zero-shot | 2,417 | 0.5086 | 0.5190 | −0.0104 [−0.0171, −0.0037] |
+| WQ-hotpotqa | hotpotqa | zero-shot | 7,405 | 0.8004 | 0.8193 | −0.0189 [−0.0231, −0.0149] |
+| WQ-musique | metaqa | zero-shot | 9,785 | 0.3615 | 0.4126 | −0.0511 [−0.0581, −0.0441] |
+| WQ-hotpotqa | metaqa | zero-shot | 9,785 | 0.3519 | 0.3668 | −0.0148 [−0.0231, −0.0070] |
+
+- In-domain on 2wiki, hotpotqa and musique, the GNN is 1.05 to 1.61 points above the MLP. Each interval is above zero.
+- Zero-shot, the MLP is above the GNN on all four reads, by 1.0 to 5.1 points.
+- The points come from the same record as the shares. No bar on points is declared, so they carry no call.
+- The call changes no model, pool or input (section 3).

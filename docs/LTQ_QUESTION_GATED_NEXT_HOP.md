@@ -156,3 +156,28 @@ beside reads and the report again. The fits go through `retry_cmd.py` as LTA's d
 
 Committed: this file, `ltqdiag.py`, and `outputs/ltq/report.{json,md}` once filed. Never committed: fold fits, read
 records.
+
+## 9. Results (filed 4 November 2026)
+
+`ltq-report-dec` wrote `outputs/ltq/report.json` and `.md` on the host at about 23:55 IST on 3 November. Nothing in
+sections 1 to 8 changed after the reads.
+
+**NO_SIGNAL (BELOW_PAIR).** The decision form is u: its unlinked T2 on musique/s1fit is 0.089, against h's 0.043.
+
+| decisive read | unlinked T2: u | pair | needed (pair + 0.03) | linked T2: u | needed (bil - 0.02) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| WQ-hotpotqa musique/s1fit | 0.089 | 0.144 | 0.174 | 0.342 | 0.311 |
+| WQ-hotpotqa musique/s1eval | 0.086 | 0.113 | 0.143 | 0.343 | 0.326 |
+
+- **The unlinked condition fails on both reads.** u is below pair itself, not only below pair + 0.03, and below res
+  (0.128 and 0.104). It is close to bil (0.096 and 0.084).
+- **The linked condition holds on both.** u keeps bil's linked T2: 0.342 against 0.331, and 0.343 against 0.346.
+- Every read's bil, pair, res and rrf columns equal LTA's record ("equal" in the report).
+- **Beside, deciding nothing:**
+  - On 2wiki/fit, u's unlinked T2 is 0.194, against pair's 0.155.
+  - On hotpotqa/s1eval it is 0.126, against pair's 0.269.
+  - u's question gate puts 0.69 to 0.71 of its weight on expert A in every read.
+
+**What follows (section 7, NO_SIGNAL).** A next-hop scorer trained on the golds, with relations and IRA's refinement,
+is not what musique's unlinked next hop lacks; it needs a new input. No further next-hop scorer is declared before the
+freeze. The verdict closes only this form (docs/SCREENS.md, section 3b).

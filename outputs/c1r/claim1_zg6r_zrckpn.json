@@ -1,0 +1,1501 @@
+{
+ "stage": "C1R",
+ "doc": "docs/C1R_CLAIM1_UNDER_WQ.md",
+ "family": {
+  "mlp": "zrckpn",
+  "gnn": "zg6r"
+ },
+ "candidate": "p@swa",
+ "carve": "s1eval",
+ "boot": 2000,
+ "bar": 0.9,
+ "margin": 0.002,
+ "fits": [
+  {
+   "fit": "scr-ltm-zrckpn-s0",
+   "arm": "zrckpn",
+   "split": "WQ-musique",
+   "seed": 0,
+   "stamp": "ltm",
+   "role": "mlp"
+  },
+  {
+   "fit": "scr-ltm-zrckpn-s0-hp",
+   "arm": "zrckpn",
+   "split": "WQ-hotpotqa",
+   "seed": 0,
+   "stamp": "ltm",
+   "role": "mlp"
+  },
+  {
+   "fit": "scr-ml1-zg6r-s0",
+   "arm": "zg6r",
+   "split": "WQ-musique",
+   "seed": 0,
+   "stamp": "ml1",
+   "role": "gnn"
+  },
+  {
+   "fit": "scr-ml1-zg6r-s0-hp",
+   "arm": "zg6r",
+   "split": "WQ-hotpotqa",
+   "seed": 0,
+   "stamp": "ml1",
+   "role": "gnn"
+  }
+ ],
+ "call": "CLAIM1_NOT_ALL",
+ "in_domain": {
+  "WQ-musique squad": "NOT_SHOWN",
+  "WQ-musique hotpotqa": "HOLDS",
+  "WQ-musique 2wiki": "HOLDS",
+  "WQ-musique webqsp": "HOLDS",
+  "WQ-hotpotqa squad": "NOT_SHOWN",
+  "WQ-hotpotqa musique": "NOT_SHOWN",
+  "WQ-hotpotqa 2wiki": "HOLDS",
+  "WQ-hotpotqa webqsp": "HOLDS"
+ },
+ "zero_shot": {
+  "WQ-musique musique": "HOLDS",
+  "WQ-hotpotqa hotpotqa": "HOLDS",
+  "WQ-musique metaqa": "HOLDS",
+  "WQ-hotpotqa metaqa": "HOLDS"
+ },
+ "zero_shot_reads": {
+  "WQ-musique musique": {
+   "in_split": "WQ-hotpotqa",
+   "zs_gap": -0.0104,
+   "in_gap": 0.0105,
+   "allowed": 0.0105,
+   "excess": [
+    -0.0209,
+    -0.0303,
+    -0.0117
+   ],
+   "call": "HOLDS"
+  },
+  "WQ-hotpotqa hotpotqa": {
+   "in_split": "WQ-musique",
+   "zs_gap": -0.0189,
+   "in_gap": 0.0132,
+   "allowed": 0.0132,
+   "excess": [
+    -0.0321,
+    -0.0375,
+    -0.027
+   ],
+   "call": "HOLDS"
+  },
+  "WQ-musique metaqa": {
+   "in_split": null,
+   "zs_gap": -0.0511,
+   "in_gap": null,
+   "allowed": 0.0,
+   "excess": [
+    -0.0511,
+    -0.0581,
+    -0.0441
+   ],
+   "call": "HOLDS"
+  },
+  "WQ-hotpotqa metaqa": {
+   "in_split": null,
+   "zs_gap": -0.0148,
+   "in_gap": null,
+   "allowed": 0.0,
+   "excess": [
+    -0.0148,
+    -0.0231,
+    -0.007
+   ],
+   "call": "HOLDS"
+  }
+ },
+ "reads": [
+  {
+   "split": "WQ-musique",
+   "dataset": "metaqa",
+   "read": "zero-shot",
+   "questions": 9785,
+   "mlp": [
+    0.4126,
+    0.3338,
+    0.3011
+   ],
+   "gnn": [
+    0.3615,
+    0.2985,
+    0.2266
+   ],
+   "rrf": [
+    0.0047,
+    0.0026,
+    0.0008
+   ],
+   "gnn_gain": {
+    "point": [
+     0.3568,
+     0.296,
+     0.2258
+    ],
+    "lo": [
+     0.3478,
+     0.2866,
+     0.2175
+    ],
+    "hi": [
+     0.3658,
+     0.3052,
+     0.234
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.4078,
+     0.3312,
+     0.3003
+    ],
+    "lo": [
+     0.3989,
+     0.322,
+     0.2911
+    ],
+    "hi": [
+     0.417,
+     0.3407,
+     0.309
+    ]
+   },
+   "share": {
+    "point": [
+     1.1431,
+     1.1191,
+     1.33
+    ],
+    "lo": [
+     1.1225,
+     1.0937,
+     1.288
+    ],
+    "hi": [
+     1.1647,
+     1.1446,
+     1.375
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0511,
+     -0.0353,
+     -0.0745
+    ],
+    "lo": [
+     -0.0581,
+     -0.0424,
+     -0.0832
+    ],
+    "hi": [
+     -0.0441,
+     -0.0281,
+     -0.0664
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0/reads/metaqa__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0/reads/metaqa__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "4aa853b576ed8025a16e42f1af9845df47c390dc680b7caf8a84bcb431963f19",
+    "gnn": "14378eac2cd7cd299177349360ed77fc35e8eb5a6a18841373b03d9732aec81a"
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "mlp": [
+    0.9138,
+    0.9138,
+    0.7548
+   ],
+   "gnn": [
+    0.9142,
+    0.9142,
+    0.7535
+   ],
+   "rrf": [
+    0.9054,
+    0.9054,
+    0.7335
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0088,
+     0.0088,
+     0.02
+    ],
+    "lo": [
+     0.0055,
+     0.0055,
+     0.0154
+    ],
+    "hi": [
+     0.012,
+     0.012,
+     0.0247
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0084,
+     0.0084,
+     0.0213
+    ],
+    "lo": [
+     0.0054,
+     0.0054,
+     0.017
+    ],
+    "hi": [
+     0.0115,
+     0.0115,
+     0.0259
+    ]
+   },
+   "share": {
+    "point": [
+     0.9615,
+     0.9615,
+     1.0675
+    ],
+    "lo": [
+     0.7549,
+     0.7549,
+     0.9329
+    ],
+    "hi": [
+     1.2439,
+     1.2439,
+     1.2414
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0003,
+     0.0003,
+     -0.0013
+    ],
+    "lo": [
+     -0.0018,
+     -0.0018,
+     -0.0043
+    ],
+    "hi": [
+     0.0024,
+     0.0024,
+     0.0014
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0/reads/squad__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0/reads/squad__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "c2876223d9c76796d95ccf75fc2f7049864da27eeedbeffd222ac1778db11a47",
+    "gnn": "edc569084fba788ceeff28991899595a2b4d032d65e412abf595864d41cf68d2"
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "musique",
+   "read": "zero-shot",
+   "questions": 2417,
+   "mlp": [
+    0.519,
+    0.2056,
+    0.6827
+   ],
+   "gnn": [
+    0.5086,
+    0.1994,
+    0.6934
+   ],
+   "rrf": [
+    0.4734,
+    0.1353,
+    0.633
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0352,
+     0.0641,
+     0.0604
+    ],
+    "lo": [
+     0.0244,
+     0.0476,
+     0.0434
+    ],
+    "hi": [
+     0.0455,
+     0.0811,
+     0.0765
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0455,
+     0.0703,
+     0.0496
+    ],
+    "lo": [
+     0.0347,
+     0.0538,
+     0.0319
+    ],
+    "hi": [
+     0.0564,
+     0.0873,
+     0.067
+    ]
+   },
+   "share": {
+    "point": [
+     1.2951,
+     1.0968,
+     0.8219
+    ],
+    "lo": [
+     1.0908,
+     0.9527,
+     0.6216
+    ],
+    "hi": [
+     1.5965,
+     1.2713,
+     1.0272
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0104,
+     -0.0062,
+     0.0108
+    ],
+    "lo": [
+     -0.0171,
+     -0.0153,
+     -0.0017
+    ],
+    "hi": [
+     -0.0037,
+     0.0029,
+     0.0232
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0/reads/musique__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0/reads/musique__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "d2cb33cce6ffae59ed5707d097287d9307943ed3c5979db4ccb774b38c5c09a7",
+    "gnn": "12bee7d5cce8c8339492e410f0f7bbe7a90bb1ff181b6b2f88e44d0e25db3d0e"
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "hotpotqa",
+   "read": "in-domain",
+   "questions": 7405,
+   "mlp": [
+    0.846,
+    0.7286,
+    0.8199
+   ],
+   "gnn": [
+    0.8593,
+    0.7538,
+    0.8689
+   ],
+   "rrf": [
+    0.6846,
+    0.424,
+    0.8277
+   ],
+   "gnn_gain": {
+    "point": [
+     0.1747,
+     0.3298,
+     0.0412
+    ],
+    "lo": [
+     0.1682,
+     0.3176,
+     0.0338
+    ],
+    "hi": [
+     0.1809,
+     0.3413,
+     0.0485
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.1614,
+     0.3045,
+     -0.0078
+    ],
+    "lo": [
+     0.1551,
+     0.2925,
+     -0.0163
+    ],
+    "hi": [
+     0.1678,
+     0.3167,
+     0.0003
+    ]
+   },
+   "share": {
+    "point": [
+     0.9242,
+     0.9234,
+     -0.1902
+    ],
+    "lo": [
+     0.9072,
+     0.9068,
+     -0.4601
+    ],
+    "hi": [
+     0.9417,
+     0.9398,
+     0.0058
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0132,
+     0.0253,
+     0.049
+    ],
+    "lo": [
+     0.0101,
+     0.0197,
+     0.0424
+    ],
+    "hi": [
+     0.0163,
+     0.0309,
+     0.0556
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0/reads/hotpotqa__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0/reads/hotpotqa__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "8c021ad8588842b7578cde779d21347f10642e0932b1a7ab18dc9ccd61cbe419",
+    "gnn": "400552e96eef75a0db45d2894d598100513c6813cf8cbef8601f12aeb184e24b"
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "mlp": [
+    0.9155,
+    0.7892,
+    0.9787
+   ],
+   "gnn": [
+    0.9269,
+    0.8248,
+    0.9753
+   ],
+   "rrf": [
+    0.6079,
+    0.2536,
+    0.8747
+   ],
+   "gnn_gain": {
+    "point": [
+     0.319,
+     0.5712,
+     0.1006
+    ],
+    "lo": [
+     0.3141,
+     0.562,
+     0.0951
+    ],
+    "hi": [
+     0.3236,
+     0.5799,
+     0.1062
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3076,
+     0.5356,
+     0.104
+    ],
+    "lo": [
+     0.303,
+     0.527,
+     0.0983
+    ],
+    "hi": [
+     0.3121,
+     0.5443,
+     0.1097
+    ]
+   },
+   "share": {
+    "point": [
+     0.9642,
+     0.9376,
+     1.034
+    ],
+    "lo": [
+     0.9575,
+     0.9282,
+     1.0068
+    ],
+    "hi": [
+     0.9713,
+     0.9473,
+     1.0605
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0114,
+     0.0356,
+     -0.0034
+    ],
+    "lo": [
+     0.0091,
+     0.0299,
+     -0.006
+    ],
+    "hi": [
+     0.0136,
+     0.0413,
+     -0.0007
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0/reads/2wiki__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0/reads/2wiki__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "a3a8c73e3ab0e8cf87ef1995d1bd3476fc844f5b9b72b185eb50a00c515d8f73",
+    "gnn": "5be3c7d88f655549a3f14acbe3a5a41c904c1c879e8cc283611d2547173c040d"
+   }
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "webqsp",
+   "read": "in-domain",
+   "questions": 1503,
+   "mlp": [
+    0.6457,
+    0.5409,
+    0.5316
+   ],
+   "gnn": [
+    0.6632,
+    0.5536,
+    0.5981
+   ],
+   "rrf": [
+    0.0535,
+    0.0379,
+    0.0459
+   ],
+   "gnn_gain": {
+    "point": [
+     0.6097,
+     0.5156,
+     0.5522
+    ],
+    "lo": [
+     0.5849,
+     0.4877,
+     0.525
+    ],
+    "hi": [
+     0.6314,
+     0.5409,
+     0.5782
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.5921,
+     0.503,
+     0.4857
+    ],
+    "lo": [
+     0.5677,
+     0.4764,
+     0.4571
+    ],
+    "hi": [
+     0.6149,
+     0.5296,
+     0.5136
+    ]
+   },
+   "share": {
+    "point": [
+     0.9712,
+     0.9755,
+     0.8795
+    ],
+    "lo": [
+     0.9496,
+     0.9436,
+     0.8384
+    ],
+    "hi": [
+     0.9941,
+     1.0078,
+     0.9223
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0175,
+     0.0126,
+     0.0665
+    ],
+    "lo": [
+     0.0035,
+     -0.004,
+     0.0419
+    ],
+    "hi": [
+     0.0309,
+     0.0293,
+     0.0905
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0/reads/webqsp__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0/reads/webqsp__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "c31b994ba9607bcb5ee8bcb9b94270be874846917f695db1d1ab5f9d20f8e815",
+    "gnn": "5999b656037a4529e7b81eeb29794eed6fea3d143feeb895a1d8ec0f36d7561c"
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "metaqa",
+   "read": "zero-shot",
+   "questions": 9785,
+   "mlp": [
+    0.3668,
+    0.2997,
+    0.2198
+   ],
+   "gnn": [
+    0.3519,
+    0.2839,
+    0.175
+   ],
+   "rrf": [
+    0.0047,
+    0.0026,
+    0.0008
+   ],
+   "gnn_gain": {
+    "point": [
+     0.3472,
+     0.2813,
+     0.1741
+    ],
+    "lo": [
+     0.3383,
+     0.2722,
+     0.1665
+    ],
+    "hi": [
+     0.3556,
+     0.2901,
+     0.182
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.362,
+     0.2972,
+     0.219
+    ],
+    "lo": [
+     0.3531,
+     0.288,
+     0.2106
+    ],
+    "hi": [
+     0.3712,
+     0.3066,
+     0.2269
+    ]
+   },
+   "share": {
+    "point": [
+     1.0427,
+     1.0563,
+     1.2576
+    ],
+    "lo": [
+     1.02,
+     1.0282,
+     1.2064
+    ],
+    "hi": [
+     1.0668,
+     1.0881,
+     1.3123
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0148,
+     -0.0158,
+     -0.0449
+    ],
+    "lo": [
+     -0.0231,
+     -0.0243,
+     -0.0528
+    ],
+    "hi": [
+     -0.007,
+     -0.0081,
+     -0.0368
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0-hp/reads/metaqa__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0-hp/reads/metaqa__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "86543790d3dabf6fa449b2c24a6d7bb58db24d75b6759e95afee2dfdfa2050dc",
+    "gnn": "bd2da2e4a30d5effbcb738bb378594ececc676610c2d2eda7c806ca7299c2fe7"
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "squad",
+   "read": "in-domain",
+   "questions": 11873,
+   "mlp": [
+    0.9132,
+    0.9132,
+    0.7537
+   ],
+   "gnn": [
+    0.9139,
+    0.9139,
+    0.7534
+   ],
+   "rrf": [
+    0.9054,
+    0.9054,
+    0.7335
+   ],
+   "gnn_gain": {
+    "point": [
+     0.0085,
+     0.0085,
+     0.0199
+    ],
+    "lo": [
+     0.0051,
+     0.0051,
+     0.0152
+    ],
+    "hi": [
+     0.012,
+     0.012,
+     0.0246
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.0078,
+     0.0078,
+     0.0202
+    ],
+    "lo": [
+     0.0048,
+     0.0048,
+     0.0158
+    ],
+    "hi": [
+     0.0111,
+     0.0111,
+     0.0248
+    ]
+   },
+   "share": {
+    "point": [
+     0.9208,
+     0.9208,
+     1.0169
+    ],
+    "lo": [
+     0.686,
+     0.686,
+     0.874
+    ],
+    "hi": [
+     1.2268,
+     1.2268,
+     1.1934
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0007,
+     0.0007,
+     -0.0003
+    ],
+    "lo": [
+     -0.0015,
+     -0.0015,
+     -0.0034
+    ],
+    "hi": [
+     0.0029,
+     0.0029,
+     0.0026
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0-hp/reads/squad__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0-hp/reads/squad__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "8df6fce1066d4680ffdc89ef5405b6b164df65830f17e12b54c237706a3d4536",
+    "gnn": "3e5305e94e79572c53d7dbcd1697dc8d32316c89e015b6a554c0da1e7835c9b2"
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "musique",
+   "read": "in-domain",
+   "questions": 2417,
+   "mlp": [
+    0.5806,
+    0.2706,
+    0.7307
+   ],
+   "gnn": [
+    0.5912,
+    0.2834,
+    0.7633
+   ],
+   "rrf": [
+    0.4734,
+    0.1353,
+    0.633
+   ],
+   "gnn_gain": {
+    "point": [
+     0.1177,
+     0.1481,
+     0.1303
+    ],
+    "lo": [
+     0.1076,
+     0.1324,
+     0.1134
+    ],
+    "hi": [
+     0.1274,
+     0.1643,
+     0.1469
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.1072,
+     0.1353,
+     0.0976
+    ],
+    "lo": [
+     0.0976,
+     0.1196,
+     0.0807
+    ],
+    "hi": [
+     0.1166,
+     0.151,
+     0.115
+    ]
+   },
+   "share": {
+    "point": [
+     0.9107,
+     0.9134,
+     0.7492
+    ],
+    "lo": [
+     0.858,
+     0.8434,
+     0.6645
+    ],
+    "hi": [
+     0.9656,
+     0.9853,
+     0.8304
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0105,
+     0.0128,
+     0.0327
+    ],
+    "lo": [
+     0.004,
+     0.0021,
+     0.0211
+    ],
+    "hi": [
+     0.0171,
+     0.0236,
+     0.0443
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0-hp/reads/musique__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0-hp/reads/musique__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "182e8fa2302ae57e29e5c5af25e7141f74c470a27b746f26c4b38712b1690b2f",
+    "gnn": "c943a22b93974eeed90716ad65d1fd9373aa23b46b70574585109be062a6c6bb"
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "hotpotqa",
+   "read": "zero-shot",
+   "questions": 7405,
+   "mlp": [
+    0.8193,
+    0.6805,
+    0.815
+   ],
+   "gnn": [
+    0.8004,
+    0.6562,
+    0.7776
+   ],
+   "rrf": [
+    0.6846,
+    0.424,
+    0.8277
+   ],
+   "gnn_gain": {
+    "point": [
+     0.1158,
+     0.2321,
+     -0.0501
+    ],
+    "lo": [
+     0.109,
+     0.2203,
+     -0.0598
+    ],
+    "hi": [
+     0.1223,
+     0.2439,
+     -0.0412
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.1347,
+     0.2564,
+     -0.0127
+    ],
+    "lo": [
+     0.1285,
+     0.2452,
+     -0.0213
+    ],
+    "hi": [
+     0.1406,
+     0.2671,
+     -0.005
+    ]
+   },
+   "share": {
+    "point": [
+     1.1633,
+     1.1047,
+     -Infinity
+    ],
+    "lo": [
+     1.1236,
+     1.0713,
+     -Infinity
+    ],
+    "hi": [
+     1.2062,
+     1.1388,
+     -Infinity
+    ]
+   },
+   "gap": {
+    "point": [
+     -0.0189,
+     -0.0243,
+     -0.0374
+    ],
+    "lo": [
+     -0.0231,
+     -0.0313,
+     -0.0442
+    ],
+    "hi": [
+     -0.0149,
+     -0.0172,
+     -0.0308
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0-hp/reads/hotpotqa__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0-hp/reads/hotpotqa__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "ef8bba826d8acfb33f55bd210162499ea4c4616aba6d94247a89e0d48e4d3d0c",
+    "gnn": "60278c6269854aba6d92eda684d903a1c7354ec0f230a1039a01662ab729e469"
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "2wiki",
+   "read": "in-domain",
+   "questions": 12576,
+   "mlp": [
+    0.9135,
+    0.7832,
+    0.9808
+   ],
+   "gnn": [
+    0.9296,
+    0.8307,
+    0.988
+   ],
+   "rrf": [
+    0.6079,
+    0.2536,
+    0.8747
+   ],
+   "gnn_gain": {
+    "point": [
+     0.3217,
+     0.5771,
+     0.1133
+    ],
+    "lo": [
+     0.3169,
+     0.5685,
+     0.1075
+    ],
+    "hi": [
+     0.3264,
+     0.5861,
+     0.1191
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.3056,
+     0.5296,
+     0.1062
+    ],
+    "lo": [
+     0.301,
+     0.5209,
+     0.1007
+    ],
+    "hi": [
+     0.31,
+     0.5383,
+     0.1118
+    ]
+   },
+   "share": {
+    "point": [
+     0.9499,
+     0.9176,
+     0.9368
+    ],
+    "lo": [
+     0.9432,
+     0.9083,
+     0.9159
+    ],
+    "hi": [
+     0.9565,
+     0.9264,
+     0.957
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0161,
+     0.0476,
+     0.0072
+    ],
+    "lo": [
+     0.0139,
+     0.0423,
+     0.0049
+    ],
+    "hi": [
+     0.0183,
+     0.0532,
+     0.0096
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0-hp/reads/2wiki__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0-hp/reads/2wiki__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "2e903feb8620c3eb110dc8a13343113f04ce006564e2e57eb19ae0fbbdda568e",
+    "gnn": "011b2eadad25eb58df7366bf0cdc61c6d0280835ab02bac7db68b804c5a3ef76"
+   }
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "webqsp",
+   "read": "in-domain",
+   "questions": 1503,
+   "mlp": [
+    0.6469,
+    0.5442,
+    0.5263
+   ],
+   "gnn": [
+    0.6658,
+    0.5529,
+    0.6001
+   ],
+   "rrf": [
+    0.0535,
+    0.0379,
+    0.0459
+   ],
+   "gnn_gain": {
+    "point": [
+     0.6123,
+     0.515,
+     0.5542
+    ],
+    "lo": [
+     0.5885,
+     0.487,
+     0.5269
+    ],
+    "hi": [
+     0.6352,
+     0.5403,
+     0.5788
+    ]
+   },
+   "mlp_gain": {
+    "point": [
+     0.5934,
+     0.5063,
+     0.4804
+    ],
+    "lo": [
+     0.5694,
+     0.4797,
+     0.4538
+    ],
+    "hi": [
+     0.6153,
+     0.5303,
+     0.5077
+    ]
+   },
+   "share": {
+    "point": [
+     0.9691,
+     0.9832,
+     0.8667
+    ],
+    "lo": [
+     0.9455,
+     0.9496,
+     0.8232
+    ],
+    "hi": [
+     0.9936,
+     1.0194,
+     0.9118
+    ]
+   },
+   "gap": {
+    "point": [
+     0.0189,
+     0.0086,
+     0.0739
+    ],
+    "lo": [
+     0.0039,
+     -0.01,
+     0.0479
+    ],
+    "hi": [
+     0.0336,
+     0.0259,
+     0.0991
+    ]
+   },
+   "files": {
+    "mlp": "outputs/screen/fits/scr-ltm-zrckpn-s0-hp/reads/webqsp__s1eval.npz",
+    "gnn": "outputs/screen/fits/scr-ml1-zg6r-s0-hp/reads/webqsp__s1eval.npz"
+   },
+   "sha256": {
+    "mlp": "2ba496d78dff92dc36a3b163f2dbceb95a9821c6a2183be92211b44279398364",
+    "gnn": "009f91f7d4b54acf249fcfbda75d762f0febbfd6e6a3b9ab9ea2a314134f3493"
+   }
+  }
+ ],
+ "seeds_beside": [
+  {
+   "seed": 1,
+   "split": "WQ-musique",
+   "dataset": "metaqa",
+   "mlp": 0.4256,
+   "gnn": 0.3477,
+   "rrf": 0.0047,
+   "share": 1.2271
+  },
+  {
+   "seed": 1,
+   "split": "WQ-musique",
+   "dataset": "squad",
+   "mlp": 0.9125,
+   "gnn": 0.9145,
+   "rrf": 0.9054,
+   "share": 0.7802
+  },
+  {
+   "seed": 1,
+   "split": "WQ-musique",
+   "dataset": "musique",
+   "mlp": 0.5227,
+   "gnn": 0.5039,
+   "rrf": 0.4734,
+   "share": 1.6164
+  },
+  {
+   "seed": 1,
+   "split": "WQ-musique",
+   "dataset": "hotpotqa",
+   "mlp": 0.8469,
+   "gnn": 0.8596,
+   "rrf": 0.6846,
+   "share": 0.9274
+  },
+  {
+   "seed": 1,
+   "split": "WQ-musique",
+   "dataset": "2wiki",
+   "mlp": 0.9159,
+   "gnn": 0.9297,
+   "rrf": 0.6079,
+   "share": 0.9571
+  },
+  {
+   "seed": 1,
+   "split": "WQ-musique",
+   "dataset": "webqsp",
+   "mlp": 0.6498,
+   "gnn": 0.6586,
+   "rrf": 0.0535,
+   "share": 0.9855
+  },
+  {
+   "seed": 1,
+   "split": "WQ-hotpotqa",
+   "dataset": "metaqa",
+   "mlp": 0.4261,
+   "gnn": 0.3903,
+   "rrf": 0.0047,
+   "share": 1.0928
+  },
+  {
+   "seed": 1,
+   "split": "WQ-hotpotqa",
+   "dataset": "squad",
+   "mlp": 0.912,
+   "gnn": 0.914,
+   "rrf": 0.9054,
+   "share": 0.7674
+  },
+  {
+   "seed": 1,
+   "split": "WQ-hotpotqa",
+   "dataset": "musique",
+   "mlp": 0.5803,
+   "gnn": 0.5988,
+   "rrf": 0.4734,
+   "share": 0.8525
+  },
+  {
+   "seed": 1,
+   "split": "WQ-hotpotqa",
+   "dataset": "hotpotqa",
+   "mlp": 0.8182,
+   "gnn": 0.7943,
+   "rrf": 0.6846,
+   "share": 1.2179
+  },
+  {
+   "seed": 1,
+   "split": "WQ-hotpotqa",
+   "dataset": "2wiki",
+   "mlp": 0.9166,
+   "gnn": 0.929,
+   "rrf": 0.6079,
+   "share": 0.9614
+  },
+  {
+   "seed": 1,
+   "split": "WQ-hotpotqa",
+   "dataset": "webqsp",
+   "mlp": 0.6597,
+   "gnn": 0.6512,
+   "rrf": 0.0535,
+   "share": 1.0142
+  },
+  {
+   "seed": 2,
+   "split": "WQ-musique",
+   "dataset": "metaqa",
+   "mlp": 0.4167,
+   "gnn": 0.3461,
+   "rrf": 0.0047,
+   "share": 1.2068
+  },
+  {
+   "seed": 2,
+   "split": "WQ-musique",
+   "dataset": "squad",
+   "mlp": 0.9149,
+   "gnn": 0.9163,
+   "rrf": 0.9054,
+   "share": 0.8716
+  },
+  {
+   "seed": 2,
+   "split": "WQ-musique",
+   "dataset": "musique",
+   "mlp": 0.5381,
+   "gnn": 0.5134,
+   "rrf": 0.4734,
+   "share": 1.6175
+  },
+  {
+   "seed": 2,
+   "split": "WQ-musique",
+   "dataset": "hotpotqa",
+   "mlp": 0.8491,
+   "gnn": 0.8562,
+   "rrf": 0.6846,
+   "share": 0.9586
+  },
+  {
+   "seed": 2,
+   "split": "WQ-musique",
+   "dataset": "2wiki",
+   "mlp": 0.9133,
+   "gnn": 0.9215,
+   "rrf": 0.6079,
+   "share": 0.9739
+  },
+  {
+   "seed": 2,
+   "split": "WQ-musique",
+   "dataset": "webqsp",
+   "mlp": 0.6552,
+   "gnn": 0.6593,
+   "rrf": 0.0535,
+   "share": 0.9932
+  },
+  {
+   "seed": 2,
+   "split": "WQ-hotpotqa",
+   "dataset": "metaqa",
+   "mlp": 0.4131,
+   "gnn": 0.3651,
+   "rrf": 0.0047,
+   "share": 1.1332
+  },
+  {
+   "seed": 2,
+   "split": "WQ-hotpotqa",
+   "dataset": "squad",
+   "mlp": 0.9132,
+   "gnn": 0.9127,
+   "rrf": 0.9054,
+   "share": 1.0685
+  },
+  {
+   "seed": 2,
+   "split": "WQ-hotpotqa",
+   "dataset": "musique",
+   "mlp": 0.5777,
+   "gnn": 0.5939,
+   "rrf": 0.4734,
+   "share": 0.8656
+  },
+  {
+   "seed": 2,
+   "split": "WQ-hotpotqa",
+   "dataset": "hotpotqa",
+   "mlp": 0.8136,
+   "gnn": 0.784,
+   "rrf": 0.6846,
+   "share": 1.2978
+  },
+  {
+   "seed": 2,
+   "split": "WQ-hotpotqa",
+   "dataset": "2wiki",
+   "mlp": 0.9135,
+   "gnn": 0.9276,
+   "rrf": 0.6079,
+   "share": 0.9559
+  },
+  {
+   "seed": 2,
+   "split": "WQ-hotpotqa",
+   "dataset": "webqsp",
+   "mlp": 0.6512,
+   "gnn": 0.6523,
+   "rrf": 0.0535,
+   "share": 0.9982
+  }
+ ],
+ "script_sha256": "c18ae71d20ccbcb30c64a4a0ec7756d965a3b28db896a99f8595cb91014c433f",
+ "p3c_sha256": "9898a91e2b1a7f93ddc844bd44a50b3736f6d74fd0d8997906301e578fcf58f4",
+ "utc": "2026-11-03T18:23:52Z"
+}
