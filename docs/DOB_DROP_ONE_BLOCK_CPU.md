@@ -124,3 +124,23 @@ training. The host runs CPU items in its environment for CPU work, whose torch i
 GPU environment's build (`2.8.0+cu128`). The device record now pins `2.8.0+cpu`; the rest of the check is unchanged: the CPU,
 6 threads, and the GPU not visible. Every DOB fit runs in that one environment, so the base and the drops share it. Nothing
 else changes. The feeder sends each stopped item once more on its own.
+
+## 10. Amendment A2, 3 November 2026, before any xrank fit trained: the xrank arm withdrawn
+
+- **What stopped.** `dob-xrank-s0` stopped when its model was built, before any training: "zret needs the rank block: its
+  rrf column marks the retrieved rows" (lean_screen3.py). zrckp's model z-scores every input against the pool's retrieved
+  rows, and the rank block's rrf column is what marks them. Without the block it is another model, not zrckp with one
+  input left out.
+- **The change.** The xrank arm is withdrawn. The rank block stays in every arm, as SEMB does. Seven drops remain:
+  dense_cos, topo_STRUCT, depth_STRUCT, SEED, WALK, DISTS and WALKF. The fits are 20 (the base's six and the drops'
+  fourteen) and the compares 18 (the drops' fourteen and the null's four). Section 4's rule is unchanged over the seven
+  drops, and its "a fit or a compare is missing" counts these. DOB does not measure the rank block's share of R@5.
+- **The code.** zdob.py is not edited: its sha is in every DOB fit's code record, and section 4 checks each fit's code
+  against its base's. `outputs/mp_unified/zdoba2.py` imports it and, for the length of the compares and the calls, takes
+  xrank's two fits and two compares out of zdob's tables, then puts them back, also on a failure. The calls record and
+  page name the amendment. Its self-test passed before this commit; it covers the tables, their restoring, the refusal of
+  an xrank fit, the rule called on seven drops (INCOMPLETE without the amendment), the calls' stamp, and zdob's own
+  self-test.
+- **The queue.** `dob-xrank-s0` and `dob-xrank-s0-hp` leave it. `dob-compare` and `dob-calls` run
+  `zdoba2.py compare-all` and `zdoba2.py calls`, after `dob-a2-selftest`.
+- **What has been read.** Nothing: DOB's compares and calls have not run.
