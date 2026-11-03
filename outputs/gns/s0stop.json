@@ -1,0 +1,132 @@
+{
+ "stage": "GNS",
+ "declared_in": "docs/GNS_SELF_ANCHORED_ATTENTION_GNN.md",
+ "rule": "LTG's in-domain rule (zltg.decide_screen)",
+ "s0_fit": "scr-gns-sa-s0",
+ "hp_fit": "scr-gns-sa-s0-hp",
+ "split": "WQ-musique",
+ "deciding_reads": [
+  "WQ-musique squad",
+  "WQ-musique hotpotqa",
+  "WQ-musique 2wiki",
+  "WQ-musique webqsp"
+ ],
+ "decision": "GO",
+ "verdict": null,
+ "loss_rows": [],
+ "missing": [],
+ "rows": [
+  {
+   "split": "WQ-musique",
+   "read": "squad",
+   "base": [
+    0.9142,
+    0.9145,
+    0.9163
+   ],
+   "new": 0.9127,
+   "delta": -0.0015,
+   "floor": 0.0075,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "hotpotqa",
+   "base": [
+    0.8593,
+    0.8596,
+    0.8562
+   ],
+   "new": 0.8548,
+   "delta": -0.0045,
+   "floor": 0.0075,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "2wiki",
+   "base": [
+    0.9269,
+    0.9297,
+    0.9215
+   ],
+   "new": 0.9268,
+   "delta": -0.0001,
+   "floor": 0.0086,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "webqsp",
+   "base": [
+    0.6632,
+    0.6586,
+    0.6593
+   ],
+   "new": 0.6619,
+   "delta": -0.0013,
+   "floor": 0.0085,
+   "call": "WITHIN"
+  }
+ ],
+ "beside": [
+  {
+   "split": "WQ-musique",
+   "read": "musique",
+   "base": [
+    0.5086,
+    0.5039,
+    0.5134
+   ],
+   "new": 0.5193,
+   "delta": 0.0107,
+   "floor": 0.0095,
+   "call": "GAIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "metaqa",
+   "base": [
+    0.3615,
+    0.3477,
+    0.3461
+   ],
+   "new": 0.3858,
+   "delta": 0.0243,
+   "floor": 0.0292,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "musique-3hop",
+   "base": [
+    0.4329,
+    0.4272,
+    0.4404
+   ],
+   "new": 0.4351,
+   "delta": 0.0022,
+   "floor": 0.0133,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "musique-4hop",
+   "base": [
+    0.313,
+    0.3167,
+    0.3179
+   ],
+   "new": 0.321,
+   "delta": 0.008,
+   "floor": 0.0087,
+   "call": "WITHIN"
+  }
+ ],
+ "problems": [],
+ "s0_read_sha256": "904a62dc18f79d837abdbbf842ac14a83c267699e3ce5b2b5ecd52bad933791c",
+ "calls_sha256": "7adf71d52dc81f90c662f1f4c0d271d0fd551c36f27dd0ddebc295b6774df5c0",
+ "calls_screen_verdict": "INCOMPLETE",
+ "s0stop_sha256": "9a8150bdeabdf2de7b1a0e76b2914808a7174aeb9ee89b7020b81ee6ed900f3c",
+ "utc": "2026-11-03T13:49:48Z"
+}
