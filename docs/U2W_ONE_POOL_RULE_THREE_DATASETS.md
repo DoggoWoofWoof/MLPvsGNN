@@ -154,6 +154,45 @@ The self-test runs on made-up tables:
 - the verdict table gives each of its five outcomes, and E's four, on inputs built for them;
 - the carry order picks E, then C, then the row-priced point, then nothing.
 
-## 8. Results
+## 8. Results (filed 4 November 2026, about 01:00 IST)
 
-(Filed here after the run; nothing above changes.)
+The run, `zu2w.py choose` on the laptop, took 1,806 s. Every check passed: pick O's filed point and U2s's 11 filed
+frontier C points were reproduced on the three datasets; the walk, questions and weights are U2s's. Records:
+`outputs/u2w/choice.json` and `choice.md`.
+
+**Verdicts: NOT_UNIFIED and KIND_FREE_TOO_DEAR. Nothing is carried.** ALL on s1sel, with mean rows in brackets:
+
+| pools | level | cost (rows) | musique | hotpotqa | 2wiki |
+| --- | ---: | ---: | --- | --- | --- |
+| pick O, the incumbent (per-dataset construction) | 0.96 | 1,751.9 | 0.9668 (5,522.2) | 0.9602 (713.1) | 0.9699 (1,070.5) |
+| C's cheapest at 0.96: `rrf50+FULL:h2_c25/kind_t/kt_cos+n2_10:ada_f6_k0@0.85` | 0.96 | 4,215.6 | 0.9602 (4,193.9) | 0.9834 (4,025.2) | 0.9913 (4,361.1) |
+| E's cheapest at 0.96: the same point with the rrf5t recipe | 0.96 | 4,215.6 | 0.9602 (4,193.9) | 0.9834 (4,025.2) | 0.9913 (4,361.1) |
+
+- The ceilings C_d are musique 0.9811, hotpotqa 0.9881 and 2wiki 0.996. The incumbent's level L_I is 0.96, with
+  hotpotqa binding at 0.9602.
+- No universal point is within the 1,953.5-row cap at any level. C's cheapest 0.950 point costs 3,528.4 rows (1.81 ×
+  the cap) and E's 3,522.1.
+- At L_I, C's and E's cheapest points cost 4,215.6 rows, 2.41 × the incumbent's. That is past the declared row price of
+  2 ×, so neither AT_A_ROW_PRICE row applies.
+
+**Where the price comes from (beside, deciding nothing).** Every universal candidate pays musique's depth on all three
+datasets.
+- The fewest mean rows any universal candidate needs at 0.96 is 4,122.4 on musique, but 467.5 on hotpotqa and 441.3 on
+  2wiki. These are upper bounds per dataset; no one candidate reaches all three.
+- C's pick at 0.96 holds hotpotqa and 2wiki far above their targets (0.9834 and 0.9913) with about 4,000 rows each,
+  against pick O's 713.1 and 1,070.5. On musique it needs fewer rows than pick O (4,193.9 against 5,522.2).
+- At 0.96 the cheapest point of each budget form (FIX 4,252.5, ADA 4,215.6, MASS 4,230.7) and of each of the 12
+  constructions (4,215.6 to 4,438.9) lie within 6% of one another. No budget form in U2s's set reads how deep a
+  question's golds lie.
+
+**What follows (section 4, rule 4, and U2s's section 10).** Pick O stays the pools of record. The next forms of the
+universal construction, each in its own declared file, are:
+1. a budget read from the recipe's own fused score, RRF5T's agreement across its five orders, in place of one walk's
+   mass;
+2. P1h's cut taken over the walk's mass in place of rank mass.
+
+Both target the cause above: each question's depth, which the current budget forms do not see. Stages B and C wait for
+a carried pick. Pick O's coverage on s1eval and B1 (section 5's measures, for pick O alone) is the coverage and
+localization record either way, so it is measured now from PKO's and B1P's filed pools, in its own file.
+
+Each verdict closes only the form it tests (docs/SCREENS.md, section 3b).
