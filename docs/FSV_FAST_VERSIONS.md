@@ -249,3 +249,116 @@ claims and measuring all"). It may push a full run past the freeze. The user dec
 - section 4's order over the levels;
 - the R@5 reader (two R@5 for one seed, a missing or foreign compare) and the slices (a read file whose musique R@5 is not
   its compare's).
+
+## 9. Amendment A1: the GNN's cut fits (4 November, about 05:00 IST, before any GNN fit)
+
+This wires section 3's GNN part. Module: `outputs/mp_unified/zfsvg.py` (new). `zfsv.py` is not edited. Sections 2, 4, 6
+and 7 stand as written.
+
+**The fits.**
+
+| fit | what | compared with |
+|---|---|---|
+| `scr-fsv-zspk-L<l>-s0`, `-hp` | zspk cut at L, seed 0: the start of the level's zg6r fits of its split | nothing (its read is checked, not compared) |
+| `scr-fsv-zg6r-L<l>-s<k>`, `-hp` | zg6r cut at L | ML1's `scr-ml1-zg6r-s<k>`, `-hp`, in `scr-fsv-zg6r-L<l>-vs-full-s<k>`, `-hp` |
+
+**How a fit runs.** Each fit is zml1s's own fit, a train and then a read. Everything is ML1's: the arm, the card, PKO's
+roots and gate, the read cap (zspk 65,536, zg6r 32,768) and the device (the host's GPU, torch 2.8.0+cu128, deterministic
+algorithms, TF32 off, cuBLAS workspace :4096:8). These in-process patches apply, and each is put back afterwards, also
+on a failure:
+- FSV's declaration, stage and stamp key (`fsv`). zml1s's fit table holds FSV's GNN fits, and its fit naming answers
+  for the fit being run.
+- lean_gpu's pick and pns (the pick without SEMB) without the level's cut. DOB's nine blocks are checked first. zrm
+  builds its block encoder from this pick when the model is built (`zrm.py`, line 176).
+- Reads keep p@swa alone (readswa, as in DEP, RTR and IRA).
+- The stamp adds A1's block: the level, groups, cut, pick, full fit and start, and the pick and pns in force when the
+  stamp is written.
+- The code list adds the sha256 of `zfsvg.py`, `zfsv.py` and `readswa.py`.
+
+**The start.** zfsvg's loader replaces `zml1s.load_encoder` for a cut zg6r fit. It loads the p@swa encoder of the cut
+zspk of the fit's level and split, and stops unless all of these hold:
+- the cut zspk was fitted and read by FSV with A1's block at that level, trained the level's pick (its `train.json`),
+  and had that pick in force when stamped;
+- its `models.pt` is that fit's seed 0, with a p@swa;
+- it holds every encoder tensor zg6rw names, at the cut encoder's size: ML1's 224,737 numbers less 128 x (2w + 1) for
+  each cut block of width w. These are the columns zrm's first layer takes per block: its raw values, z-scored values
+  and mask. ML1's seed-0 zspk fits record the same widths in both splits, so the sizes are 203,489 at L3, 208,097 at L2
+  and 217,057 at L1.
+
+zg6r's own checks then apply unchanged:
+- each tensor's shape must match the cut model's (`copy_encoder`);
+- at least one zg6r must be built from the encoder;
+- the fit's basis and hidden size must be the encoder's (`encoder_used`).
+
+A cut zspk starts from a fresh draw, as ML1's zspk did. So no cut encoder starts from weights that saw a cut block.
+
+**After each fit.** The fit's `train.json` must name the level's pick: its variant p's blocks and its recorded pick.
+Otherwise the item exits 3, because the patch did not reach the trainer. `retry_cmd` reruns only file races and CUDA
+faults, so exit 3 is not rerun.
+
+**The compares and the calls.**
+- `compare-all` runs zml1s's compare of each read cut zg6r against ML1's zg6r of the same seed and split, under FSV's
+  names. Each compare record adds an FSV block: the amendment, the level, the two fits and the device.
+- The full model's R@5 at each seed is section 3's: from ML1's compares `scr-ml1-zg6r-vs-zspk-s<k>`, `-hp`. FSV's
+  compares must agree with them within 1e-9.
+- The rule is section 4's, unchanged: the eight deciding reads, the screen and the full run, INCOMPLETE first, and the
+  order L3, L2, L1. The slices are read as section 4 reads them.
+- `calls` writes `outputs/fsv/calls_gnn.json` and `calls_gnn.md`.
+
+**INCOMPLETE** (section 4) also covers these, for a cut fit and for its start, against its full fit (ML1's fit of the
+same arm, seed and split):
+- it names a gate other than PKO's present gate;
+- its train and read stamps and its full fit's two stamps do not all name one device;
+- a read cap is not the arm's;
+- its trainer's code differs from its full fit's. This covers every file the full fit's stamp names, except the three
+  stage modules DEP also leaves out (`zml1s.py`, `ziso.py`, `ml1start.py`);
+- its `train.json` does not name the level's pick, or its hidden size, basis, config or device flags differ from its
+  full fit's. The flags are deterministic algorithms, TF32, matmul precision, device, torch, cuBLAS workspace and torch
+  threads;
+- for a cut zg6r, its encoder record does not name all of: its start (read, seed 0), the sha256 of the start's present
+  `models.pt`, at least one copy, the level, and the level's size.
+
+**The queue (the host's GPU).** D1 stands. The GNN's L3 screen goes after the six WQ-hotpotqa halves not yet run (GNP,
+GNW, LTX, GNR, GNT, GNS; RTR's has run and IRA's is running), and ahead of every full run those screens may open.
+
+| item | GPU share | GB | after |
+|---|---:|---:|---|
+| `fsvg-selftest` | - | 2 | - |
+| `fsvg-zspk-L3-s0` | 0.42 | 8 | the self-test, PKO's gate, ISO's verdict, the start and readswa checks |
+| `fsvg-zspk-L3-s0-hp` | 0.57 | 12 | the same |
+| `fsvg-zg6r-L3-s0` | 0.42 | 9 | `fsvg-zspk-L3-s0` |
+| `fsvg-zg6r-L3-s0-hp` | 0.83 | 12 | `fsvg-zspk-L3-s0-hp` |
+| `fsvg-compare` | - | 8 | both zg6r fits |
+| `fsvg-calls` | - | 4 | the compare |
+
+The shares and memory hold ML1's measured train peaks on the 24 GB card. The PyTorch pool caps are 0.4, 0.55, 0.4 and
+0.8 (`cuda_alloc.py`).
+
+| arm | GPU GB, WQ-musique | GPU GB, WQ-hotpotqa | memory GB, WQ-musique | memory GB, WQ-hotpotqa |
+|---|---:|---:|---:|---:|
+| zspk | 7.2 | 11.7 | 7.5 | 11.2 |
+| zg6r | 7.8-8.0 | 17.7-18.4 | 7.3-8.7 | 11.4 |
+
+A cut model takes fewer columns, so its peaks should not be higher. The two starts fit on the card together.
+
+The later items are added only after `calls_gnn` names them (section 4's order): a full run's seeds 1 and 2, or the
+next level's screen.
+
+**The self-test** (`python outputs/mp_unified/zfsvg.py --selftest`) passed on the laptop before this commit. It covers:
+- the names and the levels' picks;
+- the encoder's size at each level, against zrm's block encoder built at ML1's widths;
+- the widths' record, and its refusal of a start not at DOB's pick;
+- the patches (names, fit table, pick, stamp, loader, code), and that each is put back: after the fit, after a failure
+  inside it, and when lean_gpu is not at DOB's pick;
+- the stamp's A1 block;
+- the loader on a made-up start, and each refusal: a fit of the other split, an unread start, a start trained at
+  another pick, another fit's `models.pt`, one number short, and a missing tensor;
+- the problems check on a pair shaped as ML1's real records (`train.json`'s config, flags, sets and variant; the
+  stamps' device, gate, read cap and code). It runs clean, then with each of nine faults alone, and with the full fit
+  at another read cap;
+- the R@5 reader: two R@5 for one seed, a compare not A1's, and ML1's compares missing;
+- the slices: a missing read file, and a read file whose musique R@5 is not its compare's;
+- the rule: PASS, FAIL, INCOMPLETE on a problem, and ADMITTED on all three seeds.
+
+**Commit policy.** Commit only `outputs/fsv/calls_gnn.json` and `calls_gnn.md`, masked with `mask_host.py` and
+`mask_md.py`, with `git add -f`. Never commit the fits, compares or read files.
