@@ -341,6 +341,10 @@ def selftest():
         stop = {"stage": "XX", "s0_fit": "scr-x-s0", "s0_read_sha256": sha_file(rp), "decision": STOP, "problems": [],
                 "rows": s0rows({"webqsp": LOSS}), "utc": "t"}
         write_json(od / "s0stop.json", stop)
+        _, a, rest = parse(["gate", "--stage", "dep", "--want", ADOPT_FOR_FULL_RUN])   # the feeder's gate line
+        assert (a.cmd, a.stage, a.want, a.block, rest) == ("gate", "dep", ADOPT_FOR_FULL_RUN, "screen", [])
+        _, a, rest = parse(["s0stop-run", "--stage", "gnw", "--", "python", "f.py", "--frac", "0.8", "--", "x.py"])
+        assert (a.cmd, a.stage, rest) == ("s0stop-run", "gnw", ["python", "f.py", "--frac", "0.8", "--", "x.py"])
         assert gate("xx", [ADOPT_FOR_FULL_RUN], base=base) == 2          # no calls.json
         marker = base / "ran.txt"
         cmd = [sys.executable, "-c", f"open(r'{marker}', 'w').write('1')"]
@@ -370,15 +374,21 @@ def selftest():
     return 0
 
 
-def main(argv=None):
+def parse(argv):
+    """(the parser, its args, the command after "--"). A REMAINDER positional would swallow --stage and --want too."""
     ap = argparse.ArgumentParser(description="the WWW rule: the six in-domain reads of 2wiki, HotpotQA and MuSiQue decide")
     ap.add_argument("cmd", nargs="?", choices=("call", "s0stop-run", "gate", "audit"))
     ap.add_argument("--stage")
     ap.add_argument("--want", default="")
     ap.add_argument("--block", default="screen", choices=BLOCKS)
     ap.add_argument("--selftest", action="store_true")
-    ap.add_argument("rest", nargs=argparse.REMAINDER)
-    a = ap.parse_args(argv)
+    argv = list(argv)
+    cut = argv.index("--") if "--" in argv else len(argv)
+    return ap, ap.parse_args(argv[:cut]), argv[cut + 1:]
+
+
+def main(argv=None):
+    ap, a, rest = parse(sys.argv[1:] if argv is None else argv)
     if a.selftest:
         return selftest()
     if a.cmd == "audit":
@@ -392,8 +402,9 @@ def main(argv=None):
             f"{(rec['full_run'] or {}).get('www')} (own {(rec['full_run'] or {}).get('own')}); {OUT}/{a.stage}.json")
         return 0
     if a.cmd == "s0stop-run":
-        cmd = a.rest[1:] if a.rest[:1] == ["--"] else a.rest
-        return s0stop_run(a.stage, cmd)
+        if not rest:
+            ap.error("s0stop-run needs a command after --")
+        return s0stop_run(a.stage, rest)
     want = [w for w in a.want.split(",") if w]
     if not want:
         ap.error("gate needs --want")
