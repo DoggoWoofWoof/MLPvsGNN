@@ -185,3 +185,21 @@ Both self-tests passed on the laptop's CPU before this commit.
     are unchanged bit for bit; the term trains in lean_gpu's loop; the term record is 1,664 parameters, 181,882 in all;
   - **the stamp**: its NEXT block is GNP's with GNP's term, and it refuses a fit without columns;
   - **what follows**, as section 7 states it.
+
+## 10. Amendment A1, 3 November 2026, after PFS amendment A4's calls and before any GNP fit
+
+**Why.** PFS amendment A4 (docs/PKO_FEATURE_SCREEN.md section 13) tested the next form named in section 7 for ADOPT_FOR_FULL_RUN. That form uses the same six columns against the top five of a first pass. A4 made the first pass as a fixed probe: the logistic probe on lean + P5, crossfit by question parity. It then read R2, the six columns against that pass's own top five, beside P5. Its rule, fixed before any number: R2_NOTHING on at least three of the five closes re-anchoring on a first round for the pair columns. GNP's two-pass next form is then withdrawn by a GNP amendment before GNP's verdict, and after ADOPT_FOR_FULL_RUN GNP's next form is its message-weight form. Three reads already give R2_NOTHING. The other two cannot change the count:
+
+| dataset | questions | recall@5, lean + P5 | lean + P5 + R2 | d2 | call | first round's top five kept from rrf's |
+| --- | --- | --- | --- | --- | --- | --- |
+| hotpotqa | 1,000 | 0.8223 | 0.8203 | -0.0020 | R2_NOTHING | 0.595 |
+| squad | 1,000 | 0.9558 | 0.9568 | +0.0010 | R2_NOTHING | 0.757 |
+| 2wiki | 1,000 | 0.8203 | 0.8244 | +0.0041 | R2_NOTHING | 0.426 |
+| musique (first 400, all 2-hop) | 400 | 0.6663 | 0.6675 | +0.0012 | R2_NOTHING; counted under section 14's rule once its 3-hop and 4-hop read is in | 0.706 |
+
+Every read's machinery check is exact. Each read reproduces A3's lean and lean + P5 recall@5 to 0.0. The first round changes between a quarter (squad) and more than half (2wiki) of the anchors, and the six columns read against the new anchors add nothing beside P5. Section 13's full table, with musique's 3-hop and 4-hop read (section 14) and webqsp, is filed in its own section of that file.
+
+**What changes.**
+- **Section 7, the ADOPT_FOR_FULL_RUN row.** Its next form is now the pair scores as message weights from the first stage's top five inside message passing (the NO_GAIN row's form), in its own file. The two-pass form is withdrawn.
+- **Section 7, the NO_GAIN or NOT_ADOPTED row,** is unchanged. So after either verdict, GNP's next form is the message-weight form.
+- **Nothing else changes:** not zgnp.py, not gnpcols.py, not GNP's items, its rule or its reads, and not STK amendment A3's use of the columns.
