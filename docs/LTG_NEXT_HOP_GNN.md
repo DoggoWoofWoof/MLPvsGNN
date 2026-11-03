@@ -363,3 +363,51 @@ no job has. The feeder keeps them waiting and does not drop them. `ltg-compare-f
 
 **What does not change.** Sections 1 to 11, apart from that row: the term, the fits, the base, the reads, both rules, the
 seed-0 stop, and the NO_GAIN, NOT_ADOPTED and INCOMPLETE rows.
+
+## 13. Amendment A5, 3 November 2026, after LTG's screen verdict: what the fits show, and the form before section 6's
+
+**The verdict.** NOT_ADOPTED (`outputs/ltg/calls.md`, 538e467): 0 GAIN, 2 LOSS, 8 WITHIN. Both LOSSes are on the
+WQ-hotpotqa fit's musique read: R@5 0.5669 against the base's 0.5912 (-0.0243, floor 0.0114), and its 3-hop slice
+(-0.0224, floor 0.0207).
+
+**What the fits' own records show.** The term fit its training questions better than the base did, and held-out
+questions of the same datasets no better:
+
+| split | listwise loss, last epoch: LTG | base | the deciding reads, LTG minus base |
+| --- | ---: | ---: | --- |
+| WQ-hotpotqa | 1.6017 | 1.7635 | musique -0.0243 and its 3-hop slice -0.0224 (LOSS); the other six WITHIN |
+| WQ-musique | 1.3592 | 1.4189 | all four WITHIN (-0.0007 to +0.0070) |
+
+- LTG's loss is the listwise part of its stamp's next-hop curve, each 500-step window weighted by its steps in the last
+  epoch. Its epoch loss adds λ times the next-hop loss: 2.1715 and 1.9442.
+- The base's loss is its last epoch's (ML1's fits, ISO KEEP). Both arms ran the same 2,156 and 2,295 steps an epoch.
+- Beside, deciding nothing: on WQ-musique, where musique is zero-shot and the scorer never saw a musique gold, LTG's
+  musique read rose by +0.0086 (floor 0.0095).
+
+**The reading.** The scorer that weights every message was trained on the golds of the questions the layers train on:
+by the next-hop loss directly, and by the main loss through the gains. In training, an edge's score already knows which
+of a question's rows are its next hops. At the read, on a question the scorer has not seen, it does not. So the layers
+learn to lean on edge scores that are worth less on held-out questions. Two records fit this reading:
+
+- **musique's training questions share golds.** LTM's census (docs/LTM_NEXT_HOP_MLP.md section 3;
+  `outputs/ltm/lists/musique__s1fit.json`) finds 731 components of musique s1fit's questions joined by a shared gold
+  node, over 4,601 questions. The largest holds 455 (9.9%), and 294 stand alone. A scorer fit on some of a component's
+  questions has seen golds of the others.
+- **The MLP's next-hop columns are cross-fitted by those components.** LTM (ADOPT, 7874e4d) gives each training question
+  columns from the fold fit that never saw its component (five folds, of 920 or 921 questions on musique s1fit). LTG's
+  scorer inside the GNN was not cross-fitted.
+
+This is a reading of the records, not a measurement. LTX's screen tests it.
+
+**The change.** Section 6's NOT_ADOPTED row named the cumulative residual as the next form. LTX
+(docs/LTX_CROSSFIT_NEXT_HOP_GNN.md, declared in the same commit) comes first. It screens the same term, cross-fitted:
+
+- two scorers, one per fold of those components;
+- each question's layers read the scorer of the fold it is not in, detached;
+- the next-hop loss trains the scorer of the question's own fold;
+- the main loss trains no scorer.
+
+The cumulative residual stays the next form after LTX, in its own file, as LTX's section 7 states.
+
+**What does not change.** Sections 1 to 12: the term, the fits, the reads, the rule, the verdict and the queue. No LTG
+item is added or released.
