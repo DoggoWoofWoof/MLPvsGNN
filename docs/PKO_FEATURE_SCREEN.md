@@ -277,3 +277,22 @@ does not read.
 
 Items: `pfp-smoke` (hotpotqa, 32 questions), then `pfp-pair-<dataset>` for the five datasets, musique first, one at a time. They are CPU only and write only `outputs/pfs/pair_<dataset>.json`. They
 read PKO's cache and the served node vectors (on the host, the verified mirror), read only.
+
+## 12. Results of Amendment A3 (filed 3 November 2026; section 9's fit carves and first questions, every pool row, no seed)
+
+Every read passed the identity: no row was off, and the largest |c.q - dense_cos| was 0.0007 to 0.0010. Every baseline reproduced section 10's recall@5 exactly (gap 0.0000).
+
+| dataset | carve | questions | rows | lean recall@5 | + pair | d | recall@20 | AUC | call |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
+| musique | s1fit | 400 | 2,221,400 | 0.6500 | 0.6663 | +0.0162 | 0.8163 -> 0.8313 | 0.9877 -> 0.9848 | PAIR_ADDS |
+| hotpotqa | fit | 1,000 | 711,780 | 0.8053 | 0.8223 | +0.0170 | 0.9229 -> 0.9284 | 0.9871 -> 0.9884 | PAIR_ADDS |
+| 2wiki | fit | 1,000 | 1,073,464 | 0.8085 | 0.8203 | +0.0118 | 0.9314 -> 0.9342 | 0.9857 -> 0.9859 | PAIR_ADDS |
+| squad | fit | 1,000 | 50,031 | 0.9518 | 0.9558 | +0.0040 | 0.9950 -> 0.9930 | 0.9871 -> 0.9902 | PAIR_NOTHING |
+| webqsp | fit | 600 | 2,922,458 | 0.2919 | 0.3300 | +0.0380 | 0.5575 -> 0.5908 | 0.9530 -> 0.9563 | PAIR_ADDS |
+
+- **The call by section 11.** PAIR_ADDS on four of the five (musique, hotpotqa, 2wiki and webqsp) and PAIR_HURTS on none. GNP is declared (docs/GNP_PAIR_COLUMNS_IN_GNN.md), on the GNN first. The MLP
+  follows second, on the CPU, in its own file.
+- **musique's read is 2-hop only.** Its first 400 questions are all 2-hop (2-hop: 0.6500 -> 0.6663). Its 3-hop and 4-hop questions are not in this read.
+- **The single columns beyond rrf's top five** (z-scored AUC; the best two of the six, res_max and pair_mean): musique 0.894 and 0.903, hotpotqa 0.673 and 0.633, squad 0.823 and 0.856, webqsp 0.568
+  and 0.551. On 2wiki every column is below 0.5 there (0.37 to 0.48), yet the probe gains: the columns help beside the lean ones, not alone.
+- **Stated against it.** Section 11's, unchanged. musique's AUC over all rows fell (0.9877 -> 0.9848) while its recall@5 rose. The reads' JSON stay under `outputs/pfs` (gitignored).
