@@ -1,0 +1,1394 @@
+{
+ "declared_in": "docs/HLC_HYPERLINK_LIFT_MODELS_VS_WALK.md",
+ "script_sha256": "8f55bf9aae8c2e648691b6aa9d43caec81e4fc1f320bd035a464b6d299963869",
+ "walk": "A1",
+ "candidate": "p@swa",
+ "boot": {
+  "resamples": 2000,
+  "seed": 0
+ },
+ "hipporag2_published": {
+  "musique": 0.747,
+  "2wiki": 0.904,
+  "hotpotqa": 0.963
+ },
+ "reports_sha256": {
+  "hlw": "3fc5abd145a4e7de222e91f27fcabe7b66e33cc81b9572a3fe6fd96b599b11c6",
+  "u1a": "91dfbba0673645115d9c650578f47e822ef43a8ac5f6e45bf64bed43cef0b431",
+  "b1p": "76f76cf0bab5bc5bc6dd6fbc52077677fe847b7eb9c0b67f9197fe9dfbe296a0"
+ },
+ "settings": {
+  "2wiki": {
+   "questions": 1000,
+   "passages": 6119,
+   "walk_arms": {
+    "R0": {
+     "R@2": 0.6335,
+     "R@5": 0.7117,
+     "R@10": 0.7565,
+     "FC@5": 0.411
+    },
+    "A1/NK": {
+     "R@2": 0.3372,
+     "R@5": 0.6198,
+     "R@10": 0.809,
+     "FC@5": 0.324
+    },
+    "A1/SNK": {
+     "R@2": 0.3598,
+     "R@5": 0.6182,
+     "R@10": 0.865,
+     "FC@5": 0.313
+    },
+    "A1/WNK": {
+     "R@2": 0.363,
+     "R@5": 0.6205,
+     "R@10": 0.859,
+     "FC@5": 0.314
+    },
+    "A1/WNK_stored": {
+     "R@2": 0.363,
+     "R@5": 0.613,
+     "R@10": 0.8818,
+     "FC@5": 0.311
+    }
+   },
+   "w2s_structural": {
+    "rows": 4060,
+    "pairs": 2030,
+    "self_loops": 0,
+    "every_pair_twice": true
+   },
+   "shared_files_equal": {
+    "graph_ner.npz": true,
+    "graph_knn.npz": true,
+    "first_stage.npz": true,
+    "queries.json": true,
+    "nodes.json": true
+   },
+   "H": {
+    "zsp/J5": {
+     "model": "GNN",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.9715,
+      "model_without": 0.7735,
+      "walk_with": 0.6182,
+      "walk_without": 0.6198,
+      "R0": 0.7117
+     },
+     "model_lift": {
+      "R@5": 0.198,
+      "ci": [
+       0.183,
+       0.2122
+      ]
+     },
+     "walk_lift": {
+      "R@5": -0.0015,
+      "ci": [
+       -0.0095,
+       0.0063
+      ]
+     },
+     "difference": {
+      "R@5": 0.1995,
+      "ci": [
+       0.184,
+       0.2152
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.3533,
+      "ci": [
+       0.3362,
+       0.37
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1552,
+      "ci": [
+       0.138,
+       0.1718
+      ]
+     }
+    },
+    "zsp/L-2wiki": {
+     "model": "GNN",
+     "read": "held-out",
+     "levels": {
+      "model_with": 0.934,
+      "model_without": 0.7708,
+      "walk_with": 0.6182,
+      "walk_without": 0.6198,
+      "R0": 0.7117
+     },
+     "model_lift": {
+      "R@5": 0.1633,
+      "ci": [
+       0.1497,
+       0.176
+      ]
+     },
+     "walk_lift": {
+      "R@5": -0.0015,
+      "ci": [
+       -0.0095,
+       0.0063
+      ]
+     },
+     "difference": {
+      "R@5": 0.1648,
+      "ci": [
+       0.1492,
+       0.1792
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.3157,
+      "ci": [
+       0.2995,
+       0.3325
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1525,
+      "ci": [
+       0.1368,
+       0.1683
+      ]
+     }
+    },
+    "zrc/J5": {
+     "model": "MLP",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.9637,
+      "model_without": 0.7558,
+      "walk_with": 0.6182,
+      "walk_without": 0.6198,
+      "R0": 0.7117
+     },
+     "model_lift": {
+      "R@5": 0.208,
+      "ci": [
+       0.1933,
+       0.2225
+      ]
+     },
+     "walk_lift": {
+      "R@5": -0.0015,
+      "ci": [
+       -0.0095,
+       0.0063
+      ]
+     },
+     "difference": {
+      "R@5": 0.2095,
+      "ci": [
+       0.1933,
+       0.225
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.3455,
+      "ci": [
+       0.3282,
+       0.3625
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1375,
+      "ci": [
+       0.1202,
+       0.1538
+      ]
+     }
+    },
+    "zrc/L-2wiki": {
+     "model": "MLP",
+     "read": "held-out",
+     "levels": {
+      "model_with": 0.933,
+      "model_without": 0.7558,
+      "walk_with": 0.6182,
+      "walk_without": 0.6198,
+      "R0": 0.7117
+     },
+     "model_lift": {
+      "R@5": 0.1772,
+      "ci": [
+       0.164,
+       0.1905
+      ]
+     },
+     "walk_lift": {
+      "R@5": -0.0015,
+      "ci": [
+       -0.0095,
+       0.0063
+      ]
+     },
+     "difference": {
+      "R@5": 0.1787,
+      "ci": [
+       0.164,
+       0.1933
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.3147,
+      "ci": [
+       0.2982,
+       0.3315
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1375,
+      "ci": [
+       0.1212,
+       0.153
+      ]
+     }
+    }
+   },
+   "W": {
+    "zg6r/in_domain": {
+     "model": "GNN",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.9493,
+      "model_without": 0.781,
+      "walk_with": 0.6205,
+      "walk_without": 0.6198,
+      "R0": 0.7117
+     },
+     "model_lift": {
+      "R@5": 0.1682,
+      "ci": [
+       0.1551,
+       0.1818
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0008,
+      "ci": [
+       -0.0075,
+       0.0088
+      ]
+     },
+     "difference": {
+      "R@5": 0.1675,
+      "ci": [
+       0.1525,
+       0.1826
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.3287,
+      "ci": [
+       0.311,
+       0.3463
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1605,
+      "ci": [
+       0.1442,
+       0.1768
+      ]
+     },
+     "walk_stored": {
+      "R@5": -0.0067,
+      "ci": [
+       -0.0168,
+       0.0022
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": 0.175,
+      "ci": [
+       0.1595,
+       0.1905
+      ]
+     },
+     "call_vs_stored": "GREATER"
+    },
+    "zrckp/in_domain": {
+     "model": "MLP",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.9396,
+      "model_without": 0.7589,
+      "walk_with": 0.6205,
+      "walk_without": 0.6198,
+      "R0": 0.7117
+     },
+     "model_lift": {
+      "R@5": 0.1807,
+      "ci": [
+       0.1679,
+       0.1941
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0008,
+      "ci": [
+       -0.0075,
+       0.0088
+      ]
+     },
+     "difference": {
+      "R@5": 0.18,
+      "ci": [
+       0.1652,
+       0.1945
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.3191,
+      "ci": [
+       0.3016,
+       0.3375
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1384,
+      "ci": [
+       0.1222,
+       0.1544
+      ]
+     },
+     "walk_stored": {
+      "R@5": -0.0067,
+      "ci": [
+       -0.0168,
+       0.0022
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": 0.1875,
+      "ci": [
+       0.1722,
+       0.2026
+      ]
+     },
+     "call_vs_stored": "GREATER"
+    }
+   }
+  },
+  "hotpotqa": {
+   "questions": 1000,
+   "passages": 9811,
+   "walk_arms": {
+    "R0": {
+     "R@2": 0.6945,
+     "R@5": 0.85,
+     "R@10": 0.9245,
+     "FC@5": 0.712
+    },
+    "A1/NK": {
+     "R@2": 0.392,
+     "R@5": 0.7555,
+     "R@10": 0.9355,
+     "FC@5": 0.562
+    },
+    "A1/SNK": {
+     "R@2": 0.525,
+     "R@5": 0.807,
+     "R@10": 0.9585,
+     "FC@5": 0.639
+    },
+    "A1/WNK": {
+     "R@2": 0.488,
+     "R@5": 0.789,
+     "R@10": 0.95,
+     "FC@5": 0.61
+    },
+    "A1/WNK_stored": {
+     "R@2": 0.516,
+     "R@5": 0.8005,
+     "R@10": 0.956,
+     "FC@5": 0.626
+    }
+   },
+   "w2s_structural": {
+    "rows": 8630,
+    "pairs": 4315,
+    "self_loops": 0,
+    "every_pair_twice": true
+   },
+   "shared_files_equal": {
+    "graph_ner.npz": true,
+    "graph_knn.npz": true,
+    "first_stage.npz": true,
+    "queries.json": true,
+    "nodes.json": true
+   },
+   "H": {
+    "zsp/J5": {
+     "model": "GNN",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.9825,
+      "model_without": 0.9,
+      "walk_with": 0.807,
+      "walk_without": 0.7555,
+      "R0": 0.85
+     },
+     "model_lift": {
+      "R@5": 0.0825,
+      "ci": [
+       0.0695,
+       0.094
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0515,
+      "ci": [
+       0.041,
+       0.063
+      ]
+     },
+     "difference": {
+      "R@5": 0.031,
+      "ci": [
+       0.0135,
+       0.047
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1755,
+      "ci": [
+       0.1575,
+       0.1915
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.093,
+      "ci": [
+       0.077,
+       0.108
+      ]
+     }
+    },
+    "zsp/L-hotpotqa": {
+     "model": "GNN",
+     "read": "held-out",
+     "levels": {
+      "model_with": 0.9585,
+      "model_without": 0.891,
+      "walk_with": 0.807,
+      "walk_without": 0.7555,
+      "R0": 0.85
+     },
+     "model_lift": {
+      "R@5": 0.0675,
+      "ci": [
+       0.0565,
+       0.079
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0515,
+      "ci": [
+       0.041,
+       0.063
+      ]
+     },
+     "difference": {
+      "R@5": 0.016,
+      "ci": [
+       0.0,
+       0.032
+      ]
+     },
+     "call": "SAME",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1515,
+      "ci": [
+       0.1345,
+       0.1675
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.084,
+      "ci": [
+       0.0685,
+       0.0985
+      ]
+     }
+    },
+    "zrc/J5": {
+     "model": "MLP",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.9815,
+      "model_without": 0.887,
+      "walk_with": 0.807,
+      "walk_without": 0.7555,
+      "R0": 0.85
+     },
+     "model_lift": {
+      "R@5": 0.0945,
+      "ci": [
+       0.0815,
+       0.1065
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0515,
+      "ci": [
+       0.041,
+       0.063
+      ]
+     },
+     "difference": {
+      "R@5": 0.043,
+      "ci": [
+       0.026,
+       0.059
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1745,
+      "ci": [
+       0.157,
+       0.1905
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.08,
+      "ci": [
+       0.064,
+       0.0955
+      ]
+     }
+    },
+    "zrc/L-hotpotqa": {
+     "model": "MLP",
+     "read": "held-out",
+     "levels": {
+      "model_with": 0.9655,
+      "model_without": 0.8855,
+      "walk_with": 0.807,
+      "walk_without": 0.7555,
+      "R0": 0.85
+     },
+     "model_lift": {
+      "R@5": 0.08,
+      "ci": [
+       0.0675,
+       0.0925
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0515,
+      "ci": [
+       0.041,
+       0.063
+      ]
+     },
+     "difference": {
+      "R@5": 0.0285,
+      "ci": [
+       0.0115,
+       0.045
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1585,
+      "ci": [
+       0.141,
+       0.175
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.0785,
+      "ci": [
+       0.0625,
+       0.0935
+      ]
+     }
+    }
+   },
+   "W": {
+    "zg6r/in_domain": {
+     "model": "GNN",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.9428,
+      "model_without": 0.9113,
+      "walk_with": 0.789,
+      "walk_without": 0.7555,
+      "R0": 0.85
+     },
+     "model_lift": {
+      "R@5": 0.0315,
+      "ci": [
+       0.0235,
+       0.0398
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0335,
+      "ci": [
+       0.024,
+       0.0435
+      ]
+     },
+     "difference": {
+      "R@5": -0.002,
+      "ci": [
+       -0.0145,
+       0.0098
+      ]
+     },
+     "call": "SAME",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1538,
+      "ci": [
+       0.1377,
+       0.1695
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1223,
+      "ci": [
+       0.1067,
+       0.1375
+      ]
+     },
+     "walk_stored": {
+      "R@5": 0.045,
+      "ci": [
+       0.0345,
+       0.056
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": -0.0135,
+      "ci": [
+       -0.0272,
+       -0.0008
+      ]
+     },
+     "call_vs_stored": "LESS"
+    },
+    "zrckp/in_domain": {
+     "model": "MLP",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.9343,
+      "model_without": 0.9005,
+      "walk_with": 0.789,
+      "walk_without": 0.7555,
+      "R0": 0.85
+     },
+     "model_lift": {
+      "R@5": 0.0338,
+      "ci": [
+       0.025,
+       0.0427
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0335,
+      "ci": [
+       0.024,
+       0.0435
+      ]
+     },
+     "difference": {
+      "R@5": 0.0003,
+      "ci": [
+       -0.012,
+       0.0125
+      ]
+     },
+     "call": "SAME",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1453,
+      "ci": [
+       0.1292,
+       0.1612
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1115,
+      "ci": [
+       0.0958,
+       0.127
+      ]
+     },
+     "walk_stored": {
+      "R@5": 0.045,
+      "ci": [
+       0.0345,
+       0.056
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": -0.0112,
+      "ci": [
+       -0.0248,
+       0.0018
+      ]
+     },
+     "call_vs_stored": "SAME"
+    },
+    "zg6r/zero_shot": {
+     "model": "GNN",
+     "read": "zero-shot",
+     "levels": {
+      "model_with": 0.9288,
+      "model_without": 0.8938,
+      "walk_with": 0.789,
+      "walk_without": 0.7555,
+      "R0": 0.85
+     },
+     "model_lift": {
+      "R@5": 0.035,
+      "ci": [
+       0.0262,
+       0.0442
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0335,
+      "ci": [
+       0.024,
+       0.0435
+      ]
+     },
+     "difference": {
+      "R@5": 0.0015,
+      "ci": [
+       -0.0112,
+       0.0133
+      ]
+     },
+     "call": "SAME",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1398,
+      "ci": [
+       0.124,
+       0.1553
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1048,
+      "ci": [
+       0.0888,
+       0.1208
+      ]
+     },
+     "walk_stored": {
+      "R@5": 0.045,
+      "ci": [
+       0.0345,
+       0.056
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": -0.01,
+      "ci": [
+       -0.0238,
+       0.0027
+      ]
+     },
+     "call_vs_stored": "SAME"
+    },
+    "zrckp/zero_shot": {
+     "model": "MLP",
+     "read": "zero-shot",
+     "levels": {
+      "model_with": 0.922,
+      "model_without": 0.8788,
+      "walk_with": 0.789,
+      "walk_without": 0.7555,
+      "R0": 0.85
+     },
+     "model_lift": {
+      "R@5": 0.0432,
+      "ci": [
+       0.0342,
+       0.052
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0335,
+      "ci": [
+       0.024,
+       0.0435
+      ]
+     },
+     "difference": {
+      "R@5": 0.0097,
+      "ci": [
+       -0.0032,
+       0.0225
+      ]
+     },
+     "call": "SAME",
+     "model_with_minus_walk_with": {
+      "R@5": 0.133,
+      "ci": [
+       0.1172,
+       0.1488
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.0898,
+      "ci": [
+       0.0735,
+       0.106
+      ]
+     },
+     "walk_stored": {
+      "R@5": 0.045,
+      "ci": [
+       0.0345,
+       0.056
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": -0.0018,
+      "ci": [
+       -0.0153,
+       0.0113
+      ]
+     },
+     "call_vs_stored": "SAME"
+    }
+   }
+  },
+  "musique": {
+   "questions": 1000,
+   "passages": 11656,
+   "walk_arms": {
+    "R0": {
+     "R@2": 0.4153,
+     "R@5": 0.5643,
+     "R@10": 0.6502,
+     "FC@5": 0.213
+    },
+    "A1/NK": {
+     "R@2": 0.2502,
+     "R@5": 0.491,
+     "R@10": 0.6702,
+     "FC@5": 0.187
+    },
+    "A1/SNK": {
+     "R@2": 0.2619,
+     "R@5": 0.4994,
+     "R@10": 0.6826,
+     "FC@5": 0.2
+    },
+    "A1/WNK": {
+     "R@2": 0.2637,
+     "R@5": 0.5012,
+     "R@10": 0.6851,
+     "FC@5": 0.198
+    },
+    "A1/WNK_stored": {
+     "R@2": 0.2602,
+     "R@5": 0.4996,
+     "R@10": 0.6848,
+     "FC@5": 0.198
+    }
+   },
+   "w2s_structural": {
+    "rows": 82858,
+    "pairs": 41429,
+    "self_loops": 0,
+    "every_pair_twice": true
+   },
+   "shared_files_equal": {
+    "graph_ner.npz": true,
+    "graph_knn.npz": true,
+    "first_stage.npz": true,
+    "queries.json": true,
+    "nodes.json": true
+   },
+   "H": {
+    "zsp/J5": {
+     "model": "GNN",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.6628,
+      "model_without": 0.6294,
+      "walk_with": 0.4994,
+      "walk_without": 0.491,
+      "R0": 0.5643
+     },
+     "model_lift": {
+      "R@5": 0.0334,
+      "ci": [
+       0.021,
+       0.0452
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0084,
+      "ci": [
+       -0.0012,
+       0.0176
+      ]
+     },
+     "difference": {
+      "R@5": 0.025,
+      "ci": [
+       0.0107,
+       0.0393
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1634,
+      "ci": [
+       0.1463,
+       0.1794
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.13,
+      "ci": [
+       0.1139,
+       0.1454
+      ]
+     }
+    },
+    "zsp/L-musique": {
+     "model": "GNN",
+     "read": "held-out",
+     "levels": {
+      "model_with": 0.6025,
+      "model_without": 0.5775,
+      "walk_with": 0.4994,
+      "walk_without": 0.491,
+      "R0": 0.5643
+     },
+     "model_lift": {
+      "R@5": 0.025,
+      "ci": [
+       0.0104,
+       0.0393
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0084,
+      "ci": [
+       -0.0012,
+       0.0176
+      ]
+     },
+     "difference": {
+      "R@5": 0.0166,
+      "ci": [
+       -0.0006,
+       0.0325
+      ]
+     },
+     "call": "SAME",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1031,
+      "ci": [
+       0.084,
+       0.1207
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.0781,
+      "ci": [
+       0.0608,
+       0.0947
+      ]
+     }
+    },
+    "zrc/J5": {
+     "model": "MLP",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.6612,
+      "model_without": 0.634,
+      "walk_with": 0.4994,
+      "walk_without": 0.491,
+      "R0": 0.5643
+     },
+     "model_lift": {
+      "R@5": 0.0272,
+      "ci": [
+       0.016,
+       0.038
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0084,
+      "ci": [
+       -0.0012,
+       0.0176
+      ]
+     },
+     "difference": {
+      "R@5": 0.0187,
+      "ci": [
+       0.0043,
+       0.0334
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1618,
+      "ci": [
+       0.1447,
+       0.1784
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1346,
+      "ci": [
+       0.119,
+       0.1505
+      ]
+     }
+    },
+    "zrc/L-musique": {
+     "model": "MLP",
+     "read": "held-out",
+     "levels": {
+      "model_with": 0.6132,
+      "model_without": 0.5837,
+      "walk_with": 0.4994,
+      "walk_without": 0.491,
+      "R0": 0.5643
+     },
+     "model_lift": {
+      "R@5": 0.0295,
+      "ci": [
+       0.0163,
+       0.0429
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0084,
+      "ci": [
+       -0.0012,
+       0.0176
+      ]
+     },
+     "difference": {
+      "R@5": 0.0211,
+      "ci": [
+       0.0057,
+       0.0362
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1138,
+      "ci": [
+       0.0944,
+       0.1308
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.0843,
+      "ci": [
+       0.0685,
+       0.1009
+      ]
+     }
+    }
+   },
+   "W": {
+    "zg6r/in_domain": {
+     "model": "GNN",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.6895,
+      "model_without": 0.6596,
+      "walk_with": 0.5012,
+      "walk_without": 0.491,
+      "R0": 0.5643
+     },
+     "model_lift": {
+      "R@5": 0.0299,
+      "ci": [
+       0.0183,
+       0.0405
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0102,
+      "ci": [
+       0.0009,
+       0.0188
+      ]
+     },
+     "difference": {
+      "R@5": 0.0198,
+      "ci": [
+       0.0061,
+       0.033
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1884,
+      "ci": [
+       0.1706,
+       0.2054
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1584,
+      "ci": [
+       0.1407,
+       0.1767
+      ]
+     },
+     "walk_stored": {
+      "R@5": 0.0086,
+      "ci": [
+       -0.0021,
+       0.0183
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": 0.0214,
+      "ci": [
+       0.0069,
+       0.0354
+      ]
+     },
+     "call_vs_stored": "GREATER"
+    },
+    "zrckp/in_domain": {
+     "model": "MLP",
+     "read": "in-domain",
+     "levels": {
+      "model_with": 0.6689,
+      "model_without": 0.6247,
+      "walk_with": 0.5012,
+      "walk_without": 0.491,
+      "R0": 0.5643
+     },
+     "model_lift": {
+      "R@5": 0.0443,
+      "ci": [
+       0.0334,
+       0.0557
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0102,
+      "ci": [
+       0.0009,
+       0.0188
+      ]
+     },
+     "difference": {
+      "R@5": 0.0341,
+      "ci": [
+       0.0207,
+       0.0488
+      ]
+     },
+     "call": "GREATER",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1678,
+      "ci": [
+       0.1507,
+       0.1852
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1235,
+      "ci": [
+       0.1061,
+       0.1416
+      ]
+     },
+     "walk_stored": {
+      "R@5": 0.0086,
+      "ci": [
+       -0.0021,
+       0.0183
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": 0.0357,
+      "ci": [
+       0.0214,
+       0.0506
+      ]
+     },
+     "call_vs_stored": "GREATER"
+    },
+    "zg6r/zero_shot": {
+     "model": "GNN",
+     "read": "zero-shot",
+     "levels": {
+      "model_with": 0.6079,
+      "model_without": 0.6206,
+      "walk_with": 0.5012,
+      "walk_without": 0.491,
+      "R0": 0.5643
+     },
+     "model_lift": {
+      "R@5": -0.0127,
+      "ci": [
+       -0.0262,
+       0.001
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0102,
+      "ci": [
+       0.0009,
+       0.0188
+      ]
+     },
+     "difference": {
+      "R@5": -0.0229,
+      "ci": [
+       -0.0377,
+       -0.0076
+      ]
+     },
+     "call": "LESS",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1067,
+      "ci": [
+       0.0876,
+       0.1247
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.1194,
+      "ci": [
+       0.1009,
+       0.1372
+      ]
+     },
+     "walk_stored": {
+      "R@5": 0.0086,
+      "ci": [
+       -0.0021,
+       0.0183
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": -0.0213,
+      "ci": [
+       -0.0369,
+       -0.0053
+      ]
+     },
+     "call_vs_stored": "LESS"
+    },
+    "zrckp/zero_shot": {
+     "model": "MLP",
+     "read": "zero-shot",
+     "levels": {
+      "model_with": 0.6088,
+      "model_without": 0.5862,
+      "walk_with": 0.5012,
+      "walk_without": 0.491,
+      "R0": 0.5643
+     },
+     "model_lift": {
+      "R@5": 0.0226,
+      "ci": [
+       0.0095,
+       0.0354
+      ]
+     },
+     "walk_lift": {
+      "R@5": 0.0102,
+      "ci": [
+       0.0009,
+       0.0188
+      ]
+     },
+     "difference": {
+      "R@5": 0.0125,
+      "ci": [
+       -0.0023,
+       0.0273
+      ]
+     },
+     "call": "SAME",
+     "model_with_minus_walk_with": {
+      "R@5": 0.1076,
+      "ci": [
+       0.0887,
+       0.1254
+      ]
+     },
+     "model_without_minus_walk_with": {
+      "R@5": 0.085,
+      "ci": [
+       0.0664,
+       0.1038
+      ]
+     },
+     "walk_stored": {
+      "R@5": 0.0086,
+      "ci": [
+       -0.0021,
+       0.0183
+      ]
+     },
+     "difference_vs_stored": {
+      "R@5": 0.0141,
+      "ci": [
+       -0.0016,
+       0.0299
+      ]
+     },
+     "call_vs_stored": "SAME"
+    }
+   }
+  }
+ },
+ "call_H": "GREATER_EVERYWHERE",
+ "call_W": "MIXED",
+ "deciding_cells": {
+  "H": [
+   "2wiki zsp/J5",
+   "2wiki zrc/J5",
+   "hotpotqa zsp/J5",
+   "hotpotqa zrc/J5"
+  ],
+  "W": [
+   "2wiki zg6r/in_domain",
+   "2wiki zrckp/in_domain",
+   "hotpotqa zg6r/in_domain",
+   "hotpotqa zrckp/in_domain",
+   "musique zg6r/in_domain",
+   "musique zrckp/in_domain"
+  ]
+ },
+ "checks": {
+  "hlw_arms": true,
+  "hlw_add": true,
+  "u1a_paired": true,
+  "b1p_paired": true,
+  "read_sha256": true,
+  "read_ids": true,
+  "w2s_bench_shares_b1": true
+ },
+ "seconds": 292.4,
+ "utc": "2026-11-03T20:01:57Z"
+}

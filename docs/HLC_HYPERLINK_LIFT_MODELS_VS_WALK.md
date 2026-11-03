@@ -131,3 +131,69 @@ with its LLM-built graph. The reads are on HippoRAG 2's 1,000-question settings.
 python outputs/mp_unified/hlcdiag.py selftest
 python outputs/mp_unified/hlcdiag.py run          (laptop, minutes)
 ```
+
+## 9. Results (filed 4 November 2026)
+
+`hlcdiag.py selftest` passed, and `hlcdiag.py run` ran on the laptop from 01:27 to 01:32 IST (292 s). Every check in
+section 4 passed. Records: `outputs/hlc/report.json` and `report.md`. Nothing in sections 1 to 8 changed after the run.
+
+**Family H, the corpus's own hyperlinks: GREATER_EVERYWHERE.** R@5 points, paired by question, [95% interval]:
+
+| setting | model (J5, in-domain) | model lift | walk lift | difference | call |
+| --- | --- | --- | --- | --- | --- |
+| 2wiki | zsp (GNN) | +19.8 [+18.3, +21.2] | −0.1 [−0.9, +0.6] | +20.0 [+18.4, +21.5] | GREATER |
+| 2wiki | zrc (MLP) | +20.8 [+19.3, +22.2] | −0.1 [−0.9, +0.6] | +20.9 [+19.3, +22.5] | GREATER |
+| hotpotqa | zsp (GNN) | +8.2 [+7.0, +9.4] | +5.1 [+4.1, +6.3] | +3.1 [+1.4, +4.7] | GREATER |
+| hotpotqa | zrc (MLP) | +9.4 [+8.2, +10.7] | +5.1 [+4.1, +6.3] | +4.3 [+2.6, +5.9] | GREATER |
+
+Beside (deciding nothing):
+- The held fits are GREATER on 2wiki for both arms, and on hotpotqa for the MLP. The hotpotqa GNN is SAME: +1.6
+  [+0.0, +3.2].
+- On musique, where the links are title mentions, J5 is GREATER for both arms (+2.5 and +1.9). Of the held fits, the
+  GNN is SAME and the MLP GREATER.
+
+**Family W, the recreated links W2_S: MIXED.**
+
+| setting | model (in-domain seed mean) | model lift | walk lift | difference | call |
+| --- | --- | --- | --- | --- | --- |
+| 2wiki | zg6r (GNN) | +16.8 [+15.5, +18.2] | +0.1 [−0.8, +0.9] | +16.8 [+15.2, +18.3] | GREATER |
+| 2wiki | zrckp (MLP) | +18.1 [+16.8, +19.4] | +0.1 [−0.8, +0.9] | +18.0 [+16.5, +19.4] | GREATER |
+| hotpotqa | zg6r (GNN) | +3.1 [+2.4, +4.0] | +3.4 [+2.4, +4.3] | −0.2 [−1.5, +1.0] | SAME |
+| hotpotqa | zrckp (MLP) | +3.4 [+2.5, +4.3] | +3.4 [+2.4, +4.3] | +0.0 [−1.2, +1.2] | SAME |
+| musique | zg6r (GNN) | +3.0 [+1.8, +4.0] | +1.0 [+0.1, +1.9] | +2.0 [+0.6, +3.3] | GREATER |
+| musique | zrckp (MLP) | +4.4 [+3.3, +5.6] | +1.0 [+0.1, +1.9] | +3.4 [+2.1, +4.9] | GREATER |
+
+Beside (deciding nothing):
+- **Zero-shot.** On musique, zg6r is LESS: its lift is −1.3, the walk's +1.0, a difference of −2.3 [−3.8, −0.8]. The
+  other three zero-shot cells are SAME.
+- **The walk on the stored file**, with every W2_S pair counted twice, gains more on hotpotqa: +4.5 [+3.5, +5.6].
+  Against it, hotpotqa's zg6r in-domain cell is LESS (−1.4 [−2.7, −0.1]) and zrckp's is SAME. 2wiki and musique stay
+  GREATER.
+
+**The levels: the walk stays below its own first stage; the models stay far above the walk.**
+
+| R@5 | 2wiki | hotpotqa | musique |
+| --- | ---: | ---: | ---: |
+| R0, the walk's first stage | 0.7117 | 0.8500 | 0.5643 |
+| A1 walk on NK | 0.6198 | 0.7555 | 0.4910 |
+| A1 walk on SNK (hyperlinks; musique: title mentions) | 0.6182 | 0.8070 | 0.4994 |
+| A1 walk on W2_S + NK | 0.6205 | 0.7890 | 0.5012 |
+
+- Our models with the links are 14.5 to 35.3 points above the walk with the links, in every cell of both families.
+- Even without any links (b1t), every J5 model is above the walk with the hyperlinks: by 13.8 to 15.5 points on
+  2wiki, 8.0 to 9.3 on hotpotqa and 13.0 to 13.5 on musique, all with intervals above 0.
+
+**What a written sentence may say (section 6).**
+- **Family H.** On HippoRAG 2's settings, adding the corpus hyperlinks lifts our trained models more than it lifts
+  HippoRAG 2's walk on our graph, question for question: by 20.0 and 20.9 points on 2wiki, and 3.1 and 4.3 on
+  hotpotqa (GNN, MLP).
+- **Family W.** The recreated links lift our models more than the walk on 2wiki (+16.8 and +18.0) and on musique
+  (+2.0 and +3.4). On hotpotqa the two lifts are the same (−0.2 and +0.0, intervals across 0). No general sentence is
+  written for family W.
+- **The levels**, which no call decides: the walk ranks below its own first stage with or without the links, and our
+  models without any links rank above the walk with them.
+- In every case the walk is HippoRAG 2's walk on our LLM-free graph, from its own restart rule. The models in family H
+  are B1b's bases (zsp and zrc), not the models of record.
+
+**What follows (section 7).** The zb1p amendment reads zg6r and zrckpn on b1, and family H is then read again with the
+models of record. The verdict closes only this measure.
