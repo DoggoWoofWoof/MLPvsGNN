@@ -1,0 +1,34 @@
+{
+ "stage": "CAP",
+ "declared_in": "docs/DOB_CAPACITY.md",
+ "base": "zrckpn",
+ "cell": null,
+ "screen_sha256": "6661ad7d678caac879343300e3cceb54283021e55bf7902189e3666b8b216921",
+ "zcap_sha256": "6e98048b5d59550057943f6d3e227cd0d1f4795de09809a7064be463b8a2eabb",
+ "utc": "2026-11-04T19:25:32Z",
+ "verdict": "NO_FULL_RUN",
+ "problems": [],
+ "own": {
+  "verdict": "NOT_ADOPTED"
+ },
+ "www": {
+  "verdict": "NOT_ADOPTED"
+ },
+ "screen": {
+  "e16": {
+   "own": "NOT_ADOPTED",
+   "www": "NO_GAIN",
+   "stop": "GO"
+  },
+  "w256": {
+   "own": "NOT_ADOPTED",
+   "www": "NOT_ADOPTED",
+   "stop": "GO"
+  },
+  "w256e16": {
+   "own": "NOT_ADOPTED",
+   "www": "NO_GAIN",
+   "stop": "GO"
+  }
+ }
+}

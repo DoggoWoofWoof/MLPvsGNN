@@ -184,3 +184,31 @@ python outputs/mp_unified/zcap.py calls
   asks for work to be queued at all times. Otherwise: hold the block behind the timing track's timed items.
 - **D2, what an ADOPT means for the claims.** Default: the cell is filed beside zrckpn, the MLP of record stays, and the GNN's
   matching form runs first (section 6). Otherwise: the user moves the MLP of record to the cell.
+
+## 10. Results of CAP, 5 November 2026 (00:50 IST)
+
+`zcap.py compare-all`, `screen` and `calls` ran on the host on 5 November between 00:48 and 00:56 IST, after the six
+seed-0 fits. The records are `outputs/dob/cap/screen.json` and `.md` and `outputs/dob/cap/full.json` and `.md`, with no
+problems. All three cells passed the seed-0 stop (no LOSS on WQ-musique's hotpotqa and 2wiki reads), so all six fits ran.
+
+| cell | hidden | config | own (twelve reads) | six-read rule | mean seed-0 delta, six reads | GAIN / LOSS (six) |
+| --- | ---: | --- | --- | --- | ---: | --- |
+| e16 | 128 | 2e-3:1e-4:0.1:16:4 | NOT_ADOPTED | NO_GAIN | +0.0032 | 0 / 0 |
+| w256 | 256 | 2e-3:1e-4:0.1:8:2 | NOT_ADOPTED | NOT_ADOPTED | -0.0089 | 0 / 3 |
+| w256e16 | 256 | 2e-3:1e-4:0.1:16:4 | NOT_ADOPTED | NO_GAIN | -0.0029 | 0 / 0 |
+
+- The screen chose **no cell**, so the stage is NO_FULL_RUN (section 4): the four full-run items ended at once, and
+  `full.json` files both rules as NOT_ADOPTED.
+- The six reads are WQ-musique's hotpotqa and 2wiki and WQ-hotpotqa's musique, 2wiki, musique-3hop and musique-4hop. No
+  cell has a GAIN on any of them. w256 has three LOSSes (WQ-hotpotqa musique -0.0117, musique-3hop -0.0167,
+  musique-4hop -0.0093); e16 and w256e16 have none.
+- On the own rule's twelve reads each cell has one or two LOSSes: e16 on WQ-musique metaqa (-0.0385) and WQ-hotpotqa
+  hotpotqa (-0.0085), w256 on WQ-hotpotqa musique (-0.0117), w256e16 on WQ-musique metaqa (-0.0462). w256 also has one
+  GAIN (WQ-musique metaqa, +0.0573), which decides nothing.
+
+**What follows (section 6, fixed before the fits).**
+- Capacity is closed for zrckpn on these pools: no cell lifts a read of the six, and width 256 lowers three of them.
+  Width 512 is not run. zrckpn stays the MLP of record, and no cell's forward is timed.
+- No next CPU form is declared before the freeze. The host's CPU goes to the hyperlink carve's reads first, and a form is
+  declared in its own file after the freeze.
+- A verdict closes only the form it tested: the epochs and the width of this MLP, on these pools, at these seeds.
