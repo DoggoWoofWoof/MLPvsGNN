@@ -209,3 +209,39 @@ of zu2y. `zu2xh.mirror()` puts PKOH's package mirror in place and checks that th
 **Records.** The stats pass writes its rerun of U2s's stats and the walk-mass sums under `outputs/u2y/stats`
 (uncommitted, as U2x's). The choice writes `outputs/u2y/choice.json` and `choice.md`, committed with a dated results
 section in this file.
+
+## 7. Results of stage A, 4 November 2026 (08:24 IST)
+
+Filed in `outputs/u2y/choice.json` and `outputs/u2y/choice.md`. `zu2y.py choose` ran on the laptop over the host's
+merged statistics for the three datasets.
+
+**Verdicts: NOT_UNIFIED and KIND_FREE_TOO_DEAR. Nothing is carried.**
+- Pick O (`own/kind_t/kt_cos:ada_f16_k0@0.85`) reaches level 0.96 at 1,751.9 rows on s1sel; the cap is 1,953.5.
+- No point on frontier C or E reaches 0.96 within the cap, with the walk-mass candidates or without them. The cheapest
+  points at 0.96 are both WMS:
+  - C: `rrf50+none/kind_t/kt_cos_r0+n2_10:mass_A1all_t0.99_f1_k0@0.975~A1all.pool`, 4,011.3 rows (2.29 x pick O's);
+  - E: `rrf200+FULL:h2_c25/both/kt_cos+n2_100:mass_A1all_t0.99_f2_k0@0.95~A1all.pool`, 3,897.6 rows (2.22 x).
+- The cheapest WMT point at 0.96 costs 4,233.4 rows. The report's KTall rows are empty at this level.
+
+**Checks passed.**
+- The re-run of U2s's pass equals U2s.
+- The control, P1h's rank-mass cut, gives back U2s's table at all 1,103,760 universal candidates on each of the three
+  datasets (3,311,280 values).
+- Pick O's filed point is reproduced, U2w's frontier C has its 11 points, and the weights check passed.
+
+**Beside, deciding nothing.**
+- The ceilings do not move with the walk-mass candidates: musique 0.9811, hotpotqa 0.9881, 2wiki 0.996.
+- Section 1's question, whether a walk-mass cut follows depth: both cheapest WMS points at 0.96 spend fewer rows on
+  hotpotqa and 2wiki than on musique (C: 4,156.2, 3,937.4 and 4,009.5; E: 4,264.1, 3,756.3 and 3,860.5). The cheapest
+  WMT point does not (4,121.3, 4,154.4 and 4,332.8). Even where the cut follows depth, it spends more than twice pick
+  O's rows to reach pick O's level.
+- P1e's kinds: every s1sel question is a passage question (musique 1,534, hotpotqa 1,508, 2wiki 1,496), as section 5
+  expected.
+- The mean share of a walk's mass outside the base's B is 0.48 to 0.60 for A1all and 0.22 to 0.43 for KTall. It is
+  largest outside rrf50's B on all three datasets.
+
+**What follows (section 5, fixed before the run).**
+- Pick O stays the pools of record.
+- This cut was the last form U2s's section 10 names.
+- The next form is one rule that picks a construction for each corpus before any gold is read, from the corpus's own
+  pool sizes in U2s's filed arrays. It is declared in its own file.
