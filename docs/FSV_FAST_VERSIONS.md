@@ -642,3 +642,168 @@ two files only, masked (`mask_host.py`, `mask_md.py`), with `git add -f`; never 
   WQ-musique's slice reads at four decimals;
 - the one difference is the step named: L0's screen, where the filed record names none. The calls' header reads "Next: L0
   screen", and L0 is not among the levels until its compare is filed.
+
+## 12. Amendment A4: faster exact forms for stage (a) and the GNN's layers (4 November, before any timed number with them)
+
+This takes up D1 of section 10 (a faster exact stage (a) or forward before the timed pass of record) on the user's order of 4
+November, 06:30 IST ("make sure while measuring both models across families are as fast as possible and fam 1 without feature
+cuts and fam 2 with feature cuts"), and the earlier one, "make the gnns faster too i dont want to give any unfair advantage to
+mlp". Section 10's timed passes (M2: `outputs/fsv/timing/raw`, `report.json`) used section 10's forms. They stand as the record
+of those forms and are not touched. The forms below are timed after this commit, as M3. Module: `outputs/mp_unified/zfsvx.py`
+(new). It imports `zfsvc.py`, installs the forms in its own process (`installed()`: three functions replaced, put back on exit
+and asserted) and edits nothing: not `zfsvc.py`, `zg6r.py`, `lean_gpu.py`, `zpko.py`, the C-stage modules or P4's. Sections 1
+to 11 stand, except where this names one.
+
+**Why.** M2's stage (a), p50 in ms per question (BLAS 2, the 200 kept questions; the rule's walks, orders and KT columns are its
+parts), and the two models' (b) and (c):
+
+| dataset | pool rows p50 | (a) | of it: walks / orders / KT | MLP (b)+(c) | GNN (b)+(c) | of it: GNN (c) / MLP (c) | (a) share of the MLP's / the GNN's end to end |
+|---|---|---|---|---|---|---|---|
+| musique | 4814 | 419.6 | 242.7 / 151.6 / 13.5 | 102.9 | 279.5 | 206.8 / 25.9 | 80% / 60% |
+| hotpotqa | 697 | 1173.5 | 1046.2 / 110.3 / 12.5 | 17.4 | 21.5 | 13.2 / 6.2 | 99% / 99% |
+| 2wiki | 1074 | 1353.1 | 1202.9 / 132.8 / 12.5 | 25.0 | 32.0 | 18.9 / 7.9 | 98% / 98% |
+
+Stage (a) is the larger part of both models' end-to-end time on every dataset, and the walks are most of it. On musique the
+GNN's forward is the larger part of its model-only time (206.8 of 279.5 ms, against the MLP's 25.9 of 102.9).
+
+**The forms** (each stage, each model; a form a model has in a shared stage, the other has too):
+
+| stage | A2's form | A4's form | MLP | GNN |
+|---|---|---|---|---|
+| (a) walks | `lean_rule`'s thirteen walks (`sources_batch`, `steered_batch`, `restarts_batch`, five `rwalk`s), numba batch kernels on the two unions | the ten walks the pool and the KT columns read (A1st, A1all, Kst, KTst, KTall and the five relational walks), on P4b's declared records (`docs/P4B_FAST_WALKS.md`: breadth-first numbering, 16-byte hot and cold records, merged neighbour lists, generation-stamped keys, a steer bitmap), built once per dataset from the unions at index time; the relational walk is `zfsvx.frwalk`, `zu2m_a`'s push on the same records | the same run | the same run |
+| (a) orders | `p1e_orders` and `rule_orders` for every candidate order, `question_orders` for every column | the six orders the columns read (KIND_T, A1st, A1all, Kst, KTst, KTall), from `p1e_orders`' and `rule_orders`' own lines; of the expansion's orders `kt_cos` alone (the pick's order, asserted at run time), its unit rows made from the float16 rows the store holds in one numba pass, the float32 norm certified | the same run | the same run |
+| (b) | A2's | A2's | unchanged | unchanged |
+| (c) forward | the module in eager torch, one thread | the MLP's: the module's. The GNN's: `zg6r.g6r_step` replaced in the process by `zfsvx.g6r_step_x` for a pool with no typed edge, one question, float32, no gradient (any other input takes the module's step, counted) | the module's | the layer step in two parts: the attention logit from one dot product per node, and the messages with their two scatter-adds in one pass over the edges |
+
+**Why each form is exact** (the same floating-point operations in the same order; only where the state lives, or work no read
+reaches, changes):
+- **The walks on P4b's records.** The seeds in their order, each popped node's neighbours in theirs, the same float64
+  operations: P4b's walkers reproduce P4a's orders and counts bit for bit (`docs/P4B_FAST_WALKS.md`). The numbering is
+  breadth-first with ties by original id, and the top breaks its ties by the original id, so every order is the original's.
+  `frwalk` is `zu2m_a`'s relational push statement for statement on the same records: family 0's edges weigh the question's
+  weight of their class, the other families 1, each times floor plus the node's extra when steered, the weights of a run summed
+  first and then each neighbour's share `m / (nf * sum)` times its weight; the class of every merged-list entry is carried at
+  index time. A union with the records built from it holds the same nodes and edges as the union.
+- **The ten walks.** Kall, A1Tst and A1Tall feed orders (csum, A1both, SUM5, RRF5, RRF7T, KCUT, ROUTEboth and the rest of
+  `p1e_orders`' and `rule_orders`' candidates) that nothing after them reads: the pool takes KIND_T, the KT columns take the six
+  orders above, and the expansion takes `kt_cos`. The forms compute those orders from `p1e_orders`' and `rule_orders`' own lines.
+  Every question's pool, KT columns and expansion are compared with `zfsvc.lean_rule`'s, byte for byte.
+- **The expansion's cosines.** `kt_cos` is the column of `question_orders` that the pick's plan reads (the run stops if the
+  plan's order is another). Its cosines are `d5b_neighbour_orders.unit` of the float16 rows (as float32) times the question's
+  vector. The forms convert the rows with torch (exact, as numpy's) and take each row's norm in one pass: the float64 sum of the
+  squares (each product of two float32 values is exact in float64), in eight lanes instead of einsum's order. Any order of 1,536
+  non-negative float64 terms is within 1.7e-13 (relative) of the exact sum, so the norm's float32 rounding is the same as
+  einsum's unless the band [y (1 - 1e-12), y (1 + 1e-12)] holds a rounding midpoint; a matrix with a row whose band does hold
+  one takes the reference's own `unit` for the whole matrix (counted: it happens, see the checks). The rows that only the second
+  link (N2) brings are not read by any order; they stay zero rows in the product, because a float32 row of a matrix-vector
+  product depends on its place in the matrix, not on the other rows' values (the kernel takes rows by position), so every other
+  row's cosine is the original's.
+- **The GNN's layers.** `g6r_step_x` is `zg6r.g6r_step` op for op, except two places: the attention logit (the gather of the
+  linear map's rows times the question's context, summed over the 64 values, is the per-node sum, gathered: the same float32
+  values, since torch's row sum is a function of the row alone), and the two scatter-adds (`index_add_` takes the edges one after
+  the other and adds each row to its target; the pass does the same in the edge order, each product a rounded float32 and each
+  sum a float32 sum). Every other op is the module's, in its order. A pool with a typed edge, a batch beyond one question, a
+  non-float32 or a grad-enabled input takes the module's step (counted in `STATS`); the timed path has none of these
+  (zfsvc builds `_g6r` with no typed edge).
+- **The MLP's forward: no form.** The module's forward is spread over 2,306 small ops, the largest a fifth of its time (the
+  profile below). Its largest part, `encode`'s masks and segment z-scores (six small ops, about 45%), would take a fused rewrite
+  of `seg_zscore_ref` and `seg_zscore8D` with every float32 rounding kept, which is not in this amendment. The MLP's forward
+  stays the module's. The GNN's `encode` is the same computation on its blocks (38 of the module's 287 ms and 42 of the forms'
+  90 on that question), so a fused `encode` would serve both models and every cut fit; it is left for a later amendment.
+- **Where exactness is checked, not argued.** Two steps rest on a property of a library's kernel (sgemv's rows by place, torch's
+  row sum), so the checks below compare the bytes, not only the bars.
+
+**The checks** (untimed; `devx` for development, `run` for M3):
+- A2's own development checks with the forms installed (`zfsvc.dev_checks`): the pool, today's pool, the expansion, the KT
+  columns and I against PKO's rule on the same question; each model's inputs against the reference carve's batch; each model's
+  scores against the fit's filed read at batch 1, within 1e-4 with the same top 5; the float16 NEXT values counted.
+- Beside them, per question: stage (a)'s three outputs from `zfsvc.lean_rule` and from the forms, byte for byte (run in
+  alternating order on the same inputs); each model's scores from the forward with the module's layer step and with the forms',
+  byte for byte. `devx` passes only if every one holds on every question, no layer step took the module's path, and the forms
+  ran (counted).
+- `selftest` (no data): the walks on random graphs of both unions, with and without a steer; the orders; the cosines with the
+  certified and the not-certified norm; the layers, including the typed-edge, two-question and gradient inputs that take the
+  module's step; the installation and its restoration, also after an error. It passed before this commit.
+- M3's `run` keeps A2's checks per timed question and A2's rule: a question that fails the scores' or the pool's check is not
+  kept, and more than 2% failing stops the dataset.
+
+**Development numbers** (the host, the first 40 questions of each dataset, BLAS 2, one logical processor off the timed ones,
+other jobs running: development times, not measurements; stage (a)'s two forms on the same inputs, alternating order):
+
+| dataset | pool rows p50 | link edges p50 | (a) zfsvc's p50 | (a) the forms' p50 | speed-up | GNN forward: module's / forms' (speed-up) | MLP forward: module's / forms' |
+|---|---|---|---|---|---|---|---|
+| musique | 4845 | 126724 | 582.9 | 177.2 | 3.29 | 319.3 / 89.1 (3.58) | 36.6 / 37.5 |
+| hotpotqa | 671 | 4040 | 1425.1 | 225.4 | 6.32 | 15.4 / 10.9 (1.41) | 7.0 / 6.9 |
+| 2wiki | 1123 | 6434 | 1477.7 | 200.4 | 7.37 | 21.0 / 14.2 (1.47) | 8.8 / 8.5 |
+
+The forms' stage (a) by segment (p50 ms; the walks are `x_unw` and `x_rel`, `question_orders` is the expansion's cosines and
+their fusion, `cos1` the first link's cosines):
+
+- musique: x_unw 32.1, x_rel 45.9, x_ord1 2.1, n1_table 1.5, cos1 25.7, ranks 0.4, second_link 2.1, outside 0.5, question_orders
+  49.2, kept 0.7, x_ord2 2.0, kt_cols 4.2.
+- hotpotqa: x_unw 65.6, x_rel 85.9, x_ord1 2.4, n1_table 0.6, cos1 7.5, ranks 0.1, second_link 1.2, outside 0.5, question_orders
+  56.5, kept 0.3, x_ord2 2.3, kt_cols 2.2.
+- 2wiki: x_unw 54.1, x_rel 72.5, x_ord1 2.4, n1_table 0.5, cos1 10.5, ranks 0.1, second_link 1.4, outside 0.4, question_orders
+  52.8, kept 0.3, x_ord2 2.3, kt_cols 2.3.
+
+zfsvc's own stage (a) reads 583, 1425 and 1478 ms here against M2's 420, 1174 and 1353: the first 40 questions, the host loaded
+by other jobs, one logical processor for BLAS's two threads. Only the ratios say anything, and they are not timed ones.
+
+All three runs passed (`DEVX PASS`). On the 40 questions of each dataset: stage (a)'s pool, KT columns and expansion from the
+forms equal `zfsvc.lean_rule`'s byte for byte on all 40; each model's scores from the module's layer step and from the forms'
+are equal byte for byte on all 80 forwards; A2's checks held on every question (the pool, today's pool, the expansion, the KT
+columns and I against PKO's rule; each model's inputs against the carve's batch); the largest difference of a score from the
+fit's filed read (MLP / GNN) was 5.7e-06 / 7.2e-06 on musique, 2.9e-06 / 4.8e-06 on hotpotqa, 2.4e-06 / 6.7e-06 on 2wiki (bar
+1e-4), with the same top five on 40 of 40 for both models on all three; no layer step took the module's path (255 of 255 by the
+forms on each). The float16 NEXT values that differ from the cache's (counted, not failures, as in M2): 0 of 1,383,088 on
+musique, 1 of 191,583 on hotpotqa, 0 of 313,117 on 2wiki. The norm band could not certify a matrix in 6 (musique), 15 (hotpotqa)
+and 18 (2wiki) of the 123 stage (a) calls of those runs (the prepass, the JIT question and each question twice); each took the
+reference's form for that matrix, and its bytes are the reference's.
+
+**What dominates** (torch's profiler, one thread, self time; the first question of musique: 4,750 rows, 106,810 link edges):
+- The module's GNN forward, 276 ms of self time: `mul` 25%, `index` 24%, `scatter_add_` 23%, `mm` 7%, `sum` 7%, `addmm` 3%. By
+  part (encode, chain, input map and context, layers, readout; wall time, ms): the module's 37.8, 0.3, 4.3, 244.1, 0.8 (the
+  layers are 85%: the per-edge gathers, products and scatter-adds, and the attention's row sum); the forms' 41.5, 0.1, 3.3,
+  45.3, 0.2. On the second question the layers took 235 ms and 58. What is left of the GNN's forward is the encode (46%) and the
+  layers (50%).
+- The module's MLP forward, 39 ms in 2,306 calls: `addmm` 20%, `index` 14%, `mul` 11%, `mm` 10%, `scatter_add_` 9%, `where` 8%,
+  `gelu` 4%, `cat` 3%. The six ops `index`, `mul`, `where`, `div`, `sub` and `scatter_add_` (45% together) are `encode`'s masks
+  and segment z-scores.
+
+**What is not changed.**
+- Stage (b): A2's forms (`compile_serial`, `lean_rows10`, `links_fast`, NEXT's lists, the inputs), for both models. Compile
+  36, rows 20 and links 12 ms on musique are a place for a later amendment.
+- The MLP's forward (the module's; see the profile), first-stage retrieval (not timed), the threads (one for torch, numba and every
+  OpenMP runtime; BLAS 2 in the record, 1 beside), the pin, the reads, the bars and the question sets.
+- Family 2's forms stay for amendment A3 (section 10): a cut input is neither computed nor read in stage (b). The forms above
+  touch the pool's walks and orders and the GNN's layers, which no cut changes (a cut fit is the same stack with its own
+  weights), and so are the forms of both families.
+
+**Re-time (M3).** The timed passes run per dataset after this commit, one at a time on the host, a smoke first (`--nq 20`, its
+raw file in `outputs/fsv/timing/a4/raw_smoke`, not filed; the run stops with "the forms did not run" if a form was not used).
+The records add 0.1, 1.6 and 2.7 GiB to a dataset's process, so a job's `--mem` is A2's plus 3 GB. Each dataset:
+
+```
+python outputs/host_ops/pylib_run.py outputs/mp_unified/zfsvx.py run --dataset D --blas 2 --lps 2,4 --require-pin
+```
+
+then the BLAS-1 pass beside (`--blas 1`), its raw files in `outputs/fsv/timing/a4/raw` (the `a4` directory; zfsvc's raw files are
+not touched; each records the module's sha256, the records' index time and size and what ran), and
+`python outputs/mp_unified/zfsvx.py report` (zfsvc's reduction of those files, labelled A4: `outputs/fsv/timing/a4/report.json`
+and `report.md`). M3 replaces M2 as the number of record for every cell; M2 stays in the repository, labelled A2. A faster exact
+form found later is a new amendment and a re-time.
+
+**Risks, stated before any number.**
+- The development speed-ups are not measurements; the timed ones can differ (pinning, the host's load, the cache).
+- The records are an index-time structure built from the unions (1.3 s and 77 MiB on musique, 10.5 s and 1,586 MiB on hotpotqa,
+  14.5 s and 2,731 MiB on 2wiki; untimed, as the unions and PKO's prepared lists are). A reader who counts them as cold time
+  would add the build once per dataset; M3 reports it beside.
+- Two exactness steps rest on library kernels (sgemv's per-row result by place, torch's row sum). They hold on the checked
+  questions and in the self-test; another library version or thread count could differ, and a question whose bytes differ fails
+  the check and is counted, not hidden.
+- A norm the band cannot certify takes the reference's form (slower, exact); the count is reported (6 on musique, 15 on
+  hotpotqa, 18 on 2wiki of 123 stage (a) calls in the development runs).
+- The new kernels are compiled in the first (untimed) question, as A2's are.
+
+**Commit policy.** `zfsvx.py` and this section are committed before any M3 pass. The raw files are never committed (section
+10's policy); M3's `report.json` and `report.md` are committed masked, as M2's, with `git add -f`.
