@@ -1,0 +1,3143 @@
+{
+ "title": "The cost of the LLM-free link build: measured index-build records",
+ "read_on": "2026-11-05 04:28 +0530",
+ "head_at_read": "ec68d2f 2026-11-05 04:08:53 +0530",
+ "script": "outputs/idxcost/compile_costs.py",
+ "script_sha256": "8222966357e00ab9067fae80581002f375af27f1f6f1a7c41040b6d40246de11",
+ "command": "PYTHONIOENCODING=utf-8 python -I outputs/idxcost/compile_costs.py",
+ "components": {
+  "w2s_rule_links": "W2_S rule links (no spaCy)",
+  "ner_family": "ner family (spaCy): A6's re-run of its extraction (the original build was not timed)",
+  "name_index_p4a": "the laptop name index (P4a, one thread)",
+  "beside": "not in the final system, beside: P2c part 2's parse"
+ },
+ "rules": [
+  "per component and per corpus; no total across components; no per-passage rate; no extrapolation",
+  "the only arithmetic is a sum, minimum or maximum over the part records of one component of one corpus, marked in the item (arithmetic, over_records)",
+  "every item carries its record, key, tracked or untracked, the file's last commit and its kind"
+ ],
+ "kinds": {
+  "measured": "a clock or memory reading the run wrote",
+  "counted": "a tally in a record",
+  "declared": "a setting or description written in a record, a script or a doc; not a measurement",
+  "not recorded": "the record holds nothing (or 0 or null) for this"
+ },
+ "corpora": {
+  "2wiki": {
+   "passages": {
+    "value": 5989847,
+    "unit": "passages",
+    "kind": "counted",
+    "record": "outputs/u2b/2wiki/new/capstat.json",
+    "key": "n_nodes",
+    "tracked": true,
+    "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+   },
+   "w2s_rule_links": {
+    "component": "W2_S rule links (no spaCy)",
+    "variants_all": [
+     "W2",
+     "W5e",
+     "W6e",
+     "W3e",
+     "W7e",
+     "W7",
+     "W3eg",
+     "W7eg"
+    ],
+    "graph_forms": [
+     "D",
+     "DS",
+     "M",
+     "S"
+    ],
+    "graphs_in_build_record": 32,
+    "rule_own_build": {
+     "what": "the W2 variant's part, the part that builds W2_S; it builds four graphs together (W2_M, W2_D, W2_S, W2_DS), so W2_S has no seconds figure of its own",
+     "variant": "W2",
+     "graphs": [
+      "W2_M",
+      "W2_D",
+      "W2_S",
+      "W2_DS"
+     ],
+     "containers": 1,
+     "seconds": {
+      "value": 480.6,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/2wiki/graphs/part_new_W2.json",
+      "key": "secs",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "peak_gb": {
+      "value": 14.29,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/u2b/2wiki/graphs/part_new_W2.json",
+      "key": "peak_gb",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "cpus": {
+      "value": 2.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of build_part",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "read_at_commit": "f8e1097",
+      "decorator_line": 420
+     },
+     "memory": {
+      "value": [
+       32768,
+       131072
+      ],
+      "unit": "as written",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(memory=...) of build_part",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "read_at_commit": "f8e1097",
+      "decorator_line": 420
+     }
+    },
+    "stat": {
+     "scope": "one pass over the corpus's passages for the rule, shared by every variant (not per variant)",
+     "shards": {
+      "value": 32,
+      "unit": "shards",
+      "kind": "counted",
+      "record": "outputs/u2b/2wiki/new/capstat.json",
+      "key": "shards",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "seconds_max_over_shards": {
+      "value": 527.1,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/2wiki/new/capstat.json",
+      "key": "stat_secs_max",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "peak_gb_max": {
+      "value": null,
+      "unit": null,
+      "kind": "not recorded",
+      "record": "outputs/u2b/2wiki/new/capstat.json",
+      "key": "stat_peak_gb_max",
+      "record_holds": 0,
+      "meaning": "the record holds no peak for this step",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of stat, as written in each committed version that has it (4 versions)",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    },
+    "link": {
+     "scope": "one pass that links all variants together (W2, W5e, W6e, W3e, W7e, W7, W3eg, W7eg); a seconds figure for W2 alone does not exist",
+     "link_pass": {
+      "value": "zu2b_fast.link_pass",
+      "kind": "declared",
+      "basis": "128 link shards against 32 stat shards; the script has a link shard count of its own only from 3ca24f8, which also first calls zu2b_fast.link_pass in its link stage"
+     },
+     "shards": {
+      "value": 128,
+      "unit": "shards",
+      "kind": "counted",
+      "record": "outputs/u2b/2wiki/graphs/build_new.json",
+      "key": "link_npz_sha256 (its length)",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "seconds_max_over_shards": {
+      "value": 979.1,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/2wiki/graphs/build_new.json",
+      "key": "link_secs_max",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "peak_gb_max": {
+      "value": 27.2,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/u2b/2wiki/graphs/build_new.json",
+      "key": "link_peak_gb_max",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of link, as written in each committed version that has it (4 versions)",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    },
+    "build_all_variants": {
+     "scope": "every variant (W2, W5e, W6e, W3e, W7e, W7, W3eg, W7eg), 32 graphs; NOT the rule's own build",
+     "layout": "8 build_part containers, one per variant, started by one build container (starmap); the seconds are that build container's",
+     "seconds": {
+      "value": 2286.9,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/2wiki/graphs/build_new.json",
+      "key": "secs",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "peak_gb": {
+      "value": 19.06,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/u2b/2wiki/graphs/build_new.json",
+      "key": "peak_gb",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "cpus": {
+      "parts": {
+       "value": 2.0,
+       "unit": "cpus",
+       "kind": "declared",
+       "record": "outputs/mp_unified/zu2b_modal.py",
+       "key": "@app.function(cpu=...) of build_part",
+       "tracked": true,
+       "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+       "read_at_commit": "f8e1097"
+      },
+      "orchestrator": {
+       "value": 1.0,
+       "unit": "cpus",
+       "kind": "declared",
+       "record": "outputs/mp_unified/zu2b_modal.py",
+       "key": "@app.function(cpu=...) of build",
+       "tracked": true,
+       "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+       "read_at_commit": "f8e1097"
+      }
+     }
+    }
+   },
+   "ner_family_rerun": {
+    "component": "ner family (spaCy): A6's re-run of its extraction (the original build was not timed)",
+    "what": "spaCy NER over all passages, one CPU reserved per part, summed over parts",
+    "parts": {
+     "value": 60,
+     "unit": "parts",
+     "kind": "counted",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-2wiki-<k>of60'], k = 0..59",
+     "tracked": false,
+     "commit": "untracked"
+    },
+    "cpus_per_part": {
+     "value": 1.0,
+     "unit": "cpus",
+     "kind": "declared",
+     "record": "outputs/host_ops/hostfeed_items.txt",
+     "key": "field 5 (cpus) of the item lines a6-ents-2wiki-<k>of60 (HEAD version); docs/A6_LINK_WORDS_INPUT.md line 139: '114 NER parts, 1 CPU and 1.5 GB each'; the request, not a measurement",
+     "tracked": true,
+     "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+     "modified_since_commit": true
+    },
+    "memory_request_per_part": {
+     "value": 1.5,
+     "unit": "GB",
+     "kind": "declared",
+     "record": "outputs/host_ops/hostfeed_items.txt",
+     "key": "field 6 (mem) of the same item lines (HEAD version); the feeder may send a different request (outputs/host_ops/hostfeed2.py lines 1 to 20 describe measured sizing)",
+     "tracked": true,
+     "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+     "modified_since_commit": true
+    },
+    "job_seconds_sum": {
+     "value": 93280.4,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-2wiki-<k>of60'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 60
+    },
+    "job_seconds_min": {
+     "value": 1224.5,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-2wiki-<k>of60'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "min",
+     "over_records": 60
+    },
+    "job_seconds_max": {
+     "value": 1808.5,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-2wiki-<k>of60'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 60
+    },
+    "peak_gb_max": {
+     "value": 1.19,
+     "unit": "GB",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-2wiki-<k>of60'] -> job id; terminal[job id][2]",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 60
+    },
+    "merge_job": {
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/host_ops/hostfeed_items.txt",
+      "key": "field 5 of the item line a6-merge-2wiki (HEAD version)",
+      "tracked": true,
+      "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+      "modified_since_commit": true
+     },
+     "seconds": {
+      "value": 277.9,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/host_ops/hostfeed_state.json",
+      "key": "terminal[sent['a6-merge-2wiki']][3] (ran_s)",
+      "tracked": false,
+      "commit": "untracked"
+     },
+     "peak_gb": {
+      "value": 9.49,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/host_ops/hostfeed_state.json",
+      "key": "terminal[sent['a6-merge-2wiki']][2]",
+      "tracked": false,
+      "commit": "untracked"
+     }
+    }
+   },
+   "name_index_p4a": {
+    "setup_total_s": {
+     "value": 111.6504454612732,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/2wiki.json",
+     "key": "index.setup_total_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "name_only_s": {
+     "value": 42.35704708099365,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/2wiki.json",
+     "key": "index.name_only_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "name_index_s": {
+     "value": 64.52541065216064,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/2wiki.json",
+     "key": "index.name_index_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "other_itemised": {
+     "pools_file_s": {
+      "value": 1.7805290222167969,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/2wiki.json",
+      "key": "index.pools_file_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     },
+     "lists_and_pools_s": {
+      "value": 2.883167028427124,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/2wiki.json",
+      "key": "index.lists_and_pools_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     },
+     "buffers_s": {
+      "value": 0.00019693374633789062,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/2wiki.json",
+      "key": "index.buffers_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     }
+    },
+    "threads": {
+     "value": 1,
+     "unit": "threads",
+     "kind": "declared",
+     "record": "outputs/p4a/2wiki.json",
+     "key": "threads",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "pinned_to_logical_processor": {
+     "value": 2,
+     "unit": "logical processor",
+     "kind": "declared",
+     "record": "outputs/p4a/2wiki.json",
+     "key": "pin.affinity_lp",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "run_utc": "2026-10-14T06:21:44Z"
+   }
+  },
+  "hotpotqa": {
+   "passages": {
+    "value": 5233329,
+    "unit": "passages",
+    "kind": "counted",
+    "record": "outputs/u2b/hotpotqa/new/capstat.json",
+    "key": "n_nodes",
+    "tracked": true,
+    "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+   },
+   "w2s_rule_links": {
+    "component": "W2_S rule links (no spaCy)",
+    "variants_all": [
+     "W2",
+     "W5e",
+     "W6e",
+     "W3e",
+     "W7e",
+     "W7",
+     "W3eg",
+     "W7eg"
+    ],
+    "graph_forms": [
+     "D",
+     "DS",
+     "M",
+     "S"
+    ],
+    "graphs_in_build_record": 32,
+    "rule_own_build": null,
+    "rule_own_build_why_not": "no per-variant part: the build record has no 'parts' key and there is no part_new_*.json for hotpotqa; before f8e1097 one container built every variant's graphs (docs/U2B_LINK_RULE.md line 151)",
+    "stat": {
+     "scope": "one pass over the corpus's passages for the rule, shared by every variant (not per variant)",
+     "shards": {
+      "value": 32,
+      "unit": "shards",
+      "kind": "counted",
+      "record": "outputs/u2b/hotpotqa/new/capstat.json",
+      "key": "shards",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "seconds_max_over_shards": {
+      "value": 344.5,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/hotpotqa/new/capstat.json",
+      "key": "stat_secs_max",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "peak_gb_max": {
+      "value": null,
+      "unit": null,
+      "kind": "not recorded",
+      "record": "outputs/u2b/hotpotqa/new/capstat.json",
+      "key": "stat_peak_gb_max",
+      "record_holds": 0,
+      "meaning": "the record holds no peak for this step",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of stat, as written in each committed version that has it (4 versions)",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    },
+    "link": {
+     "scope": "one pass that links all variants together (W2, W5e, W6e, W3e, W7e, W7, W3eg, W7eg); a seconds figure for W2 alone does not exist",
+     "link_pass": {
+      "value": "zu2b_fast.link_pass",
+      "kind": "declared",
+      "basis": "128 link shards against 32 stat shards; the script has a link shard count of its own only from 3ca24f8, which also first calls zu2b_fast.link_pass in its link stage"
+     },
+     "shards": {
+      "value": 128,
+      "unit": "shards",
+      "kind": "counted",
+      "record": "outputs/u2b/hotpotqa/graphs/build_new.json",
+      "key": "link_npz_sha256 (its length)",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "seconds_max_over_shards": {
+      "value": 701.4,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/hotpotqa/graphs/build_new.json",
+      "key": "link_secs_max",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "peak_gb_max": {
+      "value": 24.27,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/u2b/hotpotqa/graphs/build_new.json",
+      "key": "link_peak_gb_max",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of link, as written in each committed version that has it (4 versions)",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    },
+    "build_all_variants": {
+     "scope": "every variant (W2, W5e, W6e, W3e, W7e, W7, W3eg, W7eg), 32 graphs; NOT the rule's own build",
+     "layout": "one container built every graph, in turn (no 'parts' key; the script before f8e1097 builds every graph in one container, docs/U2B_LINK_RULE.md line 151)",
+     "seconds": {
+      "value": 3664.2,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/hotpotqa/graphs/build_new.json",
+      "key": "secs",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "peak_gb": {
+      "value": 9.75,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/u2b/hotpotqa/graphs/build_new.json",
+      "key": "peak_gb",
+      "tracked": true,
+      "commit": "c772da3 2026-10-22 12:57:09 +0530"
+     },
+     "cpus": {
+      "value": 2.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of build, as written in the versions before f8e1097: 6043564, 3ca24f8, 9f34d3f",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    }
+   },
+   "ner_family_rerun": {
+    "component": "ner family (spaCy): A6's re-run of its extraction (the original build was not timed)",
+    "what": "spaCy NER over all passages, one CPU reserved per part, summed over parts",
+    "parts": {
+     "value": 40,
+     "unit": "parts",
+     "kind": "counted",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-hotpotqa-<k>of40'], k = 0..39",
+     "tracked": false,
+     "commit": "untracked"
+    },
+    "cpus_per_part": {
+     "value": 1.0,
+     "unit": "cpus",
+     "kind": "declared",
+     "record": "outputs/host_ops/hostfeed_items.txt",
+     "key": "field 5 (cpus) of the item lines a6-ents-hotpotqa-<k>of40 (HEAD version); docs/A6_LINK_WORDS_INPUT.md line 139: '114 NER parts, 1 CPU and 1.5 GB each'; the request, not a measurement",
+     "tracked": true,
+     "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+     "modified_since_commit": true
+    },
+    "memory_request_per_part": {
+     "value": 1.5,
+     "unit": "GB",
+     "kind": "declared",
+     "record": "outputs/host_ops/hostfeed_items.txt",
+     "key": "field 6 (mem) of the same item lines (HEAD version); the feeder may send a different request (outputs/host_ops/hostfeed2.py lines 1 to 20 describe measured sizing)",
+     "tracked": true,
+     "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+     "modified_since_commit": true
+    },
+    "job_seconds_sum": {
+     "value": 51449.3,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-hotpotqa-<k>of40'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 40
+    },
+    "job_seconds_min": {
+     "value": 1159.5,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-hotpotqa-<k>of40'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "min",
+     "over_records": 40
+    },
+    "job_seconds_max": {
+     "value": 1447.3,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-hotpotqa-<k>of40'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 40
+    },
+    "peak_gb_max": {
+     "value": 0.86,
+     "unit": "GB",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-hotpotqa-<k>of40'] -> job id; terminal[job id][2]",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 40
+    },
+    "merge_job": {
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/host_ops/hostfeed_items.txt",
+      "key": "field 5 of the item line a6-merge-hotpotqa (HEAD version)",
+      "tracked": true,
+      "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+      "modified_since_commit": true
+     },
+     "seconds": {
+      "value": 233.9,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/host_ops/hostfeed_state.json",
+      "key": "terminal[sent['a6-merge-hotpotqa']][3] (ran_s)",
+      "tracked": false,
+      "commit": "untracked"
+     },
+     "peak_gb": {
+      "value": 5.37,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/host_ops/hostfeed_state.json",
+      "key": "terminal[sent['a6-merge-hotpotqa']][2]",
+      "tracked": false,
+      "commit": "untracked"
+     }
+    }
+   },
+   "name_index_p4a": {
+    "setup_total_s": {
+     "value": 131.56149339675903,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/hotpotqa.json",
+     "key": "index.setup_total_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "name_only_s": {
+     "value": 47.84407091140747,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/hotpotqa.json",
+     "key": "index.name_only_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "name_index_s": {
+     "value": 78.4966173171997,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/hotpotqa.json",
+     "key": "index.name_index_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "other_itemised": {
+     "pools_file_s": {
+      "value": 2.245901107788086,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/hotpotqa.json",
+      "key": "index.pools_file_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     },
+     "lists_and_pools_s": {
+      "value": 2.804640769958496,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/hotpotqa.json",
+      "key": "index.lists_and_pools_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     },
+     "buffers_s": {
+      "value": 0.0004324913024902344,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/hotpotqa.json",
+      "key": "index.buffers_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     }
+    },
+    "threads": {
+     "value": 1,
+     "unit": "threads",
+     "kind": "declared",
+     "record": "outputs/p4a/hotpotqa.json",
+     "key": "threads",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "pinned_to_logical_processor": {
+     "value": 2,
+     "unit": "logical processor",
+     "kind": "declared",
+     "record": "outputs/p4a/hotpotqa.json",
+     "key": "pin.affinity_lp",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "run_utc": "2026-10-14T06:16:26Z"
+   }
+  },
+  "musique": {
+   "passages": {
+    "value": 117534,
+    "unit": "passages",
+    "kind": "counted",
+    "record": "outputs/u2b/musique/new/capstat.json",
+    "key": "n_nodes",
+    "tracked": true,
+    "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+   },
+   "w2s_rule_links": {
+    "component": "W2_S rule links (no spaCy)",
+    "variants_all": [
+     "W2",
+     "W5e",
+     "W6e",
+     "W3e",
+     "W7e",
+     "W7",
+     "W3eg",
+     "W7eg"
+    ],
+    "graph_forms": [
+     "D",
+     "DS",
+     "M",
+     "S"
+    ],
+    "graphs_in_build_record": 32,
+    "rule_own_build": null,
+    "rule_own_build_why_not": "no per-variant part: the build record has no 'parts' key and there is no part_new_*.json for musique; before f8e1097 one container built every variant's graphs (docs/U2B_LINK_RULE.md line 151)",
+    "stat": {
+     "scope": "one pass over the corpus's passages for the rule, shared by every variant (not per variant)",
+     "shards": {
+      "value": 1,
+      "unit": "shards",
+      "kind": "counted",
+      "record": "outputs/u2b/musique/new/capstat.json",
+      "key": "shards",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "seconds_max_over_shards": {
+      "value": 37.1,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/musique/new/capstat.json",
+      "key": "stat_secs_max",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "peak_gb_max": {
+      "value": null,
+      "unit": null,
+      "kind": "not recorded",
+      "record": "outputs/u2b/musique/new/capstat.json",
+      "key": "stat_peak_gb_max",
+      "record_holds": 0,
+      "meaning": "the record holds no peak for this step",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of stat, as written in each committed version that has it (4 versions)",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    },
+    "link": {
+     "scope": "one pass that links all variants together (W2, W5e, W6e, W3e, W7e, W7, W3eg, W7eg); a seconds figure for W2 alone does not exist",
+     "link_pass": {
+      "value": "not stated in the record",
+      "kind": "not recorded",
+      "basis": "1 link shard, as for stat; the build record names no link pass; its link and build peaks are empty (0 or null)",
+      "build_record_first_committed": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "shards": {
+      "value": 1,
+      "unit": "shards",
+      "kind": "counted",
+      "record": "outputs/u2b/musique/graphs/build_new.json",
+      "key": "link_npz_sha256 (its length)",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "seconds_max_over_shards": {
+      "value": 912.8,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/musique/graphs/build_new.json",
+      "key": "link_secs_max",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "peak_gb_max": {
+      "value": null,
+      "unit": null,
+      "kind": "not recorded",
+      "record": "outputs/u2b/musique/graphs/build_new.json",
+      "key": "link_peak_gb_max",
+      "record_holds": 0,
+      "meaning": "the record holds no peak for this step",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of link, as written in each committed version that has it (4 versions)",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    },
+    "build_all_variants": {
+     "scope": "every variant (W2, W5e, W6e, W3e, W7e, W7, W3eg, W7eg), 32 graphs; NOT the rule's own build",
+     "layout": "one container built every graph, in turn (no 'parts' key; the script before f8e1097 builds every graph in one container, docs/U2B_LINK_RULE.md line 151)",
+     "seconds": {
+      "value": 128.3,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/musique/graphs/build_new.json",
+      "key": "secs",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "peak_gb": {
+      "value": null,
+      "unit": null,
+      "kind": "not recorded",
+      "record": "outputs/u2b/musique/graphs/build_new.json",
+      "key": "peak_gb",
+      "record_holds": null,
+      "meaning": "the record holds no peak for this step",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "cpus": {
+      "value": 2.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of build, as written in the versions before f8e1097: 6043564, 3ca24f8, 9f34d3f",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    }
+   },
+   "ner_family_rerun": {
+    "component": "ner family (spaCy): A6's re-run of its extraction (the original build was not timed)",
+    "what": "spaCy NER over all passages, one CPU reserved per part, summed over parts",
+    "parts": {
+     "value": 2,
+     "unit": "parts",
+     "kind": "counted",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-musique-<k>of2'], k = 0..1",
+     "tracked": false,
+     "commit": "untracked"
+    },
+    "cpus_per_part": {
+     "value": 1.0,
+     "unit": "cpus",
+     "kind": "declared",
+     "record": "outputs/host_ops/hostfeed_items.txt",
+     "key": "field 5 (cpus) of the item lines a6-ents-musique-<k>of2 (HEAD version); docs/A6_LINK_WORDS_INPUT.md line 139: '114 NER parts, 1 CPU and 1.5 GB each'; the request, not a measurement",
+     "tracked": true,
+     "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+     "modified_since_commit": true
+    },
+    "memory_request_per_part": {
+     "value": 1.5,
+     "unit": "GB",
+     "kind": "declared",
+     "record": "outputs/host_ops/hostfeed_items.txt",
+     "key": "field 6 (mem) of the same item lines (HEAD version); the feeder may send a different request (outputs/host_ops/hostfeed2.py lines 1 to 20 describe measured sizing)",
+     "tracked": true,
+     "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+     "modified_since_commit": true
+    },
+    "job_seconds_sum": {
+     "value": 1721.7,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-musique-<k>of2'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 2
+    },
+    "job_seconds_min": {
+     "value": 856.9,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-musique-<k>of2'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "min",
+     "over_records": 2
+    },
+    "job_seconds_max": {
+     "value": 864.9,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-musique-<k>of2'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 2
+    },
+    "peak_gb_max": {
+     "value": 0.77,
+     "unit": "GB",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-musique-<k>of2'] -> job id; terminal[job id][2]",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 2
+    },
+    "merge_job": {
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/host_ops/hostfeed_items.txt",
+      "key": "field 5 of the item line a6-merge-musique (HEAD version)",
+      "tracked": true,
+      "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+      "modified_since_commit": true
+     },
+     "seconds": {
+      "value": 13.6,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/host_ops/hostfeed_state.json",
+      "key": "terminal[sent['a6-merge-musique']][3] (ran_s)",
+      "tracked": false,
+      "commit": "untracked"
+     },
+     "peak_gb": {
+      "value": 0.36,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/host_ops/hostfeed_state.json",
+      "key": "terminal[sent['a6-merge-musique']][2]",
+      "tracked": false,
+      "commit": "untracked"
+     }
+    }
+   },
+   "name_index_p4a": {
+    "setup_total_s": {
+     "value": 8.28215217590332,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/musique.json",
+     "key": "index.setup_total_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "name_only_s": {
+     "value": 1.525181770324707,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/musique.json",
+     "key": "index.name_only_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "name_index_s": {
+     "value": 4.040663957595825,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/musique.json",
+     "key": "index.name_index_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "other_itemised": {
+     "pools_file_s": {
+      "value": 0.7624092102050781,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/musique.json",
+      "key": "index.pools_file_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     },
+     "lists_and_pools_s": {
+      "value": 1.8388042449951172,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/musique.json",
+      "key": "index.lists_and_pools_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     },
+     "buffers_s": {
+      "value": 0.0011088848114013672,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/musique.json",
+      "key": "index.buffers_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     }
+    },
+    "threads": {
+     "value": 1,
+     "unit": "threads",
+     "kind": "declared",
+     "record": "outputs/p4a/musique.json",
+     "key": "threads",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "pinned_to_logical_processor": {
+     "value": 2,
+     "unit": "logical processor",
+     "kind": "declared",
+     "record": "outputs/p4a/musique.json",
+     "key": "pin.affinity_lp",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "run_utc": "2026-10-14T06:06:40Z"
+   }
+  },
+  "squad": {
+   "passages": {
+    "value": 20233,
+    "unit": "passages",
+    "kind": "counted",
+    "record": "outputs/u2b/squad/new/capstat.json",
+    "key": "n_nodes",
+    "tracked": true,
+    "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+   },
+   "w2s_rule_links": {
+    "component": "W2_S rule links (no spaCy)",
+    "variants_all": [
+     "W2",
+     "W5e",
+     "W6e",
+     "W3e",
+     "W7e",
+     "W7",
+     "W3eg",
+     "W7eg"
+    ],
+    "graph_forms": [
+     "D",
+     "DS",
+     "M",
+     "S"
+    ],
+    "graphs_in_build_record": 32,
+    "rule_own_build": null,
+    "rule_own_build_why_not": "no per-variant part: the build record has no 'parts' key and there is no part_new_*.json for squad; before f8e1097 one container built every variant's graphs (docs/U2B_LINK_RULE.md line 151)",
+    "stat": {
+     "scope": "one pass over the corpus's passages for the rule, shared by every variant (not per variant)",
+     "shards": {
+      "value": 1,
+      "unit": "shards",
+      "kind": "counted",
+      "record": "outputs/u2b/squad/new/capstat.json",
+      "key": "shards",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "seconds_max_over_shards": {
+      "value": 3.4,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/squad/new/capstat.json",
+      "key": "stat_secs_max",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "peak_gb_max": {
+      "value": null,
+      "unit": null,
+      "kind": "not recorded",
+      "record": "outputs/u2b/squad/new/capstat.json",
+      "key": "stat_peak_gb_max",
+      "record_holds": 0,
+      "meaning": "the record holds no peak for this step",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of stat, as written in each committed version that has it (4 versions)",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    },
+    "link": {
+     "scope": "one pass that links all variants together (W2, W5e, W6e, W3e, W7e, W7, W3eg, W7eg); a seconds figure for W2 alone does not exist",
+     "link_pass": {
+      "value": "not stated in the record",
+      "kind": "not recorded",
+      "basis": "1 link shard, as for stat; the build record names no link pass; its link and build peaks are empty (0 or null)",
+      "build_record_first_committed": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "shards": {
+      "value": 1,
+      "unit": "shards",
+      "kind": "counted",
+      "record": "outputs/u2b/squad/graphs/build_new.json",
+      "key": "link_npz_sha256 (its length)",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "seconds_max_over_shards": {
+      "value": 20.9,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/squad/graphs/build_new.json",
+      "key": "link_secs_max",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "peak_gb_max": {
+      "value": null,
+      "unit": null,
+      "kind": "not recorded",
+      "record": "outputs/u2b/squad/graphs/build_new.json",
+      "key": "link_peak_gb_max",
+      "record_holds": 0,
+      "meaning": "the record holds no peak for this step",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of link, as written in each committed version that has it (4 versions)",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    },
+    "build_all_variants": {
+     "scope": "every variant (W2, W5e, W6e, W3e, W7e, W7, W3eg, W7eg), 32 graphs; NOT the rule's own build",
+     "layout": "one container built every graph, in turn (no 'parts' key; the script before f8e1097 builds every graph in one container, docs/U2B_LINK_RULE.md line 151)",
+     "seconds": {
+      "value": 53.4,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/u2b/squad/graphs/build_new.json",
+      "key": "secs",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "peak_gb": {
+      "value": null,
+      "unit": null,
+      "kind": "not recorded",
+      "record": "outputs/u2b/squad/graphs/build_new.json",
+      "key": "peak_gb",
+      "record_holds": null,
+      "meaning": "the record holds no peak for this step",
+      "tracked": true,
+      "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+     },
+     "cpus": {
+      "value": 2.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/mp_unified/zu2b_modal.py",
+      "key": "@app.function(cpu=...) of build, as written in the versions before f8e1097: 6043564, 3ca24f8, 9f34d3f",
+      "tracked": true,
+      "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+      "commits_read": 4
+     }
+    }
+   },
+   "ner_family_rerun": {
+    "component": "ner family (spaCy): A6's re-run of its extraction (the original build was not timed)",
+    "what": "spaCy NER over all passages, one CPU reserved per part, summed over parts",
+    "parts": {
+     "value": 1,
+     "unit": "parts",
+     "kind": "counted",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-squad-<k>of1'], k = 0..0",
+     "tracked": false,
+     "commit": "untracked"
+    },
+    "cpus_per_part": {
+     "value": 1.0,
+     "unit": "cpus",
+     "kind": "declared",
+     "record": "outputs/host_ops/hostfeed_items.txt",
+     "key": "field 5 (cpus) of the item lines a6-ents-squad-<k>of1 (HEAD version); docs/A6_LINK_WORDS_INPUT.md line 139: '114 NER parts, 1 CPU and 1.5 GB each'; the request, not a measurement",
+     "tracked": true,
+     "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+     "modified_since_commit": true
+    },
+    "memory_request_per_part": {
+     "value": 1.5,
+     "unit": "GB",
+     "kind": "declared",
+     "record": "outputs/host_ops/hostfeed_items.txt",
+     "key": "field 6 (mem) of the same item lines (HEAD version); the feeder may send a different request (outputs/host_ops/hostfeed2.py lines 1 to 20 describe measured sizing)",
+     "tracked": true,
+     "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+     "modified_since_commit": true
+    },
+    "job_seconds_sum": {
+     "value": 448.5,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-squad-<k>of1'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 1
+    },
+    "job_seconds_min": {
+     "value": 448.5,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-squad-<k>of1'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "min",
+     "over_records": 1
+    },
+    "job_seconds_max": {
+     "value": 448.5,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-squad-<k>of1'] -> job id; terminal[job id][3] (ran_s)",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 1
+    },
+    "peak_gb_max": {
+     "value": 0.87,
+     "unit": "GB",
+     "kind": "measured",
+     "record": "outputs/host_ops/hostfeed_state.json",
+     "key": "sent['a6-ents-squad-<k>of1'] -> job id; terminal[job id][2]",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 1
+    },
+    "merge_job": {
+     "cpus": {
+      "value": 1.0,
+      "unit": "cpus",
+      "kind": "declared",
+      "record": "outputs/host_ops/hostfeed_items.txt",
+      "key": "field 5 of the item line a6-merge-squad (HEAD version)",
+      "tracked": true,
+      "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+      "modified_since_commit": true
+     },
+     "seconds": {
+      "value": 6.0,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/host_ops/hostfeed_state.json",
+      "key": "terminal[sent['a6-merge-squad']][3] (ran_s)",
+      "tracked": false,
+      "commit": "untracked"
+     },
+     "peak_gb": {
+      "value": 0.01,
+      "unit": "GB",
+      "kind": "measured",
+      "record": "outputs/host_ops/hostfeed_state.json",
+      "key": "terminal[sent['a6-merge-squad']][2]",
+      "tracked": false,
+      "commit": "untracked"
+     }
+    },
+    "laptop_part": {
+     "seconds": {
+      "value": 314.7,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/a6/ents/parts/squad/part_0of1.json",
+      "key": "seconds",
+      "tracked": false,
+      "commit": "untracked",
+      "where": "laptop",
+      "utc": "2026-10-17T09:41:49Z"
+     }
+    }
+   },
+   "name_index_p4a": {
+    "setup_total_s": {
+     "value": 4.532017946243286,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/squad.json",
+     "key": "index.setup_total_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "name_only_s": {
+     "value": 0.3281879425048828,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/squad.json",
+     "key": "index.name_only_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "name_index_s": {
+     "value": 0.11598420143127441,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p4a/squad.json",
+     "key": "index.name_index_s",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "other_itemised": {
+     "pools_file_s": {
+      "value": 0.35543346405029297,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/squad.json",
+      "key": "index.pools_file_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     },
+     "lists_and_pools_s": {
+      "value": 3.606292486190796,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/squad.json",
+      "key": "index.lists_and_pools_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     },
+     "buffers_s": {
+      "value": 0.00032448768615722656,
+      "unit": "s",
+      "kind": "measured",
+      "record": "outputs/p4a/squad.json",
+      "key": "index.buffers_s",
+      "tracked": true,
+      "commit": "056918b 2026-10-14 11:56:16 +0530"
+     }
+    },
+    "threads": {
+     "value": 1,
+     "unit": "threads",
+     "kind": "declared",
+     "record": "outputs/p4a/squad.json",
+     "key": "threads",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "pinned_to_logical_processor": {
+     "value": 2,
+     "unit": "logical processor",
+     "kind": "declared",
+     "record": "outputs/p4a/squad.json",
+     "key": "pin.affinity_lp",
+     "tracked": true,
+     "commit": "056918b 2026-10-14 11:56:16 +0530"
+    },
+    "run_utc": "2026-10-14T06:03:00Z"
+   }
+  }
+ },
+ "w2s_notes": {
+  "chosen_line": 187,
+  "rule_lines": "43 to 44",
+  "retry_line": 146,
+  "preempt_line": 152,
+  "single_container_line": 151,
+  "build_commit": "f8e1097",
+  "plain_lines": "193 to 194",
+  "form_s_line": 78,
+  "stages_line": 125,
+  "fast_pass_lines": "139 to 140",
+  "first_fast": "3ca24f8",
+  "first_sep": "3ca24f8",
+  "first_sep_subject": "U2b follow-up (22 Oct, outputs unchanged): the link stage runs zu2b_fast, preemption-safe stages, 128 link shards",
+  "first_rusage": "3ca24f8",
+  "u2c_lines": "21 to 23"
+ },
+ "modal_script_facts": {
+  "stage_keys": [
+   "single_use_containers",
+   "retries"
+  ],
+  "orch_keys": [
+   "nonpreemptible",
+   "retries"
+  ],
+  "first_fast": "3ca24f8",
+  "first_sep": "3ca24f8",
+  "link_shard_default": {
+   "commit_before": "6043564",
+   "earlier_one_link_container_per_stat_shard": true,
+   "later_unset_equals_stat": true
+  },
+  "fast_and_sep_from_first": true,
+  "first_rusage": "3ca24f8",
+  "pinned_packages": [
+   "numpy==2.3.2",
+   "pyyaml==6.0.2"
+  ],
+  "added_files": [
+   "outputs/mp_unified/u1b.py",
+   "outputs/mp_unified/u1d.py",
+   "outputs/mp_unified/zu2b.py",
+   "outputs/mp_unified/zu2b_fast.py",
+   "src/mp_retrieval/m3b_pools.py"
+  ],
+  "max_retries": 3,
+  "single_use": true,
+  "image": "3.13",
+  "threads": {
+   "OPENBLAS_NUM_THREADS": "8",
+   "OMP_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8"
+  },
+  "shard_json_written": true
+ },
+ "ner_meta": {
+  "what_the_seconds_are": "wall seconds of one host job (the job's end minus its start, as the host queue recorded it), one CPU reserved per job; summed over parts they are reserved CPU-seconds (one CPU times wall seconds), not a CPU-time reading. The job runs under a retry wrapper that reruns only after a Windows file-lock error (up to 3 runs, 60 s apart), so a rerun, if one happened, is inside the job's seconds; the queue state does not say whether any did. The job also includes its own start-up (unpacking, imports, model load)",
+  "peak_is": "the host job record's peak memory (the larger of its peak and live readings)",
+  "semantics_read_at": "outputs/host_ops/hostfeed2.py (HEAD version) lines 509 and 510; items format at line 389; outputs/host_ops/retry_cmd.py lines 34 and 9",
+  "same_settings_as_the_ner_family": "docs/A6_LINK_WORDS_INPUT.md line 41: 'as the graph's NER family was built'",
+  "settings_checked_at": "scripts/b1_build.py line 199, whose rule the doc describes at docs/B1_HIPPORAG2_ALIGNMENT.md line 68",
+  "faithful_rerun": "the doc's laptop check rebuilt every one of squad's 156,130 NER edges from A6's part, none extra (docs/A6_LINK_WORDS_INPUT.md lines 134 to 135)",
+  "settings": {
+   "spacy": "3.8.15",
+   "model_version": "3.8.0",
+   "disabled": [
+    "parser",
+    "lemmatizer"
+   ],
+   "labels": 9,
+   "min_chars": 3,
+   "key": "e.text.lower().strip()",
+   "batch_size": 256,
+   "document_frequency_range": [
+    2,
+    25
+   ]
+  },
+  "settings_read_from": "outputs/a6/ents/parts/squad/part_0of1.json settings",
+  "reserved_per_part": "docs/A6_LINK_WORDS_INPUT.md line 139: '114 NER parts, 1 CPU and 1.5 GB each'",
+  "local_part_files": [
+   "squad"
+  ],
+  "plan_figure_not_used": "A plan figure for all 114 NER parts over six datasets is in docs/A6_LINK_WORDS_INPUT.md lines 140 to 141, declared before the runs; it is an estimate and is not used here",
+  "pools_note": {
+   "text": "Why this spaCy row is in the final system. The pools keep the package's spaCy-built ner family. U2l graded a spaCy-free entity family, E1 (IS alone; on a passage graph E1 together with R, the sibling links (`docs/U2L_ENTITY_MATCH.md` line 85), is W2_S array for array, line 192), and filed CHOSEN E1 (line 178); U2r graded name rules beside it and kept E1 (`docs/U2R_NAME_RULE.md` line 134, filed in 14a48ee). The pool test with E1 in the ner slot was NO_GAIN (`docs/U2M_POOLS_THREE_FAMILIES.md` section 20, line 804, filed in a2a2627 on 2026-10-27, code at fcd0f08; record `outputs/u2m/e1/verdict_e1.json`, `verdict`): on musique the I (the base and seeds plus the expansion over the three families, line 63) holds every gold (ALL, the share of questions with every gold in the pool, `docs/P1E_ANCHOR_KIND.md` line 135) for 0.7751 of the questions with the filed families (2,067.2 rows) and for 0.6838 with E1's (1,199.7 rows) (doc line 821; record `the_I.musique`). The doc reads this as musique's I reading the ner family, whose links carry bridge entities that W2_S does not reach (lines 836 to 837), and it states that the pools keep the package's NER (lines 806 to 807). U2r's model-free name rule (N1) was not adopted either: it lost 2wiki's pools by 0.0226 (`docs/NMD_NAME_LINK_DIAG.md` line 43). So the models of record read the package's spaCy-built ner family: in their pools (the models' compiled edges read all three families on every dataset, `docs/U2M_POOLS_THREE_FAMILIES.md` line 22) and in the B1 carves (carve b1 holds the NER and KNN graphs, `docs/B1H_MODELS_OF_RECORD_ON_HYPERLINKS.md` line 29; carve b1t is the NER and KNN families alone, `docs/B1L_MODELS_OF_RECORD_ON_THE_LLM_GRAPH.md` line 19; the carve's ner graph is rebuilt with spaCy, `docs/B1_HIPPORAG2_ALIGNMENT.md` lines 68 to 69). W2_S rule links (no spaCy), section 2, uses no spaCy. Superseded for the pools: `docs/U2R_NAME_RULE.md` lines 17 and 135 describe the pools' entity family as the title links alone; they date from 2026-10-26, and section 20 of the pool doc (2026-10-27) is the later record.",
+   "musique_I": {
+    "filed_families_ALL": {
+     "value": 0.7751,
+     "unit": "share of questions",
+     "kind": "measured",
+     "record": "outputs/u2m/e1/verdict_e1.json",
+     "key": "the_I.musique.filed.ALL",
+     "tracked": true,
+     "commit": "a2a2627 2026-10-27 03:27:21 +0530"
+    },
+    "filed_families_rows": {
+     "value": 2067.2,
+     "unit": "rows",
+     "kind": "measured",
+     "record": "outputs/u2m/e1/verdict_e1.json",
+     "key": "the_I.musique.filed.size",
+     "tracked": true,
+     "commit": "a2a2627 2026-10-27 03:27:21 +0530"
+    },
+    "e1_ALL": {
+     "value": 0.6838,
+     "unit": "share of questions",
+     "kind": "measured",
+     "record": "outputs/u2m/e1/verdict_e1.json",
+     "key": "the_I.musique.E1.ALL",
+     "tracked": true,
+     "commit": "a2a2627 2026-10-27 03:27:21 +0530"
+    },
+    "e1_rows": {
+     "value": 1199.7,
+     "unit": "rows",
+     "kind": "measured",
+     "record": "outputs/u2m/e1/verdict_e1.json",
+     "key": "the_I.musique.E1.size",
+     "tracked": true,
+     "commit": "a2a2627 2026-10-27 03:27:21 +0530"
+    },
+    "verdict": {
+     "value": "NO_GAIN",
+     "record": "outputs/u2m/e1/verdict_e1.json",
+     "key": "verdict",
+     "tracked": true,
+     "commit": "a2a2627 2026-10-27 03:27:21 +0530"
+    }
+   },
+   "u2m_section_20": {
+    "heading_line": 804,
+    "keep_lines": "806 to 807",
+    "reading_lines": "836 to 837",
+    "filed_in": "a2a2627 2026-10-27 03:27:21 +0530",
+    "code_commit": "fcd0f08 2026-10-26 12:46:09 +0530",
+    "table_row_line": 821,
+    "i_definition_line": 63,
+    "models_read_all_three_families_line": 22
+   },
+   "u2l": {
+    "chosen_line": 178,
+    "e1_is_w2s_line": 192
+   },
+   "u2r": {
+    "commit": "14a48ee 2026-10-26 08:45:47 +0530",
+    "chosen_line": 134,
+    "lines_superseded_for_the_pools": [
+     17,
+     135
+    ]
+   },
+   "nmd": {
+    "line": 43,
+    "n1_lost_2wiki_pools_by": 0.0226
+   },
+   "b1": {
+    "b1h_carve_line": 29,
+    "b1l_b1t_line": 19,
+    "b1_ner_lines": "68 to 69"
+   }
+  }
+ },
+ "p4a_meta": {
+  "what": "the index time of the pass: the stores and both unions, the name index and the name-only mask, the question texts, the walk buffers and FastPool's stamps, built once per corpus and recorded, not part of the timed per-question passes",
+  "doc_lines": "docs/P4A_POOL_COLD.md lines 52 to 55; the laptop, its pin and one thread at lines 60 and 61",
+  "total_is": "the record's own total is setup_total_s; name_index_s and name_only_s are two of its itemised parts (the record also itemises pools_file_s, lists_and_pools_s and buffers_s); they are not re-summed here"
+ },
+ "sibling_package_graph_manifests": {
+  "2wiki": {
+   "record": "CRAG package: data/final_canonical/2wiki/graph/GRAPH_MANIFEST.json",
+   "provenance": {
+    "tracked": false,
+    "commit": "untracked",
+    "in": "the frozen sibling package, read-only"
+   },
+   "ner": {
+    "durations": [],
+    "built_timestamps": []
+   },
+   "knn": {
+    "durations": [],
+    "built_timestamps": [
+     {
+      "key": "families.knn.source.built",
+      "value": "2026-09-10T01:54:51"
+     }
+    ],
+    "method": "EXHAUSTIVE_SHARDED_FP32_COMPUTE over RESOLVED canonical vectors"
+   }
+  },
+  "hotpotqa": {
+   "record": "CRAG package: data/final_canonical/hotpotqa/graph/GRAPH_MANIFEST.json",
+   "provenance": {
+    "tracked": false,
+    "commit": "untracked",
+    "in": "the frozen sibling package, read-only"
+   },
+   "ner": {
+    "durations": [],
+    "built_timestamps": []
+   },
+   "knn": {
+    "durations": [],
+    "built_timestamps": [
+     {
+      "key": "families.knn.source.built",
+      "value": "2026-09-10T00:13:28"
+     }
+    ],
+    "method": "EXHAUSTIVE_SHARDED_FP32_COMPUTE over RESOLVED canonical vectors"
+   }
+  },
+  "musique": {
+   "record": "CRAG package: data/final_canonical/musique/graph/GRAPH_MANIFEST.json",
+   "provenance": {
+    "tracked": false,
+    "commit": "untracked",
+    "in": "the frozen sibling package, read-only"
+   },
+   "ner": {
+    "durations": [],
+    "built_timestamps": []
+   },
+   "knn": {
+    "durations": [
+     {
+      "value": 513.4,
+      "unit": "s",
+      "kind": "measured",
+      "record": "CRAG package: data/final_canonical/musique/graph/GRAPH_MANIFEST.json",
+      "key": "families.knn.source.source_manifest.build_seconds",
+      "tracked": false,
+      "commit": "untracked",
+      "in": "the frozen sibling package, read-only"
+     }
+    ],
+    "built_timestamps": [
+     {
+      "key": "families.knn.source.built",
+      "value": "2026-09-11T21:14:41"
+     }
+    ],
+    "method": "EXHAUSTIVE_FP32_COMPUTE over RESOLVED canonical vectors (local CPU)"
+   }
+  },
+  "squad": {
+   "record": "CRAG package: data/final_canonical/squad/graph/GRAPH_MANIFEST.json",
+   "provenance": {
+    "tracked": false,
+    "commit": "untracked",
+    "in": "the frozen sibling package, read-only"
+   },
+   "ner": {
+    "durations": [],
+    "built_timestamps": []
+   },
+   "knn": {
+    "durations": [],
+    "built_timestamps": [],
+    "method": null
+   }
+  }
+ },
+ "hardware": {
+  "host": {
+   "cpu": {
+    "value": "Intel i9-14900, 32 threads, AVX2",
+    "unit": "text",
+    "kind": "declared",
+    "record": "docs/GPU_HOST_HANDOVER.md",
+    "key": "line 24 (row 'CPU')",
+    "tracked": true,
+    "commit": "016b850 2026-10-03 23:14:34 +0530",
+    "line": 24
+   },
+   "memory": {
+    "value": "127.7 GB",
+    "unit": "text",
+    "kind": "declared",
+    "record": "docs/GPU_HOST_HANDOVER.md",
+    "key": "line 25 (row 'memory')",
+    "tracked": true,
+    "commit": "016b850 2026-10-03 23:14:34 +0530",
+    "line": 25
+   },
+   "gpu": {
+    "value": "NVIDIA RTX 4500 Ada Generation, 24 GB, driver 596.71",
+    "unit": "text",
+    "kind": "declared",
+    "record": "docs/GPU_HOST_HANDOVER.md",
+    "key": "line 26 (row 'GPU')",
+    "tracked": true,
+    "commit": "016b850 2026-10-03 23:14:34 +0530",
+    "line": 26
+   },
+   "scheduler_capacity": {
+    "value": "32 CPUs minus 2 reserved, 127.7 GB minus 8 reserved, GPU 0",
+    "unit": "text",
+    "kind": "declared",
+    "record": "docs/GPU_HOST_HANDOVER.md",
+    "key": "line 31 (row 'scheduler capacity')",
+    "tracked": true,
+    "commit": "016b850 2026-10-03 23:14:34 +0530",
+    "line": 31
+   },
+   "machine": {
+    "value": "a shared lab workstation; other accounts use it",
+    "unit": "text",
+    "kind": "declared",
+    "record": "docs/GPU_HOST_HANDOVER.md",
+    "key": "line 22 (row 'machine', the text after the host's name)",
+    "tracked": true,
+    "commit": "016b850 2026-10-03 23:14:34 +0530",
+    "line": 22
+   }
+  },
+  "laptop": {
+   "value": "Intel Family 6 Model 186, 12 logical CPUs, AVX2, 15.7 GB of memory",
+   "unit": "text",
+   "kind": "declared",
+   "record": "docs/GPU_HOST_HANDOVER.md",
+   "key": "line 35",
+   "tracked": true,
+   "commit": "016b850 2026-10-03 23:14:34 +0530",
+   "line": 35
+  },
+  "host_used_for": "A6's NER part jobs (one CPU reserved per job, no GPU named in their queue items) and, beside, P2c part 2's parse parts",
+  "laptop_used_for": "P4a's index setup (pinned, one thread)",
+  "modal_containers": {
+   "declared_in": "outputs/mp_unified/zu2b_modal.py",
+   "tracked": true,
+   "commit": "f8e1097 2026-10-22 05:20:59 +0530",
+   "by_commit": {
+    "6043564": {
+     "date": "2026-10-22 01:49:51 +0530",
+     "functions": {
+      "stat": {
+       "def_line": 216,
+       "decorator_line": 215,
+       "cpu": 1.0,
+       "memory": 32768,
+       "timeout": 10800
+      },
+      "merge": {
+       "def_line": 255,
+       "decorator_line": 254,
+       "cpu": 1.0,
+       "memory": 8192,
+       "timeout": 3600
+      },
+      "link": {
+       "def_line": 280,
+       "decorator_line": 279,
+       "cpu": 1.0,
+       "memory": 49152,
+       "timeout": 21600
+      },
+      "build": {
+       "def_line": 316,
+       "decorator_line": 315,
+       "cpu": 2.0,
+       "memory": 98304,
+       "timeout": 10800
+      }
+     }
+    },
+    "3ca24f8": {
+     "date": "2026-10-22 03:07:39 +0530",
+     "functions": {
+      "stat": {
+       "def_line": 285,
+       "decorator_line": 284,
+       "cpu": 1.0,
+       "memory": [
+        12288,
+        65536
+       ],
+       "timeout": 10800
+      },
+      "merge": {
+       "def_line": 326,
+       "decorator_line": 325,
+       "cpu": 1.0,
+       "memory": 8192,
+       "timeout": 3600
+      },
+      "link": {
+       "def_line": 353,
+       "decorator_line": 352,
+       "cpu": 1.0,
+       "memory": [
+        24576,
+        131072
+       ],
+       "timeout": 21600
+      },
+      "build": {
+       "def_line": 397,
+       "decorator_line": 396,
+       "cpu": 2.0,
+       "memory": [
+        32768,
+        131072
+       ],
+       "timeout": 10800
+      }
+     }
+    },
+    "9f34d3f": {
+     "date": "2026-10-22 05:04:18 +0530",
+     "functions": {
+      "stat": {
+       "def_line": 285,
+       "decorator_line": 284,
+       "cpu": 1.0,
+       "memory": [
+        12288,
+        65536
+       ],
+       "timeout": 10800
+      },
+      "merge": {
+       "def_line": 326,
+       "decorator_line": 325,
+       "cpu": 1.0,
+       "memory": 8192,
+       "timeout": 3600
+      },
+      "link": {
+       "def_line": 353,
+       "decorator_line": 352,
+       "cpu": 1.0,
+       "memory": [
+        24576,
+        131072
+       ],
+       "timeout": 21600
+      },
+      "build": {
+       "def_line": 400,
+       "decorator_line": 398,
+       "cpu": 2.0,
+       "memory": [
+        32768,
+        131072
+       ],
+       "nonpreemptible": true,
+       "timeout": 10800
+      }
+     }
+    },
+    "f8e1097": {
+     "date": "2026-10-22 05:20:59 +0530",
+     "functions": {
+      "stat": {
+       "def_line": 286,
+       "decorator_line": 285,
+       "cpu": 1.0,
+       "memory": [
+        12288,
+        65536
+       ],
+       "timeout": 10800
+      },
+      "merge": {
+       "def_line": 327,
+       "decorator_line": 326,
+       "cpu": 1.0,
+       "memory": 8192,
+       "timeout": 3600
+      },
+      "link": {
+       "def_line": 354,
+       "decorator_line": 353,
+       "cpu": 1.0,
+       "memory": [
+        24576,
+        131072
+       ],
+       "timeout": 21600
+      },
+      "build_part": {
+       "def_line": 422,
+       "decorator_line": 420,
+       "cpu": 2.0,
+       "memory": [
+        32768,
+        131072
+       ],
+       "nonpreemptible": true,
+       "timeout": 10800
+      },
+      "build": {
+       "def_line": 473,
+       "decorator_line": 471,
+       "cpu": 1.0,
+       "memory": [
+        8192,
+        65536
+       ],
+       "nonpreemptible": true,
+       "timeout": 14400
+      }
+     }
+    }
+   },
+   "gpu_argument_anywhere": false,
+   "one_input_per_container": true,
+   "retries_per_stage_input": 3,
+   "image": "Debian slim, Python 3.13, packages numpy==2.3.2, pyyaml==6.0.2",
+   "pinned_packages": [
+    "numpy==2.3.2",
+    "pyyaml==6.0.2"
+   ],
+   "threads_set_in_the_image": {
+    "OPENBLAS_NUM_THREADS": 8,
+    "OMP_NUM_THREADS": 8,
+    "MKL_NUM_THREADS": 8
+   },
+   "link_shard_default": {
+    "commit_before": "6043564",
+    "earlier_one_link_container_per_stat_shard": true,
+    "later_unset_equals_stat": true
+   },
+   "memory_unit": {
+    "unit": "MiB",
+    "modal_version": "1.3.3",
+    "read_from": "the comment above the memory argument of App.function in the installed modal package (a version that may differ from the one the stages ran under; the records name none)"
+   },
+   "seconds_are": "wall-clock seconds in the container (time.time differences), not CPU seconds",
+   "cpu_model_of_the_workers": "not recorded"
+  }
+ },
+ "beside": {
+  "why_beside": "Not in the final system: `docs/P2C2_FOURTH_FAMILY.md` line 91 says 'NO_GAIN: the fourth family is not adopted, and no full run follows'. The fourth family's parse is part 1's version 1, run on the host over every passage (`docs/P2C2_FOURTH_FAMILY.md` line 19), with the full spaCy pipeline including its dependency parser (`docs/P2C_LLM_FREE_TRIPLES.md` line 63).",
+  "spacy_parse": {
+   "2wiki": {
+    "parts": {
+     "value": 60,
+     "unit": "parts",
+     "kind": "counted",
+     "record": "outputs/p2c/parse_2wiki_<k>of60.json",
+     "key": "file count (the names say k of n)",
+     "tracked": false,
+     "commit": "untracked"
+    },
+    "seconds_sum": {
+     "value": 115407.0,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_2wiki_<k>of60.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 60
+    },
+    "seconds_min": {
+     "value": 1190.7,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_2wiki_<k>of60.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "min",
+     "over_records": 60
+    },
+    "seconds_max": {
+     "value": 2414.6,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_2wiki_<k>of60.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 60
+    },
+    "peak_gb_max": {
+     "value": 1.39,
+     "unit": "GB",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_2wiki_<k>of60.json",
+     "key": "peak_gb",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 60
+    },
+    "passages_sum": {
+     "value": 5989847,
+     "unit": "passages",
+     "kind": "counted",
+     "record": "outputs/p2c/parse_2wiki_<k>of60.json",
+     "key": "passages",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 60
+    }
+   },
+   "hotpotqa": {
+    "parts": {
+     "value": 40,
+     "unit": "parts",
+     "kind": "counted",
+     "record": "outputs/p2c/parse_hotpotqa_<k>of40.json",
+     "key": "file count (the names say k of n)",
+     "tracked": false,
+     "commit": "untracked"
+    },
+    "seconds_sum": {
+     "value": 60386.3,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_hotpotqa_<k>of40.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 40
+    },
+    "seconds_min": {
+     "value": 1293.3,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_hotpotqa_<k>of40.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "min",
+     "over_records": 40
+    },
+    "seconds_max": {
+     "value": 1681.8,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_hotpotqa_<k>of40.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 40
+    },
+    "peak_gb_max": {
+     "value": 0.98,
+     "unit": "GB",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_hotpotqa_<k>of40.json",
+     "key": "peak_gb",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 40
+    },
+    "passages_sum": {
+     "value": 5233329,
+     "unit": "passages",
+     "kind": "counted",
+     "record": "outputs/p2c/parse_hotpotqa_<k>of40.json",
+     "key": "passages",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 40
+    }
+   },
+   "musique": {
+    "parts": {
+     "value": 2,
+     "unit": "parts",
+     "kind": "counted",
+     "record": "outputs/p2c/parse_musique_<k>of2.json",
+     "key": "file count (the names say k of n)",
+     "tracked": false,
+     "commit": "untracked"
+    },
+    "seconds_sum": {
+     "value": 2005.7,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_musique_<k>of2.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 2
+    },
+    "seconds_min": {
+     "value": 980.8,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_musique_<k>of2.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "min",
+     "over_records": 2
+    },
+    "seconds_max": {
+     "value": 1024.9,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_musique_<k>of2.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 2
+    },
+    "peak_gb_max": {
+     "value": 0.92,
+     "unit": "GB",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_musique_<k>of2.json",
+     "key": "peak_gb",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 2
+    },
+    "passages_sum": {
+     "value": 117534,
+     "unit": "passages",
+     "kind": "counted",
+     "record": "outputs/p2c/parse_musique_<k>of2.json",
+     "key": "passages",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 2
+    }
+   },
+   "squad": {
+    "parts": {
+     "value": 1,
+     "unit": "parts",
+     "kind": "counted",
+     "record": "outputs/p2c/parse_squad_<k>of1.json",
+     "key": "file count (the names say k of n)",
+     "tracked": false,
+     "commit": "untracked"
+    },
+    "seconds_sum": {
+     "value": 592.3,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_squad_<k>of1.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 1
+    },
+    "seconds_min": {
+     "value": 592.3,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_squad_<k>of1.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "min",
+     "over_records": 1
+    },
+    "seconds_max": {
+     "value": 592.3,
+     "unit": "s",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_squad_<k>of1.json",
+     "key": "seconds",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 1
+    },
+    "peak_gb_max": {
+     "value": 0.97,
+     "unit": "GB",
+     "kind": "measured",
+     "record": "outputs/p2c/parse_squad_<k>of1.json",
+     "key": "peak_gb",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "max",
+     "over_records": 1
+    },
+    "passages_sum": {
+     "value": 20233,
+     "unit": "passages",
+     "kind": "counted",
+     "record": "outputs/p2c/parse_squad_<k>of1.json",
+     "key": "passages",
+     "tracked": false,
+     "commit": "untracked",
+     "arithmetic": "sum",
+     "over_records": 1
+    }
+   }
+  }
+ },
+ "gaps": [
+  {
+   "component": "embeddings (the frozen dense encoder, gte-Qwen2-1.5B), every corpus",
+   "missing": "no wall time of any encode run is in the records compiled here",
+   "evidence": "the encoder is named at docs/B1_HIPPORAG2_ALIGNMENT.md line 138. docs/M3A_WEBQSP_ENCODE_BUDGET.md line 48 says 'no shard status JSON in the package records a timing -- they carry rows, sha, dtype and dim only' (the doc's subject is one corpus; its encode rate is declared and marked DECLARED_NOT_MEASURED, line 53, and none of its figures is used here). The package's own logs, if they hold a timing, were not searched"
+  },
+  {
+   "component": "the original ner and knn builds, every corpus",
+   "missing": "ner: no duration in any of the four corpora's graph manifests in the frozen sibling package. knn: a duration for musique (513.4 s, key families.knn.source.source_manifest.build_seconds); a build timestamp and no duration for 2wiki (2026-09-10T01:54:51), hotpotqa (2026-09-10T00:13:28); neither a duration nor a timestamp for squad",
+   "evidence": "read at run time from the sibling package's data/final_canonical/<corpus>/graph/GRAPH_MANIFEST.json (untracked there; its data folder is git-ignored), by scanning the ner and knn family entries for a seconds-like key. That manifest's knn method line says: EXHAUSTIVE_FP32_COMPUTE over RESOLVED canonical vectors (local CPU). The package's other records and logs were not searched. Section 3 re-runs the ner family's extraction; it is not the original build, and nothing re-runs the knn build"
+  },
+  {
+   "component": "the CSR family stores (outputs/m3b/csr/<corpus>_<family>.npz)",
+   "missing": "no build time of its own is recorded: a missing store is built by whatever job first opens it, and no record read here separates that time from the job's",
+   "evidence": "`src/mp_retrieval/m3b_pools.py` lines 155 to 163: load_or_build_store builds a missing store and saves it, and takes no timing (checked at run time). The stores are read from outputs/m3b/csr through it (`docs/STEP4_POOL_REACH.md` line 38); the 12 stores of the four corpora (three families each) are present in this working tree, untracked"
+  },
+  {
+   "component": "Modal container-second totals (stat, link, build) and the merge stage",
+   "missing": "only the slowest shard's seconds per stage are kept, not the sum over shard containers; the merge stage's seconds are in no record; the time lost in failed or preempted attempts is in none either",
+   "evidence": "the Modal script writes each shard's record to the Modal volume, and this repository holds the merged capstat.json and the build record only (both checked at run time)"
+  },
+  {
+   "component": "W2 alone, where there is no part record",
+   "missing": "the build seconds of W2 for hotpotqa, musique and squad (no per-variant parts; the figures are for all variants), and the stat and link seconds of W2 alone for every corpus (one pass serves all variants)",
+   "evidence": "section 2; only 2wiki has a W2 part record, and that part builds four graphs together, so W2_S alone has no figure there either"
+  },
+  {
+   "component": "peak memory of some Modal steps",
+   "missing": "not recorded (the record holds 0 or null) for 2wiki stat, hotpotqa stat, musique stat, musique link, musique build, squad stat, squad link and squad build",
+   "evidence": "marked 'not recorded' in the rows of section 2"
+  },
+  {
+   "component": "the Modal workers' CPU model",
+   "missing": "not recorded; the result records hold neither CPU count nor memory, and the script's decorators declare the CPU request and memory only",
+   "evidence": "section 5"
+  },
+  {
+   "component": "the Modal dense stage (the frozen vectors the rule's context choice reads, placed on the volume)",
+   "missing": "no seconds: its records (dense_verified.json and dense_reread.json, per corpus) hold dataset, manifest_sha256, n_rows, shards, status only",
+   "evidence": "keys checked at run time in all eight files"
+  },
+  {
+   "component": "A6's per-part files for 2wiki, hotpotqa and musique",
+   "missing": "this working tree holds the A6 part file of squad only (a laptop run); for the other corpora the host queue's job seconds are used, which include each job's own start-up and any rerun by the retry wrapper",
+   "evidence": "section 3"
+  },
+  {
+   "component": "a per-corpus end-to-end index figure",
+   "missing": "not recorded and not computed here, by design: the components have different hardware and different stages",
+   "evidence": "no total appears in this record"
+  }
+ ],
+ "checks": [
+  {
+   "check": "2wiki: the parse parts are k = 0..59 of 60, each naming itself",
+   "ok": true,
+   "detail": "60 files"
+  },
+  {
+   "check": "2wiki: every parse part ran on the host",
+   "ok": true,
+   "detail": "key where"
+  },
+  {
+   "check": "hotpotqa: the parse parts are k = 0..39 of 40, each naming itself",
+   "ok": true,
+   "detail": "40 files"
+  },
+  {
+   "check": "hotpotqa: every parse part ran on the host",
+   "ok": true,
+   "detail": "key where"
+  },
+  {
+   "check": "musique: the parse parts are k = 0..1 of 2, each naming itself",
+   "ok": true,
+   "detail": "2 files"
+  },
+  {
+   "check": "musique: every parse part ran on the host",
+   "ok": true,
+   "detail": "key where"
+  },
+  {
+   "check": "squad: the parse parts are k = 0..0 of 1, each naming itself",
+   "ok": true,
+   "detail": "1 file"
+  },
+  {
+   "check": "squad: every parse part ran on the host",
+   "ok": true,
+   "detail": "key where"
+  },
+  {
+   "check": "2wiki: n_nodes equals the sum of passages over the parse parts",
+   "ok": true,
+   "detail": "5989847 and 5989847"
+  },
+  {
+   "check": "hotpotqa: n_nodes equals the sum of passages over the parse parts",
+   "ok": true,
+   "detail": "5233329 and 5233329"
+  },
+  {
+   "check": "musique: n_nodes equals the sum of passages over the parse parts",
+   "ok": true,
+   "detail": "117534 and 117534"
+  },
+  {
+   "check": "squad: n_nodes equals the sum of passages over the parse parts",
+   "ok": true,
+   "detail": "20233 and 20233"
+  },
+  {
+   "check": "hotpotqa and 2wiki: the counts in the link rule doc equal n_nodes",
+   "ok": true,
+   "detail": "docs/U2B_LINK_RULE.md line 134"
+  },
+  {
+   "check": "2wiki: the stat and build records name the rule code the working tree holds (sha256 of zu2b.py, u1b.py, u1d.py)",
+   "ok": true,
+   "detail": "zu2b.py 4bfbf7479a72, u1b.py cb485a77ea63, u1d.py c4b62ce8b69f"
+  },
+  {
+   "check": "hotpotqa: the stat and build records name the rule code the working tree holds (sha256 of zu2b.py, u1b.py, u1d.py)",
+   "ok": true,
+   "detail": "zu2b.py 4bfbf7479a72, u1b.py cb485a77ea63, u1d.py c4b62ce8b69f"
+  },
+  {
+   "check": "musique: the stat and build records name the rule code the working tree holds (sha256 of zu2b.py, u1b.py, u1d.py)",
+   "ok": true,
+   "detail": "zu2b.py 4bfbf7479a72, u1b.py cb485a77ea63, u1d.py c4b62ce8b69f"
+  },
+  {
+   "check": "squad: the stat and build records name the rule code the working tree holds (sha256 of zu2b.py, u1b.py, u1d.py)",
+   "ok": true,
+   "detail": "zu2b.py 4bfbf7479a72, u1b.py cb485a77ea63, u1d.py c4b62ce8b69f"
+  },
+  {
+   "check": "no source file the Modal image adds mentions spaCy",
+   "ok": true,
+   "detail": "outputs/mp_unified/u1b.py, outputs/mp_unified/u1d.py, outputs/mp_unified/zu2b.py, outputs/mp_unified/zu2b_fast.py, src/mp_retrieval/m3b_pools.py"
+  },
+  {
+   "check": "the Modal image installs no spaCy",
+   "ok": true,
+   "detail": "numpy==2.3.2, pyyaml==6.0.2"
+  },
+  {
+   "check": "the Modal image sets OPENBLAS_NUM_THREADS, OMP_NUM_THREADS and MKL_NUM_THREADS, all to one value",
+   "ok": true,
+   "detail": "OPENBLAS_NUM_THREADS=8, OMP_NUM_THREADS=8, MKL_NUM_THREADS=8"
+  },
+  {
+   "check": "no function of any committed Modal script passes a gpu argument, and the stage and orchestrator settings name none",
+   "ok": true,
+   "detail": "4 versions"
+  },
+  {
+   "check": "the separate link shard count and the zu2b_fast link pass enter the script in one commit, and stay",
+   "ok": true,
+   "detail": "the separate count first at 3ca24f8, the zu2b_fast call first at 3ca24f8"
+  },
+  {
+   "check": "an unset link shard count equals the stat shard count: one link container per stat shard before the separate count, and kl = k_link or k (k_link defaults to 0) from it on",
+   "ok": true,
+   "detail": "function corpus of outputs/mp_unified/zu2b_modal.py at 6043564 and at 3ca24f8"
+  },
+  {
+   "check": "in every committed version, stat, link, build and build_part start their clock after the volume reload and write their seconds as the time since that start",
+   "ok": true,
+   "detail": "4 versions"
+  },
+  {
+   "check": "link's seconds start after zu2b_fast's selftest",
+   "ok": true,
+   "detail": "outputs/mp_unified/zu2b_modal.py at f8e1097"
+  },
+  {
+   "check": "build_part's seconds run from after the container is up and the code is imported, through reading the link shards, to the end of the part",
+   "ok": true,
+   "detail": "outputs/mp_unified/zu2b_modal.py at f8e1097, function build_part"
+  },
+  {
+   "check": "the build container's seconds include starting every part and checking every graph file's hash",
+   "ok": true,
+   "detail": "outputs/mp_unified/zu2b_modal.py at f8e1097, function build"
+  },
+  {
+   "check": "the build record gets its 'parts' key from the commit the doc names, and not before",
+   "ok": true,
+   "detail": "first at f8e1097"
+  },
+  {
+   "check": "the commit the doc names states the layouts in its own comment",
+   "ok": true,
+   "detail": "outputs/mp_unified/zu2b_modal.py at f8e1097"
+  },
+  {
+   "check": "2wiki: the stat and build records hold no CPU count or memory key",
+   "ok": true,
+   "detail": "no key matches cpu, mem or core"
+  },
+  {
+   "check": "2wiki: the stat record holds no merge seconds",
+   "ok": true,
+   "detail": "capstat.json keys"
+  },
+  {
+   "check": "2wiki: the link record names the shard count the doc states",
+   "ok": true,
+   "detail": "128 link shard hashes; docs/U2B_LINK_RULE.md line 148 says 128"
+  },
+  {
+   "check": "2wiki: the W2 part file equals the build record's parts.W2",
+   "ok": true,
+   "detail": "480.6 s, 14.29 GB"
+  },
+  {
+   "check": "2wiki: the W2 part builds the graph W2_S",
+   "ok": true,
+   "detail": "W2_M, W2_D, W2_S, W2_DS"
+  },
+  {
+   "check": "2wiki: the build stage's seconds are at least its slowest part's",
+   "ok": true,
+   "detail": "2286.9 and 2038.4"
+  },
+  {
+   "check": "2wiki: the build record's parts are its variants",
+   "ok": true,
+   "detail": "['W2', 'W5e', 'W6e', 'W3e', 'W7e', 'W7', 'W3eg', 'W7eg']"
+  },
+  {
+   "check": "2wiki: the doc's build line rounds the record's secs and peak_gb",
+   "ok": true,
+   "detail": "2286.9 s, 19.06 GB; docs/U2B_LINK_RULE.md line 229"
+  },
+  {
+   "check": "hotpotqa: the stat and build records hold no CPU count or memory key",
+   "ok": true,
+   "detail": "no key matches cpu, mem or core"
+  },
+  {
+   "check": "hotpotqa: the stat record holds no merge seconds",
+   "ok": true,
+   "detail": "capstat.json keys"
+  },
+  {
+   "check": "hotpotqa: the link record names the shard count the doc states",
+   "ok": true,
+   "detail": "128 link shard hashes; docs/U2B_LINK_RULE.md line 148 says 128"
+  },
+  {
+   "check": "hotpotqa: the build record has no per-variant parts",
+   "ok": true,
+   "detail": "key parts absent"
+  },
+  {
+   "check": "musique: the stat and build records hold no CPU count or memory key",
+   "ok": true,
+   "detail": "no key matches cpu, mem or core"
+  },
+  {
+   "check": "musique: the stat record holds no merge seconds",
+   "ok": true,
+   "detail": "capstat.json keys"
+  },
+  {
+   "check": "musique: the build record has no per-variant parts",
+   "ok": true,
+   "detail": "key parts absent"
+  },
+  {
+   "check": "musique: the peaks are empty and the script before 3ca24f8 has no peak fallback",
+   "ok": true,
+   "detail": "link_peak_gb_max 0, peak_gb null"
+  },
+  {
+   "check": "squad: the stat and build records hold no CPU count or memory key",
+   "ok": true,
+   "detail": "no key matches cpu, mem or core"
+  },
+  {
+   "check": "squad: the stat record holds no merge seconds",
+   "ok": true,
+   "detail": "capstat.json keys"
+  },
+  {
+   "check": "squad: the build record has no per-variant parts",
+   "ok": true,
+   "detail": "key parts absent"
+  },
+  {
+   "check": "squad: the peaks are empty and the script before 3ca24f8 has no peak fallback",
+   "ok": true,
+   "detail": "link_peak_gb_max 0, peak_gb null"
+  },
+  {
+   "check": "squad's laptop part covers the corpus's passages",
+   "ok": true,
+   "detail": "20233 and 20233"
+  },
+  {
+   "check": "the doc's laptop check names the squad part file's mentions and keys, and its seconds rounded",
+   "ok": true,
+   "detail": "docs/A6_LINK_WORDS_INPUT.md line 134: 188,101 mentions, 64,439 keys, 315 s; the part file: 188101, 64439, 314.7"
+  },
+  {
+   "check": "A6's settings are the ner family's: labels, document-frequency range, minimum characters, key, batch size and disabled components equal those of ner_edges in the package's build script",
+   "ok": true,
+   "detail": "scripts/b1_build.py line 199; docs/B1_HIPPORAG2_ALIGNMENT.md line 68"
+  },
+  {
+   "check": "the retry wrapper reruns only after a Windows file-lock error",
+   "ok": true,
+   "detail": "outputs/host_ops/retry_cmd.py lines 34, 9"
+  },
+  {
+   "check": "2wiki: A6's parts are k = 0..59 of 60, as the doc's part count",
+   "ok": true,
+   "detail": "60 jobs; docs/A6_LINK_WORDS_INPUT.md line 43"
+  },
+  {
+   "check": "2wiki: every A6 part job is done with return code 0",
+   "ok": true,
+   "detail": "terminal[job id][0] and [1]"
+  },
+  {
+   "check": "2wiki: A6's merge job is done with return code 0",
+   "ok": true,
+   "detail": "a6-merge-2wiki"
+  },
+  {
+   "check": "2wiki: each A6 job id carries its job's name, and no A6 job is in the queue's retried, dropped or shed lists",
+   "ok": true,
+   "detail": "61 jobs"
+  },
+  {
+   "check": "2wiki: every A6 part's queue item asks for 1 CPU and 1.5 GB, names no GPU, and runs part k/n of the corpus on the host under the retry wrapper (3 runs, 60 s apart)",
+   "ok": true,
+   "detail": "outputs/host_ops/hostfeed_items.txt (HEAD version), 60 item lines"
+  },
+  {
+   "check": "hotpotqa: A6's parts are k = 0..39 of 40, as the doc's part count",
+   "ok": true,
+   "detail": "40 jobs; docs/A6_LINK_WORDS_INPUT.md line 43"
+  },
+  {
+   "check": "hotpotqa: every A6 part job is done with return code 0",
+   "ok": true,
+   "detail": "terminal[job id][0] and [1]"
+  },
+  {
+   "check": "hotpotqa: A6's merge job is done with return code 0",
+   "ok": true,
+   "detail": "a6-merge-hotpotqa"
+  },
+  {
+   "check": "hotpotqa: each A6 job id carries its job's name, and no A6 job is in the queue's retried, dropped or shed lists",
+   "ok": true,
+   "detail": "41 jobs"
+  },
+  {
+   "check": "hotpotqa: every A6 part's queue item asks for 1 CPU and 1.5 GB, names no GPU, and runs part k/n of the corpus on the host under the retry wrapper (3 runs, 60 s apart)",
+   "ok": true,
+   "detail": "outputs/host_ops/hostfeed_items.txt (HEAD version), 40 item lines"
+  },
+  {
+   "check": "musique: A6's parts are k = 0..1 of 2, as the doc's part count",
+   "ok": true,
+   "detail": "2 jobs; docs/A6_LINK_WORDS_INPUT.md line 43"
+  },
+  {
+   "check": "musique: every A6 part job is done with return code 0",
+   "ok": true,
+   "detail": "terminal[job id][0] and [1]"
+  },
+  {
+   "check": "musique: A6's merge job is done with return code 0",
+   "ok": true,
+   "detail": "a6-merge-musique"
+  },
+  {
+   "check": "musique: each A6 job id carries its job's name, and no A6 job is in the queue's retried, dropped or shed lists",
+   "ok": true,
+   "detail": "3 jobs"
+  },
+  {
+   "check": "musique: every A6 part's queue item asks for 1 CPU and 1.5 GB, names no GPU, and runs part k/n of the corpus on the host under the retry wrapper (3 runs, 60 s apart)",
+   "ok": true,
+   "detail": "outputs/host_ops/hostfeed_items.txt (HEAD version), 2 item lines"
+  },
+  {
+   "check": "squad: A6's parts are k = 0..0 of 1, as the doc's part count",
+   "ok": true,
+   "detail": "1 job; docs/A6_LINK_WORDS_INPUT.md line 43"
+  },
+  {
+   "check": "squad: every A6 part job is done with return code 0",
+   "ok": true,
+   "detail": "terminal[job id][0] and [1]"
+  },
+  {
+   "check": "squad: A6's merge job is done with return code 0",
+   "ok": true,
+   "detail": "a6-merge-squad"
+  },
+  {
+   "check": "squad: each A6 job id carries its job's name, and no A6 job is in the queue's retried, dropped or shed lists",
+   "ok": true,
+   "detail": "2 jobs"
+  },
+  {
+   "check": "squad: every A6 part's queue item asks for 1 CPU and 1.5 GB, names no GPU, and runs part k/n of the corpus on the host under the retry wrapper (3 runs, 60 s apart)",
+   "ok": true,
+   "detail": "outputs/host_ops/hostfeed_items.txt (HEAD version), 1 item line"
+  },
+  {
+   "check": "the E1 verdict record says NO_GAIN, and its musique I figures equal the doc's table",
+   "ok": true,
+   "detail": "outputs/u2m/e1/verdict_e1.json: [0.7751, 2067.2, 0.6838, 1199.7]; docs/U2M_POOLS_THREE_FAMILIES.md line 821"
+  },
+  {
+   "check": "the E1 verdict record was committed with the filing",
+   "ok": true,
+   "detail": "a2a2627 2026-10-27 03:27:21 +0530 and a2a2627"
+  },
+  {
+   "check": "the code commit the doc names changed outputs/mp_unified/zu2m_e1.py, and is older than the filing commit",
+   "ok": true,
+   "detail": "fcd0f08 2026-10-26 12:46:09 +0530; filing a2a2627 2026-10-27 03:27:21 +0530"
+  },
+  {
+   "check": "U2r's filing is older than U2m's section 20 filing",
+   "ok": true,
+   "detail": "14a48ee 2026-10-26 08:45:47 +0530; a2a2627 2026-10-27 03:27:21 +0530"
+  },
+  {
+   "check": "the B1H doc's carve b1 holds the NER and KNN graphs",
+   "ok": true,
+   "detail": "docs/B1H_MODELS_OF_RECORD_ON_HYPERLINKS.md line 29"
+  },
+  {
+   "check": "the B1 doc's ner rule is the spaCy rule, two lines on",
+   "ok": true,
+   "detail": "docs/B1_HIPPORAG2_ALIGNMENT.md lines 68, 69"
+  },
+  {
+   "check": "the doc's index-time paragraph is lines 52 to 55",
+   "ok": true,
+   "detail": "docs/P4A_POOL_COLD.md"
+  },
+  {
+   "check": "2wiki: P4a ran one thread, pinned to a logical processor",
+   "ok": true,
+   "detail": "outputs/p4a/2wiki.json"
+  },
+  {
+   "check": "2wiki: the record's setup_total_s is at least each itemised part it lists",
+   "ok": true,
+   "detail": "111.6504454612732 and 64.52541065216064"
+  },
+  {
+   "check": "hotpotqa: P4a ran one thread, pinned to a logical processor",
+   "ok": true,
+   "detail": "outputs/p4a/hotpotqa.json"
+  },
+  {
+   "check": "hotpotqa: the record's setup_total_s is at least each itemised part it lists",
+   "ok": true,
+   "detail": "131.56149339675903 and 78.4966173171997"
+  },
+  {
+   "check": "musique: P4a ran one thread, pinned to a logical processor",
+   "ok": true,
+   "detail": "outputs/p4a/musique.json"
+  },
+  {
+   "check": "musique: the record's setup_total_s is at least each itemised part it lists",
+   "ok": true,
+   "detail": "8.28215217590332 and 4.040663957595825"
+  },
+  {
+   "check": "squad: P4a ran one thread, pinned to a logical processor",
+   "ok": true,
+   "detail": "outputs/p4a/squad.json"
+  },
+  {
+   "check": "squad: the record's setup_total_s is at least each itemised part it lists",
+   "ok": true,
+   "detail": "4.532017946243286 and 3.606292486190796"
+  },
+  {
+   "check": "the host and laptop lines sit within lines 21 to 35 of the handover doc",
+   "ok": true,
+   "detail": "cpu line 24, memory line 25, gpu line 26, scheduler_capacity line 31, machine line 22, laptop line 35"
+  },
+  {
+   "check": "load_or_build_store builds a missing store and takes no timing",
+   "ok": true,
+   "detail": "src/mp_retrieval/m3b_pools.py lines 155 to 163"
+  },
+  {
+   "check": "the stores of the four corpora are present in this working tree and none is tracked",
+   "ok": true,
+   "detail": "12 of 12"
+  },
+  {
+   "check": "no per-shard stat or link record is kept in this repository, though the script writes one per shard",
+   "ok": true,
+   "detail": "outputs/u2b/2wiki/new holds capstat.json; outputs/u2b/hotpotqa/new holds capstat.json; outputs/u2b/musique/new holds capstat.json; outputs/u2b/squad/new holds capstat.json"
+  },
+  {
+   "check": "the Modal dense stage's records hold no seconds key, and all eight hold the same keys",
+   "ok": true,
+   "detail": "dataset, manifest_sha256, n_rows, shards, status in all 8 files"
+  }
+ ],
+ "files_read": {
+  "outputs/u2b/2wiki/new/capstat.json": {
+   "sha256": "4c52b2a97b0b9930ab8c7ac35eaadc56fd8a7c16c5a4caab4b0555567893d88b",
+   "bytes": 688,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/hotpotqa/new/capstat.json": {
+   "sha256": "d13e4f251b727621f39eb099c21acd1bba4904fabf8bd20e5d7456a27baad752",
+   "bytes": 691,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/musique/new/capstat.json": {
+   "sha256": "d8a394af9ddb20e351f3c661c01adbf1f3eac537ae511325cb5baf2d3d4911e0",
+   "bytes": 681,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/squad/new/capstat.json": {
+   "sha256": "632edabe14bf692772ddd71b787ea5dd26dbecee699f889f553b05c3633c9fb7",
+   "bytes": 666,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/2wiki/graphs/build_new.json": {
+   "sha256": "8f0dfdda2a9f600ac5ce1a99f055bdc9359d1e65f5e3cef09f5f8c0ec49f72af",
+   "bytes": 20152,
+   "tracked": true,
+   "commit": "c772da3 2026-10-22 12:57:09 +0530"
+  },
+  "outputs/u2b/hotpotqa/graphs/build_new.json": {
+   "sha256": "cb8ba3103630ad9741fbc6f8c30d728a681223f3cbf941015d4dc27d737c7f7a",
+   "bytes": 19653,
+   "tracked": true,
+   "commit": "c772da3 2026-10-22 12:57:09 +0530"
+  },
+  "outputs/u2b/musique/graphs/build_new.json": {
+   "sha256": "186261c4364de4359130ce067d113a11b8e13b546462cd68576af21590ffa18b",
+   "bytes": 10679,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/squad/graphs/build_new.json": {
+   "sha256": "e26456a774470ffb2956bc600c018ca81a2fbbf6551c508937d5beae1c189624",
+   "bytes": 10602,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "docs/U2B_LINK_RULE.md": {
+   "sha256": "e8302d71a123a3d29f2c1a0b9b80784f545be6e8e8d1e7c966efb04d599a28ba",
+   "bytes": 16052,
+   "tracked": true,
+   "commit": "c772da3 2026-10-22 12:57:09 +0530"
+  },
+  "outputs/mp_unified/zu2b.py": {
+   "sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+   "bytes": 33513,
+   "tracked": true,
+   "commit": "6043564 2026-10-22 01:49:51 +0530"
+  },
+  "outputs/mp_unified/u1b.py": {
+   "sha256": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88",
+   "bytes": 23747,
+   "tracked": true,
+   "commit": "045ed79 2026-10-10 00:13:08 +0530"
+  },
+  "outputs/mp_unified/u1d.py": {
+   "sha256": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+   "bytes": 27477,
+   "tracked": true,
+   "commit": "79e843b 2026-10-10 01:53:55 +0530"
+  },
+  "outputs/mp_unified/zu2b_fast.py": {
+   "sha256": "09b9b96bc494da19fa115b0cf28c220dc8801a0bc24e0addf58e4a938df361b9",
+   "bytes": 8003,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "src/mp_retrieval/m3b_pools.py": {
+   "sha256": "219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697",
+   "bytes": 10697,
+   "tracked": true,
+   "commit": "cec4d7a 2026-09-13 13:59:57 +0530"
+  },
+  "outputs/u2b/2wiki/graphs/part_new_W2.json": {
+   "sha256": "d72d0a2dd891093fbf256232f4137e7df4e6c1f00bf3669493bda1d83e23aa56",
+   "bytes": 1788,
+   "tracked": true,
+   "commit": "c772da3 2026-10-22 12:57:09 +0530"
+  },
+  "docs/A6_LINK_WORDS_INPUT.md": {
+   "sha256": "d2c0d8e29f72c21485480b84c7ca13f852575088141521d2d01742a2e080a961",
+   "bytes": 13376,
+   "tracked": true,
+   "commit": "946ce17 2026-10-18 01:18:37 +0530"
+  },
+  "outputs/host_ops/hostfeed2.py (HEAD version)": {
+   "sha256": "5a9ca8de763685ed22e82c1c453e0f31e9d69dcdf62028626c72325ee02e35db",
+   "bytes": 97858,
+   "tracked": true,
+   "commit": "85d8658 2026-10-20 02:57:45 +0530",
+   "modified_since_commit": true
+  },
+  "outputs/host_ops/retry_cmd.py": {
+   "sha256": "cd7b0acf823a3070a34c83832731f263642483a263d522e4d108897d6e3bead4",
+   "bytes": 6336,
+   "tracked": true,
+   "commit": "89ca491 2026-10-07 08:56:15 +0530"
+  },
+  "outputs/host_ops/hostfeed_items.txt (HEAD version)": {
+   "sha256": "5129f7f92891a97c45d5673c9eb2e3e92b53c53c7055521b8649f2d3bdcc21f9",
+   "bytes": 10594390,
+   "tracked": true,
+   "commit": "e3b1283 2026-10-20 19:22:34 +0530",
+   "modified_since_commit": true
+  },
+  "outputs/a6/ents/parts/squad/part_0of1.json": {
+   "sha256": "2fa51617c91b92594a7297ad1c0cc87b878e07bae9c1cfb822a2b2fbc081bbea",
+   "bytes": 1009,
+   "tracked": false,
+   "commit": "untracked"
+  },
+  "docs/B1_HIPPORAG2_ALIGNMENT.md": {
+   "sha256": "955fcbde7260437314b700a9cbc22d65735562082deb51ec47b17c8616d58829",
+   "bytes": 8037,
+   "tracked": true,
+   "commit": "81fc9cf 2026-10-09 14:46:11 +0530"
+  },
+  "scripts/b1_build.py": {
+   "sha256": "b3da0e3b06ce0fe848098a93d29294d440f27620383d235f0ce982d8fdd834a1",
+   "bytes": 17145,
+   "tracked": true,
+   "commit": "7e0d51f 2026-10-09 14:29:08 +0530"
+  },
+  "outputs/host_ops/hostfeed_state.json": {
+   "live_file": true,
+   "tracked": false,
+   "commit": "untracked",
+   "entries_used": 107,
+   "entries_sha256": "27c2f836125e2f108305591f6d966686cd014c47ae3b5ad805713df15f0b579d",
+   "used": "the 103 A6 part jobs and 4 A6 merge jobs of the four corpora: sent[name] and terminal[job id]; the rest of this live file is not used and not hashed"
+  },
+  "docs/U2M_POOLS_THREE_FAMILIES.md": {
+   "sha256": "b2c14136e4603a6e8c6cb94b9290f3eb70fbd0dfe3d1e03ce44912500e622b5b",
+   "bytes": 53600,
+   "tracked": true,
+   "commit": "a2a2627 2026-10-27 03:27:21 +0530"
+  },
+  "outputs/u2m/e1/verdict_e1.json": {
+   "sha256": "c63b7ad1363f3e783d571ee44f9aea48bb13f3a02576638b0f6f4955310de45c",
+   "bytes": 17023,
+   "tracked": true,
+   "commit": "a2a2627 2026-10-27 03:27:21 +0530"
+  },
+  "docs/U2L_ENTITY_MATCH.md": {
+   "sha256": "4fb4bde37a4e57b77e3bb05139881db4741b1e8ddb2b94f86bc2f82f887110e6",
+   "bytes": 17038,
+   "tracked": true,
+   "commit": "7854b30 2026-10-25 12:44:56 +0530"
+  },
+  "docs/U2R_NAME_RULE.md": {
+   "sha256": "afa90bb88ac2d29a1cb6979bddb5455c56cd2beaa92819392ec08eaacb48e0fb",
+   "bytes": 11792,
+   "tracked": true,
+   "commit": "14a48ee 2026-10-26 08:45:47 +0530"
+  },
+  "docs/NMD_NAME_LINK_DIAG.md": {
+   "sha256": "bbba4337f9e1ea9db420a7877c0921263bec23f1cdb3b683ca750488a5a78236",
+   "bytes": 12817,
+   "tracked": true,
+   "commit": "5623bea 2026-11-03 21:27:36 +0530"
+  },
+  "docs/B1H_MODELS_OF_RECORD_ON_HYPERLINKS.md": {
+   "sha256": "b15ecfc4be83100f95f8d411478e625fb438f10b5acf9dbd5cfe79facd6fe23a",
+   "bytes": 20204,
+   "tracked": true,
+   "commit": "b3f14df 2026-11-05 01:40:23 +0530"
+  },
+  "docs/B1L_MODELS_OF_RECORD_ON_THE_LLM_GRAPH.md": {
+   "sha256": "36521968ec51bb728266584fb18161ed553b08457134e7cfcd64d6fdb1093d0b",
+   "bytes": 25871,
+   "tracked": true,
+   "commit": "7cfe1fc 2026-11-05 03:54:04 +0530"
+  },
+  "docs/P1E_ANCHOR_KIND.md": {
+   "sha256": "f5ff033d5cd82f6af43e53e46e1b7e02f5e36fead021cdfd895f429df842715f",
+   "bytes": 24062,
+   "tracked": true,
+   "commit": "db5ce0a 2026-10-13 14:39:49 +0530"
+  },
+  "sibling package: data/final_canonical/2wiki/graph/GRAPH_MANIFEST.json": {
+   "sha256": "948fb163e9fddd890a6b422ac10d1d95bc2e318c1e9bfcaf3bad58fd61408090",
+   "bytes": 7040,
+   "tracked": false,
+   "commit": "untracked",
+   "in": "the frozen sibling package, read-only"
+  },
+  "sibling package: data/final_canonical/hotpotqa/graph/GRAPH_MANIFEST.json": {
+   "sha256": "0764ac90df37cf27086c2f28252623a4b3c80c139e91a7121c282ddaee7576bb",
+   "bytes": 7031,
+   "tracked": false,
+   "commit": "untracked",
+   "in": "the frozen sibling package, read-only"
+  },
+  "sibling package: data/final_canonical/musique/graph/GRAPH_MANIFEST.json": {
+   "sha256": "51c5df697afa30504569010825006a7ace0872f055d5550d5bf66f82fe5edc3f",
+   "bytes": 10224,
+   "tracked": false,
+   "commit": "untracked",
+   "in": "the frozen sibling package, read-only"
+  },
+  "sibling package: data/final_canonical/squad/graph/GRAPH_MANIFEST.json": {
+   "sha256": "a46e80bc1a828622b413ab8af064040e5c59d849a783f3673b8eba2cd98ceffc",
+   "bytes": 5676,
+   "tracked": false,
+   "commit": "untracked",
+   "in": "the frozen sibling package, read-only"
+  },
+  "docs/P4A_POOL_COLD.md": {
+   "sha256": "7be8f0dc561395cb12e9c555734fcde3d315234ce03c75f168a9ce7ed5dc3a95",
+   "bytes": 17112,
+   "tracked": true,
+   "commit": "056918b 2026-10-14 11:56:16 +0530"
+  },
+  "outputs/p4a/2wiki.json": {
+   "sha256": "f79324cabd1faf63622ec4440da9345c5bc24bd6429ce6ee98ae75280cdc80da",
+   "bytes": 191359,
+   "tracked": true,
+   "commit": "056918b 2026-10-14 11:56:16 +0530"
+  },
+  "outputs/p4a/hotpotqa.json": {
+   "sha256": "6228b9f5775c6b68b3a51cbedc294f9ce50b61c60ec612be8db9f9bd4b43a032",
+   "bytes": 187921,
+   "tracked": true,
+   "commit": "056918b 2026-10-14 11:56:16 +0530"
+  },
+  "outputs/p4a/musique.json": {
+   "sha256": "fe32934337655ffa799229b71a1adfd6fca41772f0abb42b58fd570b04ac883f",
+   "bytes": 185698,
+   "tracked": true,
+   "commit": "056918b 2026-10-14 11:56:16 +0530"
+  },
+  "outputs/p4a/squad.json": {
+   "sha256": "21d8ccc25ffe7d672fb78c289929244c27868d5ca88b0ec66ef7ad2d7b6b9f8c",
+   "bytes": 88612,
+   "tracked": true,
+   "commit": "056918b 2026-10-14 11:56:16 +0530"
+  },
+  "docs/GPU_HOST_HANDOVER.md": {
+   "sha256": "39ae286201cba2e5d44eb0f62bec09ae8a175b46179c15bc3883ed1ab54c6176",
+   "bytes": 32148,
+   "tracked": true,
+   "commit": "016b850 2026-10-03 23:14:34 +0530"
+  },
+  "installed modal package: app.py": {
+   "sha256": "aa6a2d611ec959eaa5f4b0454553c8cea90a406b0a0dbd6f2731d7291e1388b2",
+   "bytes": 66708,
+   "tracked": false,
+   "commit": "not in this repository"
+  },
+  "docs/M3A_WEBQSP_ENCODE_BUDGET.md": {
+   "sha256": "0670c2bfd822eb7d721cbc3f69a25f977758a1cdc2c9fb613310f743a5865cd2",
+   "bytes": 5193,
+   "tracked": true,
+   "commit": "1ae3c2d 2026-09-08 15:49:03 +0530"
+  },
+  "docs/STEP4_POOL_REACH.md": {
+   "sha256": "67efd149604dd35fcbc3ae133f4fdb3831e1fb0c34ef7e97ba222e409c512423",
+   "bytes": 10431,
+   "tracked": true,
+   "commit": "b5d911b 2026-10-07 06:53:33 +0530"
+  },
+  "outputs/u2b/2wiki/dense_verified.json": {
+   "sha256": "573c2b562f187d28f43f0b453181f4684539d23f0ac92d7394de84325e402b5e",
+   "bytes": 24355,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/2wiki/dense_reread.json": {
+   "sha256": "7203b0e3e0f782628f033614e71f99aeb9570e7e69c603484129f7b7114ff662",
+   "bytes": 21655,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/hotpotqa/dense_verified.json": {
+   "sha256": "cf1e34a70d1cc51a37fec644fc1e669885bf6b6de52b87ea832968e3f74a168a",
+   "bytes": 21285,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/hotpotqa/dense_reread.json": {
+   "sha256": "8b4865cb1f076ed7b53157a9dddee291c6fe5b1975f9b51815fcb18b8b47fd0a",
+   "bytes": 18923,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/musique/dense_verified.json": {
+   "sha256": "0db8903d714368256226c9d5e06110b83ff8c1d1ef7411ddaf4c732aaa60c06b",
+   "bytes": 650,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/musique/dense_reread.json": {
+   "sha256": "4a0019fd9f2f4fa46804d0ed3891c6a88d565e46c929b048bea7e1471ccb9856",
+   "bytes": 593,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/squad/dense_verified.json": {
+   "sha256": "9a4abb3c09aee71e1c22c78e88cea697cda7c278dd921813cef106e44fe6b208",
+   "bytes": 324,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "outputs/u2b/squad/dense_reread.json": {
+   "sha256": "13fdaf11973881b36c21e3f5126c7d0ed6ded7f5feb71091b359fd44813f2973",
+   "bytes": 305,
+   "tracked": true,
+   "commit": "3ca24f8 2026-10-22 03:07:39 +0530"
+  },
+  "docs/P2C_LLM_FREE_TRIPLES.md": {
+   "sha256": "7fde06a5342caa57fb6159226db79c60531b8415480b0a1aa2de603d1039c41c",
+   "bytes": 20986,
+   "tracked": true,
+   "commit": "f5b24ad 2026-10-13 10:41:04 +0530"
+  },
+  "docs/P2C2_FOURTH_FAMILY.md": {
+   "sha256": "323db4a6debfffbc410839ddf7a1c5f326442550541a6908fec1061d968a342d",
+   "bytes": 6772,
+   "tracked": true,
+   "commit": "6a5aedc 2026-10-13 14:45:06 +0530"
+  },
+  "docs/U2C_POOLS_ON_CHOSEN.md": {
+   "sha256": "1b9afdb45fbbae007071a572d6c325323cb8cb8dc609468023672432303cb8dc",
+   "bytes": 15275,
+   "tracked": true,
+   "commit": "de54ca5 2026-10-22 12:57:20 +0530"
+  }
+ },
+ "file_groups_read": {
+  "outputs/p2c/parse_<corpus>_<k>of<n>.json": {
+   "files": 103,
+   "tracked": false,
+   "commit": "untracked",
+   "digest_sha256": "1def2821338936afea2390552e976106df87556a4139275f95b5e3f293e16053",
+   "digest_of": "sorted '<file name> <sha256>' lines"
+  },
+  "outputs/mp_unified/zu2b_modal.py (every committed version)": {
+   "commits": [
+    "6043564",
+    "3ca24f8",
+    "9f34d3f",
+    "f8e1097"
+   ],
+   "digest_sha256": "ef410dea396d78650b40ff824b980c4d3bf1f7a2c3a5fcfd7a4afd4227a285c6",
+   "digest_of": "'<commit> <sha256 of the file at it>' lines, oldest first",
+   "tracked": true,
+   "commit": "f8e1097 2026-10-22 05:20:59 +0530"
+  }
+ }
+}
