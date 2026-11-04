@@ -216,14 +216,19 @@ extrapolate to about 3,550 s (a projection, not a measurement); the reads take a
 
 ## 12. What comes next, named now
 
-- **The union carve** (the rule's pairs plus H4o's, to read what H4o adds beyond the rule) is named, not declared. No chain step is
-  reusable (every step is per carve): it is one more full chain, a gate, lists, two column sets and twelve reads. It is built only
-  after block 1 is queued and after its cost is told to the coordinator; it then gets its own section by amendment before any of
-  its numbers.
+- **The union carve** (the rule's pairs plus H4o's, to read what each adds beyond the other) is declared in section 15, after block 1
+  was queued and its cost told to the coordinator. No chain step is reusable (every step is per carve): it is one more full chain, a
+  gate, lists, two column sets and twelve reads.
 - **Block 2** (2wiki with SR; the same P form, rules and report): declared in section 14, after block 1 was queued.
 - **Development log** (disclosed here before any read number):
   - `zb1l.py bench --dataset musique` (laptop, 5 November 03:21 IST): the folder and the counts of section 3; no model, no fit.
   - `zb1l.py bench --dataset 2wiki` (laptop, 5 November 03:37 IST): the folder and the counts of section 14; no model, no fit.
+  - `zb1lu.py bench --dataset musique` (laptop, 5 November 03:50 IST; run again at 03:52 after a wording change in the report's
+    header, so that the folder's recorded script sha is the committed file's): the folder and the counts of section 15; no model, no
+    fit.
+  - `zb1l.py report` and `zb1lu.py report` were each run once on a temporary fixture (a copy of B1H's laptop settings record, and
+    b1o's reads, for the union also b1u's, made as copies of b1w's reads) to check the code end to end. Nothing there is a result;
+    the folders were removed.
   - Code fixes made after the first commit and before any read number are listed here with their commit.
 
 ## 13. Results
@@ -262,3 +267,61 @@ for 2wiki with the substitutions below, and nothing else changes.
 - **Queue.** `block3_2wiki.txt`, 18 items, `b1l-` names, the same inputs as block 1's plus 2wiki's seven bench files (125): the
   settings (2 CPUs, 4 GB, after `b1l-selftest`), the chain (2 CPUs, **12 GB** = B1P's 2wiki b1w chain 4.77 GB x 2.5; B1P measured
   545 and 607 s), the gate, the lists, the two column sets and the twelve reads, with block 1's reservations, cap and share.
+
+## 15. Amendment 2: the union carve b1u (MuSiQue)
+
+Declared 5 November 03:54 IST, after blocks 1 and 3 were queued, with the coordinator's go, and before any union settings, pool or
+read number. Sections 1 to 14 hold for MuSiQue with the substitutions below, and nothing else changes. **It is filed beside B1L's
+report, never in place of it, and B1L's filing (b1t, b1w and b1o on MuSiQue and 2wiki) does not wait for it.**
+
+- **What it reads.** The same twelve fits (zg6r `scr-ml1-zg6r-s{0,1,2}[-hp]`, zrckpn `scr-ltm-zrckpn-s{0,1,2}[-hp]`), no new fit, on
+  a fourth link set **b1u**: B1a's NER and KNN families and, as the structural family, the **union** of the rule's W2_S pairs in the
+  setting (b1w's: B1f's cut) and the P pairs of H4o (b1o's), each pair once each way, unweighted (section 3). Typing is section 3's:
+  an entry is W2_S-typed where it is a W2_S entry of the setting, NULL otherwise. So b1u's rule entries are typed as in b1w and its
+  H4o-only entries are NULL as in b1o.
+- **Why.** b1w - b1o (section 5) mixes two things, the pair set (the rule's against H4o's) and the typing (W2_S against mostly
+  NULL). The union gives each pair set the other's pairs, so it reads what each adds beyond the other. **b1u - b1w** is what H4o's
+  pairs that the rule lacks add to the rule's graph; **b1u - b1o** is what the rule's pairs that H4o lacks add to H4o's. Neither is
+  a comparison of the rule with the LLM, and neither is worded as one.
+- **The counts**, which depend on no model (`zb1lu.py bench --dataset musique`, over package rows):
+
+| | MuSiQue |
+|---|---:|
+| H4o's P pairs (entries), b1o | 98,211 (196,422) |
+| the rule's W2_S pairs in the setting (entries), b1w | 41,417 (82,834) |
+| both: pairs (entries) | 12,507 (25,014) |
+| the rule only: pairs (entries) | 28,910 (57,820) |
+| H4o only: pairs (entries) | 85,704 (171,408) |
+| **b1u: pairs (entries)** | **127,121 (254,242)** |
+| b1u entries that are the rule's (**typed**) | 82,834 (32.6 %) |
+| b1u entries that are H4o's alone (**NULL**) | 171,408 (67.4 %) |
+| b1u entries against b1w's / b1o's | 3.07 x / 1.29 x |
+
+- **Calls** (declared here, before any union number). Per model, in-domain and held-out, for b1u - b1w, b1u - b1o and b1u - b1t:
+  **UP** when the interval's bottom is above 0, **DOWN** when its top is below 0, **FLAT** otherwise (section 5's words). The
+  setting's call is made separately for b1u - b1w and for b1u - b1o, from the two models' in-domain words: **ADDS** where both are
+  UP, **NOTHING** where both are FLAT, **HURTS** where both are DOWN; **NOT_DOWN** where they differ and neither is DOWN;
+  **MIXED** otherwise; INCOMPLETE where a read is missing. The held-out words and zg6r - zrckpn on b1u are beside and decide
+  nothing. There is no share.
+- **What a call means.** It says what one pair set adds to the other for two models fitted without LLM links, with the typing
+  confound of section 3 (the fits were fitted on W2_S types; b1u is two thirds NULL). It is never a claim beyond these twelve fits on
+  these four graphs, never "the rule's links beat the LLM's", and never a statement about H4o's phrase graph.
+- **Reads.** MuSiQue's in-domain read is the WQ-hotpotqa fits (section 5), the held-out read beside. b1t and b1w are B1P's and B1M's
+  own per-question files, b1o's are B1L's (read only), b1u's are this stage's: twelve reads. 2wiki gets no union (its W2_S pairs are
+  2,030 and b1o's NULL share is 93.6 %); it would need a later amendment.
+- **Code.** `outputs/mp_unified/zb1lu.py`: `zb1l.py`, and through it `zb1h.py`, rebound to the union's roots, carve, folder and read
+  paths. Neither is edited. `bench` (laptop) builds the union's folder from b1o's and B1f's w-structural files and B1a's other
+  files, each sha-checked; `settings` (relabelled variant `u`), `chain` (its steps run `zb1lu.py step`), `gate`, `lists`, `cols`,
+  `read-gnn` and `read-mlp` are zb1l's and zb1h's on the union's roots; `report` is the union's, with the keys listed next.
+- **Records.** `outputs/b1l/u/report.json`, `report.md`, `calls.json`: `stage` B1L-U, per setting the links block (the counts
+  above), `levels` for b1t, b1w, b1o, b1u (in-domain and held-out, per model, with intervals), `paired` (`b1u-b1w`, `b1u-b1o`,
+  `b1u-b1t`), `calls`, `call`, `gnn_minus_mlp`, the reads' file shas for b1o and b1u, `types`, and the shas of the three scripts.
+  Section 9's commit policy holds, with `zb1lu.py` and those three files added.
+- **Queue.** Written 5 November 03:54 IST. `block4_union.txt`, 20 items, `b1l-u-` names (so the host watcher for `b1l-` reports
+  them), in the session's scratch and never committed; every row carries 126 inputs: block 1's 118, `zb1lu.py` and b1u's seven
+  files under `outputs/b1l/u/bench/hipporag2_u/musique/` (8.9 MB). Block 1's items with `b1l-u-` names and block 1's reservations,
+  cap and share: `selftest` (2 CPUs, 2 GB), `settings` (2, 4, after the self-test), `fork` (1, 2, after the self-test), `chain` (2,
+  **16 GB** = B1P's b1w chain 6.33 GB x 2.5, after `pkoh-gate`, the settings and **`b1l-chain-musique`**, so that block 1 keeps
+  the host's CPU), `gate`, `lists`, the two `cols`, six `read-gnn` (1.1, 4, GPU 0.15, cap 0.13) and six `read-mlp` (6, 4).
+  Projection, not a measurement: b1w's chain took 2,953 s and 438 s were 82,834 entries, so b1u's 171,408 entries over b1w extrapolate
+  to about 3,860 s.
