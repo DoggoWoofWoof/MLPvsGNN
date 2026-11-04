@@ -1,0 +1,155 @@
+{
+ "read": "5 Nov 2026, the saved fold files of the next-hop scorer (read-only, on the host)",
+ "script": "outputs/weights/count_scorers.py",
+ "script_sha256": "c85cb316a446441173757f823349bf7e555f8dd53d82ba042c54b3451dbc4a16",
+ "per_scorer": {
+  "elements": 296481,
+  "tensors": 8,
+  "parts": {
+   "net (14 -> 32 -> 32 -> 1, with biases)": 1569,
+   "V (3 x 1536 x 32)": 147456,
+   "U (3 x 1536 x 32)": 147456
+  },
+  "shapes": {
+   "U": [
+    [
+     3,
+     1536,
+     32
+    ],
+    147456
+   ],
+   "V": [
+    [
+     3,
+     1536,
+     32
+    ],
+    147456
+   ],
+   "lin.net.0.bias": [
+    [
+     32
+    ],
+    32
+   ],
+   "lin.net.0.weight": [
+    [
+     32,
+     14
+    ],
+    448
+   ],
+   "lin.net.2.bias": [
+    [
+     32
+    ],
+    32
+   ],
+   "lin.net.2.weight": [
+    [
+     32,
+     32
+    ],
+    1024
+   ],
+   "lin.net.4.bias": [
+    [
+     1
+    ],
+    1
+   ],
+   "lin.net.4.weight": [
+    [
+     1,
+     32
+    ],
+    32
+   ]
+  },
+  "constants_not_weights": "feature mean and spread, 14 numbers each, stored with every fold file"
+ },
+ "splits": {
+  "WQ-musique": {
+   "fit_record_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+   "form": "bil",
+   "fold_file_sha256": [
+    "68e46a3e16a3475e399c6ce32d330922f2f42e0bd089a4d70848832575cd23f0",
+    "d2eec403a306a1bc84238af005b9cb2685149abebc593f0ce5172ba85d877fb8",
+    "e0aeca2df2a18f7675feb826019e45c3c4234eac18b52be4d0bac152ef2e48c4",
+    "f77cc5fd3577835c25a97fe68ccc8244702469cf0cc626e70550f9587a345ba6",
+    "d1405fa7bf73e33061c7d84365284a0a1dabce9840ffea76a767f4c5828bba7f"
+   ]
+  },
+  "WQ-hotpotqa": {
+   "fit_record_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+   "form": "bil",
+   "fold_file_sha256": [
+    "0386ef93e0732d82af0b180db43d2e16303b01ac53c1e28f7dfa62e95c410b2c",
+    "fef59b33af79b9eca788c18f8264246ca37a56c1d7138d31f5cf38521fb25faf",
+    "e99f1f86b39cad6f67cd17e4d41998853a9ea2d3bed3fcec0e7fd47ccfb7d358",
+    "66719a65607958e54d883e8ea059e56b99f267f33d6d6e8b0e5d346086b1de25",
+    "57671ed95e069b730444a9944098e4508149ed10ee244d5c47c3f89f3f79050b"
+   ]
+  }
+ },
+ "folds_per_split": 5,
+ "scorer_files": 10,
+ "fits": {
+  "scr-ltm-zrckpn-s0": {
+   "split": "WQ-musique",
+   "fit_record_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125"
+  },
+  "scr-ltm-zrckpn-s0-hp": {
+   "split": "WQ-hotpotqa",
+   "fit_record_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0"
+  },
+  "scr-ltm-zrckpn-s1": {
+   "split": "WQ-musique",
+   "fit_record_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125"
+  },
+  "scr-ltm-zrckpn-s1-hp": {
+   "split": "WQ-hotpotqa",
+   "fit_record_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0"
+  },
+  "scr-ltm-zrckpn-s2": {
+   "split": "WQ-musique",
+   "fit_record_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125"
+  },
+  "scr-ltm-zrckpn-s2-hp": {
+   "split": "WQ-hotpotqa",
+   "fit_record_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0"
+  }
+ },
+ "next_columns": [
+  "next_1",
+  "next_2",
+  "next_3",
+  "next_4",
+  "next_5",
+  "next_max",
+  "next_n"
+ ],
+ "gnn_of_record_next_block": {
+  "fit_read": "scr-ml1-zg6r-s0",
+  "widths": [
+   "rank",
+   "dense_cos",
+   "topo_STRUCT",
+   "depth_STRUCT",
+   "SEMB",
+   "SEED",
+   "WALK",
+   "DISTS",
+   "WALKF"
+  ],
+  "read_from": "outputs/screen/fits/scr-ml1-zg6r-s0/train.json, variants.p.widths"
+ },
+ "sizes": {
+  "zrckpn": 226950,
+  "zrckpn_plus_one_scorer": 523431,
+  "zrckpn_plus_five_fold_fits_of_one_split": 1709355,
+  "zg6r": 404955,
+  "zrckpn_plus_one_scorer_over_zg6r": 1.293
+ }
+}
