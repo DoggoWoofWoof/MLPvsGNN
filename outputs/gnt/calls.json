@@ -1,0 +1,583 @@
+{
+ "stage": "GNT",
+ "declared_in": "docs/GNT_LEARNED_ATTENTION_GNN.md",
+ "arm": "zg6r with GNT's learned attention",
+ "iso_verdict": "KEEP",
+ "base": "zg6r (ML1)",
+ "screen": {
+  "verdict": "NOT_ADOPTED",
+  "problems": [],
+  "reads": [
+   {
+    "split": "WQ-musique",
+    "read": "squad",
+    "base": [
+     0.9142,
+     0.9145,
+     0.9163
+    ],
+    "new": 0.9119,
+    "delta": -0.0023,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "hotpotqa",
+    "base": [
+     0.8593,
+     0.8596,
+     0.8562
+    ],
+    "new": 0.8579,
+    "delta": -0.0014,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "2wiki",
+    "base": [
+     0.9269,
+     0.9297,
+     0.9215
+    ],
+    "new": 0.9293,
+    "delta": 0.0024,
+    "floor": 0.0086,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "webqsp",
+    "base": [
+     0.6632,
+     0.6586,
+     0.6593
+    ],
+    "new": 0.6524,
+    "delta": -0.0108,
+    "floor": 0.0085,
+    "call": "LOSS"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "squad",
+    "base": [
+     0.9139,
+     0.914,
+     0.9127
+    ],
+    "new": 0.9111,
+    "delta": -0.0028,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique",
+    "base": [
+     0.5912,
+     0.5988,
+     0.5939
+    ],
+    "new": 0.5943,
+    "delta": 0.0031,
+    "floor": 0.0114,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "2wiki",
+    "base": [
+     0.9296,
+     0.929,
+     0.9276
+    ],
+    "new": 0.9194,
+    "delta": -0.0102,
+    "floor": 0.0075,
+    "call": "LOSS"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "webqsp",
+    "base": [
+     0.6658,
+     0.6512,
+     0.6523
+    ],
+    "new": 0.6457,
+    "delta": -0.0201,
+    "floor": 0.0281,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-3hop",
+    "base": [
+     0.5333,
+     0.5443,
+     0.543
+    ],
+    "new": 0.5382,
+    "delta": 0.0048,
+    "floor": 0.0207,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-4hop",
+    "base": [
+     0.3765,
+     0.3833,
+     0.3772
+    ],
+    "new": 0.3778,
+    "delta": 0.0012,
+    "floor": 0.0096,
+    "call": "WITHIN"
+   }
+  ],
+  "beside": [
+   {
+    "split": "WQ-musique",
+    "read": "musique",
+    "base": [
+     0.5086,
+     0.5039,
+     0.5134
+    ],
+    "new": 0.5184,
+    "delta": 0.0098,
+    "floor": 0.0095,
+    "call": "GAIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "metaqa",
+    "base": [
+     0.3615,
+     0.3477,
+     0.3461
+    ],
+    "new": 0.4059,
+    "delta": 0.0444,
+    "floor": 0.0292,
+    "call": "GAIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "hotpotqa",
+    "base": [
+     0.8004,
+     0.7943,
+     0.784
+    ],
+    "new": 0.7956,
+    "delta": -0.0048,
+    "floor": 0.0247,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "metaqa",
+    "base": [
+     0.3519,
+     0.3903,
+     0.3651
+    ],
+    "new": 0.3476,
+    "delta": -0.0043,
+    "floor": 0.0574,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-3hop",
+    "base": [
+     0.4329,
+     0.4272,
+     0.4404
+    ],
+    "new": 0.4412,
+    "delta": 0.0083,
+    "floor": 0.0133,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-4hop",
+    "base": [
+     0.313,
+     0.3167,
+     0.3179
+    ],
+    "new": 0.3191,
+    "delta": 0.0062,
+    "floor": 0.0087,
+    "call": "WITHIN"
+   }
+  ],
+  "counts": {
+   "GAIN": 0,
+   "LOSS": 2,
+   "WITHIN": 8
+  }
+ },
+ "full_run": null,
+ "dep_rule_beside": {
+  "screen": "NOT_ADOPTED",
+  "full_run": null
+ },
+ "next_form": "learned attention to the first stage's top five closes for the GNN; next form: the same attention to the GNN's own top five after a first pass (GNR's)",
+ "beside": {
+  "pfs_a3": {
+   "musique": {
+    "d_recall@5": 0.016249999999999987,
+    "call": "PAIR_ADDS",
+    "questions": 400
+   },
+   "hotpotqa": {
+    "d_recall@5": 0.017017017017016967,
+    "call": "PAIR_ADDS",
+    "questions": 1000
+   },
+   "2wiki": {
+    "d_recall@5": 0.011833333333333251,
+    "call": "PAIR_ADDS",
+    "questions": 1000
+   },
+   "squad": {
+    "d_recall@5": 0.004020100502512669,
+    "call": "PAIR_NOTHING",
+    "questions": 1000
+   },
+   "webqsp": {
+    "d_recall@5": 0.038036373061198336,
+    "call": "PAIR_ADDS",
+    "questions": 600
+   }
+  },
+  "gnw": {
+   "screen": "NOT_ADOPTED",
+   "full_run": null,
+   "reads": [
+    {
+     "split": "WQ-musique",
+     "read": "squad",
+     "delta": -0.0009,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "hotpotqa",
+     "delta": -0.0043,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "2wiki",
+     "delta": 0.0007,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "webqsp",
+     "delta": -0.0124,
+     "call": "LOSS"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "squad",
+     "delta": -0.0019,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique",
+     "delta": 0.0069,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "2wiki",
+     "delta": -0.0019,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "webqsp",
+     "delta": -0.0131,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-3hop",
+     "delta": 0.0039,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-4hop",
+     "delta": 0.0019,
+     "call": "WITHIN"
+    }
+   ]
+  },
+  "gnp": {
+   "screen": "NO_GAIN",
+   "full_run": null,
+   "reads": [
+    {
+     "split": "WQ-musique",
+     "read": "squad",
+     "delta": -0.0009,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "hotpotqa",
+     "delta": 0.0005,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "2wiki",
+     "delta": -0.0001,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "webqsp",
+     "delta": 0.006,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "squad",
+     "delta": -0.0001,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique",
+     "delta": 0.0074,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "2wiki",
+     "delta": 0.0014,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "webqsp",
+     "delta": 0.0037,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-3hop",
+     "delta": 0.0154,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-4hop",
+     "delta": 0.0043,
+     "call": "WITHIN"
+    }
+   ]
+  },
+  "gnx": {
+   "screen": "NO_GAIN",
+   "full_run": null,
+   "reads": [
+    {
+     "split": "WQ-musique",
+     "read": "squad",
+     "delta": 0.0003,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "hotpotqa",
+     "delta": 0.0004,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "2wiki",
+     "delta": 0.0015,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "webqsp",
+     "delta": 0.0005,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "squad",
+     "delta": 0.0009,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique",
+     "delta": 0.0002,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "2wiki",
+     "delta": -0.0026,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "webqsp",
+     "delta": -0.0022,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-3hop",
+     "delta": 0.0035,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-4hop",
+     "delta": -0.0062,
+     "call": "WITHIN"
+    }
+   ]
+  },
+  "gna": {
+   "screen": "NO_GAIN",
+   "full_run": null,
+   "reads": [
+    {
+     "split": "WQ-musique",
+     "read": "squad",
+     "delta": -0.0015,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "hotpotqa",
+     "delta": 0.0044,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "2wiki",
+     "delta": 0.0045,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "webqsp",
+     "delta": 0.0084,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "squad",
+     "delta": 0.0015,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique",
+     "delta": 0.0038,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "2wiki",
+     "delta": 0.0014,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "webqsp",
+     "delta": 0.006,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-3hop",
+     "delta": 0.0035,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-4hop",
+     "delta": 0.0062,
+     "call": "WITHIN"
+    }
+   ]
+  }
+ },
+ "problems": [],
+ "parameters": {
+  "scr-gnt-at-s0": {
+   "term_parameters": 32775,
+   "parameters_h128": 212993,
+   "inputs": 15,
+   "columns": [
+    "pair_1",
+    "pair_2",
+    "pair_3",
+    "pair_4",
+    "pair_5",
+    "res_1",
+    "res_2",
+    "res_3",
+    "res_4",
+    "res_5",
+    "anchor_1",
+    "anchor_2",
+    "anchor_3",
+    "anchor_4",
+    "anchor_5"
+   ],
+   "layers": 3
+  },
+  "scr-gnt-at-s0-hp": {
+   "term_parameters": 32775,
+   "parameters_h128": 212993,
+   "inputs": 15,
+   "columns": [
+    "pair_1",
+    "pair_2",
+    "pair_3",
+    "pair_4",
+    "pair_5",
+    "res_1",
+    "res_2",
+    "res_3",
+    "res_4",
+    "res_5",
+    "anchor_1",
+    "anchor_2",
+    "anchor_3",
+    "anchor_4",
+    "anchor_5"
+   ],
+   "layers": 3
+  }
+ },
+ "zgnt_sha256": "845326d2c7cbb50bd7e770c3d409beb826f7ff3d0fdbe32551b299d90deee9b1",
+ "zgnw_sha256": "661322ff663b204bfad74ff9c5e7386880cd4a38edceeb627d1e1b818be2edb4",
+ "gnwcols_sha256": "c35b416899e5e7ac3713061501d662f487ab20087bd6d7cd98e4bff0fabdfdc0",
+ "gnpcols_sha256": "eeb0f273ab0e65370fe28a77510948fe3e30ebb56ea66483f4b3431510fdfd93",
+ "zpfp_sha256": "53f6fd81e07f341e2cc12c99a4d2c944e03312f54f21cd4a1bd46c35ce3822b1",
+ "zgnx_sha256": "161112d9e9d36124912967e0e371cd1dc820a51aed3e7c43dfbbbda4d4280414",
+ "utc": "2026-11-04T15:34:52Z"
+}
