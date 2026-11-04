@@ -595,7 +595,7 @@ def dev_checks(S, j, A, outs):
         ok, md, nd = diff(feats, rf)
         res[f"{key}_feats"] = {"identical": ok, "max_diff": md, "differing": nd,
                                "per_key": {k: diff(feats.get(k), rf.get(k))[:3] for k in rf if not diff(feats.get(k), rf.get(k))[0]}}
-        res[f"{key}_base_z"] = diff(base_z, rbz)[:3]
+        res[f"{key}_base_z"] = dict(zip(("identical", "max_diff", "differing"), diff(base_z, rbz)))
         res[f"{key}_scores"] = check_scores(S, key, j, s)
         if key == "mlp":
             nx = c.next_X[int(c.off_np[j]):int(c.off_np[j + 1])].numpy()
@@ -626,6 +626,8 @@ def dev(a):
             outs[key] = run_model(S, key, j, A, Tm[key])
         res = dev_checks(S, j, A, outs)
         bad = {k: v for k, v in res.items() if v is False or (isinstance(v, dict) and (v.get("ok") is False or v.get("identical") is False))}
+        if set(bad) == {"mlp_feats"} and set(bad["mlp_feats"]["per_key"]) == {"NEXT"}:
+            bad = {}                                                        # float16 NEXT values a step off are counted (next_flips), not failed
         allok &= not bad
         log(f"q{j} n={A.pool.size} a: " + " ".join(f"{k}={v * 1000:.1f}" for k, v in Ta.items()))
         for key in KEYS:
@@ -688,10 +690,16 @@ def pin_and_load(lps):
 def run(a):
     nq = a.nq or T.NQ
     out_dir = RAW if nq == T.NQ else OUT / "raw_smoke"
+    out_file = out_dir / f"{a.dataset}__b{BLAS}.json"                       # one raw file per dataset and BLAS pass
+    if nq == T.NQ and out_file.exists() and not a.overwrite:                # A2: a finished pass is not repeated
+        raise SystemExit(f"{out_file.name} exists: a finished pass is not repeated for its numbers (--overwrite)")
+    beside = int(BLAS) != 2                                                 # A2: the BLAS-1 pass beside the record
     S = setup(a.dataset, nq, False)
     prepass(S, range(nq + 1))
     S.threads = set_threads(BLAS)
-    head = {"dataset": a.dataset, "questions": nq, "threads": S.threads, "fits": {k: S.boxes[k]["fit"] for k in KEYS},
+    head = {"dataset": a.dataset, "questions": nq, "blas": int(BLAS), "overwrote": bool(a.overwrite and out_file.exists()),
+            "pass": "beside: BLAS 1, every question timed, checks counted" if beside else "record: BLAS 2",
+            "threads": S.threads, "fits": {k: S.boxes[k]["fit"] for k in KEYS},
             "code_conflicts": S.code_conflicts, "load_and_pin": pin_and_load([int(x) for x in a.lps.split(",")]),
             "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "script_sha256": {"zfsvc": T.sha_src(__file__), "zfsvt": T.sha_src(T.__file__)}}
@@ -743,15 +751,239 @@ def run(a):
         nx = cm.next_X[int(cm.off_np[j]):int(cm.off_np[j + 1])].numpy()
         flips.append(int((nx.view(np.uint16) != packs["mlp"][j]["nxt"].view(np.uint16)).sum()))
     bad = [not (pool_ok[j] and all(checks[k][j]["ok"] for k in KEYS)) for j in range(nq)]
-    head["checks"] = {"questions": nq, "failing": int(sum(bad)), "share": sum(bad) / nq, "stop": sum(bad) / nq > 0.02,
+    stop = sum(bad) / nq > 0.02 and not beside                              # the beside pass counts, it does not stop
+    head["checks"] = {"questions": nq, "failing": int(sum(bad)), "share": sum(bad) / nq, "stop": stop,
                       "pool_failing": int(sum(not x for x in pool_ok)), "next_flip_values": int(sum(flips)),
                       "next_flip_questions": int(sum(x > 0 for x in flips)),
                       **{k: {"failing": int(sum(not c["ok"] for c in v)),
                              "max_diff": max((c["max_diff"] or 0.0) for c in v)} for k, v in checks.items()}}
-    T.write_json(out_dir / f"{a.dataset}.json", {"head": head, "rows": rows, "checks": checks, "pool_ok": pool_ok,
-                                                 "next_flips": flips, "kept": [not b for b in bad]})
-    log(f"{a.dataset}: raw written to {out_dir.name}; checks {head['checks']}")
-    return 1 if head["checks"]["stop"] else 0
+    T.write_json(out_file, {"head": head, "rows": rows, "checks": checks, "pool_ok": pool_ok, "next_flips": flips,
+                            "kept": [True] * nq if beside else [not b for b in bad]})
+    log(f"{a.dataset}: raw written to {out_dir.name}/{out_file.name}; checks {head['checks']}")
+    return 1 if stop else 0
+
+
+# ── the report: A2's "Reported", reduced from the raw files (no choice is made here) ─────────────────────────────────
+
+NBOOT = 2000
+PASSES = (("b2", "BLAS 2 (the record)"), ("b1", "BLAS 1 (beside the record: every question timed, checks counted)"))
+A_KEYS = ("a_pool", "a_base", "a_link", "a_rule", "a_walk", "a_order", "a_kt")
+
+
+def _series(rows, kept):
+    """Per-question times in seconds over the kept questions, in question order: (a), and per model (b)'s parts, (b), (c),
+    model-only (b) + (c), end to end (a) + (b) + (c), and the warm forwards (NaN where a question has none)."""
+    rows = [r for r, k in zip(rows, kept) if k]
+    s = {"q": np.array([r["q"] for r in rows]), "n": np.array([r["n"] for r in rows])}
+    a = {k: np.array([r["a"][k] for r in rows]) for k in A_KEYS}
+    s["a"] = {"total": a["a_pool"] + a["a_base"] + a["a_link"] + a["a_rule"], "pool": a["a_pool"], "base": a["a_base"],
+              "links": a["a_link"], "rule": a["a_rule"], "walks": a["a_walk"], "orders": a["a_order"], "kt": a["a_kt"],
+              "rule_other": a["a_rule"] - a["a_walk"] - a["a_order"] - a["a_kt"]}
+    for key in KEYS:
+        m = {k: np.array([r[key][k] for r in rows]) for k in
+             ("compile", "edges", "lean", "links", "next", "assemble", "b_total", "forward", "total")}
+        s[key] = {"compile": m["compile"], "rows": m["edges"] + m["lean"], "links": m["links"], "next": m["next"],
+                  "inputs": m["assemble"], "b": m["b_total"], "c": m["forward"], "model_only": m["total"],
+                  "end_to_end": s["a"]["total"] + m["total"],
+                  "warm_b1": np.array([r[key].get("warm_b1", np.nan) for r in rows]),
+                  "warm_b16": np.array([r[key].get("warm_b16", np.nan) for r in rows])}
+    return s
+
+
+def _pq(x):
+    x = x[~np.isnan(x)]
+    return {"p50": float(np.percentile(x, 50) * 1000), "p95": float(np.percentile(x, 95) * 1000), "n": int(x.size)}
+
+
+def _ratio(g, m):
+    """GNN / MLP of the p50s over the questions both have, and the 2.5th and 97.5th percentiles of that ratio over NBOOT
+    resamples of the questions with replacement (numpy default_rng(0): the same resampled questions for every metric)."""
+    sel = ~(np.isnan(g) | np.isnan(m))
+    g, m = g[sel], m[sel]
+    idx = np.random.default_rng(0).integers(0, g.size, (NBOOT, g.size))
+    bs = np.median(g[idx], axis=1) / np.median(m[idx], axis=1)
+    lo, hi = np.percentile(bs, [2.5, 97.5])
+    return {"ratio": float(np.median(g) / np.median(m)), "lo": float(lo), "hi": float(hi), "n": int(g.size)}
+
+
+def _noise(s):
+    """Beside, deciding nothing: the first half of the questions against the second (a drift in the host's load shows
+    here), each model led first against second, and the tail of the model-only times."""
+    h = s["q"].size // 2
+    ms = lambda x: float(np.median(x) * 1000)                               # noqa: E731
+    even = s["q"] % 2 == 0                                                  # the MLP led on even questions
+    mo = {k: s[k]["model_only"] for k in KEYS}
+    return {"p50_ms_first_half_second_half": {"a": [ms(s["a"]["total"][:h]), ms(s["a"]["total"][h:])],
+                                              **{k: [ms(mo[k][:h]), ms(mo[k][h:])] for k in KEYS}},
+            "p50_ms_led_first_second": {"mlp": [ms(mo["mlp"][even]), ms(mo["mlp"][~even])],
+                                        "gnn": [ms(mo["gnn"][~even]), ms(mo["gnn"][even])]},
+            "p95_over_p50_model_only": {k: float(np.percentile(mo[k], 95) / np.median(mo[k])) for k in KEYS},
+            "p95_over_p50_a": float(np.percentile(s["a"]["total"], 95) / np.median(s["a"]["total"]))}
+
+
+def _load_summary(h):
+    lp = h["load_and_pin"]
+    pin = lp.get("pin") or {}
+    pl = [int(x) for x in pin.get("affinity_lps", [])]
+    out = {"pinned": bool(pin.get("pinned")), "lps": pl}
+    for k, name in (("cpu_percent_before", "before"), ("cpu_percent_after", "after")):
+        v = lp.get(k)
+        if v is None:
+            out[name] = None
+            continue
+        v = np.asarray(v, float)
+        out[name] = {"pinned_lps_mean": float(v[pl].mean()) if pl else None, "all_lps_mean": float(v.mean()),
+                     "all_lps_max": float(v.max()), "lps_over_50": int((v > 50).sum()), "n_lps": int(v.size),
+                     "per_lp": [float(x) for x in v]}
+    return out
+
+
+def _reduce(raw):
+    s = _series(raw["rows"], raw["kept"])
+    h = raw["head"]
+    st = {"a": {k: _pq(v) for k, v in s["a"].items()}, **{key: {k: _pq(v) for k, v in s[key].items()} for key in KEYS}}
+    ratios = {k: _ratio(s["gnn"][k], s["mlp"][k]) for k in ("b", "c", "model_only", "end_to_end", "warm_b1", "warm_b16")}
+    return {"questions": h["questions"], "kept": int(s["q"].size), "blas": h.get("blas"), "pass": h.get("pass"),
+            "utc": h["utc"], "fits": h["fits"], "threads": h["threads"], "code_conflicts": h["code_conflicts"],
+            "script_sha256": h["script_sha256"], "pool_rows": {"p50": float(np.median(s["n"])), "max": int(s["n"].max())},
+            "checks": h["checks"], "load": _load_summary(h), "stages_ms": st, "ratios_gnn_over_mlp": ratios,
+            "a_share_of_end_to_end": {key: st["a"]["total"]["p50"] / st[key]["end_to_end"]["p50"] for key in KEYS},
+            "noise": _noise(s)}
+
+
+def _md(rep):
+    L = []
+    w = L.append
+    pq = lambda d: f"{d['p50']:.1f} / {d['p95']:.1f}"                       # noqa: E731
+    rt = lambda d: f"{d['ratio']:.2f} [{d['lo']:.2f}, {d['hi']:.2f}]"       # noqa: E731
+    w("# FSV timing, Family 1, A2 forms")
+    w("")
+    w("Family 1 is zrckpn (the MLP) against zg6r (the GNN), every input kept, each at the stage forms of amendment A2 "
+      "(`docs/FSV_FAST_VERSIONS.md` section 10). Times are ms per question at batch 1 on the host's CPU, cold unless "
+      "labelled warm; each cell is p50 / p95 over the kept questions. Stage (a), the shared pool, is charged in full to "
+      "both models: model-only = (b) + (c), end to end = (a) + (b) + (c). A faster exact form found later is an "
+      "amendment and a re-time of these numbers. Family 2 (the fast versions) is not in this file.")
+    w("")
+    w("Ratios are GNN / MLP of the p50s, paired by question, with the 2.5th and 97.5th percentiles over "
+      f"{NBOOT:,} resamples of the questions with replacement (`numpy.random.default_rng(0)`).")
+    for tag, P in rep["passes"].items():
+        D = P["datasets"]
+        w("")
+        w(f"## {P['label']}")
+        w("")
+        w("### Cold, per stage (ms, p50 / p95)")
+        w("")
+        w("| dataset | kept | pool rows p50 | (a) | MLP (b) | MLP (c) | MLP model-only | MLP end to end | GNN (b) | "
+          "GNN (c) | GNN model-only | GNN end to end |")
+        w("|---|---|---|---|---|---|---|---|---|---|---|---|")
+        for ds, d in D.items():
+            st = d["stages_ms"]
+            w(f"| {ds} | {d['kept']} / {d['questions']} | {d['pool_rows']['p50']:.0f} | {pq(st['a']['total'])} | "
+              + " | ".join(pq(st[k][f]) for k in KEYS for f in ("b", "c", "model_only", "end_to_end")) + " |")
+        w("")
+        w("### Ratio GNN / MLP, and stage (a)'s share of each end-to-end time")
+        w("")
+        w("| dataset | (b) | (c) | model-only | end to end | (a) p50 ms | (a) share of MLP end to end | "
+          "(a) share of GNN end to end |")
+        w("|---|---|---|---|---|---|---|---|")
+        for ds, d in D.items():
+            r = d["ratios_gnn_over_mlp"]
+            w(f"| {ds} | {rt(r['b'])} | {rt(r['c'])} | {rt(r['model_only'])} | {rt(r['end_to_end'])} | "
+              f"{d['stages_ms']['a']['total']['p50']:.1f} | {100 * d['a_share_of_end_to_end']['mlp']:.0f}% | "
+              f"{100 * d['a_share_of_end_to_end']['gnn']:.0f}% |")
+        w("")
+        w("### Parts of (a) and (b) (p50 ms)")
+        w("")
+        w("| dataset | (a) pool | base | links | rule: walks | orders | KT | other | MLP compile | rows | links | NEXT | "
+          "inputs | GNN compile | rows | links | inputs |")
+        w("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
+        for ds, d in D.items():
+            st = d["stages_ms"]
+            ca = [f"{st['a'][k]['p50']:.1f}" for k in ("pool", "base", "links", "walks", "orders", "kt", "rule_other")]
+            cm = [f"{st['mlp'][k]['p50']:.1f}" for k in ("compile", "rows", "links", "next", "inputs")]
+            cg = [f"{st['gnn'][k]['p50']:.1f}" for k in ("compile", "rows", "links", "inputs")]
+            w(f"| {ds} | " + " | ".join(ca + cm + cg) + " |")
+        w("")
+        w("### Warm (the forward alone, per question; labelled warm)")
+        w("")
+        w("| dataset | MLP b1 | GNN b1 | ratio b1 | MLP b16 | GNN b16 | ratio b16 |")
+        w("|---|---|---|---|---|---|---|")
+        for ds, d in D.items():
+            st, r = d["stages_ms"], d["ratios_gnn_over_mlp"]
+            w(f"| {ds} | {pq(st['mlp']['warm_b1'])} | {pq(st['gnn']['warm_b1'])} | {rt(r['warm_b1'])} | "
+              f"{pq(st['mlp']['warm_b16'])} | {pq(st['gnn']['warm_b16'])} | {rt(r['warm_b16'])} |")
+        w("")
+        w("### Checks, pin and the host's load (1 s samples before and after the timed pass)")
+        w("")
+        w("| dataset | questions failing a check | pool failing | score checks failing MLP / GNN | max score diff MLP / GNN | "
+          "NEXT values differing | code conflicts | pinned | load before: pinned LPs / all mean / max | "
+          "load after: pinned LPs / all mean / max |")
+        w("|---|---|---|---|---|---|---|---|---|---|")
+        for ds, d in D.items():
+            c, ld = d["checks"], d["load"]
+            f = lambda x: "n/a" if x is None else (                           # noqa: E731
+                f"{x['pinned_lps_mean']:.0f}% / {x['all_lps_mean']:.0f}% / {x['all_lps_max']:.0f}%")
+            w(f"| {ds} | {c['failing']} of {c['questions']} | {c['pool_failing']} | "
+              f"{c['mlp']['failing']} / {c['gnn']['failing']} | "
+              f"{c['mlp']['max_diff']:.2g} / {c['gnn']['max_diff']:.2g} | {c['next_flip_values']} | "
+              f"{d['code_conflicts']} | {ld['pinned']} | {f(ld['before'])} | {f(ld['after'])} |")
+        w("")
+        w("### Noise, beside (p50 ms; deciding nothing)")
+        w("")
+        w("| dataset | (a): first / second half | MLP model-only: first / second half | GNN model-only: first / second half | "
+          "MLP led first / second | GNN led first / second | p95 / p50 of (a), MLP, GNN |")
+        w("|---|---|---|---|---|---|---|")
+        for ds, d in D.items():
+            n = d["noise"]
+            h2 = n["p50_ms_first_half_second_half"]
+            lf = n["p50_ms_led_first_second"]
+            w(f"| {ds} | {h2['a'][0]:.0f} / {h2['a'][1]:.0f} | {h2['mlp'][0]:.0f} / {h2['mlp'][1]:.0f} | "
+              f"{h2['gnn'][0]:.0f} / {h2['gnn'][1]:.0f} | {lf['mlp'][0]:.0f} / {lf['mlp'][1]:.0f} | "
+              f"{lf['gnn'][0]:.0f} / {lf['gnn'][1]:.0f} | {n['p95_over_p50_a']:.2f}, "
+              f"{n['p95_over_p50_model_only']['mlp']:.2f}, {n['p95_over_p50_model_only']['gnn']:.2f} |")
+    w("")
+    w("## Caveats")
+    w("")
+    w("- The host is shared: other jobs run on it while a timed job does, so every time carries that noise. The process "
+      "is pinned to two logical processors (its own affinity, EcoQoS opted out, above-normal priority), the models "
+      "alternate in leading each question, and the load of every logical processor is sampled for 1 s before and "
+      "after the pass; the other jobs are not pinned and may share those processors.")
+    w("- The first-stage retrieval (the question's encoding, the dense and SPLADE lists) is not timed; PKO's prepared "
+      "lists are read before timing as index-time data.")
+    w("- Stage (a) is PKO's own rule on one question at batch 1 on one thread; no fused forward exists for either "
+      "model (eager torch, one thread); OpenBLAS runs on 2 threads in the record and on 1 in the beside pass.")
+    w("- Warm times are the forward alone on inputs built beforehand; b16 is the time of 12 batches of the first 192 "
+      "questions over 16, so it has no values for the last 8 questions.")
+    w("")
+    return "\n".join(L)
+
+
+def report(a):
+    raw_dir = Path(a.raw_dir) if a.raw_dir else RAW
+    out_dir = Path(a.out_dir) if a.out_dir else OUT
+    rep = {"label": "A2 forms", "family": "1: zrckpn (MLP) against zg6r (GNN), every input kept",
+           "amendment": "docs/FSV_FAST_VERSIONS.md section 10 (A2)",
+           "recipe": {"cells": "p50 and p95 in ms over the kept questions (numpy.percentile, linear)",
+                      "end_to_end": "(a) + (b) + (c), stage (a) charged in full to both models",
+                      "ratio": f"GNN / MLP of the p50s; 2.5th and 97.5th percentiles over {NBOOT} question resamples "
+                               "(numpy default_rng(0))",
+                      "warm": "the forward alone; b16 = the batch's time / 16 over 12 batches of the first 192 questions"},
+           "passes": {}}
+    for tag, label in PASSES:
+        ds = {}
+        for name in T.DATASETS:
+            f = raw_dir / f"{name}__{tag}.json"
+            if f.exists():
+                ds[name] = _reduce(json.loads(f.read_text(encoding="utf-8")))
+        if ds:
+            rep["passes"][tag] = {"label": label, "datasets": ds}
+    if not rep["passes"]:
+        raise SystemExit(f"zfsvc report: no <dataset>__b2.json or __b1.json in {raw_dir}")
+    T.write_json(out_dir / "report.json", rep)
+    (out_dir / "report.md").write_text(_md(rep), encoding="utf-8", newline="\n")
+    log(f"report written to {out_dir.name}: passes {list(rep['passes'])}, datasets "
+        f"{ {t: list(p['datasets']) for t, p in rep['passes'].items()} }")
+    return 0
 
 
 def main(argv=None):
@@ -764,9 +996,12 @@ def main(argv=None):
     p.add_argument("--lps", default="2,4", help="run: the logical processors the process is pinned to")
     p.add_argument("--require-pin", dest="require_pin", action="store_true")
     p.add_argument("--full-rule", dest="full_rule", action="store_true")
+    p.add_argument("--overwrite", action="store_true", help="run: replace an existing raw file (a failed pass's)")
+    p.add_argument("--raw-dir", dest="raw_dir", default="", help="report: the raw files (default outputs/fsv/timing/raw)")
+    p.add_argument("--out-dir", dest="out_dir", default="", help="report: where report.json and report.md go")
     a = p.parse_args(argv)
     if a.cmd == "report":
-        raise SystemExit("zfsvc: report is written after A2 (owed)")
+        return report(a)
     _load()
     if a.cmd == "threads":                                                  # the pools after the imports, no data opened
         log(f"threads {json.dumps(set_threads(BLAS))}")
