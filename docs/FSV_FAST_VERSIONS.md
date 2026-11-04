@@ -818,3 +818,141 @@ is A2's. No form, check or number changes. The self-test gained a check of the g
 error; numba takes its compile after a block that changed `NUMBA_NUM_THREADS` and refuses the change without the guard) and was
 run whole with `NUMBA_NUM_THREADS=2`, which stopped at the first compile before the correction. The correction and `zfsvx.py`
 with it are committed before any M3 pass; each raw file records the sha256 of the file that ran.
+
+## 13. Amendment A6: faster exact forms for stage (b)'s links and NEXT columns and for the encoder's z-scores (4 November, before any timed number with them)
+
+This takes up what section 12 left open ("Stage (b) ... a place for a later amendment"; a fused `encode` "would serve both models and
+every cut fit") on the user's order of 4 November, about 19:30 IST ("we can try speeding up whatever you found rn"; on the MLP's
+NEXT columns: "mlp is doing a beam search that is why the NEXT is so slow right, try speeding up, both the stuff and what about the
+fast families"), with the standing one of 06:30 IST (section 12) that both models be as fast as possible. M3 (`outputs/fsv/timing/a4`)
+used section 12's forms. It stands as the record of those forms and is not touched. The forms below are timed after this commit,
+as M5. Module: `outputs/mp_unified/zfsvy.py` (new). It imports `zfsvx.py`, installs A4's forms with `zfsvx.installed()` and A6's on
+top in its own process (three functions replaced, put back on exit and asserted), and edits nothing: not `zfsvc.py`, `zfsvx.py`,
+`lean_screen3.py`, `ltwdiag.py`, `c3_fast.py`, `zg6r.py`, `lean_gpu.py` or any C-stage module. Sections 1 to 12 stand, except where
+this names one.
+
+**Why.** M3's stage (b) and (c), p50 in ms per question (BLAS 2, the 200 kept questions; stage (a) with A4's forms). Compile, rows
+and links are shared: each model computes its own copy. NEXT is the MLP's alone. Assemble is `build`'s inputs.
+
+| dataset | (a) | compile MLP / GNN | rows MLP / GNN | links MLP / GNN | NEXT (MLP) | assemble MLP / GNN | (c) MLP / GNN | end to end MLP / GNN | GNN / MLP |
+|---|---|---|---|---|---|---|---|---|---|
+| musique | 142.7 | 38.2 / 37.2 | 21.1 / 21.0 | 12.9 / 13.3 | 7.4 | 3.0 / 5.4 | 27.0 / 69.2 | 260.3 / 296.9 | 1.14 |
+| hotpotqa | 154.6 | 5.3 / 5.4 | 1.7 / 1.6 | 0.43 / 0.43 | 2.8 | 0.6 / 0.7 | 5.5 / 8.8 | 171.9 / 173.2 | 1.01 |
+| 2wiki | 178.8 | 9.9 / 9.7 | 2.6 / 2.5 | 0.66 / 0.67 | 3.6 | 0.9 / 1.1 | 7.5 / 12.7 | 205.1 / 208.8 | 1.02 |
+
+Stage (a) is 55%, 90% and 87% of the MLP's end-to-end time, so a form in stage (b) or (c) moves end to end by a few percent at most
+on hotpotqa and 2wiki, where both models' (b) + (c) are 18 to 28 ms of 172 to 209. On musique the data is larger (4,800 pool rows,
+127,000 link edges): stage (b) is 83 ms of the MLP's 260 and 77 of the GNN's 297, and the GNN's forward is 69.
+
+**What NEXT is.** It is not a search that goes deeper: it is LTM's beam of fixed width five and one hop. The five rows rrf ranks
+first are the anchors; each anchor's candidates are its link neighbours (with the link families as a bit mask) that are not
+themselves anchors; the fold model of the question's hold-out fold (LTW's scorer) scores every (anchor, candidate) pair; the
+log-ratio to uniform fills seven float16 columns (one per anchor, their maximum, the number of anchors that reached the row).
+Its work per question is the lists from the links, the unit vectors of the float16 rows of the anchors and the candidates (1,536
+values each), the pair features, the scorer's forward in torch, and the assembly of the columns. The profile (development, run
+after this commit and added below) says which of these is the larger share of the 2.8 to 7.4 ms.
+
+**The forms** (each stage, each model; a form a model has in a shared stage, the other has too):
+
+| stage | A4's form (the modules') | A6's form | MLP | GNN |
+|---|---|---|---|---|
+| (b) links | `c3_fast.links_fast`: numpy passes over the edge arrays (both directions, a sort, the repeats dropped) | one numba pass: each edge in both directions as the entry (row, other row * 3 + family), two stable counting sorts (by the key, then by the row), repeats dropped, the row, the other row and the family split back; int16 rows and int8 families as the module's | yes | yes |
+| (b) NEXT, candidate lists | `LTW.fam_bits` for each anchor (two scans of the link arrays, the bits of every node) and the candidate test | the anchor's run in the sorted closure by binary search, each neighbour's bits or-ed over its entries, the anchors excluded | yes | none (the GNN has no NEXT) |
+| (b) NEXT, unit rows | `ltwdiag.unit` on the float16 rows converted to float32: `np.linalg.norm`, `np.maximum(norm, 1e-12)`, divide | one numba pass per matrix with numpy's own float32 summation order | yes | none |
+| (b) NEXT, chunk | `LTW.read_chunk` | the same lines, without the outputs `next_cold` drops (the `free` columns and the identity check) | yes | none |
+| (c) encode | `lean_screen3.seg_zscore_ref`, called for every block's columns in both models' `encode` (and for rrf's base column in the MLP's forward): a chain of torch ops (the whole segment's z-score through `lean_gpu.seg_zscore8D`, then the reference rows' sums, their centring, variance and `where`s) | one numba pass per question over the segment, every column at once | yes | yes |
+
+**Why each form is exact** (the same floating-point operations in the same order, or integers only; only where the state lives, or
+work no read reaches, changes):
+- **The segment z-scores.** The module computes, per column and question, float32 sums with `index_add_` (it adds the rows one after
+  the other, in row order, which is also what section 12 relies on for the GNN's scatter-adds), the mean as the sum over the count
+  (the reference rows' count clamped at 1), the centred values as float32 differences, the variance as the sum of their squares
+  (times the 0/1 weight for the reference rows) over the count, the standard deviation as 0 where the variance is 0 and the float32
+  square root otherwise, and takes per column the reference rows' z-score `c / max(sd, eps)` when there are at least two of them
+  and their `sd >= eps`, else the whole segment's z-score (0 where its `sd < eps`). The form does the same float32 operations in the
+  same order, each product and sum rounded to float32 on its own (numba without fast-math, float32 scalars only: no fused
+  multiply-add, no reassociation, no float64 constant). A batch of 16 questions (the warm batches) is done question by question:
+  `zfsvc.build` lays each question's rows out contiguously and in question order, so a question's sums never include another's rows,
+  as in the module's per-question buffers. Any other input (not float32, not two-dimensional, not CPU, a gradient in force, empty,
+  2^24 rows or more, question ids unsorted or outside 0..B-1, a reference of another shape) takes the module's function, counted.
+- **The candidate lists.** `links_fast`'s output is the symmetric closure of the pool's links, sorted by (row, other row * 3 +
+  family) with no entry twice. The entries of an anchor are therefore one run, its neighbours come in ascending order with their
+  families together, and the bits are `1 << family` or-ed over a neighbour's entries; `fam_bits`' two directions give the same
+  neighbours and bits because the closure holds each entry's mirror. A neighbour that is one of the five anchors, the anchor
+  itself included, is not a candidate, as in the module. Integers only.
+- **The unit rows.** numpy's float32 `norm` over a row of 1,536 values is the square root of `add.reduce` of the squares, and
+  `add.reduce` along the contiguous axis is numpy's pairwise sum: blocks of at most 128 values with eight interleaved accumulators
+  combined as ((0 + 1) + (2 + 3)) + ((4 + 5) + (6 + 7)), the remainder added one by one, longer runs split at half less its
+  remainder modulo 8 (768, 384, 192 and 96 for 1,536). The kernel takes the same squares (float32 products) and adds them in that
+  order, then the float32 square root, `max(., 1e-12)` and the float32 division. The float16 rows are converted by torch (exact, as
+  numpy's). This rests on numpy's implementation of the pairwise sum, which the checks below compare byte for byte.
+- **The chunk.** `LTW.read_chunk` builds columns and an identity check that `next_cold` discards (`b, _chk = ...`) and that
+  `items_of` does not read; the form leaves them out and keeps every other line, so every value `items_of` and the scorer take is
+  the module's.
+- **The links.** Integer work only: the same set of entries sorted by the same key gives the same arrays (self-loops dropped, repeats
+  collapsed, as in the module), and an edge outside its pool or its families sends the call to the module's function.
+
+**The checks** (untimed; `devy` for development, `run` for M5):
+- A2's own development checks with A4's and A6's forms installed (`zfsvc.dev_checks`): the pool, today's pool, the expansion, the KT
+  columns and I against PKO's rule on the same question; each model's inputs against the reference carve's batch; each model's
+  scores against the fit's filed read at batch 1, within 1e-4 with the same top 5; the float16 NEXT values counted.
+- Beside them, per question and model, stage (b) and the forward run under six settings in a rotating order: A6's forms off (A4's
+  forms only), all of A6's, and each of A6's four forms alone (the z-scores, the lists, the unit rows with the chunk, the links).
+  Every output (the scores, the pack of the inputs, the features) is compared byte for byte with the run without A6's forms, and
+  each segment's time is kept. `devy` passes only if every comparison holds on every question and every form ran (counted in
+  both modules' `STATS`, the module's own function never taken on the timed path).
+- `selftest` (no data): each form against the module's function on random inputs, byte for byte (the z-scores on constant,
+  tied, tiny-scale and slice inputs, with no, one, two and many reference rows, single questions and batches of two to sixteen with
+  empty and one-row questions and 32- and 64-bit ids; the lists on random closures; the links on random edge sets with loops,
+  repeats and every family; the unit rows on float16 rows of every kind including zero rows; the chunk); the inputs that go to
+  the module's function; the installation and its restoration, also after an error. It passed before this commit (`--trials 4`: 88,
+  16, 86, 75 and 6 comparisons, none differing).
+- M5's `run` keeps A2's checks per timed question and A2's rule: a question that fails the scores' or the pool's check is not kept,
+  and more than 2% failing stops the dataset. It stops with "the forms did not run" if a form was not used, and each raw file records
+  both modules' sha256 and what ran.
+
+**Development numbers and the profile.** To be added to this section from the first development runs on the host (the first 40
+questions of each dataset, BLAS 2, two CPUs as the timed jobs have, other jobs running: development times, not measurements). A
+form that fails a check there is dropped from the module and from this section by a correction before any M5 pass. Each form's gain
+is reported per dataset; a form that gains under 0.5 ms on hotpotqa and nothing on musique is dropped as well (the links form can
+gain only on musique, where links are 13 ms of stage (b), against 0.4 on hotpotqa). A form the profile shows to be worth adding is
+declared by a correction before any M5 pass, with its check.
+
+**What is not changed.**
+- Stage (a) (A4's forms: the walks and the orders are the larger part of end-to-end time on hotpotqa and 2wiki), stage (b)'s
+  compile and rows, the GNN's layer step (A4), `lean_gpu.seg_zscore8D` (rrf's base z-score in `build`, the context weights), the
+  scorer's forward in torch, both models' matrix products, activations and concatenations, first-stage retrieval (not timed),
+  the threads (one for torch, numba and every OpenMP runtime; BLAS 2 in the record, 1 beside), the pin, the reads, the bars and
+  the question sets.
+- Family 2's forms stay for amendment A3: a cut input is neither computed nor read in stage (b), and a cut fit is the same stack
+  with its own weights, so A6's forms are the forms of both families. The MLP has no admitted cut (its screens at L3, L2, L1 and L0
+  all fail: sections 8 to 11), so its fast version is the full model; the GNN's L3 screen is pending. A3 is declared when its calls
+  are filed.
+
+**Re-time (M5).** The timed passes run per dataset after this commit, one at a time on the host, a smoke first (`--nq 20`, its raw
+file in `outputs/fsv/timing/a6/raw_smoke`, not filed). The forms add no records and no tables (their scratch arrays are a few MiB),
+so a job's `--mem` is M3's. Each dataset:
+
+```
+python outputs/host_ops/pylib_run.py outputs/mp_unified/zfsvy.py run --dataset D --blas 2 --lps 2,4 --require-pin
+```
+
+then the BLAS-1 pass beside (`--blas 1`), its raw files in `outputs/fsv/timing/a6/raw` (the `a6` directory; zfsvc's and zfsvx's raw
+files are not touched), and `python outputs/mp_unified/zfsvy.py report` (zfsvc's reduction of those files, labelled A6:
+`outputs/fsv/timing/a6/report.json` and `report.md`). M5 replaces M3 as the number of record for every cell; M3 stays in the
+repository, labelled A4. If no form passes its checks, M5 is not run and M3 stands. A faster exact form found later is a new
+amendment and a re-time.
+
+**Risks, stated before any number.**
+- The development speed-ups are not measurements; the timed ones can differ (pinning, the host's load, the cache).
+- End to end on hotpotqa and 2wiki, stage (a) is 87 to 90% of the time, so these forms can move the ratio of the models'
+  end-to-end times by about a percent there; their effect shows in the model-only, forward and warm columns, and on musique.
+- A shared form speeds the larger part more: the GNN's encode is a bigger share of its time than the MLP's, so the ratios GNN / MLP
+  can fall. M5 reports whatever it measures.
+- Three forms rest on library behaviour (torch's `index_add_` taking rows in order, numpy's pairwise float32 sum, numba's plain
+  float32 arithmetic). They hold on the self-test and, where the host's libraries differ, the byte-for-byte comparison of `devy`
+  decides: a form whose bytes differ is dropped by a correction, not hidden.
+- The new kernels are compiled in the first (untimed) question, as A2's and A4's are; their cache is written beside the module.
+
+**Commit policy.** `zfsvy.py` and this section are committed before any M5 pass. The raw files are never committed (section 10's
+policy); M5's `report.json` and `report.md` are committed masked, as M2's and M3's, with `git add -f`.
