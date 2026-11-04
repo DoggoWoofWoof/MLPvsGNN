@@ -537,14 +537,248 @@
      "WITHIN": 7
     }
    }
+  },
+  "L1": {
+   "cut": [
+    "topo_STRUCT",
+    "depth_STRUCT"
+   ],
+   "pick": [
+    "rank",
+    "dense_cos",
+    "SEMB",
+    "SEED",
+    "WALK",
+    "DISTS",
+    "WALKF",
+    "NEXT"
+   ],
+   "screen": {
+    "verdict": "FAIL",
+    "problems": [],
+    "reads": [
+     {
+      "split": "WQ-musique",
+      "read": "hotpotqa",
+      "base": [
+       0.846,
+       0.8469,
+       0.8491
+      ],
+      "new": 0.8473,
+      "delta": 0.0013,
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "2wiki",
+      "base": [
+       0.9155,
+       0.9159,
+       0.9133
+      ],
+      "new": 0.9174,
+      "delta": 0.0019,
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "musique",
+      "base": [
+       0.519,
+       0.5227,
+       0.5381
+      ],
+      "new": 0.5405,
+      "delta": 0.0215,
+      "floor": 0.0275,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "musique",
+      "base": [
+       0.5806,
+       0.5803,
+       0.5777
+      ],
+      "new": 0.5763,
+      "delta": -0.0043,
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "2wiki",
+      "base": [
+       0.9135,
+       0.9166,
+       0.9135
+      ],
+      "new": 0.9135,
+      "delta": 0.0,
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "hotpotqa",
+      "base": [
+       0.8193,
+       0.8182,
+       0.8136
+      ],
+      "new": 0.8214,
+      "delta": 0.0021,
+      "floor": 0.0082,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "musique-3hop",
+      "base": [
+       0.5351,
+       0.5333,
+       0.5263
+      ],
+      "new": 0.5268,
+      "delta": -0.0083,
+      "floor": 0.0127,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "musique-4hop",
+      "base": [
+       0.3574,
+       0.3562,
+       0.3562
+      ],
+      "new": 0.3457,
+      "delta": -0.0117,
+      "floor": 0.0075,
+      "call": "LOSS"
+     }
+    ],
+    "beside": [
+     {
+      "split": "WQ-musique",
+      "read": "metaqa",
+      "base": [
+       0.4126,
+       0.4256,
+       0.4167
+      ],
+      "new": 0.3714,
+      "delta": -0.0412,
+      "floor": 0.0193,
+      "call": "LOSS"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "squad",
+      "base": [
+       0.9138,
+       0.9125,
+       0.9149
+      ],
+      "new": 0.9128,
+      "delta": -0.001,
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "webqsp",
+      "base": [
+       0.6457,
+       0.6498,
+       0.6552
+      ],
+      "new": 0.6542,
+      "delta": 0.0085,
+      "floor": 0.0146,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "metaqa",
+      "base": [
+       0.3668,
+       0.4261,
+       0.4131
+      ],
+      "new": 0.3977,
+      "delta": 0.0309,
+      "floor": 0.1064,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "squad",
+      "base": [
+       0.9132,
+       0.912,
+       0.9132
+      ],
+      "new": 0.9107,
+      "delta": -0.0025,
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "webqsp",
+      "base": [
+       0.6469,
+       0.6597,
+       0.6512
+      ],
+      "new": 0.6546,
+      "delta": 0.0077,
+      "floor": 0.0191,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "musique-3hop",
+      "base": [
+       0.4544,
+       0.4596,
+       0.4702
+      ],
+      "new": 0.4833,
+      "delta": 0.0289,
+      "floor": 0.0235,
+      "call": "GAIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "musique-4hop",
+      "base": [
+       0.3086,
+       0.3148,
+       0.3352
+      ],
+      "new": 0.3222,
+      "delta": 0.0136,
+      "floor": 0.0385,
+      "call": "WITHIN"
+     }
+    ],
+    "counts": {
+     "GAIN": 0,
+     "LOSS": 1,
+     "WITHIN": 7
+    }
+   }
   }
  },
  "problems": [],
  "fast_version": null,
- "next": [
-  "L1",
-  "screen"
- ],
+ "next": null,
  "steps": [
   [
    "L3",
@@ -555,8 +789,13 @@
    "L2",
    "screen",
    "FAIL"
+  ],
+  [
+   "L1",
+   "screen",
+   "FAIL"
   ]
  ],
  "zfsv_sha256": "1da3100ba2e0b038d0141654bc79c62f80b6ec33da791f957a0e21bba6db6c8e",
- "utc": "2026-11-04T03:28:02Z"
+ "utc": "2026-11-04T05:19:24Z"
 }
