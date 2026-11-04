@@ -1,0 +1,90 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "part": "coverage",
+ "dataset": "hotpotqa",
+ "carve": "b1w",
+ "pick": "rrf50+none/both/kt_cos:nbc_l2.8@0.9",
+ "pools": {
+  "manifest": "outputs/u2zb/pools/hotpotqa__b1w.json",
+  "manifest_sha256": "7b7a1854348aada7c48e55c679c765331498571c9b0b29dfbba4b288e80936ca",
+  "file_sha256": "ecc1190a09d4ef20c0ee96dc46c19377083ca8ef2b76f541ca5cf6ce97e28146",
+  "questions": 1000,
+  "rows": 1108003
+ },
+ "k_q": 1512,
+ "mean_n1": 539.83,
+ "unified": {
+  "questions": 1000,
+  "no_gold": 0,
+  "golds": 2000,
+  "golds_held": 1999,
+  "ALL": 0.999,
+  "ALL_ci": [
+   0.997,
+   1.0
+  ],
+  "gold_recall": 0.9995,
+  "gold_recall_ci": [
+   0.9985,
+   1.0
+  ],
+  "recall_question_mean": 0.9995,
+  "recall_question_mean_ci": [
+   0.9985,
+   1.0
+  ],
+  "rows_mean": 1108.0,
+  "rows_median": 1108.0,
+  "rows_p90": 1108.0,
+  "rows_max": 1109,
+  "rows_min": 1108,
+  "corpus": 9811,
+  "share_mean": 0.11293476709815513,
+  "share_median": 0.11293446131892773,
+  "hipporag2_candidates": 9811
+ },
+ "pick_O_beside": {
+  "questions": 1000,
+  "no_gold": 0,
+  "golds": 2000,
+  "golds_held": 1970,
+  "ALL": 0.97,
+  "ALL_ci": [
+   0.959,
+   0.981
+  ],
+  "gold_recall": 0.985,
+  "gold_recall_ci": [
+   0.9795,
+   0.9905
+  ],
+  "recall_question_mean": 0.985,
+  "recall_question_mean_ci": [
+   0.9795,
+   0.9905
+  ],
+  "rows_mean": 65.3,
+  "rows_median": 53.0,
+  "rows_p90": 100.0,
+  "rows_max": 321,
+  "rows_min": 50,
+  "corpus": 9811,
+  "share_mean": 0.006650800122311691,
+  "share_median": 0.0054020996840281315,
+  "hipporag2_candidates": 9811,
+  "source": {
+   "file": "outputs/b1p/pools/hotpotqa__b1w.npz",
+   "sha256": "ad14f16cbbf7044eaaf17497c9b290034e9a1dff797d43d07458655bb2b1926c"
+  },
+  "note": "pick O's pools of record (COV's); decides nothing",
+  "cov_record_check": {
+   "file": "outputs/cov/report.json",
+   "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+   "verdict": "SAME",
+   "differs": {}
+  }
+ },
+ "seconds": 50.9,
+ "utc": "2026-11-04T08:34:00Z"
+}

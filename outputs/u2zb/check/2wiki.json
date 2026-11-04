@@ -1,0 +1,27 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "check": "5 (a)",
+ "dataset": "2wiki",
+ "carve": "s1sel",
+ "questions": 1496,
+ "covered": 1496,
+ "parts": {
+  "2wiki__s1sel__0of1.json": "b89b3d5b46eb5d0210c5dc8fd3e2b1c3a69f7dd526145c50cddfc6e79d5eceee"
+ },
+ "against": {
+  "verdict": "outputs/u2s/verdict.json",
+  "verdict_sha256": "516cd92d4df8444f74b9c4b70e92c7483d3c97333d2dfd3666f959be949c47c2",
+  "record": "outputs/u2s/stats/2wiki__s1sel.json",
+  "record_sha256": "a8c680c8088b140943befce18f0ce3fbe5364d63982461de67d62d542f272b08",
+  "file_sha256": "ebf1c59795a7296b47c11c252bc96e92e20a805dbcdd7a58bc26e9943821484f",
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "choice": "outputs/u2z/choice.json",
+  "choice_sha256": "3214854b2afc9b135f4dc8b9d9bba3d8b90b6a360ed572261e950eaea6f1b717",
+  "n1": "outputs/u2zb/n1/2wiki__s1sel.json",
+  "n1_sha256": "5c9f4127b785b991500fc79d1b62c3a89b72bc0eca9e1412dee9d167effda774"
+ },
+ "mismatches": {},
+ "verdict": "PASS",
+ "utc": "2026-11-04T07:58:06Z"
+}

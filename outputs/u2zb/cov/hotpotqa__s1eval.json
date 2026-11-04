@@ -1,0 +1,102 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "part": "coverage",
+ "dataset": "hotpotqa",
+ "carve": "s1eval",
+ "pick": "rrf50+none/both/kt_cos:nbc_l2.8@0.9",
+ "pools": {
+  "manifest": "outputs/u2zb/pools/hotpotqa__s1eval.json",
+  "manifest_sha256": "ea17bfe5a94d03d59040ce25e6de515137b6568c28f29ab34ba4e6fdadc9e73d",
+  "file_sha256": "ae117a7e1407a2fc2aecfc0f8d10f8f73c29763a9d7cc324039aa26954c0d5db",
+  "questions": 7405,
+  "rows": 18631114
+ },
+ "k_q": 3798,
+ "mean_n1": 1356.46,
+ "unified": {
+  "questions": 7405,
+  "no_gold": 0,
+  "golds": 14810,
+  "golds_held": 14674,
+  "ALL": 0.9823,
+  "ALL_ci": [
+   0.9795,
+   0.9853
+  ],
+  "gold_recall": 0.9908,
+  "gold_recall_ci": [
+   0.9893,
+   0.9924
+  ],
+  "recall_question_mean": 0.9908,
+  "recall_question_mean_ci": [
+   0.9893,
+   0.9924
+  ],
+  "rows_mean": 2516.0,
+  "rows_median": 2516.0,
+  "rows_p90": 2516.0,
+  "rows_max": 2519,
+  "rows_min": 2516,
+  "corpus": 5233329,
+  "share_mean": 0.0004807681871101858,
+  "share_median": 0.0004807647292956357,
+  "hipporag2_candidates": 5233329
+ },
+ "pick_O_beside": {
+  "questions": 7405,
+  "no_gold": 0,
+  "golds": 14810,
+  "golds_held": 14498,
+  "ALL": 0.9596,
+  "ALL_ci": [
+   0.955,
+   0.9639
+  ],
+  "gold_recall": 0.9789,
+  "gold_recall_ci": [
+   0.9765,
+   0.9813
+  ],
+  "recall_question_mean": 0.9789,
+  "recall_question_mean_ci": [
+   0.9765,
+   0.9813
+  ],
+  "rows_mean": 706.0,
+  "rows_median": 688.0,
+  "rows_p90": 1017.0,
+  "rows_max": 1637,
+  "rows_min": 53,
+  "corpus": 5233329,
+  "share_mean": 0.0001349104021396273,
+  "share_median": 0.00013146507700929943,
+  "hipporag2_candidates": 5233329,
+  "source": {
+   "parts": [
+    {
+     "file": "outputs/pko/pools/parts/hotpotqa__s1eval__0of3.npz",
+     "sha256": "4fef79a2b81f471fdff870c06f6d5cf8d7e495cf6fba8796581b5ad5172abb77"
+    },
+    {
+     "file": "outputs/pko/pools/parts/hotpotqa__s1eval__1of3.npz",
+     "sha256": "851c71832c1238161a0dec575af87be0e49600e9810450752e2f30ea460aa69b"
+    },
+    {
+     "file": "outputs/pko/pools/parts/hotpotqa__s1eval__2of3.npz",
+     "sha256": "dabd5cb116f6db93583455ba976691ef5e2dcd59fc0c481824f6abc65882eb3e"
+    }
+   ]
+  },
+  "note": "pick O's pools of record (COV's); decides nothing",
+  "cov_record_check": {
+   "file": "outputs/cov/report.json",
+   "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+   "verdict": "SAME",
+   "differs": {}
+  }
+ },
+ "seconds": 195.9,
+ "utc": "2026-11-04T09:26:43Z"
+}

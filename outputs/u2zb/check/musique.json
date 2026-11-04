@@ -1,0 +1,27 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "check": "5 (a)",
+ "dataset": "musique",
+ "carve": "s1sel",
+ "questions": 1534,
+ "covered": 1534,
+ "parts": {
+  "musique__s1sel__0of1.json": "813a7ad139da0437d3caed821cd6eff3d3a698cfd05b1084fcd546cdb24528b9"
+ },
+ "against": {
+  "verdict": "outputs/u2s/verdict.json",
+  "verdict_sha256": "516cd92d4df8444f74b9c4b70e92c7483d3c97333d2dfd3666f959be949c47c2",
+  "record": "outputs/u2s/stats/musique__s1sel.json",
+  "record_sha256": "166b883e522ecdbc8c6508e7c0ba75489ea63bc85188e8c6dd264a47bd054730",
+  "file_sha256": "0d01f755d6b00630e6034839b281a13169944d1bf78a7d5a62c6eebb8ccd9d6f",
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "choice": "outputs/u2z/choice.json",
+  "choice_sha256": "3214854b2afc9b135f4dc8b9d9bba3d8b90b6a360ed572261e950eaea6f1b717",
+  "n1": "outputs/u2zb/n1/musique__s1sel.json",
+  "n1_sha256": "6014ea52a41b006e22d42b416a74d5fd7efa81f576835395bfd9370836cfeb50"
+ },
+ "mismatches": {},
+ "verdict": "PASS",
+ "utc": "2026-11-04T05:28:46Z"
+}

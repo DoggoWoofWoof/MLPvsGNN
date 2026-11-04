@@ -1,0 +1,732 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "pick": "rrf50+none/both/kt_cos:nbc_l2.8@0.9",
+ "measures": "ALL = questions with every gold inside the built pool / questions; gold recall = golds inside / golds; rows = the pool's size; share = mean rows / the corpus's nodes",
+ "carves": [
+  {
+   "dataset": "musique",
+   "carve": "s1eval",
+   "k_q": 6406,
+   "mean_n1": 2287.84,
+   "unified": {
+    "questions": 2417,
+    "no_gold": 0,
+    "golds": 6404,
+    "golds_held": 6215,
+    "ALL": 0.9334,
+    "ALL_ci": [
+     0.9235,
+     0.9429
+    ],
+    "gold_recall": 0.9705,
+    "gold_recall_ci": [
+     0.966,
+     0.9749
+    ],
+    "recall_question_mean": 0.977,
+    "recall_question_mean_ci": [
+     0.9734,
+     0.9806
+    ],
+    "rows_mean": 4021.0,
+    "rows_median": 4021.0,
+    "rows_p90": 4021.0,
+    "rows_max": 4023,
+    "rows_min": 4021,
+    "corpus": 117534,
+    "share_mean": 0.03421159186191418,
+    "share_median": 0.03421137713342522,
+    "hipporag2_candidates": 117534
+   },
+   "pick_O_beside": {
+    "questions": 2417,
+    "no_gold": 0,
+    "golds": 6404,
+    "golds_held": 6261,
+    "ALL": 0.9475,
+    "ALL_ci": [
+     0.9388,
+     0.9561
+    ],
+    "gold_recall": 0.9777,
+    "gold_recall_ci": [
+     0.9739,
+     0.9813
+    ],
+    "recall_question_mean": 0.9827,
+    "recall_question_mean_ci": [
+     0.9796,
+     0.9857
+    ],
+    "rows_mean": 5263.6,
+    "rows_median": 4980.0,
+    "rows_p90": 6490.0,
+    "rows_max": 12333,
+    "rows_min": 2111,
+    "corpus": 117534,
+    "share_mean": 0.04478380885802046,
+    "share_median": 0.042370718260248096,
+    "hipporag2_candidates": 117534,
+    "source": {
+     "parts": [
+      {
+       "file": "outputs/pko/pools/parts/musique__s1eval__0of1.npz",
+       "sha256": "6bcb58bd8a2ee319917be3fb4e777a1ca082af5f74a3c411bac6527f1a2333e3"
+      }
+     ]
+    },
+    "note": "pick O's pools of record (COV's); decides nothing",
+    "cov_record_check": {
+     "file": "outputs/cov/report.json",
+     "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+     "verdict": "SAME",
+     "differs": {}
+    }
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/musique__s1eval.json",
+    "manifest_sha256": "c68ac5ca4291e0eea8abe22874c22e37dddf70d2f13c821182f936bf762ca314",
+    "file_sha256": "dbb9d9a019b7f5da5be096248efdcdd31ef99cea9305f8ef03dda6bc5bb9ac37",
+    "questions": 2417,
+    "rows": 9718818
+   }
+  },
+  {
+   "dataset": "musique",
+   "carve": "b1w",
+   "k_q": 1978,
+   "mean_n1": 706.29,
+   "unified": {
+    "questions": 1000,
+    "no_gold": 0,
+    "golds": 2648,
+    "golds_held": 2623,
+    "ALL": 0.977,
+    "ALL_ci": [
+     0.968,
+     0.986
+    ],
+    "gold_recall": 0.9906,
+    "gold_recall_ci": [
+     0.9865,
+     0.9942
+    ],
+    "recall_question_mean": 0.9926,
+    "recall_question_mean_ci": [
+     0.9892,
+     0.9955
+    ],
+    "rows_mean": 1406.0,
+    "rows_median": 1406.0,
+    "rows_p90": 1406.0,
+    "rows_max": 1408,
+    "rows_min": 1406,
+    "corpus": 11654,
+    "share_mean": 0.12064604427664322,
+    "share_median": 0.12064527200961044,
+    "hipporag2_candidates": 11654
+   },
+   "pick_O_beside": {
+    "questions": 1000,
+    "no_gold": 0,
+    "golds": 2648,
+    "golds_held": 2646,
+    "ALL": 0.998,
+    "ALL_ci": [
+     0.995,
+     1.0
+    ],
+    "gold_recall": 0.9992,
+    "gold_recall_ci": [
+     0.9981,
+     1.0
+    ],
+    "recall_question_mean": 0.999,
+    "recall_question_mean_ci": [
+     0.9975,
+     1.0
+    ],
+    "rows_mean": 3433.6,
+    "rows_median": 3455.0,
+    "rows_p90": 3532.0,
+    "rows_max": 3707,
+    "rows_min": 1340,
+    "corpus": 11654,
+    "share_mean": 0.29462656598592757,
+    "share_median": 0.2964647331388365,
+    "hipporag2_candidates": 11654,
+    "source": {
+     "file": "outputs/b1p/pools/musique__b1w.npz",
+     "sha256": "5a32b59ff27a085c1d1b830d32ae18ae9122f755200fb07316ff91ff0541263b"
+    },
+    "note": "pick O's pools of record (COV's); decides nothing",
+    "cov_record_check": {
+     "file": "outputs/cov/report.json",
+     "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+     "verdict": "SAME",
+     "differs": {}
+    }
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/musique__b1w.json",
+    "manifest_sha256": "4cb69778f9e7a8a0e00d6d4da8f13f2bf40a54dc72e431bd3bbe958ea0525419",
+    "file_sha256": "91b935b63d19773bb2f65596e40931768234232d03134966da1c18ae83771f32",
+    "questions": 1000,
+    "rows": 1406009
+   }
+  },
+  {
+   "dataset": "musique",
+   "carve": "s1sel",
+   "k_q": 7307,
+   "mean_n1": 2609.62,
+   "unified": {
+    "questions": 1534,
+    "no_gold": 0,
+    "golds": 4064,
+    "golds_held": 3999,
+    "ALL": 0.9615,
+    "ALL_ci": [
+     0.9511,
+     0.9707
+    ],
+    "gold_recall": 0.984,
+    "gold_recall_ci": [
+     0.9795,
+     0.988
+    ],
+    "recall_question_mean": 0.9847,
+    "recall_question_mean_ci": [
+     0.9804,
+     0.9885
+    ],
+    "rows_mean": 4506.4,
+    "rows_median": 4526.0,
+    "rows_p90": 4526.0,
+    "rows_max": 4527,
+    "rows_min": 4327,
+    "corpus": 117534,
+    "share_mean": 0.03834139790868359,
+    "share_median": 0.038508006193952386,
+    "hipporag2_candidates": 117534
+   },
+   "pick_O_beside": {
+    "state": "none",
+    "why": "PKO builds no pools on s1sel"
+   },
+   "reproduction": {
+    "against": "U2e's evaluate on U2s's filed arrays at cell 0, base 0, recipe 2 (zu2z.eval_one's path)",
+    "u2s_stats_sha256": "0d01f755d6b00630e6034839b281a13169944d1bf78a7d5a62c6eebb8ccd9d6f",
+    "ALL_u2e": 0.9615,
+    "rows_u2e": 4506.4,
+    "k_q_u2e": 7307,
+    "mean_n1_u2s": 2609.62,
+    "mismatched_questions": {
+     "hits": 0,
+     "golds": 0,
+     "rows": 0
+    },
+    "verdict": "IDENTICAL"
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/musique__s1sel.json",
+    "manifest_sha256": "5919bfa73fc23b14b9536280f97e0b1f61890f3a24baa75ae596913c27a41217",
+    "file_sha256": "f827998ecdc5c3ba091f02ef927f92d707dcdcee3221029d12468c75cbf14ace",
+    "questions": 1534,
+    "rows": 6912845
+   }
+  },
+  {
+   "dataset": "hotpotqa",
+   "carve": "s1eval",
+   "k_q": 3798,
+   "mean_n1": 1356.46,
+   "unified": {
+    "questions": 7405,
+    "no_gold": 0,
+    "golds": 14810,
+    "golds_held": 14674,
+    "ALL": 0.9823,
+    "ALL_ci": [
+     0.9795,
+     0.9853
+    ],
+    "gold_recall": 0.9908,
+    "gold_recall_ci": [
+     0.9893,
+     0.9924
+    ],
+    "recall_question_mean": 0.9908,
+    "recall_question_mean_ci": [
+     0.9893,
+     0.9924
+    ],
+    "rows_mean": 2516.0,
+    "rows_median": 2516.0,
+    "rows_p90": 2516.0,
+    "rows_max": 2519,
+    "rows_min": 2516,
+    "corpus": 5233329,
+    "share_mean": 0.0004807681871101858,
+    "share_median": 0.0004807647292956357,
+    "hipporag2_candidates": 5233329
+   },
+   "pick_O_beside": {
+    "questions": 7405,
+    "no_gold": 0,
+    "golds": 14810,
+    "golds_held": 14498,
+    "ALL": 0.9596,
+    "ALL_ci": [
+     0.955,
+     0.9639
+    ],
+    "gold_recall": 0.9789,
+    "gold_recall_ci": [
+     0.9765,
+     0.9813
+    ],
+    "recall_question_mean": 0.9789,
+    "recall_question_mean_ci": [
+     0.9765,
+     0.9813
+    ],
+    "rows_mean": 706.0,
+    "rows_median": 688.0,
+    "rows_p90": 1017.0,
+    "rows_max": 1637,
+    "rows_min": 53,
+    "corpus": 5233329,
+    "share_mean": 0.0001349104021396273,
+    "share_median": 0.00013146507700929943,
+    "hipporag2_candidates": 5233329,
+    "source": {
+     "parts": [
+      {
+       "file": "outputs/pko/pools/parts/hotpotqa__s1eval__0of3.npz",
+       "sha256": "4fef79a2b81f471fdff870c06f6d5cf8d7e495cf6fba8796581b5ad5172abb77"
+      },
+      {
+       "file": "outputs/pko/pools/parts/hotpotqa__s1eval__1of3.npz",
+       "sha256": "851c71832c1238161a0dec575af87be0e49600e9810450752e2f30ea460aa69b"
+      },
+      {
+       "file": "outputs/pko/pools/parts/hotpotqa__s1eval__2of3.npz",
+       "sha256": "dabd5cb116f6db93583455ba976691ef5e2dcd59fc0c481824f6abc65882eb3e"
+      }
+     ]
+    },
+    "note": "pick O's pools of record (COV's); decides nothing",
+    "cov_record_check": {
+     "file": "outputs/cov/report.json",
+     "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+     "verdict": "SAME",
+     "differs": {}
+    }
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/hotpotqa__s1eval.json",
+    "manifest_sha256": "ea17bfe5a94d03d59040ce25e6de515137b6568c28f29ab34ba4e6fdadc9e73d",
+    "file_sha256": "ae117a7e1407a2fc2aecfc0f8d10f8f73c29763a9d7cc324039aa26954c0d5db",
+    "questions": 7405,
+    "rows": 18631114
+   }
+  },
+  {
+   "dataset": "hotpotqa",
+   "carve": "b1w",
+   "k_q": 1512,
+   "mean_n1": 539.83,
+   "unified": {
+    "questions": 1000,
+    "no_gold": 0,
+    "golds": 2000,
+    "golds_held": 1999,
+    "ALL": 0.999,
+    "ALL_ci": [
+     0.997,
+     1.0
+    ],
+    "gold_recall": 0.9995,
+    "gold_recall_ci": [
+     0.9985,
+     1.0
+    ],
+    "recall_question_mean": 0.9995,
+    "recall_question_mean_ci": [
+     0.9985,
+     1.0
+    ],
+    "rows_mean": 1108.0,
+    "rows_median": 1108.0,
+    "rows_p90": 1108.0,
+    "rows_max": 1109,
+    "rows_min": 1108,
+    "corpus": 9811,
+    "share_mean": 0.11293476709815513,
+    "share_median": 0.11293446131892773,
+    "hipporag2_candidates": 9811
+   },
+   "pick_O_beside": {
+    "questions": 1000,
+    "no_gold": 0,
+    "golds": 2000,
+    "golds_held": 1970,
+    "ALL": 0.97,
+    "ALL_ci": [
+     0.959,
+     0.981
+    ],
+    "gold_recall": 0.985,
+    "gold_recall_ci": [
+     0.9795,
+     0.9905
+    ],
+    "recall_question_mean": 0.985,
+    "recall_question_mean_ci": [
+     0.9795,
+     0.9905
+    ],
+    "rows_mean": 65.3,
+    "rows_median": 53.0,
+    "rows_p90": 100.0,
+    "rows_max": 321,
+    "rows_min": 50,
+    "corpus": 9811,
+    "share_mean": 0.006650800122311691,
+    "share_median": 0.0054020996840281315,
+    "hipporag2_candidates": 9811,
+    "source": {
+     "file": "outputs/b1p/pools/hotpotqa__b1w.npz",
+     "sha256": "ad14f16cbbf7044eaaf17497c9b290034e9a1dff797d43d07458655bb2b1926c"
+    },
+    "note": "pick O's pools of record (COV's); decides nothing",
+    "cov_record_check": {
+     "file": "outputs/cov/report.json",
+     "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+     "verdict": "SAME",
+     "differs": {}
+    }
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/hotpotqa__b1w.json",
+    "manifest_sha256": "7b7a1854348aada7c48e55c679c765331498571c9b0b29dfbba4b288e80936ca",
+    "file_sha256": "ecc1190a09d4ef20c0ee96dc46c19377083ca8ef2b76f541ca5cf6ce97e28146",
+    "questions": 1000,
+    "rows": 1108003
+   }
+  },
+  {
+   "dataset": "hotpotqa",
+   "carve": "s1sel",
+   "k_q": 3826,
+   "mean_n1": 1366.35,
+   "unified": {
+    "questions": 1508,
+    "no_gold": 0,
+    "golds": 3016,
+    "golds_held": 2980,
+    "ALL": 0.9775,
+    "ALL_ci": [
+     0.9695,
+     0.9847
+    ],
+    "gold_recall": 0.9881,
+    "gold_recall_ci": [
+     0.9838,
+     0.992
+    ],
+    "recall_question_mean": 0.9881,
+    "recall_question_mean_ci": [
+     0.9838,
+     0.992
+    ],
+    "rows_mean": 2533.0,
+    "rows_median": 2533.0,
+    "rows_p90": 2533.0,
+    "rows_max": 2535,
+    "rows_min": 2533,
+    "corpus": 5233329,
+    "share_mean": 0.0004840145334699401,
+    "share_median": 0.00048401313962871434,
+    "hipporag2_candidates": 5233329
+   },
+   "pick_O_beside": {
+    "state": "none",
+    "why": "PKO builds no pools on s1sel"
+   },
+   "reproduction": {
+    "against": "U2e's evaluate on U2s's filed arrays at cell 0, base 0, recipe 2 (zu2z.eval_one's path)",
+    "u2s_stats_sha256": "42c4f0ed4472d9dfa2ff7d8256ff4ddc242c638fec4b46acaa23fd07f9959872",
+    "ALL_u2e": 0.9775,
+    "rows_u2e": 2533.0,
+    "k_q_u2e": 3826,
+    "mean_n1_u2s": 1366.35,
+    "mismatched_questions": {
+     "hits": 0,
+     "golds": 0,
+     "rows": 0
+    },
+    "verdict": "IDENTICAL"
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/hotpotqa__s1sel.json",
+    "manifest_sha256": "e112c32732a1e4e0ca41fecd887773accd4275a7ff34b480589017744ca7c04f",
+    "file_sha256": "12b0ab5aae546958fcd4bd87f7e6badaf0907645cc8fadfbcd72b41c9d753419",
+    "questions": 1508,
+    "rows": 3819775
+   }
+  },
+  {
+   "dataset": "2wiki",
+   "carve": "s1eval",
+   "k_q": 5611,
+   "mean_n1": 2003.98,
+   "unified": {
+    "questions": 12576,
+    "no_gold": 0,
+    "golds": 30654,
+    "golds_held": 30477,
+    "ALL": 0.9861,
+    "ALL_ci": [
+     0.984,
+     0.9882
+    ],
+    "gold_recall": 0.9942,
+    "gold_recall_ci": [
+     0.9934,
+     0.9951
+    ],
+    "recall_question_mean": 0.9958,
+    "recall_question_mean_ci": [
+     0.9952,
+     0.9965
+    ],
+    "rows_mean": 3570.0,
+    "rows_median": 3570.0,
+    "rows_p90": 3570.0,
+    "rows_max": 3572,
+    "rows_min": 3570,
+    "corpus": 5989847,
+    "share_mean": 0.0005960100857198147,
+    "share_median": 0.0005960085457942415,
+    "hipporag2_candidates": 5989847
+   },
+   "pick_O_beside": {
+    "questions": 12576,
+    "no_gold": 0,
+    "golds": 30654,
+    "golds_held": 30253,
+    "ALL": 0.9688,
+    "ALL_ci": [
+     0.9656,
+     0.9719
+    ],
+    "gold_recall": 0.9869,
+    "gold_recall_ci": [
+     0.9856,
+     0.9882
+    ],
+    "recall_question_mean": 0.9899,
+    "recall_question_mean_ci": [
+     0.9888,
+     0.991
+    ],
+    "rows_mean": 1081.2,
+    "rows_median": 1090.0,
+    "rows_p90": 1383.0,
+    "rows_max": 1853,
+    "rows_min": 209,
+    "corpus": 5989847,
+    "share_mean": 0.0001805059869266793,
+    "share_median": 0.00018197459801560874,
+    "hipporag2_candidates": 5989847,
+    "source": {
+     "parts": [
+      {
+       "file": "outputs/pko/pools/parts/2wiki__s1eval__0of5.npz",
+       "sha256": "8963bc2f179f6a89499655cd9c3f6118c46491ed295b2437a511b84009ed07ff"
+      },
+      {
+       "file": "outputs/pko/pools/parts/2wiki__s1eval__1of5.npz",
+       "sha256": "c1f29767be9f08a47990ce44b522d9c40f8fba7ee910153a372a6790ddb5e27c"
+      },
+      {
+       "file": "outputs/pko/pools/parts/2wiki__s1eval__2of5.npz",
+       "sha256": "2e339771a6c24bc8e173a180370ee890e18787766f3051aca749cae2ed726d54"
+      },
+      {
+       "file": "outputs/pko/pools/parts/2wiki__s1eval__3of5.npz",
+       "sha256": "8ab0c197d69de8b57eed2470605ba5f382b51ce530eb68c67ea9ed5681d8a4d6"
+      },
+      {
+       "file": "outputs/pko/pools/parts/2wiki__s1eval__4of5.npz",
+       "sha256": "3a448dd6358afdd934a1919db54db1e7c872be9dfe7779dcdae51adfc80f5ed8"
+      }
+     ]
+    },
+    "note": "pick O's pools of record (COV's); decides nothing",
+    "cov_record_check": {
+     "file": "outputs/cov/report.json",
+     "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+     "verdict": "SAME",
+     "differs": {}
+    }
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/2wiki__s1eval.json",
+    "manifest_sha256": "d666726b1f287e55c0a42083b1b9fbd3f3aa44635e804d39efeaa25709fffb3e",
+    "file_sha256": "069a8d20a0ecc6b29b95ac8368cc88d36c5748f558f5f4e561caf21b04187312",
+    "questions": 12576,
+    "rows": 44896436
+   }
+  },
+  {
+   "dataset": "2wiki",
+   "carve": "b1w",
+   "k_q": 1615,
+   "mean_n1": 576.9,
+   "unified": {
+    "questions": 1000,
+    "no_gold": 0,
+    "golds": 2470,
+    "golds_held": 2468,
+    "ALL": 0.998,
+    "ALL_ci": [
+     0.995,
+     1.0
+    ],
+    "gold_recall": 0.9992,
+    "gold_recall_ci": [
+     0.998,
+     1.0
+    ],
+    "recall_question_mean": 0.9995,
+    "recall_question_mean_ci": [
+     0.9988,
+     1.0
+    ],
+    "rows_mean": 1174.0,
+    "rows_median": 1174.0,
+    "rows_p90": 1174.0,
+    "rows_max": 1176,
+    "rows_min": 1174,
+    "corpus": 6119,
+    "share_mean": 0.19186501062265074,
+    "share_median": 0.19186141526393202,
+    "hipporag2_candidates": 6119
+   },
+   "pick_O_beside": {
+    "questions": 1000,
+    "no_gold": 0,
+    "golds": 2470,
+    "golds_held": 2374,
+    "ALL": 0.919,
+    "ALL_ci": [
+     0.901,
+     0.936
+    ],
+    "gold_recall": 0.9611,
+    "gold_recall_ci": [
+     0.9524,
+     0.9692
+    ],
+    "recall_question_mean": 0.9692,
+    "recall_question_mean_ci": [
+     0.9623,
+     0.976
+    ],
+    "rows_mean": 88.5,
+    "rows_median": 77.0,
+    "rows_p90": 145.0,
+    "rows_max": 261,
+    "rows_min": 50,
+    "corpus": 6119,
+    "share_mean": 0.01445857166203628,
+    "share_median": 0.012583755515607125,
+    "hipporag2_candidates": 6119,
+    "source": {
+     "file": "outputs/b1p/pools/2wiki__b1w.npz",
+     "sha256": "fabe820b003289754066495a9df21723138609dbee0c443acbffa010bf7c1ce6"
+    },
+    "note": "pick O's pools of record (COV's); decides nothing",
+    "cov_record_check": {
+     "file": "outputs/cov/report.json",
+     "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+     "verdict": "SAME",
+     "differs": {}
+    }
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/2wiki__b1w.json",
+    "manifest_sha256": "3f029af7ac6c2fa187e6ec35d66c6a17e29453cefc69ccebbeaac29e0d3d1651",
+    "file_sha256": "2fe4aca15239b31121e9d4928766ebd0810e09219ac3e5746d9449833d8fd738",
+    "questions": 1000,
+    "rows": 1174022
+   }
+  },
+  {
+   "dataset": "2wiki",
+   "carve": "s1sel",
+   "k_q": 5213,
+   "mean_n1": 1861.7,
+   "unified": {
+    "questions": 1496,
+    "no_gold": 0,
+    "golds": 3646,
+    "golds_held": 3625,
+    "ALL": 0.986,
+    "ALL_ci": [
+     0.9799,
+     0.9913
+    ],
+    "gold_recall": 0.9942,
+    "gold_recall_ci": [
+     0.9917,
+     0.9964
+    ],
+    "recall_question_mean": 0.9955,
+    "recall_question_mean_ci": [
+     0.9933,
+     0.9973
+    ],
+    "rows_mean": 3342.0,
+    "rows_median": 3342.0,
+    "rows_p90": 3342.0,
+    "rows_max": 3344,
+    "rows_min": 3342,
+    "corpus": 5989847,
+    "share_mean": 0.0005579450272425294,
+    "share_median": 0.0005579441344662059,
+    "hipporag2_candidates": 5989847
+   },
+   "pick_O_beside": {
+    "state": "none",
+    "why": "PKO builds no pools on s1sel"
+   },
+   "reproduction": {
+    "against": "U2e's evaluate on U2s's filed arrays at cell 0, base 0, recipe 2 (zu2z.eval_one's path)",
+    "u2s_stats_sha256": "ebf1c59795a7296b47c11c252bc96e92e20a805dbcdd7a58bc26e9943821484f",
+    "ALL_u2e": 0.986,
+    "rows_u2e": 3342.0,
+    "k_q_u2e": 5213,
+    "mean_n1_u2s": 1861.7,
+    "mismatched_questions": {
+     "hits": 0,
+     "golds": 0,
+     "rows": 0
+    },
+    "verdict": "IDENTICAL"
+   },
+   "pools": {
+    "manifest": "outputs/u2zb/pools/2wiki__s1sel.json",
+    "manifest_sha256": "a71f27048a9201915d07c063f442bf743ecae8fd7ab018cca541e313b2a7ff98",
+    "file_sha256": "f0c121db86c257f9f2c93d3500ed7eb85423e70b182a47ad22aad63b03a36b68",
+    "questions": 1496,
+    "rows": 4999640
+   }
+  }
+ ],
+ "utc": "2026-11-04T09:58:52Z"
+}

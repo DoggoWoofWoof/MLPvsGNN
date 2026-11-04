@@ -1,0 +1,110 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "part": "coverage",
+ "dataset": "2wiki",
+ "carve": "s1eval",
+ "pick": "rrf50+none/both/kt_cos:nbc_l2.8@0.9",
+ "pools": {
+  "manifest": "outputs/u2zb/pools/2wiki__s1eval.json",
+  "manifest_sha256": "d666726b1f287e55c0a42083b1b9fbd3f3aa44635e804d39efeaa25709fffb3e",
+  "file_sha256": "069a8d20a0ecc6b29b95ac8368cc88d36c5748f558f5f4e561caf21b04187312",
+  "questions": 12576,
+  "rows": 44896436
+ },
+ "k_q": 5611,
+ "mean_n1": 2003.98,
+ "unified": {
+  "questions": 12576,
+  "no_gold": 0,
+  "golds": 30654,
+  "golds_held": 30477,
+  "ALL": 0.9861,
+  "ALL_ci": [
+   0.984,
+   0.9882
+  ],
+  "gold_recall": 0.9942,
+  "gold_recall_ci": [
+   0.9934,
+   0.9951
+  ],
+  "recall_question_mean": 0.9958,
+  "recall_question_mean_ci": [
+   0.9952,
+   0.9965
+  ],
+  "rows_mean": 3570.0,
+  "rows_median": 3570.0,
+  "rows_p90": 3570.0,
+  "rows_max": 3572,
+  "rows_min": 3570,
+  "corpus": 5989847,
+  "share_mean": 0.0005960100857198147,
+  "share_median": 0.0005960085457942415,
+  "hipporag2_candidates": 5989847
+ },
+ "pick_O_beside": {
+  "questions": 12576,
+  "no_gold": 0,
+  "golds": 30654,
+  "golds_held": 30253,
+  "ALL": 0.9688,
+  "ALL_ci": [
+   0.9656,
+   0.9719
+  ],
+  "gold_recall": 0.9869,
+  "gold_recall_ci": [
+   0.9856,
+   0.9882
+  ],
+  "recall_question_mean": 0.9899,
+  "recall_question_mean_ci": [
+   0.9888,
+   0.991
+  ],
+  "rows_mean": 1081.2,
+  "rows_median": 1090.0,
+  "rows_p90": 1383.0,
+  "rows_max": 1853,
+  "rows_min": 209,
+  "corpus": 5989847,
+  "share_mean": 0.0001805059869266793,
+  "share_median": 0.00018197459801560874,
+  "hipporag2_candidates": 5989847,
+  "source": {
+   "parts": [
+    {
+     "file": "outputs/pko/pools/parts/2wiki__s1eval__0of5.npz",
+     "sha256": "8963bc2f179f6a89499655cd9c3f6118c46491ed295b2437a511b84009ed07ff"
+    },
+    {
+     "file": "outputs/pko/pools/parts/2wiki__s1eval__1of5.npz",
+     "sha256": "c1f29767be9f08a47990ce44b522d9c40f8fba7ee910153a372a6790ddb5e27c"
+    },
+    {
+     "file": "outputs/pko/pools/parts/2wiki__s1eval__2of5.npz",
+     "sha256": "2e339771a6c24bc8e173a180370ee890e18787766f3051aca749cae2ed726d54"
+    },
+    {
+     "file": "outputs/pko/pools/parts/2wiki__s1eval__3of5.npz",
+     "sha256": "8ab0c197d69de8b57eed2470605ba5f382b51ce530eb68c67ea9ed5681d8a4d6"
+    },
+    {
+     "file": "outputs/pko/pools/parts/2wiki__s1eval__4of5.npz",
+     "sha256": "3a448dd6358afdd934a1919db54db1e7c872be9dfe7779dcdae51adfc80f5ed8"
+    }
+   ]
+  },
+  "note": "pick O's pools of record (COV's); decides nothing",
+  "cov_record_check": {
+   "file": "outputs/cov/report.json",
+   "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+   "verdict": "SAME",
+   "differs": {}
+  }
+ },
+ "seconds": 201.1,
+ "utc": "2026-11-04T09:57:38Z"
+}

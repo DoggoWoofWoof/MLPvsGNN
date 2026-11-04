@@ -1,0 +1,67 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "part": "gate",
+ "datasets": {
+  "musique": {
+   "got": {
+    "check_5a": "PASS",
+    "reproduction": "IDENTICAL",
+    "ALL": 0.9615,
+    "rows": 4506.4,
+    "k_q": 7307,
+    "mean_n1": 2609.62
+   },
+   "want": {
+    "check_5a": "PASS",
+    "reproduction": "IDENTICAL",
+    "ALL": 0.9615,
+    "rows": 4506.4,
+    "k_q": 7307,
+    "mean_n1": 2609.62
+   },
+   "pass": true
+  },
+  "hotpotqa": {
+   "got": {
+    "check_5a": "PASS",
+    "reproduction": "IDENTICAL",
+    "ALL": 0.9775,
+    "rows": 2533.0,
+    "k_q": 3826,
+    "mean_n1": 1366.35
+   },
+   "want": {
+    "check_5a": "PASS",
+    "reproduction": "IDENTICAL",
+    "ALL": 0.9775,
+    "rows": 2533.0,
+    "k_q": 3826,
+    "mean_n1": 1366.35
+   },
+   "pass": true
+  },
+  "2wiki": {
+   "got": {
+    "check_5a": "PASS",
+    "reproduction": "IDENTICAL",
+    "ALL": 0.986,
+    "rows": 3342.0,
+    "k_q": 5213,
+    "mean_n1": 1861.7
+   },
+   "want": {
+    "check_5a": "PASS",
+    "reproduction": "IDENTICAL",
+    "ALL": 0.986,
+    "rows": 3342.0,
+    "k_q": 5213,
+    "mean_n1": 1861.7
+   },
+   "pass": true
+  }
+ },
+ "mean_rows_over_the_three": 3460.5,
+ "verdict": "READY",
+ "utc": "2026-11-04T08:19:23Z"
+}

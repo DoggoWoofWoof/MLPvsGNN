@@ -1,0 +1,73 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "part": "coverage",
+ "dataset": "musique",
+ "carve": "s1sel",
+ "pick": "rrf50+none/both/kt_cos:nbc_l2.8@0.9",
+ "pools": {
+  "manifest": "outputs/u2zb/pools/musique__s1sel.json",
+  "manifest_sha256": "5919bfa73fc23b14b9536280f97e0b1f61890f3a24baa75ae596913c27a41217",
+  "file_sha256": "f827998ecdc5c3ba091f02ef927f92d707dcdcee3221029d12468c75cbf14ace",
+  "questions": 1534,
+  "rows": 6912845
+ },
+ "k_q": 7307,
+ "mean_n1": 2609.62,
+ "unified": {
+  "questions": 1534,
+  "no_gold": 0,
+  "golds": 4064,
+  "golds_held": 3999,
+  "ALL": 0.9615,
+  "ALL_ci": [
+   0.9511,
+   0.9707
+  ],
+  "gold_recall": 0.984,
+  "gold_recall_ci": [
+   0.9795,
+   0.988
+  ],
+  "recall_question_mean": 0.9847,
+  "recall_question_mean_ci": [
+   0.9804,
+   0.9885
+  ],
+  "rows_mean": 4506.4,
+  "rows_median": 4526.0,
+  "rows_p90": 4526.0,
+  "rows_max": 4527,
+  "rows_min": 4327,
+  "corpus": 117534,
+  "share_mean": 0.03834139790868359,
+  "share_median": 0.038508006193952386,
+  "hipporag2_candidates": 117534
+ },
+ "reproduction": {
+  "against": "U2e's evaluate on U2s's filed arrays at cell 0, base 0, recipe 2 (zu2z.eval_one's path)",
+  "u2s_stats_sha256": "0d01f755d6b00630e6034839b281a13169944d1bf78a7d5a62c6eebb8ccd9d6f",
+  "ALL_u2e": 0.9615,
+  "rows_u2e": 4506.4,
+  "k_q_u2e": 7307,
+  "mean_n1_u2s": 2609.62,
+  "mismatched_questions": {
+   "hits": 0,
+   "golds": 0,
+   "rows": 0
+  },
+  "verdict": "IDENTICAL"
+ },
+ "expected": {
+  "mean_n1": 2609.62,
+  "kq": 7307,
+  "rows": 4506.4,
+  "ALL": 0.9615
+ },
+ "pick_O_beside": {
+  "state": "none",
+  "why": "PKO builds no pools on s1sel"
+ },
+ "seconds": 7.8,
+ "utc": "2026-11-04T05:30:02Z"
+}

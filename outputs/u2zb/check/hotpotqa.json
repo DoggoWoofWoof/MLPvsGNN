@@ -1,0 +1,27 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "check": "5 (a)",
+ "dataset": "hotpotqa",
+ "carve": "s1sel",
+ "questions": 1508,
+ "covered": 1508,
+ "parts": {
+  "hotpotqa__s1sel__0of1.json": "afa9c493509543af518f8b34a14c662a70a6191730a5e424342451c4e7572355"
+ },
+ "against": {
+  "verdict": "outputs/u2s/verdict.json",
+  "verdict_sha256": "516cd92d4df8444f74b9c4b70e92c7483d3c97333d2dfd3666f959be949c47c2",
+  "record": "outputs/u2s/stats/hotpotqa__s1sel.json",
+  "record_sha256": "840db4ddfa1a72c75f2b094630ce6909edc3d9c95c8f4b08edf479def3d82af2",
+  "file_sha256": "42c4f0ed4472d9dfa2ff7d8256ff4ddc242c638fec4b46acaa23fd07f9959872",
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "choice": "outputs/u2z/choice.json",
+  "choice_sha256": "3214854b2afc9b135f4dc8b9d9bba3d8b90b6a360ed572261e950eaea6f1b717",
+  "n1": "outputs/u2zb/n1/hotpotqa__s1sel.json",
+  "n1_sha256": "f8a84ddae161933639052dcd4b2bdedd75a72aff1c7bf68ff8c0f26ef75fbb29"
+ },
+ "mismatches": {},
+ "verdict": "PASS",
+ "utc": "2026-11-04T05:46:48Z"
+}

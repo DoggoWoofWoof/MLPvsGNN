@@ -1,0 +1,94 @@
+{
+ "declared_in": "docs/U2Z_NEIGHBOURHOOD_BUDGET.md",
+ "stage": "U2zB",
+ "part": "coverage",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "pick": "rrf50+none/both/kt_cos:nbc_l2.8@0.9",
+ "pools": {
+  "manifest": "outputs/u2zb/pools/musique__s1eval.json",
+  "manifest_sha256": "c68ac5ca4291e0eea8abe22874c22e37dddf70d2f13c821182f936bf762ca314",
+  "file_sha256": "dbb9d9a019b7f5da5be096248efdcdd31ef99cea9305f8ef03dda6bc5bb9ac37",
+  "questions": 2417,
+  "rows": 9718818
+ },
+ "k_q": 6406,
+ "mean_n1": 2287.84,
+ "unified": {
+  "questions": 2417,
+  "no_gold": 0,
+  "golds": 6404,
+  "golds_held": 6215,
+  "ALL": 0.9334,
+  "ALL_ci": [
+   0.9235,
+   0.9429
+  ],
+  "gold_recall": 0.9705,
+  "gold_recall_ci": [
+   0.966,
+   0.9749
+  ],
+  "recall_question_mean": 0.977,
+  "recall_question_mean_ci": [
+   0.9734,
+   0.9806
+  ],
+  "rows_mean": 4021.0,
+  "rows_median": 4021.0,
+  "rows_p90": 4021.0,
+  "rows_max": 4023,
+  "rows_min": 4021,
+  "corpus": 117534,
+  "share_mean": 0.03421159186191418,
+  "share_median": 0.03421137713342522,
+  "hipporag2_candidates": 117534
+ },
+ "pick_O_beside": {
+  "questions": 2417,
+  "no_gold": 0,
+  "golds": 6404,
+  "golds_held": 6261,
+  "ALL": 0.9475,
+  "ALL_ci": [
+   0.9388,
+   0.9561
+  ],
+  "gold_recall": 0.9777,
+  "gold_recall_ci": [
+   0.9739,
+   0.9813
+  ],
+  "recall_question_mean": 0.9827,
+  "recall_question_mean_ci": [
+   0.9796,
+   0.9857
+  ],
+  "rows_mean": 5263.6,
+  "rows_median": 4980.0,
+  "rows_p90": 6490.0,
+  "rows_max": 12333,
+  "rows_min": 2111,
+  "corpus": 117534,
+  "share_mean": 0.04478380885802046,
+  "share_median": 0.042370718260248096,
+  "hipporag2_candidates": 117534,
+  "source": {
+   "parts": [
+    {
+     "file": "outputs/pko/pools/parts/musique__s1eval__0of1.npz",
+     "sha256": "6bcb58bd8a2ee319917be3fb4e777a1ca082af5f74a3c411bac6527f1a2333e3"
+    }
+   ]
+  },
+  "note": "pick O's pools of record (COV's); decides nothing",
+  "cov_record_check": {
+   "file": "outputs/cov/report.json",
+   "sha256": "d5ac4b83b51bdbfe365aff10ea3050c5914f16c2fed4c7ee513f3a88d556555f",
+   "verdict": "SAME",
+   "differs": {}
+  }
+ },
+ "seconds": 20.5,
+ "utc": "2026-11-04T09:00:50Z"
+}
