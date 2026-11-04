@@ -304,3 +304,72 @@ the pick against pick O, on s1sel: musique 0.816 (4,506.4 ÷ 5,522.2), hotpotqa 
 A verdict closes only the form it tests (docs/SCREENS.md, section 3b): this one carries depth read from the corpus's own
 `n_n1`, per corpus. Per-question depth from `n_n1` does no better. U2aa (section 4) is not needed unless stage B or C
 undoes the pick.
+
+## 8. Amendment A1: stage B1's carves, queue and coverage read (4 November 2026, declared before any s1eval or B1 number)
+
+Stage B1 is the pools pass and the coverage read of the carried pick `rrf50+none/both/kt_cos:nbc_l2.8@0.9` (E_ROW). It
+builds no look, cache, links or fit: those are stage B2 and stage C, and D1 (the user decides at the freeze) is not
+touched. Nothing trains, the build reads no gold, and the coverage decides nothing about any model.
+
+**A1.1 The files.** `outputs/mp_unified/zu2zb.py` and its host wrapper `outputs/mp_unified/zu2zbh.py` (zpkoh's mirror
+around it; no number changes). `zpko.py`, `zu2z.py`, `zu2s.py` and `zpkoh.py` are imported, not edited. `zu2zb.py`
+replaces section 7's five things in process (`zpko.pick_plan`, `u2s_verdict`, `u2s_filed` and `scripts`, with the
+opener and the rule that `zpko.pools_pass` takes as arguments) and adds the commands section 7 describes in words:
+- `n1`, the pass over the carve that records every question's one-link neighbourhood size (B, the steer and the
+  one-link table; no walk, no gold) and the carve's mean m, with k_q = round(2.8 m) by `zu2z.nbr_k` (D4's default: the
+  carve's own mean); the pools shards read k_q from this record and refuse to run without it;
+- `check` (the pools pass on U2s's carve with section 7's checks), `check-merge`, `pools`, `merge` (zpko's);
+- `coverage`, `gate` and `report`.
+
+**A1.2 The carves, in this order.**
+1. **s1sel of musique, hotpotqa and 2wiki** (1,534, 1,508 and 1,496 questions, one shard each), the reproduction: the
+   n1 pass, `check` (pools and section 7's checks in one pass), `check-merge`, `merge`, `coverage` (with U2e's `evaluate`
+   on U2s's filed arrays) and `gate`. The gate is READY only when, for every one of the three:
+   - the section 5 (a) check is PASS (IDENTICAL question for question on `u2s_fields`);
+   - the coverage's reproduction is IDENTICAL, question for question (held golds and rows);
+   - mean n1 is 2,609.62, 1,366.35 and 1,861.70, and k_q is 7,307, 3,826 and 5,213;
+   - mean |B| plus keep is 4,506.4, 2,533.0 and 3,342.0 rows (3,274.7 over the three);
+   - ALL is 0.9615, 0.9775 and 0.9860.
+
+   A miss stops the chain: every later item depends on the gate, and nothing after s1sel is built or read.
+2. **s1eval of the three** (2,417, 7,405 and 12,576 questions): the n1 pass (each carve's own mean, D4), the pools pass
+   in shards of at most 3,000 questions (1, 3 and 5 shards, as PKO's), merge, coverage.
+3. **B1's three settings** (b1w of musique, hotpotqa and 2wiki: HippoRAG 2's 1,000 questions and corpora, as
+   docs/B1P_PKO_CHAIN_ON_B1.md section 2 names them), opened inside zb1p's `on_b1`: n1 pass, pools pass (one shard),
+   merge, coverage.
+
+The fit carves (musique s1fit, hotpotqa fit, 2wiki fit) are not built: they matter only to stage C's refits (D1). One
+carve of a dataset is on the host at a time from the s1eval pools on; the pools files are small and no downstream step
+is built.
+
+**A1.3 The coverage read** (no model; on each carve, per question):
+- golds: the question's unique gold node ids from the carve's population (`pop.golds`, the labels the fits read);
+- hits: the golds inside the built pool (B plus the kept expansion, from the merged pools file);
+- **ALL**: questions with at least one gold and every gold inside / questions. It is the quantity stage A's ALL is
+  (`zu2z.eval_one` counts every question in the denominator) and U2e's `evaluate` held counts' ALL;
+- **gold recall**: golds inside / golds (COV 25ce7d7's gold share);
+- **rows**: the pool's size as mean, median, 90th percentile and maximum, and the mean as a share of the carve's corpus
+  (its node count);
+- **pick O's beside**, on the same questions, deciding nothing: the same measures on PKO's pools of record
+  (`outputs/pko/pools`; B1P's for b1w) where they exist, otherwise "not built" (PKO built no s1sel pools);
+- on B1, **HippoRAG 2's candidate set** beside, which is every passage (100% of the corpus), because its walk scores the
+  whole graph.
+
+On s1sel the per-question hits and rows must equal U2e's `evaluate` on U2s's filed arrays for the carried candidate
+(section 7). On s1eval and B1 the numbers are the read that counts: the pick was chosen on s1sel (1,325,520 candidates)
+and neither carve was read by the choice.
+
+**A1.4 Shards, item names and resources.** Host jobs are named `u2z-...` and run PKOH's way (`zu2zbh.py`, the mirror,
+BLAS at 2 threads, 2 CPUs; memory from PKOH's measured peaks for the same carves: musique 9.5 GB, hotpotqa and 2wiki
+7.0 GB, a merge 2 to 4 GB; raised where the development run measures more). The items go into the host queue above the
+first `dob-cap-` item, retried by `retry_cmd.py` on a file race only. Names: `u2z-n1-<d>-<c>`, `u2z-chk-<d>` (the s1sel
+check pass), `u2z-<d>-<c>-p<i>` (pools shards), `u2z-cm-<d>` (check-merge), `u2z-mg-<d>-<c>` (merge),
+`u2z-cov-<d>-<c>`, `u2z-gate` and `u2z-report`, with d in `mu`, `hp`, `2w` and c in `sl` (s1sel), `e` (s1eval), `b1`.
+
+**A1.5 Outputs.** Under `outputs/u2zb/` on the host: `n1/`, `pools/`, `check/`, `cov/`, `gate.json`. The n1 records,
+the coverage records, `gate.json`, `coverage.json` and `coverage.md` are small and are fetched and committed (host names
+masked); the pools, KT rows and parts stay on the host, as PKO's do.
+
+**A1.6 What is not decided here.** D1, D2 and D4 stand as sections 4, 6 and 7 give them (default first: the pools and
+coverage now, no refit queued, 2x the row price, each carve's own mean). Stage B1 files the coverage and localization
+record; it decides nothing about models or about pick O.
