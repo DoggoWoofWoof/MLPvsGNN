@@ -164,3 +164,19 @@ this amendment. No ISB fit has run.
 
 **What does not change.** Sections 1 to 8: the arm, the fits, the rule and what follows. After the freeze, an amendment that
 changes only these items' dependencies releases the hold.
+
+## 10. Amendment A2, 4 November 2026, before any ISB fit: ISB's hold is released and ISB goes behind IRA's seeds
+
+**What happened.** A1 parked ISB because an ISB REPLACE would change the base under the GNN forms screened on zg6r. By 23:24 IST on
+4 November every one of them had closed on zg6r: GNX NO_GAIN (ec09b5a), GNP NO_GAIN (033d1a9), GNW NO_GAIN under the six-read rule
+(86d8508), LTX NO_GAIN (99caf82), GNR NO_GAIN (c33bb44), GNT NOT_ADOPTED (4d62c5d) and GNS NO_GAIN (bbccb41). Only IRA's screen passed
+(fc2186e), and its full run is queued. The stack gate found IRA alone ("no stack"). The card now holds FSV's GNN L3 fits and IRA's
+seeds, well under the 24 hours of declared GPU work the user asked to keep queued (17 and 20 October). ISB's screen (about 7.5 hours)
+and full run (about 12 hours) still end before the freeze (00:00 IST on 7 November) if they start behind IRA's four fits.
+
+**The change.** `isb-s0` and `isb-s0-hp` no longer wait on `hold-isb-after-freeze`. Both items move in the queue to just after IRA's
+seeds (`ira-re-compare-full`), so that IRA's fits take the card first; ISB's other items stay behind `isb-gate`. If ISB's full run
+cannot be filed before the freeze, its screen is filed beside and nothing replaces zg6r: a form adopted on zg6r stays the GNN of
+record (section 6).
+
+**What does not change.** Sections 1 to 8: the arm, the fits, the rule and what follows.
