@@ -1,0 +1,399 @@
+{
+ "stage": "IRA",
+ "declared_in": "docs/IRA_ITERATIVE_ALIGNMENT.md",
+ "arm": "zg6r with 2 rounds and 4 aligned slots",
+ "iso_verdict": "KEEP",
+ "base": "zg6r (ML1)",
+ "dep": {
+  "screen": "ADOPT_FOR_FULL_RUN",
+  "full_run": null
+ },
+ "screen": {
+  "verdict": "ADOPT_FOR_FULL_RUN",
+  "problems": [],
+  "reads": [
+   {
+    "split": "WQ-musique",
+    "read": "metaqa",
+    "base": [
+     0.3615,
+     0.3477,
+     0.3461
+    ],
+    "new": 0.3964,
+    "delta": 0.0349,
+    "floor": 0.0292,
+    "call": "GAIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "squad",
+    "base": [
+     0.9142,
+     0.9145,
+     0.9163
+    ],
+    "new": 0.9132,
+    "delta": -0.001,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique",
+    "base": [
+     0.5086,
+     0.5039,
+     0.5134
+    ],
+    "new": 0.5129,
+    "delta": 0.0043,
+    "floor": 0.0095,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "hotpotqa",
+    "base": [
+     0.8593,
+     0.8596,
+     0.8562
+    ],
+    "new": 0.8594,
+    "delta": 0.0001,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "2wiki",
+    "base": [
+     0.9269,
+     0.9297,
+     0.9215
+    ],
+    "new": 0.9296,
+    "delta": 0.0027,
+    "floor": 0.0086,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "webqsp",
+    "base": [
+     0.6632,
+     0.6586,
+     0.6593
+    ],
+    "new": 0.6718,
+    "delta": 0.0086,
+    "floor": 0.0085,
+    "call": "GAIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "metaqa",
+    "base": [
+     0.3519,
+     0.3903,
+     0.3651
+    ],
+    "new": 0.3612,
+    "delta": 0.0093,
+    "floor": 0.0574,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "squad",
+    "base": [
+     0.9139,
+     0.914,
+     0.9127
+    ],
+    "new": 0.9116,
+    "delta": -0.0023,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique",
+    "base": [
+     0.5912,
+     0.5988,
+     0.5939
+    ],
+    "new": 0.5945,
+    "delta": 0.0033,
+    "floor": 0.0114,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "hotpotqa",
+    "base": [
+     0.8004,
+     0.7943,
+     0.784
+    ],
+    "new": 0.8065,
+    "delta": 0.0061,
+    "floor": 0.0247,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "2wiki",
+    "base": [
+     0.9296,
+     0.929,
+     0.9276
+    ],
+    "new": 0.9288,
+    "delta": -0.0008,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "webqsp",
+    "base": [
+     0.6658,
+     0.6512,
+     0.6523
+    ],
+    "new": 0.67,
+    "delta": 0.0042,
+    "floor": 0.0281,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-3hop",
+    "base": [
+     0.4329,
+     0.4272,
+     0.4404
+    ],
+    "new": 0.4325,
+    "delta": -0.0004,
+    "floor": 0.0133,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-4hop",
+    "base": [
+     0.313,
+     0.3167,
+     0.3179
+    ],
+    "new": 0.3123,
+    "delta": -0.0006,
+    "floor": 0.0087,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-3hop",
+    "base": [
+     0.5333,
+     0.5443,
+     0.543
+    ],
+    "new": 0.536,
+    "delta": 0.0026,
+    "floor": 0.0207,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-4hop",
+    "base": [
+     0.3765,
+     0.3833,
+     0.3772
+    ],
+    "new": 0.3864,
+    "delta": 0.0099,
+    "floor": 0.0096,
+    "call": "GAIN"
+   }
+  ],
+  "counts": {
+   "GAIN": 3,
+   "LOSS": 0,
+   "WITHIN": 13
+  }
+ },
+ "full_run": null,
+ "problems": [],
+ "parameters": {
+  "scr-ira-k4-s0": {
+   "rounds": 2,
+   "slots": 4,
+   "sinkhorn_iters": 50,
+   "ira_parameters": 579,
+   "parameters_h128": 180797,
+   "layers": 3
+  },
+  "scr-ira-k4-s0-hp": {
+   "rounds": 2,
+   "slots": 4,
+   "sinkhorn_iters": 50,
+   "ira_parameters": 579,
+   "parameters_h128": 180797,
+   "layers": 3
+  }
+ },
+ "beside": {
+  "rtr_screen": {
+   "verdict": "NO_GAIN",
+   "counts": {
+    "GAIN": 0,
+    "LOSS": 0,
+    "WITHIN": 16
+   },
+   "reads": [
+    {
+     "split": "WQ-musique",
+     "read": "metaqa",
+     "new": 0.3364,
+     "delta": -0.0251,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "squad",
+     "new": 0.9133,
+     "delta": -0.0009,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "musique",
+     "new": 0.5149,
+     "delta": 0.0063,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "hotpotqa",
+     "new": 0.8577,
+     "delta": -0.0016,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "2wiki",
+     "new": 0.9275,
+     "delta": 0.0006,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "webqsp",
+     "new": 0.6639,
+     "delta": 0.0007,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "metaqa",
+     "new": 0.3464,
+     "delta": -0.0055,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "squad",
+     "new": 0.9137,
+     "delta": -0.0002,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique",
+     "new": 0.5926,
+     "delta": 0.0014,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "hotpotqa",
+     "new": 0.7949,
+     "delta": -0.0055,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "2wiki",
+     "new": 0.931,
+     "delta": 0.0014,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "webqsp",
+     "new": 0.675,
+     "delta": 0.0092,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "musique-3hop",
+     "new": 0.443,
+     "delta": 0.0101,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-musique",
+     "read": "musique-4hop",
+     "new": 0.3068,
+     "delta": -0.0062,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-3hop",
+     "new": 0.543,
+     "delta": 0.0096,
+     "call": "WITHIN"
+    },
+    {
+     "split": "WQ-hotpotqa",
+     "read": "musique-4hop",
+     "new": 0.3772,
+     "delta": 0.0006,
+     "call": "WITHIN"
+    }
+   ]
+  },
+  "plan": {
+   "scr-ira-k4-s0": {
+    "lam_raw": 0.11423169821500778,
+    "lam": 0.11423169821500778,
+    "bz": 1.7751119136810303,
+    "b0": -0.0022022670600563288,
+    "norm_E": 4.962234973907471,
+    "norm_e": 0.45932695269584656,
+    "norm_a": 6.569916248321533
+   },
+   "scr-ira-k4-s0-hp": {
+    "lam_raw": -0.012895619496703148,
+    "lam": 0.0,
+    "bz": 1.5333930253982544,
+    "b0": -0.0010743478778749704,
+    "norm_E": 5.101677894592285,
+    "norm_e": 0.5211893320083618,
+    "norm_a": 5.159237384796143
+   }
+  }
+ },
+ "next_form_by_rule": null,
+ "zira_sha256": "084f61911ee45451f5a963ef960737bd93cb7991de230594bf6bbe37b04afd8c",
+ "zrtr_sha256": "d472527860f4a7d56a528fdab355055d9ce42d77e5aa3c42b155de1b299627cb",
+ "zdep_sha256": "d8166738000ec12084356b3934f7e27bcc8df87d9546a71674592b1ff3f33ee1",
+ "utc": "2026-11-04T03:02:50Z"
+}

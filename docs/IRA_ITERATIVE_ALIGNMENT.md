@@ -334,4 +334,17 @@ section 6's rows and A4's full run for the stack.
 
 ## Results
 
-None yet.
+**The screen, 4 November 2026 (08:34 IST).** Filed in `outputs/ira/calls.json` and `calls.md`; the six-read rule's call
+in `outputs/www/ira.json`. The seed-0 stop said GO and the screen's fits ran (`ira-re-k4-s0` and `ira-re-k4-s0-hp`).
+
+| rule | verdict | counts | GAIN reads |
+|---|---|---|---|
+| own (DEP's sixteen reads) | ADOPT_FOR_FULL_RUN | 3 GAIN, 0 LOSS, 13 WITHIN | WQ-musique metaqa +0.0349 (floor 0.0292); WQ-musique webqsp +0.0086 (0.0085); WQ-hotpotqa musique-4hop +0.0099 (0.0096) |
+| WWW (the six reads, 6cb8f39) | ADOPT_FOR_FULL_RUN | 1 GAIN, 0 LOSS, 5 WITHIN | WQ-hotpotqa musique-4hop +0.0099 (0.0096) |
+
+- The gain on the six is one read and a margin of 0.0003 over its floor: a seed-0 screen, so seeds 1 and 2 decide.
+- Beside, deciding nothing: RTR's screen on the same base is NO_GAIN (16 WITHIN). The two screen fits' lambda is 0.1142
+  (`scr-ira-k4-s0`) and 0.0000 (`scr-ira-k4-s0-hp`).
+- **What follows (section 6's table, fixed before the fit):** `ira-re-gate` passed at 08:33, so the full run's fits
+  (`ira-re-k4-s1`, `-s2`, `-s1-hp`, `-s2-hp`) go on the queue behind `stk-own-ira`, and `ira-re-calls-full` files the
+  full run's verdict under both rules.
