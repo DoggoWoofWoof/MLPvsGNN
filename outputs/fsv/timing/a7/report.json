@@ -1,0 +1,1429 @@
+{
+ "label": "A7 forms (warm batches of 16)",
+ "amendment": "docs/FSV_FAST_VERSIONS.md section 14 (A7)",
+ "recipe": {
+  "cells": "ms per question = a batch's forward time / 16, p50 / p95 over the batches and rounds",
+  "ratio": "GNN / MLP of the p50s, paired by batch and round, 2.5th and 97.5th percentiles over 2000 resamples of the batch times with replacement (numpy default_rng(0))"
+ },
+ "passes": {
+  "b2": {
+   "label": "BLAS 2 (the record)",
+   "datasets": {
+    "musique": {
+     "batches": 12,
+     "reps": 5,
+     "blas": 2,
+     "utc": "2026-11-04T19:28:15Z",
+     "fits": {
+      "mlp": "scr-ltm-zrckpn-s0-hp",
+      "gnn": "scr-ml1-zg6r-s0-hp"
+     },
+     "threads": {
+      "blas_declared": 2,
+      "torch": 1,
+      "numba": 1,
+      "pools": [
+       [
+        "openblas",
+        2,
+        "libscipy_openblas64_-860d95b1c38e637ce4509f5fa24fbf2a.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiomp5md.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiompstubs5md.dll"
+       ],
+       [
+        "openblas",
+        2,
+        "libscipy_openblas-6b2103f2ae4d8547998b5d188e9801fb.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ]
+      ]
+     },
+     "script_sha256": {
+      "zfsvc": "8aedf4512ce4356e4347705784b28973e04765de080d2598b95eaafb56051214",
+      "zfsvt": "8cf976936afa7c0021109d675b111623b93c1cbdd2b79ecd3db82165d2fba3fc",
+      "zfsvx": "e21ee587c649a866c6fbe9c057b707f27ab1ea18f88d7f759427f67f9f25dbe5",
+      "zfsvy": "6f0ff23f4490e77cd032d9d78bc133c396a5b3a247df31f72f6240002d5aaa1a",
+      "zfsvy_b16": "d727d49236ad9b78c8744dd9aba19ae1cdcb8b2da67c2e6811f6956df3257317"
+     },
+     "forms": {
+      "fast_index": {
+       "seconds": 1.748360799974762,
+       "numbering_s": 1.42494360008277,
+       "records_s": 0.27896709996275604,
+       "bytes": 80339772
+      },
+      "stats": {
+       "lean_rule_x": 395,
+       "setup_fast": 1,
+       "g6r_step_x": 579,
+       "g6r_step_orig": 0,
+       "unit_fallback": 74
+      },
+      "stats_y": {
+       "zref_x": 8036,
+       "zref_orig": 0,
+       "next_x": 193,
+       "unit_x": 193,
+       "links_x": 386,
+       "links_orig": 0
+      },
+      "stats_b": {
+       "step_b": 432,
+       "step_orig": 0
+      }
+     },
+     "load": {
+      "pinned": true,
+      "lps": [
+       2,
+       4
+      ],
+      "before": {
+       "pinned_lps_mean": 40.25,
+       "all_lps_mean": 18.1875,
+       "all_lps_max": 78.5,
+       "lps_over_50": 2,
+       "n_lps": 32,
+       "per_lp": [
+        76.1,
+        0.0,
+        46.2,
+        3.0,
+        34.3,
+        0.0,
+        35.9,
+        0.0,
+        0.0,
+        35.9,
+        39.1,
+        0.0,
+        43.8,
+        0.0,
+        35.4,
+        0.0,
+        42.2,
+        10.6,
+        7.2,
+        1.7,
+        24.2,
+        12.1,
+        6.6,
+        1.5,
+        16.9,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        78.5,
+        10.8,
+        20.0
+       ]
+      },
+      "after": {
+       "pinned_lps_mean": 23.1,
+       "all_lps_mean": 20.86875,
+       "all_lps_max": 86.2,
+       "lps_over_50": 5,
+       "n_lps": 32,
+       "per_lp": [
+        83.2,
+        0.0,
+        0.0,
+        62.5,
+        46.2,
+        0.0,
+        26.2,
+        0.0,
+        83.3,
+        0.0,
+        0.0,
+        86.2,
+        34.4,
+        0.0,
+        43.8,
+        0.0,
+        23.4,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        70.3,
+        41.5,
+        9.4,
+        1.5,
+        3.1,
+        32.8,
+        12.5,
+        4.5,
+        1.5
+       ]
+      }
+     },
+     "checks": {
+      "gnn_a7_same_bytes_as_m5": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "mlp:m5": {
+       "failing": 0,
+       "max_diff": 1.7881393432617188e-05,
+       "questions": 192
+      },
+      "gnn:m5": {
+       "failing": 0,
+       "max_diff": 7.152557373046875e-06,
+       "questions": 192
+      },
+      "gnn:a7": {
+       "failing": 0,
+       "max_diff": 7.152557373046875e-06,
+       "questions": 192
+      }
+     },
+     "stop": false,
+     "ms_per_question": {
+      "mlp:m5": {
+       "p50": 11.680471874569776,
+       "p95": 18.501717811886916,
+       "n": 60
+      },
+      "gnn:m5": {
+       "p50": 181.32958437490743,
+       "p95": 277.61018905948725,
+       "n": 60
+      },
+      "gnn:a7": {
+       "p50": 52.8344843769446,
+       "p95": 70.70314218399288,
+       "n": 60
+      }
+     },
+     "ratios_gnn_over_mlp": {
+      "module_step": {
+       "ratio": 15.524166003061097,
+       "lo": 14.846665999860104,
+       "hi": 16.141015818564483,
+       "n": 60
+      },
+      "batched_step": {
+       "ratio": 4.5233176317108885,
+       "lo": 4.340844585733758,
+       "hi": 4.65671491586146,
+       "n": 60
+      }
+     },
+     "gnn_speedup_p50": 3.432030926642946
+    },
+    "hotpotqa": {
+     "batches": 12,
+     "reps": 5,
+     "blas": 2,
+     "utc": "2026-11-04T19:14:13Z",
+     "fits": {
+      "mlp": "scr-ltm-zrckpn-s0",
+      "gnn": "scr-ml1-zg6r-s0"
+     },
+     "threads": {
+      "blas_declared": 2,
+      "torch": 1,
+      "numba": 1,
+      "pools": [
+       [
+        "openblas",
+        2,
+        "libscipy_openblas64_-860d95b1c38e637ce4509f5fa24fbf2a.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiomp5md.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiompstubs5md.dll"
+       ],
+       [
+        "openblas",
+        2,
+        "libscipy_openblas-6b2103f2ae4d8547998b5d188e9801fb.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ]
+      ]
+     },
+     "script_sha256": {
+      "zfsvc": "8aedf4512ce4356e4347705784b28973e04765de080d2598b95eaafb56051214",
+      "zfsvt": "8cf976936afa7c0021109d675b111623b93c1cbdd2b79ecd3db82165d2fba3fc",
+      "zfsvx": "e21ee587c649a866c6fbe9c057b707f27ab1ea18f88d7f759427f67f9f25dbe5",
+      "zfsvy": "6f0ff23f4490e77cd032d9d78bc133c396a5b3a247df31f72f6240002d5aaa1a",
+      "zfsvy_b16": "d727d49236ad9b78c8744dd9aba19ae1cdcb8b2da67c2e6811f6956df3257317"
+     },
+     "forms": {
+      "fast_index": {
+       "seconds": 10.889661499997601,
+       "numbering_s": 8.753800800070167,
+       "records_s": 2.0831349999643862,
+       "bytes": 1662659608
+      },
+      "stats": {
+       "lean_rule_x": 395,
+       "setup_fast": 1,
+       "g6r_step_x": 579,
+       "g6r_step_orig": 0,
+       "unit_fallback": 68
+      },
+      "stats_y": {
+       "zref_x": 8036,
+       "zref_orig": 0,
+       "next_x": 193,
+       "unit_x": 193,
+       "links_x": 386,
+       "links_orig": 0
+      },
+      "stats_b": {
+       "step_b": 432,
+       "step_orig": 0
+      }
+     },
+     "load": {
+      "pinned": true,
+      "lps": [
+       2,
+       4
+      ],
+      "before": {
+       "pinned_lps_mean": 21.1,
+       "all_lps_mean": 17.771874999999998,
+       "all_lps_max": 75.8,
+       "lps_over_50": 3,
+       "n_lps": 32,
+       "per_lp": [
+        73.6,
+        0.0,
+        21.9,
+        0.0,
+        20.3,
+        0.0,
+        37.5,
+        0.0,
+        24.6,
+        0.0,
+        29.2,
+        0.0,
+        30.8,
+        0.0,
+        43.8,
+        0.0,
+        15.6,
+        0.0,
+        0.0,
+        0.0,
+        75.8,
+        14.1,
+        9.7,
+        17.6,
+        68.8,
+        20.3,
+        1.6,
+        3.2,
+        36.9,
+        21.0,
+        2.4,
+        0.0
+       ]
+      },
+      "after": {
+       "pinned_lps_mean": 34.05,
+       "all_lps_mean": 18.921875,
+       "all_lps_max": 82.8,
+       "lps_over_50": 4,
+       "n_lps": 32,
+       "per_lp": [
+        66.3,
+        0.0,
+        28.1,
+        0.0,
+        40.0,
+        0.0,
+        43.8,
+        0.0,
+        0.0,
+        25.0,
+        40.6,
+        0.0,
+        0.0,
+        40.6,
+        37.5,
+        0.0,
+        15.9,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        82.8,
+        17.5,
+        7.8,
+        67.2,
+        14.3,
+        6.3,
+        1.6,
+        50.8,
+        12.7,
+        5.1,
+        1.6
+       ]
+      }
+     },
+     "checks": {
+      "gnn_a7_same_bytes_as_m5": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "mlp:m5": {
+       "failing": 0,
+       "max_diff": 2.384185791015625e-06,
+       "questions": 192
+      },
+      "gnn:m5": {
+       "failing": 0,
+       "max_diff": 5.9604644775390625e-06,
+       "questions": 192
+      },
+      "gnn:a7": {
+       "failing": 0,
+       "max_diff": 5.9604644775390625e-06,
+       "questions": 192
+      }
+     },
+     "stop": false,
+     "ms_per_question": {
+      "mlp:m5": {
+       "p50": 1.9303937478980515,
+       "p95": 2.6898643740423718,
+       "n": 60
+      },
+      "gnn:m5": {
+       "p50": 10.80222812743159,
+       "p95": 12.519313128723297,
+       "n": 60
+      },
+      "gnn:a7": {
+       "p50": 5.986453124933178,
+       "p95": 7.4842212517978615,
+       "n": 60
+      }
+     },
+     "ratios_gnn_over_mlp": {
+      "module_step": {
+       "ratio": 5.5958677545416915,
+       "lo": 5.342061701031312,
+       "hi": 5.83594774703163,
+       "n": 60
+      },
+      "batched_step": {
+       "ratio": 3.1011565031494994,
+       "lo": 2.9678613097167728,
+       "hi": 3.220920543372029,
+       "n": 60
+      }
+     },
+     "gnn_speedup_p50": 1.8044454540938493
+    },
+    "2wiki": {
+     "batches": 12,
+     "reps": 5,
+     "blas": 2,
+     "utc": "2026-11-04T19:36:33Z",
+     "fits": {
+      "mlp": "scr-ltm-zrckpn-s0",
+      "gnn": "scr-ml1-zg6r-s0"
+     },
+     "threads": {
+      "blas_declared": 2,
+      "torch": 1,
+      "numba": 1,
+      "pools": [
+       [
+        "openblas",
+        2,
+        "libscipy_openblas64_-860d95b1c38e637ce4509f5fa24fbf2a.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiomp5md.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiompstubs5md.dll"
+       ],
+       [
+        "openblas",
+        2,
+        "libscipy_openblas-6b2103f2ae4d8547998b5d188e9801fb.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ]
+      ]
+     },
+     "script_sha256": {
+      "zfsvc": "8aedf4512ce4356e4347705784b28973e04765de080d2598b95eaafb56051214",
+      "zfsvt": "8cf976936afa7c0021109d675b111623b93c1cbdd2b79ecd3db82165d2fba3fc",
+      "zfsvx": "e21ee587c649a866c6fbe9c057b707f27ab1ea18f88d7f759427f67f9f25dbe5",
+      "zfsvy": "6f0ff23f4490e77cd032d9d78bc133c396a5b3a247df31f72f6240002d5aaa1a",
+      "zfsvy_b16": "d727d49236ad9b78c8744dd9aba19ae1cdcb8b2da67c2e6811f6956df3257317"
+     },
+     "forms": {
+      "fast_index": {
+       "seconds": 10.958939100033604,
+       "numbering_s": 8.6991180999903,
+       "records_s": 2.2324586999602616,
+       "bytes": 2863907604
+      },
+      "stats": {
+       "lean_rule_x": 395,
+       "setup_fast": 1,
+       "g6r_step_x": 579,
+       "g6r_step_orig": 0,
+       "unit_fallback": 37
+      },
+      "stats_y": {
+       "zref_x": 8036,
+       "zref_orig": 0,
+       "next_x": 193,
+       "unit_x": 193,
+       "links_x": 386,
+       "links_orig": 0
+      },
+      "stats_b": {
+       "step_b": 432,
+       "step_orig": 0
+      }
+     },
+     "load": {
+      "pinned": true,
+      "lps": [
+       2,
+       4
+      ],
+      "before": {
+       "pinned_lps_mean": 46.85,
+       "all_lps_mean": 19.68125,
+       "all_lps_max": 92.2,
+       "lps_over_50": 5,
+       "n_lps": 32,
+       "per_lp": [
+        70.6,
+        0.0,
+        62.5,
+        0.0,
+        31.2,
+        0.0,
+        53.8,
+        0.0,
+        92.2,
+        0.0,
+        90.6,
+        0.0,
+        49.3,
+        0.0,
+        42.2,
+        0.0,
+        50.0,
+        11.1,
+        0.0,
+        0.0,
+        42.2,
+        6.3,
+        0.0,
+        0.0,
+        20.0,
+        0.0,
+        0.0,
+        0.0,
+        7.8,
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "after": {
+       "pinned_lps_mean": 37.5,
+       "all_lps_mean": 10.746875,
+       "all_lps_max": 71.9,
+       "lps_over_50": 2,
+       "n_lps": 32,
+       "per_lp": [
+        15.8,
+        0.0,
+        3.1,
+        0.0,
+        71.9,
+        1.1,
+        44.4,
+        0.0,
+        0.0,
+        65.6,
+        50.0,
+        0.0,
+        22.7,
+        0.0,
+        15.4,
+        0.0,
+        0.0,
+        15.4,
+        0.0,
+        0.0,
+        16.9,
+        3.1,
+        0.0,
+        0.0,
+        13.6,
+        0.0,
+        0.0,
+        0.0,
+        4.9,
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "checks": {
+      "gnn_a7_same_bytes_as_m5": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "mlp:m5": {
+       "failing": 0,
+       "max_diff": 1.9073486328125e-06,
+       "questions": 192
+      },
+      "gnn:m5": {
+       "failing": 0,
+       "max_diff": 5.7220458984375e-06,
+       "questions": 192
+      },
+      "gnn:a7": {
+       "failing": 0,
+       "max_diff": 5.7220458984375e-06,
+       "questions": 192
+      }
+     },
+     "stop": false,
+     "ms_per_question": {
+      "mlp:m5": {
+       "p50": 2.8014937524858397,
+       "p95": 5.366418748235445,
+       "n": 60
+      },
+      "gnn:m5": {
+       "p50": 16.3243937495281,
+       "p95": 24.137935935505084,
+       "n": 60
+      },
+      "gnn:a7": {
+       "p50": 9.05327500004205,
+       "p95": 15.20113031474466,
+       "n": 60
+      }
+     },
+     "ratios_gnn_over_mlp": {
+      "module_step": {
+       "ratio": 5.8270320021392275,
+       "lo": 5.4547798318216,
+       "hi": 6.54931209856257,
+       "n": 60
+      },
+      "batched_step": {
+       "ratio": 3.231588502386928,
+       "lo": 3.0331199344909017,
+       "hi": 3.5269175278154394,
+       "n": 60
+      }
+     },
+     "gnn_speedup_p50": 1.8031478939336625
+    }
+   }
+  },
+  "b1": {
+   "label": "BLAS 1 (beside the record)",
+   "datasets": {
+    "musique": {
+     "batches": 12,
+     "reps": 5,
+     "blas": 1,
+     "utc": "2026-11-04T19:28:15Z",
+     "fits": {
+      "mlp": "scr-ltm-zrckpn-s0-hp",
+      "gnn": "scr-ml1-zg6r-s0-hp"
+     },
+     "threads": {
+      "blas_declared": 1,
+      "torch": 1,
+      "numba": 1,
+      "pools": [
+       [
+        "openblas",
+        1,
+        "libscipy_openblas64_-860d95b1c38e637ce4509f5fa24fbf2a.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiomp5md.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiompstubs5md.dll"
+       ],
+       [
+        "openblas",
+        1,
+        "libscipy_openblas-6b2103f2ae4d8547998b5d188e9801fb.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ]
+      ]
+     },
+     "script_sha256": {
+      "zfsvc": "8aedf4512ce4356e4347705784b28973e04765de080d2598b95eaafb56051214",
+      "zfsvt": "8cf976936afa7c0021109d675b111623b93c1cbdd2b79ecd3db82165d2fba3fc",
+      "zfsvx": "e21ee587c649a866c6fbe9c057b707f27ab1ea18f88d7f759427f67f9f25dbe5",
+      "zfsvy": "6f0ff23f4490e77cd032d9d78bc133c396a5b3a247df31f72f6240002d5aaa1a",
+      "zfsvy_b16": "d727d49236ad9b78c8744dd9aba19ae1cdcb8b2da67c2e6811f6956df3257317"
+     },
+     "forms": {
+      "fast_index": {
+       "seconds": 1.748360799974762,
+       "numbering_s": 1.42494360008277,
+       "records_s": 0.27896709996275604,
+       "bytes": 80339772
+      },
+      "stats": {
+       "lean_rule_x": 395,
+       "setup_fast": 1,
+       "g6r_step_x": 579,
+       "g6r_step_orig": 0,
+       "unit_fallback": 74
+      },
+      "stats_y": {
+       "zref_x": 8036,
+       "zref_orig": 0,
+       "next_x": 193,
+       "unit_x": 193,
+       "links_x": 386,
+       "links_orig": 0
+      },
+      "stats_b": {
+       "step_b": 432,
+       "step_orig": 0
+      }
+     },
+     "load": {
+      "pinned": true,
+      "lps": [
+       2,
+       4
+      ],
+      "before": {
+       "pinned_lps_mean": 17.95,
+       "all_lps_mean": 22.628125,
+       "all_lps_max": 86.3,
+       "lps_over_50": 8,
+       "n_lps": 32,
+       "per_lp": [
+        86.3,
+        0.0,
+        0.0,
+        71.9,
+        35.9,
+        0.0,
+        39.1,
+        0.0,
+        81.2,
+        0.0,
+        0.0,
+        86.2,
+        58.5,
+        0.0,
+        46.2,
+        0.0,
+        14.3,
+        1.3,
+        0.0,
+        0.0,
+        3.4,
+        0.0,
+        0.0,
+        57.8,
+        50.8,
+        10.9,
+        0.0,
+        3.1,
+        58.5,
+        11.1,
+        4.5,
+        3.1
+       ]
+      },
+      "after": {
+       "pinned_lps_mean": 40.7,
+       "all_lps_mean": 4.95625,
+       "all_lps_max": 70.5,
+       "lps_over_50": 1,
+       "n_lps": 32,
+       "per_lp": [
+        0.0,
+        0.0,
+        10.9,
+        0.0,
+        70.5,
+        0.0,
+        3.9,
+        0.0,
+        21.5,
+        0.0,
+        29.7,
+        0.0,
+        0.0,
+        0.0,
+        1.6,
+        0.0,
+        0.0,
+        0.0,
+        6.2,
+        1.6,
+        1.6,
+        1.6,
+        0.0,
+        0.0,
+        4.6,
+        1.8,
+        0.0,
+        0.0,
+        3.1,
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "checks": {
+      "gnn_a7_same_bytes_as_m5": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "mlp:m5": {
+       "failing": 0,
+       "max_diff": 1.7881393432617188e-05,
+       "questions": 192
+      },
+      "gnn:m5": {
+       "failing": 0,
+       "max_diff": 7.152557373046875e-06,
+       "questions": 192
+      },
+      "gnn:a7": {
+       "failing": 0,
+       "max_diff": 7.152557373046875e-06,
+       "questions": 192
+      }
+     },
+     "stop": false,
+     "ms_per_question": {
+      "mlp:m5": {
+       "p50": 11.770724999223603,
+       "p95": 15.42209562867356,
+       "n": 60
+      },
+      "gnn:m5": {
+       "p50": 180.95420312238275,
+       "p95": 275.8957700047176,
+       "n": 60
+      },
+      "gnn:a7": {
+       "p50": 52.397965624550125,
+       "p95": 74.60887531233311,
+       "n": 60
+      }
+     },
+     "ratios_gnn_over_mlp": {
+      "module_step": {
+       "ratio": 15.373241931513862,
+       "lo": 14.84859814647862,
+       "hi": 16.303257693241175,
+       "n": 60
+      },
+      "batched_step": {
+       "ratio": 4.451549554339796,
+       "lo": 4.357217319881528,
+       "hi": 4.620840355474643,
+       "n": 60
+      }
+     },
+     "gnn_speedup_p50": 3.4534585640019566
+    },
+    "hotpotqa": {
+     "batches": 12,
+     "reps": 5,
+     "blas": 1,
+     "utc": "2026-11-04T19:14:13Z",
+     "fits": {
+      "mlp": "scr-ltm-zrckpn-s0",
+      "gnn": "scr-ml1-zg6r-s0"
+     },
+     "threads": {
+      "blas_declared": 1,
+      "torch": 1,
+      "numba": 1,
+      "pools": [
+       [
+        "openblas",
+        1,
+        "libscipy_openblas64_-860d95b1c38e637ce4509f5fa24fbf2a.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiomp5md.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiompstubs5md.dll"
+       ],
+       [
+        "openblas",
+        1,
+        "libscipy_openblas-6b2103f2ae4d8547998b5d188e9801fb.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ]
+      ]
+     },
+     "script_sha256": {
+      "zfsvc": "8aedf4512ce4356e4347705784b28973e04765de080d2598b95eaafb56051214",
+      "zfsvt": "8cf976936afa7c0021109d675b111623b93c1cbdd2b79ecd3db82165d2fba3fc",
+      "zfsvx": "e21ee587c649a866c6fbe9c057b707f27ab1ea18f88d7f759427f67f9f25dbe5",
+      "zfsvy": "6f0ff23f4490e77cd032d9d78bc133c396a5b3a247df31f72f6240002d5aaa1a",
+      "zfsvy_b16": "d727d49236ad9b78c8744dd9aba19ae1cdcb8b2da67c2e6811f6956df3257317"
+     },
+     "forms": {
+      "fast_index": {
+       "seconds": 10.889661499997601,
+       "numbering_s": 8.753800800070167,
+       "records_s": 2.0831349999643862,
+       "bytes": 1662659608
+      },
+      "stats": {
+       "lean_rule_x": 395,
+       "setup_fast": 1,
+       "g6r_step_x": 579,
+       "g6r_step_orig": 0,
+       "unit_fallback": 68
+      },
+      "stats_y": {
+       "zref_x": 8036,
+       "zref_orig": 0,
+       "next_x": 193,
+       "unit_x": 193,
+       "links_x": 386,
+       "links_orig": 0
+      },
+      "stats_b": {
+       "step_b": 432,
+       "step_orig": 0
+      }
+     },
+     "load": {
+      "pinned": true,
+      "lps": [
+       2,
+       4
+      ],
+      "before": {
+       "pinned_lps_mean": 41.0,
+       "all_lps_mean": 17.821875,
+       "all_lps_max": 73.4,
+       "lps_over_50": 3,
+       "n_lps": 32,
+       "per_lp": [
+        57.1,
+        0.0,
+        32.8,
+        3.1,
+        49.2,
+        0.0,
+        42.9,
+        0.0,
+        0.0,
+        31.2,
+        35.9,
+        0.0,
+        0.0,
+        38.5,
+        37.5,
+        0.0,
+        9.4,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        73.4,
+        14.1,
+        9.4,
+        60.9,
+        4.6,
+        9.2,
+        0.0,
+        36.5,
+        15.4,
+        5.9,
+        3.3
+       ]
+      },
+      "after": {
+       "pinned_lps_mean": 29.45,
+       "all_lps_mean": 17.63125,
+       "all_lps_max": 76.6,
+       "lps_over_50": 4,
+       "n_lps": 32,
+       "per_lp": [
+        68.6,
+        0.0,
+        29.7,
+        0.0,
+        29.2,
+        0.0,
+        28.1,
+        0.0,
+        29.7,
+        0.0,
+        34.4,
+        0.0,
+        30.8,
+        0.0,
+        21.9,
+        0.0,
+        22.2,
+        1.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        76.6,
+        25.0,
+        71.9,
+        10.9,
+        4.6,
+        6.2,
+        56.2,
+        13.8,
+        1.5,
+        1.4
+       ]
+      }
+     },
+     "checks": {
+      "gnn_a7_same_bytes_as_m5": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "mlp:m5": {
+       "failing": 0,
+       "max_diff": 2.384185791015625e-06,
+       "questions": 192
+      },
+      "gnn:m5": {
+       "failing": 0,
+       "max_diff": 5.9604644775390625e-06,
+       "questions": 192
+      },
+      "gnn:a7": {
+       "failing": 0,
+       "max_diff": 5.9604644775390625e-06,
+       "questions": 192
+      }
+     },
+     "stop": false,
+     "ms_per_question": {
+      "mlp:m5": {
+       "p50": 1.9218874986108858,
+       "p95": 2.4772384374955427,
+       "n": 60
+      },
+      "gnn:m5": {
+       "p50": 10.752237496490125,
+       "p95": 12.355163750180509,
+       "n": 60
+      },
+      "gnn:a7": {
+       "p50": 6.072462500014808,
+       "p95": 7.48384093894856,
+       "n": 60
+      }
+     },
+     "ratios_gnn_over_mlp": {
+      "module_step": {
+       "ratio": 5.59462377702217,
+       "lo": 5.395146068485213,
+       "hi": 5.801371455002638,
+       "n": 60
+      },
+      "batched_step": {
+       "ratio": 3.1596347363744766,
+       "lo": 3.0332609088195164,
+       "hi": 3.3123505150827377,
+       "n": 60
+      }
+     },
+     "gnn_speedup_p50": 1.7706552319530842
+    },
+    "2wiki": {
+     "batches": 12,
+     "reps": 5,
+     "blas": 1,
+     "utc": "2026-11-04T19:36:33Z",
+     "fits": {
+      "mlp": "scr-ltm-zrckpn-s0",
+      "gnn": "scr-ml1-zg6r-s0"
+     },
+     "threads": {
+      "blas_declared": 1,
+      "torch": 1,
+      "numba": 1,
+      "pools": [
+       [
+        "openblas",
+        1,
+        "libscipy_openblas64_-860d95b1c38e637ce4509f5fa24fbf2a.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiomp5md.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "libiompstubs5md.dll"
+       ],
+       [
+        "openblas",
+        1,
+        "libscipy_openblas-6b2103f2ae4d8547998b5d188e9801fb.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ],
+       [
+        "openmp",
+        1,
+        "vcomp140.dll"
+       ]
+      ]
+     },
+     "script_sha256": {
+      "zfsvc": "8aedf4512ce4356e4347705784b28973e04765de080d2598b95eaafb56051214",
+      "zfsvt": "8cf976936afa7c0021109d675b111623b93c1cbdd2b79ecd3db82165d2fba3fc",
+      "zfsvx": "e21ee587c649a866c6fbe9c057b707f27ab1ea18f88d7f759427f67f9f25dbe5",
+      "zfsvy": "6f0ff23f4490e77cd032d9d78bc133c396a5b3a247df31f72f6240002d5aaa1a",
+      "zfsvy_b16": "d727d49236ad9b78c8744dd9aba19ae1cdcb8b2da67c2e6811f6956df3257317"
+     },
+     "forms": {
+      "fast_index": {
+       "seconds": 10.958939100033604,
+       "numbering_s": 8.6991180999903,
+       "records_s": 2.2324586999602616,
+       "bytes": 2863907604
+      },
+      "stats": {
+       "lean_rule_x": 395,
+       "setup_fast": 1,
+       "g6r_step_x": 579,
+       "g6r_step_orig": 0,
+       "unit_fallback": 37
+      },
+      "stats_y": {
+       "zref_x": 8036,
+       "zref_orig": 0,
+       "next_x": 193,
+       "unit_x": 193,
+       "links_x": 386,
+       "links_orig": 0
+      },
+      "stats_b": {
+       "step_b": 432,
+       "step_orig": 0
+      }
+     },
+     "load": {
+      "pinned": true,
+      "lps": [
+       2,
+       4
+      ],
+      "before": {
+       "pinned_lps_mean": 2.35,
+       "all_lps_mean": 5.975,
+       "all_lps_max": 50.6,
+       "lps_over_50": 1,
+       "n_lps": 32,
+       "per_lp": [
+        50.6,
+        0.0,
+        4.7,
+        0.0,
+        0.0,
+        18.8,
+        25.8,
+        0.0,
+        0.0,
+        31.2,
+        43.1,
+        0.0,
+        1.6,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        7.8,
+        0.0,
+        0.0,
+        4.6,
+        0.0,
+        0.0,
+        0.0,
+        3.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ]
+      },
+      "after": {
+       "pinned_lps_mean": 23.45,
+       "all_lps_mean": 15.662500000000001,
+       "all_lps_max": 82.8,
+       "lps_over_50": 3,
+       "n_lps": 32,
+       "per_lp": [
+        78.3,
+        0.0,
+        34.4,
+        0.0,
+        12.5,
+        0.0,
+        33.8,
+        0.0,
+        82.8,
+        0.0,
+        71.9,
+        0.0,
+        33.3,
+        0.0,
+        39.1,
+        0.0,
+        0.0,
+        0.0,
+        33.8,
+        6.2,
+        24.6,
+        6.2,
+        0.0,
+        0.0,
+        12.3,
+        4.3,
+        1.5,
+        15.4,
+        10.8,
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "checks": {
+      "gnn_a7_same_bytes_as_m5": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "mlp:m5": {
+       "failing": 0,
+       "max_diff": 1.9073486328125e-06,
+       "questions": 192
+      },
+      "gnn:m5": {
+       "failing": 0,
+       "max_diff": 5.7220458984375e-06,
+       "questions": 192
+      },
+      "gnn:a7": {
+       "failing": 0,
+       "max_diff": 5.7220458984375e-06,
+       "questions": 192
+      }
+     },
+     "stop": false,
+     "ms_per_question": {
+      "mlp:m5": {
+       "p50": 2.616328125441214,
+       "p95": 3.266198755227375,
+       "n": 60
+      },
+      "gnn:m5": {
+       "p50": 14.969171872508014,
+       "p95": 19.48621624833322,
+       "n": 60
+      },
+      "gnn:a7": {
+       "p50": 8.479337499011308,
+       "p95": 11.1418293807219,
+       "n": 60
+      }
+     },
+     "ratios_gnn_over_mlp": {
+      "module_step": {
+       "ratio": 5.721442859917898,
+       "lo": 5.4797754087634205,
+       "hi": 5.873779425264022,
+       "n": 60
+      },
+      "batched_step": {
+       "ratio": 3.240930453851756,
+       "lo": 3.1548844994270766,
+       "hi": 3.310101270830788,
+       "n": 60
+      }
+     },
+     "gnn_speedup_p50": 1.7653704519077607
+    }
+   }
+  }
+ },
+ "provenance": [
+  "The host is shared: other jobs run on it while a timed job does, so every time carries that noise. The process is pinned to two logical processors (its own affinity, EcoQoS opted out, above-normal priority), the load of every logical processor is sampled for 1 s before and after each pass (in report.json), and the other jobs are not pinned and may share those processors. No other timed job of this track ran beside these passes: the smoke and the three runs went one at a time, after M5's last pass.",
+  "Each cell is the forward alone, per question (a batch of 16's forward time over 16): the 12 batches of the first 192 questions over five counted rounds (60 batch times) after a round that is not counted. The three forwards of a batch (the MLP's, the GNN's with the module's step, the GNN's with A7's) are timed in an order that rotates, the features are built outside the clock, and both BLAS counts run in one process on inputs built once at BLAS 2 (OpenBLAS on 2 threads in the record, 1 in the pass beside).",
+  "A7's batched step gave the module's step's scores byte for byte in all 12 batches of every dataset at both BLAS counts; every variant's scores stood within 1e-4 of the fit's filed read, with the same top five, on all 192 questions (largest differences at BLAS 2: musique MLP 1.8e-05, GNN 7.2e-06; hotpotqa 2.4e-06, 6.0e-06; 2wiki 1.9e-06, 5.7e-06); every raw head says stop False, and the counter of the batched step held (432 layer steps a job, none the module's). The ratio GNN / MLP falls with A7's step because the GNN's largest stage at that batch shrank and the MLP's did not; the cold forward and end to end are not touched. For the warm batch of 16 the number of record is this report's, on all three datasets; M5's cells (one forward a batch, the module's step; report ed3cdd1) stay in M5's report."
+ ]
+}
