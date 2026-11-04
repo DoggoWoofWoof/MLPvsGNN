@@ -54,6 +54,56 @@ Ratios are GNN / MLP of the p50s, paired by question, with the 2.5th and 97.5th 
 | hotpotqa | 1149 / 1243 | 17 / 17 | 21 / 22 | 18 / 16 | 22 / 21 | 1.26, 1.51, 1.64 |
 | 2wiki | 1478 / 1308 | 25 / 25 | 33 / 31 | 27 / 24 | 33 / 31 | 1.27, 1.41, 1.60 |
 
+## BLAS 1 (beside the record: every question timed, checks counted)
+
+### Cold, per stage (ms, p50 / p95)
+
+| dataset | kept | pool rows p50 | (a) | MLP (b) | MLP (c) | MLP model-only | MLP end to end | GNN (b) | GNN (c) | GNN model-only | GNN end to end |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| musique | 200 / 200 | 4814 | 412.8 / 597.7 | 77.4 / 152.0 | 25.3 / 33.1 | 103.0 / 182.6 | 523.7 / 778.2 | 74.1 / 144.4 | 192.6 / 379.7 | 267.1 / 523.5 | 699.3 / 1121.2 |
+| hotpotqa | 200 / 200 | 697 | 1097.0 / 1389.1 | 11.1 / 19.2 | 6.2 / 8.2 | 17.3 / 27.0 | 1115.8 / 1408.7 | 8.2 / 13.4 | 13.2 / 22.2 | 21.1 / 34.1 | 1122.4 / 1415.0 |
+| 2wiki | 200 / 200 | 1074 | 1802.6 / 2265.0 | 23.6 / 35.2 | 10.0 / 14.1 | 33.8 / 49.3 | 1837.9 / 2296.2 | 18.3 / 30.1 | 26.0 / 52.4 | 45.0 / 76.9 | 1856.3 / 2321.4 |
+
+### Ratio GNN / MLP, and stage (a)'s share of each end-to-end time
+
+| dataset | (b) | (c) | model-only | end to end | (a) p50 ms | (a) share of MLP end to end | (a) share of GNN end to end |
+|---|---|---|---|---|---|---|---|
+| musique | 0.96 [0.90, 1.00] | 7.62 [7.04, 8.39] | 2.59 [2.45, 2.77] | 1.34 [1.29, 1.37] | 412.8 | 79% | 59% |
+| hotpotqa | 0.74 [0.69, 0.77] | 2.12 [2.04, 2.18] | 1.22 [1.17, 1.26] | 1.01 [1.00, 1.01] | 1097.0 | 98% | 98% |
+| 2wiki | 0.78 [0.74, 0.83] | 2.59 [2.46, 2.70] | 1.33 [1.28, 1.40] | 1.01 [1.00, 1.02] | 1802.6 | 98% | 97% |
+
+### Parts of (a) and (b) (p50 ms)
+
+| dataset | (a) pool | base | links | rule: walks | orders | KT | other | MLP compile | rows | links | NEXT | inputs | GNN compile | rows | links | inputs |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| musique | 0.3 | 0.1 | 0.1 | 236.2 | 164.2 | 12.9 | 4.0 | 36.5 | 19.5 | 12.2 | 7.0 | 2.7 | 36.8 | 19.9 | 12.2 | 5.1 |
+| hotpotqa | 0.1 | 0.1 | 0.1 | 974.4 | 105.0 | 12.5 | 2.4 | 5.1 | 1.7 | 0.5 | 3.0 | 0.6 | 5.0 | 1.8 | 0.5 | 0.8 |
+| 2wiki | 0.1 | 0.1 | 0.1 | 1598.8 | 183.7 | 14.5 | 4.0 | 12.6 | 3.3 | 0.8 | 5.0 | 1.4 | 12.7 | 3.3 | 0.8 | 1.6 |
+
+### Warm (the forward alone, per question; labelled warm)
+
+| dataset | MLP b1 | GNN b1 | ratio b1 | MLP b16 | GNN b16 | ratio b16 |
+|---|---|---|---|---|---|---|
+| musique | 26.8 / 35.5 | 212.5 / 448.1 | 7.93 [7.42, 8.66] | 26.0 / 33.6 | 225.0 / 350.4 | 8.65 [8.53, 8.77] |
+| hotpotqa | 6.4 / 8.9 | 13.5 / 23.6 | 2.09 [2.01, 2.21] | 3.8 / 4.5 | 13.7 / 15.2 | 3.64 [3.53, 3.75] |
+| 2wiki | 8.9 / 11.3 | 22.7 / 39.3 | 2.56 [2.44, 2.78] | 6.5 / 7.7 | 28.0 / 33.7 | 4.31 [4.22, 4.40] |
+
+### Checks, pin and the host's load (1 s samples before and after the timed pass)
+
+| dataset | questions failing a check | pool failing | score checks failing MLP / GNN | max score diff MLP / GNN | NEXT values differing | code conflicts | pinned | load before: pinned LPs / all mean / max | load after: pinned LPs / all mean / max |
+|---|---|---|---|---|---|---|---|---|---|
+| musique | 23 of 200 | 0 | 16 / 22 | 0.0021 / 0.0013 | 6 | 21 | True | 31% / 27% / 77% | 28% / 22% / 85% |
+| hotpotqa | 4 of 200 | 0 | 3 / 2 | 0.0013 / 0.0013 | 1 | 1 | True | 43% / 19% / 76% | 31% / 37% / 91% |
+| 2wiki | 3 of 200 | 0 | 0 / 3 | 4e-05 / 0.00043 | 4 | 7 | True | 17% / 61% / 100% | 35% / 51% / 98% |
+
+### Noise, beside (p50 ms; deciding nothing)
+
+| dataset | (a): first / second half | MLP model-only: first / second half | GNN model-only: first / second half | MLP led first / second | GNN led first / second | p95 / p50 of (a), MLP, GNN |
+|---|---|---|---|---|---|---|
+| musique | 405 / 421 | 105 / 101 | 286 / 249 | 102 / 104 | 267 / 267 | 1.45, 1.77, 1.96 |
+| hotpotqa | 1063 / 1176 | 17 / 18 | 21 / 21 | 19 / 17 | 22 / 21 | 1.27, 1.55, 1.62 |
+| 2wiki | 1752 / 1931 | 35 / 32 | 45 / 45 | 36 / 31 | 45 / 45 | 1.26, 1.46, 1.71 |
+
 ## Caveats
 
 - The host is shared: other jobs run on it while a timed job does, so every time carries that noise. The process is pinned to two logical processors (its own affinity, EcoQoS opted out, above-normal priority), the models alternate in leading each question, and the load of every logical processor is sampled for 1 s before and after the pass; the other jobs are not pinned and may share those processors.
