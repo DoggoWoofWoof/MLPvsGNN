@@ -1183,3 +1183,118 @@ report. The headline stays the end-to-end and the cold forward times, which this
 **Commit policy.** `zfsvy_b16.py` and this section are committed before any A7 timed pass. The raw files and the development
 JSON are never committed (section 10's policy); the A7 `report.json` and `report.md` are committed masked, as M5's, with
 `git add -f`.
+
+## 15. Amendment A3: Family 2's forms for the cut GNN, and the GNN's L2 screen (5 November, before any Family 2 number)
+
+Sections 10 to 14 each leave Family 2's forms to this amendment, and section 13 says it is declared when the GNN's calls are filed.
+They are filed: `outputs/fsv/calls_gnn.json` and `calls_gnn.md` (the host's `fsvg-calls`, 5 November, 03:45 IST; committed in
+0591dfb). The rule of sections 5 and 10 stands: a fast version that equals its full model is timed once and has no second row.
+Section 9 adds that the level after a failed screen is queued once the calls name it; they name L2, and this amendment queues it.
+
+**State at 03:45 IST on 5 November.**
+- The MLP's four screens failed (L3 6d16b28, L2 0c95b96, L1 ab2af7a, L0 d2f8c98): its fast version is the full zrckpn, and its
+  Family 1 rows (M5, A7) are its Family 2 rows.
+- The GNN's L3 screen FAILED: three LOSS among the eight deciding reads (WQ-hotpotqa musique -0.0220 against a floor of 0.0114,
+  its 3-hop slice -0.0259 against 0.0207 and its 4-hop slice -0.0111 against 0.0096), two GAIN and three WITHIN. By section 4's
+  order the L2 screen (G_struct and G_walk cut) comes next; its items are declared below. A PASS would still need its full run, so
+  the GNN's fast version is not known.
+- A3 does not wait for it. The forms below hold for every level the GNN's order can still admit, and nothing in them depends on
+  which one it is.
+
+**The cases.** L3 is out (a verdict closes only the level it tested, section 6). G_store (SEED, DISTS) stays in every level that
+is left, so it needs no form.
+
+| the GNN's calls | Family 2 | what this section gives |
+|---|---|---|
+| L2 ADMITTED | zg6r without G_struct and G_walk, against the full zrckpn | the forms for both groups |
+| L2 not admitted, L1 ADMITTED | zg6r without G_struct, against the full zrckpn | the form for G_struct |
+| an L0 for the GNN added by a later amendment (section 11) and ADMITTED | zg6r without topo_STRUCT, against the full zrckpn | the form for G_struct's first block alone |
+| no level admitted | the full zg6r against the full zrckpn: Family 1 stands for both | nothing; M4 is not run |
+
+**What a cut removes in stage (b).** The pieces each group feeds, read from the code, with their costs from A6's development
+profile (the first two questions of each dataset, BLAS 2, one thread, p50 ms). These figures are development figures: unfiled (the
+profile's raw output is not committed) and not measurements. 2wiki was not profiled.
+
+| group | blocks | computed by | hotpotqa | musique |
+|---|---|---|---|---|
+| G_struct | topo_STRUCT, depth_STRUCT | the compile (`C11.compile_serial` calls `c2_fast.compile_mlp`): its laps `topology`, `D` and `depth_basis` | 1.6 | 23.8 |
+| G_walk | WALK, WALKF | the rows (`C10.lean_rows10` calls `C2.walk_block` and `C2.walkf_block`) | 0.5 | 7.4 |
+
+M5's GNN stage (b) is 8.6 ms on hotpotqa, 13.2 on 2wiki and 65.0 on musique, its end to end 177.3, 201.7 and 255.3, and stage (a)
+is 92%, 88% and 52% of that. So the skipped pieces are worth at most 2.1 ms (L2) or 1.6 (L1) of stage (b) on hotpotqa and 31.2 or
+23.8 of it on musique. If those pieces were all that changed, the GNN's end to end on musique would go from 1.17 times the MLP's
+(255.3 against 218.0) to 1.03 (L2) or 1.06 (L1), and on hotpotqa it would move by about 1% (2wiki was not profiled, and stage (a)
+is a similar share there). The forward (c) changes too, by a narrower first layer and fewer z-scored columns. These are bounds
+from unfiled development figures, stated before any timed number; the timed pass gives the numbers, and Claim 3 is stated from
+them whatever they are.
+
+**The forms.** One rule, from section 10: a cut input is neither computed nor read in stage (b), and the forward is the cut fit's
+own model. A cut fit is the same stack as its full model with its own weights (section 13), so A6's forms and A7's batched step
+apply to it unchanged.
+- compile (G_struct): an in-process copy of `c2_fast.compile_mlp` that returns after its `edges` lap, so the laps `topology`, `D`
+  and `depth_basis` do not run (L0: only the topology kernel is left out, since the symmetric CSR the depth basis reads is still
+  built). The retrieval and edge laps are the module's own and the pool's edges are still made, because the links and the kept
+  blocks read them. If `need_compile.NeedCompiler` (it mirrors `FastCompiler` group by group and is bit-identical on the asked
+  blocks by its own `need_check.py`) takes the same inputs and is no slower, it is used instead. The development check decides,
+  and a correction records which.
+- rows (G_walk, at L2): `C2.walk_block` and `C2.walkf_block`, the two calls `C10.lean_rows10` makes for the walk columns, are
+  replaced in process by functions that return zeros of the same shape (the cut pick never reads those columns), so that every
+  other line of `lean_rows10` is the module's own.
+- assemble and forward: `zfsvc.build` over the cut pick's blocks (section 2's table, with the GNN's links and messages); the
+  forward is the cut fit's own `models.pt`, read for each dataset from the same split as the full fits' reads; A6's z-score forms
+  run on the kept columns only; the warm batch of 16 runs A7's step.
+
+**Checks.** A module for the cut path (`outputs/mp_unified/zfsvy_cut.py`, new, not in this commit) imports `zfsvy_b16.py` and so
+`zfsvy.py`, `zfsvx.py` and `zfsvc.py`, and edits none of them, as `zfsvy_b16.py` did. Its `selftest` is the check without data and
+its `devy` the development job (the first 40 questions of each dataset, BLAS 2, the full path and the cut path in one process, the
+two CPUs the timed jobs have). On every question:
+- each kept column of X, the pack's inputs, the features and the scores of the cut path are byte for byte the values the full
+  path gives when the cut pick is selected from its inputs;
+- A2's checks hold: the pool, the KT columns and I equal PKO's rule's; the scores are within 1e-4 of the cut fit's own filed read
+  with the same top five.
+
+A form that fails is dropped by a correction before any M4 pass: its piece is then computed and not read, M4 says which pieces
+ran, and no gain is claimed for it. A piece that cannot be separated exactly costs the cut only its speed-up.
+
+**M4, the timed pass.** Per dataset one job with both BLAS counts (2, the record, then 1 beside), a smoke first, as M5's and A7's:
+the first 200 questions, cold at batch 1 and one thread, warm at batches of 1 and 16, the same pin and load. Per question, in a
+rotating order, three versions: the full MLP, the full GNN and the cut GNN. It runs only after this commit, after the GNN's
+verdict, after the development check, never beside another timed job, and with section 6's rule applied first if the pair of
+record at the freeze is not zg6r and zrckpn.
+- Reported, with no call (section 5's list): per stage p50 and p95 of the cut and the full GNN; model-only and end to end; the
+  ratio cut GNN / full MLP (Family 2) and, beside it, full against full (Family 1 again, in the same job), paired by question with
+  2,000 resamples (seed 0); the cut GNN's gain over the full GNN per stage, paired the same way; the warm times at batches of 1 and 16.
+- If no level is admitted, M4 is not run and the record of Claim 3 is M5's and A7's.
+
+**The L2 screen's items.** The same module, rule and fits as L3's (section 9), with `L2` in the fit names: `scr-fsv-zspk-L2-s0` and
+`-hp`, `scr-fsv-zg6r-L2-s0` and `-hp`, then the compare and the calls. L2 cuts G_struct and G_walk, so the pick keeps rank, dense_cos,
+SEMB, SEED and DISTS, and the cut encoder has 208,097 numbers (section 9). The commands, the pool caps and the inputs are L3's items'
+own; of the 85 input files only this document has changed since L3's fits were sent.
+
+| item | GPU share | host GB | after |
+|---|---:|---:|---|
+| `fsvg-zspk-L2-s0` | 0.42 | 13.4 | `fsvg-calls` (the calls that name L2) |
+| `fsvg-zspk-L2-s0-hp` | 0.57 | 13.4 | `fsvg-calls` |
+| `fsvg-zg6r-L2-s0` | 0.42 | 13.4 | `fsvg-zspk-L2-s0` |
+| `fsvg-zg6r-L2-s0-hp` | 0.83 | 13.4 | `fsvg-zspk-L2-s0-hp` |
+| `fsvg-compare-l2` | - | 2 | both zg6r fits |
+| `fsvg-calls-l2` | - | 1 | the compare |
+
+The reservations come from L3's four fits as run, not from section 9's table (ML1's peaks, 7.3 to 11.4 GB of memory):
+- memory: rx's record is 12.63, 12.47, 12.81 and 12.65 GB (zspk, zspk -hp, zg6r, zg6r -hp), so each fit reserves 13.4, 4.6% above
+  the largest; the compare and the calls peaked at 0.22 and 0.04 GB committed and reserve 2 and 1;
+- the card: the allocator's peak reserved was 8.65, 11.42, 9.01 and 17.89 GB, under the pool caps 0.4, 0.55, 0.4 and 0.8 of the
+  24 GB card, so the shares and caps stay L3's. The training peaks in L3's logs (7.17, 11.58, 7.80 and 18.35 GB) match ML1's
+  (section 9's table: 7.2, 11.7, 7.8 to 8.0 and 17.7 to 18.4), so the cut did not lower them. L2 keeps more columns than L3 and fewer
+  than the full model, so its peaks are not expected to differ; the allocator's line in each log is the check;
+- time: the four fits ran 32, 41, 64 and 111 minutes beside other jobs; a CUDA fault is rerun by `retry_cmd`, as at L3.
+
+Once `fsvg-calls-l2` has run, `calls_gnn` names the next step as section 4 says: L2's full run (seeds 1 and 2) after a PASS, L1's
+screen after a FAIL. Those items are declared by a correction then, as this one is.
+
+**What is not changed.** Sections 1 to 14: the cuts, the reads, the rule, the pool and the forms of both families, M5's and A7's
+numbers (the MLP's Family 2 rows are M5's and A7's), the threads, the pin, the question sets and the bars.
+
+**Commit policy.** This section is committed before any development job of the cut module and before any M4 pass. The raw files and
+the development JSON are never committed (section 10's policy); M4's `report.json` and `report.md` are committed masked, as M5's,
+with `git add -f`. The six items of the L2 screen go to the feeder after this commit; no other host job is sent with it.
