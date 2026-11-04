@@ -1037,3 +1037,142 @@ the batch of 16 (`zref_orig` 0), so M5's warm numbers compare like with like.
 
 **Commit policy.** `zfsvy.py` and this section are committed before any M5 pass. The raw files are never committed (section 10's
 policy); M5's `report.json` and `report.md` are committed masked, as M2's and M3's, with `git add -f`.
+
+## 14. Amendment A7: a batched layer step for the GNN's warm batches of 16 (4 November, before any timed number with it)
+
+This takes up the line "the GNN's layer step (A4)" in section 13's "What is not changed", after a development measurement of
+4 November (feeder jobs `fsvy-b16-D`, from about 22:55 IST, beside M5's first passes), on the standing orders of 10 October ("make
+the gnns faster too i dont want to give any unfair advantage to mlp") and of 4 November, 06:30 IST (section 12: both models as fast
+as possible). A4's layer step is for one question. At a batch of 16 the module's torch step runs, once per layer (section 13,
+correction 1), and that step is most of the GNN's warm forward there, while A6's z-score form speeds the MLP's forward about 1.9
+times at the same batch (the table below). Left alone, M5's warm batch-of-16 column would show the ratio GNN / MLP rising to about
+1.75 times what the same development job gives with M3's forms (musique 8.4 to 14.8, hotpotqa 2.9 to 5.1): the MLP got a form for
+its largest cost and the GNN's largest cost at that batch got none. The form below is the GNN's counterpart.
+
+Module: `outputs/mp_unified/zfsvy_b16.py` (new). Its `selftest` is the check without data, `share` the development job, `run` and
+`report` the timed re-time of this section. It imports `zfsvy.py` (and so `zfsvx.py` and `zfsvc.py`), edits none of them and none
+of `zg6r.py`: the batched step is put in the module's place around each forward timed with it and put back. Sections 1 to 13
+stand. M5 stays the number of record for every cell except the GNN's warm batch of 16 and the ratio there, which the re-time below
+replaces for every dataset whose checks pass.
+
+**Development numbers** (`share`, one job per dataset, no timed number). 32 questions of the dataset, that is two batches of 16;
+one process, BLAS 2 and then BLAS 1; pinned to two logical processors outside the timed ones (8 and 10), run beside M5's passes
+(2 and 4). Each round times three variants of the batch's forward in an order that rotates: "M3" (no A6 form, the module's step:
+M3's forms), "A6" (A6's forms, the module's step: what M5's warm batches run) and "A7" (A6's forms and the batched step below);
+five rounds after one that is not counted. The layer step's three calls and the layer loop are timed inside the same forwards by
+wrappers, and one torch-profiler pass per model gives the shares of its self time. Cells are ms per question (the batch's forward
+over 16, median over the rounds):
+
+| dataset | BLAS | MLP ms/q, M3 -> A6 forms | GNN ms/q, M3 -> A6 -> A7 step | step share of the GNN's forward | ratio GNN/MLP, M3 -> A6 -> A7 | A7 step vs module's: the step / the forward | ratio with the step free |
+|---|---|---|---|---|---|---|---|
+| musique | 2 | 24.7 -> 13.2 | 207.5 -> 194.7 -> 57.1 | 92% | 8.40 -> 14.77 -> 4.34 | 4.25x / 3.41x | 1.15 |
+| musique | 1 | 23.7 -> 12.2 | 207.4 -> 196.2 -> 54.9 | 92% | 8.74 -> 16.03 -> 4.49 | 4.49x / 3.57x | 1.21 |
+| hotpotqa | 2 | 3.8 -> 2.0 | 11.2 -> 10.0 -> 5.5 | 80% | 2.91 -> 5.10 -> 2.79 | 2.22x / 1.83x | 1.01 |
+| hotpotqa | 1 | 3.6 -> 2.0 | 10.7 -> 9.1 -> 5.2 | 80% | 2.98 -> 4.56 -> 2.61 | 2.14x / 1.75x | 0.90 |
+
+Self time in the profiler (the first batch of 16, BLAS 2, A6's forms and the module's step), matrix products / gathers and
+scatters / the rest:
+
+| dataset | MLP: matrix products / gathers and scatters / the rest | GNN: same |
+|---|---|---|
+| musique | 66% / 3% / 31% | 9% / 54% / 38% |
+| hotpotqa | 64% / 3% / 33% | 30% / 33% / 37% |
+
+What the numbers say, and what is decided.
+- The module's layer step is 92% of the GNN's batch-of-16 forward on musique and 80% on hotpotqa, at both BLAS counts; the
+  layer loop is the same share to within a point. The MLP has no such stage: its forward is two thirds matrix products and 3%
+  gathers and scatters, and the matrix products are calls to the BLAS that the GNN's forward makes too. The GNN's forward is 54%
+  (musique) and 33% (hotpotqa) gathers and scatters, the layer step's edge work.
+- A6's forms alone move the ratio the wrong way: the MLP's forward falls 1.9 times and the GNN's 1.07 (musique) and 1.12
+  (hotpotqa) times, because the segment z-scores are most of the MLP's forward and a smaller part of the GNN's.
+- The batched step is 4.3 (musique) and 2.2 (hotpotqa) times faster than the module's, the forward 3.4 and 1.8 times, and the
+  ratio GNN / MLP at A6's forms and the batched step is 4.3 (musique) and 2.8 (hotpotqa), under the value with M3's forms (8.4, 2.9
+  in the same jobs) on musique and about level with it on hotpotqa. If the step were free the ratio would be 1.2 and 1.0: what
+  is left of the GNN's forward (the encoder, the readout and the z-scores) is the size of the MLP's whole forward. No further form
+  is proposed here.
+- The forward's scores are byte for byte the same in every batch (two a dataset), at both BLAS counts: the batched step against
+  the module's step for the GNN, and A6's forms against M3's for both models. The batched step gains on every dataset measured
+  and at both BLAS counts, so it is declared. The development job for 2wiki has not run yet (the feeder holds it behind M5's
+  passes); it is not needed for this decision, and the timed re-time covers 2wiki.
+- End to end and the cold forward do not use this step at a batch of 16 and do not move. The warm batch of 16 moves, and so do the
+  ratios GNN / MLP there: that is arithmetic on development gains, not a measurement: the re-time measures.
+
+**The form.** `g6r_step_b` in `outputs/mp_unified/zfsvy_b16.py` is `zfsvx.g6r_step_x` for a batch (B > 1; B = 1 is A4's step,
+unchanged). It is `zg6r.g6r_step` with the same operations in the same order, except two:
+1. The attention logit's dot product. The module computes it once per edge: `(linear(h, wa)[u] * c[qv]).sum(1) / sqrt(D)`, a gather
+   of the source row's projection, a product with the context of the question the edge is in, and a sum over the 64 values. There
+   are 6 times as many edges as rows on hotpotqa and 24 times on musique (p50 of the development questions: 4,036 edges on 676
+   rows, and 118,598 on 4,859). Every edge lies inside one question (its source row and its target row are rows of the same
+   question: `nq` is each row's question, `qv` the target's), so `c[qv]` of the edge is `c[nq[u]]`, the context of the source
+   row's own question. The form computes `(linear(h, wa) * c[nq]).sum(1) / sqrt(D)` once per row and gathers the result at the
+   edges' source rows. For one edge the two are the same 64 float32 products added by the same torch reduction (per row of a
+   contiguous matrix), and the gather copies a float32. The form tests `nq[u] == qv` on every call and takes the module's step
+   (counted) when it fails, with a typed edge, another dtype or a gradient in force.
+2. The two scatter-adds. The family means and the attention numerators are `index_add_` of per-edge rows into rows. A4's numba
+   kernel `edge_acc` does both in one pass over the edges in their order: `index_add_` adds the source rows one after the other in
+   index order (section 12's argument for B = 1), so each target row's sum is the same sequence of float32 additions. The edges of
+   different questions touch different rows, so a batch does not change any row's sequence.
+
+The denominators' `index_add_`, the clamp, the divisions, the five linear maps, the layer norm and the activation are the module's
+calls on the same tensors in the same order. The module's per-edge tensors (the gathered projections and their products, 64
+floats per edge) are never built; that is the saving.
+
+**The checks** (untimed):
+- `selftest` (the laptop; random layers of the module's shapes and random graphs whose edges lie inside their questions: B = 2,
+  5 and 16, one and two torch threads, up to 2,000 rows and 20,000 edges a question, every layer): 42 steps compared byte for
+  byte, 0 differ; an edge that leaves its question takes the module's step, counted. (The other fallbacks, a typed edge, another
+  dtype and a gradient in force, are by reading.)
+- The development jobs above: the forward's scores byte for byte the module's, in every batch (two a dataset), at both BLAS
+  counts: A7's step against the module's step for the GNN, A6's forms against M3's for both models.
+- The timed run (`run`), per dataset and BLAS count, on the 12 batches of 16 of M5's warm pass (the first 192 questions): the
+  scores of the batched step byte for byte the module's in every batch, the same scores twice in every round (a variant whose
+  forward differs from its own first round stops the run), and each variant's scores, question by question, against the fit's
+  filed read (section 5's bar: within 1e-4, the same top five; M5 does not check the batch of 16's scores). The run stops when
+  more than 2% of the questions fail for the batched step (section 5), and a byte that differs in any batch fails the form for
+  that dataset: M5's batch-of-16 cell stands there and says so. The guard of A6 (`forms_ran`) and a counter of the batched step
+  (all three layer steps of every forward timed with it, none the module's) must hold, or the job stops without a record.
+
+**What is not changed.**
+- Everything else of sections 1 to 13: the MLP, stage (a), stage (b), the cold forward and the warm batch of 1 (A4's step), both
+  models' matrix products, the threads (one for torch, numba and every OpenMP runtime; BLAS 2 in the record, 1 beside), the pin,
+  the reads, the bars and the question sets. M5's own cells stay in M5's report, the batch of 16 of both models included (the
+  module's step); the re-time reports the GNN with the module's step and with A7's side by side, the MLP once, in the same job.
+- Family 2 (amendment A3, still to be declared): a cut GNN is the same stack with its own weights, so A7's step is a form of both
+  families; the MLP has no admitted cut and no layer step.
+
+**Re-time (A7).** After this commit and after M5's chain, never beside another timed job, per dataset one job with both BLAS
+counts (2, then 1), a smoke first (hotpotqa, `--nq 20`, one batch of 16; its raw file in `outputs/fsv/timing/a7/raw_smoke`, not
+filed):
+
+```
+python outputs/host_ops/pylib_run.py outputs/mp_unified/zfsvy_b16.py run --dataset D --blas 2 --lps 2,4 --require-pin
+```
+
+Per BLAS count: the inputs of the first 192 questions (12 batches of 16) built as in M5 (untimed), then six rounds over the 12
+batches, the first not counted; in a round, per batch, the features of both models are built outside the clock and the three
+forwards (the MLP's, the GNN's with the module's step, the GNN's with A7's) are timed in an order that rotates from batch to
+batch and round to round.
+Each cell is the batch's forward time over 16, p50 and p95 over the 60 batch times; the ratio GNN / MLP is that of the p50s,
+paired by batch and round, with the 2.5th and 97.5th percentiles over 2,000 resamples of the batch times with replacement
+(`numpy.random.default_rng(0)`). Raw files `outputs/fsv/timing/a7/raw/D__bN.json`;
+`python outputs/mp_unified/zfsvy_b16.py report` writes `outputs/fsv/timing/a7/report.json` and `report.md`.
+
+For the warm batch of 16, the number of record is the report's (the MLP's and the GNN's times of one job, the GNN with A7's step)
+for every dataset whose checks pass; M5's own batch-of-16 cells (one forward per batch, 12 values, the module's step) stay in M5's
+report. The headline stays the end-to-end and the cold forward times, which this does not touch; the warm columns are beside.
+
+**Risks, stated before any number.**
+- The development numbers are 32 questions beside M5's passes on other processors: not measurements. The timed ones can differ,
+  and the speed-up can differ with the graphs' sizes (the layer step's cost grows with the edges: 4,036 a question on hotpotqa,
+  118,598 on musique).
+- The form leans on two properties of the libraries: torch's reduction over a row does not depend on the number of rows, and
+  `index_add_` takes its rows in order (A4's kernel already relies on it). They held on the selftest and in every development
+  comparison; the timed run's per-batch comparison decides, and a form whose bytes differ is dropped by a correction.
+- The ratios GNN / MLP at batch 16 fall with this form: the GNN's largest stage at that batch shrank and the MLP's did not. The
+  report says what it measures. The form does not touch the cold forward or end to end.
+- Six rounds over 12 batches is a larger sample than M5's 12 values per cell; the two are not compared cell by cell, the re-time
+  carries the module's step beside A7's.
+
+**Commit policy.** `zfsvy_b16.py` and this section are committed before any A7 timed pass. The raw files and the development
+JSON are never committed (section 10's policy); the A7 `report.json` and `report.md` are committed masked, as M5's, with
+`git add -f`.
