@@ -249,3 +249,24 @@ python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 -- python outputs/mp_un
 python outputs/mp_unified/zdoba3.py compare-all
 python outputs/mp_unified/zdoba3.py calls
 ```
+
+## 13. Results of A3, 4 November 2026 (07:58 IST)
+
+`zdoba3.py compare-all` and `calls` ran on the host on 4 November at 07:58 IST, after the four xtopo fits. The records
+are `outputs/dob/full_xtopo.json` and `.md`, with no problems.
+
+| rule | reads | verdict |
+| --- | --- | --- |
+| own (ML1's, `zml1.verdict`) | twelve | **NOT_ADOPTED**: 11 WITHIN, 1 UNCONFIRMED_GAIN (WQ-musique webqsp) |
+| WWW (`zwww.full_verdict`) | six | **NOT_ADOPTED**: all six WITHIN |
+
+- The screen's one GAIN, WQ-hotpotqa musique-3hop at seed 0 (+0.0154), does not hold at seeds 1 and 2 (−0.0070 and
+  +0.0018). Its three-seed floor is 0.0270.
+- WQ-musique webqsp gives +0.0134, −0.0004 and +0.0016 against a floor of 0.0131. It is outside the WWW rule's six.
+
+**What follows (section 12, fixed before the fits).**
+- topo_STRUCT stays in the pick.
+- No drop is adopted, so the next CPU form is section 6's capacity form (hidden width and epochs), on zrckpn, the MLP of
+  record since LTM, in its own declared file.
+- The own verdict is filed here. It decides after the freeze, together with the other four drops' full runs
+  (section 11).

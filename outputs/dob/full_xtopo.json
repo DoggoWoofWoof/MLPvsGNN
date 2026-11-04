@@ -1,0 +1,236 @@
+{
+ "stage": "DOB",
+ "amendment": "A3",
+ "declared_in": "docs/DOB_DROP_ONE_BLOCK_CPU.md",
+ "drop": "xtopo",
+ "block": "topo_STRUCT",
+ "arm": "zrckp",
+ "device": {
+  "gpu": "cpu x6",
+  "torch": "2.8.0+cpu",
+  "cuda": null,
+  "cudnn": null
+ },
+ "threads": 6,
+ "problems": [],
+ "own": {
+  "rule": "ML1's (zml1.verdict), twelve reads, three seeds",
+  "verdict": "NOT_ADOPTED",
+  "counts": {
+   "GAIN": 0,
+   "LOSS": 0,
+   "UNCONFIRMED_GAIN": 1,
+   "WITHIN": 11
+  },
+  "problems": [],
+  "reads": [
+   {
+    "split": "WQ-musique",
+    "dataset": "metaqa",
+    "delta": {
+     "0": 0.0738,
+     "1": -0.0044,
+     "2": -0.0591
+    },
+    "floor": 0.114445,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "squad",
+    "delta": {
+     "0": 0.0008,
+     "1": -0.0011,
+     "2": -0.0023
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "musique",
+    "delta": {
+     "0": 0.0009,
+     "1": 0.0212,
+     "2": 0.0196
+    },
+    "floor": 0.022806,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "hotpotqa",
+    "delta": {
+     "0": -0.0006,
+     "1": -0.0009,
+     "2": 0.0031
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "2wiki",
+    "delta": {
+     "0": 0.0069,
+     "1": -0.0042,
+     "2": 0.0061
+    },
+    "floor": 0.010848,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "webqsp",
+    "delta": {
+     "0": 0.0134,
+     "1": -0.0004,
+     "2": 0.0016
+    },
+    "floor": 0.013062,
+    "call": "UNCONFIRMED_GAIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "metaqa",
+    "delta": {
+     "0": -0.0101,
+     "1": 0.0019,
+     "2": 0.0377
+    },
+    "floor": 0.056381,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "squad",
+    "delta": {
+     "0": -0.0009,
+     "1": -0.0007,
+     "2": -0.0016
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "musique",
+    "delta": {
+     "0": 0.0035,
+     "1": 0.0006,
+     "2": 0.0002
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "hotpotqa",
+    "delta": {
+     "0": 0.0025,
+     "1": -0.0021,
+     "2": 0.0014
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "2wiki",
+    "delta": {
+     "0": 0.0127,
+     "1": -0.0045,
+     "2": 0.0035
+    },
+    "floor": 0.014487,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "webqsp",
+    "delta": {
+     "0": 0.0074,
+     "1": -0.0094,
+     "2": 0.0064
+    },
+    "floor": 0.01489,
+    "call": "WITHIN"
+   }
+  ]
+ },
+ "www": {
+  "rule": "docs/WWW_SCOPE_RULE.md section 2, full run",
+  "verdict": "NOT_ADOPTED",
+  "reads": [
+   {
+    "split": "WQ-musique",
+    "dataset": "hotpotqa",
+    "delta": {
+     "0": -0.0006,
+     "1": -0.0009,
+     "2": 0.0031
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "2wiki",
+    "delta": {
+     "0": 0.0069,
+     "1": -0.0042,
+     "2": 0.0061
+    },
+    "floor": 0.010848,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "musique",
+    "delta": {
+     "0": 0.0035,
+     "1": 0.0006,
+     "2": 0.0002
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "2wiki",
+    "delta": {
+     "0": 0.0127,
+     "1": -0.0045,
+     "2": 0.0035
+    },
+    "floor": 0.014487,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "musique-3hop",
+    "delta": {
+     "0": 0.0154,
+     "1": -0.007,
+     "2": 0.0018
+    },
+    "floor": 0.02703,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "musique-4hop",
+    "delta": {
+     "0": 0.0056,
+     "1": -0.0093,
+     "2": 0.0006
+    },
+    "floor": 0.011906,
+    "call": "WITHIN"
+   }
+  ],
+  "missing": []
+ },
+ "zdoba3_sha256": "f0119edb4b5cbb383be8842e490e7233674e6b15292629f17e8ac59c7010b9e8",
+ "utc": "2026-11-04T02:28:50Z"
+}
