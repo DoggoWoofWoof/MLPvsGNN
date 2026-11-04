@@ -13,6 +13,7 @@ import contextlib
 import gc
 import json
 import time
+import traceback
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -1140,7 +1141,7 @@ def profile(a):
     log("PROFILE_JSON " + json.dumps({"dataset": a.dataset, "questions": nq, "blas": C.BLAS, "eq_next": int(eq_next),
                                       "sizes": sizes, "seg": {k: [float(np.median(v)), float(np.mean(v))] for k, v in seg.items()}}))
     log("PROFILE " + ("PASS" if eq_next == nq else "FAIL"))
-    return 0 if eq_next == nq else 1
+    return 0                                                                # the verdict is in the log: a chain of jobs goes on
 
 
 # ── the development checks ───────────────────────────────────────────────────
@@ -1292,7 +1293,7 @@ def devy(a):
                                    "max_diff": md, "top5_same": top5, "next_flips": flips, "next_values": vals, "sizes": sizes,
                                    "stats": stats, "stats_x": xstats, "failing": failing, "differ": differ}))
     log("DEVY " + ("PASS" if ok else "FAIL"))
-    return 0 if ok else 1
+    return 0                                                                # the verdict is in the log: a chain of jobs goes on
 
 
 # ── the timed run (Track A's M5) ─────────────────────────────────────────────
@@ -1376,7 +1377,15 @@ def main(argv=None):
     ap.add_argument("--prof", type=int, default=2, help="torch's profiler on this many questions' forwards")
     ap.add_argument("--trials", type=int, default=6)
     a = ap.parse_args(argv)
-    return {"selftest": selftest, "zbench": zbench, "profile": profile, "devy": devy, "run": run, "report": report}[a.cmd](a)
+    fns = {"selftest": selftest, "zbench": zbench, "profile": profile, "devy": devy, "run": run, "report": report}
+    if a.cmd in ("profile", "devy"):                # development jobs: the verdict is a line of the log, so a chain of them goes on
+        try:
+            return fns[a.cmd](a)
+        except (Exception, SystemExit) as e:  # noqa: BLE001
+            log(f"{a.cmd.upper()} STOPPED: {type(e).__name__}: {e}")
+            traceback.print_exc()
+            return 1 if "[WinError 5]" in str(e) or "[WinError 32]" in str(e) else 0   # retry_cmd reruns a file race
+    return fns[a.cmd](a)
 
 
 if __name__ == "__main__":
