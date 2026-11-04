@@ -220,11 +220,45 @@ extrapolate to about 3,550 s (a projection, not a measurement); the reads take a
   reusable (every step is per carve): it is one more full chain, a gate, lists, two column sets and twelve reads. It is built only
   after block 1 is queued and after its cost is told to the coordinator; it then gets its own section by amendment before any of
   its numbers.
-- **Block 2** (2wiki with SR; the same P form, rules and report) only if cheap and after block 1 is queued.
+- **Block 2** (2wiki with SR; the same P form, rules and report): declared in section 14, after block 1 was queued.
 - **Development log** (disclosed here before any read number):
   - `zb1l.py bench --dataset musique` (laptop, 5 November 03:21 IST): the folder and the counts of section 3; no model, no fit.
+  - `zb1l.py bench --dataset 2wiki` (laptop, 5 November 03:37 IST): the folder and the counts of section 14; no model, no fit.
   - Code fixes made after the first commit and before any read number are listed here with their commit.
 
 ## 13. Results
 
 Not yet filed.
+
+## 14. Amendment 1: block 2, 2wiki with SR
+
+Declared 5 November 03:40 IST, after block 1 was queued and before any 2wiki settings, pool or read number. Sections 1 to 13 hold
+for 2wiki with the substitutions below, and nothing else changes.
+
+- **The reference** is SR (SiReRAG's propositions; its knowledge-graph file for 2wiki, read only from the CRAG repository's
+  `baselines/repos` and never committed), matched to B1's 6,119 passages in P2c part 1 (6,119 items, 29,282 phrases, 83,971
+  relation pairs, 42,453 mentions, 27,959 propositions). `zb1l.py bench --dataset 2wiki` (laptop, 5 November 03:37 IST) re-read it
+  and required its sets and counts to equal P2c's, as for H4o. The P form, the pair set only (weights beside), the typing, the
+  calls, the share and the bootstrap are sections 3 and 5's.
+- **The counts**, which depend on no model:
+
+| | 2wiki, SR |
+|---|---:|
+| passages | 6,119 |
+| P pairs (positions = package rows) | 27,364 |
+| entries (each pair once each way) | 54,728 |
+| passages with a P edge; degree mean, median, p95, max over those | 4,807; 11.4, 7, 35, 143 |
+| phrases with df 1 / 2 to 25 / over 25 | 24,361 / 4,869 / 52 |
+| W2_S pairs in the setting (entries) | 2,030 (4,060) |
+| P entries that are W2_S entries (**typed**) | 3,524 (6.4 %), 1,762 pairs |
+| P entries that are not (**NULL**) | 51,204 (93.6 %), 25,602 pairs |
+| W2_S entries that are P entries | 3,524 (86.8 %) |
+| weights, 5 / 25 / 50 / 75 / 95 / 99 % and max (beside, not entered) | 0.040 / 0.056 / 0.100 / 0.243 / 0.50 / 1.21; 5.66 |
+
+- **The confound is stronger here.** 93.6 % of b1o's entries are NULL, and the rule's W2_S links in 2wiki's setting are 2,030
+  pairs, so b1w differs from b1t by 4,060 entries only. b1o - b1t is a lower bound as in section 3; b1w - b1o compares 2,030 typed
+  pairs with 27,364 mostly-NULL ones. The wording is section 3's: the models of record, fitted without LLM links, read on ...
+- **Reads.** 2wiki's in-domain reads are both splits' fits, six per model (section 5); there is no held-out read. Twelve reads.
+- **Queue.** `block3_2wiki.txt`, 18 items, `b1l-` names, the same inputs as block 1's plus 2wiki's seven bench files (125): the
+  settings (2 CPUs, 4 GB, after `b1l-selftest`), the chain (2 CPUs, **12 GB** = B1P's 2wiki b1w chain 4.77 GB x 2.5; B1P measured
+  545 and 607 s), the gate, the lists, the two column sets and the twelve reads, with block 1's reservations, cap and share.
