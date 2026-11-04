@@ -373,3 +373,11 @@ masked); the pools, KT rows and parts stay on the host, as PKO's do.
 **A1.6 What is not decided here.** D1, D2 and D4 stand as sections 4, 6 and 7 give them (default first: the pools and
 coverage now, no refit queued, 2x the row price, each carve's own mean). Stage B1 files the coverage and localization
 record; it decides nothing about models or about pick O.
+
+**A1.7 Resources as queued (corrected the same day, before any number).** A1.4 named PKOH's peaks as the starting point. The
+development runs on the host (`outputs/u2zb_dev`, not filed) measured far below them: the n1 pass of musique 0.8 GB (b1w
+0.4 GB), the open of hotpotqa 2.9 GB and of 2wiki 4.0 GB, a 64-question pools pass of musique 1.1 GB at 1.03 s per
+question, the golds reads 0.9 to 1.8 GB. The items ask for those peaks with room for a shard's facts and a merge's copies
+(GB, musique / hotpotqa / 2wiki): n1 2 / 4 / 5, pools and check 2.5 / 5 / 6.5, merge 2 / 4 / 6, coverage 2.5 / 4 / 6;
+check-merge and gate 1 GB and 1 CPU, report 2 GB and 1 CPU; every other item 2 CPUs. The feeder's own measured requests
+take over after a first run, as for every item. Nothing else in A1 changes.
