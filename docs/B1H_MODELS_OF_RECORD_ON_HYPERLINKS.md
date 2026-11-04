@@ -192,7 +192,8 @@ Numbers are fractions of 1, rounded to 4 places as theirs, except `gap_points` (
 - **A failing check in `settings`** (section 3) stops the stage before any pool. It is reported, not patched.
 - **An identity failure in `cols`** (B1M's) stops that carve's columns. It is reported, not patched.
 - **A device mismatch** (the host's CPU or GPU torch changed since the fits) stops the read before any number.
-- **A zg6r read out of GPU memory.** The share below is B1P's, measured on three settings; the first read's peak sizes the rest.
+- **A zg6r read out of GPU memory.** The cap and share of section 11 are twice B1P's measured peak on three settings (1.51 GB);
+  the first read's peak sizes the rest, and a read that dies on the cap is run again with B1P's cap (0.27), disclosed in section 12.
 - **Code fixes** before any read number are allowed and disclosed in section 12. After the first read number only an amendment
   changes this file.
 
@@ -213,22 +214,27 @@ Commit only this file, `zb1h.py`, `outputs/b1h/report.json`, `report.md` and `ca
 
 ## 11. Queue (the host)
 
-CPU rows first, as B1P's and B1M's. 2wiki and hotpotqa are separate lanes, then musique. Memory is the peak those stages measured
-(B1P's PKOH lanes and B1M's lists and columns); the host is shared, so no row asks for more.
+Three blocks of host items, as B1P's and B1M's: block 1 (self-test, settings, fork, the 2wiki and hotpotqa chains), block 2 (the
+`main` tag's gate, lists, columns and twelve reads), block 3 (musique, last). Each item carries the memory its analogue measured on
+the host (the feeder's own record of B1P's and B1M's items), not the earlier tables' reservations; the host is shared, so no row
+asks for more.
 
-| items | CPUs | GB | GPU | after |
-|---|---:|---:|---:|---|
-| `b1h-selftest` | 1 | 4 | | - |
-| `b1h-settings` | 2 | 8 | | the self-test |
-| `b1h-chain-2wiki`, `b1h-chain-hotpotqa` | 2 | 8 | | `pkoh-gate`, `b1h-settings` |
-| `b1h-gate-main` | 1 | 3 | | both chains |
-| `b1h-fork` | 1 | 2 | | the self-test |
-| `b1h-read-gnn-<fit>` (six) | 1.1 | 6 | 0.29 | `b1h-gate-main`, `b1h-fork` |
-| `b1h-lists-<dataset>` (two) | 1 | 2 | | the dataset's chain |
-| `b1h-cols-<wqm or wqh>-<dataset>` (four) | 2 | 6 | | the dataset's lists |
-| `b1h-read-mlp-<fit>` (six) | 6 | 12 | | `b1h-gate-main`, `b1h-fork`, the fit's split's two column sets |
-| `b1h-chain-musique` | 2 | 10 | | `pkoh-gate`, `b1h-settings`, the 2wiki and hotpotqa chains |
-| `b1h-gate-musique`, `b1h-lists-musique`, `b1h-cols-<split>-musique` (two), the twelve musique reads | as above | | | the musique chain |
+| items | CPUs | GB | GPU | after | measured by |
+|---|---:|---:|---:|---|---|
+| `b1h-selftest` | 2 | 2 | | - | (numba's two threads need two CPUs) |
+| `b1h-settings` | 2 | 6 | | the self-test | 3.47 GB, a fresh laptop build |
+| `b1h-fork` | 1 | 2 | | the self-test | B1P's fork, 2 s |
+| `b1h-chain-2wiki`, `b1h-chain-hotpotqa` | 2 | 6 | | `pkoh-gate`, `b1h-settings` | B1P's chains, 4.5 - 5.2 GB, 9 - 10 min |
+| `b1h-gate-main` | 1 | 2 | | both chains | B1P's gate, 4 s |
+| `b1h-lists-<dataset>` (two) | 1 | 2 | | the dataset's chain | B1M's lists, 2 - 7 s |
+| `b1h-cols-<wqm or wqh>-<dataset>` (four) | 2 | 2 | | the dataset's lists | B1M's columns, <= 0.53 GB |
+| `b1h-read-gnn-main-<fit>` (six) | 1.1 | 6 | 0.15 | `b1h-gate-main`, `b1h-fork` | B1P's reads, GPU peak 1.51 GB: cap 0.13 (3.1 GB), share 0.15 |
+| `b1h-read-mlp-main-<fit>` (six) | 6 | 4 | | `b1h-gate-main`, `b1h-fork`, the fit's split's two column sets | B1M's reads, 1.9 GB |
+| `b1h-chain-musique` | 2 | 8 | | `pkoh-gate`, `b1h-settings` | B1P's chains, 6.0 - 6.3 GB, 42 - 49 min |
+| `b1h-gate-musique`, `b1h-lists-musique`, `b1h-cols-<split>-musique` (two), the twelve `b1h-read-{gnn,mlp}-musique-<fit>` | as above | | | the musique chain |
+
+Musique's chain waits for nothing of 2wiki's or hotpotqa's: its block comes last in the queue and the host's CPUs are free for
+it.
 
 The report runs on the laptop after `rx.py fetch` of the b1h reads and of B1M's zrckpn b1t and b1w reads.
 
@@ -244,7 +250,10 @@ The report runs on the laptop after `rx.py fetch` of the b1h reads and of B1M's 
     after the last code change. That change, the check that the structural store equals the settings' CSR at the pools' open (two
     lines), came after the development run began, so no run has exercised it yet; the first chain does, and a failure there stops
     before any pool row.
-  - Code fixes made after this commit and before any read number are listed here with their commit.
+  - The queue of section 11 was written after the declaration's first commit (29c2553): the table's reservations are the measured
+    peaks of the analogous B1P and B1M items, in place of the first table's, and the musique chain no longer waits for the other
+    two (nothing in the rule changes).
+  - Code fixes made after the first commit and before any read number are listed here with their commit.
 
 ## 13. Results
 
