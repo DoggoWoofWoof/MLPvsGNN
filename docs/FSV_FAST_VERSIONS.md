@@ -1046,8 +1046,8 @@ the gnns faster too i dont want to give any unfair advantage to mlp") and of 4 N
 as possible). A4's layer step is for one question. At a batch of 16 the module's torch step runs, once per layer (section 13,
 correction 1), and that step is most of the GNN's warm forward there, while A6's z-score form speeds the MLP's forward about 1.9
 times at the same batch (the table below). Left alone, M5's warm batch-of-16 column would show the ratio GNN / MLP rising to about
-1.75 times what the same development job gives with M3's forms (musique 8.4 to 14.8, hotpotqa 2.9 to 5.1): the MLP got a form for
-its largest cost and the GNN's largest cost at that batch got none. The form below is the GNN's counterpart.
+1.7 to 1.8 times what the same development job gives with M3's forms (musique 8.4 to 14.8, hotpotqa 2.9 to 5.1, 2wiki 3.5 to
+5.9): the MLP got a form for its largest cost and the GNN's largest cost at that batch got none. The form below is the GNN's counterpart.
 
 Module: `outputs/mp_unified/zfsvy_b16.py` (new). Its `selftest` is the check without data, `share` the development job, `run` and
 `report` the timed re-time of this section. It imports `zfsvy.py` (and so `zfsvx.py` and `zfsvc.py`), edits none of them and none
@@ -1057,7 +1057,10 @@ replaces for every dataset whose checks pass.
 
 **Development numbers** (`share`, one job per dataset, no timed number). 32 questions of the dataset, that is two batches of 16;
 one process, BLAS 2 and then BLAS 1; pinned to two logical processors outside the timed ones (8 and 10), run beside M5's passes
-(2 and 4). Each round times three variants of the batch's forward in an order that rotates: "M3" (no A6 form, the module's step:
+(2 and 4); the three jobs ran 22:54-22:58 (hotpotqa; M5's hotpotqa pass at BLAS 2 ran on 2 and 4 at the same time), 22:59-23:04
+(musique; M5's hotpotqa pass at BLAS 1) and 23:14-23:20 IST (2wiki; M5's musique pass at BLAS 2), the last one after this section was
+committed (the feeder sent it before the item could be dropped), so the 2wiki rows below were not part of the decision. Each round
+times three variants of the batch's forward in an order that rotates: "M3" (no A6 form, the module's step:
 M3's forms), "A6" (A6's forms, the module's step: what M5's warm batches run) and "A7" (A6's forms and the batched step below);
 five rounds after one that is not counted. The layer step's three calls and the layer loop are timed inside the same forwards by
 wrappers, and one torch-profiler pass per model gives the shares of its self time. Cells are ms per question (the batch's forward
@@ -1069,6 +1072,8 @@ over 16, median over the rounds):
 | musique | 1 | 23.7 -> 12.2 | 207.4 -> 196.2 -> 54.9 | 92% | 8.74 -> 16.03 -> 4.49 | 4.49x / 3.57x | 1.21 |
 | hotpotqa | 2 | 3.8 -> 2.0 | 11.2 -> 10.0 -> 5.5 | 80% | 2.91 -> 5.10 -> 2.79 | 2.22x / 1.83x | 1.01 |
 | hotpotqa | 1 | 3.6 -> 2.0 | 10.7 -> 9.1 -> 5.2 | 80% | 2.98 -> 4.56 -> 2.61 | 2.14x / 1.75x | 0.90 |
+| 2wiki | 2 | 5.3 -> 2.8 | 18.6 -> 16.5 -> 9.3 | 80% | 3.50 -> 5.85 -> 3.28 | 2.23x / 1.78x | 1.15 |
+| 2wiki | 1 | 5.1 -> 2.9 | 20.6 -> 17.7 -> 10.1 | 81% | 4.05 -> 6.16 -> 3.50 | 2.10x / 1.76x | 1.19 |
 
 Self time in the profiler (the first batch of 16, BLAS 2, A6's forms and the module's step), matrix products / gathers and
 scatters / the rest:
@@ -1077,23 +1082,25 @@ scatters / the rest:
 |---|---|---|
 | musique | 66% / 3% / 31% | 9% / 54% / 38% |
 | hotpotqa | 64% / 3% / 33% | 30% / 33% / 37% |
+| 2wiki | 60% / 3% / 37% | 24% / 36% / 39% |
 
 What the numbers say, and what is decided.
-- The module's layer step is 92% of the GNN's batch-of-16 forward on musique and 80% on hotpotqa, at both BLAS counts; the
-  layer loop is the same share to within a point. The MLP has no such stage: its forward is two thirds matrix products and 3%
-  gathers and scatters, and the matrix products are calls to the BLAS that the GNN's forward makes too. The GNN's forward is 54%
-  (musique) and 33% (hotpotqa) gathers and scatters, the layer step's edge work.
-- A6's forms alone move the ratio the wrong way: the MLP's forward falls 1.9 times and the GNN's 1.07 (musique) and 1.12
-  (hotpotqa) times, because the segment z-scores are most of the MLP's forward and a smaller part of the GNN's.
-- The batched step is 4.3 (musique) and 2.2 (hotpotqa) times faster than the module's, the forward 3.4 and 1.8 times, and the
-  ratio GNN / MLP at A6's forms and the batched step is 4.3 (musique) and 2.8 (hotpotqa), under the value with M3's forms (8.4, 2.9
-  in the same jobs) on musique and about level with it on hotpotqa. If the step were free the ratio would be 1.2 and 1.0: what
-  is left of the GNN's forward (the encoder, the readout and the z-scores) is the size of the MLP's whole forward. No further form
-  is proposed here.
+- The module's layer step is 92% of the GNN's batch-of-16 forward on musique, 80% on hotpotqa and 80% (BLAS 2) or 81% (BLAS 1) on
+  2wiki; the layer loop is the same share to within a point. The MLP has no such stage: its forward is 60 to 66% matrix products
+  and 3% gathers and scatters, and the matrix products are calls to the BLAS that the GNN's forward makes too. The GNN's forward
+  is 54% (musique), 33% (hotpotqa) and 36% (2wiki) gathers and scatters, the layer step's edge work.
+- A6's forms alone move the ratio the wrong way: the MLP's forward falls 1.9 times and the GNN's 1.07 (musique), 1.12
+  (hotpotqa) and 1.13 (2wiki) times, because the segment z-scores are most of the MLP's forward and a smaller part of the GNN's.
+- The batched step is 4.3 (musique), 2.2 (hotpotqa) and 2.2 (2wiki) times faster than the module's, the forward 3.4, 1.8 and 1.8
+  times, and the ratio GNN / MLP at A6's forms and the batched step is 4.3 (musique), 2.8 (hotpotqa) and 3.3 (2wiki), under the
+  value with M3's forms (8.4, 2.9 and 3.5 in the same jobs) on musique, about level with it on hotpotqa and a little under it on
+  2wiki. If the step were free the ratio would be 1.2, 1.0 and 1.2: what is left of the GNN's forward (the encoder, the readout
+  and the z-scores) is the size of the MLP's whole forward. No further form is proposed here.
 - The forward's scores are byte for byte the same in every batch (two a dataset), at both BLAS counts: the batched step against
   the module's step for the GNN, and A6's forms against M3's for both models. The batched step gains on every dataset measured
-  and at both BLAS counts, so it is declared. The development job for 2wiki has not run yet (the feeder holds it behind M5's
-  passes); it is not needed for this decision, and the timed re-time covers 2wiki.
+  and at both BLAS counts, so it is declared. The development job for 2wiki ran after this section was committed (the feeder sent
+  it before its item could be dropped); its rows are in the tables and agree with the other two datasets, and they were not part
+  of the decision.
 - End to end and the cold forward do not use this step at a batch of 16 and do not move. The warm batch of 16 moves, and so do the
   ratios GNN / MLP there: that is arithmetic on development gains, not a measurement: the re-time measures.
 
@@ -1101,8 +1108,8 @@ What the numbers say, and what is decided.
 unchanged). It is `zg6r.g6r_step` with the same operations in the same order, except two:
 1. The attention logit's dot product. The module computes it once per edge: `(linear(h, wa)[u] * c[qv]).sum(1) / sqrt(D)`, a gather
    of the source row's projection, a product with the context of the question the edge is in, and a sum over the 64 values. There
-   are 6 times as many edges as rows on hotpotqa and 24 times on musique (p50 of the development questions: 4,036 edges on 676
-   rows, and 118,598 on 4,859). Every edge lies inside one question (its source row and its target row are rows of the same
+   are 6 times as many edges as rows on hotpotqa, 5 times on 2wiki and 24 times on musique (p50 of the development questions: 4,036
+   edges on 676 rows, 5,871 on 1,082 and 118,598 on 4,859). Every edge lies inside one question (its source row and its target row are rows of the same
    question: `nq` is each row's question, `qv` the target's), so `c[qv]` of the edge is `c[nq[u]]`, the context of the source
    row's own question. The form computes `(linear(h, wa) * c[nq]).sum(1) / sqrt(D)` once per row and gathers the result at the
    edges' source rows. For one edge the two are the same 64 float32 products added by the same torch reduction (per row of a
@@ -1164,7 +1171,7 @@ report. The headline stays the end-to-end and the cold forward times, which this
 **Risks, stated before any number.**
 - The development numbers are 32 questions beside M5's passes on other processors: not measurements. The timed ones can differ,
   and the speed-up can differ with the graphs' sizes (the layer step's cost grows with the edges: 4,036 a question on hotpotqa,
-  118,598 on musique).
+  5,871 on 2wiki, 118,598 on musique).
 - The form leans on two properties of the libraries: torch's reduction over a row does not depend on the number of rows, and
   `index_add_` takes its rows in order (A4's kernel already relies on it). They held on the selftest and in every development
   comparison; the timed run's per-batch comparison decides, and a form whose bytes differ is dropped by a correction.
