@@ -362,3 +362,154 @@ next level's screen.
 
 **Commit policy.** Commit only `outputs/fsv/calls_gnn.json` and `calls_gnn.md`, masked with `mask_host.py` and
 `mask_md.py`, with `git add -f`. Never commit the fits, compares or read files.
+
+## 10. Amendment A2: the timing's two families, its stages' forms and its code (4 November, before any timed number)
+
+This wires section 5 and the user's order of 4 November, 06:30 IST: "make sure while measuring both models across families
+are as fast as possible and fam 1 without feature cuts and fam 2 with feature cuts". Module: `outputs/mp_unified/zfsvc.py`
+(new). It imports `zfsvt.py` (section 5's reference reads, unchanged). Sections 1 to 9 stand, except where this names one.
+
+**The families.**
+
+| family | MLP | GNN |
+|---|---|---|
+| 1, no feature cuts | zrckpn, every input kept | zg6r, every input kept |
+| 2, with feature cuts | zrckpn at its first ADMITTED level, else the full zrckpn | zg6r at its first ADMITTED level, else the full zg6r |
+
+- Both families time each model at its fastest exact form in every stage. A form one model has in a shared stage, the other
+  has too. A faster exact form found later is a new amendment and a re-time of every number it touches.
+- Family 2 follows section 4's order and rule, unchanged. State at 09:20 IST on 4 November: the MLP's L3 screen FAILED
+  (6d16b28) and its L2 screen FAILED (0c95b96: 1 LOSS of the 8 deciding reads, WQ-hotpotqa musique-4hop, -0.0093 against a
+  0.0075 floor). L1, the G_struct cut alone, is queued on the host (`fsv-zrckpn-L1-s0`, `-s0-hp`, `fsv-compare-l1`,
+  `fsv-calls-l1`), its verdict due between about 11:00 and 12:00 IST on 4 November. The GNN's L3 calls are due about 01:00
+  IST on 5 November. If L1 also fails, the MLP's Family 2 is the full zrckpn.
+- Family 2 is timed only after both verdicts. A model whose Family 2 is its full model has no second row: it is timed once
+  (section 5), and its Family 1 row stands for both.
+- Family 2's forms are declared in amendment A3, before any Family 2 number. They take one rule from here: a cut input is
+  neither computed nor read in stage (b); the forward is the cut fit's own model; exactness is against that fit's own filed
+  read (`scr-fsv-*`), which `zfsvt.py` reads first, as it read the full fits'.
+
+**The stages' forms, Family 1.** Stage (a) runs once per question and is shared. Stages (b) and (c) run once per model.
+
+| stage | form | MLP (zrckpn) | GNN (zg6r) |
+|---|---|---|---|
+| (a) pool | `zfsvc.stage_a`: today's pool and the seeds by `c10_zn.FastPool`; the base (equal-RRF budget, `c10_zn._rrf_base`); the question's text links (step 4e's `link` on the name index); PKO's rule as `zpko.rule_batch` calls it, for one question on one thread, without its statistics and self-checks (the walks on the carried walk, KIND_T, the one-link and two-link neighbourhoods and their orders, the pick's expansion, the KT columns); pool = B plus the expansion | the same run | the same run |
+| (b) compile | `c11_fast.compile_serial` on `c12_fast`'s kernel table | own call | own call |
+| (b) rows | `c10_zn.lean_rows10`, with `c10_zn.Decoder` over the int8 code table | own call | own call |
+| (b) links | `c3_fast.links_fast` | for NEXT's family bits | the `_link` edges |
+| (b) NEXT | LTM's lists of the five leading rows and their link neighbours, scored by the fold model of the question's fold | 7 columns | none |
+| (b) inputs | the batch's tensors as `lean_gpu.CacheCarve.batch` gives them, from the question's own rows | blocks, `_kt`, NEXT | blocks, `_kt`, `_link`, `_g6r` (the passage graphs' empty typed slot) |
+| (c) forward | the model's module in eager torch, `no_grad`, one thread; the top five | own | own |
+
+- The model-only time of a model is its (b) + (c). Its end-to-end time is the question's (a) + its (b) + (c); (a) ran
+  once and is charged in full to both models.
+- Each model's (b) runs from the pool for that model alone, so its model-only time stands alone.
+- The models alternate in leading each question: the MLP first on even questions, the GNN first on odd ones. The 201st
+  question runs first, for both models, to compile (numba) and warm: it is not kept.
+- The first-stage retrieval (the question's encoding, the dense and SPLADE lists) is not timed here. PKO's prepared lists
+  are read before timing, as index-time data. Any number reported beside it comes from an earlier record, labelled so.
+- No fused form exists for zrckpn or zg6r (the C-stage fused forwards cover the older zrc and zsp). Stage (a) is PKO's own
+  rule at batch 1: P4b's fast-walk layouts were built for P4a's KIND_T pools and are not applied to pick O's walks. Either
+  is a place where a faster exact form could exist; it would be an amendment and a re-time (D1 below).
+
+**Threads and BLAS.**
+- The walks (numba), the forward (torch) and every other stage run on one thread; every OpenMP runtime is limited to one
+  thread (the host's job environment sets two for the pools loaded before the script, so the script limits them).
+- OpenBLAS runs on **2 threads**, in the matrix products of stages (a) and (b). The reason is measured. The first 12
+  questions of musique's s1eval, with BLAS on 1 thread: two questions had one float16 input value (`depth_STRUCT`) one step
+  off the filed read's, and one question's scores moved 1.5e-4 (beyond section 5's 1e-4, top 5 the same). With BLAS on 2
+  threads, all 12 reproduce the filed inputs value for value. Section 5's "one thread" is read this way from here on.
+- A pass at BLAS 1 is timed beside, labelled: its check counts the questions beyond 1e-4, and they are timed all the same.
+  The BLAS-2 pass is the record.
+- Each job records the pools' effective sizes (torch, numba, BLAS and every OpenMP runtime, each with its library) after
+  every module has set its own; `zfsvc.py threads` prints them after the imports.
+
+**The device.** The host's CPU (rx env `mpr-cpu`, started through `pylib_run.py` for numba), not the laptop: the laptop
+holds neither PKO's links and caches nor the RAM for a dataset's index (section 5's own condition). The host is shared, so
+it cannot be idle; instead:
+- the process pins itself to logical processors 2 and 4 (its own affinity, EcoQoS opted out, above-normal priority; its own
+  process only), and with `--require-pin` the job stops if the pin fails (the three calls all took effect in the smoke
+  run below);
+- every logical processor's load is sampled for 1 s before and after the timed pass and recorded;
+- one job per dataset, one after another, never beside another timed job; `--cpus 2`; memory reserved from the larger of
+  the dataset's development and smoke peaks plus a margin (musique: 12.8 GB for the 40-question development check, 15.9 GB
+  for the 20-question smoke run, which also holds the check pass);
+- one record per dataset: a job that fails (memory, a lost host connection) is re-run, a finished job is not repeated for
+  its numbers.
+
+**Fits and questions** (the fits are zfsvt's: seed 0, p@swa, its filed reads).
+
+| dataset | MLP | GNN |
+|---|---|---|
+| musique | `scr-ltm-zrckpn-s0-hp` | `scr-ml1-zg6r-s0-hp` |
+| hotpotqa, 2wiki | `scr-ltm-zrckpn-s0` | `scr-ml1-zg6r-s0` |
+
+The first 200 s1eval questions of each dataset, in the look's order, and the 201st for the first run. Musique's models
+are the WQ-hotpotqa halves; hotpotqa's and 2wiki's are the WQ-musique halves.
+
+**Two inputs the filed reads used, and how the cold path matches them.**
+- **NEXT.** The fold model of question j is LTM's cross-fit: fold `np.random.default_rng([0, DS_K[ds], 7]).integers(0, 5,
+  n)[j]`, n the carve's full size, so the model that did not train on the question scores it. LTM scored lists in batches
+  of 32 across questions; the cold path scores one question's lists at a time, and a batch's composition can in principle
+  move a float16 value one step. The check pass counts the values that differ from the cache's (musique, first 40
+  questions, 1,383,088 values: none differ).
+- **The int8 code table.** The cache the reads were built on does not hold one code per node: of the first 12 questions'
+  59,687 pool rows, one row's code differs by one step from the same node's code in an earlier question (the build's
+  blocks), and 2 of the first 40 questions' rows. A table written once per node cannot reproduce every filed read. The cold
+  path reads one table either way (the same slots, the same decode); before each question's timed stages, untimed, the table
+  is written with the codes of that question's rows from the cache. The job records how many rows differed from an earlier
+  question's (`code_conflicts`).
+
+**The checks** (section 5's, untimed, after the timed pass). For each timed question:
+- each model's scores against the fit's filed read at batch 1 (within 1e-4, same top 5);
+- the pool, today's pool and the KT columns against PKO's own rule on the same question (`zpko.rule_batch`), equal; the
+  pool's size against the question's row count in the cache, which was built on PKO's filed pools (a mismatch stops the
+  job);
+- the NEXT columns against the cache's, counted (not a call).
+
+A question that fails the first two is not kept. More than 2% failing stops the dataset (P4a's rule); the job exits 1.
+
+**Reported** (section 5's list, as one recipe fixed before any number):
+- per stage and per model, p50 and p95 in ms over the kept questions: (a) with its parts (the pool, the base, the links,
+  the rule's walks, orders and KT columns), (b) with its parts (compile, rows, links, NEXT, inputs), (c);
+- model-only and end to end, per model;
+- the ratio GNN / MLP of the p50 of the same resampled questions, full against full (Family 1) and fast against fast
+  (Family 2), with the 2.5th and 97.5th percentiles over 2,000 resamples of the questions with replacement
+  (`numpy.random.default_rng(0)`);
+- warm: the forward alone from the packs of the cold pass, batch 1 on each question and batch 16 as 12 batches of the first
+  192 (the batch's time over 16), the same pin;
+- cold is the headline, warm beside it, labelled.
+
+**The development check** (`python outputs/host_ops/pylib_run.py outputs/mp_unified/zfsvc.py dev --dataset musique
+--questions N --blas B`) passed on the host before this commit, on musique's first questions, BLAS 2:
+- stage (a)'s base-and-seeds, today's pool, expansion, pool, KT columns, text links and seeds equal PKO's own rule and its
+  filed arrays on every question;
+- each model's inputs equal the reference carve's batch of that question value for value (0 values differ);
+- scores are within 7.2e-6 of the filed read's (first 12 questions) and the top 5 is the same;
+- the NEXT columns: 0 of 28,203 to 41,370 float16 values per question differ from the cache's (first 12 questions);
+- first 40 questions (197,584 pool rows): every check passes, scores within 7.2e-6, 0 of 1,383,088 NEXT values differ.
+At BLAS 1 the same 12 questions fail as described above (2 questions with one input value a step off, 1 beyond 1e-4).
+
+A smoke run of the timed path (`run --nq 20`, `--cpus 2`, BLAS 2, `--require-pin` on logical processors 2 and 4; its raw
+file goes to `raw_smoke`, is not filed and is not a measurement) completed on the host, run twice (the second after the
+OpenMP limit above), both with the same result: the pin took (affinity, EcoQoS opt-out, priority), the pools were OpenBLAS
+2 and torch, numba and every OpenMP runtime 1 (second run), 20 of 20 questions were kept with no check failing (scores
+within 5.7e-6 for the MLP and 7.2e-6 for the GNN of the filed reads, the pool and KT columns equal PKO's rule on every
+question, 0 NEXT values differing), one cached code row differed from an earlier question's, and the job's peak memory
+was 15.9 GB.
+
+The development check and the smoke run were made on musique only. Hotpotqa and 2wiki go through `dev` (their first 40
+questions, BLAS 2) before their timed passes, and a pass starts only when every check passes; a failure there changes the
+code, not the recipe above, and is stated in the report.
+
+**Owed, not part of this amendment.** `zfsvc.py report` (the reduction above, from the raw files, writing
+`outputs/fsv/timing/report.json` and `report.md`) is written with the first raw file and changes no choice made here.
+Family 2's forms (A3). **D1** (the user's): spend time on a faster exact stage (a) or forward before the timed pass, or time
+the forms stated here first. Default: time them first and state the share of (a) beside each ratio. In the smoke run (the
+host carried other jobs: development times, not measurements) the p50 of stage (a) was 0.47 s per question (0.51 s in the
+first run), of which the rule's walks were 0.29 s and its orders 0.18 s, against 0.12 s for the MLP's (b) + (c) and 0.34 s
+for the GNN's (its forward 0.25 s); stage (a) is the larger part of both models' end-to-end times, so a faster exact (a)
+moves the end-to-end ratios and a faster exact forward moves the model-only ones.
+
+**Commit policy.** Commit only `outputs/fsv/timing/report.json` and `report.md`, masked (`mask_host.py`, `mask_md.py`),
+with `git add -f`. The raw files (`outputs/fsv/timing/raw`) and the reference arrays (`ref/*.npz`) are never committed.
