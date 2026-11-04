@@ -8,6 +8,10 @@ code list are FSV's, and zml1s's declaration, stage and stamp key are FSV's, wit
 stamp. Everything else is LTM's zrckpn: zltm's trainer and read, the card, each split's NEXT columns, PKO's roots, the
 read cap and DOB's device. Every patched name is put back afterwards, also on a failure.
 
+Amendment A5 (docs/FSV_FAST_VERSIONS.md section 11) adds one level to the MLP's order, after L1: L0 cuts topo_STRUCT alone.
+zfsvg.py reads GROUPS, LEVELS and ORDER (its tables count three levels), so those three stay as they were and L0 lives
+beside them, in GROUPS_A5, LEVELS_A5 and MLP_ORDER.
+
     python outputs/mp_unified/zfsv.py fit --name scr-fsv-zrckpn-L3-s0     (train when needed, then read; kept when read)
     python outputs/mp_unified/zfsv.py compare-all                         (each read cut fit against LTM's zrckpn)
     python outputs/mp_unified/zfsv.py calls                               (outputs/fsv/calls.json and .md)
@@ -48,6 +52,12 @@ MLP = LTM.ARM                                   # zrckpn
 GROUPS = {"G_struct": ("topo_STRUCT", "depth_STRUCT"), "G_store": ("SEED", "DISTS"), "G_walk": ("WALK", "WALKF")}
 LEVELS = {"L3": ("G_struct", "G_store", "G_walk"), "L2": ("G_struct", "G_walk"), "L1": ("G_struct",)}
 ORDER = ("L3", "L2", "L1")                      # the largest cut first (section 2)
+GROUPS_A5 = {"G_topo": ("topo_STRUCT",)}        # amendment A5: the first block of G_struct, alone
+LEVELS_A5 = {"L0": ("G_topo",)}                 # the smallest cut (not "no cut": the full model is not a level)
+MLP_ORDER = ORDER + tuple(LEVELS_A5)            # the MLP's order: L0 after L1 (the GNN's stays ORDER)
+ALL_GROUPS = {**GROUPS, **GROUPS_A5}
+ALL_LEVELS = {**LEVELS, **LEVELS_A5}
+AMENDMENT_A5 = "A5"
 NEVER = ("rank", "dense_cos", "SEMB", LTM.NEXT)  # pick blocks never cut (the KT input and the GNN's links are not blocks)
 FSV_CODE = ("zfsv",)
 CAND = "p@swa"
@@ -58,12 +68,14 @@ PASS, FAIL, ADMITTED, NOT_ADMITTED, INCOMPLETE = "PASS", "FAIL", "ADMITTED", "NO
 assert DOB.PICK == ("rank", "dense_cos", "topo_STRUCT", "depth_STRUCT", "SEMB", "SEED", "WALK", "DISTS", "WALKF")
 assert LTM.PICK == DOB.PICK + (LTM.NEXT,) and LTM.THREADS == THREADS and S0 == "WQ-musique" and HP == "WQ-hotpotqa"
 assert set(b for g in GROUPS.values() for b in g) == set(DOB.PICK) - set(NEVER)
+assert set(GROUPS_A5["G_topo"]) < set(GROUPS["G_struct"])
+assert all(set(g) <= set(ALL_GROUPS) for g in LEVELS_A5.values()) and not set(GROUPS_A5) & set(GROUPS)
 assert tuple(DEP.SLICES) == ("musique-3hop", "musique-4hop") and DEP.SLICE_DS == "musique"
 assert all(r in RULE.READS for r in DECIDING if r[1] in RULE.DATASETS)
 
 
 def cut_of(level):
-    return tuple(b for g in LEVELS[level] for b in GROUPS[g])
+    return tuple(b for g in ALL_LEVELS[level] for b in ALL_GROUPS[g])
 
 
 def pick_of(level):
@@ -84,11 +96,11 @@ def pair_name(level, seed, split):
     return f"scr-fsv-{MLP}-{level}-vs-full-s{seed}{M1.WQ.SUF[split]}"
 
 
-FITS = {fit_name(lv, sd, sp): (MLP, sd, sp) for lv in ORDER for sd in RULE.SEEDS for sp in M1.SPLITS}
-LEVEL_OF = {fit_name(lv, sd, sp): lv for lv in ORDER for sd in RULE.SEEDS for sp in M1.SPLITS}
+FITS = {fit_name(lv, sd, sp): (MLP, sd, sp) for lv in MLP_ORDER for sd in RULE.SEEDS for sp in M1.SPLITS}
+LEVEL_OF = {fit_name(lv, sd, sp): lv for lv in MLP_ORDER for sd in RULE.SEEDS for sp in M1.SPLITS}
 PAIRS = {pair_name(lv, sd, sp): (fit_name(lv, sd, sp), full_name(sd, sp))
-         for lv in ORDER for sd in RULE.SEEDS for sp in M1.SPLITS}
-assert len(FITS) == 18 and len(PAIRS) == 18
+         for lv in MLP_ORDER for sd in RULE.SEEDS for sp in M1.SPLITS}
+assert len(FITS) == 24 and len(PAIRS) == 24     # 18 until amendment A5 added L0's six
 assert not set(FITS) & (set(M1.ALL_FITS) | set(DOB.FITS) | set(LTM.FITS))
 assert all(b in LTM.FITS for _n, b in PAIRS.values())
 
@@ -102,9 +114,11 @@ def naming(level):
 
 
 def fsv_block(name):
+    """The stamp's FSV block. L3, L2 and L1 keep the block they were stamped with; L0 (amendment A5) names its amendment."""
     lv = LEVEL_OF[name]
-    return {"declared_in": DECLARED, "level": lv, "groups": list(LEVELS[lv]), "cut": list(cut_of(lv)),
-            "pick": list(pick_of(lv)), "full": full_name(*FITS[name][1:])}
+    blk = {"declared_in": DECLARED, "level": lv, "groups": list(ALL_LEVELS[lv]), "cut": list(cut_of(lv)),
+           "pick": list(pick_of(lv)), "full": full_name(*FITS[name][1:])}
+    return {**blk, "amendment": AMENDMENT_A5} if lv in LEVELS_A5 else blk
 
 
 def stamp_fsv(orig, name):
@@ -263,7 +277,7 @@ def slices(cut, full, base=ROOT, slicer=None):
     bad = []
     for sp in M1.SPLITS:
         for sd in RULE.SEEDS:
-            todo = [(full_name(sd, sp), full)] + [(fit_name(lv, sd, sp), cut.setdefault(lv, {})) for lv in ORDER
+            todo = [(full_name(sd, sp), full)] + [(fit_name(lv, sd, sp), cut.setdefault(lv, {})) for lv in MLP_ORDER
                                                   if sd in cut.get(lv, {}).get((sp, DEP.SLICE_DS), {})]
             for f, own in todo:
                 want = own.get((sp, DEP.SLICE_DS), {}).get(sd)
@@ -323,11 +337,12 @@ def full_run(cut, full):
     return {"verdict": v, "problems": problems, "reads": rows, "beside": side, "counts": n}
 
 
-def walk(levels):
+def walk(levels, order=None):
     """Section 4's order over {level: {"screen": .., "full_run": ..}}: (the fast version's level or None, the next step
-    as (level, "screen" | "full_run") or None, the steps taken)."""
+    as (level, "screen" | "full_run") or None, the steps taken). order is ORDER (zfsvg's, the GNN's) unless the caller gives
+    one: the MLP's is MLP_ORDER (amendment A5)."""
     steps = []
-    for lv in ORDER:
+    for lv in (order or ORDER):
         s = (levels.get(lv) or {}).get("screen") or {}
         if s.get("verdict") in (None, INCOMPLETE):
             return None, (lv, "screen"), steps
@@ -348,7 +363,7 @@ def decide(cut, full, bad):
     it is compared, its full run; every verdict INCOMPLETE when there is any problem; then the order. Returns (levels,
     the fast version's level or None, the next step or None, the steps)."""
     levels = {}
-    for lv in ORDER:
+    for lv in MLP_ORDER:
         c = cut.get(lv) or {}
         if not c:
             continue
@@ -360,7 +375,7 @@ def decide(cut, full, bad):
             for what in ("screen", "full_run"):
                 if what in blk:
                     blk[what]["verdict"] = INCOMPLETE
-    fast, nxt, steps = walk(levels)
+    fast, nxt, steps = walk(levels, MLP_ORDER)
     return levels, fast, (None if bad else nxt), steps
 
 
@@ -407,8 +422,8 @@ def calls(base=ROOT):
     bad += fit_problems(base)
     levels, fast, nxt, steps = decide(cut, full, bad)
     rec = {"stage": STAGE, "declared_in": DECLARED, "model": MLP, "full": "LTM's zrckpn (scr-ltm-zrckpn-s<k>)",
-           "device": DOB.DEVICE, "threads": THREADS, "groups": {g: list(b) for g, b in GROUPS.items()},
-           "order": list(ORDER), "deciding": [list(r) for r in DECIDING], "levels": levels, "problems": bad,
+           "device": DOB.DEVICE, "threads": THREADS, "groups": {g: list(b) for g, b in ALL_GROUPS.items()},
+           "order": list(MLP_ORDER), "deciding": [list(r) for r in DECIDING], "levels": levels, "problems": bad,
            "fast_version": fast, "next": list(nxt) if nxt else None, "steps": [list(s) for s in steps],
            "zfsv_sha256": M1.WQ.sha_src(__file__), "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     out = Path(base) / OUT
@@ -469,8 +484,21 @@ def selftest():
     assert pick_of("L3") == ("rank", "dense_cos", "SEMB", "NEXT")
     assert pick_of("L2") == ("rank", "dense_cos", "SEMB", "SEED", "DISTS", "NEXT")
     assert pick_of("L1") == ("rank", "dense_cos", "SEMB", "SEED", "WALK", "DISTS", "WALKF", "NEXT")
-    assert all(set(NEVER) <= set(pick_of(lv)) and pick_of(lv)[-1] == LTM.NEXT for lv in ORDER)
-    assert all(set(cut_of(a)) > set(cut_of(b)) for a, b in zip(ORDER, ORDER[1:]))
+    assert all(set(NEVER) <= set(pick_of(lv)) and pick_of(lv)[-1] == LTM.NEXT for lv in MLP_ORDER)
+    assert all(set(cut_of(a)) > set(cut_of(b)) for a, b in zip(MLP_ORDER, MLP_ORDER[1:]))
+    # amendment A5: L0 beside the three levels, and everything zfsvg reads exactly as it was
+    assert ORDER == ("L3", "L2", "L1") and tuple(LEVELS) == ORDER and tuple(GROUPS) == ("G_struct", "G_store", "G_walk")
+    assert LEVELS["L1"] == ("G_struct",) and GROUPS["G_struct"] == ("topo_STRUCT", "depth_STRUCT")
+    assert MLP_ORDER == ORDER + ("L0",) and ALL_LEVELS["L0"] == ("G_topo",) and cut_of("L0") == ("topo_STRUCT",)
+    assert pick_of("L0") == ("rank", "dense_cos", "depth_STRUCT", "SEMB", "SEED", "WALK", "DISTS", "WALKF", "NEXT")
+    assert fit_name("L0", 0, S0) == "scr-fsv-zrckpn-L0-s0" and fit_name("L0", 2, HP) == "scr-fsv-zrckpn-L0-s2-hp"
+    assert PAIRS[pair_name("L0", 1, S0)] == (fit_name("L0", 1, S0), full_name(1, S0)) and len(FITS) == len(PAIRS) == 24
+    assert fsv_block(fit_name("L0", 0, S0)) == {"declared_in": DECLARED, "level": "L0", "groups": ["G_topo"],
+                                                "cut": ["topo_STRUCT"], "pick": list(pick_of("L0")),
+                                                "full": full_name(0, S0), "amendment": AMENDMENT_A5}
+    assert fsv_block(fit_name("L1", 0, S0)) == {"declared_in": DECLARED, "level": "L1", "groups": ["G_struct"],
+                                                "cut": ["topo_STRUCT", "depth_STRUCT"], "pick": list(pick_of("L1")),
+                                                "full": full_name(0, S0)}            # as stamped before A5: no new key
     assert fit_name("L3", 0, S0) == "scr-fsv-zrckpn-L3-s0" and fit_name("L2", 1, HP) == "scr-fsv-zrckpn-L2-s1-hp"
     assert full_name(2, HP) == "scr-ltm-zrckpn-s2-hp"
     assert PAIRS[pair_name("L1", 2, HP)] == (fit_name("L1", 2, HP), full_name(2, HP))
@@ -511,6 +539,10 @@ def selftest():
             raise RuntimeError("boom")
     except RuntimeError:
         pass
+    assert state() == saved
+    with on_fsv(fit_name("L0", 1, HP), Z2, LG):                      # amendment A5: L0's patches, then put back
+        assert LG.SETS["pick"] == list(pick_of("L0")) and LTM.PICK == pick_of("L0") and "topo_STRUCT" not in LTM.PICK
+        assert LTM.FITS == {fit_name("L0", 1, HP): (MLP, 1, HP)} and "L0" in LTM.NAMING
     assert state() == saved
     must_stop(lambda: on_fsv("scr-fsv-zrckpn-L4-s0", Z2, LG).__enter__())
     must_stop(fit, "scr-ltm-zrckpn-s0")
@@ -553,7 +585,17 @@ def selftest():
     assert walk(lv3)[:2] == ("L1", None)
     assert walk({})[:2] == (None, ("L3", "screen"))
     assert walk({"L3": {"screen": {"verdict": PASS}, "full_run": {"verdict": ADMITTED}}})[:2] == ("L3", None)
-    assert walk({lv: {"screen": {"verdict": FAIL}} for lv in ORDER})[:2] == (None, None)
+    assert walk({lv: {"screen": {"verdict": FAIL}} for lv in ORDER})[:2] == (None, None)     # zfsvg's walk: three levels
+    # amendment A5: the MLP's walk names L0's screen once L3, L2 and L1 have failed, and goes on from there as section 4 says
+    all3 = {lv: {"screen": {"verdict": FAIL}} for lv in ORDER}
+    assert walk(all3, MLP_ORDER)[:2] == (None, ("L0", "screen"))
+    assert walk({**all3, "L0": {"screen": {"verdict": INCOMPLETE}}}, MLP_ORDER)[:2] == (None, ("L0", "screen"))
+    assert walk({**all3, "L0": {"screen": {"verdict": PASS}}}, MLP_ORDER)[:2] == (None, ("L0", "full_run"))
+    l0_in = {"screen": {"verdict": PASS}, "full_run": {"verdict": ADMITTED}}
+    assert walk({**all3, "L0": l0_in}, MLP_ORDER)[:2] == ("L0", None)
+    assert walk({**all3, "L0": {**l0_in, "full_run": {"verdict": NOT_ADMITTED}}}, MLP_ORDER)[:2] == (None, None)
+    assert walk({**all3, "L0": {"screen": {"verdict": FAIL}}}, MLP_ORDER)[:2] == (None, None)
+    assert walk({"L3": all3["L3"], "L2": l0_in}, MLP_ORDER)[:2] == ("L2", None)          # an earlier level still wins
 
     # decide: a screen alone, then its full run; any problem makes every verdict INCOMPLETE and names no next step
     lv, fast, nxt, _st = decide({"L3": cut}, full, [])
@@ -565,6 +607,17 @@ def selftest():
     lv, fast, nxt, _st = decide({"L3": cf}, full, ["two R@5 for one seed"])
     assert lv["L3"]["screen"]["verdict"] == INCOMPLETE and lv["L3"]["full_run"]["verdict"] == INCOMPLETE
     assert (fast, nxt) == (None, None)
+    lost = {**cut, (S0, "2wiki"): {0: 0.70}}                       # amendment A5: three failed levels name L0's screen,
+    lv, fast, nxt, _st = decide({"L3": lost, "L2": lost, "L1": lost}, full, [])     # which is pending, not a FAIL
+    assert [lv[k]["screen"]["verdict"] for k in ("L3", "L2", "L1")] == [FAIL] * 3 and "L0" not in lv
+    assert (fast, nxt) == (None, ("L0", "screen"))
+    assert _st == [("L3", "screen", FAIL), ("L2", "screen", FAIL), ("L1", "screen", FAIL)]
+    lv, fast, nxt, _st = decide({"L3": lost, "L2": lost, "L1": lost, "L0": cut}, full, [])
+    assert lv["L0"]["screen"]["verdict"] == PASS and (fast, nxt) == (None, ("L0", "full_run"))
+    lv, fast, nxt, _st = decide({"L3": lost, "L2": lost, "L1": lost, "L0": cf}, full, [])
+    assert lv["L0"]["full_run"]["verdict"] == ADMITTED and (fast, nxt) == ("L0", None)
+    lv, fast, nxt, _st = decide({"L3": lost, "L2": lost, "L1": lost, "L0": lost}, full, [])
+    assert lv["L0"]["screen"]["verdict"] == FAIL and (fast, nxt) == (None, None)
 
     # the R@5 reader: LTM's compares give the full model's seeds; two values for one seed, or a missing compare, are
     # problems
@@ -613,7 +666,8 @@ def selftest():
     assert "### Full run: ADMITTED" in md and "| WQ-hotpotqa | musique-4hop |" in md
     log("selftest passed: the names and levels, the patches and their restoring (also on a failure), the stamp's "
         "block, the screen and full run (PASS, FAIL, ADMITTED, NOT_ADMITTED, the floor, a held-out read and a slice "
-        "deciding, a beside read not, INCOMPLETE on a hole and on any problem), the order, the R@5 reader and the slices")
+        "deciding, a beside read not, INCOMPLETE on a hole and on any problem), the order, the R@5 reader and the slices, and "
+        "amendment A5's L0 (its names, pick, stamp, patches and walk) beside the three levels, zfsvg's names unchanged")
     return 0
 
 

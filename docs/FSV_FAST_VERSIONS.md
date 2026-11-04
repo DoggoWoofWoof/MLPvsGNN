@@ -513,3 +513,132 @@ moves the end-to-end ratios and a faster exact forward moves the model-only ones
 
 **Commit policy.** Commit only `outputs/fsv/timing/report.json` and `report.md`, masked (`mask_host.py`, `mask_md.py`),
 with `git add -f`. The raw files (`outputs/fsv/timing/raw`) and the reference arrays (`ref/*.npz`) are never committed.
+
+## 11. Amendment A5: the L0 level (4 November, about 11:30 IST, before any L0 fit)
+
+L3, L2 and L1 have each failed their screen for zrckpn (L3 6d16b28, L2 0c95b96, L1 ab2af7a). By section 4 the MLP has no
+fast version in section 2's order, and by section 10 its Family 2 would be the full zrckpn. This adds one level to the
+MLP's order, after L1: **L0, topo_STRUCT alone**. It names the fits, the rule and the queue before any L0 number. Module:
+`outputs/mp_unified/zfsv.py`, edited additively. Sections 1 to 10 stand, except where this names one.
+
+**Why a level after L1, and why an amendment.**
+- A verdict closes only the level it tested (section 6). L1 cut both blocks of G_struct and lost one deciding read,
+  WQ-hotpotqa musique-4hop (-0.0117 against a 0.0075 floor; L2 lost the same read, -0.0093). The other seven deciding reads
+  were WITHIN at both levels. Nested levels do not say which block a read needed (section 7).
+- topo_STRUCT is one of section 2's six candidates and lies inside G_struct, so L0 is a finer cut of a group already
+  named, not a new input. A cut outside the levels needs its own file (section 6). This section is that declaration, made
+  as an amendment because L0 takes section 4's reads and rule, the module's fits and stamps, and section 8's queue
+  unchanged. It is dated and committed before any L0 fit, as a file would be.
+- topo_STRUCT, and not depth_STRUCT, because it is the one block of G_struct with evidence at three seeds (below).
+
+**The level.**
+
+| level | group | cut | the pick keeps (NEXT too, after the kept blocks) |
+|---|---|---|---|
+| L0 | G_topo (new): topo_STRUCT | topo_STRUCT | rank, dense_cos, depth_STRUCT, SEMB, SEED, WALK, DISTS, WALKF |
+
+- The MLP's order is L3, L2, L1, L0. Each level's cut contains the next one's: L0's is the first block of L1's.
+- "L0" names the smallest cut. It is not "no cut": the full zrckpn is not a level.
+- The GNN's order stays L3, L2, L1. `zfsvg.py` counts three levels and is not edited. If the GNN's L1 screen fails too, a
+  later amendment adds an L0 for the GNN, with evidence and wiring of its own.
+
+**The evidence, and what it does not say.** DOB A3 (`docs/DOB_DROP_ONE_BLOCK_CPU.md` sections 12 and 13, 5e81953;
+`outputs/dob/full_xtopo.json` and `.md`) refitted zrckp without topo_STRUCT alone, at seeds 0, 1 and 2 on both splits,
+against the CPU base's fits of the same seeds:
+- DOB's own rule (ML1's, twelve reads): NOT_ADOPTED, 11 WITHIN and 1 UNCONFIRMED_GAIN (WQ-musique webqsp). No LOSS.
+- The WWW rule (the six in-domain reads): NOT_ADOPTED, all six WITHIN. "Not adopted" here means no GAIN to adopt it as a
+  better model; it is not a loss.
+- On the read L1 lost, WQ-hotpotqa musique-4hop, the three seeds' deltas were +0.0056, -0.0093 and +0.0006, against a
+  three-seed floor of 0.0119.
+- Of DOB's seven single drops, xtopo is the only one taken to seeds 1 and 2 (section 12). depth_STRUCT's drop has its
+  seed-0 reads alone: NO_GAIN, all six WWW reads WITHIN, +0.0062 on the 4-hop slice.
+
+It does not say that zrckpn can do without topo_STRUCT, for three reasons:
+- **The base differs.** DOB's base is zrckp. FSV's full model is zrckpn: zrckp plus the NEXT columns (LTM, ADOPT
+  7874e4d), which read the look differently.
+- **The rule differs.** DOB's three-seed calls use `zml1.call` with pair floors. The screen below reads seed 0 against
+  floors from the full model's own spread.
+- **The pair.** One drop at a time says nothing about pairs (DOB section 7). L1 cut topo_STRUCT and depth_STRUCT together;
+  DOB's single drops of each lost no deciding read on zrckp. L0 asks whether topo_STRUCT alone costs the 4-hop read on
+  zrckpn.
+
+**The screen** is L1's, with the level's name changed (sections 3 and 4):
+- **Fits:** `scr-fsv-zrckpn-L0-s0` on WQ-musique and `scr-fsv-zrckpn-L0-s0-hp` on WQ-hotpotqa. Each is LTM's zrckpn at
+  seed 0 with topo_STRUCT left out of lean_gpu's pick; NEXT is kept. Everything else is LTM's: zltm's trainer and read, the
+  card, each split's NEXT columns, PKO's roots, the read cap (65,536) and DOB's device (the host's CPU, 6 threads, torch
+  2.8.0+cpu).
+- **Compared** with LTM's `scr-ltm-zrckpn-s0` and `-hp`, in `scr-fsv-zrckpn-L0-vs-full-s0` and `-hp`, on the same device.
+- **The rule** is section 4's, unchanged: the same eight deciding reads (the slices read as there), the same floors
+  (max(0.0075, 2 × the full model's spread over its three seeds)), LOSS when the delta is at or below minus the floor,
+  PASS with no LOSS, FAIL with any, INCOMPLETE first. The full model's R@5 comes from the same compares as for L1.
+- **No number is read before this section is committed,** and no L0 fit starts before it.
+
+**What the calls mean** (section 4's order, extended by one level):
+- **PASS:** the full run follows: L0 at seeds 1 and 2 on both splits (`scr-fsv-zrckpn-L0-s1`, `-s2`, `-s1-hp`, `-s2-hp`),
+  queued only after the calls name it (section 8). ADMITTED, no LOSS among the eight at three seeds, makes L0 the MLP's
+  fast version. Its Family 2 is then the cut zrckpn, timed in a later pass (M3) once Family 2's forms (A3, owed in section
+  10) are written, after the pass that times both families with the MLP's Family 2 as the full zrckpn (M2). NOT_ADMITTED:
+  Family 2 stays the full zrckpn.
+- **FAIL:** the MLP's Family 2 stays the full zrckpn. It is timed once, and its Family 1 row stands for both (section 10).
+  No further MLP cut is declared without a new named form and its own evidence, before any number.
+- A PASS or an ADMITTED is not an adoption (section 4): L0 would be a fast version, not a better model.
+- Section 10's "if L1 also fails, the MLP's Family 2 is the full zrckpn" holds from here only once L0 has failed or been
+  NOT_ADMITTED. Until then the MLP's Family 2 is open; the timing of the full models is not affected.
+
+**Risks, stated before any number.**
+- **One seed is noise on one read.** zrckpn's three seeds agree within 0.0012 on the 4-hop slice, so its floor is the
+  0.0075 minimum, yet DOB's topo_STRUCT drop moved that read by +0.0056 at one seed and -0.0093 at another. A seed-0 FAIL
+  may be chance. It still decides this level: a new draw of the same cut is a new declaration, not a rerun. A PASS is not
+  an admission; the full run decides.
+- **A level declared after its predecessors' tables were seen** raises the chance of a lucky seed-0 PASS. The three-seed
+  full run is the stricter gate for it.
+- **The saving may be small.** topo_STRUCT is one block of the look's structural columns, so an admitted L0 may save
+  little in section 10's stages. The timing says how much. That changes no rule here.
+
+**The queue** (the host's CPU, section 8's items with L0 in the names; a full run's items are not queued).
+
+L1's two fits measured peaks of 26.7 GB (WQ-musique) and 30.2 GB (WQ-hotpotqa) on 6 CPUs and ran 1 hour 15 minutes and
+1 hour 40 minutes. L3's and L2's four fits ran 58 minutes to 1 hour 37 minutes. An L0 fit has more columns than L1's and
+fewer than the full model's, so each reserves the full model's measured peak, as L1's did (26.8 GB and 31.0 GB, plus the
+feeder's margin).
+
+| item | CPUs | memory (GB) | after |
+|---|---:|---|---|
+| `fsv-selftest-l0` | 1 | 4 | - |
+| `fsv-zrckpn-L0-s0` | 6 | LTM's `ltm-zrckpn-s0` peak | PKO's gate, the self-test |
+| `fsv-zrckpn-L0-s0-hp` | 6 | LTM's `ltm-zrckpn-s0-hp` peak | the same |
+| `fsv-compare-l0` | 1 | 8 | both fits |
+| `fsv-calls-l0` | 1 | 4 | the compare |
+
+- The self-test is new because `fsv-selftest` ran on the host before this amendment. It heads L0's items as it headed
+  L1's.
+- The items sit after U2z's pending block and ahead of CAP's pending fits, for D1's reason (measuring Claim 3 before
+  further model iterations). A fit starts when its memory is free; nothing already running is touched.
+
+**The report** is `outputs/fsv/calls.json` and `calls.md`, rewritten by `fsv-calls-l0`: the MLP's one record, with L3,
+L2, L1 and, once its compare is filed, L0. Until then the header reads "Next: L0 screen". It is filed as L1's was: those
+two files only, masked (`mask_host.py`, `mask_md.py`), with `git add -f`; never the fits, compares or read files.
+
+**The code** (`zfsv.py`, additive):
+- `ORDER`, `LEVELS` and `GROUPS` are as they were, because `zfsvg.py` reads them and asserts its fit counts. L0 is in
+  `GROUPS_A5`, `LEVELS_A5` and `MLP_ORDER = ORDER + ("L0",)`, merged for the lookups in `ALL_GROUPS` and `ALL_LEVELS`.
+- The MLP's tables (24 fits, 24 compares), `decide`, `slices` and the calls record use `MLP_ORDER`. `walk` takes an
+  optional order and defaults to `ORDER`.
+- L3's, L2's and L1's stamp block is as stamped before. L0's adds `"amendment": "A5"`.
+
+**The self-test** (`python outputs/mp_unified/zfsv.py --selftest`) passed on the laptop before this commit, and so did
+`zfsvg.py`'s. It adds to section 8's list:
+- L0's name, cut and pick, its stamp block and the L1 block unchanged, and its patches and their restoring;
+- the MLP's walk: L0's screen is named once L3, L2 and L1 have failed, and again on INCOMPLETE; PASS names its full run;
+  ADMITTED makes L0 the fast version; NOT_ADMITTED and FAIL name nothing; an earlier admitted level still wins. The GNN's
+  walk still stops at three levels;
+- `decide` on made-up reads: three failed levels name L0's screen with L0 absent from the levels (pending, not a FAIL),
+  then L0's PASS, ADMITTED and FAIL.
+
+**Reproduction.** The filed screens of L3, L2 and L1 (`outputs/fsv/calls.json`, ab2af7a) were rebuilt from their own rows
+(the full model's three seeds, the cut's seed 0) and run through the amended `decide`:
+- the verdicts (FAIL, FAIL, FAIL), counts, cuts, picks and every read's call are the filed ones. The eight deciding reads'
+  deltas and floors equal the filed ones to the last digit, and the beside reads' to 0.00015, because the record stores
+  WQ-musique's slice reads at four decimals;
+- the one difference is the step named: L0's screen, where the filed record names none. The calls' header reads "Next: L0
+  screen", and L0 is not among the levels until its compare is filed.
