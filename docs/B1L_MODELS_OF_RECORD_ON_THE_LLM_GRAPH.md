@@ -183,7 +183,36 @@ or any file or phrase of the references.
 
 ## 11. Queue (the host)
 
-Written after this file's first commit, from the development pass's measured peaks (section 12).
+Written 5 November 03:35 IST, after this file's first commit, before any read number. Two block files, `block1_chain.txt` (4
+items) and `block2_reads.txt` (16 items), `b1l-` names, kept in the session's scratch and never committed. Every row carries the
+same 118 inputs: B1M's rows' inputs, the import closure of `zb1h.py` and `zb1l.py`, `scripts/p2c_triples.py` (the self-test's P
+pairs; its top-level imports are the standard library and numpy), this file, and b1o's seven files under
+`outputs/b1l/bench/hipporag2_o/musique/` (8.8 MB: B1a's files and the structural family of section 3). The reference files and the
+weights are not inputs. Nothing is downloaded and no credential goes to the host.
+
+| item | CPUs | GB | GPU share | after | runs (`zb1l.py ...`) |
+|---|---:|---:|---:|---|---|
+| `b1l-selftest` | 2 | 2 | | | `selftest` |
+| `b1l-settings` | 2 | 4 | | selftest | `settings --dataset musique --host` |
+| `b1l-fork` | 1 | 2 | | selftest | `fork` |
+| `b1l-chain-musique` | 2 | 16 | | `pkoh-gate`, settings | `chain --dataset musique --host` |
+| `b1l-gate-musique` | 1 | 2 | | chain | `gate --tag musique --host` |
+| `b1l-lists-musique` | 1 | 2 | | chain | `lists --dataset musique` |
+| `b1l-cols-wqm-musique`, `-wqh-` | 2 | 2 | | lists | `cols --split WQ-musique` / `WQ-hotpotqa --dataset musique --host` |
+| `b1l-read-gnn-musique-s{0,1,2}[-hp]` (6) | 1.1 | 4 | 0.15 (cap 0.13) | gate, fork | `read-gnn --name scr-ml1-zg6r-s.. --tag musique` |
+| `b1l-read-mlp-musique-s{0,1,2}[-hp]` (6) | 6 | 4 | | gate, fork, its split's columns | `read-mlp --name scr-ltm-zrckpn-s.. --tag musique` |
+
+**Reservations** are the peaks the host measured for the same steps: B1P's settings 2.33 GB; its musique chains 6.04 GB (b1t,
+2,515 s) and 6.33 GB (b1w, 2,953 s); its zg6r reads 1.4 to 1.5 GB (113 to 190 s); B1M's zrckpn reads 1.9 GB (156 to 190 s) and
+columns up to 0.53 GB. The chain is reserved at **16 GB, b1w's 6.33 GB x 2.5** (the coordinator's rule: b1o's structural family has
+2.4 x b1w's entries); the host's own measured peak replaces it in the record. The GPU reads carry B1H's cap and share (0.13 / 0.15).
+
+**No laptop development pass.** `settings` needs about 3.5 GB on the laptop, which had 2.9 GB free (held by other applications), so
+`selftest` and `settings` are the block's first host items and the chain waits for `settings`. A failing item is fixed, and the fix
+is disclosed in section 12 with its commit, before any read number.
+
+**Time.** B1P's b1t and b1w chains took 2,515 s and 2,953 s: 438 s for 82,834 more entries. b1o's 196,422 entries over b1t
+extrapolate to about 3,550 s (a projection, not a measurement); the reads take about three minutes each.
 
 ## 12. What comes next, named now
 
