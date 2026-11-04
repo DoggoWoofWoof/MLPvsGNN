@@ -1025,5 +1025,15 @@ amendment and a re-time.
   decides: a form whose bytes differ is dropped by a correction, not hidden.
 - The new kernels are compiled in the first (untimed) question, as A2's and A4's are; their cache is written beside the module.
 
+**Correction 1 (4 November, 22:30 IST, before any M5 pass).** The first smoke (hotpotqa, 20 questions, BLAS 2) passed every check
+(0 of 20 questions failing, scores within 2.9e-6 for the MLP and 3.8e-6 for the GNN of the filed reads, 0 NEXT values differing) and
+then stopped with "the forms did not run": `forms_ran` required that A4's layer-step form took every GNN layer step, as `devy`
+(batch 1 only) shows it does. A4's step is for one question by design (`zfsvx.g6r_step_x` takes the module's step when the batch
+is not 1), and a timed run's warm batches of 16 (12 batches of the first 192 questions; one in the smoke) take the module's step,
+one per layer: 3 in the smoke, which is what the counters showed (`g6r_step_orig` 3, `g6r_step_x` 123, `zref_orig` 0). The check now
+expects exactly that many module steps in a timed run (layers x (questions // 16)) and none in `devy`; nothing else in `zfsvy.py`
+changes, no form, no timed path and no score check. M3's warm batch of 16 took the same module step, and A6's z-score form handles
+the batch of 16 (`zref_orig` 0), so M5's warm numbers compare like with like.
+
 **Commit policy.** `zfsvy.py` and this section are committed before any M5 pass. The raw files are never committed (section 10's
 policy); M5's `report.json` and `report.md` are committed masked, as M2's and M3's, with `git add -f`.

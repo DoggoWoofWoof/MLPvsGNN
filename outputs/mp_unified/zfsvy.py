@@ -1189,10 +1189,11 @@ def forward_ops(S, key, j, n, feats, nqt, base_z):
         log(f"q{j} {key} forward profile failed (the checks go on): {type(e).__name__}: {str(e)[:300]}")
 
 
-def forms_ran(nq):
-    """True when every form ran (both modules' counters): the callers stop if not."""
+def forms_ran(nq, b16=0):
+    """True when every form ran (both modules' counters): the callers stop if not. A4's layer step is for one question: the
+    warm batches of 16 (b16 of them in a timed run, none in devy) take the module's step, one per layer, and nothing else does."""
     xs, zl = X.STATS, X._zg6r().LAYERS
-    return (xs["setup_fast"] == 1 and xs["lean_rule_x"] >= nq and xs["g6r_step_x"] >= nq * zl and xs["g6r_step_orig"] == 0
+    return (xs["setup_fast"] == 1 and xs["lean_rule_x"] >= nq and xs["g6r_step_x"] >= nq * zl and xs["g6r_step_orig"] == zl * b16
             and STATS["zref_x"] >= nq and STATS["next_x"] >= nq and STATS["unit_x"] > 0 and STATS["zref_orig"] == 0
             and STATS["links_x"] >= nq and STATS["links_orig"] == 0)
 
@@ -1309,7 +1310,7 @@ def run(a):
     with installed(C.OUT / "a6") as P:
         rc = C.run(ns)
         nq = a.nq or C.T.NQ
-        if not forms_ran(nq):
+        if not forms_ran(nq, nq // C.B16):
             raise SystemExit(f"the forms did not run: {X.STATS} {STATS}")
         out_file = (C.RAW if nq == C.T.NQ else C.OUT / "raw_smoke") / f"{a.dataset}__b{C.BLAS}.json"
         d = json.load(open(out_file))
