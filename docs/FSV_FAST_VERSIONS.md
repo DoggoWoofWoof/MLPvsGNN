@@ -911,12 +911,83 @@ work no read reaches, changes):
   and more than 2% failing stops the dataset. It stops with "the forms did not run" if a form was not used, and each raw file records
   both modules' sha256 and what ran.
 
-**Development numbers and the profile.** To be added to this section from the first development runs on the host (the first 40
-questions of each dataset, BLAS 2, two CPUs as the timed jobs have, other jobs running: development times, not measurements). A
-form that fails a check there is dropped from the module and from this section by a correction before any M5 pass. Each form's gain
-is reported per dataset; a form that gains under 0.5 ms on hotpotqa and nothing on musique is dropped as well (the links form can
-gain only on musique, where links are 13 ms of stage (b), against 0.4 on hotpotqa). A form the profile shows to be worth adding is
-declared by a correction before any M5 pass, with its check.
+**Development numbers and the profile.** From the first development runs on the host (feeder jobs `fsvy-profile-D` and
+`fsvy-devy-D`, 4 November 21:19 to 22:18 IST, on the module as committed in d2348c3; the first 40 questions of each dataset, BLAS 2,
+two CPUs as the timed jobs have, other jobs running on the host: development times, not measurements). A form that fails a check
+there is dropped from the module and from this section by a correction before any M5 pass. Each form's gain is reported per dataset;
+a form that gains under 0.5 ms on hotpotqa and nothing on musique is dropped as well (the links form can gain only on musique, where
+links are 10 to 13 ms of stage (b), against 0.4 on hotpotqa). A form the profile shows to be worth adding is declared by a correction
+before any M5 pass, with its check.
+
+**Exactness.** `devy` PASSED on hotpotqa, musique and 2wiki. On every question and for both models, each of the five settings (all of
+A6's forms; each form alone) gave the scores, the pack of the inputs and the features byte for byte equal to the run with A4's forms
+only. A2's checks held with the forms installed: the pool, the KT columns and I equal PKO's rule on the same question, each model's
+inputs equal the carve's batch, the scores within 1e-4 of the fits' filed reads (the largest difference below is 7.2e-6) with the same
+top five on 40 of 40, and the float16 NEXT values counted. Every form ran and neither module's own function was taken (`zref_orig` 0,
+`links_orig` 0 on every dataset; counters per job: z-scores 1,680, candidate lists 123, unit rows 82, links 164). The profile's NEXT
+columns equal `next_cold`'s on 40 of 40 questions on each dataset.
+
+| dataset | questions | pool rows p50 (max) | link edges p50 (max) | scores vs the filed read, max diff MLP / GNN | same top 5 MLP / GNN | NEXT values differing from the filed read | variants differing byte for byte from A4's forms |
+|---|---|---|---|---|---|---|---|
+| musique | 40 | 4833 (8053) | 125259 (289218) | 5.7e-06 / 7.2e-06 | 40 / 40 of 40 | 0 of 1,383,088 | none |
+| hotpotqa | 40 | 666 (1250) | 4036 (15056) | 2.9e-06 / 4.8e-06 | 40 / 40 of 40 | 1 of 191,583 | none |
+| 2wiki | 40 | 1115 (1568) | 6230 (20910) | 2.4e-06 / 6.7e-06 | 40 / 40 of 40 | 0 of 313,117 | none |
+
+(The one hotpotqa NEXT value is also in the run with A4's forms: the variants agree byte for byte, so the form did not move it.)
+
+**All of A6's forms against A4's forms alone**, p50 in ms per question, stage (b) + (c) without stage (a) (A4's forms -> A4's and
+A6's). The segments A6 does not touch (compile, rows, assemble) differ by up to 0.3 ms between settings on hotpotqa and 2wiki and by
+up to 2.5 ms on musique: the host is shared, so only differences beyond that are readable.
+
+| dataset | model | compile | rows | links | NEXT | assemble | forward | (b)+(c) | gain | x |
+|---|---|---|---|---|---|---|---|---|---|---|
+| musique | MLP | 31.29 -> 33.77 | 16.59 -> 16.80 | 10.25 -> 1.99 | 6.46 -> 3.58 | 2.30 -> 2.24 | 22.62 -> 11.83 | 92.77 -> 69.21 | 23.56 | 1.34 |
+| musique | GNN | 32.36 -> 32.88 | 16.48 -> 18.18 | 10.37 -> 1.96 | none | 3.84 -> 4.73 | 52.06 -> 44.88 | 115.43 -> 103.41 | 12.02 | 1.12 |
+| hotpotqa | MLP | 3.85 -> 3.76 | 1.48 -> 1.50 | 0.40 -> 0.07 | 2.38 -> 2.37 | 0.54 -> 0.54 | 5.30 -> 2.03 | 14.96 -> 10.99 | 3.96 | 1.36 |
+| hotpotqa | GNN | 3.66 -> 3.62 | 1.51 -> 1.51 | 0.42 -> 0.07 | none | 0.60 -> 0.61 | 8.28 -> 5.65 | 14.95 -> 11.56 | 3.40 | 1.29 |
+| 2wiki | MLP | 7.37 -> 7.23 | 2.29 -> 2.42 | 0.65 -> 0.12 | 3.15 -> 3.03 | 0.91 -> 0.88 | 7.22 -> 3.17 | 22.37 -> 16.90 | 5.47 | 1.32 |
+| 2wiki | GNN | 7.11 -> 6.84 | 2.44 -> 2.50 | 0.64 -> 0.11 | none | 1.10 -> 1.06 | 12.40 -> 8.51 | 23.36 -> 19.64 | 3.72 | 1.19 |
+
+**Each form alone**, its own segment's p50 in ms without and with the form:
+
+| dataset | model | z-scores: forward | links form: links | lists form: NEXT | unit rows and chunk form: NEXT |
+|---|---|---|---|---|---|
+| musique | MLP | 22.62 -> 11.49 | 10.25 -> 1.89 | 6.46 -> 3.72 | 6.46 -> 5.19 |
+| musique | GNN | 52.06 -> 42.35 | 10.37 -> 1.89 | none | none |
+| hotpotqa | MLP | 5.30 -> 1.97 | 0.40 -> 0.08 | 2.38 -> 2.41 | 2.38 -> 2.44 |
+| hotpotqa | GNN | 8.28 -> 5.55 | 0.42 -> 0.07 | none | none |
+| 2wiki | MLP | 7.22 -> 3.09 | 0.65 -> 0.11 | 3.15 -> 2.94 | 3.15 -> 3.03 |
+| 2wiki | GNN | 12.40 -> 8.70 | 0.64 -> 0.11 | none | none |
+
+**What NEXT costs** (the profile: two questions per dataset with its timers in force, p50 in ms; its NEXT totals, 3.1, 7.1 and 3.0
+with the call's wrapper, are within 0.7 ms of the development p50s above). The question was whether the beam search is what makes
+NEXT slow. It is not a search: the candidate lists are 0.1 ms on hotpotqa and 2wiki and 1.4 ms on musique, where the links are
+125,000 edges; the pair features and the scorer's forward are 72%, 47% and 70% of it.
+
+| part | hotpotqa | musique | 2wiki |
+|---|---|---|---|
+| pair features (`read_chunk`: the rows' reads, unit vectors, the per-list pair features, the float16 rows) | 1.29 | 1.79 | 1.30 |
+| the fold model's forward (torch) | 0.86 | 1.41 | 0.73 |
+| collate | 0.30 | 0.51 | 0.31 |
+| candidate lists (the families' bits) | 0.10 | 1.40 | 0.12 |
+| order, prep, candidates, items, fill, pack | 0.42 | 1.63 | 0.44 |
+| NEXT, total | 2.96 | 6.73 | 2.90 |
+
+**What the numbers say, and what is decided.**
+- The segment z-scores are the large gain on every dataset and in both models: they were 64% and 34% of the MLP's and the GNN's
+  forward on hotpotqa in the profile (61% and 32% on 2wiki, 55% and 21% on musique), and the forms' gains agree (the MLP's forward
+  falls 2.6 times on hotpotqa and the GNN's 1.5 times).
+- The links form gains 0.3 ms on hotpotqa and 0.5 ms on 2wiki and 8.4 ms on musique, in both models. The lists form and the unit-row
+  form gain nothing on hotpotqa and 0.1 to 0.2 ms on 2wiki, and 2.7 and 1.3 ms of the MLP's NEXT on musique. By the rule above all
+  four forms stay: each gains on musique. No form is dropped and none is added. The parts of NEXT that remain (the pair features and
+  the scorer's forward, 0.7 to 1.8 ms each) would be a new amendment for under 1 ms of 170 to 260 ms end to end; none is proposed.
+- The risk named below ("the ratios GNN / MLP can fall") went the other way: the MLP's forward is mostly z-scores, so it gains more
+  than the GNN's, and the model-only ratio GNN / MLP at development rises (musique 1.24 -> 1.49, hotpotqa 1.00 -> 1.05, 2wiki 1.04
+  -> 1.16). Taken with M3's stage (a) (142.7, 154.6 and 178.8 ms) the development gains would move end to end by 2 to 3% on
+  hotpotqa and 2wiki and by 10% (MLP) and 4% (GNN) on musique, and GNN / MLP end to end from 1.14 to about 1.20 on musique, from 1.02
+  to 1.03 on 2wiki, and leave it at 1.01 on hotpotqa. That is arithmetic on development gains, not a measurement: M5 measures.
+- The GNN's forward, after the z-scores, is matrix products and activations (torch's profiler on hotpotqa's first question: `mm` 34%,
+  `addmm` 15%, `gelu` 7%, `mul` 5%, layer norm 5%), which A6 does not change.
 
 **What is not changed.**
 - Stage (a) (A4's forms: the walks and the orders are the larger part of end-to-end time on hotpotqa and 2wiki), stage (b)'s
