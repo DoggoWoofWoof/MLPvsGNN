@@ -82,3 +82,29 @@ counts: {"GAIN": 0, "LOSS": 1, "WITHIN": 7}
 | WQ-musique | musique-4hop | 0.3086, 0.3148, 0.3352 | 0.3222 | +0.0136 | 0.0385 | WITHIN (beside) |
 
 
+## L0: without topo_STRUCT
+
+### Screen: FAIL
+
+counts: {"GAIN": 0, "LOSS": 1, "WITHIN": 7}
+
+| split | read | full s0, s1, s2 | cut s0 | delta | floor | call |
+|---|---|---|---:|---:|---:|---|
+| WQ-musique | hotpotqa | 0.8460, 0.8469, 0.8491 | 0.8469 | +0.0009 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | 0.9155, 0.9159, 0.9133 | 0.9174 | +0.0019 | 0.0075 | WITHIN |
+| WQ-musique | musique | 0.5190, 0.5227, 0.5381 | 0.5247 | +0.0057 | 0.0275 | WITHIN |
+| WQ-hotpotqa | musique | 0.5806, 0.5803, 0.5777 | 0.5785 | -0.0021 | 0.0075 | WITHIN |
+| WQ-hotpotqa | 2wiki | 0.9135, 0.9166, 0.9135 | 0.9096 | -0.0039 | 0.0075 | WITHIN |
+| WQ-hotpotqa | hotpotqa | 0.8193, 0.8182, 0.8136 | 0.8187 | -0.0006 | 0.0082 | WITHIN |
+| WQ-hotpotqa | musique-3hop | 0.5351, 0.5333, 0.5263 | 0.5311 | -0.0039 | 0.0127 | WITHIN |
+| WQ-hotpotqa | musique-4hop | 0.3574, 0.3562, 0.3562 | 0.3494 | -0.0080 | 0.0075 | LOSS |
+| WQ-musique | metaqa | 0.4126, 0.4256, 0.4167 | 0.3995 | -0.0131 | 0.0193 | WITHIN (beside) |
+| WQ-musique | squad | 0.9138, 0.9125, 0.9149 | 0.9133 | -0.0005 | 0.0075 | WITHIN (beside) |
+| WQ-musique | webqsp | 0.6457, 0.6498, 0.6552 | 0.6521 | +0.0064 | 0.0146 | WITHIN (beside) |
+| WQ-hotpotqa | metaqa | 0.3668, 0.4261, 0.4131 | 0.3943 | +0.0275 | 0.1064 | WITHIN (beside) |
+| WQ-hotpotqa | squad | 0.9132, 0.9120, 0.9132 | 0.9122 | -0.0010 | 0.0075 | WITHIN (beside) |
+| WQ-hotpotqa | webqsp | 0.6469, 0.6597, 0.6512 | 0.6432 | -0.0037 | 0.0191 | WITHIN (beside) |
+| WQ-musique | musique-3hop | 0.4544, 0.4596, 0.4702 | 0.4592 | +0.0048 | 0.0235 | WITHIN (beside) |
+| WQ-musique | musique-4hop | 0.3086, 0.3148, 0.3352 | 0.3191 | +0.0105 | 0.0385 | WITHIN (beside) |
+
+
