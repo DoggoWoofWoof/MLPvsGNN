@@ -123,3 +123,38 @@ lists, columns, forks or reads.
     restored file is checked after the copy, no existing file is overwritten and no record changes, so section 2's roots are again
     what B1P's records say. B1M's six t-reads wait on the restore. The musique-b1w lists, two column sets and six w-reads run again
     under new item names (`-r`), and `b1m-report-r` reads all twelve.
+  - *The restore's outcome (4 Nov, 05:01 to 05:03 IST, before any read number).* The verify passed with no problem: every
+    rebuilt cache array of the six carves had its pinned sha256, every rebuilt look record agreed with B1P's, and nothing under
+    `outputs/b1p` changed. The restore copied back the 240 removed files (1.79 GB); none was present already. The records,
+    `outputs/b1m/repair/{prep,verify,restore}.json`, stay uncommitted (section 7).
+
+## 11. Results (filed 4 November 2026, about 06:05 IST)
+
+`b1m-report-r` ran at 05:28 IST on all twelve reads (missing reads: 0). Records: `outputs/b1m/report.json`, `report.md` and
+`cols.json`. R@5 ×100 on 1,000 questions per setting, 95% intervals over the questions. B1 selects nothing.
+
+**zrckpn's Table 1 row** (in-domain, b1w): musique 67.4 (65.7 to 69.2), 2wiki 94.1 (93.2 to 94.9), hotpotqa 93.4 (92.4 to
+94.5). BELOW the best published row on all three, of any kind and peer-reviewed alone. The gaps are -13.2 and -10.9 points on
+musique (SAG2 80.68, PropRAG 78.3), -4.4 and -4.1 on 2wiki (EviReform 98.45, G-reasoner 98.2) and -5.3 and -4.0 on hotpotqa
+(BridgeRAG 98.75, PropRAG 97.4).
+
+**The two models of record: GNN_ABOVE on every in-domain read.** zg6r - zrckpn, paired by question:
+
+| setting | b1w | b1t |
+| --- | --- | --- |
+| musique | +1.5 (+0.7, +2.4) | +1.5 (+0.6, +2.4) |
+| 2wiki | +0.8 (+0.5, +1.2) | +1.1 (+0.7, +1.6) |
+| hotpotqa | +0.9 (+0.4, +1.4) | +0.8 (+0.2, +1.4) |
+
+- On 2wiki's b1w, the gap comes from the WQ-hotpotqa fits (+1.6 to +1.8 per fit pair). The WQ-musique pairs are -0.2 to +0.2.
+- Zero-shot, beside: musique b1w is MLP_ABOVE, -1.1 (-1.9, -0.1); musique b1t +2.0, hotpotqa b1w +0.6 and b1t +0.8 are
+  GNN_ABOVE.
+
+**Carry-over.** zrckpn's b1w - b1t is positive on every read: in-domain +2.9 (musique), +17.1 (2wiki) and +3.0 (hotpotqa);
+zero-shot +1.8 (musique) and +3.6 (hotpotqa).
+
+**Beside, deciding nothing.** zrckpn - zrckp on b1w in-domain is level on all three: +0.5 (-0.1, +1.2), +0.1 (-0.2, +0.5) and
+-0.0 (-0.4, +0.4). On b1t it is +2.0, +1.1 and +0.3. So LTM's columns add on the text-link carve, not on b1w.
+
+**Training overlap.** None of a setting's questions is in its in-domain training carves (B1P's counts), and all six LTM fits
+name WQ's training carves.

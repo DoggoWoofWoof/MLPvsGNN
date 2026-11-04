@@ -1,0 +1,188 @@
+{
+ "declared_in": "docs/B1M_MLP_OF_RECORD_ON_B1.md",
+ "stage": "B1M",
+ "cols": {
+  "WQ-musique musique/b1w": {
+   "record": "outputs/b1m/ltm/cols/WQ-musique/musique/b1w/record.json",
+   "sha256": "c98484e1dbb08fbb3ffbf352995a7af1935de4a4a3f04554085f1a8c45f8a2f0",
+   "identity": {
+    "checked": 153906,
+    "bad": 0,
+    "max_abs": 0.000779271125793457,
+    "pass": true
+   },
+   "rows": 3433578,
+   "rows_with_an_anchor": 0.03007562373710456,
+   "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+   "training_carve": false,
+   "seconds": 8.475682020187378
+  },
+  "WQ-musique 2wiki/b1w": {
+   "record": "outputs/b1m/ltm/cols/WQ-musique/2wiki/b1w/record.json",
+   "sha256": "8810e3074134b7b0b6b8fc6314d78a1d7ed5301b1525aa2ddde12af973318ede",
+   "identity": {
+    "checked": 30658,
+    "bad": 0,
+    "max_abs": 0.0008345842361450195,
+    "pass": true
+   },
+   "rows": 88472,
+   "rows_with_an_anchor": 0.18406953612442353,
+   "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+   "training_carve": false,
+   "seconds": 2.2237284183502197
+  },
+  "WQ-musique hotpotqa/b1w": {
+   "record": "outputs/b1m/ltm/cols/WQ-musique/hotpotqa/b1w/record.json",
+   "sha256": "142316bb034fe8c22fe2f29e5f90d91603651a5f83deff7e3cfab497e959f5be",
+   "identity": {
+    "checked": 30950,
+    "bad": 0,
+    "max_abs": 0.0009412169456481934,
+    "pass": true
+   },
+   "rows": 65251,
+   "rows_with_an_anchor": 0.21608864231965794,
+   "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+   "training_carve": false,
+   "seconds": 1.9932150840759277
+  },
+  "WQ-musique musique/b1t": {
+   "record": "outputs/b1m/ltm/cols/WQ-musique/musique/b1t/record.json",
+   "sha256": "00d0193c582846c6f2368bff53bdbac399d9fb3b413c2ba6df753a427f7a5219",
+   "identity": {
+    "checked": 115444,
+    "bad": 0,
+    "max_abs": 0.000779271125793457,
+    "pass": true
+   },
+   "rows": 3312959,
+   "rows_with_an_anchor": 0.0234672388037401,
+   "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+   "training_carve": false,
+   "seconds": 4.3958823680877686
+  },
+  "WQ-musique 2wiki/b1t": {
+   "record": "outputs/b1m/ltm/cols/WQ-musique/2wiki/b1t/record.json",
+   "sha256": "34057785705edeb7c85de699972905599dcd89cd32f58f6d4dc2edf2d84d89bd",
+   "identity": {
+    "checked": 18431,
+    "bad": 0,
+    "max_abs": 0.0008345842361450195,
+    "pass": true
+   },
+   "rows": 50022,
+   "rows_with_an_anchor": 0.1733237375554756,
+   "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+   "training_carve": false,
+   "seconds": 1.2554981708526611
+  },
+  "WQ-musique hotpotqa/b1t": {
+   "record": "outputs/b1m/ltm/cols/WQ-musique/hotpotqa/b1t/record.json",
+   "sha256": "6720f14edcf4c1ba8031c81b216df08d418fd36e249b3de61b6ec1d5f9aede85",
+   "identity": {
+    "checked": 26284,
+    "bad": 0,
+    "max_abs": 0.0009412169456481934,
+    "pass": true
+   },
+   "rows": 50025,
+   "rows_with_an_anchor": 0.22128935532233884,
+   "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+   "training_carve": false,
+   "seconds": 2.0552308559417725
+  },
+  "WQ-hotpotqa musique/b1w": {
+   "record": "outputs/b1m/ltm/cols/WQ-hotpotqa/musique/b1w/record.json",
+   "sha256": "198380eedd32dea5ac0a2f1e81db16e8c31c648753f74476fb5a79bce317468d",
+   "identity": {
+    "checked": 153906,
+    "bad": 0,
+    "max_abs": 0.000779271125793457,
+    "pass": true
+   },
+   "rows": 3433578,
+   "rows_with_an_anchor": 0.03007562373710456,
+   "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+   "training_carve": false,
+   "seconds": 8.215445041656494
+  },
+  "WQ-hotpotqa 2wiki/b1w": {
+   "record": "outputs/b1m/ltm/cols/WQ-hotpotqa/2wiki/b1w/record.json",
+   "sha256": "d8142e45aedb81d0bc74f1b3f1efb121a48e2b893aeb682f860b3582ab8abc78",
+   "identity": {
+    "checked": 30658,
+    "bad": 0,
+    "max_abs": 0.0008345842361450195,
+    "pass": true
+   },
+   "rows": 88472,
+   "rows_with_an_anchor": 0.18406953612442353,
+   "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+   "training_carve": false,
+   "seconds": 2.03527569770813
+  },
+  "WQ-hotpotqa hotpotqa/b1w": {
+   "record": "outputs/b1m/ltm/cols/WQ-hotpotqa/hotpotqa/b1w/record.json",
+   "sha256": "fd3da9995c8f08ce8ac8499592a431946eae22e87dc65688de214f8020ec67ff",
+   "identity": {
+    "checked": 30950,
+    "bad": 0,
+    "max_abs": 0.0009412169456481934,
+    "pass": true
+   },
+   "rows": 65251,
+   "rows_with_an_anchor": 0.21608864231965794,
+   "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+   "training_carve": false,
+   "seconds": 1.8529789447784424
+  },
+  "WQ-hotpotqa musique/b1t": {
+   "record": "outputs/b1m/ltm/cols/WQ-hotpotqa/musique/b1t/record.json",
+   "sha256": "b71a8a02e8081e2549942575f0e84f03de1705174880658ff0e70c1961b9f393",
+   "identity": {
+    "checked": 115444,
+    "bad": 0,
+    "max_abs": 0.000779271125793457,
+    "pass": true
+   },
+   "rows": 3312959,
+   "rows_with_an_anchor": 0.0234672388037401,
+   "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+   "training_carve": false,
+   "seconds": 4.685459613800049
+  },
+  "WQ-hotpotqa 2wiki/b1t": {
+   "record": "outputs/b1m/ltm/cols/WQ-hotpotqa/2wiki/b1t/record.json",
+   "sha256": "7e1ad2dab39a527ad51eb9028365744792690574b9aaac96690c0d1aab0246f8",
+   "identity": {
+    "checked": 18431,
+    "bad": 0,
+    "max_abs": 0.0008345842361450195,
+    "pass": true
+   },
+   "rows": 50022,
+   "rows_with_an_anchor": 0.1733237375554756,
+   "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+   "training_carve": false,
+   "seconds": 1.4524312019348145
+  },
+  "WQ-hotpotqa hotpotqa/b1t": {
+   "record": "outputs/b1m/ltm/cols/WQ-hotpotqa/hotpotqa/b1t/record.json",
+   "sha256": "8da65fa40a5e5928157c0fe627a279351b4f23c4bd4a206c3d0cd5e177587caf",
+   "identity": {
+    "checked": 26284,
+    "bad": 0,
+    "max_abs": 0.0009412169456481934,
+    "pass": true
+   },
+   "rows": 50025,
+   "rows_with_an_anchor": 0.22128935532233884,
+   "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+   "training_carve": false,
+   "seconds": 1.772676944732666
+  }
+ },
+ "zb1m_sha256": "bdf64505d53f8b960e54964159982bc50da8b990d8a3239bdb31111f42c6bcb5",
+ "utc": "2026-11-03T23:57:57Z"
+}
