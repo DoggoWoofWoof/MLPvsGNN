@@ -21,6 +21,9 @@ number is made here, and nothing of zfsvc.py, zpko.py or the C-stage modules is 
              module's own, in its order. Any other input takes the module's step (counted). The MLP's forward is the module's.
   installed  the forms in this process (zfsvc.lean_rule, zfsvc.setup, zg6r.g6r_step replaced, the P4b records built at index time),
              put back on exit and asserted; nothing of zfsvc.py, zg6r.py or the C-stage modules is edited
+  threads    the imports of ours that follow zfsvc._load (P4b, zg6r) run inside thread_env_kept: the project's modules set the
+             thread variables to 1 on import, and numba refuses a changed NUMBA_NUM_THREADS once its threads have started (rx sets it
+             to --cpus, 2 in the timed passes), so the variables are put back as they were
   checks     every question: the pool, the expansion and the KT columns equal zfsvc.lean_rule's byte for byte, and with them the
              first KIND_T and the six orders the columns read; each model's forward equals the module's byte for byte, and A2's own
              development checks (zfsvc.dev_checks) hold with the forms installed; selftest: the walks, the orders, the cosines and
@@ -55,6 +58,27 @@ def log(msg):
     print(f"[{time.strftime('%H:%M:%S')}] zfsvx: {msg}", flush=True)
 
 
+THREAD_VARS = ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS", "NUMBA_NUM_THREADS",
+               "LEAN_TIME_THREADS")
+
+
+@contextlib.contextmanager
+def thread_env_kept():
+    """The thread variables as they stand on entry, put back on exit. The project's modules set them all to 1 when first imported
+    (P4b does, through P4a); zfsvc._load puts numba's back after its own imports, because numba refuses a changed NUMBA_NUM_THREADS
+    at a compile once its threads have started (rx sets it to --cpus: 2 in the timed passes). An import of ours that follows
+    zfsvc._load runs inside this, so the process's environment after setup is A2's."""
+    saved = {k: os.environ.get(k) for k in THREAD_VARS}
+    try:
+        yield
+    finally:
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+
 class Seg:
     """Adds the time of its block to T[name]."""
     __slots__ = ("T", "n", "t0")
@@ -84,7 +108,8 @@ def fkernels():
     weights summed first, then each neighbour's share), a walk's key a generation, the top by original id."""
     if _F:
         return _F
-    import p4b_fast_walks as P4B
+    with thread_env_kept():
+        import p4b_fast_walks as P4B
     from numba import njit
     _seeds, _pop, _settle, _families, _top, _bit, _prefetch = (P4B._seeds, P4B._pop, P4B._settle, P4B._families, P4B._top,
                                                                P4B._bit, P4B._prefetch)
@@ -561,7 +586,8 @@ def gkernels():
 
 
 def _zg6r():
-    import zg6r
+    with thread_env_kept():
+        import zg6r
     return zg6r
 
 
@@ -757,6 +783,7 @@ def selftest(a):
     bad.update(selftest_cos(rng, int(a.trials)))
     bad.update(selftest_layers(rng, int(a.trials)))
     bad.update(selftest_installed(rng))
+    bad.update(selftest_threads())
     ok = not any(bad.values())
     log("SELFTEST " + ("PASS" if ok else "FAIL"))
     return 0 if ok else 1
@@ -956,6 +983,58 @@ def selftest_installed(rng, n=2000):
     finally:
         C.setup = keep[0]
     log(f"installed: the forms in the process and put back on exit, with and without an error inside: {bad['installed']} wrong")
+    return bad
+
+
+def selftest_threads():
+    """thread_env_kept: after the block the six variables are as they were (a set one at its value, an absent one absent), also
+    after an error inside it; and numba, whose threads are started, takes a compile after a block that changed NUMBA_NUM_THREADS
+    (the control: it refuses the changed value when the change is not undone, which is what the guard is for)."""
+    import numba
+    from numba.core import config as nbcfg
+    keep = {k: os.environ.get(k) for k in THREAD_VARS}
+
+    def put(env):
+        for k, v in env.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+    bad = {"threads_env": 0, "threads_numba": 0}
+    try:
+        env = {k: "5" for k in THREAD_VARS}
+        env["LEAN_TIME_THREADS"] = None
+        put(env)
+        want = {k: os.environ.get(k) for k in THREAD_VARS}
+        for fail in (False, True):
+            try:
+                with thread_env_kept():
+                    put({k: "1" for k in THREAD_VARS})
+                    if fail:
+                        raise RuntimeError("an error inside the block")
+            except RuntimeError:
+                pass
+            bad["threads_env"] += {k: os.environ.get(k) for k in THREAD_VARS} != want
+    finally:
+        put(keep)
+    numba.set_num_threads(1)                                   # starts the threads, as zfsvc._load does
+    other = str(int(nbcfg.NUMBA_NUM_THREADS) + 1)
+    with thread_env_kept():
+        os.environ["NUMBA_NUM_THREADS"] = other
+    nbcfg.reload_config()                                      # what every compile begins with
+    os.environ["NUMBA_NUM_THREADS"] = other
+    try:
+        nbcfg.reload_config()
+        refused = False
+    except RuntimeError:
+        refused = True
+    finally:
+        put(keep)
+    nbcfg.reload_config()
+    bad["threads_numba"] += not refused
+    log(f"thread variables: put back as they were, with and without an error inside: {bad['threads_env']} wrong; numba takes its "
+        f"compile after a block that changed NUMBA_NUM_THREADS and refuses the change without the guard: {bad['threads_numba']} wrong")
     return bad
 
 

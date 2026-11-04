@@ -807,3 +807,14 @@ form found later is a new amendment and a re-time.
 
 **Commit policy.** `zfsvx.py` and this section are committed before any M3 pass. The raw files are never committed (section
 10's policy); M3's `report.json` and `report.md` are committed masked, as M2's, with `git add -f`.
+
+**Correction 1 (4 November, before any M3 pass).** The first smoke on the host, with two CPUs as the timed jobs have, stopped at
+the first compile after the P4b import: numba refuses a changed `NUMBA_NUM_THREADS` once its threads have started. rx sets the
+variable to `--cpus`; `zfsvc._load` puts that value back after the C-stage modules' imports set it to 1, and `p4b_fast_walks`
+(through `p4a_pool_cold`) set it to 1 again when `zfsvx` imported it afterwards. The development runs had one CPU, the value P4b
+sets, and did not meet it. `zfsvx.py` now imports P4b and zg6r inside `thread_env_kept`, which puts the six thread variables
+(OpenBLAS, OpenMP, MKL, NumExpr, numba and the timing code's) back as they were on entry, so the process's environment after setup
+is A2's. No form, check or number changes. The self-test gained a check of the guard (the variables come back, also after an
+error; numba takes its compile after a block that changed `NUMBA_NUM_THREADS` and refuses the change without the guard) and was
+run whole with `NUMBA_NUM_THREADS=2`, which stopped at the first compile before the correction. The correction and `zfsvx.py`
+with it are committed before any M3 pass; each raw file records the sha256 of the file that ran.
