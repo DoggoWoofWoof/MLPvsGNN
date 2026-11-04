@@ -442,8 +442,12 @@ def golds_of(name, carve):
 
 def pools_measures(R, name, carve, golds, ids, n_corpus):
     filed, ent, msha = ZK.load_filed(name, carve, R)
-    if [str(x) for x in filed["ids"]] != ids:
-        raise SystemExit(f"{name}/{carve}: the pools' questions are not the carve's population")
+    f_ids = [str(x) for x in filed["ids"]]
+    if f_ids != ids:                                  # the same questions in another order: golds follow the pools' order
+        at = {q: i for i, q in enumerate(ids)}
+        if len(at) != len(ids) or len(set(f_ids)) != len(f_ids) or set(f_ids) != set(at):
+            raise SystemExit(f"{name}/{carve}: the pools' questions are not the carve's population")
+        golds = [golds[at[q]] for q in f_ids]
     hits, ng = hits_of(golds, ZK.pools_of(filed))
     sz = ZK.pool_sizes(filed)
     return measures(hits, ng, sz, n_corpus), hits, ng, sz, filed, ent, msha
@@ -591,6 +595,8 @@ def report():
     recs = [read_json(p) for p in sorted((OUT / "cov").glob("*.json"))]
     if not recs:
         raise SystemExit("no coverage records")
+    order = {"s1eval": 0, "b1w": 1, "s1sel": 2}
+    recs.sort(key=lambda r: (THREE.index(r["dataset"]) if r["dataset"] in THREE else len(THREE), order.get(r["carve"], 9)))
     keep = ("dataset", "carve", "k_q", "mean_n1", "unified", "pick_O_beside", "reproduction", "pools")
     obj = {"declared_in": DECLARED, "stage": STAGE, "pick": PICK,
            "measures": "ALL = questions with every gold inside the built pool / questions; gold recall = golds inside / "
@@ -611,10 +617,14 @@ def report():
           "pick O: ALL, recall, rows |", "|---|---|---:|---|---|---|---:|---:|---|"]
     for r in recs:
         u, o = r["unified"], r.get("pick_O_beside") or {}
-        ob = f"{pc(o['ALL'])}, {pc(o['gold_recall'])}, {o['rows_mean']}" if "ALL" in o else "none"
+        ob = (f"{pc(o['ALL'])}, {pc(o['gold_recall'])}, {o['rows_mean']} (this pick x{u['rows_mean'] / o['rows_mean']:.2f})"
+              if "ALL" in o else "none")
         md.append(f"| {r['dataset']} | {r['carve']} | {u['questions']} | {pc(u['ALL'])} {ci(u['ALL_ci'])} | "
                   f"{pc(u['gold_recall'])} {ci(u['gold_recall_ci'])} | {u['rows_mean']} / {u['rows_median']:.0f} / "
                   f"{u['rows_p90']:.0f} | {u['corpus']:,} | {100 * u['share_mean']:.3f}% | {ob} |")
+    md += ["", "s1eval: the evaluation carve, the read that counts (the pick was not chosen on it); b1w: HippoRAG 2's "
+           "1,000-question setting of the dataset (its corpus is the setting's passages); s1sel: the carve the pick was "
+           "chosen on, the reproduction of stage A (PKO built no pick O pools on it)."]
     (OUT / "coverage.md").write_text("\n".join(md) + "\n", encoding="utf-8", newline="\n")
     log(f"report: {len(recs)} carves")
 
