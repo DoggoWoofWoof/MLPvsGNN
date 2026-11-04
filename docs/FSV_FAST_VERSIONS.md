@@ -514,7 +514,7 @@ moves the end-to-end ratios and a faster exact forward moves the model-only ones
 **Commit policy.** Commit only `outputs/fsv/timing/report.json` and `report.md`, masked (`mask_host.py`, `mask_md.py`),
 with `git add -f`. The raw files (`outputs/fsv/timing/raw`) and the reference arrays (`ref/*.npz`) are never committed.
 
-## 11. Amendment A5: the L0 level (4 November, about 11:30 IST, before any L0 fit)
+## 11. Amendment A5: the L0 level (4 November, about 11:15 IST, before any L0 fit)
 
 L3, L2 and L1 have each failed their screen for zrckpn (L3 6d16b28, L2 0c95b96, L1 ab2af7a). By section 4 the MLP has no
 fast version in section 2's order, and by section 10 its Family 2 would be the full zrckpn. This adds one level to the
@@ -550,8 +550,8 @@ against the CPU base's fits of the same seeds:
   better model; it is not a loss.
 - On the read L1 lost, WQ-hotpotqa musique-4hop, the three seeds' deltas were +0.0056, -0.0093 and +0.0006, against a
   three-seed floor of 0.0119.
-- Of DOB's seven single drops, xtopo is the only one taken to seeds 1 and 2 (section 12). depth_STRUCT's drop has its
-  seed-0 reads alone: NO_GAIN, all six WWW reads WITHIN, +0.0062 on the 4-hop slice.
+- Of DOB's seven single drops, xtopo is the only one taken to seeds 1 and 2 (DOB section 12). depth_STRUCT's drop has
+  its seed-0 reads alone: NO_GAIN, all six WWW reads WITHIN, +0.0062 on the 4-hop slice.
 
 It does not say that zrckpn can do without topo_STRUCT, for three reasons:
 - **The base differs.** DOB's base is zrckp. FSV's full model is zrckpn: zrckp plus the NEXT columns (LTM, ADOPT
