@@ -233,7 +233,99 @@ extrapolate to about 3,550 s (a projection, not a measurement); the reads take a
 
 ## 13. Results
 
-Not yet filed.
+Filed 5 November 06:16 IST. Records: `outputs/b1l/report.json`, `report.md` and `calls.json` (masked with `mask_host.py`; counts and
+per-question statistics only, no file or phrase of the references). `zb1l.py` is the file committed with the declaration (a46b076)
+and ran unchanged on the host: its sha256 (`daefd3ed4d57...`) and `zb1h.py`'s (`33b0e49554e2...`) are the ones in both settings records
+and both gates, so **no code fix was made and no deviation was added to section 6.** All 24 reads are present (12 per setting), both
+gates read READY with no problem, both settings records' type checks hold (0 mismatches), and the b1t and b1w rows recomputed from
+B1P's and B1M's read files equal B1M's filed rows (60 checked, 0 differ). R@5 x100 of the p@swa candidate, 1,000 questions per
+setting; the intervals are 95% bootstrap intervals over the questions (2,000 resamples, seed 0), the differences paired.
+
+**In-domain** (MuSiQue: the WQ-hotpotqa fits, three seeds; 2wiki: both splits, six fits; each question's R@5 averaged over the fits):
+
+| setting | model | b1t | b1w | b1o | b1o - b1t | b1w - b1t | b1w - b1o | calls (o-t / w-t / w-o) | share of the LLM step the rule's step recovers |
+|---|---|---:|---:|---:|---|---|---|---|---|
+| musique | zg6r | 66.0 (64.3-67.7) | 69.0 (67.2-70.7) | 67.4 (65.8-69.3) | +1.5 (+0.4, +2.6) | +3.0 (+1.8, +4.0) | +1.5 (+0.4, +2.5) | UP / UP / GREATER | 2.03 (1.20-6.02) |
+| musique | zrckpn | 64.5 (62.8-66.1) | 67.4 (65.7-69.2) | 67.3 (65.6-69.2) | +2.8 (+1.7, +3.9) | +2.9 (+1.9, +4.0) | +0.1 (-0.9, +1.1) | UP / UP / SAME | 1.03 (0.71-1.53) |
+| 2wiki | zg6r | 78.1 (76.7-79.5) | 94.9 (94.1-95.7) | 89.8 (88.7-90.8) | +11.7 (+10.4, +13.1) | +16.8 (+15.5, +18.2) | +5.1 (+4.0, +6.3) | UP / UP / GREATER | 1.44 (1.32-1.57) |
+| 2wiki | zrckpn | 77.0 (75.6-78.4) | 94.1 (93.2-94.9) | 90.8 (89.8-91.8) | +13.8 (+12.5, +15.1) | +17.1 (+15.8, +18.4) | +3.3 (+2.3, +4.3) | UP / UP / GREATER | 1.24 (1.16-1.33) |
+
+**The setting's call** (the two models' in-domain b1w - b1o words, section 5):
+
+| setting | call | zg6r | zrckpn |
+|---|---|---|---|
+| musique | NOT_LESS | GREATER | SAME |
+| 2wiki | GREATER | GREATER | GREATER |
+
+**Held-out** (MuSiQue, the WQ-musique fits; 2wiki has none; these words decide nothing):
+
+| setting | model | b1t | b1w | b1o | b1o - b1t | b1w - b1t | b1w - b1o | calls (o-t / w-t / w-o) | share of the LLM step the rule's step recovers |
+|---|---|---:|---:|---:|---|---|---|---|---|
+| musique | zg6r | 62.1 (60.4-63.7) | 60.8 (59.1-62.5) | 62.8 (61.1-64.5) | +0.8 (-0.5, +2.0) | -1.3 (-2.6, +0.1) | -2.0 (-3.5, -0.6) | FLAT / FLAT / LESS | n/a: b1o - b1t not above 0 |
+| musique | zrckpn | 60.0 (58.4-61.7) | 61.8 (60.1-63.6) | 64.0 (62.3-65.8) | +4.0 (+2.7, +5.2) | +1.8 (+0.5, +3.1) | -2.1 (-3.5, -0.8) | UP / UP / LESS | 0.46 (0.17-0.75) |
+
+**zg6r - zrckpn**, paired by question, on each carve:
+
+| setting | read | carve | zg6r - zrckpn (CI) | label |
+|---|---|---|---|---|
+| musique | in-domain | b1t | +1.5 (+0.6, +2.4) | GNN_ABOVE |
+| musique | in-domain | b1w | +1.5 (+0.7, +2.4) | GNN_ABOVE |
+| musique | in-domain | b1o | +0.1 (-0.7, +0.9) | LEVEL |
+| musique | zero-shot | b1t | +2.0 (+1.1, +2.9) | GNN_ABOVE |
+| musique | zero-shot | b1w | -1.1 (-1.9, -0.1) | MLP_ABOVE |
+| musique | zero-shot | b1o | -1.2 (-2.0, -0.3) | MLP_ABOVE |
+| 2wiki | in-domain | b1t | +1.1 (+0.7, +1.6) | GNN_ABOVE |
+| 2wiki | in-domain | b1w | +0.8 (+0.5, +1.2) | GNN_ABOVE |
+| 2wiki | in-domain | b1o | -1.0 (-1.6, -0.4) | MLP_ABOVE |
+
+**The link sets**, by entry type (sections 3 and 14; "null score type" counts every entry whose score type is the null class: MuSiQue's
+175,802 are the 171,408 entries that are not W2_S entries plus 4,394 W2_S entries whose filed type is itself null, 2wiki's 51,204 are
+the entries that are not W2_S entries):
+
+| setting | reference | P pairs | entries | entries that are W2_S entries | entries with the null score type | W2_S pairs in the setting | W2_S entries that are P entries |
+|---|---|---:|---:|---:|---:|---:|---:|
+| musique | H4o | 98211 | 196422 | 25014 (12.7%) | 175802 (89.5%) | 41417 | 25014 |
+| 2wiki | SR | 27364 | 54728 | 3524 (6.4%) | 51204 (93.6%) | 2030 | 3524 |
+
+**What the reads say, under the rules declared above and nothing more.**
+
+- **b1o - b1t is UP in-domain for both models on both settings.** H4o's P pairs (MuSiQue) and SR's (2wiki), added to the text links,
+  raise the R@5 of the models fitted without LLM links by +1.5 (+0.4, +2.6) points (zg6r) and +2.8 (+1.7, +3.9) (zrckpn) on MuSiQue and
+  by +11.7 (+10.4, +13.1) and +13.8 (+12.5, +15.1) on 2wiki. 87.3 % (MuSiQue) and 93.6 % (2wiki) of b1o's entries carry no W2_S type
+  while the fits were fitted on W2_S types, so these steps are lower bounds (section 3).
+- **b1w - b1t is UP in-domain for both models on both settings:** +3.0 (+1.8, +4.0) and +2.9 (+1.9, +4.0) on MuSiQue, +16.8
+  (+15.5, +18.2) and +17.1 (+15.8, +18.4) on 2wiki. The sets differ in size: b1w adds 82,834 entries to b1t's text links on MuSiQue and
+  4,060 on 2wiki, b1o adds 196,422 and 54,728.
+- **b1w - b1o, in-domain:** GREATER for zg6r on MuSiQue (+1.5 (+0.4, +2.5)) and for both models on 2wiki (+5.1 (+4.0, +6.3) for zg6r,
+  +3.3 (+2.3, +4.3) for zrckpn); SAME for zrckpn on MuSiQue (+0.1 (-0.9, +1.1)). The setting's calls are **NOT_LESS** (MuSiQue) and
+  **GREATER** (2wiki). The difference mixes the pair set with the typing (W2_S-typed against mostly NULL, for fits fitted on W2_S types):
+  it is not a comparison of the rule's links with the LLM's (sections 3 and 5).
+- **The share** (b1w - b1t) / (b1o - b1t), in-domain, defined on all four reads (b1o - b1t is UP on each): MuSiQue 2.03 (1.20-6.02)
+  for zg6r (over 1,998 of 2,000 resamples, the others having a denominator at or below 0) and 1.03 (0.71-1.53) for
+  zrckpn; 2wiki 1.44 (1.32-1.57) and 1.24 (1.16-1.33). The interval's bottom is above 1 on zg6r's MuSiQue read and on both 2wiki reads
+  and holds 1 on zrckpn's MuSiQue read. A share at or above 1 says b1w's step over b1t is at least as large as b1o's for these fits;
+  b1o's step being a lower bound, it says nothing about the rule's links against the LLM-built ones.
+- **Held-out (MuSiQue, decides nothing):** b1o reads above b1w for both models (b1w - b1o -2.0 (-3.5, -0.6) and -2.1 (-3.5, -0.8), both
+  LESS), the opposite sign to the in-domain one; b1o - b1t is FLAT for zg6r (+0.8 (-0.5, +2.0)) and UP for zrckpn (+4.0 (+2.7, +5.2));
+  the share is not defined for zg6r and is 0.46 (0.17-0.75) for zrckpn.
+- **zg6r - zrckpn:** in-domain GNN_ABOVE on b1t and b1w on both settings (the words B1M filed), LEVEL on b1o on MuSiQue (+0.1 (-0.7,
+  +0.9)) and MLP_ABOVE on b1o on 2wiki (-1.0 (-1.6, -0.4)); held-out on MuSiQue GNN_ABOVE on b1t (+2.0 (+1.1, +2.9)) and MLP_ABOVE on
+  b1w (-1.1 (-1.9, -0.1)) and on b1o (-1.2 (-2.0, -0.3)).
+- **Against the best published rows** (beside, decides nothing): every row, on every carve, is BELOW both the best row of any kind
+  (MuSiQue SAG2 80.68, 2wiki EviReform 98.45) and the best peer-reviewed row (MuSiQue PropRAG 78.3, 2wiki G-reasoner 98.2). The gaps
+  to the best row of any kind, in points (zg6r, zrckpn): MuSiQue b1t -14.72, -16.19; b1w -11.73, -13.25; b1o -13.25, -13.35; 2wiki b1t
+  -20.35, -21.47; b1w -3.52, -4.37; b1o -8.63, -7.67.
+- **Not claimed:** anything about H4o's or SR's phrase graphs or about HippoRAG 2's or SiReRAG's own systems (b1o is a passage-pair
+  projection, section 3); anything beyond these twelve fits on these three graphs and two settings; an equal-typing control (not run,
+  section 3).
+
+Host items (`rx`; the host's own peaks and times of the jobs in state done whose id `rx status` resolved, the listing truncating ids).
+The MuSiQue chain peaked at 6.75 GB in 2,697 s (reserved 16 GB; section 11's projection was about 3,550 s), the 2wiki chain at 5.24 GB
+in 727 s (reserved 12 GB); the two settings took 5 and 10 s at most 0.31 GB. zg6r's reads took 1.58 to 1.62 GB in 197 to 403 s on
+MuSiQue (6 of 6 resolved) and 1.19 to 1.21 GB in 43 to 47 s on 2wiki (6 of 6); zrckpn's 1.91 GB in 187 to 198 s on MuSiQue (4 of 6)
+and 1.24 to 1.26 GB in 34 to 35 s on 2wiki (4 of 6). The host's listing of `b1l-` jobs (the union's included), read when this section
+was written, holds done and cancelled jobs only, no failure: the five cancelled are zg6r MuSiQue reads that the feeder shed for lack
+of GPU room, each sent again, so the twelve reads per setting are the done ones.
 
 ## 14. Amendment 1: block 2, 2wiki with SR
 

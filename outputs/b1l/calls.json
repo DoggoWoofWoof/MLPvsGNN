@@ -1,0 +1,169 @@
+{
+ "declared_in": "docs/B1L_MODELS_OF_RECORD_ON_THE_LLM_GRAPH.md",
+ "call": {
+  "musique": "NOT_LESS",
+  "2wiki": "GREATER"
+ },
+ "calls_vs_llm_graph": {
+  "musique": {
+   "in_domain": {
+    "zg6r": {
+     "b1o-b1t": "UP",
+     "b1w-b1t": "UP",
+     "b1w-b1o": "GREATER"
+    },
+    "zrckpn": {
+     "b1o-b1t": "UP",
+     "b1w-b1t": "UP",
+     "b1w-b1o": "SAME"
+    }
+   },
+   "zero_shot": {
+    "zg6r": {
+     "b1o-b1t": "FLAT",
+     "b1w-b1t": "FLAT",
+     "b1w-b1o": "LESS"
+    },
+    "zrckpn": {
+     "b1o-b1t": "UP",
+     "b1w-b1t": "UP",
+     "b1w-b1o": "LESS"
+    }
+   }
+  },
+  "2wiki": {
+   "in_domain": {
+    "zg6r": {
+     "b1o-b1t": "UP",
+     "b1w-b1t": "UP",
+     "b1w-b1o": "GREATER"
+    },
+    "zrckpn": {
+     "b1o-b1t": "UP",
+     "b1w-b1t": "UP",
+     "b1w-b1o": "GREATER"
+    }
+   },
+   "zero_shot": {}
+  }
+ },
+ "share_of_llm_step": {
+  "musique": {
+   "in_domain": {
+    "zg6r": {
+     "share": 2.034,
+     "ci": [
+      1.197,
+      6.021
+     ],
+     "resamples": 1998,
+     "of": 2000,
+     "b1o-b1t": {
+      "R@5": 0.0147,
+      "ci": [
+       0.004,
+       0.0256
+      ]
+     }
+    },
+    "zrckpn": {
+     "share": 1.034,
+     "ci": [
+      0.709,
+      1.532
+     ],
+     "resamples": 2000,
+     "of": 2000,
+     "b1o-b1t": {
+      "R@5": 0.0284,
+      "ci": [
+       0.0172,
+       0.0393
+      ]
+     }
+    }
+   },
+   "zero_shot": {
+    "zg6r": {
+     "share": null,
+     "reason": "b1o - b1t is not above 0 by its interval",
+     "b1o-b1t": {
+      "R@5": 0.0075,
+      "ci": [
+       -0.0049,
+       0.0204
+      ]
+     }
+    },
+    "zrckpn": {
+     "share": 0.457,
+     "ci": [
+      0.165,
+      0.75
+     ],
+     "resamples": 2000,
+     "of": 2000,
+     "b1o-b1t": {
+      "R@5": 0.0396,
+      "ci": [
+       0.027,
+       0.0525
+      ]
+     }
+    }
+   }
+  },
+  "2wiki": {
+   "in_domain": {
+    "zg6r": {
+     "share": 1.436,
+     "ci": [
+      1.325,
+      1.572
+     ],
+     "resamples": 2000,
+     "of": 2000,
+     "b1o-b1t": {
+      "R@5": 0.1172,
+      "ci": [
+       0.1042,
+       0.1308
+      ]
+     }
+    },
+    "zrckpn": {
+     "share": 1.239,
+     "ci": [
+      1.163,
+      1.33
+     ],
+     "resamples": 2000,
+     "of": 2000,
+     "b1o-b1t": {
+      "R@5": 0.138,
+      "ci": [
+       0.125,
+       0.1508
+      ]
+     }
+    }
+   },
+   "zero_shot": {}
+  }
+ },
+ "gnn_minus_mlp": {
+  "musique": {
+   "in_domain/b1t": "GNN_ABOVE",
+   "in_domain/b1w": "GNN_ABOVE",
+   "in_domain/b1o": "LEVEL",
+   "zero_shot/b1t": "GNN_ABOVE",
+   "zero_shot/b1w": "MLP_ABOVE",
+   "zero_shot/b1o": "MLP_ABOVE"
+  },
+  "2wiki": {
+   "in_domain/b1t": "GNN_ABOVE",
+   "in_domain/b1w": "GNN_ABOVE",
+   "in_domain/b1o": "MLP_ABOVE"
+  }
+ }
+}
