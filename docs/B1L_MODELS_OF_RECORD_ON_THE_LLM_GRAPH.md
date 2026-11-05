@@ -417,3 +417,64 @@ report, never in place of it, and B1L's filing (b1t, b1w and b1o on MuSiQue and 
   the host's CPU), `gate`, `lists`, the two `cols`, six `read-gnn` (1.1, 4, GPU 0.15, cap 0.13) and six `read-mlp` (6, 4).
   Projection, not a measurement: b1w's chain took 2,953 s and 438 s were 82,834 entries, so b1u's 171,408 entries over b1w extrapolate
   to about 3,860 s.
+
+## 16. Results of amendment 2: the union b1u (MuSiQue)
+
+Filed 5 November 06:21 IST, **beside section 13, never in place of it** (section 13, filed in 568bf08, stands on its own). Records:
+`outputs/b1l/u/report.json`, `report.md` and `calls.json` (masked with `mask_host.py`; counts and per-question statistics only, no
+file or phrase of the references). `zb1lu.py` is the file committed with the amendment (7cfe1fc) and ran unchanged: its sha256
+(`d76abd497080...`) is in the settings record and the report, with `zb1l.py`'s (`daefd3ed4d57...`) and `zb1h.py`'s
+(`33b0e49554e2...`), so **no code fix was made and no rule of sections 1 to 15 changed**. All twelve reads are present, the gate reads
+READY with no problem, the settings record's type checks hold (0 mismatches in the EM types of the 82,834 W2_S entries and of the
+82,834 union entries that are W2_S entries), and the record's counts equal section 15's table (127,121 pairs, 254,242 entries; 82,834
+typed (32.6 %), 171,408 NULL (67.4 %); 178,344 entries carry the null score type, the 171,408 plus 6,936 W2_S entries whose filed type
+is itself null). The report ties to section 13's record by its sha256 (`acf2956d8d6f...`, the file committed in 568bf08), and its b1t,
+b1w and b1o rows equal section 13's (R@5 and interval, in-domain and held-out). R@5 x100 of the p@swa candidate, 1,000 questions; 95%
+bootstrap intervals over the questions (2,000 resamples, seed 0), the differences paired.
+
+**In-domain** (the WQ-hotpotqa fits, three seeds per model):
+
+| setting | model | b1t | b1w | b1o | b1u | b1u - b1w | b1u - b1o | b1u - b1t | words (u-w / u-o / u-t) |
+|---|---|---:|---:|---:|---:|---|---|---|---|
+| musique | zg6r | 66.0 (64.3-67.7) | 69.0 (67.2-70.7) | 67.4 (65.8-69.3) | 68.8 (67.1-70.6) | -0.1 (-1.1, +0.9) | +1.4 (+0.8, +2.0) | +2.9 (+1.8, +3.9) | FLAT / UP / UP |
+| musique | zrckpn | 64.5 (62.8-66.1) | 67.4 (65.7-69.2) | 67.3 (65.6-69.2) | 67.7 (66.0-69.5) | +0.3 (-0.7, +1.2) | +0.4 (-0.1, +0.9) | +3.2 (+2.1, +4.4) | FLAT / FLAT / UP |
+
+**The setting's call** (the two models' in-domain words, section 15):
+
+| setting | b1u - b1w | b1u - b1o |
+|---|---|---|
+| musique | NOTHING | NOT_DOWN |
+
+**Held-out** (the WQ-musique fits; these words decide nothing):
+
+| setting | model | b1t | b1w | b1o | b1u | b1u - b1w | b1u - b1o | b1u - b1t | words (u-w / u-o / u-t) |
+|---|---|---:|---:|---:|---:|---|---|---|---|
+| musique | zg6r | 62.1 (60.4-63.7) | 60.8 (59.1-62.5) | 62.8 (61.1-64.5) | 63.5 (61.7-65.2) | +2.7 (+1.4, +4.0) | +0.7 (-0.1, +1.4) | +1.4 (+0.1, +2.6) | UP / FLAT / UP |
+| musique | zrckpn | 60.0 (58.4-61.7) | 61.8 (60.1-63.6) | 64.0 (62.3-65.8) | 65.0 (63.3-66.8) | +3.2 (+2.0, +4.4) | +1.1 (+0.4, +1.7) | +5.0 (+3.8, +6.3) | UP / UP / UP |
+
+**zg6r - zrckpn on b1u**, paired by question (beside, decides nothing; B1M's labels): in-domain +1.1 (+0.3, +1.9) GNN_ABOVE, held-out
+-1.6 (-2.4, -0.7) MLP_ABOVE.
+
+**What the reads say, under the rules declared in section 15 and nothing more.**
+
+- **b1u - b1w is FLAT in-domain for both models: the setting's call is NOTHING.** The P pairs of H4o that the rule lacks (85,704 pairs,
+  171,408 NULL-typed entries added to b1w's 82,834 typed ones) change the R@5 of the models of record, fitted without LLM links, by
+  -0.1 (-1.1, +0.9) points (zg6r) and +0.3 (-0.7, +1.2) (zrckpn). NOTHING is the word for two intervals that hold 0: a step of up to
+  about one point either way is not excluded.
+- **b1u - b1o is UP for zg6r and FLAT for zrckpn in-domain: the setting's call is NOT_DOWN.** The rule's pairs that H4o lacks (28,910
+  pairs, 57,820 W2_S-typed entries added to b1o's 196,422) change R@5 by +1.4 (+0.8, +2.0) (zg6r) and +0.4 (-0.1, +0.9) (zrckpn).
+- **b1u - b1t is UP in-domain for both models:** +2.9 (+1.8, +3.9) and +3.2 (+2.1, +4.4). In-domain the union's point R@5 (68.8 and
+  67.7) is within 0.3 points of b1w's (69.0 and 67.4) and above b1o's (67.4 and 67.3) for both models, which the interval confirms for
+  zg6r only.
+- **Held-out (decides nothing):** b1u - b1w is UP for both models (+2.7 (+1.4, +4.0) and +3.2 (+2.0, +4.4)), b1u - b1o is FLAT for zg6r
+  (+0.7 (-0.1, +1.4)) and UP for zrckpn (+1.1 (+0.4, +1.7)), b1u - b1t is UP for both (+1.4 (+0.1, +2.6) and +5.0 (+3.8, +6.3)); b1u has
+  the highest held-out R@5 of the four sets for both models (63.5 and 65.0).
+- **The typing confound of section 3 stays:** b1u is two thirds NULL-typed while the fits were fitted on W2_S types, so b1u - b1w
+  and b1u - b1o carry the typing of the entries they add as well as their pairs.
+- **Not claimed:** anything about H4o's phrase graph; anything beyond these twelve fits on these four graphs; a share (none is
+  declared); a union on 2wiki (not built, section 15); a comparison of the rule's links with the LLM's.
+
+Host items (`rx`; the host's own peaks and times of the jobs in state done whose id `rx status` resolved). The union's chain peaked at
+7.13 GB in 3,182.5 s (reserved 16 GB; section 15's projection was about 3,860 s), the settings took 11 s at 0.31 GB. zg6r's reads took
+1.65 to 1.68 GB in 269 to 434 s (4 of 6 resolved), zrckpn's 1.92 GB in 180 to 181 s (2 of 6). The host's listing of `b1l-u-` jobs,
+read when this section was written, holds the 20 items' jobs, all done, none failed or cancelled.

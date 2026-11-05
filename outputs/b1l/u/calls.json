@@ -1,0 +1,39 @@
+{
+ "declared_in": "docs/B1L_MODELS_OF_RECORD_ON_THE_LLM_GRAPH.md",
+ "call": {
+  "musique": {
+   "b1u-b1w": "NOTHING",
+   "b1u-b1o": "NOT_DOWN"
+  }
+ },
+ "calls": {
+  "musique": {
+   "in_domain/zg6r": {
+    "b1u-b1w": "FLAT",
+    "b1u-b1o": "UP",
+    "b1u-b1t": "UP"
+   },
+   "in_domain/zrckpn": {
+    "b1u-b1w": "FLAT",
+    "b1u-b1o": "FLAT",
+    "b1u-b1t": "UP"
+   },
+   "zero_shot/zg6r": {
+    "b1u-b1w": "UP",
+    "b1u-b1o": "FLAT",
+    "b1u-b1t": "UP"
+   },
+   "zero_shot/zrckpn": {
+    "b1u-b1w": "UP",
+    "b1u-b1o": "UP",
+    "b1u-b1t": "UP"
+   }
+  }
+ },
+ "gnn_minus_mlp": {
+  "musique": {
+   "in_domain/b1u": "GNN_ABOVE",
+   "zero_shot/b1u": "MLP_ABOVE"
+  }
+ }
+}
