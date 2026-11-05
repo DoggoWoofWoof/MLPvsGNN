@@ -1298,3 +1298,58 @@ numbers (the MLP's Family 2 rows are M5's and A7's), the threads, the pin, the q
 **Commit policy.** This section is committed before any development job of the cut module and before any M4 pass. The raw files and
 the development JSON are never committed (section 10's policy); M4's `report.json` and `report.md` are committed masked, as M5's,
 with `git add -f`. The six items of the L2 screen go to the feeder after this commit; no other host job is sent with it.
+
+**Correction 1 (5 November, about 10:16 IST, before any seed-1 or seed-2 fit): the GNN's L2 full run.** The L2 screen is filed:
+`outputs/fsv/calls_gnn.json` and `calls_gnn.md` (the host's `fsvg-calls-l2`, 5 November, 10:03 IST; committed in 8a1dd2d). It is
+a PASS. Of the eight deciding reads one is a GAIN (WQ-musique musique, +0.0162 against a floor of 0.0095), seven are WITHIN and
+none is a LOSS; the lowest delta is -0.0062 (WQ-hotpotqa's musique 4-hop slice, floor 0.0096); there are no problems. By
+section 4's order a PASS opens that level's full run, and the calls read "Next: L2 full_run". The GNN's fast version is still
+not known: a PASS admits nothing, and the GAIN does not count (section 4).
+
+**The run.** Section 4's full run, unchanged: seeds 1 and 2 on both splits, each cut fit compared with ML1's zg6r of the same
+seed and split, and `zltg.full_row` per deciding read over the three seeds with the pair floor of both arms' spreads. Seed 0
+is the screen's, filed and kept. ADMITTED when none of the eight is a LOSS, NOT_ADMITTED when any is, INCOMPLETE first
+(sections 4 and 9).
+
+Four fits and no new start. Each starts from the cut zspk fit of its split at seed 0 (`scr-fsv-zspk-L2-s0` for WQ-musique, `-hp`
+for WQ-hotpotqa), fitted and read in the screen, which is the start of every zg6r fit of that level and split (section 9);
+`zfsvg`'s loader checks the start as it did for the screen's fits.
+
+| item | GPU share | host GB | after |
+|---|---:|---:|---|
+| `fsvg-zg6r-L2-s1` | 0.42 | 13.4 | `fsvg-calls-l2` (the calls that name the full run) |
+| `fsvg-zg6r-L2-s2` | 0.42 | 13.4 | `fsvg-calls-l2` |
+| `fsvg-zg6r-L2-s1-hp` | 0.83 | 13.4 | `fsvg-calls-l2` |
+| `fsvg-zg6r-L2-s2-hp` | 0.83 | 13.4 | `fsvg-calls-l2` |
+| `fsvg-compare-l2f` | - | 2 | the four fits |
+| `fsvg-calls-l2f` | - | 1 | the compare |
+
+The items go in this order. The commands, the pool caps (0.4 for the WQ-musique fits, 0.8 for the -hp fits) and the 85 input
+files are the screen's items' own, with the seed in the fit name: `scr-fsv-zg6r-L2-s<k>` and `-hp`, k = 1 and 2. No input file
+has changed since the screen's items were sent, except this document.
+
+**The reservations** come from the four L2 fits as run, and they stand:
+- memory: rx's record is 12.63, 12.52, 12.77 and 12.62 GB (zspk, zspk -hp, zg6r, zg6r -hp), so each fit reserves 13.4, 4.9% above
+  the largest; the compare and the calls peaked at 0.22 and 0.04 GB committed and reserve 2 and 1;
+- the card: the allocator's peak reserved was 8.68, 11.04, 8.96 and 18.15 GB, under the pool caps 0.4, 0.55, 0.4 and 0.8 of the
+  24 GB card, and the process's peak at the end of the two zg6r reads was 9.35 and 18.37 GB, under the shares' 10.1 (0.42) and
+  19.9 GB (0.83). The training peaks in L2's logs (7.18, 11.60, 7.81 and 18.37 GB) equal L3's within 0.02 GB, so the cut at L2
+  did not move them either;
+- time: the two zg6r fits ran 36 minutes and 1 h 50 min.
+
+**The card.** The two WQ-musique fits hold 0.84 of it together and run side by side; each -hp fit holds 0.83 and runs alone, one
+after the other. On a card free of other jobs the four fits take about 4.5 hours.
+
+**What the verdict opens.**
+- ADMITTED: the GNN's fast version is L2 (zg6r without topo_STRUCT, depth_STRUCT, WALK and WALKF), and Family 2 is that cut GNN
+  against the full zrckpn. Section 15's forms, the cut module, its development check and M4 follow as section 15 says, and
+  section 6's rule for the frozen pair applies before any timing. This correction writes and runs none of them.
+- NOT_ADMITTED: L1's screen (G_struct cut alone, 217,057 encoder numbers) opens by a later correction, not before. If no level
+  is admitted, the full zg6r is the fast version and M4 is not run (section 15).
+- INCOMPLETE: the missing fit, compare or read file is made and the calls are rerun (section 4).
+
+**What is not changed.** Sections 1 to 15: the cuts, the reads, the rule, the pool, the forms of both families, and M5's and A7's numbers.
+
+**Commit policy.** This correction is committed before any of the four fits is sent. The fits, compares and reads are never
+committed; the calls that name the verdict are, masked (section 9's policy). The six items go to the feeder after this commit;
+no other host job is sent with it.
