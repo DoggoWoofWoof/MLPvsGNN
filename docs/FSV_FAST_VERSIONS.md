@@ -1353,3 +1353,99 @@ after the other. On a card free of other jobs the four fits take about 4.5 hours
 **Commit policy.** This correction is committed before any of the four fits is sent. The fits, compares and reads are never
 committed; the calls that name the verdict are, masked (section 9's policy). The six items go to the feeder after this commit;
 no other host job is sent with it.
+
+**Correction 2 (6 November, about 06:38 IST, before any number of the cut path): the cut module, its check without data, the cut fits'
+reference reads and its development job.** The GNN's L2 full run is filed and ADMITTED (`outputs/fsv/calls_gnn.json` and `calls_gnn.md`,
+committed in 634a8ad; the header reads "Fast version: L2. Next: nothing"). So Family 2 is the cut zg6r (without topo_STRUCT,
+depth_STRUCT, WALK and WALKF) against the full zrckpn, and the forms this section declared on 5 November are now written. This
+correction declares the code and its development job; it makes no number, runs nothing on the host itself and sends no item
+itself: the six items below go to the feeder after this commit, inserted by the feeder's owner.
+
+**The module.** `outputs/mp_unified/zfsvy_cut.py` (new, committed with this correction) imports `zfsvy_b16.py` first, and so
+`zfsvy.py`, `zfsvx.py`, `zfsvc.py` and `zfsvt.py`; it also imports `zfsvg.py` (the cut fits' names, pick and read context). It edits
+none of them. It holds the forms of this section, as declared, and no timed pass (M4's `run` and `report` come by a later correction,
+before any M4 pass):
+- compile (G_struct): `compile_cut` and `_compile_cut`, a copy of `c2_fast.compile_mlp` and of `_compile_mlp` up to and including its
+  `edges` lap, then its return, so the laps `topology`, `D` and `depth_basis` do not run and the columns they fill stay zero. The
+  retrieval and edge laps are the module's lines; `selftest` compares the copy's lines with the module's, one by one.
+  `need_compile.NeedCompiler` is not tried here; a later correction would record it if it were.
+- rows (G_walk): `walk_zeros` and `walkf_zeros` return zeros of the shapes of `C2.walk_block` (16 columns) and `C2.walkf_block`
+  (18), float32; every other line of `C10.lean_rows10` is the module's own.
+- `cut_forms()` puts the three replacements in force (`c2_fast.compile_mlp`, `walk_block`, `walkf_block`, the names
+  `C11.compile_serial` and `C10.lean_rows10` call) for the length of the cut GNN's own run, and puts the module's functions back
+  after it, also on an error; entered twice it refuses.
+- assemble and forward: `cut_view(S)` swaps the GNN's entries of `S.models`, `S.blocks` and `S.boxes` for the cut fit's for the length
+  of a block, so that `zfsvc.run_model`, `build`, `forward` and `check_scores` run the cut model unedited: `build` over the cut
+  pick's blocks, the forward of the cut fit's own `models.pt`. A6's z-score forms run on the kept columns only (they act on what the
+  model passes them); the warm batch of 16 runs A7's step (`zfsvy_b16.forward_t`).
+- the cut fits are the seed-0 screen fits of the split of the full fit each dataset is timed on (musique `scr-fsv-zg6r-L2-s0-hp`,
+  hotpotqa and 2wiki `scr-fsv-zg6r-L2-s0`), the same choice as the full models' (`scr-ml1-zg6r-s0-hp`, `scr-ml1-zg6r-s0`).
+  The cut model is built through the cut fit's own read chain (`zfsvg.on_fit` around `zml1s.run_arm`'s read up to `read_ref`: FSV's
+  names, A1's stamp checked, the level's pick, p@swa alone) and takes the full GNN's carve, which is the cut fit's cache, split and
+  basis (checked: the basis and its sha256), so no second carve is held.
+
+**The check without data.** `python outputs/mp_unified/zfsvy_cut.py selftest`: (1) `compile_cut` is `compile_mlp`'s lines and
+`_compile_cut` is `_compile_mlp`'s up to its `edges` lap and its return; (2) the zero functions return the shape and dtype of the
+walks they stand for (checked on a random graph against the module's), are in force only inside `cut_forms`, and are put back after
+an error; (3) the comparison of kept columns sees a change in a kept column and not one in a cut column, and `cut_view` swaps and
+restores; (4) the level's cut and pick as `zfsv` and `zfsvg` name them (the cut is these four blocks, the pick is DOB's order
+without them), and each dataset's cut fit starts from the full fit's split. It passed on the laptop before this commit (6 November,
+06:36 IST): it needs no data and prints nothing it measured.
+
+**The cut fits' reference reads** (`ref`). The cut fits have no reference file yet: `zfsvt.py`'s are the full fits'. `python
+outputs/mp_unified/zfsvy_cut.py ref --dataset D` is `zfsvt.ref_cmd` for the dataset's cut fit: the same chain, flags, class, roots and
+read cap as the fit's read, `read_carve`'s batches, then every question at batch 1, on the CPU, checked against the fit's filed read
+file (its scores64 on the first 64 questions, its top and hit on all 201 questions), under `zfsvg.on_fit` and with no stamp
+touched. It writes `outputs/fsv/timing/ref/<cut fit>/<dataset>.npz` and `.json` and nothing under `outputs/screen/fits`. The files
+are never committed (section 10's policy).
+
+**The development job** (`devy`; the first 40 questions of the dataset and the JIT question, BLAS 2, the two CPUs the timed jobs
+have (`zfsvy_b16.pin_two`), A4's and A6's forms installed). Per question, in a rotating order, four versions: the full MLP, the full
+GNN, the full path with the cut pick selected from its inputs (`cutref`: the module's own compile and rows, the cut model) and the
+cut path. On every question:
+- A2's checks (`zfsvc.dev_checks`) on the full MLP and GNN, as A6's development job ran them;
+- the cut path against `cutref`, byte for byte: each kept column of X (the blocks of the cut pick but SEMB), the pack's inputs (n, P,
+  q16, kt, the link count and the link arrays), the features, the question index, the base z and the scores;
+- the cut path's features and base z against the cut fit's carve (`batch([q])` over the cut blocks), and both cut paths' scores
+  against the cut fit's reference read at batch 1 (within 1e-4, the same top five);
+- information, not a check: whether the cut columns of the cut path's X are zero.
+
+After the questions: the cut path's packs in batches of 16 (two), the forward with the module's layer step against A7's, byte for
+byte. The job prints the per-stage medians of the four versions (development numbers, unfiled, not measurements) and a line
+`DEVY_JSON` with the counts. It ends `DEVY PASS` when no question fails a check, every form ran (A4's and A6's by their counters, the
+cut forms by theirs: `compile_cut`, `walk_zeros` and `walkf_zeros` once per question, the module's functions back in place) and the
+batches are equal; otherwise `DEVY FAIL` with the failing questions and checks named. The job exits 0 either way (the verdict is in
+the log, so the chain goes on), except on a Windows file race, which `retry_cmd` reruns. A form that fails is dropped by a correction
+before any M4 pass, as this section says: its piece is then computed and not read, and no gain is claimed for it.
+
+**The six items** (one chain, in this order, each after the one before; the dataset's devy after its reference read). All run on
+two CPUs, and the commands go through `pylib_run.py` as the earlier development items did:
+
+| item | dataset | command (after `outputs/host_ops/pylib_run.py outputs/mp_unified/zfsvy_cut.py`) | host GB |
+|---|---|---|---:|
+| `fsvc-ref-hotpotqa` | hotpotqa | `ref --dataset hotpotqa --blas 2` | 14 |
+| `fsvc-devy-hotpotqa` | hotpotqa | `devy --dataset hotpotqa --questions 40 --blas 2 --lp 8` | 19 |
+| `fsvc-ref-musique` | musique | `ref --dataset musique --blas 2` | 14 |
+| `fsvc-devy-musique` | musique | `devy --dataset musique --questions 40 --blas 2 --lp 8` | 23 |
+| `fsvc-ref-2wiki` | 2wiki | `ref --dataset 2wiki --blas 2` | 14 |
+| `fsvc-devy-2wiki` | 2wiki | `devy --dataset 2wiki --questions 40 --blas 2 --lp 8` | 28 |
+
+The development items run under `retry_cmd.py --tries 3 --wait 90`. Their inputs are `pylib_run.py`, `retry_cmd.py`, the numba zip and
+the five modules of the chain (`zfsvt.py`, `zfsvc.py`, `zfsvx.py`, `zfsvy.py`, `zfsvy_b16.py`) with `zfsvg.py` and `zfsvy_cut.py`;
+the reference items need the cut fits' folders, which the screen left on the host, and the cache. The reservations are estimates:
+no peak of either job has been measured. The devy figures are zfsvy's development items' (17, 21 and 26 GB) plus 2 GB for the cut
+model and its reference arrays; the reference items reserve 14 GB until the peak of the same job on the full zg6r fit is read from
+rx's record. They are re-read from the first runs, as A2's were.
+
+**What is not changed.** Sections 1 to 14, section 15 above this correction, the cuts, the reads, the rule, the pool, the forms of
+both families, the threads, the pin, the question sets and the bars; M5's and A7's numbers; `zfsvc.py`, `zfsvt.py`, `zfsvx.py`,
+`zfsvy.py` and `zfsvy_b16.py`.
+
+**What follows.** After the six items: a correction if a form fails its check (the form dropped). Then M4's code (`run` and `report`)
+by a later correction, with its smoke; M4 itself runs only after the freeze (00:00 IST on 7 November), after this development
+check, never beside another timed job, on a quiet host, with section 6's rule applied first if the pair of record at the freeze is
+not zg6r and zrckpn.
+
+**Commit policy.** This correction and `zfsvy_cut.py` are committed together, before any development job of the module runs. The
+development logs, the reference files and the development JSON are never committed; the six items go to the feeder after this
+commit, and no other host job is sent with them.
