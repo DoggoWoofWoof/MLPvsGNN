@@ -1,0 +1,129 @@
+{
+ "declared_in": "docs/B1H_MODELS_OF_RECORD_ON_HYPERLINKS.md",
+ "call_H": "MIXED",
+ "deciding_cells": {
+  "H": [
+   "2wiki zg6r",
+   "2wiki zrckpn",
+   "hotpotqa zg6r",
+   "hotpotqa zrckpn"
+  ]
+ },
+ "H": {
+  "2wiki": {
+   "zg6r": "GREATER",
+   "zrckpn": "GREATER"
+  },
+  "hotpotqa": {
+   "zg6r": "SAME",
+   "zrckpn": "SAME"
+  },
+  "musique": {
+   "zg6r": "GREATER",
+   "zrckpn": "GREATER"
+  }
+ },
+ "calls_vs_best_published": {
+  "2wiki": {
+   "zg6r/b1t": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1t": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zg6r/b1w": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1w": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zg6r/b1": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   }
+  },
+  "hotpotqa": {
+   "zg6r/b1t": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1t": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zg6r/b1w": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1w": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zg6r/b1": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   }
+  },
+  "musique": {
+   "zg6r/b1t": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1t": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zg6r/b1w": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1w": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zg6r/b1": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   },
+   "zrckpn/b1": {
+    "any": "BELOW",
+    "peer_reviewed": "BELOW"
+   }
+  }
+ },
+ "gnn_minus_mlp": {
+  "2wiki": {
+   "in_domain/b1t": "GNN_ABOVE",
+   "in_domain/b1w": "GNN_ABOVE",
+   "in_domain/b1": "GNN_ABOVE"
+  },
+  "hotpotqa": {
+   "in_domain/b1t": "GNN_ABOVE",
+   "in_domain/b1w": "GNN_ABOVE",
+   "in_domain/b1": "GNN_ABOVE",
+   "zero_shot/b1t": "GNN_ABOVE",
+   "zero_shot/b1w": "GNN_ABOVE",
+   "zero_shot/b1": "GNN_ABOVE"
+  },
+  "musique": {
+   "in_domain/b1t": "GNN_ABOVE",
+   "in_domain/b1w": "GNN_ABOVE",
+   "in_domain/b1": "GNN_ABOVE",
+   "zero_shot/b1t": "GNN_ABOVE",
+   "zero_shot/b1w": "MLP_ABOVE",
+   "zero_shot/b1": "MLP_ABOVE"
+  }
+ }
+}

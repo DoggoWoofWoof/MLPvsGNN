@@ -257,4 +257,123 @@ The report runs on the laptop after `rx.py fetch` of the b1h reads and of B1M's 
 
 ## 13. Results
 
-Not yet filed.
+Filed 6 November 20:14 IST. Records: `outputs/b1h/report.json`, `report.md` and `calls.json` (masked with `mask_host.py`; counts and per-question
+statistics only). `zb1h.py` is the file committed with the declaration (29c2553) and ran unchanged on the host and on the laptop: its
+sha256 (`33b0e49554e2...`) is the one in every gate record, read marker and `report.json`, so **no code fix was made and no deviation
+was added to section 6.** All 36 read arrays (12 fits x 3 settings) and 24 read markers (12 fits x 2 tags) were fetched, none missing;
+both gates (`b1h_gate_main.json`, `b1h_gate_musique.json`) read READY; each setting's type checks hold (`w2s_em_recomputed_mismatches` 0
+and `overlap_em_mismatches` 0 on 2wiki, hotpotqa and musique); the settings JSONs the host built carry the same `content_sha256` as
+the laptop's three; the b1t and b1w rows recomputed from B1P's and B1M's read files equal B1M's filed rows (92 checked, 0 differ). R@5 x100
+of the p@swa candidate, 1,000 questions per setting; the intervals are 95% bootstrap intervals over the questions (2,000 resamples, seed
+0), the differences paired. **The two models were fitted on W2_S pools, never on a hyperlink graph: b1 is a shift of graph family for
+both (section 6), and every word below is the declared rule's and nothing more.**
+
+**Queue history** (disclosed, no rule or reservation changed). Block 1 (self-test, settings, fork, the three chains) was sent from
+01:50 IST on 5 November; the chains ended rc 0 (2wiki 466 s, peak 4.62 GB; hotpotqa 451 s, 4.83 GB; musique 2,202 s, 6.26 GB) and
+`b1h-lists-hotpotqa` ran once. At 02:00 the other 35 rows were taken out of the feeder's queue (no read was sent then). On 6 November
+at 10:49 IST, after the user asked that the host not idle, the 35 went back, behind the end of FSV's last M4 pass (`fsvm4b-2wiki`: the
+five root rows waited on it, so the timing pass had a quiet host) and after ISB's rows; at 10:51 the twelve zg6r read rows were moved
+ahead of ISB's fits. `b1h-lists-hotpotqa` carries the suffix `-r2` in the second queue because the feeder held its first name as sent
+(same command; it ended rc 0 in 1.9 s). The gates ran at 11:39 IST and the reads between 11:41 and 14:20 IST, all 24 jobs rc 0. Measured on the host (the
+jobs whose ids resolved: 8 of 12 zg6r reads, 6 of 12 zrckpn reads): zg6r main tag 16-18 s, 1.15-1.18 GB; zg6r musique 649 s, 1.51-1.52 GB;
+zrckpn main tag 8-9 s, under 0.1 GB; zrckpn musique 162 s, 1.91 GB; every request was above its peak. Report:
+`zb1h.py report` on the laptop, 20:07 IST.
+
+**The ladder, in-domain** (2wiki: both splits, six fits; hotpotqa: the WQ-musique fits; musique, beside: the WQ-hotpotqa fits; each
+question's R@5 averaged over the fits):
+
+| setting | model | b1t | b1w | b1 | b1w - b1t | b1 - b1w | b1 - b1t | share of the gain at b1w | b1 calls (any / peer) | b1 gap (any / peer) |
+|---|---|---:|---:|---|---|---|---|---:|---|---|
+| 2wiki | zg6r | 78.1 (76.7-79.5) | 94.9 (94.1-95.7) | 95.4 (94.6-96.1) | +16.8 (+15.5, +18.2) | +0.4 (-0.3, +1.1) | +17.3 (+16.0, +18.6) | 0.974 | BELOW / BELOW | -3.1 / -2.8 |
+| 2wiki | zrckpn | 77.0 (75.6-78.4) | 94.1 (93.2-94.9) | 94.4 (93.5-95.2) | +17.1 (+15.8, +18.4) | +0.3 (-0.4, +0.9) | +17.4 (+16.1, +18.7) | 0.984 | BELOW / BELOW | -4.1 / -3.8 |
+| hotpotqa | zg6r | 91.1 (90.0-92.3) | 94.3 (93.3-95.3) | 96.5 (95.7-97.3) | +3.1 (+2.4, +4.0) | +2.2 (+1.5, +2.9) | +5.3 (+4.4, +6.2) | 0.589 | BELOW / BELOW | -2.3 / -0.9 |
+| hotpotqa | zrckpn | 90.4 (89.2-91.6) | 93.4 (92.4-94.5) | 95.6 (94.8-96.5) | +3.0 (+2.2, +3.9) | +2.2 (+1.5, +2.9) | +5.2 (+4.3, +6.2) | 0.580 | BELOW / BELOW | -3.1 / -1.8 |
+| musique | zg6r | 66.0 (64.3-67.7) | 69.0 (67.2-70.7) | 68.6 (66.9-70.4) | +3.0 (+1.8, +4.0) | -0.4 (-0.9, +0.2) | +2.6 (+1.6, +3.7) | 1.135 | BELOW / BELOW | -12.1 / -9.7 |
+| musique | zrckpn | 64.5 (62.8-66.1) | 67.4 (65.7-69.2) | 67.3 (65.6-69.0) | +2.9 (+1.9, +4.0) | -0.1 (-0.6, +0.4) | +2.9 (+1.8, +4.0) | 1.032 | BELOW / BELOW | -13.3 / -11.0 |
+
+Best published rows: 2wiki EviReform 98.45 / G-reasoner 98.2; hotpotqa BridgeRAG 98.75 / PropRAG 97.4; musique SAG2 80.68 / PropRAG 78.3
+
+**The held-out read** (hotpotqa by the WQ-hotpotqa fits, musique by the WQ-musique fits; decides nothing):
+
+| setting | model | b1t | b1w | b1 | b1w - b1t | b1 - b1w | b1 - b1t |
+|---|---|---:|---:|---|---|---|---|
+| hotpotqa | zg6r | 89.4 (88.2-90.6) | 92.9 (91.9-94.0) | 94.7 (93.8-95.6) | +3.5 (+2.6, +4.4) | +1.8 (+1.1, +2.5) | +5.3 (+4.3, +6.3) |
+| hotpotqa | zrckpn | 88.6 (87.4-89.9) | 92.2 (91.2-93.4) | 93.9 (92.9-94.9) | +3.6 (+2.8, +4.5) | +1.6 (+0.9, +2.3) | +5.3 (+4.4, +6.2) |
+| musique | zg6r | 62.1 (60.4-63.7) | 60.8 (59.1-62.5) | 59.1 (57.4-60.9) | -1.3 (-2.6, +0.1) | -1.7 (-2.3, -1.0) | -2.9 (-4.3, -1.6) |
+| musique | zrckpn | 60.0 (58.4-61.7) | 61.8 (60.1-63.6) | 61.1 (59.3-62.9) | +1.8 (+0.5, +3.1) | -0.8 (-1.3, -0.1) | +1.1 (-0.1, +2.3) |
+
+**zg6r - zrckpn**, paired by question, on each carve:
+
+| setting | read | carve | zg6r - zrckpn (CI) | label |
+|---|---|---|---|---|
+| 2wiki | in-domain | b1t | +1.1 (+0.7, +1.6) | GNN_ABOVE |
+| 2wiki | in-domain | b1w | +0.8 (+0.5, +1.2) | GNN_ABOVE |
+| 2wiki | in-domain | b1 | +1.0 (+0.6, +1.4) | GNN_ABOVE |
+| hotpotqa | in-domain | b1t | +0.8 (+0.2, +1.4) | GNN_ABOVE |
+| hotpotqa | in-domain | b1w | +0.9 (+0.4, +1.4) | GNN_ABOVE |
+| hotpotqa | in-domain | b1 | +0.9 (+0.4, +1.3) | GNN_ABOVE |
+| hotpotqa | zero-shot | b1t | +0.8 (+0.0, +1.5) | GNN_ABOVE |
+| hotpotqa | zero-shot | b1w | +0.6 (+0.1, +1.2) | GNN_ABOVE |
+| hotpotqa | zero-shot | b1 | +0.8 (+0.2, +1.4) | GNN_ABOVE |
+| musique | in-domain | b1t | +1.5 (+0.6, +2.4) | GNN_ABOVE |
+| musique | in-domain | b1w | +1.5 (+0.7, +2.4) | GNN_ABOVE |
+| musique | in-domain | b1 | +1.3 (+0.4, +2.1) | GNN_ABOVE |
+| musique | zero-shot | b1t | +2.0 (+1.1, +2.9) | GNN_ABOVE |
+| musique | zero-shot | b1w | -1.1 (-1.9, -0.1) | MLP_ABOVE |
+| musique | zero-shot | b1 | -1.9 (-2.8, -1.1) | MLP_ABOVE |
+
+**HLC's family H on the models of record** (stage call MIXED; HLC's rows for the J5 fits beside, as filed: GREATER_EVERYWHERE):
+
+Model lift = R@5(b1) - R@5(b1t); walk lift = A1 on structural + NER + KNN minus A1 on NER + KNN (HLW's walk); difference = model lift - walk lift, paired by question. Deciding cells (in-domain): 2wiki zg6r, 2wiki zrckpn, hotpotqa zg6r, hotpotqa zrckpn.
+
+| setting | model | read | model lift (CI) | walk lift (CI) | difference (CI) | call |
+|---|---|---|---|---|---|---|
+| 2wiki | zg6r | in-domain | +17.3 (+16.0, +18.6) | -0.1 (-0.9, +0.6) | +17.4 (+15.9, +18.9) | GREATER |
+| 2wiki | zrckpn | in-domain | +17.4 (+16.1, +18.7) | -0.1 (-0.9, +0.6) | +17.5 (+16.0, +19.1) | GREATER |
+| hotpotqa | zg6r | in-domain | +5.3 (+4.4, +6.2) | +5.1 (+4.1, +6.3) | +0.2 (-1.2, +1.6) | SAME |
+| hotpotqa | zrckpn | in-domain | +5.2 (+4.3, +6.2) | +5.1 (+4.1, +6.3) | +0.1 (-1.4, +1.6) | SAME |
+| hotpotqa | zg6r | held-out | +5.3 (+4.3, +6.3) | +5.1 (+4.1, +6.3) | +0.1 (-1.3, +1.6) | SAME |
+| hotpotqa | zrckpn | held-out | +5.3 (+4.4, +6.2) | +5.1 (+4.1, +6.3) | +0.1 (-1.4, +1.6) | SAME |
+| musique | zg6r | in-domain | +2.6 (+1.6, +3.7) | +0.8 (-0.1, +1.8) | +1.8 (+0.4, +3.1) | GREATER |
+| musique | zrckpn | in-domain | +2.9 (+1.8, +4.0) | +0.8 (-0.1, +1.8) | +2.0 (+0.6, +3.4) | GREATER |
+| musique | zg6r | held-out | -2.9 (-4.3, -1.6) | +0.8 (-0.1, +1.8) | -3.8 (-5.3, -2.2) | LESS |
+| musique | zrckpn | held-out | +1.1 (-0.1, +2.3) | +0.8 (-0.1, +1.8) | +0.2 (-1.2, +1.7) | SAME |
+
+**The link sets**, by entry type (section 3):
+
+| setting | hyperlink pairs | entries | entries that are W2_S entries | entries with the null score type | W2_S pairs in the setting |
+|---|---:|---:|---:|---:|---:|
+| 2wiki | 1984 | 3968 | 3348 (84.4%) | 620 (15.6%) | 2030 |
+| hotpotqa | 4400 | 8800 | 7074 (80.4%) | 1726 (19.6%) | 4315 |
+| musique | 42823 | 85646 | 76508 (89.3%) | 9806 (11.5%) | 41417 |
+
+Check: the b1t and b1w rows recomputed from B1P's and B1M's read files equal B1M's filed rows (92 checked, 0 differ). Missing reads: 0.
+
+**What the reads say, under the rules declared above and nothing more.**
+
+- **The stage call is MIXED.** The four deciding cells are in-domain on 2wiki and hotpotqa. 2wiki is GREATER for both models:
+  the difference of the model's lift and the walk's is +17.4 (+15.9, +18.9) points for zg6r and +17.5 (+16.0, +19.1) for zrckpn (the
+  models' lifts are +17.3 (+16.0, +18.6) and +17.4 (+16.1, +18.7), the walk's -0.1 (-0.9, +0.6)). Hotpotqa is SAME for both: +0.2 (-1.2, +1.6)
+  and +0.1 (-1.4, +1.6), the models' lifts +5.3 (+4.4, +6.2) and +5.2 (+4.3, +6.2) against the walk's +5.1 (+4.1, +6.3). HLC's rows for the
+  J5 fits stay as filed (their stage call is GREATER_EVERYWHERE) and are not mixed with these. The call says that the models get more out
+  of the links than the walk does on 2wiki and no more than the walk does on hotpotqa; it never says that the links carry the model
+  (section 5).
+- **Every b1 row is BELOW the best published row**, for both lists, on all three settings and both models; the gaps (any / peer-reviewed)
+  are -3.1 / -2.8 (zg6r) and -4.1 / -3.8 (zrckpn) on 2wiki, -2.3 / -0.9 and -3.1 / -1.8 on hotpotqa, and -12.1 / -9.7 and -13.3 / -11.0
+  on musique (beside; its b1 is title mentions).
+- **The ladder.** b1 - b1t is +17.3 / +17.4 points on 2wiki, +5.3 / +5.2 on hotpotqa and +2.6 (+1.6, +3.7) / +2.9 (+1.8, +4.0) on musique.
+  The share of that gain that b1w recovers (section 5) is 0.974 / 0.984 on 2wiki, 0.589 / 0.580 on hotpotqa and 1.135 / 1.032 on musique,
+  where b1 - b1w is -0.4 (-0.9, +0.2) / -0.1 (-0.6, +0.4). On 2wiki b1 - b1w is +0.4 (-0.3, +1.1) / +0.3 (-0.4, +0.9), both intervals
+  holding 0; on hotpotqa it is +2.2 (+1.5, +2.9) for both models.
+- **zg6r - zrckpn.** GNN_ABOVE on every in-domain carve of all three settings (on b1: +1.0 (+0.6, +1.4) on 2wiki, +0.9 (+0.4, +1.3) on
+  hotpotqa, +1.3 (+0.4, +2.1) on musique) and on all three hotpotqa held-out carves. The musique held-out read changes sign: GNN_ABOVE on
+  b1t (+2.0 (+1.1, +2.9)), MLP_ABOVE on b1w (-1.1 (-1.9, -0.1)) and on b1 (-1.9 (-2.8, -1.1)). The held-out words decide nothing.
+- **Held-out reads, beside.** Hotpotqa: b1 - b1t is +5.3 (+4.3, +6.3) for zg6r and +5.3 (+4.4, +6.2) for zrckpn. Musique: -2.9
+  (-4.3, -1.6) for zg6r (R@5 on b1 below b1t) and +1.1 (-0.1, +2.3) for zrckpn. Family H on the held-out cells: hotpotqa SAME for both;
+  musique LESS for zg6r (-3.8 (-5.3, -2.2)) and SAME for zrckpn.
+- **Musique, beside.** Family H in-domain is GREATER for both models (+1.8 (+0.4, +3.1) and +2.0 (+0.6, +3.4)); musique's b1 is title
+  mentions, not corpus hyperlinks (section 4), and the stage call does not use it.
+
+**What this does not say.** The records compare nothing with an LLM-built graph (B1L's records are its own and stay as filed), no model
+was fitted on the hyperlinks (section 12 names that as not declared here), and a model's gain from b1 over b1t is not a statement about
+what the links carry. The musique chain and gate ran as declared; nothing was run twice except the one 2-second lists row named above.
