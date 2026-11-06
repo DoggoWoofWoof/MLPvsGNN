@@ -661,6 +661,7 @@ CODE = [
 # a read on the card as B1P's reads ran (zb1p rows): a transient WinError 32 retried, 0.27 of the card's memory, a share of 0.29
 READ = ("python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 --cuda -- python outputs/host_ops/cuda_alloc.py --frac 0.27 "
         "--gc 0.9 -- outputs/mp_unified/zabl.py")
+SMALL = ("webqsp", "musique")                          # carves whose look and cache are a few GB (1.5k and 2.4k questions)
 LANE_GB = {"webqsp": 7.0, "musique": 9.5, "hotpotqa": 9.5, "metaqa": 9.5, "squad": 7.0, "2wiki": 9.5}
 
 
@@ -708,8 +709,9 @@ def items(arm, lanes=6, sout=False):
             r = f"abl-{tag}-read-{ds}-{fit.replace('scr-ml1-', '')}"
             reads.append(r)
             rows.append(f"line|x|{g},abl-{tag}-fork|{r}|1.1|6|{ins}|{READ} read --arm {arm} --name {fit} --datasets {ds}|gpu:0.29")
-        prev = f"abl-{tag}-prune-{ds}"
-        rows.append(f"line|x|{','.join(reads)}|{prev}|1|2|{ins}|python outputs/mp_unified/zabl.py prune --arm {arm} --datasets {ds}")
+        pr = f"abl-{tag}-prune-{ds}"
+        rows.append(f"line|x|{','.join(reads)}|{pr}|1|2|{ins}|python outputs/mp_unified/zabl.py prune --arm {arm} --datasets {ds}")
+        prev = g if ds in SMALL else pr            # a small carve's files are a few GB: the next chain need not wait for the card
     return rows
 
 
@@ -738,7 +740,8 @@ def selftest():
     assert len(names) == len(set(names)), "item names are unique"
     by = {r.split("|")[3]: r.split("|")[2].split(",") for r in rows}
     # the datasets run one after another: each chain waits on the previous dataset's prune, never on a later item
-    assert by["abl-GO-musique"] == ["abl-GO-prune-webqsp"] and by["abl-GO-webqsp"] == [""]
+    assert by["abl-GO-musique"] == ["abl-GO-gate-webqsp"] and by["abl-GO-webqsp"] == [""]
+    assert by["abl-GO-metaqa"] == ["abl-GO-prune-hotpotqa"] and by["abl-GO-hotpotqa"] == ["abl-GO-gate-musique"]
     assert all(d in names[:names.index(n)] for n, ds_ in by.items() for d in ds_ if d)
     g = items("GOK")
     assert len(g) == 1 + 2 + 2 and sum("gpu:" in r for r in g) == 2 and all(r.startswith("line|x|") for r in g)
@@ -753,6 +756,27 @@ def selftest():
         return lr
     assert check_gok("f", "d", fake(), out=True)["equal_to_1e-4"]
     assert not check_gok("f", "d", fake(1e-3), out=True)["equal_to_1e-4"]
+    # cell(): which fits make the in-domain and held-out reads of a dataset (fit names are ML1's), with per_q faked
+    seen = []
+
+    def fake_per_q(arm_, fit_, ds_):
+        seen.append(fit_)
+        return np.array(list("abc")), np.ones(3, np.int64), np.full(3, 0.5), "sha"
+    real_pq, g = per_q, globals()
+    g["per_q"] = fake_per_q
+    try:
+        mi = cell("GK", "musique", "zg6r", "in-domain")
+        mh = cell("GK", "musique", "zg6r", "held out")
+        wi = cell("GK", "webqsp", "zrckp", "in-domain")
+        wh = cell("GK", "webqsp", "zrckp", "held out")
+        ki = cell("GK", "metaqa", "zg6r", "in-domain")
+        kh = cell("GK", "metaqa", "zg6r", "held out")
+    finally:
+        g["per_q"] = real_pq
+    assert mi and mh and wi and kh and wh is None and ki is None, "webqsp has no held-out fits; metaqa has no in-domain fits"
+    assert len(mi["fits"]) == 3 and len(mh["fits"]) == 3 and len(wi["fits"]) == 6 and len(kh["fits"]) == 6
+    assert set(mi["fits"]) | set(mh["fits"]) <= set(FITS) and not set(mi["fits"]) & set(mh["fits"])
+    assert all(f.endswith("-hp") for f in mi["fits"]) != all(f.endswith("-hp") for f in mh["fits"])
     # the paired comparison: identical cells are LEVEL with difference 0; a cell 0.1 lower in every question is BELOW
     ids = np.array([str(i) for i in range(200)])
     rng = np.random.default_rng(0)
