@@ -3,7 +3,7 @@
 ## Screen: NO_GAIN
 
 counts: {"GAIN": 0, "LOSS": 0, "WITHIN": 10}
-DEP's sixteen-read rule beside: screen ADOPT_FOR_FULL_RUN, full run None
+DEP's sixteen-read rule beside: screen ADOPT_FOR_FULL_RUN, full run ADOPT
 
 | split | read | base s0, s1, s2 | GNX s0 | delta | floor | call |
 |---|---|---|---:|---:|---:|---|
@@ -23,3 +23,24 @@ DEP's sixteen-read rule beside: screen ADOPT_FOR_FULL_RUN, full run None
 | WQ-hotpotqa | metaqa | 0.3519, 0.3903, 0.3651 | 0.3629 | +0.0110 | 0.0574 | WITHIN (beside) |
 | WQ-musique | musique-3hop | 0.4329, 0.4272, 0.4404 | 0.4456 | +0.0127 | 0.0133 | WITHIN (beside) |
 | WQ-musique | musique-4hop | 0.3130, 0.3167, 0.3179 | 0.3302 | +0.0173 | 0.0087 | GAIN (beside) |
+
+## Full run: NOT_ADOPTED
+
+| split | read | d0 | d1 | d2 | floor | call |
+|---|---|---:|---:|---:|---:|---|
+| WQ-musique | squad | +0.0003 | -0.0014 | -0.0017 | 0.0075 | WITHIN |
+| WQ-musique | hotpotqa | +0.0004 | +0.0011 | +0.0024 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | +0.0015 | -0.0014 | +0.0028 | 0.0075 | WITHIN |
+| WQ-musique | webqsp | +0.0005 | +0.0075 | -0.0137 | 0.0192 | WITHIN |
+| WQ-hotpotqa | squad | +0.0009 | -0.0004 | +0.0014 | 0.0075 | WITHIN |
+| WQ-hotpotqa | musique | +0.0002 | -0.0044 | +0.0045 | 0.0111 | WITHIN |
+| WQ-hotpotqa | 2wiki | -0.0026 | -0.0067 | +0.0003 | 0.0075 | WITHIN |
+| WQ-hotpotqa | webqsp | -0.0022 | +0.0064 | +0.0098 | 0.0208 | WITHIN |
+| WQ-hotpotqa | musique-3hop | +0.0035 | -0.0009 | +0.0057 | 0.0199 | WITHIN |
+| WQ-hotpotqa | musique-4hop | -0.0062 | -0.0012 | +0.0074 | 0.0196 | WITHIN |
+| WQ-musique | musique | +0.0147 | +0.0169 | +0.0114 | 0.0075 | GAIN (beside) |
+| WQ-musique | metaqa | +0.0245 | +0.0036 | +0.0441 | 0.0406 | WITHIN (beside) |
+| WQ-hotpotqa | hotpotqa | +0.0004 | +0.0078 | +0.0155 | 0.0176 | WITHIN (beside) |
+| WQ-hotpotqa | metaqa | +0.0110 | -0.0094 | +0.0082 | 0.0456 | WITHIN (beside) |
+| WQ-musique | musique-3hop | +0.0127 | +0.0215 | +0.0088 | 0.0105 | GAIN (beside) |
+| WQ-musique | musique-4hop | +0.0173 | +0.0012 | +0.0068 | 0.0149 | GAIN (beside) |
